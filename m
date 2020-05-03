@@ -2,95 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70D721C2BE3
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 May 2020 13:42:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D7051C2BF2
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 May 2020 13:54:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728010AbgECLmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 May 2020 07:42:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57610 "EHLO
+        id S1728081AbgECLyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 May 2020 07:54:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727023AbgECLmr (ORCPT
+        by vger.kernel.org with ESMTP id S1727112AbgECLyY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 May 2020 07:42:47 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3AD5C061A0C;
-        Sun,  3 May 2020 04:42:45 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id z2so9378273iol.11;
-        Sun, 03 May 2020 04:42:45 -0700 (PDT)
+        Sun, 3 May 2020 07:54:24 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9288BC061A0C;
+        Sun,  3 May 2020 04:54:24 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id z1so4133686pfn.3;
+        Sun, 03 May 2020 04:54:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=CswbDbzRoY7hOaMpKGQ7lTgkmEKRA2Ia8858GzcpRyQ=;
-        b=B/VeyKDZ4SLuIY7xHuxpXOzOskfvZKU+A5FK81ESN3wNpQDFeg5YMMn10lN8K1HlzU
-         ucNQI44nZ0RuaN9V467tsqNfMHZxbuNPptiUAsaVg3KYYzH75VV4unRSTt+NsACNb4lc
-         dmcvbKyaOxB31ly2JwulyTgFbdifyHm56KvXnfOHErfj5UVE7YK2+skEdePVFu+BR44B
-         uhVpDPvmnRDtBvfnAqrbUU5KLt9w1767QhJPPXsDn7tZknjhE++fAPu4TrDilwXBU/d1
-         P2CRaRavJOqCiQE5DwlZs5i9VhlFSnNBdt72/1BGc2EAlaYKKm0a8lAz8UeYwOT07Ide
-         HpOw==
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=X2DurU4Vh0Yd3MU//DVV30ODVL3/CkrGhn4rgAtbVjE=;
+        b=NkQsAYesfqyA/Kilc74lDwpDm7JKVpHRd8asuPMDpRP0knU1NwNs2txQDZh+ueON+A
+         dJvKqVBG68tuvDKbMRNUbMKvhRxguZnf6vfJ9A2GFuxqZ0Gu/+BHqXt7ljTNj0xrwXao
+         L1DVxfhZUF4yw+3pNRJ8T7d1BhbIc+EtnOVtIJYj4xPLcW7vjLtTi7YWxDQ5DY2TX47I
+         EBHnKGPi1046iQyWj44U9QVTQb63L/978pGS+vLyAdGcRJk3T3NxThBNG9+SO8t9MG1k
+         kTBgUfPlOFX2TgF/Qt9px1VJJ+xIHENTr4Z6pJzsB91ZWJ4UzoQM+FxjIiwiuZx5Cv0d
+         QdiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=CswbDbzRoY7hOaMpKGQ7lTgkmEKRA2Ia8858GzcpRyQ=;
-        b=K/uw8rUY+N83SIkT07MPONYaQwtZBj+85zUdcQdEsRI5L2awo8bjdfDfzwdh7hB6cW
-         hXmW88s3Gq2nmnGPOXbXkUZmxsb6esBR1j9M7VSNZRyL2XUboQ8LM4S2HX/jpj/yHXcO
-         pKqJp8IkjDpbGWZ3D51RQ7vQMhuFYJ3FlLNFxaka6VHCYwLl8IbT+Rdxswyb1+08FRtf
-         zJNVgM+0FHXm1xWNGZhumc+9XBsg5I1ICeG6+gNihofRPuXCwGavFAEcp2Nrw5Gbeumr
-         jdAiibmx7HrkKo9RP3LJmnPSZox/BdZGRpbC8vPcny3HqhzutUEhh2kOz8vjcuZ2Kn/b
-         FQhQ==
-X-Gm-Message-State: AGi0PuZr9BtjY1vHab9rxEH8uicuFjXCNx3jmv0hJm3goQsEL/upDYIp
-        fPZtshDjHp6sn7cFY3KwArtqOAvRMWKu13OJpnc=
-X-Google-Smtp-Source: APiQypK7bQYFFm90yVaM++6A1mWUH1dHV3MQb0qbIp+ohH4OaxgHO6pX+nd1tdial7Rn5XJUxQbfqsSdn1DrT9htlVU=
-X-Received: by 2002:a02:3f44:: with SMTP id c4mr10593844jaf.144.1588506164909;
- Sun, 03 May 2020 04:42:44 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to:user-agent;
+        bh=X2DurU4Vh0Yd3MU//DVV30ODVL3/CkrGhn4rgAtbVjE=;
+        b=mtOGfVEOrUBLfVSPjgtQVB5xAYA6ddYHOoTydeyBCvINfX15OFoxCAsGjxLG1CGvcd
+         qoSi2ZKKHlELcH18qCgrVJ85/opdt95bnH05UMZJJ4qZFzGKJVPu5lQ6kY9RJSiwQ5oX
+         Fc6J1YLiGvE/NsFGs0/XkQlSAflW3amtdBPJU3AfsEUurPpS+epiJ2/vIh5F4Lk+e5CA
+         OX3zTIlZ22qk0kn7xNBeueaYRnScd7tiuxL4C7Tv0cG13kJM/85X6VThc1fFhuc3HWM3
+         yRWBUg2rmxbjFivuXgBsf9lTZ9bebymNZmoNmkNrkinLfESmuerhrDv+LufVzGCiVmWd
+         7caQ==
+X-Gm-Message-State: AGi0PubswmtM/W+5OlxWnfBMafEtVMaqTU1/2B3aqirKKmOBhK18jYgE
+        AwFoRnSwXkFSlDHIgXNR11LLVSgt
+X-Google-Smtp-Source: APiQypIfqOMNxsOZd7FeQ6jaM9tAwa6+SbN+r8AelILnZTQUuTePJtZm/AQAlDhdmD+J4DSbeFV0VA==
+X-Received: by 2002:a63:d201:: with SMTP id a1mr11782889pgg.137.1588506863752;
+        Sun, 03 May 2020 04:54:23 -0700 (PDT)
+Received: from udknight.localhost ([59.57.158.27])
+        by smtp.gmail.com with ESMTPSA id 140sm6465884pfw.96.2020.05.03.04.54.21
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 03 May 2020 04:54:22 -0700 (PDT)
+Received: from udknight.localhost (localhost [127.0.0.1])
+        by udknight.localhost (8.14.9/8.14.4) with ESMTP id 043Bk45j010346;
+        Sun, 3 May 2020 19:46:04 +0800
+Received: (from root@localhost)
+        by udknight.localhost (8.14.9/8.14.9/Submit) id 043BjvpN010345;
+        Sun, 3 May 2020 19:45:57 +0800
+Date:   Sun, 3 May 2020 19:45:57 +0800
+From:   Wang YanQing <udknight@gmail.com>
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     Joe Perches <joe@perches.com>, Andy Whitcroft <apw@canonical.com>,
+        kernel-janitors@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Matteo Croce <mcroce@redhat.com>
+Subject: Re: [PATCH v4] checkpatch: add support to check 'Fixes:' tag format
+Message-ID: <20200503114557.GA10332@udknight>
+Mail-Followup-To: Wang YanQing <udknight@gmail.com>,
+        Markus Elfring <Markus.Elfring@web.de>,
+        Joe Perches <joe@perches.com>, Andy Whitcroft <apw@canonical.com>,
+        kernel-janitors@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Matteo Croce <mcroce@redhat.com>
+References: <20200502185421.GB9082@udknight>
+ <6a3a6f8d-e8be-0002-780d-1991f6152c8f@web.de>
 MIME-Version: 1.0
-References: <20200426104115.22630-1-peron.clem@gmail.com> <20200426104115.22630-7-peron.clem@gmail.com>
- <CAGb2v66TFzpEmzdqxmjqGvVONkPEhaDMHNA4tRUvrX_Mg8w=tA@mail.gmail.com>
-In-Reply-To: <CAGb2v66TFzpEmzdqxmjqGvVONkPEhaDMHNA4tRUvrX_Mg8w=tA@mail.gmail.com>
-From:   =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Date:   Sun, 3 May 2020 13:42:33 +0200
-Message-ID: <CAJiuCcfpk=9E2dQnE+QeZrDHG7EqCBWqbEbnpBvhn-uvWuRV2w@mail.gmail.com>
-Subject: Re: [PATCH v3 6/7] ASoC: sun4i-i2s: Adjust regmap settings
-To:     Chen-Yu Tsai <wens@csie.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Marcus Cooper <codekipper@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6a3a6f8d-e8be-0002-780d-1991f6152c8f@web.de>
+User-Agent: Mutt/1.7.1 (2016-10-04)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sat, May 02, 2020 at 09:40:24PM +0200, Markus Elfring wrote:
+> 
+> 
+> > +				$diagnostics .= "Missing a pair of parentheses '()' or a pair of double quotation marks (\"\").\n";
+> 
+> Can such a message trigger any more thoughts and development ideas?
 
-On Mon, 27 Apr 2020 at 13:03, Chen-Yu Tsai <wens@csie.org> wrote:
->
-> On Sun, Apr 26, 2020 at 6:41 PM Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail=
-.com> wrote:
-> >
-> > From: Marcus Cooper <codekipper@gmail.com>
-> >
-> > Bypass the regmap cache when flushing or reading the i2s FIFOs.
-> >
-> > Signed-off-by: Marcus Cooper <codekipper@gmail.com>
-> > Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
->
-> Acked-by: Chen-Yu Tsai <wens@csie.org>
+No, I don't think so. '(" ... ")' is the minimum interface between analyser
+(checkpatch) and commit id description (normal commit id and 'Fixes:' tag)
+about the title, it is very difficult if not impossible to guess the title
+boundary and whether it is the *REAL* title that folllow the SHA1 without
+this precondition, and it is more difficult to do it when we need to support
+title which across lines in the normal commit id description.
 
-The  SUN4I_I2S_FIFO_CTRL_REG is also missing.
-As some bits can self-clear by themselves.
+At last I really doubt the benefit it brings deserves the complexity and the
+current diagnostics info is enough clear for most situation.
 
-I will fix this in v4.
-
-Regards,
-Clement
+Thanks.
