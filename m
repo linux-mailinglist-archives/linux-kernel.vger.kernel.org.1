@@ -2,58 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3400B1C2A6E
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 May 2020 08:52:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45FDB1C2A76
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 May 2020 09:06:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727111AbgECGwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 May 2020 02:52:30 -0400
-Received: from sonic308-19.consmr.mail.ir2.yahoo.com ([77.238.178.147]:42695
-        "EHLO sonic308-19.consmr.mail.ir2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726974AbgECGw3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 May 2020 02:52:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1588488747; bh=HCBdmXO5/l665w/MwYeTKYgprR4CxrsZjPuQNxf8ZBg=; h=Date:From:Reply-To:Subject:References:From:Subject; b=Vv2+uM6nj7NBa97+9iZ6RXO1cBFs3xJP+HRgPl7HgBjtac8RCvfVQ08EkPf9wvtd6a7EGGj+65Am/zblOQf2tenQRtvyQrTaIkxXi0EaPIuJpe67rZ3l/Rac9nowsccpN05nO4XwQN1Bl83IiVkZk+PCXz4hbCrHPwUB6SNu4jITnKKUTZdEoCMXqdjT4jWOrO6TpESSIhocxcAqZV9WUJwckZ7TyfJpbzXfKEyxRwuYv169weQ6N8jT98xSqTqVPhxkXoCz3tisDKt2N+pi35Ju6EaQ4WourUcWXTOyEgg9GxvXOyEOmjFjs70KkR4wBaRIEKMcEDlXV8WNGuidjA==
-X-YMail-OSG: oiMm6S0VM1lm7JxgEsjb6A.UbPyn83nGg7OaotgBSllRQUIyNXVcxaO7lANcZMU
- aHnkUmO3iHTwTH2Mh2L3sU4DIvkvWYYQkxuxnWwUUS1JVXyVchvVojh1INFmb.R7DeZGRDiS9I2c
- XXKAv588Awk2rTYAX7bSoqQsoh7Nys2yX891FS5Zd4GaTmY2brNX_G6qPothhB5UNnDvLBGNw_QE
- 7mdSKynpbGjLpJOeXiSeJjprLNCFxzn9v1CaliBs9O0Pv_79LB875TTdcQU6SUO7_wkx8jqix7Rj
- 5azy63OZ0mFXBIORIYyYUh8wcgVYoLMC7NFChvuGd54aHClywbKsU2r_5CkyO66ck5MI21NOHvIG
- i614CwvPjlRhbymGtF968AJ3n9l2FanPXnfoU8NseEIT.6Rq6a1xo3e3e7bXIe6s0p.XPE_ttZch
- wJPufl5gS36qYWe0Uc5KP1YHtE.ZiiGIr2pJl.XMnBwR_EXsYbfXCtQpVgzwy1YYk6PLIKU9Kmo1
- 29ebFRjkmXNNEEIYH0ZWnjLp9ceL6Cwyu0j7EAc6uF2DfWm16A5ScpXBtUi7elYdGQt6kW5kMUHx
- XuuqCnSuslenjvgqmLhiRxwrY5Ia34HiYzAziX_CRPe6uI6BYfqPdRIjvta7Zl69U7Y1iiTpdiZO
- ha4VKfbUaCqBpR.WgbLLybVcTNWeMZmbJCz_6sm5fl.Q6FzNNLJsq7sX1rv4wNzXCTPrdA8NlWmu
- vJYLG28PIY6.bHeWmSc3WB6nH75QDi629guHNtjDQBLfvEXdpuXzXHwezEnWEEUP7hejcFZ.Bokp
- bxRMWISZhb29Ijt3CqTLd5LAhKoyBsB0.il4dznwP6xpomhTxbS9LYNSYCCDONk_gNlmkSAgwLgn
- KgU1rd29XERkdeBTv3CxzAbtoNJCQZGksbuNqtMh7WOINDDvcNT87CWTTPtw7sjXLSkg_X7VhHQF
- pHgXNaJ6qq5ztcoZ0rRbHh7M3nU_qf4v8QZmnVVrYgAu12uFUbT5gztDZ0hde2W.7e9nLr1CDekM
- oxJiXBIOmqBy_Dn6qm1N9p0eMg6gBGTWW1OqTqRme3uM87ddfPximYkTty6AK_Fo0tcptM6dqQ4D
- ul7nHg2UlwhF8XhoaQnWljb9f8R5Kjs_XvIoguNyhLtDC9dhtjOdX2niFKDstUZSEGtBK.4J.I51
- FjPl_Ht7VmocFuXXt8KgN1fXkseNMoLN4Um2qnYmrR9FO5n8firFT1zY3_MQ.uuY0CyL_2gAdNT6
- dOjVTCauGElamXzGprJneoYzJOMOoPCUZ.ItPCDBpMUboLac_VEnYzinMKXX1_UvF2EoII_pRqw-
- -
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic308.consmr.mail.ir2.yahoo.com with HTTP; Sun, 3 May 2020 06:52:27 +0000
-Date:   Sun, 3 May 2020 06:52:26 +0000 (UTC)
-From:   Miss Pamela Render <pamelarender45@gmail.com>
-Reply-To: pamelarender45@gmail.com
-Message-ID: <1137921726.642686.1588488746422@mail.yahoo.com>
-Subject: Greetings From Miss Pamela Render Please I Need Your Urgent Reply!
+        id S1727106AbgECHGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 May 2020 03:06:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44038 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726937AbgECHGn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 May 2020 03:06:43 -0400
+Received: from coco.lan (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CDB2B2078E;
+        Sun,  3 May 2020 07:06:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588489602;
+        bh=/TuUmS/lUQz6LYPGZt4r8qNTCPIMydP+HbiwVJRqEwU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=V3K20RJQBclm2rGRYlqbbl+oI4pMRqrnprtrA6Lzsk+zeg3Pblf/zwoJy9LzLvjDV
+         avaSDWTPt5ML4bIeWqyvWUtPBy65X7VAsnE4lPcPGZgVoCmfurzS18xa5bK9QNBcl2
+         Ozix+BJU6JXbN1s9GV4CAvw9Y1wcaIoL5W0AS6To=
+Date:   Sun, 3 May 2020 09:06:34 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
+Cc:     sean@mess.org, kstewart@linuxfoundation.org, allison@lohutok.net,
+        tglx@linutronix.de, linux-media@vger.kernel.org,
+        skhan@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC, WIP, v4 06/11] media: vidtv: add wrappers for memcpy and
+ memset
+Message-ID: <20200503090634.1b7ae548@coco.lan>
+In-Reply-To: <20200502084038.07c38c4b@coco.lan>
+References: <20200502032216.197977-1-dwlsalmeida@gmail.com>
+        <20200502032216.197977-7-dwlsalmeida@gmail.com>
+        <20200502084038.07c38c4b@coco.lan>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-References: <1137921726.642686.1588488746422.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.15756 YMailNodin Mozilla/5.0 (Windows NT 6.1; rv:75.0) Gecko/20100101 Firefox/75.0
-To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Em Sat, 2 May 2020 08:40:38 +0200
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
 
+> Em Sat,  2 May 2020 00:22:11 -0300
+> "Daniel W. S. Almeida" <dwlsalmeida@gmail.com> escreveu:
+> 
 
-Greetings From Miss Pamela Render Please I Need Your Urgent Reply!
+> > +u32 vidtv_memcpy(void *to,
+> > +		 const void *from,
+> > +		 size_t len,
+> > +		 u32 offset,
+> > +		 u32 buf_sz)
+> > +{
+> > +	if (buf_sz && offset + len > buf_sz) {
+> > +		pr_err("%s: overflow detected, skipping. Try increasing the buffer size",
+> > +		       __func__);
+> > +		return 0;  
+> 
+> shouldn't it return an error?
+> 
+> > +	}
+> > +
+> > +	memcpy(to, from, len);
+> > +	return len;
+> > +}
 
-I'm Pamela Render, from USA. I am a highly motivated and willing to learn, I'm also hard working lady, very relaible. I really want to establish mutual friendship with you, I will introduce myself better as soon as i receive your email response.
+When trying to use your memset wrapper, I noticed a few issues there.
 
-Kind regards
-Miss Pamela Render
+The first one is that you should not use __func__ directly at pr_* macros.
+
+Instead, just ensure that you have a pr_fmt() macro that ill be adding
+the driver's name and the function, e. g.:
+
+	#define pr_fmt(fmt) KBUILD_MODNAME ":%s: " fmt, __func__
+
+Besides that, the parameter order sounded weird:
+
+> > +u32 vidtv_memcpy(void *to,
+> > +		 const void *from,
+> > +		 size_t len,
+> > +		 u32 offset,
+> > +		 u32 buf_sz)
+
+The "to", "offset" and "buf_sz" arguments refer to the "to" buffer,
+while "from" and "len" refers to what will be copied from the "from"
+into the "to" buffer. Please re-order it, placing first the "to"
+args, then "from" arg, and finally the argument that applies to both,
+e. g.: 
+
+	size_t vidtv_memcpy(void *to, size_t to_offset, size_t to_size,
+			    const void *from, size_t len)
+
+(you should notice that I'm using size_t for all args there).
+
+The same is also valid for the memset.
+
+Finally, the places where this function is used require to pass twice
+the offset (from patch 08/11):
+
+> +		nbytes += vidtv_memcpy(args.dest_buf +
+> +				       args.dest_offset +
+> +				       nbytes,
+> +				       &ts_header,
+> +				       sizeof(ts_header),
+> +				       args.dest_offset + nbytes,
+> +				       args.dest_buf_sz);
+
+That doesn't make much sense. I mean, if the arguments are "buf + offset",
+one would expect that the "buf" would be the head of a buffer, and the
+function would be adding the offset internally.
+
+So, the best would be to re-define it like:
+
+	/**
+	 * vidtv_memcpy() - wrapper routine to be used by MPEG-TS
+	 *		    generator, in order to avoid going past the
+	 *		    output buffer.
+	 * @to:	Starting element to where a MPEG-TS packet will
+	 *		be copied.
+	 * @to_offset:	Starting position of the @to buffer to be filled.
+	 * @to_size:	Size of the @to buffer.
+	 * @from:	Starting element of the buffer to be copied.
+	 * @ten:	Number of elements to be copy from @from buffer
+	 *		into @to+ @to_offset buffer.
+	 *
+	 * Note:
+	 *	Real digital TV demod drivers should not have memcpy
+	 *	wrappers. We use it here just because emulating a MPEG-TS
+	 *	generation at kernelspace require some extra care.
+	 *
+	 * Return:
+	 *	Returns the number of bytes 
+	 */
+	size_t vidtv_memcpy(void *to, size_t to_offset, size_t to_size,
+			    const void *from, size_t len)
+	{
+		if unlikely(to_offset + len > to_size) {
+			pr_err_ratelimited("overflow detected, skipping. Try increasing the buffer size\n");
+			return 0;
+		}
+		memcpy(to + to_offset, from, len);
+		return len;
+	}
+
+Thanks,
+Mauro
