@@ -2,64 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B56311C2B6B
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 May 2020 12:47:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95BAF1C2B7E
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 May 2020 12:55:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728169AbgECKrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 May 2020 06:47:16 -0400
-Received: from smtp04.smtpout.orange.fr ([80.12.242.126]:39565 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727125AbgECKrQ (ORCPT
+        id S1728228AbgECKz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 May 2020 06:55:29 -0400
+Received: from smtpout1.mo803.mail-out.ovh.net ([79.137.123.219]:36653 "EHLO
+        smtpout1.mo803.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728205AbgECKz2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 May 2020 06:47:16 -0400
-Received: from localhost.localdomain ([93.22.132.225])
-        by mwinf5d60 with ME
-        id aAnA220074rwLad03AnAgQ; Sun, 03 May 2020 12:47:14 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 03 May 2020 12:47:14 +0200
-X-ME-IP: 93.22.132.225
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     balbi@kernel.org, gregkh@linuxfoundation.org, jun.li@freescale.com,
-        rogerq@ti.com
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] usb: gadget: audio: Fix a missing error return value in audio_bind()
-Date:   Sun,  3 May 2020 12:47:07 +0200
-Message-Id: <20200503104707.148996-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.25.1
+        Sun, 3 May 2020 06:55:28 -0400
+Received: from pro2.mail.ovh.net (unknown [10.108.16.246])
+        by mo803.mail-out.ovh.net (Postfix) with ESMTPS id 9EDD45092F0B;
+        Sun,  3 May 2020 12:55:24 +0200 (CEST)
+Received: from localhost (89.70.31.203) by DAG2EX1.emp2.local (172.16.2.11)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1847.3; Sun, 3 May 2020
+ 12:55:24 +0200
+Date:   Sun, 3 May 2020 12:53:51 +0200
+From:   Tomasz Duszynski <tomasz.duszynski@octakon.com>
+To:     Jonathan Cameron <jic23@kernel.org>
+CC:     Tomasz Duszynski <tomasz.duszynski@octakon.com>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <robh+dt@kernel.org>
+Subject: Re: [PATCH 1/6] iio: chemical: scd30: add core driver
+Message-ID: <20200503105351.GA2712@arch>
+References: <20200422141135.86419-1-tomasz.duszynski@octakon.com>
+ <20200422141135.86419-2-tomasz.duszynski@octakon.com>
+ <20200425195534.2ac91fe6@archlinux>
+ <20200428075101.GA6908@arch>
+ <20200502173738.66dbc888@archlinux>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20200502173738.66dbc888@archlinux>
+X-Originating-IP: [89.70.31.203]
+X-ClientProxiedBy: DAG2EX2.emp2.local (172.16.2.12) To DAG2EX1.emp2.local
+ (172.16.2.11)
+X-Ovh-Tracer-Id: 11753269131200519250
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: 0
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduhedrjedvgdefgecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecunecujfgurhepfffhvffukfhfgggtuggjihesthdtredttddtjeenucfhrhhomhepvfhomhgrshiiucffuhhsiiihnhhskhhiuceothhomhgrshiirdguuhhsiiihnhhskhhisehotghtrghkohhnrdgtohhmqeenucggtffrrghtthgvrhhnpedtheevtefhffduteejfedtkeeuheejgeejvdetfffgveekffefgeffueeghefgjeenucfkpheptddrtddrtddrtddpkeelrdejtddrfedurddvtdefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhrohdvrdhmrghilhdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepthhomhgrshiirdguuhhsiiihnhhskhhisehotghtrghkohhnrdgtohhmpdhrtghpthhtoheprhhosghhodgutheskhgvrhhnvghlrdhorhhg
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If 'usb_otg_descriptor_alloc()' fails, we must return an error code, not 0.
+On Sat, May 02, 2020 at 05:37:38PM +0100, Jonathan Cameron wrote:
+> On Tue, 28 Apr 2020 09:51:01 +0200
+> Tomasz Duszynski <tomasz.duszynski@octakon.com> wrote:
+>
+> > On Sat, Apr 25, 2020 at 07:55:34PM +0100, Jonathan Cameron wrote:
+> > > On Wed, 22 Apr 2020 16:11:30 +0200
+> > > Tomasz Duszynski <tomasz.duszynski@octakon.com> wrote:
+> > >
+> > > > Add Sensirion SCD30 carbon dioxide core driver.
+> > > >
+> > > > Signed-off-by: Tomasz Duszynski <tomasz.duszynski@octakon.com>
+> > > Hi Tomasz
+> > >
+> > > As you've probably guessed the big questions are around the custom ABI.
+> > >
+> > > Few other things inline.
+> > >
+> > > Jonathan
+> > >
+> ...
+>
+> > > > +static int scd30_read_meas(struct scd30_state *state)
+> > > > +{
+> > > > +	int i, ret;
+> > > > +
+> > > > +	ret = scd30_command(state, CMD_READ_MEAS, 0, (char *)state->meas,
+> > > > +			    sizeof(state->meas));
+> > > > +	if (ret)
+> > > > +		return ret;
+> > > > +
+> > > > +	for (i = 0; i < ARRAY_SIZE(state->meas); i++)
+> > > > +		state->meas[i] = scd30_float_to_fp(state->meas[i]);
+> > >
+> > > We have previously discussed proving direct floating point channel types
+> > > for the rare devices that actually provide floating point data in
+> > > a standard format.
+> > >
+> > > I'm happy to revisit that if you would like to.
+> > >
+> >
+> > Thanks for reminding me :).
+> >
+> > In that case I admit that some float helper in iio would be a good thing to
+> > have. Especially that there will be at least 2 sensors using it.
+> >
+> > I'd work on that after this driver makes it into the tree.
+> >
+> > How does it sound?
+>
+> The problem is that, if we do it in that order we have ABI for this
+> device that we should really maintain.  We can probably get away
+> with changing it on the basis the channel type is self describing anyway
+> but it's not ideal.
+>
+> So probably fine but not best practice...
+>
 
-Fixes: 56023ce0fd70 ("usb: gadget: audio: allocate and init otg descriptor by otg capabilities")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/usb/gadget/legacy/audio.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+While I generally agree I can also easily imagine inclusion delay caused
+by that change. I need to give some more though to this.
 
-diff --git a/drivers/usb/gadget/legacy/audio.c b/drivers/usb/gadget/legacy/audio.c
-index dd81fd538cb8..a748ed0842e8 100644
---- a/drivers/usb/gadget/legacy/audio.c
-+++ b/drivers/usb/gadget/legacy/audio.c
-@@ -300,8 +300,10 @@ static int audio_bind(struct usb_composite_dev *cdev)
- 		struct usb_descriptor_header *usb_desc;
- 
- 		usb_desc = usb_otg_descriptor_alloc(cdev->gadget);
--		if (!usb_desc)
-+		if (!usb_desc) {
-+			status = -ENOMEM;
- 			goto fail;
-+		}
- 		usb_otg_descriptor_init(cdev->gadget, usb_desc);
- 		otg_desc[0] = usb_desc;
- 		otg_desc[1] = NULL;
--- 
-2.25.1
+> >
+> > > > +
+> > > > +	/*
+> > > > +	 * Accuracy within calibrated operating range is
+> > > > +	 * +-(30ppm + 3% measurement) so fractional part does
+> > > > +	 * not add real value. Moreover, ppm is an integer.
+> > > > +	 */
+> > > > +	state->meas[CONC] /= 100;
+> > > > +
+> > > > +	return 0;
+> > > > +}
+> > > > +
+> > > > +static int scd30_wait_meas_irq(struct scd30_state *state)
+> > > > +{
+> > > > +	int ret, timeout = msecs_to_jiffies(state->meas_interval * 1250);
+> > > > +
+> > > > +	reinit_completion(&state->meas_ready);
+> > > > +	enable_irq(state->irq);
+> > >
+> > > So this is just 'grab the next one'?
+> > >
+> >
+> > Yes, grab the fresh one. Moreover enabling interrupts only when necessary can
+> > limit pointless buss traffic. Reason being irq is acknowledged by reading data
+> > from sensor.
+> >
+>
+> As mentioned below, it seems to me that we should really be starting this
+> device only when we want a reading.  Hence any interrupt (subject to possible
+> races) should be valid.  Hence we would not be enabling and disabling the
+> interrupt controller mask on this line.
+>
 
+While it's okay for triggered mode that isn't so ideal for polled mode
+because of extra time needed by sensor to actually spin up.
+
+You start measuring and expect new data to arrive within 2 seconds
+(given 0.5Hz sampling frequency is set) but they can actually show
+up within 8 secs. Not very reliable so to say.
+
+Thus I think sticking to continuous sampling is preferred here.
+
+>
+> > > > +static int scd30_setup_trigger(struct iio_dev *indio_dev)
+> > > > +{
+> > > > +	struct scd30_state *state = iio_priv(indio_dev);
+> > > > +	struct device *dev = indio_dev->dev.parent;
+> > > > +	struct iio_trigger *trig;
+> > > > +	int ret;
+> > > > +
+> > > > +	trig = devm_iio_trigger_alloc(dev, "%s-dev%d", indio_dev->name,
+> > > > +				      indio_dev->id);
+> > > > +	if (!trig) {
+> > > > +		dev_err(dev, "failed to allocate trigger\n");
+> > > > +		return -ENOMEM;
+> > > > +	}
+> > > > +
+> > > > +	trig->dev.parent = dev;
+> > > > +	trig->ops = &scd30_trigger_ops;
+> > > > +	iio_trigger_set_drvdata(trig, indio_dev);
+> > > > +
+> > > > +	ret = devm_iio_trigger_register(dev, trig);
+> > > > +	if (ret)
+> > > > +		return ret;
+> > > > +
+> > > > +	indio_dev->trig = iio_trigger_get(trig);
+> > > > +
+> > > > +	ret = devm_request_threaded_irq(dev, state->irq, scd30_irq_handler,
+> > > > +					scd30_irq_thread_handler,
+> > > > +					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
+> > > > +					indio_dev->name, indio_dev);
+> > > > +	if (ret)
+> > > > +		dev_err(dev, "failed to request irq\n");
+> > >
+> > > I'm guessing this is a device without any means to disable the interrupt
+> > > being generated?  In which case are you safe against a race before you
+> > > disable here?
+> > >
+> >
+> > IRQs can be actually disabled by telling device to stop taking measurements.
+> > There is dedicated command for that. If irq fires off before being disabled
+> > nothing bad should happen as everything necessary is in place already.
+>
+> Hmm. I wonder if we'd be better off starting it on demand - or only when running
+> with it as a data ready trigger. That would make the the polled read a case
+> of starting the sampling for one sample rather than just 'picking' one from
+> the stream of actual samples.
+>
+> >
+> > Another thing is that without disabling interrupt here we would get warning
+> > about unbalanced irq whilst enabling trigger.
+> >
+> > > > +
+> > > > +	disable_irq(state->irq);
+> > > > +
+> > > > +	return ret;
+> > > > +}
+> > > > +
+> > > > +int scd30_probe(struct device *dev, int irq, const char *name, void *priv,
+> > > > +		int (*command)(struct scd30_state *state, enum scd30_cmd cmd,
+> > > > +			       u16 arg, char *rsp, int size))
+> > > > +{
+> > > > +	static const unsigned long scd30_scan_masks[] = { 0x07, 0x00 };
+> > > > +	struct scd30_state *state;
+> > > > +	struct iio_dev *indio_dev;
+> > > > +	int ret;
+> > > > +	u16 val;
+> > > > +
+> > > > +	indio_dev = devm_iio_device_alloc(dev, sizeof(*state));
+> > > > +	if (!indio_dev)
+> > > > +		return -ENOMEM;
+> > > > +
+> > > > +	dev_set_drvdata(dev, indio_dev);
+> > > > +
+> > > > +	state = iio_priv(indio_dev);
+> > > > +	state->dev = dev;
+> > > > +	state->priv = priv;
+> > > > +	state->irq = irq;
+> > > > +	state->pressure_comp = SCD30_PRESSURE_COMP_DEFAULT;
+> > > > +	state->meas_interval = SCD30_MEAS_INTERVAL_DEFAULT;
+> > > > +	state->command = command;
+> > > > +	mutex_init(&state->lock);
+> > > > +	init_completion(&state->meas_ready);
+> > > > +
+> > > > +	indio_dev->dev.parent = dev;
+> > > > +	indio_dev->info = &scd30_info;
+> > > > +	indio_dev->name = name;
+> > > > +	indio_dev->channels = scd30_channels;
+> > > > +	indio_dev->num_channels = ARRAY_SIZE(scd30_channels);
+> > > > +	indio_dev->modes = INDIO_DIRECT_MODE;
+> > > > +	indio_dev->available_scan_masks = scd30_scan_masks;
+> > > > +
+> > > > +	state->vdd = devm_regulator_get(dev, "vdd");
+> > > > +	if (IS_ERR(state->vdd)) {
+> > >
+> > > This is very noisy if we have deferred probing going on.
+> > > Either explicitly check for that case or just don't bother
+> > > with an error message in this path.
+> > >
+> >
+> > Okay.
+> >
+> > > > +		dev_err(dev, "failed to get vdd regulator\n");
+> > > > +		return PTR_ERR(state->vdd);
+> > > > +	}
+> > > > +
+> > > > +	ret = regulator_enable(state->vdd);
+> > > > +	if (ret) {
+> > > > +		dev_err(dev, "failed to enable vdd regulator\n");
+> > > > +		return ret;
+> > > > +	}
+> > > > +
+> > > > +	ret = devm_add_action_or_reset(dev, scd30_exit, state);
+> > > > +	if (ret)
+> > >
+> > > This should match exactly against the item above it. Whilst stop
+> > > measurement may be safe from here on, it is not easy to review
+> > > unless we can clearly see where the equivalent start is.
+> > >
+> >
+> > Well, naming might be confusing. The thing is that sensor after being
+> > powered up reverts itself to the much the same state it left.
+> >
+> > If we have real regulator then scd30_exit would disable regulator and
+> > that's it. But, in case of a dummy one and sensor starting in
+> > continuous mode we waste power for no real reason (for example 19mA
+> > at 0.5Hz).
+> >
+> > So it's explanation for doing 2 things inside early on but not excuse
+> > for unintuitive naming.
+>
+> I'd rather see two devm_add_action_or_reset calls one handling the regulator
+> and one handling the register write.  Then it will be clear what each
+> one is doing and that there are no possible races.  Basically it lets
+> a reviewer not bother thinking which is always good :)
+>
+
+Fair enough.
+
+> >
+> > > > +		return ret;
+> > > > +
+> > > > +	ret = scd30_reset(state);
+> > > > +	if (ret) {
+> > > > +		dev_err(dev, "failed to reset device: %d\n", ret);
+> > > > +		return ret;
+> > > > +	}
