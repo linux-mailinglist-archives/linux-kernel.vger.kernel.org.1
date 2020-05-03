@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BDA21C2EA8
+	by mail.lfdr.de (Postfix) with ESMTP id B74181C2EA9
 	for <lists+linux-kernel@lfdr.de>; Sun,  3 May 2020 21:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728983AbgECTCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 May 2020 15:02:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47526 "EHLO mx2.suse.de"
+        id S1729003AbgECTC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 May 2020 15:02:27 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47670 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728847AbgECTCJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 May 2020 15:02:09 -0400
+        id S1728847AbgECTC0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 May 2020 15:02:26 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 2EF28AC68;
-        Sun,  3 May 2020 19:02:09 +0000 (UTC)
-Date:   Sun, 03 May 2020 21:02:06 +0200
-Message-ID: <s5hbln4hmfl.wl-tiwai@suse.de>
+        by mx2.suse.de (Postfix) with ESMTP id CA185ADE2;
+        Sun,  3 May 2020 19:02:26 +0000 (UTC)
+Date:   Sun, 03 May 2020 21:02:25 +0200
+Message-ID: <s5ha72ohmf2.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
 To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
 Cc:     <tiwai@suse.com>, <David_chen7@dell.com>,
@@ -29,9 +29,10 @@ Cc:     <tiwai@suse.com>, <David_chen7@dell.com>,
         =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
         "moderated list:SOUND" <alsa-devel@alsa-project.org>,
         open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] Revert "ALSA: hda/realtek: Fix pop noise on ALC225"
-In-Reply-To: <20200503152449.22761-1-kai.heng.feng@canonical.com>
+Subject: Re: [PATCH 2/2] ALSA: hda/realtek - Fix S3 pop noise on Dell Wyse
+In-Reply-To: <20200503152449.22761-2-kai.heng.feng@canonical.com>
 References: <20200503152449.22761-1-kai.heng.feng@canonical.com>
+        <20200503152449.22761-2-kai.heng.feng@canonical.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -42,19 +43,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 03 May 2020 17:24:46 +0200,
+On Sun, 03 May 2020 17:24:47 +0200,
 Kai-Heng Feng wrote:
 > 
-> This reverts commit 3b36b13d5e69d6f51ff1c55d1b404a74646c9757.
+> Commit 317d9313925c ("ALSA: hda/realtek - Set default power save node to
+> 0") makes the ALC225 have pop noise on S3 resume and cold boot.
 > 
-> Enable power save node breaks some systems with ACL225. Revert the patch
-> and use a platform specific quirk for the original issue isntead.
+> The previous fix enable power save node universally for ALC225, however
+> it makes some ALC225 systems unable to produce any sound.
 > 
-> Fixes: 3b36b13d5e69 ("ALSA: hda/realtek: Fix pop noise on ALC225")
-> BugLink: https://bugs.launchpad.net/bugs/1875916
+> So let's only enable power save node for the affected Dell Wyse
+> platform.
+> 
+> Fixes: 317d9313925c ("ALSA: hda/realtek - Set default power save node to 0")
+> BugLink: https://bugs.launchpad.net/bugs/1866357
 > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-Applied now.  Thanks.
+Applied, thanks.
 
 
 Takashi
