@@ -2,116 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 039981C2C2B
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 May 2020 14:32:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5893B1C2C2F
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 May 2020 14:32:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728246AbgECMce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 May 2020 08:32:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37072 "EHLO
+        id S1728398AbgECMcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 May 2020 08:32:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728067AbgECMcd (ORCPT
+        with ESMTP id S1728122AbgECMcl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 May 2020 08:32:33 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3738C061A0C;
-        Sun,  3 May 2020 05:32:32 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id q124so7171193pgq.13;
-        Sun, 03 May 2020 05:32:32 -0700 (PDT)
+        Sun, 3 May 2020 08:32:41 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA989C061A0C;
+        Sun,  3 May 2020 05:32:40 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id r14so4158447pfg.2;
+        Sun, 03 May 2020 05:32:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OjKNsWuIlNWqOK8ZTfhDbmoOKJ5lMhGgdYyR3P+yrPs=;
-        b=ROSqKV+TRSB/gN3uXuCuk55t9hWftXZdrFL+65lO6rz7wY/CWQAQacEmEpatwFLMJw
-         LVLLkwT0K2DG9p7hjGtPM3hrYO2Go0ULqgaVohy3Ec7WmfizN08PMfhx7sqtIGdQP5SW
-         MABDmweWRpHFK3TY47EdA3ValTXg7f7sEdrpJaa8ASjtjm5/CiiRiEjBdJ03STsV6j8E
-         EqZLUW2DrYu9VThXk7A+L3sbm3MN7MsEECMFht0UtN7o5z3mE3f9+Kyxtx5QjtxkCE2O
-         SmyAFZuXVKtYEGWcfaSUExg4XhjI5Qc3VYYtbsYwvSxm1mO4IScjdQBpefMa3+v1m+bJ
-         lNTQ==
+        h=from:to:cc:subject:date:message-id;
+        bh=S9UZgj84mZAUAnmYOiySi9W6UM6bjoHB6qeDJBZBBZ4=;
+        b=EfiAq3xhC9XfMREVxYJntXiQCSfbWYk1IgxAqVXwY9/XYi9od5O8peytXsfQ2QvClD
+         /PCFthfcWmKq3W9UShq5i5xhkuVacd1WfhrKE8CoBJ8uATv0/CZ63Z+LgsdZgeC0WqvH
+         sVSwL3NT6MaA56QifgOddRScrZbTpPRwF70nOR2LTtidsztx3yiMaCo5a4ksyqWZsJFQ
+         sUGSCaGQOVLvBKE9BIJrcSKAtVA4dX6M6+cvjwGX6nCOnBsmOQV4JeowAFgsmYxfb0tm
+         WXvSKjc+/eJc+zHNn28/W4obnMslqfQnJE1qBIzbY/eazL8H3K/7SEGvvbIv5Jx+2Rpu
+         elXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OjKNsWuIlNWqOK8ZTfhDbmoOKJ5lMhGgdYyR3P+yrPs=;
-        b=VN1SP+YuFKIZXM7QBmp7H9PpHW9SSoo7rp3kQq3jk1FBGASN4IIc+PraEEQUD99sNq
-         Mr2kI2WZuxSK7HtFjqSsjwm2VeazGr2cP3ojQylboJdsJ376VM2c7q0/nNUxieRoUfGE
-         7KZPucxhwIfizrA1H70HAfF00vXX3GtRMoRYCAp14CiJ50m6eSdLvBMNQ7EKAEpRc+hH
-         sppVSJcZEkqAV3PRHN4wnneDExTB7xSKgjm3ErsG8vuOo5zzPNJPiYdBHYj2OCRt7Ehp
-         0wim37aXUgwQAShDSC0qmXMDRgfRAlK17E3U9jehUQ9+K8Iaz8zgt0elmwS/Cc5AnXFy
-         y3lw==
-X-Gm-Message-State: AGi0PuZmN/3tZDe4myy+yUXM71IsRe7pzkUAQfZ+nB5K1tXXg1qtUetr
-        PMhHqgpkKkdx59onF5ZzIXU=
-X-Google-Smtp-Source: APiQypJb994dlbUr1k5iWSh9AbhTGKGKo5AP/hP7Juwv642dHfO6NJAVOM2+pS3z5nSs0K2zQLX5NA==
-X-Received: by 2002:a63:da02:: with SMTP id c2mr12284369pgh.22.1588509152596;
-        Sun, 03 May 2020 05:32:32 -0700 (PDT)
-Received: from localhost ([89.208.244.169])
-        by smtp.gmail.com with ESMTPSA id x132sm6476464pfc.57.2020.05.03.05.32.31
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 03 May 2020 05:32:32 -0700 (PDT)
-From:   Dejin Zheng <zhengdejin5@gmail.com>
-To:     nicolas.ferre@microchip.com, davem@davemloft.net,
-        paul.walmsley@sifive.com, palmer@dabbelt.com, yash.shah@sifive.com,
-        netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Dejin Zheng <zhengdejin5@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH net v3] net: macb: fix an issue about leak related system resources
-Date:   Sun,  3 May 2020 20:32:26 +0800
-Message-Id: <20200503123226.7092-1-zhengdejin5@gmail.com>
-X-Mailer: git-send-email 2.25.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=S9UZgj84mZAUAnmYOiySi9W6UM6bjoHB6qeDJBZBBZ4=;
+        b=FXRMj15/klwKi/2psMa8JJMUgNGdokj6nhezqAJJw2RRCTGk0scr0G+olycqQUqAoF
+         agF0UQiGtypji1knIjdBX+NOc2YN2gG+3B7YugjTo38MjUp7qv8b3tTGXhTW/xtntJFN
+         g0jBeKa5mnl5k6OPheYclRFlQmt4PQY3rDd7XOrZXsJZdX99SZKk23o4Y+iLSn/wetMz
+         cwBWNb43NwAGUIrcpCBO6Tp7O2IOSrHY0ReXbNz3KODfzHPUsAe3tPm7ZfmTrieQG692
+         efMvfhdhP8R4xD9nT83sfwT91IAMjnPmxF5z7DBTbgPlGeEcSB1J0TvvvcVUyd69GRbX
+         Byuw==
+X-Gm-Message-State: AGi0Pub/+K6+9oxiJQvEm8EGhAuqckgSuGoFFijkHxrBcRXIJjSenGqw
+        tnZQTlU4YsI12QSDPRDa63w=
+X-Google-Smtp-Source: APiQypL6YSIqiQz/09JrBRtKPPnIm0Gn/IEdymEAxBFebb6kaG2jLSnHf77BG22ZRivXdD11gPVNhg==
+X-Received: by 2002:a63:3206:: with SMTP id y6mr12499287pgy.68.1588509160450;
+        Sun, 03 May 2020 05:32:40 -0700 (PDT)
+Received: from localhost.localdomain ([2409:4072:8b:8746:9817:f6e9:c9f8:6a59])
+        by smtp.gmail.com with ESMTPSA id u5sm6496514pfu.198.2020.05.03.05.32.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 May 2020 05:32:39 -0700 (PDT)
+From:   Aishwarya Ramakrishnan <aishwaryarj100@gmail.com>
+To:     Vladimir Zapolskiy <vz@mleia.com>,
+        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     aishwaryarj100@gmail.com
+Subject: [PATCH] i2c: lpc2k: Remove superfluous error message in i2c_lpc2k_probe()
+Date:   Sun,  3 May 2020 18:02:30 +0530
+Message-Id: <20200503123230.14304-1-aishwaryarj100@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A call of the function macb_init() can fail in the function
-fu540_c000_init. The related system resources were not released
-then. use devm_platform_ioremap_resource() to replace ioremap()
-to fix it.
+The function platform_get_irq can log an error by itself.
+This omit a redundant message for exception handling in the
+calling function.
 
-Fixes: c218ad559020ff9 ("macb: Add support for SiFive FU540-C000")
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
-Reviewed-by: Yash Shah <yash.shah@sifive.com>
-Suggested-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
+Suggested by Coccinelle.
+
+Signed-off-by: Aishwarya Ramakrishnan <aishwaryarj100@gmail.com>
 ---
-v2 -> v3:
-	- use IS_ERR() and PTR_ERR() for error handling by Nicolas's
-	  suggestion. Thanks Nicolas!
-v1 -> v2:
-	- Nicolas and Andy suggest use devm_platform_ioremap_resource()
-	  to repalce devm_ioremap() to fix this issue. Thanks Nicolas
-	  and Andy.
-	- Yash help me to review this patch, Thanks Yash!
+ drivers/i2c/busses/i2c-lpc2k.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
- drivers/net/ethernet/cadence/macb_main.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
-index a0e8c5bbabc0..f040a36d6e54 100644
---- a/drivers/net/ethernet/cadence/macb_main.c
-+++ b/drivers/net/ethernet/cadence/macb_main.c
-@@ -4172,15 +4172,9 @@ static int fu540_c000_clk_init(struct platform_device *pdev, struct clk **pclk,
+diff --git a/drivers/i2c/busses/i2c-lpc2k.c b/drivers/i2c/busses/i2c-lpc2k.c
+index 13b0c12e2dba..43dc9b7043e4 100644
+--- a/drivers/i2c/busses/i2c-lpc2k.c
++++ b/drivers/i2c/busses/i2c-lpc2k.c
+@@ -362,10 +362,8 @@ static int i2c_lpc2k_probe(struct platform_device *pdev)
+ 		return PTR_ERR(i2c->base);
  
- static int fu540_c000_init(struct platform_device *pdev)
- {
--	struct resource *res;
--
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
--	if (!res)
--		return -ENODEV;
--
--	mgmt->reg = ioremap(res->start, resource_size(res));
--	if (!mgmt->reg)
--		return -ENOMEM;
-+	mgmt->reg = devm_platform_ioremap_resource(pdev, 1);
-+	if (IS_ERR(mgmt->reg))
-+		return PTR_ERR(mgmt->reg);
+ 	i2c->irq = platform_get_irq(pdev, 0);
+-	if (i2c->irq < 0) {
+-		dev_err(&pdev->dev, "can't get interrupt resource\n");
++	if (i2c->irq < 0)
+ 		return i2c->irq;
+-	}
  
- 	return macb_init(pdev);
- }
+ 	init_waitqueue_head(&i2c->wait);
+ 
 -- 
-2.25.0
+2.17.1
 
