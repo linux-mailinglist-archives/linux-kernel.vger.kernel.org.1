@@ -2,126 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3CA61C2BED
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 May 2020 13:48:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C5101C2BF3
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 May 2020 13:54:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727909AbgECLsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 May 2020 07:48:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41156 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727091AbgECLsR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 May 2020 07:48:17 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AABF22071C;
-        Sun,  3 May 2020 11:48:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588506496;
-        bh=MjIriiKXwBhuy3vRVQshwzttKeQfN8gHwz12BeKmiyQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=YTJEQ3/OjiyY9cpQSweNqt7J1FtAJdP0BBQjtgz2enfFFunpuoUqiE1KIGeYipLku
-         gKjQ6tjRBCgT02PERAu+p5HLfeBNobOvP8PivfyKYhZjwmlSvHLFXpjqJHZPFw4L/q
-         uA2HBRbJjFtwoo9sxXF09GsbykqLUcFYRgPMSgP4=
-Date:   Sun, 3 May 2020 12:48:11 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Fabrice Gasnier <fabrice.gasnier@st.com>
-Cc:     <rjw@rjwysocki.net>, <ulf.hansson@linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <mcoquelin.stm32@gmail.com>,
-        <benjamin.gaignard@st.com>, <alexandre.torgue@st.com>,
-        <olivier.moysan@st.com>, <linux-iio@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-Subject: Re: [PATCH v2] iio: adc: stm32-adc: fix runtime autosuspend delay
- when slow polling
-Message-ID: <20200503124811.0abf7655@archlinux>
-In-Reply-To: <1588163348-31640-1-git-send-email-fabrice.gasnier@st.com>
-References: <1588163348-31640-1-git-send-email-fabrice.gasnier@st.com>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1728152AbgECLy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 May 2020 07:54:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727112AbgECLyZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 May 2020 07:54:25 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBC34C061A0C;
+        Sun,  3 May 2020 04:54:25 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id s8so7164257pgq.1;
+        Sun, 03 May 2020 04:54:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:mime-version
+         :content-disposition:user-agent;
+        bh=BUkMHQD/V/0ORXwYkMywhz4/rrG1c8EmuLKXI0QJv5w=;
+        b=taljpVsPcYgjASQ7IomkR3YZJbOLGafzFyqXmnvC+6zVFMEzneQ/8JJmzqgIPrWV1w
+         rNfS74InWNxXvxnoxhsfXdS9foq22gGlbS7hBBDXSYKxaGhzfDNHbIr9xP5GIbu5jMti
+         jqbeMBcvYK37h4NxLpjBckvG8fuJdlpw3xs5DUT4HnCNMSo/GPXlHN07v8npHM+3Pjag
+         WBlMXAH66S4vfAbf1Fzxw8ddkyylrOv4UKPSoKyyScfS6zzQYyKN4lM4JQOyWPn9WYIe
+         BCYi26Y4EAF6gM7zNQhDkRlkRcMypDdVJjG8QxV6pbUyO9vuBMmwSA2pcxjiQhY4RsuN
+         mq8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:mime-version:content-disposition:user-agent;
+        bh=BUkMHQD/V/0ORXwYkMywhz4/rrG1c8EmuLKXI0QJv5w=;
+        b=FbIeuAEcJ/5kap8L313Qzpsm02yXNeppmS5dGlKD9J8UBVER4VWHekANcwn9yel1L8
+         AaEe2DLSqgyuOdIQoPbZWNumRqUGn+6oCMo4Us0C5ofAUiUwwgAsa82bJpA8Ml0VHjzV
+         h40EP9Oz39Wm0rA6YQpLSw1F72AGQlzh3UbGf3MWZDjfDif5hMTCMww+Yww91q/N0BSM
+         xkYt1msvPZAWnHPB3tllO2W3Fhx27yuUHTunxgdd9tTBBdRpTT/IHSPmYfKibC1OGrJP
+         u/OWzPUE23hN5+2K6szmKzZLg5SIfoF81GuBjaTKWgaaJEqtTDUz+5yGK47aYjmlUF2p
+         ad8w==
+X-Gm-Message-State: AGi0PuYAL1+rBq+U7qz5ILPUOGDdovV/JUzjeW45PWsRuEr9Bam+Qv6J
+        uV76aQKOXNUr7gk6lEx+Eo8=
+X-Google-Smtp-Source: APiQypLSSrXj5uw+ridEe+sj0GIban+7bcW+DaU/Y1Q3vv/3T6eTmpmIzsNSRfjyeFG4O42Em5UXAQ==
+X-Received: by 2002:a62:1415:: with SMTP id 21mr12503275pfu.203.1588506865450;
+        Sun, 03 May 2020 04:54:25 -0700 (PDT)
+Received: from udknight.localhost ([59.57.158.27])
+        by smtp.gmail.com with ESMTPSA id r18sm5775570pgu.93.2020.05.03.04.54.24
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 03 May 2020 04:54:24 -0700 (PDT)
+Received: from udknight.localhost (localhost [127.0.0.1])
+        by udknight.localhost (8.14.9/8.14.4) with ESMTP id 043Bs62H010515;
+        Sun, 3 May 2020 19:54:06 +0800
+Received: (from root@localhost)
+        by udknight.localhost (8.14.9/8.14.9/Submit) id 043Bs6Zl010514;
+        Sun, 3 May 2020 19:54:06 +0800
+Date:   Sun, 3 May 2020 19:54:06 +0800
+From:   Wang YanQing <udknight@gmail.com>
+To:     joe@perches.com
+Cc:     Andy Whitcroft <apw@canonical.com>, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Matteo Croce <mcroce@redhat.com>, Markus.Elfring@web.de,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH v2] checkpatch: fix can't check for too long invalid commit id
+Message-ID: <20200503115406.GB10332@udknight>
+Mail-Followup-To: Wang YanQing <udknight@gmail.com>, joe@perches.com,
+        Andy Whitcroft <apw@canonical.com>, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Matteo Croce <mcroce@redhat.com>, Markus.Elfring@web.de,
+        kernel-janitors@vger.kernel.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.7.1 (2016-10-04)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Apr 2020 14:29:08 +0200
-Fabrice Gasnier <fabrice.gasnier@st.com> wrote:
+The current UNKNOWN_COMMIT_ID doesn't check for 41+ length commit id,
+and although GIT_COMMIT_ID will check for 41+ length commit id, but
+it willn't warn anything about it due to 41+ length commit will never
+be defined.
 
-> When the ADC is runtime suspended and starting a conversion, the stm32-adc
-> driver calls pm_runtime_get_sync() that gets cascaded to the parent
-> (e.g. runtime resume of stm32-adc-core driver). This also kicks the
-> autosuspend delay (e.g. 2s) of the parent.
-> Once the ADC is active, calling pm_runtime_get_sync() again (upon a new
-> capture) won't kick the autosuspend delay for the parent (stm32-adc-core
-> driver) as already active.
-> 
-> Currently, this makes the stm32-adc-core driver go in suspend state
-> every 2s when doing slow polling. As an example, doing a capture, e.g.
-> cat in_voltageY_raw at a 0.2s rate, the auto suspend delay for the parent
-> isn't refreshed. Once it expires, the parent immediately falls into
-> runtime suspended state, in between two captures, as soon as the child
-> driver falls into runtime suspend state:
-> - e.g. after 2s, + child calls pm_runtime_put_autosuspend() + 100ms
->   autosuspend delay of the child.
-> - stm32-adc-core switches off regulators, clocks and so on.
-> - They get switched on back again 100ms later in this example (at 2.2s).
-> 
-> So, use runtime_idle() callback in stm32-adc-core driver to call
-> pm_runtime_mark_last_busy() for the parent driver (stm32-adc-core),
-> to avoid this.
-> 
-> Fixes: 9bdbb1139ca1 ("iio: adc: stm32-adc: add power management support")
-> 
-> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@st.com>
+This patch moves the unknown commit id check for normal commit description
+to GIT_COMMIT_ID, and uses ERROR instead of WARN, because unknown commit
+id is total useless to track change history in changelog, it deserves the
+ERROR.
 
-Whilst this seems 'sensible' to me, I really don't have a good enough grasp
-of runtime pm to be sure. 
+Signed-off-by: Wang YanQing <udknight@gmail.com>
+---
+ v2:
+ 1: Fix annonying "Invalid commit id" reports for non commit id number string.
+ 2: Fix indentaton issue, reported by Joe Perches.
+ 3: Reword the error message in code, suggested by Joe Perches.
+ 4: Delete unnecessary capture group in UNKNOWN_COMMIT_ID, suggested by Joe Perches.
 
-I see something similar looking in the greybus driver, but not sure on the
-reason it is there.
+ scripts/checkpatch.pl | 26 ++++++++++++++++++++------
+ 1 file changed, 20 insertions(+), 6 deletions(-)
 
-Hence, ideally looking for an ack from Rafael on this one!
-
-Thanks,
-
-Jonathan
-
-> ---
-> Changes in v2:
-> - Use runtime_idle callback in stm32-adc-core driver, instead of refreshing
->   last_busy from the child (for the parent) at many place. Initial patch v1
->   looked like "somewhat adhoc solution" as commented by Jonathan.
-> ---
->  drivers/iio/adc/stm32-adc-core.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iio/adc/stm32-adc-core.c b/drivers/iio/adc/stm32-adc-core.c
-> index 2df88d2..ebe5dbc 100644
-> --- a/drivers/iio/adc/stm32-adc-core.c
-> +++ b/drivers/iio/adc/stm32-adc-core.c
-> @@ -803,6 +803,13 @@ static int stm32_adc_core_runtime_resume(struct device *dev)
->  {
->  	return stm32_adc_core_hw_start(dev);
->  }
-> +
-> +static int stm32_adc_core_runtime_idle(struct device *dev)
-> +{
-> +	pm_runtime_mark_last_busy(dev);
-> +
-> +	return 0;
-> +}
->  #endif
->  
->  static const struct dev_pm_ops stm32_adc_core_pm_ops = {
-> @@ -810,7 +817,7 @@ static const struct dev_pm_ops stm32_adc_core_pm_ops = {
->  				pm_runtime_force_resume)
->  	SET_RUNTIME_PM_OPS(stm32_adc_core_runtime_suspend,
->  			   stm32_adc_core_runtime_resume,
-> -			   NULL)
-> +			   stm32_adc_core_runtime_idle)
->  };
->  
->  static const struct stm32_adc_priv_cfg stm32f4_adc_priv_cfg = {
-
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 23a001a..9b47584 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -2829,18 +2829,21 @@ sub process {
+ 			my $space = 1;
+ 			my $hasdesc = 0;
+ 			my $hasparens = 0;
++			my $hasprefix = 1;
+ 			my $id = '0123456789ab';
+ 			my $orig_desc = "commit description";
+ 			my $description = "";
++			my $sha1_length_min = 12;
+ 
+ 			if ($line =~ /\b(c)ommit\s+([0-9a-f]{5,})\b/i) {
+ 				$init_char = $1;
+ 				$orig_commit = lc($2);
+ 			} elsif ($line =~ /\b([0-9a-f]{12,40})\b/i) {
+ 				$orig_commit = lc($1);
++				$hasprefix = 0;
+ 			}
+ 
+-			$short = 0 if ($line =~ /\bcommit\s+[0-9a-f]{12,40}/i);
++			$short = 0 if ($line =~ /\bcommit\s+[0-9a-f]{$sha1_length_min,40}/i);
+ 			$long = 1 if ($line =~ /\bcommit\s+[0-9a-f]{41,}/i);
+ 			$space = 0 if ($line =~ /\bcommit [0-9a-f]/i);
+ 			$case = 0 if ($line =~ /\b[Cc]ommit\s+[0-9a-f]{5,40}[^A-F]/);
+@@ -2865,10 +2868,21 @@ sub process {
+ 			($id, $description) = git_commit_info($orig_commit,
+ 							      $id, $orig_desc);
+ 
++			if ($hasprefix && !defined($id)) {
++				if ($long) {
++					ERROR("GIT_COMMIT_ID",
++					      "Invalid commit id '$orig_commit' length '" . length($orig_commit) . "' exceeds allowed maxium of 40
++					      ($sha1_length_min+ chars of sha1 is recommended).\n" . $herecurr);
++				} else {
++					ERROR("GIT_COMMIT_ID",
++					      "Unknown commit id '$orig_commit', maybe rebased or not pulled?\n" . $herecurr);
++				}
++			}
++
+ 			if (defined($id) &&
+-			   ($short || $long || $space || $case || ($orig_desc ne $description) || !$hasparens)) {
++			   ($short || $space || $case || ($orig_desc ne $description) || !$hasparens)) {
+ 				ERROR("GIT_COMMIT_ID",
+-				      "Please use git commit description style 'commit <12+ chars of sha1> (\"<title line>\")' - ie: '${init_char}ommit $id (\"$description\")'\n" . $herecurr);
++				      "Please use git commit description style 'commit <$sha1_length_min+ chars of sha1> (\"<title line>\")' - ie: '${init_char}ommit $id (\"$description\")'\n" . $herecurr);
+ 			}
+ 		}
+ 
+@@ -2969,13 +2983,13 @@ sub process {
+ 		}
+ 
+ # check for invalid commit id
+-		if ($in_commit_log && $line =~ /(^fixes:|\bcommit)\s+([0-9a-f]{6,40})\b/i) {
++		if ($in_commit_log && $line =~ /^fixes:\s+([0-9a-f]{6,40})\b/i) {
+ 			my $id;
+ 			my $description;
+-			($id, $description) = git_commit_info($2, undef, undef);
++			($id, $description) = git_commit_info($1, undef, undef);
+ 			if (!defined($id)) {
+ 				WARN("UNKNOWN_COMMIT_ID",
+-				     "Unknown commit id '$2', maybe rebased or not pulled?\n" . $herecurr);
++				     "Unknown commit id '$1', maybe rebased or not pulled?\n" . $herecurr);
+ 			}
+ 		}
+ 
+-- 
+1.8.5.6.2.g3d8a54e.dirty
