@@ -2,76 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5E141C2DCC
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 May 2020 17:58:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D12C51C2DD3
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 May 2020 18:09:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728942AbgECP4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 May 2020 11:56:30 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:34203 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728907AbgECP41 (ORCPT
+        id S1728840AbgECQIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 May 2020 12:08:50 -0400
+Received: from correo.unt.edu.ar ([200.45.169.32]:60014 "EHLO
+        correo.unt.edu.ar" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728665AbgECQIu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 May 2020 11:56:27 -0400
-Received: by mail-oi1-f195.google.com with SMTP id x10so4483196oie.1;
-        Sun, 03 May 2020 08:56:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=PLOLvZE+s39Hp3IKRQqs7UuDfEqpShYvBhp9hM9EmJI=;
-        b=c/cv4V5SLg+nUvB9paCCBJN45jZtLj6fQqp/luysw6gTpKlYlTUJHNi0ZVk53hBFQu
-         ASvHrV1R9Mz9PVXi6rFFumTiwhbeuS0VLjZ5teZvNQiQLg/ccdrbatVscQMc7pFzhlNr
-         UWeWG80O2FlA2H6KTacsFqtW+Pe51vk52TRf1LzY0zcgeDta5rAH8QEwJ+C4RxDS32uV
-         Ub1TUM//qEoIs3qYjgGB3M5XCTGUbdJnkRaOXmS0YONfybJc/vMHgFR523TOMrK6sgpg
-         Y2N8UOA0AbpmOlOUt8LWkuOjAq/YrIDWnfZInke/lGijPfMalh519JUtofZKc/0syXXa
-         iyRQ==
-X-Gm-Message-State: AGi0Pub+vx9zvBm4Y8giUcJM0jksoRQfglp7M+/7oVp65pLVq0nQ/UFB
-        l1T9T0G2Ij7zxLv9I+guEw==
-X-Google-Smtp-Source: APiQypLIuHNhlfXyGR1tRhlXU/FmUWgupHa1Z2ZRPxSlSoRpqcq6frZKcvRA/5O/V70e+xNobWFmKA==
-X-Received: by 2002:aca:c546:: with SMTP id v67mr6016397oif.84.1588521386842;
-        Sun, 03 May 2020 08:56:26 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id g10sm2518523oou.31.2020.05.03.08.56.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 May 2020 08:56:26 -0700 (PDT)
-Received: (nullmailer pid 22903 invoked by uid 1000);
-        Sun, 03 May 2020 15:56:25 -0000
-Date:   Sun, 3 May 2020 10:56:25 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Maxime Ripard <mripard@kernel.org>
-Subject: Re: [PATCH v3 8/8] dt-bindings: arm: Add Calxeda system registers
- json-schema binding
-Message-ID: <20200503155625.GA22844@bogus>
-References: <20200430211054.30466-1-andre.przywara@arm.com>
- <20200430211054.30466-9-andre.przywara@arm.com>
+        Sun, 3 May 2020 12:08:50 -0400
+X-Greylist: delayed 376 seconds by postgrey-1.27 at vger.kernel.org; Sun, 03 May 2020 12:08:49 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by correo.unt.edu.ar (Postfix) with ESMTP id 367B819855B5;
+        Sun,  3 May 2020 13:02:25 -0300 (-03)
+Received: from correo.unt.edu.ar ([127.0.0.1])
+        by localhost (correo.unt.edu.ar [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id VEQ-PttZV9yN; Sun,  3 May 2020 13:02:24 -0300 (-03)
+Received: from localhost (localhost [127.0.0.1])
+        by correo.unt.edu.ar (Postfix) with ESMTP id 76C1F1985582;
+        Sun,  3 May 2020 13:02:24 -0300 (-03)
+DKIM-Filter: OpenDKIM Filter v2.10.3 correo.unt.edu.ar 76C1F1985582
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fbqf.unt.edu.ar;
+        s=12BE24AC-28DE-11E7-96BE-C28A9E4A95FB; t=1588521744;
+        bh=jT+Cqao+xrk1USgBvgQCKc/+J/z4TqArKaoeH4zMCHo=;
+        h=Date:From:Message-ID:MIME-Version;
+        b=gcx5NhSoPhc+BU2I5K4Dba2k5QWPVEIgbf+UgK0JnI5FEqpg1DxjDfvSxinw6kEK4
+         vA3JfgUfhNWJH+48pnqL62MLTEchjypfMGnP8JkxLofZ7qNRJoMNgXJrDL3GI0I97M
+         GXXalsrNlhIILCIXIhrIgSdbmHUnQiXhcdnJtHu8=
+X-Virus-Scanned: amavisd-new at correo.unt.edu.ar
+Received: from correo.unt.edu.ar ([127.0.0.1])
+        by localhost (correo.unt.edu.ar [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id ttFfeTe8KQUk; Sun,  3 May 2020 13:02:24 -0300 (-03)
+Received: from correo.unt.edu.ar (correo.unt.edu.ar [200.45.169.32])
+        by correo.unt.edu.ar (Postfix) with ESMTP id B375E198543E;
+        Sun,  3 May 2020 13:02:11 -0300 (-03)
+Date:   Sun, 3 May 2020 13:02:11 -0300 (ART)
+From:   "Mr. Michael Hearty" <mfuentes@fbqf.unt.edu.ar>
+Reply-To: "Mr. Michael Hearty" <michaelheartyocc20@aol.com>
+Message-ID: <808337395.77464.1588521731642.JavaMail.zimbra@fbqf.unt.edu.ar>
+Subject: REPLY AS SOON AS POSSIBLE.
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200430211054.30466-9-andre.przywara@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [200.45.169.32]
+X-Mailer: Zimbra 8.8.12_GA_3866 (zclient/8.8.12_GA_3866)
+Thread-Index: QANgfXkU7U1kbqPE8q8C3xXMnpcY4g==
+Thread-Topic: REPLY AS SOON AS POSSIBLE.
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Apr 2020 22:10:54 +0100, Andre Przywara wrote:
-> The Calxeda system registers are a collection of MMIO register
-> controlling several more general aspects of the SoC.
-> Beside for some power management tasks this node is also somewhat
-> abused as the container for the clock nodes.
-> 
-> Add a binding in DT schema format using json-schema.
-> 
-> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> ---
->  .../bindings/arm/calxeda/hb-sregs.yaml        | 49 +++++++++++++++++++
->  1 file changed, 49 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/arm/calxeda/hb-sregs.yaml
-> 
+My name is Mr. Michael Hearty. My email correspondence is to seek your
+assistance as overseas representative for an investment involving
+large volume of funds.
 
-Applied, thanks.
+Please, I will provide more details about the transaction if you are
+willing to handle such project and also let you know your entitlement
+for the solicited role.
 
-Rob
+I shall be expecting your quick reply.
+
+Please you can contact me on my private email: michaelheartyocc20@aol.com
+
+Best Regards,
+
+Michael Hearty
