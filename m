@@ -2,132 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F197E1C2C28
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 May 2020 14:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44AE71C2C34
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 May 2020 14:35:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728276AbgECMTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 May 2020 08:19:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727807AbgECMTk (ORCPT
+        id S1728476AbgECMfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 May 2020 08:35:21 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:56040 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728289AbgECMfU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 May 2020 08:19:40 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54B13C061A0C
-        for <linux-kernel@vger.kernel.org>; Sun,  3 May 2020 05:19:40 -0700 (PDT)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id E13FF3A2; Sun,  3 May 2020 14:19:35 +0200 (CEST)
-Date:   Sun, 3 May 2020 14:19:34 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
-Subject: [git pull] IOMMU Fixes for Linux v5.7-rc3
-Message-ID: <20200503121929.GA10425@8bytes.org>
+        Sun, 3 May 2020 08:35:20 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 043CZFf8037315;
+        Sun, 3 May 2020 07:35:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1588509315;
+        bh=TKKNAOkF2jAtJRcMeSHJHG0+FAnDUE28xaOhXuqo9oE=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=HGRHkl0NzJGjyGSifwWFpK1x9dG35KnNK942jhJqXEqLgk/ILw/YRvg3w/rxuUPhE
+         HkOEBvnCrBrV8KfbU6mjQFU1IvY9//4nEL1BTyklklMbrqHQxJ4zlkZeoGufusySYj
+         2EpEcGE9K6FJXoxG5+w1taxoMzBQKTUJzp+JRhE0=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 043CZFhn009063;
+        Sun, 3 May 2020 07:35:15 -0500
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Sun, 3 May
+ 2020 07:35:15 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Sun, 3 May 2020 07:35:15 -0500
+Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 043CZFlN032465;
+        Sun, 3 May 2020 07:35:15 -0500
+Subject: Re: [PATCH v23 02/16] leds: multicolor: Introduce a multicolor class
+ definition
+To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>, <pavel@ucw.cz>
+CC:     <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20200429202816.26501-1-dmurphy@ti.com>
+ <20200429202816.26501-3-dmurphy@ti.com>
+ <5533a7b4-12b4-90b8-2731-a9cdfbee5e12@gmail.com>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <05377684-c316-24c2-d577-f52b8eea5656@ti.com>
+Date:   Sun, 3 May 2020 07:26:28 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Q68bSM7Ycu6FN28Q"
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <5533a7b4-12b4-90b8-2731-a9cdfbee5e12@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Jacek
 
---Q68bSM7Ycu6FN28Q
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 5/2/20 4:51 PM, Jacek Anaszewski wrote:
+> Dan,
+>
+> I've converted drivers/leds/leds-an30259a.c to LED mc framework
+> and tested it on Samsung Galaxy S3 (exysnos4412-trats2 board).
+> Works as expected. And now the framework usability is indeed neater.
+>
+> One thing to improve: LED mc based drivers' entries in Kconfig should 
+> have this dependency:
+>
+> depends on LEDS_CLASS_MULTI_COLOR || !LEDS_CLASS_MULTI_COLOR
+>
+> It is required to enforce building driver as a module if
+> LED mc framework is configured as such.
+>
+Do you think the FLASH class needs this as well?  If so I will send this 
+in a separate patch
 
-Hi Linus,
 
-The following changes since commit 6a8b55ed4056ea5559ebe4f6a4b247f627870d4c:
+> With this (and DT bindings nits) addressed, for patches 1-6:
+>
+> Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+>
+Ack
+> It's been a long journey. Thank you for your determination to drive
+> this work to the end.
+>
+Ack to that.
 
-  Linux 5.7-rc3 (2020-04-26 13:51:02 -0700)
+Dan
 
-are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git tags/iommu-fixes-v5.7-rc3
-
-for you to fetch changes up to b52649aee6243ea661905bdc5fbe28cc5f6dec76:
-
-  iommu/qcom: Fix local_base status check (2020-05-01 13:37:23 +0200)
-
-----------------------------------------------------------------
-IOMMU Fixes for Linux v5.7-rc3
-
-Including:
-
-	- Fix for a memory leak when dev_iommu gets freed and a
-	  sub-pointer does not.
-
-	- Build dependency fixes for Mediatek, spapr_tce, and
-	  Intel IOMMU driver.
-
-	- Export iommu_group_get_for_dev() only for GPLed modules
-
-	- Fix for AMD IOMMU interrupt remapping when x2apic is
-	  enabled
-
-	- Fix for error path in the QCOM IOMMU driver probe function
-
-----------------------------------------------------------------
-Geert Uytterhoeven (1):
-      iommu/mediatek: Fix MTK_IOMMU dependencies
-
-Greg Kroah-Hartman (1):
-      iommu: Properly export iommu_group_get_for_dev()
-
-Kevin Hao (1):
-      iommu: Fix the memory leak in dev_iommu_free()
-
-Krzysztof Kozlowski (1):
-      iommu: spapr_tce: Disable compile testing to fix build on book3s_32 config
-
-Lu Baolu (1):
-      iommu/vt-d: Use right Kconfig option name
-
-Suravee Suthikulpanit (1):
-      iommu/amd: Fix legacy interrupt remapping for x2APIC-enabled system
-
-Tang Bin (1):
-      iommu/qcom: Fix local_base status check
-
- drivers/iommu/Kconfig          | 4 ++--
- drivers/iommu/amd_iommu_init.c | 2 +-
- drivers/iommu/intel-iommu.c    | 4 ++--
- drivers/iommu/iommu.c          | 3 ++-
- drivers/iommu/qcom_iommu.c     | 5 ++++-
- 5 files changed, 11 insertions(+), 7 deletions(-)
-
-Please pull.
-
-There are also some race condition fixes for the AMD IOMMU driver
-pending, but I wait for more testing feedback from Qian before sending
-them your way, so they are not included here.
-
-Thanks,
-
-	Joerg
-
---Q68bSM7Ycu6FN28Q
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEr9jSbILcajRFYWYyK/BELZcBGuMFAl6uttAACgkQK/BELZcB
-GuNcNg/9EEptDzjNdWIh4GD+okAC+zWIMeWezt2Te8ytNx/r7zOS1Ye3VqgYq8GS
-TavgT+a5hIeaxo2qTLRj7ZNrxVGcB7vshQBwXqBpFg2rYOeo3O+7lhmBeWpGUgBy
-6IjyF0WctoUYCkxZPVYjAjoUrSI2ZMzYBpjNKto2EpLFj1f8FAR+Wujcx9l3qWFb
-J8G49VIqPhjtHLOGHT1ijmfWaF2MvQmZVpYRsGkRqlaWc//iOrHKc+ONLTApmatP
-ZqnqDTqeQNBSEbP0K4G2WZ4N8D3vdBjVrDRb4jQaPpmunK2WHXnSgv/VJy1IyqUT
-P4jicSh0vr5YKbkrAeGEj11RLKyji8jrHV2yWBIH8TtHNLagJeyIK5KkNqk+Qz02
-g+fUjjiS0Whvxc4zT2r+I+j3MvARZbY2sXRG/3WOUOna6D9HGKLVdQs/7ezDQKES
-2LrYSx3G9omTIdwCugJ2jvItokXuryN6wLL87EpnK5iipKWtYnXKoG8Quq/VgJ3+
-VI2mvqx4nspJ/ENj22DU++bbNO9KhTKgzrOeOgO8eE8QyUK382MGn5/ehBddK0yD
-xnBbTtjEvQPFbAA2rEUrTyZszBE0BhHxQxwNEhmFBVE5CR10BHUseeWdW8HVUI7r
-ZdTpE2CMZxR6tM3+hswWH6d5Vg5IeQbz8Amc4CN8DLYU8xQb8wo=
-=cYaI
------END PGP SIGNATURE-----
-
---Q68bSM7Ycu6FN28Q--
