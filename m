@@ -2,98 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D27221C2C98
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 May 2020 14:58:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 582C21C2C9D
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 May 2020 15:04:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728587AbgECM6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 May 2020 08:58:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728245AbgECM6w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 May 2020 08:58:52 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81DCEC061A0C
-        for <linux-kernel@vger.kernel.org>; Sun,  3 May 2020 05:58:50 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id g16so11184331eds.1
-        for <linux-kernel@vger.kernel.org>; Sun, 03 May 2020 05:58:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=7pQZXnvX6HMxYjTpYRyUtl7rLyv7zw8o+SfKiiyYre0=;
-        b=SMlfNBLzZcvWhqea1tbz9ldnAEMvzuYUZWpJJVEdGCTzvpTFbVVVlrCWFGFdXhRRBa
-         NAUUxnAilxOEO0mnCrZZqaJ2rUI/oCj5uAs3P2ZeMU/icJ4FbgAmvm4isIhnYde2Oa4D
-         DsWCRTRDUrevFQISbFKKZhuWyEK/VlpgpfCqZ+A6sNpecf7RHxyc4Jv/p8e9oIql57p8
-         wCgZnvUPMeBmdWDLowjcU3Sups2lSZSUI2QsqyX6pJZtT7vFvSq/V5vboRDf3CFrBjUJ
-         gCXAYXyOGa2Lm6jg0U6OcA4hbH0xhADxdID6jU6c5dDgGmz6WijvbLDOd1aRhmTLeJbR
-         G62w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=7pQZXnvX6HMxYjTpYRyUtl7rLyv7zw8o+SfKiiyYre0=;
-        b=kCGHb9bdlt/wI7f5rFiO6a1IS++JkkCqKVEFjNdOYUHvPRgWtRhSpSkfvdamNK+0YG
-         1uRPHx6Vss+Rqrbrg5ej1rD3Afp1I2j/hlhjVJHQ2yMaMqvcabmFBUwOORmMfmHHfYov
-         N6Z2+rWPlzUd4J/4VwL9myldaHEcmd94Bb3JHjPkpShkdEhgD+AbQcnG2jnfdZnuDjRP
-         NGXViuOSlh/hU6Zx9q55iUiITkhcUTXnr/kYF4Iyuln7YwJhLzDd7/+G5BlTI91BK2pE
-         zflH7z9GSon+friJzwInuci7crM3DwX5fQ2pW8vqpegIWr/H+dfztxO/pQDpBJG+61qQ
-         tdkQ==
-X-Gm-Message-State: AGi0PuZr7AaFeThVmTyXisVHxzRvyZZdfN7Cefn7PrcifZcDaA4G+e1y
-        gzaHOSsBDcs7Mi255zPeXuwkp+2iffgaOdIJ+XM=
-X-Google-Smtp-Source: APiQypJNfMEkIvZDRHqmDLH45dPyXyY9cKkUAfCewiarq+4azHCYerrAnFsNNLsfhGSVRam60A62XVJEK6X1MotnYtc=
-X-Received: by 2002:a05:6402:3125:: with SMTP id dd5mr11177510edb.208.1588510729188;
- Sun, 03 May 2020 05:58:49 -0700 (PDT)
+        id S1728515AbgECNDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 May 2020 09:03:55 -0400
+Received: from mout.web.de ([212.227.15.3]:50993 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728239AbgECNDy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 May 2020 09:03:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1588511027;
+        bh=luUWOSurUWv8Y8HSTIcfmRsAiC2aJOWuuo0/vNEMFEQ=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Cc:Date:In-Reply-To;
+        b=I5dB89K04HMvfkNrTUu6X2qoYj5YEDRVxMUY/7bmUO8YlKsX5M+M1wlOdv+7oSrmW
+         JeSjBdTC0QqHIpnnPqrH1Uh5oNhAo0iAILPEzK5mQpp2dFWDw8zkfoW/VC6sYX5zbH
+         MVdSiaj+w09EmV+hFM/FryajhTOym6MmiBn6IKuA=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([93.131.26.31]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1Mx0Ix-1jFNQ82Ca3-00yPs8; Sun, 03
+ May 2020 15:03:47 +0200
+Subject: Re: [PATCH] checkpatch: add support for title acrosses three lines in
+ commit id description
+To:     Wang YanQing <udknight@gmail.com>, Joe Perches <joe@perches.com>,
+        Andy Whitcroft <apw@canonical.com>,
+        kernel-janitors@vger.kernel.org
+References: <20200503123435.GD10332@udknight>
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Cc:     linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Matteo Croce <mcroce@redhat.com>
+Message-ID: <df619612-3825-4637-e025-618a7a982310@web.de>
+Date:   Sun, 3 May 2020 15:03:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Received: by 2002:a05:6402:619:0:0:0:0 with HTTP; Sun, 3 May 2020 05:58:48
- -0700 (PDT)
-Reply-To: transfermoney212@foxmail.com
-From:   "Mrs. Susan Dansuki" <infobceaorb@gmail.com>
-Date:   Sun, 3 May 2020 05:58:48 -0700
-Message-ID: <CAL0WEXaAZvEtjYW_AV93D0LvRTPEYFGK2OtmktA87u7cwo2FWA@mail.gmail.com>
-Subject: Re: CONTACT MONEY GRAM FOR YOUR DAILY PAYMENT OF $5,000.00
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200503123435.GD10332@udknight>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:+H1AVTi6CX+RViudSSfT9MZFOWyNtOH0bHzzwEX+EH9FyHN9PF4
+ MdC97gdYJqFMs7W+c9dyXJwoX2m/899+ue5F6favdHwS0WXKFm/iV8saQfKx+7/MjE/XZXi
+ DQRahSaWAjs6d/UBfoorjE3jr8ASPN7mQ8GgQyxq/C4kNv6P8mhAQE1U2teNAe5WdrrrrA7
+ 86EKVsnVn2GJDlYmxwPCw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:2RU6bDv9qdo=:FCn9tYU+pH0Eevczq+Pwoe
+ asGIPB8kKOYb1JqKv4h/pnUyI1YqV8v68oC0i0lpc7gPg4HbxAYSnUgrorakInf1nuY/ExK5m
+ GEBQj4lxBVc1jiqF4uQloQ99ebxLQc/lJ8XNzrtDjNbYzriuHI6LIKwSM4/4ntwh0j6qou9Nt
+ GIEL0k7IojyolhqT/QspOugbajWXzDq2ou8APdm9SEDodGvcYalYOXCGAQHnp56wt0qn0ksVF
+ JCjJ/Ts2D0R2VJO3S5AziGqZbCNgcIac5SnftHE9yEsGkv2GKJ3edFhvve5qSvg5t9OciKlzN
+ +x+vsKr6ocpBsBC+qH51YOFgFmy4U9xkppjtA4qrc9yVKc/uZXJi8NDObQNarAvOH+R3d1v4w
+ qoBR3xrRyJ5SM4teicchyEpBu41lWL2DwgLQ+ry6jsutosyUpF7Y8wTNpfksiLkQZoBwwyWsz
+ KXJJQlST9pIp8NgbG9c2fXzQ3Ss7UILnYnVmv5VYij2W6xcE/VQKF/DP7YFMt5LAD3w9z9xX6
+ ZpPCRbM7PAV7nFCt/fKT6M0rch6wkETH0czSTJshz2pWqc87Q+XMYCK9ceS6q+06+ls6twYMB
+ 4aI7ldvTL/lm6JxPSy/vuqG60ILVBHi5TmO71RDadEwGSDxwdrguoNpPpwxSntNIlZfVs9BOs
+ CZU7e/KYUH7VKbsp1K0bWzPvHQTCzX51DsrDYxxddwH4eyXRl77qlgMSI/xnxVWu1Q6kK7xtA
+ OIJIdn9PDRkeYYomsZaK0uj9qFmKLNTjy1IP8cHA/bercB9D2uoQDF9tV7H2M5AFpuV68pAAo
+ a+jULa52PT9Ds1PdHsHl6xcaOkSR5Yu895h7qy89Ku6Vip/uA/qy7sfS3t6p131vjbysPi7jI
+ 1qos9H7u3pbBl1F5W9eLfYK28vaOMgQycvN0mT8W0EqTl6qvtohhA8x0Wib/OMDDN+AvWChvf
+ cPPrmPw4SYCV8D15vpq3sZo/sCtNWb8yFPVh5ic1SkKQTngga/ZWAke+eKVux0Dt/AA1LOJHt
+ 7LDWZzWFKbbyudR5/mlNdxMdvYWNXasS7nI+e+UrOvf7aA4g9VSDRTiqdZa9YDVNIxSvW2ygh
+ OJwgtARaHSZL1JIlZh1Fewg7x2KfvMQKqjuR6sFZRHFOrbTnV6rXCmCH+vw1Uru+2PAP+zNEU
+ Yvqp55BWfx/A4SpquX/XSP4lHlizWWEMtrqxVtDYJOhNPCJSzEfIhmbwEwQ/tlmbmKF4ojzWw
+ XvYlLLi2tY2189wA0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-Attention: Beneficiary,
+> The current GIT_COMMIT_ID will report error when the title in commit id
+> description acrosses three lines, =E2=80=A6
 
-This is the second time we are notifying you about the statue of your
-compensation payment of ( $1,500,000.00). Be inform that We have been
-authorized by the United Nations Compensation Commission (UNCC) to
-release your compensation payment totaling the sum of US$1,500,000.00
-through Money Gram transfer.You will be receiving the sum of $5,000.00
-daily until the total sum of US $1,500,000.00 is completely
-transferred to you.
+I suggest to improve the commit message (and subsequent Perl code)
+also according to the usage of the text =E2=80=9Cacrosses=E2=80=9D.
 
-Besides,we have already credited your first payment of US$5,000.00
-today,therefore,you are advice to contact our director of foreign
-Remittance Department MR.ROBERT TAIWO and request him to give you the
-details of your first payment such as MoneyGram reference Numbers and
-senders name to enable you pick up your first payment of US$5,000.00
-at any Money Gram office located around you.Kindly contact him through
-the information stated below for faster process.
 
-Contact Person: MR.ROBERT TAIWO
-E-MAIL: transfermoney212@foxmail.com
-Tel: (+229) 965 483 88 ( WhatsApp )
+> This patch adds support for three lines title in the commit id descripti=
+on,
+> and emit diagnostics info when the title acrosses more than three lines.
 
-REMEMBER TO FORWARD HIM YOUR FULL INFORMATION AS REQUIRED BELOW TO
-ENABLE HIM LOCATE YOUR PAYMENT FILE AND ATTEND TO YOU IMMEDIATELY.
+Please split this paragraph into two imperative wordings.
 
-1. Your Full Name:
-2. Address:
-3. Age:
-4. Occupation:
-5. Telephone:
-6. Country:
-
-NOTE: that the amount to be paid to you is (USD1.500, 000.00), we
-expect your urgent response to this email to enable us monitor the
-transaction effectively.
-
-Best Regards
-Mrs. Susan Dansuki.
+Regards,
+Markus
