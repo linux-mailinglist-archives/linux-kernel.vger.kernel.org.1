@@ -2,312 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC10B1C405D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 18:44:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78BBF1C4088
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 18:53:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729734AbgEDQoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 12:44:13 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:36414 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729604AbgEDQoN (ORCPT
+        id S1729878AbgEDQx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 12:53:29 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:49748 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729553AbgEDQx3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 12:44:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588610651;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+M6/Lj841qYSV8Ztwzmd8tANiqUnsdBx4XN2CRc3s4s=;
-        b=BSYOfPqGieeWjyxbFqjxrj7k7juKd2Z7z3grK5yIax2YLdIzRDm9KeHqlXCEO4hfyTQ13O
-        XHKfoFAXLZ9quNNMxV62rRamhgt6xGM5O0vA7/LklrRZ+PlA+dZNXl//J3MvsubQDededi
-        7YcCMgWtAik919nZRrojfMkyXEGiMjs=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-150-OvWiR4lRPtmEsLslht8yWA-1; Mon, 04 May 2020 12:44:09 -0400
-X-MC-Unique: OvWiR4lRPtmEsLslht8yWA-1
-Received: by mail-wr1-f70.google.com with SMTP id 30so599393wrp.22
-        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 09:44:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+M6/Lj841qYSV8Ztwzmd8tANiqUnsdBx4XN2CRc3s4s=;
-        b=ENivgWRZNFtolMixHom/d1ieuTQbY4EQhxXWKreyr3yo0BC/TFUNm7zZ5anaPH4Rn8
-         jsxz3nelY6vnKqtEsVlSuix5ewKZZkumQibGZygMvBySj6QItSZ7NBr9h+gd7bPAN8kg
-         51r4MinSLDq6jH0gMW0zHPhHcWaz44sVJkbv9egBJtSamp71cFg2dtpexn7Oo4qhzaXW
-         osmDv8xrsCSt2VN8IKWIxZpLKfdzmInA17OA0bQjnDQnRtHn3Npi8mJXIpCw504GPvqE
-         wmtDo0qnWD1bhmcRxxNrk92PV2ygDYJ1sC6zHoTZJl2IB2At0bcq54tIkCvqVvGt6Q6+
-         f1dw==
-X-Gm-Message-State: AGi0PubnxDLgelyhRijof/yhBq1OEiVD8kaukcaXWHMR6svXR1GJT//h
-        E1cnoYfJdJjJyM1QigJn1Ejxw2L6GQTGvkBdTXlxBRjoqiJJtBdurHb/06uI3AM8ndUlYkwIv3n
-        KdNltZbqHDgcnpODzHSSLnmn7
-X-Received: by 2002:a1c:dc0a:: with SMTP id t10mr15229834wmg.113.1588610648199;
-        Mon, 04 May 2020 09:44:08 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJ0cze6zl1D2HX7FNX7uCHrNwHQJxh/yuDMpozw7eywpNcw63bfUk8JeQLLBFlKl4OHEkTn5w==
-X-Received: by 2002:a1c:dc0a:: with SMTP id t10mr15229807wmg.113.1588610647828;
-        Mon, 04 May 2020 09:44:07 -0700 (PDT)
-Received: from [192.168.178.58] ([151.20.132.175])
-        by smtp.gmail.com with ESMTPSA id e13sm18351175wrw.88.2020.05.04.09.44.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 May 2020 09:44:07 -0700 (PDT)
-Subject: Re: [PATCH v2] KVM: nVMX: Tweak handling of failure code for nested
- VM-Enter failure
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200428173217.5430-1-sean.j.christopherson@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <32f20974-5c42-3eba-b586-4c156bb328d0@redhat.com>
-Date:   Mon, 4 May 2020 18:44:06 +0200
+        Mon, 4 May 2020 12:53:29 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 044GrRDP081344;
+        Mon, 4 May 2020 11:53:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1588611207;
+        bh=0eGgGN67Gih5o+VzyxIZ6R2au1X7hqDqT3zQR5pwfkA=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=rDJrTpztG/gD2nR+S/a0mAF+BBOHDRm214BhYt1hFOPOmQZRvQOf2GGcwq8AEOTHn
+         vN1f9szgR7xsVBeLjGZGqba8oGpZJHz8iLgTBXm9375PoPJo9GFvOVv7545yssNY+L
+         +lKtHsUHmpwpjf/FJlfHj6rhJUMa0O+IaG/d9F2M=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 044GrRU0046672
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 4 May 2020 11:53:27 -0500
+Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 4 May
+ 2020 11:53:27 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 4 May 2020 11:53:27 -0500
+Received: from [10.250.65.13] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 044GrQqP005405;
+        Mon, 4 May 2020 11:53:26 -0500
+Subject: Re: [PATCH] dt-bindings: power: Convert bq27xxx dt to yaml
+To:     <sre@kernel.org>
+CC:     <linux-pm@vger.kernel.org>, <robh@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
+        "Davis, Andrew" <afd@ti.com>
+References: <20200504164156.21469-1-dmurphy@ti.com>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <1ddf643b-c54e-0a60-ee14-8ea137f2bfc9@ti.com>
+Date:   Mon, 4 May 2020 11:44:43 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200428173217.5430-1-sean.j.christopherson@intel.com>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <20200504164156.21469-1-dmurphy@ti.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/04/20 19:32, Sean Christopherson wrote:
-> Use an enum for passing around the failure code for a failed VM-Enter
-> that results in VM-Exit to provide a level of indirection from the final
-> resting place of the failure code, vmcs.EXIT_QUALIFICATION.  The exit
-> qualification field is an unsigned long, e.g. passing around
-> 'u32 exit_qual' throws up red flags as it suggests KVM may be dropping
-> bits when reporting errors to L1.  This is a red herring because the
-> only defined failure codes are 0, 2, 3, and 4, i.e. don't come remotely
-> close to overflowing a u32.
-> 
-> Setting vmcs.EXIT_QUALIFICATION on entry failure is further complicated
-> by the MSR load list, which returns the (1-based) entry that failed, and
-> the number of MSRs to load is a 32-bit VMCS field.  At first blush, it
-> would appear that overflowing a u32 is possible, but the number of MSRs
-> that can be loaded is hardcapped at 4096 (limited by MSR_IA32_VMX_MISC).
-> 
-> In other words, there are two completely disparate types of data that
-> eventually get stuffed into vmcs.EXIT_QUALIFICATION, neither of which is
-> an 'unsigned long' in nature.  This was presumably the reasoning for
-> switching to 'u32' when the related code was refactored in commit
-> ca0bde28f2ed6 ("kvm: nVMX: Split VMCS checks from nested_vmx_run()").
-> 
-> Using an enum for the failure code addresses the technically-possible-
-> but-will-never-happen scenario where Intel defines a failure code that
-> doesn't fit in a 32-bit integer.  The enum variables and values will
-> either be automatically sized (gcc 5.4 behavior) or be subjected to some
-> combination of truncation.  The former case will simply work, while the
-> latter will trigger a compile-time warning unless the compiler is being
-> particularly unhelpful.
-> 
-> Separating the failure code from the failed MSR entry allows for
-> disassociating both from vmcs.EXIT_QUALIFICATION, which avoids the
-> conundrum where KVM has to choose between 'u32 exit_qual' and tracking
-> values as 'unsigned long' that have no business being tracked as such.
-> To cement the split, set vmcs12->exit_qualification directly from the
-> entry error code or failed MSR index instead of bouncing through a local
-> variable.
-> 
-> Opportunistically rename the variables in load_vmcs12_host_state() and
-> vmx_set_nested_state() to call out that they're ignored, set exit_reason
-> on demand on nested VM-Enter failure, and add a comment in
-> nested_vmx_load_msr() to call out that returning 'i + 1' can't wrap.
-> 
-> No functional change intended.
-> 
-> Reported-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> Cc: Jim Mattson <jmattson@google.com>
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Adding Andrew in manually.
+
+On 5/4/20 11:41 AM, Dan Murphy wrote:
+> Convert the bq27xxx.txt to yaml format
+>
+> CC: Pali Rohár <pali@kernel.org>
+> CC: Andrew F. Davis" <afd@ti.com>
+> Signed-off-by: Dan Murphy <dmurphy@ti.com>
 > ---
-> 
-> v2:
->   - Set vmcs12->exit_qualification directly to avoid writing the failed
->     MSR index (a u32) to the entry_failure_code enum. [Jim]
->   - Set exit_reason on demand since the "goto vm_exit" paths need to set
->     vmcs12->exit_qualification anyways, i.e. already have curly braces.
-> 
->  arch/x86/include/asm/vmx.h | 10 +++++----
->  arch/x86/kvm/vmx/nested.c  | 44 ++++++++++++++++++++++----------------
->  2 files changed, 31 insertions(+), 23 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/vmx.h b/arch/x86/include/asm/vmx.h
-> index 5e090d1f03f8..cd7de4b401fe 100644
-> --- a/arch/x86/include/asm/vmx.h
-> +++ b/arch/x86/include/asm/vmx.h
-> @@ -527,10 +527,12 @@ struct vmx_msr_entry {
->  /*
->   * Exit Qualifications for entry failure during or after loading guest state
->   */
-> -#define ENTRY_FAIL_DEFAULT		0
-> -#define ENTRY_FAIL_PDPTE		2
-> -#define ENTRY_FAIL_NMI			3
-> -#define ENTRY_FAIL_VMCS_LINK_PTR	4
-> +enum vm_entry_failure_code {
-> +	ENTRY_FAIL_DEFAULT		= 0,
-> +	ENTRY_FAIL_PDPTE		= 2,
-> +	ENTRY_FAIL_NMI			= 3,
-> +	ENTRY_FAIL_VMCS_LINK_PTR	= 4,
-> +};
->  
->  /*
->   * Exit Qualifications for EPT Violations
-> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> index 2c36f3f53108..dc00d1742480 100644
-> --- a/arch/x86/kvm/vmx/nested.c
-> +++ b/arch/x86/kvm/vmx/nested.c
-> @@ -922,6 +922,7 @@ static u32 nested_vmx_load_msr(struct kvm_vcpu *vcpu, u64 gpa, u32 count)
->  	}
->  	return 0;
->  fail:
-> +	/* Note, max_msr_list_size is at most 4096, i.e. this can't wrap. */
->  	return i + 1;
->  }
->  
-> @@ -1117,7 +1118,7 @@ static bool nested_vmx_transition_mmu_sync(struct kvm_vcpu *vcpu)
->   * @entry_failure_code.
->   */
->  static int nested_vmx_load_cr3(struct kvm_vcpu *vcpu, unsigned long cr3, bool nested_ept,
-> -			       u32 *entry_failure_code)
-> +			       enum vm_entry_failure_code *entry_failure_code)
->  {
->  	if (cr3 != kvm_read_cr3(vcpu) || (!nested_ept && pdptrs_changed(vcpu))) {
->  		if (CC(!nested_cr3_valid(vcpu, cr3))) {
-> @@ -2470,7 +2471,7 @@ static void prepare_vmcs02_rare(struct vcpu_vmx *vmx, struct vmcs12 *vmcs12)
->   * is assigned to entry_failure_code on failure.
->   */
->  static int prepare_vmcs02(struct kvm_vcpu *vcpu, struct vmcs12 *vmcs12,
-> -			  u32 *entry_failure_code)
-> +			  enum vm_entry_failure_code *entry_failure_code)
->  {
->  	struct vcpu_vmx *vmx = to_vmx(vcpu);
->  	struct hv_enlightened_vmcs *hv_evmcs = vmx->nested.hv_evmcs;
-> @@ -2930,11 +2931,11 @@ static int nested_check_guest_non_reg_state(struct vmcs12 *vmcs12)
->  
->  static int nested_vmx_check_guest_state(struct kvm_vcpu *vcpu,
->  					struct vmcs12 *vmcs12,
-> -					u32 *exit_qual)
-> +					enum vm_entry_failure_code *entry_failure_code)
->  {
->  	bool ia32e;
->  
-> -	*exit_qual = ENTRY_FAIL_DEFAULT;
-> +	*entry_failure_code = ENTRY_FAIL_DEFAULT;
->  
->  	if (CC(!nested_guest_cr0_valid(vcpu, vmcs12->guest_cr0)) ||
->  	    CC(!nested_guest_cr4_valid(vcpu, vmcs12->guest_cr4)))
-> @@ -2949,7 +2950,7 @@ static int nested_vmx_check_guest_state(struct kvm_vcpu *vcpu,
->  		return -EINVAL;
->  
->  	if (nested_vmx_check_vmcs_link_ptr(vcpu, vmcs12)) {
-> -		*exit_qual = ENTRY_FAIL_VMCS_LINK_PTR;
-> +		*entry_failure_code = ENTRY_FAIL_VMCS_LINK_PTR;
->  		return -EINVAL;
->  	}
->  
-> @@ -3241,9 +3242,9 @@ enum nvmx_vmentry_status nested_vmx_enter_non_root_mode(struct kvm_vcpu *vcpu,
->  {
->  	struct vcpu_vmx *vmx = to_vmx(vcpu);
->  	struct vmcs12 *vmcs12 = get_vmcs12(vcpu);
-> +	enum vm_entry_failure_code entry_failure_code;
->  	bool evaluate_pending_interrupts;
-> -	u32 exit_reason = EXIT_REASON_INVALID_STATE;
-> -	u32 exit_qual;
-> +	u32 exit_reason, failed_index;
->  
->  	if (kvm_check_request(KVM_REQ_TLB_FLUSH_CURRENT, vcpu))
->  		kvm_vcpu_flush_tlb_current(vcpu);
-> @@ -3291,24 +3292,30 @@ enum nvmx_vmentry_status nested_vmx_enter_non_root_mode(struct kvm_vcpu *vcpu,
->  			return NVMX_VMENTRY_VMFAIL;
->  		}
->  
-> -		if (nested_vmx_check_guest_state(vcpu, vmcs12, &exit_qual))
-> +		if (nested_vmx_check_guest_state(vcpu, vmcs12,
-> +						 &entry_failure_code)) {
-> +			exit_reason = EXIT_REASON_INVALID_STATE;
-> +			vmcs12->exit_qualification = entry_failure_code;
->  			goto vmentry_fail_vmexit;
-> +		}
->  	}
->  
->  	enter_guest_mode(vcpu);
->  	if (vmcs12->cpu_based_vm_exec_control & CPU_BASED_USE_TSC_OFFSETTING)
->  		vcpu->arch.tsc_offset += vmcs12->tsc_offset;
->  
-> -	if (prepare_vmcs02(vcpu, vmcs12, &exit_qual))
-> +	if (prepare_vmcs02(vcpu, vmcs12, &entry_failure_code))
->  		goto vmentry_fail_vmexit_guest_mode;
->  
->  	if (from_vmentry) {
-> -		exit_reason = EXIT_REASON_MSR_LOAD_FAIL;
-> -		exit_qual = nested_vmx_load_msr(vcpu,
-> -						vmcs12->vm_entry_msr_load_addr,
-> -						vmcs12->vm_entry_msr_load_count);
-> -		if (exit_qual)
-> +		failed_index = nested_vmx_load_msr(vcpu,
-> +						   vmcs12->vm_entry_msr_load_addr,
-> +						   vmcs12->vm_entry_msr_load_count);
-> +		if (failed_index) {
-> +			exit_reason = EXIT_REASON_MSR_LOAD_FAIL;
-> +			vmcs12->exit_qualification = failed_index;
->  			goto vmentry_fail_vmexit_guest_mode;
-> +		}
->  	} else {
->  		/*
->  		 * The MMU is not initialized to point at the right entities yet and
-> @@ -3372,7 +3379,6 @@ enum nvmx_vmentry_status nested_vmx_enter_non_root_mode(struct kvm_vcpu *vcpu,
->  
->  	load_vmcs12_host_state(vcpu, vmcs12);
->  	vmcs12->vm_exit_reason = exit_reason | VMX_EXIT_REASONS_FAILED_VMENTRY;
-> -	vmcs12->exit_qualification = exit_qual;
->  	if (enable_shadow_vmcs || vmx->nested.hv_evmcs)
->  		vmx->nested.need_vmcs12_to_shadow_sync = true;
->  	return NVMX_VMENTRY_VMEXIT;
-> @@ -4066,8 +4072,8 @@ static void prepare_vmcs12(struct kvm_vcpu *vcpu, struct vmcs12 *vmcs12,
->  static void load_vmcs12_host_state(struct kvm_vcpu *vcpu,
->  				   struct vmcs12 *vmcs12)
->  {
-> +	enum vm_entry_failure_code ignored;
->  	struct kvm_segment seg;
-> -	u32 entry_failure_code;
->  
->  	if (vmcs12->vm_exit_controls & VM_EXIT_LOAD_IA32_EFER)
->  		vcpu->arch.efer = vmcs12->host_ia32_efer;
-> @@ -4102,7 +4108,7 @@ static void load_vmcs12_host_state(struct kvm_vcpu *vcpu,
->  	 * Only PDPTE load can fail as the value of cr3 was checked on entry and
->  	 * couldn't have changed.
->  	 */
-> -	if (nested_vmx_load_cr3(vcpu, vmcs12->host_cr3, false, &entry_failure_code))
-> +	if (nested_vmx_load_cr3(vcpu, vmcs12->host_cr3, false, &ignored))
->  		nested_vmx_abort(vcpu, VMX_ABORT_LOAD_HOST_PDPTE_FAIL);
->  
->  	if (!enable_ept)
-> @@ -6002,7 +6008,7 @@ static int vmx_set_nested_state(struct kvm_vcpu *vcpu,
->  {
->  	struct vcpu_vmx *vmx = to_vmx(vcpu);
->  	struct vmcs12 *vmcs12;
-> -	u32 exit_qual;
-> +	enum vm_entry_failure_code ignored;
->  	struct kvm_vmx_nested_state_data __user *user_vmx_nested_state =
->  		&user_kvm_nested_state->data.vmx[0];
->  	int ret;
-> @@ -6143,7 +6149,7 @@ static int vmx_set_nested_state(struct kvm_vcpu *vcpu,
->  
->  	if (nested_vmx_check_controls(vcpu, vmcs12) ||
->  	    nested_vmx_check_host_state(vcpu, vmcs12) ||
-> -	    nested_vmx_check_guest_state(vcpu, vmcs12, &exit_qual))
-> +	    nested_vmx_check_guest_state(vcpu, vmcs12, &ignored))
->  		goto error_guest_mode;
->  
->  	vmx->nested.dirty_vmcs12 = true;
-> 
-
-Queued this one, actually.
-
-Paolo
-
+>   .../bindings/power/supply/bq27xxx.txt         | 56 -----------
+>   .../bindings/power/supply/bq27xxx.yaml        | 95 +++++++++++++++++++
+>   2 files changed, 95 insertions(+), 56 deletions(-)
+>   delete mode 100644 Documentation/devicetree/bindings/power/supply/bq27xxx.txt
+>   create mode 100644 Documentation/devicetree/bindings/power/supply/bq27xxx.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/power/supply/bq27xxx.txt b/Documentation/devicetree/bindings/power/supply/bq27xxx.txt
+> deleted file mode 100644
+> index 4fa8e08df2b6..000000000000
+> --- a/Documentation/devicetree/bindings/power/supply/bq27xxx.txt
+> +++ /dev/null
+> @@ -1,56 +0,0 @@
+> -TI BQ27XXX fuel gauge family
+> -
+> -Required properties:
+> -- compatible: contains one of the following:
+> - * "ti,bq27200" - BQ27200
+> - * "ti,bq27210" - BQ27210
+> - * "ti,bq27500" - deprecated, use revision specific property below
+> - * "ti,bq27510" - deprecated, use revision specific property below
+> - * "ti,bq27520" - deprecated, use revision specific property below
+> - * "ti,bq27500-1" - BQ27500/1
+> - * "ti,bq27510g1" - BQ27510-g1
+> - * "ti,bq27510g2" - BQ27510-g2
+> - * "ti,bq27510g3" - BQ27510-g3
+> - * "ti,bq27520g1" - BQ27520-g1
+> - * "ti,bq27520g2" - BQ27520-g2
+> - * "ti,bq27520g3" - BQ27520-g3
+> - * "ti,bq27520g4" - BQ27520-g4
+> - * "ti,bq27521" - BQ27521
+> - * "ti,bq27530" - BQ27530
+> - * "ti,bq27531" - BQ27531
+> - * "ti,bq27541" - BQ27541
+> - * "ti,bq27542" - BQ27542
+> - * "ti,bq27546" - BQ27546
+> - * "ti,bq27742" - BQ27742
+> - * "ti,bq27545" - BQ27545
+> - * "ti,bq27411" - BQ27411
+> - * "ti,bq27421" - BQ27421
+> - * "ti,bq27425" - BQ27425
+> - * "ti,bq27426" - BQ27426
+> - * "ti,bq27441" - BQ27441
+> - * "ti,bq27621" - BQ27621
+> -- reg: integer, I2C address of the fuel gauge.
+> -
+> -Optional properties:
+> -- monitored-battery: phandle of battery characteristics node
+> -    The fuel gauge uses the following battery properties:
+> -    + energy-full-design-microwatt-hours
+> -    + charge-full-design-microamp-hours
+> -    + voltage-min-design-microvolt
+> -  Both or neither of the *-full-design-*-hours properties must be set.
+> -  See Documentation/devicetree/bindings/power/supply/battery.txt
+> -
+> -Example:
+> -
+> -	bat: battery {
+> -		compatible = "simple-battery";
+> -		voltage-min-design-microvolt = <3200000>;
+> -		energy-full-design-microwatt-hours = <5290000>;
+> -		charge-full-design-microamp-hours = <1430000>;
+> -	};
+> -
+> -	bq27510g3: fuel-gauge@55 {
+> -		compatible = "ti,bq27510g3";
+> -		reg = <0x55>;
+> -		monitored-battery = <&bat>;
+> -	};
+> diff --git a/Documentation/devicetree/bindings/power/supply/bq27xxx.yaml b/Documentation/devicetree/bindings/power/supply/bq27xxx.yaml
+> new file mode 100644
+> index 000000000000..6c53ee849004
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/power/supply/bq27xxx.yaml
+> @@ -0,0 +1,95 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (C) 2020 Texas Instruments Incorporated
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/power/supply/bq27xxx.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: TI BQ27XXX fuel gauge family
+> +
+> +maintainers:
+> +  - Pali Rohár <pali@kernel.org>
+> +  - Andrew F. Davis" <afd@ti.com>
+> +  - Sebastian Reichel <sre@kernel.org>
+> +
+> +description: |
+> +  Support various Texas Instruments fuel gauge devices that share similar
+> +  register maps and power supply properties
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - ti,bq27200 - BQ27200
+> +      - ti,bq27210 - BQ27210
+> +      - ti,bq27500 - deprecated, use revision specific property below
+> +      - ti,bq27510 - deprecated, use revision specific property below
+> +      - ti,bq27520 - deprecated, use revision specific property below
+> +      - ti,bq27500-1 - BQ27500/1
+> +      - ti,bq27510g1 - BQ27510-g1
+> +      - ti,bq27510g2 - BQ27510-g2
+> +      - ti,bq27510g3 - BQ27510-g3
+> +      - ti,bq27520g1 - BQ27520-g1
+> +      - ti,bq27520g2 - BQ27520-g2
+> +      - ti,bq27520g3 - BQ27520-g3
+> +      - ti,bq27520g4 - BQ27520-g4
+> +      - ti,bq27521 - BQ27521
+> +      - ti,bq27530 - BQ27530
+> +      - ti,bq27531 - BQ27531
+> +      - ti,bq27541 - BQ27541
+> +      - ti,bq27542 - BQ27542
+> +      - ti,bq27546 - BQ27546
+> +      - ti,bq27742 - BQ27742
+> +      - ti,bq27545 - BQ27545
+> +      - ti,bq27411 - BQ27411
+> +      - ti,bq27421 - BQ27421
+> +      - ti,bq27425 - BQ27425
+> +      - ti,bq27426 - BQ27426
+> +      - ti,bq27441 - BQ27441
+> +      - ti,bq27621 - BQ27621
+> +
+> +  reg:
+> +    maxItems: 1
+> +    description: integer, I2C address of the fuel gauge.
+> +
+> +  monitored-battery:
+> +    description: phandle of battery characteristics node
+> +
+> +  energy-full-design-microwatt-hours:
+> +    description: |
+> +      See Documentation/devicetree/bindings/power/supply/battery.txt.
+> +      If this property is set then charge-full-design-microamp-hours must be
+> +      set as well.
+> +
+> +  charge-full-design-microamp-hours:
+> +    description: |
+> +      See Documentation/devicetree/bindings/power/supply/battery.txt.
+> +      If this property is set then energy-full-design-microwatt-hours must be
+> +      set as well.
+> +
+> +  voltage-min-design-microvolt:
+> +    description: |
+> +      See Documentation/devicetree/bindings/power/supply/battery.txt.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    i2c0 {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +      bat: battery {
+> +        compatible = "simple-battery";
+> +        voltage-min-design-microvolt = <3200000>;
+> +        energy-full-design-microwatt-hours = <5290000>;
+> +        charge-full-design-microamp-hours = <1430000>;
+> +      };
+> +
+> +      bq27510g3: fuel-gauge@55 {
+> +        compatible = "ti,bq27510g3";
+> +        reg = <0x55>;
+> +        monitored-battery = <&bat>;
+> +      };
+> +    };
