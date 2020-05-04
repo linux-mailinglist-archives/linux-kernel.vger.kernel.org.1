@@ -2,47 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 816D41C4384
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 19:59:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05C891C44FD
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730689AbgEDR7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 13:59:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52166 "EHLO mail.kernel.org"
+        id S1731569AbgEDSDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:03:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730658AbgEDR7E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 13:59:04 -0400
+        id S1731527AbgEDSDl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 14:03:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EFCF020746;
-        Mon,  4 May 2020 17:59:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5073F205ED;
+        Mon,  4 May 2020 18:03:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588615143;
-        bh=/d4LLvuy0JaQAOIVCX8DV7isbzzvmVxxFXjbhAkZVNw=;
+        s=default; t=1588615420;
+        bh=I+23E1nejXXmqMPCcDs70MvMIzAWPNa9nL34YX8ynx4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wHFq3E2xZjeq5Wl8BWtjXL5YVBMjGSS3l86o8KknOa6vQliILifUxA81nCBq0VRCZ
-         mfSlObOgd89aoPSzPho/aIBXV23Kk6icnj/wv5sf6QxgsCMSGWu9BNFDu6JGzzwHPs
-         uPc/ghKnjw+QAP4eD0Za5K87ilXizBRqRFkCHLdI=
+        b=s+Loxc/cB62UPrs8BoF9ayjs1/aiawOUNwuXYGJ11s5vp7mP/ZrOVBWOdMhqf6rBu
+         QAtScmSr93yOd5B6uEtJdkNUz93SrRFoBXDHvclk+2obI89I358/5lify1kSRqpxXT
+         IqUHa6Sq1ILPuL4pMsEszxfEFoktFld9OLjNOAsw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        David Ahern <dsahern@gmail.com>, Jiri Olsa <jolsa@redhat.com>,
-        Kan Liang <kan.liang@intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vince Weaver <vincent.weaver@maine.edu>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: [PATCH 4.4 13/18] perf/x86: Fix uninitialized value usage
-Date:   Mon,  4 May 2020 19:57:11 +0200
-Message-Id: <20200504165444.253471372@linuxfoundation.org>
+        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
+        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>, David Sterba <dsterba@suse.com>
+Subject: [PATCH 5.4 08/57] btrfs: fix transaction leak in btrfs_recover_relocation
+Date:   Mon,  4 May 2020 19:57:12 +0200
+Message-Id: <20200504165457.244140813@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200504165441.533160703@linuxfoundation.org>
-References: <20200504165441.533160703@linuxfoundation.org>
+In-Reply-To: <20200504165456.783676004@linuxfoundation.org>
+References: <20200504165456.783676004@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -52,54 +44,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
 
-commit e01d8718de4170373cd7fbf5cf6f9cb61cebb1e9 upstream.
+commit 1402d17dfd9657be0da8458b2079d03c2d61c86a upstream.
 
-When calling intel_alt_er() with .idx != EXTRA_REG_RSP_* we will not
-initialize alt_idx and then use this uninitialized value to index an
-array.
+btrfs_recover_relocation() invokes btrfs_join_transaction(), which joins
+a btrfs_trans_handle object into transactions and returns a reference of
+it with increased refcount to "trans".
 
-When that is not fatal, it can result in an infinite loop in its
-caller __intel_shared_reg_get_constraints(), with IRQs disabled.
+When btrfs_recover_relocation() returns, "trans" becomes invalid, so the
+refcount should be decreased to keep refcount balanced.
 
-Alternative error modes are random memory corruption due to the
-cpuc->shared_regs->regs[] array overrun, which manifest in either
-get_constraints or put_constraints doing weird stuff.
+The reference counting issue happens in one exception handling path of
+btrfs_recover_relocation(). When read_fs_root() failed, the refcnt
+increased by btrfs_join_transaction() is not decreased, causing a refcnt
+leak.
 
-Only took 6 hours of painful debugging to find this. Neither GCC nor
-Smatch warnings flagged this bug.
+Fix this issue by calling btrfs_end_transaction() on this error path
+when read_fs_root() failed.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: David Ahern <dsahern@gmail.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Kan Liang <kan.liang@intel.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Stephane Eranian <eranian@google.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Vince Weaver <vincent.weaver@maine.edu>
-Fixes: ae3f011fc251 ("perf/x86/intel: Fix SLM MSR_OFFCORE_RSP1 valid_mask")
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Fixes: 79787eaab461 ("btrfs: replace many BUG_ONs with proper error handling")
+CC: stable@vger.kernel.org # 4.4+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kernel/cpu/perf_event_intel.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/btrfs/relocation.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/x86/kernel/cpu/perf_event_intel.c
-+++ b/arch/x86/kernel/cpu/perf_event_intel.c
-@@ -1937,7 +1937,8 @@ intel_bts_constraints(struct perf_event
- 
- static int intel_alt_er(int idx, u64 config)
- {
--	int alt_idx;
-+	int alt_idx = idx;
-+
- 	if (!(x86_pmu.flags & PMU_FL_HAS_RSP_1))
- 		return idx;
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -4605,6 +4605,7 @@ int btrfs_recover_relocation(struct btrf
+ 		if (IS_ERR(fs_root)) {
+ 			err = PTR_ERR(fs_root);
+ 			list_add_tail(&reloc_root->root_list, &reloc_roots);
++			btrfs_end_transaction(trans);
+ 			goto out_unset;
+ 		}
  
 
 
