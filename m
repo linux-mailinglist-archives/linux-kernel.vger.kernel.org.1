@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE7BD1C455B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:15:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3919C1C4442
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731807AbgEDSOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:14:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55878 "EHLO mail.kernel.org"
+        id S1731805AbgEDSFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:05:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730207AbgEDSAv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:00:51 -0400
+        id S1731808AbgEDSFb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 14:05:31 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6B0362073B;
-        Mon,  4 May 2020 18:00:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BBD1020746;
+        Mon,  4 May 2020 18:05:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588615250;
-        bh=dKMRFHf2hWNojyhDPK5A/3u6YvdqEd0+AaKTXiihleA=;
+        s=default; t=1588615531;
+        bh=UimvCBn9psmg95nF9nENjpcecV3G4CRP3EAeJJfvkms=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H/nNGoQrvof1xV5Gssu5VlpxMdVtOs98VjmqZTa1spA3dwxbAzL1e8768lkZ4QRea
-         LIC2Sm626tMmcNM9VhoUUs9tOi/qYu+u3s2DwHcitR/1UgSlOncdXQyIeMWpb+IsTe
-         KgVQvh0HgByTfM+gYyZPbz24/aVp8vr1PP1h+bzY=
+        b=VzkXM6DR1x+tufr4KViqsFPVeINUpiINFjMu4BYTwowm3EjO/Tsr/uhwBEUVu7RxY
+         hr9NgkWK/zudLphgeoCHuOxzGVKEkJwW7LLZ3y/6fjAPb8/pQPn8MbvsIKaN3UdQUs
+         IwKbUHO/HlNXSGdNMUlQ2xjclLvwJFSPXTYlS/Vk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 4.14 07/26] btrfs: fix partial loss of prealloc extent past i_size after fsync
-Date:   Mon,  4 May 2020 19:57:21 +0200
-Message-Id: <20200504165444.168138017@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 5.6 19/73] mmc: sdhci-msm: Enable host capabilities pertains to R1b response
+Date:   Mon,  4 May 2020 19:57:22 +0200
+Message-Id: <20200504165505.334804830@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200504165442.494398840@linuxfoundation.org>
-References: <20200504165442.494398840@linuxfoundation.org>
+In-Reply-To: <20200504165501.781878940@linuxfoundation.org>
+References: <20200504165501.781878940@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,139 +45,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+From: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
 
-commit f135cea30de5f74d5bfb5116682073841fb4af8f upstream.
+commit 9d8cb58691f85cef687512262acb2c7109ee4868 upstream.
 
-When we have an inode with a prealloc extent that starts at an offset
-lower than the i_size and there is another prealloc extent that starts at
-an offset beyond i_size, we can end up losing part of the first prealloc
-extent (the part that starts at i_size) and have an implicit hole if we
-fsync the file and then have a power failure.
+MSM sd host controller is capable of HW busy detection of device busy
+signaling over DAT0 line. And it requires the R1B response for commands
+that have this response associated with them.
 
-Consider the following example with comments explaining how and why it
-happens.
+So set the below two host capabilities for qcom SDHC.
+ - MMC_CAP_WAIT_WHILE_BUSY
+ - MMC_CAP_NEED_RSP_BUSY
 
-  $ mkfs.btrfs -f /dev/sdb
-  $ mount /dev/sdb /mnt
+Recent development of the mmc core in regards to this, revealed this as
+being a potential bug, hence the stable tag.
 
-  # Create our test file with 2 consecutive prealloc extents, each with a
-  # size of 128Kb, and covering the range from 0 to 256Kb, with a file
-  # size of 0.
-  $ xfs_io -f -c "falloc -k 0 128K" /mnt/foo
-  $ xfs_io -c "falloc -k 128K 128K" /mnt/foo
-
-  # Fsync the file to record both extents in the log tree.
-  $ xfs_io -c "fsync" /mnt/foo
-
-  # Now do a redudant extent allocation for the range from 0 to 64Kb.
-  # This will merely increase the file size from 0 to 64Kb. Instead we
-  # could also do a truncate to set the file size to 64Kb.
-  $ xfs_io -c "falloc 0 64K" /mnt/foo
-
-  # Fsync the file, so we update the inode item in the log tree with the
-  # new file size (64Kb). This also ends up setting the number of bytes
-  # for the first prealloc extent to 64Kb. This is done by the truncation
-  # at btrfs_log_prealloc_extents().
-  # This means that if a power failure happens after this, a write into
-  # the file range 64Kb to 128Kb will not use the prealloc extent and
-  # will result in allocation of a new extent.
-  $ xfs_io -c "fsync" /mnt/foo
-
-  # Now set the file size to 256K with a truncate and then fsync the file.
-  # Since no changes happened to the extents, the fsync only updates the
-  # i_size in the inode item at the log tree. This results in an implicit
-  # hole for the file range from 64Kb to 128Kb, something which fsck will
-  # complain when not using the NO_HOLES feature if we replay the log
-  # after a power failure.
-  $ xfs_io -c "truncate 256K" -c "fsync" /mnt/foo
-
-So instead of always truncating the log to the inode's current i_size at
-btrfs_log_prealloc_extents(), check first if there's a prealloc extent
-that starts at an offset lower than the i_size and with a length that
-crosses the i_size - if there is one, just make sure we truncate to a
-size that corresponds to the end offset of that prealloc extent, so
-that we don't lose the part of that extent that starts at i_size if a
-power failure happens.
-
-A test case for fstests follows soon.
-
-Fixes: 31d11b83b96f ("Btrfs: fix duplicate extents after fsync of file with prealloc extents")
-CC: stable@vger.kernel.org # 4.14+
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Cc: <stable@vger.kernel.org> # v4.19+
+Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Link: https://lore.kernel.org/r/1587363626-20413-2-git-send-email-vbadigan@codeaurora.org
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/btrfs/tree-log.c |   43 ++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 40 insertions(+), 3 deletions(-)
+ drivers/mmc/host/sdhci-msm.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -4155,6 +4155,9 @@ static int btrfs_log_prealloc_extents(st
- 	const u64 ino = btrfs_ino(inode);
- 	struct btrfs_path *dst_path = NULL;
- 	bool dropped_extents = false;
-+	u64 truncate_offset = i_size;
-+	struct extent_buffer *leaf;
-+	int slot;
- 	int ins_nr = 0;
- 	int start_slot;
- 	int ret;
-@@ -4169,9 +4172,43 @@ static int btrfs_log_prealloc_extents(st
- 	if (ret < 0)
- 		goto out;
+--- a/drivers/mmc/host/sdhci-msm.c
++++ b/drivers/mmc/host/sdhci-msm.c
+@@ -2068,6 +2068,8 @@ static int sdhci_msm_probe(struct platfo
+ 		goto clk_disable;
+ 	}
  
-+	/*
-+	 * We must check if there is a prealloc extent that starts before the
-+	 * i_size and crosses the i_size boundary. This is to ensure later we
-+	 * truncate down to the end of that extent and not to the i_size, as
-+	 * otherwise we end up losing part of the prealloc extent after a log
-+	 * replay and with an implicit hole if there is another prealloc extent
-+	 * that starts at an offset beyond i_size.
-+	 */
-+	ret = btrfs_previous_item(root, path, ino, BTRFS_EXTENT_DATA_KEY);
-+	if (ret < 0)
-+		goto out;
++	msm_host->mmc->caps |= MMC_CAP_WAIT_WHILE_BUSY | MMC_CAP_NEED_RSP_BUSY;
 +
-+	if (ret == 0) {
-+		struct btrfs_file_extent_item *ei;
-+
-+		leaf = path->nodes[0];
-+		slot = path->slots[0];
-+		ei = btrfs_item_ptr(leaf, slot, struct btrfs_file_extent_item);
-+
-+		if (btrfs_file_extent_type(leaf, ei) ==
-+		    BTRFS_FILE_EXTENT_PREALLOC) {
-+			u64 extent_end;
-+
-+			btrfs_item_key_to_cpu(leaf, &key, slot);
-+			extent_end = key.offset +
-+				btrfs_file_extent_num_bytes(leaf, ei);
-+
-+			if (extent_end > i_size)
-+				truncate_offset = extent_end;
-+		}
-+	} else {
-+		ret = 0;
-+	}
-+
- 	while (true) {
--		struct extent_buffer *leaf = path->nodes[0];
--		int slot = path->slots[0];
-+		leaf = path->nodes[0];
-+		slot = path->slots[0];
- 
- 		if (slot >= btrfs_header_nritems(leaf)) {
- 			if (ins_nr > 0) {
-@@ -4209,7 +4246,7 @@ static int btrfs_log_prealloc_extents(st
- 				ret = btrfs_truncate_inode_items(trans,
- 							 root->log_root,
- 							 &inode->vfs_inode,
--							 i_size,
-+							 truncate_offset,
- 							 BTRFS_EXTENT_DATA_KEY);
- 			} while (ret == -EAGAIN);
- 			if (ret)
+ 	pm_runtime_get_noresume(&pdev->dev);
+ 	pm_runtime_set_active(&pdev->dev);
+ 	pm_runtime_enable(&pdev->dev);
 
 
