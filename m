@@ -2,220 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB8621C465B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:51:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54ED91C4668
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:52:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726924AbgEDSun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:50:43 -0400
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:7667 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727953AbgEDSuY (ORCPT
+        id S1726514AbgEDSwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:52:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725981AbgEDSwS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:50:24 -0400
-Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 04 May 2020 11:50:20 -0700
-Received: from gurus-linux.qualcomm.com ([10.46.162.81])
-  by ironmsg05-sd.qualcomm.com with ESMTP; 04 May 2020 11:50:20 -0700
-Received: by gurus-linux.qualcomm.com (Postfix, from userid 383780)
-        id 913B8DBF; Mon,  4 May 2020 11:50:20 -0700 (PDT)
-From:   Guru Das Srinagesh <gurus@codeaurora.org>
-To:     linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
-        David Collins <collinsd@codeaurora.org>,
-        linux-kernel@vger.kernel.org, Joe Perches <joe@perches.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Guru Das Srinagesh <gurus@codeaurora.org>
-Subject: [RESEND PATCH v14 11/11] pwm: core: Convert period and duty cycle to u64
-Date:   Mon,  4 May 2020 11:50:17 -0700
-Message-Id: <cfffc119f1a6364593b80a3ed09e326ae6d235e8.1588616856.git.gurus@codeaurora.org>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <cover.1588616856.git.gurus@codeaurora.org>
-References: <cover.1588616856.git.gurus@codeaurora.org>
-In-Reply-To: <cover.1588616856.git.gurus@codeaurora.org>
-References: <cover.1588616856.git.gurus@codeaurora.org>
+        Mon, 4 May 2020 14:52:18 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D036BC061A0F
+        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 11:52:16 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id fb4so183418qvb.7
+        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 11:52:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=adjJOFzCV27UBowg1lrxThAfdTSRhfjEwd7jUgPNu98=;
+        b=YZRAV0AyEHZEn9/fI9ik+VuoPT/P7uH/RwqNo+WZMyDbXXmTmjuqh/wcgTIguVa+c1
+         bIFVoETAloA5UQjrY1t/Yfc0FTqr3a+nbjEYziaQJyOSHpiiJ4aBZk/0mJdq4y4KCR33
+         shmtfXvKf4ENockWIQs5WA//OxVlh4sPPB2HxV7/sVl9xJIVVWA8YNixo592fT92Cfas
+         hJ9tCF+5zvqTJZqhTzml8lxtP7YqXdJwVZTk++9QxERvZuRmrrwDhT3PTOieWVi0aBgv
+         YflogUvb3JD5DwtGmWyU+2rom/P4nqRfeTbS6gQDm5gdBF2Yh0oJlHNSGV+iDTMyy1O2
+         Fv1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=adjJOFzCV27UBowg1lrxThAfdTSRhfjEwd7jUgPNu98=;
+        b=ND4yW2ZyX9pg5EXumj33+50lUUYrgU1bPe03RVxPWsOHqFLAYT8EEYxieicnCo7N6R
+         as/bw4M6pXNHPC24lcpYS3z2aLmRjy+W3pQRc41L0Ty2Gb2Ej2Cyk80nj+XR/+6IFbru
+         26b9kXlEq5NQIuPwnCpUjs+Rz8oxtHQsGAPJ/RdRUFJrmF1jO+j+3xS3NIwTNWAmX7d+
+         +KbMwm/lxrl5AWulQCSfTHoBZuasBHQPTchGP2fSPIvYIIboJiJ6VNZrm8TxGyJDeUJ3
+         dJGN0vRmKMkcUTswCLwaNIpSSPCOMEFJwPjI3G9AMlyfFm2nhKe5E4cNELsuNW3BMa0r
+         bqXg==
+X-Gm-Message-State: AGi0PuZRLZYTPnyyYhulSKYsFWHkRyEe++qUqEPT5CD9gB7mIzmhc64j
+        8WFtxxJdc0LdHW/ua3kvmT70Bg/O2vI=
+X-Google-Smtp-Source: APiQypKM1fi3EYDT2GhyOd/rpGfZXDtFNFVhvL1pwgUmcfW72iElR9ef8v/6QtcP0NMRef0SzGen+w==
+X-Received: by 2002:a05:6214:1386:: with SMTP id g6mr519872qvz.105.1588618335941;
+        Mon, 04 May 2020 11:52:15 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id p75sm3892500qke.121.2020.05.04.11.52.15
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 04 May 2020 11:52:15 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jVgCM-00027B-RF; Mon, 04 May 2020 15:52:14 -0300
+Date:   Mon, 4 May 2020 15:52:14 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "Denis V. Lunev" <den@openvz.org>
+Cc:     Konstantin Khorenko <khorenko@virtuozzo.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] i40iw: remove bogus call to
+ netdev_master_upper_dev_get
+Message-ID: <20200504185214.GA8086@ziepe.ca>
+References: <20200428131511.11049-1-den@openvz.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200428131511.11049-1-den@openvz.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Because period and duty cycle are defined as ints with units of
-nanoseconds, the maximum time duration that can be set is limited to
-~2.147 seconds. Change their definitions to u64 in the structs of the
-PWM framework so that higher durations may be set.
+On Tue, Apr 28, 2020 at 04:15:11PM +0300, Denis V. Lunev wrote:
+> Local variable netdev is not used in these calls.
+> 
+> It should be noted, that this change is required to work in bonded mode.
+> In the other case we would get the following assert:
+>  "RTNL: assertion failed at net/core/dev.c (5665)"
+> with the calltrace as follows:
+> 	dump_stack+0x19/0x1b
+> 	netdev_master_upper_dev_get+0x61/0x70
+> 	i40iw_addr_resolve_neigh+0x1e8/0x220
+> 	i40iw_make_cm_node+0x296/0x700
+> 	? i40iw_find_listener.isra.10+0xcc/0x110
+> 	i40iw_receive_ilq+0x3d4/0x810
+> 	i40iw_puda_poll_completion+0x341/0x420
+> 	i40iw_process_ceq+0xa5/0x280
+> 	i40iw_ceq_dpc+0x1e/0x40
+> 	tasklet_action+0x83/0x140
+> 	__do_softirq+0x125/0x2bb
+> 	call_softirq+0x1c/0x30
+> 	do_softirq+0x65/0xa0
+> 	irq_exit+0x105/0x110
+> 	do_IRQ+0x56/0xf0
+> 	common_interrupt+0x16a/0x16a
+> 	? cpuidle_enter_state+0x57/0xd0
+> 	cpuidle_idle_call+0xde/0x230
+> 	arch_cpu_idle+0xe/0xc0
+> 	cpu_startup_entry+0x14a/0x1e0
+> 	start_secondary+0x1f7/0x270
+> 	start_cpu+0x5/0x14
+> 
+> Signed-off-by: Denis V. Lunev <den@openvz.org>
+> CC: Konstantin Khorenko <khorenko@virtuozzo.com>
+> CC: Faisal Latif <faisal.latif@intel.com>
+> CC: Shiraz Saleem <shiraz.saleem@intel.com>
+> CC: Doug Ledford <dledford@redhat.com>
+> CC: Jason Gunthorpe <jgg@ziepe.ca>
+> CC: linux-rdma@vger.kernel.org
+> CC: linux-kernel@vger.kernel.org
+> Acked-by: Shiraz Saleem <shiraz.saleem@intel.com>
+>  drivers/infiniband/hw/i40iw/i40iw_cm.c | 8 --------
+>  1 file changed, 8 deletions(-)
 
-Also use the right format specifiers in debug prints in both core.c as
-well as pwm-stm32-lp.c.
+Applied to for-rc, thanks
 
-Reported-by: kbuild test robot <lkp@intel.com>
-Signed-off-by: Guru Das Srinagesh <gurus@codeaurora.org>
----
- drivers/pwm/core.c         | 14 +++++++-------
- drivers/pwm/pwm-stm32-lp.c |  2 +-
- drivers/pwm/sysfs.c        |  8 ++++----
- include/linux/pwm.h        | 12 ++++++------
- 4 files changed, 18 insertions(+), 18 deletions(-)
-
-diff --git a/drivers/pwm/core.c b/drivers/pwm/core.c
-index bca0496..a2ff6dd 100644
---- a/drivers/pwm/core.c
-+++ b/drivers/pwm/core.c
-@@ -510,12 +510,12 @@ static void pwm_apply_state_debug(struct pwm_device *pwm,
- 	    last->period > s2.period &&
- 	    last->period <= state->period)
- 		dev_warn(chip->dev,
--			 ".apply didn't pick the best available period (requested: %u, applied: %u, possible: %u)\n",
-+			 ".apply didn't pick the best available period (requested: %llu, applied: %llu, possible: %llu)\n",
- 			 state->period, s2.period, last->period);
- 
- 	if (state->enabled && state->period < s2.period)
- 		dev_warn(chip->dev,
--			 ".apply is supposed to round down period (requested: %u, applied: %u)\n",
-+			 ".apply is supposed to round down period (requested: %llu, applied: %llu)\n",
- 			 state->period, s2.period);
- 
- 	if (state->enabled &&
-@@ -524,14 +524,14 @@ static void pwm_apply_state_debug(struct pwm_device *pwm,
- 	    last->duty_cycle > s2.duty_cycle &&
- 	    last->duty_cycle <= state->duty_cycle)
- 		dev_warn(chip->dev,
--			 ".apply didn't pick the best available duty cycle (requested: %u/%u, applied: %u/%u, possible: %u/%u)\n",
-+			 ".apply didn't pick the best available duty cycle (requested: %llu/%llu, applied: %llu/%llu, possible: %llu/%llu)\n",
- 			 state->duty_cycle, state->period,
- 			 s2.duty_cycle, s2.period,
- 			 last->duty_cycle, last->period);
- 
- 	if (state->enabled && state->duty_cycle < s2.duty_cycle)
- 		dev_warn(chip->dev,
--			 ".apply is supposed to round down duty_cycle (requested: %u/%u, applied: %u/%u)\n",
-+			 ".apply is supposed to round down duty_cycle (requested: %llu/%llu, applied: %llu/%llu)\n",
- 			 state->duty_cycle, state->period,
- 			 s2.duty_cycle, s2.period);
- 
-@@ -558,7 +558,7 @@ static void pwm_apply_state_debug(struct pwm_device *pwm,
- 	    (s1.enabled && s1.period != last->period) ||
- 	    (s1.enabled && s1.duty_cycle != last->duty_cycle)) {
- 		dev_err(chip->dev,
--			".apply is not idempotent (ena=%d pol=%d %u/%u) -> (ena=%d pol=%d %u/%u)\n",
-+			".apply is not idempotent (ena=%d pol=%d %llu/%llu) -> (ena=%d pol=%d %llu/%llu)\n",
- 			s1.enabled, s1.polarity, s1.duty_cycle, s1.period,
- 			last->enabled, last->polarity, last->duty_cycle,
- 			last->period);
-@@ -1284,8 +1284,8 @@ static void pwm_dbg_show(struct pwm_chip *chip, struct seq_file *s)
- 		if (state.enabled)
- 			seq_puts(s, " enabled");
- 
--		seq_printf(s, " period: %u ns", state.period);
--		seq_printf(s, " duty: %u ns", state.duty_cycle);
-+		seq_printf(s, " period: %llu ns", state.period);
-+		seq_printf(s, " duty: %llu ns", state.duty_cycle);
- 		seq_printf(s, " polarity: %s",
- 			   state.polarity ? "inverse" : "normal");
- 
-diff --git a/drivers/pwm/pwm-stm32-lp.c b/drivers/pwm/pwm-stm32-lp.c
-index 67fca62..134c146 100644
---- a/drivers/pwm/pwm-stm32-lp.c
-+++ b/drivers/pwm/pwm-stm32-lp.c
-@@ -61,7 +61,7 @@ static int stm32_pwm_lp_apply(struct pwm_chip *chip, struct pwm_device *pwm,
- 	do_div(div, NSEC_PER_SEC);
- 	if (!div) {
- 		/* Clock is too slow to achieve requested period. */
--		dev_dbg(priv->chip.dev, "Can't reach %u ns\n",	state->period);
-+		dev_dbg(priv->chip.dev, "Can't reach %llu ns\n", state->period);
- 		return -EINVAL;
- 	}
- 
-diff --git a/drivers/pwm/sysfs.c b/drivers/pwm/sysfs.c
-index 2389b86..449dbc0 100644
---- a/drivers/pwm/sysfs.c
-+++ b/drivers/pwm/sysfs.c
-@@ -42,7 +42,7 @@ static ssize_t period_show(struct device *child,
- 
- 	pwm_get_state(pwm, &state);
- 
--	return sprintf(buf, "%u\n", state.period);
-+	return sprintf(buf, "%llu\n", state.period);
- }
- 
- static ssize_t period_store(struct device *child,
-@@ -52,10 +52,10 @@ static ssize_t period_store(struct device *child,
- 	struct pwm_export *export = child_to_pwm_export(child);
- 	struct pwm_device *pwm = export->pwm;
- 	struct pwm_state state;
--	unsigned int val;
-+	u64 val;
- 	int ret;
- 
--	ret = kstrtouint(buf, 0, &val);
-+	ret = kstrtou64(buf, 0, &val);
- 	if (ret)
- 		return ret;
- 
-@@ -77,7 +77,7 @@ static ssize_t duty_cycle_show(struct device *child,
- 
- 	pwm_get_state(pwm, &state);
- 
--	return sprintf(buf, "%u\n", state.duty_cycle);
-+	return sprintf(buf, "%llu\n", state.duty_cycle);
- }
- 
- static ssize_t duty_cycle_store(struct device *child,
-diff --git a/include/linux/pwm.h b/include/linux/pwm.h
-index 2635b2a..a13ff38 100644
---- a/include/linux/pwm.h
-+++ b/include/linux/pwm.h
-@@ -39,7 +39,7 @@ enum pwm_polarity {
-  * current PWM hardware state.
-  */
- struct pwm_args {
--	unsigned int period;
-+	u64 period;
- 	enum pwm_polarity polarity;
- };
- 
-@@ -56,8 +56,8 @@ enum {
-  * @enabled: PWM enabled status
-  */
- struct pwm_state {
--	unsigned int period;
--	unsigned int duty_cycle;
-+	u64 period;
-+	u64 duty_cycle;
- 	enum pwm_polarity polarity;
- 	bool enabled;
- };
-@@ -107,13 +107,13 @@ static inline bool pwm_is_enabled(const struct pwm_device *pwm)
- 	return state.enabled;
- }
- 
--static inline void pwm_set_period(struct pwm_device *pwm, unsigned int period)
-+static inline void pwm_set_period(struct pwm_device *pwm, u64 period)
- {
- 	if (pwm)
- 		pwm->state.period = period;
- }
- 
--static inline unsigned int pwm_get_period(const struct pwm_device *pwm)
-+static inline u64 pwm_get_period(const struct pwm_device *pwm)
- {
- 	struct pwm_state state;
- 
-@@ -128,7 +128,7 @@ static inline void pwm_set_duty_cycle(struct pwm_device *pwm, unsigned int duty)
- 		pwm->state.duty_cycle = duty;
- }
- 
--static inline unsigned int pwm_get_duty_cycle(const struct pwm_device *pwm)
-+static inline u64 pwm_get_duty_cycle(const struct pwm_device *pwm)
- {
- 	struct pwm_state state;
- 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+JAson
