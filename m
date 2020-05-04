@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94DF11C4445
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:06:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B5BB1C43C3
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:01:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731826AbgEDSFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:05:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35576 "EHLO mail.kernel.org"
+        id S1731155AbgEDSBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:01:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731030AbgEDSFi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:05:38 -0400
+        id S1731137AbgEDSBV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 14:01:21 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D0820206B8;
-        Mon,  4 May 2020 18:05:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6AFF120707;
+        Mon,  4 May 2020 18:01:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588615538;
-        bh=m0NOQkhaDLLWHMFRUMofd+9PQkdwLZpGR0kbkLzWY9M=;
+        s=default; t=1588615279;
+        bh=fwR0V1cq/YSDhhql/2sy5/+ZtJJnxpF1Wz065Hb34Jg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WHBAKvjO/UgIvvlYFrGwB7MjGc974k+e0PKcuaN1bhLlSP3A2Oll2OsHpICazB61h
-         zwtQtFWfXKS72Y62pNn+kNKUSAIdJmFy4V/CSPQJz0RhpE6N7I5cZpN0nJnwofNmre
-         +NspUoW5oaD4JFbFt+LeO4u9eXJmKfsriwtlwR0g=
+        b=UMvF3Z8+uD4ciKawNHd6Z3igzFj01+8tBuKFbt8vTKXiGvj4DypuKfR2D5B8WaNP1
+         zNNTYQO7xDaRVSyB8Otde/hgMBQBNq7YM09Ih4CCUofZ1rqkqtnSXyfXKi4Imm8pxY
+         tD/Ied6C7mrEhNkzG5AWKhzJtzpCrjkg3UQVbPJo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 5.6 21/73] mmc: meson-mx-sdio: remove the broken ->card_busy() op
-Date:   Mon,  4 May 2020 19:57:24 +0200
-Message-Id: <20200504165505.612443779@linuxfoundation.org>
+        stable@vger.kernel.org, Sunwook Eom <speed.eom@samsung.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 4.19 12/37] dm verity fec: fix hash block number in verity_fec_decode
+Date:   Mon,  4 May 2020 19:57:25 +0200
+Message-Id: <20200504165449.793743944@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200504165501.781878940@linuxfoundation.org>
-References: <20200504165501.781878940@linuxfoundation.org>
+In-Reply-To: <20200504165448.264746645@linuxfoundation.org>
+References: <20200504165448.264746645@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,67 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+From: Sunwook Eom <speed.eom@samsung.com>
 
-commit ddca1092c4324c89cf692b5efe655aa251864b51 upstream.
+commit ad4e80a639fc61d5ecebb03caa5cdbfb91fcebfc upstream.
 
-The recent commit 0d84c3e6a5b2 ("mmc: core: Convert to
-mmc_poll_for_busy() for erase/trim/discard") makes use of the
-->card_busy() op for SD cards. This uncovered that the ->card_busy() op
-in the Meson SDIO driver was never working right:
-while polling the busy status with ->card_busy()
-meson_mx_mmc_card_busy() reads only one of the two MESON_MX_SDIO_IRQC
-register values 0x1f001f10 or 0x1f003f10. This translates to "three out
-of four DAT lines are HIGH" and "all four DAT lines are HIGH", which
-is interpreted as "the card is busy".
+The error correction data is computed as if data and hash blocks
+were concatenated. But hash block number starts from v->hash_start.
+So, we have to calculate hash block number based on that.
 
-It turns out that no situation can be observed where all four DAT lines
-are LOW, meaning the card is not busy anymore. Upon further research the
-3.10 vendor driver for this controller does not implement the
-->card_busy() op.
-
-Remove the ->card_busy() op from the meson-mx-sdio driver since it is
-not working. At the time of writing this patch it is not clear what's
-needed to make the ->card_busy() implementation work with this specific
-controller hardware. For all use-cases which have previously worked the
-MMC_CAP_WAIT_WHILE_BUSY flag is now taking over, even if we don't have
-a ->card_busy() op anymore.
-
-Fixes: ed80a13bb4c4c9 ("mmc: meson-mx-sdio: Add a driver for the Amlogic Meson8 and Meson8b SoCs")
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Fixes: a739ff3f543af ("dm verity: add support for forward error correction")
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200416183513.993763-3-martin.blumenstingl@googlemail.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Sunwook Eom <speed.eom@samsung.com>
+Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mmc/host/meson-mx-sdio.c |    9 ---------
- 1 file changed, 9 deletions(-)
+ drivers/md/dm-verity-fec.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/mmc/host/meson-mx-sdio.c
-+++ b/drivers/mmc/host/meson-mx-sdio.c
-@@ -357,14 +357,6 @@ static void meson_mx_mmc_request(struct
- 		meson_mx_mmc_start_cmd(mmc, mrq->cmd);
- }
+--- a/drivers/md/dm-verity-fec.c
++++ b/drivers/md/dm-verity-fec.c
+@@ -436,7 +436,7 @@ int verity_fec_decode(struct dm_verity *
+ 	fio->level++;
  
--static int meson_mx_mmc_card_busy(struct mmc_host *mmc)
--{
--	struct meson_mx_mmc_host *host = mmc_priv(mmc);
--	u32 irqc = readl(host->base + MESON_MX_SDIO_IRQC);
--
--	return !!(irqc & MESON_MX_SDIO_IRQC_FORCE_DATA_DAT_MASK);
--}
--
- static void meson_mx_mmc_read_response(struct mmc_host *mmc,
- 				       struct mmc_command *cmd)
- {
-@@ -506,7 +498,6 @@ static void meson_mx_mmc_timeout(struct
- static struct mmc_host_ops meson_mx_mmc_ops = {
- 	.request		= meson_mx_mmc_request,
- 	.set_ios		= meson_mx_mmc_set_ios,
--	.card_busy		= meson_mx_mmc_card_busy,
- 	.get_cd			= mmc_gpio_get_cd,
- 	.get_ro			= mmc_gpio_get_ro,
- };
+ 	if (type == DM_VERITY_BLOCK_TYPE_METADATA)
+-		block += v->data_blocks;
++		block = block - v->hash_start + v->data_blocks;
+ 
+ 	/*
+ 	 * For RS(M, N), the continuous FEC data is divided into blocks of N
 
 
