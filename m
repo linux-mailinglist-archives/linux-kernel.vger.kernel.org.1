@@ -2,258 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 856BF1C3D7D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 16:49:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D2841C3D96
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 16:52:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728803AbgEDOtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 10:49:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728353AbgEDOtR (ORCPT
+        id S1728582AbgEDOvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 10:51:44 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:41742 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728430AbgEDOvm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 10:49:17 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87531C061A0F
-        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 07:49:17 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id s20so6849670plp.6
-        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 07:49:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=5lmoQJYoeg3ybSPwplhMkrooqQOGOYA7nU2sY4Dq1pc=;
-        b=R04Fjb4R2zQrBdDiS1rI1lH0gMnWxIPItV5U2BOiCIby5HxxzYV7c9vaEBIuSU6TKc
-         N9yJAqZKcVjZS3dG2Rah6YyW6mKqK9XGAwKP4ZTnARpmIBVYbSR+v9/ffySNScve9KAS
-         fFp6YUwxhiVFrKpnhfNdNztyuV6JtUulx7ImPpPksB5T3uIrbqLIc2QZ0DIaH7vmMYa/
-         mlSuf4zp+Oh+k8sETM+eBqNyneLDT6QlrGT3CmLeedUqmbAq6giRJxV29uKfbeWsbvDB
-         yM6pyiRw2db9pa0Tm3awQzKDxTdw3iafUgw096RzVZ2cKOSKyRo5hi5nclBmgK32UOHY
-         x8EQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=5lmoQJYoeg3ybSPwplhMkrooqQOGOYA7nU2sY4Dq1pc=;
-        b=W8u+RjVSjM/n211Y4YL3Bq1Em4agjqp81rBdZ9oGa5AxWX9/bR9v4MdQLnf0gsfhjp
-         lIkhPN5HEFXqMrvDbJlb7Qi69ATECn19jE/g1/ZDm0K3Uhlyd1Py26JNG3jaI56si+B0
-         sLRe3J/85lkdoJ5xEoaX1uSt1lDb8cVFS/eIY/aLftYmWGvxzzu8SuO0Z81HzZNBrdqP
-         uLPmajaEMWH938GjgfGBzdoVjZtAnjULwGAmJBOEgo1kv+3yyUydJ6i45gb2ZTBVGV6l
-         KUGRm/wQlAgoj1abYvpAdK72UoPRBfTgdp+WvYbRFxoHTolIO870cL/bfPr+wxED+gUw
-         TxYg==
-X-Gm-Message-State: AGi0Pub/cT28XuXllgeyH0/EsPY/krOEXilmeZUaGPN8Mdygd65frxky
-        Bdgmifjw9wRwKoeKD9CWhGo2
-X-Google-Smtp-Source: APiQypJjIapp5XKSell2YBv+inFoZ8mKXrHBT+VFs3IVljbQMp6IsqaBr1+529ONpM1jjcEHWag4sQ==
-X-Received: by 2002:a17:902:fe8e:: with SMTP id x14mr18541862plm.128.1588603756751;
-        Mon, 04 May 2020 07:49:16 -0700 (PDT)
-Received: from Mani-XPS-13-9360 ([2409:4072:41c:f7b5:bdcc:167e:2cd1:efea])
-        by smtp.gmail.com with ESMTPSA id p66sm9009181pfb.65.2020.05.04.07.49.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 04 May 2020 07:49:15 -0700 (PDT)
-Date:   Mon, 4 May 2020 20:19:06 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     davem@davemloft.net
-Cc:     gregkh@linuxfoundation.org, smohanad@codeaurora.org,
-        jhugo@codeaurora.org, kvalo@codeaurora.org,
-        bjorn.andersson@linaro.org, hemantk@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clew@codeaurora.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] net: qrtr: Add MHI transport layer
-Message-ID: <20200504144906.GF3391@Mani-XPS-13-9360>
-References: <20200427075829.9304-1-manivannan.sadhasivam@linaro.org>
- <20200427075829.9304-3-manivannan.sadhasivam@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200427075829.9304-3-manivannan.sadhasivam@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        Mon, 4 May 2020 10:51:42 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 044ElrZR117068;
+        Mon, 4 May 2020 14:51:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2020-01-29;
+ bh=kAb0uKQlR0Mu5YgZ88ZFRxUKRNMHumU/kWcfRlU4hVA=;
+ b=VwkKvSTnB7Pp0d88IMcqodpJ/j3UU3S+dYxwvdBW6ynq25bKnss4dIsHHQiqdehpEXEE
+ t9ZyeHCNrANhaYziMdCvDz6CHuRaonA8MH5bZyBEmnO86uthwa8swHux2YMj7fwL9pn9
+ ATuewE0By0TAGf3XvFI9ZHyNcz0jmiLrI1TlK6un62WLuLRns1KrjQ/mLwzIW80I5Lyj
+ MTpgSiYHIQZvivRMjWyeMMaFk7eV/fEBC4xsCWyFQtsYp304L4q+ElwCWZaEYyoyRHmz
+ /HFxl31Wror3bjchXf9dv0XjMmt80nvKed8wlgBah6BcBgfkbemBXP1jw+8LwPBXBv2i 9w== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 30s09qyds6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 04 May 2020 14:51:04 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 044ElM0F033808;
+        Mon, 4 May 2020 14:51:03 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 30sjnav30d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 04 May 2020 14:51:03 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 044Ep0uN017233;
+        Mon, 4 May 2020 14:51:00 GMT
+Received: from linux-1.home.com (/10.175.9.166)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 04 May 2020 07:51:00 -0700
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+To:     rkrcmar@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, dave.hansen@linux.intel.com,
+        luto@kernel.org, peterz@infradead.org, x86@kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     pbonzini@redhat.com, konrad.wilk@oracle.com,
+        jan.setjeeilers@oracle.com, liran.alon@oracle.com,
+        junaids@google.com, graf@amazon.de, rppt@linux.vnet.ibm.com,
+        kuzuno@gmail.com, mgross@linux.intel.com,
+        alexandre.chartre@oracle.com
+Subject: [RFC v4][PATCH part-1 0/7] ASI - Part I (ASI Infrastructure and PTI)
+Date:   Mon,  4 May 2020 16:49:32 +0200
+Message-Id: <20200504144939.11318-1-alexandre.chartre@oracle.com>
+X-Mailer: git-send-email 2.18.2
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9610 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 adultscore=0 phishscore=0
+ mlxlogscore=921 bulkscore=0 malwarescore=0 spamscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005040123
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9610 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0
+ lowpriorityscore=0 spamscore=0 adultscore=0 clxscore=1011 suspectscore=0
+ priorityscore=1501 malwarescore=0 mlxlogscore=946 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005040123
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dave,
+This version 4 of the kernel Address Space Isolation (ASI) RFC. I have
+broken it down into three distinct parts:
 
-On Mon, Apr 27, 2020 at 01:28:28PM +0530, Manivannan Sadhasivam wrote:
-> MHI is the transport layer used for communicating to the external modems.
-> Hence, this commit adds MHI transport layer support to QRTR for
-> transferring the QMI messages over IPC Router.
-> 
+ - Part I: ASI Infrastructure and PTI (this part)
+ - Part II: Decorated Page-Table
+ - Part III: ASI Test Driver and CLI
 
-Can you please review this driver? It'd be great if this ends up in v5.8
-along with all other MHI patches.
+Part I is similar to RFCv3 [3] with some small bug fixes. Parts II and III
+extend the initial patchset: part II introduces decorated page-table in
+order to provide convenient page-table management functions, and part III
+provides a driver and CLI for testing ASI (using parts I and II).
+
+KVM ASI will come later and will rely on the ASI infrastructure (part I)
+and decorated page-table (part II).
+
+Patches are based on v5.7-rc4.
+
+Background
+==========
+Kernel Address Space Isolation aims to use address spaces to isolate some
+parts of the kernel (for example KVM) to prevent leaking sensitive data
+between CPU hyper-threads under speculative execution attacks.
+
+Over the past years, various speculative attacks (like L1TF or MDS) have
+highlighted that data can leak between CPU threads through the CPU (micro)
+architecture. In particular, a malicious virtual machine running on a CPU
+thread can target data used by a sibling CPU thread from the same CPU core.
+Thus, a malicious VM can potentially access data from another VM or from
+the host system if they are running on sibling CPU threads.
+
+Core Scheduling [4] can prevent a malicious VM from attacking another VM
+by running the same VM on all CPU threads of a CPU core. However a
+malicious VM can still target the host system when the sibling CPU thread
+exits the VM and returns to the host.
+
+Address Space Isolation can be applied to KVM to mitigate this VM-to-host
+attack by removing secrets from the kernel address space used when running
+KVM, thus preventing a malicious VM from collecting any sensitive data
+from host.
+
+Address Space Isolation can also be used to implement Page Table Isolation
+(PTI [5]) which reduces kernel mappings present in user address spaces to
+prevent the Meltdown attack.
+
+Details
+=======
+
+ASI
+---
+An ASI is created by calling asi_create() with a specified ASI type. The
+ASI type manages data common to all ASI of the same type. It is used, in
+particular, to manage per-ASI type TLB/PCID information.
+
+Then the ASI can be entered with asi_enter() and exited with asi_exit().
+When an ASI is in used, any interrupt/exception/NMI will cause the ASI to
+be interrupted (ASI_INTERRUPT) and the ASI will be resumed (ASI_RESUME)
+when the interrupt/exception/NMI returns.
+
+asi_enter()/asi_exit() and ASI_INTERRUPT/ASI_RESUME switch between the
+ASI and the full kernel page-table by updating the CR3 register.
+
+If a task using ASI is scheduled out then its ASI state is saved and it
+will be restored when the task is scheduled back.
+
+Page fault occurring while ASI is used will either cause the ASI to be
+aborted (switch back to the full kernel pagetable) or to be preserved.
+The behavior depends on the ASI type. For example, for PTI the ASI is
+preserved and the kernel page fault handler handles the fault on behalf
+of the ASI. But for KVM ASI, the ASI will be aborted and the fault will
+be retried with the full kernel page-table.
+
+PTI
+---
+PTI is now implemented with ASI (user ASI) if both CONFIG_ADDRESS_SPACE_ISOLATION
+and CONFIG_PAGE_TABLE_ISOLATION are set. The behavior of PTI is unchanged
+but it is now using the ASI infrastructure. 
+
+For each user process, a user ASI is defined with the PTI pagetable. The
+user ASI is used when running userland code, and it is exited when entering
+a syscall. The user ASI is re-entered when the syscall returns to userland.
+
+KVM
+---
+As already mentioned, KVM ASI is not present in this patchset. KVM ASI
+will be implemented ontop of this infrastructure. Basically, the KVM ASI
+patchset will:
+  - define a KVM ASI type (DEFINE_ASI_TYPE)
+  - create and fill a page-table to be used by the KVM ASI
+  - create a KVM ASI (asi_create_kvm())
+  - enter the KVM ASI (asi_enter()) on KVM_RUN ioctl
+  - exit the KVM ASI (asi_exit())
+
+Fault occuring when KVM ASI is in used will cause the ASI to be aborted,
+and the code will continue running with the full kernel page-table,
+until KVM ASI is explicitly reentered.
+
+Status
+======
+The code looks stable and it supports running a full kernel build and
+also ltp tests. Performance impact is expected to be limited as the new
+code only adds a small number of assembly instructions on syscall and
+interrupts. There's probably also room for reducing this number of
+instructions.
+
+Changes 
+=======
+RFCv4:
+
+- Fix crash when booting with PTI disabled
+- Fix issue when task using ASI is scheduled-in
+
+RFCv3:
+
+- Add ASI Type
+
+- Add generic TLB flushing mechanism for ASI. This mechanism is similar
+  to the context tracking done when switching mm.
+
+- When ASI is in used, it is interrupted on interrupt/exception/NMI and
+  resumed when the interrupt/exception/NMI returns.
+
+- If a task using ASI is scheduled in/out then save/restore the corresponding
+  ASI and update the cpu ASI session.
+
+- Implement PTI with ASI.
+
+- Remove KVM ASI from the patchset. KVM ASI will be provided in a separated
+  patchset ontop of the ASI infrastructure.
+
+- Remove functions to manage, populate and clear page-tables. These functions
+  were only used to build to the KVM ASI page-table. Also such functions should
+  be generic page-table functions and not specific to ASI. Mike Rapoport is also
+  looking at making these functions generic.
+
+
+References
+==========
+[1] ASI RFCv1 - https://lkml.org/lkml/2019/5/13/515
+[2] ASI RFCv2 - https://lore.kernel.org/lkml/1562855138-19507-1-git-send-email-alexandre.chartre@oracle.com
+[3] ASI RFCv3 - https://lore.kernel.org/lkml/1582734120-26757-1-git-send-email-alexandre.chartre@oracle.com
+[4] Core Scheduling - https://lwn.net/Articles/803652
+[5] Page Table Isolation (PTI) - https://www.kernel.org/doc/html/latest/x86/pti.html
+
 
 Thanks,
-Mani
 
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: netdev@vger.kernel.org
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  net/qrtr/Kconfig  |   7 +++
->  net/qrtr/Makefile |   2 +
->  net/qrtr/mhi.c    | 127 ++++++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 136 insertions(+)
->  create mode 100644 net/qrtr/mhi.c
-> 
-> diff --git a/net/qrtr/Kconfig b/net/qrtr/Kconfig
-> index 63f89cc6e82c..8eb876471564 100644
-> --- a/net/qrtr/Kconfig
-> +++ b/net/qrtr/Kconfig
-> @@ -29,4 +29,11 @@ config QRTR_TUN
->  	  implement endpoints of QRTR, for purpose of tunneling data to other
->  	  hosts or testing purposes.
->  
-> +config QRTR_MHI
-> +	tristate "MHI IPC Router channels"
-> +	depends on MHI_BUS
-> +	help
-> +	  Say Y here to support MHI based ipcrouter channels. MHI is the
-> +	  transport used for communicating to external modems.
-> +
->  endif # QRTR
-> diff --git a/net/qrtr/Makefile b/net/qrtr/Makefile
-> index 32d4e923925d..1b1411d158a7 100644
-> --- a/net/qrtr/Makefile
-> +++ b/net/qrtr/Makefile
-> @@ -5,3 +5,5 @@ obj-$(CONFIG_QRTR_SMD) += qrtr-smd.o
->  qrtr-smd-y	:= smd.o
->  obj-$(CONFIG_QRTR_TUN) += qrtr-tun.o
->  qrtr-tun-y	:= tun.o
-> +obj-$(CONFIG_QRTR_MHI) += qrtr-mhi.o
-> +qrtr-mhi-y	:= mhi.o
-> diff --git a/net/qrtr/mhi.c b/net/qrtr/mhi.c
-> new file mode 100644
-> index 000000000000..2a2abf5b070d
-> --- /dev/null
-> +++ b/net/qrtr/mhi.c
-> @@ -0,0 +1,127 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2018-2020, The Linux Foundation. All rights reserved.
-> + */
-> +
-> +#include <linux/mhi.h>
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/module.h>
-> +#include <linux/skbuff.h>
-> +#include <net/sock.h>
-> +
-> +#include "qrtr.h"
-> +
-> +struct qrtr_mhi_dev {
-> +	struct qrtr_endpoint ep;
-> +	struct mhi_device *mhi_dev;
-> +	struct device *dev;
-> +};
-> +
-> +/* From MHI to QRTR */
-> +static void qcom_mhi_qrtr_dl_callback(struct mhi_device *mhi_dev,
-> +				      struct mhi_result *mhi_res)
-> +{
-> +	struct qrtr_mhi_dev *qdev = dev_get_drvdata(&mhi_dev->dev);
-> +	int rc;
-> +
-> +	if (!qdev || mhi_res->transaction_status)
-> +		return;
-> +
-> +	rc = qrtr_endpoint_post(&qdev->ep, mhi_res->buf_addr,
-> +				mhi_res->bytes_xferd);
-> +	if (rc == -EINVAL)
-> +		dev_err(qdev->dev, "invalid ipcrouter packet\n");
-> +}
-> +
-> +/* From QRTR to MHI */
-> +static void qcom_mhi_qrtr_ul_callback(struct mhi_device *mhi_dev,
-> +				      struct mhi_result *mhi_res)
-> +{
-> +	struct sk_buff *skb = (struct sk_buff *)mhi_res->buf_addr;
-> +
-> +	if (skb->sk)
-> +		sock_put(skb->sk);
-> +	consume_skb(skb);
-> +}
-> +
-> +/* Send data over MHI */
-> +static int qcom_mhi_qrtr_send(struct qrtr_endpoint *ep, struct sk_buff *skb)
-> +{
-> +	struct qrtr_mhi_dev *qdev = container_of(ep, struct qrtr_mhi_dev, ep);
-> +	int rc;
-> +
-> +	rc = skb_linearize(skb);
-> +	if (rc)
-> +		goto free_skb;
-> +
-> +	rc = mhi_queue_skb(qdev->mhi_dev, DMA_TO_DEVICE, skb, skb->len,
-> +			   MHI_EOT);
-> +	if (rc)
-> +		goto free_skb;
-> +
-> +	if (skb->sk)
-> +		sock_hold(skb->sk);
-> +
-> +	return rc;
-> +
-> +free_skb:
-> +	kfree_skb(skb);
-> +
-> +	return rc;
-> +}
-> +
-> +static int qcom_mhi_qrtr_probe(struct mhi_device *mhi_dev,
-> +			       const struct mhi_device_id *id)
-> +{
-> +	struct qrtr_mhi_dev *qdev;
-> +	int rc;
-> +
-> +	qdev = devm_kzalloc(&mhi_dev->dev, sizeof(*qdev), GFP_KERNEL);
-> +	if (!qdev)
-> +		return -ENOMEM;
-> +
-> +	qdev->mhi_dev = mhi_dev;
-> +	qdev->dev = &mhi_dev->dev;
-> +	qdev->ep.xmit = qcom_mhi_qrtr_send;
-> +
-> +	dev_set_drvdata(&mhi_dev->dev, qdev);
-> +	rc = qrtr_endpoint_register(&qdev->ep, QRTR_EP_NID_AUTO);
-> +	if (rc)
-> +		return rc;
-> +
-> +	dev_dbg(qdev->dev, "Qualcomm MHI QRTR driver probed\n");
-> +
-> +	return 0;
-> +}
-> +
-> +static void qcom_mhi_qrtr_remove(struct mhi_device *mhi_dev)
-> +{
-> +	struct qrtr_mhi_dev *qdev = dev_get_drvdata(&mhi_dev->dev);
-> +
-> +	qrtr_endpoint_unregister(&qdev->ep);
-> +	dev_set_drvdata(&mhi_dev->dev, NULL);
-> +}
-> +
-> +static const struct mhi_device_id qcom_mhi_qrtr_id_table[] = {
-> +	{ .chan = "IPCR" },
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(mhi, qcom_mhi_qrtr_id_table);
-> +
-> +static struct mhi_driver qcom_mhi_qrtr_driver = {
-> +	.probe = qcom_mhi_qrtr_probe,
-> +	.remove = qcom_mhi_qrtr_remove,
-> +	.dl_xfer_cb = qcom_mhi_qrtr_dl_callback,
-> +	.ul_xfer_cb = qcom_mhi_qrtr_ul_callback,
-> +	.id_table = qcom_mhi_qrtr_id_table,
-> +	.driver = {
-> +		.name = "qcom_mhi_qrtr",
-> +	},
-> +};
-> +
-> +module_mhi_driver(qcom_mhi_qrtr_driver);
-> +
-> +MODULE_AUTHOR("Chris Lew <clew@codeaurora.org>");
-> +MODULE_AUTHOR("Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>");
-> +MODULE_DESCRIPTION("Qualcomm IPC-Router MHI interface driver");
-> +MODULE_LICENSE("GPL v2");
-> -- 
-> 2.17.1
-> 
+alex.
+
+-----
+
+Alexandre Chartre (7):
+  mm/x86: Introduce kernel Address Space Isolation (ASI)
+  mm/asi: ASI entry/exit interface
+  mm/asi: Improve TLB flushing when switching to an ASI pagetable
+  mm/asi: Interrupt ASI on interrupt/exception/NMI
+  mm/asi: Exit/enter ASI when task enters/exits scheduler
+  mm/asi: ASI fault handler
+  mm/asi: Implement PTI with ASI
+
+ arch/x86/entry/calling.h           |  37 ++-
+ arch/x86/entry/common.c            |  29 ++-
+ arch/x86/entry/entry_64.S          |  28 ++
+ arch/x86/include/asm/asi.h         | 289 +++++++++++++++++++++
+ arch/x86/include/asm/asi_session.h |  24 ++
+ arch/x86/include/asm/mmu_context.h |  20 +-
+ arch/x86/include/asm/tlbflush.h    |  23 +-
+ arch/x86/kernel/asm-offsets.c      |   5 +
+ arch/x86/mm/Makefile               |   1 +
+ arch/x86/mm/asi.c                  | 402 +++++++++++++++++++++++++++++
+ arch/x86/mm/fault.c                |  20 ++
+ arch/x86/mm/pti.c                  |  28 +-
+ include/linux/mm_types.h           |   5 +
+ include/linux/sched.h              |   9 +
+ kernel/fork.c                      |  17 ++
+ kernel/sched/core.c                |  17 ++
+ security/Kconfig                   |  10 +
+ 17 files changed, 946 insertions(+), 18 deletions(-)
+ create mode 100644 arch/x86/include/asm/asi.h
+ create mode 100644 arch/x86/include/asm/asi_session.h
+ create mode 100644 arch/x86/mm/asi.c
+
+-- 
+2.18.2
+
