@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5603B1C4814
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 22:25:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4AD71C481D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 22:25:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728130AbgEDUYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 16:24:50 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:21628 "EHLO
+        id S1728164AbgEDUZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 16:25:02 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:40493 "EHLO
         mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728097AbgEDUYt (ORCPT
+        by vger.kernel.org with ESMTP id S1728155AbgEDUY7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 16:24:49 -0400
+        Mon, 4 May 2020 16:24:59 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1588623888; h=Content-Transfer-Encoding: MIME-Version:
+ s=smtp; t=1588623899; h=Content-Transfer-Encoding: MIME-Version:
  References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=MrDi8noaTB1I3x+4qIYePHEVKUCye+KrBWK+o+3mFgY=; b=cwineDAjjjDZTUFkKNYQeX2LpqBvxUnhTeb8/bnuSiqr/rkYZ6NhrrxldyhdUVa8OHG2NIPJ
- fRNoqdi3uvQ+pUEiz8/6RuBp2Tc58Hj55I9SKFfqClWGw1QFwYyTySHzB778q1DmKCkD187L
- 96IxTy3zWueRIeAKhJAyKUBoIdo=
+ Sender; bh=whfsKbTByTCa4nC/8eyS8pS1JkobHmiSe5nlsTPnSjs=; b=Oz+0fPttTGWg+sij8YSME8k6hxDsZ1SAQMRrLesToEPfxdaiZvjdBwF4jXZ3tgSnA7/kxGJU
+ oeePg1tOPjajVc4Lhj5OIlFcKwIO6NamxsPivsCGDKmu0rwS6u0VqPL78RQF1pzRcRKd18gN
+ 99D541D2pRHiktqVROEQ/Q4Tink=
 X-Mailgun-Sending-Ip: 104.130.122.26
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5eb07a10.7fef5ee2e3e8-smtp-out-n04;
- Mon, 04 May 2020 20:24:48 -0000 (UTC)
+ by mxa.mailgun.org with ESMTP id 5eb07a17.7efd156c03b0-smtp-out-n02;
+ Mon, 04 May 2020 20:24:55 -0000 (UTC)
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1905BC44788; Mon,  4 May 2020 20:24:46 +0000 (UTC)
+        id E1EACC00456; Mon,  4 May 2020 20:24:53 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
+        autolearn=ham autolearn_force=no version=3.4.0
 Received: from blr-ubuntu-87.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B6AABC44788;
-        Mon,  4 May 2020 20:24:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B6AABC44788
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0D0EAC447A1;
+        Mon,  4 May 2020 20:24:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0D0EAC447A1
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=sibis@codeaurora.org
 From:   Sibi Sankar <sibis@codeaurora.org>
@@ -51,9 +51,9 @@ Cc:     nm@ti.com, agross@kernel.org, david.brown@linaro.org,
         amit.kucheria@linaro.org, ulf.hansson@linaro.org,
         lukasz.luba@arm.com, sudeep.holla@arm.com,
         Sibi Sankar <sibis@codeaurora.org>
-Subject: [PATCH v4 08/12] cpufreq: qcom: Disable fast switch when scaling ddr/l3
-Date:   Tue,  5 May 2020 01:52:39 +0530
-Message-Id: <20200504202243.5476-9-sibis@codeaurora.org>
+Subject: [PATCH v4 09/12] dt-bindings: interconnect: Add interconnect-tags bindings
+Date:   Tue,  5 May 2020 01:52:40 +0530
+Message-Id: <20200504202243.5476-10-sibis@codeaurora.org>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <20200504202243.5476-1-sibis@codeaurora.org>
 References: <20200504202243.5476-1-sibis@codeaurora.org>
@@ -64,29 +64,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Disable fast switch when the icc paths required for scaling ddr/l3
-are populated.
+Add interconnect-tags bindings to enable passing of optional
+tag information to the interconnect framework.
 
 Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
 ---
- drivers/cpufreq/qcom-cpufreq-hw.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ .../devicetree/bindings/interconnect/interconnect.txt        | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
-index 4fb489b69bc61..4b2c23dab3728 100644
---- a/drivers/cpufreq/qcom-cpufreq-hw.c
-+++ b/drivers/cpufreq/qcom-cpufreq-hw.c
-@@ -316,7 +316,9 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
+diff --git a/Documentation/devicetree/bindings/interconnect/interconnect.txt b/Documentation/devicetree/bindings/interconnect/interconnect.txt
+index 6f5d23a605b75..c1a226a934e50 100644
+--- a/Documentation/devicetree/bindings/interconnect/interconnect.txt
++++ b/Documentation/devicetree/bindings/interconnect/interconnect.txt
+@@ -55,6 +55,11 @@ interconnect-names : List of interconnect path name strings sorted in the same
+ 			 * dma-mem: Path from the device to the main memory of
+ 			            the system
  
- 	dev_pm_opp_of_register_em(policy->cpus);
++interconnect-tags : List of interconnect path tags sorted in the same order as the
++		    interconnects property. Consumers can append a specific tag to
++		    the path and pass this information to the interconnect framework
++		    to do aggregation based on the attached tag.
++
+ Example:
  
--	policy->fast_switch_possible = true;
-+	ret = dev_pm_opp_get_path_count(cpu_dev);
-+	if (ret <= 0)
-+		policy->fast_switch_possible = true;
- 
- 	return 0;
- error:
+ 	sdhci@7864000 {
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
