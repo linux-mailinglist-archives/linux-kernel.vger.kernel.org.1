@@ -2,118 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52D3F1C4621
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:41:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2B981C4624
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:42:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727051AbgEDSl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:41:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35226 "EHLO
+        id S1727100AbgEDSmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:42:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726531AbgEDSl0 (ORCPT
+        by vger.kernel.org with ESMTP id S1726756AbgEDSl7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:41:26 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E00CC061A0E
-        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 11:41:26 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id a8so14462688edv.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 11:41:26 -0700 (PDT)
+        Mon, 4 May 2020 14:41:59 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3E4FC061A0E
+        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 11:41:59 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id 18so5959776pfv.8
+        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 11:41:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NHvWqbfEB8yb6qlopm+hJaZs/tFY66VoXPBrPdANidc=;
-        b=e1Nga4Z4DjmgOTcZiDC753QUjzHP++XYG2YQiFHg89Q0yvU8WzfMYHB2j8mJIj2RoI
-         AmV/VHJXHnHhFm328HaI5kSFBiHbqWaUH4lPdCh6MjCqIkJ9YP1LqqSTO2evFV4rIJz4
-         MCaMOHyR7Cwe8RZT4M5PsF4qJ6GPI56Ky6oBaf0KFi3g/G1k8C0h3CfBIDjUWWd47Fc5
-         nR6EzKDqEYCiAso1aqesKbJe4GxfB9KOBqCeE06jJrKkjaqeWvRzwcwP2N9cDWrCtgUa
-         DywL3x7VgMEGvGrE6zzVSMwJ9amOQ9fQoFHQlpIyF6hgB9MLI90uD9C3OrZJ4SgWVJwk
-         pPSQ==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=W2tJ5b2t7hczpaAxFKlCfGf3HMAY03e+dltiT1wWRtw=;
+        b=ZeNPUEFJK3Vzqz+6/aS6puuqVk/a8cosOmqzD7wITSt0oXSXn2EHXgOrzGqV7NeV1U
+         tpNtoJ8OFz+o7A+cLKtE7CTdGQP15Cv/jR2PAAT/RkIvE7i4pWJs/yQJ9GoGzWr77iYi
+         GoWITCOXJw3bA0fVyTcdTrgnW0VyEa9wuf8no=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NHvWqbfEB8yb6qlopm+hJaZs/tFY66VoXPBrPdANidc=;
-        b=mhdzAkDU+pzl5FL/8Kw7fRfglsnlyQUh+qMMvdRce5SspDk7X8/b1YLWFj6LuOjsQs
-         HNl3oU/kTmvaiyDz9xapxSa9y7ussXwZiDiqNLfaxUuyRrB3Z+9I9KKScIzOLEq1vFMz
-         HfBMsHGZQEVOtb6ZtnxqjWjbka6Xe2i9PZRCAzYFNO0xPj/G7Pw7Z6QWEKDOZ06Ajxvd
-         AXBKF50OHga0dqE38PwGhfNRecXgdzA4KOlhE4OovUeyGQEOUowzmfI6mjxvZuCZmUZo
-         dlO4e7tViV7lizqHJgH1rWu4dfO9CArrbcD9L47hQnY4/EqMmpTqkfb0IQhImM994oTL
-         K0+w==
-X-Gm-Message-State: AGi0PuaxynHa4+TSPx6SJ2YFxUfQ8PDFDs9+jNsICOfSaZPGYUjb2XKR
-        bKKeu0TsZ88PqLSM25MgsEqNKEJwV7qfuqnKbUAJkQ==
-X-Google-Smtp-Source: APiQypLxTnA8751anvOoZo3J0pXXFgll7A2I9j5SDc8Fw78+RBagvZqw/Wc4F+EFrt6X87Zjv4JsNamCmk2SLQ5qeTk=
-X-Received: by 2002:aa7:cfc3:: with SMTP id r3mr16444897edy.342.1588617684859;
- Mon, 04 May 2020 11:41:24 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=W2tJ5b2t7hczpaAxFKlCfGf3HMAY03e+dltiT1wWRtw=;
+        b=jcGlwKWbI+m8GuEB4imqAJFBG1gfJkhBz1Xdw8adVIf6YJGIayQPj0uwNIXFsj7Hsd
+         qfnttwEm/EyouJb8CEEY+VcvyIChquJjTtAumugobN4k3b/SUbt9Hpo/vC/8UbVS61i7
+         H/USx9Lvc/A6QRJ2ApNUuov9iXNRSPFckNKmAhp9FX37je6UBCzmGH4waapBsHE+Yi8n
+         5DuXtg7wCW12c7vn+/sXP4vbIYVuGSFM1GTun5fpQpzc6N9qzwxR4jT5hJPcqpobDxrl
+         G1omhoe0A+vSu4uJFjyrV8uWCOYR59XvXgL/WNk2EWAbh6q3FcYVmUvYycEtoRNC/s+g
+         /hgw==
+X-Gm-Message-State: AGi0PuY09fVK6y6dSEaQTiaZy8UfwiOVwB8R4bSfohP0zOC29RU9lP2S
+        wDWFNwTlyQAJAux4DAjJJRF2bg==
+X-Google-Smtp-Source: APiQypIZef/BfkRBu20SORWfQDfii5L/7CKWSh4JL4l2QaSNhCzuiGlsdosd5WC0raG1OkKCcKBJ1A==
+X-Received: by 2002:a62:4ec6:: with SMTP id c189mr19147132pfb.299.1588617719212;
+        Mon, 04 May 2020 11:41:59 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id q6sm9253995pfh.193.2020.05.04.11.41.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 May 2020 11:41:58 -0700 (PDT)
+Date:   Mon, 4 May 2020 11:41:57 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Iurii Zaikin <yzaikin@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, David Rientjes <rientjes@google.com>
+Subject: Re: [PATCH 2/5] mm: remove watermark_boost_factor_sysctl_handler
+Message-ID: <202005041141.DA134ED931@keescook>
+References: <20200424064338.538313-1-hch@lst.de>
+ <20200424064338.538313-3-hch@lst.de>
 MIME-Version: 1.0
-References: <20200502143555.543636-1-pasha.tatashin@soleen.com>
- <20200502143555.543636-2-pasha.tatashin@soleen.com> <20200504131500.5f6c8860@gandalf.local.home>
- <202005041111.D803E731@keescook>
-In-Reply-To: <202005041111.D803E731@keescook>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Mon, 4 May 2020 14:40:49 -0400
-Message-ID: <CA+CK2bAF+cS_H-tU29wE54tsdRnBvBEpewgQ7ZM7BfLhASV1mg@mail.gmail.com>
-Subject: Re: [PATCH v1 1/3] printk: honor the max_reason field in kmsg_dumper
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        James Morris <jmorris@namei.org>,
-        Sasha Levin <sashal@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        anton@enomsg.org, ccross@android.com,
-        Tony Luck <tony.luck@intel.com>, robh+dt@kernel.org,
-        devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200424064338.538313-3-hch@lst.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank Kees, I think it is a little cleaner this way.
+On Fri, Apr 24, 2020 at 08:43:35AM +0200, Christoph Hellwig wrote:
+> watermark_boost_factor_sysctl_handler is just a pointless wrapper for
+> proc_dointvec_minmax, so remove it and use proc_dointvec_minmax
+> directly.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Thank you,
-Pasha
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
+-Kees
 
-On Mon, May 4, 2020 at 2:12 PM Kees Cook <keescook@chromium.org> wrote:
->
-> On Mon, May 04, 2020 at 01:15:00PM -0400, Steven Rostedt wrote:
-> > On Sat,  2 May 2020 10:35:53 -0400
-> > Pavel Tatashin <pasha.tatashin@soleen.com> wrote:
-> >
-> > > kmsg_dump() allows to dump kmesg buffer for various system events: oops,
-> > > panic, reboot, etc. It provides an interface to register a callback call
-> > > for clients, and in that callback interface there is a field "max_reason"
-> > > which gets ignored unless always_kmsg_dump is passed as kernel parameter.
-> > >
-> > > Allow clients to decide max_reason, and keep the current behavior when
-> > > max_reason is not set.
-> > >
-> > > Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-> > > ---
-> > >  include/linux/kmsg_dump.h |  1 +
-> > >  kernel/printk/printk.c    | 16 +++++++++-------
-> > >  2 files changed, 10 insertions(+), 7 deletions(-)
-> > >
-> > > diff --git a/include/linux/kmsg_dump.h b/include/linux/kmsg_dump.h
-> > > index 2e7a1e032c71..c0d703b7ce38 100644
-> > > --- a/include/linux/kmsg_dump.h
-> > > +++ b/include/linux/kmsg_dump.h
-> > > @@ -28,6 +28,7 @@ enum kmsg_dump_reason {
-> > >     KMSG_DUMP_RESTART,
-> > >     KMSG_DUMP_HALT,
-> > >     KMSG_DUMP_POWEROFF,
-> > > +   KMSG_DUMP_MAX = KMSG_DUMP_POWEROFF
-> >
-> > Hmm, I didn't realize that enums were allowed to have duplicates. That can
-> > usually screw up logic. I would recommend making that a define afterward.
-> >
-> > #define KMSG_DUMP_MAX KMSG_DUMP_POWEROFF
-> >
-> > As is done in other locations of the kernel.
->
-> I've seen it also be the last item in an enum, then comparisons can just
-> do "< KMSG_DUMP_MAX" instead of "<= KMSG_DUMP_MAX".
->
-> --
-> Kees Cook
+> Acked-by: David Rientjes <rientjes@google.com>
+> ---
+>  include/linux/mmzone.h |  2 --
+>  kernel/sysctl.c        |  2 +-
+>  mm/page_alloc.c        | 12 ------------
+>  3 files changed, 1 insertion(+), 15 deletions(-)
+> 
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index 1b9de7d220fb7..f37bb8f187fc7 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -911,8 +911,6 @@ static inline int is_highmem(struct zone *zone)
+>  struct ctl_table;
+>  int min_free_kbytes_sysctl_handler(struct ctl_table *, int,
+>  					void __user *, size_t *, loff_t *);
+> -int watermark_boost_factor_sysctl_handler(struct ctl_table *, int,
+> -					void __user *, size_t *, loff_t *);
+>  int watermark_scale_factor_sysctl_handler(struct ctl_table *, int,
+>  					void __user *, size_t *, loff_t *);
+>  extern int sysctl_lowmem_reserve_ratio[MAX_NR_ZONES];
+> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+> index 8a176d8727a3a..99d27acf46465 100644
+> --- a/kernel/sysctl.c
+> +++ b/kernel/sysctl.c
+> @@ -1491,7 +1491,7 @@ static struct ctl_table vm_table[] = {
+>  		.data		= &watermark_boost_factor,
+>  		.maxlen		= sizeof(watermark_boost_factor),
+>  		.mode		= 0644,
+> -		.proc_handler	= watermark_boost_factor_sysctl_handler,
+> +		.proc_handler	= proc_dointvec_minmax,
+>  		.extra1		= SYSCTL_ZERO,
+>  	},
+>  	{
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 69827d4fa0527..62c1550cd43ec 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -7978,18 +7978,6 @@ int min_free_kbytes_sysctl_handler(struct ctl_table *table, int write,
+>  	return 0;
+>  }
+>  
+> -int watermark_boost_factor_sysctl_handler(struct ctl_table *table, int write,
+> -	void __user *buffer, size_t *length, loff_t *ppos)
+> -{
+> -	int rc;
+> -
+> -	rc = proc_dointvec_minmax(table, write, buffer, length, ppos);
+> -	if (rc)
+> -		return rc;
+> -
+> -	return 0;
+> -}
+> -
+>  int watermark_scale_factor_sysctl_handler(struct ctl_table *table, int write,
+>  	void __user *buffer, size_t *length, loff_t *ppos)
+>  {
+> -- 
+> 2.26.1
+> 
+
+-- 
+Kees Cook
