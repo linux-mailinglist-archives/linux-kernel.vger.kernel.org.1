@@ -2,364 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11F611C3E0C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 17:05:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B1331C3E01
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 17:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729466AbgEDPFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 11:05:36 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:55910 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726551AbgEDPFf (ORCPT
+        id S1729414AbgEDPCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 11:02:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727884AbgEDPCx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 11:05:35 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 044ElbOC116459;
-        Mon, 4 May 2020 15:05:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=HpLop/q6lU72RED2M2+GV24t44M/xn1HonNpo3nMWgU=;
- b=FyGhYMm8VAft9HHCv0GOjD0jRw7lTwOx0r+xP7qPCr1zVyHsNwtDMFSSGUj/xLBHVsNa
- RC3IQtUYa646xMlbSozveJI/Jx5A7lIFn9dHnzm20i916PMMA+47ILesv3oV/gJKn/9V
- bCpiHn6JIF2D7x34SXOuY7gZtTzzjXxSlLP0NmvXrBHta/9mleqwO0vmp519mffuwxsG
- yah9mPj0rq3NXoP3cuw2q3W91aZxqxzN8FpX8PpAXsvS3v2Xly4RbngLuE3bKY5OaPM2
- SjVcbYT5jBd/jog3TpJQPJe6+GTrTE+DOSIQr0gC2c0Ytf1BpuD8KzKM+Quk+Dwwp6wm rw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 30s09qyh0x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 04 May 2020 15:05:03 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 044ElaIM053343;
-        Mon, 4 May 2020 15:05:03 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 30t1r2f99h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 04 May 2020 15:05:03 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 044F51Zt028984;
-        Mon, 4 May 2020 15:05:01 GMT
-Received: from linux-1.home.com (/10.175.9.166)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 04 May 2020 08:05:01 -0700
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        x86@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     pbonzini@redhat.com, konrad.wilk@oracle.com,
-        jan.setjeeilers@oracle.com, liran.alon@oracle.com,
-        junaids@google.com, graf@amazon.de, rppt@linux.vnet.ibm.com,
-        kuzuno@gmail.com, mgross@linux.intel.com,
-        alexandre.chartre@oracle.com
-Subject: [RFC v4][PATCH part-3 14/14] asidrv/asicmd: Add options to manage ASI mapped VA ranges
-Date:   Mon,  4 May 2020 17:02:35 +0200
-Message-Id: <20200504150235.12171-15-alexandre.chartre@oracle.com>
-X-Mailer: git-send-email 2.18.2
-In-Reply-To: <20200504150235.12171-1-alexandre.chartre@oracle.com>
-References: <20200504150235.12171-1-alexandre.chartre@oracle.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9610 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 suspectscore=2
- spamscore=0 mlxlogscore=999 malwarescore=0 phishscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2005040123
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9610 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0
- lowpriorityscore=0 spamscore=0 adultscore=0 clxscore=1015 suspectscore=2
- priorityscore=1501 malwarescore=0 mlxlogscore=999 phishscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005040123
+        Mon, 4 May 2020 11:02:53 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65531C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 08:02:53 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id w29so14240485qtv.3
+        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 08:02:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=pEkcpc7p0hbqyGBvGeqY9qBw2K4+umYg84O9K1LJmhc=;
+        b=O0/SsYEiyh30CWZLFLhKk3Af1Wm0y9ombP0AB9Yw4eoIhhAd6zxECAB3Jr8X7FHerb
+         hXa4OaYfd7mx+fHn8xkDxEqqs3tInN81Mnyo9I5BjL0eOqfqu0udT2cWW08TWh3A+OhV
+         LO+0v1LdAK5UwgnZms3jdNhK6of9dg0/+xWFC9LIa7w3Mwv94iOcmjJ5IZyeiFfb4Mpf
+         h02KPAjWm4U0AYrICAUPZ+3LdwuQQsDrrghLsnGh/z1P6gpdFucK+ZNEw157Q7oVibWj
+         f6WMcN8en2o3CqrhPKmfVIHR8+WpSxgEf9qY0w0eaw4X70ro1gH2aXf8LbNthC+nxNAm
+         HH2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=pEkcpc7p0hbqyGBvGeqY9qBw2K4+umYg84O9K1LJmhc=;
+        b=ct0ZJmDPjHxUb2CJVI0A4E1pCQwnAU9adV2eWCsMfv7pmCczdAmgrCtBfImzPkPazs
+         mKZYgKXdbxeikRkaIG2B9nMJ1RxFAU9RXaLBnOm2Nbk2g4dFLB34af034/iV1BWaNOoy
+         W69osx4Ksd3lq7XgqoaE7VIJwrpATbmAxS2yL+xyrxV0o+UUleXhzsmiBIIfZaoWj48m
+         Be0RtEKMgNlhNxnS9i2PWanQzH2W3Rtall7qVW5xT4OLLhcTy9SIoS+LltVwTDqwNG12
+         dGlYLTRpJMB43IgN8D57uc3KqMvjW9iOCR57bEboj00QVBWns5bJ5K6IWyLkCQ7LDJmf
+         6xbQ==
+X-Gm-Message-State: AGi0PubvfWx6b7ZTKGPEAmsBMpNFctaSTbLvAaRKXPkyecjW6yfCBkYV
+        ZLOjDKIh3wGtc/FR+9YYEQ+d1w==
+X-Google-Smtp-Source: APiQypJy7lN7noG6hTnCNDGaF3L0TkUKhOXDytH7FtT7xvOcceX25Rfo7r4RyXyJv2kdUAEoUX+vxg==
+X-Received: by 2002:ac8:4cce:: with SMTP id l14mr17188342qtv.31.1588604572499;
+        Mon, 04 May 2020 08:02:52 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id j25sm10646608qtn.21.2020.05.04.08.02.49
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 04 May 2020 08:02:50 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jVccK-0000Gm-Od; Mon, 04 May 2020 12:02:48 -0300
+Date:   Mon, 4 May 2020 12:02:48 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cohuck@redhat.com, peterx@redhat.com
+Subject: Re: [PATCH 1/3] vfio/type1: Support faulting PFNMAP vmas
+Message-ID: <20200504150248.GW26002@ziepe.ca>
+References: <158836742096.8433.685478071796941103.stgit@gimli.home>
+ <158836914801.8433.9711545991918184183.stgit@gimli.home>
+ <20200501235033.GA19929@ziepe.ca>
+ <20200504080630.293f33e8@x1.home>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200504080630.293f33e8@x1.home>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add options to the asicmd CLI to list, add and clear ASI mapped
-VA ranges.
+On Mon, May 04, 2020 at 08:06:30AM -0600, Alex Williamson wrote:
+> On Fri, 1 May 2020 20:50:33 -0300
+> Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> 
+> > On Fri, May 01, 2020 at 03:39:08PM -0600, Alex Williamson wrote:
+> > > With conversion to follow_pfn(), DMA mapping a PFNMAP range depends on
+> > > the range being faulted into the vma.  Add support to manually provide
+> > > that, in the same way as done on KVM with hva_to_pfn_remapped().
+> > > 
+> > > Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+> > >  drivers/vfio/vfio_iommu_type1.c |   36 +++++++++++++++++++++++++++++++++---
+> > >  1 file changed, 33 insertions(+), 3 deletions(-)
+> > > 
+> > > diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+> > > index cc1d64765ce7..4a4cb7cd86b2 100644
+> > > +++ b/drivers/vfio/vfio_iommu_type1.c
+> > > @@ -317,6 +317,32 @@ static int put_pfn(unsigned long pfn, int prot)
+> > >  	return 0;
+> > >  }
+> > >  
+> > > +static int follow_fault_pfn(struct vm_area_struct *vma, struct mm_struct *mm,
+> > > +			    unsigned long vaddr, unsigned long *pfn,
+> > > +			    bool write_fault)
+> > > +{
+> > > +	int ret;
+> > > +
+> > > +	ret = follow_pfn(vma, vaddr, pfn);
+> > > +	if (ret) {
+> > > +		bool unlocked = false;
+> > > +
+> > > +		ret = fixup_user_fault(NULL, mm, vaddr,
+> > > +				       FAULT_FLAG_REMOTE |
+> > > +				       (write_fault ?  FAULT_FLAG_WRITE : 0),
+> > > +				       &unlocked);
+> > > +		if (unlocked)
+> > > +			return -EAGAIN;
+> > > +
+> > > +		if (ret)
+> > > +			return ret;
+> > > +
+> > > +		ret = follow_pfn(vma, vaddr, pfn);
+> > > +	}
+> > > +
+> > > +	return ret;
+> > > +}
+> > > +
+> > >  static int vaddr_get_pfn(struct mm_struct *mm, unsigned long vaddr,
+> > >  			 int prot, unsigned long *pfn)
+> > >  {
+> > > @@ -339,12 +365,16 @@ static int vaddr_get_pfn(struct mm_struct *mm, unsigned long vaddr,
+> > >  
+> > >  	vaddr = untagged_addr(vaddr);
+> > >  
+> > > +retry:
+> > >  	vma = find_vma_intersection(mm, vaddr, vaddr + 1);
+> > >  
+> > >  	if (vma && vma->vm_flags & VM_PFNMAP) {
+> > > -		if (!follow_pfn(vma, vaddr, pfn) &&
+> > > -		    is_invalid_reserved_pfn(*pfn))
+> > > -			ret = 0;
+> > > +		ret = follow_fault_pfn(vma, mm, vaddr, pfn, prot & IOMMU_WRITE);
+> > > +		if (ret == -EAGAIN)
+> > > +			goto retry;
+> > > +
+> > > +		if (!ret && !is_invalid_reserved_pfn(*pfn))
+> > > +			ret = -EFAULT;  
+> > 
+> > I suggest checking vma->vm_ops == &vfio_pci_mmap_ops and adding a
+> > comment that this is racy and needs to be fixed up. The ops check
+> > makes this only used by other vfio bars and should prevent some
+> > abuses of this hacky thing
+> 
+> We can't do that, vfio-pci is only one bus driver within the vfio
+> ecosystem.
 
-Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
----
- drivers/staging/asi/asicmd.c | 243 +++++++++++++++++++++++++++++++++++
- 1 file changed, 243 insertions(+)
+Given this flow is already hacky, maybe it is OK?
 
-diff --git a/drivers/staging/asi/asicmd.c b/drivers/staging/asi/asicmd.c
-index 4d7bb9df0fcc..974a3147a313 100644
---- a/drivers/staging/asi/asicmd.c
-+++ b/drivers/staging/asi/asicmd.c
-@@ -16,6 +16,10 @@
- 
- #include "asidrv.h"
- 
-+static const char * const page_table_level[] = {
-+	"PTE", "PMD", "PUD", "P4D", "PGD"
-+};
-+
- struct asidrv_test {
- 	char		*name;		/* test name */
- 	enum asidrv_seqnum seqnum;	/* sequence */
-@@ -56,12 +60,25 @@ static void usage(void)
- 	printf("  fltclr   - clear ASI faults\n");
- 	printf("  stkon    - show stack on ASI fault\n");
- 	printf("  stkoff   - do not show stack on ASI fault\n");
-+	printf("  map      - list ASI mappings\n");
-+	printf("  mapadd   - add ASI mappings\n");
-+	printf("  mapclr   - clear ASI mapping\n");
- 	printf("\n");
- 	printf("Tests:\n");
- 	for (i = 0; i < TEST_LIST_SIZE; i++)
- 		printf("  %-10s - %s\n", test_list[i].name, test_list[i].desc);
- }
- 
-+static void usage_mapadd(void)
-+{
-+	printf("usage: asicmd mapadd [percpu:]<addr>:<size>[:<level>]\n");
-+}
-+
-+static void usage_mapclr(void)
-+{
-+	printf("usage: asicmd mapclr [percpu:]<addr>\n");
-+}
-+
- static void asidrv_run_test(int fd, struct asidrv_test *test)
- {
- 	struct asidrv_run_param rparam;
-@@ -130,6 +147,210 @@ static int asidrv_fault_list(int fd)
- 	return 0;
- }
- 
-+static int asidrv_map_list(int fd)
-+{
-+	struct asidrv_mapping_list *mlist;
-+	int level;
-+	int i, rv, len = 64;
-+
-+	mlist = malloc(sizeof(*mlist) +
-+		       sizeof(struct asidrv_mapping) * len);
-+	if (!mlist) {
-+		perror("malloc mlist");
-+		return -1;
-+	}
-+
-+	mlist->length = len;
-+	rv = ioctl(fd, ASIDRV_IOCTL_LIST_MAPPING, mlist);
-+	if (rv < 0) {
-+		perror("ioctl list mapping");
-+		return -1;
-+	}
-+
-+	if (!mlist->length) {
-+		printf("ASI has no mapping\n");
-+		return 0;
-+	}
-+
-+	printf("%-18s  %18s  %s\n", "ADDRESS", "SIZE", "LEVEL");
-+	for (i = 0; i < mlist->length && i < len; i++) {
-+		printf("%#18llx  %#18llx  ",
-+		       mlist->mapping[i].addr,
-+		       mlist->mapping[i].size);
-+		level = mlist->mapping[i].level;
-+		if (level < 5)
-+			printf("%5s\n", page_table_level[level]);
-+		else
-+			printf("%5d\n", level);
-+	}
-+	printf("Mapping List: %d/%d\n", i, mlist->length);
-+
-+	return 0;
-+}
-+
-+static char *asidrv_skip_percpu(char *str, bool *percpup)
-+{
-+	int len = sizeof("percpu:") - 1;
-+
-+	if (!strncmp(str, "percpu:", len)) {
-+		str += len;
-+		*percpup = true;
-+	} else {
-+		*percpup = false;
-+	}
-+
-+	return str;
-+}
-+
-+static int asidrv_parse_mapping_clear(char *arg, struct asidrv_mapping *mapping)
-+{
-+	char  *s, *end;
-+	bool percpu;
-+	__u64 addr;
-+
-+	s = asidrv_skip_percpu(arg, &percpu);
-+
-+	addr = strtoull(s, &end, 0);
-+	if (*end != 0) {
-+		printf("invalid mapping address '%s'\n", s);
-+		return -1;
-+	}
-+
-+	printf("mapclr %llx%s\n", addr, percpu ? " percpu" : "");
-+
-+	mapping->addr = addr;
-+	mapping->size = 0;
-+	mapping->level = 0;
-+	mapping->percpu = percpu;
-+
-+	return 0;
-+}
-+
-+static int asidrv_parse_mapping_add(char *arg, struct asidrv_mapping *mapping)
-+{
-+	char *s, *end;
-+	__u64 addr, size;
-+	__u32 level;
-+	bool percpu;
-+	int i;
-+
-+	s = asidrv_skip_percpu(arg, &percpu);
-+
-+	s = strtok(s, ":");
-+	if (!s) {
-+		printf("mapadd: <addr> not found\n");
-+		return -1;
-+	}
-+
-+	addr = strtoull(s, &end, 0);
-+	if (*end != 0) {
-+		printf("invalid mapping address '%s'\n", s);
-+		return -1;
-+	}
-+
-+	s = strtok(NULL, ":");
-+	if (!s) {
-+		printf("mapadd: <size> not found\n");
-+		return -1;
-+	}
-+	size = strtoull(s, &end, 0);
-+	if (*end != 0) {
-+		printf("mapadd: invalid size %s\n", s);
-+		return -1;
-+	}
-+
-+	s = strtok(NULL, ":");
-+	if (!s) {
-+		level = 0;
-+	} else {
-+		/* lookup page table level name */
-+		level = -1;
-+		for (i = 0; i < 5; i++) {
-+			if (!strcasecmp(s, page_table_level[i])) {
-+				level = i;
-+				break;
-+			}
-+		}
-+		if (level == -1) {
-+			level = strtoul(s, &end, 0);
-+			if (*end != 0 || level >= 5) {
-+				printf("mapadd: invalid level %s\n", s);
-+				return -1;
-+			}
-+		}
-+	}
-+
-+	printf("mapadd %llx/%llx/%u%s\n", addr, size, level,
-+	       percpu ? " percpu" : "");
-+
-+	mapping->addr = addr;
-+	mapping->size = size;
-+	mapping->level = level;
-+	mapping->percpu = percpu;
-+
-+	return 0;
-+}
-+
-+static int asidrv_map_change(int fd, unsigned long cmd, char *arg)
-+{
-+	struct asidrv_mapping_list *mlist;
-+	int i, count, err;
-+	char *s;
-+
-+	count = 0;
-+	for (s = arg; s; s = strchr(s + 1, ','))
-+		count++;
-+
-+	mlist = malloc(sizeof(mlist) + sizeof(struct asidrv_mapping) * count);
-+	if (!mlist) {
-+		perror("malloc mapping list");
-+		return -ENOMEM;
-+	}
-+
-+	for (i = 0; i < count; i++) {
-+		s = strchr(arg, ',');
-+		if (s)
-+			s[0] = '\0';
-+
-+		if (cmd == ASIDRV_IOCTL_ADD_MAPPING) {
-+			err = asidrv_parse_mapping_add(arg,
-+						       &mlist->mapping[i]);
-+		} else {
-+			err = asidrv_parse_mapping_clear(arg,
-+							 &mlist->mapping[i]);
-+		}
-+		if (err)
-+			goto done;
-+		arg = s + 1;
-+	}
-+
-+	mlist->length = count;
-+	err = ioctl(fd, cmd, mlist);
-+	if (err < 0) {
-+		perror("ioctl mapping");
-+		err = errno;
-+	} else if (err > 0) {
-+		/* partial error */
-+		printf("ioctl mapping: partial failure (%d/%d)\n",
-+		       err, count);
-+		for (i = 0; i < count; i++) {
-+			printf("  %#llx: ", mlist->mapping[i].addr);
-+			if (i < err)
-+				printf("done\n");
-+			else if (i == err)
-+				printf("failed\n");
-+			else
-+				printf("not done\n");
-+		}
-+		err = -1;
-+	}
-+
-+done:
-+	free(mlist);
-+
-+	return err;
-+}
-+
- int main(int argc, char *argv[])
- {
- 	bool run_all, run;
-@@ -172,6 +393,28 @@ int main(int argc, char *argv[])
- 				perror("ioctl log fault sstack");
- 			continue;
- 
-+		} else if (!strcmp(test, "map")) {
-+			asidrv_map_list(fd);
-+			continue;
-+
-+		} else if (!strcmp(test, "mapadd")) {
-+			if (++i >= argc) {
-+				usage_mapadd();
-+				return 2;
-+			}
-+			asidrv_map_change(fd, ASIDRV_IOCTL_ADD_MAPPING,
-+					  argv[i]);
-+			continue;
-+
-+		} else if (!strcmp(test, "mapclr")) {
-+			if (++i >= argc) {
-+				usage_mapclr();
-+				return 2;
-+			}
-+			asidrv_map_change(fd, ASIDRV_IOCTL_CLEAR_MAPPING,
-+					  argv[i]);
-+			continue;
-+
- 		} else if (!strcmp(test, "all")) {
- 			run_all = true;
- 		} else {
--- 
-2.18.2
+> > However, I wonder if this chould just link itself into the
+> > vma->private data so that when the vfio that owns the bar goes away,
+> > so does the iommu mapping?
+> 
+> I don't really see why we wouldn't use mmu notifiers so that the vfio
+> iommu backend and vfio bus driver remain independent.
 
+mmu notifiers have tended to be complicated enough that if they can be
+avoided it is usually better.
+
+eg you can't just use mmu notifiers here, you have to use an entire
+whole pinless page faulting scheme with the locking like
+hmm_range_fault uses.
+
+You also have to be very very careful with locking around invalidation
+of the iommu to avoid deadlock. For instance the notifier invalidate
+cannot do GFP_KERNEL memory allocations.
+
+Jason
