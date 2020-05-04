@@ -2,130 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACDF01C3CD7
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 16:21:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9CC31C3CDD
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 16:22:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729126AbgEDOVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 10:21:07 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:48557 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728943AbgEDOVD (ORCPT
+        id S1729145AbgEDOV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 10:21:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728168AbgEDOV7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 10:21:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588602062;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kEhPnil3Au9ljZyWx7OUd3eWbeEZNvjibden46SQ+d8=;
-        b=ScLmwShLfKCvGiiAr5GitGXpOzl4cSVlZls65pwPdNBbcjMnIMCrthgyUqzeNkDXsFFUM8
-        xDfH56K7fs+nDABS/SQJnKITGF30JWqFEFZfmuAGeoxtGHN1hN0qmu6D0dDhIAfS+dLe8g
-        pfuY9/n8xbBa2/5gUZHTlKz8ZxOGtk4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-119-d5U_WhvSPbmwh6DTLH-6NA-1; Mon, 04 May 2020 10:21:00 -0400
-X-MC-Unique: d5U_WhvSPbmwh6DTLH-6NA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D0A1518FE861;
-        Mon,  4 May 2020 14:20:58 +0000 (UTC)
-Received: from x1.home (ovpn-113-95.phx2.redhat.com [10.3.113.95])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DB11958;
-        Mon,  4 May 2020 14:20:55 +0000 (UTC)
-Date:   Mon, 4 May 2020 08:20:55 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cohuck@redhat.com, peterx@redhat.com
-Subject: Re: [PATCH 2/3] vfio-pci: Fault mmaps to enable vma tracking
-Message-ID: <20200504082055.0faeef8b@x1.home>
-In-Reply-To: <20200501232550.GP26002@ziepe.ca>
-References: <158836742096.8433.685478071796941103.stgit@gimli.home>
-        <158836915917.8433.8017639758883869710.stgit@gimli.home>
-        <20200501232550.GP26002@ziepe.ca>
-Organization: Red Hat
+        Mon, 4 May 2020 10:21:59 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDA7AC061A0E;
+        Mon,  4 May 2020 07:21:58 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id s9so4702521lfp.1;
+        Mon, 04 May 2020 07:21:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=TjQIadq6DfkSuMtzgbVyqx7eozFCGzVHUTUogoGl7xY=;
+        b=jIHpH8tCYXoUS/6yaeKsETWsdPAiDMK0RP02iwGzjzLK/nJ8eRqBiYJJ6etliXLip1
+         8PlROGndEGmJOkQb+GS9LVPB3FjI/MyuzkbiZRHX56/PrN7HKjF2MNK1lcG9iht/JBKj
+         hLlEk94jUha/lV4BWoFcV0WMPSo7uT2Jd/gVUmwmSdtW5KGcs6BhIPFLRhAgiP5Pxv+v
+         BDvR1GlfLHarnpA6VBkpl5OLGpVFPs5Q4OEZHGxcJNpQiO6jXq/ERSTvVesCLxKVONId
+         VMWRwzA4I0+tRUnuEkWEW7ZJY7TQNm00e0rgLEzgjIKJvhmvUgcnnwT8X7qCQfIuQttN
+         ZFaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=TjQIadq6DfkSuMtzgbVyqx7eozFCGzVHUTUogoGl7xY=;
+        b=K2frAgdxWXGL0XWJSaUpWGKdrq255SBlQqOoLPOKmmBtA8ZoB/XLqPV7k63SPDlnof
+         mQ7OXCQlh6ZetAQ//79DGSgWE7ov7H+Fw8gIV1R7+1M3lKjb3zNZnl/vLIIfDf2xdZqy
+         +PTuYVRJr0f1gh9na0E2ogYR6ny7dEDupNqdDmyyaL9DI6oIEiY3/eh6B53rPs1WDk1c
+         R9Te8g7jjMxQOlvkQrCFshFGPVu4cxPpD12zq6H78Gr7zUXI6yd5sHm91WtS2UBO0FZj
+         +DjenE47ZW+FxvINZqn52jV++/kRyLkwrGnrHgWncsXVVKXW5x3d+V8XFrF3Kv8RUdqV
+         su9A==
+X-Gm-Message-State: AGi0PuZZoDja/zqWVXue3J0o/xGCemk+Rnt9oarHN38WMhkrq7orlNJ+
+        XxFnbaCjWiEbt0cGi5HqUQVdCNcPxz8e5Q==
+X-Google-Smtp-Source: APiQypILiwgc6kOVf1Dh9xb4iNYqSTwVc8ILuaP2SqMOrOHSXjRr2sAkPPlMPKjIkNV0biK7ivNAUA==
+X-Received: by 2002:a05:6512:31d6:: with SMTP id j22mr11613555lfe.83.1588602117162;
+        Mon, 04 May 2020 07:21:57 -0700 (PDT)
+Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id a2sm8363646ljj.53.2020.05.04.07.21.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 May 2020 07:21:55 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Mon, 4 May 2020 16:21:53 +0200
+To:     Joel Fernandes <joel@joelfernandes.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Matthew Wilcox <willy@infradead.org>,
+        RCU <rcu@vger.kernel.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH 19/24] rcu/tree: Support reclaim for head-less object
+Message-ID: <20200504142153.GG17577@pc636>
+References: <20200428205903.61704-1-urezki@gmail.com>
+ <20200428205903.61704-20-urezki@gmail.com>
+ <20200501223909.GF7560@paulmck-ThinkPad-P72>
+ <20200504001258.GD197097@google.com>
+ <20200504002855.GF2869@paulmck-ThinkPad-P72>
+ <20200504003237.GD212435@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200504003237.GD212435@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 1 May 2020 20:25:50 -0300
-Jason Gunthorpe <jgg@ziepe.ca> wrote:
-
-> On Fri, May 01, 2020 at 03:39:19PM -0600, Alex Williamson wrote:
-> > Rather than calling remap_pfn_range() when a region is mmap'd, setup
-> > a vm_ops handler to support dynamic faulting of the range on access.
-> > This allows us to manage a list of vmas actively mapping the area that
-> > we can later use to invalidate those mappings.  The open callback
-> > invalidates the vma range so that all tracking is inserted in the
-> > fault handler and removed in the close handler.
+> > > 
+> > > If we are not doing single-pointer allocation, then that would also eliminate
+> > > entering the low-level page allocator for single-pointer allocations.
+> > > 
+> > > Or did you mean entry into the allocator for the full-page allocations
+> > > related to the pointer array for PREEMPT_RT? Even if we skip entry into the
+> > > allocator for those, we will still have additional caching which further
+> > > reduces chances of getting a full page. In the event of such failure, we can
+> > > simply queue the rcu_head.
+> > > 
+> > > Thoughts?
 > > 
-> > Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
-> > ---
-> >  drivers/vfio/pci/vfio_pci.c         |   76 ++++++++++++++++++++++++++++++++++-
-> >  drivers/vfio/pci/vfio_pci_private.h |    7 +++
-> >  2 files changed, 81 insertions(+), 2 deletions(-)  
+> > I was just trying to guess why you kept the single-pointer allocation.
+> > It looks like I guessed wrong.  ;-)
+> > 
+> > If, as you say above, you make it go straight to synchronize_rcu()
+> > upon full-page allocation failure, that would be good!
 > 
-> > +static vm_fault_t vfio_pci_mmap_fault(struct vm_fault *vmf)
-> > +{
-> > +	struct vm_area_struct *vma = vmf->vma;
-> > +	struct vfio_pci_device *vdev = vma->vm_private_data;
-> > +
-> > +	if (vfio_pci_add_vma(vdev, vma))
-> > +		return VM_FAULT_OOM;
-> > +
-> > +	if (remap_pfn_range(vma, vma->vm_start, vma->vm_pgoff,
-> > +			    vma->vm_end - vma->vm_start, vma->vm_page_prot))
-> > +		return VM_FAULT_SIGBUS;
-> > +
-> > +	return VM_FAULT_NOPAGE;
-> > +}
-> > +
-> > +static const struct vm_operations_struct vfio_pci_mmap_ops = {
-> > +	.open = vfio_pci_mmap_open,
-> > +	.close = vfio_pci_mmap_close,
-> > +	.fault = vfio_pci_mmap_fault,
-> > +};
-> > +
-> >  static int vfio_pci_mmap(void *device_data, struct vm_area_struct *vma)
-> >  {
-> >  	struct vfio_pci_device *vdev = device_data;
-> > @@ -1357,8 +1421,14 @@ static int vfio_pci_mmap(void *device_data, struct vm_area_struct *vma)
-> >  	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
-> >  	vma->vm_pgoff = (pci_resource_start(pdev, index) >> PAGE_SHIFT) + pgoff;
-> >  
-> > -	return remap_pfn_range(vma, vma->vm_start, vma->vm_pgoff,
-> > -			       req_len, vma->vm_page_prot);
-> > +	/*
-> > +	 * See remap_pfn_range(), called from vfio_pci_fault() but we can't
-> > +	 * change vm_flags within the fault handler.  Set them now.
-> > +	 */
-> > +	vma->vm_flags |= VM_IO | VM_PFNMAP | VM_DONTEXPAND | VM_DONTDUMP;
-> > +	vma->vm_ops = &vfio_pci_mmap_ops;  
+> Paul, sounds good. Vlad, are you also Ok with that?
 > 
-> Perhaps do the vfio_pci_add_vma & remap_pfn_range combo here if the
-> BAR is activated ? That way a fully populated BAR is presented in the
-> common case and avoids taking a fault path?
-> 
-> But it does seem OK as is
+OK, let's drop it and keep it simple :)
 
-Thanks for reviewing.  There's also an argument that we defer
-remap_pfn_range() until the device is actually touched, which might
-reduce the startup latency.  It's also a bit inconsistent with the
-vm_ops.open() path where I can't return error, so I can't call
-vfio_pci_add_vma(), I can only zap the vma so that the fault handler
-can return an error if necessary.  Therefore it felt more consistent,
-with potential startup latency improvements, to defer all mappings to
-the fault handler.  If there's a good reason to do otherwise, I can
-make the change, but I doubt I'd have encountered the dma mapping of an
-unfaulted vma issue had I done it this way, so maybe there's a test
-coverage argument as well.  Thanks,
+BTW, for PREEMPT_RT we still can do a page allocation for single
+argument of kvfree_rcu(). In case of double we just revert everything
+to the rcu_head if no cache.
 
-Alex
+For single argument we can drop the lock before the entry to the page
+allocator. Because it follows might_sleep() anotation we avoid of having
+a situation when spinlock(rt mutex) is taken from any atomic context.
 
+Since the lock is dropped the current context can be interrupted by
+an IRQ which in its turn can also call kvfree_rcu() on current CPU.
+In that case it must be double argument(single is not allowed) kvfree_rcu()
+call. For PREEMPT_RT if no cache everything is reverted to rcu_head usage,
+i.e. the entry to page allocator is bypassed.
+
+It can be addressed as a separate patch and send out later on if we
+are on the same page.
+
+Paul, Joel what are your opinions?
+
+--
+Vlad Rezki
