@@ -2,121 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58FD91C47C0
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 22:14:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BFD81C47C4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 22:15:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727789AbgEDUOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 16:14:32 -0400
-Received: from mout.web.de ([212.227.15.4]:40017 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726111AbgEDUOb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 16:14:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1588623251;
-        bh=fM0qlrt2nxlUHS4Lo23+CVfKwk8o4EthxceeGf2zWcQ=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=gRGwNFL4aqk3ftRPT/XVgKszD4NxC5QJwT7DfO5aAVvSRyUP77T3BgNnDOOXkx4v5
-         pHP08SLR542bd3AYKhm1IsScaseSL+w3MB1vdW97c84WYhAvGsFdSTviZJZVVjAv+f
-         /1Y/o67CKfREnINCTw7reg1Tm9zg1V+4m3rt/6oI=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([93.133.152.69]) by smtp.web.de (mrweb002
- [213.165.67.108]) with ESMTPSA (Nemesis) id 0LtXDY-1j6Qpr0KAe-010scS; Mon, 04
- May 2020 22:14:11 +0200
-Subject: Re: [v3] nfp: abm: Fix incomplete release of system resources in
- nfp_abm_vnic_set_mac()
-To:     Qiushi Wu <wu000273@umn.edu>, netdev@vger.kernel.org
-Cc:     LKML <linux-kernel@vger.kernel.org>, oss-drivers@netronome.com,
-        Kangjie Lu <kjlu@umn.edu>, Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-References: <20200503204932.11167-1-wu000273@umn.edu>
- <20200504100300.28438c70@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAMV6ehFC=efyD81rtNRcWW9gbiD4t6z4G2TkLk7WqLS+Qg9X-Q@mail.gmail.com>
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-Message-ID: <ca694a38-14c5-bb9e-c140-52a6d847017b@web.de>
-Date:   Mon, 4 May 2020 22:13:59 +0200
+        id S1727859AbgEDUPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 16:15:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726111AbgEDUPc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 16:15:32 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5F57C061A0E;
+        Mon,  4 May 2020 13:15:31 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id s8so10309wrt.9;
+        Mon, 04 May 2020 13:15:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:references:autocrypt:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=i+RbthjxFM69yETzo2H0vFLgAF3qI0S5kE5s/KINk2o=;
+        b=Ge7/ZzHdrTSgcP4mmTUGts8VnUNeciffJcfbr2qYA7+Y5UVx3UYdVHl2kQ3KRTB6K7
+         l13PvwD/ng/zkLnMUFScRkKE378fQnVthUL9rT2VGWAKbB2tcJe+3/Ieu2E98IldiGJU
+         g5wVII4Fc5TZYWE7EQUoPBqhU8cvLsOLSr2Qc1+Lm1eQdpk1NqdMtkfYSLUU8zolMX34
+         oy1XsjBg+oR+z5zu12zWlooVEBvR3erDTGA0yVq4jIfdOnLsHzG+YMoe4PxXc46pf2FF
+         lFKZElW7brRPj8froiPqiyScsbKAS5fMqmjuJIExdsoUh5OZKedVYCxWlUCS4O/Y8dNo
+         eeLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:references:autocrypt:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=i+RbthjxFM69yETzo2H0vFLgAF3qI0S5kE5s/KINk2o=;
+        b=Rqi8AxrOBFFH1JhRNxuHeaR0m3G7Sf+H7FnGPS6yDb6yO9PjqqZ2O5uGFfOrF12CJz
+         kobMKEhyuGAECXAnFI7uKpf1VV0wIalXSmPEb0DEdcMhScrkhDPHZVltGjSt57G61yBY
+         YxzYFd5Fij8XWbYvwc5poxaXybm1PZG4jJ2QmbUhtexaBPY9Z79PwK6MYb/jLQl3qKqu
+         AbN9wKcHcVvtTUekalvLkutDTxTHok48p2bNwTMgeCCaiiSBpEcjzTfBGTPsOuWkPvbU
+         Y2/cGc3X7eWWK80HsoM6SDmTSTpFfZflmul52J/jTLQltatiRWoNNn8kCkRfHmjwTZzt
+         UTJg==
+X-Gm-Message-State: AGi0PuZ7ZTB/NKtHRQEy/Ec1lHVBmghjH8T42K5hYXKpbcE9WCyKnv/z
+        KBqmOkRPClXQAkhnPe+POnxvWm70
+X-Google-Smtp-Source: APiQypLz8vk8hJf0nq3F12fm++iFM2tz6T6ZZ3EjufS3kTZgXajO6JWKOFcQ2i6oxb2zsZVzBPocUA==
+X-Received: by 2002:adf:dc81:: with SMTP id r1mr1246575wrj.0.1588623330087;
+        Mon, 04 May 2020 13:15:30 -0700 (PDT)
+Received: from [192.168.43.168] ([109.126.133.135])
+        by smtp.gmail.com with ESMTPSA id e21sm21847971wrc.1.2020.05.04.13.15.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 May 2020 13:15:29 -0700 (PDT)
+From:   Pavel Begunkov <asml.silence@gmail.com>
+To:     Jens Axboe <axboe@kernel.dk>, Jann Horn <jannh@google.com>,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <c7dc4d15f9065f41df5ad83e051d05e7c46f004f.1588622410.git.asml.silence@gmail.com>
+Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
+ 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 bA==
+Subject: Re: [PATCH for-5.7] io_uring: fix zero len do_splice()
+Message-ID: <136e55c8-b28f-a987-d1c7-8e888cc1439a@gmail.com>
+Date:   Mon, 4 May 2020 23:14:24 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-In-Reply-To: <CAMV6ehFC=efyD81rtNRcWW9gbiD4t6z4G2TkLk7WqLS+Qg9X-Q@mail.gmail.com>
+In-Reply-To: <c7dc4d15f9065f41df5ad83e051d05e7c46f004f.1588622410.git.asml.silence@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-X-Provags-ID: V03:K1:+3OdVBq/w0xTpg7DCIQ/+khai6nBBgVHN2yAtWx3B13sQPoMJ2b
- jKJndxmjJmCwOQp/bNhZ1jjRQFDctmm7HHcrTbvqi1NYtTF3ETyFmbUamQNTjtiT10ixQgp
- J3fIY/oR5qKEjBQUqn2039XAkPDurHMhf2P91tf6jxAI/kdPvPq/HcCqSwjVkaIPeyGJ5p9
- y9rLV6k+aGy28Ke8mjQ9g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:8i6+Wn1gR/0=:I1mENXJuiVPFqYBrETs/Mq
- 81G8JhG1T0GzJmbx+VF/4miHfL7eVSC5a9lnzBvyFJcyzxDFZE50RUKTXC3Iid0rGnVZsgocq
- M85MEfrf9VpTUqvD+Xnk+QI1ZjBDkzscPP+i/3gpzUwJ18qQEDw4eEKM5KQJ9hRXaJdg2NBxk
- W2R8BHxVn5Fd3Jx955PnxNNoKOL90KI4gTfBMfy5UGczeUgtTANGZLKdZD4UIUbSj0NhnCFet
- pt5/YV0Lt9G9o9QzFpmVNg7iRN7K4SNv0egqKNHplXZyqOTG6rgyquQwKmPWNCnWvaSEdXlNK
- Y6Gr54hNyTxCC/GXOqK5Xpr051/j4hT/jzK4BQFGKG3RhvHr0yLT5AyPBwebRRofO/s8pwNOd
- 7SYUFAff2jOn4zNdXMkd2sqelTikFr/ax+qCI/N4amMB4db2jo4eEmVV6np1cbqHbWe5rTteo
- X4duCW/ocx5/BWS9ePhkWvhiIEYoF12l4VZ1woei6X9My7bZHIcCEF5fENWd0ZB3kp7Ld994C
- noHiR0Yo2pHUzvhDwAOWZvLZ9NLM8eF38U+NFX4tVdpxo4HW87dKMeh0tVAe5K01OPieLErgA
- yIqxA1r/f/kkL7ObbeG57p9cfktG9ByhyEvfouktOUpuh+6j/Y+BqLg2RdwaGUdgixpISW4fh
- fwRtzgipkFJW1iSHtphNiFSzMAPG28CJKXEEdGmhpT0KNRtY/PNIEm9MwELORShr7fSfypsWl
- G210kDpdh/AYewDUkp3kHdHRPKbAyuMtMFgZawT/qZpkSvcu7ULPJb8CVt8NEiVyhX3oU9wfq
- 2IhV56xl6CsHJGeCtFAnFs/563yDC9OPQ4AOk60ltFUyOskldBzr6EsHFQ4WwQU8Q0lm9v8ux
- 7N58MifQwP0SeUGRj8PAWKuUHZ5ruLpqrKUDDGVJ27Pfxz4rdrzh75vYDYLdejoJHa2O4fx2o
- U9D+PQ5XjuEB0/LSGXQvFB9W69FViszJhloDemRkhxORr9O2CAyVPj6dY2RvwJB2mW5wbPf6w
- fhe67IBxCtYuz/rgnGqnStkkdbe6aSOpGURd906GXbmmJEfqH4pPGmBSUmZHzyKMuKDyMZ9eY
- klXJS62YBVQK4Mli0IzXfiH+tZ+A1WI8Ewlf+A8AAtOQpKkrKer4v+5QeHR7OXvZpyKImMOMY
- vGEkofNqkadDyjgaa6CGHe5xQ+TWRCYztIXysp1ttroESXbQmHIKxeQTtihfZGZPk/F6a4idn
- +NkhnL5ZNnY1MYSOD
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> By the way, is there anything else that I need to improve for this patch?
+On 04/05/2020 23:00, Pavel Begunkov wrote:
+> do_splice() doesn't expect len to be 0. Just always return 0 in this
+> case as splice(2) do.
 
-I became curious if you would like to adjust further details from
-the change description.
-Other contributors might care less for presented concerns.
+There is a thing, splice/tee will always return success on len=0 even with
+invalid fds. Fast return for len=0, should really has been done after basic
+validation, but I don't want to break userspace.
 
-Regards,
-Markus
+Any ideas?
+
+> 
+> Fixes: 7d67af2c0134 ("io_uring: add splice(2) support")
+> Reported-by: Jann Horn <jannh@google.com>
+> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+> ---
+>  fs/io_uring.c | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/io_uring.c b/fs/io_uring.c
+> index 65458eda2127..d53a1ef2a205 100644
+> --- a/fs/io_uring.c
+> +++ b/fs/io_uring.c
+> @@ -2772,16 +2772,19 @@ static int io_splice(struct io_kiocb *req, bool force_nonblock)
+>  	struct file *out = sp->file_out;
+>  	unsigned int flags = sp->flags & ~SPLICE_F_FD_IN_FIXED;
+>  	loff_t *poff_in, *poff_out;
+> -	long ret;
+> +	long ret = 0;
+>  
+>  	if (force_nonblock)
+>  		return -EAGAIN;
+>  
+>  	poff_in = (sp->off_in == -1) ? NULL : &sp->off_in;
+>  	poff_out = (sp->off_out == -1) ? NULL : &sp->off_out;
+> -	ret = do_splice(in, poff_in, out, poff_out, sp->len, flags);
+> -	if (force_nonblock && ret == -EAGAIN)
+> -		return -EAGAIN;
+> +
+> +	if (sp->len) {
+> +		ret = do_splice(in, poff_in, out, poff_out, sp->len, flags);
+> +		if (force_nonblock && ret == -EAGAIN)
+> +			return -EAGAIN;
+> +	}
+>  
+>  	io_put_file(req, in, (sp->flags & SPLICE_F_FD_IN_FIXED));
+>  	req->flags &= ~REQ_F_NEED_CLEANUP;
+> 
+
+-- 
+Pavel Begunkov
