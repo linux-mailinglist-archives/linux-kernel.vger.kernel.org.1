@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93AA71C43DC
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:02:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B05501C4527
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:13:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730778AbgEDSCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:02:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58176 "EHLO mail.kernel.org"
+        id S1732302AbgEDSM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:12:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58274 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731276AbgEDSCH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:02:07 -0400
+        id S1731284AbgEDSCJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 14:02:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 93488206B8;
-        Mon,  4 May 2020 18:02:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EF61F20721;
+        Mon,  4 May 2020 18:02:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588615326;
-        bh=ALr5P5uc5kfYMY0WVPmuOGBIuhGk+HBbjdIrCLtCg9M=;
+        s=default; t=1588615328;
+        bh=sKd4IOOd+1Slt8yImQ9WOxQZC4UE/kImsmCfjq/0hBQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hH8MaPongcqNMftRhEIDSlp+Pmyv93qPRD5Qa1r5QYtv+IJtx+asnHPxfyCqPMMgH
-         kG21Vn2y4/5pN38uqUIf7C7pjgjIKLt81P2J2+ATztr8za43WlzOOJfYDFG9HkT4Sw
-         x8/eBP+CPmQzWDAGEpaHeN9EVrpEyp5osJ4mZerI=
+        b=RUlNZuPdXQQdTDr5sWeDdhS9wdSACuCEuMMecZ4efz6NjrB5QOq3E3IeVOEJLTwyd
+         kBHtPByFTQpBoH+LEg0Gu+FF9oiBC5SRgd9SC0E7ZhLBioVK7GXs6QtUYoSz2kgpUO
+         k/dorYnfnYPQOP3mxl5BZDIdVL0zLEVU4vQRnfVM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 4.19 31/37] btrfs: transaction: Avoid deadlock due to bad initialization timing of fs_info::journal_info
-Date:   Mon,  4 May 2020 19:57:44 +0200
-Message-Id: <20200504165451.463599438@linuxfoundation.org>
+        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 4.19 32/37] mmc: cqhci: Avoid false "cqhci: CQE stuck on" by not open-coding timeout loop
+Date:   Mon,  4 May 2020 19:57:45 +0200
+Message-Id: <20200504165451.529374240@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200504165448.264746645@linuxfoundation.org>
 References: <20200504165448.264746645@linuxfoundation.org>
@@ -43,127 +44,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
+From: Douglas Anderson <dianders@chromium.org>
 
-commit fcc99734d1d4ced30167eb02e17f656735cb9928 upstream.
+commit b1ac62a7ac386d76968af5f374a4a7a82a35fe31 upstream.
 
-[BUG]
-One run of btrfs/063 triggered the following lockdep warning:
-  ============================================
-  WARNING: possible recursive locking detected
-  5.6.0-rc7-custom+ #48 Not tainted
-  --------------------------------------------
-  kworker/u24:0/7 is trying to acquire lock:
-  ffff88817d3a46e0 (sb_internal#2){.+.+}, at: start_transaction+0x66c/0x890 [btrfs]
+Open-coding a timeout loop invariably leads to errors with handling
+the timeout properly in one corner case or another.  In the case of
+cqhci we might report "CQE stuck on" even if it wasn't stuck on.
+You'd just need this sequence of events to happen in cqhci_off():
 
-  but task is already holding lock:
-  ffff88817d3a46e0 (sb_internal#2){.+.+}, at: start_transaction+0x66c/0x890 [btrfs]
+1. Call ktime_get().
+2. Something happens to interrupt the CPU for > 100 us (context switch
+   or interrupt).
+3. Check time and; set "timed_out" to true since > 100 us.
+4. Read CQHCI_CTL.
+5. Both "reg & CQHCI_HALT" and "timed_out" are true, so break.
+6. Since "timed_out" is true, falsely print the error message.
 
-  other info that might help us debug this:
-   Possible unsafe locking scenario:
+Rather than fixing the polling loop, use readx_poll_timeout() like
+many people do.  This has been time tested to handle the corner cases.
 
-         CPU0
-         ----
-    lock(sb_internal#2);
-    lock(sb_internal#2);
-
-   *** DEADLOCK ***
-
-   May be due to missing lock nesting notation
-
-  4 locks held by kworker/u24:0/7:
-   #0: ffff88817b495948 ((wq_completion)btrfs-endio-write){+.+.}, at: process_one_work+0x557/0xb80
-   #1: ffff888189ea7db8 ((work_completion)(&work->normal_work)){+.+.}, at: process_one_work+0x557/0xb80
-   #2: ffff88817d3a46e0 (sb_internal#2){.+.+}, at: start_transaction+0x66c/0x890 [btrfs]
-   #3: ffff888174ca4da8 (&fs_info->reloc_mutex){+.+.}, at: btrfs_record_root_in_trans+0x83/0xd0 [btrfs]
-
-  stack backtrace:
-  CPU: 0 PID: 7 Comm: kworker/u24:0 Not tainted 5.6.0-rc7-custom+ #48
-  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
-  Workqueue: btrfs-endio-write btrfs_work_helper [btrfs]
-  Call Trace:
-   dump_stack+0xc2/0x11a
-   __lock_acquire.cold+0xce/0x214
-   lock_acquire+0xe6/0x210
-   __sb_start_write+0x14e/0x290
-   start_transaction+0x66c/0x890 [btrfs]
-   btrfs_join_transaction+0x1d/0x20 [btrfs]
-   find_free_extent+0x1504/0x1a50 [btrfs]
-   btrfs_reserve_extent+0xd5/0x1f0 [btrfs]
-   btrfs_alloc_tree_block+0x1ac/0x570 [btrfs]
-   btrfs_copy_root+0x213/0x580 [btrfs]
-   create_reloc_root+0x3bd/0x470 [btrfs]
-   btrfs_init_reloc_root+0x2d2/0x310 [btrfs]
-   record_root_in_trans+0x191/0x1d0 [btrfs]
-   btrfs_record_root_in_trans+0x90/0xd0 [btrfs]
-   start_transaction+0x16e/0x890 [btrfs]
-   btrfs_join_transaction+0x1d/0x20 [btrfs]
-   btrfs_finish_ordered_io+0x55d/0xcd0 [btrfs]
-   finish_ordered_fn+0x15/0x20 [btrfs]
-   btrfs_work_helper+0x116/0x9a0 [btrfs]
-   process_one_work+0x632/0xb80
-   worker_thread+0x80/0x690
-   kthread+0x1a3/0x1f0
-   ret_from_fork+0x27/0x50
-
-It's pretty hard to reproduce, only one hit so far.
-
-[CAUSE]
-This is because we're calling btrfs_join_transaction() without re-using
-the current running one:
-
-btrfs_finish_ordered_io()
-|- btrfs_join_transaction()		<<< Call #1
-   |- btrfs_record_root_in_trans()
-      |- btrfs_reserve_extent()
-	 |- btrfs_join_transaction()	<<< Call #2
-
-Normally such btrfs_join_transaction() call should re-use the existing
-one, without trying to re-start a transaction.
-
-But the problem is, in btrfs_join_transaction() call #1, we call
-btrfs_record_root_in_trans() before initializing current::journal_info.
-
-And in btrfs_join_transaction() call #2, we're relying on
-current::journal_info to avoid such deadlock.
-
-[FIX]
-Call btrfs_record_root_in_trans() after we have initialized
-current::journal_info.
-
-CC: stable@vger.kernel.org # 4.4+
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Fixes: a4080225f51d ("mmc: cqhci: support for command queue enabled host")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20200413162717.1.Idece266f5c8793193b57a1ddb1066d030c6af8e0@changeid
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/btrfs/transaction.c |   13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ drivers/mmc/host/cqhci.c |   21 ++++++++++-----------
+ 1 file changed, 10 insertions(+), 11 deletions(-)
 
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -572,10 +572,19 @@ again:
- 	}
+--- a/drivers/mmc/host/cqhci.c
++++ b/drivers/mmc/host/cqhci.c
+@@ -13,6 +13,7 @@
+ #include <linux/delay.h>
+ #include <linux/highmem.h>
+ #include <linux/io.h>
++#include <linux/iopoll.h>
+ #include <linux/module.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/slab.h>
+@@ -351,12 +352,16 @@ static int cqhci_enable(struct mmc_host
+ /* CQHCI is idle and should halt immediately, so set a small timeout */
+ #define CQHCI_OFF_TIMEOUT 100
  
- got_it:
--	btrfs_record_root_in_trans(h, root);
++static u32 cqhci_read_ctl(struct cqhci_host *cq_host)
++{
++	return cqhci_readl(cq_host, CQHCI_CTL);
++}
++
+ static void cqhci_off(struct mmc_host *mmc)
+ {
+ 	struct cqhci_host *cq_host = mmc->cqe_private;
+-	ktime_t timeout;
+-	bool timed_out;
+ 	u32 reg;
++	int err;
+ 
+ 	if (!cq_host->enabled || !mmc->cqe_on || cq_host->recovery_halt)
+ 		return;
+@@ -366,15 +371,9 @@ static void cqhci_off(struct mmc_host *m
+ 
+ 	cqhci_writel(cq_host, CQHCI_HALT, CQHCI_CTL);
+ 
+-	timeout = ktime_add_us(ktime_get(), CQHCI_OFF_TIMEOUT);
+-	while (1) {
+-		timed_out = ktime_compare(ktime_get(), timeout) > 0;
+-		reg = cqhci_readl(cq_host, CQHCI_CTL);
+-		if ((reg & CQHCI_HALT) || timed_out)
+-			break;
+-	}
 -
- 	if (!current->journal_info)
- 		current->journal_info = h;
-+
-+	/*
-+	 * btrfs_record_root_in_trans() needs to alloc new extents, and may
-+	 * call btrfs_join_transaction() while we're also starting a
-+	 * transaction.
-+	 *
-+	 * Thus it need to be called after current->journal_info initialized,
-+	 * or we can deadlock.
-+	 */
-+	btrfs_record_root_in_trans(h, root);
-+
- 	return h;
- 
- join_fail:
+-	if (timed_out)
++	err = readx_poll_timeout(cqhci_read_ctl, cq_host, reg,
++				 reg & CQHCI_HALT, 0, CQHCI_OFF_TIMEOUT);
++	if (err < 0)
+ 		pr_err("%s: cqhci: CQE stuck on\n", mmc_hostname(mmc));
+ 	else
+ 		pr_debug("%s: cqhci: CQE off\n", mmc_hostname(mmc));
 
 
