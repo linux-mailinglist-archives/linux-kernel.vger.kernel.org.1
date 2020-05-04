@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 037531C4506
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:12:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 148491C44B6
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:09:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732285AbgEDSLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:11:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60782 "EHLO mail.kernel.org"
+        id S1731978AbgEDSG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:06:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731533AbgEDSDd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:03:33 -0400
+        id S1731958AbgEDSGZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 14:06:25 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CF25420707;
-        Mon,  4 May 2020 18:03:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4A16D20721;
+        Mon,  4 May 2020 18:06:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588615413;
-        bh=sJvUXY4jKJ59y85O7d56ajWyoMqv8hzihExsn6RTZ+8=;
+        s=default; t=1588615584;
+        bh=VbAQfR2M04RtC+waQITrYrcHnc8XtCKGxpNl6W13Eig=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q95L9MiohbYCVg7f9r0Qwv0zzKPvWyITH1OULXMZh9xnM3WYgnJlVpUwwZmnlSQTH
-         23bXmUX7JRCLIp+2SrCSvOtogO4n2Ff3AiKjO8Lmjy4cDY0o51Vu0Wbh6zuSl6xVfN
-         9scvYRtTtmcmwci39/BUo9LaUmKF+go/ZIRGBlYA=
+        b=14Nb6ayWn8vdlRa6WodSMatGPvkAeqEwxo6YhLi+l2bF1xLun23y/Bc9H7HyaXuV7
+         3ZT+lyiW7PkI2ALXiCuXTPhkj70hqNtTmLNsrI05IFu36TSJgKmSI2xNraQR+gXTxF
+         9pMM42Qk7SDbdR/MeHrlK7GLSxGVBPBC9GqxMnbo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
-        Gerd Hoffmann <kraxel@redhat.com>
-Subject: [PATCH 5.4 05/57] drm/qxl: qxl_release leak in qxl_hw_surface_alloc()
-Date:   Mon,  4 May 2020 19:57:09 +0200
-Message-Id: <20200504165457.069539664@linuxfoundation.org>
+        stable@vger.kernel.org, Chris Wilson <chris@chris-wilson.co.uk>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Subject: [PATCH 5.6 07/73] drm/i915/gt: Check cacheline is valid before acquiring
+Date:   Mon,  4 May 2020 19:57:10 +0200
+Message-Id: <20200504165503.252291539@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200504165456.783676004@linuxfoundation.org>
-References: <20200504165456.783676004@linuxfoundation.org>
+In-Reply-To: <20200504165501.781878940@linuxfoundation.org>
+References: <20200504165501.781878940@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,35 +44,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasily Averin <vvs@virtuozzo.com>
+From: Chris Wilson <chris@chris-wilson.co.uk>
 
-commit a65aa9c3676ffccb21361d52fcfedd5b5ff387d7 upstream.
+commit 2abaad4eb59d1cdc903ea84c06acb406e2fbb263 upstream.
 
-Cc: stable@vger.kernel.org
-Fixes: 8002db6336dd ("qxl: convert qxl driver to proper use for reservations")
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-Link: http://patchwork.freedesktop.org/patch/msgid/2e5a13ae-9ab2-5401-aa4d-03d5f5593423@virtuozzo.com
-Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
+The hwsp_cacheline pointer from i915_request is very, very flimsy. The
+i915_request.timeline (and the hwsp_cacheline) are lost upon retiring
+(after an RCU grace). Therefore we need to confirm that once we have the
+right pointer for the cacheline, it is not in the process of being
+retired and disposed of before we attempt to acquire a reference to the
+cacheline.
+
+<3>[  547.208237] BUG: KASAN: use-after-free in active_debug_hint+0x6a/0x70 [i915]
+<3>[  547.208366] Read of size 8 at addr ffff88822a0d2710 by task gem_exec_parall/2536
+
+<4>[  547.208547] CPU: 3 PID: 2536 Comm: gem_exec_parall Tainted: G     U            5.7.0-rc2-ged7a286b5d02d-kasan_117+ #1
+<4>[  547.208556] Hardware name: Dell Inc. XPS 13 9350/, BIOS 1.4.12 11/30/2016
+<4>[  547.208564] Call Trace:
+<4>[  547.208579]  dump_stack+0x96/0xdb
+<4>[  547.208707]  ? active_debug_hint+0x6a/0x70 [i915]
+<4>[  547.208719]  print_address_description.constprop.6+0x16/0x310
+<4>[  547.208841]  ? active_debug_hint+0x6a/0x70 [i915]
+<4>[  547.208963]  ? active_debug_hint+0x6a/0x70 [i915]
+<4>[  547.208975]  __kasan_report+0x137/0x190
+<4>[  547.209106]  ? active_debug_hint+0x6a/0x70 [i915]
+<4>[  547.209127]  kasan_report+0x32/0x50
+<4>[  547.209257]  ? i915_gemfs_fini+0x40/0x40 [i915]
+<4>[  547.209376]  active_debug_hint+0x6a/0x70 [i915]
+<4>[  547.209389]  debug_print_object+0xa7/0x220
+<4>[  547.209405]  ? lockdep_hardirqs_on+0x348/0x5f0
+<4>[  547.209426]  debug_object_assert_init+0x297/0x430
+<4>[  547.209449]  ? debug_object_free+0x360/0x360
+<4>[  547.209472]  ? lock_acquire+0x1ac/0x8a0
+<4>[  547.209592]  ? intel_timeline_read_hwsp+0x4f/0x840 [i915]
+<4>[  547.209737]  ? i915_active_acquire_if_busy+0x66/0x120 [i915]
+<4>[  547.209861]  i915_active_acquire_if_busy+0x66/0x120 [i915]
+<4>[  547.209990]  ? __live_alloc.isra.15+0xc0/0xc0 [i915]
+<4>[  547.210005]  ? rcu_read_lock_sched_held+0xd0/0xd0
+<4>[  547.210017]  ? print_usage_bug+0x580/0x580
+<4>[  547.210153]  intel_timeline_read_hwsp+0xbc/0x840 [i915]
+<4>[  547.210284]  __emit_semaphore_wait+0xd5/0x480 [i915]
+<4>[  547.210415]  ? i915_fence_get_timeline_name+0x110/0x110 [i915]
+<4>[  547.210428]  ? lockdep_hardirqs_on+0x348/0x5f0
+<4>[  547.210442]  ? _raw_spin_unlock_irq+0x2a/0x40
+<4>[  547.210567]  ? __await_execution.constprop.51+0x2e0/0x570 [i915]
+<4>[  547.210706]  i915_request_await_dma_fence+0x8f7/0xc70 [i915]
+
+Fixes: 85bedbf191e8 ("drm/i915/gt: Eliminate the trylock for reading a timeline's hwsp")
+Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
+Cc: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+Cc: <stable@vger.kernel.org> # v5.6+
+Reviewed-by: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200427093038.29219-1-chris@chris-wilson.co.uk
+(cherry picked from commit 2759e395358b2b909577928894f856ab75bea41a)
+Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/qxl/qxl_cmd.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/i915/gt/intel_timeline.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/gpu/drm/qxl/qxl_cmd.c
-+++ b/drivers/gpu/drm/qxl/qxl_cmd.c
-@@ -480,9 +480,10 @@ int qxl_hw_surface_alloc(struct qxl_devi
- 		return ret;
+--- a/drivers/gpu/drm/i915/gt/intel_timeline.c
++++ b/drivers/gpu/drm/i915/gt/intel_timeline.c
+@@ -519,6 +519,8 @@ int intel_timeline_read_hwsp(struct i915
  
- 	ret = qxl_release_reserve_list(release, true);
--	if (ret)
-+	if (ret) {
-+		qxl_release_free(qdev, release);
- 		return ret;
--
-+	}
- 	cmd = (struct qxl_surface_cmd *)qxl_release_map(qdev, release);
- 	cmd->type = QXL_SURFACE_CMD_CREATE;
- 	cmd->flags = QXL_SURF_FLAG_KEEP_DATA;
+ 	rcu_read_lock();
+ 	cl = rcu_dereference(from->hwsp_cacheline);
++	if (i915_request_completed(from)) /* confirm cacheline is valid */
++		goto unlock;
+ 	if (unlikely(!i915_active_acquire_if_busy(&cl->active)))
+ 		goto unlock; /* seqno wrapped and completed! */
+ 	if (unlikely(i915_request_completed(from)))
 
 
