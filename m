@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A7D01C44BF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:10:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B24891C43EA
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:02:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731968AbgEDSJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:09:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36288 "EHLO mail.kernel.org"
+        id S1731363AbgEDSCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:02:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59050 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731910AbgEDSGI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:06:08 -0400
+        id S1731350AbgEDSCg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 14:02:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 23DA1205ED;
-        Mon,  4 May 2020 18:06:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AAF2620721;
+        Mon,  4 May 2020 18:02:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588615567;
-        bh=E4u7xH45/jlO1EBws73tdhHlwPB/QyI0cMl8bdPV9Uw=;
+        s=default; t=1588615355;
+        bh=mE/sYWgXPIp4AbOTkequVWThX26dgVQKrnppDC79Ko4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ArToTF0yiuO7b+Nn7DHEOxOpchcJm5oaovOGszMt3nFjlRSHFqUeSMiKsteEec4kv
-         t+9F314s0MpisiFI/oHQcXLcKkx44BVFkSQdRSf0eu2K2e5zghXS5E7+Hl7ncPcj2E
-         3P6u3AyJd2Uw6ZK1g7zyGE7elFTKC/y9sJIW5B0o=
+        b=ZV3FjkfC3ChVxsJ+B3mipUS2XISXvc27yrr9HCzh43+quWKrHU/sCbkjhB4uLOHHo
+         XjO1XD/d5pdRWY+LKulMTsBhrweybxw7Ky9u9jaGiUYJS0t3mIrzpoxee60hHUkrLi
+         6eR/AirtH3YId2RBBILJmnqrA/jZFzjRBozODx2Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Paul Moore <paul@paul-moore.com>
-Subject: [PATCH 5.6 32/73] selinux: properly handle multiple messages in selinux_netlink_send()
+        stable@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>
+Subject: [PATCH 4.19 22/37] vfio/type1: Fix VA->PA translation for PFNMAP VMAs in vaddr_get_pfn()
 Date:   Mon,  4 May 2020 19:57:35 +0200
-Message-Id: <20200504165507.399686778@linuxfoundation.org>
+Message-Id: <20200504165450.668045868@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200504165501.781878940@linuxfoundation.org>
-References: <20200504165501.781878940@linuxfoundation.org>
+In-Reply-To: <20200504165448.264746645@linuxfoundation.org>
+References: <20200504165448.264746645@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,112 +44,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Moore <paul@paul-moore.com>
+From: Sean Christopherson <sean.j.christopherson@intel.com>
 
-commit fb73974172ffaaf57a7c42f35424d9aece1a5af6 upstream.
+commit 5cbf3264bc715e9eb384e2b68601f8c02bb9a61d upstream.
 
-Fix the SELinux netlink_send hook to properly handle multiple netlink
-messages in a single sk_buff; each message is parsed and subject to
-SELinux access control.  Prior to this patch, SELinux only inspected
-the first message in the sk_buff.
+Use follow_pfn() to get the PFN of a PFNMAP VMA instead of assuming that
+vma->vm_pgoff holds the base PFN of the VMA.  This fixes a bug where
+attempting to do VFIO_IOMMU_MAP_DMA on an arbitrary PFNMAP'd region of
+memory calculates garbage for the PFN.
 
-Cc: stable@vger.kernel.org
-Reported-by: Dmitry Vyukov <dvyukov@google.com>
-Reviewed-by: Stephen Smalley <stephen.smalley.work@gmail.com>
-Signed-off-by: Paul Moore <paul@paul-moore.com>
+Hilariously, this only got detected because the first "PFN" calculated
+by vaddr_get_pfn() is PFN 0 (vma->vm_pgoff==0), and iommu_iova_to_phys()
+uses PA==0 as an error, which triggers a WARN in vfio_unmap_unpin()
+because the translation "failed".  PFN 0 is now unconditionally reserved
+on x86 in order to mitigate L1TF, which causes is_invalid_reserved_pfn()
+to return true and in turns results in vaddr_get_pfn() returning success
+for PFN 0.  Eventually the bogus calculation runs into PFNs that aren't
+reserved and leads to failure in vfio_pin_map_dma().  The subsequent
+call to vfio_remove_dma() attempts to unmap PFN 0 and WARNs.
+
+  WARNING: CPU: 8 PID: 5130 at drivers/vfio/vfio_iommu_type1.c:750 vfio_unmap_unpin+0x2e1/0x310 [vfio_iommu_type1]
+  Modules linked in: vfio_pci vfio_virqfd vfio_iommu_type1 vfio ...
+  CPU: 8 PID: 5130 Comm: sgx Tainted: G        W         5.6.0-rc5-705d787c7fee-vfio+ #3
+  Hardware name: Intel Corporation Mehlow UP Server Platform/Moss Beach Server, BIOS CNLSE2R1.D00.X119.B49.1803010910 03/01/2018
+  RIP: 0010:vfio_unmap_unpin+0x2e1/0x310 [vfio_iommu_type1]
+  Code: <0f> 0b 49 81 c5 00 10 00 00 e9 c5 fe ff ff bb 00 10 00 00 e9 3d fe
+  RSP: 0018:ffffbeb5039ebda8 EFLAGS: 00010246
+  RAX: 0000000000000000 RBX: ffff9a55cbf8d480 RCX: 0000000000000000
+  RDX: 0000000000000000 RSI: 0000000000000001 RDI: ffff9a52b771c200
+  RBP: 0000000000000000 R08: 0000000000000040 R09: 00000000fffffff2
+  R10: 0000000000000001 R11: ffff9a51fa896000 R12: 0000000184010000
+  R13: 0000000184000000 R14: 0000000000010000 R15: ffff9a55cb66ea08
+  FS:  00007f15d3830b40(0000) GS:ffff9a55d5600000(0000) knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: 0000561cf39429e0 CR3: 000000084f75f005 CR4: 00000000003626e0
+  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+  Call Trace:
+   vfio_remove_dma+0x17/0x70 [vfio_iommu_type1]
+   vfio_iommu_type1_ioctl+0x9e3/0xa7b [vfio_iommu_type1]
+   ksys_ioctl+0x92/0xb0
+   __x64_sys_ioctl+0x16/0x20
+   do_syscall_64+0x4c/0x180
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+  RIP: 0033:0x7f15d04c75d7
+  Code: <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 81 48 2d 00 f7 d8 64 89 01 48
+
+Fixes: 73fa0d10d077 ("vfio: Type1 IOMMU implementation")
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- security/selinux/hooks.c |   70 ++++++++++++++++++++++++++++++-----------------
- 1 file changed, 45 insertions(+), 25 deletions(-)
+ drivers/vfio/vfio_iommu_type1.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/security/selinux/hooks.c
-+++ b/security/selinux/hooks.c
-@@ -5829,40 +5829,60 @@ static unsigned int selinux_ipv6_postrou
+--- a/drivers/vfio/vfio_iommu_type1.c
++++ b/drivers/vfio/vfio_iommu_type1.c
+@@ -385,8 +385,8 @@ static int vaddr_get_pfn(struct mm_struc
+ 	vma = find_vma_intersection(mm, vaddr, vaddr + 1);
  
- static int selinux_netlink_send(struct sock *sk, struct sk_buff *skb)
- {
--	int err = 0;
--	u32 perm;
-+	int rc = 0;
-+	unsigned int msg_len;
-+	unsigned int data_len = skb->len;
-+	unsigned char *data = skb->data;
- 	struct nlmsghdr *nlh;
- 	struct sk_security_struct *sksec = sk->sk_security;
-+	u16 sclass = sksec->sclass;
-+	u32 perm;
- 
--	if (skb->len < NLMSG_HDRLEN) {
--		err = -EINVAL;
--		goto out;
--	}
--	nlh = nlmsg_hdr(skb);
-+	while (data_len >= nlmsg_total_size(0)) {
-+		nlh = (struct nlmsghdr *)data;
- 
--	err = selinux_nlmsg_lookup(sksec->sclass, nlh->nlmsg_type, &perm);
--	if (err) {
--		if (err == -EINVAL) {
-+		/* NOTE: the nlmsg_len field isn't reliably set by some netlink
-+		 *       users which means we can't reject skb's with bogus
-+		 *       length fields; our solution is to follow what
-+		 *       netlink_rcv_skb() does and simply skip processing at
-+		 *       messages with length fields that are clearly junk
-+		 */
-+		if (nlh->nlmsg_len < NLMSG_HDRLEN || nlh->nlmsg_len > data_len)
-+			return 0;
-+
-+		rc = selinux_nlmsg_lookup(sclass, nlh->nlmsg_type, &perm);
-+		if (rc == 0) {
-+			rc = sock_has_perm(sk, perm);
-+			if (rc)
-+				return rc;
-+		} else if (rc == -EINVAL) {
-+			/* -EINVAL is a missing msg/perm mapping */
- 			pr_warn_ratelimited("SELinux: unrecognized netlink"
--			       " message: protocol=%hu nlmsg_type=%hu sclass=%s"
--			       " pid=%d comm=%s\n",
--			       sk->sk_protocol, nlh->nlmsg_type,
--			       secclass_map[sksec->sclass - 1].name,
--			       task_pid_nr(current), current->comm);
--			if (!enforcing_enabled(&selinux_state) ||
--			    security_get_allow_unknown(&selinux_state))
--				err = 0;
-+				" message: protocol=%hu nlmsg_type=%hu sclass=%s"
-+				" pid=%d comm=%s\n",
-+				sk->sk_protocol, nlh->nlmsg_type,
-+				secclass_map[sclass - 1].name,
-+				task_pid_nr(current), current->comm);
-+			if (enforcing_enabled(&selinux_state) &&
-+			    !security_get_allow_unknown(&selinux_state))
-+				return rc;
-+			rc = 0;
-+		} else if (rc == -ENOENT) {
-+			/* -ENOENT is a missing socket/class mapping, ignore */
-+			rc = 0;
-+		} else {
-+			return rc;
- 		}
- 
--		/* Ignore */
--		if (err == -ENOENT)
--			err = 0;
--		goto out;
-+		/* move to the next message after applying netlink padding */
-+		msg_len = NLMSG_ALIGN(nlh->nlmsg_len);
-+		if (msg_len >= data_len)
-+			return 0;
-+		data_len -= msg_len;
-+		data += msg_len;
+ 	if (vma && vma->vm_flags & VM_PFNMAP) {
+-		*pfn = ((vaddr - vma->vm_start) >> PAGE_SHIFT) + vma->vm_pgoff;
+-		if (is_invalid_reserved_pfn(*pfn))
++		if (!follow_pfn(vma, vaddr, pfn) &&
++		    is_invalid_reserved_pfn(*pfn))
+ 			ret = 0;
  	}
  
--	err = sock_has_perm(sk, perm);
--out:
--	return err;
-+	return rc;
- }
- 
- static void ipc_init_security(struct ipc_security_struct *isec, u16 sclass)
 
 
