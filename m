@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8A101C4390
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 19:59:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 233D91C4436
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:05:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730840AbgEDR7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 13:59:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53324 "EHLO mail.kernel.org"
+        id S1730896AbgEDSFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:05:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34820 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730826AbgEDR7f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 13:59:35 -0400
+        id S1731774AbgEDSFK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 14:05:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 917432075E;
-        Mon,  4 May 2020 17:59:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C535F206B8;
+        Mon,  4 May 2020 18:05:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588615175;
-        bh=yaSrsYE0N5KSzZ1Mxd8AqBPhY+jnZZhzXAsJHLQEezc=;
+        s=default; t=1588615509;
+        bh=z4cqvnk6Rzpi/NGSkK4ma/fkQPm9mS7DduXFNAfNqs0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U9N+UTSkZR4nXeweAmlkdYLBcN1YVfno1bL1VoAbmL4rL9mAEg0jxOH1bhGLnz/J+
-         dSIGvqaedrafzEDSI8b3HkMp/o0xQZQOH0Mvj3dWddUjlK9GS29aP6T6o1KgkqdxNw
-         SbY16cKkQv9l/djyNESnYkv4QQGfkF/LIiCe85s8=
+        b=KHxDf6W8IyfFcW0bVNZdG6eXqBzw2adGcYUGWDZ+JvG9bF9zAvzj2oW1Z+7t5m03k
+         XimQKM8x6MMBmBc7pudA/k7ppNy29neRNymD/9RAhoGZ25dy5pi0VqNWvJ7Wn1mRKn
+         wmH4QBOCK36EfkFihvIWvd8Ilt8ja0vw8TsOuk8s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>,
-        Manasi Navare <manasi.d.navare@intel.com>
-Subject: [PATCH 4.9 02/18] drm/edid: Fix off-by-one in DispID DTD pixel clock
-Date:   Mon,  4 May 2020 19:57:12 +0200
-Message-Id: <20200504165442.510359901@linuxfoundation.org>
+        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
+        Gerd Hoffmann <kraxel@redhat.com>
+Subject: [PATCH 5.6 10/73] drm/qxl: qxl_release use after free
+Date:   Mon,  4 May 2020 19:57:13 +0200
+Message-Id: <20200504165503.838845588@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200504165442.028485341@linuxfoundation.org>
-References: <20200504165442.028485341@linuxfoundation.org>
+In-Reply-To: <20200504165501.781878940@linuxfoundation.org>
+References: <20200504165501.781878940@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,39 +43,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ville Syrjälä <ville.syrjala@linux.intel.com>
+From: Vasily Averin <vvs@virtuozzo.com>
 
-commit 6292b8efe32e6be408af364132f09572aed14382 upstream.
+commit 933db73351d359f74b14f4af095808260aff11f9 upstream.
 
-The DispID DTD pixel clock is documented as:
-"00 00 00 h → FF FF FF h | Pixel clock ÷ 10,000 0.01 → 167,772.16 Mega Pixels per Sec"
-Which seems to imply that we to add one to the raw value.
+qxl_release should not be accesses after qxl_push_*_ring_release() calls:
+userspace driver can process submitted command quickly, move qxl_release
+into release_ring, generate interrupt and trigger garbage collector.
 
-Reality seems to agree as there are tiled displays in the wild
-which currently show a 10kHz difference in the pixel clock
-between the tiles (one tile gets its mode from the base EDID,
-the other from the DispID block).
+It can lead to crashes in qxl driver or trigger memory corruption
+in some kmalloc-192 slab object
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200423151743.18767-1-ville.syrjala@linux.intel.com
-Reviewed-by: Manasi Navare <manasi.d.navare@intel.com>
+Gerd Hoffmann proposes to swap the qxl_release_fence_buffer_objects() +
+qxl_push_{cursor,command}_ring_release() calls to close that race window.
+
+cc: stable@vger.kernel.org
+Fixes: f64122c1f6ad ("drm: add new QXL driver. (v1.4)")
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+Link: http://patchwork.freedesktop.org/patch/msgid/fa17b338-66ae-f299-68fe-8d32419d9071@virtuozzo.com
+Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/drm_edid.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/qxl/qxl_cmd.c     |    5 ++---
+ drivers/gpu/drm/qxl/qxl_display.c |    6 +++---
+ drivers/gpu/drm/qxl/qxl_draw.c    |    2 +-
+ drivers/gpu/drm/qxl/qxl_ioctl.c   |    5 +----
+ 4 files changed, 7 insertions(+), 11 deletions(-)
 
---- a/drivers/gpu/drm/drm_edid.c
-+++ b/drivers/gpu/drm/drm_edid.c
-@@ -3970,7 +3970,7 @@ static struct drm_display_mode *drm_mode
- 	struct drm_display_mode *mode;
- 	unsigned pixel_clock = (timings->pixel_clock[0] |
- 				(timings->pixel_clock[1] << 8) |
--				(timings->pixel_clock[2] << 16));
-+				(timings->pixel_clock[2] << 16)) + 1;
- 	unsigned hactive = (timings->hactive[0] | timings->hactive[1] << 8) + 1;
- 	unsigned hblank = (timings->hblank[0] | timings->hblank[1] << 8) + 1;
- 	unsigned hsync = (timings->hsync[0] | (timings->hsync[1] & 0x7f) << 8) + 1;
+--- a/drivers/gpu/drm/qxl/qxl_cmd.c
++++ b/drivers/gpu/drm/qxl/qxl_cmd.c
+@@ -500,8 +500,8 @@ int qxl_hw_surface_alloc(struct qxl_devi
+ 	/* no need to add a release to the fence for this surface bo,
+ 	   since it is only released when we ask to destroy the surface
+ 	   and it would never signal otherwise */
+-	qxl_push_command_ring_release(qdev, release, QXL_CMD_SURFACE, false);
+ 	qxl_release_fence_buffer_objects(release);
++	qxl_push_command_ring_release(qdev, release, QXL_CMD_SURFACE, false);
+ 
+ 	surf->hw_surf_alloc = true;
+ 	spin_lock(&qdev->surf_id_idr_lock);
+@@ -543,9 +543,8 @@ int qxl_hw_surface_dealloc(struct qxl_de
+ 	cmd->surface_id = id;
+ 	qxl_release_unmap(qdev, release, &cmd->release_info);
+ 
+-	qxl_push_command_ring_release(qdev, release, QXL_CMD_SURFACE, false);
+-
+ 	qxl_release_fence_buffer_objects(release);
++	qxl_push_command_ring_release(qdev, release, QXL_CMD_SURFACE, false);
+ 
+ 	return 0;
+ }
+--- a/drivers/gpu/drm/qxl/qxl_display.c
++++ b/drivers/gpu/drm/qxl/qxl_display.c
+@@ -523,8 +523,8 @@ static int qxl_primary_apply_cursor(stru
+ 	cmd->u.set.visible = 1;
+ 	qxl_release_unmap(qdev, release, &cmd->release_info);
+ 
+-	qxl_push_cursor_ring_release(qdev, release, QXL_CMD_CURSOR, false);
+ 	qxl_release_fence_buffer_objects(release);
++	qxl_push_cursor_ring_release(qdev, release, QXL_CMD_CURSOR, false);
+ 
+ 	return ret;
+ 
+@@ -665,8 +665,8 @@ static void qxl_cursor_atomic_update(str
+ 	cmd->u.position.y = plane->state->crtc_y + fb->hot_y;
+ 
+ 	qxl_release_unmap(qdev, release, &cmd->release_info);
+-	qxl_push_cursor_ring_release(qdev, release, QXL_CMD_CURSOR, false);
+ 	qxl_release_fence_buffer_objects(release);
++	qxl_push_cursor_ring_release(qdev, release, QXL_CMD_CURSOR, false);
+ 
+ 	if (old_cursor_bo != NULL)
+ 		qxl_bo_unpin(old_cursor_bo);
+@@ -713,8 +713,8 @@ static void qxl_cursor_atomic_disable(st
+ 	cmd->type = QXL_CURSOR_HIDE;
+ 	qxl_release_unmap(qdev, release, &cmd->release_info);
+ 
+-	qxl_push_cursor_ring_release(qdev, release, QXL_CMD_CURSOR, false);
+ 	qxl_release_fence_buffer_objects(release);
++	qxl_push_cursor_ring_release(qdev, release, QXL_CMD_CURSOR, false);
+ }
+ 
+ static void qxl_update_dumb_head(struct qxl_device *qdev,
+--- a/drivers/gpu/drm/qxl/qxl_draw.c
++++ b/drivers/gpu/drm/qxl/qxl_draw.c
+@@ -243,8 +243,8 @@ void qxl_draw_dirty_fb(struct qxl_device
+ 	}
+ 	qxl_bo_kunmap(clips_bo);
+ 
+-	qxl_push_command_ring_release(qdev, release, QXL_CMD_DRAW, false);
+ 	qxl_release_fence_buffer_objects(release);
++	qxl_push_command_ring_release(qdev, release, QXL_CMD_DRAW, false);
+ 
+ out_release_backoff:
+ 	if (ret)
+--- a/drivers/gpu/drm/qxl/qxl_ioctl.c
++++ b/drivers/gpu/drm/qxl/qxl_ioctl.c
+@@ -261,11 +261,8 @@ static int qxl_process_single_command(st
+ 			apply_surf_reloc(qdev, &reloc_info[i]);
+ 	}
+ 
++	qxl_release_fence_buffer_objects(release);
+ 	ret = qxl_push_command_ring_release(qdev, release, cmd->type, true);
+-	if (ret)
+-		qxl_release_backoff_reserve_list(release);
+-	else
+-		qxl_release_fence_buffer_objects(release);
+ 
+ out_free_bos:
+ out_free_release:
 
 
