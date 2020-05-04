@@ -2,44 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5CF41C4A31
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 01:24:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D04B21C4A2F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 01:24:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728507AbgEDXYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 19:24:06 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:39356 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728426AbgEDXXt (ORCPT
+        id S1728309AbgEDXX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 19:23:57 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:51026 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728427AbgEDXXu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 19:23:49 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 044NKvDI189045;
-        Mon, 4 May 2020 23:23:04 GMT
+        Mon, 4 May 2020 19:23:50 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 044NN6eb100167;
+        Mon, 4 May 2020 23:23:09 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=025THODSAUORN0KKxcGMO0F7lBMceQh7+vvoiAV8J5A=;
- b=Rs9/26B4gNxBfWStl5uLBsxpqlUrjqZF858zTW2b6FIWtGtzAY/AK0JBbkmfbDDUgzsR
- r/Ja28g9Xq91erwMGSy03vzTN9FrMNaguY0Z+Vk6upqsnTGl7TQ3eN/yWeWJIbKEOODa
- 4umdC3mTq2I6bUf/HHQxedfPIl+hFZ5w3+ufsOTkYh0sFpFGCRIjhAmTWUMcHK5eqVWl
- Cx3beG0ijQl7v2OU32bHEk75wR2qBWFno6OyW9maRIH5RKvznqibcwdFvRTTF7MhCF73
- 0Or2jAFt1Mw9DBjlHJiwDXFmZgZrUA7eeoWm8fs8Xy2J/kcVOZzeXeyBshMENTdUCNKa kQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 30s09r1v0t-1
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=o1NtgaO96Z6YGB/ubjzccSr7c2jU6ZstDnxOqI6Kh8Y=;
+ b=Ck06/42KPP/Ndp+gCzT649XYj23h6mVaLv0ipiZJ82+v0VTmPZblHmhpWxAfM1JZ5SE8
+ RpHFN20OTZh3QuuIGUv62GKwpGecbN/L/TSb81GIKMt3TR3F2fzldHHfl0MZMGO7YwE6
+ f5mflC7XkbTaPILqgea5NQ5zoFZ0Rh/OmtuNc6rmU0WxhjVKgY1s8jdm7b5DxkB436MM
+ L4mGNWmiOz8sYi37+U5ZdRz0oscdzBEUgzxshCfL86ZNJlMmsAZb6/MkKAMbKfWYHBCA
+ aowD8nZwGvRatoCzUb0Ht6hZQzQoWljsASlX6+D7BgEIsUQ3cCLzeaYNdNAON7H4fdRf YA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 30s0tm9t3j-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 04 May 2020 23:23:03 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 044NMTaR021575;
-        Mon, 4 May 2020 23:23:03 GMT
+        Mon, 04 May 2020 23:23:09 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 044NMoQD092955;
+        Mon, 4 May 2020 23:23:09 GMT
 Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 30sjjx5hyx-1
+        by aserp3030.oracle.com with ESMTP id 30sjdrpf56-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 04 May 2020 23:23:03 +0000
+        Mon, 04 May 2020 23:23:08 +0000
 Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 044NN2jk010758;
-        Mon, 4 May 2020 23:23:02 GMT
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 044NN7AS010770;
+        Mon, 4 May 2020 23:23:07 GMT
 Received: from tomti.i.net-space.pl (/10.175.189.148)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 04 May 2020 16:23:01 -0700
+        with ESMTP ; Mon, 04 May 2020 16:23:06 -0700
 From:   Daniel Kiper <daniel.kiper@oracle.com>
 To:     grub-devel@gnu.org, linux-kernel@vger.kernel.org,
         trenchboot-devel@googlegroups.com, x86@kernel.org
@@ -50,23 +51,26 @@ Cc:     alexander.burmashev@oracle.com, andrew.cooper3@citrix.com,
         krystian.hebel@3mdeb.com, lukasz.hawrylko@linux.intel.com,
         michal.zygowski@3mdeb.com, mjg59@google.com, phcoder@gmail.com,
         pirot.krol@3mdeb.com, pjones@redhat.com, ross.philipson@oracle.com
-Subject: [GRUB PATCH RFC 13/18] i386/slaunch: Add basic platform support for secure launch
-Date:   Tue,  5 May 2020 01:21:27 +0200
-Message-Id: <20200504232132.23570-14-daniel.kiper@oracle.com>
+Subject: [GRUB PATCH RFC 14/18] i386/txt: Add Intel TXT definitions header file
+Date:   Tue,  5 May 2020 01:21:28 +0200
+Message-Id: <20200504232132.23570-15-daniel.kiper@oracle.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20200504232132.23570-1-daniel.kiper@oracle.com>
 References: <20200504232132.23570-1-daniel.kiper@oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9611 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 phishscore=0
- bulkscore=0 malwarescore=0 spamscore=0 mlxlogscore=999 adultscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0 mlxscore=0
+ bulkscore=0 adultscore=0 phishscore=0 mlxlogscore=999 malwarescore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
  definitions=main-2005040182
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9611 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0
- lowpriorityscore=0 spamscore=0 adultscore=0 clxscore=1015 suspectscore=0
- priorityscore=1501 malwarescore=0 mlxlogscore=999 phishscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0
+ priorityscore=1501 lowpriorityscore=0 spamscore=0 suspectscore=0
+ phishscore=0 clxscore=1015 bulkscore=0 mlxlogscore=999 adultscore=0
  impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005040181
+ engine=8.12.0-2003020000 definitions=main-2005040182
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -77,44 +81,16 @@ From: Ross Philipson <ross.philipson@oracle.com>
 Signed-off-by: Ross Philipson <ross.philipson@oracle.com>
 Signed-off-by: Daniel Kiper <daniel.kiper@oracle.com>
 ---
- include/grub/i386/cpuid.h |  13 ++++
- include/grub/i386/crfr.h  | 186 ++++++++++++++++++++++++++++++++++++++++++++++
- include/grub/i386/mmio.h  |  90 ++++++++++++++++++++++
- include/grub/i386/msr.h   |  61 +++++++++++++++
- 4 files changed, 350 insertions(+)
- create mode 100644 include/grub/i386/crfr.h
- create mode 100644 include/grub/i386/mmio.h
+ include/grub/i386/txt.h | 690 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 690 insertions(+)
+ create mode 100644 include/grub/i386/txt.h
 
-diff --git a/include/grub/i386/cpuid.h b/include/grub/i386/cpuid.h
-index f7ae4b0a4..8176e5d11 100644
---- a/include/grub/i386/cpuid.h
-+++ b/include/grub/i386/cpuid.h
-@@ -19,6 +19,19 @@
- #ifndef GRUB_CPU_CPUID_HEADER
- #define GRUB_CPU_CPUID_HEADER 1
- 
-+/* General  */
-+#define GRUB_X86_CPUID_VENDOR	0x00000000
-+#define GRUB_X86_CPUID_FEATURES	0x00000001
-+
-+/* Intel  */
-+#define GRUB_VMX_CPUID_FEATURE	(1<<5)
-+#define GRUB_SMX_CPUID_FEATURE	(1<<6)
-+
-+/* AMD  */
-+#define GRUB_AMD_CPUID_FEATURES	0x80000001
-+#define GRUB_SVM_CPUID_FEATURE	(1<<2)
-+#define GRUB_AMD_CPUID_FUNC	0x8000000a
-+
- extern unsigned char grub_cpuid_has_longmode;
- extern unsigned char grub_cpuid_has_pae;
- 
-diff --git a/include/grub/i386/crfr.h b/include/grub/i386/crfr.h
+diff --git a/include/grub/i386/txt.h b/include/grub/i386/txt.h
 new file mode 100644
-index 000000000..284d6967b
+index 000000000..8280e461e
 --- /dev/null
-+++ b/include/grub/i386/crfr.h
-@@ -0,0 +1,186 @@
++++ b/include/grub/i386/txt.h
+@@ -0,0 +1,690 @@
 +/*
 + *  GRUB  --  GRand Unified Bootloader
 + *  Copyright (C) 2020  Oracle and/or its affiliates.
@@ -130,357 +106,681 @@ index 000000000..284d6967b
 + *  GNU General Public License for more details.
 + *
 + *  You should have received a copy of the GNU General Public License
-+ *  along with GRUB.  If not, see <https://www.gnu.org/licenses/>.
++ *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
++ *
++ *  Intel TXT definitions header file.
 + */
 +
-+#ifndef GRUB_CRFR_H
-+#define GRUB_CRFR_H 1
++#ifndef GRUB_TXT_H
++#define GRUB_TXT_H 1
 +
++#include <grub/err.h>
 +#include <grub/types.h>
++#include <grub/i386/memory.h>
++#include <grub/i386/mmio.h>
++#include <grub/i386/slaunch.h>
 +
-+/* Routines for R/W of control and flags registers */
++/* Intel TXT Software Developers Guide */
 +
-+#define GRUB_CR0_X86_PE		0x00000001 /* Enable Protected Mode */
-+#define GRUB_CR0_X86_MP		0x00000002 /* "Math" (FPU) Present */
-+#define GRUB_CR0_X86_EM		0x00000004 /* EMulate FPU */
-+#define GRUB_CR0_X86_TS		0x00000008 /* Task Switched */
-+#define GRUB_CR0_X86_PG		0x80000000 /* Enable PaGing */
++/* Chapter 2, Table 2 MLE/SINIT Capabilities Field Bit Definitions */
 +
-+#define GRUB_CR0_X86_NE		0x00000020 /* Numeric Error enable (EX16 vs IRQ13) */
-+#define GRUB_CR0_X86_WP		0x00010000 /* Write Protect */
-+#define GRUB_CR0_X86_AM		0x00040000 /* Alignment Mask */
-+#define GRUB_CR0_X86_NW		0x20000000 /* Not Write-through */
-+#define GRUB_CR0_X86_CD		0x40000000 /* Cache Disable */
++#define GRUB_TXT_PCR_EXT_MAX_AGILITY_POLICY	0
++#define GRUB_TXT_PCR_EXT_MAX_PERF_POLICY	1
 +
-+#define GRUB_CR4_X86_VME	0x00000001 /* Virtual 8086 mode extensions */
-+#define GRUB_CR4_X86_PVI	0x00000002 /* Protected-mode virtual interrupts */
-+#define GRUB_CR4_X86_TSD	0x00000004 /* Time stamp disable */
-+#define GRUB_CR4_X86_DE		0x00000008 /* Debugging extensions */
-+#define GRUB_CR4_X86_PSE	0x00000010 /* Page size extensions */
-+#define GRUB_CR4_X86_PAE	0x00000020 /* Physical address extension */
-+#define GRUB_CR4_X86_MCE	0x00000040 /* Enable Machine check enable */
-+#define GRUB_CR4_X86_PGE	0x00000080 /* Enable Page global */
-+#define GRUB_CR4_X86_PCE	0x00000100 /* Enable Performance monitoring counter */
-+#define GRUB_CR4_X86_FXSR	0x00000200 /* Fast FPU save/restore */
-+#define GRUB_CR4_X86_XMM	0x00000400 /* Enable SIMD/MMX2 to use except 16 */
-+#define GRUB_CR4_X86_VMXE	0x00002000 /* Enable VMX */
-+#define GRUB_CR4_X86_SMXE	0x00004000 /* Enable SMX */
-+#define GRUB_CR4_X86_PCIDE	0x00020000 /* Enable PCID */
++#define GRUB_TXT_PLATFORM_TYPE_LEGACY		0
++#define GRUB_TXT_PLATFORM_TYPE_CLIENT		1
++#define GRUB_TXT_PLATFORM_TYPE_SERVER		2
++#define GRUB_TXT_PLATFORM_TYPE_RESERVED		3
 +
-+static inline unsigned long
-+grub_read_cr4 (void)
++#define GRUB_TXT_CAPS_GETSEC_WAKE_SUPPORT	(1<<0)
++#define GRUB_TXT_CAPS_MONITOR_SUPPORT		(1<<1)
++#define GRUB_TXT_CAPS_ECX_PT_SUPPORT		(1<<2)
++#define GRUB_TXT_CAPS_STM_SUPPORT		(1<<3)
++#define GRUB_TXT_CAPS_TPM_12_NO_LEGACY_PCR_USAGE	(1<<4)
++#define GRUB_TXT_CAPS_TPM_12_AUTH_PCR_USAGE	(1<<5)
++#define GRUB_TXT_CAPS_PLATFORM_TYPE		(3<<6)
++#define GRUB_TXT_CAPS_MAXPHYSADDR_SUPPORT	(1<<8)
++#define GRUB_TXT_CAPS_TPM_20_EVTLOG_SUPPORT	(1<<9)
++#define GRUB_TXT_CAPS_CBNT_SUPPORT		(1<<10)
++/* Rest is reserved */
++
++/* Appendix A TXT Execution Technology Authenticated Code Modules */
++/* A.1 Authenticated Code Module Format */
++
++#define GRUB_TXT_ACM_MODULE_TYPE		2
++
++#define GRUB_TXT_ACM_MODULE_SUB_TYPE_TXT_ACM	0
++#define GRUB_TXT_ACM_MODULE_SUB_TYPE_S_ACM	1
++
++#define GRUB_TXT_ACM_HEADER_LEN_0_0		161
++#define GRUB_TXT_ACM_HEADER_LEN_3_0		224
++
++#define GRUB_TXT_ACM_HEADER_VERSION_0_0		0x0000
++#define GRUB_TXT_ACM_HEADER_VERSION_3_0		0x0300
++
++#define GRUB_TXT_ACM_FLAG_PREPRODUCTION		(1<<14)
++#define GRUB_TXT_ACM_FLAG_DEBUG_SIGNED		(1<<15)
++
++#define GRUB_TXT_ACM_MODULE_VENDOR_INTEL	0x00008086
++
++#define GRUB_TXT_MLE_MAX_SIZE			0x40000000
++
++#define GRUB_MLE_AP_WAKE_BLOCK_SIZE		GRUB_PAGE_SIZE
++
++struct grub_txt_acm_header
 +{
-+  unsigned long val;
++  grub_uint16_t module_type;
++  grub_uint16_t module_sub_type;
++  grub_uint32_t header_len;
++  grub_uint32_t header_version;
++  grub_uint16_t chipset_id;
++  grub_uint16_t flags;
++  grub_uint32_t module_vendor;
++  grub_uint32_t date; /* e.g 20131231H == December 31, 2013 */
++  grub_uint32_t size; /* multiples of 4 bytes */
++  grub_uint16_t txt_svn;
++  grub_uint16_t se_svn;
++  grub_uint32_t code_control;
++  grub_uint32_t error_entry_point;
++  grub_uint32_t gdt_limit;
++  grub_uint32_t gdt_base;
++  grub_uint32_t seg_sel;
++  grub_uint32_t entry_point;
++  grub_uint8_t reserved2[64];
++  grub_uint32_t key_size;
++  grub_uint32_t scratch_size;
++  /* RSA Pub Key and Signature */
++} GRUB_PACKED;
 +
-+  asm volatile ("mov %%cr4, %0" : "=r" (val) : : "memory");
++#define GRUB_TXT_ACM_UUID "\xaa\x3a\xc0\x7f\xa7\x46\xdb\x18\x2e\xac\x69\x8f\x8d\x41\x7f\x5a"
 +
-+  return val;
-+}
++#define GRUB_TXT_ACM_CHIPSET_TYPE_BIOS		0
++#define GRUB_TXT_ACM_CHIPSET_TYPE_SINIT		1
++#define GRUB_TXT_ACM_CHIPSET_TYPE_BIOS_RACM	8
++#define GRUB_TXT_ACM_CHIPSET_TYPE_SINIT_RACM	9
 +
-+static inline void
-+grub_write_cr4 (unsigned long val)
++struct grub_txt_acm_info_table
 +{
-+  asm volatile ("mov %0, %%cr4" : : "r" (val) : "memory");
-+}
++  grub_uint8_t uuid[16];
++  grub_uint8_t chipset_acm_type;
++  grub_uint8_t version;
++  grub_uint16_t length;
++  grub_uint32_t chipset_id_list;
++  grub_uint32_t os_sinit_data_ver;
++  grub_uint32_t min_mle_header_ver;
++  grub_uint32_t capabilities;
++  grub_uint32_t acm_version_revision;
++  grub_uint32_t processor_id_list;
++  /* Version >= 5 */
++  grub_uint32_t tpm_info_list;
++} GRUB_PACKED;
 +
-+#define GRUB_CR0	0
-+#define GRUB_CR1	1
-+#define GRUB_CR2	2
-+#define GRUB_CR3	3
-+#define GRUB_CR4	4
++struct grub_txt_acm_chipset_id_list
++{
++  grub_uint32_t count;
++        /* Array of chipset ID structs */
++} GRUB_PACKED;
++
++#define GRUB_TXT_ACM_REVISION_ID_MASK	(1<<0)
++
++struct grub_txt_acm_chipset_id
++{
++  grub_uint32_t flags;
++  grub_uint16_t vendor_id;
++  grub_uint16_t device_id;
++  grub_uint16_t revision_id;
++  grub_uint16_t reserved;
++  grub_uint32_t extended_id;
++} GRUB_PACKED;
++
++struct grub_txt_acm_processor_id_list
++{
++  grub_uint32_t count;
++        /* Array of processor ID structs */
++} GRUB_PACKED;
++
++struct grub_txt_acm_processor_id
++{
++  grub_uint32_t fms;
++  grub_uint32_t fms_mask;
++  grub_uint64_t platform_id;
++  grub_uint64_t platform_mask;
++} GRUB_PACKED;
++
++#define GRUB_TXT_TPM_CAPS_EXTPOL_NONE		0 /* TPM 1.2 */
++#define GRUB_TXT_TPM_CAPS_EXTPOL_MA		1
++#define GRUB_TXT_TPM_CAPS_EXTPOL_MP		2
++#define GRUB_TXT_TPM_CAPS_EXTPOL_BOTH		3
++
++#define GRUB_TXT_TPM_CAPS_FAMILY_DISCRETE_12	1
++#define GRUB_TXT_TPM_CAPS_FAMILY_DISCRETE_20	2
++#define GRUB_TXT_TPM_CAPS_FAMILY_FIRMWARE_20	8
++
++#define GRUB_TXT_TPM_CAPS_INITIAL_NV_INDICES	0
++#define GRUB_TXT_TPM_CAPS_TCP_NV_INDICES	1
++
++struct grub_txt_acm_tpm_info
++{
++  grub_uint32_t capabilities;
++  grub_uint16_t count;
++  /* List of supported hash algorithm per TPM2 spec */
++} GRUB_PACKED;
++
++/* Appendix B SMX Interaction with Platform */
++/* B.1 Intel Trusted Execution Technology Configuration Registers */
 +
 +#ifdef __x86_64__
-+#define read_cr(r, d) asm volatile ("movq %%cr" r ", %0" : "=r" (d))
++#define GRUB_TXT_CFG_REGS_PUB	0xfed30000ULL
 +#else
-+#define read_cr(r, d) asm volatile ("movl %%cr" r ", %0" : "=r" (d))
++#define GRUB_TXT_CFG_REGS_PUB	0xfed30000
 +#endif
 +
-+static inline unsigned long
-+grub_read_control_register(grub_uint8_t reg)
-+{
-+  unsigned long data;
++#define GRUB_TXT_STS			0x0000
++#define GRUB_TXT_ESTS			0x0008
++#define GRUB_TXT_ERRORCODE		0x0030
++#define GRUB_TXT_CMD_RESET		0x0038
++#define GRUB_TXT_CMD_CLOSE_PRIVATE	0x0048
++#define GRUB_TXT_VER_FSBIF		0x0100
++#define GRUB_TXT_DIDVID			0x0110
++#define GRUB_TXT_VER_QPIIF		0x0200
++#define GRUB_TXT_CMD_UNLOCK_MEM_CONFIG	0x0218
++#define GRUB_TXT_SINIT_BASE		0x0270
++#define GRUB_TXT_SINIT_SIZE		0x0278
++#define GRUB_TXT_MLE_JOIN		0x0290
++#define GRUB_TXT_HEAP_BASE		0x0300
++#define GRUB_TXT_HEAP_SIZE		0x0308
++#define GRUB_TXT_MSEG_BASE		0x0310
++#define GRUB_TXT_MSEG_SIZE		0x0318
++#define GRUB_TXT_DPR			0x0330
++#define GRUB_TXT_CMD_OPEN_LOCALITY1	0x0380
++#define GRUB_TXT_CMD_CLOSE_LOCALITY1	0x0388
++#define GRUB_TXT_CMD_OPEN_LOCALITY2	0x0390
++#define GRUB_TXT_CMD_CLOSE_LOCALITY2	0x0398
++#define GRUB_TXT_PUBLIC_KEY		0x0400
++#define GRUB_TXT_CMD_SECRETS		0x08e0
++#define GRUB_TXT_CMD_NO_SECRETS		0x08e8
++#define GRUB_TXT_E2STS			0x08f0
 +
-+  switch (reg)
++#define GRUB_TXT_STS_SENTER_DONE	(1 << 0)
++#define GRUB_TXT_STS_SEXIT_DONE		(1 << 1)
++#define GRUB_TXT_STS_MEM_CONFIG_LOCK	(1 << 6)
++#define GRUB_TXT_STS_PRIVATE_OPEN	(1 << 7)
++#define GRUB_TXT_STS_LOCALITY1_OPEN	(1 << 15)
++#define GRUB_TXT_STS_LOCALITY2_OPEN	(1 << 16)
++
++#define GRUB_TXT_ESTS_TXT_RESET		(1 << 0)
++
++#define GRUB_TXT_VER_FSBIF_DEBUG_FUSE	(1 << 31)
++
++#define GRUB_TXT_VER_QPIIF_DEBUG_FUSE	(1 << 31)
++
++#define GRUB_TXT_E2STS_SECRETS		(1 << 1)
++
++union grub_txt_didvid
++{
++  grub_uint64_t value;
++  struct
 +  {
-+  case GRUB_CR0:
-+    read_cr("0", data);
-+    break;
-+  case GRUB_CR1:
-+    read_cr("1", data);
-+    break;
-+  case GRUB_CR2:
-+    read_cr("2", data);
-+    break;
-+  case GRUB_CR3:
-+    read_cr("3", data);
-+    break;
-+  case GRUB_CR4:
-+    read_cr("4", data);
-+    break;
-+  default:
-+    /* TODO: Loudly complain if this is called. Even some kind of BUG() */
-+    data = ~0UL;
-+    break;
-+  }
++    grub_uint16_t vid;
++    grub_uint16_t did;
++    grub_uint16_t rid;
++    grub_uint16_t id_ext;
++  };
++} GRUB_PACKED;
 +
-+  return data;
++#define GRUB_TXT_VERSION_DEBUG_FUSED	(1<<31)
++
++/* Appendix C Intel TXT Heap Memory */
++
++/* Ext Data Structs */
++
++struct grub_txt_heap_uuid
++{
++  grub_uint32_t data1;
++  grub_uint16_t data2;
++  grub_uint16_t data3;
++  grub_uint16_t data4;
++  grub_uint8_t data5[6];
++} GRUB_PACKED;
++
++struct grub_txt_heap_ext_data_element
++{
++  grub_uint32_t type;
++  grub_uint32_t size;
++  grub_uint8_t data[];
++} GRUB_PACKED;
++
++#define GRUB_TXT_HEAP_EXTDATA_TYPE_END			0
++
++struct grub_txt_heap_end_element
++{
++  grub_uint32_t type;
++  grub_uint32_t size;
++} GRUB_PACKED;
++
++#define GRUB_TXT_HEAP_EXTDATA_TYPE_BIOS_SPEC_VER	1
++
++struct grub_txt_heap_bios_spec_ver_element
++{
++  grub_uint16_t spec_ver_major;
++  grub_uint16_t spec_ver_minor;
++  grub_uint16_t spec_ver_revision;
++} GRUB_PACKED;
++
++#define GRUB_TXT_HEAP_EXTDATA_TYPE_ACM			2
++
++struct grub_txt_heap_acm_element
++{
++  grub_uint32_t num_acms;
++  /* Array of num_acms grub_uint64_t addresses */
++} GRUB_PACKED;
++
++#define GRUB_TXT_HEAP_EXTDATA_TYPE_STM			3
++
++struct grub_txt_heap_stm_element
++{
++  /* STM specific BIOS properties */
++} GRUB_PACKED;
++
++#define GRUB_TXT_HEAP_EXTDATA_TYPE_CUSTOM		4
++
++struct grub_txt_heap_custom_element
++{
++  struct grub_txt_heap_uuid uuid;
++  /* Vendor Data */
++} GRUB_PACKED;
++
++#define GRUB_TXT_HEAP_EXTDATA_TYPE_TPM_EVENT_LOG_PTR	5
++
++struct grub_txt_heap_tpm_event_log_element
++{
++  grub_uint32_t type;
++  grub_uint32_t size;
++  grub_uint64_t event_log_phys_addr;
++} GRUB_PACKED;
++
++#define GRUB_TXT_HEAP_EXTDATA_TYPE_MADT			6
++
++struct grub_txt_heap_madt_element
++{
++  /* Copy of ACPI MADT table */
++} GRUB_PACKED;
++
++#define GRUB_TXT_HEAP_EXTDATA_TYPE_EVENT_LOG_POINTER2_1	8
++
++struct grub_txt_heap_event_log_pointer2_1_element
++{
++  grub_uint32_t type;
++  grub_uint32_t size;
++  grub_uint64_t phys_addr;
++  grub_uint32_t allocated_event_container_size;
++  grub_uint32_t first_record_offset;
++  grub_uint32_t next_record_offset;
++} GRUB_PACKED;
++
++#define GRUB_TXT_HEAP_EXTDATA_TYPE_MCFG			9
++
++struct grub_txt_heap_mcfg_element
++{
++  /* Copy of ACPI MCFG table */
++} GRUB_PACKED;
++
++/* TXT Heap Tables */
++
++struct grub_txt_bios_data
++{
++  grub_uint32_t version; /* Currently 5 for TPM 1.2 and 6 for TPM 2.0 */
++  grub_uint32_t bios_sinit_size;
++  grub_uint64_t reserved1;
++  grub_uint64_t reserved22;
++  grub_uint32_t num_logical_procs;
++  /* Versions >= 5 with updates in version 6 */
++  grub_uint32_t sinit_flags;
++  grub_uint32_t mle_flags;
++  /* Versions >= 4 */
++  /* Ext Data Elements */
++} GRUB_PACKED;
++
++/* GRUB SLAUNCH specific definitions OS-MLE data */
++#define GRUB_SL_BOOTPARAMS_OFFSET	0x12c
++#define GRUB_SL_MAX_EVENT_LOG_SIZE	(5*4*1024)   /* 4k*5 */
++#define GRUB_SL_MAX_VARIABLE_MTRRS	32
++#define GRUB_SL_OS_MLE_STRUCT_VERSION	1
++
++struct grub_slaunch_mtrr_pair
++{
++  grub_uint64_t mtrr_physbase;
++  grub_uint64_t mtrr_physmask;
++} GRUB_PACKED;
++
++struct grub_slaunch_mtrr_state
++{
++  grub_uint64_t default_mem_type;
++  grub_uint64_t mtrr_vcnt;
++  struct grub_slaunch_mtrr_pair mtrr_pair[GRUB_SL_MAX_VARIABLE_MTRRS];
++} GRUB_PACKED;
++
++struct grub_txt_os_mle_data
++{
++  grub_uint32_t version;
++  grub_uint32_t zero_page_addr;
++  grub_uint8_t msb_key_hash[20];
++  grub_uint64_t saved_misc_enable_msr;
++  struct grub_slaunch_mtrr_state saved_bsp_mtrrs;
++  grub_uint64_t ap_wake_ebp;
++  grub_uint64_t ap_wake_block;
++  grub_uint8_t event_log_buffer[GRUB_SL_MAX_EVENT_LOG_SIZE];
++} GRUB_PACKED;
++
++struct grub_txt_os_sinit_data
++{
++  grub_uint32_t version; /* Currently 6 for TPM 1.2 and 7 for TPM 2.0 */
++  grub_uint32_t flags;
++  grub_uint64_t mle_ptab;
++  grub_uint64_t mle_size;
++  grub_uint64_t mle_hdr_base;
++  grub_uint64_t vtd_pmr_lo_base;
++  grub_uint64_t vtd_pmr_lo_size;
++  grub_uint64_t vtd_pmr_hi_base;
++  grub_uint64_t vtd_pmr_hi_size;
++  grub_uint64_t lcp_po_base;
++  grub_uint64_t lcp_po_size;
++  grub_uint32_t capabilities;
++  /* Version = 5 */
++  grub_uint64_t    efi_rsdt_ptr;
++  /* Versions >= 6 */
++  /* Ext Data Elements */
++  grub_uint8_t ext_data_elts[];
++} GRUB_PACKED;
++
++struct grub_txt_sinit_mle_data
++{
++  grub_uint32_t version;             /* Current values are 6 through 9 */
++  /* Versions <= 8 */
++  grub_uint8_t bios_acm_id[20];
++  grub_uint32_t edx_senter_flags;
++  grub_uint64_t mseg_valid;
++  grub_uint8_t sinit_hash[20];
++  grub_uint8_t mle_hash[20];
++  grub_uint8_t stm_hash[20];
++  grub_uint8_t lcp_policy_hash[20];
++  grub_uint32_t lcp_policy_control;
++  /* Versions >= 7 */
++  grub_uint32_t rlp_wakeup_addr;
++  grub_uint32_t reserved;
++  grub_uint32_t num_of_sinit_mdrs;
++  grub_uint32_t sinit_mdrs_table_offset;
++  grub_uint32_t sinit_vtd_dmar_table_size;
++  grub_uint32_t sinit_vtd_dmar_table_offset;
++  /* Versions >= 8 */
++  grub_uint32_t processor_scrtm_status;
++  /* Versions >= 9 */
++  /* Ext Data Elements */
++} GRUB_PACKED;
++
++struct grub_txt_sinit_memory_descriptor_records
++{
++  grub_uint64_t address;
++  grub_uint64_t length;
++  grub_uint8_t type;
++  grub_uint8_t reserved[7];
++} GRUB_PACKED;
++
++/* Section 2 Measured Launch Environment */
++/* 2.1 MLE Architecture Overview */
++/* Table 1. MLE Header structure */
++
++struct grub_txt_mle_header
++{
++  grub_uint8_t uuid[16];
++  grub_uint32_t header_len;
++  grub_uint32_t version;
++  grub_uint32_t entry_point;
++  grub_uint32_t first_valid_page;
++  grub_uint32_t mle_start;
++  grub_uint32_t mle_end;
++  grub_uint32_t capabilities;
++  grub_uint32_t cmdline_start;
++  grub_uint32_t cmdline_end;
++} GRUB_PACKED;
++
++struct grub_txt_heap_event_log_ptr_elt
++{
++  grub_uint64_t event_log_phys_addr;
++} GRUB_PACKED;
++
++struct grub_txt_heap_event_log_ptr_elt2_1
++{
++  grub_uint64_t phys_addr;
++  grub_uint32_t allcoated_event_container_size;
++  grub_uint32_t first_record_offset;
++  grub_uint32_t next_record_offset;
++} GRUB_PACKED;
++
++/* TXT register and heap access */
++
++static inline grub_uint64_t
++grub_txt_reg_pub_readq (grub_uint32_t reg)
++{
++  return grub_readq ((void *) (GRUB_TXT_CFG_REGS_PUB + reg));
 +}
 +
-+#ifdef __x86_64__
-+#define write_cr(r, d) asm volatile ("movq %0, %%cr" r : : "r" (d))
-+#else
-+#define write_cr(r, d) asm volatile ("movl %0, %%cr" r : : "r" (d))
-+#endif
-+
-+static inline void
-+grub_write_control_register(grub_uint8_t reg, unsigned long data)
++static inline grub_uint8_t *
++grub_txt_get_heap (void)
 +{
-+  switch (reg)
-+  {
-+  case GRUB_CR0:
-+    write_cr("0", data);
-+    break;
-+  case GRUB_CR1:
-+    write_cr("1", data);
-+    break;
-+  case GRUB_CR2:
-+    write_cr("2", data);
-+    break;
-+  case GRUB_CR3:
-+    write_cr("3", data);
-+    break;
-+  case GRUB_CR4:
-+    write_cr("4", data);
-+    break;
-+  default:
-+    /* TODO: Loudly complain if this is called. Even some kind of BUG() */
-+    ;
-+  }
-+}
-+
-+#define GRUB_EFLAGS_X86_CF	0x00000001 /* Carry Flag */
-+#define GRUB_EFLAGS_X86_PF	0x00000004 /* Parity Flag */
-+#define GRUB_EFLAGS_X86_AF	0x00000010 /* Auxillary carry Flag */
-+#define GRUB_EFLAGS_X86_ZF	0x00000040 /* Zero Flag */
-+#define GRUB_EFLAGS_X86_SF	0x00000080 /* Sign Flag */
-+#define GRUB_EFLAGS_X86_TF	0x00000100 /* Trap Flag */
-+#define GRUB_EFLAGS_X86_IF	0x00000200 /* Interrupt Flag */
-+#define GRUB_EFLAGS_X86_DF	0x00000400 /* Direction Flag */
-+#define GRUB_EFLAGS_X86_OF	0x00000800 /* Overflow Flag */
-+#define GRUB_EFLAGS_X86_IOPL	0x00003000 /* IOPL mask */
-+#define GRUB_EFLAGS_X86_NT	0x00004000 /* Nested Task */
-+#define GRUB_EFLAGS_X86_RF	0x00010000 /* Resume Flag */
-+#define GRUB_EFLAGS_X86_VM	0x00020000 /* Virtual Mode */
-+#define GRUB_EFLAGS_X86_AC	0x00040000 /* Alignment Check */
-+#define GRUB_EFLAGS_X86_VIF	0x00080000 /* Virtual Interrupt Flag */
-+#define GRUB_EFLAGS_X86_VIP	0x00100000 /* Virtual Interrupt Pending */
-+#define GRUB_EFLAGS_X86_ID	0x00200000 /* CPUID detection flag */
-+
-+static inline unsigned long
-+grub_read_flags_register(void)
-+{
-+  unsigned long flags;
-+
-+#ifdef __x86_64__
-+  asm volatile ("pushfq; popq %0" : "=r" (flags));
-+#else
-+  asm volatile ("pushfl; popl %0" : "=r" (flags));
-+#endif
-+
-+  return flags;
-+}
-+
-+static inline void
-+grub_write_flags_register(unsigned long flags)
-+{
-+#ifdef __x86_64__
-+  asm volatile ("pushq %0; popfq" : : "r" (flags));
-+#else
-+  asm volatile ("pushl %0; popfl" : : "r" (flags));
-+#endif
-+}
-+
-+#endif
-diff --git a/include/grub/i386/mmio.h b/include/grub/i386/mmio.h
-new file mode 100644
-index 000000000..6f5bf18ce
---- /dev/null
-+++ b/include/grub/i386/mmio.h
-@@ -0,0 +1,90 @@
-+/*
-+ *  GRUB  --  GRand Unified Bootloader
-+ *  Copyright (C) 2020  Oracle and/or its affiliates.
-+ *
-+ *  GRUB is free software: you can redistribute it and/or modify
-+ *  it under the terms of the GNU General Public License as published by
-+ *  the Free Software Foundation, either version 3 of the License, or
-+ *  (at your option) any later version.
-+ *
-+ *  GRUB is distributed in the hope that it will be useful,
-+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ *  GNU General Public License for more details.
-+ *
-+ *  You should have received a copy of the GNU General Public License
-+ *  along with GRUB.  If not, see <https://www.gnu.org/licenses/>.
-+ */
-+
-+#ifndef GRUB_I386_MMIO_H
-+#define GRUB_I386_MMIO_H 1
-+
-+#include <grub/types.h>
-+
-+/* TODO: Are these barirers really needed??? */
-+#define grub_mb()	asm volatile ("mfence" : : : "memory")
-+#define grub_rmb()	asm volatile ("lfence" : : : "memory")
-+#define grub_wmb()	asm volatile ("sfence" : : : "memory")
-+#define grub_barrier()	asm volatile ("" : : : "memory")
-+
-+static inline grub_uint8_t
-+grub_readb (const volatile void *addr)
-+{
-+  grub_uint8_t val;
-+
-+  grub_barrier ();
-+  val = (*(volatile grub_uint8_t *) (addr));
-+  grub_rmb ();
-+
-+  return val;
-+}
-+
-+static inline grub_uint32_t
-+grub_readl (const volatile void *addr)
-+{
-+  grub_uint32_t val;
-+
-+  grub_barrier ();
-+  val = (*(volatile grub_uint32_t *) (addr));
-+  grub_rmb ();
-+
-+  return val;
++  return (grub_uint8_t *)(grub_addr_t) grub_txt_reg_pub_readq (GRUB_TXT_HEAP_BASE);
 +}
 +
 +static inline grub_uint64_t
-+grub_readq (const volatile void *addr)
++grub_txt_bios_data_size (grub_uint8_t *heap)
 +{
-+  grub_uint64_t val;
++  return *(grub_uint64_t *)heap;
++}
 +
-+  grub_barrier ();
-+  val = (*(volatile grub_uint64_t *) (addr));
-+  grub_rmb ();
++static inline struct grub_txt_bios_data*
++grub_txt_bios_data_start (grub_uint8_t *heap)
++{
++  return (struct grub_txt_bios_data*)(heap + sizeof (grub_uint64_t));
++}
 +
-+  return val;
++static inline grub_uint64_t
++grub_txt_os_mle_data_size (grub_uint8_t *heap)
++{
++  return *(grub_uint64_t *)(heap + grub_txt_bios_data_size (heap));
++}
++
++static inline struct grub_txt_os_mle_data*
++grub_txt_os_mle_data_start (grub_uint8_t *heap)
++{
++  return (struct grub_txt_os_mle_data*)(heap + grub_txt_bios_data_size (heap) +
++                                        sizeof (grub_uint64_t));
++}
++
++static inline grub_uint64_t
++grub_txt_os_sinit_data_size (grub_uint8_t *heap)
++{
++  return *(grub_uint64_t *)(heap + grub_txt_bios_data_size (heap) +
++                            grub_txt_os_mle_data_size (heap));
++}
++
++static inline struct grub_txt_os_sinit_data *
++grub_txt_os_sinit_data_start (grub_uint8_t *heap)
++{
++  return (struct grub_txt_os_sinit_data*)(heap +
++                 grub_txt_bios_data_size (heap) +
++                 grub_txt_os_mle_data_size (heap) + sizeof (grub_uint64_t));
++}
++
++static inline grub_uint64_t
++grub_txt_sinit_mle_data_size (grub_uint8_t *heap)
++{
++  return *(grub_uint64_t *)(heap + grub_txt_bios_data_size (heap) +
++                            grub_txt_os_mle_data_size (heap) +
++                            grub_txt_os_sinit_data_size (heap));
++}
++
++static inline struct grub_txt_sinit_mle_data*
++grub_txt_sinit_mle_data_start (grub_uint8_t *heap)
++{
++  return (struct grub_txt_sinit_mle_data*)(heap +
++                 grub_txt_bios_data_size (heap) +
++                 grub_txt_os_mle_data_size (heap) +
++                 grub_txt_os_sinit_data_size (heap) +
++                 sizeof (grub_uint64_t));
++}
++
++/* Intel 64 and IA-32 Architectures Software Developer’s Manual */
++/* Volume 2 (2A, 2B, 2C & 2D): Instruction Set Reference, A-Z */
++
++/* CHAPTER 6 SAFER MODE EXTENSIONS REFERENCE */
++
++#define GRUB_SMX_LEAF_CAPABILITIES	0
++#define GRUB_SMX_LEAF_UNDEFINED		1
++#define GRUB_SMX_LEAF_ENTERACCS		2
++#define GRUB_SMX_LEAF_EXITAC 		3
++#define GRUB_SMX_LEAF_SENTER		4
++#define GRUB_SMX_LEAF_SEXIT		5
++#define GRUB_SMX_LEAF_PARAMETERS	6
++#define GRUB_SMX_LEAF_SMCTRL		7
++#define GRUB_SMX_LEAF_WAKEUP		8
++
++#define GRUB_SMX_CAPABILITY_CHIPSET_PRESENT	(1<<0)
++#define GRUB_SMX_CAPABILITY_UNDEFINED		(1<<1)
++#define GRUB_SMX_CAPABILITY_ENTERACCS		(1<<2)
++#define GRUB_SMX_CAPABILITY_EXITAC		(1<<3)
++#define GRUB_SMX_CAPABILITY_SENTER		(1<<4)
++#define GRUB_SMX_CAPABILITY_SEXIT		(1<<5)
++#define GRUB_SMX_CAPABILITY_PARAMETERS		(1<<6)
++#define GRUB_SMX_CAPABILITY_SMCTRL		(1<<7)
++#define GRUB_SMX_CAPABILITY_WAKEUP		(1<<8)
++#define GRUB_SMX_CAPABILITY_EXTENDED_LEAFS	(1<<31)
++
++static inline grub_uint32_t
++grub_txt_getsec_capabilities (grub_uint32_t index)
++{
++  grub_uint32_t caps;
++
++  asm volatile (".byte 0x0f,0x37\n"
++                        : "=a" (caps)
++                        : "a" (GRUB_SMX_LEAF_CAPABILITIES), "b" (index));
++  return caps;
 +}
 +
 +static inline void
-+grub_writeb (grub_uint8_t val, volatile void *addr)
++grub_txt_getsec_enteraccs (grub_uint32_t acm_phys_addr, grub_uint32_t acm_size)
 +{
-+  grub_wmb ();
-+  (*(volatile grub_uint8_t *) (addr)) = val;
-+  grub_barrier ();
++  asm volatile (".byte 0x0f,0x37\n" :
++                        : "a" (GRUB_SMX_LEAF_ENTERACCS),
++                          "b" (acm_phys_addr), "c" (acm_size));
 +}
 +
 +static inline void
-+grub_writel (grub_uint32_t val, volatile void *addr)
++grub_txt_getsec_exitac (grub_uint32_t near_jump)
 +{
-+  grub_wmb ();
-+  (*(volatile grub_uint32_t *) (addr)) = val;
-+  grub_barrier ();
++  asm volatile (".byte 0x0f,0x37\n" :
++                        : "a" (GRUB_SMX_LEAF_EXITAC), "b" (near_jump));
 +}
 +
 +static inline void
-+grub_writeq (grub_uint64_t val, volatile void *addr)
++grub_txt_getsec_senter (grub_uint32_t acm_phys_addr, grub_uint32_t acm_size)
 +{
-+  grub_wmb ();
-+  (*(volatile grub_uint64_t *) (addr)) = val;
-+  grub_barrier ();
++  asm volatile (".byte 0x0f,0x37\n" :
++                        : "a" (GRUB_SMX_LEAF_SENTER),
++                          "b" (acm_phys_addr), "c" (acm_size));
 +}
 +
-+#endif /* GRUB_I386_MMIO_H */
-diff --git a/include/grub/i386/msr.h b/include/grub/i386/msr.h
-index 1e838c022..f2552ecbc 100644
---- a/include/grub/i386/msr.h
-+++ b/include/grub/i386/msr.h
-@@ -2,6 +2,9 @@
-  *  GRUB  --  GRand Unified Bootloader
-  *  Copyright (C) 2019  Free Software Foundation, Inc.
-  *
-+ *  Some definitions in this header are extracted from the Trusted Computing
-+ *  Group's "TPM Main Specification", Parts 1-3.
-+ *
-  *  GRUB is free software: you can redistribute it and/or modify
-  *  it under the terms of the GNU General Public License as published by
-  *  the Free Software Foundation, either version 3 of the License, or
-@@ -19,6 +22,62 @@
- #ifndef GRUB_I386_MSR_H
- #define GRUB_I386_MSR_H 1
- 
-+/* General */
-+#define GRUB_MSR_X86_PLATFORM_ID	0x00000017
++static inline void
++grub_txt_getsec_sexit (void)
++{
++  asm volatile (".byte 0x0f,0x37\n" : : "a" (GRUB_SMX_LEAF_SEXIT));
++}
 +
-+#define GRUB_MSR_X86_APICBASE		0x0000001b
-+#define GRUB_MSR_X86_APICBASE_BSP	(1<<8)
-+#define GRUB_MSR_X86_APICBASE_ENABLE	(1<<11)
-+#define GRUB_MSR_X86_APICBASE_BASE	(0xfffff<<12)
++#define GRUB_SMX_PARAMETER_TYPE_MASK		0x1f
++#define GRUB_SMX_PARAMETER_NULL			0
++#define GRUB_SMX_PARAMETER_ACM_VERSIONS		1
++#define GRUB_SMX_PARAMETER_MAX_ACM_SIZE		2
++#define GRUB_SMX_PARAMETER_ACM_MEMORY_TYPES	3
++#define GRUB_SMX_PARAMETER_SENTER_CONTROLS	4
++#define GRUB_SMX_PARAMETER_TXT_EXTENSIONS	5
 +
-+#define GRUB_MSR_X86_FEATURE_CONTROL	0x0000003a
-+#define GRUB_MSR_X86_ENABLE_VMX_IN_SMX	(1<<1)
-+#define GRUB_MSR_X86_SENTER_FUNCTIONS	(0x7f<<8)
-+#define GRUB_MSR_X86_SENTER_ENABLE	(1<<15)
 +
-+#define GRUB_MSR_X86_MTRRCAP		0x000000fe
-+#define GRUB_MSR_X86_VCNT_MASK		0xff
++#define GRUB_SMX_PARAMETER_MAX_VERSIONS	0x20
 +
-+#define GRUB_MSR_X86_MCG_CAP		0x00000179
-+#define GRUB_MSR_MCG_BANKCNT_MASK	0xff      /* Number of banks  */
-+#define GRUB_MSR_X86_MCG_STATUS		0x0000017a
-+#define GRUB_MSR_MCG_STATUS_MCIP	(1ULL<<2) /* MC in progress  */
++#define GRUB_SMX_GET_MAX_ACM_SIZE(v)	((v & ~GRUB_SMX_PARAMETER_TYPE_MASK)*0x20)
 +
-+#define GRUB_MSR_X86_MISC_ENABLE	0x000001a0
-+#define GRUB_MSR_X86_ENABLE_MONITOR_FSM	(1<<18)
++#define GRUB_SMX_ACM_MEMORY_TYPE_UC	0x00000100
++#define GRUB_SMX_ACM_MEMORY_TYPE_WC	0x00000200
++#define GRUB_SMX_ACM_MEMORY_TYPE_WT	0x00001000
++#define GRUB_SMX_ACM_MEMORY_TYPE_WP	0x00002000
++#define GRUB_SMX_ACM_MEMORY_TYPE_WB	0x00004000
 +
-+#define GRUB_MSR_X86_MTRR_PHYSBASE0	0x00000200
-+#define GRUB_MSR_X86_MTRR_PHYSMASK0	0x00000201
-+#define GRUB_MSR_X86_BASE_DEF_TYPE_MASK	0xff
-+#define GRUB_MSR_X86_MASK_VALID		(1<<11)
++#define GRUB_SMX_GET_ACM_MEMORY_TYPES(v) (v & ~GRUB_SMX_PARAMETER_TYPE_MASK)
 +
-+#define GRUB_MSR_X86_MTRR_DEF_TYPE	0x000002ff
-+#define GRUB_MSR_X86_DEF_TYPE_MASK	0xff
-+#define GRUB_MSR_X86_MTRR_ENABLE_FIXED	(1<<10)
-+#define GRUB_MSR_X86_MTRR_ENABLE	(1<<11)
++#define GRUB_SMX_GET_SENTER_CONTROLS(v)	((v & 0x7f00) >> 8)
 +
-+#define GRUB_MSR_X86_MC0_STATUS		0x00000401
++#define GRUB_SMX_PROCESSOR_BASE_SCRTM	0x00000020
++#define GRUB_SMX_MACHINE_CHECK_HANLDING	0x00000040
++#define GRUB_SMX_GET_TXT_EXT_FEATURES(v) (v & (GRUB_SMX_PROCESSOR_BASE_SCRTM|GRUB_SMX_MACHINE_CHECK_HANLDING))
 +
-+#define GRUB_MSR_X86_EFER		0xc0000080 /* Extended features  */
-+#define GRUB_MSR_EFER_LME		(1<<8)     /* Enable Long Mode/IA-32e  */
-+#define GRUB_MSR_EFER_LMA		(1<<10)    /* Long Mode/IA-32e Actuve  */
-+#define GRUB_MSR_EFER_SVME		(1<<12)    /* Enable virtualization  */
++#define GRUB_SMX_DEFAULT_VERSION	0x0
++#define GRUB_SMX_DEFAULT_VERSION_MASK	0xffffffff
++#define GRUB_SMX_DEFAULT_MAX_ACM_SIZE	0x8000 /* 32K */
++#define GRUB_SMX_DEFAULT_ACM_MEMORY_TYPE GRUB_SMX_ACM_MEMORY_TYPE_UC
++#define GRUB_SMX_DEFAULT_SENTER_CONTROLS 0x0
 +
-+/* AMD Specific */
-+#define GRUB_MSR_AMD64_PATCH_LEVEL	0x0000008b
-+#define GRUB_MSR_AMD64_PATCH_CLEAR	0xc0010021 /* AMD-specific microcode patch clear  */
-+#define GRUB_MSR_AMD64_VM_CR		0xc0010114
-+#define GRUB_MSR_SVM_VM_CR_SVM_DISABLE	4
++#define GRUB_TXT_PMR_ALIGN_SHIFT	21
++#define GRUB_TXT_PMR_ALIGN		(1 << GRUB_TXT_PMR_ALIGN_SHIFT)
 +
-+/* MTRR Specific */
-+#define GRUB_MTRR_MEMORY_TYPE_UC	0
-+#define GRUB_MTRR_MEMORY_TYPE_WC	1
-+#define GRUB_MTRR_MEMORY_TYPE_WT	4
-+#define GRUB_MTRR_MEMORY_TYPE_WP	5
-+#define GRUB_MTRR_MEMORY_TYPE_WB	6
++struct grub_smx_supported_versions
++{
++  grub_uint32_t mask;
++  grub_uint32_t version;
++} GRUB_PACKED;
 +
-+#ifndef ASM_FILE
++struct grub_smx_parameters
++{
++  struct grub_smx_supported_versions versions[GRUB_SMX_PARAMETER_MAX_VERSIONS];
++  grub_uint32_t version_count;
++  grub_uint32_t max_acm_size;
++  grub_uint32_t acm_memory_types;
++  grub_uint32_t senter_controls;
++  grub_uint32_t txt_feature_ext_flags;
++} GRUB_PACKED;
 +
- #include <grub/err.h>
- #include <grub/i386/cpuid.h>
- #include <grub/types.h>
-@@ -71,4 +130,6 @@ grub_wrmsr (grub_uint32_t msr_id, grub_uint64_t msr_value)
-   asm volatile ("wrmsr" : : "c" (msr_id), "a" (low), "d" (high));
- }
- 
-+#endif /* ASM_FILE */
++static inline void
++grub_txt_getsec_parameters (grub_uint32_t index, grub_uint32_t *eax_out,
++                            grub_uint32_t *ebx_out, grub_uint32_t *ecx_out)
++{
++  if (!eax_out || !ebx_out || !ecx_out)
++    return;
 +
- #endif /* GRUB_I386_MSR_H */
++  asm volatile (".byte 0x0f,0x37\n"
++                        : "=a" (*eax_out), "=b" (*ebx_out), "=c" (*ecx_out)
++                        : "0" (GRUB_SMX_LEAF_PARAMETERS), "1" (index));
++}
++
++extern grub_uint32_t grub_txt_supported_os_sinit_data_ver (struct grub_txt_acm_header* hdr);
++
++extern grub_uint32_t grub_txt_get_sinit_capabilities (struct grub_txt_acm_header* hdr);
++
++extern int grub_txt_is_sinit_acmod (const void *acmod_base, grub_uint32_t acmod_size);
++
++extern int grub_txt_acmod_match_platform (struct grub_txt_acm_header *hdr);
++
++extern struct grub_txt_acm_header* grub_txt_sinit_select (struct grub_txt_acm_header *sinit);
++
++extern grub_err_t grub_txt_verify_platform (void);
++extern grub_err_t grub_txt_prepare_cpu (void);
++
++extern grub_uint32_t grub_txt_get_mle_ptab_size (grub_uint32_t mle_size);
++extern void grub_txt_setup_mle_ptab (struct grub_slaunch_params *slparams);
++
++extern grub_err_t grub_txt_init (void);
++extern void grub_txt_shutdown (void);
++extern void grub_txt_state_show (void);
++extern grub_err_t grub_txt_boot_prepare (struct grub_slaunch_params *slparams);
++
++#endif
 -- 
 2.11.0
 
