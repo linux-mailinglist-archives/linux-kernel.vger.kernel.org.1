@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B35171C44C8
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:10:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B0E91C4449
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:06:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732255AbgEDSKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:10:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35794 "EHLO mail.kernel.org"
+        id S1731880AbgEDSFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:05:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35856 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731303AbgEDSFq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:05:46 -0400
+        id S1731260AbgEDSFs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 14:05:48 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 318F1206B8;
-        Mon,  4 May 2020 18:05:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CAAEB206B8;
+        Mon,  4 May 2020 18:05:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588615545;
-        bh=+lCzk60t6D3AqqDcbuo5xmrcjuWvczNzUemVjNaWeRg=;
+        s=default; t=1588615548;
+        bh=9d6Pvb4A4ksGSkUQd2jZmen4jVrxDFLyx/up/i+XRUs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=al6y9OGW5bHXgEkwXAeXwXURTdNVCWno/Q5RoiWOyG5IxzQj5GtQnADTMAhaDn7pm
-         e1eeJICe4Wz96reuH2360P4dpalXffkB8FQiE+AKhpJ6cYL3BB7eKWql3R12zXlkyF
-         p+dbOHeoPyIkEVFSvlPDJzNFQxJzooONakvib97c=
+        b=TszJzj+wo9TZxTPkXNOBM7nZhG7wmT/SHdw/OPPSbmcIYSNm41bzDz98C3OBfjqSg
+         syNRB4Tn0s7N8a9c0cw8RQp8+uEXD7qwPoR3Tn93RAUg7d0PoZO07zeJv4dVOkSS/E
+         X6oOtqXZ1sro8kn45vpQRqhe5dMvIwDOQzhheM6c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.6 24/73] ALSA: usb-audio: Correct a typo of NuPrime DAC-10 USB ID
-Date:   Mon,  4 May 2020 19:57:27 +0200
-Message-Id: <20200504165506.634960965@linuxfoundation.org>
+        stable@vger.kernel.org, Wu Bo <wubo40@huawei.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.6 25/73] ALSA: hda/hdmi: fix without unlocked before return
+Date:   Mon,  4 May 2020 19:57:28 +0200
+Message-Id: <20200504165506.938836738@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200504165501.781878940@linuxfoundation.org>
 References: <20200504165501.781878940@linuxfoundation.org>
@@ -42,32 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Wu Bo <wubo40@huawei.com>
 
-commit 547d2c9cf4f1f72adfecacbd5b093681fb0e8b3e upstream.
+commit a2f647240998aa49632fb09b01388fdf2b87acfc upstream.
 
-The USB vendor ID of NuPrime DAC-10 is not 16b0 but 16d0.
+Fix the following coccicheck warning:
+sound/pci/hda/patch_hdmi.c:1852:2-8: preceding lock on line 1846
 
-Fixes: f656891c6619 ("ALSA: usb-audio: add more quirks for DSD interfaces")
+After add sanity check to pass klockwork check,
+The spdif_mutex should be unlock before return true
+in check_non_pcm_per_cvt().
+
+Fixes: 960a581e22d9 ("ALSA: hda: fix some klockwork scan warnings")
+Signed-off-by: Wu Bo <wubo40@huawei.com>
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200430124755.15940-1-tiwai@suse.de
+Link: https://lore.kernel.org/r/1587907042-694161-1-git-send-email-wubo40@huawei.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/usb/quirks.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/hda/patch_hdmi.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1643,7 +1643,7 @@ u64 snd_usb_interface_dsd_format_quirks(
- 
- 	case USB_ID(0x0d8c, 0x0316): /* Hegel HD12 DSD */
- 	case USB_ID(0x10cb, 0x0103): /* The Bit Opus #3; with fp->dsd_raw */
--	case USB_ID(0x16b0, 0x06b2): /* NuPrime DAC-10 */
-+	case USB_ID(0x16d0, 0x06b2): /* NuPrime DAC-10 */
- 	case USB_ID(0x16d0, 0x09dd): /* Encore mDSD */
- 	case USB_ID(0x16d0, 0x0733): /* Furutech ADL Stratos */
- 	case USB_ID(0x16d0, 0x09db): /* NuPrime Audio DAC-9 */
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -1934,8 +1934,10 @@ static bool check_non_pcm_per_cvt(struct
+ 	/* Add sanity check to pass klockwork check.
+ 	 * This should never happen.
+ 	 */
+-	if (WARN_ON(spdif == NULL))
++	if (WARN_ON(spdif == NULL)) {
++		mutex_unlock(&codec->spdif_mutex);
+ 		return true;
++	}
+ 	non_pcm = !!(spdif->status & IEC958_AES0_NONAUDIO);
+ 	mutex_unlock(&codec->spdif_mutex);
+ 	return non_pcm;
 
 
