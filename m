@@ -2,124 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE3261C42F9
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 19:35:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A0BA1C430A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 19:38:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730425AbgEDRf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 13:35:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41708 "EHLO mail.kernel.org"
+        id S1730363AbgEDRia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 13:38:30 -0400
+Received: from mga02.intel.com ([134.134.136.20]:16140 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729597AbgEDRf1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 13:35:27 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 55B4320663;
-        Mon,  4 May 2020 17:35:26 +0000 (UTC)
-Date:   Mon, 4 May 2020 13:35:24 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-bcache@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH RFC 2/2] tracing/block: add request operation and flags
- into trace events
-Message-ID: <20200504133524.686c7be5@gandalf.local.home>
-In-Reply-To: <158860538157.30407.6389633238674780245.stgit@buzz>
-References: <158860537783.30407.1084087380643625249.stgit@buzz>
-        <158860538157.30407.6389633238674780245.stgit@buzz>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1730032AbgEDRia (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 13:38:30 -0400
+IronPort-SDR: QQFZU0pRrJNcsbKgtqFtOjXqpVx2CKZI1Gt4hBkBDxpNNl6iychyxN+5yB8Yt9J1Fq2h2R9dZn
+ ubN4OC8YGpUw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2020 10:38:29 -0700
+IronPort-SDR: EhmT2hBAhXyQCtUqJRpl9QSK8YtbIxLR5ZMVgssJEM26ptGSUBMgGEbTtE+TYWLl2ldS68E6mG
+ RbJBSpnlvcvQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,352,1583222400"; 
+   d="scan'208";a="434173944"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by orsmga005.jf.intel.com with ESMTP; 04 May 2020 10:38:27 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jVf2x-0009PD-10; Tue, 05 May 2020 01:38:27 +0800
+Date:   Tue, 05 May 2020 01:37:14 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:rcu/next] BUILD SUCCESS
+ 829960d8a31ef6f025276341b6bc13be4800be4a
+Message-ID: <5eb052ca.aNM5W0zyoCkVmv3Q%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 04 May 2020 18:16:21 +0300
-Konstantin Khlebnikov <khlebnikov@yandex-team.ru> wrote:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  rcu/next
+branch HEAD: 829960d8a31ef6f025276341b6bc13be4800be4a  rcu: Add callbacks-invoked counters
 
-> +/* Request operations, see enum req_opf */
-> +
-> +TRACE_DEFINE_ENUM(REQ_OP_READ);
-> +TRACE_DEFINE_ENUM(REQ_OP_WRITE);
-> +TRACE_DEFINE_ENUM(REQ_OP_FLUSH);
-> +TRACE_DEFINE_ENUM(REQ_OP_DISCARD);
-> +TRACE_DEFINE_ENUM(REQ_OP_SECURE_ERASE);
-> +TRACE_DEFINE_ENUM(REQ_OP_ZONE_RESET);
-> +TRACE_DEFINE_ENUM(REQ_OP_WRITE_SAME);
-> +TRACE_DEFINE_ENUM(REQ_OP_ZONE_RESET_ALL);
-> +TRACE_DEFINE_ENUM(REQ_OP_WRITE_ZEROES);
-> +TRACE_DEFINE_ENUM(REQ_OP_ZONE_OPEN);
-> +TRACE_DEFINE_ENUM(REQ_OP_ZONE_CLOSE);
-> +TRACE_DEFINE_ENUM(REQ_OP_ZONE_FINISH);
-> +TRACE_DEFINE_ENUM(REQ_OP_SCSI_IN);
-> +TRACE_DEFINE_ENUM(REQ_OP_SCSI_OUT);
-> +TRACE_DEFINE_ENUM(REQ_OP_DRV_IN);
-> +TRACE_DEFINE_ENUM(REQ_OP_DRV_OUT);
-> +
-> +#define BLOCK_REQ_OP_STRINGS					\
-> +	{ REQ_OP_READ,		"READ" },			\
-> +	{ REQ_OP_WRITE,		"WRITE" },			\
-> +	{ REQ_OP_FLUSH,		"FLUSH" },			\
-> +	{ REQ_OP_DISCARD,	"DISCARD" },			\
-> +	{ REQ_OP_SECURE_ERASE,	"SECURE_ERASE" },		\
-> +	{ REQ_OP_ZONE_RESET,	"ZONE_RESET" },			\
-> +	{ REQ_OP_WRITE_SAME,	"WRITE_SAME" },			\
-> +	{ REQ_OP_ZONE_RESET_ALL,"ZONE_RESET_ALL" },		\
-> +	{ REQ_OP_WRITE_ZEROES,	"WRITE_ZEROES" },		\
-> +	{ REQ_OP_ZONE_OPEN,	"ZONE_OPEN" },			\
-> +	{ REQ_OP_ZONE_CLOSE,	"ZONE_CLOSE" },			\
-> +	{ REQ_OP_ZONE_FINISH,	"ZONE_FINISH" },		\
-> +	{ REQ_OP_SCSI_IN,	"SCSI_IN" },			\
-> +	{ REQ_OP_SCSI_OUT,	"SCSI_OUT" },			\
-> +	{ REQ_OP_DRV_IN,	"DRV_IN" },			\
-> +	{ REQ_OP_DRV_OUT,	"DRV_OUT" }
-> +
-> +#define show_block_req_op(req)					\
-> +	__print_symbolic((req) & REQ_OP_MASK, BLOCK_REQ_OP_STRINGS)
-> +
+elapsed time: 3002m
 
-A common trick to avoid the duplication from above is to do this:
+configs tested: 192
+configs skipped: 22
 
-#define BLOCK_REQ_OP_STRINGS					\
-	EM( REQ_OP_READ,	"READ" )			\
-	EM( REQ_OP_WRITE,	"WRITE" )			\
-	EM( REQ_OP_FLUSH,	"FLUSH" )			\
-	EM( REQ_OP_DISCARD,	"DISCARD" )			\
-	EM( REQ_OP_SECURE_ERASE, "SECURE_ERASE" )		\
-	EM( REQ_OP_ZONE_RESET,	"ZONE_RESET" )			\
-	EM( REQ_OP_WRITE_SAME,	"WRITE_SAME" )			\
-	EM( REQ_OP_ZONE_RESET_ALL,"ZONE_RESET_ALL" )		\
-	EM( REQ_OP_WRITE_ZEROES, "WRITE_ZEROES" )		\
-	EM( REQ_OP_ZONE_OPEN,	"ZONE_OPEN" )			\
-	EM( REQ_OP_ZONE_CLOSE,	"ZONE_CLOSE" )			\
-	EM( REQ_OP_ZONE_FINISH,	"ZONE_FINISH" )			\
-	EM( REQ_OP_SCSI_IN,	"SCSI_IN" )			\
-	EM( REQ_OP_SCSI_OUT,	"SCSI_OUT" )			\
-	EM( REQ_OP_DRV_IN,	"DRV_IN" )			\
-	EMe( REQ_OP_DRV_OUT,	"DRV_OUT" )
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-#undef EM
-#undef EMe
+arm64                            allyesconfig
+arm                              allyesconfig
+arm64                            allmodconfig
+arm                              allmodconfig
+arm64                             allnoconfig
+arm                               allnoconfig
+arm                           efm32_defconfig
+arm                         at91_dt_defconfig
+arm                        shmobile_defconfig
+arm64                               defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                           sunxi_defconfig
+arm                        multi_v7_defconfig
+sparc                            allyesconfig
+um                                  defconfig
+s390                       zfcpdump_defconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                             alldefconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                        generic_defconfig
+ia64                          tiger_defconfig
+ia64                         bigsur_defconfig
+ia64                             allyesconfig
+ia64                             alldefconfig
+m68k                       m5475evb_defconfig
+m68k                             allmodconfig
+m68k                       bvme6000_defconfig
+m68k                           sun3_defconfig
+m68k                          multi_defconfig
+nios2                         3c120_defconfig
+nios2                         10m50_defconfig
+c6x                        evmc6678_defconfig
+c6x                              allyesconfig
+openrisc                 simple_smp_defconfig
+openrisc                    or1ksim_defconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                                defconfig
+alpha                               defconfig
+h8300                       h8s-sim_defconfig
+h8300                     edosk2674_defconfig
+xtensa                          iss_defconfig
+h8300                    h8300h-sim_defconfig
+xtensa                       common_defconfig
+arc                                 defconfig
+arc                              allyesconfig
+microblaze                      mmu_defconfig
+microblaze                    nommu_defconfig
+mips                malta_kvm_guest_defconfig
+mips                         tb0287_defconfig
+mips                       capcella_defconfig
+mips                           ip32_defconfig
+mips                  decstation_64_defconfig
+mips                      loongson3_defconfig
+mips                          ath79_defconfig
+mips                        bcm63xx_defconfig
+mips                      fuloong2e_defconfig
+mips                      malta_kvm_defconfig
+mips                            ar7_defconfig
+mips                             allyesconfig
+mips                         64r6el_defconfig
+mips                              allnoconfig
+mips                           32r2_defconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                generic-64bit_defconfig
+parisc                generic-32bit_defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                      chrp32_defconfig
+powerpc                             defconfig
+powerpc                       holly_defconfig
+powerpc                       ppc64_defconfig
+powerpc                          rhel-kconfig
+powerpc                           allnoconfig
+powerpc                  mpc866_ads_defconfig
+powerpc                    amigaone_defconfig
+powerpc                    adder875_defconfig
+powerpc                     ep8248e_defconfig
+powerpc                          g5_defconfig
+powerpc                     mpc512x_defconfig
+m68k                 randconfig-a001-20200502
+mips                 randconfig-a001-20200502
+nds32                randconfig-a001-20200502
+alpha                randconfig-a001-20200502
+parisc               randconfig-a001-20200502
+riscv                randconfig-a001-20200502
+m68k                 randconfig-a001-20200503
+mips                 randconfig-a001-20200503
+nds32                randconfig-a001-20200503
+alpha                randconfig-a001-20200503
+parisc               randconfig-a001-20200503
+riscv                randconfig-a001-20200503
+h8300                randconfig-a001-20200503
+nios2                randconfig-a001-20200503
+microblaze           randconfig-a001-20200503
+c6x                  randconfig-a001-20200503
+sparc64              randconfig-a001-20200503
+s390                 randconfig-a001-20200430
+xtensa               randconfig-a001-20200430
+csky                 randconfig-a001-20200430
+openrisc             randconfig-a001-20200430
+sh                   randconfig-a001-20200430
+xtensa               randconfig-a001-20200503
+openrisc             randconfig-a001-20200503
+csky                 randconfig-a001-20200503
+i386                 randconfig-b003-20200503
+x86_64               randconfig-b002-20200503
+i386                 randconfig-b001-20200503
+x86_64               randconfig-b003-20200503
+x86_64               randconfig-b001-20200503
+i386                 randconfig-b002-20200503
+x86_64               randconfig-c002-20200502
+i386                 randconfig-c002-20200502
+i386                 randconfig-c001-20200502
+i386                 randconfig-c003-20200502
+x86_64               randconfig-e003-20200503
+x86_64               randconfig-e002-20200503
+i386                 randconfig-e003-20200503
+x86_64               randconfig-e001-20200503
+i386                 randconfig-e002-20200503
+i386                 randconfig-e001-20200503
+i386                 randconfig-f003-20200502
+x86_64               randconfig-f001-20200502
+x86_64               randconfig-f003-20200502
+x86_64               randconfig-f002-20200502
+i386                 randconfig-f001-20200502
+i386                 randconfig-f002-20200502
+i386                 randconfig-f003-20200503
+x86_64               randconfig-f002-20200503
+i386                 randconfig-f001-20200503
+i386                 randconfig-f002-20200503
+x86_64               randconfig-g003-20200503
+i386                 randconfig-g003-20200503
+i386                 randconfig-g002-20200503
+x86_64               randconfig-g001-20200503
+i386                 randconfig-g001-20200503
+i386                 randconfig-h002-20200504
+i386                 randconfig-h001-20200504
+i386                 randconfig-h003-20200504
+x86_64               randconfig-h002-20200504
+x86_64               randconfig-h003-20200504
+x86_64               randconfig-h001-20200504
+i386                 randconfig-h001-20200502
+i386                 randconfig-h002-20200502
+i386                 randconfig-h003-20200502
+x86_64               randconfig-h002-20200502
+x86_64               randconfig-h001-20200502
+x86_64               randconfig-h003-20200502
+ia64                 randconfig-a001-20200502
+arm64                randconfig-a001-20200502
+arc                  randconfig-a001-20200502
+powerpc              randconfig-a001-20200502
+arm                  randconfig-a001-20200502
+sparc                randconfig-a001-20200502
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+s390                          debug_defconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                             alldefconfig
+s390                                defconfig
+sh                          rsk7269_defconfig
+sh                               allmodconfig
+sh                            titan_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                                allnoconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
 
-#define EM(a, b) TRACE_DEFINE_ENUM(a);
-#define EMe(a, b) TRACE_DEFINE_ENUM(a);
-
-BLOCK_REQ_OP_STRINGS
-
-#undef EM
-#undef EMe
-
-#define EM(a, b) { a, b },
-#define EMe(a, b)  { a , b }
-
-#define show_block_req_op(req)
-	__print_symbolic((req) & REQ_OP_MASK, BLOCK_REQ_OP_STRINGS)
-
-
-Several other event files in include/trace/events do this.
-
--- Steve
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
