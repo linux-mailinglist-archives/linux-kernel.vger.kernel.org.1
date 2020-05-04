@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F0C61C4458
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:06:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66C0C1C4575
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:15:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731467AbgEDSGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:06:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36858 "EHLO mail.kernel.org"
+        id S1730784AbgEDR71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 13:59:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52816 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731972AbgEDSG1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:06:27 -0400
+        id S1730759AbgEDR7U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 13:59:20 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ADAF520746;
-        Mon,  4 May 2020 18:06:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E6EBF2073E;
+        Mon,  4 May 2020 17:59:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588615587;
-        bh=5Ba3zmbe26PyiXUYcpJE1N44vRi1Et3FlZoBjwaufCk=;
+        s=default; t=1588615160;
+        bh=2Ts0qwqIIy4EueHUrt2AeaiXr9zjm5BSbIDgkMTapuw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B2hO/kvmT2XP37CAAP/Uxm6ytaGz+2eXdb+QAOlOQYyqkxbCAlV9FBqzVcCfC9KvS
-         InJm5/Bn+8+5Oaps4bU+XVUNKB/XNPulwvnjh53TkNylVs9lK7MfP3f5U2prjWStVa
-         7lhA3ETKsVfPgRJwVFpHc0UWUyUiIrkv4XRy2aGg=
+        b=Lts8jGsZki/bKWYeDy3rXgB9fpd4lWuNMpWuGz0LLUU6bjJEzUYy/tQClky1PM5oP
+         Lbnc9GlPFlE8j02RJI9oFCdYUE13kljXpySYzxiV7u0h+ihpuRYusuTJRPWnJWf7L3
+         WTwQ8ENH+7i+NvTRXyVjyvVm8Bd+7MBkSVVHUjQ4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
-        Gerd Hoffmann <kraxel@redhat.com>
-Subject: [PATCH 5.6 08/73] drm/qxl: qxl_release leak in qxl_draw_dirty_fb()
+        stable@vger.kernel.org, Theodore Tso <tytso@mit.edu>,
+        Dan Carpenter <dan.carpenter@oracle.com>, stable@kernel.org,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 4.9 01/18] ext4: fix special inode number checks in __ext4_iget()
 Date:   Mon,  4 May 2020 19:57:11 +0200
-Message-Id: <20200504165503.424748924@linuxfoundation.org>
+Message-Id: <20200504165442.343060583@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200504165501.781878940@linuxfoundation.org>
-References: <20200504165501.781878940@linuxfoundation.org>
+In-Reply-To: <20200504165442.028485341@linuxfoundation.org>
+References: <20200504165442.028485341@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -43,37 +46,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasily Averin <vvs@virtuozzo.com>
+From: Theodore Ts'o <tytso@mit.edu>
 
-commit 85e9b88af1e6164f19ec71381efd5e2bcfc17620 upstream.
+commit 191ce17876c9367819c4b0a25b503c0f6d9054d8 upstream.
 
-ret should be changed to release allocated struct qxl_release
+The check for special (reserved) inode number checks in __ext4_iget()
+was broken by commit 8a363970d1dc: ("ext4: avoid declaring fs
+inconsistent due to invalid file handles").  This was caused by a
+botched reversal of the sense of the flag now known as
+EXT4_IGET_SPECIAL (when it was previously named EXT4_IGET_NORMAL).
+Fix the logic appropriately.
 
-Cc: stable@vger.kernel.org
-Fixes: 8002db6336dd ("qxl: convert qxl driver to proper use for reservations")
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-Link: http://patchwork.freedesktop.org/patch/msgid/22cfd55f-07c8-95d0-a2f7-191b7153c3d4@virtuozzo.com
-Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
+Fixes: 8a363970d1dc ("ext4: avoid declaring fs inconsistent...")
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: stable@kernel.org
+Cc: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/qxl/qxl_draw.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ fs/ext4/inode.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/qxl/qxl_draw.c
-+++ b/drivers/gpu/drm/qxl/qxl_draw.c
-@@ -209,9 +209,10 @@ void qxl_draw_dirty_fb(struct qxl_device
- 		goto out_release_backoff;
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -4494,7 +4494,7 @@ struct inode *__ext4_iget(struct super_b
+ 	gid_t i_gid;
+ 	projid_t i_projid;
  
- 	rects = drawable_set_clipping(qdev, num_clips, clips_bo);
--	if (!rects)
-+	if (!rects) {
-+		ret = -EINVAL;
- 		goto out_release_backoff;
--
-+	}
- 	drawable = (struct qxl_drawable *)qxl_release_map(qdev, release);
- 
- 	drawable->clip.type = SPICE_CLIP_TYPE_RECTS;
+-	if (((flags & EXT4_IGET_NORMAL) &&
++	if ((!(flags & EXT4_IGET_SPECIAL) &&
+ 	     (ino < EXT4_FIRST_INO(sb) && ino != EXT4_ROOT_INO)) ||
+ 	    (ino < EXT4_ROOT_INO) ||
+ 	    (ino > le32_to_cpu(EXT4_SB(sb)->s_es->s_inodes_count))) {
 
 
