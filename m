@@ -2,136 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2DA01C45E5
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:29:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C4DD1C45ED
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730957AbgEDS3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:29:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33332 "EHLO
+        id S1730992AbgEDSaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:30:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730555AbgEDS31 (ORCPT
+        by vger.kernel.org with ESMTP id S1729937AbgEDSaT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:29:27 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B41EC061A0E
-        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 11:29:27 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id f7so5944201pfa.9
-        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 11:29:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3mcb3hEms/g2cRqXnF9mYGpTlaunEURjVZJCsIzGh9k=;
-        b=Zh/W+EiE3lvTwm+HWpVVsbuUMLNuAdreiZ2ZqOc+C3Ch5E1CjUraKKj4/BATTkl0SQ
-         nvB715f5f1/i8/QqCGuaBQQmLrIX/rGOkI7uCqvJgOziqNe4wpbCZDC64EOO8tEneDC8
-         5xZC438qx9k6dBvlrMI4JqvZbGDHXCci/LtIt8oaHR8w9sxBUtyE8LE/Fr77j5ASvaT5
-         EE5davlIM9hmPW7dbjVYycDHUjQYDbcrNLIGZv+yOb/kyKoUtTcWkcdTkEJE4O00VAUF
-         teOcH6GUEH+lU+8sdTOS1kCwvq4f5hoc7ZzEmJ4rFkPmkhdOHR+KOlMuGINjD/FbCU9L
-         D3NA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3mcb3hEms/g2cRqXnF9mYGpTlaunEURjVZJCsIzGh9k=;
-        b=KyIKnkMSBHYErcBGfnkGhVApGSIvmwHDRVuaRIamwyyWZsaRb8aRHh/WrOrgqzzQ4f
-         mzZB+EyDSTzHITtQQZL3/ZAbr6xJBJe8uSsDVi8Jv8+mBKcKAx6ObRiiL5BHorRIzkP1
-         3rHgW7441LYIi+2AK1DnSrVA5LM3zboOvOArC90TYL7QVJLu4SyNt+4HgNC7JQQnTGKH
-         qw49E8rJ4xaTQFMVy+xADgFUpIBTGhCQT26kkTe6mEpNJ5+h8vj7DUiK0raiOS6pyvfn
-         tDxX8LcAe1/D45qedmRhnSiOTy2J/mbrfqfnUp25npuRzi8o/qr9JjW4GMB9ulf8wn7u
-         CGdQ==
-X-Gm-Message-State: AGi0PubADI5VmbR5WDkBgTsIfJrTqvK41vlEb611nA58MIJNBCdSbS1a
-        uESjOA3v4NA8Q+kJv1M+6MVvqg==
-X-Google-Smtp-Source: APiQypJw2QOIf2XJfvZVcM8veojbbFcmiYFYAB5w4F2DRway3GD/F2mtQmG2UymA9Nd+umrDiTMePw==
-X-Received: by 2002:aa7:82d7:: with SMTP id f23mr19851746pfn.198.1588616966991;
-        Mon, 04 May 2020 11:29:26 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id 13sm9402013pfv.95.2020.05.04.11.29.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 May 2020 11:29:26 -0700 (PDT)
-Date:   Mon, 4 May 2020 11:30:10 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     robh+dt@kernel.org, davem@davemloft.net, evgreen@chromium.org,
-        subashab@codeaurora.org, cpratapa@codeaurora.org,
-        agross@kernel.org, devicetree@vger.kernel.org,
-        netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v2 1/4] dt-bindings: net: add IPA iommus property
-Message-ID: <20200504183010.GD20625@builder.lan>
-References: <20200504175859.22606-1-elder@linaro.org>
- <20200504175859.22606-2-elder@linaro.org>
+        Mon, 4 May 2020 14:30:19 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FABDC061A0E;
+        Mon,  4 May 2020 11:30:19 -0700 (PDT)
+Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tip-bot2@linutronix.de>)
+        id 1jVfr6-0005N9-DG; Mon, 04 May 2020 20:30:16 +0200
+Received: from [127.0.1.1] (localhost [IPv6:::1])
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id D90DD1C0084;
+        Mon,  4 May 2020 20:30:15 +0200 (CEST)
+Date:   Mon, 04 May 2020 18:30:15 -0000
+From:   "tip-bot2 for Joerg Roedel" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/boot] x86/boot/compressed/64: Switch to __KERNEL_CS after
+ GDT is loaded
+Cc:     Joerg Roedel <jroedel@suse.de>, Borislav Petkov <bp@suse.de>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200428151725.31091-13-joro@8bytes.org>
+References: <20200428151725.31091-13-joro@8bytes.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200504175859.22606-2-elder@linaro.org>
+Message-ID: <158861701576.8414.8257104010943662350.tip-bot2@tip-bot2>
+X-Mailer: tip-git-log-daemon
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 04 May 10:58 PDT 2020, Alex Elder wrote:
+The following commit has been merged into the x86/boot branch of tip:
 
-> The IPA accesses "IMEM" and main system memory through an SMMU, so
-> its DT node requires an iommus property to define range of stream IDs
-> it uses.
-> 
-> Signed-off-by: Alex Elder <elder@linaro.org>
-> ---
->  Documentation/devicetree/bindings/net/qcom,ipa.yaml | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/net/qcom,ipa.yaml b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
-> index 140f15245654..7b749fc04c32 100644
-> --- a/Documentation/devicetree/bindings/net/qcom,ipa.yaml
-> +++ b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
-> @@ -20,7 +20,10 @@ description:
->    The GSI is an integral part of the IPA, but it is logically isolated
->    and has a distinct interrupt and a separately-defined address space.
->  
-> -  See also soc/qcom/qcom,smp2p.txt and interconnect/interconnect.txt.
-> +  See also soc/qcom/qcom,smp2p.txt and interconnect/interconnect.txt.  See
-> +  iommu/iommu.txt and iommu/arm,smmu.yaml for more information about SMMU
-> +  bindings.
-> +
->  
->    - |
->      --------             ---------
-> @@ -54,6 +57,9 @@ properties:
->        - const: ipa-shared
->        - const: gsi
->  
-> +  iommus:
-> +    maxItems: 1
-> +
->    clocks:
->      maxItems: 1
->  
-> @@ -126,6 +132,7 @@ properties:
->  
->  required:
->    - compatible
-> +  - iommus
+Commit-ID:     34bb49229f19399a5b45c323afb5749f31f7876c
+Gitweb:        https://git.kernel.org/tip/34bb49229f19399a5b45c323afb5749f31f7876c
+Author:        Joerg Roedel <jroedel@suse.de>
+AuthorDate:    Tue, 28 Apr 2020 17:16:22 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Mon, 04 May 2020 19:53:08 +02:00
 
-This technically "breaks" backwards compatibility, but the binding is
-rather new and in limited use, so I think we should do this.
+x86/boot/compressed/64: Switch to __KERNEL_CS after GDT is loaded
 
+When the pre-decompression code loads its first GDT in startup_64(), it
+is still running on the CS value of the previous GDT. In the case of
+SEV-ES, this is the EFI GDT but it can be anything depending on what has
+loaded the kernel (boot loader, container runtime, etc.)
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+To make exception handling work (especially IRET) the CPU needs to
+switch to a CS value in the current GDT, so jump to __KERNEL_CS after
+the first GDT is loaded. This is prudent also as a general sanitization
+of CS to a known good value.
 
-Regards,
-Bjorn
+ [ bp: Massage commit message. ]
 
->    - reg
->    - clocks
->    - interrupts
-> @@ -164,6 +171,7 @@ examples:
->                  modem-init;
->                  modem-remoteproc = <&mss_pil>;
->  
-> +                iommus = <&apps_smmu 0x720 0x3>;
->                  reg = <0 0x1e40000 0 0x7000>,
->                          <0 0x1e47000 0 0x2000>,
->                          <0 0x1e04000 0 0x2c000>;
-> -- 
-> 2.20.1
-> 
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20200428151725.31091-13-joro@8bytes.org
+---
+ arch/x86/boot/compressed/head_64.S | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
+index 4f7e6b8..6b11060 100644
+--- a/arch/x86/boot/compressed/head_64.S
++++ b/arch/x86/boot/compressed/head_64.S
+@@ -393,6 +393,14 @@ SYM_CODE_START(startup_64)
+ 	addq	%rax, 2(%rax)
+ 	lgdt	(%rax)
+ 
++	/* Reload CS so IRET returns to a CS actually in the GDT */
++	pushq	$__KERNEL_CS
++	leaq	.Lon_kernel_cs(%rip), %rax
++	pushq	%rax
++	lretq
++
++.Lon_kernel_cs:
++
+ 	/*
+ 	 * paging_prepare() sets up the trampoline and checks if we need to
+ 	 * enable 5-level paging.
