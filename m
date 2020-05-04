@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 816011C451D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:12:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BAE81C4519
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:12:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732289AbgEDSMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:12:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58960 "EHLO mail.kernel.org"
+        id S1731259AbgEDSMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:12:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59000 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730828AbgEDSCa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:02:30 -0400
+        id S1731345AbgEDSCd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 14:02:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D9B042073E;
-        Mon,  4 May 2020 18:02:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4ABD0206B8;
+        Mon,  4 May 2020 18:02:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588615350;
-        bh=p2lFW4EGbbv2BXqjl+0zAIJRmb6LhRC1mQBNqnySme8=;
+        s=default; t=1588615352;
+        bh=2zBnnkOM1H+7bmygsb3P9WY2HQU87sUn/VQp+GBLkTk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YSfU3DU7UjLo0og3FYFxcHVbK3iJ57zarWUdNdORXo4KbJh3RfbUYfFeD1LlBVF+p
-         TzeFkBG3kUtILzB3iUzbuecWG6zTLtnfJNTzF4oJ8qNaXpdPAUAfPNjwl1ifWWRKKU
-         PNGhd2gnz7bna8hUr3e08eVM3O9Jyh4usQcRvwKc=
+        b=atJj59x7jeYaPPWcjJu9LMq9EN2EuMTJxkejTmiJ5ePzxPImS3u+XJvHnAOiMtqG8
+         JRK4Q75Ms5s4ZOgL1/B4esYiRP9BoUmhp6G7jM6Npof3kjX7wX+AG0h/a4mORzbxrF
+         Zfrk7ZRe6rsn3PFLAEHO7alDU05IWJZ4JMbVmzio=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jason Gunthorpe <jgg@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>
-Subject: [PATCH 4.19 20/37] RDMA/core: Fix race between destroy and release FD object
-Date:   Mon,  4 May 2020 19:57:33 +0200
-Message-Id: <20200504165450.549963642@linuxfoundation.org>
+        stable@vger.kernel.org, Yan Zhao <yan.y.zhao@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>
+Subject: [PATCH 4.19 21/37] vfio: avoid possible overflow in vfio_iommu_type1_pin_pages
+Date:   Mon,  4 May 2020 19:57:34 +0200
+Message-Id: <20200504165450.604878640@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200504165448.264746645@linuxfoundation.org>
 References: <20200504165448.264746645@linuxfoundation.org>
@@ -43,55 +43,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@mellanox.com>
+From: Yan Zhao <yan.y.zhao@intel.com>
 
-commit f0abc761bbb9418876cc4d1ebc473e4ea6352e42 upstream.
+commit 0ea971f8dcd6dee78a9a30ea70227cf305f11ff7 upstream.
 
-The call to ->lookup_put() was too early and it caused an unlock of the
-read/write protection of the uobject after the FD was put. This allows a
-race:
+add parentheses to avoid possible vaddr overflow.
 
-     CPU1                                 CPU2
- rdma_lookup_put_uobject()
-   lookup_put_fd_uobject()
-     fput()
-				   fput()
-				     uverbs_uobject_fd_release()
-				       WARN_ON(uverbs_try_lock_object(uobj,
-					       UVERBS_LOOKUP_WRITE));
-   atomic_dec(usecnt)
-
-Fix the code by changing the order, first unlock and call to
-->lookup_put() after that.
-
-Fixes: 3832125624b7 ("IB/core: Add support for idr types")
-Link: https://lore.kernel.org/r/20200423060122.6182-1-leon@kernel.org
-Suggested-by: Jason Gunthorpe <jgg@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Fixes: a54eb55045ae ("vfio iommu type1: Add support for mediated devices")
+Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/infiniband/core/rdma_core.c |    2 +-
+ drivers/vfio/vfio_iommu_type1.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/infiniband/core/rdma_core.c
-+++ b/drivers/infiniband/core/rdma_core.c
-@@ -697,7 +697,6 @@ void rdma_lookup_put_uobject(struct ib_u
- 			     enum rdma_lookup_mode mode)
- {
- 	assert_uverbs_usecnt(uobj, mode);
--	uobj->uapi_object->type_class->lookup_put(uobj, mode);
- 	/*
- 	 * In order to unlock an object, either decrease its usecnt for
- 	 * read access or zero it in case of exclusive access. See
-@@ -714,6 +713,7 @@ void rdma_lookup_put_uobject(struct ib_u
- 		break;
- 	}
+--- a/drivers/vfio/vfio_iommu_type1.c
++++ b/drivers/vfio/vfio_iommu_type1.c
+@@ -598,7 +598,7 @@ static int vfio_iommu_type1_pin_pages(vo
+ 			continue;
+ 		}
  
-+	uobj->uapi_object->type_class->lookup_put(uobj, mode);
- 	/* Pairs with the kref obtained by type->lookup_get */
- 	uverbs_uobject_put(uobj);
- }
+-		remote_vaddr = dma->vaddr + iova - dma->iova;
++		remote_vaddr = dma->vaddr + (iova - dma->iova);
+ 		ret = vfio_pin_page_external(dma, remote_vaddr, &phys_pfn[i],
+ 					     do_accounting);
+ 		if (ret)
 
 
