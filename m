@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B007C1C441C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:05:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00E181C43E1
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:02:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731111AbgEDSEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:04:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33446 "EHLO mail.kernel.org"
+        id S1731314AbgEDSCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:02:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58572 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731632AbgEDSEH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:04:07 -0400
+        id S1731306AbgEDSCS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 14:02:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F0C4A20746;
-        Mon,  4 May 2020 18:04:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BFD5920707;
+        Mon,  4 May 2020 18:02:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588615447;
-        bh=oisrjGC2R519ZWch4BZGf44X1xNE52FyZ8g5AFCBwIU=;
+        s=default; t=1588615338;
+        bh=OfM4L/DSXzomjs6joc4qF0cINSrNJaXOJcZUMqDCA5g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JydwQzc/mJSHayTCNcvDypjJMivQephmv8ExoUsMTnRXjQX4IJpFdJH7GOCw7uAQ1
-         fOjom0KOdNBYtSuT5yxuPC1jeK7Z2E379GaKbZK1/4dvMB5NODtQGqM76cwAt2Ymwm
-         6JcMlQ93Otgg3lgqPzvQL/KFJ6iEXVtHPqT74+AI=
+        b=dl/FwMbYadvN7ZSOdrBetb/e5iy3xMvzIbo1UNv6RzfHKry8SPbujQiKZZMthTShB
+         seiUjUNFX1Ne15kCLpSESSrZv/W6y9VeJi2kT0SUPi6jUilv8t+qAU1hVekkM9pxcY
+         /FgAJk57BJ2La5PC46xjzLHS2fhUTUpIJF4Bzi+4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>,
-        Wolfram Sang <wsa@the-dreams.de>
-Subject: [PATCH 5.4 43/57] i2c: iproc: generate stop event for slave writes
-Date:   Mon,  4 May 2020 19:57:47 +0200
-Message-Id: <20200504165500.057640592@linuxfoundation.org>
+        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 4.19 35/37] mmc: sdhci-msm: Enable host capabilities pertains to R1b response
+Date:   Mon,  4 May 2020 19:57:48 +0200
+Message-Id: <20200504165451.839824034@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200504165456.783676004@linuxfoundation.org>
-References: <20200504165456.783676004@linuxfoundation.org>
+In-Reply-To: <20200504165448.264746645@linuxfoundation.org>
+References: <20200504165448.264746645@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,33 +45,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
+From: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
 
-commit 068143a8195fb0fdeea1f3ca430b3db0f6d04a53 upstream.
+commit 9d8cb58691f85cef687512262acb2c7109ee4868 upstream.
 
-When slave status is I2C_SLAVE_RX_END, generate I2C_SLAVE_STOP
-event to i2c_client.
+MSM sd host controller is capable of HW busy detection of device busy
+signaling over DAT0 line. And it requires the R1B response for commands
+that have this response associated with them.
 
-Fixes: c245d94ed106 ("i2c: iproc: Add multi byte read-write support for slave mode")
-Signed-off-by: Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
-Signed-off-by: Wolfram Sang <wsa@the-dreams.de>
+So set the below two host capabilities for qcom SDHC.
+ - MMC_CAP_WAIT_WHILE_BUSY
+ - MMC_CAP_NEED_RSP_BUSY
+
+Recent development of the mmc core in regards to this, revealed this as
+being a potential bug, hence the stable tag.
+
+Cc: <stable@vger.kernel.org> # v4.19+
+Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Link: https://lore.kernel.org/r/1587363626-20413-2-git-send-email-vbadigan@codeaurora.org
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/i2c/busses/i2c-bcm-iproc.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/mmc/host/sdhci-msm.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/i2c/busses/i2c-bcm-iproc.c
-+++ b/drivers/i2c/busses/i2c-bcm-iproc.c
-@@ -359,6 +359,9 @@ static bool bcm_iproc_i2c_slave_isr(stru
- 			value = (u8)((val >> S_RX_DATA_SHIFT) & S_RX_DATA_MASK);
- 			i2c_slave_event(iproc_i2c->slave,
- 					I2C_SLAVE_WRITE_RECEIVED, &value);
-+			if (rx_status == I2C_SLAVE_RX_END)
-+				i2c_slave_event(iproc_i2c->slave,
-+						I2C_SLAVE_STOP, &value);
- 		}
- 	} else if (status & BIT(IS_S_TX_UNDERRUN_SHIFT)) {
- 		/* Master read other than start */
+--- a/drivers/mmc/host/sdhci-msm.c
++++ b/drivers/mmc/host/sdhci-msm.c
+@@ -1909,6 +1909,8 @@ static int sdhci_msm_probe(struct platfo
+ 		goto clk_disable;
+ 	}
+ 
++	msm_host->mmc->caps |= MMC_CAP_WAIT_WHILE_BUSY | MMC_CAP_NEED_RSP_BUSY;
++
+ 	pm_runtime_get_noresume(&pdev->dev);
+ 	pm_runtime_set_active(&pdev->dev);
+ 	pm_runtime_enable(&pdev->dev);
 
 
