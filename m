@@ -2,247 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B2F01C4024
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 18:40:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C7A21C4019
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 18:39:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729839AbgEDQjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 12:39:39 -0400
-Received: from foss.arm.com ([217.140.110.172]:48734 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729817AbgEDQjc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 12:39:32 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D71F71063;
-        Mon,  4 May 2020 09:39:31 -0700 (PDT)
-Received: from e120937-lin.home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C6AB73F68F;
-        Mon,  4 May 2020 09:39:30 -0700 (PDT)
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
-        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
-        cristian.marussi@arm.com
-Subject: [PATCH v7 9/9] firmware: arm_scmi: Add Base notifications support
-Date:   Mon,  4 May 2020 17:38:55 +0100
-Message-Id: <20200504163855.54548-10-cristian.marussi@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200504163855.54548-1-cristian.marussi@arm.com>
-References: <20200504163855.54548-1-cristian.marussi@arm.com>
+        id S1729751AbgEDQjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 12:39:17 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:48437 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729734AbgEDQjQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 12:39:16 -0400
+Received: from apollo.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:6257:18ff:fec4:ca34])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 1D52522FF5;
+        Mon,  4 May 2020 18:39:13 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1588610354;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=YP4gjbxcCteAmw6tSDmBQLlYF5WPFR7ZRFNU6sacuXM=;
+        b=WxqziZ6M08fEKrcgpTq+MBtfBr4x/7p6ZJ3oyOA3U9TCJHtfTkJIo6BwU3LmMOqa+WxLAM
+        kTJvJ4xgDUvjwtzHhuVR63BLe0EvFbrdJuMKuIKKZIarLZaBcG9NeKetuVGaRoYkplC71x
+        WRN+kw9RCCuUUMHfrkHBU9mISgxbaRU=
+From:   Michael Walle <michael@walle.cc>
+To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Antoine Tenart <antoine.tenart@bootlin.com>,
+        Michael Walle <michael@walle.cc>
+Subject: [PATCH net-next 0/3] add phy shared storage
+Date:   Mon,  4 May 2020 18:38:56 +0200
+Message-Id: <20200504163859.10763-1-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: ++++++
+X-Spam-Level: ******
+X-Rspamd-Server: web
+X-Spam-Status: Yes, score=6.40
+X-Spam-Score: 6.40
+X-Rspamd-Queue-Id: 1D52522FF5
+X-Spamd-Result: default: False [6.40 / 15.00];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         R_MISSING_CHARSET(2.50)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         BROKEN_CONTENT_TYPE(1.50)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_SPAM(0.00)[0.864];
+         DKIM_SIGNED(0.00)[];
+         RCPT_COUNT_SEVEN(0.00)[10];
+         MID_CONTAINS_FROM(1.00)[];
+         RCVD_COUNT_ZERO(0.00)[0];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:31334, ipnet:2a02:810c:8000::/33, country:DE];
+         FREEMAIL_CC(0.00)[lunn.ch,gmail.com,armlinux.org.uk,davemloft.net,nxp.com,bootlin.com,walle.cc];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam: Yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make SCMI Base protocol register with the notification core.
+Introduce the concept of a shared PHY storage which can be used by some
+QSGMII PHYs to ease initialization and access to global per-package
+registers.
 
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
----
-V6 --> V7
-- fixed report.timestamp type
-- fix max_payld_sz initialization
-- fix report layout and initialization
-- expose SCMI_EVENT_ in linux/scmi_protocol.h
-V5 --> V6
-- added handle argument to fill_custom_report()
-V4 --> V5
-- fixed unsual return construct
-V3 --> V4
-- scmi_event field renamed
-V2 --> V3
-- added handle awareness
-V1 --> V2
-- simplified .set_notify_enabled() implementation moving the ALL_SRCIDs
-  logic out of protocol. ALL_SRCIDs logic is now in charge of the
-  notification core, together with proper reference counting of enables
-- switched to devres protocol-registration
----
- drivers/firmware/arm_scmi/base.c | 118 +++++++++++++++++++++++++++++--
- include/linux/scmi_protocol.h    |   9 +++
- 2 files changed, 123 insertions(+), 4 deletions(-)
+Changes since RFC:
+ - check return code of kzalloc()
+ - fix local variable ordering (reverse christmas tree)
+ - add priv_size argument to phy_package_join()
+ - add Tested-by tag, thanks Vladimir.
 
-diff --git a/drivers/firmware/arm_scmi/base.c b/drivers/firmware/arm_scmi/base.c
-index ce7d9203e41b..dcb098d8d823 100644
---- a/drivers/firmware/arm_scmi/base.c
-+++ b/drivers/firmware/arm_scmi/base.c
-@@ -5,7 +5,13 @@
-  * Copyright (C) 2018 ARM Ltd.
-  */
- 
-+#include <linux/scmi_protocol.h>
-+
- #include "common.h"
-+#include "notify.h"
-+
-+#define SCMI_BASE_NUM_SOURCES		1
-+#define SCMI_BASE_MAX_CMD_ERR_COUNT	1024
- 
- enum scmi_base_protocol_cmd {
- 	BASE_DISCOVER_VENDOR = 0x3,
-@@ -19,16 +25,25 @@ enum scmi_base_protocol_cmd {
- 	BASE_RESET_AGENT_CONFIGURATION = 0xb,
- };
- 
--enum scmi_base_protocol_notify {
--	BASE_ERROR_EVENT = 0x0,
--};
--
- struct scmi_msg_resp_base_attributes {
- 	u8 num_protocols;
- 	u8 num_agents;
- 	__le16 reserved;
- };
- 
-+struct scmi_msg_base_error_notify {
-+	__le32 event_control;
-+#define BASE_TP_NOTIFY_ALL	BIT(0)
-+};
-+
-+struct scmi_base_error_notify_payld {
-+	__le32 agent_id;
-+	__le32 error_status;
-+#define IS_FATAL_ERROR(x)	((x) & BIT(31))
-+#define ERROR_CMD_COUNT(x)	FIELD_GET(GENMASK(9, 0), (x))
-+	__le64 msg_reports[SCMI_BASE_MAX_CMD_ERR_COUNT];
-+};
-+
- /**
-  * scmi_base_attributes_get() - gets the implementation details
-  *	that are associated with the base protocol.
-@@ -222,6 +237,95 @@ static int scmi_base_discover_agent_get(const struct scmi_handle *handle,
- 	return ret;
- }
- 
-+static int scmi_base_error_notify(const struct scmi_handle *handle, bool enable)
-+{
-+	int ret;
-+	u32 evt_cntl = enable ? BASE_TP_NOTIFY_ALL : 0;
-+	struct scmi_xfer *t;
-+	struct scmi_msg_base_error_notify *cfg;
-+
-+	ret = scmi_xfer_get_init(handle, BASE_NOTIFY_ERRORS,
-+				 SCMI_PROTOCOL_BASE, sizeof(*cfg), 0, &t);
-+	if (ret)
-+		return ret;
-+
-+	cfg = t->tx.buf;
-+	cfg->event_control = cpu_to_le32(evt_cntl);
-+
-+	ret = scmi_do_xfer(handle, t);
-+
-+	scmi_xfer_put(handle, t);
-+	return ret;
-+}
-+
-+static bool scmi_base_set_notify_enabled(const struct scmi_handle *handle,
-+					 u8 evt_id, u32 src_id, bool enable)
-+{
-+	int ret;
-+
-+	ret = scmi_base_error_notify(handle, enable);
-+	if (ret)
-+		pr_warn("SCMI Notifications - Proto:%X - FAIL_ENABLED - evt[%X] ret:%d\n",
-+			SCMI_PROTOCOL_BASE, evt_id, ret);
-+
-+	return !ret;
-+}
-+
-+static void *scmi_base_fill_custom_report(const struct scmi_handle *handle,
-+					  u8 evt_id, u64 timestamp,
-+					  const void *payld, size_t payld_sz,
-+					  void *report, u32 *src_id)
-+{
-+	void *rep = NULL;
-+
-+	switch (evt_id) {
-+	case SCMI_EVENT_BASE_ERROR_EVENT:
-+	{
-+		int i;
-+		const struct scmi_base_error_notify_payld *p = payld;
-+		struct scmi_base_error_report *r = report;
-+
-+		/*
-+		 * BaseError notification payload is variable in size but
-+		 * up to a maximum length determined by the struct ponted by p.
-+		 * Instead payld_sz is the effective length of this notification
-+		 * payload so cannot be greater of the maximum allowed size as
-+		 * pointed by p.
-+		 */
-+		if (sizeof(*p) < payld_sz)
-+			break;
-+
-+		r->timestamp = timestamp;
-+		r->agent_id = le32_to_cpu(p->agent_id);
-+		r->fatal = IS_FATAL_ERROR(le32_to_cpu(p->error_status));
-+		r->cmd_count = ERROR_CMD_COUNT(le32_to_cpu(p->error_status));
-+		for (i = 0; i < r->cmd_count; i++)
-+			r->reports[i] = le64_to_cpu(p->msg_reports[i]);
-+		*src_id = 0;
-+		rep = r;
-+		break;
-+	}
-+	default:
-+		break;
-+	}
-+
-+	return rep;
-+}
-+
-+static const struct scmi_event base_events[] = {
-+	{
-+		.id = SCMI_EVENT_BASE_ERROR_EVENT,
-+		.max_payld_sz = sizeof(struct scmi_base_error_notify_payld),
-+		.max_report_sz = sizeof(struct scmi_base_error_report) +
-+				  SCMI_BASE_MAX_CMD_ERR_COUNT * sizeof(u64),
-+	},
-+};
-+
-+static const struct scmi_protocol_event_ops base_event_ops = {
-+	.set_notify_enabled = scmi_base_set_notify_enabled,
-+	.fill_custom_report = scmi_base_fill_custom_report,
-+};
-+
- int scmi_base_protocol_init(struct scmi_handle *h)
- {
- 	int id, ret;
-@@ -256,6 +360,12 @@ int scmi_base_protocol_init(struct scmi_handle *h)
- 	dev_dbg(dev, "Found %d protocol(s) %d agent(s)\n", rev->num_protocols,
- 		rev->num_agents);
- 
-+	scmi_register_protocol_events(handle,
-+				      SCMI_PROTOCOL_BASE, (4 * PAGE_SIZE),
-+				      &base_event_ops, base_events,
-+				      ARRAY_SIZE(base_events),
-+				      SCMI_BASE_NUM_SOURCES);
-+
- 	for (id = 0; id < rev->num_agents; id++) {
- 		scmi_base_discover_agent_get(handle, id, name);
- 		dev_dbg(dev, "Agent %d: %s\n", id, name);
-diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
-index 091263aa5733..bb858d329dae 100644
---- a/include/linux/scmi_protocol.h
-+++ b/include/linux/scmi_protocol.h
-@@ -375,6 +375,7 @@ enum scmi_notification_events {
- 	SCMI_EVENT_PERFORMANCE_LEVEL_CHANGED = 0x1,
- 	SCMI_EVENT_SENSOR_TRIP_POINT_EVENT = 0x0,
- 	SCMI_EVENT_RESET_ISSUED = 0x0,
-+	SCMI_EVENT_BASE_ERROR_EVENT = 0x0,
- };
- 
- struct scmi_power_state_changed_report {
-@@ -413,4 +414,12 @@ struct scmi_reset_issued_report {
- 	u32 reset_state;
- };
- 
-+struct scmi_base_error_report {
-+	u64 timestamp;
-+	u32 agent_id;
-+	bool fatal;
-+	u16 cmd_count;
-+	u64 reports[0];
-+};
-+
- #endif /* _LINUX_SCMI_PROTOCOL_H */
+Michael Walle (3):
+  net: phy: add concept of shared storage for PHYs
+  net: phy: bcm54140: use phy_package_shared
+  net: phy: mscc: use phy_package_shared
+
+ drivers/net/phy/bcm54140.c       |  57 +++----------
+ drivers/net/phy/mdio_bus.c       |   1 +
+ drivers/net/phy/mscc/mscc.h      |   1 -
+ drivers/net/phy/mscc/mscc_main.c | 101 +++++++---------------
+ drivers/net/phy/phy_device.c     | 138 +++++++++++++++++++++++++++++++
+ include/linux/phy.h              |  89 ++++++++++++++++++++
+ 6 files changed, 270 insertions(+), 117 deletions(-)
+
 -- 
-2.17.1
+2.20.1
 
