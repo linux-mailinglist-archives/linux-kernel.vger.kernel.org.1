@@ -2,61 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C64B1C3F4A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 18:03:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F0041C3F52
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 18:05:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729317AbgEDQDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 12:03:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726551AbgEDQDR (ORCPT
+        id S1729459AbgEDQFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 12:05:10 -0400
+Received: from www62.your-server.de ([213.133.104.62]:45066 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726551AbgEDQFJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 12:03:17 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71AA5C061A0E;
-        Mon,  4 May 2020 09:03:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=MJiG06idgkhQ7ETomKvk+pXIhWmcVzgg6Sh67pMiRa8=; b=KSO+cu4KS04f9QMSMnoEgpz4lP
-        xEUzzhMHMNy0nNQLb/oWLnGEmta0IgfeMaWPLFVU8v0KE5Q/SQ/kf7eZZQbtkWd1mh1jOtqlamJpr
-        YN+qE50vHOxXepS7SXteLP+Jz8YM7GoPnzdBjtA78HfjZE5ci7Ix61JXsgZmNOz3ITCwjRyIZY+8f
-        VyOZXfNmnntPRCfh/xfRBQBe6qX2/BPIpwkpCgcPE5LJxYzBjMyx5sO7eU8s1XolUvo0+SbSxsYHA
-        IxtQuHWPpYcGkzHJS2c5PU+nqLHZ77pbjoE7P9V0lYxoaoYguZ5auscSJkpBNu3v2LiCVcQSeLZB2
-        eIpOBNEQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jVdYo-0007fF-8J; Mon, 04 May 2020 16:03:14 +0000
-Date:   Mon, 4 May 2020 09:03:14 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Chris Wilson <chris@chris-wilson.co.uk>
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, bigeasy@linutronix.de,
-        tglx@linutronix.de, stable@vger.kernel.org
-Subject: Re: [PATCH] drm/i915: check to see if SIMD registers are available
- before using SIMD
-Message-ID: <20200504160314.GA26373@infradead.org>
-References: <20200430221016.3866-1-Jason@zx2c4.com>
- <20200501180731.GA2485@infradead.org>
- <158853721918.8377.18286963845226122104@build.alporthouse.com>
+        Mon, 4 May 2020 12:05:09 -0400
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jVdaZ-0004zi-1W; Mon, 04 May 2020 18:05:03 +0200
+Received: from [178.195.186.98] (helo=pc-9.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jVdaY-000HF6-Hv; Mon, 04 May 2020 18:05:02 +0200
+Subject: Re: [PATCH bpf 0/2] bpf, arm: Small JIT optimizations
+To:     Luke Nelson <lukenels@cs.washington.edu>, bpf@vger.kernel.org
+Cc:     Luke Nelson <luke.r.nels@gmail.com>,
+        Shubham Bansal <illusionist.neo@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20200501020210.32294-1-luke.r.nels@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <c59f4067-6334-2dc4-a37b-b1e953663897@iogearbox.net>
+Date:   Mon, 4 May 2020 18:05:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <158853721918.8377.18286963845226122104@build.alporthouse.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20200501020210.32294-1-luke.r.nels@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25802/Mon May  4 14:12:31 2020)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 03, 2020 at 09:20:19PM +0100, Chris Wilson wrote:
-> > Err, why does i915 implements its own uncached memcpy instead of relying
-> > on core functionality to start with?
+On 5/1/20 4:02 AM, Luke Nelson wrote:
+> As Daniel suggested to us, we ran our formal verification tool, Serval,
+> over the arm JIT. The bugs we found have been patched and applied to the
+> bpf tree [1, 2]. This patch series introduces two small optimizations
+> that simplify the JIT and use fewer instructions.
 > 
-> What is this core functionality that provides movntqda?
+> [1] https://lore.kernel.org/bpf/20200408181229.10909-1-luke.r.nels@gmail.com/
+> [2] https://lore.kernel.org/bpf/20200409221752.28448-1-luke.r.nels@gmail.com/
+> 
+> Luke Nelson (2):
+>    bpf, arm: Optimize emit_a32_arsh_r64 using conditional instruction
+>    bpf, arm: Optimize ALU ARSH K using asr immediate instruction
+> 
+>   arch/arm/net/bpf_jit_32.c | 14 +++++++++-----
+>   arch/arm/net/bpf_jit_32.h |  2 ++
+>   2 files changed, 11 insertions(+), 5 deletions(-)
+> 
 
-A sensible name might be memcpy_uncached or mempcy_nontemporal.
-But the important point is that this should be arch code with a common
-fallback rather than hacking it up in drivers.
+Applied, thanks!
