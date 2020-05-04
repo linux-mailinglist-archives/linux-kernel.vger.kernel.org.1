@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 825221C4395
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 19:59:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72F531C4513
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:12:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730872AbgEDR7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 13:59:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53698 "EHLO mail.kernel.org"
+        id S1731086AbgEDSMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:12:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59584 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730861AbgEDR7p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 13:59:45 -0400
+        id S1731399AbgEDSCx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 14:02:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 45FD0207DD;
-        Mon,  4 May 2020 17:59:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 74B4D2073E;
+        Mon,  4 May 2020 18:02:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588615184;
-        bh=GZXs/27IPQdcxPnSRMLXpJDcuFGzqUfF4jVTSEXs3i8=;
+        s=default; t=1588615371;
+        bh=YtQEHYARyOrdGFRJN/zgntJn5+hi7Pt8/Yuu+ZrkoMk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fBoTmO4P9LWCevdXLgA0JrXh89BbD+DzCu5sxuicFI2lVfIQaOLKy9yyISuvd+r3D
-         jeyTzP9qR95vnNqPnBvaeH7f1RQBN2goKbAmifnWW+ajV29KPEc9hsfqISUrFL4isT
-         BNK6sktNs0uh9arrbFvYY64lio/+tVgMo9Ih/THo=
+        b=aaDyd2GXyaK6UgtOkZqINDOBN2egDuChzvEvRYS31KJIiYXzaOSxfrBwPFZTLbqUX
+         aXfIGXTrtO2AB4liUdv0r0y8NTae3FiLO5AA0udXZ2C/ns6rvDGDB96Ro3aIq0ncRL
+         Ip37mLSU9lXYk3a1igBBGqxHSCdkXOm/VxpF+U/0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wu Bo <wubo40@huawei.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.9 06/18] ALSA: hda/hdmi: fix without unlocked before return
+        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 5.4 12/57] mmc: cqhci: Avoid false "cqhci: CQE stuck on" by not open-coding timeout loop
 Date:   Mon,  4 May 2020 19:57:16 +0200
-Message-Id: <20200504165443.451800031@linuxfoundation.org>
+Message-Id: <20200504165457.514098873@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200504165442.028485341@linuxfoundation.org>
-References: <20200504165442.028485341@linuxfoundation.org>
+In-Reply-To: <20200504165456.783676004@linuxfoundation.org>
+References: <20200504165456.783676004@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,41 +44,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wu Bo <wubo40@huawei.com>
+From: Douglas Anderson <dianders@chromium.org>
 
-commit a2f647240998aa49632fb09b01388fdf2b87acfc upstream.
+commit b1ac62a7ac386d76968af5f374a4a7a82a35fe31 upstream.
 
-Fix the following coccicheck warning:
-sound/pci/hda/patch_hdmi.c:1852:2-8: preceding lock on line 1846
+Open-coding a timeout loop invariably leads to errors with handling
+the timeout properly in one corner case or another.  In the case of
+cqhci we might report "CQE stuck on" even if it wasn't stuck on.
+You'd just need this sequence of events to happen in cqhci_off():
 
-After add sanity check to pass klockwork check,
-The spdif_mutex should be unlock before return true
-in check_non_pcm_per_cvt().
+1. Call ktime_get().
+2. Something happens to interrupt the CPU for > 100 us (context switch
+   or interrupt).
+3. Check time and; set "timed_out" to true since > 100 us.
+4. Read CQHCI_CTL.
+5. Both "reg & CQHCI_HALT" and "timed_out" are true, so break.
+6. Since "timed_out" is true, falsely print the error message.
 
-Fixes: 960a581e22d9 ("ALSA: hda: fix some klockwork scan warnings")
-Signed-off-by: Wu Bo <wubo40@huawei.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/1587907042-694161-1-git-send-email-wubo40@huawei.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Rather than fixing the polling loop, use readx_poll_timeout() like
+many people do.  This has been time tested to handle the corner cases.
+
+Fixes: a4080225f51d ("mmc: cqhci: support for command queue enabled host")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20200413162717.1.Idece266f5c8793193b57a1ddb1066d030c6af8e0@changeid
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/hda/patch_hdmi.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/mmc/host/cqhci.c |   21 ++++++++++-----------
+ 1 file changed, 10 insertions(+), 11 deletions(-)
 
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -1699,8 +1699,10 @@ static bool check_non_pcm_per_cvt(struct
- 	/* Add sanity check to pass klockwork check.
- 	 * This should never happen.
- 	 */
--	if (WARN_ON(spdif == NULL))
-+	if (WARN_ON(spdif == NULL)) {
-+		mutex_unlock(&codec->spdif_mutex);
- 		return true;
-+	}
- 	non_pcm = !!(spdif->status & IEC958_AES0_NONAUDIO);
- 	mutex_unlock(&codec->spdif_mutex);
- 	return non_pcm;
+--- a/drivers/mmc/host/cqhci.c
++++ b/drivers/mmc/host/cqhci.c
+@@ -5,6 +5,7 @@
+ #include <linux/delay.h>
+ #include <linux/highmem.h>
+ #include <linux/io.h>
++#include <linux/iopoll.h>
+ #include <linux/module.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/slab.h>
+@@ -343,12 +344,16 @@ static int cqhci_enable(struct mmc_host
+ /* CQHCI is idle and should halt immediately, so set a small timeout */
+ #define CQHCI_OFF_TIMEOUT 100
+ 
++static u32 cqhci_read_ctl(struct cqhci_host *cq_host)
++{
++	return cqhci_readl(cq_host, CQHCI_CTL);
++}
++
+ static void cqhci_off(struct mmc_host *mmc)
+ {
+ 	struct cqhci_host *cq_host = mmc->cqe_private;
+-	ktime_t timeout;
+-	bool timed_out;
+ 	u32 reg;
++	int err;
+ 
+ 	if (!cq_host->enabled || !mmc->cqe_on || cq_host->recovery_halt)
+ 		return;
+@@ -358,15 +363,9 @@ static void cqhci_off(struct mmc_host *m
+ 
+ 	cqhci_writel(cq_host, CQHCI_HALT, CQHCI_CTL);
+ 
+-	timeout = ktime_add_us(ktime_get(), CQHCI_OFF_TIMEOUT);
+-	while (1) {
+-		timed_out = ktime_compare(ktime_get(), timeout) > 0;
+-		reg = cqhci_readl(cq_host, CQHCI_CTL);
+-		if ((reg & CQHCI_HALT) || timed_out)
+-			break;
+-	}
+-
+-	if (timed_out)
++	err = readx_poll_timeout(cqhci_read_ctl, cq_host, reg,
++				 reg & CQHCI_HALT, 0, CQHCI_OFF_TIMEOUT);
++	if (err < 0)
+ 		pr_err("%s: cqhci: CQE stuck on\n", mmc_hostname(mmc));
+ 	else
+ 		pr_debug("%s: cqhci: CQE off\n", mmc_hostname(mmc));
 
 
