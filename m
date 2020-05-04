@@ -2,103 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 292541C47D3
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 22:18:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35AB71C47DA
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 22:19:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728003AbgEDUSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 16:18:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726111AbgEDUSL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 16:18:11 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 423CFC061A0E;
-        Mon,  4 May 2020 13:18:10 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id a5so472970pjh.2;
-        Mon, 04 May 2020 13:18:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3mBLKfvK+TlfAtTHQanQgHlv1D1yJyX+Gon6/azPPNo=;
-        b=HtluyzkauYfZ2YAflxShgODGBqt+/PvbOalG2B7lekeQhLAxFsSwXM9UZ6ceDkviR8
-         5vYHZXTGMCox6TW/VyMGwLbllyjqdMSL2zSSsFeUIZqpQiJPU19eVKLuxoBYapg7vRRa
-         w/piVVucZ7sFyQpNygR9p+I2Wn57eE/xgftCNrjnP+7XqZjMkkVVxRL+1hNcPdIq/73l
-         gQi6qwEcuJsy5AGyKCA7HexJ4OHf7l/nITLtvpQpy2j1JHwgHTwS/3PVathcJ9rne7HH
-         9kBlXcRYB72CodN6cMDrlM0Whg/D4TzFuQlrRYNGty+NtC6T5rhoZjSqlsArrWpLAlzN
-         5FMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3mBLKfvK+TlfAtTHQanQgHlv1D1yJyX+Gon6/azPPNo=;
-        b=VSVLkzYcj1x9gjWREyiyPF7DccM07PcG1dNxUqk8rvxr4BRd5WMekUc4mOirWaSdjq
-         oK7iiMjkEuXLldvIr1GnZxn8+Q79XF79tITWJ42Gh3e06xrWW4vXqF8AvAkqrPrWcTYq
-         OLjBTF3DeCpiW1MMyc0hHUZOYL8fDKOuPf5nqjySSjcH+U2vkktfoCyYeeNuANBRX+zo
-         Rz74/ZR7XALnJV3xqXQM8Ht3nW1M5v1zqIhy8914B8c5Mq6aecfAm4Q3BWLqZmEY14UL
-         joW7YG1n0miaw7pXY/V3Qfa3uI40GcsaVMXy4wi0hKyMHDsPx0Uh/z029wmCj9MEoOfw
-         4Uhw==
-X-Gm-Message-State: AGi0PubdyRCuE4JvZIla6ZUqUQdV0R8Jr5rWInGPyaCJrdsBdECgll2j
-        RTDwX8yovNA0Gma61hqrpBOUJAPU
-X-Google-Smtp-Source: APiQypIK4xGAVkclsDi/LY8AGEJIUEpUUrLYBhKkTmUsgLESOTCpLUUVX3zkmZG0TiHPSZ0k0RDFpA==
-X-Received: by 2002:a17:902:d883:: with SMTP id b3mr928358plz.133.1588623489319;
-        Mon, 04 May 2020 13:18:09 -0700 (PDT)
-Received: from bender.lan (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
-        by smtp.gmail.com with ESMTPSA id e11sm2814627pgs.41.2020.05.04.13.18.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 May 2020 13:18:08 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     allen.pais@oracle.com, Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net] net: dsa: Do not leave DSA master with NULL netdev_ops
-Date:   Mon,  4 May 2020 13:18:06 -0700
-Message-Id: <20200504201806.27192-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        id S1727886AbgEDUTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 16:19:19 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:34336 "EHLO rere.qmqm.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726111AbgEDUTT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 16:19:19 -0400
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 49GDj11SK1zGl;
+        Mon,  4 May 2020 22:19:17 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1588623557; bh=qcQYscDQASAGGq1qfnXT5pHuuM+wfGhJkYYXvoJsvpU=;
+        h=Date:From:Subject:To:Cc:From;
+        b=OMWOhZsjgMD0dtICo6Gxn1dfhSoW3AoL7g5Fy0jnwxrW97z9DXRHuqGg9/mPVs4iL
+         4ydpOesSxNGbnFc2WMuyj+Y645n3nuoPYqjJwbVRV+mHjYHWTb2udx4KQOAowKQltF
+         A7un/+N6G7QMM+XRdZMUEOtJifmtplR8Eal46I7GbMprqOi0gPp0qbnx17h7hsLHkx
+         Wp3ISCYP/v639xzile3FILkqSFswgwHBQZHV5Pyd017T9v7HmcnA8gOnmznl7G18VB
+         UwkoWceaBUeHnaHH22q/sLjCRnJXfjLcgxAjybP5y+zUsrVxE1SopX2bWKU6c9w9D+
+         j3b+7BxyjG3Tg==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+Date:   Mon, 04 May 2020 22:19:16 +0200
+Message-Id: <cover.1588623391.git.mirq-linux@rere.qmqm.pl>
+From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
+Subject: [PATCH v6 0/3] clk: at91: support configuring more clocks via DT
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When ndo_get_phys_port_name() for the CPU port was added we introduced
-an early check for when the DSA master network device in
-dsa_master_ndo_setup() already implements ndo_get_phys_port_name(). When
-we perform the teardown operation in dsa_master_ndo_teardown() we would
-not be checking that cpu_dp->orig_ndo_ops was successfully allocated and
-non-NULL initialized.
+This series extends AT91 clock support with references to PCKx and
+PLLA/PLLB/AUDIOPLL. This makes the DT be able to fully specify (assign)
+clock parents when needed.
 
-With network device drivers such as virtio_net, this leads to a NPD as
-soon as the DSA switch hanging off of it gets torn down because we are
-now assigning the virtio_net device's netdev_ops a NULL pointer.
+First patch simplifies clock table allocation. Next two update the table
+with missing clock pointers and IDs.
 
-Fixes: da7b9e9b00d4 ("net: dsa: Add ndo_get_phys_port_name() for CPU port")
-Reported-by: Allen Pais <allen.pais@oracle.com>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- net/dsa/master.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/net/dsa/master.c b/net/dsa/master.c
-index b5c535af63a3..a621367c6e8c 100644
---- a/net/dsa/master.c
-+++ b/net/dsa/master.c
-@@ -289,7 +289,8 @@ static void dsa_master_ndo_teardown(struct net_device *dev)
- {
- 	struct dsa_port *cpu_dp = dev->dsa_ptr;
- 
--	dev->netdev_ops = cpu_dp->orig_ndo_ops;
-+	if (cpu_dp->orig_ndo_ops)
-+		dev->netdev_ops = cpu_dp->orig_ndo_ops;
- 	cpu_dp->orig_ndo_ops = NULL;
- }
- 
+Michał Mirosław (3):
+  clk: at91: optimize pmc data allocation
+  clk: at91: allow setting PCKx parent via DT
+  clk: at91: allow setting all PMC clock parents via DT
+
+ drivers/clk/at91/at91rm9200.c    | 12 ++++++---
+ drivers/clk/at91/at91sam9260.c   | 13 +++++++---
+ drivers/clk/at91/at91sam9g45.c   | 10 +++++---
+ drivers/clk/at91/at91sam9n12.c   | 12 ++++++---
+ drivers/clk/at91/at91sam9rl.c    | 10 +++++---
+ drivers/clk/at91/at91sam9x5.c    | 10 +++++---
+ drivers/clk/at91/pmc.c           | 44 ++++++++++++--------------------
+ drivers/clk/at91/pmc.h           |  8 ++++--
+ drivers/clk/at91/sam9x60.c       | 10 +++++---
+ drivers/clk/at91/sama5d2.c       | 12 ++++++---
+ drivers/clk/at91/sama5d3.c       | 10 +++++---
+ drivers/clk/at91/sama5d4.c       | 10 +++++---
+ include/dt-bindings/clock/at91.h |  4 +++
+ 13 files changed, 106 insertions(+), 59 deletions(-)
+
 -- 
 2.20.1
 
