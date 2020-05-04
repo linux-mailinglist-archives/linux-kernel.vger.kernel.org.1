@@ -2,144 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 792481C3D27
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 16:35:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FD6F1C3D30
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 16:35:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729126AbgEDOfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 10:35:10 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:53275 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728187AbgEDOfK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 10:35:10 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1588602909; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=4OlRcGETyCmH3CyivLm0F5Fs+YC/4OSoLg+kCNZVH5w=; b=ZJnRRv8GK/1jokhaK0dSaFgP3VLGIRtn+65k7A/BQaAcDzY+nyAVVkURc6Jxps/apSSa/loY
- ierEzzxBEgq1rCSw+986Dhz5gDpegbVcRrx4awUaZvIg2fACxD/HDd/q79r+0/HsJxFKb1dz
- N4he03rVszM1sjrRmyXrYar3PSo=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5eb02805.7f88f8fa1180-smtp-out-n01;
- Mon, 04 May 2020 14:34:45 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C6FEDC433F2; Mon,  4 May 2020 14:34:45 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.0
-Received: from pillair-linux.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S1729170AbgEDOfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 10:35:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53248 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728187AbgEDOfk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 10:35:40 -0400
+Received: from localhost (unknown [104.132.1.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: pillair)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CA1A7C433D2;
-        Mon,  4 May 2020 14:34:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CA1A7C433D2
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=pillair@codeaurora.org
-From:   Rakesh Pillai <pillair@codeaurora.org>
-To:     ath10k@lists.infradead.org
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rakesh Pillai <pillair@codeaurora.org>
-Subject: [PATCH] ath10k: Remove msdu from idr when management pkt send fails
-Date:   Mon,  4 May 2020 20:04:39 +0530
-Message-Id: <1588602879-14098-1-git-send-email-pillair@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        by mail.kernel.org (Postfix) with ESMTPSA id 37AD120757;
+        Mon,  4 May 2020 14:35:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588602940;
+        bh=/ng91w5ahKiTgqOAq3EhJa/UEnoAexrnPLSisjkQuAo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=2NcGhs1lltWrZgLGFr9nyV1si7PFTUah17Dv93Gy3acgY/eVNgCK175zt9ULoQb/V
+         m7zmQId2X1c5b8NAC3lqZzGj/vy8Hw1j6pcFD5S5ZRoB9VZaS995y7lW1cNSbLcYq8
+         E4dBOHOZcFo9eV6uZzbtp7zHTiF73MzO/LoHhj1A=
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Cc:     Daeho Jeong <daehojeong@google.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: [PATCH] f2fs: remove redundant check in f2fs_force_buffered_io
+Date:   Mon,  4 May 2020 07:35:38 -0700
+Message-Id: <20200504143538.159967-1-jaegeuk@kernel.org>
+X-Mailer: git-send-email 2.26.2.526.g744177e7f7-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently when the sending of any management pkt
-via wmi command fails, the packet is being unmapped
-freed in the error handling. But the idr entry added,
-which is used to track these packet is not getting removed.
+From: Daeho Jeong <daehojeong@google.com>
 
-Hence, during unload, in wmi cleanup, all the entries
-in IDR are removed and the corresponding buffer is
-attempted to be freed. This can cause a situation where
-one packet is attempted to be freed twice.
+We already checked whether the file is compressed or not in
+f2fs_post_read_required(). So removed f2fs_compressed_file()
+in f2fs_force_buffered_io().
 
-Fix this error by rmeoving the msdu from the idr
-list when the sending of a management packet over
-wmi fails.
-
-Tested HW: WCN3990
-Tested FW: WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
-
-Fixes: 1807da49733e ("ath10k: wmi: add management tx by reference support over wmi")
-Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+Signed-off-by: Daeho Jeong <daehojeong@google.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/wmi-ops.h |  7 ++++++-
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 15 +++++++++++++++
- 2 files changed, 21 insertions(+), 1 deletion(-)
+ fs/f2fs/f2fs.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-index 1491c25..de15e62 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-@@ -216,6 +216,7 @@ struct wmi_ops {
- 	struct sk_buff *(*gen_bb_timing)
- 			(struct ath10k *ar,
- 			 const struct wmi_bb_timing_cfg_arg *arg);
-+	int (*cleanup_mgmt_tx_send)(struct ath10k *ar, struct sk_buff *msdu);
- 
- };
- 
-@@ -457,8 +458,12 @@ ath10k_wmi_mgmt_tx_send(struct ath10k *ar, struct sk_buff *msdu,
- 
- 	ret = ath10k_wmi_cmd_send(ar, skb,
- 				  ar->wmi.cmd->mgmt_tx_send_cmdid);
--	if (ret)
-+	if (ret) {
-+		/* remove this msdu from idr tracking */
-+		if (ar->wmi.ops->cleanup_mgmt_tx_send)
-+			ar->wmi.ops->cleanup_mgmt_tx_send(ar, msdu);
- 		return ret;
-+	}
- 
- 	return 0;
- }
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index e1ab900f..b2a4a44 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -2898,6 +2898,18 @@ ath10k_wmi_tlv_op_gen_request_stats(struct ath10k *ar, u32 stats_mask)
- }
- 
- static int
-+ath10k_wmi_tlv_op_cleanup_mgmt_tx_send(struct ath10k *ar,
-+				       struct sk_buff *msdu)
-+{
-+	struct ath10k_skb_cb *cb = ATH10K_SKB_CB(msdu);
-+	struct ath10k_wmi *wmi = &ar->wmi;
-+
-+	idr_remove(&wmi->mgmt_pending_tx, cb->msdu_id);
-+
-+	return 0;
-+}
-+
-+static int
- ath10k_wmi_mgmt_tx_alloc_msdu_id(struct ath10k *ar, struct sk_buff *skb,
- 				 dma_addr_t paddr)
- {
-@@ -2971,6 +2983,8 @@ ath10k_wmi_tlv_op_gen_mgmt_tx_send(struct ath10k *ar, struct sk_buff *msdu,
- 	if (desc_id < 0)
- 		goto err_free_skb;
- 
-+	cb->msdu_id = desc_id;
-+
- 	ptr = (void *)skb->data;
- 	tlv = ptr;
- 	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_MGMT_TX_CMD);
-@@ -4447,6 +4461,7 @@ static const struct wmi_ops wmi_tlv_ops = {
- 	.gen_echo = ath10k_wmi_tlv_op_gen_echo,
- 	.gen_vdev_spectral_conf = ath10k_wmi_tlv_op_gen_vdev_spectral_conf,
- 	.gen_vdev_spectral_enable = ath10k_wmi_tlv_op_gen_vdev_spectral_enable,
-+	.cleanup_mgmt_tx_send = ath10k_wmi_tlv_op_cleanup_mgmt_tx_send,
- };
- 
- static const struct wmi_peer_flags_map wmi_tlv_peer_flags_map = {
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 6b7b963641696..01a00fc808361 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -4064,8 +4064,6 @@ static inline bool f2fs_force_buffered_io(struct inode *inode,
+ 		return true;
+ 	if (f2fs_is_multi_device(sbi))
+ 		return true;
+-	if (f2fs_compressed_file(inode))
+-		return true;
+ 	/*
+ 	 * for blkzoned device, fallback direct IO to buffered IO, so
+ 	 * all IOs can be serialized by log-structured write.
 -- 
-2.7.4
+2.26.2.526.g744177e7f7-goog
+
