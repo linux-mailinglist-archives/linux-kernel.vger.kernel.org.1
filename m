@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF94B1C42AA
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 19:26:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F1461C42BD
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 19:28:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730136AbgEDR0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 13:26:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51636 "EHLO
+        id S1730208AbgEDR2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 13:28:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729896AbgEDR0f (ORCPT
+        by vger.kernel.org with ESMTP id S1729873AbgEDR2s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 13:26:35 -0400
+        Mon, 4 May 2020 13:28:48 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59495C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 10:26:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 888D8C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 10:28:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=1LTa3+KheQ5v1ObwivcHllaOHb1LlbllYguCQhIzs40=; b=blhPcHYL04vlWWEZqgtWh1cCVm
-        7f5FZUTBaX2XlwjygqrDkbbVgc9FU/SOKpUR+fkbp9eikZZwG06DhKDaS629B7dMLkJyGbdv1rlf+
-        d39DilZDs5e7QBSssmI33YmqFPP1bjHy5u5OEIgw8B3IQrAPM5C4bQZxRsUiX/ReS9h2P4RpCWYcU
-        ca1rHcxV5ThyAXmph0NkTEZVnX41JqDDiQtnRzBNkgsYZzeMTtkp8LpQScatNBUecZFhcS24qUdCp
-        GGRiIpL+s3kRv3X1F4qH620iS89T0Dc/i6C1KJDTxVvZ2dyxt3jxb3FQsehRgt4NROkPlRdqzsZmg
-        cJYOVl+A==;
+        bh=afbLJe7FW7rZfKqpOjG70Tp1qRCBlhgrW5EzTWyIN78=; b=kuKwNOQzLm20nxHIr43h/f1GCp
+        gUtLyIwR+ZBL2HyxPS8KmZdIj98Cc1nLXlaWILzPhZFfHYBhmwT+4GYjPfMS29jdNKHZqBXNn/Y4y
+        6za7ZmRZh4qcXOVlEjNK7W+Q9rK7To7uf7EKukzL+AR5Ru+qGHBigjuLR5W7nN55BbCXRjKPJS4iL
+        sUmTtZ/ADcl+GTVCrSLtlLNeFPNaKAxspGBFQV1jE6I6wPlFmkUl0wzLE/2BHt+IpIpqiq8WEcOWD
+        lGdPlGHCpLYMjb7ZJwT3JVLDyRagjgAe7ypF7jfqtHcKaHibFaWdKgqrFm2KHjkMqSl6dEpSAPTCF
+        Wr7UTnsg==;
 Received: from 089144205116.atnat0014.highway.webapn.at ([89.144.205.116] helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jVerS-0003jr-A3; Mon, 04 May 2020 17:26:34 +0000
+        id 1jVetb-0004ES-Gr; Mon, 04 May 2020 17:28:47 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     x86@kernel.org
 Cc:     Mike Travis <mike.travis@hpe.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH 04/11] x86/uv: Unexport symbols only used by x2apic_uv_x.c
-Date:   Mon,  4 May 2020 19:15:20 +0200
-Message-Id: <20200504171527.2845224-5-hch@lst.de>
+Subject: [PATCH 05/11] x86/uv: Remove the UV*_HUB_IS_SUPPORTED macros
+Date:   Mon,  4 May 2020 19:15:21 +0200
+Message-Id: <20200504171527.2845224-6-hch@lst.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200504171527.2845224-1-hch@lst.de>
 References: <20200504171527.2845224-1-hch@lst.de>
@@ -45,54 +45,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-uv_bios_set_legacy_vga_target, uv_bios_freq_base, uv_bios_get_sn_info,
-uv_type, system_serial_number and sn_region_size are only used in
-x2apic_uv_x.c, which can't be modular.
+All of the macros are always defined to one.  Remove them and the dead
+code keyed off them.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/x86/platform/uv/bios_uv.c | 6 ------
- 1 file changed, 6 deletions(-)
+ arch/x86/include/asm/uv/uv_hub.h  | 19 -------------------
+ arch/x86/include/asm/uv/uv_mmrs.h |  7 -------
+ 2 files changed, 26 deletions(-)
 
-diff --git a/arch/x86/platform/uv/bios_uv.c b/arch/x86/platform/uv/bios_uv.c
-index 5d675c4f459b4..4494589a288ae 100644
---- a/arch/x86/platform/uv/bios_uv.c
-+++ b/arch/x86/platform/uv/bios_uv.c
-@@ -83,10 +83,7 @@ long sn_coherency_id;
- long sn_region_size;
- EXPORT_SYMBOL_GPL(sn_region_size);
- long system_serial_number;
--EXPORT_SYMBOL_GPL(system_serial_number);
- int uv_type;
--EXPORT_SYMBOL_GPL(uv_type);
--
+diff --git a/arch/x86/include/asm/uv/uv_hub.h b/arch/x86/include/asm/uv/uv_hub.h
+index 950cd1395d5dd..a998e65e6a584 100644
+--- a/arch/x86/include/asm/uv/uv_hub.h
++++ b/arch/x86/include/asm/uv/uv_hub.h
+@@ -244,51 +244,32 @@ static inline int uv_hub_info_check(int version)
+ #define UV4_HUB_REVISION_BASE		7
+ #define UV4A_HUB_REVISION_BASE		8	/* UV4 (fixed) rev 2 */
  
- s64 uv_bios_get_sn_info(int fc, int *uvtype, long *partid, long *coher,
- 		long *region, long *ssn)
-@@ -113,7 +110,6 @@ s64 uv_bios_get_sn_info(int fc, int *uvtype, long *partid, long *coher,
- 		*ssn = v1;
- 	return ret;
- }
--EXPORT_SYMBOL_GPL(uv_bios_get_sn_info);
- 
- int
- uv_bios_mq_watchlist_alloc(unsigned long addr, unsigned int mq_size,
-@@ -164,7 +160,6 @@ s64 uv_bios_freq_base(u64 clock_type, u64 *ticks_per_second)
- 	return uv_bios_call(UV_BIOS_FREQ_BASE, clock_type,
- 			   (u64)ticks_per_second, 0, 0, 0);
- }
--EXPORT_SYMBOL_GPL(uv_bios_freq_base);
- 
- /*
-  * uv_bios_set_legacy_vga_target - Set Legacy VGA I/O Target
-@@ -183,7 +178,6 @@ int uv_bios_set_legacy_vga_target(bool decode, int domain, int bus)
- 	return uv_bios_call(UV_BIOS_SET_LEGACY_VGA_TARGET,
- 				(u64)decode, (u64)domain, (u64)bus, 0, 0);
- }
--EXPORT_SYMBOL_GPL(uv_bios_set_legacy_vga_target);
- 
- int uv_bios_init(void)
+-/* WARNING: UVx_HUB_IS_SUPPORTED defines are deprecated and will be removed */
+ static inline int is_uv1_hub(void)
  {
+-#ifdef	UV1_HUB_IS_SUPPORTED
+ 	return is_uv_hubbed(uv(1));
+-#else
+-	return 0;
+-#endif
+ }
+ 
+ static inline int is_uv2_hub(void)
+ {
+-#ifdef	UV2_HUB_IS_SUPPORTED
+ 	return is_uv_hubbed(uv(2));
+-#else
+-	return 0;
+-#endif
+ }
+ 
+ static inline int is_uv3_hub(void)
+ {
+-#ifdef	UV3_HUB_IS_SUPPORTED
+ 	return is_uv_hubbed(uv(3));
+-#else
+-	return 0;
+-#endif
+ }
+ 
+ /* First test "is UV4A", then "is UV4" */
+ static inline int is_uv4a_hub(void)
+ {
+-#ifdef	UV4A_HUB_IS_SUPPORTED
+ 	if (is_uv_hubbed(uv(4)))
+ 		return (uv_hub_info->hub_revision == UV4A_HUB_REVISION_BASE);
+-#endif
+ 	return 0;
+ }
+ 
+ static inline int is_uv4_hub(void)
+ {
+-#ifdef	UV4_HUB_IS_SUPPORTED
+ 	return is_uv_hubbed(uv(4));
+-#else
+-	return 0;
+-#endif
+ }
+ 
+ static inline int is_uvx_hub(void)
+diff --git a/arch/x86/include/asm/uv/uv_mmrs.h b/arch/x86/include/asm/uv/uv_mmrs.h
+index 62c79e26a59ac..9ee5ed6e8b348 100644
+--- a/arch/x86/include/asm/uv/uv_mmrs.h
++++ b/arch/x86/include/asm/uv/uv_mmrs.h
+@@ -99,13 +99,6 @@
+ #define UV3_HUB_PART_NUMBER_X	0x4321
+ #define UV4_HUB_PART_NUMBER	0x99a1
+ 
+-/* Compat: Indicate which UV Hubs are supported. */
+-#define UV1_HUB_IS_SUPPORTED	1
+-#define UV2_HUB_IS_SUPPORTED	1
+-#define UV3_HUB_IS_SUPPORTED	1
+-#define UV4_HUB_IS_SUPPORTED	1
+-#define UV4A_HUB_IS_SUPPORTED	1
+-
+ /* Error function to catch undefined references */
+ extern unsigned long uv_undefined(char *str);
+ 
 -- 
 2.26.2
 
