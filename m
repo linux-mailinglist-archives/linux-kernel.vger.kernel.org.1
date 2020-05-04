@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6E331C43B4
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:01:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B58AA1C450D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:12:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731063AbgEDSAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:00:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55670 "EHLO mail.kernel.org"
+        id S1731430AbgEDSC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:02:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59738 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730575AbgEDSAn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:00:43 -0400
+        id S1731416AbgEDSC5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 14:02:57 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2C3AD2073B;
-        Mon,  4 May 2020 18:00:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5039320707;
+        Mon,  4 May 2020 18:02:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588615243;
-        bh=h9wQ7p5kC7HRMjeeis5OSe0tAUhnYOwRGHgrzoC6kFA=;
+        s=default; t=1588615376;
+        bh=e6ccMfhxtpK7sTocC+QkoGt/nt9t13JWpEXbmbDlFks=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=auyt9kpCVnriMK1OurdV9hJHD/rg1Y38IxQbgTb8DGpznENKT/fyzW23nLaiF5zuq
-         6pAQzWhY0HNM7xBpDcRdmcr6XfNT4hXhxs5dU/DvOjAMFSl0uUvCDl4ywP8UJxgPiJ
-         JDEw1c531rL6HPbHuHg5ncbhvYKuObD85c5uypTw=
+        b=ReiSJfoWIXscHLvMnzHxAZmqcuSxWy+QpROoWh4DOWfbn1YzMJafW5cwnR7c7gYdu
+         0Vns6qcQSRMyJU7fTG+aZfFxO/coK1MPBJ0DwAqTCmbNyA4ECLYs7SqIX8gkYfe8OQ
+         kyz6YJnC8DVulO+vnD6NWWLbUOzn+L2+9eyK+Cvw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
-        Gerd Hoffmann <kraxel@redhat.com>
-Subject: [PATCH 4.14 04/26] drm/qxl: qxl_release leak in qxl_hw_surface_alloc()
+        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 5.4 14/57] mmc: sdhci-pci: Fix eMMC driver strength for BYT-based controllers
 Date:   Mon,  4 May 2020 19:57:18 +0200
-Message-Id: <20200504165443.436730782@linuxfoundation.org>
+Message-Id: <20200504165457.666271534@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200504165442.494398840@linuxfoundation.org>
-References: <20200504165442.494398840@linuxfoundation.org>
+In-Reply-To: <20200504165456.783676004@linuxfoundation.org>
+References: <20200504165456.783676004@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,35 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasily Averin <vvs@virtuozzo.com>
+From: Adrian Hunter <adrian.hunter@intel.com>
 
-commit a65aa9c3676ffccb21361d52fcfedd5b5ff387d7 upstream.
+commit 1a8eb6b373c2af6533c13d1ea11f504e5010ed9a upstream.
 
+BIOS writers have begun the practice of setting 40 ohm eMMC driver strength
+even though the eMMC may not support it, on the assumption that the kernel
+will validate the value against the eMMC (Extended CSD DRIVER_STRENGTH
+[offset 197]) and revert to the default 50 ohm value if 40 ohm is invalid.
+
+This is done to avoid changing the value for different boards.
+
+Putting aside the merits of this approach, it is clear the eMMC's mask
+of supported driver strengths is more reliable than the value provided
+by BIOS. Add validation accordingly.
+
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+Fixes: 51ced59cc02e ("mmc: sdhci-pci: Use ACPI DSM to get driver strength for some Intel devices")
 Cc: stable@vger.kernel.org
-Fixes: 8002db6336dd ("qxl: convert qxl driver to proper use for reservations")
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-Link: http://patchwork.freedesktop.org/patch/msgid/2e5a13ae-9ab2-5401-aa4d-03d5f5593423@virtuozzo.com
-Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
+Link: https://lore.kernel.org/r/20200422111629.4899-1-adrian.hunter@intel.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/qxl/qxl_cmd.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/mmc/host/sdhci-pci-core.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/gpu/drm/qxl/qxl_cmd.c
-+++ b/drivers/gpu/drm/qxl/qxl_cmd.c
-@@ -504,9 +504,10 @@ int qxl_hw_surface_alloc(struct qxl_devi
- 		return ret;
+--- a/drivers/mmc/host/sdhci-pci-core.c
++++ b/drivers/mmc/host/sdhci-pci-core.c
+@@ -601,6 +601,9 @@ static int intel_select_drive_strength(s
+ 	struct sdhci_pci_slot *slot = sdhci_priv(host);
+ 	struct intel_host *intel_host = sdhci_pci_priv(slot);
  
- 	ret = qxl_release_reserve_list(release, true);
--	if (ret)
-+	if (ret) {
-+		qxl_release_free(qdev, release);
- 		return ret;
--
-+	}
- 	cmd = (struct qxl_surface_cmd *)qxl_release_map(qdev, release);
- 	cmd->type = QXL_SURFACE_CMD_CREATE;
- 	cmd->flags = QXL_SURF_FLAG_KEEP_DATA;
++	if (!(mmc_driver_type_mask(intel_host->drv_strength) & card_drv))
++		return 0;
++
+ 	return intel_host->drv_strength;
+ }
+ 
 
 
