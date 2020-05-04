@@ -2,134 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B1991C4362
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 19:56:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4622D1C436F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 19:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730525AbgEDRz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 13:55:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49234 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729386AbgEDRz6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 13:55:58 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 40165206B8;
-        Mon,  4 May 2020 17:55:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588614957;
-        bh=7AASLHxv2Rby4dstXR1mZull2LY1/sl46uo96ENxXog=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=T/4b4jqaWekrwSnAOxrrDnnsqhQdyBbqnCTaU4oZvRIk1eLfkoYWFZ1ih5QvyBaPn
-         /XDMyxX07GqjYgR0nbxYkb7arLT1aQCJjt4ADoIePOJItfhJ06Z1Gf3LlyxSV+FfeV
-         FizZRIenSvfWO2jknmk2ojaBVX7K1p8zWc+VBTk0=
-Date:   Mon, 4 May 2020 18:55:55 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Sameer Pujar <spujar@nvidia.com>
-Cc:     perex@perex.cz, tiwai@suse.com, kuninori.morimoto.gx@renesas.com,
-        lgirdwood@gmail.com, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, digetx@gmail.com,
-        alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sharadg@nvidia.com,
-        mkumard@nvidia.com, viswanathl@nvidia.com, rlokhande@nvidia.com,
-        dramesh@nvidia.com, atalambedu@nvidia.com, nwartikar@nvidia.com,
-        swarren@nvidia.com, nicoleotsuka@gmail.com
-Subject: Re: [RFC] DPCM for Tegra
-Message-ID: <20200504175555.GG5491@sirena.org.uk>
-References: <1588250483-10014-1-git-send-email-spujar@nvidia.com>
+        id S1730580AbgEDR4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 13:56:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729386AbgEDR4m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 13:56:42 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CDECC061A0F
+        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 10:56:41 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id a2so14715662ejx.5
+        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 10:56:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RjIlcnq4yiC6vV5MYzey8j0IMoFyjTKlaFO0D+bQg24=;
+        b=ZGEyPwV03UkmAUrht9/IhvuD1CmRcikPe5XRtd0QZjb6wKtnzvCsvnSu+MS+y0s0Hk
+         z1HUVem0q596xf/xLXiL+6/UR8QQTZBqjWw2gONtaZd2BXEBQqeqovU6O7bheFuu4GCi
+         KxIpqERDZluuFq4GZjuuaEykRni7NJfk88Vc7yMqUe8CrGvk7Gu7xHcVdteGOmCv4dWL
+         eMWILgwESOkvC8pLu2xalTHSzD21cw51yXWPNmaHBeGUvL+2MPeJhiEFr5uNGN1nII4a
+         1JKwBTVD1jV+acMUwVAMfjXEPViCk7JRXleFI2rrsmnOY65xKNg4+K1bIWNxoPYfW44f
+         dOlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RjIlcnq4yiC6vV5MYzey8j0IMoFyjTKlaFO0D+bQg24=;
+        b=b4QOSYeS72Tz6X95Jb8IG2s6a/d90yyCX5uuCr5xj4QUs4/QMhnYx7q4YoyI5FqUhy
+         AhjJTz/UdyJxtVK0XgnBb7z4ihz2Rwxyxq/D10CyPEIzOtH62QdPqUrXN4cFfPthMy0a
+         AlqvI/rGfLLIl+tyHWeZIIn01wYStrrG1gH2FvdE6sWDM/0E/+6k+JRFr9z/Y8YTpTI1
+         k0t4KhcaBZXrm7Q1toSSd85dpZr3XDd6CxFxp9bKNGw87dC+cKcP18LtaXedyBLBfdBy
+         VnHF38C2D8gEofPgo4z+L8IBXDgMP4JpoBJdsR+xf9+9+O63euTjN26/9R5WkhxtZvrm
+         5UMA==
+X-Gm-Message-State: AGi0PuZG9j5JxtLZ0k/MS4jTBFajeJ/Vcekh13SiaEgHC3RGGcm2Izlv
+        qpRS4xlnC4NN3oSZJMkZSmuNhxTVf3D0ci/+TNRthQ==
+X-Google-Smtp-Source: APiQypJulmPEpxcWX1jyXL8BWDiI54NDVxDpnmYWCjC6BTiL2RZDj0Ms+5KHcenqxHDwS47TFsCwyara8rfJrVk9c7U=
+X-Received: by 2002:a17:906:49c7:: with SMTP id w7mr16307878ejv.29.1588615000212;
+ Mon, 04 May 2020 10:56:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ahP6B03r4gLOj5uD"
-Content-Disposition: inline
-In-Reply-To: <1588250483-10014-1-git-send-email-spujar@nvidia.com>
-X-Cookie: My life is a patio of fun!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200502143555.543636-1-pasha.tatashin@soleen.com>
+ <20200502143555.543636-2-pasha.tatashin@soleen.com> <20200504131500.5f6c8860@gandalf.local.home>
+In-Reply-To: <20200504131500.5f6c8860@gandalf.local.home>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Mon, 4 May 2020 13:56:04 -0400
+Message-ID: <CA+CK2bBeBC1T_Bc2gskk90bJogOdg-RK1DHf4odsDj-ck_efyQ@mail.gmail.com>
+Subject: Re: [PATCH v1 1/3] printk: honor the max_reason field in kmsg_dumper
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     James Morris <jmorris@namei.org>, Sasha Levin <sashal@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Kees Cook <keescook@chromium.org>, anton@enomsg.org,
+        ccross@android.com, Tony Luck <tony.luck@intel.com>,
+        robh+dt@kernel.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> Hmm, I didn't realize that enums were allowed to have duplicates. That can
+> usually screw up logic. I would recommend making that a define afterward.
+>
+> #define KMSG_DUMP_MAX KMSG_DUMP_POWEROFF
+>
+> As is done in other locations of the kernel.
+>
 
---ahP6B03r4gLOj5uD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi Steve,
 
-On Thu, Apr 30, 2020 at 06:11:23PM +0530, Sameer Pujar wrote:
+Sure, I will change it to define.
 
->  a) Can I use a DAPM Mux control to activate a BE path? This in turn can
->     program required switch in XBAR.
-
-If it works then sure, that seems sensible.
-
->  b) I have modelled SFC and MIXER as backends. Is this allowed?
->=20
->     This was done to include SFC or MIXER HW components as part of the
->     sound card and use like below in one of the audio use cases.
-> =20
->     ADMAIF1(FE) --> SFC(BE1) --> I2S(BE2) ... OR
->     ADMAIF2(FE) --> SFC(BE1) --> I2S(BE2) ...
-
-This is the sort of setup that'd be a lot happier using a component
-model.
-
->     I used following workaround to connect multiple BE components.
->     With this I can see PCM callbacks happen for all BE DAIs along the DA=
-PM
->     path. The obective was to connect multiple components together and (a)
->     was used to connect one component to another. Each "-->" here connects
->     two components and it is a switch in XBAR.=20
-
-This doesn't strike me as something that's likely to be robust but given
-that that applies to DPCM in general so long as it doesn't break anyone
-else's existing stuff I guess it should be viable, it's not like there
-are actually good options that you could use currently.  It's really
-hard to get enthusiastic about it though.
-
->  c) Hostless mode did NOT work:
->      - Following audio path was intended to be tested:
->        I2S1 --> SFC --> I2S2
-
->      - [3] offers two options:
->          * CODEC<->CODEC: If I were to use a separate DAI link for each B=
-E to BE
->            connection, then it will result in a similar design what we ha=
-ve
->            currently.
-
-This is more in line with components so will probably be easier going
-forwards.
-
->          * Hostless: I did not come across references for this.
->            (Any references in this regard will be helpful)
-
-Not sure anyone has ever done this with DPCM, could be wrong though.
-
-> May be the current Tegra ASoC design is more suitable for component model=
- as you
-> had previously mentioned. I wanted to understand if above, especially (a)=
- and (b),
-> are acceptable in this regard or if there are better options to interconn=
-ect
-> multiple ASoC components.
-
-In general most systems would be happier with components but yeah, I
-think that's particularly the case for something as powerful and
-flexible as your hardware seems to be.
-
---ahP6B03r4gLOj5uD
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6wVyoACgkQJNaLcl1U
-h9BsCQf+NDpQnXUKOhrp8OMCAs73chnv7fTrNscXnf0V+rnrqqSC7b6d0Q2tz3QL
-8HYzl1AiMtRaAmybm98BhWpdUWXMGTKdYMBM7uKX2r+uVkm6oWhhK+EST6fOMv3k
-ZvgRM35+2mIXUrSR5b62uPIi8O3mtbLuFkPb3oWkw/hT0jQm4MPKl/c6h3f9e2qb
-FY8yrgExhRQkp+NAKMSNKV4gEZbViEJG5M9w879aEjQdWWhJ4tqo2s2QQXZmg5p2
-x/uNk6mgWU+edW21BN78iaOB8urYcnac5ItgRCiVVCrhRjNeP8qhs0irsRF5l03X
-656KL7U44mgySYNW2tlLHsXV/jmJXg==
-=W0ip
------END PGP SIGNATURE-----
-
---ahP6B03r4gLOj5uD--
+Thank you,
+Pasha
