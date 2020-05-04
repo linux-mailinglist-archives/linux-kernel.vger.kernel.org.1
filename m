@@ -2,328 +2,336 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0052F1C48EF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 23:22:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4116C1C48D5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 23:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728168AbgEDVWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 17:22:49 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:57910 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728102AbgEDVWq (ORCPT
+        id S1726950AbgEDVQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 17:16:25 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:34842 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726334AbgEDVQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 17:22:46 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 044LMXx8104294;
-        Mon, 4 May 2020 16:22:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1588627353;
-        bh=l5RB1BFBNGs53h/lFYd+NbwK21SIGQnFwb+EHjWJYqg=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=tF0aZ+XP/8Ofiy1lHCrUPX27C+7U2U4YNVEgOu52UOyz3qFv+1gyy0nxhR3SZBGgs
-         2x3g5QyYG/+yfihIV5RvqdcjtAIrPB4XkRnxyT8kh6MhNLWbjRcdpoQbpAX5ylng14
-         Udmi27nuZbJvGGqYDW/BBJ3PMsZR4N8cbjn7Bt8o=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 044LMXme021116
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 4 May 2020 16:22:33 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 4 May
- 2020 16:22:33 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 4 May 2020 16:22:33 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 044LMXV9098314;
-        Mon, 4 May 2020 16:22:33 -0500
-From:   Dan Murphy <dmurphy@ti.com>
-To:     <jacek.anaszewski@gmail.com>, <pavel@ucw.cz>
-CC:     <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>
-Subject: [PATCH v25 16/16] dt: bindings: Update lp55xx binding to recommended LED naming
-Date:   Mon, 4 May 2020 16:13:44 -0500
-Message-ID: <20200504211344.13221-17-dmurphy@ti.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200504211344.13221-1-dmurphy@ti.com>
-References: <20200504211344.13221-1-dmurphy@ti.com>
+        Mon, 4 May 2020 17:16:25 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 044LBwr1190374;
+        Mon, 4 May 2020 21:16:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
+ bh=Oplnk4Rt829rHZ5Ud2jmRrMcwwQYYPsjI4HEiMMUZK8=;
+ b=j3nPqVHcVXCpfkkVM4IoKe52OwIyj6wFSh5Aee+lewHjtzli8zxHYtMSxbYQuQI03vXK
+ AMnJRTsbI2OZsOyrtoyt1J6jcjhKupHlme0nLIoqWDy36B1BaQy1eG4EU94Z3Jo0hCQF
+ 0jzMx7w1SlB3rBiukNT5FxzWo66qQGV3fGQDrV1x18PI8iLLVA+URSzqfo+fvszqIyGp
+ ML3GLcfWxS4LZDerAXZ1x36GTOlK/UK+lL4fNX8ZM+SOxfV/gosLZG5KmnAE/u/Er0RH
+ HU4r/VbWtcg5KJSAQsmLEOwHqx1ILb6sR+J+a4YupQD9591r7lDBQbN9PpwrE7+arBMo 5g== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 30s09r1f42-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 04 May 2020 21:16:00 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 044L7eWS140831;
+        Mon, 4 May 2020 21:14:00 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 30t1r39k5p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 04 May 2020 21:13:59 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 044LDwdt019330;
+        Mon, 4 May 2020 21:13:58 GMT
+Received: from vbusired-dt (/10.39.235.150)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 04 May 2020 14:13:57 -0700
+Date:   Mon, 4 May 2020 16:13:56 -0500
+From:   Venu Busireddy <venu.busireddy@oracle.com>
+To:     Ashish Kalra <Ashish.Kalra@amd.com>
+Cc:     pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        hpa@zytor.com, joro@8bytes.org, bp@suse.de,
+        thomas.lendacky@amd.com, x86@kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, srutherford@google.com,
+        rientjes@google.com, brijesh.singh@amd.com
+Subject: Re: [PATCH v7 02/18] KVM: SVM: Add KVM_SEND_UPDATE_DATA command
+Message-ID: <20200504211356.GB1699387@vbusired-dt>
+References: <cover.1588234824.git.ashish.kalra@amd.com>
+ <8d336fdd83e9b698354b5572d5f2bd1660879fc4.1588234824.git.ashish.kalra@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <8d336fdd83e9b698354b5572d5f2bd1660879fc4.1588234824.git.ashish.kalra@amd.com>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9611 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 suspectscore=0
+ spamscore=0 mlxlogscore=999 malwarescore=0 phishscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005040165
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9611 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0
+ lowpriorityscore=0 spamscore=0 adultscore=0 clxscore=1015 suspectscore=0
+ priorityscore=1501 malwarescore=0 mlxlogscore=999 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005040165
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the LP55xx DT binding examples to the recommended node
-naming convention.  There are no changes to the DT properties.
+On 2020-04-30 08:40:50 +0000, Ashish Kalra wrote:
+> From: Brijesh Singh <Brijesh.Singh@amd.com>
+> 
+> The command is used for encrypting the guest memory region using the encryption
+> context created with KVM_SEV_SEND_START.
+> 
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: "Radim Krčmář" <rkrcmar@redhat.com>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Borislav Petkov <bp@suse.de>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Cc: x86@kernel.org
+> Cc: kvm@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Reviewed-by : Steve Rutherford <srutherford@google.com>
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> ---
+>  .../virt/kvm/amd-memory-encryption.rst        |  24 ++++
+>  arch/x86/kvm/svm/sev.c                        | 135 +++++++++++++++++-
+>  include/uapi/linux/kvm.h                      |   9 ++
+>  3 files changed, 164 insertions(+), 4 deletions(-)
+> 
+> diff --git a/Documentation/virt/kvm/amd-memory-encryption.rst b/Documentation/virt/kvm/amd-memory-encryption.rst
+> index 4fd34fc5c7a7..f46817ef7019 100644
+> --- a/Documentation/virt/kvm/amd-memory-encryption.rst
+> +++ b/Documentation/virt/kvm/amd-memory-encryption.rst
+> @@ -290,6 +290,30 @@ Returns: 0 on success, -negative on error
+>                  __u32 session_len;
+>          };
+>  
+> +11. KVM_SEV_SEND_UPDATE_DATA
+> +----------------------------
+> +
+> +The KVM_SEV_SEND_UPDATE_DATA command can be used by the hypervisor to encrypt the
+> +outgoing guest memory region with the encryption context creating using
+> +KVM_SEV_SEND_START.
+> +
+> +Parameters (in): struct kvm_sev_send_update_data
+> +
+> +Returns: 0 on success, -negative on error
+> +
+> +::
+> +
+> +        struct kvm_sev_launch_send_update_data {
+> +                __u64 hdr_uaddr;        /* userspace address containing the packet header */
+> +                __u32 hdr_len;
+> +
+> +                __u64 guest_uaddr;      /* the source memory region to be encrypted */
+> +                __u32 guest_len;
+> +
+> +                __u64 trans_uaddr;      /* the destition memory region  */
+> +                __u32 trans_len;
+> +        };
+> +
+>  References
+>  ==========
+>  
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 5a15b43b4349..0c92c16505ab 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -23,6 +23,7 @@ static DECLARE_RWSEM(sev_deactivate_lock);
+>  static DEFINE_MUTEX(sev_bitmap_lock);
+>  unsigned int max_sev_asid;
+>  static unsigned int min_sev_asid;
+> +static unsigned long sev_me_mask;
+>  static unsigned long *sev_asid_bitmap;
+>  static unsigned long *sev_reclaim_asid_bitmap;
+>  #define __sme_page_pa(x) __sme_set(page_to_pfn(x) << PAGE_SHIFT)
+> @@ -1035,6 +1036,123 @@ static int sev_send_start(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>  	return ret;
+>  }
+>  
+> +/* Userspace wants to query either header or trans length. */
+> +static int
+> +__sev_send_update_data_query_lengths(struct kvm *kvm, struct kvm_sev_cmd *argp,
+> +				     struct kvm_sev_send_update_data *params)
+> +{
+> +	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+> +	struct sev_data_send_update_data *data;
+> +	int ret;
+> +
+> +	data = kzalloc(sizeof(*data), GFP_KERNEL_ACCOUNT);
+> +	if (!data)
+> +		return -ENOMEM;
+> +
+> +	data->handle = sev->handle;
+> +	ret = sev_issue_cmd(kvm, SEV_CMD_SEND_UPDATE_DATA, data, &argp->error);
+> +
+> +	params->hdr_len = data->hdr_len;
+> +	params->trans_len = data->trans_len;
+> +
+> +	if (copy_to_user((void __user *)(uintptr_t)argp->data, params,
+> +			 sizeof(struct kvm_sev_send_update_data)))
+> +		ret = -EFAULT;
+> +
+> +	kfree(data);
+> +	return ret;
+> +}
+> +
+> +static int sev_send_update_data(struct kvm *kvm, struct kvm_sev_cmd *argp)
+> +{
+> +	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+> +	struct sev_data_send_update_data *data;
+> +	struct kvm_sev_send_update_data params;
+> +	void *hdr, *trans_data;
+> +	struct page **guest_page;
+> +	unsigned long n;
+> +	int ret, offset;
+> +
+> +	if (!sev_guest(kvm))
+> +		return -ENOTTY;
+> +
+> +	if (copy_from_user(&params, (void __user *)(uintptr_t)argp->data,
+> +			sizeof(struct kvm_sev_send_update_data)))
+> +		return -EFAULT;
+> +
+> +	/* userspace wants to query either header or trans length */
+> +	if (!params.trans_len || !params.hdr_len)
+> +		return __sev_send_update_data_query_lengths(kvm, argp, &params);
+> +
+> +	if (!params.trans_uaddr || !params.guest_uaddr ||
+> +	    !params.guest_len || !params.hdr_uaddr)
+> +		return -EINVAL;
+> +
+> +	/* Check if we are crossing the page boundary */
+> +	offset = params.guest_uaddr & (PAGE_SIZE - 1);
+> +	if ((params.guest_len + offset > PAGE_SIZE))
+> +		return -EINVAL;
+> +
+> +	/* Pin guest memory */
+> +	guest_page = sev_pin_memory(kvm, params.guest_uaddr & PAGE_MASK,
+> +				    PAGE_SIZE, &n, 0);
+> +	if (!guest_page)
+> +		return -EFAULT;
+> +
+> +	/* allocate memory for header and transport buffer */
+> +	ret = -ENOMEM;
+> +	hdr = kmalloc(params.hdr_len, GFP_KERNEL_ACCOUNT);
+> +	if (!hdr)
+> +		goto e_unpin;
+> +
+> +	trans_data = kmalloc(params.trans_len, GFP_KERNEL_ACCOUNT);
+> +	if (!trans_data)
+> +		goto e_free_hdr;
+> +
+> +	data = kzalloc(sizeof(*data), GFP_KERNEL);
+> +	if (!data)
+> +		goto e_free_trans_data;
+> +
+> +	data->hdr_address = __psp_pa(hdr);
+> +	data->hdr_len = params.hdr_len;
+> +	data->trans_address = __psp_pa(trans_data);
+> +	data->trans_len = params.trans_len;
+> +
+> +	/* The SEND_UPDATE_DATA command requires C-bit to be always set. */
+> +	data->guest_address = (page_to_pfn(guest_page[0]) << PAGE_SHIFT) +
+> +				offset;
+> +	data->guest_address |= sev_me_mask;
+> +	data->guest_len = params.guest_len;
+> +	data->handle = sev->handle;
+> +
+> +	ret = sev_issue_cmd(kvm, SEV_CMD_SEND_UPDATE_DATA, data, &argp->error);
+> +
+> +	if (ret)
+> +		goto e_free;
+> +
+> +	/* copy transport buffer to user space */
+> +	if (copy_to_user((void __user *)(uintptr_t)params.trans_uaddr,
+> +			 trans_data, params.trans_len)) {
+> +		ret = -EFAULT;
+> +		goto e_unpin;
 
-Acked-by: Pavel Machek <pavel@ucw.cz>
-Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
-CC: Rob Herring <robh+dt@kernel.org>
-CC: Tony Lindgren <tony@atomide.com>
-CC: "Benoît Cousson" <bcousson@baylibre.com>
-CC: Linus Walleij <linus.walleij@linaro.org>
-CC: Shawn Guo <shawnguo@kernel.org>
-CC: Sascha Hauer <s.hauer@pengutronix.de>
-CC: Pengutronix Kernel Team <kernel@pengutronix.de>
-CC: Fabio Estevam <festevam@gmail.com>
-CC: NXP Linux Team <linux-imx@nxp.com>
----
- .../devicetree/bindings/leds/leds-lp55xx.txt  | 58 +++++++++----------
- 1 file changed, 29 insertions(+), 29 deletions(-)
+Can you address my comment in v6 about this goto statement?
+https://lore.kernel.org/kvm/20200402175529.GA655472@vbusired-dt/
 
-diff --git a/Documentation/devicetree/bindings/leds/leds-lp55xx.txt b/Documentation/devicetree/bindings/leds/leds-lp55xx.txt
-index 0ccc1efc2499..5475f45ef51f 100644
---- a/Documentation/devicetree/bindings/leds/leds-lp55xx.txt
-+++ b/Documentation/devicetree/bindings/leds/leds-lp55xx.txt
-@@ -48,7 +48,7 @@ example 1) LP5521
- 'lp5521_pri:channel1' and 'lp5521_pri:channel2', with a heartbeat trigger
- on channel 0.
- 
--lp5521@32 {
-+led-controller@32 {
- 	#address-cells = <1>;
- 	#size-cells = <0>;
- 	compatible = "national,lp5521";
-@@ -56,20 +56,20 @@ lp5521@32 {
- 	label = "lp5521_pri";
- 	clock-mode = /bits/ 8 <2>;
- 
--	chan@0 {
-+	led@0 {
- 		reg = <0>;
- 		led-cur = /bits/ 8 <0x2f>;
- 		max-cur = /bits/ 8 <0x5f>;
- 		linux,default-trigger = "heartbeat";
- 	};
- 
--	chan@1 {
-+	led@1 {
- 		reg = <1>;
- 		led-cur = /bits/ 8 <0x2f>;
- 		max-cur = /bits/ 8 <0x5f>;
- 	};
- 
--	chan@2 {
-+	led@2 {
- 		reg = <2>;
- 		led-cur = /bits/ 8 <0x2f>;
- 		max-cur = /bits/ 8 <0x5f>;
-@@ -88,70 +88,70 @@ ASEL1    ASEL0    Address
-  VEN      GND       34h
-  VEN      VEN       35h
- 
--lp5523@32 {
-+led-controller@32 {
- 	#address-cells = <1>;
- 	#size-cells = <0>;
- 	compatible = "national,lp5523";
- 	reg = <0x32>;
- 	clock-mode = /bits/ 8 <1>;
- 
--	chan@0 {
-+	led@0 {
- 		reg = <0>;
- 		chan-name = "d1";
- 		led-cur = /bits/ 8 <0x14>;
- 		max-cur = /bits/ 8 <0x20>;
- 	};
- 
--	chan@1 {
-+	led@1 {
- 		reg = <1>;
- 		chan-name = "d2";
- 		led-cur = /bits/ 8 <0x14>;
- 		max-cur = /bits/ 8 <0x20>;
- 	};
- 
--	chan@2 {
-+	led@2 {
- 		reg = <2>;
- 		chan-name = "d3";
- 		led-cur = /bits/ 8 <0x14>;
- 		max-cur = /bits/ 8 <0x20>;
- 	};
- 
--	chan@3 {
-+	led@3 {
- 		reg = <3>;
- 		chan-name = "d4";
- 		led-cur = /bits/ 8 <0x14>;
- 		max-cur = /bits/ 8 <0x20>;
- 	};
- 
--	chan@4 {
-+	led@4 {
- 		reg = <4>;
- 		chan-name = "d5";
- 		led-cur = /bits/ 8 <0x14>;
- 		max-cur = /bits/ 8 <0x20>;
- 	};
- 
--	chan@5 {
-+	led@5 {
- 		reg = <5>;
- 		chan-name = "d6";
- 		led-cur = /bits/ 8 <0x14>;
- 		max-cur = /bits/ 8 <0x20>;
- 	};
- 
--	chan@6 {
-+	led@6 {
- 		reg = <6>;
- 		chan-name = "d7";
- 		led-cur = /bits/ 8 <0x14>;
- 		max-cur = /bits/ 8 <0x20>;
- 	};
- 
--	chan@7 {
-+	led@7 {
- 		reg = <7>;
- 		chan-name = "d8";
- 		led-cur = /bits/ 8 <0x14>;
- 		max-cur = /bits/ 8 <0x20>;
- 	};
- 
--	chan@8 {
-+	led@8 {
- 		reg = <8>;
- 		chan-name = "d9";
- 		led-cur = /bits/ 8 <0x14>;
-@@ -162,35 +162,35 @@ lp5523@32 {
- example 3) LP5562
- 4 channels are defined.
- 
--lp5562@30 {
-+led-controller@30 {
- 	#address-cells = <1>;
- 	#size-cells = <0>;
- 	compatible = "ti,lp5562";
- 	reg = <0x30>;
- 	clock-mode = /bits/8 <2>;
- 
--	chan@0 {
-+	led@0 {
- 		reg = <0>;
- 		chan-name = "R";
- 		led-cur = /bits/ 8 <0x20>;
- 		max-cur = /bits/ 8 <0x60>;
- 	};
- 
--	chan@1 {
-+	led@1 {
- 		reg = <1>;
- 		chan-name = "G";
- 		led-cur = /bits/ 8 <0x20>;
- 		max-cur = /bits/ 8 <0x60>;
- 	};
- 
--	chan@2 {
-+	led@2 {
- 		reg = <2>;
- 		chan-name = "B";
- 		led-cur = /bits/ 8 <0x20>;
- 		max-cur = /bits/ 8 <0x60>;
- 	};
- 
--	chan@3 {
-+	led@3 {
- 		reg = <3>;
- 		chan-name = "W";
- 		led-cur = /bits/ 8 <0x20>;
-@@ -202,7 +202,7 @@ example 4) LP8501
- 9 channels are defined. The 'pwr-sel' is LP8501 specific property.
- Others are same as LP5523.
- 
--lp8501@32 {
-+led-controller@32 {
- 	#address-cells = <1>;
- 	#size-cells = <0>;
- 	compatible = "ti,lp8501";
-@@ -210,63 +210,63 @@ lp8501@32 {
- 	clock-mode = /bits/ 8 <2>;
- 	pwr-sel = /bits/ 8 <3>;	/* D1~9 connected to VOUT */
- 
--	chan@0 {
-+	led@0 {
- 		reg = <0>;
- 		chan-name = "d1";
- 		led-cur = /bits/ 8 <0x14>;
- 		max-cur = /bits/ 8 <0x20>;
- 	};
- 
--	chan@1 {
-+	led@1 {
- 		reg = <1>;
- 		chan-name = "d2";
- 		led-cur = /bits/ 8 <0x14>;
- 		max-cur = /bits/ 8 <0x20>;
- 	};
- 
--	chan@2 {
-+	led@2 {
- 		reg = <2>;
- 		chan-name = "d3";
- 		led-cur = /bits/ 8 <0x14>;
- 		max-cur = /bits/ 8 <0x20>;
- 	};
- 
--	chan@3 {
-+	led@3 {
- 		reg = <3>;
- 		chan-name = "d4";
- 		led-cur = /bits/ 8 <0x14>;
- 		max-cur = /bits/ 8 <0x20>;
- 	};
- 
--	chan@4 {
-+	led@4 {
- 		reg = <4>;
- 		chan-name = "d5";
- 		led-cur = /bits/ 8 <0x14>;
- 		max-cur = /bits/ 8 <0x20>;
- 	};
- 
--	chan@5 {
-+	led@5 {
- 		reg = <5>;
- 		chan-name = "d6";
- 		led-cur = /bits/ 8 <0x14>;
- 		max-cur = /bits/ 8 <0x20>;
- 	};
- 
--	chan@6 {
-+	led@6 {
- 		reg = <6>;
- 		chan-name = "d7";
- 		led-cur = /bits/ 8 <0x14>;
- 		max-cur = /bits/ 8 <0x20>;
- 	};
- 
--	chan@7 {
-+	led@7 {
- 		reg = <7>;
- 		chan-name = "d8";
- 		led-cur = /bits/ 8 <0x14>;
- 		max-cur = /bits/ 8 <0x20>;
- 	};
- 
--	chan@8 {
-+	led@8 {
- 		reg = <8>;
- 		chan-name = "d9";
- 		led-cur = /bits/ 8 <0x14>;
--- 
-2.25.1
-
+> +	}
+> +
+> +	/* Copy packet header to userspace. */
+> +	ret = copy_to_user((void __user *)(uintptr_t)params.hdr_uaddr, hdr,
+> +				params.hdr_len);
+> +
+> +e_free:
+> +	kfree(data);
+> +e_free_trans_data:
+> +	kfree(trans_data);
+> +e_free_hdr:
+> +	kfree(hdr);
+> +e_unpin:
+> +	sev_unpin_memory(kvm, guest_page, n);
+> +
+> +	return ret;
+> +}
+> +
+>  int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
+>  {
+>  	struct kvm_sev_cmd sev_cmd;
+> @@ -1082,6 +1200,9 @@ int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
+>  	case KVM_SEV_SEND_START:
+>  		r = sev_send_start(kvm, &sev_cmd);
+>  		break;
+> +	case KVM_SEV_SEND_UPDATE_DATA:
+> +		r = sev_send_update_data(kvm, &sev_cmd);
+> +		break;
+>  	default:
+>  		r = -EINVAL;
+>  		goto out;
+> @@ -1238,16 +1359,22 @@ void sev_vm_destroy(struct kvm *kvm)
+>  int __init sev_hardware_setup(void)
+>  {
+>  	struct sev_user_data_status *status;
+> +	u32 eax, ebx;
+>  	int rc;
+>  
+> -	/* Maximum number of encrypted guests supported simultaneously */
+> -	max_sev_asid = cpuid_ecx(0x8000001F);
+> +	/*
+> +	 * Query the memory encryption information.
+> +	 *  EBX:  Bit 0:5 Pagetable bit position used to indicate encryption
+> +	 *  (aka Cbit).
+> +	 *  ECX:  Maximum number of encrypted guests supported simultaneously.
+> +	 *  EDX:  Minimum ASID value that should be used for SEV guest.
+> +	 */
+> +	cpuid(0x8000001f, &eax, &ebx, &max_sev_asid, &min_sev_asid);
+>  
+>  	if (!svm_sev_enabled())
+>  		return 1;
+>  
+> -	/* Minimum ASID value that should be used for SEV guest */
+> -	min_sev_asid = cpuid_edx(0x8000001F);
+> +	sev_me_mask = 1UL << (ebx & 0x3f);
+>  
+>  	/* Initialize SEV ASID bitmaps */
+>  	sev_asid_bitmap = bitmap_zalloc(max_sev_asid, GFP_KERNEL);
+> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+> index 8827d43e2684..7aaed8ee33cf 100644
+> --- a/include/uapi/linux/kvm.h
+> +++ b/include/uapi/linux/kvm.h
+> @@ -1610,6 +1610,15 @@ struct kvm_sev_send_start {
+>  	__u32 session_len;
+>  };
+>  
+> +struct kvm_sev_send_update_data {
+> +	__u64 hdr_uaddr;
+> +	__u32 hdr_len;
+> +	__u64 guest_uaddr;
+> +	__u32 guest_len;
+> +	__u64 trans_uaddr;
+> +	__u32 trans_len;
+> +};
+> +
+>  #define KVM_DEV_ASSIGN_ENABLE_IOMMU	(1 << 0)
+>  #define KVM_DEV_ASSIGN_PCI_2_3		(1 << 1)
+>  #define KVM_DEV_ASSIGN_MASK_INTX	(1 << 2)
+> -- 
+> 2.17.1
+> 
