@@ -2,104 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 140491C3E3A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 17:14:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FC221C3E5A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 17:20:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729312AbgEDPOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 11:14:49 -0400
-Received: from gateway23.websitewelcome.com ([192.185.50.129]:22385 "EHLO
-        gateway23.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726509AbgEDPOs (ORCPT
+        id S1728582AbgEDPUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 11:20:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725941AbgEDPUx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 11:14:48 -0400
-Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
-        by gateway23.websitewelcome.com (Postfix) with ESMTP id 26059FFD2A
-        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 10:14:48 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id VcnwjK9aHEfyqVcnwj8Akx; Mon, 04 May 2020 10:14:48 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Type:MIME-Version:Message-ID:Subject:
-        Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=0aRQZfEcxHyBj7xnDiHsle71WyIV/i7sE6OjfEdSZt4=; b=pzLzkbHmwXQ0GeUH5+6kvnEZha
-        ZteJlMux6TZSH/AikoPvYp7CfasYeff9LU8ME9UZabFJYAmM7iDAk7Dtzd1vcIfYWHlGDQY9xj3GQ
-        5RQhnx3brUKeJUoSly0atiiJYFBRueb3lIe9AnwHP3GZhpKpOkex+UUG7cURDZKkkyZSOGI34bbT+
-        sMAWxPOItDndSR3yBtlBp4nQrF6rnfpHM92U0XDIxpf0NELlZFcENRtKk5veV6UZSCEUExxMFhIkX
-        3+fCN6loSsmy2E8ZSbIySndGn2+G7B46iRqgNRMUeAzgUzoe/VZDGtBaJKHJpAgPBPYX3K56srXBL
-        OLWqf/Qg==;
-Received: from [189.207.59.248] (port=60896 helo=embeddedor)
-        by gator4166.hostgator.com with esmtpa (Exim 4.92)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1jVcnv-003tgs-Q8; Mon, 04 May 2020 10:14:47 -0500
-Date:   Mon, 4 May 2020 10:19:12 -0500
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-To:     Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Pavel Begunkov <asml.silence@gmail.com>
-Cc:     io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH][next] io_uring: Remove logically dead code in io_splice
-Message-ID: <20200504151912.GA22779@embeddedor>
+        Mon, 4 May 2020 11:20:53 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59067C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 08:20:53 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id 19so12655376ioz.10
+        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 08:20:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=T6E4sa47WiUWY45YJzDn9sg5wskjTrREH+XL57J4HjA=;
+        b=ar8D3WWowhf3TqhMXvosjX37VL5Q3PMOE23J1QCv7tuISdMTJC0n0Cv+q8afrpkrBK
+         MKxDhD6taHPoUUGb8UZSZ3Vtw298CeT6gMiCExHKX2Mk1wMVRxgj9sxzLAxB1nkKcRsX
+         r7OkHfZwH5rTo0FRaf5ydWedH4FqyaGGOkkRc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=T6E4sa47WiUWY45YJzDn9sg5wskjTrREH+XL57J4HjA=;
+        b=UuexV4wv2NwtpmcuOx6hr0hIpvDAnvnFnlRThuyh4WaZ6RggdLtf9/WXQOYP3Bqxbb
+         nnAlB9IlpH8Q7wdeAjPkqdVVtUDDoD2A8+X5J+hSG/2CoGY5xm5aIhZ0ebPvVCbaY+s8
+         EtZAT/ioCUU7uOS7PZANipuh3wm+ViZ49ZyyuzZ1zYTx8+3UYhGmoT2M+sDhUE7pOJAT
+         7R1Bz7Ppfuhui+skKlnPpw30ieUdpos7SUUoDCdywelF2VGC4iyQoJrL4cFGl2u3+EGD
+         MHFY3qAJvjEAAyWeJPOHiFjqc6Xs/zocIBklInXZt7EE6vuJxZSJ8UdpNpItLKTOkhwB
+         tR/g==
+X-Gm-Message-State: AGi0PuaVN8BQ87Lgm8BfzfN9bDhwDOiFsKkTzFQdBTSDcVL/QApn9MFe
+        ZkCgBzlqpt/op7kI88Nw7gnWQsJNj1l2CfcZ8cbDJA==
+X-Google-Smtp-Source: APiQypKVjWID+3rjrtFjLcSSUH+W8buTUh3xgn1YhjYKIoTsozCZ0Fz29P55Fk0GHlGltBqh//rR3Tiv8gGmRnIpECo=
+X-Received: by 2002:a6b:3e0a:: with SMTP id l10mr2587371ioa.112.1588605652380;
+ Mon, 04 May 2020 08:20:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 189.207.59.248
-X-Source-L: No
-X-Exim-ID: 1jVcnv-003tgs-Q8
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: (embeddedor) [189.207.59.248]:60896
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 16
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+References: <20191021193343.41320-1-kdasu.kdev@gmail.com> <20191105200344.1e8c3eab@xps13>
+ <1718371158.75883.1572995022606.JavaMail.zimbra@nod.at> <20200109160352.6080e1e5@xps13>
+ <CAKekbeucdjZgttQfHeiXH6S92He2qkKGsQcEqz_4_okHzDK16A@mail.gmail.com>
+ <20200109182807.04c8866a@xps13> <20200502200806.1d6b1cba@xps13>
+In-Reply-To: <20200502200806.1d6b1cba@xps13>
+From:   Kamal Dasu <kamal.dasu@broadcom.com>
+Date:   Mon, 4 May 2020 11:20:16 -0400
+Message-ID: <CAKekbevhWqsYSacTFCp+XEv7nBjL7tbo_wkOiCDZ1UYPf=RoeA@mail.gmail.com>
+Subject: Re: [PATCH] mtd: set mtd partition panic write flag
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Kamal Dasu <kdasu.kdev@gmail.com>,
+        Richard Weinberger <richard@nod.at>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Marek Vasut <marek.vasut@gmail.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        Brian Norris <computersforpeace@gmail.com>,
+        David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In case force_nonblock happens to be true, the function returns
-at:
+On Sat, May 2, 2020 at 2:08 PM Miquel Raynal <miquel.raynal@bootlin.com> wr=
+ote:
+>
+> Hi Kamal,
+>
+> Miquel Raynal <miquel.raynal@bootlin.com> wrote on Thu, 9 Jan 2020
+> 18:28:07 +0100:
+>
+> > Hi Kamal,
+> >
+> > Kamal Dasu <kamal.dasu@broadcom.com> wrote on Thu, 9 Jan 2020 10:25:59
+> > -0500:
+> >
+> > > Miquel,
+> > >
+> > > Yes the issue is still open. I was trying to understand the suggestio=
+n
+> > > and did not get a reply on the question I had
+> > >
+> > > Richard wrote :
+> > > "So the right fix would be setting the parent's oops_panic_write in
+> > > mtd_panic_write().
+> > > Then we don't have to touch mtdpart.c"
+> > >
+> > > How do I get access to the parts parent in the core ?. Maybe I am
+> > > missing something.
+> >
+> > I think the solution is to set the oops_panic_write of the root parent,=
+ instead of updating the flag of the mtd device itself (which is maybe a pa=
+rtition).
+> >
+> > Would this help?
+> >
+> > https://www.spinics.net/lists/linux-mtd/msg10454.html
+>
+> I'm pinging you here as well, as I think you raise a real issue, and we
+> agreed on a solution, which can now be easily setup with the above
+> change which has been applied and support for functions like:
+>
+>         static inline struct mtd_info *mtd_get_master(struct mtd_info *mt=
+d)
+>         static inline u64 mtd_get_master_ofs(struct mtd_info *mtd, u64 of=
+s)
+>         static inline bool mtd_is_partition(const struct mtd_info *mtd)
+>         static inline bool mtd_has_partitions(const struct mtd_info *mtd)
+>
 
- 2779         if (force_nonblock)
- 2780                 return -EAGAIN;
+So I should only set  master->oops_panic_write  with the new code ?.
 
-before reaching this line of code. So, the null check on force_nonblock
-at 2785, is never actually being executed.
+> Thanks,
+> Miqu=C3=A8l
 
-Addresses-Coverity-ID: 1492838 ("Logically dead code")
-Fixes: 2fb3e82284fc ("io_uring: punt splice async because of inode mutex")
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
----
- fs/io_uring.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index e5dfbbd2aa34..4b1efb062f7f 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -2782,7 +2782,7 @@ static int io_splice(struct io_kiocb *req, bool force_nonblock)
- 	poff_in = (sp->off_in == -1) ? NULL : &sp->off_in;
- 	poff_out = (sp->off_out == -1) ? NULL : &sp->off_out;
- 	ret = do_splice(in, poff_in, out, poff_out, sp->len, flags);
--	if (force_nonblock && ret == -EAGAIN)
-+	if (ret == -EAGAIN)
- 		return -EAGAIN;
- 
- 	io_put_file(req, in, (sp->flags & SPLICE_F_FD_IN_FIXED));
--- 
-2.26.0
-
+Kamal
