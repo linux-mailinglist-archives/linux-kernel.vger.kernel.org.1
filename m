@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22C661C441F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:05:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E2361C44A7
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:09:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731668AbgEDSEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:04:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33758 "EHLO mail.kernel.org"
+        id S1732032AbgEDSGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:06:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731660AbgEDSEW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:04:22 -0400
+        id S1732016AbgEDSGq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 14:06:46 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5CB28206B8;
-        Mon,  4 May 2020 18:04:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 110BF2073B;
+        Mon,  4 May 2020 18:06:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588615461;
-        bh=fyBOmnqKsuvNpxFwlXUHV4DLG7y2lqjw2zO/T3sFijI=;
+        s=default; t=1588615606;
+        bh=nTTT4da67tY6V26UzMba9X5BQOwgU9ZiHTbAOw+bExk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d6Ra093W8+2ey56LWufxc4v/NMH7Cy+MYu4GroZ7hfmj9+MRtzugRLaNCFga/G9t/
-         pXDTlXfCXe9VVSI3IkWUvs73pvaLOAOjaTUleI5zBtXVHf91297t6bxnNZvwVnDKrR
-         r+1akX3w7Hi4wdRNplc0wxOtfEqZwlHv0SExO1jE=
+        b=oAPoai4Xr82e9vzPDjMkjvLR69lyTTCs2gf0VixXzJFKQa/z+mXuPI1nIyYRDhNsQ
+         6/HGtKgwEmg80veQ2pFj8Y5RahU5xG0GE9zsmKdHbhZ+1KM3RZjwLJEnbfmcZbpTyw
+         MzgqIyT9DJoh6dsa1yvH3TmO6jXwC3CL+oMX5DG0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Joerg Roedel <jroedel@suse.de>
-Subject: [PATCH 5.4 48/57] iommu/amd: Fix legacy interrupt remapping for x2APIC-enabled system
-Date:   Mon,  4 May 2020 19:57:52 +0200
-Message-Id: <20200504165500.595704118@linuxfoundation.org>
+        stable@vger.kernel.org, Leon Romanovsky <leonro@mellanox.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Subject: [PATCH 5.6 50/73] RDMA/cm: Fix ordering of xa_alloc_cyclic() in ib_create_cm_id()
+Date:   Mon,  4 May 2020 19:57:53 +0200
+Message-Id: <20200504165509.134278419@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200504165456.783676004@linuxfoundation.org>
-References: <20200504165456.783676004@linuxfoundation.org>
+In-Reply-To: <20200504165501.781878940@linuxfoundation.org>
+References: <20200504165501.781878940@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,39 +43,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+From: Jason Gunthorpe <jgg@mellanox.com>
 
-commit b74aa02d7a30ee5e262072a7d6e8deff10b37924 upstream.
+commit e8dc4e885c459343970b25acd9320fe9ee5492e7 upstream.
 
-Currently, system fails to boot because the legacy interrupt remapping
-mode does not enable 128-bit IRTE (GA), which is required for x2APIC
-support.
+xa_alloc_cyclic() is a SMP release to be paired with some later acquire
+during xa_load() as part of cm_acquire_id().
 
-Fix by using AMD_IOMMU_GUEST_IR_LEGACY_GA mode when booting with
-kernel option amd_iommu_intr=legacy instead. The initialization
-logic will check GASup and automatically fallback to using
-AMD_IOMMU_GUEST_IR_LEGACY if GA mode is not supported.
+As such, xa_alloc_cyclic() must be done after the cm_id is fully
+initialized, in particular, it absolutely must be after the
+refcount_set(), otherwise the refcount_inc() in cm_acquire_id() may not
+see the set.
 
-Fixes: 3928aa3f5775 ("iommu/amd: Detect and enable guest vAPIC support")
-Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Link: https://lore.kernel.org/r/1587562202-14183-1-git-send-email-suravee.suthikulpanit@amd.com
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+As there are several cases where a reader will be able to use the
+id.local_id after cm_acquire_id in the IB_CM_IDLE state there needs to be
+an unfortunate split into a NULL allocate and a finalizing xa_store.
+
+Fixes: a977049dacde ("[PATCH] IB: Add the kernel CM implementation")
+Link: https://lore.kernel.org/r/20200310092545.251365-2-leon@kernel.org
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iommu/amd_iommu_init.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/core/cm.c |   27 +++++++++++----------------
+ 1 file changed, 11 insertions(+), 16 deletions(-)
 
---- a/drivers/iommu/amd_iommu_init.c
-+++ b/drivers/iommu/amd_iommu_init.c
-@@ -2946,7 +2946,7 @@ static int __init parse_amd_iommu_intr(c
+--- a/drivers/infiniband/core/cm.c
++++ b/drivers/infiniband/core/cm.c
+@@ -572,18 +572,6 @@ static int cm_init_av_by_path(struct sa_
+ 	return 0;
+ }
+ 
+-static int cm_alloc_id(struct cm_id_private *cm_id_priv)
+-{
+-	int err;
+-	u32 id;
+-
+-	err = xa_alloc_cyclic_irq(&cm.local_id_table, &id, cm_id_priv,
+-			xa_limit_32b, &cm.local_id_next, GFP_KERNEL);
+-
+-	cm_id_priv->id.local_id = (__force __be32)id ^ cm.random_id_operand;
+-	return err;
+-}
+-
+ static u32 cm_local_id(__be32 local_id)
  {
- 	for (; *str; ++str) {
- 		if (strncmp(str, "legacy", 6) == 0) {
--			amd_iommu_guest_ir = AMD_IOMMU_GUEST_IR_LEGACY;
-+			amd_iommu_guest_ir = AMD_IOMMU_GUEST_IR_LEGACY_GA;
- 			break;
- 		}
- 		if (strncmp(str, "vapic", 5) == 0) {
+ 	return (__force u32) (local_id ^ cm.random_id_operand);
+@@ -825,6 +813,7 @@ struct ib_cm_id *ib_create_cm_id(struct
+ 				 void *context)
+ {
+ 	struct cm_id_private *cm_id_priv;
++	u32 id;
+ 	int ret;
+ 
+ 	cm_id_priv = kzalloc(sizeof *cm_id_priv, GFP_KERNEL);
+@@ -836,9 +825,6 @@ struct ib_cm_id *ib_create_cm_id(struct
+ 	cm_id_priv->id.cm_handler = cm_handler;
+ 	cm_id_priv->id.context = context;
+ 	cm_id_priv->id.remote_cm_qpn = 1;
+-	ret = cm_alloc_id(cm_id_priv);
+-	if (ret)
+-		goto error;
+ 
+ 	spin_lock_init(&cm_id_priv->lock);
+ 	init_completion(&cm_id_priv->comp);
+@@ -847,11 +833,20 @@ struct ib_cm_id *ib_create_cm_id(struct
+ 	INIT_LIST_HEAD(&cm_id_priv->altr_list);
+ 	atomic_set(&cm_id_priv->work_count, -1);
+ 	refcount_set(&cm_id_priv->refcount, 1);
++
++	ret = xa_alloc_cyclic_irq(&cm.local_id_table, &id, NULL, xa_limit_32b,
++				  &cm.local_id_next, GFP_KERNEL);
++	if (ret)
++		goto error;
++	cm_id_priv->id.local_id = (__force __be32)id ^ cm.random_id_operand;
++	xa_store_irq(&cm.local_id_table, cm_local_id(cm_id_priv->id.local_id),
++		     cm_id_priv, GFP_KERNEL);
++
+ 	return &cm_id_priv->id;
+ 
+ error:
+ 	kfree(cm_id_priv);
+-	return ERR_PTR(-ENOMEM);
++	return ERR_PTR(ret);
+ }
+ EXPORT_SYMBOL(ib_create_cm_id);
+ 
 
 
