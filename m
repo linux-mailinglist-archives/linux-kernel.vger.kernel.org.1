@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A90771C4537
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:13:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC3101C4518
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:12:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730500AbgEDSBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:01:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56154 "EHLO mail.kernel.org"
+        id S1732133AbgEDSMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:12:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731094AbgEDSBB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:01:01 -0400
+        id S1731350AbgEDSCk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 14:02:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 40C1C206B8;
-        Mon,  4 May 2020 18:01:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7AEE9206B8;
+        Mon,  4 May 2020 18:02:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588615260;
-        bh=wbkp8qqavz27ErAdxGpNXAyCPktsf8JUg0achhI6Gds=;
+        s=default; t=1588615359;
+        bh=veOsvRPlrvyCtf3q8/NNzUyaYKGJ9L/RP453UntgzHc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZQzVR7/iydFnN2kBqYA202ezizSyD+DRN0q4pGJ/IuE8DUIEBqMMm9gR0c3zCftLI
-         2CfUR8kWfNGqY7bzKOL94V0R/0Ck6qOhy/IGf5Up4/LRnFXyXEYRoRl4VrzYh9xwIZ
-         bSCXUkjycLiNv91iprMV8pBt+tOQpv6Pr6tscfb8=
+        b=Y7rVKuR1zxu+rjgjiyjDgp1Dcsg7yf9ED0396Lj8wXNPGKUmE2ovge5DRehAUObjG
+         obkVhU5Ah5kw/8CLmQ4OGAagVZq5WoiKH3TPsZ/rxA9b9zuyqZCpj3+kIi6FpmUOQE
+         D6RythWsE/pYCnZuiCWos6bW8ESfcUAp3rSaK3RY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.14 23/26] ALSA: opti9xx: shut up gcc-10 range warning
+        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
+        David Disseldorp <ddiss@suse.de>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 4.19 24/37] scsi: target/iblock: fix WRITE SAME zeroing
 Date:   Mon,  4 May 2020 19:57:37 +0200
-Message-Id: <20200504165447.726403661@linuxfoundation.org>
+Message-Id: <20200504165450.921397685@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200504165442.494398840@linuxfoundation.org>
-References: <20200504165442.494398840@linuxfoundation.org>
+In-Reply-To: <20200504165448.264746645@linuxfoundation.org>
+References: <20200504165448.264746645@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,84 +44,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: David Disseldorp <ddiss@suse.de>
 
-commit 5ce00760a84848d008554c693ceb6286f4d9c509 upstream.
+commit 1d2ff149b263c9325875726a7804a0c75ef7112e upstream.
 
-gcc-10 points out a few instances of suspicious integer arithmetic
-leading to value truncation:
+SBC4 specifies that WRITE SAME requests with the UNMAP bit set to zero
+"shall perform the specified write operation to each LBA specified by the
+command".  Commit 2237498f0b5c ("target/iblock: Convert WRITE_SAME to
+blkdev_issue_zeroout") modified the iblock backend to call
+blkdev_issue_zeroout() when handling WRITE SAME requests with UNMAP=0 and a
+zero data segment.
 
-sound/isa/opti9xx/opti92x-ad1848.c: In function 'snd_opti9xx_configure':
-sound/isa/opti9xx/opti92x-ad1848.c:322:43: error: overflow in conversion from 'int' to 'unsigned char' changes value from '(int)snd_opti9xx_read(chip, 3) & -256 | 240' to '240' [-Werror=overflow]
-  322 |   (snd_opti9xx_read(chip, reg) & ~(mask)) | ((value) & (mask)))
-      |   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
-sound/isa/opti9xx/opti92x-ad1848.c:351:3: note: in expansion of macro 'snd_opti9xx_write_mask'
-  351 |   snd_opti9xx_write_mask(chip, OPTi9XX_MC_REG(3), 0xf0, 0xff);
-      |   ^~~~~~~~~~~~~~~~~~~~~~
-sound/isa/opti9xx/miro.c: In function 'snd_miro_configure':
-sound/isa/opti9xx/miro.c:873:40: error: overflow in conversion from 'int' to 'unsigned char' changes value from '(int)snd_miro_read(chip, 3) & -256 | 240' to '240' [-Werror=overflow]
-  873 |   (snd_miro_read(chip, reg) & ~(mask)) | ((value) & (mask)))
-      |   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
-sound/isa/opti9xx/miro.c:1010:3: note: in expansion of macro 'snd_miro_write_mask'
- 1010 |   snd_miro_write_mask(chip, OPTi9XX_MC_REG(3), 0xf0, 0xff);
-      |   ^~~~~~~~~~~~~~~~~~~
+The iblock blkdev_issue_zeroout() call incorrectly provides a flags
+parameter of 0 (bool false), instead of BLKDEV_ZERO_NOUNMAP.  The bool
+false parameter reflects the blkdev_issue_zeroout() API prior to commit
+ee472d835c26 ("block: add a flags argument to (__)blkdev_issue_zeroout")
+which was merged shortly before 2237498f0b5c.
 
-These are all harmless here as only the low 8 bit are passed down
-anyway. Change the macros to inline functions to make the code
-more readable and also avoid the warning.
-
-Strictly speaking those functions also need locking to make the
-read/write pair atomic, but it seems unlikely that anyone would
-still run into that issue.
-
-Fixes: 1841f613fd2e ("[ALSA] Add snd-miro driver")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Link: https://lore.kernel.org/r/20200429190216.85919-1-arnd@arndb.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Link: https://lore.kernel.org/r/20200419163109.11689-1-ddiss@suse.de
+Fixes: 2237498f0b5c ("target/iblock: Convert WRITE_SAME to blkdev_issue_zeroout")
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: David Disseldorp <ddiss@suse.de>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/isa/opti9xx/miro.c           |    9 ++++++---
- sound/isa/opti9xx/opti92x-ad1848.c |    9 ++++++---
- 2 files changed, 12 insertions(+), 6 deletions(-)
+ drivers/target/target_core_iblock.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/sound/isa/opti9xx/miro.c
-+++ b/sound/isa/opti9xx/miro.c
-@@ -875,10 +875,13 @@ static void snd_miro_write(struct snd_mi
- 	spin_unlock_irqrestore(&chip->lock, flags);
- }
+--- a/drivers/target/target_core_iblock.c
++++ b/drivers/target/target_core_iblock.c
+@@ -445,7 +445,7 @@ iblock_execute_zero_out(struct block_dev
+ 				target_to_linux_sector(dev, cmd->t_task_lba),
+ 				target_to_linux_sector(dev,
+ 					sbc_get_write_same_sectors(cmd)),
+-				GFP_KERNEL, false);
++				GFP_KERNEL, BLKDEV_ZERO_NOUNMAP);
+ 	if (ret)
+ 		return TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE;
  
-+static inline void snd_miro_write_mask(struct snd_miro *chip,
-+		unsigned char reg, unsigned char value, unsigned char mask)
-+{
-+	unsigned char oldval = snd_miro_read(chip, reg);
- 
--#define snd_miro_write_mask(chip, reg, value, mask)	\
--	snd_miro_write(chip, reg,			\
--		(snd_miro_read(chip, reg) & ~(mask)) | ((value) & (mask)))
-+	snd_miro_write(chip, reg, (oldval & ~mask) | (value & mask));
-+}
- 
- /*
-  *  Proc Interface
---- a/sound/isa/opti9xx/opti92x-ad1848.c
-+++ b/sound/isa/opti9xx/opti92x-ad1848.c
-@@ -327,10 +327,13 @@ static void snd_opti9xx_write(struct snd
- }
- 
- 
--#define snd_opti9xx_write_mask(chip, reg, value, mask)	\
--	snd_opti9xx_write(chip, reg,			\
--		(snd_opti9xx_read(chip, reg) & ~(mask)) | ((value) & (mask)))
-+static inline void snd_opti9xx_write_mask(struct snd_opti9xx *chip,
-+		unsigned char reg, unsigned char value, unsigned char mask)
-+{
-+	unsigned char oldval = snd_opti9xx_read(chip, reg);
- 
-+	snd_opti9xx_write(chip, reg, (oldval & ~mask) | (value & mask));
-+}
- 
- static int snd_opti9xx_configure(struct snd_opti9xx *chip,
- 					   long port,
 
 
