@@ -2,70 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 883311C33B3
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 09:35:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02B8F1C33BE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 09:37:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728089AbgEDHfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 03:35:52 -0400
-Received: from cmccmta1.chinamobile.com ([221.176.66.79]:4380 "EHLO
-        cmccmta1.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726411AbgEDHfw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 03:35:52 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.13]) by rmmx-syy-dmz-app02-12002 (RichMail) with SMTP id 2ee25eafc5bf247-fd6c3; Mon, 04 May 2020 15:35:28 +0800 (CST)
-X-RM-TRANSID: 2ee25eafc5bf247-fd6c3
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain (unknown[112.3.182.180])
-        by rmsmtp-syy-appsvr07-12007 (RichMail) with SMTP id 2ee75eafc5bddce-073a0;
-        Mon, 04 May 2020 15:35:28 +0800 (CST)
-X-RM-TRANSID: 2ee75eafc5bddce-073a0
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-To:     broonie@kernel.org, bgoswami@codeaurora.org, plai@codeaurora.org,
-        perex@perex.cz
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>,
-        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Subject: [PATCH] ASoC: qcom: Remove the unnecessary cast
-Date:   Mon,  4 May 2020 15:35:58 +0800
-Message-Id: <20200504073558.2340-1-tangbin@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.20.1.windows.1
+        id S1728119AbgEDHhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 03:37:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57242 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727088AbgEDHhs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 03:37:48 -0400
+Received: from localhost (unknown [171.76.84.84])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2802120735;
+        Mon,  4 May 2020 07:37:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588577868;
+        bh=faQSb/4qCDmUQbreEw2Wmjz3BaAjeSxXz98jqDVxdGQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=k+spgRX/ztQJZK1UdUxWUm73hg0mo5Uy7ZTRxSZ7+1rEg1LQQlBOOJsUt3KzuHfcx
+         hRD1adZETmqC9WQpRVWyMBbhBtFWW0M1cQ5I4CP9wTX0nTs9rL12j/WTQiZGaZsV8P
+         1HHLqVp+f2ebeSeY7ANnXf1W2utSOm2snvvMAUBM=
+Date:   Mon, 4 May 2020 13:07:43 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Robert Marko <robert.marko@sartura.hr>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, kishon@ti.com,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        robh+dt@kernel.org, mark.rutland@arm.com,
+        devicetree@vger.kernel.org, John Crispin <john@phrozen.org>,
+        Luka Perkov <luka.perkov@sartura.hr>
+Subject: Re: [PATCH v7 1/3] phy: add driver for Qualcomm IPQ40xx USB PHY
+Message-ID: <20200504073743.GO1375924@vkoul-mobl>
+References: <20200503201823.531757-1-robert.marko@sartura.hr>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200503201823.531757-1-robert.marko@sartura.hr>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's not necessary to specify 'void const __force *' casting
-for 'drvdata->lpaif'.
+On 03-05-20, 22:18, Robert Marko wrote:
+> Add a driver to setup the USB PHY-s on Qualcom m IPQ40xx series SoCs.
+> The driver sets up HS and SS phys.
 
-Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
----
- sound/soc/qcom/lpass-cpu.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Applied, thanks
 
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index 885c1f2e7..4242f45ee 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -443,10 +443,10 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
- 
- 	drvdata->lpaif = devm_platform_ioremap_resource_byname(pdev, 
- 						"lpass-lpaif")
--	if (IS_ERR((void const __force *)drvdata->lpaif)) {
-+	if (IS_ERR(drvdata->lpaif)) {
- 		dev_err(&pdev->dev, "error mapping reg resource: %ld\n",
--				PTR_ERR((void const __force *)drvdata->lpaif));
--		return PTR_ERR((void const __force *)drvdata->lpaif);
-+				PTR_ERR(drvdata->lpaif));
-+		return PTR_ERR(drvdata->lpaif);
- 	}
- 
- 	lpass_cpu_regmap_config.max_register = LPAIF_WRDMAPER_REG(variant,
 -- 
-2.20.1.windows.1
-
-
-
+~Vinod
