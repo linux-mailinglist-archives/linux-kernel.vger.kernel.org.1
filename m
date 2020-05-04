@@ -2,470 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E7771C3DFA
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 17:04:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86F9A1C3E10
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 17:06:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729399AbgEDPCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 11:02:25 -0400
-Received: from smtp1.de.adit-jv.com ([93.241.18.167]:36659 "EHLO
-        smtp1.de.adit-jv.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728165AbgEDPCZ (ORCPT
+        id S1729509AbgEDPG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 11:06:28 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:53046 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728437AbgEDPG2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 11:02:25 -0400
-Received: from localhost (smtp1.de.adit-jv.com [127.0.0.1])
-        by smtp1.de.adit-jv.com (Postfix) with ESMTP id 13FEF3C009C;
-        Mon,  4 May 2020 17:02:21 +0200 (CEST)
-Received: from smtp1.de.adit-jv.com ([127.0.0.1])
-        by localhost (smtp1.de.adit-jv.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id yLPyA56NIFdM; Mon,  4 May 2020 17:02:14 +0200 (CEST)
-Received: from HI2EXCH01.adit-jv.com (hi2exch01.adit-jv.com [10.72.92.24])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtp1.de.adit-jv.com (Postfix) with ESMTPS id 92FCC3C058E;
-        Mon,  4 May 2020 17:01:29 +0200 (CEST)
-Received: from vmlxhi-121.adit-jv.com (10.72.94.9) by HI2EXCH01.adit-jv.com
- (10.72.92.24) with Microsoft SMTP Server (TLS) id 14.3.487.0; Mon, 4 May 2020
- 17:01:29 +0200
-Date:   Mon, 4 May 2020 17:01:22 +0200
-From:   Michael Rodin <mrodin@de.adit-jv.com>
-To:     Suresh Udipi <sudipi@jp.adit-jv.com>
-CC:     <niklas.soderlund@ragnatech.se>, <akiyama@nds-osk.co.jp>,
-        <efriedrich@de.adit-jv.com>, <erosca@de.adit-jv.com>,
-        <hverkuil-cisco@xs4all.nl>, <jacopo+renesas@jmondi.org>,
-        <laurent.pinchart@ideasonboard.com>,
-        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-renesas-soc@vger.kernel.org>, <mrodin@de.adit-jv.com>,
-        <securitycheck@denso.co.jp>
-Subject: Re: [PATCH v5] media: rcar-csi2: Correct the selection of hsfreqrange
-Message-ID: <20200504150122.GA8532@vmlxhi-121.adit-jv.com>
-References: <20200414115600.GB285053@oden.dyn.berto.se>
- <1588226590-12880-1-git-send-email-sudipi@jp.adit-jv.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1588226590-12880-1-git-send-email-sudipi@jp.adit-jv.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Originating-IP: [10.72.94.9]
+        Mon, 4 May 2020 11:06:28 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 044En9dc024660;
+        Mon, 4 May 2020 15:06:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2020-01-29;
+ bh=uQjb5JGnLBJ/IzQq/diJ8g0hSMyLwx5kP4DzCTdsCIg=;
+ b=fTWY/2CV+bmxfQTo7FJkDTOrCUyfhbtD5CyOVBxc6DpksWzXoWbllnTgZQgUbxAJqOfL
+ RKBgHR/SRrfLXM1TnffDlmQxYKHZshRlrSUTPPH6HVtxStm9MvggiWXLDJ+69GCf1p5e
+ ugqsfaA1NNZVX/6ENFCmZh9TKMgfWTcQjJAzajhPW5rK6tFJ/6lJv/tPKlG7bcacP092
+ pr3yN9gi5gUYA8FrKbEjxLPxB9mEkBYy8LNSGI7yXrntp5V7wzcvHDGnT79/8sKpQqWn
+ VaiGSWNCLyGFVAGboTSK6UKcqQDuuM78Kvk4HGzoc9xtB+X8s6all7Ka1yhur+2O/Gx0 eg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 30s0tm7f5a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 04 May 2020 15:06:06 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 044Ekejf094671;
+        Mon, 4 May 2020 15:04:06 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 30sjdqqmr1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 04 May 2020 15:04:05 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 044F45hL028387;
+        Mon, 4 May 2020 15:04:05 GMT
+Received: from linux-1.home.com (/10.175.9.166)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 04 May 2020 08:04:04 -0700
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        x86@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     pbonzini@redhat.com, konrad.wilk@oracle.com,
+        jan.setjeeilers@oracle.com, liran.alon@oracle.com,
+        junaids@google.com, graf@amazon.de, rppt@linux.vnet.ibm.com,
+        kuzuno@gmail.com, mgross@linux.intel.com,
+        alexandre.chartre@oracle.com
+Subject: [RFC v4][PATCH part-3 00/14] ASI - Part III (ASI Test Driver and CLI)
+Date:   Mon,  4 May 2020 17:02:21 +0200
+Message-Id: <20200504150235.12171-1-alexandre.chartre@oracle.com>
+X-Mailer: git-send-email 2.18.2
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9610 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0 mlxscore=0
+ bulkscore=0 adultscore=0 phishscore=0 mlxlogscore=999 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005040123
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9610 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0
+ priorityscore=1501 lowpriorityscore=0 spamscore=0 suspectscore=0
+ phishscore=0 clxscore=1015 bulkscore=0 mlxlogscore=999 adultscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005040123
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Suresh, Niklas,
+This is part III of ASI RFC v4. Please refer to the cover letter of
+part I for an overview the ASI RFC.
 
-I think that we should not change the structs for PHTW register configuration,
-because there are no "max" values in the table "PHTW Set Values" from the
-Renesas Hardware Manual. The patch looks just wrong. A major issue is also
-that the Hardware Manual does not provide any algorithm, how to select the
-right table entry for the configuration of PHTW and PHYPLL registers, so we
-can not say for sure that the patch is correct. It is also not clear, what
-are the "default" bit rates? It looks like they are made exactly for usage
-in driver code:
- - both PHTW and PHYPLL tables have "default" values
- - only PHYPLL (HSFREQRANGE) tables have min/max values and it requires
-   additional rounding in order to hardcode them in a driver
-But these are just my speculations. If they are correct, then the only
-exception, where the patch v2 failed, could be a typo in the Hardware Manual.
-Otherwise patch v2 looks much better to me. I think, we should wait for more
-details from Renesas before fixing this issue. 
+  https://lore.kernel.org/lkml/20200504144939.11318-1-alexandre.chartre@oracle.com/
 
-On Thu, Apr 30, 2020 at 03:03:10PM +0900, Suresh Udipi wrote:
-> hsfreqrange should be chosen based on the calculated mbps which
-> is within the range as per table[1]. But current calculation
-> always selects first value which is greater than or equal to the
-> calculated mbps which may lead to chosing a wrong range in some cases.
-> 
-> For example for 360 mbps for H3/M3N
-> Existing logic selects
-> Calculated value 360Mbps : Default 400Mbps Range [368.125 -433.125 mbps]
-> 
-> This hsfreqrange is out of range.
-> 
-> The logic is changed to select the first hsfreqrange whose max range[1] is
-> greater than the calculated bit rate.
-> 
-> Calculated value 360Mbps : max range 380.625 mbps is selected
->  i.e Default 350Mbps  Range [320.625 -380.625 mpbs]
-> 
-> [1] specs r19uh0105ej0200-r-car-3rd-generation.pdf [Table 25.9]
-> 
-> Fixes: 769afd212b16 ("media: rcar-csi2: add Renesas R-Car MIPI CSI-2 receiver driver")
-> 
-> Signed-off-by: Suresh Udipi <sudipi@jp.adit-jv.com>
-> Signed-off-by: Kazuyoshi Akiyama <akiyama@nds-osk.co.jp>
-> ---
->  Changes in v2:
->   - Added the boundary check for the maximum bit rate.
-> 
->   - Simplified the logic by remmoving range check
->     as only the closest default value covers most
->     of the use cases.
-> 
->   - Aligning the commit message based on the above change
-> 
-> 
->  Changes in v3:
->     - Added max member from struct rcsi2_mbps_reg.
->       mbps varialbe cannot be removed from rcsi2_mbps_reg,
->       since this structure is reused for
->       phtw_mbps_h3_v3h_m3n/phtw_mbps_v3m_e3 where mbps is
->       used.
-> 
-> 
->    -  Update the walk of the array in rcsi2_set_phypll() so that it finds
->       the first entry where the calculated bit rate is less than the max.
-> 
->    - Support lower bit rates less than 80Mbps like 48Mbps
->      (Raspberry pi camera 640x480 connected to Kingfisher)
->      can also be supported by selecting the lowest default bit rate 80Mbps
->      as done before this fix
-> 
->    - Alignement of the commit message based on above changes.
-> 
->  Changes in v4:
->    - Remove unncessary braces.
->  
->  Changes in v5:
->    - Removed mbps variable in rcsi2_mbps_reg and aligned all 
->      tables accordingly
-> 
->  drivers/media/platform/rcar-vin/rcar-csi2.c | 282 ++++++++++++++--------------
->  1 file changed, 141 insertions(+), 141 deletions(-)
-> 
-> diff --git a/drivers/media/platform/rcar-vin/rcar-csi2.c b/drivers/media/platform/rcar-vin/rcar-csi2.c
-> index faa9fb2..d45bf80 100644
-> --- a/drivers/media/platform/rcar-vin/rcar-csi2.c
-> +++ b/drivers/media/platform/rcar-vin/rcar-csi2.c
-> @@ -132,63 +132,63 @@ struct phtw_value {
->  };
->  
->  struct rcsi2_mbps_reg {
-> -	u16 mbps;
->  	u16 reg;
-> +	u16 max;
->  };
->  
->  static const struct rcsi2_mbps_reg phtw_mbps_h3_v3h_m3n[] = {
-> -	{ .mbps =   80, .reg = 0x86 },
-> -	{ .mbps =   90, .reg = 0x86 },
-> -	{ .mbps =  100, .reg = 0x87 },
-> -	{ .mbps =  110, .reg = 0x87 },
-> -	{ .mbps =  120, .reg = 0x88 },
-> -	{ .mbps =  130, .reg = 0x88 },
-> -	{ .mbps =  140, .reg = 0x89 },
-> -	{ .mbps =  150, .reg = 0x89 },
-> -	{ .mbps =  160, .reg = 0x8a },
-> -	{ .mbps =  170, .reg = 0x8a },
-> -	{ .mbps =  180, .reg = 0x8b },
-> -	{ .mbps =  190, .reg = 0x8b },
-> -	{ .mbps =  205, .reg = 0x8c },
-> -	{ .mbps =  220, .reg = 0x8d },
-> -	{ .mbps =  235, .reg = 0x8e },
-> -	{ .mbps =  250, .reg = 0x8e },
-> +	{ .reg = 0x86, .max =  80  },
-> +	{ .reg = 0x86, .max =  90  },
-> +	{ .reg = 0x87, .max =  100 },
-> +	{ .reg = 0x87, .max =  110 },
-> +	{ .reg = 0x88, .max =  120 },
-> +	{ .reg = 0x88, .max =  130 },
-> +	{ .reg = 0x89, .max =  140 },
-> +	{ .reg = 0x89, .max =  150 },
-> +	{ .reg = 0x8a, .max =  160 },
-> +	{ .reg = 0x8a, .max =  170 },
-> +	{ .reg = 0x8b, .max =  180 },
-> +	{ .reg = 0x8b, .max =  190 },
-> +	{ .reg = 0x8c, .max =  205 },
-> +	{ .reg = 0x8d, .max =  220 },
-> +	{ .reg = 0x8e, .max =  235 },
-> +	{ .reg = 0x8e, .max =  250 },
->  	{ /* sentinel */ },
->  };
->  
->  static const struct rcsi2_mbps_reg phtw_mbps_v3m_e3[] = {
-> -	{ .mbps =   80, .reg = 0x00 },
-> -	{ .mbps =   90, .reg = 0x20 },
-> -	{ .mbps =  100, .reg = 0x40 },
-> -	{ .mbps =  110, .reg = 0x02 },
-> -	{ .mbps =  130, .reg = 0x22 },
-> -	{ .mbps =  140, .reg = 0x42 },
-> -	{ .mbps =  150, .reg = 0x04 },
-> -	{ .mbps =  170, .reg = 0x24 },
-> -	{ .mbps =  180, .reg = 0x44 },
-> -	{ .mbps =  200, .reg = 0x06 },
-> -	{ .mbps =  220, .reg = 0x26 },
-> -	{ .mbps =  240, .reg = 0x46 },
-> -	{ .mbps =  250, .reg = 0x08 },
-> -	{ .mbps =  270, .reg = 0x28 },
-> -	{ .mbps =  300, .reg = 0x0a },
-> -	{ .mbps =  330, .reg = 0x2a },
-> -	{ .mbps =  360, .reg = 0x4a },
-> -	{ .mbps =  400, .reg = 0x0c },
-> -	{ .mbps =  450, .reg = 0x2c },
-> -	{ .mbps =  500, .reg = 0x0e },
-> -	{ .mbps =  550, .reg = 0x2e },
-> -	{ .mbps =  600, .reg = 0x10 },
-> -	{ .mbps =  650, .reg = 0x30 },
-> -	{ .mbps =  700, .reg = 0x12 },
-> -	{ .mbps =  750, .reg = 0x32 },
-> -	{ .mbps =  800, .reg = 0x52 },
-> -	{ .mbps =  850, .reg = 0x72 },
-> -	{ .mbps =  900, .reg = 0x14 },
-> -	{ .mbps =  950, .reg = 0x34 },
-> -	{ .mbps = 1000, .reg = 0x54 },
-> -	{ .mbps = 1050, .reg = 0x74 },
-> -	{ .mbps = 1125, .reg = 0x16 },
-> +	{ .reg = 0x00, .max = 80   },
-> +	{ .reg = 0x20, .max = 90   },
-> +	{ .reg = 0x40, .max = 100  },
-> +	{ .reg = 0x02, .max = 110  },
-> +	{ .reg = 0x22, .max = 130  },
-> +	{ .reg = 0x42, .max = 140  },
-> +	{ .reg = 0x04, .max = 150  },
-> +	{ .reg = 0x24, .max = 170  },
-> +	{ .reg = 0x44, .max = 180  },
-> +	{ .reg = 0x06, .max = 200  },
-> +	{ .reg = 0x26, .max = 220  },
-> +	{ .reg = 0x46, .max = 240  },
-> +	{ .reg = 0x08, .max = 250  },
-> +	{ .reg = 0x28, .max = 270  },
-> +	{ .reg = 0x0a, .max = 300  },
-> +	{ .reg = 0x2a, .max = 330  },
-> +	{ .reg = 0x4a, .max = 360  },
-> +	{ .reg = 0x0c, .max = 400  },
-> +	{ .reg = 0x2c, .max = 450  },
-> +	{ .reg = 0x0e, .max = 500  },
-> +	{ .reg = 0x2e, .max = 550  },
-> +	{ .reg = 0x10, .max = 600  },
-> +	{ .reg = 0x30, .max = 650  },
-> +	{ .reg = 0x12, .max = 700  },
-> +	{ .reg = 0x32, .max = 750  },
-> +	{ .reg = 0x52, .max = 800  },
-> +	{ .reg = 0x72, .max = 850  },
-> +	{ .reg = 0x14, .max = 900  },
-> +	{ .reg = 0x34, .max = 950  },
-> +	{ .reg = 0x54, .max = 1000 },
-> +	{ .reg = 0x74, .max = 1050 },
-> +	{ .reg = 0x16, .max = 1125 },
->  	{ /* sentinel */ },
->  };
->  
-> @@ -201,96 +201,96 @@ static const struct rcsi2_mbps_reg phtw_mbps_v3m_e3[] = {
->  #define PHYPLL_HSFREQRANGE(n)		((n) << 16)
->  
->  static const struct rcsi2_mbps_reg hsfreqrange_h3_v3h_m3n[] = {
-> -	{ .mbps =   80, .reg = 0x00 },
-> -	{ .mbps =   90, .reg = 0x10 },
-> -	{ .mbps =  100, .reg = 0x20 },
-> -	{ .mbps =  110, .reg = 0x30 },
-> -	{ .mbps =  120, .reg = 0x01 },
-> -	{ .mbps =  130, .reg = 0x11 },
-> -	{ .mbps =  140, .reg = 0x21 },
-> -	{ .mbps =  150, .reg = 0x31 },
-> -	{ .mbps =  160, .reg = 0x02 },
-> -	{ .mbps =  170, .reg = 0x12 },
-> -	{ .mbps =  180, .reg = 0x22 },
-> -	{ .mbps =  190, .reg = 0x32 },
-> -	{ .mbps =  205, .reg = 0x03 },
-> -	{ .mbps =  220, .reg = 0x13 },
-> -	{ .mbps =  235, .reg = 0x23 },
-> -	{ .mbps =  250, .reg = 0x33 },
-> -	{ .mbps =  275, .reg = 0x04 },
-> -	{ .mbps =  300, .reg = 0x14 },
-> -	{ .mbps =  325, .reg = 0x25 },
-> -	{ .mbps =  350, .reg = 0x35 },
-> -	{ .mbps =  400, .reg = 0x05 },
-> -	{ .mbps =  450, .reg = 0x16 },
-> -	{ .mbps =  500, .reg = 0x26 },
-> -	{ .mbps =  550, .reg = 0x37 },
-> -	{ .mbps =  600, .reg = 0x07 },
-> -	{ .mbps =  650, .reg = 0x18 },
-> -	{ .mbps =  700, .reg = 0x28 },
-> -	{ .mbps =  750, .reg = 0x39 },
-> -	{ .mbps =  800, .reg = 0x09 },
-> -	{ .mbps =  850, .reg = 0x19 },
-> -	{ .mbps =  900, .reg = 0x29 },
-> -	{ .mbps =  950, .reg = 0x3a },
-> -	{ .mbps = 1000, .reg = 0x0a },
-> -	{ .mbps = 1050, .reg = 0x1a },
-> -	{ .mbps = 1100, .reg = 0x2a },
-> -	{ .mbps = 1150, .reg = 0x3b },
-> -	{ .mbps = 1200, .reg = 0x0b },
-> -	{ .mbps = 1250, .reg = 0x1b },
-> -	{ .mbps = 1300, .reg = 0x2b },
-> -	{ .mbps = 1350, .reg = 0x3c },
-> -	{ .mbps = 1400, .reg = 0x0c },
-> -	{ .mbps = 1450, .reg = 0x1c },
-> -	{ .mbps = 1500, .reg = 0x2c },
-> +	{ .reg = 0x00, .max =   97 },
-> +	{ .reg = 0x10, .max =  107 },
-> +	{ .reg = 0x20, .max =  118 },
-> +	{ .reg = 0x30, .max =  128 },
-> +	{ .reg = 0x01, .max =  139 },
-> +	{ .reg = 0x11, .max =  149 },
-> +	{ .reg = 0x21, .max =  160 },
-> +	{ .reg = 0x31, .max =  170 },
-> +	{ .reg = 0x02, .max =  181 },
-> +	{ .reg = 0x12, .max =  191 },
-> +	{ .reg = 0x22, .max =  202 },
-> +	{ .reg = 0x32, .max =  212 },
-> +	{ .reg = 0x03, .max =  228 },
-> +	{ .reg = 0x13, .max =  224 },
-> +	{ .reg = 0x23, .max =  259 },
-> +	{ .reg = 0x33, .max =  275 },
-> +	{ .reg = 0x04, .max =  301 },
-> +	{ .reg = 0x14, .max =  328 },
-> +	{ .reg = 0x25, .max =  354 },
-> +	{ .reg = 0x35, .max =  380 },
-> +	{ .reg = 0x05, .max =  433 },
-> +	{ .reg = 0x16, .max =  485 },
-> +	{ .reg = 0x26, .max =  538 },
-> +	{ .reg = 0x37, .max =  590 },
-> +	{ .reg = 0x07, .max =  643 },
-> +	{ .reg = 0x18, .max =  695 },
-> +	{ .reg = 0x28, .max =  748 },
-> +	{ .reg = 0x39, .max =  800 },
-> +	{ .reg = 0x09, .max =  853 },
-> +	{ .reg = 0x19, .max =  905 },
-> +	{ .reg = 0x29, .max =  958 },
-> +	{ .reg = 0x3a, .max = 1010 },
-> +	{ .reg = 0x0a, .max = 1063 },
-> +	{ .reg = 0x1a, .max = 1115 },
-> +	{ .reg = 0x2a, .max = 1168 },
-> +	{ .reg = 0x3b, .max = 1220 },
-> +	{ .reg = 0x0b, .max = 1273 },
-> +	{ .reg = 0x1b, .max = 1325 },
-> +	{ .reg = 0x2b, .max = 1378 },
-> +	{ .reg = 0x3c, .max = 1430 },
-> +	{ .reg = 0x0c, .max = 1483 },
-> +	{ .reg = 0x1c, .max = 1500 },
-> +	{ .reg = 0x2c, .max = 1500 },
->  	{ /* sentinel */ },
->  };
->  
->  static const struct rcsi2_mbps_reg hsfreqrange_m3w_h3es1[] = {
-> -	{ .mbps =   80,	.reg = 0x00 },
-> -	{ .mbps =   90,	.reg = 0x10 },
-> -	{ .mbps =  100,	.reg = 0x20 },
-> -	{ .mbps =  110,	.reg = 0x30 },
-> -	{ .mbps =  120,	.reg = 0x01 },
-> -	{ .mbps =  130,	.reg = 0x11 },
-> -	{ .mbps =  140,	.reg = 0x21 },
-> -	{ .mbps =  150,	.reg = 0x31 },
-> -	{ .mbps =  160,	.reg = 0x02 },
-> -	{ .mbps =  170,	.reg = 0x12 },
-> -	{ .mbps =  180,	.reg = 0x22 },
-> -	{ .mbps =  190,	.reg = 0x32 },
-> -	{ .mbps =  205,	.reg = 0x03 },
-> -	{ .mbps =  220,	.reg = 0x13 },
-> -	{ .mbps =  235,	.reg = 0x23 },
-> -	{ .mbps =  250,	.reg = 0x33 },
-> -	{ .mbps =  275,	.reg = 0x04 },
-> -	{ .mbps =  300,	.reg = 0x14 },
-> -	{ .mbps =  325,	.reg = 0x05 },
-> -	{ .mbps =  350,	.reg = 0x15 },
-> -	{ .mbps =  400,	.reg = 0x25 },
-> -	{ .mbps =  450,	.reg = 0x06 },
-> -	{ .mbps =  500,	.reg = 0x16 },
-> -	{ .mbps =  550,	.reg = 0x07 },
-> -	{ .mbps =  600,	.reg = 0x17 },
-> -	{ .mbps =  650,	.reg = 0x08 },
-> -	{ .mbps =  700,	.reg = 0x18 },
-> -	{ .mbps =  750,	.reg = 0x09 },
-> -	{ .mbps =  800,	.reg = 0x19 },
-> -	{ .mbps =  850,	.reg = 0x29 },
-> -	{ .mbps =  900,	.reg = 0x39 },
-> -	{ .mbps =  950,	.reg = 0x0a },
-> -	{ .mbps = 1000,	.reg = 0x1a },
-> -	{ .mbps = 1050,	.reg = 0x2a },
-> -	{ .mbps = 1100,	.reg = 0x3a },
-> -	{ .mbps = 1150,	.reg = 0x0b },
-> -	{ .mbps = 1200,	.reg = 0x1b },
-> -	{ .mbps = 1250,	.reg = 0x2b },
-> -	{ .mbps = 1300,	.reg = 0x3b },
-> -	{ .mbps = 1350,	.reg = 0x0c },
-> -	{ .mbps = 1400,	.reg = 0x1c },
-> -	{ .mbps = 1450,	.reg = 0x2c },
-> -	{ .mbps = 1500,	.reg = 0x3c },
-> +	{ .reg = 0x00, .max =  110 },
-> +	{ .reg = 0x10, .max =  120 },
-> +	{ .reg = 0x20, .max =  131 },
-> +	{ .reg = 0x30, .max =  141 },
-> +	{ .reg = 0x01, .max =  152 },
-> +	{ .reg = 0x11, .max =  162 },
-> +	{ .reg = 0x21, .max =  173 },
-> +	{ .reg = 0x31, .max =  183 },
-> +	{ .reg = 0x02, .max =  194 },
-> +	{ .reg = 0x12, .max =  204 },
-> +	{ .reg = 0x22, .max =  215 },
-> +	{ .reg = 0x32, .max =  225 },
-> +	{ .reg = 0x03, .max =  241 },
-> +	{ .reg = 0x13, .max =  257 },
-> +	{ .reg = 0x23, .max =  273 },
-> +	{ .reg = 0x33, .max =  275 },
-> +	{ .reg = 0x04, .max =  301 },
-> +	{ .reg = 0x14, .max =  328 },
-> +	{ .reg = 0x05, .max =  354 },
-> +	{ .reg = 0x15, .max =  393 },
-> +	{ .reg = 0x25, .max =  446 },
-> +	{ .reg = 0x06, .max =  498 },
-> +	{ .reg = 0x16, .max =  551 },
-> +	{ .reg = 0x07, .max =  603 },
-> +	{ .reg = 0x17, .max =  656 },
-> +	{ .reg = 0x08, .max =  708 },
-> +	{ .reg = 0x18, .max =  761 },
-> +	{ .reg = 0x09, .max =  813 },
-> +	{ .reg = 0x19, .max =  866 },
-> +	{ .reg = 0x29, .max =  918 },
-> +	{ .reg = 0x39, .max =  971 },
-> +	{ .reg = 0x0a, .max = 1023 },
-> +	{ .reg = 0x1a, .max = 1076 },
-> +	{ .reg = 0x2a, .max = 1128 },
-> +	{ .reg = 0x3a, .max = 1181 },
-> +	{ .reg = 0x0b, .max = 1233 },
-> +	{ .reg = 0x1b, .max = 1286 },
-> +	{ .reg = 0x2b, .max = 1338 },
-> +	{ .reg = 0x3b, .max = 1391 },
-> +	{ .reg = 0x0c, .max = 1443 },
-> +	{ .reg = 0x1c, .max = 1496 },
-> +	{ .reg = 0x2c, .max = 1500 },
-> +	{ .reg = 0x3c, .max = 1500 },
->  	{ /* sentinel */ },
->  };
->  
-> @@ -432,11 +432,11 @@ static int rcsi2_set_phypll(struct rcar_csi2 *priv, unsigned int mbps)
->  {
->  	const struct rcsi2_mbps_reg *hsfreq;
->  
-> -	for (hsfreq = priv->info->hsfreqrange; hsfreq->mbps != 0; hsfreq++)
-> -		if (hsfreq->mbps >= mbps)
-> +	for (hsfreq = priv->info->hsfreqrange; hsfreq->max != 0; hsfreq++)
-> +		if (hsfreq->max >= mbps)
->  			break;
->  
-> -	if (!hsfreq->mbps) {
-> +	if (!hsfreq->max) {
->  		dev_err(priv->dev, "Unsupported PHY speed (%u Mbps)", mbps);
->  		return -ERANGE;
->  	}
-> @@ -907,11 +907,11 @@ static int rcsi2_phtw_write_mbps(struct rcar_csi2 *priv, unsigned int mbps,
->  {
->  	const struct rcsi2_mbps_reg *value;
->  
-> -	for (value = values; value->mbps; value++)
-> -		if (value->mbps >= mbps)
-> +	for (value = values; value->max; value++)
-> +		if (value->max >= mbps)
->  			break;
->  
-> -	if (!value->mbps) {
-> +	if (!value->max) {
->  		dev_err(priv->dev, "Unsupported PHY speed (%u Mbps)", mbps);
->  		return -ERANGE;
->  	}
-> -- 
-> 2.7.4
-> 
+This part provides a driver and a CLI for testing and introspecting an
+ASI. The driver creates a test ASI and provide the ability to run some
+test sequences on the test ASI such as:
+
+ - a simple enter/exit ASI
+ - using printk with ASI
+ - access a map or unmapped buffer while in ASI
+ - receive an interrupt or NMI while in ASI
+ - scheduling in/out a task using ASI
+
+The driver reports if the ASI remains active or not at the end of the
+test sequence. It also provides the ability to:
+
+ - query the ASI fault (i.e. places where the ASI had a fault)
+ - clear the ASI fault log
+ - toggle the reporting of stack trace on an ASI fault
+ - query ASI mappings (i.e. VA ranges mapped in the ASI)
+ - add an ASI mapping
+ - clear an ASI mapping
+
+The asicmd user CLI is provided to interact with the ASI test driver.
+More details and examples are provided below for using the asicmd CLI.
+
+Thanks,
+
+alex.
+
+=====
+
+ASI Test Driver and CLI Usage
+-----------------------------
+The ASI test driver is built as a loadable module (asi.ko) in the
+drivers/staging/asi/ directory. You can load it with modprobe or insmod.
+
+The ASI test CLI (asicmd) is built in the drivers/staging/asi/ directory.
+The ASI test driver should be loaded before using the asicmd CLI.
+
+Usage:
+------
+Running the asicmd without arguments will show the different commands
+available:
+
+# ./asicmd 
+Usage: asicmd (<cmd>|<test>...)
+
+Commands:
+  all      - run all tests
+  fault    - list ASI faults
+  fltclr   - clear ASI faults
+  stkon    - show stack on ASI fault
+  stkoff   - do not show stack on ASI fault
+  map      - list ASI mappings
+  mapadd   - add ASI mappings
+  mapclr   - clear ASI mapping
+
+Tests:
+  nop        - enter/exit ASI and nothing else
+  mem        - enter ASI and accessed an unmapped buffer
+  memmap     - enter ASI and accessed a mapped buffer
+  intr       - receive an interruption while running with ASI
+  nmi        - receive a NMI while running with ASI
+  intrnmi    - receive a NMI in an interrupt received while running with ASI
+  sched      - call schedule() while running with ASI
+  printk     - call printk() while running with ASI
+
+Running a Test Sequence:
+------------------------
+Just specify the test sequence to run. For example, to run the "nop"
+test sequence, run "asicmd nop":
+
+  # ./asicmd nop
+  Test nop (sequence 0)
+    - rv = 0 ; result = 0 ; asi active
+    - expect = asi active
+  TEST OK
+
+The command reports that the ASI was active at the end of the test
+sequence and that this was the expected result. So the test was
+successful.
+
+Another example with the "mem" test sequence:
+
+  # ./asicmd mem
+  Test mem (sequence 2)
+    - rv = 0 ; result = 0 ; asi inactive
+    - expect = asi inactive
+  TEST OK
+
+This tests sequence access a buffer which is not mapped in ASI so it
+causes ASI to exit. The test effectively reports that the ASI was inactive
+at the end of the test sequence, but this is the expected result so the
+test is successful.
+
+All test sequences can be run with the "all" command: asicmd all
+
+Managing ASI Faults:
+--------------------
+The asicmd CLI has commands to manage ASI faults i.e. faults that occurred
+while running ASI because ASI is accessing an unmapped address:
+
+  - "asicmd fault" reports all ASI faults. It shows the address where the
+     fault has occurred and the number of time the fault has occurred.
+
+  - "asicmd fltclr" clears the ASI fault log.
+
+For example, the "mem" will cause an ASI fault and we can see it with the
+"fault" command:
+
+  # ./asicmd fltclr
+
+  # ./asicmd fault
+  ASI has no fault
+
+  # ./asicmd mem
+  Test mem (sequence 2)
+    - rv = 0 ; result = 0 ; asi inactive
+    - expect = asi inactive
+  TEST OK
+
+  # ./asicmd fault
+  ADDRESS             COUNT  SYMBOL
+  0xffffffffc0515037      1  asidrv_mem_run+0x37/0x7f [asi]
+
+
+Managing ASI Mappings:
+----------------------
+The asicmd CLI has commands to manage ASI mappings i.e. address ranges
+which are mapped in the ASI page-table:
+
+  - "asicmd map" reports all ASI mappings. It shows the address, size and
+    page-table level of the mappings.
+
+  - "asicmd mapadd" adds a mapping to the ASI page-table. The syntax is:
+
+     asicmd mapadd [percpu:]<addr>:<size>[:<level>]
+
+     . <addr> is the start address of the mapping and <size> is its size.
+     . <level> is the page-table level of the mapping, either "pte", "pmd",
+       "pud", "p4d" or "pgd". By default, the level is "pte".
+     . "percpu" should be prepended when <addr> is the offset of a percpu
+       buffer
+
+  - "asicmd" mapclr" clears a mapping in the ASI page-table. The syntax is:
+
+     asicmd mapclr [percpu:]<addr>
+
+     . <addr> is the start address of the mapping. The system automatically
+       figures out the size and page-table level of the mapping.
+     . "percpu" should be prepended when <addr> is the offset of a percpu
+       buffer
+
+Example:
+
+  # ./asicmd map
+  ADDRESS                           SIZE  LEVEL
+  0xffff88806946f000               0x838    PTE
+  0xffff88806820a000                0x60    PTE
+  0xffffffffc0515000              0x7000    PTE
+  0xffff88807ddac4c0                0xa0    PTE
+  0xffff88807dd2c4c0                0xa0    PTE
+  0xffff88807dcac4c0                0xa0    PTE
+  0xffff88807dc2c4c0                0xa0    PTE
+  0xffff88807dd98bc0                 0x8    PTE
+  0xffff88807dd18bc0                 0x8    PTE
+  0xffff88807dc98bc0                 0x8    PTE
+  0xffff88807dc18bc0                 0x8    PTE
+  0xffff88807dd80000                0x30    PTE
+  0xffff88807dd00000                0x30    PTE
+  0xffff88807dc80000                0x30    PTE
+  0xffff88807dc00000                0x30    PTE
+  0xfffffe0000001000        0x8000000000    P4D
+  0xffffffff80000000          0x40000000    PTE
+
+This shows the default core mappings for ASI. These mappings shouldn't be
+removed.
+
+If the ASI faults then you can add the missing mapping. For example with
+the "printk" test sequence:
+
+  # ./asicmd fltclr
+
+  # ./asicmd printk
+  Test printk (sequence 1)
+    - rv = 0 ; result = 0 ; asi inactive
+    - expect = asi active
+  TEST FAILED - unexpected ASI state
+
+The "printk" test sequence failed because of an ASI fault:
+
+  # ./asicmd fault
+  ADDRESS             COUNT  SYMBOL
+  0xffffffff8110b5a1      1  vprintk_func+0x11/0xbc
+
+With the source code or debugger, we can figure out that the fault is due
+to printk_context not being mapped in the ASI.
+
+  0xffffffff8110b5a1 <+17>: mov %gs:0x7ef106f8(%rip),%eax  # 0x1bca0 <printk_context>
+
+So we can add the missing mapping into the ASI with "mapadd"; note that
+printk_context is a percpu buffer and that sizeof(printk_context) is 4:
+
+  # ./asicmd mapadd percpu:0x1bca0:4
+  mapadd 1bca0/4/0 percpu
+
+If we re-run the "printk" test then we got:
+
+  # ./asicmd fltclr
+
+  # ./asicmd printk
+  Test printk (sequence 1)
+    - rv = 0 ; result = 0 ; asi inactive
+    - expect = asi active
+  TEST FAILED - unexpected ASI state
+
+  # ./asicmd fault
+  ADDRESS             COUNT  SYMBOL
+  0xffffffff811081f3      1  log_store.constprop.27+0x1f3/0x280
+
+We still see a new fault but at a difference address (this time because
+cpu_number is not mapped).
+
+-----
+
+Alexandre Chartre (14):
+  mm/asi: Define the test ASI type
+  asidrv: Introduce the ASI driver
+  asidrv: Introduce the ASIDRV_IOCTL_RUN_SEQUENCE ioctl
+  asidrv: Sequence to test ASI access to mapped/unmapped memory
+  asidrv: Sequence to test interrupt on ASI
+  asidrv: Sequence to test NMI on ASI
+  asidrv: Sequence to test interrupt+NMI on ASI
+  asidrv: Sequence to test scheduling in/out with ASI
+  asidrv: Add ioctls to manage ASI page faults
+  asidrv: Add ioctls to manage ASI mapped VA ranges
+  asidrv/asicmd: Introduce the asicmd command
+  asidrv/asicmd: Add more test sequences for testing ASI
+  asidrv/asicmd: Add options to manage ASI page faults
+  asidrv/asicmd: Add options to manage ASI mapped VA ranges
+
+ arch/x86/include/asm/asi.h   |    2 +
+ arch/x86/mm/asi.c            |    1 +
+ drivers/staging/Makefile     |    1 +
+ drivers/staging/asi/Makefile |   13 +
+ drivers/staging/asi/asicmd.c |  439 ++++++++++++++
+ drivers/staging/asi/asidrv.c | 1077 ++++++++++++++++++++++++++++++++++
+ drivers/staging/asi/asidrv.h |  102 ++++
+ 7 files changed, 1635 insertions(+)
+ create mode 100644 drivers/staging/asi/Makefile
+ create mode 100644 drivers/staging/asi/asicmd.c
+ create mode 100644 drivers/staging/asi/asidrv.c
+ create mode 100644 drivers/staging/asi/asidrv.h
 
 -- 
-Best Regards,
-Michael
+2.18.2
+
