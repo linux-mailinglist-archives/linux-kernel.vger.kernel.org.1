@@ -2,135 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 936671C45EB
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:30:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2DA01C45E5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:29:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731033AbgEDS3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:29:46 -0400
-Received: from smtprelay0141.hostedemail.com ([216.40.44.141]:33792 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730292AbgEDS3n (ORCPT
+        id S1730957AbgEDS3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:29:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730555AbgEDS31 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:29:43 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id BCBAE180050EA;
-        Mon,  4 May 2020 18:29:41 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:800:960:966:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2196:2199:2393:2559:2562:2828:2914:3138:3139:3140:3141:3142:3353:3865:3866:3867:3868:4321:4385:4605:5007:7903:8603:10004:10400:10848:11026:11657:11658:11914:12043:12296:12297:12438:12555:12760:13439:14096:14097:14181:14659:14721:21080:21433:21627:21990:30054:30060:30070,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:5,LUA_SUMMARY:none
-X-HE-Tag: care86_8eb3f26475931
-X-Filterd-Recvd-Size: 3895
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf18.hostedemail.com (Postfix) with ESMTPA;
-        Mon,  4 May 2020 18:29:40 +0000 (UTC)
-Message-ID: <f1926d434cdeb091405ef8c01a90c0140d296bed.camel@perches.com>
-Subject: [trivial PATCH] efi/libstub: Reduce efi_printk object size
-From:   Joe Perches <joe@perches.com>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>, X86 ML <x86@kernel.org>
-Date:   Mon, 04 May 2020 11:29:39 -0700
-In-Reply-To: <CAMj1kXHwdy3BTqt-q_qnezyz666BcqKiFxeumfsD+Qjy5qRzZA@mail.gmail.com>
-References: <091e3fc3bdbc5f480af7d3b3ac096d174a4480d0.1588273612.git.joe@perches.com>
-         <ec53e67b3ac928922807db3cb1585e911971dadc.1588273612.git.joe@perches.com>
-         <CAMj1kXHwdy3BTqt-q_qnezyz666BcqKiFxeumfsD+Qjy5qRzZA@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.1-2 
+        Mon, 4 May 2020 14:29:27 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B41EC061A0E
+        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 11:29:27 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id f7so5944201pfa.9
+        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 11:29:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3mcb3hEms/g2cRqXnF9mYGpTlaunEURjVZJCsIzGh9k=;
+        b=Zh/W+EiE3lvTwm+HWpVVsbuUMLNuAdreiZ2ZqOc+C3Ch5E1CjUraKKj4/BATTkl0SQ
+         nvB715f5f1/i8/QqCGuaBQQmLrIX/rGOkI7uCqvJgOziqNe4wpbCZDC64EOO8tEneDC8
+         5xZC438qx9k6dBvlrMI4JqvZbGDHXCci/LtIt8oaHR8w9sxBUtyE8LE/Fr77j5ASvaT5
+         EE5davlIM9hmPW7dbjVYycDHUjQYDbcrNLIGZv+yOb/kyKoUtTcWkcdTkEJE4O00VAUF
+         teOcH6GUEH+lU+8sdTOS1kCwvq4f5hoc7ZzEmJ4rFkPmkhdOHR+KOlMuGINjD/FbCU9L
+         D3NA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3mcb3hEms/g2cRqXnF9mYGpTlaunEURjVZJCsIzGh9k=;
+        b=KyIKnkMSBHYErcBGfnkGhVApGSIvmwHDRVuaRIamwyyWZsaRb8aRHh/WrOrgqzzQ4f
+         mzZB+EyDSTzHITtQQZL3/ZAbr6xJBJe8uSsDVi8Jv8+mBKcKAx6ObRiiL5BHorRIzkP1
+         3rHgW7441LYIi+2AK1DnSrVA5LM3zboOvOArC90TYL7QVJLu4SyNt+4HgNC7JQQnTGKH
+         qw49E8rJ4xaTQFMVy+xADgFUpIBTGhCQT26kkTe6mEpNJ5+h8vj7DUiK0raiOS6pyvfn
+         tDxX8LcAe1/D45qedmRhnSiOTy2J/mbrfqfnUp25npuRzi8o/qr9JjW4GMB9ulf8wn7u
+         CGdQ==
+X-Gm-Message-State: AGi0PubADI5VmbR5WDkBgTsIfJrTqvK41vlEb611nA58MIJNBCdSbS1a
+        uESjOA3v4NA8Q+kJv1M+6MVvqg==
+X-Google-Smtp-Source: APiQypJw2QOIf2XJfvZVcM8veojbbFcmiYFYAB5w4F2DRway3GD/F2mtQmG2UymA9Nd+umrDiTMePw==
+X-Received: by 2002:aa7:82d7:: with SMTP id f23mr19851746pfn.198.1588616966991;
+        Mon, 04 May 2020 11:29:26 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id 13sm9402013pfv.95.2020.05.04.11.29.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 May 2020 11:29:26 -0700 (PDT)
+Date:   Mon, 4 May 2020 11:30:10 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Alex Elder <elder@linaro.org>
+Cc:     robh+dt@kernel.org, davem@davemloft.net, evgreen@chromium.org,
+        subashab@codeaurora.org, cpratapa@codeaurora.org,
+        agross@kernel.org, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v2 1/4] dt-bindings: net: add IPA iommus property
+Message-ID: <20200504183010.GD20625@builder.lan>
+References: <20200504175859.22606-1-elder@linaro.org>
+ <20200504175859.22606-2-elder@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200504175859.22606-2-elder@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use a few more common kernel styles.
+On Mon 04 May 10:58 PDT 2020, Alex Elder wrote:
 
-Trivially reduce efi_printk object size by using a dereference to
-a temporary instead of multiple dereferences of the same object.
+> The IPA accesses "IMEM" and main system memory through an SMMU, so
+> its DT node requires an iommus property to define range of stream IDs
+> it uses.
+> 
+> Signed-off-by: Alex Elder <elder@linaro.org>
+> ---
+>  Documentation/devicetree/bindings/net/qcom,ipa.yaml | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/qcom,ipa.yaml b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
+> index 140f15245654..7b749fc04c32 100644
+> --- a/Documentation/devicetree/bindings/net/qcom,ipa.yaml
+> +++ b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
+> @@ -20,7 +20,10 @@ description:
+>    The GSI is an integral part of the IPA, but it is logically isolated
+>    and has a distinct interrupt and a separately-defined address space.
+>  
+> -  See also soc/qcom/qcom,smp2p.txt and interconnect/interconnect.txt.
+> +  See also soc/qcom/qcom,smp2p.txt and interconnect/interconnect.txt.  See
+> +  iommu/iommu.txt and iommu/arm,smmu.yaml for more information about SMMU
+> +  bindings.
+> +
+>  
+>    - |
+>      --------             ---------
+> @@ -54,6 +57,9 @@ properties:
+>        - const: ipa-shared
+>        - const: gsi
+>  
+> +  iommus:
+> +    maxItems: 1
+> +
+>    clocks:
+>      maxItems: 1
+>  
+> @@ -126,6 +132,7 @@ properties:
+>  
+>  required:
+>    - compatible
+> +  - iommus
 
-Use efi_printk(const char *str) and static or static const for its
-internal variables.
+This technically "breaks" backwards compatibility, but the binding is
+rather new and in limited use, so I think we should do this.
 
-Use the more common form of while instead of a for loop.
 
-Change efi_char16_printk argument to const.
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- drivers/firmware/efi/libstub/efi-stub-helper.c | 16 ++++++++--------
- drivers/firmware/efi/libstub/efistub.h         |  6 +++---
- 2 files changed, 11 insertions(+), 11 deletions(-)
+Regards,
+Bjorn
 
-diff --git a/drivers/firmware/efi/libstub/efi-stub-helper.c b/drivers/firmware/efi/libstub/efi-stub-helper.c
-index 1c92ac231f94..dfd72a4360ac 100644
---- a/drivers/firmware/efi/libstub/efi-stub-helper.c
-+++ b/drivers/firmware/efi/libstub/efi-stub-helper.c
-@@ -26,19 +26,19 @@ bool __pure __efi_soft_reserve_enabled(void)
- 	return !efi_nosoftreserve;
- }
- 
--void efi_printk(char *str)
-+void efi_printk(const char *str)
- {
--	char *s8;
-+	char s8;
- 
--	for (s8 = str; *s8; s8++) {
--		efi_char16_t ch[2] = { 0 };
-+	while ((s8 = *str++)) {
-+		static efi_char16_t ch[2] = {0, 0};
- 
--		ch[0] = *s8;
--		if (*s8 == '\n') {
--			efi_char16_t nl[2] = { '\r', 0 };
-+		if (s8 == '\n') {
-+			static const efi_char16_t nl[2] = { '\r', 0 };
- 			efi_char16_printk(nl);
- 		}
- 
-+		ch[0] = s8;
- 		efi_char16_printk(ch);
- 	}
- }
-@@ -284,7 +284,7 @@ void *get_efi_config_table(efi_guid_t guid)
- 	return NULL;
- }
- 
--void efi_char16_printk(efi_char16_t *str)
-+void efi_char16_printk(const efi_char16_t *str)
- {
- 	efi_call_proto(efi_table_attr(efi_system_table, con_out),
- 		       output_string, str);
-diff --git a/drivers/firmware/efi/libstub/efistub.h b/drivers/firmware/efi/libstub/efistub.h
-index 5ff63230a1f1..a03a92c665f0 100644
---- a/drivers/firmware/efi/libstub/efistub.h
-+++ b/drivers/firmware/efi/libstub/efistub.h
-@@ -251,7 +251,7 @@ union efi_simple_text_output_protocol {
- 	struct {
- 		void *reset;
- 		efi_status_t (__efiapi *output_string)(efi_simple_text_output_protocol_t *,
--						       efi_char16_t *);
-+						       const efi_char16_t *);
- 		void *test_string;
- 	};
- 	struct {
-@@ -599,7 +599,7 @@ efi_status_t efi_exit_boot_services(void *handle,
- 				    void *priv,
- 				    efi_exit_boot_map_processing priv_func);
- 
--void efi_char16_printk(efi_char16_t *);
-+void efi_char16_printk(const efi_char16_t *str);
- 
- efi_status_t allocate_new_fdt_and_exit_boot(void *handle,
- 					    unsigned long *new_fdt_addr,
-@@ -624,7 +624,7 @@ efi_status_t check_platform_features(void);
- 
- void *get_efi_config_table(efi_guid_t guid);
- 
--void efi_printk(char *str);
-+void efi_printk(const char *str);
- 
- void efi_free(unsigned long size, unsigned long addr);
- 
-
+>    - reg
+>    - clocks
+>    - interrupts
+> @@ -164,6 +171,7 @@ examples:
+>                  modem-init;
+>                  modem-remoteproc = <&mss_pil>;
+>  
+> +                iommus = <&apps_smmu 0x720 0x3>;
+>                  reg = <0 0x1e40000 0 0x7000>,
+>                          <0 0x1e47000 0 0x2000>,
+>                          <0 0x1e04000 0 0x2c000>;
+> -- 
+> 2.20.1
+> 
