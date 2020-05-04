@@ -2,138 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22A201C3B41
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 15:29:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E483C1C3B48
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 15:30:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728238AbgEDN3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 09:29:52 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33040 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726404AbgEDN3w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 09:29:52 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 16598AD2C;
-        Mon,  4 May 2020 13:29:51 +0000 (UTC)
-Received: by lion.mk-sys.cz (Postfix, from userid 1000)
-        id E7EB7604EE; Mon,  4 May 2020 15:29:47 +0200 (CEST)
-Date:   Mon, 4 May 2020 15:29:47 +0200
-From:   Michal Kubecek <mkubecek@suse.cz>
-To:     netdev@vger.kernel.org
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Marek Vasut <marex@denx.de>, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>, mkl@pengutronix.de,
-        kernel@pengutronix.de, David Jander <david@protonic.nl>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Christian Herber <christian.herber@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-Subject: Re: [PATCH v5 1/2] ethtool: provide UAPI for PHY master/slave
- configuration.
-Message-ID: <20200504132947.GB8237@lion.mk-sys.cz>
-References: <20200504071214.5890-1-o.rempel@pengutronix.de>
- <20200504071214.5890-2-o.rempel@pengutronix.de>
- <20200504091044.GA8237@lion.mk-sys.cz>
- <20200504101029.zt3eu7jsywdiq4tu@pengutronix.de>
+        id S1728303AbgEDNa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 09:30:56 -0400
+Received: from forwardcorp1o.mail.yandex.net ([95.108.205.193]:47022 "EHLO
+        forwardcorp1o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726404AbgEDNa4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 09:30:56 -0400
+Received: from mxbackcorp1o.mail.yandex.net (mxbackcorp1o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::301])
+        by forwardcorp1o.mail.yandex.net (Yandex) with ESMTP id 5C7352E1460;
+        Mon,  4 May 2020 16:30:53 +0300 (MSK)
+Received: from myt5-70c90f7d6d7d.qloud-c.yandex.net (myt5-70c90f7d6d7d.qloud-c.yandex.net [2a02:6b8:c12:3e2c:0:640:70c9:f7d])
+        by mxbackcorp1o.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id p37YMl27Y5-UqbWRbWb;
+        Mon, 04 May 2020 16:30:53 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1588599053; bh=Spta+i/oO8BEvGD3BvlYBGUTfw/bm1sIiGx2AOg3kHw=;
+        h=Message-ID:References:Date:To:From:Subject:In-Reply-To;
+        b=wbZzOWD0J1vut19Iy8vO2yMXcjAexNO0wnK6JSkxfdqMgkmuxWsuRrt4q+oe4tTBF
+         sacTDHlJSNqEj9NBtCtARAnk1kxnK/4g4YED+IrJxbnAQnVGMeSRSGIbiZa9P5UWfj
+         LTRfvy42yQsKrBnDVNWiiDbAHzMOb920G2agr5TA=
+Authentication-Results: mxbackcorp1o.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from dynamic-vpn.dhcp.yndx.net (dynamic-vpn.dhcp.yndx.net [2a02:6b8:b081:409::1:8])
+        by myt5-70c90f7d6d7d.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id lOjei5J8xC-UqWWBwFp;
+        Mon, 04 May 2020 16:30:52 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+Subject: [PATCH 3/4] block/part_stat: account merge of two requests
+From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+To:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>
+Date:   Mon, 04 May 2020 16:30:52 +0300
+Message-ID: <158859904278.19926.1357797452754171976.stgit@buzz>
+In-Reply-To: <158859896942.19836.15240144203131230746.stgit@buzz>
+References: <158859896942.19836.15240144203131230746.stgit@buzz>
+User-Agent: StGit/0.22-32-g6a05
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200504101029.zt3eu7jsywdiq4tu@pengutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 04, 2020 at 12:10:29PM +0200, Oleksij Rempel wrote:
-> > > diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-> > > index ac2784192472f..42dda9d2082ee 100644
-> > > --- a/drivers/net/phy/phy_device.c
-> > > +++ b/drivers/net/phy/phy_device.c
-> > > @@ -1768,6 +1768,90 @@ int genphy_setup_forced(struct phy_device *phydev)
-> > >  }
-> > >  EXPORT_SYMBOL(genphy_setup_forced);
-> > >  
-> > > +static int genphy_setup_master_slave(struct phy_device *phydev)
-> > > +{
-> > > +	u16 ctl = 0;
-> > > +
-> > > +	if (!phydev->is_gigabit_capable)
-> > > +		return 0;
-> > 
-> > Why did you revert to silently ignoring requests in this case?
-> 
-> genphy_setup_forced() is called by __genphy_config_aneg() and this can
-> be called by a PHY driver after configuring master slave mode locally by
-> PHY driver. See tja11xx patch. Same can be potentially done in the phy/realtek.c
-> driver.
-> 
-> Currently my imagination is not caffeanized enough to
-> provide a better solution. Do you have ideas?
+Also rename blk_account_io_merge() into blk_account_io_merge_request() to
+distinguish it from merging request and bio.
 
-If we have the check in ethnl_update_linkmodes(), we shouldn't really
-get here so I believe we can leave this part as it is.
+Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+---
+ block/blk-merge.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-> > >  static int ethnl_update_linkmodes(struct genl_info *info, struct nlattr **tb,
-> > >  				  struct ethtool_link_ksettings *ksettings,
-> > >  				  bool *mod)
-> > >  {
-> > >  	struct ethtool_link_settings *lsettings = &ksettings->base;
-> > >  	bool req_speed, req_duplex;
-> > > +	const struct nlattr *master_slave_cfg;
-> > >  	int ret;
-> > >  
-> > > +	master_slave_cfg = tb[ETHTOOL_A_LINKMODES_MASTER_SLAVE_CFG];
-> > > +	if (master_slave_cfg) {
-> > > +		u8 cfg = nla_get_u8(master_slave_cfg);
-> > > +		if (!ethnl_validate_master_slave_cfg(cfg)) {
-> > > +			GENL_SET_ERR_MSG(info, "LINKMODES_MASTER_SLAVE_CFG contains not valid value");
-> > > +			return -EOPNOTSUPP;
-> > > +		}
-> > > +	}
-> > 
-> > Please set also the "bad attribute" in extack, it may help
-> > non-interactive clients.
-> > 
-> > Also, it would be nice to report error if client wants to set master/slave but
-> > driver does not support it. How about this?
-> > 
-> > 	if (master_slave_cfg) {
-> > 		u8 cfg = nla_get_u8(master_slave_cfg);
-> > 
-> > 		if (lsettings->master_slave_cfg == MASTER_SLAVE_CFG_UNSUPPORTED) {
-> > 			NL_SET_ERR_MSG_ATTR(info->extack, master_slave_cfg,
-> > 					    "master/slave configuration not supported by device");
-> > 			return -EOPNOTSUPP;
-> > 		}
-> > 		if (!ethnl_validate_master_slave_cfg(cfg)) {
-> > 			NL_SET_ERR_MSG_ATTR(info->extack, master_slave_cfg,
-> > 					    "master/slave value is invalid");
-> > 			return -EOPNOTSUPP;
-> > 		}
-> > 	}
-> > 
-> 
-> looks good. thx!
-> 
-> > 
-> > Do you plan to allow handling master/slave also via ioctl()?
-> 
-> no.
-> 
-> > If yes, we should
-> > also add the sanity checks to ioctl code path. If not, we should prevent
-> > passing non-zero values from userspace to driver.
-> 
-> What is the best place to add this sanity check?
+diff --git a/block/blk-merge.c b/block/blk-merge.c
+index a04e991b5ded..37bced39bae8 100644
+--- a/block/blk-merge.c
++++ b/block/blk-merge.c
+@@ -662,20 +662,23 @@ void blk_rq_set_mixed_merge(struct request *rq)
+ 	rq->rq_flags |= RQF_MIXED_MERGE;
+ }
+ 
+-static void blk_account_io_merge(struct request *req)
++static void blk_account_io_merge_request(struct request *req)
+ {
+ 	if (blk_do_io_stat(req)) {
++		const int sgrp = op_stat_group(req_op(req));
+ 		struct hd_struct *part;
+ 
+ 		part_stat_lock();
+ 		part = req->part;
+ 
++		part_stat_inc(part, merges[sgrp]);
+ 		part_dec_in_flight(req->q, part, rq_data_dir(req));
+ 
+ 		hd_struct_put(part);
+ 		part_stat_unlock();
+ 	}
+ }
++
+ /*
+  * Two cases of handling DISCARD merge:
+  * If max_discard_segments > 1, the driver takes every bio
+@@ -787,7 +790,7 @@ static struct request *attempt_merge(struct request_queue *q,
+ 	/*
+ 	 * 'next' is going away, so update stats accordingly
+ 	 */
+-	blk_account_io_merge(next);
++	blk_account_io_merge_request(next);
+ 
+ 	/*
+ 	 * ownership of bio passed from next to req, return 'next' for
 
-If there is no plan to allow handling master/slave via ioctl, the best
-option would IMHO be zeroing both fields in ethtool_get_link_ksettings()
-right before the call to store_link_ksettings_for_user() and either
-zeroing master_slave_cfg in ethtool_set_link_ksettings() after the call
-load_link_ksettings_from_user(), or checking that it's zero (i.e. that
-userspace left it untouched).
-
-Michal
