@@ -2,102 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38D3B1C48CE
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 23:08:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0709F1C4901
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 23:24:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727887AbgEDVId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 17:08:33 -0400
-Received: from ozlabs.org ([203.11.71.1]:42111 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726334AbgEDVId (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 17:08:33 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49GFnp29n5z9sRf;
-        Tue,  5 May 2020 07:08:30 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1588626511;
-        bh=LWc7WDFCEe4/CqRdxD8y0ASLGpoEli6mYUnBjW2ojek=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=oxvtDDfTAmGhZsiDyeSkaPzxqc5R4JAushqgSvEozm+8m60vD5NXplkXq0IKnkiTL
-         ZyebJTrEvSmlc/KmNRPkhjmYCcoqIAcS551O/Re48sR0dSV9ng3LSBZf+rFOcoWUM3
-         mfGzX3GOAN7xKZaC73P3l6jcgUkVDcbPNLgT39mrOYowtjHZRvV4JPOq6xC0BmFCBN
-         L9Cg1Yt2NTlaIFU3JtBij2eIESyuqVjoCrkVCtdZ2t5GbMB2y2g7pm3Xhk2QQNl89V
-         RXhd6foSKeYTxpn47ev8FRFs4uojxJsymCScx4fHBEg5UL6sN2ycyGZChHjmb0cjOo
-         wS7ywR8zcazBw==
-Date:   Tue, 5 May 2020 07:08:28 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mike Rapoport <rppt@linux.ibm.com>
-Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marc Hartmayer <mhartmay@linux.ibm.com>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>
-Subject: Re: linux-next: Tree for May 4 --> mm: free_area_init: allow
- defining max_zone_pfn in descending order does increase memory use
-Message-ID: <20200505070828.20fd21af@canb.auug.org.au>
-In-Reply-To: <20200504154410.GF342687@linux.ibm.com>
-References: <20200504173547.2cdd83bf@canb.auug.org.au>
-        <9e9edd1e-6653-a585-0e22-69930a07dce1@de.ibm.com>
-        <20200504154410.GF342687@linux.ibm.com>
+        id S1728250AbgEDVXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 17:23:08 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:57874 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727770AbgEDVWf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 17:22:35 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 044LMTGJ104239;
+        Mon, 4 May 2020 16:22:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1588627349;
+        bh=5kTwSm0j/nEYWnnOPT/V2sI+wVlLQJbo67RSZQQIUOA=;
+        h=From:To:CC:Subject:Date;
+        b=trO+2nRuAdvCBjff4ageTxq6X4wvsZRHLT2jDI7IAv+nqw0cuXYWwT1+h4HUTr7Ys
+         ZFO2Xprg9pW0O1JfJA9B31++XRtUMxOBESuGs3ZI9lG5e7vwvCV+vSIYLtyHTYdwr4
+         Bg2PXZ6bpgnYakT/92/MIEO+SkK9smegvCK/qrtU=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 044LMTx5088661;
+        Mon, 4 May 2020 16:22:29 -0500
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 4 May
+ 2020 16:22:28 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 4 May 2020 16:22:28 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 044LMSll102058;
+        Mon, 4 May 2020 16:22:28 -0500
+From:   Dan Murphy <dmurphy@ti.com>
+To:     <jacek.anaszewski@gmail.com>, <pavel@ucw.cz>
+CC:     <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH v25 00/16] Multicolor Framework v25
+Date:   Mon, 4 May 2020 16:13:28 -0500
+Message-ID: <20200504211344.13221-1-dmurphy@ti.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/EC8ktDc27Ll0Q6ltM8Z62Nm";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/EC8ktDc27Ll0Q6ltM8Z62Nm
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello
 
-Hi Mike,
+This is the multi color LED framework.   This framework presents clustered
+colored LEDs into an array and allows the user space to adjust the brightness
+of the cluster using a single file write.  The individual colored LEDs
+intensities are controlled via a single file that is an array of LEDs
 
-On Mon, 4 May 2020 18:44:10 +0300 Mike Rapoport <rppt@linux.ibm.com> wrote:
->
-> Ho Christian,
->=20
-> On Mon, May 04, 2020 at 04:50:06PM +0200, Christian Borntraeger wrote:
-> > Mike,
-> > commit 51a2f644fd020d5f090044825c388444d11029d ("mm: free_area_init: al=
-low defining max_zone_pfn in descending order")
-> > does increase the memory use on s390 (e.g. 700 MB vs.1.8 GB).
-> >=20
-> > Something is odd in this patch. Any idea? =20
->=20
-> Yeah, this patch is buggy. In short, it breaks zone size calculation on
-> s390 and some other architectures.
->=20
-> I've just replied at [1] with more details and a fix.
->=20
-> [1] https://lore.kernel.org/linux-mm/20200504153901.GM14260@kernel.org/
+Dan
 
-I have added that to linux-next for today.
+Dan Murphy (16):
+  dt: bindings: Add multicolor class dt bindings documention
+  leds: multicolor: Introduce a multicolor class definition
+  dt: bindings: lp50xx: Introduce the lp50xx family of RGB drivers
+  leds: lp50xx: Add the LP50XX family of the RGB LED driver
+  dt: bindings: lp55xx: Be consistent in the document with LED acronym
+  dt: bindings: lp55xx: Update binding for Multicolor Framework
+  ARM: dts: n900: Add reg property to the LP5523 channel node
+  ARM: dts: imx6dl-yapp4: Add reg property to the lp5562 channel node
+  ARM: dts: ste-href: Add reg property to the LP5521 channel nodes
+  leds: lp55xx: Convert LED class registration to devm_*
+  leds: lp55xx: Add multicolor framework support to lp55xx
+  leds: lp5523: Update the lp5523 code to add multicolor brightness
+    function
+  leds: lp5521: Add multicolor framework multicolor brightness support
+  leds: lp55xx: Fix checkpatch file permissions issues
+  leds: lp5523: Fix checkpatch issues in the code
+  dt: bindings: Update lp55xx binding to recommended LED naming
 
---=20
-Cheers,
-Stephen Rothwell
+ .../ABI/testing/sysfs-class-led-multicolor    |  34 +
+ .../bindings/leds/leds-class-multicolor.yaml  |  71 ++
+ .../devicetree/bindings/leds/leds-lp50xx.yaml | 180 ++++
+ .../devicetree/bindings/leds/leds-lp55xx.txt  | 163 +++-
+ Documentation/leds/index.rst                  |   1 +
+ Documentation/leds/leds-class-multicolor.rst  |  88 ++
+ MAINTAINERS                                   |   8 +
+ arch/arm/boot/dts/imx6dl-yapp4-common.dtsi    |  14 +-
+ arch/arm/boot/dts/omap3-n900.dts              |  29 +-
+ arch/arm/boot/dts/ste-href.dtsi               |  22 +-
+ drivers/leds/Kconfig                          |  24 +
+ drivers/leds/Makefile                         |   2 +
+ drivers/leds/led-class-multicolor.c           | 210 +++++
+ drivers/leds/led-core.c                       |   1 +
+ drivers/leds/leds-lp50xx.c                    | 778 ++++++++++++++++++
+ drivers/leds/leds-lp5521.c                    |  43 +-
+ drivers/leds/leds-lp5523.c                    |  62 +-
+ drivers/leds/leds-lp5562.c                    |  22 +-
+ drivers/leds/leds-lp55xx-common.c             | 213 +++--
+ drivers/leds/leds-lp55xx-common.h             |  16 +-
+ drivers/leds/leds-lp8501.c                    |  23 +-
+ include/dt-bindings/leds/common.h             |   3 +-
+ include/linux/led-class-multicolor.h          | 121 +++
+ include/linux/platform_data/leds-lp55xx.h     |   8 +
+ 24 files changed, 1977 insertions(+), 159 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-class-led-multicolor
+ create mode 100644 Documentation/devicetree/bindings/leds/leds-class-multicolor.yaml
+ create mode 100644 Documentation/devicetree/bindings/leds/leds-lp50xx.yaml
+ create mode 100644 Documentation/leds/leds-class-multicolor.rst
+ create mode 100644 drivers/leds/led-class-multicolor.c
+ create mode 100644 drivers/leds/leds-lp50xx.c
+ create mode 100644 include/linux/led-class-multicolor.h
 
---Sig_/EC8ktDc27Ll0Q6ltM8Z62Nm
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+-- 
+2.25.1
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl6whEwACgkQAVBC80lX
-0GzmWwf+JTR9NVgZ198HKHx7MTJLK6YQL0hAXJV5Dz/0wmzoL2UDKclFwic2HZv9
-wK9ztJaqX20Vdxq6zbQMB/xvTiItLdbe8EosmrPdG46BeocBOKX0AInV/zRb9K9P
-GgJPZemdo3HJqLPqY4Djw/CWTewa6g21M5xg5HMy5EbnTRSitEotZuHt69EHmJKo
-nuPEFRG/cn8xXel/4963dNTFfTESCFOPs++wooDHFQ0mQzAnsR3nKMcEVZYFb1Br
-T7wSanues09dSqhsC+lJDe37tyMwcU5N/y2NusDKahBn63aZEz/q/qXNrbBDhYgE
-RqXCWfPt+gliNxsihqbuk5o9lYk/pQ==
-=1Mmd
------END PGP SIGNATURE-----
-
---Sig_/EC8ktDc27Ll0Q6ltM8Z62Nm--
