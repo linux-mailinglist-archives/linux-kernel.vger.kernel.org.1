@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 148491C44B6
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:09:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C20AB1C4409
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731978AbgEDSG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:06:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36798 "EHLO mail.kernel.org"
+        id S1730812AbgEDSDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:03:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731958AbgEDSGZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:06:25 -0400
+        id S1731527AbgEDSDh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 14:03:37 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4A16D20721;
-        Mon,  4 May 2020 18:06:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3CF4D205ED;
+        Mon,  4 May 2020 18:03:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588615584;
-        bh=VbAQfR2M04RtC+waQITrYrcHnc8XtCKGxpNl6W13Eig=;
+        s=default; t=1588615415;
+        bh=z4cqvnk6Rzpi/NGSkK4ma/fkQPm9mS7DduXFNAfNqs0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=14Nb6ayWn8vdlRa6WodSMatGPvkAeqEwxo6YhLi+l2bF1xLun23y/Bc9H7HyaXuV7
-         3ZT+lyiW7PkI2ALXiCuXTPhkj70hqNtTmLNsrI05IFu36TSJgKmSI2xNraQR+gXTxF
-         9pMM42Qk7SDbdR/MeHrlK7GLSxGVBPBC9GqxMnbo=
+        b=seM5kZ3rDcr+QC/1bwHm1S7eGFvQt9JH711xHlKCTyiEdEB4J4VnE3o254YKPv9KB
+         ZFHeXSHEdrXpKz7toBWhf+r7/v8PRpTv6VJDwqbHXMJl3Ygl6l8I8UOjDIg4rDuBZj
+         PQGaNnOt4axlIOveUZVkhA9N/f5jz1T0XKjQpZHg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Wilson <chris@chris-wilson.co.uk>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>
-Subject: [PATCH 5.6 07/73] drm/i915/gt: Check cacheline is valid before acquiring
+        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
+        Gerd Hoffmann <kraxel@redhat.com>
+Subject: [PATCH 5.4 06/57] drm/qxl: qxl_release use after free
 Date:   Mon,  4 May 2020 19:57:10 +0200
-Message-Id: <20200504165503.252291539@linuxfoundation.org>
+Message-Id: <20200504165457.134532238@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200504165501.781878940@linuxfoundation.org>
-References: <20200504165501.781878940@linuxfoundation.org>
+In-Reply-To: <20200504165456.783676004@linuxfoundation.org>
+References: <20200504165456.783676004@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,76 +43,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Wilson <chris@chris-wilson.co.uk>
+From: Vasily Averin <vvs@virtuozzo.com>
 
-commit 2abaad4eb59d1cdc903ea84c06acb406e2fbb263 upstream.
+commit 933db73351d359f74b14f4af095808260aff11f9 upstream.
 
-The hwsp_cacheline pointer from i915_request is very, very flimsy. The
-i915_request.timeline (and the hwsp_cacheline) are lost upon retiring
-(after an RCU grace). Therefore we need to confirm that once we have the
-right pointer for the cacheline, it is not in the process of being
-retired and disposed of before we attempt to acquire a reference to the
-cacheline.
+qxl_release should not be accesses after qxl_push_*_ring_release() calls:
+userspace driver can process submitted command quickly, move qxl_release
+into release_ring, generate interrupt and trigger garbage collector.
 
-<3>[  547.208237] BUG: KASAN: use-after-free in active_debug_hint+0x6a/0x70 [i915]
-<3>[  547.208366] Read of size 8 at addr ffff88822a0d2710 by task gem_exec_parall/2536
+It can lead to crashes in qxl driver or trigger memory corruption
+in some kmalloc-192 slab object
 
-<4>[  547.208547] CPU: 3 PID: 2536 Comm: gem_exec_parall Tainted: G     U            5.7.0-rc2-ged7a286b5d02d-kasan_117+ #1
-<4>[  547.208556] Hardware name: Dell Inc. XPS 13 9350/, BIOS 1.4.12 11/30/2016
-<4>[  547.208564] Call Trace:
-<4>[  547.208579]  dump_stack+0x96/0xdb
-<4>[  547.208707]  ? active_debug_hint+0x6a/0x70 [i915]
-<4>[  547.208719]  print_address_description.constprop.6+0x16/0x310
-<4>[  547.208841]  ? active_debug_hint+0x6a/0x70 [i915]
-<4>[  547.208963]  ? active_debug_hint+0x6a/0x70 [i915]
-<4>[  547.208975]  __kasan_report+0x137/0x190
-<4>[  547.209106]  ? active_debug_hint+0x6a/0x70 [i915]
-<4>[  547.209127]  kasan_report+0x32/0x50
-<4>[  547.209257]  ? i915_gemfs_fini+0x40/0x40 [i915]
-<4>[  547.209376]  active_debug_hint+0x6a/0x70 [i915]
-<4>[  547.209389]  debug_print_object+0xa7/0x220
-<4>[  547.209405]  ? lockdep_hardirqs_on+0x348/0x5f0
-<4>[  547.209426]  debug_object_assert_init+0x297/0x430
-<4>[  547.209449]  ? debug_object_free+0x360/0x360
-<4>[  547.209472]  ? lock_acquire+0x1ac/0x8a0
-<4>[  547.209592]  ? intel_timeline_read_hwsp+0x4f/0x840 [i915]
-<4>[  547.209737]  ? i915_active_acquire_if_busy+0x66/0x120 [i915]
-<4>[  547.209861]  i915_active_acquire_if_busy+0x66/0x120 [i915]
-<4>[  547.209990]  ? __live_alloc.isra.15+0xc0/0xc0 [i915]
-<4>[  547.210005]  ? rcu_read_lock_sched_held+0xd0/0xd0
-<4>[  547.210017]  ? print_usage_bug+0x580/0x580
-<4>[  547.210153]  intel_timeline_read_hwsp+0xbc/0x840 [i915]
-<4>[  547.210284]  __emit_semaphore_wait+0xd5/0x480 [i915]
-<4>[  547.210415]  ? i915_fence_get_timeline_name+0x110/0x110 [i915]
-<4>[  547.210428]  ? lockdep_hardirqs_on+0x348/0x5f0
-<4>[  547.210442]  ? _raw_spin_unlock_irq+0x2a/0x40
-<4>[  547.210567]  ? __await_execution.constprop.51+0x2e0/0x570 [i915]
-<4>[  547.210706]  i915_request_await_dma_fence+0x8f7/0xc70 [i915]
+Gerd Hoffmann proposes to swap the qxl_release_fence_buffer_objects() +
+qxl_push_{cursor,command}_ring_release() calls to close that race window.
 
-Fixes: 85bedbf191e8 ("drm/i915/gt: Eliminate the trylock for reading a timeline's hwsp")
-Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-Cc: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
-Cc: <stable@vger.kernel.org> # v5.6+
-Reviewed-by: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200427093038.29219-1-chris@chris-wilson.co.uk
-(cherry picked from commit 2759e395358b2b909577928894f856ab75bea41a)
-Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+cc: stable@vger.kernel.org
+Fixes: f64122c1f6ad ("drm: add new QXL driver. (v1.4)")
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+Link: http://patchwork.freedesktop.org/patch/msgid/fa17b338-66ae-f299-68fe-8d32419d9071@virtuozzo.com
+Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/i915/gt/intel_timeline.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/gpu/drm/qxl/qxl_cmd.c     |    5 ++---
+ drivers/gpu/drm/qxl/qxl_display.c |    6 +++---
+ drivers/gpu/drm/qxl/qxl_draw.c    |    2 +-
+ drivers/gpu/drm/qxl/qxl_ioctl.c   |    5 +----
+ 4 files changed, 7 insertions(+), 11 deletions(-)
 
---- a/drivers/gpu/drm/i915/gt/intel_timeline.c
-+++ b/drivers/gpu/drm/i915/gt/intel_timeline.c
-@@ -519,6 +519,8 @@ int intel_timeline_read_hwsp(struct i915
+--- a/drivers/gpu/drm/qxl/qxl_cmd.c
++++ b/drivers/gpu/drm/qxl/qxl_cmd.c
+@@ -500,8 +500,8 @@ int qxl_hw_surface_alloc(struct qxl_devi
+ 	/* no need to add a release to the fence for this surface bo,
+ 	   since it is only released when we ask to destroy the surface
+ 	   and it would never signal otherwise */
+-	qxl_push_command_ring_release(qdev, release, QXL_CMD_SURFACE, false);
+ 	qxl_release_fence_buffer_objects(release);
++	qxl_push_command_ring_release(qdev, release, QXL_CMD_SURFACE, false);
  
- 	rcu_read_lock();
- 	cl = rcu_dereference(from->hwsp_cacheline);
-+	if (i915_request_completed(from)) /* confirm cacheline is valid */
-+		goto unlock;
- 	if (unlikely(!i915_active_acquire_if_busy(&cl->active)))
- 		goto unlock; /* seqno wrapped and completed! */
- 	if (unlikely(i915_request_completed(from)))
+ 	surf->hw_surf_alloc = true;
+ 	spin_lock(&qdev->surf_id_idr_lock);
+@@ -543,9 +543,8 @@ int qxl_hw_surface_dealloc(struct qxl_de
+ 	cmd->surface_id = id;
+ 	qxl_release_unmap(qdev, release, &cmd->release_info);
+ 
+-	qxl_push_command_ring_release(qdev, release, QXL_CMD_SURFACE, false);
+-
+ 	qxl_release_fence_buffer_objects(release);
++	qxl_push_command_ring_release(qdev, release, QXL_CMD_SURFACE, false);
+ 
+ 	return 0;
+ }
+--- a/drivers/gpu/drm/qxl/qxl_display.c
++++ b/drivers/gpu/drm/qxl/qxl_display.c
+@@ -523,8 +523,8 @@ static int qxl_primary_apply_cursor(stru
+ 	cmd->u.set.visible = 1;
+ 	qxl_release_unmap(qdev, release, &cmd->release_info);
+ 
+-	qxl_push_cursor_ring_release(qdev, release, QXL_CMD_CURSOR, false);
+ 	qxl_release_fence_buffer_objects(release);
++	qxl_push_cursor_ring_release(qdev, release, QXL_CMD_CURSOR, false);
+ 
+ 	return ret;
+ 
+@@ -665,8 +665,8 @@ static void qxl_cursor_atomic_update(str
+ 	cmd->u.position.y = plane->state->crtc_y + fb->hot_y;
+ 
+ 	qxl_release_unmap(qdev, release, &cmd->release_info);
+-	qxl_push_cursor_ring_release(qdev, release, QXL_CMD_CURSOR, false);
+ 	qxl_release_fence_buffer_objects(release);
++	qxl_push_cursor_ring_release(qdev, release, QXL_CMD_CURSOR, false);
+ 
+ 	if (old_cursor_bo != NULL)
+ 		qxl_bo_unpin(old_cursor_bo);
+@@ -713,8 +713,8 @@ static void qxl_cursor_atomic_disable(st
+ 	cmd->type = QXL_CURSOR_HIDE;
+ 	qxl_release_unmap(qdev, release, &cmd->release_info);
+ 
+-	qxl_push_cursor_ring_release(qdev, release, QXL_CMD_CURSOR, false);
+ 	qxl_release_fence_buffer_objects(release);
++	qxl_push_cursor_ring_release(qdev, release, QXL_CMD_CURSOR, false);
+ }
+ 
+ static void qxl_update_dumb_head(struct qxl_device *qdev,
+--- a/drivers/gpu/drm/qxl/qxl_draw.c
++++ b/drivers/gpu/drm/qxl/qxl_draw.c
+@@ -243,8 +243,8 @@ void qxl_draw_dirty_fb(struct qxl_device
+ 	}
+ 	qxl_bo_kunmap(clips_bo);
+ 
+-	qxl_push_command_ring_release(qdev, release, QXL_CMD_DRAW, false);
+ 	qxl_release_fence_buffer_objects(release);
++	qxl_push_command_ring_release(qdev, release, QXL_CMD_DRAW, false);
+ 
+ out_release_backoff:
+ 	if (ret)
+--- a/drivers/gpu/drm/qxl/qxl_ioctl.c
++++ b/drivers/gpu/drm/qxl/qxl_ioctl.c
+@@ -261,11 +261,8 @@ static int qxl_process_single_command(st
+ 			apply_surf_reloc(qdev, &reloc_info[i]);
+ 	}
+ 
++	qxl_release_fence_buffer_objects(release);
+ 	ret = qxl_push_command_ring_release(qdev, release, cmd->type, true);
+-	if (ret)
+-		qxl_release_backoff_reserve_list(release);
+-	else
+-		qxl_release_fence_buffer_objects(release);
+ 
+ out_free_bos:
+ out_free_release:
 
 
