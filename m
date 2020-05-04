@@ -2,133 +2,521 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B508B1C3F8D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 18:16:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EE181C3FAD
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 18:19:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729551AbgEDQQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 12:16:06 -0400
-Received: from mout.web.de ([212.227.17.11]:55749 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729253AbgEDQQE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 12:16:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1588608949;
-        bh=DQ2nnjZEA8s4f3e4nypJA7Djufr+5weaQyav93E3Oso=;
-        h=X-UI-Sender-Class:To:Cc:Subject:From:Date;
-        b=lyh772TgdBb6MLT0ZJZ2riRi3nvnhxRjy/UD3s5yXQIEALNk+EpgNIeuB1E6nOAJd
-         XDKwCVIh6XOKeMx6f+/uxhvnYUTvVF08ifKtTqsKNcrCGLixZfwJh37n5KrKEcJHLm
-         exGCX5KqYsXodl/Xst42Ngvhm7UuvqqNzy/ofsfI=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([93.133.152.69]) by smtp.web.de (mrweb102
- [213.165.67.124]) with ESMTPSA (Nemesis) id 0MT8bi-1jg7M31zUs-00S3b7; Mon, 04
- May 2020 18:15:49 +0200
-To:     Jia-Ju Bai <baijiaju1990@gmail.com>,
-        jfs-discussion@lists.sourceforge.net
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Dave Kleikamp <shaggy@kernel.org>
-Subject: Re: [PATCH] fs: jfs: fix a possible data race in txBegin()
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- mQINBFg2+xABEADBJW2hoUoFXVFWTeKbqqif8VjszdMkriilx90WB5c0ddWQX14h6w5bT/A8
- +v43YoGpDNyhgA0w9CEhuwfZrE91GocMtjLO67TAc2i2nxMc/FJRDI0OemO4VJ9RwID6ltwt
- mpVJgXGKkNJ1ey+QOXouzlErVvE2fRh+KXXN1Q7fSmTJlAW9XJYHS3BDHb0uRpymRSX3O+E2
- lA87C7R8qAigPDZi6Z7UmwIA83ZMKXQ5stA0lhPyYgQcM7fh7V4ZYhnR0I5/qkUoxKpqaYLp
- YHBczVP+Zx/zHOM0KQphOMbU7X3c1pmMruoe6ti9uZzqZSLsF+NKXFEPBS665tQr66HJvZvY
- GMDlntZFAZ6xQvCC1r3MGoxEC1tuEa24vPCC9RZ9wk2sY5Csbva0WwYv3WKRZZBv8eIhGMxs
- rcpeGShRFyZ/0BYO53wZAPV1pEhGLLxd8eLN/nEWjJE0ejakPC1H/mt5F+yQBJAzz9JzbToU
- 5jKLu0SugNI18MspJut8AiA1M44CIWrNHXvWsQ+nnBKHDHHYZu7MoXlOmB32ndsfPthR3GSv
- jN7YD4Ad724H8fhRijmC1+RpuSce7w2JLj5cYj4MlccmNb8YUxsE8brY2WkXQYS8Ivse39MX
- BE66MQN0r5DQ6oqgoJ4gHIVBUv/ZwgcmUNS5gQkNCFA0dWXznQARAQABtCZNYXJrdXMgRWxm
- cmluZyA8TWFya3VzLkVsZnJpbmdAd2ViLmRlPokCVAQTAQgAPhYhBHDP0hzibeXjwQ/ITuU9
- Figxg9azBQJYNvsQAhsjBQkJZgGABQsJCAcCBhUICQoLAgQWAgMBAh4BAheAAAoJEOU9Figx
- g9azcyMP/iVihZkZ4VyH3/wlV3nRiXvSreqg+pGPI3c8J6DjP9zvz7QHN35zWM++1yNek7Ar
- OVXwuKBo18ASlYzZPTFJZwQQdkZSV+atwIzG3US50ZZ4p7VyUuDuQQVVqFlaf6qZOkwHSnk+
- CeGxlDz1POSHY17VbJG2CzPuqMfgBtqIU1dODFLpFq4oIAwEOG6fxRa59qbsTLXxyw+PzRaR
- LIjVOit28raM83Efk07JKow8URb4u1n7k9RGAcnsM5/WMLRbDYjWTx0lJ2WO9zYwPgRykhn2
- sOyJVXk9xVESGTwEPbTtfHM+4x0n0gC6GzfTMvwvZ9G6xoM0S4/+lgbaaa9t5tT/PrsvJiob
- kfqDrPbmSwr2G5mHnSM9M7B+w8odjmQFOwAjfcxoVIHxC4Cl/GAAKsX3KNKTspCHR0Yag78w
- i8duH/eEd4tB8twcqCi3aCgWoIrhjNS0myusmuA89kAWFFW5z26qNCOefovCx8drdMXQfMYv
- g5lRk821ZCNBosfRUvcMXoY6lTwHLIDrEfkJQtjxfdTlWQdwr0mM5ye7vd83AManSQwutgpI
- q+wE8CNY2VN9xAlE7OhcmWXlnAw3MJLW863SXdGlnkA3N+U4BoKQSIToGuXARQ14IMNvfeKX
- NphLPpUUnUNdfxAHu/S3tPTc/E/oePbHo794dnEm57LuuQINBFg2+xABEADZg/T+4o5qj4cw
- nd0G5pFy7ACxk28mSrLuva9tyzqPgRZ2bdPiwNXJUvBg1es2u81urekeUvGvnERB/TKekp25
- 4wU3I2lEhIXj5NVdLc6eU5czZQs4YEZbu1U5iqhhZmKhlLrhLlZv2whLOXRlLwi4jAzXIZAu
- 76mT813jbczl2dwxFxcT8XRzk9+dwzNTdOg75683uinMgskiiul+dzd6sumdOhRZR7YBT+xC
- wzfykOgBKnzfFscMwKR0iuHNB+VdEnZw80XGZi4N1ku81DHxmo2HG3icg7CwO1ih2jx8ik0r
- riIyMhJrTXgR1hF6kQnX7p2mXe6K0s8tQFK0ZZmYpZuGYYsV05OvU8yqrRVL/GYvy4Xgplm3
- DuMuC7/A9/BfmxZVEPAS1gW6QQ8vSO4zf60zREKoSNYeiv+tURM2KOEj8tCMZN3k3sNASfoG
- fMvTvOjT0yzMbJsI1jwLwy5uA2JVdSLoWzBD8awZ2X/eCU9YDZeGuWmxzIHvkuMj8FfX8cK/
- 2m437UA877eqmcgiEy/3B7XeHUipOL83gjfq4ETzVmxVswkVvZvR6j2blQVr+MhCZPq83Ota
- xNB7QptPxJuNRZ49gtT6uQkyGI+2daXqkj/Mot5tKxNKtM1Vbr/3b+AEMA7qLz7QjhgGJcie
- qp4b0gELjY1Oe9dBAXMiDwARAQABiQI8BBgBCAAmFiEEcM/SHOJt5ePBD8hO5T0WKDGD1rMF
- Alg2+xACGwwFCQlmAYAACgkQ5T0WKDGD1rOYSw/+P6fYSZjTJDAl9XNfXRjRRyJSfaw6N1pA
- Ahuu0MIa3djFRuFCrAHUaaFZf5V2iW5xhGnrhDwE1Ksf7tlstSne/G0a+Ef7vhUyeTn6U/0m
- +/BrsCsBUXhqeNuraGUtaleatQijXfuemUwgB+mE3B0SobE601XLo6MYIhPh8MG32MKO5kOY
- hB5jzyor7WoN3ETVNQoGgMzPVWIRElwpcXr+yGoTLAOpG7nkAUBBj9n9TPpSdt/npfok9ZfL
- /Q+ranrxb2Cy4tvOPxeVfR58XveX85ICrW9VHPVq9sJf/a24bMm6+qEg1V/G7u/AM3fM8U2m
- tdrTqOrfxklZ7beppGKzC1/WLrcr072vrdiN0icyOHQlfWmaPv0pUnW3AwtiMYngT96BevfA
- qlwaymjPTvH+cTXScnbydfOQW8220JQwykUe+sHRZfAF5TS2YCkQvsyf7vIpSqo/ttDk4+xc
- Z/wsLiWTgKlih2QYULvW61XU+mWsK8+ZlYUrRMpkauN4CJ5yTpvp+Orcz5KixHQmc5tbkLWf
- x0n1QFc1xxJhbzN+r9djSGGN/5IBDfUqSANC8cWzHpWaHmSuU3JSAMB/N+yQjIad2ztTckZY
- pwT6oxng29LzZspTYUEzMz3wK2jQHw+U66qBFk8whA7B2uAU1QdGyPgahLYSOa4XAEGb6wbI FEE=
-Message-ID: <5ef374a5-0e2e-5c74-a827-0148c384f6e3@web.de>
-Date:   Mon, 4 May 2020 18:15:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1729597AbgEDQTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 12:19:33 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:47954 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728641AbgEDQTd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 12:19:33 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out02.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jVdoY-00028A-As; Mon, 04 May 2020 10:19:30 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jVdoK-0006sQ-2F; Mon, 04 May 2020 10:19:30 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        =?utf-8?Q?St=C3=A9phane?= Graber <stgraber@ubuntu.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Serge Hallyn <serge@hallyn.com>, Jann Horn <jannh@google.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Aleksa Sarai <cyphar@cyphar.com>, linux-api@vger.kernel.org
+References: <20200504144141.3605533-1-christian.brauner@ubuntu.com>
+        <20200504144141.3605533-2-christian.brauner@ubuntu.com>
+Date:   Mon, 04 May 2020 11:15:54 -0500
+In-Reply-To: <20200504144141.3605533-2-christian.brauner@ubuntu.com>
+        (Christian Brauner's message of "Mon, 4 May 2020 16:41:39 +0200")
+Message-ID: <87wo5roev9.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:8/af1Ha9nzjc2lhZ5r//wz9hohzEA2pfMMozzIES8IlmQdG9k1y
- BKeq18KyyjcU61EVm7XNPp4CtjUHkYKPFVDMMHJ/RNxc4syj33nSr+vVhQt3mCce2gMp5dI
- EN09JEFU8qaIncDi4YTbj7Fq1T5z1YmY4pySdhWxCQo0Nc6eSxY1/YVtR4XXcFNo2KB9trT
- nZNH/YD2V1eKirZfeMePw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ArymooPZTeg=:Dmrghxo4++2SROSRIDzjLs
- KUlKg1b382hJrekSx8GrThMoLNhDaH5QLV0YfUDoKGNPPdGcFtxTsfjy18Lbjvnp57aGna+FK
- Jf0AqGDtF4QFONPIXcdrTYIXGdR4/L32GOjM9XBAc3FAlFNN12YavBRDEIC41eMeJKQ9teHiK
- D7vOY7RZoYK6wqg98jNJ+97qntaRK/D6i3UqwE04MmbIy124VxrWnHWcKcJVtjUXY//NlNNdN
- uZrUfFObTDg0tiwo9DswTYU0aU6rWvSd/pvXoSDVUeC3fxWcjH6mx8JHvqQEmnNL4lshl6bks
- NPHskXYMY2JVGMwbJcwOKss6YM7fOjvGI6+oj2QxhdfGF+uMfjhAGmanvpyCGd9145uP61vtn
- wzpkoyoHRr4aRgulr3LWTBigFEfZWvqcxPzbFSMw9X3bvoyrFinFPXEgCyNp4LB1B3MG6KvRy
- r3kHxPew2Dyne8HgrLo/3RNiH3GHTt9+MGurpptPCHIJaLW519VUv8QzgtS/eXItBqT8SQDIA
- kRY8tsPjx6HsIScW7FNza6Sfu18XnjB9NPYNi/rJIWT0UBid/qESlGZHnK91Fy91NlpnpHEum
- oyViDeD5vkSvMoR71kn6J2Wxx5TGk+BXOXz3N2Bb2Tw7deep5P/cxq6Q68XvX1O9UhlVf2PQU
- GuKibhy7whZcdrRZD7mdp5eJV4kWtb6hGKddtayhTRNpZwWkvcu3HSm1PoeQpzAzK1slrdwfk
- qIfcG4kyjEtuaIjIOalmymsRX2FOujh/+7hteZy1poWavA58zRZ48SIb+P5WPuFXB2eIZKRTt
- KrLhvn8z/yIE+ZFDzTJrneG/SQZvs++mgGEjRtMGalosadISLUGY7QKj7w4kyd3CIor0fslFU
- bMuj4WjJXxLeAReYSZCvqIKGf6bX22SVkAMzePLTiiQGlyH/DZB+wSXnNSFOA7Llp9Yjg1nmj
- hBWdeOcLe8RlMWE8N4RsSSEPc+nbGUugO9MFj8lA2CM4jgEeeBeo+iKlXe2xWMZmBp7/gNn9f
- apLo76LXr84JwQr6E4YfhpA1Z5Xm//Q17UxXfetgA+I89m3O1nQPMar5REX14mkw3y7XUiu2N
- frujy6IW7UipGGbHPZRi20B5WhP2sjvIaw1N8zh7Y3Qzmv0CeQ2mzKWYWJ0fCYHb+8b8Y9MXc
- azl95sxk2K5ZTGRXXR1pUUAWfNLn5Uh/nY3rLKYXMV3U2IcH+VMxCYH40NqkC3G4cndrsku+z
- sgybEMRZCeh6hawSq
+Content-Type: text/plain
+X-XM-SPF: eid=1jVdoK-0006sQ-2F;;;mid=<87wo5roev9.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19s9XilEgKCflxk3PVw2Z9qDUxK+Oca3oU=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,LotsOfNums_01,T_TM2_M_HEADER_IN_MSG,
+        T_XMDrugObfuBody_08 autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  1.2 LotsOfNums_01 BODY: Lots of long strings of numbers
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 0; Body=1 Fuz1=1 Fuz2=1]
+        *  1.0 T_XMDrugObfuBody_08 obfuscated drug references
+X-Spam-DCC: ; sa07 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Christian Brauner <christian.brauner@ubuntu.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 1690 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 10 (0.6%), b_tie_ro: 9 (0.5%), parse: 2.4 (0.1%),
+        extract_message_metadata: 42 (2.5%), get_uri_detail_list: 13 (0.7%),
+        tests_pri_-1000: 47 (2.8%), tests_pri_-950: 1.70 (0.1%),
+        tests_pri_-900: 1.55 (0.1%), tests_pri_-90: 241 (14.3%), check_bayes:
+        219 (13.0%), b_tokenize: 27 (1.6%), b_tok_get_all: 102 (6.1%),
+        b_comp_prob: 7 (0.4%), b_tok_touch_all: 78 (4.6%), b_finish: 0.95
+        (0.1%), tests_pri_0: 1320 (78.1%), check_dkim_signature: 0.84 (0.0%),
+        check_dkim_adsp: 2.2 (0.1%), poll_dns_idle: 0.53 (0.0%), tests_pri_10:
+        3.3 (0.2%), tests_pri_500: 14 (0.9%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v3 1/3] nsproxy: add struct nsset
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Thus, a data race can occur for tblk->flag.
+Christian Brauner <christian.brauner@ubuntu.com> writes:
+
+> Add a simple struct nsset. It holds all necessary pieces to switch to a new
+> set of namespaces without leaving a task in a half-switched state which we
+> will make use of in the next patch. This patch simply switches the existing
+> setns logic over without causing a change in setns() behavior. This brings
+> setns() closer to how unshare() works(). The prepare_ns() function is
+> responsible to prepare all necessary information. This has two reasons.
+> First it minimizes dependencies between individual namespaces, i.e. all
+> install handler can expect that all fields are properly initialized
+> independent in what order they are called in. Second, this makes the code
+> easier to maintain and easier to follow if it needs to be changed.
+
+This is buggy.
+
+Your code assume that nstype == 0 is invalid.
+
+Passing nstype == 0 means don't verify the kind of file descriptor
+passed.
+
+Quite frankly doing nstype & CLONE_XYZ is wrong.  It always
+needs to be nstype == CLONE_XYZ.
+
+Maybe we change that in a later patch but here where you are just
+upgrading the infrastructure semantics changes are not ok.
+
+Eric
+
+
+> Cc: Eric W. Biederman <ebiederm@xmission.com>
+> Cc: Serge Hallyn <serge@hallyn.com>
+> Cc: Jann Horn <jannh@google.com>
+> Cc: Michael Kerrisk <mtk.manpages@gmail.com>
+> Cc: Aleksa Sarai <cyphar@cyphar.com>
+> Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
+> ---
+> /* v2 */
+> patch introduced
 >
-> To fix this data race, the spinlock log->gclock is used in
-> txBegin().
+> /* v3 */
+> - Eric W. Biederman <ebiederm@xmission.com>:
+>   - Remove the prior ns_capable_cred() patch and simplify the permission
+>     check from ns_capable_cred(nsset, nsset->cred->user_ns, CAP_SYS_ADMIN))
+>     to from ns_capable(nsset->cred->user_ns, CAP_SYS_ADMIN)).
+> patch introduced
+> ---
+>  fs/namespace.c                | 10 ++--
+>  include/linux/mnt_namespace.h |  1 +
+>  include/linux/nsproxy.h       | 24 +++++++++
+>  include/linux/proc_ns.h       |  4 +-
+>  ipc/namespace.c               |  7 ++-
+>  kernel/cgroup/namespace.c     |  5 +-
+>  kernel/nsproxy.c              | 94 ++++++++++++++++++++++++++++++-----
+>  kernel/pid_namespace.c        |  5 +-
+>  kernel/time/namespace.c       |  5 +-
+>  kernel/user_namespace.c       |  8 +--
+>  kernel/utsname.c              |  5 +-
+>  net/core/net_namespace.c      |  5 +-
+>  12 files changed, 137 insertions(+), 36 deletions(-)
 >
-> This data race is found by our concurrency fuzzer.
-
-How do you think about a wording variant like the following?
-
-   Change description:
-   A data race can occur for the data structure member =E2=80=9Cflag=E2=80=
-=9D.
-   This data race was found by our concurrency fuzzer.
-
-   Thus use the spin lock =E2=80=9Cgclock=E2=80=9D for the resetting of fi=
-ve
-   data structure members in this function implementation.
-
-
-Would you like to add the tag =E2=80=9CFixes=E2=80=9D to the commit messag=
-e?
-
-Regards,
-Markus
+> diff --git a/fs/namespace.c b/fs/namespace.c
+> index a28e4db075ed..62899fad4a04 100644
+> --- a/fs/namespace.c
+> +++ b/fs/namespace.c
+> @@ -3954,16 +3954,18 @@ static void mntns_put(struct ns_common *ns)
+>  	put_mnt_ns(to_mnt_ns(ns));
+>  }
+>  
+> -static int mntns_install(struct nsproxy *nsproxy, struct ns_common *ns)
+> +static int mntns_install(struct nsset *nsset, struct ns_common *ns)
+>  {
+> -	struct fs_struct *fs = current->fs;
+> +	struct nsproxy *nsproxy = nsset->nsproxy;
+> +	struct fs_struct *fs = nsset->fs;
+>  	struct mnt_namespace *mnt_ns = to_mnt_ns(ns), *old_mnt_ns;
+> +	struct user_namespace *user_ns = nsset->cred->user_ns;
+>  	struct path root;
+>  	int err;
+>  
+>  	if (!ns_capable(mnt_ns->user_ns, CAP_SYS_ADMIN) ||
+> -	    !ns_capable(current_user_ns(), CAP_SYS_CHROOT) ||
+> -	    !ns_capable(current_user_ns(), CAP_SYS_ADMIN))
+> +	    !ns_capable(user_ns, CAP_SYS_CHROOT) ||
+> +	    !ns_capable(user_ns, CAP_SYS_ADMIN))
+>  		return -EPERM;
+>  
+>  	if (is_anon_ns(mnt_ns))
+> diff --git a/include/linux/mnt_namespace.h b/include/linux/mnt_namespace.h
+> index 35942084cd40..007cfa52efb2 100644
+> --- a/include/linux/mnt_namespace.h
+> +++ b/include/linux/mnt_namespace.h
+> @@ -6,6 +6,7 @@
+>  struct mnt_namespace;
+>  struct fs_struct;
+>  struct user_namespace;
+> +struct ns_common;
+>  
+>  extern struct mnt_namespace *copy_mnt_ns(unsigned long, struct mnt_namespace *,
+>  		struct user_namespace *, struct fs_struct *);
+> diff --git a/include/linux/nsproxy.h b/include/linux/nsproxy.h
+> index 074f395b9ad2..cdb171efc7cb 100644
+> --- a/include/linux/nsproxy.h
+> +++ b/include/linux/nsproxy.h
+> @@ -41,6 +41,30 @@ struct nsproxy {
+>  };
+>  extern struct nsproxy init_nsproxy;
+>  
+> +/*
+> + * A structure to encompass all bits needed to install
+> + * a partial or complete new set of namespaces.
+> + *
+> + * If a new user namespace is requested cred will
+> + * point to a modifiable set of credentials. If a pointer
+> + * to a modifiable set is needed nsset_cred() must be
+> + * used and tested.
+> + */
+> +struct nsset {
+> +	unsigned flags;
+> +	struct nsproxy *nsproxy;
+> +	struct fs_struct *fs;
+> +	const struct cred *cred;
+> +};
+> +
+> +static inline struct cred *nsset_cred(struct nsset *set)
+> +{
+> +	if (set->flags & CLONE_NEWUSER)
+> +		return (struct cred *)set->cred;
+> +
+> +	return NULL;
+> +}
+> +
+>  /*
+>   * the namespaces access rules are:
+>   *
+> diff --git a/include/linux/proc_ns.h b/include/linux/proc_ns.h
+> index 6abe85c34681..75807ecef880 100644
+> --- a/include/linux/proc_ns.h
+> +++ b/include/linux/proc_ns.h
+> @@ -8,7 +8,7 @@
+>  #include <linux/ns_common.h>
+>  
+>  struct pid_namespace;
+> -struct nsproxy;
+> +struct nsset;
+>  struct path;
+>  struct task_struct;
+>  struct inode;
+> @@ -19,7 +19,7 @@ struct proc_ns_operations {
+>  	int type;
+>  	struct ns_common *(*get)(struct task_struct *task);
+>  	void (*put)(struct ns_common *ns);
+> -	int (*install)(struct nsproxy *nsproxy, struct ns_common *ns);
+> +	int (*install)(struct nsset *nsset, struct ns_common *ns);
+>  	struct user_namespace *(*owner)(struct ns_common *ns);
+>  	struct ns_common *(*get_parent)(struct ns_common *ns);
+>  } __randomize_layout;
+> diff --git a/ipc/namespace.c b/ipc/namespace.c
+> index b3ca1476ca51..fdc3b5f3f53a 100644
+> --- a/ipc/namespace.c
+> +++ b/ipc/namespace.c
+> @@ -177,15 +177,14 @@ static void ipcns_put(struct ns_common *ns)
+>  	return put_ipc_ns(to_ipc_ns(ns));
+>  }
+>  
+> -static int ipcns_install(struct nsproxy *nsproxy, struct ns_common *new)
+> +static int ipcns_install(struct nsset *nsset, struct ns_common *new)
+>  {
+> +	struct nsproxy *nsproxy = nsset->nsproxy;
+>  	struct ipc_namespace *ns = to_ipc_ns(new);
+>  	if (!ns_capable(ns->user_ns, CAP_SYS_ADMIN) ||
+> -	    !ns_capable(current_user_ns(), CAP_SYS_ADMIN))
+> +	    !ns_capable(nsset->cred->user_ns, CAP_SYS_ADMIN))
+>  		return -EPERM;
+>  
+> -	/* Ditch state from the old ipc namespace */
+> -	exit_sem(current);
+>  	put_ipc_ns(nsproxy->ipc_ns);
+>  	nsproxy->ipc_ns = get_ipc_ns(ns);
+>  	return 0;
+> diff --git a/kernel/cgroup/namespace.c b/kernel/cgroup/namespace.c
+> index b05f1dd58a62..812a61afd538 100644
+> --- a/kernel/cgroup/namespace.c
+> +++ b/kernel/cgroup/namespace.c
+> @@ -95,11 +95,12 @@ static inline struct cgroup_namespace *to_cg_ns(struct ns_common *ns)
+>  	return container_of(ns, struct cgroup_namespace, ns);
+>  }
+>  
+> -static int cgroupns_install(struct nsproxy *nsproxy, struct ns_common *ns)
+> +static int cgroupns_install(struct nsset *nsset, struct ns_common *ns)
+>  {
+> +	struct nsproxy *nsproxy = nsset->nsproxy;
+>  	struct cgroup_namespace *cgroup_ns = to_cg_ns(ns);
+>  
+> -	if (!ns_capable(current_user_ns(), CAP_SYS_ADMIN) ||
+> +	if (!ns_capable(nsset->cred->user_ns, CAP_SYS_ADMIN) ||
+>  	    !ns_capable(cgroup_ns->user_ns, CAP_SYS_ADMIN))
+>  		return -EPERM;
+>  
+> diff --git a/kernel/nsproxy.c b/kernel/nsproxy.c
+> index ed9882108cd2..2da463bab58a 100644
+> --- a/kernel/nsproxy.c
+> +++ b/kernel/nsproxy.c
+> @@ -19,6 +19,7 @@
+>  #include <net/net_namespace.h>
+>  #include <linux/ipc_namespace.h>
+>  #include <linux/time_namespace.h>
+> +#include <linux/fs_struct.h>
+>  #include <linux/proc_ns.h>
+>  #include <linux/file.h>
+>  #include <linux/syscalls.h>
+> @@ -257,12 +258,85 @@ void exit_task_namespaces(struct task_struct *p)
+>  	switch_task_namespaces(p, NULL);
+>  }
+>  
+> +static void put_nsset(struct nsset *nsset)
+> +{
+> +	unsigned flags = nsset->flags;
+> +
+> +	if (flags & CLONE_NEWUSER)
+> +		put_cred(nsset_cred(nsset));
+> +	if (nsset->nsproxy)
+> +		free_nsproxy(nsset->nsproxy);
+> +}
+> +
+> +static int prepare_nsset(unsigned flags, struct nsset *nsset)
+> +{
+> +	struct task_struct *me = current;
+> +
+> +	nsset->nsproxy = create_new_namespaces(0, me, current_user_ns(), me->fs);
+> +	if (IS_ERR(nsset->nsproxy))
+> +		return PTR_ERR(nsset->nsproxy);
+> +
+> +	if (flags & CLONE_NEWUSER)
+> +		nsset->cred = prepare_creds();
+> +	else
+> +		nsset->cred = current_cred();
+> +	if (!nsset->cred)
+> +		goto out;
+> +
+> +	if (flags & CLONE_NEWNS)
+> +		nsset->fs = me->fs;
+> +
+> +	nsset->flags = flags;
+> +	return 0;
+> +
+> +out:
+> +	put_nsset(nsset);
+> +	return -ENOMEM;
+> +}
+> +
+> +/*
+> + * This is the point of no return. There are just a few namespaces
+> + * that do some actual work here and it's sufficiently minimal that
+> + * a separate ns_common operation seems unnecessary for now.
+> + * Unshare is doing the same thing. If we'll end up needing to do
+> + * more in a given namespace or a helper here is ultimately not
+> + * exported anymore a simple commit handler for each namespace
+> + * should be added to ns_common.
+> + */
+> +static void commit_nsset(struct nsset *nsset)
+> +{
+> +	unsigned flags = nsset->flags;
+> +	struct task_struct *me = current;
+> +
+> +#ifdef CONFIG_USER_NS
+> +	if (flags & CLONE_NEWUSER) {
+> +		/* transfer ownership */
+> +		commit_creds(nsset_cred(nsset));
+> +		nsset->cred = NULL;
+> +	}
+> +#endif
+> +
+> +#ifdef CONFIG_IPC_NS
+> +	if (flags & CLONE_NEWIPC)
+> +		exit_sem(me);
+> +#endif
+> +
+> +	/* transfer ownership */
+> +	switch_task_namespaces(me, nsset->nsproxy);
+> +	nsset->nsproxy = NULL;
+> +}
+> +
+> +static inline int validate_ns(struct nsset *nsset, struct ns_common *ns)
+> +{
+> +	return ns->ops->install(nsset, ns);
+> +}
+> +
+>  SYSCALL_DEFINE2(setns, int, fd, int, nstype)
+>  {
+>  	struct task_struct *tsk = current;
+> -	struct nsproxy *new_nsproxy;
+>  	struct file *file;
+>  	struct ns_common *ns;
+> +	struct nsset nsset = {};
+>  	int err;
+>  
+>  	file = proc_ns_fget(fd);
+> @@ -274,20 +348,16 @@ SYSCALL_DEFINE2(setns, int, fd, int, nstype)
+>  	if (nstype && (ns->ops->type != nstype))
+>  		goto out;
+>  
+> -	new_nsproxy = create_new_namespaces(0, tsk, current_user_ns(), tsk->fs);
+> -	if (IS_ERR(new_nsproxy)) {
+> -		err = PTR_ERR(new_nsproxy);
+> +	err = prepare_nsset(nstype, &nsset);
+> +	if (err)
+>  		goto out;
+> -	}
+>  
+> -	err = ns->ops->install(new_nsproxy, ns);
+> -	if (err) {
+> -		free_nsproxy(new_nsproxy);
+> -		goto out;
+> +	err = validate_ns(&nsset, ns);
+> +	if (!err) {
+> +		commit_nsset(&nsset);
+> +		perf_event_namespaces(tsk);
+>  	}
+> -	switch_task_namespaces(tsk, new_nsproxy);
+> -
+> -	perf_event_namespaces(tsk);
+> +	put_nsset(&nsset);
+>  out:
+>  	fput(file);
+>  	return err;
+> diff --git a/kernel/pid_namespace.c b/kernel/pid_namespace.c
+> index 01f8ba32cc0c..11db2bdbb41e 100644
+> --- a/kernel/pid_namespace.c
+> +++ b/kernel/pid_namespace.c
+> @@ -378,13 +378,14 @@ static void pidns_put(struct ns_common *ns)
+>  	put_pid_ns(to_pid_ns(ns));
+>  }
+>  
+> -static int pidns_install(struct nsproxy *nsproxy, struct ns_common *ns)
+> +static int pidns_install(struct nsset *nsset, struct ns_common *ns)
+>  {
+> +	struct nsproxy *nsproxy = nsset->nsproxy;
+>  	struct pid_namespace *active = task_active_pid_ns(current);
+>  	struct pid_namespace *ancestor, *new = to_pid_ns(ns);
+>  
+>  	if (!ns_capable(new->user_ns, CAP_SYS_ADMIN) ||
+> -	    !ns_capable(current_user_ns(), CAP_SYS_ADMIN))
+> +	    !ns_capable(nsset->cred->user_ns, CAP_SYS_ADMIN))
+>  		return -EPERM;
+>  
+>  	/*
+> diff --git a/kernel/time/namespace.c b/kernel/time/namespace.c
+> index 53bce347cd50..5d9fc22d836a 100644
+> --- a/kernel/time/namespace.c
+> +++ b/kernel/time/namespace.c
+> @@ -280,8 +280,9 @@ static void timens_put(struct ns_common *ns)
+>  	put_time_ns(to_time_ns(ns));
+>  }
+>  
+> -static int timens_install(struct nsproxy *nsproxy, struct ns_common *new)
+> +static int timens_install(struct nsset *nsset, struct ns_common *new)
+>  {
+> +	struct nsproxy *nsproxy = nsset->nsproxy;
+>  	struct time_namespace *ns = to_time_ns(new);
+>  	int err;
+>  
+> @@ -289,7 +290,7 @@ static int timens_install(struct nsproxy *nsproxy, struct ns_common *new)
+>  		return -EUSERS;
+>  
+>  	if (!ns_capable(ns->user_ns, CAP_SYS_ADMIN) ||
+> -	    !ns_capable(current_user_ns(), CAP_SYS_ADMIN))
+> +	    !ns_capable(nsset->cred->user_ns, CAP_SYS_ADMIN))
+>  		return -EPERM;
+>  
+>  	timens_set_vvar_page(current, ns);
+> diff --git a/kernel/user_namespace.c b/kernel/user_namespace.c
+> index 8eadadc478f9..87804e0371fe 100644
+> --- a/kernel/user_namespace.c
+> +++ b/kernel/user_namespace.c
+> @@ -1253,7 +1253,7 @@ static void userns_put(struct ns_common *ns)
+>  	put_user_ns(to_user_ns(ns));
+>  }
+>  
+> -static int userns_install(struct nsproxy *nsproxy, struct ns_common *ns)
+> +static int userns_install(struct nsset *nsset, struct ns_common *ns)
+>  {
+>  	struct user_namespace *user_ns = to_user_ns(ns);
+>  	struct cred *cred;
+> @@ -1274,14 +1274,14 @@ static int userns_install(struct nsproxy *nsproxy, struct ns_common *ns)
+>  	if (!ns_capable(user_ns, CAP_SYS_ADMIN))
+>  		return -EPERM;
+>  
+> -	cred = prepare_creds();
+> +	cred = nsset_cred(nsset);
+>  	if (!cred)
+> -		return -ENOMEM;
+> +		return -EINVAL;
+>  
+>  	put_user_ns(cred->user_ns);
+>  	set_cred_user_ns(cred, get_user_ns(user_ns));
+>  
+> -	return commit_creds(cred);
+> +	return 0;
+>  }
+>  
+>  struct ns_common *ns_get_owner(struct ns_common *ns)
+> diff --git a/kernel/utsname.c b/kernel/utsname.c
+> index f0e491193009..e488d0e2ab45 100644
+> --- a/kernel/utsname.c
+> +++ b/kernel/utsname.c
+> @@ -140,12 +140,13 @@ static void utsns_put(struct ns_common *ns)
+>  	put_uts_ns(to_uts_ns(ns));
+>  }
+>  
+> -static int utsns_install(struct nsproxy *nsproxy, struct ns_common *new)
+> +static int utsns_install(struct nsset *nsset, struct ns_common *new)
+>  {
+> +	struct nsproxy *nsproxy = nsset->nsproxy;
+>  	struct uts_namespace *ns = to_uts_ns(new);
+>  
+>  	if (!ns_capable(ns->user_ns, CAP_SYS_ADMIN) ||
+> -	    !ns_capable(current_user_ns(), CAP_SYS_ADMIN))
+> +	    !ns_capable(nsset->cred->user_ns, CAP_SYS_ADMIN))
+>  		return -EPERM;
+>  
+>  	get_uts_ns(ns);
+> diff --git a/net/core/net_namespace.c b/net/core/net_namespace.c
+> index 190ca66a383b..dcd61aca343e 100644
+> --- a/net/core/net_namespace.c
+> +++ b/net/core/net_namespace.c
+> @@ -1353,12 +1353,13 @@ static void netns_put(struct ns_common *ns)
+>  	put_net(to_net_ns(ns));
+>  }
+>  
+> -static int netns_install(struct nsproxy *nsproxy, struct ns_common *ns)
+> +static int netns_install(struct nsset *nsset, struct ns_common *ns)
+>  {
+> +	struct nsproxy *nsproxy = nsset->nsproxy;
+>  	struct net *net = to_net_ns(ns);
+>  
+>  	if (!ns_capable(net->user_ns, CAP_SYS_ADMIN) ||
+> -	    !ns_capable(current_user_ns(), CAP_SYS_ADMIN))
+> +	    !ns_capable(nsset->cred->user_ns, CAP_SYS_ADMIN))
+>  		return -EPERM;
+>  
+>  	put_net(nsproxy->net_ns);
