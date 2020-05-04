@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D5F71C3E11
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 17:06:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6FB31C3E05
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 17:04:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729533AbgEDPGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 11:06:33 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:53160 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729511AbgEDPGd (ORCPT
+        id S1728907AbgEDPEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 11:04:39 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:54870 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727815AbgEDPEj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 11:06:33 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 044EnCJ6024811;
-        Mon, 4 May 2020 15:06:11 GMT
+        Mon, 4 May 2020 11:04:39 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 044ElfaX116691;
+        Mon, 4 May 2020 15:04:15 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=3HTd6a/kkIIAOtF/XlS6dHGOCc3Mh+Pqrk2elGvT+Tk=;
- b=yORRV0oYlMSn935vfd2pC0Z1Mje0vWHKOJTjBC+EdVNPPXcRUdvCTawt3JP3GLhN3AHD
- Hhmmq3uWs8uyfU6Tl5w0IjP3dFNBiEdb473+e+A3mrZe7rLvhq3nHkafYB4tva+QiW8H
- WW6CRNuPimlGg0q6umF/F+doaFLznl0HOHh2DxJCd709f8blfHqFybRqxw1vBqw1lOzx
- ywZeB3+RCe81OTiB64xQzp4t7BuoitQODBsmBgbONYSN47tXHUjfaqtHdkz1AD/cysDx
- mlfIwhpbtZ07FuagtA4OgI/3pHMaVeV7cLUfMm+IJgRkGnZv3RzTz9/+6hc6JBUhzO+y pg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 30s0tm7f5y-1
+ bh=9ZTqvJjjLyxOtbSJqAkDSETOKDWWKvJ7dBdIIE9LUGI=;
+ b=FTt900j8w4nSYYb8kx7FGWna/5R7g+FIVCzUgqKfgT/XXDX9lMqzsYFuXOMaWatWCgBZ
+ hDnIB9nuFQYpeYqVbwQXMrb2NjLzMgK6sMnbW0G0pscgfYjszfp2gN3g8q5Kb/Beo48r
+ aDjq7Gq53nAw4Ndvbdef7LM9lMI4myGgTwkpeODx06op+/yW25dLZC8r6yNbeYX7iNj7
+ G3VejSC7IIwkMlKxmy6ue1UUTNGKTT+9JbeOY2akQHTpe2FtScu9gw4uBEncVhBlW7Tk
+ jIFwbQuh+oDRTgZ8ZRqh/NUKSItafILU06RbLIDSL/oU+BbQ5iobRGSU1I9v4JK4i0GQ Qw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 30s09qygt2-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 04 May 2020 15:06:11 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 044ElaHf053343;
-        Mon, 4 May 2020 15:04:10 GMT
+        Mon, 04 May 2020 15:04:15 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 044EmVKi105667;
+        Mon, 4 May 2020 15:04:14 GMT
 Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 30t1r2f5ph-1
+        by userp3020.oracle.com with ESMTP id 30sjjw15mf-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 04 May 2020 15:04:10 +0000
+        Mon, 04 May 2020 15:04:14 +0000
 Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 044F49Ml028395;
-        Mon, 4 May 2020 15:04:09 GMT
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 044F4CLS028449;
+        Mon, 4 May 2020 15:04:12 GMT
 Received: from linux-1.home.com (/10.175.9.166)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 04 May 2020 08:04:08 -0700
+        with ESMTP ; Mon, 04 May 2020 08:04:12 -0700
 From:   Alexandre Chartre <alexandre.chartre@oracle.com>
 To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
         dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
@@ -49,21 +49,21 @@ Cc:     pbonzini@redhat.com, konrad.wilk@oracle.com,
         junaids@google.com, graf@amazon.de, rppt@linux.vnet.ibm.com,
         kuzuno@gmail.com, mgross@linux.intel.com,
         alexandre.chartre@oracle.com
-Subject: [RFC v4][PATCH part-3 01/14] mm/asi: Define the test ASI type
-Date:   Mon,  4 May 2020 17:02:22 +0200
-Message-Id: <20200504150235.12171-2-alexandre.chartre@oracle.com>
+Subject: [RFC v4][PATCH part-3 02/14] asidrv: Introduce the ASI driver
+Date:   Mon,  4 May 2020 17:02:23 +0200
+Message-Id: <20200504150235.12171-3-alexandre.chartre@oracle.com>
 X-Mailer: git-send-email 2.18.2
 In-Reply-To: <20200504150235.12171-1-alexandre.chartre@oracle.com>
 References: <20200504150235.12171-1-alexandre.chartre@oracle.com>
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9610 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 suspectscore=0
- spamscore=0 mlxlogscore=999 malwarescore=0 phishscore=0 mlxscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 phishscore=0
+ bulkscore=0 malwarescore=0 spamscore=0 mlxlogscore=999 adultscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
  definitions=main-2005040123
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9610 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0
- priorityscore=1501 lowpriorityscore=0 spamscore=0 suspectscore=0
- phishscore=0 clxscore=1015 bulkscore=0 mlxlogscore=999 adultscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0
+ lowpriorityscore=0 spamscore=0 adultscore=0 clxscore=1015 suspectscore=0
+ priorityscore=1501 malwarescore=0 mlxlogscore=999 phishscore=0
  impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2003020000 definitions=main-2005040123
 Sender: linux-kernel-owner@vger.kernel.org
@@ -71,57 +71,166 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Define the test ASI type which can be used for testing or experimenting
-ASI.
+Introduce the infrastructure for the ASI driver. This driver is meant
+for testing ASI. It creates a test ASI, and will allow to run some
+test sequences on this ASI.
 
 Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
 ---
- arch/x86/include/asm/asi.h | 2 ++
- arch/x86/mm/asi.c          | 1 +
- drivers/staging/Makefile   | 1 +
- 3 files changed, 4 insertions(+)
+ drivers/staging/asi/Makefile |   7 ++
+ drivers/staging/asi/asidrv.c | 129 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 136 insertions(+)
+ create mode 100644 drivers/staging/asi/Makefile
+ create mode 100644 drivers/staging/asi/asidrv.c
 
-diff --git a/arch/x86/include/asm/asi.h b/arch/x86/include/asm/asi.h
-index eafed750e07f..de4f790c630b 100644
---- a/arch/x86/include/asm/asi.h
-+++ b/arch/x86/include/asm/asi.h
-@@ -66,6 +66,7 @@ struct asi_tlb_state {
- #ifdef CONFIG_PAGE_TABLE_ISOLATION
- #define ASI_PCID_PREFIX_USER		0x80	/* user ASI */
- #endif
-+#define ASI_PCID_PREFIX_TEST		0xff	/* test ASI */
- 
- struct asi_type {
- 	int			pcid_prefix;	/* PCID prefix */
-@@ -156,6 +157,7 @@ extern int asi_init_dpt(struct dpt *dpt);
- #ifdef CONFIG_PAGE_TABLE_ISOLATION
- DECLARE_ASI_TYPE(user);
- #endif
-+DECLARE_ASI_TYPE(test);
- 
- static inline void asi_set_log_policy(struct asi *asi, int policy)
- {
-diff --git a/arch/x86/mm/asi.c b/arch/x86/mm/asi.c
-index 8b670ed13729..e0b0d70415d7 100644
---- a/arch/x86/mm/asi.c
-+++ b/arch/x86/mm/asi.c
-@@ -17,6 +17,7 @@
- #ifdef CONFIG_PAGE_TABLE_ISOLATION
- DEFINE_ASI_TYPE(user, ASI_PCID_PREFIX_USER, false);
- #endif
-+DEFINE_ASI_TYPE(test, ASI_PCID_PREFIX_TEST, true);
- 
- static void asi_log_fault(struct asi *asi, struct pt_regs *regs,
- 			   unsigned long error_code, unsigned long address,
-diff --git a/drivers/staging/Makefile b/drivers/staging/Makefile
-index 4d34198151b3..fb50e669579b 100644
---- a/drivers/staging/Makefile
-+++ b/drivers/staging/Makefile
-@@ -50,3 +50,4 @@ obj-$(CONFIG_FIELDBUS_DEV)     += fieldbus/
- obj-$(CONFIG_KPC2000)		+= kpc2000/
- obj-$(CONFIG_QLGE)		+= qlge/
- obj-$(CONFIG_WFX)		+= wfx/
-+obj-$(CONFIG_ADDRESS_SPACE_ISOLATION) += asi/
+diff --git a/drivers/staging/asi/Makefile b/drivers/staging/asi/Makefile
+new file mode 100644
+index 000000000000..a48487e48d7c
+--- /dev/null
++++ b/drivers/staging/asi/Makefile
+@@ -0,0 +1,7 @@
++# SPDX-License-Identifier: GPL-2.0
++
++#
++# Address Space Isolation (ASI) driver
++#
++obj-m += asi.o
++asi-y := asidrv.o
+diff --git a/drivers/staging/asi/asidrv.c b/drivers/staging/asi/asidrv.c
+new file mode 100644
+index 000000000000..c06e4734e0e5
+--- /dev/null
++++ b/drivers/staging/asi/asidrv.c
+@@ -0,0 +1,129 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) 2020, Oracle and/or its affiliates.
++ */
++
++#include <linux/fs.h>
++#include <linux/miscdevice.h>
++#include <linux/module.h>
++#include <linux/slab.h>
++
++#include <asm/asi.h>
++#include <asm/dpt.h>
++
++struct asidrv_test {
++	struct asi		*asi;	/* ASI for testing */
++	struct dpt		*dpt;	/* ASI decorated page-table */
++};
++
++static struct asidrv_test *asidrv_test;
++
++static void asidrv_test_destroy(struct asidrv_test *test);
++
++static struct asidrv_test *asidrv_test_create(void)
++{
++	struct asidrv_test *test;
++	int err;
++
++	test = kzalloc(sizeof(*test), GFP_KERNEL);
++	if (!test)
++		return NULL;
++
++	/*
++	 * Create and fill a decorator page-table to be used with the ASI.
++	 */
++	test->dpt = dpt_create(ASI_PGTABLE_MASK);
++	if (!test->dpt)
++		goto error;
++
++	err = asi_init_dpt(test->dpt);
++	if (err)
++		goto error;
++
++	err = DPT_MAP_THIS_MODULE(test->dpt);
++	if (err)
++		goto error;
++
++	/* map the asidrv_test as we will access it during the test */
++	err = dpt_map(test->dpt, test, sizeof(*test));
++	if (err)
++		goto error;
++
++	test->asi = asi_create_test();
++	if (!test->asi)
++		goto error;
++
++	/*
++	 * By default, the ASI structure is not mapped into the ASI. We
++	 * map it so that we can access it and verify the consistency
++	 * of some values (for example the CR3 value).
++	 */
++	err = dpt_map(test->dpt, test->asi, sizeof(*test->asi));
++	if (err)
++		goto error;
++
++	asi_set_pagetable(test->asi, test->dpt->pagetable);
++
++	return test;
++
++error:
++	pr_debug("Failed to create ASI Test\n");
++	asidrv_test_destroy(test);
++	return NULL;
++}
++
++static void asidrv_test_destroy(struct asidrv_test *test)
++{
++	if (!test)
++		return;
++
++	if (test->dpt)
++		dpt_destroy(test->dpt);
++
++	if (test->asi)
++		asi_destroy(test->asi);
++
++	kfree(test);
++}
++
++static const struct file_operations asidrv_fops = {
++	.owner		= THIS_MODULE,
++};
++
++static struct miscdevice asidrv_miscdev = {
++	.minor = MISC_DYNAMIC_MINOR,
++	.name = KBUILD_MODNAME,
++	.fops = &asidrv_fops,
++};
++
++static int __init asidrv_init(void)
++{
++	int err;
++
++	asidrv_test = asidrv_test_create();
++	if (!asidrv_test)
++		return -ENOMEM;
++
++	err = misc_register(&asidrv_miscdev);
++	if (err) {
++		asidrv_test_destroy(asidrv_test);
++		asidrv_test = NULL;
++	}
++
++	return err;
++}
++
++static void __exit asidrv_exit(void)
++{
++	asidrv_test_destroy(asidrv_test);
++	asidrv_test = NULL;
++	misc_deregister(&asidrv_miscdev);
++}
++
++module_init(asidrv_init);
++module_exit(asidrv_exit);
++
++MODULE_AUTHOR("Alexandre Chartre <alexandre.chartre@oracle.com>");
++MODULE_DESCRIPTION("Privileged interface to ASI");
++MODULE_VERSION("1.0");
++MODULE_LICENSE("GPL v2");
 -- 
 2.18.2
 
