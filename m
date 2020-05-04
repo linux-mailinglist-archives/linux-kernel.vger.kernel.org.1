@@ -2,120 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 344C81C4607
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:34:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 767181C4632
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:44:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730606AbgEDSd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:33:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729762AbgEDSd7 (ORCPT
+        id S1727819AbgEDSnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:43:55 -0400
+Received: from smtprelay0168.hostedemail.com ([216.40.44.168]:54644 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726756AbgEDSny (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:33:59 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC82DC061A0E
-        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 11:33:58 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id b20so3104603ejg.11
-        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 11:33:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Glau+s6Q6iM76mHi/QXePg8xF2snTXD5otz87ESSu8A=;
-        b=F+2NEE8n0+6a2Uxkq3oo+gK/iDs1gXhBaBtJu3It7O83YXrMkKTw/j5R5KqU4cLb1I
-         vlOYdG8d6H2sSQjfFpkieMLY+KM5edr1MbbCXsj+B9wkYlXKMNdfSGw1CJFXf7fx5Q7C
-         nLx7CYq5rjomyrqgHsVmp6vku6f3HeDmYZpPHsh7ka8b5Df1pXeivwm1iUG0Tio8BF4o
-         ZS585n3JOtRJMk45ZcupX+D3R94fYlWZsYjSr5wbogW/u9eqdMEat4pDnASo56oFKvzS
-         7tnb7wc1b4OhUfvjaDeX366gFmfgoP2fFKltlwAvd8N31RZXbHNtbqksmP+ogCEDB/JL
-         SgwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Glau+s6Q6iM76mHi/QXePg8xF2snTXD5otz87ESSu8A=;
-        b=pjeQnXMlqFlHksMlBi6DAg+CFtuWeOLT3j6SBPLMQKhTjbhW0BcfyJbXAscCRD0sDV
-         wkc56fxUJxH02mTzy4QHh0ZcIiueBbSSfrCFuVeaAEWatJjEGRbGmSwISIrFHLqsegER
-         5UlSEz5o6jyQmw65jvA1pU4NB30ebyhX3dAmUf2vsHN6MCUf7QeAQunUdUKpuqrwYPT0
-         S6qIPoizNVl3BS6h3AlB6IOxgsAlBEjrtyNiiLhXkf5twO05eXotDwhhiNzrMbl7nELa
-         PG463/txh9itNifxA0+ortFadMyJ4+auVvdxOca1pFsCEhRGvgdIuu1tfQXG6M/CeO8O
-         uNJg==
-X-Gm-Message-State: AGi0Pub0HZPEmNK75tK9ea3JSyRGRfKpf6VjnPTPuqLOiRk5JeSeYz+W
-        242qAfdAw1nzIxPOlgwuk35WkM87DKTXeiqT631ADA==
-X-Google-Smtp-Source: APiQypKMZgww2SWaJ3dlnMp45iEyQic5CmZ0rEfuzBZzZC+1C4Op+IwopR9sfyLSwESK4to/xI+WLCvGiTO9JNWKJqE=
-X-Received: by 2002:a17:907:9e5:: with SMTP id ce5mr15759967ejc.123.1588617237480;
- Mon, 04 May 2020 11:33:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <158823509800.2094061.9683997333958344535.stgit@dwillia2-desk3.amr.corp.intel.com>
- <CAHk-=wh6d59KAG_6t+NrCLBz-i0OUSJrqurric=m0ZG850Ddkw@mail.gmail.com>
- <CALCETrVP5k25yCfknEPJm=XX0or4o2b2mnzmevnVHGNLNOXJ2g@mail.gmail.com>
- <CAHk-=widQfxhWMUN3bGxM_zg3az0fRKYvFoP8bEhqsCtaEDVAA@mail.gmail.com>
- <CALCETrVq11YVqGZH7J6A=tkHB1AZUWXnKwAfPUQ-m9qXjWfZtg@mail.gmail.com>
- <20200430192258.GA24749@agluck-desk2.amr.corp.intel.com> <CAHk-=wg0Sza8uzQHzJbdt7FFc7bRK+o1BB=VBUGrQEvVv6+23w@mail.gmail.com>
- <CAPcyv4g0a406X9-=NATJZ9QqObim9Phdkb_WmmhsT9zvXsGSpw@mail.gmail.com>
- <CAHk-=wiMs=A90np0Hv5WjHY8HXQWpgtuq-xrrJvyk7_pNB4meg@mail.gmail.com>
- <CAPcyv4jvgCGU700x_U6EKyGsHwQBoPkJUF+6gP4YDPupjdViyQ@mail.gmail.com>
- <CAHk-=wiPkwF2+y6wZd=VD9BooKxHRWhSVW8dr+WSeeSPkJk7kQ@mail.gmail.com> <a4aabe6f2ca649779a772a5f0365af6f@AcuMS.aculab.com>
-In-Reply-To: <a4aabe6f2ca649779a772a5f0365af6f@AcuMS.aculab.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 4 May 2020 11:33:46 -0700
-Message-ID: <CAPcyv4i8V9FCuTHZG2RG9o3vjrMmLkv40-41MwLBO8tZWUsZ5Q@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] Replace and improve "mcsafe" with copy_safe()
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        stable <stable@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Erwin Tsaur <erwin.tsaur@intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Mon, 4 May 2020 14:43:54 -0400
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave08.hostedemail.com (Postfix) with ESMTP id 78402182D3ECD;
+        Mon,  4 May 2020 18:34:34 +0000 (UTC)
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 4C82019B05;
+        Mon,  4 May 2020 18:34:34 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 90,9,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:152:355:379:599:966:973:981:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2196:2198:2199:2200:2393:2559:2562:2693:2731:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3872:4250:4321:4362:4385:4605:5007:6119:7903:8957:10004:10400:10848:11026:11232:11473:11658:11914:12295:12297:12438:12555:12740:12895:12986:13095:13870:13894:14093:14096:14097:14181:14659:14721:21080:21220:21433:21451:21627:21740:21741:21990:30012:30034:30054:30070:30075:30089:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: patch84_27b7e2cd6480a
+X-Filterd-Recvd-Size: 3549
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf06.hostedemail.com (Postfix) with ESMTPA;
+        Mon,  4 May 2020 18:34:32 +0000 (UTC)
+Message-ID: <aaa0a1f9619130293a8d8810fa8de140d5612e45.camel@perches.com>
+Subject: Re: [PATCH v6] checkpatch: add support to check 'Fixes:' tag format
+From:   Joe Perches <joe@perches.com>
+To:     Wang YanQing <udknight@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Andy Whitcroft <apw@canonical.com>, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Matteo Croce <mcroce@redhat.com>, Markus.Elfring@web.de,
+        kernel-janitors@vger.kernel.org
+Date:   Mon, 04 May 2020 11:34:31 -0700
+In-Reply-To: <20200504082002.GA29972@udknight>
+References: <20200504082002.GA29972@udknight>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.1-2 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 3, 2020 at 5:57 AM David Laight <David.Laight@aculab.com> wrote:
->
-> From: Linus Torvalds
-> > Sent: 01 May 2020 19:29
-> ...
-> > And as DavidL pointed out - if you ever have "iomem" as a source or
-> > destination, you need yet another case. Not because they can take
-> > another kind of fault (although on some platforms you have the machine
-> > checks for that too), but because they have *very* different
-> > performance profiles (and the ERMS "rep movsb" sucks baby donkeys
-> > through a straw).
->
->
-> I was actually thinking that the nvdimm accesses need to be treated
-> much more like (cached) memory mapped io space than normal system
-> memory.
-> So treating them the same as "iomem" and then having access functions
-> that report access failures (which the current readq() doesn't)
-> might make sense.
+On Mon, 2020-05-04 at 16:20 +0800, Wang YanQing wrote:
+> According to submitting-patches.rst, 'Fixes:' tag has a little
+> stricter condition about the one line summary than normal git
+> commit description:
+> “...
+> Do not split the tag across multiple lines, tags are exempt from
+> the "wrap at 75 columns" rule in order to simplify parsing scripts
+> ...”
+> 
+> And there is no sanity check for 'Fixes:' tag format in checkpatch
+> the same as GIT_COMMIT_ID for git commit description, so let's expand
+> the GIT_COMMIT_ID to add 'Fixes:' tag format check support.
+> 
+> The check supports below formats:
+> Fixes: 54a4f0239f2e ("KVM: MMU: make kvm_mmu_zap_page() return the number of pages it actually freed")
+> Fixes: 85f7cd3a2aad ("Revert "media: Kconfig: better support hybrid TV devices"")
+> Fixes: 878520ac45f9 ("ext4: save the error code which triggered...")
+> Fixes: 878520ac45f9 ("ext4: save the error code which triggered")
+> Fixes: 277f27e2f277 ("SUNRPC/cache: Allow garbage collection ... ")
+> 
+> The check doesn't support below formats and it will emit diagnostics info for them:
+> Fixes: f2c2e717642c ("usb: gadget: add raw-gadget interface"
+> Fixes: 6c73698904aa pinctrl: qcom: Introduce readl/writel accessors
+> Fixes: 3fd6e7d9a146 (ASoC: tas571x: New driver for TI TAS571x power amplifiers)
+> Fixes: 55697cbb44e4 ("arm64: dts: renesas: r8a779{65,80,90}: Add IPMMU devices nodes)
+> Fixes: ba35f8588f47 (“ipvlan: Defer multicast / broadcast processing to a work-queue”)
+> Fixes: cd758a9b57ee "KVM: PPC: Book3S HV: Use __gfn_to_pfn_memslot in HPT page fault handler"
+> Fixes:      9b1640686470 ("scsi: lpfc: Fix use-after-free mailbox cmd completion")
+> Fixes: 03f6fc6de919 ('ASoC: rt5682: Add the soundwire support')
+> Fixes: 03404e8ae652("IB/mlx5: Add support to dropless RQ")
+> 
+> Because after GIT_COMMIT_ID supports 'Fixes:' tag format check, it could do
+> the same check as the UNKNOWN_COMMIT_ID, so we don't need UNKNOWN_COMMIT_ID
+> anymore and I decide to delete it.
+> 
+> Note: this patch also fixes double quotation mark issue for normal git
+>       commit description, and now it supports double quotation mark in
+>       title line, for example:
+>       Commit e33e2241e272 ("Revert "cfg80211: Use 5MHz bandwidth by default
+>       when checking usable channels"")
+> 
+> Note: this patch also adds diagnostics info support for normal git commit
+>       description format check.
 
-While I agree that something like copy_mc_iomem_to_{user,kernel} could
-have users, nvdimm is not one of them.
+Thanks YanQing.
 
-> If you are using memory that 'might fail' for kernel code or data
-> you really get what you deserve.
+All of this seems fine, but perhaps checkpatch's output message content
+could be a bit shorter.  I'll give it a think for a while.
 
-nvdimms are no less "might fail" than DRAM, recall that some nvdimms
-are just DRAM with a platform promise that their contents are battery
-backed.
 
-> OTOH system response to PCIe errors is currently rather problematic.
-> Mostly reads time out and return ~0u.
-> This can be checked for and, if possibly valid, a second location read.
-
-Yes, the ambiguous ~0u return needs careful handling.
