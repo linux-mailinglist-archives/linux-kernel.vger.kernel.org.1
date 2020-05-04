@@ -2,209 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 392921C41F6
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 19:15:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91A571C41D5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 19:14:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730624AbgEDRPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 13:15:18 -0400
-Received: from mout.gmx.net ([212.227.17.21]:56061 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730380AbgEDRPP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 13:15:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1588612478;
-        bh=Xn2gavpIWQ0DU9ZY9hafpAe5jpDKjLmd0xje7CYpgmc=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=EfYfqCXCZOqypRU3p1pX4jc+GeXcmvn5DmOxGyxMF8hG/L/+kTn8CUr9hfg5/CQqC
-         k9ExJJXq/vVZNR99F6rFwWBPKo+4R/xr2Xe47SRP8oiwXBlw8SI7fS+xT4DIXGp/hN
-         dJklvHLbNmGEcfPx2CfcM6vT5cmA903mzQNn/c2o=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([83.52.229.196]) by mail.gmx.com
- (mrgmx104 [212.227.17.174]) with ESMTPSA (Nemesis) id
- 1M59C8-1jWkbS1PZk-001Ceo; Mon, 04 May 2020 19:14:38 +0200
-From:   Oscar Carter <oscar.carter@gmx.com>
-To:     Forest Bond <forest@alittletooquiet.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Oscar Carter <oscar.carter@gmx.com>,
-        Malcolm Priestley <tvboxspy@gmail.com>,
-        Quentin Deslandes <quentin.deslandes@itdev.co.uk>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Benjamin Sherman <benjamin@bensherman.io>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Amir Mahdi Ghorbanian <indigoomega021@gmail.com>
-Subject: [PATCH] staging: vt6656: Use const for read only data
-Date:   Mon,  4 May 2020 19:14:14 +0200
-Message-Id: <20200504171414.11307-1-oscar.carter@gmx.com>
-X-Mailer: git-send-email 2.20.1
+        id S1730548AbgEDROb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 13:14:31 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:39537 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730514AbgEDRO3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 13:14:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588612467;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6aQ5ibFz18gpDUUUf4aVImQQmCOSMFf6YNTiJbVqWyc=;
+        b=DvDv0pSCXWr8Nls1ghfay6eccsnJbOWs0SdBbpON92dOh2XapsxrutN2G7gQIIa1Po5r/z
+        pdpx+y0L142ATzfql/inRl/gUjwyXj8HY09m3FemWNOoHo/IUbTQlcrkESilAyqrwlMbON
+        0NMxi9EwMLO7g6QSYedsQ8TTBfjI/sM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-152-Ymekn6f8Ply5acsj-J9mKw-1; Mon, 04 May 2020 13:14:23 -0400
+X-MC-Unique: Ymekn6f8Ply5acsj-J9mKw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 04E49107ACCD;
+        Mon,  4 May 2020 17:14:21 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-225.rdu2.redhat.com [10.10.118.225])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 80DD35C221;
+        Mon,  4 May 2020 17:14:17 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [RFC PATCH 45/61] fscache: Remove the update operation
+From:   David Howells <dhowells@redhat.com>
+To:     Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Jeff Layton <jlayton@redhat.com>
+Cc:     dhowells@redhat.com, Matthew Wilcox <willy@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 04 May 2020 18:14:16 +0100
+Message-ID: <158861245670.340223.11283691470830647768.stgit@warthog.procyon.org.uk>
+In-Reply-To: <158861203563.340223.7585359869938129395.stgit@warthog.procyon.org.uk>
+References: <158861203563.340223.7585359869938129395.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.21
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:W2BgVsJlKeKnlRgESKOPI70DFJmdz7SkMPgF8b+m6IATUWf0mPI
- KKSPRPKZ1EgVG84VYUssGWlM2SqASk7qlKkU7wQuqRzHaKiC/2rZOMnepl57EltmRZaZ4IM
- WcESfzrgRVEHk97ee7paRX12EwKW1lJYwnwkHoftWHbSGWZYjY/2ns2LPXZW5e2Te00hRHc
- QvmAB73sK7FRrVmbV0tUw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:oiEO+z/IRwU=:VBHum2bZZDCoQ5X0LiFcnP
- Fv+lM12uZzd09aYz2aHCVQAXvUfPL7Mqzg9pfmEsCPtuSHVmISFuuqhHrKsAacMOEF0hneQ08
- KuTJDW+kLWgxGr6GAatzkdwKN3ZXwOhCd6UG74vfUiPvq68zLh1Hd5VjYoHg69hbVC3skEdJZ
- rcIXFDfDepNuoqVMcUQaRWrLK/kiaLqhnrjcTx0clTfNaSeueiVh7kwC+HeKftY9lQMF2RGQu
- +n6s1jBg94xAkxu5lL0e2H8W1bayZ/wgatPzHzsgaD2MP7/iXGQqf2IxjXqPfM0pOrwfbPCVw
- /FrfI91XSjZinrTVU7sdqshrmkCxVhIrIY9PwzrTI7GPxb1R4rRjaJlVwP+rz8b9a3Pu6cCv1
- GrbydcouhUv9IovoR5nwdsfVAdyIxwiqf9uq9UMoH0dscPRLHpH54I5kwROy0ZyLCaq9tGq2g
- jOmeqfily2/NgcZOaousIEOtBX+2YKx8iCiqf396jYH0iz5pAsU4QIzJ9m6zho/Yf3H2SpGlT
- qxLMeHDW48mF/Xk9LROXKc5TjnB6J6ACObZw6205IKD4f3TUakOapGDM/USF1ps7O2RRHmA2/
- Jr6kGLpIJrjdbjn0pbrvKGtVYMAb4SNILlNEn0it6IGewb3sWGCNGbIKWcjqCwwiIvC6cW2sc
- 0MMBP8shNHe5Dv//L4nhnUe4k/R0utDmn0ma7AM3dnzLdSCgZ2riextecw9wQzBVHojT9cR/9
- fZpN9NerEz2uSmrKA9DNBL1Md+YyKna0Vy9wB8HVlkhxCL3poqzFVtZn1KPebwGsw2TR8p2Xe
- 5Zzw0yayAKHiHOialvE7EeXiQ0+Rgj3dR/2tC9B1ChfRq+2uld8Hs7YvwGRlbwB3wMp8QrPFt
- 2N29npzjk5Fj/wabiyE8md6MDcuFwFpijrDfkX2bNrBGAAuVd6rD9OVuWobcaB08Cv6Besy9j
- s1Zq5NNOwJZ7DhJeFuGAxYAfOT7ns6av5fO/5B1cQnuSbwx2DsBeEpMVwwSEwYYIj1aOG8dWw
- Ix8taN5lTbwSf+pjTwd8tlWwSu9yeuV0VqWxabLummNw4UM88AvNEaEh/8sTF7n9lgaodp98u
- Cb7dHAR8WMAExacUF/sFXhWz37FPR4dgcIDEVaPTy6R9Wl+4D2GJ6m567KAvE5oVGyiOKolHR
- EFySnlAU+HS/11DSfZxEkTidMcB2EKzrNTXHauZaGPUg176Kig+x6kDGzDYvY2b113RnAfNni
- Em9QK2C0PXiegChfw
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use const for the arrays that are used as "read only". Also, modify the
-prototype of vnt_control_out_blocks() function to use a pointer to a
-const type.
+Remove the cache-side of the object update operation as it doesn't
+serialise with other setattr, O_TRUNC and write operations.
 
-The vnt_vt3184_al2230 array can't be converted to const as it's modified
-later.
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
 
-Then in the vnt_vt3184_init() function use two types of pointers (to
-const type and to no const type) to avoid the compiler warning:
+ fs/cachefiles/interface.c     |   59 -----------------------------------------
+ fs/fscache/internal.h         |    1 -
+ fs/fscache/obj.c              |   14 ----------
+ fs/fscache/stats.c            |    4 +--
+ include/linux/fscache-cache.h |    2 -
+ 5 files changed, 1 insertion(+), 79 deletions(-)
 
-assignment discards 'const' qualifiers from pointer target type
-
-This way decrease the .data section and increase the .rodata section
-limiting the surface attack.
-
-Before this change:
-=2D------------------
-
-drivers/staging/vt6656/baseband.o  :
-section              size   addr
-.text                1278      0
-.data                 576      0
-.bss                    0      0
-.rodata               319      0
-.comment               45      0
-.note.GNU-stack         0      0
-.note.gnu.property     32      0
-Total                2250
-
-After this change:
-=2D-----------------
-
-drivers/staging/vt6656/baseband.o  :
-section              size   addr
-.text                1278      0
-.data                 256      0
-.bss                    0      0
-.rodata               640      0
-.comment               45      0
-.note.GNU-stack         0      0
-.note.gnu.property     32      0
-Total                2251
-
-Signed-off-by: Oscar Carter <oscar.carter@gmx.com>
-=2D--
- drivers/staging/vt6656/baseband.c | 14 +++++++++-----
- drivers/staging/vt6656/usbpipe.c  |  2 +-
- drivers/staging/vt6656/usbpipe.h  |  2 +-
- 3 files changed, 11 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/staging/vt6656/baseband.c b/drivers/staging/vt6656/ba=
-seband.c
-index 1d75acaec8f3..41ae779ec61f 100644
-=2D-- a/drivers/staging/vt6656/baseband.c
-+++ b/drivers/staging/vt6656/baseband.c
-@@ -31,7 +31,7 @@
- #include "rf.h"
- #include "usbpipe.h"
-
--static u8 vnt_vt3184_agc[] =3D {
-+static const u8 vnt_vt3184_agc[] =3D {
- 	0x00, 0x00, 0x02, 0x02, 0x04, 0x04, 0x06, 0x06,
- 	0x08, 0x08, 0x0a, 0x0a, 0x0c, 0x0c, 0x0e, 0x0e, /* 0x0f */
- 	0x10, 0x10, 0x12, 0x12, 0x14, 0x14, 0x16, 0x16,
-@@ -78,7 +78,7 @@ static u8 vnt_vt3184_al2230[] =3D {
- };
-
- /* {{RobertYu:20060515, new BB setting for VT3226D0 */
--static u8 vnt_vt3184_vt3226d0[] =3D {
-+static const u8 vnt_vt3184_vt3226d0[] =3D {
- 	0x31, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00,
- 	0x70, 0x45, 0x2a, 0x76, 0x00, 0x00, 0x80, 0x00, /* 0x0f */
- 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-@@ -243,7 +243,8 @@ int vnt_vt3184_init(struct vnt_private *priv)
- {
- 	int ret;
- 	u16 length;
--	u8 *addr;
-+	u8 *addr =3D NULL;
-+	const u8 *c_addr;
- 	u8 data;
-
- 	ret =3D vnt_control_in(priv, MESSAGE_TYPE_READ, 0, MESSAGE_REQUEST_EEPRO=
-M,
-@@ -275,7 +276,7 @@ int vnt_vt3184_init(struct vnt_private *priv)
- 		   (priv->rf_type =3D=3D RF_VT3342A0)) {
- 		priv->bb_rx_conf =3D vnt_vt3184_vt3226d0[10];
- 		length =3D sizeof(vnt_vt3184_vt3226d0);
--		addr =3D vnt_vt3184_vt3226d0;
-+		c_addr =3D vnt_vt3184_vt3226d0;
-
- 		priv->bb_vga[0] =3D 0x20;
- 		priv->bb_vga[1] =3D 0x10;
-@@ -291,8 +292,11 @@ int vnt_vt3184_init(struct vnt_private *priv)
- 		goto end;
- 	}
-
-+	if (addr)
-+		c_addr =3D addr;
-+
- 	ret =3D vnt_control_out_blocks(priv, VNT_REG_BLOCK_SIZE,
--				     MESSAGE_REQUEST_BBREG, length, addr);
-+				     MESSAGE_REQUEST_BBREG, length, c_addr);
- 	if (ret)
- 		goto end;
-
-diff --git a/drivers/staging/vt6656/usbpipe.c b/drivers/staging/vt6656/usb=
-pipe.c
-index 91b62c3dff7b..fb5e1b0dce6b 100644
-=2D-- a/drivers/staging/vt6656/usbpipe.c
-+++ b/drivers/staging/vt6656/usbpipe.c
-@@ -77,7 +77,7 @@ int vnt_control_out_u8(struct vnt_private *priv, u8 reg,=
- u8 reg_off, u8 data)
+diff --git a/fs/cachefiles/interface.c b/fs/cachefiles/interface.c
+index f9c2c09e1713..59910433f2a3 100644
+--- a/fs/cachefiles/interface.c
++++ b/fs/cachefiles/interface.c
+@@ -152,64 +152,6 @@ struct fscache_object *cachefiles_grab_object(struct fscache_object *_object,
+ 	return &object->fscache;
  }
+ 
+-/*
+- * update the auxiliary data for an object object on disk
+- */
+-static void cachefiles_update_object(struct fscache_object *_object)
+-{
+-	struct cachefiles_object *object;
+-	struct cachefiles_cache *cache;
+-	const struct cred *saved_cred;
+-	struct inode *inode;
+-	loff_t object_size, i_size;
+-	int ret;
+-
+-	_enter("{OBJ%x}", _object->debug_id);
+-
+-	object = container_of(_object, struct cachefiles_object, fscache);
+-	cache = container_of(object->fscache.cache, struct cachefiles_cache,
+-			     cache);
+-
+-	cachefiles_begin_secure(cache, &saved_cred);
+-
+-	object_size = object->fscache.cookie->object_size;
+-	inode = d_inode(object->dentry);
+-	i_size = i_size_read(inode);
+-	if (i_size > object_size) {
+-		struct path path = {
+-			.mnt	= cache->mnt,
+-			.dentry	= object->dentry
+-		};
+-		_debug("trunc %llx -> %llx", i_size, object_size);
+-		trace_cachefiles_trunc(object, inode, i_size, object_size);
+-		ret = vfs_truncate(&path, object_size);
+-		if (ret < 0) {
+-			cachefiles_io_error_obj(object, "Trunc-to-size failed");
+-			cachefiles_remove_object_xattr(cache, object->dentry);
+-			goto out;
+-		}
+-
+-		object_size = round_up(object_size, CACHEFILES_DIO_BLOCK_SIZE);
+-		i_size = i_size_read(inode);
+-		_debug("trunc %llx -> %llx", i_size, object_size);
+-		if (i_size < object_size) {
+-			trace_cachefiles_trunc(object, inode, i_size, object_size);
+-			ret = vfs_truncate(&path, object_size);
+-			if (ret < 0) {
+-				cachefiles_io_error_obj(object, "Trunc-to-dio-size failed");
+-				cachefiles_remove_object_xattr(cache, object->dentry);
+-				goto out;
+-			}
+-		}
+-	}
+-
+-	cachefiles_set_object_xattr(object);
+-
+-out:
+-	cachefiles_end_secure(cache, saved_cred);
+-	_leave("");
+-}
+-
+ /*
+  * Shorten the backing object to discard any dirty data and free up
+  * any unused granules.
+@@ -655,7 +597,6 @@ const struct fscache_cache_ops cachefiles_cache_ops = {
+ 	.lookup_object		= cachefiles_lookup_object,
+ 	.free_lookup_data	= cachefiles_free_lookup_data,
+ 	.grab_object		= cachefiles_grab_object,
+-	.update_object		= cachefiles_update_object,
+ 	.resize_object		= cachefiles_resize_object,
+ 	.invalidate_object	= cachefiles_invalidate_object,
+ 	.drop_object		= cachefiles_drop_object,
+diff --git a/fs/fscache/internal.h b/fs/fscache/internal.h
+index 7a0b36a49457..2670c821e1c9 100644
+--- a/fs/fscache/internal.h
++++ b/fs/fscache/internal.h
+@@ -200,7 +200,6 @@ extern atomic_t fscache_n_cop_alloc_object;
+ extern atomic_t fscache_n_cop_lookup_object;
+ extern atomic_t fscache_n_cop_create_object;
+ extern atomic_t fscache_n_cop_invalidate_object;
+-extern atomic_t fscache_n_cop_update_object;
+ extern atomic_t fscache_n_cop_drop_object;
+ extern atomic_t fscache_n_cop_put_object;
+ extern atomic_t fscache_n_cop_sync_cache;
+diff --git a/fs/fscache/obj.c b/fs/fscache/obj.c
+index 332ba132413d..b2e7675a80c1 100644
+--- a/fs/fscache/obj.c
++++ b/fs/fscache/obj.c
+@@ -54,14 +54,6 @@ static int fscache_do_create_object(struct fscache_object *object, void *data)
+ 	return ret;
+ }
+ 
+-static void fscache_do_update_object(struct fscache_object *object)
+-{
+-	fscache_stat(&fscache_n_updates_run);
+-	fscache_stat(&fscache_n_cop_update_object);
+-	object->cache->ops->update_object(object);
+-	fscache_stat_d(&fscache_n_cop_update_object);
+-}
+-
+ static void fscache_do_drop_object(struct fscache_cache *cache,
+ 				   struct fscache_object *object,
+ 				   bool invalidate)
+@@ -279,12 +271,6 @@ void fscache_drop_object(struct fscache_cookie *cookie,
+ 	_enter("{OBJ%x,%d},%u",
+ 	       object->debug_id, object->n_children, invalidate);
+ 
+-	if (!invalidate &&
+-	    test_bit(FSCACHE_OBJECT_NEEDS_UPDATE, &object->flags)) {
+-		_debug("final update");
+-		fscache_do_update_object(object);
+-	}
+-
+ 	spin_lock(&cache->object_list_lock);
+ 	list_del_init(&object->cache_link);
+ 	spin_unlock(&cache->object_list_lock);
+diff --git a/fs/fscache/stats.c b/fs/fscache/stats.c
+index 3b262af57625..cf71c8b2a22a 100644
+--- a/fs/fscache/stats.c
++++ b/fs/fscache/stats.c
+@@ -50,7 +50,6 @@ atomic_t fscache_n_cop_alloc_object;
+ atomic_t fscache_n_cop_lookup_object;
+ atomic_t fscache_n_cop_create_object;
+ atomic_t fscache_n_cop_invalidate_object;
+-atomic_t fscache_n_cop_update_object;
+ atomic_t fscache_n_cop_drop_object;
+ atomic_t fscache_n_cop_put_object;
+ atomic_t fscache_n_cop_sync_cache;
+@@ -135,9 +134,8 @@ int fscache_stats_show(struct seq_file *m, void *v)
+ 	seq_printf(m, "CacheOp: alo=%d luo=%d\n",
+ 		   atomic_read(&fscache_n_cop_alloc_object),
+ 		   atomic_read(&fscache_n_cop_lookup_object));
+-	seq_printf(m, "CacheOp: inv=%d upo=%d dro=%d pto=%d atc=%d syn=%d\n",
++	seq_printf(m, "CacheOp: inv=%d dro=%d pto=%d atc=%d syn=%d\n",
+ 		   atomic_read(&fscache_n_cop_invalidate_object),
+-		   atomic_read(&fscache_n_cop_update_object),
+ 		   atomic_read(&fscache_n_cop_drop_object),
+ 		   atomic_read(&fscache_n_cop_put_object),
+ 		   atomic_read(&fscache_n_cop_attr_changed),
+diff --git a/include/linux/fscache-cache.h b/include/linux/fscache-cache.h
+index adb899448f6e..95f7c60b9092 100644
+--- a/include/linux/fscache-cache.h
++++ b/include/linux/fscache-cache.h
+@@ -116,8 +116,6 @@ struct fscache_cache_ops {
+ 	/* unpin an object in the cache */
+ 	void (*unpin_object)(struct fscache_object *object);
+ 
+-	/* store the updated auxiliary data on an object */
+-	void (*update_object)(struct fscache_object *object);
+ 	/* Change the size of a data object */
+ 	void (*resize_object)(struct fscache_object *object, loff_t new_size);
+ 
 
- int vnt_control_out_blocks(struct vnt_private *priv,
--			   u16 block, u8 reg, u16 length, u8 *data)
-+			   u16 block, u8 reg, u16 length, const u8 *data)
- {
- 	int ret =3D 0, i;
-
-diff --git a/drivers/staging/vt6656/usbpipe.h b/drivers/staging/vt6656/usb=
-pipe.h
-index 35697b58d748..1f0b2566c288 100644
-=2D-- a/drivers/staging/vt6656/usbpipe.h
-+++ b/drivers/staging/vt6656/usbpipe.h
-@@ -52,7 +52,7 @@ int vnt_control_out_u8(struct vnt_private *priv, u8 reg,=
- u8 ref_off, u8 data);
- int vnt_control_in_u8(struct vnt_private *priv, u8 reg, u8 reg_off, u8 *d=
-ata);
-
- int vnt_control_out_blocks(struct vnt_private *priv,
--			   u16 block, u8 reg, u16 len, u8 *data);
-+			   u16 block, u8 reg, u16 len, const u8 *data);
-
- int vnt_start_interrupt_urb(struct vnt_private *priv);
- int vnt_submit_rx_urb(struct vnt_private *priv, struct vnt_rcb *rcb);
-=2D-
-2.20.1
 
