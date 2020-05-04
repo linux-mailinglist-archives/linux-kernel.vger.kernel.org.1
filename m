@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 829031C445E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:07:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 580DE1C44AB
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:09:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732005AbgEDSGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:06:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37130 "EHLO mail.kernel.org"
+        id S1730984AbgEDSJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:09:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731397AbgEDSGk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:06:40 -0400
+        id S1731459AbgEDSGm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 14:06:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AD7E02075A;
-        Mon,  4 May 2020 18:06:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4648C2073B;
+        Mon,  4 May 2020 18:06:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588615599;
-        bh=l2pz1Q/etFufQ9FGN6o4PN+pFteV/HMU9wnCVm0Kyvg=;
+        s=default; t=1588615601;
+        bh=/8LCSKazyyYH+bHBxoSD6yfKYeJ3go/tsRUeaJ2kmjs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Kgg+7B9RDIPs/7kQOV0tehfv57ckm+fFEkyevCPQPtpRgrz8PBUoGeWBCD6T2hYqu
-         wfYAM1VOE+Ep/+5HemTKpwQt1I4AlfMmXHDMzjJK0VRARghq4EXUtWm28GEX7iER11
-         POoq7Pe1EdrX3X19xwwrCMIkMIidG7K0M4gYwmzE=
+        b=A1m5Rm0JF/2x9aWnC6tnByPu9ty64JeQwqkEMdXNRd4uaUGUSGS216gKpQKk1gRCi
+         W9DLcDyLjYlP1rD5vlP5O9FVGVdXpTGSuoTtRAsaWHj1flzGJkPoM1KZ/doOG4o6S/
+         BoSlTr0qmYbgIbRciu6x4cg4IYsikrk8BdYko4PA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jason Gunthorpe <jgg@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>
-Subject: [PATCH 5.6 47/73] RDMA/core: Prevent mixed use of FDs between shared ufiles
-Date:   Mon,  4 May 2020 19:57:50 +0200
-Message-Id: <20200504165508.915229051@linuxfoundation.org>
+        stable@vger.kernel.org, Leon Romanovsky <leonro@mellanox.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Subject: [PATCH 5.6 48/73] RDMA/core: Fix overwriting of uobj in case of error
+Date:   Mon,  4 May 2020 19:57:51 +0200
+Message-Id: <20200504165508.991340794@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200504165501.781878940@linuxfoundation.org>
 References: <20200504165501.781878940@linuxfoundation.org>
@@ -45,69 +45,81 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Leon Romanovsky <leonro@mellanox.com>
 
-commit 0fb00941dc63990a10951146df216fc7b0e20bc2 upstream.
+commit 83a2670212215a569ed133efc10c92055c96cc8c upstream.
 
-FDs can only be used on the ufile that created them, they cannot be mixed
-to other ufiles. We are lacking a check to prevent it.
+In case of failure to get file, the uobj is overwritten and causes to
+supply bad pointer as an input to uverbs_uobject_put().
 
-  BUG: KASAN: null-ptr-deref in atomic64_sub_and_test include/asm-generic/atomic-instrumented.h:1547 [inline]
-  BUG: KASAN: null-ptr-deref in atomic_long_sub_and_test include/asm-generic/atomic-long.h:460 [inline]
-  BUG: KASAN: null-ptr-deref in fput_many+0x1a/0x140 fs/file_table.c:336
-  Write of size 8 at addr 0000000000000038 by task syz-executor179/284
+  BUG: KASAN: null-ptr-deref in atomic_fetch_sub include/asm-generic/atomic-instrumented.h:199 [inline]
+  BUG: KASAN: null-ptr-deref in refcount_sub_and_test include/linux/refcount.h:253 [inline]
+  BUG: KASAN: null-ptr-deref in refcount_dec_and_test include/linux/refcount.h:281 [inline]
+  BUG: KASAN: null-ptr-deref in kref_put include/linux/kref.h:64 [inline]
+  BUG: KASAN: null-ptr-deref in uverbs_uobject_put+0x22/0x90 drivers/infiniband/core/rdma_core.c:57
+  Write of size 4 at addr 0000000000000030 by task syz-executor.4/1691
 
-  CPU: 0 PID: 284 Comm: syz-executor179 Not tainted 5.5.0-rc5+ #1
+  CPU: 1 PID: 1691 Comm: syz-executor.4 Not tainted 5.6.0 #17
   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.1-0-ga5cab58e9a3f-prebuilt.qemu.org 04/01/2014
   Call Trace:
    __dump_stack lib/dump_stack.c:77 [inline]
    dump_stack+0x94/0xce lib/dump_stack.c:118
-   __kasan_report+0x18f/0x1b7 mm/kasan/report.c:510
-   kasan_report+0xe/0x20 mm/kasan/common.c:639
-   check_memory_region_inline mm/kasan/generic.c:185 [inline]
-   check_memory_region+0x15d/0x1b0 mm/kasan/generic.c:192
-   atomic64_sub_and_test include/asm-generic/atomic-instrumented.h:1547 [inline]
-   atomic_long_sub_and_test include/asm-generic/atomic-long.h:460 [inline]
-   fput_many+0x1a/0x140 fs/file_table.c:336
-   rdma_lookup_put_uobject+0x85/0x130 drivers/infiniband/core/rdma_core.c:692
-   uobj_put_read include/rdma/uverbs_std_types.h:96 [inline]
-   _ib_uverbs_lookup_comp_file drivers/infiniband/core/uverbs_cmd.c:198 [inline]
-   create_cq+0x375/0xba0 drivers/infiniband/core/uverbs_cmd.c:1006
-   ib_uverbs_create_cq+0x114/0x140 drivers/infiniband/core/uverbs_cmd.c:1089
-   ib_uverbs_write+0xaa5/0xdf0 drivers/infiniband/core/uverbs_main.c:769
+   __kasan_report+0x10c/0x190 mm/kasan/report.c:515
+   kasan_report+0x32/0x50 mm/kasan/common.c:625
+   check_memory_region_inline mm/kasan/generic.c:187 [inline]
+   check_memory_region+0x16d/0x1c0 mm/kasan/generic.c:193
+   atomic_fetch_sub include/asm-generic/atomic-instrumented.h:199 [inline]
+   refcount_sub_and_test include/linux/refcount.h:253 [inline]
+   refcount_dec_and_test include/linux/refcount.h:281 [inline]
+   kref_put include/linux/kref.h:64 [inline]
+   uverbs_uobject_put+0x22/0x90 drivers/infiniband/core/rdma_core.c:57
+   alloc_begin_fd_uobject+0x1d0/0x250 drivers/infiniband/core/rdma_core.c:486
+   rdma_alloc_begin_uobject+0xa8/0xf0 drivers/infiniband/core/rdma_core.c:509
+   __uobj_alloc include/rdma/uverbs_std_types.h:117 [inline]
+   ib_uverbs_create_comp_channel+0x16d/0x230 drivers/infiniband/core/uverbs_cmd.c:982
+   ib_uverbs_write+0xaa5/0xdf0 drivers/infiniband/core/uverbs_main.c:665
    __vfs_write+0x7c/0x100 fs/read_write.c:494
    vfs_write+0x168/0x4a0 fs/read_write.c:558
    ksys_write+0xc8/0x200 fs/read_write.c:611
-   do_syscall_64+0x9c/0x390 arch/x86/entry/common.c:294
+   do_syscall_64+0x9c/0x390 arch/x86/entry/common.c:295
    entry_SYSCALL_64_after_hwframe+0x44/0xa9
-  RIP: 0033:0x44ef99
-  Code: 00 b8 00 01 00 00 eb e1 e8 74 1c 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c4 ff ff ff f7 d8 64 89 01 48
-  RSP: 002b:00007ffc0b74c028 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-  RAX: ffffffffffffffda RBX: 00007ffc0b74c030 RCX: 000000000044ef99
-  RDX: 0000000000000040 RSI: 0000000020000040 RDI: 0000000000000005
-  RBP: 00007ffc0b74c038 R08: 0000000000401830 R09: 0000000000401830
-  R10: 00007ffc0b74c038 R11: 0000000000000246 R12: 0000000000000000
-  R13: 0000000000000000 R14: 00000000006be018 R15: 0000000000000000
+  RIP: 0033:0x466479
+  Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+  RSP: 002b:00007efe9f6a7c48 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+  RAX: ffffffffffffffda RBX: 000000000073bf00 RCX: 0000000000466479
+  RDX: 0000000000000018 RSI: 0000000020000040 RDI: 0000000000000003
+  RBP: 00007efe9f6a86bc R08: 0000000000000000 R09: 0000000000000000
+  R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000005
+  R13: 0000000000000bf2 R14: 00000000004cb80a R15: 00000000006fefc0
 
-Fixes: cf8966b3477d ("IB/core: Add support for fd objects")
-Link: https://lore.kernel.org/r/20200421082929.311931-2-leon@kernel.org
-Suggested-by: Jason Gunthorpe <jgg@mellanox.com>
+Fixes: 849e149063bd ("RDMA/core: Do not allow alloc_commit to fail")
+Link: https://lore.kernel.org/r/20200421082929.311931-3-leon@kernel.org
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/infiniband/core/rdma_core.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/core/rdma_core.c |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
 --- a/drivers/infiniband/core/rdma_core.c
 +++ b/drivers/infiniband/core/rdma_core.c
-@@ -360,7 +360,7 @@ lookup_get_fd_uobject(const struct uverb
- 	 * uverbs_uobject_fd_release(), and the caller is expected to ensure
- 	 * that release is never done while a call to lookup is possible.
- 	 */
--	if (f->f_op != fd_type->fops) {
-+	if (f->f_op != fd_type->fops || uobject->ufile != ufile) {
- 		fput(f);
- 		return ERR_PTR(-EBADF);
+@@ -474,16 +474,15 @@ alloc_begin_fd_uobject(const struct uver
+ 	filp = anon_inode_getfile(fd_type->name, fd_type->fops, NULL,
+ 				  fd_type->flags);
+ 	if (IS_ERR(filp)) {
++		uverbs_uobject_put(uobj);
+ 		uobj = ERR_CAST(filp);
+-		goto err_uobj;
++		goto err_fd;
  	}
+ 	uobj->object = filp;
+ 
+ 	uobj->id = new_fd;
+ 	return uobj;
+ 
+-err_uobj:
+-	uverbs_uobject_put(uobj);
+ err_fd:
+ 	put_unused_fd(new_fd);
+ 	return uobj;
 
 
