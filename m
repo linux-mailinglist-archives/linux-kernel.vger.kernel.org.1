@@ -2,131 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A50851C3D9C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 16:53:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FF011C3DA2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 16:54:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728634AbgEDOxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 10:53:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728241AbgEDOxO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 10:53:14 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AF3CC061A0F
-        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 07:53:14 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id g10so9954635lfj.13
-        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 07:53:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PWZ26t9Z32MlW5UKTGmfXwCpHufQN5g8ypGnGhMoTV4=;
-        b=QVr6XQdCtnmAtOuVNcvlC8Q1NmED36YsFG+qbvUri4BnTHMhK1Vs1D87apQIG3FCOW
-         QOrtlGCTNDtbWPZopaxb0X/P/XDjsTPZYshG4GDHuQRJq2oELxlYiSQNonoapjawLKHI
-         k4zgc06E0LPchPMixyKmgFmuR7lufFcUr2XeSWpcn3TUNyEDjMO217tthRxiept1lNWN
-         IwTLEODOGj1uNTUGZkJM9r+Ch3yOv2M5whFChG1zwovMr5qbJoVor+OVfpaAhX64v34I
-         Bl6XQFAQWRBet5kGBbSGtoyRG52+whbAV+8X4TeiQxgoow5TnXNzG2UL4E6IlyvEnHyu
-         7K1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PWZ26t9Z32MlW5UKTGmfXwCpHufQN5g8ypGnGhMoTV4=;
-        b=ReCsZqq7tKeifLS8pnaaNMNQDJdtP20ct1FsSBixh29yDRSkAgjRr1BFtp9B78ilEL
-         pI0iWTLbFZJnRllHujSIILl/LO44sFMo3xTy265DlcemQmyYGaaYa6mLL1H0zlVKOM9t
-         JUIrbpnTbVhG3icJiw6mCczkOLAL8ZFSOr7XIOw1qVIcg5g2hzacJPxIHelOIOR5IHnl
-         7ffZmISnGspdDBeTsrbVAR/t2IG4kAnzjUD2kpx4//cEWYjkSsNRWFANteSvz2e5tHMe
-         y4Z/rZElj9T/aov2wccgnasW4s7tz10sqdN4URjAkRHlsU1aXGXL+aubYslsHFHjVjIH
-         oIaw==
-X-Gm-Message-State: AGi0PuZ/j2nLyanZyROe65bj9piGp3sskiGNt6C470pPpngSMqgPzHhv
-        vcw9AuzLln95C/ggrh7PLZDiGBEVJO8n0Qu5hEieNA==
-X-Google-Smtp-Source: APiQypIhrhGrNgrw3phbw7oshVoOFP13vW6aP5Kr4CW7NqXozPGxi60oaOXj6CS4/G7IL7lprTdlDDydkK2ahudmrIc=
-X-Received: by 2002:ac2:5e65:: with SMTP id a5mr11921180lfr.189.1588603992481;
- Mon, 04 May 2020 07:53:12 -0700 (PDT)
+        id S1728839AbgEDOyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 10:54:07 -0400
+Received: from foss.arm.com ([217.140.110.172]:46662 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727106AbgEDOyH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 10:54:07 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2BA381FB;
+        Mon,  4 May 2020 07:54:06 -0700 (PDT)
+Received: from [10.163.71.79] (unknown [10.163.71.79])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 332DE3F305;
+        Mon,  4 May 2020 07:54:00 -0700 (PDT)
+Subject: Re: [PATCH] arm64/cpuinfo: Drop boot_cpu_data
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Suzuki Poulose <suzuki.poulose@arm.com>,
+        linux-kernel@vger.kernel.org
+References: <1588595400-4560-1-git-send-email-anshuman.khandual@arm.com>
+ <20200504124321.GA73375@C02TD0UTHF1T.local>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <224296d1-086a-5516-95a8-8f4ad5c533d9@arm.com>
+Date:   Mon, 4 May 2020 20:23:08 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-References: <20200430182712.237526-1-shakeelb@google.com> <20200504065600.GA22838@dhcp22.suse.cz>
- <CALvZod5Ao2PEFPEOckW6URBfxisp9nNpNeon1GuctuHehqk_6Q@mail.gmail.com> <20200504141136.GR22838@dhcp22.suse.cz>
-In-Reply-To: <20200504141136.GR22838@dhcp22.suse.cz>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 4 May 2020 07:53:01 -0700
-Message-ID: <CALvZod7Ls7rTDOr5vXwEiPneLqbq3JoxfFBxZZ71YWgvLkNr5A@mail.gmail.com>
-Subject: Re: [PATCH] memcg: oom: ignore oom warnings from memory.max
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
-        Greg Thelen <gthelen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200504124321.GA73375@C02TD0UTHF1T.local>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 4, 2020 at 7:11 AM Michal Hocko <mhocko@kernel.org> wrote:
->
-> On Mon 04-05-20 06:54:40, Shakeel Butt wrote:
-> > On Sun, May 3, 2020 at 11:56 PM Michal Hocko <mhocko@kernel.org> wrote:
-> > >
-> > > On Thu 30-04-20 11:27:12, Shakeel Butt wrote:
-> > > > Lowering memory.max can trigger an oom-kill if the reclaim does not
-> > > > succeed. However if oom-killer does not find a process for killing, it
-> > > > dumps a lot of warnings.
-> > >
-> > > It shouldn't dump much more than the regular OOM report AFAICS. Sure
-> > > there is "Out of memory and no killable processes..." message printed as
-> > > well but is that a real problem?
-> > >
-> > > > Deleting a memcg does not reclaim memory from it and the memory can
-> > > > linger till there is a memory pressure. One normal way to proactively
-> > > > reclaim such memory is to set memory.max to 0 just before deleting the
-> > > > memcg. However if some of the memcg's memory is pinned by others, this
-> > > > operation can trigger an oom-kill without any process and thus can log a
-> > > > lot un-needed warnings. So, ignore all such warnings from memory.max.
-> > >
-> > > OK, I can see why you might want to use memory.max for that purpose but
-> > > I do not really understand why the oom report is a problem here.
-> >
-> > It may not be a problem for an individual or small scale deployment
-> > but when "sweep before tear down" is the part of the workflow for
-> > thousands of machines cycling through hundreds of thousands of cgroups
-> > then we can potentially flood the logs with not useful dumps and may
-> > hide (or overflow) any useful information in the logs.
->
-> If you are doing this in a large scale and the oom report is really a
-> problem then you shouldn't be resetting hard limit to 0 in the first
-> place.
->
 
-I think I have pretty clearly described why we want to reset the hard
-limit to 0, so, unless there is an alternative I don't see why we
-should not be doing this.
 
-> > > memory.max can trigger the oom kill and user should be expecting the oom
-> > > report under that condition. Why is "no eligible task" so special? Is it
-> > > because you know that there won't be any tasks for your particular case?
-> > > What about other use cases where memory.max is not used as a "sweep
-> > > before tear down"?
-> >
-> > What other such use-cases would be? The only use-case I can envision
-> > of adjusting limits dynamically of a live cgroup are resource
-> > managers. However for cgroup v2, memory.high is the recommended way to
-> > limit the usage, so, why would resource managers be changing
-> > memory.max instead of memory.high? I am not sure. What do you think?
->
-> There are different reasons to use the hard limit. Mostly to contain
-> potential runaways. While high limit might be a sufficient measure to
-> achieve that as well the hard limit is the last resort. And it clearly
-> has the oom killer semantic so I am not really sure why you are
-> comparing the two.
->
+On 05/04/2020 06:13 PM, Mark Rutland wrote:
+> On Mon, May 04, 2020 at 06:00:00PM +0530, Anshuman Khandual wrote:
+>> A global boot_cpu_data is not really required. Lets drop this.
+> 
+> I don't think it's true that this isn't required today.
+> 
+> One reason that we have both boot_cpu_data and a cpu_data variable for
+> CPU0 is that CPU0 itself can be hotplugged out then back in, and this
+> allows us to detect if CPU0's features have changed (e.g. due to FW
+> failing to configure it appropriately, or real physical hotplug
+> occurring).
 
-I am trying to see if "no eligible task" is really an issue and should
-be warned for the "other use cases". The only real use-case I can
-think of are resource managers adjusting the limit dynamically. I
-don't see "no eligible task" a concerning reason for such use-case. If
-you have some other use-case please do tell.
+Understood. After hotplug, CPU0 will come back via secondary_start_kernel()
+where it's current register values will be checked against earlier captured
+values i.e boot_cpu_data.
 
-Shakeel
+But wondering why should CPU0 be treated like any other secondary CPU. IOW
+in case the fresh boot CPU register values dont match with boot_cpu_data,
+should not the online process just be declined ? AFAICS, current approach
+will let the kernel run with taint in case of a mismatch.
+
+> 
+> So NAK to the patch as it stands. If we're certain we capture all of
+> those details even without boot_cpu_data, then we should make other
+> changes to make that clear (e.g. removing it as an argument to
+> update_cpu_features()).
+
+There might not be another way, unless we can override CPU0's cpu_data
+variable when the boot CPU comes back in after vetting against existing
+values. Is there any particular reason to store the very first boot CPU0
+info for ever ?
+
+Passing on CPU0's cpu_data variable in update_cpu_features() for secondary
+CPUs during boot still make sense. It helps in finalizing register values.
+Re-entering CPU0's test against boot_cpu_data seems different.
