@@ -2,309 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6C321C486E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 22:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 438C51C4875
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 22:40:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727992AbgEDUis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 16:38:48 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:34966 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726111AbgEDUil (ORCPT
+        id S1728078AbgEDUkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 16:40:41 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:10782 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726410AbgEDUki (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 16:38:41 -0400
-Received: from prsriva-linux.hsd1.wa.comcast.net (c-24-19-135-168.hsd1.wa.comcast.net [24.19.135.168])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 48ADA20B71CC;
-        Mon,  4 May 2020 13:38:39 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 48ADA20B71CC
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1588624720;
-        bh=9BrQRipJ8L0+PR7w+BHorvxfJzUA9j4XBGTJLVfj2wo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PwEu7JQqBDNtq0Ye6OGM+lwHUvBLraMCPYd6S0gRzmT+DyyNhHY+NbfP5f4uH4gtm
-         gX62CyYfzrXnAQeSD+SIqrWcSWeWjxA/cxR8sFn1vT7e5h8gn8tXWrycaXfTF7VyXI
-         q0Yci1unj92sYaUT+UKvMO/gBetA75txVtFxqyNM=
-From:   Prakhar Srivastava <prsriva@linux.microsoft.com>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Cc:     catalin.marinas@arm.com, will@kernel.org, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org, robh+dt@kernel.org,
-        frowand.list@gmail.com, zohar@linux.ibm.com,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        pasha.tatashin@soleen.com, allison@lohutok.net,
-        kstewart@linuxfoundation.org, takahiro.akashi@linaro.org,
-        tglx@linutronix.de, vincenzo.frascino@arm.com,
-        mark.rutland@arm.com, masahiroy@kernel.org, james.morse@arm.com,
-        bhsharma@redhat.com, mbrugger@suse.com, hsinyi@chromium.org,
-        tao.li@vivo.com, christophe.leroy@c-s.fr,
-        gregkh@linuxfoundation.org, nramas@linux.microsoft.com,
-        prsriva@linux.microsoft.com, tusharsu@linux.microsoft.com,
-        balajib@linux.microsoft.com
-Subject: [RFC][PATCH 2/2] Add support for ima buffer pass using reserved memory arm64
-Date:   Mon,  4 May 2020 13:38:29 -0700
-Message-Id: <20200504203829.6330-3-prsriva@linux.microsoft.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200504203829.6330-1-prsriva@linux.microsoft.com>
-References: <20200504203829.6330-1-prsriva@linux.microsoft.com>
+        Mon, 4 May 2020 16:40:38 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1588624837; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=fLYIM9kqqwdLGMsIsdcSwPKcC0oxxXbjzB2POxGFLMk=;
+ b=NMhdK6K3GZsMg27eE5aZeBwe2AlaPuaHuKAZRFfFpVGBWtCxvrMVdbDbYDXsnYmX7vX621fX
+ iMWLu6vLRYta8ETaePjUk97oxZ6TdkxWpn9kGav3kz3Qubvl0ER9r9tA+5KFQP2t9rAOvI3S
+ reNvgz3aQ6xob5DgOCZ0rYMXzxU=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5eb07db5.7f04b837b650-smtp-out-n04;
+ Mon, 04 May 2020 20:40:21 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E25CFC433F2; Mon,  4 May 2020 20:40:19 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 38301C433BA;
+        Mon,  4 May 2020 20:40:18 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 05 May 2020 02:10:18 +0530
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     Georgi Djakov <georgi.djakov@linaro.org>
+Cc:     vireshk@kernel.org, nm@ti.com, sboyd@kernel.org,
+        robh+dt@kernel.org, rjw@rjwysocki.net, saravanak@google.com,
+        rnayak@codeaurora.org, bjorn.andersson@linaro.org,
+        vincent.guittot@linaro.org, jcrouse@codeaurora.org,
+        evgreen@chromium.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-owner@vger.kernel.org
+Subject: Re: [PATCH v7 2/7] OPP: Add helpers for reading the binding
+ properties
+In-Reply-To: <20200424155404.10746-3-georgi.djakov@linaro.org>
+References: <20200424155404.10746-1-georgi.djakov@linaro.org>
+ <20200424155404.10746-3-georgi.djakov@linaro.org>
+Message-ID: <cbba1156b96e2cef39a2ea596fd5b911@codeaurora.org>
+X-Sender: sibis@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- Add support for ima buffer pass using reserved memory for
- arm64 kexec. Update the arch sepcific code path in kexec file load to store
- the ima buffer in the reserved memory. The same reserved memory is read on
- kexec or cold boot.
+On 2020-04-24 21:23, Georgi Djakov wrote:
+> From: Saravana Kannan <saravanak@google.com>
+> 
+> The opp-hz DT property is not mandatory and we may use another property
+> as a key in the OPP table. Add helper functions to simplify the reading
+> and comparing the keys.
+> 
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
+> ---
+> v7:
+> * Extracted just the helpers from patch v6, as Viresh advised to split 
+> it.
+> 
+> v6: 
+> https://lore.kernel.org/r/20191207002424.201796-3-saravanak@google.com
+> 
+>  drivers/opp/core.c | 15 +++++++++++++--
+>  drivers/opp/of.c   | 42 ++++++++++++++++++++++++++----------------
+>  drivers/opp/opp.h  |  1 +
+>  3 files changed, 40 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+> index ba43e6a3dc0a..c9c1bbe6ae27 100644
+> --- a/drivers/opp/core.c
+> +++ b/drivers/opp/core.c
+> @@ -1272,11 +1272,21 @@ static bool
+> _opp_supported_by_regulators(struct dev_pm_opp *opp,
+>  	return true;
+>  }
+> 
+> +int _opp_compare_key(struct dev_pm_opp *opp1, struct dev_pm_opp *opp2)
+> +{
+> +	if (opp1->rate != opp2->rate)
+> +		return opp1->rate < opp2->rate ? -1 : 1;
+> +	if (opp1->level != opp2->level)
+> +		return opp1->level < opp2->level ? -1 : 1;
+> +	return 0;
+> +}
+> +
+>  static int _opp_is_duplicate(struct device *dev, struct dev_pm_opp 
+> *new_opp,
+>  			     struct opp_table *opp_table,
+>  			     struct list_head **head)
+>  {
+>  	struct dev_pm_opp *opp;
+> +	int opp_cmp;
+> 
+>  	/*
+>  	 * Insert new OPP in order of increasing frequency and discard if
+> @@ -1287,12 +1297,13 @@ static int _opp_is_duplicate(struct device
+> *dev, struct dev_pm_opp *new_opp,
+>  	 * loop.
+>  	 */
+>  	list_for_each_entry(opp, &opp_table->opp_list, node) {
+> -		if (new_opp->rate > opp->rate) {
+> +		opp_cmp = _opp_compare_key(new_opp, opp);
+> +		if (opp_cmp > 0) {
+>  			*head = &opp->node;
+>  			continue;
+>  		}
+> 
+> -		if (new_opp->rate < opp->rate)
+> +		if (opp_cmp < 0)
+>  			return 0;
+> 
+>  		/* Duplicate OPPs */
+> diff --git a/drivers/opp/of.c b/drivers/opp/of.c
+> index 9cd8f0adacae..e33169c7e045 100644
+> --- a/drivers/opp/of.c
+> +++ b/drivers/opp/of.c
+> @@ -521,6 +521,28 @@ void dev_pm_opp_of_remove_table(struct device 
+> *dev)
+>  }
+>  EXPORT_SYMBOL_GPL(dev_pm_opp_of_remove_table);
+> 
+> +static int _read_opp_key(struct dev_pm_opp *new_opp, struct 
+> device_node *np,
+> +			 bool *rate_not_available)
+> +{
+> +	u64 rate;
+> +	int ret;
+> +
+> +	ret = of_property_read_u64(np, "opp-hz", &rate);
+> +	if (!ret) {
+> +		/*
+> +		 * Rate is defined as an unsigned long in clk API, and so
+> +		 * casting explicitly to its type. Must be fixed once rate is 64
+> +		 * bit guaranteed in clk API.
+> +		 */
+> +		new_opp->rate = (unsigned long)rate;
+> +	}
+> +	*rate_not_available = !!ret;
+> +
+> +	of_property_read_u32(np, "opp-level", &new_opp->level);
+> +
+> +	return ret;
+> +}
+> +
+>  /**
+>   * _opp_add_static_v2() - Allocate static OPPs (As per 'v2' DT 
+> bindings)
+>   * @opp_table:	OPP table
+> @@ -558,26 +580,14 @@ static struct dev_pm_opp
+> *_opp_add_static_v2(struct opp_table *opp_table,
+>  	if (!new_opp)
+>  		return ERR_PTR(-ENOMEM);
+> 
+> -	ret = of_property_read_u64(np, "opp-hz", &rate);
+> +	ret = _read_opp_key(new_opp, np, &rate_not_available);
+>  	if (ret < 0) {
+> -		/* "opp-hz" is optional for devices like power domains. */
+> -		if (!opp_table->is_genpd) {
+> -			dev_err(dev, "%s: opp-hz not found\n", __func__);
+> -			goto free_opp;
+> -		}
+> +		if (!opp_table->is_genpd)
+> +			dev_err(dev, "%s: opp key field not found\n", __func__);
 
-Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
----
- arch/arm64/Kconfig                     |  1 +
- arch/arm64/include/asm/ima.h           | 22 +++++++++
- arch/arm64/include/asm/kexec.h         |  5 ++
- arch/arm64/kernel/Makefile             |  1 +
- arch/arm64/kernel/ima_kexec.c          | 64 ++++++++++++++++++++++++++
- arch/arm64/kernel/machine_kexec_file.c |  1 +
- arch/powerpc/include/asm/ima.h         |  3 +-
- arch/powerpc/kexec/ima.c               | 14 +++++-
- security/integrity/ima/ima_kexec.c     | 15 ++++--
- 9 files changed, 119 insertions(+), 7 deletions(-)
- create mode 100644 arch/arm64/include/asm/ima.h
- create mode 100644 arch/arm64/kernel/ima_kexec.c
+With ^^ regression fixed
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 40fb05d96c60..bc9e1a91686b 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -1069,6 +1069,7 @@ config KEXEC
- config KEXEC_FILE
- 	bool "kexec file based system call"
- 	select KEXEC_CORE
-+	select HAVE_IMA_KEXEC
- 	help
- 	  This is new version of kexec system call. This system call is
- 	  file based and takes file descriptors as system call argument
-diff --git a/arch/arm64/include/asm/ima.h b/arch/arm64/include/asm/ima.h
-new file mode 100644
-index 000000000000..58033b427e59
---- /dev/null
-+++ b/arch/arm64/include/asm/ima.h
-@@ -0,0 +1,22 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_ARM64_IMA_H
-+#define _ASM_ARM64_IMA_H
-+
-+struct kimage;
-+
-+int is_ima_memory_reserved(void);
-+int ima_get_kexec_buffer(void **addr, size_t *size);
-+int ima_free_kexec_buffer(void);
-+
-+#ifdef CONFIG_IMA_KEXEC
-+int arch_ima_add_kexec_buffer(struct kimage *image, unsigned long load_addr,
-+			      void *buffer, size_t size);
-+
-+#else
-+int arch_ima_add_kexec_buffer(struct kimage *image, unsigned long load_addr,
-+			      void *buffer, size_t size)
-+{
-+	return 0;
-+}
-+#endif /* CONFIG_IMA_KEXEC */
-+#endif /* _ASM_ARM64_IMA_H */
-diff --git a/arch/arm64/include/asm/kexec.h b/arch/arm64/include/asm/kexec.h
-index d24b527e8c00..2bd19ccb6c43 100644
---- a/arch/arm64/include/asm/kexec.h
-+++ b/arch/arm64/include/asm/kexec.h
-@@ -100,6 +100,11 @@ struct kimage_arch {
- 	void *elf_headers;
- 	unsigned long elf_headers_mem;
- 	unsigned long elf_headers_sz;
-+
-+#ifdef CONFIG_IMA_KEXEC
-+	phys_addr_t ima_buffer_addr;
-+	size_t ima_buffer_size;
-+#endif
- };
- 
- extern const struct kexec_file_ops kexec_image_ops;
-diff --git a/arch/arm64/kernel/Makefile b/arch/arm64/kernel/Makefile
-index 4e5b8ee31442..cd3cb7690d51 100644
---- a/arch/arm64/kernel/Makefile
-+++ b/arch/arm64/kernel/Makefile
-@@ -55,6 +55,7 @@ obj-$(CONFIG_RANDOMIZE_BASE)		+= kaslr.o
- obj-$(CONFIG_HIBERNATION)		+= hibernate.o hibernate-asm.o
- obj-$(CONFIG_KEXEC_CORE)		+= machine_kexec.o relocate_kernel.o	\
- 					   cpu-reset.o
-+obj-$(CONFIG_HAVE_IMA_KEXEC)		+= ima_kexec.o
- obj-$(CONFIG_KEXEC_FILE)		+= machine_kexec_file.o kexec_image.o
- obj-$(CONFIG_ARM64_RELOC_TEST)		+= arm64-reloc-test.o
- arm64-reloc-test-y := reloc_test_core.o reloc_test_syms.o
-diff --git a/arch/arm64/kernel/ima_kexec.c b/arch/arm64/kernel/ima_kexec.c
-new file mode 100644
-index 000000000000..ff5649333c7c
---- /dev/null
-+++ b/arch/arm64/kernel/ima_kexec.c
-@@ -0,0 +1,64 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2019 Microsoft Corporation.
-+ *
-+ * Authors:
-+ * Prakhar Srivastava <prsriva@linux.microsoft.com>
-+ */
-+
-+#include <linux/kexec.h>
-+#include <linux/of.h>
-+
-+
-+/**
-+ * is_ima_memory_reserved - check if memory is reserved via device
-+ *			    tree.
-+ *	Return: negative or zero when memory is not reserved.
-+ *	positive number on success.
-+ *
-+ */
-+int is_ima_memory_reserved(void)
-+{
-+	return of_is_ima_memory_reserved();
-+}
-+
-+/**
-+ * ima_get_kexec_buffer - get IMA buffer from the previous kernel
-+ * @addr:	On successful return, set to point to the buffer contents.
-+ * @size:	On successful return, set to the buffer size.
-+ *
-+ * Return: 0 on success, negative errno on error.
-+ */
-+int ima_get_kexec_buffer(void **addr, size_t *size)
-+{
-+	return of_get_ima_buffer(addr, size);
-+}
-+
-+/**
-+ * ima_free_kexec_buffer - free memory used by the IMA buffer
-+ *
-+ * Return: 0 on success, negative errno on error.
-+ */
-+int ima_free_kexec_buffer(void)
-+{
-+	return of_remove_ima_buffer();
-+}
-+
-+#ifdef CONFIG_IMA_KEXEC
-+/**
-+ * arch_ima_add_kexec_buffer - do arch-specific steps to add the IMA
-+ *	measurement log.
-+ * @image: - pointer to the kimage, to store the address and size of the
-+ *	IMA measurement log.
-+ * @load_addr: - the address where the IMA measurement log is stored.
-+ * @size - size of the IMA measurement log.
-+ *
-+ * Return: 0 on success, negative errno on error.
-+ */
-+int arch_ima_add_kexec_buffer(struct kimage *image, unsigned long load_addr,
-+			      void *buffer, size_t size)
-+{
-+	of_ima_write_buffer(buffer, size);
-+	return 0;
-+}
-+#endif /* CONFIG_IMA_KEXEC */
-diff --git a/arch/arm64/kernel/machine_kexec_file.c b/arch/arm64/kernel/machine_kexec_file.c
-index b40c3b0def92..8dc25511142d 100644
---- a/arch/arm64/kernel/machine_kexec_file.c
-+++ b/arch/arm64/kernel/machine_kexec_file.c
-@@ -22,6 +22,7 @@
- #include <linux/types.h>
- #include <linux/vmalloc.h>
- #include <asm/byteorder.h>
-+#include <asm/ima.h>
- 
- /* relevant device tree properties */
- #define FDT_PROP_KEXEC_ELFHDR	"linux,elfcorehdr"
-diff --git a/arch/powerpc/include/asm/ima.h b/arch/powerpc/include/asm/ima.h
-index ead488cf3981..a8febc620b42 100644
---- a/arch/powerpc/include/asm/ima.h
-+++ b/arch/powerpc/include/asm/ima.h
-@@ -4,6 +4,7 @@
- 
- struct kimage;
- 
-+int is_ima_memory_reserved(void);
- int ima_get_kexec_buffer(void **addr, size_t *size);
- int ima_free_kexec_buffer(void);
- 
-@@ -15,7 +16,7 @@ static inline void remove_ima_buffer(void *fdt, int chosen_node) {}
- 
- #ifdef CONFIG_IMA_KEXEC
- int arch_ima_add_kexec_buffer(struct kimage *image, unsigned long load_addr,
--			      size_t size);
-+			      void *buffer, size_t size);
- 
- int setup_ima_buffer(const struct kimage *image, void *fdt, int chosen_node);
- #else
-diff --git a/arch/powerpc/kexec/ima.c b/arch/powerpc/kexec/ima.c
-index 720e50e490b6..3823539d4e07 100644
---- a/arch/powerpc/kexec/ima.c
-+++ b/arch/powerpc/kexec/ima.c
-@@ -46,6 +46,18 @@ static int do_get_kexec_buffer(const void *prop, int len, unsigned long *addr,
- 	return 0;
- }
- 
-+/**
-+ * is_ima_memory_reserved - check if memory is reserved via device
-+ *			    tree.
-+ *	Return: negative or zero when memory is not reserved.
-+ *	positive number on success.
-+ *
-+ */
-+int is_ima_memory_reserved(void)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
- /**
-  * ima_get_kexec_buffer - get IMA buffer from the previous kernel
-  * @addr:	On successful return, set to point to the buffer contents.
-@@ -137,7 +149,7 @@ void remove_ima_buffer(void *fdt, int chosen_node)
-  * Return: 0 on success, negative errno on error.
-  */
- int arch_ima_add_kexec_buffer(struct kimage *image, unsigned long load_addr,
--			      size_t size)
-+			      void *buffer, size_t size)
- {
- 	image->arch.ima_buffer_addr = load_addr;
- 	image->arch.ima_buffer_size = size;
-diff --git a/security/integrity/ima/ima_kexec.c b/security/integrity/ima/ima_kexec.c
-index 121de3e04af2..3749472c7e18 100644
---- a/security/integrity/ima/ima_kexec.c
-+++ b/security/integrity/ima/ima_kexec.c
-@@ -116,13 +116,18 @@ void ima_add_kexec_buffer(struct kimage *image)
- 	kbuf.buffer = kexec_buffer;
- 	kbuf.bufsz = kexec_buffer_size;
- 	kbuf.memsz = kexec_segment_size;
--	ret = kexec_add_buffer(&kbuf);
--	if (ret) {
--		pr_err("Error passing over kexec measurement buffer.\n");
--		return;
-+
-+	if (!is_ima_memory_reserved()) {
-+
-+		ret = kexec_add_buffer(&kbuf);
-+		if (ret) {
-+			pr_err("Error passing over kexec measurement buffer.\n");
-+			return;
-+		}
- 	}
- 
--	ret = arch_ima_add_kexec_buffer(image, kbuf.mem, kexec_segment_size);
-+	ret = arch_ima_add_kexec_buffer(image, kbuf.mem, kexec_buffer,
-+					kexec_segment_size);
- 	if (ret) {
- 		pr_err("Error passing over kexec measurement buffer.\n");
- 		return;
+Reviewed-by: Sibi Sankar <sibis@codeaurora.org>
+
+> 
+> -		rate_not_available = true;
+> -	} else {
+> -		/*
+> -		 * Rate is defined as an unsigned long in clk API, and so
+> -		 * casting explicitly to its type. Must be fixed once rate is 64
+> -		 * bit guaranteed in clk API.
+> -		 */
+> -		new_opp->rate = (unsigned long)rate;
+> +		goto free_opp;
+>  	}
+> 
+> -	of_property_read_u32(np, "opp-level", &new_opp->level);
+> -
+>  	/* Check if the OPP supports hardware's hierarchy of versions or not 
+> */
+>  	if (!_opp_is_supported(dev, opp_table, np)) {
+>  		dev_dbg(dev, "OPP not supported by hardware: %llu\n", rate);
+> diff --git a/drivers/opp/opp.h b/drivers/opp/opp.h
+> index d14e27102730..bcadb1e328a4 100644
+> --- a/drivers/opp/opp.h
+> +++ b/drivers/opp/opp.h
+> @@ -211,6 +211,7 @@ struct opp_device *_add_opp_dev(const struct
+> device *dev, struct opp_table *opp_
+>  void _dev_pm_opp_find_and_remove_table(struct device *dev);
+>  struct dev_pm_opp *_opp_allocate(struct opp_table *opp_table);
+>  void _opp_free(struct dev_pm_opp *opp);
+> +int _opp_compare_key(struct dev_pm_opp *opp1, struct dev_pm_opp 
+> *opp2);
+>  int _opp_add(struct device *dev, struct dev_pm_opp *new_opp, struct
+> opp_table *opp_table, bool rate_not_available);
+>  int _opp_add_v1(struct opp_table *opp_table, struct device *dev,
+> unsigned long freq, long u_volt, bool dynamic);
+>  void _dev_pm_opp_cpumask_remove_table(const struct cpumask *cpumask,
+> int last_cpu);
+
 -- 
-2.25.1
-
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project.
