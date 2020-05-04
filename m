@@ -2,95 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E483C1C3B48
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 15:30:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 335651C3B52
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 15:32:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728303AbgEDNa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 09:30:56 -0400
-Received: from forwardcorp1o.mail.yandex.net ([95.108.205.193]:47022 "EHLO
-        forwardcorp1o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726404AbgEDNa4 (ORCPT
+        id S1728528AbgEDNcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 09:32:10 -0400
+Received: from alexa-out-blr-02.qualcomm.com ([103.229.18.198]:8215 "EHLO
+        alexa-out-blr-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728125AbgEDNcK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 09:30:56 -0400
-Received: from mxbackcorp1o.mail.yandex.net (mxbackcorp1o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::301])
-        by forwardcorp1o.mail.yandex.net (Yandex) with ESMTP id 5C7352E1460;
-        Mon,  4 May 2020 16:30:53 +0300 (MSK)
-Received: from myt5-70c90f7d6d7d.qloud-c.yandex.net (myt5-70c90f7d6d7d.qloud-c.yandex.net [2a02:6b8:c12:3e2c:0:640:70c9:f7d])
-        by mxbackcorp1o.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id p37YMl27Y5-UqbWRbWb;
-        Mon, 04 May 2020 16:30:53 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
-        t=1588599053; bh=Spta+i/oO8BEvGD3BvlYBGUTfw/bm1sIiGx2AOg3kHw=;
-        h=Message-ID:References:Date:To:From:Subject:In-Reply-To;
-        b=wbZzOWD0J1vut19Iy8vO2yMXcjAexNO0wnK6JSkxfdqMgkmuxWsuRrt4q+oe4tTBF
-         sacTDHlJSNqEj9NBtCtARAnk1kxnK/4g4YED+IrJxbnAQnVGMeSRSGIbiZa9P5UWfj
-         LTRfvy42yQsKrBnDVNWiiDbAHzMOb920G2agr5TA=
-Authentication-Results: mxbackcorp1o.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
-Received: from dynamic-vpn.dhcp.yndx.net (dynamic-vpn.dhcp.yndx.net [2a02:6b8:b081:409::1:8])
-        by myt5-70c90f7d6d7d.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id lOjei5J8xC-UqWWBwFp;
-        Mon, 04 May 2020 16:30:52 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-Subject: [PATCH 3/4] block/part_stat: account merge of two requests
-From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-To:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>
-Date:   Mon, 04 May 2020 16:30:52 +0300
-Message-ID: <158859904278.19926.1357797452754171976.stgit@buzz>
-In-Reply-To: <158859896942.19836.15240144203131230746.stgit@buzz>
-References: <158859896942.19836.15240144203131230746.stgit@buzz>
-User-Agent: StGit/0.22-32-g6a05
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        Mon, 4 May 2020 09:32:10 -0400
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by alexa-out-blr-02.qualcomm.com with ESMTP/TLS/AES256-SHA; 04 May 2020 19:01:27 +0530
+Received: from mkrishn-linux.qualcomm.com ([10.204.66.35])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 04 May 2020 19:01:07 +0530
+Received: by mkrishn-linux.qualcomm.com (Postfix, from userid 438394)
+        id EAE0346E3; Mon,  4 May 2020 19:01:05 +0530 (IST)
+From:   Krishna Manikandan <mkrishn@codeaurora.org>
+To:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
+Cc:     Krishna Manikandan <mkrishn@codeaurora.org>,
+        linux-kernel@vger.kernel.org, robdclark@gmail.com,
+        seanpaul@chromium.org, hoegsberg@chromium.org,
+        kalyan_t@codeaurora.org, nganji@codeaurora.org, mka@chromium.org
+Subject: [v1] drm/msm/dpu: update bandwidth threshold check
+Date:   Mon,  4 May 2020 19:01:03 +0530
+Message-Id: <1588599063-15754-1-git-send-email-mkrishn@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Also rename blk_account_io_merge() into blk_account_io_merge_request() to
-distinguish it from merging request and bio.
+Maximum allowed bandwidth  has no dependency on the type
+of panel used. Hence, cleanup the code to use max_bw_high
+as the threshold value for bandwidth checks.
 
-Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Update the maximum allowed bandwidth as 6.8Gbps for
+SC7180 target.
+
+Signed-off-by: Krishna Manikandan <mkrishn@codeaurora.org>
 ---
- block/blk-merge.c |    7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/msm/disp/dpu1/dpu_core_perf.c  | 23 +----------------------
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c |  4 ++--
+ 2 files changed, 3 insertions(+), 24 deletions(-)
 
-diff --git a/block/blk-merge.c b/block/blk-merge.c
-index a04e991b5ded..37bced39bae8 100644
---- a/block/blk-merge.c
-+++ b/block/blk-merge.c
-@@ -662,20 +662,23 @@ void blk_rq_set_mixed_merge(struct request *rq)
- 	rq->rq_flags |= RQF_MIXED_MERGE;
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_core_perf.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_core_perf.c
+index 11f2beb..7c230f7 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_core_perf.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_core_perf.c
+@@ -36,22 +36,6 @@ static struct dpu_kms *_dpu_crtc_get_kms(struct drm_crtc *crtc)
+ 	return to_dpu_kms(priv->kms);
  }
  
--static void blk_account_io_merge(struct request *req)
-+static void blk_account_io_merge_request(struct request *req)
- {
- 	if (blk_do_io_stat(req)) {
-+		const int sgrp = op_stat_group(req_op(req));
- 		struct hd_struct *part;
+-static bool _dpu_core_video_mode_intf_connected(struct drm_crtc *crtc)
+-{
+-	struct drm_crtc *tmp_crtc;
+-
+-	drm_for_each_crtc(tmp_crtc, crtc->dev) {
+-		if ((dpu_crtc_get_intf_mode(tmp_crtc) == INTF_MODE_VIDEO) &&
+-				tmp_crtc->enabled) {
+-			DPU_DEBUG("video interface connected crtc:%d\n",
+-				tmp_crtc->base.id);
+-			return true;
+-		}
+-	}
+-
+-	return false;
+-}
+-
+ static void _dpu_core_perf_calc_crtc(struct dpu_kms *kms,
+ 		struct drm_crtc *crtc,
+ 		struct drm_crtc_state *state,
+@@ -94,7 +78,6 @@ int dpu_core_perf_crtc_check(struct drm_crtc *crtc,
+ 	u32 bw, threshold;
+ 	u64 bw_sum_of_intfs = 0;
+ 	enum dpu_crtc_client_type curr_client_type;
+-	bool is_video_mode;
+ 	struct dpu_crtc_state *dpu_cstate;
+ 	struct drm_crtc *tmp_crtc;
+ 	struct dpu_kms *kms;
+@@ -144,11 +127,7 @@ int dpu_core_perf_crtc_check(struct drm_crtc *crtc,
+ 		bw = DIV_ROUND_UP_ULL(bw_sum_of_intfs, 1000);
+ 		DPU_DEBUG("calculated bandwidth=%uk\n", bw);
  
- 		part_stat_lock();
- 		part = req->part;
+-		is_video_mode = dpu_crtc_get_intf_mode(crtc) == INTF_MODE_VIDEO;
+-		threshold = (is_video_mode ||
+-			_dpu_core_video_mode_intf_connected(crtc)) ?
+-			kms->catalog->perf.max_bw_low :
+-			kms->catalog->perf.max_bw_high;
++		threshold = kms->catalog->perf.max_bw_high;
  
-+		part_stat_inc(part, merges[sgrp]);
- 		part_dec_in_flight(req->q, part, rq_data_dir(req));
+ 		DPU_DEBUG("final threshold bw limit = %d\n", threshold);
  
- 		hd_struct_put(part);
- 		part_stat_unlock();
- 	}
- }
-+
- /*
-  * Two cases of handling DISCARD merge:
-  * If max_discard_segments > 1, the driver takes every bio
-@@ -787,7 +790,7 @@ static struct request *attempt_merge(struct request_queue *q,
- 	/*
- 	 * 'next' is going away, so update stats accordingly
- 	 */
--	blk_account_io_merge(next);
-+	blk_account_io_merge_request(next);
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+index c567917..6ad7472 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+@@ -515,8 +515,8 @@
+ };
  
- 	/*
- 	 * ownership of bio passed from next to req, return 'next' for
+ static const struct dpu_perf_cfg sc7180_perf_data = {
+-	.max_bw_low = 3900000,
+-	.max_bw_high = 5500000,
++	.max_bw_low = 6800000,
++	.max_bw_high = 6800000,
+ 	.min_core_ib = 2400000,
+ 	.min_llcc_ib = 800000,
+ 	.min_dram_ib = 800000,
+-- 
+1.9.1
 
