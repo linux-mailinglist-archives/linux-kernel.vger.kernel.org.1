@@ -2,280 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 833321C45DC
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:27:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D0121C45E8
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730951AbgEDS1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:27:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730848AbgEDS1y (ORCPT
+        id S1730966AbgEDS3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:29:43 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:10818 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730642AbgEDS3g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:27:54 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB53DC061A10
-        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 11:27:53 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id a32so257587pje.5
-        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 11:27:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nNG0LdDMqhgoNOsYJtqodOSWFHeIBtvo/8trfMubmmI=;
-        b=l1z9nxVQOCSfy94Afw1Uy11I/u7eFSYpN2RP/fNFVUCBQ66CkXzNxP0dmnLSm5vSy9
-         kgQzrEUmn2Z8f0r+GfX2Ov+oFmOKMsi2lbh0nx2WWXs0xuD1SuIIW/jrxDnRRtRuJMJG
-         OKCPDD6drFQiiF7mQIS7tSWDeVGGGL4BeVQgpHiXyhL2Mkv8RzHd/479D3TcBNVDLJ97
-         6mPohZITWb+Z0XAIpgYRFflCD5EP2gp8892Y7cfm4LLBx/+AofWqKcowBi+qTLexBXWK
-         7jg8OcFWRTqzFIJR1e9SvyADZYJjnSJ/Xbsz9K90LYmp94Z8mf+ZvDMI8ctmeuYPPjIp
-         6DOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nNG0LdDMqhgoNOsYJtqodOSWFHeIBtvo/8trfMubmmI=;
-        b=XVAV8UMbJ+5UK66Pgq6lVOmYjWSdfVxviEa8107ZhkblY7C0MeIfwc5ESzV1yxTQIJ
-         XiK2Bj8xwvxum7RWdRzHU2+0wr+bsLvv+606kiFZfc4bJpxlFaXa161WxldqadLgTgKC
-         DTHpdTkIK3gWb+2GWcPJTIwixpBKEO+Ae4ZqtQzIAs+5q49slVG71fzYUdfh8WDna4oG
-         XHIUZ3qXTQklTeZgspTzMVk8UPjRuSQ7/C+Qx/qFQUO1EWt1yXhqgYoc1CYZ/dfipPUB
-         eielU0JsZNgEeJRITXnA28wtSUudqDCxzB8XGJHrSPMoDEJHR4PNxrt6sd9hMaqPisW2
-         tzSw==
-X-Gm-Message-State: AGi0PuZzqA7TTDVLwekCRskBA8z2XJ4Re83u859XyrRXvKXI7AiD61EC
-        /voWX62bT+xyWd1tpZJfWkGGNg==
-X-Google-Smtp-Source: APiQypJWzYTt4TwZ/qA7F3EWZokRUkdG2JpMjsFX+GZrUyPGCSa3XwwUZnYR5pCPtQCkhEkhCo4hTg==
-X-Received: by 2002:a17:90a:d917:: with SMTP id c23mr332348pjv.192.1588616873082;
-        Mon, 04 May 2020 11:27:53 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id 71sm9489750pfw.111.2020.05.04.11.27.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 May 2020 11:27:52 -0700 (PDT)
-Date:   Mon, 4 May 2020 11:28:36 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     davem@davemloft.net, evgreen@chromium.org, subashab@codeaurora.org,
-        cpratapa@codeaurora.org, agross@kernel.org, robh+dt@kernel.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v2 3/4] net: ipa: define IMEM memory region for
- IPA
-Message-ID: <20200504182836.GC20625@builder.lan>
-References: <20200504175859.22606-1-elder@linaro.org>
- <20200504175859.22606-4-elder@linaro.org>
-MIME-Version: 1.0
+        Mon, 4 May 2020 14:29:36 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 044ILhmo019117;
+        Mon, 4 May 2020 11:29:28 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=yKoxBFKOB12ft7ahvIB3iujflYmUWvevHI3ebCDRR94=;
+ b=IdppthKyM9J2Q9GqRpZZogLRYf9NtftFwzhzluhSfBBD0JNq5xKNSd2AXFm4b5Sgs4r3
+ JbZsVSZyCPxwvuwoEm9+rwQfBMm1yIiLSSj7cmc/fXR954P99gqHaqPlcYao65OqgxsQ
+ Qg6WnmcmB8I37ECZCdzCe2oYmK/cAZHA350= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 30s6kphq55-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 04 May 2020 11:29:28 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Mon, 4 May 2020 11:29:27 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cBiS8+bOlD9BIgTSpmNmB3u+DJMxDvQ5xaLTEKYh9RsTTMKExqLfbp5PmAv50uvY/kOi0GG7GXfMYSRVRp8BxaIMMEpeF2JEFfJw07y7oeq6UzpJv+YYcMIDL3G372QjdFShYqz2LDeoT1fgEUE8zd5ckLxD2eCB7WDGipVAWPqcSNNaNKQ9dnqH6Q9Kwaz5g3WcvB78JZpIfs/TNlbzCumHzelVseBxKQC/alJw1dWTUDNXelIHuhEMg024tsbJNem/BugpYNh0uTridayj1rE2HEcb7ABlfQ02WLrGMKz1bRsZyISuzrYBF1wvoYr++eZN3EEgEYJH5nQstx1w0g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yKoxBFKOB12ft7ahvIB3iujflYmUWvevHI3ebCDRR94=;
+ b=L7SSQ6fCutjHVX4oTmmG4lSSGlTHGyq/XYaEMWgNCX8LIUcBjlPAHVSeQFyytW57nthNDDgr7aPKmfRuSbnkFzdA34K//FPrtkQaY2pO2tSJV5FYuq5PTCHJmzl9lZRKyhO8kNHMZXeggAGfO5pmZCYU/6dEJ09E3Pje/eWP4FsHZFEauIU2vwQSYw+Xi9LWwQEYf9YHfcOyNUgVw15UCi1YvSZY7hQI97ofwhlYNxKyosQtj9KowOsy3VFLzt4kohMS/ONueUvnn5DCFQxbcwFxL/VOH+10MJnlBMZmSV1dzOOav/zp+EM7VfEyAikYWpgg9SEsUbg+pa88rNt1CA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yKoxBFKOB12ft7ahvIB3iujflYmUWvevHI3ebCDRR94=;
+ b=fZkSvKVZAfTGorc1zLNQHjFop9PPowaYCnUORxCdaJ8sd1G+Q+AN6o6UYw96oO6RXIb+UzGglEZLqosDW8JAhaL67BlihMU0jnZcJ8n/EDn2/gPFTVN5MSJf8eP2SJcHKh7hIgxwi1PxdU6g/CgE4cRTtb2M8OuRsPKQIT1wvkI=
+Authentication-Results: linux.com; dkim=none (message not signed)
+ header.d=none;linux.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB2645.namprd15.prod.outlook.com (2603:10b6:a03:156::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.21; Mon, 4 May
+ 2020 18:29:25 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::bdf9:6577:1d2a:a275]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::bdf9:6577:1d2a:a275%7]) with mapi id 15.20.2958.029; Mon, 4 May 2020
+ 18:29:25 +0000
+Date:   Mon, 4 May 2020 11:29:22 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     Christopher Lameter <cl@linux.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>, <linux-mm@kvack.org>,
+        <kernel-team@fb.com>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 04/19] mm: slub: implement SLUB version of
+ obj_to_index()
+Message-ID: <20200504182922.GA20009@carbon.dhcp.thefacebook.com>
+References: <20200422204708.2176080-5-guro@fb.com>
+ <alpine.DEB.2.21.2004222349280.20021@www.lameter.com>
+ <20200423000530.GA63356@carbon.lan>
+ <alpine.DEB.2.21.2004250208500.7624@www.lameter.com>
+ <20200425024625.GA107755@carbon.lan>
+ <alpine.DEB.2.21.2004271618340.27701@www.lameter.com>
+ <20200427164638.GC114719@carbon.DHCP.thefacebook.com>
+ <alpine.DEB.2.21.2004301625490.1693@www.lameter.com>
+ <20200430171558.GA339283@carbon.dhcp.thefacebook.com>
+ <alpine.DEB.2.22.394.2005022353330.1987@www.lameter.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200504175859.22606-4-elder@linaro.org>
+In-Reply-To: <alpine.DEB.2.22.394.2005022353330.1987@www.lameter.com>
+X-ClientProxiedBy: BYAPR07CA0017.namprd07.prod.outlook.com
+ (2603:10b6:a02:bc::30) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:cc1a) by BYAPR07CA0017.namprd07.prod.outlook.com (2603:10b6:a02:bc::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.19 via Frontend Transport; Mon, 4 May 2020 18:29:24 +0000
+X-Originating-IP: [2620:10d:c090:400::5:cc1a]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 426aa318-4e5d-45b9-2757-08d7f05912ba
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2645:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB2645F8933DCC7E70E8BE8153BEA60@BYAPR15MB2645.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-Forefront-PRVS: 03932714EB
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 3qv4Aabn0ItGUrLgUAeLDutg87RDyMKizt7OxYxAJS+XBdxTeGCo+FKwnuS+W6DwOz4jnZ6/hCiZNmEBD5VONVDo4BTtmYYRO0Fqsdyplh5o3RxXKyG0BH8hCPYbmW7OqAYPbWQv29qyZlFC7+iqDEEpjDpIZsdG54m9Yd5u0l8crB21N4pBA4+M4zOF9mJzwolFVTkOmZk3KCJ7h20QthoYw+aGYx3ikjuLlX6FJU8fL0upSMmSmHxrEv4zvBv4kX8acMeeWgOlMXfF2GJG7z2eEoveuYVy8FFFFzcCeUmYJEiTdiCeVXl1Cl7xGDaehQeamH6LDrtbr1iTCKnB1gDHXIJ6nZWIOD87nWgCZmacpOsQubaT7XBQVeZsalWGW4dregbAsjGXudnabyPzaBSvYxqPbm2ogEFjFHHo9DK91y85bQleVu7W1vVDtgPt
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(376002)(346002)(136003)(366004)(39860400002)(396003)(5660300002)(6916009)(66946007)(66476007)(66556008)(2906002)(8676002)(16526019)(8936002)(1076003)(186003)(478600001)(6506007)(4326008)(54906003)(33656002)(86362001)(316002)(9686003)(7696005)(52116002)(55016002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: dO50jlkfEWPdKbeNixoKmsfumtPxREjvJ14DSYHNvXPuWatz9KOaMURi+aAe9M77k0WGD5wbIshifNMI4yqn3LfQFtDRYh4RzikJ/RRfeT1WTHKAV6/7C27ZKzce2mrtgxiwp7PYVE9W0S5u0oHQZFxyKYXcCzLMEuYGDCzNCBfV79hEs/O1X3aQDf9RY2+Oc5p8x2jPOPUSm/CK2wU0M1zVRR3hmu1lQgYjx1OK558YugGpTAwhqsmxCKGWLXGfyjQl0OayoSUtvwI05jFjNjtOtPmtyfHiaZRXmS/6lkgSTo70iPFNPV/5izKJv/ScvXeBD1zWBvPjdqrj+5wJqiWowuSssGjVJGFAJ7NOw8zBFvWIaejSUQq+7u4wx+/n87T8HuikUBZOXcxoo+iCNiJSIDqIzahlXb4XD26WMknAh7Hn5UbhvqjJPkq+cVgJ+nNqekzZhc0zhYyR41YnHptCdMUtYsFe+qFAvbpFAmGmHXczxSN7dGGZvE/I3zJMSK7qeD/YpwZXZNDlFCtlhpzM3MIFw+vN92Ow3FvszSgUZWF0Gn+io7vNtp7DxDFMmtk5ABFjPXMzNExA62ZazpIbXEgGFDCrsPjBeVr5/GF2r+Ktet6pZdLTKXRU36linmDm5s2cVA4jr7K4WIG7ogKQ8p1V5GUT4um8tSeb9srU6qg//l7sBLNFD9g0/W0fIhfTDpi92+2wEEMuSeK/qzY+a4NEulKpxeP+DHD5mYZMMsx1cvYVi+onG7qxNkoRdQ0xFRHS3rTxxDIblXM9yTc5iG6EGKRD8tmEyt5QEFuemA71SqD0H2AeVRdW0P7o2yjwdAoIqmbslwrcD6qm9g==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 426aa318-4e5d-45b9-2757-08d7f05912ba
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 May 2020 18:29:25.5188
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: iR9Y8G4Krq/tDF+9nBtmp21zI5jGaVoIgUgj06t4b8xNLHZtWXhS2toqT2cKwjSR
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2645
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-05-04_11:2020-05-04,2020-05-04 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ bulkscore=0 suspectscore=1 adultscore=0 malwarescore=0 impostorscore=0
+ phishscore=0 mlxscore=0 mlxlogscore=580 priorityscore=1501 clxscore=1015
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005040144
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 04 May 10:58 PDT 2020, Alex Elder wrote:
-
-> Define a region of IMEM memory available for use by IPA in the
-> platform configuration data.  Initialize it from ipa_mem_init().
-> The memory must be mapped for access through an SMMU.
+On Sat, May 02, 2020 at 11:54:09PM +0000, Christoph Lameter wrote:
+> On Thu, 30 Apr 2020, Roman Gushchin wrote:
 > 
-
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-Regards,
-Bjorn
-
-> Signed-off-by: Alex Elder <elder@linaro.org>
-> ---
->  drivers/net/ipa/ipa.h             |  5 ++
->  drivers/net/ipa/ipa_data-sc7180.c |  2 +
->  drivers/net/ipa/ipa_data-sdm845.c |  2 +
->  drivers/net/ipa/ipa_data.h        |  6 ++-
->  drivers/net/ipa/ipa_mem.c         | 84 +++++++++++++++++++++++++++++++
->  5 files changed, 98 insertions(+), 1 deletion(-)
+> > Sorry, but what exactly do you mean?
 > 
-> diff --git a/drivers/net/ipa/ipa.h b/drivers/net/ipa/ipa.h
-> index 23fb29889e5a..32f6dfafdb05 100644
-> --- a/drivers/net/ipa/ipa.h
-> +++ b/drivers/net/ipa/ipa.h
-> @@ -47,6 +47,8 @@ struct ipa_interrupt;
->   * @mem_offset:		Offset from @mem_virt used for access to IPA memory
->   * @mem_size:		Total size (bytes) of memory at @mem_virt
->   * @mem:		Array of IPA-local memory region descriptors
-> + * @imem_iova:		I/O virtual address of IPA region in IMEM
-> + * @imem_size;		Size of IMEM region
->   * @zero_addr:		DMA address of preallocated zero-filled memory
->   * @zero_virt:		Virtual address of preallocated zero-filled memory
->   * @zero_size:		Size (bytes) of preallocated zero-filled memory
-> @@ -88,6 +90,9 @@ struct ipa {
->  	u32 mem_size;
->  	const struct ipa_mem *mem;
->  
-> +	unsigned long imem_iova;
-> +	size_t imem_size;
-> +
->  	dma_addr_t zero_addr;
->  	void *zero_virt;
->  	size_t zero_size;
-> diff --git a/drivers/net/ipa/ipa_data-sc7180.c b/drivers/net/ipa/ipa_data-sc7180.c
-> index f97e7e4e61c1..e9007d151c68 100644
-> --- a/drivers/net/ipa/ipa_data-sc7180.c
-> +++ b/drivers/net/ipa/ipa_data-sc7180.c
-> @@ -299,6 +299,8 @@ static const struct ipa_mem ipa_mem_local_data[] = {
->  static struct ipa_mem_data ipa_mem_data = {
->  	.local_count	= ARRAY_SIZE(ipa_mem_local_data),
->  	.local		= ipa_mem_local_data,
-> +	.imem_addr	= 0x146a8000,
-> +	.imem_size	= 0x00002000,
->  };
->  
->  /* Configuration data for the SC7180 SoC. */
-> diff --git a/drivers/net/ipa/ipa_data-sdm845.c b/drivers/net/ipa/ipa_data-sdm845.c
-> index c55507e94559..c0e207085550 100644
-> --- a/drivers/net/ipa/ipa_data-sdm845.c
-> +++ b/drivers/net/ipa/ipa_data-sdm845.c
-> @@ -321,6 +321,8 @@ static const struct ipa_mem ipa_mem_local_data[] = {
->  static struct ipa_mem_data ipa_mem_data = {
->  	.local_count	= ARRAY_SIZE(ipa_mem_local_data),
->  	.local		= ipa_mem_local_data,
-> +	.imem_addr	= 0x146bd000,
-> +	.imem_size	= 0x00002000,
->  };
->  
->  /* Configuration data for the SDM845 SoC. */
-> diff --git a/drivers/net/ipa/ipa_data.h b/drivers/net/ipa/ipa_data.h
-> index 51d8e5a6f23a..69957af56ccd 100644
-> --- a/drivers/net/ipa/ipa_data.h
-> +++ b/drivers/net/ipa/ipa_data.h
-> @@ -245,13 +245,17 @@ struct ipa_resource_data {
->  };
->  
->  /**
-> - * struct ipa_mem - IPA-local memory region description
-> + * struct ipa_mem - description of IPA memory regions
->   * @local_count:	number of regions defined in the local[] array
->   * @local:		array of IPA-local memory region descriptors
-> + * @imem_addr:		physical address of IPA region within IMEM
-> + * @imem_size:		size in bytes of IPA IMEM region
->   */
->  struct ipa_mem_data {
->  	u32 local_count;
->  	const struct ipa_mem *local;
-> +	u32 imem_addr;
-> +	u32 imem_size;
->  };
->  
->  /**
-> diff --git a/drivers/net/ipa/ipa_mem.c b/drivers/net/ipa/ipa_mem.c
-> index fb4de2a12796..3c0916597fe1 100644
-> --- a/drivers/net/ipa/ipa_mem.c
-> +++ b/drivers/net/ipa/ipa_mem.c
-> @@ -8,6 +8,7 @@
->  #include <linux/bitfield.h>
->  #include <linux/bug.h>
->  #include <linux/dma-mapping.h>
-> +#include <linux/iommu.h>
->  #include <linux/io.h>
->  
->  #include "ipa.h"
-> @@ -266,6 +267,79 @@ int ipa_mem_zero_modem(struct ipa *ipa)
->  	return 0;
->  }
->  
-> +/**
-> + * ipa_imem_init() - Initialize IMEM memory used by the IPA
-> + * @ipa:	IPA pointer
-> + * @addr:	Physical address of the IPA region in IMEM
-> + * @size:	Size (bytes) of the IPA region in IMEM
-> + *
-> + * IMEM is a block of shared memory separate from system DRAM, and
-> + * a portion of this memory is available for the IPA to use.  The
-> + * modem accesses this memory directly, but the IPA accesses it
-> + * via the IOMMU, using the AP's credentials.
-> + *
-> + * If this region exists (size > 0) we map it for read/write access
-> + * through the IOMMU using the IPA device.
-> + *
-> + * Note: @addr and @size are not guaranteed to be page-aligned.
-> + */
-> +static int ipa_imem_init(struct ipa *ipa, unsigned long addr, size_t size)
-> +{
-> +	struct device *dev = &ipa->pdev->dev;
-> +	struct iommu_domain *domain;
-> +	unsigned long iova;
-> +	phys_addr_t phys;
-> +	int ret;
-> +
-> +	if (!size)
-> +		return 0;	/* IMEM memory not used */
-> +
-> +	domain = iommu_get_domain_for_dev(dev);
-> +	if (!domain) {
-> +		dev_err(dev, "no IOMMU domain found for IMEM\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* Align the address down and the size up to page boundaries */
-> +	phys = addr & PAGE_MASK;
-> +	size = PAGE_ALIGN(size + addr - phys);
-> +	iova = phys;	/* We just want a direct mapping */
-> +
-> +	ret = iommu_map(domain, iova, phys, size, IOMMU_READ | IOMMU_WRITE);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ipa->imem_iova = iova;
-> +	ipa->imem_size = size;
-> +
-> +	return 0;
-> +}
-> +
-> +static void ipa_imem_exit(struct ipa *ipa)
-> +{
-> +	struct iommu_domain *domain;
-> +	struct device *dev;
-> +
-> +	if (!ipa->imem_size)
-> +		return;
-> +
-> +	dev = &ipa->pdev->dev;
-> +	domain = iommu_get_domain_for_dev(dev);
-> +	if (domain) {
-> +		size_t size;
-> +
-> +		size = iommu_unmap(domain, ipa->imem_iova, ipa->imem_size);
-> +		if (size != ipa->imem_size)
-> +			dev_warn(dev, "unmapped %zu IMEM bytes, expected %lu\n",
-> +				 size, ipa->imem_size);
-> +	} else {
-> +		dev_err(dev, "couldn't get IPA IOMMU domain for IMEM\n");
-> +	}
-> +
-> +	ipa->imem_size = 0;
-> +	ipa->imem_iova = 0;
-> +}
-> +
->  /* Perform memory region-related initialization */
->  int ipa_mem_init(struct ipa *ipa, const struct ipa_mem_data *mem_data)
->  {
-> @@ -305,11 +379,21 @@ int ipa_mem_init(struct ipa *ipa, const struct ipa_mem_data *mem_data)
->  	/* The ipa->mem[] array is indexed by enum ipa_mem_id values */
->  	ipa->mem = mem_data->local;
->  
-> +	ret = ipa_imem_init(ipa, mem_data->imem_addr, mem_data->imem_size);
-> +	if (ret)
-> +		goto err_unmap;
-> +
->  	return 0;
-> +
-> +err_unmap:
-> +	memunmap(ipa->mem_virt);
-> +
-> +	return ret;
->  }
->  
->  /* Inverse of ipa_mem_init() */
->  void ipa_mem_exit(struct ipa *ipa)
->  {
-> +	ipa_imem_exit(ipa);
->  	memunmap(ipa->mem_virt);
->  }
-> -- 
-> 2.20.1
-> 
+> I think the right approach is to add a pointer to each slab object for
+> memcg support.
+>
+
+As I understand, embedding the memcg pointer will hopefully make allocations
+cheaper in terms of CPU, but will require more memory. And you think that
+it's worth it. Is it a correct understanding?
+
+Can you, please, describe a bit more detailed how it should be done
+from your point of view?
+I mean where to store the pointer, should it be SLAB/SLUB-specific code
+or a generic code, what do to with kmallocs alignments, should we
+merge slabs which had a different size before and now have the same
+because of the memcg pointer and aligment, etc.
+
+I'm happy to follow your advice and perform some tests to get an idea of
+how significant the memory overhead is and how big are CPU savings.
+I guess with these numbers it will be easy to make a decision.
+
+Thanks!
