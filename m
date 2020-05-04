@@ -2,90 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B64371C478F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 22:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B77071C4799
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 22:03:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728115AbgEDUBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 16:01:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728082AbgEDUB3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 16:01:29 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 920D4C061A10
-        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 13:01:29 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id f8so228726plt.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 13:01:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZFRO3RhADYIeDpbw4dnAWyjVt7yzrlI/aPmG+9d8qeE=;
-        b=qrHszcJGGSIsCedROR57TweuB7bX5mbZsxDa1hb+YaSY5m/twRdgsGDaKjFpj1FT4N
-         V3ECCU3uh6lis3rOAqcfqTQFIoLtc4zGPki5ISHQzFRgDjGkRwdfSu8CkSBUiSKcJgiN
-         NM4EF5poDdfcNB/62wYhnyLMSNCzCJpcWte6mNPF9NsqMNcZhm0uMDZQWCgNOYDo1Ohu
-         GlAjPDD1qGAC1SHA99cElOMjxrhYtOKW+YnG3vVMHZXdgDCy9UwHxWSNR0bKV3na+jYG
-         eJUzGB70l7kBEHhrWRgbWMAsO+hihmceg9Zo2H2vXXs0My0GoiqKsOph6Z3gBJZL0qwe
-         pXIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=ZFRO3RhADYIeDpbw4dnAWyjVt7yzrlI/aPmG+9d8qeE=;
-        b=oBoCyrqtE7yGjzYAdmk0JGjUbR7ENrzCCEhYV1/CkSkGDfGt/5M4ndffXXeQ36rH76
-         Qqi2qdI/fp2TMz8UBtQbj1IM6wUOkdJqvJTArvJkGnYRLx9pBXo+fAQDa2SC/y1z6K1S
-         uGM9QdCTunlZSWDJmaDkHmFyl3b9DCCmq9xvOE3T0KUVWDRvyJpQqiNeQ3kjMTSYMwce
-         O0jU+G7UY+vAI1dfJmppxPbZ03q6XKuK7RsFNbiIw3L6bOGefzYVDKY5pui8USL4f3fQ
-         ANSNeTkp+YR4yvlNnfHL12r767D22UH7vezQWlKtkZOZw7pb6B6zTjovu3Zv0sz8uwJQ
-         t+NA==
-X-Gm-Message-State: AGi0PubAYzNVK4XSF5RiIQAuxqNNXYC4K0LbybCQS/9Z0sQ4nIttjD2n
-        PxCUE8zqrFx5lbrk6F/VO1GyZA==
-X-Google-Smtp-Source: APiQypIFC8V36B+W7lp+3i/NHiQ8u4AgxMSexVW/Rp60TpLxCPv8LY5YL73POlfEskWD07QJhyN/kQ==
-X-Received: by 2002:a17:902:8497:: with SMTP id c23mr868287plo.335.1588622488940;
-        Mon, 04 May 2020 13:01:28 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id p189sm9716682pfp.135.2020.05.04.13.01.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 May 2020 13:01:28 -0700 (PDT)
-Date:   Mon, 04 May 2020 13:01:28 -0700 (PDT)
-X-Google-Original-Date: Mon, 04 May 2020 13:01:06 PDT (-0700)
-Subject:     Re: [PATCH 0/3] RISC-V KVM preparation
-In-Reply-To: <20200424045928.79324-1-anup.patel@wdc.com>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
-        pbonzini@redhat.com, Atish Patra <Atish.Patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        anup@brainfault.org, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Anup Patel <Anup.Patel@wdc.com>
-From:   Palmer Dabbelt <palmerdabbelt@google.com>
-To:     Anup Patel <Anup.Patel@wdc.com>
-Message-ID: <mhng-be6b9ad5-d81c-4ae1-9eed-9b2d63600b37@palmerdabbelt-glaptop1>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        id S1727788AbgEDUDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 16:03:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55992 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726334AbgEDUDA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 16:03:00 -0400
+Received: from [192.168.1.74] (75-58-59-55.lightspeed.rlghnc.sbcglobal.net [75.58.59.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 740C1206A5;
+        Mon,  4 May 2020 20:02:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588622580;
+        bh=GIxo0Vm+W3zux+9Tx3/1kqa1pGgR2R/67Dfb5VXJ+I4=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=mNgiZ0Kjg0wTQw/+v4PZd/EHEfwYZfOKjaavdvVX1cdSFUs0nSI5RsWlB3Wyim1z1
+         UTEXTcGq4s8dF8BOkLpNRUVGSFI9PYoN9dclXKEy+8zmvWKoS+DUut7HpN0jg64ktd
+         R0MmkOpN0+k3SM0o0VIH0qeH+ENQwfPFv8dhA4Hs=
+Subject: Re: [PATCH] dmaengine: qcom_hidma: use true,false for bool variable
+To:     Jason Yan <yanaijie@huawei.com>, agross@kernel.org,
+        bjorn.andersson@linaro.org, vkoul@kernel.org,
+        dan.j.williams@intel.com, linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200504113406.41530-1-yanaijie@huawei.com>
+From:   Sinan Kaya <okaya@kernel.org>
+Autocrypt: addr=okaya@kernel.org; keydata=
+ mQENBFrnOrUBCADGOL0kF21B6ogpOkuYvz6bUjO7NU99PKhXx1MfK/AzK+SFgxJF7dMluoF6
+ uT47bU7zb7HqACH6itTgSSiJeSoq86jYoq5s4JOyaj0/18Hf3/YBah7AOuwk6LtV3EftQIhw
+ 9vXqCnBwP/nID6PQ685zl3vH68yzF6FVNwbDagxUz/gMiQh7scHvVCjiqkJ+qu/36JgtTYYw
+ 8lGWRcto6gr0eTF8Wd8f81wspmUHGsFdN/xPsZPKMw6/on9oOj3AidcR3P9EdLY4qQyjvcNC
+ V9cL9b5I/Ud9ghPwW4QkM7uhYqQDyh3SwgEFudc+/RsDuxjVlg9CFnGhS0nPXR89SaQZABEB
+ AAG0HVNpbmFuIEtheWEgPG9rYXlhQGtlcm5lbC5vcmc+iQFOBBMBCAA4FiEEYdOlMSE+a7/c
+ ckrQvGF4I+4LAFcFAlztcAoCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQvGF4I+4L
+ AFfidAf/VKHInxep0Z96iYkIq42432HTZUrxNzG9IWk4HN7c3vTJKv2W+b9pgvBF1SmkyQSy
+ 8SJ3Zd98CO6FOHA1FigFyZahVsme+T0GsS3/OF1kjrtMktoREr8t0rK0yKpCTYVdlkHadxmR
+ Qs5xLzW1RqKlrNigKHI2yhgpMwrpzS+67F1biT41227sqFzW9urEl/jqGJXaB6GV+SRKSHN+
+ ubWXgE1NkmfAMeyJPKojNT7ReL6eh3BNB/Xh1vQJew+AE50EP7o36UXghoUktnx6cTkge0ZS
+ qgxuhN33cCOU36pWQhPqVSlLTZQJVxuCmlaHbYWvye7bBOhmiuNKhOzb3FcgT7kBDQRa5zq1
+ AQgAyRq/7JZKOyB8wRx6fHE0nb31P75kCnL3oE+smKW/sOcIQDV3C7mZKLf472MWB1xdr4Tm
+ eXeL/wT0QHapLn5M5wWghC80YvjjdolHnlq9QlYVtvl1ocAC28y43tKJfklhHiwMNDJfdZbw
+ 9lQ2h+7nccFWASNUu9cqZOABLvJcgLnfdDpnSzOye09VVlKr3NHgRyRZa7me/oFJCxrJlKAl
+ 2hllRLt0yV08o7i14+qmvxI2EKLX9zJfJ2rGWLTVe3EJBnCsQPDzAUVYSnTtqELu2AGzvDiM
+ gatRaosnzhvvEK+kCuXuCuZlRWP7pWSHqFFuYq596RRG5hNGLbmVFZrCxQARAQABiQEfBBgB
+ CAAJBQJa5zq1AhsMAAoJELxheCPuCwBX2UYH/2kkMC4mImvoClrmcMsNGijcZHdDlz8NFfCI
+ gSb3NHkarnA7uAg8KJuaHUwBMk3kBhv2BGPLcmAknzBIehbZ284W7u3DT9o1Y5g+LDyx8RIi
+ e7pnMcC+bE2IJExCVf2p3PB1tDBBdLEYJoyFz/XpdDjZ8aVls/pIyrq+mqo5LuuhWfZzPPec
+ 9EiM2eXpJw+Rz+vKjSt1YIhg46YbdZrDM2FGrt9ve3YaM5H0lzJgq/JQPKFdbd5MB0X37Qc+
+ 2m/A9u9SFnOovA42DgXUyC2cSbIJdPWOK9PnzfXqF3sX9Aol2eLUmQuLpThJtq5EHu6FzJ7Y
+ L+s0nPaNMKwv/Xhhm6Y=
+Message-ID: <3d61f97c-6d7e-a0be-9986-99c09a0f896d@kernel.org>
+Date:   Mon, 4 May 2020 16:02:58 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20200504113406.41530-1-yanaijie@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Apr 2020 21:59:25 PDT (-0700), Anup Patel wrote:
-> This patch series is factored-out from the KVM RISC-V v11 series and is
-> based upon Linux-5.7-rc2.
->
-> These patches are mostly preparatory changes in Linux RISC-V kernel which
-> we require for KVM RISC-V implementation. Also, most of these patches are
-> already reviewed as part of original KVM RISC-V series.
->
-> Anup Patel (3):
->   RISC-V: Export riscv_cpuid_to_hartid_mask() API
->   RISC-V: Add bitmap reprensenting ISA features common across CPUs
->   RISC-V: Remove N-extension related defines
->
->  arch/riscv/include/asm/csr.h   |  3 --
->  arch/riscv/include/asm/hwcap.h | 22 +++++++++
->  arch/riscv/kernel/cpufeature.c | 83 ++++++++++++++++++++++++++++++++--
->  arch/riscv/kernel/smp.c        |  2 +
->  4 files changed, 104 insertions(+), 6 deletions(-)
+On 5/4/2020 7:34 AM, Jason Yan wrote:
+> Fix the following coccicheck warning:
+> 
+> drivers/dma/qcom/hidma.c:553:1-17: WARNING: Assignment of 0/1 to bool
+> variable
+> 
+> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+> ---
+>  drivers/dma/qcom/hidma.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/dma/qcom/hidma.c b/drivers/dma/qcom/hidma.c
+> index 87490e125bc3..0a6d3ea08c78 100644
+> --- a/drivers/dma/qcom/hidma.c
+> +++ b/drivers/dma/qcom/hidma.c
+> @@ -550,7 +550,7 @@ static void hidma_free_chan_resources(struct dma_chan *dmach)
+>  		kfree(mdesc);
+>  	}
+>  
+> -	mchan->allocated = 0;
+> +	mchan->allocated = false;
+>  	spin_unlock_irqrestore(&mchan->lock, irqflags);
+>  }
 
-These are on fixes.
+Acked By: Sinan Kaya <okaya@kernel.org>
+
