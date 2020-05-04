@@ -2,153 +2,353 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91ACB1C3B99
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 15:46:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2165A1C3B89
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 15:44:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728636AbgEDNq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 09:46:56 -0400
-Received: from esa4.microchip.iphmx.com ([68.232.154.123]:36552 "EHLO
-        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728334AbgEDNqy (ORCPT
+        id S1728405AbgEDNoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 09:44:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728165AbgEDNoh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 09:46:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1588600014; x=1620136014;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=12xjLzI1c4xmu9itMWLk1HDPDRb1cJVAi53VDaonBYc=;
-  b=0L4VWVbV8Z1aCUU49kGXYmE/J0QNfjv9rMSfR/4mqVg9tAc9Yjdp8F5X
-   0l1LQi6T2SSGRueQ5+q0jhS6yR8SrGdRoDwOYEcg21dab9HO6kxZYOwmO
-   Kre0dFQK8dcr8dXe+VkkJIV5inwnlBO/glDylowrSaIiyxWnWQF2zCVCe
-   aNrmoWH8gYQ3aa13rJLeYB9Rm5umeztYySCjQyoqt6HuczxHUV7F979yB
-   ssHDl1i4hzm+hH4v4L8dWQ9y78enSGBYfea/ZXbbfuFTQsCu3O69g5EIw
-   FIjVr05fktVKtHy2RIYSAXwT2nGZ5AkwsDMMvwtj5VlzUUnqopetflsD1
-   w==;
-IronPort-SDR: ZXnc/wUiGFY/B3+inZSWq9bYwDHFMMv3hrflf0gpSWTmhoAoRQl28agtHAlcsB0fncaWN094wj
- 6m69xlWsR7TZQ5Xt6UQAvMnAkKi7jB5A4N1ih6mVK6fuc3mhGSf+bFPG4u3+/BlFaeJ2LFcQBO
- Ros5J1KaJ3lXYJRQT1aoSbX5Oxuafoo4gkY45I7J7eT0mOJmvKQNL+iuow+fzLZ5kuRr2wW4rh
- RKAp+9dKTK+m5NszmJ1KBO8qSes+Nq3HIP+mQwEme7+0EhsxzAIQs244SrkL9XVd+p5oh6P81A
- 4LM=
-X-IronPort-AV: E=Sophos;i="5.73,352,1583218800"; 
-   d="scan'208";a="72332658"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 04 May 2020 06:46:52 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 4 May 2020 06:46:53 -0700
-Received: from localhost.localdomain (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.1713.5 via Frontend Transport; Mon, 4 May 2020 06:46:49 -0700
-From:   <nicolas.ferre@microchip.com>
-To:     <linux-arm-kernel@lists.infradead.org>, <netdev@vger.kernel.org>,
-        "Claudiu Beznea" <claudiu.beznea@microchip.com>,
-        <harini.katakam@xilinx.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        <antoine.tenart@bootlin.com>, <f.fainelli@gmail.com>,
-        <linux@armlinux.org.uk>, <andrew@lunn.ch>,
-        <michal.simek@xilinx.com>,
-        "Nicolas Ferre" <nicolas.ferre@microchip.com>
-Subject: [PATCH v3 7/7] net: macb: Add WoL interrupt support for MACB type of Ethernet controller
-Date:   Mon, 4 May 2020 15:44:22 +0200
-Message-ID: <a7ff77de9ab8694ac1c0648a623f6916c000d35e.1588597759.git.nicolas.ferre@microchip.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1588597759.git.nicolas.ferre@microchip.com>
-References: <cover.1588597759.git.nicolas.ferre@microchip.com>
+        Mon, 4 May 2020 09:44:37 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52521C061A0F
+        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 06:44:37 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id i16so11250409ils.12
+        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 06:44:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=antmicro.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=YiKnWtOgcX4d6/1epbmpUfGmDFGrCbeypzkpKzeVrds=;
+        b=cr7Ja9/WRgMiwRfDa/XjnyXjX+jzxDckxjUFre8+JFmlsh4gFnFYYzm9be1kaR9+xL
+         QsHmhFlDlEvRuooxON67qa/ps6IyB5QRXYmIUA1MIXFwveyQ8uhU5U/IoFzkrzRYQdSK
+         P9UPAG/6jM9E3/bJtU/QqjOOtcvPvllD85Ymg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=YiKnWtOgcX4d6/1epbmpUfGmDFGrCbeypzkpKzeVrds=;
+        b=j3AKu2pS4W/kI5qVSvY2Llpuy4mnTfQr+F/Q3Esh9wu0G0Z6ajPGIYwC1tmd7tOmOE
+         JLDp0TWDyU2YFkqd/mKrZpxt0eXgmP3qbKf2/5eSx/vRpfHsE9x8yywKONBuWpCcEP4j
+         Ujn1vH9Yww7hRHhl8UQyy1KAUq4VAQvB2kTCoBvmRxzGIcqscKKotQAcm8tChmEb2ukE
+         OlvF20UMH4IpNXJQylByWbVjHDaum6B/kyw00P9MdClPgQA/3XNVtOhW078ncvA6AzvO
+         GepahGGzhUFp6zZn95eweyGMjRho01NR9IbhAjpGckGolxxpVjLNwtv1MjhgmAybOI0v
+         LNhw==
+X-Gm-Message-State: AGi0Pua7nh2CDxEaE38moCJQc6AJRuIIE+DOfJxXALPODkzjMiVtgefI
+        VTxevGoxRzHnAUQTZ6L58h6PLSvqgQqjHU5ekwEjVg==
+X-Google-Smtp-Source: APiQypKTBaTlYMo8+eC12IIkd8T/1jhkPCaKJOZPNrBKCvbb82kPAYYpg5jPBch/+CSrG4a1Op54kP6+5xC4z65Pg7U=
+X-Received: by 2002:a92:b710:: with SMTP id k16mr15879307ili.270.1588599876503;
+ Mon, 04 May 2020 06:44:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+References: <20200425133939.3508912-0-mholenko@antmicro.com>
+ <20200425133939.3508912-5-mholenko@antmicro.com> <CAHp75VfsiAaZez7nv7Z7E-5NL0_xObzi_LZsiWbms54jNcyv6A@mail.gmail.com>
+In-Reply-To: <CAHp75VfsiAaZez7nv7Z7E-5NL0_xObzi_LZsiWbms54jNcyv6A@mail.gmail.com>
+From:   Mateusz Holenko <mholenko@antmicro.com>
+Date:   Mon, 4 May 2020 15:44:24 +0200
+Message-ID: <CAPk366R7ty-KAtnaTyqOH6rUewRd7Wvt6GSoB3bYpS+X_xT1CQ@mail.gmail.com>
+Subject: Re: [PATCH v5 5/5] drivers/tty/serial: add LiteUART driver
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Stafford Horne <shorne@gmail.com>,
+        Karol Gugala <kgugala@antmicro.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Paul E. McKenney" <paulmck@linux.ibm.com>,
+        Filip Kokosinski <fkokosinski@antmicro.com>,
+        Pawel Czarnecki <pczarnecki@internships.antmicro.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Icenowy Zheng <icenowy@aosc.io>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas Ferre <nicolas.ferre@microchip.com>
+On Tue, Apr 28, 2020 at 5:50 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Sat, Apr 25, 2020 at 2:45 PM Mateusz Holenko <mholenko@antmicro.com> w=
+rote:
+> >
+> > From: Filip Kokosinski <fkokosinski@antmicro.com>
+> >
+> > This commit adds driver for the FPGA-based LiteUART serial controller
+> > from LiteX SoC builder.
+> >
+> > The current implementation supports LiteUART configured
+> > for 32 bit data width and 8 bit CSR bus width.
+> >
+> > It does not support IRQ.
+> >
+> > Signed-off-by: Filip Kokosinski <fkokosinski@antmicro.com>
+> > Signed-off-by: Mateusz Holenko <mholenko@antmicro.com>
+>
+> Co-developed-by?
 
-Handle the Wake-on-Lan interrupt for the Cadence MACB Ethernet
-controller.
-As we do for the GEM version, we handle of WoL interrupt in a
-specialized interrupt handler for MACB version that is positionned
-just between suspend() and resume() calls.
+Most of the coding here is done by Filip Kokosinski - I'm responsible
+for managing the patches and sending to LKML so I don't think I
+qualify as a co-developer :)
 
-Cc: Claudiu Beznea <claudiu.beznea@microchip.com>
-Cc: Harini Katakam <harini.katakam@xilinx.com>
-Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
----
-Changes in v2:
-- Addition of pm_wakeup_event() in WoL IRQ
+> ...
+>
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -9731,6 +9731,7 @@ S:        Maintained
+> >  F:     Documentation/devicetree/bindings/*/litex,*.yaml
+> >  F:     drivers/soc/litex/litex_soc_ctrl.c
+> >  F:     include/linux/litex.h
+> > +F:     drivers/tty/serial/liteuart.c
+>
+> Ordering issue, run latest checkpatch.pl and parse-maintaners.pl to fix.
 
- drivers/net/ethernet/cadence/macb_main.c | 39 +++++++++++++++++++++++-
- 1 file changed, 38 insertions(+), 1 deletion(-)
+We'll check that.
 
-diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
-index be8454a8535b..f8dc3c1b807b 100644
---- a/drivers/net/ethernet/cadence/macb_main.c
-+++ b/drivers/net/ethernet/cadence/macb_main.c
-@@ -1513,6 +1513,35 @@ static void macb_tx_restart(struct macb_queue *queue)
- 	macb_writel(bp, NCR, macb_readl(bp, NCR) | MACB_BIT(TSTART));
- }
- 
-+static irqreturn_t macb_wol_interrupt(int irq, void *dev_id)
-+{
-+	struct macb_queue *queue = dev_id;
-+	struct macb *bp = queue->bp;
-+	u32 status;
-+
-+	status = queue_readl(queue, ISR);
-+
-+	if (unlikely(!status))
-+		return IRQ_NONE;
-+
-+	spin_lock(&bp->lock);
-+
-+	if (status & MACB_BIT(WOL)) {
-+		queue_writel(queue, IDR, MACB_BIT(WOL));
-+		macb_writel(bp, WOL, 0);
-+		netdev_vdbg(bp->dev, "MACB WoL: queue = %u, isr = 0x%08lx\n",
-+			    (unsigned int)(queue - bp->queues),
-+			    (unsigned long)status);
-+		if (bp->caps & MACB_CAPS_ISR_CLEAR_ON_WRITE)
-+			queue_writel(queue, ISR, MACB_BIT(WOL));
-+		pm_wakeup_event(&bp->pdev->dev, 0);
-+	}
-+
-+	spin_unlock(&bp->lock);
-+
-+	return IRQ_HANDLED;
-+}
-+
- static irqreturn_t gem_wol_interrupt(int irq, void *dev_id)
- {
- 	struct macb_queue *queue = dev_id;
-@@ -4586,8 +4615,8 @@ static int __maybe_unused macb_suspend(struct device *dev)
- 		/* Change interrupt handler and
- 		 * Enable WoL IRQ on queue 0
- 		 */
-+		devm_free_irq(dev, bp->queues[0].irq, bp->queues);
- 		if (macb_is_gem(bp)) {
--			devm_free_irq(dev, bp->queues[0].irq, bp->queues);
- 			err = devm_request_irq(dev, bp->queues[0].irq, gem_wol_interrupt,
- 					       IRQF_SHARED, netdev->name, bp->queues);
- 			if (err) {
-@@ -4599,6 +4628,14 @@ static int __maybe_unused macb_suspend(struct device *dev)
- 			queue_writel(bp->queues, IER, GEM_BIT(WOL));
- 			gem_writel(bp, WOL, MACB_BIT(MAG));
- 		} else {
-+			err = devm_request_irq(dev, bp->queues[0].irq, macb_wol_interrupt,
-+					       IRQF_SHARED, netdev->name, bp->queues);
-+			if (err) {
-+				dev_err(dev,
-+					"Unable to request IRQ %d (error %d)\n",
-+					bp->queues[0].irq, err);
-+				return err;
-+			}
- 			queue_writel(bp->queues, IER, MACB_BIT(WOL));
- 			macb_writel(bp, WOL, MACB_BIT(MAG));
- 		}
--- 
-2.26.2
+> ...
+>
+> > +config SERIAL_LITEUART
+> > +       tristate "LiteUART serial port support"
+> > +       depends on HAS_IOMEM
+>
+> > +       depends on OF
+>
+> || COMPILE_TEST ?
 
+Sure, we'll add that.
+
+> > +       depends on LITEX_SOC_CONTROLLER
+> > +       select SERIAL_CORE
+>
+> ...
+>
+> > +/*
+> > + * CSRs definitions
+> > + * (base address offsets + width)
+> > + *
+> > + * The definitions below are true for
+> > + * LiteX SoC configured for
+> > + * 8-bit CSR Bus, 32-bit aligned.
+> > + *
+> > + * Supporting other configurations
+> > + * might require new definitions
+> > + * or a more generic way of indexing
+> > + * the LiteX CSRs.
+> > + *
+> > + * For more details on how CSRs
+> > + * are defined and handled in LiteX,
+> > + * see comments in the LiteX SoC Driver:
+> > + * drivers/soc/litex/litex_soc_ctrl.c
+> > + */
+>
+> Can you use some like 76 characters per line?
+>
+
+We'll reformat the code to match 76 chars.
+
+> ...
+>
+> > +#define OFF_RXTX       0x00
+> > +#define SIZE_RXTX      1
+> > +#define OFF_TXFULL     0x04
+> > +#define SIZE_TXFULL    1
+> > +#define OFF_RXEMPTY    0x08
+> > +#define SIZE_RXEMPTY   1
+> > +#define OFF_EV_STATUS  0x0c
+> > +#define SIZE_EV_STATUS 1
+> > +#define OFF_EV_PENDING 0x10
+> > +#define SIZE_EV_PENDING        1
+> > +#define OFF_EV_ENABLE  0x14
+> > +#define SIZE_EV_ENABLE 1
+>
+> Why do you need all those SIZE_*?
+>
+> ...
+
+This is related to how LiteX peripherals (LiteUART being one of them)
+handle register access.
+The LiteX HW splits a classic 32-bit register into 4 32-bit registers,
+each one containing only 8-bit part of it.
+
+SIZE in this context means how many of those "subregisters" (still
+32-bit wide, but with only 8-bit of meaningful data) to read/write.
+The "litex.h" header (patch 3 of this patchset) provides common
+functions for doing it, but it must know the size for each register.
+
+>
+> > +static struct uart_driver liteuart_driver =3D {
+> > +       .owner =3D THIS_MODULE,
+> > +       .driver_name =3D DRIVER_NAME,
+> > +       .dev_name =3D DEV_NAME,
+>
+> Much easier to see if any name collisions are happen by grepping
+> similar struct definitions, but these macros are making life harder.
+
+Do you mean to avoid indirection caused by defines and write e.g.,
+`.driver_name =3D "liteuart"`?
+
+OK, but the reason we have defines in the first place is because we
+use the same name in many places and we want to avoid inconsistencies
+(typos, partial rename, etc.).
+What's more, looking at other serial drivers I see the notation is not
+consistent - many of them use defines for name/major/minor as well.
+
+> > +       .major =3D DRIVER_MAJOR,
+> > +       .minor =3D DRIVER_MINOR,
+>
+> Ditto.
+>
+> > +       .nr =3D CONFIG_SERIAL_LITEUART_MAX_PORTS,
+>
+> > +#ifdef CONFIG_SERIAL_LITEUART_CONSOLE
+> > +       .cons =3D &liteuart_console,
+> > +#endif
+>
+> > +};
+>
+> ...
+>
+> > +static const char *liteuart_type(struct uart_port *port)
+> > +{
+> > +       return (port->type =3D=3D PORT_LITEUART) ? DRIVER_NAME : NULL;
+> > +}
+>
+> Do we need this check? Do we need a port type at all?
+>
+> ...
+
+This is inspired by serial_core.c and other serial drivers.
+We don't support any alternative `port->types` values so it's probably
+not necessary for us, but it seems that this is how other serial
+drivers are written too.
+
+> > +static int liteuart_probe(struct platform_device *pdev)
+> > +{
+> > +       struct device_node *np =3D pdev->dev.of_node;
+> > +       struct liteuart_port *uart;
+> > +       struct uart_port *port;
+> > +       int dev_id;
+> > +
+> > +       if (!litex_check_accessors())
+> > +               return -EPROBE_DEFER;
+> > +
+>
+> > +       /* no device tree */
+> > +       if (!np)
+> > +               return -ENODEV;
+>
+> I guess it should go first, otherwise potentially you may end up with
+> deferred module above.
+
+You are right. We'll reorder the initialization.
+
+> > +       /* look for aliases; auto-enumerate for free index if not found=
+ */
+> > +       dev_id =3D of_alias_get_id(np, "serial");
+> > +       if (dev_id < 0)
+> > +               dev_id =3D find_first_zero_bit(liteuart_ports_in_use,
+> > +                                            CONFIG_SERIAL_LITEUART_MAX=
+_PORTS);
+>
+> Racy.
+
+We'll protect it with a mutex to avoid race conditions.
+
+> > +       /* get {map,mem}base */
+> > +       port->mapbase =3D platform_get_resource(pdev, IORESOURCE_MEM, 0=
+)->start;
+> > +       port->membase =3D of_iomap(np, 0);
+>
+> Can't you use devm_platform_get_and_ioremap_resource() ?
+
+This indeed can be simplified.
+
+> > +       if (!port->membase)
+> > +               return -ENXIO;
+>
+> > +}
+>
+> ...
+>
+> > +static struct platform_driver liteuart_platform_driver =3D {
+> > +       .probe =3D liteuart_probe,
+> > +       .remove =3D liteuart_remove,
+> > +       .driver =3D {
+> > +               .name =3D DRIVER_NAME,
+>
+> > +               .of_match_table =3D of_match_ptr(liteuart_of_match),
+>
+> of_match_ptr() makes no sense (you have depends on OF).
+
+You mean that `of_match_ptr(X)` resolves simply to `X` when
+`CONFIG_OF` is defined?
+In this context it surely can be simplified.
+
+> > +       },
+> > +};
+>
+> ...
+>
+>
+> > +static int __init liteuart_console_init(void)
+> > +{
+>
+> Missed spin lock initialization.
+
+We'll fix this.
+
+> > +       register_console(&liteuart_console);
+> > +
+> > +       return 0;
+> > +}
+>
+> > +
+>
+> Extra blank line.
+
+You mean we should remove an empty line between the definition of
+liteuart_console_init() and the call to console_initcall()? It seems
+to be inconsistent across different drivers, but sure - no problem.
+
+> > +console_initcall(liteuart_console_init);
+>
+> ...
+>
+> > +/* LiteUART */
+> > +#define PORT_LITEUART  123
+>
+> We have holes in the list, use them.
+>
+> And again why we need this?
+
+This is inspired by other serial drivers that also reserves
+identifiers in this file and handles them the same way we do. We
+simply followed the convention.
+
+> --
+> With Best Regards,
+> Andy Shevchenko
+
+Thanks for your time and the comments! We'll address them in the next
+version of the patchset.
+
+Best regards,
+Mateusz Ho=C5=82enko
+
+--
+Mateusz Holenko
+Antmicro Ltd | www.antmicro.com
+Roosevelta 22, 60-829 Poznan, Poland
