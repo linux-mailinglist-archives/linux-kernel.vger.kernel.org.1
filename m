@@ -2,121 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDADA1C4490
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:08:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FBF21C4386
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 19:59:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732210AbgEDSH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:07:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38802 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732176AbgEDSHq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:07:46 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 034E6206B8;
-        Mon,  4 May 2020 18:07:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588615666;
-        bh=r3c1iXelmmBrzj0DTZL4IUaoj5TuLR7/oHUZShSDMrw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C3pK66oL+V2je3XUHuHIqIzfTqdANHvJT34CvSWIFbkk5k+ZUgjBT+fRuPXmLFE76
-         IWwO0ZZXp2MaA6KjbsfconSk4G5kFoqeetI8b1qpCgxhJJt/tnPQmqIiWm4iSE09pt
-         UyO9ZBDvd1lRR1PZ+EFM06HpdpTK0JHcEtn/UJDo=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Clay Harris <bugs@claycon.org>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.6 73/73] io_uring: statx must grab the file table for valid fd
-Date:   Mon,  4 May 2020 19:58:16 +0200
-Message-Id: <20200504165510.640529034@linuxfoundation.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200504165501.781878940@linuxfoundation.org>
-References: <20200504165501.781878940@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1730714AbgEDR7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 13:59:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730534AbgEDR7I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 13:59:08 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D72C5C061A41
+        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 10:59:07 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id n14so439439qke.8
+        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 10:59:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vqdw6T961NjpBgRT/XhyOu+dO0BOx3bSC8VPzWsBaf8=;
+        b=XPPT51l7YVLzCOVDR8nXFLo0ll/gEhC+LGvA/j0yhs3ZktWvl0sAm3ZbfhvqTH3C/D
+         ob0L3coYcB9BRxc3fZvibyxEE6yc6am6tRF7VR6G/N80RmcfUkKm+Dd3eVNcBoKTMkYj
+         /Hq0E1m9fqBgPbBFdnr9j8qfc7mSf2egge2V/mVAOykoiw9QwObUn4IH9jPEYLFjSs+F
+         TupT1A+dCMnVbX7hmJwpGXfzxkIaHlq8cT/EMPi48gSWtAUo8RDuh1Gq1v1dNMDgmiMv
+         gUKFA1YpWXOqPL9yC3HmH5uy8dWiuR3v0/g78gPbreQidnKadkgNDdii6O0dTF8GoWXW
+         e/lw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vqdw6T961NjpBgRT/XhyOu+dO0BOx3bSC8VPzWsBaf8=;
+        b=jHYu78O6Kzx4DkEoX8Cj5h4AFqC6hL5uWcjV641kj2+RHnrK7dErg1p4Y3aCcZtbhH
+         fvyFV/Y5M/OADwEVrPaJrZfTLjnt5Qr8sf+LrZK6mJ8lPd9Ymd8uyBWkBlGUhlIFqhlf
+         O+5v+x65pFb5VU4ZssH9ub2IBL/7LfwejQ6hljNIPJN7QYII8MVNXLEUCKbIe/saVvUf
+         x2qYDRmJK6VwrOzwYLdl5D8XG+RjKnoGoLxaA0lRrYO7UjU5r4CTcrMsS0grDFu95tEe
+         EXarCssVT9zNIC1kQlhHZLom2UgqbZoyMGmENgkiLxD2j/bQ0EZmCv123Tt0LMiTbTGX
+         95DA==
+X-Gm-Message-State: AGi0Pub13edjd3KGQfxt+8TC5z6n/6PUzme4bfXoJV8cJqlvNORitJdp
+        KPfMEOhO3UL4yIHDgwZlCmi6Fg==
+X-Google-Smtp-Source: APiQypJJ+e8/no9p4zo1oA/7S8B1GlIpY1L/RkCv9O30uXiNL1i8dlLjNyWlL/9UZ7G1xUcxb/aAwA==
+X-Received: by 2002:a37:8346:: with SMTP id f67mr367493qkd.283.1588615146701;
+        Mon, 04 May 2020 10:59:06 -0700 (PDT)
+Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id h19sm11271088qtk.78.2020.05.04.10.59.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 May 2020 10:59:05 -0700 (PDT)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net
+Cc:     evgreen@chromium.org, subashab@codeaurora.org,
+        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
+        agross@kernel.org, robh+dt@kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v2 0/4] net: ipa: I/O map SMEM and IMEM
+Date:   Mon,  4 May 2020 12:58:55 -0500
+Message-Id: <20200504175859.22606-1-elder@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+This series adds the definition of two memory regions that must be
+mapped for IPA to access through an SMMU.  It requires the SMMU to
+be defined in the IPA node in the SoC's Device Tree file.
 
-commit 5b0bbee4732cbd58aa98213d4c11a366356bba3d upstream.
+There is no change since version 1 to the content of the code in
+these patches, *however* this time the first patch is an update to
+the binding definition rather than an update to a DTS file.
 
-Clay reports that OP_STATX fails for a test case with a valid fd
-and empty path:
+					-Alex
 
- -- Test 0: statx:fd 3: SUCCEED, file mode 100755
- -- Test 1: statx:path ./uring_statx: SUCCEED, file mode 100755
- -- Test 2: io_uring_statx:fd 3: FAIL, errno 9: Bad file descriptor
- -- Test 3: io_uring_statx:path ./uring_statx: SUCCEED, file mode 100755
+Alex Elder (4):
+  dt-bindings: net: add IPA iommus property
+  net: ipa: redefine struct ipa_mem_data
+  net: ipa: define IMEM memory region for IPA
+  net: ipa: define SMEM memory region for IPA
 
-This is due to statx not grabbing the process file table, hence we can't
-lookup the fd in async context. If the fd is valid, ensure that we grab
-the file table so we can grab the file from async context.
+ .../devicetree/bindings/net/qcom,ipa.yaml     |  10 +-
+ drivers/net/ipa/ipa.h                         |  10 +
+ drivers/net/ipa/ipa_data-sc7180.c             |  14 +-
+ drivers/net/ipa/ipa_data-sdm845.c             |  14 +-
+ drivers/net/ipa/ipa_data.h                    |  23 +-
+ drivers/net/ipa/ipa_main.c                    |   2 +-
+ drivers/net/ipa/ipa_mem.c                     | 209 +++++++++++++++++-
+ drivers/net/ipa/ipa_mem.h                     |   3 +-
+ 8 files changed, 263 insertions(+), 22 deletions(-)
 
-Cc: stable@vger.kernel.org # v5.6
-Reported-by: Clay Harris <bugs@claycon.org>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- fs/io_uring.c |   12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
-
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -479,6 +479,7 @@ enum {
- 	REQ_F_COMP_LOCKED_BIT,
- 	REQ_F_NEED_CLEANUP_BIT,
- 	REQ_F_OVERFLOW_BIT,
-+	REQ_F_NO_FILE_TABLE_BIT,
- };
- 
- enum {
-@@ -521,6 +522,8 @@ enum {
- 	REQ_F_NEED_CLEANUP	= BIT(REQ_F_NEED_CLEANUP_BIT),
- 	/* in overflow list */
- 	REQ_F_OVERFLOW		= BIT(REQ_F_OVERFLOW_BIT),
-+	/* doesn't need file table for this request */
-+	REQ_F_NO_FILE_TABLE	= BIT(REQ_F_NO_FILE_TABLE_BIT),
- };
- 
- /*
-@@ -711,6 +714,7 @@ static const struct io_op_def io_op_defs
- 		.needs_file		= 1,
- 		.fd_non_neg		= 1,
- 		.needs_fs		= 1,
-+		.file_table		= 1,
- 	},
- 	[IORING_OP_READ] = {
- 		.needs_mm		= 1,
-@@ -2843,8 +2847,12 @@ static int io_statx(struct io_kiocb *req
- 	struct kstat stat;
- 	int ret;
- 
--	if (force_nonblock)
-+	if (force_nonblock) {
-+		/* only need file table for an actual valid fd */
-+		if (ctx->dfd == -1 || ctx->dfd == AT_FDCWD)
-+			req->flags |= REQ_F_NO_FILE_TABLE;
- 		return -EAGAIN;
-+	}
- 
- 	if (vfs_stat_set_lookup_flags(&lookup_flags, ctx->how.flags))
- 		return -EINVAL;
-@@ -4632,7 +4640,7 @@ static int io_grab_files(struct io_kiocb
- 	int ret = -EBADF;
- 	struct io_ring_ctx *ctx = req->ctx;
- 
--	if (req->work.files)
-+	if (req->work.files || (req->flags & REQ_F_NO_FILE_TABLE))
- 		return 0;
- 	if (!ctx->ring_file)
- 		return -EBADF;
-
+-- 
+2.20.1
 
