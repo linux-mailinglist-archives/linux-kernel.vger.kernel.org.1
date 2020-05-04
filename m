@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A2811C43A9
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:00:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAB881C444A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:06:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730991AbgEDSAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:00:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55062 "EHLO mail.kernel.org"
+        id S1731885AbgEDSFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:05:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35916 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730986AbgEDSAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:00:21 -0400
+        id S1731874AbgEDSFv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 14:05:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2229520721;
-        Mon,  4 May 2020 18:00:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3B8162073B;
+        Mon,  4 May 2020 18:05:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588615221;
-        bh=fwR0V1cq/YSDhhql/2sy5/+ZtJJnxpF1Wz065Hb34Jg=;
+        s=default; t=1588615550;
+        bh=SsXvhzbB2jWYNJpRGiFkqDvIr0NI17B/xvS9oHi+tsM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IAwyvPz+t8nlWOELMhGSVQ0h9Aq6BaSEo82TwVkVilA/kuOagba428vY5d6rQ8l6v
-         waibYWMazrS/fr9W2xKR4Iv8n720tN/EVXoTI4F6f9lEc24gviLVVCVWc2w6zpiV8h
-         xbu1wuuXGVeCuyQX+SPhu85y6oYL1FvNX+uBsxXQ=
+        b=bAJ8NtWU4zA6E0vC75PooTJliRkCG0LnG6iv4CkxvSZBzgsTkeoy+q5EDpOrDBgEK
+         REFqM2wMGB6eKoJoIORpH3qsrXFo35RZWsdYuyV9yJy/E0T9on+sw38K/9qXr7GUMR
+         cBpOIP8sVpjcjwPRGnTlb99LX8almsb+4e3p0UIs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sunwook Eom <speed.eom@samsung.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 4.14 15/26] dm verity fec: fix hash block number in verity_fec_decode
+        stable@vger.kernel.org, Vasily Khoruzhick <anarsoul@gmail.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.6 26/73] ALSA: line6: Fix POD HD500 audio playback
 Date:   Mon,  4 May 2020 19:57:29 +0200
-Message-Id: <20200504165445.923422760@linuxfoundation.org>
+Message-Id: <20200504165507.022626692@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200504165442.494398840@linuxfoundation.org>
-References: <20200504165442.494398840@linuxfoundation.org>
+In-Reply-To: <20200504165501.781878940@linuxfoundation.org>
+References: <20200504165501.781878940@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,35 +43,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sunwook Eom <speed.eom@samsung.com>
+From: Vasily Khoruzhick <anarsoul@gmail.com>
 
-commit ad4e80a639fc61d5ecebb03caa5cdbfb91fcebfc upstream.
+commit cc18b2f4f3f1d7ed3125ac1840794f9feab0325c upstream.
 
-The error correction data is computed as if data and hash blocks
-were concatenated. But hash block number starts from v->hash_start.
-So, we have to calculate hash block number based on that.
+Apparently interface 1 is control interface akin to HD500X,
+setting LINE6_CAP_CONTROL and choosing it as ctrl_if fixes
+audio playback on POD HD500.
 
-Fixes: a739ff3f543af ("dm verity: add support for forward error correction")
-Cc: stable@vger.kernel.org
-Signed-off-by: Sunwook Eom <speed.eom@samsung.com>
-Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200425201115.3430-1-anarsoul@gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/md/dm-verity-fec.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/usb/line6/podhd.c |   22 +++++-----------------
+ 1 file changed, 5 insertions(+), 17 deletions(-)
 
---- a/drivers/md/dm-verity-fec.c
-+++ b/drivers/md/dm-verity-fec.c
-@@ -436,7 +436,7 @@ int verity_fec_decode(struct dm_verity *
- 	fio->level++;
- 
- 	if (type == DM_VERITY_BLOCK_TYPE_METADATA)
--		block += v->data_blocks;
-+		block = block - v->hash_start + v->data_blocks;
- 
- 	/*
- 	 * For RS(M, N), the continuous FEC data is divided into blocks of N
+--- a/sound/usb/line6/podhd.c
++++ b/sound/usb/line6/podhd.c
+@@ -21,8 +21,7 @@
+ enum {
+ 	LINE6_PODHD300,
+ 	LINE6_PODHD400,
+-	LINE6_PODHD500_0,
+-	LINE6_PODHD500_1,
++	LINE6_PODHD500,
+ 	LINE6_PODX3,
+ 	LINE6_PODX3LIVE,
+ 	LINE6_PODHD500X,
+@@ -318,8 +317,7 @@ static const struct usb_device_id podhd_
+ 	/* TODO: no need to alloc data interfaces when only audio is used */
+ 	{ LINE6_DEVICE(0x5057),    .driver_info = LINE6_PODHD300 },
+ 	{ LINE6_DEVICE(0x5058),    .driver_info = LINE6_PODHD400 },
+-	{ LINE6_IF_NUM(0x414D, 0), .driver_info = LINE6_PODHD500_0 },
+-	{ LINE6_IF_NUM(0x414D, 1), .driver_info = LINE6_PODHD500_1 },
++	{ LINE6_IF_NUM(0x414D, 0), .driver_info = LINE6_PODHD500 },
+ 	{ LINE6_IF_NUM(0x414A, 0), .driver_info = LINE6_PODX3 },
+ 	{ LINE6_IF_NUM(0x414B, 0), .driver_info = LINE6_PODX3LIVE },
+ 	{ LINE6_IF_NUM(0x4159, 0), .driver_info = LINE6_PODHD500X },
+@@ -352,23 +350,13 @@ static const struct line6_properties pod
+ 		.ep_audio_r = 0x82,
+ 		.ep_audio_w = 0x01,
+ 	},
+-	[LINE6_PODHD500_0] = {
++	[LINE6_PODHD500] = {
+ 		.id = "PODHD500",
+ 		.name = "POD HD500",
+-		.capabilities	= LINE6_CAP_PCM
++		.capabilities	= LINE6_CAP_PCM | LINE6_CAP_CONTROL
+ 				| LINE6_CAP_HWMON,
+ 		.altsetting = 1,
+-		.ep_ctrl_r = 0x81,
+-		.ep_ctrl_w = 0x01,
+-		.ep_audio_r = 0x86,
+-		.ep_audio_w = 0x02,
+-	},
+-	[LINE6_PODHD500_1] = {
+-		.id = "PODHD500",
+-		.name = "POD HD500",
+-		.capabilities	= LINE6_CAP_PCM
+-				| LINE6_CAP_HWMON,
+-		.altsetting = 0,
++		.ctrl_if = 1,
+ 		.ep_ctrl_r = 0x81,
+ 		.ep_ctrl_w = 0x01,
+ 		.ep_audio_r = 0x86,
 
 
