@@ -2,153 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78AEC1C34BC
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 10:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E99E1C34C4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 10:46:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728281AbgEDIon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 04:44:43 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:58854 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726351AbgEDIon (ORCPT
+        id S1728313AbgEDIqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 04:46:10 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:57627 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726351AbgEDIqK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 04:44:43 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0448iaJb095179;
-        Mon, 4 May 2020 03:44:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1588581876;
-        bh=MJFZeP9Kt0d/U5r8cedlUqKEgzNmU/L56TzLmHNhuwA=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=rUWaCASbPDM5c8AbQEl/BHEC1S34pGHrrmTIrCEytrpIRC7r43gMhnh2SEwVSoDsQ
-         kWbrAWHMXTO5XjofI2djF5EIlUPNUI/1wCAqM17XhbB+4htYTn8vKCVmWIOSpB7OZ7
-         xX5ee6Zi4IF739eyV3OvEtRPGfm75XxIttsbnN/M=
-Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0448iafK069176
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 4 May 2020 03:44:36 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 4 May
- 2020 03:44:36 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 4 May 2020 03:44:36 -0500
-Received: from [10.250.150.106] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0448iUss019965;
-        Mon, 4 May 2020 03:44:31 -0500
-Subject: Re: [PATCH v2 2/4] PCI: cadence: Use "dma-ranges" instead of
- "cdns,no-bar-match-nbits" property
-To:     Robin Murphy <robin.murphy@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-CC:     Tom Joseph <tjoseph@cadence.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200417114322.31111-1-kishon@ti.com>
- <20200417114322.31111-3-kishon@ti.com>
- <20200501144645.GB7398@e121166-lin.cambridge.arm.com>
- <dc581c5b-11de-f4b3-e928-208b9293e391@arm.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <2472c182-834c-d2c1-175e-4d73898aef35@ti.com>
-Date:   Mon, 4 May 2020 14:14:29 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Mon, 4 May 2020 04:46:10 -0400
+Received: from mail-lf1-f72.google.com ([209.85.167.72])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <po-hsu.lin@canonical.com>)
+        id 1jVWj7-0002zr-Ni
+        for linux-kernel@vger.kernel.org; Mon, 04 May 2020 08:46:06 +0000
+Received: by mail-lf1-f72.google.com with SMTP id 85so5391706lfa.7
+        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 01:45:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B6wxkvYlDwcvNl28OAXd66foLiyX2Rf6xw2AGAy8rbg=;
+        b=PmRqfIsy6mk4Nh+quO89ohbI77kVKz3tEiSXyQJpVj6VhBmuolOtESOWx5VoOTlrW6
+         1p7eGngG4XveHaVtm2KcphlCAKFMuWO2MyUv1pUchXgQkUJBSPNu0o6FSoCw/8ooicj2
+         /4RIXpOVkdNVUS/DkEYX1K+TmaFOmgxixQihxjxims2+/t9iSv3I3h6SLtsSuYxK0K/V
+         xZGD54XrOr9+rOnwi71ZARSLHrkEFr7hUJJcI+x7t7EkqFqzRKopAwKJreyr4RXIjDnb
+         LU6aYtU00XfkyO2qNXm+CkTYQtzC7KQUpPLButDOycKly3OU9oEg29Cgj5DZcwaYgiBz
+         QPWA==
+X-Gm-Message-State: AGi0PuYSDeL5N1/Ay69Jn+80t69OgsaeHo3or7gks4sdgVC827so0ZFd
+        HFhPsTEMBoEsql33iAHu+gv/Gv2IMsYRMUeKCNECqjJ5xBDkrkTguXxvo0GQQYBYnu3iM8zu/gl
+        jxPo+c9JQhAq7f5GfUi+f2FsXwS4MFtPfuwPMUkH+mme9oFPJW1YWLE4/
+X-Received: by 2002:ac2:43c6:: with SMTP id u6mr11091157lfl.170.1588581925048;
+        Mon, 04 May 2020 01:45:25 -0700 (PDT)
+X-Google-Smtp-Source: APiQypIFD22/DCljKnq+u7jZyFdo7Mol8bJVCRBOgP0jURuxOCQkhi9JrcMk24wR9tGnThznoIKAGBwM9EBBjnCRNbI=
+X-Received: by 2002:ac2:43c6:: with SMTP id u6mr11091134lfl.170.1588581924658;
+ Mon, 04 May 2020 01:45:24 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <dc581c5b-11de-f4b3-e928-208b9293e391@arm.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20200429095044.24625-1-po-hsu.lin@canonical.com> <20200501105933.8ebf317da9be19884c7cd33e@kernel.org>
+In-Reply-To: <20200501105933.8ebf317da9be19884c7cd33e@kernel.org>
+From:   Po-Hsu Lin <po-hsu.lin@canonical.com>
+Date:   Mon, 4 May 2020 16:45:13 +0800
+Message-ID: <CAMy_GT91OyBCNFHHNyAd_6KcmBB6bexYZYO3xD8vEvC=wvOBFA@mail.gmail.com>
+Subject: Re: [PATCH] selftests/ftrace: treat module requirement unmet
+ situation as unsupported
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     linux-kselftest@vger.kernel.org,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>, mingo@redhat.com,
+        shuah <shuah@kernel.org>, Colin King <colin.king@canonical.com>,
+        Xiao Yang <yangx.jy@cn.fujitsu.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robin,
+On Fri, May 1, 2020 at 9:59 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+>
+> Hi,
+>
+> On Wed, 29 Apr 2020 17:50:44 +0800
+> Po-Hsu Lin <po-hsu.lin@canonical.com> wrote:
+>
+> > When the required module for the test does not exist, use
+> > exit_unsupported instead of exit_unresolved to indicate this test is
+> > not supported.
+>
+> Hmm, this doesn't mean "the function is not supported" but
+> "we can not resolve this because of the environmental issue".
+> For example, if you forgot to install the modules, but the
+> function itself is enabled, that can not be tested, but the
+> system supports that feature.
+>
+> >
+> > By doing this we can make test behaviour in sync with the
+> > irqsoff_tracer.tc test in preemptirq, which is also treating module
+> > existence in this way. Moreover, the test won't exit with a non-zero
+> > return value if the module does not exist.
+>
+> It is OK to return zero even if the result is "unresolved", but
+> I don't want to change the result of each test cases, because
+> it clarify that you must install modules correctly, instead of
+> enabling the feature.
 
-On 5/1/2020 9:24 PM, Robin Murphy wrote:
-> On 2020-05-01 3:46 pm, Lorenzo Pieralisi wrote:
->> [+Robin - to check on dma-ranges intepretation]
->>
->> I would need RobH and Robin to review this.
->>
->> Also, An ACK from Tom is required - for the whole series.
->>
->> On Fri, Apr 17, 2020 at 05:13:20PM +0530, Kishon Vijay Abraham I wrote:
->>> Cadence PCIe core driver (host mode) uses "cdns,no-bar-match-nbits"
->>> property to configure the number of bits passed through from PCIe
->>> address to internal address in Inbound Address Translation register.
->>>
->>> However standard PCI dt-binding already defines "dma-ranges" to
->>> describe the address range accessible by PCIe controller. Parse
->>> "dma-ranges" property to configure the number of bits passed
->>> through from PCIe address to internal address in Inbound Address
->>> Translation register.
->>>
->>> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
->>> ---
->>>   drivers/pci/controller/cadence/pcie-cadence-host.c | 13 +++++++++++--
->>>   1 file changed, 11 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/drivers/pci/controller/cadence/pcie-cadence-host.c
->>> b/drivers/pci/controller/cadence/pcie-cadence-host.c
->>> index 9b1c3966414b..60f912a657b9 100644
->>> --- a/drivers/pci/controller/cadence/pcie-cadence-host.c
->>> +++ b/drivers/pci/controller/cadence/pcie-cadence-host.c
->>> @@ -206,8 +206,10 @@ int cdns_pcie_host_setup(struct cdns_pcie_rc *rc)
->>>       struct device *dev = rc->pcie.dev;
->>>       struct platform_device *pdev = to_platform_device(dev);
->>>       struct device_node *np = dev->of_node;
->>> +    struct of_pci_range_parser parser;
->>>       struct pci_host_bridge *bridge;
->>>       struct list_head resources;
->>> +    struct of_pci_range range;
->>>       struct cdns_pcie *pcie;
->>>       struct resource *res;
->>>       int ret;
->>> @@ -222,8 +224,15 @@ int cdns_pcie_host_setup(struct cdns_pcie_rc *rc)
->>>       rc->max_regions = 32;
->>>       of_property_read_u32(np, "cdns,max-outbound-regions", &rc->max_regions);
->>>   -    rc->no_bar_nbits = 32;
->>> -    of_property_read_u32(np, "cdns,no-bar-match-nbits", &rc->no_bar_nbits);
->>> +    if (!of_pci_dma_range_parser_init(&parser, np))
->>> +        if (of_pci_range_parser_one(&parser, &range))
->>> +            rc->no_bar_nbits = ilog2(range.size);
-> 
-> You probably want "range.pci_addr + range.size" here just in case the bottom of
-> the window is ever non-zero. Is there definitely only ever a single inbound
-> window to consider?
+Hello Masami,
 
-Cadence IP has 3 inbound address translation registers, however we use only 1
-inbound address translation register to map the entire 32 bit or 64 bit address
-region.
-> 
-> I believe that pci_parse_request_of_pci_ranges() could do the actual parsing
-> for you, but I suppose plumbing that in plus processing the resulting
-> dma_ranges resource probably ends up a bit messier than the concise open-coding
-> here.
+With Alan Maguire's recent commit b730d668138c ("ftrace/selftest: make
+unresolved cases cause failure if --fail-unresolved set") landed on
+the tree.
+I think this unresolved return value issue is all good here.
 
-right, pci_parse_request_of_pci_ranges() parses "ranges" property and is used
-for outbound configuration, whereas here we parse "dma-ranges" property and is
-used for inbound configuration.
+It is indeed a good question to brainstorm with about how to
+distinguish a not enabled / enabled but not working feature.
+I will fix the irqsoff_tracer.tc test here to make them consistent first.
 
-Thanks
-Kishon
+Thank you for your feedback.
+Po-Hsu
 
-> 
-> Robin.
-> 
->>> +
->>> +    if (!rc->no_bar_nbits) {
->>> +        rc->no_bar_nbits = 32;
->>> +        of_property_read_u32(np, "cdns,no-bar-match-nbits",
->>> +                     &rc->no_bar_nbits);
->>> +    }
->>>         rc->vendor_id = 0xffff;
->>>       of_property_read_u16(np, "vendor-id", &rc->vendor_id);
->>> -- 
->>> 2.17.1
->>>
+>
+> And OK, I found irqsoff_tracer.tc IS incorrect. It should be fixed to
+> return UNRESOLVED if there is no test module.
+>
+> If you still think UNRESOLVED is unneeded, please propose the patch
+> which removes all UNRESOLVED related code. That can start another
+> discussion.
+>
+> Thank you,
+>
+>
+> >
+> > Fixes: 646f01ccdd59 ("ftrace/selftest: Add tests to test register_ftrace_direct()")
+> > Fixes: 4d23e9b4fd2e ("selftests/ftrace: Add trace_printk sample module test")
+> > Fixes: 7bc026d6c032 ("selftests/ftrace: Add function filter on module testcase")
+> > Fixes: af2a0750f374 ("selftests/ftrace: Improve kprobe on module testcase to load/unload module")
+> > Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+> > ---
+> >  tools/testing/selftests/ftrace/test.d/direct/ftrace-direct.tc  | 2 +-
+> >  tools/testing/selftests/ftrace/test.d/direct/kprobe-direct.tc  | 2 +-
+> >  tools/testing/selftests/ftrace/test.d/event/trace_printk.tc    | 2 +-
+> >  tools/testing/selftests/ftrace/test.d/ftrace/func_mod_trace.tc | 2 +-
+> >  tools/testing/selftests/ftrace/test.d/kprobe/kprobe_module.tc  | 2 +-
+> >  5 files changed, 5 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/ftrace/test.d/direct/ftrace-direct.tc b/tools/testing/selftests/ftrace/test.d/direct/ftrace-direct.tc
+> > index d75a869..3d6189e 100644
+> > --- a/tools/testing/selftests/ftrace/test.d/direct/ftrace-direct.tc
+> > +++ b/tools/testing/selftests/ftrace/test.d/direct/ftrace-direct.tc
+> > @@ -5,7 +5,7 @@
+> >  rmmod ftrace-direct ||:
+> >  if ! modprobe ftrace-direct ; then
+> >    echo "No ftrace-direct sample module - please make CONFIG_SAMPLE_FTRACE_DIRECT=m"
+> > -  exit_unresolved;
+> > +  exit_unsupported;
+> >  fi
+> >
+> >  echo "Let the module run a little"
+> > diff --git a/tools/testing/selftests/ftrace/test.d/direct/kprobe-direct.tc b/tools/testing/selftests/ftrace/test.d/direct/kprobe-direct.tc
+> > index 801ecb6..3d0e3ca 100644
+> > --- a/tools/testing/selftests/ftrace/test.d/direct/kprobe-direct.tc
+> > +++ b/tools/testing/selftests/ftrace/test.d/direct/kprobe-direct.tc
+> > @@ -5,7 +5,7 @@
+> >  rmmod ftrace-direct ||:
+> >  if ! modprobe ftrace-direct ; then
+> >    echo "No ftrace-direct sample module - please build with CONFIG_SAMPLE_FTRACE_DIRECT=m"
+> > -  exit_unresolved;
+> > +  exit_unsupported;
+> >  fi
+> >
+> >  if [ ! -f kprobe_events ]; then
+> > diff --git a/tools/testing/selftests/ftrace/test.d/event/trace_printk.tc b/tools/testing/selftests/ftrace/test.d/event/trace_printk.tc
+> > index b02550b..dd8b10d 100644
+> > --- a/tools/testing/selftests/ftrace/test.d/event/trace_printk.tc
+> > +++ b/tools/testing/selftests/ftrace/test.d/event/trace_printk.tc
+> > @@ -5,7 +5,7 @@
+> >  rmmod trace-printk ||:
+> >  if ! modprobe trace-printk ; then
+> >    echo "No trace-printk sample module - please make CONFIG_SAMPLE_TRACE_PRINTK=m"
+> > -  exit_unresolved;
+> > +  exit_unsupported;
+> >  fi
+> >
+> >  echo "Waiting for irq work"
+> > diff --git a/tools/testing/selftests/ftrace/test.d/ftrace/func_mod_trace.tc b/tools/testing/selftests/ftrace/test.d/ftrace/func_mod_trace.tc
+> > index 1a4b4a4..26dc06a 100644
+> > --- a/tools/testing/selftests/ftrace/test.d/ftrace/func_mod_trace.tc
+> > +++ b/tools/testing/selftests/ftrace/test.d/ftrace/func_mod_trace.tc
+> > @@ -13,7 +13,7 @@ echo '*:mod:trace_printk' > set_ftrace_filter
+> >  if ! modprobe trace-printk ; then
+> >    echo "No trace-printk sample module - please make CONFIG_SAMPLE_TRACE_PRINTK=
+> >  m"
+> > -  exit_unresolved;
+> > +  exit_unsupported;
+> >  fi
+> >
+> >  : "Wildcard should be resolved after loading module"
+> > diff --git a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_module.tc b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_module.tc
+> > index d861bd7..4e07c69 100644
+> > --- a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_module.tc
+> > +++ b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_module.tc
+> > @@ -8,7 +8,7 @@ rmmod trace-printk ||:
+> >  if ! modprobe trace-printk ; then
+> >    echo "No trace-printk sample module - please make CONFIG_SAMPLE_TRACE_PRINTK=
+> >  m"
+> > -  exit_unresolved;
+> > +  exit_unsupported;
+> >  fi
+> >
+> >  MOD=trace_printk
+> > --
+> > 2.7.4
+> >
+>
+>
+> --
+> Masami Hiramatsu <mhiramat@kernel.org>
