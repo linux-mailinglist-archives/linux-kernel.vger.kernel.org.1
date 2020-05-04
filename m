@@ -2,99 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E13D71C3EDE
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 17:48:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 688661C3EEC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 17:50:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728727AbgEDPsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 11:48:14 -0400
-Received: from foss.arm.com ([217.140.110.172]:47696 "EHLO foss.arm.com"
+        id S1729460AbgEDPuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 11:50:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39150 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725941AbgEDPsO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 11:48:14 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8E5CB1FB;
-        Mon,  4 May 2020 08:48:13 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1856A3F68F;
-        Mon,  4 May 2020 08:48:11 -0700 (PDT)
-References: <20200503083407.GA27766@iZj6chx1xj0e0buvshuecpZ> <CAKfTPtCNG9Y4xNA-iLd+JRRsUCA1+SkkFFRbbzk5n7q6v401tw@mail.gmail.com>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Peng Liu <iwtbavbm@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>
-Subject: Re: [PATCH] sched/fair: Fix nohz.next_balance update
-In-reply-to: <CAKfTPtCNG9Y4xNA-iLd+JRRsUCA1+SkkFFRbbzk5n7q6v401tw@mail.gmail.com>
-Date:   Mon, 04 May 2020 16:48:06 +0100
-Message-ID: <jhjtv0vd7m1.mognet@arm.com>
+        id S1726641AbgEDPuN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 11:50:13 -0400
+Received: from localhost (mobile-166-175-184-168.mycingular.net [166.175.184.168])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3BCCF206B9;
+        Mon,  4 May 2020 15:50:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588607413;
+        bh=I1VRDM/K7C5sTKMm0JfGuB80QuKueC0yXDSYbXU7okA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=P+s6XoEotwcWSY+lQ9Jfohq+kosEep9mkVCmETbuA1/uFXapsrrBiGfZRGP2ujcP3
+         nZtD6S17h+r6SMpgXl5/ZFaMvGtPFUjydvHWY1WhUclYYLUdoLEQYJl/AiP6iTUiLc
+         4CZNbgEYZELBTpQbQRNKPsd5zophQb1Ui+0dBXgM=
+Date:   Mon, 4 May 2020 10:50:11 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Andrew Murray <amurray@thegoodpenguin.co.uk>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Remi Pommarel <repk@triplefau.lt>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>,
+        Xogium <contact@xogium.me>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH v4 01/12] PCI: aardvark: Train link immediately after
+ enabling training
+Message-ID: <20200504155011.GA271366@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200430080625.26070-2-pali@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Apr 30, 2020 at 10:06:14AM +0200, Pali Rohár wrote:
+> Adding even 100ms (PCI_PM_D3COLD_WAIT) delay between enabling link
+> training and starting link training causes detection issues with some
+> buggy cards (such as Compex WLE900VX).
+> 
+> Move the code which enables link training immediately before the one
+> which starts link traning.
 
-On 04/05/20 16:17, Vincent Guittot wrote:
-> On Sun, 3 May 2020 at 10:34, Peng Liu <iwtbavbm@gmail.com> wrote:
->>
->> commit c5afb6a87f23 ("sched/fair: Fix nohz.next_balance update")
->> During idle load balance, this_cpu(ilb) do load balance for the other
->> idle CPUs, also gather the earliest (nohz.)next_balance.
->>
->> Since commit:
->>   'b7031a02ec75 ("sched/fair: Add NOHZ_STATS_KICK")'
->>
->> We update nohz.next_balance like this:
->>
->>   _nohz_idle_balance() {
->>       for_each_cpu(nohz.idle_cpus_mask) {
->>           rebalance_domains() {
->>               update nohz.next_balance <-- compare and update
->>           }
->>       }
->>       rebalance_domains(this_cpu) {
->>           update nohz.next_balance <-- compare and update
->>       }
->>       update nohz.next_balance <-- unconditionally update
->>   }
->>
->> For instance, nohz.idle_cpus_mask spans {cpu2,3,5,8}, and this_cpu is
->> cpu5. After the above loop we could gather the earliest *next_balance*
->> among {cpu2,3,8}, then rebalance_domains(this_cpu) update
->> nohz.next_balance with this_rq->next_balance, but finally overwrite
->> nohz.next_balance with the earliest *next_balance* among {cpu2,3,8},
->> we may end up with not getting the earliest next_balance.
->>
->> Since we can gather all the updated rq->next_balance, including this_cpu,
->> in _nohz_idle_balance(), it's safe to remove the extra lines in
->> rebalance_domains() which are originally intended for this_cpu. And
->> finally the updating only happen in _nohz_idle_balance().
->
-> I'm not sure that's always true. Nothing prevents nohz_idle_balance()
-> to return false . Then run_rebalance_domains() calls
-> rebalance_domains(this_rq ,SCHED_IDLE) outside _nohz_idle_balance().
-> In this case we must keep the code in rebalance_domains().
->
-> For example when the tick is not stopped when entering idle. Or when
-> need_resched() returns true.
->
+s/traning/training/
 
-I had missed that, good points.
+> This fixes detection issues of Compex WLE900VX card on Turris MOX after
+> cold boot.
+> 
+> Fixes: f4c7d053d7f7 ("PCI: aardvark: Wait for endpoint to be ready...")
 
-> So instead of removing the code from rebalance_domains, you should
-> move the one in _nohz_idle_balance() to make sure that the "if
-> (likely(update_next_balance)) ..." is called before calling
-> rebalance_domains for the local cpu
->
+Don't repost just for these, but if you do repost, include the
+complete subject here, e.g.,
 
-Why not just get rid of the update in _nohz_idle_balance() entirely then?
-The nohz.next_balance update in rebalance_domains() will always happen if
-it is required (and we have idle == CPU_IDLE), so the extra update in
-_nohz_idle_balance() doesn't seem to be any useful.
+f4c7d053d7f7 ("PCI: aardvark: Wait for endpoint to be ready before training link")
