@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 793EF1C4507
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:12:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48EC71C4545
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:14:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731472AbgEDSDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:03:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60080 "EHLO mail.kernel.org"
+        id S1732326AbgEDSOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:14:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56000 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731461AbgEDSDJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:03:09 -0400
+        id S1731084AbgEDSA4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 14:00:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7ADB420707;
-        Mon,  4 May 2020 18:03:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7183E2073B;
+        Mon,  4 May 2020 18:00:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588615388;
-        bh=K4rqI3B0UdQGyemnvV/xQqF1HMpwHU8XyHixCcdZV+Y=;
+        s=default; t=1588615255;
+        bh=u1eRWLzcSsHvN8fzxr/uCnaS7bnXn9sRpbs/0zvLWHM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PJWKemY79QZ9fJY0BlQPsP8VREZw7LSYKxR1m7MNTOFX6Qp99kxgQ+W3ZAmohmNo2
-         VguccwQlayCqjScBgX4bf3TBZmba0KxNCeoMuunAlrTgb/5nMaq5GoclcQf41DOemh
-         tiTGlxIGP+pRLoScQAqjHaIE/UTkK/or6GpfDMi8=
+        b=zWCZUQ1m/edPpmXWt6tee3yajjLc7I2aPfl335/fY0pv/QY2lO50Y41WV2knBjKu2
+         U7olG2VwaSr4mLju00SbymHliqM9v5GqHhGEc+oPvJuaNRf5t4lZ7PFqquu0fO/YX5
+         XNGVACKJyCAen7v1hvSvQbVop21o7JqPXwdlYTpg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hui Wang <hui.wang@canonical.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 19/57] ALSA: hda/realtek - Two front mics on a Lenovo ThinkCenter
+        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 4.14 09/26] mmc: sdhci-pci: Fix eMMC driver strength for BYT-based controllers
 Date:   Mon,  4 May 2020 19:57:23 +0200
-Message-Id: <20200504165458.052707215@linuxfoundation.org>
+Message-Id: <20200504165444.899552282@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200504165456.783676004@linuxfoundation.org>
-References: <20200504165456.783676004@linuxfoundation.org>
+In-Reply-To: <20200504165442.494398840@linuxfoundation.org>
+References: <20200504165442.494398840@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,33 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hui Wang <hui.wang@canonical.com>
+From: Adrian Hunter <adrian.hunter@intel.com>
 
-commit ef0b3203c758b6b8abdb5dca651880347eae6b8c upstream.
+commit 1a8eb6b373c2af6533c13d1ea11f504e5010ed9a upstream.
 
-This new Lenovo ThinkCenter has two front mics which can't be handled
-by PA so far, so apply the fixup ALC283_FIXUP_HEADSET_MIC to change
-the location for one of the mics.
+BIOS writers have begun the practice of setting 40 ohm eMMC driver strength
+even though the eMMC may not support it, on the assumption that the kernel
+will validate the value against the eMMC (Extended CSD DRIVER_STRENGTH
+[offset 197]) and revert to the default 50 ohm value if 40 ohm is invalid.
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
-Link: https://lore.kernel.org/r/20200427030039.10121-1-hui.wang@canonical.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+This is done to avoid changing the value for different boards.
+
+Putting aside the merits of this approach, it is clear the eMMC's mask
+of supported driver strengths is more reliable than the value provided
+by BIOS. Add validation accordingly.
+
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+Fixes: 51ced59cc02e ("mmc: sdhci-pci: Use ACPI DSM to get driver strength for some Intel devices")
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20200422111629.4899-1-adrian.hunter@intel.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/hda/patch_realtek.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/mmc/host/sdhci-pci-core.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -7295,6 +7295,7 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x1558, 0x8560, "System76 Gazelle (gaze14)", ALC269_FIXUP_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1558, 0x8561, "System76 Gazelle (gaze14)", ALC269_FIXUP_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x17aa, 0x1036, "Lenovo P520", ALC233_FIXUP_LENOVO_MULTI_CODECS),
-+	SND_PCI_QUIRK(0x17aa, 0x1048, "ThinkCentre Station", ALC283_FIXUP_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x17aa, 0x20f2, "Thinkpad SL410/510", ALC269_FIXUP_SKU_IGNORE),
- 	SND_PCI_QUIRK(0x17aa, 0x215e, "Thinkpad L512", ALC269_FIXUP_SKU_IGNORE),
- 	SND_PCI_QUIRK(0x17aa, 0x21b8, "Thinkpad Edge 14", ALC269_FIXUP_SKU_IGNORE),
+--- a/drivers/mmc/host/sdhci-pci-core.c
++++ b/drivers/mmc/host/sdhci-pci-core.c
+@@ -490,6 +490,9 @@ static int intel_select_drive_strength(s
+ 	struct sdhci_pci_slot *slot = sdhci_priv(host);
+ 	struct intel_host *intel_host = sdhci_pci_priv(slot);
+ 
++	if (!(mmc_driver_type_mask(intel_host->drv_strength) & card_drv))
++		return 0;
++
+ 	return intel_host->drv_strength;
+ }
+ 
 
 
