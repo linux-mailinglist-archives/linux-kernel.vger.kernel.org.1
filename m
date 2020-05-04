@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6D211C4401
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:03:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E9371C43D4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:02:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731512AbgEDSD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:03:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60526 "EHLO mail.kernel.org"
+        id S1731249AbgEDSB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:01:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57590 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731501AbgEDSDY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:03:24 -0400
+        id S1731224AbgEDSBt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 14:01:49 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 342CC24958;
-        Mon,  4 May 2020 18:03:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A42E52073B;
+        Mon,  4 May 2020 18:01:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588615403;
-        bh=2CO5k6vD6czG69Ma7ay0a21TfHP8pfcgA+9/BvVhWII=;
+        s=default; t=1588615309;
+        bh=a5Q6ARFG+WGwfBrNNAer3kTu/FZ8YJRrxVocg0nPM7g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vw8dIc+q9ATiB3tceLYXjF1sLR7YpAixuPvsu60XmdtQov4au/23F7bBrV/erDW3C
-         CCqF0BRBdKm6bbLAZj+bThLgFIat38gRUKtAS/L0otyy6R0CwLHBIdXykjPtDaM7yu
-         LSBqzCLcbR8czJNgeDGucZAsErw3Bm3ZlzXT+LKU=
+        b=VHaLLYv9EqvvcxyTL3j19nXvZszbPBDDkm60aGbGlMCeXo2NG6cb67OSvsdeUjoei
+         9hmO5Y4f8pMmiAIez7BFsNnyfGby6kgJIBrFi3qRqxkneiYFiNYNm184d40ZmHSQrk
+         lTjAtufZWP6DmrubAlHlB9+cFSTIKyyk9Pcgnq4Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Wolfram Sang <wsa@the-dreams.de>, stable@kernel.org
-Subject: [PATCH 5.4 24/57] i2c: amd-mp2-pci: Fix Oops in amd_mp2_pci_init() error handling
-Date:   Mon,  4 May 2020 19:57:28 +0200
-Message-Id: <20200504165458.452156495@linuxfoundation.org>
+        stable@vger.kernel.org, Arun Easi <aeasi@marvell.com>,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Martin Wilck <mwilck@suse.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 4.19 16/37] scsi: qla2xxx: check UNLOADING before posting async work
+Date:   Mon,  4 May 2020 19:57:29 +0200
+Message-Id: <20200504165450.158814908@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200504165456.783676004@linuxfoundation.org>
-References: <20200504165456.783676004@linuxfoundation.org>
+In-Reply-To: <20200504165448.264746645@linuxfoundation.org>
+References: <20200504165448.264746645@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,41 +45,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Martin Wilck <mwilck@suse.com>
 
-commit ac2b0813fceaf7cb3d8d46c7b33c90bae9fa49db upstream.
+commit 5a263892d7d0b4fe351363f8d1a14c6a75955475 upstream.
 
-The problem is that we dereference "privdata->pci_dev" when we print
-the error messages in amd_mp2_pci_init():
+qlt_free_session_done() tries to post async PRLO / LOGO, and waits for the
+completion of these async commands. If UNLOADING is set, this is doomed to
+timeout, because the async logout command will never complete.
 
-	dev_err(ndev_dev(privdata), "Failed to enable MP2 PCI device\n");
-		^^^^^^^^^^^^^^^^^
+The only way to avoid waiting pointlessly is to fail posting these commands
+in the first place if the driver is in UNLOADING state.  In general,
+posting any command should be avoided when the driver is UNLOADING.
 
-Fixes: 529766e0a011 ("i2c: Add drivers for the AMD PCIe MP2 I2C controller")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Wolfram Sang <wsa@the-dreams.de>
-Cc: stable@kernel.org
+With this patch, "rmmod qla2xxx" completes without noticeable delay.
+
+Link: https://lore.kernel.org/r/20200421204621.19228-3-mwilck@suse.com
+Fixes: 45235022da99 ("scsi: qla2xxx: Fix driver unload by shutting down chip")
+Acked-by: Arun Easi <aeasi@marvell.com>
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Signed-off-by: Martin Wilck <mwilck@suse.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/i2c/busses/i2c-amd-mp2-pci.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/qla2xxx/qla_os.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/i2c/busses/i2c-amd-mp2-pci.c
-+++ b/drivers/i2c/busses/i2c-amd-mp2-pci.c
-@@ -349,12 +349,12 @@ static int amd_mp2_pci_probe(struct pci_
- 	if (!privdata)
- 		return -ENOMEM;
+--- a/drivers/scsi/qla2xxx/qla_os.c
++++ b/drivers/scsi/qla2xxx/qla_os.c
+@@ -4645,6 +4645,9 @@ qla2x00_alloc_work(struct scsi_qla_host
+ 	struct qla_work_evt *e;
+ 	uint8_t bail;
  
-+	privdata->pci_dev = pci_dev;
- 	rc = amd_mp2_pci_init(privdata, pci_dev);
- 	if (rc)
- 		return rc;
- 
- 	mutex_init(&privdata->c2p_lock);
--	privdata->pci_dev = pci_dev;
- 
- 	pm_runtime_set_autosuspend_delay(&pci_dev->dev, 1000);
- 	pm_runtime_use_autosuspend(&pci_dev->dev);
++	if (test_bit(UNLOADING, &vha->dpc_flags))
++		return NULL;
++
+ 	QLA_VHA_MARK_BUSY(vha, bail);
+ 	if (bail)
+ 		return NULL;
 
 
