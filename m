@@ -2,92 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0EE21C3ED6
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 17:44:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 859ED1C3F2C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 17:57:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729373AbgEDPoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 11:44:25 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:21568 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728983AbgEDPoX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 11:44:23 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 044F2XpZ139280;
-        Mon, 4 May 2020 11:44:18 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30s50ys4ce-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 May 2020 11:44:18 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 044Ffo2O012898;
-        Mon, 4 May 2020 15:44:15 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma03ams.nl.ibm.com with ESMTP id 30s0g5n435-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 May 2020 15:44:15 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 044Fh3vg61735376
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 4 May 2020 15:43:03 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D867B4C04A;
-        Mon,  4 May 2020 15:44:12 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E51214C040;
-        Mon,  4 May 2020 15:44:11 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.148.201.44])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Mon,  4 May 2020 15:44:11 +0000 (GMT)
-Date:   Mon, 4 May 2020 18:44:10 +0300
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marc Hartmayer <mhartmay@linux.ibm.com>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>
-Subject: Re: linux-next: Tree for May 4 --> mm: free_area_init: allow
- defining max_zone_pfn in descending order does increase memory use
-Message-ID: <20200504154410.GF342687@linux.ibm.com>
-References: <20200504173547.2cdd83bf@canb.auug.org.au>
- <9e9edd1e-6653-a585-0e22-69930a07dce1@de.ibm.com>
+        id S1729467AbgEDP5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 11:57:18 -0400
+Received: from elvis.franken.de ([193.175.24.41]:39442 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727929AbgEDP5P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 11:57:15 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jVdSx-0004JX-00; Mon, 04 May 2020 17:57:11 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 8632DC036C; Mon,  4 May 2020 17:46:13 +0200 (CEST)
+Date:   Mon, 4 May 2020 17:46:13 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     "Maciej W. Rozycki" <macro@linux-mips.org>
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Fangrui Song <maskray@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Jouni Hogander <jouni.hogander@unikie.com>,
+        Kevin Darbyshire-Bryant <ldir@darbyshire-bryant.me.uk>,
+        Borislav Petkov <bp@suse.de>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5] MIPS: Truncate link address into 32bit for 32bit
+ kernel
+Message-ID: <20200504154613.GA14031@alpha.franken.de>
+References: <20200413062651.3992652-1-jiaxun.yang@flygoat.com>
+ <20200422143258.1250960-1-jiaxun.yang@flygoat.com>
+ <alpine.LFD.2.21.2004230036480.851719@eddie.linux-mips.org>
+ <B307BFAC-9973-4444-B69A-40B054210E84@flygoat.com>
+ <alpine.LFD.2.21.2004241316360.851719@eddie.linux-mips.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9e9edd1e-6653-a585-0e22-69930a07dce1@de.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-05-04_09:2020-05-04,2020-05-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
- clxscore=1011 suspectscore=0 mlxlogscore=798 priorityscore=1501
- impostorscore=0 lowpriorityscore=0 mlxscore=0 adultscore=0 phishscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005040124
+In-Reply-To: <alpine.LFD.2.21.2004241316360.851719@eddie.linux-mips.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ho Christian,
-
-On Mon, May 04, 2020 at 04:50:06PM +0200, Christian Borntraeger wrote:
-> Mike,
-> commit 51a2f644fd020d5f090044825c388444d11029d ("mm: free_area_init: allow defining max_zone_pfn in descending order")
-> does increase the memory use on s390 (e.g. 700 MB vs.1.8 GB).
+On Fri, Apr 24, 2020 at 01:22:30PM +0100, Maciej W. Rozycki wrote:
+> On Thu, 23 Apr 2020, Jiaxun Yang wrote:
 > 
-> Something is odd in this patch. Any idea?
+> > > Alternatively, have you made any attempt to verify if actually replacing 
+> > >the setting for VMLINUX_LOAD_ADDRESS would be safe?  Glancing over its use 
+> > >there do not appear to be many places.
+> > 
+> > Limited experiments showed it should be fine...
+> > 
+> > But MIPS kernel has some design I'm not really familiar with like SYM32 for
+> > 64-bit kernel and special address space design for Trap-and-emul KVM.
+> 
+>  This only affects CONFIG_32BIT kernels, so SYM32 does not apply; I can't 
+> comment on KVM.  There's still that bunch of:
+> 
+> $(shell expr $(...) \< 0xffffffff80000000)
+> 
+> constructs I mentioned before, so let's leave your change as it stands at 
+> this time.  Please do rename the variable as I suggested though, I hope 
+> that's not a big deal.
 
-Yeah, this patch is buggy. In short, it breaks zone size calculation on
-s390 and some other architectures.
+Jiaxun, are you going to send an update with this change ?
 
-I've just replied at [1] with more details and a fix.
-
-[1] https://lore.kernel.org/linux-mm/20200504153901.GM14260@kernel.org/
+Thomas.
 
 -- 
-Sincerely yours,
-Mike.
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
