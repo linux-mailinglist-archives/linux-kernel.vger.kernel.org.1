@@ -2,133 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EF121C473A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 21:47:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A20A21C4720
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 21:37:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726955AbgEDTrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 15:47:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45582 "EHLO
+        id S1727778AbgEDThr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 15:37:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726111AbgEDTrU (ORCPT
+        by vger.kernel.org with ESMTP id S1726550AbgEDThq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 15:47:20 -0400
-X-Greylist: delayed 526 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 04 May 2020 12:47:19 PDT
-Received: from ndesaulniers1.mtv.corp.google.com (unknown [IPv6:2620:15c:211:202:7116:4d00:ce84:d6b7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC46CC061A0E
-        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 12:47:19 -0700 (PDT)
-Received: from ndesaulniers1.mtv.corp.google.com (localhost [127.0.0.1])
-        by ndesaulniers1.mtv.corp.google.com (8.15.2/8.15.2/Debian-17) with ESMTP id 044JbVdu227376;
-        Mon, 4 May 2020 12:37:31 -0700
-Received: (from ndesaulniers@localhost)
-        by ndesaulniers1.mtv.corp.google.com (8.15.2/8.15.2/Submit) id 044JbU18227374;
-        Mon, 4 May 2020 12:37:30 -0700
-Date:   Mon, 4 May 2020 12:37:29 -0700
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Jesse Brandeburg <jesse.brandeburg@intel.com>
-Cc:     clang-built-linux@googlegroups.com, andriy.shevchenko@intel.com,
-        bp@alien8.de, dan.j.williams@intel.com,
-        linux-kernel@vger.kernel.org, linux@rasmusvillemoes.dk,
-        mingo@redhat.com, peterz@infradead.org, tglx@linutronix.de,
-        x86@kernel.org, ilie.halip@gmail.com, natechancellor@gmail.com
-Subject: Re: [PATCH v6 1/2] x86: fix bitops.h warning with a moved cast
-Message-ID: <20200504193524.GA221287@google.com>
-Reply-To: 20200310221747.2848474-1-jesse.brandeburg@intel.com
-References: <20200310221747.2848474-1-jesse.brandeburg@intel.com>
+        Mon, 4 May 2020 15:37:46 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84F05C061A0F
+        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 12:37:46 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id k18so13697305ion.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 12:37:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AdWMO0GZMNFscZNybGWQG3ITswtupKPg+QTxQVbhP58=;
+        b=GObmazAbydGljs6lUpNTgX82Yj9VICjxvJsXCRjiEN/IiUC4gN8U8xjGFwFx9O7ill
+         ZFs+VP0q2tO0znb2WC0f2LJP3cMcp+e1Muf7XNyClzKjOuvajCxdLCIVo5W1RvjY4uOd
+         sLQwXUEOzKPvuukgNeSceNmqwReuSA9lOcGCA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AdWMO0GZMNFscZNybGWQG3ITswtupKPg+QTxQVbhP58=;
+        b=hJEnjMaILrkpr9vgcqypYEywr9n/jYgNj+k3kvimt1UbAMTgjcXwDGoAYP1Tx7uNih
+         QR5Ma7NaUQ/jIvGUn61KXsJUCL/y0YeuEfTFiFpWDb3ltEGN3eEu4nZy7dN2n2J1E7jY
+         a/8GSFi9BN9HtgMBoE8JMX+EZYX+4cNxgNOl+j8AczFDhEbugF1OwpXoD/L6UEYbWae1
+         nXs7ha4sh1pHkkPHM0kYOOp51//wJ19291rXPPeJ7+D4OGkXLbHAzsP5r5vtrrp4oyJT
+         695+WqHyHGT6d31YGiL8etTzLAeh+tYubyxvesd8puavNx5DVeGPoLOQG9u/I/G5GdTi
+         jjiQ==
+X-Gm-Message-State: AGi0Pub4Jlc5qyNfPecwtZgMp8PuMfutg6L7ki4Rj80Mz7KuIlQetBQ1
+        /A/Q9G0VxRs30vvQzbpxwXMRYlMBAkcThg+X7ZA8ZelMVi4=
+X-Google-Smtp-Source: APiQypLQSD4iaEpIO5FjQ3ZmMTHwJnzzJlOFWYJXTb12bjeP6SAD28w06feWRZUOQRwbhUf9KFyI72uv/kTlXn/A57o=
+X-Received: by 2002:a6b:bc85:: with SMTP id m127mr3389827iof.89.1588621065701;
+ Mon, 04 May 2020 12:37:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200310221747.2848474-1-jesse.brandeburg@intel.com>
+References: <20200428205903.61704-1-urezki@gmail.com> <20200428205903.61704-10-urezki@gmail.com>
+ <20200501212749.GD7560@paulmck-ThinkPad-P72> <20200504124323.GA17577@pc636>
+ <20200504152437.GK2869@paulmck-ThinkPad-P72> <20200504174822.GA20446@pc636>
+ <20200504180805.GA172409@google.com> <20200504190138.GU2869@paulmck-ThinkPad-P72>
+In-Reply-To: <20200504190138.GU2869@paulmck-ThinkPad-P72>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Mon, 4 May 2020 15:37:33 -0400
+Message-ID: <CAEXW_YQmrfbaDocsc7bLULRR1yUv4=MMMEw3b0s1mXM8sEVVzQ@mail.gmail.com>
+Subject: Re: [PATCH 09/24] rcu/tree: cache specified number of objects
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Matthew Wilcox <willy@infradead.org>,
+        RCU <rcu@vger.kernel.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 10, 2020 at 03:17:46PM -0700, Jesse Brandeburg wrote:
-> Fix many sparse warnings when building with C=1. These are useless
-> noise from the bitops.h file and getting rid of them helps devs
-> make more use of the tools and possibly find real bugs.
-> 
-> When the kernel is compiled with C=1, there are lots of messages like:
->   arch/x86/include/asm/bitops.h:77:37: warning: cast truncates bits from constant value (ffffff7f becomes 7f)
-> 
-> CONST_MASK() is using a signed integer "1" to create the mask which is
-> later cast to (u8), in order to yield an 8-bit value for the assembly
-> instructions to use. Simplify the expressions used to clearly indicate
-> they are working on 8-bit values only, which still keeps sparse happy
-> without an accidental promotion to a 32 bit integer.
-> 
-> The warning was occurring because certain bitmasks that end with a bit
-> set next to a natural boundary like 7, 15, 23, 31, end up with a mask
-> like 0x7f, which then results in sign extension due to the integer
-> type promotion rules[1]. It was really only "clear_bit" that was
-> having problems, and it was only on some bit checks that resulted in a
-> mask like 0xffffff7f being generated after the inversion.
-> 
-> Verified with a test module (see next patch) and assembly inspection
-> that the patch doesn't introduce any change in generated code.
-> 
-> [1] https://stackoverflow.com/questions/46073295/implicit-type-promotion-rules
-> 
-> Signed-off-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
-> ---
-> v6: reworded commit message, enhanced explanation
-> v5: changed code to use simple AND and XOR, updated commit message
-> v4: reverse argument order as suggested by David Laight, added reviewed-by
-> v3: Clean up the header file changes as per peterz.
-> v2: use correct CC: list
-> ---
->  arch/x86/include/asm/bitops.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/bitops.h b/arch/x86/include/asm/bitops.h
-> index 062cdecb2f24..53f246e9df5a 100644
-> --- a/arch/x86/include/asm/bitops.h
-> +++ b/arch/x86/include/asm/bitops.h
-> @@ -54,7 +54,7 @@ arch_set_bit(long nr, volatile unsigned long *addr)
->  	if (__builtin_constant_p(nr)) {
->  		asm volatile(LOCK_PREFIX "orb %1,%0"
->  			: CONST_MASK_ADDR(nr, addr)
-> -			: "iq" ((u8)CONST_MASK(nr))
-> +			: "iq" (CONST_MASK(nr) & 0xff)
+Hi Paul,
 
-Sorry for the very late report.  It turns out that if your config
-tickles __builtin_constant_p just right, this now produces invalid
-assembly:
+On Mon, May 4, 2020 at 3:01 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> On Mon, May 04, 2020 at 02:08:05PM -0400, Joel Fernandes wrote:
+> > On Mon, May 04, 2020 at 07:48:22PM +0200, Uladzislau Rezki wrote:
+> > > On Mon, May 04, 2020 at 08:24:37AM -0700, Paul E. McKenney wrote:
+> > [..]
+> > > > > > Presumably the list can also be accessed without holding this lock,
+> > > > > > because otherwise we shouldn't need llist...
+> > > > > >
+> > > > > Hm... We increase the number of elements in cache, therefore it is not
+> > > > > lockless. From the other hand i used llist_head to maintain the cache
+> > > > > because it is single linked list, we do not need "*prev" link. Also
+> > > > > we do not need to init the list.
+> > > > >
+> > > > > But i can change it to list_head. Please let me know if i need :)
+> > > >
+> > > > Hmmm...  Maybe it is time for a non-atomic singly linked list?  In the RCU
+> > > > callback processing, the operations were open-coded, but they have been
+> > > > pushed into include/linux/rcu_segcblist.h and kernel/rcu/rcu_segcblist.*.
+> > > >
+> > > > Maybe some non-atomic/protected/whatever macros in the llist.h file?
+> > > > Or maybe just open-code the singly linked list?  (Probably not the
+> > > > best choice, though.)  Add comments stating that the atomic properties
+> > > > of the llist functions aren't neded?  Something else?
+> > > >
+> > > In order to keep it simple i can replace llist_head by the list_head?
+> >
+> > Just to clarify for me, what is the disadvantage of using llist here?
+>
+> Are there some llist APIs that are not set up for concurrency?  I am
+> not seeing any.
 
-$ cat foo.c
-long a(long b, long c) {
-  asm("orb\t%1, %0" : "+q"(c): "r"(b));
-  return c;
-}
-$ gcc foo.c
-foo.c: Assembler messages:
-foo.c:2: Error: `%rax' not allowed with `orb'
+llist deletion racing with another llist deletion will need locking.
+So strictly speaking, some locking is possible with llist usage?
 
-The "q" constraint only has meanting on -m32 otherwise is treated as
-"r".
+The locklessness as I understand comes when adding and deleting at the
+same time. For that no lock is needed. But in the current patch, it
+locks anyway to avoid the lost-update of the size of the list.
 
-Since we have the mask (& 0xff), can we drop the `b` suffix from the
-instruction? Or is a revert more appropriate? Or maybe another way to
-skin this cat?
+> The overhead isn't that much of a concern, given that these are not on the
+> hotpath, but people reading the code and seeing the cmpxchg operations
+> might be forgiven for believing that there is some concurrency involved
+> somewhere.
+>
+> Or am I confused and there are now single-threaded add/delete operations
+> for llist?
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/961
-This is blowing up our KernelCI reports.
+I do see some examples of llist usage with locking in the kernel code.
+One case is: do_init_module() calling llist_add to add to the
+init_free_list under module_mutex.
 
->  			: "memory");
->  	} else {
->  		asm volatile(LOCK_PREFIX __ASM_SIZE(bts) " %1,%0"
-> @@ -74,7 +74,7 @@ arch_clear_bit(long nr, volatile unsigned long *addr)
->  	if (__builtin_constant_p(nr)) {
->  		asm volatile(LOCK_PREFIX "andb %1,%0"
->  			: CONST_MASK_ADDR(nr, addr)
-> -			: "iq" ((u8)~CONST_MASK(nr)));
-> +			: "iq" (CONST_MASK(nr) ^ 0xff));
->  	} else {
->  		asm volatile(LOCK_PREFIX __ASM_SIZE(btr) " %1,%0"
->  			: : RLONG_ADDR(addr), "Ir" (nr) : "memory");
-> 
-> base-commit: 8b614cb8f1dcac8ca77cf4dd85f46ef3055f8238
-> -- 
-> 2.24.1
-> 
+> > Since we don't care about traversing backwards, isn't it better to use llist
+> > for this usecase?
+> >
+> > I think Vlad is using locking as we're also tracking the size of the llist to
+> > know when to free pages. This tracking could suffer from the lost-update
+> > problem without any locking, 2 lockless llist_add happened simulatenously.
+> >
+> > Also if list_head is used, it will take more space and still use locking.
+>
+> Indeed, it would be best to use a non-concurrent singly linked list.
+
+Ok cool :-)
+
+Is it safe to say something like the following is ruled out? ;-) :-D
+#define kfree_rcu_list_add llist_add
+
+Thanks,
+
+ - Joel
