@@ -2,84 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 317BA1C3DC5
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 16:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4968C1C3DF2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 17:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728950AbgEDO5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 10:57:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727967AbgEDO5T (ORCPT
+        id S1729370AbgEDPBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 11:01:02 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:51266 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729355AbgEDPBA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 10:57:19 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F949C061A0F
-        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 07:57:19 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id b24so10017813lfp.7
-        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 07:57:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KXTeEx6IisqAOCmfPVwDlnFlnDkJiSAj9MRHccmyI/s=;
-        b=f1O7lCLc9F+EoW79NTRjesPk5eQ7p4Q7MnxAp+szu+ekyG67HHuZaHvrobdUzOqBlb
-         yxPAcF6Rs6WCFXCs4xqx5LEJ4GGkKVujqbgVq9W4LCfPYWNecwVz+m0SBfRVrXYINYKo
-         yLmS5ygJkWMdj3uUMxFXDwwSobIvM4pzAw1+2UFB5+XOnVwN0y9pLSOq4yTLfyX4xxav
-         1BzzHnHZ096oMNL+SaMPBB0D7qGRTnxD13SNoNHNIILeSzitLEO2SFfMC1sVuuY8RJT+
-         UZ58sL0B1Mzmxy6NSJbmzTax5111MpmwldblyZhlWiaGY/fMAkXVTB5bSCMQ4i9oDf3B
-         nGPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KXTeEx6IisqAOCmfPVwDlnFlnDkJiSAj9MRHccmyI/s=;
-        b=jtENcCYts57DnKllh0XPcT4/4C9zv2ZUTE0/79EZOoHV0uDPVSaCtvPyc+LYexODCu
-         LdrSR8b1H/MuN47scV3wCKikrdCuX9Up59vtdfmyPnuBH1OGtqae2xL4OfdLXIQ3vMRi
-         vpR69Sq93NFB3DRWJeF82UnlpiOSuWhgwhtJ3D1jXYHL2V1eFtiesNUx/YtbFv0VQKOB
-         ViWuf0Ku4XW64fL/OzsA3qfGWypVnt0EKPvIWi9Obew53C3dnB1jYWyTJhuDIlD6SWoW
-         2K/weS9pWYjIlNCMt/90OHPl6Mv8pJABIeWV0r3dP9bna9e5VfwgniRd6zhsI6RErhCc
-         fLww==
-X-Gm-Message-State: AGi0PuaI8ZfgE/R3sLHtFI7gLMQJ1wr8nruZUMQo+wUPdO3oRs6PcAsN
-        XKCer9gHLPilJmEzYSfCheCLERpEXY19zRzxucsyBg==
-X-Google-Smtp-Source: APiQypLeWlS/2tJFxpoWroiqoFWA9TyTM5cYPxWBjGApMajaaMz7gQOa5MU4ttHNy7FkO2WJK1Rul1KNGmjOa5S7i08=
-X-Received: by 2002:ac2:4466:: with SMTP id y6mr12025645lfl.125.1588604237015;
- Mon, 04 May 2020 07:57:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200430182712.237526-1-shakeelb@google.com> <20200504065600.GA22838@dhcp22.suse.cz>
- <CALvZod5Ao2PEFPEOckW6URBfxisp9nNpNeon1GuctuHehqk_6Q@mail.gmail.com> <939b6744-6556-2733-b83e-bf14e848dabd@I-love.SAKURA.ne.jp>
-In-Reply-To: <939b6744-6556-2733-b83e-bf14e848dabd@I-love.SAKURA.ne.jp>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 4 May 2020 07:57:05 -0700
-Message-ID: <CALvZod5T9pYG1xVHqNM=c68jgKPVXtKjuvV0DSAR+Ld_Mm1c4A@mail.gmail.com>
-Subject: Re: [PATCH] memcg: oom: ignore oom warnings from memory.max
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Greg Thelen <gthelen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 4 May 2020 11:01:00 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 044ElbqT116461;
+        Mon, 4 May 2020 14:59:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2020-01-29;
+ bh=6TPxMgWmQtH64Bn23GV/AftZjSew5g3GNKLiViW6Iy4=;
+ b=gFnT5jo6XL/vq8JpP48I0AftEHAaN8XlSDr4W8ZpfRzhx8JGBr6tAK6D0mKyk6E58rF/
+ oquWByjYyxEMe8qAeG3v2f8p2pZd287Oj6ua7SZNIyRvuvZpfGzbCZyrniOX3aP/g6lz
+ xa/80tQTPFYDbmomam+cMU5Y4F+X84v0DhJvRDSsSK4AWeX8mgkSklKaIzWS8wviZF1A
+ eDLA3CHAPTcjVjrnS8QKReCGLjvHEExbZbjNTmAFKpWDdCGfIhidrMsMHzlfnVfardgg
+ A7rOcl5YOGUB+9GxY5xya5LOf7jnVERNWH2eM8++6AzZvbq7Z91KbFGnaH9on9GUpIRn BQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 30s09qyfp4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 04 May 2020 14:59:35 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 044EkfUs094736;
+        Mon, 4 May 2020 14:59:35 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 30sjdqq5u8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 04 May 2020 14:59:34 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 044ExWnw027298;
+        Mon, 4 May 2020 14:59:32 GMT
+Received: from linux-1.home.com (/10.175.9.166)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 04 May 2020 07:59:32 -0700
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        x86@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     pbonzini@redhat.com, konrad.wilk@oracle.com,
+        jan.setjeeilers@oracle.com, liran.alon@oracle.com,
+        junaids@google.com, graf@amazon.de, rppt@linux.vnet.ibm.com,
+        kuzuno@gmail.com, mgross@linux.intel.com,
+        alexandre.chartre@oracle.com
+Subject: [RFC v4][PATCH part-2 00/13] ASI - Part II (Decorated Page-Table)
+Date:   Mon,  4 May 2020 16:57:57 +0200
+Message-Id: <20200504145810.11882-1-alexandre.chartre@oracle.com>
+X-Mailer: git-send-email 2.18.2
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9610 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0 mlxscore=0
+ bulkscore=0 adultscore=0 phishscore=0 mlxlogscore=859 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005040123
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9610 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0
+ lowpriorityscore=0 spamscore=0 adultscore=0 clxscore=1015 suspectscore=0
+ priorityscore=1501 malwarescore=0 mlxlogscore=948 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005040123
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 4, 2020 at 7:20 AM Tetsuo Handa
-<penguin-kernel@i-love.sakura.ne.jp> wrote:
->
-> On 2020/05/04 22:54, Shakeel Butt wrote:
-> > It may not be a problem for an individual or small scale deployment
-> > but when "sweep before tear down" is the part of the workflow for
-> > thousands of machines cycling through hundreds of thousands of cgroups
-> > then we can potentially flood the logs with not useful dumps and may
-> > hide (or overflow) any useful information in the logs.
->
-> I'm proposing a patch which allows configuring which OOM-related messages
-> should be sent to consoles at
-> https://lkml.kernel.org/r/20200424024239.63607-1-penguin-kernel@I-love.SAKURA.ne.jp .
-> Will that approach help you?
+This is part II of ASI RFC v4. Please refer to the cover letter of
+part I for an overview the ASI RFC.
 
-From what I understand, that patch is specifically for controlling
-messages to consoles. The messages will still be in logs, right?
+  https://lore.kernel.org/lkml/20200504144939.11318-1-alexandre.chartre@oracle.com/
+
+This part introduces decorated page-table which encapsulate native page
+table (e.g. a PGD) in order to provide convenient page-table management
+functions, such as tracking address range mapped in a page-table or
+safely handling references to another page-table.
+
+Decorated page-table can then be used to easily create and manage page
+tables to be used with ASI. It will be used by the ASI test driver (see
+part III) and later by KVM ASI.
+
+Decorated page-table is independent of ASI, and can potentially be used
+anywhere a page-table is needed.
+
+Thanks,
+
+alex.
+
+-----
+
+Alexandre Chartre (13):
+  mm/x86: Introduce decorated page-table (dpt)
+  mm/dpt: Track buffers allocated for a decorated page-table
+  mm/dpt: Add decorated page-table entry offset functions
+  mm/dpt: Add decorated page-table entry allocation functions
+  mm/dpt: Add decorated page-table entry set functions
+  mm/dpt: Functions to populate a decorated page-table from a VA range
+  mm/dpt: Helper functions to map module into a decorated page-table
+  mm/dpt: Keep track of VA ranges mapped in a decorated page-table
+  mm/dpt: Functions to clear decorated page-table entries for a VA range
+  mm/dpt: Function to copy page-table entries for percpu buffer
+  mm/dpt: Add decorated page-table remap function
+  mm/dpt: Handle decorated page-table mapped range leaks and overlaps
+  mm/asi: Function to init decorated page-table with ASI core mappings
+
+ arch/x86/include/asm/asi.h |    2 +
+ arch/x86/include/asm/dpt.h |   89 +++
+ arch/x86/mm/Makefile       |    2 +-
+ arch/x86/mm/asi.c          |   57 ++
+ arch/x86/mm/dpt.c          | 1051 ++++++++++++++++++++++++++++++++++++
+ 5 files changed, 1200 insertions(+), 1 deletion(-)
+ create mode 100644 arch/x86/include/asm/dpt.h
+ create mode 100644 arch/x86/mm/dpt.c
+
+-- 
+2.18.2
+
