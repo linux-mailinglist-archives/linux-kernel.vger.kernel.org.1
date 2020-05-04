@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D61D1C442C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:05:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAFD41C4453
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731740AbgEDSEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:04:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34454 "EHLO mail.kernel.org"
+        id S1731312AbgEDSGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:06:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36380 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731724AbgEDSEw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:04:52 -0400
+        id S1731918AbgEDSGK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 14:06:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CC58724957;
-        Mon,  4 May 2020 18:04:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8CF2420746;
+        Mon,  4 May 2020 18:06:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588615491;
-        bh=g7KtWtbUzXxt0Cfs7sicut6krvWw6UQmyNyj8ocRw4A=;
+        s=default; t=1588615570;
+        bh=tTx+X6ofM/0dXOC1QY/hOoerybTx5eC+WY95hSicXC4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KWeUMCHl2ECxRcKAoobuyfLU8HISyOh/W2arI9I1JuNlMDOBcJdSiwYJyeH0p+O41
-         wmEOBTenTSCmB57wrmNhOaBY4XvHxzwg34jPdyqveFFZNGmHPfTFc7dlDCNOrrI9aB
-         gZriyFOqm+dohmfp2Y9HUe+fHyoJHBM4SvB54U8o=
+        b=nKuY/cgu3RxBZ5frPvBK+rJBujLdRd42MiEP6fYxw7DQoD5vyxjGbhAu6dqyuqHhR
+         r7UeFhXLxyuKyxIGuVABiEFqBbbtQtIDk/yiyp66hpqPQ0YFuDhmNkUyOyEkjdEHeW
+         +Eaa5gSGLLRrpgnMd7uoVrcuVz++HGSidWniG6n0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 5.4 31/57] dm writecache: fix data corruption when reloading the target
-Date:   Mon,  4 May 2020 19:57:35 +0200
-Message-Id: <20200504165459.033141220@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Subject: [PATCH 5.6 33/73] IB/rdmavt: Always return ERR_PTR from rvt_create_mmap_info()
+Date:   Mon,  4 May 2020 19:57:36 +0200
+Message-Id: <20200504165507.472436514@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200504165456.783676004@linuxfoundation.org>
-References: <20200504165456.783676004@linuxfoundation.org>
+In-Reply-To: <20200504165501.781878940@linuxfoundation.org>
+References: <20200504165501.781878940@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,129 +45,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mikulas Patocka <mpatocka@redhat.com>
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 
-commit 31b22120194b5c0d460f59e0c98504de1d3f1f14 upstream.
+commit 47c370c1a5eea9b2f6f026d49e060c3748c89667 upstream.
 
-The dm-writecache reads metadata in the target constructor. However, when
-we reload the target, there could be another active instance running on
-the same device. This is the sequence of operations when doing a reload:
+The commit below modified rvt_create_mmap_info() to return ERR_PTR's but
+didn't update the callers to handle them. Modify rvt_create_mmap_info() to
+only return ERR_PTR and fix all error checking after
+rvt_create_mmap_info() was called.
 
-1. construct new target
-2. suspend old target
-3. resume new target
-4. destroy old target
-
-Metadata that were written by the old target between steps 1 and 2 would
-not be visible by the new target.
-
-Fix the data corruption by loading the metadata in the resume handler.
-
-Also, validate block_size is at least as large as both the devices'
-logical block size and only read 1 block from the metadata during
-target constructor -- no need to read entirety of metadata now that it
-is done during resume.
-
-Fixes: 48debafe4f2f ("dm: add writecache target")
-Cc: stable@vger.kernel.org # v4.18+
-Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Fixes: ff23dfa13457 ("IB: Pass only ib_udata in function prototypes")
+Link: https://lore.kernel.org/r/20200424173146.10970-1-sudipm.mukherjee@gmail.com
+Cc: stable@vger.kernel.org [5.4+]
+Tested-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
+Acked-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/md/dm-writecache.c |   52 ++++++++++++++++++++++++++++++++-------------
- 1 file changed, 37 insertions(+), 15 deletions(-)
+ drivers/infiniband/sw/rdmavt/cq.c   |    4 ++--
+ drivers/infiniband/sw/rdmavt/mmap.c |    4 ++--
+ drivers/infiniband/sw/rdmavt/qp.c   |    4 ++--
+ drivers/infiniband/sw/rdmavt/srq.c  |    4 ++--
+ 4 files changed, 8 insertions(+), 8 deletions(-)
 
---- a/drivers/md/dm-writecache.c
-+++ b/drivers/md/dm-writecache.c
-@@ -878,6 +878,24 @@ static int writecache_alloc_entries(stru
- 	return 0;
- }
- 
-+static int writecache_read_metadata(struct dm_writecache *wc, sector_t n_sectors)
-+{
-+	struct dm_io_region region;
-+	struct dm_io_request req;
-+
-+	region.bdev = wc->ssd_dev->bdev;
-+	region.sector = wc->start_sector;
-+	region.count = n_sectors;
-+	req.bi_op = REQ_OP_READ;
-+	req.bi_op_flags = REQ_SYNC;
-+	req.mem.type = DM_IO_VMA;
-+	req.mem.ptr.vma = (char *)wc->memory_map;
-+	req.client = wc->dm_io;
-+	req.notify.fn = NULL;
-+
-+	return dm_io(&req, 1, &region, NULL);
-+}
-+
- static void writecache_resume(struct dm_target *ti)
- {
- 	struct dm_writecache *wc = ti->private;
-@@ -888,8 +906,18 @@ static void writecache_resume(struct dm_
- 
- 	wc_lock(wc);
- 
--	if (WC_MODE_PMEM(wc))
-+	if (WC_MODE_PMEM(wc)) {
- 		persistent_memory_invalidate_cache(wc->memory_map, wc->memory_map_size);
-+	} else {
-+		r = writecache_read_metadata(wc, wc->metadata_sectors);
-+		if (r) {
-+			size_t sb_entries_offset;
-+			writecache_error(wc, r, "unable to read metadata: %d", r);
-+			sb_entries_offset = offsetof(struct wc_memory_superblock, entries);
-+			memset((char *)wc->memory_map + sb_entries_offset, -1,
-+			       (wc->metadata_sectors << SECTOR_SHIFT) - sb_entries_offset);
-+		}
-+	}
- 
- 	wc->tree = RB_ROOT;
- 	INIT_LIST_HEAD(&wc->lru);
-@@ -1984,6 +2012,12 @@ static int writecache_ctr(struct dm_targ
- 		ti->error = "Invalid block size";
- 		goto bad;
- 	}
-+	if (wc->block_size < bdev_logical_block_size(wc->dev->bdev) ||
-+	    wc->block_size < bdev_logical_block_size(wc->ssd_dev->bdev)) {
-+		r = -EINVAL;
-+		ti->error = "Block size is smaller than device logical block size";
-+		goto bad;
-+	}
- 	wc->block_size_bits = __ffs(wc->block_size);
- 
- 	wc->max_writeback_jobs = MAX_WRITEBACK_JOBS;
-@@ -2072,8 +2106,6 @@ invalid_optional:
- 			goto bad;
- 		}
- 	} else {
--		struct dm_io_region region;
--		struct dm_io_request req;
- 		size_t n_blocks, n_metadata_blocks;
- 		uint64_t n_bitmap_bits;
- 
-@@ -2130,19 +2162,9 @@ invalid_optional:
- 			goto bad;
+--- a/drivers/infiniband/sw/rdmavt/cq.c
++++ b/drivers/infiniband/sw/rdmavt/cq.c
+@@ -248,8 +248,8 @@ int rvt_create_cq(struct ib_cq *ibcq, co
+ 	 */
+ 	if (udata && udata->outlen >= sizeof(__u64)) {
+ 		cq->ip = rvt_create_mmap_info(rdi, sz, udata, u_wc);
+-		if (!cq->ip) {
+-			err = -ENOMEM;
++		if (IS_ERR(cq->ip)) {
++			err = PTR_ERR(cq->ip);
+ 			goto bail_wc;
  		}
  
--		region.bdev = wc->ssd_dev->bdev;
--		region.sector = wc->start_sector;
--		region.count = wc->metadata_sectors;
--		req.bi_op = REQ_OP_READ;
--		req.bi_op_flags = REQ_SYNC;
--		req.mem.type = DM_IO_VMA;
--		req.mem.ptr.vma = (char *)wc->memory_map;
--		req.client = wc->dm_io;
--		req.notify.fn = NULL;
--
--		r = dm_io(&req, 1, &region, NULL);
-+		r = writecache_read_metadata(wc, wc->block_size >> SECTOR_SHIFT);
- 		if (r) {
--			ti->error = "Unable to read metadata";
-+			ti->error = "Unable to read first block of metadata";
- 			goto bad;
+--- a/drivers/infiniband/sw/rdmavt/mmap.c
++++ b/drivers/infiniband/sw/rdmavt/mmap.c
+@@ -154,7 +154,7 @@ done:
+  * @udata: user data (must be valid!)
+  * @obj: opaque pointer to a cq, wq etc
+  *
+- * Return: rvt_mmap struct on success
++ * Return: rvt_mmap struct on success, ERR_PTR on failure
+  */
+ struct rvt_mmap_info *rvt_create_mmap_info(struct rvt_dev_info *rdi, u32 size,
+ 					   struct ib_udata *udata, void *obj)
+@@ -166,7 +166,7 @@ struct rvt_mmap_info *rvt_create_mmap_in
+ 
+ 	ip = kmalloc_node(sizeof(*ip), GFP_KERNEL, rdi->dparms.node);
+ 	if (!ip)
+-		return ip;
++		return ERR_PTR(-ENOMEM);
+ 
+ 	size = PAGE_ALIGN(size);
+ 
+--- a/drivers/infiniband/sw/rdmavt/qp.c
++++ b/drivers/infiniband/sw/rdmavt/qp.c
+@@ -1244,8 +1244,8 @@ struct ib_qp *rvt_create_qp(struct ib_pd
+ 
+ 			qp->ip = rvt_create_mmap_info(rdi, s, udata,
+ 						      qp->r_rq.wq);
+-			if (!qp->ip) {
+-				ret = ERR_PTR(-ENOMEM);
++			if (IS_ERR(qp->ip)) {
++				ret = ERR_CAST(qp->ip);
+ 				goto bail_qpn;
+ 			}
+ 
+--- a/drivers/infiniband/sw/rdmavt/srq.c
++++ b/drivers/infiniband/sw/rdmavt/srq.c
+@@ -111,8 +111,8 @@ int rvt_create_srq(struct ib_srq *ibsrq,
+ 		u32 s = sizeof(struct rvt_rwq) + srq->rq.size * sz;
+ 
+ 		srq->ip = rvt_create_mmap_info(dev, s, udata, srq->rq.wq);
+-		if (!srq->ip) {
+-			ret = -ENOMEM;
++		if (IS_ERR(srq->ip)) {
++			ret = PTR_ERR(srq->ip);
+ 			goto bail_wq;
  		}
- 	}
+ 
 
 
