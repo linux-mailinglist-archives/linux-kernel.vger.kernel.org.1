@@ -2,233 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B51E21C4243
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 19:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48D491C40FB
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 19:08:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730515AbgEDRRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 13:17:20 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:51780 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729714AbgEDRRT (ORCPT
+        id S1730104AbgEDRIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 13:08:51 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:40055 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730092AbgEDRIt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 13:17:19 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 044HHHJp086798;
-        Mon, 4 May 2020 12:17:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1588612637;
-        bh=5HkS3LXYDb7FAZsgCE8f3t5PScofPnie5Sj76ZrQ+os=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=l+g0cdu5ta2o3KZhui48hM+F5oqQrJm4EBMoSrRoN1+phRW9Fa+qz8L3cSi/IKH2V
-         /pqMHGZEZu8QLp+2lbUNCOknFn0oIpveovFuoOnQMVJbMppFuFBdMZcD1N1I6xXEfx
-         FGX1n0DtQ6aj+wHn0I75BwJIOBafyvPvYbunfKgk=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 044HHH8i005817;
-        Mon, 4 May 2020 12:17:17 -0500
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 4 May
- 2020 12:17:17 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 4 May 2020 12:17:17 -0500
-Received: from [10.250.65.13] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 044HHHLP050906;
-        Mon, 4 May 2020 12:17:17 -0500
-Subject: Re: [PATCH] dt-bindings: power: Convert bq27xxx dt to yaml
-To:     "Andrew F. Davis" <afd@ti.com>, <sre@kernel.org>
-CC:     <linux-pm@vger.kernel.org>, <robh@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
-References: <20200504164156.21469-1-dmurphy@ti.com>
- <1ddf643b-c54e-0a60-ee14-8ea137f2bfc9@ti.com>
- <5a7220c7-6c0b-6997-f773-e4b1133d628b@ti.com>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <1bd44e87-dc61-f38d-63ad-9a783b36569c@ti.com>
-Date:   Mon, 4 May 2020 12:08:34 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Mon, 4 May 2020 13:08:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588612127;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5jp/lu0GxHdmrW7lYis3BayJlXaHxiOzRuuxkLlmEHw=;
+        b=c0RQvEkmbwayO9pGNrSSmTN9nYvhKYqCSp+8IZ2xm+zZhwTwHlVrijj6XFF+wCrQBWwuv0
+        7SRDZDfQod00v8RgyXmasTWuZL4l86BJG4OjGjLe+g9l4JLDou2yjlTdH7AVsPUvpoOLPy
+        EUO0C3J+S5eiv0et3Iij3xNr4jFxfUE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-329-IjKgymHHN5ifQhjeKOLe7Q-1; Mon, 04 May 2020 13:08:43 -0400
+X-MC-Unique: IjKgymHHN5ifQhjeKOLe7Q-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E95708014D6;
+        Mon,  4 May 2020 17:08:41 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-225.rdu2.redhat.com [10.10.118.225])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8598E63BBA;
+        Mon,  4 May 2020 17:08:39 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [RFC PATCH 08/61] fscache: Procfile to display cookies
+From:   David Howells <dhowells@redhat.com>
+To:     Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Jeff Layton <jlayton@redhat.com>
+Cc:     dhowells@redhat.com, Matthew Wilcox <willy@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 04 May 2020 18:08:38 +0100
+Message-ID: <158861211871.340223.7223853943667440807.stgit@warthog.procyon.org.uk>
+In-Reply-To: <158861203563.340223.7585359869938129395.stgit@warthog.procyon.org.uk>
+References: <158861203563.340223.7585359869938129395.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.21
 MIME-Version: 1.0
-In-Reply-To: <5a7220c7-6c0b-6997-f773-e4b1133d628b@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrew
+Add /proc/fs/fscache/cookies to display active cookies.
 
-On 5/4/20 12:08 PM, Andrew F. Davis wrote:
-> On 5/4/20 12:44 PM, Dan Murphy wrote:
->> Adding Andrew in manually.
->>
->> On 5/4/20 11:41 AM, Dan Murphy wrote:
->>> Convert the bq27xxx.txt to yaml format
->>>
->>> CC: Pali Rohár <pali@kernel.org>
->>> CC: Andrew F. Davis" <afd@ti.com>
->>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
->>> ---
->>>    .../bindings/power/supply/bq27xxx.txt         | 56 -----------
->>>    .../bindings/power/supply/bq27xxx.yaml        | 95 +++++++++++++++++++
->>>    2 files changed, 95 insertions(+), 56 deletions(-)
->>>    delete mode 100644
->>> Documentation/devicetree/bindings/power/supply/bq27xxx.txt
->>>    create mode 100644
->>> Documentation/devicetree/bindings/power/supply/bq27xxx.yaml
->>>
->>> diff --git
->>> a/Documentation/devicetree/bindings/power/supply/bq27xxx.txt
->>> b/Documentation/devicetree/bindings/power/supply/bq27xxx.txt
->>> deleted file mode 100644
->>> index 4fa8e08df2b6..000000000000
->>> --- a/Documentation/devicetree/bindings/power/supply/bq27xxx.txt
->>> +++ /dev/null
->>> @@ -1,56 +0,0 @@
->>> -TI BQ27XXX fuel gauge family
->>> -
->>> -Required properties:
->>> -- compatible: contains one of the following:
->>> - * "ti,bq27200" - BQ27200
->>> - * "ti,bq27210" - BQ27210
->>> - * "ti,bq27500" - deprecated, use revision specific property below
->>> - * "ti,bq27510" - deprecated, use revision specific property below
->>> - * "ti,bq27520" - deprecated, use revision specific property below
->>> - * "ti,bq27500-1" - BQ27500/1
->>> - * "ti,bq27510g1" - BQ27510-g1
->>> - * "ti,bq27510g2" - BQ27510-g2
->>> - * "ti,bq27510g3" - BQ27510-g3
->>> - * "ti,bq27520g1" - BQ27520-g1
->>> - * "ti,bq27520g2" - BQ27520-g2
->>> - * "ti,bq27520g3" - BQ27520-g3
->>> - * "ti,bq27520g4" - BQ27520-g4
->>> - * "ti,bq27521" - BQ27521
->>> - * "ti,bq27530" - BQ27530
->>> - * "ti,bq27531" - BQ27531
->>> - * "ti,bq27541" - BQ27541
->>> - * "ti,bq27542" - BQ27542
->>> - * "ti,bq27546" - BQ27546
->>> - * "ti,bq27742" - BQ27742
->>> - * "ti,bq27545" - BQ27545
->>> - * "ti,bq27411" - BQ27411
->>> - * "ti,bq27421" - BQ27421
->>> - * "ti,bq27425" - BQ27425
->>> - * "ti,bq27426" - BQ27426
->>> - * "ti,bq27441" - BQ27441
->>> - * "ti,bq27621" - BQ27621
->>> -- reg: integer, I2C address of the fuel gauge.
->>> -
->>> -Optional properties:
->>> -- monitored-battery: phandle of battery characteristics node
->>> -    The fuel gauge uses the following battery properties:
->>> -    + energy-full-design-microwatt-hours
->>> -    + charge-full-design-microamp-hours
->>> -    + voltage-min-design-microvolt
->>> -  Both or neither of the *-full-design-*-hours properties must be set.
->>> -  See Documentation/devicetree/bindings/power/supply/battery.txt
->>> -
->>> -Example:
->>> -
->>> -    bat: battery {
->>> -        compatible = "simple-battery";
->>> -        voltage-min-design-microvolt = <3200000>;
->>> -        energy-full-design-microwatt-hours = <5290000>;
->>> -        charge-full-design-microamp-hours = <1430000>;
->>> -    };
->>> -
->>> -    bq27510g3: fuel-gauge@55 {
->>> -        compatible = "ti,bq27510g3";
->>> -        reg = <0x55>;
->>> -        monitored-battery = <&bat>;
->>> -    };
->>> diff --git
->>> a/Documentation/devicetree/bindings/power/supply/bq27xxx.yaml
->>> b/Documentation/devicetree/bindings/power/supply/bq27xxx.yaml
->>> new file mode 100644
->>> index 000000000000..6c53ee849004
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/power/supply/bq27xxx.yaml
->>> @@ -0,0 +1,95 @@
->>> +# SPDX-License-Identifier: GPL-2.0
->>> +# Copyright (C) 2020 Texas Instruments Incorporated
->>> +%YAML 1.2
->>> +---
->>> +$id: "http://devicetree.org/schemas/power/supply/bq27xxx.yaml#"
->>> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
->>> +
->>> +title: TI BQ27XXX fuel gauge family
->>> +
->>> +maintainers:
->>> +  - Pali Rohár <pali@kernel.org>
->>> +  - Andrew F. Davis" <afd@ti.com>
->
-> Extra " at end of name.
->
-Ack
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
 
+ fs/fscache/cookie.c     |  103 +++++++++++++++++++++++++++++++++++++++++++++++
+ fs/fscache/internal.h   |    1 
+ fs/fscache/proc.c       |    7 +++
+ include/linux/fscache.h |    1 
+ 4 files changed, 112 insertions(+)
 
->>> +  - Sebastian Reichel <sre@kernel.org>
->>> +
->>> +description: |
->>> +  Support various Texas Instruments fuel gauge devices that share
->>> similar
->>> +  register maps and power supply properties
->>> +
->>> +properties:
->>> +  compatible:
->>> +    enum:
->>> +      - ti,bq27200 - BQ27200
->>> +      - ti,bq27210 - BQ27210
->>> +      - ti,bq27500 - deprecated, use revision specific property below
->>> +      - ti,bq27510 - deprecated, use revision specific property below
->>> +      - ti,bq27520 - deprecated, use revision specific property below
->>> +      - ti,bq27500-1 - BQ27500/1
->>> +      - ti,bq27510g1 - BQ27510-g1
->>> +      - ti,bq27510g2 - BQ27510-g2
->>> +      - ti,bq27510g3 - BQ27510-g3
->>> +      - ti,bq27520g1 - BQ27520-g1
->>> +      - ti,bq27520g2 - BQ27520-g2
->>> +      - ti,bq27520g3 - BQ27520-g3
->>> +      - ti,bq27520g4 - BQ27520-g4
->>> +      - ti,bq27521 - BQ27521
->>> +      - ti,bq27530 - BQ27530
->>> +      - ti,bq27531 - BQ27531
->>> +      - ti,bq27541 - BQ27541
->>> +      - ti,bq27542 - BQ27542
->>> +      - ti,bq27546 - BQ27546
->>> +      - ti,bq27742 - BQ27742
->>> +      - ti,bq27545 - BQ27545
->>> +      - ti,bq27411 - BQ27411
->>> +      - ti,bq27421 - BQ27421
->>> +      - ti,bq27425 - BQ27425
->>> +      - ti,bq27426 - BQ27426
->>> +      - ti,bq27441 - BQ27441
->>> +      - ti,bq27621 - BQ27621
->>> +
->>> +  reg:
->>> +    maxItems: 1
->>> +    description: integer, I2C address of the fuel gauge.
->>> +
->>> +  monitored-battery:
->>> +    description: phandle of battery characteristics node
->>> +
->>> +  energy-full-design-microwatt-hours:
->>> +    description: |
->>> +      See Documentation/devicetree/bindings/power/supply/battery.txt.
->>> +      If this property is set then charge-full-design-microamp-hours
->>> must be
->>> +      set as well.
->
-> These are properties of the battery node and should be described in
-> their binding, they are not part of the fuel gauge node here.
-
-OK.  I will add the explanation back from the original text file that 
-these are used by the fuel gauge from the battery node.
-
-Dan
+diff --git a/fs/fscache/cookie.c b/fs/fscache/cookie.c
+index b94e3995011e..477c5fb349ee 100644
+--- a/fs/fscache/cookie.c
++++ b/fs/fscache/cookie.c
+@@ -19,6 +19,8 @@ static atomic_t fscache_object_debug_id = ATOMIC_INIT(0);
+ 
+ #define fscache_cookie_hash_shift 15
+ static struct hlist_bl_head fscache_cookie_hash[1 << fscache_cookie_hash_shift];
++static LIST_HEAD(fscache_cookies);
++static DEFINE_RWLOCK(fscache_cookies_lock);
+ 
+ static int fscache_acquire_non_index_cookie(struct fscache_cookie *cookie,
+ 					    loff_t object_size);
+@@ -65,6 +67,9 @@ void fscache_free_cookie(struct fscache_cookie *cookie)
+ {
+ 	if (cookie) {
+ 		BUG_ON(!hlist_empty(&cookie->backing_objects));
++		write_lock(&fscache_cookies_lock);
++		list_del(&cookie->proc_link);
++		write_unlock(&fscache_cookies_lock);
+ 		if (cookie->aux_len > sizeof(cookie->inline_aux))
+ 			kfree(cookie->aux);
+ 		if (cookie->key_len > sizeof(cookie->inline_key))
+@@ -192,6 +197,10 @@ struct fscache_cookie *fscache_alloc_cookie(
+ 	/* radix tree insertion won't use the preallocation pool unless it's
+ 	 * told it may not wait */
+ 	INIT_RADIX_TREE(&cookie->stores, GFP_NOFS & ~__GFP_DIRECT_RECLAIM);
++
++	write_lock(&fscache_cookies_lock);
++	list_add_tail(&cookie->proc_link, &fscache_cookies);
++	write_unlock(&fscache_cookies_lock);
+ 	return cookie;
+ 
+ nomem:
+@@ -969,3 +978,97 @@ int __fscache_check_consistency(struct fscache_cookie *cookie,
+ 	return -ESTALE;
+ }
+ EXPORT_SYMBOL(__fscache_check_consistency);
++
++/*
++ * Generate a list of extant cookies in /proc/fs/fscache/cookies
++ */
++static int fscache_cookies_seq_show(struct seq_file *m, void *v)
++{
++	struct fscache_cookie *cookie;
++	unsigned int keylen = 0, auxlen = 0;
++	char _type[3], *type;
++	u8 *p;
++
++	if (v == &fscache_cookies) {
++		seq_puts(m,
++			 "COOKIE   PARENT   USAGE CHILD ACT TY FL  DEF              NETFS_DATA\n"
++			 "======== ======== ===== ===== === == === ================ ==========\n"
++			 );
++		return 0;
++	}
++
++	cookie = list_entry(v, struct fscache_cookie, proc_link);
++
++	switch (cookie->type) {
++	case 0:
++		type = "IX";
++		break;
++	case 1:
++		type = "DT";
++		break;
++	default:
++		snprintf(_type, sizeof(_type), "%02u",
++			 cookie->type);
++		type = _type;
++		break;
++	}
++
++	seq_printf(m,
++		   "%08x %08x %5u %5u %3u %s %03lx %-16s %px",
++		   cookie->debug_id,
++		   cookie->parent ? cookie->parent->debug_id : 0,
++		   atomic_read(&cookie->usage),
++		   atomic_read(&cookie->n_children),
++		   atomic_read(&cookie->n_active),
++		   type,
++		   cookie->flags,
++		   cookie->def->name,
++		   cookie->netfs_data);
++
++	keylen = cookie->key_len;
++	auxlen = cookie->aux_len;
++
++	if (keylen > 0 || auxlen > 0) {
++		seq_puts(m, " ");
++		p = keylen <= sizeof(cookie->inline_key) ?
++			cookie->inline_key : cookie->key;
++		for (; keylen > 0; keylen--)
++			seq_printf(m, "%02x", *p++);
++		if (auxlen > 0) {
++			seq_puts(m, ", ");
++			p = auxlen <= sizeof(cookie->inline_aux) ?
++				cookie->inline_aux : cookie->aux;
++			for (; auxlen > 0; auxlen--)
++				seq_printf(m, "%02x", *p++);
++		}
++	}
++
++	seq_puts(m, "\n");
++	return 0;
++}
++
++static void *fscache_cookies_seq_start(struct seq_file *m, loff_t *_pos)
++	__acquires(fscache_cookies_lock)
++{
++	read_lock(&fscache_cookies_lock);
++	return seq_list_start_head(&fscache_cookies, *_pos);
++}
++
++static void *fscache_cookies_seq_next(struct seq_file *m, void *v, loff_t *_pos)
++{
++	return seq_list_next(v, &fscache_cookies, _pos);
++}
++
++static void fscache_cookies_seq_stop(struct seq_file *m, void *v)
++	__releases(rcu)
++{
++	read_unlock(&fscache_cookies_lock);
++}
++
++
++const struct seq_operations fscache_cookies_seq_ops = {
++	.start  = fscache_cookies_seq_start,
++	.next   = fscache_cookies_seq_next,
++	.stop   = fscache_cookies_seq_stop,
++	.show   = fscache_cookies_seq_show,
++};
+diff --git a/fs/fscache/internal.h b/fs/fscache/internal.h
+index 08e91efbce53..4b535c2dae4a 100644
+--- a/fs/fscache/internal.h
++++ b/fs/fscache/internal.h
+@@ -45,6 +45,7 @@ extern struct fscache_cache *fscache_select_cache_for_object(
+  * cookie.c
+  */
+ extern struct kmem_cache *fscache_cookie_jar;
++extern const struct seq_operations fscache_cookies_seq_ops;
+ 
+ extern void fscache_free_cookie(struct fscache_cookie *);
+ extern struct fscache_cookie *fscache_alloc_cookie(struct fscache_cookie *,
+diff --git a/fs/fscache/proc.c b/fs/fscache/proc.c
+index 90a7bc22f7e1..da51fdfc8641 100644
+--- a/fs/fscache/proc.c
++++ b/fs/fscache/proc.c
+@@ -21,6 +21,10 @@ int __init fscache_proc_init(void)
+ 	if (!proc_mkdir("fs/fscache", NULL))
+ 		goto error_dir;
+ 
++	if (!proc_create_seq("fs/fscache/cookies", S_IFREG | 0444, NULL,
++			     &fscache_cookies_seq_ops))
++		goto error_cookies;
++
+ #ifdef CONFIG_FSCACHE_STATS
+ 	if (!proc_create_single("fs/fscache/stats", S_IFREG | 0444, NULL,
+ 			fscache_stats_show))
+@@ -53,6 +57,8 @@ int __init fscache_proc_init(void)
+ 	remove_proc_entry("fs/fscache/stats", NULL);
+ error_stats:
+ #endif
++	remove_proc_entry("fs/fscache/cookies", NULL);
++error_cookies:
+ 	remove_proc_entry("fs/fscache", NULL);
+ error_dir:
+ 	_leave(" = -ENOMEM");
+@@ -73,5 +79,6 @@ void fscache_proc_cleanup(void)
+ #ifdef CONFIG_FSCACHE_STATS
+ 	remove_proc_entry("fs/fscache/stats", NULL);
+ #endif
++	remove_proc_entry("fs/fscache/cookies", NULL);
+ 	remove_proc_entry("fs/fscache", NULL);
+ }
+diff --git a/include/linux/fscache.h b/include/linux/fscache.h
+index 0229bb80b73c..38ec80217899 100644
+--- a/include/linux/fscache.h
++++ b/include/linux/fscache.h
+@@ -141,6 +141,7 @@ struct fscache_cookie {
+ 	const struct fscache_cookie_def	*def;		/* definition */
+ 	struct fscache_cookie		*parent;	/* parent of this entry */
+ 	struct hlist_bl_node		hash_link;	/* Link in hash table */
++	struct list_head		proc_link;	/* Link in proc list */
+ 	void				*netfs_data;	/* back pointer to netfs */
+ 	struct radix_tree_root		stores;		/* pages to be stored on this cookie */
+ #define FSCACHE_COOKIE_PENDING_TAG	0		/* pages tag: pending write to cache */
 
 
