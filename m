@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71FAC1C4404
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:04:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A2811C43A9
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:00:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731524AbgEDSD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:03:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60630 "EHLO mail.kernel.org"
+        id S1730991AbgEDSAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:00:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55062 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731511AbgEDSD0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:03:26 -0400
+        id S1730986AbgEDSAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 14:00:21 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 95E8624959;
-        Mon,  4 May 2020 18:03:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2229520721;
+        Mon,  4 May 2020 18:00:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588615406;
-        bh=/R8XU+BggqfQRFq8PBhn4i1kXq57E1OzkleW7rEp2U8=;
+        s=default; t=1588615221;
+        bh=fwR0V1cq/YSDhhql/2sy5/+ZtJJnxpF1Wz065Hb34Jg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sgLuCGysbMhnwFyYXP9e7oBSY4GQi/zIX9Ufph6F1i4jZN7VCFifQlHJ/A9nuS6Nr
-         NhScYpfXrV8Mwj2ZjiUZTiaGw0mdg3IYlVMZGTTaWk4f1GSWfIiY39qhQTbbVZ0UsG
-         Ru/ceJXsmJdwRhn/QkxvT60mioLfFBqa/WdISRsU=
+        b=IAwyvPz+t8nlWOELMhGSVQ0h9Aq6BaSEo82TwVkVilA/kuOagba428vY5d6rQ8l6v
+         waibYWMazrS/fr9W2xKR4Iv8n720tN/EVXoTI4F6f9lEc24gviLVVCVWc2w6zpiV8h
+         xbu1wuuXGVeCuyQX+SPhu85y6oYL1FvNX+uBsxXQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Kelley <mikelley@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>
-Subject: [PATCH 5.4 25/57] Drivers: hv: vmbus: Fix Suspend-to-Idle for Generation-2 VM
+        stable@vger.kernel.org, Sunwook Eom <speed.eom@samsung.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 4.14 15/26] dm verity fec: fix hash block number in verity_fec_decode
 Date:   Mon,  4 May 2020 19:57:29 +0200
-Message-Id: <20200504165458.526901749@linuxfoundation.org>
+Message-Id: <20200504165445.923422760@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200504165456.783676004@linuxfoundation.org>
-References: <20200504165456.783676004@linuxfoundation.org>
+In-Reply-To: <20200504165442.494398840@linuxfoundation.org>
+References: <20200504165442.494398840@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,112 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dexuan Cui <decui@microsoft.com>
+From: Sunwook Eom <speed.eom@samsung.com>
 
-commit 1a06d017fb3f388734ffbe5dedee6f8c3af5f2db upstream.
+commit ad4e80a639fc61d5ecebb03caa5cdbfb91fcebfc upstream.
 
-Before the hibernation patchset (e.g. f53335e3289f), in a Generation-2
-Linux VM on Hyper-V, the user can run "echo freeze > /sys/power/state" to
-freeze the system, i.e. Suspend-to-Idle. The user can press the keyboard
-or move the mouse to wake up the VM.
+The error correction data is computed as if data and hash blocks
+were concatenated. But hash block number starts from v->hash_start.
+So, we have to calculate hash block number based on that.
 
-With the hibernation patchset, Linux VM on Hyper-V can hibernate to disk,
-but Suspend-to-Idle is broken: when the synthetic keyboard/mouse are
-suspended, there is no way to wake up the VM.
-
-Fix the issue by not suspending and resuming the vmbus devices upon
-Suspend-to-Idle.
-
-Fixes: f53335e3289f ("Drivers: hv: vmbus: Suspend/resume the vmbus itself for hibernation")
+Fixes: a739ff3f543af ("dm verity: add support for forward error correction")
 Cc: stable@vger.kernel.org
-Reviewed-by: Michael Kelley <mikelley@microsoft.com>
-Signed-off-by: Dexuan Cui <decui@microsoft.com>
-Link: https://lore.kernel.org/r/1586663435-36243-1-git-send-email-decui@microsoft.com
-Signed-off-by: Wei Liu <wei.liu@kernel.org>
+Signed-off-by: Sunwook Eom <speed.eom@samsung.com>
+Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/hv/vmbus_drv.c |   43 ++++++++++++++++++++++++++++++++++---------
- 1 file changed, 34 insertions(+), 9 deletions(-)
+ drivers/md/dm-verity-fec.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/hv/vmbus_drv.c
-+++ b/drivers/hv/vmbus_drv.c
-@@ -978,6 +978,9 @@ static int vmbus_resume(struct device *c
+--- a/drivers/md/dm-verity-fec.c
++++ b/drivers/md/dm-verity-fec.c
+@@ -436,7 +436,7 @@ int verity_fec_decode(struct dm_verity *
+ 	fio->level++;
  
- 	return drv->resume(dev);
- }
-+#else
-+#define vmbus_suspend NULL
-+#define vmbus_resume NULL
- #endif /* CONFIG_PM_SLEEP */
+ 	if (type == DM_VERITY_BLOCK_TYPE_METADATA)
+-		block += v->data_blocks;
++		block = block - v->hash_start + v->data_blocks;
  
- /*
-@@ -995,11 +998,22 @@ static void vmbus_device_release(struct
- }
- 
- /*
-- * Note: we must use SET_NOIRQ_SYSTEM_SLEEP_PM_OPS rather than
-- * SET_SYSTEM_SLEEP_PM_OPS: see the comment before vmbus_bus_pm.
-+ * Note: we must use the "noirq" ops: see the comment before vmbus_bus_pm.
-+ *
-+ * suspend_noirq/resume_noirq are set to NULL to support Suspend-to-Idle: we
-+ * shouldn't suspend the vmbus devices upon Suspend-to-Idle, otherwise there
-+ * is no way to wake up a Generation-2 VM.
-+ *
-+ * The other 4 ops are for hibernation.
-  */
-+
- static const struct dev_pm_ops vmbus_pm = {
--	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(vmbus_suspend, vmbus_resume)
-+	.suspend_noirq	= NULL,
-+	.resume_noirq	= NULL,
-+	.freeze_noirq	= vmbus_suspend,
-+	.thaw_noirq	= vmbus_resume,
-+	.poweroff_noirq	= vmbus_suspend,
-+	.restore_noirq	= vmbus_resume,
- };
- 
- /* The one and only one */
-@@ -2280,6 +2294,9 @@ static int vmbus_bus_resume(struct devic
- 
- 	return 0;
- }
-+#else
-+#define vmbus_bus_suspend NULL
-+#define vmbus_bus_resume NULL
- #endif /* CONFIG_PM_SLEEP */
- 
- static const struct acpi_device_id vmbus_acpi_device_ids[] = {
-@@ -2290,16 +2307,24 @@ static const struct acpi_device_id vmbus
- MODULE_DEVICE_TABLE(acpi, vmbus_acpi_device_ids);
- 
- /*
-- * Note: we must use SET_NOIRQ_SYSTEM_SLEEP_PM_OPS rather than
-- * SET_SYSTEM_SLEEP_PM_OPS, otherwise NIC SR-IOV can not work, because the
-- * "pci_dev_pm_ops" uses the "noirq" callbacks: in the resume path, the
-- * pci "noirq" restore callback runs before "non-noirq" callbacks (see
-+ * Note: we must use the "no_irq" ops, otherwise hibernation can not work with
-+ * PCI device assignment, because "pci_dev_pm_ops" uses the "noirq" ops: in
-+ * the resume path, the pci "noirq" restore op runs before "non-noirq" op (see
-  * resume_target_kernel() -> dpm_resume_start(), and hibernation_restore() ->
-  * dpm_resume_end()). This means vmbus_bus_resume() and the pci-hyperv's
-- * resume callback must also run via the "noirq" callbacks.
-+ * resume callback must also run via the "noirq" ops.
-+ *
-+ * Set suspend_noirq/resume_noirq to NULL for Suspend-to-Idle: see the comment
-+ * earlier in this file before vmbus_pm.
-  */
-+
- static const struct dev_pm_ops vmbus_bus_pm = {
--	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(vmbus_bus_suspend, vmbus_bus_resume)
-+	.suspend_noirq	= NULL,
-+	.resume_noirq	= NULL,
-+	.freeze_noirq	= vmbus_bus_suspend,
-+	.thaw_noirq	= vmbus_bus_resume,
-+	.poweroff_noirq	= vmbus_bus_suspend,
-+	.restore_noirq	= vmbus_bus_resume
- };
- 
- static struct acpi_driver vmbus_acpi_driver = {
+ 	/*
+ 	 * For RS(M, N), the continuous FEC data is divided into blocks of N
 
 
