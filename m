@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA8761C469E
+	by mail.lfdr.de (Postfix) with ESMTP id 198131C469D
 	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 21:03:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727124AbgEDTDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 15:03:02 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:25928 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726469AbgEDTDB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727109AbgEDTDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 4 May 2020 15:03:01 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:41892 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725981AbgEDTDA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 15:03:00 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
         s=mimecast20190719; t=1588618979;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=mP9q+4tMTUFFbHWKmZ6XyIVd8J3nRNyyGmILxDAp3rM=;
-        b=CRsaquWQerzl88VxeMXNnQceRzPXubJFUokrLQGGSy00uU8wvaw3oXVk94RKbjU06/cx9A
-        hUrTEjPr83CRV54k1UutbyXLjsDof1n4KTHyqNo1Wrx4q40xArHpkBYfuO5ZGcSWqg9SHc
-        6jbTXUAlFGa7wfyHeubXAsY4eQT+EcE=
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3DVF+lgsiekXA9h6tv6LV4F597LFQ9My0fRuyYxe868=;
+        b=Mw5Q1f0aFhApTfcSWjc50ACpaYMVANO9tKsVHRRTVAf8NhX5tzTRP6hcaZZqVVfmxyr6yq
+        eW8WwihDwZQMGWolQ3o36XBuu1GtZi72MmTm0QNK3PC6+7uWbWwXmcBNnyz62WIIbmFe04
+        111rToSDSqM32D5sbN+NqKQ80BtlptY=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-282-NZ081FhiM1eWnMh_6FGHpA-1; Mon, 04 May 2020 15:02:51 -0400
-X-MC-Unique: NZ081FhiM1eWnMh_6FGHpA-1
+ us-mta-325-Puc1_toyMROoH1ne7lS_cw-1; Mon, 04 May 2020 15:02:54 -0400
+X-MC-Unique: Puc1_toyMROoH1ne7lS_cw-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A42CB107ACCD;
-        Mon,  4 May 2020 19:02:48 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 350C71840400;
+        Mon,  4 May 2020 19:02:52 +0000 (UTC)
 Received: from t480s.redhat.com (ovpn-114-235.ams2.redhat.com [10.36.114.235])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B21522B4AF;
-        Mon,  4 May 2020 19:02:42 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F06C7385;
+        Mon,  4 May 2020 19:02:48 +0000 (UTC)
 From:   David Hildenbrand <david@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-mm@kvack.org, linux-nvdimm@lists.01.org,
@@ -41,16 +42,18 @@ Cc:     linux-mm@kvack.org, linux-nvdimm@lists.01.org,
         Pavel Tatashin <pasha.tatashin@soleen.com>,
         David Hildenbrand <david@redhat.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Baoquan He <bhe@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eric Biederman <ebiederm@xmission.com>,
         Michal Hocko <mhocko@suse.com>,
         Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>
-Subject: [PATCH v3 0/3] mm/memory_hotplug: Interface to add driver-managed system ram
-Date:   Mon,  4 May 2020 21:02:24 +0200
-Message-Id: <20200504190227.18269-1-david@redhat.com>
+        Wei Yang <richard.weiyang@gmail.com>,
+        Baoquan He <bhe@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: [PATCH v3 1/3] mm/memory_hotplug: Introduce add_memory_device_managed()
+Date:   Mon,  4 May 2020 21:02:25 +0200
+Message-Id: <20200504190227.18269-2-david@redhat.com>
+In-Reply-To: <20200504190227.18269-1-david@redhat.com>
+References: <20200504190227.18269-1-david@redhat.com>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Content-Transfer-Encoding: quoted-printable
@@ -59,70 +62,207 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Third time is the charm? Let's see ... :)
+Some device drivers rely on memory they managed to not get added to the
+initial (firmware) memmap as system RAM - so it's not used as initial
+system RAM by the kernel and the driver is under control. While this is t=
+he
+case during cold boot and after a reboot, kexec is not aware of that and
+might add such memory to the initial (firmware) memmap of the kexec kerne=
+l.
+We need ways to teach kernel and userspace that this system ram is
+different.
 
-This is the follow up of [1]:
- [PATCH v1 0/3] mm/memory_hotplug: Make virtio-mem play nicely with
- kexec-tools
-and [2]:
- [PATCH v2 0/3] mm/memory_hotplug: Allow to not create firmware memmap
- entries
+For example, dax/kmem allows to decide at runtime if persistent memory is
+to be used as system ram. Another future user is virtio-mem, which has to
+coordinate with its hypervisor to deal with inaccessible parts within
+memory resources.
 
-kexec (via kexec_load()) can currently not properly handle memory added v=
-ia
-dax/kmem, and will have similar issues with virtio-mem. kexec-tools will
-currently add all memory to the fixed-up initial firmware memmap. In case
-of dax/kmem, this means that - in contrast to a proper reboot - how that
-persistent memory will be used can no longer be configured by the kexec'd
-kernel. In case of virtio-mem it will be harmful, because that memory
-might contain inaccessible pieces that require coordination with hypervis=
-or
-first.
+We want to let users in the kernel (esp. kexec) but also user space
+(esp. kexec-tools) know that this memory has different semantics and
+needs to be handled differently:
+1. Don't create entries in /sys/firmware/memmap/
+2. Name the memory resource "System RAM ($DRIVER)" (exposed via
+   /proc/iomem) ($DRIVER might be "kmem", "virtio_mem").
+3. Flag the memory resource IORESOURCE_MEM_DRIVER_MANAGED
 
-In both cases, we want to let the driver in the kexec'd kernel handle
-detecting and adding the memory, like during an ordinary reboot.
-Introduce add_memory_driver_managed(). More on the samentics are in patch
-#1.
+/sys/firmware/memmap/ [1] represents the "raw firmware-provided memory ma=
+p"
+because "on most architectures that firmware-provided memory map is
+modified afterwards by the kernel itself". The primary user is kexec on
+x86-64. Since commit d96ae5309165 ("memory-hotplug: create
+/sys/firmware/memmap entry for new memory"), we add all hotplugged
+memory to that firmware memmap - which makes perfect sense for traditiona=
+l
+memory hotplug on x86-64, where real HW will also add hotplugged DIMMs to
+the firmware memmap. We replicate what the "raw firmware-provided memory
+map" looks like after hot(un)plug.
 
-In the future, we might want to make this behavior configurable for
-dax/kmem- either by configuring it in the kernel (which would then also
-allow to configure kexec_file_load()) or in kexec-tools by also adding
-"System RAM (kmem)" memory from /proc/iomem to the fixed-up initial
-firmware memmap.
+To keep things simple, let the user provide the full resource name
+instead of only the driver name - this way, we don't have to manually
+allocate/craft strings for memory resources. Also use the resource
+name to make decisions, to avoid passing additional flags. In case the
+name isn't "System RAM", it's special.
 
-More on the motivation can be found in [1] and [2].
+We don't have to worry about firmware_map_remove() on the removal path. I=
+f
+there is no entry, it will simply return with -EINVAL.
 
-v2 -> v3:
-- Don't use flags for add_memory() and friends, provide
-  add_memory_driver_managed() instead.
-- Flag memory resources via IORESOURCE_MEM_DRIVER_MANAGED and handle them
-  in kexec.
-- Name memory resources "System RAM ($DRIVER)", visible via /proc/iomem
-- Added more details to the patch descriptions, especially regarding the
-  history of /sys/firmware/memmap
-- Add a comment to the device-dax change. Dropped Dave's Ack as the
+We'll adapt dax/kmem in a follow-up patch.
 
-v1 -> v2:
-- Don't change the resource name
-- Rename the flag to MHP_NO_FIRMWARE_MEMMAP to reflect what it is doing
-- Rephrase subjects/descriptions
-- Use the flag for dax/kmem
+[1] https://www.kernel.org/doc/Documentation/ABI/testing/sysfs-firmware-m=
+emmap
 
-[1] https://lkml.kernel.org/r/20200429160803.109056-1-david@redhat.com
-[2] https://lkml.kernel.org/r/20200430102908.10107-1-david@redhat.com
-
-David Hildenbrand (3):
-  mm/memory_hotplug: Introduce add_memory_device_managed()
-  kexec_file: Don't place kexec images on IORESOURCE_MEM_DRIVER_MANAGED
-  device-dax: Add memory via add_memory_driver_managed()
-
- drivers/dax/kmem.c             |  8 ++++-
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Cc: Wei Yang <richard.weiyang@gmail.com>
+Cc: Baoquan He <bhe@redhat.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Eric Biederman <ebiederm@xmission.com>
+Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: David Hildenbrand <david@redhat.com>
+---
  include/linux/ioport.h         |  1 +
  include/linux/memory_hotplug.h |  2 ++
- kernel/kexec_file.c            |  5 +++
  mm/memory_hotplug.c            | 62 +++++++++++++++++++++++++++++++---
- 5 files changed, 73 insertions(+), 5 deletions(-)
+ 3 files changed, 61 insertions(+), 4 deletions(-)
 
+diff --git a/include/linux/ioport.h b/include/linux/ioport.h
+index a9b9170b5dd2..cc9a5b4593ca 100644
+--- a/include/linux/ioport.h
++++ b/include/linux/ioport.h
+@@ -103,6 +103,7 @@ struct resource {
+ #define IORESOURCE_MEM_32BIT		(3<<3)
+ #define IORESOURCE_MEM_SHADOWABLE	(1<<5)	/* dup: IORESOURCE_SHADOWABLE *=
+/
+ #define IORESOURCE_MEM_EXPANSIONROM	(1<<6)
++#define IORESOURCE_MEM_DRIVER_MANAGED	(1<<7)
+=20
+ /* PnP I/O specific bits (IORESOURCE_BITS) */
+ #define IORESOURCE_IO_16BIT_ADDR	(1<<0)
+diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotplu=
+g.h
+index 7dca9cd6076b..fee7fab5d706 100644
+--- a/include/linux/memory_hotplug.h
++++ b/include/linux/memory_hotplug.h
+@@ -342,6 +342,8 @@ extern void __ref free_area_init_core_hotplug(int nid=
+);
+ extern int __add_memory(int nid, u64 start, u64 size);
+ extern int add_memory(int nid, u64 start, u64 size);
+ extern int add_memory_resource(int nid, struct resource *resource);
++extern int add_memory_driver_managed(int nid, u64 start, u64 size,
++				     const char *resource_name);
+ extern void move_pfn_range_to_zone(struct zone *zone, unsigned long star=
+t_pfn,
+ 		unsigned long nr_pages, struct vmem_altmap *altmap);
+ extern void remove_pfn_range_from_zone(struct zone *zone,
+diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+index ad54349a2550..c4d5c45820d0 100644
+--- a/mm/memory_hotplug.c
++++ b/mm/memory_hotplug.c
+@@ -98,11 +98,14 @@ void mem_hotplug_done(void)
+ u64 max_mem_size =3D U64_MAX;
+=20
+ /* add this memory to iomem resource */
+-static struct resource *register_memory_resource(u64 start, u64 size)
++static struct resource *register_memory_resource(u64 start, u64 size,
++						 const char *resource_name)
+ {
+ 	struct resource *res;
+ 	unsigned long flags =3D  IORESOURCE_SYSTEM_RAM | IORESOURCE_BUSY;
+-	char *resource_name =3D "System RAM";
++
++	if (strcmp(resource_name, "System RAM"))
++		flags |=3D IORESOURCE_MEM_DRIVER_MANAGED;
+=20
+ 	/*
+ 	 * Make sure value parsed from 'mem=3D' only restricts memory adding
+@@ -1057,7 +1060,8 @@ int __ref add_memory_resource(int nid, struct resou=
+rce *res)
+ 	BUG_ON(ret);
+=20
+ 	/* create new memmap entry */
+-	firmware_map_add_hotplug(start, start + size, "System RAM");
++	if (!strcmp(res->name, "System RAM"))
++		firmware_map_add_hotplug(start, start + size, "System RAM");
+=20
+ 	/* device_online() will take the lock when calling online_pages() */
+ 	mem_hotplug_done();
+@@ -1083,7 +1087,7 @@ int __ref __add_memory(int nid, u64 start, u64 size=
+)
+ 	struct resource *res;
+ 	int ret;
+=20
+-	res =3D register_memory_resource(start, size);
++	res =3D register_memory_resource(start, size, "System RAM");
+ 	if (IS_ERR(res))
+ 		return PTR_ERR(res);
+=20
+@@ -1105,6 +1109,56 @@ int add_memory(int nid, u64 start, u64 size)
+ }
+ EXPORT_SYMBOL_GPL(add_memory);
+=20
++/*
++ * Add special, driver-managed memory to the system as system RAM. Such
++ * memory is not exposed via the raw firmware-provided memmap as system
++ * RAM, instead, it is detected and added by a driver - during cold boot=
+,
++ * after a reboot, and after kexec.
++ *
++ * Reasons why this memory should not be used for the initial memmap of =
+a
++ * kexec kernel or for placing kexec images:
++ * - The booting kernel is in charge of determining how this memory will=
+ be
++ *   used (e.g., use persistent memory as system RAM)
++ * - Coordination with a hypervisor is required before this memory
++ *   can be used (e.g., inaccessible parts).
++ *
++ * For this memory, no entries in /sys/firmware/memmap ("raw firmware-pr=
+ovided
++ * memory map") are created. Also, the created memory resource is flagge=
+d
++ * with IORESOURCE_MEM_DRIVER_MANAGED, so in-kernel users can special-ca=
+se
++ * this memory as well (esp., not place kexec images onto it).
++ *
++ * The resource_name (visible via /proc/iomem) has to have the format
++ * "System RAM ($DRIVER)".
++ */
++int add_memory_driver_managed(int nid, u64 start, u64 size,
++			      const char *resource_name)
++{
++	struct resource *res;
++	int rc;
++
++	if (!resource_name ||
++	    strstr(resource_name, "System RAM (") !=3D resource_name ||
++	    resource_name[strlen(resource_name) - 1] !=3D ')')
++		return -EINVAL;
++
++	lock_device_hotplug();
++
++	res =3D register_memory_resource(start, size, resource_name);
++	if (IS_ERR(res)) {
++		rc =3D PTR_ERR(res);
++		goto out_unlock;
++	}
++
++	rc =3D add_memory_resource(nid, res);
++	if (rc < 0)
++		release_memory_resource(res);
++
++out_unlock:
++	unlock_device_hotplug();
++	return rc;
++}
++EXPORT_SYMBOL_GPL(add_memory_driver_managed);
++
+ #ifdef CONFIG_MEMORY_HOTREMOVE
+ /*
+  * Confirm all pages in a range [start, end) belong to the same zone (sk=
+ipping
 --=20
 2.25.3
 
