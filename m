@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9BF21C3DE7
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 17:00:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D63811C3DF9
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 17:04:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729306AbgEDPAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 11:00:37 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:50830 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727786AbgEDPAf (ORCPT
+        id S1729395AbgEDPBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 11:01:45 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:47896 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728165AbgEDPBo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 11:00:35 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 044ElbNQ116459;
-        Mon, 4 May 2020 15:00:08 GMT
+        Mon, 4 May 2020 11:01:44 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 044En9bZ024708;
+        Mon, 4 May 2020 15:00:15 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=K4WuIRzv6NwwGlBbEMaCvqf1ii2XJ+sibBt35OcpXCQ=;
- b=k3nxkLIW+pEF/Y1ilQRHwL3pob0Wn2rsWjG7ffWhhxZMxX3ArXWlk53vjW8dlpCraVDy
- imbEqF68auq3T0FZwjgk1kOkrKy/xfFtKr8jSV6L5g6z3OAzfru1i2z0TUkJfh+CpwQT
- NyFQkYbHWh8Ywk5aRwA/AEWEijwE2FmJCgklc2rjAOQ8pS7HE3+3PhS6s4xKa++fb5Wo
- oKeG1oYIf/DWcAAq7TKZoX3+2CdjEab8V32ZbOM9qAcB/X4opRlwbftrikc5VTofvRq0
- LA+86v60a5hycNhDTXyeOZ6fHqTWUW3ZTqYMQmC294WtBK+U6JXpvL08u/sDuSUbsIiY Cg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 30s09qyftp-1
+ bh=GsovF01BLBXADs9ogvbBPifuM8m9iNcoQzHGafVfZWQ=;
+ b=xPvV2kRQBk3Nlt40ptkPC9KCMt9BYKDiPFbPmxAgFBng46AyCQUZGwjiTU6qKYSbb2/2
+ l97gXnRDxXCYqavU1u3WK4VV/AZNHg+kfGxqv+J/UnfAaUwh8rNebHujYO2WRXls2iYl
+ 114hPLOOs7H28p6lsLWjbBNwf/V4UByCs1gZIi34GD0rfCtk65MN8dfHZ9GgAIxOrOQH
+ YbevGLfZNHXwh7G256hpoyMmLjxRzr5zQFbAA9OavbQroFIMR8Pkr058C9HRLlW6NzjQ
+ /nFSkSW+J/amLXkw+oMe6Yg6XDfeUU1zumGj32R0BB4W1kdlAqeDwSPsfKYeVBCwIPO+ Jw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 30s0tm7dn1-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 04 May 2020 15:00:08 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 044ElLhg033730;
-        Mon, 4 May 2020 15:00:07 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 30sjnaw2ej-1
+        Mon, 04 May 2020 15:00:15 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 044EmVae105750;
+        Mon, 4 May 2020 15:00:14 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 30sjjw0hkh-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 04 May 2020 15:00:07 +0000
+        Mon, 04 May 2020 15:00:14 +0000
 Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 044F06lt001343;
-        Mon, 4 May 2020 15:00:06 GMT
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 044F0AuU027632;
+        Mon, 4 May 2020 15:00:10 GMT
 Received: from linux-1.home.com (/10.175.9.166)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 04 May 2020 08:00:05 -0700
+        with ESMTP ; Mon, 04 May 2020 08:00:09 -0700
 From:   Alexandre Chartre <alexandre.chartre@oracle.com>
 To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
         dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
@@ -49,21 +49,21 @@ Cc:     pbonzini@redhat.com, konrad.wilk@oracle.com,
         junaids@google.com, graf@amazon.de, rppt@linux.vnet.ibm.com,
         kuzuno@gmail.com, mgross@linux.intel.com,
         alexandre.chartre@oracle.com
-Subject: [RFC v4][PATCH part-2 08/13] mm/dpt: Keep track of VA ranges mapped in a decorated page-table
-Date:   Mon,  4 May 2020 16:58:05 +0200
-Message-Id: <20200504145810.11882-9-alexandre.chartre@oracle.com>
+Subject: [RFC v4][PATCH part-2 09/13] mm/dpt: Functions to clear decorated page-table entries for a VA range
+Date:   Mon,  4 May 2020 16:58:06 +0200
+Message-Id: <20200504145810.11882-10-alexandre.chartre@oracle.com>
 X-Mailer: git-send-email 2.18.2
 In-Reply-To: <20200504145810.11882-1-alexandre.chartre@oracle.com>
 References: <20200504145810.11882-1-alexandre.chartre@oracle.com>
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9610 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 adultscore=0 phishscore=0
- mlxlogscore=999 bulkscore=0 malwarescore=0 spamscore=0 suspectscore=2
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 phishscore=0
+ bulkscore=0 malwarescore=0 spamscore=0 mlxlogscore=999 adultscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
  definitions=main-2005040123
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9610 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0
- lowpriorityscore=0 spamscore=0 adultscore=0 clxscore=1015 suspectscore=2
- priorityscore=1501 malwarescore=0 mlxlogscore=999 phishscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0
+ priorityscore=1501 lowpriorityscore=0 spamscore=0 suspectscore=0
+ phishscore=0 clxscore=1015 bulkscore=0 mlxlogscore=999 adultscore=0
  impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2003020000 definitions=main-2005040123
 Sender: linux-kernel-owner@vger.kernel.org
@@ -71,155 +71,180 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add functions to keep track of VA ranges mapped in a decorated page-table.
-This will be used when unmapping to ensure the same range is unmapped,
-at the same page-table level. This will also be used to handle mapping
-and unmapping of overlapping VA ranges.
+Provide functions to clear page-table entries in a decorated page-table
+for a specified VA range. Functions also check that the clearing
+effectively happens in the decorated page-table and there is no crossing
+of the decorated page-table boundary (through references to another page
+table), so that another page table is not modified by mistake.
+
+As information (address, size, page-table level) about VA ranges mapped
+to the decorated page-table is tracked, clearing is done with just
+specifying the start address of the range.
 
 Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
 ---
- arch/x86/include/asm/dpt.h | 12 ++++++++
- arch/x86/mm/dpt.c          | 60 ++++++++++++++++++++++++++++++++++++++
- 2 files changed, 72 insertions(+)
+ arch/x86/include/asm/dpt.h |   1 +
+ arch/x86/mm/dpt.c          | 135 +++++++++++++++++++++++++++++++++++++
+ 2 files changed, 136 insertions(+)
 
 diff --git a/arch/x86/include/asm/dpt.h b/arch/x86/include/asm/dpt.h
-index 5a38d97a70a8..0d74afb10141 100644
+index 0d74afb10141..01727ef0577e 100644
 --- a/arch/x86/include/asm/dpt.h
 +++ b/arch/x86/include/asm/dpt.h
-@@ -16,6 +16,17 @@ enum page_table_level {
- 	PGT_LEVEL_PGD
- };
+@@ -56,6 +56,7 @@ extern void dpt_destroy(struct dpt *dpt);
+ extern int dpt_map_range(struct dpt *dpt, void *ptr, size_t size,
+ 			 enum page_table_level level);
+ extern int dpt_map(struct dpt *dpt, void *ptr, unsigned long size);
++extern void dpt_unmap(struct dpt *dpt, void *ptr);
  
-+/*
-+ * Structure to keep track of address ranges mapped into a decorated
-+ * page-table.
-+ */
-+struct dpt_range_mapping {
-+	struct list_head list;
-+	void *ptr;			/* range start address */
-+	size_t size;			/* range size */
-+	enum page_table_level level;	/* mapping level */
-+};
-+
- /*
-  * A decorated page-table (dpt) encapsulates a native page-table (e.g.
-  * a PGD) and maintain additional attributes related to this page-table.
-@@ -24,6 +35,7 @@ struct dpt {
- 	spinlock_t		lock;		/* protect all attributes */
- 	pgd_t			*pagetable;	/* the actual page-table */
- 	unsigned int		alignment;	/* page-table alignment */
-+	struct list_head	mapping_list;	/* list of VA range mapping */
- 
- 	/*
- 	 * A page-table can have direct references to another page-table,
+ static inline int dpt_map_module(struct dpt *dpt, char *module_name)
+ {
 diff --git a/arch/x86/mm/dpt.c b/arch/x86/mm/dpt.c
-index 0e725344b921..12eb0d794d84 100644
+index 12eb0d794d84..c495c9b59b3e 100644
 --- a/arch/x86/mm/dpt.c
 +++ b/arch/x86/mm/dpt.c
-@@ -59,6 +59,24 @@ static int dpt_add_backend_page(struct dpt *dpt, void *addr,
- 	return 0;
+@@ -636,6 +636,141 @@ int dpt_map(struct dpt *dpt, void *ptr, unsigned long size)
  }
+ EXPORT_SYMBOL(dpt_map);
  
-+/*
-+ * Return the range mapping starting at the specified address, or NULL if
-+ * no such range is found.
-+ */
-+static struct dpt_range_mapping *dpt_get_range_mapping(struct dpt *dpt,
-+						       void *ptr)
++static void dpt_clear_pte_range(struct dpt *dpt, pmd_t *pmd,
++				unsigned long addr, unsigned long end)
 +{
-+	struct dpt_range_mapping *range;
++	pte_t *pte;
 +
-+	lockdep_assert_held(&dpt->lock);
-+	list_for_each_entry(range, &dpt->mapping_list, list) {
-+		if (range->ptr == ptr)
-+			return range;
-+	}
++	pte = dpt_pte_offset(dpt, pmd, addr);
++	if (IS_ERR(pte))
++		return;
 +
-+	return NULL;
++	do {
++		pte_clear(NULL, addr, pte);
++	} while (pte++, addr += PAGE_SIZE, addr < end);
 +}
 +
- /*
-  * Check if an offset in the page-table is valid, i.e. check that the
-  * offset is on a page effectively belonging to the page-table.
-@@ -563,6 +581,7 @@ static int dpt_copy_pgd_range(struct dpt *dpt,
- int dpt_map_range(struct dpt *dpt, void *ptr, size_t size,
- 		  enum page_table_level level)
- {
++static void dpt_clear_pmd_range(struct dpt *dpt, pud_t *pud,
++				unsigned long addr, unsigned long end,
++				enum page_table_level level)
++{
++	unsigned long next;
++	pmd_t *pmd;
++
++	pmd = dpt_pmd_offset(dpt, pud, addr);
++	if (IS_ERR(pmd))
++		return;
++
++	do {
++		next = pmd_addr_end(addr, end);
++		if (pmd_none(*pmd))
++			continue;
++		if (level == PGT_LEVEL_PMD || pmd_trans_huge(*pmd) ||
++		    pmd_devmap(*pmd) || !pmd_present(*pmd)) {
++			pmd_clear(pmd);
++			continue;
++		}
++		dpt_clear_pte_range(dpt, pmd, addr, next);
++	} while (pmd++, addr = next, addr < end);
++}
++
++static void dpt_clear_pud_range(struct dpt *dpt, p4d_t *p4d,
++				unsigned long addr, unsigned long end,
++				enum page_table_level level)
++{
++	unsigned long next;
++	pud_t *pud;
++
++	pud = dpt_pud_offset(dpt, p4d, addr);
++	if (IS_ERR(pud))
++		return;
++
++	do {
++		next = pud_addr_end(addr, end);
++		if (pud_none(*pud))
++			continue;
++		if (level == PGT_LEVEL_PUD || pud_trans_huge(*pud) ||
++		    pud_devmap(*pud)) {
++			pud_clear(pud);
++			continue;
++		}
++		dpt_clear_pmd_range(dpt, pud, addr, next, level);
++	} while (pud++, addr = next, addr < end);
++}
++
++static void dpt_clear_p4d_range(struct dpt *dpt, pgd_t *pgd,
++				unsigned long addr, unsigned long end,
++				enum page_table_level level)
++{
++	unsigned long next;
++	p4d_t *p4d;
++
++	p4d = dpt_p4d_offset(dpt, pgd, addr);
++	if (IS_ERR(p4d))
++		return;
++
++	do {
++		next = p4d_addr_end(addr, end);
++		if (p4d_none(*p4d))
++			continue;
++		if (level == PGT_LEVEL_P4D) {
++			p4d_clear(p4d);
++			continue;
++		}
++		dpt_clear_pud_range(dpt, p4d, addr, next, level);
++	} while (p4d++, addr = next, addr < end);
++}
++
++static void dpt_clear_pgd_range(struct dpt *dpt, pgd_t *pagetable,
++				unsigned long addr, unsigned long end,
++				enum page_table_level level)
++{
++	unsigned long next;
++	pgd_t *pgd;
++
++	pgd = pgd_offset_pgd(pagetable, addr);
++	do {
++		next = pgd_addr_end(addr, end);
++		if (pgd_none(*pgd))
++			continue;
++		if (level == PGT_LEVEL_PGD) {
++			pgd_clear(pgd);
++			continue;
++		}
++		dpt_clear_p4d_range(dpt, pgd, addr, next, level);
++	} while (pgd++, addr = next, addr < end);
++}
++
++/*
++ * Clear page table entries in the specified decorated page-table.
++ */
++void dpt_unmap(struct dpt *dpt, void *ptr)
++{
 +	struct dpt_range_mapping *range_mapping;
- 	unsigned long addr = (unsigned long)ptr;
- 	unsigned long end = addr + ((unsigned long)size);
- 	unsigned long flags;
-@@ -571,8 +590,36 @@ int dpt_map_range(struct dpt *dpt, void *ptr, size_t size,
- 	pr_debug("DPT %p: MAP %px/%lx/%d\n", dpt, ptr, size, level);
- 
- 	spin_lock_irqsave(&dpt->lock, flags);
++	unsigned long addr, end;
++	unsigned long flags;
 +
-+	/* check if the range is already mapped */
++	spin_lock_irqsave(&dpt->lock, flags);
++
 +	range_mapping = dpt_get_range_mapping(dpt, ptr);
-+	if (range_mapping) {
-+		pr_debug("DPT %p: MAP %px/%lx/%d already mapped\n",
-+			 dpt, ptr, size, level);
-+		err = -EBUSY;
-+		goto done;
-+	}
-+
-+	/* map new range */
-+	range_mapping = kmalloc(sizeof(*range_mapping), GFP_KERNEL);
 +	if (!range_mapping) {
-+		err = -ENOMEM;
++		pr_debug("DPT %p: UNMAP %px - not mapped\n", dpt, ptr);
 +		goto done;
 +	}
 +
- 	err = dpt_copy_pgd_range(dpt, dpt->pagetable, current->mm->pgd,
- 				 addr, end, level);
-+	if (err) {
-+		kfree(range_mapping);
-+		goto done;
-+	}
-+
-+	INIT_LIST_HEAD(&range_mapping->list);
-+	range_mapping->ptr = ptr;
-+	range_mapping->size = size;
-+	range_mapping->level = level;
-+	list_add(&range_mapping->list, &dpt->mapping_list);
++	addr = (unsigned long)range_mapping->ptr;
++	end = addr + range_mapping->size;
++	pr_debug("DPT %p: UNMAP %px/%lx/%d\n", dpt, ptr,
++		 range_mapping->size, range_mapping->level);
++	dpt_clear_pgd_range(dpt, dpt->pagetable, addr, end,
++			    range_mapping->level);
++	list_del(&range_mapping->list);
++	kfree(range_mapping);
 +done:
- 	spin_unlock_irqrestore(&dpt->lock, flags);
- 
- 	return err;
-@@ -611,6 +658,8 @@ struct dpt *dpt_create(unsigned int pgt_alignment)
- 	if (!dpt)
- 		return NULL;
- 
-+	INIT_LIST_HEAD(&dpt->mapping_list);
++	spin_unlock_irqrestore(&dpt->lock, flags);
++}
++EXPORT_SYMBOL(dpt_unmap);
 +
- 	pagetable = (unsigned long)__get_free_pages(GFP_KERNEL_ACCOUNT |
- 						    __GFP_ZERO,
- 						    alloc_order);
-@@ -632,6 +681,7 @@ void dpt_destroy(struct dpt *dpt)
- {
- 	unsigned int pgt_alignment;
- 	unsigned int alloc_order;
-+	struct dpt_range_mapping *range, *range_next;
- 	unsigned long index;
- 	void *entry;
- 
-@@ -643,6 +693,16 @@ void dpt_destroy(struct dpt *dpt)
- 			free_page((unsigned long)DPT_BACKEND_PAGE_ADDR(entry));
- 	}
- 
-+	list_for_each_entry_safe(range, range_next, &dpt->mapping_list, list) {
-+		list_del(&range->list);
-+		kfree(range);
-+	}
-+
-+	if (dpt->backend_pages_count) {
-+		xa_for_each(&dpt->backend_pages, index, entry)
-+			free_page((unsigned long)DPT_BACKEND_PAGE_ADDR(entry));
-+	}
-+
- 	if (dpt->pagetable) {
- 		pgt_alignment = dpt->alignment;
- 		alloc_order = round_up(PAGE_SIZE + pgt_alignment,
+ /*
+  * dpt_create - allocate a page-table and create a corresponding
+  * decorated page-table. The page-table is allocated and aligned
 -- 
 2.18.2
 
