@@ -2,113 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49E7C1C3A43
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 14:55:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A954F1C3A58
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 14:56:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729085AbgEDMzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 08:55:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728940AbgEDMyT (ORCPT
+        id S1728198AbgEDM4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 08:56:06 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:24062 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726351AbgEDM4F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 08:54:19 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C549AC061A10
-        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 05:54:18 -0700 (PDT)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 300465BB; Mon,  4 May 2020 14:54:15 +0200 (CEST)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     iommu@lists.linux-foundation.org
-Cc:     Qian Cai <cai@lca.pw>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        linux-kernel@vger.kernel.org, Joerg Roedel <jroedel@suse.de>
-Subject: [PATCH 5/5] iommu/amd: Do not flush Device Table in iommu_map_page()
-Date:   Mon,  4 May 2020 14:54:13 +0200
-Message-Id: <20200504125413.16798-6-joro@8bytes.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200504125413.16798-1-joro@8bytes.org>
-References: <20200504125413.16798-1-joro@8bytes.org>
+        Mon, 4 May 2020 08:56:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588596964;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=3IyWgTOMXjHOmy2ereqicnSHpo+TKRD9Jy/hue5zjes=;
+        b=VLfSERQDWi30tOopYoDIOvH91QElddAR9oTY7o/qJyI1sdA2n7v3S5H5Mth5fTm99Tt2q+
+        3zJCkNsoAq+rX9q6nOCPd348Y2twehYIeHOjqAFhUVtw687Sk9uMld/RZN/o85MYerSMXy
+        8GZU+DJrOJFXlhLESBLenpDpk505ofM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-52-llUa-5xNNqK2I1daWIMIhA-1; Mon, 04 May 2020 08:56:00 -0400
+X-MC-Unique: llUa-5xNNqK2I1daWIMIhA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7B4A064ACA;
+        Mon,  4 May 2020 12:55:58 +0000 (UTC)
+Received: from x1.localdomain.com (ovpn-114-224.ams2.redhat.com [10.36.114.224])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 060A25D97D;
+        Mon,  4 May 2020 12:55:52 +0000 (UTC)
+From:   Hans de Goede <hdegoede@redhat.com>
+To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Jonathan Cameron <jic23@kernel.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>, linux-acpi@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-iio@vger.kernel.org
+Subject: [PATCH v4 01/11] iio: light: cm32181: Switch to new style i2c-driver probe function
+Date:   Mon,  4 May 2020 14:55:41 +0200
+Message-Id: <20200504125551.434647-1-hdegoede@redhat.com>
+MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joerg Roedel <jroedel@suse.de>
+Switch to the new style i2c-driver probe_new probe function and drop the
+unnecessary i2c_device_id table (we do not have any old style board files
+using this).
 
-The flush of the Device Table Entries for the domain has already
-happened in increase_address_space(), if necessary. Do no flush them
-again in iommu_map_page().
+This is a preparation patch for adding ACPI binding support.
 
-Tested-by: Qian Cai <cai@lca.pw>
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- drivers/iommu/amd_iommu.c | 27 ++++++++++++++++-----------
- 1 file changed, 16 insertions(+), 11 deletions(-)
+Changes in v4:
+- Set indio_dev->name to "cm32181" instead of setting it to dev_name(dev)
 
-diff --git a/drivers/iommu/amd_iommu.c b/drivers/iommu/amd_iommu.c
-index 2ae1daac888a..1dc3718560d0 100644
---- a/drivers/iommu/amd_iommu.c
-+++ b/drivers/iommu/amd_iommu.c
-@@ -1446,15 +1446,18 @@ static bool increase_address_space(struct protection_domain *domain,
+Changes in v3:
+- This is a new patch in v3 of this patch-set
+---
+ drivers/iio/light/cm32181.c | 15 +++------------
+ 1 file changed, 3 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/iio/light/cm32181.c b/drivers/iio/light/cm32181.c
+index 5f4fb5674fa0..2c139d85ef0c 100644
+--- a/drivers/iio/light/cm32181.c
++++ b/drivers/iio/light/cm32181.c
+@@ -294,8 +294,7 @@ static const struct iio_info cm32181_info =3D {
+ 	.attrs			=3D &cm32181_attribute_group,
+ };
+=20
+-static int cm32181_probe(struct i2c_client *client,
+-			const struct i2c_device_id *id)
++static int cm32181_probe(struct i2c_client *client)
  {
- 	struct domain_pgtable pgtable;
- 	unsigned long flags;
--	bool ret = false;
-+	bool ret = true;
- 	u64 *pte, root;
- 
- 	spin_lock_irqsave(&domain->lock, flags);
- 
- 	amd_iommu_domain_get_pgtable(domain, &pgtable);
- 
--	if (address <= PM_LEVEL_SIZE(pgtable.mode) ||
--	    WARN_ON_ONCE(pgtable.mode == PAGE_MODE_6_LEVEL))
-+	if (address <= PM_LEVEL_SIZE(pgtable.mode))
-+		goto out;
-+
-+	ret = false;
-+	if (WARN_ON_ONCE(pgtable.mode == PAGE_MODE_6_LEVEL))
- 		goto out;
- 
- 	pte = (void *)get_zeroed_page(gfp);
-@@ -1499,19 +1502,15 @@ static u64 *alloc_pte(struct protection_domain *domain,
- 	amd_iommu_domain_get_pgtable(domain, &pgtable);
- 
- 	while (address > PM_LEVEL_SIZE(pgtable.mode)) {
--		bool upd = increase_address_space(domain, address, gfp);
+ 	struct cm32181_chip *cm32181;
+ 	struct iio_dev *indio_dev;
+@@ -316,7 +315,7 @@ static int cm32181_probe(struct i2c_client *client,
+ 	indio_dev->channels =3D cm32181_channels;
+ 	indio_dev->num_channels =3D ARRAY_SIZE(cm32181_channels);
+ 	indio_dev->info =3D &cm32181_info;
+-	indio_dev->name =3D id->name;
++	indio_dev->name =3D "cm32181";
+ 	indio_dev->modes =3D INDIO_DIRECT_MODE;
+=20
+ 	ret =3D cm32181_reg_init(cm32181);
+@@ -338,13 +337,6 @@ static int cm32181_probe(struct i2c_client *client,
+ 	return 0;
+ }
+=20
+-static const struct i2c_device_id cm32181_id[] =3D {
+-	{ "cm32181", 0 },
+-	{ }
+-};
 -
--		/* Read new values to check if update was successful */
--		amd_iommu_domain_get_pgtable(domain, &pgtable);
+-MODULE_DEVICE_TABLE(i2c, cm32181_id);
 -
- 		/*
- 		 * Return an error if there is no memory to update the
- 		 * page-table.
- 		 */
--		if (!upd && (address > PM_LEVEL_SIZE(pgtable.mode)))
-+		if (!increase_address_space(domain, address, gfp))
- 			return NULL;
- 
--		*updated = *updated || upd;
-+		/* Read new values to check if update was successful */
-+		amd_iommu_domain_get_pgtable(domain, &pgtable);
- 	}
- 
- 
-@@ -1719,7 +1718,13 @@ static int iommu_map_page(struct protection_domain *dom,
- 		unsigned long flags;
- 
- 		spin_lock_irqsave(&dom->lock, flags);
--		update_domain(dom);
-+		/*
-+		 * Flush domain TLB(s) and wait for completion. Any Device-Table
-+		 * Updates and flushing already happened in
-+		 * increase_address_space().
-+		 */
-+		domain_flush_tlb_pde(dom);
-+		domain_flush_complete(dom);
- 		spin_unlock_irqrestore(&dom->lock, flags);
- 	}
- 
--- 
-2.17.1
+ static const struct of_device_id cm32181_of_match[] =3D {
+ 	{ .compatible =3D "capella,cm32181" },
+ 	{ }
+@@ -356,8 +348,7 @@ static struct i2c_driver cm32181_driver =3D {
+ 		.name	=3D "cm32181",
+ 		.of_match_table =3D of_match_ptr(cm32181_of_match),
+ 	},
+-	.id_table       =3D cm32181_id,
+-	.probe		=3D cm32181_probe,
++	.probe_new	=3D cm32181_probe,
+ };
+=20
+ module_i2c_driver(cm32181_driver);
+--=20
+2.26.0
 
