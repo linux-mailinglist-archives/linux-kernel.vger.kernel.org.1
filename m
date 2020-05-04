@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C7541C3DDB
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 17:00:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D76E11C3E02
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 17:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728008AbgEDPAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 11:00:10 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:50374 "EHLO
+        id S1729425AbgEDPC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 11:02:57 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:53264 "EHLO
         userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726948AbgEDPAJ (ORCPT
+        with ESMTP id S1728909AbgEDPCz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 11:00:09 -0400
+        Mon, 4 May 2020 11:02:55 -0400
 Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 044Elbbx116456;
-        Mon, 4 May 2020 14:59:39 GMT
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 044ElbML116466;
+        Mon, 4 May 2020 15:01:44 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=gOU60KEGCpd90jFwTgBCZEZdFNyJRNJA9GfZLpt6zw8=;
- b=B2pFBFVVIkkc3kRYz76iRL1urniEgMM+pcMfb/sfNQ+kqocoURz+DfnjrDyBw0q84WPk
- rRFnStr5d0TiPQz8dTQe+RC1kIowLLuiJ+4pjuS0XEOdsqYJWbhuJkBu0+AZw3jdkIuE
- PrhMsEQ9QI3/CFfdW6JKLoHoGFaBkqE+RWrVGE7xrXPmvhbwJgrItDIl+Zc3WI8PxpZt
- FLN4bRgMWADYqsEx9LVm8MDmbon8NIMUHC1uUDb2M/SzYVSDH/EzkvBo7YFpVewBEJ1w
- tXRJyqnM3Lz4qCXl5BpTCj7x2of9DtyXiLgkTejBTo1+4YQQ+j4iZaEmIbZftiywvRQc LA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 30s09qyfpj-1
+ bh=mpXXd7uEdJ6fmVl0iUxBjNXdKzD8MJRJwDBOk9pZnT0=;
+ b=aiDhQg48J1nTnS19xiB7JOTozw6IIJ6RDVQKmmdGkIqRuLpW8s76/frddUZtuAuBUjPy
+ ElA+W64NLBZsxkRyNsTHCo/mD+yeVv56uxVANbu6S2URk2CukVo65oH/WwumHiwC9XLc
+ QLGhAmMgjaDqXIMK2tNJ7Vprz/i/aInfcGOScTAJSLJvVJE6wJFVgf9hUJd/N0KarHKf
+ iKzeHffR/dJ89EaaBaWr3bOJ5r6XSVp4fiR+K8C2nCHgNcngD6TILIBhQQQ8MlZsG6z+
+ pXc71NSWiGFr7xuMH6ygsa1m/aagaunI0X0rkwg6+vL6vOEyqgIYgPdHioAuVPhoN8i8 aw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 30s09qyg76-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 04 May 2020 14:59:39 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 044ElK3e033673;
-        Mon, 4 May 2020 14:59:38 GMT
+        Mon, 04 May 2020 15:01:42 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 044ElbCv053434;
+        Mon, 4 May 2020 14:59:42 GMT
 Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 30sjnaw0r4-1
+        by userp3030.oracle.com with ESMTP id 30t1r2esd5-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 04 May 2020 14:59:38 +0000
+        Mon, 04 May 2020 14:59:42 +0000
 Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 044Exaia022105;
-        Mon, 4 May 2020 14:59:36 GMT
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 044ExeBx022128;
+        Mon, 4 May 2020 14:59:40 GMT
 Received: from linux-1.home.com (/10.175.9.166)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 04 May 2020 07:59:36 -0700
+        with ESMTP ; Mon, 04 May 2020 07:59:40 -0700
 From:   Alexandre Chartre <alexandre.chartre@oracle.com>
 To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
         dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
@@ -49,15 +49,15 @@ Cc:     pbonzini@redhat.com, konrad.wilk@oracle.com,
         junaids@google.com, graf@amazon.de, rppt@linux.vnet.ibm.com,
         kuzuno@gmail.com, mgross@linux.intel.com,
         alexandre.chartre@oracle.com
-Subject: [RFC v4][PATCH part-2 01/13] mm/x86: Introduce decorated page-table (dpt)
-Date:   Mon,  4 May 2020 16:57:58 +0200
-Message-Id: <20200504145810.11882-2-alexandre.chartre@oracle.com>
+Subject: [RFC v4][PATCH part-2 02/13] mm/dpt: Track buffers allocated for a decorated page-table
+Date:   Mon,  4 May 2020 16:57:59 +0200
+Message-Id: <20200504145810.11882-3-alexandre.chartre@oracle.com>
 X-Mailer: git-send-email 2.18.2
 In-Reply-To: <20200504145810.11882-1-alexandre.chartre@oracle.com>
 References: <20200504145810.11882-1-alexandre.chartre@oracle.com>
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9610 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 adultscore=0 phishscore=0
- mlxlogscore=999 bulkscore=0 malwarescore=0 spamscore=0 suspectscore=2
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 suspectscore=2
+ spamscore=0 mlxlogscore=999 malwarescore=0 phishscore=0 mlxscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
  definitions=main-2005040123
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9610 signatures=668687
@@ -71,136 +71,173 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A decorated page-table (dpt) encapsulates a native page-table (e.g.
-a PGD) and maintain additional attributes related to this page-table.
-It aims to be the base structure for providing useful functions to
-manage a page-table, such as tracking VA range mapped in a page-table
-or safely handling references to another page-table.
+Add functions to track buffers allocated for a decorated page-table.
+A page-table can have direct references to the kernel page table, at
+different levels (PGD, P4D, PUD, PMD). When freeing a page-table, we
+should make sure that we free parts actually allocated for the decorated
+page-table, and not parts of the kernel page table referenced from the
+page-table. To do so, we will keep track of buffers when building the
+page-table.
 
 Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
 ---
- arch/x86/include/asm/dpt.h | 23 +++++++++++++
- arch/x86/mm/Makefile       |  2 +-
- arch/x86/mm/dpt.c          | 67 ++++++++++++++++++++++++++++++++++++++
- 3 files changed, 91 insertions(+), 1 deletion(-)
- create mode 100644 arch/x86/include/asm/dpt.h
- create mode 100644 arch/x86/mm/dpt.c
+ arch/x86/include/asm/dpt.h | 21 ++++++++++
+ arch/x86/mm/dpt.c          | 82 ++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 103 insertions(+)
 
 diff --git a/arch/x86/include/asm/dpt.h b/arch/x86/include/asm/dpt.h
-new file mode 100644
-index 000000000000..1da4d43d5e94
---- /dev/null
+index 1da4d43d5e94..b9cba051ebf2 100644
+--- a/arch/x86/include/asm/dpt.h
 +++ b/arch/x86/include/asm/dpt.h
-@@ -0,0 +1,23 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef ARCH_X86_MM_DPT_H
-+#define ARCH_X86_MM_DPT_H
-+
-+#include <linux/spinlock.h>
-+
-+#include <asm/pgtable.h>
-+
-+/*
-+ * A decorated page-table (dpt) encapsulates a native page-table (e.g.
-+ * a PGD) and maintain additional attributes related to this page-table.
-+ */
-+struct dpt {
-+	spinlock_t		lock;		/* protect all attributes */
-+	pgd_t			*pagetable;	/* the actual page-table */
-+	unsigned int		alignment;	/* page-table alignment */
-+
+@@ -3,9 +3,18 @@
+ #define ARCH_X86_MM_DPT_H
+ 
+ #include <linux/spinlock.h>
++#include <linux/xarray.h>
+ 
+ #include <asm/pgtable.h>
+ 
++enum page_table_level {
++	PGT_LEVEL_PTE,
++	PGT_LEVEL_PMD,
++	PGT_LEVEL_PUD,
++	PGT_LEVEL_P4D,
++	PGT_LEVEL_PGD
 +};
 +
-+extern struct dpt *dpt_create(unsigned int pgt_alignment);
-+extern void dpt_destroy(struct dpt *dpt);
-+
-+#endif
-diff --git a/arch/x86/mm/Makefile b/arch/x86/mm/Makefile
-index e57af263e870..5b52d854a030 100644
---- a/arch/x86/mm/Makefile
-+++ b/arch/x86/mm/Makefile
-@@ -48,7 +48,7 @@ obj-$(CONFIG_NUMA_EMU)		+= numa_emulation.o
- obj-$(CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS)	+= pkeys.o
- obj-$(CONFIG_RANDOMIZE_MEMORY)			+= kaslr.o
- obj-$(CONFIG_PAGE_TABLE_ISOLATION)		+= pti.o
--obj-$(CONFIG_ADDRESS_SPACE_ISOLATION)		+= asi.o
-+obj-$(CONFIG_ADDRESS_SPACE_ISOLATION)		+= asi.o dpt.o
+ /*
+  * A decorated page-table (dpt) encapsulates a native page-table (e.g.
+  * a PGD) and maintain additional attributes related to this page-table.
+@@ -15,6 +24,18 @@ struct dpt {
+ 	pgd_t			*pagetable;	/* the actual page-table */
+ 	unsigned int		alignment;	/* page-table alignment */
  
- obj-$(CONFIG_AMD_MEM_ENCRYPT)	+= mem_encrypt.o
- obj-$(CONFIG_AMD_MEM_ENCRYPT)	+= mem_encrypt_identity.o
++	/*
++	 * A page-table can have direct references to another page-table,
++	 * at different levels (PGD, P4D, PUD, PMD). When freeing or
++	 * modifying a page-table, we should make sure that we free/modify
++	 * parts effectively allocated to the actual page-table, and not
++	 * parts of another page-table referenced from this page-table.
++	 *
++	 * To do so, the backend_pages XArray is used to keep track of pages
++	 * used for this page-table.
++	 */
++	struct xarray		backend_pages;		/* page-table pages */
++	unsigned long		backend_pages_count;	/* pages count */
+ };
+ 
+ extern struct dpt *dpt_create(unsigned int pgt_alignment);
 diff --git a/arch/x86/mm/dpt.c b/arch/x86/mm/dpt.c
-new file mode 100644
-index 000000000000..333e259c5b7f
---- /dev/null
+index 333e259c5b7f..6df2d4fde8ec 100644
+--- a/arch/x86/mm/dpt.c
 +++ b/arch/x86/mm/dpt.c
-@@ -0,0 +1,67 @@
-+// SPDX-License-Identifier: GPL-2.0
+@@ -8,6 +8,80 @@
+ 
+ #include <asm/dpt.h>
+ 
 +/*
-+ * Copyright (c) 2019, 2020, Oracle and/or its affiliates.
++ * Get the pointer to the beginning of a page table directory from a page
++ * table directory entry.
++ */
++#define DPT_BACKEND_PAGE_ALIGN(entry)	\
++	((typeof(entry))(((unsigned long)(entry)) & PAGE_MASK))
++
++/*
++ * Pages used to build a page-table are stored in the backend_pages XArray.
++ * Each entry in the array is a logical OR of the page address and the page
++ * table level (PTE, PMD, PUD, P4D) this page is used for in the page-table.
++ *
++ * As a page address is aligned with PAGE_SIZE, we have plenty of space
++ * for storing the page table level (which is a value between 0 and 4) in
++ * the low bits of the page address.
 + *
 + */
 +
-+#include <linux/slab.h>
++#define DPT_BACKEND_PAGE_ENTRY(addr, level)	\
++	((typeof(addr))(((unsigned long)(addr)) | ((unsigned long)(level))))
++#define DPT_BACKEND_PAGE_ADDR(entry)		\
++	((void *)(((unsigned long)(entry)) & PAGE_MASK))
++#define DPT_BACKEND_PAGE_LEVEL(entry)		\
++	((enum page_table_level)(((unsigned long)(entry)) & ~PAGE_MASK))
 +
-+#include <asm/dpt.h>
++static int dpt_add_backend_page(struct dpt *dpt, void *addr,
++				enum page_table_level level)
++{
++	unsigned long index;
++	void *old_entry;
++
++	if ((!addr) || ((unsigned long)addr) & ~PAGE_MASK)
++		return -EINVAL;
++
++	lockdep_assert_held(&dpt->lock);
++	index = dpt->backend_pages_count;
++
++	old_entry = xa_store(&dpt->backend_pages, index,
++			     DPT_BACKEND_PAGE_ENTRY(addr, level),
++			     GFP_KERNEL);
++	if (xa_is_err(old_entry))
++		return xa_err(old_entry);
++	if (old_entry)
++		return -EBUSY;
++
++	dpt->backend_pages_count++;
++
++	return 0;
++}
 +
 +/*
-+ * dpt_create - allocate a page-table and create a corresponding
-+ * decorated page-table. The page-table is allocated and aligned
-+ * at the specified alignment (pgt_alignment) which should be a
-+ * multiple of PAGE_SIZE.
++ * Check if an offset in the page-table is valid, i.e. check that the
++ * offset is on a page effectively belonging to the page-table.
 + */
-+struct dpt *dpt_create(unsigned int pgt_alignment)
++static bool dpt_valid_offset(struct dpt *dpt, void *offset)
 +{
-+	unsigned int alloc_order;
-+	unsigned long pagetable;
-+	struct dpt *dpt;
++	unsigned long index;
++	void *addr, *entry;
++	bool valid;
 +
-+	if (!IS_ALIGNED(pgt_alignment, PAGE_SIZE))
-+		return NULL;
++	addr = DPT_BACKEND_PAGE_ALIGN(offset);
++	valid = false;
 +
-+	alloc_order = round_up(PAGE_SIZE + pgt_alignment,
-+			       PAGE_SIZE) >> PAGE_SHIFT;
-+
-+	dpt = kzalloc(sizeof(*dpt), GFP_KERNEL);
-+	if (!dpt)
-+		return NULL;
-+
-+	pagetable = (unsigned long)__get_free_pages(GFP_KERNEL_ACCOUNT |
-+						    __GFP_ZERO,
-+						    alloc_order);
-+	if (!pagetable) {
-+		kfree(dpt);
-+		return NULL;
-+	}
-+	dpt->pagetable = (pgd_t *)(pagetable + pgt_alignment);
-+	dpt->alignment = pgt_alignment;
-+
-+	spin_lock_init(&dpt->lock);
-+
-+	return dpt;
-+}
-+EXPORT_SYMBOL(dpt_create);
-+
-+void dpt_destroy(struct dpt *dpt)
-+{
-+	unsigned int pgt_alignment;
-+	unsigned int alloc_order;
-+
-+	if (!dpt)
-+		return;
-+
-+	if (dpt->pagetable) {
-+		pgt_alignment = dpt->alignment;
-+		alloc_order = round_up(PAGE_SIZE + pgt_alignment,
-+				       PAGE_SIZE) >> PAGE_SHIFT;
-+		free_pages((unsigned long)(dpt->pagetable) - pgt_alignment,
-+			   alloc_order);
++	lockdep_assert_held(&dpt->lock);
++	xa_for_each(&dpt->backend_pages, index, entry) {
++		if (DPT_BACKEND_PAGE_ADDR(entry) == addr) {
++			valid = true;
++			break;
++		}
 +	}
 +
-+	kfree(dpt);
++	return valid;
 +}
-+EXPORT_SYMBOL(dpt_destroy);
++
+ /*
+  * dpt_create - allocate a page-table and create a corresponding
+  * decorated page-table. The page-table is allocated and aligned
+@@ -41,6 +115,7 @@ struct dpt *dpt_create(unsigned int pgt_alignment)
+ 	dpt->alignment = pgt_alignment;
+ 
+ 	spin_lock_init(&dpt->lock);
++	xa_init(&dpt->backend_pages);
+ 
+ 	return dpt;
+ }
+@@ -50,10 +125,17 @@ void dpt_destroy(struct dpt *dpt)
+ {
+ 	unsigned int pgt_alignment;
+ 	unsigned int alloc_order;
++	unsigned long index;
++	void *entry;
+ 
+ 	if (!dpt)
+ 		return;
+ 
++	if (dpt->backend_pages_count) {
++		xa_for_each(&dpt->backend_pages, index, entry)
++			free_page((unsigned long)DPT_BACKEND_PAGE_ADDR(entry));
++	}
++
+ 	if (dpt->pagetable) {
+ 		pgt_alignment = dpt->alignment;
+ 		alloc_order = round_up(PAGE_SIZE + pgt_alignment,
 -- 
 2.18.2
 
