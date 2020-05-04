@@ -2,106 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC3AD1C3621
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 11:51:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 837281C362F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 11:53:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728427AbgEDJuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 05:50:55 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:37013 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728338AbgEDJuy (ORCPT
+        id S1728574AbgEDJxJ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 May 2020 05:53:09 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:8288 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728339AbgEDJxJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 05:50:54 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1588585854; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=dsoB2pXtHXtJ6z6FYDGExSBwxV7fxuDgwhHrrM4FK4Y=;
- b=sR0r3BFKKPUoqLWumWZz/sPeJhI96b6KGedBnpGBZzphPpTkLc/GIcteTZI/yld2Yo2q3CyW
- 6Jx3OUrRgnHOFXubx3ML/pO5alZUTKAx9zuQ/5k8Th5pv8H8Ja67tPHl1h+5p5AEKwObTqZQ
- 7j2wAqptEw2Kt1jSaKNQa6R7QDE=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5eafe572.7f7a1c2c67d8-smtp-out-n03;
- Mon, 04 May 2020 09:50:42 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4289CC432C2; Mon,  4 May 2020 09:50:42 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
-        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E6E97C433CB;
-        Mon,  4 May 2020 09:50:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E6E97C433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] brcmfmac: no need to check return value of debugfs_create
- functions
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200429101526.GA2094124@kroah.com>
-References: <20200429101526.GA2094124@kroah.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Arend van Spriel <arend.vanspriel@broadcom.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
-        Wright Feng <wright.feng@cypress.com>,
+        Mon, 4 May 2020 05:53:09 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0449Wevn154538;
+        Mon, 4 May 2020 05:52:01 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 30s50fcewg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 May 2020 05:52:00 -0400
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0449Y0Fw161848;
+        Mon, 4 May 2020 05:51:59 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 30s50fcew4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 May 2020 05:51:59 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 0449ofx1028861;
+        Mon, 4 May 2020 09:51:57 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03fra.de.ibm.com with ESMTP id 30s0g5ht3w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 May 2020 09:51:57 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0449ptPp10682730
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 4 May 2020 09:51:55 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5B19B52050;
+        Mon,  4 May 2020 09:51:55 +0000 (GMT)
+Received: from localhost (unknown [9.85.127.4])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id EE3F75204F;
+        Mon,  4 May 2020 09:51:54 +0000 (GMT)
+Date:   Mon, 04 May 2020 15:21:53 +0530
+From:   "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+Subject: Re: [PATCH 12/14] docs: move remaining stuff under
+ Documentation/*.txt to Documentation/staging
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
         "David S. Miller" <davem@davemloft.net>,
-        Pieter-Paul Giesberts <pieter-paul.giesberts@broadcom.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?utf-8?b?UmFmYcWCIE1pxYJl?= =?utf-8?b?Y2tp?= <rafal@milecki.pl>,
-        linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        brcm80211-dev-list@cypress.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20200504095042.4289CC432C2@smtp.codeaurora.org>
-Date:   Mon,  4 May 2020 09:50:42 +0000 (UTC)
+        =?iso-8859-1?q?Greg=0A?= Kroah-Hartman 
+        <gregkh@linuxfoundation.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Lecopzer Chen <lecopzer.chen@mediatek.com>,
+        linux-arch@vger.kernel.org,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        =?iso-8859-1?q?Sameer=0A?= Rahmani <lxsameer@gnu.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rob Herring <robh@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        tee-dev@lists.linaro.org, Thomas Gleixner <tglx@linutronix.de>
+References: <cover.1588345503.git.mchehab+huawei@kernel.org>
+        <28687056965ff46c0e6c81663a419bc59cfb94b4.1588345503.git.mchehab+huawei@kernel.org>
+        <20200504085415.db8e0e3b40e795f2fb4af009@kernel.org>
+In-Reply-To: <20200504085415.db8e0e3b40e795f2fb4af009@kernel.org>
+MIME-Version: 1.0
+User-Agent: astroid/v0.15-13-gb675b421
+ (https://github.com/astroidmail/astroid)
+Message-Id: <1588585777.904qzycqcn.naveen@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8BIT
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-05-04_05:2020-05-01,2020-05-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ clxscore=1011 impostorscore=0 adultscore=0 priorityscore=1501
+ malwarescore=0 phishscore=0 mlxscore=0 spamscore=0 mlxlogscore=999
+ bulkscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005040078
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-
-> When calling debugfs functions, there is no need to ever check the
-> return value.  The function can work or not, but the code logic should
-> never do something different based on this.
+Masami Hiramatsu wrote:
+> On Fri,  1 May 2020 17:37:56 +0200
+> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
 > 
-> In doing this, make brcmf_debugfs_add_entry() return void as no one was
-> even paying attention to the return value.
+>> There are several files that I was unable to find a proper place
+>> for them, and 3 ones that are still in plain old text format.
+>> 
+>> Let's place those stuff behind the carpet, as we'd like to keep the
+>> root directory clean.
+>> 
+>> We can later discuss and move those into better places.
 > 
-> Cc: Arend van Spriel <arend.vanspriel@broadcom.com>
-> Cc: Franky Lin <franky.lin@broadcom.com>
-> Cc: Hante Meuleman <hante.meuleman@broadcom.com>
-> Cc: Chi-Hsien Lin <chi-hsien.lin@cypress.com>
-> Cc: Wright Feng <wright.feng@cypress.com>
-> Cc: Kalle Valo <kvalo@codeaurora.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Pieter-Paul Giesberts <pieter-paul.giesberts@broadcom.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: "Rafał Miłecki" <rafal@milecki.pl>
-> Cc: linux-wireless@vger.kernel.org
-> Cc: brcm80211-dev-list.pdl@broadcom.com
-> Cc: brcm80211-dev-list@cypress.com
-> Cc: netdev@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Acked-by: Arend van Spriel <arend.vanspriel@broadcom.com>
+> Hi Mauro,
+> 
+> Thanks for cleaning it up! Tentatively moving kprobes.txt under
+> staging/ is good to me.
+> 
+> Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+> 
+> BTW, I think kprobes.txt is under trace/ or we may be better
+> making a new core-api/events/ directory and prepare other event
+> systems (PMU, uprobes, and hw_breakpoint.) 
 
-Patch applied to wireless-drivers-next.git, thanks.
+I think it would be good to move kprobes.txt under trace/ -- all other 
+tracing bits are already present there, including uprobes.
 
-ea1b3bc6d5ad brcmfmac: no need to check return value of debugfs_create functions
 
--- 
-https://patchwork.kernel.org/patch/11516617/
+- Naveen
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
