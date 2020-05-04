@@ -2,80 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 437091C3ED5
+	by mail.lfdr.de (Postfix) with ESMTP id B0EE21C3ED6
 	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 17:44:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729165AbgEDPoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 11:44:23 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:50870 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726509AbgEDPoX (ORCPT
+        id S1729373AbgEDPoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 11:44:25 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:21568 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728983AbgEDPoX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 4 May 2020 11:44:23 -0400
-Received: from fsav107.sakura.ne.jp (fsav107.sakura.ne.jp [27.133.134.234])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 044Fi1hv055060;
-        Tue, 5 May 2020 00:44:01 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav107.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav107.sakura.ne.jp);
- Tue, 05 May 2020 00:44:01 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav107.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 044Fi0RI055015
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-        Tue, 5 May 2020 00:44:01 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH] memcg: oom: ignore oom warnings from memory.max
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Greg Thelen <gthelen@google.com>,
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 044F2XpZ139280;
+        Mon, 4 May 2020 11:44:18 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30s50ys4ce-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 May 2020 11:44:18 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 044Ffo2O012898;
+        Mon, 4 May 2020 15:44:15 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma03ams.nl.ibm.com with ESMTP id 30s0g5n435-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 May 2020 15:44:15 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 044Fh3vg61735376
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 4 May 2020 15:43:03 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D867B4C04A;
+        Mon,  4 May 2020 15:44:12 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E51214C040;
+        Mon,  4 May 2020 15:44:11 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.148.201.44])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Mon,  4 May 2020 15:44:11 +0000 (GMT)
+Date:   Mon, 4 May 2020 18:44:10 +0300
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20200430182712.237526-1-shakeelb@google.com>
- <20200504065600.GA22838@dhcp22.suse.cz>
- <CALvZod5Ao2PEFPEOckW6URBfxisp9nNpNeon1GuctuHehqk_6Q@mail.gmail.com>
- <939b6744-6556-2733-b83e-bf14e848dabd@I-love.SAKURA.ne.jp>
- <CALvZod5T9pYG1xVHqNM=c68jgKPVXtKjuvV0DSAR+Ld_Mm1c4A@mail.gmail.com>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <3c24ef6a-f1f4-38e6-2d0f-1eac18dc15bb@i-love.sakura.ne.jp>
-Date:   Tue, 5 May 2020 00:44:00 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Marc Hartmayer <mhartmay@linux.ibm.com>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>
+Subject: Re: linux-next: Tree for May 4 --> mm: free_area_init: allow
+ defining max_zone_pfn in descending order does increase memory use
+Message-ID: <20200504154410.GF342687@linux.ibm.com>
+References: <20200504173547.2cdd83bf@canb.auug.org.au>
+ <9e9edd1e-6653-a585-0e22-69930a07dce1@de.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <CALvZod5T9pYG1xVHqNM=c68jgKPVXtKjuvV0DSAR+Ld_Mm1c4A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9e9edd1e-6653-a585-0e22-69930a07dce1@de.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-05-04_09:2020-05-04,2020-05-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
+ clxscore=1011 suspectscore=0 mlxlogscore=798 priorityscore=1501
+ impostorscore=0 lowpriorityscore=0 mlxscore=0 adultscore=0 phishscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005040124
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/05/04 23:57, Shakeel Butt wrote:
-> On Mon, May 4, 2020 at 7:20 AM Tetsuo Handa
-> <penguin-kernel@i-love.sakura.ne.jp> wrote:
->>
->> On 2020/05/04 22:54, Shakeel Butt wrote:
->>> It may not be a problem for an individual or small scale deployment
->>> but when "sweep before tear down" is the part of the workflow for
->>> thousands of machines cycling through hundreds of thousands of cgroups
->>> then we can potentially flood the logs with not useful dumps and may
->>> hide (or overflow) any useful information in the logs.
->>
->> I'm proposing a patch which allows configuring which OOM-related messages
->> should be sent to consoles at
->> https://lkml.kernel.org/r/20200424024239.63607-1-penguin-kernel@I-love.SAKURA.ne.jp .
->> Will that approach help you?
-> 
->>From what I understand, that patch is specifically for controlling
-> messages to consoles. The messages will still be in logs, right?
-> 
+Ho Christian,
 
-Right.
+On Mon, May 04, 2020 at 04:50:06PM +0200, Christian Borntraeger wrote:
+> Mike,
+> commit 51a2f644fd020d5f090044825c388444d11029d ("mm: free_area_init: allow defining max_zone_pfn in descending order")
+> does increase the memory use on s390 (e.g. 700 MB vs.1.8 GB).
+> 
+> Something is odd in this patch. Any idea?
 
-If you want to control which OOM-related messages should be sent to syslog,
-we could use similar approach.
+Yeah, this patch is buggy. In short, it breaks zone size calculation on
+s390 and some other architectures.
+
+I've just replied at [1] with more details and a fix.
+
+[1] https://lore.kernel.org/linux-mm/20200504153901.GM14260@kernel.org/
+
+-- 
+Sincerely yours,
+Mike.
