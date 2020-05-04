@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 586CC1C4543
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:14:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54DB91C4432
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:05:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731723AbgEDSNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:13:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56236 "EHLO mail.kernel.org"
+        id S1731771AbgEDSFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:05:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34662 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731104AbgEDSBD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:01:03 -0400
+        id S1731756AbgEDSFB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 14:05:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9DDCC2073B;
-        Mon,  4 May 2020 18:01:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 86816206B8;
+        Mon,  4 May 2020 18:05:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588615263;
-        bh=0iBARj4TxwISLi/XhODDCPesSt/fsZtgRkxuEPlml6Q=;
+        s=default; t=1588615501;
+        bh=2r32fugBjwG8T40ehjInEQQbqeH50pAvIpYorokJkRk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Zl5obtgwKEPZtqCOYIpHuoY2KfZukm+2XcV1jD8PaN6MZaw6h8qaW5JwFLGMRpAJQ
-         J0j0sYtev4Ll5HiemMM4/uBpaNtmoInQtmu/OaDcdPN91LjEZ9RmvYkoefazlMfCGu
-         CJ9Q+Uk0DVYIRbzk1yuWz7K4HrNm8peSEyFPGjzc=
+        b=rLckBcNpyo7oviNpnBLD2VPhqRM7Xmt+bhWGdbCQNmc2izIS2ZoG+/mn1j9w5FQAK
+         10hAggZu2mAudEUU1rfrZh11guD+uJwAFnsO0Yd61kFFYlHHx0eox7eGIh5ciP+Rhh
+         GfIs80BaaBaHMjkauJ7CBqd//gqTdZ7zHArbVI0c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>
-Subject: [PATCH 4.14 24/26] nfs: Fix potential posix_acl refcnt leak in nfs3_set_acl
-Date:   Mon,  4 May 2020 19:57:38 +0200
-Message-Id: <20200504165447.897342672@linuxfoundation.org>
+        stable@vger.kernel.org, Arun Easi <aeasi@marvell.com>,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Martin Wilck <mwilck@suse.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 5.4 35/57] scsi: qla2xxx: check UNLOADING before posting async work
+Date:   Mon,  4 May 2020 19:57:39 +0200
+Message-Id: <20200504165459.394512123@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200504165442.494398840@linuxfoundation.org>
-References: <20200504165442.494398840@linuxfoundation.org>
+In-Reply-To: <20200504165456.783676004@linuxfoundation.org>
+References: <20200504165456.783676004@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,79 +45,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andreas Gruenbacher <agruenba@redhat.com>
+From: Martin Wilck <mwilck@suse.com>
 
-commit 7648f939cb919b9d15c21fff8cd9eba908d595dc upstream.
+commit 5a263892d7d0b4fe351363f8d1a14c6a75955475 upstream.
 
-nfs3_set_acl keeps track of the acl it allocated locally to determine if an acl
-needs to be released at the end.  This results in a memory leak when the
-function allocates an acl as well as a default acl.  Fix by releasing acls
-that differ from the acl originally passed into nfs3_set_acl.
+qlt_free_session_done() tries to post async PRLO / LOGO, and waits for the
+completion of these async commands. If UNLOADING is set, this is doomed to
+timeout, because the async logout command will never complete.
 
-Fixes: b7fa0554cf1b ("[PATCH] NFS: Add support for NFSv3 ACLs")
-Reported-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+The only way to avoid waiting pointlessly is to fail posting these commands
+in the first place if the driver is in UNLOADING state.  In general,
+posting any command should be avoided when the driver is UNLOADING.
+
+With this patch, "rmmod qla2xxx" completes without noticeable delay.
+
+Link: https://lore.kernel.org/r/20200421204621.19228-3-mwilck@suse.com
+Fixes: 45235022da99 ("scsi: qla2xxx: Fix driver unload by shutting down chip")
+Acked-by: Arun Easi <aeasi@marvell.com>
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Signed-off-by: Martin Wilck <mwilck@suse.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/nfs/nfs3acl.c |   22 +++++++++++++++-------
- 1 file changed, 15 insertions(+), 7 deletions(-)
+ drivers/scsi/qla2xxx/qla_os.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/fs/nfs/nfs3acl.c
-+++ b/fs/nfs/nfs3acl.c
-@@ -253,37 +253,45 @@ int nfs3_proc_setacls(struct inode *inod
+--- a/drivers/scsi/qla2xxx/qla_os.c
++++ b/drivers/scsi/qla2xxx/qla_os.c
+@@ -4857,6 +4857,9 @@ qla2x00_alloc_work(struct scsi_qla_host
+ 	struct qla_work_evt *e;
+ 	uint8_t bail;
  
- int nfs3_set_acl(struct inode *inode, struct posix_acl *acl, int type)
- {
--	struct posix_acl *alloc = NULL, *dfacl = NULL;
-+	struct posix_acl *orig = acl, *dfacl = NULL, *alloc;
- 	int status;
- 
- 	if (S_ISDIR(inode->i_mode)) {
- 		switch(type) {
- 		case ACL_TYPE_ACCESS:
--			alloc = dfacl = get_acl(inode, ACL_TYPE_DEFAULT);
-+			alloc = get_acl(inode, ACL_TYPE_DEFAULT);
- 			if (IS_ERR(alloc))
- 				goto fail;
-+			dfacl = alloc;
- 			break;
- 
- 		case ACL_TYPE_DEFAULT:
--			dfacl = acl;
--			alloc = acl = get_acl(inode, ACL_TYPE_ACCESS);
-+			alloc = get_acl(inode, ACL_TYPE_ACCESS);
- 			if (IS_ERR(alloc))
- 				goto fail;
-+			dfacl = acl;
-+			acl = alloc;
- 			break;
- 		}
- 	}
- 
- 	if (acl == NULL) {
--		alloc = acl = posix_acl_from_mode(inode->i_mode, GFP_KERNEL);
-+		alloc = posix_acl_from_mode(inode->i_mode, GFP_KERNEL);
- 		if (IS_ERR(alloc))
- 			goto fail;
-+		acl = alloc;
- 	}
- 	status = __nfs3_proc_setacls(inode, acl, dfacl);
--	posix_acl_release(alloc);
-+out:
-+	if (acl != orig)
-+		posix_acl_release(acl);
-+	if (dfacl != orig)
-+		posix_acl_release(dfacl);
- 	return status;
- 
- fail:
--	return PTR_ERR(alloc);
-+	status = PTR_ERR(alloc);
-+	goto out;
- }
- 
- const struct xattr_handler *nfs3_xattr_handlers[] = {
++	if (test_bit(UNLOADING, &vha->dpc_flags))
++		return NULL;
++
+ 	QLA_VHA_MARK_BUSY(vha, bail);
+ 	if (bail)
+ 		return NULL;
 
 
