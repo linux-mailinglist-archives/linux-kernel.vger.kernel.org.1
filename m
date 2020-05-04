@@ -2,82 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 637D51C481E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 22:25:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 930641C4832
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 22:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728181AbgEDUZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 16:25:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40468 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727804AbgEDUZA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 16:25:00 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        id S1727896AbgEDUZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 16:25:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726410AbgEDUZy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 16:25:54 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF436C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 13:25:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=QzyVcYGaTfWfjc7VbJBysUnAPUBFtQMrS3LJCoW4qx4=; b=Ghx2r4PAYhFnjL9dYaES0XeM2N
+        XKvwjzcSLVO6rksH3dGoAxPT8DUJN8DpcpwJOPXZW1FDNcwnrdi53jyxcSgdeNeQTWN03JAYAfP35
+        DabS1v0x1dgvMEdoczf0O372kT7GSWzg6wruFRHskFi6+UvzTsDBTsly50ZOwmo+sQTUIVcKHBLcT
+        4K56jCGJOq8KKEyNE7Mo0x4QVlqKaQHWsYTJ4mxl7sWWQeAZYRO96SCS61WuZDNL2YRPQuLT+QaYt
+        jJ58uqnEiCSCrUDmYPTeqSqNrif5FSt+fQKRfXq+wrj1j8KDYyynPnJw60mIgKXerI90gia9eomWi
+        8SYFlNVQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jVhep-0007Fq-At; Mon, 04 May 2020 20:25:43 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 05E3420721;
-        Mon,  4 May 2020 20:24:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588623899;
-        bh=dCUcj64WxQsEocNsatvppm/zf3WGdXsZ0RfjpWEZz/w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=drrSv1ltJv0WLhISRLHG/qvOeiVCSP5oy99VBxNo0rvRjwYLzOrpF1RSA+AaAi49u
-         PdtCfQw2CQ6rcLvPivJ8lN+g6CShd3diYYqcPVuQyUtKTi2wb7lRIqGi9xiU1/4PaB
-         7EiOLTyNgeIM5z78mmHFcW0lKuQr5xeu8ZcZJrDs=
-Date:   Mon, 4 May 2020 21:24:54 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3 02/16] arm64/cpufeature: Drop TraceFilt feature
- exposure from ID_DFR0 register
-Message-ID: <20200504202453.GA5012@willie-the-truck>
-References: <1588426445-24344-1-git-send-email-anshuman.khandual@arm.com>
- <1588426445-24344-3-git-send-email-anshuman.khandual@arm.com>
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 970D7305E45;
+        Mon,  4 May 2020 22:25:40 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 817822B13518F; Mon,  4 May 2020 22:25:40 +0200 (CEST)
+Date:   Mon, 4 May 2020 22:25:40 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Joerg Roedel <jroedel@suse.de>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shile Zhang <shile.zhang@linux.alibaba.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Subject: Re: [PATCH] percpu: Sync vmalloc mappings in pcpu_alloc() and
+ free_percpu()
+Message-ID: <20200504202540.GD5298@hirez.programming.kicks-ass.net>
+References: <20200429105941.GQ30814@suse.de>
+ <20200429082854.6e1796b5@oasis.local.home>
+ <20200429100731.201312a9@gandalf.local.home>
+ <20200430141120.GA8135@suse.de>
+ <20200430121136.6d7aeb22@gandalf.local.home>
+ <20200430191434.GC8135@suse.de>
+ <20200430211308.74a994dc@oasis.local.home>
+ <1902703609.78863.1588300015661.JavaMail.zimbra@efficios.com>
+ <20200430223919.50861011@gandalf.local.home>
+ <20200504151236.GI8135@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1588426445-24344-3-git-send-email-anshuman.khandual@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200504151236.GI8135@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 02, 2020 at 07:03:51PM +0530, Anshuman Khandual wrote:
-> ID_DFR0 based TraceFilt feature should not be exposed to guests. Hence lets
-> drop it.
+On Mon, May 04, 2020 at 05:12:36PM +0200, Joerg Roedel wrote:
+> On Thu, Apr 30, 2020 at 10:39:19PM -0400, Steven Rostedt wrote:
+> > What's so damn special about alloc_percpu()? It's definitely not a fast
+> > path. And it's not used often.
 > 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: James Morse <james.morse@arm.com>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
+> Okay, I fixed it in the percpu code. It is definitly not a nice
+> solution, but having to call vmalloc_sync_mappings/unmappings() is not a
+> nice solution at any place in the code. Here is the patch which fixes
+> this issue for me. I am also not sure what to put in the Fixes tag, as
+> it is related to tracing code accessing per-cpu data from the page-fault
+> handler, not sure when this got introduced. Maybe someone else can
+> provide a meaningful Fixes- or stable tag.
 > 
-> Suggested-by: Mark Rutland <mark.rutland@arm.com>
-> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->  arch/arm64/kernel/cpufeature.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> index 6d032fbe416f..51386dade423 100644
-> --- a/arch/arm64/kernel/cpufeature.c
-> +++ b/arch/arm64/kernel/cpufeature.c
-> @@ -435,7 +435,6 @@ static const struct arm64_ftr_bits ftr_id_pfr1[] = {
->  };
->  
->  static const struct arm64_ftr_bits ftr_id_dfr0[] = {
-> -	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, 28, 4, 0),
+> I also have an idea in mind how to make this all more robust and get rid
+> of the vmalloc_sync_mappings/unmappings() interface, will show more when
+> I know it works the way I think it does.
 
-Hmm, this still confuses me. Is this not now FTR_NONSTRICT? Why is that ok?
+I'm only following this with half an eye atm, but one solution is to
+pull the vmalloc fault out of the trace path entirely.
 
-Will
+With the current code that is 'interesting', but with the pile of
+patches Thomas is sitting on that would be quite feasible.
