@@ -2,157 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 375ED1C3E0D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 17:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7C3F1C3E1E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 17:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729480AbgEDPF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 11:05:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57800 "EHLO
+        id S1729475AbgEDPHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 11:07:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726551AbgEDPF6 (ORCPT
+        by vger.kernel.org with ESMTP id S1727778AbgEDPHo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 11:05:58 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CD41C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 08:05:58 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id l18so3719598qtp.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 08:05:58 -0700 (PDT)
+        Mon, 4 May 2020 11:07:44 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFC42C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 08:07:42 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id s8so11071134wrt.9
+        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 08:07:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=W9SfBfk/u14rl2gH53J+GCo3+J3XKQlUdBUevAtgsvg=;
-        b=hQy9jhSSW/Ku+IvObuEN+74pDIyl494WQ3X87xYprHIOt8NXWmSVnGSc3RT3eOD2BM
-         3L5xnD/n3wrksd/OOtLeNfEtW7pEC5YybNtOI5aZtP26PhWfzFuxE5G3KV+w6wyK6S1N
-         OllFS1VbcAfROvmzpJVr9vhxOACAm7jjtxvSjhB2z8VG0ZBsCdSaZ7L85inRw7H7OQaj
-         ZpjhjI2MawebL+SsjUYZG//o1Xv5fTACocobMH7y7ACBlLqayobAQW1oQpV0v0bVjHV8
-         n8E3fYv7EF16OQ7kk0VL8eW73lDAKGSlcZkbVuhFSHJb+NmZQ3YGvoM1uUzYSxmcPVy1
-         YILQ==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:autocrypt:organization:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yIpsHyA9glZdFIhIUVuj3v+X/9J9nmCRLoRSzNv8+EQ=;
+        b=CMVcN2bnRYOlhbASLXRJn4ILYwwr5HB0o9+xTjFFvMMTEciug45dy4hE8qo0B/d0K7
+         fqJjAwc6GlFYJHY2M3AZhqFtXbbbBF2wb1fnd8sE8iOG9i/zwi5itzrobfznMr1FKZTi
+         9bW/g38QlSTxpXNO3pwMPPqAZFfWvhdcq081MpaOqaKOvQYec9cYtFa2cR39spTv8XVy
+         iHVtb4rOsPVB9Kai/vkyP90dCPadPZvUS2yQ/rR90HSl6gOqSKQ+WAvkQMP+oTATk5rw
+         jyvs+AYbXCXBspXd82cGP2fDcTk34g0DJgZeq5MOo4LDpi742VOM83+6CaKLYDOHAwJ8
+         UubQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=W9SfBfk/u14rl2gH53J+GCo3+J3XKQlUdBUevAtgsvg=;
-        b=Z6MNOh+KkCUEtT58SKcRJtf64Wr7xVXI27oyc2KzwtjLBl1I2RqwtDRX4tmEDJl9ik
-         XesoisJ/aZVSs3+4qw6OjikWogJ+q24ltx7O/vRB7QbjlrH7NyhbRL9FSoyF8BbtLXKC
-         ky4/OHTiydVl+AKsAyWayxiOfsKb3DFRjJAXPszGSe88f2v4cGw2k065vsQa121nzOY6
-         nUfMYAAPr1UPz06QriJnPIoMCfs8DYZ3IHfEKR5KkiNqq4ATPqFjkMyCySn76Y24V+5S
-         UEYf0ID1ToiayD1RPTMbJshc+DsNr7EFT6rzKbmzRZEj/x7hhpa6iInGRoRgnfh4sGSY
-         MI3A==
-X-Gm-Message-State: AGi0PuZieaYnXZ3mj28UptjjFfxMG3K+ghEXoN9tzIvYAn5JreMCU6Aj
-        /5dqDCuUAF+ieOWjA33pztvacA==
-X-Google-Smtp-Source: APiQypL5Sg4OJm1P2mb7CDrW9ftmb7zH1hc234vBHyttVYZLd71RZJd513T2KlxdS697uXkd6I+R1A==
-X-Received: by 2002:ac8:6f6c:: with SMTP id u12mr219677qtv.103.1588604757260;
-        Mon, 04 May 2020 08:05:57 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id 193sm5659558qkl.42.2020.05.04.08.05.56
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 04 May 2020 08:05:56 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jVcfM-0000LM-1C; Mon, 04 May 2020 12:05:56 -0300
-Date:   Mon, 4 May 2020 12:05:56 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cohuck@redhat.com, peterx@redhat.com
-Subject: Re: [PATCH 2/3] vfio-pci: Fault mmaps to enable vma tracking
-Message-ID: <20200504150556.GX26002@ziepe.ca>
-References: <158836742096.8433.685478071796941103.stgit@gimli.home>
- <158836915917.8433.8017639758883869710.stgit@gimli.home>
- <20200501232550.GP26002@ziepe.ca>
- <20200504082055.0faeef8b@x1.home>
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :organization:message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=yIpsHyA9glZdFIhIUVuj3v+X/9J9nmCRLoRSzNv8+EQ=;
+        b=K2z2pCenK9Dsi2LoOTHF/IJTRLKbLD31NZ5xaADQCUftZCnxrrCqEGOYuYS8V888XB
+         BpUvRGZCYh5tUs7bLgmwzALWBr2F4uzzPLQHFUqyeO0/+oozcbbcW+ydlrfuL3MNUbKE
+         qKDVRm7GjqtBMr+0DHElY7r6tbMlQOpW4JLuEUF8tzcFdQJYLVDM0AlMcQSKpIsWS4Xc
+         iZ5rpfGBcrcaEcsqfSNn/GTWNDlIpueAx3Ri0fgAqUz95K1egAI1fv+fNAwePOUnBwVi
+         0LAvx4CG0On/8yYFr6pZHBxPaR8pFvSRmA7IWyuZvsIiW3/Dk6a3cAdvUT4+OZSNZt3q
+         Abrw==
+X-Gm-Message-State: AGi0PubUb3hgiFjenescegqhX/CgSA73kned8mdwaTBb0Sf4SXSg+XT4
+        VUWra/4fuN19vtf07uPVvAF6ImvYvCw47Q==
+X-Google-Smtp-Source: APiQypLr4jnfBC4D8t9SeFbZ6pBis5hfASSWt4QxKygGkjzLeuWiJecZXbHBCv+/SUtVmzwGuleEIA==
+X-Received: by 2002:adf:d841:: with SMTP id k1mr11907808wrl.129.1588604861052;
+        Mon, 04 May 2020 08:07:41 -0700 (PDT)
+Received: from ?IPv6:2a01:e35:2ec0:82b0:4460:3fd3:382:4a71? ([2a01:e35:2ec0:82b0:4460:3fd3:382:4a71])
+        by smtp.gmail.com with ESMTPSA id k9sm19896490wrd.17.2020.05.04.08.07.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 May 2020 08:07:40 -0700 (PDT)
+Subject: Re: [PATCH v6 0/6] drm/meson: add support for Amlogic Video FBC
+To:     daniel@ffwll.ch, dri-devel@lists.freedesktop.org
+Cc:     linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20200421161559.2347-1-narmstrong@baylibre.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKE5laWwgQXJtc3Ryb25nIDxuYXJtc3Ryb25nQGJheWxpYnJlLmNvbT7CwHsEEwEKACUC
+ GyMGCwkIBwMCBhUIAgkKCwQWAgMBAh4BAheABQJXDO2CAhkBAAoJEBaat7Gkz/iubGIH/iyk
+ RqvgB62oKOFlgOTYCMkYpm2aAOZZLf6VKHKc7DoVwuUkjHfIRXdslbrxi4pk5VKU6ZP9AKsN
+ NtMZntB8WrBTtkAZfZbTF7850uwd3eU5cN/7N1Q6g0JQihE7w4GlIkEpQ8vwSg5W7hkx3yQ6
+ 2YzrUZh/b7QThXbNZ7xOeSEms014QXazx8+txR7jrGF3dYxBsCkotO/8DNtZ1R+aUvRfpKg5
+ ZgABTC0LmAQnuUUf2PHcKFAHZo5KrdO+tyfL+LgTUXIXkK+tenkLsAJ0cagz1EZ5gntuheLD
+ YJuzS4zN+1Asmb9kVKxhjSQOcIh6g2tw7vaYJgL/OzJtZi6JlIXOwU0EVid/pAEQAND7AFhr
+ 5faf/EhDP9FSgYd/zgmb7JOpFPje3uw7jz9wFb28Cf0Y3CcncdElYoBNbRlesKvjQRL8mozV
+ 9RN+IUMHdUx1akR/A4BPXNdL7StfzKWOCxZHVS+rIQ/fE3Qz/jRmT6t2ZkpplLxVBpdu95qJ
+ YwSZjuwFXdC+A7MHtQXYi3UfCgKiflj4+/ITcKC6EF32KrmIRqamQwiRsDcUUKlAUjkCLcHL
+ CQvNsDdm2cxdHxC32AVm3Je8VCsH7/qEPMQ+cEZk47HOR3+Ihfn1LEG5LfwsyWE8/JxsU2a1
+ q44LQM2lcK/0AKAL20XDd7ERH/FCBKkNVzi+svYJpyvCZCnWT0TRb72mT+XxLWNwfHTeGALE
+ +1As4jIS72IglvbtONxc2OIid3tR5rX3k2V0iud0P7Hnz/JTdfvSpVj55ZurOl2XAXUpGbq5
+ XRk5CESFuLQV8oqCxgWAEgFyEapI4GwJsvfl/2Er8kLoucYO1Id4mz6N33+omPhaoXfHyLSy
+ dxD+CzNJqN2GdavGtobdvv/2V0wukqj86iKF8toLG2/Fia3DxMaGUxqI7GMOuiGZjXPt/et/
+ qeOySghdQ7Sdpu6fWc8CJXV2mOV6DrSzc6ZVB4SmvdoruBHWWOR6YnMz01ShFE49pPucyU1h
+ Av4jC62El3pdCrDOnWNFMYbbon3vABEBAAHCwn4EGAECAAkFAlYnf6QCGwICKQkQFpq3saTP
+ +K7BXSAEGQECAAYFAlYnf6QACgkQd9zb2sjISdGToxAAkOjSfGxp0ulgHboUAtmxaU3viucV
+ e2Hl1BVDtKSKmbIVZmEUvx9D06IijFaEzqtKD34LXD6fjl4HIyDZvwfeaZCbJbO10j3k7FJE
+ QrBtpdVqkJxme/nYlGOVzcOiKIepNkwvnHVnuVDVPcXyj2wqtsU7VZDDX41z3X4xTQwY3SO1
+ 9nRO+f+i4RmtJcITgregMa2PcB0LvrjJlWroI+KAKCzoTHzSTpCXMJ1U/dEqyc87bFBdc+DI
+ k8mWkPxsccdbs4t+hH0NoE3Kal9xtAl56RCtO/KgBLAQ5M8oToJVatxAjO1SnRYVN1EaAwrR
+ xkHdd97qw6nbg9BMcAoa2NMc0/9MeiaQfbgW6b0reIz/haHhXZ6oYSCl15Knkr4t1o3I2Bqr
+ Mw623gdiTzotgtId8VfLB2Vsatj35OqIn5lVbi2ua6I0gkI6S7xJhqeyrfhDNgzTHdQVHB9/
+ 7jnM0ERXNy1Ket6aDWZWCvM59dTyu37g3VvYzGis8XzrX1oLBU/tTXqo1IFqqIAmvh7lI0Se
+ gCrXz7UanxCwUbQBFjzGn6pooEHJYRLuVGLdBuoApl/I4dLqCZij2AGa4CFzrn9W0cwm3HCO
+ lR43gFyz0dSkMwNUd195FrvfAz7Bjmmi19DnORKnQmlvGe/9xEEfr5zjey1N9+mt3//geDP6
+ clwKBkq0JggA+RTEAELzkgPYKJ3NutoStUAKZGiLOFMpHY6KpItbbHjF2ZKIU1whaRYkHpB2
+ uLQXOzZ0d7x60PUdhqG3VmFnzXSztA4vsnDKk7x2xw0pMSTKhMafpxaPQJf494/jGnwBHyi3
+ h3QGG1RjfhQ/OMTX/HKtAUB2ct3Q8/jBfF0hS5GzT6dYtj0Ci7+8LUsB2VoayhNXMnaBfh+Q
+ pAhaFfRZWTjUFIV4MpDdFDame7PB50s73gF/pfQbjw5Wxtes/0FnqydfId95s+eej+17ldGp
+ lMv1ok7K0H/WJSdr7UwDAHEYU++p4RRTJP6DHWXcByVlpNQ4SSAiivmWiwOt490+Ac7ATQRN
+ WQbPAQgAvIoM384ZRFocFXPCOBir5m2J+96R2tI2XxMgMfyDXGJwFilBNs+fpttJlt2995A8
+ 0JwPj8SFdm6FBcxygmxBBCc7i/BVQuY8aC0Z/w9Vzt3Eo561r6pSHr5JGHe8hwBQUcNPd/9l
+ 2ynP57YTSE9XaGJK8gIuTXWo7pzIkTXfN40Wh5jeCCspj4jNsWiYhljjIbrEj300g8RUT2U0
+ FcEoiV7AjJWWQ5pi8lZJX6nmB0lc69Jw03V6mblgeZ/1oTZmOepkagwy2zLDXxihf0GowUif
+ GphBDeP8elWBNK+ajl5rmpAMNRoKxpN/xR4NzBg62AjyIvigdywa1RehSTfccQARAQABwsBf
+ BBgBAgAJBQJNWQbPAhsMAAoJEBaat7Gkz/iuteIH+wZuRDqK0ysAh+czshtG6JJlLW6eXJJR
+ Vi7dIPpgFic2LcbkSlvB8E25Pcfz/+tW+04Urg4PxxFiTFdFCZO+prfd4Mge7/OvUcwoSub7
+ ZIPo8726ZF5/xXzajahoIu9/hZ4iywWPAHRvprXaim5E/vKjcTeBMJIqZtS4u/UK3EpAX59R
+ XVxVpM8zJPbk535ELUr6I5HQXnihQm8l6rt9TNuf8p2WEDxc8bPAZHLjNyw9a/CdeB97m2Tr
+ zR8QplXA5kogS4kLe/7/JmlDMO8Zgm9vKLHSUeesLOrjdZ59EcjldNNBszRZQgEhwaarfz46
+ BSwxi7g3Mu7u5kUByanqHyA=
+Organization: Baylibre
+Message-ID: <25032a93-8bd5-91ad-6ab8-0fb2c74f40fb@baylibre.com>
+Date:   Mon, 4 May 2020 17:07:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200504082055.0faeef8b@x1.home>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200421161559.2347-1-narmstrong@baylibre.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 04, 2020 at 08:20:55AM -0600, Alex Williamson wrote:
-> On Fri, 1 May 2020 20:25:50 -0300
-> Jason Gunthorpe <jgg@ziepe.ca> wrote:
+Hi Daniel,
+
+On 21/04/2020 18:15, Neil Armstrong wrote:
+> Amlogic uses a proprietary lossless image compression protocol and format
+> for their hardware video codec accelerators, either video decoders or
+> video input encoders.
 > 
-> > On Fri, May 01, 2020 at 03:39:19PM -0600, Alex Williamson wrote:
-> > > Rather than calling remap_pfn_range() when a region is mmap'd, setup
-> > > a vm_ops handler to support dynamic faulting of the range on access.
-> > > This allows us to manage a list of vmas actively mapping the area that
-> > > we can later use to invalidate those mappings.  The open callback
-> > > invalidates the vma range so that all tracking is inserted in the
-> > > fault handler and removed in the close handler.
-> > > 
-> > > Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
-> > >  drivers/vfio/pci/vfio_pci.c         |   76 ++++++++++++++++++++++++++++++++++-
-> > >  drivers/vfio/pci/vfio_pci_private.h |    7 +++
-> > >  2 files changed, 81 insertions(+), 2 deletions(-)  
-> > 
-> > > +static vm_fault_t vfio_pci_mmap_fault(struct vm_fault *vmf)
-> > > +{
-> > > +	struct vm_area_struct *vma = vmf->vma;
-> > > +	struct vfio_pci_device *vdev = vma->vm_private_data;
-> > > +
-> > > +	if (vfio_pci_add_vma(vdev, vma))
-> > > +		return VM_FAULT_OOM;
-> > > +
-> > > +	if (remap_pfn_range(vma, vma->vm_start, vma->vm_pgoff,
-> > > +			    vma->vm_end - vma->vm_start, vma->vm_page_prot))
-> > > +		return VM_FAULT_SIGBUS;
-> > > +
-> > > +	return VM_FAULT_NOPAGE;
-> > > +}
-> > > +
-> > > +static const struct vm_operations_struct vfio_pci_mmap_ops = {
-> > > +	.open = vfio_pci_mmap_open,
-> > > +	.close = vfio_pci_mmap_close,
-> > > +	.fault = vfio_pci_mmap_fault,
-> > > +};
-> > > +
-> > >  static int vfio_pci_mmap(void *device_data, struct vm_area_struct *vma)
-> > >  {
-> > >  	struct vfio_pci_device *vdev = device_data;
-> > > @@ -1357,8 +1421,14 @@ static int vfio_pci_mmap(void *device_data, struct vm_area_struct *vma)
-> > >  	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
-> > >  	vma->vm_pgoff = (pci_resource_start(pdev, index) >> PAGE_SHIFT) + pgoff;
-> > >  
-> > > -	return remap_pfn_range(vma, vma->vm_start, vma->vm_pgoff,
-> > > -			       req_len, vma->vm_page_prot);
-> > > +	/*
-> > > +	 * See remap_pfn_range(), called from vfio_pci_fault() but we can't
-> > > +	 * change vm_flags within the fault handler.  Set them now.
-> > > +	 */
-> > > +	vma->vm_flags |= VM_IO | VM_PFNMAP | VM_DONTEXPAND | VM_DONTDUMP;
-> > > +	vma->vm_ops = &vfio_pci_mmap_ops;  
-> > 
-> > Perhaps do the vfio_pci_add_vma & remap_pfn_range combo here if the
-> > BAR is activated ? That way a fully populated BAR is presented in the
-> > common case and avoids taking a fault path?
-> > 
-> > But it does seem OK as is
+> It considerably reduces memory bandwidth while writing and reading
+> frames in memory.
 > 
-> Thanks for reviewing.  There's also an argument that we defer
-> remap_pfn_range() until the device is actually touched, which might
-> reduce the startup latency.
+> The underlying storage is considered to be 3 components, 8bit or 10-bit
+> per component, YCbCr 420, single plane :
+> - DRM_FORMAT_YUV420_8BIT
+> - DRM_FORMAT_YUV420_10BIT
+> 
+> This modifier will be notably added to DMA-BUF frames imported from the V4L2
+> Amlogic VDEC decoder.
+> 
+> At least two layout are supported :
+> - Basic: composed of a body and a header
+> - Scatter: the buffer is filled with a IOMMU scatter table referring
+>   to the encoder current memory layout. This mode if more efficient in terms
+>   of memory allocation but frames are not dumpable and only valid during until
+>   the buffer is freed and back in control of the encoder
+> 
+> At least two options are supported :
+> - Memory saving: when the pixel bpp is 8b, the size of the superblock can
+>   be reduced, thus saving memory.
 
-But not startup to a functional VM as that will now have to take the
-slower fault path.
+Is the fourcc DRM_FORMAT_MOD_ definition correct now ? It includes the changes I proposed on the
+v5 thread.
 
-> It's also a bit inconsistent with the vm_ops.open() path where I
-> can't return error, so I can't call vfio_pci_add_vma(), I can only
-> zap the vma so that the fault handler can return an error if
-> necessary.
+Thanks,
 
-open could allocate memory so the zap isn't needed. If allocation
-fails then do the zap and take the slow path.
+Neil
 
-> handler.  If there's a good reason to do otherwise, I can make the
-> change, but I doubt I'd have encountered the dma mapping of an
-> unfaulted vma issue had I done it this way, so maybe there's a test
-> coverage argument as well.  Thanks,
+> 
+> This serie adds the missing register, updated the FBC decoder registers
+> content to be committed by the crtc code.
+> 
+> The Amlogic FBC has been tested with compressed content from the Amlogic
+> HW VP9 decoder on S905X (GXL), S905D2 (G12A) and S905X3 (SM1) in 8bit
+> (Scatter+Mem Saving on G12A/SM1, Mem Saving on GXL) and 10bit
+> (Scatter on G12A/SM1, default on GXL).
+> 
+> It's expected to work as-is on GXM and G12B SoCs.
+> 
+> Changes since v5 at [5]:
+> - merged all fourcc patches in 1
+> - fixed fourcc definition to have only a single DRM_MOD_
+> - fixed 2 checkpatch issues
+> 
+> Changes since v4 at [4]:
+> - added layout and options mask
+> - cosmetic changes in fourcc.h
+> - fixed mod check using the masks
+> - fixed plane apply using the masks
+> 
+> Changes since v3 at [3]:
+> - added dropped fourcc patch for scatter
+> - fixed build of last patch
+> 
+> Changes since v2 at [2]:
+> - Added "BASIC" layout and moved the SCATTER mode as layout, making
+>   BASIC and SCATTER layout exclusives
+> - Moved the Memory Saving at bit 8 for options fields
+> - Split fourcc and overlay patch to introduce basic, mem saving and then
+>   scatter in separate patches
+> - Added comment about "transferability" of the buffers
+> 
+> Changes since v1 at [1]:
+> - s/VD1_AXI_SEL_AFB/VD1_AXI_SEL_AFBC/ into meson_registers.h
+> 
+> [1] https://patchwork.freedesktop.org/series/73722/#rev1
+> [2] https://patchwork.freedesktop.org/series/73722/#rev2
+> [3] https://patchwork.freedesktop.org/series/73722/#rev3
+> [4] https://patchwork.freedesktop.org/series/73722/#rev4
+> [4] https://patchwork.freedesktop.org/series/73722/#rev5
+> 
+> Neil Armstrong (6):
+>   drm/fourcc: Add modifier definitions for describing Amlogic Video
+>     Framebuffer Compression
+>   drm/meson: add Amlogic Video FBC registers
+>   drm/meson: overlay: setup overlay for Amlogic FBC
+>   drm/meson: overlay: setup overlay for Amlogic FBC Memory Saving mode
+>   drm/meson: overlay: setup overlay for Amlogic FBC Scatter Memory
+>     layout
+>   drm/meson: crtc: handle commit of Amlogic FBC frames
+> 
+>  drivers/gpu/drm/meson/meson_crtc.c      | 118 +++++++---
+>  drivers/gpu/drm/meson/meson_drv.h       |  16 ++
+>  drivers/gpu/drm/meson/meson_overlay.c   | 290 +++++++++++++++++++++++-
+>  drivers/gpu/drm/meson/meson_registers.h |  22 ++
+>  include/uapi/drm/drm_fourcc.h           |  74 ++++++
+>  5 files changed, 482 insertions(+), 38 deletions(-)
+> 
 
-This test is best done by having one thread disable the other bar
-while another thread is trying to map it
-
-Jason
