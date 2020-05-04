@@ -2,306 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D31611C4127
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 19:10:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95CE91C41A0
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 19:13:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729911AbgEDRJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 13:09:55 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:33706 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729937AbgEDRJw (ORCPT
+        id S1730458AbgEDRNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 13:13:15 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:41248 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730179AbgEDRNM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 13:09:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588612191;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y2Ym8NDnG20EEuUxysNXL8JMwYnPfogCsP7xXVdvk5g=;
-        b=Kp0OuAfxqhDo4ja3yzdqSkgDNYrWINWkAWsdKijZZ5ZP7SEXbh8wF9MwkAQCWM4l5qaxRg
-        lC2D8J72/KZ1KWqbcgUqd+a4lviXfm2Pfv0hcxNoCkvPgv7/7l24N85ouOVNy9z/jI0Nem
-        wL7IpWb3CY37dXiUZsrTShcqn3VT3LU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-269-mjl1BEsfNyWqzmj5I0X-3w-1; Mon, 04 May 2020 13:09:47 -0400
-X-MC-Unique: mjl1BEsfNyWqzmj5I0X-3w-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8AC9D107ACCA;
-        Mon,  4 May 2020 17:09:45 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-118-225.rdu2.redhat.com [10.10.118.225])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4460270527;
-        Mon,  4 May 2020 17:09:40 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [RFC PATCH 15/61] fscache: Remove fscache_attr_changed()
-From:   David Howells <dhowells@redhat.com>
-To:     Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Jeff Layton <jlayton@redhat.com>
-Cc:     dhowells@redhat.com, Matthew Wilcox <willy@infradead.org>,
+        Mon, 4 May 2020 13:13:12 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jVeeT-000475-56; Mon, 04 May 2020 11:13:09 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jVeeS-0007Cd-8B; Mon, 04 May 2020 11:13:09 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     linux-kernel@vger.kernel.org,
         Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 04 May 2020 18:09:39 +0100
-Message-ID: <158861217939.340223.10943744136296299477.stgit@warthog.procyon.org.uk>
-In-Reply-To: <158861203563.340223.7585359869938129395.stgit@warthog.procyon.org.uk>
-References: <158861203563.340223.7585359869938129395.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.21
+        =?utf-8?Q?St=C3=A9phane?= Graber <stgraber@ubuntu.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Serge Hallyn <serge@hallyn.com>, Jann Horn <jannh@google.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Aleksa Sarai <cyphar@cyphar.com>, linux-api@vger.kernel.org
+References: <20200504144141.3605533-1-christian.brauner@ubuntu.com>
+        <20200504144141.3605533-3-christian.brauner@ubuntu.com>
+        <87h7wvoefw.fsf@x220.int.ebiederm.org>
+        <20200504163907.jjgqe7qnnjpw4uwo@wittgenstein>
+Date:   Mon, 04 May 2020 12:09:46 -0500
+In-Reply-To: <20200504163907.jjgqe7qnnjpw4uwo@wittgenstein> (Christian
+        Brauner's message of "Mon, 4 May 2020 18:39:07 +0200")
+Message-ID: <87ftcfmxt1.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain
+X-XM-SPF: eid=1jVeeS-0007Cd-8B;;;mid=<87ftcfmxt1.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19bqNapwp8vFn0s3C2ELzsRQSZ1zw8pn/A=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa04.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4372]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa04 0; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: ; sa04 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Christian Brauner <christian.brauner@ubuntu.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 446 ms - load_scoreonly_sql: 0.11 (0.0%),
+        signal_user_changed: 14 (3.1%), b_tie_ro: 12 (2.6%), parse: 1.93
+        (0.4%), extract_message_metadata: 19 (4.2%), get_uri_detail_list: 2.6
+        (0.6%), tests_pri_-1000: 7 (1.6%), tests_pri_-950: 1.54 (0.3%),
+        tests_pri_-900: 1.25 (0.3%), tests_pri_-90: 71 (15.8%), check_bayes:
+        69 (15.5%), b_tokenize: 8 (1.9%), b_tok_get_all: 8 (1.8%),
+        b_comp_prob: 3.3 (0.7%), b_tok_touch_all: 46 (10.2%), b_finish: 0.90
+        (0.2%), tests_pri_0: 306 (68.6%), check_dkim_signature: 0.98 (0.2%),
+        check_dkim_adsp: 3.5 (0.8%), poll_dns_idle: 0.45 (0.1%), tests_pri_10:
+        2.6 (0.6%), tests_pri_500: 18 (4.0%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v3 2/3] nsproxy: attach to namespaces via pidfds
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove fscache_attr_changed() as it's unused.
+Christian Brauner <christian.brauner@ubuntu.com> writes:
 
-Signed-off-by: David Howells <dhowells@redhat.com>
----
+> On Mon, May 04, 2020 at 11:25:07AM -0500, Eric W. Biederman wrote:
+>> 
+>> I am not thrilled about treating nstype as a flags fields when it is not
+>> currently.  It was my hope when I designed the interface that not
+>> treating nstype as a flags field would save us from the problem of bits
+>> running out.
+>
+> Hm, I researched the setns() syscall history before that and I didn't
+> see that reasoning anywhere. The "nstype" arg was originally advertised
+> on the list as "having a flags field is useful in general".
 
- fs/cachefiles/interface.c     |   13 ++---
- fs/fscache/Makefile           |    3 -
- fs/fscache/page.c             |   98 -----------------------------------------
- include/linux/fscache-cache.h |    4 --
- include/linux/fscache.h       |   21 ---------
- 5 files changed, 6 insertions(+), 133 deletions(-)
- delete mode 100644 fs/fscache/page.c
+Take a look at the code.  At the end of the day nstype is not treated at
+all like a flags field.
 
-diff --git a/fs/cachefiles/interface.c b/fs/cachefiles/interface.c
-index a3837ed090a8..81322e3acadd 100644
---- a/fs/cachefiles/interface.c
-+++ b/fs/cachefiles/interface.c
-@@ -10,7 +10,7 @@
- #include <linux/xattr.h>
- #include "internal.h"
- 
--static int cachefiles_attr_changed(struct fscache_object *_object);
-+static int cachefiles_attr_changed(struct cachefiles_object *object);
- 
- /*
-  * allocate an object record for a cookie lookup and prepare the lookup data
-@@ -110,7 +110,7 @@ static int cachefiles_lookup_object(struct fscache_object *_object)
- 	/* polish off by setting the attributes of non-index files */
- 	if (ret == 0 &&
- 	    object->fscache.cookie->type != FSCACHE_COOKIE_TYPE_INDEX)
--		cachefiles_attr_changed(&object->fscache);
-+		cachefiles_attr_changed(object);
- 
- 	if (ret < 0 && ret != -ETIMEDOUT) {
- 		if (ret != -ENOBUFS)
-@@ -324,9 +324,8 @@ static void cachefiles_sync_cache(struct fscache_cache *_cache)
-  * notification the attributes on an object have changed
-  * - called with reads/writes excluded by FS-Cache
-  */
--static int cachefiles_attr_changed(struct fscache_object *_object)
-+static int cachefiles_attr_changed(struct cachefiles_object *object)
- {
--	struct cachefiles_object *object;
- 	struct cachefiles_cache *cache;
- 	const struct cred *saved_cred;
- 	struct iattr newattrs;
-@@ -334,12 +333,11 @@ static int cachefiles_attr_changed(struct fscache_object *_object)
- 	loff_t oi_size;
- 	int ret;
- 
--	ni_size = _object->cookie->object_size;
-+	ni_size = object->fscache.cookie->object_size;
- 
- 	_enter("{OBJ%x},[%llu]",
--	       _object->debug_id, (unsigned long long) ni_size);
-+	       object->fscache.debug_id, (unsigned long long) ni_size);
- 
--	object = container_of(_object, struct cachefiles_object, fscache);
- 	cache = container_of(object->fscache.cache,
- 			     struct cachefiles_cache, cache);
- 
-@@ -442,5 +440,4 @@ const struct fscache_cache_ops cachefiles_cache_ops = {
- 	.drop_object		= cachefiles_drop_object,
- 	.put_object		= cachefiles_put_object,
- 	.sync_cache		= cachefiles_sync_cache,
--	.attr_changed		= cachefiles_attr_changed,
- };
-diff --git a/fs/fscache/Makefile b/fs/fscache/Makefile
-index 79e08e05ef84..565a3441d31d 100644
---- a/fs/fscache/Makefile
-+++ b/fs/fscache/Makefile
-@@ -10,8 +10,7 @@ fscache-y := \
- 	main.o \
- 	netfs.o \
- 	object.o \
--	operation.o \
--	page.o
-+	operation.o
- 
- fscache-$(CONFIG_PROC_FS) += proc.o
- fscache-$(CONFIG_FSCACHE_STATS) += stats.o
-diff --git a/fs/fscache/page.c b/fs/fscache/page.c
-deleted file mode 100644
-index 73636e9d652d..000000000000
---- a/fs/fscache/page.c
-+++ /dev/null
-@@ -1,98 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-or-later
--/* Cache page management and data I/O routines
-- *
-- * Copyright (C) 2004-2008 Red Hat, Inc. All Rights Reserved.
-- * Written by David Howells (dhowells@redhat.com)
-- */
--
--#define FSCACHE_DEBUG_LEVEL PAGE
--#include <linux/module.h>
--#include <linux/fscache-cache.h>
--#include <linux/buffer_head.h>
--#include <linux/pagevec.h>
--#include <linux/slab.h>
--#include "internal.h"
--
--/*
-- * actually apply the changed attributes to a cache object
-- */
--static void fscache_attr_changed_op(struct fscache_operation *op)
--{
--	struct fscache_object *object = op->object;
--	int ret;
--
--	_enter("{OBJ%x OP%x}", object->debug_id, op->debug_id);
--
--	fscache_stat(&fscache_n_attr_changed_calls);
--
--	if (fscache_object_is_active(object)) {
--		fscache_stat(&fscache_n_cop_attr_changed);
--		ret = object->cache->ops->attr_changed(object);
--		fscache_stat_d(&fscache_n_cop_attr_changed);
--		if (ret < 0)
--			fscache_abort_object(object);
--		fscache_op_complete(op, ret < 0);
--	} else {
--		fscache_op_complete(op, true);
--	}
--
--	_leave("");
--}
--
--/*
-- * notification that the attributes on an object have changed
-- */
--int __fscache_attr_changed(struct fscache_cookie *cookie)
--{
--	struct fscache_operation *op;
--	struct fscache_object *object;
--	bool wake_cookie = false;
--
--	_enter("%p", cookie);
--
--	ASSERTCMP(cookie->type, !=, FSCACHE_COOKIE_TYPE_INDEX);
--
--	fscache_stat(&fscache_n_attr_changed);
--
--	op = kzalloc(sizeof(*op), GFP_KERNEL);
--	if (!op) {
--		fscache_stat(&fscache_n_attr_changed_nomem);
--		_leave(" = -ENOMEM");
--		return -ENOMEM;
--	}
--
--	fscache_operation_init(cookie, op, fscache_attr_changed_op, NULL, NULL);
--	trace_fscache_page_op(cookie, NULL, op, fscache_page_op_attr_changed);
--	op->flags = FSCACHE_OP_ASYNC |
--		(1 << FSCACHE_OP_EXCLUSIVE) |
--		(1 << FSCACHE_OP_UNUSE_COOKIE);
--
--	spin_lock(&cookie->lock);
--
--	if (!fscache_cookie_enabled(cookie) ||
--	    hlist_empty(&cookie->backing_objects))
--		goto nobufs;
--	object = hlist_entry(cookie->backing_objects.first,
--			     struct fscache_object, cookie_link);
--
--	__fscache_use_cookie(cookie);
--	if (fscache_submit_exclusive_op(object, op) < 0)
--		goto nobufs_dec;
--	spin_unlock(&cookie->lock);
--	fscache_stat(&fscache_n_attr_changed_ok);
--	fscache_put_operation(op);
--	_leave(" = 0");
--	return 0;
--
--nobufs_dec:
--	wake_cookie = __fscache_unuse_cookie(cookie);
--nobufs:
--	spin_unlock(&cookie->lock);
--	fscache_put_operation(op);
--	if (wake_cookie)
--		__fscache_wake_unused_cookie(cookie);
--	fscache_stat(&fscache_n_attr_changed_nobufs);
--	_leave(" = %d", -ENOBUFS);
--	return -ENOBUFS;
--}
--EXPORT_SYMBOL(__fscache_attr_changed);
-diff --git a/include/linux/fscache-cache.h b/include/linux/fscache-cache.h
-index 3a78e41d2338..627e1ab7123d 100644
---- a/include/linux/fscache-cache.h
-+++ b/include/linux/fscache-cache.h
-@@ -184,10 +184,6 @@ struct fscache_cache_ops {
- 	/* sync a cache */
- 	void (*sync_cache)(struct fscache_cache *cache);
- 
--	/* notification that the attributes of a non-index object (such as
--	 * i_size) have changed */
--	int (*attr_changed)(struct fscache_object *object);
--
- 	/* reserve space for an object's data and associated metadata */
- 	int (*reserve_space)(struct fscache_object *object, loff_t i_size);
- };
-diff --git a/include/linux/fscache.h b/include/linux/fscache.h
-index 82e871a3dc6a..5eb2ac5f2bf1 100644
---- a/include/linux/fscache.h
-+++ b/include/linux/fscache.h
-@@ -140,7 +140,6 @@ extern struct fscache_cookie *__fscache_acquire_cookie(
- 	loff_t, bool);
- extern void __fscache_relinquish_cookie(struct fscache_cookie *, const void *, bool);
- extern void __fscache_update_cookie(struct fscache_cookie *, const void *);
--extern int __fscache_attr_changed(struct fscache_cookie *);
- extern void __fscache_invalidate(struct fscache_cookie *);
- extern void __fscache_wait_on_invalidate(struct fscache_cookie *);
- extern void __fscache_disable_cookie(struct fscache_cookie *, const void *, bool);
-@@ -337,26 +336,6 @@ void fscache_unpin_cookie(struct fscache_cookie *cookie)
- {
- }
- 
--/**
-- * fscache_attr_changed - Notify cache that an object's attributes changed
-- * @cookie: The cookie representing the cache object
-- *
-- * Send a notification to the cache indicating that an object's attributes have
-- * changed.  This includes the data size.  These attributes will be obtained
-- * through the get_attr() cookie definition op.
-- *
-- * See Documentation/filesystems/caching/netfs-api.txt for a complete
-- * description.
-- */
--static inline
--int fscache_attr_changed(struct fscache_cookie *cookie)
--{
--	if (fscache_cookie_valid(cookie) && fscache_cookie_enabled(cookie))
--		return __fscache_attr_changed(cookie);
--	else
--		return -ENOBUFS;
--}
--
- /**
-  * fscache_invalidate - Notify cache that an object needs invalidation
-  * @cookie: The cookie representing the cache object
+It isn't a very important point.  And it was certainly easier to use
+the existing bits for essentially their existing meanings.  But it was
+certainly something I was thinking at the time.
 
+I think I left it as we can see either way, depending on how things
+evolve.
+
+I can imagine a use for a nstype being a single namespace from a pidfd.
+Do you have any actual usecases for setting some but not all of the
+namespaces from a pidfd?  If we don't have a compelling reason
+I would like to kick that can down the road a ways farther.
+
+I am also remembering that that setns freed the low 8 bits.  Which gave
+some freedom beyond clone.
+
+>> That aside.  It would be very good if the default version of setting
+>> everything from a pidfd would set the root directory from the process it
+>> is copying everything else from.
+>
+> I'm not sure I follow completely. If you specify CLONE_NEWNS then we do
+> set the root directory with set_fs_root() in commit_nsset(). Or are you
+> saying we should always do that independent of whether or not
+> CLONE_NEWNS is specified? And if so could you explain why we'd want
+> that? I'm sure I'm missing something!
+
+I am suggesting that when we do:
+
+"setns(pidfd, 0)" or "setns(pidfd, SETNS_PIDFD)"
+
+That the result is not just the namespaces changing but also the root
+directory changing to the pids root directory.  Something where the
+whole is greater than the parts.
+
+Eric
 
