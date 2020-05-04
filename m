@@ -2,123 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D2771C4488
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:08:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB3BC1C448E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:08:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729770AbgEDSIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:08:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732231AbgEDSIH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:08:07 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 139EBC061A0E
-        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 11:08:07 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id i14so444788qka.10
-        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 11:08:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8lqlcqzLSXs6kQK5WzXKsA6SXfOJlZ0T+LEde0fpTBU=;
-        b=gnaxHkTW0xp32Dnjn0U3/jhSQEoLB3QVuJZRpwpZQqGjQpILV2SWkM0bQgd73dRrsh
-         V/J7zKNRB3rG2HTqPTTN47hpUnZBw81Uv14JodvK3TSNjF1447WH41WQOwua+88IdE35
-         RQ58FtnvDfzr+hliOFTTwbzGh4QByFIFewB78=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8lqlcqzLSXs6kQK5WzXKsA6SXfOJlZ0T+LEde0fpTBU=;
-        b=abGv1Cix+6TUgAiePRi396lePJTa54C4OixEJ1ce1Q0SXrPaHMg+XjBDiamFlI5ubt
-         beR+BAeHIpJvSeeX0Qc06zQyo1Mf98gqwyMlTIofz4iD4W+QqYWag6PGs03hUADy5pvP
-         IY/APzsupiwhYiZWTPrHkw8MlF5tfFs3kLLoEIbHvQeC1jJarxRurfQ5MxL6bIPz6iV4
-         zIoiGl0IMFJ1qM6MiPfNRP40m/rpUWLCada5MA5qc7M4xrDP31LnyaGZ6XHkrT//fCmi
-         i955xRUTY8AHQ3NAUDTTsIeBrfuL17t4ISqiLHVliYqmnxyRAdKZljvReyUGPg7l33LS
-         y6Sg==
-X-Gm-Message-State: AGi0PuZKgQYRqeyaNO0JZsFsaz+IvQn51z65CIaAcH/jaD05sFja/cew
-        VzYqRyxTbtbMGaWF7po28ygAQQ==
-X-Google-Smtp-Source: APiQypI5eZszvopLJuDAZRuwCkGzdKXSDC/oOtdUeAQZtCszD77WvOxRYkXISoFQHLqf83/FhKwcrg==
-X-Received: by 2002:a37:809:: with SMTP id 9mr468583qki.93.1588615686148;
-        Mon, 04 May 2020 11:08:06 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id g16sm8606827qkk.122.2020.05.04.11.08.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 May 2020 11:08:05 -0700 (PDT)
-Date:   Mon, 4 May 2020 14:08:05 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Matthew Wilcox <willy@infradead.org>,
-        RCU <rcu@vger.kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 09/24] rcu/tree: cache specified number of objects
-Message-ID: <20200504180805.GA172409@google.com>
-References: <20200428205903.61704-1-urezki@gmail.com>
- <20200428205903.61704-10-urezki@gmail.com>
- <20200501212749.GD7560@paulmck-ThinkPad-P72>
- <20200504124323.GA17577@pc636>
- <20200504152437.GK2869@paulmck-ThinkPad-P72>
- <20200504174822.GA20446@pc636>
+        id S1732245AbgEDSI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:08:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39846 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730356AbgEDSIY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 14:08:24 -0400
+Received: from localhost (mobile-166-175-184-168.mycingular.net [166.175.184.168])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DAB732078C;
+        Mon,  4 May 2020 18:08:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588615704;
+        bh=3kE93KOqN86Y89UIWlogoqpE00pDfbHOWdaJi8fWZKE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=nMuIlsiFaHEVz6n29r8yQ6uL9CyGvPj2t2j6luK2GBvYs7juilzEGWsz9/eW7WvSh
+         FLdRo5SkA9Csz+yzbhj4a09nDXLcOPqQY9NF9jxFiSUxEpcn55joPRCweg7/UQhKIi
+         +8BPpmW7AH9zWd1azT8tNUrw+sXCAb5g0V5z0vPc=
+Date:   Mon, 4 May 2020 13:08:22 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Aman Sharma <amanharitsh123@gmail.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH v2 1/2] driver core: platform: Clarify that IRQ 0 is
+ invalid
+Message-ID: <20200504180822.GA282766@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200504174822.GA20446@pc636>
+In-Reply-To: <20200502061537.GA2527384@kroah.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 04, 2020 at 07:48:22PM +0200, Uladzislau Rezki wrote:
-> On Mon, May 04, 2020 at 08:24:37AM -0700, Paul E. McKenney wrote:
-[..] 
-> > > > Presumably the list can also be accessed without holding this lock,
-> > > > because otherwise we shouldn't need llist...
-> > > > 
-> > > Hm... We increase the number of elements in cache, therefore it is not
-> > > lockless. From the other hand i used llist_head to maintain the cache
-> > > because it is single linked list, we do not need "*prev" link. Also
-> > > we do not need to init the list.
-> > > 
-> > > But i can change it to list_head. Please let me know if i need :)
+On Sat, May 02, 2020 at 08:15:37AM +0200, Greg Kroah-Hartman wrote:
+> On Fri, May 01, 2020 at 05:40:41PM -0500, Bjorn Helgaas wrote:
+> > From: Bjorn Helgaas <bhelgaas@google.com>
 > > 
-> > Hmmm...  Maybe it is time for a non-atomic singly linked list?  In the RCU
-> > callback processing, the operations were open-coded, but they have been
-> > pushed into include/linux/rcu_segcblist.h and kernel/rcu/rcu_segcblist.*.
+> > These interfaces return a negative error number or an IRQ:
 > > 
-> > Maybe some non-atomic/protected/whatever macros in the llist.h file?
-> > Or maybe just open-code the singly linked list?  (Probably not the
-> > best choice, though.)  Add comments stating that the atomic properties
-> > of the llist functions aren't neded?  Something else?
-> >
-> In order to keep it simple i can replace llist_head by the list_head?
-
-Just to clarify for me, what is the disadvantage of using llist here?
-
-Since we don't care about traversing backwards, isn't it better to use llist
-for this usecase?
-
-I think Vlad is using locking as we're also tracking the size of the llist to
-know when to free pages. This tracking could suffer from the lost-update
-problem without any locking, 2 lockless llist_add happened simulatenously.
-
-Also if list_head is used, it will take more space and still use locking.
-
-Thoughts?
-
-thanks,
-
- - Joel
-
+> >   platform_get_irq()
+> >   platform_get_irq_optional()
+> >   platform_get_irq_byname()
+> >   platform_get_irq_byname_optional()
 > > 
-> > The comments would be a good start.  Just to take pity on people seeing
-> > the potential for concurrency and wondering how the concurrent accesses
-> > actually happen.  ;-)
+> > The function comments suggest checking for error like this:
 > > 
-> Sounds like you are kidding me :) 
+> >   irq = platform_get_irq(...);
+> >   if (irq < 0)
+> >     return irq;
+> > 
+> > which is what most callers (~900 of 1400) do, so it's implicit that IRQ 0
+> > is invalid.  But some callers check for "irq <= 0", and it's not obvious
+> > from the source that we never return an IRQ 0.
+> > 
+> > Make this more explicit by updating the comments to say that an IRQ number
+> > is always non-zero and adding a WARN() if we ever do return zero.  If we do
+> > return IRQ 0, it likely indicates a bug in the arch-specific parts of
+> > platform_get_irq().
 > 
-> --
-> Vlad Rezki
+> I worry about adding WARN() as there are systems that do panic_on_warn()
+> and syzbot trips over this as well.  I don't think that for this issue
+> it would be a problem, but what really is this warning about that
+> someone could do anything with?
+> 
+> Other than that minor thing, this looks good to me, thanks for finally
+> clearing this up.
+
+What I'm concerned about is an arch that returns 0.  Most drivers
+don't check for 0 so they'll just try to use it, and things will fail
+in some obscure way.  My assumption is that if there really is no IRQ,
+we should return -ENOENT or similar instead of 0.
+
+I could be convinced that it's not worth warning about at all, or we
+could do something like the following:
+
+diff --git a/drivers/base/platform.c b/drivers/base/platform.c
+index 084cf1d23d3f..4afa5875e14d 100644
+--- a/drivers/base/platform.c
++++ b/drivers/base/platform.c
+@@ -220,7 +220,11 @@ int platform_get_irq_optional(struct platform_device *dev, unsigned int num)
+ 	ret = -ENXIO;
+ #endif
+ out:
+-	WARN(ret == 0, "0 is an invalid IRQ number\n");
++	/* Returning zero here is likely a bug in the arch IRQ code */
++	if (ret == 0) {
++		pr_warn("0 is an invalid IRQ number\n");
++		dump_stack();
++	}
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(platform_get_irq_optional);
+@@ -312,7 +316,11 @@ static int __platform_get_irq_byname(struct platform_device *dev,
+ 
+ 	r = platform_get_resource_byname(dev, IORESOURCE_IRQ, name);
+ 	if (r) {
+-		WARN(r->start == 0, "0 is an invalid IRQ number\n");
++		/* Returning zero here is likely a bug in the arch IRQ code */
++		if (r->start == 0) {
++			pr_warn("0 is an invalid IRQ number\n");
++			dump_stack();
++		}
+ 		return r->start;
+ 	}
+ 
