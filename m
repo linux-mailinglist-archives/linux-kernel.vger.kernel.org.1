@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8D8A1C43B2
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:01:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12E121C44D4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:10:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731053AbgEDSAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:00:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55592 "EHLO mail.kernel.org"
+        id S1732335AbgEDSKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:10:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731030AbgEDSAl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:00:41 -0400
+        id S1731031AbgEDSFT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 14:05:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A69E5206B8;
-        Mon,  4 May 2020 18:00:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 76248206B8;
+        Mon,  4 May 2020 18:05:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588615241;
-        bh=wRkYzBLk0vUVQRuUS+lFzvR6kc1EqVlOI6UkZWW2SN8=;
+        s=default; t=1588615518;
+        bh=F12sOzFhwshjn4Oeh291QGzCcqyC0yJAeCyNKWEJfK4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tNrjxHt3aOkSS6CqgXI4nyIAXhESpGjKI9IPNl4/RxV5lE2IwQiTCCArqXiWlZ6Cp
-         7Fh2kJ76sxKG8XXszIFm/LeAxQdzVU+dggzojBMPzpav4xuGiwgQXqtiqeEhPD79UW
-         aF4btDvkryIHPDvV8wNsEFz0nJGN0Y1vWUzvZWMA=
+        b=xBf/LGTy50kQ8ERbnC/9cnLUdVOhDYsAA8aYSfmnwOcaK79z06a/H3wOsXfAvAIIC
+         EEXC6CMHyxc3UdTxh1jpi815ccW6M6Oob/Bmo1byy4z9sr4MDRVLfIzUpvTxV6RL4Q
+         OhLdtrvgmtORrhP7MV3o6rSsB6OWDvIkE8TUb6bE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
-        Gerd Hoffmann <kraxel@redhat.com>
-Subject: [PATCH 4.14 03/26] drm/qxl: qxl_release leak in qxl_draw_dirty_fb()
+        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 5.6 14/73] btrfs: fix partial loss of prealloc extent past i_size after fsync
 Date:   Mon,  4 May 2020 19:57:17 +0200
-Message-Id: <20200504165443.279359748@linuxfoundation.org>
+Message-Id: <20200504165504.577657162@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200504165442.494398840@linuxfoundation.org>
-References: <20200504165442.494398840@linuxfoundation.org>
+In-Reply-To: <20200504165501.781878940@linuxfoundation.org>
+References: <20200504165501.781878940@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +43,139 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasily Averin <vvs@virtuozzo.com>
+From: Filipe Manana <fdmanana@suse.com>
 
-commit 85e9b88af1e6164f19ec71381efd5e2bcfc17620 upstream.
+commit f135cea30de5f74d5bfb5116682073841fb4af8f upstream.
 
-ret should be changed to release allocated struct qxl_release
+When we have an inode with a prealloc extent that starts at an offset
+lower than the i_size and there is another prealloc extent that starts at
+an offset beyond i_size, we can end up losing part of the first prealloc
+extent (the part that starts at i_size) and have an implicit hole if we
+fsync the file and then have a power failure.
 
-Cc: stable@vger.kernel.org
-Fixes: 8002db6336dd ("qxl: convert qxl driver to proper use for reservations")
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-Link: http://patchwork.freedesktop.org/patch/msgid/22cfd55f-07c8-95d0-a2f7-191b7153c3d4@virtuozzo.com
-Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
+Consider the following example with comments explaining how and why it
+happens.
+
+  $ mkfs.btrfs -f /dev/sdb
+  $ mount /dev/sdb /mnt
+
+  # Create our test file with 2 consecutive prealloc extents, each with a
+  # size of 128Kb, and covering the range from 0 to 256Kb, with a file
+  # size of 0.
+  $ xfs_io -f -c "falloc -k 0 128K" /mnt/foo
+  $ xfs_io -c "falloc -k 128K 128K" /mnt/foo
+
+  # Fsync the file to record both extents in the log tree.
+  $ xfs_io -c "fsync" /mnt/foo
+
+  # Now do a redudant extent allocation for the range from 0 to 64Kb.
+  # This will merely increase the file size from 0 to 64Kb. Instead we
+  # could also do a truncate to set the file size to 64Kb.
+  $ xfs_io -c "falloc 0 64K" /mnt/foo
+
+  # Fsync the file, so we update the inode item in the log tree with the
+  # new file size (64Kb). This also ends up setting the number of bytes
+  # for the first prealloc extent to 64Kb. This is done by the truncation
+  # at btrfs_log_prealloc_extents().
+  # This means that if a power failure happens after this, a write into
+  # the file range 64Kb to 128Kb will not use the prealloc extent and
+  # will result in allocation of a new extent.
+  $ xfs_io -c "fsync" /mnt/foo
+
+  # Now set the file size to 256K with a truncate and then fsync the file.
+  # Since no changes happened to the extents, the fsync only updates the
+  # i_size in the inode item at the log tree. This results in an implicit
+  # hole for the file range from 64Kb to 128Kb, something which fsck will
+  # complain when not using the NO_HOLES feature if we replay the log
+  # after a power failure.
+  $ xfs_io -c "truncate 256K" -c "fsync" /mnt/foo
+
+So instead of always truncating the log to the inode's current i_size at
+btrfs_log_prealloc_extents(), check first if there's a prealloc extent
+that starts at an offset lower than the i_size and with a length that
+crosses the i_size - if there is one, just make sure we truncate to a
+size that corresponds to the end offset of that prealloc extent, so
+that we don't lose the part of that extent that starts at i_size if a
+power failure happens.
+
+A test case for fstests follows soon.
+
+Fixes: 31d11b83b96f ("Btrfs: fix duplicate extents after fsync of file with prealloc extents")
+CC: stable@vger.kernel.org # 4.14+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/qxl/qxl_draw.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ fs/btrfs/tree-log.c |   43 ++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 40 insertions(+), 3 deletions(-)
 
---- a/drivers/gpu/drm/qxl/qxl_draw.c
-+++ b/drivers/gpu/drm/qxl/qxl_draw.c
-@@ -348,9 +348,10 @@ void qxl_draw_dirty_fb(struct qxl_device
- 		goto out_release_backoff;
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -4211,6 +4211,9 @@ static int btrfs_log_prealloc_extents(st
+ 	const u64 ino = btrfs_ino(inode);
+ 	struct btrfs_path *dst_path = NULL;
+ 	bool dropped_extents = false;
++	u64 truncate_offset = i_size;
++	struct extent_buffer *leaf;
++	int slot;
+ 	int ins_nr = 0;
+ 	int start_slot;
+ 	int ret;
+@@ -4225,9 +4228,43 @@ static int btrfs_log_prealloc_extents(st
+ 	if (ret < 0)
+ 		goto out;
  
- 	rects = drawable_set_clipping(qdev, num_clips, clips_bo);
--	if (!rects)
-+	if (!rects) {
-+		ret = -EINVAL;
- 		goto out_release_backoff;
--
++	/*
++	 * We must check if there is a prealloc extent that starts before the
++	 * i_size and crosses the i_size boundary. This is to ensure later we
++	 * truncate down to the end of that extent and not to the i_size, as
++	 * otherwise we end up losing part of the prealloc extent after a log
++	 * replay and with an implicit hole if there is another prealloc extent
++	 * that starts at an offset beyond i_size.
++	 */
++	ret = btrfs_previous_item(root, path, ino, BTRFS_EXTENT_DATA_KEY);
++	if (ret < 0)
++		goto out;
++
++	if (ret == 0) {
++		struct btrfs_file_extent_item *ei;
++
++		leaf = path->nodes[0];
++		slot = path->slots[0];
++		ei = btrfs_item_ptr(leaf, slot, struct btrfs_file_extent_item);
++
++		if (btrfs_file_extent_type(leaf, ei) ==
++		    BTRFS_FILE_EXTENT_PREALLOC) {
++			u64 extent_end;
++
++			btrfs_item_key_to_cpu(leaf, &key, slot);
++			extent_end = key.offset +
++				btrfs_file_extent_num_bytes(leaf, ei);
++
++			if (extent_end > i_size)
++				truncate_offset = extent_end;
++		}
++	} else {
++		ret = 0;
 +	}
- 	drawable = (struct qxl_drawable *)qxl_release_map(qdev, release);
++
+ 	while (true) {
+-		struct extent_buffer *leaf = path->nodes[0];
+-		int slot = path->slots[0];
++		leaf = path->nodes[0];
++		slot = path->slots[0];
  
- 	drawable->clip.type = SPICE_CLIP_TYPE_RECTS;
+ 		if (slot >= btrfs_header_nritems(leaf)) {
+ 			if (ins_nr > 0) {
+@@ -4265,7 +4302,7 @@ static int btrfs_log_prealloc_extents(st
+ 				ret = btrfs_truncate_inode_items(trans,
+ 							 root->log_root,
+ 							 &inode->vfs_inode,
+-							 i_size,
++							 truncate_offset,
+ 							 BTRFS_EXTENT_DATA_KEY);
+ 			} while (ret == -EAGAIN);
+ 			if (ret)
 
 
