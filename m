@@ -2,98 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5D6E1C483B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 22:28:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67D041C483F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 22:29:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727095AbgEDU2F convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 May 2020 16:28:05 -0400
-Received: from mga03.intel.com ([134.134.136.65]:60139 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726334AbgEDU2F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 16:28:05 -0400
-IronPort-SDR: tEXcMrxJOw4out8B+zdAY1kEJSsAr0iepczBan6sKrt+4ctBGQo93G1Z9oi/iAobZ1z+pROtUg
- GNKfkuJQh/9Q==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2020 13:28:04 -0700
-IronPort-SDR: Tq/jZWgJ6AUwkRsjaMqbQWY2fWdseKH72RaHEPvpnJo0rzelICaR5nI2gOywHD4HNMNdXASnkw
- 1zC1NwnCC7dQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,353,1583222400"; 
-   d="scan'208";a="249260889"
-Received: from orsmsx108.amr.corp.intel.com ([10.22.240.6])
-  by fmsmga007.fm.intel.com with ESMTP; 04 May 2020 13:28:03 -0700
-Received: from orsmsx112.amr.corp.intel.com ([169.254.3.248]) by
- ORSMSX108.amr.corp.intel.com ([169.254.2.68]) with mapi id 14.03.0439.000;
- Mon, 4 May 2020 13:28:03 -0700
-From:   "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>
-To:     David Miller <davem@davemloft.net>,
-        "kai.heng.feng@canonical.com" <kai.heng.feng@canonical.com>
-CC:     "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] igb: Report speed and duplex as unknown when device is
- runtime suspended
-Thread-Topic: [PATCH] igb: Report speed and duplex as unknown when device is
- runtime suspended
-Thread-Index: AQHWIjoCs1YMgvTPr0+YmRp3SYYI9aiYsmYA//+t7dA=
-Date:   Mon, 4 May 2020 20:28:03 +0000
-Message-ID: <61CC2BC414934749BD9F5BF3D5D9404498687DD5@ORSMSX112.amr.corp.intel.com>
-References: <20200504173218.1724-1-kai.heng.feng@canonical.com>
- <20200504.112056.1400711844642835898.davem@davemloft.net>
-In-Reply-To: <20200504.112056.1400711844642835898.davem@davemloft.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [10.22.254.138]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1727802AbgEDU3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 16:29:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726334AbgEDU3w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 16:29:52 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69812C061A0F
+        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 13:29:52 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id v63so6144800pfb.10
+        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 13:29:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Q6DSmsBJKt2DQfLRYsNho1OzzZKZZ7TrpLhucHJGeDU=;
+        b=CtUHuD2HM6xhWKDF3wYinVyJ5yfU8h3iMv+4Jgb/2SnYJaXO580t11nnYxa+9FlNDK
+         U6TGMzQwU+V7RChMHxwXZtyt+SewvPLvCCLh1uwla15xqrRU0z1ghpA1H7ZH1pJ46AdY
+         SEXFhpaX8gu/FTKTebFQeFBwGadqxAUhyR9ME=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Q6DSmsBJKt2DQfLRYsNho1OzzZKZZ7TrpLhucHJGeDU=;
+        b=K1ygx/FYBl1LgHYUJ7NAkOfu/KpVL7zsO9a4Js6mki24MMKPrLWbg3GjKpaT5Gcj13
+         7kfpPkUW6gB96ImnkO5kd6wpeXARYwlSU438fSrQgOZo6/h1AEtA4aGe86NlbZX73TWy
+         N2rQPDWNRGtm+5S6jZMypZoxPKL989qbQvhfbKal+beQHA5ibsvirYJshK0Qzv1wY+AS
+         9m7LvPfoSCg7TeTziSOmecOOXEoj7iyUuV/EY4vyQfZmFkwcxjNZsmkXeBmV4XuRWNu0
+         JXxmMMD5/L+4BaI18Whj9mn5n/XMYCPEmwfEYU6Rt0KfnVHnsIkMftxaZDDyYPsJQPrI
+         onFw==
+X-Gm-Message-State: AGi0PubuI0gx8or8oFoeB1cQNQzpbaPcmFyFDLQTqBic9B7bSAVEQCs1
+        J8gnqlrzfJz2ywtikvGCxjBnm2nOg8j9JA==
+X-Google-Smtp-Source: APiQypJFsSvliJI9R20jNekDhiFtU17acQVf014rcrlhyg8R1X6m8Sc86MkUoQNu9jpjNd5H+2HQbA==
+X-Received: by 2002:a63:a012:: with SMTP id r18mr30263pge.352.1588624191724;
+        Mon, 04 May 2020 13:29:51 -0700 (PDT)
+Received: from mathewk1.lan ([161.97.192.125])
+        by smtp.gmail.com with ESMTPSA id z23sm9511737pfr.136.2020.05.04.13.29.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 May 2020 13:29:51 -0700 (PDT)
+From:   Mathew King <mathewk@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Mathew King <mathewk@chromium.org>,
+        Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org
+Subject: [PATCH v2 0/4] Cleanup power_supply_sysfs.c
+Date:   Mon,  4 May 2020 14:29:26 -0600
+Message-Id: <20200504202930.228453-1-mathewk@chromium.org>
+X-Mailer: git-send-email 2.26.2.526.g744177e7f7-goog
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: David Miller <davem@davemloft.net>
-> Sent: Monday, May 4, 2020 11:21
-> To: kai.heng.feng@canonical.com
-> Cc: Kirsher, Jeffrey T <jeffrey.t.kirsher@intel.com>; intel-wired-
-> lan@lists.osuosl.org; netdev@vger.kernel.org; linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH] igb: Report speed and duplex as unknown when device is
-> runtime suspended
-> 
-> From: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> Date: Tue,  5 May 2020 01:32:18 +0800
-> 
-> > igb device gets runtime suspended when there's no link partner. We
-> > can't get correct speed under that state:
-> > $ cat /sys/class/net/enp3s0/speed
-> > 1000
-> >
-> > In addition to that, an error can also be spotted in dmesg:
-> > [  385.991957] igb 0000:03:00.0 enp3s0: PCIe link lost
-> >
-> > Since device can only be runtime suspended when there's no link
-> > partner, we can directly report the speed and duplex as unknown.
-> >
-> > The more generic approach will be wrap get_link_ksettings() with
-> > begin() and complete() callbacks. However, for this particular issue,
-> > begin() calls igb_runtime_resume() , which tries to rtnl_lock() while
-> > the lock is already hold by upper ethtool layer.
-> >
-> > So let's take this approach until the igb_runtime_resume() no longer
-> > needs to hold rtnl_lock.
-> >
-> > Suggested-by: Alexander Duyck <alexander.duyck@gmail.com>
-> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> 
-> I'm assuming I will get this from upstream via Jeff K.
-[Kirsher, Jeffrey T] 
+A few various patches to cleanup the power_supply sysfs implementation.
+---
+v2: - Don't create attributes for unlisted properties
+    - Use a char array for lower case name so no allocations neeed in
+      init
+    - Fix patch #2 does not compile because of change meant for patch #3
 
-Yep, I will be picking this up once Alex's last questions/concerns are addressed.
+Mathew King (4):
+  power_supply: Cleanup power supply sysfs attribute list
+  power_supply: Use designated initializer for property text arrays
+  power_supply: Add a macro that maps enum properties to text values
+  power_supply: Add power supply type property to uevent env
+
+ drivers/power/supply/power_supply_sysfs.c | 471 ++++++++++++----------
+ 1 file changed, 255 insertions(+), 216 deletions(-)
+
+-- 
+2.26.2.526.g744177e7f7-goog
+
