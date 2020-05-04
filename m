@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7C581C4427
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:05:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 816011C451D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:12:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731713AbgEDSEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:04:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34230 "EHLO mail.kernel.org"
+        id S1732289AbgEDSMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:12:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731683AbgEDSEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:04:42 -0400
+        id S1730828AbgEDSCa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 14:02:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3BC8A2087E;
-        Mon,  4 May 2020 18:04:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D9B042073E;
+        Mon,  4 May 2020 18:02:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588615481;
-        bh=Ics9sg11UVNE6IzrEy6Dxtn4/1sV+IZozK9ffGF+YH8=;
+        s=default; t=1588615350;
+        bh=p2lFW4EGbbv2BXqjl+0zAIJRmb6LhRC1mQBNqnySme8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EI8psk3CJoc9CkdRgJLoOr1KWf066z308ZT1EgFX/GNbgfbipmYA4ySQKPe27AZUt
-         RP4XbiDDYH3CA3RgQMIkO0Ga4yDq+pp3ujFNnrQ9DbhCmN/rju5mx6laK/zKTjD51P
-         lyVw5kWXR9Fm/zN/6uGX4zrK+ibDrYhu0Hckgd9s=
+        b=YSfU3DU7UjLo0og3FYFxcHVbK3iJ57zarWUdNdORXo4KbJh3RfbUYfFeD1LlBVF+p
+         TzeFkBG3kUtILzB3iUzbuecWG6zTLtnfJNTzF4oJ8qNaXpdPAUAfPNjwl1ifWWRKKU
+         PNGhd2gnz7bna8hUr3e08eVM3O9Jyh4usQcRvwKc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dexuan Cui <decui@microsoft.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 5.4 29/57] PM: hibernate: Freeze kernel threads in software_resume()
+        stable@vger.kernel.org, Jason Gunthorpe <jgg@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>
+Subject: [PATCH 4.19 20/37] RDMA/core: Fix race between destroy and release FD object
 Date:   Mon,  4 May 2020 19:57:33 +0200
-Message-Id: <20200504165458.869037589@linuxfoundation.org>
+Message-Id: <20200504165450.549963642@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200504165456.783676004@linuxfoundation.org>
-References: <20200504165456.783676004@linuxfoundation.org>
+In-Reply-To: <20200504165448.264746645@linuxfoundation.org>
+References: <20200504165448.264746645@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,46 +43,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dexuan Cui <decui@microsoft.com>
+From: Leon Romanovsky <leonro@mellanox.com>
 
-commit 2351f8d295ed63393190e39c2f7c1fee1a80578f upstream.
+commit f0abc761bbb9418876cc4d1ebc473e4ea6352e42 upstream.
 
-Currently the kernel threads are not frozen in software_resume(), so
-between dpm_suspend_start(PMSG_QUIESCE) and resume_target_kernel(),
-system_freezable_power_efficient_wq can still try to submit SCSI
-commands and this can cause a panic since the low level SCSI driver
-(e.g. hv_storvsc) has quiesced the SCSI adapter and can not accept
-any SCSI commands: https://lkml.org/lkml/2020/4/10/47
+The call to ->lookup_put() was too early and it caused an unlock of the
+read/write protection of the uobject after the FD was put. This allows a
+race:
 
-At first I posted a fix (https://lkml.org/lkml/2020/4/21/1318) trying
-to resolve the issue from hv_storvsc, but with the help of
-Bart Van Assche, I realized it's better to fix software_resume(),
-since this looks like a generic issue, not only pertaining to SCSI.
+     CPU1                                 CPU2
+ rdma_lookup_put_uobject()
+   lookup_put_fd_uobject()
+     fput()
+				   fput()
+				     uverbs_uobject_fd_release()
+				       WARN_ON(uverbs_try_lock_object(uobj,
+					       UVERBS_LOOKUP_WRITE));
+   atomic_dec(usecnt)
 
-Cc: All applicable <stable@vger.kernel.org>
-Signed-off-by: Dexuan Cui <decui@microsoft.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Fix the code by changing the order, first unlock and call to
+->lookup_put() after that.
+
+Fixes: 3832125624b7 ("IB/core: Add support for idr types")
+Link: https://lore.kernel.org/r/20200423060122.6182-1-leon@kernel.org
+Suggested-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- kernel/power/hibernate.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/infiniband/core/rdma_core.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/kernel/power/hibernate.c
-+++ b/kernel/power/hibernate.c
-@@ -898,6 +898,13 @@ static int software_resume(void)
- 	error = freeze_processes();
- 	if (error)
- 		goto Close_Finish;
-+
-+	error = freeze_kernel_threads();
-+	if (error) {
-+		thaw_processes();
-+		goto Close_Finish;
-+	}
-+
- 	error = load_image_and_restore();
- 	thaw_processes();
-  Finish:
+--- a/drivers/infiniband/core/rdma_core.c
++++ b/drivers/infiniband/core/rdma_core.c
+@@ -697,7 +697,6 @@ void rdma_lookup_put_uobject(struct ib_u
+ 			     enum rdma_lookup_mode mode)
+ {
+ 	assert_uverbs_usecnt(uobj, mode);
+-	uobj->uapi_object->type_class->lookup_put(uobj, mode);
+ 	/*
+ 	 * In order to unlock an object, either decrease its usecnt for
+ 	 * read access or zero it in case of exclusive access. See
+@@ -714,6 +713,7 @@ void rdma_lookup_put_uobject(struct ib_u
+ 		break;
+ 	}
+ 
++	uobj->uapi_object->type_class->lookup_put(uobj, mode);
+ 	/* Pairs with the kref obtained by type->lookup_get */
+ 	uverbs_uobject_put(uobj);
+ }
 
 
