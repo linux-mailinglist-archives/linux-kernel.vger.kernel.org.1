@@ -2,116 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 885961C4081
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 18:52:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C502E1C408F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 18:56:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729859AbgEDQwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 12:52:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34388 "EHLO mail.kernel.org"
+        id S1729653AbgEDQ4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 12:56:11 -0400
+Received: from foss.arm.com ([217.140.110.172]:49236 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729740AbgEDQwg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 12:52:36 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C292E20721;
-        Mon,  4 May 2020 16:52:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588611155;
-        bh=pHevdodwKI9AchWwf20bTvyMZmY/KXT51VAk5UHfloY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uyMa7mayYmQKcwMDm+GOx012e1zqDeyv+W5L6bDtfpKFAZ+E7dHLgSdsy/T09kHTW
-         ixd15enHaJKKfVWzOVcZQBM4JTXKH1eXGREFx5btkK873B8qrSEX32IqtAqg24KSMC
-         y7A6s2xNnFeJRxYbjVN/DbsKn+VXK3WbXoGH2kNQ=
-Date:   Mon, 4 May 2020 17:52:28 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Laura Abbott <labbott@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Jann Horn <jannh@google.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        clang-built-linux@googlegroups.com,
-        kernel-hardening@lists.openwall.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v11 01/12] add support for Clang's Shadow Call Stack (SCS)
-Message-ID: <20200504165227.GB1833@willie-the-truck>
-References: <20191018161033.261971-1-samitolvanen@google.com>
- <20200416161245.148813-1-samitolvanen@google.com>
- <20200416161245.148813-2-samitolvanen@google.com>
- <20200420171727.GB24386@willie-the-truck>
- <20200420211830.GA5081@google.com>
- <20200422173938.GA3069@willie-the-truck>
- <20200422235134.GA211149@google.com>
- <202004231121.A13FDA100@keescook>
- <20200424112113.GC21141@willie-the-truck>
- <20200427204546.GA80713@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200427204546.GA80713@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1728655AbgEDQ4L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 12:56:11 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EDCC6101E;
+        Mon,  4 May 2020 09:56:10 -0700 (PDT)
+Received: from e120937-lin.home (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D2EAF3F68F;
+        Mon,  4 May 2020 09:56:09 -0700 (PDT)
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
+        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
+        cristian.marussi@arm.com
+Subject: [PATCH v2 0/3] SCMI System Power Support
+Date:   Mon,  4 May 2020 17:55:37 +0100
+Message-Id: <20200504165540.37188-1-cristian.marussi@arm.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 01:45:46PM -0700, Sami Tolvanen wrote:
-> On Fri, Apr 24, 2020 at 12:21:14PM +0100, Will Deacon wrote:
-> > Also, since you mentioned the lack of redzoning, isn't it a bit dodgy
-> > allocating blindly out of the kmem_cache? It means we don't have a redzone
-> > or a guard page, so if you can trigger something like a recursion bug then
-> > could you scribble past the SCS before the main stack overflows? Would this
-> > clobber somebody else's SCS?
-> 
-> I agree that allocating from a kmem_cache isn't ideal for safety. It's a
-> compromise to reduce memory overhead.
+Hi all,
 
-Do you think it would be a problem if we always allocated a page for the
-SCS?
+this series wants to add the core SCMI System Power support and related
+events' handling logic: the protocol support itself is trivial and boils
+down to some bare initializations and supporting one SCMI System Power
+notification event meant to carry platform-originated System transition
+requests. This is patch [1/3].
 
-> > The vmap version that I asked Sami to drop
-> > is at least better in this regard, although the guard page is at the wrong
-> > end of the stack and we just hope that the allocation below us didn't pass
-> > VM_NO_GUARD. Looks like the same story for vmap stack :/
-> 
-> SCS grows up and the guard page is after the allocation, so how is it at
-> the wrong end? Am I missing something here?
+On top of this a new SCMI driver has been developed which registers for
+such System Power notification and acts accordingly to satisfy such
+plaform system-state transition requests that can be of forceful or
+graceful kind.
 
-Sorry, I'd got the SCS upside-down in my head (hey, that second 'S' stands
-for 'Stack'!). But I think I'm right about vmap stack, which feels a
-little fragile even though it seems to work out today with the very limited
-uses of VM_NO_GUARD.
+In order to comply with such graceful requests, and co-operate with
+userspace entities to drive a clean shutdown/reboot, the logic of the
+driver relies on the same orderly_* API methods used by ACPI when handling
+ACPI Shutdown bus events.
+As an alternative method to tunnel graceful requests to userspace it is
+possible to configure, via available module parameters, a specific signal
+to be sent to CAD pid. This is patch [2/3].
 
-> > If we split the pointer in two (base, offset) then we could leave the
-> > base live in the thread_info, not require alignment of the stacks (which
-> > may allow for unconditional redzoning?) and then just update the offset
-> > value on context switch, which could be trivially checked as part of the
-> > existing stack overflow checking on kernel entry.
-> 
-> I sent out v13 with split pointers, but I'm not sure it's convenient to
-> add an overflow check to kernel_ventry where the VMAP_STACK check is
-> done. I suppose I could add a check to kernel_entry after we load x18
-> from tsk. Thoughts?
+Patch [3/3] is a mere JUNO example of the minimal DT bindings needed to
+enable the protocol at the DT level and is NOT meant to be upstream as of
+now.
 
-I'll take a look at v13, since at this stage I'm keen to get something
-queued up so that we can use it as a base for further improvements without
-you having to repost the whole stack every time.
+The series is based on SCMI Notifications Core V7 [1] (only posted not
+merged) which in turn is based on top of scmi-for-next-5.7.
 
-Cheers,
+Thanks
 
-Will
+Cristian
+
+----
+
+[1] https://lore.kernel.org/linux-arm-kernel/20200504163855.54548-1-cristian.marussi@arm.com/
+
+Cristian Marussi (3):
+  firmware: arm_scmi: Add System Power Protocol support
+  firmware: arm_scmi: Add SCMI System Power Control driver
+  arm64: dts: juno: add SCMI SystemPower Protocol support
+
+ arch/arm64/boot/dts/arm/juno-base.dtsi        |   4 +
+ drivers/firmware/Kconfig                      |  12 +
+ drivers/firmware/arm_scmi/Makefile            |   3 +-
+ drivers/firmware/arm_scmi/driver.c            |   1 +
+ .../firmware/arm_scmi/scmi_power_control.c    | 389 ++++++++++++++++++
+ drivers/firmware/arm_scmi/system.c            | 145 +++++++
+ include/linux/scmi_protocol.h                 |  18 +
+ 7 files changed, 571 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/firmware/arm_scmi/scmi_power_control.c
+ create mode 100644 drivers/firmware/arm_scmi/system.c
+
+-- 
+2.17.1
+
