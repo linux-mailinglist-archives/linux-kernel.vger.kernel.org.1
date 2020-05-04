@@ -2,104 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4A631C4797
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 22:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C35A21C4785
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 22:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728117AbgEDUCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 16:02:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47918 "EHLO
+        id S1727925AbgEDUBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 16:01:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726441AbgEDUCI (ORCPT
+        by vger.kernel.org with ESMTP id S1726111AbgEDUBL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 16:02:08 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49A21C061A0E;
-        Mon,  4 May 2020 13:02:08 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id x4so873153wmj.1;
-        Mon, 04 May 2020 13:02:08 -0700 (PDT)
+        Mon, 4 May 2020 16:01:11 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3A78C061A0E;
+        Mon,  4 May 2020 13:01:11 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id l18so575327wrn.6;
+        Mon, 04 May 2020 13:01:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:mime-version
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=KdlOL0+4+Ykci+7yQYazMb8JW9d/9xEljqxcf/GDuEk=;
-        b=sJcXHxLSBnzJGMaKNW+99617mOPEmXnMG5Noq1kdinn6Ed89n3c9c+GeJVczmV0vCu
-         pvDt6LRa1hz1a1M3pbXUYY+71rble+dJs0BQ4tholGGBuEof7kKZaL7p97aHQVhTq22W
-         Tkm/t2uTcMagqEp/CE014kqT9GmDoUIisRe97eJs20d0MqBMGNQwJRYRnaMhGfR2IS/i
-         YH8KEnMqltUdXf/GxTZAZiyfgHEm/mORzPhzh+Q7BsIpH71rJkRPrksfpZmKA5IhnUIO
-         GII3sCKzYNjXKmlzMq/3nwTahAUEaDyS5ng+aESP14gzxHO/Mq/qngu+GZP9SFL1Pr0x
-         DOMg==
+        bh=xwqNTpvr36YlbOoEch1Pgho2qgj2JVScQlJ2Ca/JbVM=;
+        b=MQWbg/TSygNyKyr5jE13Qw4+hnu+8Ghk/K0WTZpN5wFyh7CFc2J8wLIyLAfrj5Ty5l
+         TQ5pfDHa6GsnyR6ZkTRK2LyipMDCjKf8g3+tHKaOFbPyJj6LNgGfHcWVzi7Ph0nmGbX/
+         CnKIYiWdrV/Ib49qwonSgj+r1LMdU9u/u3hD+gY08rXbfihI9xKhVDH2sb2PC8z2eU/L
+         K7EhzVh+3M26Jwb949bnePkL2tsfWwX2MD3V/6js9bAtf/ZkPtPeCUAqMEh3cWvCdnEu
+         FMyRFDODIR+MmCrazrMyMTICU0WeHan/Ek5/1R6QU3iNRUtOu9iwrlTEPFRBHuCwidnd
+         6n+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=KdlOL0+4+Ykci+7yQYazMb8JW9d/9xEljqxcf/GDuEk=;
-        b=b5JFLj/Q8jPUhhL3LgdSTQz9Jc8ICZQ5f3dwv46HjW4hi4UhYDe79DwOz4v5kNAABA
-         6UUE7NCu+uYUdS6LYDLuSHuMJ48uKmNaqcQsBQ/hfm1Pq1jvlVymWAU4FFoNmi+rROBJ
-         4ymiQIgJygAGd8Ji6XuFJuxc3pKUg8CRoLGGp5U5WRM8HqrKlw1PxzzK0jC0+sglJSJK
-         owci6jLgYVQ8XhNuygOm7UQiqvEmtv/DR420Qcr2Gs3BXtbWpkuR74TyK7RiSrp/oAp2
-         AxUxvLuTCX5m5VZQGZFviMP2Wgpp5a2UaiNnfaS+3lorT0M1uRaLJqipbJBy4RHXVPwp
-         0QKg==
-X-Gm-Message-State: AGi0PuZQoiE2kthAWFukEFAFdqH1XYUNvxvdHk66mlWcXcpBmoz2Zx+Y
-        Iv8ZsE9kLte5jCUyVcqQE5WnMwKN
-X-Google-Smtp-Source: APiQypLtdII6d3Uh6/K5h+dxXP5Ugh8M97Xscg7xDlXEjK1u9cJyQqNmpchCvB+ACdDUmIXUsWo5mA==
-X-Received: by 2002:a1c:40c4:: with SMTP id n187mr15844209wma.28.1588622527018;
-        Mon, 04 May 2020 13:02:07 -0700 (PDT)
-Received: from localhost.localdomain ([109.126.133.135])
-        by smtp.gmail.com with ESMTPSA id c190sm25482wme.10.2020.05.04.13.02.05
+        bh=xwqNTpvr36YlbOoEch1Pgho2qgj2JVScQlJ2Ca/JbVM=;
+        b=TcAesBfXkhkTRnU18Yl8Mls7CoggJWHKjUMboEJ4rbyqpz/PXXFCHhLHL3GQNGzKmB
+         H+jM23Pni55F4Qn6KS7Xm/eqmj9B5b8Dy0TOe9vcn2pYrh9aT6M0FNmiFM4V8A9DyR8r
+         52x4+mhYgxQhZ28k7CtW5hf9N4DgNU9o/fsYQXZJBsxXmvxr6ybSKZ1f894q3dkg8fDc
+         QZrGvqotmzDO5okAcHfNK3kg6ZFGUzpzxj5ew1KJaDuHwu124eGtX2D2XyWFQkX0D18J
+         H32k7R+r490OUQGaBjxSlWdNpQZupZsZ1sJSTTd7Bi180XiZj7fapKHKoxb9csKA8z22
+         QIpA==
+X-Gm-Message-State: AGi0PuZaW2ILUR457ozxWMKNa3dyzhDdh3mqYuAgU4g5RxRyk1EF7rHa
+        YhOmX/GS/QvbaXHpzUltTB8=
+X-Google-Smtp-Source: APiQypLvvE9333aRFxwKbKQHbL0iSZvAaDGcvFb14pX/z6fIIXy/aeg7zbhQ+V10PpIe2vBXj6AbyA==
+X-Received: by 2002:adf:fad0:: with SMTP id a16mr1104639wrs.149.1588622470431;
+        Mon, 04 May 2020 13:01:10 -0700 (PDT)
+Received: from localhost.localdomain (abag125.neoplus.adsl.tpnet.pl. [83.6.170.125])
+        by smtp.googlemail.com with ESMTPSA id s17sm739252wmc.48.2020.05.04.13.01.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 May 2020 13:02:06 -0700 (PDT)
-From:   Pavel Begunkov <asml.silence@gmail.com>
-To:     Jens Axboe <axboe@kernel.dk>, Jann Horn <jannh@google.com>,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH for-5.7] io_uring: fix zero len do_splice()
-Date:   Mon,  4 May 2020 23:00:54 +0300
-Message-Id: <c7dc4d15f9065f41df5ad83e051d05e7c46f004f.1588622410.git.asml.silence@gmail.com>
-X-Mailer: git-send-email 2.24.0
+        Mon, 04 May 2020 13:01:10 -0700 (PDT)
+From:   Konrad Dybcio <konradybcio@gmail.com>
+Cc:     Konrad Dybcio <konradybcio@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [v3 PATCH 0/2] Add support for ASUS Z00T TM5P5 NT35596 panel
+Date:   Mon,  4 May 2020 22:00:58 +0200
+Message-Id: <20200504200102.129195-1-konradybcio@gmail.com>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-do_splice() doesn't expect len to be 0. Just always return 0 in this
-case as splice(2) do.
+changes since v2:
+- fix Kconfig indentation
 
-Fixes: 7d67af2c0134 ("io_uring: add splice(2) support")
-Reported-by: Jann Horn <jannh@google.com>
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
----
- fs/io_uring.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+changes since v1:
+- make `backlight_properties props` constant
+- a couple of line breaks
+- change name and compatible to reflect ASUS being the vendor
+- remove a redundant TODO
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 65458eda2127..d53a1ef2a205 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -2772,16 +2772,19 @@ static int io_splice(struct io_kiocb *req, bool force_nonblock)
- 	struct file *out = sp->file_out;
- 	unsigned int flags = sp->flags & ~SPLICE_F_FD_IN_FIXED;
- 	loff_t *poff_in, *poff_out;
--	long ret;
-+	long ret = 0;
- 
- 	if (force_nonblock)
- 		return -EAGAIN;
- 
- 	poff_in = (sp->off_in == -1) ? NULL : &sp->off_in;
- 	poff_out = (sp->off_out == -1) ? NULL : &sp->off_out;
--	ret = do_splice(in, poff_in, out, poff_out, sp->len, flags);
--	if (force_nonblock && ret == -EAGAIN)
--		return -EAGAIN;
-+
-+	if (sp->len) {
-+		ret = do_splice(in, poff_in, out, poff_out, sp->len, flags);
-+		if (force_nonblock && ret == -EAGAIN)
-+			return -EAGAIN;
-+	}
- 
- 	io_put_file(req, in, (sp->flags & SPLICE_F_FD_IN_FIXED));
- 	req->flags &= ~REQ_F_NEED_CLEANUP;
+Konrad Dybcio (2):
+  drivers: drm: panel: Add ASUS TM5P5 NT35596 panel driver
+  dt-bindings: display: Document ASUS Z00T TM5P5 NT35596 panel
+    compatible
+
+ .../display/panel/asus,z00t-tm5p5-n35596.yaml |  56 +++
+ drivers/gpu/drm/panel/Kconfig                 |  10 +
+ drivers/gpu/drm/panel/Makefile                |   1 +
+ .../drm/panel/panel-asus-z00t-tm5p5-n35596.c  | 367 ++++++++++++++++++
+ 4 files changed, 434 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/panel/asus,z00t-tm5p5-n35596.yaml
+ create mode 100644 drivers/gpu/drm/panel/panel-asus-z00t-tm5p5-n35596.c
+
 -- 
-2.24.0
+2.26.1
 
