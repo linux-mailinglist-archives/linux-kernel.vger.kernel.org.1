@@ -2,93 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 152631C46DD
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 21:12:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2E541C46E2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 21:14:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726750AbgEDTMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 15:12:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725956AbgEDTMO (ORCPT
+        id S1727829AbgEDTOB convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 May 2020 15:14:01 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:60840 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725956AbgEDTOB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 15:12:14 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 426EAC061A0F
-        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 12:12:14 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id r14so6024900pfg.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 12:12:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DRRJVsf51l5t9Dm4TlhSU/EZbXOvcOE4YxM3FowxRF0=;
-        b=Si7dlb0AnRhxMKmPOWWmPJJFBiUT4hTbUEZ13DYzEVOo2Il6yfzy/8I4eF85hIu4Kg
-         JTsIF/Gth/JFANckJbrIiWa1vqiV+Kn8c9EHteuh/ReoJW0U5GlArClgOw2sVllSjRef
-         3fe1eu6sfxWOOEXu+wxVB1GNh8zSo/xAskcUQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DRRJVsf51l5t9Dm4TlhSU/EZbXOvcOE4YxM3FowxRF0=;
-        b=nsVYsSuLbX64Pt3hnan38sVfSVPg4fVMjpbMEz+Vavz67emtpn4eKKEuIwrkB7LDpd
-         fy259OEsDtfkenYZJfB5nvMQ2seyPGrGVoIRmEkUa7l9bLWGjenL/4tUPH16MNRlOfMS
-         MyuXxx8TnbWqT4y6vEh8PpEPnnCuikEPjIjZQ5pCL3DM2eoIDHJq11Oe2340I3E2uFxX
-         q+jtO+PMH00ZuwAnLv1gtVAcWWBrCq74RVcIdvcU+w0hKgfp32QI8nCcmpIJy519IC2M
-         lgCQ3qJDi+6uJ0N3f0ZAU9OzMBoSqZMEIAQP0WH/SUC6qob8XzM1+iduWWK2mIT463vn
-         Jsew==
-X-Gm-Message-State: AGi0PuZJd+m+Q/COi06NRMi8IZuUuZ+m32Udtc4rEuk4Dx5qhDvAKrWg
-        QX4yx70B7sdu70i3ET+c5lPsXhLssS8=
-X-Google-Smtp-Source: APiQypK9UGDyEzyZDsYFS7KmpnuRRHd1CKSUuVF2CV0RkZbNly3BomdV876VP1jJ+iRSqqtxTefo9g==
-X-Received: by 2002:a63:7e1b:: with SMTP id z27mr403821pgc.19.1588619533882;
-        Mon, 04 May 2020 12:12:13 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id s4sm1730400pgv.78.2020.05.04.12.12.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 May 2020 12:12:13 -0700 (PDT)
-Date:   Mon, 4 May 2020 12:12:12 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     James Morris <jmorris@namei.org>, Sasha Levin <sashal@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>, anton@enomsg.org,
-        ccross@android.com, Tony Luck <tony.luck@intel.com>,
-        robh+dt@kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v1 0/3] allow ramoops to collect all kmesg_dump events
-Message-ID: <202005041211.040A1C65C8@keescook>
-References: <20200502143555.543636-1-pasha.tatashin@soleen.com>
- <202005041112.F3C8117F67@keescook>
- <CA+CK2bBDzbXdH23aDxqGzMoxPppNcVmitrYJ00tJqympMBVJOg@mail.gmail.com>
+        Mon, 4 May 2020 15:14:01 -0400
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 53FBB2A0E46;
+        Mon,  4 May 2020 20:13:58 +0100 (BST)
+Date:   Mon, 4 May 2020 21:13:54 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Tomasz Figa <tfiga@chromium.org>, kernel@collabora.com,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Jeffrey Kardatzke <jkardatzke@chromium.org>
+Subject: Re: [PATCH v2 2/3] media: uapi: Add VP9 stateless decoder controls
+Message-ID: <20200504211354.5b8cafd4@collabora.com>
+In-Reply-To: <98946a03023451d44c2ebb2da719fa7dd3e530f6.camel@collabora.com>
+References: <20200410115113.31728-1-ezequiel@collabora.com>
+        <20200410115113.31728-3-ezequiel@collabora.com>
+        <9126475c-275d-71ab-0308-6ae85e22446b@xs4all.nl>
+        <bf475e70cca6f9ebf645aed51276e57668eaf43b.camel@collabora.com>
+        <20200502203707.402ea3cd@collabora.com>
+        <db9fa91be8084fe9c87f263a4a97dc38d46f9bd1.camel@collabora.com>
+        <e53824aed3eeb27419e5399576cce028f0ba8203.camel@collabora.com>
+        <98946a03023451d44c2ebb2da719fa7dd3e530f6.camel@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+CK2bBDzbXdH23aDxqGzMoxPppNcVmitrYJ00tJqympMBVJOg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 04, 2020 at 02:47:45PM -0400, Pavel Tatashin wrote:
-> > > # reboot -f
-> > >
-> > > After VM is back:
-> > >
-> > > # mount -t pstore pstore /mnt
-> > > # head /mnt/dmesg-ramoops-0
-> > > Restart#1 Part1
-> >
-> > Is there a reason that using ramoops.console_size isn't sufficient for
-> > this?
+On Mon, 04 May 2020 14:38:23 -0400
+Nicolas Dufresne <nicolas.dufresne@collabora.com> wrote:
+
+> Le lundi 04 mai 2020 à 14:01 -0400, Nicolas Dufresne a écrit :
+> > Le samedi 02 mai 2020 à 19:55 -0300, Ezequiel Garcia a écrit :  
+> > > +Nicolas
+> > > 
+> > > On Sat, 2020-05-02 at 20:37 +0200, Boris Brezillon wrote:  
+> > > > On Fri, 01 May 2020 13:57:49 -0300
+> > > > Ezequiel Garcia <ezequiel@collabora.com> wrote:
+> > > >   
+> > > > > > > +
+> > > > > > > +.. tabularcolumns:: |p{1.5cm}|p{6.3cm}|p{9.4cm}|
+> > > > > > > +
+> > > > > > > +.. flat-table:: enum v4l2_vp9_reset_frame_context
+> > > > > > > +    :header-rows:  0
+> > > > > > > +    :stub-columns: 0
+> > > > > > > +    :widths:       1 2
+> > > > > > > +
+> > > > > > > +    * - ``V4L2_VP9_RESET_FRAME_CTX_NONE``
+> > > > > > > +      - Do not reset any frame context.
+> > > > > > > +    * - ``V4L2_VP9_RESET_FRAME_CTX_NONE_ALT``
+> > > > > > > +      - Do not reset any frame context. This is an alternative value for
+> > > > > > > +        V4L2_VP9_RESET_FRAME_CTX_NONE.    
+> > > > > > 
+> > > > > > Add `` around V4L2_VP9_RESET_FRAME_CTX_NONE.
+> > > > > >     
+> > > > > 
+> > > > > Hm, now that I look closer, what's the point
+> > > > > of having the NONE_ALT in our uAPI if it
+> > > > > has same meaning as NONE?
+> > > > > 
+> > > > > I think it can be removed.  
+> > > > 
+> > > > The intent was to match the spec so that one can pass the value
+> > > > extracted from the bitstream directly.  
+> > 
+> > reset_frame_contextspecifies whether the frame context should be reset
+> > to default values:
+> >   − 0 or 1 means do not reset any frame context
+> >   − 2 resets just the context specified in the frame header
+> >   − 3 resets all cont
+> > 
+> > But aren't we going too far by making this an emum ? In Microsfot DXVA,
+> > we pass that value without interpreting it in userspace. For the
+> > following RKVDEC, it is (suspiciously ?) ignored. Maybe just passing
+> > over the value would make more sense, less work ?  
 > 
-> Unfortunately, the console option is not working for us (Microsoft),
-> we have an embedded device with a serial console, and the baud rate
-> reduces the reboot performance, so we must keep the console quiet. We
-> also want to be able collect full shutdown logs from the field that
-> are collected during kexec based updates.
+> I have looked deeper. So basically when 2 and 3, that needs to be done
+> by userspace is set back the associated probs arrays to their default
+> values (see section 10.5 or the spec).
+> 
+> https://github.com/rockchip-linux/mpp/blob/develop/mpp/codec/dec/vp9/vp9d_parser.c#L1021
+> 
+> It seems that for both VAAPI And DXVA, the drivers takes care of that
+> reset. So I'd like to ask, shall we code these defaults inside the
+> driver ? I think we do similar things in JPEG side. But if we keep it
+> the way it is, this should be strictly documented, otherwise anyone
+> porting from DXVA or VAAPI will be tricked by this.
 
-I meant collecting console via pstore (i.e. /mnt/console-ramoops-0). Are
-you saying that's still too large for your situation?
-
--- 
-Kees Cook
+IIRC, some book keeping had to be done in userspace anyway, so I didn't
+feel the need for resetting probe context in kernel space (tt's always
+hard to draw a clear line of what should be done in userspace and what
+should be automated by kernel drivers for those stateless decoders).
+I suspect some engines have hardware probs contexts, and in that case,
+you'd have to reset those when this field is set to 2 or 3, but that's
+not the case here.
