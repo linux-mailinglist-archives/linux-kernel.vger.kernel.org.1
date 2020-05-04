@@ -2,118 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F5821C3F92
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 18:16:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D60B1C3F9E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 18:17:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729579AbgEDQQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 12:16:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726551AbgEDQQQ (ORCPT
+        id S1729603AbgEDQRE convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 May 2020 12:17:04 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([146.101.78.151]:51463 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729207AbgEDQRE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 12:16:16 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AC2EC061A0E;
-        Mon,  4 May 2020 09:16:16 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id a32so3986pje.5;
-        Mon, 04 May 2020 09:16:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=mJxATeoW9r1Ijzs0Cv12TCPDgNZzSbmxIdXoWB9J3wU=;
-        b=omfljF0dC/ATvmTsC2aJI+kHBhsxfZzHuKUdvPV/DvDvlRI/fZO15ItSIynzHh8WQ5
-         bbH7N1bQL2FjjPAEIrEd0PFWOz8TBebD0eBDMXALia6+1uXwoCkCVV+uX1/gi1jZHP2z
-         OGSFKCTO881EK7uqpI1LWSBPKKz3A4hHD7y4W4PAbbuwAb5/WlOnF2MxmaKNiQel42ZG
-         eRZSeaz3GqZDN5Mz76/vMH5GDJKd6nGUwDo2o/AUfrXkZ+qIkvN9oMVNVlUd0hjv/Cnl
-         PXQnP2kYOYpLYIc4NXyguUo6khYx8Yzkb3qeP6sWEgYTKcCU10jAgwRJCaS3O5Hyk/KT
-         SSNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=mJxATeoW9r1Ijzs0Cv12TCPDgNZzSbmxIdXoWB9J3wU=;
-        b=EQHJJhgWysNJ6/rQjKChZEgXad57ZHVPLcDPT1TIw3FFAa77zyeNVJbDB1nlciUvzk
-         4FNPr9RaPXqyanEOLZKRKlNUUa84+RuWYIILHOCFUy7TAyzm3NhObMPpyRU3lUxedMmZ
-         IWCzA9Zqo02gjoXTEMzZvuPGCwYQ0PvB/RqoD/D7cxehHEiqH/3WBcPRcZbN9aJT0TzD
-         i9yzDDk4OzouA1rCOv04ZjTrstv7vjypKE8FP6/EiMj5L4F7+lnX66mzxE9YUnE+6XyJ
-         zVNOM1VfSvhGvC8hdjJCS5T796liOVAaJJKNRAphQCdnYlHKw41tl8s2vXiEDObRgq8w
-         MtHg==
-X-Gm-Message-State: AGi0Puahozn6ZJPkMyroCIzr7pgujMNvPhihdyOW+EwDle1tP4X2+Jdn
-        FdBPmJzGvZ3PySD8//+U/qA=
-X-Google-Smtp-Source: APiQypKyG4mJ/QDG3KcoaV0DVI3jvg+MGkPaCDGlrIosbApPc0EPrPqH0uGoRpOpc+3ULNyzpJbiVg==
-X-Received: by 2002:a17:90a:4ce5:: with SMTP id k92mr71565pjh.192.1588608975646;
-        Mon, 04 May 2020 09:16:15 -0700 (PDT)
-Received: from localhost.localdomain ([120.244.110.63])
-        by smtp.gmail.com with ESMTPSA id 4sm9515257pff.18.2020.05.04.09.16.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 May 2020 09:16:14 -0700 (PDT)
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-To:     darrick.wong@oracle.com
-Cc:     linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [PATCH] fs: xfs: fix a possible data race in xfs_inode_set_reclaim_tag()
-Date:   Tue,  5 May 2020 00:15:30 +0800
-Message-Id: <20200504161530.14059-1-baijiaju1990@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 4 May 2020 12:17:04 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-39-uzlKmwNAOK6q6QlcHfY66Q-1; Mon, 04 May 2020 17:15:42 +0100
+X-MC-Unique: uzlKmwNAOK6q6QlcHfY66Q-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Mon, 4 May 2020 17:15:41 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Mon, 4 May 2020 17:15:41 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Christoph Hellwig' <hch@infradead.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>
+CC:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "bigeasy@linutronix.de" <bigeasy@linutronix.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [PATCH] drm/i915: check to see if SIMD registers are available
+ before using SIMD
+Thread-Topic: [PATCH] drm/i915: check to see if SIMD registers are available
+ before using SIMD
+Thread-Index: AQHWIi2IJD6S33S1cEGYb8jR4+2/zKiYGMQA
+Date:   Mon, 4 May 2020 16:15:41 +0000
+Message-ID: <cb9e8125a94e4efc8733967a5b47be88@AcuMS.aculab.com>
+References: <20200430221016.3866-1-Jason@zx2c4.com>
+ <20200501180731.GA2485@infradead.org>
+ <158853721918.8377.18286963845226122104@build.alporthouse.com>
+ <20200504160314.GA26373@infradead.org>
+In-Reply-To: <20200504160314.GA26373@infradead.org>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We find that xfs_inode_set_reclaim_tag() and xfs_reclaim_inode() are
-concurrently executed at runtime in the following call contexts:
+From: Christoph Hellwig
+> Sent: 04 May 2020 17:03
+> 
+> On Sun, May 03, 2020 at 09:20:19PM +0100, Chris Wilson wrote:
+> > > Err, why does i915 implements its own uncached memcpy instead of relying
+> > > on core functionality to start with?
+> >
+> > What is this core functionality that provides movntqda?
+> 
+> A sensible name might be memcpy_uncached or mempcy_nontemporal.
+> But the important point is that this should be arch code with a common
+> fallback rather than hacking it up in drivers.
 
-Thread1:
-  xfs_fs_put_super()
-    xfs_unmountfs()
-      xfs_rtunmount_inodes()
-        xfs_irele()
-          xfs_fs_destroy_inode()
-            xfs_inode_set_reclaim_tag()
+More the point, you are trying to do a copy where:
+1) The kernel isn't expected to read the data - so can bypass the cache.
+and maybe:
+2) The data needs flushing from the cache to actual memory.
+and maybe:
+3) The cache lines need invalidating.
 
-Thread2:
-  xfs_reclaim_worker()
-    xfs_reclaim_inodes()
-      xfs_reclaim_inodes_ag()
-        xfs_reclaim_inode()
+The fallbacks depend on the required behaviour.
 
-In xfs_inode_set_reclaim_tag():
-  pag = xfs_perag_get(mp, XFS_INO_TO_AGNO(mp, ip->i_ino));
-  ...
-  spin_lock(&ip->i_flags_lock);
+	David
 
-In xfs_reclaim_inode():
-  spin_lock(&ip->i_flags_lock);
-  ...
-  ip->i_ino = 0;
-  spin_unlock(&ip->i_flags_lock);
-
-Thus, a data race can occur for ip->i_ino.
-
-To fix this data race, the spinlock ip->i_flags_lock is used to protect
-the access to ip->i_ino in xfs_inode_set_reclaim_tag().
-
-This data race is found by our concurrency fuzzer.
-
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
----
- fs/xfs/xfs_icache.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/xfs/xfs_icache.c b/fs/xfs/xfs_icache.c
-index 8bf1d15be3f6..a2de08222ff5 100644
---- a/fs/xfs/xfs_icache.c
-+++ b/fs/xfs/xfs_icache.c
-@@ -229,9 +229,9 @@ xfs_inode_set_reclaim_tag(
- 	struct xfs_mount	*mp = ip->i_mount;
- 	struct xfs_perag	*pag;
- 
-+	spin_lock(&ip->i_flags_lock);
- 	pag = xfs_perag_get(mp, XFS_INO_TO_AGNO(mp, ip->i_ino));
- 	spin_lock(&pag->pag_ici_lock);
--	spin_lock(&ip->i_flags_lock);
- 
- 	radix_tree_tag_set(&pag->pag_ici_root, XFS_INO_TO_AGINO(mp, ip->i_ino),
- 			   XFS_ICI_RECLAIM_TAG);
--- 
-2.17.1
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
