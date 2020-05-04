@@ -2,145 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 251251C4912
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 23:31:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 220E11C4916
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 23:32:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726756AbgEDVbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 17:31:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33514 "EHLO
+        id S1728112AbgEDVcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 17:32:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726453AbgEDVbH (ORCPT
+        by vger.kernel.org with ESMTP id S1726334AbgEDVcD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 17:31:07 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2324C061A0F
-        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 14:31:06 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id k22so16550eds.6
-        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 14:31:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=S6K9rzdvWscNG4wZPQ1rJpU9QAUIGngtAWX+SWcl3dk=;
-        b=HFz4z/6vNebp8NseCgqhAEQfo5KWVIcyjrxldQaD5QkV0Qfculhk7762n62lN/0bGY
-         EE5bkJGb69yHfC2fRhWCC/qXBf0gqZ5OdDpol202tw5MCCGK1ss2EAsqOa++mVG1KjiN
-         SurKrYicx486IwQfZJdRs1K1Cwxb2R+dhl5qBJGNKhdfs6IztdFeg4HM3b4kHaSWRylb
-         R/CI15wL0O7F4WhglJR6q+k5Lj11gnXFenkR/PqnxmqL7/PGOCFnvYrgLsL6QN1xnOTD
-         eX2JK0UM7l00ntGZVtUsQc6pmed40z1McRpthk7/QXnBlGQ+Fa7IOG1WRA1dOIO2eX1k
-         5Yag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=S6K9rzdvWscNG4wZPQ1rJpU9QAUIGngtAWX+SWcl3dk=;
-        b=PmfdUgNsumxd8zB9YPheYLA5sdRTIc2/eQyO/w07/Jm0U9stoio4hC5CjNiqyk5ziU
-         ORL5n5YLnumi9wvxF9lD4o8uqZ7Fp1HNq5gt/KEOlTZQwKjlUnTU/V85zM4s/4miuFHM
-         mSjsZBuV4/Gk8ak0FC/SojHGAeV1qDuwrEwkqHCxwIlY8t1jz/npd7rl3D6FXyq+FUdQ
-         LzfE3QxCNHOceK1n75zJgCgd7hcQTn6zwPdSnyen6tjmifPPl3ZkURd7Y1V4JrisKWfB
-         DAJfatg7+5nMr1DuPArJqErMlUFhdl8wCSCWI4F9byEcv2niBs+qwJIkfRvkw5Yemu02
-         WLcQ==
-X-Gm-Message-State: AGi0PuYufnxk7dCCaatMu2awJXiuirD2SihmFfGsCODjX+I18YC5gsBe
-        VZutyb09pVNmlwA+xGuiCFpv5VrP9vlH/TExcwDWiw==
-X-Google-Smtp-Source: APiQypLsUbY4xwta6nK8zdFY4PM1aXzxNUct4mV5ijnB2SRzlqauiInU9dEyyDSrj2cbNV1Gqc9iBqjU95LVtXcZorM=
-X-Received: by 2002:a50:bb6b:: with SMTP id y98mr42475ede.296.1588627865384;
- Mon, 04 May 2020 14:31:05 -0700 (PDT)
+        Mon, 4 May 2020 17:32:03 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17067C061A0E;
+        Mon,  4 May 2020 14:32:03 -0700 (PDT)
+Received: from apollo.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:6257:18ff:fec4:ca34])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 4949323E2C;
+        Mon,  4 May 2020 23:31:56 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1588627918;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Pbk6l9zjbtUTPFTAA3Cs0kMDUoN3umGp+IGi4P0EqHM=;
+        b=iCwp77bdRD5RKc9zQnokWH+kYByDS5nV3Gd7vN7Hu9EJuBmxL5lo7TIpv6MG/2r6r5hKB6
+        3KTgUezO21VNTk82bsP4PMqm/NlERvlR3lTI0LuybFKvHLs+UPbk7s+2E9LJkR4m7bHTmG
+        zNSPfhdEQ0/Wg5D+UnJg4IQRNgu7BSY=
+From:   Michael Walle <michael@walle.cc>
+To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Antoine Tenart <antoine.tenart@bootlin.com>,
+        Michael Walle <michael@walle.cc>
+Subject: [PATCH net-next v2 0/3] add phy shared storage
+Date:   Mon,  4 May 2020 23:31:33 +0200
+Message-Id: <20200504213136.26458-1-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <CAHk-=wiMs=A90np0Hv5WjHY8HXQWpgtuq-xrrJvyk7_pNB4meg@mail.gmail.com>
- <1962EE67-8AD1-409D-963A-4F1E1AB3B865@amacapital.net> <3908561D78D1C84285E8C5FCA982C28F7F60EBB6@ORSMSX115.amr.corp.intel.com>
- <CALCETrW5zNLOrhOS69xeb3ANa0HVAW5+xaHvG2CA8iFy1ByHKQ@mail.gmail.com>
- <3908561D78D1C84285E8C5FCA982C28F7F612DF4@ORSMSX115.amr.corp.intel.com> <CALCETrVAsppM5kRz0HicAQ8o_x06=7Nd0q64sEre3MEShWPaLw@mail.gmail.com>
-In-Reply-To: <CALCETrVAsppM5kRz0HicAQ8o_x06=7Nd0q64sEre3MEShWPaLw@mail.gmail.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 4 May 2020 14:30:54 -0700
-Message-ID: <CAPcyv4g9nTLTMjhQOJdu+v8n-Sc9L566KfnSjcz+0TS_Ge15Fw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] Replace and improve "mcsafe" with copy_safe()
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     "Luck, Tony" <tony.luck@intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        stable <stable@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        "Tsaur, Erwin" <erwin.tsaur@intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: ++++++
+X-Spam-Level: ******
+X-Rspamd-Server: web
+X-Spam-Status: Yes, score=6.40
+X-Spam-Score: 6.40
+X-Rspamd-Queue-Id: 4949323E2C
+X-Spamd-Result: default: False [6.40 / 15.00];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         R_MISSING_CHARSET(2.50)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         BROKEN_CONTENT_TYPE(1.50)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_SPAM(0.00)[0.864];
+         DKIM_SIGNED(0.00)[];
+         RCPT_COUNT_SEVEN(0.00)[10];
+         MID_CONTAINS_FROM(1.00)[];
+         RCVD_COUNT_ZERO(0.00)[0];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:31334, ipnet:2a02:810c:8000::/33, country:DE];
+         FREEMAIL_CC(0.00)[lunn.ch,gmail.com,armlinux.org.uk,davemloft.net,nxp.com,bootlin.com,walle.cc];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam: Yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 4, 2020 at 1:26 PM Andy Lutomirski <luto@kernel.org> wrote:
->
-> On Mon, May 4, 2020 at 1:05 PM Luck, Tony <tony.luck@intel.com> wrote:
-> >
-> > > When a copy function hits a bad page and the page is not yet known to
-> > > be bad, what does it do?  (I.e. the page was believed to be fine but
-> > > the copy function gets #MC.)  Does it unmap it right away?  What does
-> > > it return?
-> >
-> > I suspect that we will only ever find a handful of situations where the
-> > kernel can recover from memory that has gone bad that are worth fixing
-> > (got to be some code path that touches a meaningful fraction of memory,
-> > otherwise we get code complexity without any meaningful payoff).
-> >
-> > I don't think we'd want different actions for the cases of "we just found out
-> > now that this page is bad" and "we got a notification an hour ago that this
-> > page had gone bad". Currently we treat those the same for application
-> > errors ... SIGBUS either way[1].
->
-> Oh, I agree that the end result should be the same.  I'm thinking more
-> about the mechanism and the internal API.  As a somewhat silly example
-> of why there's a difference, the first time we try to read from bad
-> memory, we can expect #MC (I assume, on a sensibly functioning
-> platform).  But, once we get the #MC, I imagine that the #MC handler
-> will want to unmap the page to prevent a storm of additional #MC
-> events on the same page -- given the awful x86 #MC design, too many
-> all at once is fatal.  So the next time we copy_mc_to_user() or
-> whatever from the memory, we'll get #PF instead.  Or maybe that #MC
-> will defer the unmap?
+Introduce the concept of a shared PHY storage which can be used by some
+QSGMII PHYs to ease initialization and access to global per-package
+registers.
 
-After the consumption the PMEM driver arranges for the page to never
-be mapped again via its "badblocks" list.
+Changes since v1:
+ - fix typos and add a comment, thanks Florian.
+ - check for "addr < 0" in phy_package_join()
+ - remove multiple blank lines and make "checkpatch.pl --strict" happy
 
->
-> So the point of my questions is that the overall design should be at
-> least somewhat settled before anyone tries to review just the copy
-> functions.
+Changes since RFC:
+ - check return code of kzalloc()
+ - fix local variable ordering (reverse christmas tree)
+ - add priv_size argument to phy_package_join()
+ - add Tested-by tag, thanks Vladimir.
 
-I would say that DAX / PMEM stretches the Linux memory error handling
-model beyond what it was originally designed. The primary concepts
-that bend the assumptions of mm/memory-failure.c are:
+Michael Walle (3):
+  net: phy: add concept of shared storage for PHYs
+  net: phy: bcm54140: use phy_package_shared
+  net: phy: mscc: use phy_package_shared
 
-1/ DAX pages can not be offlined via the page allocator.
+ drivers/net/phy/bcm54140.c       |  57 +++----------
+ drivers/net/phy/mdio_bus.c       |   1 +
+ drivers/net/phy/mscc/mscc.h      |   1 -
+ drivers/net/phy/mscc/mscc_main.c | 101 +++++++---------------
+ drivers/net/phy/phy_device.c     | 138 +++++++++++++++++++++++++++++++
+ include/linux/phy.h              |  90 ++++++++++++++++++++
+ 6 files changed, 271 insertions(+), 117 deletions(-)
 
-2/ DAX pages (well cachelines in those pages) can be asynchronously
-marked poisoned by a platform or device patrol scrub facility.
+-- 
+2.20.1
 
-3/ DAX pages might be repaired by writes.
-
-Currently 1/ and 2/ are managed by a per-block-device "badblocks" list
-that is populated by scrub results and also amended when #MC is raised
-(see nfit_handle_mce()). When fs/dax.c services faults it will decline
-to map the page if the physical file extent intersects a bad block.
-
-There is also support for sending SIGBUS if userspace races the
-scrubber to consume the badblock. However, that uses the standard
-'struct page' error model and assumes that a file backed page is 1:1
-mapped to a file. This requirement prevents filesystems from enabling
-reflink. That collision and the desire to enable reflink is why we are
-now investigating supplanting the mm/memory-failure.c model. When the
-page is "owned" by a filesystem invoke the filesystem to handle the
-memory error across all impacted files.
-
-The presence of 3/ means that any action error handling takes to
-disable access to the page needs to be capable of being undone, which
-runs counter to the mm/memory-failure.c assumption that offlining is a
-one-way trip.
