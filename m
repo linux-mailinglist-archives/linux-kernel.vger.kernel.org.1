@@ -2,150 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 043141C4078
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 18:52:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 304931C407C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 18:52:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729798AbgEDQwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 12:52:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729604AbgEDQwI (ORCPT
+        id S1729819AbgEDQwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 12:52:15 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:57364 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729803AbgEDQwN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 12:52:08 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1584BC061A0F;
-        Mon,  4 May 2020 09:52:08 -0700 (PDT)
-Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tip-bot2@linutronix.de>)
-        id 1jVeK4-0001aX-Nv; Mon, 04 May 2020 18:52:04 +0200
-Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 47E8D1C047D;
-        Mon,  4 May 2020 18:52:04 +0200 (CEST)
-Date:   Mon, 04 May 2020 16:52:04 -0000
-From:   "tip-bot2 for Vamshi K Sthambamkadi" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/boot] x86/boot: Add kstrtoul() from lib/
-Cc:     Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>,
-        Borislav Petkov <bp@suse.de>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <1587645588-7130-2-git-send-email-vamshi.k.sthambamkadi@gmail.com>
-References: <1587645588-7130-2-git-send-email-vamshi.k.sthambamkadi@gmail.com>
+        Mon, 4 May 2020 12:52:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588611132;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Xq7evAiBk3xPfOvO/sipXO7h1v7W7BuTHXTgg2tavgk=;
+        b=RDCQxcvGffRt837920W0lFHhcbqfH/ZE4mgqNidXUH0l9uErNAJTeHhGgEv+/wrO7LlnhX
+        WE425IZw+ImnU0iKRJZc8Tl3elx93Un8YAHR5YfFnh0kYixjlteU7Lfp1K+Zxkvv+thxbf
+        N6erAgxj+kARgZ6qJhhelQqWsUp68bk=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-162-3EYKf4BSP42pspY-AfGwcA-1; Mon, 04 May 2020 12:52:10 -0400
+X-MC-Unique: 3EYKf4BSP42pspY-AfGwcA-1
+Received: by mail-wr1-f72.google.com with SMTP id e5so11058810wrs.23
+        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 09:52:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Xq7evAiBk3xPfOvO/sipXO7h1v7W7BuTHXTgg2tavgk=;
+        b=KxOsUItALHqCIo6Jtk/Xg+ZzIGUT/JoUUCKhH7FLj0EO/hE05LFu8BHovVxnuCD0Yq
+         OMlZDeKwQoGLTSSQiuTvWlLYFS2c8NU61tFTw9shpu6Q7bsMBMrrgKqqolAzFTNBa5Gr
+         5N/vhdgfQ9dypXgWYe6pgcop4QTxZsZl3BWpB4tSMjaIb5to79/aSybzF6nMaUr6j1V5
+         VZ2B7X7Leiqt8iijZbCyJqS7XWQNG6gHLt7T74WEpXxVTop0f20DnNr1Ry9NShTYvDBK
+         GovEYHkBkc8o6xcnbMOmMAsfKOfZJdS2FCZF9badqJO1L0wnEafq0NxU3KyC9DfNmQvy
+         zXZg==
+X-Gm-Message-State: AGi0PuZXWuf+Cy2xVUk1S+dndZ64wrQLjgqc8NU+YJb/RKYTMS+urXd9
+        zGSP7AVjlogCbuuJg/NVCB14nWQVfXjXg/nhQZcJU5PUHUlgLViDs2CGvFz17spFPK/CAZb5y8G
+        k/go7LTMKdAsLxvNnQF+Uv0NV
+X-Received: by 2002:a5d:4b04:: with SMTP id v4mr228530wrq.358.1588611129360;
+        Mon, 04 May 2020 09:52:09 -0700 (PDT)
+X-Google-Smtp-Source: APiQypIt+QaQvO/hh4kBVZb4PUDBG8Re1ce556PxEi7eJG0bF6Z9f4Ryq95dX5XnnVb3uAFaXN/YOg==
+X-Received: by 2002:a5d:4b04:: with SMTP id v4mr228509wrq.358.1588611129088;
+        Mon, 04 May 2020 09:52:09 -0700 (PDT)
+Received: from [192.168.178.58] ([151.20.132.175])
+        by smtp.gmail.com with ESMTPSA id p6sm18767323wrt.3.2020.05.04.09.52.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 May 2020 09:52:08 -0700 (PDT)
+Subject: Re: [PATCH] KVM: x86/mmu: Add a helper to consolidate root sp
+ allocation
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200428023714.31923-1-sean.j.christopherson@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <d33d1d4f-106b-06a7-68e8-a4707ecc9e67@redhat.com>
+Date:   Mon, 4 May 2020 18:52:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Message-ID: <158861112423.8414.159944326230563590.tip-bot2@tip-bot2>
-X-Mailer: tip-git-log-daemon
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20200428023714.31923-1-sean.j.christopherson@intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/boot branch of tip:
+On 28/04/20 04:37, Sean Christopherson wrote:
+> Add a helper, mmu_alloc_root(), to consolidate the allocation of a root
+> shadow page, which has the same basic mechanics for all flavors of TDP
+> and shadow paging.
+> 
+> Note, __pa(sp->spt) doesn't need to be protected by mmu_lock, sp->spt
+> points at a kernel page.
+> 
+> No functional change intended.
+> 
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> ---
+>  arch/x86/kvm/mmu/mmu.c | 88 +++++++++++++++++++-----------------------
+>  1 file changed, 39 insertions(+), 49 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index e618472c572b..80205aea296e 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -3685,37 +3685,43 @@ static int mmu_check_root(struct kvm_vcpu *vcpu, gfn_t root_gfn)
+>  	return ret;
+>  }
+>  
+> +static hpa_t mmu_alloc_root(struct kvm_vcpu *vcpu, gfn_t gfn, gva_t gva,
+> +			    u8 level, bool direct)
+> +{
+> +	struct kvm_mmu_page *sp;
+> +
+> +	spin_lock(&vcpu->kvm->mmu_lock);
+> +
+> +	if (make_mmu_pages_available(vcpu)) {
+> +		spin_unlock(&vcpu->kvm->mmu_lock);
+> +		return INVALID_PAGE;
+> +	}
+> +	sp = kvm_mmu_get_page(vcpu, gfn, gva, level, direct, ACC_ALL);
+> +	++sp->root_count;
+> +
+> +	spin_unlock(&vcpu->kvm->mmu_lock);
+> +	return __pa(sp->spt);
+> +}
+> +
+>  static int mmu_alloc_direct_roots(struct kvm_vcpu *vcpu)
+>  {
+> -	struct kvm_mmu_page *sp;
+> +	u8 shadow_root_level = vcpu->arch.mmu->shadow_root_level;
+> +	hpa_t root;
+>  	unsigned i;
+>  
+> -	if (vcpu->arch.mmu->shadow_root_level >= PT64_ROOT_4LEVEL) {
+> -		spin_lock(&vcpu->kvm->mmu_lock);
+> -		if(make_mmu_pages_available(vcpu) < 0) {
+> -			spin_unlock(&vcpu->kvm->mmu_lock);
+> +	if (shadow_root_level >= PT64_ROOT_4LEVEL) {
+> +		root = mmu_alloc_root(vcpu, 0, 0, shadow_root_level, true);
+> +		if (!VALID_PAGE(root))
+>  			return -ENOSPC;
+> -		}
+> -		sp = kvm_mmu_get_page(vcpu, 0, 0,
+> -				vcpu->arch.mmu->shadow_root_level, 1, ACC_ALL);
+> -		++sp->root_count;
+> -		spin_unlock(&vcpu->kvm->mmu_lock);
+> -		vcpu->arch.mmu->root_hpa = __pa(sp->spt);
+> -	} else if (vcpu->arch.mmu->shadow_root_level == PT32E_ROOT_LEVEL) {
+> +		vcpu->arch.mmu->root_hpa = root;
+> +	} else if (shadow_root_level == PT32E_ROOT_LEVEL) {
+>  		for (i = 0; i < 4; ++i) {
+> -			hpa_t root = vcpu->arch.mmu->pae_root[i];
+> +			MMU_WARN_ON(VALID_PAGE(vcpu->arch.mmu->pae_root[i]));
+>  
+> -			MMU_WARN_ON(VALID_PAGE(root));
+> -			spin_lock(&vcpu->kvm->mmu_lock);
+> -			if (make_mmu_pages_available(vcpu) < 0) {
+> -				spin_unlock(&vcpu->kvm->mmu_lock);
+> +			root = mmu_alloc_root(vcpu, i << (30 - PAGE_SHIFT),
+> +					      i << 30, PT32_ROOT_LEVEL, true);
+> +			if (!VALID_PAGE(root))
+>  				return -ENOSPC;
+> -			}
+> -			sp = kvm_mmu_get_page(vcpu, i << (30 - PAGE_SHIFT),
+> -					i << 30, PT32_ROOT_LEVEL, 1, ACC_ALL);
+> -			root = __pa(sp->spt);
+> -			++sp->root_count;
+> -			spin_unlock(&vcpu->kvm->mmu_lock);
+>  			vcpu->arch.mmu->pae_root[i] = root | PT_PRESENT_MASK;
+>  		}
+>  		vcpu->arch.mmu->root_hpa = __pa(vcpu->arch.mmu->pae_root);
+> @@ -3730,9 +3736,9 @@ static int mmu_alloc_direct_roots(struct kvm_vcpu *vcpu)
+>  
+>  static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
+>  {
+> -	struct kvm_mmu_page *sp;
+>  	u64 pdptr, pm_mask;
+>  	gfn_t root_gfn, root_pgd;
+> +	hpa_t root;
+>  	int i;
+>  
+>  	root_pgd = vcpu->arch.mmu->get_guest_pgd(vcpu);
+> @@ -3746,20 +3752,12 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
+>  	 * write-protect the guests page table root.
+>  	 */
+>  	if (vcpu->arch.mmu->root_level >= PT64_ROOT_4LEVEL) {
+> -		hpa_t root = vcpu->arch.mmu->root_hpa;
+> +		MMU_WARN_ON(VALID_PAGE(vcpu->arch.mmu->root_hpa));
+>  
+> -		MMU_WARN_ON(VALID_PAGE(root));
+> -
+> -		spin_lock(&vcpu->kvm->mmu_lock);
+> -		if (make_mmu_pages_available(vcpu) < 0) {
+> -			spin_unlock(&vcpu->kvm->mmu_lock);
+> +		root = mmu_alloc_root(vcpu, root_gfn, 0,
+> +				      vcpu->arch.mmu->shadow_root_level, false);
+> +		if (!VALID_PAGE(root))
+>  			return -ENOSPC;
+> -		}
+> -		sp = kvm_mmu_get_page(vcpu, root_gfn, 0,
+> -				vcpu->arch.mmu->shadow_root_level, 0, ACC_ALL);
+> -		root = __pa(sp->spt);
+> -		++sp->root_count;
+> -		spin_unlock(&vcpu->kvm->mmu_lock);
+>  		vcpu->arch.mmu->root_hpa = root;
+>  		goto set_root_pgd;
+>  	}
+> @@ -3774,9 +3772,7 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
+>  		pm_mask |= PT_ACCESSED_MASK | PT_WRITABLE_MASK | PT_USER_MASK;
+>  
+>  	for (i = 0; i < 4; ++i) {
+> -		hpa_t root = vcpu->arch.mmu->pae_root[i];
+> -
+> -		MMU_WARN_ON(VALID_PAGE(root));
+> +		MMU_WARN_ON(VALID_PAGE(vcpu->arch.mmu->pae_root[i]));
+>  		if (vcpu->arch.mmu->root_level == PT32E_ROOT_LEVEL) {
+>  			pdptr = vcpu->arch.mmu->get_pdptr(vcpu, i);
+>  			if (!(pdptr & PT_PRESENT_MASK)) {
+> @@ -3787,17 +3783,11 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
+>  			if (mmu_check_root(vcpu, root_gfn))
+>  				return 1;
+>  		}
+> -		spin_lock(&vcpu->kvm->mmu_lock);
+> -		if (make_mmu_pages_available(vcpu) < 0) {
+> -			spin_unlock(&vcpu->kvm->mmu_lock);
+> -			return -ENOSPC;
+> -		}
+> -		sp = kvm_mmu_get_page(vcpu, root_gfn, i << 30, PT32_ROOT_LEVEL,
+> -				      0, ACC_ALL);
+> -		root = __pa(sp->spt);
+> -		++sp->root_count;
+> -		spin_unlock(&vcpu->kvm->mmu_lock);
+>  
+> +		root = mmu_alloc_root(vcpu, root_gfn, i << 30,
+> +				      PT32_ROOT_LEVEL, false);
+> +		if (!VALID_PAGE(root))
+> +			return -ENOSPC;
+>  		vcpu->arch.mmu->pae_root[i] = root | pm_mask;
+>  	}
+>  	vcpu->arch.mmu->root_hpa = __pa(vcpu->arch.mmu->pae_root);
+> 
 
-Commit-ID:     5fafbebc86a0043ca5bbd8d3ce4f63dc5a02ad8e
-Gitweb:        https://git.kernel.org/tip/5fafbebc86a0043ca5bbd8d3ce4f63dc5a02ad8e
-Author:        Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
-AuthorDate:    Thu, 23 Apr 2020 18:09:47 +05:30
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Mon, 04 May 2020 15:19:07 +02:00
+Queued, thanks.
 
-x86/boot: Add kstrtoul() from lib/
+Paolo
 
-Add kstrtoul() to ../boot/ to be used by facilities there too.
-
- [
-   bp: Massage, make _kstrtoul() static. Prepend function names with
-   "boot_". This is a temporary workaround for build errors like:
-
-   ld: arch/x86/boot/compressed/acpi.o: in function `count_immovable_mem_regions':
-   acpi.c:(.text+0x463): undefined reference to `_kstrtoul'
-   make[2]: *** [arch/x86/boot/compressed/Makefile:117: arch/x86/boot/compressed/vmlinux] Error 1
-
-   due to the namespace clash between x86/boot/ and kernel proper.
-   Future reorg will get rid of the linux/linux/ namespace as much as
-   possible so that x86/boot/ can be independent from kernel proper. ]
-
-Signed-off-by: Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/1587645588-7130-2-git-send-email-vamshi.k.sthambamkadi@gmail.com
----
- arch/x86/boot/string.c | 43 ++++++++++++++++++++++++++++++++++++++++-
- arch/x86/boot/string.h |  1 +-
- 2 files changed, 43 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/boot/string.c b/arch/x86/boot/string.c
-index 8272a44..8a3fff9 100644
---- a/arch/x86/boot/string.c
-+++ b/arch/x86/boot/string.c
-@@ -117,7 +117,6 @@ static unsigned int simple_guess_base(const char *cp)
-  * @endp: A pointer to the end of the parsed string will be placed here
-  * @base: The number base to use
-  */
--
- unsigned long long simple_strtoull(const char *cp, char **endp, unsigned int base)
- {
- 	unsigned long long result = 0;
-@@ -335,3 +334,45 @@ int kstrtoull(const char *s, unsigned int base, unsigned long long *res)
- 		s++;
- 	return _kstrtoull(s, base, res);
- }
-+
-+static int _kstrtoul(const char *s, unsigned int base, unsigned long *res)
-+{
-+	unsigned long long tmp;
-+	int rv;
-+
-+	rv = kstrtoull(s, base, &tmp);
-+	if (rv < 0)
-+		return rv;
-+	if (tmp != (unsigned long)tmp)
-+		return -ERANGE;
-+	*res = tmp;
-+	return 0;
-+}
-+
-+/**
-+ * kstrtoul - convert a string to an unsigned long
-+ * @s: The start of the string. The string must be null-terminated, and may also
-+ *  include a single newline before its terminating null. The first character
-+ *  may also be a plus sign, but not a minus sign.
-+ * @base: The number base to use. The maximum supported base is 16. If base is
-+ *  given as 0, then the base of the string is automatically detected with the
-+ *  conventional semantics - If it begins with 0x the number will be parsed as a
-+ *  hexadecimal (case insensitive), if it otherwise begins with 0, it will be
-+ *  parsed as an octal number. Otherwise it will be parsed as a decimal.
-+ * @res: Where to write the result of the conversion on success.
-+ *
-+ * Returns 0 on success, -ERANGE on overflow and -EINVAL on parsing error.
-+ * Used as a replacement for the simple_strtoull.
-+ */
-+int boot_kstrtoul(const char *s, unsigned int base, unsigned long *res)
-+{
-+	/*
-+	 * We want to shortcut function call, but
-+	 * __builtin_types_compatible_p(unsigned long, unsigned long long) = 0.
-+	 */
-+	if (sizeof(unsigned long) == sizeof(unsigned long long) &&
-+	    __alignof__(unsigned long) == __alignof__(unsigned long long))
-+		return kstrtoull(s, base, (unsigned long long *)res);
-+	else
-+		return _kstrtoul(s, base, res);
-+}
-diff --git a/arch/x86/boot/string.h b/arch/x86/boot/string.h
-index 38d8f2f..995f7b7 100644
---- a/arch/x86/boot/string.h
-+++ b/arch/x86/boot/string.h
-@@ -30,4 +30,5 @@ extern unsigned long long simple_strtoull(const char *cp, char **endp,
- 					  unsigned int base);
- 
- int kstrtoull(const char *s, unsigned int base, unsigned long long *res);
-+int boot_kstrtoul(const char *s, unsigned int base, unsigned long *res);
- #endif /* BOOT_STRING_H */
