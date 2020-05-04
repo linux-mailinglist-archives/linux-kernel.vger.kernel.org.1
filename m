@@ -2,154 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CD241C4266
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 19:22:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81AAC1C42A7
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 19:25:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730233AbgEDRWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 13:22:47 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:33232 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729549AbgEDRWp (ORCPT
+        id S1730030AbgEDRZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 13:25:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729549AbgEDRZt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 13:22:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588612963;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JzrHLa4yO9piUrvMC3ds7g4OpEiv0B4QEcZSD2qDkrA=;
-        b=in72ZRbDtsc6KqcR9RlxJlHC3Hc+b8rrQKFPMlHg48tZf4tnn9XDcw+Qf0Pt8OaCl8/Cx3
-        5U/YKzkWkCxPjKQRoRdZ65v1qL2USzlOLIdIFKID7hvCtEdeKv8vpWJ0quJkbbzR2rtAZm
-        8To5OCb1z3/0ARWNMXnEtw9ErwCRPOE=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-319-MfsjiLnVMKm08yjsIfNOfA-1; Mon, 04 May 2020 13:22:40 -0400
-X-MC-Unique: MfsjiLnVMKm08yjsIfNOfA-1
-Received: by mail-wr1-f72.google.com with SMTP id h12so186485wrr.19
-        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 10:22:39 -0700 (PDT)
+        Mon, 4 May 2020 13:25:49 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDFD8C061A0E;
+        Mon,  4 May 2020 10:25:49 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id x77so5867664pfc.0;
+        Mon, 04 May 2020 10:25:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=bxyngs7ScABszWTp3cRRYAAivc+75uL16s+Y0Qohbfk=;
+        b=jj7aodihYRtL/Aw1lPJ/3uTzmW49L9lY1DGjeVBjf7DW9zhTuaG50kqPgjCdGddlKX
+         nlf4DVmygLqa1P85K9FnX7PW9Jw6fPAX2+JXiUDlMp6uYqdJRQLzomxPglLErsPKZDXe
+         i2d9CNFOBPIreCFDWPHUc/cehaHrkwzvQwUDKOnQbtEK+XEPiIM+dgYoK4zB46IbAKMB
+         9KHI9b1Pdwhyrx5iD3glTL+c4Z06Se+zohsKiJVDvdosKhNBtDkGZKdNqSQE62sxPx33
+         V7zUjh/OCmILdDqTEWd94apwGO+nYxWYS/25lD8H9xiBe15VenABslSJ0ngEBiewHr9B
+         6IBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JzrHLa4yO9piUrvMC3ds7g4OpEiv0B4QEcZSD2qDkrA=;
-        b=RQdD4JuHnv559O/f4OpVZQi7vT6l+vEwPxHthfdmFB32sS60LcNt7d+Ki+bWuvipUS
-         UwteBqfZ/dg1QQ60unxWESHt4wPXWvAS0a+B098XBomAltq/TaYjqs+SHJX+lRx4rOan
-         GyBDy3T40bYsq+ERPZ5RT7cAJfj3o58pKLhVjNFCNiNiOciETxC2INzEeMCWdBdTsW+p
-         TRp8WHeyfwZKsX4uTUPU3GMTZTQBjxWZc4rFlLC9FQ7RAEabtOZFit8Gp3Kl4tTqajUO
-         PPLUwtX5YCqXgu/K9+E53EExYYrV1F5bd+Y8EPC7rDDTjRJxwlbG75T8L3wRpvZmMyEn
-         W3ow==
-X-Gm-Message-State: AGi0PuYIXoIKz+xHjqPhf1iXZLvk7qz30zv3b0Hw6rUxG4cGmbe3ELws
-        jDwD+Sm8XVHuvKGSrJ5DN4faYfJtuBdF5bNZtT0181h8PQqULUyBd2FxN9JJzCGv9cO1n/xak9c
-        nRKmZnXfL+SFSiWocvxvK0AvN
-X-Received: by 2002:a1c:2e91:: with SMTP id u139mr15337111wmu.18.1588612958981;
-        Mon, 04 May 2020 10:22:38 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJ7AQYoylVQUK+fEXTNONUM6fSyUA1uFiuC72Sdv+Lm4wvXk2jFjHoC4mb2iB4Rn3OzXU/kzA==
-X-Received: by 2002:a1c:2e91:: with SMTP id u139mr15337091wmu.18.1588612958716;
-        Mon, 04 May 2020 10:22:38 -0700 (PDT)
-Received: from [192.168.178.58] ([151.20.132.175])
-        by smtp.gmail.com with ESMTPSA id v131sm141677wmb.19.2020.05.04.10.22.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 May 2020 10:22:38 -0700 (PDT)
-Subject: Re: [PATCH v4 0/7] KVM: VMX: Tscdeadline timer emulation fastpath
-To:     Wanpeng Li <kernellwp@gmail.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Haiwei Li <lihaiwei@tencent.com>
-References: <1588055009-12677-1-git-send-email-wanpengli@tencent.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <8f7fd1b1-51c5-29a4-cfce-5ebe51a486cf@redhat.com>
-Date:   Mon, 4 May 2020 19:22:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <1588055009-12677-1-git-send-email-wanpengli@tencent.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=bxyngs7ScABszWTp3cRRYAAivc+75uL16s+Y0Qohbfk=;
+        b=Yi7Vg/G5ng6q9XQ8ojD+XEAZy6/L+LWyc7XqA4P3lI0vNfpmhmnwjV57vfbBtXgguv
+         /ZOK8R5htzeW4Esg7YAuFOfofskqJSKupYkqLzXCsXq8IlemiLn11L6MSz0ZVuFLXz35
+         rWNj5IHQSIvVI+tzOE18aLmHpjGoA+Au8VIqhCmk9rIiWLc02XpLXOYAe+58v0BMpgPT
+         Ssu7qSWjJRk5kZ+jrjgW7urAwaLoL7EPwrw1WI0n8cgyMSK27e4u+ui8lPqgKFu4K3UQ
+         3hj+Sxg3KfQJePIijJgDLhGQMIrV0ZUxY9zBBr43BR9r/m5MSmFiY7VkntaFEP8GDZAP
+         DnwQ==
+X-Gm-Message-State: AGi0Pubq5ZIitS4Oa0TNfTnuGO/J692NbVm6xYhtKgzb2MYOG3MjNf9Q
+        H2gt2733yS5Re8pE52eNkEIhjqLJcH0=
+X-Google-Smtp-Source: APiQypK8ncf0X4fEweYDbiw4wdqgxEAnU2BJWCdANx6PY/JlaECuMfUPchTUQDqsE1EcG/UEBD4ZJg==
+X-Received: by 2002:a63:7b4e:: with SMTP id k14mr6497pgn.267.1588613149331;
+        Mon, 04 May 2020 10:25:49 -0700 (PDT)
+Received: from localhost.localdomain ([120.244.110.63])
+        by smtp.gmail.com with ESMTPSA id 6sm6415552pgw.47.2020.05.04.10.25.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 May 2020 10:25:48 -0700 (PDT)
+From:   Jia-Ju Bai <baijiaju1990@gmail.com>
+To:     linuxdrivers@attotech.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jia-Ju Bai <baijiaju1990@gmail.com>
+Subject: [PATCH] scsi: esas2r: reduce the risk of a possible buffer-overflow vulnerability caused by DMA failures/attacks in esas2r_process_vda_ioctl()
+Date:   Tue,  5 May 2020 01:24:12 +0800
+Message-Id: <20200504172412.25985-1-baijiaju1990@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/04/20 08:23, Wanpeng Li wrote:
-> IPI and Timer cause the main vmexits in cloud environment observation, 
-> after single target IPI fastpath, let's optimize tscdeadline timer 
-> latency by introducing tscdeadline timer emulation fastpath, it will 
-> skip various KVM related checks when possible. i.e. after vmexit due 
-> to tscdeadline timer emulation, handle it and vmentry immediately 
-> without checking various kvm stuff when possible. 
-> 
-> Testing on SKX Server.
-> 
-> cyclictest in guest(w/o mwait exposed, adaptive advance lapic timer is default -1):
-> 
-> 5540.5ns -> 4602ns       17%
-> 
-> kvm-unit-test/vmexit.flat:
-> 
-> w/o avanced timer:
-> tscdeadline_immed: 3028.5  -> 2494.75  17.6%
-> tscdeadline:       5765.7  -> 5285      8.3%
-> 
-> w/ adaptive advance timer default -1:
-> tscdeadline_immed: 3123.75 -> 2583     17.3%
-> tscdeadline:       4663.75 -> 4537      2.7%
-> 
-> Tested-by: Haiwei Li <lihaiwei@tencent.com>
-> Cc: Haiwei Li <lihaiwei@tencent.com>
-> 
-> v3 -> v4:
->  * fix bad indentation
->  * rename CONT_RUN to REENTER_GUEST
->  * rename kvm_need_cancel_enter_guest to kvm_vcpu_exit_request
->  * rename EXIT_FASTPATH_CONT_RUN to EXIT_FASTPATH_REENTER_GUEST 
->  * introduce EXIT_FASTPATH_NOP 
->  * don't squish several stuffs to one patch
->  * REENTER_GUEST be introduced with its first usage
->  * introduce __handle_preemption_timer subfunction
-> 
-> v2 -> v3:
->  * skip interrupt notify and use vmx_sync_pir_to_irr before each cont_run
->  * add from_timer_fn argument to apic_timer_expired
->  * remove all kinds of duplicate codes
-> 
-> v1 -> v2:
->  * move more stuff from vmx.c to lapic.c
->  * remove redundant checking
->  * check more conditions to bail out CONT_RUN
->  * not break AMD
->  * not handle LVTT sepecial
->  * cleanup codes
-> 
-> Wanpeng Li (7):
->   KVM: VMX: Introduce generic fastpath handler
->   KVM: X86: Enable fastpath when APICv is enabled
->   KVM: X86: Introduce more exit_fastpath_completion enum values
->   KVM: X86: Introduce kvm_vcpu_exit_request() helper
->   KVM: VMX: Optimize posted-interrupt delivery for timer fastpath
->   KVM: X86: TSCDEADLINE MSR emulation fastpath
->   KVM: VMX: Handle preemption timer fastpath
-> 
->  arch/x86/include/asm/kvm_host.h |  3 ++
->  arch/x86/kvm/lapic.c            | 18 +++++++----
->  arch/x86/kvm/svm/svm.c          | 11 ++++---
->  arch/x86/kvm/vmx/vmx.c          | 66 +++++++++++++++++++++++++++++++++--------
->  arch/x86/kvm/x86.c              | 44 ++++++++++++++++++++-------
->  arch/x86/kvm/x86.h              |  3 +-
->  virt/kvm/kvm_main.c             |  1 +
->  7 files changed, 110 insertions(+), 36 deletions(-)
-> 
+The function esas2r_read_vda() uses a DMA value "vi":
 
-Queued all except 2, pending testing (and understanding the rationale
-behind patch 2).  I will post separately my version of patch 3.
+  struct atto_ioctl_vda *vi =
+			(struct atto_ioctl_vda *)a->vda_buffer;
 
-Thanks,
+Then esas2r_read_vda() calls esas2r_process_vda_ioctl() with vi:
+  esas2r_process_vda_ioctl(a, vi, rq, &sgc);
 
-Paolo
+In esas2r_process_vda_ioctl(), the DMA value "vi->function" is 
+used at many places, such as:
+  if (vi->function >= vercnt)
+  ...
+  if (vi->version > esas2r_vdaioctl_versions[vi->function])
+  ...
+
+However, when DMA failures or attacks occur, the value of vi->function 
+can be changed at any time. In this case, vi->function can be
+first smaller than vercnt, and then it can be larger than vercnt when it
+is used as the array index of esas2r_vdaioctl_versions, causing a
+buffer-overflow vulnerability.
+
+To avoid the risk of this vulnerability, vi->function is assigned to a 
+non-DMA local variable at the beginning of esas2r_process_vda_ioctl(), 
+and this variable replaces each use of vi->function in the function.
+
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+---
+ drivers/scsi/esas2r/esas2r_vda.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/scsi/esas2r/esas2r_vda.c b/drivers/scsi/esas2r/esas2r_vda.c
+index 30028e56df63..c3a6811145cf 100644
+--- a/drivers/scsi/esas2r/esas2r_vda.c
++++ b/drivers/scsi/esas2r/esas2r_vda.c
+@@ -70,16 +70,17 @@ bool esas2r_process_vda_ioctl(struct esas2r_adapter *a,
+ 	u32 datalen = 0;
+ 	struct atto_vda_sge *firstsg = NULL;
+ 	u8 vercnt = (u8)ARRAY_SIZE(esas2r_vdaioctl_versions);
++	u8 function = vi->function;
+ 
+ 	vi->status = ATTO_STS_SUCCESS;
+ 	vi->vda_status = RS_PENDING;
+ 
+-	if (vi->function >= vercnt) {
++	if (function >= vercnt) {
+ 		vi->status = ATTO_STS_INV_FUNC;
+ 		return false;
+ 	}
+ 
+-	if (vi->version > esas2r_vdaioctl_versions[vi->function]) {
++	if (vi->version > esas2r_vdaioctl_versions[function]) {
+ 		vi->status = ATTO_STS_INV_VERSION;
+ 		return false;
+ 	}
+@@ -89,14 +90,14 @@ bool esas2r_process_vda_ioctl(struct esas2r_adapter *a,
+ 		return false;
+ 	}
+ 
+-	if (vi->function != VDA_FUNC_SCSI)
++	if (function != VDA_FUNC_SCSI)
+ 		clear_vda_request(rq);
+ 
+-	rq->vrq->scsi.function = vi->function;
++	rq->vrq->scsi.function = function;
+ 	rq->interrupt_cb = esas2r_complete_vda_ioctl;
+ 	rq->interrupt_cx = vi;
+ 
+-	switch (vi->function) {
++	switch (function) {
+ 	case VDA_FUNC_FLASH:
+ 
+ 		if (vi->cmd.flash.sub_func != VDA_FLASH_FREAD
+-- 
+2.17.1
 
