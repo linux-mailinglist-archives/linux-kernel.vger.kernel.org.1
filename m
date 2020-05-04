@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 000BE1C43C5
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:01:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4282D1C4565
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:15:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731164AbgEDSB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:01:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56878 "EHLO mail.kernel.org"
+        id S1731698AbgEDSOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:14:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54816 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731145AbgEDSBX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:01:23 -0400
+        id S1730951AbgEDSAP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 14:00:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0A1B0206B8;
-        Mon,  4 May 2020 18:01:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D2E0920663;
+        Mon,  4 May 2020 18:00:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588615282;
-        bh=7/qnSfUBs+1jIHe1HqF94F0r4bVp2HssIChY1dp/Xlg=;
+        s=default; t=1588615214;
+        bh=WOwYZ/09O3hRQvZRWnR5ibcSY9bduvtiBeCePotFWM8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s2nHX4Kv3XYWnhjj3vHyfo+bFvThHBrmr22VFqqavo825xCQHHybF7BS0p9iskshZ
-         nksGHQG3AbmGny8mycG9TYqm+n8nTfA9Japrj02UJct5i83PECSRqHXw2FIuVK3Ajo
-         m5A3YiL5rUC2JPcz/t1XhHl9rRQJBT+t4k09C/Kg=
+        b=w7oo9W4Gn2gAq2/CGEHHz4niSCn6c9eognfjl8LRRAc3V1aWnNmIlI/t31810qcsb
+         Hxx3+AyJRYftQbQAl49l/duUxeu5EH5ksnmIr9hNXdNBRN486GlGm+GTeaqpAfWtYF
+         rZvwng1N1pCpF3b2VoK5G52pISH9+tt4/tBQx7CU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 4.19 13/37] dm writecache: fix data corruption when reloading the target
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.14 12/26] ALSA: pcm: oss: Place the plugin buffer overflow checks correctly
 Date:   Mon,  4 May 2020 19:57:26 +0200
-Message-Id: <20200504165449.916465238@linuxfoundation.org>
+Message-Id: <20200504165445.473221017@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200504165448.264746645@linuxfoundation.org>
-References: <20200504165448.264746645@linuxfoundation.org>
+In-Reply-To: <20200504165442.494398840@linuxfoundation.org>
+References: <20200504165442.494398840@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,129 +42,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mikulas Patocka <mpatocka@redhat.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 31b22120194b5c0d460f59e0c98504de1d3f1f14 upstream.
+commit 4285de0725b1bf73608abbcd35ad7fd3ddc0b61e upstream.
 
-The dm-writecache reads metadata in the target constructor. However, when
-we reload the target, there could be another active instance running on
-the same device. This is the sequence of operations when doing a reload:
+The checks of the plugin buffer overflow in the previous fix by commit
+  f2ecf903ef06 ("ALSA: pcm: oss: Avoid plugin buffer overflow")
+are put in the wrong places mistakenly, which leads to the expected
+(repeated) sound when the rate plugin is involved.  Fix in the right
+places.
 
-1. construct new target
-2. suspend old target
-3. resume new target
-4. destroy old target
+Also, at those right places, the zero check is needed for the
+termination node, so added there as well, and let's get it done,
+finally.
 
-Metadata that were written by the old target between steps 1 and 2 would
-not be visible by the new target.
-
-Fix the data corruption by loading the metadata in the resume handler.
-
-Also, validate block_size is at least as large as both the devices'
-logical block size and only read 1 block from the metadata during
-target constructor -- no need to read entirety of metadata now that it
-is done during resume.
-
-Fixes: 48debafe4f2f ("dm: add writecache target")
-Cc: stable@vger.kernel.org # v4.18+
-Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Fixes: f2ecf903ef06 ("ALSA: pcm: oss: Avoid plugin buffer overflow")
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200424193350.19678-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/md/dm-writecache.c |   52 ++++++++++++++++++++++++++++++++-------------
- 1 file changed, 37 insertions(+), 15 deletions(-)
+ sound/core/oss/pcm_plugin.c |   20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
---- a/drivers/md/dm-writecache.c
-+++ b/drivers/md/dm-writecache.c
-@@ -884,6 +884,24 @@ static int writecache_alloc_entries(stru
- 	return 0;
- }
- 
-+static int writecache_read_metadata(struct dm_writecache *wc, sector_t n_sectors)
-+{
-+	struct dm_io_region region;
-+	struct dm_io_request req;
-+
-+	region.bdev = wc->ssd_dev->bdev;
-+	region.sector = wc->start_sector;
-+	region.count = n_sectors;
-+	req.bi_op = REQ_OP_READ;
-+	req.bi_op_flags = REQ_SYNC;
-+	req.mem.type = DM_IO_VMA;
-+	req.mem.ptr.vma = (char *)wc->memory_map;
-+	req.client = wc->dm_io;
-+	req.notify.fn = NULL;
-+
-+	return dm_io(&req, 1, &region, NULL);
-+}
-+
- static void writecache_resume(struct dm_target *ti)
- {
- 	struct dm_writecache *wc = ti->private;
-@@ -894,8 +912,18 @@ static void writecache_resume(struct dm_
- 
- 	wc_lock(wc);
- 
--	if (WC_MODE_PMEM(wc))
-+	if (WC_MODE_PMEM(wc)) {
- 		persistent_memory_invalidate_cache(wc->memory_map, wc->memory_map_size);
-+	} else {
-+		r = writecache_read_metadata(wc, wc->metadata_sectors);
-+		if (r) {
-+			size_t sb_entries_offset;
-+			writecache_error(wc, r, "unable to read metadata: %d", r);
-+			sb_entries_offset = offsetof(struct wc_memory_superblock, entries);
-+			memset((char *)wc->memory_map + sb_entries_offset, -1,
-+			       (wc->metadata_sectors << SECTOR_SHIFT) - sb_entries_offset);
-+		}
-+	}
- 
- 	wc->tree = RB_ROOT;
- 	INIT_LIST_HEAD(&wc->lru);
-@@ -1978,6 +2006,12 @@ static int writecache_ctr(struct dm_targ
- 		ti->error = "Invalid block size";
- 		goto bad;
- 	}
-+	if (wc->block_size < bdev_logical_block_size(wc->dev->bdev) ||
-+	    wc->block_size < bdev_logical_block_size(wc->ssd_dev->bdev)) {
-+		r = -EINVAL;
-+		ti->error = "Block size is smaller than device logical block size";
-+		goto bad;
-+	}
- 	wc->block_size_bits = __ffs(wc->block_size);
- 
- 	wc->max_writeback_jobs = MAX_WRITEBACK_JOBS;
-@@ -2066,8 +2100,6 @@ invalid_optional:
- 			goto bad;
+--- a/sound/core/oss/pcm_plugin.c
++++ b/sound/core/oss/pcm_plugin.c
+@@ -211,21 +211,23 @@ static snd_pcm_sframes_t plug_client_siz
+ 	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		plugin = snd_pcm_plug_last(plug);
+ 		while (plugin && drv_frames > 0) {
+-			if (check_size && drv_frames > plugin->buf_frames)
+-				drv_frames = plugin->buf_frames;
+ 			plugin_prev = plugin->prev;
+ 			if (plugin->src_frames)
+ 				drv_frames = plugin->src_frames(plugin, drv_frames);
++			if (check_size && plugin->buf_frames &&
++			    drv_frames > plugin->buf_frames)
++				drv_frames = plugin->buf_frames;
+ 			plugin = plugin_prev;
  		}
- 	} else {
--		struct dm_io_region region;
--		struct dm_io_request req;
- 		size_t n_blocks, n_metadata_blocks;
- 		uint64_t n_bitmap_bits;
- 
-@@ -2124,19 +2156,9 @@ invalid_optional:
- 			goto bad;
+ 	} else if (stream == SNDRV_PCM_STREAM_CAPTURE) {
+ 		plugin = snd_pcm_plug_first(plug);
+ 		while (plugin && drv_frames > 0) {
+ 			plugin_next = plugin->next;
++			if (check_size && plugin->buf_frames &&
++			    drv_frames > plugin->buf_frames)
++				drv_frames = plugin->buf_frames;
+ 			if (plugin->dst_frames)
+ 				drv_frames = plugin->dst_frames(plugin, drv_frames);
+-			if (check_size && drv_frames > plugin->buf_frames)
+-				drv_frames = plugin->buf_frames;
+ 			plugin = plugin_next;
  		}
- 
--		region.bdev = wc->ssd_dev->bdev;
--		region.sector = wc->start_sector;
--		region.count = wc->metadata_sectors;
--		req.bi_op = REQ_OP_READ;
--		req.bi_op_flags = REQ_SYNC;
--		req.mem.type = DM_IO_VMA;
--		req.mem.ptr.vma = (char *)wc->memory_map;
--		req.client = wc->dm_io;
--		req.notify.fn = NULL;
--
--		r = dm_io(&req, 1, &region, NULL);
-+		r = writecache_read_metadata(wc, wc->block_size >> SECTOR_SHIFT);
- 		if (r) {
--			ti->error = "Unable to read metadata";
-+			ti->error = "Unable to read first block of metadata";
- 			goto bad;
+ 	} else
+@@ -251,26 +253,28 @@ static snd_pcm_sframes_t plug_slave_size
+ 		plugin = snd_pcm_plug_first(plug);
+ 		while (plugin && frames > 0) {
+ 			plugin_next = plugin->next;
++			if (check_size && plugin->buf_frames &&
++			    frames > plugin->buf_frames)
++				frames = plugin->buf_frames;
+ 			if (plugin->dst_frames) {
+ 				frames = plugin->dst_frames(plugin, frames);
+ 				if (frames < 0)
+ 					return frames;
+ 			}
+-			if (check_size && frames > plugin->buf_frames)
+-				frames = plugin->buf_frames;
+ 			plugin = plugin_next;
  		}
- 	}
+ 	} else if (stream == SNDRV_PCM_STREAM_CAPTURE) {
+ 		plugin = snd_pcm_plug_last(plug);
+ 		while (plugin) {
+-			if (check_size && frames > plugin->buf_frames)
+-				frames = plugin->buf_frames;
+ 			plugin_prev = plugin->prev;
+ 			if (plugin->src_frames) {
+ 				frames = plugin->src_frames(plugin, frames);
+ 				if (frames < 0)
+ 					return frames;
+ 			}
++			if (check_size && plugin->buf_frames &&
++			    frames > plugin->buf_frames)
++				frames = plugin->buf_frames;
+ 			plugin = plugin_prev;
+ 		}
+ 	} else
 
 
