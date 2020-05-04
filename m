@@ -2,96 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A17E31C3DFD
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 17:04:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20D051C3E09
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 17:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729406AbgEDPCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 11:02:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728165AbgEDPCk (ORCPT
+        id S1729445AbgEDPFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 11:05:02 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:40674 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727815AbgEDPFA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 11:02:40 -0400
-Received: from forwardcorp1j.mail.yandex.net (forwardcorp1j.mail.yandex.net [IPv6:2a02:6b8:0:1619::183])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62554C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 08:02:40 -0700 (PDT)
-Received: from mxbackcorp2j.mail.yandex.net (mxbackcorp2j.mail.yandex.net [IPv6:2a02:6b8:0:1619::119])
-        by forwardcorp1j.mail.yandex.net (Yandex) with ESMTP id 7D6A02E09E9;
-        Mon,  4 May 2020 18:02:35 +0300 (MSK)
-Received: from vla1-81430ab5870b.qloud-c.yandex.net (vla1-81430ab5870b.qloud-c.yandex.net [2a02:6b8:c0d:35a1:0:640:8143:ab5])
-        by mxbackcorp2j.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id x8Wr5xxAsD-2YXG9Sbt;
-        Mon, 04 May 2020 18:02:35 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
-        t=1588604555; bh=TecYTwqL2Tni8kiHB0VFRMYHoz+jlo49hV2B3B1oH28=;
-        h=In-Reply-To:Message-ID:From:Date:References:To:Subject:Cc;
-        b=a+3ZY8hjuuH0jy7QCODn2HSUgXhHYwHG4hqr17w5kaBI8EqlqohmPA4GJdO4d29zZ
-         YoetrcGhkOqoWi4wF6aPU3Ji7SVhsDkU3qH8SFLhicKXFB3q46WYlUlOPSAXWCa7qR
-         lWRDAO4ZzWhQAqrAmWTJEht2lsU0/6X8RLxcqjzY=
-Authentication-Results: mxbackcorp2j.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
-Received: from dynamic-vpn.dhcp.yndx.net (dynamic-vpn.dhcp.yndx.net [2a02:6b8:b081:409::1:8])
-        by vla1-81430ab5870b.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id HG3qcYwhkL-2XXaA9TR;
-        Mon, 04 May 2020 18:02:33 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-Subject: Re: [PATCH 2/4] block/part_stat: use __this_cpu_add() instead of
- access by smp_processor_id()
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>, Christoph Lameter <cl@linux.com>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>
-References: <158859896942.19836.15240144203131230746.stgit@buzz>
- <158859897252.19836.5614675872684760741.stgit@buzz>
- <20200504140317.GB29020@infradead.org>
-From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-Message-ID: <2dfaeec5-135e-c7ac-714b-ecdf14478568@yandex-team.ru>
-Date:   Mon, 4 May 2020 18:02:28 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <20200504140317.GB29020@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
+        Mon, 4 May 2020 11:05:00 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 044Elis7024656;
+        Mon, 4 May 2020 15:04:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
+ bh=HlwbAlrpx3vJnc/cnvhjjhhjODFL/A8igwurSCDOi0E=;
+ b=RryTrC2iKUzql/6iQwhgQEfato+6RYgoLKaBxF3C7xSU2LRYifSZ8jn5Z+gn9Ib1eLyG
+ SZ+J7dyyfUrI1EvUiV0mJR5J4N3ku1CyiKV2HNcsMqKKDK/Q/XOIi4MDKTP7ua3ZawA5
+ 4GfyRU3CTGbQNkBBHHTWgO2FKVIlSI3/c/oxSf8TPkl8pbuRo7i+6CCh8zWhnXurx+zt
+ 1QjL1za2eyPvIOOncy7wxtu0V7NCnzYaHKm8hyFqfSWJlB3D++Egvruaj7XHrF0wlP4Z
+ +txG1BSOep3Z3ziFMdkSgBDyta3kIe4vMQT5JEwk5GygVoYLz78b0S5XdeQRE7xcErAp jg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 30s1gmy9mg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 04 May 2020 15:04:36 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 044ElbZt053429;
+        Mon, 4 May 2020 15:04:35 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 30t1r2f7eq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 04 May 2020 15:04:35 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 044F4XVp004344;
+        Mon, 4 May 2020 15:04:33 GMT
+Received: from linux-1.home.com (/10.175.9.166)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 04 May 2020 08:04:33 -0700
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        x86@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     pbonzini@redhat.com, konrad.wilk@oracle.com,
+        jan.setjeeilers@oracle.com, liran.alon@oracle.com,
+        junaids@google.com, graf@amazon.de, rppt@linux.vnet.ibm.com,
+        kuzuno@gmail.com, mgross@linux.intel.com,
+        alexandre.chartre@oracle.com
+Subject: [RFC v4][PATCH part-3 07/14] asidrv: Sequence to test interrupt+NMI on ASI
+Date:   Mon,  4 May 2020 17:02:28 +0200
+Message-Id: <20200504150235.12171-8-alexandre.chartre@oracle.com>
+X-Mailer: git-send-email 2.18.2
+In-Reply-To: <20200504150235.12171-1-alexandre.chartre@oracle.com>
+References: <20200504150235.12171-1-alexandre.chartre@oracle.com>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9610 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 suspectscore=0
+ spamscore=0 mlxlogscore=999 malwarescore=0 phishscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005040123
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9610 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 mlxscore=0
+ spamscore=0 clxscore=1015 priorityscore=1501 bulkscore=0 phishscore=0
+ impostorscore=0 malwarescore=0 lowpriorityscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005040123
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/05/2020 17.03, Christoph Hellwig wrote:
->> +#define __part_stat_add(part, field, addnd)				\
->> +	(part_stat_get(part, field) += (addnd))
-> 
-> Just open coding part_stat_get for the UP side would seems a little
-> easier to read.
+Add a sequence to test if an ASI remains active after receiving
+an interrupt which is itself interrupted by an NMI.
 
-If rewrite filed definition as
+Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
+---
+ drivers/staging/asi/asidrv.c | 62 +++++++++++++++++++++++++++++++++++-
+ drivers/staging/asi/asidrv.h |  1 +
+ 2 files changed, 62 insertions(+), 1 deletion(-)
 
-#ifdef	CONFIG_SMP
-	struct disk_stats __percpu *dkstats;
-#else
-	struct disk_stats __percpu dkstats[1];
-#endif
+diff --git a/drivers/staging/asi/asidrv.c b/drivers/staging/asi/asidrv.c
+index 8f964c9e0b14..e08f2a107e89 100644
+--- a/drivers/staging/asi/asidrv.c
++++ b/drivers/staging/asi/asidrv.c
+@@ -49,6 +49,7 @@ struct asidrv_test {
+ 	struct work_struct	work;	/* work for other cpu */
+ 	bool			work_set;
+ 	enum asidrv_run_error	run_error;
++	bool			intrnmi;
+ };
+ 
+ struct asidrv_sequence {
+@@ -65,6 +66,7 @@ static void asidrv_test_destroy(struct asidrv_test *test);
+ static void asidrv_run_fini(struct asidrv_test *test);
+ static void asidrv_run_cleanup(struct asidrv_test *test,
+ 			       struct asidrv_sequence *sequence);
++static void asidrv_intrnmi_send(struct work_struct *work);
+ 
+ static struct asidrv_test *asidrv_test_create(void)
+ {
+@@ -284,7 +286,10 @@ static enum asidrv_run_error asidrv_nmi_setup(struct asidrv_test *test)
+ 	}
+ 
+ 	/* set work to have another cpu to send us an NMI */
+-	INIT_WORK(&test->work, asidrv_nmi_send);
++	if (test->intrnmi)
++		INIT_WORK(&test->work, asidrv_intrnmi_send);
++	else
++		INIT_WORK(&test->work, asidrv_nmi_send);
+ 
+ 	test->work_set = true;
+ 
+@@ -336,6 +341,12 @@ static void asidrv_intr_handler(void *info)
+ 
+ 	pr_debug("Received interrupt\n");
+ 	atomic_set(&test->state, ASIDRV_STATE_INTR_RECEIVED);
++
++	if (!test->intrnmi)
++		return;
++
++	pr_debug("Waiting for NMI in interrupt\n");
++	asidrv_nmi_run(test);
+ }
+ 
+ static void asidrv_intr_send(struct work_struct *work)
+@@ -383,6 +394,50 @@ static enum asidrv_run_error asidrv_intr_run(struct asidrv_test *test)
+ 	return err;
+ }
+ 
++/*
++ * Interrupt+NMI Test Sequence
++ */
++
++static void asidrv_intrnmi_send(struct work_struct *work)
++{
++	/* send and interrupt and then send an NMI */
++	asidrv_intr_send(work);
++	asidrv_nmi_send(work);
++}
++
++static enum asidrv_run_error asidrv_intrnmi_setup(struct asidrv_test *test)
++{
++	test->intrnmi = true;
++	return asidrv_nmi_setup(test);
++}
++
++static enum asidrv_run_error asidrv_intrnmi_run(struct asidrv_test *test)
++{
++	enum asidrv_run_error err;
++	enum asidrv_state state;
++
++	/*
++	 * Wait for state changes indicating that an interrupt and
++	 * then an NMI were received.
++	 */
++	err = asidrv_wait_transition(test,
++				     ASIDRV_STATE_INTR_WAITING,
++				     ASIDRV_STATE_NMI_RECEIVED,
++				     ASIDRV_TIMEOUT_INTERRUPT);
++	if (err == ASIDRV_RUN_ERR_TIMEOUT) {
++		state = atomic_read(&test->state);
++		if (state == ASIDRV_STATE_INTR_WAITING) {
++			pr_debug("Interrupt wait timeout\n");
++			err = ASIDRV_RUN_ERR_INTR;
++		} else {
++			pr_debug("NMI wait timeout\n");
++			err = ASIDRV_RUN_ERR_NMI;
++		}
++	}
++
++	return err;
++}
++
+ /*
+  * Memory Buffer Access Test Sequences
+  */
+@@ -462,6 +517,10 @@ struct asidrv_sequence asidrv_sequences[] = {
+ 		"nmi",
+ 		asidrv_nmi_setup, asidrv_nmi_run, asidrv_nmi_cleanup,
+ 	},
++	[ASIDRV_SEQ_INTRNMI] = {
++		"intr+nmi",
++		asidrv_intrnmi_setup, asidrv_intrnmi_run, asidrv_nmi_cleanup,
++	},
+ };
+ 
+ static enum asidrv_run_error asidrv_run_init(struct asidrv_test *test)
+@@ -509,6 +568,7 @@ static enum asidrv_run_error asidrv_run_setup(struct asidrv_test *test,
+ 	int run_err;
+ 
+ 	test->work_set = false;
++	test->intrnmi = false;
+ 
+ 	if (sequence->setup) {
+ 		run_err = sequence->setup(test);
+diff --git a/drivers/staging/asi/asidrv.h b/drivers/staging/asi/asidrv.h
+index 6fac32d56f6f..de9f7ad993e0 100644
+--- a/drivers/staging/asi/asidrv.h
++++ b/drivers/staging/asi/asidrv.h
+@@ -12,6 +12,7 @@ enum asidrv_seqnum {
+ 	ASIDRV_SEQ_MEMMAP,	/* access mapped memory */
+ 	ASIDRV_SEQ_INTERRUPT,	/* interrupt sequence */
+ 	ASIDRV_SEQ_NMI,		/* NMI interrupt sequence */
++	ASIDRV_SEQ_INTRNMI,	/* NMI in interrupt sequence */
+ };
+ 
+ enum asidrv_run_error {
+-- 
+2.18.2
 
-Then all per-cpu macro should work as is for UP case too.
-Surprisingly arrow operator (struct->filed) works for arrays too =)
-
-
-Inlining per-cpu structures should be good for tiny UP systems.
-Especially if this could be done by few macro only in three places:
-definition, allocating and freeing.
-
-
-But sparse still complains.
-
-./include/linux/part_stat.h:45:24: warning: incorrect type in initializer (different address spaces)
-./include/linux/part_stat.h:45:24:    expected void const [noderef] <asn:3> *__vpp_verify
-./include/linux/part_stat.h:45:24:    got struct disk_stats [noderef] *
-
-Looks like it cannot assign different address-space to the filed.
-
-
-> 
-> Otherwise this looks good:
-> 
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> 
