@@ -2,144 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69CDB1C3781
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 13:03:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 291021C3789
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 13:04:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728200AbgEDLDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 07:03:42 -0400
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:18841 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726756AbgEDLDl (ORCPT
+        id S1728595AbgEDLEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 07:04:00 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:39674 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728388AbgEDLD6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 07:03:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1588590220; x=1620126220;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=T2Ad+xhss7QEUq6ACAoeVJMtAF5NTKjVDRG0qnqJk4M=;
-  b=mcEMa+bmB5gKCMhU+VbkZ7sLbYNRYILO/M9YzHkQDbUzmrPf/tfkld7e
-   VF9d1KXaGDjjdlcfryiK9pUIbabvZ2TijunqR4yLBBMdE3UdJYKxeLSUJ
-   CphHb08dwSqhxMbZg0yTkpCkuq7rGRYRU/WfDvJlwU65veRPuZhqyGkLB
-   vsZMoSv7Ds2D4CRjdXicg0qFabRC0W3NMd7wPlHPawkgnAv/FtVDtd1D8
-   +OZQRknY+EyKkVG0C1f2fL6sUFXLsgiXM2Rez610nqTDZQbcVBGLpKEDq
-   h08KJzTHgMYx+nY8pRMqE6j6OnzmIyaRWinzybC2EpaYQHognXL5lPh77
-   A==;
-IronPort-SDR: TkHLjhkNCssM/54UEuoLifdtWCRDV+TQjGqNzQuCtfU63PFsOqq9NIn9it4tXpty+S/Qx4uk0A
- uXxMDqbft7/ZdP0LF+XZf+++pNVtFEX8OYkOKgVT5xFO3+g9bBIaJp6qaDmLgjUVN3OOhGHedQ
- eQ8ILIzU6tfOoNM29spfHkLijtcfkFzttiEYku8Y3FzCEguDHgspOwN2H9Qa0VhJjA6IG/S1xd
- E2qi4olvwVVV+W7qAXeVWzctu+oGH9q1/Cwp7LBoW4oZsaOFrFc6dRRs/lkIS7fg2IbWSzdTm+
- Lq8=
-X-IronPort-AV: E=Sophos;i="5.73,351,1583164800"; 
-   d="scan'208";a="138293344"
-Received: from mail-bn7nam10lp2101.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.101])
-  by ob1.hgst.iphmx.com with ESMTP; 04 May 2020 19:03:38 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZD4qD4vdl1RmyZ8LPqKI9dFYBNhxGOBxyyKolIeUgImvRMLNtnDg2hUDh92ODTBfZieeZhE67FIUIfT/X8b5wwhxb+2iuL8O9kg4pF0O96mOnQd2u64vkEjOtm19n/z9KcVW8NfuCLjrfKilv8+mLJBPArs0yx2O4M6gjU0NR5AsxenFt+WF5s5YsRlhjdesrOGR1e54Ar6Y/AXkhsoEafn89jG3a+vSKBu2lcnOe+Hlp0FPhHizHe7a2soZx0X6+i1zgv6DHqNw/A0QZB28kAfURsHEFkRc8cDljCf2Lo42G6GcHOPEK6ga29ebRrr/wMC9vh8Jsttb5f+Y5qkykQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CBrXMGNmfuPgRYboGXskCcGcamN9Oase54vLZm12Wrc=;
- b=PR8NhrPMpHDPdBdC0Z0gxGfMfSxIENuw3klVltjdkH5EdVVZHWhdIRJwhcpvPwu8pQ+nvuwRym1WGZVzAWsyMmm1Sp5DrE/mVsOAxYjbTjUqObSqoqw58InNjjo6KysLwX10YpEdBd+WVdoAU+Hvt6TXyLSrv9C4rpnAWTJCnZY//gkgtXOCegjKtBNxRDADYpjcMU/H8fdHZZSuE11UnY9WLoK3Ne+Ay5OmWRnsUADJPGRrsA3leV/X46DgQjSClBwkrk88jVBOPn/6gaawld1UAFDkxco0khodpLLSbja/8r/HQpkuhasogkoaXafSw70R/GnDwGuJPaFf0gnfRw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CBrXMGNmfuPgRYboGXskCcGcamN9Oase54vLZm12Wrc=;
- b=HMkcqGNCFCg55p8goMbRiT814V/YmjZWycXgjRM+9RQmCzNhEcEl12N5BmNg4my4ffVsgsWJGxQlREfAJY6na6emYlU6d5qsuXtAAG0rV4WjhVXfzUBRX79NHAKnkIFShbab9y3KKkgXtriSW2PBYVEkJbmBKrXjPJcJ6rV1veI=
-Received: from SN6PR04MB4640.namprd04.prod.outlook.com (2603:10b6:805:a4::19)
- by SN6PR04MB4464.namprd04.prod.outlook.com (2603:10b6:805:b2::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.27; Mon, 4 May
- 2020 11:03:36 +0000
-Received: from SN6PR04MB4640.namprd04.prod.outlook.com
- ([fe80::9cbe:995f:c25f:d288]) by SN6PR04MB4640.namprd04.prod.outlook.com
- ([fe80::9cbe:995f:c25f:d288%6]) with mapi id 15.20.2958.030; Mon, 4 May 2020
- 11:03:36 +0000
-From:   Avri Altman <Avri.Altman@wdc.com>
-To:     Stanley Chu <stanley.chu@mediatek.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>
-CC:     "beanhuo@micron.com" <beanhuo@micron.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kuohong.wang@mediatek.com" <kuohong.wang@mediatek.com>,
-        "peter.wang@mediatek.com" <peter.wang@mediatek.com>,
-        "chun-hung.wu@mediatek.com" <chun-hung.wu@mediatek.com>,
-        "andy.teng@mediatek.com" <andy.teng@mediatek.com>
-Subject: RE: [PATCH v5 4/8] scsi: ufs-mediatek: add fixup_dev_quirks vops
-Thread-Topic: [PATCH v5 4/8] scsi: ufs-mediatek: add fixup_dev_quirks vops
-Thread-Index: AQHWIT7UcNDlRrxlf0S0WlJUL1qmaqiXwh9QgAACjFA=
-Date:   Mon, 4 May 2020 11:03:36 +0000
-Message-ID: <SN6PR04MB4640A424D8E400300200F351FCA60@SN6PR04MB4640.namprd04.prod.outlook.com>
-References: <20200503113415.21034-1-stanley.chu@mediatek.com>
- <20200503113415.21034-5-stanley.chu@mediatek.com>
- <SN6PR04MB46408BF365ADE7F226275BC0FCA60@SN6PR04MB4640.namprd04.prod.outlook.com>
-In-Reply-To: <SN6PR04MB46408BF365ADE7F226275BC0FCA60@SN6PR04MB4640.namprd04.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: mediatek.com; dkim=none (message not signed)
- header.d=none;mediatek.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [212.25.79.133]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 1202ed4f-8872-4489-038f-08d7f01acb49
-x-ms-traffictypediagnostic: SN6PR04MB4464:
-x-microsoft-antispam-prvs: <SN6PR04MB44649060BBCF1C8B0E7E49E1FCA60@SN6PR04MB4464.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:4502;
-x-forefront-prvs: 03932714EB
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 6CZ1txf016gqnCo7nLtnYC0mjL1CSwi9QRjCeFyBlIw0sw8SpzGzDLS7vPmwuY6RMvPgVniDU8IbP0HhOg2jrWkFyL1cuqkn/g8mci2hi2VsaYfNzLPb2oe9D4nRb26LPjK6CsuDlZFbF+RE705pkugLWT+Xikm5zXDppiuYebyW2wpNR7WqX2AavdzqDXQ6J10lw9spQJUQ7A5Yr+MVLtWyDXvQGsGCj0cDL6CbYneIR5OLXZCB/4yttvjRdSj8FkSPa6tMtO4XxUpGERLvykIIdy4CRx92cy9WyDQgxryQhhUOvINcTgcbmjA2Umg+PqlV472B0P/yRdoyPx7B5MZKOhUjn91R0uQAGEDA5k4Xm7/tSdDO46M1Ub0MtsYy/dVT2diahkUe8LoOQmlly3/AoKSpVaMDos4c99WF48DmJp+0HusXF7CSvFJUFnRz
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR04MB4640.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(376002)(39860400002)(346002)(396003)(136003)(66476007)(8676002)(26005)(2906002)(52536014)(6506007)(71200400001)(478600001)(33656002)(5660300002)(86362001)(2940100002)(64756008)(4744005)(55016002)(9686003)(7696005)(66946007)(54906003)(66446008)(76116006)(4326008)(66556008)(186003)(8936002)(316002)(7416002)(110136005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: Lpot51sJtCNQQeharX17bbSwi7M1/KrhQFnZqPJbcuZ0sHRfKwaOQFuoPnNpPJPthNbck7XsdqW327RYNd7OI+OavLCw1hD3B/ogrsVvIKbBm3Hj9bMDiibVJ3we1OatQhHVUmapoMVbwE8UXYvws9bPkWF/FClcXZ8uUInvvJ1aLSY+jzj8C+t6QKWwUY8dEYIwVnZItX3APA9dpHNVGCm8bomyVNFnewmEGlSvrNiVt6MSpfAVCsYD4NdfL084XtdSe87Db7n4LU0ShqV13GPK/DE7j2rCq+XJkI/LSBy+ZtxHc6EUT8JXzH02wBcvikOT/p+glEgmvA6ZbrPazkkP2dEaRYU7Ho1e92mnWIs8M9r93O15ViH3J8CGwOxqjSSQSXKcWv5VRyp66RSdmGxtEGZTjaNYyxEqHt0+GFkUS2wghAl21vYZTLcgUIBuGvdrEFj95S3LH3yfYlsIZ/YivAm5dmgX1keBKplvdApw5RMtSa5N7J9Zq/MOoAMyalj8OrtKXjZUgXYRQXwlRtiiFDO2Idn5wIZMdjMnPoodMDxtrSRR2TVEM73b7qfIlkNLE7yrbbAg8J1aEtRGhUW6IFlOC/paV0ltaLApytlFHr35bT2RMITVXP1+RWMMzVlwntH5mih2TVwJVPVdaEj5iIZa+ILhdo5qnGA2c0Je+wMmMHItEdgFqr0OTIPDxP7Nus3ODdVy5YdsHtNMGLS3qyN1hOAULQeiUi96POdbZw95AhQp64VSaRFwSxjOAyZuyPZEiYTGnOB6XQV0jIiORFNpr1BsejmYTIiPXw0=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 4 May 2020 07:03:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588590236;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ICTWiD14DGnWtt5uuvQA1CMZKfEw+J2p/55HnpIvnTw=;
+        b=gjkHwbfnmXGE2/vrLlruOQhSUzTe0/hJlHVE0omVAGKzJ2uz4D0H5Uxf+FaOFSUfE4slqZ
+        ioRAXO0BJJ4HfBv64cLsaOJ/xrvPjmB1ux1UYjCARj25bqZos9B9ZwhBIWhTHodQCzXHmd
+        JE3rO7cf9F94/JLD+fDeV8dMxsEew3M=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-12-Rd7-lbWqNdK2o17YGZ-_jA-1; Mon, 04 May 2020 07:03:52 -0400
+X-MC-Unique: Rd7-lbWqNdK2o17YGZ-_jA-1
+Received: by mail-wr1-f70.google.com with SMTP id r11so10554198wrx.21
+        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 04:03:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ICTWiD14DGnWtt5uuvQA1CMZKfEw+J2p/55HnpIvnTw=;
+        b=syZ8rtSSSh5W15+yhQYbrDVcBpvhxBzR2xYQ5FB7H5WrcKAjM6awGAk39l0u/A3z1i
+         zhIW3obgMWlaIsylP+Uob1I3Zxv121gvt7bn6tdE+yOH0yYFYanhZ8frALYefl/NarKI
+         uxPHm25AzuFgl6IdxjH0JNS38W/STwyRKQu6aw5+afrPhdSnSDvwHknt58tclU/12yVT
+         esuQlQMgq7yxcfwz1RYbI2wv7oBfap7WXdiI+ZZNKnxsrcwhkoVuErz7yoZ/+e4Ex6WC
+         5j7A72Wp9PX8JYJc3T2aXu8mNiLI4/y7JJJcGHYGg8LpYpjMAMld0NLBMxTDXIc91Xm8
+         ENDw==
+X-Gm-Message-State: AGi0PuZzuF+Ea+RQmvgLeCeJ+0chNV614XNwOQ18K+PezOtmsXjkm4yJ
+        7ndXSY3hkJOWNoGTESIIb/UZJ2vTxNyBvQGAUCWIl9YG95MSKwZpDcQeYgP1kk6k7qyV/NPsClZ
+        r64Eb+TneNnX7zIcGFrJorkkO
+X-Received: by 2002:adf:a2d7:: with SMTP id t23mr4327205wra.402.1588590231209;
+        Mon, 04 May 2020 04:03:51 -0700 (PDT)
+X-Google-Smtp-Source: APiQypIx2aIz7stykmwXWJf7C80Kf95sM7YNOTZKj0BHeE5ekaM3LQpRAivT6MmqN7PrZv1JcZDMtA==
+X-Received: by 2002:adf:a2d7:: with SMTP id t23mr4327156wra.402.1588590230858;
+        Mon, 04 May 2020 04:03:50 -0700 (PDT)
+Received: from localhost.localdomain.com ([194.230.155.213])
+        by smtp.gmail.com with ESMTPSA id a13sm10885750wrv.67.2020.05.04.04.03.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 May 2020 04:03:50 -0700 (PDT)
+From:   Emanuele Giuseppe Esposito <eesposit@redhat.com>
+To:     kvm@vger.kernel.org
+Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Emanuele Giuseppe Esposito <e.emanuelegiuseppe@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>
+Subject: [PATCH v2 0/5] Statsfs: a new ram-based file sytem for Linux kernel statistics
+Date:   Mon,  4 May 2020 13:03:39 +0200
+Message-Id: <20200504110344.17560-1-eesposit@redhat.com>
+X-Mailer: git-send-email 2.25.2
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1202ed4f-8872-4489-038f-08d7f01acb49
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 May 2020 11:03:36.5480
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: dX+4qjBcvvlo96IV4U5oSMj3xg7TCmznIToe4oB+L5ORPqeT9vs74XynAIsFsxzXbaNxOSLy+RbpFBoN+/r/aw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4464
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+There is currently no common way for Linux kernel subsystems to expose
+statistics to userspace shared throughout the Linux kernel; subsystems
+have to take care of gathering and displaying statistics by themselves,
+for example in the form of files in debugfs. For example KVM has its own
+code section that takes care of this in virt/kvm/kvm_main.c, where it sets
+up debugfs handlers for displaying values and aggregating them from
+various subfolders to obtain information about the system state (i.e.
+displaying the total number of exits, calculated by summing all exits of
+all cpus of all running virtual machines).
 
+Allowing each section of the kernel to do so has two disadvantages. First,
+it will introduce redundant code. Second, debugfs is anyway not the right
+place for statistics (for example it is affected by lockdown)
 
-> >
-> > +void ufs_mtk_fixup_dev_quirks(struct ufs_hba *hba)
-> > +{
-> > +       struct ufs_dev_info *dev_info =3D &hba->dev_info;
-> > +       u16 mid =3D dev_info->wmanufacturerid;
-> > +
-> > +       ufshcd_fixup_device_setup(hba, ufs_mtk_dev_fixups);
-> > +
-> > +       if (mid =3D=3D UFS_VENDOR_SAMSUNG)
-> > +               hba->dev_quirks &=3D ~UFS_DEVICE_QUIRK_HOST_PA_TACTIVAT=
-E;
-> Why move it? It is a unipro/hci param.
-Actually - please ignore.
+In this patch series I introduce statsfs, a synthetic ram-based virtual
+filesystem that takes care of gathering and displaying statistics for the
+Linux kernel subsystems.
 
-Thanks,
-Avri
+The file system is mounted on /sys/kernel/stats and would be already used
+by kvm. Statsfs was initially introduced by Paolo Bonzini [1].
+
+Statsfs offers a generic and stable API, allowing any kind of
+directory/file organization and supporting multiple kind of aggregations
+(not only sum, but also average, max, min and count_zero) and data types
+(all unsigned and signed types plus boolean). The implementation, which is
+a generalization of KVM’s debugfs statistics code, takes care of gathering
+and displaying information at run time; users only need to specify the
+values to be included in each source.
+
+Statsfs would also be a different mountpoint from debugfs, and would not
+suffer from limited access due to the security lock down patches. Its main
+function is to display each statistics as a file in the desired folder
+hierarchy defined through the API. Statsfs files can be read, and possibly
+cleared if their file mode allows it.
+
+Statsfs has two main components: the public API defined by
+include/linux/statsfs.h, and the virtual file system which should end up
+in /sys/kernel/stats.
+
+The API has two main elements, values and sources. Kernel subsystems like
+KVM can use the API to create a source, add child
+sources/values/aggregates and register it to the root source (that on the
+virtual fs would be /sys/kernel/statsfs).
+
+Sources are created via statsfs_source_create(), and each source becomes a
+directory in the file system. Sources form a parent-child relationship;
+root sources are added to the file system via statsfs_source_register().
+Every other source is added to or removed from a parent through the
+statsfs_source_add_subordinate and statsfs_source_remote_subordinate APIs.
+Once a source is created and added to the tree (via add_subordinate), it
+will be used to compute aggregate values in the parent source.
+
+Values represent quantites that are gathered by the statsfs user. Examples
+of values include the number of vm exits of a given kind, the amount of
+memory used by some data structure, the length of the longest hash table
+chain, or anything like that. Values are defined with the
+statsfs_source_add_values function. Each value is defined by a struct
+statsfs_value; the same statsfs_value can be added to many different
+sources. A value can be considered "simple" if it fetches data from a
+user-provided location, or "aggregate" if it groups all values in the
+subordinates sources that include the same statsfs_value.
+
+For more information, please consult the kerneldoc documentation in patch
+2 and the sample uses in the kunit tests and in KVM.
+
+This series of patches is based on my previous series "libfs: group and
+simplify linux fs code" and the single patch sent to kvm "kvm_host: unify
+VM_STAT and VCPU_STAT definitions in a single place". The former
+simplifies code duplicated in debugfs and tracefs (from which statsfs is
+based on), the latter groups all macros definition for statistics in kvm
+in a single common file shared by all architectures.
+
+Patch 1 adds a new refcount and kref destructor wrappers that take a
+semaphore, as those are used later by statsfs. Patch 2 introduces the
+statsfs API, patch 3 provides extensive tests that can also be used as
+example on how to use the API and patch 4 adds the file system support.
+Finally, patch 5 provides a real-life example of statsfs usage in KVM.
+
+[1] https://lore.kernel.org/kvm/5d6cdcb1-d8ad-7ae6-7351-3544e2fa366d@redhat.com/?fbclid=IwAR18LHJ0PBcXcDaLzILFhHsl3qpT3z2vlG60RnqgbpGYhDv7L43n0ZXJY8M
+
+Signed-off-by: Emanuele Giuseppe Esposito <eesposit@redhat.com>
+
+v1->v2 remove unnecessary list_foreach_safe loops, fix wrong indentation,
+change statsfs in stats_fs
+
+Emanuele Giuseppe Esposito (5):
+  refcount, kref: add dec-and-test wrappers for rw_semaphores
+  stats_fs API: create, add and remove stats_fs sources and values
+  kunit: tests for stats_fs API
+  stats_fs fs: virtual fs to show stats to the end-user
+  kvm_main: replace debugfs with stats_fs
+
+ MAINTAINERS                     |    7 +
+ arch/arm64/kvm/Kconfig          |    1 +
+ arch/arm64/kvm/guest.c          |    2 +-
+ arch/mips/kvm/Kconfig           |    1 +
+ arch/mips/kvm/mips.c            |    2 +-
+ arch/powerpc/kvm/Kconfig        |    1 +
+ arch/powerpc/kvm/book3s.c       |    6 +-
+ arch/powerpc/kvm/booke.c        |    8 +-
+ arch/s390/kvm/Kconfig           |    1 +
+ arch/s390/kvm/kvm-s390.c        |   16 +-
+ arch/x86/include/asm/kvm_host.h |    2 +-
+ arch/x86/kvm/Kconfig            |    1 +
+ arch/x86/kvm/Makefile           |    2 +-
+ arch/x86/kvm/debugfs.c          |   64 --
+ arch/x86/kvm/stats_fs.c         |   56 ++
+ arch/x86/kvm/x86.c              |    6 +-
+ fs/Kconfig                      |   12 +
+ fs/Makefile                     |    1 +
+ fs/stats_fs/Makefile            |    6 +
+ fs/stats_fs/inode.c             |  337 ++++++++++
+ fs/stats_fs/internal.h          |   35 +
+ fs/stats_fs/stats_fs-tests.c    | 1088 +++++++++++++++++++++++++++++++
+ fs/stats_fs/stats_fs.c          |  773 ++++++++++++++++++++++
+ include/linux/kref.h            |   11 +
+ include/linux/kvm_host.h        |   39 +-
+ include/linux/refcount.h        |    2 +
+ include/linux/stats_fs.h        |  304 +++++++++
+ include/uapi/linux/magic.h      |    1 +
+ lib/refcount.c                  |   32 +
+ tools/lib/api/fs/fs.c           |   21 +
+ virt/kvm/arm/arm.c              |    2 +-
+ virt/kvm/kvm_main.c             |  314 ++-------
+ 32 files changed, 2772 insertions(+), 382 deletions(-)
+ delete mode 100644 arch/x86/kvm/debugfs.c
+ create mode 100644 arch/x86/kvm/stats_fs.c
+ create mode 100644 fs/stats_fs/Makefile
+ create mode 100644 fs/stats_fs/inode.c
+ create mode 100644 fs/stats_fs/internal.h
+ create mode 100644 fs/stats_fs/stats_fs-tests.c
+ create mode 100644 fs/stats_fs/stats_fs.c
+ create mode 100644 include/linux/stats_fs.h
+
+-- 
+2.25.2
+
