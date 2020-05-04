@@ -2,107 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ABEF1C3499
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 10:37:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75AE21C34B5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 10:44:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728214AbgEDIhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 04:37:38 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47080 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726796AbgEDIhi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 04:37:38 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 376E4AC7D;
-        Mon,  4 May 2020 08:37:37 +0000 (UTC)
-Received: by lion.mk-sys.cz (Postfix, from userid 1000)
-        id 143EA604EE; Mon,  4 May 2020 10:37:34 +0200 (CEST)
-Date:   Mon, 4 May 2020 10:37:34 +0200
-From:   Michal Kubecek <mkubecek@suse.cz>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Jander <david@protonic.nl>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>, mkl@pengutronix.de,
-        Marek Vasut <marex@denx.de>,
-        Christian Herber <christian.herber@nxp.com>
-Subject: Re: [PATCH v5 1/2] ethtool: provide UAPI for PHY master/slave
- configuration.
-Message-ID: <20200504083734.GA5989@lion.mk-sys.cz>
-References: <20200504071214.5890-1-o.rempel@pengutronix.de>
- <20200504071214.5890-2-o.rempel@pengutronix.de>
- <20200504080417.i3d2jsjjpu2zjk4z@pengutronix.de>
+        id S1727929AbgEDIoE convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 May 2020 04:44:04 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:14459 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726351AbgEDIoE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 04:44:04 -0400
+X-Originating-IP: 91.224.148.103
+Received: from xps13 (unknown [91.224.148.103])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 8DCEF240014;
+        Mon,  4 May 2020 08:43:40 +0000 (UTC)
+Date:   Mon, 4 May 2020 10:43:39 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Ricardo Ribalda Delgado <ricardo@ribalda.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Alban Bedel <albeu@free.fr>,
+        Ricardo Ribalda Delgado <ribalda@kernel.org>
+Subject: Re: [PATCH] mtd: Fix mtd not registered due to nvmem name collision
+Message-ID: <20200504104339.31b4a858@xps13>
+In-Reply-To: <20200430131721.360064-1-ricardo@ribalda.com>
+References: <20200430131721.360064-1-ricardo@ribalda.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200504080417.i3d2jsjjpu2zjk4z@pengutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 04, 2020 at 10:04:17AM +0200, Oleksij Rempel wrote:
-> @Michal,
-> 
-> i noticed that linkmodes_fill_reply() some times get not enough
-> tailroom.
-> if data->peer_empty == 0
-> linkmodes_reply_size() size: 476
-> linkmodes_fill_reply() skb tailroom: 724
-> 
-> 
-> if data->peer_empty == 1
-> linkmodes_reply_size() size: 216                                      
-> linkmodes_fill_reply() skb tailroom: 212
-> 
-> In the last case i won't be able to attach master_lave state and cfg
-> fields.
-> 
-> It looks like this issue was not introduced by my patches. May be you
-> have idea, what is missing?
+Hi Richard,
 
-It's my mistake, I'm just not sure why I never ran into this while
-testing. Please try the patch below.
+Ricardo Ribalda Delgado <ricardo@ribalda.com> wrote on Thu, 30 Apr 2020
+15:17:21 +0200:
 
-Michal
+> From: Ricardo Ribalda Delgado <ribalda@kernel.org>
+> 
+> When the nvmem framework is enabled, a nvmem device is created per mtd
+> device/partition.
+> 
+> It is not uncommon that a device can have multiple mtd devices with
+> partitions that have the same name. Eg, when there DT overlay is allowed
+> and the same device with mtd is attached twice.
+> 
+> Under that circumstances, the mtd fails to register due to a name
+> duplication on the nvmem framework.
+> 
+> With this patch we use the mtdX name instead of the partition name,
+> which is unique.
+> 
+> [    8.948991] sysfs: cannot create duplicate filename '/bus/nvmem/devices/Production Data'
+> [    8.948992] CPU: 7 PID: 246 Comm: systemd-udevd Not tainted 5.5.0-qtec-standard #13
+> [    8.948993] Hardware name: AMD Dibbler/Dibbler, BIOS 05.22.04.0019 10/26/2019
+> [    8.948994] Call Trace:
+> [    8.948996]  dump_stack+0x50/0x70
+> [    8.948998]  sysfs_warn_dup.cold+0x17/0x2d
+> [    8.949000]  sysfs_do_create_link_sd.isra.0+0xc2/0xd0
+> [    8.949002]  bus_add_device+0x74/0x140
+> [    8.949004]  device_add+0x34b/0x850
+> [    8.949006]  nvmem_register.part.0+0x1bf/0x640
+> ...
+> [    8.948926] mtd mtd8: Failed to register NVMEM device
+> 
+> Fixes: c4dfa25ab307 ("mtd: add support for reading MTD devices via the nvmem API")
+> Signed-off-by: Ricardo Ribalda Delgado <ribalda@kernel.org>
+> ---
+>  drivers/mtd/mtdcore.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index 2916674208b3..29d41003d6e0 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -555,7 +555,7 @@ static int mtd_nvmem_add(struct mtd_info *mtd)
+>  
+>  	config.id = -1;
+>  	config.dev = &mtd->dev;
+> -	config.name = mtd->name;
+> +	config.name = dev_name(&mtd->dev);
+>  	config.owner = THIS_MODULE;
+>  	config.reg_read = mtd_nvmem_reg_read;
+>  	config.size = mtd->size;
 
-diff --git a/net/ethtool/netlink.c b/net/ethtool/netlink.c
-index 0c772318c023..ed5357210193 100644
---- a/net/ethtool/netlink.c
-+++ b/net/ethtool/netlink.c
-@@ -342,7 +342,7 @@ static int ethnl_default_doit(struct sk_buff *skb, struct genl_info *info)
- 	ret = ops->reply_size(req_info, reply_data);
- 	if (ret < 0)
- 		goto err_cleanup;
--	reply_len = ret;
-+	reply_len = ret + ethnl_reply_header_size();
- 	ret = -ENOMEM;
- 	rskb = ethnl_reply_init(reply_len, req_info->dev, ops->reply_cmd,
- 				ops->hdr_attr, info, &reply_payload);
-@@ -588,7 +588,7 @@ static void ethnl_default_notify(struct net_device *dev, unsigned int cmd,
- 	ret = ops->reply_size(req_info, reply_data);
- 	if (ret < 0)
- 		goto err_cleanup;
--	reply_len = ret;
-+	reply_len = ret + ethnl_reply_header_size();
- 	ret = -ENOMEM;
- 	skb = genlmsg_new(reply_len, GFP_KERNEL);
- 	if (!skb)
-diff --git a/net/ethtool/strset.c b/net/ethtool/strset.c
-index 95eae5c68a52..0eed4e4909ab 100644
---- a/net/ethtool/strset.c
-+++ b/net/ethtool/strset.c
-@@ -324,7 +324,6 @@ static int strset_reply_size(const struct ethnl_req_info *req_base,
- 	int len = 0;
- 	int ret;
- 
--	len += ethnl_reply_header_size();
- 	for (i = 0; i < ETH_SS_COUNT; i++) {
- 		const struct strset_info *set_info = &data->sets[i];
- 
+We hope this will definitely fix the NVMEM duplicate name issue. If it
+does not reliably, we might want to revert this patch and create an MTD
+unique ID field which, for each MTD device, concatenates the name of
+its parent and its own mtd->name.
+
+Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+
+Thanks,
+Miquèl
