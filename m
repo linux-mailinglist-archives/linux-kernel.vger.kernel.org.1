@@ -2,97 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADE601C4549
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:14:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FCC91C4563
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:15:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732347AbgEDSOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:14:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59126 "EHLO
+        id S1731378AbgEDSOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:14:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732091AbgEDSOA (ORCPT
+        by vger.kernel.org with ESMTP id S1732352AbgEDSOa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:14:00 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27FD8C061A0F
-        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 11:14:00 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id g26so264142qtv.13
-        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 11:14:00 -0700 (PDT)
+        Mon, 4 May 2020 14:14:30 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24743C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 11:14:30 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id p25so5913054pfn.11
+        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 11:14:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Z3nW96fFZYnDn8jk8+VYyojQcEjzERa3OD5pCIlBdho=;
-        b=K1h0aeVunNzSt5ERI2Q5f1AdAZ3vbRcewfdgTDjWr/DOw/0bFRJyHo5X3G1b4FH9Xu
-         gr4v3njy+NCCtBeUGcdM6EZfJjBU6Sb4QUbjBMA1Kf13psCgtumNxIH5kyXKgupAOryp
-         IQhYOQHjNWrgm0b3KRupuCNtFivn+Gqns6Zb0HPC4S3bQY3xzBOxxEUeNIDvpR6c8JPA
-         O65YVwhn7Nx9KOa2gtSjrvavv1qiH0w42V+gZdqaIAPrDgMfh4SLBo6u3sD/DfiY88EK
-         OMf9ZIRY2El4ZvVgtPG2UoIZkbB3A4Y0bllnjIo9M+x+MzBKenOUkIRU2d1Rhgahl7ik
-         W28A==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LJmSp82Ligwp7WEnd3OlCUWXViCVJLdpeeRX1nJdOAo=;
+        b=i4ryt0VLTZEgW9WQe4ALh7GSYN1W1JwqThJe+wRYZgNPFUczOTCCP213kc/oLApap1
+         G0ekyN5KGn7TaWDNsjrmi06xnz+e4iALaF/Fp3Q1fClqTC4UOWucvy4YhBo+9Ij0krMM
+         Z5LGe36D3Cdo4BukCzFGBjqJ8NjSHMXqYgJW4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Z3nW96fFZYnDn8jk8+VYyojQcEjzERa3OD5pCIlBdho=;
-        b=UdlgQhduQZnU6IzhQk9tD1HrPnexnemvmyO/qmDcB02eIWIOBUgmuaidgvrdHJTu3g
-         lntTVgZGgWo/YaAS98JZeMw5Pn3eEViRkHXKqlLWf0FwXW6tarMGvR2sigED8hHipVU/
-         zkn07qh2u7YPhnJsIXLIWl29UdnRB0g8z9C2H6I7zbzAy3DtoVlwbolrST+1EwFTlRj3
-         bm55PCEuBtQwLgjtBO6UV6VwX58IFwMpDWvzHvXYak4Jm4flxsz4286W/iTpdjJmka88
-         CacOKgnVGA5R5lUuqFY3AedQh7Th25IRSyEQkS6N6ZH1XQ0b06Ggt7C64Ldqh1O8v2m2
-         XVdg==
-X-Gm-Message-State: AGi0PuaWRplpXMcDrQCNmeV7x9L8f5Fe/iA8Qitz834X3Il+7Qn0/bD2
-        qKAW5z1uJlfRqowUPRS5qYvcGA==
-X-Google-Smtp-Source: APiQypI4Oi2r4p833QHi40cXGxwDFX3mON5ouXXX22y6pe3WuHg5/KcOdeA1C0f71wZ5egHt2uEuCQ==
-X-Received: by 2002:ac8:1c35:: with SMTP id a50mr389657qtk.286.1588616039180;
-        Mon, 04 May 2020 11:13:59 -0700 (PDT)
-Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id v4sm7107146qkv.43.2020.05.04.11.13.57
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LJmSp82Ligwp7WEnd3OlCUWXViCVJLdpeeRX1nJdOAo=;
+        b=qzzeRSOwfxCT2AgAWZJVixhJQ6lWXaFvzpyH06wWWyGagqPORDktEIiGVhO0cVxFAB
+         t0JEkdL44fs/3eUquKIMFy6FjLKyUFGmve0pNdbEN1MwXXq2z1IizeMWAV6NfWxMsPL0
+         qShMgQLZzGY9KPn6s8JUITlyniUPhQurq4kxaS4LrguyJGQBnGkrxroO+Ke9HxiJD+tB
+         NK1vTvAlLMxQCgR26bNUzru0ULzNPRXA2WQQFyOT7g3sxVFfp8KqC44IpAdqFchhpRu6
+         cRcUhziRyfIqbaylc5PyDJ/vJeRCiVLefnfGrUTBOJX4Z2+di1SpkwBepAF3geyA3zRr
+         eVHA==
+X-Gm-Message-State: AGi0PuaeyE7ZBRQNWWUGc7yJ736UWdjTOy0umg5fK1n/Ry2WBeSU4Laa
+        mecP2f+Xr9oU+qiQOQSfzRN7AQ==
+X-Google-Smtp-Source: APiQypJpzCwRNKHAwOjPu5Y0o7IOylpPdGPyjby32XHu799JivYz0nUFllc5ajHtfLH+GbCdEk043g==
+X-Received: by 2002:a65:5287:: with SMTP id y7mr232927pgp.86.1588616069763;
+        Mon, 04 May 2020 11:14:29 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 127sm9632296pfw.72.2020.05.04.11.14.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 May 2020 11:13:58 -0700 (PDT)
-From:   Alex Elder <elder@linaro.org>
-To:     bjorn.andersson@linaro.org, agross@kernel.org
-Cc:     davem@davemloft.net, evgreen@chromium.org.net,
-        subashab@codeaurora.org, cpratapa@codeaurora.org,
-        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH net-next v2 1/1] arm64: dts: sdm845: add IPA iommus property
-Date:   Mon,  4 May 2020 13:13:50 -0500
-Message-Id: <20200504181350.22822-1-elder@linaro.org>
-X-Mailer: git-send-email 2.20.1
+        Mon, 04 May 2020 11:14:29 -0700 (PDT)
+Date:   Mon, 4 May 2020 11:14:28 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc:     jmorris@namei.org, sashal@kernel.org, linux-kernel@vger.kernel.org,
+        pmladek@suse.com, sergey.senozhatsky@gmail.com,
+        rostedt@goodmis.org, anton@enomsg.org, ccross@android.com,
+        tony.luck@intel.com, robh+dt@kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v1 0/3] allow ramoops to collect all kmesg_dump events
+Message-ID: <202005041112.F3C8117F67@keescook>
+References: <20200502143555.543636-1-pasha.tatashin@soleen.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200502143555.543636-1-pasha.tatashin@soleen.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an "iommus" property to the IPA node in "sdm845.dtsi".  It is
-required because there are two regions of memory the IPA accesses
-through an SMMU.  The next few patches define and map those regions.
+On Sat, May 02, 2020 at 10:35:52AM -0400, Pavel Tatashin wrote:
+> Currently, ramoops is capable to collect dmesg buffer only during
+> panic and oops events. However, it is desirable for shutdown performance
+> analysis reasons to optionally allow collecting dmesg buffers during other
+> events as well: reboot, kexec, emergency reboot etc.
+> 
+> How to quickly test:
+> 
+> virtme-run --mods=auto --kdir --mods=auto --kdir . \
+> 	-a memmap=1G$8G -a ramoops.mem_address=0x200000000 \
+> 	-a ramoops.mem_size=0x100000 -a ramoops.record_size=32768 \
+> 	-a ramoops.dump_all=1 -a quiet --qemu-opts -m 8G
+> ..
+> # reboot -f
+> 
+> After VM is back:
+> 
+> # mount -t pstore pstore /mnt
+> # head /mnt/dmesg-ramoops-0 
+> Restart#1 Part1
 
-Signed-off-by: Alex Elder <elder@linaro.org>
----
+Is there a reason that using ramoops.console_size isn't sufficient for
+this?
 
-NOTE: This was posted in error previously as part of another series,
-      which has since been superseded (and no longer includes it).
-      https://lore.kernel.org/netdev/20200504175859.22606-1-elder@linaro.org/
+I'm not strictly opposed to making these changes, but traditionally the
+granularity of dmesg output has been pretty easily "all or crashes"
+instead of a range within.
 
- arch/arm64/boot/dts/qcom/sdm845.dtsi | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-index 71dfdfcf2033..7cce6f1b7c9e 100644
---- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-@@ -1762,6 +1762,8 @@
- 
- 		ipa: ipa@1e40000 {
- 			compatible = "qcom,sdm845-ipa";
-+
-+			iommus = <&apps_smmu 0x720 0x3>;
- 			reg = <0 0x1e40000 0 0x7000>,
- 			      <0 0x1e47000 0 0x2000>,
- 			      <0 0x1e04000 0 0x2c000>;
 -- 
-2.20.1
-
+Kees Cook
