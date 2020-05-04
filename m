@@ -2,162 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EB401C34C2
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 10:45:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BF9B1C34C8
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 10:46:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728302AbgEDIpp convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 May 2020 04:45:45 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:26900 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726351AbgEDIpo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 04:45:44 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0448WGAk068567;
-        Mon, 4 May 2020 04:45:40 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30s4xjgttf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 May 2020 04:45:39 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 0448eU7a022879;
-        Mon, 4 May 2020 08:45:37 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 30s0g5mbk3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 May 2020 08:45:37 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0448jYUp59441472
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 4 May 2020 08:45:34 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9F7F111C058;
-        Mon,  4 May 2020 08:45:34 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 347F111C04C;
-        Mon,  4 May 2020 08:45:34 +0000 (GMT)
-Received: from linux.fritz.box (unknown [9.145.145.121])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon,  4 May 2020 08:45:34 +0000 (GMT)
-From:   Stefan Haberland <sth@linux.ibm.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        hoeppner@linux.ibm.com, linux-s390@vger.kernel.org,
-        heiko.carstens@de.ibm.com, gor@linux.ibm.com,
-        borntraeger@de.ibm.com, linux-kernel@vger.kernel.org,
-        Peter Oberparleiter <oberpar@linux.ibm.com>
-References: <20200430111754.98508-1-sth@linux.ibm.com>
- <20200430111754.98508-2-sth@linux.ibm.com> <20200430131351.GA24813@lst.de>
- <4ab11558-9f2b-02ee-d191-c9a5cc38de0f@linux.ibm.com>
-Autocrypt: addr=sth@linux.ibm.com; keydata=
- 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
- cH4TNHyhiR0KAbxE8qKx3Jc=
-Subject: Re: [PATCH 1/1] s390/dasd: remove ioctl_by_bdev from DASD driver
-Message-ID: <70f541fe-a678-8952-0753-32707d21e337@linux.ibm.com>
-Date:   Mon, 4 May 2020 10:45:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <4ab11558-9f2b-02ee-d191-c9a5cc38de0f@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+        id S1728332AbgEDIqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 04:46:47 -0400
+Received: from mail-dm6nam12on2081.outbound.protection.outlook.com ([40.107.243.81]:11584
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726351AbgEDIqq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 04:46:46 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=I/KcCgQA/nTYr2IJ6e2iIujz+je/1xyLzA2QLXDD1fYohqQJtep+AUQu57++mmD/lu0O98xtYiGYD97z1aBRmjsGVS2rgjQQUCW6Kk3Jl95iyRmZ+hlNqY+huTQgDwnFh0t14DOsUpuIAdzSBd/Xl73POduRSUzj+qlXfwv+qIQsY/upGpFK/E7+BE3cqUnLb/BA+JJ4FRwMUzYuyr0sgfCGX7TPsn/PtQql8RTefyrqAyP8GKSz9t+F+jEfUEx7qXc/Rj7/5WIelZHeZmbgVj2RHIysXiI/BYCE/WgrAeUltdm+d1TkJbdzGKyofXLa8/pSLRFb0pEyPMQKhFnKGw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=13OCvDAIYJgJx8qmdxetZjYYsyPulJeXYYZeJTnOjq0=;
+ b=nGaWa2TiNmHA3Wbx+62vLEglK9G5OaWZOYlslO8KgnQ71TTjxB2zzK7B2UsYaKjf3TLe7NEQgZSu+Cl0Zo6Ed3rpchz521xmkTjU6nr47iorLoOfjrcTHUW4YMXSzGqHA/QHgs+a8SAUab7WEWfTBs6e2QOOZF1xcnQrfZVXZTwai67JaMULapJuPDT5pYaqTXkhyWgzYOHfd3amaZsXvYI58121y5MGJv93GsU27v/o5vuWhco8wPd0WBytw4Ebhoc4xXm8X17p3memsF60tFd0cu53H+xUFpqdKRkUIERoI1FXxlRUyE0H1dHKERgC8XMBIQBJR0keEQK85WgPUA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=13OCvDAIYJgJx8qmdxetZjYYsyPulJeXYYZeJTnOjq0=;
+ b=jH6Yj6DRhGDKykBWIUu7ViRbX31yCrzjB/StgtZKOnTKtpGhQLATlnCmcte4J0vS8v4apk55FsUeehLO0aJst/Sl2MaZ9NJt7zJBmcWD+HpeR8NjNMhqAMwgqD3IIgMjC/74gpORhrDkIHt9k1SSNmV59xG2wlG96sTdB0Bv84c=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from DM5PR12MB1163.namprd12.prod.outlook.com (2603:10b6:3:7a::18) by
+ DM5PR12MB1721.namprd12.prod.outlook.com (2603:10b6:3:10d::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2958.20; Mon, 4 May 2020 08:46:44 +0000
+Received: from DM5PR12MB1163.namprd12.prod.outlook.com
+ ([fe80::d061:4c5:954e:4744]) by DM5PR12MB1163.namprd12.prod.outlook.com
+ ([fe80::d061:4c5:954e:4744%4]) with mapi id 15.20.2958.029; Mon, 4 May 2020
+ 08:46:44 +0000
+Subject: Re: AVIC related warning in enable_irq_window
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+References: <9ce7bb5c4fb8bcc4ac21103f7534a6edfcbe195d.camel@redhat.com>
+ <758b27a8-74c0-087d-d90b-d95faee2f561@redhat.com>
+From:   Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Message-ID: <c5c32371-4b4e-1382-c616-3830ba46bf85@amd.com>
+Date:   Mon, 4 May 2020 15:46:35 +0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
+In-Reply-To: <758b27a8-74c0-087d-d90b-d95faee2f561@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-05-04_04:2020-05-01,2020-05-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- mlxlogscore=933 spamscore=0 impostorscore=0 mlxscore=0 adultscore=0
- suspectscore=0 clxscore=1015 priorityscore=1501 bulkscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005040069
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SG2PR06CA0122.apcprd06.prod.outlook.com
+ (2603:1096:1:1d::24) To DM5PR12MB1163.namprd12.prod.outlook.com
+ (2603:10b6:3:7a::18)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from Suravees-MacBook-Pro.local (2403:6200:8862:d0e7:7c73:bebd:7e44:6839) by SG2PR06CA0122.apcprd06.prod.outlook.com (2603:1096:1:1d::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.20 via Frontend Transport; Mon, 4 May 2020 08:46:42 +0000
+X-Originating-IP: [2403:6200:8862:d0e7:7c73:bebd:7e44:6839]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 2cbe73b6-8db0-46dc-dac3-08d7f007ac56
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1721:
+X-Microsoft-Antispam-PRVS: <DM5PR12MB1721240658279753532391F1F3A60@DM5PR12MB1721.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-Forefront-PRVS: 03932714EB
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: cYBGOJn4y+F1Pv1cuzYUXFeo92jaUQWy7gQy/f/4N1/GoUpw6jyKP9+gfRnVE8XVya9VNmgwS3ILIj3erZEgMyXWtNgs+S29hmmyyplDrV8BA99l7VgCCkgJ5hh//46zfWztM9AIt9HY1feS/MWrv6BvilnEIROJSRGHLQ+YWFjO2ffz0b67EjxFJIMo+VXX+dXjemGCCW1CZE9myaOgrLEZeksyOjZ6PjA7DnkJSBhJ7yyUpSnMkm0jRccisTNCuNHU/TxkefphWwQvsSDOLoH/SuP+6ncH3yUfIyz+QtNHSx2qCIdZUNqA4EfuUcE1pVHfPLbiFf+942L+5klLcp5q6x1kQuVOu3vXjEvpZjn6URnuk+QrJIVvmA3SDMG5oRQQpAewQRyspnD3befMdDRHz2MJ9yKRiIfJetIA0SBs3cN6wukeLHfDxBj7vc7O
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1163.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(39860400002)(376002)(366004)(396003)(136003)(8676002)(8936002)(6486002)(6512007)(4326008)(31696002)(2906002)(66556008)(31686004)(86362001)(66476007)(66946007)(316002)(110136005)(5660300002)(478600001)(2616005)(16526019)(36756003)(6666004)(44832011)(53546011)(6506007)(52116002)(4744005)(186003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: ceotyYTi6Wf7ZHLE81GMz6l2t2V9C1sacWzq/gFCjEYN4fTtMdLkStEf4CIsX/UYovvJ8fNkQXtLVJ2JC8UCBY3Ax+JpnK6WuBBYNx8O+UMMDHMB6LCCIVtj72A9LzXN4EkvyREfc1ibbBdKYIMq8Ch6GRC2e0hQ0tk3bwZ+R601lZkZTNTRtq81II5Pf7Lafv4Gy+9k0Yxnm69qzOcEVGUHOSgOsHJzQ4k0I38CPilrO77U8DL7RiA5wYASGqiK6NrpFH+K8Hlz9vsqyg7cAGRGX0m0Z308HpHIOitdbYNeFmV9mesGv0rkRUbIXwWFT566PDUirIlj31lTESASzWS1IBT+shbj4t93DCotlx9Rg9MlHrwNAzo9jgVL05cnJC2fQTMGItuMh7xRTWbL6oBik8jEefwTkLKqKVIRWvGto4qb5MV1Mp924HKX2stx3rOO/u706KRsHBX5yIrCNSD3iOTP+CuK8NMCkSmhIHZl1MIKdiBt/KhFLdJYsJvc62OZL5M/hKIPz7oXKhwLoNBl9xDvH+0yOLo2GPsXS86GYKZuRCmfcE6688+hMWGVRihHD5PP92aBnLcnhmm71v87DcJYb0RTpcRyERqG9nhw7xDvMzBy+PUhlgYrUF627WdgX3+WJo3K14Y74LalzrwhNxroAgEKOSBOffMcTbi+kKWpANdsDQr5MFL4fE9oJB+IbdtgOjh3OnyDiC2ecfnQY95wnhiXrUf2Iu5MUzj4dIkO8Iz/NkJUCGF/tZf45oBzqn6/AM2/bub4bhMLPAf+RJ1EoYTfB+pUgdWCbea9Sa+2Tyv51TqyJCx1dabKfFF+reKAEnn+3Hhypk+7T/RErJsSO3Ic5ElW6pnAtDi6Z/HNGrrtl9wzhU8vfIz3
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2cbe73b6-8db0-46dc-dac3-08d7f007ac56
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 May 2020 08:46:44.5863
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: sxqFAWVeE39BrCgDzd4o1BGEMKBjiOFOE2/FIvbAGG3+onSql5NC4vXOyR6WqcFgterqEBdQbWLLy4IEHLNN3Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1721
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 30.04.20 um 16:02 schrieb Stefan Haberland:
-> Am 30.04.20 um 15:13 schrieb Christoph Hellwig:
->> On Thu, Apr 30, 2020 at 01:17:54PM +0200, Stefan Haberland wrote:
->>> Remove the calls to ioctl_by_bdev from the DASD partition detection code
->>> to enable the removal of the specific code.
->>>
->>> To do so reuse the gendisk private_data pointer and not only provide a
->>> pointer to the devmap but provide a new structure containing a pointer
->>> to the devmap as well as all required information for the partition
->>> detection. This makes it independent from the dasd_information2_t
->>> structure.
->> I think sharing the data structure in private data is pretty dangerous.
-> Thought of this as well. This is why I check for the major number before I
-> use the private pointer to reference the data structure. Thought this would
-> be enough checking.
-> Do you think this is not sufficient?
->
->> In the meantime I thought of another idea - the partition code could
->> do a symbol_get of a symbol exported by the dasd driver and use that
->> to query the information.
-> Then I would need to export a lot of DASD internal structures to be
-> available
-> in thepartition detection code if I would like to walk down our device
-> map to
-> findthe corresponding device for example. Not sure if this is that easy.
+Paolo / Maxim,
 
-I did some additional research on this.
-What I could imagine:
+On 5/2/20 11:42 PM, Paolo Bonzini wrote:
+> On 02/05/20 15:58, Maxim Levitsky wrote:
+>> The AVIC is disabled by svm_toggle_avic_for_irq_window, which calls
+>> kvm_request_apicv_update, which broadcasts the KVM_REQ_APICV_UPDATE vcpu request,
+>> however it doesn't broadcast it to CPU on which now we are running, which seems OK,
+>> because the code that handles that broadcast runs on each VCPU entry, thus
+>> when this CPU will enter guest mode it will notice and disable the AVIC.
+>>
+>> However later in svm_enable_vintr, there is test 'WARN_ON(kvm_vcpu_apicv_active(&svm->vcpu));'
+>> which is still true on current CPU because of the above.
+> Good point!  We can just remove the WARN_ON I think.  Can you send a patch?
 
-The gendisk->private_data pointer currently contains a pointer to
-the dasd_devmap structure. This one is also reachable by iterating
-over an exported dasd_hashlist.
-So I could export the dasd_hashlist symbol, iterate over it and try
-to find the dasd_devmap pointer I have from the gendisk->private_data
-pointer.
-This would ensure that the gendisk belongs to the DASD driver and I
-could use the additional information that is somehow reachable through
-the gendisk->private_data pointer.
+Instead, as an alternative to remove the WARN_ON(), would it be better to just explicitly
+calling kvm_vcpu_update_apicv(vcpu) to update the apicv_active flag right after
+kvm_request_apicv_update()?
 
-But again, I am not sure if this additional code and effort is needed.
-From my point of view checking the gendisk->major for DASD_MAJOR is
-OK to ensure that the device belongs to the DASD driver.
-
-What do you think?
-
+Thanks,
+Suravee
 
