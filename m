@@ -2,96 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04BE31C4010
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 18:37:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D0A01C4029
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 18:40:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729718AbgEDQhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 12:37:53 -0400
-Received: from sonic306-2.consmr.mail.bf2.yahoo.com ([74.6.132.41]:41990 "EHLO
-        sonic306-2.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729459AbgEDQhx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 12:37:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aol.com; s=a2048; t=1588610271; bh=DPYuw2gUpgtMJzJhlH/AVmRGu2wSKCY1C+f8nOCoxu0=; h=Date:From:Reply-To:Subject:References:From:Subject; b=NrbIaY9un0cN0BPUu1yxMAne/8fJdCgSMKVMyF0hNvV+gZdjCJycrSALftzZdlzGNlKQeNBqOYc87Tg3w0MMaXG7a+FNdwRm22aplhJoH2MX9Y+NHp+mFsDCZNaSR5KiLj2VlhJSUQwumBVZSwfXOLeo5rMe0ARf1g/PKU/WU1ai8RBHZTUlhsPhZWNFCJNloQs3/QMO0jhOgGRhqZJsDTN87PoVvtzKkO2nZYb8M3xb0xvvxs0y7wt5lnqrVZdK0SMnRoT67Vz+OV7VtzI0fGEPlT3vuqkqf+RO4vfBxdYZfjHKILet5zWX6N2eIN9zNZMl6u40NasAABSJFwqUSA==
-X-YMail-OSG: wTKrySIVM1mGoWz9pAp7GDJIrgNRdvuveOXJNrZcMJBzTfS8OglhrwoO1Ao.lk7
- q2tne.V1ApsdcdmznOG9a4R1NLR20S7kPgtj4zMlO9aV3DSNJyk8amFnBSWn2E03XwyzF4Yx0XGL
- C4OBp4c4EVHHZa1l1oTZTvnRYiatNXBTbQs6yYRShrOpeccbzkxj.h7H_JMNiB6buJ6TTtUT.feP
- of5uhr4z7LK.7jITsWGvCFUpAk511stmNBtJzz.8MeQT9tj7X09oKsSIbCR6wSewZ.DekIBbXR9q
- u.Hx1d6poGwohvzNVjoiC7iiYFtnPo08cDUfu4SyD0VZjQ5hQ7jTcaILjRqeoo0xnO5loYy_6X1w
- HZb6cU1BJdcX8tS9b.CriACkgUHLX0SJoMQsvWsuAY9lpeBjRv3i8SErU7cw9z2Azd.hH6PJgrbm
- QlO6vEBxYCmVM6AOTxuwHM9Z0z44qYaxPKp8Ii.2xy4yx4Nc8KJuhQKo4DVjqS6P9sIoq76ZGUgy
- VZNY6oA.KtZqhEaFy6EqmIZPQBp8FfXBFFenu89S3x0djY_Id8H451rlpkQ_DtxEiQpSDxo54GtB
- 00BXPwelY30CcE5adbYvUNUKDbkntgx0dga1_8jWUERDjxp5ffmRmbrBEGXabrEpk6y5CmtLv388
- t2PoRqGFURG1SjlOzjjC9S9ylclTq0siL3ieR1SzFFf7h8ZYfcTMeEq04z.WwS2jCmZncmWtLfEA
- NLHbrfZCg.KW1UeLiXFxipHUDkpmkisTGKul8QiDxv_gGAOipSjT0JluU.cJNtzwcvVkjBhQXaMm
- lxMbwuQqqFn16pytWp06heVsBbToWrbADnESTMIP9dxy81JWqQ9jbVM2cOfdzilRcbgyzzxXLj2Q
- Se6v94s61szxsZ87xjOrL2vTbAcFQOOaJQ8t96L0AoKDcb8.PVmFFPk5vhDt09DdkfTMtz_envpj
- IhAgR_CHir1McuXlxO9Fgq8di6Mptp_arqZ4CsrHpMy6Yi1enAKE.BB_cFmwR8OOtGbskUm0JJXi
- s1P.Uu_oIP5D9P8S1OhSJqHneK9RPtTSC_0.7y6gD0Z0ownmV6MbzZ02gnijpnwlavFrOrAPHR84
- GMLWbYzmzYXxpQdM8lxrp55ihL8PZQaAXMt0gXbvT84JosN1N7edWbRnklEjV_UhUApDIGhTbEir
- gO7nT0y_gktoC2PXMejww2e4BEjHTBo7hjH7WjaDTYfVqfm91uHFFCZgK2EfE6iyYKLah9f0SAxd
- CM.NzviLySv5U7SSFil1UKZxt12Z0AbjzQZXDnx6IDbvXOwuwGHNyOzUI6tRCa1VP4Rk1zLVZww-
- -
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic306.consmr.mail.bf2.yahoo.com with HTTP; Mon, 4 May 2020 16:37:51 +0000
-Date:   Mon, 4 May 2020 16:37:47 +0000 (UTC)
-From:   "Mrs.A.Mina" <brunel.m@aol.com>
-Reply-To: brunelmrsminaa@gmail.com
-Message-ID: <2044753010.676646.1588610267052@mail.yahoo.com>
-Subject: My Dear in the lord
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <2044753010.676646.1588610267052.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.15756 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:75.0) Gecko/20100101 Firefox/75.0
-To:     unlisted-recipients:; (no To-header on input)
+        id S1729879AbgEDQkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 12:40:00 -0400
+Received: from foss.arm.com ([217.140.110.172]:48650 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729779AbgEDQjV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 12:39:21 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 56C5B101E;
+        Mon,  4 May 2020 09:39:20 -0700 (PDT)
+Received: from e120937-lin.home (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 436F63F68F;
+        Mon,  4 May 2020 09:39:19 -0700 (PDT)
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
+        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
+        cristian.marussi@arm.com
+Subject: [PATCH v7 0/9] SCMI Notifications Core Support
+Date:   Mon,  4 May 2020 17:38:46 +0100
+Message-Id: <20200504163855.54548-1-cristian.marussi@arm.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi all,
 
+this series wants to introduce SCMI Notification Support, built on top of
+the standard Kernel notification chain subsystem.
 
-My Dear in the lord
+At initialization time each SCMI Protocol takes care to register with the
+new SCMI notification core the set of its own events which it intends to
+support.
 
+Using the API exposed via scmi_handle.notify_ops a Kernel user can register
+its own notifier_t callback (via a notifier_block as usual) against any
+registered event as identified by the tuple:
 
-My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
-na Faso, I am married to Mr. Brunel Patrice, a politicians who owns a small=
- gold company in Burkina Faso; He died of Leprosy and Radesyge, in year Feb=
-ruary 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Milli=
-on Euro) Eight million, Five hundred thousand Euros in a bank in Ouagadougo=
-u the capital city of of Burkina in West Africa. The money was from the sal=
-e of his company and death benefits payment and entitlements of my deceased=
- husband by his company.
+		(proto_id, event_id, src_id)
 
-I am sending you this message with heavy tears in my eyes and great sorrow =
-in my heart, and also praying that it will reach you in good health because=
- I am not in good health, I sleep every night without knowing if I may be a=
-live to see the next day. I am suffering from long time cancer and presentl=
-y I am partially suffering from Leprosy, which has become difficult for me =
-to move around. I was married to my late husband for more than 6 years with=
-out having a child and my doctor confided that I have less chance to live, =
-having to know when the cup of death will come, I decided to contact you to=
- claim the fund since I don't have any relation I grew up from an orphanage=
- home.
+where src_id represents a generic source identifier which is protocol
+dependent like domain_id, performance_id, sensor_id and so forth.
+(users can anyway do NOT provide any src_id, and subscribe instead to ALL
+ the existing (if any) src_id sources for that proto_id/evt_id combination)
 
-I have decided to donate this money for the support of helping Motherless b=
-abies/Less privileged/Widows and churches also to build the house of God be=
-cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
-cided to donate from what I have inherited from my late husband to you for =
-the good work of Almighty God; I will be going in for an operation surgery =
-soon.
+Each of the above tuple-specified eventis will be served on its own
+dedicated blocking notification chain, dynamically allocated on-demand when
+at least one user has shown interest on that event.
 
-Now I want you to stand as my next of kin to claim the funds for charity pu=
-rposes. Because of this money remains unclaimed after my death, the bank ex=
-ecutives or the government will take the money as unclaimed fund and maybe =
-use it for selfishness and worthless ventures, I need a very honest person =
-who can claim this money and use it for Charity works, for orphanages, wido=
-ws and also build schools and churches for less privilege that will be name=
-d after my late husband and my name.
+Upon a notification delivery all the users' registered notifier_t callbacks
+will be in turn invoked and fed with the event_id as @action param and a
+generated custom per-event struct _report as @data param.
+(as in include/linux/scmi_protocol.h)
 
-I need your urgent answer to know if you will be able to execute this proje=
-ct, and I will give you more information on how the fund will be transferre=
-d to your bank account or online banking.
+The final step of notification delivery via users' callback invocation is
+instead delegated to a pool of deferred workers (Kernel cmwq): each
+SCMI protocol has its own dedicated worker and dedicated queue to push
+events from the rx ISR to the worker.
+
+Based on scmi-next/for-next/scmi 5.7 [1], on top of:
+
+commit f7199cf48902 ("firmware: arm_scmi: Fix return error code in
+		     smc_send_message")
+
+This series has been tested on JUNO with an experimental firmware only
+supporting Perf Notifications.
+
 
 Thanks
-Mrs. Mina A. Brunel
+
+Cristian
+
+----
+v6 --> v7:
+- rebased on top of scmi-next 5.7, dropped the initial 4 patches
+  since now already queued on base scmi-next [1]
+- fixed some events' proto initialization
+- removed some notify_enabled explicit methods exposed in some protocol_ops
+  since not supposed to be used directly when using this notification
+  framework (and of no other known use)
+- exposing SCMI_EVENT_ enums in scmi_protocol.h
+- added agent_id field in RESET_ISSUED payload as per reviewed SCMI spec
+- removed POWER_STATE_CHANGE_REQUESTED pre-notification definition and
+  handling as per reviewedSCMI spec
+- fixed report.timestamp field type
+
+v5 --> v6:
+- added handle argument to fill_custom_report() helper
+
+v4 --> v5:
+- fixed kernel-doc
+- added proper barriers around registered protocols and events
+  initialization
+- reviewed queues allocation using devm_add_action_or_reset
+- reviewed REVT_NOTIFY_ENABLE macro
+
+v3 --> v4:
+- dropped RFC tag
+- avoid one unneeded evt payload memcpy on the ISR RC code path by
+  redesigning dispatcher to handle partial queue-reads (in_flight events,
+  only header)
+- fixed the initialization issue exposed by late SCMI modules loading by
+  reviewing the init process to support possible late events registrations
+  by protocols and early callbacks registrations by users (pending)
+- cleanup/simplification of exit path: SCMI protocols are generally never
+  de-initialized after the initial device creation, so do not deinit
+  notification core either (we do halt the delivery, stop the wq and empty
+  the queues though)
+- reduced contention on regustered_events_handler to the minimum during
+  delivery by splitting the common registered_events_handlers hashtable
+  into a number of per-protocol tables
+- converted registered_protocols and registered_events hastable to
+  fixed size arrays: simpler and lockless in our usage scenario
+
+v2 --> v3:
+- added platform instance awareness to the notification core: a
+  notification instance is created for each known handle
+- reviewed notification core initialization and shutdown process
+- removed generic non-handle-rooted registration API
+- added WQ_SYSFS flag to workqueue instance
+
+v1 --> v2:
+- dropped anti-tampering patch
+- rebased on top of scmi-for-next-5.6, which includes Viresh series that
+  make SCMI core independent of transport (5c8a47a5a91d)
+- add a few new SCMI transport methods on top of Viresh patch to address
+  needs of SCMI Notifications
+- reviewed/renamed scmi_handle_xfer_delayed_resp()
+- split main SCMI Notification core patch (~1k lines) into three chunks:
+  protocol-registration / callbacks-registration / dispatch-and-delivery
+- removed awkward usage of IDR maps in favour of pure hashtables
+- added enable/disable refcounting in notification core (was broken in v1)
+- removed per-protocol candidate API: a single generic API is now proposed
+  instead of scmi_register_<proto>_event_notifier(evt_id, *src_id, *nb)
+- added handle->notify_ops as an alternative notification API
+  for scmi_driver
+- moved ALL_SRCIDs enabled handling from protocol code to core code
+- reviewed protocol registration/unregistration logic to use devres
+- reviewed cleanup phase on shutdown
+- fixed  ERROR: reference preceded by free as reported by kbuild test robot
+
+[1] git://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git
+
+
+Cristian Marussi (9):
+  firmware: arm_scmi: Add notification protocol-registration
+  firmware: arm_scmi: Add notification callbacks-registration
+  firmware: arm_scmi: Add notification dispatch and delivery
+  firmware: arm_scmi: Enable notification core
+  firmware: arm_scmi: Add Power notifications support
+  firmware: arm_scmi: Add Perf notifications support
+  firmware: arm_scmi: Add Sensor notifications support
+  firmware: arm_scmi: Add Reset notifications support
+  firmware: arm_scmi: Add Base notifications support
+
+ drivers/firmware/arm_scmi/Makefile  |    2 +-
+ drivers/firmware/arm_scmi/base.c    |  118 ++-
+ drivers/firmware/arm_scmi/common.h  |    4 +
+ drivers/firmware/arm_scmi/driver.c  |   10 +
+ drivers/firmware/arm_scmi/notify.c  | 1461 +++++++++++++++++++++++++++
+ drivers/firmware/arm_scmi/notify.h  |   78 ++
+ drivers/firmware/arm_scmi/perf.c    |  137 ++-
+ drivers/firmware/arm_scmi/power.c   |  101 +-
+ drivers/firmware/arm_scmi/reset.c   |  105 +-
+ drivers/firmware/arm_scmi/sensors.c |   77 +-
+ include/linux/scmi_protocol.h       |  108 +-
+ 11 files changed, 2171 insertions(+), 30 deletions(-)
+ create mode 100644 drivers/firmware/arm_scmi/notify.c
+ create mode 100644 drivers/firmware/arm_scmi/notify.h
+
+-- 
+2.17.1
+
