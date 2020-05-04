@@ -2,158 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E5091C4844
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 22:30:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5CFB1C484D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 22:31:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728021AbgEDUaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 16:30:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52250 "EHLO
+        id S1728101AbgEDUbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 16:31:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727890AbgEDU35 (ORCPT
+        with ESMTP id S1726948AbgEDUba (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 16:29:57 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CADB6C061A10
-        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 13:29:56 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id a32so468207pje.5
-        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 13:29:56 -0700 (PDT)
+        Mon, 4 May 2020 16:31:30 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1B7EC061A0E
+        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 13:31:29 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id s3so15140479eji.6
+        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 13:31:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3jc0TOyQ4war+DAm2+lh4uAs3ApKGMVi9why4UvGExE=;
-        b=QNsTHDRZoZuDPWYQs4Csq+6FgUrP8w3uyMqQAR+1uJZZGAxtjqBK6vIQLXiLro9EUM
-         rZiKT7UuJeIhn7v8tm363KM+VROs4JMrqn+S7N7HytoMEK+V/od5eq1OdNDeXkskr4S1
-         0ilRHOmV42klq2IeepjH+ryE1UU5IjBInAFLI=
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iD+7rCv19A+JVwng0cwm3/xzNCTcSEjwlIiYKk9uiJc=;
+        b=HiS3C7pVeSXcrkb235oy8Rnf/oLD0dVimUKrLc0zeeW/8XaSu203SAaOKchrWyKAxB
+         Z9MjsQPaSAO2yPuBjYFgCll5xe7kHNJ66BXwMCPOffizsuBNB4WoiJGbKqr5FhwcTWL7
+         epoa3TmJlDVEJqejcAW8n4Y+bHuwSpRaBkCJvukLd7/UaCkLY284LPMrm4Zi12c1pzhr
+         NaT85hv/kpIrmtLG5IGEUpvfHioRj+H3SlIznGgpN3pbXQJHmyiQC9brFJZ5pojQ1BO5
+         t38dnwRBT5lNXIzdfhUd7Cjwjgfq3tsYfJfii92eTR/RTHyoxrcmjRtQwuTpRc5Lr46K
+         c6mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3jc0TOyQ4war+DAm2+lh4uAs3ApKGMVi9why4UvGExE=;
-        b=LHZSe0UZBU3aj1k3Lq7y7e4ETcSt5Oieno/8cEMF4gmo+ey8b8DBE7hwUmQMXR5EoS
-         dEr5a+Jsa7RvUPMwSGKjEsh0vYsj790JPI0//HooqXjxiL7Wc1b6b/bS/d8MwVb1lfgq
-         jX240xIvVnmNn1fXTD+ZJi1ar2lExEhXYDiM9dwrg1nkWWmdoYUtWjDq7cjlnS98g8Ih
-         l5woC/WKGG8KpsQ9wY6fNC3Ro/h02mwXl/ujPbk1zD2l3ijQh5DBoKD+VljU29wgbdq5
-         MannN0Up1BCkqbYTJF2tbT919zgCbLwZzJtxCHYQo2317AAYUl86E4gItReEhouYhI7b
-         8ArA==
-X-Gm-Message-State: AGi0PuZc6GfOMxYT1dWhKe1k2QdnmcPXjG5AnWAdasz1CxenkcoMQL7n
-        dimPhs8E+70//jlIE8I/5qwA/8Go16/B5Q==
-X-Google-Smtp-Source: APiQypKaJu64Aen3AruMc8A3xz6cDGP1Ljua3iefkQJP7oxlKh9bFxhPzW0F/NDlcNiJYNL4gl8S4g==
-X-Received: by 2002:a17:902:a40b:: with SMTP id p11mr1019115plq.304.1588624196117;
-        Mon, 04 May 2020 13:29:56 -0700 (PDT)
-Received: from mathewk1.lan ([161.97.192.125])
-        by smtp.gmail.com with ESMTPSA id z23sm9511737pfr.136.2020.05.04.13.29.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 May 2020 13:29:55 -0700 (PDT)
-From:   Mathew King <mathewk@chromium.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Mathew King <mathewk@chromium.org>,
-        Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org
-Subject: [PATCH v2 4/4] power_supply: Add power supply type property to uevent env
-Date:   Mon,  4 May 2020 14:29:30 -0600
-Message-Id: <20200504202930.228453-5-mathewk@chromium.org>
-X-Mailer: git-send-email 2.26.2.526.g744177e7f7-goog
-In-Reply-To: <20200504202930.228453-1-mathewk@chromium.org>
-References: <20200504202930.228453-1-mathewk@chromium.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iD+7rCv19A+JVwng0cwm3/xzNCTcSEjwlIiYKk9uiJc=;
+        b=VKDc/Xgv1ST0yfApraUM2ADRZW3ScoTJIf42AF9r6y3eXrcJvPICx6o/vBPzGv5gbl
+         zBTyFwlFifGmvRekOZ9EVtADVZmBJNlDms+0NfNvC3wbx8VhYqTYmKmfWDS7QS5stBXJ
+         IHOl4V5cMKDzJj0l2GMFKjWRVdyVlUarAlXC92cg8eTzAsJNXn1oKug1775sbKWhN33n
+         15d4UU5G4ccWvM/BfHJIXdzRJ8hkAEsNdf17YFk6GRx+GviUWrhr+5jOsbLdcBXY4MVt
+         nM16ZHxcM98aQOf19szXXg/VDvyTX0g/RAAHZZOHKCsAKlZWaB38dFFNoTNFI/e0yd/i
+         GTbg==
+X-Gm-Message-State: AGi0PuZXKi5fy+iC6Azs198PCBYC6R1TA+9NSmyLbMC6Vu7/mJaAshd9
+        TQzn6u8boFwl7dyQG2XIJoWuw8WiuCFYSUIl2jQEdkWnMDo=
+X-Google-Smtp-Source: APiQypLjLLzJYSGQHmzKy9PL7/vfCx8HEa61JRW6aeMlPHl9r7osDVCErguI8BiMvjtked5EcSIjQgppbgkYxYAopd4=
+X-Received: by 2002:a17:906:49c7:: with SMTP id w7mr16855566ejv.29.1588624288649;
+ Mon, 04 May 2020 13:31:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200502143555.543636-1-pasha.tatashin@soleen.com>
+ <20200502143555.543636-3-pasha.tatashin@soleen.com> <202005041222.4A870DFEC@keescook>
+In-Reply-To: <202005041222.4A870DFEC@keescook>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Mon, 4 May 2020 16:30:52 -0400
+Message-ID: <CA+CK2bDyi-vncYc0_sSZZ9Wb4O7oNUYH-6SN=-XKkeEamB8W8A@mail.gmail.com>
+Subject: Re: [PATCH v1 2/3] pstore/ram: allow to dump kmesg during regular reboot
+To:     Kees Cook <keescook@chromium.org>
+Cc:     James Morris <jmorris@namei.org>, Sasha Levin <sashal@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>, anton@enomsg.org,
+        ccross@android.com, Tony Luck <tony.luck@intel.com>,
+        robh+dt@kernel.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add POWER_SUPPLY_TYPE to the uevent env for power supply. Type is a
-property of all power supplies and there is a sysfs entry for it but it
-is not included in the properties array of the power supply so
-explicitly add it to the udev env.
+> > -static void pstore_register_kmsg(void)
+> > +static void pstore_register_kmsg(int dmesg_all)
+> >  {
+> > +     if (dmesg_all)
+> > +             pstore_dumper.max_reason = KMSG_DUMP_MAX;
+>
+> So, I'd like to avoid any new arguments in the API and instead add a new
+> field to struct pstore_info, which will be valid when PSTORE_FLAGS_DMESG
+> is set, and the max kdump reason can be set there by the pstore backends.
 
-Signed-off-by: Mathew King <mathewk@chromium.org>
----
-v2: - Fixup with patches in series
----
- drivers/power/supply/power_supply_sysfs.c | 61 ++++++++++++++---------
- 1 file changed, 37 insertions(+), 24 deletions(-)
+Hi Kees,
 
-diff --git a/drivers/power/supply/power_supply_sysfs.c b/drivers/power/supply/power_supply_sysfs.c
-index 8f90daff0003..d856aed8cb41 100644
---- a/drivers/power/supply/power_supply_sysfs.c
-+++ b/drivers/power/supply/power_supply_sysfs.c
-@@ -410,6 +410,37 @@ void power_supply_init_attrs(struct device_type *dev_type)
- 	}
- }
- 
-+static int add_prop_uevent(struct device *dev, struct kobj_uevent_env *env,
-+			   enum power_supply_property prop, char *prop_buf)
-+{
-+	int ret = 0;
-+	struct power_supply_attr *pwr_attr;
-+	struct device_attribute *dev_attr;
-+	char *line;
-+
-+	pwr_attr = &power_supply_attrs[prop];
-+	dev_attr = &pwr_attr->dev_attr;
-+
-+	ret = power_supply_show_property(dev, dev_attr, prop_buf);
-+	if (ret == -ENODEV || ret == -ENODATA) {
-+		/*
-+		 * When a battery is absent, we expect -ENODEV. Don't abort;
-+		 * send the uevent with at least the the PRESENT=0 property
-+		 */
-+		return 0;
-+	}
-+
-+	if (ret < 0)
-+		return ret;
-+
-+	line = strchr(prop_buf, '\n');
-+	if (line)
-+		*line = 0;
-+
-+	return add_uevent_var(env, "POWER_SUPPLY_%s=%s",
-+			      pwr_attr->prop_name, prop_buf);
-+}
-+
- int power_supply_uevent(struct device *dev, struct kobj_uevent_env *env)
- {
- 	struct power_supply *psy = dev_get_drvdata(dev);
-@@ -429,31 +460,13 @@ int power_supply_uevent(struct device *dev, struct kobj_uevent_env *env)
- 	if (!prop_buf)
- 		return -ENOMEM;
- 
--	for (j = 0; j < psy->desc->num_properties; j++) {
--		struct power_supply_attr *pwr_attr;
--		struct device_attribute *dev_attr;
--		char *line;
--
--		pwr_attr = &power_supply_attrs[psy->desc->properties[j]];
--		dev_attr = &pwr_attr->dev_attr;
--
--		ret = power_supply_show_property(dev, dev_attr, prop_buf);
--		if (ret == -ENODEV || ret == -ENODATA) {
--			/* When a battery is absent, we expect -ENODEV. Don't abort;
--			   send the uevent with at least the the PRESENT=0 property */
--			ret = 0;
--			continue;
--		}
--
--		if (ret < 0)
--			goto out;
--
--		line = strchr(prop_buf, '\n');
--		if (line)
--			*line = 0;
-+	ret = add_prop_uevent(dev, env, POWER_SUPPLY_PROP_TYPE, prop_buf);
-+	if (ret)
-+		goto out;
- 
--		ret = add_uevent_var(env, "POWER_SUPPLY_%s=%s",
--				     pwr_attr->prop_name, prop_buf);
-+	for (j = 0; j < psy->desc->num_properties; j++) {
-+		ret = add_prop_uevent(dev, env, psy->desc->properties[j],
-+				      prop_buf);
- 		if (ret)
- 			goto out;
- 	}
--- 
-2.26.2.526.g744177e7f7-goog
+I am trying to verify that I understand the request correctly:
 
+1. pstore_register_kmsg() -> remove argument.
+2. pstore_info -> add a new field  max_kmsg_reason: contains the
+actual reason value
+3. Modify: pstore_register() to set this field in pstore_dumper prior
+to calling pstore_register_kmsg().
+4. remove ramoops.dump_all boolean parameter
+5. add a new parameter ramoops.max_reason integer variable, which will
+be set in pstore_register_kmsg
+6. Modify other users of pstore_register() to provide the correct
+max_kmsg_reason.
+
+Is this correct?
+
+Thank you,
+Pasha
