@@ -2,129 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A22F1C3B83
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 15:44:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D16731C3BA0
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 15:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728353AbgEDNoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 09:44:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726922AbgEDNoB (ORCPT
+        id S1728684AbgEDNrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 09:47:06 -0400
+Received: from esa2.microchip.iphmx.com ([68.232.149.84]:21352 "EHLO
+        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728116AbgEDNrF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 09:44:01 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AACEC061A0E;
-        Mon,  4 May 2020 06:44:01 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id g14so8849152otg.10;
-        Mon, 04 May 2020 06:44:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hEWs1xs69QGFQT8FpFMUjbbXsqIGW+k2px0Ls7b6Oi8=;
-        b=QdrM3gPHzWbm4Ut0s77CXXuPeXeO3+pWV0ebjCCBJG+EiLxeyghlid3QCd7Um13g3Q
-         jMfneriy+x5BaIONl5wKwdXifl1ySev0gDGA0O2A6aLemvnsfCbjMxPirHTS/JOIOvtP
-         vPfTmyLF+G4kTQBg6kgc33HQ2ZKi/0rJa/kZUXKNu41yGYhZGOjWCN5t8bpmdMLx2k0t
-         rJe8rVsJGOXwZi4Gw0ty8U4DsWbSXKDKfT/rbVlDFgmPVsDhDYmevn1xfD9USEgw4xAu
-         yTEgKiIyjSji1U2sF8bmzhDWsVx8yo+sLoRKqK/5gVRibpacAxOtgwApzMIJT/fekupS
-         CnnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hEWs1xs69QGFQT8FpFMUjbbXsqIGW+k2px0Ls7b6Oi8=;
-        b=YBIARUgrvamv4YPxL4WPJDCkb2/40tEkM1LDrBUwyVryz1K4mtuDAxfVO4yETIkU2B
-         Cx4Qq6LArvIljF7P8nNEnW4ipvx5KEiA/wjU0u5JXHZd/nsf3FLXMm7NXFcSRLbjaGTh
-         W5Ug45WjlI/stF1qo/vQpLQFGLwmR5YWx0EqJea7AmHTVDKfS0l9mnJVA/SpW5xbzF/s
-         mZ4ETK7A5iZHk8vH8m7wxcMz0XOrLyBUhpCIDCddoitx4bbYXBnnOEbJeCi4DK1oZsyF
-         wSkqWVrcMmtveBoVKyzplsr+j+9ONykGsP4HwEeT+rpamvIH8qht9MwTh97dqHvSfRQ0
-         KZwA==
-X-Gm-Message-State: AGi0PuaMNGX0/FnoZOd5seJ1vQLpLP+WM6ZA3MGh42gHefB6PzYklotQ
-        0b4TJqUNpYPf7Aen9PeIU6wwza2iIllsAkpdFR4=
-X-Google-Smtp-Source: APiQypLNn94uuIHxhLJOj/nbkJcX/HXrwlyBrRZSV8ynXzT8RUBOpYvtk0ulNzKDoqpofBW0lh97EwemfFvkm8NH9KE=
-X-Received: by 2002:a9d:7390:: with SMTP id j16mr13274515otk.43.1588599840793;
- Mon, 04 May 2020 06:44:00 -0700 (PDT)
+        Mon, 4 May 2020 09:47:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1588600025; x=1620136025;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=YdfSV8vFHtHkdY/j8Ajqyu9W6T2nF4zgct9CAGRxwRQ=;
+  b=0+JAHkcWxpITI5R4goTSPQMBKrdiHzSTWMwCmcQAEU1p6lByU4QWCY4q
+   BfVc66AVR8BWDyXk0zSOPJj65yjI4S7Cb+LS/F60iUVfDLrZ8sHnOZVuf
+   KunmtH8XwuVFrFHRj2OZfqeBb3YweWfsRJVy9mhTH+V+ifZ0HAOmd1GbP
+   y7i9P+c0rRxRpMFiYnUSIKmZmWr8I4rFP6V4c5Ihk646iQffqsSbJV2ww
+   2RrZRgnsEt3yVnT1KeCCn/XQYb6rSBQLIjIz0Wv8fK27M6rErb2a1cpzh
+   CLcvTlb9jF3MGyQoG87tH4qNqOa9kOl+6wVF2y93lg6++/KAaQBXT8ok+
+   w==;
+IronPort-SDR: hsTM1QVLN9NhCq54tmB8QKFvocu9kjOduP0h93w7Ccg6OxKoxHWaRIoqTuZrqRgNyQpmP7Jfop
+ 6UdRqUn7gGWMLXt3nGVbqEEBVWrHnut10yjQX+yGmawu8RbxMZd3JCoYcyYiqys8CgxH8ORxPX
+ BSsBbmQnqNZBNO4mMFMwy66FWVOXwjrDYZzA49QowmyXrFBkn3GoOaZg1d9eWYe3P1hLzHQHrX
+ vX/6rFmXYsdvDvmvc6Kv5z+1PzB/JRWk7kLA7ndsIzhtKFPUundxmirbcXFgBL+zJlOwAVRFHD
+ HJ0=
+X-IronPort-AV: E=Sophos;i="5.73,352,1583218800"; 
+   d="scan'208";a="74135742"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 04 May 2020 06:46:29 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 4 May 2020 06:46:30 -0700
+Received: from localhost.localdomain (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.1713.5 via Frontend Transport; Mon, 4 May 2020 06:46:26 -0700
+From:   <nicolas.ferre@microchip.com>
+To:     <linux-arm-kernel@lists.infradead.org>, <netdev@vger.kernel.org>,
+        "Claudiu Beznea" <claudiu.beznea@microchip.com>,
+        <harini.katakam@xilinx.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        <antoine.tenart@bootlin.com>, <f.fainelli@gmail.com>,
+        <linux@armlinux.org.uk>, <andrew@lunn.ch>,
+        <michal.simek@xilinx.com>,
+        "Nicolas Ferre" <nicolas.ferre@microchip.com>
+Subject: [PATCH v3 0/7] net: macb: Wake-on-Lan magic packet fixes and GEM handling
+Date:   Mon, 4 May 2020 15:44:15 +0200
+Message-ID: <cover.1588597759.git.nicolas.ferre@microchip.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <1588542414-14826-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1588542414-14826-5-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdWBp_+PAa9VNhHCxd8CwrZVeeH1swDrZhegS-7YuQaL2g@mail.gmail.com>
-In-Reply-To: <CAMuHMdWBp_+PAa9VNhHCxd8CwrZVeeH1swDrZhegS-7YuQaL2g@mail.gmail.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Mon, 4 May 2020 14:43:34 +0100
-Message-ID: <CA+V-a8sRtYy5VoMegnrwW535wjaSiv3YAJ=eBUAbiLiC5fu=Qg@mail.gmail.com>
-Subject: Re: [PATCH v2 04/10] dt-bindings: mmc: renesas,mmcif: Document
- r8a7742 DT bindings
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dmaengine <dmaengine@vger.kernel.org>,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+From: Nicolas Ferre <nicolas.ferre@microchip.com>
 
-Thank you for the review.
+Hi,
+Here is the 3rd series to fix WoL magic-packet on the current macb driver.
+I also add, in the second part of this series the feature to GEM types of IPs.
+Please tell me if they should be separated; but the two last patches cannot go
+without the 5 fixes first ones.
 
-On Mon, May 4, 2020 at 11:26 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Prabhakar,
->
-> On Sun, May 3, 2020 at 11:47 PM Lad Prabhakar
-> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > Add support for r8a7742 SoC. Renesas RZ/G1H (R8A7742) MMCIF is identical
-> > to the R-Car Gen2 family.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
->
-> Thanks for your patch!
->
-> > --- a/Documentation/devicetree/bindings/mmc/renesas,mmcif.txt
-> > +++ b/Documentation/devicetree/bindings/mmc/renesas,mmcif.txt
-> > @@ -11,6 +11,7 @@ Required properties:
-> >         - "renesas,mmcif-r7s72100" for the MMCIF found in r7s72100 SoCs
-> >         - "renesas,mmcif-r8a73a4" for the MMCIF found in r8a73a4 SoCs
-> >         - "renesas,mmcif-r8a7740" for the MMCIF found in r8a7740 SoCs
-> > +       - "renesas,mmcif-r8a7742" for the MMCIF found in r8a7742 SoCs
-> >         - "renesas,mmcif-r8a7743" for the MMCIF found in r8a7743 SoCs
-> >         - "renesas,mmcif-r8a7744" for the MMCIF found in r8a7744 SoCs
-> >         - "renesas,mmcif-r8a7745" for the MMCIF found in r8a7745 SoCs
->
-> Please also update the paragraph stating the number of interrupts
-> (1 for r8a7742).
->
-Oops missed that, will fixup and post a v3.
+MACB and GEM code must co-exist and as they don't share exactly the same
+register layout, I had to specialize a bit the suspend/resume paths and plug a
+specific IRQ handler in order to avoid overloading the "normal" IRQ hot path.
 
-> With that fixed:
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
->
-Thanks for the Ack.
+The use of dumb buffers for RX that Harini implemented in [1] might
+need to be considered for a follow-up patch series in order to address
+lower-power modes on some of the platforms.
+For instance, I didn't have to implement dumb buffers for some of the simpler
+ARM9 platforms using MACB+FIFO types of controllers.
 
-Cheers,
---Prabhakar
+Please give feedback. Best regards,
+  Nicolas
 
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+[1]:
+https://github.com/Xilinx/linux-xlnx/commit/e9648006e8d9132db2594e50e700af362b3c9226#diff-41909d180431659ccc1229aa30fd4e5a
+https://github.com/Xilinx/linux-xlnx/commit/60a21c686f7e4e50489ae04b9bb1980b145e52ef
+
+Changes in v3:
+- Revert some of the v2 changes done in macb_resume(). Now the resume function
+  supports in-depth re-configuration of the controller in order to deal with
+  deeper sleep states. Basically as it was before changes introduced by this
+  series
+- Tested for non-regression with our deeper Power Management mode which cuts
+  power to the controller completely
+
+Changes in v2:
+- Add patch 4/7 ("net: macb: fix macb_suspend() by removing call to netif_carrier_off()")
+  needed for keeping phy state consistent
+- Add patch 5/7 ("net: macb: fix call to pm_runtime in the suspend/resume functions") that prevent
+  putting the macb in runtime pm suspend mode when WoL is used
+- Collect review tags on 3 first patches from Florian: Thanks!
+- Review of macb_resume() function
+- Addition of pm_wakeup_event() in both MACB and GEM WoL IRQ handlers
+
+Nicolas Ferre (7):
+  net: macb: fix wakeup test in runtime suspend/resume routines
+  net: macb: mark device wake capable when "magic-packet" property
+    present
+  net: macb: fix macb_get/set_wol() when moving to phylink
+  net: macb: fix macb_suspend() by removing call to netif_carrier_off()
+  net: macb: fix call to pm_runtime in the suspend/resume functions
+  net: macb: WoL support for GEM type of Ethernet controller
+  net: macb: Add WoL interrupt support for MACB type of Ethernet
+    controller
+
+ drivers/net/ethernet/cadence/macb.h      |   3 +
+ drivers/net/ethernet/cadence/macb_main.c | 209 +++++++++++++++++++----
+ 2 files changed, 176 insertions(+), 36 deletions(-)
+
+-- 
+2.26.2
+
