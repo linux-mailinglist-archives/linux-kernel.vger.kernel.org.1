@@ -2,98 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A561C3747
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 12:54:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 058071C374E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 12:55:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728385AbgEDKyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 06:54:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46802 "EHLO
+        id S1728347AbgEDKzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 06:55:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726756AbgEDKyv (ORCPT
+        by vger.kernel.org with ESMTP id S1727098AbgEDKzr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 06:54:51 -0400
-X-Greylist: delayed 7673 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 04 May 2020 03:54:51 PDT
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1D57C061A0E;
-        Mon,  4 May 2020 03:54:51 -0700 (PDT)
-Received: from zn.tnic (p200300EC2F08AF00A9258889345EFBFA.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:af00:a925:8889:345e:fbfa])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 186691EC01B7;
-        Mon,  4 May 2020 12:54:49 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1588589689;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=w0w3Aijj1ra8KuzYyt1lCImYJX1LTveNb8GK18SLIV8=;
-        b=rqNi/B7JopqCWzjGwcJ5p0oW/TBH05ZbVhoihYn39t8uzH1svqnE+WbsRjmueARw0snG9X
-        g8MoCy2QqIO3W8ZY1BmYKAHZBQHonH+4BnHd+hGZBog4Jj0/Eb2jL6peqM/RZWpBF5P28q
-        bc0obY45bX1B8fyESNsvitlXbp6EVts=
-Date:   Mon, 4 May 2020 12:54:45 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     x86@kernel.org, hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Hellstrom <thellstrom@vmware.com>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Joerg Roedel <jroedel@suse.de>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v3 13/75] x86/boot/compressed/64: Add IDT Infrastructure
-Message-ID: <20200504105445.GE15046@zn.tnic>
-References: <20200428151725.31091-1-joro@8bytes.org>
- <20200428151725.31091-14-joro@8bytes.org>
+        Mon, 4 May 2020 06:55:47 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E188C061A0E;
+        Mon,  4 May 2020 03:55:46 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id r26so8522106wmh.0;
+        Mon, 04 May 2020 03:55:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MQzZFCIobcGRmD/3+2nuvnxHv+aNaXAHRF5s3/10ij8=;
+        b=m/PZmuLtPqcrVYqQd8qj0jK+TnpKJK5MX7Eozj10EZs/2HHL50KGQbVzu8gMp02gQJ
+         6F9pbqJxSIP5cyRweFxpWJmvEjHRO8iYRZ7uJtUkgDOuGJdz6ddKmppLGZR3e5PZRy8p
+         lscDnAenUEC22uEp+XgYw32aZ+HkLVSqsvC75MSuht8EuPG6ScVjIjvMEFV9pdkEkkcf
+         OArBZA9Q1sjFRuzpgxMJe/LVC99w/wnQt0E3X/QvpCR24OL4Clof6mIPLcYdTz1iOWT0
+         IgmiGmXOguP6TDTfqbTQZvpTCTiMEWCPmXlM5UOvtimIP+GKpRwOyklM3Lsq6jw5VEvG
+         JW4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MQzZFCIobcGRmD/3+2nuvnxHv+aNaXAHRF5s3/10ij8=;
+        b=ZV9X1bqalkcw/gZPBYDcAEgC9yUxoPWp4/LtHnV8h0jt+bAGce7XO9Fi09ow8UoTZC
+         I4FCOhYHzu48cNwsPzev/cvN7ziE6H4Hs2lVmO6qKaRoCp+fq2WFFvyIeUUFzSso+bLW
+         /pGuU/DkcH5s+gv2HU2W5a7FnrPEUdom8BYyX8exfbC3cYifU+j8WNl3rjhbjXJYaGPw
+         h7GIHy9IOlE8wQyAKuliigIanGy636MQQb2ouXsoZVIR1Gkw4nHHrklD3uyZ/BEtzkyD
+         vwtLaf5kbH6Ku8GfpD76Mm0VXbTBAe3vbHha9jD0H3dXe+7T1ZDhgYLCl0kHeDZdFUR+
+         BNaQ==
+X-Gm-Message-State: AGi0Pua6+/AlmdHBEXzlMul+Iw5yIz1L7EkE88G8KdQ+M8R4WcvZz6nq
+        gWrw3Bc1Y8BZxqo0535A8GU0ma8ZEg2K/K06t3I=
+X-Google-Smtp-Source: APiQypIYRxd9Jarg4XaVun2QaTdEW4Ftk+7SlWd5NIBX1wOKIWiArNVS6La7qmbqT0diARP8mRcyXHfJL2xmf4cg4Io=
+X-Received: by 2002:a7b:c0c5:: with SMTP id s5mr13769191wmh.134.1588589744849;
+ Mon, 04 May 2020 03:55:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200428151725.31091-14-joro@8bytes.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200502114752.1048500-1-martin.blumenstingl@googlemail.com> <20200502114752.1048500-2-martin.blumenstingl@googlemail.com>
+In-Reply-To: <20200502114752.1048500-2-martin.blumenstingl@googlemail.com>
+From:   hex dump <hexdump0815@gmail.com>
+Date:   Mon, 4 May 2020 12:55:30 +0200
+Message-ID: <CAKTihDVy6oSuQe4eP87hWO17tBu3=XZ-PM41YOqLVOtXJ8+YeQ@mail.gmail.com>
+Subject: Re: [PATCH 1/6] dt-bindings: phy: meson8b-usb2: Convert to json-schema
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     kishon@ti.com, robh+dt@kernel.org, vkoul@kernel.org,
+        devicetree@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        narmstrong@baylibre.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 05:16:23PM +0200, Joerg Roedel wrote:
-> diff --git a/arch/x86/boot/compressed/idt_handlers_64.S b/arch/x86/boot/compressed/idt_handlers_64.S
+On Sat, May 2, 2020 at 1:48 PM Martin Blumenstingl
+<martin.blumenstingl@googlemail.com> wrote:
+>
+> Now that we have the DT validation in place, let's convert the device
+> tree bindings for the Amlogic Meson8, Meson8b, Meson8m2 and GXBB USB2
+> PHY over to a YAML schema.
+>
+> While here, also add the fallback compatible string
+> "amlogic,meson-gxbb-usb2-phy" which is already used in
+> arch/arm/boot/dts/meson{,8,8b}.dtsi.
+>
+> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+
+Tested-by: hexdump <hexdump0815@googlemail.com>
+
+> ---
+>  .../phy/amlogic,meson8b-usb2-phy.yaml         | 61 +++++++++++++++++++
+>  .../bindings/phy/meson8b-usb2-phy.txt         | 28 ---------
+>  2 files changed, 61 insertions(+), 28 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/phy/amlogic,meson8b-usb2-phy.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/phy/meson8b-usb2-phy.txt
+>
+> diff --git a/Documentation/devicetree/bindings/phy/amlogic,meson8b-usb2-phy.yaml b/Documentation/devicetree/bindings/phy/amlogic,meson8b-usb2-phy.yaml
 > new file mode 100644
-> index 000000000000..f86ea872d860
+> index 000000000000..c2fe8c08d99e
 > --- /dev/null
-> +++ b/arch/x86/boot/compressed/idt_handlers_64.S
-> @@ -0,0 +1,69 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Early IDT handler entry points
-> + *
-> + * Copyright (C) 2019 SUSE
-> + *
-> + * Author: Joerg Roedel <jroedel@suse.de>
-> + */
+> +++ b/Documentation/devicetree/bindings/phy/amlogic,meson8b-usb2-phy.yaml
+> @@ -0,0 +1,61 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/phy/amlogic,meson8b-usb2-phy.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
 > +
-> +#include <asm/segment.h>
+> +title: Amlogic Meson8, Meson8b, Meson8m2 and GXBB USB2 PHY
 > +
-> +#include "../../entry/calling.h"
-
-Leftover from something? Commenting it out doesn't break the build here.
-
-If needed, then we need to lift stuff in a separate header and share it
-or so. I want to include as less as possible crap from kernel proper and
-eventually untangle arch/x86/boot/ because include/linux/ definitions
-are a real pain.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> +maintainers:
+> +  - Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - items:
+> +          - enum:
+> +            - amlogic,meson8-usb2-phy
+> +            - amlogic,meson8b-usb2-phy
+> +          - const: amlogic,meson-mx-usb2-phy
+> +      - const: amlogic,meson-gxbb-usb2-phy
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    minItems: 2
+> +
+> +  clock-names:
+> +    items:
+> +      - const: usb_general
+> +      - const: usb
+> +
+> +  resets:
+> +    minItems: 1
+> +
+> +  "#phy-cells":
+> +    const: 0
+> +
+> +  phy-supply:
+> +     description:
+> +       Phandle to a regulator that provides power to the PHY. This
+> +       regulator will be managed during the PHY power on/off sequence.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - "#phy-cells"
+> +
+> +examples:
+> +  - |
+> +    usb-phy@c0000000 {
+> +      compatible = "amlogic,meson-gxbb-usb2-phy";
+> +      reg = <0xc0000000 0x20>;
+> +      resets = <&reset_usb_phy>;
+> +      clocks = <&clk_usb_general>, <&reset_usb>;
+> +      clock-names = "usb_general", "usb";
+> +      phy-supply = <&usb_vbus>;
+> +      #phy-cells = <0>;
+> +    };
+> diff --git a/Documentation/devicetree/bindings/phy/meson8b-usb2-phy.txt b/Documentation/devicetree/bindings/phy/meson8b-usb2-phy.txt
+> deleted file mode 100644
+> index d81d73aea608..000000000000
+> --- a/Documentation/devicetree/bindings/phy/meson8b-usb2-phy.txt
+> +++ /dev/null
+> @@ -1,28 +0,0 @@
+> -* Amlogic Meson8, Meson8b and GXBB USB2 PHY
+> -
+> -Required properties:
+> -- compatible:  Depending on the platform this should be one of:
+> -       "amlogic,meson8-usb2-phy"
+> -       "amlogic,meson8b-usb2-phy"
+> -       "amlogic,meson-gxbb-usb2-phy"
+> -- reg:         The base address and length of the registers
+> -- #phys-cells: should be 0 (see phy-bindings.txt in this directory)
+> -- clocks:      phandle and clock identifier for the phy clocks
+> -- clock-names: "usb_general" and "usb"
+> -
+> -Optional properties:
+> -- resets:      reference to the reset controller
+> -- phy-supply:  see phy-bindings.txt in this directory
+> -
+> -
+> -Example:
+> -
+> -usb0_phy: usb-phy@c0000000 {
+> -       compatible = "amlogic,meson-gxbb-usb2-phy";
+> -       #phy-cells = <0>;
+> -       reg = <0x0 0xc0000000 0x0 0x20>;
+> -       resets = <&reset RESET_USB_OTG>;
+> -       clocks = <&clkc CLKID_USB>, <&clkc CLKID_USB0>;
+> -       clock-names = "usb_general", "usb";
+> -       phy-supply = <&usb_vbus>;
+> -};
+> --
+> 2.26.2
+>
