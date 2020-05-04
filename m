@@ -2,68 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91FAE1C42C6
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 19:29:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D58321C420A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 19:15:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730374AbgEDR3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 13:29:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730336AbgEDR3F (ORCPT
+        id S1730663AbgEDRPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 13:15:42 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:54883 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730142AbgEDRPk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 13:29:05 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AC18C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 10:29:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=M6Hol8lVrYTT/lqsdSfNEOam4R/3TesIx/BPey5hvag=; b=MRrLMwIj+wlcXelBijzTg74b+W
-        fgxJxMBaa4TmevZBonEZOFQHRaq69d6UpZhg8SpekQM1XMdUFNb5zCmFHGzXbJIcXBC026B9yPZYj
-        Wznzktq9fHaUSrwolvX7/VaAzz+/qDokN42621KtDFuONXLrC/P80GMkBgWOsya/oeZbXZUPWO0IV
-        7uRG2WeE7yMpQLH8TdUtANVxRfLv0vWA6arJx8LIfjbbqfQDpmkWqlvqfkslS07yMiJ3ME4jwmte+
-        xtP2VEhjw91CDf8ABUDIljLzqfiHCryptCU5aCP1EKbQ978wB+q+jg3UhRk7QDeBpFdflnWcZvUB0
-        DdHFuEPw==;
-Received: from [2001:4bb8:18c:10bd:c70:4a89:bc61:2] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jVets-0004Iy-IC; Mon, 04 May 2020 17:29:04 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     x86@kernel.org
-Cc:     Mike Travis <mike.travis@hpe.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH 11/11] x86/uv: Remove the unused _uv_cpu_blade_processor_id macro
-Date:   Mon,  4 May 2020 19:15:27 +0200
-Message-Id: <20200504171527.2845224-12-hch@lst.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200504171527.2845224-1-hch@lst.de>
-References: <20200504171527.2845224-1-hch@lst.de>
+        Mon, 4 May 2020 13:15:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588612540;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CWQJK7zPeDPdYhDwPYU8xq1x4O/xcEWQo3ZiKiG6jyk=;
+        b=bjyoWYn50f/ObvqRRuhrak4gIQp/rDr/Cf8vrso2G2U/P+Lq0BV2AGgqP3LBWWBCGcRzLA
+        14rlZjHpiVJsUT5Xw4X8xmCHabqNV/FNCo/+aiW8rIsSDfLOZawHVhbREGRzGZp1KNoAKI
+        sJLh3/WkAggAFB+sa6bz2pqAih83Zto=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-470-2suybqQwNsyAxzX2F4_yfw-1; Mon, 04 May 2020 13:15:36 -0400
+X-MC-Unique: 2suybqQwNsyAxzX2F4_yfw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5647680BE32;
+        Mon,  4 May 2020 17:15:34 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-225.rdu2.redhat.com [10.10.118.225])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F146D5C1BD;
+        Mon,  4 May 2020 17:15:31 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [RFC PATCH 53/61] afs: Note the amount transferred in fetch-data
+ delivery
+From:   David Howells <dhowells@redhat.com>
+To:     Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Jeff Layton <jlayton@redhat.com>
+Cc:     dhowells@redhat.com, Matthew Wilcox <willy@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 04 May 2020 18:15:31 +0100
+Message-ID: <158861253114.340223.7031203580922376614.stgit@warthog.procyon.org.uk>
+In-Reply-To: <158861203563.340223.7585359869938129395.stgit@warthog.procyon.org.uk>
+References: <158861203563.340223.7585359869938129395.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.21
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No users anywhere in the kernel tree.
+Note the amount of data transferred in the fscache request op structure in
+the delivery/decode routines for the various FetchData operations.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Also, we need to exclude the excess from this value and then we need to use
+this in directory read rather than actual_len.
+
+Signed-off-by: David Howells <dhowells@redhat.com>
 ---
- arch/x86/include/asm/uv/uv_hub.h | 1 -
- 1 file changed, 1 deletion(-)
 
-diff --git a/arch/x86/include/asm/uv/uv_hub.h b/arch/x86/include/asm/uv/uv_hub.h
-index 9eabd7e52fd15..60ca0afdeaf9f 100644
---- a/arch/x86/include/asm/uv/uv_hub.h
-+++ b/arch/x86/include/asm/uv/uv_hub.h
-@@ -659,7 +659,6 @@ static inline int uv_cpu_blade_processor_id(int cpu)
- {
- 	return uv_cpu_info_per(cpu)->blade_cpu_id;
- }
--#define _uv_cpu_blade_processor_id 1	/* indicate function available */
+ fs/afs/dir.c       |    9 ++++-----
+ fs/afs/fsclient.c  |    5 +++++
+ fs/afs/yfsclient.c |    5 +++++
+ 3 files changed, 14 insertions(+), 5 deletions(-)
+
+diff --git a/fs/afs/dir.c b/fs/afs/dir.c
+index 0b3f33269fdd..577c975c13b0 100644
+--- a/fs/afs/dir.c
++++ b/fs/afs/dir.c
+@@ -211,9 +211,8 @@ static void afs_dir_dump(struct afs_vnode *dvnode, struct afs_read *req)
+ 	pr_warn("DIR %llx:%llx f=%llx l=%llx al=%llx\n",
+ 		dvnode->fid.vid, dvnode->fid.vnode,
+ 		req->file_size, req->cache.len, req->actual_len);
+-	pr_warn("DIR %llx %x %zx %zx\n",
+-		req->cache.pos, req->cache.nr_pages,
+-		req->iter->iov_offset,  iov_iter_count(req->iter));
++	pr_warn("DIR %llx %x %llx\n",
++		req->cache.pos, req->cache.nr_pages, req->cache.transferred);
  
- /* Blade number to Node number (UV1..UV4 is 1:1) */
- static inline int uv_blade_to_node(int blade)
--- 
-2.26.2
+ 	xas_for_each(&xas, page, last) {
+ 		if (xas_retry(&xas, page))
+@@ -323,7 +322,7 @@ static struct afs_read *afs_read_dir(struct afs_vnode *dvnode, struct key *key)
+ 
+ 	nr_pages = (i_size + PAGE_SIZE - 1) / PAGE_SIZE;
+ 
+-	req->actual_len = i_size; /* May change */
++	req->cache.transferred = i_size; /* May change */
+ 	req->cache.len = nr_pages * PAGE_SIZE; /* We can ask for more than there is */
+ 	req->data_version = dvnode->status.data_version; /* May change */
+ 	iov_iter_mapping(&req->def_iter, READ, dvnode->vfs_inode.i_mapping,
+@@ -548,7 +547,7 @@ static int afs_dir_iterate(struct inode *dir, struct dir_context *ctx,
+ 
+ 	/* walk through the blocks in sequence */
+ 	ret = 0;
+-	while (ctx->pos < req->actual_len) {
++	while (ctx->pos < req->cache.transferred) {
+ 		blkoff = ctx->pos & ~(sizeof(union afs_xdr_dir_block) - 1);
+ 
+ 		/* Fetch the appropriate page from the directory and re-add it
+diff --git a/fs/afs/fsclient.c b/fs/afs/fsclient.c
+index c9789294fc68..62cc8072874b 100644
+--- a/fs/afs/fsclient.c
++++ b/fs/afs/fsclient.c
+@@ -417,6 +417,11 @@ static int afs_deliver_fs_fetch_data(struct afs_call *call)
+ 		break;
+ 	}
+ 
++	/* Pass the call's ref on the read request descriptor to the completion
++	 * handler.
++	 */
++	req->cache.transferred = min(req->actual_len, req->cache.len);
++	set_bit(FSCACHE_IO_DATA_FROM_SERVER, &req->cache.flags);
+ 	if (req->cache.io_done)
+ 		req->cache.io_done(&req->cache);
+ 
+diff --git a/fs/afs/yfsclient.c b/fs/afs/yfsclient.c
+index 6ea97233c0d2..fb3f006be31c 100644
+--- a/fs/afs/yfsclient.c
++++ b/fs/afs/yfsclient.c
+@@ -531,6 +531,11 @@ static int yfs_deliver_fs_fetch_data64(struct afs_call *call)
+ 		break;
+ 	}
+ 
++	/* Pass the call's ref on the read request descriptor to the completion
++	 * handler.
++	 */
++	req->cache.transferred = min(req->actual_len, req->cache.len);
++	set_bit(FSCACHE_IO_DATA_FROM_SERVER, &req->cache.flags);
+ 	if (req->cache.io_done)
+ 		req->cache.io_done(&req->cache);
+ 
+
 
