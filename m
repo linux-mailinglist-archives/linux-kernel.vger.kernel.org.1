@@ -2,111 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73F311C3E3C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 17:15:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04BAE1C3E46
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 17:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729380AbgEDPPN convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 May 2020 11:15:13 -0400
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:35083 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726509AbgEDPPN (ORCPT
+        id S1729545AbgEDPQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 11:16:23 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:45093 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728684AbgEDPQW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 11:15:13 -0400
-Received: by mail-ed1-f65.google.com with SMTP id a8so13846076edv.2;
-        Mon, 04 May 2020 08:15:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=LCc+eYdO3tX3LkVF95rDTpEk+HBT/KELfuXGkU4VVhM=;
-        b=p604soKS+8HyOzeDutcUjBGXG/4TW8PCYxm8/RbCdYKZARwQ3H1/LDcbJqu26/8Bij
-         DZhbYmG1kmloHI9mhAA1o11sEHyl8yoD9GYUcz8T1nT0vPKY9bweMBC6LIO5qJcR60qv
-         fuPzni36o4tuyA7qPThu/xAZ8fomrym1Mb1VQpohSF0Sk5GnVWZP4dn56a7uu5FUY9Xi
-         Tnqmvd/2rvS4m+Bi/Pmr43W/MqIAFs020zP8RqIz0KzGFQGmSRJ1SCjGTgsHiYBxLvO3
-         GqiaYAdOhH08z9DrallzIo/D4/koS+fCeYC1xP/qaxUZw/GdtcisiP6hTTt5isU00mcx
-         Q32A==
-X-Gm-Message-State: AGi0PuZnZSR1ryp56Feia1H74AyZxpCxbX1SCq3MOT6lfBgsCQitXjHC
-        QvRihXAhtEB8oPyohOnLpOAO6uM/
-X-Google-Smtp-Source: APiQypLgL0BNupES2fskOUM21pKl/rDCVu+OP0SF7FJCBNEdF6HBSjXWjjho1YvOBX3WBlLXsQtV9g==
-X-Received: by 2002:a05:6402:22a6:: with SMTP id cx6mr14498532edb.277.1588605310748;
-        Mon, 04 May 2020 08:15:10 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.237])
-        by smtp.googlemail.com with ESMTPSA id 10sm1488687ejt.80.2020.05.04.08.15.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 04 May 2020 08:15:10 -0700 (PDT)
-Date:   Mon, 4 May 2020 17:15:08 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Jonathan Bakker <xc-racer2@live.ca>
-Cc:     kgene@kernel.org, robh+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 00/18] S5PV210 and Aries DTS improvements
-Message-ID: <20200504151508.GA3205@kozik-lap>
-References: <20200426183604.28494-1-xc-racer2@live.ca>
- <BN6PR04MB066033FD7FF6E5C37747C7A2A3AB0@BN6PR04MB0660.namprd04.prod.outlook.com>
+        Mon, 4 May 2020 11:16:22 -0400
+Received: from mail-qt1-f181.google.com ([209.85.160.181]) by
+ mrelayeu.kundenserver.de (mreue012 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MrOq7-1ilFCd3JlX-00oVu7; Mon, 04 May 2020 17:16:21 +0200
+Received: by mail-qt1-f181.google.com with SMTP id g16so10264400qtp.11;
+        Mon, 04 May 2020 08:16:20 -0700 (PDT)
+X-Gm-Message-State: AGi0PuY7Dy0tcYZRe5lO3fJFtrFFxb5fLFN9/bg1a15M1OAKTqOM5xIR
+        VbE9j8AIZQdQkreJ8B4ULYNavgDXL1EmESPI9Vc=
+X-Google-Smtp-Source: APiQypL5WgUAhbeT4hCo6s57/ai3QBtJeXFaXUuzlX+bmFS85Algr9U95kT2CU1vCl6sA5XuPw/rnlhJ6X2pgdEdJ/U=
+X-Received: by 2002:ac8:12c2:: with SMTP id b2mr17657477qtj.7.1588605379427;
+ Mon, 04 May 2020 08:16:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <BN6PR04MB066033FD7FF6E5C37747C7A2A3AB0@BN6PR04MB0660.namprd04.prod.outlook.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200502233910.20851-1-clay@daemons.net>
+In-Reply-To: <20200502233910.20851-1-clay@daemons.net>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 4 May 2020 17:16:02 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1m-zmiTx0_KJb-9PTW0iK+Zkh10gKsaBzge0OJALBFmQ@mail.gmail.com>
+Message-ID: <CAK8P3a1m-zmiTx0_KJb-9PTW0iK+Zkh10gKsaBzge0OJALBFmQ@mail.gmail.com>
+Subject: Re: [PATCH] net: ethernet: ti: Remove TI_CPTS_MOD workaround
+To:     Clay McClure <clay@daemons.net>
+Cc:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        kbuild test robot <lkp@intel.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Tony Lindgren <tony@atomide.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Wingman Kwok <w-kwok2@ti.com>,
+        Murali Karicheri <m-karicheri2@ti.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
+        Kees Cook <keescook@chromium.org>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:V8qk58D27ufZzMhxnwD4iHjL4JpQbVrq0pC4GH9P7zw/lls1hfy
+ Z9nW9LV7MEeBqqVqOCt1Lg1rVGN5zKlg22Z2WcWOgFG3CQO3aXj6l7cAwOGc4cFn5mBITgB
+ RIPpgIHTmMQL5s1gRlwuwsM1rEKdkGDOW0BhOqaWwID0LhSr765B68eFsFWwF2xr/Mq3CmD
+ buBXmHa+4qJg/8uJ7FBpQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:tbcwA8OpZ0k=:WGi0zi7PnptrFt0O9QmWzc
+ H4mC49I97x4Qm0suvCYZm1vNIy3v7xWLmIfqeT+74cnP8oDKwyVBLFVQWQSBTS1xQFxYDFhlt
+ WnjzHLaONPV3EvAtRvYRrpNRnAo2cEbdRi40y+wS7pZHskMLtHogaAng7Tafyl4bqRIhqN9CO
+ Mih207YZupHpGD61ghLk0uftARgFAzntwoBYOWBvPgS5ei3olhWmX6FNEc728MA8r10ySmsdh
+ MzR23fgu1tV9s/aBl9+luHk/4VRdtca9NqPLWP29tBVjWHBWhtUsUzFPsCS40U3oAv8Nh8qO0
+ hfp9skO8dRKHMxsDt8+wIovdPby+EpbwxWTdnlOulb9SV4fJU/KlrSjqmTcoyCVLqzafLyjzz
+ cpVlKs+COt6puxOYe1pcUw/CxHnX9FXZXLqApS38PEHXhgMf5xTn+nKb635JbyriVp+3GJ8FH
+ S+bLFDP2E2L++2tEDYiI0V7bV6GoeQkOGB62JiCeMfyabUS0H+sd/LkpbTHd3eUJEIFgX8aC3
+ qhEPee5zMD5souwtNV0FdVv3TUV6b2GGPvJUAfHMtCgGtpEyoK+PgIbiwa2rYS5qH6xgUbcwA
+ kWDeEDOzvH9wkv6p0Ydjl5oc9wHyYXLLOZzfI8P/gZffkuI0a9dD/SPe7I8Ewstqtcprn1cjw
+ jnfRIYhhy2OrPYMLrhUWb84CSnQTXDH5cvL4etAEaVro1Krt8QpCHMCK2uOugJHNazqQOxtcp
+ 3aNCuucy+Qu98Gpa0ddWgm6u7DdlTFUGtlICcjgsJjel2efY3vrR4xdY8EMOZ9LDG2ZFyqhep
+ cuPdXjVEV5Bk3WTJh5aZWltLRH6QGQMDhxVJa+4592AhYfGecg=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 01, 2020 at 04:50:01PM -0700, Jonathan Bakker wrote:
-> This patchset makes several improvements to Aries devices which are
-> based on S5PV210.  Several pulls on GPIOs were incorrect/not specified,
-> sleep GPIO configurations have been added, and more devices have been
-> added.
-> 
-> Touching the common S5PV210 DTSI are the addition of the ADC node
-> as well as fixes to the FIMC definitions and a sleep GPIO helper
-> added.  The GPI gpio node name has been corrected.
-> 
-> The patches have been tested on both a GT-i9000 as well as an
-> SGH-T959P and both can now suspend/resume properly.
-> 
-> Changes from v1:
-> - Correct ADC node name to match reg
-> - Restore removed regulator suspend state
-> - Split commit adding support for new devices into separate commits
->   for each device
-> - Add note where sleep gpio cfgs come from
-> - Ensure subject of all patches matches subsystem
-> - Add patch correcting GPI node name
-> 
-> 
-> Jonathan Bakker (17):
->   ARM: dts: s5pv210: Add helper define for sleep gpio config
->   ARM: dts: s5pv210: Add sleep GPIO configuration for fascinate4g
->   ARM: dts: s5pv210: Add sleep GPIO configuration for galaxys
->   ARM: dts: s5pv210: Set keep-power-in-suspend for SDHCI1 on aries
->   ARM: dts: s5pv210: Disable pulls on GPIO i2c adapters for aries
->   ARM: dts: s5pv210: Add WM8994 support to aries boards
->   ARM: dts: s5pv210: Add FSA9480 support to Aries boards
->   ARM: dts: s5pv210: Add touchkey support to aries boards
->   ARM: dts: s5pv210: Add panel support to aries boards
->   ARM: dts: s5pv210: Add remaining i2c-gpio adapters to aries
->   ARM: dts: s5pv210: Disable pull for vibrator ena GPIO on aries
->   ARM: dts: s5pv210: Add an ADC node
->   ARM: dts: s5pv210: Enable ADC on aries boards
->   ARM: dts: s5pv210: Assign clocks to MMC devices on aries
->   ARM: dts: s5pv210: Correct FIMC definitions
->   ARM: dts: s5pv210: Set MAX8998 GPIO pulls on aries
->   ARM: dts: s5pv210: Correct gpi gpio node name
-> 
-> Paweł Chmiel (1):
->   ARM: dts: s5pv210: Add si470x fmradio to galaxys
->
+On Sun, May 3, 2020 at 1:41 AM Clay McClure <clay@daemons.net> wrote:
 
-Nice job!
+> To preserve the existing behavior of defconfigs that select TI_CPTS, we
+> must also select PTP_1588_CLOCK so that the dependency is satisfied.
+> omap2plus_defconfig and keystone_defconfig have not been updated in a
+> while, so some unrelated no-op changes appear in the diff.
 
-Thanks, I applied entire set.
+Please don't do that at all. If you need to add a line to the defconfig file,
+add just that line, to avoid merge conflicts and dropping unrelated lines
+that have not been caught but need to be preserved in some way
+(by enabling another dependency, or renaming the option).
 
-Best regards,
-Krzysztof
-
+      Arnd
