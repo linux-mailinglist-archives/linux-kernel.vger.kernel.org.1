@@ -2,87 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBF491C368D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 12:15:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 998C11C3695
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 12:17:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727982AbgEDKPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 06:15:53 -0400
-Received: from mga14.intel.com ([192.55.52.115]:39941 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727786AbgEDKPx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 06:15:53 -0400
-IronPort-SDR: zac0n6+mH4OGwqJlyJPhQ8YUboM1GZLbOwg4U5I+xGCy8OfgwLujC5hTbHqPAywYMUP6V/BMIf
- XiwcgJm7sOzA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2020 03:15:52 -0700
-IronPort-SDR: kWzOexmE9gA9GHIa+C/aOVrhX7sZAgooMMGkA7wWet4plCES6C0LHJKpk/ebmQ5jghUQWYWDmf
- qla8KiukKhPw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,351,1583222400"; 
-   d="scan'208";a="277483002"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga002.jf.intel.com with ESMTP; 04 May 2020 03:15:51 -0700
-Received: from [10.215.163.15] (ekotax-mobl.gar.corp.intel.com [10.215.163.15])
-        by linux.intel.com (Postfix) with ESMTP id 2E749580609;
-        Mon,  4 May 2020 03:15:48 -0700 (PDT)
-Subject: Re: [PATCH 1/4] spi: lantiq: Synchronize interrupt handlers and
- transfers
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Daniel Schwierzeck <daniel.schwierzeck@gmail.com>, robh@kernel.org,
-        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, hauke@hauke-m.de,
-        andriy.shevchenko@intel.com, cheol.yong.kim@intel.com,
-        chuanhua.lei@linux.intel.com, qi-ming.wu@intel.com
-References: <cover.1587702428.git.eswara.kota@linux.intel.com>
- <3bf88d24b9cad9f3df1da8ed65bf55c05693b0f2.1587702428.git.eswara.kota@linux.intel.com>
- <310ca761-e7ae-1192-99fd-a1960697806b@gmail.com>
- <46f31699-e781-ae33-3ee5-d51e6940ee43@linux.intel.com>
- <20200429121310.GH4201@sirena.org.uk>
-From:   Dilip Kota <eswara.kota@linux.intel.com>
-Message-ID: <28f6511e-fe85-a834-1652-fd70def9ca88@linux.intel.com>
-Date:   Mon, 4 May 2020 18:15:47 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1728142AbgEDKRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 06:17:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726531AbgEDKRp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 06:17:45 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C36CC061A0E;
+        Mon,  4 May 2020 03:17:44 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id d16so13055006edv.8;
+        Mon, 04 May 2020 03:17:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=9YLhFsATDF9CQ1Kz7zcFcPQ6ReaZ8MJ/irWvA43Y+c0=;
+        b=FItz7HwlVSu7eS7n7AwPvpHdLcGWnBU6ErB/HRgCMWw8TeAUlfMFmxWjXDnyzgzqbc
+         WSE8rhkeVDiuI9IBCQTMSqrrnfcOV2vfddsJ3KGOdabSsCQFzuDcQuaf5LExyJdzhfb8
+         6BBRYOVRGWECjVxgTzjm2VHNosRK7EjTio6yj1AswTOanWgu3cCTONMhuSolIYbsIh6S
+         eeF2b41Ubkd+t5saU2WZ24BbD5KpIzEnDVanhW2SwARZGX2na7tvfA+Bl9SRKI71XHTp
+         AMudOq7AEjYcqgawIR0tNH8Ume6Ps1DcY+qzbwCwApxxqsQtMVob1MEkgAXGwn2d2oY8
+         h6ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=9YLhFsATDF9CQ1Kz7zcFcPQ6ReaZ8MJ/irWvA43Y+c0=;
+        b=ExscYGXsN9WI3P4S7EXSeZ4BMH/P08iwsbKPboFhuX337H7M6MQTTJKg0uEix8hLZb
+         2C6AWWIWcrZTk148ZIUcQ9ekrgUckAYpFJ/EHtmf0i56/7tVeUUEqQXzPrG4vCTFjJLM
+         PZsvRjYs14Xx6bIOt/NhlekGHlnoffBS+rezKlwsYA51t6ZLsNzKP1Rj9YPXrL6EzVLt
+         CSm95XF9BubLem/tSYQCxVplJJeSQXgdVoYDakVfNBCqzjiTrUjw4IP/n5jPAHFiMfoZ
+         ZZmA/yju+36Q2DlSoPq3JaOFq/rv+1XdRpHdJTBsTxYwHXnnc/SCpA5O4zfNDcWXGAAp
+         aV/g==
+X-Gm-Message-State: AGi0PuaKZXLhjs0wYBczV6Vqytb1jLyZxa0AcPcjlIexohfchr5EBsK3
+        8HYUBw9Id9gVHC86L+iog4510ikzNe7dOTxrhH0=
+X-Google-Smtp-Source: APiQypIwdDOKDpx+1h9+iSL94zUNe8BJguW9reVlsixilagJeowBiCSiwwCY3WMAA+G2UF+rvlg34kzDlOSMNeQ+TtE=
+X-Received: by 2002:a05:6402:7d6:: with SMTP id u22mr13626163edy.149.1588587462974;
+ Mon, 04 May 2020 03:17:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200429121310.GH4201@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20200202151907.23587-1-cyphar@cyphar.com> <20200202151907.23587-3-cyphar@cyphar.com>
+ <1567baea-5476-6d21-4f03-142def0f62e3@gmail.com> <20200331143911.lokfoq3lqfri2mgy@yavin.dot.cyphar.com>
+ <cd3a6aad-b906-ee57-1b5b-5939b9602ad0@gmail.com> <20200412164943.imwpdj5qgtyfn5de@yavin.dot.cyphar.com>
+ <cd1438ab-cfc6-b286-849e-d7de0d5c7258@gmail.com> <20200414103524.wjhyfobzpjk236o7@yavin.dot.cyphar.com>
+In-Reply-To: <20200414103524.wjhyfobzpjk236o7@yavin.dot.cyphar.com>
+Reply-To: mtk.manpages@gmail.com
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Date:   Mon, 4 May 2020 12:17:32 +0200
+Message-ID: <CAKgNAkjUssPCeOHQCg5zxjt2b9huRKfZQ3nR7Qtyr9jaizoqsw@mail.gmail.com>
+Subject: Re: [PATCH man-pages v2 2/2] openat2.2: document new openat2(2) syscall
+To:     Aleksa Sarai <asarai@suse.de>
+Cc:     Aleksa Sarai <cyphar@cyphar.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian@brauner.io>,
+        linux-man <linux-man@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Aleksa,
 
-On 4/29/2020 8:13 PM, Mark Brown wrote:
-> On Wed, Apr 29, 2020 at 04:20:53PM +0800, Dilip Kota wrote:
->> On 4/28/2020 7:10 PM, Daniel Schwierzeck wrote:
->>> actually there is no real bottom half. Reading or writing the FIFOs is
->>> fast and is therefore be done in hard IRQ context. But as the comment
->> Doing FIFO r/w in threaded irqs shouldn't cause any impact on maximum
->> transfer rate i think.
-> Have you actually tested this?  Generally adding extra latency is going
-> to lead to some opportunity for the hardware to idle and the longer the
-> hardware is idle the lower the throughput.
->
->> Also the ISR should be quick enough, doing FIFO r/w in ISR adds up more
->> latency to ISR.
->> Handling the FIFOs r/w in threaded irq will be a better way.
-> Consider what happens on a heavily loaded system - the threaded
-> interrupt will have to be scheduled along with other tasks.
->
->>> for lantiq_ssc_bussy_work() state, the driver needs some busy-waiting
->>> after the last interrupt. I don't think it's worth to replace this with
->>> threaded interrupts which add more runtime overhead and likely decrease
->>> the maximum transfer speed.
->> Workqueue has a higher chances of causing SPI transfers timedout.
-> because...?
-I just tried to get the history of removing workqueue in SPI driver, on 
-GRX500 (earlier chipset of LGM) the SPI transfers got timedout with 
-workqueues during regression testing. Once changed to threaded IRQs 
-transfers are working successfully.
+Ping on this piece please:
 
-Regards,
-Dilip
+> > > It wouldn't hurt to add a longer description of magic-links in
+> > > symlink(7). I'll send you a small patch to beef up the description (I
+> > > had planned to include a longer rewrite with the O_EMPTYPATH patches but
+> > > those require quite a bit more work to land).
+> >
+> > That would be great. Thank you!
+>
+> I'll cook something up later this week.
+
+Thanks,
+
+Michael
