@@ -2,112 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FD341C4345
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 19:50:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AAF81C434D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 19:50:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730470AbgEDRuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 13:50:22 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:46040 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728158AbgEDRuW (ORCPT
+        id S1730524AbgEDRut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 13:50:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730491AbgEDRun (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 13:50:22 -0400
-Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jVfEQ-0001IG-BA; Mon, 04 May 2020 17:50:18 +0000
-Date:   Mon, 4 May 2020 19:50:17 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Jann Horn <jannh@google.com>, linux-api@vger.kernel.org,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-Subject: Re: [PATCH v3 2/3] nsproxy: attach to namespaces via pidfds
-Message-ID: <20200504175017.ry2qhoeq3q45k2my@wittgenstein>
-References: <20200504144141.3605533-1-christian.brauner@ubuntu.com>
- <20200504144141.3605533-3-christian.brauner@ubuntu.com>
- <87h7wvoefw.fsf@x220.int.ebiederm.org>
- <20200504163907.jjgqe7qnnjpw4uwo@wittgenstein>
- <87ftcfmxt1.fsf@x220.int.ebiederm.org>
+        Mon, 4 May 2020 13:50:43 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C796EC061A0E
+        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 10:50:43 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id t40so228423pjb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 10:50:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=k/AK+JAkG8AocWziltXofgXSpvQiWbZdp+MJy5gRIXI=;
+        b=GxbjPhAxClfMPq6Ig4vZD/GnEFTCE58onBjQ9vrB+PfUJzmpiGKhngrrFSZ3UAkjB6
+         r2vJHK1oVzSqlOwDc3R9pNbKlSfr6Y20Cc9aNrflCZRcCSysM/xSt+A8JUHE1U466l5L
+         2Dpvbe9DTYsg1csGIgDnZc2fEDt5kVFZ2myRo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=k/AK+JAkG8AocWziltXofgXSpvQiWbZdp+MJy5gRIXI=;
+        b=Mw8dj1vkfoh827Lno173HhOho0XUhINPpLJhlfi+lvtk12fE2HX+8OL6ukGzXdxmS4
+         vmH+wegVo8W1LAiOE2nhBSROvQFL1sf5R1DANkk1FkBWR9e6nczeN2kp5ScRPNmdwv1Q
+         Q50sDN80gxlpmuOIQoUvgbh6rjkDqsX0+05XnbofMQhrjOTvEYe9sokDEuNYO5apf6FA
+         k6vjXJSTK5tUbRVfC3+3b9vFNJ6iWjA7eJwQnSSCMwqLZxOtOLkXTz0HxnegK4QIQsWb
+         BRp3b4KHG9wBD+CQZ1WQz/L/oNJMMhpdFXH74pW58x+PrGVIEuU5wlDASQMxBoVdJs9G
+         WmwQ==
+X-Gm-Message-State: AGi0PuaTzuh28nxiMD7Ad+50WyoCgYiHJRS8JpvQsTM1jwTVjd39OX8K
+        nhUxYxysWF8W8YG3bV2P5e1wOw==
+X-Google-Smtp-Source: APiQypIWcFYx1ZC2mKbogBoKHibhu5EPSONeP3jQWgvXL/NxWLEF4zBLuyqZbo1QO+00/YPD3092YQ==
+X-Received: by 2002:a17:902:bd02:: with SMTP id p2mr375570pls.72.1588614643361;
+        Mon, 04 May 2020 10:50:43 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:24fa:e766:52c9:e3b2])
+        by smtp.gmail.com with ESMTPSA id t3sm9402062pfq.110.2020.05.04.10.50.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 May 2020 10:50:42 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rafael.j.wysocki@intel.com, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     evgreen@chromium.org, swboyd@chromium.org, mka@chromium.org,
+        mkshah@codeaurora.org, Douglas Anderson <dianders@chromium.org>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        Colin Cross <ccross@android.com>,
+        Kevin Hilman <khilman@ti.com>,
+        Santosh Shilimkar <santosh.shilimkar@ti.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v6 3/5] kernel/cpu_pm: Fix uninitted local in cpu_pm
+Date:   Mon,  4 May 2020 10:50:17 -0700
+Message-Id: <20200504104917.v6.3.I2d44fc0053d019f239527a4e5829416714b7e299@changeid>
+X-Mailer: git-send-email 2.26.2.526.g744177e7f7-goog
+In-Reply-To: <20200504104917.v6.1.Ic7096b3b9b7828cdd41cd5469a6dee5eb6abf549@changeid>
+References: <20200504104917.v6.1.Ic7096b3b9b7828cdd41cd5469a6dee5eb6abf549@changeid>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <87ftcfmxt1.fsf@x220.int.ebiederm.org>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 04, 2020 at 12:09:46PM -0500, Eric W. Biederman wrote:
-> Christian Brauner <christian.brauner@ubuntu.com> writes:
-> 
-> > On Mon, May 04, 2020 at 11:25:07AM -0500, Eric W. Biederman wrote:
-> >> 
-> >> I am not thrilled about treating nstype as a flags fields when it is not
-> >> currently.  It was my hope when I designed the interface that not
-> >> treating nstype as a flags field would save us from the problem of bits
-> >> running out.
-> >
-> > Hm, I researched the setns() syscall history before that and I didn't
-> > see that reasoning anywhere. The "nstype" arg was originally advertised
-> > on the list as "having a flags field is useful in general".
-> 
-> Take a look at the code.  At the end of the day nstype is not treated at
-> all like a flags field.
+cpu_pm_notify() is basically a wrapper of notifier_call_chain().
+notifier_call_chain() doesn't initialize *nr_calls to 0 before it
+starts incrementing it--presumably it's up to the callers to do this.
 
-Oh, I wasn't trying to dispute that. I was just pointing at the history
-where using it as a flags field in the future wasn't in principle out of
-the question.
+Unfortunately the callers of cpu_pm_notify() don't init *nr_calls.
+This potentially means you could get too many or two few calls to
+CPU_PM_ENTER_FAILED or CPU_CLUSTER_PM_ENTER_FAILED depending on the
+luck of the stack.
 
-> 
-> It isn't a very important point.  And it was certainly easier to use
-> the existing bits for essentially their existing meanings.  But it was
-> certainly something I was thinking at the time.
-> 
-> I think I left it as we can see either way, depending on how things
-> evolve.
-> 
-> I can imagine a use for a nstype being a single namespace from a pidfd.
-> Do you have any actual usecases for setting some but not all of the
-> namespaces from a pidfd?  If we don't have a compelling reason
-> I would like to kick that can down the road a ways farther.
+Let's fix this.
 
-Yeah, I think so. We already have a few use-cases. The syscall
-interception stuff selectively attaches to subsets of namespaces
-depending on what namespaces are needed to emulate a given syscall. And
-the exec logic let's users select what namespaces to attach to. It's
-common to setns to a subset of namespaces to perform operations with
-privilege and then later attach others (often the userns).
+Fixes: ab10023e0088 ("cpu_pm: Add cpu power management notifiers")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+---
+This seems to be an ownerless file.  I'm hoping this patch can just go
+through the Qualcomm tree.  It would be nice if we could get an Ack
+from Rafael or Greg KH though.
 
-> 
-> I am also remembering that that setns freed the low 8 bits.  Which gave
-> some freedom beyond clone.
-> 
-> >> That aside.  It would be very good if the default version of setting
-> >> everything from a pidfd would set the root directory from the process it
-> >> is copying everything else from.
-> >
-> > I'm not sure I follow completely. If you specify CLONE_NEWNS then we do
-> > set the root directory with set_fs_root() in commit_nsset(). Or are you
-> > saying we should always do that independent of whether or not
-> > CLONE_NEWNS is specified? And if so could you explain why we'd want
-> > that? I'm sure I'm missing something!
-> 
-> I am suggesting that when we do:
-> 
-> "setns(pidfd, 0)" or "setns(pidfd, SETNS_PIDFD)"
-> 
-> That the result is not just the namespaces changing but also the root
-> directory changing to the pids root directory.  Something where the
-> whole is greater than the parts.
+Changes in v6: None
+Changes in v5: None
+Changes in v4: None
+Changes in v3: None
+Changes in v2:
+- ("Fix uninitted local in cpu_pm") new for v2.
 
-Ok, I can see that being useful. But If we do this, then a new flag
-would be quite helpful. (I also think Michael had some reservations
-against re-using 0 for something like this.)
-But let me suggest moving your phrase from above down to here and
-say that we could kick that can down the road for a follow-up extension?
+ kernel/cpu_pm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Christian
+diff --git a/kernel/cpu_pm.c b/kernel/cpu_pm.c
+index cbca6879ab7d..44a259338e33 100644
+--- a/kernel/cpu_pm.c
++++ b/kernel/cpu_pm.c
+@@ -80,7 +80,7 @@ EXPORT_SYMBOL_GPL(cpu_pm_unregister_notifier);
+  */
+ int cpu_pm_enter(void)
+ {
+-	int nr_calls;
++	int nr_calls = 0;
+ 	int ret = 0;
+ 
+ 	ret = cpu_pm_notify(CPU_PM_ENTER, -1, &nr_calls);
+@@ -131,7 +131,7 @@ EXPORT_SYMBOL_GPL(cpu_pm_exit);
+  */
+ int cpu_cluster_pm_enter(void)
+ {
+-	int nr_calls;
++	int nr_calls = 0;
+ 	int ret = 0;
+ 
+ 	ret = cpu_pm_notify(CPU_CLUSTER_PM_ENTER, -1, &nr_calls);
+-- 
+2.26.2.526.g744177e7f7-goog
+
