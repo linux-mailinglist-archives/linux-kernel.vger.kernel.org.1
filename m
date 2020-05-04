@@ -2,71 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F6DB1C3C5B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 16:06:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 618221C3C5E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 16:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729085AbgEDOGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 10:06:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728855AbgEDOGL (ORCPT
+        id S1728790AbgEDOHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 10:07:22 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:28588 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728233AbgEDOHV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 10:06:11 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5FBFC061A0E;
-        Mon,  4 May 2020 07:06:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=O2GPx2eRjN8jkkTzlEq3ED1zoCe+YCEyTNd0Rsv99XQ=; b=NeQeB2xz9Ko+RVrNJI3U7FnsNT
-        GcjGRt2AcABv+QpUGUbHjO1CZcJpfsZ32wy+bWcDeisEmuZP8gYyf5jeE/oCfr6sfU9aHUVJAs8JA
-        lQ7vehdCu6OCGGxyc1xsM5bNHIaJ9l1DEpGn/8zw1uLI2aBz1KhhhVhDtBEp8NDybrJ+2IHmWYRV2
-        khs6l3QkknAws4dc8djzU18r2wzD4ipFmmwcfOUk1YCs/bcvFQ1SXorNxbGo06+S/nxBpwOCDIlbN
-        uKiqtjMhNoi7s1sXdEoSTyWm6KwdL+R2VGUIjpLy+qYCOoVafsj3aeDfFBfeldcESO+OktlybZ1R6
-        2aCWDcxQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jVbjX-0005nT-KC; Mon, 04 May 2020 14:06:11 +0000
-Date:   Mon, 4 May 2020 07:06:11 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH 4/4] block/part_stat: add helper
- blk_account_io_merge_bio()
-Message-ID: <20200504140611.GD29020@infradead.org>
-References: <158859896942.19836.15240144203131230746.stgit@buzz>
- <158859906056.19958.10435750035306672420.stgit@buzz>
+        Mon, 4 May 2020 10:07:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588601239;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UNEInDzsZUfgj6dVPP9TtTfYbCtjbqhCfb5bgYwLZbY=;
+        b=Wvs8yqi/dtKKxncigQNT5V6wC6U2InfYpy/WtybRt1213VQhx4/UffIWqddZYQcy1Mx73X
+        TlpgX5MJJGItTk5n6qWNs9Dk9mlb5o2KI7qLCUEN1kNc2i1erv+OshoEJ1i/Yiq/zHm/K7
+        JEgK/miZyAzwpVaOVQZcCoqMJbl7Lzc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-463-5Qn0jHjGNO2YUpdhuNEjLg-1; Mon, 04 May 2020 10:07:15 -0400
+X-MC-Unique: 5Qn0jHjGNO2YUpdhuNEjLg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9FA471856FD5;
+        Mon,  4 May 2020 14:06:34 +0000 (UTC)
+Received: from x1.home (ovpn-113-95.phx2.redhat.com [10.3.113.95])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9335D78B21;
+        Mon,  4 May 2020 14:06:31 +0000 (UTC)
+Date:   Mon, 4 May 2020 08:06:30 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cohuck@redhat.com, peterx@redhat.com
+Subject: Re: [PATCH 1/3] vfio/type1: Support faulting PFNMAP vmas
+Message-ID: <20200504080630.293f33e8@x1.home>
+In-Reply-To: <20200501235033.GA19929@ziepe.ca>
+References: <158836742096.8433.685478071796941103.stgit@gimli.home>
+        <158836914801.8433.9711545991918184183.stgit@gimli.home>
+        <20200501235033.GA19929@ziepe.ca>
+Organization: Red Hat
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <158859906056.19958.10435750035306672420.stgit@buzz>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 04, 2020 at 04:31:04PM +0300, Konstantin Khlebnikov wrote:
-> Move non-"new_io" branch of blk_account_io_start() into separate function.
-> Fix merge accounting for discards (they were counted as write merges).
+On Fri, 1 May 2020 20:50:33 -0300
+Jason Gunthorpe <jgg@ziepe.ca> wrote:
+
+> On Fri, May 01, 2020 at 03:39:08PM -0600, Alex Williamson wrote:
+> > With conversion to follow_pfn(), DMA mapping a PFNMAP range depends on
+> > the range being faulted into the vma.  Add support to manually provide
+> > that, in the same way as done on KVM with hva_to_pfn_remapped().
+> > 
+> > Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+> >  drivers/vfio/vfio_iommu_type1.c |   36 +++++++++++++++++++++++++++++++++---
+> >  1 file changed, 33 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+> > index cc1d64765ce7..4a4cb7cd86b2 100644
+> > +++ b/drivers/vfio/vfio_iommu_type1.c
+> > @@ -317,6 +317,32 @@ static int put_pfn(unsigned long pfn, int prot)
+> >  	return 0;
+> >  }
+> >  
+> > +static int follow_fault_pfn(struct vm_area_struct *vma, struct mm_struct *mm,
+> > +			    unsigned long vaddr, unsigned long *pfn,
+> > +			    bool write_fault)
+> > +{
+> > +	int ret;
+> > +
+> > +	ret = follow_pfn(vma, vaddr, pfn);
+> > +	if (ret) {
+> > +		bool unlocked = false;
+> > +
+> > +		ret = fixup_user_fault(NULL, mm, vaddr,
+> > +				       FAULT_FLAG_REMOTE |
+> > +				       (write_fault ?  FAULT_FLAG_WRITE : 0),
+> > +				       &unlocked);
+> > +		if (unlocked)
+> > +			return -EAGAIN;
+> > +
+> > +		if (ret)
+> > +			return ret;
+> > +
+> > +		ret = follow_pfn(vma, vaddr, pfn);
+> > +	}
+> > +
+> > +	return ret;
+> > +}
+> > +
+> >  static int vaddr_get_pfn(struct mm_struct *mm, unsigned long vaddr,
+> >  			 int prot, unsigned long *pfn)
+> >  {
+> > @@ -339,12 +365,16 @@ static int vaddr_get_pfn(struct mm_struct *mm, unsigned long vaddr,
+> >  
+> >  	vaddr = untagged_addr(vaddr);
+> >  
+> > +retry:
+> >  	vma = find_vma_intersection(mm, vaddr, vaddr + 1);
+> >  
+> >  	if (vma && vma->vm_flags & VM_PFNMAP) {
+> > -		if (!follow_pfn(vma, vaddr, pfn) &&
+> > -		    is_invalid_reserved_pfn(*pfn))
+> > -			ret = 0;
+> > +		ret = follow_fault_pfn(vma, mm, vaddr, pfn, prot & IOMMU_WRITE);
+> > +		if (ret == -EAGAIN)
+> > +			goto retry;
+> > +
+> > +		if (!ret && !is_invalid_reserved_pfn(*pfn))
+> > +			ret = -EFAULT;  
 > 
-> Also blk_account_io_merge_bio() doesn't call update_io_ticks() unlike to
-> blk_account_io_start(), there is no reason for that.
-> 
-> Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+> I suggest checking vma->vm_ops == &vfio_pci_mmap_ops and adding a
+> comment that this is racy and needs to be fixed up. The ops check
+> makes this only used by other vfio bars and should prevent some
+> abuses of this hacky thing
 
-Looks good,
+We can't do that, vfio-pci is only one bus driver within the vfio
+ecosystem.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+> However, I wonder if this chould just link itself into the
+> vma->private data so that when the vfio that owns the bar goes away,
+> so does the iommu mapping?
 
-Nitpick below:
+I don't really see why we wouldn't use mmu notifiers so that the vfio
+iommu backend and vfio bus driver remain independent.
 
-> +void blk_account_io_start(struct request *rq)
->  {
->  	struct hd_struct *part;
->  	int rw = rq_data_dir(rq);
->  
-> +	if (blk_do_io_stat(rq)) {
+> I feel like this patch set is not complete unless it also handles the
+> shootdown of this path too?
 
-part and rw probably should move inside this branch.
+It would be nice to solve both issues and I'll start working on the mmu
+notifier side of things, but this series does solve a real issue on
+its own and we're not changing the iommu mapping behavior here.  Thanks,
+
+Alex
+
