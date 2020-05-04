@@ -2,322 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CD781C4831
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 22:26:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A9EF1C4816
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 22:25:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728224AbgEDUZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 16:25:23 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:35290 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727813AbgEDUZV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 16:25:21 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1588623920; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=4z02q7C1bVjeOXlDHhPdRKke7uOJKSAT2ssSZ6zrLbo=; b=luYhgNshyATfsZTdsUNkZTNagP0RGNNOAdKcTxb7sLrlBGly1M+5slegm8trj0aom6KwAu1C
- YqZkDwjjTq97dHqmG5fqy33rTNr0MEfI7eRJWsLJ/MHeFQinBD8O0HTgjSdGc3I26eSrMtrL
- RMOu2cH60wPiNaSYtQItIyjPUkc=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5eb07a30.7f7d8ebee3b0-smtp-out-n02;
- Mon, 04 May 2020 20:25:20 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 0BDBDC3856D; Mon,  4 May 2020 20:25:18 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-87.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8B64AC38559;
-        Mon,  4 May 2020 20:25:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8B64AC38559
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=sibis@codeaurora.org
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     viresh.kumar@linaro.org, sboyd@kernel.org,
-        georgi.djakov@linaro.org, bjorn.andersson@linaro.org,
-        saravanak@google.com, mka@chromium.org
-Cc:     nm@ti.com, agross@kernel.org, david.brown@linaro.org,
-        robh+dt@kernel.org, mark.rutland@arm.com, rjw@rjwysocki.net,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        dianders@chromium.org, vincent.guittot@linaro.org,
-        amit.kucheria@linaro.org, ulf.hansson@linaro.org,
-        lukasz.luba@arm.com, sudeep.holla@arm.com,
-        Sibi Sankar <sibis@codeaurora.org>
-Subject: [PATCH v4 12/12] arm64: dts: qcom: sc7180: Add cpu OPP tables
-Date:   Tue,  5 May 2020 01:52:43 +0530
-Message-Id: <20200504202243.5476-13-sibis@codeaurora.org>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20200504202243.5476-1-sibis@codeaurora.org>
-References: <20200504202243.5476-1-sibis@codeaurora.org>
+        id S1728152AbgEDUYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 16:24:53 -0400
+Received: from mga18.intel.com ([134.134.136.126]:23822 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728021AbgEDUYt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 16:24:49 -0400
+IronPort-SDR: g4Rr4XhslbKzVqgw0+US95BuLs42jjjz9CMKAtGOiYVyMELvKq2jYneZXh7EqYqGC1ayUs2ySI
+ mXbcMdR6vhOQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2020 13:24:48 -0700
+IronPort-SDR: jvk/9LK3jvTn1Qq14j4FHplMGgwv+dnrHzjS/mtGNF2eRzMSGVrAXlLOm08LzOj5NFrVCDa+Km
+ pqhqLWUVCpSg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,353,1583222400"; 
+   d="scan'208";a="295610884"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
+  by orsmga008.jf.intel.com with ESMTP; 04 May 2020 13:24:47 -0700
+Date:   Mon, 4 May 2020 13:24:47 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Paul Mackerras <paulus@samba.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Helge Deller <deller@gmx.de>, X86 ML <x86@kernel.org>,
+        linux-csky@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        arcml <linux-snps-arc@lists.infradead.org>,
+        linux-xtensa@linux-xtensa.org, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Chris Zankel <chris@zankel.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH V2 11/11] drm: Remove drm specific kmap_atomic code
+Message-ID: <20200504202446.GA985727@iweiny-DESK2.sc.intel.com>
+References: <20200504010912.982044-1-ira.weiny@intel.com>
+ <20200504010912.982044-12-ira.weiny@intel.com>
+ <CAKMK7uF4fd3upBYSQEzs==Nx7osn=wZPnxoKLKm9HTxwU_sZ+w@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKMK7uF4fd3upBYSQEzs==Nx7osn=wZPnxoKLKm9HTxwU_sZ+w@mail.gmail.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add OPP tables required to scale DDR/L3 per freq-domain on SC7180 SoCs.
+On Mon, May 04, 2020 at 01:18:51PM +0200, Daniel Vetter wrote:
+> On Mon, May 4, 2020 at 3:09 AM <ira.weiny@intel.com> wrote:
+> >
+> > From: Ira Weiny <ira.weiny@intel.com>
+> >
+> > kmap_atomic_prot() is now exported by all architectures.  Use this
+> > function rather than open coding a driver specific kmap_atomic.
+> >
+> > Reviewed-by: Christian König <christian.koenig@amd.com>
+> > Reviewed-by: Christoph Hellwig <hch@lst.de>
+> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> 
+> I'm assuming this lands through some other tree or a topic branch or whatever.
 
-Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
----
+Yes I think Andrew queued this up before and so I hope he will continue to do
+so with the subsequent versions.
 
-v4:
- https://lore.kernel.org/patchwork/cover/1230626/
- * Reworked based on Georgi's bindings
+Andrew, LMK if this is an issue.
 
- arch/arm64/boot/dts/qcom/sc7180.dtsi | 168 +++++++++++++++++++++++++++
- 1 file changed, 168 insertions(+)
+Thanks,
+Ira
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index 4216b574c0803..2421b7bb7dd83 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -10,6 +10,7 @@
- #include <dt-bindings/clock/qcom,gpucc-sc7180.h>
- #include <dt-bindings/clock/qcom,rpmh.h>
- #include <dt-bindings/clock/qcom,videocc-sc7180.h>
-+#include <dt-bindings/interconnect/qcom,osm-l3.h>
- #include <dt-bindings/interconnect/qcom,sc7180.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/phy/phy-qcom-qusb2.h>
-@@ -100,6 +101,10 @@ &LITTLE_CPU_SLEEP_1
- 					   &CLUSTER_SLEEP_0>;
- 			capacity-dmips-mhz = <1024>;
- 			dynamic-power-coefficient = <100>;
-+			operating-points-v2 = <&cpu0_opp_table>;
-+			interconnects = <&gem_noc MASTER_APPSS_PROC &mc_virt SLAVE_EBI1>,
-+					<&osm_l3 MASTER_OSM_L3_APPS &osm_l3 SLAVE_OSM_L3>;
-+			interconnect-tags = <3 0>;
- 			next-level-cache = <&L2_0>;
- 			#cooling-cells = <2>;
- 			qcom,freq-domain = <&cpufreq_hw 0>;
-@@ -123,6 +128,10 @@ &LITTLE_CPU_SLEEP_1
- 			capacity-dmips-mhz = <1024>;
- 			dynamic-power-coefficient = <100>;
- 			next-level-cache = <&L2_100>;
-+			operating-points-v2 = <&cpu0_opp_table>;
-+			interconnects = <&gem_noc MASTER_APPSS_PROC &mc_virt SLAVE_EBI1>,
-+					<&osm_l3 MASTER_OSM_L3_APPS &osm_l3 SLAVE_OSM_L3>;
-+			interconnect-tags = <3 0>;
- 			#cooling-cells = <2>;
- 			qcom,freq-domain = <&cpufreq_hw 0>;
- 			L2_100: l2-cache {
-@@ -142,6 +151,10 @@ &LITTLE_CPU_SLEEP_1
- 			capacity-dmips-mhz = <1024>;
- 			dynamic-power-coefficient = <100>;
- 			next-level-cache = <&L2_200>;
-+			operating-points-v2 = <&cpu0_opp_table>;
-+			interconnects = <&gem_noc MASTER_APPSS_PROC &mc_virt SLAVE_EBI1>,
-+					<&osm_l3 MASTER_OSM_L3_APPS &osm_l3 SLAVE_OSM_L3>;
-+			interconnect-tags = <3 0>;
- 			#cooling-cells = <2>;
- 			qcom,freq-domain = <&cpufreq_hw 0>;
- 			L2_200: l2-cache {
-@@ -161,6 +174,10 @@ &LITTLE_CPU_SLEEP_1
- 			capacity-dmips-mhz = <1024>;
- 			dynamic-power-coefficient = <100>;
- 			next-level-cache = <&L2_300>;
-+			operating-points-v2 = <&cpu0_opp_table>;
-+			interconnects = <&gem_noc MASTER_APPSS_PROC &mc_virt SLAVE_EBI1>,
-+					<&osm_l3 MASTER_OSM_L3_APPS &osm_l3 SLAVE_OSM_L3>;
-+			interconnect-tags = <3 0>;
- 			#cooling-cells = <2>;
- 			qcom,freq-domain = <&cpufreq_hw 0>;
- 			L2_300: l2-cache {
-@@ -180,6 +197,10 @@ &LITTLE_CPU_SLEEP_1
- 			capacity-dmips-mhz = <1024>;
- 			dynamic-power-coefficient = <100>;
- 			next-level-cache = <&L2_400>;
-+			operating-points-v2 = <&cpu0_opp_table>;
-+			interconnects = <&gem_noc MASTER_APPSS_PROC &mc_virt SLAVE_EBI1>,
-+					<&osm_l3 MASTER_OSM_L3_APPS &osm_l3 SLAVE_OSM_L3>;
-+			interconnect-tags = <3 0>;
- 			#cooling-cells = <2>;
- 			qcom,freq-domain = <&cpufreq_hw 0>;
- 			L2_400: l2-cache {
-@@ -199,6 +220,10 @@ &LITTLE_CPU_SLEEP_1
- 			capacity-dmips-mhz = <1024>;
- 			dynamic-power-coefficient = <100>;
- 			next-level-cache = <&L2_500>;
-+			operating-points-v2 = <&cpu0_opp_table>;
-+			interconnects = <&gem_noc MASTER_APPSS_PROC &mc_virt SLAVE_EBI1>,
-+					<&osm_l3 MASTER_OSM_L3_APPS &osm_l3 SLAVE_OSM_L3>;
-+			interconnect-tags = <3 0>;
- 			#cooling-cells = <2>;
- 			qcom,freq-domain = <&cpufreq_hw 0>;
- 			L2_500: l2-cache {
-@@ -218,6 +243,10 @@ &BIG_CPU_SLEEP_1
- 			capacity-dmips-mhz = <1740>;
- 			dynamic-power-coefficient = <405>;
- 			next-level-cache = <&L2_600>;
-+			operating-points-v2 = <&cpu6_opp_table>;
-+			interconnects = <&gem_noc MASTER_APPSS_PROC &mc_virt SLAVE_EBI1>,
-+					<&osm_l3 MASTER_OSM_L3_APPS &osm_l3 SLAVE_OSM_L3>;
-+			interconnect-tags = <3 0>;
- 			#cooling-cells = <2>;
- 			qcom,freq-domain = <&cpufreq_hw 1>;
- 			L2_600: l2-cache {
-@@ -237,6 +266,10 @@ &BIG_CPU_SLEEP_1
- 			capacity-dmips-mhz = <1740>;
- 			dynamic-power-coefficient = <405>;
- 			next-level-cache = <&L2_700>;
-+			operating-points-v2 = <&cpu6_opp_table>;
-+			interconnects = <&gem_noc MASTER_APPSS_PROC &mc_virt SLAVE_EBI1>,
-+					<&osm_l3 MASTER_OSM_L3_APPS &osm_l3 SLAVE_OSM_L3>;
-+			interconnect-tags = <3 0>;
- 			#cooling-cells = <2>;
- 			qcom,freq-domain = <&cpufreq_hw 1>;
- 			L2_700: l2-cache {
-@@ -336,6 +369,141 @@ CLUSTER_SLEEP_0: cluster-sleep-0 {
- 		};
- 	};
- 
-+	cpu0_opp_table: cpu0_opp_table {
-+		compatible = "operating-points-v2";
-+		opp-shared;
-+
-+		cpu0_opp1: opp-300000000 {
-+			opp-hz = /bits/ 64 <300000000>;
-+			opp-peak-kBps = <1200000 4800000>;
-+		};
-+
-+		cpu0_opp2: opp-576000000 {
-+			opp-hz = /bits/ 64 <576000000>;
-+			opp-peak-kBps = <1200000 4800000>;
-+		};
-+
-+		cpu0_opp3: opp-768000000 {
-+			opp-hz = /bits/ 64 <768000000>;
-+			opp-peak-kBps = <1200000 4800000>;
-+		};
-+
-+		cpu0_opp4: opp-1017600000 {
-+			opp-hz = /bits/ 64 <1017600000>;
-+			opp-peak-kBps = <1804000 8908800>;
-+		};
-+
-+		cpu0_opp5: opp-1248000000 {
-+			opp-hz = /bits/ 64 <1248000000>;
-+			opp-peak-kBps = <2188000 12902400>;
-+		};
-+
-+		cpu0_opp6: opp-1324800000 {
-+			opp-hz = /bits/ 64 <1324800000>;
-+			opp-peak-kBps = <2188000 12902400>;
-+		};
-+
-+		cpu0_opp7: opp-1516800000 {
-+			opp-hz = /bits/ 64 <1516800000>;
-+			opp-peak-kBps = <3072000 15052800>;
-+		};
-+
-+		cpu0_opp8: opp-1612800000 {
-+			opp-hz = /bits/ 64 <1612800000>;
-+			opp-peak-kBps = <3072000 15052800>;
-+		};
-+
-+		cpu0_opp9: opp-1708800000 {
-+			opp-hz = /bits/ 64 <1708800000>;
-+			opp-peak-kBps = <3072000 15052800>;
-+		};
-+
-+		cpu0_opp10: opp-1804800000 {
-+			opp-hz = /bits/ 64 <1804800000>;
-+			opp-peak-kBps = <4068000 22425600>;
-+		};
-+	};
-+
-+	cpu6_opp_table: cpu6_opp_table {
-+		compatible = "operating-points-v2";
-+		opp-shared;
-+
-+		cpu6_opp1: opp-300000000 {
-+			opp-hz = /bits/ 64 <300000000>;
-+			opp-peak-kBps = <2188000 8908800>;
-+		};
-+
-+		cpu6_opp2: opp-652800000 {
-+			opp-hz = /bits/ 64 <652800000>;
-+			opp-peak-kBps = <2188000 8908800>;
-+		};
-+
-+		cpu6_opp3: opp-825600000 {
-+			opp-hz = /bits/ 64 <825600000>;
-+			opp-peak-kBps = <2188000 8908800>;
-+		};
-+
-+		cpu6_opp4: opp-979200000 {
-+			opp-hz = /bits/ 64 <979200000>;
-+			opp-peak-kBps = <2188000 8908800>;
-+		};
-+
-+		cpu6_opp5: opp-1113600000 {
-+			opp-hz = /bits/ 64 <1113600000>;
-+			opp-peak-kBps = <2188000 8908800>;
-+		};
-+
-+		cpu6_opp6: opp-1267200000 {
-+			opp-hz = /bits/ 64 <1267200000>;
-+			opp-peak-kBps = <4068000 12902400>;
-+		};
-+
-+		cpu6_opp7: opp-1555200000 {
-+			opp-hz = /bits/ 64 <1555200000>;
-+			opp-peak-kBps = <4068000 15052800>;
-+		};
-+
-+		cpu6_opp8: opp-1708800000 {
-+			opp-hz = /bits/ 64 <1708800000>;
-+			opp-peak-kBps = <6220000 19353600>;
-+		};
-+
-+		cpu6_opp9: opp-1843200000 {
-+			opp-hz = /bits/ 64 <1843200000>;
-+			opp-peak-kBps = <6220000 19353600>;
-+		};
-+
-+		cpu6_opp10: opp-1900800000 {
-+			opp-hz = /bits/ 64 <1900800000>;
-+			opp-peak-kBps = <6220000 22425600>;
-+		};
-+
-+		cpu6_opp11: opp-1996800000 {
-+			opp-hz = /bits/ 64 <1996800000>;
-+			opp-peak-kBps = <6220000 22425600>;
-+		};
-+
-+		cpu6_opp12: opp-2112000000 {
-+			opp-hz = /bits/ 64 <2112000000>;
-+			opp-peak-kBps = <6220000 22425600>;
-+		};
-+
-+		cpu6_opp13: opp-2208000000 {
-+			opp-hz = /bits/ 64 <2208000000>;
-+			opp-peak-kBps = <7216000 22425600>;
-+		};
-+
-+		cpu6_opp14: opp-2323200000 {
-+			opp-hz = /bits/ 64 <2323200000>;
-+			opp-peak-kBps = <7216000 22425600>;
-+		};
-+
-+		cpu6_opp15: opp-2400000000 {
-+			opp-hz = /bits/ 64 <2400000000>;
-+			opp-peak-kBps = <8532000 23347200>;
-+		};
-+	};
-+
- 	memory@80000000 {
- 		device_type = "memory";
- 		/* We expect the bootloader to fill in the size */
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+> 
+> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> 
+> Cheers, Daniel
+> 
+> > ---
+> >  drivers/gpu/drm/ttm/ttm_bo_util.c    | 56 ++--------------------------
+> >  drivers/gpu/drm/vmwgfx/vmwgfx_blit.c | 16 ++++----
+> >  include/drm/ttm/ttm_bo_api.h         |  4 --
+> >  3 files changed, 12 insertions(+), 64 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/ttm/ttm_bo_util.c b/drivers/gpu/drm/ttm/ttm_bo_util.c
+> > index 52d2b71f1588..f09b096ba4fd 100644
+> > --- a/drivers/gpu/drm/ttm/ttm_bo_util.c
+> > +++ b/drivers/gpu/drm/ttm/ttm_bo_util.c
+> > @@ -257,54 +257,6 @@ static int ttm_copy_io_page(void *dst, void *src, unsigned long page)
+> >         return 0;
+> >  }
+> >
+> > -#ifdef CONFIG_X86
+> > -#define __ttm_kmap_atomic_prot(__page, __prot) kmap_atomic_prot(__page, __prot)
+> > -#define __ttm_kunmap_atomic(__addr) kunmap_atomic(__addr)
+> > -#else
+> > -#define __ttm_kmap_atomic_prot(__page, __prot) vmap(&__page, 1, 0,  __prot)
+> > -#define __ttm_kunmap_atomic(__addr) vunmap(__addr)
+> > -#endif
+> > -
+> > -
+> > -/**
+> > - * ttm_kmap_atomic_prot - Efficient kernel map of a single page with
+> > - * specified page protection.
+> > - *
+> > - * @page: The page to map.
+> > - * @prot: The page protection.
+> > - *
+> > - * This function maps a TTM page using the kmap_atomic api if available,
+> > - * otherwise falls back to vmap. The user must make sure that the
+> > - * specified page does not have an aliased mapping with a different caching
+> > - * policy unless the architecture explicitly allows it. Also mapping and
+> > - * unmapping using this api must be correctly nested. Unmapping should
+> > - * occur in the reverse order of mapping.
+> > - */
+> > -void *ttm_kmap_atomic_prot(struct page *page, pgprot_t prot)
+> > -{
+> > -       if (pgprot_val(prot) == pgprot_val(PAGE_KERNEL))
+> > -               return kmap_atomic(page);
+> > -       else
+> > -               return __ttm_kmap_atomic_prot(page, prot);
+> > -}
+> > -EXPORT_SYMBOL(ttm_kmap_atomic_prot);
+> > -
+> > -/**
+> > - * ttm_kunmap_atomic_prot - Unmap a page that was mapped using
+> > - * ttm_kmap_atomic_prot.
+> > - *
+> > - * @addr: The virtual address from the map.
+> > - * @prot: The page protection.
+> > - */
+> > -void ttm_kunmap_atomic_prot(void *addr, pgprot_t prot)
+> > -{
+> > -       if (pgprot_val(prot) == pgprot_val(PAGE_KERNEL))
+> > -               kunmap_atomic(addr);
+> > -       else
+> > -               __ttm_kunmap_atomic(addr);
+> > -}
+> > -EXPORT_SYMBOL(ttm_kunmap_atomic_prot);
+> > -
+> >  static int ttm_copy_io_ttm_page(struct ttm_tt *ttm, void *src,
+> >                                 unsigned long page,
+> >                                 pgprot_t prot)
+> > @@ -316,13 +268,13 @@ static int ttm_copy_io_ttm_page(struct ttm_tt *ttm, void *src,
+> >                 return -ENOMEM;
+> >
+> >         src = (void *)((unsigned long)src + (page << PAGE_SHIFT));
+> > -       dst = ttm_kmap_atomic_prot(d, prot);
+> > +       dst = kmap_atomic_prot(d, prot);
+> >         if (!dst)
+> >                 return -ENOMEM;
+> >
+> >         memcpy_fromio(dst, src, PAGE_SIZE);
+> >
+> > -       ttm_kunmap_atomic_prot(dst, prot);
+> > +       kunmap_atomic(dst);
+> >
+> >         return 0;
+> >  }
+> > @@ -338,13 +290,13 @@ static int ttm_copy_ttm_io_page(struct ttm_tt *ttm, void *dst,
+> >                 return -ENOMEM;
+> >
+> >         dst = (void *)((unsigned long)dst + (page << PAGE_SHIFT));
+> > -       src = ttm_kmap_atomic_prot(s, prot);
+> > +       src = kmap_atomic_prot(s, prot);
+> >         if (!src)
+> >                 return -ENOMEM;
+> >
+> >         memcpy_toio(dst, src, PAGE_SIZE);
+> >
+> > -       ttm_kunmap_atomic_prot(src, prot);
+> > +       kunmap_atomic(src);
+> >
+> >         return 0;
+> >  }
+> > diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_blit.c b/drivers/gpu/drm/vmwgfx/vmwgfx_blit.c
+> > index bb46ca0c458f..94d456a1d1a9 100644
+> > --- a/drivers/gpu/drm/vmwgfx/vmwgfx_blit.c
+> > +++ b/drivers/gpu/drm/vmwgfx/vmwgfx_blit.c
+> > @@ -374,12 +374,12 @@ static int vmw_bo_cpu_blit_line(struct vmw_bo_blit_line_data *d,
+> >                 copy_size = min_t(u32, copy_size, PAGE_SIZE - src_page_offset);
+> >
+> >                 if (unmap_src) {
+> > -                       ttm_kunmap_atomic_prot(d->src_addr, d->src_prot);
+> > +                       kunmap_atomic(d->src_addr);
+> >                         d->src_addr = NULL;
+> >                 }
+> >
+> >                 if (unmap_dst) {
+> > -                       ttm_kunmap_atomic_prot(d->dst_addr, d->dst_prot);
+> > +                       kunmap_atomic(d->dst_addr);
+> >                         d->dst_addr = NULL;
+> >                 }
+> >
+> > @@ -388,8 +388,8 @@ static int vmw_bo_cpu_blit_line(struct vmw_bo_blit_line_data *d,
+> >                                 return -EINVAL;
+> >
+> >                         d->dst_addr =
+> > -                               ttm_kmap_atomic_prot(d->dst_pages[dst_page],
+> > -                                                    d->dst_prot);
+> > +                               kmap_atomic_prot(d->dst_pages[dst_page],
+> > +                                                d->dst_prot);
+> >                         if (!d->dst_addr)
+> >                                 return -ENOMEM;
+> >
+> > @@ -401,8 +401,8 @@ static int vmw_bo_cpu_blit_line(struct vmw_bo_blit_line_data *d,
+> >                                 return -EINVAL;
+> >
+> >                         d->src_addr =
+> > -                               ttm_kmap_atomic_prot(d->src_pages[src_page],
+> > -                                                    d->src_prot);
+> > +                               kmap_atomic_prot(d->src_pages[src_page],
+> > +                                                d->src_prot);
+> >                         if (!d->src_addr)
+> >                                 return -ENOMEM;
+> >
+> > @@ -499,9 +499,9 @@ int vmw_bo_cpu_blit(struct ttm_buffer_object *dst,
+> >         }
+> >  out:
+> >         if (d.src_addr)
+> > -               ttm_kunmap_atomic_prot(d.src_addr, d.src_prot);
+> > +               kunmap_atomic(d.src_addr);
+> >         if (d.dst_addr)
+> > -               ttm_kunmap_atomic_prot(d.dst_addr, d.dst_prot);
+> > +               kunmap_atomic(d.dst_addr);
+> >
+> >         return ret;
+> >  }
+> > diff --git a/include/drm/ttm/ttm_bo_api.h b/include/drm/ttm/ttm_bo_api.h
+> > index 0a9d042e075a..de1ccdcd5703 100644
+> > --- a/include/drm/ttm/ttm_bo_api.h
+> > +++ b/include/drm/ttm/ttm_bo_api.h
+> > @@ -668,10 +668,6 @@ int ttm_bo_mmap_obj(struct vm_area_struct *vma, struct ttm_buffer_object *bo);
+> >  int ttm_bo_mmap(struct file *filp, struct vm_area_struct *vma,
+> >                 struct ttm_bo_device *bdev);
+> >
+> > -void *ttm_kmap_atomic_prot(struct page *page, pgprot_t prot);
+> > -
+> > -void ttm_kunmap_atomic_prot(void *addr, pgprot_t prot);
+> > -
+> >  /**
+> >   * ttm_bo_io
+> >   *
+> > --
+> > 2.25.1
+> >
+> > _______________________________________________
+> > dri-devel mailing list
+> > dri-devel@lists.freedesktop.org
+> > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> 
+> 
+> 
+> -- 
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> +41 (0) 79 365 57 48 - http://blog.ffwll.ch
