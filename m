@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A93021C4435
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:05:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B17A81C438B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 19:59:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731789AbgEDSFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:05:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34898 "EHLO mail.kernel.org"
+        id S1730025AbgEDR7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 13:59:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52420 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731778AbgEDSFM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:05:12 -0400
+        id S1730715AbgEDR7L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 13:59:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3172C2073E;
-        Mon,  4 May 2020 18:05:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 37073207DD;
+        Mon,  4 May 2020 17:59:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588615511;
-        bh=m4EcSt3zXHUMsSW3fDHvl3oNDX5fcLVwzpe1swlR0eY=;
+        s=default; t=1588615150;
+        bh=19ZLzxZ3iCQ95N4Ki0BMSsdfiekRIWUaniX2b/lyVuk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Cs89Olrnd9P+HLg9sKiTjxSMUJ3y06omoxQp3WCdUPSeJvlAtDqZyOQD6+hQcKO+i
-         Kcq0GvlIblkEOmm1v+bWa/YZalMmezVGx7qXB+KuFKEK22EC6pCfAbrUkiThErmR0y
-         h0hubT7VI1Mt83egYCV4X9oli1xUlm8g+hCPG/KQ=
+        b=KEW8wftZbUpEmxFotn3YU9a97Rx/SMnhZGNkzqQiDeH3sheOQuxMZpoXIP9FbO9Po
+         maoI4sE06JBJ+ORaqsDMBGpPvSJJoNQO0wO6lMTY/45418tRs+DY8VewN5baLUdjoq
+         xXhL4R3aYs55HbmxWYxamia1RtybWzmWJQG6DLG0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Olga Kornievskaia <kolga@netapp.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>
-Subject: [PATCH 5.6 11/73] NFSv4.1: fix handling of backchannel binding in BIND_CONN_TO_SESSION
+        stable@vger.kernel.org, Fabio Estevam <fabio.estevam@nxp.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.4 16/18] ASoC: imx-spdif: Fix crash on suspend
 Date:   Mon,  4 May 2020 19:57:14 +0200
-Message-Id: <20200504165504.007128955@linuxfoundation.org>
+Message-Id: <20200504165445.006367933@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200504165501.781878940@linuxfoundation.org>
-References: <20200504165501.781878940@linuxfoundation.org>
+In-Reply-To: <20200504165441.533160703@linuxfoundation.org>
+References: <20200504165441.533160703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,88 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Olga Kornievskaia <olga.kornievskaia@gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
 
-commit dff58530c4ca8ce7ee5a74db431c6e35362cf682 upstream.
+commit 9954859185c6e8359e71121037b627f1e294057d upstream.
 
-Currently, if the client sends BIND_CONN_TO_SESSION with
-NFS4_CDFC4_FORE_OR_BOTH but only gets NFS4_CDFS4_FORE back it ignores
-that it wasn't able to enable a backchannel.
+When registering a ASoC card the driver data of the parent device is set to
+point to the card. This driver data is used in the
+snd_soc_suspend()/resume() callbacks.
 
-To make sure, the client sends BIND_CONN_TO_SESSION as the first
-operation on the connections (ie., no other session compounds haven't
-been sent before), and if the client's request to bind the backchannel
-is not satisfied, then reset the connection and retry.
+The imx-spdif driver overwrites the driver data with custom data which
+causes snd_soc_suspend() to crash.  Since the custom driver is not used
+anywhere simply deleting the line which sets the custom driver data fixes
+the issue.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Olga Kornievskaia <kolga@netapp.com>
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Fixes: 43ac946922b3 ("ASoC: imx-spdif: add snd_soc_pm_ops for spdif machine driver")
+Tested-by: Fabio Estevam <fabio.estevam@nxp.com>
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/nfs/nfs4proc.c           |    8 ++++++++
- include/linux/nfs_xdr.h     |    2 ++
- include/linux/sunrpc/clnt.h |    5 +++++
- 3 files changed, 15 insertions(+)
+ sound/soc/fsl/imx-spdif.c |    2 --
+ 1 file changed, 2 deletions(-)
 
---- a/fs/nfs/nfs4proc.c
-+++ b/fs/nfs/nfs4proc.c
-@@ -7893,6 +7893,7 @@ static void
- nfs4_bind_one_conn_to_session_done(struct rpc_task *task, void *calldata)
- {
- 	struct nfs41_bind_conn_to_session_args *args = task->tk_msg.rpc_argp;
-+	struct nfs41_bind_conn_to_session_res *res = task->tk_msg.rpc_resp;
- 	struct nfs_client *clp = args->client;
- 
- 	switch (task->tk_status) {
-@@ -7901,6 +7902,12 @@ nfs4_bind_one_conn_to_session_done(struc
- 		nfs4_schedule_session_recovery(clp->cl_session,
- 				task->tk_status);
+--- a/sound/soc/fsl/imx-spdif.c
++++ b/sound/soc/fsl/imx-spdif.c
+@@ -72,8 +72,6 @@ static int imx_spdif_audio_probe(struct
+ 		goto end;
  	}
-+	if (args->dir == NFS4_CDFC4_FORE_OR_BOTH &&
-+			res->dir != NFS4_CDFS4_BOTH) {
-+		rpc_task_close_connection(task);
-+		if (args->retries++ < MAX_BIND_CONN_TO_SESSION_RETRIES)
-+			rpc_restart_call(task);
-+	}
- }
  
- static const struct rpc_call_ops nfs4_bind_one_conn_to_session_ops = {
-@@ -7923,6 +7930,7 @@ int nfs4_proc_bind_one_conn_to_session(s
- 	struct nfs41_bind_conn_to_session_args args = {
- 		.client = clp,
- 		.dir = NFS4_CDFC4_FORE_OR_BOTH,
-+		.retries = 0,
- 	};
- 	struct nfs41_bind_conn_to_session_res res;
- 	struct rpc_message msg = {
---- a/include/linux/nfs_xdr.h
-+++ b/include/linux/nfs_xdr.h
-@@ -1307,11 +1307,13 @@ struct nfs41_impl_id {
- 	struct nfstime4			date;
- };
+-	platform_set_drvdata(pdev, data);
+-
+ end:
+ 	of_node_put(spdif_np);
  
-+#define MAX_BIND_CONN_TO_SESSION_RETRIES 3
- struct nfs41_bind_conn_to_session_args {
- 	struct nfs_client		*client;
- 	struct nfs4_sessionid		sessionid;
- 	u32				dir;
- 	bool				use_conn_in_rdma_mode;
-+	int				retries;
- };
- 
- struct nfs41_bind_conn_to_session_res {
---- a/include/linux/sunrpc/clnt.h
-+++ b/include/linux/sunrpc/clnt.h
-@@ -236,4 +236,9 @@ static inline int rpc_reply_expected(str
- 		(task->tk_msg.rpc_proc->p_decode != NULL);
- }
- 
-+static inline void rpc_task_close_connection(struct rpc_task *task)
-+{
-+	if (task->tk_xprt)
-+		xprt_force_disconnect(task->tk_xprt);
-+}
- #endif /* _LINUX_SUNRPC_CLNT_H */
 
 
