@@ -2,109 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DC761C3CF5
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 16:27:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C7A71C3D04
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 16:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728999AbgEDO1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 10:27:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728706AbgEDO1d (ORCPT
+        id S1729121AbgEDO3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 10:29:43 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:35423 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729060AbgEDO3m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 10:27:33 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4575C061A10
-        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 07:27:31 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id v4so152213wme.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 07:27:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=R8hMysgCANDxPI0D+IpQRpi6VaDo+fsmsuFYs+cuTuA=;
-        b=sCyOY7cWz+Zih2Gcur3hgcfiu3oSiZBTIp0cZmq5uKEDB6IrRn9BCNvLxR0Y2FnQ75
-         J/sWlpL8ZM/H2nEmr1COYKz40Odhyre7AgPfsXQpuO/yVTvFrL7svixV/hPPXLFe76NL
-         a5ZxjdqpicIx5Ol0TULum1FfemlP16K3/LeIY6MvaApt2ME7+3l3YC+1xxuqIB3+2AXc
-         RgQkc912evPAICrllpKV+xm0uyGmeiHBUw2pviROwFNmFGQMeMlbHDH+To1RM+10fxCp
-         PtzF1sTkIAtzaTNVqC2EXQGruoXv5gwMTh5A5y1Jlrv5srccEch/nFZZN7jXn7v8L8r6
-         FHpg==
+        Mon, 4 May 2020 10:29:42 -0400
+Received: by mail-ot1-f65.google.com with SMTP id k110so4504853otc.2;
+        Mon, 04 May 2020 07:29:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=R8hMysgCANDxPI0D+IpQRpi6VaDo+fsmsuFYs+cuTuA=;
-        b=qFZ1fzRfV2TALps33boLxFMBvypaOkGX3kcTuexvtVL6O5JZwhetNCPvi9edFXZymy
-         8j2v/+Ozu1vD+qi69kznUZLDTaYduyRnnN2Oj5fvFRHFts1gSxLhy7iGAdiJQYDQHy5O
-         Hi8VL4P9yeNAAwG9rEtg8lXV5JYd6t75pIWdmQgQEN7gd924dmjXzynFtbm7HpH43K/f
-         XveBAmkw7hRlTrexCSDewYtDa8E1y+/oSmIMt/9G35Uf5h8HuA6KvYGxtK/amJ21Hrq5
-         AFvx63Vb83QeBlD4M+kKIv9jdI1C5SWMtwL6oy8C/hBr6XoaOqXNiLr4+TfJ3WGPBxDM
-         8nmQ==
-X-Gm-Message-State: AGi0Puba+/aqnUZ5l/2Ch+oaIaXrGSyJrBQTReYOdp+bJGCzIU2C1DAp
-        KmKnQaA2gPA8UkCDOgAqDb6zHsxdrszdHzFlPmo=
-X-Google-Smtp-Source: APiQypJvPehbbUthQvX9YGeEq+Ipj4rzULCq/PSfWLN7t0/wgJVu4JxunEJ5TD5rohgmepaA63orXw==
-X-Received: by 2002:a1c:1bcb:: with SMTP id b194mr15744884wmb.4.1588602450462;
-        Mon, 04 May 2020 07:27:30 -0700 (PDT)
-Received: from localhost (nat-35.starnet.cz. [178.255.168.35])
-        by smtp.gmail.com with ESMTPSA id g6sm19438716wrw.34.2020.05.04.07.27.29
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 04 May 2020 07:27:29 -0700 (PDT)
-From:   Michal Simek <michal.simek@xilinx.com>
-To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
-        michal.simek@xilinx.com, git@xilinx.com, stable@vger.kernel.org
-Cc:     Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>,
-        linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org
-Subject: [PATCH v2] tty: xilinx_uartps: Fix missing id assignment to the console
-Date:   Mon,  4 May 2020 16:27:28 +0200
-Message-Id: <ed3111533ef5bd342ee5ec504812240b870f0853.1588602446.git.michal.simek@xilinx.com>
-X-Mailer: git-send-email 2.26.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4qmNWbZEWGK3APAzYwIeRF7N4Ey8Oknk1ZvcU1u1ZqU=;
+        b=N1oXyP7br7VE+24jMnpp//tEsI2I9XMyipiwrWkWyV0WlxffaFdZWcngd8JXS1pXP4
+         /6ighEpGKEP276G12e4Pu0JNaLUnWjHgTK6cbnaqvYkYNnROtka1WSFPI+u631GQpSWo
+         j/qX4TSs7AWDXwKmOOK5MCtz/OcYRe+prCpD9/QFZNd7+gcGnJfVIwENZ2Sg00uMeVzh
+         lZ2mBJ8OxZtgGMNJHj4DQxSq6Txc+7+ppz3xhoAhNlsx5Rf6YAVaxwZ/MqKzJsuEYJNX
+         5GGcBolqiK1c5HVmUvZ5chSXUv+OKPPXa1+Y5KZYL1/eEbU27l6ZKz1WvUwwQjtKjDBV
+         IvvA==
+X-Gm-Message-State: AGi0PuYY/E3WPj86DYzI8Lv6+XTmM+aw9qLH865psgy4eTdcKEb2H2hi
+        npNwSZIpNgFJft8rgPTu77NOvfq5q98kkxjqZbo=
+X-Google-Smtp-Source: APiQypIl5oeOYwC1jEI/m9PhRtWzOpl25bOP4xHlOC6xhIPb9atAy1P1nyb7qKk0U0HPJufqUAievgfEuM+jpmQcYow=
+X-Received: by 2002:a9d:7990:: with SMTP id h16mr14016322otm.145.1588602579133;
+ Mon, 04 May 2020 07:29:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1588542414-14826-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1588542414-14826-10-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <CAMuHMdXv1kW4BeEt4tGBwp9gmRUOJ1X_7-Gu2h=m+On8+RjZ2A@mail.gmail.com> <CA+V-a8vqC90BgGjZKcMArOf4-F9PS4jXoVQbNQ81V6p4knsx=A@mail.gmail.com>
+In-Reply-To: <CA+V-a8vqC90BgGjZKcMArOf4-F9PS4jXoVQbNQ81V6p4knsx=A@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 4 May 2020 16:29:28 +0200
+Message-ID: <CAMuHMdX6_zOVXStgRRCYonZF2XUowsm0T=3L3+xmqhyGCqMi6Q@mail.gmail.com>
+Subject: Re: [PATCH v2 09/10] ARM: dts: r8a7742-iwg21m: Add iWave RZ/G1H
+ Qseven SOM
+To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dmaengine <dmaengine@vger.kernel.org>,
+        Linux MMC List <linux-mmc@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
+Hi Prabhakar,
 
-When serial console has been assigned to ttyPS1 (which is serial1 alias)
-console index is not updated property and pointing to index -1 (statically
-initialized) which ends up in situation where nothing has been printed on
-the port.
+On Mon, May 4, 2020 at 4:20 PM Lad, Prabhakar
+<prabhakar.csengg@gmail.com> wrote:
+> On Mon, May 4, 2020 at 2:01 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Sun, May 3, 2020 at 11:48 PM Lad Prabhakar
+> > <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > > Add support for iWave RZ/G1H Qseven System On Module.
+> > >
+> > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > > Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
 
-The commit 18cc7ac8a28e ("Revert "serial: uartps: Register own uart console
-and driver structures"") didn't contain this line which was removed by
-accident.
+> > > --- /dev/null
+> > > +++ b/arch/arm/boot/dts/r8a7742-iwg21m.dtsi
+> > > @@ -0,0 +1,53 @@
+> > > +// SPDX-License-Identifier: GPL-2.0
+> > > +/*
+> > > + * Device Tree Source for the iWave RZ/G1H Qseven SOM
+> > > + *
+> > > + * Copyright (C) 2020 Renesas Electronics Corp.
+> > > + */
+> > > +
+> > > +#include "r8a7742.dtsi"
+> > > +#include <dt-bindings/gpio/gpio.h>
+> > > +
+> > > +/ {
+> > > +       compatible = "iwave,g21m", "renesas,r8a7742";
+> > > +
+> > > +       memory@40000000 {
+> > > +               device_type = "memory";
+> > > +               reg = <0 0x40000000 0 0x40000000>;
+> > > +       };
+> > > +
+> > > +       memory@200000000 {
+> > > +               device_type = "memory";
+> > > +               reg = <2 0x00000000 0 0x20000000>;
+> >
+> > According to the schematics, the second bank is also 1 GiB, so the
+> > reg length should be 0x40000000.
+> >
+> Agreed will fix that.
 
-Signed-off-by: Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
----
+Thanks for the confirmation.  I can fix that while applying.
 
-Changes in v2:
-- Do better commit description
-- Origin subject was "tty: xilinx_uartps: Add the id to the console"
+> > > +       };
+> >
+> > > +&pfc {
+> > > +       mmc1_pins: mmc1 {
+> > > +               groups = "mmc1_data4", "mmc1_ctrl";
+> > > +               function = "mmc1";
+> > > +       };
+> > > +};
+> > > +
+> > > +&mmcif1 {
+> > > +       pinctrl-0 = <&mmc1_pins>;
+> > > +       pinctrl-names = "default";
+> > > +
+> > > +       vmmc-supply = <&reg_3p3v>;
+> > > +       bus-width = <4>;
+> > > +       non-removable;
+> > > +       status = "okay";
+> > > +};
+> >
+> > The eMMC has an 8-bit data path.  Is there any specific reason you use
+> > bus-width = <4>, and the "mmc1_data4" pin group?
+> >
+> MMC1_DATA7 is shared with VI1_CLK, so instead of limiting to only one
+> device when using 8-bit just switched to 4bit mode so that both the
+> peripherals can be used.
 
-Greg: Would be good if you can take this patch to 5.7 and also to stable
-trees.
+OK.
 
----
- drivers/tty/serial/xilinx_uartps.c | 1 +
- 1 file changed, 1 insertion(+)
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-devel for v5.8 with the above fixed.
 
-diff --git a/drivers/tty/serial/xilinx_uartps.c b/drivers/tty/serial/xilinx_uartps.c
-index 672cfa075e28..b9d672af8b65 100644
---- a/drivers/tty/serial/xilinx_uartps.c
-+++ b/drivers/tty/serial/xilinx_uartps.c
-@@ -1465,6 +1465,7 @@ static int cdns_uart_probe(struct platform_device *pdev)
- 		cdns_uart_uart_driver.nr = CDNS_UART_NR_PORTS;
- #ifdef CONFIG_SERIAL_XILINX_PS_UART_CONSOLE
- 		cdns_uart_uart_driver.cons = &cdns_uart_console;
-+		cdns_uart_console.index = id;
- #endif
- 
- 		rc = uart_register_driver(&cdns_uart_uart_driver);
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.26.2
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
