@@ -2,68 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C78B1C3FBF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 18:23:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FEC91C3FC0
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 18:24:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729600AbgEDQXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 12:23:55 -0400
-Received: from forwardcorp1o.mail.yandex.net ([95.108.205.193]:48398 "EHLO
-        forwardcorp1o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728158AbgEDQXz (ORCPT
+        id S1729577AbgEDQY0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 May 2020 12:24:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728158AbgEDQY0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 12:23:55 -0400
-Received: from mxbackcorp1o.mail.yandex.net (mxbackcorp1o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::301])
-        by forwardcorp1o.mail.yandex.net (Yandex) with ESMTP id 5F9BF2E0B11;
-        Mon,  4 May 2020 19:23:52 +0300 (MSK)
-Received: from iva4-7c3d9abce76c.qloud-c.yandex.net (iva4-7c3d9abce76c.qloud-c.yandex.net [2a02:6b8:c0c:4e8e:0:640:7c3d:9abc])
-        by mxbackcorp1o.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id jZLbaWK4CF-NpbW5JEh;
-        Mon, 04 May 2020 19:23:52 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
-        t=1588609432; bh=no6TW68O+atJXPBJd9FkxYcBR+RL32lyRAIoHBava80=;
-        h=In-Reply-To:Message-ID:From:Date:References:To:Subject:Cc;
-        b=zt4m8qjEBFXYYgR7FHl3xaXs0x6JYyFGFIdvDGK0YYRJyp7DnQmBeKyP7Z3UsNg5h
-         8BPAJcBiULiqqB6agjJ/F3rkeoBeg2MpWa4p5UfEWfhZ5Et2MoPa9yGPUjvlPNSLCi
-         XpEWUZlpousukGejujQgcf3mX9lAMHFcPYWDIkO8=
-Authentication-Results: mxbackcorp1o.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
-Received: from dynamic-vpn.dhcp.yndx.net (dynamic-vpn.dhcp.yndx.net [2a02:6b8:b081:409::1:8])
-        by iva4-7c3d9abce76c.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id c71R8gaCcF-NpW8weO5;
-        Mon, 04 May 2020 19:23:51 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-Subject: Re: [PATCH RFC 1/2] fs/iomap/direct-io: pass NOWAIT to bio flags
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>
-References: <158860769311.32485.8003552176738816448.stgit@buzz>
- <20200504160052.GA8625@infradead.org>
-From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-Message-ID: <94ec1b65-5f4c-6b56-5a47-ca186615d978@yandex-team.ru>
-Date:   Mon, 4 May 2020 19:23:50 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Mon, 4 May 2020 12:24:26 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 335D4C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 09:24:24 -0700 (PDT)
+Received: from bigeasy by Galois.linutronix.de with local (Exim 4.80)
+        (envelope-from <bigeasy@linutronix.de>)
+        id 1jVdtA-00011O-0l; Mon, 04 May 2020 18:24:16 +0200
+Date:   Mon, 4 May 2020 18:24:15 +0200
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Kevin Hao <haokexin@gmail.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH v5.6-rt] mm: slub: Always flush the delayed empty slubs
+ in flush_all()
+Message-ID: <20200504162415.lsdebr6wmhipvjdl@linutronix.de>
+References: <20200504033407.2385-1-haokexin@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200504160052.GA8625@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20200504033407.2385-1-haokexin@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/05/2020 19.00, Christoph Hellwig wrote:
-> On Mon, May 04, 2020 at 06:54:53PM +0300, Konstantin Khlebnikov wrote:
->> This is required to avoid waiting in lower layers.
->>
->> Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-> 
-> This looks sensible.  Did you run this through xfstests?
-> 
+On 2020-05-04 11:34:07 [+0800], Kevin Hao wrote:
+> After commit f0b231101c94 ("mm/SLUB: delay giving back empty slubs to
+…
+> Fixes: f0b231101c94 ("mm/SLUB: delay giving back empty slubs to IRQ enabled regions")
+> Signed-off-by: Kevin Hao <haokexin@gmail.com>
 
-Nope. It seems xfstests has one trivial test for NOWAIT - generic/471
-It tests only write with/without extent, nothing about contention.
+Applied, thanks.
 
-I've added nowait into fio and played with it a little.
-https://github.com/axboe/fio/pull/972
-
-With these patches I see EAGAINs when queue is flooded.
+Sebastian
