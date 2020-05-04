@@ -2,177 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 603971C479F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 22:04:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11F611C476B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 21:56:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727092AbgEDUER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 16:04:17 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:38530 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726111AbgEDUEQ (ORCPT
+        id S1726580AbgEDT4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 15:56:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726111AbgEDT4t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 16:04:16 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 044K4ALS080434;
-        Mon, 4 May 2020 15:04:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1588622650;
-        bh=9VhwbEA312S5jn2e02G3zURBnKiTzVYqGi5OHCo+NQo=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=lsFBoDULMdwpUWmJoyoHPpyi3EC1VpWs4hOTgioHZzeFKmoMFTKdF2WzPOOfx5/rE
-         pN6SJsVwbPpWdEV4is6PFf+JsjwQkiGxfvv+Y+uTcrPVnbqImyJKaA7X0m5bW1ynoE
-         aD2NYMYebWmyoOihI/LDQKoZ/UV054+O6JM+ujmE=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 044K4AQO025119
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 4 May 2020 15:04:10 -0500
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 4 May
- 2020 15:04:10 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 4 May 2020 15:04:10 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 044K49YS090232;
-        Mon, 4 May 2020 15:04:09 -0500
-From:   Dan Murphy <dmurphy@ti.com>
-To:     <jacek.anaszewski@gmail.com>, <pavel@ucw.cz>
-CC:     <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh@kernel.org>
-Subject: [PATCH v25 01/16] dt: bindings: Add multicolor class dt bindings documention
-Date:   Mon, 4 May 2020 14:55:26 -0500
-Message-ID: <20200504195526.28242-1-dmurphy@ti.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200503123215.6449-2-dmurphy@ti.com>
-References: <20200503123215.6449-2-dmurphy@ti.com>
+        Mon, 4 May 2020 15:56:49 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D8DAC061A0E;
+        Mon,  4 May 2020 12:56:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=fRTAxMt+wwPpjAy5FUGbHC1yS2mrXc5N6zswIhz2qFU=; b=U2ubukdfAiDbK2ZjfknkSdIZZj
+        AjopC+jkvMrXQ9FVjXXnq53WZIm9n3N/S2YQJnm/RKG/G+EQXXmsgzYD8d/VGzsFRGW6pbOTUSkis
+        r5/Y2LaI40jPhkDuA357fVfgK3JufLYz/3iKIUWzdpi4apH2qJXL1DazqpydEoq1ixm2HuCjWAcAx
+        /o+oh/BUZjVvqQgv0o6VmJggTTbI/eCgxIJ0OJZ592aAU5rNH3lcnY1bFd+JYoRIHEi5MpwxdtC1D
+        N3crodKkBqcxylqmYqSVgaBvnUIxJqQnh7XoF4NWM2ikctoH4dUqcptCDvUTtK/FY0aIdAXirGDRy
+        +MGsWUGQ==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jVhCm-0007RJ-5H; Mon, 04 May 2020 19:56:44 +0000
+Subject: Re: [v2 PATCH 1/2] drivers: drm: panel: Add ASUS TM5P5 NT35596 panel
+ driver
+To:     Konrad Dybcio <konradybcio@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200504193816.126299-1-konradybcio@gmail.com>
+ <20200504193816.126299-2-konradybcio@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <a9a381eb-6d85-5c6e-f377-0b9815bd36a5@infradead.org>
+Date:   Mon, 4 May 2020 12:56:43 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20200504193816.126299-2-konradybcio@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add DT bindings for the LEDs multicolor class framework.
-Add multicolor ID to the color ID list for device tree bindings.
+On 5/4/20 12:38 PM, Konrad Dybcio wrote:
+> diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
+> index a1723c1b5fbf8..3aa57a927c4bd 100644
+> --- a/drivers/gpu/drm/panel/Kconfig
+> +++ b/drivers/gpu/drm/panel/Kconfig
+> @@ -18,6 +18,16 @@ config DRM_PANEL_ARM_VERSATILE
+>  	  reference designs. The panel is detected using special registers
+>  	  in the Versatile family syscon registers.
+>  
+> +config DRM_PANEL_ASUS_Z00T_TM5P5_NT35596
+> +        tristate "ASUS Z00T TM5P5 NT35596 panel"
+> +        depends on GPIOLIB && OF
+> +        depends on DRM_MIPI_DSI
+> +	depends on BACKLIGHT_CLASS_DEVICE
+> +        help
+> +          Say Y here if you want to enable support for the ASUS TMP5P5
+> +          NT35596 1080x1920 video mode panel as found in some Asus
+> +          Zenfone 2 Laser Z00T devices.
+> +
+>  config DRM_PANEL_BOE_HIMAX8279D
+>  	tristate "Boe Himax8279d panel"
+>  	depends on OF
 
-CC: Rob Herring <robh@kernel.org>
-Acked-by: Pavel Machek <pavel@ucw.cz>
-Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
----
- .../bindings/leds/leds-class-multicolor.yaml  | 71 +++++++++++++++++++
- drivers/leds/led-core.c                       |  1 +
- include/dt-bindings/leds/common.h             |  3 +-
- 3 files changed, 74 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/devicetree/bindings/leds/leds-class-multicolor.yaml
+Hi,
 
-diff --git a/Documentation/devicetree/bindings/leds/leds-class-multicolor.yaml b/Documentation/devicetree/bindings/leds/leds-class-multicolor.yaml
-new file mode 100644
-index 000000000000..fa6ea8e5c46b
---- /dev/null
-+++ b/Documentation/devicetree/bindings/leds/leds-class-multicolor.yaml
-@@ -0,0 +1,71 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/leds/leds-class-multicolor.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Common properties for the multicolor LED class.
-+
-+maintainers:
-+  - Dan Murphy <dmurphy@ti.com>
-+
-+description: |
-+  Bindings for multi color LEDs show how to describe current outputs of
-+  either integrated multi-color LED elements (like RGB, RGBW, RGBWA-UV
-+  etc.) or standalone LEDs, to achieve logically grouped multi-color LED
-+  modules. This is achieved by adding multi-led nodes layer to the
-+  monochrome LED bindings.
-+  The nodes and properties defined in this document are unique to the multicolor
-+  LED class.  Common LED nodes and properties are inherited from the common.txt
-+  within this documentation directory.
-+
-+properties:
-+  color:
-+    description: |
-+      For multicolor LED support this property should be defined as
-+      LED_COLOR_ID_MULTI and further definition can be found in
-+      include/linux/leds/common.h.
-+
-+required:
-+  - color
-+
-+examples:
-+  - |
-+    #include <dt-bindings/leds/common.h>
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        led-controller@14 {
-+          #address-cells = <1>;
-+          #size-cells = <0>;
-+          compatible = "ti,lp5009";
-+          reg = <0x14>;
-+
-+          multi-led@1 {
-+            #address-cells = <1>;
-+            #size-cells = <0>;
-+            reg = <1>;
-+            color = <LED_COLOR_ID_MULTI>;
-+            function = LED_FUNCTION_CHARGING;
-+
-+            led@0 {
-+              reg = <0>;
-+              color = <LED_COLOR_ID_RED>;
-+            };
-+
-+            led@1 {
-+              reg = <1>;
-+              color = <LED_COLOR_ID_GREEN>;
-+            };
-+
-+            led@2 {
-+              reg = <2>;
-+              color = <LED_COLOR_ID_BLUE>;
-+            };
-+          };
-+        };
-+    };
-+
-+additionalProperties: false
-+...
-diff --git a/drivers/leds/led-core.c b/drivers/leds/led-core.c
-index f1f718dbe0f8..846248a0693d 100644
---- a/drivers/leds/led-core.c
-+++ b/drivers/leds/led-core.c
-@@ -34,6 +34,7 @@ const char * const led_colors[LED_COLOR_ID_MAX] = {
- 	[LED_COLOR_ID_VIOLET] = "violet",
- 	[LED_COLOR_ID_YELLOW] = "yellow",
- 	[LED_COLOR_ID_IR] = "ir",
-+	[LED_COLOR_ID_MULTI] = "multicolor",
- };
- EXPORT_SYMBOL_GPL(led_colors);
- 
-diff --git a/include/dt-bindings/leds/common.h b/include/dt-bindings/leds/common.h
-index 0ce7dfc00dcb..a463ce6a8794 100644
---- a/include/dt-bindings/leds/common.h
-+++ b/include/dt-bindings/leds/common.h
-@@ -30,7 +30,8 @@
- #define LED_COLOR_ID_VIOLET	5
- #define LED_COLOR_ID_YELLOW	6
- #define LED_COLOR_ID_IR		7
--#define LED_COLOR_ID_MAX	8
-+#define LED_COLOR_ID_MULTI	8
-+#define LED_COLOR_ID_MAX	9
- 
- /* Standard LED functions */
- /* Keyboard LEDs, usually it would be input4::capslock etc. */
+Please clean up the config entry indentation.
+The keywords (tristate, depends, help) should all be indented with
+one tab (not spaces) and the help text should be indented with
+one tab + 2 spaces.
+
+thanks.
 -- 
-2.25.1
-
+~Randy
