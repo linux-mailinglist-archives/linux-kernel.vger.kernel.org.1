@@ -2,148 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F43C1C4479
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:07:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ECAB1C4486
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:08:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732178AbgEDSHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:07:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38524 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731094AbgEDSHi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:07:38 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 620EA206B8;
-        Mon,  4 May 2020 18:07:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588615657;
-        bh=qSSPanwBoB9/JQpMTRvAt64HeB1Nngc7+wt849hUqt8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=gOJg6N0Wp5t9LhWqGYLQdlvrM4KGIMDVXHt5MuhbymoZ/3c9ufbSMdZ4v7ElfUGP2
-         bk4lSTe5mv4yys6Jv2pdJpujGo7i2Mv6UTmnts5leniCOTcyRKUWKg+dq0yhHyBISZ
-         AGUsWGxPfyMCmb4hywnL0NSJq1KaBwv2pWOsU0ww=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 437E535226F4; Mon,  4 May 2020 11:07:37 -0700 (PDT)
-Date:   Mon, 4 May 2020 11:07:37 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Matthew Wilcox <willy@infradead.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        RCU <rcu@vger.kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 09/24] rcu/tree: cache specified number of objects
-Message-ID: <20200504180737.GT2869@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200428205903.61704-1-urezki@gmail.com>
- <20200428205903.61704-10-urezki@gmail.com>
- <20200501212749.GD7560@paulmck-ThinkPad-P72>
- <20200504124323.GA17577@pc636>
- <20200504152437.GK2869@paulmck-ThinkPad-P72>
- <20200504174822.GA20446@pc636>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200504174822.GA20446@pc636>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1732229AbgEDSIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:08:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731676AbgEDSH5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 14:07:57 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37ABBC061A0E;
+        Mon,  4 May 2020 11:07:57 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id A766C15D266F6;
+        Mon,  4 May 2020 11:07:54 -0700 (PDT)
+Date:   Mon, 04 May 2020 11:07:53 -0700 (PDT)
+Message-Id: <20200504.110753.1196693099669354507.davem@davemloft.net>
+To:     nicolas.ferre@microchip.com
+Cc:     linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        claudiu.beznea@microchip.com, harini.katakam@xilinx.com,
+        linux-kernel@vger.kernel.org, alexandre.belloni@bootlin.com,
+        antoine.tenart@bootlin.com, f.fainelli@gmail.com,
+        linux@armlinux.org.uk, andrew@lunn.ch, michal.simek@xilinx.com
+Subject: Re: [PATCH v3 0/7] net: macb: Wake-on-Lan magic packet fixes and
+ GEM handling
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <cover.1588597759.git.nicolas.ferre@microchip.com>
+References: <cover.1588597759.git.nicolas.ferre@microchip.com>
+X-Mailer: Mew version 6.8 on Emacs 26.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 04 May 2020 11:07:55 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 04, 2020 at 07:48:22PM +0200, Uladzislau Rezki wrote:
-> On Mon, May 04, 2020 at 08:24:37AM -0700, Paul E. McKenney wrote:
-> > On Mon, May 04, 2020 at 02:43:23PM +0200, Uladzislau Rezki wrote:
-> > > On Fri, May 01, 2020 at 02:27:49PM -0700, Paul E. McKenney wrote:
-> > > > On Tue, Apr 28, 2020 at 10:58:48PM +0200, Uladzislau Rezki (Sony) wrote:
-> > > > > Cache some extra objects per-CPU. During reclaim process
-> > > > > some pages are cached instead of releasing by linking them
-> > > > > into the list. Such approach provides O(1) access time to
-> > > > > the cache.
-> > > > > 
-> > > > > That reduces number of requests to the page allocator, also
-> > > > > that makes it more helpful if a low memory condition occurs.
-> > > > > 
-> > > > > A parameter reflecting the minimum allowed pages to be
-> > > > > cached per one CPU is propagated via sysfs, it is read
-> > > > > only, the name is "rcu_min_cached_objs".
-> > > > > 
-> > > > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > > > > ---
-> > > > >  kernel/rcu/tree.c | 64 ++++++++++++++++++++++++++++++++++++++++++++---
-> > > > >  1 file changed, 60 insertions(+), 4 deletions(-)
-> > > > > 
-> > > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > > > index 89e9ca3f4e3e..d8975819b1c9 100644
-> > > > > --- a/kernel/rcu/tree.c
-> > > > > +++ b/kernel/rcu/tree.c
-> > > > > @@ -178,6 +178,14 @@ module_param(gp_init_delay, int, 0444);
-> > > > >  static int gp_cleanup_delay;
-> > > > >  module_param(gp_cleanup_delay, int, 0444);
-> > > > >  
-> > > > > +/*
-> > > > > + * This rcu parameter is read-only, but can be write also.
-> > > > 
-> > > > You mean that although the parameter is read-only, you see no reason
-> > > > why it could not be converted to writeable?
-> > > > 
-> > > I added just a note. If it is writable, then we can change the size of the
-> > > per-CPU cache dynamically, i.e. "echo 5 > /sys/.../rcu_min_cached_objs"
-> > > would cache 5 pages. But i do not have a strong opinion if it should be
-> > > writable.
-> > > 
-> > > > If it was writeable, and a given CPU had the maximum numbr of cached
-> > > > objects, the rcu_min_cached_objs value was decreased, but that CPU never
-> > > > saw another kfree_rcu(), would the number of cached objects change?
-> > > > 
-> > > No. It works the way: unqueue the page from cache in the kfree_rcu(),
-> > > whereas "rcu work" will put it back if number of objects < rcu_min_cached_objs,
-> > > if >= will free the page.
-> > 
-> > Just to make sure I understand...  If someone writes a smaller number to
-> > the sysfs variable, the per-CPU caches will be decreased at that point,
-> > immediately during that sysfs write?  Or are you saying something else?
-> > 
-> This patch defines it as read-only. It defines the minimum threshold that
-> controls number of elements in the per-CPU cache. If we decide to make it
-> write also, then we will have full of freedom how to define its behavior,
-> i.e. it is not defined because it is read only.
+From: <nicolas.ferre@microchip.com>
+Date: Mon, 4 May 2020 15:44:15 +0200
 
-And runtime-read-only sounds like an excellent state for it.
+> Here is the 3rd series to fix WoL magic-packet on the current macb driver.
+> I also add, in the second part of this series the feature to GEM types of IPs.
+> Please tell me if they should be separated; but the two last patches cannot go
+> without the 5 fixes first ones.
 
-> > > > Presumably the list can also be accessed without holding this lock,
-> > > > because otherwise we shouldn't need llist...
-> > > > 
-> > > Hm... We increase the number of elements in cache, therefore it is not
-> > > lockless. From the other hand i used llist_head to maintain the cache
-> > > because it is single linked list, we do not need "*prev" link. Also
-> > > we do not need to init the list.
-> > > 
-> > > But i can change it to list_head. Please let me know if i need :)
-> > 
-> > Hmmm...  Maybe it is time for a non-atomic singly linked list?  In the RCU
-> > callback processing, the operations were open-coded, but they have been
-> > pushed into include/linux/rcu_segcblist.h and kernel/rcu/rcu_segcblist.*.
-> > 
-> > Maybe some non-atomic/protected/whatever macros in the llist.h file?
-> > Or maybe just open-code the singly linked list?  (Probably not the
-> > best choice, though.)  Add comments stating that the atomic properties
-> > of the llist functions aren't neded?  Something else?
-> >
-> In order to keep it simple i can replace llist_head by the list_head?
-
-Fine by me!
-
-> > The comments would be a good start.  Just to take pity on people seeing
-> > the potential for concurrency and wondering how the concurrent accesses
-> > actually happen.  ;-)
-> > 
-> Sounds like you are kidding me :) 
-
-"Only those who have gone too far can possibly tell you how far you
-can go!"  ;-)
-
-							Thanx, Paul
+Please separate these into a pure bug fix series for 'net', and once that is
+integrated and propagated to 'net-next' you can submit the GEM support.
