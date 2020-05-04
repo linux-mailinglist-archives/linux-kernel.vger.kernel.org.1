@@ -2,102 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A1F51C3BCC
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 15:55:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2833C1C3BDC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 16:00:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728357AbgEDNzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 09:55:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46656 "EHLO
+        id S1728695AbgEDOAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 10:00:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726404AbgEDNzB (ORCPT
+        by vger.kernel.org with ESMTP id S1728110AbgEDN74 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 09:55:01 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E592C061A0F
-        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 06:55:01 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id h4so9718815ljg.12
-        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 06:55:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Itdyqr8e224xa0qoeMb+hZq4gtZJw27Kt/U4OO6UwfY=;
-        b=VwcmkO0/GGrS6n5JI5GYBP8kGrKFLTo2xvM2ArBj0wbbTAFiLbviLMWKFElUpB1u6f
-         WgULsIHvmc25XtTe+aJFycilL4dmDvYQXBjgWFAqwh6WcFlGwUP/KZN3Izhl5TPyVYWx
-         G28TYGCkekQgzmA9OTUzT3vDw78RBR1mtkmpHdpljY6SYmnD2iBGW25ClTOYDjONv/DZ
-         4dAknYrGHYB8MFaPSTGCOfozIdR+Z2EP6rW2LI59ejQ8A8zk69BN9FX540dADpBvZWg4
-         AHm0elYmxfpvuY5b9nbJ9Bpb+6pyYKLZmUTWEUuMAMpCQzn3eLMnlpgruHUEUJdyhwJ7
-         kVjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Itdyqr8e224xa0qoeMb+hZq4gtZJw27Kt/U4OO6UwfY=;
-        b=Rk4oBwfdtBbx9hAaxe/dxlyw1fQRxNvcc9ql9rOyvLbYv+dOAKrCDR8he/1z4rOPiw
-         JpZg8xj6T8sXM9NLP2z/kJ+7ulmDGhzD2MbFHw4rnt4Hz128+Lk74ElZ/G6G7bJGjbG8
-         /RoiTnM1W8A19u2GI55yJpptYMgvSEaN7uOsJBLdnPB7jlxhzhrSL1mT2LbBGPVsNif/
-         YXMo7Uif0YBBXwnfuyg+cNt96sZ0kIHf0CblEpSBmG0Pi8GgAVHmOoIql6d86hXpeos+
-         DhQlsZD2rsGHUtHxZJOedLvaVw7BQEsg+ruF9+9pYo4NNCvSnfBOERjHtNATRNZg/Aj4
-         5FcA==
-X-Gm-Message-State: AGi0PubM+K5S1aB4hu1LUIeaPwgtUtK02bFcuLp4wGp/g4xoVD1j7Yol
-        XnsZkevZhdxVGXJyxEZ3qCa7brPlXzCKCtxNOsGugQ==
-X-Google-Smtp-Source: APiQypKqAKnoOiCs/8EtnTYjFOuEKS1X7ml0nzp5cVcBNdTubHtkdwIUSuo4z/eUhZ7BmF9cZA0K+zzUomm2bREV/nw=
-X-Received: by 2002:a2e:330f:: with SMTP id d15mr9701206ljc.250.1588600499500;
- Mon, 04 May 2020 06:54:59 -0700 (PDT)
+        Mon, 4 May 2020 09:59:56 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E01AC0610D5;
+        Mon,  4 May 2020 06:59:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=CT9TPYB1gBir/yelz692kCRjhkXIcgo4vO0zDJE8gwk=; b=rJyjevkJ4AJbP004OHAOCBnof1
+        YIafKltJ9MfSxyThjuPBAXEj2GLR36kE4nJ8GJokvQILLT6qSQIiWp+GRKXEXjYXAchKjJUjaFHM9
+        G4BDqH+3RH3n+9LXVGpwy1cuq3UH+2+nGccvKrTVdOYkcBsY5MrBgX9uTpFQ1ehd/gRhiTBOyxzcb
+        YQWNTTvHhkrZa8Ve1OkkvMoQhddwnMoc2+UyoOoynmMQmnsrzOt8TbVI9BbWtuG0vTa+itpKcNdb3
+        wwxjlmc4iIzipoTy5Pa8SOYpmy9Ssli5sz+ho9ZZ/CpO6i1dEEOiT0nzFyQ+ixNZZTh6od2ml6tqf
+        KBmtyCAw==;
+Received: from [2001:4bb8:18c:10bd:c70:4a89:bc61:2] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jVbd5-0007Y5-DB; Mon, 04 May 2020 13:59:31 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Tim Waugh <tim@cyberelk.net>, Borislav Petkov <bp@alien8.de>,
+        Jan Kara <jack@suse.com>, linux-block@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: stop using ioctl_by_bdev for file system access to CDROMs v3
+Date:   Mon,  4 May 2020 15:59:19 +0200
+Message-Id: <20200504135927.2835750-1-hch@lst.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200430182712.237526-1-shakeelb@google.com> <20200430192907.GA2436@cmpxchg.org>
- <CALvZod6Gatw+sX7_hsVPB-O2yMt-ygXUSweQbHwxZHgwdEth4Q@mail.gmail.com> <20200504065701.GB22838@dhcp22.suse.cz>
-In-Reply-To: <20200504065701.GB22838@dhcp22.suse.cz>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 4 May 2020 06:54:47 -0700
-Message-ID: <CALvZod7qEE-k0uoSbUR-+pD2kWshz2SYQNXaVCLPiTTG8sqAmQ@mail.gmail.com>
-Subject: Re: [PATCH] memcg: oom: ignore oom warnings from memory.max
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
-        Greg Thelen <gthelen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 3, 2020 at 11:57 PM Michal Hocko <mhocko@kernel.org> wrote:
->
-> On Thu 30-04-20 13:20:10, Shakeel Butt wrote:
-> > On Thu, Apr 30, 2020 at 12:29 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> > >
-> > > On Thu, Apr 30, 2020 at 11:27:12AM -0700, Shakeel Butt wrote:
-> > > > Lowering memory.max can trigger an oom-kill if the reclaim does not
-> > > > succeed. However if oom-killer does not find a process for killing, it
-> > > > dumps a lot of warnings.
-> > > >
-> > > > Deleting a memcg does not reclaim memory from it and the memory can
-> > > > linger till there is a memory pressure. One normal way to proactively
-> > > > reclaim such memory is to set memory.max to 0 just before deleting the
-> > > > memcg. However if some of the memcg's memory is pinned by others, this
-> > > > operation can trigger an oom-kill without any process and thus can log a
-> > > > lot un-needed warnings. So, ignore all such warnings from memory.max.
-> > >
-> > > Can't you set memory.high=0 instead? It does the reclaim portion of
-> > > memory.max, without the actual OOM killing that causes you problems.
-> >
-> > Yes that would work but remote charging concerns me. Remote charging
-> > can still happen after the memcg is offlined and at the moment, high
-> > reclaim does not work for remote memcg and the usage can go till max
-> > or global pressure. This is most probably a misconfiguration and we
-> > might not receive the warnings in the log ever. Setting memory.max to
-> > 0 will definitely give such warnings.
->
-> Can we add a warning for the remote charging on dead memcgs?
->
+Hi Jens,
 
-I don't think we should warn for all remote charging on dead memcgs.
-One particular example is the buffer_head which can be allocated
-within reclaim context and most probably pages which they are attached
-to will be freed soon.
+can you pick up this series?
 
-Shakeel
+Except for the DASD case under discussion the last users of ioctl_by_bdev
+are the file system drivers that want to query CDROM information using
+ioctls.  This series switches them to use function calls directly into
+the CDROM midlayer instead, which implies:
+
+ - adding a cdrom_device_info pointer to the gendisk, so that file systems
+   can find it without going to the low-level driver first
+ - ensuring that the CDROM midlayer (which isn't a lot of code) is built
+   in if the file systems are built in so that they can actually call the
+   exported functions
+
+Changes since v2:
+ - add a patch to also convert hfs (exactly duplicate of the hfsplus code)
+Changes since v1:
+ - fix up the no-CDROM error case in isofs_get_last_session to return 0
+   instead of -EINVAL.
