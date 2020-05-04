@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A08FE1C4417
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:04:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC03B1C4485
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:08:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731629AbgEDSEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:04:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33258 "EHLO mail.kernel.org"
+        id S1730885AbgEDSID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:08:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39070 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731609AbgEDSED (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:04:03 -0400
+        id S1732211AbgEDSH4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 14:07:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 12F01206B8;
-        Mon,  4 May 2020 18:04:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B198520721;
+        Mon,  4 May 2020 18:07:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588615442;
-        bh=le726E5NPR5DJLKT2A0s7mKCI1Oa8lsc7twTHpZNr6M=;
+        s=default; t=1588615676;
+        bh=ds1Jxau9BSf+D3cDbxpy7Qio3XbI/M2VHzL83wDBhyg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IHhf9k0ZtOZGndjKj/PXTiaPTknDY2QwLt38aIWynbi/+5EuUnxGXfAnVA0ZjhGrA
-         fa7vOjPfXEgM05DVLyqp0oQdQS+DlYW4gd/QLAYwDdagcEFTZ5Jvzubcw1wNjDXp3J
-         7SWHlraHBoMhhXFgo9QXb/VPbDpXjJPMlYNvQ6y0=
+        b=CF27ETN0+K5CB+5/e7HzDA5JQalgr4cY0s6NVjMoLtCSXp31YENK1fDNllkRHqbgt
+         N8k18Vsy1Mefu7xVBge5ZdeL4abVMq9s2Ac5pHvMbOAzKjmT4bangFYPJPi9BcOhvq
+         W7WG0DofW45djX1OmLaUI7xfMkpK0NJbcyNZbsKQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Leon Romanovsky <leonro@mellanox.com>,
+        stable@vger.kernel.org, Aharon Landau <aharonl@mellanox.com>,
+        Maor Gottlieb <maorg@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
         Jason Gunthorpe <jgg@mellanox.com>
-Subject: [PATCH 5.4 41/57] RDMA/cm: Fix ordering of xa_alloc_cyclic() in ib_create_cm_id()
-Date:   Mon,  4 May 2020 19:57:45 +0200
-Message-Id: <20200504165459.892946324@linuxfoundation.org>
+Subject: [PATCH 5.6 43/73] RDMA/mlx5: Set GRH fields in query QP on RoCE
+Date:   Mon,  4 May 2020 19:57:46 +0200
+Message-Id: <20200504165508.641327076@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200504165456.783676004@linuxfoundation.org>
-References: <20200504165456.783676004@linuxfoundation.org>
+In-Reply-To: <20200504165501.781878940@linuxfoundation.org>
+References: <20200504165501.781878940@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,92 +45,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Gunthorpe <jgg@mellanox.com>
+From: Aharon Landau <aharonl@mellanox.com>
 
-commit e8dc4e885c459343970b25acd9320fe9ee5492e7 upstream.
+commit 2d7e3ff7b6f2c614eb21d0dc348957a47eaffb57 upstream.
 
-xa_alloc_cyclic() is a SMP release to be paired with some later acquire
-during xa_load() as part of cm_acquire_id().
+GRH fields such as sgid_index, hop limit, et. are set in the QP context
+when QP is created/modified.
 
-As such, xa_alloc_cyclic() must be done after the cm_id is fully
-initialized, in particular, it absolutely must be after the
-refcount_set(), otherwise the refcount_inc() in cm_acquire_id() may not
-see the set.
+Currently, when query QP is performed, we fill the GRH fields only if the
+GRH bit is set in the QP context, but this bit is not set for RoCE. Adjust
+the check so we will set all relevant data for the RoCE too.
 
-As there are several cases where a reader will be able to use the
-id.local_id after cm_acquire_id in the IB_CM_IDLE state there needs to be
-an unfortunate split into a NULL allocate and a finalizing xa_store.
+Since this data is returned to userspace, the below is an ABI regression.
 
-Fixes: a977049dacde ("[PATCH] IB: Add the kernel CM implementation")
-Link: https://lore.kernel.org/r/20200310092545.251365-2-leon@kernel.org
+Fixes: d8966fcd4c25 ("IB/core: Use rdma_ah_attr accessor functions")
+Link: https://lore.kernel.org/r/20200413132028.930109-1-leon@kernel.org
+Signed-off-by: Aharon Landau <aharonl@mellanox.com>
+Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/infiniband/core/cm.c |   27 +++++++++++----------------
- 1 file changed, 11 insertions(+), 16 deletions(-)
+ drivers/infiniband/hw/mlx5/qp.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/infiniband/core/cm.c
-+++ b/drivers/infiniband/core/cm.c
-@@ -597,18 +597,6 @@ static int cm_init_av_by_path(struct sa_
- 	return 0;
- }
- 
--static int cm_alloc_id(struct cm_id_private *cm_id_priv)
--{
--	int err;
--	u32 id;
--
--	err = xa_alloc_cyclic_irq(&cm.local_id_table, &id, cm_id_priv,
--			xa_limit_32b, &cm.local_id_next, GFP_KERNEL);
--
--	cm_id_priv->id.local_id = (__force __be32)id ^ cm.random_id_operand;
--	return err;
--}
--
- static u32 cm_local_id(__be32 local_id)
- {
- 	return (__force u32) (local_id ^ cm.random_id_operand);
-@@ -862,6 +850,7 @@ struct ib_cm_id *ib_create_cm_id(struct
- 				 void *context)
- {
- 	struct cm_id_private *cm_id_priv;
-+	u32 id;
- 	int ret;
- 
- 	cm_id_priv = kzalloc(sizeof *cm_id_priv, GFP_KERNEL);
-@@ -873,9 +862,6 @@ struct ib_cm_id *ib_create_cm_id(struct
- 	cm_id_priv->id.cm_handler = cm_handler;
- 	cm_id_priv->id.context = context;
- 	cm_id_priv->id.remote_cm_qpn = 1;
--	ret = cm_alloc_id(cm_id_priv);
--	if (ret)
--		goto error;
- 
- 	spin_lock_init(&cm_id_priv->lock);
- 	init_completion(&cm_id_priv->comp);
-@@ -884,11 +870,20 @@ struct ib_cm_id *ib_create_cm_id(struct
- 	INIT_LIST_HEAD(&cm_id_priv->altr_list);
- 	atomic_set(&cm_id_priv->work_count, -1);
- 	atomic_set(&cm_id_priv->refcount, 1);
+--- a/drivers/infiniband/hw/mlx5/qp.c
++++ b/drivers/infiniband/hw/mlx5/qp.c
+@@ -5545,7 +5545,9 @@ static void to_rdma_ah_attr(struct mlx5_
+ 	rdma_ah_set_path_bits(ah_attr, path->grh_mlid & 0x7f);
+ 	rdma_ah_set_static_rate(ah_attr,
+ 				path->static_rate ? path->static_rate - 5 : 0);
+-	if (path->grh_mlid & (1 << 7)) {
 +
-+	ret = xa_alloc_cyclic_irq(&cm.local_id_table, &id, NULL, xa_limit_32b,
-+				  &cm.local_id_next, GFP_KERNEL);
-+	if (ret)
-+		goto error;
-+	cm_id_priv->id.local_id = (__force __be32)id ^ cm.random_id_operand;
-+	xa_store_irq(&cm.local_id_table, cm_local_id(cm_id_priv->id.local_id),
-+		     cm_id_priv, GFP_KERNEL);
-+
- 	return &cm_id_priv->id;
++	if (path->grh_mlid & (1 << 7) ||
++	    ah_attr->type == RDMA_AH_ATTR_TYPE_ROCE) {
+ 		u32 tc_fl = be32_to_cpu(path->tclass_flowlabel);
  
- error:
- 	kfree(cm_id_priv);
--	return ERR_PTR(-ENOMEM);
-+	return ERR_PTR(ret);
- }
- EXPORT_SYMBOL(ib_create_cm_id);
- 
+ 		rdma_ah_set_grh(ah_attr, NULL,
 
 
