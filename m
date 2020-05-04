@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B17A81C438B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 19:59:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 790EC1C456A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:15:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730025AbgEDR7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 13:59:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52420 "EHLO mail.kernel.org"
+        id S1730865AbgEDR7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 13:59:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53446 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730715AbgEDR7L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 13:59:11 -0400
+        id S1730846AbgEDR7l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 13:59:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 37073207DD;
-        Mon,  4 May 2020 17:59:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6ABC92073E;
+        Mon,  4 May 2020 17:59:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588615150;
-        bh=19ZLzxZ3iCQ95N4Ki0BMSsdfiekRIWUaniX2b/lyVuk=;
+        s=default; t=1588615179;
+        bh=WqTx+QF6pJnF3cGIVyBhUyFzTKMpOvQY0boZGNlnp88=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KEW8wftZbUpEmxFotn3YU9a97Rx/SMnhZGNkzqQiDeH3sheOQuxMZpoXIP9FbO9Po
-         maoI4sE06JBJ+ORaqsDMBGpPvSJJoNQO0wO6lMTY/45418tRs+DY8VewN5baLUdjoq
-         xXhL4R3aYs55HbmxWYxamia1RtybWzmWJQG6DLG0=
+        b=lsuyYv/NJmli9syymhc+/CQL7p9xoKKktyptFHMpTH2+tevt0hKW5I2WWsOCmkief
+         Fl2R0jTVHkwlSCdxjZn9Wq81T8gf3D/MF3zMGJ1eAX22LM+59485P1HBvNAK2yjI1p
+         U5zH0nAyWCvwelFCLLQTTYMcnAysPuXyJgnJ1eho=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fabio Estevam <fabio.estevam@nxp.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4.4 16/18] ASoC: imx-spdif: Fix crash on suspend
+        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
+        Gerd Hoffmann <kraxel@redhat.com>
+Subject: [PATCH 4.9 04/18] drm/qxl: qxl_release leak in qxl_hw_surface_alloc()
 Date:   Mon,  4 May 2020 19:57:14 +0200
-Message-Id: <20200504165445.006367933@linuxfoundation.org>
+Message-Id: <20200504165442.950806007@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200504165441.533160703@linuxfoundation.org>
-References: <20200504165441.533160703@linuxfoundation.org>
+In-Reply-To: <20200504165442.028485341@linuxfoundation.org>
+References: <20200504165442.028485341@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,39 +43,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lars-Peter Clausen <lars@metafoo.de>
+From: Vasily Averin <vvs@virtuozzo.com>
 
-commit 9954859185c6e8359e71121037b627f1e294057d upstream.
+commit a65aa9c3676ffccb21361d52fcfedd5b5ff387d7 upstream.
 
-When registering a ASoC card the driver data of the parent device is set to
-point to the card. This driver data is used in the
-snd_soc_suspend()/resume() callbacks.
-
-The imx-spdif driver overwrites the driver data with custom data which
-causes snd_soc_suspend() to crash.  Since the custom driver is not used
-anywhere simply deleting the line which sets the custom driver data fixes
-the issue.
-
-Fixes: 43ac946922b3 ("ASoC: imx-spdif: add snd_soc_pm_ops for spdif machine driver")
-Tested-by: Fabio Estevam <fabio.estevam@nxp.com>
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
+Fixes: 8002db6336dd ("qxl: convert qxl driver to proper use for reservations")
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+Link: http://patchwork.freedesktop.org/patch/msgid/2e5a13ae-9ab2-5401-aa4d-03d5f5593423@virtuozzo.com
+Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/soc/fsl/imx-spdif.c |    2 --
- 1 file changed, 2 deletions(-)
+ drivers/gpu/drm/qxl/qxl_cmd.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/sound/soc/fsl/imx-spdif.c
-+++ b/sound/soc/fsl/imx-spdif.c
-@@ -72,8 +72,6 @@ static int imx_spdif_audio_probe(struct
- 		goto end;
- 	}
+--- a/drivers/gpu/drm/qxl/qxl_cmd.c
++++ b/drivers/gpu/drm/qxl/qxl_cmd.c
+@@ -500,9 +500,10 @@ int qxl_hw_surface_alloc(struct qxl_devi
+ 		return ret;
  
--	platform_set_drvdata(pdev, data);
+ 	ret = qxl_release_reserve_list(release, true);
+-	if (ret)
++	if (ret) {
++		qxl_release_free(qdev, release);
+ 		return ret;
 -
- end:
- 	of_node_put(spdif_np);
- 
++	}
+ 	cmd = (struct qxl_surface_cmd *)qxl_release_map(qdev, release);
+ 	cmd->type = QXL_SURFACE_CMD_CREATE;
+ 	cmd->flags = QXL_SURF_FLAG_KEEP_DATA;
 
 
