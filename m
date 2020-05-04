@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 365261C444D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:06:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97B071C455F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:15:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731905AbgEDSGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:06:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36086 "EHLO mail.kernel.org"
+        id S1732350AbgEDSO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:14:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731890AbgEDSF6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:05:58 -0400
+        id S1730997AbgEDSAc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 14:00:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 84F47206B8;
-        Mon,  4 May 2020 18:05:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1397B20663;
+        Mon,  4 May 2020 18:00:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588615558;
-        bh=dO6RhbOudPOhZ0c/Cb1uMroFYNjWJ07NIm5zR9uk3N4=;
+        s=default; t=1588615231;
+        bh=wUmm6LYoVcix7U/5shfK5nyIdmxpv81m6PDMQob0ne8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GTRWy29qoLqWoCvL9jZXjXFBANAHt113asu29DSOPyUycVEwn3FrvkR/rtlM4sxcV
-         KD8CXOxP1RBxbgagT3kRjtu/fC6Ll6m8NGbfmV8OpJiQGsVxjgbd8N8p7t+q8NeOlu
-         A6a5CwNZup+stGs0MHx5EgUdANznryuaZ7uIK55g=
+        b=VbsrAB7yj5+dSjux+gExnAO2Ibi59Hza2eIG/VOq6lS+83n8U2VNiRMg989WrPwcx
+         jJizSUZEYvK+U88E083/TCD987MAkIIiXEfmyUNQgYD+b7IVpd4h7Q6S8sfhShgt5c
+         eMGCWKzi/eDR/v4KFjApoCIwrXGVDOUbwdUtrCa4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dexuan Cui <decui@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>
-Subject: [PATCH 5.6 29/73] x86/hyperv: Suspend/resume the VP assist page for hibernation
-Date:   Mon,  4 May 2020 19:57:32 +0200
-Message-Id: <20200504165507.203047839@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>
+Subject: [PATCH 4.14 19/26] vfio/type1: Fix VA->PA translation for PFNMAP VMAs in vaddr_get_pfn()
+Date:   Mon,  4 May 2020 19:57:33 +0200
+Message-Id: <20200504165446.668167398@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200504165501.781878940@linuxfoundation.org>
-References: <20200504165501.781878940@linuxfoundation.org>
+In-Reply-To: <20200504165442.494398840@linuxfoundation.org>
+References: <20200504165442.494398840@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,93 +44,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dexuan Cui <decui@microsoft.com>
+From: Sean Christopherson <sean.j.christopherson@intel.com>
 
-commit 421f090c819d695942a470051cd624dc43deaf95 upstream.
+commit 5cbf3264bc715e9eb384e2b68601f8c02bb9a61d upstream.
 
-Unlike the other CPUs, CPU0 is never offlined during hibernation, so in the
-resume path, the "new" kernel's VP assist page is not suspended (i.e. not
-disabled), and later when we jump to the "old" kernel, the page is not
-properly re-enabled for CPU0 with the allocated page from the old kernel.
+Use follow_pfn() to get the PFN of a PFNMAP VMA instead of assuming that
+vma->vm_pgoff holds the base PFN of the VMA.  This fixes a bug where
+attempting to do VFIO_IOMMU_MAP_DMA on an arbitrary PFNMAP'd region of
+memory calculates garbage for the PFN.
 
-So far, the VP assist page is used by hv_apic_eoi_write(), and is also
-used in the case of nested virtualization (running KVM atop Hyper-V).
+Hilariously, this only got detected because the first "PFN" calculated
+by vaddr_get_pfn() is PFN 0 (vma->vm_pgoff==0), and iommu_iova_to_phys()
+uses PA==0 as an error, which triggers a WARN in vfio_unmap_unpin()
+because the translation "failed".  PFN 0 is now unconditionally reserved
+on x86 in order to mitigate L1TF, which causes is_invalid_reserved_pfn()
+to return true and in turns results in vaddr_get_pfn() returning success
+for PFN 0.  Eventually the bogus calculation runs into PFNs that aren't
+reserved and leads to failure in vfio_pin_map_dma().  The subsequent
+call to vfio_remove_dma() attempts to unmap PFN 0 and WARNs.
 
-For hv_apic_eoi_write(), when the page is not properly re-enabled,
-hvp->apic_assist is always 0, so the HV_X64_MSR_EOI MSR is always written.
-This is not ideal with respect to performance, but Hyper-V can still
-correctly handle this according to the Hyper-V spec; nevertheless, Linux
-still must update the Hyper-V hypervisor with the correct VP assist page
-to prevent Hyper-V from writing to the stale page, which causes guest
-memory corruption and consequently may have caused the hangs and triple
-faults seen during non-boot CPUs resume.
+  WARNING: CPU: 8 PID: 5130 at drivers/vfio/vfio_iommu_type1.c:750 vfio_unmap_unpin+0x2e1/0x310 [vfio_iommu_type1]
+  Modules linked in: vfio_pci vfio_virqfd vfio_iommu_type1 vfio ...
+  CPU: 8 PID: 5130 Comm: sgx Tainted: G        W         5.6.0-rc5-705d787c7fee-vfio+ #3
+  Hardware name: Intel Corporation Mehlow UP Server Platform/Moss Beach Server, BIOS CNLSE2R1.D00.X119.B49.1803010910 03/01/2018
+  RIP: 0010:vfio_unmap_unpin+0x2e1/0x310 [vfio_iommu_type1]
+  Code: <0f> 0b 49 81 c5 00 10 00 00 e9 c5 fe ff ff bb 00 10 00 00 e9 3d fe
+  RSP: 0018:ffffbeb5039ebda8 EFLAGS: 00010246
+  RAX: 0000000000000000 RBX: ffff9a55cbf8d480 RCX: 0000000000000000
+  RDX: 0000000000000000 RSI: 0000000000000001 RDI: ffff9a52b771c200
+  RBP: 0000000000000000 R08: 0000000000000040 R09: 00000000fffffff2
+  R10: 0000000000000001 R11: ffff9a51fa896000 R12: 0000000184010000
+  R13: 0000000184000000 R14: 0000000000010000 R15: ffff9a55cb66ea08
+  FS:  00007f15d3830b40(0000) GS:ffff9a55d5600000(0000) knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: 0000561cf39429e0 CR3: 000000084f75f005 CR4: 00000000003626e0
+  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+  Call Trace:
+   vfio_remove_dma+0x17/0x70 [vfio_iommu_type1]
+   vfio_iommu_type1_ioctl+0x9e3/0xa7b [vfio_iommu_type1]
+   ksys_ioctl+0x92/0xb0
+   __x64_sys_ioctl+0x16/0x20
+   do_syscall_64+0x4c/0x180
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+  RIP: 0033:0x7f15d04c75d7
+  Code: <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 81 48 2d 00 f7 d8 64 89 01 48
 
-Fix the issue by calling hv_cpu_die()/hv_cpu_init() in the syscore ops.
-Without the fix, hibernation can fail at a rate of 1/300 ~ 1/500.
-With the fix, hibernation can pass a long-haul test of 2000 runs.
-
-In the case of nested virtualization, disabling/reenabling the assist
-page upon hibernation may be unsafe if there are active L2 guests.
-It looks KVM should be enhanced to abort the hibernation request if
-there is any active L2 guest.
-
-Fixes: 05bd330a7fd8 ("x86/hyperv: Suspend/resume the hypercall page for hibernation")
-Cc: stable@vger.kernel.org
-Signed-off-by: Dexuan Cui <decui@microsoft.com>
-Link: https://lore.kernel.org/r/1587437171-2472-1-git-send-email-decui@microsoft.com
-Signed-off-by: Wei Liu <wei.liu@kernel.org>
+Fixes: 73fa0d10d077 ("vfio: Type1 IOMMU implementation")
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/hyperv/hv_init.c |   12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ drivers/vfio/vfio_iommu_type1.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/arch/x86/hyperv/hv_init.c
-+++ b/arch/x86/hyperv/hv_init.c
-@@ -73,7 +73,8 @@ static int hv_cpu_init(unsigned int cpu)
- 	struct page *pg;
+--- a/drivers/vfio/vfio_iommu_type1.c
++++ b/drivers/vfio/vfio_iommu_type1.c
+@@ -378,8 +378,8 @@ static int vaddr_get_pfn(struct mm_struc
+ 	vma = find_vma_intersection(mm, vaddr, vaddr + 1);
  
- 	input_arg = (void **)this_cpu_ptr(hyperv_pcpu_input_arg);
--	pg = alloc_page(GFP_KERNEL);
-+	/* hv_cpu_init() can be called with IRQs disabled from hv_resume() */
-+	pg = alloc_page(irqs_disabled() ? GFP_ATOMIC : GFP_KERNEL);
- 	if (unlikely(!pg))
- 		return -ENOMEM;
- 	*input_arg = page_address(pg);
-@@ -254,6 +255,7 @@ static int __init hv_pci_init(void)
- static int hv_suspend(void)
- {
- 	union hv_x64_msr_hypercall_contents hypercall_msr;
-+	int ret;
+ 	if (vma && vma->vm_flags & VM_PFNMAP) {
+-		*pfn = ((vaddr - vma->vm_start) >> PAGE_SHIFT) + vma->vm_pgoff;
+-		if (is_invalid_reserved_pfn(*pfn))
++		if (!follow_pfn(vma, vaddr, pfn) &&
++		    is_invalid_reserved_pfn(*pfn))
+ 			ret = 0;
+ 	}
  
- 	/*
- 	 * Reset the hypercall page as it is going to be invalidated
-@@ -270,12 +272,17 @@ static int hv_suspend(void)
- 	hypercall_msr.enable = 0;
- 	wrmsrl(HV_X64_MSR_HYPERCALL, hypercall_msr.as_uint64);
- 
--	return 0;
-+	ret = hv_cpu_die(0);
-+	return ret;
- }
- 
- static void hv_resume(void)
- {
- 	union hv_x64_msr_hypercall_contents hypercall_msr;
-+	int ret;
-+
-+	ret = hv_cpu_init(0);
-+	WARN_ON(ret);
- 
- 	/* Re-enable the hypercall page */
- 	rdmsrl(HV_X64_MSR_HYPERCALL, hypercall_msr.as_uint64);
-@@ -288,6 +295,7 @@ static void hv_resume(void)
- 	hv_hypercall_pg_saved = NULL;
- }
- 
-+/* Note: when the ops are called, only CPU0 is online and IRQs are disabled. */
- static struct syscore_ops hv_syscore_ops = {
- 	.suspend	= hv_suspend,
- 	.resume		= hv_resume,
 
 
