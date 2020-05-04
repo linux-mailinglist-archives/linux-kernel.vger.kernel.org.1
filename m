@@ -2,54 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88CFC1C42CB
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 19:30:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF0C71C42D0
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 19:32:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730320AbgEDRae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 13:30:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729549AbgEDRae (ORCPT
+        id S1730199AbgEDRb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 13:31:58 -0400
+Received: from smtprelay0141.hostedemail.com ([216.40.44.141]:58446 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729386AbgEDRb6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 13:30:34 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 413B6C061A0E;
-        Mon,  4 May 2020 10:30:34 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 2FD2A119534EF;
-        Mon,  4 May 2020 10:30:31 -0700 (PDT)
-Date:   Mon, 04 May 2020 10:30:27 -0700 (PDT)
-Message-Id: <20200504.103027.1573174382777601889.davem@davemloft.net>
-To:     f.fainelli@gmail.com
-Cc:     netdev@vger.kernel.org, andrew@lunn.ch, vivien.didelot@gmail.com,
-        kuba@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] net: dsa: Do not make user port errors fatal
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200504035057.20275-1-f.fainelli@gmail.com>
-References: <20200504035057.20275-1-f.fainelli@gmail.com>
-X-Mailer: Mew version 6.8 on Emacs 26.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+        Mon, 4 May 2020 13:31:58 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 9EFCC180A55F0;
+        Mon,  4 May 2020 17:31:56 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3870:3871:3873:3874:4250:4321:5007:6117:6119:10004:10400:10848:11232:11658:11914:12043:12109:12297:12740:12760:12895:13069:13163:13229:13311:13357:13439:14096:14097:14181:14659:14721:21080:21433:21451:21627:30029:30054:30069:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: twig62_4aee47edd0d24
+X-Filterd-Recvd-Size: 1976
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf07.hostedemail.com (Postfix) with ESMTPA;
+        Mon,  4 May 2020 17:31:54 +0000 (UTC)
+Message-ID: <28790ee42242ecc0b0050943a27f569dd1aeec16.camel@perches.com>
+Subject: Re: [PATCH 1/6] dt-bindings: phy: meson8b-usb2: Convert to
+ json-schema
+From:   Joe Perches <joe@perches.com>
+To:     hex dump <hexdump0815@gmail.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     kishon@ti.com, robh+dt@kernel.org, vkoul@kernel.org,
+        devicetree@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        narmstrong@baylibre.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Date:   Mon, 04 May 2020 10:31:53 -0700
+In-Reply-To: <CAKTihDVy6oSuQe4eP87hWO17tBu3=XZ-PM41YOqLVOtXJ8+YeQ@mail.gmail.com>
+References: <20200502114752.1048500-1-martin.blumenstingl@googlemail.com>
+         <20200502114752.1048500-2-martin.blumenstingl@googlemail.com>
+         <CAKTihDVy6oSuQe4eP87hWO17tBu3=XZ-PM41YOqLVOtXJ8+YeQ@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.1-2 
+MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 04 May 2020 10:30:31 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
-Date: Sun,  3 May 2020 20:50:57 -0700
-
-> Prior to 1d27732f411d ("net: dsa: setup and teardown ports"), we would
-> not treat failures to set-up an user port as fatal, but after this
-> commit we would, which is a regression for some systems where interfaces
-> may be declared in the Device Tree, but the underlying hardware may not
-> be present (pluggable daughter cards for instance).
+On Mon, 2020-05-04 at 12:55 +0200, hex dump wrote:
+> On Sat, May 2, 2020 at 1:48 PM Martin Blumenstingl
+> <martin.blumenstingl@googlemail.com> wrote:
+> > Now that we have the DT validation in place, let's convert the device
+> > tree bindings for the Amlogic Meson8, Meson8b, Meson8m2 and GXBB USB2
+> > PHY over to a YAML schema.
+> > 
+> > While here, also add the fallback compatible string
+> > "amlogic,meson-gxbb-usb2-phy" which is already used in
+> > arch/arm/boot/dts/meson{,8,8b}.dtsi.
+> > 
+> > Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 > 
-> Fixes: 1d27732f411d ("net: dsa: setup and teardown ports")
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> Tested-by: hexdump <hexdump0815@googlemail.com>
 
-Applied and queued up for -stable, thanks Florian.
+Is the kernel now accepting "Tested-by" lines from robots?
+
+If hexdump0815@googlemail.com is not a robot, can you please use
+your full legal name instead?
+
+
