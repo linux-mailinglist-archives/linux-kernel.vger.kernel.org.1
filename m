@@ -2,136 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81AAC1C42A7
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 19:25:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9EC21C42B2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 19:28:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730030AbgEDRZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 13:25:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729549AbgEDRZt (ORCPT
+        id S1730164AbgEDR2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 13:28:24 -0400
+Received: from smtprelay0098.hostedemail.com ([216.40.44.98]:45014 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729597AbgEDR2Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 13:25:49 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDFD8C061A0E;
-        Mon,  4 May 2020 10:25:49 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id x77so5867664pfc.0;
-        Mon, 04 May 2020 10:25:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=bxyngs7ScABszWTp3cRRYAAivc+75uL16s+Y0Qohbfk=;
-        b=jj7aodihYRtL/Aw1lPJ/3uTzmW49L9lY1DGjeVBjf7DW9zhTuaG50kqPgjCdGddlKX
-         nlf4DVmygLqa1P85K9FnX7PW9Jw6fPAX2+JXiUDlMp6uYqdJRQLzomxPglLErsPKZDXe
-         i2d9CNFOBPIreCFDWPHUc/cehaHrkwzvQwUDKOnQbtEK+XEPiIM+dgYoK4zB46IbAKMB
-         9KHI9b1Pdwhyrx5iD3glTL+c4Z06Se+zohsKiJVDvdosKhNBtDkGZKdNqSQE62sxPx33
-         V7zUjh/OCmILdDqTEWd94apwGO+nYxWYS/25lD8H9xiBe15VenABslSJ0ngEBiewHr9B
-         6IBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=bxyngs7ScABszWTp3cRRYAAivc+75uL16s+Y0Qohbfk=;
-        b=Yi7Vg/G5ng6q9XQ8ojD+XEAZy6/L+LWyc7XqA4P3lI0vNfpmhmnwjV57vfbBtXgguv
-         /ZOK8R5htzeW4Esg7YAuFOfofskqJSKupYkqLzXCsXq8IlemiLn11L6MSz0ZVuFLXz35
-         rWNj5IHQSIvVI+tzOE18aLmHpjGoA+Au8VIqhCmk9rIiWLc02XpLXOYAe+58v0BMpgPT
-         Ssu7qSWjJRk5kZ+jrjgW7urAwaLoL7EPwrw1WI0n8cgyMSK27e4u+ui8lPqgKFu4K3UQ
-         3hj+Sxg3KfQJePIijJgDLhGQMIrV0ZUxY9zBBr43BR9r/m5MSmFiY7VkntaFEP8GDZAP
-         DnwQ==
-X-Gm-Message-State: AGi0Pubq5ZIitS4Oa0TNfTnuGO/J692NbVm6xYhtKgzb2MYOG3MjNf9Q
-        H2gt2733yS5Re8pE52eNkEIhjqLJcH0=
-X-Google-Smtp-Source: APiQypK8ncf0X4fEweYDbiw4wdqgxEAnU2BJWCdANx6PY/JlaECuMfUPchTUQDqsE1EcG/UEBD4ZJg==
-X-Received: by 2002:a63:7b4e:: with SMTP id k14mr6497pgn.267.1588613149331;
-        Mon, 04 May 2020 10:25:49 -0700 (PDT)
-Received: from localhost.localdomain ([120.244.110.63])
-        by smtp.gmail.com with ESMTPSA id 6sm6415552pgw.47.2020.05.04.10.25.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 May 2020 10:25:48 -0700 (PDT)
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-To:     linuxdrivers@attotech.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [PATCH] scsi: esas2r: reduce the risk of a possible buffer-overflow vulnerability caused by DMA failures/attacks in esas2r_process_vda_ioctl()
-Date:   Tue,  5 May 2020 01:24:12 +0800
-Message-Id: <20200504172412.25985-1-baijiaju1990@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 4 May 2020 13:28:24 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 9A50019B29;
+        Mon,  4 May 2020 17:28:22 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1537:1566:1593:1594:1711:1714:1730:1747:1777:1792:2198:2199:2393:2559:2562:2731:2828:3138:3139:3140:3141:3142:3622:3865:3866:3867:3870:4321:4362:5007:6742:6743:10004:10400:10848:11232:11658:11914:12043:12297:12740:12760:12895:13069:13311:13357:13439:14659:14721:21080:21627:30054:30060:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: edge64_2b6e02f508642
+X-Filterd-Recvd-Size: 2313
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf01.hostedemail.com (Postfix) with ESMTPA;
+        Mon,  4 May 2020 17:28:18 +0000 (UTC)
+Message-ID: <be112d4580b3dcd648fca7c23c09f5f13b31e435.camel@perches.com>
+Subject: Re: [PATCH] docs: dt: fix broken links due to txt->yaml renames
+From:   Joe Perches <joe@perches.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sandy Huang <hjc@rock-chips.com>,
+        Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
+        Sean Wang <sean.wang@mediatek.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Jyri Sarha <jsarha@ti.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Olivier Moysan <olivier.moysan@st.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org,
+        linux-bluetooth@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, netdev@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-mips@vger.kernel.org
+Date:   Mon, 04 May 2020 10:28:17 -0700
+In-Reply-To: <967df5c3303b478b76199d4379fe40f5094f3f9b.1588584538.git.mchehab+huawei@kernel.org>
+References: <967df5c3303b478b76199d4379fe40f5094f3f9b.1588584538.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.1-2 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function esas2r_read_vda() uses a DMA value "vi":
+On Mon, 2020-05-04 at 11:30 +0200, Mauro Carvalho Chehab wrote:
+> There are some new broken doc links due to yaml renames
+> at DT. Developers should really run:
+> 
+> 	./scripts/documentation-file-ref-check
+> 
+> in order to solve those issues while submitting patches.
+> This tool can even fix most of the issues with:
+> 
+> 	./scripts/documentation-file-ref-check --fix
 
-  struct atto_ioctl_vda *vi =
-			(struct atto_ioctl_vda *)a->vda_buffer;
+Thanks Mauro.
 
-Then esas2r_read_vda() calls esas2r_process_vda_ioctl() with vi:
-  esas2r_process_vda_ioctl(a, vi, rq, &sgc);
-
-In esas2r_process_vda_ioctl(), the DMA value "vi->function" is 
-used at many places, such as:
-  if (vi->function >= vercnt)
-  ...
-  if (vi->version > esas2r_vdaioctl_versions[vi->function])
-  ...
-
-However, when DMA failures or attacks occur, the value of vi->function 
-can be changed at any time. In this case, vi->function can be
-first smaller than vercnt, and then it can be larger than vercnt when it
-is used as the array index of esas2r_vdaioctl_versions, causing a
-buffer-overflow vulnerability.
-
-To avoid the risk of this vulnerability, vi->function is assigned to a 
-non-DMA local variable at the beginning of esas2r_process_vda_ioctl(), 
-and this variable replaces each use of vi->function in the function.
-
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
----
- drivers/scsi/esas2r/esas2r_vda.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/scsi/esas2r/esas2r_vda.c b/drivers/scsi/esas2r/esas2r_vda.c
-index 30028e56df63..c3a6811145cf 100644
---- a/drivers/scsi/esas2r/esas2r_vda.c
-+++ b/drivers/scsi/esas2r/esas2r_vda.c
-@@ -70,16 +70,17 @@ bool esas2r_process_vda_ioctl(struct esas2r_adapter *a,
- 	u32 datalen = 0;
- 	struct atto_vda_sge *firstsg = NULL;
- 	u8 vercnt = (u8)ARRAY_SIZE(esas2r_vdaioctl_versions);
-+	u8 function = vi->function;
- 
- 	vi->status = ATTO_STS_SUCCESS;
- 	vi->vda_status = RS_PENDING;
- 
--	if (vi->function >= vercnt) {
-+	if (function >= vercnt) {
- 		vi->status = ATTO_STS_INV_FUNC;
- 		return false;
- 	}
- 
--	if (vi->version > esas2r_vdaioctl_versions[vi->function]) {
-+	if (vi->version > esas2r_vdaioctl_versions[function]) {
- 		vi->status = ATTO_STS_INV_VERSION;
- 		return false;
- 	}
-@@ -89,14 +90,14 @@ bool esas2r_process_vda_ioctl(struct esas2r_adapter *a,
- 		return false;
- 	}
- 
--	if (vi->function != VDA_FUNC_SCSI)
-+	if (function != VDA_FUNC_SCSI)
- 		clear_vda_request(rq);
- 
--	rq->vrq->scsi.function = vi->function;
-+	rq->vrq->scsi.function = function;
- 	rq->interrupt_cb = esas2r_complete_vda_ioctl;
- 	rq->interrupt_cx = vi;
- 
--	switch (vi->function) {
-+	switch (function) {
- 	case VDA_FUNC_FLASH:
- 
- 		if (vi->cmd.flash.sub_func != VDA_FLASH_FREAD
--- 
-2.17.1
 
