@@ -2,108 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF3A11C4320
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 19:44:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3179A1C4341
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 19:49:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730250AbgEDRoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 13:44:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44434 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729386AbgEDRoP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 13:44:15 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A8DD4206A4;
-        Mon,  4 May 2020 17:44:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588614254;
-        bh=9Sb1ZJEY/oPGWjp07mTfMZs9PiyuEaUxtKetFjkV1zY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=fU3T+tszlgh22hrOk5J0VcoUX2E6BbRaWKyq8iSD8BgDncfy9Jm3Tn6py+DXjHJ8k
-         obeZ7/FhD761N6QvensAuDhNakfKXkOKm6E6nuKoubu1j4zX2SGxNRm8UgjeMkfkDv
-         ZZS+2Tq+9clTyLWaYtQ9sEHvzh/Cii3+2bt6XUTg=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 1CC0135226F4; Mon,  4 May 2020 10:44:13 -0700 (PDT)
-Date:   Mon, 4 May 2020 10:44:13 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>, frextrite@gmail.com,
-        Ingo Molnar <mingo@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>, kernel-team@android.com,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        madhuparnabhowmik04@gmail.com,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        peterz@infradead.org, Petr Mladek <pmladek@suse.com>,
-        rcu@vger.kernel.org, rostedt@goodmis.org, tglx@linutronix.de,
-        vpillai@digitalocean.com
-Subject: Re: [PATCH v3 0/5] RCU dyntick nesting counter cleanups for rcu -dev
-Message-ID: <20200504174413.GA8883@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200504120505.89351-1-joel@joelfernandes.org>
- <20200504171532.GR2869@paulmck-ThinkPad-P72>
+        id S1730259AbgEDRth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 13:49:37 -0400
+Received: from gateway20.websitewelcome.com ([192.185.45.27]:28175 "EHLO
+        gateway20.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729839AbgEDRtg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 13:49:36 -0400
+Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
+        by gateway20.websitewelcome.com (Postfix) with ESMTP id 8E81C400E7A61
+        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 11:22:33 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id Vf4pjrBjRAGTXVf4pj8YlB; Mon, 04 May 2020 12:40:23 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Type:MIME-Version:Message-ID:Subject:
+        Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=+5a4Lppw4lJsYvc8K58j+1uvME/U/HnGj1dRIM7HnuA=; b=vXoxx6s5atXqWdZuR4go1HOx0W
+        NUnwKJnlkXujGKpqLinY3IWWFwB3UgrRPYAuxKXwFuhAD4uuFByeFbqJRSH3XykGBKVGQ1mxsm0av
+        pNGsl79FaNZj1HGTaOOOrxAcpANWPYL72d5awFeui5z2XBN2LdpRSC0QawZD9kugc5vfcwGMAyAOH
+        JKMetNK+U5LllOkNo09A7PM7PGZbVvzdT6YfR3KjTZzjbp5A6FzXK2oHRoqRmCu2Aq58VPRBrnppC
+        ljgf60vdXCIMzeWFH3Cvm0uI7WD6h9in8TnvFcietYkWhK4rB6oAk2bYu3bytG3RWsemDJbPf24AU
+        0A8usVYw==;
+Received: from [189.207.59.248] (port=55708 helo=embeddedor)
+        by gator4166.hostgator.com with esmtpa (Exim 4.92)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1jVf4p-000sBs-FO; Mon, 04 May 2020 12:40:23 -0500
+Date:   Mon, 4 May 2020 12:44:49 -0500
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [GIT PULL] flexible-array member convertion patches for 5.7-rc5
+Message-ID: <20200504174449.GA15934@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200504171532.GR2869@paulmck-ThinkPad-P72>
 User-Agent: Mutt/1.9.4 (2018-02-28)
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 189.207.59.248
+X-Source-L: No
+X-Exim-ID: 1jVf4p-000sBs-FO
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: (embeddedor) [189.207.59.248]:55708
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 4
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 04, 2020 at 10:15:32AM -0700, Paul E. McKenney wrote:
-> On Mon, May 04, 2020 at 08:05:00AM -0400, Joel Fernandes (Google) wrote:
-> > These patches clean up the usage of dynticks nesting counters simplifying the
-> > code, while preserving the usecases.
-> > 
-> > It is a much needed simplification, makes the code less confusing, and prevents
-> > future bugs such as those that arise from forgetting that the
-> > dynticks_nmi_nesting counter is not a simple counter and can be "crowbarred" in
-> > common situations.
-> > 
-> > rcutorture testing with all TREE RCU configurations succeed with
-> > CONFIG_RCU_EQS_DEBUG=y and CONFIG_PROVE_LOCKING=y.
-> > 
-> > v1->v2:
-> > - Rebase on v5.6-rc6
-> > 
-> > v2->v3:
-> > - Rebase on rcu/dev with adjustments for tasks-RCU.
-> 
-> Thank you!
-> 
-> But this does not apply to any of v5.6-rc6, v5.7-rc1, or v5.7-rc2.
-> 
-> Where should I be trying to apply it?
+The following changes since commit 0e698dfa282211e414076f9dc7e83c1c288314fd:
 
-OK, morning blindness overcome.  I new see the "rcu/dev" in v2->v3.
+  Linux 5.7-rc4 (2020-05-03 14:56:04 -0700)
 
-Please accept my apologies for the noise.
+are available in the Git repository at:
 
-							Thanx, Paul
+  git://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git tags/flexible-array-member-5.7-rc5
 
-> > Joel Fernandes (Google) (4):
-> > Revert b8c17e6664c4 ("rcu: Maintain special bits at bottom of
-> > ->dynticks counter")
-> > rcu/tree: Add better tracing for dyntick-idle
-> > rcu/tree: Clean up dynticks counter usage
-> > rcu/tree: Remove dynticks_nmi_nesting counter
-> > 
-> > Madhuparna Bhowmik (1):
-> > trace: events: rcu: Change description of rcu_dyntick trace event
-> > 
-> > .../Data-Structures/Data-Structures.rst       |  31 +--
-> > Documentation/RCU/stallwarn.rst               |   6 +-
-> > include/linux/rcutiny.h                       |   3 -
-> > include/trace/events/rcu.h                    |  29 +--
-> > kernel/rcu/rcu.h                              |   4 -
-> > kernel/rcu/tree.c                             | 199 +++++++-----------
-> > kernel/rcu/tree.h                             |   4 +-
-> > kernel/rcu/tree_stall.h                       |   4 +-
-> > 8 files changed, 110 insertions(+), 170 deletions(-)
-> > 
-> > --
-> > 2.26.2.526.g744177e7f7-goog
-> > 
+for you to fetch changes up to 1e6e9d0f4859ec698d55381ea26f4136eff3afe1:
+
+  uapi: revert flexible-array conversions (2020-05-04 11:30:15 -0500)
+
+----------------------------------------------------------------
+flexible-array member convertion patches for 5.7-rc5
+
+Hi Linus,
+
+Please, pull the following patch that reverts changes in include/uapi/
+
+These structures can get embedded in other structures in user-space
+and cause all sorts of warnings and problems[1]. So, we better don't take
+any chances and keep the zero-length arrays in place for now.
+
+[1] https://lore.kernel.org/lkml/20200424121553.GE26002@ziepe.ca/
+
+Thanks
+--
+Gustavo
+
+----------------------------------------------------------------
+Gustavo A. R. Silva (1):
+      uapi: revert flexible-array conversions
+
+ include/uapi/linux/bpf.h                        | 2 +-
+ include/uapi/linux/dlm_device.h                 | 4 ++--
+ include/uapi/linux/fiemap.h                     | 2 +-
+ include/uapi/linux/if_arcnet.h                  | 6 +++---
+ include/uapi/linux/mmc/ioctl.h                  | 2 +-
+ include/uapi/linux/net_dropmon.h                | 4 ++--
+ include/uapi/linux/netfilter_bridge/ebt_among.h | 2 +-
+ include/uapi/scsi/scsi_bsg_fc.h                 | 2 +-
+ 8 files changed, 12 insertions(+), 12 deletions(-)
