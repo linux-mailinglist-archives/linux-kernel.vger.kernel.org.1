@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DA7C1C4569
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:15:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DDF71C4446
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:06:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732356AbgEDSO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:14:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54466 "EHLO mail.kernel.org"
+        id S1731846AbgEDSFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:05:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35614 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730912AbgEDSAF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:00:05 -0400
+        id S1731303AbgEDSFl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 14:05:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1D84220663;
-        Mon,  4 May 2020 18:00:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3C99D206B8;
+        Mon,  4 May 2020 18:05:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588615204;
-        bh=PLcg8nMAWsaFrwBBCy/ig/9EhHyL5vPB69f2ovNqveo=;
+        s=default; t=1588615540;
+        bh=8QJu8C4+M3+eSdZiUf/yJQMwEkuvIhK4bHbnDdisRRw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0XhUjpKYilYyeMR+qw3ikIzS8qEpa2fdilm2dTz9wpKMznTArXlYgu2N7D8VHLR7a
-         qzl5qXk2vRHNaG2qYHOsd/qC+BZcE9MnMLbS6WYYxX23SwH/p7Hers5rHelt+g5+yP
-         8thaF5tRB1EUiU+z6vqxVQaVG3rEC4cvdjo+8iow=
+        b=lOK1qJfMcvT/W/AnvmI89hZPHzw8V0DH1fkxYQ31MIlVaR0JPwuVksm4qCBOM88ra
+         p8whDMsI80rC6KOyvPXkbMzAHZyYBmhpLMK7Rds7mKRAFiDgctir6ByIYK1YNaREU6
+         uwyS4F4F4itwY8fbYjsS2thLLn58+znfuOimqLFw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>
-Subject: [PATCH 4.9 15/18] nfs: Fix potential posix_acl refcnt leak in nfs3_set_acl
+        stable@vger.kernel.org, Iuliana Prodan <iuliana.prodan@nxp.com>,
+        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Subject: [PATCH 5.6 22/73] crypto: caam - fix the address of the last entry of S/G
 Date:   Mon,  4 May 2020 19:57:25 +0200
-Message-Id: <20200504165445.398976381@linuxfoundation.org>
+Message-Id: <20200504165505.854835441@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200504165442.028485341@linuxfoundation.org>
-References: <20200504165442.028485341@linuxfoundation.org>
+In-Reply-To: <20200504165501.781878940@linuxfoundation.org>
+References: <20200504165501.781878940@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,79 +44,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andreas Gruenbacher <agruenba@redhat.com>
+From: Iuliana Prodan <iuliana.prodan@nxp.com>
 
-commit 7648f939cb919b9d15c21fff8cd9eba908d595dc upstream.
+commit 55b3209acbb01cb02b1ee6b1afe80d83b1aab36d upstream.
 
-nfs3_set_acl keeps track of the acl it allocated locally to determine if an acl
-needs to be released at the end.  This results in a memory leak when the
-function allocates an acl as well as a default acl.  Fix by releasing acls
-that differ from the acl originally passed into nfs3_set_acl.
+For skcipher algorithms, the input, output HW S/G tables
+look like this: [IV, src][dst, IV]
+Now, we can have 2 conditions here:
+- there is no IV;
+- src and dst are equal (in-place encryption) and scattered
+and the error is an "off-by-one" in the HW S/G table.
 
-Fixes: b7fa0554cf1b ("[PATCH] NFS: Add support for NFSv3 ACLs")
-Reported-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+This issue was seen with KASAN:
+BUG: KASAN: slab-out-of-bounds in skcipher_edesc_alloc+0x95c/0x1018
+
+Read of size 4 at addr ffff000022a02958 by task cryptomgr_test/321
+
+CPU: 2 PID: 321 Comm: cryptomgr_test Not tainted
+5.6.0-rc1-00165-ge4ef8383-dirty #4
+Hardware name: LS1046A RDB Board (DT)
+Call trace:
+ dump_backtrace+0x0/0x260
+ show_stack+0x14/0x20
+ dump_stack+0xe8/0x144
+ print_address_description.isra.11+0x64/0x348
+ __kasan_report+0x11c/0x230
+ kasan_report+0xc/0x18
+ __asan_load4+0x90/0xb0
+ skcipher_edesc_alloc+0x95c/0x1018
+ skcipher_encrypt+0x84/0x150
+ crypto_skcipher_encrypt+0x50/0x68
+ test_skcipher_vec_cfg+0x4d4/0xc10
+ test_skcipher_vec+0x178/0x1d8
+ alg_test_skcipher+0xec/0x230
+ alg_test.part.44+0x114/0x4a0
+ alg_test+0x1c/0x60
+ cryptomgr_test+0x34/0x58
+ kthread+0x1b8/0x1c0
+ ret_from_fork+0x10/0x18
+
+Allocated by task 321:
+ save_stack+0x24/0xb0
+ __kasan_kmalloc.isra.10+0xc4/0xe0
+ kasan_kmalloc+0xc/0x18
+ __kmalloc+0x178/0x2b8
+ skcipher_edesc_alloc+0x21c/0x1018
+ skcipher_encrypt+0x84/0x150
+ crypto_skcipher_encrypt+0x50/0x68
+ test_skcipher_vec_cfg+0x4d4/0xc10
+ test_skcipher_vec+0x178/0x1d8
+ alg_test_skcipher+0xec/0x230
+ alg_test.part.44+0x114/0x4a0
+ alg_test+0x1c/0x60
+ cryptomgr_test+0x34/0x58
+ kthread+0x1b8/0x1c0
+ ret_from_fork+0x10/0x18
+
+Freed by task 0:
+(stack is not available)
+
+The buggy address belongs to the object at ffff000022a02800
+ which belongs to the cache dma-kmalloc-512 of size 512
+The buggy address is located 344 bytes inside of
+ 512-byte region [ffff000022a02800, ffff000022a02a00)
+The buggy address belongs to the page:
+page:fffffe00006a8000 refcount:1 mapcount:0 mapping:ffff00093200c400
+index:0x0 compound_mapcount: 0
+flags: 0xffff00000010200(slab|head)
+raw: 0ffff00000010200 dead000000000100 dead000000000122 ffff00093200c400
+raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff000022a02800: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff000022a02880: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff000022a02900: 00 00 00 00 00 00 00 00 00 00 fc fc fc fc fc fc
+                                                    ^
+ ffff000022a02980: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff000022a02a00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+
+Fixes: 334d37c9e263 ("crypto: caam - update IV using HW support")
+Cc: <stable@vger.kernel.org> # v5.3+
+Signed-off-by: Iuliana Prodan <iuliana.prodan@nxp.com>
+Reviewed-by: Horia Geantă <horia.geanta@nxp.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/nfs/nfs3acl.c |   22 +++++++++++++++-------
- 1 file changed, 15 insertions(+), 7 deletions(-)
+ drivers/crypto/caam/caamalg.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/nfs/nfs3acl.c
-+++ b/fs/nfs/nfs3acl.c
-@@ -252,37 +252,45 @@ int nfs3_proc_setacls(struct inode *inod
+--- a/drivers/crypto/caam/caamalg.c
++++ b/drivers/crypto/caam/caamalg.c
+@@ -1791,7 +1791,7 @@ static struct skcipher_edesc *skcipher_e
  
- int nfs3_set_acl(struct inode *inode, struct posix_acl *acl, int type)
- {
--	struct posix_acl *alloc = NULL, *dfacl = NULL;
-+	struct posix_acl *orig = acl, *dfacl = NULL, *alloc;
- 	int status;
+ 	if (ivsize || mapped_dst_nents > 1)
+ 		sg_to_sec4_set_last(edesc->sec4_sg + dst_sg_idx +
+-				    mapped_dst_nents);
++				    mapped_dst_nents - 1 + !!ivsize);
  
- 	if (S_ISDIR(inode->i_mode)) {
- 		switch(type) {
- 		case ACL_TYPE_ACCESS:
--			alloc = dfacl = get_acl(inode, ACL_TYPE_DEFAULT);
-+			alloc = get_acl(inode, ACL_TYPE_DEFAULT);
- 			if (IS_ERR(alloc))
- 				goto fail;
-+			dfacl = alloc;
- 			break;
- 
- 		case ACL_TYPE_DEFAULT:
--			dfacl = acl;
--			alloc = acl = get_acl(inode, ACL_TYPE_ACCESS);
-+			alloc = get_acl(inode, ACL_TYPE_ACCESS);
- 			if (IS_ERR(alloc))
- 				goto fail;
-+			dfacl = acl;
-+			acl = alloc;
- 			break;
- 		}
- 	}
- 
- 	if (acl == NULL) {
--		alloc = acl = posix_acl_from_mode(inode->i_mode, GFP_KERNEL);
-+		alloc = posix_acl_from_mode(inode->i_mode, GFP_KERNEL);
- 		if (IS_ERR(alloc))
- 			goto fail;
-+		acl = alloc;
- 	}
- 	status = __nfs3_proc_setacls(inode, acl, dfacl);
--	posix_acl_release(alloc);
-+out:
-+	if (acl != orig)
-+		posix_acl_release(acl);
-+	if (dfacl != orig)
-+		posix_acl_release(dfacl);
- 	return status;
- 
- fail:
--	return PTR_ERR(alloc);
-+	status = PTR_ERR(alloc);
-+	goto out;
- }
- 
- const struct xattr_handler *nfs3_xattr_handlers[] = {
+ 	if (sec4_sg_bytes) {
+ 		edesc->sec4_sg_dma = dma_map_single(jrdev, edesc->sec4_sg,
 
 
