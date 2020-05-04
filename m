@@ -2,89 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 480421C478E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 22:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4A631C4797
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 22:02:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728081AbgEDUBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 16:01:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47802 "EHLO
+        id S1728117AbgEDUCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 16:02:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728083AbgEDUBa (ORCPT
+        by vger.kernel.org with ESMTP id S1726441AbgEDUCI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 16:01:30 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB6FBC061A0E
-        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 13:01:28 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id d16so14684320edq.7
-        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 13:01:28 -0700 (PDT)
+        Mon, 4 May 2020 16:02:08 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49A21C061A0E;
+        Mon,  4 May 2020 13:02:08 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id x4so873153wmj.1;
+        Mon, 04 May 2020 13:02:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=a3/e8Z9+7dUAsUY2FABXXWSYilV/IhKWhqiAxe7AB0w=;
-        b=PQLxh8BxfRVNbGhoMqQ+SidqGRLgyNwgg8AMxdhr+hQzfTeHVr36B+yHinyk4RO/N4
-         Y6or3TT0f0D5Fk2htAjerP0VkNsQmuf+6kdiRqGxrmqzFx4LeKaq2tJJyV4BLREtMGXz
-         OYg6bJ8gAXk19xxFW/6JajQ6o5OgEmm+BlSXGcHzftgStQevaAhOKN4SIQzOWZsmtA2M
-         sHN7uXi6oTRnaDA0P8KsZ+qN+PRH+Bz2jlGhskWtqMnQT4Akn2iBxP70/9YiOy2/UExj
-         h7tIFeuI5HvEEkvt4yCaBpVupn252Kup6VLqULCGJqBRmjdtUTAeOXz58YCUjCCiXISr
-         3d3g==
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KdlOL0+4+Ykci+7yQYazMb8JW9d/9xEljqxcf/GDuEk=;
+        b=sJcXHxLSBnzJGMaKNW+99617mOPEmXnMG5Noq1kdinn6Ed89n3c9c+GeJVczmV0vCu
+         pvDt6LRa1hz1a1M3pbXUYY+71rble+dJs0BQ4tholGGBuEof7kKZaL7p97aHQVhTq22W
+         Tkm/t2uTcMagqEp/CE014kqT9GmDoUIisRe97eJs20d0MqBMGNQwJRYRnaMhGfR2IS/i
+         YH8KEnMqltUdXf/GxTZAZiyfgHEm/mORzPhzh+Q7BsIpH71rJkRPrksfpZmKA5IhnUIO
+         GII3sCKzYNjXKmlzMq/3nwTahAUEaDyS5ng+aESP14gzxHO/Mq/qngu+GZP9SFL1Pr0x
+         DOMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=a3/e8Z9+7dUAsUY2FABXXWSYilV/IhKWhqiAxe7AB0w=;
-        b=NHXe6P719mTCOcqbxDmJcKVCeeDiZJSEfv0JrsBqfu9OnB0+XvTQ0nQjWk65O9SK30
-         FrEIjLFiUCW5c1X80xgKNvQIrdPSvCXSrEe7ZMSsksnRF6RyZ4CNTs9USrudPYRbRcXR
-         W1cHZBhZV+lnVAeWBuZ/RTMR067YTg9D70MrrBnAdpMzNz16GqPNyjkS9H2OuJ+ngzuq
-         BisC7ZjZv7zDDvb2H0jJ4tLsK1GhNaJ/so2dpwep2PHl/Ess+av/QE0Rs5u2HZ8m6QNV
-         VgwHCfBSL1GC/5vrWf2LHOn1fKc1rPa46KFWQezBL1cXdxo5UNwcbpuHAmstgRMdDC43
-         1kWQ==
-X-Gm-Message-State: AGi0PuYn3zF19wdfwO+oj16mWYJMMFNtENHu9c+tZh+RB88liM2IjhRk
-        O1G+E7fqLGfwqyAA3XWfnea2lMkj4tT+nWNllH3Jwg==
-X-Google-Smtp-Source: APiQypJuGrmkU0XtajGtCW6+tnsEvDAvqoXPAkujg8EqXPfFARkabTI9PH5qgtjx1yu+XzN1nobAPxrfByxFFM1kmdk=
-X-Received: by 2002:a05:6402:356:: with SMTP id r22mr17037164edw.3.1588622487633;
- Mon, 04 May 2020 13:01:27 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KdlOL0+4+Ykci+7yQYazMb8JW9d/9xEljqxcf/GDuEk=;
+        b=b5JFLj/Q8jPUhhL3LgdSTQz9Jc8ICZQ5f3dwv46HjW4hi4UhYDe79DwOz4v5kNAABA
+         6UUE7NCu+uYUdS6LYDLuSHuMJ48uKmNaqcQsBQ/hfm1Pq1jvlVymWAU4FFoNmi+rROBJ
+         4ymiQIgJygAGd8Ji6XuFJuxc3pKUg8CRoLGGp5U5WRM8HqrKlw1PxzzK0jC0+sglJSJK
+         owci6jLgYVQ8XhNuygOm7UQiqvEmtv/DR420Qcr2Gs3BXtbWpkuR74TyK7RiSrp/oAp2
+         AxUxvLuTCX5m5VZQGZFviMP2Wgpp5a2UaiNnfaS+3lorT0M1uRaLJqipbJBy4RHXVPwp
+         0QKg==
+X-Gm-Message-State: AGi0PuZQoiE2kthAWFukEFAFdqH1XYUNvxvdHk66mlWcXcpBmoz2Zx+Y
+        Iv8ZsE9kLte5jCUyVcqQE5WnMwKN
+X-Google-Smtp-Source: APiQypLtdII6d3Uh6/K5h+dxXP5Ugh8M97Xscg7xDlXEjK1u9cJyQqNmpchCvB+ACdDUmIXUsWo5mA==
+X-Received: by 2002:a1c:40c4:: with SMTP id n187mr15844209wma.28.1588622527018;
+        Mon, 04 May 2020 13:02:07 -0700 (PDT)
+Received: from localhost.localdomain ([109.126.133.135])
+        by smtp.gmail.com with ESMTPSA id c190sm25482wme.10.2020.05.04.13.02.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 May 2020 13:02:06 -0700 (PDT)
+From:   Pavel Begunkov <asml.silence@gmail.com>
+To:     Jens Axboe <axboe@kernel.dk>, Jann Horn <jannh@google.com>,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH for-5.7] io_uring: fix zero len do_splice()
+Date:   Mon,  4 May 2020 23:00:54 +0300
+Message-Id: <c7dc4d15f9065f41df5ad83e051d05e7c46f004f.1588622410.git.asml.silence@gmail.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-References: <20200502143555.543636-1-pasha.tatashin@soleen.com>
- <202005041112.F3C8117F67@keescook> <CA+CK2bBDzbXdH23aDxqGzMoxPppNcVmitrYJ00tJqympMBVJOg@mail.gmail.com>
- <202005041211.040A1C65C8@keescook> <CA+CK2bAJgKR+=Tby91gU-ZKy29Juv_oJinCTFAWRaKiiro2vkg@mail.gmail.com>
- <202005041230.806B1581D@keescook>
-In-Reply-To: <202005041230.806B1581D@keescook>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Mon, 4 May 2020 16:00:51 -0400
-Message-ID: <CA+CK2bBFQYnFWeDxegR+7rz2nepbK-upqBnRjLgO9JH7oUJoQw@mail.gmail.com>
-Subject: Re: [PATCH v1 0/3] allow ramoops to collect all kmesg_dump events
-To:     Kees Cook <keescook@chromium.org>
-Cc:     James Morris <jmorris@namei.org>, Sasha Levin <sashal@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>, anton@enomsg.org,
-        ccross@android.com, Tony Luck <tony.luck@intel.com>,
-        robh+dt@kernel.org, devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > pstore /mnt/console-ramoops-0 outputs only messages below the console
-> > loglevel, and our console loglevel is set to 3 due to slowness of
-> > serial console. Which means only errors and worse types of messages
-> > are recorded. AFAIK, there is no way to have different log levels for
-> > different consoles.
->
-> Ah-ha! Okay, thanks. Please include this rationale in the v2 changelog.
-> That makes perfect sense; I just didn't see it and maybe others will
-> need the same clarity too. Thanks!
+do_splice() doesn't expect len to be 0. Just always return 0 in this
+case as splice(2) do.
 
-I will add this explanation to v2.
+Fixes: 7d67af2c0134 ("io_uring: add splice(2) support")
+Reported-by: Jann Horn <jannh@google.com>
+Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+---
+ fs/io_uring.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-Thank you,
-Pasha
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 65458eda2127..d53a1ef2a205 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -2772,16 +2772,19 @@ static int io_splice(struct io_kiocb *req, bool force_nonblock)
+ 	struct file *out = sp->file_out;
+ 	unsigned int flags = sp->flags & ~SPLICE_F_FD_IN_FIXED;
+ 	loff_t *poff_in, *poff_out;
+-	long ret;
++	long ret = 0;
+ 
+ 	if (force_nonblock)
+ 		return -EAGAIN;
+ 
+ 	poff_in = (sp->off_in == -1) ? NULL : &sp->off_in;
+ 	poff_out = (sp->off_out == -1) ? NULL : &sp->off_out;
+-	ret = do_splice(in, poff_in, out, poff_out, sp->len, flags);
+-	if (force_nonblock && ret == -EAGAIN)
+-		return -EAGAIN;
++
++	if (sp->len) {
++		ret = do_splice(in, poff_in, out, poff_out, sp->len, flags);
++		if (force_nonblock && ret == -EAGAIN)
++			return -EAGAIN;
++	}
+ 
+ 	io_put_file(req, in, (sp->flags & SPLICE_F_FD_IN_FIXED));
+ 	req->flags &= ~REQ_F_NEED_CLEANUP;
+-- 
+2.24.0
 
->
-> -Kees
->
-> --
-> Kees Cook
