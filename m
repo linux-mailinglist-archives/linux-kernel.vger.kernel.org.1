@@ -2,614 +2,322 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E59BD1C484A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 22:31:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B57111C47B5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 22:11:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727772AbgEDUbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 16:31:23 -0400
-Received: from gateway36.websitewelcome.com ([192.185.192.36]:37618 "EHLO
-        gateway36.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726338AbgEDUbX (ORCPT
+        id S1726515AbgEDULx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 16:11:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726111AbgEDULw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 16:31:23 -0400
-X-Greylist: delayed 1478 seconds by postgrey-1.27 at vger.kernel.org; Mon, 04 May 2020 16:31:21 EDT
-Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
-        by gateway36.websitewelcome.com (Postfix) with ESMTP id 4D86640D2BC57
-        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 14:25:20 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id VhMQjcAxAVQh0VhMQjiaXD; Mon, 04 May 2020 15:06:42 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Type:MIME-Version:Message-ID:Subject:
-        Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=FhdSqbnIjF/VfgKxY8JVFIdq0H36uTAyETzNIb3T7zw=; b=rjvH4WUGFAvJB4lzCzL/ebXFaE
-        XlGHJGNZ62AHM0UtRJ8lkN3MGIyW+N5VYL9Trev3dvDYZUSHeqMJVsoa01xomtwzMBsz5pBdks9Lp
-        QiAJp5AEMmBFyU8HoDHJqOVz18uCeXiezCGHycwYLRi+kkcwzY9cqkzctV/F1CdF300jCjahK7VhV
-        Y45gArEUAUkMbPu3iXgp2xoDyWd77qIoxQZ6mP754eqQ9OduFyaAjv1t4d4XlvNNb5yiwaQZehJYz
-        ONL6ObU6xRqCmEgzrKbSsXjJz2kBJspSqmEc3heXjFH7/WqobAjz45dQ/heOqeaqLdUJPpjMhR/rP
-        PG+mbIQw==;
-Received: from [189.207.59.248] (port=58766 helo=embeddedor)
-        by gator4166.hostgator.com with esmtpa (Exim 4.92)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1jVhMQ-002Gry-Ad; Mon, 04 May 2020 15:06:42 -0500
-Date:   Mon, 4 May 2020 15:11:08 -0500
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-To:     Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH] ath10k: Replace zero-length array with flexible-array
-Message-ID: <20200504201108.GA32136@embeddedor>
+        Mon, 4 May 2020 16:11:52 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0B36C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 13:11:52 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1jVhR6-0002Pb-1u; Mon, 04 May 2020 22:11:32 +0200
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1jVhR5-0007po-DD; Mon, 04 May 2020 22:11:31 +0200
+Date:   Mon, 4 May 2020 22:11:31 +0200
+From:   Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+To:     Sandipan Patra <spatra@nvidia.com>
+Cc:     treding@nvidia.com, robh+dt@kernel.org, jonathanh@nvidia.com,
+        bbasu@nvidia.com, ldewangan@nvidia.com, linux-pwm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2] pwm: tegra: dynamic clk freq configuration by PWM
+ driver
+Message-ID: <20200504201131.l5ofxem3owrl5siv@pengutronix.de>
+References: <1587398043-18767-1-git-send-email-spatra@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 189.207.59.248
-X-Source-L: No
-X-Exim-ID: 1jVhMQ-002Gry-Ad
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: (embeddedor) [189.207.59.248]:58766
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 11
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1587398043-18767-1-git-send-email-spatra@nvidia.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current codebase makes use of the zero-length array language
-extension to the C90 standard, but the preferred mechanism to declare
-variable-length types such as these ones is a flexible array member[1][2],
-introduced in C99:
+Hello,
 
-struct foo {
-        int stuff;
-        struct boo array[];
-};
+On Mon, Apr 20, 2020 at 09:24:03PM +0530, Sandipan Patra wrote:
+> Added support for dynamic clock freq configuration in pwm kernel driver.
+> Earlier the pwm driver used to cache boot time clock rate by pwm clock
+> parent during probe. Hence dynamically changing pwm frequency was not
+> possible for all the possible ranges. With this change, dynamic calculation
+> is enabled and it is able to set the requested period from sysfs knob
+> provided the value is supported by clock source.
+> 
+> Changes mainly have 2 parts:
+>   - T186 and later chips [1]
+>   - T210 and prior chips [2]
+> 
+> For [1] - Changes implemented to set pwm period dynamically and
+>           also checks added to allow only if requested period(ns) is
+>           below or equals to higher range.
+> 
+> For [2] - Only checks if the requested period(ns) is below or equals
+>           to higher range defined by max clock limit. The limitation
+>           in T210 or prior chips are due to the reason of having only
+>           one pwm-controller supporting multiple channels. But later
+>           chips have multiple pwm controller instances each having
+> 	  single channel support.
+> 
+> Signed-off-by: Sandipan Patra <spatra@nvidia.com>
+> ---
+> V2:
+> 1. Min period_ns calculation is moved to probe.
+> 2. Added descriptioins for PWM register bits and regarding behaviour
+>    of the controller when new configuration is applied or pwm is disabled.
+> 3. Setting period with possible value when supplied period is below limit.
+> 4. Corrected the earlier code comment:
+>    plus 1 instead of minus 1 during pwm calculation
+> 
+>  drivers/pwm/pwm-tegra.c | 110 +++++++++++++++++++++++++++++++++++++++++-------
+>  1 file changed, 94 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/pwm/pwm-tegra.c b/drivers/pwm/pwm-tegra.c
+> index d26ed8f..7a36325 100644
+> --- a/drivers/pwm/pwm-tegra.c
+> +++ b/drivers/pwm/pwm-tegra.c
+> @@ -4,8 +4,39 @@
+>   *
+>   * Tegra pulse-width-modulation controller driver
+>   *
+> - * Copyright (c) 2010, NVIDIA Corporation.
+> - * Based on arch/arm/plat-mxc/pwm.c by Sascha Hauer <s.hauer@pengutronix.de>
+> + * Copyright (c) 2010-2020, NVIDIA Corporation.
+> + *
+> + * Overview of Tegra Pulse Width Modulator Register:
+> + * 1. 13-bit: Frequency division (SCALE)
+> + * 2. 8-bit : Puls division (DUTY)
+> + * 3. 1-bit : Enable bit
+> + *
+> + * The PWM clock frequency is divided by 256 before subdividing it based
+> + * on the programmable frequency division value to generate the required
+> + * frequency for PWM output. The maximum output frequency that can be
+> + * achieved is (max rate of source clock) / 256.
+> + * i.e. if source clock rate is 408 MHz, maximum output frequency cab be:
 
-By making use of the mechanism above, we will get a compiler warning
-in case the flexible array does not occur last in the structure, which
-will help us prevent some kind of undefined behavior bugs from being
-inadvertently introduced[3] to the codebase from now on.
+s/i.e./e.g./, s/cab/can/
 
-Also, notice that, dynamic memory allocations won't be affected by
-this change:
+> + * 408 MHz/256 = 1.6 MHz.
+> + * This 1.6 MHz frequency can further be divided using SCALE value in PWM.
+> + *
+> + * PWM pulse width: 8 bits are usable [23:16] for varying pulse width.
+> + * To achieve 100% duty cycle, program Bit [24] of this register to
+> + * 1’b1. In which case the other bits [23:16] are set to don't care.
+> + *
+> + * Limitations and known facts:
 
-"Flexible array members have incomplete type, and so the sizeof operator
-may not be applied. As a quirk of the original implementation of
-zero-length arrays, sizeof evaluates to zero."[1]
+Please use "Limitations:" here to make this easier greppable.
 
-sizeof(flexible-array-member) triggers a warning because flexible array
-members have incomplete type[1]. There are some instances of code in
-which the sizeof operator is being incorrectly/erroneously applied to
-zero-length arrays and the result is zero. Such instances may be hiding
-some bugs. So, this work (flexible-array member conversions) will also
-help to get completely rid of those sorts of issues.
+> + * -	When PWM is disabled, the output is driven to 0.
 
-This issue was found with the help of Coccinelle.
+0 or inactive?
 
-[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-[2] https://github.com/KSPP/linux/issues/21
-[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+> + * -	It does not allow the current PWM period to complete and
+> + *	stops abruptly.
+> + *
+> + * -	If the register is reconfigured while pwm is running,
 
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
----
- drivers/net/wireless/ath/ath10k/ce.h       |  2 +-
- drivers/net/wireless/ath/ath10k/core.h     |  2 +-
- drivers/net/wireless/ath/ath10k/coredump.h |  4 +--
- drivers/net/wireless/ath/ath10k/debug.h    |  2 +-
- drivers/net/wireless/ath/ath10k/htt.h      | 42 +++++++++++-----------
- drivers/net/wireless/ath/ath10k/hw.h       |  2 +-
- drivers/net/wireless/ath/ath10k/pci.h      |  2 +-
- drivers/net/wireless/ath/ath10k/wmi-tlv.h  |  6 ++--
- drivers/net/wireless/ath/ath10k/wmi.h      | 42 +++++++++++-----------
- 9 files changed, 52 insertions(+), 52 deletions(-)
+s/pwm/PWM/
 
-diff --git a/drivers/net/wireless/ath/ath10k/ce.h b/drivers/net/wireless/ath/ath10k/ce.h
-index a7478c240f78..41b5ea25ca57 100644
---- a/drivers/net/wireless/ath/ath10k/ce.h
-+++ b/drivers/net/wireless/ath/ath10k/ce.h
-@@ -110,7 +110,7 @@ struct ath10k_ce_ring {
- 	struct ce_desc_64 *shadow_base;
- 
- 	/* keep last */
--	void *per_transfer_context[0];
-+	void *per_transfer_context[];
- };
- 
- struct ath10k_ce_pipe {
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index bd8ef576c590..829c2f9244e8 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -1228,7 +1228,7 @@ struct ath10k {
- 	int coex_gpio_pin;
- 
- 	/* must be last */
--	u8 drv_priv[0] __aligned(sizeof(void *));
-+	u8 drv_priv[] __aligned(sizeof(void *));
- };
- 
- static inline bool ath10k_peer_stats_enabled(struct ath10k *ar)
-diff --git a/drivers/net/wireless/ath/ath10k/coredump.h b/drivers/net/wireless/ath/ath10k/coredump.h
-index 8bf03e8c1d3a..e760ce1a5f1e 100644
---- a/drivers/net/wireless/ath/ath10k/coredump.h
-+++ b/drivers/net/wireless/ath/ath10k/coredump.h
-@@ -88,7 +88,7 @@ struct ath10k_dump_file_data {
- 	u8 unused[128];
- 
- 	/* struct ath10k_tlv_dump_data + more */
--	u8 data[0];
-+	u8 data[];
- } __packed;
- 
- struct ath10k_dump_ram_data_hdr {
-@@ -100,7 +100,7 @@ struct ath10k_dump_ram_data_hdr {
- 	/* length of payload data, not including this header */
- 	__le32 length;
- 
--	u8 data[0];
-+	u8 data[];
- };
- 
- /* magic number to fill the holes not copied due to sections in regions */
-diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
-index 82f7eb8583d9..099cc438e231 100644
---- a/drivers/net/wireless/ath/ath10k/debug.h
-+++ b/drivers/net/wireless/ath/ath10k/debug.h
-@@ -65,7 +65,7 @@ struct ath10k_pktlog_hdr {
- 	__le16 log_type; /* Type of log information foll this header */
- 	__le16 size; /* Size of variable length log information in bytes */
- 	__le32 timestamp;
--	u8 payload[0];
-+	u8 payload[];
- } __packed;
- 
- /* FIXME: How to calculate the buffer size sanely? */
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index 4a12564fc30e..fd072d60319a 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -279,12 +279,12 @@ struct htt_rx_ring_setup_hdr {
- 
- struct htt_rx_ring_setup_32 {
- 	struct htt_rx_ring_setup_hdr hdr;
--	struct htt_rx_ring_setup_ring32 rings[0];
-+	struct htt_rx_ring_setup_ring32 rings[];
- } __packed;
- 
- struct htt_rx_ring_setup_64 {
- 	struct htt_rx_ring_setup_hdr hdr;
--	struct htt_rx_ring_setup_ring64 rings[0];
-+	struct htt_rx_ring_setup_ring64 rings[];
- } __packed;
- 
- /*
-@@ -722,7 +722,7 @@ struct htt_rx_indication {
- 	 * %mpdu_ranges starts after &%prefix + roundup(%fw_rx_desc_bytes, 4)
- 	 * and has %num_mpdu_ranges elements.
- 	 */
--	struct htt_rx_indication_mpdu_range mpdu_ranges[0];
-+	struct htt_rx_indication_mpdu_range mpdu_ranges[];
- } __packed;
- 
- /* High latency version of the RX indication */
-@@ -731,7 +731,7 @@ struct htt_rx_indication_hl {
- 	struct htt_rx_indication_ppdu ppdu;
- 	struct htt_rx_indication_prefix prefix;
- 	struct fw_rx_desc_hl fw_desc;
--	struct htt_rx_indication_mpdu_range mpdu_ranges[0];
-+	struct htt_rx_indication_mpdu_range mpdu_ranges[];
- } __packed;
- 
- struct htt_hl_rx_desc {
-@@ -898,7 +898,7 @@ struct htt_append_retries {
- struct htt_data_tx_completion_ext {
- 	struct htt_append_retries a_retries;
- 	__le32 t_stamp;
--	__le16 msdus_rssi[0];
-+	__le16 msdus_rssi[];
- } __packed;
- 
- /**
-@@ -982,7 +982,7 @@ struct htt_data_tx_completion {
- 	} __packed;
- 	u8 num_msdus;
- 	u8 flags2; /* HTT_TX_CMPL_FLAG_DATA_RSSI */
--	__le16 msdus[0]; /* variable length based on %num_msdus */
-+	__le16 msdus[]; /* variable length based on %num_msdus */
- } __packed;
- 
- #define HTT_TX_PPDU_DUR_INFO0_PEER_ID_MASK	GENMASK(15, 0)
-@@ -997,7 +997,7 @@ struct htt_data_tx_ppdu_dur {
- 
- struct htt_data_tx_compl_ppdu_dur {
- 	__le32 info0; /* HTT_TX_COMPL_PPDU_DUR_INFO0_ */
--	struct htt_data_tx_ppdu_dur ppdu_dur[0];
-+	struct htt_data_tx_ppdu_dur ppdu_dur[];
- } __packed;
- 
- struct htt_tx_compl_ind_base {
-@@ -1023,7 +1023,7 @@ struct htt_rc_update {
- 	u8 addr[6];
- 	u8 num_elems;
- 	u8 rsvd0;
--	struct htt_rc_tx_done_params params[0]; /* variable length %num_elems */
-+	struct htt_rc_tx_done_params params[]; /* variable length %num_elems */
- } __packed;
- 
- /* see htt_rx_indication for similar fields and descriptions */
-@@ -1040,7 +1040,7 @@ struct htt_rx_fragment_indication {
- 	__le16 fw_rx_desc_bytes;
- 	__le16 rsvd0;
- 
--	u8 fw_msdu_rx_desc[0];
-+	u8 fw_msdu_rx_desc[];
- } __packed;
- 
- #define ATH10K_IEEE80211_EXTIV               BIT(5)
-@@ -1065,7 +1065,7 @@ struct htt_rx_pn_ind {
- 	u8 seqno_end;
- 	u8 pn_ie_count;
- 	u8 reserved;
--	u8 pn_ies[0];
-+	u8 pn_ies[];
- } __packed;
- 
- struct htt_rx_offload_msdu {
-@@ -1074,7 +1074,7 @@ struct htt_rx_offload_msdu {
- 	u8 vdev_id;
- 	u8 tid;
- 	u8 fw_desc;
--	u8 payload[0];
-+	u8 payload[];
- } __packed;
- 
- struct htt_rx_offload_ind {
-@@ -1157,7 +1157,7 @@ struct htt_rx_test {
- 	 *  a) num_ints * sizeof(__le32)
- 	 *  b) num_chars * sizeof(u8) aligned to 4bytes
- 	 */
--	u8 payload[0];
-+	u8 payload[];
- } __packed;
- 
- static inline __le32 *htt_rx_test_get_ints(struct htt_rx_test *rx_test)
-@@ -1191,7 +1191,7 @@ static inline u8 *htt_rx_test_get_chars(struct htt_rx_test *rx_test)
-  */
- struct htt_pktlog_msg {
- 	u8 pad[3];
--	u8 payload[0];
-+	u8 payload[];
- } __packed;
- 
- struct htt_dbg_stats_rx_reorder_stats {
-@@ -1480,7 +1480,7 @@ struct htt_stats_conf_item {
- 	} __packed;
- 	u8 pad;
- 	__le16 length;
--	u8 payload[0]; /* roundup(length, 4) long */
-+	u8 payload[]; /* roundup(length, 4) long */
- } __packed;
- 
- struct htt_stats_conf {
-@@ -1489,7 +1489,7 @@ struct htt_stats_conf {
- 	__le32 cookie_msb;
- 
- 	/* each item has variable length! */
--	struct htt_stats_conf_item items[0];
-+	struct htt_stats_conf_item items[];
- } __packed;
- 
- static inline struct htt_stats_conf_item *htt_stats_conf_next_item(
-@@ -1664,7 +1664,7 @@ struct htt_tx_fetch_ind {
- 	__le16 num_resp_ids;
- 	__le16 num_records;
- 	struct htt_tx_fetch_record records[0];
--	__le32 resp_ids[0]; /* ath10k_htt_get_tx_fetch_ind_resp_ids() */
-+	__le32 resp_ids[]; /* ath10k_htt_get_tx_fetch_ind_resp_ids() */
- } __packed;
- 
- static inline void *
-@@ -1679,13 +1679,13 @@ struct htt_tx_fetch_resp {
- 	__le16 fetch_seq_num;
- 	__le16 num_records;
- 	__le32 token;
--	struct htt_tx_fetch_record records[0];
-+	struct htt_tx_fetch_record records[];
- } __packed;
- 
- struct htt_tx_fetch_confirm {
- 	u8 pad0;
- 	__le16 num_resp_ids;
--	__le32 resp_ids[0];
-+	__le32 resp_ids[];
- } __packed;
- 
- enum htt_tx_mode_switch_mode {
-@@ -1717,7 +1717,7 @@ struct htt_tx_mode_switch_ind {
- 	__le16 info0; /* HTT_TX_MODE_SWITCH_IND_INFO0_ */
- 	__le16 info1; /* HTT_TX_MODE_SWITCH_IND_INFO1_ */
- 	u8 pad1[2];
--	struct htt_tx_mode_switch_record records[0];
-+	struct htt_tx_mode_switch_record records[];
- } __packed;
- 
- struct htt_channel_change {
-@@ -1747,7 +1747,7 @@ struct htt_peer_tx_stats {
- 	u8 num_ppdu;
- 	u8 ppdu_len;
- 	u8 version;
--	u8 payload[0];
-+	u8 payload[];
- } __packed;
- 
- #define ATH10K_10_2_TX_STATS_OFFSET	136
-@@ -2185,7 +2185,7 @@ struct htt_rx_desc {
- 		struct rx_ppdu_end ppdu_end;
- 	} __packed;
- 	u8 rx_hdr_status[RX_HTT_HDR_STATUS_LEN];
--	u8 msdu_payload[0];
-+	u8 msdu_payload[];
- };
- 
- #define HTT_RX_DESC_HL_INFO_SEQ_NUM_MASK           0x00000fff
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 970c736ac6bb..077813bc6c7e 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -165,7 +165,7 @@ enum qca9377_chip_id_rev {
- struct ath10k_fw_ie {
- 	__le32 id;
- 	__le32 len;
--	u8 data[0];
-+	u8 data[];
- };
- 
- enum ath10k_fw_ie_type {
-diff --git a/drivers/net/wireless/ath/ath10k/pci.h b/drivers/net/wireless/ath/ath10k/pci.h
-index 4455ed6c5275..1254412f06dd 100644
---- a/drivers/net/wireless/ath/ath10k/pci.h
-+++ b/drivers/net/wireless/ath/ath10k/pci.h
-@@ -182,7 +182,7 @@ struct ath10k_pci {
- 	 * allocated (ahb support enabled case) in the continuation of
- 	 * this struct.
- 	 */
--	struct ath10k_ahb ahb[0];
-+	struct ath10k_ahb ahb[];
- };
- 
- static inline struct ath10k_pci *ath10k_pci_priv(struct ath10k *ar)
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-index 4972dc12991c..4d49eb4b7f3d 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-@@ -1623,7 +1623,7 @@ wmi_tlv_svc_map_ext(const __le32 *in, unsigned long *out, size_t len)
- struct wmi_tlv {
- 	__le16 len;
- 	__le16 tag;
--	u8 value[0];
-+	u8 value[];
- } __packed;
- 
- struct ath10k_mgmt_tx_pkt_addr {
-@@ -2023,7 +2023,7 @@ struct wmi_tlv_bcn_tx_status_ev {
- struct wmi_tlv_bcn_prb_info {
- 	__le32 caps;
- 	__le32 erp;
--	u8 ies[0];
-+	u8 ies[];
- } __packed;
- 
- struct wmi_tlv_bcn_tmpl_cmd {
-@@ -2054,7 +2054,7 @@ struct wmi_tlv_diag_item {
- 	__le16 len;
- 	__le32 timestamp;
- 	__le32 code;
--	u8 payload[0];
-+	u8 payload[];
- } __packed;
- 
- struct wmi_tlv_diag_data_ev {
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 6df415778374..df140cfb7af7 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -2290,7 +2290,7 @@ struct wmi_service_ready_event {
- 	 * where FW can access this memory directly (or) by DMA.
- 	 */
- 	__le32 num_mem_reqs;
--	struct wlan_host_mem_req mem_reqs[0];
-+	struct wlan_host_mem_req mem_reqs[];
- } __packed;
- 
- /* This is the definition from 10.X firmware branch */
-@@ -2329,7 +2329,7 @@ struct wmi_10x_service_ready_event {
- 	 */
- 	__le32 num_mem_reqs;
- 
--	struct wlan_host_mem_req mem_reqs[0];
-+	struct wlan_host_mem_req mem_reqs[];
- } __packed;
- 
- #define WMI_SERVICE_READY_TIMEOUT_HZ (5 * HZ)
-@@ -3084,19 +3084,19 @@ struct wmi_chan_list_entry {
- struct wmi_chan_list {
- 	__le32 tag; /* WMI_CHAN_LIST_TAG */
- 	__le32 num_chan;
--	struct wmi_chan_list_entry channel_list[0];
-+	struct wmi_chan_list_entry channel_list[];
- } __packed;
- 
- struct wmi_bssid_list {
- 	__le32 tag; /* WMI_BSSID_LIST_TAG */
- 	__le32 num_bssid;
--	struct wmi_mac_addr bssid_list[0];
-+	struct wmi_mac_addr bssid_list[];
- } __packed;
- 
- struct wmi_ie_data {
- 	__le32 tag; /* WMI_IE_TAG */
- 	__le32 ie_len;
--	u8 ie_data[0];
-+	u8 ie_data[];
- } __packed;
- 
- struct wmi_ssid {
-@@ -3107,7 +3107,7 @@ struct wmi_ssid {
- struct wmi_ssid_list {
- 	__le32 tag; /* WMI_SSID_LIST_TAG */
- 	__le32 num_ssids;
--	struct wmi_ssid ssids[0];
-+	struct wmi_ssid ssids[];
- } __packed;
- 
- /* prefix used by scan requestor ids on the host */
-@@ -3309,7 +3309,7 @@ struct wmi_stop_scan_arg {
- 
- struct wmi_scan_chan_list_cmd {
- 	__le32 num_scan_chans;
--	struct wmi_channel chan_info[0];
-+	struct wmi_channel chan_info[];
- } __packed;
- 
- struct wmi_scan_chan_list_arg {
-@@ -3393,12 +3393,12 @@ struct wmi_mgmt_rx_hdr_v2 {
- 
- struct wmi_mgmt_rx_event_v1 {
- 	struct wmi_mgmt_rx_hdr_v1 hdr;
--	u8 buf[0];
-+	u8 buf[];
- } __packed;
- 
- struct wmi_mgmt_rx_event_v2 {
- 	struct wmi_mgmt_rx_hdr_v2 hdr;
--	u8 buf[0];
-+	u8 buf[];
- } __packed;
- 
- struct wmi_10_4_mgmt_rx_hdr {
-@@ -3413,7 +3413,7 @@ struct wmi_10_4_mgmt_rx_hdr {
- 
- struct wmi_10_4_mgmt_rx_event {
- 	struct wmi_10_4_mgmt_rx_hdr hdr;
--	u8 buf[0];
-+	u8 buf[];
- } __packed;
- 
- struct wmi_mgmt_rx_ext_info {
-@@ -3453,14 +3453,14 @@ struct wmi_phyerr {
- 	__le32 rssi_chains[4];
- 	__le16 nf_chains[4];
- 	__le32 buf_len;
--	u8 buf[0];
-+	u8 buf[];
- } __packed;
- 
- struct wmi_phyerr_event {
- 	__le32 num_phyerrs;
- 	__le32 tsf_l32;
- 	__le32 tsf_u32;
--	struct wmi_phyerr phyerrs[0];
-+	struct wmi_phyerr phyerrs[];
- } __packed;
- 
- struct wmi_10_4_phyerr_event {
-@@ -3477,7 +3477,7 @@ struct wmi_10_4_phyerr_event {
- 	__le32 phy_err_mask[2];
- 	__le32 tsf_timestamp;
- 	__le32 buf_len;
--	u8 buf[0];
-+	u8 buf[];
- } __packed;
- 
- struct wmi_radar_found_info {
-@@ -3590,7 +3590,7 @@ struct wmi_mgmt_tx_hdr {
- 
- struct wmi_mgmt_tx_cmd {
- 	struct wmi_mgmt_tx_hdr hdr;
--	u8 buf[0];
-+	u8 buf[];
- } __packed;
- 
- struct wmi_echo_event {
-@@ -4618,7 +4618,7 @@ struct wmi_stats_event {
- 	 *  By having a zero sized array, the pointer to data area
- 	 *  becomes available without increasing the struct size
- 	 */
--	u8 data[0];
-+	u8 data[];
- } __packed;
- 
- struct wmi_10_2_stats_event {
-@@ -4628,7 +4628,7 @@ struct wmi_10_2_stats_event {
- 	__le32 num_vdev_stats;
- 	__le32 num_peer_stats;
- 	__le32 num_bcnflt_stats;
--	u8 data[0];
-+	u8 data[];
- } __packed;
- 
- /*
-@@ -5023,7 +5023,7 @@ struct wmi_vdev_install_key_cmd {
- 	__le32 key_rxmic_len;
- 
- 	/* contains key followed by tx mic followed by rx mic */
--	u8 key_data[0];
-+	u8 key_data[];
- } __packed;
- 
- struct wmi_vdev_install_key_arg {
-@@ -5693,7 +5693,7 @@ struct wmi_bcn_tx_hdr {
- 
- struct wmi_bcn_tx_cmd {
- 	struct wmi_bcn_tx_hdr hdr;
--	u8 *bcn[0];
-+	u8 *bcn[];
- } __packed;
- 
- struct wmi_bcn_tx_arg {
-@@ -6110,7 +6110,7 @@ struct wmi_bcn_info {
- 
- struct wmi_host_swba_event {
- 	__le32 vdev_map;
--	struct wmi_bcn_info bcn_info[0];
-+	struct wmi_bcn_info bcn_info[];
- } __packed;
- 
- struct wmi_10_2_4_bcn_info {
-@@ -6120,7 +6120,7 @@ struct wmi_10_2_4_bcn_info {
- 
- struct wmi_10_2_4_host_swba_event {
- 	__le32 vdev_map;
--	struct wmi_10_2_4_bcn_info bcn_info[0];
-+	struct wmi_10_2_4_bcn_info bcn_info[];
- } __packed;
- 
- /* 16 words = 512 client + 1 word = for guard */
-@@ -6161,7 +6161,7 @@ struct wmi_10_4_bcn_info {
- 
- struct wmi_10_4_host_swba_event {
- 	__le32 vdev_map;
--	struct wmi_10_4_bcn_info bcn_info[0];
-+	struct wmi_10_4_bcn_info bcn_info[];
- } __packed;
- 
- #define WMI_MAX_AP_VDEV 16
+> + *	It does not let the currently running period to complete.
+
+s/It/it/; s/let/complete/; s/ to complete//
+
+> + *
+> + * -	Pulse width of the pwm can never be out of bound.
+
+I don't understand that one.
+
+> + *	It's taken care at HW and SW
+> + * -	If the user input duty is below limit, then driver sets it to
+> + *	minimum possible value.
+
+that is 0? Do you mean "input period"? If so, better refuse the request.
+
+> + * -	If anything else goes wrong for setting duty or period,
+> + *	-EINVAL is returned.
+
+I wouldn't state this, too trivial. Instead the following are
+interesting:
+
+ - The driver doesn't implement the right rounding rules
+ - The driver needs updating to the atomic API
+
+>   */
+>  
+>  #include <linux/clk.h>
+> @@ -41,6 +72,7 @@ struct tegra_pwm_chip {
+>  	struct reset_control*rst;
+>  
+>  	unsigned long clk_rate;
+> +	unsigned long min_period_ns;
+>  
+>  	void __iomem *regs;
+>  
+> @@ -67,8 +99,9 @@ static int tegra_pwm_config(struct pwm_chip *chip, struct pwm_device *pwm,
+>  			    int duty_ns, int period_ns)
+>  {
+>  	struct tegra_pwm_chip *pc = to_tegra_pwm_chip(chip);
+> -	unsigned long long c = duty_ns, hz;
+> -	unsigned long rate;
+> +	unsigned long long p_width = duty_ns, period_hz;
+> +	unsigned long rate, required_clk_rate;
+> +	unsigned long pfm; /* Frequency divider */
+>  	u32 val = 0;
+>  	int err;
+>  
+> @@ -77,37 +110,77 @@ static int tegra_pwm_config(struct pwm_chip *chip, struct pwm_device *pwm,
+>  	 * per (1 << PWM_DUTY_WIDTH) cycles and make sure to round to the
+>  	 * nearest integer during division.
+>  	 */
+> -	c *= (1 << PWM_DUTY_WIDTH);
+> -	c = DIV_ROUND_CLOSEST_ULL(c, period_ns);
+> +	p_width *= (1 << PWM_DUTY_WIDTH);
+> +	p_width = DIV_ROUND_CLOSEST_ULL(p_width, period_ns);
+>  
+> -	val = (u32)c << PWM_DUTY_SHIFT;
+> +	val = (u32)p_width << PWM_DUTY_SHIFT;
+> +
+> +	/*
+> +	 *  Period in nano second has to be <= highest allowed period
+> +	 *  based on max clock rate of the pwm controller.
+> +	 *
+> +	 *  higher limit = max clock limit >> PWM_DUTY_WIDTH
+> +	 *  lower limit = min clock limit >> PWM_DUTY_WIDTH >> PWM_SCALE_WIDTH
+> +	 */
+> +	if (period_ns < pc->min_period_ns) {
+> +		period_ns = pc->min_period_ns;
+> +		pr_warn("Period is adjusted to allowed value (%d ns)\n",
+> +				period_ns);
+
+That pr_warn is a bad idea as it spams the kernel log when the
+configuration is changed frequently. Wouldn't it be easier to calculate
+the frequency that is needed to achieve period_ns and check that against
+max_frequency?
+
+> +	}
+>  
+>  	/*
+>  	 * Compute the prescaler value for which (1 << PWM_DUTY_WIDTH)
+>  	 * cycles at the PWM clock rate will take period_ns nanoseconds.
+>  	 */
+> -	rate = pc->clk_rate >> PWM_DUTY_WIDTH;
+> +	if (pc->soc->num_channels == 1) {
+
+required_clk_rate could be defined here, which is better as it narrows
+its scope.
+
+> +		/*
+> +		 * Rate is multiplied with 2^PWM_DUTY_WIDTH so that it matches
+> +		 * with the hieghest applicable rate that the controller can
+
+s/hieghest/highest/
+
+> +		 * provide. Any further lower value can be derived by setting
+> +		 * PFM bits[0:12].
+> +		 * Higher mark is taken since BPMP has round-up mechanism
+> +		 * implemented.
+
+I don't understand the part with the round-up mechanism.
+
+> +		 */
+> +		required_clk_rate =
+> +			(NSEC_PER_SEC / period_ns) << PWM_DUTY_WIDTH;
+> +
+> +		err = clk_set_rate(pc->clk, required_clk_rate);
+> +		if (err < 0)
+> +			return -EINVAL;
+
+What happens if clk_set_rate configures a higher rate than requested?
+
+> +
+> +		rate = clk_get_rate(pc->clk) >> PWM_DUTY_WIDTH;
+> +	} else {
+> +		/*
+> +		 * This is the case for SoCs who support multiple channels:
+
+s/who/that/
+
+> +		 *
+> +		 * clk_set_rate() can not be called again in config because
+> +		 * T210 or any prior chip supports one pwm-controller and
+> +		 * multiple channels. Hence in this case cached clock rate
+> +		 * will be considered which was stored during probe.
+> +		 */
+> +		rate = pc->clk_rate >> PWM_DUTY_WIDTH;
+> +	}
+>  
+>  	/* Consider precision in PWM_SCALE_WIDTH rate calculation */
+> -	hz = DIV_ROUND_CLOSEST_ULL(100ULL * NSEC_PER_SEC, period_ns);
+> -	rate = DIV_ROUND_CLOSEST_ULL(100ULL * rate, hz);
+> +	period_hz = DIV_ROUND_CLOSEST_ULL(100ULL * NSEC_PER_SEC, period_ns);
+> +	pfm = DIV_ROUND_CLOSEST_ULL(100ULL * rate, period_hz);
+>  
+>  	/*
+>  	 * Since the actual PWM divider is the register's frequency divider
+> -	 * field minus 1, we need to decrement to get the correct value to
+> +	 * field plus 1, we need to decrement to get the correct value to
+>  	 * write to the register.
+>  	 */
+> -	if (rate > 0)
+> -		rate--;
+> +	if (pfm > 0)
+> +		pfm--;
+>  
+>  	/*
+> -	 * Make sure that the rate will fit in the register's frequency
+> +	 * Make sure that pfm will fit in the register's frequency
+>  	 * divider field.
+>  	 */
+> -	if (rate >> PWM_SCALE_WIDTH)
+> +	if (pfm >> PWM_SCALE_WIDTH)
+>  		return -EINVAL;
+>  
+> -	val |= rate << PWM_SCALE_SHIFT;
+> +	val |= pfm << PWM_SCALE_SHIFT;
+>  
+>  	/*
+>  	 * If the PWM channel is disabled, make sure to turn on the clock
+> @@ -205,6 +278,10 @@ static int tegra_pwm_probe(struct platform_device *pdev)
+>  	 */
+>  	pwm->clk_rate = clk_get_rate(pwm->clk);
+>  
+> +	/* Set minimum limit of PWM period for the IP */
+> +	pwm->min_period_ns =
+> +	    (NSEC_PER_SEC / (pwm->soc->max_frequency >> PWM_DUTY_WIDTH)) + 1;
+
+With my suggestion above, you can drop the min_period_ns field.
+
+> +
+>  	pwm->rst = devm_reset_control_get_exclusive(&pdev->dev, "pwm");
+>  	if (IS_ERR(pwm->rst)) {
+>  		ret = PTR_ERR(pwm->rst);
+> @@ -313,4 +390,5 @@ module_platform_driver(tegra_pwm_driver);
+>  
+>  MODULE_LICENSE("GPL");
+>  MODULE_AUTHOR("NVIDIA Corporation");
+> +MODULE_AUTHOR("Sandipan Patra <spatra@nvidia.com>");
+>  MODULE_ALIAS("platform:tegra-pwm");
+
+Best regards
+Uwe
+
 -- 
-2.26.2
-
+Pengutronix e.K.                           | Uwe Kleine-König            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
