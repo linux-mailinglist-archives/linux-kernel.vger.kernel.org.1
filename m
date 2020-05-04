@@ -2,69 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDEBB1C3E2A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 17:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A26041C3E33
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 17:10:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729502AbgEDPJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 11:09:43 -0400
-Received: from mga02.intel.com ([134.134.136.20]:6395 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726509AbgEDPJm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 11:09:42 -0400
-IronPort-SDR: mrH34a4NnU41VrFjnViFVmgkQf7fPAexd4BPbF00rsihZ+WAUIvFav5VXV14fZ9zMHnIP6X21a
- RegijQLEwGFQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2020 08:09:40 -0700
-IronPort-SDR: +rmv6oM9Pv2+DecJHTy97vzZ31ydYiRgTZbcySm3YCgNqSqKxSSFEMxXhiChVTaoJZbfkQKmq3
- NTqALnAojO8g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,352,1583222400"; 
-   d="scan'208";a="460696072"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
-  by fmsmga005.fm.intel.com with ESMTP; 04 May 2020 08:09:40 -0700
-Date:   Mon, 4 May 2020 08:09:40 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/10] KVM: x86: Misc anti-retpoline optimizations
-Message-ID: <20200504150940.GB16949@linux.intel.com>
-References: <20200502043234.12481-1-sean.j.christopherson@intel.com>
- <76c2fc30-58e3-4d90-4b66-85b6fb4741b5@redhat.com>
+        id S1729517AbgEDPK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 11:10:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726509AbgEDPKz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 11:10:55 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE31CC061A0E;
+        Mon,  4 May 2020 08:10:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/5CyeOhM27U5uv4E/drHzMGguStn+cxzIB+16o/6zyc=; b=HL3ZRQjsjfv9XvM4tccsYrUYzy
+        3Uune7ovqt7E0cLyxeioyOIhR9CDkQZUEWDZnNWOPgg6Tx8IHmzbfd1GGPplVxxGE7x2vi48rRGe5
+        dfgBxy++PXbalKb5he1Ndtw4wgQuEQIoHLoewTLXdT6bZz+sTri/pn6hqe5yzIwPuR67bqx57I5M6
+        q/MtwI4TVXQaUBWuXwz6cJ80ZEbZklbJ6X5GYbAvY7zG7y7UaW6angseiHHw7Vzeug5NX+6lyf9G8
+        HOmWLGyh53wqDX1XPW+9+MJNgcLVnBmtGkATN4iqhMytP/3awX9HFN3OtzgoZOrWlGLvkGt0WyolM
+        Y2FJYJKg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jVck8-0000Bx-7h; Mon, 04 May 2020 15:10:52 +0000
+Date:   Mon, 4 May 2020 08:10:52 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>, Christoph Lameter <cl@linux.com>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH 2/4] block/part_stat: use __this_cpu_add() instead of
+ access by smp_processor_id()
+Message-ID: <20200504151052.GA25279@infradead.org>
+References: <158859896942.19836.15240144203131230746.stgit@buzz>
+ <158859897252.19836.5614675872684760741.stgit@buzz>
+ <20200504140317.GB29020@infradead.org>
+ <2dfaeec5-135e-c7ac-714b-ecdf14478568@yandex-team.ru>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <76c2fc30-58e3-4d90-4b66-85b6fb4741b5@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <2dfaeec5-135e-c7ac-714b-ecdf14478568@yandex-team.ru>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 04, 2020 at 03:25:58PM +0200, Paolo Bonzini wrote:
-> On 02/05/20 06:32, Sean Christopherson wrote:
-> > A smattering of optimizations geared toward avoiding retpolines, though
-> > IMO most of the patches are worthwhile changes irrespective of retpolines.
-> > I can split this up into separate patches if desired, outside of the
-> > obvious combos there are no dependencies.
+On Mon, May 04, 2020 at 06:02:28PM +0300, Konstantin Khlebnikov wrote:
+> Then all per-cpu macro should work as is for UP case too.
+> Surprisingly arrow operator (struct->filed) works for arrays too =)
 > 
-> Most of them are good stuff anyway, I agree.
 > 
-> Since I like to believe that static calls _are_ close, I queued these:
-> 
->       KVM: x86: Save L1 TSC offset in 'struct kvm_vcpu_arch'
->       KVM: nVMX: Unconditionally validate CR3 during nested transitions
->       KVM: VMX: Add proper cache tracking for CR4
->       KVM: VMX: Add proper cache tracking for CR0
->       KVM: VMX: Move nested EPT out of kvm_x86_ops.get_tdp_level() hook
->       KVM: x86/mmu: Capture TDP level when updating CPUID
-> 
-> and I don't disagree with the DR6 one though it can be even improved a
-> bit so I'll send a patch myself.
+> Inlining per-cpu structures should be good for tiny UP systems.
+> Especially if this could be done by few macro only in three places:
+> definition, allocating and freeing.
 
-Sounds good, thanks!
+Or we could just use the percpu ops always, which is what most
+users do.  I never really go the UP microoptmization here.
