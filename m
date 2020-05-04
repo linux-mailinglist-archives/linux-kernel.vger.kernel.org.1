@@ -2,153 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0BD91C3EA6
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 17:36:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80EB01C4613
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729048AbgEDPgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 11:36:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725941AbgEDPgL (ORCPT
+        id S1726495AbgEDSh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:37:29 -0400
+Received: from mx0a-00154904.pphosted.com ([148.163.133.20]:6174 "EHLO
+        mx0a-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725981AbgEDSh1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 11:36:11 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B7A4C061A0F
-        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 08:36:10 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id i16so11645629ils.12
-        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 08:36:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qFsRyyCs1CNjwXLV7fTk66+/Kw4cVk2SMY32klLrVvY=;
-        b=kI2P1QATu4fMvFXgsjZaHWkW8Y3XJGqJkCH4VH4S2hAg9+Vf3AvornlrHqlVTarDb+
-         EeZu5F+xjbst6eGmuwij20/VCcnhWF1dciottRi7qPgLl/9SMkVACFCg+R/+LzAN9eJt
-         dXKpQWeXwlRZiFyghDThzUDLG/kqUKYN7TU0lsFBUVBE/+fexBbfhqcgKcNwFQUbeZ0z
-         g7Xc95Ow3xr7zwzCLZ/8WkH0u9iyCiatwX1ogMrRo07yD/YlqVoguTXJ4TVw8tywH3vK
-         5axni/ZTLBoKU0pep98AOq6XRYFLGKe2DyOkbo8hRcpffcqW8QZhkXVT8ClK1sR/2rS5
-         pbZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qFsRyyCs1CNjwXLV7fTk66+/Kw4cVk2SMY32klLrVvY=;
-        b=mfFNlu59Q0OjmbB/Ok3nanZrREQE4n7YgIh2/KojYKJ6GBdaiiz6bfaTwa8rCvYrnW
-         8FaFeB3gbliwa2iftErxqb+mjBycjUeSQxCk/ASFeh1yvuiLGtc4TqzP41aUbg4k50xz
-         b2XdA1wYqpbSkMP9DTM1lQwEct1r6H8VksoWsblxaTooN+zRNlDPEMmyFQTin79Ds81O
-         euAuDW1WqFbiLJn0D5UB6qT19TOQrft81YEMgdIkrR1HZ1Wly18nHvdAsmXk4aW+0rFm
-         WtCpzSXPNiuxmt1hBBYFY+3E5/WWjocTGYco9Cxgh5Yu7c5Mmd5xQmEWweOe2dWTOBe9
-         srQA==
-X-Gm-Message-State: AGi0PubOBRE3H/cynO9WhGJ7q+hkQuUNHxZhXcCQKZ/Luvi2QkX+s1/2
-        IhP15RsyvaPeZaJK+LjMD+9OCcm+rSmIsQMz8JlSmQ==
-X-Google-Smtp-Source: APiQypJt6dmFL/4DjT37gVTtzJF9FkA+FS7wvHKSKE3iXFdMtw15wAGYkQTPYxqZ4SAb7f+zZxpeMLkcOxCFQn5KKNs=
-X-Received: by 2002:a92:7e4a:: with SMTP id z71mr17584200ilc.83.1588606569319;
- Mon, 04 May 2020 08:36:09 -0700 (PDT)
+        Mon, 4 May 2020 14:37:27 -0400
+X-Greylist: delayed 10771 seconds by postgrey-1.27 at vger.kernel.org; Mon, 04 May 2020 14:37:27 EDT
+Received: from pps.filterd (m0170391.ppops.net [127.0.0.1])
+        by mx0a-00154904.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 044FVLif032765;
+        Mon, 4 May 2020 11:37:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=smtpout1;
+ bh=qKQjYVmtNTVgpbpac2gqElMiV14sV7QCUi4AU9A9xJo=;
+ b=Ffwvw4KOWUQzKXiWWP0056LuzyE4Me+2yUY5XgAhf0vXZbfxsgeaSY0jY/ufipHDxErl
+ VLQZQfgcMttzZq9VO2bVHdsSqtQ7arYubUsAp8CX/8b9/EsIhsHpcki7U8NBDcLfAkEW
+ SqCiL2p19EmCcvdusbYp4wxokLeiZELS00HdzblfDN0rd5zNSjiFcPZkwzDnt7BzvOIT
+ irOXmFjSd3uheocPw8k4KFZZYfW0gIG2cHha9UC+wsTd/V/U/3yoPmx5BtcHZaUPY14C
+ BqyVtMYg8Dyn+GgPBkYDibi/Rs2tx+08XkxzcmZAoeGGIVN9Zav8n8PQakRr38scKYxq ZQ== 
+Received: from mx0a-00154901.pphosted.com (mx0a-00154901.pphosted.com [67.231.149.39])
+        by mx0a-00154904.pphosted.com with ESMTP id 30sxjm2eks-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 May 2020 11:37:54 -0400
+Received: from pps.filterd (m0090351.ppops.net [127.0.0.1])
+        by mx0b-00154901.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 044FWhDC053426;
+        Mon, 4 May 2020 11:37:54 -0400
+Received: from ausxippc101.us.dell.com (ausxippc101.us.dell.com [143.166.85.207])
+        by mx0b-00154901.pphosted.com with ESMTP id 30s57eg0g7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 04 May 2020 11:37:54 -0400
+X-LoopCount0: from 10.166.132.128
+X-PREM-Routing: D-Outbound
+X-IronPort-AV: E=Sophos;i="5.60,346,1549951200"; 
+   d="scan'208";a="1384301358"
+From:   <Mario.Limonciello@dell.com>
+To:     <hdegoede@redhat.com>, <dvhart@infradead.org>, <andy@infradead.org>
+CC:     <linux-acpi@vger.kernel.org>,
+        <platform-driver-x86@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 4/5] platform/x86: intel-vbtn: Also handle tablet-mode
+ switch on "Detachable" and "Portable" chassis-types
+Thread-Topic: [PATCH 4/5] platform/x86: intel-vbtn: Also handle tablet-mode
+ switch on "Detachable" and "Portable" chassis-types
+Thread-Index: AQHWIK+7lmbxrem4aUOvjmuguWcpP6iYECVg
+Date:   Mon, 4 May 2020 15:37:51 +0000
+Message-ID: <7c3e5f844a224ff780cd8e3b3f5f7641@AUSX13MPC101.AMER.DELL.COM>
+References: <20200502182951.114231-1-hdegoede@redhat.com>
+ <20200502182951.114231-5-hdegoede@redhat.com>
+In-Reply-To: <20200502182951.114231-5-hdegoede@redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Enabled=True;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SiteId=945c199a-83a2-4e80-9f8c-5a91be5752dd;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Owner=Mario_Limonciello@Dell.com;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SetDate=2020-05-04T15:37:48.8278993Z;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Name=External Public;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Application=Microsoft Azure
+ Information Protection;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_ActionId=5e6660b9-a2eb-46dd-82e8-74aa2b3a23f5;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Extended_MSFT_Method=Manual
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [143.166.24.60]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20200430182712.237526-1-shakeelb@google.com> <20200504065600.GA22838@dhcp22.suse.cz>
- <CALvZod5Ao2PEFPEOckW6URBfxisp9nNpNeon1GuctuHehqk_6Q@mail.gmail.com>
- <20200504141136.GR22838@dhcp22.suse.cz> <CALvZod7Ls7rTDOr5vXwEiPneLqbq3JoxfFBxZZ71YWgvLkNr5A@mail.gmail.com>
- <20200504150052.GT22838@dhcp22.suse.cz>
-In-Reply-To: <20200504150052.GT22838@dhcp22.suse.cz>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 4 May 2020 08:35:57 -0700
-Message-ID: <CALvZod7EeQm-T4dsBddfMY_szYw3m8gRh5R5GfjQiuQAtCocug@mail.gmail.com>
-Subject: Re: [PATCH] memcg: oom: ignore oom warnings from memory.max
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
-        Greg Thelen <gthelen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-05-04_10:2020-05-04,2020-05-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ adultscore=0 spamscore=0 mlxscore=0 lowpriorityscore=0 suspectscore=0
+ bulkscore=0 phishscore=0 clxscore=1011 mlxlogscore=999 impostorscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005040126
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0 mlxscore=0
+ malwarescore=0 adultscore=0 clxscore=1011 spamscore=0 priorityscore=1501
+ phishscore=0 suspectscore=0 lowpriorityscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005040126
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 4, 2020 at 8:00 AM Michal Hocko <mhocko@kernel.org> wrote:
->
-> On Mon 04-05-20 07:53:01, Shakeel Butt wrote:
-> > On Mon, May 4, 2020 at 7:11 AM Michal Hocko <mhocko@kernel.org> wrote:
-> > >
-> > > On Mon 04-05-20 06:54:40, Shakeel Butt wrote:
-> > > > On Sun, May 3, 2020 at 11:56 PM Michal Hocko <mhocko@kernel.org> wrote:
-> > > > >
-> > > > > On Thu 30-04-20 11:27:12, Shakeel Butt wrote:
-> > > > > > Lowering memory.max can trigger an oom-kill if the reclaim does not
-> > > > > > succeed. However if oom-killer does not find a process for killing, it
-> > > > > > dumps a lot of warnings.
-> > > > >
-> > > > > It shouldn't dump much more than the regular OOM report AFAICS. Sure
-> > > > > there is "Out of memory and no killable processes..." message printed as
-> > > > > well but is that a real problem?
-> > > > >
-> > > > > > Deleting a memcg does not reclaim memory from it and the memory can
-> > > > > > linger till there is a memory pressure. One normal way to proactively
-> > > > > > reclaim such memory is to set memory.max to 0 just before deleting the
-> > > > > > memcg. However if some of the memcg's memory is pinned by others, this
-> > > > > > operation can trigger an oom-kill without any process and thus can log a
-> > > > > > lot un-needed warnings. So, ignore all such warnings from memory.max.
-> > > > >
-> > > > > OK, I can see why you might want to use memory.max for that purpose but
-> > > > > I do not really understand why the oom report is a problem here.
-> > > >
-> > > > It may not be a problem for an individual or small scale deployment
-> > > > but when "sweep before tear down" is the part of the workflow for
-> > > > thousands of machines cycling through hundreds of thousands of cgroups
-> > > > then we can potentially flood the logs with not useful dumps and may
-> > > > hide (or overflow) any useful information in the logs.
-> > >
-> > > If you are doing this in a large scale and the oom report is really a
-> > > problem then you shouldn't be resetting hard limit to 0 in the first
-> > > place.
-> > >
-> >
-> > I think I have pretty clearly described why we want to reset the hard
-> > limit to 0, so, unless there is an alternative I don't see why we
-> > should not be doing this.
->
-> I am not saying you shouldn't be doing that. I am just saying that if
-> you do then you have to live with oom reports.
->
-> > > > > memory.max can trigger the oom kill and user should be expecting the oom
-> > > > > report under that condition. Why is "no eligible task" so special? Is it
-> > > > > because you know that there won't be any tasks for your particular case?
-> > > > > What about other use cases where memory.max is not used as a "sweep
-> > > > > before tear down"?
-> > > >
-> > > > What other such use-cases would be? The only use-case I can envision
-> > > > of adjusting limits dynamically of a live cgroup are resource
-> > > > managers. However for cgroup v2, memory.high is the recommended way to
-> > > > limit the usage, so, why would resource managers be changing
-> > > > memory.max instead of memory.high? I am not sure. What do you think?
-> > >
-> > > There are different reasons to use the hard limit. Mostly to contain
-> > > potential runaways. While high limit might be a sufficient measure to
-> > > achieve that as well the hard limit is the last resort. And it clearly
-> > > has the oom killer semantic so I am not really sure why you are
-> > > comparing the two.
-> > >
-> >
-> > I am trying to see if "no eligible task" is really an issue and should
-> > be warned for the "other use cases". The only real use-case I can
-> > think of are resource managers adjusting the limit dynamically. I
-> > don't see "no eligible task" a concerning reason for such use-case.
->
-> It is very much a concerning reason to notify about like any other OOM
-> situation due to hard limit breach. In this case it is worse in some
-> sense because the limit cannot be trimmed down because there is no
-> directly reclaimable memory at all. Such an oom situation is
-> effectivelly conserved.
+
+
+> -----Original Message-----
+> From: Hans de Goede <hdegoede@redhat.com>
+> Sent: Saturday, May 2, 2020 1:30 PM
+> To: Darren Hart; Andy Shevchenko; Limonciello, Mario
+> Cc: Hans de Goede; linux-acpi@vger.kernel.org; platform-driver-
+> x86@vger.kernel.org; linux-kernel@vger.kernel.org
+> Subject: [PATCH 4/5] platform/x86: intel-vbtn: Also handle tablet-mode sw=
+itch
+> on "Detachable" and "Portable" chassis-types
+>=20
+>=20
+> [EXTERNAL EMAIL]
+>=20
+> Commit de9647efeaa9 ("platform/x86: intel-vbtn: Only activate tablet mode
+> switch on 2-in-1's") added a DMI chassis-type check to avoid accidentally
+> reporting SW_TABLET_MODE =3D 1 to userspace on laptops.
+>=20
+> Some devices with a detachable keyboard and using the intel-vbnt (INT33D6=
+)
+> interface to report if they are in tablet mode (keyboard detached) or not=
+,
+> report 32 / "Detachable" as chassis-type, e.g. the HP Pavilion X2 series.
+>=20
+> Other devices with a detachable keyboard and using the intel-vbnt (INT33D=
+6)
+> interface to report SW_TABLET_MODE, report 8 / "Portable" as chassis-type=
+.
+> The Dell Venue 11 Pro 7130 is an example of this.
+>=20
+> Extend the DMI chassis-type check to also accept Portables and Detachable=
+s
+> so that the intel-vbtn driver will report SW_TABLET_MODE on these devices=
+.
+>=20
+> Note the chassis-type check was originally added to avoid a false-positiv=
+e
+> tablet-mode report on the Dell XPS 9360 laptop. To the best of my knowled=
+ge
+> that laptop is using a chassis-type of 9 / "Laptop", so after this commit
+> we still ignore the tablet-switch for that chassis-type.
+
+Yes that's correct.
+
+>=20
+> Fixes: de9647efeaa9 ("platform/x86: intel-vbtn: Only activate tablet mode
+> switch on 2-in-1's")
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> ---
+> Looking at the Microsoft Windows documentation for tablet-mode reporting:
+> https://docs.microsoft.com/en-us/windows-hardware/drivers/gpiobtn/button-
+> implementation
+>=20
+> Then the presence of a tablet-mode switch is indicated by the presence
+> of a PNP0C60 compatible ACPI devices. There are 2 ways in which this devi=
+ce
+> can report the tablet-mode. 1. Directly providing a GpioInt resource insi=
+de
+> the PNP0C60 device, 2. Through injecting events from a Windows driver.
+>=20
+> It seems that the intel-vbtn / the INT33D6 ACPI device is the ACPI side
+> of Intel's generic solution for the case where the tablet-mode comes from
+> the embedded-controller and needs to be "injected".
+>=20
+> This all suggests that it might be better to replace the chassis-type
+> check with a acpi_dev_present("PNP0C60", NULL, -1) check.
+>=20
+> Mario, can you provide an acpidump and alsa-info.sh output for the
+> Dell XPS 9360, so that I can check if that might help with the issue
+> there, and thus is a potential candidate to replace the chassis-type
+> check?
+
+Unfortunately with WFH right now, I don't have access to a XPS 9630 to
+double check the patch series.
+
+However I do agree this should be a good approach.
+
+Reviewed-by: Mario Limonciello <Mario.limonciello@dell.com>
+
+> ---
+>  drivers/platform/x86/intel-vbtn.c | 12 +++++++++++-
+>  1 file changed, 11 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/platform/x86/intel-vbtn.c b/drivers/platform/x86/int=
+el-
+> vbtn.c
+> index 500fae82e12c..4921fc15dc6c 100644
+> --- a/drivers/platform/x86/intel-vbtn.c
+> +++ b/drivers/platform/x86/intel-vbtn.c
+> @@ -158,12 +158,22 @@ static void detect_tablet_mode(struct platform_devi=
+ce
+> *device)
+>  static bool intel_vbtn_has_switches(acpi_handle handle)
+>  {
+>  	const char *chassis_type =3D dmi_get_system_info(DMI_CHASSIS_TYPE);
+> +	unsigned long chassis_type_int;
+>  	unsigned long long vgbs;
+>  	acpi_status status;
+>=20
+> -	if (!(chassis_type && strcmp(chassis_type, "31") =3D=3D 0))
+> +	if (kstrtoul(chassis_type, 10, &chassis_type_int))
+>  		return false;
+>=20
+> +	switch (chassis_type_int) {
+> +	case  8: /* Portable */
+> +	case 31: /* Convertible */
+> +	case 32: /* Detachable */
+> +		break;
+> +	default:
+> +		return false;
+> +	}
+> +
+>  	status =3D acpi_evaluate_integer(handle, "VGBS", NULL, &vgbs);
+>  	return ACPI_SUCCESS(status);
+>  }
 > --
+> 2.26.0
 
-Let me make a more precise statement and tell me if you agree. The "no
-eligible task" is concerning for the charging path but not for the
-writer of memory.max. The writer can read the usage and
-cgroup.[procs|events] to figure out the situation if needed. Usually
-such writers (i.e. resource managers) use memory.high in addition to
-memory.max. First set memory.high and once the usage is below the high
-then set max to not induce the oom-kills.
-
-Shakeel
