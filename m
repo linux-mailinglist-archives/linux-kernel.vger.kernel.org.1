@@ -2,135 +2,470 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5D511C3DF1
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 17:01:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E7771C3DFA
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 17:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729363AbgEDPBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 11:01:00 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:56126 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729348AbgEDPA6 (ORCPT
+        id S1729399AbgEDPCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 11:02:25 -0400
+Received: from smtp1.de.adit-jv.com ([93.241.18.167]:36659 "EHLO
+        smtp1.de.adit-jv.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728165AbgEDPCZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 11:00:58 -0400
-Received: by mail-wm1-f65.google.com with SMTP id e26so8852628wmk.5;
-        Mon, 04 May 2020 08:00:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tJ5etNEXsxt7E9ZceP21z7vkGhvbdJvXpUDXj5OxOH0=;
-        b=TUfk0G1174QGxz8rsA9PkEPAcJXdD7AaqH9gp5I0Njykl9quRzmDrpfnJhujZ+DDos
-         Qe9B+gch3jguuB24ZdoFPyuPmpu4dzDOwUB2JeRHhTztz8iuW/UMZ5HONaxSSKOp/heL
-         nkLtrdMLSJsV75xNl3kcMsMEl572w65iV7ZzL2HBZibJ6cY1sIUh/WwNTZ2ahvbev0rs
-         skS68sGYKCl0NgQuQNgPQZzy/oYYfuFE50EC8o0opiKVxhY52M6YsHXOmXqd3qqlcYWD
-         92YUP8SLf/8ubbFr6v33Tb7XPm9V3HQxz8Wwn/HSzkEx4mhesUQwTsa7zf0y/nPKfXiG
-         SEIA==
-X-Gm-Message-State: AGi0Pualc07v4TkInnEodta/K9KYnOCvTnwWTCN3+O6GqOq5VMbAMd5Q
-        DIK/w/kLukCQJJ9q/gdsZIg=
-X-Google-Smtp-Source: APiQypJQHKMQIRZdJ8nNLXQjOA202ammJbzJLV5W2BPzSNYKXJ7sgyYhV0l8zzxSdFgng1kNGOagoA==
-X-Received: by 2002:a05:600c:220c:: with SMTP id z12mr14797153wml.84.1588604455378;
-        Mon, 04 May 2020 08:00:55 -0700 (PDT)
-Received: from localhost (ip-37-188-183-9.eurotel.cz. [37.188.183.9])
-        by smtp.gmail.com with ESMTPSA id 138sm14956344wmb.14.2020.05.04.08.00.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 May 2020 08:00:54 -0700 (PDT)
-Date:   Mon, 4 May 2020 17:00:52 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
-        Greg Thelen <gthelen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] memcg: oom: ignore oom warnings from memory.max
-Message-ID: <20200504150052.GT22838@dhcp22.suse.cz>
-References: <20200430182712.237526-1-shakeelb@google.com>
- <20200504065600.GA22838@dhcp22.suse.cz>
- <CALvZod5Ao2PEFPEOckW6URBfxisp9nNpNeon1GuctuHehqk_6Q@mail.gmail.com>
- <20200504141136.GR22838@dhcp22.suse.cz>
- <CALvZod7Ls7rTDOr5vXwEiPneLqbq3JoxfFBxZZ71YWgvLkNr5A@mail.gmail.com>
+        Mon, 4 May 2020 11:02:25 -0400
+Received: from localhost (smtp1.de.adit-jv.com [127.0.0.1])
+        by smtp1.de.adit-jv.com (Postfix) with ESMTP id 13FEF3C009C;
+        Mon,  4 May 2020 17:02:21 +0200 (CEST)
+Received: from smtp1.de.adit-jv.com ([127.0.0.1])
+        by localhost (smtp1.de.adit-jv.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id yLPyA56NIFdM; Mon,  4 May 2020 17:02:14 +0200 (CEST)
+Received: from HI2EXCH01.adit-jv.com (hi2exch01.adit-jv.com [10.72.92.24])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtp1.de.adit-jv.com (Postfix) with ESMTPS id 92FCC3C058E;
+        Mon,  4 May 2020 17:01:29 +0200 (CEST)
+Received: from vmlxhi-121.adit-jv.com (10.72.94.9) by HI2EXCH01.adit-jv.com
+ (10.72.92.24) with Microsoft SMTP Server (TLS) id 14.3.487.0; Mon, 4 May 2020
+ 17:01:29 +0200
+Date:   Mon, 4 May 2020 17:01:22 +0200
+From:   Michael Rodin <mrodin@de.adit-jv.com>
+To:     Suresh Udipi <sudipi@jp.adit-jv.com>
+CC:     <niklas.soderlund@ragnatech.se>, <akiyama@nds-osk.co.jp>,
+        <efriedrich@de.adit-jv.com>, <erosca@de.adit-jv.com>,
+        <hverkuil-cisco@xs4all.nl>, <jacopo+renesas@jmondi.org>,
+        <laurent.pinchart@ideasonboard.com>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-renesas-soc@vger.kernel.org>, <mrodin@de.adit-jv.com>,
+        <securitycheck@denso.co.jp>
+Subject: Re: [PATCH v5] media: rcar-csi2: Correct the selection of hsfreqrange
+Message-ID: <20200504150122.GA8532@vmlxhi-121.adit-jv.com>
+References: <20200414115600.GB285053@oden.dyn.berto.se>
+ <1588226590-12880-1-git-send-email-sudipi@jp.adit-jv.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <CALvZod7Ls7rTDOr5vXwEiPneLqbq3JoxfFBxZZ71YWgvLkNr5A@mail.gmail.com>
+In-Reply-To: <1588226590-12880-1-git-send-email-sudipi@jp.adit-jv.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Originating-IP: [10.72.94.9]
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 04-05-20 07:53:01, Shakeel Butt wrote:
-> On Mon, May 4, 2020 at 7:11 AM Michal Hocko <mhocko@kernel.org> wrote:
-> >
-> > On Mon 04-05-20 06:54:40, Shakeel Butt wrote:
-> > > On Sun, May 3, 2020 at 11:56 PM Michal Hocko <mhocko@kernel.org> wrote:
-> > > >
-> > > > On Thu 30-04-20 11:27:12, Shakeel Butt wrote:
-> > > > > Lowering memory.max can trigger an oom-kill if the reclaim does not
-> > > > > succeed. However if oom-killer does not find a process for killing, it
-> > > > > dumps a lot of warnings.
-> > > >
-> > > > It shouldn't dump much more than the regular OOM report AFAICS. Sure
-> > > > there is "Out of memory and no killable processes..." message printed as
-> > > > well but is that a real problem?
-> > > >
-> > > > > Deleting a memcg does not reclaim memory from it and the memory can
-> > > > > linger till there is a memory pressure. One normal way to proactively
-> > > > > reclaim such memory is to set memory.max to 0 just before deleting the
-> > > > > memcg. However if some of the memcg's memory is pinned by others, this
-> > > > > operation can trigger an oom-kill without any process and thus can log a
-> > > > > lot un-needed warnings. So, ignore all such warnings from memory.max.
-> > > >
-> > > > OK, I can see why you might want to use memory.max for that purpose but
-> > > > I do not really understand why the oom report is a problem here.
-> > >
-> > > It may not be a problem for an individual or small scale deployment
-> > > but when "sweep before tear down" is the part of the workflow for
-> > > thousands of machines cycling through hundreds of thousands of cgroups
-> > > then we can potentially flood the logs with not useful dumps and may
-> > > hide (or overflow) any useful information in the logs.
-> >
-> > If you are doing this in a large scale and the oom report is really a
-> > problem then you shouldn't be resetting hard limit to 0 in the first
-> > place.
-> >
+Hello Suresh, Niklas,
+
+I think that we should not change the structs for PHTW register configuration,
+because there are no "max" values in the table "PHTW Set Values" from the
+Renesas Hardware Manual. The patch looks just wrong. A major issue is also
+that the Hardware Manual does not provide any algorithm, how to select the
+right table entry for the configuration of PHTW and PHYPLL registers, so we
+can not say for sure that the patch is correct. It is also not clear, what
+are the "default" bit rates? It looks like they are made exactly for usage
+in driver code:
+ - both PHTW and PHYPLL tables have "default" values
+ - only PHYPLL (HSFREQRANGE) tables have min/max values and it requires
+   additional rounding in order to hardcode them in a driver
+But these are just my speculations. If they are correct, then the only
+exception, where the patch v2 failed, could be a typo in the Hardware Manual.
+Otherwise patch v2 looks much better to me. I think, we should wait for more
+details from Renesas before fixing this issue. 
+
+On Thu, Apr 30, 2020 at 03:03:10PM +0900, Suresh Udipi wrote:
+> hsfreqrange should be chosen based on the calculated mbps which
+> is within the range as per table[1]. But current calculation
+> always selects first value which is greater than or equal to the
+> calculated mbps which may lead to chosing a wrong range in some cases.
 > 
-> I think I have pretty clearly described why we want to reset the hard
-> limit to 0, so, unless there is an alternative I don't see why we
-> should not be doing this.
-
-I am not saying you shouldn't be doing that. I am just saying that if
-you do then you have to live with oom reports.
-
-> > > > memory.max can trigger the oom kill and user should be expecting the oom
-> > > > report under that condition. Why is "no eligible task" so special? Is it
-> > > > because you know that there won't be any tasks for your particular case?
-> > > > What about other use cases where memory.max is not used as a "sweep
-> > > > before tear down"?
-> > >
-> > > What other such use-cases would be? The only use-case I can envision
-> > > of adjusting limits dynamically of a live cgroup are resource
-> > > managers. However for cgroup v2, memory.high is the recommended way to
-> > > limit the usage, so, why would resource managers be changing
-> > > memory.max instead of memory.high? I am not sure. What do you think?
-> >
-> > There are different reasons to use the hard limit. Mostly to contain
-> > potential runaways. While high limit might be a sufficient measure to
-> > achieve that as well the hard limit is the last resort. And it clearly
-> > has the oom killer semantic so I am not really sure why you are
-> > comparing the two.
-> >
+> For example for 360 mbps for H3/M3N
+> Existing logic selects
+> Calculated value 360Mbps : Default 400Mbps Range [368.125 -433.125 mbps]
 > 
-> I am trying to see if "no eligible task" is really an issue and should
-> be warned for the "other use cases". The only real use-case I can
-> think of are resource managers adjusting the limit dynamically. I
-> don't see "no eligible task" a concerning reason for such use-case.
+> This hsfreqrange is out of range.
+> 
+> The logic is changed to select the first hsfreqrange whose max range[1] is
+> greater than the calculated bit rate.
+> 
+> Calculated value 360Mbps : max range 380.625 mbps is selected
+>  i.e Default 350Mbps  Range [320.625 -380.625 mpbs]
+> 
+> [1] specs r19uh0105ej0200-r-car-3rd-generation.pdf [Table 25.9]
+> 
+> Fixes: 769afd212b16 ("media: rcar-csi2: add Renesas R-Car MIPI CSI-2 receiver driver")
+> 
+> Signed-off-by: Suresh Udipi <sudipi@jp.adit-jv.com>
+> Signed-off-by: Kazuyoshi Akiyama <akiyama@nds-osk.co.jp>
+> ---
+>  Changes in v2:
+>   - Added the boundary check for the maximum bit rate.
+> 
+>   - Simplified the logic by remmoving range check
+>     as only the closest default value covers most
+>     of the use cases.
+> 
+>   - Aligning the commit message based on the above change
+> 
+> 
+>  Changes in v3:
+>     - Added max member from struct rcsi2_mbps_reg.
+>       mbps varialbe cannot be removed from rcsi2_mbps_reg,
+>       since this structure is reused for
+>       phtw_mbps_h3_v3h_m3n/phtw_mbps_v3m_e3 where mbps is
+>       used.
+> 
+> 
+>    -  Update the walk of the array in rcsi2_set_phypll() so that it finds
+>       the first entry where the calculated bit rate is less than the max.
+> 
+>    - Support lower bit rates less than 80Mbps like 48Mbps
+>      (Raspberry pi camera 640x480 connected to Kingfisher)
+>      can also be supported by selecting the lowest default bit rate 80Mbps
+>      as done before this fix
+> 
+>    - Alignement of the commit message based on above changes.
+> 
+>  Changes in v4:
+>    - Remove unncessary braces.
+>  
+>  Changes in v5:
+>    - Removed mbps variable in rcsi2_mbps_reg and aligned all 
+>      tables accordingly
+> 
+>  drivers/media/platform/rcar-vin/rcar-csi2.c | 282 ++++++++++++++--------------
+>  1 file changed, 141 insertions(+), 141 deletions(-)
+> 
+> diff --git a/drivers/media/platform/rcar-vin/rcar-csi2.c b/drivers/media/platform/rcar-vin/rcar-csi2.c
+> index faa9fb2..d45bf80 100644
+> --- a/drivers/media/platform/rcar-vin/rcar-csi2.c
+> +++ b/drivers/media/platform/rcar-vin/rcar-csi2.c
+> @@ -132,63 +132,63 @@ struct phtw_value {
+>  };
+>  
+>  struct rcsi2_mbps_reg {
+> -	u16 mbps;
+>  	u16 reg;
+> +	u16 max;
+>  };
+>  
+>  static const struct rcsi2_mbps_reg phtw_mbps_h3_v3h_m3n[] = {
+> -	{ .mbps =   80, .reg = 0x86 },
+> -	{ .mbps =   90, .reg = 0x86 },
+> -	{ .mbps =  100, .reg = 0x87 },
+> -	{ .mbps =  110, .reg = 0x87 },
+> -	{ .mbps =  120, .reg = 0x88 },
+> -	{ .mbps =  130, .reg = 0x88 },
+> -	{ .mbps =  140, .reg = 0x89 },
+> -	{ .mbps =  150, .reg = 0x89 },
+> -	{ .mbps =  160, .reg = 0x8a },
+> -	{ .mbps =  170, .reg = 0x8a },
+> -	{ .mbps =  180, .reg = 0x8b },
+> -	{ .mbps =  190, .reg = 0x8b },
+> -	{ .mbps =  205, .reg = 0x8c },
+> -	{ .mbps =  220, .reg = 0x8d },
+> -	{ .mbps =  235, .reg = 0x8e },
+> -	{ .mbps =  250, .reg = 0x8e },
+> +	{ .reg = 0x86, .max =  80  },
+> +	{ .reg = 0x86, .max =  90  },
+> +	{ .reg = 0x87, .max =  100 },
+> +	{ .reg = 0x87, .max =  110 },
+> +	{ .reg = 0x88, .max =  120 },
+> +	{ .reg = 0x88, .max =  130 },
+> +	{ .reg = 0x89, .max =  140 },
+> +	{ .reg = 0x89, .max =  150 },
+> +	{ .reg = 0x8a, .max =  160 },
+> +	{ .reg = 0x8a, .max =  170 },
+> +	{ .reg = 0x8b, .max =  180 },
+> +	{ .reg = 0x8b, .max =  190 },
+> +	{ .reg = 0x8c, .max =  205 },
+> +	{ .reg = 0x8d, .max =  220 },
+> +	{ .reg = 0x8e, .max =  235 },
+> +	{ .reg = 0x8e, .max =  250 },
+>  	{ /* sentinel */ },
+>  };
+>  
+>  static const struct rcsi2_mbps_reg phtw_mbps_v3m_e3[] = {
+> -	{ .mbps =   80, .reg = 0x00 },
+> -	{ .mbps =   90, .reg = 0x20 },
+> -	{ .mbps =  100, .reg = 0x40 },
+> -	{ .mbps =  110, .reg = 0x02 },
+> -	{ .mbps =  130, .reg = 0x22 },
+> -	{ .mbps =  140, .reg = 0x42 },
+> -	{ .mbps =  150, .reg = 0x04 },
+> -	{ .mbps =  170, .reg = 0x24 },
+> -	{ .mbps =  180, .reg = 0x44 },
+> -	{ .mbps =  200, .reg = 0x06 },
+> -	{ .mbps =  220, .reg = 0x26 },
+> -	{ .mbps =  240, .reg = 0x46 },
+> -	{ .mbps =  250, .reg = 0x08 },
+> -	{ .mbps =  270, .reg = 0x28 },
+> -	{ .mbps =  300, .reg = 0x0a },
+> -	{ .mbps =  330, .reg = 0x2a },
+> -	{ .mbps =  360, .reg = 0x4a },
+> -	{ .mbps =  400, .reg = 0x0c },
+> -	{ .mbps =  450, .reg = 0x2c },
+> -	{ .mbps =  500, .reg = 0x0e },
+> -	{ .mbps =  550, .reg = 0x2e },
+> -	{ .mbps =  600, .reg = 0x10 },
+> -	{ .mbps =  650, .reg = 0x30 },
+> -	{ .mbps =  700, .reg = 0x12 },
+> -	{ .mbps =  750, .reg = 0x32 },
+> -	{ .mbps =  800, .reg = 0x52 },
+> -	{ .mbps =  850, .reg = 0x72 },
+> -	{ .mbps =  900, .reg = 0x14 },
+> -	{ .mbps =  950, .reg = 0x34 },
+> -	{ .mbps = 1000, .reg = 0x54 },
+> -	{ .mbps = 1050, .reg = 0x74 },
+> -	{ .mbps = 1125, .reg = 0x16 },
+> +	{ .reg = 0x00, .max = 80   },
+> +	{ .reg = 0x20, .max = 90   },
+> +	{ .reg = 0x40, .max = 100  },
+> +	{ .reg = 0x02, .max = 110  },
+> +	{ .reg = 0x22, .max = 130  },
+> +	{ .reg = 0x42, .max = 140  },
+> +	{ .reg = 0x04, .max = 150  },
+> +	{ .reg = 0x24, .max = 170  },
+> +	{ .reg = 0x44, .max = 180  },
+> +	{ .reg = 0x06, .max = 200  },
+> +	{ .reg = 0x26, .max = 220  },
+> +	{ .reg = 0x46, .max = 240  },
+> +	{ .reg = 0x08, .max = 250  },
+> +	{ .reg = 0x28, .max = 270  },
+> +	{ .reg = 0x0a, .max = 300  },
+> +	{ .reg = 0x2a, .max = 330  },
+> +	{ .reg = 0x4a, .max = 360  },
+> +	{ .reg = 0x0c, .max = 400  },
+> +	{ .reg = 0x2c, .max = 450  },
+> +	{ .reg = 0x0e, .max = 500  },
+> +	{ .reg = 0x2e, .max = 550  },
+> +	{ .reg = 0x10, .max = 600  },
+> +	{ .reg = 0x30, .max = 650  },
+> +	{ .reg = 0x12, .max = 700  },
+> +	{ .reg = 0x32, .max = 750  },
+> +	{ .reg = 0x52, .max = 800  },
+> +	{ .reg = 0x72, .max = 850  },
+> +	{ .reg = 0x14, .max = 900  },
+> +	{ .reg = 0x34, .max = 950  },
+> +	{ .reg = 0x54, .max = 1000 },
+> +	{ .reg = 0x74, .max = 1050 },
+> +	{ .reg = 0x16, .max = 1125 },
+>  	{ /* sentinel */ },
+>  };
+>  
+> @@ -201,96 +201,96 @@ static const struct rcsi2_mbps_reg phtw_mbps_v3m_e3[] = {
+>  #define PHYPLL_HSFREQRANGE(n)		((n) << 16)
+>  
+>  static const struct rcsi2_mbps_reg hsfreqrange_h3_v3h_m3n[] = {
+> -	{ .mbps =   80, .reg = 0x00 },
+> -	{ .mbps =   90, .reg = 0x10 },
+> -	{ .mbps =  100, .reg = 0x20 },
+> -	{ .mbps =  110, .reg = 0x30 },
+> -	{ .mbps =  120, .reg = 0x01 },
+> -	{ .mbps =  130, .reg = 0x11 },
+> -	{ .mbps =  140, .reg = 0x21 },
+> -	{ .mbps =  150, .reg = 0x31 },
+> -	{ .mbps =  160, .reg = 0x02 },
+> -	{ .mbps =  170, .reg = 0x12 },
+> -	{ .mbps =  180, .reg = 0x22 },
+> -	{ .mbps =  190, .reg = 0x32 },
+> -	{ .mbps =  205, .reg = 0x03 },
+> -	{ .mbps =  220, .reg = 0x13 },
+> -	{ .mbps =  235, .reg = 0x23 },
+> -	{ .mbps =  250, .reg = 0x33 },
+> -	{ .mbps =  275, .reg = 0x04 },
+> -	{ .mbps =  300, .reg = 0x14 },
+> -	{ .mbps =  325, .reg = 0x25 },
+> -	{ .mbps =  350, .reg = 0x35 },
+> -	{ .mbps =  400, .reg = 0x05 },
+> -	{ .mbps =  450, .reg = 0x16 },
+> -	{ .mbps =  500, .reg = 0x26 },
+> -	{ .mbps =  550, .reg = 0x37 },
+> -	{ .mbps =  600, .reg = 0x07 },
+> -	{ .mbps =  650, .reg = 0x18 },
+> -	{ .mbps =  700, .reg = 0x28 },
+> -	{ .mbps =  750, .reg = 0x39 },
+> -	{ .mbps =  800, .reg = 0x09 },
+> -	{ .mbps =  850, .reg = 0x19 },
+> -	{ .mbps =  900, .reg = 0x29 },
+> -	{ .mbps =  950, .reg = 0x3a },
+> -	{ .mbps = 1000, .reg = 0x0a },
+> -	{ .mbps = 1050, .reg = 0x1a },
+> -	{ .mbps = 1100, .reg = 0x2a },
+> -	{ .mbps = 1150, .reg = 0x3b },
+> -	{ .mbps = 1200, .reg = 0x0b },
+> -	{ .mbps = 1250, .reg = 0x1b },
+> -	{ .mbps = 1300, .reg = 0x2b },
+> -	{ .mbps = 1350, .reg = 0x3c },
+> -	{ .mbps = 1400, .reg = 0x0c },
+> -	{ .mbps = 1450, .reg = 0x1c },
+> -	{ .mbps = 1500, .reg = 0x2c },
+> +	{ .reg = 0x00, .max =   97 },
+> +	{ .reg = 0x10, .max =  107 },
+> +	{ .reg = 0x20, .max =  118 },
+> +	{ .reg = 0x30, .max =  128 },
+> +	{ .reg = 0x01, .max =  139 },
+> +	{ .reg = 0x11, .max =  149 },
+> +	{ .reg = 0x21, .max =  160 },
+> +	{ .reg = 0x31, .max =  170 },
+> +	{ .reg = 0x02, .max =  181 },
+> +	{ .reg = 0x12, .max =  191 },
+> +	{ .reg = 0x22, .max =  202 },
+> +	{ .reg = 0x32, .max =  212 },
+> +	{ .reg = 0x03, .max =  228 },
+> +	{ .reg = 0x13, .max =  224 },
+> +	{ .reg = 0x23, .max =  259 },
+> +	{ .reg = 0x33, .max =  275 },
+> +	{ .reg = 0x04, .max =  301 },
+> +	{ .reg = 0x14, .max =  328 },
+> +	{ .reg = 0x25, .max =  354 },
+> +	{ .reg = 0x35, .max =  380 },
+> +	{ .reg = 0x05, .max =  433 },
+> +	{ .reg = 0x16, .max =  485 },
+> +	{ .reg = 0x26, .max =  538 },
+> +	{ .reg = 0x37, .max =  590 },
+> +	{ .reg = 0x07, .max =  643 },
+> +	{ .reg = 0x18, .max =  695 },
+> +	{ .reg = 0x28, .max =  748 },
+> +	{ .reg = 0x39, .max =  800 },
+> +	{ .reg = 0x09, .max =  853 },
+> +	{ .reg = 0x19, .max =  905 },
+> +	{ .reg = 0x29, .max =  958 },
+> +	{ .reg = 0x3a, .max = 1010 },
+> +	{ .reg = 0x0a, .max = 1063 },
+> +	{ .reg = 0x1a, .max = 1115 },
+> +	{ .reg = 0x2a, .max = 1168 },
+> +	{ .reg = 0x3b, .max = 1220 },
+> +	{ .reg = 0x0b, .max = 1273 },
+> +	{ .reg = 0x1b, .max = 1325 },
+> +	{ .reg = 0x2b, .max = 1378 },
+> +	{ .reg = 0x3c, .max = 1430 },
+> +	{ .reg = 0x0c, .max = 1483 },
+> +	{ .reg = 0x1c, .max = 1500 },
+> +	{ .reg = 0x2c, .max = 1500 },
+>  	{ /* sentinel */ },
+>  };
+>  
+>  static const struct rcsi2_mbps_reg hsfreqrange_m3w_h3es1[] = {
+> -	{ .mbps =   80,	.reg = 0x00 },
+> -	{ .mbps =   90,	.reg = 0x10 },
+> -	{ .mbps =  100,	.reg = 0x20 },
+> -	{ .mbps =  110,	.reg = 0x30 },
+> -	{ .mbps =  120,	.reg = 0x01 },
+> -	{ .mbps =  130,	.reg = 0x11 },
+> -	{ .mbps =  140,	.reg = 0x21 },
+> -	{ .mbps =  150,	.reg = 0x31 },
+> -	{ .mbps =  160,	.reg = 0x02 },
+> -	{ .mbps =  170,	.reg = 0x12 },
+> -	{ .mbps =  180,	.reg = 0x22 },
+> -	{ .mbps =  190,	.reg = 0x32 },
+> -	{ .mbps =  205,	.reg = 0x03 },
+> -	{ .mbps =  220,	.reg = 0x13 },
+> -	{ .mbps =  235,	.reg = 0x23 },
+> -	{ .mbps =  250,	.reg = 0x33 },
+> -	{ .mbps =  275,	.reg = 0x04 },
+> -	{ .mbps =  300,	.reg = 0x14 },
+> -	{ .mbps =  325,	.reg = 0x05 },
+> -	{ .mbps =  350,	.reg = 0x15 },
+> -	{ .mbps =  400,	.reg = 0x25 },
+> -	{ .mbps =  450,	.reg = 0x06 },
+> -	{ .mbps =  500,	.reg = 0x16 },
+> -	{ .mbps =  550,	.reg = 0x07 },
+> -	{ .mbps =  600,	.reg = 0x17 },
+> -	{ .mbps =  650,	.reg = 0x08 },
+> -	{ .mbps =  700,	.reg = 0x18 },
+> -	{ .mbps =  750,	.reg = 0x09 },
+> -	{ .mbps =  800,	.reg = 0x19 },
+> -	{ .mbps =  850,	.reg = 0x29 },
+> -	{ .mbps =  900,	.reg = 0x39 },
+> -	{ .mbps =  950,	.reg = 0x0a },
+> -	{ .mbps = 1000,	.reg = 0x1a },
+> -	{ .mbps = 1050,	.reg = 0x2a },
+> -	{ .mbps = 1100,	.reg = 0x3a },
+> -	{ .mbps = 1150,	.reg = 0x0b },
+> -	{ .mbps = 1200,	.reg = 0x1b },
+> -	{ .mbps = 1250,	.reg = 0x2b },
+> -	{ .mbps = 1300,	.reg = 0x3b },
+> -	{ .mbps = 1350,	.reg = 0x0c },
+> -	{ .mbps = 1400,	.reg = 0x1c },
+> -	{ .mbps = 1450,	.reg = 0x2c },
+> -	{ .mbps = 1500,	.reg = 0x3c },
+> +	{ .reg = 0x00, .max =  110 },
+> +	{ .reg = 0x10, .max =  120 },
+> +	{ .reg = 0x20, .max =  131 },
+> +	{ .reg = 0x30, .max =  141 },
+> +	{ .reg = 0x01, .max =  152 },
+> +	{ .reg = 0x11, .max =  162 },
+> +	{ .reg = 0x21, .max =  173 },
+> +	{ .reg = 0x31, .max =  183 },
+> +	{ .reg = 0x02, .max =  194 },
+> +	{ .reg = 0x12, .max =  204 },
+> +	{ .reg = 0x22, .max =  215 },
+> +	{ .reg = 0x32, .max =  225 },
+> +	{ .reg = 0x03, .max =  241 },
+> +	{ .reg = 0x13, .max =  257 },
+> +	{ .reg = 0x23, .max =  273 },
+> +	{ .reg = 0x33, .max =  275 },
+> +	{ .reg = 0x04, .max =  301 },
+> +	{ .reg = 0x14, .max =  328 },
+> +	{ .reg = 0x05, .max =  354 },
+> +	{ .reg = 0x15, .max =  393 },
+> +	{ .reg = 0x25, .max =  446 },
+> +	{ .reg = 0x06, .max =  498 },
+> +	{ .reg = 0x16, .max =  551 },
+> +	{ .reg = 0x07, .max =  603 },
+> +	{ .reg = 0x17, .max =  656 },
+> +	{ .reg = 0x08, .max =  708 },
+> +	{ .reg = 0x18, .max =  761 },
+> +	{ .reg = 0x09, .max =  813 },
+> +	{ .reg = 0x19, .max =  866 },
+> +	{ .reg = 0x29, .max =  918 },
+> +	{ .reg = 0x39, .max =  971 },
+> +	{ .reg = 0x0a, .max = 1023 },
+> +	{ .reg = 0x1a, .max = 1076 },
+> +	{ .reg = 0x2a, .max = 1128 },
+> +	{ .reg = 0x3a, .max = 1181 },
+> +	{ .reg = 0x0b, .max = 1233 },
+> +	{ .reg = 0x1b, .max = 1286 },
+> +	{ .reg = 0x2b, .max = 1338 },
+> +	{ .reg = 0x3b, .max = 1391 },
+> +	{ .reg = 0x0c, .max = 1443 },
+> +	{ .reg = 0x1c, .max = 1496 },
+> +	{ .reg = 0x2c, .max = 1500 },
+> +	{ .reg = 0x3c, .max = 1500 },
+>  	{ /* sentinel */ },
+>  };
+>  
+> @@ -432,11 +432,11 @@ static int rcsi2_set_phypll(struct rcar_csi2 *priv, unsigned int mbps)
+>  {
+>  	const struct rcsi2_mbps_reg *hsfreq;
+>  
+> -	for (hsfreq = priv->info->hsfreqrange; hsfreq->mbps != 0; hsfreq++)
+> -		if (hsfreq->mbps >= mbps)
+> +	for (hsfreq = priv->info->hsfreqrange; hsfreq->max != 0; hsfreq++)
+> +		if (hsfreq->max >= mbps)
+>  			break;
+>  
+> -	if (!hsfreq->mbps) {
+> +	if (!hsfreq->max) {
+>  		dev_err(priv->dev, "Unsupported PHY speed (%u Mbps)", mbps);
+>  		return -ERANGE;
+>  	}
+> @@ -907,11 +907,11 @@ static int rcsi2_phtw_write_mbps(struct rcar_csi2 *priv, unsigned int mbps,
+>  {
+>  	const struct rcsi2_mbps_reg *value;
+>  
+> -	for (value = values; value->mbps; value++)
+> -		if (value->mbps >= mbps)
+> +	for (value = values; value->max; value++)
+> +		if (value->max >= mbps)
+>  			break;
+>  
+> -	if (!value->mbps) {
+> +	if (!value->max) {
+>  		dev_err(priv->dev, "Unsupported PHY speed (%u Mbps)", mbps);
+>  		return -ERANGE;
+>  	}
+> -- 
+> 2.7.4
+> 
 
-It is very much a concerning reason to notify about like any other OOM
-situation due to hard limit breach. In this case it is worse in some
-sense because the limit cannot be trimmed down because there is no
-directly reclaimable memory at all. Such an oom situation is
-effectivelly conserved.
 -- 
-Michal Hocko
-SUSE Labs
+Best Regards,
+Michael
