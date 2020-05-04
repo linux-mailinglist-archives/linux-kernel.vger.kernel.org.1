@@ -2,108 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25F041C4306
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 19:38:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 687FE1C430C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 19:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730252AbgEDRiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 13:38:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53434 "EHLO
+        id S1729880AbgEDRjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 13:39:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730039AbgEDRiB (ORCPT
+        by vger.kernel.org with ESMTP id S1729969AbgEDRjj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 13:38:01 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E486C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 10:38:01 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id s10so12040240iln.11
-        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 10:38:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=D0fsepn3Ehc6T1kax7xZI+IBiV7boArhydSrUBRKNVg=;
-        b=CNZs7zCwd/vJ9hQOc34lDO6VUgH2PpUgVQUN8rT+NwMDc35FjNtyvo/XYEDy84Rk2x
-         YnzW4b3oCh1s0bcp9wpuQ2BXiLyKrs7edd3JhXx/Yg7ZdMhSOt3xJM2iE7XXtZv5q6B0
-         AZTuMNm1xu0GIBpE6+6BUnENc9K0k6bQQgg6M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D0fsepn3Ehc6T1kax7xZI+IBiV7boArhydSrUBRKNVg=;
-        b=UdffyYPlxMhbr3+Z/CA9ppJQTJQ5lrBIfKeTLONzZGO8AG4Ba8HXXlBcKHkcNal/DA
-         Le3wknkLPqSFGi+9nE5a3Po2EU+a9TyqeEssaU3pDQzfjVn93Y6eKf8sJMcvWkAgZjyY
-         hv3k35c6ttdv2AHWDTIE7RBfkb8meY5g5BLmiYtz80Jaoxpr/ynJWSOU9Wp/CPT1r/ke
-         tA///23bh7sq6q42lCexo6ejKeUVojI5CG5oOO2mOE14JSsq9aknjv8KBVvfo7O6/222
-         gAGoSefioNZmfrjbPxwYBEXun7t+XYqu2v37D+ILPd/0dZnSQCnvrKoDIH2fNlnb2+Cw
-         7unw==
-X-Gm-Message-State: AGi0Pub3Znix300FZwvuWAtoaaICMDq1Og2LBvcaLIB63sGqPDHbQITK
-        73eIrPwTbHOKEvmU6hDEqfEJRNqivznY0s/pFYlBpg==
-X-Google-Smtp-Source: APiQypJaQpBu3P7krd8Dq+c9FZQ5zt5v/9tmm2nB8jbjYNGxidPoOSN3wE0BIbK9/dMcRgTGINAbDI1jjAN3LkE4/8c=
-X-Received: by 2002:a92:3509:: with SMTP id c9mr17728934ila.262.1588613880520;
- Mon, 04 May 2020 10:38:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200504120505.89351-1-joel@joelfernandes.org> <20200504171532.GR2869@paulmck-ThinkPad-P72>
-In-Reply-To: <20200504171532.GR2869@paulmck-ThinkPad-P72>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Mon, 4 May 2020 13:37:48 -0400
-Message-ID: <CAEXW_YQNm9QMzLNay8TMnXoUsJgVhxOFEdvT3aLDLE+0zx2Mng@mail.gmail.com>
-Subject: Re: [PATCH v3 0/5] RCU dyntick nesting counter cleanups for rcu -dev
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Amol Grover <frextrite@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        kernel-team <kernel-team@android.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Petr Mladek <pmladek@suse.com>, rcu <rcu@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Glexiner <tglx@linutronix.de>,
-        Vineeth Remanan Pillai <vpillai@digitalocean.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 4 May 2020 13:39:39 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCCA5C061A0E;
+        Mon,  4 May 2020 10:39:37 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id E3A8F15B52E80;
+        Mon,  4 May 2020 10:39:36 -0700 (PDT)
+Date:   Mon, 04 May 2020 10:39:35 -0700 (PDT)
+Message-Id: <20200504.103935.1584665284135386530.davem@davemloft.net>
+To:     joyce.ooi@intel.com
+Cc:     thor.thayer@linux.intel.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dalon.westergreen@intel.com,
+        ley.foon.tan@intel.com, chin.liang.see@intel.com,
+        dinh.nguyen@intel.com
+Subject: Re: [PATCHv2 01/10] net: eth: altera: tse_start_xmit ignores
+ tx_buffer call response
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200504082558.112627-2-joyce.ooi@intel.com>
+References: <20200504082558.112627-1-joyce.ooi@intel.com>
+        <20200504082558.112627-2-joyce.ooi@intel.com>
+X-Mailer: Mew version 6.8 on Emacs 26.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 04 May 2020 10:39:37 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 4, 2020 at 1:15 PM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Mon, May 04, 2020 at 08:05:00AM -0400, Joel Fernandes (Google) wrote:
-> > These patches clean up the usage of dynticks nesting counters simplifying the
-> > code, while preserving the usecases.
-> >
-> > It is a much needed simplification, makes the code less confusing, and prevents
-> > future bugs such as those that arise from forgetting that the
-> > dynticks_nmi_nesting counter is not a simple counter and can be "crowbarred" in
-> > common situations.
-> >
-> > rcutorture testing with all TREE RCU configurations succeed with
-> > CONFIG_RCU_EQS_DEBUG=y and CONFIG_PROVE_LOCKING=y.
-> >
-> > v1->v2:
-> > - Rebase on v5.6-rc6
-> >
-> > v2->v3:
-> > - Rebase on rcu/dev with adjustments for tasks-RCU.
->
-> Thank you!
->
-> But this does not apply to any of v5.6-rc6, v5.7-rc1, or v5.7-rc2.
->
-> Where should I be trying to apply it?
->
+From: Joyce Ooi <joyce.ooi@intel.com>
+Date: Mon,  4 May 2020 16:25:49 +0800
 
-Hi Paul,
-It is for the rcu/dev branch as mentioned in the cover letter subject
-line. I thought it would reduce conflicts for you if I rebased on
-that. There are conflicts with trace-RCU for example.
+> The return from tx_buffer call in tse_start_xmit is
+> inapropriately ignored.  tse_buffer calls should return
+> 0 for success or NETDEV_TX_BUSY.  tse_start_xmit should
+> return not report a successful transmit when the tse_buffer
+> call returns an error condition.
 
-What do you suggest?
+From driver.txt:
 
-Thanks,
+====================
+1) The ndo_start_xmit method must not return NETDEV_TX_BUSY under
+   any normal circumstances.  It is considered a hard error unless
+   there is no way your device can tell ahead of time when it's
+   transmit function will become busy.
+====================
 
- - Joel
+The problem is that when you return this error code, something has
+to trigger restarting the transmit queue to start sending packets
+to your device again.  The usual mechanism is waking the transmit
+queue, but it's obviously already awake since your transmit routine
+is being called.  Therefore nothing will reliably restart the queue
+when you return this error code.
+
+The best thing to do honestly is to drop the packet and return
+NETDEV_TX_OK, meanwhile bumping a statistic counter to record this
+event.
