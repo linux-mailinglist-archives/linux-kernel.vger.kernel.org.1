@@ -2,22 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E66D1C3C98
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 16:14:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F79D1C3C9B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 16:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729075AbgEDOOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 10:14:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728918AbgEDOOS (ORCPT
+        id S1729114AbgEDOOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 10:14:22 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:58228 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728728AbgEDOOT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 10:14:18 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CF29C061A0F
-        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 07:14:18 -0700 (PDT)
+        Mon, 4 May 2020 10:14:19 -0400
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (Authenticated sender: eballetbo)
-        with ESMTPSA id 881642A131D
+        with ESMTPSA id AB72A2A131E
 From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
 To:     linux-kernel@vger.kernel.org,
         Collabora Kernel ML <kernel@collabora.com>
@@ -30,9 +27,9 @@ Cc:     matthias.bgg@gmail.com, drinkcat@chromium.org, hsinyi@chromium.org,
         dri-devel@lists.freedesktop.org,
         linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org
-Subject: [PATCH 2/3] drm/mediatek: mtk_dpi: Convert to bridge driver
-Date:   Mon,  4 May 2020 16:14:07 +0200
-Message-Id: <20200504141408.60877-3-enric.balletbo@collabora.com>
+Subject: [PATCH 3/3] drm/mediatek: mtk_dpi: Use simple encoder
+Date:   Mon,  4 May 2020 16:14:08 +0200
+Message-Id: <20200504141408.60877-4-enric.balletbo@collabora.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200504141408.60877-1-enric.balletbo@collabora.com>
 References: <20200504141408.60877-1-enric.balletbo@collabora.com>
@@ -43,155 +40,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert mtk_dpi to a bridge driver with built-in encoder support for
-compatibility with existing component drivers.
+The mtk_dpi driver uses an empty implementation for its encoder. Replace
+the code with the generic simple encoder.
 
 Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 ---
 
- drivers/gpu/drm/mediatek/mtk_dpi.c | 66 +++++++++++++++---------------
- 1 file changed, 34 insertions(+), 32 deletions(-)
+ drivers/gpu/drm/mediatek/mtk_dpi.c | 14 +++-----------
+ 1 file changed, 3 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/mediatek/mtk_dpi.c
-index 7112125dc3d1..baad198c69eb 100644
+index baad198c69eb..80778b2aac2a 100644
 --- a/drivers/gpu/drm/mediatek/mtk_dpi.c
 +++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
-@@ -61,6 +61,7 @@ enum mtk_dpi_out_color_format {
- struct mtk_dpi {
- 	struct mtk_ddp_comp ddp_comp;
- 	struct drm_encoder encoder;
-+	struct drm_bridge bridge;
- 	struct drm_bridge *next_bridge;
- 	void __iomem *regs;
- 	struct device *dev;
-@@ -77,9 +78,9 @@ struct mtk_dpi {
- 	int refcount;
- };
+@@ -20,6 +20,7 @@
+ #include <drm/drm_bridge.h>
+ #include <drm/drm_crtc.h>
+ #include <drm/drm_of.h>
++#include <drm/drm_simple_kms_helper.h>
  
--static inline struct mtk_dpi *mtk_dpi_from_encoder(struct drm_encoder *e)
-+static inline struct mtk_dpi *bridge_to_dpi(struct drm_bridge *b)
- {
--	return container_of(e, struct mtk_dpi, encoder);
-+	return container_of(b, struct mtk_dpi, bridge);
- }
- 
- enum mtk_dpi_polarity {
-@@ -518,50 +519,44 @@ static const struct drm_encoder_funcs mtk_dpi_encoder_funcs = {
- 	.destroy = mtk_dpi_encoder_destroy,
- };
- 
--static bool mtk_dpi_encoder_mode_fixup(struct drm_encoder *encoder,
--				       const struct drm_display_mode *mode,
--				       struct drm_display_mode *adjusted_mode)
-+static int mtk_dpi_bridge_attach(struct drm_bridge *bridge,
-+				 enum drm_bridge_attach_flags flags)
- {
--	return true;
-+	struct mtk_dpi *dpi = bridge_to_dpi(bridge);
-+
-+	return drm_bridge_attach(bridge->encoder, dpi->next_bridge,
-+				 &dpi->bridge, flags);
- }
- 
--static void mtk_dpi_encoder_mode_set(struct drm_encoder *encoder,
--				     struct drm_display_mode *mode,
--				     struct drm_display_mode *adjusted_mode)
-+static void mtk_dpi_bridge_mode_set(struct drm_bridge *bridge,
-+				const struct drm_display_mode *mode,
-+				const struct drm_display_mode *adjusted_mode)
- {
--	struct mtk_dpi *dpi = mtk_dpi_from_encoder(encoder);
-+	struct mtk_dpi *dpi = bridge_to_dpi(bridge);
- 
- 	drm_mode_copy(&dpi->mode, adjusted_mode);
- }
- 
--static void mtk_dpi_encoder_disable(struct drm_encoder *encoder)
-+static void mtk_dpi_bridge_disable(struct drm_bridge *bridge)
- {
--	struct mtk_dpi *dpi = mtk_dpi_from_encoder(encoder);
-+	struct mtk_dpi *dpi = bridge_to_dpi(bridge);
- 
- 	mtk_dpi_power_off(dpi);
- }
- 
--static void mtk_dpi_encoder_enable(struct drm_encoder *encoder)
-+static void mtk_dpi_bridge_enable(struct drm_bridge *bridge)
- {
--	struct mtk_dpi *dpi = mtk_dpi_from_encoder(encoder);
-+	struct mtk_dpi *dpi = bridge_to_dpi(bridge);
- 
- 	mtk_dpi_power_on(dpi);
- 	mtk_dpi_set_display_mode(dpi, &dpi->mode);
- }
- 
--static int mtk_dpi_atomic_check(struct drm_encoder *encoder,
--				struct drm_crtc_state *crtc_state,
--				struct drm_connector_state *conn_state)
--{
--	return 0;
--}
--
--static const struct drm_encoder_helper_funcs mtk_dpi_encoder_helper_funcs = {
--	.mode_fixup = mtk_dpi_encoder_mode_fixup,
--	.mode_set = mtk_dpi_encoder_mode_set,
--	.disable = mtk_dpi_encoder_disable,
--	.enable = mtk_dpi_encoder_enable,
--	.atomic_check = mtk_dpi_atomic_check,
-+static const struct drm_bridge_funcs mtk_dpi_bridge_funcs = {
-+	.attach = mtk_dpi_bridge_attach,
-+	.mode_set = mtk_dpi_bridge_mode_set,
-+	.disable = mtk_dpi_bridge_disable,
-+	.enable = mtk_dpi_bridge_enable,
- };
- 
- static void mtk_dpi_start(struct mtk_ddp_comp *comp)
-@@ -602,16 +597,13 @@ static int mtk_dpi_bind(struct device *dev, struct device *master, void *data)
- 		dev_err(dev, "Failed to initialize decoder: %d\n", ret);
- 		goto err_unregister;
- 	}
--	drm_encoder_helper_add(&dpi->encoder, &mtk_dpi_encoder_helper_funcs);
- 
- 	/* Currently DPI0 is fixed to be driven by OVL1 */
- 	dpi->encoder.possible_crtcs = BIT(1);
- 
--	ret = drm_bridge_attach(&dpi->encoder, dpi->next_bridge, NULL, 0);
--	if (ret) {
--		dev_err(dev, "Failed to attach bridge: %d\n", ret);
-+	ret = drm_bridge_attach(&dpi->encoder, &dpi->bridge, NULL, 0);
-+	if (ret)
- 		goto err_cleanup;
--	}
- 
- 	dpi->bit_num = MTK_DPI_OUT_BIT_NUM_8BITS;
- 	dpi->channel_swap = MTK_DPI_OUT_CHANNEL_SWAP_RGB;
-@@ -768,8 +760,15 @@ static int mtk_dpi_probe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, dpi);
- 
-+	dpi->bridge.funcs = &mtk_dpi_bridge_funcs;
-+	dpi->bridge.of_node = dev->of_node;
-+	dpi->bridge.type = DRM_MODE_CONNECTOR_DPI;
-+
-+	drm_bridge_add(&dpi->bridge);
-+
- 	ret = component_add(dev, &mtk_dpi_component_ops);
- 	if (ret) {
-+		drm_bridge_remove(&dpi->bridge);
- 		dev_err(dev, "Failed to add component: %d\n", ret);
- 		return ret;
- 	}
-@@ -779,7 +778,10 @@ static int mtk_dpi_probe(struct platform_device *pdev)
- 
- static int mtk_dpi_remove(struct platform_device *pdev)
- {
-+	struct mtk_dpi *dpi = platform_get_drvdata(pdev);
-+
- 	component_del(&pdev->dev, &mtk_dpi_component_ops);
-+	drm_bridge_remove(&dpi->bridge);
- 
+ #include "mtk_dpi_regs.h"
+ #include "mtk_drm_ddp_comp.h"
+@@ -510,15 +511,6 @@ static int mtk_dpi_set_display_mode(struct mtk_dpi *dpi,
  	return 0;
  }
+ 
+-static void mtk_dpi_encoder_destroy(struct drm_encoder *encoder)
+-{
+-	drm_encoder_cleanup(encoder);
+-}
+-
+-static const struct drm_encoder_funcs mtk_dpi_encoder_funcs = {
+-	.destroy = mtk_dpi_encoder_destroy,
+-};
+-
+ static int mtk_dpi_bridge_attach(struct drm_bridge *bridge,
+ 				 enum drm_bridge_attach_flags flags)
+ {
+@@ -591,8 +583,8 @@ static int mtk_dpi_bind(struct device *dev, struct device *master, void *data)
+ 		return ret;
+ 	}
+ 
+-	ret = drm_encoder_init(drm_dev, &dpi->encoder, &mtk_dpi_encoder_funcs,
+-			       DRM_MODE_ENCODER_TMDS, NULL);
++	ret = drm_simple_encoder_init(drm_dev, &dpi->encoder,
++				      DRM_MODE_ENCODER_TMDS);
+ 	if (ret) {
+ 		dev_err(dev, "Failed to initialize decoder: %d\n", ret);
+ 		goto err_unregister;
 -- 
 2.26.2
 
