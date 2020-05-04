@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AF9A1C44CC
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:10:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E49161C4574
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730916AbgEDSFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:05:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35252 "EHLO mail.kernel.org"
+        id S1730792AbgEDR72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 13:59:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731817AbgEDSF2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:05:28 -0400
+        id S1730767AbgEDR7X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 13:59:23 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0C86D206B8;
-        Mon,  4 May 2020 18:05:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5ADC220746;
+        Mon,  4 May 2020 17:59:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588615526;
-        bh=bDrhjzhTskjV7kPXv5v9McXEoLe8VDFr0GW1kaT3njM=;
+        s=default; t=1588615162;
+        bh=oj1aSHJQB2KRe6kNlCB/UO6RMr8tKwXPStULUd2W+Tg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X5p8PIEcDvAAJnJ1SFXFtupV754GQrJp7V1nokR2Af1sleQif55KEKdAMIhedn+kk
-         MlU5JmJk4U66uUiZh9ytrwlIY1uCOme4Jkx883Nyx9QJpcB9haRAXkOTWV3q5cDqK3
-         usThdjeRBA54e720pLpTJM4inhWl64ayn61apDq0=
+        b=iPtF2xBK+qFHYtRzxZTDLfo50NSZjAprOqFxvAWeWp/ktfTCnH9d8gkBfzrxrGg08
+         kCKHvk31JwC5VXNigEv8vmPpViKOmTLyen8Ocv0rXwxUEhY0GbDuXaAyKuy86lrkpz
+         d0O2Rt9FB6kKb3Nxx571fvqoxMvWOuMm4y26C8Mw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 5.6 17/73] mmc: sdhci-xenon: fix annoying 1.8V regulator warning
+        stable@vger.kernel.org, Sunwook Eom <speed.eom@samsung.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 4.9 10/18] dm verity fec: fix hash block number in verity_fec_decode
 Date:   Mon,  4 May 2020 19:57:20 +0200
-Message-Id: <20200504165505.044101855@linuxfoundation.org>
+Message-Id: <20200504165444.248614958@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200504165501.781878940@linuxfoundation.org>
-References: <20200504165501.781878940@linuxfoundation.org>
+In-Reply-To: <20200504165442.028485341@linuxfoundation.org>
+References: <20200504165442.028485341@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,55 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Behún <marek.behun@nic.cz>
+From: Sunwook Eom <speed.eom@samsung.com>
 
-commit bb32e1987bc55ce1db400faf47d85891da3c9b9f upstream.
+commit ad4e80a639fc61d5ecebb03caa5cdbfb91fcebfc upstream.
 
-For some reason the Host Control2 register of the Xenon SDHCI controller
-sometimes reports the bit representing 1.8V signaling as 0 when read
-after it was written as 1. Subsequent read reports 1.
+The error correction data is computed as if data and hash blocks
+were concatenated. But hash block number starts from v->hash_start.
+So, we have to calculate hash block number based on that.
 
-This causes the sdhci_start_signal_voltage_switch function to report
-  1.8V regulator output did not become stable
-
-When CONFIG_PM is enabled, the host is suspended and resumend many
-times, and in each resume the switch to 1.8V is called, and so the
-kernel log reports this message annoyingly often.
-
-Do an empty read of the Host Control2 register in Xenon's
-.voltage_switch method to circumvent this.
-
-This patch fixes this particular problem on Turris MOX.
-
-Signed-off-by: Marek Behún <marek.behun@nic.cz>
-Fixes: 8d876bf472db ("mmc: sdhci-xenon: wait 5ms after set 1.8V...")
-Cc: stable@vger.kernel.org # v4.16+
-Link: https://lore.kernel.org/r/20200420080444.25242-1-marek.behun@nic.cz
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Fixes: a739ff3f543af ("dm verity: add support for forward error correction")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sunwook Eom <speed.eom@samsung.com>
+Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mmc/host/sdhci-xenon.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/md/dm-verity-fec.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/mmc/host/sdhci-xenon.c
-+++ b/drivers/mmc/host/sdhci-xenon.c
-@@ -235,6 +235,16 @@ static void xenon_voltage_switch(struct
- {
- 	/* Wait for 5ms after set 1.8V signal enable bit */
- 	usleep_range(5000, 5500);
-+
-+	/*
-+	 * For some reason the controller's Host Control2 register reports
-+	 * the bit representing 1.8V signaling as 0 when read after it was
-+	 * written as 1. Subsequent read reports 1.
-+	 *
-+	 * Since this may cause some issues, do an empty read of the Host
-+	 * Control2 register here to circumvent this.
-+	 */
-+	sdhci_readw(host, SDHCI_HOST_CONTROL2);
- }
+--- a/drivers/md/dm-verity-fec.c
++++ b/drivers/md/dm-verity-fec.c
+@@ -447,7 +447,7 @@ int verity_fec_decode(struct dm_verity *
+ 	fio->level++;
  
- static const struct sdhci_ops sdhci_xenon_ops = {
+ 	if (type == DM_VERITY_BLOCK_TYPE_METADATA)
+-		block += v->data_blocks;
++		block = block - v->hash_start + v->data_blocks;
+ 
+ 	/*
+ 	 * For RS(M, N), the continuous FEC data is divided into blocks of N
 
 
