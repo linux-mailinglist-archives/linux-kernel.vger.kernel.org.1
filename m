@@ -2,104 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CB961C4342
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 19:49:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD2A71C4347
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 19:50:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730453AbgEDRtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 13:49:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55284 "EHLO
+        id S1730485AbgEDRum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 13:50:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729839AbgEDRti (ORCPT
+        by vger.kernel.org with ESMTP id S1728158AbgEDRul (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 13:49:38 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97FF7C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 10:49:38 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id b1so261323qtt.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 10:49:38 -0700 (PDT)
+        Mon, 4 May 2020 13:50:41 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C274CC061A0E
+        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 10:50:41 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id b6so12107plz.13
+        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 10:50:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9O9pOv93g7JmOc2UpRRs5DUt0jFUPNWmQLQ3nDY1Vjc=;
-        b=S5BasPFcYpNCX02Po60a7tIfWWh50cRfls4aZ8I6Zi7e2YDq8cgTPHA7QqOUNMY7n8
-         8OB8NvLBMMSfoaiCEyDGke/7MZcdrOr/FwiL9Fv4Xyx+BH8Emf7of8pg/T0NyJkl8Esg
-         Nx6bGhzRLerxuGWbM19JNvOvLwa0DA0+QgXzBchAPDrcMbv4aafsq0jXAZA4z26HP+o7
-         iEwhatzAhhZyFg++5gRLUCOxYTL6637TbGHDZdxx48WPSlNWUsNhWUF+awyaEchH8Xgb
-         uWuSeD/GlNCUfHODM0pVP00OJBNe2wq9YXVqbEE82j9u6y8zinuHXtPqpQD4jrg0pP7+
-         Cz8Q==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=COJ4St1lQrIdf4dsEVKhZiSK4khVz5kd/fC7gBtBbkM=;
+        b=Mpd4GwJqCn6fs3imO0KHhzS3awEBa2J8gV5GcyQYNUazC5gy/M0qVgDmTLbaWH/ezn
+         Tb2Xeee7qR1lNT2zrjV3BN/ErkWgmtSPBkLoNINZke5cvXcJ4DmB6bjnXJddexYSgFBN
+         faD9o/qrTGYKpFeQcE6EKbkeSR4/vpJx3uFJI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9O9pOv93g7JmOc2UpRRs5DUt0jFUPNWmQLQ3nDY1Vjc=;
-        b=R1dZQSxLPLmdPqHZg3bHfYlYTEg7836l/2ui64xzHf24Em5DZpU8l88EeDOYtJAxnc
-         iIgrLR6+R3pSk8D55N0MYnSod35BVoHjGaHgDvhX1rrNWAwS0XidmMlSinr5L2oREZmo
-         ClA1oIA0nK6gw8vdw/yRUjqy5bQq/kFG6mqP6OZZQw8mUxxHmwvcJ6lzKaDHR31BpT+u
-         s29nCwnsn8M212jZgMiKfo/JkAb5A/c55uXOv8cifwA5AYg6AiKPYSz/24L4bjNkrknd
-         zD8bcs48tZhmZQF38i/MzAh+NKkx7CtMdxjZCurz0+fwlS6Kd+TALkJPLv9NF3m7lWO0
-         oCVg==
-X-Gm-Message-State: AGi0PubbYsTT5r7FcyP6kUP0JWHs76yfYnjpi2TkmgvCHdnh5CDrA2tG
-        dcU+xBRIRBRwEIAdFZGsb0GWkQ==
-X-Google-Smtp-Source: APiQypITbt1cZYJweE1W6xTp3vnqrk2qUN/sIDoZBQOauDUv68RNU+RbcvLqS/MtFwfEPVmDlPlDRg==
-X-Received: by 2002:ac8:6f0d:: with SMTP id g13mr268950qtv.328.1588614577576;
-        Mon, 04 May 2020 10:49:37 -0700 (PDT)
-Received: from google.com ([2620:0:1003:510:c948:3327:92b6:e959])
-        by smtp.gmail.com with ESMTPSA id k43sm12239311qtk.67.2020.05.04.10.49.36
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=COJ4St1lQrIdf4dsEVKhZiSK4khVz5kd/fC7gBtBbkM=;
+        b=dbMIZ/ONDxxONmkwTNDVjJtlcXPj9Dcpj2IjR7N6bRAyy6IQF5Th4fF7SlMPxtuPkd
+         m7T+/jbKgL8msVMznUCyjNwdI895Edd3snoMMbn20XNtWCeNREj42XqTOop3BQ5KF3H+
+         HuRRv8rV3oBM2AaQTHgzpPe3Rgb26alj6pxKeAOR2SGMfyBqS5l+7Lq7QQycF8I3v5kZ
+         fzlEqG12GrDbe1W6DcMkDEX5tX6olsiY2Qqxfzv0X7ecI6jOZr6aHIJJrBy4iY/xJR2s
+         lRxj322LU2FiFDH7LjcnQI/esLaLKbnzVntooMZbAMY3a0xf9jpoOyll90W21pTp1TXu
+         goxQ==
+X-Gm-Message-State: AGi0PuZFaQfAYKRPbR47+erYqMrvI3yaxtP5zz2g1V0hYBjI5XP0K4vI
+        0fg0QPnM9+W6eoDhHwYyAuMHMw==
+X-Google-Smtp-Source: APiQypLDJBkzSpF+EsZ9GrUQlZE0DsT6W/QXtW8cnRp491M8t8tm7a6yuuNSA0A6B5WZ/k7oh57AlA==
+X-Received: by 2002:a17:90a:5648:: with SMTP id d8mr115639pji.163.1588614641276;
+        Mon, 04 May 2020 10:50:41 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:24fa:e766:52c9:e3b2])
+        by smtp.gmail.com with ESMTPSA id t3sm9402062pfq.110.2020.05.04.10.50.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 May 2020 10:49:36 -0700 (PDT)
-Date:   Mon, 4 May 2020 13:49:33 -0400
-From:   Richard Yeh <rcy@google.com>
-To:     Oscar Carter <oscar.carter@gmx.com>
-Cc:     Rob Springer <rspringer@google.com>,
-        Todd Poynor <toddpoynor@google.com>,
-        Ben Chan <benchan@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Simon Que <sque@chromium.org>,
-        John Joseph <jnjoseph@google.com>, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: gasket: Check the return value of
- gasket_get_bar_index()
-Message-ID: <20200504174933.GA83381@google.com>
-References: <20200501155118.13380-1-oscar.carter@gmx.com>
+        Mon, 04 May 2020 10:50:40 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rafael.j.wysocki@intel.com, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     evgreen@chromium.org, swboyd@chromium.org, mka@chromium.org,
+        mkshah@codeaurora.org, Douglas Anderson <dianders@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v6 1/5] soc: qcom: rpmh-rsc: Correctly ignore CPU_CLUSTER_PM notifications
+Date:   Mon,  4 May 2020 10:50:15 -0700
+Message-Id: <20200504104917.v6.1.Ic7096b3b9b7828cdd41cd5469a6dee5eb6abf549@changeid>
+X-Mailer: git-send-email 2.26.2.526.g744177e7f7-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200501155118.13380-1-oscar.carter@gmx.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 01, 2020 at 05:51:18PM +0200, Oscar Carter wrote:
-> Check the return value of gasket_get_bar_index function as it can return
-> a negative one (-EINVAL). If this happens, a negative index is used in
-> the "gasket_dev->bar_data" array.
-> 
-> Addresses-Coverity-ID: 1438542 ("Negative array index read")
-> Fixes: 9a69f5087ccc2 ("drivers/staging: Gasket driver framework + Apex driver")
-> Signed-off-by: Oscar Carter <oscar.carter@gmx.com>
-> ---
->  drivers/staging/gasket/gasket_core.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/staging/gasket/gasket_core.c b/drivers/staging/gasket/gasket_core.c
-> index 8e0575fcb4c8..67325fbaf760 100644
-> --- a/drivers/staging/gasket/gasket_core.c
-> +++ b/drivers/staging/gasket/gasket_core.c
-> @@ -925,6 +925,10 @@ do_map_region(const struct gasket_dev *gasket_dev, struct vm_area_struct *vma,
->  		gasket_get_bar_index(gasket_dev,
->  				     (vma->vm_pgoff << PAGE_SHIFT) +
->  				     driver_desc->legacy_mmap_address_offset);
-> +
-> +	if (bar_index < 0)
-> +		return DO_MAP_REGION_INVALID;
-> +
->  	phys_base = gasket_dev->bar_data[bar_index].phys_base + phys_offset;
->  	while (mapped_bytes < map_length) {
->  		/*
-> --
-> 2.20.1
-> 
+Our switch statement doesn't have entries for CPU_CLUSTER_PM_ENTER,
+CPU_CLUSTER_PM_ENTER_FAILED, and CPU_CLUSTER_PM_EXIT and doesn't have
+a default.  This means that we'll try to do a flush in those cases but
+we won't necessarily be the last CPU down.  That's not so ideal since
+our (lack of) locking assumes we're on the last CPU.
 
-Reviewed-by: Richard Yeh <rcy@google.com>
+Luckily this isn't as big a problem as you'd think since (at least on
+the SoC I tested) we don't get these notifications except on full
+system suspend.  ...and on full system suspend we get them on the last
+CPU down.  That means that the worst problem we hit is flushing twice.
+Still, it's good to make it correct.
+
+Fixes: 985427f997b6 ("soc: qcom: rpmh: Invoke rpmh_flush() for dirty caches")
+Reported-by: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
+
+Changes in v6:
+- Release the lock on cluster notifications.
+
+Changes in v5:
+- Corrently => Correctly
+
+Changes in v4:
+- ("...Corrently ignore CPU_CLUSTER_PM notifications") split out for v4.
+
+Changes in v3: None
+Changes in v2: None
+
+ drivers/soc/qcom/rpmh-rsc.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/soc/qcom/rpmh-rsc.c b/drivers/soc/qcom/rpmh-rsc.c
+index a9e15699f55f..8c338335fc21 100644
+--- a/drivers/soc/qcom/rpmh-rsc.c
++++ b/drivers/soc/qcom/rpmh-rsc.c
+@@ -806,6 +806,9 @@ static int rpmh_rsc_cpu_pm_callback(struct notifier_block *nfb,
+ 	case CPU_PM_EXIT:
+ 		cpumask_clear_cpu(smp_processor_id(), &drv->cpus_entered_pm);
+ 		goto exit;
++	default:
++		ret = NOTIFY_DONE;
++		goto exit;
+ 	}
+ 
+ 	ret = rpmh_rsc_ctrlr_is_busy(drv);
+-- 
+2.26.2.526.g744177e7f7-goog
+
