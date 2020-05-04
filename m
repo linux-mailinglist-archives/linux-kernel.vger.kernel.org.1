@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30BF71C322B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 07:19:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AB851C3236
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 07:24:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727088AbgEDFTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 01:19:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56622 "EHLO mail.kernel.org"
+        id S1727106AbgEDFYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 01:24:19 -0400
+Received: from mga17.intel.com ([192.55.52.151]:20123 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726509AbgEDFTo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 01:19:44 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8041020735;
-        Mon,  4 May 2020 05:19:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588569584;
-        bh=4EmP+2FrxfyqR11RGq1tcyZLWtI7D3c2DFsoLAgeg8w=;
-        h=From:To:Cc:Subject:Date:From;
-        b=aDZsuSRrEISnnDH/pGxOXte+So6f2PJ0pF5qrCaV3iwGn/xlZWMVx0cNd15M9d3Co
-         ZcJdGzwGaH2OADELxYRRVvNQP5kMfTzOTThnmlbjG4JlMbN7P2BjFqaG4/NytW1yE+
-         bkEqfnZJ9OnZJW0wOO8Kxo/XTrP4+ntufvo6q+5s=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Maor Gottlieb <maorg@mellanox.com>,
-        Mark Zhang <markz@mellanox.com>
-Subject: [PATCH rdma-next v3 0/5] Set flow_label and RoCEv2 UDP source port for datagram QP
-Date:   Mon,  4 May 2020 08:19:30 +0300
-Message-Id: <20200504051935.269708-1-leon@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        id S1725859AbgEDFYS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 01:24:18 -0400
+IronPort-SDR: lr3IlC+yzNjGtaDVBK6wvJhe3eL8qLqd0xFv+U7S87gZtiR9UyQNEHftmNMSf0CLWaNSqxO2Fn
+ fE+fjo7OYyqA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2020 22:24:17 -0700
+IronPort-SDR: V2qGDrGup2TxuOj/Zljq8sm2gsxIj/3bGCHw36LXtdYXu2qYmZOxHNQdPO5NraRzoVGhDEWYQW
+ zHSz5ChfccrQ==
+X-IronPort-AV: E=Sophos;i="5.73,350,1583222400"; 
+   d="scan'208";a="368992552"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2020 22:24:17 -0700
+From:   ira.weiny@intel.com
+To:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Ira Weiny <ira.weiny@intel.com>, linux-csky@vger.kernel.org,
+        linux-parisc@vger.kernel.org,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>
+Subject: [PATCH 0/2] kmap cleanup 2
+Date:   Sun,  3 May 2020 22:24:13 -0700
+Message-Id: <20200504052415.984585-1-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -41,48 +42,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@mellanox.com>
+From: Ira Weiny <ira.weiny@intel.com>
 
-Changelog:
- v3: Rebased on latest rdma-nex, which includes HCA set capability patch
- and LAG code and this is why new patch from Maor was added.
- v2: https://lore.kernel.org/linux-rdma/20200413133703.932731-1-leon@kernel.org
- Dropped patch "RDMA/cm: Set flow label of recv_wc based on primary
- flow label", because it violates IBTA 13.5.4.3/13.5.4.4 sections.
- v1: https://lore.kernel.org/lkml/20200322093031.918447-1-leon@kernel.org
- Added extra patch to reduce amount of kzalloc/kfree calls in
- the HCA set capability flow.
- v0: https://lore.kernel.org/linux-rdma/20200318095300.45574-1-leon@kernel.org
---------------------------------
+Continue the kmap clean up with 2 follow on patches
 
-From Mark:
+These apply after the kmap cleanup V2 series:
 
-This series provide flow label and UDP source port definition in RoCE v2.
-Those fields are used to create entropy for network routes (ECMP), load
-balancers and 802.3ad link aggregation switching that are not aware of
-RoCE headers.
+https://lore.kernel.org/lkml/20200504010912.982044-1-ira.weiny@intel.com/
 
-Thanks.
+Ira Weiny (2):
+  kmap: Remove kmap_atomic_to_page()
+  parisc/kmap: Remove duplicate kmap code
 
-Maor Gottlieb (1):
-  RDMA/core: Consider flow label when building skb
+ arch/csky/include/asm/highmem.h      |  1 -
+ arch/csky/mm/highmem.c               | 13 -------------
+ arch/nds32/include/asm/highmem.h     |  1 -
+ arch/parisc/include/asm/cacheflush.h | 28 ++--------------------------
+ include/linux/highmem.h              | 10 +++++++---
+ 5 files changed, 9 insertions(+), 44 deletions(-)
 
-Mark Zhang (4):
-  RDMA/core: Add hash functions to calculate RoCEv2 flowlabel and UDP
-    source port
-  RDMA/mlx5: Define RoCEv2 udp source port when set path
-  RDMA/cma: Initialize the flow label of CM's route path record
-  RDMA/mlx5: Set UDP source port based on the grh.flow_label
-
- drivers/infiniband/core/cma.c        | 23 +++++++++++++++
- drivers/infiniband/core/lag.c        |  6 ++--
- drivers/infiniband/hw/mlx5/ah.c      | 21 +++++++++++--
- drivers/infiniband/hw/mlx5/main.c    |  4 +--
- drivers/infiniband/hw/mlx5/mlx5_ib.h |  4 +--
- drivers/infiniband/hw/mlx5/qp.c      | 30 +++++++++++++++----
- include/rdma/ib_verbs.h              | 44 ++++++++++++++++++++++++++++
- 7 files changed, 118 insertions(+), 14 deletions(-)
-
---
-2.26.2
+-- 
+2.25.1
 
