@@ -2,99 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09BAF1C44E7
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:11:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18EBD1C44E5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:11:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732182AbgEDSLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:11:10 -0400
-Received: from mout.kundenserver.de ([212.227.17.13]:44035 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732265AbgEDSLH (ORCPT
+        id S1732160AbgEDSK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:10:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731782AbgEDSKx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:11:07 -0400
-Received: from localhost ([109.41.193.12]) by mrelayeu.kundenserver.de
- (mreue107 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1M58SY-1jWm0f3tDQ-0016Pm; Mon, 04 May 2020 20:10:38 +0200
-Date:   Mon, 4 May 2020 20:10:34 +0200
-From:   Andreas Klinger <ak@it-klinger.de>
-To:     jic23@kernel.org
-Cc:     knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net,
-        bgolaszewski@baylibre.com, linus.walleij@linaro.org,
-        tglx@linutronix.de, allison@lohutok.net, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3] iio: bmp280: fix compensation of humidity
-Message-ID: <20200504181033.GA15745@arbad>
+        Mon, 4 May 2020 14:10:53 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 758B9C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 11:10:53 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id a21so10622810ljb.9
+        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 11:10:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=jH+RQvZfWBPL/mnizZmaNYP9xWO1o6rOJMbxjkZZp1Y=;
+        b=SBeK7PzPMOpDCOs2i7PNkBs8r0xKcDyF4T0FljvZO3+rcPXW+xALMNyHnpbMGR2Mp+
+         BOGAUC0BngtM1Sc3+8gB2CGzVbqWYnZj7Je3GQbgFY47HhQG5W5TwfcwoAuO4UjxldVW
+         XOukAtZCowxX1uxJSYCR+fT04fEtjlK6OTuO5kfJFz366tMUTXykOho+1I4C3hQaxKZV
+         4hRPebyWpqxjDgctSOfny5fyasF+UDceKh/3tQkkkNXwuJ+rkZf9vvhAJMJT/rOQqQgR
+         dr8yOKpVrkiNpedov7iLfJyrcNPxcAxhOeP1H+/3frWIlRXQS+QYlC2gsXrQn2zWCPiU
+         RgOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=jH+RQvZfWBPL/mnizZmaNYP9xWO1o6rOJMbxjkZZp1Y=;
+        b=WfVeZJ0C8cegacYGraGuq6pebzamKtoQCGfOaMhm9UYgKJxxEn1K//BtC2K92KygVn
+         rQLMRIQTFTBqirhDIK37jZtJzGUCuLZftTpcqPKsLcKK5b5R8v+no6YUNLXQkvd+Uoj3
+         PTrLVZaYCOCr42Gur3QaKll12aaz2uc5srIImCpT4oxoj/d17PIDzjEfAsoINK6vfMSS
+         TQzgAeXJRHtNVjgsna2b6mZELb25wKJrDa9T4sec70O6fMvzRJ+4uYkOIX4dqitKhFgC
+         nSMpYiAc0b9wm8xPOOvkW0nwo9nvuf2yxFXeYjmnxVJzWVuOOOoBW/J/GVFNs3rjky53
+         NqaA==
+X-Gm-Message-State: AGi0Pua8l2MgYYRrQhX3IfwxM+DwPKypsRU5bh1lmLmolitnEoln8Qt4
+        MANzlw7QYuHfAhogioXhp5Y1fI9aoOc=
+X-Google-Smtp-Source: APiQypL9nfuj0aaNVAUWhXrgQd1rcEGy36iBc3lcKQE8pRbx02DEqi3yEWxDJIwhUg02VG3TXcj55A==
+X-Received: by 2002:a2e:5847:: with SMTP id x7mr10967982ljd.61.1588615851911;
+        Mon, 04 May 2020 11:10:51 -0700 (PDT)
+Received: from jade (h-249-223.A175.priv.bahnhof.se. [98.128.249.223])
+        by smtp.gmail.com with ESMTPSA id a13sm8775284ljm.25.2020.05.04.11.10.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 May 2020 11:10:51 -0700 (PDT)
+Date:   Mon, 4 May 2020 20:10:49 +0200
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+To:     arm@kernel.org, soc@kernel.org
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        tee-dev@lists.linaro.org
+Subject: [GIT PULL] tee subsystem work for v5.8
+Message-ID: <20200504181049.GA10860@jade>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Provags-ID: V03:K1:ocgTseaez8bdvV9u0+jmemzP2DfkQbD7gDGFoeFvrUSUgmWG2lK
- NDSVIRPPSrIMxBnpSWtJM8aYNFU5deDn9LaChONPne5226HYUGUW/wBhWBcvjvcH3hrwJM4
- byjq9YPVokkwr3qdK6wVvYmjbPxFLzqkAFb2DmAgHagi0pBcfXlkw+FH3c7Xmfiqwx3VMqY
- 0zN7rp+/vM3yRtC2FsMiw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:lf9AWC4ovJ4=:mJnYAnWFsnpuNXC45ASvp/
- qHip1buxF0G2h4HS4JfGBUweYpiZNe8jidwQdTzAWFjLiMyEGBm3sb85PfrxTS3EG6sTNhSGi
- OYj7PPSl+wkzYUjUlKCNaQC37flFsYDO4hWR5e4hcTK/f9GAurjCqf2cWsyVabUuEyQrD7iSu
- Gi7+hHkbiJvHFZt/qGIqASEPrdMyA8mHeRMhyA4LwNNe/yNn8tBez/xjxiB1ouK8qM4zUURP0
- kAnmzqdDGIhGp1cc4pBcGpTweZ+EAtrPoUdBHKMHmh9MUGsIpLA/lw+3VYCH0N35KLTXeVaYt
- 5ozXkao/PfDRz4zEpMjojmV9k7osfLLUzboF50WqwrxfJJa03R63AwPIbB1fIDrU3HUP8/2l6
- 17FTxkz1oicJdVi7GmyGM4K36jQrxyAb+HtLMgwr8KELpbkVGIi7j73s7NfrmDu16rPmoyuYt
- EVRapTTULUDPV/1v/JpMQxOJ22aKkD1y6/E96OpD00UM2/UkGIioLa6z3sOluTM8KSDB1iOSO
- c+bX1lTOs2F9TUZmgOnWmSVSk07QG5c4GgBNih/wVFt7iQkdGMPRWLIYuxHYa2zsfCo6A+yT/
- XXptZRxZIAqV/Z4wTItCdn9RidsnlctQHwUg6pxy7Gznp4y1O9DQsFqkx4uuoioJE+KI2FNOc
- GFOOiRNeAyuFzc9t0Qrl7qNd5zFgUikGiJMkrUb02iGNLOjGCjgmqXlAcniyO5E4MwHvT+2d8
- B6Yz+vI4OobdHkwzFLOlweXKIgFM64CdeCPoegqJ0v5XhVd+WKhojm3ZHbEZxWMLdEAcgyMdw
- Hn7Q3zTDqNBtW0E0/hkEZQ/J06fGl64rVNtMTxrnnJBpRtWCR3uuf/VWZgMTzQ9UNP2fzyB
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Limit the output of humidity compensation to the range between 0 and 100
-percent.
+Hello arm-soc maintainers,
 
-Depending on the calibration parameters of the individual sensor it
-happens, that a humidity above 100 percent or below 0 percent is
-calculated, which don't make sense in terms of relative humidity.
+Please pull these small tee subsystem patches.
 
-Add a clamp to the compensation formula as described in the datasheet of
-the sensor in chapter 4.2.3.
+Thanks,
+Jens
 
-Although this clamp is documented, it was never in the driver of the
-kernel.
+The following changes since commit ae83d0b416db002fe95601e7f97f64b59514d936:
 
-It depends on the circumstances (calibration parameters, temperature,
-humidity) if one can see a value above 100 percent without the clamp.
-The writer of this patch was working with this type of sensor without
-noting this error. So it seems to be a rare event when this bug occures.
+  Linux 5.7-rc2 (2020-04-19 14:35:30 -0700)
 
-Signed-off-by: Andreas Klinger <ak@it-klinger.de>
----
+are available in the Git repository at:
 
-Change to v2:
-Thanks to the review of Jonathan a more descriptive commit message is
-added.
+  git://git.linaro.org/people/jens.wiklander/linux-tee.git tags/tee-subsys-for-5.8
 
-Change to v1:
-Thanks to Tomasz for suggesting the easier to use function clamp_val()
-which is now used.
+for you to fetch changes up to 104edb94cc4b3101bab33161cd861de13e85610b:
 
- drivers/iio/pressure/bmp280-core.c | 2 ++
- 1 file changed, 2 insertions(+)
+  tee: add private login method for kernel clients (2020-04-20 16:18:14 +0200)
 
-diff --git a/drivers/iio/pressure/bmp280-core.c b/drivers/iio/pressure/bmp280-core.c
-index 29c209cc1108..297ee2205bf6 100644
---- a/drivers/iio/pressure/bmp280-core.c
-+++ b/drivers/iio/pressure/bmp280-core.c
-@@ -271,6 +271,8 @@ static u32 bmp280_compensate_humidity(struct bmp280_data *data,
- 		+ (s32)2097152) * calib->H2 + 8192) >> 14);
- 	var -= ((((var >> 15) * (var >> 15)) >> 7) * (s32)calib->H1) >> 4;
- 
-+	var = clamp_val(var, 0, 419430400);
-+
- 	return var >> 12;
- };
- 
--- 
-2.20.1
+----------------------------------------------------------------
+TEE subsystem work
+- Reserve GlobalPlatform implementation defined logon method range
+- Add support to register kernel memory with TEE to allow TEE bus drivers
+  to register memory references.
+
+----------------------------------------------------------------
+Sumit Garg (2):
+      tee: enable support to register kernel memory
+      tee: add private login method for kernel clients
+
+ drivers/tee/tee_core.c   |  7 +++++++
+ drivers/tee/tee_shm.c    | 28 +++++++++++++++++++++++++---
+ include/linux/tee_drv.h  |  1 +
+ include/uapi/linux/tee.h |  9 +++++++++
+ 4 files changed, 42 insertions(+), 3 deletions(-)
