@@ -2,65 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1891F1C48C4
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 23:04:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D9C51C48C9
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 23:07:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728084AbgEDVEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 17:04:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41112 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726948AbgEDVES (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 17:04:18 -0400
-Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4BDC520721;
-        Mon,  4 May 2020 21:04:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588626258;
-        bh=uzln4Pud3znUaVLrXJ/2VBLassqd467HHBti1c0w4sc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z1D64umVPdKGTDrHCEl6UPZw+rkmnm7Wuv5L2nsENzpGvbO7Wql2rFPJk5bunNM9c
-         NXgnaWayAG3aru9r7nPrB5S5O2+EzvX2rDdNNZ7ImJ8kZR4RzeMo5mEbjEGgGhKQG6
-         u8SemSfFpY9zRYwL7RXKK2Dn9MiLfroD3YUXO3Oc=
-From:   Will Deacon <will@kernel.org>
-To:     James Morse <james.morse@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     catalin.marinas@arm.com, Will Deacon <will@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] firmware: arm_sdei: Drop check for /firmware/ node and always register driver
-Date:   Mon,  4 May 2020 22:04:10 +0100
-Message-Id: <158861396805.45075.3995796630639381619.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200422122823.1390-1-sudeep.holla@arm.com>
-References: <20200422122823.1390-1-sudeep.holla@arm.com>
+        id S1727801AbgEDVHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 17:07:15 -0400
+Received: from www62.your-server.de ([213.133.104.62]:32810 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726334AbgEDVHP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 17:07:15 -0400
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jViIn-0001Gq-FV; Mon, 04 May 2020 23:07:01 +0200
+Received: from [178.195.186.98] (helo=pc-9.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jViIm-000G0e-PC; Mon, 04 May 2020 23:07:00 +0200
+Subject: Re: [PATCH 05/15] bpf: avoid gcc-10 stringop-overflow warning
+To:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Hannes Frederic Sowa <hannes@stressinduktion.org>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Brad Spengler <spender@grsecurity.net>,
+        Daniel Borkmann <dborkman@redhat.com>,
+        Alexei Starovoitov <ast@plumgrid.com>,
+        Kees Cook <keescook@chromium.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <20200430213101.135134-1-arnd@arndb.de>
+ <20200430213101.135134-6-arnd@arndb.de>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <f1ffd814-538b-1913-5b67-266060abfa7a@iogearbox.net>
+Date:   Mon, 4 May 2020 23:06:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200430213101.135134-6-arnd@arndb.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25802/Mon May  4 14:12:31 2020)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Apr 2020 13:28:23 +0100, Sudeep Holla wrote:
-> As with most of the drivers, let us register this driver unconditionally
-> by dropping the checks for presence of firmware nodes(DT) or entries(ACPI).
+On 4/30/20 11:30 PM, Arnd Bergmann wrote:
+> gcc-10 warns about accesses to zero-length arrays:
 > 
-> Further, as mentioned in the commit acafce48b07b ("firmware: arm_sdei:
-> Fix DT platform device creation"), the core takes care of creation of
-> platform device when the appropriate device node is found and probe
-> is called accordingly.
+> kernel/bpf/core.c: In function 'bpf_patch_insn_single':
+> cc1: warning: writing 8 bytes into a region of size 0 [-Wstringop-overflow=]
+> In file included from kernel/bpf/core.c:21:
+> include/linux/filter.h:550:20: note: at offset 0 to object 'insnsi' with size 0 declared here
+>    550 |   struct bpf_insn  insnsi[0];
+>        |                    ^~~~~~
 > 
-> [...]
+> In this case, we really want to have two flexible-array members,
+> but that is not possible. Removing the union to make insnsi a
+> flexible-array member while leaving insns as a zero-length array
+> fixes the warning, as nothing writes to the other one in that way.
+> 
+> This trick only works on linux-3.18 or higher, as older versions
+> had additional members in the union.
+> 
+> Fixes: 60a3b2253c41 ("net: bpf: make eBPF interpreter images read-only")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Applied to arm64 (for-next/sdei), thanks!
+Not pretty but looks okay to me, both have the same offset afterwards
+in the pahole dump as well.
 
-[1/1] firmware: arm_sdei: Drop check for /firmware/ node and always register driver
-      https://git.kernel.org/arm64/c/caf2cd610dbb
+struct bpf_prog {
+[...]
+         unsigned int               (*bpf_func)(const void  *, const struct bpf_insn  *); /*    48     8 */
+         struct sock_filter         insns[0];             /*    56     0 */
+         struct bpf_insn            insnsi[];             /*    56     0 */
 
-Cheers,
--- 
-Will
+         /* size: 56, cachelines: 1, members: 21 */
+         /* sum members: 50, holes: 1, sum holes: 4 */
+         /* sum bitfield members: 10 bits, bit holes: 1, sum bit holes: 6 bits */
+         /* last cacheline: 56 bytes */
+};
 
-https://fixes.arm64.dev
-https://next.arm64.dev
+Applied to bpf-next, thanks!
