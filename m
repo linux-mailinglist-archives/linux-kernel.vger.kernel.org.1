@@ -2,110 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 232BC1C406E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 18:50:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 765C31C4079
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 18:52:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729731AbgEDQt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 12:49:59 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:50942 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729606AbgEDQt7 (ORCPT
+        id S1729779AbgEDQwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 12:52:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729540AbgEDQwI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 12:49:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588610997;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oHIFHZpMTFsS6o4C4eP4nmeKJgG/zhFL7wedsTnup60=;
-        b=VxY0G9PidKrQ0eOpp/ncMeda9TwULTFan3Lqw/SGlHxy+AAh8v0h3A4L6Tcg3oOFsEXyzh
-        m73/Z105RtZXPkEEO15k+jQGusrxoq0hjOfoAi+1BoML4vUls1VUMDVskTQM5UuJvZTH98
-        SnFfXa3ZONlBW8tblddzHGqfGt1idNo=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-71--sO8lHQSPB67IiLMQPN9Lg-1; Mon, 04 May 2020 12:49:55 -0400
-X-MC-Unique: -sO8lHQSPB67IiLMQPN9Lg-1
-Received: by mail-wm1-f71.google.com with SMTP id v185so115034wmg.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 09:49:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=oHIFHZpMTFsS6o4C4eP4nmeKJgG/zhFL7wedsTnup60=;
-        b=F9CBNkeZ8p5ydv09M/dlTI35M7YWvAPcL7kOZZNm+cvi5/CnCjIXwltKzQpMzDaeIS
-         k9ooyvzRXQk8IPzkFA2e2YSPyxl1EDECl7bWv/7AV0HOrVXY34b7KK4lpYJ5yjV4ckdR
-         fFv8Mydg32/mD47rhQPjeAoyt7BE4ocywd2BvcDpEoICFaAbIu5MdE6/ONjOkdA6nBvt
-         avPncPq+0KQhJkl0YoMuII1+2OFqJGUQnUFTNyUyBJF3E2H1r22weET7kA031VAb1NyN
-         nnMn5CofszXp0Ea2ahgZC9+FLZZBrp5aRjBqcKig2Cy5R2K6YXceMMbkzHHcPaOgJOHN
-         Bnug==
-X-Gm-Message-State: AGi0PubCFFhf0nha4EYhZEw/gBSMJ8dA3dGU3T9/APSBf1z0I4j4b9nR
-        PAo7SeTuJdZhtP0X7fvqpbRGynMKcp4LAX3Tg9wS4QKURGAPpEN0n1gESMLCdhHW6yMv5GAzqzK
-        YsYfaEZPwqybxca4nHZyxWy2f
-X-Received: by 2002:adf:ee88:: with SMTP id b8mr174147wro.93.1588610994692;
-        Mon, 04 May 2020 09:49:54 -0700 (PDT)
-X-Google-Smtp-Source: APiQypLKtFHZIUv4NcG3vTVjC4T0n5A2J4iO87GdeaxTeFI/aWSAwfse461FLfDPml9gQKYkw32KGw==
-X-Received: by 2002:adf:ee88:: with SMTP id b8mr174120wro.93.1588610994397;
-        Mon, 04 May 2020 09:49:54 -0700 (PDT)
-Received: from [192.168.178.58] ([151.20.132.175])
-        by smtp.gmail.com with ESMTPSA id d5sm19736003wrp.44.2020.05.04.09.49.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 May 2020 09:49:53 -0700 (PDT)
-Subject: Re: [PATCH 0/3] KVM: x86/mmu: Use kernel's PG_LEVEL_* enums
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Barret Rhoden <brho@google.com>
-References: <20200428005422.4235-1-sean.j.christopherson@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <35a94d18-d6d1-78f1-aee5-0e40b5edc60b@redhat.com>
-Date:   Mon, 4 May 2020 18:49:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Mon, 4 May 2020 12:52:08 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAF7FC061A0E;
+        Mon,  4 May 2020 09:52:07 -0700 (PDT)
+Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tip-bot2@linutronix.de>)
+        id 1jVeK4-0001aU-F1; Mon, 04 May 2020 18:52:04 +0200
+Received: from [127.0.1.1] (localhost [IPv6:::1])
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id E1A381C0084;
+        Mon,  4 May 2020 18:52:03 +0200 (CEST)
+Date:   Mon, 04 May 2020 16:52:03 -0000
+From:   "tip-bot2 for Vamshi K Sthambamkadi" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/boot] x86/boot: Fix -Wint-to-pointer-cast build warning
+Cc:     Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>,
+        Borislav Petkov <bp@suse.de>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <1587645588-7130-3-git-send-email-vamshi.k.sthambamkadi@gmail.com>
+References: <1587645588-7130-3-git-send-email-vamshi.k.sthambamkadi@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200428005422.4235-1-sean.j.christopherson@intel.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
+Message-ID: <158861112381.8414.8884633778038509569.tip-bot2@tip-bot2>
+X-Mailer: tip-git-log-daemon
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/04/20 02:54, Sean Christopherson wrote:
-> Drop KVM's PT_{PAGE_TABLE,DIRECTORY,PDPE}_LEVEL KVM enums in favor of the
-> kernel's PG_LEVEL_{4K,2M,1G} enums, which have far more user friendly
-> names.
-> 
-> The KVM names were presumably intended to abstract away the page size.  In
-> practice, the abstraction is only useful for a single line of code, a PSE
-> paging related large page check.  For everything else, the abstract names
-> do nothing but obfuscate the code.
-> 
-> Boot tested a PSE kernel under 32-bit KVM and 64-bit KVM, with and without
-> EPT enabled.  Patches 2 and 3 generate no binary difference relative to
-> patch 1 when compared via "objdump -d".
-> 
-> Sean Christopherson (3):
->   KVM: x86/mmu: Tweak PSE hugepage handling to avoid 2M vs 4M conundrum
->   KVM: x86/mmu: Move max hugepage level to a separate #define
->   KVM: x86/mmu: Drop KVM's hugepage enums in favor of the kernel's enums
-> 
->  arch/x86/include/asm/kvm_host.h |  13 +---
->  arch/x86/kvm/mmu/mmu.c          | 118 +++++++++++++++-----------------
->  arch/x86/kvm/mmu/page_track.c   |   4 +-
->  arch/x86/kvm/mmu/paging_tmpl.h  |  18 ++---
->  arch/x86/kvm/mmu_audit.c        |   6 +-
->  arch/x86/kvm/svm/svm.c          |   2 +-
->  arch/x86/kvm/vmx/vmx.c          |   6 +-
->  arch/x86/kvm/x86.c              |   4 +-
->  8 files changed, 79 insertions(+), 92 deletions(-)
-> 
+The following commit has been merged into the x86/boot branch of tip:
 
-Queued, thanks.
+Commit-ID:     40ba9309c76f29d012a5cc0cf938f8ff7dc6fef2
+Gitweb:        https://git.kernel.org/tip/40ba9309c76f29d012a5cc0cf938f8ff7dc6fef2
+Author:        Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
+AuthorDate:    Thu, 23 Apr 2020 18:09:48 +05:30
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Mon, 04 May 2020 15:22:16 +02:00
 
-Paolo
+x86/boot: Fix -Wint-to-pointer-cast build warning
 
+Fix this warning when building 32-bit with
+
+CONFIG_RANDOMIZE_BASE=y
+CONFIG_MEMORY_HOTREMOVE=y
+
+  arch/x86/boot/compressed/acpi.c:316:9: warning: \
+    cast to pointer from integer of different size [-Wint-to-pointer-cast]
+
+Have get_cmdline_acpi_rsdp() return unsigned long which is the proper
+type to convert to a pointer of the respective width.
+
+ [ bp: Rewrite commit message, touch ups. ]
+
+Signed-off-by: Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/1587645588-7130-3-git-send-email-vamshi.k.sthambamkadi@gmail.com
+---
+ arch/x86/boot/compressed/acpi.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/arch/x86/boot/compressed/acpi.c b/arch/x86/boot/compressed/acpi.c
+index ef2ad72..8bcbcee 100644
+--- a/arch/x86/boot/compressed/acpi.c
++++ b/arch/x86/boot/compressed/acpi.c
+@@ -280,9 +280,9 @@ acpi_physical_address get_rsdp_addr(void)
+  */
+ #define MAX_ADDR_LEN 19
+ 
+-static acpi_physical_address get_cmdline_acpi_rsdp(void)
++static unsigned long get_cmdline_acpi_rsdp(void)
+ {
+-	acpi_physical_address addr = 0;
++	unsigned long addr = 0;
+ 
+ #ifdef CONFIG_KEXEC
+ 	char val[MAX_ADDR_LEN] = { };
+@@ -292,7 +292,7 @@ static acpi_physical_address get_cmdline_acpi_rsdp(void)
+ 	if (ret < 0)
+ 		return 0;
+ 
+-	if (kstrtoull(val, 16, &addr))
++	if (boot_kstrtoul(val, 16, &addr))
+ 		return 0;
+ #endif
+ 	return addr;
+@@ -314,7 +314,6 @@ static unsigned long get_acpi_srat_table(void)
+ 	 * different ideas about whether to trust a command-line parameter.
+ 	 */
+ 	rsdp = (struct acpi_table_rsdp *)get_cmdline_acpi_rsdp();
+-
+ 	if (!rsdp)
+ 		rsdp = (struct acpi_table_rsdp *)(long)
+ 			boot_params->acpi_rsdp_addr;
