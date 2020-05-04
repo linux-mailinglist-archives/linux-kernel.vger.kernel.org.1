@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 977EE1C3E0A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 17:05:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4CA01C3E16
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 17:07:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729454AbgEDPFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 11:05:07 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:40750 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727815AbgEDPFF (ORCPT
+        id S1729396AbgEDPHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 11:07:06 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:57582 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726744AbgEDPHF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 11:05:05 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 044Elhhg024555;
-        Mon, 4 May 2020 15:04:40 GMT
+        Mon, 4 May 2020 11:07:05 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 044ElifK116784;
+        Mon, 4 May 2020 15:06:43 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=OTy8bFEepziAap9YJkk0SYeg/Bi8nvhGZOVavHSgpoA=;
- b=h4bL8BulIgg78eyOq3XCjR0Y17cD8h5dvBaIkIfEQvxPrpsafN/+zTpQppm+XXet/ZNm
- 3y1rgnXZ0/QQZ49pjBq6XQWR5oIn+XoZxiR/HfTToSJ7Bt6Mj5TS1qRsNPykkQuhQuXW
- TSO3g9WD7yXJjviAj8aOqAhz8taVHKNt004Ma/NnMafYqk6pA6w+Yx+fKorymrG6Awz0
- 6wMgVsZ9opuh3KzVTQ3RpQIQm3CYld65xqv9auT8pOJU1BtKRm4eJLYylOtlJOhbBcZ3
- vzNMtj9UGQlXNNH0+I2EMjg1jiORkHnwWfLwMdpgorkxxBxmU/H403Pk81dYS3XXioKW Lg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 30s1gmy9n0-1
+ bh=B2uXdxYJUzNl2lMjTTjR6bplmjpOhPo7Ihfe5K+yde8=;
+ b=Zggz8WZz+a42F1eiz01QmaSd9xLe0dv3JE6HqFkChmCj+nZO5yZxG9zmKP3rO/ef7kGr
+ zSbCInKO1qE6hfwwj6VVY9aFUMsqYpzHlkfYE362YQxqh+jJDmKV7BlQkik6Sw2aMyQ3
+ mPcBi1pgi//3tNPB3yuxwH8gqm4A2Gk051CrFzKAATm2U1ft0/vReRqjUt+6jPlkmqPT
+ GAbjsgqz6DJmXSvC5doQRDDzOTVbE2ZDN6oLGJ2SqptXQX/frCmloy2L5g3BPvzMortT
+ ofRTaVS48mVDtociM/fhdV1QJyKRSxA9/WgyJpDGZeqynqeElH1TH1Q0ZfMxspamfJtk WA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 30s09qyhfx-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 04 May 2020 15:04:40 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 044EkeFY094664;
-        Mon, 4 May 2020 15:04:39 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 30sjdqqpwm-1
+        Mon, 04 May 2020 15:06:43 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 044EmV46105699;
+        Mon, 4 May 2020 15:04:43 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 30sjjw18dg-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 04 May 2020 15:04:39 +0000
+        Mon, 04 May 2020 15:04:43 +0000
 Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 044F4bsX025389;
-        Mon, 4 May 2020 15:04:37 GMT
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 044F4fW2030429;
+        Mon, 4 May 2020 15:04:41 GMT
 Received: from linux-1.home.com (/10.175.9.166)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 04 May 2020 08:04:37 -0700
+        with ESMTP ; Mon, 04 May 2020 08:04:41 -0700
 From:   Alexandre Chartre <alexandre.chartre@oracle.com>
 To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
         dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
@@ -49,226 +49,195 @@ Cc:     pbonzini@redhat.com, konrad.wilk@oracle.com,
         junaids@google.com, graf@amazon.de, rppt@linux.vnet.ibm.com,
         kuzuno@gmail.com, mgross@linux.intel.com,
         alexandre.chartre@oracle.com
-Subject: [RFC v4][PATCH part-3 08/14] asidrv: Sequence to test scheduling in/out with ASI
-Date:   Mon,  4 May 2020 17:02:29 +0200
-Message-Id: <20200504150235.12171-9-alexandre.chartre@oracle.com>
+Subject: [RFC v4][PATCH part-3 09/14] asidrv: Add ioctls to manage ASI page faults
+Date:   Mon,  4 May 2020 17:02:30 +0200
+Message-Id: <20200504150235.12171-10-alexandre.chartre@oracle.com>
 X-Mailer: git-send-email 2.18.2
 In-Reply-To: <20200504150235.12171-1-alexandre.chartre@oracle.com>
 References: <20200504150235.12171-1-alexandre.chartre@oracle.com>
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9610 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0 mlxscore=0
- bulkscore=0 adultscore=0 phishscore=0 mlxlogscore=999 malwarescore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 phishscore=0
+ bulkscore=0 malwarescore=0 spamscore=0 mlxlogscore=999 adultscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
  definitions=main-2005040123
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9610 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 mlxscore=0
- spamscore=0 clxscore=1015 priorityscore=1501 bulkscore=0 phishscore=0
- impostorscore=0 malwarescore=0 lowpriorityscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2005040123
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0
+ lowpriorityscore=0 spamscore=0 adultscore=0 clxscore=1015 suspectscore=0
+ priorityscore=1501 malwarescore=0 mlxlogscore=999 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005040123
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a sequence to test if an ASI remains active after it is
-scheduled out and then scheduled back in.
+Add ioctls to list and clear ASI page faults. Also add an ioctl to display
+or not stack trace on ASI page fault.
 
 Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
 ---
- drivers/staging/asi/asidrv.c | 98 ++++++++++++++++++++++++++++++++++++
- drivers/staging/asi/asidrv.h |  2 +
- 2 files changed, 100 insertions(+)
+ drivers/staging/asi/asidrv.c | 88 ++++++++++++++++++++++++++++++++++++
+ drivers/staging/asi/asidrv.h | 32 +++++++++++++
+ 2 files changed, 120 insertions(+)
 
 diff --git a/drivers/staging/asi/asidrv.c b/drivers/staging/asi/asidrv.c
-index e08f2a107e89..9ca17e0b654e 100644
+index 9ca17e0b654e..e6edfbe5acea 100644
 --- a/drivers/staging/asi/asidrv.c
 +++ b/drivers/staging/asi/asidrv.c
 @@ -4,6 +4,7 @@
   */
  
  #include <linux/fs.h>
-+#include <linux/kthread.h>
++#include <linux/kallsyms.h>
+ #include <linux/kthread.h>
  #include <linux/miscdevice.h>
  #include <linux/module.h>
- #include <linux/nmi.h>
-@@ -21,17 +22,24 @@
- /* Number of read for mem/memmap test sequence */
- #define ASIDRV_MEM_READ_COUNT		1000
- 
-+/* Number of loop for the sched test sequence */
-+#define ASIDRV_SCHED_LOOP_COUNT		20
-+
- /* Timeout for target to be ready to receive an interrupt or NMI */
- #define ASIDRV_TIMEOUT_TARGET_READY	1
- 
- /* Timeout for receiving an interrupt or NMI */
- #define ASIDRV_TIMEOUT_INTERRUPT	5
- 
-+/* Timeout before thread can start its job */
-+#define ASIDRV_TIMEOUT_THREAD_START	5
-+
- /* NMI handler name used for testing */
- #define ASIDRV_NMI_HANDLER_NAME		"ASI Test"
- 
- enum asidrv_state {
- 	ASIDRV_STATE_NONE,
-+	ASIDRV_STATE_START,
- 	ASIDRV_STATE_INTR_WAITING,
- 	ASIDRV_STATE_INTR_RECEIVED,
- 	ASIDRV_STATE_NMI_WAITING,
-@@ -50,6 +58,8 @@ struct asidrv_test {
- 	bool			work_set;
- 	enum asidrv_run_error	run_error;
- 	bool			intrnmi;
-+	struct task_struct	*kthread; /* work on same cpu */
-+	int			count;
- };
- 
- struct asidrv_sequence {
-@@ -438,6 +448,66 @@ static enum asidrv_run_error asidrv_intrnmi_run(struct asidrv_test *test)
- 	return err;
+@@ -790,12 +791,99 @@ static int asidrv_ioctl_run_sequence(struct asidrv_test *test,
+ 	return 0;
  }
  
 +/*
-+ * Sched Test Sequence
++ * ASI fault ioctls
 + */
 +
-+static void asidrv_sched_loop(struct asidrv_test *test)
++static int asidrv_ioctl_list_fault(struct asi *asi, unsigned long arg)
 +{
-+	int last_count = 0;
++	struct asidrv_fault_list __user *uflist;
++	struct asidrv_fault_list *flist;
++	size_t flist_size;
++	__u32 uflist_len;
++	int i;
 +
-+	while (test->count < ASIDRV_SCHED_LOOP_COUNT) {
-+		test->count++;
-+		last_count = test->count;
-+		/*
-+		 * Call into the scheduler, until it runs the other
-+		 * asidrv_sched_loop() task. We know it has run when
-+		 * test->count changes.
-+		 */
-+		while (last_count == test->count)
-+			schedule();
++	uflist = (struct asidrv_fault_list __user *)arg;
++	if (copy_from_user(&uflist_len, &uflist->length, sizeof(uflist_len)))
++		return -EFAULT;
++
++	uflist_len = min_t(unsigned int, uflist_len, ASI_FAULT_LOG_SIZE);
++
++	flist_size = sizeof(*flist) + sizeof(struct asidrv_fault) * uflist_len;
++	flist = kzalloc(flist_size, GFP_KERNEL);
++	if (!flist)
++		return -ENOMEM;
++
++	for (i = 0; i < ASI_FAULT_LOG_SIZE; i++) {
++		if (!asi->fault_log[i].address)
++			break;
++		if (i < uflist_len) {
++			flist->fault[i].addr = asi->fault_log[i].address;
++			flist->fault[i].count = asi->fault_log[i].count;
++			sprint_symbol(flist->fault[i].symbol,
++				      asi->fault_log[i].address);
++		}
 +	}
-+	test->count++;
-+}
++	flist->length = i;
 +
-+static int asidrv_sched_kthread(void *data)
-+{
-+	struct asidrv_test *test = data;
-+	enum asidrv_run_error err;
-+
-+	err = asidrv_wait(test, ASIDRV_STATE_START,
-+			  ASIDRV_TIMEOUT_THREAD_START);
-+	if (err) {
-+		pr_debug("Error waiting for start state: error %d\n", err);
-+		return err;
++	if (copy_to_user(uflist, flist, flist_size)) {
++		kfree(flist);
++		return -EFAULT;
 +	}
-+	asidrv_sched_loop(test);
++
++	if (i >= ASI_FAULT_LOG_SIZE)
++		pr_warn("ASI %p: fault log buffer is full [%d]\n", asi, i);
++
++	kfree(flist);
 +
 +	return 0;
 +}
 +
-+static enum asidrv_run_error asidrv_sched_init(struct asidrv_test *test)
++static int asidrv_ioctl_clear_fault(struct asi *asi)
 +{
-+	test->kthread = kthread_create_on_node(asidrv_sched_kthread, test,
-+					       cpu_to_node(test->cpu),
-+					       "sched test");
-+	if (!test->kthread)
-+		return ASIDRV_RUN_ERR_KTHREAD;
++	int i;
 +
-+	kthread_bind(test->kthread, test->cpu);
-+	test->count = 0;
-+
-+	return ASIDRV_RUN_ERR_NONE;
-+}
-+
-+static enum asidrv_run_error asidrv_sched_run(struct asidrv_test *test)
-+{
-+	atomic_set(&test->state, ASIDRV_STATE_START);
-+	asidrv_sched_loop(test);
-+
-+	return ASIDRV_RUN_ERR_NONE;
-+}
-+
- /*
-  * Memory Buffer Access Test Sequences
-  */
-@@ -521,14 +591,28 @@ struct asidrv_sequence asidrv_sequences[] = {
- 		"intr+nmi",
- 		asidrv_intrnmi_setup, asidrv_intrnmi_run, asidrv_nmi_cleanup,
- 	},
-+	[ASIDRV_SEQ_SCHED] = {
-+		"sched",
-+		asidrv_sched_init, asidrv_sched_run, NULL,
-+	},
- };
- 
- static enum asidrv_run_error asidrv_run_init(struct asidrv_test *test)
- {
-+	cpumask_t mask = CPU_MASK_NONE;
- 	int err;
- 
- 	test->run_error = ASIDRV_RUN_ERR_NONE;
- 
-+	/*
-+	 * Binding ourself to the current cpu but keep preemption
-+	 * enabled.
-+	 */
-+	test->cpu = get_cpu();
-+	cpumask_set_cpu(test->cpu, &mask);
-+	set_cpus_allowed_ptr(current, &mask);
-+	put_cpu();
-+
- 	/*
- 	 * Map the current stack, we need it to enter ASI.
- 	 */
-@@ -589,12 +673,26 @@ static enum asidrv_run_error asidrv_run_setup(struct asidrv_test *test,
- 		schedule_work_on(other_cpu, &test->work);
- 	}
- 
-+	if (test->kthread)
-+		wake_up_process(test->kthread);
-+
- 	return ASIDRV_RUN_ERR_NONE;
- }
- 
- static void asidrv_run_cleanup(struct asidrv_test *test,
- 			       struct asidrv_sequence *sequence)
- {
-+	if (test->kthread) {
-+		kthread_stop(test->kthread);
-+		test->kthread = NULL;
++	for (i = 0; i < ASI_FAULT_LOG_SIZE; i++) {
++		if (!asi->fault_log[i].address)
++			break;
++		asi->fault_log[i].address = 0;
 +	}
 +
-+	if (test->work_set) {
-+		/* ensure work has completed */
-+		flush_work(&test->work);
-+		test->work_set = false;
++	pr_debug("ASI %p: faults cleared\n", asi);
++	return 0;
++}
++
++static int asidrv_ioctl_log_fault_stack(struct asi *asi, bool log_stack)
++{
++	if (log_stack) {
++		asi->fault_log_policy |= ASI_FAULT_LOG_STACK;
++		pr_debug("ASI %p: setting fault stack\n", asi);
++	} else {
++		asi->fault_log_policy &= ~ASI_FAULT_LOG_STACK;
++		pr_debug("ASI %p: clearing fault stack\n", asi);
 +	}
 +
- 	if (sequence->cleanup)
- 		sequence->cleanup(test);
- }
++	return 0;
++}
++
+ static long asidrv_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+ {
+ 	struct asidrv_test *test = asidrv_test;
++	struct asi *asi = test->asi;
+ 
+ 	switch (cmd) {
+ 
++	/* ASI fault ioctls */
++
++	case ASIDRV_IOCTL_LIST_FAULT:
++		return asidrv_ioctl_list_fault(asi, arg);
++
++	case ASIDRV_IOCTL_CLEAR_FAULT:
++		return asidrv_ioctl_clear_fault(asi);
++
++	case ASIDRV_IOCTL_LOG_FAULT_STACK:
++		return asidrv_ioctl_log_fault_stack(asi, arg);
++
+ 	/* Test ioctls */
+ 
+ 	case ASIDRV_IOCTL_RUN_SEQUENCE:
 diff --git a/drivers/staging/asi/asidrv.h b/drivers/staging/asi/asidrv.h
-index de9f7ad993e0..9f540b119883 100644
+index 9f540b119883..99ab9843e36b 100644
 --- a/drivers/staging/asi/asidrv.h
 +++ b/drivers/staging/asi/asidrv.h
-@@ -13,6 +13,7 @@ enum asidrv_seqnum {
- 	ASIDRV_SEQ_INTERRUPT,	/* interrupt sequence */
- 	ASIDRV_SEQ_NMI,		/* NMI interrupt sequence */
- 	ASIDRV_SEQ_INTRNMI,	/* NMI in interrupt sequence */
-+	ASIDRV_SEQ_SCHED,	/* schedule() sequence */
- };
- 
- enum asidrv_run_error {
-@@ -30,6 +31,7 @@ enum asidrv_run_error {
- 	ASIDRV_RUN_ERR_NMI,	/* no NMI received */
- 	ASIDRV_RUN_ERR_NMI_REG,	/* failed to register NMI handler */
- 	ASIDRV_RUN_ERR_NMI_ASI_ACTIVE, /* ASI active in NMI handler */
-+	ASIDRV_RUN_ERR_KTHREAD,	/* failed to create kernel thread */
- };
+@@ -36,9 +36,41 @@ enum asidrv_run_error {
  
  #define ASIDRV_IOCTL_RUN_SEQUENCE	_IOWR('a', 1, struct asidrv_run_param)
+ 
++/*
++ * ASIDRV_IOCTL_LIST_FAULT: return the list of ASI faults.
++ *
++ * User should set 'length' with the number of entries available in the
++ * 'fault' array. On return, 'length' is set to the number of ASI faults
++ * (which can be larger than the original 'length' value), and the 'fault'
++ * array is filled with the ASI faults.
++ */
++#define ASIDRV_IOCTL_LIST_FAULT		_IOWR('a', 2, struct asidrv_fault_list)
++#define ASIDRV_IOCTL_CLEAR_FAULT	_IO('a', 3)
++#define ASIDRV_IOCTL_LOG_FAULT_STACK	_IO('a', 4)
++
++#define ASIDRV_KSYM_NAME_LEN	128
++/*
++ * We need KSYM_SYMBOL_LEN to lookup symbol. However it's not part of
++ * userland include. So we use a reasonably large value (KSYM_SYMBOL_LEN
++ * is around 310).
++ */
++#define ASIDRV_KSYM_SYMBOL_LEN	512
++
+ struct asidrv_run_param {
+ 	__u32 sequence;		/* sequence to run */
+ 	__u32 run_error;	/* result error after run */
+ 	__u32 asi_active;	/* ASI is active after run? */
+ };
++
++struct asidrv_fault {
++	__u64 addr;
++	char  symbol[ASIDRV_KSYM_SYMBOL_LEN];
++	__u32 count;
++};
++
++struct asidrv_fault_list {
++	__u32 length;
++	struct asidrv_fault fault[0];
++};
++
+ #endif
 -- 
 2.18.2
 
