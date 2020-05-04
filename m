@@ -2,91 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35F6E1C3358
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 09:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 441961C335D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 09:12:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727995AbgEDHLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 03:11:25 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:46454 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726625AbgEDHLY (ORCPT
+        id S1727769AbgEDHM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 03:12:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726625AbgEDHM1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 03:11:24 -0400
-Received: by mail-ot1-f65.google.com with SMTP id z25so8024653otq.13
-        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 00:11:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rfkxILgR6gYq3zL8Nxb8d3GiP3wwKG2LbudzQQF7WbU=;
-        b=oOfOSSr/dGmYh+jgyKl4faHKwXMWHkL4It14ig4D+xNsjyb8fJTiEs6WntlJ106M/8
-         MhQbUQDWNt/6+jc1D8Y34o1AP+Kgt9pkvgAwwo0pD8Kq1Rp5vi70iFCil04knWNtC/G7
-         KYW7ONL8p/ynSVAkpvyfxsgBqJAa+rPofwhzUxCkE/A2WLYXIOZFQ/ki9XXA7yWqTZwX
-         GitnNCnuiSr/VuvOkwQP3TWFVw0aTuVDjZ+3DJneTV5ELj5AfWAGWQvDfK4hRM1pDgPs
-         tmbEFjcQBpviVfs15700KoLFTCQFzzRJO02xFzUlGwGVVvLUnnUwh4LV784rxjYUnfck
-         JuEw==
-X-Gm-Message-State: AGi0Pub5s+YFPDTcH+4NcEuMRqUd73kFr8NgcpXeEpMnKw+VJOaQ7JOr
-        x/3x0BVas0DPulUXxfip6UpRnPuN8aOFQ6wI3z4=
-X-Google-Smtp-Source: APiQypJPMgeWBRUiVyeVnkIiZGgJNdYK9YfY571As0RfWeLMVNq4WlAgY4mBZ80+C3ouKbzMSZ5KFVm7VZsG8Eqtf1M=
-X-Received: by 2002:a9d:7d85:: with SMTP id j5mr12499692otn.107.1588576283223;
- Mon, 04 May 2020 00:11:23 -0700 (PDT)
+        Mon, 4 May 2020 03:12:27 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0093C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 00:12:26 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1jVVH2-0001TY-0P; Mon, 04 May 2020 09:12:20 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1jVVGx-0001Y2-O0; Mon, 04 May 2020 09:12:15 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Kubecek <mkubecek@suse.cz>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        David Jander <david@protonic.nl>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>, mkl@pengutronix.de,
+        Marek Vasut <marex@denx.de>,
+        Christian Herber <christian.herber@nxp.com>
+Subject: [PATCH net-next v4 0/2] provide support for PHY master/slave configuration
+Date:   Mon,  4 May 2020 09:12:12 +0200
+Message-Id: <20200504071214.5890-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <1585568499-21585-1-git-send-email-amit.kachhap@arm.com>
-In-Reply-To: <1585568499-21585-1-git-send-email-amit.kachhap@arm.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 4 May 2020 09:11:12 +0200
-Message-ID: <CAMuHMdWxTtFxgpabeK3L4Ev4zgZ6r=_c+5MBVYd7ZAHbNYxm=Q@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] init/kconfig: Add LD_VERSION Kconfig
-To:     Amit Daniel Kachhap <amit.kachhap@arm.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <Vincenzo.Frascino@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Amit,
+changes v5:
+- set MASTER_SLAVE_CFG_UNSUPPORTED as default value
+- send a netlink error message on validation error
+- more code fixes
 
-On Mon, Mar 30, 2020 at 1:42 PM Amit Daniel Kachhap
-<amit.kachhap@arm.com> wrote:
-> This option can be used in Kconfig files to compare the ld version
-> and enable/disable incompatible config options if required.
->
-> This option is used in the subsequent patch along with GCC_VERSION to
-> filter out an incompatible feature.
->
-> Signed-off-by: Amit Daniel Kachhap <amit.kachhap@arm.com>
+changes v4:
+- rename port_mode to master_slave 
+- move validation code to net/ethtool/linkmodes.c 
+- add UNSUPPORTED state and avoid sending unsupported fields
+- more formatting and naming fixes
+- tja11xx: support only force mode
+- tja11xx: mark state as unsupported
 
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -17,6 +17,10 @@ config GCC_VERSION
->         default $(shell,$(srctree)/scripts/gcc-version.sh $(CC)) if CC_IS_GCC
->         default 0
->
-> +config LD_VERSION
-> +       int
-> +       default $(shell,$(LD) --version | $(srctree)/scripts/ld-version.sh)
-> +
->  config CC_IS_CLANG
->         def_bool $(success,$(CC) --version | head -n 1 | grep -q clang)
+changes v3:
+- provide separate field for config and state.
+- make state rejected on set
+- add validation
 
-.config: warning: symbol value '2.01827e+11' invalid for LD_VERSION
+changes v2:
+- change names. Use MASTER_PREFERRED instead of MULTIPORT
+- configure master/slave only on request. Default configuration can be
+  provided by PHY or eeprom
+- status and configuration to the user space.
 
-Seen with the or32 compiler on kisskb, e.g.
-http://kisskb.ellerman.id.au/kisskb/buildresult/14226173/
+Oleksij Rempel (2):
+  ethtool: provide UAPI for PHY master/slave configuration.
+  net: phy: tja11xx: add support for master-slave configuration
 
-Gr{oetje,eeting}s,
-
-                        Geert
+ Documentation/networking/ethtool-netlink.rst | 35 ++++----
+ drivers/net/phy/nxp-tja11xx.c                | 43 +++++++++
+ drivers/net/phy/phy.c                        |  4 +-
+ drivers/net/phy/phy_device.c                 | 94 ++++++++++++++++++++
+ include/linux/phy.h                          |  3 +
+ include/uapi/linux/ethtool.h                 | 16 +++-
+ include/uapi/linux/ethtool_netlink.h         |  2 +
+ include/uapi/linux/mii.h                     |  2 +
+ net/ethtool/linkmodes.c                      | 45 ++++++++++
+ 9 files changed, 226 insertions(+), 18 deletions(-)
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.26.2
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
