@@ -2,118 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8834C1C3C78
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 16:11:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15F8F1C3C92
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 16:12:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728977AbgEDOLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 10:11:41 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:51708 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726404AbgEDOLk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 10:11:40 -0400
-Received: by mail-wm1-f66.google.com with SMTP id x4so8637425wmj.1;
-        Mon, 04 May 2020 07:11:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Zhg/lpI81ciSxh0fDjxdl8lxOebSyQ78Sv338/w3oPQ=;
-        b=rJIqbzgWbe7JBoG3mO5trfY5HjP8qfYv99u8R1TuD+G+Mj/VL+na024fmiaR9AD742
-         eqc4VfTuEyZrOL9WwFTlGWnONZcwAg1w7fBtcOpeCahYeUBNpQnkbKzPz4y9mDWGgdkC
-         i5FADfLQp6aePQV8OALyoM0djJdiN69kS7XdJIeegEd0jbdETE05FLnWmJ13YUqDWkdY
-         xoRiyxCYG5aol+c9vcQRE7+GcjRJyHM+aLYCsvbiQm1L/1AUP+Jn8k2uYEm/04/9WsPL
-         JCcw5V6A9H1006n5rihoqEm5hsACb2hf+f3yScls98Kc2B6cC74oka0UYPucQeRlrH0+
-         //Cg==
-X-Gm-Message-State: AGi0PuYB+cUheJGVUHYUgUtJlbrc4TpzePDoNKWw7FLs2i+ThCLCarDs
-        ZqykuGT97jQsww1wd/IcBHA=
-X-Google-Smtp-Source: APiQypLBTMdBsqI3e05mfgV9qMZytUOnyP9gk3F560DYzx00KopeXxRT1ghjjg42a4hKAmUBPodayQ==
-X-Received: by 2002:a1c:9e43:: with SMTP id h64mr14579214wme.0.1588601498915;
-        Mon, 04 May 2020 07:11:38 -0700 (PDT)
-Received: from localhost (ip-37-188-183-9.eurotel.cz. [37.188.183.9])
-        by smtp.gmail.com with ESMTPSA id i25sm13328487wml.43.2020.05.04.07.11.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 May 2020 07:11:38 -0700 (PDT)
-Date:   Mon, 4 May 2020 16:11:36 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
-        Greg Thelen <gthelen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] memcg: oom: ignore oom warnings from memory.max
-Message-ID: <20200504141136.GR22838@dhcp22.suse.cz>
-References: <20200430182712.237526-1-shakeelb@google.com>
- <20200504065600.GA22838@dhcp22.suse.cz>
- <CALvZod5Ao2PEFPEOckW6URBfxisp9nNpNeon1GuctuHehqk_6Q@mail.gmail.com>
+        id S1729089AbgEDOM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 10:12:29 -0400
+Received: from mout.web.de ([212.227.17.11]:43859 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728803AbgEDOM2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 10:12:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1588601535;
+        bh=UAsDAdzEesDdhSsGNqKHkiDxf63hFvLRdf35+NhJn64=;
+        h=X-UI-Sender-Class:Cc:Subject:From:To:Date;
+        b=afXj9uq2CXdiZOs5EVAMQB2Iw1ZGJ298HmyDgRU5Xl3bFMoXL1FcWBod/Q6qXasw2
+         IYl0Tx8hDOLZ4RmH0oti3dihxlgFbjA/9DirXJSXMzSmpJTPDftLZpBPCL8u84/Goq
+         exm2iSnr2YNBX6BLLbl6AMFV754cPfwSxLD1Xxjs=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([93.133.152.69]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MMpCg-1joNhL1SOC-00IxGG; Mon, 04
+ May 2020 16:12:15 +0200
+Cc:     linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: Re: [PATCH] net: enetc: fix an issue about leak system resources
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+To:     Dejin Zheng <zhengdejin5@gmail.com>, netdev@vger.kernel.org
+Message-ID: <9de14fae-458f-adb7-a5e7-5beb05d8d9ea@web.de>
+Date:   Mon, 4 May 2020 16:12:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod5Ao2PEFPEOckW6URBfxisp9nNpNeon1GuctuHehqk_6Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:rl3DVGTzFlHf+dEb536eUHxAAiO3NGO8mSyhRmD3WgOx91M+zVn
+ I6p4nUs9dVK+meGWXzIFCp4ADheAVN6Q+525jVfksIVZfKLxD41FvgFpUJK9cm616TjW6uv
+ Rupeq0zA2Up3AzfFJwFJbcvRWLldJMjhwSVSwY/UzmRzFo7UIxioPpv8LWcfLCyr3SNWWjq
+ fovb35JbZpEp+pP4ZCsTw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:KeONVTIGYXs=:nV2XLIAWlmy40BSi1wZW87
+ DGbk5lA//It4624X2p4KEFyELzaCq1VL1xYgILgiwI94YpB58rhlKHJarbq3ypI5NeI+Bi1Ka
+ qJSnBPeQXBMLHNc5Q1PtfvBY4gn7z5oum2wpAFU0nkDdgm+HlJn6ngg/VW6LWFaEh9tffL5PY
+ 3B9GhTtnBZSVR35jlbR/xUrY96iHpbOo8QfUVoYGbMM+A8eUqj5PAGv7SEzX2f6To+VZEumUi
+ 4zkoRI6nWodpJj+ukaLZKkFLg/dhXO1Wsc0I05wPOpyPk9ndhwN1ouOPH98IeV4SvU0GekldG
+ 0eJQFcXf+3/CZx7P5vbqoTZf/3NxWBPsJuTgZzCsYMw5XpiC7XQS2nb4ChLb94glCy/hw62TU
+ dzMTm3F0JjB0MKR1X8KxnKt71h8ioNt9OZFIUB+ZsFzMI0gOBAX1Eaxfs54kn582kncndmUyE
+ Uw442fkiVD7ddTVTYoDUwR0Y9xFbptcm5hTldyaWx4WcinBSrX70qcvLbzxviIWXFzMPuF3ez
+ qb9t5za7kDTAtd3bvZQQq0SBeGieE6v4wQ5Qk3cXaa3mljL20x747W0f+IqNSejMxZ7aQu4cw
+ JSrUt1VB5rvVramN30mNd1/8/gyYEjqwxd/NBcIIp8fXJrGtfby4VHLC6fsddItGnkCXVLX8r
+ lN74bWCYirgcjXXon1uCgvEy+lSj60VAxT6mbzd2d1vHYU47xWS/pnKE6WYcdQ4kyTjRvkIWt
+ Ynx1oiDFtqK0XkBR9v03jz6y1aGGzcGmz9Sxx2P9CgNNAnyC828l0ELz5GhI+vExRFRyt3BAX
+ AwCQg8WeJY/mUtP4h07Wl26Uz85fAAX2JCKr7c+rZUzHYHHUjiGXwDAhULCS6kDfJhO1Qdbqm
+ NOgCudYmdY8fmkvNea9kNlGanmDp7p59LVPrItIkW6R42wbc6Gy3FXqWypfhi0ogVxZcwcNWX
+ YLxm/V6fMf6TWrghPMcOePXX2d9T5FmANYuBE58aUloU/UYUyMiL/pVTRPsUODg59qfk+96H8
+ 0qa9w7sMYialpdjZgI4sqwFADgt2FkFd2MLCobLZIjljxXrTuXBEOrLQRmZ7eJRpDfPTnsNUO
+ 5AZHfYVUJ1dBAHZJ05uSi14k+4AoYtvv0bQ9YOMwc/rGF9O9bu8ej3L2FOFseOO9gleTBWY6U
+ 5X+yZhAnQzYiWjy9dHrbFR6hxrTqg6/Qn3TreblhEX4dM/LP7d7w/VEMiDIm5E6GB900K/jY0
+ w+9X39Zt9PUIWzer+
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 04-05-20 06:54:40, Shakeel Butt wrote:
-> On Sun, May 3, 2020 at 11:56 PM Michal Hocko <mhocko@kernel.org> wrote:
-> >
-> > On Thu 30-04-20 11:27:12, Shakeel Butt wrote:
-> > > Lowering memory.max can trigger an oom-kill if the reclaim does not
-> > > succeed. However if oom-killer does not find a process for killing, it
-> > > dumps a lot of warnings.
-> >
-> > It shouldn't dump much more than the regular OOM report AFAICS. Sure
-> > there is "Out of memory and no killable processes..." message printed as
-> > well but is that a real problem?
-> >
-> > > Deleting a memcg does not reclaim memory from it and the memory can
-> > > linger till there is a memory pressure. One normal way to proactively
-> > > reclaim such memory is to set memory.max to 0 just before deleting the
-> > > memcg. However if some of the memcg's memory is pinned by others, this
-> > > operation can trigger an oom-kill without any process and thus can log a
-> > > lot un-needed warnings. So, ignore all such warnings from memory.max.
-> >
-> > OK, I can see why you might want to use memory.max for that purpose but
-> > I do not really understand why the oom report is a problem here.
-> 
-> It may not be a problem for an individual or small scale deployment
-> but when "sweep before tear down" is the part of the workflow for
-> thousands of machines cycling through hundreds of thousands of cgroups
-> then we can potentially flood the logs with not useful dumps and may
-> hide (or overflow) any useful information in the logs.
+> the related system resources were not released when enetc_hw_alloc()
+> return error in the enetc_pci_mdio_probe(), add iounmap() for error
+> handling label "err_hw_alloc" to fix it.
 
-If you are doing this in a large scale and the oom report is really a
-problem then you shouldn't be resetting hard limit to 0 in the first
-place.
+How do you think about a wording variant like the following?
 
-> > memory.max can trigger the oom kill and user should be expecting the oom
-> > report under that condition. Why is "no eligible task" so special? Is it
-> > because you know that there won't be any tasks for your particular case?
-> > What about other use cases where memory.max is not used as a "sweep
-> > before tear down"?
-> 
-> What other such use-cases would be? The only use-case I can envision
-> of adjusting limits dynamically of a live cgroup are resource
-> managers. However for cgroup v2, memory.high is the recommended way to
-> limit the usage, so, why would resource managers be changing
-> memory.max instead of memory.high? I am not sure. What do you think?
+   Subject:
+   [PATCH v2] net: enetc: Complete exception handling in enetc_pci_mdio_pr=
+obe()
 
-There are different reasons to use the hard limit. Mostly to contain
-potential runaways. While high limit might be a sufficient measure to
-achieve that as well the hard limit is the last resort. And it clearly
-has the oom killer semantic so I am not really sure why you are
-comparing the two.
+   Change description:
+   A call of the function =E2=80=9Cenetc_hw_alloc=E2=80=9D can fail here.
+   The corresponding system resources were not released then.
+   Thus move a call of the function =E2=80=9Ciounmap=E2=80=9D behind
+   the label =E2=80=9Cerr_hw_alloc=E2=80=9D.
 
-> FB is moving away from limits setting, so, not sure if they have
-> thought of these cases.
-> 
-> BTW for such use-cases, shouldn't we be taking the memcg's oom_lock?
 
-This is a good question. I would have to go and double check the code
-but I suspect that this is an omission.
--- 
-Michal Hocko
-SUSE Labs
+Would you like to reduce the labels for this function implementation inste=
+ad?
+
+Regards,
+Markus
