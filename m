@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26EFD1C4570
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:15:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0BC11C43BC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:01:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730813AbgEDR7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 13:59:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53118 "EHLO mail.kernel.org"
+        id S1731100AbgEDSBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:01:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730794AbgEDR73 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 13:59:29 -0400
+        id S1730575AbgEDSAy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 14:00:54 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4FB0820746;
-        Mon,  4 May 2020 17:59:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D6D0F2078C;
+        Mon,  4 May 2020 18:00:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588615167;
-        bh=6Rv8g7Pik3o5TY+Aa2mrVyiSSrcmj02o9OfxZPNwV/A=;
+        s=default; t=1588615253;
+        bh=w/JwMb7JVHqYplPPoNYvno00KImVTLDxu+5qtPyfeg0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gkL70LFyQIzAzxDLQhcxeUK9isBGoXP+38Uns2NyA/SSHbd3xDO1V+7mfhFN6ULMn
-         EdEW5zzWy/KtIo5dva7S14gVOnjRaNC4RNgFTndHUDyikgD5Ha58E/uwDdPzLBydyU
-         K+6Lcd3ZEANl0uZCYhmJvDtVpCo/goWfrmJWO5aM=
+        b=HmlMd9JOYay/mzFcDxHYvxfiY1iR5LVyQjTQqQvsJuJSPqSlTWjchCAvonTD8ZWEn
+         Gx9VIziShyDeraMFW48jLboF2p0pAYF5QR7h4sNyQtFKJ3JOSt1OXZnQ4uhiFHNkxz
+         kF8BzWx5EJtL05NB4veNrFkzMvuURANKUJqYnrLY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>
-Subject: [PATCH 4.9 12/18] vfio/type1: Fix VA->PA translation for PFNMAP VMAs in vaddr_get_pfn()
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 4.14 08/26] mmc: sdhci-xenon: fix annoying 1.8V regulator warning
 Date:   Mon,  4 May 2020 19:57:22 +0200
-Message-Id: <20200504165444.661937255@linuxfoundation.org>
+Message-Id: <20200504165444.563485569@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200504165442.028485341@linuxfoundation.org>
-References: <20200504165442.028485341@linuxfoundation.org>
+In-Reply-To: <20200504165442.494398840@linuxfoundation.org>
+References: <20200504165442.494398840@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,73 +44,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <sean.j.christopherson@intel.com>
+From: Marek Behún <marek.behun@nic.cz>
 
-commit 5cbf3264bc715e9eb384e2b68601f8c02bb9a61d upstream.
+commit bb32e1987bc55ce1db400faf47d85891da3c9b9f upstream.
 
-Use follow_pfn() to get the PFN of a PFNMAP VMA instead of assuming that
-vma->vm_pgoff holds the base PFN of the VMA.  This fixes a bug where
-attempting to do VFIO_IOMMU_MAP_DMA on an arbitrary PFNMAP'd region of
-memory calculates garbage for the PFN.
+For some reason the Host Control2 register of the Xenon SDHCI controller
+sometimes reports the bit representing 1.8V signaling as 0 when read
+after it was written as 1. Subsequent read reports 1.
 
-Hilariously, this only got detected because the first "PFN" calculated
-by vaddr_get_pfn() is PFN 0 (vma->vm_pgoff==0), and iommu_iova_to_phys()
-uses PA==0 as an error, which triggers a WARN in vfio_unmap_unpin()
-because the translation "failed".  PFN 0 is now unconditionally reserved
-on x86 in order to mitigate L1TF, which causes is_invalid_reserved_pfn()
-to return true and in turns results in vaddr_get_pfn() returning success
-for PFN 0.  Eventually the bogus calculation runs into PFNs that aren't
-reserved and leads to failure in vfio_pin_map_dma().  The subsequent
-call to vfio_remove_dma() attempts to unmap PFN 0 and WARNs.
+This causes the sdhci_start_signal_voltage_switch function to report
+  1.8V regulator output did not become stable
 
-  WARNING: CPU: 8 PID: 5130 at drivers/vfio/vfio_iommu_type1.c:750 vfio_unmap_unpin+0x2e1/0x310 [vfio_iommu_type1]
-  Modules linked in: vfio_pci vfio_virqfd vfio_iommu_type1 vfio ...
-  CPU: 8 PID: 5130 Comm: sgx Tainted: G        W         5.6.0-rc5-705d787c7fee-vfio+ #3
-  Hardware name: Intel Corporation Mehlow UP Server Platform/Moss Beach Server, BIOS CNLSE2R1.D00.X119.B49.1803010910 03/01/2018
-  RIP: 0010:vfio_unmap_unpin+0x2e1/0x310 [vfio_iommu_type1]
-  Code: <0f> 0b 49 81 c5 00 10 00 00 e9 c5 fe ff ff bb 00 10 00 00 e9 3d fe
-  RSP: 0018:ffffbeb5039ebda8 EFLAGS: 00010246
-  RAX: 0000000000000000 RBX: ffff9a55cbf8d480 RCX: 0000000000000000
-  RDX: 0000000000000000 RSI: 0000000000000001 RDI: ffff9a52b771c200
-  RBP: 0000000000000000 R08: 0000000000000040 R09: 00000000fffffff2
-  R10: 0000000000000001 R11: ffff9a51fa896000 R12: 0000000184010000
-  R13: 0000000184000000 R14: 0000000000010000 R15: ffff9a55cb66ea08
-  FS:  00007f15d3830b40(0000) GS:ffff9a55d5600000(0000) knlGS:0000000000000000
-  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  CR2: 0000561cf39429e0 CR3: 000000084f75f005 CR4: 00000000003626e0
-  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-  Call Trace:
-   vfio_remove_dma+0x17/0x70 [vfio_iommu_type1]
-   vfio_iommu_type1_ioctl+0x9e3/0xa7b [vfio_iommu_type1]
-   ksys_ioctl+0x92/0xb0
-   __x64_sys_ioctl+0x16/0x20
-   do_syscall_64+0x4c/0x180
-   entry_SYSCALL_64_after_hwframe+0x44/0xa9
-  RIP: 0033:0x7f15d04c75d7
-  Code: <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 81 48 2d 00 f7 d8 64 89 01 48
+When CONFIG_PM is enabled, the host is suspended and resumend many
+times, and in each resume the switch to 1.8V is called, and so the
+kernel log reports this message annoyingly often.
 
-Fixes: 73fa0d10d077 ("vfio: Type1 IOMMU implementation")
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+Do an empty read of the Host Control2 register in Xenon's
+.voltage_switch method to circumvent this.
+
+This patch fixes this particular problem on Turris MOX.
+
+Signed-off-by: Marek Behún <marek.behun@nic.cz>
+Fixes: 8d876bf472db ("mmc: sdhci-xenon: wait 5ms after set 1.8V...")
+Cc: stable@vger.kernel.org # v4.16+
+Link: https://lore.kernel.org/r/20200420080444.25242-1-marek.behun@nic.cz
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/vfio/vfio_iommu_type1.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mmc/host/sdhci-xenon.c |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
---- a/drivers/vfio/vfio_iommu_type1.c
-+++ b/drivers/vfio/vfio_iommu_type1.c
-@@ -229,8 +229,8 @@ static int vaddr_get_pfn(unsigned long v
- 	vma = find_vma_intersection(current->mm, vaddr, vaddr + 1);
+--- a/drivers/mmc/host/sdhci-xenon.c
++++ b/drivers/mmc/host/sdhci-xenon.c
+@@ -238,6 +238,16 @@ static void xenon_voltage_switch(struct
+ {
+ 	/* Wait for 5ms after set 1.8V signal enable bit */
+ 	usleep_range(5000, 5500);
++
++	/*
++	 * For some reason the controller's Host Control2 register reports
++	 * the bit representing 1.8V signaling as 0 when read after it was
++	 * written as 1. Subsequent read reports 1.
++	 *
++	 * Since this may cause some issues, do an empty read of the Host
++	 * Control2 register here to circumvent this.
++	 */
++	sdhci_readw(host, SDHCI_HOST_CONTROL2);
+ }
  
- 	if (vma && vma->vm_flags & VM_PFNMAP) {
--		*pfn = ((vaddr - vma->vm_start) >> PAGE_SHIFT) + vma->vm_pgoff;
--		if (is_invalid_reserved_pfn(*pfn))
-+		if (!follow_pfn(vma, vaddr, pfn) &&
-+		    is_invalid_reserved_pfn(*pfn))
- 			ret = 0;
- 	}
- 
+ static const struct sdhci_ops sdhci_xenon_ops = {
 
 
