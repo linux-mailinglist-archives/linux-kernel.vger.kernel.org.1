@@ -2,29 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 778FA1C382A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 13:33:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CE071C3829
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 13:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728653AbgEDLdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 07:33:42 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:3404 "EHLO huawei.com"
+        id S1728639AbgEDLdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 07:33:39 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:56594 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728630AbgEDLdk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 07:33:40 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 4B935F381415832D31C8;
-        Mon,  4 May 2020 19:33:26 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Mon, 4 May 2020
- 19:33:17 +0800
+        id S1726445AbgEDLdj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 07:33:39 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 85D99CE2747AD275C5FC;
+        Mon,  4 May 2020 19:33:36 +0800 (CST)
+Received: from huawei.com (10.175.124.28) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Mon, 4 May 2020
+ 19:33:28 +0800
 From:   Jason Yan <yanaijie@huawei.com>
-To:     <bskeggs@redhat.com>, <airlied@linux.ie>, <daniel@ffwll.ch>,
-        <dri-devel@lists.freedesktop.org>, <nouveau@lists.freedesktop.org>,
+To:     <gregkh@linuxfoundation.org>, <devel@driverdev.osuosl.org>,
         <linux-kernel@vger.kernel.org>
 CC:     Jason Yan <yanaijie@huawei.com>
-Subject: [PATCH] drm/nouveau/mmu: remove unneeded semicolon
-Date:   Mon, 4 May 2020 19:32:40 +0800
-Message-ID: <20200504113240.40683-1-yanaijie@huawei.com>
+Subject: [PATCH] staging: rtl8723bs: remove conversion to bool in halbtcoutsrc_Get()
+Date:   Mon, 4 May 2020 19:32:51 +0800
+Message-ID: <20200504113251.40791-1-yanaijie@huawei.com>
 X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -38,43 +37,27 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fix the following coccicheck warning:
 
-drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmm.h:307:2-3: Unneeded
-semicolon
-drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmm.c:583:2-3: Unneeded
-semicolon
+drivers/staging/rtl8723bs/hal/hal_btcoex.c:410:59-64: WARNING:
+conversion to bool not needed here
 
 Signed-off-by: Jason Yan <yanaijie@huawei.com>
 ---
- drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmm.c | 2 +-
- drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmm.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/staging/rtl8723bs/hal/hal_btcoex.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmm.c b/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmm.c
-index 41640e0584ac..199f94e15c5f 100644
---- a/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmm.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmm.c
-@@ -580,7 +580,7 @@ nvkm_vmm_iter(struct nvkm_vmm *vmm, const struct nvkm_vmm_page *page,
- 				it.pte[it.lvl]++;
- 			}
- 		}
--	};
-+	}
+diff --git a/drivers/staging/rtl8723bs/hal/hal_btcoex.c b/drivers/staging/rtl8723bs/hal/hal_btcoex.c
+index a6ed1bb9945e..3705a60a0546 100644
+--- a/drivers/staging/rtl8723bs/hal/hal_btcoex.c
++++ b/drivers/staging/rtl8723bs/hal/hal_btcoex.c
+@@ -407,7 +407,7 @@ static u8 halbtcoutsrc_Get(void *pBtcContext, u8 getType, void *pOutBuf)
+ 		break;
  
- 	nvkm_vmm_flush(&it);
- 	return ~0ULL;
-diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmm.h b/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmm.h
-index 5e55ecbd8005..d3f8f916d0db 100644
---- a/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmm.h
-+++ b/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmm.h
-@@ -304,7 +304,7 @@ int tu102_vmm_new(struct nvkm_mmu *, bool, u64, u64, void *, u32,
- 		FILL(VMM, PT, PTEI, _ptes, MAP, _addr);                        \
- 		PTEI += _ptes;                                                 \
- 		PTEN -= _ptes;                                                 \
--	};                                                                     \
-+	}                                                                      \
- 	nvkm_done((PT)->memory);                                               \
- } while(0)
+ 	case BTC_GET_BL_WIFI_ENABLE_ENCRYPTION:
+-		*pu8 = padapter->securitypriv.dot11PrivacyAlgrthm == 0 ? false : true;
++		*pu8 = padapter->securitypriv.dot11PrivacyAlgrthm != 0;
+ 		break;
  
+ 	case BTC_GET_BL_WIFI_UNDER_B_MODE:
 -- 
 2.21.1
 
