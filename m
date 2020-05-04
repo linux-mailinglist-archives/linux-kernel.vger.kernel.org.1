@@ -2,102 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E4541C3344
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 09:03:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD2C71C3349
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 09:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727924AbgEDHDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 03:03:05 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:35684 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726410AbgEDHDF (ORCPT
+        id S1728003AbgEDHFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 03:05:05 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:56873 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726515AbgEDHFF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 03:03:05 -0400
-Received: by mail-wr1-f66.google.com with SMTP id x18so19562674wrq.2;
-        Mon, 04 May 2020 00:03:03 -0700 (PDT)
+        Mon, 4 May 2020 03:05:05 -0400
+Received: by mail-il1-f198.google.com with SMTP id z24so12667568ilk.23
+        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 00:05:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jjVK3IGY3lofxgky6MANKIlS/RTE1msGdHN8C79gtRA=;
-        b=cDu0EMjdG1BtJjN4HCuS28n3gPTbwkKPK2RIj58kca605qvsMMTY4BhGtTPA9FtIxm
-         QYR/YtS5LXlmfivcxJtqOHFnt3i1k8LRh+M5GepZRjjfuaP+1oGi6OssYo92axHFW5AI
-         lFC1lN7Bxm88uKyP5duSTRs+jD5sH2aYy7/0B5aRHGPONd+ekGOOuMRZN6OrCPPgwUm3
-         KQWl2n1kOzEk88zM2Q/9ls7e1f9RyIwyu7Yu6FPC0tBpWXc90M+59+23ZYQoj0GoyqnC
-         ZY2fZLv+76ZFwOMKmniaweuN3p1MB/pqqdD3NR016jHpGL4uIIt/vAb0dbSyEImbGpD1
-         CObQ==
-X-Gm-Message-State: AGi0PubQOFyxWr5BSJjJtKmkJDzyvUuFSOwwYOFvK0hsaKFfrPLtEXJF
-        eBFZTsbnbsKoQLECDYTYdQs=
-X-Google-Smtp-Source: APiQypL1DoXx6w0TGJSBvgI/zBJ2RIwW2P/T7NsRocZrPXDloYOn7lqwJM5NQOxDkI/4wpi4dbdQkg==
-X-Received: by 2002:adf:f40b:: with SMTP id g11mr18764892wro.178.1588575783322;
-        Mon, 04 May 2020 00:03:03 -0700 (PDT)
-Received: from localhost (ip-37-188-183-9.eurotel.cz. [37.188.183.9])
-        by smtp.gmail.com with ESMTPSA id r3sm18434951wrx.72.2020.05.04.00.03.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 May 2020 00:03:02 -0700 (PDT)
-Date:   Mon, 4 May 2020 09:03:01 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Greg Thelen <gthelen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] memcg: oom: ignore oom warnings from memory.max
-Message-ID: <20200504070301.GC22838@dhcp22.suse.cz>
-References: <20200430182712.237526-1-shakeelb@google.com>
- <CALOAHbC4WY00yQ46b8CFqVQ3S=JSJxE2HR00TtMqXOWLRPRZ8w@mail.gmail.com>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=u3a78ZSqYtMPKHHAjJSNj5CtWeDAIi+gNz7+0hYnnWI=;
+        b=ryclp+Mjn90JDCd8Sw4kBSWW/rOmrFr4DreA+/r1vfWoOh4BlLnjmIZKBxvdD1nLwM
+         judn3GjMAfiGgM45eD0hKne1lxTSM+5dLz7Igcy2ByZsF6Gh7oJ7SShIWxsSMmH/XIaw
+         RyU76/NqwjnH7XBAFbcs9kU2xNMy4At0nNBDerM5phyQY2TqlzbsXz4oqdbL+EMnn/mM
+         OBwSfS+mmgtp2fKkAOg/aY/I9Ln43qY1r3UwlPJwndohwpfkXCr4fM7si8LZX9yi9Zbd
+         dK52lRyWgQ/joxrBJDC8o6BcWUaN3bsKxPgE5ZTM/rS1rzS0Opcy65Ha9nRKEMNbcBJ3
+         EAXQ==
+X-Gm-Message-State: AGi0PuajNH8UwbmVAqnj3ZNIX4wU6uiJkelMDbgGRPlj/9VoSQM1ktuw
+        Y0zFkmtwv95VjRjjIcrzFGOJZXor/0Bqvy5wIkCgyFUQHOMG
+X-Google-Smtp-Source: APiQypJoS44zQk9wi0Sxu/Y9n64DarEKre69MS+FF88hVeGqZryFDTLDuYB2V3PmvQ9hW8h0OBRfR17f+aByoFxd0BOKIBQz/zJ+
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALOAHbC4WY00yQ46b8CFqVQ3S=JSJxE2HR00TtMqXOWLRPRZ8w@mail.gmail.com>
+X-Received: by 2002:a92:8515:: with SMTP id f21mr14830968ilh.20.1588575904094;
+ Mon, 04 May 2020 00:05:04 -0700 (PDT)
+Date:   Mon, 04 May 2020 00:05:04 -0700
+In-Reply-To: <000000000000c0bffa0586795098@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000076622305a4cd26ae@google.com>
+Subject: Re: WARNING: bad unlock balance in rcu_core
+From:   syzbot <syzbot+36baa6c2180e959e19b1@syzkaller.appspotmail.com>
+To:     aia21@cantab.net, bvanassche@acm.org, dvyukov@google.com,
+        gaoxiang25@huawei.com, jack@suse.cz, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, miaoxie@huawei.com, mingo@kernel.org,
+        mingo@redhat.com, peterz@infradead.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
+        will@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 01-05-20 09:39:24, Yafang Shao wrote:
-> On Fri, May 1, 2020 at 2:27 AM Shakeel Butt <shakeelb@google.com> wrote:
-> >
-> > Lowering memory.max can trigger an oom-kill if the reclaim does not
-> > succeed. However if oom-killer does not find a process for killing, it
-> > dumps a lot of warnings.
-> >
-> 
-> I have been confused by this behavior for several months and I think
-> it will confuse more memcg users.
+syzbot suspects this bug was fixed by commit:
 
-Could you be more specific what has caused the confusion?
+commit 10476e6304222ced7df9b3d5fb0a043b3c2a1ad8
+Author: Peter Zijlstra <peterz@infradead.org>
+Date:   Fri Mar 13 08:56:38 2020 +0000
 
-> We should keep the memcg oom behavior consistent with system oom - no
-> oom kill if no process.
+    locking/lockdep: Fix bad recursion pattern
 
-This is not the global mmemcg behavior. We do complain loud on no
-eligible tasks and actually panic the system. Memcg cannot simply
-do the same by default for obvious reasons.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=142baee4100000
+start commit:   5a1e843c Merge tag 'mips_fixes_5.4_3' of git://git.kernel...
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=420126a10fdda0f1
+dashboard link: https://syzkaller.appspot.com/bug?extid=36baa6c2180e959e19b1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1108239ce00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13cf40a8e00000
 
-> What about bellow change ?
->
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index e28098e13f1c..25fbc37a747f 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -6086,6 +6086,9 @@ static ssize_t memory_max_write(struct
-> kernfs_open_file *of,
->                         continue;
->                 }
-> 
-> +               if (!cgroup_is_populated(memcg->css.cgroup))
-> +                       break;
-> +
->                 memcg_memory_event(memcg, MEMCG_OOM);
->                 if (!mem_cgroup_out_of_memory(memcg, GFP_KERNEL, 0))
->                         break;
+If the result looks correct, please mark the bug fixed by replying with:
 
-I am not a great fan to be honest. The warning might be useful for other
-usecases when it is not clear that the memcg is empty.
+#syz fix: locking/lockdep: Fix bad recursion pattern
 
--- 
-Michal Hocko
-SUSE Labs
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
