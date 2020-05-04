@@ -2,328 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 420911C46D9
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 21:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24BC31C46DE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 21:12:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727812AbgEDTLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 15:11:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726877AbgEDTLN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 15:11:13 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C0F0C061A0F
-        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 12:11:12 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id 23so784238qkf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 12:11:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=from:content-transfer-encoding:mime-version:subject:message-id:date
-         :cc:to;
-        bh=VGvSAvWLe7+IJSwNMQEyo7m7FXM+79LRvXotwNFZf2s=;
-        b=kAyV4PUynjGB9Pg4P/67U0gxD+gr2+FcBJL6hSl3Cbb6lNF1QE965aRb+yFK6FiKgl
-         4hQFwnwIusFItt4by2VT/VMNe2LH+aRvOvEyJ//MlpU61ROWkTE3tz53DQec0KU8tq0E
-         S8TCA8I/jdgYx/o238ovH7THJTK+M8bz0SED0WKXYMdJ5rHuBUQLzLkeTq6uAW5aZDIh
-         nxSx+/cSQG9/vr9QMgaTZKyYE4l7mYVqPRo8xEeGt64LB/Olv1ruQhceVy5m6+ReDX3r
-         rjAm76To9yUwqbYCeLqbTX4OwbbiyHZSDjq6f3A4puU25D/fm9pKOsgqPBE/sULnYD//
-         cOnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:content-transfer-encoding:mime-version
-         :subject:message-id:date:cc:to;
-        bh=VGvSAvWLe7+IJSwNMQEyo7m7FXM+79LRvXotwNFZf2s=;
-        b=SyY2qTBLKw+Tkb+3zBB16wMZs8X0N6/iIY+/nhYygseZfxuSoemQ0N+ZhemJ7KRcVP
-         b8FwsGvIXGhF/Y6y7XC8jiE1OIGcwhvW6JIjKBIZmHT9xR3X2024MasUZ7ZU3qldQ2EK
-         Um6G7ICjBMHb6+GNymns8jmXxkiM5plz670RG7V/r9GxyR6TLXKrwxJPJxhfGsOrySCI
-         mkV04Xc6dapBJ78MDpd3XeSyTc1/lDxYwEwVL1qNZoAjKgWrOdVlTEhAnQe7Pks+0Oje
-         OwtPbAN5DS7pkq/ZeqPEnOsW977jmrABAHl+NnXivgkB6sgIpGOxJBayQUz1xF8EdD55
-         juEA==
-X-Gm-Message-State: AGi0PuYWN+N2qdOl45124j72JM7nDko4N0rC5AvbaRqLpysBCamI4cQx
-        Lz3GQAkqnXieqVzrn3t7f+MWMA==
-X-Google-Smtp-Source: APiQypLoc1Bl2ZCLxPBUvax2c2dnuxnfkz9fTYPan6cEz0DB7ycCLbC8dg232ptBJL+tl1HgXm9uXg==
-X-Received: by 2002:a05:620a:693:: with SMTP id f19mr695285qkh.299.1588619470939;
-        Mon, 04 May 2020 12:11:10 -0700 (PDT)
-Received: from [192.168.1.153] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id h185sm4503286qkc.19.2020.05.04.12.11.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 04 May 2020 12:11:10 -0700 (PDT)
-From:   Qian Cai <cai@lca.pw>
-Content-Type: text/plain;
-        charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: splice() rcu_sched self-detected stall on CPU
-Message-Id: <89F418A9-EB20-48CB-9AE0-52C700E6BB74@lca.pw>
-Date:   Mon, 4 May 2020 15:11:09 -0400
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-fsdevel@vger.kernel.org
-To:     Al Viro <viro@ZenIV.linux.org.uk>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+        id S1726974AbgEDTMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 15:12:50 -0400
+Received: from mga01.intel.com ([192.55.52.88]:7903 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725956AbgEDTMu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 15:12:50 -0400
+IronPort-SDR: MDH2N+gkrJsMEh3aJ58w7K3xTdsQa5zsWH455Cd3GA9kTp6MBLGSbtGwWCfnc7xumlaSKbMOpV
+ YAGFqLVjYRtA==
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2020 12:12:33 -0700
+IronPort-SDR: nhI2Yatbe0vptIvamjooqlQtvy9RfXBRqCSXeZBte6I6X3+o14ZRp8HEPQe2r/mV1TmBgFnDfQ
+ maoTfxRv2TJA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,353,1583222400"; 
+   d="gz'50?scan'50,208,50";a="294721301"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 04 May 2020 12:12:31 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jVgVy-0004S3-Gi; Tue, 05 May 2020 03:12:30 +0800
+Date:   Tue, 5 May 2020 03:11:58 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Prasad Sodagudi <psodagud@codeaurora.org>, tglx@linutronix.de,
+        john.stultz@linaro.org, sboyd@kernel.org, tj@kernel.org
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        saravanak@google.com, psodagud@codeaurora.org,
+        pkondeti@codeaurora.org
+Subject: Re: [PATCH v3 2/2] sched: Add a check for cpu unbound deferrable
+ timers
+Message-ID: <202005050350.JrZ92nSI%lkp@intel.com>
+References: <1588444137-18651-3-git-send-email-psodagud@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="BXVAT5kNtrzKuDFl"
+Content-Disposition: inline
+In-Reply-To: <1588444137-18651-3-git-send-email-psodagud@codeaurora.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Running a syscall fuzzer inside a container on linux-next floods systems =
-with soft lockups. It looks like stuck in this line at =
-iov_iter_copy_from_user_atomic(), Thoughts?
 
-iterate_all_kinds(i, bytes, v,
-                copyin((p +=3D v.iov_len) - v.iov_len, v.iov_base, =
-v.iov_len),
-                memcpy_from_page((p +=3D v.bv_len) - v.bv_len, =
-v.bv_page,
-                                 v.bv_offset, v.bv_len),
-                memcpy((p +=3D v.iov_len) - v.iov_len, v.iov_base, =
-v.iov_len)
-        )
+--BXVAT5kNtrzKuDFl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-[18310.203791][  C118] watchdog: BUG: soft lockup - CPU#118 stuck for =
-22s! [trinity-c93:129976]
-[18310.212289][  C118] Modules linked in: nfnetlink cn brd ext4 crc16 =
-mbcache jbd2 loop nls_iso8859_1 nls_cp437 vfat fat kvm_amd kvm ses =
-enclosure dax_pmem irqbypass dax_pmem_core efivars acpi_cpufreq efivarfs =
-ip_tables x_tables xfs sd_mod smartpqi scsi_transport_sas mlx5_core tg3 =
-libphy firmware_class dm_mirror dm_region_hash dm_log dm_mod [last =
-unloaded: binfmt_misc]
-[18310.245012][  C118] irq event stamp: 0
-[18310.248847][  C118] hardirqs last  enabled at (0): =
-[<0000000000000000>] 0x0
-[18310.255867][  C118] hardirqs last disabled at (0): =
-[<ffffffffa5ebffef>] copy_process+0x10ff/0x30a0
-[18310.264889][  C118] softirqs last  enabled at (0): =
-[<ffffffffa5ebffef>] copy_process+0x10ff/0x30a0
-[18310.273908][  C118] softirqs last disabled at (0): =
-[<0000000000000000>] 0x0
-[18310.280958][  C118] CPU: 118 PID: 129976 Comm: trinity-c93 Tainted: G =
-          O L    5.7.0-rc4-next-20200504+ #1
-[18310.291463][  C118] Hardware name: HPE ProLiant DL385 Gen10/ProLiant =
-DL385 Gen10, BIOS A40 07/10/2019
-[18310.300814][  C118] RIP: =
-0010:iov_iter_copy_from_user_atomic+0x3b4/0x510
-lib/iov_iter.c:1000 (discriminator 10)
-[18310.307699][  C118] Code: 92 dd ff 41 8b 47 08 8b 75 c8 8b 55 b8 29 =
-d8 81 e2 ff 0f 00 00 39 f0 0f 47 c6 89 c1 b8 00 10 00 00 29 d0 39 c1 0f =
-46 c1 85 c0 <74> 55 4c 89 ff 89 45 d0 89 55 a4 e8 2c 93 dd ff 8b 75 b8 =
-48 8b 7d
-[18310.327430][  C118] RSP: 0018:ffffc900387f7758 EFLAGS: 00000246 =
-ORIG_RAX: ffffffffffffff13
-[18310.335863][  C118] RAX: 0000000000000000 RBX: 0000000000000000 RCX: =
-0000000000000000
-[18310.343747][  C118] RDX: 0000000000000000 RSI: 0000000000000b99 RDI: =
-ffff888c8f804208
-[18310.351731][  C118] RBP: ffffc900387f77b8 R08: ffffed1117c50075 R09: =
-ffffed1117c50075
-[18310.359659][  C118] R10: ffff8888be2803a7 R11: ffffed1117c50074 R12: =
-0000000000000b99
-[18310.367624][  C118] R13: ffffc900387f7c30 R14: 0000000000000000 R15: =
-ffff888c8f804200
-[18310.375601][  C118] FS:  00007f733446f740(0000) =
-GS:ffff889030700000(0000) knlGS:0000000000000000
-[18310.384444][  C118] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[18310.391026][  C118] CR2: 00007f73340852fc CR3: 00000009e6ea4000 CR4: =
-00000000003406e0
-[18310.398951][  C118] Call Trace:
-[18310.402123][  C118]  generic_perform_write+0x254/0x340
-[18310.407402][  C118]  ? filemap_check_errors+0xb0/0xb0
-[18310.412493][  C118]  ? file_update_time+0x18a/0x220
-[18310.417532][  C118]  ? update_time+0x70/0x70
-[18310.421836][  C118]  ? __kasan_check_write+0x14/0x20
-[18310.426928][  C118]  __generic_file_write_iter+0x1a5/0x2a0
-[18310.432453][  C118]  generic_file_write_iter+0x219/0x2d8
-[18310.437900][  C118]  ? kernel_text_address+0x59/0xc0
-[18310.442901][  C118]  ? __generic_file_write_iter+0x2a0/0x2a0
-[18310.448670][  C118]  do_iter_readv_writev+0x2cb/0x3d0
-[18310.453757][  C118]  ? default_llseek+0x140/0x140
-[18310.458571][  C118]  ? create_object+0x4a7/0x540
-[18310.463224][  C118]  do_iter_write+0xd7/0x2b0
-[18310.467680][  C118]  vfs_iter_write+0x4e/0x70
-[18310.472072][  C118]  iter_file_splice_write+0x44a/0x620
-[18310.477430][  C118]  ? page_cache_pipe_buf_steal+0x130/0x130
-[18310.483130][  C118]  ? debug_lockdep_rcu_enabled+0x27/0x60
-[18310.488709][  C118]  ? ___might_sleep+0x178/0x210
-[18310.493449][  C118]  ? __sb_start_write+0x17b/0x270
-[18310.498476][  C118]  do_splice+0x5ce/0xa20
-[18310.502602][  C118]  ? __task_pid_nr_ns+0x5/0x290
-[18310.507426][  C118]  ? __task_pid_nr_ns+0x145/0x290
-[18310.512339][  C118]  ? default_file_splice_write+0x40/0x40
-[18310.517952][  C118]  ? __kasan_check_read+0x11/0x20
-[18310.522866][  C118]  ? __fget_light+0xba/0x120
-[18310.527423][  C118]  __x64_sys_splice+0x16e/0x180
-[18310.532163][  C118]  do_syscall_64+0xcc/0xaf0
-[18310.536643][  C118]  ? syscall_return_slowpath+0x580/0x580
-[18310.542168][  C118]  ? lockdep_hardirqs_off+0x1f/0x140
-[18310.547386][  C118]  ? entry_SYSCALL_64_after_hwframe+0x3e/0xb3
-[18310.553349][  C118]  ? trace_hardirqs_off_caller+0x3a/0x150
-[18310.559046][  C118]  ? trace_hardirqs_off_thunk+0x1a/0x1c
-[18310.564484][  C118]  entry_SYSCALL_64_after_hwframe+0x49/0xb3
-[18310.570342][  C118] RIP: 0033:0x7f73345b070d
-[18310.574647][  C118] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 =
-0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c =
-24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 53 f7 0c 00 f7 d8 64 =
-89 01 48
-[18310.594352][  C118] RSP: 002b:00007ffe560d32f8 EFLAGS: 00000246 =
-ORIG_RAX: 0000000000000113
-[18310.602719][  C118] RAX: ffffffffffffffda RBX: 0000000000000113 RCX: =
-00007f73345b070d
-[18310.610653][  C118] RDX: 00000000000000a0 RSI: 0000000000000000 RDI: =
-00000000000000b1
-[18310.618628][  C118] RBP: 0000000000000113 R08: 0000000000001000 R09: =
-0000000000000002
-[18310.626597][  C118] R10: 0000000000000000 R11: 0000000000000246 R12: =
-0000000000000002
-[18310.634477][  C118] R13: 00007f7332cd5058 R14: 00007f733446f6c0 R15: =
-00007f7332cd5000
-[18321.464794][  C118] rcu: INFO: rcu_sched self-detected stall on CPU
-[18321.471149][  C118] rcu: 	118-....: (6410 ticks this GP) =
-idle=3D496/1/0x4000000000000002 softirq=3D311635/311638 fqs=3D2933=20
-[18321.482019][  C118] 	(t=3D6502 jiffies g=3D1028673 q=3D377159)
-[18321.487375][  C118] NMI backtrace for cpu 118
-[18321.491767][  C118] CPU: 118 PID: 129976 Comm: trinity-c93 Tainted: G =
-          O L    5.7.0-rc4-next-20200504+ #1
-[18321.502180][  C118] Hardware name: HPE ProLiant DL385 Gen10/ProLiant =
-DL385 Gen10, BIOS A40 07/10/2019
-[18321.511477][  C118] Call Trace:
-[18321.514643][  C118]  <IRQ>
-[18321.517381][  C118]  dump_stack+0xa7/0xea
-[18321.521423][  C118]  nmi_cpu_backtrace.cold.9+0x2e/0x33
-[18321.526706][  C118]  ? nmi_cpu_backtrace_handler+0x20/0x20
-[18321.532230][  C118]  nmi_trigger_cpumask_backtrace+0x19f/0x1b2
-[18321.538108][  C118]  arch_trigger_cpumask_backtrace+0x19/0x20
-[18321.543898][  C118]  rcu_dump_cpu_stacks+0x1a3/0x1ee
-[18321.549030][  C118]  rcu_sched_clock_irq.cold.110+0xe9/0x73a
-[18321.554731][  C118]  ? trace_hardirqs_off+0x3a/0x150
-[18321.559858][  C118]  update_process_times+0x28/0x60
-[18321.564776][  C118]  tick_sched_handle+0x44/0x90
-[18321.569525][  C118]  tick_sched_timer+0x3c/0xa0
-[18321.574086][  C118]  __hrtimer_run_queues+0x45d/0x8c0
-[18321.579251][  C118]  ? tick_sched_do_timer+0x90/0x90
-[18321.584249][  C118]  ? enqueue_hrtimer+0x240/0x240
-[18321.589203][  C118]  ? trace_hardirqs_off+0x3a/0x150
-[18321.594205][  C118]  ? ktime_get_update_offsets_now+0xb7/0x1f0
-[18321.600167][  C118]  hrtimer_interrupt+0x1aa/0x360
-[18321.605071][  C118]  ? __kasan_check_read+0x11/0x20
-[18321.610023][  C118]  smp_apic_timer_interrupt+0x103/0x430
-[18321.615518][  C118]  apic_timer_interrupt+0xf/0x20
-[18321.620341][  C118]  </IRQ>
-[18321.623160][  C118] RIP: =
-0010:iov_iter_copy_from_user_atomic+0x35d/0x510
-[18321.629982][  C118] Code: fe ff ff 49 8d 45 18 44 89 65 c8 45 31 f6 =
-48 89 45 a8 8b 45 c8 85 c0 0f 84 0e fe ff ff 48 8b 7d a8 e8 97 93 dd ff =
-49 8b 4d 18 <44> 89 f0 48 c1 e0 04 48 89 4d d0 48 01 c1 49 89 cf 48 8d =
-79 0c 48
-[18321.649567][  C118] RSP: 0018:ffffc900387f7758 EFLAGS: 00000246 =
-ORIG_RAX: ffffffffffffff13
-[18321.657890][  C118] RAX: 0000000000000000 RBX: 0000000000000000 RCX: =
-ffff888c8f804200
-[18321.665906][  C118] RDX: dffffc0000000000 RSI: 0000000000000b99 RDI: =
-ffffc900387f7c48
-[18321.673789][  C118] RBP: ffffc900387f77b8 R08: ffffed1117c50075 R09: =
-ffffed1117c50075
-[18321.681753][  C118] R10: ffff8888be2803a7 R11: ffffed1117c50074 R12: =
-0000000000000b99
-[18321.689635][  C118] R13: ffffc900387f7c30 R14: 0000000000000000 R15: =
-ffff888c8f804200
-[18321.697523][  C118]  ? iov_iter_copy_from_user_atomic+0x359/0x510
-[18321.703660][  C118]  generic_perform_write+0x254/0x340
-[18321.708920][  C118]  ? filemap_check_errors+0xb0/0xb0
-[18321.714010][  C118]  ? file_update_time+0x18a/0x220
-[18321.718944][  C118]  ? update_time+0x70/0x70
-[18321.723242][  C118]  ? __kasan_check_write+0x14/0x20
-[18321.728310][  C118]  __generic_file_write_iter+0x1a5/0x2a0
-[18321.733833][  C118]  generic_file_write_iter+0x219/0x2d8
-[18321.739236][  C118]  ? kernel_text_address+0x59/0xc0
-[18321.744237][  C118]  ? __generic_file_write_iter+0x2a0/0x2a0
-[18321.749937][  C118]  do_iter_readv_writev+0x2cb/0x3d0
-[18321.755095][  C118]  ? default_llseek+0x140/0x140
-[18321.759834][  C118]  ? create_object+0x4a7/0x540
-[18321.764488][  C118]  do_iter_write+0xd7/0x2b0
-[18321.768878][  C118]  vfs_iter_write+0x4e/0x70
-[18321.773273][  C118]  iter_file_splice_write+0x44a/0x620
-[18321.778537][  C118]  ? page_cache_pipe_buf_steal+0x130/0x130
-[18321.784237][  C118]  ? debug_lockdep_rcu_enabled+0x27/0x60
-[18321.789760][  C118]  ? ___might_sleep+0x178/0x210
-[18321.794500][  C118]  ? __sb_start_write+0x17b/0x270
-[18321.799410][  C118]  do_splice+0x5ce/0xa20
-[18321.803534][  C118]  ? __task_pid_nr_ns+0x5/0x290
-[18321.808275][  C118]  ? __task_pid_nr_ns+0x145/0x290
-[18321.813186][  C118]  ? default_file_splice_write+0x40/0x40
-[18321.818709][  C118]  ? __kasan_check_read+0x11/0x20
-[18321.823622][  C118]  ? __fget_light+0xba/0x120
-[18321.828131][  C118]  __x64_sys_splice+0x16e/0x180
-[18321.832868][  C118]  do_syscall_64+0xcc/0xaf0
-[18321.837290][  C118]  ? syscall_return_slowpath+0x580/0x580
-[18321.842817][  C118]  ? lockdep_hardirqs_off+0x1f/0x140
-[18321.847991][  C118]  ? entry_SYSCALL_64_after_hwframe+0x3e/0xb3
-[18321.853952][  C118]  ? trace_hardirqs_off_caller+0x3a/0x150
-[18321.859565][  C118]  ? trace_hardirqs_off_thunk+0x1a/0x1c
-[18321.865040][  C118]  entry_SYSCALL_64_after_hwframe+0x49/0xb3
-[18321.870867][  C118] RIP: 0033:0x7f73345b070d
-[18321.875174][  C118] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 =
-0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c =
-24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 53 f7 0c 00 f7 d8 64 =
-89 01 48
-[18321.894764][  C118] RSP: 002b:00007ffe560d32f8 EFLAGS: 00000246 =
-ORIG_RAX: 0000000000000113
-[18321.903082][  C118] RAX: ffffffffffffffda RBX: 0000000000000113 RCX: =
-00007f73345b070d
-[18321.910963][  C118] RDX: 00000000000000a0 RSI: 0000000000000000 RDI: =
-00000000000000b1
-[18321.918845][  C118] RBP: 0000000000000113 R08: 0000000000001000 R09: =
-0000000000000002
-[18321.926724][  C118] R10: 0000000000000000 R11: 0000000000000246 R12: =
-0000000000000002
-[18321.934605][  C118] R13: 00007f7332cd5058 R14: 00007f733446f6c0 R15: =
-00007f7332cd5000
- INFO: task trinity-c93:129976 can't die for more than 1725 seconds.
-[20088.049356][  T794] trinity-c93     R  running task    27728 129976  =
-97040 0x8000000e
-[20088.057298][  T794] Call Trace:
-[20088.060541][  T794]  ? __kasan_check_read+0x11/0x20
-[20088.065459][  T794]  ? activate_page+0x233/0x330
-[20088.070157][  T794]  ? __kasan_check_read+0x11/0x20
-[20088.075074][  T794]  ? mark_page_accessed+0x10a/0x5f0
-[20088.080202][  T794]  ? retint_kernel+0x10/0x10
-[20088.084681][  T794]  ? lockdep_hardirqs_on+0x16/0x2c0
-[20088.089772][  T794]  ? retint_kernel+0x10/0x10
-[20088.094288][  T794]  ? trace_hardirqs_on_caller+0x3a/0x160
-[20088.099909][  T794]  ? trace_hardirqs_on_thunk+0x1a/0x1c
-[20088.105306][  T794]  ? irq_exit+0x60/0xf0
-[20088.109346][  T794]  ? retint_kernel+0x10/0x10
-[20088.113857][  T794]  ? iov_iter_copy_from_user_atomic+0x359/0x510
-[20088.120156][  T794]  ? __asan_load8+0x30/0xb0
-[20088.124602][  T794]  ? iov_iter_copy_from_user_atomic+0x38d/0x510
-[20088.130850][  T794]  ? generic_perform_write+0x254/0x340
-[20088.136204][  T794]  ? filemap_check_errors+0xb0/0xb0
-[20088.141384][  T794]  ? file_update_time+0x18a/0x220
-[20088.146299][  T794]  ? update_time+0x70/0x70
-[20088.150633][  T794]  ? __kasan_check_write+0x14/0x20
-[20088.155637][  T794]  ? __generic_file_write_iter+0x1a5/0x2a0
-[20088.161371][  T794]  ? generic_file_write_iter+0x219/0x2d8
-[20088.166902][  T794]  ? kernel_text_address+0x59/0xc0
-[20088.171936][  T794]  ? __generic_file_write_iter+0x2a0/0x2a0
-[20088.177638][  T794]  ? do_iter_readv_writev+0x2cb/0x3d0
-[20088.182931][  T794]  ? default_llseek+0x140/0x140
-[20088.187672][  T794]  ? create_object+0x4a7/0x540
-[20088.192350][  T794]  ? do_iter_write+0xd7/0x2b0
-[20088.196919][  T794]  ? vfs_iter_write+0x4e/0x70
-[20088.201512][  T794]  ? iter_file_splice_write+0x44a/0x620
-[20088.206952][  T794]  ? page_cache_pipe_buf_steal+0x130/0x130
-[20088.212686][  T794]  ? debug_lockdep_rcu_enabled+0x27/0x60
-[20088.218213][  T794]  ? ___might_sleep+0x178/0x210
-[20088.223046][  T794]  ? __sb_start_write+0x17b/0x270
-[20088.227959][  T794]  ? do_splice+0x5ce/0xa20
-[20088.232290][  T794]  ? __task_pid_nr_ns+0x5/0x290
-[20088.237028][  T794]  ? __task_pid_nr_ns+0x145/0x290
-[20088.242054][  T794]  ? default_file_splice_write+0x40/0x40
-[20088.247579][  T794]  ? __kasan_check_read+0x11/0x20
-[20088.252564][  T794]  ? __fget_light+0xba/0x120
-[20088.257041][  T794]  ? __x64_sys_splice+0x16e/0x180
-[20088.262010][  T794]  ? do_syscall_64+0xcc/0xaf0
-[20088.266575][  T794]  ? syscall_return_slowpath+0x580/0x580
-[20088.272144][  T794]  ? lockdep_hardirqs_off+0x1f/0x140
-[20088.277320][  T794]  ? entry_SYSCALL_64_after_hwframe+0x3e/0xb3
-[20088.283305][  T794]  ? trace_hardirqs_off_caller+0x3a/0x150
-[20088.288920][  T794]  ? trace_hardirqs_off_thunk+0x1a/0x1c
-[20088.294398][  T794]  ? entry_SYSCALL_64_after_hwframe+0x49/0xb3=
+Hi Prasad,
+
+Thank you for the patch! Yet something to improve:
+
+[auto build test ERROR on tip/timers/core]
+[also build test ERROR on tip/auto-latest tip/timers/nohz v5.7-rc4 next-20200501]
+[if your patch is applied to the wrong git tree, please drop us a note to help
+improve the system. BTW, we also suggest to use '--base' option to specify the
+base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+
+url:    https://github.com/0day-ci/linux/commits/Prasad-Sodagudi/timer-make-deferrable-cpu-unbound-timers-really-not-bound-to-a-cpu/20200503-025049
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git 4479730e9263befbb9ce9563a09563db2acb8f7c
+config: riscv-nommu_virt_defconfig (attached as .config)
+compiler: riscv64-linux-gcc (GCC) 9.3.0
+reproduce:
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # save the attached .config to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day GCC_VERSION=9.3.0 make.cross ARCH=riscv 
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kbuild test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+   kernel/time/timer.c: In function 'get_timer_cpu_base':
+   kernel/time/timer.c:848:11: error: 'timer_base_deferrable' undeclared (first use in this function)
+     848 |   base = &timer_base_deferrable;
+         |           ^~~~~~~~~~~~~~~~~~~~~
+   kernel/time/timer.c:848:11: note: each undeclared identifier is reported only once for each function it appears in
+   kernel/time/timer.c: In function 'get_timer_this_cpu_base':
+   kernel/time/timer.c:867:11: error: 'timer_base_deferrable' undeclared (first use in this function)
+     867 |   base = &timer_base_deferrable;
+         |           ^~~~~~~~~~~~~~~~~~~~~
+   kernel/time/timer.c: In function 'run_timer_softirq':
+>> kernel/time/timer.c:1829:24: error: 'deferrable_pending' undeclared (first use in this function)
+    1829 |   if ((atomic_cmpxchg(&deferrable_pending, 1, 0) &&
+         |                        ^~~~~~~~~~~~~~~~~~
+   kernel/time/timer.c:1832:18: error: 'timer_base_deferrable' undeclared (first use in this function)
+    1832 |    __run_timers(&timer_base_deferrable);
+         |                  ^~~~~~~~~~~~~~~~~~~~~
+
+vim +/deferrable_pending +1829 kernel/time/timer.c
+
+  1817	
+  1818	/*
+  1819	 * This function runs timers and the timer-tq in bottom half context.
+  1820	 */
+  1821	static __latent_entropy void run_timer_softirq(struct softirq_action *h)
+  1822	{
+  1823		struct timer_base *base = this_cpu_ptr(&timer_bases[BASE_STD]);
+  1824	
+  1825		__run_timers(base);
+  1826		if (IS_ENABLED(CONFIG_NO_HZ_COMMON)) {
+  1827			__run_timers(this_cpu_ptr(&timer_bases[BASE_DEF]));
+  1828	#ifdef CONFIG_SMP
+> 1829			if ((atomic_cmpxchg(&deferrable_pending, 1, 0) &&
+  1830					tick_do_timer_cpu == TICK_DO_TIMER_NONE) ||
+  1831					tick_do_timer_cpu == smp_processor_id())
+  1832				__run_timers(&timer_base_deferrable);
+  1833	#endif
+  1834		}
+  1835	}
+  1836	
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+--BXVAT5kNtrzKuDFl
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
+
+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
+
+--BXVAT5kNtrzKuDFl--
