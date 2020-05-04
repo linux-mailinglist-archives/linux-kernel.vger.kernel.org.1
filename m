@@ -2,75 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 794391C3FC7
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 18:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD8421C3FD1
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 18:29:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729634AbgEDQZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 12:25:21 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:43968 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728158AbgEDQZV (ORCPT
+        id S1729610AbgEDQ3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 12:29:00 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:41504 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729425AbgEDQ3A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 12:25:21 -0400
-Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jVduA-0001n8-Pr; Mon, 04 May 2020 16:25:18 +0000
-Date:   Mon, 4 May 2020 18:25:17 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        =?utf-8?B?U3TDqXBoYW5l?= Graber <stgraber@ubuntu.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Serge Hallyn <serge@hallyn.com>, Jann Horn <jannh@google.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Aleksa Sarai <cyphar@cyphar.com>, linux-api@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] nsproxy: add struct nsset
-Message-ID: <20200504162517.vjcbwj5ynaqdn2k4@wittgenstein>
-References: <20200504144141.3605533-1-christian.brauner@ubuntu.com>
- <20200504144141.3605533-2-christian.brauner@ubuntu.com>
- <87wo5roev9.fsf@x220.int.ebiederm.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <87wo5roev9.fsf@x220.int.ebiederm.org>
+        Mon, 4 May 2020 12:29:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588609739;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=vyYYYfDE98dZ74NRX6gFiGAARZEAda2ko5w/z7U1TOY=;
+        b=Esnrn88KsElsfJxD8Dn6pk1Cca7jpfOPsFAUv15nAzf5BVB3R6aHtNDIiqfqRT7dDHInw8
+        wxtXHwC3DSR3o/BMdKv1qanOOdLqUqD4VcAhaM0gzCFa590ya9NN+UYoJxbHfRIBtecxtG
+        CM0hcoHH7dtayFyy4sED4xAoyS0zW5I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-423-desGePx4MY68frG5i3_GMQ-1; Mon, 04 May 2020 12:28:55 -0400
+X-MC-Unique: desGePx4MY68frG5i3_GMQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 23F818014D5;
+        Mon,  4 May 2020 16:28:54 +0000 (UTC)
+Received: from virtlab511.virt.lab.eng.bos.redhat.com (virtlab511.virt.lab.eng.bos.redhat.com [10.19.152.198])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A1FDA60C81;
+        Mon,  4 May 2020 16:28:53 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Subject: [PATCH] kvm: ioapic: Restrict lazy EOI update to edge-triggered interrupts
+Date:   Mon,  4 May 2020 12:28:52 -0400
+Message-Id: <20200504162852.404422-1-pbonzini@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 04, 2020 at 11:15:54AM -0500, Eric W. Biederman wrote:
-> Christian Brauner <christian.brauner@ubuntu.com> writes:
-> 
-> > Add a simple struct nsset. It holds all necessary pieces to switch to a new
-> > set of namespaces without leaving a task in a half-switched state which we
-> > will make use of in the next patch. This patch simply switches the existing
-> > setns logic over without causing a change in setns() behavior. This brings
-> > setns() closer to how unshare() works(). The prepare_ns() function is
-> > responsible to prepare all necessary information. This has two reasons.
-> > First it minimizes dependencies between individual namespaces, i.e. all
-> > install handler can expect that all fields are properly initialized
-> > independent in what order they are called in. Second, this makes the code
-> > easier to maintain and easier to follow if it needs to be changed.
-> 
-> This is buggy.
-> 
-> Your code assume that nstype == 0 is invalid.
+Commit f458d039db7e ("kvm: ioapic: Lazy update IOAPIC EOI") introduces
+the following infinite loop:
 
-Yep, good catch! That's a bug from rearranging the patches.
+BUG: stack guard page was hit at 000000008f595917 \
+(stack is 00000000bdefe5a4..00000000ae2b06f5)
+kernel stack overflow (double-fault): 0000 [#1] SMP NOPTI
+RIP: 0010:kvm_set_irq+0x51/0x160 [kvm]
+Call Trace:
+ irqfd_resampler_ack+0x32/0x90 [kvm]
+ kvm_notify_acked_irq+0x62/0xd0 [kvm]
+ kvm_ioapic_update_eoi_one.isra.0+0x30/0x120 [kvm]
+ ioapic_set_irq+0x20e/0x240 [kvm]
+ kvm_ioapic_set_irq+0x5c/0x80 [kvm]
+ kvm_set_irq+0xbb/0x160 [kvm]
+ ? kvm_hv_set_sint+0x20/0x20 [kvm]
+ irqfd_resampler_ack+0x32/0x90 [kvm]
+ kvm_notify_acked_irq+0x62/0xd0 [kvm]
+ kvm_ioapic_update_eoi_one.isra.0+0x30/0x120 [kvm]
+ ioapic_set_irq+0x20e/0x240 [kvm]
+ kvm_ioapic_set_irq+0x5c/0x80 [kvm]
+ kvm_set_irq+0xbb/0x160 [kvm]
+ ? kvm_hv_set_sint+0x20/0x20 [kvm]
+....
 
-> 
-> Passing nstype == 0 means don't verify the kind of file descriptor
-> passed.
-> 
-> Quite frankly doing nstype & CLONE_XYZ is wrong.  It always
-> needs to be nstype == CLONE_XYZ.
+The re-entrancy happens because the irq state is the OR of
+the interrupt state and the resamplefd state.  That is, we don't
+want to show the state as 0 until we've had a chance to set the
+resamplefd.  But if the interrupt has _not_ gone low then
+ioapic_set_irq is invoked again, causing an infinite loop.
 
-I mean, I can do the nstype == CLONE_NEW* in the preparatory patch and
-then switch to flags & CLONE_NEW* later.
+This can only happen for a level-triggered interrupt, otherwise
+irqfd_inject would immediately set the KVM_USERSPACE_IRQ_SOURCE_ID high
+and then low.  Fortunately, in the case of level-triggered interrupts the VMEXIT already happens because
+TMR is set.  Thus, fix the bug by restricting the lazy invocation
+of the ack notifier to edge-triggered interrupts, the only ones that
+need it.
 
-Let me fix this right now.
+Tested-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Reported-by: borisvk@bstnet.org
+Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
+Link: https://www.spinics.net/lists/kvm/msg213512.html
+Fixes: f458d039db7e ("kvm: ioapic: Lazy update IOAPIC EOI")
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=207489
+Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+---
+ arch/x86/kvm/ioapic.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-Christian
+diff --git a/arch/x86/kvm/ioapic.c b/arch/x86/kvm/ioapic.c
+index 750ff0b29404..d057376bd3d3 100644
+--- a/arch/x86/kvm/ioapic.c
++++ b/arch/x86/kvm/ioapic.c
+@@ -225,12 +225,12 @@ static int ioapic_set_irq(struct kvm_ioapic *ioapic, unsigned int irq,
+ 	}
+ 
+ 	/*
+-	 * AMD SVM AVIC accelerate EOI write and do not trap,
+-	 * in-kernel IOAPIC will not be able to receive the EOI.
+-	 * In this case, we do lazy update of the pending EOI when
+-	 * trying to set IOAPIC irq.
++	 * AMD SVM AVIC accelerate EOI write iff the interrupt is edge
++	 * triggered, in which case the in-kernel IOAPIC will not be able
++	 * to receive the EOI.  In this case, we do a lazy update of the
++	 * pending EOI when trying to set IOAPIC irq.
+ 	 */
+-	if (kvm_apicv_activated(ioapic->kvm))
++	if (edge && kvm_apicv_activated(ioapic->kvm))
+ 		ioapic_lazy_update_eoi(ioapic, irq);
+ 
+ 	/*
+-- 
+2.18.2
+
