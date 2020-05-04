@@ -2,125 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93F681C4568
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 812071C43BA
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732338AbgEDSOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:14:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730930AbgEDSAF (ORCPT
+        id S1731091AbgEDSA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:00:59 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:47478 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731069AbgEDSAw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:00:05 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 398E5C061A0F
-        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 11:00:05 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id r26so533825wmh.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 11:00:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qbmRVkJVnDjRqhdFY+l/ig1wTrc758l+/8RY3n4wjFc=;
-        b=PrJGfQ5M+WmbbFqCXZZjiflyl42zUUO4bLQu04MZySO3vfwbQdagYqYvMO3ZIrSDhJ
-         sAN7Jsw5y4Mza7k/s9JBHHJSP2HPGKEH2TetQbSDCpiBPhTD6wk2+F9hXVZBP9RVntHX
-         AW+BB6OaY2nEIZ0A4HTMAHB5Embv9TjRxxTo5Rh8NUgzPcL8owogcYqYQGer8s5ff1vX
-         KdAmLsOiE5kSh36ooaNRl3L8gIi3GTtH4wn5CesKc255fvNyK37iyO00+PR/Z/Iss5xX
-         m32segT/SepHrM+2ty1btGlebX9G3wH2nCvorA4B1gQwxr4Pt8V/KBw3cYw3545uKHQm
-         JkBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qbmRVkJVnDjRqhdFY+l/ig1wTrc758l+/8RY3n4wjFc=;
-        b=NJ6og/QDd9YydqBF9T3UnaTHqDmmaAJGBFkVfkTH6AKattomVs2orooApjCJTXyF0u
-         zV3DE4y27AzcDbGk2fQp7YgWiGLRS5bMCeBMPUHdPN5+ZDoB5bNSMPs+2MsWC9lz5+9N
-         mGpjCtnQcikaXnynb6N+TctxLKbNZEeQpMdK0FcBkviy5ltbpzYm8VDqFvxnpuj67/mg
-         KvIi6pmtqtVwn0WsvwFnxrHZpiTqJ0fgBNyKCwEIwFr0Hhk52P5lrJg1tIGfUacVhbU9
-         8Q8OHczi+aCKz2fnKgiKPK/UKA+UcP8iNxl9vx4JZPrXLz17xYspWjfwzuNlLEHxMM0o
-         hQRw==
-X-Gm-Message-State: AGi0PubdkAOUG8klet0tD3hZfB+MJ5ayDOt7xSCTGrL77baKzhqdc+pL
-        GFZHXKV0Emq8OHMpPglGv8Nhdw==
-X-Google-Smtp-Source: APiQypIIewN+KD0rmmmMDEFgyICcmHYy6pzcXOsTGiaXb7cTDdxUe2Z9XD2ayjd0GNyIyyvA4SuvFA==
-X-Received: by 2002:a05:600c:1008:: with SMTP id c8mr15239758wmc.14.1588615203806;
-        Mon, 04 May 2020 11:00:03 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:1938:2e25:c14c:a06e? ([2a01:e34:ed2f:f020:1938:2e25:c14c:a06e])
-        by smtp.googlemail.com with ESMTPSA id w83sm267860wmb.37.2020.05.04.11.00.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 May 2020 11:00:02 -0700 (PDT)
-Subject: Re: [PATCH v4 4/4] thermal: cpuidle: Register cpuidle cooling device
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     Lukasz Luba <lukasz.luba@arm.com>, rui.zhang@intel.com,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        "open list:CPU IDLE TIME MANAGEMENT FRAMEWORK" 
-        <linux-pm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:CPUIDLE DRIVER - ARM PSCI" 
-        <linux-arm-kernel@lists.infradead.org>
-References: <20200429103644.5492-1-daniel.lezcano@linaro.org>
- <20200429103644.5492-4-daniel.lezcano@linaro.org>
- <99b3bc79-f48a-3d51-a8ae-8b9ca4856d36@arm.com>
- <04b5da25-d591-b08a-e554-6e084d7ea908@linaro.org>
-Message-ID: <f3cee834-4946-10bd-a504-df6cf62d9e90@linaro.org>
-Date:   Mon, 4 May 2020 20:00:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Mon, 4 May 2020 14:00:52 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 67F4E1C0220; Mon,  4 May 2020 20:00:49 +0200 (CEST)
+Date:   Mon, 4 May 2020 20:00:49 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     nikitos.tr@gmail.com
+Cc:     dmurphy@ti.com, robh+dt@kernel.org, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH 1/3] leds: add aw2013 driver
+Message-ID: <20200504180049.GA5067@duo.ucw.cz>
+References: <20200504162934.4693-1-nikitos.tr@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <04b5da25-d591-b08a-e554-6e084d7ea908@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="/04w6evG8XlLl3ft"
+Content-Disposition: inline
+In-Reply-To: <20200504162934.4693-1-nikitos.tr@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Hi,
+--/04w6evG8XlLl3ft
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 29/04/2020 23:01, Daniel Lezcano wrote:
-> On 29/04/2020 22:02, Lukasz Luba wrote:
->>
->>
->> On 4/29/20 11:36 AM, Daniel Lezcano wrote:
->>> The cpuidle driver can be used as a cooling device by injecting idle
->>> cycles. The DT binding for the idle state added an optional
->>>
->>> When the property is set, register the cpuidle driver with the idle
->>> state node pointer as a cooling device. The thermal framework will do
->>> the association automatically with the thermal zone via the
->>> cooling-device defined in the device tree cooling-maps section.
->>>
->>> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
->>> ---
->>>   - V4:
->>>     - Do not check the return value as the function does no longer
->>> return one
->>> ---
-> 
-> [ ... ]
-> 
->> Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
-> 
-> Thanks Lukasz for the review.
-> 
-> Rafael, as Lorenzo and Sudeep are not responsive, could you consider ack
-> this patch so I can merge the series through the thermal tree ?
+Hi!
 
-Gentle ping ... Sudeep, Lorenzo or Rafael ?
+> +#define AW2013_NAME "aw2013"
 
-Thanks
+That's.... not really useful define. Make it NAME? Drop it?
 
-  -- Danie
+> +#define AW2013_TIME_STEP 130
 
+I'd add comment with /* units */.
 
+> +#define STATE_OFF 0
+> +#define STATE_KEEP 1
+> +#define STATE_ON 2
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+We should add enum into core for this...
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+> +static int aw2013_chip_init(struct aw2013 *chip)
+> +{
+> +	int i, ret;
+> +
+> +	ret =3D regmap_write(chip->regmap, AW2013_GCR, AW2013_GCR_ENABLE);
+> +	if (ret) {
+> +		dev_err(&chip->client->dev, "Failed to enable the chip: %d\n",
+> +			ret);
+> +		goto error;
+> +	}
+> +
+> +	for (i =3D 0; i < chip->num_leds; i++) {
+> +		ret =3D regmap_update_bits(chip->regmap,
+> +					 AW2013_LCFG(chip->leds[i].num),
+> +					 AW2013_LCFG_IMAX_MASK,
+> +					 chip->leds[i].imax);
+> +		if (ret) {
+> +			dev_err(&chip->client->dev,
+> +				"Failed to set maximum current for led %d: %d\n",
+> +				chip->leds[i].num, ret);
+> +			goto error;
+> +		}
+> +	}
+> +
+> +error:
+> +	return ret;
+> +}
+
+No need for goto if you are just returning.
+
+> +static bool aw2013_chip_in_use(struct aw2013 *chip)
+> +{
+> +	int i;
+> +
+> +	for (i =3D 0; i < chip->num_leds; i++)
+> +		if (chip->leds[i].cdev.brightness)
+> +			return true;
+> +
+> +	return false;
+> +}
+
+How is this going to interact with ledstate =3D=3D KEEP?
+
+> +static int aw2013_brightness_set(struct led_classdev *cdev,
+> +				 enum led_brightness brightness)
+> +{
+> +	struct aw2013_led *led =3D container_of(cdev, struct aw2013_led, cdev);
+> +	int ret, num;
+> +
+> +	mutex_lock(&led->chip->mutex);
+> +
+> +	if (aw2013_chip_in_use(led->chip)) {
+> +		ret =3D aw2013_chip_enable(led->chip);
+> +		if (ret)
+> +			return ret;
+> +	}
+
+You are returning with mutex held.
+
+> +	/* Never on - just set to off */
+> +	if (!*delay_on)
+> +		return aw2013_brightness_set(&led->cdev, LED_OFF);
+> +
+> +	/* Never off - just set to brightness */
+> +	if (!*delay_off)
+> +		return aw2013_brightness_set(&led->cdev, led->cdev.brightness);
+
+Is this dance neccessary? Should we do it in the core somewhere?
+
+> +		} else {
+> +			led->imax =3D 1; // 5mA
+> +			dev_info(&client->dev,
+> +				 "DT property led-max-microamp is missing!\n");
+> +		}
+
+Lets remove the exclamation mark.
+
+> +		led->num =3D source;
+> +		led->chip =3D chip;
+> +		led->fwnode =3D of_fwnode_handle(child);
+> +
+> +		if (!of_property_read_string(child, "default-state", &str)) {
+> +			if (!strcmp(str, "on"))
+> +				led->default_state =3D STATE_ON;
+> +			else if (!strcmp(str, "keep"))
+> +				led->default_state =3D STATE_KEEP;
+> +			else
+> +				led->default_state =3D STATE_OFF;
+> +		}
+
+We should really have something in core for this. Should we support
+arbitrary brightness there?
+
+> +static void aw2013_read_current_state(struct aw2013 *chip)
+> +{
+> +	int i, led_on;
+> +
+> +	regmap_read(chip->regmap, AW2013_LCTR, &led_on);
+> +
+> +	for (i =3D 0; i < chip->num_leds; i++) {
+> +		if (!(led_on & AW2013_LCTR_LE(chip->leds[i].num))) {
+> +			chip->leds[i].cdev.brightness =3D LED_OFF;
+> +			continue;
+> +		}
+> +		regmap_read(chip->regmap, AW2013_REG_PWM(chip->leds[i].num),
+> +			    &chip->leds[i].cdev.brightness);
+> +	}
+> +}
+> +
+> +static void aw2013_init_default_state(struct aw2013_led *led)
+> +{
+> +	switch (led->default_state) {
+> +	case STATE_ON:
+> +		led->cdev.brightness =3D LED_FULL;
+> +		break;
+> +	case STATE_OFF:
+> +		led->cdev.brightness =3D LED_OFF;
+> +	} /* On keep - just set brightness that was retrieved previously */
+> +
+> +	aw2013_brightness_set(&led->cdev, led->cdev.brightness);
+> +}
+
+Aha; I guess this makes "keeping" the state to work. Do you really
+need that functionality?
+
+Pretty nice driver, thanks.
+
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--/04w6evG8XlLl3ft
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXrBYUQAKCRAw5/Bqldv6
+8vgWAJ9WeR5dGSlwHlUTp6MxPEwVtyx+6wCgj7lyJGhIoXq2ucnLkhPzBdInxUU=
+=U8CV
+-----END PGP SIGNATURE-----
+
+--/04w6evG8XlLl3ft--
