@@ -2,78 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 483C21C3F17
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 17:55:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FB971C3F24
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 17:56:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729502AbgEDPzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 11:55:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725941AbgEDPzB (ORCPT
+        id S1729578AbgEDP4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 11:56:06 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:53306 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729486AbgEDP4E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 11:55:01 -0400
-Received: from forwardcorp1p.mail.yandex.net (forwardcorp1p.mail.yandex.net [IPv6:2a02:6b8:0:1472:2741:0:8b6:217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 222BFC061A0E;
-        Mon,  4 May 2020 08:55:01 -0700 (PDT)
-Received: from mxbackcorp1g.mail.yandex.net (mxbackcorp1g.mail.yandex.net [IPv6:2a02:6b8:0:1402::301])
-        by forwardcorp1p.mail.yandex.net (Yandex) with ESMTP id 1C45A2E14BE;
-        Mon,  4 May 2020 18:54:59 +0300 (MSK)
-Received: from vla1-81430ab5870b.qloud-c.yandex.net (vla1-81430ab5870b.qloud-c.yandex.net [2a02:6b8:c0d:35a1:0:640:8143:ab5])
-        by mxbackcorp1g.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id unjaBONJEP-svAi9BRl;
-        Mon, 04 May 2020 18:54:59 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
-        t=1588607699; bh=ENcg5Bf9VUdHKlHIUgm/DkthSsQoFPP4xREmFmfnUxI=;
-        h=In-Reply-To:Message-ID:References:Date:To:From:Subject:Cc;
-        b=PI2azLgj/qi1u4obicwsghWBMKHSF7d2CVimRri+0mk15qdEuEJw3kD6ayLzlDmfZ
-         LRsGm2CP2MnHAvOPsI3QMnT5qQVWUJ5bMXxeU2IDl4VAZJzH63nXlsED2Hfd2Y9myf
-         XjO8paKl1j+KQDJA6WQDIF2VvNKk5puP/QNTJWWY=
-Authentication-Results: mxbackcorp1g.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
-Received: from dynamic-vpn.dhcp.yndx.net (dynamic-vpn.dhcp.yndx.net [2a02:6b8:b081:409::1:8])
-        by vla1-81430ab5870b.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id oIkNNHFTF1-svX88CIP;
-        Mon, 04 May 2020 18:54:57 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-Subject: [PATCH RFC 2/2] fs/direct-io: pass NOWAIT to also for read requests
-From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-To:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
-Cc:     Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@infradead.org>
-Date:   Mon, 04 May 2020 18:54:57 +0300
-Message-ID: <158860769737.32485.3674517821826063792.stgit@buzz>
-In-Reply-To: <158860769311.32485.8003552176738816448.stgit@buzz>
-References: <158860769311.32485.8003552176738816448.stgit@buzz>
-User-Agent: StGit/0.22-32-g6a05
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        Mon, 4 May 2020 11:56:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588607763;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=eX+GzNLLoLRdY/7Oo9fQjZpifFeDPG106etXnTI+oh4=;
+        b=Fczfe/r+NwIA7oY0COu/wLtPWNQzZEQtvPLIDs9UswDQAfNydgm+wSZBOX1JxbaEIqgVdU
+        7Zh10GemvR8bM0eS8agNpkMkO+kTwyAHYiXqSVi5LlyiMCv8xEkeRTfFyZojQ8aGDKqiqD
+        2U+XxrEpdAdATeJ6Wl7gkjgpD5gulUE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-221-Hn7cpswBOnSw0swXlGpKDw-1; Mon, 04 May 2020 11:56:00 -0400
+X-MC-Unique: Hn7cpswBOnSw0swXlGpKDw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 06585107AFD4;
+        Mon,  4 May 2020 15:55:59 +0000 (UTC)
+Received: from virtlab511.virt.lab.eng.bos.redhat.com (virtlab511.virt.lab.eng.bos.redhat.com [10.19.152.198])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8C1D96FF1A;
+        Mon,  4 May 2020 15:55:58 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>
+Subject: [PATCH 0/3] KVM: x86: cleanup and fixes for debug register accesses
+Date:   Mon,  4 May 2020 11:55:55 -0400
+Message-Id: <20200504155558.401468-1-pbonzini@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For some reason NOWAIT currently is passed only for writes.
+The purpose of this series is to get rid of the get_dr6 accessor
+and, on Intel, of set_dr6 as well.  This is done mostly in patch 2,
+since patch 3 is only the resulting cleanup.  Patch 1 is a related
+bug fix that I found while inspecting the code.
 
-Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-Fixes: 03a07c92a9ed ("block: return on congested block device")
----
- fs/direct-io.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+A guest debugging selftest is sorely needed if anyone wants to take
+a look!
 
-diff --git a/fs/direct-io.c b/fs/direct-io.c
-index 00b4d15bb811..dbb6afef6be9 100644
---- a/fs/direct-io.c
-+++ b/fs/direct-io.c
-@@ -1234,11 +1234,11 @@ do_blockdev_direct_IO(struct kiocb *iocb, struct inode *inode,
- 	if (iov_iter_rw(iter) == WRITE) {
- 		dio->op = REQ_OP_WRITE;
- 		dio->op_flags = REQ_SYNC | REQ_IDLE;
--		if (iocb->ki_flags & IOCB_NOWAIT)
--			dio->op_flags |= REQ_NOWAIT;
- 	} else {
- 		dio->op = REQ_OP_READ;
- 	}
-+	if (iocb->ki_flags & IOCB_NOWAIT)
-+		dio->op_flags |= REQ_NOWAIT;
- 	if (iocb->ki_flags & IOCB_HIPRI)
- 		dio->op_flags |= REQ_HIPRI;
- 
+Paolo
+
+Paolo Bonzini (3):
+  KVM: SVM: fill in kvm_run->debug.arch.dr[67]
+  KVM: SVM: keep DR6 synchronized with vcpu->arch.dr6
+  KVM: x86: simplify dr6 accessors in kvm_x86_ops
+
+ arch/x86/include/asm/kvm_host.h |  1 -
+ arch/x86/kvm/svm/svm.c          | 11 ++++-------
+ arch/x86/kvm/vmx/vmx.c          | 11 -----------
+ arch/x86/kvm/x86.c              |  8 +++-----
+ 4 files changed, 7 insertions(+), 24 deletions(-)
+
+-- 
+2.18.2
 
