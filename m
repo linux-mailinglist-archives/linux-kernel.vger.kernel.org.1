@@ -2,134 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1D6B1C3E37
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 17:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73F311C3E3C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 17:15:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729297AbgEDPMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 11:12:41 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54782 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726509AbgEDPMl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 11:12:41 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 14AF5ABBD;
-        Mon,  4 May 2020 15:12:41 +0000 (UTC)
-Date:   Mon, 4 May 2020 17:12:36 +0200
-From:   Joerg Roedel <jroedel@suse.de>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shile Zhang <shile.zhang@linux.alibaba.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Subject: [PATCH] percpu: Sync vmalloc mappings in pcpu_alloc() and
- free_percpu()
-Message-ID: <20200504151236.GI8135@suse.de>
-References: <20200429054857.66e8e333@oasis.local.home>
- <20200429105941.GQ30814@suse.de>
- <20200429082854.6e1796b5@oasis.local.home>
- <20200429100731.201312a9@gandalf.local.home>
- <20200430141120.GA8135@suse.de>
- <20200430121136.6d7aeb22@gandalf.local.home>
- <20200430191434.GC8135@suse.de>
- <20200430211308.74a994dc@oasis.local.home>
- <1902703609.78863.1588300015661.JavaMail.zimbra@efficios.com>
- <20200430223919.50861011@gandalf.local.home>
+        id S1729380AbgEDPPN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 May 2020 11:15:13 -0400
+Received: from mail-ed1-f65.google.com ([209.85.208.65]:35083 "EHLO
+        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726509AbgEDPPN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 11:15:13 -0400
+Received: by mail-ed1-f65.google.com with SMTP id a8so13846076edv.2;
+        Mon, 04 May 2020 08:15:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=LCc+eYdO3tX3LkVF95rDTpEk+HBT/KELfuXGkU4VVhM=;
+        b=p604soKS+8HyOzeDutcUjBGXG/4TW8PCYxm8/RbCdYKZARwQ3H1/LDcbJqu26/8Bij
+         DZhbYmG1kmloHI9mhAA1o11sEHyl8yoD9GYUcz8T1nT0vPKY9bweMBC6LIO5qJcR60qv
+         fuPzni36o4tuyA7qPThu/xAZ8fomrym1Mb1VQpohSF0Sk5GnVWZP4dn56a7uu5FUY9Xi
+         Tnqmvd/2rvS4m+Bi/Pmr43W/MqIAFs020zP8RqIz0KzGFQGmSRJ1SCjGTgsHiYBxLvO3
+         GqiaYAdOhH08z9DrallzIo/D4/koS+fCeYC1xP/qaxUZw/GdtcisiP6hTTt5isU00mcx
+         Q32A==
+X-Gm-Message-State: AGi0PuZnZSR1ryp56Feia1H74AyZxpCxbX1SCq3MOT6lfBgsCQitXjHC
+        QvRihXAhtEB8oPyohOnLpOAO6uM/
+X-Google-Smtp-Source: APiQypLgL0BNupES2fskOUM21pKl/rDCVu+OP0SF7FJCBNEdF6HBSjXWjjho1YvOBX3WBlLXsQtV9g==
+X-Received: by 2002:a05:6402:22a6:: with SMTP id cx6mr14498532edb.277.1588605310748;
+        Mon, 04 May 2020 08:15:10 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.237])
+        by smtp.googlemail.com with ESMTPSA id 10sm1488687ejt.80.2020.05.04.08.15.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 04 May 2020 08:15:10 -0700 (PDT)
+Date:   Mon, 4 May 2020 17:15:08 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Jonathan Bakker <xc-racer2@live.ca>
+Cc:     kgene@kernel.org, robh+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 00/18] S5PV210 and Aries DTS improvements
+Message-ID: <20200504151508.GA3205@kozik-lap>
+References: <20200426183604.28494-1-xc-racer2@live.ca>
+ <BN6PR04MB066033FD7FF6E5C37747C7A2A3AB0@BN6PR04MB0660.namprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200430223919.50861011@gandalf.local.home>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <BN6PR04MB066033FD7FF6E5C37747C7A2A3AB0@BN6PR04MB0660.namprd04.prod.outlook.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 10:39:19PM -0400, Steven Rostedt wrote:
-> What's so damn special about alloc_percpu()? It's definitely not a fast
-> path. And it's not used often.
+On Fri, May 01, 2020 at 04:50:01PM -0700, Jonathan Bakker wrote:
+> This patchset makes several improvements to Aries devices which are
+> based on S5PV210.  Several pulls on GPIOs were incorrect/not specified,
+> sleep GPIO configurations have been added, and more devices have been
+> added.
+> 
+> Touching the common S5PV210 DTSI are the addition of the ADC node
+> as well as fixes to the FIMC definitions and a sleep GPIO helper
+> added.  The GPI gpio node name has been corrected.
+> 
+> The patches have been tested on both a GT-i9000 as well as an
+> SGH-T959P and both can now suspend/resume properly.
+> 
+> Changes from v1:
+> - Correct ADC node name to match reg
+> - Restore removed regulator suspend state
+> - Split commit adding support for new devices into separate commits
+>   for each device
+> - Add note where sleep gpio cfgs come from
+> - Ensure subject of all patches matches subsystem
+> - Add patch correcting GPI node name
+> 
+> 
+> Jonathan Bakker (17):
+>   ARM: dts: s5pv210: Add helper define for sleep gpio config
+>   ARM: dts: s5pv210: Add sleep GPIO configuration for fascinate4g
+>   ARM: dts: s5pv210: Add sleep GPIO configuration for galaxys
+>   ARM: dts: s5pv210: Set keep-power-in-suspend for SDHCI1 on aries
+>   ARM: dts: s5pv210: Disable pulls on GPIO i2c adapters for aries
+>   ARM: dts: s5pv210: Add WM8994 support to aries boards
+>   ARM: dts: s5pv210: Add FSA9480 support to Aries boards
+>   ARM: dts: s5pv210: Add touchkey support to aries boards
+>   ARM: dts: s5pv210: Add panel support to aries boards
+>   ARM: dts: s5pv210: Add remaining i2c-gpio adapters to aries
+>   ARM: dts: s5pv210: Disable pull for vibrator ena GPIO on aries
+>   ARM: dts: s5pv210: Add an ADC node
+>   ARM: dts: s5pv210: Enable ADC on aries boards
+>   ARM: dts: s5pv210: Assign clocks to MMC devices on aries
+>   ARM: dts: s5pv210: Correct FIMC definitions
+>   ARM: dts: s5pv210: Set MAX8998 GPIO pulls on aries
+>   ARM: dts: s5pv210: Correct gpi gpio node name
+> 
+> Paweł Chmiel (1):
+>   ARM: dts: s5pv210: Add si470x fmradio to galaxys
+>
 
-Okay, I fixed it in the percpu code. It is definitly not a nice
-solution, but having to call vmalloc_sync_mappings/unmappings() is not a
-nice solution at any place in the code. Here is the patch which fixes
-this issue for me. I am also not sure what to put in the Fixes tag, as
-it is related to tracing code accessing per-cpu data from the page-fault
-handler, not sure when this got introduced. Maybe someone else can
-provide a meaningful Fixes- or stable tag.
+Nice job!
 
-I also have an idea in mind how to make this all more robust and get rid
-of the vmalloc_sync_mappings/unmappings() interface, will show more when
-I know it works the way I think it does.
+Thanks, I applied entire set.
 
-Regards,
-
-	Joerg
-
-From c616a9a09499f9c9d682775767d3de7db81fb2ed Mon Sep 17 00:00:00 2001
-From: Joerg Roedel <jroedel@suse.de>
-Date: Mon, 4 May 2020 17:11:41 +0200
-Subject: [PATCH] percpu: Sync vmalloc mappings in pcpu_alloc() and
- free_percpu()
-
-Sync the vmalloc mappings for all page-tables in the system when
-allocating and freeing per-cpu memory. This is necessary for
-architectures which use page-faults on vmalloc areas.
-
-The page-fault handlers accesses per-cpu data when tracing is enabled,
-and fauling again in the page-fault handler on a vmalloc'ed per-cpu area
-will result in a recursive fault.
-
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
----
- mm/percpu.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
-
-diff --git a/mm/percpu.c b/mm/percpu.c
-index d7e3bc649f4e..6ab035bc6977 100644
---- a/mm/percpu.c
-+++ b/mm/percpu.c
-@@ -1710,6 +1710,20 @@ static void __percpu *pcpu_alloc(size_t size, size_t align, bool reserved,
- 	trace_percpu_alloc_percpu(reserved, is_atomic, size, align,
- 			chunk->base_addr, off, ptr);
- 
-+	/*
-+	 * The per-cpu buffers might be allocated in the vmalloc area of the
-+	 * address space. When the architecture allows faulting on the vmalloc
-+	 * area and the memory allocated here is accessed in the page-fault
-+	 * handler, the vmalloc area fault may be recursive and could never be
-+	 * resolved.
-+	 * This happens for example in the tracing code which allocates per-cpu
-+	 * and accesses them when tracing page-faults.
-+	 * To prevent this, make sure the per-cpu buffers allocated here are
-+	 * mapped in all PGDs so that the page-fault handler will never fault
-+	 * again on them.
-+	 */
-+	vmalloc_sync_mappings();
-+
- 	return ptr;
- 
- fail_unlock:
-@@ -1958,6 +1972,12 @@ void free_percpu(void __percpu *ptr)
- 
- 	trace_percpu_free_percpu(chunk->base_addr, off, ptr);
- 
-+	/*
-+	 * See comment at the vmalloc_sync_mappings() call in pcpu_alloc() for
-+	 * why this is necessary.
-+	 */
-+	vmalloc_sync_unmappings();
-+
- 	spin_unlock_irqrestore(&pcpu_lock, flags);
- 
- 	if (need_balance)
--- 
-2.12.3
+Best regards,
+Krzysztof
 
