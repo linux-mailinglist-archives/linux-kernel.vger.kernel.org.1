@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB13E1C441E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:05:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9311E1C4460
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 20:07:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731661AbgEDSEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 14:04:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33732 "EHLO mail.kernel.org"
+        id S1732021AbgEDSGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 14:06:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37250 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731115AbgEDSEU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 14:04:20 -0400
+        id S1732010AbgEDSGo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 14:06:44 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F03CE205ED;
-        Mon,  4 May 2020 18:04:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C20DB2087E;
+        Mon,  4 May 2020 18:06:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588615459;
-        bh=nyuc0UrXFf+Y/rW8iOi/qOX3NRNEicLnLnbSzCvQ8As=;
+        s=default; t=1588615604;
+        bh=w+yPL/bVXvDTiFWPzUWODEVmw/6jrMVQG1TYGt8QO3s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U2P2AtbyxKH9KV++v2BirvnB6djETebbWM2Srd98qFGCOj6niEvhXBmAJ6bzgZUgl
-         9wpgWSg0FftHulMj7BerxPMiH1KT3j5mUBoG5ZtA3PikWrb/BeKcQiOkI2ojWG7rQn
-         CZYn8+/mBQmrV7TZZZlXEdYkUBNEXhoIf7QExP/4=
+        b=Sah/UtS8oGuKUF2WBmfxkf+XAVobMbiRMf3gNRU4fmcdBzY1373TJqQnJe5S1QFx6
+         I92d0MAnVZTi7IPgfGUxKrUj0JDTqkEJKnXjtHotfWw0buoPdOVoCX7HbmTY7Ksayc
+         HXVzdiOffgez5EW8TupfH3M8+hJ5WoPqGHYZVlGE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
-        David Disseldorp <ddiss@suse.de>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 5.4 47/57] scsi: target/iblock: fix WRITE SAME zeroing
-Date:   Mon,  4 May 2020 19:57:51 +0200
-Message-Id: <20200504165500.462575857@linuxfoundation.org>
+        stable@vger.kernel.org, Jason Gunthorpe <jgg@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>
+Subject: [PATCH 5.6 49/73] RDMA/core: Fix race between destroy and release FD object
+Date:   Mon,  4 May 2020 19:57:52 +0200
+Message-Id: <20200504165509.066749063@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200504165456.783676004@linuxfoundation.org>
-References: <20200504165456.783676004@linuxfoundation.org>
+In-Reply-To: <20200504165501.781878940@linuxfoundation.org>
+References: <20200504165501.781878940@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,44 +43,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Disseldorp <ddiss@suse.de>
+From: Leon Romanovsky <leonro@mellanox.com>
 
-commit 1d2ff149b263c9325875726a7804a0c75ef7112e upstream.
+commit f0abc761bbb9418876cc4d1ebc473e4ea6352e42 upstream.
 
-SBC4 specifies that WRITE SAME requests with the UNMAP bit set to zero
-"shall perform the specified write operation to each LBA specified by the
-command".  Commit 2237498f0b5c ("target/iblock: Convert WRITE_SAME to
-blkdev_issue_zeroout") modified the iblock backend to call
-blkdev_issue_zeroout() when handling WRITE SAME requests with UNMAP=0 and a
-zero data segment.
+The call to ->lookup_put() was too early and it caused an unlock of the
+read/write protection of the uobject after the FD was put. This allows a
+race:
 
-The iblock blkdev_issue_zeroout() call incorrectly provides a flags
-parameter of 0 (bool false), instead of BLKDEV_ZERO_NOUNMAP.  The bool
-false parameter reflects the blkdev_issue_zeroout() API prior to commit
-ee472d835c26 ("block: add a flags argument to (__)blkdev_issue_zeroout")
-which was merged shortly before 2237498f0b5c.
+     CPU1                                 CPU2
+ rdma_lookup_put_uobject()
+   lookup_put_fd_uobject()
+     fput()
+				   fput()
+				     uverbs_uobject_fd_release()
+				       WARN_ON(uverbs_try_lock_object(uobj,
+					       UVERBS_LOOKUP_WRITE));
+   atomic_dec(usecnt)
 
-Link: https://lore.kernel.org/r/20200419163109.11689-1-ddiss@suse.de
-Fixes: 2237498f0b5c ("target/iblock: Convert WRITE_SAME to blkdev_issue_zeroout")
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: David Disseldorp <ddiss@suse.de>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fix the code by changing the order, first unlock and call to
+->lookup_put() after that.
+
+Fixes: 3832125624b7 ("IB/core: Add support for idr types")
+Link: https://lore.kernel.org/r/20200423060122.6182-1-leon@kernel.org
+Suggested-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/target/target_core_iblock.c |    2 +-
+ drivers/infiniband/core/rdma_core.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/target/target_core_iblock.c
-+++ b/drivers/target/target_core_iblock.c
-@@ -432,7 +432,7 @@ iblock_execute_zero_out(struct block_dev
- 				target_to_linux_sector(dev, cmd->t_task_lba),
- 				target_to_linux_sector(dev,
- 					sbc_get_write_same_sectors(cmd)),
--				GFP_KERNEL, false);
-+				GFP_KERNEL, BLKDEV_ZERO_NOUNMAP);
- 	if (ret)
- 		return TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE;
+--- a/drivers/infiniband/core/rdma_core.c
++++ b/drivers/infiniband/core/rdma_core.c
+@@ -678,7 +678,6 @@ void rdma_lookup_put_uobject(struct ib_u
+ 			     enum rdma_lookup_mode mode)
+ {
+ 	assert_uverbs_usecnt(uobj, mode);
+-	uobj->uapi_object->type_class->lookup_put(uobj, mode);
+ 	/*
+ 	 * In order to unlock an object, either decrease its usecnt for
+ 	 * read access or zero it in case of exclusive access. See
+@@ -695,6 +694,7 @@ void rdma_lookup_put_uobject(struct ib_u
+ 		break;
+ 	}
  
++	uobj->uapi_object->type_class->lookup_put(uobj, mode);
+ 	/* Pairs with the kref obtained by type->lookup_get */
+ 	uverbs_uobject_put(uobj);
+ }
 
 
