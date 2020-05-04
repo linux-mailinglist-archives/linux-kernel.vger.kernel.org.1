@@ -2,77 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A1BA1C3D0A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 16:30:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51C171C3D12
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 May 2020 16:31:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729129AbgEDOal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 10:30:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42812 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728324AbgEDOak (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 10:30:40 -0400
-Received: from localhost (unknown [104.132.1.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728977AbgEDObb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 10:31:31 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:61047 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728803AbgEDObb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 10:31:31 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1588602690; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=vWmFHzkfv8jS2Mn0X+IL+VWQDo/XxfPk1Hg81BCXLGc=; b=FjGam5R/KDrNW4+rbfwYW+8mKqFA7boUXi9au+NnDrec2plDsR0Mp0XP3G7thYbc3kHLE6nH
+ Gxf/71AjsA0aXXVTF0cTRUx8WiqBnSBfkLVPso4kfyov7K8Q/qMs0rjeAO3EqN6ktOkkIZSA
+ YqNCuhxbqJFnDU8+E4ZGaDBZfdU=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5eb02741.7fc815623928-smtp-out-n05;
+ Mon, 04 May 2020 14:31:29 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 72747C433D2; Mon,  4 May 2020 14:31:28 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [10.226.58.28] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 85F6F20721;
-        Mon,  4 May 2020 14:30:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588602640;
-        bh=npyVMpEkCqP47vK/3mKvzs371ZtGgQITkgOQX9mdQjY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=eEJaD0ZEz5VfWYlWTVpOTos5fOnwiNG3g/saqcrKdLWp78+xQuLIWaK/+6+jzg7A6
-         lUVoRHynjtW/MoTSZCXKP4hBWLOgKLvzHTEAx46W/NXdOqsy+yFe3tqORj1sPjyHsV
-         VND1zcREbsOSfw7FDmp+OZpATxcM3scDDKAEmXFU=
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
-Cc:     Daeho Jeong <daehojeong@google.com>
-Subject: [PATCH] f2fs: change maximum zstd compression buffer size
-Date:   Mon,  4 May 2020 07:30:39 -0700
-Message-Id: <20200504143039.155644-1-jaegeuk@kernel.org>
-X-Mailer: git-send-email 2.26.2.526.g744177e7f7-goog
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B2A0CC433CB;
+        Mon,  4 May 2020 14:31:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B2A0CC433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jhugo@codeaurora.org
+Subject: Re: [PATCH v4 4/8] bus: mhi: core: Read transfer length from an event
+ properly
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>, mani@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hemantk@codeaurora.org
+References: <1588386725-1165-1-git-send-email-bbhatt@codeaurora.org>
+ <1588386725-1165-5-git-send-email-bbhatt@codeaurora.org>
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+Message-ID: <4e187d13-951d-4833-ea82-577b0e755521@codeaurora.org>
+Date:   Mon, 4 May 2020 08:31:25 -0600
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1588386725-1165-5-git-send-email-bbhatt@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daeho Jeong <daehojeong@google.com>
+On 5/1/2020 8:32 PM, Bhaumik Bhatt wrote:
+> From: Hemant Kumar <hemantk@codeaurora.org>
+> 
+> When MHI Driver receives an EOT event, it reads xfer_len from the
+> event in the last TRE. The value is under control of the MHI device
+> and never validated by Host MHI driver. The value should never be
+> larger than the real size of the buffer but a malicious device can
+> set the value 0xFFFF as maximum. This causes driver to memory
+> overflow (both read or write). Fix this issue by reading minimum of
+> transfer length from event and the buffer length provided.
+> 
+> Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
 
-Current zstd compression buffer size is one page and header size less
-than cluster size. By this, zstd compression always succeeds even if
-the real compression data is failed to fit into the buffer size, and
-eventually reading the cluster returns I/O error with the corrupted
-compression data.
+Reviewed-by: Jeffrey Hugo <jhugo@codeaurora.org>
 
-Signed-off-by: Daeho Jeong <daehojeong@google.com>
----
- fs/f2fs/compress.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-index 4c7eaeee52336..a9fa8049b295f 100644
---- a/fs/f2fs/compress.c
-+++ b/fs/f2fs/compress.c
-@@ -313,7 +313,7 @@ static int zstd_init_compress_ctx(struct compress_ctx *cc)
- 	cc->private = workspace;
- 	cc->private2 = stream;
- 
--	cc->clen = cc->rlen - PAGE_SIZE - COMPRESS_HEADER_SIZE;
-+	cc->clen = ZSTD_compressBound(PAGE_SIZE << cc->log_cluster_size);
- 	return 0;
- }
- 
-@@ -330,7 +330,7 @@ static int zstd_compress_pages(struct compress_ctx *cc)
- 	ZSTD_inBuffer inbuf;
- 	ZSTD_outBuffer outbuf;
- 	int src_size = cc->rlen;
--	int dst_size = src_size - PAGE_SIZE - COMPRESS_HEADER_SIZE;
-+	int dst_size = cc->clen;
- 	int ret;
- 
- 	inbuf.pos = 0;
 -- 
-2.26.2.526.g744177e7f7-goog
-
+Jeffrey Hugo
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
