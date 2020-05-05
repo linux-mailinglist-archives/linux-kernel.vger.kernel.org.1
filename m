@@ -2,112 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4E1D1C5A47
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:00:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4E531C63A0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 00:04:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729564AbgEEPAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 11:00:00 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39564 "EHLO mx2.suse.de"
+        id S1729060AbgEEWEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 18:04:24 -0400
+Received: from mga02.intel.com ([134.134.136.20]:48051 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729235AbgEEPAA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 11:00:00 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 64AACABB2;
-        Tue,  5 May 2020 14:59:59 +0000 (UTC)
-Subject: Re: [PATCH v2 2/2] usb: xhci: Load Raspberry Pi 4 VL805's firmware
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        u-boot@lists.denx.de, bmeng.cn@gmail.com, marex@denx.de,
-        linux-kernel@vger.kernel.org
-Cc:     sjg@chromium.org, m.szyprowski@samsung.com, s.nawrocki@samsung.com
-References: <20200430130433.11248-1-nsaenzjulienne@suse.de>
- <20200430130433.11248-3-nsaenzjulienne@suse.de>
- <0958ece3-feda-65c0-b0e2-893e2dfeb508@suse.com>
- <cefb0be789dba88b3e3ad825fd74f49195110f97.camel@suse.de>
- <38448831-9f22-f887-e938-065fed195414@suse.com>
- <073b80ef4285a02729f5b06872474202d4ff2e3e.camel@suse.de>
-From:   Matthias Brugger <mbrugger@suse.com>
-Autocrypt: addr=mbrugger@suse.com; prefer-encrypt=mutual; keydata=
- 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
- HxUCQ9Y1Y/Ct
-Message-ID: <0ca001a3-75c3-e3ba-fc63-17c6b4982856@suse.com>
-Date:   Tue, 5 May 2020 16:59:55 +0200
+        id S1727785AbgEEWEX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 18:04:23 -0400
+IronPort-SDR: /RnhK7h5k59VMlvMt8V+WbILtuVBh3x2YbEmUBqbXHd2hQqsv/ik/JgxD5WTRcpB1DToMEecZp
+ Hgw9JufC7sIQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2020 15:04:20 -0700
+IronPort-SDR: y6UqgH1vxBwoaEF3R9aoJcRP4PwHDFLbYrd6lJw4h/SkEGEpO/usT3X8LjWcUD0ncc8j/uixfi
+ DIxqFLnT0P7w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,356,1583222400"; 
+   d="scan'208";a="278022605"
+Received: from krogers-mobl1.amr.corp.intel.com (HELO [10.255.229.42]) ([10.255.229.42])
+  by orsmga002.jf.intel.com with ESMTP; 05 May 2020 15:04:16 -0700
+Subject: Re: [PATCH V2] ASoC: Intel: boards: Use FS as nau8825 sysclk in
+ nau88125_* machine
+To:     =?UTF-8?Q?Rados=c5=82aw_Biernacki?= <rad@semihalf.com>
+Cc:     Lech Betlej <Lech.Betlej@intel.com>, alsa-devel@alsa-project.org,
+        Todd Broch <tbroch@google.com>,
+        Harshapriya <harshapriya.n@intel.com>,
+        John Hsu <KCHSU0@nuvoton.com>,
+        Alex Levin <levinale@google.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        "Sienkiewicz, Michal" <michal.sienkiewicz@intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Ben Zhang <benzh@chromium.org>,
+        Mac Chiang <mac.chiang@intel.com>,
+        Vamshi Krishna <vamshi.krishna.gopal@intel.com>,
+        Marcin Wojtas <mw@semihalf.com>, linux-kernel@vger.kernel.org,
+        Yong Zhi <yong.zhi@intel.com>
+References: <20200501193141.30293-1-rad@semihalf.com>
+ <3ad44b75-387f-da75-d7b2-3a16ed00550c@linux.intel.com>
+ <CAOs-w0LPeKgooa_98x_Jkzus-Y5Kad7pDby0CriDGb6nTp_6sA@mail.gmail.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <8b97bf43-ddd8-df81-90e7-9e87c19af1ab@linux.intel.com>
+Date:   Tue, 5 May 2020 10:00:03 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <073b80ef4285a02729f5b06872474202d4ff2e3e.camel@suse.de>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CAOs-w0LPeKgooa_98x_Jkzus-Y5Kad7pDby0CriDGb6nTp_6sA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -116,143 +60,73 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-On 05/05/2020 15:47, Nicolas Saenz Julienne wrote:
-> On Tue, 2020-05-05 at 15:39 +0200, Matthias Brugger wrote:
+>>> This single fix address two issues on machines with nau88125:
+>>> 1) Audio distortion, due to lack of required clock rate on MCLK line
+>>> 2) Loud audible "pops" on headphones if there is no sysclk during nau8825
+>>>      playback power up sequence
+>>>
+>>> Explanation for:
+>>> 1) Due to Skylake HW limitation, MCLK pin can only output 24MHz clk
+>>>      rate (it can be only connected to XTAL parent clk). The BCLK pin
+>>>      can be driven by dividers and therefore FW is able to set it to rate
+>>>      required by chosen audio format. According to nau8825 datasheet, 256*FS
+>>>      sysclk gives the best audio quality and the only way to achieve this
+>>>      (taking into account the above limitations) its to regenerate the MCLK
+>>>      from BCLK on nau8825 side by FFL. Without required clk rate, audio is
+>>>      distorted by added harmonics.
 >>
->> On 05/05/2020 14:53, Nicolas Saenz Julienne wrote:
->>> Hi Matthias,
+>> The BCLK is going to be a multiple of 50 * Fs due to clocking
+>> restrictions. Can the codec regenerate a good-enough sysclk from this?
+> 
+> According to Intel, silicon has a limitation, on SKL/KBL only clk_id =
+> SKL_XTAL, .name = "xtal" is available for IO domain.
+> As mentioned in the commit:
+> MCLK is generated by using 24MHz Xtal directly or applying a divider
+> (so no way of achieving the rate required by audio format).
+> BCLK/FS is generated from 24MHz and uses dividers and additional
+> padding bits are used to match the clock source.
+> Next gen silicon has the possibility of using additional clock sources.
+> 
+> Summing up, using MCLK from SKL to NAU88L25 is not an option.
+> The only option we found is to use BCLK and regen the required clock
+> rate by FLL on the NAU88l25 side.
+
+Right, this 24 MHz is a recurring problem.
+But what I was asking was if the NAU8825 is fine working with e.g. a 
+2.4MHz bit clock. i.e. with 25 bit slots or padding at the end of the frame?
+
+> 
 >>>
->>> On Tue, 2020-05-05 at 14:15 +0200, Matthias Brugger wrote:
->>>> On 30/04/2020 15:04, Nicolas Saenz Julienne wrote:
->>>>> When needed, RPi4's co-processor (called VideoCore) has to be instructed
->>>>> to load VL805's firmware (the chip providing xHCI support). VideoCore's
->>>>> firmware expects the board's PCIe bus to be already configured in order
->>>>> for it to load the xHCI chip firmware. So we have to make sure this
->>>>> happens in between the PCIe configuration and xHCI startup.
->>>>>
->>>>> Introduce a callback in xhci_pci_probe() to run this platform specific
->>>>> routine.
->>>>>
->>>>> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
->>>>>
->>>>> ---
->>>>>
->>>>> Changes since v1:
->>>>>  - Create callback
->>>>>
->>>>>  board/raspberrypi/rpi/rpi.c | 12 ++++++++++++
->>>>>  drivers/usb/host/xhci-pci.c |  6 ++++++
->>>>>  include/usb/xhci.h          |  3 +++
->>>>>  3 files changed, 21 insertions(+)
->>>>>
->>>>> diff --git a/board/raspberrypi/rpi/rpi.c b/board/raspberrypi/rpi/rpi.c
->>>>> index e367ba3092..8aa78d1f48 100644
->>>>> --- a/board/raspberrypi/rpi/rpi.c
->>>>> +++ b/board/raspberrypi/rpi/rpi.c
->>>>> @@ -14,6 +14,7 @@
->>>>>  #include <lcd.h>
->>>>>  #include <memalign.h>
->>>>>  #include <mmc.h>
->>>>> +#include <usb/xhci.h>
->>>>>  #include <asm/gpio.h>
->>>>>  #include <asm/arch/mbox.h>
->>>>>  #include <asm/arch/msg.h>
->>>>> @@ -494,3 +495,14 @@ int ft_board_setup(void *blob, bd_t *bd)
->>>>>  
->>>>>  	return 0;
->>>>>  }
->>>>> +
->>>>> +#ifdef CONFIG_BCM2711
->>>>
->>>> This won't work with rpi_arm64_defconfig.
->>>> Can't we just evaluate at runtime if we need to do anything in
->>>> xhci_pci_fixup.
->>>
->>> I can't see why, who is going to call xhci_pci_probe() in RPi3?
->>>
+>>> 2) Currently Skylake does not output MCLK/FS when the back-end DAI op
+>>>      hw_param is called, so we cannot switch to MCLK/FS in hw_param.  This
+>>>      patch reduces pop by letting nau8825 keep using its internal VCO clock
+>>>      during widget power up sequence, until SNDRV_PCM_TRIGGER_START when
+>>>      MCLK/FS is available. Once device resumes, the system will only enable
+>>>      power sequence for playback without doing hardware parameter, audio
+>>>      format, and PLL configure. In the mean time, the jack detecion sequence
+>>>      has changed PLL parameters and switched to internal clock. Thus, the
+>>>      playback signal distorted without correct PLL parameters.  That is why
+>>>      we need to configure the PLL again in SNDRV_PCM_TRIGGER_RESUME case.
 >>
->> If you do make rpi_arm64_defconfig and inspect the .config, you will see that
->> CONFIG_BCM2711 is not defined, so this code won't be called on RPi4.
+>> IIRC the FS can be controlled with the clk_ api with the Skylake driver,
+>> as done for some KBL platforms. Or is this not supported by the firmware
+>> used by this machine?
 > 
-> Oh! Understood.
-> 
-> Well, given that only xhci_pci_probe() is called if we're running on RPi4, I
-> think I can disregard those defines altogether. I'll double-check that.
-> 
+> According to Ben, SKL had limitations in FW for managing the clk's
+> back in the days.
+> Can you point to the other driver you mention so we can cross check?
 
-Yes but from my understanding we only need to call the function on newer
-revisions of RPi4. Does it have any side effect on older revisions, e.g. we get
-error messages (see below)?
+There are two KBL drivers that control the SSP clocks from the machine 
+driver, but indeed I don't know if this would work on Firmware, it'd be 
+a question for Lech/Cezary.
 
-[...]>>>> I wonder if the newer RPi4 have also a newer revision ID (see
->>>> get_board_rev).
->>>> If
->>>> so we could add another bool to struct rpi_model which will indicate us if
->>>> we
->>>> need to notify VideoCore about vl805's firmware.
->>>>
->>>>> +void xhci_pci_fixup(struct udevice *dev)
->>>>> +{
->>>>> +	int ret;
->>>>> +
->>>>> +	ret = bcm2711_notify_vl805_reset();
->>>>> +	if (ret)
->>>>> +		printf("RPI: Failed to notify VideoCore about vl805's
->>>>> firmware\n");
+kbl_rt5663_max98927.c:          ret = clk_prepare_enable(priv->mclk);
+kbl_rt5663_max98927.c:          ret = clk_prepare_enable(priv->sclk);
+kbl_rt5663_rt5514_max98927.c:           ret = 
+clk_prepare_enable(priv->mclk);
+kbl_rt5663_rt5514_max98927.c:           ret = 
+clk_prepare_enable(priv->sclk);
+kbl_rt5663_rt5514_max98927.c:                   ret = 
+clk_prepare_enable(priv->mclk);
 
-We already have
-printf("bcm2711: Faild to load vl805's firmware, %d\n", ret); in
-bcm2711_notify_vl805_reset(). Do we really need two error messages?
 
-Regards,
-Matthias
-
->>>>> +}
->>>>> +#endif
->>>>> diff --git a/drivers/usb/host/xhci-pci.c b/drivers/usb/host/xhci-pci.c
->>>>> index c1f60da541..1285dde1ef 100644
->>>>> --- a/drivers/usb/host/xhci-pci.c
->>>>> +++ b/drivers/usb/host/xhci-pci.c
->>>>> @@ -11,6 +11,10 @@
->>>>>  #include <usb.h>
->>>>>  #include <usb/xhci.h>
->>>>>  
->>>>> +__weak void xhci_pci_fixup(struct udevice *dev)
->>>>> +{
->>>>> +}
->>>>> +
->>>>>  static void xhci_pci_init(struct udevice *dev, struct xhci_hccr
->>>>> **ret_hccr,
->>>>>  			  struct xhci_hcor **ret_hcor)
->>>>>  {
->>>>> @@ -40,6 +44,8 @@ static int xhci_pci_probe(struct udevice *dev)
->>>>>  	struct xhci_hccr *hccr;
->>>>>  	struct xhci_hcor *hcor;
->>>>>  
->>>>> +	xhci_pci_fixup(dev);
->>>>> +
->>>>>  	xhci_pci_init(dev, &hccr, &hcor);
->>>>>  
->>>>>  	return xhci_register(dev, hccr, hcor);
->>>>> diff --git a/include/usb/xhci.h b/include/usb/xhci.h
->>>>> index c16106a2fc..57feed7603 100644
->>>>> --- a/include/usb/xhci.h
->>>>> +++ b/include/usb/xhci.h
->>>>> @@ -16,6 +16,7 @@
->>>>>  #ifndef HOST_XHCI_H_
->>>>>  #define HOST_XHCI_H_
->>>>>  
->>>>> +#include <usb.h>
->>>>>  #include <asm/types.h>
->>>>>  #include <asm/cache.h>
->>>>>  #include <asm/io.h>
->>>>> @@ -1281,4 +1282,6 @@ extern struct dm_usb_ops xhci_usb_ops;
->>>>>  
->>>>>  struct xhci_ctrl *xhci_get_ctrl(struct usb_device *udev);
->>>>>  
->>>>> +extern void xhci_pci_fixup(struct udevice *dev);
->>>>> +
->>>>>  #endif /* HOST_XHCI_H_ */
->>>>>
-> 
