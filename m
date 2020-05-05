@@ -2,445 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FC941C4DDF
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 07:53:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AA5C1C4DEE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 07:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728210AbgEEFwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 01:52:40 -0400
-Received: from mx07-00178001.pphosted.com ([62.209.51.94]:17526 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726788AbgEEFwi (ORCPT
+        id S1727904AbgEEFzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 01:55:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725766AbgEEFzJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 01:52:38 -0400
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0455lPhI009538;
-        Tue, 5 May 2020 07:52:22 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=STMicroelectronics;
- bh=sF4j2SqbetdQG3bc1UfJr1QolPm7JTCYL8LwvwH5cZ8=;
- b=d44e5JnEZT0HHP/1fg2QjB08eFnjfZT1xtNPCEOmeekgsRCaEcV0Rjv1K+eG17weP/Q1
- Z9ZgzPXphpDFKzXCQdwqFs+2OdcUyMK/3Acnudh7v93DW7AGyh3li2iuzl7kXFWLoJE9
- e8cefNLchEOEsTTvHGW0u5Uhcv1nY6d5IMa3Z2fzRTBZDdewFdYKEapa633Ha+v+3k3/
- LG2Dmx86Pfxhm3SiZfZO+aOGCxS6cusLqZeXOMmpiOiFRzSK911xC0XsK725kL4u0nTt
- SI80Xh2guGqJfEQsWZmgf0DW7wNZMQkxiTeGgj22ZtQfYnJGaoF8vGJ5a5FuMD6yzWgh 7Q== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 30rxmvdw0c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 May 2020 07:52:22 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 96F3D100038;
-        Tue,  5 May 2020 07:52:21 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 8A64321CA74;
-        Tue,  5 May 2020 07:52:21 +0200 (CEST)
-Received: from localhost (10.75.127.50) by SFHDAG3NODE2.st.com (10.75.127.8)
- with Microsoft SMTP Server (TLS) id 15.0.1347.2; Tue, 5 May 2020 07:52:21
- +0200
-From:   Alain Volmat <alain.volmat@st.com>
-To:     <wsa@kernel.org>, <robh+dt@kernel.org>
-CC:     <mark.rutland@arm.com>, <pierre-yves.mordret@st.com>,
-        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@st.com>,
-        <linux-i2c@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@st.com>,
-        <alain.volmat@st.com>
-Subject: [PATCH 4/4] i2c: stm32f7: Add SMBus-specific protocols support
-Date:   Tue, 5 May 2020 07:51:11 +0200
-Message-ID: <1588657871-14747-5-git-send-email-alain.volmat@st.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1588657871-14747-1-git-send-email-alain.volmat@st.com>
-References: <1588657871-14747-1-git-send-email-alain.volmat@st.com>
+        Tue, 5 May 2020 01:55:09 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDE4CC061A0F
+        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 22:55:08 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id j3so317114ljg.8
+        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 22:55:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:cc:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=5Jl8Jj64ibC9mIAmg/Ap6Jj3w1BwlRCCyo3VEMK9xNk=;
+        b=FbUX3wWMmYHcjwSRdlYy4lardgWzwLOqBHDjy5LpkkW7NILuTjeFJDm7A0mXyFjQtl
+         mJaT9TDGvIrE0jOMLX1wAb46VKaVkhOgkC5EIEjx1kn9oqwJgqTAvIbQOyLSgsLsEc+F
+         7weYeDrINH1T4d+ACbCVO7LNc6Hc1Rfn7EgCAQA984az1ORolPCpoqSHmZQlUwMj3pj6
+         CMDwsyuCZ3adwDcLuulIypamK2ZpO7tHjw99oP9lKpiLHVMNtlfvB4ogz51E3YH+iN/x
+         cD38T+UMnnCjlVepELQrpDcAXzuipkQVgpFKC8VrUNoQTRFlC5oCBoyQsMatAVHw7eJm
+         v5oQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:cc:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5Jl8Jj64ibC9mIAmg/Ap6Jj3w1BwlRCCyo3VEMK9xNk=;
+        b=TdwNPODi8yEomU3r0DEWd18jfPBOVaIQVmQeF56PEyL2t0YzIE0zZqhzyOHxmYaj5t
+         5HlBRK3aZhdprBHXLLW6HEAvR3MHoAuMSFGr2xMiGh1c9kdARjy3hqGQh71n7zjzu6Lj
+         rtA+7G3qtg+gjGx9XYpzd1kn/02uMRjDjz9hleBe8M0W7Ot3ox15dq7Wr/dhNkvYcnYE
+         pQXGn3r06Zt1FY/oEPbBgzst4KKXdS1F/qRwSZMssTeB2Yo13dARzZCy8KL755PDYvuk
+         fI93/1tT2fHYH5UGsb7hZ/7HKXsDOcBAs7Fa8hE3pxmSCYxdZJZ+xxn4PYaNI/qah9A+
+         xR5A==
+X-Gm-Message-State: AGi0PuYab6fwAg0NJRFCpkWIUR70R0dM3TGsY10coTqI216HIPOsR4AE
+        jMMyQZv9DqFGJ6fIM0+wKDc=
+X-Google-Smtp-Source: APiQypKj427kpn++lsVAknyegPhtGV744X0rKkRsUjaI13o2Clu5IZP2HJNkrcmtGSp5f2+iUyb7eA==
+X-Received: by 2002:a2e:9791:: with SMTP id y17mr757567lji.174.1588658107094;
+        Mon, 04 May 2020 22:55:07 -0700 (PDT)
+Received: from [192.168.0.103] (static-91-225-135-18.devs.futuro.pl. [91.225.135.18])
+        by smtp.gmail.com with ESMTPSA id a12sm816405ljj.64.2020.05.04.22.55.02
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 04 May 2020 22:55:06 -0700 (PDT)
+Subject: Re: [PATCH] drm: Replace drm_modeset_lock/unlock_all with
+ DRM_MODESET_LOCK_ALL_* helpers
+To:     Sean Paul <seanpaul@chromium.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+References: <1588093804-30446-1-git-send-email-michalorzel.eng@gmail.com>
+ <875zdiacv2.fsf@intel.com>
+ <CAOw6vbK69aWzti9a7MXNmAfVfJXzzC5g74p4ukSE49MhaV_b3g@mail.gmail.com>
+ <CAKMK7uEzTn2nKyEaxMcd6602tprwkdnBrmrFYO+_Hi7FY39jAw@mail.gmail.com>
+ <520d517e-5e8f-a6c7-1c8a-38d1a368a79f@gmail.com>
+ <20200504115309.GJ10381@phenom.ffwll.local>
+From:   =?UTF-8?B?TWljaGHFgiBPcnplxYI=?= <michalorzel.eng@gmail.com>
+Cc:     Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Dave Airlie <airlied@linux.ie>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Message-ID: <9cd2487b-c6a8-b057-e53c-b3dd1e7141aa@gmail.com>
+Date:   Tue, 5 May 2020 07:55:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG6NODE1.st.com (10.75.127.16) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-05-05_02:2020-05-04,2020-05-05 signatures=0
+In-Reply-To: <20200504115309.GJ10381@phenom.ffwll.local>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds the support for SMBus Host notify and SMBus Alert
-extensions protocols
 
-Signed-off-by: Alain Volmat <alain.volmat@st.com>
----
- drivers/i2c/busses/Kconfig       |   1 +
- drivers/i2c/busses/i2c-stm32f7.c | 198 +++++++++++++++++++++++++++++--
- 2 files changed, 189 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
-index 2f6e39b41e6c..b82c2f7d7d50 100644
---- a/drivers/i2c/busses/Kconfig
-+++ b/drivers/i2c/busses/Kconfig
-@@ -1024,6 +1024,7 @@ config I2C_STM32F7
- 	tristate "STMicroelectronics STM32F7 I2C support"
- 	depends on ARCH_STM32 || COMPILE_TEST
- 	select I2C_SLAVE
-+	select I2C_SMBUS
- 	help
- 	  Enable this option to add support for STM32 I2C controller embedded
- 	  in STM32F7 SoCs.
-diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
-index 9c9e10ea9199..6d02ddbc1ab4 100644
---- a/drivers/i2c/busses/i2c-stm32f7.c
-+++ b/drivers/i2c/busses/i2c-stm32f7.c
-@@ -14,10 +14,12 @@
-  * This driver is based on i2c-stm32f4.c
-  *
-  */
-+#include <linux/atomic.h>
- #include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/err.h>
- #include <linux/i2c.h>
-+#include <linux/i2c-smbus.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/iopoll.h>
-@@ -50,6 +52,8 @@
- 
- /* STM32F7 I2C control 1 */
- #define STM32F7_I2C_CR1_PECEN			BIT(23)
-+#define STM32F7_I2C_CR1_ALERTEN			BIT(22)
-+#define STM32F7_I2C_CR1_SMBHEN			BIT(20)
- #define STM32F7_I2C_CR1_WUPEN			BIT(18)
- #define STM32F7_I2C_CR1_SBC			BIT(16)
- #define STM32F7_I2C_CR1_RXDMAEN			BIT(15)
-@@ -121,6 +125,7 @@
- 				(((n) & STM32F7_I2C_ISR_ADDCODE_MASK) >> 17)
- #define STM32F7_I2C_ISR_DIR			BIT(16)
- #define STM32F7_I2C_ISR_BUSY			BIT(15)
-+#define STM32F7_I2C_ISR_ALERT			BIT(13)
- #define STM32F7_I2C_ISR_PECERR			BIT(11)
- #define STM32F7_I2C_ISR_ARLO			BIT(9)
- #define STM32F7_I2C_ISR_BERR			BIT(8)
-@@ -134,6 +139,7 @@
- #define STM32F7_I2C_ISR_TXE			BIT(0)
- 
- /* STM32F7 I2C Interrupt Clear */
-+#define STM32F7_I2C_ICR_ALERTCF			BIT(13)
- #define STM32F7_I2C_ICR_PECCF			BIT(11)
- #define STM32F7_I2C_ICR_ARLOCF			BIT(9)
- #define STM32F7_I2C_ICR_BERRCF			BIT(8)
-@@ -150,7 +156,7 @@
- 
- #define STM32F7_I2C_MAX_LEN			0xff
- #define STM32F7_I2C_DMA_LEN_MIN			0x16
--#define STM32F7_I2C_MAX_SLAVE			0x2
-+#define STM32F7_I2C_MAX_SLAVE			0x3
- 
- #define STM32F7_I2C_DNF_DEFAULT			0
- #define STM32F7_I2C_DNF_MAX			16
-@@ -274,6 +280,29 @@ struct stm32f7_i2c_msg {
- 	u8 smbus_buf[I2C_SMBUS_BLOCK_MAX + 3] __aligned(4);
- };
- 
-+/**
-+ * struct stm32f7_i2c_host - SMBus host specific data
-+ * @client: I2C slave device that represents SMBus host
-+ * @notify_start: indicate that this is the start of the notify transaction
-+ * @addr: device address of SMBus device that initiate SMBus host protocol
-+ */
-+struct stm32f7_i2c_host {
-+	struct i2c_client *client;
-+	bool notify_start;
-+	u8 addr;
-+};
-+
-+/**
-+ * struct stm32f7_i2c_alert - SMBus alert specific data
-+ * @setup: platform data for the smbus_alert i2c client
-+ * @ara: I2C slave device used to respond to the SMBus Alert with Alert
-+ * Response Address
-+ */
-+struct stm32f7_i2c_alert {
-+	struct i2c_smbus_alert_setup setup;
-+	struct i2c_client *ara;
-+};
-+
- /**
-  * struct stm32f7_i2c_dev - private data of the controller
-  * @adap: I2C adapter for this controller
-@@ -301,6 +330,9 @@ struct stm32f7_i2c_msg {
-  * @fmp_creg: register address for clearing Fast Mode Plus bits
-  * @fmp_mask: mask for Fast Mode Plus bits in set register
-  * @wakeup_src: boolean to know if the device is a wakeup source
-+ * @host_notify_cnt: atomic to know number of host_notify enabled clients
-+ * @host_notify_client: SMBus host-notify client
-+ * @alert: SMBus alert specific data
-  */
- struct stm32f7_i2c_dev {
- 	struct i2c_adapter adap;
-@@ -327,6 +359,9 @@ struct stm32f7_i2c_dev {
- 	u32 fmp_creg;
- 	u32 fmp_mask;
- 	bool wakeup_src;
-+	atomic_t host_notify_cnt;
-+	struct i2c_client *host_notify_client;
-+	struct stm32f7_i2c_alert *alert;
- };
- 
- /*
-@@ -1321,10 +1356,20 @@ static int stm32f7_i2c_get_free_slave_id(struct stm32f7_i2c_dev *i2c_dev,
- 	int i;
- 
- 	/*
--	 * slave[0] supports 7-bit and 10-bit slave address
--	 * slave[1] supports 7-bit slave address only
-+	 * slave[0] support only SMBus Host address (0x8)
-+	 * slave[1] supports 7-bit and 10-bit slave address
-+	 * slave[2] supports 7-bit slave address only
- 	 */
--	for (i = STM32F7_I2C_MAX_SLAVE - 1; i >= 0; i--) {
-+	if (atomic_read(&i2c_dev->host_notify_cnt)) {
-+		if (slave->addr == 0x08) {
-+			if (i2c_dev->slave[0])
-+				goto fail;
-+			*id = 0;
-+			return 0;
-+		}
-+	}
-+
-+	for (i = STM32F7_I2C_MAX_SLAVE - 1; i > 0; i--) {
- 		if (i == 1 && (slave->flags & I2C_CLIENT_TEN))
- 			continue;
- 		if (!i2c_dev->slave[i]) {
-@@ -1333,6 +1378,7 @@ static int stm32f7_i2c_get_free_slave_id(struct stm32f7_i2c_dev *i2c_dev,
- 		}
- 	}
- 
-+fail:
- 	dev_err(dev, "Slave 0x%x could not be registered\n", slave->addr);
- 
- 	return -EINVAL;
-@@ -1586,6 +1632,13 @@ static irqreturn_t stm32f7_i2c_isr_error(int irq, void *data)
- 		f7_msg->result = -EINVAL;
- 	}
- 
-+	if (status & STM32F7_I2C_ISR_ALERT) {
-+		dev_dbg(dev, "<%s>: SMBus alert received\n", __func__);
-+		writel_relaxed(STM32F7_I2C_ICR_ALERTCF, base + STM32F7_I2C_ICR);
-+		i2c_handle_smbus_alert(i2c_dev->alert->ara);
-+		return IRQ_HANDLED;
-+	}
-+
- 	if (!i2c_dev->slave_running) {
- 		u32 mask;
- 		/* Disable interrupts */
-@@ -1776,7 +1829,13 @@ static int stm32f7_i2c_reg_slave(struct i2c_client *slave)
- 	if (!stm32f7_i2c_is_slave_registered(i2c_dev))
- 		stm32f7_i2c_enable_wakeup(i2c_dev, true);
- 
--	if (id == 0) {
-+	switch (id) {
-+	case 0:
-+		/* Slave SMBus Host */
-+		i2c_dev->slave[id] = slave;
-+		break;
-+
-+	case 1:
- 		/* Configure Own Address 1 */
- 		oar1 = readl_relaxed(i2c_dev->base + STM32F7_I2C_OAR1);
- 		oar1 &= ~STM32F7_I2C_OAR1_MASK;
-@@ -1789,7 +1848,9 @@ static int stm32f7_i2c_reg_slave(struct i2c_client *slave)
- 		oar1 |= STM32F7_I2C_OAR1_OA1EN;
- 		i2c_dev->slave[id] = slave;
- 		writel_relaxed(oar1, i2c_dev->base + STM32F7_I2C_OAR1);
--	} else if (id == 1) {
-+		break;
-+
-+	case 2:
- 		/* Configure Own Address 2 */
- 		oar2 = readl_relaxed(i2c_dev->base + STM32F7_I2C_OAR2);
- 		oar2 &= ~STM32F7_I2C_OAR2_MASK;
-@@ -1802,7 +1863,10 @@ static int stm32f7_i2c_reg_slave(struct i2c_client *slave)
- 		oar2 |= STM32F7_I2C_OAR2_OA2EN;
- 		i2c_dev->slave[id] = slave;
- 		writel_relaxed(oar2, i2c_dev->base + STM32F7_I2C_OAR2);
--	} else {
-+		break;
-+
-+	default:
-+		dev_err(dev, "I2C slave id not supported\n");
- 		ret = -ENODEV;
- 		goto pm_free;
- 	}
-@@ -1843,10 +1907,10 @@ static int stm32f7_i2c_unreg_slave(struct i2c_client *slave)
- 	if (ret < 0)
- 		return ret;
- 
--	if (id == 0) {
-+	if (id == 1) {
- 		mask = STM32F7_I2C_OAR1_OA1EN;
- 		stm32f7_i2c_clr_bits(base + STM32F7_I2C_OAR1, mask);
--	} else {
-+	} else if (id == 2) {
- 		mask = STM32F7_I2C_OAR2_OA2EN;
- 		stm32f7_i2c_clr_bits(base + STM32F7_I2C_OAR2, mask);
- 	}
-@@ -1911,6 +1975,103 @@ static int stm32f7_i2c_setup_fm_plus_bits(struct platform_device *pdev,
- 					  &i2c_dev->fmp_mask);
- }
- 
-+static int stm32f7_i2c_enable_smbus_host(struct stm32f7_i2c_dev *i2c_dev)
-+{
-+	struct i2c_adapter *adap = &i2c_dev->adap;
-+	void __iomem *base = i2c_dev->base;
-+	struct i2c_client *client;
-+
-+	client = i2c_new_smbus_host_notify_device(adap);
-+	if (IS_ERR(client))
-+		return PTR_ERR(client);
-+
-+	i2c_dev->host_notify_client = client;
-+
-+	/* Enable SMBus Host address */
-+	stm32f7_i2c_set_bits(base + STM32F7_I2C_CR1, STM32F7_I2C_CR1_SMBHEN);
-+
-+	return 0;
-+}
-+
-+static void stm32f7_i2c_disable_smbus_host(struct stm32f7_i2c_dev *i2c_dev)
-+{
-+	void __iomem *base = i2c_dev->base;
-+
-+	if (i2c_dev->host_notify_client) {
-+		/* Disable SMBus Host address */
-+		stm32f7_i2c_clr_bits(base + STM32F7_I2C_CR1,
-+				     STM32F7_I2C_CR1_SMBHEN);
-+		i2c_free_smbus_host_notify_device(i2c_dev->host_notify_client);
-+	}
-+}
-+
-+static int stm32f7_i2c_reg_client(struct i2c_client *client)
-+{
-+	struct stm32f7_i2c_dev *i2c_dev = i2c_get_adapdata(client->adapter);
-+	int ret;
-+
-+	if (client->flags & I2C_CLIENT_HOST_NOTIFY) {
-+		/* Only enable on the first device registration */
-+		if (atomic_inc_return(&i2c_dev->host_notify_cnt) == 1) {
-+			ret = stm32f7_i2c_enable_smbus_host(i2c_dev);
-+			if (ret) {
-+				dev_err(i2c_dev->dev,
-+					"failed to enable SMBus host notify (%d)\n",
-+					ret);
-+				return ret;
-+			}
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static void stm32f7_i2c_unreg_client(struct i2c_client *client)
-+{
-+	struct stm32f7_i2c_dev *i2c_dev = i2c_get_adapdata(client->adapter);
-+
-+	if (client->flags & I2C_CLIENT_HOST_NOTIFY) {
-+		if (atomic_dec_return(&i2c_dev->host_notify_cnt) == 0)
-+			stm32f7_i2c_disable_smbus_host(i2c_dev);
-+	}
-+}
-+
-+static int stm32f7_i2c_enable_smbus_alert(struct stm32f7_i2c_dev *i2c_dev)
-+{
-+	struct stm32f7_i2c_alert *alert;
-+	struct i2c_adapter *adap = &i2c_dev->adap;
-+	struct device *dev = i2c_dev->dev;
-+	void __iomem *base = i2c_dev->base;
-+
-+	alert = devm_kzalloc(dev, sizeof(*alert), GFP_KERNEL);
-+	if (!alert)
-+		return -ENOMEM;
-+
-+	alert->ara = i2c_new_smbus_alert_device(adap, &alert->setup);
-+	if (IS_ERR(alert->ara))
-+		return PTR_ERR(alert->ara);
-+
-+	i2c_dev->alert = alert;
-+
-+	/* Enable SMBus Alert */
-+	stm32f7_i2c_set_bits(base + STM32F7_I2C_CR1, STM32F7_I2C_CR1_ALERTEN);
-+
-+	return 0;
-+}
-+
-+static void stm32f7_i2c_disable_smbus_alert(struct stm32f7_i2c_dev *i2c_dev)
-+{
-+	struct stm32f7_i2c_alert *alert = i2c_dev->alert;
-+	void __iomem *base = i2c_dev->base;
-+
-+	if (alert) {
-+		/* Disable SMBus Alert */
-+		stm32f7_i2c_clr_bits(base + STM32F7_I2C_CR1,
-+				     STM32F7_I2C_CR1_ALERTEN);
-+		i2c_unregister_device(alert->ara);
-+	}
-+}
-+
- static u32 stm32f7_i2c_func(struct i2c_adapter *adap)
- {
- 	return I2C_FUNC_I2C | I2C_FUNC_10BIT_ADDR | I2C_FUNC_SLAVE |
-@@ -1918,7 +2079,7 @@ static u32 stm32f7_i2c_func(struct i2c_adapter *adap)
- 		I2C_FUNC_SMBUS_BYTE_DATA | I2C_FUNC_SMBUS_WORD_DATA |
- 		I2C_FUNC_SMBUS_BLOCK_DATA | I2C_FUNC_SMBUS_BLOCK_PROC_CALL |
- 		I2C_FUNC_SMBUS_PROC_CALL | I2C_FUNC_SMBUS_PEC |
--		I2C_FUNC_SMBUS_I2C_BLOCK;
-+		I2C_FUNC_SMBUS_I2C_BLOCK | I2C_FUNC_SMBUS_HOST_NOTIFY;
- }
- 
- static const struct i2c_algorithm stm32f7_i2c_algo = {
-@@ -1927,6 +2088,8 @@ static const struct i2c_algorithm stm32f7_i2c_algo = {
- 	.functionality = stm32f7_i2c_func,
- 	.reg_slave = stm32f7_i2c_reg_slave,
- 	.unreg_slave = stm32f7_i2c_unreg_slave,
-+	.reg_client = stm32f7_i2c_reg_client,
-+	.unreg_client = stm32f7_i2c_unreg_client,
- };
- 
- static int stm32f7_i2c_probe(struct platform_device *pdev)
-@@ -2088,6 +2251,16 @@ static int stm32f7_i2c_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto pm_disable;
- 
-+	if (device_property_read_bool(&pdev->dev, "st,smbus-alert")) {
-+		ret = stm32f7_i2c_enable_smbus_alert(i2c_dev);
-+		if (ret) {
-+			dev_err(i2c_dev->dev,
-+				"failed to enable SMBus alert protocol (%d)\n",
-+				ret);
-+			goto i2c_adapter_remove;
-+		}
-+	}
-+
- 	dev_info(i2c_dev->dev, "STM32F7 I2C-%d bus adapter\n", adap->nr);
- 
- 	pm_runtime_mark_last_busy(i2c_dev->dev);
-@@ -2095,6 +2268,9 @@ static int stm32f7_i2c_probe(struct platform_device *pdev)
- 
- 	return 0;
- 
-+i2c_adapter_remove:
-+	i2c_del_adapter(adap);
-+
- pm_disable:
- 	pm_runtime_put_noidle(i2c_dev->dev);
- 	pm_runtime_disable(i2c_dev->dev);
-@@ -2126,6 +2302,8 @@ static int stm32f7_i2c_remove(struct platform_device *pdev)
- {
- 	struct stm32f7_i2c_dev *i2c_dev = platform_get_drvdata(pdev);
- 
-+	stm32f7_i2c_disable_smbus_alert(i2c_dev);
-+
- 	i2c_del_adapter(&i2c_dev->adap);
- 	pm_runtime_get_sync(i2c_dev->dev);
- 
--- 
-2.17.1
+On 04.05.2020 13:53, Daniel Vetter wrote:
+> On Fri, May 01, 2020 at 05:49:33PM +0200, Michał Orzeł wrote:
+>>
+>>
+>> On 30.04.2020 20:30, Daniel Vetter wrote:
+>>> On Thu, Apr 30, 2020 at 5:38 PM Sean Paul <seanpaul@chromium.org> wrote:
+>>>>
+>>>> On Wed, Apr 29, 2020 at 4:57 AM Jani Nikula <jani.nikula@linux.intel.com> wrote:
+>>>>>
+>>>>> On Tue, 28 Apr 2020, Michal Orzel <michalorzel.eng@gmail.com> wrote:
+>>>>>> As suggested by the TODO list for the kernel DRM subsystem, replace
+>>>>>> the deprecated functions that take/drop modeset locks with new helpers.
+>>>>>>
+>>>>>> Signed-off-by: Michal Orzel <michalorzel.eng@gmail.com>
+>>>>>> ---
+>>>>>>  drivers/gpu/drm/drm_mode_object.c | 10 ++++++----
+>>>>>>  1 file changed, 6 insertions(+), 4 deletions(-)
+>>>>>>
+>>>>>> diff --git a/drivers/gpu/drm/drm_mode_object.c b/drivers/gpu/drm/drm_mode_object.c
+>>>>>> index 35c2719..901b078 100644
+>>>>>> --- a/drivers/gpu/drm/drm_mode_object.c
+>>>>>> +++ b/drivers/gpu/drm/drm_mode_object.c
+>>>>>> @@ -402,12 +402,13 @@ int drm_mode_obj_get_properties_ioctl(struct drm_device *dev, void *data,
+>>>>>>  {
+>>>>>>       struct drm_mode_obj_get_properties *arg = data;
+>>>>>>       struct drm_mode_object *obj;
+>>>>>> +     struct drm_modeset_acquire_ctx ctx;
+>>>>>>       int ret = 0;
+>>>>>>
+>>>>>>       if (!drm_core_check_feature(dev, DRIVER_MODESET))
+>>>>>>               return -EOPNOTSUPP;
+>>>>>>
+>>>>>> -     drm_modeset_lock_all(dev);
+>>>>>> +     DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
+>>>>>
+>>>>> I cry a little every time I look at the DRM_MODESET_LOCK_ALL_BEGIN and
+>>>>> DRM_MODESET_LOCK_ALL_END macros. :(
+>>>>>
+>>>>> Currently only six users... but there are ~60 calls to
+>>>>> drm_modeset_lock_all{,_ctx} that I presume are to be replaced. I wonder
+>>>>> if this will come back and haunt us.
+>>>>>
+>>>>
+>>>> What's the alternative? Seems like the options without the macros is
+>>>> to use incorrect scope or have a bunch of retry/backoff cargo-cult
+>>>> everywhere (and hope the copy source is done correctly).
+>>>
+>>> Yeah Sean & me had a bunch of bikesheds and this is the least worst
+>>> option we could come up with. You can't make it a function because of
+>>> the control flow. You don't want to open code this because it's tricky
+>>> to get right, if all you want is to just grab all locks. But it is
+>>> magic hidden behind a macro, which occasionally ends up hurting.
+>>> -Daniel
+>> So what are we doing with this problem? Should we replace at once approx. 60 calls?
+> 
+> I'm confused by your question - dradual conversion is entirely orthogonal
+> to what exactly we're converting too. All I added here is that we've
+> discussed this at length, and the macro is the best thing we've come up
+> with. I still think it's the best compromise.
+> 
+> Flag-day conversion for over 60 calls doesn't work, no matter what.
+> -Daniel
+> 
+I agree with that. All I wanted to ask was whether I should add something additional to this patch or not.
 
+Thanks,
+Michal
+>>
+>> Michal
+>>>
+>>>> Sean
+>>>>
+>>>>> BR,
+>>>>> Jani.
+>>>>>
+>>>>>
+>>>>>>
+>>>>>>       obj = drm_mode_object_find(dev, file_priv, arg->obj_id, arg->obj_type);
+>>>>>>       if (!obj) {
+>>>>>> @@ -427,7 +428,7 @@ int drm_mode_obj_get_properties_ioctl(struct drm_device *dev, void *data,
+>>>>>>  out_unref:
+>>>>>>       drm_mode_object_put(obj);
+>>>>>>  out:
+>>>>>> -     drm_modeset_unlock_all(dev);
+>>>>>> +     DRM_MODESET_LOCK_ALL_END(ctx, ret);
+>>>>>>       return ret;
+>>>>>>  }
+>>>>>>
+>>>>>> @@ -449,12 +450,13 @@ static int set_property_legacy(struct drm_mode_object *obj,
+>>>>>>  {
+>>>>>>       struct drm_device *dev = prop->dev;
+>>>>>>       struct drm_mode_object *ref;
+>>>>>> +     struct drm_modeset_acquire_ctx ctx;
+>>>>>>       int ret = -EINVAL;
+>>>>>>
+>>>>>>       if (!drm_property_change_valid_get(prop, prop_value, &ref))
+>>>>>>               return -EINVAL;
+>>>>>>
+>>>>>> -     drm_modeset_lock_all(dev);
+>>>>>> +     DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
+>>>>>>       switch (obj->type) {
+>>>>>>       case DRM_MODE_OBJECT_CONNECTOR:
+>>>>>>               ret = drm_connector_set_obj_prop(obj, prop, prop_value);
+>>>>>> @@ -468,7 +470,7 @@ static int set_property_legacy(struct drm_mode_object *obj,
+>>>>>>               break;
+>>>>>>       }
+>>>>>>       drm_property_change_valid_put(prop, ref);
+>>>>>> -     drm_modeset_unlock_all(dev);
+>>>>>> +     DRM_MODESET_LOCK_ALL_END(ctx, ret);
+>>>>>>
+>>>>>>       return ret;
+>>>>>>  }
+>>>>>
+>>>>> --
+>>>>> Jani Nikula, Intel Open Source Graphics Center
+>>>
+>>>
+>>>
+> 
