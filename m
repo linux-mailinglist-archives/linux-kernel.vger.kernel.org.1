@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C73E11C589E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A02A1C58DD
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:20:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730148AbgEEOQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:16:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49176 "EHLO
+        id S1730454AbgEEOTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:19:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730140AbgEEOQf (ORCPT
+        by vger.kernel.org with ESMTP id S1730115AbgEEOQ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:16:35 -0400
+        Tue, 5 May 2020 10:16:29 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38FB6C061A10
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:16:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8B97C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:16:29 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jVyMk-00029Z-O9; Tue, 05 May 2020 16:16:10 +0200
+        id 1jVyMm-0002Aa-4d; Tue, 05 May 2020 16:16:12 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 48033FFC8D;
-        Tue,  5 May 2020 16:16:10 +0200 (CEST)
-Message-Id: <20200505135315.380927730@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 82ABDFFC8D;
+        Tue,  5 May 2020 16:16:11 +0200 (CEST)
+Message-Id: <20200505135315.476734898@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 05 May 2020 15:49:47 +0200
+Date:   Tue, 05 May 2020 15:49:48 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -44,7 +44,7 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Will Deacon <will@kernel.org>
-Subject: [patch V4 part 4 21/24] x86/traps: Address objtool noinstr complaints in #DB
+Subject: [patch V4 part 4 22/24] x86/mce: Address objtools noinstr complaints
 References: <20200505134926.578885807@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -57,62 +57,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The functions invoked from handle_debug() can be instrumented. Tell objtool
-about it.
+Mark the relevant functions noinstr, use the plain non-instrumented MSR
+accessors. The only odd part is the instr_begin()/end() pair around the
+indirect machine_check_vector() call as objtool can't figure that out. The
+possible invoked functions are annotated correctly.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/kernel/traps.c |   14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ arch/x86/kernel/cpu/mce/core.c    |   20 +++++++++++++++-----
+ arch/x86/kernel/cpu/mce/p5.c      |    4 +++-
+ arch/x86/kernel/cpu/mce/winchip.c |    4 +++-
+ kernel/time/timekeeping.c         |    2 +-
+ 4 files changed, 22 insertions(+), 8 deletions(-)
 
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -762,14 +762,19 @@ static void noinstr handle_debug(struct
- 	/* Store the virtualized DR6 value */
- 	tsk->thread.debugreg6 = dr6;
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -130,7 +130,7 @@ static void (*quirk_no_way_out)(int bank
+ BLOCKING_NOTIFIER_HEAD(x86_mce_decoder_chain);
  
+ /* Do initial initialization of a struct mce */
+-void mce_setup(struct mce *m)
++noinstr void mce_setup(struct mce *m)
+ {
+ 	memset(m, 0, sizeof(struct mce));
+ 	m->cpu = m->extcpu = smp_processor_id();
+@@ -140,12 +140,12 @@ void mce_setup(struct mce *m)
+ 	m->cpuid = cpuid_eax(1);
+ 	m->socketid = cpu_data(m->extcpu).phys_proc_id;
+ 	m->apicid = cpu_data(m->extcpu).initial_apicid;
+-	rdmsrl(MSR_IA32_MCG_CAP, m->mcgcap);
++	m->mcgcap = __rdmsr(MSR_IA32_MCG_CAP);
+ 
+ 	if (this_cpu_has(X86_FEATURE_INTEL_PPIN))
+-		rdmsrl(MSR_PPIN, m->ppin);
++		m->ppin = __rdmsr(MSR_PPIN);
+ 	else if (this_cpu_has(X86_FEATURE_AMD_PPIN))
+-		rdmsrl(MSR_AMD_PPIN, m->ppin);
++		m->ppin = __rdmsr(MSR_AMD_PPIN);
+ 
+ 	m->microcode = boot_cpu_data.microcode;
+ }
+@@ -1895,10 +1895,12 @@ bool filter_mce(struct mce *m)
+ }
+ 
+ /* Handle unconfigured int18 (should never happen) */
+-static void unexpected_machine_check(struct pt_regs *regs)
++static noinstr void unexpected_machine_check(struct pt_regs *regs)
+ {
 +	instr_begin();
- #ifdef CONFIG_KPROBES
--	if (kprobe_debug_handler(regs))
-+	if (kprobe_debug_handler(regs)) {
-+		instr_end();
- 		return;
-+	}
- #endif
- 
- 	if (notify_die(DIE_DEBUG, "debug", regs, (long)&dr6, 0,
--		       SIGTRAP) == NOTIFY_STOP)
-+		       SIGTRAP) == NOTIFY_STOP) {
-+		instr_end();
- 		return;
-+	}
- 
- 	/*
- 	 * Let others (NMI) know that the debug stack is in use
-@@ -805,6 +810,7 @@ static void noinstr handle_debug(struct
- out:
- 	cond_local_irq_disable(regs);
- 	debug_stack_usage_dec();
+ 	pr_err("CPU#%d: Unexpected int18 (Machine Check)\n",
+ 	       smp_processor_id());
 +	instr_end();
  }
  
- static __always_inline void exc_debug_kernel(struct pt_regs *regs,
-@@ -816,7 +822,7 @@ static __always_inline void exc_debug_ke
- 	 * generates a debug exception."  Clear TIF_BLOCKSTEP to keep
- 	 * TIF_BLOCKSTEP in sync with the hardware BTF flag.
- 	 */
--	clear_tsk_thread_flag(tsk, TIF_BLOCKSTEP);
-+	clear_thread_flag(TIF_BLOCKSTEP);
+ /* Call the installed machine check handler for this CPU setup. */
+@@ -1915,14 +1917,22 @@ static __always_inline void exc_machine_
+ 		return;
  
- 	/*
- 	 * Catch SYSENTER with TF set and clear DR_STEP. If this hit a
-@@ -839,7 +845,7 @@ static __always_inline void exc_debug_us
- 					   unsigned long dr6)
+ 	nmi_enter();
++	/*
++	 * The call targets are marked noinstr, but objtool can't figure
++	 * that out because it's an indirect call. Annotate it.
++	 */
++	instr_begin();
+ 	machine_check_vector(regs);
++	instr_end();
+ 	nmi_exit();
+ }
+ 
+ static __always_inline void exc_machine_check_user(struct pt_regs *regs)
  {
  	idtentry_enter(regs);
--	clear_tsk_thread_flag(tsk, TIF_BLOCKSTEP);
-+	clear_thread_flag(TIF_BLOCKSTEP);
++	instr_begin();
+ 	machine_check_vector(regs);
++	instr_end();
+ 	idtentry_exit(regs);
+ }
  
- 	/*
- 	 * If dr6 has no reason to give us about the origin of this trap,
+--- a/arch/x86/kernel/cpu/mce/p5.c
++++ b/arch/x86/kernel/cpu/mce/p5.c
+@@ -21,10 +21,11 @@
+ int mce_p5_enabled __read_mostly;
+ 
+ /* Machine check handler for Pentium class Intel CPUs: */
+-static void pentium_machine_check(struct pt_regs *regs)
++static noinstr void pentium_machine_check(struct pt_regs *regs)
+ {
+ 	u32 loaddr, hi, lotype;
+ 
++	instr_begin();
+ 	rdmsr(MSR_IA32_P5_MC_ADDR, loaddr, hi);
+ 	rdmsr(MSR_IA32_P5_MC_TYPE, lotype, hi);
+ 
+@@ -37,6 +38,7 @@ static void pentium_machine_check(struct
+ 	}
+ 
+ 	add_taint(TAINT_MACHINE_CHECK, LOCKDEP_NOW_UNRELIABLE);
++	instr_end();
+ }
+ 
+ /* Set up machine check reporting for processors with Intel style MCE: */
+--- a/arch/x86/kernel/cpu/mce/winchip.c
++++ b/arch/x86/kernel/cpu/mce/winchip.c
+@@ -17,10 +17,12 @@
+ #include "internal.h"
+ 
+ /* Machine check handler for WinChip C6: */
+-static void winchip_machine_check(struct pt_regs *regs)
++static noinstr void winchip_machine_check(struct pt_regs *regs)
+ {
++	instr_begin();
+ 	pr_emerg("CPU0: Machine Check Exception.\n");
+ 	add_taint(TAINT_MACHINE_CHECK, LOCKDEP_NOW_UNRELIABLE);
++	instr_end();
+ }
+ 
+ /* Set up machine check reporting on the Winchip C6 series */
+--- a/kernel/time/timekeeping.c
++++ b/kernel/time/timekeeping.c
+@@ -953,7 +953,7 @@ EXPORT_SYMBOL_GPL(ktime_get_real_seconds
+  * but without the sequence counter protect. This internal function
+  * is called just when timekeeping lock is already held.
+  */
+-time64_t __ktime_get_real_seconds(void)
++noinstr time64_t __ktime_get_real_seconds(void)
+ {
+ 	struct timekeeper *tk = &tk_core.timekeeper;
+ 
 
