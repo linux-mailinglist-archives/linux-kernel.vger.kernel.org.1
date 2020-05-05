@@ -2,76 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A70A31C608A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 20:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 330081C6090
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 21:00:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728995AbgEES76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 14:59:58 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:40278 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728660AbgEES76 (ORCPT
+        id S1729050AbgEETAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 15:00:25 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:40314 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728481AbgEETAZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 14:59:58 -0400
-Received: by mail-ot1-f65.google.com with SMTP id i27so2598818ota.7;
-        Tue, 05 May 2020 11:59:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=dyq9mrLIg56VCBL+2zAISaEQ9imS4CMmiuffnUM6wnM=;
-        b=r7vSjhg0qGye5YUkNs5JFj/UwLR6NTJ7L2ci+H4v5dBr2mpYwRNBfIYq8W54pNF3AS
-         hl8jHgPojxUB4vHrhfcu5AtNpAVKnmbkwm1h9FltO7Kdep8lTyYoTucTd7bIFMe3cz52
-         Z8bmgQk9HhrJ+QNY10sigF3ZQcsThAKUQa2Agbsb+OHG46LMSF09vkrQAziBifQVkPFC
-         YcIJkDuFHbtonDyIi0CQrpsCJySZXb4uwSlzBUsuLc9ixhZppOSVcOztYpp9IR/czLXR
-         4dwCh/zRhLEHlkrzZjAfE96CZcS84ET+3QSRW33BK0mlvFVSmYamYA/BgGHVgPmYzst8
-         NLtA==
-X-Gm-Message-State: AGi0PuZ4CAG1tEOQbI9UMyKqJAKo/Q81C4/evkim4Eermu/eDhrIWQ2C
-        h6pm6PTT4EfY8Fj8T6Uow+Qk/f0=
-X-Google-Smtp-Source: APiQypJB3l17s1k8pOxERL4EQWyrzfLLgdkc4mgGcqAFGDVuy3Hc+dm2BZpJ7th3DoZKbdYSOcVR+g==
-X-Received: by 2002:a9d:2030:: with SMTP id n45mr3068366ota.99.1588705195598;
-        Tue, 05 May 2020 11:59:55 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id n132sm780007oig.49.2020.05.05.11.59.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 May 2020 11:59:55 -0700 (PDT)
-Received: (nullmailer pid 6166 invoked by uid 1000);
-        Tue, 05 May 2020 18:59:53 -0000
-Date:   Tue, 5 May 2020 13:59:53 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        David Heidelberg <david@ixit.cz>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Stephen Warren <swarren@wwwdotorg.org>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Pedro =?iso-8859-1?Q?=C2ngelo?= <pangelo@void.io>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Zack Pearsall <zpearsall@yahoo.com>,
-        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 5/6] dt-bindings: ARM: tegra: Add ASUS Google Nexus 7
-Message-ID: <20200505185953.GA6104@bogus>
-References: <20200505022517.30523-1-digetx@gmail.com>
- <20200505022517.30523-6-digetx@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200505022517.30523-6-digetx@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Tue, 5 May 2020 15:00:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588705224;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc; bh=R7YqtoNVOAoFKS6RM3wllcWxnGsaIeVUvLmMoQN3l6s=;
+        b=VN2sk+fuJdiPCK3DG8DTXvA0TQhVDkdF3M5DCCfu+vSBzP+LLEeqiN2gzaEQ0w72pT6/3S
+        I9SCVM+sxkVkr8yQxe9R1ovDpwh51RUw9RBVVGCMlUxTdaqkSMmmB38ld3LmoN1ClukNpe
+        c1KPdu5fRLkPxs7Q7LbUhTEDHQHLo/Q=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-316-QjKGPL5FP2uTIWb7k7g_vw-1; Tue, 05 May 2020 15:00:20 -0400
+X-MC-Unique: QjKGPL5FP2uTIWb7k7g_vw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D1AE91899527;
+        Tue,  5 May 2020 19:00:18 +0000 (UTC)
+Received: from lszubowi.redhat.com (unknown [10.10.110.69])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8A51F19C4F;
+        Tue,  5 May 2020 19:00:17 +0000 (UTC)
+From:   Lenny Szubowicz <lszubowi@redhat.com>
+To:     ardb@kernel.org, eric.snowberg@oracle.com, mingo@kernel.org,
+        nivedita@alum.mit.edu, tglx@linutronix.de,
+        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] efi/libstub/x86: Free EFI map buffer in allocate_e820()
+Date:   Tue,  5 May 2020 15:00:16 -0400
+Message-Id: <20200505190016.4350-1-lszubowi@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  5 May 2020 05:25:16 +0300, Dmitry Osipenko wrote:
-> Add a binding for the Tegra30-based ASUS Google Nexus 7 tablet device.
-> 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  Documentation/devicetree/bindings/arm/tegra.yaml | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
+In allocate_e820(), free the EFI map buffer that has been returned
+by efi_get_memory_map(). The returned size of the EFI map buffer
+is used to allocate an adequately sized e820ext buffer, if it's
+needed. But the contents of that EFI map buffer is not used at all
+and the local pointer to it is gone on return from allocate_e820().
 
-Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Lenny Szubowicz <lszubowi@redhat.com>
+---
+ drivers/firmware/efi/libstub/x86-stub.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/firmware/efi/libstub/x86-stub.c b/drivers/firmware/efi/libstub/x86-stub.c
+index 05ccb229fb45..4efe3e7a218d 100644
+--- a/drivers/firmware/efi/libstub/x86-stub.c
++++ b/drivers/firmware/efi/libstub/x86-stub.c
+@@ -623,6 +623,9 @@ static efi_status_t allocate_e820(struct boot_params *params,
+ 	if (status != EFI_SUCCESS)
+ 		return status;
+ 
++	/* Allocated EFI map buf is not used here. Just need its size. */
++	efi_bs_call(free_pool, map);
++
+ 	nr_desc = buff_size / desc_size;
+ 
+ 	if (nr_desc > ARRAY_SIZE(params->e820_table)) {
+-- 
+2.18.4
+
