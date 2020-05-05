@@ -2,202 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 938D41C579D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 15:56:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C10D91C5796
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 15:56:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729260AbgEEN43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 09:56:29 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:7268 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729089AbgEEN41 (ORCPT
+        id S1729238AbgEEN4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 09:56:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729202AbgEEN4R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 09:56:27 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 045DXI0R093720;
-        Tue, 5 May 2020 09:56:03 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30s4xkqjv9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 May 2020 09:56:03 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 045DpEP1025688;
-        Tue, 5 May 2020 09:56:03 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30s4xkqjtu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 May 2020 09:56:02 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 045Dtpcf025867;
-        Tue, 5 May 2020 13:56:00 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 30s0g5q3w7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 May 2020 13:56:00 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 045DtvUG8585642
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 5 May 2020 13:55:57 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BA14C11C054;
-        Tue,  5 May 2020 13:55:57 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A631311C05B;
-        Tue,  5 May 2020 13:55:57 +0000 (GMT)
-Received: from oc3748833570.ibm.com (unknown [9.145.26.196])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  5 May 2020 13:55:57 +0000 (GMT)
-Received: by oc3748833570.ibm.com (Postfix, from userid 1000)
-        id 193C1D80361; Tue,  5 May 2020 15:55:56 +0200 (CEST)
-Date:   Tue, 5 May 2020 15:55:56 +0200
-From:   Ulrich Weigand <uweigand@de.ibm.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        viro@zeniv.linux.org.uk, david@redhat.com,
-        akpm@linux-foundation.org, aarcange@redhat.com, linux-mm@kvack.org,
-        frankja@linux.ibm.com, sfr@canb.auug.org.au, jhubbard@nvidia.com,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        jack@suse.cz, kirill@shutemov.name, peterz@infradead.org,
-        sean.j.christopherson@intel.com, Ulrich.Weigand@de.ibm.com
-Subject: Re: [PATCH v2 1/1] fs/splice: add missing callback for inaccessible
- pages
-Message-ID: <20200505135556.GA9920@oc3748833570.ibm.com>
-References: <20200430143825.3534128-1-imbrenda@linux.ibm.com>
- <1a3f5107-9847-73d4-5059-c6ef9d293551@de.ibm.com>
- <e3e95a35-b0e3-b733-92f4-98bcccbe7ca5@intel.com>
- <3d379d9e-241c-ef3b-dcef-20fdd3b8740d@de.ibm.com>
- <a10ec7ad-2648-950e-7f30-07c08e400e7b@intel.com>
- <20200504134154.GA21001@oc3748833570.ibm.com>
- <231da2f1-a6ef-0cf9-7f57-95e8b925997b@intel.com>
+        Tue, 5 May 2020 09:56:17 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEDBBC061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 06:56:16 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id r16so1848158edw.5
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 06:56:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kByI+w+1r3yVREOJZ6z093OJKNl72Y1CH8ahM0Q63XY=;
+        b=ipNtgkcPwQaCd/KFAKKCzEcUcKFCfb7x3z4NEVWMwUh94Bu54C4AbN3A72Y5hKnJ+n
+         oiStdLca3s0SQIKFEVG/KxqF9OkQx3cbrCDG4u9U3+xQz/xE655gmDYg1+OJeblGE2Iu
+         Y38P1mTpYn7m6tr5ZZYBBkCmxVOIAJ/Cck6YE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kByI+w+1r3yVREOJZ6z093OJKNl72Y1CH8ahM0Q63XY=;
+        b=VC7LZ8xhyJeGc5QOzSn5Lo1MTPpqWplJ/AyEL3wcXcAQLV42CxYtjcDEmDzcxMsHXh
+         hxA8oWl+pHnCauOrokXEUzfVD2uagRICfXiIBTusLV4/IuSYpy21UB1trHTuVfdLfCqn
+         EaRJ9iIhTUORagw4UNLW3553lt7qFH9NfOLstrIG5EOhIV9VgKjZRtIM0ZCelclIBNAI
+         wSPSqFjbOr5+M+5GRr0C10GJszzliFi5i6Llng3JyeChm/IMTduuqu/I9fRVUgZpP5yQ
+         pwjHXQzrqyA05waaabxtipZMP5HXF2H+diNchEGDjHAOQuPWKaqvSQNgrKUPiOJ1X299
+         I7Nw==
+X-Gm-Message-State: AGi0PuYOTMm0bMN14gGJ6AyKJI+ETTeGLut1N6094XqmZnl6fWlcdfNM
+        Tn3kf/r2EifFLLMRvrOapZJXBUa6uM1mPQ==
+X-Google-Smtp-Source: APiQypLpClg/LDKjwG9N3bEcMExDk79HPejzsHiEr5UWEdWny8X2Kt91gMsZy0BLHXVL7m7QV67z9w==
+X-Received: by 2002:aa7:cb43:: with SMTP id w3mr2651240edt.95.1588686975283;
+        Tue, 05 May 2020 06:56:15 -0700 (PDT)
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com. [209.85.221.51])
+        by smtp.gmail.com with ESMTPSA id o17sm332460ejr.76.2020.05.05.06.56.14
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 May 2020 06:56:14 -0700 (PDT)
+Received: by mail-wr1-f51.google.com with SMTP id y3so2900694wrt.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 06:56:14 -0700 (PDT)
+X-Received: by 2002:adf:d0d1:: with SMTP id z17mr3809161wrh.295.1588686973780;
+ Tue, 05 May 2020 06:56:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <231da2f1-a6ef-0cf9-7f57-95e8b925997b@intel.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-05-05_08:2020-05-04,2020-05-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- mlxlogscore=999 spamscore=0 impostorscore=0 mlxscore=0 adultscore=0
- suspectscore=0 clxscore=1015 priorityscore=1501 bulkscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005050105
+References: <20200505134110.3435-1-ezequiel@collabora.com> <20200505134110.3435-2-ezequiel@collabora.com>
+In-Reply-To: <20200505134110.3435-2-ezequiel@collabora.com>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Tue, 5 May 2020 15:56:02 +0200
+X-Gmail-Original-Message-ID: <CAAFQd5AWZFoPk2YTp2k8M7LvJshxw46-z+wK2VoM9EzB2CqiFA@mail.gmail.com>
+Message-ID: <CAAFQd5AWZFoPk2YTp2k8M7LvJshxw46-z+wK2VoM9EzB2CqiFA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] media: rkvdec: Fix .buf_prepare
+To:     Ezequiel Garcia <ezequiel@collabora.com>
+Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel@collabora.com, Jonas Karlman <jonas@kwiboo.se>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Jeffrey Kardatzke <jkardatzke@chromium.org>,
+        Gustavo Padovan <gustavo.padovan@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 05, 2020 at 05:34:45AM -0700, Dave Hansen wrote:
-> On 5/4/20 6:41 AM, Ulrich Weigand wrote:
-> > You're right that there is no mechanism to prevent new references,
-> > but that's really never been the goal either.  We're simply trying
-> > to ensure that no I/O is ever done on a page that is in the "secure"
-> > (or inaccessible) state.  To do so, we rely on the assumption that
-> > all code that starts I/O on a page cache page will *first*:
-> > - mark the page as pending I/O by either taking an extra page
-> >   count, or by setting the Writeback flag; then:
-> > - call arch_make_page_accessible(); then:
-> > - start I/O; and only after I/O has finished:
-> > - remove the "pending I/O" marker (Writeback and/or extra ref)
-> 
-> Let's ignore writeback for a moment because get_page() is the more
-> general case.  The locking sequence is:
-> 
-> 1. get_page() (or equivalent) "locks out" a page from converting to
->    inaccessbile,
-> 2. followed by a make_page_accessible() guarantees that the page
->    *stays* accessible until
-> 3. I/O is safe in this region
-> 4. put_page(), removes the "lock out", I/O now unsafe
+Hi Ezequiel,
 
-Yes, exactly.
+On Tue, May 5, 2020 at 3:41 PM Ezequiel Garcia <ezequiel@collabora.com> wrote:
+>
+> The driver should only set the payload on .buf_prepare
+> if the buffer is CAPTURE type, or if an OUTPUT buffer
+> has a zeroed payload.
 
-> They key is, though, the get_page() must happen before
-> make_page_accessible() and *every* place that acquires a new reference
-> needs a make_page_accessible().
+Thanks for the patch. Just one question below.
 
-Well, sort of: every place that acquires a new reference *and then
-performs I/O* needs a make_page_accessible().  There seem to be a
-lot of plain get_page() calls that aren't related to I/O.
+Where does the requirement to set OUTPUT buffer bytesused to sizeimage
+if the original bytesused is 0 come from?
 
-> try_get_page() is obviously one of those "new reference sites" and it
-> only has one call site outisde of the gup code: generic_pipe_buf_get(),
-> which is effectively patched by the patch that started this thread.  The
-> fact that this one oddball site _and_ gup are patched now is a good sign.
-> 
-> *But*, I still don't know how that could work nicely:
-> 
-> > static inline __must_check bool try_get_page(struct page *page)
-> > {
-> >         page = compound_head(page);
-> >         if (WARN_ON_ONCE(page_ref_count(page) <= 0))
-> >                 return false;
-> >         page_ref_inc(page);
-> >         return true;
-> > }
-> 
-> If try_get_page() collides with a freeze_page_refs(), it'll hit the
-> WARN_ON_ONCE(), which is surely there for a good reason.  I'm not sure
-> that warning is _actually_ valid since freeze_page_refs() isn't truly a
-> 0 refcount.  But, the fact that this hasn't been encountered means that
-> the testing here is potentially lacking.
+Best regards,
+Tomasz
 
-This is indeed interesting.  In particular if you compare try_get_page
-with try_get_compound_head in gup.c, which does instead:
-
-        if (WARN_ON_ONCE(page_ref_count(head) < 0))
-                return NULL;
-
-which seems more reasonable to me, given the presence of the
-page_ref_freeze method.  So I'm not sure why try_get_page has <= 0.
-
-I think I understand why we haven't seen this in testing: all the
-places in gup.c where try_get_page is called hold the pte lock;
-and in the usual case, the pte lock itself already suffices to
-lock out make_secure_pte before it even tries to use page_ref_freeze.
-(The intent of holding the pte lock there was really to ensure that
-the PTE entry is and remains valid throughout the execution of
-the ultravisor call, which will look at the PTE entry.)
-
-However, I guess we could construct cases where the pte lock doesn't
-suffice to prevent the try_get_page warning: if we create a shared
-mapping of the secure guest backing store file into a second process.
-That doesn't ever happen in normal qemu operation, so that's likely
-why we haven't seen that case.
-
-> > We thought we had identified all places where we needed to place
-> > arch_make_page_accessible so that the above assumption is satisfied.
-> > You've found at least two instances where this wasn't true (thanks!);
-> > but I still think that this can be fixed by just adding those calls.
-> 
-> Why do you think that's the extent of the problem?  Because the crashes
-> stopped?
-> 
-> I'd feel a lot more comfortable if you explained the audits that you've
-> performed or _why_ you think that.  What I've heard thus far is
-> basically that you've been able to boot a guest and you're ready to ship
-> this code.
-
-Not sure if you can really call this an "audit", but we were really
-coming from identifying places where I/O can happen on a page cache
-page, and everything we found (except writeback) went through gup.
-We obviously missed the sendfile case here; not sure what the best
-way would be to verify nothing else was missed.
-
-> But, with regular RCU, you're right, it _does_ appear that it would hit
-> that retry loop, but then it would *succeed* in getting a reference.  In
-> the end, this just supports the sequence I wrote above:
-> arch_make_page_accessible() is only valid when called with an elevated
-> refcount and the refcount must be held to lock out make_secure_pte().
-
-Yes, exactly.  That's what comment ahead of our arch_make_page_accesible
-says: To be called with the page locked or with an extra reference!
-(Either is enough to lock out make_secure_pte.)
-
-Bye,
-Ulrich
-
--- 
-  Dr. Ulrich Weigand
-  GNU/Linux compilers and toolchain
-  Ulrich.Weigand@de.ibm.com
+>
+> Fix it.
+>
+> Fixes: cd33c830448ba ("media: rkvdec: Add the rkvdec driver")
+> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+> ---
+>  drivers/staging/media/rkvdec/rkvdec.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/staging/media/rkvdec/rkvdec.c b/drivers/staging/media/rkvdec/rkvdec.c
+> index 225eeca73356..4df2a248ab96 100644
+> --- a/drivers/staging/media/rkvdec/rkvdec.c
+> +++ b/drivers/staging/media/rkvdec/rkvdec.c
+> @@ -456,7 +456,15 @@ static int rkvdec_buf_prepare(struct vb2_buffer *vb)
+>                 if (vb2_plane_size(vb, i) < sizeimage)
+>                         return -EINVAL;
+>         }
+> -       vb2_set_plane_payload(vb, 0, f->fmt.pix_mp.plane_fmt[0].sizeimage);
+> +
+> +       /*
+> +        * Buffer's bytesused is written by the driver for CAPTURE buffers,
+> +        * or if the application passed zero bytesused on an OUTPUT buffer.
+> +        */
+> +       if (!V4L2_TYPE_IS_OUTPUT(vq->type) ||
+> +           (V4L2_TYPE_IS_OUTPUT(vq->type) && !vb2_get_plane_payload(vb, 0)))
+> +               vb2_set_plane_payload(vb, 0,
+> +                                     f->fmt.pix_mp.plane_fmt[0].sizeimage);
+>         return 0;
+>  }
+>
+> --
+> 2.26.0.rc2
+>
