@@ -2,123 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EBF31C5576
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 14:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C1A71C557B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 14:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728872AbgEEMbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 08:31:50 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45912 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728804AbgEEMbt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 08:31:49 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id BD465AB89;
-        Tue,  5 May 2020 12:31:49 +0000 (UTC)
-Date:   Tue, 5 May 2020 14:31:44 +0200
-From:   Joerg Roedel <jroedel@suse.de>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shile Zhang <shile.zhang@linux.alibaba.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Subject: [PATCH] tracing: Call vmalloc_sync_mappings() after alloc_percpu()
-Message-ID: <20200505123144.GM8135@suse.de>
-References: <20200430141120.GA8135@suse.de>
- <20200430121136.6d7aeb22@gandalf.local.home>
- <20200430191434.GC8135@suse.de>
- <20200430211308.74a994dc@oasis.local.home>
- <1902703609.78863.1588300015661.JavaMail.zimbra@efficios.com>
- <20200430223919.50861011@gandalf.local.home>
- <20200504151236.GI8135@suse.de>
- <20200504134042.178409c3@gandalf.local.home>
- <20200504183832.GL8135@suse.de>
- <20200504151006.69d2a16c@gandalf.local.home>
+        id S1728942AbgEEMcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 08:32:02 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:44628 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728804AbgEEMcB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 08:32:01 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 96A681C0225; Tue,  5 May 2020 14:31:59 +0200 (CEST)
+Date:   Tue, 5 May 2020 14:31:59 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Vinod Koul <vkoul@kernel.org>
+Subject: Re: [PATCH 4.19 28/37] dmaengine: dmatest: Fix iteration non-stop
+ logic
+Message-ID: <20200505123159.GC28722@amd>
+References: <20200504165448.264746645@linuxfoundation.org>
+ <20200504165451.307643203@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="6zdv2QT/q3FMhpsV"
 Content-Disposition: inline
-In-Reply-To: <20200504151006.69d2a16c@gandalf.local.home>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200504165451.307643203@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 04, 2020 at 03:10:06PM -0400, Steven Rostedt wrote:
-> I'm fine with adding it to the tracing code (with that ridiculous
-> comment! ;-)
-> 
-> I'll even tag is as stable, but again, it's uncertain what commit that it
-> "fixes".
 
-Okay, so here it is. It fixes the issue for me and doesn't cause any
-lockdep splats on my machine. I am not sure how far this needs to be
-backported via stable, so I didn't specify it. Same with a Fixes tag.
-Oh, and I added your comment :-) (which makes up most of the added
-lines, so feel free to change authorship to you).
+--6zdv2QT/q3FMhpsV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Regards,
+Hi!
 
-	Joerg
+> So, to the point, the conditional of checking the thread to be stopped be=
+ing
+> first part of conjunction logic prevents to check iterations. Thus, we ha=
+ve to
+> always check both conditions to be able to stop after given
+> iterations.
 
-From a265290761dc9d87d35892dc821fd0f5c99f8b34 Mon Sep 17 00:00:00 2001
-From: Joerg Roedel <jroedel@suse.de>
-Date: Tue, 5 May 2020 14:17:57 +0200
-Subject: [PATCH] tracing: Call vmalloc_sync_mappings() after alloc_percpu()
+I ... don't understand. AFAICT the code is equivalent. Both && and ||
+operators permit "short" execution... but second part of expression
+has no sideeffects, so...
 
-Tracing code allocates percpu memory which is touched when trace events
-happen. When the events happen in the page-fault handler and per-cpu
-memory needs to be faulted in, the page-fault on per-cpu memory might
-never complete.
+> @@ -567,8 +567,8 @@ static int dmatest_func(void *data)
+>  	flags =3D DMA_CTRL_ACK | DMA_PREP_INTERRUPT;
+> =20
+>  	ktime =3D ktime_get();
+> -	while (!kthread_should_stop()
+> -	       && !(params->iterations && total_tests >=3D params->iterations))=
+ {
+> +	while (!(kthread_should_stop() ||
+> +	       (params->iterations && total_tests >=3D params->iterations))) {
+>  		struct dma_async_tx_descriptor *tx =3D NULL;
+>  		struct dmaengine_unmap_data *um;
+>  		dma_addr_t *dsts;
 
-Call vmalloc_sync_mappings() after allocating the runtime per-cpu
-buffers to make sure they are mapped when the page-fault handler tries
-to access them.
+let a =3D kthread_should_stop()
+let b =3D (params->iterations && total_tests >=3D params->iterations)
 
-This is not a nice solution, but the best fix until the
-vmalloc_sync_mappings/unmappings() interface can be ripped out of the
-kernel.
+You are changing !a & !b into !(a | b). But that's equivalent
+expression. I hate to admit, but I had to draw truth table to prove
+that.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
----
- kernel/trace/trace.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+!a & !b   0 0 -> 1
+       	  else -> 0
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 8d2b98812625..0fc56063fcca 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -8525,6 +8525,19 @@ static int allocate_trace_buffers(struct trace_array *tr, int size)
- 	 */
- 	allocate_snapshot = false;
- #endif
-+
-+	/*
-+	 * Because of some magic with the way alloc_percpu() works on
-+	 * x86_64, we need to synchronize the pgd of all the tables,
-+	 * otherwise the trace events that happen in x86_64 page fault
-+	 * handlers can't cope with accessing the chance that a
-+	 * alloc_percpu()'d memory might be touched in the page fault trace
-+	 * event. Oh, and we need to audit all alloc_percpu() and vmalloc()
-+	 * calls in tracing, because something might get triggered within a
-+	 * page fault trace event!
-+	 */
-+	vmalloc_sync_mappings();
-+
- 	return 0;
- }
- 
--- 
-2.12.3
+!(a | b)  0 0 -> 1
+     	   else -> 0
+	  =20
+What am I missing?
 
+Best regards,
+								Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
 
+--6zdv2QT/q3FMhpsV
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl6xXL4ACgkQMOfwapXb+vJIvQCgwg/672KLMZ1Cjt4fjfpDJNIl
+u4YAoIuFw3pH/JnK7hMHG1ueLt3qm8V0
+=w4yg
+-----END PGP SIGNATURE-----
+
+--6zdv2QT/q3FMhpsV--
