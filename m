@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2687B1C58B6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:17:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65D511C58C0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:18:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730376AbgEEORq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:17:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49354 "EHLO
+        id S1729635AbgEEOSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:18:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730288AbgEEORQ (ORCPT
+        by vger.kernel.org with ESMTP id S1730296AbgEEORS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:17:16 -0400
+        Tue, 5 May 2020 10:17:18 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BA48C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:17:16 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70E7BC061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:17:18 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jVyNT-0002e7-P0; Tue, 05 May 2020 16:16:55 +0200
+        id 1jVyNV-0002ex-0I; Tue, 05 May 2020 16:16:57 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 38CB6FFC8D;
-        Tue,  5 May 2020 16:16:55 +0200 (CEST)
-Message-Id: <20200505135830.882516167@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 73977FFC8D;
+        Tue,  5 May 2020 16:16:56 +0200 (CEST)
+Message-Id: <20200505135830.974384212@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 05 May 2020 15:54:09 +0200
+Date:   Tue, 05 May 2020 15:54:10 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -43,8 +43,9 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Brian Gerst <brgerst@gmail.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>
-Subject: [patch V4 part 5 28/31] x86/entry/32: Remove redundant irq disable code
+        Will Deacon <will@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: [patch V4 part 5 29/31] x86/entry/64: Remove TRACE_IRQS_*_DEBUG
 References: <20200505135341.730586321@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -57,114 +58,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Peter Zijlstra <peterz@infradead.org>
 
-All exceptions/interrupts return with interrupts disabled now. No point in
-doing this in ASM again.
+Since INT3/#BP no longer runs on an IST, this workaround is no longer
+required.
 
+Tested by running lockdep+ftrace as described in the initial commit:
+
+  5963e317b1e9 ("ftrace/x86: Do not change stacks in DEBUG when calling lockdep")
+
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
 ---
- arch/x86/entry/entry_32.S |   76 ----------------------------------------------
- 1 file changed, 76 deletions(-)
+ arch/x86/entry/entry_64.S |   48 ++--------------------------------------------
+ 1 file changed, 3 insertions(+), 45 deletions(-)
 
---- a/arch/x86/entry/entry_32.S
-+++ b/arch/x86/entry/entry_32.S
-@@ -51,34 +51,6 @@
+--- a/arch/x86/entry/entry_64.S
++++ b/arch/x86/entry/entry_64.S
+@@ -68,44 +68,6 @@ SYM_CODE_END(native_usergs_sysret64)
+ .endm
  
- 	.section .entry.text, "ax"
- 
--/*
-- * We use macros for low-level operations which need to be overridden
-- * for paravirtualization.  The following will never clobber any registers:
-- *   INTERRUPT_RETURN (aka. "iret")
-- *   GET_CR0_INTO_EAX (aka. "movl %cr0, %eax")
-- *   ENABLE_INTERRUPTS_SYSEXIT (aka "sti; sysexit").
+ /*
+- * When dynamic function tracer is enabled it will add a breakpoint
+- * to all locations that it is about to modify, sync CPUs, update
+- * all the code, sync CPUs, then remove the breakpoints. In this time
+- * if lockdep is enabled, it might jump back into the debug handler
+- * outside the updating of the IST protection. (TRACE_IRQS_ON/OFF).
 - *
-- * For DISABLE_INTERRUPTS/ENABLE_INTERRUPTS (aka "cli"/"sti"), you must
-- * specify what registers can be overwritten (CLBR_NONE, CLBR_EAX/EDX/ECX/ANY).
-- * Allowing a register to be clobbered can shrink the paravirt replacement
-- * enough to patch inline, increasing performance.
+- * We need to change the IDT table before calling TRACE_IRQS_ON/OFF to
+- * make sure the stack pointer does not get reset back to the top
+- * of the debug stack, and instead just reuses the current stack.
 - */
+-#if defined(CONFIG_DYNAMIC_FTRACE) && defined(CONFIG_TRACE_IRQFLAGS)
 -
--#ifdef CONFIG_PREEMPTION
--# define preempt_stop(clobbers)	DISABLE_INTERRUPTS(clobbers); TRACE_IRQS_OFF
--#else
--# define preempt_stop(clobbers)
--#endif
--
--.macro TRACE_IRQS_IRET
--#ifdef CONFIG_TRACE_IRQFLAGS
--	testl	$X86_EFLAGS_IF, PT_EFLAGS(%esp)     # interrupts off?
--	jz	1f
--	TRACE_IRQS_ON
--1:
--#endif
+-.macro TRACE_IRQS_OFF_DEBUG
+-	call	debug_stack_set_zero
+-	TRACE_IRQS_OFF
+-	call	debug_stack_reset
 -.endm
 -
- #define PTI_SWITCH_MASK         (1 << PAGE_SHIFT)
- 
- /*
-@@ -881,38 +853,6 @@ SYM_CODE_START(ret_from_fork)
- SYM_CODE_END(ret_from_fork)
- .popsection
- 
--/*
-- * Return to user mode is not as complex as all this looks,
-- * but we want the default path for a system call return to
-- * go as quickly as possible which is why some of this is
-- * less clear than it otherwise should be.
-- */
+-.macro TRACE_IRQS_ON_DEBUG
+-	call	debug_stack_set_zero
+-	TRACE_IRQS_ON
+-	call	debug_stack_reset
+-.endm
 -
--	# userspace resumption stub bypassing syscall exit tracing
--SYM_CODE_START_LOCAL(ret_from_exception)
--	preempt_stop(CLBR_ANY)
--ret_from_intr:
--#ifdef CONFIG_VM86
--	movl	PT_EFLAGS(%esp), %eax		# mix EFLAGS and CS
--	movb	PT_CS(%esp), %al
--	andl	$(X86_EFLAGS_VM | SEGMENT_RPL_MASK), %eax
+-.macro TRACE_IRQS_IRETQ_DEBUG
+-	btl	$9, EFLAGS(%rsp)		/* interrupts off? */
+-	jnc	1f
+-	TRACE_IRQS_ON_DEBUG
+-1:
+-.endm
+-
 -#else
--	/*
--	 * We can be coming here from child spawned by kernel_thread().
--	 */
--	movl	PT_CS(%esp), %eax
--	andl	$SEGMENT_RPL_MASK, %eax
+-# define TRACE_IRQS_OFF_DEBUG			TRACE_IRQS_OFF
+-# define TRACE_IRQS_ON_DEBUG			TRACE_IRQS_ON
+-# define TRACE_IRQS_IRETQ_DEBUG			TRACE_IRQS_IRETQ
 -#endif
--	cmpl	$USER_RPL, %eax
--	jb	restore_all_kernel		# not returning to v8086 or userspace
 -
--	DISABLE_INTERRUPTS(CLBR_ANY)
--	TRACE_IRQS_OFF
--	movl	%esp, %eax
--	call	prepare_exit_to_usermode
--	jmp	restore_all_switch_stack
--SYM_CODE_END(ret_from_exception)
--
- SYM_ENTRY(__begin_SYSENTER_singlestep_region, SYM_L_GLOBAL, SYM_A_NONE)
- /*
-  * All code from here through __end_SYSENTER_singlestep_region is subject
-@@ -1147,22 +1087,6 @@ SYM_FUNC_START(entry_INT80_32)
- 	 */
- 	INTERRUPT_RETURN
+-/*
+  * 64-bit SYSCALL instruction entry. Up to 6 arguments in registers.
+  *
+  * This is the only entry point used for 64-bit system calls.  The
+@@ -501,11 +463,7 @@ SYM_CODE_START(\asmsym)
  
--restore_all_kernel:
--#ifdef CONFIG_PREEMPTION
--	DISABLE_INTERRUPTS(CLBR_ANY)
--	cmpl	$0, PER_CPU_VAR(__preempt_count)
--	jnz	.Lno_preempt
--	testl	$X86_EFLAGS_IF, PT_EFLAGS(%esp)	# interrupts off (exception path) ?
--	jz	.Lno_preempt
--	call	preempt_schedule_irq
--.Lno_preempt:
--#endif
--	TRACE_IRQS_IRET
--	PARANOID_EXIT_TO_KERNEL_MODE
--	BUG_IF_WRONG_CR3
--	RESTORE_REGS 4
--	jmp	.Lirq_return
--
- .section .fixup, "ax"
- SYM_CODE_START(asm_exc_iret_error)
- 	pushl	$0				# no error code
+ 	UNWIND_HINT_REGS
+ 
+-	.if \vector == X86_TRAP_DB
+-		TRACE_IRQS_OFF_DEBUG
+-	.else
+-		TRACE_IRQS_OFF
+-	.endif
++	TRACE_IRQS_OFF
+ 
+ 	movq	%rsp, %rdi		/* pt_regs pointer */
+ 
+@@ -885,7 +843,7 @@ SYM_CODE_END(paranoid_entry)
+ SYM_CODE_START_LOCAL(paranoid_exit)
+ 	UNWIND_HINT_REGS
+ 	DISABLE_INTERRUPTS(CLBR_ANY)
+-	TRACE_IRQS_OFF_DEBUG
++	TRACE_IRQS_OFF
+ 	testl	%ebx, %ebx			/* swapgs needed? */
+ 	jnz	.Lparanoid_exit_no_swapgs
+ 	TRACE_IRQS_IRETQ
+@@ -894,7 +852,7 @@ SYM_CODE_START_LOCAL(paranoid_exit)
+ 	SWAPGS_UNSAFE_STACK
+ 	jmp	restore_regs_and_return_to_kernel
+ .Lparanoid_exit_no_swapgs:
+-	TRACE_IRQS_IRETQ_DEBUG
++	TRACE_IRQS_IRETQ
+ 	/* Always restore stashed CR3 value (see paranoid_entry) */
+ 	RESTORE_CR3	scratch_reg=%rbx save_reg=%r14
+ 	jmp restore_regs_and_return_to_kernel
 
