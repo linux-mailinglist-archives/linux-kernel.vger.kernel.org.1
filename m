@@ -2,136 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CE5A1C594F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:24:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9187E1C5954
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:24:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729853AbgEEOY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:24:26 -0400
-Received: from mga05.intel.com ([192.55.52.43]:33155 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729315AbgEEOYX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:24:23 -0400
-IronPort-SDR: 1MKpLzBxKzJLCBE5n8RGINtN4tVS9f/ShUO1sDvh6Zd7Lm7BpmhyoL/dKMBmpZJ5j9uUZcEN9+
- Yn1ixAD9yh9A==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2020 07:24:20 -0700
-IronPort-SDR: rF7SXhFUvLBuX5r8XAY34eDysDlam/bZUTpaVEUFd52J0M9E6Qg9eZ2I7hLNYVbP5BYuHUDBB1
- nAlwqA/z6NbA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,355,1583222400"; 
-   d="scan'208";a="263184101"
-Received: from jmserbon-mobl1.amr.corp.intel.com (HELO [10.254.110.254]) ([10.254.110.254])
-  by orsmga006.jf.intel.com with ESMTP; 05 May 2020 07:24:19 -0700
-Subject: Re: [PATCH v2 1/1] fs/splice: add missing callback for inaccessible
- pages
-To:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        Ulrich Weigand <uweigand@de.ibm.com>
-Cc:     Claudio Imbrenda <imbrenda@linux.ibm.com>, viro@zeniv.linux.org.uk,
-        david@redhat.com, akpm@linux-foundation.org, aarcange@redhat.com,
-        linux-mm@kvack.org, frankja@linux.ibm.com, sfr@canb.auug.org.au,
-        jhubbard@nvidia.com, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, jack@suse.cz, kirill@shutemov.name,
-        peterz@infradead.org, sean.j.christopherson@intel.com,
-        Ulrich.Weigand@de.ibm.com
-References: <20200430143825.3534128-1-imbrenda@linux.ibm.com>
- <1a3f5107-9847-73d4-5059-c6ef9d293551@de.ibm.com>
- <e3e95a35-b0e3-b733-92f4-98bcccbe7ca5@intel.com>
- <3d379d9e-241c-ef3b-dcef-20fdd3b8740d@de.ibm.com>
- <a10ec7ad-2648-950e-7f30-07c08e400e7b@intel.com>
- <20200504134154.GA21001@oc3748833570.ibm.com>
- <231da2f1-a6ef-0cf9-7f57-95e8b925997b@intel.com>
- <45bc81bb-8765-ffff-6e47-8ee9702c8bcd@de.ibm.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <6e97a4b0-df4f-90c7-a6f7-61ee52e0833e@intel.com>
-Date:   Tue, 5 May 2020 07:24:18 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1730127AbgEEOYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:24:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729315AbgEEOYf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 10:24:35 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A9DBC061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:24:35 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id q7so2432998qkf.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 07:24:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=z7jVxqc7TYDxLD35G2tT1fTPM95gzbd5Aqe8HIKsqWE=;
+        b=GPKOxTXyID7KCIVJRJo+1menSzg+R+tV1g62FhqmTgUHSM7IVkoCBY+O6Sk64a4BqZ
+         G+9NNXKGsF9XsRUTQykvp14C1HvCQP40QPp/S3dSpo+iul/4Ny4QxeMGCbR/PhfVDGyY
+         LRMm701EleKexfywr/6329rQBKCThTBEMvQKnVli5GbZzZebINQUozWnRQvax50NomSB
+         rJdlH5RLwSvu8vGHl9cbLVtfO0iYPtNY2epyStFyIJMsboF3RSEevwOcR7lXZ4+47yIK
+         V/dKJo1DcG1IX+ONR8wRA0Wn85kJckK0cHIr+vEZAoVFyTMtJwhd8ogRmToS4bjBuskM
+         k7hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to:content-transfer-encoding;
+        bh=z7jVxqc7TYDxLD35G2tT1fTPM95gzbd5Aqe8HIKsqWE=;
+        b=rSJs2saABBjGdgO3XzabvDpQXNYA/ZT62W49YsAdBuIM79dldxxqbGkR8BfznmV4Xp
+         CcjursaSUemTM4i5B5RA1TLBzT9SC5xN5Dut9ivDewpZPYQfIZr/Ot1EHCDei5Yelt8N
+         a1D0LEAgGCBdVPNo3OkUOfSyEGBL5YLNw6r1sTskD+NM/7UgeFJC+EjbyhrY/C8Da4Lr
+         ppbMFDjhcEKv1+LXfTyfRn5gy3wJ+4KgIZmJsoZ1tcIwcE+X/zxS26kM685i8aqqpedd
+         XA+avOEee7hAEexFXkOFimLQKfAviL0lmRdWsFhaDZ6xvjq4dfemk6ytmnhTflCPzAxZ
+         jc5g==
+X-Gm-Message-State: AGi0PubIN/alLdWBStknu0hevKK4K8ZxHoFQxjRbSe0OXOktjye5Lj6/
+        YW1YEE/3O3pAr93aAH5uupl4JqZAIV07w725OBo=
+X-Google-Smtp-Source: APiQypIazf8D4NwTk2ba322YEOFc8KDPPPQqMUJcJX9ybQQ29Mwqp+Q7N11g5Djpq+EqG5kEG8H3sBuBCBAD6aXpxnc=
+X-Received: by 2002:a37:9a13:: with SMTP id c19mr2479150qke.51.1588688674526;
+ Tue, 05 May 2020 07:24:34 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <45bc81bb-8765-ffff-6e47-8ee9702c8bcd@de.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a0c:f689:0:0:0:0:0 with HTTP; Tue, 5 May 2020 07:24:33 -0700 (PDT)
+From:   "Mrs. vivian Ouedrago" <vivian.OuedragoBrown@gmail.com>
+Date:   Tue, 5 May 2020 07:24:33 -0700
+X-Google-Sender-Auth: CDxwzchD25jSXvSwcJaSU0v5hCU
+Message-ID: <CADSfHSgn0wcz_Lq0iGSdykZNZ5YuSA=uqagMTcGiv1Vy-4ARmA@mail.gmail.com>
+Subject: =?UTF-8?Q?D=C4=81rgais_Dieva_izredz=C4=93tais?=
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/5/20 7:00 AM, Christian Borntraeger wrote:
-> We are certainly not married to our approach. I would happily extend/change
-> this to anything that works for your case and the s390 case. So can you outline
-> your requirements a bit more?
+D=C4=81rgais Dieva izredz=C4=93tais
 
-For SEV, the guest define which pages are encrypted or not.  You could
-theoretically do DMA to them or have the CPU access their contents, but
-you'd get either get ciphertext for reads, or data corruption and loss
-of cache coherency for writes.  That's not so cool.
+Es rakstu jums =C5=A1o v=C4=93stuli ar smag=C4=81m asar=C4=81m ac=C4=ABs un=
+ sird=C4=AB ar liel=C4=81m
+b=C4=93d=C4=81m. Mans v=C4=81rds ir vivian Ouedrago kundze, es esmu no Tuni=
+sijas un
+sazin=C4=81jos ar jums no Burkinafaso slimn=C4=ABcas, es gribu jums to pate=
+ikt,
+jo es Jums nav citas iesp=C4=93jas k=C4=81 pateikt, kad mani uzrun=C4=81ja =
+atv=C4=93rties
+jums, es apprec=C4=93jos ar Ouedrago Smitu Braunu, kur=C5=A1 devi=C5=86us g=
+adus
+str=C4=81d=C4=81ja ar Tunisijas v=C4=93stnieku Burkinafaso, pirms vi=C5=86=
+=C5=A1 nomira 2005.
+gad=C4=81. prec=C4=93jies vienpadsmit gadus bez b=C4=93rna.
 
-Ideally, we would stop the CPU from ever accessing those pages by
-unmapping them.  But, the pages go in and out of the encrypted state and
-the host really needs to be *sure* about what's going on before it
-restores its mapping and messes with the page.  That includes situations
-where someone does a gup, starts an I/O to an unencrypted page, then the
-guest tries to convert that page over to being encrypted.
+Vi=C5=86=C5=A1 nomira p=C4=93c =C4=ABsas slim=C4=ABbas, kas ilga tikai piec=
+as dienas. Kop=C5=A1 vi=C5=86a
+n=C4=81ves es nol=C4=93mu v=C4=93lreiz neprec=C4=93ties. Kad mans miru=C5=
+=A1ais v=C4=ABrs bija
+dz=C4=ABvs, vi=C5=86=C5=A1 noguld=C4=ABja USD 8,5 miljonus (asto=C5=86i mil=
+joni pieci simti
+t=C5=ABksto=C5=A1u dol=C4=81ru) bank=C4=81 Ouagadougou galvaspils=C4=93t=C4=
+=81 Burkina Fasoin
+rietum=C4=81frik=C4=81. =C5=A0obr=C4=ABd =C5=A1=C4=AB nauda joproj=C4=81m a=
+trodas banka. Vi=C5=86=C5=A1 padar=C4=ABja =C5=A1o
+naudu pieejamu zelta eksportam no Burkinafaso kalnr=C5=ABpniec=C4=ABbas.
 
-So, the requirements are:
+Nesen =C4=81rsts man teica, ka v=C4=93=C5=BEa probl=C4=93mas d=C4=93=C4=BC =
+es neturpin=C4=81=C5=A1os septi=C5=86us
+m=C4=93ne=C5=A1us. Tas, kas mani visvair=C4=81k trauc=C4=93, ir mana insult=
+a slim=C4=ABba.
+Uzzin=C4=81jis manu st=C4=81vokli, es nol=C4=93mu =C5=A1o naudu nodot jums,=
+ lai r=C5=ABp=C4=93tos
+par maz=C4=81k privili=C4=A3=C4=93tajiem cilv=C4=93kiem, j=C5=ABs =C5=A1o n=
+audu izlietosit t=C4=81, k=C4=81 es
+=C5=A1eit nor=C4=81d=C4=AB=C5=A1u. Es v=C4=93los, lai j=C5=ABs pa=C5=86emtu=
+ 30 procentus no kop=C4=93j=C4=81s
+naudas person=C4=ABgai lieto=C5=A1anai. Kam=C4=93r 70% naudas tiks novirz=
+=C4=ABti
+labdar=C4=ABbas "cilv=C4=93kiem uz ielas un pal=C4=ABdz=C4=ABbas snieg=C5=
+=A1anai b=C4=93rnunam=C4=81. Es
+uzaugu k=C4=81 b=C4=81renis, un man nav neviena k=C4=81 manai =C4=A3imenei.=
+ loceklis,
+tikai cen=C5=A1oties saglab=C4=81t Dieva namu. Es to daru, lai Dievs piedot=
+u
+mysins un pie=C5=86emtu manu dv=C4=93seli parad=C4=ABz=C4=93, jo =C5=A1=C4=
+=AB slim=C4=ABba mani ir tik
+=C4=BCoti cietusi.
 
-1. Allow host-side DMA and CPU access to shared pages
-2. Stop host-side DMA and CPU access to encrypted pages
-3. Allow pages to be converted between the states at the request of the
-   guest
+Tikl=C4=ABdz es sa=C5=86em=C5=A1u j=C5=ABsu atbildi, es jums nor=C4=81d=C4=
+=AB=C5=A1u bankas kontaktu
+Burkinafaso, k=C4=81 ar=C4=AB uzdo=C5=A1u bankas vad=C4=ABt=C4=81jam jums i=
+zsniegt pilnvaras
+v=C4=93stuli, kas jums apliecin=C4=81s pa=C5=A1reiz=C4=93jo naudas l=C4=ABd=
+zek=C4=BCu sa=C5=86=C4=93m=C4=93ju
+bank=C4=81, ti, ja j=C5=ABs nodro=C5=A1in=C4=81sit man, ka j=C5=ABs r=C4=AB=
+kosities atbilsto=C5=A1i, k=C4=81
+es =C5=A1eit nor=C4=81d=C4=ABju.
 
-Stopping the DMA is pretty easy, even across the gazillions of drivers
-in the tree because even random ethernet drivers do stuff like:
-
-                txdr->buffer_info[i].dma =
-                        dma_map_single(&pdev->dev, skb->data, skb->len,
-                                       DMA_TO_DEVICE);
-
-So the DMA can be stopped at the mapping layer.  It's a *LOT* easier to
-catch there since the IOMMUs already provide isolation between the I/O
-and CPU address spaces.
+No vivian Ouedrago kundzes
