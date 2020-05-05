@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78C831C5897
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:16:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCAD41C58ED
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:20:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730016AbgEEOQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:16:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49046 "EHLO
+        id S1730023AbgEEOUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:20:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729295AbgEEOQF (ORCPT
+        by vger.kernel.org with ESMTP id S1730022AbgEEOQK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:16:05 -0400
+        Tue, 5 May 2020 10:16:10 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49ADDC061A0F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:16:05 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8889C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:16:09 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jVyMN-0001oZ-A7; Tue, 05 May 2020 16:15:47 +0200
+        id 1jVyMO-0001pb-GD; Tue, 05 May 2020 16:15:48 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id BA4C1FFC8D;
-        Tue,  5 May 2020 16:15:46 +0200 (CEST)
-Message-Id: <20200505135313.517429268@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 007D5FFC8D;
+        Tue,  5 May 2020 16:15:48 +0200 (CEST)
+Message-Id: <20200505135313.624443814@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 05 May 2020 15:49:28 +0200
+Date:   Tue, 05 May 2020 15:49:29 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -45,7 +45,7 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Will Deacon <will@kernel.org>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch V4 part 4 02/24] x86/int3: Avoid atomic instrumentation
+Subject: [patch V4 part 4 03/24] lib/bsearch: Provide __always_inline variant
 References: <20200505134926.578885807@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -60,40 +60,81 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Peter Zijlstra <peterz@infradead.org>
 
-Use arch_atomic_*() and READ_ONCE_NOCHECK() to ensure nothing untoward
-creeps in and ruins things.
+For code that needs the ultimate performance (it can inline the @cmp
+function too) or simply needs to avoid calling external functions for
+whatever reason, provide an __always_inline variant of bsearch().
 
-That is; this is the INT3 text poke handler, strictly limit the code
-that runs in it, lest it inadvertenly hits yet another INT3.
-
-Reported-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/kernel/alternative.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ include/linux/bsearch.h |   26 ++++++++++++++++++++++++--
+ lib/bsearch.c           |   22 ++--------------------
+ 2 files changed, 26 insertions(+), 22 deletions(-)
 
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -960,9 +960,9 @@ static struct bp_patching_desc *bp_desc;
- static __always_inline
- struct bp_patching_desc *try_get_desc(struct bp_patching_desc **descp)
- {
--	struct bp_patching_desc *desc = READ_ONCE(*descp); /* rcu_dereference */
-+	struct bp_patching_desc *desc = READ_ONCE_NOCHECK(*descp); /* rcu_dereference */
+--- a/include/linux/bsearch.h
++++ b/include/linux/bsearch.h
+@@ -4,7 +4,29 @@
  
--	if (!desc || !atomic_inc_not_zero(&desc->refs))
-+	if (!desc || !arch_atomic_inc_not_zero(&desc->refs))
- 		return NULL;
+ #include <linux/types.h>
  
- 	return desc;
-@@ -971,7 +971,7 @@ struct bp_patching_desc *try_get_desc(st
- static __always_inline void put_desc(struct bp_patching_desc *desc)
+-void *bsearch(const void *key, const void *base, size_t num, size_t size,
+-	      cmp_func_t cmp);
++static __always_inline
++void *__bsearch(const void *key, const void *base, size_t num, size_t size, cmp_func_t cmp)
++{
++	const char *pivot;
++	int result;
++
++	while (num > 0) {
++		pivot = base + (num >> 1) * size;
++		result = cmp(key, pivot);
++
++		if (result == 0)
++			return (void *)pivot;
++
++		if (result > 0) {
++			base = pivot + size;
++			num--;
++		}
++		num >>= 1;
++	}
++
++	return NULL;
++}
++
++extern void *bsearch(const void *key, const void *base, size_t num, size_t size, cmp_func_t cmp);
+ 
+ #endif /* _LINUX_BSEARCH_H */
+--- a/lib/bsearch.c
++++ b/lib/bsearch.c
+@@ -28,27 +28,9 @@
+  * the key and elements in the array are of the same type, you can use
+  * the same comparison function for both sort() and bsearch().
+  */
+-void *bsearch(const void *key, const void *base, size_t num, size_t size,
+-	      cmp_func_t cmp)
++void *bsearch(const void *key, const void *base, size_t num, size_t size, cmp_func_t cmp)
  {
- 	smp_mb__before_atomic();
--	atomic_dec(&desc->refs);
-+	arch_atomic_dec(&desc->refs);
+-	const char *pivot;
+-	int result;
+-
+-	while (num > 0) {
+-		pivot = base + (num >> 1) * size;
+-		result = cmp(key, pivot);
+-
+-		if (result == 0)
+-			return (void *)pivot;
+-
+-		if (result > 0) {
+-			base = pivot + size;
+-			num--;
+-		}
+-		num >>= 1;
+-	}
+-
+-	return NULL;
++	return __bsearch(key, base, num, size, cmp);
  }
- 
- static __always_inline void *text_poke_addr(struct text_poke_loc *tp)
+ EXPORT_SYMBOL(bsearch);
+ NOKPROBE_SYMBOL(bsearch);
 
