@@ -2,81 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D69E1C5AB8
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:11:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2116A1C5AC0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:13:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729917AbgEEPL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 11:11:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40418 "EHLO mail.kernel.org"
+        id S1729948AbgEEPM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 11:12:59 -0400
+Received: from sauhun.de ([88.99.104.3]:34206 "EHLO pokefinder.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729507AbgEEPL4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 11:11:56 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8050B2078D;
-        Tue,  5 May 2020 15:11:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588691515;
-        bh=QuX9vn31uQ/v8nykk4K4lR23eNtpDJLWEZk/rfaSGII=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dbxK4diAUXU6Dx3LzLM/VkDX6SbjoytcJwqeWq5zBH1RodT/oKqvPQckgAS/Frmu1
-         0Szq2BMamAqpu7uF35mVfnJdg0y6qLRCtPOfsWgGQcadDbRGtzg5OEtD5ar+QOBik1
-         HJ+SVXOr7Pu8hf6vgxl3Ntt1QLBPhh0yBoWtWa0w=
-Date:   Tue, 5 May 2020 16:11:50 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Marco Elver <elver@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Alexander Potapenko <glider@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH] kcsan: fix section mismatch for
- __write_once_size/blacklisted_initcalls
-Message-ID: <20200505151150.GD24239@willie-the-truck>
-References: <20200505141137.665940-1-arnd@arndb.de>
- <CANpmjNNwgkVR6kjFudrR4ga--PigU5Mx69HZ1mhCAQ0GCLqQGg@mail.gmail.com>
- <CAK8P3a3r35VrKVfpn_q2YYhxkvH9j0+3MnMqgRM6R=QOcsE96Q@mail.gmail.com>
+        id S1729332AbgEEPM6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 11:12:58 -0400
+Received: from localhost (p54B335A1.dip0.t-ipconnect.de [84.179.53.161])
+        by pokefinder.org (Postfix) with ESMTPSA id 7F2872C0892;
+        Tue,  5 May 2020 17:12:56 +0200 (CEST)
+Date:   Tue, 5 May 2020 17:12:56 +0200
+From:   Wolfram Sang <wsa@the-dreams.de>
+To:     Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Cc:     linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        ludovic.desroches@microchip.com, nicolas.ferre@microchip.com,
+        alexandre.belloni@bootlin.com, kamel.bouhara@bootlin.com,
+        linux@armlinux.org.uk, linus.walleij@linaro.org, alan@softiron.com
+Subject: Re: [RFC PATCH] i2c: at91: Fix pinmux after devm_gpiod_get() for bus
+ recovery
+Message-ID: <20200505151256.GF2468@ninjato>
+References: <20200415070643.23663-1-codrin.ciubotariu@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="twz1s1Hj1O0rHoT0"
 Content-Disposition: inline
-In-Reply-To: <CAK8P3a3r35VrKVfpn_q2YYhxkvH9j0+3MnMqgRM6R=QOcsE96Q@mail.gmail.com>
+In-Reply-To: <20200415070643.23663-1-codrin.ciubotariu@microchip.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 05, 2020 at 05:05:36PM +0200, Arnd Bergmann wrote:
-> On Tue, May 5, 2020 at 4:17 PM 'Marco Elver' via Clang Built Linux
-> <clang-built-linux@googlegroups.com> wrote:
-> > On Tue, 5 May 2020 at 16:11, Arnd Bergmann <arnd@arndb.de> wrote:
-> > > So far, my randconfig checks found two such instances, one for read_once
-> > > and one for write_once. There are probably a couple more in random
-> > > configurations, but I guess they are rare enough that we can just work
-> > > around them like this.
-> >
-> > [+Cc Will]
-> >
-> > Thanks for testing and fixing this. Note that this may no longer be
-> > necessary once Will's patches land. Also noted here:
-> > https://lkml.kernel.org/r/CANpmjNNw6M9Gqj6WGTHH4Cegu8roTVu5x6Vqs_tCBxX3gPwL4A@mail.gmail.com
-> >
-> > For reference, Will's series:
-> > https://lore.kernel.org/lkml/20200421151537.19241-1-will@kernel.org/
-> 
-> Right, good point. If that is going to get merged for the same release, we don't
-> need my workarounds and I'll just keep them applied locally in my linux-next
-> randconfig tree for the moment.
 
-I'll send out a new version based on the kcsan stuff this week, so fingers
-crossed for 5.8!
+--twz1s1Hj1O0rHoT0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Will
+On Wed, Apr 15, 2020 at 10:06:43AM +0300, Codrin Ciubotariu wrote:
+> devm_gpiod_get() usually calls gpio_request_enable() for non-strict pinmux
+> drivers. These puts the pins in GPIO mode, whithout notifying the pinctrl
+> driver. At this point, the I2C bus no longer owns the pins. To mux the
+> pins back to the I2C bus, we use the pinctrl driver to change the state
+> of the pins to GPIO, before using devm_gpiod_get(). After the pins are
+> received as GPIOs, we switch theer pinctrl state back to the default
+> one,
+>=20
+> Fixes: d3d3fdcc4c90 ("i2c: at91: implement i2c bus recovery")
+> Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+
+Applied to for-current, thanks!
+
+This will do for 5.7. For 5.8 or 5.9, I can imagine to take the two
+pinctrl_state pointers into bus_recovery_info and handle all this in the
+core. I will try this later this week if noone is super-eager to try it
+out before.
+
+
+--twz1s1Hj1O0rHoT0
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl6xgnQACgkQFA3kzBSg
+KbbY+xAArfL/iEHhieAsZoajJ8HCWqBjKMu523a4uPpmSCk4jP9UIqOQqtUac4tK
+wUCJg3LXJvbT8pfvfxAcSTHYjgVIvh0br6N44vO5zWz6uTlyEH0LXrg8NP9qrECb
+B5HHfsFxVWhTMuFTgcqRHel1qHzhd3rWCebhfdiFrBcHpM6xmeB9VlYyXoq4/qx5
+p3/5LwgKJW4xo4AT2J3PCfX5h/zVdIzeWW9qPX+xyUtCJ0MpCxsVxStpUXwudIH2
+rJahIU7t0NL0MtKLa4Waf8PjQULKShZc1vrQ/QQhi50kLicGkPwQSJnkFe+lLnjS
+aMGEKiJajucG8tz1nqsg8A2CsXpUC70f7bwQP7kGlUVPqEPp13soeor9qoKIClfX
+LleANdq18XOlIIRKGtcLKvg/abHXk1/OQ9efNx8Aa4G30im3rozCwbR+Fpn+mLZC
+oANKeX7VJ+DmuYqiWaD23Iz/j3M2skgBmUeuzAMYvA+OX6lERmWWnBqEMAqb0si2
+nngZTQcBg1s8HEbeDMkH7N9zu47bEdXAARoFE9ys16uZK3A7RRNnv46NSjZAph1b
+uepFxAB8QGm9a+sLjLY4Ym/G6vBAv9CRh5FCLDxZ1ODzYZfEiPtt3umtz7DFfGKp
+/9wolNpCGqYXQHYwgmakJq5f9MEASvhl4GNag81Qi1AHgRJeDqs=
+=kQ/H
+-----END PGP SIGNATURE-----
+
+--twz1s1Hj1O0rHoT0--
