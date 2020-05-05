@@ -2,71 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4673C1C5399
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 12:47:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 598F91C539C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 12:48:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728716AbgEEKr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 06:47:57 -0400
-Received: from foss.arm.com ([217.140.110.172]:36954 "EHLO foss.arm.com"
+        id S1728751AbgEEKsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 06:48:11 -0400
+Received: from verein.lst.de ([213.95.11.211]:34634 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728497AbgEEKr5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 06:47:57 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A32F430E;
-        Tue,  5 May 2020 03:47:56 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 51F4C3F305;
-        Tue,  5 May 2020 03:47:55 -0700 (PDT)
-Date:   Tue, 5 May 2020 11:47:49 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Jason Yan <yanaijie@huawei.com>
-Cc:     amurray@thegoodpenguin.co.uk, bhelgaas@google.com,
-        p.zabel@pengutronix.de, gustavo.pimentel@synopsys.com,
-        andriy.shevchenko@intel.com, eswara.kota@linux.intel.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hulk Robot <hulkci@huawei.com>
-Subject: Re: [PATCH] PCI: dwc: intel: make intel_pcie_cpu_addr() static
-Message-ID: <20200505104749.GA13446@e121166-lin.cambridge.arm.com>
-References: <20200415084953.6533-1-yanaijie@huawei.com>
+        id S1728238AbgEEKsL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 06:48:11 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id CCFFE68C4E; Tue,  5 May 2020 12:48:05 +0200 (CEST)
+Date:   Tue, 5 May 2020 12:48:05 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jann Horn <jannh@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org,
+        Mark Salter <msalter@redhat.com>,
+        Aurelien Jacquiot <jacquiot.aurelien@gmail.com>,
+        linux-c6x-dev@linux-c6x.org,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org
+Subject: Re: [PATCH v2 1/5] binfmt_elf_fdpic: Stop using dump_emit() on
+ user pointers on !MMU
+Message-ID: <20200505104805.GA17400@lst.de>
+References: <20200429214954.44866-1-jannh@google.com> <20200429214954.44866-2-jannh@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200415084953.6533-1-yanaijie@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200429214954.44866-2-jannh@google.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 04:49:53PM +0800, Jason Yan wrote:
-> Fix the following sparse warning:
-> 
-> drivers/pci/controller/dwc/pcie-intel-gw.c:456:5: warning: symbol
-> 'intel_pcie_cpu_addr' was not declared. Should it be static?
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Jason Yan <yanaijie@huawei.com>
-> ---
->  drivers/pci/controller/dwc/pcie-intel-gw.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On Wed, Apr 29, 2020 at 11:49:50PM +0200, Jann Horn wrote:
+> dump_emit() is for kernel pointers, and VMAs describe userspace memory.
+> Let's be tidy here and avoid accessing userspace pointers under KERNEL_DS,
+> even if it probably doesn't matter much on !MMU systems - especially given
+> that it looks like we can just use the same get_dump_page() as on MMU if
+> we move it out of the CONFIG_MMU block.
 
-Applied to pci/dwc, thanks.
-
-Lorenzo
-
-> diff --git a/drivers/pci/controller/dwc/pcie-intel-gw.c b/drivers/pci/controller/dwc/pcie-intel-gw.c
-> index fc2a12212dec..2d8dbb318087 100644
-> --- a/drivers/pci/controller/dwc/pcie-intel-gw.c
-> +++ b/drivers/pci/controller/dwc/pcie-intel-gw.c
-> @@ -453,7 +453,7 @@ static int intel_pcie_msi_init(struct pcie_port *pp)
->  	return 0;
->  }
->  
-> -u64 intel_pcie_cpu_addr(struct dw_pcie *pcie, u64 cpu_addr)
-> +static u64 intel_pcie_cpu_addr(struct dw_pcie *pcie, u64 cpu_addr)
->  {
->  	return cpu_addr + BUS_IATU_OFFSET;
->  }
-> -- 
-> 2.21.1
-> 
+Looks sensible.  Did you get a chance to test this with a nommu setup?
