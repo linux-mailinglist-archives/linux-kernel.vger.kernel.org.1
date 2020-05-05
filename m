@@ -2,176 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A6721C59D4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:40:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70F5E1C59DB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:42:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729362AbgEEOkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:40:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41766 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727083AbgEEOkQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:40:16 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8DB0A206B9;
-        Tue,  5 May 2020 14:40:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588689616;
-        bh=j/GqXoT+GQGssQ3rGRFGFL3Qfzj08wyd/Iyt+COdg2A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vQRX4RZsIX+qs0WE3rk0U3eOEH1uAOv+i+v2rDbwNKAFYykV6I37Zfaitx0oUXWwm
-         wtxPbEft1eIUz4BouINwCZusQpQ10+hcyUHJspFT+n8tfliHeVjyY4l+zIcs60Gf1f
-         /xBEITuUyoyNppCR7aSoddeDROW8aT33JQLYQlMU=
-Date:   Tue, 5 May 2020 16:40:13 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Benjamin Gaignard <benjamin.gaignard@st.com>
-Cc:     robh+dt@kernel.org, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, loic.pallardy@st.com,
-        linus.walleij@linaro.org, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/5] bus: stm32: Introduce firewall controller helpers
-Message-ID: <20200505144013.GB838641@kroah.com>
-References: <20200505073308.22914-1-benjamin.gaignard@st.com>
- <20200505073308.22914-3-benjamin.gaignard@st.com>
+        id S1729334AbgEEOmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:42:40 -0400
+Received: from mout.kundenserver.de ([212.227.126.187]:48979 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729148AbgEEOmj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 10:42:39 -0400
+Received: from mail-qt1-f174.google.com ([209.85.160.174]) by
+ mrelayeu.kundenserver.de (mreue010 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MekrN-1ixkQF1vi1-00apPG for <linux-kernel@vger.kernel.org>; Tue, 05 May
+ 2020 16:42:38 +0200
+Received: by mail-qt1-f174.google.com with SMTP id q13so717406qtp.7
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 07:42:38 -0700 (PDT)
+X-Gm-Message-State: AGi0PubtyDTYm45KTTYbrMR/8CPNTSuVYBNXnsdxDqT39qnOh/1KRhRp
+        zDHCjFHtYwjgB0EFSlt5zRdIVfIhd1qGCv1mF2I=
+X-Google-Smtp-Source: APiQypLlhYQf7fq/1v0dm90zwWA86A9C8KA52UCtn36b/qe56zBKDZqiifbmYW+Cab0gFL/AUmEbJBOD9oHp5/E1lrQ=
+X-Received: by 2002:ac8:12c2:: with SMTP id b2mr3012949qtj.7.1588689757275;
+ Tue, 05 May 2020 07:42:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200505073308.22914-3-benjamin.gaignard@st.com>
+References: <20200505141218.684079-1-arnd@arndb.de> <20200505141908.GH1551@shell.armlinux.org.uk>
+In-Reply-To: <20200505141908.GH1551@shell.armlinux.org.uk>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 5 May 2020 16:42:20 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1c1+7GyAzocpWqUMo7=oN48WAdDfPZtnEBHQXpmd7pOw@mail.gmail.com>
+Message-ID: <CAK8P3a1c1+7GyAzocpWqUMo7=oN48WAdDfPZtnEBHQXpmd7pOw@mail.gmail.com>
+Subject: Re: [PATCH] ARM: use ARM unwinder for gcov
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Nathan Huckleberry <nhuck15@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:M1VNuKvVZ615qw96nOi5BI+GFyzPkKBKvKTrivaSkzc8INf5IAT
+ inekSEoVZRd86q6gvlHb6RZ1EtNC/6BAvBhbXdqxmvEMzdTpzxg2g22P8xusPYxzV4V0vPk
+ 1LmuD9dKslF3wBokf2SGU5DZWJJ/+KS4+IFyT82tG1t2UbDT9xYgJLvFmAfBdiZM5x6sVif
+ KTeFR4FvamZ+F8gcb5Ceg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Z9ubrjF0/fM=:f0rQU5LmNG+5Em1rKhJ8HA
+ f4CxNLQHh/d0L1MKrGeIx+x38t/JEfcEPtOi97b2oisnnxXd9blJ7LpRh8678uBXhGBrIAIzP
+ DtT+ZcSTzke4jUQvjykNzolu5kHxpgBErlfIOWEqgT1sJb6bSATc6fbQji7nFvCCBZEvmDtc0
+ ewRBnPPctC1L+tsdcwz8r1Okvd/WEhtntmaJCGdjD7cly7Dz21W8DykWi8dmbgpIVtT9s5EDd
+ 3pjJc310qnhx+Cj0FAJfuUa22tsMJ7UL9+YSXL95oxl7KpPpjCVCdutZ6bCTV8sWjVcAjtWle
+ fCZN/qHPbnYRehjtN8cRy7xKd8cEhDVQx9dq3Q76K3yMoWXNN4nPT8xlKJ/wcirdvlPzf5xxK
+ J7HB1vhEoVF6EV2UJpDsNA7/o+P4CwxNZ9KAh2JI71JmpbEGNf8Gj9eqmgPiIYbSp/JzWDgjC
+ SCc65hv7eeva24farfmerYholy0a9AYVtJ82vJiJyr99doG24ba+DpfHjEqvxlTkcFzc9uD2v
+ RyM3JEyUXhIvdaA5DjzP139XNfStlpx2vN0Wot+kOHDvEEJfXV/BbuiEeHr6IFS96wELjnywW
+ 0hp5Ix/wxb+ZPZDn6JFbEyYDLsQLMDIX69ftY7lAi+p5j83iXehK/UxTZ3mfM3hh+Nw+R76TV
+ VefLjrNPPTS84wIcmQPDQWX0joSbcgYkSCQt5za9U4BUAUCGEkPaRC+aF2uFsCZkjmq5IVfzw
+ 5SX8wKVoV0a7DOF7qyTyy/KizcULVKZm1L9w+I8khPRZTaxFs8pw9A19BbuVbWqtapQlHGrAM
+ Si2WlJfc34zgPfRjCmxZzxFmEZXqNIGnAvcwEaLbOOZ1PsTa5c=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 05, 2020 at 09:33:05AM +0200, Benjamin Gaignard wrote:
-> The goal of these helpers are to offer an interface for the
-> hardware blocks controlling bus accesses rights.
-> 
-> Bus firewall controllers are typically used to control if a
-> hardware block can perform read or write operations on bus.
-> 
-> Smarter firewall controllers could be able to define accesses
-> rights per hardware blocks to control where they can read
-> or write.
-> 
-> Firewall controller configurations are provided in device node,
-> parsed by the helpers and send to the driver to apply them.
-> Each controller may need different number and type of inputs
-> to configure the firewall so device-tree properties size have to
-> be define by using "#firewall-cells".
-> Firewall configurations properties have to be named "firewall-X"
-> on device node.
-> "firewall-names" keyword can also be used to give a name to
-> a specific configuration.
-> 
-> Example of device-tree:
-> ctrl0: firewall@0 {
-> 	#firewall-cells = <2>;
->       };
-> 
-> foo: foo@0 {
-> 	firewall-names = "default", "setting1";
-> 	firewall-0 = <&ctrl0 1 2>;
-> 	firewall-1 = <&ctrl0 3 4>;
-> };
-> 
-> Configurations could be applied with functions like
-> firewall_set_config_by_index() or firewall_set_config_by_name().
-> 
-> firewall_set_default_config() function will apply the
-> configuration named "default" (if existing) or the configuration
-> with index 0 (i.e. firewall-0).
-> 
-> Drivers could register/unregister themselves be calling
-> firewall_register/firewall_unregister functions.
-> 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@st.com>
-> ---
->  drivers/bus/Kconfig          |   2 +
->  drivers/bus/Makefile         |   2 +
->  drivers/bus/stm32/Kconfig    |   3 +
->  drivers/bus/stm32/Makefile   |   1 +
->  drivers/bus/stm32/firewall.c | 266 +++++++++++++++++++++++++++++++++++++++++++
->  drivers/bus/stm32/firewall.h |  75 ++++++++++++
->  6 files changed, 349 insertions(+)
->  create mode 100644 drivers/bus/stm32/Kconfig
->  create mode 100644 drivers/bus/stm32/Makefile
->  create mode 100644 drivers/bus/stm32/firewall.c
->  create mode 100644 drivers/bus/stm32/firewall.h
-> 
-> diff --git a/drivers/bus/Kconfig b/drivers/bus/Kconfig
-> index 6d4e4497b59b..843b356322d9 100644
-> --- a/drivers/bus/Kconfig
-> +++ b/drivers/bus/Kconfig
-> @@ -203,4 +203,6 @@ config DA8XX_MSTPRI
->  source "drivers/bus/fsl-mc/Kconfig"
->  source "drivers/bus/mhi/Kconfig"
->  
-> +source "drivers/bus/stm32/Kconfig"
-> +
->  endmenu
-> diff --git a/drivers/bus/Makefile b/drivers/bus/Makefile
-> index 05f32cd694a4..5e0e34b10235 100644
-> --- a/drivers/bus/Makefile
-> +++ b/drivers/bus/Makefile
-> @@ -37,3 +37,5 @@ obj-$(CONFIG_DA8XX_MSTPRI)	+= da8xx-mstpri.o
->  
->  # MHI
->  obj-$(CONFIG_MHI_BUS)		+= mhi/
-> +
-> +obj-$(CONFIG_MACH_STM32MP157) 	+= stm32/
-> \ No newline at end of file
-> diff --git a/drivers/bus/stm32/Kconfig b/drivers/bus/stm32/Kconfig
-> new file mode 100644
-> index 000000000000..57221e833e2d
-> --- /dev/null
-> +++ b/drivers/bus/stm32/Kconfig
-> @@ -0,0 +1,3 @@
-> +config FIREWALL_CONTROLLERS
-> +	bool "Support of bus firewall controllers"
-> +	depends on OF
-> diff --git a/drivers/bus/stm32/Makefile b/drivers/bus/stm32/Makefile
-> new file mode 100644
-> index 000000000000..eb6b978d6450
-> --- /dev/null
-> +++ b/drivers/bus/stm32/Makefile
-> @@ -0,0 +1 @@
-> +obj-$(CONFIG_FIREWALL_CONTROLLERS) += firewall.o
-> diff --git a/drivers/bus/stm32/firewall.c b/drivers/bus/stm32/firewall.c
-> new file mode 100644
-> index 000000000000..95f716cf926f
-> --- /dev/null
-> +++ b/drivers/bus/stm32/firewall.c
-> @@ -0,0 +1,266 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) STMicroelectronics 2020 - All Rights Reserved
-> + * Author: Benjamin Gaignard <benjamin.gaignard@st.com> for STMicroelectronics.
-> + */
-> +
-> +#include <linux/device.h>
-> +#include <linux/err.h>
-> +#include <linux/init.h>
-> +#include <linux/kernel.h>
-> +#include <linux/list.h>
-> +#include <linux/of.h>
-> +#include <linux/slab.h>
-> +
-> +#include "firewall.h"
-> +
-> +/* Mutex taken to protect firewall_list */
-> +static DEFINE_MUTEX(firewall_list_mutex);
-> +
-> +/* Global list of firewall control devices */
-> +static LIST_HEAD(firewall_list);
+On Tue, May 5, 2020 at 4:19 PM Russell King - ARM Linux admin
+<linux@armlinux.org.uk> wrote:
+>
+> On Tue, May 05, 2020 at 04:11:56PM +0200, Arnd Bergmann wrote:
+> > Using gcov on ARM fails when the frame pointer unwinder is used:
+> >
+> > arm-linux-gnueabi-ld: kernel/softirq.o:(.ARM.exidx+0x120): undefined reference to `__aeabi_unwind_cpp_pr0'
+> > arm-linux-gnueabi-ld: init/main.o:(.ARM.exidx+0x98): undefined reference to `__aeabi_unwind_cpp_pr0'
+> > arm-linux-gnueabi-ld: init/version.o:(.ARM.exidx+0x0): undefined reference to `__aeabi_unwind_cpp_pr0'
+> > arm-linux-gnueabi-ld: init/do_mounts.o:(.ARM.exidx+0x28): undefined reference to `__aeabi_unwind_cpp_pr0'
+> > arm-linux-gnueabi-ld: init/do_mounts_initrd.o:(.ARM.exidx+0x0): undefined reference to `__aeabi_unwind_cpp_pr0'
+> > arm-linux-gnueabi-ld: init/initramfs.o:(.ARM.exidx+0x8): more undefined references to `__aeabi_unwind_cpp_pr0' follow
+> >
+> > This is likely a bug in clang that should be fixed in the compiler.
+> > Forcing the use of the ARM unwinder in this configuration however
+> > works around the problem.
+>
+> Or should the stub functions in arch/arm/kernel/unwind.c be moved out?
 
-Why is that needed?  Why can't you just walk the list of devices on this
-"bus/class" if you really wanted to?
+I had not realized this is only a stub. Moving them out should fix the
+link failure, I can
+send a patch after testing if we are sure that calling them is not a
+bug in clang
+that would lead to runtime failures.
 
-Along those lines, why is this going around the driver model and
-ignoring it?  Shouldn't this be a bus and you have devices attached to
-it of the specific type?
-
-
-greg k-h
+       Arnd
