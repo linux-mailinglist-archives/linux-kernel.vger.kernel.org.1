@@ -2,91 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87F471C5CE4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 18:04:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B08A1C5CE6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 18:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730337AbgEEQEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 12:04:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50048 "EHLO mail.kernel.org"
+        id S1730476AbgEEQEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 12:04:42 -0400
+Received: from foss.arm.com ([217.140.110.172]:44342 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729398AbgEEQEN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 12:04:13 -0400
-Received: from localhost (p54B335A1.dip0.t-ipconnect.de [84.179.53.161])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B2BCE206A4;
-        Tue,  5 May 2020 16:04:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588694653;
-        bh=UPUCU3eUar7iY9cJbizcok3tqdxkqvfWgxtd4KniG9w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Jpyx0GW/MEFsaJ/3a8hJQAhv87YOfwuY2VCRaz2f23rAvywCCpVGpGI62SPlvU69i
-         M6PyJEGWsX8kBfF4OIpUBzoH6UU6urADCJP1Lvy+RrPyzkDrdWg3+P38CzNeDwJ73w
-         fcgb2+iKwsiUevl4QPm+FOQRnr/WwxiojXAm3VSs=
-Date:   Tue, 5 May 2020 18:04:10 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, kernel@pengutronix.de,
-        Rob Herring <robh+dt@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, devicetree@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] powerpc/5200: update contact email
-Message-ID: <20200505160410.GH2468@ninjato>
-References: <20200502142642.18979-1-wsa@kernel.org>
- <877dxsdl5e.fsf@mpe.ellerman.id.au>
+        id S1729398AbgEEQEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 12:04:42 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BB43031B;
+        Tue,  5 May 2020 09:04:41 -0700 (PDT)
+Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 513D23F71F;
+        Tue,  5 May 2020 09:04:39 -0700 (PDT)
+Date:   Tue, 5 May 2020 17:04:22 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: Re: [patch V4 part 1 07/36] locking/atomics: Flip fallbacks and
+ instrumentation
+Message-ID: <20200505160421.GA27127@lakrids.cambridge.arm.com>
+References: <20200505131602.633487962@linutronix.de>
+ <20200505134058.769149955@linutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="v2Uk6McLiE8OV1El"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <877dxsdl5e.fsf@mpe.ellerman.id.au>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200505134058.769149955@linutronix.de>
+User-Agent: Mutt/1.11.1+11 (2f07cb52) (2018-12-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, May 05, 2020 at 03:16:09PM +0200, Thomas Gleixner wrote:
+> Currently instrumentation of atomic primitives is done at the
+> architecture level, while composites or fallbacks are provided at the
+> generic level.
+> 
+> The result is that there are no uninstrumented variants of the
+> fallbacks. Since there is now need of such (see the next patch),
+> invert this ordering.
+> 
+> Doing this means moving the instrumentation into the generic code as
+> well as having (for now) two variants of the fallbacks.
+> 
+> Notes:
+> 
+>  - the various *cond_read* primitives are not proper fallbacks
+>    and got moved into linux/atomic.c. No arch_ variants are
+>    generated because the base primitives smp_cond_load*()
+>    are instrumented.
+> 
+>  - once all architectures are moved over to arch_atomic_ we can remove
+>    one of the fallback variants and reclaim some 2300 lines.
+> 
+>  - atomic_{read,set}*() are no longer double-instrumented
+> 
+> Reported-by: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Mark Rutland <mark.rutland@arm.com>
 
---v2Uk6McLiE8OV1El
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+FWIW, the scripting changes all look fine to me, so:
 
+Acked-by: Mark Rutland <mark.rutland@arm.com>
 
-> > My 'pengutronix' address is defunct for years. Merge the entries and use
-> > the proper contact address.
->=20
-> Is there any point adding the new address? It's just likely to bit-rot
-> one day too.
+I'm hoping that I can convert the remaining arches over to arch_atomic
+atop of this, at which point we can remove the duplication, and have the
+usual arch_<foo>/raw_<foo>/<foo> split.
 
-At least, this one is a group address, not an individual one, so less
-likey.
-
-> I figure the git history is a better source for more up-to-date emails.
-
-But yes, can still be argued. I won't persist if you don't like it.
-
-Thanks!
-
-
---v2Uk6McLiE8OV1El
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl6xjnoACgkQFA3kzBSg
-KbaTsxAAizU7yVpsyfvJAhLroyGpAVRj7LysT+H5JlZ8JjJ4uDpEhOhL4Hzr5QO4
-T4RfB4o+1xmKc0pwT2BOUteCO05S2hRH6+cwel++k+vWjCnKUBxeinylK+ixk4+V
-P8QWDo/gFuqUtsm/Wb6PtBR8otMVa0FajdEPuaAkhi2OPQjO/2DvffSHT4c3VAtI
-HY4pIIbwaaCiAalCse6IrqkuJT90A0ZDM9oRTZOIaryVkkTHHkBNmB7PKu4viJic
-yS3yH+R0e5yBGEre6FkwL1z2CCNAGNXeBQ23gvq3glJAQIQyfBYgnO+lQFD8lZzq
-Cb8E69+sastbZnUBKAK7GR5xvBYJImCxN35PRakdd8/pLHcdKgwIWu1B9PTO5xQP
-avv3RmViYiSqfRJa5MSWqPu04zkJCYxy/w6yskdPHqhpG+7x1grsLO9hFBWxDN18
-KDQaMtcgGzQbGzhxXnB8aZGJOEOTGrmlCxE35WQ5t3uGQe09hHTKuaUri288LXwH
-7mK08jCqhMDavvLaUPngPz4IkdiAv8yZaK3LH4ikMQ4bKTJXhpnwfHYEswLP9FQq
-Qcrm3tGBksw5Ld3sncU+ENfhhVaoIyxWxxjTp+WQVI+jMjWGCuJ1hy57iPonXfKn
-2LEqI9lEf2iukddWH32wj4eivgYf6UHnf91Y5FoePzMf197dID4=
-=bFLt
------END PGP SIGNATURE-----
-
---v2Uk6McLiE8OV1El--
+Thanks,
+Mark.
