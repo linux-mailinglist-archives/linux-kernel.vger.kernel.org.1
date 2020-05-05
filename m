@@ -2,169 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B47E51C532E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 12:27:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC2951C5332
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 12:27:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728712AbgEEK1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 06:27:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41168 "EHLO
+        id S1728746AbgEEK1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 06:27:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728642AbgEEK1C (ORCPT
+        by vger.kernel.org with ESMTP id S1728716AbgEEK1L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 06:27:02 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C4A1C0610D6
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 03:27:02 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id k8so1246187ejv.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 03:27:02 -0700 (PDT)
+        Tue, 5 May 2020 06:27:11 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D875C0610D5
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 03:27:10 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id w20so1062803ljj.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 03:27:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Orh5u/cGFa6CUf3Ru5y/QPpEtSbGN9HXkDg7tWvYPnE=;
-        b=SsJORsGWqpqKroHw3juOiPB4jAoj7j0EugdHIIHw2eqbFfUiCLya+4s/vMXwX777AV
-         Q6Gvxzp1ptHMdUcThPhLS/5pv+LKe9X/D+xifOF/VxYr9M+vpHeYBIWBgbqf0I0Ak1mw
-         KKG9VB+GwPDv4zXgR51qnxe8nGhz2Ci2zJxls4yl5Pt7qUNgckkXy+L4d0cAg9hbRyhU
-         DoAMIi/U7nG2zB2FJn2l2yURSbHkoPHlr2VfZzBcTrM6IY4r2rBQRX4h4+t8FGHTjdLR
-         9diXW7lj9wss7Ubnw0i8NxTpKAOkAVKaPuRJJumf0TKHSK7E6PPPvS+F0CJ9+QeEGUfu
-         rVQQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Y4r4BzjDGTO09+pq2qJQzLpsqdYp3d0bmg7xrYt7/0k=;
+        b=lxq8UsRbbA6JQHwi8YB41ue072QJ2ffr78bQkb/4GLMC458KwPgtwlcNH+7K8pq11n
+         zoraXwhw9eRsviQtxRA+U4dervHMol0BBPlIVzZx/9cforLpLbgmHwtFP+/uBqR3RGfO
+         CtucDsTaeq6V+hc8mK3P5FjYNUKYjKxOh5Z7HLpjOgkHftZDtQjx7tCwlFG1zVG1ve/+
+         0Jw7mXl/wHOdI9vIPA5gO25bE4K+IakBue0rQ1ZRHihufkCi2AzoV5zH8nZq3YFPz29Y
+         H752OVjW1oGHf4ltCmCXrQOYrGKbBDvHs8C0YNfPoKNcnoy1KeslY75+PptWpVM5voKr
+         xruw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Orh5u/cGFa6CUf3Ru5y/QPpEtSbGN9HXkDg7tWvYPnE=;
-        b=ILxUlpTa+C2+WeU0kHoIW+fzWctQcYCgGfpkaWec7O9UZuE7mQocuc9bHydBXSf8wv
-         eTIRtAqf/gsiJtyweguZRcKYUTui/IO7CTbTr+D4yZnM/+eIOfDJLasUG2XloZMnvK48
-         568YibT1VMDxRpa2RFMhLPptjzLIn+7E8F1biQQMIHPvjNhkMb4KO1OFHdRRbo/wufpt
-         /rj0QHigVcI3UyeLzQOXbKIPb9ZD7rp1LKN7SS9sOAMbKqMrmS0qW0yoVqN4J2fRbrxr
-         OZ+hUfQ0wPkg512U3fbZCSMKEUfpCG0n2MMjy1VRmT1tZIX/QpSHVccFdzCLyhVRjUjP
-         wgOw==
-X-Gm-Message-State: AGi0PubWOnzhOlLE8jK9I4Fxd4/v+pX2x2BPglr7OSZMCwnOca0S7zQR
-        0dJZ937BbR3AwjV0MV0UXIUVUBN6is/YxOG6vHb4zw==
-X-Google-Smtp-Source: APiQypL4FFjkxMGI8aLXdMhTJ3XGyBUIZqnU0wyfYDKRQb8wG4Ok9jkG5xaBSuXBG86XDN48syzA5yMzvtKRdYvGaFE=
-X-Received: by 2002:a17:906:fcaf:: with SMTP id qw15mr1938820ejb.236.1588674420735;
- Tue, 05 May 2020 03:27:00 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Y4r4BzjDGTO09+pq2qJQzLpsqdYp3d0bmg7xrYt7/0k=;
+        b=oXE1zlmDpOYOJnf9eTmPSrjzMJsa+JZqzbo4enGdjV4v82BWglCY0A2cNfbiByOYog
+         9EQ9ftRageLf24PCQdsuSa10xRshec9xqC4T4znXX8ZaluZG9K653ZmDrJ08ZOM16Z51
+         C0YLgGDiiYLEun4Wvc9FFzKcYP23t7hltXkPGvQlETD4wX8r2KPUB2nRssC67Vl/nGpb
+         uyGyrrH+ljmRx9kiS1bkMwkiPWSDkc+KlFKXSYhtonjMZ2T1oqA4RDv8scPLSt20s0c4
+         ArH2IsdtrvmBsv9eolx65FPe5MucuHx62BI+RkyB38T2fEc5PEWUuhy5WPLaGePVU28N
+         rj1A==
+X-Gm-Message-State: AGi0PubLbXTmzqTFd07OVz8nw7R1DS6Wczre8+MntBS/nibYIarYm/+v
+        lFH4cHPLc27t8uvPFTX4zDObyg==
+X-Google-Smtp-Source: APiQypJnEG5pEB+WJjoe6xM1H2pstsQj428JhTG2iNFeTSyXwOzyD5BmMDWHrEub1AqznTCaupW6Lw==
+X-Received: by 2002:a2e:a58e:: with SMTP id m14mr1390091ljp.95.1588674428941;
+        Tue, 05 May 2020 03:27:08 -0700 (PDT)
+Received: from localhost (c-8c28e555.07-21-73746f28.bbcust.telenor.se. [85.229.40.140])
+        by smtp.gmail.com with ESMTPSA id j15sm1799172lji.18.2020.05.05.03.27.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 May 2020 03:27:08 -0700 (PDT)
+From:   Anders Roxell <anders.roxell@linaro.org>
+To:     brendanhiggins@google.com
+Cc:     john.johansen@canonical.com, jmorris@namei.org, serge@hallyn.com,
+        tytso@mit.edu, adilger.kernel@dilger.ca,
+        gregkh@linuxfoundation.org, akpm@linux-foundation.org,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-security-module@vger.kernel.org, elver@google.com,
+        davidgow@google.com, Anders Roxell <anders.roxell@linaro.org>
+Subject: [PATCH v2 1/6] kunit: Kconfig: enable a KUNIT_RUN_ALL fragment
+Date:   Tue,  5 May 2020 12:27:00 +0200
+Message-Id: <20200505102700.7912-1-anders.roxell@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <2869c4f6-9adf-3d55-a41d-a42865ae56f2@mageia.org> <20200505041050.GA8131@leoy-ThinkPad-X240s>
-In-Reply-To: <20200505041050.GA8131@leoy-ThinkPad-X240s>
-From:   Mike Leach <mike.leach@linaro.org>
-Date:   Tue, 5 May 2020 11:26:49 +0100
-Message-ID: <CAJ9a7Vh8nqT5zGO1XPzWhPTpmMK+rx-S6DXvzPC4m31Fjkr+rQ@mail.gmail.com>
-Subject: Re: perf build error with gcc 10 on arm and aarch64
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Thomas Backlund <tmb@mageia.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki Kuruppassery Poulose <suzuki.poulose@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Leo,
+Make it easier to enable all KUnit fragments.  This is needed for kernel
+test-systems, so its easy to get all KUnit tests enabled and if new gets
+added they will be enabled as well.  Fragments that has to be builtin
+will be missed if CONFIG_KUNIT_RUN_ALL is set as a module.
 
-This is caused by GCC 10 new default to -fno-common. Temporarily
-adding this to perf build reproduces issue with other compilers,
-including x86 build of perf with cs-etm.
-As such - your fix is good to resolve this issue.
+Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+---
+ lib/kunit/Kconfig | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Tested by / Reviewed by Mike Leach <mike.leach@linaro.org>
-
-On Tue, 5 May 2020 at 05:11, Leo Yan <leo.yan@linaro.org> wrote:
->
-> Hi Thomas,
->
-> [ + Mathieu/Mike/Suzuki ]
->
-> On Mon, May 04, 2020 at 10:22:27PM +0300, Thomas Backlund wrote:
-> > This is building perf from kernel-5.6.10 on armv7hl and aarch64:
-> >
-> > Compiler is gcc 10.1.0-RC
-> >
-> >
-> >   LD       perf-in.o
-> > ld: arch/perf-in.o: in function `.LANCHOR0':
-> > /home/iurt/rpmbuild/BUILD/kernel-arm/linux-5.6/tools/perf/util/include/../../util/cs-etm.h:118:
-> > multiple definition of `traceid_list'; util/perf-in.o:/home/iurt/rpmbuild/BUILD/kernel-arm/linux-5.6/tools/perf/util/cs-etm.h:118:
-> > first defined here
-> > make[3]: *** [/home/iurt/rpmbuild/BUILD/kernel-arm/linux-5.6/tools/build/Makefile.build:145:
-> > perf-in.o] Error 1
-> >
-> >   LD       perf-in.o
-> > ld: arch/perf-in.o:/home/iurt/rpmbuild/BUILD/kernel-aarch64/linux-5.6/tools/perf/util/include/../../util/cs-etm.h:118:
-> > multiple definition of `traceid_list'; util/perf-in.o:/home/iurt/rpmbuild/BUILD/kernel-aarch64/linux-5.6/tools/perf/util/cs-etm.h:118:
-> > first defined here
-> > make[3]: *** [/home/iurt/rpmbuild/BUILD/kernel-aarch64/linux-5.6/tools/build/Makefile.build:145:
-> > perf-in.o] Error 1
-> > make[2]: *** [Makefile.perf:616: perf-in.o] Error 2
-> > make[1]: *** [Makefile.perf:225: sub-make] Error 2
-> > make: *** [Makefile:70: all] Error 2
-> >
-> >
-> > The same build succeeds with gcc 9.3.0
->
-> Thanks for reporting the issue.
->
-> Could you help confirm if below change can resolve this issue?
->
-> Thanks,
-> Leo
->
-> ---8<---
->
-> Subject: [PATCH] perf cs-etm: Move defined of traceid_list
->
-> The variable 'traceid_list' is defined in the header file cs-etm.h,
-> if multiple C files include cs-etm.h the compiler might complaint for
-> multiple definition of 'traceid_list'.
->
-> To fix multiple definition error, move the definition of 'traceid_list'
-> into cs-etm.c.
->
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> ---
->  tools/perf/util/cs-etm.c | 3 +++
->  tools/perf/util/cs-etm.h | 3 ---
->  2 files changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
-> index 62d2f9b9ce1b..381d9708e9bd 100644
-> --- a/tools/perf/util/cs-etm.c
-> +++ b/tools/perf/util/cs-etm.c
-> @@ -94,6 +94,9 @@ struct cs_etm_queue {
->         struct cs_etm_traceid_queue **traceid_queues;
->  };
->
-> +/* RB tree for quick conversion between traceID and metadata pointers */
-> +static struct intlist *traceid_list;
-> +
->  static int cs_etm__update_queues(struct cs_etm_auxtrace *etm);
->  static int cs_etm__process_queues(struct cs_etm_auxtrace *etm);
->  static int cs_etm__process_timeless_queues(struct cs_etm_auxtrace *etm,
-> diff --git a/tools/perf/util/cs-etm.h b/tools/perf/util/cs-etm.h
-> index 650ecc2a6349..4ad925d6d799 100644
-> --- a/tools/perf/util/cs-etm.h
-> +++ b/tools/perf/util/cs-etm.h
-> @@ -114,9 +114,6 @@ enum cs_etm_isa {
->         CS_ETM_ISA_T32,
->  };
->
-> -/* RB tree for quick conversion between traceID and metadata pointers */
-> -struct intlist *traceid_list;
-> -
->  struct cs_etm_queue;
->
->  struct cs_etm_packet {
-> --
-> 2.17.1
-
-
-
+diff --git a/lib/kunit/Kconfig b/lib/kunit/Kconfig
+index 95d12e3d6d95..537f37bc8400 100644
+--- a/lib/kunit/Kconfig
++++ b/lib/kunit/Kconfig
+@@ -41,4 +41,10 @@ config KUNIT_EXAMPLE_TEST
+ 	  is intended for curious hackers who would like to understand how to
+ 	  use KUnit for kernel development.
+ 
++config KUNIT_RUN_ALL
++	tristate "KUnit run all test"
++	help
++	  Enables all KUnit tests, if they can be enabled.
++	  That depends on if KUnit is enabled as a module or builtin.
++
+ endif # KUNIT
 -- 
-Mike Leach
-Principal Engineer, ARM Ltd.
-Manchester Design Centre. UK
+2.20.1
+
