@@ -2,144 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E154C1C6395
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 00:02:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8B891C639C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 00:03:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728914AbgEEWC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 18:02:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40160 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727089AbgEEWCZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 18:02:25 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0D47C206B8;
-        Tue,  5 May 2020 22:02:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588716145;
-        bh=jqBGVHODT2ZorzgQ2/+DwPIqnnfhekndrsHXricHH9I=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=aOlZTH/98A1zwce46k+/fi1I4wNQxzGSYOhtSyYx1Jn1p/waNXqZ1ZIe7+xkMMT6t
-         NQEF/EKpJHDMpphEhy1gWAslQEKmVQOCLJX67D971XmXA1AM+dcOqU0xVe9CKoVioT
-         dAPV3UcaQpoOEimGY6Tbd7vtyPYa+65B8UIkuZhk=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id DC1243523039; Tue,  5 May 2020 15:02:24 -0700 (PDT)
-Date:   Tue, 5 May 2020 15:02:24 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [patch V4 part 3 11/29] rcu: Provide rcu_irq_exit_preempt()
-Message-ID: <20200505220224.GT2869@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200505134354.774943181@linutronix.de>
- <20200505134904.364456424@linutronix.de>
+        id S1729339AbgEEWDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 18:03:32 -0400
+Received: from mail-pj1-f65.google.com ([209.85.216.65]:53243 "EHLO
+        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727089AbgEEWDb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 18:03:31 -0400
+Received: by mail-pj1-f65.google.com with SMTP id a5so222061pjh.2;
+        Tue, 05 May 2020 15:03:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Lpi8MZJNSPhbvdnHwiB6LcQYNoz5iZcaJ91eFfyKq3I=;
+        b=geI9MTUj1lyPkZ6fBPt5FJYeshQsIPP/s+oHHztUNcJj7IdUqMo+evq4LFpdUQivEa
+         lSRzjWEebJ/u1iWrI+1AsjhUNwYOaSDTiAbXF21NkuNX0q1iAWn1naq4U1+yaH1trPsf
+         Hd5Hv58GIHH7+Y2Z2JROXAiCP62yt1RjcqsKfaRXtn1vh5Nx/iA8Vh66cJCgnkzNqomy
+         VxDIIeaFEKuRtXrs6w4xx3BlI5/UNwjGee2LaY6j4ZHECp2vKu4XsbH7+bqPJvEeAAcC
+         iFPbAmVIGtNAp8dbXOEE3oxc0woIneqcpg4i+qPcmTjcrmEjzbXEbDBMC7ocGs6gsHsf
+         zaUA==
+X-Gm-Message-State: AGi0PuaI+bfXcfyeEtAqflMDmrsiPPI//nVDfM0ejAvPB7zWVx8JGeDE
+        NLGVNVrnNwy+9sv0aJp/B/A=
+X-Google-Smtp-Source: APiQypIlQ7vp+PigyBUJjXs2IzjQDASyZB2j0a3df8Yc3dcT5dEuIN8kzQWJl3UYEKmIcOD1rDvh5g==
+X-Received: by 2002:a17:90a:3ace:: with SMTP id b72mr5651418pjc.48.1588716209523;
+        Tue, 05 May 2020 15:03:29 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id b73sm9201pfb.52.2020.05.05.15.03.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 May 2020 15:03:28 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id 5616C403EA; Tue,  5 May 2020 22:03:27 +0000 (UTC)
+Date:   Tue, 5 May 2020 22:03:27 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sysctl: Make sure proc handlers can't expose heap memory
+Message-ID: <20200505220327.GV11244@42.do-not-panic.com>
+References: <202005041205.C7AF4AF@keescook>
+ <20200504195937.GS11244@42.do-not-panic.com>
+ <202005041329.169799C65D@keescook>
+ <20200504215903.GT11244@42.do-not-panic.com>
+ <20200505063441.GA3877399@kroah.com>
+ <202005051339.5F1979C4DF@keescook>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200505134904.364456424@linutronix.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <202005051339.5F1979C4DF@keescook>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 05, 2020 at 03:44:05PM +0200, Thomas Gleixner wrote:
-> Interrupts and exceptions invoke rcu_irq_enter() on entry and need to
-> invoke rcu_irq_exit() before they either return to the interrupted code or
-> invoke the scheduler due to preemption.
+On Tue, May 05, 2020 at 01:41:44PM -0700, Kees Cook wrote:
+> On Tue, May 05, 2020 at 08:34:41AM +0200, Greg KH wrote:
+> > On Mon, May 04, 2020 at 09:59:03PM +0000, Luis Chamberlain wrote:
+> > > On Mon, May 04, 2020 at 01:32:07PM -0700, Kees Cook wrote:
+> > > > On Mon, May 04, 2020 at 07:59:37PM +0000, Luis Chamberlain wrote:
+> > > > > On Mon, May 04, 2020 at 12:08:55PM -0700, Kees Cook wrote:
+> > > > > > Just as a precaution, make sure that proc handlers don't accidentally
+> > > > > > grow "count" beyond the allocated kbuf size.
+> > > > > > 
+> > > > > > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > > > > > ---
+> > > > > > This applies to hch's sysctl cleanup tree...
+> > > > > > ---
+> > > > > >  fs/proc/proc_sysctl.c | 3 +++
+> > > > > >  1 file changed, 3 insertions(+)
+> > > > > > 
+> > > > > > diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
+> > > > > > index 15030784566c..535ab26473af 100644
+> > > > > > --- a/fs/proc/proc_sysctl.c
+> > > > > > +++ b/fs/proc/proc_sysctl.c
+> > > > > > @@ -546,6 +546,7 @@ static ssize_t proc_sys_call_handler(struct file *filp, void __user *ubuf,
+> > > > > >  	struct inode *inode = file_inode(filp);
+> > > > > >  	struct ctl_table_header *head = grab_header(inode);
+> > > > > >  	struct ctl_table *table = PROC_I(inode)->sysctl_entry;
+> > > > > > +	size_t count_max = count;
+> > > > > >  	void *kbuf;
+> > > > > >  	ssize_t error;
+> > > > > >  
+> > > > > > @@ -590,6 +591,8 @@ static ssize_t proc_sys_call_handler(struct file *filp, void __user *ubuf,
+> > > > > >  
+> > > > > >  	if (!write) {
+> > > > > >  		error = -EFAULT;
+> > > > > > +		if (WARN_ON(count > count_max))
+> > > > > > +			count = count_max;
+> > > > > 
+> > > > > That would crash a system with panic-on-warn. I don't think we want that?
+> > > > 
+> > > > Eh? None of the handlers should be making this mistake currently and
+> > > > it's not a mistake that can be controlled from userspace. WARN() is
+> > > > absolutely what's wanted here: report an impossible situation (and
+> > > > handle it gracefully for the bulk of users that don't have
+> > > > panic_on_warn set).
+> > > 
+> > > Alrighty, Greg are you OK with this type of WARN_ON()? You recently
+> > > expressed concerns over its use due to panic-on-warn on another patch.
+> > 
+> > We should never call WARN() on any path that a user can trigger.
+> > 
+> > If it is just a "the developer called this api in a foolish way" then we
+> > could use a WARN_ON() to have them realize their mistake, but in my
+> > personal experience, foolish developers don't even notice that kind of
+> > mistake :(
 > 
-> The general assumption is that RCU idle code has to have preemption
-> disabled so that a return from interrupt cannot schedule. So the return
-> from interrupt code invokes rcu_irq_exit() and preempt_schedule_irq().
-> 
-> If there is any imbalance in the rcu_irq/nmi* invocations or RCU idle code
-> had preemption enabled then this goes unnoticed until the CPU goes idle or
-> some other RCU check is executed.
-> 
-> Provide rcu_irq_exit_preempt() which can be invoked from the
-> interrupt/exception return code in case that preemption is enabled. It
-> invokes rcu_irq_exit() and contains a few sanity checks in case that
-> CONFIG_PROVE_RCU is enabled to catch such issues directly.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> Cc: Joel Fernandes <joel@joelfernandes.org>
+> Right -- while it'd be nice if the developer noticed it, it is _usually_
+> an unsuspecting end user (or fuzzer), in which case we absolutely want a
+> WARN (and not a BUG![1]) and have the situations handled gracefully, so
+> it can be reported and fixed.
 
-The ->dynticks_nmi_nesting field is going away at some point, but
-there is always "git merge".  ;-)
+I've been using WARN*() for this exact purpose before, so I am as
+surprised as you are bout these concerns. However if we have folks
+shipping with panic-on-warn this would be rather detrimental to our
+goals.
 
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+Greg, are you aware of folks shipping with panic-on-warn on some products?
 
-> ---
->  include/linux/rcutiny.h |    1 +
->  include/linux/rcutree.h |    1 +
->  kernel/rcu/tree.c       |   21 +++++++++++++++++++++
->  3 files changed, 23 insertions(+)
-> 
-> --- a/include/linux/rcutiny.h
-> +++ b/include/linux/rcutiny.h
-> @@ -71,6 +71,7 @@ static inline void rcu_irq_enter(void) {
->  static inline void rcu_irq_exit_irqson(void) { }
->  static inline void rcu_irq_enter_irqson(void) { }
->  static inline void rcu_irq_exit(void) { }
-> +static inline void rcu_irq_exit_preempt(void) { }
->  static inline void exit_rcu(void) { }
->  static inline bool rcu_preempt_need_deferred_qs(struct task_struct *t)
->  {
-> --- a/include/linux/rcutree.h
-> +++ b/include/linux/rcutree.h
-> @@ -46,6 +46,7 @@ void rcu_idle_enter(void);
->  void rcu_idle_exit(void);
->  void rcu_irq_enter(void);
->  void rcu_irq_exit(void);
-> +void rcu_irq_exit_preempt(void);
->  void rcu_irq_enter_irqson(void);
->  void rcu_irq_exit_irqson(void);
->  
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -706,6 +706,27 @@ void noinstr rcu_irq_exit(void)
->  	rcu_nmi_exit();
->  }
->  
-> +/**
-> + * rcu_irq_exit_preempt - Inform RCU that current CPU is exiting irq
-> + *			  towards in kernel preemption
-> + *
-> + * Same as rcu_irq_exit() but has a sanity check that scheduling is safe
-> + * from RCU point of view. Invoked from return from interrupt before kernel
-> + * preemption.
-> + */
-> +void rcu_irq_exit_preempt(void)
-> +{
-> +	lockdep_assert_irqs_disabled();
-> +	rcu_nmi_exit();
-> +
-> +	RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nesting) <= 0,
-> +			 "RCU dynticks_nesting counter underflow/zero!");
-> +	RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nmi_nesting) <= 0,
-> +			 "RCU dynticks_nmi_nesting counter underflow/zero!");
-> +	RCU_LOCKDEP_WARN(rcu_dynticks_curr_cpu_in_eqs(),
-> +			 "RCU in extended quiescent state!");
-> +}
-> +
->  /*
->   * Wrapper for rcu_irq_exit() where interrupts are enabled.
->   *
-> 
+  Luis
