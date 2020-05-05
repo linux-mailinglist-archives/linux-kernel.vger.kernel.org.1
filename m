@@ -2,127 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 160751C5E54
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 19:06:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33DA91C5E63
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 19:07:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730697AbgEERGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 13:06:25 -0400
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:42596 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729553AbgEERGZ (ORCPT
+        id S1730752AbgEERHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 13:07:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729209AbgEERHf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 13:06:25 -0400
+        Tue, 5 May 2020 13:07:35 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A9F8C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 10:07:35 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id o24so2635001oic.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 10:07:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1588698385; x=1620234385;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   mime-version;
-  bh=hyqx3sEx0HkM4cRvxyLFgm0m8+qZ9wy5z5vRYYMS0v8=;
-  b=bqIIKFLne/cfHFTgbQB2MnJo8Gvh1as7T1D9EDayzhyBHlfJY+BOYb7e
-   OsW/C5ba9dZHGh1TTIgzy07IVaSBphBSXOy0Gt5jYGMPyl4dXcr12Uhw/
-   x5zLfm+64OwHH+HWXEC3ovQZ3GIyHGvGMckss0HfNH2Z1plm9ryJ+OyWD
-   c=;
-IronPort-SDR: jhgWSVz5jwTYo4yq3w9Qga/bGerZXAMJqPWrkL80dbu2OKh46ZpUZ9UuexC7wzHQtQe+rK3/qi
- F4LZtCWE8enw==
-X-IronPort-AV: E=Sophos;i="5.73,356,1583193600"; 
-   d="scan'208";a="42833981"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-f14f4a47.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 05 May 2020 17:06:23 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2a-f14f4a47.us-west-2.amazon.com (Postfix) with ESMTPS id DC9D6A2115;
-        Tue,  5 May 2020 17:06:21 +0000 (UTC)
-Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 5 May 2020 17:06:21 +0000
-Received: from u886c93fd17d25d.ant.amazon.com (10.43.160.180) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 5 May 2020 17:06:11 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     Eric Dumazet <eric.dumazet@gmail.com>
-CC:     SeongJae Park <sjpark@amazon.com>,
-        Eric Dumazet <edumazet@google.com>,
-        David Miller <davem@davemloft.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <sj38.park@gmail.com>, netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        SeongJae Park <sjpark@amazon.de>, <snu@amazon.com>,
-        <amit@kernel.org>, <stable@vger.kernel.org>,
-        Paul McKenney <paulmck@kernel.org>
-Subject: Re: Re: [PATCH net v2 0/2] Revert the 'socket_alloc' life cycle change
-Date:   Tue, 5 May 2020 19:05:53 +0200
-Message-ID: <20200505170553.24056-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <67bdfac9-0d7d-0bbe-dc7a-d73979fd8ed9@gmail.com> (raw)
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SwCBEJLwe7+6OV63AZ4GOUwDgwYhujIY1KxrxYevf8k=;
+        b=AgMhYAYI7oAoN+75kXJTQfJ9xq+4PvF/xfadMC/kGz0bHK0cWBykACmtXpL2yg133v
+         IxetqIswOnRfoQeEkVvvafM74+y59R9S9mXPGam75gzOQSBbyOJNGzZ9fSYJmQSSM7dM
+         ke4i6aZQm5a8vwCRRp1rBwG8Z4F/VM4idvH7Qps/TFZF7g+9FjQ4+h7okAyFlR9wx4jO
+         n5uAIpknyy4Hj7hMpFIqxJo4Ti2klvjCXoD0t4T8UZniP7vwPVCp4IS7ScrK3PiMcDXs
+         4t4uRzxmPxZHwCkFnd3xg6egwy5pt07YK/j/7g8tEOijdeTuA1PR3NtmeEynQmd58Pf+
+         FxTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SwCBEJLwe7+6OV63AZ4GOUwDgwYhujIY1KxrxYevf8k=;
+        b=Wr/MJ7+v0jPOprAtePv64MJaFTXiY7kn3g1Ja6ioeEW8gmcSkB7XqnfdE1JYK3WOlV
+         Wt5MfZl0oIwR61SXAoaN7F5yoSFPjey3DADu4JgD+5GLVxcbkkXZ4HqXTHnc/GOPKPbt
+         ihV9ghsahdHMtMM9hzAEXubsCHlfo2ff/eTrMXEIr3FfYYnXaHMkuaEk2MiHBGpss7hm
+         txA3z2Xn5Rcmk1R/ZYtvfWHhDLfIQMAPvrn3uUtfdJU9p9jaoIpb49t+p6iwTo4r34j8
+         +kOeQ48wSCYxTY84cihd5GKYTg+0accAXk//LVEaaMZaDmFmoA15hRU6gwLg4FGL34SL
+         Ygiw==
+X-Gm-Message-State: AGi0PualGFuyjz8Vn1N4e9LOPWcb6TKC20YMEapqbtJwKsNuzvFgDivq
+        FoVuJr+qy2Pwf/Ol/5SrQDD5p5B1Exox8kK8ITCvtw==
+X-Google-Smtp-Source: APiQypJfG29VS70oZa7J3OZeMprXzjXSrYWiHd6+IM0iA5V1iEiRQGVpAuu2w/He9wLcHpoqlnBRZ8gOQodF2S7Yyyg=
+X-Received: by 2002:aca:c646:: with SMTP id w67mr3335582oif.70.1588698454453;
+ Tue, 05 May 2020 10:07:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.160.180]
-X-ClientProxiedBy: EX13D10UWB001.ant.amazon.com (10.43.161.111) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+References: <20200505142341.1096942-1-arnd@arndb.de> <CANpmjNMtGy6YK8zuqf0dmkykZMt=qkxkZrZNEKde1nbw84ZLkg@mail.gmail.com>
+ <CACT4Y+Zpp=+JJedhMpunuUh832eJFu+af-r8631Ar0kE2nv72A@mail.gmail.com>
+ <CAK8P3a23XzLhZQNuFbeQhaSNru1abPwXV_mXR_P6N6Dvxm6jFw@mail.gmail.com>
+ <CANpmjNOE+GUG7O=WaJKQg6rdUOn+YMBhdS8enNWkD_8mdtaSBQ@mail.gmail.com> <CAK8P3a36w+QFqik_sHS3T5+_DZ7XP9Y5BYqT72pnjC67T9Sn3Q@mail.gmail.com>
+In-Reply-To: <CAK8P3a36w+QFqik_sHS3T5+_DZ7XP9Y5BYqT72pnjC67T9Sn3Q@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 5 May 2020 19:07:22 +0200
+Message-ID: <CANpmjNPCZ2r9V7t50_yy+F_-roBWJdiQWgmvvcqTFxzdzOwKhg@mail.gmail.com>
+Subject: Re: [PATCH] ubsan, kcsan: don't combine sanitizer with kcov
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 May 2020 09:37:42 -0700 Eric Dumazet <eric.dumazet@gmail.com> wrote:
+On Tue, 5 May 2020 at 17:29, Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Tue, May 5, 2020 at 5:20 PM 'Marco Elver' via Clang Built Linux
+> <clang-built-linux@googlegroups.com> wrote:
+>
+> > > --- a/lib/Kconfig.kcsan
+> > > +++ b/lib/Kconfig.kcsan
+> > > @@ -5,7 +5,7 @@ config HAVE_ARCH_KCSAN
+> > >
+> > >  menuconfig KCSAN
+> > >         bool "KCSAN: dynamic data race detector"
+> > > -       depends on HAVE_ARCH_KCSAN && DEBUG_KERNEL && !KASAN && !KCOV
+> > > +       depends on HAVE_ARCH_KCSAN && DEBUG_KERNEL && !KASAN && !(KCOV
+> > > && CC_IS_CLANG)
+> >
+> > I wonder if we can just add this:  depends on !(KCOV &&
+> > !$(cc-option,-Werror -fsanitize=thread -fsanitize-coverage=trace-pc))
+> >
+> > Similarly for UBSAN.
+> >
+> > That way, once Clang supports this combination, we don't need another
+> > patch to fix it.
+>
+> Good idea. It probably get a little more complicated because kcov uses
+> different flags depending on other options:
+>
+> kcov-flags-$(CONFIG_CC_HAS_SANCOV_TRACE_PC)     += -fsanitize-coverage=trace-pc
+> kcov-flags-$(CONFIG_KCOV_ENABLE_COMPARISONS)    += -fsanitize-coverage=trace-cmp
+> kcov-flags-$(CONFIG_GCC_PLUGIN_SANCOV)          +=
+> -fplugin=$(objtree)/scripts/gcc-plugins/sancov_plugin.so
+>
+> Do you have any preference on whether we should make KCSAN or KCOV
+> conditional in this case? It may be easier to move the compiletime check
+> into CONFIG_KCOV_ENABLE_COMPARISONS and
+> CONFIG_CC_HAS_SANCOV_TRACE_PC.
 
-> 
-> 
-> On 5/5/20 9:31 AM, Eric Dumazet wrote:
-> > 
-> > 
-> > On 5/5/20 9:25 AM, Eric Dumazet wrote:
-> >>
-> >>
-> >> On 5/5/20 9:13 AM, SeongJae Park wrote:
-> >>> On Tue, 5 May 2020 09:00:44 -0700 Eric Dumazet <edumazet@google.com> wrote:
-> >>>
-> >>>> On Tue, May 5, 2020 at 8:47 AM SeongJae Park <sjpark@amazon.com> wrote:
-> >>>>>
-> >>>>> On Tue, 5 May 2020 08:20:50 -0700 Eric Dumazet <eric.dumazet@gmail.com> wrote:
-> >>>>>
-> >>>>>>
-> >>>>>>
-> >>>>>> On 5/5/20 8:07 AM, SeongJae Park wrote:
-> >>>>>>> On Tue, 5 May 2020 07:53:39 -0700 Eric Dumazet <edumazet@google.com> wrote:
-> >>>>>>>
-> >>>>>>
-[...]
-> >>
-> >> I would ask Paul opinion on this issue, because we have many objects
-> >> being freed after RCU grace periods.
-> >>
-> >> If RCU subsystem can not keep-up, I guess other workloads will also suffer.
-> >>
-> >> Sure, we can revert patches there and there trying to work around the issue,
-> >> but for objects allocated from process context, we should not have these problems.
-> >>
-> > 
-> > I wonder if simply adjusting rcu_divisor to 6 or 5 would help 
-> > 
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index d9a49cd6065a20936edbda1b334136ab597cde52..fde833bac0f9f81e8536211b4dad6e7575c1219a 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -427,7 +427,7 @@ module_param(qovld, long, 0444);
-> >  static ulong jiffies_till_first_fqs = ULONG_MAX;
-> >  static ulong jiffies_till_next_fqs = ULONG_MAX;
-> >  static bool rcu_kick_kthreads;
-> > -static int rcu_divisor = 7;
-> > +static int rcu_divisor = 6;
-> >  module_param(rcu_divisor, int, 0644);
-> >  
-> >  /* Force an exit from rcu_do_batch() after 3 milliseconds. */
-> > 
-> 
-> To be clear, you can adjust the value without building a new kernel.
-> 
-> echo 6 >/sys/module/rcutree/parameters/rcu_divisor
-> 
-
-I tried value 6, 5, and 4, but none of those removed the problem.
-
+Whichever is easier. I think if we have a config that tries to set
+both, but then one gets silently disabled, it likely already breaks
+the usecase. It'd be nice if there was a way to warn about only one
+being selected so that a developer can then go back and choose the one
+they're most interested in (or change compiler).
 
 Thanks,
-SeongJae Park
+-- Marco
