@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 554341C587C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:15:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C2421C590E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:21:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729369AbgEEOPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:15:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48850 "EHLO
+        id S1729614AbgEEOVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:21:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729756AbgEEOPO (ORCPT
+        by vger.kernel.org with ESMTP id S1729769AbgEEOPP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:15:14 -0400
+        Tue, 5 May 2020 10:15:15 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2941C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:15:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68DFBC061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:15:15 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jVyLY-0001HN-PX; Tue, 05 May 2020 16:14:57 +0200
+        id 1jVyLZ-0001Hh-Hc; Tue, 05 May 2020 16:14:57 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id C093DFFC8D;
-        Tue,  5 May 2020 16:14:55 +0200 (CEST)
-Message-Id: <20200505134903.622702796@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 08E4A1001F5;
+        Tue,  5 May 2020 16:14:57 +0200 (CEST)
+Message-Id: <20200505134903.731004084@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 05 May 2020 15:43:58 +0200
+Date:   Tue, 05 May 2020 15:43:59 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -44,8 +44,8 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Will Deacon <will@kernel.org>
-Subject: [patch V4 part 3 04/29] x86/traps: Make interrupt enable/disable
- symmetric in C code
+Subject: [patch V4 part 3 05/29] x86/traps: Split trap numbers out in a
+ seperate header
 References: <20200505134354.774943181@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -58,172 +58,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Traps enable interrupts conditionally but rely on the ASM return code to
-disable them again. That results in redundant interrupt disable and trace
-calls.
+From: Thomas Gleixner <tglx@linutronix.de>
 
-Make the trap handlers disable interrupts before returning to avoid that,
-which allows simplification of the ASM entry code.
+So they can be used in ASM code. For this it is also necessary to convert
+them to defines. Will be used for the rework of the entry code.
 
-Originally-by: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Andy Lutomirski <luto@kernel.org>
+Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
 
 ---
- arch/x86/kernel/traps.c |   28 +++++++++++++++++++---------
- arch/x86/mm/fault.c     |   15 +++++++++++++--
- 2 files changed, 32 insertions(+), 11 deletions(-)
+ arch/x86/include/asm/trapnr.h |   31 +++++++++++++++++++++++++++++++
+ arch/x86/include/asm/traps.h  |   26 +-------------------------
+ 2 files changed, 32 insertions(+), 25 deletions(-)
 
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -201,6 +201,7 @@ static void do_error_trap(struct pt_regs
- 			NOTIFY_STOP) {
- 		cond_local_irq_enable(regs);
- 		do_trap(trapnr, signr, str, regs, error_code, sicode, addr);
-+		cond_local_irq_disable(regs);
- 	}
- }
- 
-@@ -399,6 +400,8 @@ dotraplinkage void do_bounds(struct pt_r
- 		die("bounds", regs, error_code);
- 
- 	do_trap(X86_TRAP_BR, SIGSEGV, "bounds", regs, error_code, 0, NULL);
+--- /dev/null
++++ b/arch/x86/include/asm/trapnr.h
+@@ -0,0 +1,31 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _ASM_X86_TRAPNR_H
++#define _ASM_X86_TRAPNR_H
 +
-+	cond_local_irq_disable(regs);
- }
++/* Interrupts/Exceptions */
++
++#define X86_TRAP_DE		 0	/* Divide-by-zero */
++#define X86_TRAP_DB		 1	/* Debug */
++#define X86_TRAP_NMI		 2	/* Non-maskable Interrupt */
++#define X86_TRAP_BP		 3	/* Breakpoint */
++#define X86_TRAP_OF		 4	/* Overflow */
++#define X86_TRAP_BR		 5	/* Bound Range Exceeded */
++#define X86_TRAP_UD		 6	/* Invalid Opcode */
++#define X86_TRAP_NM		 7	/* Device Not Available */
++#define X86_TRAP_DF		 8	/* Double Fault */
++#define X86_TRAP_OLD_MF		 9	/* Coprocessor Segment Overrun */
++#define X86_TRAP_TS		10	/* Invalid TSS */
++#define X86_TRAP_NP		11	/* Segment Not Present */
++#define X86_TRAP_SS		12	/* Stack Segment Fault */
++#define X86_TRAP_GP		13	/* General Protection Fault */
++#define X86_TRAP_PF		14	/* Page Fault */
++#define X86_TRAP_SPURIOUS	15	/* Spurious Interrupt */
++#define X86_TRAP_MF		16	/* x87 Floating-Point Exception */
++#define X86_TRAP_AC		17	/* Alignment Check */
++#define X86_TRAP_MC		18	/* Machine Check */
++#define X86_TRAP_XF		19	/* SIMD Floating-Point Exception */
++#define X86_TRAP_VE		20	/* Virtualization Exception */
++#define X86_TRAP_CP		21	/* Control Protection Exception */
++#define X86_TRAP_IRET		32	/* IRET Exception */
++
++#endif
+--- a/arch/x86/include/asm/traps.h
++++ b/arch/x86/include/asm/traps.h
+@@ -7,6 +7,7 @@
  
- enum kernel_gp_hint {
-@@ -458,12 +461,13 @@ dotraplinkage void do_general_protection
+ #include <asm/debugreg.h>
+ #include <asm/siginfo.h>			/* TRAP_TRACE, ... */
++#include <asm/trapnr.h>
  
- 	if (static_cpu_has(X86_FEATURE_UMIP)) {
- 		if (user_mode(regs) && fixup_umip_exception(regs))
--			return;
-+			goto exit;
- 	}
+ #define dotraplinkage __visible
  
- 	if (v8086_mode(regs)) {
- 		local_irq_enable();
- 		handle_vm86_fault((struct kernel_vm86_regs *) regs, error_code);
-+		local_irq_disable();
- 		return;
- 	}
+@@ -127,31 +128,6 @@ void __noreturn handle_stack_overflow(co
+ 				      unsigned long fault_address);
+ #endif
  
-@@ -475,12 +479,11 @@ dotraplinkage void do_general_protection
- 
- 		show_signal(tsk, SIGSEGV, "", desc, regs, error_code);
- 		force_sig(SIGSEGV);
+-/* Interrupts/Exceptions */
+-enum {
+-	X86_TRAP_DE = 0,	/*  0, Divide-by-zero */
+-	X86_TRAP_DB,		/*  1, Debug */
+-	X86_TRAP_NMI,		/*  2, Non-maskable Interrupt */
+-	X86_TRAP_BP,		/*  3, Breakpoint */
+-	X86_TRAP_OF,		/*  4, Overflow */
+-	X86_TRAP_BR,		/*  5, Bound Range Exceeded */
+-	X86_TRAP_UD,		/*  6, Invalid Opcode */
+-	X86_TRAP_NM,		/*  7, Device Not Available */
+-	X86_TRAP_DF,		/*  8, Double Fault */
+-	X86_TRAP_OLD_MF,	/*  9, Coprocessor Segment Overrun */
+-	X86_TRAP_TS,		/* 10, Invalid TSS */
+-	X86_TRAP_NP,		/* 11, Segment Not Present */
+-	X86_TRAP_SS,		/* 12, Stack Segment Fault */
+-	X86_TRAP_GP,		/* 13, General Protection Fault */
+-	X86_TRAP_PF,		/* 14, Page Fault */
+-	X86_TRAP_SPURIOUS,	/* 15, Spurious Interrupt */
+-	X86_TRAP_MF,		/* 16, x87 Floating-Point Exception */
+-	X86_TRAP_AC,		/* 17, Alignment Check */
+-	X86_TRAP_MC,		/* 18, Machine Check */
+-	X86_TRAP_XF,		/* 19, SIMD Floating-Point Exception */
+-	X86_TRAP_IRET = 32,	/* 32, IRET Exception */
+-};
 -
--		return;
-+		goto exit;
- 	}
- 
- 	if (fixup_exception(regs, X86_TRAP_GP, error_code, 0))
--		return;
-+		goto exit;
- 
- 	tsk->thread.error_code = error_code;
- 	tsk->thread.trap_nr = X86_TRAP_GP;
-@@ -492,11 +495,11 @@ dotraplinkage void do_general_protection
- 	if (!preemptible() &&
- 	    kprobe_running() &&
- 	    kprobe_fault_handler(regs, X86_TRAP_GP))
--		return;
-+		goto exit;
- 
- 	ret = notify_die(DIE_GPF, desc, regs, error_code, X86_TRAP_GP, SIGSEGV);
- 	if (ret == NOTIFY_STOP)
--		return;
-+		goto exit;
- 
- 	if (error_code)
- 		snprintf(desc, sizeof(desc), "segment-related " GPFSTR);
-@@ -518,6 +521,8 @@ dotraplinkage void do_general_protection
- 
- 	die_addr(desc, regs, error_code, gp_addr);
- 
-+exit:
-+	cond_local_irq_disable(regs);
- }
- NOKPROBE_SYMBOL(do_general_protection);
- 
-@@ -775,7 +780,7 @@ static void math_error(struct pt_regs *r
- 
- 	if (!user_mode(regs)) {
- 		if (fixup_exception(regs, trapnr, error_code, 0))
--			return;
-+			goto exit;
- 
- 		task->thread.error_code = error_code;
- 		task->thread.trap_nr = trapnr;
-@@ -783,7 +788,7 @@ static void math_error(struct pt_regs *r
- 		if (notify_die(DIE_TRAP, str, regs, error_code,
- 					trapnr, SIGFPE) != NOTIFY_STOP)
- 			die(str, regs, error_code);
--		return;
-+		goto exit;
- 	}
- 
- 	/*
-@@ -797,10 +802,12 @@ static void math_error(struct pt_regs *r
- 	si_code = fpu__exception_code(fpu, trapnr);
- 	/* Retry when we get spurious exceptions: */
- 	if (!si_code)
--		return;
-+		goto exit;
- 
- 	force_sig_fault(SIGFPE, si_code,
- 			(void __user *)uprobe_get_trap_addr(regs));
-+exit:
-+	cond_local_irq_disable(regs);
- }
- 
- dotraplinkage void do_coprocessor_error(struct pt_regs *regs, long error_code)
-@@ -855,6 +862,8 @@ do_device_not_available(struct pt_regs *
- 
- 		info.regs = regs;
- 		math_emulate(&info);
-+
-+		cond_local_irq_disable(regs);
- 		return;
- 	}
- #endif
-@@ -885,6 +894,7 @@ dotraplinkage void do_iret_error(struct
- 		do_trap(X86_TRAP_IRET, SIGILL, "iret exception", regs, error_code,
- 			ILL_BADSTK, (void __user *)NULL);
- 	}
-+	local_irq_disable();
- }
- #endif
- 
---- a/arch/x86/mm/fault.c
-+++ b/arch/x86/mm/fault.c
-@@ -927,6 +927,8 @@ static void
- 
- 		force_sig_fault(SIGSEGV, si_code, (void __user *)address);
- 
-+		local_irq_disable();
-+
- 		return;
- 	}
- 
-@@ -1548,9 +1550,18 @@ do_page_fault(struct pt_regs *regs, unsi
- 		return;
- 
- 	/* Was the fault on kernel-controlled part of the address space? */
--	if (unlikely(fault_in_kernel_space(address)))
-+	if (unlikely(fault_in_kernel_space(address))) {
- 		do_kern_addr_fault(regs, hw_error_code, address);
--	else
-+	} else {
- 		do_user_addr_fault(regs, hw_error_code, address);
-+		/*
-+		 * User address page fault handling might have reenabled
-+		 * interrupts. Fixing up all potential exit points of
-+		 * do_user_addr_fault() and its leaf functions is just not
-+		 * doable w/o creating an unholy mess or turning the code
-+		 * upside down.
-+		 */
-+		local_irq_disable();
-+	}
- }
- NOKPROBE_SYMBOL(do_page_fault);
+ /*
+  * Page fault error code bits:
+  *
 
