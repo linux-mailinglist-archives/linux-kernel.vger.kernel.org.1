@@ -2,178 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE9371C58EF
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:20:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A71021C5893
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:16:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730121AbgEEOUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:20:11 -0400
-Received: from mout.kundenserver.de ([212.227.17.13]:45565 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729997AbgEEOQF (ORCPT
+        id S1729967AbgEEOPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:15:52 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:21065 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729939AbgEEOPr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:16:05 -0400
-Received: from localhost.localdomain ([149.172.19.189]) by
- mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPA (Nemesis) id
- 1M9nEJ-1jSNK23B49-005rjT; Tue, 05 May 2020 16:15:47 +0200
-From:   Arnd Bergmann <arnd@arndb.de>
-To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Yan Yankovskyi <yyankovskyi@gmail.com>, Wei Liu <wl@xen.org>,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH] xenbus: avoid stack overflow warning
-Date:   Tue,  5 May 2020 16:15:37 +0200
-Message-Id: <20200505141546.824573-1-arnd@arndb.de>
-X-Mailer: git-send-email 2.26.0
+        Tue, 5 May 2020 10:15:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588688146;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Pdh8PaKKCB6jydt3X9bRNYULYYUuebIi6pG6NH9E+WA=;
+        b=SGdpEVbPEAjN3SCEYVeQkqTns2vgKa79DxnAe2GNy5jhLHw8BozivequjrM9KX/z1f5VEu
+        HXH2NExUKS1PZ7FXyWl423eYl2XSDT+9i4VPX3s1Ztj1WwiMq3T2HSXutQFwFUv3KCtKmM
+        QUbUIMD3ckKcoQcwU2jT5bXBwGl6MSA=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-304-pU2HBKlgNHmvixV7kj_Yig-1; Tue, 05 May 2020 10:15:44 -0400
+X-MC-Unique: pU2HBKlgNHmvixV7kj_Yig-1
+Received: by mail-qt1-f198.google.com with SMTP id d35so1762652qtc.20
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 07:15:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Pdh8PaKKCB6jydt3X9bRNYULYYUuebIi6pG6NH9E+WA=;
+        b=ODSCNeOxG7xlsqbhcVtYWEYEGQU5+aGx3o4zvYliGB0/HqV5dQFSs1D9qsYCmqCnlF
+         MZMYsAALrjLjlRng3teNEssILWfkCNL8HK63swVIrcJoXdbNDwRdR+slAZZnRPxoy4To
+         8SeNwujTBm99a2r16L2frtYDsS7SIQ/QTuT3Lu9bs+ETjwyC1OEk0JuDqjdch93OZp+3
+         xztzVlpI6azyFDB07ivGqT8z0ggr4iE6feUB5YVJVsJU9/90kdJmV6PSATyfTEnv+HGR
+         ueiRED1bcGvpXL6Dc4CFrVLubbz/773cWontA8jSXJojz0xaUaPONB03LhOoUGqY6pmG
+         +7uQ==
+X-Gm-Message-State: AGi0PubIX9nEnjs5w+yCeaTc1TTQyK4NAfVRW/zjh3f7Qom5TrZjLQfP
+        8E1iFShaMwNK+tWpTb7FknP3sGiTA3tiYJuWQgdN83oVBySTfu17JeQJuyrKPu0T3Tc4FU4dI+F
+        2c7c4bu0dqOYr6+PbSFdxpTxF
+X-Received: by 2002:aed:3eca:: with SMTP id o10mr2829914qtf.30.1588688143991;
+        Tue, 05 May 2020 07:15:43 -0700 (PDT)
+X-Google-Smtp-Source: APiQypI7Nwwnxis/I/GyVehDFWGlPcQsyscfxDqmFgtIZNy/E6RdlTN/1qONlWTO6ejDKf2kO4H/Dg==
+X-Received: by 2002:aed:3eca:: with SMTP id o10mr2829897qtf.30.1588688143786;
+        Tue, 05 May 2020 07:15:43 -0700 (PDT)
+Received: from xz-x1 ([2607:9880:19c0:32::2])
+        by smtp.gmail.com with ESMTPSA id h25sm1921298qte.37.2020.05.05.07.15.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 May 2020 07:15:42 -0700 (PDT)
+Date:   Tue, 5 May 2020 10:15:41 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        jmattson@google.com
+Subject: Re: [PATCH] KVM: x86: fix DR6 delivery for emulated hardware
+ breakpoint
+Message-ID: <20200505141541.GI6299@xz-x1>
+References: <20200505113449.18478-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:A6tw1zrTOAQW5yW+MxCDJvOopLSS/Ga3YzKkHajnYByzROmhf/Z
- UCjmaSkpNjyjF6nnYkDrgoDTQcQKOsy9GqpcEYeDBFITW4FIlbQVan7MDSfBvVH5vKDNaMG
- I57/Bb6kf/hHfTGPMDXpo9MiGKtA/lQKOkRk2jrdXtJteCeqspXA4ZRf6fi0zCQjBphQskO
- vo1QzWOdqSAs5HBhhLKyg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:AVDw9QU2Bq0=:RtvByz9YZEMaNPXxSQQaan
- cDa1tb8w5qa0/seyrGG5bEJDTWS1bQ6DU6Z3caE8AVZWP1DLGjx3JqQeK/1xFSA7XkiiMJyhk
- g9yWhIyFP3lr0xAKhrdIAeNeM227xqBDcoaJzkkSz7XLlBTcbuKxl+ZBf6c7IvRpJTium5Wpy
- wbna0RoQzxMBC5A1ijVWpzJPTQ7zvqxiSFQvyLxdIYvMvoRuaB1v0r0X2ffQfaZ/Czv/uqxyY
- E9XMnNAgucakN6lhB6eQ6MOsvvookARXupmUbbnYbrkjFuSavXZ5pPP4YBTM6PZq3heRt0Ffb
- JXcfBQqCOIzDgg7z68QhXEjzhQzOU4skSyZfx4/PAjDqxOMtEfkTgAIUF067/bJHW4AdVoJMY
- X+QbTqcaz/Ajz1Bf4V8+HNe3gCPNTAZr5Ybk5lRqkDoEqY/Ks4zyMQ/eR4+CxwQJ9LlAs7EQJ
- h6UvsBe6lcNJlmhfiIaAlxlQjzHwYJ2LmHLpAEq9YFUPDzY2vcYxrehJKsZD3z9sR9EMwrX1I
- SCBTxeQ5jjvIOIGLuslnh9tYC1VW3T9yt9QsuzcNAm2vg28xGYLkrNxvRpFlltV+SGz4EriaI
- ZKIpN/t8zQ1fTUnto9/GFaHTg0xIITo1QroKaSzEh2NeBZt5Z1ioW6I3pIWOY2xIhgHsRK/NH
- UIcynKaRVx7azRrZE9UI8sHcKSwYGlA0KhQM/SBjFqUO6NKyqrqMAwhYjVYdRmoSIMoeKxDMm
- ZE/GCuMVoM+OE+Jo4mT72blCEhI8HrcXl2M0M3aXX9f7P/C/S9P0oo9BzRoS655scEfNndInz
- 7spEwdABS87Ga/MwDfUpMag/fwUWsaGdnX00Lewh0xtIkUjZQc=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200505113449.18478-1-pbonzini@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The __xenbus_map_ring() function has two large arrays, 'map' and
-'unmap' on its stack. When clang decides to inline it into its caller,
-xenbus_map_ring_valloc_hvm(), the total stack usage exceeds the warning
-limit for stack size on 32-bit architectures.
+On Tue, May 05, 2020 at 07:34:49AM -0400, Paolo Bonzini wrote:
+> Go through kvm_queue_exception_p so that the payload is correctly delivered
+> through the exit qualification, and add a kvm_update_dr6 call to
+> kvm_deliver_exception_payload that is needed on AMD.
+> 
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 
-drivers/xen/xenbus/xenbus_client.c:592:12: error: stack frame size of 1104 bytes in function 'xenbus_map_ring_valloc_hvm' [-Werror,-Wframe-larger-than=]
+I still think we could also change this in handle_exception_nmi() and
+handle_dr() as mentioned in the other thread, but no strong opinion:
 
-As far as I can tell, other compilers don't inline it here, so we get
-no warning, but the stack usage is actually the same. It is possible
-for both arrays to use the same location on the stack, but the compiler
-cannot prove that this is safe because they get passed to external
-functions that may end up using them until they go out of scope.
+Reviewed-by: Peter Xu <peterx@redhat.com>
 
-Move the two arrays into separate basic blocks to limit the scope
-and force them to occupy less stack in total, regardless of the
-inlining decision.
+Thanks,
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/xen/xenbus/xenbus_client.c | 74 +++++++++++++++++-------------
- 1 file changed, 41 insertions(+), 33 deletions(-)
-
-diff --git a/drivers/xen/xenbus/xenbus_client.c b/drivers/xen/xenbus/xenbus_client.c
-index 040d2a43e8e3..23ca70378e36 100644
---- a/drivers/xen/xenbus/xenbus_client.c
-+++ b/drivers/xen/xenbus/xenbus_client.c
-@@ -470,54 +470,62 @@ static int __xenbus_map_ring(struct xenbus_device *dev,
- 			     unsigned int flags,
- 			     bool *leaked)
- {
--	struct gnttab_map_grant_ref map[XENBUS_MAX_RING_GRANTS];
--	struct gnttab_unmap_grant_ref unmap[XENBUS_MAX_RING_GRANTS];
- 	int i, j;
- 	int err = GNTST_okay;
- 
--	if (nr_grefs > XENBUS_MAX_RING_GRANTS)
--		return -EINVAL;
-+	{
-+		struct gnttab_map_grant_ref map[XENBUS_MAX_RING_GRANTS];
- 
--	for (i = 0; i < nr_grefs; i++) {
--		memset(&map[i], 0, sizeof(map[i]));
--		gnttab_set_map_op(&map[i], addrs[i], flags, gnt_refs[i],
--				  dev->otherend_id);
--		handles[i] = INVALID_GRANT_HANDLE;
--	}
-+		if (nr_grefs > XENBUS_MAX_RING_GRANTS)
-+			return -EINVAL;
- 
--	gnttab_batch_map(map, i);
-+		for (i = 0; i < nr_grefs; i++) {
-+			memset(&map[i], 0, sizeof(map[i]));
-+			gnttab_set_map_op(&map[i], addrs[i], flags,
-+					  gnt_refs[i], dev->otherend_id);
-+			handles[i] = INVALID_GRANT_HANDLE;
-+		}
-+
-+		gnttab_batch_map(map, i);
- 
--	for (i = 0; i < nr_grefs; i++) {
--		if (map[i].status != GNTST_okay) {
--			err = map[i].status;
--			xenbus_dev_fatal(dev, map[i].status,
-+		for (i = 0; i < nr_grefs; i++) {
-+			if (map[i].status != GNTST_okay) {
-+				err = map[i].status;
-+				xenbus_dev_fatal(dev, map[i].status,
- 					 "mapping in shared page %d from domain %d",
- 					 gnt_refs[i], dev->otherend_id);
--			goto fail;
--		} else
--			handles[i] = map[i].handle;
-+				goto fail;
-+			} else
-+				handles[i] = map[i].handle;
-+		}
- 	}
--
- 	return GNTST_okay;
- 
-  fail:
--	for (i = j = 0; i < nr_grefs; i++) {
--		if (handles[i] != INVALID_GRANT_HANDLE) {
--			memset(&unmap[j], 0, sizeof(unmap[j]));
--			gnttab_set_unmap_op(&unmap[j], (phys_addr_t)addrs[i],
--					    GNTMAP_host_map, handles[i]);
--			j++;
-+	{
-+		struct gnttab_unmap_grant_ref unmap[XENBUS_MAX_RING_GRANTS];
-+
-+		for (i = j = 0; i < nr_grefs; i++) {
-+			if (handles[i] != INVALID_GRANT_HANDLE) {
-+				memset(&unmap[j], 0, sizeof(unmap[j]));
-+				gnttab_set_unmap_op(&unmap[j],
-+						    (phys_addr_t)addrs[i],
-+						    GNTMAP_host_map,
-+						    handles[i]);
-+				j++;
-+			}
- 		}
--	}
- 
--	if (HYPERVISOR_grant_table_op(GNTTABOP_unmap_grant_ref, unmap, j))
--		BUG();
-+		if (HYPERVISOR_grant_table_op(GNTTABOP_unmap_grant_ref,
-+					      unmap, j))
-+			BUG();
- 
--	*leaked = false;
--	for (i = 0; i < j; i++) {
--		if (unmap[i].status != GNTST_okay) {
--			*leaked = true;
--			break;
-+		*leaked = false;
-+		for (i = 0; i < j; i++) {
-+			if (unmap[i].status != GNTST_okay) {
-+				*leaked = true;
-+				break;
-+			}
- 		}
- 	}
- 
 -- 
-2.26.0
+Peter Xu
 
