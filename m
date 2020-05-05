@@ -2,134 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C5D1C52C6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 12:14:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F41151C52D1
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 12:15:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728785AbgEEKOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 06:14:17 -0400
-Received: from foss.arm.com ([217.140.110.172]:36356 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728422AbgEEKOR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 06:14:17 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7169531B;
-        Tue,  5 May 2020 03:14:16 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 01A1D3F305;
-        Tue,  5 May 2020 03:14:12 -0700 (PDT)
-Date:   Tue, 5 May 2020 11:14:05 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Zhenyu Ye <yezhenyu2@huawei.com>
-Cc:     will@kernel.org, catalin.marinas@arm.com, suzuki.poulose@arm.com,
-        maz@kernel.org, steven.price@arm.com, guohanjun@huawei.com,
-        olof@lixom.net, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, xiexiangyou@huawei.com,
-        zhangshaokun@hisilicon.com, linux-mm@kvack.org, arm@kernel.org,
-        prime.zeng@hisilicon.com, kuhn.chenqun@huawei.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [RFC PATCH v3 1/2] arm64: tlb: Detect the ARMv8.4 TLBI RANGE
- feature
-Message-ID: <20200505101405.GB82424@C02TD0UTHF1T.local>
-References: <20200414112835.1121-1-yezhenyu2@huawei.com>
- <20200414112835.1121-2-yezhenyu2@huawei.com>
+        id S1728685AbgEEKPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 06:15:45 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:46911 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727931AbgEEKPp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 06:15:45 -0400
+Received: from mail-pg1-f200.google.com ([209.85.215.200])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <po-hsu.lin@canonical.com>)
+        id 1jVubI-0000qy-Lm
+        for linux-kernel@vger.kernel.org; Tue, 05 May 2020 10:14:56 +0000
+Received: by mail-pg1-f200.google.com with SMTP id s126so874013pgc.9
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 03:14:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3jQdO0StdvNBvV4/pWErSvlqKP7ZpKyE2C4p/RjopqA=;
+        b=IZdrF/V9GtH2SGFFLHPLqJGLNEIm/3hFhVSP1KRLhd9qaztzqeeRIECVOFdxowGM2I
+         SmJ86zLs3glZrr+aCcn5ihmlyic3dlhqMOWoSA5jmoppYm4nKJcUb6Ky6P+O0cKHJkEv
+         QbBfx6/JIaEa9wz1U4Sbp5OIfDKpQMDm+GLdte4BFk9vgvoOR0CTFkzDBZoJRhtJ4R9+
+         OqXZMzSvmeRtiqYhwWu5qHi5Nu2/kLQKEVdKmdpPJ+JhCz8JlU9YbaOriVjfKM5RIMCy
+         asL7u5BMEwIyE6n6y3rOSbTpOH1Tq3XCuHKOL9SeqSgAdRqlseXBkUC7qlo2G1TKvZ0O
+         VEtA==
+X-Gm-Message-State: AGi0PuZQoZAqEO2lpbhtzE5qzNxKxncuLDyjTUnajxM1NuB9peVdxK+/
+        eZz706DrXJvl7ye4c+ZA62k1yOWQQSuFcyccK4TMttHEK4jiAuUkJnNoI9GPxn+5YUug6k2mvq4
+        Jdp59Ht2reh12tr0+kjh6BtKpaoaNZlh5hbhyUU0/
+X-Received: by 2002:a63:4d3:: with SMTP id 202mr2384179pge.248.1588673694646;
+        Tue, 05 May 2020 03:14:54 -0700 (PDT)
+X-Google-Smtp-Source: APiQypLGgjuYe84gOCOst55qT44cCXLJjkRPwtBO7m2lJXOC7uPLyI8xx1unsOLavkC6BInlPCukhA==
+X-Received: by 2002:a63:4d3:: with SMTP id 202mr2384156pge.248.1588673694369;
+        Tue, 05 May 2020 03:14:54 -0700 (PDT)
+Received: from localhost.localdomain (111-71-115-42.emome-ip.hinet.net. [111.71.115.42])
+        by smtp.gmail.com with ESMTPSA id d35sm1235727pgd.29.2020.05.05.03.14.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 May 2020 03:14:53 -0700 (PDT)
+From:   Po-Hsu Lin <po-hsu.lin@canonical.com>
+To:     linux-kselftest@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org, mingo@redhat.com,
+        rostedt@goodmis.org, mhiramat@kernel.org, po-hsu.lin@canonical.com,
+        joel@joelfernandes.org
+Subject: [PATCH] selftests/ftrace: mark irqsoff_tracer.tc test as unresolved if the test module does not exist
+Date:   Tue,  5 May 2020 18:14:45 +0800
+Message-Id: <20200505101445.27063-1-po-hsu.lin@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200414112835.1121-2-yezhenyu2@huawei.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 07:28:34PM +0800, Zhenyu Ye wrote:
-> ARMv8.4-TLBI provides TLBI invalidation instruction that apply to a
-> range of input addresses. This patch detect this feature.
-> 
-> Signed-off-by: Zhenyu Ye <yezhenyu2@huawei.com>
-> ---
->  arch/arm64/include/asm/cpucaps.h |  3 ++-
->  arch/arm64/include/asm/sysreg.h  |  4 ++++
->  arch/arm64/kernel/cpufeature.c   | 11 +++++++++++
->  3 files changed, 17 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/include/asm/cpucaps.h b/arch/arm64/include/asm/cpucaps.h
-> index 8eb5a088ae65..950095a72617 100644
-> --- a/arch/arm64/include/asm/cpucaps.h
-> +++ b/arch/arm64/include/asm/cpucaps.h
-> @@ -61,7 +61,8 @@
->  #define ARM64_HAS_AMU_EXTN			51
->  #define ARM64_HAS_ADDRESS_AUTH			52
->  #define ARM64_HAS_GENERIC_AUTH			53
-> +#define ARM64_HAS_TLBI_RANGE			54
->  
-> -#define ARM64_NCAPS				54
-> +#define ARM64_NCAPS				55
->  
->  #endif /* __ASM_CPUCAPS_H */
-> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
-> index ebc622432831..ac1b98650234 100644
-> --- a/arch/arm64/include/asm/sysreg.h
-> +++ b/arch/arm64/include/asm/sysreg.h
-> @@ -592,6 +592,7 @@
->  
->  /* id_aa64isar0 */
->  #define ID_AA64ISAR0_RNDR_SHIFT		60
-> +#define ID_AA64ISAR0_TLBI_RANGE_SHIFT	56
->  #define ID_AA64ISAR0_TS_SHIFT		52
->  #define ID_AA64ISAR0_FHM_SHIFT		48
->  #define ID_AA64ISAR0_DP_SHIFT		44
-> @@ -605,6 +606,9 @@
->  #define ID_AA64ISAR0_SHA1_SHIFT		8
->  #define ID_AA64ISAR0_AES_SHIFT		4
->  
-> +#define ID_AA64ISAR0_TLBI_RANGE_NI	0x0
-> +#define ID_AA64ISAR0_TLBI_RANGE		0x2
-> +
->  /* id_aa64isar1 */
->  #define ID_AA64ISAR1_I8MM_SHIFT		52
->  #define ID_AA64ISAR1_DGH_SHIFT		48
-> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> index 9fac745aa7bb..31bcfd0722b5 100644
-> --- a/arch/arm64/kernel/cpufeature.c
-> +++ b/arch/arm64/kernel/cpufeature.c
-> @@ -124,6 +124,7 @@ static bool __system_matches_cap(unsigned int n);
->   */
->  static const struct arm64_ftr_bits ftr_id_aa64isar0[] = {
->  	ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64ISAR0_RNDR_SHIFT, 4, 0),
-> +	ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64ISAR0_TLBI_RANGE_SHIFT, 4, 0),
+The UNRESOLVED state is much more apporiate than the UNSUPPORTED state
+for the absence of the test module, as it matches "test was set up
+incorrectly" situation in the README file.
 
-This should be FTR_HIDDEN as userspace has no reason to see this.
+A possible scenario is that the function was enabled (supported by the
+kernel) but the module was not installed properly, in this case we
+cannot call this as UNSUPPORTED.
 
-Otherwise this all seems to match the ARM ARM.
+This change also make it consistent with other module-related tests
+in ftrace.
 
-Mark.
+Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+---
+ .../testing/selftests/ftrace/test.d/preemptirq/irqsoff_tracer.tc | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
->  	ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64ISAR0_TS_SHIFT, 4, 0),
->  	ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64ISAR0_FHM_SHIFT, 4, 0),
->  	ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64ISAR0_DP_SHIFT, 4, 0),
-> @@ -1779,6 +1780,16 @@ static const struct arm64_cpu_capabilities arm64_features[] = {
->  		.min_field_value = 1,
->  	},
->  #endif
-> +	{
-> +		.desc = "TLB range maintenance instruction",
-> +		.capability = ARM64_HAS_TLBI_RANGE,
-> +		.type = ARM64_CPUCAP_SYSTEM_FEATURE,
-> +		.matches = has_cpuid_feature,
-> +		.sys_reg = SYS_ID_AA64ISAR0_EL1,
-> +		.field_pos = ID_AA64ISAR0_TLBI_RANGE_SHIFT,
-> +		.sign = FTR_UNSIGNED,
-> +		.min_field_value = ID_AA64ISAR0_TLBI_RANGE,
-> +	},
->  	{},
->  };
->  
-> -- 
-> 2.19.1
-> 
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+diff --git a/tools/testing/selftests/ftrace/test.d/preemptirq/irqsoff_tracer.tc b/tools/testing/selftests/ftrace/test.d/preemptirq/irqsoff_tracer.tc
+index cbd1743..2b82c80e 100644
+--- a/tools/testing/selftests/ftrace/test.d/preemptirq/irqsoff_tracer.tc
++++ b/tools/testing/selftests/ftrace/test.d/preemptirq/irqsoff_tracer.tc
+@@ -17,7 +17,14 @@ unsup() { #msg
+     exit_unsupported
+ }
+ 
+-modprobe $MOD || unsup "$MOD module not available"
++unres() { #msg
++    reset_tracer
++    rmmod $MOD || true
++    echo $1
++    exit_unresolved
++}
++
++modprobe $MOD || unres "$MOD module not available"
+ rmmod $MOD
+ 
+ grep -q "preemptoff" available_tracers || unsup "preemptoff tracer not enabled"
+-- 
+2.7.4
