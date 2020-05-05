@@ -2,67 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1BC01C5742
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 15:43:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A69D1C587A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:15:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729092AbgEENni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 09:43:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43732 "EHLO
+        id S1729748AbgEEOPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:15:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728954AbgEENni (ORCPT
+        by vger.kernel.org with ESMTP id S1729704AbgEEOPJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 09:43:38 -0400
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D8C4C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 06:43:38 -0700 (PDT)
-Received: from ramsan ([IPv6:2a02:1810:ac12:ed60:bd97:8453:3b10:1832])
-        by baptiste.telenet-ops.be with bizsmtp
-        id b1jc2200m3VwRR3011jccL; Tue, 05 May 2020 15:43:37 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan with esmtp (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1jVxrF-0008LA-Dt; Tue, 05 May 2020 15:43:37 +0200
-Received: from geert by rox.of.borg with local (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1jVxrF-0006z1-Bm; Tue, 05 May 2020 15:43:37 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Steve French <sfrench@samba.org>, Jiri Kosina <trivial@kernel.org>,
-        Aurelien Aptel <aaptel@suse.com>
-Cc:     linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH trivial] CIFS: Spelling s/EACCESS/EACCES/
-Date:   Tue,  5 May 2020 15:43:35 +0200
-Message-Id: <20200505134335.26802-1-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.17.1
+        Tue, 5 May 2020 10:15:09 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55600C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:15:09 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jVyLT-0001EK-AI; Tue, 05 May 2020 16:14:51 +0200
+Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id BF611FFC8D;
+        Tue,  5 May 2020 16:14:50 +0200 (CEST)
+Message-Id: <20200505134354.774943181@linutronix.de>
+User-Agent: quilt/0.65
+Date:   Tue, 05 May 2020 15:43:54 +0200
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>
+Subject: [patch V4 part 3 00/29] x86/entry: Entry/exception code rework,
+ simple exceptions
+Content-transfer-encoding: 8-bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As per POSIX, the correct spelling is EACCES:
+Folks,
 
-include/uapi/asm-generic/errno-base.h:#define EACCES 13 /* Permission denied */
+This is the third part of the rework series. Part 2 can be found here:
 
-Fixes: b8f7442bc46e48fb ("CIFS: refactor cifs_get_inode_info()")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- fs/cifs/inode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ https://lore.kernel.org/r/20200505134112.272268764@linutronix.de
 
-diff --git a/fs/cifs/inode.c b/fs/cifs/inode.c
-index 390d2b15ef6ef9d7..5d2965a2373054a4 100644
---- a/fs/cifs/inode.c
-+++ b/fs/cifs/inode.c
-@@ -730,7 +730,7 @@ static __u64 simple_hashstr(const char *str)
-  * cifs_backup_query_path_info - SMB1 fallback code to get ino
-  *
-  * Fallback code to get file metadata when we don't have access to
-- * @full_path (EACCESS) and have backup creds.
-+ * @full_path (EACCES) and have backup creds.
-  *
-  * @data will be set to search info result buffer
-  * @resp_buf will be set to cifs resp buf and needs to be freed with
--- 
-2.17.1
+The series has a total of 138 patches and is split into 5 parts. The base
+for this 3rd series is:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git entry-v4-part-2
+
+The full series with all parts applied is available here:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git entry-v4-part-5
+
+The third part, i.e. this series is available from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git entry-v4-part-3
+ 
+This part contains the modifications for the simple exceptions and traps:
+
+ - Preparatory changes and simplifications moving especially tracing affected
+   code out of ASM
+
+ - Distangle the unreadable idtentry maze on 64bit
+
+ - Provide C entry/exit functions which handle the transitions vs. RCU,
+   context tracking and instrumentation.
+ 
+ - Provide a set of macros to define and declare exception and trap handlers
+
+   The macros generate:
+     - The prototypes for the relevant C, ASM and XEN/PV functions
+     - C wrappers for the actual handler code which contain all
+       the necessary entry handling
+     - Automatic emission of the low level ASM entry code  
+
+ - Converting the trivial exceptions over to the new scheme
+
+The objtool check for the noinstr.text correctness is not yet added to the
+build machinery and has to be invoked manually for now:
+
+   objtool check -fal vmlinux.o
+
+The checking only works for builtin code as objtool cannot do a combined
+analysis of vmlinux.o and a module.o
+
+Thanks,
+
+	tglx
+
+8<----------
+ arch/x86/entry/common.c              |   90 +++++++
+ arch/x86/entry/entry_32.S            |  188 ++++++---------
+ arch/x86/entry/entry_64.S            |  436 +++++++++++++++++++----------------
+ arch/x86/include/asm/idtentry.h      |  153 ++++++++++++
+ arch/x86/include/asm/special_insns.h |   14 -
+ arch/x86/include/asm/trapnr.h        |   31 ++
+ arch/x86/include/asm/traps.h         |   76 ------
+ arch/x86/kernel/idt.c                |   28 +-
+ arch/x86/kernel/traps.c              |  184 +++++++++-----
+ arch/x86/mm/fault.c                  |   17 +
+ arch/x86/xen/enlighten_pv.c          |   33 +-
+ arch/x86/xen/xen-asm_32.S            |    2 
+ arch/x86/xen/xen-asm_64.S            |   28 +-
+ include/linux/rcutiny.h              |    1 
+ include/linux/rcutree.h              |    1 
+ kernel/rcu/tree.c                    |   21 +
+ 16 files changed, 808 insertions(+), 495 deletions(-)
