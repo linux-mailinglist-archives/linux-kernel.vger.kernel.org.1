@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D80A61C587B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:15:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C7241C5888
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:16:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729763AbgEEOPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:15:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48838 "EHLO
+        id S1729245AbgEEOPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:15:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729743AbgEEOPL (ORCPT
+        by vger.kernel.org with ESMTP id S1729800AbgEEOPU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:15:11 -0400
+        Tue, 5 May 2020 10:15:20 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 554B8C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:15:11 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B224C061A41
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:15:20 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jVyLV-0001Fp-RQ; Tue, 05 May 2020 16:14:53 +0200
+        id 1jVyLX-0001GX-0e; Tue, 05 May 2020 16:14:55 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 45DCDFFC8D;
-        Tue,  5 May 2020 16:14:53 +0200 (CEST)
-Message-Id: <20200505134903.439765290@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 838F5FFC8D;
+        Tue,  5 May 2020 16:14:54 +0200 (CEST)
+Message-Id: <20200505134903.531534675@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 05 May 2020 15:43:56 +0200
+Date:   Tue, 05 May 2020 15:43:57 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -44,7 +44,8 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Will Deacon <will@kernel.org>
-Subject: [patch V4 part 3 02/29] x86/traps: Mark sync_regs() noinstr
+Subject: [patch V4 part 3 03/29] x86/entry: Disable interrupts for
+ native_load_gs_index() in C code
 References: <20200505134354.774943181@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -57,29 +58,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the notrace and NOKPROBE annotations with noinstr.
+There is absolutely no point in doing this in ASM code. Move it to C.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/kernel/traps.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ arch/x86/entry/entry_64.S            |   19 +++++++------------
+ arch/x86/include/asm/special_insns.h |   14 ++++++++++++--
+ 2 files changed, 19 insertions(+), 14 deletions(-)
 
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -639,14 +639,13 @@ NOKPROBE_SYMBOL(do_int3);
-  * to switch to the normal thread stack if the interrupted code was in
-  * user mode. The actual stack switch is done in entry_64.S
-  */
--asmlinkage __visible notrace struct pt_regs *sync_regs(struct pt_regs *eregs)
-+asmlinkage __visible noinstr struct pt_regs *sync_regs(struct pt_regs *eregs)
- {
- 	struct pt_regs *regs = (struct pt_regs *)this_cpu_read(cpu_current_top_of_stack) - 1;
- 	if (regs != eregs)
- 		*regs = *eregs;
- 	return regs;
- }
--NOKPROBE_SYMBOL(sync_regs);
+--- a/arch/x86/entry/entry_64.S
++++ b/arch/x86/entry/entry_64.S
+@@ -1036,27 +1036,22 @@ idtentry alignment_check		do_alignment_c
+ idtentry simd_coprocessor_error		do_simd_coprocessor_error	has_error_code=0
  
- struct bad_iret_stack {
- 	void *error_entry_ret;
+ 
+-	/*
+-	 * Reload gs selector with exception handling
+-	 * edi:  new selector
+-	 */
++/*
++ * Reload gs selector with exception handling
++ * edi:  new selector
++ */
+ .pushsection .text, "ax"
+-SYM_FUNC_START(native_load_gs_index)
++SYM_FUNC_START(asm_native_load_gs_index)
+ 	FRAME_BEGIN
+-	pushfq
+-	DISABLE_INTERRUPTS(CLBR_ANY & ~CLBR_RDI)
+-	TRACE_IRQS_OFF
+ 	SWAPGS
+ .Lgs_change:
+ 	movl	%edi, %gs
+ 2:	ALTERNATIVE "", "mfence", X86_BUG_SWAPGS_FENCE
+ 	SWAPGS
+-	TRACE_IRQS_FLAGS (%rsp)
+-	popfq
+ 	FRAME_END
+ 	ret
+-SYM_FUNC_END(native_load_gs_index)
+-EXPORT_SYMBOL(native_load_gs_index)
++SYM_FUNC_END(asm_native_load_gs_index)
++EXPORT_SYMBOL(asm_native_load_gs_index)
+ .popsection
+ 
+ 	_ASM_EXTABLE(.Lgs_change, .Lbad_gs)
+--- a/arch/x86/include/asm/special_insns.h
++++ b/arch/x86/include/asm/special_insns.h
+@@ -7,6 +7,7 @@
+ 
+ #include <asm/nops.h>
+ #include <asm/processor-flags.h>
++#include <linux/irqflags.h>
+ #include <linux/jump_label.h>
+ 
+ /*
+@@ -129,7 +130,16 @@ static inline void native_wbinvd(void)
+ 	asm volatile("wbinvd": : :"memory");
+ }
+ 
+-extern asmlinkage void native_load_gs_index(unsigned);
++extern asmlinkage void asm_native_load_gs_index(unsigned int selector);
++
++static inline void native_load_gs_index(unsigned int selector)
++{
++	unsigned long flags;
++
++	local_irq_save(flags);
++	asm_native_load_gs_index(selector);
++	local_irq_restore(flags);
++}
+ 
+ static inline unsigned long __read_cr4(void)
+ {
+@@ -186,7 +196,7 @@ static inline void wbinvd(void)
+ 
+ #ifdef CONFIG_X86_64
+ 
+-static inline void load_gs_index(unsigned selector)
++static inline void load_gs_index(unsigned int selector)
+ {
+ 	native_load_gs_index(selector);
+ }
 
