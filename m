@@ -2,207 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FAA21C5895
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:16:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D9F41C5746
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 15:45:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729992AbgEEOQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:16:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48982 "EHLO
+        id S1729098AbgEENpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 09:45:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729910AbgEEOPo (ORCPT
+        by vger.kernel.org with ESMTP id S1729022AbgEENpO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:15:44 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B28FC061A10
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:15:44 -0700 (PDT)
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jVyM3-0001ge-B0; Tue, 05 May 2020 16:15:27 +0200
-Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id C2C9F1001F5;
-        Tue,  5 May 2020 16:15:26 +0200 (CEST)
-Message-Id: <20200505134906.128769226@linutronix.de>
-User-Agent: quilt/0.65
-Date:   Tue, 05 May 2020 15:44:23 +0200
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>
-Subject: [patch V4 part 3 29/29] x86/entry/32: Convert IRET exception to IDTENTRY_SW
-References: <20200505134354.774943181@linutronix.de>
+        Tue, 5 May 2020 09:45:14 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4795C061A41
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 06:45:12 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id g16so1886322qtp.11
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 06:45:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PpZGV2cFYdg509BirBHZ7UsYovRP7E9mXl70khXE+Yg=;
+        b=oaB1Z5tAY1jA4cgdEhNqen4ZiSZ0IF7LyeOMXells7W87g5yIUHpfarJaZ/cEaPa/J
+         HP/hdI1Hb1lXcUqCXlGiCFp4TfVFNcDffbI6X5ib62sLdNwloT5X/JFIXI/OAQwFP2Oh
+         P/yLfXsjqI2+zMMTaqKwpfGqidgwOqTHNMwltC6NGSXGmHnLHX5vCn87BKhEu2jODPRD
+         edLP/YNScbyqtBmPDy3aEQPAMRGeuhgiuswpuU9LQnNxMUq9s6ny2ibN//I4Tw9IOirm
+         7/FUUe4PKtnl1QquB6uqIfnH4Es3LEqkKVFLF9zvOKSSfYjDS+m57uJaTkCDZif4snYS
+         y2vA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PpZGV2cFYdg509BirBHZ7UsYovRP7E9mXl70khXE+Yg=;
+        b=t69LFpm+T/d6Xju6NCNdHbvgSpZOb2gzNfi6LOW0rQH6gVRwWuRtShJ7gjzdR6KNnU
+         RGVcIwWsG6TokWLNphKueDRc4Ktte1dtUnLsoN2kUDXqNei49BQV6hUe79ELnkFhs9Ag
+         vTCV66wHyygjEDqQKshM19qvKbd7iC1K5tN8YCY0A0TbhQrTpY4vQWEgllx04WS3k1pw
+         pxf7KlIsKUrqJdtw9mJYnGU8swlikeP1orO6PGdgA7sJWBhG3gfdxDB/fo/+z9pM8g1x
+         +kd1dLoiMsYN6BdN4ejopnBRnmUlBrEdmNrUtAcTLNEHuX16MivwCLulSqQdq8mA4al1
+         mfnQ==
+X-Gm-Message-State: AGi0PuYDnjbY4iZnwP+wMhDJhQdcZUaEr6LWy3wkcjEvp73SSSvJpfWB
+        FD1Ma2O36TnmuYXHKvLkg8+d8qbA8f1G9Sxj29Tklg==
+X-Google-Smtp-Source: APiQypIQnqlnKlTUwTz4stU5KhGXfg9rPA+FBzDsV7Uz9ztLly+3ic300+uRgn67dm2QVbQb4u+5SRDs7KZNqIQtvwI=
+X-Received: by 2002:ac8:6c24:: with SMTP id k4mr2653777qtu.257.1588686311674;
+ Tue, 05 May 2020 06:45:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+References: <0000000000000610eb059e429abd@google.com> <1588684948.13662.11.camel@suse.com>
+In-Reply-To: <1588684948.13662.11.camel@suse.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 5 May 2020 15:44:58 +0200
+Message-ID: <CACT4Y+YqeYnH7ZynaAOhddCQF=yoV-=2QSV+doAA0sW6Nxe71w@mail.gmail.com>
+Subject: Re: KASAN: slab-out-of-bounds Write in betop_probe
+To:     Oliver Neukum <oneukum@suse.com>
+Cc:     syzbot <syzbot+07efed3bc5a1407bd742@syzkaller.appspotmail.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+,On Tue, May 5, 2020 at 3:23 PM Oliver Neukum <oneukum@suse.com> wrote:
+>
+> Am Montag, den 10.02.2020, 17:16 -0800 schrieb syzbot:
+> > Hello,
+> >
+> > syzbot found the following crash on:
+> >
+> > HEAD commit:    e5cd56e9 usb: gadget: add raw-gadget interface
+> > git tree:       https://github.com/google/kasan.git usb-fuzzer
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=1517fed9e00000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=8cff427cc8996115
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=07efed3bc5a1407bd742
+> > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=147026b5e00000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1683b6b5e00000
+> >
+> > IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> > Reported-by: syzbot+07efed3bc5a1407bd742@syzkaller.appspotmail.com
+> >
+> > betop 0003:20BC:5500.0001: unknown main item tag 0x0
+> > betop 0003:20BC:5500.0001: hidraw0: USB HID v0.00 Device [HID 20bc:5500] on usb-dummy_hcd.0-1/input0
+> > ==================================================================
+> > BUG: KASAN: slab-out-of-bounds in set_bit include/asm-generic/bitops/instrumented-atomic.h:28 [inline]
+> > BUG: KASAN: slab-out-of-bounds in betopff_init drivers/hid/hid-betopff.c:99 [inline]
+> > BUG: KASAN: slab-out-of-bounds in betop_probe+0x396/0x570 drivers/hid/hid-betopff.c:134
+> > Write of size 8 at addr ffff8881d4f43ac0 by task kworker/1:2/94
+> >
+> > Freed by task 12:
+> >  save_stack+0x1b/0x80 mm/kasan/common.c:72
+> >  set_track mm/kasan/common.c:80 [inline]
+> >  kasan_set_free_info mm/kasan/common.c:337 [inline]
+> >  __kasan_slab_free+0x117/0x160 mm/kasan/common.c:476
+> >  slab_free_hook mm/slub.c:1444 [inline]
+> >  slab_free_freelist_hook mm/slub.c:1477 [inline]
+> >  slab_free mm/slub.c:3024 [inline]
+> >  kfree+0xd5/0x300 mm/slub.c:3976
+> >  urb_destroy drivers/usb/core/urb.c:26 [inline]
+> >  kref_put include/linux/kref.h:65 [inline]
+> >
+>
+> Hi,
+>
+> this indicates that I am confused. Why are we getting an out-of-bounds
+> on a freed region? Is this a strange way of reporting access
+> to already freed memory?
 
-Convert the IRET exception handler to IDTENTRY_SW. This is slightly
-different than the conversions of hardware exceptions as the IRET exception
-is invoked via an exception table when IRET faults. So it just uses the
-IDTENTRY_SW mechanism for consistency. It does not emit ASM code as it does
-not fit the other idtentry exceptions.
+Hi Oliver,
 
-  - Implement the C entry point with DEFINE_IDTENTRY_SW() which maps to
-    DEFINE_IDTENTRY()
-  - Fixup the XEN/PV code
-  - Remove the old prototyoes
-  - Remove the RCU warning as the new entry macro ensures correctness
-
-No functional change.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-
----
- arch/x86/entry/entry_32.S       |   14 +++++++-------
- arch/x86/include/asm/idtentry.h |   10 ++++++++++
- arch/x86/include/asm/traps.h    |    3 ---
- arch/x86/kernel/traps.c         |    8 +++-----
- arch/x86/xen/xen-asm_32.S       |    2 +-
- 5 files changed, 21 insertions(+), 16 deletions(-)
-
---- a/arch/x86/entry/entry_32.S
-+++ b/arch/x86/entry/entry_32.S
-@@ -1147,9 +1147,9 @@ SYM_FUNC_START(entry_INT80_32)
- 	jmp	.Lirq_return
- 
- .section .fixup, "ax"
--SYM_CODE_START(iret_exc)
-+SYM_CODE_START(asm_exc_iret_error)
- 	pushl	$0				# no error code
--	pushl	$do_iret_error
-+	pushl	$exc_iret_error
- 
- #ifdef CONFIG_DEBUG_ENTRY
- 	/*
-@@ -1163,10 +1163,10 @@ SYM_CODE_START(iret_exc)
- 	popl	%eax
- #endif
- 
--	jmp	common_exception
--SYM_CODE_END(iret_exc)
-+	jmp	handle_exception
-+SYM_CODE_END(asm_exc_iret_error)
- .previous
--	_ASM_EXTABLE(.Lirq_return, iret_exc)
-+	_ASM_EXTABLE(.Lirq_return, asm_exc_iret_error)
- SYM_FUNC_END(entry_INT80_32)
- 
- .macro FIXUP_ESPFIX_STACK
-@@ -1293,7 +1293,7 @@ SYM_FUNC_END(name)
- #ifdef CONFIG_PARAVIRT
- SYM_CODE_START(native_iret)
- 	iret
--	_ASM_EXTABLE(native_iret, iret_exc)
-+	_ASM_EXTABLE(native_iret, asm_exc_iret_error)
- SYM_CODE_END(native_iret)
- #endif
- 
-@@ -1358,7 +1358,7 @@ SYM_FUNC_START(xen_failsafe_callback)
- 	popl	%eax
- 	lea	16(%esp), %esp
- 	jz	5f
--	jmp	iret_exc
-+	jmp	asm_exc_iret_error
- 5:	pushl	$-1				/* orig_ax = -1 => not a system call */
- 	SAVE_ALL
- 	ENCODE_FRAME_POINTER
---- a/arch/x86/include/asm/idtentry.h
-+++ b/arch/x86/include/asm/idtentry.h
-@@ -57,6 +57,10 @@ static __always_inline void __##func(str
- 									\
- static __always_inline void __##func(struct pt_regs *regs)
- 
-+/* Special case for 32bit IRET 'trap' */
-+#define DECLARE_IDTENTRY_SW	DECLARE_IDTENTRY
-+#define DEFINE_IDTENTRY_SW	DEFINE_IDTENTRY
-+
- /**
-  * DECLARE_IDTENTRY_ERRORCODE - Declare functions for simple IDT entry points
-  *				Error code pushed by hardware
-@@ -111,6 +115,9 @@ static __always_inline void __##func(str
- #define DECLARE_IDTENTRY_ERRORCODE(vector, func)			\
- 	idtentry vector asm_##func func has_error_code=1 sane=1
- 
-+/* Special case for 32bit IRET 'trap'. Do not emit ASM code */
-+#define DECLARE_IDTENTRY_SW(vector, func)
-+
- #endif /* __ASSEMBLY__ */
- 
- /*
-@@ -133,6 +140,9 @@ DECLARE_IDTENTRY(X86_TRAP_SPURIOUS,	exc_
- DECLARE_IDTENTRY(X86_TRAP_MF,		exc_coprocessor_error);
- DECLARE_IDTENTRY(X86_TRAP_XF,		exc_simd_coprocessor_error);
- 
-+/* 32bit software IRET trap. Do not emit ASM code */
-+DECLARE_IDTENTRY_SW(X86_TRAP_IRET,	exc_iret_error);
-+
- /* Simple exception entries with error code pushed by hardware */
- DECLARE_IDTENTRY_ERRORCODE(X86_TRAP_TS,	exc_invalid_tss);
- DECLARE_IDTENTRY_ERRORCODE(X86_TRAP_NP,	exc_segment_not_present);
---- a/arch/x86/include/asm/traps.h
-+++ b/arch/x86/include/asm/traps.h
-@@ -41,9 +41,6 @@ dotraplinkage void do_int3(struct pt_reg
- dotraplinkage void do_double_fault(struct pt_regs *regs, long error_code, unsigned long cr2);
- #endif
- dotraplinkage void do_page_fault(struct pt_regs *regs, unsigned long error_code, unsigned long address);
--#ifdef CONFIG_X86_32
--dotraplinkage void do_iret_error(struct pt_regs *regs, long error_code);
--#endif
- dotraplinkage void do_mce(struct pt_regs *regs, long error_code);
- 
- #ifdef CONFIG_X86_64
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -917,14 +917,12 @@ DEFINE_IDTENTRY(exc_device_not_available
- }
- 
- #ifdef CONFIG_X86_32
--dotraplinkage void do_iret_error(struct pt_regs *regs, long error_code)
-+DEFINE_IDTENTRY_SW(exc_iret_error)
- {
--	RCU_LOCKDEP_WARN(!rcu_is_watching(), "entry code didn't wake RCU");
- 	local_irq_enable();
--
--	if (notify_die(DIE_TRAP, "iret exception", regs, error_code,
-+	if (notify_die(DIE_TRAP, "iret exception", regs, 0,
- 			X86_TRAP_IRET, SIGILL) != NOTIFY_STOP) {
--		do_trap(X86_TRAP_IRET, SIGILL, "iret exception", regs, error_code,
-+		do_trap(X86_TRAP_IRET, SIGILL, "iret exception", regs, 0,
- 			ILL_BADSTK, (void __user *)NULL);
- 	}
- 	local_irq_disable();
---- a/arch/x86/xen/xen-asm_32.S
-+++ b/arch/x86/xen/xen-asm_32.S
-@@ -117,7 +117,7 @@ SYM_CODE_START(xen_iret)
- 
- 1:	iret
- xen_iret_end_crit:
--	_ASM_EXTABLE(1b, iret_exc)
-+	_ASM_EXTABLE(1b, asm_exc_iret_error)
- 
- hyper_iret:
- 	/* put this out of line since its very rarely used */
-
+This is being tracked in:
+https://bugzilla.kernel.org/show_bug.cgi?id=198425
