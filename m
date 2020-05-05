@@ -2,90 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67BDC1C588C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:16:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA07F1C5906
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:21:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729895AbgEEOPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:15:38 -0400
-Received: from mout.kundenserver.de ([217.72.192.75]:55717 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729829AbgEEOPc (ORCPT
+        id S1730603AbgEEOVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:21:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729797AbgEEOPX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:15:32 -0400
-Received: from localhost.localdomain ([149.172.19.189]) by
- mrelayeu.kundenserver.de (mreue109 [212.227.15.145]) with ESMTPA (Nemesis) id
- 1MspyA-1jGeMH3jPU-00t97P; Tue, 05 May 2020 16:15:25 +0200
-From:   Arnd Bergmann <arnd@arndb.de>
-To:     Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Lee Jones <lee.jones@linaro.org>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] usb: dwc3: select USB_ROLE_SWITCH
-Date:   Tue,  5 May 2020 16:15:09 +0200
-Message-Id: <20200505141523.809858-1-arnd@arndb.de>
-X-Mailer: git-send-email 2.26.0
+        Tue, 5 May 2020 10:15:23 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FC5DC061A0F;
+        Tue,  5 May 2020 07:15:23 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id s8so1135687pgq.1;
+        Tue, 05 May 2020 07:15:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0nX/PJie6N8ENA2Zvbm0yQ+G3ZDyBTfdd9KJ7MPuSj4=;
+        b=nfmE75xAk2mRtYELliGHUe/ax/6qkgrPatqmkxJZ/4QQY+o+lMk11CjpG4sAQ3FVBV
+         WzncbHPCgbdKwNdc+0McksELLJMYnMAiR59i9RiNpkJ1wTWQvRjMj/LOf+Xb5oeK3q9X
+         8VD8zvXA45j3xTucUWd8a6+SrLV7AXDs8dsNgTmPYadNJvCSJY3+9yk+3FG9cqznsAn1
+         Ayjs9sTijBSlXb0wCaoDlmLuPkX19TLs6CSO8ttbuzlrxO+xpFQbVBsTgFRVP0zVj4wd
+         QyMxU4d3tVal6fMMXpNV6WOxd3TZfCk2bsV8QT8ybu6iLP/OmMTw0MsgxUT8NrAH2Rv+
+         1Ceg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0nX/PJie6N8ENA2Zvbm0yQ+G3ZDyBTfdd9KJ7MPuSj4=;
+        b=L303mJpbVSMNy1ExethZrn1BrbfB9EogsM9HridS/D8+4WcZiXGqoWk7vWF6GPZiwo
+         ShmaWWFGJ/lyaH7gqfTXYghTHub9QlUO9yz7cn1laBMCOMwbudx9/lUWLuGL5xuJsNPo
+         CI2/0YQ5F4AV4a4lCye0DXUkXVIqhJBIFeqaCZIeyjXJz25GoUDcSbduNuFXuXG1N0Il
+         aR7+eG5H1tpsAUtCeJAVMMxvj//QmYLwQnhRPokCYQg8i4fnhrU8bTRoi60H2Z/K8kVY
+         OqMOUi1o1U6nMLpn3D1XnMCvtKo15MO15T8WFUGIHH+dzfcK0X1j6BB+qCz34GA751PF
+         AJMw==
+X-Gm-Message-State: AGi0PuamiyE38pwwZG5ADwgsmkPDl8yYZxVtl5QOKKVlbSCLmL/w7NJm
+        BnWthRIaovLTx4nmjYGsV71Mz904+ktKfu2m3T4=
+X-Google-Smtp-Source: APiQypLc7JWdA097hNwo8eG2GAZy8/3FtlTIfHPPFCBF9V0wjqm7rU8EeIuNboUNOrlwwMtxJqnfA7pV8Mn60TSZrt8=
+X-Received: by 2002:a62:5ec7:: with SMTP id s190mr3257831pfb.130.1588688122575;
+ Tue, 05 May 2020 07:15:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:yrb9vkuiMmrbRMRwcScx3qJ0uzLosaMXqi/bdKr7h+PA1CusLZU
- KRReS9zXfZAxA4/I5Eta+f5I+FgMS/F4Bvtk2qzGnFmtQo0AZ3tHddZDf/vmzyAQGhkAzyv
- if7nUXs7NCdUuiRjIEJLVJ9bRs2h6Ue10IXBlv/1ikSUOeveGKV+j2pGKz8NyiSyjzMplIt
- FW8yDVW2OE+EYofp5mgzw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:2a99Z8iYXuk=:afVkxNbQWlu4TrQVHfCj+X
- xBGZdgbKpa3kUxXSc350jkH8vtLB7zTrevjfQ3J1vSCugnWfRvAU1WuGETxi0rk5i+dVJYuRS
- vCxHFcvR92Ua+gEcw3jrvGj9exUlzYdZp05JG0RnSCUDzu3w1x2z270AnbIbM0rnNvfspo0rV
- iM0XQo5HFkacIgBv1JpumOwCHwZk6fEDVnzE1DO80lvfqPWySSmf/hc49i/iK+9RHKMTTtgW8
- 4hRzzGmf5UiXMFla/bfxbeMISHIb1QJjnd2B6FIFK7fxExI3KV8VjsQvr3lNeWD1RRTbwoCIc
- Hs1e3YJ7a3otrJk8EI7VULoGYufXtEEl7FENBs6y1rgFhyiup2b1Fe8DVJGqv83i/LXeVhD/c
- FPOYWIOgrTBjW0BeAxZH5a6PW1X5YjpYUGScluw3/rnGuWsu5sVqDqq5WUxHFeD5yuRrgwL3t
- NW+3dNC79fwuSw6fuWwzv0QkQzdTg3YW29ZI2UQXurDjcEOmtHsojshhW3v3iTGGYiRbMUnUj
- COLpP/pLUrOORRhIujA81qdy6dJvOKCK8eQcs90yjGKvBwOvW+pJHCrvjDcR4s5iVw1AfId9l
- xhcigPEdwtnnjYOsTC/aRwunIE5iMXsWIQZWW32qZhHSMnBeOKiOdS2V2FSmY+5cJqK/MelC/
- Qz1buQt8fdnuxWSux5KyrLjzKbrW9NK7QbfMB0wMRUgK8Gj+4mTflA6j084cr7QOAURLjG3+d
- 70W7efn/otxKYUMCgaNN2fPhbKat5dGxR6zZLDVF1mEorkbd/yG0bOfiDxZUbqnjYl0lCTJQf
- YSrYStaId772DwTM13AjGHAuTnm7QWirD1b0gKGRM5Tr3kIOjg=
+References: <20200505132905.10276-1-calvin.johnson@oss.nxp.com> <20200505132905.10276-5-calvin.johnson@oss.nxp.com>
+In-Reply-To: <20200505132905.10276-5-calvin.johnson@oss.nxp.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 5 May 2020 17:15:16 +0300
+Message-ID: <CAHp75VfQ_ueABUcgUUirQ7kK60CR6vMi1gP-UsdDd+UmsSE4Sw@mail.gmail.com>
+Subject: Re: [net-next PATCH v3 4/5] net: phy: Introduce fwnode_get_phy_id()
+To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
+Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        linux.cj@gmail.com, Jeremy Linton <jeremy.linton@arm.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Varun Sethi <V.Sethi@nxp.com>,
+        "Rajesh V . Bikkina" <rajesh.bikkina@nxp.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Diana Madalina Craciun <diana.craciun@nxp.com>,
+        netdev <netdev@vger.kernel.org>, Marcin Wojtas <mw@semihalf.com>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Makarand Pawagi <makarand.pawagi@nxp.com>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Pankaj Bansal <pankaj.bansal@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Heiner Kallweit <hkallweit1@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Calling into the role switch API requires that these functions
-are loaded, if they are in a loadable module and dwc3 itself
-is built-in, this produces a link error:
+On Tue, May 5, 2020 at 4:29 PM Calvin Johnson
+<calvin.johnson@oss.nxp.com> wrote:
+>
+> Extract phy_id from compatible string. This will be used by
+> fwnode_mdiobus_register_phy() to create phy device using the
+> phy_id.
 
-drivers/usb/dwc3/drd.o: In function `dwc3_usb_role_switch_get':
-drd.c:(.text+0x26): undefined reference to `usb_role_switch_get_drvdata'
-drivers/usb/dwc3/drd.o: In function `dwc3_usb_role_switch_set':
-drd.c:(.text+0x97): undefined reference to `usb_role_switch_get_drvdata'
-drivers/usb/dwc3/drd.o: In function `dwc3_drd_init':
-drd.c:(.text+0x1ca7): undefined reference to `usb_role_switch_register'
-drivers/usb/dwc3/drd.o: In function `dwc3_drd_exit':
-drd.c:(.text+0x1e92): undefined reference to `usb_role_switch_unregister'
+> +int fwnode_get_phy_id(struct fwnode_handle *fwnode, u32 *phy_id)
+> +{
+> +       const char *cp;
+> +       unsigned int upper, lower;
+> +       int ret;
+> +
+> +       ret = fwnode_property_read_string(fwnode, "compatible", &cp);
+> +       if (!ret) {
 
-Select the USB_ROLE_SWITCH symbol from dwc3 in that configuration.
+if (ret)
+ return ret;
 
-Fixes: 0339f7fbc82e ("usb: dwc3: fix up for role switch API change")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/usb/dwc3/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+will help a lot with readability of this.
 
-diff --git a/drivers/usb/dwc3/Kconfig b/drivers/usb/dwc3/Kconfig
-index 206caa0ea1c6..7a2304565a73 100644
---- a/drivers/usb/dwc3/Kconfig
-+++ b/drivers/usb/dwc3/Kconfig
-@@ -4,6 +4,7 @@ config USB_DWC3
- 	tristate "DesignWare USB3 DRD Core Support"
- 	depends on (USB || USB_GADGET) && HAS_DMA
- 	select USB_XHCI_PLATFORM if USB_XHCI_HCD
-+	select USB_ROLE_SWITCH if USB_DWC3_DUAL_ROLE
- 	help
- 	  Say Y or M here if your system has a Dual Role SuperSpeed
- 	  USB controller based on the DesignWare USB3 IP Core.
+> +               if (sscanf(cp, "ethernet-phy-id%4x.%4x",
+> +                          &upper, &lower) == 2) {
+
+> +                       *phy_id = ((upper & 0xFFFF) << 16) | (lower & 0xFFFF);
+
+How upper can be bigger than 0xfff? Same for lower.
+
+> +                       return 0;
+> +               }
+> +       }
+> +       return -EINVAL;
+> +}
+
 -- 
-2.26.0
-
+With Best Regards,
+Andy Shevchenko
