@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C9C91C58DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:20:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 706921C589B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:16:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730106AbgEEOQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:16:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49116 "EHLO
+        id S1730113AbgEEOQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:16:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730071AbgEEOQU (ORCPT
+        by vger.kernel.org with ESMTP id S1730084AbgEEOQV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:16:20 -0400
+        Tue, 5 May 2020 10:16:21 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 121A3C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:16:20 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 477DDC061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:16:21 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jVyMc-00022P-4z; Tue, 05 May 2020 16:16:02 +0200
+        id 1jVyMd-00023Z-Az; Tue, 05 May 2020 16:16:03 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 969F6FFC8D;
-        Tue,  5 May 2020 16:16:01 +0200 (CEST)
-Message-Id: <20200505135314.716186134@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id D2F75FFC8D;
+        Tue,  5 May 2020 16:16:02 +0200 (CEST)
+Message-Id: <20200505135314.808628211@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 05 May 2020 15:49:40 +0200
+Date:   Tue, 05 May 2020 15:49:41 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -43,8 +43,9 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Brian Gerst <brgerst@gmail.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>
-Subject: [patch V4 part 4 14/24] x86/nmi: Protect NMI entry against instrumentation
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: [patch V4 part 4 15/24] x86/db: Split out dr6/7 handling
 References: <20200505134926.578885807@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -57,140 +58,143 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mark all functions in the fragile code parts noinstr or force inlining so
-they can't be instrumented.
+From: Peter Zijlstra <peterz@infradead.org>
 
+DR6/7 should be handled before nmi_enter() is invoked and restore after
+nmi_exit() to minimize the exposure.
+
+Split it out into helper inlines and bring it into the correct order.
+
+Signed-off-by: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/include/asm/desc.h  |    8 ++++----
- arch/x86/kernel/cpu/common.c |    6 ++----
- arch/x86/kernel/nmi.c        |   10 ++++++----
- 3 files changed, 12 insertions(+), 12 deletions(-)
+ arch/x86/kernel/hw_breakpoint.c |    6 ---
+ arch/x86/kernel/traps.c         |   62 +++++++++++++++++++++++++++-------------
+ 2 files changed, 44 insertions(+), 24 deletions(-)
 
---- a/arch/x86/include/asm/desc.h
-+++ b/arch/x86/include/asm/desc.h
-@@ -214,7 +214,7 @@ static inline void native_load_gdt(const
- 	asm volatile("lgdt %0"::"m" (*dtr));
- }
- 
--static inline void native_load_idt(const struct desc_ptr *dtr)
-+static __always_inline void native_load_idt(const struct desc_ptr *dtr)
+--- a/arch/x86/kernel/hw_breakpoint.c
++++ b/arch/x86/kernel/hw_breakpoint.c
+@@ -464,7 +464,7 @@ static int hw_breakpoint_handler(struct
  {
- 	asm volatile("lidt %0"::"m" (*dtr));
- }
-@@ -393,7 +393,7 @@ extern unsigned long system_vectors[];
+ 	int i, cpu, rc = NOTIFY_STOP;
+ 	struct perf_event *bp;
+-	unsigned long dr7, dr6;
++	unsigned long dr6;
+ 	unsigned long *dr6_p;
  
- #ifdef CONFIG_X86_64
- DECLARE_PER_CPU(u32, debug_idt_ctr);
--static inline bool is_debug_idt_enabled(void)
-+static __always_inline bool is_debug_idt_enabled(void)
- {
- 	if (this_cpu_read(debug_idt_ctr))
- 		return true;
-@@ -401,7 +401,7 @@ static inline bool is_debug_idt_enabled(
- 	return false;
- }
+ 	/* The DR6 value is pointed by args->err */
+@@ -479,9 +479,6 @@ static int hw_breakpoint_handler(struct
+ 	if ((dr6 & DR_TRAP_BITS) == 0)
+ 		return NOTIFY_DONE;
  
--static inline void load_debug_idt(void)
-+static __always_inline void load_debug_idt(void)
- {
- 	load_idt((const struct desc_ptr *)&debug_idt_descr);
- }
-@@ -423,7 +423,7 @@ static inline void load_debug_idt(void)
-  * that doesn't need to disable interrupts, as nothing should be
-  * bothering the CPU then.
-  */
--static inline void load_current_idt(void)
-+static __always_inline void load_current_idt(void)
- {
- 	if (is_debug_idt_enabled())
- 		load_debug_idt();
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -1692,21 +1692,19 @@ void syscall_init(void)
- DEFINE_PER_CPU(int, debug_stack_usage);
- DEFINE_PER_CPU(u32, debug_idt_ctr);
+-	get_debugreg(dr7, 7);
+-	/* Disable breakpoints during exception handling */
+-	set_debugreg(0UL, 7);
+ 	/*
+ 	 * Assert that local interrupts are disabled
+ 	 * Reset the DRn bits in the virtualized register value.
+@@ -538,7 +535,6 @@ static int hw_breakpoint_handler(struct
+ 	    (dr6 & (~DR_TRAP_BITS)))
+ 		rc = NOTIFY_DONE;
  
--void debug_stack_set_zero(void)
-+noinstr void debug_stack_set_zero(void)
- {
- 	this_cpu_inc(debug_idt_ctr);
- 	load_current_idt();
- }
--NOKPROBE_SYMBOL(debug_stack_set_zero);
+-	set_debugreg(dr7, 7);
+ 	put_cpu();
  
--void debug_stack_reset(void)
-+noinstr void debug_stack_reset(void)
- {
- 	if (WARN_ON(!this_cpu_read(debug_idt_ctr)))
- 		return;
- 	if (this_cpu_dec_return(debug_idt_ctr) == 0)
- 		load_current_idt();
- }
--NOKPROBE_SYMBOL(debug_stack_reset);
- 
- #else	/* CONFIG_X86_64 */
- 
---- a/arch/x86/kernel/nmi.c
-+++ b/arch/x86/kernel/nmi.c
-@@ -307,7 +307,7 @@ NOKPROBE_SYMBOL(unknown_nmi_error);
- static DEFINE_PER_CPU(bool, swallow_nmi);
- static DEFINE_PER_CPU(unsigned long, last_nmi_rip);
- 
--static void default_do_nmi(struct pt_regs *regs)
-+static noinstr void default_do_nmi(struct pt_regs *regs)
- {
- 	unsigned char reason = 0;
- 	int handled;
-@@ -333,6 +333,7 @@ static void default_do_nmi(struct pt_reg
- 
- 	__this_cpu_write(last_nmi_rip, regs->ip);
- 
-+	instr_begin();
- 	handled = nmi_handle(NMI_LOCAL, regs);
- 	__this_cpu_add(nmi_stats.normal, handled);
- 	if (handled) {
-@@ -346,6 +347,7 @@ static void default_do_nmi(struct pt_reg
- 		 */
- 		if (handled > 1)
- 			__this_cpu_write(swallow_nmi, true);
-+		instr_end();
- 		return;
- 	}
- 
-@@ -378,6 +380,7 @@ static void default_do_nmi(struct pt_reg
+ 	return rc;
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -691,6 +691,44 @@ static bool is_sysenter_singlestep(struc
  #endif
- 		__this_cpu_add(nmi_stats.external, 1);
- 		raw_spin_unlock(&nmi_reason_lock);
-+		instr_end();
- 		return;
- 	}
- 	raw_spin_unlock(&nmi_reason_lock);
-@@ -416,8 +419,8 @@ static void default_do_nmi(struct pt_reg
- 		__this_cpu_add(nmi_stats.swallow, 1);
- 	else
- 		unknown_nmi_error(reason, regs);
-+	instr_end();
  }
--NOKPROBE_SYMBOL(default_do_nmi);
  
++static __always_inline void debug_enter(unsigned long *dr6, unsigned long *dr7)
++{
++	/*
++	 * Disable breakpoints during exception handling; recursive exceptions
++	 * are exceedingly 'fun'.
++	 *
++	 * Since this function is NOKPROBE, and that also applies to
++	 * HW_BREAKPOINT_X, we can't hit a breakpoint before this (XXX except a
++	 * HW_BREAKPOINT_W on our stack)
++	 *
++	 * Entry text is excluded for HW_BP_X and cpu_entry_area, which
++	 * includes the entry stack is excluded for everything.
++	 */
++	get_debugreg(*dr7, 6);
++	set_debugreg(0, 7);
++
++	/*
++	 * The Intel SDM says:
++	 *
++	 *   Certain debug exceptions may clear bits 0-3. The remaining
++	 *   contents of the DR6 register are never cleared by the
++	 *   processor. To avoid confusion in identifying debug
++	 *   exceptions, debug handlers should clear the register before
++	 *   returning to the interrupted task.
++	 *
++	 * Keep it simple: clear DR6 immediately.
++	 */
++	get_debugreg(*dr6, 6);
++	set_debugreg(0, 6);
++	/* Filter out all the reserved bits which are preset to 1 */
++	*dr6 &= ~DR6_RESERVED;
++}
++
++static __always_inline void debug_exit(unsigned long dr7)
++{
++	set_debugreg(dr7, 7);
++}
++
  /*
-  * NMIs can page fault or hit breakpoints which will cause it to lose
-@@ -489,7 +492,7 @@ static DEFINE_PER_CPU(unsigned long, nmi
-  */
- static DEFINE_PER_CPU(int, update_debug_stack);
- 
--static bool notrace is_debug_stack(unsigned long addr)
-+static noinstr bool is_debug_stack(unsigned long addr)
+  * Our handling of the processor debug registers is non-trivial.
+  * We do not clear them on entry and exit from the kernel. Therefore
+@@ -718,28 +756,13 @@ static bool is_sysenter_singlestep(struc
+ dotraplinkage void do_debug(struct pt_regs *regs, long error_code)
  {
- 	struct cea_exception_stacks *cs = __this_cpu_read(cea_exception_stacks);
- 	unsigned long top = CEA_ESTACK_TOP(cs, DB);
-@@ -504,7 +507,6 @@ static bool notrace is_debug_stack(unsig
- 	 */
- 	return addr >= bot && addr < top;
- }
--NOKPROBE_SYMBOL(is_debug_stack);
+ 	struct task_struct *tsk = current;
++	unsigned long dr6, dr7;
+ 	int user_icebp = 0;
+-	unsigned long dr6;
+ 	int si_code;
+ 
+-	nmi_enter();
+-
+-	get_debugreg(dr6, 6);
+-	/*
+-	 * The Intel SDM says:
+-	 *
+-	 *   Certain debug exceptions may clear bits 0-3. The remaining
+-	 *   contents of the DR6 register are never cleared by the
+-	 *   processor. To avoid confusion in identifying debug
+-	 *   exceptions, debug handlers should clear the register before
+-	 *   returning to the interrupted task.
+-	 *
+-	 * Keep it simple: clear DR6 immediately.
+-	 */
+-	set_debugreg(0, 6);
++	debug_enter(&dr6, &dr7);
+ 
+-	/* Filter out all the reserved bits which are preset to 1 */
+-	dr6 &= ~DR6_RESERVED;
++	nmi_enter();
+ 
+ 	/*
+ 	 * The SDM says "The processor clears the BTF flag when it
+@@ -777,7 +800,7 @@ dotraplinkage void do_debug(struct pt_re
  #endif
  
- DEFINE_IDTENTRY_NMI(exc_nmi)
+ 	if (notify_die(DIE_DEBUG, "debug", regs, (long)&dr6, error_code,
+-							SIGTRAP) == NOTIFY_STOP)
++		       SIGTRAP) == NOTIFY_STOP)
+ 		goto exit;
+ 
+ 	/*
+@@ -816,6 +839,7 @@ dotraplinkage void do_debug(struct pt_re
+ 
+ exit:
+ 	nmi_exit();
++	debug_exit(dr7);
+ }
+ NOKPROBE_SYMBOL(do_debug);
+ 
 
