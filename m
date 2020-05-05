@@ -2,129 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABEB91C592B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:23:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BE471C588E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729587AbgEEOOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:14:32 -0400
-Received: from mout.kundenserver.de ([217.72.192.73]:36381 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729559AbgEEOOW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:14:22 -0400
-Received: from localhost.localdomain ([149.172.19.189]) by
- mrelayeu.kundenserver.de (mreue108 [212.227.15.145]) with ESMTPA (Nemesis) id
- 1MBDrM-1jQzi83buY-00CePX; Tue, 05 May 2020 16:14:02 +0200
-From:   Arnd Bergmann <arnd@arndb.de>
-To:     Kevin Hilman <khilman@kernel.org>,
-        Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Tony Lindgren <tony@atomide.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        afzal mohammed <afzal.mohd.ma@gmail.com>,
-        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: omap1: fix irq setup
-Date:   Tue,  5 May 2020 16:13:48 +0200
-Message-Id: <20200505141400.767312-1-arnd@arndb.de>
-X-Mailer: git-send-email 2.26.0
+        id S1729920AbgEEOPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:15:42 -0400
+Received: from mout.web.de ([212.227.17.11]:38787 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729860AbgEEOPf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 10:15:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1588688106;
+        bh=mf+yc1THoV4pyv4ey9hGDxLNZka1B4z5xCXHHlp3NBo=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=gYytFFqrgxEhnMiNctQEWfaB2tmp5SoA75+VAEI1gESiBHcL41LSde8uzuEynFf9L
+         OL0Z2xNHKaHd5AegX8Lgg1+mBtux9PDZco5ONf8AVWF1O8+v++DU2nv+/Rxjsrpn+5
+         BGM9fR/Wbu3vkg57DMj4+c0aQB1cW/d9ABk3XMNE=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([78.48.132.123]) by smtp.web.de (mrweb103
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 0MPpIE-1jS6jg1OmQ-005080; Tue, 05
+ May 2020 16:15:06 +0200
+Subject: Re: [PATCH v2] fs: jfs: fix a possible data race in
+ metapage_writepage()
+To:     Jia-Ju Bai <baijiaju1990@gmail.com>,
+        jfs-discussion@lists.sourceforge.net
+Cc:     Dave Kleikamp <shaggy@kernel.org>, linux-kernel@vger.kernel.org
+References: <20200505135313.28793-1-baijiaju1990@gmail.com>
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <d3e126df-e7f6-00bd-aa3c-ea39fcd1582e@web.de>
+Date:   Tue, 5 May 2020 16:15:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:LvLPepcWVA3cOq/dneR4EUFbqygTCx28UhrDXt4MYSPcNJ4mrgn
- +QPxmj7Yxy4NuRDL2I3gKatumDNFanxLYw86EEXLQeaxf2uHxTPjdRxsZ0nyaJR+ncJanxy
- 4nbOjM2H44/xEfwf5IKaHiR31MSIY7ePR1EXQ4Pd0jnyhEqjx5026Ue0/bycDgRv8VJvbSE
- z15LpjYn+K1X0KpouEG5A==
+In-Reply-To: <20200505135313.28793-1-baijiaju1990@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:QP5sqwEUOajYPTCypdV+V2cQv0nAqBqPw6LwvVHLNPF/+loAea0
+ 8FZWYinEvl3JjjgzrmORj9yCT05CZfs+6F/RoRHwkUnxPUh+7Bo1tq2TJsQz9U8Yy1o6kVK
+ E0KfvFVPNXswaiDWXEQLBfIkqnBRBbq3gCs2FV50toH5/O2dJMUTJ9S98YrKT95lEH+wLoL
+ ghLtjHiL0dBbRmqKBD+oA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:HMPeHO7MWj0=:QCVLcwagAi7moRTbEI8t4o
- uzWUr479RSv5Yd9emDprIzlpJRBuT53YlMq5+Ph3I8BO22ZitbEGM7a0XAZV1RVBCFf25N678
- TSSXd/DZRqPeNA1XgKo27ZE4YfC4aoy7CMpcWIcubWLSwahc2Xd649/RRCJ1m2OeQSpcVNUVy
- 0S4sfhFaScwVX+oUmWSX3LSejHiSqhMTHxBHagCNqDQkYUgvY7Lk1ZLRLLfo5qI9Tgegs8PwV
- kV18Qh/OM9PwyUWsjmUIMGZZdeyBpHb7wox2LZZQ/jMUiOLhxzFzpIn3U0Vd/3+pBq1tSf40P
- ijm0zpuP258+KqWNNf26tgKSlX70j7WNSfTQw5lEjoGpNy0LG3ZHY2lDnbNHOrzrGDkVma1ZW
- QAUaXOEPlSk2TUXpiNbWsdDdJRKkkz6tSZFsz+tcZa1mCrVp06VXvlpZCDUqidndoJUdqcqTR
- tTRJSfP9TXKy9QTHkPTSZVr8WxIrcvil34FhEJeiuF0CYUXDWOQLlegPiXAfQ7qD7AHXkTvKh
- KU3SyvnFld/2S3Ux5n9p6oUgmDcLzE+N+w34hvIMfikZPCamItyAGjJX08clxNMQae1cg+qed
- 2mMf1XNBAplayot4r50g5EN56RUtCME/8OHkIuIDeQa8l75/AnBimnkj6cz1aPm+9W2i1Pw2N
- CaQwxqyVNrY45q70PsMqbGXLktumgD0UiY3EMai9x6tPj3+vvsDz+XHg9FtGCe2SDKjL/V6UJ
- xSbQ3spM4NH7kQgc9kGalLumeO36TZI2qKqiV1K/BSrh2/DKj2yWD0pmUoP6MYOEwQAs1t/cO
- nDRnVmQi9zqpnZnWAibQPwqWUIJdJXK6XyLcf6VORR8tpPigNQ=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:0BZCCghejvA=:m1frBApvFnEwLFSglBajkJ
+ fU2RRFOrB2kZm1BcP1JeACybbvyW3ch5C2Pa2bXswzciSo8yXexAaYsekjcnmcggV8lcfm127
+ HbinQBEGT/A+vNh1NDL8nCUv2TbtZfCiE/l1qBE4IFKyB4JppFuFJf+3Bphbw8rkqkM3Kpl5b
+ wPmutVvYbkxZJXp13shKAVYU/eRUluIcr5o1hoApM8FkQVgAKph60ABtc2qQ9J/rAKKHJL9Ul
+ kkyrtMlGiX/RqrEaD24T8/7D+JI9hqhdJ2pbfiHEEI4rg/muUsXoGstCoINj/53LbGlTmxQCi
+ gCpkECSvOJ+6MoeYUbLVLHhb+3mQrFcw5bI+tKaLI/eBOsG5XvAh/DRTL3oIOHgvglM9Gxu5g
+ unFlzin50f6kdk2JlSnWJyueEVfgxEBkTVlMfl/wEWf0Limk1wkWkxLtsGwd3/a4cX1hXuYHq
+ 8zU7uuRtwGiJqJ1bXa0ja9PovvLuZUItPcTcQuf3LnD4hiUm8IzXDkxS2lpPubLBiNATGIVSv
+ Z2yVkgfWCLkJYMjHBKif2j+MF7zuwf+uYqLTrrYEaZUVW67C0FmUY1+0EVIJ1waFrpYOrsgWN
+ xi+Sk0l8jlQ2dnt+5dFtoTSAgkav/eIEjU9JWNojbsNV8cY/kYF/9/MBPpSPIwDrwfPk0E1w6
+ +EmoO6Ndc1jmrbVdlc0wsNHqBNKfJOxtZRIZrM5MVEPyUJwJuMYNMQKtmykgRlPZu/sG5KWNE
+ hIxPbioz5IYJALhFTq7rvugO2SShigLpoNZx8Are/JbU7eBQUw4csxe3dAkIne3+1PLf3kSUo
+ 4WYU9BC2JhTT9yRSRgTH+TBgxXaotmIZOEXDkq8PBllsLL7nvhlenQBpaREw2FbDNUg/9H+mD
+ USw+7oTPk3KmE//V/k0PokpajqaxHzYgddFLv/A0BR7/rFGLw2xaknDGQSzlhN/Np78++THV/
+ EdAQI3m4Qr03ciRn1kP7O2TpzwYYufYguR9YRPVzu+Vd357xmnppqg0IhRGNgP1+DCJr1U00e
+ ifcV0gtEWw8+eWp2uzneSMk02sLpJoS/JuulBfAoUHzqa68Qi9FnLQQLjeMtrHybsmHKqS5Y0
+ fcQtoCyRcDh7fHDcH4MtNyf5tvNBXetRZN18GpPM0ctm5hD22PCWQT6WY3foRwjuNy7VcemEm
+ 3EK/gsREJ76UCrLn59PXLeXHmBKpmvI9mNb50oz7jGsqQaJz9tgtCpWBG8jz1r2EzDWX4Ipsz
+ wRWUJoyxOaAoSKQUh
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A recent cleanup introduced a bug on any omap1 machine that has
-no wakeup IRQ, i.e. omap15xx:
+> This data race is found by our concurrency fuzzer.
 
-arch/arm/mach-omap1/pm.c:656:11: error: variable 'irq' is used uninitialized whenever 'if' condition is false [-Werror,-Wsometimes-uninitialized]
-        else if (cpu_is_omap16xx())
-                 ^~~~~~~~~~~~~~~~~
-include/linux/soc/ti/omap1-soc.h:115:30: note: expanded from macro 'cpu_is_omap16xx'
- #  define cpu_is_omap16xx()             is_omap16xx()
-                                        ^~~~~~~~~~~~~
-arch/arm/mach-omap1/pm.c:658:18: note: uninitialized use occurs here
-        if (request_irq(irq, omap_wakeup_interrupt, 0, "peripheral wakeup",
-                        ^~~
-arch/arm/mach-omap1/pm.c:656:7: note: remove the 'if' if its condition is always true
-        else if (cpu_is_omap16xx())
-             ^~~~~~~~~~~~~~~~~~~~~~
-arch/arm/mach-omap1/pm.c:611:9: note: initialize the variable 'irq' to silence this warning
-        int irq;
-               ^
+* How do you think about to replace the word =E2=80=9Cis=E2=80=9D by =E2=
+=80=9Cwas=E2=80=9D?
 
-Move this code into a separate function to deal with it cleanly.
+* Is this analysis tool publicly available?
 
-Fixes: b75ca5217743 ("ARM: OMAP: replace setup_irq() by request_irq()")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/arm/mach-omap1/pm.c | 25 +++++++++++++++++--------
- 1 file changed, 17 insertions(+), 8 deletions(-)
 
-diff --git a/arch/arm/mach-omap1/pm.c b/arch/arm/mach-omap1/pm.c
-index 0f8064bd40ae..266aa08aa8ed 100644
---- a/arch/arm/mach-omap1/pm.c
-+++ b/arch/arm/mach-omap1/pm.c
-@@ -605,10 +605,25 @@ static const struct platform_suspend_ops omap_pm_ops = {
- 	.valid		= suspend_valid_only_mem,
- };
- 
-+static void omap_wakeup_init(void)
-+{
-+	int irq;
-+
-+	if (cpu_is_omap7xx())
-+		irq = INT_7XX_WAKE_UP_REQ;
-+	else if (cpu_is_omap16xx())
-+		irq = INT_1610_WAKE_UP_REQ;
-+	else
-+		return;
-+
-+	if (request_irq(irq, omap_wakeup_interrupt, 0, "peripheral wakeup",
-+			NULL))
-+		pr_err("Failed to request irq %d (peripheral wakeup)\n", irq);
-+}
-+
- static int __init omap_pm_init(void)
- {
- 	int error = 0;
--	int irq;
- 
- 	if (!cpu_class_is_omap1())
- 		return -ENODEV;
-@@ -651,13 +666,7 @@ static int __init omap_pm_init(void)
- 
- 	arm_pm_idle = omap1_pm_idle;
- 
--	if (cpu_is_omap7xx())
--		irq = INT_7XX_WAKE_UP_REQ;
--	else if (cpu_is_omap16xx())
--		irq = INT_1610_WAKE_UP_REQ;
--	if (request_irq(irq, omap_wakeup_interrupt, 0, "peripheral wakeup",
--			NULL))
--		pr_err("Failed to request irq %d (peripheral wakeup)\n", irq);
-+	omap_wakeup_init();
- 
- 	/* Program new power ramp-up time
- 	 * (0 for most boards since we don't lower voltage when in deep sleep)
--- 
-2.26.0
+=E2=80=A6
+> ---
+>  fs/jfs/jfs_metapage.c | 11 +++++++++--
 
+I suggest to omit the triple dashes before this information.
+
+Regards,
+Markus
