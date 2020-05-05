@@ -2,110 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F07051C6275
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 22:54:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35E621C627C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 22:57:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729165AbgEEUyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 16:54:47 -0400
-Received: from smtprelay0254.hostedemail.com ([216.40.44.254]:40852 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726593AbgEEUyr (ORCPT
+        id S1728850AbgEEU5e convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 May 2020 16:57:34 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:58167 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726593AbgEEU5d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 16:54:47 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 66E1910054F00;
-        Tue,  5 May 2020 20:54:46 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2197:2199:2393:2551:2553:2559:2562:2689:2828:3138:3139:3140:3141:3142:3354:3622:3653:3865:3867:3868:3871:3872:3873:4321:5007:7522:7903:8531:9040:9545:10004:10400:10848:11232:11658:11914:12043:12050:12295:12297:12555:12740:12895:12986:13071:13255:13439:13894:14180:14181:14659:14721:21060:21080:21221:21627:30012:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: play38_c63f55c33806
-X-Filterd-Recvd-Size: 3100
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf16.hostedemail.com (Postfix) with ESMTPA;
-        Tue,  5 May 2020 20:54:45 +0000 (UTC)
-Message-ID: <5b68825bf74fb0df287d2c4df239dc08f8577cba.camel@perches.com>
-Subject: Re: [kernel.org users] [PATCH v2] checkpatch: use patch subject
- when reading from stdin
-From:   Joe Perches <joe@perches.com>
-To:     Pali =?ISO-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Andy Whitcroft <apw@canonical.com>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, users@linux.kernel.org
-Date:   Tue, 05 May 2020 13:54:43 -0700
-In-Reply-To: <20200505204015.44ibvg4bapnalrct@pali>
-References: <20200505132613.17452-1-geert+renesas@glider.be>
-         <1b0b4e6562cbbf4621e71042e511ae3cd0b542f6.camel@perches.com>
-         <20200505204015.44ibvg4bapnalrct@pali>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.1-2 
+        Tue, 5 May 2020 16:57:33 -0400
+Received: from mail-qv1-f49.google.com ([209.85.219.49]) by
+ mrelayeu.kundenserver.de (mreue109 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1MDhpZ-1jOgV11f6N-00Apkm for <linux-kernel@vger.kernel.org>; Tue, 05 May
+ 2020 22:57:32 +0200
+Received: by mail-qv1-f49.google.com with SMTP id h6so1773026qvz.8
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 13:57:32 -0700 (PDT)
+X-Gm-Message-State: AGi0PuabuCGV0xfIwfAB4IKfMrtwCfapv4AN2wjq5mWVTPc3qEj7h2mp
+        eCB0SmgjmuJ/Poh5SgMGKXNILtsn21HpgBdsr5I=
+X-Google-Smtp-Source: APiQypJrgFYMvWYQxR3/H4be6yfzqH6LIElWNTCfGS8MCkKF2CDVLP6zcvtTKAL/xjFld7TVJiEQt5NIfuQ2sfTN1L0=
+X-Received: by 2002:ad4:4a8b:: with SMTP id h11mr4439312qvx.210.1588712251082;
+ Tue, 05 May 2020 13:57:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200505141546.824573-1-arnd@arndb.de> <30d49e6d-570b-f6fd-3a6f-628abcc8b127@suse.com>
+ <CAK8P3a0mWH=Zcq180+cTRMpqOkGt05xDP1+kCTP6yc9grAg2VQ@mail.gmail.com> <48893239-dde9-4e94-040d-859f4348816d@suse.com>
+In-Reply-To: <48893239-dde9-4e94-040d-859f4348816d@suse.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 5 May 2020 22:57:15 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2_7+_a_cwDK1cwfrJX4azQJhd_Y0xB18cCUn6=p7fVsg@mail.gmail.com>
+Message-ID: <CAK8P3a2_7+_a_cwDK1cwfrJX4azQJhd_Y0xB18cCUn6=p7fVsg@mail.gmail.com>
+Subject: Re: [PATCH] xenbus: avoid stack overflow warning
+To:     =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Yan Yankovskyi <yyankovskyi@gmail.com>, Wei Liu <wl@xen.org>,
+        xen-devel <xen-devel@lists.xenproject.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Provags-ID: V03:K1:4ulp0f5K9CPkflqn5Kg/msj90NrX+jG/SnIimflwT4UXEAWrwpw
+ yas2Cc9AYHLUTlAgZawxedYfFhn94aPHlljlfYHQ98h14iCc65fHdbsK9e4lXIe896We8IP
+ V4kPnTJpmUK3kS9DR9MeLpyZ4HBuCYxNg/OpwuXwJ0M/rH6n71FRFYaTaOHtybd06A8hA/X
+ oRBZH7VI/gARXXtMrNTAA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:1bzlBjUMUrM=:TMLIdk8FkoQ56njjAu3Z5X
+ DSIPLnbwlichn9tOx7iCzV3Seyo+RZzJQ26KV+DmBXAavMWLkgnoaTL9GLxcHwNduyuvwH5z4
+ QDXxGdkgSYOM/6F41oqJZfdWfhcsAPxcy3pqL0s05N9Hit0OIpVKXWGhpUyD+gVro/MsYzdLq
+ lKOaYFtsie1pfeWVR51cQf8hjnQGteh4ZVLUMPf1srd0R2EUTKqR750Q+oaYd44pIQbbfcN+V
+ rQEGf1And3U0oPGtunSj6MmzQg/2NO0sQFZ6wVElRdxliZsuBNo8h78m9+Fj//mV6bTJSmFOY
+ fPsSLY8neLCgq+xr4DnSp/92qDRKrRmEPisRO1zRt/yhEabT8qvMeCHwmsj7vQbyeyomY2bee
+ MVTsOspatAPjkBzO6Bt6RU+0pV1mY+FjaC5Ak84t3KCBidB8Kb3yJRnxFeoRNtntlp/uU7RHN
+ woNkyB3g1q4hs14fqhzsK7CcCAtrvS4LbcFXMhEeELAIj899PQ1XCf2uR4wPlrukRdYdwhYt6
+ gY36pdYK8fdY5uI07RVVb8EBEFDmaEIUoQYcrXuBnRWsFKG7K6FJ5z1glCfzky+ZbRwuzfJMb
+ rutSNawfpWDPkWMXA/SnTmHqd43lekWMvPNZID+rqkdCZppMX3oDgPnsmHVaH+QShcHaX0hXp
+ n+6/Mi9fIOsDbPzW1s7e20h6+3pdnsrE0EIA7cJrz1o2xvCronWHYL2wzi63xMqCjfC6N9GZ+
+ 69hw8vUnjVbryZQnkOILszXTkDwrpeCSUTVqKkEXs5D5Y49CTf5YZpP8oMAdVSDf0eS0/LRDI
+ jdgDvjQsGoUH5LwdFer+C7fuNOxmS2Uh0ed4IiUJW5j/SGgGGo=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-05-05 at 22:40 +0200, Pali Roh�r wrote:
-> Hello!
-> 
-> On Tuesday 05 May 2020 12:57:37 Joe Perches wrote:
-> > > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> > > index eac40f0abd56a9f4..3355358697d9e790 100755
-> > > --- a/scripts/checkpatch.pl
-> > > +++ b/scripts/checkpatch.pl
-> > > @@ -1057,6 +1057,10 @@ for my $filename (@ARGV) {
-> > >  	}
-> > >  	while (<$FILE>) {
-> > >  		chomp;
-> > > +		if ($vname eq 'Your patch') {
-> > > +			my ($subject) = $_ =~ /^Subject:\s*(.*)/;
-> > > +			$vname = '"' . $subject . '"' if $subject;
-> > > +		}
-> > >  		push(@rawlines, $_);
-> > >  	}
-> > >  	close($FILE);
-> > 
-> > There's a less cpu intensive way to do this,
-> > for small patches, on my little laptop it's a
-> > few dozen milliseconds faster, and for very
-> > large patches multiple seconds faster to use
-> > the following patch:
-> > 
-> > Substitute Geert's patch with the below but:
-> > 
-> > Acked-by: Joe Perches <joe@perches.com>
-> > 
-> > ---
-> > 
-> >  scripts/checkpatch.pl | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> > index f0092104ff7b..29786a097862 100755
-> > --- a/scripts/checkpatch.pl
-> > +++ b/scripts/checkpatch.pl
-> > @@ -1062,6 +1062,7 @@ for my $filename (@ARGV) {
-> >  	while (<$FILE>) {
-> >  		chomp;
-> >  		push(@rawlines, $_);
-> > +		$vname = "\"$1\"" if ($filename eq '-' && $_ =~ /^Subject:\s*(.*)/);
-> 
-> Hint: You can use qq operator to make code more readable (no need to
-> escape quote character). And maybe you should match Subject as
-> case-insensitive and expects at least one space after colon.
-> As a Perl developer I would write above code as:
-> 
-> +		$vname = qq("$1") if $filename eq '-' && $_ =~ m/^Subject:\s+(.+)/i;
-> 
-> Anyway, what would happen if subject line contains quotes?
+On Tue, May 5, 2020 at 6:02 PM Jürgen Groß <jgross@suse.com> wrote:
+> On 05.05.20 17:01, Arnd Bergmann wrote:
+> > On Tue, May 5, 2020 at 4:34 PM Jürgen Groß <jgross@suse.com> wrote:
+> >> On 05.05.20 16:15, Arnd Bergmann wrote:
+> >
+> > I considered that as well, and don't really mind either way. I think it does
+> > get a bit ugly whatever we do. If you prefer the union, I can respin the
+> > patch that way.
+>
+> Hmm, thinking more about it I think the real clean solution would be to
+> extend struct map_ring_valloc_hvm to cover the pv case, too, to add the
+> map and unmap arrays (possibly as a union) to it and to allocate it
+> dynamically instead of having it on the stack.
+>
+> Would you be fine doing this?
 
-Hi Pali.
+This is a little more complex than I'd want to do without doing any testing
+(and no, I don't want to do the testing either) ;-)
 
-bad things... ;) so your suggestion is better.
+It does sound like a better approach though.
 
-But/And checkpatch uses parens for if statements.
-
-cheers and thanks, Joe
-
+      Arnd
