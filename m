@@ -2,112 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61E0E1C5E60
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 19:07:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 515561C5E67
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 19:09:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730717AbgEERHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 13:07:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729209AbgEERHc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 13:07:32 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A086C061A41
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 10:07:32 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id o18so1279286pgg.8
-        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 10:07:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=vBqzVx+qxfalnXJK7KTGtarAHizzhkjQWkeOeL25v0I=;
-        b=O5i7do4icdhMgjwpo9TCdui1mhr1arbAoT6CXE/FL4FNU3azDor8xRsQqnf1oekzW/
-         7Qdnbc7WereNZhHIyoLYjd3kSqw20Zgo4WpUa6FDM3lp00UVK8MuXDFlE01cNDiRoL/O
-         EAJ+Ut2sB0upkwibNjvyQBcsbJtaD+jjUHszOCYm3fAaoq1qP93jucL3eyvdClOkn4r9
-         aH+4c51iqcLP9pbxn4M3XH4t32uYqryQbnelLqdVh/XN7PZz087P/5s0HNVg2D8n0IWM
-         Us9QoDxYRHRAsocKaYP+GGGf+vkaem3+rBmS0NeZS6uvBlq/NtEMkGqiIrBNdRSUHVrW
-         Rf/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=vBqzVx+qxfalnXJK7KTGtarAHizzhkjQWkeOeL25v0I=;
-        b=DIGI+Bn2LzsmtatwNObpMbBIsT/JFVvKORmtcsJataYhyCqHFeKM7HU64I7gt4nEnE
-         5u7OnZ41tEvCWR3bC16/hu5z2U3KMVRq/EZCRbRCxHLjdOz+5touTgjKyOxwh3bXM3Pr
-         jmXabYD8E675m7uxvIKxtAntVytCpiCS3dDMq8JtZYKxdeLXX9owrve4+M6aqBGA3LHp
-         ly39r+uH0iBfSBI+CZCUstxXN3XUuirGbUN42T+PG0MLEoffphOTOp3yRQ/IcNu6/wLx
-         EgAyO/8jRkCgGKt+9mUMPJz4jIHGGDQImxycGmcSvjRYwl1ube4bKPT8xE9Eo4ZVNmZ5
-         CQzw==
-X-Gm-Message-State: AGi0Pua7a9coJsf84NvNIs7bGM3fBjTHouKnG3d0n38aW3sfFLLmn17n
-        D/PSxaZicdvEVt7WBShqBwH7WA==
-X-Google-Smtp-Source: APiQypL1cJk6Ptxu94QvTpoApcHVyzDf/w6RUKic+BQutwZLjzt9TVLdFv2iA8r9azHBa6jgEpe/WQ==
-X-Received: by 2002:a63:778d:: with SMTP id s135mr3848663pgc.238.1588698451129;
-        Tue, 05 May 2020 10:07:31 -0700 (PDT)
-Received: from [2620:15c:17:3:3a5:23a7:5e32:4598] ([2620:15c:17:3:3a5:23a7:5e32:4598])
-        by smtp.gmail.com with ESMTPSA id z190sm2471532pfb.1.2020.05.05.10.07.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 May 2020 10:07:30 -0700 (PDT)
-Date:   Tue, 5 May 2020 10:07:29 -0700 (PDT)
-From:   David Rientjes <rientjes@google.com>
-X-X-Sender: rientjes@chino.kir.corp.google.com
-To:     Paolo Bonzini <pbonzini@redhat.com>
-cc:     Jim Mattson <jmattson@google.com>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        Jonathan Adams <jwadams@google.com>,
-        kvm list <kvm@vger.kernel.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Emanuele Giuseppe Esposito <e.emanuelegiuseppe@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-mips@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH v2 0/5] Statsfs: a new ram-based file sytem for Linux
- kernel statistics
-In-Reply-To: <1d12f846-bf89-7b0a-5c71-e61d83b1a36f@redhat.com>
-Message-ID: <alpine.DEB.2.22.394.2005051003380.216575@chino.kir.corp.google.com>
-References: <20200504110344.17560-1-eesposit@redhat.com> <alpine.DEB.2.22.394.2005041429210.224786@chino.kir.corp.google.com> <f2654143-b8e5-5a1f-8bd0-0cb0df2cd638@redhat.com> <CALMp9eQYcLr_REzDC1kWTHX4SJWt7x+Zd1KwNvS1YGd5TVM1xA@mail.gmail.com>
- <1d12f846-bf89-7b0a-5c71-e61d83b1a36f@redhat.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S1730296AbgEERJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 13:09:29 -0400
+Received: from foss.arm.com ([217.140.110.172]:45982 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729998AbgEERJ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 13:09:29 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9DB5831B;
+        Tue,  5 May 2020 10:09:28 -0700 (PDT)
+Received: from bogus (unknown [10.37.12.47])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6FC133F305;
+        Tue,  5 May 2020 10:09:26 -0700 (PDT)
+Date:   Tue, 5 May 2020 18:09:23 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Peng Fan <peng.fan@nxp.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Steven Price <steven.price@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] firmware: arm_scmi: fix psci dependency
+Message-ID: <20200505170923.GB23612@bogus>
+References: <20200505140820.536615-1-arnd@arndb.de>
+ <20200505150421.GA23612@bogus>
+ <20200505162135.GB27127@lakrids.cambridge.arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200505162135.GB27127@lakrids.cambridge.arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 May 2020, Paolo Bonzini wrote:
+On Tue, May 05, 2020 at 05:21:36PM +0100, Mark Rutland wrote:
+> On Tue, May 05, 2020 at 04:04:21PM +0100, Sudeep Holla wrote:
+> > Hi Arnd,
+> >
+> > On Tue, May 05, 2020 at 04:08:08PM +0200, Arnd Bergmann wrote:
+> > > When CONFIG_ARM_PSCI_FW is disabled but CONFIG_HAVE_ARM_SMCCC is enabled,
+> > > arm-scmi runs into a link failure:
+> > >
+> > > arm-linux-gnueabi-ld: drivers/firmware/arm_scmi/smc.o: in function `smc_send_message':
+> > > smc.c:(.text+0x200): undefined reference to `arm_smccc_1_1_get_conduit'
+> > >
+> > > Use an inline helper to default to version v1.0 in the absence of psci.
+> > >
+> >
+> > Thanks for fixing this. I was thinking if we can separate PSCI and SMCCC
+> > quickly as a fix for this but I think he needs to be discussed in detail.
+> >
+> > I am fine with this fix as is and happy to apply to my tree if no one
+> > objects.
+> >
+> > Sorry but taking this patch as opportunity to discuss how to carry the
+> > dependency in future. Just a proposal,
+> >
+> > 1. Introduce a DT node for SMCCC v1.2+
+> > 2. The new SMCCC driver(strictly speaking library/few APIs) can probe
+> >    independent of PSCI if DT node is present
+> > 3. Else we fallback on PSCI and detect the SMCCC version for v1.1 and
+> >    v1.2
+> > 4. Assume v1.0 if
+> > 	a. PSCI FEATURE returns NOT_SUPPORTED for ARM_SMCCC_VERSION_FUNC_ID
+> > 	b. CONFIG_ARM_PSCI{,_FW} is not defined
+> >
+> > Mark/Will/Marc,
+> >
+> > Any other use-case config missed above ?
+>
+> Do we need to support SMCCC without PSCI? Is anyone goingto build a
+> sysyem with SMCCC but no PSCI functionality?
+>
 
-> >>> Since this is becoming a generic API (good!!), maybe we can discuss
-> >>> possible ways to optimize gathering of stats in mass?
-> >> Sure, the idea of a binary format was considered from the beginning in
-> >> [1], and it can be done either together with the current filesystem, or
-> >> as a replacement via different mount options.
-> > 
-> > ASCII stats are not scalable. A binary format is definitely the way to go.
-> 
-> I am totally in favor of having a binary format, but it should be
-> introduced as a separate series on top of this one---and preferably by
-> someone who has already put some thought into the problem (which
-> Emanuele and I have not, beyond ensuring that the statsfs concept and
-> API is flexible enough).
-> 
+May be arm32 using all new fancy specification we may come up to solve
+certain areas but continue to use legacy boot/power methods. I may be
+wrong. E.g: Today we enable HAVE_ARM_SMCCC for armv7 and above but not
+all have PSCI enabled.
 
-The concern is that once this series is merged then /sys/kernel/stats 
-could be considered an ABI and there would be a reasonable expectation 
-that it will remain stable, in so far as the stats that userspace is 
-interested in are stable and not obsoleted.
+> If not, then given we can always probe SMCCC from PSCI (for both ACPI
+> and DT), I'd prefer to support only support doing things that way
+> around. i.e. have SMCCC depend on PSCI.
+>
 
-So is this a suggestion that the binary format becomes complementary to 
-statsfs and provide a means for getting all stats from a single subsystem, 
-or that this series gets converted to such a format before it is merged?
+OK, but we still have above config.
 
-> ASCII stats are necessary for quick userspace consumption and for
-> backwards compatibility with KVM debugfs (which is not an ABI, but it's
-> damn useful and should not be dropped without providing something as
-> handy), so this is what this series starts from.
-> 
+> Otherwise I suspect we're inviting more problems than a dependency on
+> PSCI.
+>
+
+Agreed and I am happy to keep it as is.
+
+--
+Regards,
+Sudeep
