@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B3421C5942
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA38D1C585D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:13:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729441AbgEEONx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:13:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48528 "EHLO
+        id S1729462AbgEEON5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:13:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729372AbgEEONt (ORCPT
+        by vger.kernel.org with ESMTP id S1729421AbgEEONv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:13:49 -0400
+        Tue, 5 May 2020 10:13:51 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F04CEC061A10
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:13:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2400EC061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:13:51 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jVyK0-0000LM-Eb; Tue, 05 May 2020 16:13:20 +0200
+        id 1jVyK1-0000MB-UN; Tue, 05 May 2020 16:13:22 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id E3E31FFC8D;
-        Tue,  5 May 2020 16:13:19 +0200 (CEST)
-Message-Id: <20200505134058.560059744@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 2D109FFC8D;
+        Tue,  5 May 2020 16:13:21 +0200 (CEST)
+Message-Id: <20200505134058.651504242@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 05 May 2020 15:16:07 +0200
+Date:   Tue, 05 May 2020 15:16:08 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -45,8 +45,7 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Will Deacon <will@kernel.org>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch V4 part 1 05/36] x86/entry: Flip _TIF_SIGPENDING and
- _TIF_NOTIFY_RESUME handling
+Subject: [patch V4 part 1 06/36] compiler: Simple READ/WRITE_ONCE() implementations
 References: <20200505131602.633487962@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -59,37 +58,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make sure task_work runs before any kind of userspace -- very much
-including signals -- is invoked.
+READ/WRITE_ONCE_NOCHECK() is required for atomics in code which cannot be
+instrumented like the x86 int3 text poke code. As READ/WRITE_ONCE() is
+undergoing a rewrite, provide __{READ,WRITE}_ONCE_SCALAR().
 
-Suggested-by: Andy Lutomirski <luto@kernel.org>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/entry/common.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ include/linux/compiler.h |    8 ++++++++
+ 1 file changed, 8 insertions(+)
 
---- a/arch/x86/entry/common.c
-+++ b/arch/x86/entry/common.c
-@@ -156,16 +156,16 @@ static void exit_to_usermode_loop(struct
- 		if (cached_flags & _TIF_PATCH_PENDING)
- 			klp_update_patch_state(current);
+--- a/include/linux/compiler.h
++++ b/include/linux/compiler.h
+@@ -313,6 +313,14 @@ unsigned long read_word_at_a_time(const
+ 	__u.__val;					\
+ })
  
--		/* deal with pending signal delivery */
--		if (cached_flags & _TIF_SIGPENDING)
--			do_signal(regs);
--
- 		if (cached_flags & _TIF_NOTIFY_RESUME) {
- 			clear_thread_flag(TIF_NOTIFY_RESUME);
- 			tracehook_notify_resume(regs);
- 			rseq_handle_notify_resume(NULL, regs);
- 		}
- 
-+		/* deal with pending signal delivery */
-+		if (cached_flags & _TIF_SIGPENDING)
-+			do_signal(regs);
++#define __READ_ONCE_SCALAR(x)				\
++	(*(const volatile typeof(x) *)&(x))
 +
- 		if (cached_flags & _TIF_USER_RETURN_NOTIFY)
- 			fire_user_return_notifiers();
- 
++#define __WRITE_ONCE_SCALAR(x, val)			\
++do {							\
++	*(volatile typeof(x) *)&(x) = val;		\
++} while (0)
++
+ /**
+  * data_race - mark an expression as containing intentional data races
+  *
 
