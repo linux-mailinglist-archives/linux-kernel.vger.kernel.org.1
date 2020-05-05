@@ -2,91 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD76E1C5A08
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:50:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BFE51C5A0D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:51:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729545AbgEEOug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:50:36 -0400
-Received: from mout.kundenserver.de ([212.227.17.10]:42959 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729332AbgEEOuf (ORCPT
+        id S1729591AbgEEOvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:51:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729142AbgEEOvR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:50:35 -0400
-Received: from mail-qk1-f172.google.com ([209.85.222.172]) by
- mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MfZDK-1iuhCk00VM-00fxiN; Tue, 05 May 2020 16:50:34 +0200
-Received: by mail-qk1-f172.google.com with SMTP id i14so2481696qka.10;
-        Tue, 05 May 2020 07:50:33 -0700 (PDT)
-X-Gm-Message-State: AGi0PuYMK1Z5O7Lw3eOlNezFBug99HhG7qCIsvsG+rcLi3zrpBdCxkVl
-        vhsx8+AdyKCS6gV/qVrWzc37WbVf9uKLCjaoEcw=
-X-Google-Smtp-Source: APiQypJLyiXCJC5P9f6z2L3iZlBe5oRvFHw9Gwp3hVkojbjzPuoDSdiHrFCZeHWjvZ6SiDNDEMJvgXleWYPp8TYCh3o=
-X-Received: by 2002:a37:a492:: with SMTP id n140mr4053709qke.352.1588690232807;
- Tue, 05 May 2020 07:50:32 -0700 (PDT)
+        Tue, 5 May 2020 10:51:17 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69943C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:51:17 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id s18so1109988pgl.12
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 07:51:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=M2EXFFKRgen9dOdoaNmpWiHUyjNR6THbe0hOWRO7mK8=;
+        b=D7fddasAWnayCiXP2vHn30lJiXBOJv2aUiHOdfJde4gO8WX1JRBXjaUsSh2f8mxYla
+         4Vcx3Lj7+2jFSZozWlZUqJ4F/wBJeDLYJdvLg7VanqP07JlBBqtkBCqZZBIGaBx+ozlG
+         1CWshZSJFrUHiODphYd2AfN9t9lUsX3GgK4i4aGC1nbA1xu/8yhuTNkbYYH95w8mrY6G
+         wPAc0l7d1YO0y2OmI1XmbtlFcZaMGMBON7c84uuWbYjK6CgU8A3QCP2bD3UK4x38AqKg
+         OkLqZ+ZQlbycqkgaaImtw/veRODLqWCXNa3yJJ4Mq21juD5AOLy9wI9SpzCSNPT0yRF1
+         TIbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=M2EXFFKRgen9dOdoaNmpWiHUyjNR6THbe0hOWRO7mK8=;
+        b=rrLxEvCYliyDUi/I4n0corDa4xGmaPp7fEvybjgqjRAzttxoL7y0OSm4dbLy3yk7rQ
+         verfk/WzP06kRWDtcloDWjxcZ0Qd5caHOfBd11Yoog5yQS350Ox3mzIZLu/OUqTQt7nR
+         wmwFOvHcFev2/YXEiTYAS/QQsPGXbc8YWwplYM30sLHvnKW2Rj/0ZnFDgarZFntGUG8C
+         M9MIsOy5UCFl947E8s4GW5ShnAa+2A4tVEvRnf+45KcJGi/s+9V6tYDqASPLK8nap6nR
+         3csnmqYC+6j4fPn32IDsdwUGrZemg3u9yH92kdWrq5MMYiidfr1LkAJv67LCW3JCbpAB
+         cdtQ==
+X-Gm-Message-State: AGi0Pua5ETW//5vt38yWZFbfnBVqdbC9etOThh9JAO3p1tlpMeIMF0zp
+        BnvAUfKAzOx/uvPFnWjYa+QndiEo05rlFw==
+X-Google-Smtp-Source: APiQypLWT/eT6bBlOmzsdnLhfcWjUIOGYmmUvs4tqBFlqETjzRpH8Cy+o7M1d/EQm2xTC6ZHMmnHZw==
+X-Received: by 2002:a63:da10:: with SMTP id c16mr3216084pgh.208.1588690276578;
+        Tue, 05 May 2020 07:51:16 -0700 (PDT)
+Received: from [192.168.1.7] ([120.244.110.63])
+        by smtp.gmail.com with ESMTPSA id x185sm2293389pfx.155.2020.05.05.07.51.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 May 2020 07:51:15 -0700 (PDT)
+Subject: Re: [v2] fs: jfs: fix a possible data race in metapage_writepage()
+To:     Markus Elfring <Markus.Elfring@web.de>,
+        Jia-Ju Bai <baijiaju1990@gmail.com>,
+        jfs-discussion@lists.sourceforge.net
+Cc:     Dave Kleikamp <shaggy@kernel.org>, linux-kernel@vger.kernel.org
+References: <20200505135313.28793-1-baijiaju1990@gmail.com>
+ <d3e126df-e7f6-00bd-aa3c-ea39fcd1582e@web.de>
+ <05f9211d-6f57-b613-b584-a6d84b163645@gmail.com>
+ <074b3682-054a-d2ec-8142-1d87e1e97ed6@web.de>
+From:   Jia-Ju Bai <baijiaju1990@gmail.com>
+Message-ID: <10f050ee-1b73-d015-ab57-fa0a3b59577b@gmail.com>
+Date:   Tue, 5 May 2020 22:50:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-References: <20200429112834.24908-1-vincenzo.frascino@arm.com>
-In-Reply-To: <20200429112834.24908-1-vincenzo.frascino@arm.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 5 May 2020 16:50:16 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3u05wF1DT3Wnvmapc0jixu+gp_YG=KTEN9-n4JedJ9BA@mail.gmail.com>
-Message-ID: <CAK8P3a3u05wF1DT3Wnvmapc0jixu+gp_YG=KTEN9-n4JedJ9BA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] kselftest: Extend vDSO tests
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:c+CoYMx96cdZ0BvJpcEUhP+izzQf2qvPczyfYmJz90MuGAgBsFT
- jMfPdM/yEXK6SbuaMAXipzXZXbg9jzWgLtqb5cq23xc3G1qDCAC26tG0i2ms1ynjdaL16yT
- Gsy3YA72u/etcYVllRjoALQnvRwURDjVhGfE67JxB/QZcVhj07nZcU2MXvmkPQTReeeO175
- bgz31FynO1mfcYliXp3LQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:m1zBxUvWGYA=:iKJeMF58+W+tPtenU7nQfr
- RShj67StJ+z1sMcqv1ktsa3z+JilpsJM9Cmm8mE2Tn8Uup0xQT1jMEMvuNFiEqb1IADFMtgJX
- 6vBe5SphWkLYD89hf22tEyLsVMV8QiW199qDf0zXdNb8mEzk/LJV2bXToEJC29HHanaW9RCsO
- Tp6yUnzfnatsPIU3i/5iYceQvbksnY6nV76aIiobxrxd3nEa6183uGyRDid7zP8ohO+JRXwK4
- 6aAhL7W16tux6BZtG2e3et6eSXFnHdEg60M1euyTqF0MFsFbUNJR6WSdMuVTWbipZNVQPm76n
- 4heHXtPoRrY2hLDnRJ2yv9ibzZIGYDEMCMTfKDCQBQgpBwOdyg5gMhYB1bKpFQhyebKI616nC
- F2HziDjqUQHVcsfIUVxIdo5qYcD/mG18NEwz53hGZJ4LniYkuU2Eeq4wp3AbV721uClxpaPws
- BtBrPKgdlflUZ5DGak/Awm+vnlRYlcHeiEFaAKfQ3uSWpFPuqDU/c7VzSYrvjFe3vCGHQFNyH
- MYwuOi0o+Mv8d//S22gxKA8v6DMiqm5pdnCvXC7WpmuARhyKB8c5CmGhNM61QZAfx6JIxTVeE
- dTO8A8k1/3XWj+5LjpnCyBVyVCgY7ZMCPrXE/XLFc0mToIitWZPARCvP0Qc7oCFtZqc8lj2G3
- YNrNDdW+scRp0Tcz/Ios5W5TRMi71A/2C4DnGgfpZcr/AcQkpRiwnnv6+emDYOva6NNCenY2Y
- pbgfMw9ejR7aB4oRQs1PqFtpIL8I8YmnDmXSv8/zeaFADRgaNzVv82oo7McYT6h/HT67Ah23v
- WAS8xXMlSiKzdKKwvyGZUJiRVaxewl0/VsZtQ0XOZ7q3b7dRzA=
+In-Reply-To: <074b3682-054a-d2ec-8142-1d87e1e97ed6@web.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 1:34 PM Vincenzo Frascino
-<vincenzo.frascino@arm.com> wrote:
->
-> This series extends the kselftests for the vDSO library making sure: that
-> they compile correctly on non x86 platforms, that they can be cross
-> compiled and introducing new tests that verify the correctness of the
-> library.
->
-> The so extended vDSO kselftests have been verified on all the platforms
-> supported by the unified vDSO library [1].
->
-> The only new patch that this series introduces is the first one, patch 2 and
-> patch 3 have already been reviewed in past as part of other series [2] [3].
->
-> [1] https://lore.kernel.org/lkml/20190621095252.32307-1-vincenzo.frascino@arm.com
-> [2] https://lore.kernel.org/lkml/20190621095252.32307-26-vincenzo.frascino@arm.com
-> [3] https://lore.kernel.org/lkml/20190523112116.19233-4-vincenzo.frascino@arm.com
 
-Hi Vincenzo,
 
-Not sure if you are aware of the recent bug report about clock_gettime64()
-returning invalid times on some arm32 kernels:
-https://github.com/raspberrypi/linux/issues/3579
+On 2020/5/5 22:32, Markus Elfring wrote:
+>>>> This data race is found by our concurrency fuzzer.
+>>> * How do you think about to replace the word “is” by “was”?
+>> Okay.
+> Can such a positive feedback influence the change descriptions
+> for any of your other patches?
 
-Regardless of when that gets fixed or by whom, I wonder if kselftest should
-also check for consistency, i.e. call both the vdso and the syscall version of
-clock_gettime() and clock_gettime64() and check that the results are always
-in sequence.
+Okay, sure, thanks for the advice.
+I will resend my patches for jfs.
 
-      Arnd
+
+Best wishes,
+Jia-Ju Bai
