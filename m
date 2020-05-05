@@ -2,166 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BB1A1C4C1F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 04:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05D821C4C31
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 04:33:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728417AbgEECba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 22:31:30 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:10318 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728248AbgEECbK (ORCPT
+        id S1728398AbgEECcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 22:32:53 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:15051 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726926AbgEECcx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 22:31:10 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5eb0cfa80000>; Mon, 04 May 2020 19:30:00 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Mon, 04 May 2020 19:31:10 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Mon, 04 May 2020 19:31:10 -0700
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 5 May
- 2020 02:31:09 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Tue, 5 May 2020 02:31:09 +0000
-Received: from skomatineni-linux.nvidia.com (Not Verified[10.2.165.119]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5eb0cfed0000>; Mon, 04 May 2020 19:31:09 -0700
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-To:     <skomatineni@nvidia.com>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <frankc@nvidia.com>, <hverkuil@xs4all.nl>,
-        <sakari.ailus@iki.fi>, <helen.koike@collabora.com>
-CC:     <digetx@gmail.com>, <sboyd@kernel.org>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-clk@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [RFC PATCH v12 9/9] arm64: tegra: Add Tegra VI CSI support in device tree
-Date:   Mon, 4 May 2020 19:32:00 -0700
-Message-ID: <1588645920-20557-10-git-send-email-skomatineni@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1588645920-20557-1-git-send-email-skomatineni@nvidia.com>
-References: <1588645920-20557-1-git-send-email-skomatineni@nvidia.com>
-X-NVConfidentiality: public
+        Mon, 4 May 2020 22:32:53 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1588645972; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=aWsP1jrgv5VOaBcGYPLjJDNZ7GM9ZWmCxTTYgdbAIYY=;
+ b=cZvRbE58igWDnlPdPtJqq7I1aOuqoNOq+mGkXiBcm2evBXA0CRlnHHW2OQ3a0Ttq6LikAgn6
+ sHHp4PYGuEUKKMyHyfym2glzgRgzU01ZT2OdFQ41WFKFxgvKyENBI05rE99F2vORGKrKZcpt
+ nuug/0MQOJqkg4k/HT7VGMZ5F1I=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3A4F5C433BA; Tue,  5 May 2020 02:32:42 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id ACAD7C433D2;
+        Tue,  5 May 2020 02:32:41 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1588645800; bh=KeDdlR1PlG/B+fOIQclITDrK2+s83pkYXD2xGrMkd0E=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         In-Reply-To:References:X-NVConfidentiality:MIME-Version:
-         Content-Type;
-        b=YKFXp/aKcwXyFZ5sUf84njXm1DQucgNhENEBOyz4ms3ocGEhLgbq9CNKILyjIfplE
-         ytfBygFsjtqfIPONsD++rg7UygTXcZh2oqxkBTfgUHN9/rbfl8w8jUbk6aggn8VoQj
-         fJ8iwgpYLEp6rg1jtiSTzRKAATOvTWZE1BHNY2h9Y4ANlYcwwea6KhkTgOAK2msPT9
-         xMZrao8YwZpcqC5jCRnFsyI0OUAW21e7BjMk48XbrdUzLNpo6dwUIfvw+vv4/cW4/W
-         R9BFh7Z9LOIq8hijUETwF6gdCKVDURDyZZyIvpgaFquCxpvfez5bePDmXgoljb/8jK
-         3nsGPsd//ZKEw==
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 04 May 2020 19:32:41 -0700
+From:   bbhatt@codeaurora.org
+To:     Jeffrey Hugo <jhugo@codeaurora.org>
+Cc:     mani@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, hemantk@codeaurora.org
+Subject: Re: [PATCH v4 8/8] bus: mhi: core: Ensure non-zero session or
+ sequence ID values are used
+In-Reply-To: <2a249d99-b1e7-7943-0ed4-d5529f7abc33@codeaurora.org>
+References: <1588386725-1165-1-git-send-email-bbhatt@codeaurora.org>
+ <1588386725-1165-9-git-send-email-bbhatt@codeaurora.org>
+ <2a249d99-b1e7-7943-0ed4-d5529f7abc33@codeaurora.org>
+Message-ID: <623c100dc1850c8d8f9a6412d7153fd1@codeaurora.org>
+X-Sender: bbhatt@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tegra210 contains VI controller for video input capture from MIPI
-CSI camera sensors and also supports built-in test pattern generator.
+On 2020-05-04 07:33, Jeffrey Hugo wrote:
+> On 5/1/2020 8:32 PM, Bhaumik Bhatt wrote:
+>> While writing any sequence or session identifiers, it is possible that
+>> the host could write a zero value, whereas only non-zero values should
+>> be supported writes to those registers. Ensure that the host does not
+>> write a non-zero value for them and also log them in debug messages.
+>> 
+>> Suggested-by: Jeffrey Hugo <jhugo@codeaurora.org>
+>> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+>> ---
+>>   drivers/bus/mhi/core/boot.c     | 15 +++++++--------
+>>   drivers/bus/mhi/core/internal.h |  1 +
+>>   2 files changed, 8 insertions(+), 8 deletions(-)
+>> 
+>> diff --git a/drivers/bus/mhi/core/boot.c b/drivers/bus/mhi/core/boot.c
+>> index e5fcde1..9fe9c59 100644
+>> --- a/drivers/bus/mhi/core/boot.c
+>> +++ b/drivers/bus/mhi/core/boot.c
+>> @@ -43,10 +43,7 @@ void mhi_rddm_prepare(struct mhi_controller 
+>> *mhi_cntrl,
+>>   		      lower_32_bits(mhi_buf->dma_addr));
+>>     	mhi_write_reg(mhi_cntrl, base, BHIE_RXVECSIZE_OFFS, 
+>> mhi_buf->len);
+>> -	sequence_id = prandom_u32() & BHIE_RXVECSTATUS_SEQNUM_BMSK;
+>> -
+>> -	if (unlikely(!sequence_id))
+>> -		sequence_id = 1;
+>> +	sequence_id = (MHI_RANDOM_U32_NONZERO & 
+>> BHIE_RXVECSTATUS_SEQNUM_BMSK);
+> 
+> I don't think this math works.  For example, if MHI_RANDOM_U32_NONZERO
+> is 0x0FF0, and BHIE_RXVECSTATUS_SEQNUM_BMSK is 0xF, then sequence_id
+> will end up being 0.
 
-CSI ports can be one-to-one mapped to VI channels for capturing from
-an external sensor or from built-in test pattern generator.
+In this case, SEQNUM BMSK is set to 0x3FFFFFFF so this change will still 
+work as
+we only supplied a non-zero number macro to AND with the mask.
+However, I agree that may not be the case always that we would know the 
+bitmask
+in advance so it is better to fix it for good.
 
-This patch adds support for VI and CSI and enables them in Tegra210
-device tree.
-
-Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
----
- arch/arm64/boot/dts/nvidia/tegra210-p2597.dtsi | 10 ++++++
- arch/arm64/boot/dts/nvidia/tegra210.dtsi       | 46 +++++++++++++++++++++++++-
- 2 files changed, 55 insertions(+), 1 deletion(-)
-
-diff --git a/arch/arm64/boot/dts/nvidia/tegra210-p2597.dtsi b/arch/arm64/boot/dts/nvidia/tegra210-p2597.dtsi
-index 313a4c2..b57d837 100644
---- a/arch/arm64/boot/dts/nvidia/tegra210-p2597.dtsi
-+++ b/arch/arm64/boot/dts/nvidia/tegra210-p2597.dtsi
-@@ -14,6 +14,16 @@
- 			status = "okay";
- 		};
- 
-+		vi@54080000 {
-+			status = "okay";
-+
-+			avdd-dsi-csi-supply = <&vdd_dsi_csi>;
-+
-+			csi@838 {
-+				status = "okay";
-+			};
-+		};
-+
- 		sor@54580000 {
- 			status = "okay";
- 
-diff --git a/arch/arm64/boot/dts/nvidia/tegra210.dtsi b/arch/arm64/boot/dts/nvidia/tegra210.dtsi
-index 29a43d7..2a02b76 100644
---- a/arch/arm64/boot/dts/nvidia/tegra210.dtsi
-+++ b/arch/arm64/boot/dts/nvidia/tegra210.dtsi
-@@ -137,9 +137,44 @@
- 
- 		vi@54080000 {
- 			compatible = "nvidia,tegra210-vi";
--			reg = <0x0 0x54080000 0x0 0x00040000>;
-+			reg = <0x0 0x54080000 0x0 0x700>;
- 			interrupts = <GIC_SPI 69 IRQ_TYPE_LEVEL_HIGH>;
- 			status = "disabled";
-+			assigned-clocks = <&tegra_car TEGRA210_CLK_VI>;
-+			assigned-clock-parents = <&tegra_car TEGRA210_CLK_PLL_C4_OUT0>;
-+
-+			clocks = <&tegra_car TEGRA210_CLK_VI>;
-+			power-domains = <&pd_venc>;
-+
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+
-+			ranges = <0x0 0x0 0x54080000 0x2000>;
-+
-+			csi@838 {
-+				compatible = "nvidia,tegra210-csi";
-+				reg = <0x838 0x1300>;
-+				status = "disabled";
-+				assigned-clocks = <&tegra_car TEGRA210_CLK_CILAB>,
-+						  <&tegra_car TEGRA210_CLK_CILCD>,
-+						  <&tegra_car TEGRA210_CLK_CILE>,
-+						  <&tegra_car TEGRA210_CLK_CSI_TPG>;
-+				assigned-clock-parents = <&tegra_car TEGRA210_CLK_PLL_P>,
-+							 <&tegra_car TEGRA210_CLK_PLL_P>,
-+							 <&tegra_car TEGRA210_CLK_PLL_P>;
-+				assigned-clock-rates = <102000000>,
-+						       <102000000>,
-+						       <102000000>,
-+						       <972000000>;
-+
-+				clocks = <&tegra_car TEGRA210_CLK_CSI>,
-+					 <&tegra_car TEGRA210_CLK_CILAB>,
-+					 <&tegra_car TEGRA210_CLK_CILCD>,
-+					 <&tegra_car TEGRA210_CLK_CILE>,
-+					 <&tegra_car TEGRA210_CLK_CSI_TPG>;
-+				clock-names = "csi", "cilab", "cilcd", "cile", "csi_tpg";
-+				power-domains = <&pd_sor>;
-+			};
- 		};
- 
- 		tsec@54100000 {
-@@ -839,6 +874,15 @@
- 				reset-names = "vic";
- 				#power-domain-cells = <0>;
- 			};
-+
-+			pd_venc: venc {
-+				clocks = <&tegra_car TEGRA210_CLK_VI>,
-+					 <&tegra_car TEGRA210_CLK_CSI>;
-+				resets = <&mc TEGRA210_MC_RESET_VI>,
-+					 <&tegra_car TEGRA210_RST_VI>,
-+					 <&tegra_car TEGRA210_CLK_CSI>;
-+				#power-domain-cells = <0>;
-+			};
- 		};
- 
- 		sdmmc1_3v3: sdmmc1-3v3 {
--- 
-2.7.4
-
+Thanks for the catch! I have updated the change to have the macro take 
+the
+bitmask as a parameter and output a non-zero value.
