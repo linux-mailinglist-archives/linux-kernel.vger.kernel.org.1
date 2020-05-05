@@ -2,327 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FA6D1C5764
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 15:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 408F01C589F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:17:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729071AbgEENt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 09:49:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44718 "EHLO
+        id S1730152AbgEEOQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:16:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728180AbgEENt6 (ORCPT
+        by vger.kernel.org with ESMTP id S1730133AbgEEOQc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 09:49:58 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34F81C061A0F;
-        Tue,  5 May 2020 06:49:58 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id j21so1045683pgb.7;
-        Tue, 05 May 2020 06:49:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9MCIO2OCfMOgmV5WblJ/wi27KouMeCD72GUlRx7Mb+U=;
-        b=lYXFjuSEZ4adi7eHR0YNXLGvq1LdV3DVgdyuGbLYR/w4rHXXccdvf4YLmlBQNKX/0d
-         u1Jj124H0EvE3WsYlxIiZVLPSIgpACDohDmsvOAiHSNTx721tSx2gKvKTu/vvaczOSXd
-         ON+d0rpMccVye8GPS/8Ud9oQUbXN/bBkBj0JbyLzZAwdd4C8QlYdYqw5OHZRj034VmTA
-         TkjsX1rg5TID1NYAIAizVjigOC0rtPhFuSxmpVzLPWNd1QtLkx5RVTMK8+SOp9RzLpG+
-         bDshL/yqRl/K8TlZXtCPssIABxehIoWVUj9d8Xl6QdEDrAYmXupJPDJE7c9IahntKT2V
-         MP3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9MCIO2OCfMOgmV5WblJ/wi27KouMeCD72GUlRx7Mb+U=;
-        b=mdZwIs068b6A/mjqB1AshCbqm86nI6Ldywy7Ebw6zANzqa60QHxD2CnYsv2T2pXH0G
-         Ut2Z96O71DS1Nh2k/3mUq8ITctoRhhWfFiIueHr1Tk05b790YwO/xQBj2R+Iv7W3HUP/
-         oezZ56urZIFbCxpIGaWXocCmSq9HPEpISDX7p2gnSFzdovh83ghpmLWNyPhzLZjO7u+I
-         y/1cuqmleqLx6syeVU8Nc2fZnO/5GmK5Tg9VgSBCTQO/PZLLfeq3hbMZzhwSwUGUQzyv
-         3SEY+M9nk9NayM1VlV2yxYO92AJJd9uSlraP9dDqdvq9/VYiHs9jtx46PpiZ3oOeqB2N
-         breA==
-X-Gm-Message-State: AGi0PuZ9TJ1tabC3m5xa1Kp93s6gd7azIonpTj4UuTeS/GrQ1wCXxBCJ
-        pyyi7lJCi/rGhefQmfVy5KfcI1ajpyVnBnztmq916RBZUGs=
-X-Google-Smtp-Source: APiQypLEjjkNBYqDj1xIa1IS20Q1twTdcOnA68o6+brisIVbghPEqqR8qaQvl3R23uiKsniAbHKbPYMgjmDuIoyZm6Y=
-X-Received: by 2002:a62:5ec7:: with SMTP id s190mr3158550pfb.130.1588686597629;
- Tue, 05 May 2020 06:49:57 -0700 (PDT)
+        Tue, 5 May 2020 10:16:32 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96314C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:16:32 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jVyMo-0002CU-FY; Tue, 05 May 2020 16:16:14 +0200
+Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 01E521001F5;
+        Tue,  5 May 2020 16:16:14 +0200 (CEST)
+Message-Id: <20200505135315.686797857@linutronix.de>
+User-Agent: quilt/0.65
+Date:   Tue, 05 May 2020 15:49:50 +0200
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>
+Subject: [patch V4 part 4 24/24] x86/entry: Convert double fault exception to
+ IDTENTRY_DF
+References: <20200505134926.578885807@linutronix.de>
 MIME-Version: 1.0
-References: <20200505013206.11223-1-david.e.box@linux.intel.com>
- <20200505023149.11630-1-david.e.box@linux.intel.com> <20200505023149.11630-2-david.e.box@linux.intel.com>
-In-Reply-To: <20200505023149.11630-2-david.e.box@linux.intel.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 5 May 2020 16:49:50 +0300
-Message-ID: <CAHp75VdnVg7q-Nr-3cO-NyKzk0ckfauOso3yDM4qUF3ofSK_VQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] platform/x86: Intel PMT Telemetry capability driver
-To:     "David E. Box" <david.e.box@linux.intel.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Andy Shevchenko <andy@infradead.org>,
-        alexander.h.duyck@intel.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-transfer-encoding: 8-bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 5, 2020 at 5:32 AM David E. Box <david.e.box@linux.intel.com> wrote:
+Convert #DF to IDTENTRY_DF
+  - Implement the C entry point with DEFINE_IDTENTRY_DF
+  - Emit the ASM stub with DECLARE_IDTENTRY_DF on 64bit
+  - Remove the ASM idtentry in 64bit
+  - Adjust the 32bit shim code
+  - Fixup the XEN/PV code
+  - Remove the old prototyoes
+
+No functional change.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+
+---
+ arch/x86/entry/entry_32.S        |    4 ++--
+ arch/x86/entry/entry_64.S        |   10 +---------
+ arch/x86/include/asm/idtentry.h  |    5 +++++
+ arch/x86/include/asm/traps.h     |    7 -------
+ arch/x86/kernel/doublefault_32.c |   10 ++++------
+ arch/x86/kernel/idt.c            |    4 ++--
+ arch/x86/kernel/traps.c          |   17 ++++++++++++++---
+ arch/x86/xen/enlighten_pv.c      |    4 ++--
+ arch/x86/xen/xen-asm_64.S        |    2 +-
+ 9 files changed, 31 insertions(+), 32 deletions(-)
+
+--- a/arch/x86/entry/entry_32.S
++++ b/arch/x86/entry/entry_32.S
+@@ -1489,7 +1489,7 @@ SYM_CODE_START_LOCAL_NOALIGN(handle_exce
+ SYM_CODE_END(handle_exception)
+ 
+ #ifdef CONFIG_DOUBLEFAULT
+-SYM_CODE_START(double_fault)
++SYM_CODE_START(asm_exc_double_fault)
+ 1:
+ 	/*
+ 	 * This is a task gate handler, not an interrupt gate handler.
+@@ -1527,7 +1527,7 @@ SYM_CODE_START(double_fault)
+ 1:
+ 	hlt
+ 	jmp 1b
+-SYM_CODE_END(double_fault)
++SYM_CODE_END(asm_exc_double_fault)
+ #endif
+ 
+ /*
+--- a/arch/x86/entry/entry_64.S
++++ b/arch/x86/entry/entry_64.S
+@@ -681,15 +681,9 @@ SYM_CODE_START(\asmsym)
+ 	call	paranoid_entry
+ 	UNWIND_HINT_REGS
+ 
+-	/* Read CR2 early */
+-	GET_CR2_INTO(%r12);
+-
+-	TRACE_IRQS_OFF
+-
+ 	movq	%rsp, %rdi		/* pt_regs pointer into first argument */
+ 	movq	ORIG_RAX(%rsp), %rsi	/* get error code into 2nd argument*/
+ 	movq	$-1, ORIG_RAX(%rsp)	/* no syscall to restart */
+-	movq	%r12, %rdx		/* Move CR2 into 3rd argument */
+ 	call	\cfunc
+ 
+ 	jmp	paranoid_exit
+@@ -918,7 +912,7 @@ SYM_INNER_LABEL(native_irq_return_iret,
+ 	/*
+ 	 * This may fault.  Non-paranoid faults on return to userspace are
+ 	 * handled by fixup_bad_iret.  These include #SS, #GP, and #NP.
+-	 * Double-faults due to espfix64 are handled in do_double_fault.
++	 * Double-faults due to espfix64 are handled in exc_double_fault.
+ 	 * Other faults here are fatal.
+ 	 */
+ 	iretq
+@@ -1074,8 +1068,6 @@ apicinterrupt IRQ_WORK_VECTOR			irq_work
+ 
+ idtentry	X86_TRAP_PF		page_fault		do_page_fault			has_error_code=1
+ 
+-idtentry_df	X86_TRAP_DF		double_fault		do_double_fault
+-
+ #ifdef CONFIG_XEN_PV
+ idtentry	512 /* dummy */		hypervisor_callback	xen_do_hypervisor_callback	has_error_code=0
+ #endif
+--- a/arch/x86/include/asm/idtentry.h
++++ b/arch/x86/include/asm/idtentry.h
+@@ -380,4 +380,9 @@ DECLARE_IDTENTRY_XEN(X86_TRAP_NMI,	nmi);
+ DECLARE_IDTENTRY_DEBUG(X86_TRAP_DB,	exc_debug);
+ DECLARE_IDTENTRY_XEN(X86_TRAP_DB,	debug);
+ 
++/* #DF */
++#if defined(CONFIG_X86_64) || defined(CONFIG_DOUBLEFAULT)
++DECLARE_IDTENTRY_DF(X86_TRAP_DF,	exc_double_fault);
++#endif
++
+ #endif
+--- a/arch/x86/include/asm/traps.h
++++ b/arch/x86/include/asm/traps.h
+@@ -11,20 +11,13 @@
+ 
+ #define dotraplinkage __visible
+ 
+-#ifdef CONFIG_X86_64
+-asmlinkage void double_fault(void);
+-#endif
+ asmlinkage void page_fault(void);
+ asmlinkage void async_page_fault(void);
+ 
+ #if defined(CONFIG_X86_64) && defined(CONFIG_XEN_PV)
+-asmlinkage void xen_double_fault(void);
+ asmlinkage void xen_page_fault(void);
+ #endif
+ 
+-#if defined(CONFIG_X86_64) || defined(CONFIG_DOUBLEFAULT)
+-dotraplinkage void do_double_fault(struct pt_regs *regs, long error_code, unsigned long cr2);
+-#endif
+ dotraplinkage void do_page_fault(struct pt_regs *regs, unsigned long error_code, unsigned long address);
+ 
+ #ifdef CONFIG_X86_64
+--- a/arch/x86/kernel/doublefault_32.c
++++ b/arch/x86/kernel/doublefault_32.c
+@@ -11,7 +11,6 @@
+ #include <asm/desc.h>
+ #include <asm/traps.h>
+ 
+-extern void double_fault(void);
+ #define ptr_ok(x) ((x) > PAGE_OFFSET && (x) < PAGE_OFFSET + MAXMEM)
+ 
+ #define TSS(x) this_cpu_read(cpu_tss_rw.x86_tss.x)
+@@ -22,7 +21,7 @@ static void set_df_gdt_entry(unsigned in
+  * Called by double_fault with CR0.TS and EFLAGS.NT cleared.  The CPU thinks
+  * we're running the doublefault task.  Cannot return.
+  */
+-asmlinkage notrace void __noreturn doublefault_shim(void)
++asmlinkage noinstr void __noreturn doublefault_shim(void)
+ {
+ 	unsigned long cr2;
+ 	struct pt_regs regs;
+@@ -41,7 +40,7 @@ asmlinkage notrace void __noreturn doubl
+ 	 * Fill in pt_regs.  A downside of doing this in C is that the unwinder
+ 	 * won't see it (no ENCODE_FRAME_POINTER), so a nested stack dump
+ 	 * won't successfully unwind to the source of the double fault.
+-	 * The main dump from do_double_fault() is fine, though, since it
++	 * The main dump from exc_double_fault() is fine, though, since it
+ 	 * uses these regs directly.
+ 	 *
+ 	 * If anyone ever cares, this could be moved to asm.
+@@ -71,7 +70,7 @@ asmlinkage notrace void __noreturn doubl
+ 	regs.cx		= TSS(cx);
+ 	regs.bx		= TSS(bx);
+ 
+-	do_double_fault(&regs, 0, cr2);
++	exc_double_fault(&regs, 0, cr2);
+ 
+ 	/*
+ 	 * x86_32 does not save the original CR3 anywhere on a task switch.
+@@ -85,7 +84,6 @@ asmlinkage notrace void __noreturn doubl
+ 	 */
+ 	panic("cannot return from double fault\n");
+ }
+-NOKPROBE_SYMBOL(doublefault_shim);
+ 
+ DEFINE_PER_CPU_PAGE_ALIGNED(struct doublefault_stack, doublefault_stack) = {
+ 	.tss = {
+@@ -96,7 +94,7 @@ DEFINE_PER_CPU_PAGE_ALIGNED(struct doubl
+ 		.ldt		= 0,
+ 	.io_bitmap_base	= IO_BITMAP_OFFSET_INVALID,
+ 
+-		.ip		= (unsigned long) double_fault,
++		.ip		= (unsigned long) asm_exc_double_fault,
+ 		.flags		= X86_EFLAGS_FIXED,
+ 		.es		= __USER_DS,
+ 		.cs		= __KERNEL_CS,
+--- a/arch/x86/kernel/idt.c
++++ b/arch/x86/kernel/idt.c
+@@ -88,7 +88,7 @@ static const __initconst struct idt_data
+ #ifdef CONFIG_X86_32
+ 	TSKG(X86_TRAP_DF,		GDT_ENTRY_DOUBLEFAULT_TSS),
+ #else
+-	INTG(X86_TRAP_DF,		double_fault),
++	INTG(X86_TRAP_DF,		asm_exc_double_fault),
+ #endif
+ 	INTG(X86_TRAP_DB,		asm_exc_debug),
+ 
+@@ -184,7 +184,7 @@ gate_desc debug_idt_table[IDT_ENTRIES] _
+ static const __initconst struct idt_data ist_idts[] = {
+ 	ISTG(X86_TRAP_DB,	asm_exc_debug,		IST_INDEX_DB),
+ 	ISTG(X86_TRAP_NMI,	asm_exc_nmi,		IST_INDEX_NMI),
+-	ISTG(X86_TRAP_DF,	double_fault,		IST_INDEX_DF),
++	ISTG(X86_TRAP_DF,	asm_exc_double_fault,	IST_INDEX_DF),
+ #ifdef CONFIG_X86_MCE
+ 	ISTG(X86_TRAP_MC,	asm_exc_machine_check,	IST_INDEX_MCE),
+ #endif
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -310,12 +310,19 @@ DEFINE_IDTENTRY_ERRORCODE(exc_alignment_
+  * from the TSS.  Returning is, in principle, okay, but changes to regs will
+  * be lost.  If, for some reason, we need to return to a context with modified
+  * regs, the shim code could be adjusted to synchronize the registers.
++ *
++ * The 32bit #DF shim provides CR2 already as an argument. On 64bit it needs
++ * to be read before doing anything else.
+  */
+-dotraplinkage void do_double_fault(struct pt_regs *regs, long error_code, unsigned long cr2)
++DEFINE_IDTENTRY_DF(exc_double_fault)
+ {
+ 	static const char str[] = "double fault";
+ 	struct task_struct *tsk = current;
+ 
++#ifdef CONFIG_X86_64
++	unsigned long address = read_cr2();
++#endif
++
+ #ifdef CONFIG_X86_ESPFIX64
+ 	extern unsigned char native_irq_return_iret[];
+ 
+@@ -372,6 +379,7 @@ dotraplinkage void do_double_fault(struc
+ #endif
+ 
+ 	nmi_enter();
++	instr_begin();
+ 	notify_die(DIE_TRAP, str, regs, error_code, X86_TRAP_DF, SIGSEGV);
+ 
+ 	tsk->thread.error_code = error_code;
+@@ -415,13 +423,16 @@ dotraplinkage void do_double_fault(struc
+ 	 * stack even if the actual trigger for the double fault was
+ 	 * something else.
+ 	 */
+-	if ((unsigned long)task_stack_page(tsk) - 1 - cr2 < PAGE_SIZE)
+-		handle_stack_overflow("kernel stack overflow (double-fault)", regs, cr2);
++	if ((unsigned long)task_stack_page(tsk) - 1 - address < PAGE_SIZE) {
++		handle_stack_overflow("kernel stack overflow (double-fault)",
++				      regs, address);
++	}
+ #endif
+ 
+ 	pr_emerg("PANIC: double fault, error_code: 0x%lx\n", error_code);
+ 	die("double fault", regs, error_code);
+ 	panic("Machine halted.");
++	instr_end();
+ }
+ #endif
+ 
+--- a/arch/x86/xen/enlighten_pv.c
++++ b/arch/x86/xen/enlighten_pv.c
+@@ -617,7 +617,7 @@ struct trap_array_entry {
+ 
+ static struct trap_array_entry trap_array[] = {
+ 	TRAP_ENTRY_REDIR(exc_debug, exc_xendebug,	true  ),
+-	{ double_fault,                xen_double_fault,                true },
++	TRAP_ENTRY(exc_double_fault,			true  ),
+ #ifdef CONFIG_X86_MCE
+ 	TRAP_ENTRY(exc_machine_check,			true  ),
+ #endif
+@@ -652,7 +652,7 @@ static bool __ref get_trap_addr(void **a
+ 	 * Replace trap handler addresses by Xen specific ones.
+ 	 * Check for known traps using IST and whitelist them.
+ 	 * The debugger ones are the only ones we care about.
+-	 * Xen will handle faults like double_fault, * so we should never see
++	 * Xen will handle faults like double_fault, so we should never see
+ 	 * them.  Warn if there's an unexpected IST-using fault handler.
+ 	 */
+ 	for (nr = 0; nr < ARRAY_SIZE(trap_array); nr++) {
+--- a/arch/x86/xen/xen-asm_64.S
++++ b/arch/x86/xen/xen-asm_64.S
+@@ -37,7 +37,7 @@ xen_pv_trap asm_exc_overflow
+ xen_pv_trap asm_exc_bounds
+ xen_pv_trap asm_exc_invalid_op
+ xen_pv_trap asm_exc_device_not_available
+-xen_pv_trap double_fault
++xen_pv_trap asm_exc_double_fault
+ xen_pv_trap asm_exc_coproc_segment_overrun
+ xen_pv_trap asm_exc_invalid_tss
+ xen_pv_trap asm_exc_segment_not_present
 
-...
-
-> Register mappings are not provided by the driver. Instead, a GUID is read
-> from a header for each endpoint. The GUID identifies the device and is to
-> be used with an XML, provided by the vendor, to discover the available set
-> of metrics and their register mapping.  This allows firmware updates to
-> modify the register space without needing to update the driver every time
-> with new mappings. Firmware writes a new GUID in this case to specify the
-> new mapping.  Software tools with access to the associated XML file can
-> then interpret the changes.
-
-Is old hardware going to support this in the future?
-(I have in mind Apollo Lake / Broxton)
-
-> This module manages access to all PMT Telemetry endpoints on a system,
-> regardless of the device exporting them. It creates an intel_pmt_telem
-
-Name is not the best we can come up with. Would anyone else use PMT?
-Would it be vendor-agnostic ABI?
-(For example, I know that MIPI standardizes tracing protocols, like
-STM, do we have any plans to standardize this one?)
-
-telem -> telemetry.
-
-> class to manage the list. For each endpoint, sysfs files provide GUID and
-> size information as well as a pointer to the parent device the telemetry
-> comes from. Software may discover the association between endpoints and
-> devices by iterating through the list in sysfs, or by looking for the
-> existence of the class folder under the device of interest.  A device node
-> of the same name allows software to then map the telemetry space for direct
-> access.
-
-...
-
-> +       tristate "Intel PMT telemetry driver"
-
-I think user should understand what is it from the title (hint: spell
-PMT fully).
-
-...
-
->  obj-$(CONFIG_PMC_ATOM)                 += pmc_atom.o
-> +obj-$(CONFIG_INTEL_PMT_TELEM)          += intel_pmt_telem.o
-
-Keep this and Kconfig section in order with the other stuff.
-
-...
-
-bits.h?
-
-> +#include <linux/cdev.h>
-> +#include <linux/intel-dvsec.h>
-> +#include <linux/io-64-nonatomic-lo-hi.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/pci.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/slab.h>
-> +#include <linux/uaccess.h>
-> +#include <linux/xarray.h>
-
-...
-
-> +/* platform device name to bind to driver */
-> +#define TELEM_DRV_NAME         "pmt_telemetry"
-
-Shouldn't be part of MFD header?
-
-...
-
-> +#define TELEM_TBIR_MASK                0x7
-
-GENMASK() ?
-
-> +struct pmt_telem_priv {
-> +       struct device                   *dev;
-> +       struct intel_dvsec_header       *dvsec;
-> +       struct telem_header             header;
-> +       unsigned long                   base_addr;
-> +       void __iomem                    *disc_table;
-> +       struct cdev                     cdev;
-> +       dev_t                           devt;
-> +       int                             devid;
-> +};
-
-...
-
-> +       unsigned long phys = priv->base_addr;
-> +       unsigned long pfn = PFN_DOWN(phys);
-> +       unsigned long psize;
-> +
-> +       psize = (PFN_UP(priv->base_addr + priv->header.size) - pfn) * PAGE_SIZE;
-> +       if (vsize > psize) {
-> +               dev_err(priv->dev, "Requested mmap size is too large\n");
-> +               return -EINVAL;
-> +       }
-
-...
-
-
-> +static ssize_t guid_show(struct device *dev, struct device_attribute *attr,
-> +                        char *buf)
-> +{
-> +       struct pmt_telem_priv *priv = dev_get_drvdata(dev);
-> +
-> +       return sprintf(buf, "0x%x\n", priv->header.guid);
-> +}
-
-So, it's not a GUID but rather some custom number? Can we actually do
-a real GUID / UUID here?
-Because of TODO below I suppose it's not carved in stone (yet) and
-basically a protocol defined by firmware (which can be amended).
-
-...
-
-> +       /* TODO: replace with device properties??? */
-
-So, please, fulfill. swnode I guess is what you are looking for.
-
-> +       priv->dvsec = dev_get_platdata(&pdev->dev);
-> +       if (!priv->dvsec) {
-> +               dev_err(&pdev->dev, "Platform data not found\n");
-> +               return -ENODEV;
-> +       }
-
-...
-
-> +       /* Local access and BARID only for now */
-> +       switch (priv->header.access_type) {
-> +       case TELEM_ACCESS_LOCAL:
-> +               if (priv->header.tbir) {
-> +                       dev_err(&pdev->dev,
-> +                               "Unsupported BAR index %d for access type %d\n",
-> +                               priv->header.tbir, priv->header.access_type);
-> +                       return -EINVAL;
-> +               }
-
-> +               fallthrough;
-
-What's the point?
-
-> +
-> +       case TELEM_ACCESS_BARID:
-> +               break;
-> +       default:
-> +               dev_err(&pdev->dev, "Unsupported access type %d\n",
-> +                       priv->header.access_type);
-> +               return -EINVAL;
-> +       }
-
-> +       err = alloc_chrdev_region(&priv->devt, 0, 1, TELEM_DRV_NAME);
-
-err or ret? Be consistent in the module.
-
-> +       if (err < 0) {
-
-' < 0' Do we need it?
-
-> +               dev_err(&pdev->dev,
-> +                       "PMT telemetry chrdev_region err: %d\n", err);
-> +               return err;
-> +       }
-
-...
-
-> +       err = pmt_telem_create_dev(priv);
-> +       if (err < 0)
-
-' < 0' Do we need it?
-
-> +               goto fail_create_dev;
-> +
-> +       return 0;
-
-> +}
-
-...
-
-> +static const struct platform_device_id pmt_telem_table[] = {
-> +       {
-> +               .name = "pmt_telemetry",
-> +       }, {
-> +               /* sentinel */
-> +       }
-
-{ .name = ... },
-{}
-
-is enough.
-
-> +};
-
-...
-
-> +static int __init pmt_telem_init(void)
-> +{
-
-> +       int ret = class_register(&pmt_telem_class);
-> +
-> +       if (ret)
-
-int ret;
-
-ret = ...
-if (ret)
-
-> +               return ret;
-> +
-> +       ret = platform_driver_register(&pmt_telem_driver);
-> +       if (ret)
-> +               class_unregister(&pmt_telem_class);
-> +
-> +       return ret;
-> +}
-
-...
-
-> +{
-
-> +}
-
-> +
-
-Extra blank line.
-
-> +module_init(pmt_telem_init);
-> +module_exit(pmt_telem_exit);
-
-Better to attach to the respective functions.
-
-...
-
-> +#include <linux/intel-dvsec.h>
-
-There is no user of this below, but types.h has users here.
-
-> +/* Telemetry types */
-> +#define PMT_TELEM_TELEMETRY    0
-> +#define PMT_TELEM_CRASHLOG     1
-> +
-> +struct telem_header {
-
-> +       u8      access_type;
-
-If it's part of hardware communication, shouldn't be rather __uXX
-types to show that this is part of protocol between software and
-hardware?
-
-> +       u8      telem_type;
-> +       u16     size;
-> +       u32     guid;
-> +       u32     base_offset;
-> +       u8      tbir;
-> +};
-
-
--- 
-With Best Regards,
-Andy Shevchenko
