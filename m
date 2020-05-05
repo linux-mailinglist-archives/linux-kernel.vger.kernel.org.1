@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3BCA1C58D9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:20:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EC161C58EC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:20:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729379AbgEEOQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:16:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49080 "EHLO
+        id S1730501AbgEEOT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:19:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730032AbgEEOQM (ORCPT
+        by vger.kernel.org with ESMTP id S1730034AbgEEOQM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 5 May 2020 10:16:12 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C61B0C061A10
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:16:11 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2955FC061A10
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:16:12 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jVyMU-0001vg-N3; Tue, 05 May 2020 16:15:54 +0200
+        id 1jVyMW-0001wv-2P; Tue, 05 May 2020 16:15:56 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 2AB3B1001F5;
-        Tue,  5 May 2020 16:15:54 +0200 (CEST)
-Message-Id: <20200505135314.137125609@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 654B9FFC8D;
+        Tue,  5 May 2020 16:15:55 +0200 (CEST)
+Message-Id: <20200505135314.243936614@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 05 May 2020 15:49:34 +0200
+Date:   Tue, 05 May 2020 15:49:35 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -44,7 +44,7 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Will Deacon <will@kernel.org>
-Subject: [patch V4 part 4 08/24] x86/entry: Provide IDTENTRY_IST
+Subject: [patch V4 part 4 09/24] x86/mce: Move nmi_enter/exit() into the entry point
 References: <20200505134926.578885807@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -57,95 +57,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Same as IDTENTRY but for exceptions which run on Interrupt STacks (IST) on
-64bit. For 32bit this maps to IDTENTRY.
-
-There are 3 variants which will be used:
-      IDTENTRY_MCE
-      IDTENTRY_DB
-      IDTENTRY_NMI
-
-These map to IDTENTRY_IST, but only the MCE and DB variants are emitting
-ASM code as the NMI entry needs hand crafted ASM still.
-
-The function defines do not contain any idtenter/exit calls as these
-exceptions need special treatment.
+There is no reason to have nmi_enter/exit() in the actual MCE
+handlers. Move it to the entry point. This also covers the until now
+uncovered initial handler which only prints.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-
-
 ---
- arch/x86/include/asm/idtentry.h |   54 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 54 insertions(+)
+ arch/x86/kernel/cpu/mce/core.c    |   26 +++++++++++++-------------
+ arch/x86/kernel/cpu/mce/p5.c      |    4 ----
+ arch/x86/kernel/cpu/mce/winchip.c |    4 ----
+ 3 files changed, 13 insertions(+), 21 deletions(-)
 
---- a/arch/x86/include/asm/idtentry.h
-+++ b/arch/x86/include/asm/idtentry.h
-@@ -132,6 +132,42 @@ static __always_inline void __##func(str
- #define DEFINE_IDTENTRY_RAW(func)					\
- __visible noinstr void func(struct pt_regs *regs)
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -1100,8 +1100,10 @@ static void mce_clear_state(unsigned lon
+  * kdump kernel establishing a new #MC handler where a broadcasted MCE
+  * might not get handled properly.
+  */
+-static bool __mc_check_crashing_cpu(int cpu)
++static noinstr bool mce_check_crashing_cpu(void)
+ {
++	unsigned int cpu = smp_processor_id();
++
+ 	if (cpu_is_offline(cpu) ||
+ 	    (crashing_cpu != -1 && crashing_cpu != cpu)) {
+ 		u64 mcgstatus;
+@@ -1235,7 +1237,6 @@ void noinstr do_machine_check(struct pt_
+ 	DECLARE_BITMAP(valid_banks, MAX_NR_BANKS);
+ 	DECLARE_BITMAP(toclear, MAX_NR_BANKS);
+ 	struct mca_config *cfg = &mca_cfg;
+-	int cpu = smp_processor_id();
+ 	struct mce m, *final;
+ 	char *msg = NULL;
+ 	int worst = 0;
+@@ -1264,11 +1265,6 @@ void noinstr do_machine_check(struct pt_
+ 	 */
+ 	int lmce = 1;
  
-+#ifdef CONFIG_X86_64
-+/**
-+ * DECLARE_IDTENTRY_IST - Declare functions for IST handling IDT entry points
-+ * @vector:	Vector number (ignored for C)
-+ * @func:	Function name of the entry point
-+ *
-+ * Maps to DECLARE_IDTENTRY_RAW
-+ */
-+#define DECLARE_IDTENTRY_IST(vector, func)				\
-+	DECLARE_IDTENTRY_RAW(vector, func)
+-	if (__mc_check_crashing_cpu(cpu))
+-		return;
+-
+-	nmi_enter();
+-
+ 	this_cpu_inc(mce_exception_count);
+ 
+ 	mce_gather_info(&m, regs);
+@@ -1356,7 +1352,7 @@ void noinstr do_machine_check(struct pt_
+ 	sync_core();
+ 
+ 	if (worst != MCE_AR_SEVERITY && !kill_it)
+-		goto out_ist;
++		return;
+ 
+ 	/* Fault was in user mode and we need to take some action */
+ 	if ((m.cs & 3) == 3) {
+@@ -1373,9 +1369,6 @@ void noinstr do_machine_check(struct pt_
+ 		if (!fixup_exception(regs, X86_TRAP_MC, error_code, 0))
+ 			mce_panic("Failed kernel mode recovery", &m, msg);
+ 	}
+-
+-out_ist:
+-	nmi_exit();
+ }
+ EXPORT_SYMBOL_GPL(do_machine_check);
+ 
+@@ -1912,11 +1905,18 @@ static void unexpected_machine_check(str
+ void (*machine_check_vector)(struct pt_regs *, long error_code) =
+ 						unexpected_machine_check;
+ 
+-dotraplinkage notrace void do_mce(struct pt_regs *regs, long error_code)
++dotraplinkage noinstr void do_mce(struct pt_regs *regs, long error_code)
+ {
++	if (machine_check_vector == do_machine_check &&
++	    mce_check_crashing_cpu())
++		return;
 +
-+/**
-+ * DEFINE_IDTENTRY_IST - Emit code for IST entry points
-+ * @func:	Function name of the entry point
-+ *
-+ * Maps to DEFINE_IDTENTRY_RAW
-+ */
-+#define DEFINE_IDTENTRY_IST(func)					\
-+	DEFINE_IDTENTRY_RAW(func)
++	nmi_enter();
 +
-+#else	/* CONFIG_X86_64 */
-+/* Maps to a regular IDTENTRY on 32bit for now */
-+# define DECLARE_IDTENTRY_IST		DECLARE_IDTENTRY
-+# define DEFINE_IDTENTRY_IST		DEFINE_IDTENTRY
-+#endif	/* !CONFIG_X86_64 */
+ 	machine_check_vector(regs, error_code);
 +
-+/* C-Code mapping */
-+#define DECLARE_IDTENTRY_MCE		DECLARE_IDTENTRY_IST
-+#define DEFINE_IDTENTRY_MCE		DEFINE_IDTENTRY_IST
-+
-+#define DECLARE_IDTENTRY_NMI		DECLARE_IDTENTRY_IST
-+#define DEFINE_IDTENTRY_NMI		DEFINE_IDTENTRY_IST
-+
-+#define DECLARE_IDTENTRY_DEBUG		DECLARE_IDTENTRY_IST
-+#define DEFINE_IDTENTRY_DEBUG		DEFINE_IDTENTRY_IST
-+
- #else /* !__ASSEMBLY__ */
++	nmi_exit();
+ }
+-NOKPROBE_SYMBOL(do_mce);
  
  /*
-@@ -149,6 +185,24 @@ static __always_inline void __##func(str
- #define DECLARE_IDTENTRY_RAW(vector, func)				\
- 	DECLARE_IDTENTRY(vector, func)
+  * Called for each booted CPU to set up machine checks.
+--- a/arch/x86/kernel/cpu/mce/p5.c
++++ b/arch/x86/kernel/cpu/mce/p5.c
+@@ -25,8 +25,6 @@ static void pentium_machine_check(struct
+ {
+ 	u32 loaddr, hi, lotype;
  
-+#ifdef CONFIG_X86_64
-+# define DECLARE_IDTENTRY_MCE(vector, func)				\
-+	idtentry_mce_db vector asm_##func func
-+
-+# define DECLARE_IDTENTRY_DEBUG(vector, func)				\
-+	idtentry_mce_db vector asm_##func func
-+
-+#else
-+# define DECLARE_IDTENTRY_MCE(vector, func)				\
-+	DECLARE_IDTENTRY(vector, func)
-+
-+# define DECLARE_IDTENTRY_DEBUG(vector, func)				\
-+	DECLARE_IDTENTRY(vector, func)
-+#endif
-+
-+/* No ASM code emitted for NMI */
-+#define DECLARE_IDTENTRY_NMI(vector, func)
-+
- #endif /* __ASSEMBLY__ */
+-	nmi_enter();
+-
+ 	rdmsr(MSR_IA32_P5_MC_ADDR, loaddr, hi);
+ 	rdmsr(MSR_IA32_P5_MC_TYPE, lotype, hi);
  
- /*
+@@ -39,8 +37,6 @@ static void pentium_machine_check(struct
+ 	}
+ 
+ 	add_taint(TAINT_MACHINE_CHECK, LOCKDEP_NOW_UNRELIABLE);
+-
+-	nmi_exit();
+ }
+ 
+ /* Set up machine check reporting for processors with Intel style MCE: */
+--- a/arch/x86/kernel/cpu/mce/winchip.c
++++ b/arch/x86/kernel/cpu/mce/winchip.c
+@@ -19,12 +19,8 @@
+ /* Machine check handler for WinChip C6: */
+ static void winchip_machine_check(struct pt_regs *regs, long error_code)
+ {
+-	nmi_enter();
+-
+ 	pr_emerg("CPU0: Machine Check Exception.\n");
+ 	add_taint(TAINT_MACHINE_CHECK, LOCKDEP_NOW_UNRELIABLE);
+-
+-	nmi_exit();
+ }
+ 
+ /* Set up machine check reporting on the Winchip C6 series */
 
