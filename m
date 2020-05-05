@@ -2,102 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F15811C58CB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:18:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2CC91C58BE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:18:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729789AbgEEOSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:18:36 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:54208 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730192AbgEEOQz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:16:55 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 045E4H3k144875;
-        Tue, 5 May 2020 10:16:52 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30sp8juqqw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 May 2020 10:16:52 -0400
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 045E4MUL145111;
-        Tue, 5 May 2020 10:16:51 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30sp8juqnu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 May 2020 10:16:50 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 045EFKbq027122;
-        Tue, 5 May 2020 14:16:48 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma02fra.de.ibm.com with ESMTP id 30s0g5awdq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 May 2020 14:16:47 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 045EFZSd61211098
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 5 May 2020 14:15:35 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6616342041;
-        Tue,  5 May 2020 14:16:45 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A180842042;
-        Tue,  5 May 2020 14:16:44 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.80.200.227])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  5 May 2020 14:16:44 +0000 (GMT)
-Message-ID: <1588688204.5157.5.camel@linux.ibm.com>
-Subject: Re: [RFC PATCH] ima: verify mprotect change is consistent with mmap
- policy
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Jann Horn <jannh@google.com>
-Cc:     linux-integrity@vger.kernel.org,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>
-Date:   Tue, 05 May 2020 10:16:44 -0400
-In-Reply-To: <CAG48ez2PwqoDBx0pkZKFHvMXHNqAc8AfuTR5oPoF-obHqUo0zQ@mail.gmail.com>
-References: <1588627060-7399-1-git-send-email-zohar@linux.ibm.com>
-         <CAG48ez2PwqoDBx0pkZKFHvMXHNqAc8AfuTR5oPoF-obHqUo0zQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.20.5 (3.20.5-1.fc24) 
-Mime-Version: 1.0
+        id S1730305AbgEEORV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:17:21 -0400
+Received: from mail-bn8nam11on2083.outbound.protection.outlook.com ([40.107.236.83]:6194
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729524AbgEEORI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 10:17:08 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iTwMMdSXk86f9sU25Er2ZrmP+IAXOtBmRH6lV6K/C9uEYotthNLSpeixGHFQp/sBN/+Ux4vQzNr/RXkDiRwIZf26EPk5/PMBWt0c/HNLVuE0+BCmdJTHwVPjPy9XhJW2szIoKb5sJd93FEcR6xU6yRQjx0hsoMOY/FjFxN6trgf2Gc+aVfOrAidH+lPgX01q3PZU8Bi4gI8AWA6fcMC3mW+2uGZGlQ/mgz8R5neSNdnhttZlyAuPNJbHYgpWLFswT4JIfXdJ9E1jgTd26IqGggNhhM/54WBjTLAybCHCiqfNIwAscRIsWgKspUoC5Edm0Ys2HOvJ9MtO1fpfHIWssg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sSX4ilqrJ63bGDLmAyA/63T2YgBZrcYZjNEIh/Oqjg8=;
+ b=b1TPWpzqEzEr47DJZdyvorA6ChnxXlaKGKZq3ukAf6g5zNU5qCwMF+IbBF2lRW+3FCNHMVlt3OU09M9kdAvzAMUg++0w2TjRyT6vSby08Ck+Dy8yHVto4T/uqkLzy72ZenBK/JgY6hu3MiCXbZh7WoiH4hkNowsedkfyWEc65Ig9okjAWWjWREWdDLmbCensMci/4j+wmmSwGhdCIASTOra3tNGEnYUDf7FqCVoooJQX6moEyxjLiK4vTIgezccAN9hHY85ApXwta6KLKmL9vT5/b9rnV6lVQ7BRsCu3DHUcgPiPb73zo+N3XtSnB15616zX7hifI7Q4jJamRadE7g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sSX4ilqrJ63bGDLmAyA/63T2YgBZrcYZjNEIh/Oqjg8=;
+ b=NkZP1v5S6GCWMrPk/71nwTcH1wugAOb0nJVrK7u8dl5rYczOP1SIOHtR2SCt86GvXhl9DfbndSxq3T/GajvOI5iypADJQVzj1Wxkx0FHmHsaEXx8Zx67fDUYBOX3Ikq17TIdl8e10XAevn1EcqOxt6ka4JKVkKv79ExztzbCEZs=
+Authentication-Results: googlegroups.com; dkim=none (message not signed)
+ header.d=none;googlegroups.com; dmarc=none action=none header.from=amd.com;
+Received: from DM6PR12MB4401.namprd12.prod.outlook.com (2603:10b6:5:2a9::15)
+ by DM6PR12MB3596.namprd12.prod.outlook.com (2603:10b6:5:3e::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.29; Tue, 5 May
+ 2020 14:17:06 +0000
+Received: from DM6PR12MB4401.namprd12.prod.outlook.com
+ ([fe80::7949:b580:a2d5:f766]) by DM6PR12MB4401.namprd12.prod.outlook.com
+ ([fe80::7949:b580:a2d5:f766%3]) with mapi id 15.20.2979.027; Tue, 5 May 2020
+ 14:17:06 +0000
+Subject: Re: [PATCH] amdgpu: fix integer overflow on 32-bit architectures
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Evan Quan <evan.quan@amd.com>
+Cc:     Hawking Zhang <Hawking.Zhang@amd.com>,
+        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
+        Monk Liu <Monk.Liu@amd.com>,
+        Kent Russell <kent.russell@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+References: <20200505141606.837164-1-arnd@arndb.de>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <e4a852b2-807b-bc73-7328-bcc399341085@amd.com>
+Date:   Tue, 5 May 2020 16:16:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
+In-Reply-To: <20200505141606.837164-1-arnd@arndb.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-05-05_08:2020-05-04,2020-05-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
- malwarescore=0 suspectscore=0 priorityscore=1501 spamscore=0 clxscore=1011
- mlxscore=0 lowpriorityscore=0 mlxlogscore=999 impostorscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2005050109
+Content-Language: en-US
+X-ClientProxiedBy: AM0PR01CA0116.eurprd01.prod.exchangelabs.com
+ (2603:10a6:208:168::21) To DM6PR12MB4401.namprd12.prod.outlook.com
+ (2603:10b6:5:2a9::15)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM0PR01CA0116.eurprd01.prod.exchangelabs.com (2603:10a6:208:168::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.26 via Frontend Transport; Tue, 5 May 2020 14:17:02 +0000
+X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 26815344-3fc2-4d2e-e3db-08d7f0fefd64
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3596:|DM6PR12MB3596:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB3596F390893E330D97A4F0B183A70@DM6PR12MB3596.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
+X-Forefront-PRVS: 0394259C80
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: KaQgGPXlPqwW268N5DGaLZ9UqH2nezz7ZC1jnmahY4OSqUjpJiDYV4F9xq2xE3FFdqGUmD1d16jK887A1MIKz/6OEMWOSFfn0IKqIEg0nT3qhTOUghIwqEdDnAqJjrBcpubl9pKgE2KzdjaSFJPeQM0AJt4eoYVPsVNJtwT+R/theJsGCQHJXaAUGyh6QTRrZJb87eNRmhrAlcc2ycECyMAKUWc776kykoL+DX3d7Y9oJffDMzO4HGI5lxWmA2HAcShxZ8F6crzcS2d6Rymm2B4h2yQWVERSyQdqWY/4TL+nsa6xgfddugFs2HuLr3FdY7xq/QlZ7YsnA8snPi+eBZuQ66iuAvuXrKY1AYwmKmIiMw4qIcfRKL2mz5zffX+ZzyOiQZng2kBI6yAj+ONhp2AHMMiBWVnYQrA/hNc9AXio89iw+sxE2cjj/yoeUmYcYh+GMqkmBodhhcJdcTFH6ufxuZzQhZ+4q22DPIJjAfCz+OS0ClRisE0ZVUK+d7S3PCVwi/PsLVVxHNJwc4GvXg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB4401.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(136003)(376002)(346002)(39860400002)(366004)(33430700001)(478600001)(31686004)(4326008)(6636002)(6486002)(31696002)(33440700001)(16526019)(186003)(86362001)(6666004)(36756003)(54906003)(2616005)(110136005)(66574012)(66476007)(66946007)(2906002)(52116002)(8676002)(5660300002)(66556008)(8936002)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 1vNBnmUD2Ca9zDw1mF4DDeu80iMi3ZbEwYIHARuvVgXRNBu0WT48imymAY2XK5DjQGRjfMKUBugkT75R7aVEXltQADdbvk+sVvOAvEn9+f0NEf0OvEIP+BYa8xQJFQuIO6N9aKl2UYO6RmBjUsJ/jLfINQ9/reALOPr2W7g0+L2Y0LBLJW7IRbMNOiLD/EIQMI+sR0zog3UBqSeBQOpb9xxOxyerByU9Udj4Go4/ndkBmzp8QJmdXAmAQJcY2lEW0OIUV9R+Z8olroB9JCJrIZp9pIy9xUf3TfB/0hzxYsRNJ9z9uRvs8CWEpxNf04e58cimG9t0B5SulAlwgTkAUX5v5Cv9RQ5g8xk0gi4tSItxeCDXYC86z+vFo71pIlDHHKpge5ADYAxPuBkrtrtQIZ5sFIKgRvHG2RG4A9iZg83Kz8ApcpcrkYZ3e6tFtjVb8NF/wYClyD+Cdf9wN5lMK1ybzO3kqUn2lYzTTLqee4BCoiaAfw3jPTM/Ngc0dN7OjwqJ1Mktf42ToutUz/8dgDZk1adLuqwJGO1bV/NM20x9NpzMqAzt9NigybVFtig1EY3CAXnxDF0WtuUtkT1hTHkv/2Y8anf4qv4lNP8fz/3yJRzK2f70755lCVVeXlMZ+pq1owVQKueWdYJOJjQDnwTiYaShcOrzUyKrUZVymsqFM3T16UNXyTBDlTb6qR7ju4gmUlBKiNBzS5ddq3f0mrVuhzPwWsV5eRKLahpdD2x+rTDbclFWmxXQ6FcpvOyrp2Z28oFnk8j48GpoXgI6CxZwATp2NlyqYCtxLyIeftxajHZ5vrLAK0ys6LPH1bKLP4A81W8/7XIkz3UnBXjT4AKmSf96AjGheyoaLk12GP0=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 26815344-3fc2-4d2e-e3db-08d7f0fefd64
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 May 2020 14:17:06.2987
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: IAKBi0sO6PGJCWXmaXaixuWoyWAe6aijK6n5Fp3zqDjNtPz03EK1eWmX04FXsG+M
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3596
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jann,
+Am 05.05.20 um 16:15 schrieb Arnd Bergmann:
+> Multiplying 1000000000 by four overruns a 'long' variable, as clang
+> points out:
+>
+> drivers/gpu/drm/amd/amdgpu/amdgpu_device.c:4160:53: error: overflow in expression; result is -294967296 with type 'long' [-Werror,-Winteger-overflow]
+>                  expires = ktime_get_mono_fast_ns() + NSEC_PER_SEC * 4L;
+>                                                                    ^
+> Make this a 'long long' constant instead.
+>
+> Fixes: 3f12acc8d6d4 ("drm/amdgpu: put the audio codec into suspend state before gpu reset V3")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-On Tue, 2020-05-05 at 02:15 +0200, Jann Horn wrote:
-> On Mon, May 4, 2020 at 11:18 PM Mimi Zohar <zohar@linux.ibm.com> wrote:
-> > Files can be mmap'ed read/write and later changed to execute to circumvent
-> > IMA's mmap appraise policy rules.  Due to locking issues (mmap semaphore
-> > would be taken prior to i_mutex), files can not be measured or appraised at
-> > this point.  Eliminate this integrity gap, by denying the mprotect
-> > PROT_EXECUTE change, if an mmap appraise policy rule exists.
-> 
-> Just keep in mind that there are other ways to create executable
-> mappings containing controlled code; e.g. PROT_EXEC with
-> MAP_ANONYMOUS, or writing to /proc/self/mem (which is a debugging API
-> that works entirely without ever making the VMA writable - I had an
-> old series to provide LSM hooks for that stuff at
-> <https://lore.kernel.org/lkml/1478142286-18427-3-git-send-email-jann@thejh.net/>,
-> but I guess I must have forgotten about it or something...).
+Reviewed-by: Christian König <christian.koenig@amd.com>
 
-Sure.  These sound like memory attacks, which should be closed, but
-are probably out of scope for IMA.
+> ---
+> I'm not sure the ktime_get_mono_fast_ns() call is necessary here
+> either. Is it intentional because ktime_get_ns() doesn't work
+> during a driver suspend, or just a mistake?
+> ---
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> index 6f93af972b0a..2e07e3e6b036 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> @@ -4157,7 +4157,7 @@ static int amdgpu_device_suspend_display_audio(struct amdgpu_device *adev)
+>   		 * the audio controller default autosuspend delay setting.
+>   		 * 4S used here is guaranteed to cover that.
+>   		 */
+> -		expires = ktime_get_mono_fast_ns() + NSEC_PER_SEC * 4L;
+> +		expires = ktime_get_mono_fast_ns() + NSEC_PER_SEC * 4LL;
+>   
+>   	while (!pm_runtime_status_suspended(&(p->dev))) {
+>   		if (!pm_runtime_suspend(&(p->dev)))
 
-thanks,
-
-Mimi
