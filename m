@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BFDF1C5915
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:22:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97EC81C586B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:15:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729619AbgEEOOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:14:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48704 "EHLO
+        id S1729580AbgEEOO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:14:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729595AbgEEOOd (ORCPT
+        by vger.kernel.org with ESMTP id S1729324AbgEEOOR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:14:33 -0400
+        Tue, 5 May 2020 10:14:17 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F1CAC061A0F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:14:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 356EDC061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:14:17 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jVyKb-0000pO-Vn; Tue, 05 May 2020 16:13:58 +0200
+        id 1jVyKd-0000qM-4J; Tue, 05 May 2020 16:13:59 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 5A0C7FFC8D;
-        Tue,  5 May 2020 16:13:57 +0200 (CEST)
-Message-Id: <20200505134101.525508608@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 955E7FFC8D;
+        Tue,  5 May 2020 16:13:58 +0200 (CEST)
+Message-Id: <20200505134101.617130349@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 05 May 2020 15:16:37 +0200
+Date:   Tue, 05 May 2020 15:16:38 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -45,7 +45,8 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Will Deacon <will@kernel.org>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch V4 part 1 35/36] x86: Replace ist_enter() with nmi_enter()
+Subject: [patch V4 part 1 36/36] rcu: Make RCU IRQ enter/exit functions rely
+ on in_nmi()
 References: <20200505131602.633487962@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -58,264 +59,160 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+From: Paul E. McKenney <paulmck@kernel.org>
 
-A few exceptions (like #DB and #BP) can happen at any location in the code,
-this then means that tracers should treat events from these exceptions as
-NMI-like. The interrupted context could be holding locks with interrupts
-disabled for instance.
+The rcu_nmi_enter_common() and rcu_nmi_exit_common() functions take an
+"irq" parameter that indicates whether these functions are invoked from
+an irq handler (irq==true) or an NMI handler (irq==false).  However,
+recent changes have applied notrace to a few critical functions such
+that rcu_nmi_enter_common() and rcu_nmi_exit_common() many now rely
+on in_nmi().  Note that in_nmi() works no differently than before,
+but rather that tracing is now prohibited in code regions where in_nmi()
+would incorrectly report NMI state.
 
-Similarly, #MC is an actual NMI-like exception.
+Therefore remove the "irq" parameter and inlines rcu_nmi_enter_common() and
+rcu_nmi_exit_common() into rcu_nmi_enter() and rcu_nmi_exit(),
+respectively.
 
-All of them use ist_enter() which only concerns itself with RCU, but does
-not do any of the other setup that NMIs need. This means things like:
-
-	printk()
-	  raw_spin_lock_irq(&logbuf_lock);
-	  <#DB/#BP/#MC>
-	     printk()
-	       raw_spin_lock_irq(&logbuf_lock);
-
-are entirely possible (well, not really since printk tries hard to
-play nice, but the concept stands).
-
-So replace ist_enter() with nmi_enter(). Also observe that any nmi_enter()
-caller must be both notrace and NOKPROBE, or in the noinstr text section.
-
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/include/asm/traps.h      |    3 -
- arch/x86/kernel/cpu/mce/core.c    |    5 +-
- arch/x86/kernel/cpu/mce/p5.c      |    5 +-
- arch/x86/kernel/cpu/mce/winchip.c |    5 +-
- arch/x86/kernel/traps.c           |   71 ++++++++------------------------------
- 5 files changed, 24 insertions(+), 65 deletions(-)
+ kernel/rcu/tree.c |   47 +++++++++++++++--------------------------------
+ 1 file changed, 15 insertions(+), 32 deletions(-)
 
---- a/arch/x86/include/asm/traps.h
-+++ b/arch/x86/include/asm/traps.h
-@@ -79,9 +79,6 @@ void smp_spurious_interrupt(struct pt_re
- void smp_error_interrupt(struct pt_regs *regs);
- asmlinkage void smp_irq_move_cleanup_interrupt(void);
- 
--extern void ist_enter(struct pt_regs *regs);
--extern void ist_exit(struct pt_regs *regs);
--
- #ifdef CONFIG_VMAP_STACK
- void __noreturn handle_stack_overflow(const char *message,
- 				      struct pt_regs *regs,
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -43,6 +43,7 @@
- #include <linux/jump_label.h>
- #include <linux/set_memory.h>
- #include <linux/task_work.h>
-+#include <linux/hardirq.h>
- 
- #include <asm/intel-family.h>
- #include <asm/processor.h>
-@@ -1266,7 +1267,7 @@ void noinstr do_machine_check(struct pt_
- 	if (__mc_check_crashing_cpu(cpu))
- 		return;
- 
--	ist_enter(regs);
-+	nmi_enter();
- 
- 	this_cpu_inc(mce_exception_count);
- 
-@@ -1374,7 +1375,7 @@ void noinstr do_machine_check(struct pt_
- 	}
- 
- out_ist:
--	ist_exit(regs);
-+	nmi_exit();
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -627,16 +627,18 @@ noinstr void rcu_user_enter(void)
  }
- EXPORT_SYMBOL_GPL(do_machine_check);
- 
---- a/arch/x86/kernel/cpu/mce/p5.c
-+++ b/arch/x86/kernel/cpu/mce/p5.c
-@@ -7,6 +7,7 @@
- #include <linux/kernel.h>
- #include <linux/types.h>
- #include <linux/smp.h>
-+#include <linux/hardirq.h>
- 
- #include <asm/processor.h>
- #include <asm/traps.h>
-@@ -24,7 +25,7 @@ static void pentium_machine_check(struct
- {
- 	u32 loaddr, hi, lotype;
- 
--	ist_enter(regs);
-+	nmi_enter();
- 
- 	rdmsr(MSR_IA32_P5_MC_ADDR, loaddr, hi);
- 	rdmsr(MSR_IA32_P5_MC_TYPE, lotype, hi);
-@@ -39,7 +40,7 @@ static void pentium_machine_check(struct
- 
- 	add_taint(TAINT_MACHINE_CHECK, LOCKDEP_NOW_UNRELIABLE);
- 
--	ist_exit(regs);
-+	nmi_exit();
- }
- 
- /* Set up machine check reporting for processors with Intel style MCE: */
---- a/arch/x86/kernel/cpu/mce/winchip.c
-+++ b/arch/x86/kernel/cpu/mce/winchip.c
-@@ -6,6 +6,7 @@
- #include <linux/interrupt.h>
- #include <linux/kernel.h>
- #include <linux/types.h>
-+#include <linux/hardirq.h>
- 
- #include <asm/processor.h>
- #include <asm/traps.h>
-@@ -18,12 +19,12 @@
- /* Machine check handler for WinChip C6: */
- static void winchip_machine_check(struct pt_regs *regs, long error_code)
- {
--	ist_enter(regs);
-+	nmi_enter();
- 
- 	pr_emerg("CPU0: Machine Check Exception.\n");
- 	add_taint(TAINT_MACHINE_CHECK, LOCKDEP_NOW_UNRELIABLE);
- 
--	ist_exit(regs);
-+	nmi_exit();
- }
- 
- /* Set up machine check reporting on the Winchip C6 series */
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -37,10 +37,12 @@
- #include <linux/mm.h>
- #include <linux/smp.h>
- #include <linux/io.h>
-+#include <linux/hardirq.h>
-+#include <linux/atomic.h>
-+
- #include <asm/stacktrace.h>
- #include <asm/processor.h>
- #include <asm/debugreg.h>
--#include <linux/atomic.h>
- #include <asm/text-patching.h>
- #include <asm/ftrace.h>
- #include <asm/traps.h>
-@@ -82,41 +84,6 @@ static inline void cond_local_irq_disabl
- 		local_irq_disable();
- }
+ #endif /* CONFIG_NO_HZ_FULL */
  
 -/*
-- * In IST context, we explicitly disable preemption.  This serves two
-- * purposes: it makes it much less likely that we would accidentally
-- * schedule in IST context and it will force a warning if we somehow
-- * manage to schedule by accident.
-- */
--void ist_enter(struct pt_regs *regs)
--{
--	if (user_mode(regs)) {
--		RCU_LOCKDEP_WARN(!rcu_is_watching(), "entry code didn't wake RCU");
--	} else {
--		/*
--		 * We might have interrupted pretty much anything.  In
--		 * fact, if we're a machine check, we can even interrupt
--		 * NMI processing.  We don't want in_nmi() to return true,
--		 * but we need to notify RCU.
--		 */
--		rcu_nmi_enter();
--	}
--
--	preempt_disable();
--
--	/* This code is a bit fragile.  Test it. */
--	RCU_LOCKDEP_WARN(!rcu_is_watching(), "ist_enter didn't work");
--}
--NOKPROBE_SYMBOL(ist_enter);
--
--void ist_exit(struct pt_regs *regs)
--{
--	preempt_enable_no_resched();
--
--	if (!user_mode(regs))
--		rcu_nmi_exit();
--}
--
- int is_valid_bugaddr(unsigned long addr)
++/**
++ * rcu_nmi_exit - inform RCU of exit from NMI context
++ *
+  * If we are returning from the outermost NMI handler that interrupted an
+  * RCU-idle period, update rdp->dynticks and rdp->dynticks_nmi_nesting
+  * to let the RCU grace-period handling know that the CPU is back to
+  * being RCU-idle.
+  *
+- * If you add or remove a call to rcu_nmi_exit_common(), be sure to test
++ * If you add or remove a call to rcu_nmi_exit(), be sure to test
+  * with CONFIG_RCU_EQS_DEBUG=y.
+  */
+-static __always_inline void rcu_nmi_exit_common(bool irq)
++noinstr void rcu_nmi_exit(void)
  {
- 	unsigned short ud;
-@@ -366,7 +333,7 @@ dotraplinkage void do_double_fault(struc
- 	 * The net result is that our #GP handler will think that we
- 	 * entered from usermode with the bad user context.
- 	 *
--	 * No need for ist_enter here because we don't use RCU.
-+	 * No need for nmi_enter() here because we don't use RCU.
- 	 */
- 	if (((long)regs->sp >> P4D_SHIFT) == ESPFIX_PGD_ENTRY &&
- 		regs->cs == __KERNEL_CS &&
-@@ -406,7 +373,7 @@ dotraplinkage void do_double_fault(struc
- 	}
- #endif
+ 	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
  
--	ist_enter(regs);
-+	nmi_enter();
- 	notify_die(DIE_TRAP, str, regs, error_code, X86_TRAP_DF, SIGSEGV);
+@@ -667,7 +669,7 @@ static __always_inline void rcu_nmi_exit
+ 	trace_rcu_dyntick(TPS("Startirq"), rdp->dynticks_nmi_nesting, 0, atomic_read(&rdp->dynticks));
+ 	WRITE_ONCE(rdp->dynticks_nmi_nesting, 0); /* Avoid store tearing. */
  
- 	tsk->thread.error_code = error_code;
-@@ -603,19 +570,13 @@ dotraplinkage void notrace do_int3(struc
- 		return;
+-	if (irq)
++	if (!in_nmi())
+ 		rcu_prepare_for_idle();
+ 	instr_end();
  
- 	/*
--	 * Unlike any other non-IST entry, we can be called from a kprobe in
--	 * non-CONTEXT_KERNEL kernel mode or even during context tracking
--	 * state changes.  Make sure that we wake up RCU even if we're coming
--	 * from kernel code.
--	 *
--	 * This means that we can't schedule even if we came from a
--	 * preemptible kernel context.  That's okay.
-+	 * Unlike any other non-IST entry, we can be called from pretty much
-+	 * any location in the kernel through kprobes -- text_poke() will most
-+	 * likely be handled by poke_int3_handler() above. This means this
-+	 * handler is effectively NMI-like.
- 	 */
--	if (!user_mode(regs)) {
--		rcu_nmi_enter();
--		preempt_disable();
--	}
--	RCU_LOCKDEP_WARN(!rcu_is_watching(), "entry code didn't wake RCU");
-+	if (!user_mode(regs))
-+		nmi_enter();
+@@ -675,22 +677,11 @@ static __always_inline void rcu_nmi_exit
+ 	rcu_dynticks_eqs_enter();
+ 	// ... but is no longer watching here.
  
- #ifdef CONFIG_KGDB_LOW_LEVEL_TRAP
- 	if (kgdb_ll_trap(DIE_INT3, "int3", regs, error_code, X86_TRAP_BP,
-@@ -637,10 +598,8 @@ dotraplinkage void notrace do_int3(struc
- 	cond_local_irq_disable(regs);
- 
- exit:
--	if (!user_mode(regs)) {
--		preempt_enable_no_resched();
--		rcu_nmi_exit();
--	}
-+	if (!user_mode(regs))
-+		nmi_exit();
+-	if (irq)
++	if (!in_nmi())
+ 		rcu_dynticks_task_enter();
  }
- NOKPROBE_SYMBOL(do_int3);
  
-@@ -745,7 +704,7 @@ dotraplinkage void do_debug(struct pt_re
- 	unsigned long dr6;
- 	int si_code;
- 
--	ist_enter(regs);
-+	nmi_enter();
- 
- 	get_debugreg(dr6, 6);
- 	/*
-@@ -838,7 +797,7 @@ dotraplinkage void do_debug(struct pt_re
- 	debug_stack_usage_dec();
- 
- exit:
--	ist_exit(regs);
-+	nmi_exit();
+ /**
+- * rcu_nmi_exit - inform RCU of exit from NMI context
+- *
+- * If you add or remove a call to rcu_nmi_exit(), be sure to test
+- * with CONFIG_RCU_EQS_DEBUG=y.
+- */
+-void noinstr rcu_nmi_exit(void)
+-{
+-	rcu_nmi_exit_common(false);
+-}
+-
+-/**
+  * rcu_irq_exit - inform RCU that current CPU is exiting irq towards idle
+  *
+  * Exit from an interrupt handler, which might possibly result in entering
+@@ -712,7 +703,7 @@ void noinstr rcu_nmi_exit(void)
+ void noinstr rcu_irq_exit(void)
+ {
+ 	lockdep_assert_irqs_disabled();
+-	rcu_nmi_exit_common(true);
++	rcu_nmi_exit();
  }
- NOKPROBE_SYMBOL(do_debug);
  
+ /*
+@@ -801,7 +792,7 @@ void noinstr rcu_user_exit(void)
+ #endif /* CONFIG_NO_HZ_FULL */
+ 
+ /**
+- * rcu_nmi_enter_common - inform RCU of entry to NMI context
++ * rcu_nmi_enter - inform RCU of entry to NMI context
+  * @irq: Is this call from rcu_irq_enter?
+  *
+  * If the CPU was idle from RCU's viewpoint, update rdp->dynticks and
+@@ -810,10 +801,10 @@ void noinstr rcu_user_exit(void)
+  * long as the nesting level does not overflow an int.  (You will probably
+  * run out of stack space first.)
+  *
+- * If you add or remove a call to rcu_nmi_enter_common(), be sure to test
++ * If you add or remove a call to rcu_nmi_enter(), be sure to test
+  * with CONFIG_RCU_EQS_DEBUG=y.
+  */
+-static __always_inline void rcu_nmi_enter_common(bool irq)
++noinstr void rcu_nmi_enter(void)
+ {
+ 	long incby = 2;
+ 	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+@@ -831,18 +822,18 @@ static __always_inline void rcu_nmi_ente
+ 	 */
+ 	if (rcu_dynticks_curr_cpu_in_eqs()) {
+ 
+-		if (irq)
++		if (!in_nmi())
+ 			rcu_dynticks_task_exit();
+ 
+ 		// RCU is not watching here ...
+ 		rcu_dynticks_eqs_exit();
+ 		// ... but is watching here.
+ 
+-		if (irq)
++		if (!in_nmi())
+ 			rcu_cleanup_after_idle();
+ 
+ 		incby = 1;
+-	} else if (irq) {
++	} else if (!in_nmi()) {
+ 		instr_begin();
+ 		if (tick_nohz_full_cpu(rdp->cpu) &&
+ 		    rdp->dynticks_nmi_nesting == DYNTICK_IRQ_NONIDLE &&
+@@ -877,14 +868,6 @@ static __always_inline void rcu_nmi_ente
+ }
+ 
+ /**
+- * rcu_nmi_enter - inform RCU of entry to NMI context
+- */
+-noinstr void rcu_nmi_enter(void)
+-{
+-	rcu_nmi_enter_common(false);
+-}
+-
+-/**
+  * rcu_irq_enter - inform RCU that current CPU is entering irq away from idle
+  *
+  * Enter an interrupt handler, which might possibly result in exiting
+@@ -909,7 +892,7 @@ noinstr void rcu_nmi_enter(void)
+ noinstr void rcu_irq_enter(void)
+ {
+ 	lockdep_assert_irqs_disabled();
+-	rcu_nmi_enter_common(true);
++	rcu_nmi_enter();
+ }
+ 
+ /*
 
