@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 186831C592E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:23:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 297B31C586A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:15:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730218AbgEEOW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:22:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48628 "EHLO
+        id S1729572AbgEEOOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:14:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729495AbgEEOOK (ORCPT
+        by vger.kernel.org with ESMTP id S1729351AbgEEOOS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:14:10 -0400
+        Tue, 5 May 2020 10:14:18 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A02AC061A10
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:14:10 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC48CC061A41
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:14:18 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jVyKW-0000ko-QA; Tue, 05 May 2020 16:13:52 +0200
+        id 1jVyKY-0000lj-2m; Tue, 05 May 2020 16:13:54 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 54A49FFC8D;
-        Tue,  5 May 2020 16:13:52 +0200 (CEST)
-Message-Id: <20200505134101.139720912@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 936F7FFC8D;
+        Tue,  5 May 2020 16:13:53 +0200 (CEST)
+Message-Id: <20200505134101.248881738@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 05 May 2020 15:16:33 +0200
+Date:   Tue, 05 May 2020 15:16:34 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -44,8 +44,11 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Will Deacon <will@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch V4 part 1 31/36] printk: Disallow instrumenting print_nmi_enter()
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Rich Felker <dalias@libc.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Subject: [patch V4 part 1 32/36] sh/ftrace: Move arch_ftrace_nmi_{enter,exit}
+ into nmi exception
 References: <20200505131602.633487962@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -60,39 +63,134 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Peter Zijlstra <peterz@infradead.org>
 
-It happens early in nmi_enter(), no tracing, probing or other funnies
-allowed. Specifically as nmi_enter() will be used in do_debug(), which
-would cause recursive exceptions when kprobed.
+SuperH is the last remaining user of arch_ftrace_nmi_{enter,exit}(),
+remove it from the generic code and into the SuperH code.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: Rich Felker <dalias@libc.org>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
 ---
- kernel/printk/printk_safe.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ Documentation/trace/ftrace-design.rst |    8 --------
+ arch/sh/Kconfig                       |    1 -
+ arch/sh/kernel/traps.c                |   12 ++++++++++++
+ include/linux/ftrace_irq.h            |   11 -----------
+ kernel/trace/Kconfig                  |   10 ----------
+ 5 files changed, 12 insertions(+), 30 deletions(-)
 
---- a/kernel/printk/printk_safe.c
-+++ b/kernel/printk/printk_safe.c
-@@ -10,6 +10,7 @@
- #include <linux/cpumask.h>
- #include <linux/irq_work.h>
- #include <linux/printk.h>
-+#include <linux/kprobes.h>
+--- a/Documentation/trace/ftrace-design.rst
++++ b/Documentation/trace/ftrace-design.rst
+@@ -229,14 +229,6 @@ Adding support for it is easy: just defi
+ pass the return address pointer as the 'retp' argument to
+ ftrace_push_return_trace().
  
- #include "internal.h"
+-HAVE_FTRACE_NMI_ENTER
+----------------------
+-
+-If you can't trace NMI functions, then skip this option.
+-
+-<details to be filled>
+-
+-
+ HAVE_SYSCALL_TRACEPOINTS
+ ------------------------
  
-@@ -293,12 +294,12 @@ static __printf(1, 0) int vprintk_nmi(co
- 	return printk_safe_log_store(s, fmt, args);
+--- a/arch/sh/Kconfig
++++ b/arch/sh/Kconfig
+@@ -71,7 +71,6 @@ config SUPERH32
+ 	select HAVE_FUNCTION_TRACER
+ 	select HAVE_FTRACE_MCOUNT_RECORD
+ 	select HAVE_DYNAMIC_FTRACE
+-	select HAVE_FTRACE_NMI_ENTER if DYNAMIC_FTRACE
+ 	select ARCH_WANT_IPC_PARSE_VERSION
+ 	select HAVE_FUNCTION_GRAPH_TRACER
+ 	select HAVE_ARCH_KGDB
+--- a/arch/sh/kernel/traps.c
++++ b/arch/sh/kernel/traps.c
+@@ -170,11 +170,21 @@ BUILD_TRAP_HANDLER(bug)
+ 	force_sig(SIGTRAP);
  }
  
--void notrace printk_nmi_enter(void)
-+void noinstr printk_nmi_enter(void)
++#ifdef CONFIG_DYNAMIC_FTRACE
++extern void arch_ftrace_nmi_enter(void);
++extern void arch_ftrace_nmi_exit(void);
++#else
++static inline void arch_ftrace_nmi_enter(void) { }
++static inline void arch_ftrace_nmi_exit(void) { }
++#endif
++
+ BUILD_TRAP_HANDLER(nmi)
  {
- 	this_cpu_add(printk_context, PRINTK_NMI_CONTEXT_OFFSET);
+ 	unsigned int cpu = smp_processor_id();
+ 	TRAP_HANDLER_DECL;
+ 
++	arch_ftrace_nmi_enter();
++
+ 	nmi_enter();
+ 	nmi_count(cpu)++;
+ 
+@@ -190,4 +200,6 @@ BUILD_TRAP_HANDLER(nmi)
+ 	}
+ 
+ 	nmi_exit();
++
++	arch_ftrace_nmi_exit();
+ }
+--- a/include/linux/ftrace_irq.h
++++ b/include/linux/ftrace_irq.h
+@@ -2,15 +2,6 @@
+ #ifndef _LINUX_FTRACE_IRQ_H
+ #define _LINUX_FTRACE_IRQ_H
+ 
+-
+-#ifdef CONFIG_FTRACE_NMI_ENTER
+-extern void arch_ftrace_nmi_enter(void);
+-extern void arch_ftrace_nmi_exit(void);
+-#else
+-static inline void arch_ftrace_nmi_enter(void) { }
+-static inline void arch_ftrace_nmi_exit(void) { }
+-#endif
+-
+ #ifdef CONFIG_HWLAT_TRACER
+ extern bool trace_hwlat_callback_enabled;
+ extern void trace_hwlat_callback(bool enter);
+@@ -22,12 +13,10 @@ static inline void ftrace_nmi_enter(void
+ 	if (trace_hwlat_callback_enabled)
+ 		trace_hwlat_callback(true);
+ #endif
+-	arch_ftrace_nmi_enter();
  }
  
--void notrace printk_nmi_exit(void)
-+void noinstr printk_nmi_exit(void)
+ static inline void ftrace_nmi_exit(void)
  {
- 	this_cpu_sub(printk_context, PRINTK_NMI_CONTEXT_OFFSET);
- }
+-	arch_ftrace_nmi_exit();
+ #ifdef CONFIG_HWLAT_TRACER
+ 	if (trace_hwlat_callback_enabled)
+ 		trace_hwlat_callback(false);
+--- a/kernel/trace/Kconfig
++++ b/kernel/trace/Kconfig
+@@ -10,11 +10,6 @@ config USER_STACKTRACE_SUPPORT
+ config NOP_TRACER
+ 	bool
+ 
+-config HAVE_FTRACE_NMI_ENTER
+-	bool
+-	help
+-	  See Documentation/trace/ftrace-design.rst
+-
+ config HAVE_FUNCTION_TRACER
+ 	bool
+ 	help
+@@ -72,11 +67,6 @@ config RING_BUFFER
+ 	select TRACE_CLOCK
+ 	select IRQ_WORK
+ 
+-config FTRACE_NMI_ENTER
+-       bool
+-       depends on HAVE_FTRACE_NMI_ENTER
+-       default y
+-
+ config EVENT_TRACING
+ 	select CONTEXT_SWITCH_TRACER
+ 	select GLOB
 
