@@ -2,137 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C80221C5F23
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 19:44:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47B471C5F28
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 19:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730596AbgEERod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 13:44:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730184AbgEERod (ORCPT
+        id S1730687AbgEERpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 13:45:19 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:7924 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730660AbgEERpR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 13:44:33 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7AFEC061A10
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 10:44:32 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id n205so3179041ybf.14
-        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 10:44:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=Xw/XeQONehgAZgmp50DsvTIx8rMMLD3xww9tGSOkTsA=;
-        b=lneA14fzuFIhvEyDZhEZTjVIaajfkM2Z7jKfKmPgQ32k4DXwTcL6jmrVG9lLKS/STZ
-         i1h5X98Rgd/oyrVzCu4ccHiaoXOVE6pNfPXCDw1dC27kWhnuB24Pl6NHQejX1rAOoNob
-         uxdOxtVcR57USHxeCw39W3UFF68ZmyFXSDnrkcblxXwOTZLZ1A7k1FPLtWM2C8QUxQRM
-         tYj7uyH/RRNIV5aGL8nNs6qF8M0ghJZznLP795RJ0up2LeIE9E1JVbtTNqrD5gB7fVKk
-         hDPTWVoBA5rqaknUJTuYGNajFguFjI3/Vrg/I4l5PVV3wBXe82Wjjvio1muWO7wBehvL
-         heZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=Xw/XeQONehgAZgmp50DsvTIx8rMMLD3xww9tGSOkTsA=;
-        b=WP+c8l+hJVST9IXL3TEGwdI3a6o0EWtmJPu6mPfR8RSwIgZPVei75YisirhX1KSaBP
-         Lu9GYqtjZ5RDWCbNfQ72dllq7+LicgBT4TlTj6GYRP3TNgVYtDmZrpqFmg0lvW63o/64
-         HnLlYJP8p1ecY3X41THa/zlxleSIPJFJCSHq6MakP55Ur+llFTxSHpDDbLBEjJr7GXAU
-         XyHXMxnaBDBW/gr625arpmZY/6Ipt4FCj6wjtRyS6j1esstspMlXscRCstvN3PAeol3u
-         8Sncm7U0daDR+pw762Ygbw8Ku30QpO9znmOZQiplz2xw8Lv9iJEf3CIWZAsFuz7mZshN
-         om7Q==
-X-Gm-Message-State: AGi0PuYr/dCM5pxalXF4ITFXNHGfKfNdZfosYDsd+VXGe+38zqvDxfa+
-        ycnWhlPR1TL2U7WXELWVhI5Q87tDNk06ALwOXGc=
-X-Google-Smtp-Source: APiQypIX//cgIeEKcfL0yb8zr5R8ZbH/uRJM3Yv5sXuOog51eI5PRryDXtV3TYrJvL5SfnLEbSZi5o6qlXlDHTWTyWM=
-X-Received: by 2002:a25:9a47:: with SMTP id r7mr6630305ybo.7.1588700672013;
- Tue, 05 May 2020 10:44:32 -0700 (PDT)
-Date:   Tue,  5 May 2020 10:44:22 -0700
-Message-Id: <20200505174423.199985-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.26.2.526.g744177e7f7-goog
-Subject: [PATCH] x86: bitops: fix build regression
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
-Cc:     Sedat Dilek <sedat.dilek@gmail.com>, stable@vger.kernel.org,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        "kernelci . org bot" <bot@kernelci.org>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Ilie Halip <ilie.halip@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Marco Elver <elver@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 5 May 2020 13:45:17 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 045H4uMf053335;
+        Tue, 5 May 2020 13:44:43 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 30s50gvc1f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 May 2020 13:44:43 -0400
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 045H5HBO054487;
+        Tue, 5 May 2020 13:44:42 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 30s50gvc0k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 May 2020 13:44:42 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 045Hf6AZ027770;
+        Tue, 5 May 2020 17:44:40 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 30s0g5qe8w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 May 2020 17:44:40 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 045HicqQ65995104
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 5 May 2020 17:44:38 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8EC0F4203F;
+        Tue,  5 May 2020 17:44:38 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BAA9F42042;
+        Tue,  5 May 2020 17:44:33 +0000 (GMT)
+Received: from [9.102.27.216] (unknown [9.102.27.216])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  5 May 2020 17:44:33 +0000 (GMT)
+Subject: Re: [RFC][PATCH] kexec: Teach indirect pages how to live in high
+ memory
+To:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Joonsoo Kim <js1304@gmail.com>
+Cc:     kernel-team@lge.com, Michal Hocko <mhocko@suse.com>,
+        Minchan Kim <minchan@kernel.org>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Rik van Riel <riel@surriel.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Huang Rui <ray.huang@amd.com>,
+        Kexec Mailing List <kexec@lists.infradead.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Laura Abbott <labbott@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>
+References: <1588130803-20527-1-git-send-email-iamjoonsoo.kim@lge.com>
+ <1588130803-20527-4-git-send-email-iamjoonsoo.kim@lge.com>
+ <87h7wzvjko.fsf@x220.int.ebiederm.org>
+ <CAAmzW4MrD75+Prw=fQ=d5uXKgGy3urBwmxnNtoNsw5M1m9xjYQ@mail.gmail.com>
+ <87ftcfpzjn.fsf@x220.int.ebiederm.org>
+ <87368fmkel.fsf_-_@x220.int.ebiederm.org>
+From:   Hari Bathini <hbathini@linux.ibm.com>
+Message-ID: <54a53bfe-6929-2790-9b1d-943e9f47cd62@linux.ibm.com>
+Date:   Tue, 5 May 2020 23:14:32 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <87368fmkel.fsf_-_@x220.int.ebiederm.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-05-05_09:2020-05-04,2020-05-05 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ clxscore=1011 impostorscore=0 adultscore=0 priorityscore=1501
+ malwarescore=0 phishscore=0 mlxscore=0 spamscore=0 mlxlogscore=999
+ bulkscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005050131
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sedat Dilek <sedat.dilek@gmail.com>
 
-It turns out that if your config tickles __builtin_constant_p via
-differences in choices to inline or not, this now produces invalid
-assembly:
 
-$ cat foo.c
-long a(long b, long c) {
-  asm("orb\t%1, %0" : "+q"(c): "r"(b));
-  return c;
-}
-$ gcc foo.c
-foo.c: Assembler messages:
-foo.c:2: Error: `%rax' not allowed with `orb'
+On 05/05/20 3:29 am, Eric W. Biederman wrote:
+> 
+> Recently a patch was proposed to kimage_alloc_page to slightly alter
+> the logic of how pages allocated with incompatible flags were
+> detected.  The logic was being altered because the semantics of the
+> page alloctor were changing yet again.
+> 
+> Looking at that case I realized that there is no reason for it to even
+> exist.  Either the indirect page allocations and the source page
+> allocations could be separated out, or I could do as I am doing now
+> and simply teach the indirect pages to live in high memory.
+> 
+> This patch replaced pointers of type kimage_entry_t * with a new type
+> kimage_entry_pos_t.  This new type holds the physical address of the
+> indirect page and the offset within that page of the next indirect
+> entry to write.  A special constant KIMAGE_ENTRY_POS_INVALID is added
+> that kimage_image_pos_t variables that don't currently have a valid
+> may be set to.
+> 
+> Two new functions kimage_read_entry and kimage_write_entry have been
+> provided to write entries in way that works if they live in high
+> memory.
+> 
+> The now unnecessary checks to see if a destination entry is non-zero
+> and to increment it if so have been removed.  For safety new indrect
+> pages are now cleared so we have a guarantee everything that has not
+> been used yet is zero.  Along with this writing an extra trailing 0
+> entry has been removed, as it is known all trailing entries are now 0.
+> 
+> With highmem support implemented for indirect pages
+> kimage_image_alloc_page has been updated to always allocate
+> GFP_HIGHUSER pages, and handling of pages with different
+> gfp flags has been removed.
+> 
+> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
 
-The "q" constraint only has meanting on -m32 otherwise is treated as
-"r".
+Eric, the patch failed with data access exception on ppc64. Using the below patch on top
+got me going...
 
-This is easily reproducible via Clang+CONFIG_STAGING=y+CONFIG_VT6656=m,
-or Clang+allyesconfig.
 
-Keep the masking operation to appease sparse (`make C=1`), add back the
-cast in order to properly select the proper 8b register alias.
+diff --git a/kernel/kexec_core.c b/kernel/kexec_core.c
+index 45862fd..bef52f1 100644
+--- a/kernel/kexec_core.c
++++ b/kernel/kexec_core.c
+@@ -570,7 +570,12 @@ static int kimage_add_entry(struct kimage *image, kimage_entry_t entry)
+ 			return -ENOMEM;
+ 
+ 		ind_addr = page_to_boot_pfn(page) << PAGE_SHIFT;
+-		kimage_write_entry(image->entry_pos, ind_addr | IND_INDIRECTION);
++
++		/* If it is the first entry, handle it here */
++		if (!image->head)
++			image->head = ind_addr | IND_INDIRECTION;
++		else
++			kimage_write_entry(image->entry_pos, ind_addr | IND_INDIRECTION);
+ 
+ 		clear_highpage(page);
+ 
+@@ -623,7 +628,11 @@ int __weak machine_kexec_post_load(struct kimage *image)
+ 
+ void kimage_terminate(struct kimage *image)
+ {
+-	kimage_write_entry(image->entry_pos, IND_DONE);
++	/* This could be the only entry in case of kdump */
++	if (!image->head)
++		image->head = IND_DONE;
++	else
++		kimage_write_entry(image->entry_pos, IND_DONE);
+ }
+ 
+ #define for_each_kimage_entry(image, pos, entry) 				\
 
- [Nick: reworded]
 
-Cc: stable@vger.kernel.org
-Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>
-Link: https://github.com/ClangBuiltLinux/linux/issues/961
-Link: https://lore.kernel.org/lkml/20200504193524.GA221287@google.com/
-Fixes: 1651e700664b4 ("x86: Fix bitops.h warning with a moved cast")
-Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
-Reported-by: kernelci.org bot <bot@kernelci.org>
-Suggested-by: Andy Shevchenko <andriy.shevchenko@intel.com>
-Suggested-by: Ilie Halip <ilie.halip@gmail.com>
-Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
-Signed-off-by: Sedat Dilek <sedat.dilek@gmail.com>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
- arch/x86/include/asm/bitops.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/include/asm/bitops.h b/arch/x86/include/asm/bitops.h
-index b392571c1f1d..139122e5b25b 100644
---- a/arch/x86/include/asm/bitops.h
-+++ b/arch/x86/include/asm/bitops.h
-@@ -54,7 +54,7 @@ arch_set_bit(long nr, volatile unsigned long *addr)
- 	if (__builtin_constant_p(nr)) {
- 		asm volatile(LOCK_PREFIX "orb %1,%0"
- 			: CONST_MASK_ADDR(nr, addr)
--			: "iq" (CONST_MASK(nr) & 0xff)
-+			: "iq" ((u8)(CONST_MASK(nr) & 0xff))
- 			: "memory");
- 	} else {
- 		asm volatile(LOCK_PREFIX __ASM_SIZE(bts) " %1,%0"
-@@ -74,7 +74,7 @@ arch_clear_bit(long nr, volatile unsigned long *addr)
- 	if (__builtin_constant_p(nr)) {
- 		asm volatile(LOCK_PREFIX "andb %1,%0"
- 			: CONST_MASK_ADDR(nr, addr)
--			: "iq" (CONST_MASK(nr) ^ 0xff));
-+			: "iq" ((u8)(CONST_MASK(nr) ^ 0xff)));
- 	} else {
- 		asm volatile(LOCK_PREFIX __ASM_SIZE(btr) " %1,%0"
- 			: : RLONG_ADDR(addr), "Ir" (nr) : "memory");
--- 
-2.26.2.526.g744177e7f7-goog
-
+Thanks
+Hari
