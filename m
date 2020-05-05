@@ -2,104 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 867B41C584F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:13:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35DC01C5853
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:13:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729277AbgEEOM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:12:57 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:48972 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729219AbgEEOM4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:12:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588687974;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9QocmiR79ciyCV8YIogR/mIbS+d3+LtRW/0KmEr7MtM=;
-        b=c33eASpjxykGTTat16XijkHaLXWb58lI0IqcNJJPtPhut7A8LNJZvd9EPsei2q+6r9YhA1
-        qPTf4BRKkHr7bLAzhdewDNGW/cKerZ33PLVbqhIGqGdU8CvibQsUIDiKsFd181KWDZ2MSU
-        4RoeCKM/KvUBXtmd4AU3cu6b/StZotU=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-119-6OnTRXnfMh6jQtRIW_mcTg-1; Tue, 05 May 2020 10:12:49 -0400
-X-MC-Unique: 6OnTRXnfMh6jQtRIW_mcTg-1
-Received: by mail-qt1-f197.google.com with SMTP id e44so1799150qta.9
-        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 07:12:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=9QocmiR79ciyCV8YIogR/mIbS+d3+LtRW/0KmEr7MtM=;
-        b=pHnFSoiYt++iv5kMD8tFnDYSscZ7mXGD2AOw8RXaN8HZg2KOWzybaqmsT3pcxbRoE3
-         4ItENiKygewLxwa7JOUTPBr0tzlB4UOUG+HBi/gs0OUL0h7q/glKOiZrHhkkdhJfa5Re
-         Bw9YY9HzXclDBbun2PABFvkaFm3dEc5CZQbYR9SH7xAsi6H8DFkQAVxGIHB0z2RidRNN
-         sznccOYJhN7sb8sjl1MS85dnjVljiQ5jdsJ/16JHsRNKALJjFNjTImXi7fM4VyQdyW/o
-         JUfoB1tuvyh/Spm4t2tL5cFxZKZiaYZrk+JwthMzBA2fEd8+Z1Diyhj/2Y/asHgLHREQ
-         zaSw==
-X-Gm-Message-State: AGi0PuYjzmr/Co8OSMDua3vixPjzksiWhjh62mCtomUSBB4Z0ZGHNf2B
-        J6UHInEzRGIJO2v6ikJ5qZXSWsR9KgS/LEGcUU7pltOuGzF+pGIHVAQPM3wUDULF4Cc5Ax3gpKw
-        1R26L1GQ3NxhMeHg7K+brg7io
-X-Received: by 2002:a05:620a:112c:: with SMTP id p12mr844433qkk.313.1588687967629;
-        Tue, 05 May 2020 07:12:47 -0700 (PDT)
-X-Google-Smtp-Source: APiQypL2JXMwNHFY++ym7AgRDXitYWpCdW9rKuEVfwZfFB1urpeidfFT0kVgaOLz2D8FZ6rVTNljng==
-X-Received: by 2002:a05:620a:112c:: with SMTP id p12mr844411qkk.313.1588687967341;
-        Tue, 05 May 2020 07:12:47 -0700 (PDT)
-Received: from xz-x1 ([2607:9880:19c0:32::2])
-        by smtp.gmail.com with ESMTPSA id v5sm1810925qkg.9.2020.05.05.07.12.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 May 2020 07:12:46 -0700 (PDT)
-Date:   Tue, 5 May 2020 10:12:45 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH] KVM: Fix a warning in __kvm_gfn_to_hva_cache_init()
-Message-ID: <20200505141245.GH6299@xz-x1>
-References: <20200504190526.84456-1-peterx@redhat.com>
- <20200505013929.GA17225@linux.intel.com>
+        id S1729306AbgEEONV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:13:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33604 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729292AbgEEONU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 10:13:20 -0400
+Received: from localhost (p54B335A1.dip0.t-ipconnect.de [84.179.53.161])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5D8D420735;
+        Tue,  5 May 2020 14:13:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588688000;
+        bh=R+70PJ9vucGn241Y2Cqa7rgwicdjK9Vs/+6SMmkQ9rA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FLcOyPVXax4walL2ONgDDGm3H9TAh64RPOsmQNypepd9HqsoSBONz+ZzlsIDQ5vD5
+         YHgBECF+mKdfrretnacbW9YNrIHo84HsBZXGZITataDIOYcqrhrgueLdEdcIRKvjT6
+         Bgo9XVwRjgwp7Tv78kNCktWKQfVJYUTzZCZbKjmw=
+Date:   Tue, 5 May 2020 16:13:16 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Aishwarya Ramakrishnan <aishwaryarj100@gmail.com>
+Cc:     Thor Thayer <thor.thayer@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pierre-Yves MORDRET <pierre-yves.mordret@st.com>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] i2c: drivers: Remove superfluous error message
+Message-ID: <20200505141316.GB2468@ninjato>
+References: <20200503120847.13528-1-aishwaryarj100@gmail.com>
+ <20200504114408.9128-1-aishwaryarj100@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="jq0ap7NbKX2Kqbes"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200505013929.GA17225@linux.intel.com>
+In-Reply-To: <20200504114408.9128-1-aishwaryarj100@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 04, 2020 at 06:39:29PM -0700, Sean Christopherson wrote:
-> On Mon, May 04, 2020 at 03:05:26PM -0400, Peter Xu wrote:
-> > GCC 10.0.1 gives me this warning when building KVM:
-> > 
-> >   warning: ‘nr_pages_avail’ may be used uninitialized in this function [-Wmaybe-uninitialized]
-> >   2442 |  for ( ; start_gfn <= end_gfn; start_gfn += nr_pages_avail) {
-> > 
-> > It should not happen, but silent it.
-> 
-> Heh, third times a charm?  This has been reported and proposed twice
-> before[1][2].  Are you using any custom compiler flags?  E.g. -O3 is known
-> to cause false positives with -Wmaybe-uninitialized.
 
-No, what I did was only upgrading to Fedora 32 (which will auto-upgrade GCC),
-so it should be using the default params of whatever provided.
+--jq0ap7NbKX2Kqbes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> If we do end up killing this warning, I'd still prefer to use
-> uninitialized_var() over zero-initializing the variable.
-> 
-> [1] https://lkml.kernel.org/r/20200218184756.242904-1-oupton@google.com
-> [2] https://bugzilla.kernel.org/show_bug.cgi?id=207173
+On Mon, May 04, 2020 at 05:14:06PM +0530, Aishwarya Ramakrishnan wrote:
+> The function platform_get_irq can log an error by itself.
+> This omit a redundant message for exception handling in the
+> calling function.
+>=20
+> Suggested by Coccinelle.
+>=20
+> Signed-off-by: Aishwarya Ramakrishnan <aishwaryarj100@gmail.com>
 
-OK, I didn't know this is a known problem and discussions going on.  But I
-guess it would be good to address this sooner because it could become a common
-warning very soon after people upgrades gcc.
+Sorry, I forgot that these are already fixed with
+e42688ed5cf5936fb55c78cc365dbe0944af7c63 in i2c/for-next.
 
-Thanks,
 
--- 
-Peter Xu
+--jq0ap7NbKX2Kqbes
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl6xdHgACgkQFA3kzBSg
+KbbwRA/+LGyt1I9I1ywJp0ulKpglf4waJU/2Fay5kC0dKFkixtjarMsChvsIcpJJ
+eJlTxUY6krLo7eUh223GmX5Y313bXl5uFIvEC4HCEbcxSVLOL81jvdVkDZcVG9u3
+CMBCXMCchPdGZnbPL7Yzvpshuj87+UtHNnS/a293LwO3exDR5eVZEGi/aICrRum/
+uf273Fx8g0pzh5h7J5erA4dgbrxP20PNt4BYUlfe9sdWft7yW1OS/kd3gaGxBnQp
+LCTk0q9f85vYTzrUX1bk2jvpls0n1kAnD5F1+73kvFq+DsnZD0t1C3FDv/GpRcc3
+TuC+rl4mcAVIoOtErmfT38xRW4PIAu0qzWJDNbnZrd12fZKH/kw20L7Yq5nmIjvi
+mXSpg+JKua+e69VuEsxSTuoDxxEVyWTo/yKc1rbDJNWKwngiR8bldUZDQDtOoSqA
+aWskPYf2kqarsWXYGeaXB8n4CXjD6fyufGjr+SsOD7tcd9ULOOzhfN6GUENw1t9L
+tI03I7owU1+hShjx/pBDpFlqzJQExHLFjMgoMD9aB5XxA7nY82ny4bcpjdy34qqW
+GF88XiojrHftpqtvEfq/qc22l89lvm9Yts8sNg0Axc+jp2/jiKLgY2rgfnZJ+e0r
+MdN0pEl1GRcD3e4WK+16qHy0BViPHmBqCreipeNddURCEXYezmo=
+=Q1Hw
+-----END PGP SIGNATURE-----
+
+--jq0ap7NbKX2Kqbes--
