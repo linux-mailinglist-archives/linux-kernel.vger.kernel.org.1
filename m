@@ -2,72 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E28821C5C57
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:46:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA6971C5C5E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730600AbgEEPqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 11:46:35 -0400
-Received: from ms.lwn.net ([45.79.88.28]:50200 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729666AbgEEPqe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 11:46:34 -0400
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id A864E31A;
-        Tue,  5 May 2020 15:46:33 +0000 (UTC)
-Date:   Tue, 5 May 2020 09:46:32 -0600
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Vitor Massaru Iha <vitor@massaru.org>
-Cc:     linux-doc@vger.kernel.org, akrowiak@linux.ibm.com,
-        pmorel@linux.ibm.com, pasic@linux.ibm.com,
-        heiko.carstens@de.ibm.com, gor@linux.ibm.com,
-        borntraeger@de.ibm.com, linux-kernel@vger.kernel.org,
-        brendanhiggins@google.com, skhan@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH] docs: s390: Fix wrong label Guest2 instead of Guest3
-Message-ID: <20200505094632.0d34f72b@lwn.net>
-In-Reply-To: <20200430221238.101838-1-vitor@massaru.org>
-References: <20200430221238.101838-1-vitor@massaru.org>
-Organization: LWN.net
+        id S1730467AbgEEPr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 11:47:28 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:63427 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729406AbgEEPr1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 11:47:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1588693647; x=1620229647;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   mime-version;
+  bh=qgL+UrIHPggA/cbMIcuZ6L6wlHkLvvYMOzgo5iwxhgg=;
+  b=G+Q7z7KLHWVXnfTXL6vCm+I433aihc4qv6kJ4WtoMTKroRNfPk1h2ODX
+   OF6z/eK/BT306TyXHZLwicMXlh1LxUV8H66LNNDTsbf9ehFMfjnYhlQjE
+   jI8MAGvELZ+s45fCv7TLThd3hP0hjX2NmaUVQsLs2nttVoml0/fnqvhKa
+   U=;
+IronPort-SDR: O166hFl/kUUCS2stThOFXVSw6unJMOC3/77W9R3kUjp/BSPJ10ib3NA17O1H6Lb1AtOuv/GJ+Y
+ 1lR6gvyLhizA==
+X-IronPort-AV: E=Sophos;i="5.73,355,1583193600"; 
+   d="scan'208";a="33074496"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 05 May 2020 15:47:24 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com (Postfix) with ESMTPS id DA09DA225F;
+        Tue,  5 May 2020 15:47:20 +0000 (UTC)
+Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 5 May 2020 15:47:20 +0000
+Received: from u886c93fd17d25d.ant.amazon.com (10.43.162.38) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 5 May 2020 15:47:12 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     Eric Dumazet <eric.dumazet@gmail.com>
+CC:     SeongJae Park <sjpark@amazon.com>,
+        Eric Dumazet <edumazet@google.com>,
+        David Miller <davem@davemloft.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <sj38.park@gmail.com>, netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        SeongJae Park <sjpark@amazon.de>, <snu@amazon.com>,
+        <amit@kernel.org>, <stable@vger.kernel.org>
+Subject: Re: Re: [PATCH net v2 0/2] Revert the 'socket_alloc' life cycle change
+Date:   Tue, 5 May 2020 17:46:44 +0200
+Message-ID: <20200505154644.18997-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <a8510327-d4f0-1207-1342-d688e9d5b8c3@gmail.com> (raw)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.43.162.38]
+X-ClientProxiedBy: EX13D18UWC003.ant.amazon.com (10.43.162.237) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Apr 2020 19:12:38 -0300
-Vitor Massaru Iha <vitor@massaru.org> wrote:
+On Tue, 5 May 2020 08:20:50 -0700 Eric Dumazet <eric.dumazet@gmail.com> wrote:
 
-> This fixes:
 > 
-> Documentation/s390/vfio-ap.rst:488: WARNING: duplicate label s390/vfio-ap:guest2, other instance in /home/iha/sdb/opensource/lkmp/linux_doc/Documentation/s390/vfio-ap.rst
 > 
-> Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
-> ---
->  Documentation/s390/vfio-ap.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> On 5/5/20 8:07 AM, SeongJae Park wrote:
+> > On Tue, 5 May 2020 07:53:39 -0700 Eric Dumazet <edumazet@google.com> wrote:
+> > 
 > 
-> diff --git a/Documentation/s390/vfio-ap.rst b/Documentation/s390/vfio-ap.rst
-> index b5c51f7c748d..367e27ec3c50 100644
-> --- a/Documentation/s390/vfio-ap.rst
-> +++ b/Documentation/s390/vfio-ap.rst
-> @@ -484,7 +484,7 @@ CARD.DOMAIN TYPE  MODE
->  05.00ff     CEX5A Accelerator
->  =========== ===== ============
->  
-> -Guest2
-> +Guest3
->  ------
->  =========== ===== ============
->  CARD.DOMAIN TYPE  MODE
+> >> Why do we have 10,000,000 objects around ? Could this be because of
+> >> some RCU problem ?
+> > 
+> > Mainly because of a long RCU grace period, as you guess.  I have no idea how
+> > the grace period became so long in this case.
+> > 
+> > As my test machine was a virtual machine instance, I guess RCU readers
+> > preemption[1] like problem might affected this.
+> > 
+> > [1] https://www.usenix.org/system/files/conference/atc17/atc17-prasad.pdf
+> > 
+> >>
+> >> Once Al patches reverted, do you have 10,000,000 sock_alloc around ?
+> > 
+> > Yes, both the old kernel that prior to Al's patches and the recent kernel
+> > reverting the Al's patches didn't reproduce the problem.
+> >
+> 
+> I repeat my question : Do you have 10,000,000 (smaller) objects kept in slab caches ?
+> 
+> TCP sockets use the (very complex, error prone) SLAB_TYPESAFE_BY_RCU, but not the struct socket_wq
+> object that was allocated in sock_alloc_inode() before Al patches.
+> 
+> These objects should be visible in kmalloc-64 kmem cache.
 
-Applied, thanks.
+Not exactly the 10,000,000, as it is only the possible highest number, but I
+was able to observe clear exponential increase of the number of the objects
+using slabtop.  Before the start of the problematic workload, the number of
+objects of 'kmalloc-64' was 5760, but I was able to observe the number increase
+to 1,136,576.
 
-Note, though, that while the patch does "fix" the warning, what it really
-fixes is (as suggested in the subject) an incorrect heading; the warning
-was just a symptom.
+	  OBJS ACTIVE  USE OBJ SIZE  SLABS OBJ/SLAB CACHE SIZE NAME
+before:	  5760   5088  88%    0.06K     90       64       360K kmalloc-64
+after:	1136576 1136576 100%    0.06K  17759       64     71036K kmalloc-64
 
-jon
+
+Thanks,
+SeongJae Park
+
