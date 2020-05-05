@@ -2,126 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D08F1C5A6F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:04:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9579E1C5A64
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:03:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729812AbgEEPEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 11:04:08 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42574 "EHLO mx2.suse.de"
+        id S1729826AbgEEPDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 11:03:11 -0400
+Received: from foss.arm.com ([217.140.110.172]:42624 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729324AbgEEPEI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 11:04:08 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id A99B4AC44;
-        Tue,  5 May 2020 15:04:08 +0000 (UTC)
-Message-ID: <f28fb56ea214ff95c0a8c1b38cb28cc6390d166e.camel@suse.de>
-Subject: Re: [PATCH v2 2/2] usb: xhci: Load Raspberry Pi 4 VL805's firmware
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Matthias Brugger <mbrugger@suse.com>, u-boot@lists.denx.de,
-        bmeng.cn@gmail.com, marex@denx.de, linux-kernel@vger.kernel.org
-Cc:     sjg@chromium.org, m.szyprowski@samsung.com, s.nawrocki@samsung.com
-Date:   Tue, 05 May 2020 17:04:04 +0200
-In-Reply-To: <0ca001a3-75c3-e3ba-fc63-17c6b4982856@suse.com>
-References: <20200430130433.11248-1-nsaenzjulienne@suse.de>
-         <20200430130433.11248-3-nsaenzjulienne@suse.de>
-         <0958ece3-feda-65c0-b0e2-893e2dfeb508@suse.com>
-         <cefb0be789dba88b3e3ad825fd74f49195110f97.camel@suse.de>
-         <38448831-9f22-f887-e938-065fed195414@suse.com>
-         <073b80ef4285a02729f5b06872474202d4ff2e3e.camel@suse.de>
-         <0ca001a3-75c3-e3ba-fc63-17c6b4982856@suse.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-vdGL3W4Bg/eO2ry47Gmv"
-User-Agent: Evolution 3.36.2 
+        id S1729808AbgEEPDK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 11:03:10 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EC3901FB;
+        Tue,  5 May 2020 08:03:09 -0700 (PDT)
+Received: from [10.37.8.251] (unknown [10.37.8.251])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C824E3F68F;
+        Tue,  5 May 2020 08:03:08 -0700 (PDT)
+Subject: Re: [PATCH v2 0/4] kselftest: Extend vDSO tests
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>
+References: <20200429112834.24908-1-vincenzo.frascino@arm.com>
+ <CAK8P3a3u05wF1DT3Wnvmapc0jixu+gp_YG=KTEN9-n4JedJ9BA@mail.gmail.com>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <b9b313b5-697e-b92e-1aca-7ad07a640a03@arm.com>
+Date:   Tue, 5 May 2020 16:04:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
+In-Reply-To: <CAK8P3a3u05wF1DT3Wnvmapc0jixu+gp_YG=KTEN9-n4JedJ9BA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Arnd,
 
---=-vdGL3W4Bg/eO2ry47Gmv
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On 5/5/20 3:50 PM, Arnd Bergmann wrote:
+> On Wed, Apr 29, 2020 at 1:34 PM Vincenzo Frascino
+> <vincenzo.frascino@arm.com> wrote:
+>>
+>> This series extends the kselftests for the vDSO library making sure: that
+>> they compile correctly on non x86 platforms, that they can be cross
+>> compiled and introducing new tests that verify the correctness of the
+>> library.
+>>
+>> The so extended vDSO kselftests have been verified on all the platforms
+>> supported by the unified vDSO library [1].
+>>
+>> The only new patch that this series introduces is the first one, patch 2 and
+>> patch 3 have already been reviewed in past as part of other series [2] [3].
+>>
+>> [1] https://lore.kernel.org/lkml/20190621095252.32307-1-vincenzo.frascino@arm.com
+>> [2] https://lore.kernel.org/lkml/20190621095252.32307-26-vincenzo.frascino@arm.com
+>> [3] https://lore.kernel.org/lkml/20190523112116.19233-4-vincenzo.frascino@arm.com
+> 
+> Hi Vincenzo,
+> 
+> Not sure if you are aware of the recent bug report about clock_gettime64()
+> returning invalid times on some arm32 kernels:
+> https://github.com/raspberrypi/linux/issues/3579
+> 
 
-On Tue, 2020-05-05 at 16:59 +0200, Matthias Brugger wrote:
-[...]
-> > > > > > +#ifdef CONFIG_BCM2711
-> > > > >=20
-> > > > > This won't work with rpi_arm64_defconfig.
-> > > > > Can't we just evaluate at runtime if we need to do anything in
-> > > > > xhci_pci_fixup.
-> > > >=20
-> > > > I can't see why, who is going to call xhci_pci_probe() in RPi3?
-> > > >=20
-> > >=20
-> > > If you do make rpi_arm64_defconfig and inspect the .config, you will =
-see
-> > > that
-> > > CONFIG_BCM2711 is not defined, so this code won't be called on RPi4.
-> >=20
-> > Oh! Understood.
-> >=20
-> > Well, given that only xhci_pci_probe() is called if we're running on RP=
-i4, I
-> > think I can disregard those defines altogether. I'll double-check that.
-> >=20
->=20
-> Yes but from my understanding we only need to call the function on newer
-> revisions of RPi4. Does it have any side effect on older revisions, e.g. =
-we
-> get
-> error messages (see below)?
+No, I was not aware of the problem. There has been no mention on the arm list
+(unless I missed it). I can try to have a look at it as soon as I get some time.
 
-The firmware quirk supports older rpi4s and simply does nothing. Note that =
-the
-downstream Linux implementation runs this on all rpi4s.
+> Regardless of when that gets fixed or by whom, I wonder if kselftest should
+> also check for consistency, i.e. call both the vdso and the syscall version of
+> clock_gettime() and clock_gettime64() and check that the results are always
+> in sequence.
+> 
 
-> [...]>>>> I wonder if the newer RPi4 have also a newer revision ID (see
-> > > > > get_board_rev).
-> > > > > If
-> > > > > so we could add another bool to struct rpi_model which will indic=
-ate
-> > > > > us if
-> > > > > we
-> > > > > need to notify VideoCore about vl805's firmware.
-> > > > >=20
-> > > > > > +void xhci_pci_fixup(struct udevice *dev)
-> > > > > > +{
-> > > > > > +	int ret;
-> > > > > > +
-> > > > > > +	ret =3D bcm2711_notify_vl805_reset();
-> > > > > > +	if (ret)
-> > > > > > +		printf("RPI: Failed to notify VideoCore about vl805's
-> > > > > > firmware\n");
->=20
-> We already have
-> printf("bcm2711: Faild to load vl805's firmware, %d\n", ret); in
-> bcm2711_notify_vl805_reset(). Do we really need two error messages?
+The test #4 partially does that: it calls syscall-vdso-syscall and verifies that
+the sequencing is correct. I reused the x86 code for that. I could extend it to
+clock_gettime64() and make sure it builds on all the platforms.
 
-Agree, it's a little redundant. I'll get rid of it.
+>       Arnd
+> 
 
+-- 
 Regards,
-Nicolas
-
-
-
---=-vdGL3W4Bg/eO2ry47Gmv
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl6xgGQACgkQlfZmHno8
-x/5KZgf+JZzFgKU2+xe0hm2qYisgNnULomoi9iRujqc5FSiQSw8g2B83MlOSNsOV
-9YJbS4/PyPFd2q/HOIY04FDsEuX1OHjjEzznlCkCUlG0dhFXXz994ZitaVog5qVv
-k/AMZih3L5Hh0lo8ug5ZIm5eKPZsTTIIDYQBacT1K/IaetaYIRsNBNSxelMWNfEd
-mYVvhCeMvN3AzLjuXNep+UEkfy4sPvLVnlCpM+aQU5Go8pK2CePH+tB0S9xOpROK
-p1YIg5/BRRUnr+dQ8RGoWg0LNHK5AmqdpkKq+e7KV6B6mo/0YyMfIrg5BdhGJp6B
-XbMfuvHZdUGIxHchhQ/lfKZKwpfkgw==
-=HIix
------END PGP SIGNATURE-----
-
---=-vdGL3W4Bg/eO2ry47Gmv--
-
+Vincenzo
