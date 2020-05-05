@@ -2,135 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 850A61C5B14
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:27:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FB151C5B1B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:28:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730036AbgEEP13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 11:27:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60364 "EHLO
+        id S1730075AbgEEP2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 11:28:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729403AbgEEP12 (ORCPT
+        by vger.kernel.org with ESMTP id S1729403AbgEEP2E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 11:27:28 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16AA2C061A10
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 08:27:28 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id b6so2639261qkh.11
-        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 08:27:28 -0700 (PDT)
+        Tue, 5 May 2020 11:28:04 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E036C061A0F;
+        Tue,  5 May 2020 08:28:04 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id w4so2363324ioc.6;
+        Tue, 05 May 2020 08:28:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=r/em/r1WAWdIxfLddFgVdK8/WA54vnvCFmZ5eTaHEGI=;
-        b=uuzwPXhvPztMz4zHd3EPswjaU7UzyVLgP82njzHGSMhiwR7satUNP/H9oFmb2zmBl5
-         roz08OHw6yDtf5Pytm0tv38O7lGL7Qd2QRHmJugb2TZycLQSah4WdqOk5gw599MivkHp
-         RCDAR0ljKALkXIj6099CztWvxNRAyHv7a4ZolmsRwjb61C2Mof0IbYRyxWnMY32Qegcy
-         BR6BEgzPa5/wJZzHwWRMvsex+cJAIMBplmh6n+c4XfhSUZwmp7EOJy4Mv3YOLsK3mTcs
-         TXxNZEIogoS1EOphfSvEWmBrZbpPpUGSnPwBXhI/r5GnunV7OX6rnQXGolj581CtOEqP
-         iECg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=b//WyoKMoOWyknzMDwAntqpnlFg9r6X0WW+350J/1yI=;
+        b=ns9BAO8YqpS1sAuldx8uWARkY5qyrGWrAOpg6uCV3k+MLyCqop9mCBaHHj89E4v0N+
+         6XSAEH4CgAV1naXoyGmgRPnxurfKpXb/oGlkGKHWtS6WxFdqDtU8owmyzzgtUhO9crJ0
+         Wah7omW86KzoFYxgbiKJ182JNj0OCAtEq2lVQ8QPzqSIMbygjkwBUz8whHphk66EsyTH
+         gc5mBj7UyJ+8nCBrHdLB+g0RkeC4aVOADiHCHBp0CvmjYghZ1QESa61mOfNSD1Htw3NG
+         HLZtaCh0qTka3kXfeEW2Qq+rFyxqOIjYpx4bn9xl6ld0OY9X7Pb8H47piuNFQUa5bDYG
+         /jVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=r/em/r1WAWdIxfLddFgVdK8/WA54vnvCFmZ5eTaHEGI=;
-        b=t9qj0aSUSubR1uUqxVyDxFKxYvs6ts9BEkHQ4+/ZZAmB4BZjRfUn2VklWGKhLOhh/n
-         P2Fb7vk7na29JvFRVizoNBaOb6v7O5ma8LVU1+UKHgWSvjNpeMR8SgSecuI0DaoBksfJ
-         QsKb18DSgj5eLcuiUIm0b3oAdDL5SnEHb1z+amDXfvYY80VhBt9n1iiqhXEpDqER++rO
-         YKRkO5tAtGFANA1okOE5/jfBg1mslfLe8oQWudxAt6TXqzLMv+Na8rN143Bz6lGwPyZg
-         P5HHZpz2cY92j4IQSFdLRYJEGZg6YEtWc3ivVsBM9XILbx8cOAEECC5O91zQf0ylKn7H
-         Pyvw==
-X-Gm-Message-State: AGi0PuYBb7bt2JC9+3ykS+g1Z6pcnAS+HNOTC6EoIrZqmKXk9B9G1O5/
-        S7yr3d5JS2hQQ2ERNnB5LMXK9Q==
-X-Google-Smtp-Source: APiQypLgzOG/9CK0nnQeafYiiDOgvjgM2U0hk8pyzzC6DGfmq/rF3w9aRNq5NZV0ftE4GOXSjn8Oaw==
-X-Received: by 2002:a05:620a:13f2:: with SMTP id h18mr3952397qkl.37.1588692447220;
-        Tue, 05 May 2020 08:27:27 -0700 (PDT)
-Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id a139sm2050850qkg.107.2020.05.05.08.27.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 May 2020 08:27:26 -0700 (PDT)
-Date:   Tue, 5 May 2020 11:27:12 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Michal Hocko <mhocko@kernel.org>, Roman Gushchin <guro@fb.com>,
-        Greg Thelen <gthelen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] memcg: oom: ignore oom warnings from memory.max
-Message-ID: <20200505152712.GB58018@cmpxchg.org>
-References: <20200430182712.237526-1-shakeelb@google.com>
- <20200504065600.GA22838@dhcp22.suse.cz>
- <CALvZod5Ao2PEFPEOckW6URBfxisp9nNpNeon1GuctuHehqk_6Q@mail.gmail.com>
- <20200504141136.GR22838@dhcp22.suse.cz>
- <CALvZod7Ls7rTDOr5vXwEiPneLqbq3JoxfFBxZZ71YWgvLkNr5A@mail.gmail.com>
- <20200504150052.GT22838@dhcp22.suse.cz>
- <CALvZod7EeQm-T4dsBddfMY_szYw3m8gRh5R5GfjQiuQAtCocug@mail.gmail.com>
- <20200504160613.GU22838@dhcp22.suse.cz>
- <CALvZod79hWns9366B+8ZK2Roz8c+vkdA80HqFNMep56_pumdRQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=b//WyoKMoOWyknzMDwAntqpnlFg9r6X0WW+350J/1yI=;
+        b=MrFrDXujMdIZ8m/ZdWrUZKrHsmEmoNKvjDI9p2FXen80Py2DpprJUphibC34+MY0FF
+         bKMj6siwBCWJMRAqH5IDIO52sZq4UzXsux9IePJ52X7ft/vYswEAJv4TKngTMDQlxd/R
+         AE2OluSbliROxQKXVHMaOKvmGFjAEWu+IKoJ9+vrREzW7oY5Hm458Y9LK1xdwiccvdvF
+         RDjbf0v/Zu3XbBMC0ALa54KmCd864Ru7HTCi2GXNeXrZrLPM9fuHEESDEueNGxlfsh1+
+         MAhsporBIB5fbUM9osRsql4HNNvJ0QU8VCV2JvJo8yp+boH5YH3zeZzbUDDilraZr80O
+         svmA==
+X-Gm-Message-State: AGi0PubsaTz4GqZMA8FE0i87N8FBlMtuYuLAA/ekEpFi7iBMQRzd89e2
+        fpJBAMUITyLnJzOd+Q1gUG8jfGddtIqWdAakyWg=
+X-Google-Smtp-Source: APiQypICZLOIAWPDMlYJr/jbilaov2atkz+fIoCy6F3ev9oqNozYB3WFgJcfcMdbAQytemQqFANXBtFhBCKd5m+hzUA=
+X-Received: by 2002:a6b:b9d5:: with SMTP id j204mr3962700iof.38.1588692483399;
+ Tue, 05 May 2020 08:28:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod79hWns9366B+8ZK2Roz8c+vkdA80HqFNMep56_pumdRQ@mail.gmail.com>
+References: <20200430201125.532129-1-daniel.m.jordan@oracle.com>
+ <20200430201125.532129-6-daniel.m.jordan@oracle.com> <deadac9a-fbef-6c66-207c-83d251d2ef50@linux.intel.com>
+ <20200501024539.tnjuybydwe3r4u2x@ca-dmjordan1.us.oracle.com>
+ <CAKgT0Uctro3+PWeJTi=O3Yc2qUF8Oy+HrypzCUzkaCt=XH0Lkg@mail.gmail.com> <20200505005432.bohmaa6zeffhdkgn@ca-dmjordan1.us.oracle.com>
+In-Reply-To: <20200505005432.bohmaa6zeffhdkgn@ca-dmjordan1.us.oracle.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Tue, 5 May 2020 08:27:52 -0700
+Message-ID: <CAKgT0Uegw2vFSCOcsCMATfDu0Q8NP2ZVi-2Fgm8P2RwU_B2c3A@mail.gmail.com>
+Subject: Re: [PATCH 5/7] mm: move zone iterator outside of deferred_init_maxorder()
+To:     Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Michal Hocko <mhocko@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Shile Zhang <shile.zhang@linux.alibaba.com>,
+        Tejun Heo <tj@kernel.org>, Zi Yan <ziy@nvidia.com>,
+        linux-crypto@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 04, 2020 at 12:23:51PM -0700, Shakeel Butt wrote:
-> On Mon, May 4, 2020 at 9:06 AM Michal Hocko <mhocko@kernel.org> wrote:
-> > I really hate to repeat myself but this is no different from a regular
-> > oom situation.
-> 
-> Conceptually yes there is no difference but there is no *divine
-> restriction* to not make a difference if there is a real world
-> use-case which would benefit from it.
-
-I would wholeheartedly agree with this in general.
-
-However, we're talking about the very semantics that set memory.max
-apart from memory.high: triggering OOM kills to enforce the limit.
-
-> > when the kernel cannot act and mentions that along with the
-> > oom report so that whoever consumes that information can debug or act on
-> > that fact.
+On Mon, May 4, 2020 at 5:54 PM Daniel Jordan <daniel.m.jordan@oracle.com> wrote:
+>
+> On Mon, May 04, 2020 at 03:10:46PM -0700, Alexander Duyck wrote:
+> > So we cannot stop in the middle of a max order block. That shouldn't
+> > be possible as part of the issue is that the buddy allocator will
+> > attempt to access the buddy for the page which could cause issues if
+> > it tries to merge the page with one that is not initialized. So if
+> > your code supports that then it is definitely broken. That was one of
+> > the reasons for all of the variable weirdness in
+> > deferred_init_maxorder. I was going through and making certain that
+> > while we were initializing the range we were freeing the pages in
+> > MAX_ORDER aligned blocks and skipping over whatever reserved blocks
+> > were there. Basically it was handling the case where a single
+> > MAX_ORDER block could span multiple ranges.
 > >
-> > Silencing the oom report is simply removing a potentially useful
-> > aid to debug further a potential problem.
-> 
-> *Potentially* useful for debugging versus actually beneficial for
-> "sweep before tear down" use-case. Also I am not saying to make "no
-> dumps for memory.max when no eligible tasks" a set in stone rule. We
-> can always reevaluate when such information will actually be useful.
-> 
-> Johannes/Andrew, what's your opinion?
+> > On x86 this was all pretty straightforward and I don't believe we
+> > needed the code, but I seem to recall there were some other
+> > architectures that had more complex memory layouts at the time and
+> > that was one of the reasons why I had to be careful to wait until I
+> > had processed the full MAX_ORDER block before I could start freeing
+> > the pages, otherwise it would start triggering memory corruptions.
+>
+> Yes, thanks, I missed the case where deferred_grow_zone could stop
+> mid-max-order-block.
 
-I still think that if you want to sweep without triggering OOMs,
-memory.high has the matching semantics.
+As it turns out that deferred_free_range will be setting the
+migratetype for the page. In a sparse config the migratetype bits are
+stored in the section bitmap. So to avoid cacheline bouncing it would
+make sense to section align the tasks so that they only have one
+thread touching one section rather than having the pageblock_flags
+getting bounced between threads. It should also reduce the overhead
+for having to parallelize the work in the first place since a section
+is several times larger than a MAX_ORDER page and allows for more
+batching of the work.
 
-As you pointed out, it doesn't work well for foreign charges, but that
-is more of a limitation in the implementation than in the semantics:
+> Maybe it's better to leave deferred_init_maxorder alone and adapt the
+> multithreading to the existing implementation.  That'd mean dealing with the
+> pesky opaque index somehow, so deferred_init_mem_pfn_range_in_zone() could be
+> generalized to find it in the thread function based on the start/end range, or
+> it could be maintained as part of the range that padata passes to the thread
+> function.
 
-	/*
-	 * If the hierarchy is above the normal consumption range, schedule
-	 * reclaim on returning to userland.  We can perform reclaim here
-	 * if __GFP_RECLAIM but let's always punt for simplicity and so that
-	 * GFP_KERNEL can consistently be used during reclaim.  @memcg is
-	 * not recorded as it most likely matches current's and won't
-	 * change in the meantime.  As high limit is checked again before
-	 * reclaim, the cost of mismatch is negligible.
-	 */
+You may be better off just implementing your threads to operate like
+deferred_grow_zone does. All your worker thread really needs then is
+to know where to start performing the page initialization and then it
+could go through and process an entire section worth of pages. The
+other bit that would have to be changed is patch 6 so that you combine
+any ranges that might span a single section instead of just splitting
+the work up based on the ranges.
 
-Wouldn't it be more useful to fix that instead? It shouldn't be much
-of a code change to do sync reclaim in try_charge().
-
-Then you could express all things that you asked for without changing
-any user-visible semantics: sweep an empty cgroup as well as possible,
-do not oom on remaining charges that continue to be used by processes
-outside the cgroup, do trigger oom on new foreign charges appearing
-due to a misconfiguration.
-
-	echo 0 > memory.high
-	cat memory.current > memory.max
-
-Would this work for you?
+If you are referring to the mo_pfn you shouldn't even need to think
+about it. All it is doing is guaranteeing you are processing at least
+a full max order worth of pages. Without that the logic before was
+either process a whole section, or just process all of memory
+initializing it before it started freeing it. I found it made things
+much more efficient to process only up to MAX_ORDER at a time as you
+could squeeze that into the L2 cache for most x86 processors at least
+and it reduced the memory bandwidth by quite a bit. If you update the
+code to only provide section aligned/sized ranges of of PFNs to
+initialize then it can pretty much be ignored since all it is doing is
+defining the break point for single MAX_ORDER chunks which would be
+smaller than a section anyway.
