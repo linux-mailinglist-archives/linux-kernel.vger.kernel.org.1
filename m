@@ -2,91 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82B741C5A78
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 316A21C5A86
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:08:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729762AbgEEPHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 11:07:25 -0400
-Received: from mout.kundenserver.de ([217.72.192.75]:49793 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729261AbgEEPHX (ORCPT
+        id S1730007AbgEEPHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 11:07:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729552AbgEEPHu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 11:07:23 -0400
-Received: from mail-qt1-f173.google.com ([209.85.160.173]) by
- mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1N6szR-1j4lAU3Azf-018O05; Tue, 05 May 2020 17:07:21 +0200
-Received: by mail-qt1-f173.google.com with SMTP id j2so1883827qtr.12;
-        Tue, 05 May 2020 08:07:21 -0700 (PDT)
-X-Gm-Message-State: AGi0PuYl+XiCsMai1Wt6Y16ptyuWwO4Ef2Pk+ryP4WQSa/U2G2LQf15Z
-        2P5P8Kx6+WB3f5NHh3uMqk4CyyGxeIkOJh7CKSA=
-X-Google-Smtp-Source: APiQypKcGtXxNTCMFsjCMlSjTXwSNyujie+geckspvsAjtzqoB03b+z86E4R0tb/FvJb7FlBkJbbNky8CoOQCI61wg8=
-X-Received: by 2002:ac8:6757:: with SMTP id n23mr3062685qtp.304.1588691240560;
- Tue, 05 May 2020 08:07:20 -0700 (PDT)
+        Tue, 5 May 2020 11:07:50 -0400
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41AEAC061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 08:07:50 -0700 (PDT)
+Received: from ramsan ([IPv6:2a02:1810:ac12:ed60:bd97:8453:3b10:1832])
+        by baptiste.telenet-ops.be with bizsmtp
+        id b37T2200Y3VwRR30137TdA; Tue, 05 May 2020 17:07:28 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan with esmtp (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1jVzAN-00027v-KP; Tue, 05 May 2020 17:07:27 +0200
+Received: from geert by rox.of.borg with local (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1jVzAN-0000QN-HZ; Tue, 05 May 2020 17:07:27 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     soc@kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, Kevin Hilman <khilman@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH v2 00/15] ARM: Drop unneeded select of multi-platform selected options
+Date:   Tue,  5 May 2020 17:07:07 +0200
+Message-Id: <20200505150722.1575-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20200429112834.24908-1-vincenzo.frascino@arm.com>
- <CAK8P3a3u05wF1DT3Wnvmapc0jixu+gp_YG=KTEN9-n4JedJ9BA@mail.gmail.com> <b9b313b5-697e-b92e-1aca-7ad07a640a03@arm.com>
-In-Reply-To: <b9b313b5-697e-b92e-1aca-7ad07a640a03@arm.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 5 May 2020 17:07:04 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0hUG3-21=HCrxxjQSxFJsDBu704NQCiOW6jNpZV5Ns8w@mail.gmail.com>
-Message-ID: <CAK8P3a0hUG3-21=HCrxxjQSxFJsDBu704NQCiOW6jNpZV5Ns8w@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] kselftest: Extend vDSO tests
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:5UApId0RZn/WJGeGExoIPUxHrVpBOgjUWKaPG1SKSBUdoO38fBv
- ZnxBcmygrFm1m9rmQW5JTULBNviOwpVL2xy8BhlUon8utxlL4zmrcrHzed8mVn5RgCeGDLk
- +7jzBZbG8HurHxS5MIBZiH24ADB0ECQmQo4Ap+RNHtb7p5+zZp1ezU52+6FPx8EOcNZcUkb
- 13oVwXf+g1mmo93DiixPg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:u1ednoR6qPA=:QoHf5FWzpzAOiFyi5wb7UP
- QUwLIAbt25ll0vgoBMFiek+diDMYWadD/aDZ8j++NOxGdCezhWoWp8m4HO4rpIFCRYJHBOlRX
- 467i+b3bpqZc7di5DdHVKLqxCG3NsIbhq57LIMbENXB5YwKIBt80sULxUouIY3U2s/wYxFb9U
- 1kDecHQ/XlqrTvAA6Zk1A38abeUKny2vAsbJayltbAOJPqFUp4Vd1+Iw0Tqo0EyXDpFye4hv4
- vf+HTxJH7ZXmHgvSb+WJR7g3GOVhs7tn9czRAcDdKCLFQMUFePKHKswz/o5Kr4EKzYFerju0g
- PIhIDy8DBBRmuCAbgN4p1VrUKnuZi1fqAZtcXwTPg//kmLTOYhfgLmzzU9Uz7txgEScRHzD8T
- 59QXTjDg6I5rciV6dZH5iOewANJFrjjRDvj0bpQJ8ZlUa5JLPhkUD5ILDIFLAbCmHC2s24Def
- iuRG0XO3xhsLhI3/Co0nzD7FPtm9tZ7bDJv5OBjrcQrdAKVePuEk/91DWzQgQ91Z4+PwuylQJ
- 1Y1YdZUc0MWC/uO0OJ0+WXxLliu6AbqnGT+F/3IKrH0WiEh7UsUBnMDRe5HBWLZQf4LKYBlLE
- bfNsPkcNg0KfwTxDyoPZoeyWlG6LxZBrJXVkqJ+rbp08iNqpwsEkg46G4SqCktc1qf9pRqRFe
- hguf66gQbJ8jTuX21MezS5YBYv67zfAMfzYsKhoSxZWr8kE4RGTw59gD7XmyrfeLmeMRXOdSt
- VLk6FxhCQdw4esAYumm3ZPZVZQO3mz927U1FlWdJstP97RFXhGKlPzWEC9zN9VLFTu/kIxmXE
- rzvGpVJ0FOuUl1R9uLqCUml6bdu91L6XjYrRAEBinL1QdABF5g=
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 5, 2020 at 5:03 PM Vincenzo Frascino
-<vincenzo.frascino@arm.com> wrote:
-> On 5/5/20 3:50 PM, Arnd Bergmann wrote:
-> > On Wed, Apr 29, 2020 at 1:34 PM Vincenzo Frascino <vincenzo.frascino@arm.com> wrote:
-> >
-> > Not sure if you are aware of the recent bug report about clock_gettime64()
-> > returning invalid times on some arm32 kernels:
-> > https://github.com/raspberrypi/linux/issues/3579
-> >
->
-> No, I was not aware of the problem. There has been no mention on the arm list
-> (unless I missed it). I can try to have a look at it as soon as I get some time.
+	Hi arm-soc folks,
 
-Right, it was on only on the musl list, and I had pinged you on IRC, but you
-must have been offline.
+This patch series drops select statements from the various
+platform-specific Kconfig files, for symbols that are already selected
+by the various multi-platform related config options
+(ARCH_MULTIPLATFORM, ARCH_MULTI_V*, and ARM_SINGLE_ARMV7M).
+This makes it easier to e.g. identify platforms that are not yet part of
+multi-platform builds, but already use some multi-platform features
+(e.g. "COMMON_CLK" is used by multi-platform + s3c24xx).
 
-> > Regardless of when that gets fixed or by whom, I wonder if kselftest should
-> > also check for consistency, i.e. call both the vdso and the syscall version of
-> > clock_gettime() and clock_gettime64() and check that the results are always
-> > in sequence.
-> >
->
-> The test #4 partially does that: it calls syscall-vdso-syscall and verifies that
-> the sequencing is correct. I reused the x86 code for that. I could extend it to
-> clock_gettime64() and make sure it builds on all the platforms.
+This series contains the patches from [1] and [2] that haven't been
+applied yet.
 
-Sounds good to me.
+Changes compared to v1:
+  - Add Acked-by, Reviewed-by.
 
-       Arnd
+Thanks for applying!
+
+[1] "[PATCH] ARM: arch timer: Drop unneeded select GENERIC_CLOCKEVENTS"
+    https://lore.kernel.org/r/20200121100608.32218-1-geert+renesas@glider.be
+[2] "[PATCH 00/20] ARM: Drop unneeded select of multi-platform selected
+     options"
+    https://lore.kernel.org/r/20200121103413.1337-1-geert+renesas@glider.be
+
+Geert Uytterhoeven (15):
+  ARM: arch timer: Drop unneeded select GENERIC_CLOCKEVENTS
+  ARM: actions: Drop unneeded select of COMMON_CLK
+  ARM: alpine: Drop unneeded select of HAVE_SMP
+  ARM: asm9260: Drop unneeded select of GENERIC_CLOCKEVENTS
+  ARM: aspeed: Drop unneeded select of HAVE_SMP
+  ARM: berlin: Drop unneeded select of HAVE_SMP
+  ARM: clps711x: Drop unneeded select of multi-platform selected options
+  ARM: davinci: Drop unneeded select of TIMER_OF
+  ARM: integrator: Drop unneeded select of SPARSE_IRQ
+  ARM: mmp: Drop unneeded select of COMMON_CLK
+  ARM: mvebu: Drop unneeded select of HAVE_SMP
+  ARM: omap2plus: Drop unneeded select of MIGHT_HAVE_CACHE_L2X0
+  ARM: prima2: Drop unneeded select of HAVE_SMP
+  ARM: realview: Drop unneeded select of multi-platform features
+  ARM: socfpga: Drop unneeded select of PCI_DOMAINS_GENERIC
+
+ arch/arm/Kconfig                 | 1 -
+ arch/arm/mach-actions/Kconfig    | 1 -
+ arch/arm/mach-alpine/Kconfig     | 1 -
+ arch/arm/mach-asm9260/Kconfig    | 1 -
+ arch/arm/mach-aspeed/Kconfig     | 1 -
+ arch/arm/mach-berlin/Kconfig     | 1 -
+ arch/arm/mach-clps711x/Kconfig   | 5 -----
+ arch/arm/mach-davinci/Kconfig    | 1 -
+ arch/arm/mach-integrator/Kconfig | 1 -
+ arch/arm/mach-mmp/Kconfig        | 1 -
+ arch/arm/mach-mvebu/Kconfig      | 3 ---
+ arch/arm/mach-omap2/Kconfig      | 1 -
+ arch/arm/mach-prima2/Kconfig     | 1 -
+ arch/arm/mach-realview/Kconfig   | 8 --------
+ arch/arm/mach-socfpga/Kconfig    | 1 -
+ 15 files changed, 28 deletions(-)
+
+-- 
+2.17.1
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
