@@ -2,104 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30D1F1C56B7
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 15:24:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D651C1C56BD
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 15:25:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729035AbgEENX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 09:23:59 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46206 "EHLO mx2.suse.de"
+        id S1729076AbgEENZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 09:25:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40544 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728892AbgEENX7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 09:23:59 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id BBA43AB3D;
-        Tue,  5 May 2020 13:23:59 +0000 (UTC)
-Message-ID: <7946e8efb23376a395d32b2ae2ea240c519502b9.camel@suse.de>
-Subject: Re: [PATCH v2 1/4] PCI: brcmstb: Don't clk_put() a managed clock
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Jim Quinlan <james.quinlan@broadcom.com>
-Cc:     "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Rob Herring <robh@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
-        <linux-pci@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Date:   Tue, 05 May 2020 15:23:54 +0200
-In-Reply-To: <20200501142831.35174-2-james.quinlan@broadcom.com>
-References: <20200501142831.35174-1-james.quinlan@broadcom.com>
-         <20200501142831.35174-2-james.quinlan@broadcom.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-j/ZrGLyXvIzAV7yVCtRN"
-User-Agent: Evolution 3.36.2 
+        id S1728934AbgEENZB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 09:25:01 -0400
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7550B2085B
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 13:25:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588685100;
+        bh=Rac7y5rYSK/2G4X72RSjogk7F2/1A77BkfY4aonMNHE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=i5xHfyBiuY7p3DIDikoONdvivQLQ4kFoUccnvcJjFvhJv1HKqhIO1mf1meaLdx+2n
+         1i52/G4OxRdFuW6VaiyUE7nR7/tQPKjvGlAde5qF2T8Af5nG/vVWTQ8pOq44RNLASN
+         r9288oja66bgZ4akeUN8C1WjZHZMIBknn7sB+hGY=
+Received: by mail-ej1-f54.google.com with SMTP id s9so1707481eju.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 06:25:00 -0700 (PDT)
+X-Gm-Message-State: AGi0PuY3b8O5MXiaGsslpbj8eBOaRMht0MntT6bX950s+QuNr0amA2EI
+        MBtGROgg5IiaRgsg7Z7Kc7iEHnULDNRoiun8yg==
+X-Google-Smtp-Source: APiQypLJ2xfzocGLFFYqsJeJ4aQuzD3rk0l4tQD4X9JUcGCFrXJoKm4Ml5gb0eu1ufwRXvYazmB6synEUoz0VY1lpns=
+X-Received: by 2002:a17:906:7717:: with SMTP id q23mr2732910ejm.38.1588685098796;
+ Tue, 05 May 2020 06:24:58 -0700 (PDT)
 MIME-Version: 1.0
+References: <20200504141408.60877-1-enric.balletbo@collabora.com> <20200504141408.60877-3-enric.balletbo@collabora.com>
+In-Reply-To: <20200504141408.60877-3-enric.balletbo@collabora.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Tue, 5 May 2020 21:24:45 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_8ZV3UDanHDnVmUESPfaNBjwFBKi9-i7ctSFVWGOHAR2g@mail.gmail.com>
+Message-ID: <CAAOTY_8ZV3UDanHDnVmUESPfaNBjwFBKi9-i7ctSFVWGOHAR2g@mail.gmail.com>
+Subject: Re: [PATCH 2/3] drm/mediatek: mtk_dpi: Convert to bridge driver
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, Enric:
 
---=-j/ZrGLyXvIzAV7yVCtRN
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Enric Balletbo i Serra <enric.balletbo@collabora.com> =E6=96=BC 2020=E5=B9=
+=B45=E6=9C=884=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=8810:14=E5=AF=AB=
+=E9=81=93=EF=BC=9A
+>
+> Convert mtk_dpi to a bridge driver with built-in encoder support for
+> compatibility with existing component drivers.
 
-On Fri, 2020-05-01 at 10:28 -0400, Jim Quinlan wrote:
-> From: Jim Quinlan <jquinlan@broadcom.com>
->=20
-> clk_put() was being invoked on a clock obtained by
-> devm_clk_get_optional().
->=20
-> Signed-off-by: Jim Quinlan <jquinlan@broadcom.com>
-> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+
+>
+> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 > ---
-
-Acked-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-
-Regards,
-Nicolas
-
->  drivers/pci/controller/pcie-brcmstb.c | 1 -
->  1 file changed, 1 deletion(-)
->=20
-> diff --git a/drivers/pci/controller/pcie-brcmstb.c
-> b/drivers/pci/controller/pcie-brcmstb.c
-> index 6d79d14527a6..454917ee9241 100644
-> --- a/drivers/pci/controller/pcie-brcmstb.c
-> +++ b/drivers/pci/controller/pcie-brcmstb.c
-> @@ -899,7 +899,6 @@ static void __brcm_pcie_remove(struct brcm_pcie *pcie=
+>
+>  drivers/gpu/drm/mediatek/mtk_dpi.c | 66 +++++++++++++++---------------
+>  1 file changed, 34 insertions(+), 32 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/mediate=
+k/mtk_dpi.c
+> index 7112125dc3d1..baad198c69eb 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_dpi.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
+> @@ -61,6 +61,7 @@ enum mtk_dpi_out_color_format {
+>  struct mtk_dpi {
+>         struct mtk_ddp_comp ddp_comp;
+>         struct drm_encoder encoder;
+> +       struct drm_bridge bridge;
+>         struct drm_bridge *next_bridge;
+>         void __iomem *regs;
+>         struct device *dev;
+> @@ -77,9 +78,9 @@ struct mtk_dpi {
+>         int refcount;
+>  };
+>
+> -static inline struct mtk_dpi *mtk_dpi_from_encoder(struct drm_encoder *e=
 )
->  	brcm_msi_remove(pcie);
->  	brcm_pcie_turn_off(pcie);
->  	clk_disable_unprepare(pcie->clk);
-> -	clk_put(pcie->clk);
+> +static inline struct mtk_dpi *bridge_to_dpi(struct drm_bridge *b)
+>  {
+> -       return container_of(e, struct mtk_dpi, encoder);
+> +       return container_of(b, struct mtk_dpi, bridge);
 >  }
-> =20
->  static int brcm_pcie_remove(struct platform_device *pdev)
-
-
---=-j/ZrGLyXvIzAV7yVCtRN
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl6xaOoACgkQlfZmHno8
-x/4zFAf6A28BXIGgiFx4cGET/exjJuFYtSEdnxdHqrU3xmv0+qw+NJRL+o6kzhqa
-Pb1Wx5+R2KV1NbiU0BKwzhHL8vj2KiE2k/zi14dvyEoy1EHsnu3aQ96eeXralUOU
-AjubnENtm+mfBPX03xZaWzjRGs4fgrJbqEEE3INb8Iji4X85iMhTh46ylY49Hkdz
-oM0lPWTRTAEXQLzBONZe7VQi+S0Zd1t8mY0IZV8nJYifwqgvYoJdSvXzNxCfJ3fA
-slYEVGW5maJEO/qHsWKyJYE17mwWPGeskeAVF4dQWQt1rDPc1vm+AsaCJzjPLMhM
-904BWZ69Lu3pdxhAiLGBX8dd+oRvzA==
-=A2C7
------END PGP SIGNATURE-----
-
---=-j/ZrGLyXvIzAV7yVCtRN--
-
+>
+>  enum mtk_dpi_polarity {
+> @@ -518,50 +519,44 @@ static const struct drm_encoder_funcs mtk_dpi_encod=
+er_funcs =3D {
+>         .destroy =3D mtk_dpi_encoder_destroy,
+>  };
+>
+> -static bool mtk_dpi_encoder_mode_fixup(struct drm_encoder *encoder,
+> -                                      const struct drm_display_mode *mod=
+e,
+> -                                      struct drm_display_mode *adjusted_=
+mode)
+> +static int mtk_dpi_bridge_attach(struct drm_bridge *bridge,
+> +                                enum drm_bridge_attach_flags flags)
+>  {
+> -       return true;
+> +       struct mtk_dpi *dpi =3D bridge_to_dpi(bridge);
+> +
+> +       return drm_bridge_attach(bridge->encoder, dpi->next_bridge,
+> +                                &dpi->bridge, flags);
+>  }
+>
+> -static void mtk_dpi_encoder_mode_set(struct drm_encoder *encoder,
+> -                                    struct drm_display_mode *mode,
+> -                                    struct drm_display_mode *adjusted_mo=
+de)
+> +static void mtk_dpi_bridge_mode_set(struct drm_bridge *bridge,
+> +                               const struct drm_display_mode *mode,
+> +                               const struct drm_display_mode *adjusted_m=
+ode)
+>  {
+> -       struct mtk_dpi *dpi =3D mtk_dpi_from_encoder(encoder);
+> +       struct mtk_dpi *dpi =3D bridge_to_dpi(bridge);
+>
+>         drm_mode_copy(&dpi->mode, adjusted_mode);
+>  }
+>
+> -static void mtk_dpi_encoder_disable(struct drm_encoder *encoder)
+> +static void mtk_dpi_bridge_disable(struct drm_bridge *bridge)
+>  {
+> -       struct mtk_dpi *dpi =3D mtk_dpi_from_encoder(encoder);
+> +       struct mtk_dpi *dpi =3D bridge_to_dpi(bridge);
+>
+>         mtk_dpi_power_off(dpi);
+>  }
+>
+> -static void mtk_dpi_encoder_enable(struct drm_encoder *encoder)
+> +static void mtk_dpi_bridge_enable(struct drm_bridge *bridge)
+>  {
+> -       struct mtk_dpi *dpi =3D mtk_dpi_from_encoder(encoder);
+> +       struct mtk_dpi *dpi =3D bridge_to_dpi(bridge);
+>
+>         mtk_dpi_power_on(dpi);
+>         mtk_dpi_set_display_mode(dpi, &dpi->mode);
+>  }
+>
+> -static int mtk_dpi_atomic_check(struct drm_encoder *encoder,
+> -                               struct drm_crtc_state *crtc_state,
+> -                               struct drm_connector_state *conn_state)
+> -{
+> -       return 0;
+> -}
+> -
+> -static const struct drm_encoder_helper_funcs mtk_dpi_encoder_helper_func=
+s =3D {
+> -       .mode_fixup =3D mtk_dpi_encoder_mode_fixup,
+> -       .mode_set =3D mtk_dpi_encoder_mode_set,
+> -       .disable =3D mtk_dpi_encoder_disable,
+> -       .enable =3D mtk_dpi_encoder_enable,
+> -       .atomic_check =3D mtk_dpi_atomic_check,
+> +static const struct drm_bridge_funcs mtk_dpi_bridge_funcs =3D {
+> +       .attach =3D mtk_dpi_bridge_attach,
+> +       .mode_set =3D mtk_dpi_bridge_mode_set,
+> +       .disable =3D mtk_dpi_bridge_disable,
+> +       .enable =3D mtk_dpi_bridge_enable,
+>  };
+>
+>  static void mtk_dpi_start(struct mtk_ddp_comp *comp)
+> @@ -602,16 +597,13 @@ static int mtk_dpi_bind(struct device *dev, struct =
+device *master, void *data)
+>                 dev_err(dev, "Failed to initialize decoder: %d\n", ret);
+>                 goto err_unregister;
+>         }
+> -       drm_encoder_helper_add(&dpi->encoder, &mtk_dpi_encoder_helper_fun=
+cs);
+>
+>         /* Currently DPI0 is fixed to be driven by OVL1 */
+>         dpi->encoder.possible_crtcs =3D BIT(1);
+>
+> -       ret =3D drm_bridge_attach(&dpi->encoder, dpi->next_bridge, NULL, =
+0);
+> -       if (ret) {
+> -               dev_err(dev, "Failed to attach bridge: %d\n", ret);
+> +       ret =3D drm_bridge_attach(&dpi->encoder, &dpi->bridge, NULL, 0);
+> +       if (ret)
+>                 goto err_cleanup;
+> -       }
+>
+>         dpi->bit_num =3D MTK_DPI_OUT_BIT_NUM_8BITS;
+>         dpi->channel_swap =3D MTK_DPI_OUT_CHANNEL_SWAP_RGB;
+> @@ -768,8 +760,15 @@ static int mtk_dpi_probe(struct platform_device *pde=
+v)
+>
+>         platform_set_drvdata(pdev, dpi);
+>
+> +       dpi->bridge.funcs =3D &mtk_dpi_bridge_funcs;
+> +       dpi->bridge.of_node =3D dev->of_node;
+> +       dpi->bridge.type =3D DRM_MODE_CONNECTOR_DPI;
+> +
+> +       drm_bridge_add(&dpi->bridge);
+> +
+>         ret =3D component_add(dev, &mtk_dpi_component_ops);
+>         if (ret) {
+> +               drm_bridge_remove(&dpi->bridge);
+>                 dev_err(dev, "Failed to add component: %d\n", ret);
+>                 return ret;
+>         }
+> @@ -779,7 +778,10 @@ static int mtk_dpi_probe(struct platform_device *pde=
+v)
+>
+>  static int mtk_dpi_remove(struct platform_device *pdev)
+>  {
+> +       struct mtk_dpi *dpi =3D platform_get_drvdata(pdev);
+> +
+>         component_del(&pdev->dev, &mtk_dpi_component_ops);
+> +       drm_bridge_remove(&dpi->bridge);
+>
+>         return 0;
+>  }
+> --
+> 2.26.2
+>
