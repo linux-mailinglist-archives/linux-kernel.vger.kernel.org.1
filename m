@@ -2,78 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B61281C4D82
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 06:58:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D55C1C4D74
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 06:54:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727956AbgEEE6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 00:58:30 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:38196 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726610AbgEEE6a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 00:58:30 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 7DDD594BE2A050E65587;
-        Tue,  5 May 2020 12:58:27 +0800 (CST)
-Received: from huawei.com (10.67.174.156) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Tue, 5 May 2020
- 12:58:20 +0800
-From:   ChenTao <chentao107@huawei.com>
-To:     <airlied@linux.ie>, <daniel@ffwll.ch>
-CC:     <alexander.deucher@amd.com>, <christian.koenig@amd.com>,
-        <David1.Zhou@amd.com>, <amd-gfx@lists.freedesktop.org>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        <chentao107@huawei.com>
-Subject: [PATCH -next] drm/radeon: fix unsigned comparison with 0
-Date:   Tue, 5 May 2020 12:57:37 +0800
-Message-ID: <20200505045737.185143-1-chentao107@huawei.com>
-X-Mailer: git-send-email 2.22.0
+        id S1726542AbgEEEyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 00:54:20 -0400
+Received: from foss.arm.com ([217.140.110.172]:59304 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725766AbgEEEyT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 00:54:19 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E0FD730E;
+        Mon,  4 May 2020 21:54:18 -0700 (PDT)
+Received: from [10.37.12.10] (unknown [10.37.12.10])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B6EE03F68F;
+        Mon,  4 May 2020 21:54:11 -0700 (PDT)
+Subject: Re: [PATCH V3 10/16] arm64/cpufeature: Add remaining feature bits in
+ ID_AA64PFR0 register
+To:     anshuman.khandual@arm.com, linux-arm-kernel@lists.infradead.org
+Cc:     catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com,
+        linux-kernel@vger.kernel.org
+References: <1588426445-24344-1-git-send-email-anshuman.khandual@arm.com>
+ <1588426445-24344-11-git-send-email-anshuman.khandual@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <f5e8b407-c731-7ff9-df47-fc54182f2d25@arm.com>
+Date:   Tue, 5 May 2020 05:59:10 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.174.156]
-X-CFilter-Loop: Reflected
+In-Reply-To: <1588426445-24344-11-git-send-email-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes warning because pipe is unsigned long and can never be negtative
+On 05/02/2020 02:33 PM, Anshuman Khandual wrote:
+> Enable MPAM and SEL2 features bits in ID_AA64PFR0 register as per ARM DDI
+> 0487F.a specification.
+> 
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> 
+> Suggested-by: Will Deacon <will@kernel.org>
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+>   arch/arm64/include/asm/sysreg.h | 2 ++
+>   arch/arm64/kernel/cpufeature.c  | 2 ++
+>   2 files changed, 4 insertions(+)
+> 
+> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+> index 40eaf89f1032..c93ea6613f51 100644
+> --- a/arch/arm64/include/asm/sysreg.h
+> +++ b/arch/arm64/include/asm/sysreg.h
+> @@ -641,6 +641,8 @@
+>   #define ID_AA64PFR0_CSV2_SHIFT		56
+>   #define ID_AA64PFR0_DIT_SHIFT		48
+>   #define ID_AA64PFR0_AMU_SHIFT		44
+> +#define ID_AA64PFR0_MPAM_SHIFT		40
+> +#define ID_AA64PFR0_SEL2_SHIFT		36
+>   #define ID_AA64PFR0_SVE_SHIFT		32
+>   #define ID_AA64PFR0_RAS_SHIFT		28
+>   #define ID_AA64PFR0_GIC_SHIFT		24
+> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+> index dbedcae28061..f5a39e040804 100644
+> --- a/arch/arm64/kernel/cpufeature.c
+> +++ b/arch/arm64/kernel/cpufeature.c
+> @@ -217,6 +217,8 @@ static const struct arm64_ftr_bits ftr_id_aa64pfr0[] = {
+>   	ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_LOWER_SAFE, ID_AA64PFR0_CSV2_SHIFT, 4, 0),
+>   	ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64PFR0_DIT_SHIFT, 4, 0),
+>   	ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_LOWER_SAFE, ID_AA64PFR0_AMU_SHIFT, 4, 0),
+> +	ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64PFR0_MPAM_SHIFT, 4, 0),
+> +	ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64PFR0_SEL2_SHIFT, 4, 0),
 
-vers/gpu/drm/radeon/radeon_kms.c:831:11: warning:
-comparison of unsigned expression < 0 is always false [-Wtype-limits]
-  if (pipe < 0 || pipe >= rdev->num_crtc) {
-drivers/gpu/drm/radeon/radeon_kms.c:857:11: warning:
-comparison of unsigned expression < 0 is always false [-Wtype-limits]
-  if (pipe < 0 || pipe >= rdev->num_crtc) {
+Both of them must be hidden. And also need to check the impact of 
+exposing this to the guests, especially MPAM.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: ChenTao <chentao107@huawei.com>
----
- drivers/gpu/drm/radeon/radeon_kms.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/radeon/radeon_kms.c b/drivers/gpu/drm/radeon/radeon_kms.c
-index 372962358a18..c5d1dc9618a4 100644
---- a/drivers/gpu/drm/radeon/radeon_kms.c
-+++ b/drivers/gpu/drm/radeon/radeon_kms.c
-@@ -828,7 +828,7 @@ int radeon_enable_vblank_kms(struct drm_crtc *crtc)
- 	unsigned long irqflags;
- 	int r;
- 
--	if (pipe < 0 || pipe >= rdev->num_crtc) {
-+	if (pipe >= rdev->num_crtc) {
- 		DRM_ERROR("Invalid crtc %d\n", pipe);
- 		return -EINVAL;
- 	}
-@@ -854,7 +854,7 @@ void radeon_disable_vblank_kms(struct drm_crtc *crtc)
- 	struct radeon_device *rdev = dev->dev_private;
- 	unsigned long irqflags;
- 
--	if (pipe < 0 || pipe >= rdev->num_crtc) {
-+	if (pipe >= rdev->num_crtc) {
- 		DRM_ERROR("Invalid crtc %d\n", pipe);
- 		return;
- 	}
--- 
-2.22.0
-
+Suzuki
