@@ -2,208 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01EB71C6226
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 22:36:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA0881C6210
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 22:29:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729189AbgEEUgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 16:36:48 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:45884 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726593AbgEEUgs (ORCPT
+        id S1729301AbgEEU3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 16:29:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728135AbgEEU3D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 16:36:48 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id DE4D62A1A91
-Subject: Re: [PATCH] platform/chrome: cros_ec_typec: Handle NULL EC pointer
- during probe.
-To:     Daniil Lunev <dlunev@chromium.org>,
-        Prashant Malani <pmalani@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>
-References: <20200428110253.1.I926f6741079cafb04ecb592130aef75b24ad31ae@changeid>
- <c57b0892-d68d-f0f2-3cc1-b8549983227e@collabora.com>
- <CAONX=-dLVBpz+p1si4cWGHEmQ_toO8kW=fCPcdUuX2KLc-o=2A@mail.gmail.com>
- <CAONX=-dDWjMQDGncSgXNf86Bt3C5OUtFqh=Pe2HToGPSv5qa4A@mail.gmail.com>
- <CACeCKacoEjQm0_VfZGYNEZVhKubPyqspNZupQk+7piJOsVzH+Q@mail.gmail.com>
- <fc7901ff-9e67-d6d5-f084-70233fd8344c@collabora.com>
- <CACeCKafnrMk_=Udg-roEbrkDzZe6m3mUk14OOVVROmn-agfpDA@mail.gmail.com>
- <CAONX=-cR0H2zrGEunwq2k3g+d=9asmeu39ssFN31yFs6i-wktQ@mail.gmail.com>
- <20200501005609.GA131713@google.com>
- <CAONX=-fs_4zA4DGxcoRTod+amjVgSdAaQ-CQ4wsC7J9=fnm6Zw@mail.gmail.com>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <d5369956-aca4-2c40-3300-d86151847bbc@collabora.com>
-Date:   Tue, 5 May 2020 22:36:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 5 May 2020 16:29:03 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 158FAC061A0F;
+        Tue,  5 May 2020 13:29:03 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id a9so2475136lfb.8;
+        Tue, 05 May 2020 13:29:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=83UCtPNkqDZBKGoRIazdaAZRxxGX8f38Okq8k7GA4pI=;
+        b=CejyCH2+i8WjwOb6iQSU/zjkgAjhZFS3kKbmAcGRM+1VtTGKGEU+WvbOY7x2voOPho
+         XLjfmulIDc05d7z63UFfBbfOwjtdaXNdU6aYilayzlrXcoKs2Scd/9SK20k+tLtbbMp6
+         n9nDQ3nkLOzgi5LtpjnS/IKdbwlyQQCsDCcNqYlzoRBaW4vZvEOnLbQUXDzHAGqefQGe
+         Q1AP1nacbWbmjUwWFXOiAHyZXwLAXI/sGF3FtUqGf+6nDIg6RIe8xlpo4X2jbPbPgjId
+         2m0DslzgGLGYJfe8SAGJ267eW+mbvJ4JEiIJQt7G2m+lSjdotbOCUzSYiGG6gAD7sGlY
+         1jBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=83UCtPNkqDZBKGoRIazdaAZRxxGX8f38Okq8k7GA4pI=;
+        b=SrWRSA6naDWClKDXGSjlB+VG8H59fTaPMMmO2+/oc09nrHwhOcWWpztCZh7V7woucU
+         nUhmL6foCtYqgX400a2gPhdnxP1RVeM98bicfqxf8Bsf6X86IQfdWd4Y0cJTupT2U3X4
+         C4FkVJprFqD/cWsUQWQhEgYc+X6LZ29WVchBF5pd5A54eQztaFfVE2dY/d1QOmt+oLK0
+         Q2/tvKovvE0YA6JV38rq5WkP0znUu2shTUwSeU3kUxN13lrBQYf3gFPxPotGvcIWHfXG
+         l/pafJ6KVwGFCfHuTxG86DCPlNv9NOoGzgNYMWvui8hWC+cnrJ5lxR0kgCilZyihWwvF
+         bQYA==
+X-Gm-Message-State: AGi0PuYtUspAyWUwQXQbqpEI5h3MP9kjUV4IBkqCalB1yBXdKRz1BIrK
+        8e4GeedE/N89gwyhsD7jbSdXRqez5IheacdccYg=
+X-Google-Smtp-Source: APiQypIN32pISCAGZuC8E0y4X/FTimjvo06gX0G57fdlSriZX05RtvQUHDYaxCoByWoKjEhFoEzhC0rF5wxgjntlPtc=
+X-Received: by 2002:a19:c349:: with SMTP id t70mr2736495lff.139.1588710541439;
+ Tue, 05 May 2020 13:29:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAONX=-fs_4zA4DGxcoRTod+amjVgSdAaQ-CQ4wsC7J9=fnm6Zw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1588706059-4208-1-git-send-email-jrdr.linux@gmail.com> <0bfe4a8a-0d91-ef9b-066f-2ea7c68571b3@nvidia.com>
+In-Reply-To: <0bfe4a8a-0d91-ef9b-066f-2ea7c68571b3@nvidia.com>
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+Date:   Wed, 6 May 2020 02:06:56 +0530
+Message-ID: <CAFqt6zZMsQkOdjAb2k1EjwX=DtZ8gKfbRzwvreHOX-0vJLngNg@mail.gmail.com>
+Subject: Re: [RFC] mm/gup.c: Updated return value of {get|pin}_user_pages_fast()
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Tony Luck <tony.luck@intel.com>, fenghua.yu@intel.com,
+        Rob Springer <rspringer@google.com>,
+        Todd Poynor <toddpoynor@google.com>, benchan@chromium.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        santosh.shilimkar@oracle.com,
+        "David S. Miller" <davem@davemloft.net>, kuba@kernel.org,
+        Jan Kara <jack@suse.cz>, Ira Weiny <ira.weiny@intel.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        inux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "open list:ANDROID DRIVERS" <devel@driverdev.osuosl.org>,
+        tee-dev@lists.linaro.org, Linux-MM <linux-mm@kvack.org>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi.
+On Wed, May 6, 2020 at 1:08 AM John Hubbard <jhubbard@nvidia.com> wrote:
+>
+> On 2020-05-05 12:14, Souptick Joarder wrote:
+> > Currently {get|pin}_user_pages_fast() have 3 return value 0, -errno
+> > and no of pinned pages. The only case where these two functions will
+> > return 0, is for nr_pages <= 0, which doesn't find a valid use case.
+> > But if at all any, then a -ERRNO will be returned instead of 0, which
+> > means {get|pin}_user_pages_fast() will have 2 return values -errno &
+> > no of pinned pages.
+> >
+> > Update all the callers which deals with return value 0 accordingly.
+>
+> Hmmm, seems a little shaky. In order to do this safely, I'd recommend
+> first changing gup_fast/pup_fast so so that they return -EINVAL if
+> the caller specified nr_pages==0, and of course auditing all callers,
+> to ensure that this won't cause problems.
 
-On 1/5/20 5:22, Daniil Lunev wrote:
-> Hi Prashant,
-> I do not think it is present. Thinking about it, I do not think it
-> shall be an issue on any released device as it will have either a
-> firmware which wouldn't even trigger the typec probe or the one after
-> the hierarchy fix. Likely I just got a firmware which was somewhere in
-> between those two (As I did some unrelated FW testing). So, yes,
-> probably putting this upstream is not necessary, though IMO more
-> sanity checks - especially on non-critical run-once paths - are always
-> better than having a kernel panic lingering around the corner, not
-> like I am insisting on pushing the patch though with all the info, up
-> to Enric.
+While auditing it was figured out, there are 5 callers which cares for
+return value
+0 of gup_fast/pup_fast. What problem it might cause if we change
+gup_fast/pup_fast
+to return -EINVAL and update all the callers in a single commit ?
 
-I'd prefer to not push the patch. If at some point this is starts of being
-possible we will catch soon.
+>
+> The gup.c documentation would also need updating in a couple of comment
+> blocks, above get_user_pages_remote(), and __get_user_pages(), because
+> those talk about a zero return value.
 
-Thank you,
- Enric
+OK.
 
-> Cheers,
-> Daniil
-> 
-> On Fri, May 1, 2020 at 10:56 AM Prashant Malani <pmalani@chromium.org> wrote:
->>
->> Hi Daniil,
->>
->> On Fri, May 01, 2020 at 10:15:18AM +1000, Daniil Lunev wrote:
->>> On the official revision of coreboot for hatch it doesn't even try to
->>> load Type C. However it gives some warning messages from
->>> cros-usbpd-notify-acpi about EC, So I wonder why the check of the same
->>> type is not appropriate in the typec driver?
->>
->> I think the difference is that GOOG0003 is already present on shipped /
->> official versions of coreboot (so not having that check can cause
->> existing release images/devices to crash), whereas for GOOG0014 that is / isn't the case.
->>
->> Is GOOG0014 present on the official release coreboot image for this
->> device? If so, what's its path (/sys/bus/acpi/devices/<HID>/path) ?
->>
->> Best regards,
->>
->> -Prashant
->>>
->>> ../chrome/cros_usbpd_notify.c
->>>
->>> /* Get the EC device pointer needed to talk to the EC. */
->>> ec_dev = dev_get_drvdata(dev->parent);
->>> if (!ec_dev) {
->>> /*
->>> * We continue even for older devices which don't have the
->>> * correct device heirarchy, namely, GOOG0003 is a child
->>> * of GOOG0004.
->>> */
->>> dev_warn(dev, "Couldn't get Chrome EC device pointer.\n");
->>> }
->>>
->>>
->>> # dmesg
->>> ...
->>> [    8.513351] cros-ec-spi spi-PRP0001:02: EC failed to respond in time
->>> [    8.722072] cros-ec-spi spi-PRP0001:02: EC failed to respond in time
->>> [    8.729271] cros-ec-spi spi-PRP0001:02: Cannot identify the EC: error -110
->>> [    8.736966] cros-ec-spi spi-PRP0001:02: cannot register EC,
->>> fallback to spidev
->>> [    8.767017] cros_ec_lpcs GOOG0004:00: Chrome EC device registered
->>> [    8.807537] cros-usbpd-notify-acpi GOOG0003:00: Couldn't get Chrome
->>> EC device pointer.
->>> ...
->>>
->>> On Fri, May 1, 2020 at 2:17 AM Prashant Malani <pmalani@chromium.org> wrote:
->>>>
->>>> Hi Enric,
->>>>
->>>> On Thu, Apr 30, 2020 at 8:26 AM Enric Balletbo i Serra
->>>> <enric.balletbo@collabora.com> wrote:
->>>>>
->>>>> Hi Prashant,
->>>>>
->>>>> On 30/4/20 2:43, Prashant Malani wrote:
->>>>>> On Wed, Apr 29, 2020 at 5:38 PM Daniil Lunev <dlunev@chromium.org> wrote:
->>>>>>>
->>>>>>> [to make it appear on the mailing list as I didn't realize I was in
->>>>>>> hypertext sending mode]
->>>>>>>
->>>>>>> On Thu, Apr 30, 2020 at 10:11 AM Daniil Lunev <dlunev@chromium.org> wrote:
->>>>>>>>
->>>>>>>> Hi Enric.
->>>>>>>> I encountered the issue on a Hatch device when trying running 5.4 kernel on that. After talking to Prashant it seems that any device with coreboot built before a certain point (a particular fix for device hierarchy in ACPI tables of Chrome devices which happened in mid-April) will not be able to correctly initialize the driver and will get a kernel panic trying to do so.
->>>>>>
->>>>>> A clarifying detail here: This should not be seen in any current
->>>>>> *production* device. No prod device firmware will carry the erroneous
->>>>>> ACPI device entry.
->>>>>>
->>>>>
->>>>> Thanks for the clarification. Then, I don't think we need to upstream this. This
->>>>> kind of "defensive-programming" it's not something that should matter to upstream.
->>>>
->>>> Actually, on second thought, I am not 100% sure about this:
->>>> Daniil, is the erroneous ACPI device on a *production* firmware for
->>>> this device (I'm not sure about the vintage of that device's BIOS)?
->>>>
->>>> My apologies for the confusion, Enric and Daniil; but would be good to
->>>> get clarification from Daniil.
->>>>
->>>> Best regards,
->>>>>
->>>>> Thanks,
->>>>>  Enric
->>>>>
->>>>>
->>>>>>>> Thanks,
->>>>>>>> Daniil
->>>>>>>>
->>>>>>>> On Thu, Apr 30, 2020 at 7:58 AM Enric Balletbo i Serra <enric.balletbo@collabora.com> wrote:
->>>>>>>>>
->>>>>>>>> Hi Daniil,
->>>>>>>>>
->>>>>>>>> Thank you for the patch.
->>>>>>>>>
->>>>>>>>> On 28/4/20 3:02, Daniil Lunev wrote:
->>>>>>>>>> Missing EC in device hierarchy causes NULL pointer to be returned to the
->>>>>>>>>> probe function which leads to NULL pointer dereference when trying to
->>>>>>>>>> send a command to the EC. This can be the case if the device is missing
->>>>>>>>>> or incorrectly configured in the firmware blob. Even if the situation
->>>>>>>>>
->>>>>>>>> There is any production device with a buggy firmware outside? Or this is just
->>>>>>>>> for defensive programming while developing the firmware? Which device is
->>>>>>>>> affected for this issue?
->>>>>>>>>
->>>>>>>>> Thanks,
->>>>>>>>>  Enric
->>>>>>>>>
->>>>>>>>>> occures, the driver shall not cause a kernel panic as the condition is
->>>>>>>>>> not critical for the system functions.
->>>>>>>>>>
->>>>>>>>>> Signed-off-by: Daniil Lunev <dlunev@chromium.org>
->>>>>>>>>> ---
->>>>>>>>>>
->>>>>>>>>>  drivers/platform/chrome/cros_ec_typec.c | 5 +++++
->>>>>>>>>>  1 file changed, 5 insertions(+)
->>>>>>>>>>
->>>>>>>>>> diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
->>>>>>>>>> index 874269c07073..30d99c930445 100644
->>>>>>>>>> --- a/drivers/platform/chrome/cros_ec_typec.c
->>>>>>>>>> +++ b/drivers/platform/chrome/cros_ec_typec.c
->>>>>>>>>> @@ -301,6 +301,11 @@ static int cros_typec_probe(struct platform_device *pdev)
->>>>>>>>>>
->>>>>>>>>>       typec->dev = dev;
->>>>>>>>>>       typec->ec = dev_get_drvdata(pdev->dev.parent);
->>>>>>>>>> +     if (!typec->ec) {
->>>>>>>>>> +             dev_err(dev, "Failed to get Cros EC data\n");
->>>>>>>>>> +             return -EINVAL;
->>>>>>>>>> +     }
->>>>>>>>>> +
->>>>>>>>>>       platform_set_drvdata(pdev, typec);
->>>>>>>>>>
->>>>>>>>>>       ret = cros_typec_get_cmd_version(typec);
->>>>>>>>>>
+>
+> This might be practical without slowing down the existing code, because
+> there is already a check in place, so just tweaking it like this (untested)
+> won't change performance at all:
+>
+> diff --git a/mm/gup.c b/mm/gup.c
+> index 11fda538c9d9..708eed79ae29 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -2787,7 +2787,7 @@ static int internal_get_user_pages_fast(unsigned long start,
+> int nr_pages,
+>          end = start + len;
+>
+>          if (end <= start)
+> -               return 0;
+> +               return -EINVAL;
+>          if (unlikely(!access_ok((void __user *)start, len)))
+>                  return -EFAULT;
+>
+> ...although I might be missing some other things that need a similar change,
+> so you should look carefully for yourself.
+
+Do you refer to other gup APIs similar to gup_fast/pup_fast ?
+
+>
+>
+> Once that change (and anything I missed) is in place, then you could go
+> ahead and stop handling ret==0 cases at the call sites.
+>
+>
+> thanks,
+> --
+> John Hubbard
+> NVIDIA
+>
+> >
+> > Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+> > ---
+> >   arch/ia64/kernel/err_inject.c              | 2 +-
+> >   drivers/platform/goldfish/goldfish_pipe.c  | 2 +-
+> >   drivers/staging/gasket/gasket_page_table.c | 4 ++--
+> >   drivers/tee/tee_shm.c                      | 2 +-
+> >   mm/gup.c                                   | 6 +++---
+> >   net/rds/rdma.c                             | 2 +-
+> >   6 files changed, 9 insertions(+), 9 deletions(-)
+> >
+> > diff --git a/arch/ia64/kernel/err_inject.c b/arch/ia64/kernel/err_inject.c
+> > index 8b5b8e6b..fd72218 100644
+> > --- a/arch/ia64/kernel/err_inject.c
+> > +++ b/arch/ia64/kernel/err_inject.c
+> > @@ -143,7 +143,7 @@ static DEVICE_ATTR(name, 0644, show_##name, store_##name)
+> >       int ret;
+> >
+> >       ret = get_user_pages_fast(virt_addr, 1, FOLL_WRITE, NULL);
+> > -     if (ret<=0) {
+> > +     if (ret < 0) {
+> >   #ifdef ERR_INJ_DEBUG
+> >               printk("Virtual address %lx is not existing.\n",virt_addr);
+> >   #endif
+> > diff --git a/drivers/platform/goldfish/goldfish_pipe.c b/drivers/platform/goldfish/goldfish_pipe.c
+> > index 1ab207e..831449d 100644
+> > --- a/drivers/platform/goldfish/goldfish_pipe.c
+> > +++ b/drivers/platform/goldfish/goldfish_pipe.c
+> > @@ -277,7 +277,7 @@ static int goldfish_pin_pages(unsigned long first_page,
+> >       ret = pin_user_pages_fast(first_page, requested_pages,
+> >                                 !is_write ? FOLL_WRITE : 0,
+> >                                 pages);
+> > -     if (ret <= 0)
+> > +     if (ret < 0)
+> >               return -EFAULT;
+> >       if (ret < requested_pages)
+> >               *iter_last_page_size = PAGE_SIZE;
+> > diff --git a/drivers/staging/gasket/gasket_page_table.c b/drivers/staging/gasket/gasket_page_table.c
+> > index f6d7157..1d08e1d 100644
+> > --- a/drivers/staging/gasket/gasket_page_table.c
+> > +++ b/drivers/staging/gasket/gasket_page_table.c
+> > @@ -489,11 +489,11 @@ static int gasket_perform_mapping(struct gasket_page_table *pg_tbl,
+> >                       ret = get_user_pages_fast(page_addr - offset, 1,
+> >                                                 FOLL_WRITE, &page);
+> >
+> > -                     if (ret <= 0) {
+> > +                     if (ret < 0) {
+> >                               dev_err(pg_tbl->device,
+> >                                       "get user pages failed for addr=0x%lx, offset=0x%lx [ret=%d]\n",
+> >                                       page_addr, offset, ret);
+> > -                             return ret ? ret : -ENOMEM;
+> > +                             return ret;
+> >                       }
+> >                       ++pg_tbl->num_active_pages;
+> >
+> > diff --git a/drivers/tee/tee_shm.c b/drivers/tee/tee_shm.c
+> > index bd679b7..2706a1f 100644
+> > --- a/drivers/tee/tee_shm.c
+> > +++ b/drivers/tee/tee_shm.c
+> > @@ -230,7 +230,7 @@ struct tee_shm *tee_shm_register(struct tee_context *ctx, unsigned long addr,
+> >       if (rc > 0)
+> >               shm->num_pages = rc;
+> >       if (rc != num_pages) {
+> > -             if (rc >= 0)
+> > +             if (rc > 0)
+> >                       rc = -ENOMEM;
+> >               ret = ERR_PTR(rc);
+> >               goto err;
+> > diff --git a/mm/gup.c b/mm/gup.c
+> > index 50681f0..8d293ed 100644
+> > --- a/mm/gup.c
+> > +++ b/mm/gup.c
+> > @@ -2760,7 +2760,7 @@ static int internal_get_user_pages_fast(unsigned long start, int nr_pages,
+> >       end = start + len;
+> >
+> >       if (end <= start)
+> > -             return 0;
+> > +             return -EINVAL;
+> >       if (unlikely(!access_ok((void __user *)start, len)))
+> >               return -EFAULT;
+> >
+> > @@ -2805,8 +2805,8 @@ static int internal_get_user_pages_fast(unsigned long start, int nr_pages,
+> >    * calling get_user_pages().
+> >    *
+> >    * Returns number of pages pinned. This may be fewer than the number requested.
+> > - * If nr_pages is 0 or negative, returns 0. If no pages were pinned, returns
+> > - * -errno.
+> > + * If nr_pages is 0 or negative, returns -errno. If no pages were pinned,
+> > + * returns -errno.
+> >    */
+> >   int get_user_pages_fast(unsigned long start, int nr_pages,
+> >                       unsigned int gup_flags, struct page **pages)
+> > diff --git a/net/rds/rdma.c b/net/rds/rdma.c
+> > index a7ae118..44b96e6 100644
+> > --- a/net/rds/rdma.c
+> > +++ b/net/rds/rdma.c
+> > @@ -161,7 +161,7 @@ static int rds_pin_pages(unsigned long user_addr, unsigned int nr_pages,
+> >               gup_flags |= FOLL_WRITE;
+> >
+> >       ret = pin_user_pages_fast(user_addr, nr_pages, gup_flags, pages);
+> > -     if (ret >= 0 && ret < nr_pages) {
+> > +     if (ret > 0 && ret < nr_pages) {
+> >               unpin_user_pages(pages, ret);
+> >               ret = -EFAULT;
+> >       }
+> >
+>
