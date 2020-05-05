@@ -2,141 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CCBA1C552E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 14:12:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDC0B1C553D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 14:15:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728970AbgEEMMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 08:12:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37404 "EHLO mail.kernel.org"
+        id S1728902AbgEEMPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 08:15:11 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37854 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728957AbgEEMMp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 08:12:45 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3463E206A4;
-        Tue,  5 May 2020 12:12:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588680764;
-        bh=lRSSmIip0z2BoR+RQ+3hQQVFRY5K07HxlK441PUvO4w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Vvd6pPIdmUOLnPSSOEbgshPimjHlXn8Jb0pT005eaNVQM/O1gReGl7Hz3fjulp0N9
-         2HhwCwhWBvnLs/L1MlRsx2W3CcZZ2qWetwd9To2K5swDT65NzY4tKUWS8kpBYA19l4
-         +ZuM12CP6wKprD2xtAJnC4YlWJo3Av3GWnxT/Gmo=
-Date:   Tue, 5 May 2020 13:12:39 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3 04/16] arm64/cpufeature: Introduce ID_PFR2 CPU register
-Message-ID: <20200505121239.GI19710@willie-the-truck>
-References: <1588426445-24344-1-git-send-email-anshuman.khandual@arm.com>
- <1588426445-24344-5-git-send-email-anshuman.khandual@arm.com>
- <20200505111241.GF19710@willie-the-truck>
- <20200505111607.GA82823@C02TD0UTHF1T.local>
- <20200505112718.GH19710@willie-the-truck>
- <20200505115054.GC82823@C02TD0UTHF1T.local>
+        id S1728180AbgEEMPI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 08:15:08 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 45669AB3D;
+        Tue,  5 May 2020 12:15:08 +0000 (UTC)
+Subject: Re: [PATCH v2 2/2] usb: xhci: Load Raspberry Pi 4 VL805's firmware
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        u-boot@lists.denx.de, bmeng.cn@gmail.com, marex@denx.de,
+        linux-kernel@vger.kernel.org
+Cc:     sjg@chromium.org, m.szyprowski@samsung.com, s.nawrocki@samsung.com
+References: <20200430130433.11248-1-nsaenzjulienne@suse.de>
+ <20200430130433.11248-3-nsaenzjulienne@suse.de>
+From:   Matthias Brugger <mbrugger@suse.com>
+Autocrypt: addr=mbrugger@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+ HxUCQ9Y1Y/Ct
+Message-ID: <0958ece3-feda-65c0-b0e2-893e2dfeb508@suse.com>
+Date:   Tue, 5 May 2020 14:15:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200505115054.GC82823@C02TD0UTHF1T.local>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200430130433.11248-3-nsaenzjulienne@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 05, 2020 at 12:50:54PM +0100, Mark Rutland wrote:
-> On Tue, May 05, 2020 at 12:27:19PM +0100, Will Deacon wrote:
-> > On Tue, May 05, 2020 at 12:16:07PM +0100, Mark Rutland wrote:
-> > > On Tue, May 05, 2020 at 12:12:41PM +0100, Will Deacon wrote:
-> > > > On Sat, May 02, 2020 at 07:03:53PM +0530, Anshuman Khandual wrote:
-> > > > > diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
-> > > > > index e5317a6367b6..c977449e02db 100644
-> > > > > --- a/arch/arm64/include/asm/sysreg.h
-> > > > > +++ b/arch/arm64/include/asm/sysreg.h
-> > > > > @@ -153,6 +153,7 @@
-> > > > >  #define SYS_MVFR0_EL1			sys_reg(3, 0, 0, 3, 0)
-> > > > >  #define SYS_MVFR1_EL1			sys_reg(3, 0, 0, 3, 1)
-> > > > >  #define SYS_MVFR2_EL1			sys_reg(3, 0, 0, 3, 2)
-> > > > > +#define SYS_ID_PFR2_EL1			sys_reg(3, 0, 0, 3, 4)
-> > > > 
-> > > > nit: but please group these defines by name rather than encoding.
-> > > 
-> > > So far we've *always* grouped these by encoding in this file, so can we
-> > > keep things that way for now? Otherwise we're inconsistent with both
-> > > schemes.
-> > 
-> > Hmm, but it's really hard to read sorted that way and we'll end up with
-> > duplicate definitions like we had for some of the field offsets already.
+
+
+On 30/04/2020 15:04, Nicolas Saenz Julienne wrote:
+> When needed, RPi4's co-processor (called VideoCore) has to be instructed
+> to load VL805's firmware (the chip providing xHCI support). VideoCore's
+> firmware expects the board's PCIe bus to be already configured in order
+> for it to load the xHCI chip firmware. So we have to make sure this
+> happens in between the PCIe configuration and xHCI startup.
 > 
-> I appreciate that, and don't disagree that the current scheme is not
-> obvious.
+> Introduce a callback in xhci_pci_probe() to run this platform specific
+> routine.
 > 
-> I just want to ensure that we don't make things less consistent, and if
-> we're going to change the scheme in order to make that easier, it should
-> be a separate patch. There'll be other changes like MMFR4_EL1, and we
-> should probably add a comment as to what the policy is either way (e.g.
-> if we're just grouping at the top level, or if that should be sorted
-> too).
+> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> 
+> ---
+> 
+> Changes since v1:
+>  - Create callback
+> 
+>  board/raspberrypi/rpi/rpi.c | 12 ++++++++++++
+>  drivers/usb/host/xhci-pci.c |  6 ++++++
+>  include/usb/xhci.h          |  3 +++
+>  3 files changed, 21 insertions(+)
+> 
+> diff --git a/board/raspberrypi/rpi/rpi.c b/board/raspberrypi/rpi/rpi.c
+> index e367ba3092..8aa78d1f48 100644
+> --- a/board/raspberrypi/rpi/rpi.c
+> +++ b/board/raspberrypi/rpi/rpi.c
+> @@ -14,6 +14,7 @@
+>  #include <lcd.h>
+>  #include <memalign.h>
+>  #include <mmc.h>
+> +#include <usb/xhci.h>
+>  #include <asm/gpio.h>
+>  #include <asm/arch/mbox.h>
+>  #include <asm/arch/msg.h>
+> @@ -494,3 +495,14 @@ int ft_board_setup(void *blob, bd_t *bd)
+>  
+>  	return 0;
+>  }
+> +
+> +#ifdef CONFIG_BCM2711
 
-Ok, I added a comment below.
+This won't work with rpi_arm64_defconfig.
+Can't we just evaluate at runtime if we need to do anything in xhci_pci_fixup.
 
-Will
+I wonder if the newer RPi4 have also a newer revision ID (see get_board_rev). If
+so we could add another bool to struct rpi_model which will indicate us if we
+need to notify VideoCore about vl805's firmware.
 
---->8
+Regards,
+Matthias
 
-commit be7ab6a6cdb0a6d7b10883094c2adf96f5d4e1e8
-Author: Will Deacon <will@kernel.org>
-Date:   Tue May 5 13:08:02 2020 +0100
-
-    arm64: cpufeature: Group indexed system register definitions by name
-    
-    Some system registers contain an index in the name (e.g. ID_MMFR<n>_EL1)
-    and, while this index often follows the register encoding, newer additions
-    to the architecture are necessarily tacked on the end. Sorting these
-    registers by encoding therefore becomes a bit of a mess.
-    
-    Group the indexed system register definitions by name so that it's easier to
-    read and will hopefully reduce the chance of us accidentally introducing
-    duplicate definitions in the future.
-    
-    Signed-off-by: Will Deacon <will@kernel.org>
-
-diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
-index 2dd3f4ca9780..194684301df0 100644
---- a/arch/arm64/include/asm/sysreg.h
-+++ b/arch/arm64/include/asm/sysreg.h
-@@ -105,6 +105,10 @@
- #define SYS_DC_CSW			sys_insn(1, 0, 7, 10, 2)
- #define SYS_DC_CISW			sys_insn(1, 0, 7, 14, 2)
- 
-+/*
-+ * System registers, organised loosely by encoding but grouped together
-+ * where the architected name contains an index. e.g. ID_MMFR<n>_EL1.
-+ */
- #define SYS_OSDTRRX_EL1			sys_reg(2, 0, 0, 0, 2)
- #define SYS_MDCCINT_EL1			sys_reg(2, 0, 0, 2, 0)
- #define SYS_MDSCR_EL1			sys_reg(2, 0, 0, 2, 2)
-@@ -140,6 +144,7 @@
- #define SYS_ID_MMFR1_EL1		sys_reg(3, 0, 0, 1, 5)
- #define SYS_ID_MMFR2_EL1		sys_reg(3, 0, 0, 1, 6)
- #define SYS_ID_MMFR3_EL1		sys_reg(3, 0, 0, 1, 7)
-+#define SYS_ID_MMFR4_EL1		sys_reg(3, 0, 0, 2, 6)
- 
- #define SYS_ID_ISAR0_EL1		sys_reg(3, 0, 0, 2, 0)
- #define SYS_ID_ISAR1_EL1		sys_reg(3, 0, 0, 2, 1)
-@@ -147,7 +152,6 @@
- #define SYS_ID_ISAR3_EL1		sys_reg(3, 0, 0, 2, 3)
- #define SYS_ID_ISAR4_EL1		sys_reg(3, 0, 0, 2, 4)
- #define SYS_ID_ISAR5_EL1		sys_reg(3, 0, 0, 2, 5)
--#define SYS_ID_MMFR4_EL1		sys_reg(3, 0, 0, 2, 6)
- #define SYS_ID_ISAR6_EL1		sys_reg(3, 0, 0, 2, 7)
- 
- #define SYS_MVFR0_EL1			sys_reg(3, 0, 0, 3, 0)
-
+> +void xhci_pci_fixup(struct udevice *dev)
+> +{
+> +	int ret;
+> +
+> +	ret = bcm2711_notify_vl805_reset();
+> +	if (ret)
+> +		printf("RPI: Failed to notify VideoCore about vl805's firmware\n");
+> +}
+> +#endif
+> diff --git a/drivers/usb/host/xhci-pci.c b/drivers/usb/host/xhci-pci.c
+> index c1f60da541..1285dde1ef 100644
+> --- a/drivers/usb/host/xhci-pci.c
+> +++ b/drivers/usb/host/xhci-pci.c
+> @@ -11,6 +11,10 @@
+>  #include <usb.h>
+>  #include <usb/xhci.h>
+>  
+> +__weak void xhci_pci_fixup(struct udevice *dev)
+> +{
+> +}
+> +
+>  static void xhci_pci_init(struct udevice *dev, struct xhci_hccr **ret_hccr,
+>  			  struct xhci_hcor **ret_hcor)
+>  {
+> @@ -40,6 +44,8 @@ static int xhci_pci_probe(struct udevice *dev)
+>  	struct xhci_hccr *hccr;
+>  	struct xhci_hcor *hcor;
+>  
+> +	xhci_pci_fixup(dev);
+> +
+>  	xhci_pci_init(dev, &hccr, &hcor);
+>  
+>  	return xhci_register(dev, hccr, hcor);
+> diff --git a/include/usb/xhci.h b/include/usb/xhci.h
+> index c16106a2fc..57feed7603 100644
+> --- a/include/usb/xhci.h
+> +++ b/include/usb/xhci.h
+> @@ -16,6 +16,7 @@
+>  #ifndef HOST_XHCI_H_
+>  #define HOST_XHCI_H_
+>  
+> +#include <usb.h>
+>  #include <asm/types.h>
+>  #include <asm/cache.h>
+>  #include <asm/io.h>
+> @@ -1281,4 +1282,6 @@ extern struct dm_usb_ops xhci_usb_ops;
+>  
+>  struct xhci_ctrl *xhci_get_ctrl(struct usb_device *udev);
+>  
+> +extern void xhci_pci_fixup(struct udevice *dev);
+> +
+>  #endif /* HOST_XHCI_H_ */
+> 
