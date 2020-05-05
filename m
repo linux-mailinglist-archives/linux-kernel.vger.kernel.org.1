@@ -2,234 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C1D81C5AE1
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:19:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C0C71C5AEA
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:20:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729818AbgEEPT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 11:19:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59106 "EHLO
+        id S1730022AbgEEPUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 11:20:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729365AbgEEPT3 (ORCPT
+        by vger.kernel.org with ESMTP id S1729951AbgEEPUO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 11:19:29 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90B16C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 08:19:28 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id u6so2028432ljl.6
-        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 08:19:28 -0700 (PDT)
+        Tue, 5 May 2020 11:20:14 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 924F9C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 08:20:14 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id j4so1923170otr.11
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 08:20:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=yH/ECA02LXyTaetCrqh3e2KjVg4AA0WCGXhItcdl/C0=;
-        b=EYOJnboUafsMGWXN49Qp8eC9x251LB0E6YrGKz9sREThccE303zigT4sZsnoA35uRD
-         dZvaJskV5FFe+bayKLxn7RopscNBfodpqXaDZ9EJB6gbDQGxXc2XUqNEgUVwX7fifbAI
-         fOoa2YuQouLT6GZ08zODczhrb9v8RMgVGt9KQNZhrovOhd/vA2SZQK6qHfwfdBxlTMdt
-         zADWMyBIyxN9aE4UKlw/V3S7IT2AKmZRsVJTv8eQfqJU25iO71EnbTMILqc5lFiuJwvf
-         7Ch5XshSQR/Bew3fxOdQL/beDelUqz7nRbaHz+nQepPn+Ielf58sprJAuzc3hYOmWlUf
-         hVLw==
+         :cc;
+        bh=V8efal+sgU1en3J4nQ9rg/ceJ49rrnhyDi/kAbpO9w0=;
+        b=lxBGwppWljXJZO33BcCG8KoqAAmjWhtBl+eWw/n4r5atXyD/OKHd5SxYHZx5Sn8phF
+         JDk/tpvNCpaXGAo2Bv8uB1pDdzg72+GOZQVnmEcBcuzaPt242hiYIcMeYeNoV4EV4G9f
+         NwKVxQ0zuL3cSe8AzienovyKPEGN0k3RabrTMc8LqClPjwWx5E5BM+vva5UQvF2+Mh7M
+         DjkxjvIJuUFOr+lbK8Evyk10L4jkQ0QwxPfSPPvPZgbCgmgGhrvDRZnpK1wSnnIgzJbs
+         VHS5rDEJ7wRbfQSE1cwPrFJbYMbrZQ/gbC8AoXgsxjm2E3JaRKEhsC/f6AI8D6rS+OMy
+         kJqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=yH/ECA02LXyTaetCrqh3e2KjVg4AA0WCGXhItcdl/C0=;
-        b=iTNEl/xhC8T0rLRlVkBQYuH8eD6Ps0iYn4JGnWM+h+EuUoAmZ4ea7zNwvZwCRMqWjJ
-         avxKxID6Jv+w9RiKDjX4Istouf7lgw8Sjn9iymSx6gVesPDCUeYjjvYPDogn6L6Sk/Tx
-         iuEq5OevVk23NjvLODUuQ/PrEl5nS6aRlOjwHRWI8OCtW6SQTnZc0UT9L4i4T/nsRsnE
-         rmb+ryvejjE4kBgooCnxdUz3Uu0GamsJf3/r40e2RpIIWVpW1I1AKosSwjWUAhAynt0m
-         eEAitSrjHFq2s91SmRGN8zGdOTdkJmijn/Sl6Hsokpct/GERPVvnr0rzuPN5hdEZZL3G
-         6fbg==
-X-Gm-Message-State: AGi0Pubg4C0uAgAly47yXqEO/8qZXNlZeGPoF8rc3PA1GJP0iOxUKE/v
-        U0UzFQAnmHh7ZZtP+fITV+0gVirz2mfY+En3Nr9XZztoNjGdSA==
-X-Google-Smtp-Source: APiQypLS6Lcx/F/VWdTDD0YhI6qcKAfSCvMt/mQsBff7XdceGqA8F9Z9krFF6HyfMXw+OU9Ezm2luImKXqxor79wptc=
-X-Received: by 2002:a2e:2e16:: with SMTP id u22mr2245114lju.243.1588691966733;
- Tue, 05 May 2020 08:19:26 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=V8efal+sgU1en3J4nQ9rg/ceJ49rrnhyDi/kAbpO9w0=;
+        b=jp+ARHxqjiVtOtCDx+eSMYFCs9ce1fYCpkUu0CeG942EfmX4jriSEn0OlDNngAo0Yy
+         ONvan5HbIys4rPoBScbBnCopR79qVrPu7qZZ0SPYe4ChkPM2Gk5Hhl9S+A84FR5KR60r
+         9PONTdIYTgtGp0n/02Ycl+tGEbSrxguTQzeuuBpJLDa2Yg4S9UHi1+JnPYCPd+IQwWWF
+         /E0zYcDoqhJsXMPE8VAqAJ8SHZVcWUCN9u7acJ8hl6QQ5EQYcs1TeuKYcsJLnCAlvSwp
+         krDFMneXAKnFMXl0IJWEcBZ5w3f4B40QFNejMbRFJq1mKlgZVisNwJkM4+Z64OTGXkjU
+         iQOw==
+X-Gm-Message-State: AGi0PuYpuldFDjWdAH0hKd7hpesfSYmRjfnc+/CEKkYadNz7HInCpQT+
+        rtrF502klu8Q0JIaui2PgIOoFZ38Ui1cYrQu4p7jsA==
+X-Google-Smtp-Source: APiQypLwXOUqn3+C8eU3KpIVewgquQ7RlElMmwoTJNU9i9gYwxhLPbNOcFoOfjuDD/piS63oaY71amxzeEjB4MuCHSc=
+X-Received: by 2002:a9d:509:: with SMTP id 9mr3055453otw.17.1588692013635;
+ Tue, 05 May 2020 08:20:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200504165456.783676004@linuxfoundation.org>
-In-Reply-To: <20200504165456.783676004@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 5 May 2020 20:49:14 +0530
-Message-ID: <CA+G9fYvegpetZe1o-5e7p5b=mCu=-+ErtCcm5RvadZEdrLwizA@mail.gmail.com>
-Subject: Re: [PATCH 5.4 00/57] 5.4.39-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+References: <20200505142341.1096942-1-arnd@arndb.de> <CANpmjNMtGy6YK8zuqf0dmkykZMt=qkxkZrZNEKde1nbw84ZLkg@mail.gmail.com>
+ <CACT4Y+Zpp=+JJedhMpunuUh832eJFu+af-r8631Ar0kE2nv72A@mail.gmail.com> <CAK8P3a23XzLhZQNuFbeQhaSNru1abPwXV_mXR_P6N6Dvxm6jFw@mail.gmail.com>
+In-Reply-To: <CAK8P3a23XzLhZQNuFbeQhaSNru1abPwXV_mXR_P6N6Dvxm6jFw@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 5 May 2020 17:19:58 +0200
+Message-ID: <CANpmjNOE+GUG7O=WaJKQg6rdUOn+YMBhdS8enNWkD_8mdtaSBQ@mail.gmail.com>
+Subject: Re: [PATCH] ubsan, kcsan: don't combine sanitizer with kcov
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        lkft-triage@lists.linaro.org,
-        linux- stable <stable@vger.kernel.org>
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 4 May 2020 at 23:33, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Tue, 5 May 2020 at 16:59, Arnd Bergmann <arnd@arndb.de> wrote:
 >
-> This is the start of the stable review cycle for the 5.4.39 release.
-> There are 57 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> On Tue, May 5, 2020 at 4:50 PM 'Dmitry Vyukov' via Clang Built Linux
+> <clang-built-linux@googlegroups.com> wrote:
+> > On Tue, May 5, 2020 at 4:36 PM Marco Elver <elver@google.com> wrote:
+> > > > Clang does not allow -fsanitize-coverage=trace-{pc,cmp} together
+> > > > with -fsanitize=bounds or with ubsan:
+> > > >
+> > > > clang: error: argument unused during compilation: '-fsanitize-coverage=trace-pc' [-Werror,-Wunused-command-line-argument]
+> > > > clang: error: argument unused during compilation: '-fsanitize-coverage=trace-cmp' [-Werror,-Wunused-command-line-argument]
+> > > >
+> > > >  menuconfig KCSAN
+> > > >         bool "KCSAN: dynamic data race detector"
+> > > > -       depends on HAVE_ARCH_KCSAN && DEBUG_KERNEL && !KASAN
+> > > > +       depends on HAVE_ARCH_KCSAN && DEBUG_KERNEL && !KASAN && !KCOV
+> > >
+> > > This also disables KCOV with GCC. Why does this not work with KCSAN?
 >
-> Responses should be made by Wed, 06 May 2020 16:52:55 +0000.
-> Anything received after that time might be too late.
+> My mistake, this should be kept enabled for gcc. If we can get the combination
+> to work in clang, that's something that should also get enabled.
+
+See my suggestion below how we might dynamically determine if the
+combination is supported.
+
+> > > This is a huge problem for us, since syzbot requires KCOV. In fact
+> > > I've always been building KCSAN kernels with CONFIG_KCOV=y (with GCC
+> > > or Clang) and cannot reproduce the problem.
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.39-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
+> I have some local patches that change the way we pick the warning options
+> for each compiler, and enable more of the warnings that are normally disabled.
 >
-> thanks,
+> Maybe -Wunused-command-line-argument is disabled by default?
+> I only started seeing this problem recently. It's also possible that there
+> are some other options that interact with it so only Kcov+FOO leads to
+> KCSAN being ignored.
+
+I see. It certainly seems quite bad if one or the other option is
+effectively ignored.
+
+> > > Ditto, we really need KCOV for all sanitizers. I also just tried to
+> > > reproduce the problem but can't.
+> > >
+> > > Which version of clang is causing this? I'm currently using Clang 9.
+> > > My guess is that we should not fix this by disallowing KCOV, but
+> > > rather make Clang work with these configs.
+> > >
+> > > Dmitry, can you comment?
+> >
+> > FWIW I can reproduce both with clang:
+> >
+> > $ clang /tmp/test.c -c -fsanitize-coverage=trace-pc -fsanitize=bounds
+> > clang-11: warning: argument unused during compilation:
+> > '-fsanitize-coverage=trace-pc' [-Wunused-command-line-argument]
+> >
+> > $ clang /tmp/test.c -c -fsanitize-coverage=trace-pc -fsanitize=thread
+> > clang-11: warning: argument unused during compilation:
+> > '-fsanitize-coverage=trace-pc' [-Wunused-command-line-argument]
+> >
+> > with both my disto's 9.0.1 and fresher 11.0.0
+> > (7b80cb7cf45faf462d6193cc41c2cb7ad556600d.
+> >
+> > But both work with gcc
+> >
+> > $ gcc /tmp/test.c -c -fsanitize-coverage=trace-pc -fsanitize=thread
+> > $ gcc /tmp/test.c -c -fsanitize-coverage=trace-pc -fsanitize=bounds
+> >
+> > Is it a known issue in clang?
+> >
+> > Can we somehow disable it only for clang and not gcc?
+> >
+> > This will immediately break KCSAN on syzbot as it enables KCSAN and KCOV:
+> > https://syzkaller.appspot.com/upstream?manager=ci2-upstream-kcsan-gce
 >
-> greg k-h
+> I can respin the patch with this fixup if you like:
 >
+> --- a/lib/Kconfig.kcsan
+> +++ b/lib/Kconfig.kcsan
+> @@ -5,7 +5,7 @@ config HAVE_ARCH_KCSAN
+>
+>  menuconfig KCSAN
+>         bool "KCSAN: dynamic data race detector"
+> -       depends on HAVE_ARCH_KCSAN && DEBUG_KERNEL && !KASAN && !KCOV
+> +       depends on HAVE_ARCH_KCSAN && DEBUG_KERNEL && !KASAN && !(KCOV
+> && CC_IS_CLANG)
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+I wonder if we can just add this:  depends on !(KCOV &&
+!$(cc-option,-Werror -fsanitize=thread -fsanitize-coverage=trace-pc))
 
-NOTE:
-While running LTP mm tests on hikey device kernel panic has been noticed.
-But this is hard to reproduce.
-We are investigating this problem.
+Similarly for UBSAN.
 
-[   75.934817] Unable to handle kernel NULL pointer dereference at
-virtual address 0000000000000000
-[   75.943910] Mem abort info:
-[   75.946768]   ESR =3D 0x86000006
-[   75.949899]   EC =3D 0x21: IABT (current EL), IL =3D 32 bits
-[   75.955330]   SET =3D 0, FnV =3D 0
-[   75.958454]   EA =3D 0, S1PTW =3D 0
-[   75.961674] user pgtable: 4k pages, 48-bit VAs, pgdp=3D000000007296d000
-[   75.968260] [0000000000000000] pgd=3D0000000072962003,
-pud=3D0000000072935003, pmd=3D0000000000000000
-[   75.977159] Internal error: Oops: 86000006 [#1] PREEMPT SMP
-[   75.982851] Modules linked in: wl18xx wlcore mac80211 cfg80211
-hci_uart snd_soc_audio_graph_card btbcm crct10dif_ce adv7511
-snd_soc_simple_card_utils wlcore_sdio cec kirin_drm dw_drm_dsi
-bluetooth drm_kms_helper rfkill drm fuse
-[   75.998113] dwmmc_k3 f723d000.dwmmc0: Unexpected interrupt latency
-[   76.003485] CPU: 0 PID: 0 Comm: swapper/0 Not tainted
-5.4.39-rc1-00058-g29ca49e0243b #1
-[   76.017981] Hardware name: HiKey Development Board (DT)
-[   76.024656] pstate: 60000085 (nZCv daIf -PAN -UAO)
-[   76.029554] pc : 0x0
-[   76.031796] lr : cpuidle_enter_state+0x68/0x360
-<>
-[   76.121215] Call trace:
-[   76.123718]  0x0
-[   76.125604]  cpuidle_enter+0x34/0x48
-[   76.129262]  call_cpuidle+0x18/0x38
-[   76.132830]  do_idle+0x1e0/0x280
-[   76.136129]  cpu_startup_entry+0x20/0x40
-[   76.140139]  rest_init+0xd4/0xe0
-[   76.143442]  arch_call_rest_init+0xc/0x14
-[   76.147540]  start_kernel+0x41c/0x448
-[   76.151293] Code: bad PC value
-[   76.154426] ---[ end trace 01a359b3eb02445a ]---
-[   76.159146] Kernel panic - not syncing: Attempted to kill the idle task!
-[   76.165995] SMP: stopping secondary CPUs
-[   76.170441] Kernel Offset: disabled
-[   76.174005] CPU features: 0x0002,24002004
-[   76.178103] Memory Limit: none
-[   76.181240] ---[ end Kernel panic - not syncing: Attempted to kill
-the idle task! ]---
-[   75.977159] Internal error: Oops: 86000006 [#1] PREEMPT SMP
+That way, once Clang supports this combination, we don't need another
+patch to fix it.
 
+Thanks,
+-- Marco
 
-Summary
-------------------------------------------------------------------------
-
-kernel: 5.4.39-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.4.y
-git commit: 29ca49e0243b0d2bb55a2ee418f3cdc1fae69627
-git describe: v5.4.38-58-g29ca49e0243b
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-5.4-oe/bui=
-ld/v5.4.38-58-g29ca49e0243b
-
-No regressions (compared to build v5.4.38)
-
-No fixes (compared to build v5.4.38)
-
-Ran 25955 total tests in the following environments and test suites.
-
-Environments
---------------
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- nxp-ls2088
-- qemu_arm
-- qemu_arm64
-- qemu_i386
-- qemu_x86_64
-- x15
-- x86
-- x86-kasan
-
-Test Suites
------------
-* build
-* install-android-platform-tools-r2600
-* install-android-platform-tools-r2800
-* libgpiod
-* linux-log-parser
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cve-tests
-* ltp-math-tests
-* ltp-sched-tests
-* perf
-* kselftest
-* kselftest/drivers
-* kselftest/filesystems
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* v4l2-compliance
-* kselftest/net
-* kselftest/networking
-* libhugetlbfs
-* ltp-cap_bounds-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-ipc-tests
-* ltp-mm-tests
-* ltp-open-posix-tests
-* ltp-syscalls-tests
-* network-basic-tests
-* kvm-unit-tests
-* kselftest-vsyscall-mode-native
-* kselftest-vsyscall-mode-native/drivers
-* kselftest-vsyscall-mode-native/filesystems
-* kselftest-vsyscall-mode-native/net
-* kselftest-vsyscall-mode-native/networking
-* kselftest-vsyscall-mode-none
-* kselftest-vsyscall-mode-none/drivers
-* kselftest-vsyscall-mode-none/filesystems
-* kselftest-vsyscall-mode-none/net
-* kselftest-vsyscall-mode-none/networking
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+>         select STACKTRACE
+>         help
+>           The Kernel Concurrency Sanitizer (KCSAN) is a dynamic
+>
+> As you both say, the combination seems to be quite important, so maybe there
+> is something else that can be to also enable it with clang.
+>
+>       Arnd
