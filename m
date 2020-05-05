@@ -2,74 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF0961C4FC4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 09:59:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C0381C4FC8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 10:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728353AbgEEH7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 03:59:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725766AbgEEH7o (ORCPT
+        id S1727978AbgEEIBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 04:01:42 -0400
+Received: from smtprelay0165.hostedemail.com ([216.40.44.165]:42462 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725833AbgEEIBm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 03:59:44 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54C0AC061A0F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 00:59:44 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id c3so901951otp.8
-        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 00:59:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=T+HL8b202M5prJrGoveqOp5+tc3db6bJ+vH0TMitLlA=;
-        b=kivhg5BAzjjquRsjB3GKipBN0uSiLOAOBiD9bRu1AtBLtACySZxR4Sr6tyHBC9NMgS
-         +O6zXUj+2y+eDV6wRBO4GvdZdoj/5hMEGOonsH9SDpS3h+YWlh6cP6qx/wnJ46jK21B/
-         7ohRYfB7jQe/w1LmhexuxkmuoOLtErTFbKS5O3FKCe6On9+jFzFGOGbA2zBtGT0CyjPT
-         kPmAk9ffQ/2ZYCRP4zvfbdRM0Vf74DVbfGfkQ3aAtm9WR7kWxIRs51+4nx6N9ZZIp9Z0
-         yga455t7f/s7vkBLl1+J5fCjHVUfjnZkHzOOgshPvna6FX4ro4n/avu2dJlaPiC7i2CF
-         KEgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=T+HL8b202M5prJrGoveqOp5+tc3db6bJ+vH0TMitLlA=;
-        b=I1e1FVeBrJSAMu+NMvD3PE5EVVJHQqinVdVLNxMzTqahxptKw8zY/r5FnK0d/goHAb
-         +bnRA9f4n2NDgi44TcoffMrdSY9y3NzBlfMFM9sy86Pg45evDXx3MgFaO/UMxzqiBxH8
-         LzZomiSyAt+zdzQBWws6MtdtCgdoVuDcZbkLeD0li7Rph5eirk9y1plHu2kD8OfDbfQW
-         dYCwMWMOtIfFVkdDaGSq7MVDTaJJPDBx3wuScUF3jw0IwOUU32mLhz4IqAbaqDzIJ++x
-         pyW0D65SHA64xHdh/B8IxMurdZ+sDHJnfgqkGC9mdzFZq9fplYAEy2ka7hdsw0ns7EGo
-         rhpg==
-X-Gm-Message-State: AGi0PuZHKGMqp8YznBMT3jkgVLD0qbSzsgcvzwtzadm4TT22OuWcMxFX
-        Yc3wkjR9r9TPqNgv5qr9ZQl1lpcNT348GZD8l00=
-X-Google-Smtp-Source: APiQypJPj3tcCf3cdKqUY9ezHvAsQyDFNowWIM5kwE66pfg6ClfbSI+kzJa8LD6x8rKjoRZuTCz0to0piVZX/rwBlOE=
-X-Received: by 2002:a9d:301:: with SMTP id 1mr1307630otv.255.1588665583621;
- Tue, 05 May 2020 00:59:43 -0700 (PDT)
+        Tue, 5 May 2020 04:01:42 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 85AD5182D31F3;
+        Tue,  5 May 2020 08:01:41 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2110:2393:2553:2559:2562:2828:2914:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3872:4321:5007:7903:8603:10004:10400:10848:11232:11658:11914:12296:12297:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:21080:21627:30012:30054:30060:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: roll80_65f027eb9442c
+X-Filterd-Recvd-Size: 1926
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf13.hostedemail.com (Postfix) with ESMTPA;
+        Tue,  5 May 2020 08:01:40 +0000 (UTC)
+Message-ID: <d0a6e679bc835d89a6b219f44dbbdcdcdea256bc.camel@perches.com>
+Subject: Re: [trivial PATCH] efi/libstub: Reduce efi_printk object size
+From:   Joe Perches <joe@perches.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>, X86 ML <x86@kernel.org>
+Date:   Tue, 05 May 2020 01:01:39 -0700
+In-Reply-To: <CAMj1kXGQ7dLNMnheWViBh7BnHd00kWw0AW2aF7i7S2wGti0qKg@mail.gmail.com>
+References: <091e3fc3bdbc5f480af7d3b3ac096d174a4480d0.1588273612.git.joe@perches.com>
+         <ec53e67b3ac928922807db3cb1585e911971dadc.1588273612.git.joe@perches.com>
+         <CAMj1kXHwdy3BTqt-q_qnezyz666BcqKiFxeumfsD+Qjy5qRzZA@mail.gmail.com>
+         <f1926d434cdeb091405ef8c01a90c0140d296bed.camel@perches.com>
+         <CAMj1kXGQ7dLNMnheWViBh7BnHd00kWw0AW2aF7i7S2wGti0qKg@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.1-2 
 MIME-Version: 1.0
-Received: by 2002:a4a:a84c:0:0:0:0:0 with HTTP; Tue, 5 May 2020 00:59:43 -0700 (PDT)
-From:   Mrs Suzara Maling Wan <mrssuzaramalingwan2@gmail.com>
-Date:   Tue, 5 May 2020 00:59:43 -0700
-X-Google-Sender-Auth: _qWOe940-88re8dXRr73JZT7oSc
-Message-ID: <CAPhCE2dvZazBzx9r5SHQBaArApM=7szQgZsXHV=2HkUrz6tXYA@mail.gmail.com>
-Subject: Hello
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello
-I'm "Mrs Suzara Maling Wan" married to Mr. Wan( an International
-Contractor and Oil Merchant/ jointly in Exposition of Agro  Equipment
-) who died in  Burkina Faso attack,  i am 64 years old and diagnosed
-of cancer for about 2 years ago  and my husband informed me that he
-deposited the sum of (14.3Million USD Only) with a Finance house) in
-UAGADOUGOU BURKINA FASO.
+On Tue, 2020-05-05 at 09:50 +0200, Ard Biesheuvel wrote:
+> On Mon, 4 May 2020 at 20:29, Joe Perches <joe@perches.com> wrote:
+> > Use a few more common kernel styles.
+> > 
+> > Trivially reduce efi_printk object size by using a dereference to
+> > a temporary instead of multiple dereferences of the same object.
+> > 
+> > Use efi_printk(const char *str) and static or static const for its
+> > internal variables.
+> > 
+> > Use the more common form of while instead of a for loop.
+> > 
+> > Change efi_char16_printk argument to const.
+> > 
+> > Signed-off-by: Joe Perches <joe@perches.com>
+> 
+> Thanks Joe.
 
-I want you to help me to use this money  for a charity project before
-I die, for the Poor, Less-privileged and  ORPHANAGES in
-your country.  Please kindly respond
+No worries, it's not worth applying if
+it's not good code.  Just ignore it.
 
-quickly for further details.
+cheers, Joe
 
-Yours fairly friend,
-Mrs Suzara Maling Wan
