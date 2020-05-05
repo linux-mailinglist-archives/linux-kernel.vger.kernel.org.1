@@ -2,137 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A62E51C57BE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:02:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A10D1C57B6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:01:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729280AbgEEOB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:01:59 -0400
-Received: from mout.kundenserver.de ([212.227.17.24]:57481 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729264AbgEEOB5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:01:57 -0400
-Received: from localhost.localdomain ([149.172.19.189]) by
- mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPA (Nemesis) id
- 1MuDsZ-1jHTUl1QxZ-00uWRX; Tue, 05 May 2020 16:01:38 +0200
-From:   Arnd Bergmann <arnd@arndb.de>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Vincenzo Aliberti <vincenzo.aliberti@gmail.com>,
-        Brian Norris <computersforpeace@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Richard Fontana <rfontana@redhat.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH] mtd: lpddr: fix excessive stack usage with clang
-Date:   Tue,  5 May 2020 16:01:16 +0200
-Message-Id: <20200505140136.263461-1-arnd@arndb.de>
-X-Mailer: git-send-email 2.26.0
+        id S1729244AbgEEOBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:01:39 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:42596 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728076AbgEEOBj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 10:01:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=MQhJQSV5DPC+RnQ18Gv5OjUfrbMB0JR8XzYM9Fu0Cns=; b=BPLdwwcd4KtC0HTYqHjtwDw1X2
+        mJVWPB/049rFgZ8S7LEq4nNbSLR/3zKrk7qLN6vTYnlH2BC+ePiuxyYNm3mjV6WYL4QFpFgEvAcTD
+        mOXu9KbDkhWxhkg1NSMok1gnLzHA8wkShofmqZvzcJausKRgNN1V7JZcqosLpe3YxvJU=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
+        (envelope-from <andrew@lunn.ch>)
+        id 1jVy8V-000wMg-KV; Tue, 05 May 2020 16:01:27 +0200
+Date:   Tue, 5 May 2020 16:01:27 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        Marek Vasut <marex@denx.de>, David Jander <david@protonic.nl>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v1] dt-bindings: net: nxp,tja11xx: rework validation
+ support
+Message-ID: <20200505140127.GJ208718@lunn.ch>
+References: <20200505104215.8975-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:iaIPMXhwT+Ozi6/EpaDCzPQ6tOZ0YRFJlPmWlpkMXIOGy4GtadE
- 2Z+LvOLt48OWBL8tlphxtGjgLmEv5xt9TTGL54IbLKq9dBjrTyohtYUyJgkuQXyGFBJuxzc
- 6osWPaVYP906+AjTqqJo7C8bulY+GI4nc8qQYAYy/TF4rtBahP77hmt5uWz15rbdppHrlZ1
- d2CaYJdcLUkSTeHBRS/3Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ZKEdyWcVvbU=:zYkDpW+KkqOFvxVL4/YtNm
- 9RlRgywDUlI6jWeDBe9CgT6v4zfsrTYQx9nUJBpcgMa1WwlbhNH+MYM8vGwR6zecGtm/xoqH2
- GsLnyQytBgbIyv6dibT0Un4WucwiF1kgU2Dw2cCbkBmHF2tjhxBI1lsyZZcEiBD09JW539gOy
- B2DwwiGt1ARK+9SXIGsEAEh/R4IhX9XWgvR3/35YJc0+0NiOXuEevJPbDmMS8WNwc0iKCO9C5
- 6QhAnXFNVGfRuDv5FZGzYGq1d8Yf1MgAJpylYydDSflY3PSaUuIBavOTvq+0YJ+4Uhj/SO49J
- UBhgVHGa/th64j4rCrhZ2puCZZRSXmLFg1gurJYVTVUbMWxbdPeywDtaNPLrkjcuNRPCPbGDs
- vahrHJP9tGpIZDhp3cTatj9www2/VrSG9bezmcdCY3Y6Gjra81B5tzJi+z2tAejKO1bdoA3eI
- e1kEvWTFqJEkgRbRM3yBGP/J8iEEZH65eUbaVpoZk+AGWV4nGA6/ZWhMSlWD7yqcsssVz2ptK
- B7gazvUT31WlAJwYWPU9u7mwAGttdJvPMtZF7g0bblT46ydiDoBAVjVhqi7sZa7slRw+3fZsC
- WRAE6KxqjAB8rH2pGfvGJnmF7UWlfIQdNI1mjjmhWNhm7ICV+BONcVnpj9zM6Xc1kYGTTGl7x
- sJAk9yh9Fs1AaW+O1fOfFjnW2ApxftOdLkAAFVc8y0JbZUhaNykwjJcIwTo/dL10KVPoOT+pO
- shuX5bITpPs9W9S0y3YkJIJTkHW4N90ZNkF2DuTyr5DP1JtiKLCL85NbGDKIEN+S/a35DRqdA
- T2TdfwELWOQHqK+OeflGC5Bo4P0y9AgaidrVeSz5sZp+KV3yWk=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200505104215.8975-1-o.rempel@pengutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Building lpddr2_nvm with clang can result in a giant stack usage
-in one function:
+On Tue, May 05, 2020 at 12:42:15PM +0200, Oleksij Rempel wrote:
+> To properly identify this node, we need to use ethernet-phy-id0180.dc80.
+> And add missing required properties.
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> ---
+>  .../devicetree/bindings/net/nxp,tja11xx.yaml  | 55 ++++++++++++-------
+>  1 file changed, 35 insertions(+), 20 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/nxp,tja11xx.yaml b/Documentation/devicetree/bindings/net/nxp,tja11xx.yaml
+> index 42be0255512b3..cc322107a24a2 100644
+> --- a/Documentation/devicetree/bindings/net/nxp,tja11xx.yaml
+> +++ b/Documentation/devicetree/bindings/net/nxp,tja11xx.yaml
+> @@ -1,4 +1,4 @@
+> -# SPDX-License-Identifier: GPL-2.0+
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>  %YAML 1.2
+>  ---
+>  $id: http://devicetree.org/schemas/net/nxp,tja11xx.yaml#
+> @@ -12,44 +12,59 @@ maintainers:
+>    - Heiner Kallweit <hkallweit1@gmail.com>
+>  
+>  description:
+> -  Bindings for NXP TJA11xx automotive PHYs
+> +  Bindings for the NXP TJA1102 automotive PHY. This is a dual PHY package where
+> +  only the first PHY has global configuration register and HW health
+> +  monitoring.
+>  
+> -allOf:
+> -  - $ref: ethernet-phy.yaml#
+> +properties:
+> +  compatible:
+> +    const: ethernet-phy-id0180.dc80
+> +    description: ethernet-phy-id0180.dc80 used for TJA1102 PHY
+> +
+> +  reg:
+> +    minimum: 0
+> +    maximum: 14
+> +    description:
+> +      The PHY address of the parent PHY.
 
-drivers/mtd/lpddr/lpddr2_nvm.c:399:12: error: stack frame size of 1144 bytes in function 'lpddr2_nvm_probe' [-Werror,-Wframe-larger-than=]
+Hi Oleksij
 
-The problem is that clang decides to build a copy of the mtd_info
-structure on the stack and then do a memcpy() into the actual version. It
-shouldn't really do it that way, but it's not strictly a bug either.
+reg is normally 0 to 31, since that is the address range for MDIO. 
+Did you use 14 here because of what strapping allows?
 
-As a workaround, use a static const version of the structure to assign
-most of the members upfront and then only set the few members that
-require runtime knowledge at probe time.
+> +required:
+> +  - compatible
+> +  - reg
+> +  - '#address-cells'
+> +  - '#size-cells'
 
-Fixes: 96ba9dd65788 ("mtd: lpddr: add driver for LPDDR2-NVM PCM memories")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/mtd/lpddr/lpddr2_nvm.c | 35 ++++++++++++++++++----------------
- 1 file changed, 19 insertions(+), 16 deletions(-)
+So we have two different meanings of 'required' here.
 
-diff --git a/drivers/mtd/lpddr/lpddr2_nvm.c b/drivers/mtd/lpddr/lpddr2_nvm.c
-index 0f1547f09d08..72f5c7b30079 100644
---- a/drivers/mtd/lpddr/lpddr2_nvm.c
-+++ b/drivers/mtd/lpddr/lpddr2_nvm.c
-@@ -393,6 +393,17 @@ static int lpddr2_nvm_lock(struct mtd_info *mtd, loff_t start_add,
- 	return lpddr2_nvm_do_block_op(mtd, start_add, len, LPDDR2_NVM_LOCK);
- }
- 
-+static const struct mtd_info lpddr2_nvm_mtd_info = {
-+	.type		= MTD_RAM,
-+	.writesize	= 1,
-+	.flags		= (MTD_CAP_NVRAM | MTD_POWERUP_LOCK),
-+	._read		= lpddr2_nvm_read,
-+	._write		= lpddr2_nvm_write,
-+	._erase		= lpddr2_nvm_erase,
-+	._unlock	= lpddr2_nvm_unlock,
-+	._lock		= lpddr2_nvm_lock,
-+};
-+
- /*
-  * lpddr2_nvm driver probe method
-  */
-@@ -433,6 +444,7 @@ static int lpddr2_nvm_probe(struct platform_device *pdev)
- 		.pfow_base	= OW_BASE_ADDRESS,
- 		.fldrv_priv	= pcm_data,
- 	};
-+
- 	if (IS_ERR(map->virt))
- 		return PTR_ERR(map->virt);
- 
-@@ -444,22 +456,13 @@ static int lpddr2_nvm_probe(struct platform_device *pdev)
- 		return PTR_ERR(pcm_data->ctl_regs);
- 
- 	/* Populate mtd_info data structure */
--	*mtd = (struct mtd_info) {
--		.dev		= { .parent = &pdev->dev },
--		.name		= pdev->dev.init_name,
--		.type		= MTD_RAM,
--		.priv		= map,
--		.size		= resource_size(add_range),
--		.erasesize	= ERASE_BLOCKSIZE * pcm_data->bus_width,
--		.writesize	= 1,
--		.writebufsize	= WRITE_BUFFSIZE * pcm_data->bus_width,
--		.flags		= (MTD_CAP_NVRAM | MTD_POWERUP_LOCK),
--		._read		= lpddr2_nvm_read,
--		._write		= lpddr2_nvm_write,
--		._erase		= lpddr2_nvm_erase,
--		._unlock	= lpddr2_nvm_unlock,
--		._lock		= lpddr2_nvm_lock,
--	};
-+	*mtd = lpddr2_nvm_mtd_info;
-+	mtd->dev.parent		= &pdev->dev;
-+	mtd->name		= pdev->dev.init_name;
-+	mtd->priv		= map;
-+	mtd->size		= resource_size(add_range);
-+	mtd->erasesize		= ERASE_BLOCKSIZE * pcm_data->bus_width;
-+	mtd->writebufsize	= WRITE_BUFFSIZE * pcm_data->bus_width;
- 
- 	/* Verify the presence of the device looking for PFOW string */
- 	if (!lpddr2_nvm_pfow_present(map)) {
--- 
-2.26.0
+One meaning is the code requires it. compatible is not required, the
+driver will correctly be bind to the device based on its ID registers.
+Is reg also required by the code?
+
+The second meaning is about keeping the yaml verifier happy. It seems
+like compatible is needed for the verifier. Is reg also required? We
+do recommend having reg, but the generic code does not require it.
+
+   Andrew
 
