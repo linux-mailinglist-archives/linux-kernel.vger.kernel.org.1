@@ -2,79 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D211C5A49
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:00:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53FA81C5A4D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729573AbgEEPAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 11:00:30 -0400
-Received: from mga17.intel.com ([192.55.52.151]:9436 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729235AbgEEPAa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 11:00:30 -0400
-IronPort-SDR: UkgUxOjEMrlqM7SMObA7/TEM06wS/tTb7mdlZkoR62YOx+2HBMrrAZaSpPDOG3nfM243Dukk3/
- N1cuA5y5BSVg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2020 08:00:29 -0700
-IronPort-SDR: qEd+L4dnkzbKUZTLsOk9W9F5SOQpgrAW/lZ94JgjXqELHPDyNVeMHqidivc1GBS7NoSacJjEDy
- 5xupdVqsZ8Sg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,355,1583222400"; 
-   d="scan'208";a="461419689"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga006.fm.intel.com with ESMTP; 05 May 2020 08:00:29 -0700
-Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.7.201.137])
-        by linux.intel.com (Postfix) with ESMTP id 73A6658048A;
-        Tue,  5 May 2020 08:00:29 -0700 (PDT)
-Message-ID: <b2c9bfa6a93ba504f36f64ed9c860d67ff8839e6.camel@linux.intel.com>
-Subject: Re: [PATCH 1/3] pci: Add Designated Vendor Specific Capability
-From:   "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Andy Shevchenko <andy@infradead.org>,
-        alexander.h.duyck@intel.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org
-Date:   Tue, 05 May 2020 08:00:29 -0700
-In-Reply-To: <CAHp75VcAA3DmjZnnpg=XdiKWtWWZBXeOguqEC7JSNYZmawCYSg@mail.gmail.com>
-References: <20200505013206.11223-1-david.e.box@linux.intel.com>
-         <20200505013206.11223-2-david.e.box@linux.intel.com>
-         <CAHp75VcAA3DmjZnnpg=XdiKWtWWZBXeOguqEC7JSNYZmawCYSg@mail.gmail.com>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.3 (3.34.3-1.fc31) 
+        id S1729661AbgEEPAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 11:00:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729235AbgEEPAz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 11:00:55 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3EC8C061A0F;
+        Tue,  5 May 2020 08:00:54 -0700 (PDT)
+Received: from apollo.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:6257:18ff:fec4:ca34])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 94D3423E80;
+        Tue,  5 May 2020 17:00:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1588690853;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=T8QHJzdQsqxKUorxv0i84+q/jnRbNR+waUrdwg8sxko=;
+        b=WzXRH7omIgdod2GwSr7P7NftvohR0t4Z6U/E+DQhKjCkTzaBB6v013s/9EAZW8xkJrpOCB
+        5LH8ly/cRqlGucUBJr3oqx/91F/JiXnHp0IaLASdw83rbiHODqxxEmFDqoPURkXME2DpDw
+        p7Ylps13Qk4orZFSTsF0mxPa6AnlrNY=
+From:   Michael Walle <michael@walle.cc>
+To:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Walle <michael@walle.cc>
+Subject: [PATCH] arm64: dts: freescale: sl28: enable LPUART1
+Date:   Tue,  5 May 2020 17:00:37 +0200
+Message-Id: <20200505150037.32573-1-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Spam: Yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-05-05 at 11:49 +0300, Andy Shevchenko wrote:
-> On Tue, May 5, 2020 at 4:32 AM David E. Box <
-> david.e.box@linux.intel.com> wrote:
-> > Add pcie dvsec extended capability id along with helper macros to
-> 
-> pcie -> PCIe
-> 
-> dvsec -> DVSEC (but here I'm not sure, what's official abbreviation
-> for this?)
+Now that the LPUART has support for the LS1028A SoC, also enable it on
+our board.
 
-Okay. DVSEC is used in the ECN. I'll spell it here out as well.
+Signed-off-by: Michael Walle <michael@walle.cc>
+---
 
-> 
-> > retrieve information from the headers.
-> 
-> 
-> > https://members.pcisig.com/wg/PCI-SIG/document/12335
-> 
-> Perhaps
-> 
-> DocLink: ...
-> 
-> (as a tag)
+Hi Shawn,
 
-Yes. Forgot to add this.
+After adding/fixing the LPUART support for the LS1028A I've forgot to send
+this patch to actually enable the LPUART on our boards. It would be great
+if this could make it into the fixes queue for the -rc. If not its also ok.
+
+Thanks,
+-michael
+
+ arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts
+index 5eac8a6ab46f..360b3a168c10 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts
+@@ -17,6 +17,7 @@
+ 		crypto = &crypto;
+ 		serial0 = &duart0;
+ 		serial1 = &duart1;
++		serial2 = &lpuart1;
+ 		spi0 = &fspi;
+ 		spi1 = &dspi2;
+ 	};
+@@ -189,3 +190,7 @@
+ 		pagesize = <32>;
+ 	};
+ };
++
++&lpuart1 {
++	status = "okay";
++};
+-- 
+2.20.1
 
