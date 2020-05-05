@@ -2,101 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 179241C5E1C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 18:58:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E64601C5E22
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 18:58:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730641AbgEEQ6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 12:58:43 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:7570 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730595AbgEEQ6k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 12:58:40 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 045GW8U1174320;
-        Tue, 5 May 2020 12:58:34 -0400
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 30s2g34xd8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 May 2020 12:58:33 -0400
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 045Gp341000505;
-        Tue, 5 May 2020 16:58:33 GMT
-Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
-        by ppma05wdc.us.ibm.com with ESMTP id 30s0g6jbbb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 May 2020 16:58:33 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 045GwVx912059052
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 5 May 2020 16:58:31 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 602507805E;
-        Tue,  5 May 2020 16:58:32 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D7F917805F;
-        Tue,  5 May 2020 16:58:31 +0000 (GMT)
-Received: from talon7.ibm.com (unknown [9.211.137.116])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue,  5 May 2020 16:58:31 +0000 (GMT)
-From:   Eddie James <eajames@linux.ibm.com>
-To:     linux-aspeed@lists.ozlabs.org
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, joel@jms.id.au, andrew@aj.id.au,
-        eajames@linux.ibm.com
-Subject: [PATCH v11 8/8] ARM: dts: Aspeed: Tacoma: Enable XDMA engine
-Date:   Tue,  5 May 2020 11:58:25 -0500
-Message-Id: <1588697905-23444-9-git-send-email-eajames@linux.ibm.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1588697905-23444-1-git-send-email-eajames@linux.ibm.com>
-References: <1588697905-23444-1-git-send-email-eajames@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-05-05_09:2020-05-04,2020-05-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- suspectscore=1 bulkscore=0 priorityscore=1501 spamscore=0
- lowpriorityscore=0 adultscore=0 phishscore=0 mlxlogscore=739 clxscore=1015
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005050126
+        id S1730705AbgEEQ6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 12:58:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38888 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730672AbgEEQ6t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 12:58:49 -0400
+Received: from gmail.com (unknown [104.132.1.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B49B120757;
+        Tue,  5 May 2020 16:58:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588697928;
+        bh=N18rhaJtm01k8g6a0UjT7Q6LzqEp+W4aYkEI1nt+QGM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MGVAziaxz2CPuV6fer1oeWX2KYKiEaAs3iXbuxTffNfh5rfa2+3lCDNDfJR97mRGz
+         FR7XkyVbck8+3uHqPfXEA9DYmQ1TwPHGVfgOLtQD/FNDGlHK7UNxn86jwi3KrNKcaH
+         bIefYvdqDROf14QqFG54fWlXC7ASGAUqAj+Gy+d4=
+Date:   Tue, 5 May 2020 09:58:47 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Subject: Re: [f2fs-dev] [PATCH] f2fs: get parent inode when recovering pino
+Message-ID: <20200505165847.GA98848@gmail.com>
+References: <20200505153139.201697-1-jaegeuk@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200505153139.201697-1-jaegeuk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a reserved memory node for the VGA memory. Add the XDMA engine node,
-enable it, and point it's memory region to the VGA memory.
+On Tue, May 05, 2020 at 08:31:39AM -0700, Jaegeuk Kim wrote:
+> We had to grab the inode before retrieving i_ino.
+> 
+> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> ---
+>  fs/f2fs/file.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> index a0a4413d6083b..9d4c3e3503567 100644
+> --- a/fs/f2fs/file.c
+> +++ b/fs/f2fs/file.c
+> @@ -168,6 +168,7 @@ static const struct vm_operations_struct f2fs_file_vm_ops = {
+>  static int get_parent_ino(struct inode *inode, nid_t *pino)
+>  {
+>  	struct dentry *dentry;
+> +	struct inode *parent;
+>  
+>  	inode = igrab(inode);
+>  	dentry = d_find_any_alias(inode);
+> @@ -175,8 +176,13 @@ static int get_parent_ino(struct inode *inode, nid_t *pino)
+>  	if (!dentry)
+>  		return 0;
+>  
+> -	*pino = parent_ino(dentry);
+> +	parent = igrab(d_inode(dentry->d_parent));
+>  	dput(dentry);
+> +	if (!parent)
+> +		return 0;
+> +
+> +	*pino = parent->i_ino;
+> +	iput(parent);
+>  	return 1;
 
-Signed-off-by: Eddie James <eajames@linux.ibm.com>
----
- arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+This doesn't appear to be necessary.  parent_ino() is:
 
-diff --git a/arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts b/arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts
-index 47293a5..d336dd4 100644
---- a/arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts
-+++ b/arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts
-@@ -29,6 +29,12 @@
- 			no-map;
- 			reg = <0xb8000000 0x4000000>; /* 64M */
- 		};
-+
-+		vga_memory: region@bf000000 {
-+			no-map;
-+			compatible = "shared-dma-pool";
-+			reg = <0xbf000000 0x01000000>;	/* 16M */
-+		};
- 	};
- 
- 	gpio-keys {
-@@ -804,3 +810,8 @@
- 	pinctrl-0 = <&pinctrl_lpc_default>,
- 		    <&pinctrl_lsirq_default>;
- };
-+
-+&xdma {
-+	status = "okay";
-+	memory-region = <&vga_memory>;
-+};
--- 
-1.8.3.1
+	spin_lock(&dentry->d_lock);
+	res = dentry->d_parent->d_inode->i_ino;
+	spin_unlock(&dentry->d_lock);
 
+Since dentry is locked and referenced, ->d_parent is stable and positive.
+
+In the encrypt+casefold patch I was reviewing, it's indeed necessary, but only
+because there was a check of inode->i_flags added outside the locked region.
+The following would be simpler:
+
+        spin_lock(&dentry->d_lock);
+        dir = dentry->d_parent->d_inode;
+        *pino = dir->i_ino;
+        needs_recovery = IS_ENCRYPTED(dir) && IS_CASEFOLDED(dir);
+        spin_unlock(&dentry->d_lock);
+
+BTW, d_find_any_alias() is unnecessary too.  This code should just be using
+file_dentry(file) from f2fs_do_sync_file().
+
+- Eric
