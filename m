@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCAD41C58ED
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:20:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3D431C58D7
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:20:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730023AbgEEOUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:20:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49070 "EHLO
+        id S1729309AbgEEOQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:16:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730022AbgEEOQK (ORCPT
+        by vger.kernel.org with ESMTP id S1730017AbgEEOQI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:16:10 -0400
+        Tue, 5 May 2020 10:16:08 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8889C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:16:09 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1AADC061A10
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:16:07 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jVyMO-0001pb-GD; Tue, 05 May 2020 16:15:48 +0200
+        id 1jVyMP-0001qr-MW; Tue, 05 May 2020 16:15:49 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 007D5FFC8D;
-        Tue,  5 May 2020 16:15:48 +0200 (CEST)
-Message-Id: <20200505135313.624443814@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 3BAC01001F5;
+        Tue,  5 May 2020 16:15:49 +0200 (CEST)
+Message-Id: <20200505135313.731774429@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 05 May 2020 15:49:29 +0200
+Date:   Tue, 05 May 2020 15:49:30 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -45,7 +45,7 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Will Deacon <will@kernel.org>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch V4 part 4 03/24] lib/bsearch: Provide __always_inline variant
+Subject: [patch V4 part 4 04/24] x86/int3: Inline bsearch()
 References: <20200505134926.578885807@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -60,81 +60,53 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Peter Zijlstra <peterz@infradead.org>
 
-For code that needs the ultimate performance (it can inline the @cmp
-function too) or simply needs to avoid calling external functions for
-whatever reason, provide an __always_inline variant of bsearch().
+Avoid calling out to bsearch() by inlining it, for normal kernel configs
+this was the last external call and poke_int3_handler() is now fully self
+sufficient -- no calls to external code.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- include/linux/bsearch.h |   26 ++++++++++++++++++++++++--
- lib/bsearch.c           |   22 ++--------------------
- 2 files changed, 26 insertions(+), 22 deletions(-)
+ arch/x86/kernel/alternative.c |    8 ++++----
+ arch/x86/kernel/traps.c       |    5 +++++
+ 2 files changed, 9 insertions(+), 4 deletions(-)
 
---- a/include/linux/bsearch.h
-+++ b/include/linux/bsearch.h
-@@ -4,7 +4,29 @@
- 
- #include <linux/types.h>
- 
--void *bsearch(const void *key, const void *base, size_t num, size_t size,
--	      cmp_func_t cmp);
-+static __always_inline
-+void *__bsearch(const void *key, const void *base, size_t num, size_t size, cmp_func_t cmp)
-+{
-+	const char *pivot;
-+	int result;
-+
-+	while (num > 0) {
-+		pivot = base + (num >> 1) * size;
-+		result = cmp(key, pivot);
-+
-+		if (result == 0)
-+			return (void *)pivot;
-+
-+		if (result > 0) {
-+			base = pivot + size;
-+			num--;
-+		}
-+		num >>= 1;
-+	}
-+
-+	return NULL;
-+}
-+
-+extern void *bsearch(const void *key, const void *base, size_t num, size_t size, cmp_func_t cmp);
- 
- #endif /* _LINUX_BSEARCH_H */
---- a/lib/bsearch.c
-+++ b/lib/bsearch.c
-@@ -28,27 +28,9 @@
-  * the key and elements in the array are of the same type, you can use
-  * the same comparison function for both sort() and bsearch().
-  */
--void *bsearch(const void *key, const void *base, size_t num, size_t size,
--	      cmp_func_t cmp)
-+void *bsearch(const void *key, const void *base, size_t num, size_t size, cmp_func_t cmp)
- {
--	const char *pivot;
--	int result;
--
--	while (num > 0) {
--		pivot = base + (num >> 1) * size;
--		result = cmp(key, pivot);
--
--		if (result == 0)
--			return (void *)pivot;
--
--		if (result > 0) {
--			base = pivot + size;
--			num--;
--		}
--		num >>= 1;
--	}
--
--	return NULL;
-+	return __bsearch(key, base, num, size, cmp);
+--- a/arch/x86/kernel/alternative.c
++++ b/arch/x86/kernel/alternative.c
+@@ -979,7 +979,7 @@ static __always_inline void *text_poke_a
+ 	return _stext + tp->rel_addr;
  }
- EXPORT_SYMBOL(bsearch);
- NOKPROBE_SYMBOL(bsearch);
+ 
+-static int noinstr patch_cmp(const void *key, const void *elt)
++static __always_inline int patch_cmp(const void *key, const void *elt)
+ {
+ 	struct text_poke_loc *tp = (struct text_poke_loc *) elt;
+ 
+@@ -1023,9 +1023,9 @@ int noinstr poke_int3_handler(struct pt_
+ 	 * Skip the binary search if there is a single member in the vector.
+ 	 */
+ 	if (unlikely(desc->nr_entries > 1)) {
+-		tp = bsearch(ip, desc->vec, desc->nr_entries,
+-			     sizeof(struct text_poke_loc),
+-			     patch_cmp);
++		tp = __bsearch(ip, desc->vec, desc->nr_entries,
++			       sizeof(struct text_poke_loc),
++			       patch_cmp);
+ 		if (!tp)
+ 			goto out_put;
+ 	} else {
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -566,6 +566,11 @@ DEFINE_IDTENTRY_ERRORCODE(exc_general_pr
+ 
+ dotraplinkage void notrace do_int3(struct pt_regs *regs, long error_code)
+ {
++	/*
++	 * poke_int3_handler() is completely self contained code; it does (and
++	 * must) *NOT* call out to anything, lest it hits upon yet another
++	 * INT3.
++	 */
+ 	if (poke_int3_handler(regs))
+ 		return;
+ 
 
