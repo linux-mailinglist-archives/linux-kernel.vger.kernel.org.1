@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB0621C5950
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:24:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C5AE1C594A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:24:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729364AbgEEONs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:13:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48500 "EHLO
+        id S1729411AbgEEONu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:13:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729327AbgEEONr (ORCPT
+        by vger.kernel.org with ESMTP id S1729331AbgEEONr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 5 May 2020 10:13:47 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 132E0C061A0F
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55BB9C061A10
         for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:13:45 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jVyJu-0000HO-HQ; Tue, 05 May 2020 16:13:14 +0200
+        id 1jVyJv-0000HU-Ci; Tue, 05 May 2020 16:13:15 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 9ABE6FFC8D;
-        Tue,  5 May 2020 16:13:13 +0200 (CEST)
-Message-Id: <20200505131602.633487962@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id D85621001F5;
+        Tue,  5 May 2020 16:13:14 +0200 (CEST)
+Message-Id: <20200505134058.162382383@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 05 May 2020 15:16:02 +0200
+Date:   Tue, 05 May 2020 15:16:03 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -44,8 +44,11 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Will Deacon <will@kernel.org>
-Subject: [patch V4 part 1 00/36] x86/entry: Entry/exception code rework,
- preparatory patches
+Subject: [patch V4 part 1 01/36] rcu: Add comments marking transitions between
+ RCU watching and not
+References: <20200505131602.633487962@linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-transfer-encoding: 8-bit
 X-Linutronix-Spam-Score: -1.0
 X-Linutronix-Spam-Level: -
@@ -55,160 +58,130 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Folks!
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This is the hopefully final version of the rework of the entry and
-exception code to ensure that instrumentation cannot touch the fragile
-parts of the hardware induced entry and exception code trainwreck. It
-further ensures correctness vs. RCU and moves quite some code out of the
-assembly code into C.
+It is not as clear as it might be just where in RCU's idle entry/exit
+code RCU stops and starts watching the current CPU.  This commit therefore
+adds comments calling out the transitions.
 
-V3 can befound here:
+Reported-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lkml.kernel.org/r/20200313024046.27622-2-paulmck@kernel.org
 
- https://lore.kernel.org/r/20200320175956.033706968@linutronix.de
+---
+ kernel/rcu/tree.c |   29 +++++++++++++++++++++++++----
+ 1 file changed, 25 insertions(+), 4 deletions(-)
 
-The protection against instrumentation is based on moving the fragile code
-parts into a special text section: .noinstr.text which is excluded from any
-form of instrumentation
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -225,7 +225,9 @@ void rcu_softirq_qs(void)
+ 
+ /*
+  * Record entry into an extended quiescent state.  This is only to be
+- * called when not already in an extended quiescent state.
++ * called when not already in an extended quiescent state, that is,
++ * RCU is watching prior to the call to this function and is no longer
++ * watching upon return.
+  */
+ static void rcu_dynticks_eqs_enter(void)
+ {
+@@ -238,7 +240,7 @@ static void rcu_dynticks_eqs_enter(void)
+ 	 * next idle sojourn.
+ 	 */
+ 	seq = atomic_add_return(RCU_DYNTICK_CTRL_CTR, &rdp->dynticks);
+-	/* Better be in an extended quiescent state! */
++	// RCU is no longer watching.  Better be in extended quiescent state!
+ 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) &&
+ 		     (seq & RCU_DYNTICK_CTRL_CTR));
+ 	/* Better not have special action (TLB flush) pending! */
+@@ -248,7 +250,8 @@ static void rcu_dynticks_eqs_enter(void)
+ 
+ /*
+  * Record exit from an extended quiescent state.  This is only to be
+- * called from an extended quiescent state.
++ * called from an extended quiescent state, that is, RCU is not watching
++ * prior to the call to this function and is watching upon return.
+  */
+ static void rcu_dynticks_eqs_exit(void)
+ {
+@@ -261,6 +264,7 @@ static void rcu_dynticks_eqs_exit(void)
+ 	 * critical section.
+ 	 */
+ 	seq = atomic_add_return(RCU_DYNTICK_CTRL_CTR, &rdp->dynticks);
++	// RCU is now watching.  Better not be in an extended quiescent state!
+ 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) &&
+ 		     !(seq & RCU_DYNTICK_CTRL_CTR));
+ 	if (seq & RCU_DYNTICK_CTRL_MASK) {
+@@ -571,6 +575,7 @@ static void rcu_eqs_enter(bool user)
+ 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) &&
+ 		     rdp->dynticks_nesting == 0);
+ 	if (rdp->dynticks_nesting != 1) {
++		// RCU will still be watching, so just do accounting and leave.
+ 		rdp->dynticks_nesting--;
+ 		return;
+ 	}
+@@ -583,7 +588,9 @@ static void rcu_eqs_enter(bool user)
+ 	rcu_prepare_for_idle();
+ 	rcu_preempt_deferred_qs(current);
+ 	WRITE_ONCE(rdp->dynticks_nesting, 0); /* Avoid irq-access tearing. */
++	// RCU is watching here ...
+ 	rcu_dynticks_eqs_enter();
++	// ... but is no longer watching here.
+ 	rcu_dynticks_task_enter();
+ }
+ 
+@@ -663,7 +670,9 @@ static __always_inline void rcu_nmi_exit
+ 	if (irq)
+ 		rcu_prepare_for_idle();
+ 
++	// RCU is watching here ...
+ 	rcu_dynticks_eqs_enter();
++	// ... but is no longer watching here.
+ 
+ 	if (irq)
+ 		rcu_dynticks_task_enter();
+@@ -738,11 +747,14 @@ static void rcu_eqs_exit(bool user)
+ 	oldval = rdp->dynticks_nesting;
+ 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && oldval < 0);
+ 	if (oldval) {
++		// RCU was already watching, so just do accounting and leave.
+ 		rdp->dynticks_nesting++;
+ 		return;
+ 	}
+ 	rcu_dynticks_task_exit();
++	// RCU is not watching here ...
+ 	rcu_dynticks_eqs_exit();
++	// ... but is watching here.
+ 	rcu_cleanup_after_idle();
+ 	trace_rcu_dyntick(TPS("End"), rdp->dynticks_nesting, 1, atomic_read(&rdp->dynticks));
+ 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
+@@ -819,7 +831,9 @@ static __always_inline void rcu_nmi_ente
+ 		if (irq)
+ 			rcu_dynticks_task_exit();
+ 
++		// RCU is not watching here ...
+ 		rcu_dynticks_eqs_exit();
++		// ... but is watching here.
+ 
+ 		if (irq)
+ 			rcu_cleanup_after_idle();
+@@ -829,9 +843,16 @@ static __always_inline void rcu_nmi_ente
+ 		   rdp->dynticks_nmi_nesting == DYNTICK_IRQ_NONIDLE &&
+ 		   READ_ONCE(rdp->rcu_urgent_qs) &&
+ 		   !READ_ONCE(rdp->rcu_forced_tick)) {
++		// We get here only if we had already exited the extended
++		// quiescent state and this was an interrupt (not an NMI).
++		// Therefore, (1) RCU is already watching and (2) The fact
++		// that we are in an interrupt handler and that the rcu_node
++		// lock is an irq-disabled lock prevents self-deadlock.
++		// So we can safely recheck under the lock.
+ 		raw_spin_lock_rcu_node(rdp->mynode);
+-		// Recheck under lock.
+ 		if (rdp->rcu_urgent_qs && !rdp->rcu_forced_tick) {
++			// A nohz_full CPU is in the kernel and RCU
++			// needs a quiescent state.  Turn on the tick!
+ 			WRITE_ONCE(rdp->rcu_forced_tick, true);
+ 			tick_dep_set_cpu(rdp->cpu, TICK_DEP_BIT_RCU);
+ 		}
 
-The correctness is validated via objtool extensions. The necessary updates
-to objtool are available here:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git objtool/core
-
-The series has a total of 138 patches and is split into 5 parts. It's based
-on v5.7-rc3 with the objtool/core and the locking/kcsan branches of the tip
-tree merged on top. The base tree is available here:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git entry-base
-
-The full series with all parts applied is available here:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git entry-v4-part-5
-
-The first part, i.e. this series is available from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git entry-v4-part-1
-
-This part contains preparatory patches and fixes of various sorts which
-have been either developed in course of this project or have been collected
-from previous versions and related discussions about the whole entry
-vs. RCU vs. instrumentation correctness problem.
-
- - Prevention of breakpoints in the entry code
- - Splitting the scheduler IPI
- - Correct ordering of user space exit work
- - Cleanup and restriction of the async page fault handling
- - Kprobes support for noinstr sections in built-in and modules code
- - The introduction of noinstr.text section
- - Preparatory work in tracing, lockdep and RCU
- - The nmi_enter() consolidation
- - Atomic fallback interaction
-
-The largest patch of this series is the atomic fallback rework which is
-necessary to address the interaction with KCSAN and pending work from Will
-Deacon in that area. The header file is autogenerated, but actually
-included in tree because regenerating on every build is too expensive.
-
-The objtool check for the noinstr.text correctness is not yet added to the
-build machinery and has to be invoked manually for now:
-
-   objtool check -fal vmlinux.o
-
-The checking only works for builtin code as objtool cannot do a combined
-analysis of vmlinux.o and a module.o
-
-Thanks,
-
-	tglx
-
-8<----------
- Documentation/trace/ftrace-design.rst        |    8 
- arch/arm64/include/asm/atomic.h              |    6 
- arch/arm64/include/asm/hardirq.h             |   78 
- arch/arm64/kernel/sdei.c                     |   14 
- arch/arm64/kernel/traps.c                    |    8 
- arch/powerpc/kernel/traps.c                  |   22 
- arch/sh/Kconfig                              |    1 
- arch/sh/kernel/traps.c                       |   12 
- arch/x86/entry/Makefile                      |    8 
- arch/x86/entry/common.c                      |    8 
- arch/x86/entry/entry_32.S                    |    8 
- arch/x86/entry/entry_64.S                    |    6 
- arch/x86/entry/thunk_64.S                    |    5 
- arch/x86/include/asm/atomic.h                |   17 
- arch/x86/include/asm/atomic64_32.h           |    9 
- arch/x86/include/asm/atomic64_64.h           |   15 
- arch/x86/include/asm/bug.h                   |    3 
- arch/x86/include/asm/irqflags.h              |   24 
- arch/x86/include/asm/kvm_para.h              |   23 
- arch/x86/include/asm/paravirt.h              |    2 
- arch/x86/include/asm/traps.h                 |    5 
- arch/x86/include/asm/x86_init.h              |    2 
- arch/x86/kernel/cpu/mce/core.c               |   65 
- arch/x86/kernel/cpu/mce/p5.c                 |    5 
- arch/x86/kernel/cpu/mce/winchip.c            |    5 
- arch/x86/kernel/hw_breakpoint.c              |   25 
- arch/x86/kernel/kvm.c                        |  158 -
- arch/x86/kernel/traps.c                      |  117 -
- arch/x86/kernel/tsc.c                        |    4 
- arch/x86/kernel/x86_init.c                   |    1 
- arch/x86/kvm/mmu/mmu.c                       |    2 
- arch/x86/mm/fault.c                          |   19 
- include/asm-generic/bug.h                    |    9 
- include/asm-generic/sections.h               |    3 
- include/asm-generic/vmlinux.lds.h            |    4 
- include/linux/atomic-arch-fallback.h         | 2291 +++++++++++++++++++++++++++
- include/linux/atomic-fallback.h              |    8 
- include/linux/atomic.h                       |   11 
- include/linux/compiler.h                     |   25 
- include/linux/compiler_types.h               |    4 
- include/linux/ftrace_irq.h                   |   15 
- include/linux/hardirq.h                      |   18 
- include/linux/irqflags.h                     |    6 
- include/linux/lockdep.h                      |   23 
- include/linux/module.h                       |    8 
- include/linux/preempt.h                      |    4 
- include/linux/sched.h                        |   17 
- kernel/kprobes.c                             |   85 -
- kernel/locking/lockdep.c                     |   89 -
- kernel/module.c                              |   10 
- kernel/panic.c                               |    4 
- kernel/printk/internal.h                     |    8 
- kernel/printk/printk_safe.c                  |    9 
- kernel/rcu/tree.c                            |  139 -
- kernel/rcu/tree_plugin.h                     |    4 
- kernel/rcu/update.c                          |    7 
- kernel/sched/core.c                          |   66 
- kernel/sched/fair.c                          |    5 
- kernel/sched/sched.h                         |    6 
- kernel/trace/Kconfig                         |   10 
- kernel/trace/trace_clock.c                   |    3 
- kernel/trace/trace_hwlat.c                   |    2 
- kernel/trace/trace_preemptirq.c              |   39 
- lib/debug_locks.c                            |    2 
- samples/kprobes/kprobe_example.c             |    6 
- samples/kprobes/kretprobe_example.c          |    2 
- scripts/atomic/fallbacks/acquire             |    4 
- scripts/atomic/fallbacks/add_negative        |    6 
- scripts/atomic/fallbacks/add_unless          |    6 
- scripts/atomic/fallbacks/andnot              |    4 
- scripts/atomic/fallbacks/dec                 |    4 
- scripts/atomic/fallbacks/dec_and_test        |    6 
- scripts/atomic/fallbacks/dec_if_positive     |    6 
- scripts/atomic/fallbacks/dec_unless_positive |    6 
- scripts/atomic/fallbacks/fence               |    4 
- scripts/atomic/fallbacks/fetch_add_unless    |    8 
- scripts/atomic/fallbacks/inc                 |    4 
- scripts/atomic/fallbacks/inc_and_test        |    6 
- scripts/atomic/fallbacks/inc_not_zero        |    6 
- scripts/atomic/fallbacks/inc_unless_negative |    6 
- scripts/atomic/fallbacks/read_acquire        |    2 
- scripts/atomic/fallbacks/release             |    4 
- scripts/atomic/fallbacks/set_release         |    2 
- scripts/atomic/fallbacks/sub_and_test        |    6 
- scripts/atomic/fallbacks/try_cmpxchg         |    4 
- scripts/atomic/gen-atomic-fallback.sh        |   29 
- scripts/atomic/gen-atomics.sh                |    5 
- scripts/mod/modpost.c                        |    2 
- 88 files changed, 3146 insertions(+), 611 deletions(-)
