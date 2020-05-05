@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7911D1C5931
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:23:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D44AA1C5927
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729506AbgEEOOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:14:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48580 "EHLO
+        id S1729518AbgEEOOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:14:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729475AbgEEON7 (ORCPT
+        by vger.kernel.org with ESMTP id S1729191AbgEEOOA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:13:59 -0400
+        Tue, 5 May 2020 10:14:00 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDFA2C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:13:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C18B4C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:14:00 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jVyKL-0000aY-MG; Tue, 05 May 2020 16:13:41 +0200
+        id 1jVyKM-0000bq-TF; Tue, 05 May 2020 16:13:43 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 33338FFC8D;
-        Tue,  5 May 2020 16:13:41 +0200 (CEST)
-Message-Id: <20200505134100.270771162@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 6CF14FFC8D;
+        Tue,  5 May 2020 16:13:42 +0200 (CEST)
+Message-Id: <20200505134100.376598577@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 05 May 2020 15:16:24 +0200
+Date:   Tue, 05 May 2020 15:16:25 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -44,8 +44,7 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Will Deacon <will@kernel.org>
-Subject: [patch V4 part 1 22/36] tracing: Provide lockdep less
- trace_hardirqs_on/off() variants
+Subject: [patch V4 part 1 23/36] bug: Annotate WARN/BUG/stackfail as noinstr safe
 References: <20200505131602.633487962@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -58,98 +57,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-trace_hardirqs_on/off() is only partially safe vs. RCU idle. The tracer
-core itself is safe, but the resulting tracepoints can be utilized by
-e.g. BPF which is unsafe.
+Warnings, bugs and stack protection fails from noinstr sections, e.g. low
+level and early entry code, are likely to be fatal.
 
-Provide variants which do not contain the lockdep invocation so the lockdep
-and tracer invocations can be split at the call site and placed properly.
-
-The new variants also do not use rcuidle as they are going to be called
-from entry code after/before context tracking.
-
-Name them so they match the lockdep counterparts.
+Mark them as "safe" to be invoked from noinstr protected code to avoid
+annotating all usage sites. Getting the information out is important.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
-V3: Renamed to trace_hardirqs_on/off_prepare().
-V2: New patch
----
- include/linux/irqflags.h        |    4 ++++
- kernel/trace/trace_preemptirq.c |   37 +++++++++++++++++++++++++++++++++++++
- 2 files changed, 41 insertions(+)
+ arch/x86/include/asm/bug.h |    3 +++
+ include/asm-generic/bug.h  |    9 +++++++--
+ kernel/panic.c             |    4 +++-
+ 3 files changed, 13 insertions(+), 3 deletions(-)
 
---- a/include/linux/irqflags.h
-+++ b/include/linux/irqflags.h
-@@ -29,6 +29,8 @@
- #endif
+--- a/arch/x86/include/asm/bug.h
++++ b/arch/x86/include/asm/bug.h
+@@ -70,13 +70,16 @@ do {									\
+ #define HAVE_ARCH_BUG
+ #define BUG()							\
+ do {								\
++	instr_begin();						\
+ 	_BUG_FLAGS(ASM_UD2, 0);					\
+ 	unreachable();						\
+ } while (0)
  
- #ifdef CONFIG_TRACE_IRQFLAGS
-+  extern void trace_hardirqs_on_prepare(void);
-+  extern void trace_hardirqs_off_prepare(void);
-   extern void trace_hardirqs_on(void);
-   extern void trace_hardirqs_off(void);
- # define lockdep_hardirq_context(p)	((p)->hardirq_context)
-@@ -96,6 +98,8 @@ do {						\
- 	  } while (0)
+ #define __WARN_FLAGS(flags)					\
+ do {								\
++	instr_begin();						\
+ 	_BUG_FLAGS(ASM_UD2, BUGFLAG_WARNING|(flags));		\
++	instr_end();						\
+ 	annotate_reachable();					\
+ } while (0)
  
+--- a/include/asm-generic/bug.h
++++ b/include/asm-generic/bug.h
+@@ -83,14 +83,19 @@ extern __printf(4, 5)
+ void warn_slowpath_fmt(const char *file, const int line, unsigned taint,
+ 		       const char *fmt, ...);
+ #define __WARN()		__WARN_printf(TAINT_WARN, NULL)
+-#define __WARN_printf(taint, arg...)					\
+-	warn_slowpath_fmt(__FILE__, __LINE__, taint, arg)
++#define __WARN_printf(taint, arg...) do {				\
++		instr_begin();						\
++		warn_slowpath_fmt(__FILE__, __LINE__, taint, arg);	\
++		instr_end();						\
++	} while (0)
  #else
-+# define trace_hardirqs_on_prepare()		do { } while (0)
-+# define trace_hardirqs_off_prepare()		do { } while (0)
- # define trace_hardirqs_on()		do { } while (0)
- # define trace_hardirqs_off()		do { } while (0)
- # define lockdep_hardirq_context(p)	0
---- a/kernel/trace/trace_preemptirq.c
-+++ b/kernel/trace/trace_preemptirq.c
-@@ -19,6 +19,24 @@
- /* Per-cpu variable to prevent redundant calls when IRQs already off */
- static DEFINE_PER_CPU(int, tracing_irq_cpu);
- 
-+/*
-+ * Like trace_hardirqs_on() but without the lockdep invocation. This is
-+ * used in the low level entry code where the ordering vs. RCU is important
-+ * and lockdep uses a staged approach which splits the lockdep hardirq
-+ * tracking into a RCU on and a RCU off section.
-+ */
-+void trace_hardirqs_on_prepare(void)
-+{
-+	if (this_cpu_read(tracing_irq_cpu)) {
-+		if (!in_nmi())
-+			trace_irq_enable(CALLER_ADDR0, CALLER_ADDR1);
-+		tracer_hardirqs_on(CALLER_ADDR0, CALLER_ADDR1);
-+		this_cpu_write(tracing_irq_cpu, 0);
-+	}
-+}
-+EXPORT_SYMBOL(trace_hardirqs_on_prepare);
-+NOKPROBE_SYMBOL(trace_hardirqs_on_prepare);
-+
- void trace_hardirqs_on(void)
+ extern __printf(1, 2) void __warn_printk(const char *fmt, ...);
+ #define __WARN()		__WARN_FLAGS(BUGFLAG_TAINT(TAINT_WARN))
+ #define __WARN_printf(taint, arg...) do {				\
++		instr_begin();						\
+ 		__warn_printk(arg);					\
+ 		__WARN_FLAGS(BUGFLAG_NO_CUT_HERE | BUGFLAG_TAINT(taint));\
++		instr_end();						\
+ 	} while (0)
+ #define WARN_ON_ONCE(condition) ({				\
+ 	int __ret_warn_on = !!(condition);			\
+--- a/kernel/panic.c
++++ b/kernel/panic.c
+@@ -662,10 +662,12 @@ device_initcall(register_warn_debugfs);
+  * Called when gcc's -fstack-protector feature is used, and
+  * gcc detects corruption of the on-stack canary value
+  */
+-__visible void __stack_chk_fail(void)
++__visible noinstr void __stack_chk_fail(void)
  {
- 	if (this_cpu_read(tracing_irq_cpu)) {
-@@ -33,6 +51,25 @@ void trace_hardirqs_on(void)
- EXPORT_SYMBOL(trace_hardirqs_on);
- NOKPROBE_SYMBOL(trace_hardirqs_on);
++	instr_begin();
+ 	panic("stack-protector: Kernel stack is corrupted in: %pB",
+ 		__builtin_return_address(0));
++	instr_end();
+ }
+ EXPORT_SYMBOL(__stack_chk_fail);
  
-+/*
-+ * Like trace_hardirqs_off() but without the lockdep invocation. This is
-+ * used in the low level entry code where the ordering vs. RCU is important
-+ * and lockdep uses a staged approach which splits the lockdep hardirq
-+ * tracking into a RCU on and a RCU off section.
-+ */
-+void trace_hardirqs_off_prepare(void)
-+{
-+	if (!this_cpu_read(tracing_irq_cpu)) {
-+		this_cpu_write(tracing_irq_cpu, 1);
-+		tracer_hardirqs_off(CALLER_ADDR0, CALLER_ADDR1);
-+		if (!in_nmi())
-+			trace_irq_disable(CALLER_ADDR0, CALLER_ADDR1);
-+	}
-+
-+}
-+EXPORT_SYMBOL(trace_hardirqs_off_prepare);
-+NOKPROBE_SYMBOL(trace_hardirqs_off_prepare);
-+
- void trace_hardirqs_off(void)
- {
- 	if (!this_cpu_read(tracing_irq_cpu)) {
 
