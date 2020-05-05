@@ -2,151 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 788B11C6213
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 22:30:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D0331C621E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 22:34:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729158AbgEEUag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 16:30:36 -0400
-Received: from mail-eopbgr20083.outbound.protection.outlook.com ([40.107.2.83]:3079
-        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726350AbgEEUaf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 16:30:35 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DxKnusg7SxJ0ojMbQ7DjCAxv5OJoCEhMTpizHGS5MKNqbqOxlgfY+EWXy77Rxfl8byR4kHETh4tv9KDPc0gFfXC2DOUAi0Sg4AYN3sPr8j0835EIS5t4nypS4lr4SoRVwZjj+4KIY4izWLTawH+PLrnTSL8cubY2FlgVEtDmd0g/CyAe2VxvqX4wRD8iHZiPwHsMrS5BkPbjUpKp1CpkuLf5QHRue6h6hoWSb6YrLMu6EmkZ/B+0bPiwbalFKFUwpeoCJ1yPuqgCtCv+PW/hqxKsK8FlYBe7jqlR1Ada/mEEORyY1BaM63jzA5oIZt613Rv5+Ggs4Xv1Gmb0Jgosvw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TQcTYS0tvs8l6+Bcw2969g5h6EQJQDTsaiu8DB7+R1w=;
- b=YGIT178uVuDLlxlHG+XbHrQOQMKgMUP1snqvkfilzSMJb1sMLKSzhkFr7Sfj8UUNDW6dbOm7yN2qgYPlbPsVzJ258as3S9BjFuCsw3lSQwk88Eu1pviFRxmDT++cbBO+k0frEhuQF+U0rXuS1GPNIapkoEPiNw7YBi0N+UR9ZRgWiQrQkp2WISQKHXM31f2N8ka1fK2Yjnyadd/COlFBWKN60vsXCp+PKNJvJ8XarTYPw4oIfsK7T+VF1pYmghNeZ48+3tfnPyoE7nETXUKktUnXofLuIx/3K+D5EUyxqeOPzDrL37Oe6qR8n9tIickXS7OO3k+FcCmmT0+iXEnFKw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TQcTYS0tvs8l6+Bcw2969g5h6EQJQDTsaiu8DB7+R1w=;
- b=guBzv5p57hfbR0XmBhKYVvGOcY309kFqCE1pSPOGomvNAwPEddw8VQWtA9Ct8+Fn1hMluWe/w3zJDICcFQBBrIzjbngDemzBTBhEXztjk+ruVUjbiBLqk+/DGtmOErMhnpximyecYR4wXdffOYbiLFKIKSS1mkfVwVWahbabmmI=
-Received: from DB8PR04MB6828.eurprd04.prod.outlook.com (2603:10a6:10:113::21)
- by DB8PR04MB6380.eurprd04.prod.outlook.com (2603:10a6:10:10c::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.26; Tue, 5 May
- 2020 20:30:29 +0000
-Received: from DB8PR04MB6828.eurprd04.prod.outlook.com
- ([fe80::58e6:c037:d476:da0d]) by DB8PR04MB6828.eurprd04.prod.outlook.com
- ([fe80::58e6:c037:d476:da0d%9]) with mapi id 15.20.2958.030; Tue, 5 May 2020
- 20:30:29 +0000
-From:   Ioana Ciornei <ioana.ciornei@nxp.com>
-To:     Leo Li <leoyang.li@nxp.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     Youri Querry <youri.querry_1@nxp.com>
-Subject: RE: [PATCH net] soc: fsl: dpio: properly compute the consumer index
-Thread-Topic: [PATCH net] soc: fsl: dpio: properly compute the consumer index
-Thread-Index: AQHWIxnwftGr9QjI3EaSI/Mop7aGF6iZ8TmAgAAAJpA=
-Date:   Tue, 5 May 2020 20:30:29 +0000
-Message-ID: <DB8PR04MB682898FB5705B70B1A54A661E0A70@DB8PR04MB6828.eurprd04.prod.outlook.com>
-References: <20200505201429.24360-1-ioana.ciornei@nxp.com>
- <VE1PR04MB668714A83CC2EB638BC273208FA70@VE1PR04MB6687.eurprd04.prod.outlook.com>
-In-Reply-To: <VE1PR04MB668714A83CC2EB638BC273208FA70@VE1PR04MB6687.eurprd04.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [86.121.118.29]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 75e1389d-085f-48e0-5283-08d7f13326c8
-x-ms-traffictypediagnostic: DB8PR04MB6380:|DB8PR04MB6380:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB8PR04MB6380D0BCAA5DF86F944B78C9E0A70@DB8PR04MB6380.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3826;
-x-forefront-prvs: 0394259C80
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: +Yz8w00UMw6HikZWRrhMzlWMkBjQIuX48zZUre7dNIbMCB+1jMAQQ1xfILOWdf++KLe8VskR6/kriWie+AtFZkKdUbCKx3YS14voElOCsbCINi7eAf/vdHiNkqyHUVUo4wbUeL1DYGkVZOuXJ8eXIWAWzwEdVp+tPX7j99lQKLmwapdEFg9x9jJSw/3jF1V9mxFDaWvrp3x7dCOgObAFL4WTKMPtgUhmBCj+Vf+DMKVFtBlCqSyx9en29iuK/gybo/ZeRGzK9DHBr5IxMlA7SE/14L+K2itsmoqkW1TaTFdqc/BfBL3F0sshjJLsPAaMqlNyPyidYeUb/c82SPPZRAVTaF7+kVzniDkTKRl3xVlBBOP63IM49j0jTLhjHXXGUCHHfRYg3VT8W9XSg2WwQYrGfzCozuQekwCrvM58Hme7CqJDlBY11Id/X9NHjd7P9hxiUki/IlMDrviCxIcLhw0YUTDb3nCPeIpsc1GbW7dHNgox8eOOIm8XxQEz/r1dBNTiRLElBJ6uNu0BQ0YX6g==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6828.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(346002)(376002)(366004)(136003)(39840400004)(33430700001)(9686003)(55016002)(33656002)(2906002)(33440700001)(26005)(44832011)(71200400001)(4326008)(52536014)(186003)(53546011)(6506007)(7696005)(478600001)(66556008)(8936002)(8676002)(76116006)(5660300002)(64756008)(66446008)(66476007)(66946007)(86362001)(316002)(110136005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: BVN9/JZBaWojuHagAWKgFl5A5aLv0GuFAJX5fyl8H1nx7OiMDONBK+mxs2yKF5Bs8Lw8oy7TRXSVval2OaEzEEMC+JLFmlZVt0LbtZy3w4/TksunpoijgeDrblu/RDdFocyuyjCt7tod69Rwoo65KERj84zChoAVxeSuL57oMtTX15mLwkzS7x1MJy/I/zZaZk6zgNbu5+KlWX7DJYHw3gNZfbC+Rbp7gLkdzIGpo4BLTNj8MoP29dWLZh+f/0JDk4vuRrfNn/Kx4BaVxHCVbCHXOgCRhNUYEbkjfujjBBXwobpRatLXWaSmuNJAq6JmhOdILJ2a1jkMjCSDk/SKKVbKDsUfSlE4Za8wRtbeebUrA+4EE/R35SQU1k4GXVCieavRKp/MEpUC/ta8RI9ZJYPDbOpv4MwSziQPEF8tLw8zAMB35ovm4hbKH8e6otc4TCvIFR+NnSHEjMLbY/92Z3MuS38ma/V70r+IXw1YAtatGben5siIu5DCzvjDMkiDwRIKZ4GIL7HqmoIPQKiKah8DaxV5PiLk0LDZjCXur++OwkGJrPTa97tr9MT540OKJvn/J1PqWtE5OCsx4RLILQomFSfwbmYJM/QkhHD3SZhGRlv9c3djzXnjHmngT/8kEUdYWY4zyM4iXkOldNa7oPbVVbTHumDqhCFiqSr6JYn6jzNEw0zqxyi0GdgTdENNeTqQzqBLEhtTvsY/Du+QmJj9+M1uDYfLuD/d0RcQExMPnonzODq0cSLK8DZ7X/9sDIaq9fhydjM6tFNbmu3XFu/DPMNiB/9jGygKIaCFEgM=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1728954AbgEEUev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 16:34:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726350AbgEEUeu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 16:34:50 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55B9BC061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 13:34:49 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id l25so49400pgc.5
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 13:34:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TNvsfcWXyYF1fSc3N65P9tk++HN1a+IbvoVQ8kNTlNY=;
+        b=Ju6kUNjSM5sGEG4OS+LDT/OmBrKxbYgyrKt6eOOwsFfNA10XBX4IFLMrQORiMhBFyN
+         rzb6QjPmRZfTp2TLA9cLKO7zPsuOEMJSUeRwWoTtakwOw/7kJ1D7Bi0KVpHttHZYoj57
+         r+68v4hwcwqjY9NrNdiy3ZW8hNtR++GarAp3w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TNvsfcWXyYF1fSc3N65P9tk++HN1a+IbvoVQ8kNTlNY=;
+        b=SdNWx3XzfFAkVgjztTirOS/XJT03k9S7eQOi0+7hXbQan9wQnCHAXMAulYGoL7McTy
+         nJdbAvRJ0alJ1NiwHOTswYHQtc30a3qfcKsdYhsqJuMuPIYiF7ceZjusU5Q1kgfbKCT2
+         8IPuvJT2uknJZQMGNWjFzAVZtkZecYUZrvDEWwH6JjSAQi4b+fWspo93GeS7TgWlsAI0
+         uiVOb0iGjFhD2GieHpv/kdMSDxRe9nLBahde9Qb9hbgDo9SrRD+jGHYv6DWTF2BVO0rX
+         azuKNMQLomdyuOTE9h6gIkwKHBr6qxKuH9JE91NJzOGp2sZVn7yJwWeXEXKHapIV+ytH
+         l3pw==
+X-Gm-Message-State: AGi0PuYqrhU6HRub4zZUlZj8UPsalydzuESu8w61lrY80gIW5bb1ac8m
+        p0vdBvsQNjRzNyBTBgcIH8v5WA==
+X-Google-Smtp-Source: APiQypIjoMiSoSddZGaQoXL1tQNhULM73w9PGkF8lFvGq6SL5+sI/PwY59veRD69bi0JHOWAwoQZUw==
+X-Received: by 2002:a63:7c1d:: with SMTP id x29mr4433516pgc.422.1588710888686;
+        Tue, 05 May 2020 13:34:48 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id u11sm2874075pfc.208.2020.05.05.13.34.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 May 2020 13:34:47 -0700 (PDT)
+Date:   Tue, 5 May 2020 13:34:46 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Singh, Balbir" <sblbir@amazon.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "jpoimboe@redhat.com" <jpoimboe@redhat.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "dave.hansen@intel.com" <dave.hansen@intel.com>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "benh@kernel.crashing.org" <benh@kernel.crashing.org>
+Subject: Re: [PATCH v5 5/6] Optionally flush L1D on context switch
+Message-ID: <202005051334.4FB6E0F98@keescook>
+References: <20200504041343.9651-1-sblbir@amazon.com>
+ <20200504041343.9651-6-sblbir@amazon.com>
+ <202005041135.764E9DD7@keescook>
+ <90f552183ae9e0df1c58789ec7df5c4d1b01c350.camel@amazon.com>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 75e1389d-085f-48e0-5283-08d7f13326c8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 May 2020 20:30:29.1462
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Mzsmf//4XZ/FaEam/Ev09/OFOHJyKuja85PakWO5OW8YEcAVJhq2hTnVIdR2pyPoc5q5ccaq+VjKRQgXP0OY7A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB6380
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <90f552183ae9e0df1c58789ec7df5c4d1b01c350.camel@amazon.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Subject: RE: [PATCH net] soc: fsl: dpio: properly compute the consumer in=
-dex
->=20
->=20
->=20
-> > -----Original Message-----
-> > From: Ioana Ciornei <ioana.ciornei@nxp.com>
-> > Sent: Tuesday, May 5, 2020 3:14 PM
-> > To: davem@davemloft.net; netdev@vger.kernel.org; linux-
-> > kernel@vger.kernel.org
-> > Cc: Youri Querry <youri.querry_1@nxp.com>; Leo Li
-> > <leoyang.li@nxp.com>; Ioana Ciornei <ioana.ciornei@nxp.com>
-> > Subject: [PATCH net] soc: fsl: dpio: properly compute the consumer
-> > index
-> >
-> > Mask the consumer index before using it. Without this, we would be
-> > writing frame descriptors beyond the ring size supported by the QBMAN b=
-lock.
-> >
-> > Fixes: 3b2abda7d28c ("soc: fsl: dpio: Replace QMAN array mode with
-> > ring mode enqueue")
-> > Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
->=20
-> If you would like it go through net tree.
->=20
-> Acked-by: Li Yang <leoyang.li@nxp.com>
->=20
-> > ---
-> >
-> > I am sending this fix through the net tree since the bug manifests
-> > itself only on net-next and not the soc trees. This way it would be
-> > easier to integrate this sooner rather than later.
->=20
-> Since the description of the patch says it fixes a patch included from so=
-c tree, it
-> is not very clear why this problem only exists on net-next.
->=20
+On Mon, May 04, 2020 at 11:14:03PM +0000, Singh, Balbir wrote:
+> On Mon, 2020-05-04 at 11:39 -0700, Kees Cook wrote:
+> > 
+> > On Mon, May 04, 2020 at 02:13:42PM +1000, Balbir Singh wrote:
+> > > Implement a mechanism to selectively flush the L1D cache. The goal
+> > > is to
+> > > allow tasks that are paranoid due to the recent snoop assisted data
+> > > sampling
+> > > vulnerabilites, to flush their L1D on being switched out.  This
+> > > protects
+> > > their data from being snooped or leaked via side channels after the
+> > > task
+> > > has context switched out.
+> > > 
+> > > There are two scenarios we might want to protect against, a task
+> > > leaving
+> > > the CPU with data still in L1D (which is the main concern of this
+> > > patch),
+> > > the second scenario is a malicious task coming in (not so well
+> > > trusted)
+> > > for which we want to clean up the cache before it starts. Only the
+> > > case
+> > > for the former is addressed.
+> > > 
+> > > A new thread_info flag TIF_SPEC_FLUSH_L1D is added to track tasks
+> > > which
+> > > opt-into L1D flushing. cpu_tlbstate.last_user_mm_spec is used to
+> > > convert
+> > > the TIF flags into mm state (per cpu via last_user_mm_spec) in
+> > > cond_mitigation(), which then used to do decide when to call
+> > > flush_l1d().
+> > > 
+> > > Add prctl()'s to opt-in to the L1D cache on context switch out, the
+> > > existing mechanisms of tracking prev_mm via cpu_tlbstate is
+> > > reused to track state of the tasks and to flush the L1D cache.
+> > > The prctl interface is generic and can be ported over to other
+> > > architectures.
+> > > 
+> > > Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+> > > Signed-off-by: Balbir Singh <sblbir@amazon.com>
+> > > Reviewed-by: Kees Cook <keescook@chromium.org>
+> > > ---
+> > >  arch/x86/include/asm/thread_info.h |  7 ++++-
+> > >  arch/x86/mm/tlb.c                  | 44
+> > > ++++++++++++++++++++++++++++--
+> > >  include/uapi/linux/prctl.h         |  4 +++
+> > >  kernel/sys.c                       | 20 ++++++++++++++
+> > >  4 files changed, 72 insertions(+), 3 deletions(-)
+> > > 
+> > > diff --git a/arch/x86/include/asm/thread_info.h
+> > > b/arch/x86/include/asm/thread_info.h
+> > > index 8de8ceccb8bc..67de693d9ba1 100644
+> > > --- a/arch/x86/include/asm/thread_info.h
+> > > +++ b/arch/x86/include/asm/thread_info.h
+> > > @@ -84,7 +84,7 @@ struct thread_info {
+> > >  #define TIF_SYSCALL_AUDIT    7       /* syscall auditing active */
+> > >  #define TIF_SECCOMP          8       /* secure computing */
+> > >  #define TIF_SPEC_IB          9       /* Indirect branch speculation
+> > > mitigation */
+> > > -#define TIF_SPEC_FORCE_UPDATE        10      /* Force speculation
+> > > MSR update in context switch */
+> > > +#define TIF_SPEC_FLUSH_L1D   10      /* Flush L1D on mm switches
+> > > (processes) */
+> > >  #define TIF_USER_RETURN_NOTIFY       11      /* notify kernel of
+> > > userspace return */
+> > >  #define TIF_UPROBE           12      /* breakpointed or
+> > > singlestepping */
+> > >  #define TIF_PATCH_PENDING    13      /* pending live patching
+> > > update */
+> > > @@ -96,6 +96,7 @@ struct thread_info {
+> > >  #define TIF_MEMDIE           20      /* is terminating due to OOM
+> > > killer */
+> > >  #define TIF_POLLING_NRFLAG   21      /* idle is polling for
+> > > TIF_NEED_RESCHED */
+> > >  #define TIF_IO_BITMAP                22      /* uses I/O bitmap */
+> > > +#define TIF_SPEC_FORCE_UPDATE        23      /* Force speculation
+> > > MSR update in context switch */
+> > >  #define TIF_FORCED_TF                24      /* true if TF in
+> > > eflags artificially */
+> > >  #define TIF_BLOCKSTEP                25      /* set when we want
+> > > DEBUGCTLMSR_BTF */
+> > >  #define TIF_LAZY_MMU_UPDATES 27      /* task is updating the mmu
+> > > lazily */
+> > > @@ -132,6 +133,7 @@ struct thread_info {
+> > >  #define _TIF_ADDR32          (1 << TIF_ADDR32)
+> > >  #define _TIF_X32             (1 << TIF_X32)
+> > >  #define _TIF_FSCHECK         (1 << TIF_FSCHECK)
+> > > +#define _TIF_SPEC_FLUSH_L1D  (1 << TIF_SPEC_FLUSH_L1D)
+> > > 
+> > >  /* Work to do before invoking the actual syscall. */
+> > >  #define _TIF_WORK_SYSCALL_ENTRY      \
+> > > @@ -235,6 +237,9 @@ static inline int arch_within_stack_frames(const
+> > > void * const stack,
+> > >                          current_thread_info()->status & TS_COMPAT)
+> > >  #endif
+> > > 
+> > > +extern int arch_prctl_l1d_flush_set(struct task_struct *tsk,
+> > > unsigned long enable);
+> > > +extern int arch_prctl_l1d_flush_get(struct task_struct *tsk);
+> > > +
+> > >  extern void arch_task_cache_init(void);
+> > >  extern int arch_dup_task_struct(struct task_struct *dst, struct
+> > > task_struct *src);
+> > >  extern void arch_release_task_struct(struct task_struct *tsk);
+> > > diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
+> > > index 10056b8d8f01..7ea9bc9e089f 100644
+> > > --- a/arch/x86/mm/tlb.c
+> > > +++ b/arch/x86/mm/tlb.c
+> > > @@ -13,6 +13,7 @@
+> > >  #include <asm/mmu_context.h>
+> > >  #include <asm/nospec-branch.h>
+> > >  #include <asm/cache.h>
+> > > +#include <asm/cacheflush.h>
+> > >  #include <asm/apic.h>
+> > >  #include <asm/uv/uv.h>
+> > > 
+> > > @@ -43,11 +44,12 @@
+> > >   */
+> > > 
+> > >  /*
+> > > - * Bits to mangle the TIF_SPEC_IB state into the mm pointer which
+> > > is
+> > > + * Bits to mangle the TIF_SPEC_* state into the mm pointer which is
+> > >   * stored in cpu_tlb_state.last_user_mm_spec.
+> > >   */
+> > >  #define LAST_USER_MM_IBPB    0x1UL
+> > > -#define LAST_USER_MM_SPEC_MASK       (LAST_USER_MM_IBPB)
+> > > +#define LAST_USER_MM_L1D_FLUSH       0x2UL
+> > > +#define LAST_USER_MM_SPEC_MASK       (LAST_USER_MM_IBPB |
+> > > LAST_USER_MM_L1D_FLUSH)
+> > > 
+> > >  /*
+> > >   * The x86 feature is called PCID (Process Context IDentifier). It
+> > > is similar
+> > > @@ -308,6 +310,35 @@ void leave_mm(int cpu)
+> > >  }
+> > >  EXPORT_SYMBOL_GPL(leave_mm);
+> > > 
+> > > +static int enable_l1d_flush_for_task(struct task_struct *tsk)
+> > > +{
+> > > +     int ret = l1d_flush_init_once();
+> > > +
+> > > +     if (ret < 0)
+> > > +             return ret;
+> > 
+> > Am I reading correctly (in the v5 delta) that with
+> > l1d_flush_init_once()
+> > now testing for Intel CPUs, it means processes on non-Intel x86 CPUs
+> > can't use the prctl() feature as a defense-in-depth to potential
+> > future
+> > L1D cache side-channel flaws?
+> 
+> 
+> Yes, you are right, I wanted to add it here to address Tom's concern,
+> but going forward we could do what you've suggested or even cpu_dev work
+> for the right algorithm per cpu vendor/device.
+> 
+> Ideally we have the cache size information in our x86_cpuinfo structure
+> at the time of discovery, but we overwrite it with the size of the
+> largest cache, so we could definitely fix those bits.
+> 
+> I suggest we move forward this series and add support for other vendors
+> as a follow up. What do you think?
 
-The problem is only observed when we enqueue multiple frame descriptors at =
-once, which is happening only with my latest patch set on net-next that add=
-s this for the XDP_REDIRECT path.=20
+Okay, sounds good.
 
-> >
-> >  drivers/soc/fsl/dpio/qbman-portal.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/drivers/soc/fsl/dpio/qbman-portal.c
-> > b/drivers/soc/fsl/dpio/qbman-portal.c
-> > index 804b8ba9bf5c..23a1377971f4 100644
-> > --- a/drivers/soc/fsl/dpio/qbman-portal.c
-> > +++ b/drivers/soc/fsl/dpio/qbman-portal.c
-> > @@ -669,6 +669,7 @@ int qbman_swp_enqueue_multiple_direct(struct
-> > qbman_swp *s,
-> >  		eqcr_ci =3D s->eqcr.ci;
-> >  		p =3D s->addr_cena + QBMAN_CENA_SWP_EQCR_CI;
-> >  		s->eqcr.ci =3D qbman_read_register(s,
-> QBMAN_CINH_SWP_EQCR_CI);
-> > +		s->eqcr.ci &=3D full_mask;
-> >
-> >  		s->eqcr.available =3D qm_cyc_diff(s->eqcr.pi_ring_size,
-> >  					eqcr_ci, s->eqcr.ci);
+-Kees
+
+> 
+> Balbir Singh.
+> 
+> 
+> > 
+> > Why can't the L1D_CACHE_ORDER just get set dynamically based on CPU?
+> > 
+> > > +
+> > > +     set_ti_thread_flag(&tsk->thread_info, TIF_SPEC_FLUSH_L1D);
+> > > +     return ret;
+> > > +}
+> > 
 > > --
-> > 2.17.1
+> > Kees Cook
 
+-- 
+Kees Cook
