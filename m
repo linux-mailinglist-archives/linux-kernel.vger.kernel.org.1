@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 599671C589D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F39CD1C58DE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:20:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730139AbgEEOQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:16:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49142 "EHLO
+        id S1730464AbgEEOTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:19:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729303AbgEEOQ0 (ORCPT
+        by vger.kernel.org with ESMTP id S1730108AbgEEOQ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:16:26 -0400
+        Tue, 5 May 2020 10:16:27 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B140C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:16:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43DD8C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:16:27 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jVyMi-00027U-93; Tue, 05 May 2020 16:16:08 +0200
+        id 1jVyMj-00028X-G9; Tue, 05 May 2020 16:16:09 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id C830CFFC8D;
-        Tue,  5 May 2020 16:16:07 +0200 (CEST)
-Message-Id: <20200505135315.177564104@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 0D674FFC8D;
+        Tue,  5 May 2020 16:16:09 +0200 (CEST)
+Message-Id: <20200505135315.283276272@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 05 May 2020 15:49:45 +0200
+Date:   Tue, 05 May 2020 15:49:46 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -44,8 +44,7 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Will Deacon <will@kernel.org>
-Subject: [patch V4 part 4 19/24] x86/entry: Implement user mode C entry points
- for #DB and #MCE
+Subject: [patch V4 part 4 20/24] x86/traps: Restructure #DB handling
 References: <20200505134926.578885807@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -58,208 +57,126 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The MCE entry point uses the same mechanism as the IST entry point for
-now. For #DB split the inner workings and just keep the ist_enter/exit
-magic in the IST variant. Fixup the ASM code to emit the proper
-noist_##cfunc call.
+Now that there are separate entry points, move the kernel/user_mode specifc
+checks into the entry functions so the common handling code does not need
+the extra mode checks. Make the code more readable while at it.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/entry/entry_64.S      |    2 -
- arch/x86/kernel/cpu/mce/core.c |   40 +++++++++++++++++++----
- arch/x86/kernel/traps.c        |   70 +++++++++++++++++++++++++++++++----------
- 3 files changed, 88 insertions(+), 24 deletions(-)
+ arch/x86/kernel/traps.c |   69 ++++++++++++++++++++++++------------------------
+ 1 file changed, 35 insertions(+), 34 deletions(-)
 
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -658,7 +658,7 @@ SYM_CODE_START(\asmsym)
- 
- 	/* Switch to the regular task stack and use the noist entry point */
- .Lfrom_usermode_switch_stack_\@:
--	idtentry_body vector \cfunc, has_error_code=0
-+	idtentry_body vector noist_\cfunc, has_error_code=0 sane=1
- 
- _ASM_NOKPROBE(\asmsym)
- SYM_CODE_END(\asmsym)
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -1904,24 +1904,50 @@ static void unexpected_machine_check(str
- /* Call the installed machine check handler for this CPU setup. */
- void (*machine_check_vector)(struct pt_regs *) = unexpected_machine_check;
- 
--DEFINE_IDTENTRY_MCE(exc_machine_check)
-+static __always_inline void exc_machine_check_kernel(struct pt_regs *regs)
- {
-+	/*
-+	 * Only required when from kernel mode. See
-+	 * mce_check_crashing_cpu() for details.
-+	 */
- 	if (machine_check_vector == do_machine_check &&
- 	    mce_check_crashing_cpu())
- 		return;
- 
--	if (user_mode(regs))
--		idtentry_enter(regs);
--	else
--		nmi_enter();
-+	nmi_enter();
-+	machine_check_vector(regs);
-+	nmi_exit();
-+}
- 
-+static __always_inline void exc_machine_check_user(struct pt_regs *regs)
-+{
-+	idtentry_enter(regs);
- 	machine_check_vector(regs);
-+	idtentry_exit(regs);
-+}
- 
-+#ifdef CONFIG_X86_64
-+/* MCE hit kernel mode */
-+DEFINE_IDTENTRY_MCE(exc_machine_check)
-+{
-+	exc_machine_check_kernel(regs);
-+}
-+
-+/* The user mode variant. */
-+DEFINE_IDTENTRY_MCE_USER(exc_machine_check)
-+{
-+	exc_machine_check_user(regs);
-+}
-+#else
-+/* 32bit unified entry point */
-+DEFINE_IDTENTRY_MCE(exc_machine_check)
-+{
- 	if (user_mode(regs))
--		idtentry_exit(regs);
-+		exc_machine_check_user(regs);
- 	else
--		nmi_exit();
-+		exc_machine_check_kernel(regs);
- }
-+#endif
- 
- /*
-  * Called for each booted CPU to set up machine checks.
 --- a/arch/x86/kernel/traps.c
 +++ b/arch/x86/kernel/traps.c
-@@ -753,20 +753,12 @@ static __always_inline void debug_exit(u
+@@ -753,39 +753,12 @@ static __always_inline void debug_exit(u
   *
   * May run on IST stack.
   */
--DEFINE_IDTENTRY_DEBUG(exc_debug)
-+static noinstr void handle_debug(struct pt_regs *regs, unsigned long dr6)
+-static noinstr void handle_debug(struct pt_regs *regs, unsigned long dr6)
++static void noinstr handle_debug(struct pt_regs *regs, unsigned long dr6,
++				 bool user_icebp)
  {
  	struct task_struct *tsk = current;
--	unsigned long dr6, dr7;
- 	int user_icebp = 0;
+-	int user_icebp = 0;
  	int si_code;
  
--	debug_enter(&dr6, &dr7);
+-	/*
+-	 * The SDM says "The processor clears the BTF flag when it
+-	 * generates a debug exception."  Clear TIF_BLOCKSTEP to keep
+-	 * TIF_BLOCKSTEP in sync with the hardware BTF flag.
+-	 */
+-	clear_tsk_thread_flag(tsk, TIF_BLOCKSTEP);
 -
--	if (user_mode(regs))
--		idtentry_enter(regs);
--	else
--		nmi_enter();
+-	if (unlikely(!user_mode(regs) && (dr6 & DR_STEP) &&
+-		     is_sysenter_singlestep(regs))) {
+-		dr6 &= ~DR_STEP;
+-		if (!dr6)
+-			return;
+-		/*
+-		 * else we might have gotten a single-step trap and hit a
+-		 * watchpoint at the same time, in which case we should fall
+-		 * through and handle the watchpoint.
+-		 */
+-	}
 -
- 	/*
- 	 * The SDM says "The processor clears the BTF flag when it
- 	 * generates a debug exception."  Clear TIF_BLOCKSTEP to keep
-@@ -778,7 +770,7 @@ DEFINE_IDTENTRY_DEBUG(exc_debug)
- 		     is_sysenter_singlestep(regs))) {
- 		dr6 &= ~DR_STEP;
- 		if (!dr6)
--			goto exit;
-+			return;
- 		/*
- 		 * else we might have gotten a single-step trap and hit a
- 		 * watchpoint at the same time, in which case we should fall
-@@ -799,12 +791,12 @@ DEFINE_IDTENTRY_DEBUG(exc_debug)
+-	/*
+-	 * If dr6 has no reason to give us about the origin of this trap,
+-	 * then it's very likely the result of an icebp/int01 trap.
+-	 * User wants a sigtrap for that.
+-	 */
+-	if (!dr6 && user_mode(regs))
+-		user_icebp = 1;
+-
+ 	/* Store the virtualized DR6 value */
+ 	tsk->thread.debugreg6 = dr6;
  
- #ifdef CONFIG_KPROBES
- 	if (kprobe_debug_handler(regs))
--		goto exit;
-+		return;
- #endif
- 
- 	if (notify_die(DIE_DEBUG, "debug", regs, (long)&dr6, 0,
- 		       SIGTRAP) == NOTIFY_STOP)
--		goto exit;
-+		return;
- 
- 	/*
- 	 * Let others (NMI) know that the debug stack is in use
-@@ -820,7 +812,7 @@ DEFINE_IDTENTRY_DEBUG(exc_debug)
+@@ -810,9 +783,7 @@ static noinstr void handle_debug(struct
+ 	if (v8086_mode(regs)) {
+ 		handle_vm86_trap((struct kernel_vm86_regs *) regs, 0,
  				 X86_TRAP_DB);
- 		cond_local_irq_disable(regs);
- 		debug_stack_usage_dec();
--		goto exit;
-+		return;
+-		cond_local_irq_disable(regs);
+-		debug_stack_usage_dec();
+-		return;
++		goto out;
  	}
  
  	if (WARN_ON_ONCE((dr6 & DR_STEP) && !user_mode(regs))) {
-@@ -839,14 +831,60 @@ DEFINE_IDTENTRY_DEBUG(exc_debug)
+@@ -826,9 +797,12 @@ static noinstr void handle_debug(struct
+ 		set_tsk_thread_flag(tsk, TIF_SINGLESTEP);
+ 		regs->flags &= ~X86_EFLAGS_TF;
+ 	}
++
+ 	si_code = get_si_code(tsk->thread.debugreg6);
+ 	if (tsk->thread.debugreg6 & (DR_STEP | DR_TRAP_BITS) || user_icebp)
  		send_sigtrap(regs, 0, si_code);
++
++out:
  	cond_local_irq_disable(regs);
  	debug_stack_usage_dec();
-+}
-+
-+static __always_inline void exc_debug_kernel(struct pt_regs *regs,
-+					     unsigned long dr6)
-+{
-+	nmi_enter();
-+	handle_debug(regs, dr6);
-+	nmi_exit();
-+}
-+
-+static __always_inline void exc_debug_user(struct pt_regs *regs,
-+					   unsigned long dr6)
-+{
-+	idtentry_enter(regs);
-+	handle_debug(regs, dr6);
-+	idtentry_exit(regs);
-+}
-+
-+#ifdef CONFIG_X86_64
-+/* IST stack entry */
-+DEFINE_IDTENTRY_DEBUG(exc_debug)
-+{
-+	unsigned long dr6, dr7;
-+
-+	debug_enter(&dr6, &dr7);
-+	exc_debug_kernel(regs, dr6);
-+	debug_exit(dr7);
-+}
-+
-+/* User entry, runs on regular task stack */
-+DEFINE_IDTENTRY_DEBUG_USER(exc_debug)
-+{
-+	unsigned long dr6, dr7;
-+
-+	debug_enter(&dr6, &dr7);
-+	exc_debug_user(regs, dr6);
-+	debug_exit(dr7);
-+}
-+#else
-+/* 32 bit does not have separate entry points. */
-+DEFINE_IDTENTRY_DEBUG(exc_debug)
-+{
-+	unsigned long dr6, dr7;
-+
-+	debug_enter(&dr6, &dr7);
- 
--exit:
- 	if (user_mode(regs))
--		idtentry_exit(regs);
-+		exc_debug_user(regs, dr6);
- 	else
--		nmi_exit();
-+		exc_debug_kernel(regs, dr6);
-+
- 	debug_exit(dr7);
  }
-+#endif
+@@ -837,7 +811,27 @@ static __always_inline void exc_debug_ke
+ 					     unsigned long dr6)
+ {
+ 	nmi_enter();
+-	handle_debug(regs, dr6);
++	/*
++	 * The SDM says "The processor clears the BTF flag when it
++	 * generates a debug exception."  Clear TIF_BLOCKSTEP to keep
++	 * TIF_BLOCKSTEP in sync with the hardware BTF flag.
++	 */
++	clear_tsk_thread_flag(tsk, TIF_BLOCKSTEP);
++
++	/*
++	 * Catch SYSENTER with TF set and clear DR_STEP. If this hit a
++	 * watchpoint at the same time then that will still be handled.
++	 */
++	if ((dr6 & DR_STEP) && is_sysenter_singlestep(regs))
++		dr6 &= ~DR_STEP;
++
++	/*
++	 * If DR6 is zero, no point in trying to handle it. The kernel is
++	 * not using INT1.
++	 */
++	if (dr6)
++		handle_debug(regs, dr6, false);
++
+ 	nmi_exit();
+ }
  
- /*
-  * Note that we play around with the 'TS' bit in an attempt to get
+@@ -845,7 +839,14 @@ static __always_inline void exc_debug_us
+ 					   unsigned long dr6)
+ {
+ 	idtentry_enter(regs);
+-	handle_debug(regs, dr6);
++	clear_tsk_thread_flag(tsk, TIF_BLOCKSTEP);
++
++	/*
++	 * If dr6 has no reason to give us about the origin of this trap,
++	 * then it's very likely the result of an icebp/int01 trap.
++	 * User wants a sigtrap for that.
++	 */
++	handle_debug(regs, dr6, !dr6);
+ 	idtentry_exit(regs);
+ }
+ 
 
