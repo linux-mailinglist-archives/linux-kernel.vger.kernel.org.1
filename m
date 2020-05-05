@@ -2,142 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9CA81C6219
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 22:32:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09D831C6211
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 22:29:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729146AbgEEUcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 16:32:19 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:58654 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726350AbgEEUcS (ORCPT
+        id S1729311AbgEEU3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 16:29:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728135AbgEEU3X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 16:32:18 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jW4Eh-0006W8-CV; Tue, 05 May 2020 14:32:15 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jW4Ef-0006JU-Rg; Tue, 05 May 2020 14:32:15 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jeremy Kerr <jk@ozlabs.org>, Arnd Bergmann <arnd@arndb.de>,
-        Oleg Nesterov <oleg@redhat.com>,
-        "the arch\/x86 maintainers" <x86@kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20200505101256.3121270-1-hch@lst.de>
-        <CAHk-=wgrHhaM1XCB=E3Zp2Br8E5c_kmVUTd5y06xh5sev5nRMA@mail.gmail.com>
-Date:   Tue, 05 May 2020 15:28:50 -0500
-In-Reply-To: <CAHk-=wgrHhaM1XCB=E3Zp2Br8E5c_kmVUTd5y06xh5sev5nRMA@mail.gmail.com>
-        (Linus Torvalds's message of "Tue, 5 May 2020 09:52:04 -0700")
-Message-ID: <877dxqgm7x.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Tue, 5 May 2020 16:29:23 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C616AC061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 13:29:21 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id b188so3789759qkd.9
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 13:29:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WwYjE2GWrCctkg5EjStPqPCb7vhBmi7tE/P9TjGv2ws=;
+        b=jWS2YE5/k4w9jAJiOHdnPf2vhCEK04lsSUmN/uqo6B6PuxZ9i97vhOmdGUOfVSzWdN
+         xv1oBs8lYqPB9/d3YhjguC+h7JIUWFNQhS2YcT4MrENkWgfFBTQfVOePVjatG1Gtzapq
+         XbAn3lQQLD1vOeUoyA9KHCPytRYPiL5K7H3tWI6RxBNn9Dc2xT+VwBFKIENzsXJWFbi4
+         xkLRUbpHt1O7QCjRxJL+fEt3p8dUFiAahZ9vUjyCmN0woJeSoFmtCE1Y3MWN1qvMGAqX
+         zJC50kYZv1JNr5uinJOuv1ZB7HjKRh8hR/94TDfXIiHougFONoTuhK/1fay8zMPd4oTp
+         ISlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WwYjE2GWrCctkg5EjStPqPCb7vhBmi7tE/P9TjGv2ws=;
+        b=B4fPNo8HsW9c0zJLQ9iGHikKPTxIfhipVTv1bexwZgny8yiyfNldstaO13oBCUNFsT
+         3dHjszJiZHpVyaK65JWLCsydsg7Sz1iruAALVMbv+zXBmLd+g2dDzKqsWCVHTm2xkSbz
+         MzCwyveSTbYm3ue3e/aNVpp+eKMtMN1lfjCJs2xky/SLsBR8tg0sJ9hW6DtZP19MY8MO
+         BPyTRhk3NWnPcFvDmdg8xpD6miam/zrR8Mkrww69zK78Nhbm3NJhum/L1rdcf0vAyo0J
+         WZ2QokVvBdE2NKxwH2fp5w6cCzEPC3drCHjMdVeHwnKDYV76LyGGqqIBChG1oWhfHJXh
+         UPxw==
+X-Gm-Message-State: AGi0PubFuviLPrV9ZexB6cu6Tqm8x3g6IuVPFcgmpZ8RGo035rf9MuYY
+        bDmlKoqk2sxexqqI77W2eQk=
+X-Google-Smtp-Source: APiQypLBsuL5EJrI4oViXGYALNZSAMkPrqKzEylAsSSsoTTEXj5JA53hZBhQj6y6TLXI2+4DtCIC3Q==
+X-Received: by 2002:ae9:c301:: with SMTP id n1mr5351742qkg.300.1588710560838;
+        Tue, 05 May 2020 13:29:20 -0700 (PDT)
+Received: from betazed.lan1 (cpe-142-255-49-197.nyc.res.rr.com. [142.255.49.197])
+        by smtp.gmail.com with ESMTPSA id p22sm2554582qtb.91.2020.05.05.13.29.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 May 2020 13:29:20 -0700 (PDT)
+From:   Tony Fischetti <tony.fischetti@gmail.com>
+To:     tglx@linutronix.de, mingo@redhat.com
+Cc:     bp@alien8.de, x86@kernel.org, hpa@zytor.com, bhe@redhat.com,
+        dyoung@redhat.com, dave.hansen@linux.intel.com, linux@roeck-us.net,
+        keescook@chromium.org, dan.j.williams@intel.com,
+        linux-kernel@vger.kernel.org, tony.fischetti@gmail.com
+Subject: [PATCH v2] x86/setup: Add boot messages about cmdline builtins
+Date:   Tue,  5 May 2020 16:29:11 -0400
+Message-Id: <20200505202911.10254-1-tony.fischetti@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jW4Ef-0006JU-Rg;;;mid=<877dxqgm7x.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19LmJDSmWFKMWb2UuEaurqQBJ8BfhbCMgQ=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4975]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa08 0; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: ; sa08 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Linus Torvalds <torvalds@linux-foundation.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 983 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 13 (1.3%), b_tie_ro: 11 (1.1%), parse: 0.73
-        (0.1%), extract_message_metadata: 13 (1.4%), get_uri_detail_list: 2.0
-        (0.2%), tests_pri_-1000: 6 (0.6%), tests_pri_-950: 1.29 (0.1%),
-        tests_pri_-900: 1.07 (0.1%), tests_pri_-90: 219 (22.3%), check_bayes:
-        204 (20.7%), b_tokenize: 7 (0.7%), b_tok_get_all: 10 (1.0%),
-        b_comp_prob: 3.2 (0.3%), b_tok_touch_all: 179 (18.2%), b_finish: 1.39
-        (0.1%), tests_pri_0: 200 (20.4%), check_dkim_signature: 0.45 (0.0%),
-        check_dkim_adsp: 2.5 (0.3%), poll_dns_idle: 505 (51.4%), tests_pri_10:
-        1.93 (0.2%), tests_pri_500: 524 (53.3%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: remove set_fs calls from the coredump code v6
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Torvalds <torvalds@linux-foundation.org> writes:
+While the ability to override or append to the boot command line has
+been added, the boot messages contain no information as to whether the
+cmdline was manipulated by the build-time options. This patch, for x86,
+adds boot messages specifying the intital cmdline, and the final cmdline
+after possible manipulation via the kernel config.
 
-> On Tue, May 5, 2020 at 3:13 AM Christoph Hellwig <hch@lst.de> wrote:
->>
->> this series gets rid of playing with the address limit in the exec and
->> coredump code.  Most of this was fairly trivial, the biggest changes are
->> those to the spufs coredump code.
->
-> Ack, nice, and looks good.
->
-> The only part I dislike is how we have that 'struct compat_siginfo' on
-> the stack, which is a huge waste (most of it is the nasty padding to
-> 128 bytes).
->
-> But that's not new, I only reacted to it because the code moved a bit.
-> We cleaned up the regular siginfo to not have the padding in the
-> kernel (and by "we" I mean "Eric Biederman did it after some prodding
-> as part of his siginfo cleanups" - see commit 4ce5f9c9e754 "signal:
-> Use a smaller struct siginfo in the kernel"),  and I wonder if we
-> could do something similar with that compat thing.
->
-> 128 bytes of wasted kernel stack isn't the end of the world, but it's
-> sad when the *actual* data is only 32 bytes or so.
+Signed-off-by: Tony Fischetti <tony.fischetti@gmail.com>
+---
+ arch/x86/kernel/setup.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-We probably can.   After introducing a kernel_compat_siginfo that is
-the size that userspace actually would need.
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index 4b3fa6cd3106..ee90dffcfd79 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -828,7 +828,7 @@ void __init setup_arch(char **cmdline_p)
+ 	 */
+ 	__flush_tlb_all();
+ #else
+-	printk(KERN_INFO "Command line: %s\n", boot_command_line);
++	pr_info("Initial command line: %s\n", boot_command_line);
+ 	boot_cpu_data.x86_phys_bits = MAX_PHYSMEM_BITS;
+ #endif
+ 
+@@ -916,6 +916,7 @@ void __init setup_arch(char **cmdline_p)
+ #endif
+ 
+ 	strlcpy(command_line, boot_command_line, COMMAND_LINE_SIZE);
++	pr_info("Final command line: %s\n", command_line);
+ 	*cmdline_p = command_line;
+ 
+ 	/*
+-- 
+2.20.1
 
-It isn't something I want to mess with until this code gets merged, as I
-think the set_fs cleanups are more important.
-
-
-Christoph made some good points about how ugly the #ifdefs are in
-the generic copy_siginfo_to_user32 implementation.
-
-I am thinking the right fix is to introduce.
-	- TS_X32 as a companion to TS_COMPAT in the x86_64.
-        - Modify in_x32_syscall() to test TS_X32
-        - Implement x32_copy_siginfo_to_user32 that forces TS_X32 to be
-          set. AKA:
-        
-	        x32_copy_siginfo_to_user32()
-	        {
-	        	unsigned long state = current_thread_info()->state;
-	                current_thread_info()->state |= TS_X32;
-	                copy_siginfo_to_user32();
-	                current_thread_info()->state = state;
-	        }
-
-That would make the #ifdefs go away, but I don't yet know what the x86
-maintainers would say about that scheme.  I think it is a good path as
-it would isolate the runtime cost of that weird SIGCHLD siginfo format
-to just x32.  Then ia32 in compat mode would not need to pay.
-
-Once I get that then it will be easier to introduce a yet another helper
-of copy_siginfo_to_user32 that generates just the kernel_compat_siginfo
-part, and the two visible derivatives can call memset and clear_user
-to clear the unset parts.
-
-I am assuming you don't don't mind having a full siginfo in
-elf_note_info that ultimately gets copied into the core dump?
-
-Eric
