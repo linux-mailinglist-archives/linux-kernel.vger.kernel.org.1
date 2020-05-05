@@ -2,180 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 609C51C5B5E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:33:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7710D1C5B4B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730309AbgEEPdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 11:33:02 -0400
-Received: from smtp-42a8.mail.infomaniak.ch ([84.16.66.168]:48077 "EHLO
-        smtp-42a8.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730260AbgEEPc7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 11:32:59 -0400
-Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 49GkHZ5J2gzlhdsY;
-        Tue,  5 May 2020 17:32:26 +0200 (CEST)
-Received: from localhost (unknown [94.23.54.103])
-        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 49GkHZ1fSRzlsT3N;
-        Tue,  5 May 2020 17:32:26 +0200 (CEST)
-From:   =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Heimes <christian@python.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Deven Bowers <deven.desai@linux.microsoft.com>,
-        Eric Chiang <ericchiang@google.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mickael.salaun@ssi.gouv.fr>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        =?UTF-8?q?Philippe=20Tr=C3=A9buchet?= 
-        <philippe.trebuchet@ssi.gouv.fr>,
-        Scott Shell <scottsh@microsoft.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Steve Dower <steve.dower@python.org>,
-        Steve Grubb <sgrubb@redhat.com>,
-        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>,
-        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: [PATCH v5 6/6] ima: add policy support for the new file open MAY_OPENEXEC flag
-Date:   Tue,  5 May 2020 17:31:56 +0200
-Message-Id: <20200505153156.925111-7-mic@digikod.net>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200505153156.925111-1-mic@digikod.net>
-References: <20200505153156.925111-1-mic@digikod.net>
+        id S1730180AbgEEPci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 11:32:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32910 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730110AbgEEPc3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 11:32:29 -0400
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 916B92083B;
+        Tue,  5 May 2020 15:32:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588692748;
+        bh=NR80z2yPjqgO14WXQRPXI+q6gF+1S53iofV6VuLwBac=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JkMfcC55zIFvs6+OSV4SiX2FtfTw0QIvi20Axw9EpOzMh5R1ceS8HDj73hIA5jtpR
+         MNC6119kGguNpko2xuC5B4eGdJueQJNXg4VIt8q/vNXhhUSvpm9QSOE9ryaZR63Kq6
+         d3gagdQdwxFajtWcNHeSKNPLpF4ShuOAp2ltZpyM=
+Date:   Tue, 5 May 2020 11:32:27 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Pavel Machek <pavel@denx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Stable <stable@vger.kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Vinod Koul <vkoul@kernel.org>
+Subject: Re: [PATCH 4.19 28/37] dmaengine: dmatest: Fix iteration non-stop
+ logic
+Message-ID: <20200505153227.GI13035@sasha-vm>
+References: <20200504165448.264746645@linuxfoundation.org>
+ <20200504165451.307643203@linuxfoundation.org>
+ <20200505123159.GC28722@amd>
+ <CAHp75VeM+qwh5rHL7RDdacru0jPSB9me2aTs__jdy749dTKRng@mail.gmail.com>
+ <20200505125818.GA31126@amd>
+ <CAHp75VcKreeQpjROdL23XGqgVu+F_0eL5DsJ=5APEQUO9V69EQ@mail.gmail.com>
+ <20200505133700.GA31753@amd>
+ <CAHp75Ve+pzhamZXiKxHF+VD8yfsjRF2coattHyiD+0aa7Fy2DA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Antivirus: Dr.Web (R) for Unix mail servers drweb plugin ver.6.0.2.8
-X-Antivirus-Code: 0x100000
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CAHp75Ve+pzhamZXiKxHF+VD8yfsjRF2coattHyiD+0aa7Fy2DA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mimi Zohar <zohar@linux.ibm.com>
+On Tue, May 05, 2020 at 05:05:37PM +0300, Andy Shevchenko wrote:
+>On Tue, May 5, 2020 at 4:37 PM Pavel Machek <pavel@denx.de> wrote:
+>> On Tue 2020-05-05 16:19:11, Andy Shevchenko wrote:
+>> > On Tue, May 5, 2020 at 3:58 PM Pavel Machek <pavel@denx.de> wrote:
+>> > > On Tue 2020-05-05 15:51:16, Andy Shevchenko wrote:
+>> > > > On Tue, May 5, 2020 at 3:37 PM Pavel Machek <pavel@denx.de> wrote:
+>> > > Yeah, I pointed that out above. Both && and || permit short
+>> > > execution. But that does not matter, as neither "params->iterations"
+>> > > nor "total_tests >= params->iterations" have side effects.
+>> > >
+>> > > Where is the runtime difference?
+>> >
+>> > We have to check *both* conditions. If we don't check iterations, we
+>> > just wait indefinitely until somebody tells us to stop.
+>> > Everything in the commit message and mentioned there commit IDs which
+>> > you may check.
+>>
+>> No.
+>
+>Yes. Please, read carefully the commit message (for your convenience I
+>emphasized above). I don't want to spend time on this basics stuff
+>anymore.
 
-The kernel has no way of differentiating between a file containing data
-or code being opened by an interpreter.  The proposed O_MAYEXEC
-openat2(2) flag bridges this gap by defining and enabling the
-MAY_OPENEXEC flag.
+I'm a bit confused about this too. Maybe it's too early in the morning,
+so I wrote this little test program:
 
-This patch adds IMA policy support for the new MAY_OPENEXEC flag.
+#include <stdio.h>
+#include <stdlib.h>
 
-Example:
-measure func=FILE_CHECK mask=^MAY_OPENEXEC
-appraise func=FILE_CHECK appraise_type=imasig mask=^MAY_OPENEXEC
+int main(int argc, char *argv[])
+{
+        int a = atoi(argv[1]);
+        int b = atoi(argv[2]);
 
-Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
-Reviewed-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Link: https://lore.kernel.org/r/1588167523-7866-3-git-send-email-zohar@linux.ibm.com
----
- Documentation/ABI/testing/ima_policy |  2 +-
- security/integrity/ima/ima_main.c    |  3 ++-
- security/integrity/ima/ima_policy.c  | 15 +++++++++++----
- 3 files changed, 14 insertions(+), 6 deletions(-)
+        if (!a && !b)
+                printf("A");
+        else
+                printf("B");
 
-diff --git a/Documentation/ABI/testing/ima_policy b/Documentation/ABI/testing/ima_policy
-index cd572912c593..caca46125fe0 100644
---- a/Documentation/ABI/testing/ima_policy
-+++ b/Documentation/ABI/testing/ima_policy
-@@ -31,7 +31,7 @@ Description:
- 				[KEXEC_KERNEL_CHECK] [KEXEC_INITRAMFS_CHECK]
- 				[KEXEC_CMDLINE] [KEY_CHECK]
- 			mask:= [[^]MAY_READ] [[^]MAY_WRITE] [[^]MAY_APPEND]
--			       [[^]MAY_EXEC]
-+			       [[^]MAY_EXEC] [[^]MAY_OPENEXEC]
- 			fsmagic:= hex value
- 			fsuuid:= file system UUID (e.g 8bcbe394-4f13-4144-be8e-5aa9ea2ce2f6)
- 			uid:= decimal value
-diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-index 9d0abedeae77..c80cdaf13626 100644
---- a/security/integrity/ima/ima_main.c
-+++ b/security/integrity/ima/ima_main.c
-@@ -438,7 +438,8 @@ int ima_file_check(struct file *file, int mask)
- 
- 	security_task_getsecid(current, &secid);
- 	return process_measurement(file, current_cred(), secid, NULL, 0,
--				   mask & (MAY_READ | MAY_WRITE | MAY_EXEC |
-+				   mask & (MAY_READ | MAY_WRITE |
-+					   MAY_EXEC | MAY_OPENEXEC |
- 					   MAY_APPEND), FILE_CHECK);
- }
- EXPORT_SYMBOL_GPL(ima_file_check);
-diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
-index c334e0dc6083..f54cbc55498d 100644
---- a/security/integrity/ima/ima_policy.c
-+++ b/security/integrity/ima/ima_policy.c
-@@ -406,7 +406,8 @@ static bool ima_match_keyring(struct ima_rule_entry *rule,
-  * @cred: a pointer to a credentials structure for user validation
-  * @secid: the secid of the task to be validated
-  * @func: LIM hook identifier
-- * @mask: requested action (MAY_READ | MAY_WRITE | MAY_APPEND | MAY_EXEC)
-+ * @mask: requested action (MAY_READ | MAY_WRITE | MAY_APPEND | MAY_EXEC |
-+ *			    MAY_OPENEXEC)
-  * @keyring: keyring name to check in policy for KEY_CHECK func
-  *
-  * Returns true on rule match, false on failure.
-@@ -527,7 +528,8 @@ static int get_subaction(struct ima_rule_entry *rule, enum ima_hooks func)
-  *        being made
-  * @secid: LSM secid of the task to be validated
-  * @func: IMA hook identifier
-- * @mask: requested action (MAY_READ | MAY_WRITE | MAY_APPEND | MAY_EXEC)
-+ * @mask: requested action (MAY_READ | MAY_WRITE | MAY_APPEND | MAY_EXEC |
-+ *			    MAY_OPENEXEC)
-  * @pcr: set the pcr to extend
-  * @template_desc: the template that should be used for this rule
-  * @keyring: the keyring name, if given, to be used to check in the policy.
-@@ -1089,6 +1091,8 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
- 				entry->mask = MAY_READ;
- 			else if (strcmp(from, "MAY_APPEND") == 0)
- 				entry->mask = MAY_APPEND;
-+			else if (strcmp(from, "MAY_OPENEXEC") == 0)
-+				entry->mask = MAY_OPENEXEC;
- 			else
- 				result = -EINVAL;
- 			if (!result)
-@@ -1420,14 +1424,15 @@ const char *const func_tokens[] = {
- 
- #ifdef	CONFIG_IMA_READ_POLICY
- enum {
--	mask_exec = 0, mask_write, mask_read, mask_append
-+	mask_exec = 0, mask_write, mask_read, mask_append, mask_openexec
- };
- 
- static const char *const mask_tokens[] = {
- 	"^MAY_EXEC",
- 	"^MAY_WRITE",
- 	"^MAY_READ",
--	"^MAY_APPEND"
-+	"^MAY_APPEND",
-+	"^MAY_OPENEXEC"
- };
- 
- void *ima_policy_start(struct seq_file *m, loff_t *pos)
-@@ -1516,6 +1521,8 @@ int ima_policy_show(struct seq_file *m, void *v)
- 			seq_printf(m, pt(Opt_mask), mt(mask_read) + offset);
- 		if (entry->mask & MAY_APPEND)
- 			seq_printf(m, pt(Opt_mask), mt(mask_append) + offset);
-+		if (entry->mask & MAY_OPENEXEC)
-+			seq_printf(m, pt(Opt_mask), mt(mask_openexec) + offset);
- 		seq_puts(m, " ");
- 	}
- 
+        if (!(a || b))
+                printf("A");
+        else
+                printf("B");
+
+        printf("\n");
+
+        return 0;
+}
+
+Andy, could you give an example of two values which will print something
+other than "AA" or "BB"?
+
+Heck, gcc even compiles these two conditions the same way:
+
+        if (!a && !b)
+    11a8:       83 7d f8 00             cmpl   $0x0,-0x8(%rbp)
+    11ac:       75 12                   jne    11c0 <main+0x57>
+    11ae:       83 7d fc 00             cmpl   $0x0,-0x4(%rbp)
+    11b2:       75 0c                   jne    11c0 <main+0x57>
+                printf("A");
+    11b4:       bf 41 00 00 00          mov    $0x41,%edi
+    11b9:       e8 a2 fe ff ff          callq  1060 <putchar@plt>
+    11be:       eb 0a                   jmp    11ca <main+0x61>
+        else
+                printf("B");
+    11c0:       bf 42 00 00 00          mov    $0x42,%edi
+    11c5:       e8 96 fe ff ff          callq  1060 <putchar@plt>
+
+        if (!(a || b))
+    11ca:       83 7d f8 00             cmpl   $0x0,-0x8(%rbp)
+    11ce:       75 12                   jne    11e2 <main+0x79>
+    11d0:       83 7d fc 00             cmpl   $0x0,-0x4(%rbp)
+    11d4:       75 0c                   jne    11e2 <main+0x79>
+                printf("A");
+    11d6:       bf 41 00 00 00          mov    $0x41,%edi
+    11db:       e8 80 fe ff ff          callq  1060 <putchar@plt>
+    11e0:       eb 0a                   jmp    11ec <main+0x83>
+        else
+                printf("B");
+    11e2:       bf 42 00 00 00          mov    $0x42,%edi
+    11e7:       e8 74 fe ff ff          callq  1060 <putchar@plt>
+
 -- 
-2.26.2
-
+Thanks,
+Sasha
