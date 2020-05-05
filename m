@@ -2,113 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A10D1C57B6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:01:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FE171C57BD
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729244AbgEEOBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:01:39 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:42596 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728076AbgEEOBj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:01:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=MQhJQSV5DPC+RnQ18Gv5OjUfrbMB0JR8XzYM9Fu0Cns=; b=BPLdwwcd4KtC0HTYqHjtwDw1X2
-        mJVWPB/049rFgZ8S7LEq4nNbSLR/3zKrk7qLN6vTYnlH2BC+ePiuxyYNm3mjV6WYL4QFpFgEvAcTD
-        mOXu9KbDkhWxhkg1NSMok1gnLzHA8wkShofmqZvzcJausKRgNN1V7JZcqosLpe3YxvJU=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
-        (envelope-from <andrew@lunn.ch>)
-        id 1jVy8V-000wMg-KV; Tue, 05 May 2020 16:01:27 +0200
-Date:   Tue, 5 May 2020 16:01:27 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        Marek Vasut <marex@denx.de>, David Jander <david@protonic.nl>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v1] dt-bindings: net: nxp,tja11xx: rework validation
- support
-Message-ID: <20200505140127.GJ208718@lunn.ch>
-References: <20200505104215.8975-1-o.rempel@pengutronix.de>
+        id S1729272AbgEEOB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:01:56 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:55403 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728076AbgEEOB4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 10:01:56 -0400
+Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1jVy8s-0000gm-PM; Tue, 05 May 2020 14:01:50 +0000
+Date:   Tue, 5 May 2020 16:01:49 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] bitops: avoid clang shift-count-overflow warnings
+Message-ID: <20200505140149.lyru5h2zxmkozn75@wittgenstein>
+References: <20200505135513.65265-1-arnd@arndb.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200505104215.8975-1-o.rempel@pengutronix.de>
+In-Reply-To: <20200505135513.65265-1-arnd@arndb.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 05, 2020 at 12:42:15PM +0200, Oleksij Rempel wrote:
-> To properly identify this node, we need to use ethernet-phy-id0180.dc80.
-> And add missing required properties.
+On Tue, May 05, 2020 at 03:54:57PM +0200, Arnd Bergmann wrote:
+> Clang normally does not warn about certain issues in inline functions when
+> it only happens in an eliminated code path. However if something else
+> goes wrong, it does tend to complain about the definition of hweight_long()
+> on 32-bit targets:
 > 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> include/linux/bitops.h:75:41: error: shift count >= width of type [-Werror,-Wshift-count-overflow]
+>         return sizeof(w) == 4 ? hweight32(w) : hweight64(w);
+>                                                ^~~~~~~~~~~~
+> include/asm-generic/bitops/const_hweight.h:29:49: note: expanded from macro 'hweight64'
+>  define hweight64(w) (__builtin_constant_p(w) ? __const_hweight64(w) : __arch_hweight64(w))
+>                                                 ^~~~~~~~~~~~~~~~~~~~
+> include/asm-generic/bitops/const_hweight.h:21:76: note: expanded from macro '__const_hweight64'
+>  define __const_hweight64(w) (__const_hweight32(w) + __const_hweight32((w) >> 32))
+>                                                                            ^  ~~
+> include/asm-generic/bitops/const_hweight.h:20:49: note: expanded from macro '__const_hweight32'
+>  define __const_hweight32(w) (__const_hweight16(w) + __const_hweight16((w) >> 16))
+>                                                 ^
+> include/asm-generic/bitops/const_hweight.h:19:72: note: expanded from macro '__const_hweight16'
+>  define __const_hweight16(w) (__const_hweight8(w)  + __const_hweight8((w)  >> 8 ))
+>                                                                        ^
+> include/asm-generic/bitops/const_hweight.h:12:9: note: expanded from macro '__const_hweight8'
+>           (!!((w) & (1ULL << 2))) +     \
+> 
+> Adding an explicit cast to __u64 avoids that warning and makes it easier
+> to read other output.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->  .../devicetree/bindings/net/nxp,tja11xx.yaml  | 55 ++++++++++++-------
->  1 file changed, 35 insertions(+), 20 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/net/nxp,tja11xx.yaml b/Documentation/devicetree/bindings/net/nxp,tja11xx.yaml
-> index 42be0255512b3..cc322107a24a2 100644
-> --- a/Documentation/devicetree/bindings/net/nxp,tja11xx.yaml
-> +++ b/Documentation/devicetree/bindings/net/nxp,tja11xx.yaml
-> @@ -1,4 +1,4 @@
-> -# SPDX-License-Identifier: GPL-2.0+
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->  %YAML 1.2
->  ---
->  $id: http://devicetree.org/schemas/net/nxp,tja11xx.yaml#
-> @@ -12,44 +12,59 @@ maintainers:
->    - Heiner Kallweit <hkallweit1@gmail.com>
->  
->  description:
-> -  Bindings for NXP TJA11xx automotive PHYs
-> +  Bindings for the NXP TJA1102 automotive PHY. This is a dual PHY package where
-> +  only the first PHY has global configuration register and HW health
-> +  monitoring.
->  
-> -allOf:
-> -  - $ref: ethernet-phy.yaml#
-> +properties:
-> +  compatible:
-> +    const: ethernet-phy-id0180.dc80
-> +    description: ethernet-phy-id0180.dc80 used for TJA1102 PHY
-> +
-> +  reg:
-> +    minimum: 0
-> +    maximum: 14
-> +    description:
-> +      The PHY address of the parent PHY.
 
-Hi Oleksij
-
-reg is normally 0 to 31, since that is the address range for MDIO. 
-Did you use 14 here because of what strapping allows?
-
-> +required:
-> +  - compatible
-> +  - reg
-> +  - '#address-cells'
-> +  - '#size-cells'
-
-So we have two different meanings of 'required' here.
-
-One meaning is the code requires it. compatible is not required, the
-driver will correctly be bind to the device based on its ID registers.
-Is reg also required by the code?
-
-The second meaning is about keeping the yaml verifier happy. It seems
-like compatible is needed for the verifier. Is reg also required? We
-do recommend having reg, but the generic code does not require it.
-
-   Andrew
-
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
