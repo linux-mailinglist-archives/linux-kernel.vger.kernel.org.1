@@ -2,90 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7540D1C5973
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:27:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B041C597F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:28:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729430AbgEEO1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:27:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729275AbgEEO1t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:27:49 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E68BFC061A10
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:27:48 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49Ghrw1s5zz9sTp;
-        Wed,  6 May 2020 00:27:43 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1588688864;
-        bh=tKWmkjZzDQuTCUpYsJT44pgEzBrMuLquVBArlnJPTok=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=AYudScwgGeF513DR39+vld/7XBnzPx/RmHX/ZpsMbR2xXEUEL2wuQW4p4g7Kvsisv
-         9BkStSD8LskDREEIZEUcnucf5n8bIAP/kQu2rNGVG4fIKIdYaiLi+vc3W32DET/0hz
-         5nsmqgrX3/E2FGtgYlYHZLqT5wY+S9qw+8b60lg/xiFk9lQCri05hPLII8zOg03WtG
-         PzAzrymQXDPh8UfjPGwC7IuvwSJwXnjW1UDF04L9jrzlQAsxufL0jpsgaVkvW/fPcm
-         FkzgDihqutVRnj1lbOzrs8G2my6pLc9rXtAY5CntiQp+YF12WDNjpeIJ+Iwrq2Q2bI
-         9B+Cn2SIClkKg==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@c-s.fr>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, npiggin@gmail.com,
-        segher@kernel.crashing.org
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v4 1/2] powerpc/uaccess: Implement unsafe_put_user() using 'asm goto'
-In-Reply-To: <23e680624680a9a5405f4b88740d2596d4b17c26.1587143308.git.christophe.leroy@c-s.fr>
-References: <23e680624680a9a5405f4b88740d2596d4b17c26.1587143308.git.christophe.leroy@c-s.fr>
-Date:   Wed, 06 May 2020 00:27:58 +1000
-Message-ID: <87sggecv81.fsf@mpe.ellerman.id.au>
+        id S1729558AbgEEO2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:28:23 -0400
+Received: from sauhun.de ([88.99.104.3]:33798 "EHLO pokefinder.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729308AbgEEO2W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 10:28:22 -0400
+Received: from localhost (p54B335A1.dip0.t-ipconnect.de [84.179.53.161])
+        by pokefinder.org (Postfix) with ESMTPSA id 911B52C0892;
+        Tue,  5 May 2020 16:28:20 +0200 (CEST)
+Date:   Tue, 5 May 2020 16:28:17 +0200
+From:   Wolfram Sang <wsa@the-dreams.de>
+To:     Alain Volmat <alain.volmat@st.com>
+Cc:     robh+dt@kernel.org, mark.rutland@arm.com,
+        pierre-yves.mordret@st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, linux-i2c@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        fabrice.gasnier@st.com
+Subject: Re: [PATCH] i2c: fix missing pm_runtime_put_sync in i2c_device_probe
+Message-ID: <20200505142817.GC2468@ninjato>
+References: <1588261401-11914-1-git-send-email-alain.volmat@st.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7qSK/uQB79J36Y4o"
+Content-Disposition: inline
+In-Reply-To: <1588261401-11914-1-git-send-email-alain.volmat@st.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@c-s.fr> writes:
-> unsafe_put_user() is designed to take benefit of 'asm goto'.
->
-> Instead of using the standard __put_user() approach and branch
-> based on the returned error, use 'asm goto' and make the
-> exception code branch directly to the error label. There is
-> no code anymore in the fixup section.
->
-> This change significantly simplifies functions using
-> unsafe_put_user()
->
-...
->
-> Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
-> ---
->  arch/powerpc/include/asm/uaccess.h | 61 +++++++++++++++++++++++++-----
->  1 file changed, 52 insertions(+), 9 deletions(-)
->
-> diff --git a/arch/powerpc/include/asm/uaccess.h b/arch/powerpc/include/asm/uaccess.h
-> index 9cc9c106ae2a..9365b59495a2 100644
-> --- a/arch/powerpc/include/asm/uaccess.h
-> +++ b/arch/powerpc/include/asm/uaccess.h
-> @@ -196,6 +193,52 @@ do {								\
->  })
->  
->  
-> +#define __put_user_asm_goto(x, addr, label, op)			\
-> +	asm volatile goto(					\
-> +		"1:	" op "%U1%X1 %0,%1	# put_user\n"	\
-> +		EX_TABLE(1b, %l2)				\
-> +		:						\
-> +		: "r" (x), "m<>" (*addr)				\
 
-The "m<>" here is breaking GCC 4.6.3, which we allegedly still support.
+--7qSK/uQB79J36Y4o
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Plain "m" works, how much does the "<>" affect code gen in practice?
+On Thu, Apr 30, 2020 at 05:43:21PM +0200, Alain Volmat wrote:
+> In case of the I2C client exposes the flag I2C_CLIENT_HOST_NOTIFY,
+> pm_runtime_get_sync is called in order to always keep active the
+> adapter. However later on, pm_runtime_put_sync is never called
+> within the function in case of an error. This commit add this
+> error handling.
+>=20
+> Fixes: 72bfcee11cf8 ("i2c: Prevent runtime suspend of adapter when Host N=
+otify is required")
+> Signed-off-by: Alain Volmat <alain.volmat@st.com>
 
-A quick diff here shows no difference from removing "<>".
+Applied to for-current, thanks!
 
-cheers
+
+--7qSK/uQB79J36Y4o
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl6xeAAACgkQFA3kzBSg
+KbYhiA//T+l0PEzPiaE6M7x6gAJ8psbfRCvstiVnIPTm05RkWxc6F5hPg/P3gCbJ
+23pSTbYP2xAhWve343T6dn/OsD/oRphhcu1av5v0yMee5k4QQ7I3MbAvxZM99bfG
+mfzQoZngIvCKgEA4PMl7Bq9JPIV0dS+6CpAl7OWOBjJGt6H6uJ+07MQNmyyGoz5e
+S3esTcF/60pQzcl5/VHA6/OyXExbqOOq92zcnd5IMXoqWC6xtIJjVoCHje0gJTpI
+bO87BHiDe5iK8tSzhLqUU/QRAvGBPgTNa4vjew9OhZgvoFsBI8GA9gAcJqYYoh3j
+t0XXWIq5sUjcWNZSlalb2/WLOdDHvEbvGMzc1jphUjdklw9ZYbY7fqA/6QIUvz6+
+NqF/j0wrBsj+dxyfxj5f82Q0672glf0Zqzt4n/QuPJ4QLf3qPVW3u96CRl0HPV1C
+/AwGTLPZUIbAmYiHaODfMlZ/v83HybqVZoRzhBS0xK/T7o4uUriVWag7tLOHmMni
+eswp+a+MsxyL+WrrC+Ug9PslANq0/VM83k0edA6MfwkHGM/DMFiDP0/ZAFGnKkjn
+zb6Wx0utBOgT7EaxNYwqFWlPHNK3X0l1cIKr4uO3t5hzIjjrF5tYoAzfTyV2uvQJ
+uT6/TtJbeWnxuW1lLmepPYYse4XDeWrHj8q/DnBVBsFJW+wnfAg=
+=e2w7
+-----END PGP SIGNATURE-----
+
+--7qSK/uQB79J36Y4o--
