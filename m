@@ -2,79 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A2841C575D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 15:48:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E5DE1C56FF
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 15:32:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729083AbgEENs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 09:48:29 -0400
-Received: from m12-17.163.com ([220.181.12.17]:46070 "EHLO m12-17.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728898AbgEENs3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 09:48:29 -0400
-X-Greylist: delayed 955 seconds by postgrey-1.27 at vger.kernel.org; Tue, 05 May 2020 09:48:27 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Subject:From:Message-ID:Date:MIME-Version; bh=vtE9L
-        BKKqPY2QgOdCyMuZW9mjYDyjGtNVqWc4Ka9luo=; b=bpuZ7YTYNZo8qjLCX6F9U
-        ay8iGfhemsjWMvllBx3GKhJ2anA8/6VNjQXiQqR11jgKHjYSFM0cd3YiXkgkIwSS
-        BOsWXdIVUF8umu3yxdlGCG4kJFMgFqbc8uK+/7XmSmdNqdLvpKojArPHjk2jz/Q5
-        1tIjBv3mehZ4LaEbnKmgbY=
-Received: from [192.168.1.7] (unknown [120.244.110.63])
-        by smtp13 (Coremail) with SMTP id EcCowAB37v3carFejW99BA--.112S2;
-        Tue, 05 May 2020 21:32:12 +0800 (CST)
-Subject: Re: fs: jfs: fix a possible data race in txBegin()
-To:     Dave Kleikamp <dave.kleikamp@oracle.com>,
-        Markus Elfring <Markus.Elfring@web.de>,
-        Jia-Ju Bai <baijiaju1990@gmail.com>,
-        jfs-discussion@lists.sourceforge.net
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <5ef374a5-0e2e-5c74-a827-0148c384f6e3@web.de>
- <abbb03ec-7ce3-08b6-7d08-420743067f19@gmail.com>
- <fa6fabec-8cc5-fc62-657f-3794e9405fac@web.de>
- <df165b9f-7a51-a632-b1a0-a2cf1efa1915@oracle.com>
-From:   Jia-Ju Bai <baijiaju1990@163.com>
-Message-ID: <565e317a-396e-9221-11bb-bc8c76cc9f7a@163.com>
-Date:   Tue, 5 May 2020 21:32:11 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1729082AbgEENck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 09:32:40 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:43434 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729042AbgEENck (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 09:32:40 -0400
+Received: by mail-oi1-f196.google.com with SMTP id j16so1751425oih.10;
+        Tue, 05 May 2020 06:32:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=aGzwYdYfDeCBheVXdcJg3XhWuww2Jcj8IasjcEOMoV0=;
+        b=MR6I+DklNB4UWIma+YhYtDGiP/qik9dk5lDXhtsvBcl1ZZGYNS5sysTXpcCPRqm8GG
+         TInab9/NjZatkLiTSUlVW5TjxT7wiIQ4jtg8+H76xQ1zY9KoDgM77LjoCWPeXZzH11lM
+         PU7LLmJuIkt/1wDksXzahxHqKOKQOLXc/6ohjl0iL1rIehZL4B1eIQ7BXzRTr50pEa5O
+         /ZEoc4uLEbqRxGUjNa2RzMv20kvfrBM7/z+mZ0jJvez2bz7n/wyiKQ+siP2zBkBHMCYy
+         nlpA81DDB1DlCvnIJxnbpFV7CI/Gt6w2mRhi6FH7nYHtxh0svw5+R8MrcF94FAERvekW
+         p/Vg==
+X-Gm-Message-State: AGi0PuY+sgtv1pEGfs9uBWoUdRHO+UrO/NFQzdHmam9LMUoaewHDggIS
+        cZLy6lrgOwgElvpRMmzS2+wq4wM=
+X-Google-Smtp-Source: APiQypIAPbkEpcmAYhh8URn60kb6nxOuIrbrTxcDfwgGhqJijN2M8awvs8XkUUWZp//f+WPg20NRnA==
+X-Received: by 2002:aca:7209:: with SMTP id p9mr2407871oic.168.1588685559210;
+        Tue, 05 May 2020 06:32:39 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id 1sm547503oir.5.2020.05.05.06.32.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 May 2020 06:32:38 -0700 (PDT)
+Received: (nullmailer pid 22806 invoked by uid 1000);
+        Tue, 05 May 2020 13:32:37 -0000
+Date:   Tue, 5 May 2020 08:32:37 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Konrad Dybcio <konradybcio@gmail.com>
+Cc:     Konrad Dybcio <konradybcio@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [v3 PATCH 2/2] dt-bindings: display: Document ASUS Z00T TM5P5
+ NT35596 panel compatible
+Message-ID: <20200505133237.GA22147@bogus>
+References: <20200504200102.129195-1-konradybcio@gmail.com>
+ <20200504200102.129195-3-konradybcio@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <df165b9f-7a51-a632-b1a0-a2cf1efa1915@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID: EcCowAB37v3carFejW99BA--.112S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrKrWkWFy8ZFyUuF1UKw45Jrb_yoWDCFc_uF
-        s5CFyUGwn8uF1rXFZ7Jw4fZry3Zw47ZF1Yywn5JrW7J3s3tFs5CFZ7KFyYy3W5tF9akrsr
-        Ca1Sqw4Dt3W2qjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5M5l5UUUUU==
-X-Originating-IP: [120.244.110.63]
-X-CM-SenderInfo: xedlyx5dmximizq6il2tof0z/1tbiVhwbelqzk2jEvAAAsB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200504200102.129195-3-konradybcio@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon,  4 May 2020 22:01:00 +0200, Konrad Dybcio wrote:
+> Signed-off-by: Konrad Dybcio <konradybcio@gmail.com>
+> ---
+>  .../display/panel/asus,z00t-tm5p5-n35596.yaml | 56 +++++++++++++++++++
+>  1 file changed, 56 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/panel/asus,z00t-tm5p5-n35596.yaml
+> 
 
+My bot found errors running 'make dt_binding_check' on your patch:
 
-On 2020/5/5 21:23, Dave Kleikamp wrote:
-> On 5/5/20 12:12 AM, Markus Elfring wrote:
->>> I am not sure how to add the tag "Fixes"...
->> How helpful do you find the available software documentation?
->> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?id=47cf1b422e6093aee2a3e55d5e162112a2c69870#n183
->>
->>
->>> I need to find which previous commit add the code about txBegin()?
->> I suggest to take another look at corresponding source code places
->> by a command like “git blame”.
->> https://git-scm.com/book/en/v2/Git-Tools-Debugging-with-Gits
-> I suspect that the problem was in the code much longer than it has been
-> under git source control.
+Documentation/devicetree/bindings/display/panel/asus,z00t-tm5p5-n35596.yaml: $id: relative path/filename doesn't match actual path or filename
+	expected: http://devicetree.org/schemas/display/panel/asus,z00t-tm5p5-n35596.yaml#
 
-I agree, because "git blame" shows the last change to txBegin() is 
-commit 1da177e4c3f4, which was submitted in 2005...
-And this commit just added or merged the filesystem to the Linux kernel.
-Thus, adding the tag "Fixes" of this commit should be useless...
+See https://patchwork.ozlabs.org/patch/1282986
 
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure dt-schema is up to date:
 
-Best wishes,
-Jia-Ju Bai
+pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
 
+Please check and re-submit.
