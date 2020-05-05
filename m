@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3D431C58D7
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:20:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4793D1C58EE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:20:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729309AbgEEOQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:16:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49060 "EHLO
+        id S1730539AbgEEOUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:20:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730017AbgEEOQI (ORCPT
+        by vger.kernel.org with ESMTP id S1730019AbgEEOQJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:16:08 -0400
+        Tue, 5 May 2020 10:16:09 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1AADC061A10
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:16:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8889C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:16:08 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jVyMP-0001qr-MW; Tue, 05 May 2020 16:15:49 +0200
+        id 1jVyMQ-0001s4-Vi; Tue, 05 May 2020 16:15:51 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 3BAC01001F5;
-        Tue,  5 May 2020 16:15:49 +0200 (CEST)
-Message-Id: <20200505135313.731774429@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 74338FFC8D;
+        Tue,  5 May 2020 16:15:50 +0200 (CEST)
+Message-Id: <20200505135313.830540017@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 05 May 2020 15:49:30 +0200
+Date:   Tue, 05 May 2020 15:49:31 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -43,9 +43,8 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Brian Gerst <brgerst@gmail.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch V4 part 4 04/24] x86/int3: Inline bsearch()
+        Will Deacon <will@kernel.org>
+Subject: [patch V4 part 4 05/24] x86/entry: Provide IDTENTRY_RAW
 References: <20200505134926.578885807@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -58,55 +57,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+Some exception handlers need to do extra work before any of the entry
+helpers are invoked. Provide IDTENTRY_RAW for this.
 
-Avoid calling out to bsearch() by inlining it, for normal kernel configs
-this was the last external call and poke_int3_handler() is now fully self
-sufficient -- no calls to external code.
-
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
- arch/x86/kernel/alternative.c |    8 ++++----
- arch/x86/kernel/traps.c       |    5 +++++
- 2 files changed, 9 insertions(+), 4 deletions(-)
 
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -979,7 +979,7 @@ static __always_inline void *text_poke_a
- 	return _stext + tp->rel_addr;
- }
+---
+ arch/x86/include/asm/idtentry.h |   31 +++++++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
+
+--- a/arch/x86/include/asm/idtentry.h
++++ b/arch/x86/include/asm/idtentry.h
+@@ -104,6 +104,34 @@ static __always_inline void __##func(str
+ static __always_inline void __##func(struct pt_regs *regs,		\
+ 				     unsigned long error_code)
  
--static int noinstr patch_cmp(const void *key, const void *elt)
-+static __always_inline int patch_cmp(const void *key, const void *elt)
- {
- 	struct text_poke_loc *tp = (struct text_poke_loc *) elt;
++/**
++ * DECLARE_IDTENTRY_RAW - Declare functions for raw IDT entry points
++ *		      No error code pushed by hardware
++ * @vector:	Vector number (ignored for C)
++ * @func:	Function name of the entry point
++ *
++ * Maps to DECLARE_IDTENTRY().
++ */
++#define DECLARE_IDTENTRY_RAW(vector, func)				\
++	DECLARE_IDTENTRY(vector, func)
++
++/**
++ * DEFINE_IDTENTRY_RAW - Emit code for raw IDT entry points
++ * @func:	Function name of the entry point
++ *
++ * @func is called from ASM entry code with interrupts disabled.
++ *
++ * The macro is written so it acts as function definition. Append the
++ * body with a pair of curly brackets.
++ *
++ * Contrary to DEFINE_IDTENTRY() this does not invoke the
++ * idtentry_enter/exit() helpers before and after the body invocation. This
++ * needs to be done in the body itself if applicable. Use if extra work
++ * is required before the enter/exit() helpers are invoked.
++ */
++#define DEFINE_IDTENTRY_RAW(func)					\
++__visible noinstr void func(struct pt_regs *regs)
++
+ #else /* !__ASSEMBLY__ */
  
-@@ -1023,9 +1023,9 @@ int noinstr poke_int3_handler(struct pt_
- 	 * Skip the binary search if there is a single member in the vector.
- 	 */
- 	if (unlikely(desc->nr_entries > 1)) {
--		tp = bsearch(ip, desc->vec, desc->nr_entries,
--			     sizeof(struct text_poke_loc),
--			     patch_cmp);
-+		tp = __bsearch(ip, desc->vec, desc->nr_entries,
-+			       sizeof(struct text_poke_loc),
-+			       patch_cmp);
- 		if (!tp)
- 			goto out_put;
- 	} else {
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -566,6 +566,11 @@ DEFINE_IDTENTRY_ERRORCODE(exc_general_pr
+ /*
+@@ -118,6 +146,9 @@ static __always_inline void __##func(str
+ /* Special case for 32bit IRET 'trap'. Do not emit ASM code */
+ #define DECLARE_IDTENTRY_SW(vector, func)
  
- dotraplinkage void notrace do_int3(struct pt_regs *regs, long error_code)
- {
-+	/*
-+	 * poke_int3_handler() is completely self contained code; it does (and
-+	 * must) *NOT* call out to anything, lest it hits upon yet another
-+	 * INT3.
-+	 */
- 	if (poke_int3_handler(regs))
- 		return;
++#define DECLARE_IDTENTRY_RAW(vector, func)				\
++	DECLARE_IDTENTRY(vector, func)
++
+ #endif /* __ASSEMBLY__ */
  
+ /*
 
