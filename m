@@ -2,206 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29AD71C5753
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 15:47:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09ACD1C5896
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:16:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729131AbgEENrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 09:47:04 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58614 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728965AbgEENrE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 09:47:04 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 72CD5ABB2;
-        Tue,  5 May 2020 13:47:04 +0000 (UTC)
-Message-ID: <073b80ef4285a02729f5b06872474202d4ff2e3e.camel@suse.de>
-Subject: Re: [PATCH v2 2/2] usb: xhci: Load Raspberry Pi 4 VL805's firmware
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Matthias Brugger <mbrugger@suse.com>, u-boot@lists.denx.de,
-        bmeng.cn@gmail.com, marex@denx.de, linux-kernel@vger.kernel.org
-Cc:     sjg@chromium.org, m.szyprowski@samsung.com, s.nawrocki@samsung.com
-Date:   Tue, 05 May 2020 15:47:00 +0200
-In-Reply-To: <38448831-9f22-f887-e938-065fed195414@suse.com>
-References: <20200430130433.11248-1-nsaenzjulienne@suse.de>
-         <20200430130433.11248-3-nsaenzjulienne@suse.de>
-         <0958ece3-feda-65c0-b0e2-893e2dfeb508@suse.com>
-         <cefb0be789dba88b3e3ad825fd74f49195110f97.camel@suse.de>
-         <38448831-9f22-f887-e938-065fed195414@suse.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-gTb7tVCY4YQZBYQw8Qwq"
-User-Agent: Evolution 3.36.2 
-MIME-Version: 1.0
+        id S1730003AbgEEOQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:16:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729295AbgEEOQD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 10:16:03 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC632C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:16:02 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jVyMK-0001mm-ND; Tue, 05 May 2020 16:15:44 +0200
+Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 448D9FFC8D;
+        Tue,  5 May 2020 16:15:44 +0200 (CEST)
+Message-Id: <20200505134926.578885807@linutronix.de>
+User-Agent: quilt/0.65
+Date:   Tue, 05 May 2020 15:49:26 +0200
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>
+Subject: [patch V4 part 4 00/24] x86/entry: Entry/exception code rework, nasty
+ exceptions
+Content-transfer-encoding: 8-bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Folks,
 
---=-gTb7tVCY4YQZBYQw8Qwq
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+This is the forth part of the rework series. Part 3 can be found here:
 
-On Tue, 2020-05-05 at 15:39 +0200, Matthias Brugger wrote:
->=20
-> On 05/05/2020 14:53, Nicolas Saenz Julienne wrote:
-> > Hi Matthias,
-> >=20
-> > On Tue, 2020-05-05 at 14:15 +0200, Matthias Brugger wrote:
-> > > On 30/04/2020 15:04, Nicolas Saenz Julienne wrote:
-> > > > When needed, RPi4's co-processor (called VideoCore) has to be instr=
-ucted
-> > > > to load VL805's firmware (the chip providing xHCI support). VideoCo=
-re's
-> > > > firmware expects the board's PCIe bus to be already configured in o=
-rder
-> > > > for it to load the xHCI chip firmware. So we have to make sure this
-> > > > happens in between the PCIe configuration and xHCI startup.
-> > > >=20
-> > > > Introduce a callback in xhci_pci_probe() to run this platform speci=
-fic
-> > > > routine.
-> > > >=20
-> > > > Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> > > >=20
-> > > > ---
-> > > >=20
-> > > > Changes since v1:
-> > > >  - Create callback
-> > > >=20
-> > > >  board/raspberrypi/rpi/rpi.c | 12 ++++++++++++
-> > > >  drivers/usb/host/xhci-pci.c |  6 ++++++
-> > > >  include/usb/xhci.h          |  3 +++
-> > > >  3 files changed, 21 insertions(+)
-> > > >=20
-> > > > diff --git a/board/raspberrypi/rpi/rpi.c b/board/raspberrypi/rpi/rp=
-i.c
-> > > > index e367ba3092..8aa78d1f48 100644
-> > > > --- a/board/raspberrypi/rpi/rpi.c
-> > > > +++ b/board/raspberrypi/rpi/rpi.c
-> > > > @@ -14,6 +14,7 @@
-> > > >  #include <lcd.h>
-> > > >  #include <memalign.h>
-> > > >  #include <mmc.h>
-> > > > +#include <usb/xhci.h>
-> > > >  #include <asm/gpio.h>
-> > > >  #include <asm/arch/mbox.h>
-> > > >  #include <asm/arch/msg.h>
-> > > > @@ -494,3 +495,14 @@ int ft_board_setup(void *blob, bd_t *bd)
-> > > > =20
-> > > >  	return 0;
-> > > >  }
-> > > > +
-> > > > +#ifdef CONFIG_BCM2711
-> > >=20
-> > > This won't work with rpi_arm64_defconfig.
-> > > Can't we just evaluate at runtime if we need to do anything in
-> > > xhci_pci_fixup.
-> >=20
-> > I can't see why, who is going to call xhci_pci_probe() in RPi3?
-> >=20
->=20
-> If you do make rpi_arm64_defconfig and inspect the .config, you will see =
-that
-> CONFIG_BCM2711 is not defined, so this code won't be called on RPi4.
+ https://lore.kernel.org/r/20200505134354.774943181@linutronix.de
 
-Oh! Understood.
+The series has a total of 138 patches and is split into 5 parts. The base
+for this 4th series is:
 
-Well, given that only xhci_pci_probe() is called if we're running on RPi4, =
-I
-think I can disregard those defines altogether. I'll double-check that.
+  git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git entry-v4-part-3
 
-Regards,
-Nicolas
+The full series with all parts applied is available here:
 
-> Regards,
-> Matthias
->=20
-> > Regards,
-> > Nicolas
-> >=20
-> > > I wonder if the newer RPi4 have also a newer revision ID (see
-> > > get_board_rev).
-> > > If
-> > > so we could add another bool to struct rpi_model which will indicate =
-us if
-> > > we
-> > > need to notify VideoCore about vl805's firmware.
-> > >=20
-> > > > +void xhci_pci_fixup(struct udevice *dev)
-> > > > +{
-> > > > +	int ret;
-> > > > +
-> > > > +	ret =3D bcm2711_notify_vl805_reset();
-> > > > +	if (ret)
-> > > > +		printf("RPI: Failed to notify VideoCore about vl805's
-> > > > firmware\n");
-> > > > +}
-> > > > +#endif
-> > > > diff --git a/drivers/usb/host/xhci-pci.c b/drivers/usb/host/xhci-pc=
-i.c
-> > > > index c1f60da541..1285dde1ef 100644
-> > > > --- a/drivers/usb/host/xhci-pci.c
-> > > > +++ b/drivers/usb/host/xhci-pci.c
-> > > > @@ -11,6 +11,10 @@
-> > > >  #include <usb.h>
-> > > >  #include <usb/xhci.h>
-> > > > =20
-> > > > +__weak void xhci_pci_fixup(struct udevice *dev)
-> > > > +{
-> > > > +}
-> > > > +
-> > > >  static void xhci_pci_init(struct udevice *dev, struct xhci_hccr
-> > > > **ret_hccr,
-> > > >  			  struct xhci_hcor **ret_hcor)
-> > > >  {
-> > > > @@ -40,6 +44,8 @@ static int xhci_pci_probe(struct udevice *dev)
-> > > >  	struct xhci_hccr *hccr;
-> > > >  	struct xhci_hcor *hcor;
-> > > > =20
-> > > > +	xhci_pci_fixup(dev);
-> > > > +
-> > > >  	xhci_pci_init(dev, &hccr, &hcor);
-> > > > =20
-> > > >  	return xhci_register(dev, hccr, hcor);
-> > > > diff --git a/include/usb/xhci.h b/include/usb/xhci.h
-> > > > index c16106a2fc..57feed7603 100644
-> > > > --- a/include/usb/xhci.h
-> > > > +++ b/include/usb/xhci.h
-> > > > @@ -16,6 +16,7 @@
-> > > >  #ifndef HOST_XHCI_H_
-> > > >  #define HOST_XHCI_H_
-> > > > =20
-> > > > +#include <usb.h>
-> > > >  #include <asm/types.h>
-> > > >  #include <asm/cache.h>
-> > > >  #include <asm/io.h>
-> > > > @@ -1281,4 +1282,6 @@ extern struct dm_usb_ops xhci_usb_ops;
-> > > > =20
-> > > >  struct xhci_ctrl *xhci_get_ctrl(struct usb_device *udev);
-> > > > =20
-> > > > +extern void xhci_pci_fixup(struct udevice *dev);
-> > > > +
-> > > >  #endif /* HOST_XHCI_H_ */
-> > > >=20
+  git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git entry-v4-part-5
 
+The forth part, i.e. this series is available from:
 
---=-gTb7tVCY4YQZBYQw8Qwq
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+  git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git entry-v4-part-4
+ 
+This part contains the modifications for complex and nasty exceptions and traps:
 
------BEGIN PGP SIGNATURE-----
+ - Conversion of int3 including a full isolation of the text poke handler
+   so it is fully self contained, i.e does not call out into any
+   instrumentable code.
 
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl6xblQACgkQlfZmHno8
-x/7l+Af/SDoBVKw5HdpLkFov8Q6yNB39S5R4rQ9T8R5xCY8mTMqyTUBfukTrv4Hs
-yRw5KSV4YgH/eNOBiy80CR/MnB4/nSwK1z+Luszqj7c6RCSYzRo0cUVCOhm9FBBg
-Be8EdlrL3zjdLEx369R7Tgo7U0pQCwfs3d4CNS/BGSLC6rKPVcmw3otsqWoS8Jqm
-Sf3z1PSAv+4FbIoRIyU3Us9i7rCGL/y6yQtvryfeAcXswwWS6QkUcAdwcDa62ft6
-OevVpIJY6FFNVHH3FD+q1nE7Hd06pn4XGrCzdE1BGof+hNtaWGmaSp8rHaTbkIE+
-vcojpVpRnWt3/5ljveGjZo8nRPNBGw==
-=EafC
------END PGP SIGNATURE-----
+ - Conversion of NMI handling including protection against instrumentation
 
---=-gTb7tVCY4YQZBYQw8Qwq--
+ - Conversion of #DB with separation of the user and kernel mode entries
 
+ - Conversion of #MC and #DF
+
+The objtool check for the noinstr.text correctness is not yet added to the
+build machinery and has to be invoked manually for now:
+
+   objtool check -fal vmlinux.o
+
+The checking only works for builtin code as objtool cannot do a combined
+analysis of vmlinux.o and a module.o
+
+Thanks,
+
+	tglx
+
+8<----------
+ arch/x86/entry/entry_32.S            |   38 ----
+ arch/x86/entry/entry_64.S            |   35 +---
+ arch/x86/include/asm/desc.h          |    8 
+ arch/x86/include/asm/idtentry.h      |  235 +++++++++++++++++++++++++++++
+ arch/x86/include/asm/mce.h           |    2 
+ arch/x86/include/asm/ptrace.h        |    2 
+ arch/x86/include/asm/text-patching.h |   11 -
+ arch/x86/include/asm/traps.h         |   23 --
+ arch/x86/kernel/alternative.c        |   25 +--
+ arch/x86/kernel/cpu/common.c         |    6 
+ arch/x86/kernel/cpu/mce/core.c       |   91 ++++++++---
+ arch/x86/kernel/cpu/mce/inject.c     |    4 
+ arch/x86/kernel/cpu/mce/internal.h   |    2 
+ arch/x86/kernel/cpu/mce/p5.c         |    8 
+ arch/x86/kernel/cpu/mce/winchip.c    |    8 
+ arch/x86/kernel/doublefault_32.c     |   10 -
+ arch/x86/kernel/hw_breakpoint.c      |    6 
+ arch/x86/kernel/idt.c                |   22 +-
+ arch/x86/kernel/nmi.c                |   14 -
+ arch/x86/kernel/traps.c              |  283 ++++++++++++++++++++++++-----------
+ arch/x86/kvm/vmx/vmx.c               |    2 
+ arch/x86/xen/enlighten_pv.c          |   17 +-
+ arch/x86/xen/xen-asm_64.S            |   12 -
+ include/linux/bsearch.h              |   26 ++-
+ kernel/time/timekeeping.c            |    2 
+ lib/bsearch.c                        |   22 --
+ 26 files changed, 615 insertions(+), 299 deletions(-)
