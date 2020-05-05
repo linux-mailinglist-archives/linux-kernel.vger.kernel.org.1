@@ -2,176 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1EAB1C6029
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 20:35:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1D8D1C6032
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 20:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728905AbgEESfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 14:35:05 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:24477 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726618AbgEESfE (ORCPT
+        id S1728972AbgEESgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 14:36:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728076AbgEESgc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 14:35:04 -0400
+        Tue, 5 May 2020 14:36:32 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40962C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 11:36:32 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id n14so3377380qke.8
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 11:36:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1588703704; x=1620239704;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   mime-version;
-  bh=+yD817Ceo4htuXp5Qfj9nfPNfFFZZ68WXswqd/tAUZk=;
-  b=VJdZkGjvMbGABSLpAovhfjBZA53Ec5JO42T0qSNBaMf5qjYtcUB9QErZ
-   sJal/rPIktb7Hi3EfOGZmydMSaqwYXkbs93oCms3lxLQddsAlfsuR64s5
-   zNRDNGTdjqfkSspOHRLDq15h0wuca4tGY4aK+FZlkY9sXXiiEx7C/mOKl
-   8=;
-IronPort-SDR: RPQb8hctXlkWW7Jaw8MfFAq5p78DqW4wIQyRJJBG4unWZb9xCIXtjLUmx/w1+W1TBnEAY3FHlo
- 53I2fDpQ89pg==
-X-IronPort-AV: E=Sophos;i="5.73,356,1583193600"; 
-   d="scan'208";a="29008117"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1e-a70de69e.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 05 May 2020 18:34:51 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1e-a70de69e.us-east-1.amazon.com (Postfix) with ESMTPS id C5D02A2071;
-        Tue,  5 May 2020 18:34:47 +0000 (UTC)
-Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 5 May 2020 18:34:46 +0000
-Received: from u886c93fd17d25d.ant.amazon.com (10.43.162.200) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 5 May 2020 18:34:39 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-CC:     SeongJae Park <sjpark@amazon.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        David Miller <davem@davemloft.net>,
-        "Al Viro" <viro@zeniv.linux.org.uk>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        <sj38.park@gmail.com>, netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        SeongJae Park <sjpark@amazon.de>, <snu@amazon.com>,
-        <amit@kernel.org>, <stable@vger.kernel.org>
-Subject: Re: Re: Re: Re: [PATCH net v2 0/2] Revert the 'socket_alloc' life cycle change
-Date:   Tue, 5 May 2020 20:34:02 +0200
-Message-ID: <20200505183402.2021-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200505181707.GJ2869@paulmck-ThinkPad-P72> (raw)
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=eqlnqG0Hw3VMrzuvRcCdGu4ewQLAPeQsUkr54n/Ba44=;
+        b=YxFtUSCKjaM3W/DhClEwL6MT2JsMzpVzLJW8cImgeavPLCOQmKCbaprWQUzSmTPxQt
+         TkhFaSHthPlrIfE7m7euz3TWtITCCv70E6r59bQT/fbfkij9Qm61XrWixDwS6hJcre2K
+         S0NhYhIAK1l0JSHO4yV4bsTJEynaLPmS9eVY9PkLpNN/lX1J38Psw3dkO3NQHPsKsBW3
+         ZxSArF7+ab99cqFBi7Bsddjcr3DhUX6TUUjztYWBQyOW2oaAl9VXNvFTlA1ggWSvakhR
+         eLXIR17oPrlMlKE/OjepKL2fjaxWqYGPxwOSkXs6D/dmOfSJINu+WIKyS5i7IZYdIGZq
+         Qs6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=eqlnqG0Hw3VMrzuvRcCdGu4ewQLAPeQsUkr54n/Ba44=;
+        b=gktgwD2NItXB0B4ZNXY3X7RDcrSUYc95UsVLBG5IC2ZV17/zVeiHI4M2xIfgGV45v7
+         plNPWz4kZcSvMnw7genr74YNbjGLe+nQXEfUITf4jxpR9LlXXhCSQ5a2lr35EFNSR5cC
+         EJcLmHrRjk78wU5YOa0IYjbSb7y9WMwxOOes2UZ4EM9pfw9mWRG1m2v2h7CUKB/pQO+7
+         HNxyYiFM8C8jaIadT8amSSbOD4JkwFG6AJ8mLuBtb5kG3HRtyyVbTWk4nS0YfLPLPcil
+         IWnOj8J0JrRSAfp2DQy0/AF/KdnAXzs/2kKiZx9l3EyVNKYYBN/GrQ+eew6AmYt3j3yk
+         3XsQ==
+X-Gm-Message-State: AGi0PuZ1aMZ/vbhpViJmIBNv4jWSHhe9czxlaxhETXRZE6tMaVy2i4/+
+        25LE/w0PaLpjbqdCCd/mDy7i7A==
+X-Google-Smtp-Source: APiQypJ7O8355ctgKfdq6OC10TRz+pU+Ntr4Qbbn9r6Z9ZCC2YPs9LO4Kx0pmGe6yNVVy3N4mhJfNQ==
+X-Received: by 2002:a37:7904:: with SMTP id u4mr4789865qkc.297.1588703791311;
+        Tue, 05 May 2020 11:36:31 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id g12sm2312319qtu.69.2020.05.05.11.36.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 05 May 2020 11:36:30 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jW2Qf-0007Sj-HD; Tue, 05 May 2020 15:36:29 -0300
+Date:   Tue, 5 May 2020 15:36:29 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cohuck@redhat.com, peterx@redhat.com
+Subject: Re: [PATCH 3/3] vfio-pci: Invalidate mmaps and block MMIO access on
+ disabled memory
+Message-ID: <20200505183629.GF26002@ziepe.ca>
+References: <158836742096.8433.685478071796941103.stgit@gimli.home>
+ <158836917028.8433.13715345616117345453.stgit@gimli.home>
+ <20200501234849.GQ26002@ziepe.ca>
+ <20200504122643.52267e44@x1.home>
+ <20200504184436.GZ26002@ziepe.ca>
+ <20200504133552.3d00c77d@x1.home>
+ <20200504200123.GA26002@ziepe.ca>
+ <20200505111227.02ac9cee@w520.home>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.162.200]
-X-ClientProxiedBy: EX13D02UWB001.ant.amazon.com (10.43.161.240) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200505111227.02ac9cee@w520.home>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 May 2020 11:17:07 -0700 "Paul E. McKenney" <paulmck@kernel.org> wrote:
-
-> On Tue, May 05, 2020 at 07:56:05PM +0200, SeongJae Park wrote:
-> > On Tue, 5 May 2020 10:30:36 -0700 "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> > 
-> > > On Tue, May 05, 2020 at 07:05:53PM +0200, SeongJae Park wrote:
-> > > > On Tue, 5 May 2020 09:37:42 -0700 Eric Dumazet <eric.dumazet@gmail.com> wrote:
-> > > > 
-> > > > > 
-> > > > > 
-> > > > > On 5/5/20 9:31 AM, Eric Dumazet wrote:
-> > > > > > 
-> > > > > > 
-> > > > > > On 5/5/20 9:25 AM, Eric Dumazet wrote:
-> > > > > >>
-> > > > > >>
-> > > > > >> On 5/5/20 9:13 AM, SeongJae Park wrote:
-> > > > > >>> On Tue, 5 May 2020 09:00:44 -0700 Eric Dumazet <edumazet@google.com> wrote:
-> > > > > >>>
-> > > > > >>>> On Tue, May 5, 2020 at 8:47 AM SeongJae Park <sjpark@amazon.com> wrote:
-> > > > > >>>>>
-> > > > > >>>>> On Tue, 5 May 2020 08:20:50 -0700 Eric Dumazet <eric.dumazet@gmail.com> wrote:
-> > > > > >>>>>
-> > > > > >>>>>>
-> > > > > >>>>>>
-> > > > > >>>>>> On 5/5/20 8:07 AM, SeongJae Park wrote:
-> > > > > >>>>>>> On Tue, 5 May 2020 07:53:39 -0700 Eric Dumazet <edumazet@google.com> wrote:
-> > > > > >>>>>>>
-> > > > > >>>>>>
-> > > > [...]
-> > > > > >>
-> > > > > >> I would ask Paul opinion on this issue, because we have many objects
-> > > > > >> being freed after RCU grace periods.
-> > > > > >>
-> > > > > >> If RCU subsystem can not keep-up, I guess other workloads will also suffer.
-> > > > > >>
-> > > > > >> Sure, we can revert patches there and there trying to work around the issue,
-> > > > > >> but for objects allocated from process context, we should not have these problems.
-> > > > > >>
-> > > > > > 
-> > > > > > I wonder if simply adjusting rcu_divisor to 6 or 5 would help 
-> > > > > > 
-> > > > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > > > > index d9a49cd6065a20936edbda1b334136ab597cde52..fde833bac0f9f81e8536211b4dad6e7575c1219a 100644
-> > > > > > --- a/kernel/rcu/tree.c
-> > > > > > +++ b/kernel/rcu/tree.c
-> > > > > > @@ -427,7 +427,7 @@ module_param(qovld, long, 0444);
-> > > > > >  static ulong jiffies_till_first_fqs = ULONG_MAX;
-> > > > > >  static ulong jiffies_till_next_fqs = ULONG_MAX;
-> > > > > >  static bool rcu_kick_kthreads;
-> > > > > > -static int rcu_divisor = 7;
-> > > > > > +static int rcu_divisor = 6;
-> > > > > >  module_param(rcu_divisor, int, 0644);
-> > > > > >  
-> > > > > >  /* Force an exit from rcu_do_batch() after 3 milliseconds. */
-> > > > > > 
-> > > > > 
-> > > > > To be clear, you can adjust the value without building a new kernel.
-> > > > > 
-> > > > > echo 6 >/sys/module/rcutree/parameters/rcu_divisor
-> > > > 
-> > > > I tried value 6, 5, and 4, but none of those removed the problem.
-> > > 
-> > > Thank you for checking this!
-> > > 
-> > > Was your earlier discussion on long RCU readers speculation, or do you
-> > > have measurements?
-> > 
-> > It was just a guess without any measurement or dedicated investigation.
+On Tue, May 05, 2020 at 11:12:27AM -0600, Alex Williamson wrote:
 > 
-> OK, another thing to check is the duration of the low-memory episode.
-> Does this duration exceed the RCU CPU stall warning time?  (21 seconds
-> in mainline, 60 in many distros, but check rcupdate.rcu_cpu_stall_timeout
-> to be sure.)
-
-The benchmark takes about 36 seconds for 10,000 repeats of the test.
-
-The value on the test machine is 60.
-
-So the duration would not exceeded the warning time and therefore I haven't
-seen the warning message.
-
-As told in other mail, I will also adjust this value to shorter one.
-
+> As noted in the comment, the fault handler can simply do:
 > 
-> Also, any chance of a .config?  Or at least the RCU portions?  I am
-> guessing CONFIG_PREEMPT=n, for example.
+> mutex_lock(&vdev->vma_lock);
+> down_read(&vdev->memory_lock);
+> 
+> This should be deadlock free now, so we can drop the retry handling
 
-I guess this would be ok.
+That does look like the right direction, because the memory_lock can
+be done at the very end it means it doesn't need to be nested inside
+mmap_sem
 
-    # CONFIG_PREEMPT is not set
-    
-    #
-    # RCU Subsystem
-    #
-    CONFIG_TREE_RCU=y
-    CONFIG_RCU_EXPERT=y
-    CONFIG_SRCU=y
-    CONFIG_TREE_SRCU=y
-    CONFIG_RCU_STALL_COMMON=y
-    CONFIG_RCU_NEED_SEGCBLIST=y
-    CONFIG_RCU_FANOUT=64
-    CONFIG_RCU_FANOUT_LEAF=16
-    # CONFIG_RCU_FAST_NO_HZ is not set
-    CONFIG_RCU_NOCB_CPU=y
-    # end of RCU Subsystem
+This is much cleaner!
 
-
-Thanks,
-SeongJae Park
+Jason
