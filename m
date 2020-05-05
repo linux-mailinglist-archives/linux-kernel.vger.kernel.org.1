@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55FA71C58AB
+	by mail.lfdr.de (Postfix) with ESMTP id C409E1C58AC
 	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729376AbgEEORE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:17:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49272 "EHLO
+        id S1730227AbgEEORG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:17:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730207AbgEEOQ6 (ORCPT
+        by vger.kernel.org with ESMTP id S1729461AbgEEORA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:16:58 -0400
+        Tue, 5 May 2020 10:17:00 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62F71C0610D6
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:16:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22F6AC061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:17:00 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jVyN7-0002N6-F3; Tue, 05 May 2020 16:16:33 +0200
+        id 1jVyN8-0002Nx-Jq; Tue, 05 May 2020 16:16:34 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id E6C69FFC8D;
-        Tue,  5 May 2020 16:16:32 +0200 (CEST)
-Message-Id: <20200505135829.108410360@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 2A5D2FFC8D;
+        Tue,  5 May 2020 16:16:34 +0200 (CEST)
+Message-Id: <20200505135829.200797412@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 05 May 2020 15:53:51 +0200
+Date:   Tue, 05 May 2020 15:53:52 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -44,7 +44,7 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Will Deacon <will@kernel.org>
-Subject: [patch V4 part 5 10/31] x86/entry: Change exit path of xen_failsafe_callback
+Subject: [patch V4 part 5 11/31] x86/entry/64: Remove error_exit
 References: <20200505135341.730586321@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -57,46 +57,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-xen_failsafe_callback is invoked from XEN for two cases:
-
-  1. Fault while reloading DS, ES, FS or GS
-  2. Fault while executing IRET
-
-#1 retries the IRET after XEN has fixed up the segments.
-#2 injects a #GP which kills the task
-
-For #1 there is no reason to go through the full exception return path
-because the tasks TIF state is still the same. So just going straight to
-the IRET path is good enough.
+No more users.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc: Juergen Gross <jgross@suse.com>
 ---
- arch/x86/entry/entry_32.S |    2 +-
- arch/x86/entry/entry_64.S |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ arch/x86/entry/entry_64.S |    9 ---------
+ 1 file changed, 9 deletions(-)
 
---- a/arch/x86/entry/entry_32.S
-+++ b/arch/x86/entry/entry_32.S
-@@ -1352,7 +1352,7 @@ SYM_FUNC_START(xen_failsafe_callback)
- 5:	pushl	$-1				/* orig_ax = -1 => not a system call */
- 	SAVE_ALL
- 	ENCODE_FRAME_POINTER
--	jmp	ret_from_exception
-+	jmp	handle_exception_return
- 
- .section .fixup, "ax"
- 6:	xorl	%eax, %eax
 --- a/arch/x86/entry/entry_64.S
 +++ b/arch/x86/entry/entry_64.S
-@@ -1137,7 +1137,7 @@ SYM_CODE_START(xen_failsafe_callback)
- 	pushq	$-1 /* orig_ax = -1 => not a system call */
- 	PUSH_AND_CLEAR_REGS
- 	ENCODE_FRAME_POINTER
--	jmp	error_exit
-+	jmp	error_return
- SYM_CODE_END(xen_failsafe_callback)
- #endif /* CONFIG_XEN_PV */
+@@ -1319,15 +1319,6 @@ SYM_CODE_START_LOCAL(error_entry)
+ 	jmp	.Lerror_entry_from_usermode_after_swapgs
+ SYM_CODE_END(error_entry)
  
+-SYM_CODE_START_LOCAL(error_exit)
+-	UNWIND_HINT_REGS
+-	DISABLE_INTERRUPTS(CLBR_ANY)
+-	TRACE_IRQS_OFF
+-	testb	$3, CS(%rsp)
+-	jz	retint_kernel
+-	jmp	.Lretint_user
+-SYM_CODE_END(error_exit)
+-
+ SYM_CODE_START_LOCAL(error_return)
+ 	UNWIND_HINT_REGS
+ 	DEBUG_ENTRY_ASSERT_IRQS_OFF
 
