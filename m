@@ -2,86 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D55C1C4D74
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 06:54:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A70721C4D85
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 07:00:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726542AbgEEEyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 00:54:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:59304 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725766AbgEEEyT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 00:54:19 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E0FD730E;
-        Mon,  4 May 2020 21:54:18 -0700 (PDT)
-Received: from [10.37.12.10] (unknown [10.37.12.10])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B6EE03F68F;
-        Mon,  4 May 2020 21:54:11 -0700 (PDT)
-Subject: Re: [PATCH V3 10/16] arm64/cpufeature: Add remaining feature bits in
- ID_AA64PFR0 register
-To:     anshuman.khandual@arm.com, linux-arm-kernel@lists.infradead.org
-Cc:     catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com,
-        linux-kernel@vger.kernel.org
-References: <1588426445-24344-1-git-send-email-anshuman.khandual@arm.com>
- <1588426445-24344-11-git-send-email-anshuman.khandual@arm.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <f5e8b407-c731-7ff9-df47-fc54182f2d25@arm.com>
-Date:   Tue, 5 May 2020 05:59:10 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.7.0
+        id S1726529AbgEEFAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 01:00:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725320AbgEEFAB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 01:00:01 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69703C061A0F
+        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 22:00:01 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id v4so1529682wme.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 May 2020 22:00:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=L/sAhNPIx0HscGRab45ItFmjRECKgd522Fp745ex8GE=;
+        b=XGKXoYze359c+5XOdEk6WT7XX+w6wPEz3HG905HvhGfXN0bQ6H5x54I8PEfo9/QHfU
+         0bzZJ/JRBGEMB88okYT5RsNLSYRFb+b5I2dduD0uSvJ0dOOkocBhSbi4f2ng049X8bie
+         WKl8G0Yzl8N/Lmnk4oNuV5D5UlNHpzhRtNzIPudeNjUZHyBMHTsRAEUP5cUd6hig03bg
+         2zLlA2KbiKheH8YNLpYcjNZYUEhebaGA7mUslsTMPaaa5TZmD3aM7CJC275hcRcTRZWb
+         +IFzi1ArOyRKlnUEVsifTAhF27LOymvn4JsWtkKrUIT3yQLakbEy+YxIB66ViiAUOmVp
+         9gcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=L/sAhNPIx0HscGRab45ItFmjRECKgd522Fp745ex8GE=;
+        b=V22LwsFPmDprHfARRfcNF0LZxjg3FiKUYxD5zRUW5kUctTdxL3emTEr/DmtRdrjNay
+         VFrXy3BM2S4rMlWBjI0d7zgyCPA6JKaGjbGMM4DOleo6kzk+p18KncSBz1Lq77C3cVRN
+         2Ysk29VK8dg+Rdo0/bEV2aaQPxJqlXOSnWcZaC5ftCL66cQ42Eo1mqxHF3/m0ONDiDbV
+         jm+1578P+S5lsWtJBBn221aZjI6tWsltnTL8HK+Lfousi82uUihKoJquGtXDkarfqYDI
+         HTfepQZtRI8DdfBFgWHMDkzlQyOYWLzqBDP/WyD0VU+E15Dt0Qqke+jUV/H5sycyPmQh
+         8zQA==
+X-Gm-Message-State: AGi0PubmM7Fvm/GmWCeUVAsuJTyAGegOl3G78APrpdelN924wcL5ojG1
+        pvFTp2hoLPTFlQCHakJWrIsJPvlgK8sVcVkw62FSBQ==
+X-Google-Smtp-Source: APiQypLWMKznagpEwXMxR2+OqoyM73azT8xsaRANFBmuTUMpM45MOcl5f3e4AeiOqYQZHQlQ6R2lzN6tDac3V+xI+V4=
+X-Received: by 2002:a05:600c:4096:: with SMTP id k22mr987224wmh.99.1588654799821;
+ Mon, 04 May 2020 21:59:59 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1588426445-24344-11-git-send-email-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200427143507.49654-1-elver@google.com> <CANpmjNOv7VXv9LtWHWBx1-an+1+WxjtzDNBF+rKsOm+ybmvwog@mail.gmail.com>
+In-Reply-To: <CANpmjNOv7VXv9LtWHWBx1-an+1+WxjtzDNBF+rKsOm+ybmvwog@mail.gmail.com>
+From:   David Gow <davidgow@google.com>
+Date:   Tue, 5 May 2020 12:59:47 +0800
+Message-ID: <CABVgOSnr8CX5tN9u_wafxSiyyVcM9nL_nX2ufrSdRi=jdWjerg@mail.gmail.com>
+Subject: Re: [PATCH] kcsan: Add test suite
+To:     Marco Elver <elver@google.com>
+Cc:     KUnit Development <kunit-dev@googlegroups.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/02/2020 02:33 PM, Anshuman Khandual wrote:
-> Enable MPAM and SEL2 features bits in ID_AA64PFR0 register as per ARM DDI
-> 0487F.a specification.
-> 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> 
-> Suggested-by: Will Deacon <will@kernel.org>
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->   arch/arm64/include/asm/sysreg.h | 2 ++
->   arch/arm64/kernel/cpufeature.c  | 2 ++
->   2 files changed, 4 insertions(+)
-> 
-> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
-> index 40eaf89f1032..c93ea6613f51 100644
-> --- a/arch/arm64/include/asm/sysreg.h
-> +++ b/arch/arm64/include/asm/sysreg.h
-> @@ -641,6 +641,8 @@
->   #define ID_AA64PFR0_CSV2_SHIFT		56
->   #define ID_AA64PFR0_DIT_SHIFT		48
->   #define ID_AA64PFR0_AMU_SHIFT		44
-> +#define ID_AA64PFR0_MPAM_SHIFT		40
-> +#define ID_AA64PFR0_SEL2_SHIFT		36
->   #define ID_AA64PFR0_SVE_SHIFT		32
->   #define ID_AA64PFR0_RAS_SHIFT		28
->   #define ID_AA64PFR0_GIC_SHIFT		24
-> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> index dbedcae28061..f5a39e040804 100644
-> --- a/arch/arm64/kernel/cpufeature.c
-> +++ b/arch/arm64/kernel/cpufeature.c
-> @@ -217,6 +217,8 @@ static const struct arm64_ftr_bits ftr_id_aa64pfr0[] = {
->   	ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_LOWER_SAFE, ID_AA64PFR0_CSV2_SHIFT, 4, 0),
->   	ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64PFR0_DIT_SHIFT, 4, 0),
->   	ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_LOWER_SAFE, ID_AA64PFR0_AMU_SHIFT, 4, 0),
-> +	ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64PFR0_MPAM_SHIFT, 4, 0),
-> +	ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64PFR0_SEL2_SHIFT, 4, 0),
+On Mon, Apr 27, 2020 at 11:23 PM 'Marco Elver' via kasan-dev
+<kasan-dev@googlegroups.com> wrote:
+>
+> On Mon, 27 Apr 2020 at 16:35, Marco Elver <elver@google.com> wrote:
+> >
+> > This adds KCSAN test focusing on behaviour of the integrated runtime.
+> > Tests various race scenarios, and verifies the reports generated to
+> > console. Makes use of KUnit for test organization, and the Torture
+> > framework for test thread control.
+> >
+> > Signed-off-by: Marco Elver <elver@google.com>
+> > ---
+>
+> +KUnit devs
+> We had some discussions on how to best test sanitizer runtimes, and we
+> believe that this test is what testing sanitizer runtimes should
+> roughly look like. Note that, for KCSAN there are various additional
+> complexities like multiple threads, and report generation isn't
+> entirely deterministic (need to run some number of iterations to get
+> reports, may get multiple reports, etc.).
 
-Both of them must be hidden. And also need to check the impact of 
-exposing this to the guests, especially MPAM.
+Thanks very much for writing the test. I do think that it goes a
+little outside what we'd normally expect of a unit test (notably with
+the issues around determinism and threading), but it's good to see
+KUnit being pushed in new directions a bit.
 
-Suzuki
+The biggest issue in my mind is the possibility that the
+non-determinism of the tests could cause false positives. If we're
+trying to run as many KUnit tests as possible as part of continuous
+integration systems or as a condition for accepting patches, having
+flaky tests could be annoying. The KCSAN tests seem to break/fail
+as-is when run on single-core machines (at least, under qemu), so some
+way of documenting this as a requirement would probably be necessary,
+too.
+
+One possibility would be to add support for "skipped" tests to KUnit
+(the TAP specification allows for it), so that the KCSAN test could
+detect cases where it's not reliable, and skip itself (leaving a note
+as to why). In the short term, though, we'd absolutely need some
+documentation around the dependencies for the test.
+
+(For the record, the failures I saw were all due to running under qemu
+emulating as a uniprocessor/single-core machine: with
+CONFIG_PREEMPT_VOLUNTARY, it would just hang after creating the first
+couple of threads. With CONFIG_PREEMPT, the tests completed, but the
+majority of them failed.)
+
+> The main thing, however, is that we want to verify the actual output
+> (or absence of it) to console. This is what the KCSAN test does using
+> the 'console' tracepoint. Could KUnit provide some generic
+> infrastructure to check console output, like is done in the test here?
+> Right now I couldn't say what the most useful generalization of this
+> would be (without it just being a wrapper around the console
+> tracepoint), because the way I've decided to capture and then match
+> console output is quite test-specific. For now we can replicate this
+> logic on a per-test basis, but it would be extremely useful if there
+> was a generic interface that KUnit could provide in future.
+
+This is something we've discussed here a couple of times as well.
+While I'll confess to being a little bit wary of having tests rely too
+heavily on console output: it risks being a bit fragile if the exact
+contents or formatting of messages change, or ends up having a lot of
+string formatting and/or parsing code in the tests. I do agree,
+though, that it probably needs to be at least a part of testing things
+like sanitizers where the ultimate goal is to produce console output.
+I'm not exactly sure how we'd implement it yet, so it's probably not
+going to happen extremely soon, but what you have here looks to me
+like a good example we can generalise as needed.
+
+Cheers,
+-- David
