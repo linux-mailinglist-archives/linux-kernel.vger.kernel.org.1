@@ -2,144 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA5AD1C60B7
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 21:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5900D1C60C8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 21:07:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727083AbgEETFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 15:05:06 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:32358 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729040AbgEETFE (ORCPT
+        id S1728938AbgEETH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 15:07:56 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:43729 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727857AbgEETHz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 15:05:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588705503;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=U4GrP7XNU8L0g24slP3Y9dEDs+NkxIqN98lAYXvDGmU=;
-        b=PRh4d0aeq4rTB2eB1x12BqHpVdDkxqOQveZcubcGV+XCGS1wkaGtzwT5anGFvir5Xmx+TR
-        7iUB8zuA9J6eHT9HBQtKSKvM1M7O82/+nUNiBbWuO3yySJ4YvBUJ7o/8UX8bfrrj53DjNh
-        v/ddbv2wTp64J6PFTfxCaHkbfXFS06E=
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
- [209.85.214.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-492-Verbd8TWMeqnUtFx_tnBsw-1; Tue, 05 May 2020 15:05:01 -0400
-X-MC-Unique: Verbd8TWMeqnUtFx_tnBsw-1
-Received: by mail-pl1-f198.google.com with SMTP id e9so2679770pls.11
-        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 12:05:01 -0700 (PDT)
+        Tue, 5 May 2020 15:07:55 -0400
+Received: by mail-ot1-f66.google.com with SMTP id g14so2619590otg.10;
+        Tue, 05 May 2020 12:07:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=U4GrP7XNU8L0g24slP3Y9dEDs+NkxIqN98lAYXvDGmU=;
-        b=uP9mojn4PVb2QpLfQIn+rrLr0Pyo00PcA+3ijC5cYEXoTF4t/41MoancfdNQgVbCDJ
-         dCQQcHwv5uJ0izSM3oB4TfUX3mwy4aiAXxbp6x9WD2E3V1zTA8DAPBV/4Ke377D6X5DS
-         nHujjcUDqrcnAGwBWtBJ5sfYOUE4Rn/RJJLhTmQ4UTV36a62BUFwlxUpI9pC+Mzuda2w
-         Ni1hDfdHvK9pzFn6HzdoDxtM07ysBJUul9T6T5fXQtn6KQsMv0Q6CHQCKZbN8FnVecod
-         oDZkOXUegvls6PtwqWD3uxeQWv22GyEle/rGbdP+u4a9zu/KoTEdiX/5MYXRumUDixOp
-         wKAg==
-X-Gm-Message-State: AGi0PuZAh8/c2ZRc1Ft0elta6kl2ADuQ96OZ0i+/i+VxNLQ8AqnVmcdx
-        xCRP4YpWOQFsLxdk/lEsEqReqw3OrpiF06FUlQNiWK3SoONeNcvh+5clQ+Wup8MwTtZHz9/fgiA
-        JUFvAkp88oo4BEyZPQGON5VDs
-X-Received: by 2002:a17:90a:2fc8:: with SMTP id n8mr4931057pjm.159.1588705499338;
-        Tue, 05 May 2020 12:04:59 -0700 (PDT)
-X-Google-Smtp-Source: APiQypKasw2T0vbZ5atQn/rNAI6ZBPg7B5A29a3CWSro3nVzE6UVzU461CDw6k/5yIaqczr2W1pqXg==
-X-Received: by 2002:a17:90a:2fc8:: with SMTP id n8mr4931017pjm.159.1588705499081;
-        Tue, 05 May 2020 12:04:59 -0700 (PDT)
-Received: from localhost ([122.177.124.216])
-        by smtp.gmail.com with ESMTPSA id i128sm2494555pfc.149.2020.05.05.12.04.57
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 05 May 2020 12:04:58 -0700 (PDT)
-From:   Bhupesh Sharma <bhsharma@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     bhsharma@redhat.com, bhupesh.linux@gmail.com,
-        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
-        aelior@marvell.com, GR-everest-linux-l2@marvell.com,
-        manishc@marvell.com, davem@davemloft.net
-Subject: [PATCH 2/2] net: qed: Disable SRIOV functionality inside kdump kernel
-Date:   Wed,  6 May 2020 00:34:41 +0530
-Message-Id: <1588705481-18385-3-git-send-email-bhsharma@redhat.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1588705481-18385-1-git-send-email-bhsharma@redhat.com>
-References: <1588705481-18385-1-git-send-email-bhsharma@redhat.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=yRzXKHUNDJ+mtxR4YILju7sSskHiz9OTnTLXZbQ3p2Y=;
+        b=hIvg7SPDZem/i5nuv/x0WIHo3fP8UXKpoIxYdnDvlKZqdJFoCALTaVUOkXgNVFBqFa
+         MVmbgeAecx9cWY3LFz9TW44i9g8n0DnazcP1MeDyyHVUt7OR0R0Ys/7nxpgONNIzGTDO
+         9Smp5KK3fMUs6nmZIEmKIB3+F3WNbgzT+ZItryeunhuj6byIVBqErLA8y8nsLssxYxNN
+         3as4AFTSUPMVD9rW/wJiAH+/34SbIzjCdm3MOngQR8HoHTvrlyV+BpUF68YshYYgAaDF
+         KbZrkDmNvIshCsOhyF9gyvjQObU6l7SiOWVgXS4HbGOV6qlLo2y6Ga9kNtKjUW0od+zw
+         ltug==
+X-Gm-Message-State: AGi0PuYNHe4lL4/ufB+J9t/Vz2A9iWmQ2X2JaOMlrdULIHHUBkwzcNgF
+        rhq9/RrwOt26X6Nkprw6yQ==
+X-Google-Smtp-Source: APiQypK2eZKZF5A9T34e/f8dTGyfZ0o4fZJqUzZkYfTgjBhAmNs3W9y7CwGgIbJcYFLhw+3Fn9UvsA==
+X-Received: by 2002:a9d:4716:: with SMTP id a22mr3514646otf.46.1588705674224;
+        Tue, 05 May 2020 12:07:54 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id z10sm464168oon.5.2020.05.05.12.07.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 May 2020 12:07:53 -0700 (PDT)
+Received: (nullmailer pid 19674 invoked by uid 1000);
+        Tue, 05 May 2020 19:07:52 -0000
+Date:   Tue, 5 May 2020 14:07:52 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Artur Rojek <contact@artur-rojek.eu>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 1/7] dt-bindings: iio/adc: Convert ingenic-adc docs to
+ YAML.
+Message-ID: <20200505190752.GA16143@bogus>
+References: <20200503171451.44034-1-contact@artur-rojek.eu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200503171451.44034-1-contact@artur-rojek.eu>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since we have kdump kernel(s) running under severe memory constraint
-it makes sense to disable the qed SRIOV functionality when running the
-kdump kernel as kdump configurations on several distributions don't
-support SRIOV targets for saving the vmcore (see [1] for example).
+On Sun, May 03, 2020 at 07:14:45PM +0200, Artur Rojek wrote:
+> Convert the textual documentation of Device Tree bindings for the
+> Ingenic JZ47xx SoCs ADC controller to YAML.
+> 
+> The `interrupts` property is now explicitly listed and marked as
+> required. While missing from the previous textual documentation, this
+> property has been used with all the boards which probe this driver.
+> 
+> Signed-off-by: Artur Rojek <contact@artur-rojek.eu>
+> Tested-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+> 
+> Changes:
+> 
+> v6: new patch
+> 
+>  .../bindings/iio/adc/ingenic,adc.txt          | 49 ------------
+>  .../bindings/iio/adc/ingenic,adc.yaml         | 74 +++++++++++++++++++
+>  2 files changed, 74 insertions(+), 49 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/iio/adc/ingenic,adc.txt
+>  create mode 100644 Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/adc/ingenic,adc.txt b/Documentation/devicetree/bindings/iio/adc/ingenic,adc.txt
+> deleted file mode 100644
+> index cd9048cf9dcf..000000000000
+> --- a/Documentation/devicetree/bindings/iio/adc/ingenic,adc.txt
+> +++ /dev/null
+> @@ -1,49 +0,0 @@
+> -* Ingenic JZ47xx ADC controller IIO bindings
+> -
+> -Required properties:
+> -
+> -- compatible: Should be one of:
+> -  * ingenic,jz4725b-adc
+> -  * ingenic,jz4740-adc
+> -  * ingenic,jz4770-adc
+> -- reg: ADC controller registers location and length.
+> -- clocks: phandle to the SoC's ADC clock.
+> -- clock-names: Must be set to "adc".
+> -- #io-channel-cells: Must be set to <1> to indicate channels are selected
+> -  by index.
+> -
+> -ADC clients must use the format described in iio-bindings.txt, giving
+> -a phandle and IIO specifier pair ("io-channels") to the ADC controller.
+> -
+> -Example:
+> -
+> -#include <dt-bindings/iio/adc/ingenic,adc.h>
+> -
+> -adc: adc@10070000 {
+> -	compatible = "ingenic,jz4740-adc";
+> -	#io-channel-cells = <1>;
+> -
+> -	reg = <0x10070000 0x30>;
+> -
+> -	clocks = <&cgu JZ4740_CLK_ADC>;
+> -	clock-names = "adc";
+> -
+> -	interrupt-parent = <&intc>;
+> -	interrupts = <18>;
+> -};
+> -
+> -adc-keys {
+> -	...
+> -	compatible = "adc-keys";
+> -	io-channels = <&adc INGENIC_ADC_AUX>;
+> -	io-channel-names = "buttons";
+> -	...
+> -};
+> -
+> -battery {
+> -	...
+> -	compatible = "ingenic,jz4740-battery";
+> -	io-channels = <&adc INGENIC_ADC_BATTERY>;
+> -	io-channel-names = "battery";
+> -	...
+> -};
+> diff --git a/Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml b/Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml
+> new file mode 100644
+> index 000000000000..e9c46fff840a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml
+> @@ -0,0 +1,74 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +# Copyright 2019-2020 Artur Rojek
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/iio/adc/ingenic,adc.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: Ingenic JZ47xx ADC controller IIO bindings
+> +
+> +maintainers:
+> +  - Artur Rojek <contact@artur-rojek.eu>
+> +
+> +description: >
+> +  Industrial I/O subsystem bindings for ADC controller found in
+> +  Ingenic JZ47xx SoCs.
+> +
+> +  ADC clients must use the format described in iio-bindings.txt, giving
+> +  a phandle and IIO specifier pair ("io-channels") to the ADC controller.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - ingenic,jz4725b-adc
+> +      - ingenic,jz4740-adc
+> +      - ingenic,jz4770-adc
+> +
+> +  '#io-channel-cells':
+> +    const: 1
+> +    description:
+> +      Must be set to <1> to indicate channels are selected by index.
+> +
+> +  reg:
+> +    items:
+> +      - description: ADC controller registers location and length.
 
-Currently the qed SRIOV functionality ends up consuming memory in
-the kdump kernel, when we don't really use the same.
+That's all 'reg' properties. Just 'maxItems: 1' is good for single 
+entry.
 
-An example log seen in the kdump kernel with the SRIOV functionality
-enabled can be seen below (obtained via memstrack tool, see [2]):
- dracut-pre-pivot[676]: ======== Report format module_summary: ========
- dracut-pre-pivot[676]: Module qed using 149.6MB (2394 pages), peak allocation 149.6MB (2394 pages)
+> +
+> +  clocks:
+> +    items:
+> +      - description: phandle to the SoC's ADC clock.
 
-This patch disables the SRIOV functionality inside kdump kernel and with
-the same applied the memory consumption goes down:
- dracut-pre-pivot[671]: ======== Report format module_summary: ========
- dracut-pre-pivot[671]: Module qed using 124.6MB (1993 pages), peak allocation 124.7MB (1995 pages)
+Same here.
 
-[1]. https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/managing_monitoring_and_updating_the_kernel/installing-and-configuring-kdump_managing-monitoring-and-updating-the-kernel#supported-kdump-targets_supported-kdump-configurations-and-targets
-[2]. Memstrack tool: https://github.com/ryncsn/memstrack
+> +
+> +  clock-names:
+> +    items:
+> +      - const: adc
+> +
+> +  interrupts:
+> +    items:
+> +      - description: IRQ line for the ADC.
 
-Cc: kexec@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Cc: Ariel Elior <aelior@marvell.com>
-Cc: GR-everest-linux-l2@marvell.com
-Cc: Manish Chopra <manishc@marvell.com>
-Cc: David S. Miller <davem@davemloft.net>
-Signed-off-by: Bhupesh Sharma <bhsharma@redhat.com>
----
- drivers/net/ethernet/qlogic/qed/qed_sriov.h  | 10 +++++++---
- drivers/net/ethernet/qlogic/qede/qede_main.c |  2 +-
- 2 files changed, 8 insertions(+), 4 deletions(-)
+And here.
 
-diff --git a/drivers/net/ethernet/qlogic/qed/qed_sriov.h b/drivers/net/ethernet/qlogic/qed/qed_sriov.h
-index 368e88565783..f2ebd9a76e20 100644
---- a/drivers/net/ethernet/qlogic/qed/qed_sriov.h
-+++ b/drivers/net/ethernet/qlogic/qed/qed_sriov.h
-@@ -32,6 +32,7 @@
- 
- #ifndef _QED_SRIOV_H
- #define _QED_SRIOV_H
-+#include <linux/crash_dump.h>
- #include <linux/types.h>
- #include "qed_vf.h"
- 
-@@ -40,9 +41,12 @@
- #define QED_VF_ARRAY_LENGTH (3)
- 
- #ifdef CONFIG_QED_SRIOV
--#define IS_VF(cdev)             ((cdev)->b_is_vf)
--#define IS_PF(cdev)             (!((cdev)->b_is_vf))
--#define IS_PF_SRIOV(p_hwfn)     (!!((p_hwfn)->cdev->p_iov_info))
-+#define IS_VF(cdev)             ((is_kdump_kernel()) ? \
-+				 (0) : ((cdev)->b_is_vf))
-+#define IS_PF(cdev)             ((is_kdump_kernel()) ? \
-+				 (1) : !((cdev)->b_is_vf))
-+#define IS_PF_SRIOV(p_hwfn)     ((is_kdump_kernel()) ? \
-+				 (0) : !!((p_hwfn)->cdev->p_iov_info))
- #else
- #define IS_VF(cdev)             (0)
- #define IS_PF(cdev)             (1)
-diff --git a/drivers/net/ethernet/qlogic/qede/qede_main.c b/drivers/net/ethernet/qlogic/qede/qede_main.c
-index 34fa3917eb33..f557ae90ce7c 100644
---- a/drivers/net/ethernet/qlogic/qede/qede_main.c
-+++ b/drivers/net/ethernet/qlogic/qede/qede_main.c
-@@ -1187,7 +1187,7 @@ static int qede_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	case QEDE_PRIVATE_VF:
- 		if (debug & QED_LOG_VERBOSE_MASK)
- 			dev_err(&pdev->dev, "Probing a VF\n");
--		is_vf = true;
-+		is_vf = is_kdump_kernel() ? false : true;
- 		break;
- 	default:
- 		if (debug & QED_LOG_VERBOSE_MASK)
--- 
-2.7.4
-
+> +
+> +required:
+> +  - compatible
+> +  - '#io-channel-cells'
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - interrupts
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/jz4740-cgu.h>
+> +    #include <dt-bindings/iio/adc/ingenic,adc.h>
+> +
+> +    adc@10070000 {
+> +            compatible = "ingenic,jz4740-adc";
+> +            #io-channel-cells = <1>;
+> +
+> +            reg = <0x10070000 0x30>;
+> +
+> +            clocks = <&cgu JZ4740_CLK_ADC>;
+> +            clock-names = "adc";
+> +
+> +            interrupt-parent = <&intc>;
+> +            interrupts = <18>;
+> +    };
+> -- 
+> 2.26.2
+> 
