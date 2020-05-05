@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E74881C5943
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E2431C5864
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:15:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729177AbgEEONz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:13:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48530 "EHLO
+        id S1729485AbgEEOOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:14:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729374AbgEEONt (ORCPT
+        by vger.kernel.org with ESMTP id S1729453AbgEEONz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:13:49 -0400
+        Tue, 5 May 2020 10:13:55 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B22EC061A41
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:13:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E03EEC061A10
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:13:54 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jVyK5-0000OZ-G1; Tue, 05 May 2020 16:13:25 +0200
+        id 1jVyK6-0000PP-MM; Tue, 05 May 2020 16:13:26 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id EDD45FFC8D;
-        Tue,  5 May 2020 16:13:24 +0200 (CEST)
-Message-Id: <20200505134058.955968069@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 3704BFFC8D;
+        Tue,  5 May 2020 16:13:26 +0200 (CEST)
+Message-Id: <20200505134059.061301403@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 05 May 2020 15:16:11 +0200
+Date:   Tue, 05 May 2020 15:16:12 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -44,8 +44,7 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Will Deacon <will@kernel.org>
-Subject: [patch V4 part 1 09/36] x86/entry/64: Avoid pointless code when
- CONTEXT_TRACKING=n
+Subject: [patch V4 part 1 10/36] x86/entry: Remove the unused LOCKDEP_SYSEXIT cruft
 References: <20200505131602.633487962@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -58,37 +57,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
-
-GAS cannot optimize out the test and conditional jump when context tracking
-is disabled and CALL_enter_from_user_mode is an empty macro.
-
-Wrap it in #ifdeffery. Will go away once all this is moved to C.
+No users left since two years due to commit 21d375b6b34f ("x86/entry/64:
+Remove the SYSCALL64 fast path")
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
-Acked-by: Frederic Weisbecker <frederic@kernel.org>
-Acked-by: Andy Lutomirski <luto@kernel.org>
-
 ---
- arch/x86/entry/entry_64.S |    2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/entry/thunk_64.S       |    5 -----
+ arch/x86/include/asm/irqflags.h |   24 ------------------------
+ 2 files changed, 29 deletions(-)
 
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -888,12 +888,14 @@ apicinterrupt IRQ_WORK_VECTOR			irq_work
- 	TRACE_IRQS_OFF
- 	.endif
+--- a/arch/x86/entry/thunk_64.S
++++ b/arch/x86/entry/thunk_64.S
+@@ -42,10 +42,6 @@ SYM_FUNC_END(\name)
+ 	THUNK trace_hardirqs_off_thunk,trace_hardirqs_off_caller,1
+ #endif
  
-+#ifdef CONFIG_CONTEXT_TRACKING
- 	.if \paranoid == 0
- 	testb	$3, CS(%rsp)
- 	jz	.Lfrom_kernel_no_context_tracking_\@
- 	CALL_enter_from_user_mode
- .Lfrom_kernel_no_context_tracking_\@:
- 	.endif
-+#endif
+-#ifdef CONFIG_DEBUG_LOCK_ALLOC
+-	THUNK lockdep_sys_exit_thunk,lockdep_sys_exit
+-#endif
+-
+ #ifdef CONFIG_PREEMPTION
+ 	THUNK preempt_schedule_thunk, preempt_schedule
+ 	THUNK preempt_schedule_notrace_thunk, preempt_schedule_notrace
+@@ -54,7 +50,6 @@ SYM_FUNC_END(\name)
+ #endif
  
- 	movq	%rsp, %rdi			/* pt_regs pointer */
+ #if defined(CONFIG_TRACE_IRQFLAGS) \
+- || defined(CONFIG_DEBUG_LOCK_ALLOC) \
+  || defined(CONFIG_PREEMPTION)
+ SYM_CODE_START_LOCAL_NOALIGN(.L_restore)
+ 	popq %r11
+--- a/arch/x86/include/asm/irqflags.h
++++ b/arch/x86/include/asm/irqflags.h
+@@ -180,30 +180,6 @@ static inline int arch_irqs_disabled(voi
+ #  define TRACE_IRQS_ON
+ #  define TRACE_IRQS_OFF
+ #endif
+-#ifdef CONFIG_DEBUG_LOCK_ALLOC
+-#  ifdef CONFIG_X86_64
+-#    define LOCKDEP_SYS_EXIT		call lockdep_sys_exit_thunk
+-#    define LOCKDEP_SYS_EXIT_IRQ \
+-	TRACE_IRQS_ON; \
+-	sti; \
+-	call lockdep_sys_exit_thunk; \
+-	cli; \
+-	TRACE_IRQS_OFF;
+-#  else
+-#    define LOCKDEP_SYS_EXIT \
+-	pushl %eax;				\
+-	pushl %ecx;				\
+-	pushl %edx;				\
+-	call lockdep_sys_exit;			\
+-	popl %edx;				\
+-	popl %ecx;				\
+-	popl %eax;
+-#    define LOCKDEP_SYS_EXIT_IRQ
+-#  endif
+-#else
+-#  define LOCKDEP_SYS_EXIT
+-#  define LOCKDEP_SYS_EXIT_IRQ
+-#endif
+ #endif /* __ASSEMBLY__ */
  
+ #endif
 
