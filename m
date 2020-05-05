@@ -2,116 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 102CA1C5902
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:21:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 669D31C5917
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:22:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730574AbgEEOVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:21:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49966 "EHLO
+        id S1730383AbgEEOV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:21:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730559AbgEEOU7 (ORCPT
+        by vger.kernel.org with ESMTP id S1729256AbgEEOV4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:20:59 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EC57C061A0F;
-        Tue,  5 May 2020 07:20:59 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 4345523E80;
-        Tue,  5 May 2020 16:20:57 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1588688457;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hN9heAe9nvYzjYtNDE8SqD4yGSnkgCfLMAsBpUZiufs=;
-        b=MlVY1pqCRINZzT3UE7EK05+wlTCqLm5hLyXTOO7pvnWZEFyJ1Hjw6ZViHh/C6qOFZW/c1e
-        ij0zOdNDDPAsMcw+63PcWcYuDXYuXlijC8S0BEiNDJbBhOk9Xpz4douoc05xQn/BYNxc/1
-        5hCUs+spNQgxlPqVZecpaZYfq04dtTk=
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 05 May 2020 16:20:57 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [RFC net-next] net: phy: at803x: add cable diagnostics support
-In-Reply-To: <20200505130741.GD208718@lunn.ch>
-References: <20200503181517.4538-1-michael@walle.cc>
- <20200505130741.GD208718@lunn.ch>
-User-Agent: Roundcube Webmail/1.4.4
-Message-ID: <7dcb92b092057d50b8f079fa8bf0bfeb@walle.cc>
-X-Sender: michael@walle.cc
+        Tue, 5 May 2020 10:21:56 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13B45C061A0F;
+        Tue,  5 May 2020 07:21:56 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id 207so1086068pgc.6;
+        Tue, 05 May 2020 07:21:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=cPehjVZlHj3aHIpwlaH11wYRizkllSVBKTyEpG1u9o8=;
+        b=cQe6rtuYwQupTWb2O+AmXwy/AngOD5Gs7e004xd9rHZ8q0lFfYjREUPKhrReYPNq+y
+         Y+LFSx278dRQWd4kuh6dz9PX70JoD+PBkFrX6cAgBKSl4eIl8dSUWj6XCkiKYL3aa9bC
+         Bcxyclf2McA4goDo32h13h1kKMPxHbcRadw7TI9B2ynWCS8Jn2urb3BxH0ZiShuakOh0
+         M0NZgA9Ejv2g1rHRUcvXf+CSBa16TUnzfCJeOOGNoqOPgvMAOb1ry/qz6qOe9fa45sDl
+         9LNqnq714nyPQ17T8yZ4QlvQRvh7rb5qewA3WdIXi01mf/9V7W/X1Vs3HopzbBLiKtrn
+         2baA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=cPehjVZlHj3aHIpwlaH11wYRizkllSVBKTyEpG1u9o8=;
+        b=QK82PuiXB3KVWcJwb8IbpPerj0OO0ragzm8yRVGpaBDy6QzJ7Fzche4GGlpy7kbteV
+         mqSE2E9hIahwu0UZFttXozbjEEEzXU2wG/2mcIRwDd5hAjuvHK/53HUswmxYoOJfnPu9
+         AHz/JCUbeHgYsj27APY/UhrxLCcGN0v6JI+5UB4KdimOgUPKM+anrW4aFQRC449s+ziM
+         CSQIbg0P+ofVMkelzWe1cCltP+iBMIDxejO0/0kB1rs/ns4lpCbEkw3cV8wT9Rf84RE6
+         ogE2jQpZ/xiC3boW7FmH/f/UGaqNDecrRROqoOuq6p1TeLDAMhQoUpdnPSrCEEESuCWy
+         LTKw==
+X-Gm-Message-State: AGi0PubosorSy67EL2Kp7o5ldTMDPR7RnVTN5dymRZlgGY3MF3JQWQ1D
+        LwslKdI5SR+zvL2vZSlsfuc=
+X-Google-Smtp-Source: APiQypLEf1iEWLOIV3zKy//l6iBpXlZXz4d2EO3uWFl2oLEiwZOq4ELIBlobuJS0yMohcdO7rPPZow==
+X-Received: by 2002:a63:8d4b:: with SMTP id z72mr2992726pgd.376.1588688515628;
+        Tue, 05 May 2020 07:21:55 -0700 (PDT)
+Received: from localhost.localdomain ([120.244.110.63])
+        by smtp.gmail.com with ESMTPSA id o63sm2235060pjb.40.2020.05.05.07.21.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 May 2020 07:21:55 -0700 (PDT)
+From:   Jia-Ju Bai <baijiaju1990@gmail.com>
+To:     mchehab@kernel.org, kstewart@linuxfoundation.org,
+        tomasbortoli@gmail.com, gregkh@linuxfoundation.org, sean@mess.org,
+        allison@lohutok.net, tglx@linutronix.de
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jia-Ju Bai <baijiaju1990@gmail.com>
+Subject: [PATCH] media: usb: ttusb-dec: avoid buffer overflow in ttusb_dec_handle_irq() when DMA failures/attacks occur
+Date:   Tue,  5 May 2020 22:21:10 +0800
+Message-Id: <20200505142110.7620-1-baijiaju1990@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2020-05-05 15:07, schrieb Andrew Lunn:
->> +static int at803x_cable_test_get_status(struct phy_device *phydev,
->> +					bool *finished)
->> +{
->> +	struct at803x_priv *priv = phydev->priv;
->> +	static const int ethtool_pair[] = {
->> +		ETHTOOL_A_CABLE_PAIR_0, ETHTOOL_A_CABLE_PAIR_1,
->> +		ETHTOOL_A_CABLE_PAIR_2, ETHTOOL_A_CABLE_PAIR_3};
-> 
-> If you put one per line, you will keep the reverse christmas tree, and
-> David will be happy.
-> 
->> +	int pair, val, ret;
->> +	unsigned int delay_ms;
-> 
-> Well, David will be happy if you move this as well.
+In ttusb_dec_init_usb():
+  dec->irq_buffer = usb_alloc_coherent(...)
 
-Damn, this should really be a checkpatch.pl check ;) It was "int 
-delay_ms;"
-before, then it was changed to "unsigned int delay_ms;"..
+Thus, "dec->irq_buffer" is a DMA value, and it is assigned to "buffer"
+in ttusb_dec_handle_irq():
+  char *buffer = dec->irq_buffer;
 
-> 
->> +	*finished = false;
->> +
->> +	if (priv->cdt_start) {
->> +		delay_ms = AT803X_CDT_DELAY_MS;
->> +		delay_ms -= jiffies_delta_to_msecs(jiffies - priv->cdt_start);
->> +		if (delay_ms > 0)
->> +			msleep(delay_ms);
->> +	}
->> +
->> +	for (pair = 0; pair < 4; pair++) {
->> +		ret = at803x_cdt_start(phydev, pair);
->> +		if (ret)
->> +			return ret;
->> +
->> +		ret = at803x_cdt_wait_for_completion(phydev);
->> +		if (ret)
->> +			return ret;
->> +
->> +		val = phy_read(phydev, AT803X_CDT_STATUS);
->> +		if (val < 0)
->> +			return val;
->> +
->> +		ethnl_cable_test_result(phydev, ethtool_pair[pair],
->> +					at803x_cdt_test_result(val));
->> +
->> +		if (at803x_cdt_fault_length_valid(val))
->> +			continue;
-> 
-> The name is not very intuitive. It return false if it is valid?
+When DMA failures or attacks occur, the value of buffer[4] can be
+changed at any time. In this case, "buffer[4] - 1 < ARRAY_SIZE(rc_keys)"
+can be first satisfied, and then the value of buffer[4] can be changed
+to a large number, causing a buffer-overflow vulnerability.
 
-Mhh, this is actually wrong, it returns true if the length is
-valid. I need to double check that. what about
-at803x_cdt_fault_length_is_valid()
+To avoid the risk of this vulnerability, buffer[4] is assigned to a
+non-DMA local variable "index" at the beginning of
+ttusb_dec_handle_irq(), and then this variable replaces each use of
+buffer[4] in the function.
 
-> Otherwise, this looks good.
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+---
+ drivers/media/usb/ttusb-dec/ttusb_dec.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-I'll wait for your v3 and then I'll rebase on that.
+diff --git a/drivers/media/usb/ttusb-dec/ttusb_dec.c b/drivers/media/usb/ttusb-dec/ttusb_dec.c
+index 3198f9624b7c..8543c552515b 100644
+--- a/drivers/media/usb/ttusb-dec/ttusb_dec.c
++++ b/drivers/media/usb/ttusb-dec/ttusb_dec.c
+@@ -250,6 +250,7 @@ static void ttusb_dec_handle_irq( struct urb *urb)
+ 	struct ttusb_dec *dec = urb->context;
+ 	char *buffer = dec->irq_buffer;
+ 	int retval;
++	u8 index = buffer[4];
+ 
+ 	switch(urb->status) {
+ 		case 0: /*success*/
+@@ -281,11 +282,11 @@ static void ttusb_dec_handle_irq( struct urb *urb)
+ 		 * this should/could be added later ...
+ 		 * for now lets report each signal as a key down and up
+ 		 */
+-		if (buffer[4] - 1 < ARRAY_SIZE(rc_keys)) {
+-			dprintk("%s:rc signal:%d\n", __func__, buffer[4]);
+-			input_report_key(dec->rc_input_dev, rc_keys[buffer[4] - 1], 1);
++		if (index - 1 < ARRAY_SIZE(rc_keys)) {
++			dprintk("%s:rc signal:%d\n", __func__, index);
++			input_report_key(dec->rc_input_dev, rc_keys[index - 1], 1);
+ 			input_sync(dec->rc_input_dev);
+-			input_report_key(dec->rc_input_dev, rc_keys[buffer[4] - 1], 0);
++			input_report_key(dec->rc_input_dev, rc_keys[index - 1], 0);
+ 			input_sync(dec->rc_input_dev);
+ 		}
+ 	}
+-- 
+2.17.1
 
--michael
