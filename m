@@ -2,103 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78F091C541E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 13:13:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 904C61C5415
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 13:13:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728904AbgEELNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 07:13:20 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:14403 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728784AbgEELNU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 07:13:20 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1588677199; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=ngKeYnR9lLVGbCVrsiWZkZYm3GJ2jFZWG4yZhTv6H4I=; b=UWBAmqP/1yKdTYK+Mv5JEnV68jRzSi+DHwHb4yqnCh7mCnA4fjE1W7ksKilQZpGnCocshmo/
- vVSYs97igNu1vPEUI8kcgCjADJMHlc+r53WL1kHIf8qxS7Amd+HSdzgLdaiLke5ZRTRyRnFO
- 4y5l006vdk+DVRm+T1781TsJt8I=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5eb14a3f.7f190c821f10-smtp-out-n04;
- Tue, 05 May 2020 11:13:03 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 19F4FC44791; Tue,  5 May 2020 11:13:02 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from codeaurora.org (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S1728883AbgEELMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 07:12:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52506 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728873AbgEELMq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 07:12:46 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: manafm)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9BF3FC43637;
-        Tue,  5 May 2020 11:12:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9BF3FC43637
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=manafm@codeaurora.org
-From:   Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Amit Kucheria <amit.kucheria@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
-Subject: [PATCH 2/2] dt-bindings: thermal: tsens: Add zeroc interrupt support in yaml
-Date:   Tue,  5 May 2020 16:42:04 +0530
-Message-Id: <20200505111204.963-3-manafm@codeaurora.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200505111204.963-1-manafm@codeaurora.org>
-References: <20200505111204.963-1-manafm@codeaurora.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id 9A88C20735;
+        Tue,  5 May 2020 11:12:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588677166;
+        bh=aqQGzN9qYZSgDY+zbPTiKpLxyYu05CkwvJktzlbaFXc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UcmzyUy+7wAHnwGGrAinJ1tPmzRK3XYBBi4NFpI0imGA0Xq1Y+a5vct9u00Zv4svr
+         /pzdcE9N4IojYNwxNmXeNFDqjLMc2V6q+ZurACaX8wqfEoBOcaWQsQ+oKJES57ND36
+         /d/JJ8/3P33x8kHDfvcYUyIF5hT2X14UJCQ0N0hA=
+Date:   Tue, 5 May 2020 12:12:41 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3 04/16] arm64/cpufeature: Introduce ID_PFR2 CPU register
+Message-ID: <20200505111241.GF19710@willie-the-truck>
+References: <1588426445-24344-1-git-send-email-anshuman.khandual@arm.com>
+ <1588426445-24344-5-git-send-email-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1588426445-24344-5-git-send-email-anshuman.khandual@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add 0C (zeroc) interrupt support for tsens in yaml.
+On Sat, May 02, 2020 at 07:03:53PM +0530, Anshuman Khandual wrote:
+> This adds basic building blocks required for ID_PFR2 CPU register which
+> provides information about the AArch32 programmers model which must be
+> interpreted along with ID_PFR0 and ID_PFR1 CPU registers. This is added
+> per ARM DDI 0487F.a specification.
+> 
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: James Morse <james.morse@arm.com>
+> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Cc: kvmarm@lists.cs.columbia.edu
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> 
+> Suggested-by: Mark Rutland <mark.rutland@arm.com>
+> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+>  arch/arm64/include/asm/cpu.h    |  1 +
+>  arch/arm64/include/asm/sysreg.h |  4 ++++
+>  arch/arm64/kernel/cpufeature.c  | 11 +++++++++++
+>  arch/arm64/kernel/cpuinfo.c     |  1 +
+>  arch/arm64/kvm/sys_regs.c       |  2 +-
+>  5 files changed, 18 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/include/asm/cpu.h b/arch/arm64/include/asm/cpu.h
+> index b4a40535a3d8..464e828a994d 100644
+> --- a/arch/arm64/include/asm/cpu.h
+> +++ b/arch/arm64/include/asm/cpu.h
+> @@ -46,6 +46,7 @@ struct cpuinfo_arm64 {
+>  	u32		reg_id_mmfr3;
+>  	u32		reg_id_pfr0;
+>  	u32		reg_id_pfr1;
+> +	u32		reg_id_pfr2;
+>  
+>  	u32		reg_mvfr0;
+>  	u32		reg_mvfr1;
+> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+> index e5317a6367b6..c977449e02db 100644
+> --- a/arch/arm64/include/asm/sysreg.h
+> +++ b/arch/arm64/include/asm/sysreg.h
+> @@ -153,6 +153,7 @@
+>  #define SYS_MVFR0_EL1			sys_reg(3, 0, 0, 3, 0)
+>  #define SYS_MVFR1_EL1			sys_reg(3, 0, 0, 3, 1)
+>  #define SYS_MVFR2_EL1			sys_reg(3, 0, 0, 3, 2)
+> +#define SYS_ID_PFR2_EL1			sys_reg(3, 0, 0, 3, 4)
 
-Signed-off-by: Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
----
- Documentation/devicetree/bindings/thermal/qcom-tsens.yaml | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+nit: but please group these defines by name rather than encoding.
 
-diff --git a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
-index 2ddd39d96766..8a0893f77d20 100644
---- a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
-+++ b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
-@@ -52,12 +52,14 @@ properties:
-     items:
-       - description: Combined interrupt if upper or lower threshold crossed
-       - description: Interrupt if critical threshold crossed
-+      - description: Interrupt if zeroC threshold is crossed
- 
-   interrupt-names:
-     minItems: 1
-     items:
-       - const: uplow
-       - const: critical
-+      - const: zeroc
- 
-   nvmem-cells:
-     minItems: 1
-@@ -168,8 +170,9 @@ examples:
-                  <0xc222000 0x1ff>;
- 
-            interrupts = <GIC_SPI 506 IRQ_TYPE_LEVEL_HIGH>,
--                        <GIC_SPI 508 IRQ_TYPE_LEVEL_HIGH>;
--           interrupt-names = "uplow", "critical";
-+                        <GIC_SPI 508 IRQ_TYPE_LEVEL_HIGH>,
-+                        <GIC_SPI 510 IRQ_TYPE_EDGE_RISING>;
-+           interrupt-names = "uplow", "critical", "zeroc";
- 
-            #qcom,sensors = <13>;
-            #thermal-sensor-cells = <1>;
--- 
-2.26.2
+Will
