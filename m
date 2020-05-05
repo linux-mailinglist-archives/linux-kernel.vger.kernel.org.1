@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29C1A1C4F22
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 09:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E4A01C4F29
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 09:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726788AbgEEHdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 03:33:38 -0400
-Received: from mx07-00178001.pphosted.com ([62.209.51.94]:25898 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725320AbgEEHdi (ORCPT
+        id S1728388AbgEEHdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 03:33:44 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:42312 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727938AbgEEHdn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 03:33:38 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0457XAhh004115;
-        Tue, 5 May 2020 09:33:25 +0200
+        Tue, 5 May 2020 03:33:43 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0457RaST021748;
+        Tue, 5 May 2020 09:33:26 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=STMicroelectronics;
- bh=0rDxJMTTj6STEhB4ZRJ2M8Lot9vO0d8RML+Y0Wg+4Fs=;
- b=EnZBydwFWdLSaXw0UjFA2QTDeJ3UbIogQFm9cnfED8s9xBPxr0emLyhc9it8a5Ke6f2l
- 1DbnnttiAylS1Jm/BzBTdF0ZLvYhMv1j/kQtI+DfUmpyAuPCRwU9EnQRMF0FbahsU2yF
- Jhk4sTOlKmr2DmEQ5MlQJ7ZF4C8eBmng9uQAjpmePbVp6QhI8RrIxSHuJLSd8Om4mJGc
- k+FRoWBYVm+Q9bsjdovfLG6ovZtgdfEJfFPqPGBtXUKl6MHgAo3SIk0xq6xqecBUynzU
- wZFDAzHWHcDXOTpdogT4bwWVhH6BN6b3I7SeULXJJ3Hxf74kO8gBEB/11FkMq4oyvIa1 pA== 
+ : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=STMicroelectronics;
+ bh=95ku3/6d1RqLRL3+9BXCw/qoEPmvHEydQikv3nokkHE=;
+ b=wq54FGb2PUTIfZ0Z4HWOhJtYsxNX08QLoHAcCvalnRvHeOwIkMrGccNgOT5kIC7rpGdW
+ 7R20/3opU85slWnUWzV9CcVaryFNqiNQyPU4nOfznM5dmRkJvTMxsXLGqxsKKo58MFO1
+ DYKOXEfDQeCMx6J9oX8CpMHedKRokE8ZCBoNDUqzf8rwl5Sut/CaDYpHjd2WwCJHoaEU
+ mcL9aUEizkntHgg/ldYqosPhOVgLvwXBCYCodWa0ULgrxL58W+WxtbJN3fPKOamuaNim
+ rVrAio9RVpA8NxQAw0bdW73n6EH3dnulJG1bLvldrmhSAyK9eYR0xE963eYNdiHmgAN5 Vg== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 30rxb1xgq8-1
+        by mx07-00178001.pphosted.com with ESMTP id 30ryrj6f49-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 May 2020 09:33:25 +0200
+        Tue, 05 May 2020 09:33:26 +0200
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id E54D710002A;
-        Tue,  5 May 2020 09:33:24 +0200 (CEST)
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 0B30F10002A;
+        Tue,  5 May 2020 09:33:26 +0200 (CEST)
 Received: from Webmail-eu.st.com (sfhdag3node3.st.com [10.75.127.9])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D60162A4929;
-        Tue,  5 May 2020 09:33:24 +0200 (CEST)
-Received: from localhost (10.75.127.50) by SFHDAG3NODE3.st.com (10.75.127.9)
- with Microsoft SMTP Server (TLS) id 15.0.1347.2; Tue, 5 May 2020 09:33:24
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id EEE642A4927;
+        Tue,  5 May 2020 09:33:25 +0200 (CEST)
+Received: from localhost (10.75.127.48) by SFHDAG3NODE3.st.com (10.75.127.9)
+ with Microsoft SMTP Server (TLS) id 15.0.1347.2; Tue, 5 May 2020 09:33:25
  +0200
 From:   Benjamin Gaignard <benjamin.gaignard@st.com>
 To:     <robh+dt@kernel.org>, <mcoquelin.stm32@gmail.com>,
@@ -45,14 +46,16 @@ CC:     <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>,
         Benjamin Gaignard <benjamin.gaignard@st.com>
-Subject: [PATCH v3 0/5] STM32 ETZPC bus controller
-Date:   Tue, 5 May 2020 09:33:03 +0200
-Message-ID: <20200505073308.22914-1-benjamin.gaignard@st.com>
+Subject: [PATCH v3 1/5] dt-bindings: bus: Add firewall bindings
+Date:   Tue, 5 May 2020 09:33:04 +0200
+Message-ID: <20200505073308.22914-2-benjamin.gaignard@st.com>
 X-Mailer: git-send-email 2.15.0
+In-Reply-To: <20200505073308.22914-1-benjamin.gaignard@st.com>
+References: <20200505073308.22914-1-benjamin.gaignard@st.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG3NODE2.st.com (10.75.127.8) To SFHDAG3NODE3.st.com
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG8NODE3.st.com (10.75.127.24) To SFHDAG3NODE3.st.com
  (10.75.127.9)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
  definitions=2020-05-05_04:2020-05-04,2020-05-05 signatures=0
@@ -61,54 +64,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-STM32 Extended TrustZone Protection controller act like a firewall on the
-platform bus. Depending of its configuration devices could be accessible
-by the TrustZone, the co-processor or the non-secure world. ETZPC
-configuration could evolve at runtime for example to switch a device from
-non-secure world to co-processor.
+Add schemas for firewall consumer and provider.
 
-The series introduce 'firewall' helpers to handle the new devices-tree
-properties. These properties are not dedicated to ETZPC and will be reused
-for STM32 next generation of bus controller.
-
+Signed-off-by: Benjamin Gaignard <benjamin.gaignard@st.com>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+---
 version 3:
 - add description in firewall consumer bindings
 - add Linus reviewed-by tag
 
-version 2:
-- fix unit name into st,stm32-etzpc.yaml example and DT
-
-
-Benjamin Gaignard (5):
-  dt-bindings: bus: Add firewall bindings
-  bus: stm32: Introduce firewall controller helpers
-  dt-bindings: bus: Add STM32 ETZPC firewall controller
-  bus: stm32: Add stm32 ETZPC firewall bus controller
-  ARM: dts: stm32: Use ETZPC firewall bus
-
- .../bindings/bus/stm32/firewall-consumer.yaml      |  36 +++
- .../bindings/bus/stm32/firewall-provider.yaml      |  18 ++
- .../bindings/bus/stm32/st,stm32-etzpc.yaml         |  46 ++++
- arch/arm/boot/dts/stm32mp151.dtsi                  |   7 +-
- drivers/bus/Kconfig                                |   2 +
- drivers/bus/Makefile                               |   2 +
- drivers/bus/stm32/Kconfig                          |  11 +
- drivers/bus/stm32/Makefile                         |   2 +
- drivers/bus/stm32/firewall.c                       | 266 +++++++++++++++++++++
- drivers/bus/stm32/firewall.h                       |  75 ++++++
- drivers/bus/stm32/stm32-etzpc.c                    | 160 +++++++++++++
- include/dt-bindings/bus/stm32/stm32-etzpc.h        |  90 +++++++
- 12 files changed, 713 insertions(+), 2 deletions(-)
+ .../bindings/bus/stm32/firewall-consumer.yaml      | 36 ++++++++++++++++++++++
+ .../bindings/bus/stm32/firewall-provider.yaml      | 18 +++++++++++
+ 2 files changed, 54 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/bus/stm32/firewall-consumer.yaml
  create mode 100644 Documentation/devicetree/bindings/bus/stm32/firewall-provider.yaml
- create mode 100644 Documentation/devicetree/bindings/bus/stm32/st,stm32-etzpc.yaml
- create mode 100644 drivers/bus/stm32/Kconfig
- create mode 100644 drivers/bus/stm32/Makefile
- create mode 100644 drivers/bus/stm32/firewall.c
- create mode 100644 drivers/bus/stm32/firewall.h
- create mode 100644 drivers/bus/stm32/stm32-etzpc.c
- create mode 100644 include/dt-bindings/bus/stm32/stm32-etzpc.h
 
+diff --git a/Documentation/devicetree/bindings/bus/stm32/firewall-consumer.yaml b/Documentation/devicetree/bindings/bus/stm32/firewall-consumer.yaml
+new file mode 100644
+index 000000000000..d3d76f99b38d
+--- /dev/null
++++ b/Documentation/devicetree/bindings/bus/stm32/firewall-consumer.yaml
+@@ -0,0 +1,36 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/bus/stm32/firewall-consumer.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Common Bus Firewall consumer binding
++
++description: |
++  Firewall properties provide the possible firewall bus controller
++  configurations for a device.
++  Bus firewall controllers are typically used to control if a hardware
++  block can perform read or write operations on bus.
++  The contents of the firewall bus configuration properties are defined by
++  the binding for the individual firewall controller device.
++
++  The first configuration 'firewall-0' or the one named 'default' is
++  applied before probing the device itself.
++
++maintainers:
++  - Benjamin Gaignard <benjamin.gaignard@st.com>
++
++# always select the core schema
++select: true
++
++properties:
++  firewall-0: true
++
++  firewall-names: true
++
++patternProperties:
++  "firewall-[0-9]":
++    $ref: "/schemas/types.yaml#/definitions/phandle-array"
++
++dependencies:
++  firewall-names: [ firewall-0 ]
+diff --git a/Documentation/devicetree/bindings/bus/stm32/firewall-provider.yaml b/Documentation/devicetree/bindings/bus/stm32/firewall-provider.yaml
+new file mode 100644
+index 000000000000..299824c620ea
+--- /dev/null
++++ b/Documentation/devicetree/bindings/bus/stm32/firewall-provider.yaml
+@@ -0,0 +1,18 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/bus/stm32/firewall-provider.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Common Bus Firewall provider binding
++
++maintainers:
++  - Benjamin Gaignard <benjamin.gaignard@st.com>
++
++properties:
++  '#firewall-cells':
++     $ref: /schemas/types.yaml#/definitions/uint32
++     description: Number of cells in a bus firewall specifier
++
++required:
++  - '#firewall-cells'
 -- 
 2.15.0
 
