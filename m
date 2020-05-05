@@ -2,98 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A0E31C5DDC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 18:52:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCC811C5DF9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 18:54:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729989AbgEEQw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 12:52:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45654 "EHLO
+        id S1730452AbgEEQyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 12:54:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729747AbgEEQwZ (ORCPT
+        by vger.kernel.org with ESMTP id S1729949AbgEEQyG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 12:52:25 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59C51C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 09:52:25 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id u15so2374357ljd.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 09:52:25 -0700 (PDT)
+        Tue, 5 May 2020 12:54:06 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2465DC0610D5
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 09:54:05 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id w11so2116815iov.8
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 09:54:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=9hFXujfAx2/iHidBrnKhRaNUObDjx6hbclJAooxUbFo=;
-        b=eb7GI2X/XrhuAn2Vm+U9831w2ibE6cHnWF7F9S99pPGIKJ581y9sIjG0fOlnKnr8XU
-         3l3RpH6pJHtIm3ZTaZWOJ1vg4eqLgQyIQUJKPk6h3hKYNOZAM/NKILDQePeV8IKRtcTz
-         txmKNoel5w65lmX1pdFQXgC+9b7bhZqgRSUAI=
+        bh=CQPV38VFHq5jUdj3xuK872aLx1CmmM995oAhTR/zeg4=;
+        b=p0OmBMiNRcbZeEVttRyrUydpDTEXD+loILZwadE01yiYrZMAefBa5lEnkCd8IE/f1C
+         wqtNt3itnutwU9SNyU/Y0fQOnPrSFTEoDV1obS+naK5wdvSAbwcozgcVIGkY/Otjnd9p
+         51XhOstTUsx5ISmBzOTD1jNv/oS5q27DmqmWhYSeqm+5U94xAJaIyLgweW34StzfEErI
+         3dfM/v0XMGcRAFe9bPtoLVFLg5ACcy1j8Rnan0JmxmJvsltfDo9KWXkcjYgZK/TvXSRC
+         Oh/P44Cii0cxHTkyJ4tN2a3504hNbCU0BEhwsSTKenaJXoMTLVbgu3JdVv36Y/5fs6vB
+         BO9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9hFXujfAx2/iHidBrnKhRaNUObDjx6hbclJAooxUbFo=;
-        b=OQ28oLqCjl2y6Ar7RLSQOWBjDmltWWVTrrZ7uslDNgLTTcxEb0x+MZWaQyyTJ8Jn7Y
-         QRw/v+tDfWcIpDyLHxSMvWZbnVo9Z2sv2zoYnBfV4byHwPcxEj2pBrTc6Pt2oVMzQNbb
-         FTMWURaqAlxG4xtw1m68us+ETKDAw5L894PqQnERxrHJ/9M+Eid+Yd5KwAxnChiyscC4
-         EFkZ9TEDTuSkI8DPapKUNLkkvmqK4qAF+BZlzOKkSjBLu9FLuDjLjw2Xcx8OXl/LbxDu
-         Adbubg9c2TAJz/ph2vQ+eJTYw+dwpxVcle8dsN+v0Cdq8QPA1ge8dQmUvDKqFZjeZvE6
-         AeHg==
-X-Gm-Message-State: AGi0PuYRkO1ImR2yNrRWRo+QKATel7Sj5gktI0SnJLFDqSsM97c+Cq4h
-        4Bx4MSt7psYFjGyqOJGJ9Au8+YtUezA=
-X-Google-Smtp-Source: APiQypIedb5mOT0y5ACJZsVZdI+/Hf1/R6WwSNLnLp93Wa1VDRI/rRiwrrNhQUmY5a2rFpL7n5YMqg==
-X-Received: by 2002:a2e:88d8:: with SMTP id a24mr2397500ljk.224.1588697543143;
-        Tue, 05 May 2020 09:52:23 -0700 (PDT)
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
-        by smtp.gmail.com with ESMTPSA id l2sm2134420ljg.89.2020.05.05.09.52.21
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 May 2020 09:52:21 -0700 (PDT)
-Received: by mail-lj1-f182.google.com with SMTP id a21so2346971ljj.11
-        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 09:52:21 -0700 (PDT)
-X-Received: by 2002:a2e:87d9:: with SMTP id v25mr2307697ljj.241.1588697540733;
- Tue, 05 May 2020 09:52:20 -0700 (PDT)
+        bh=CQPV38VFHq5jUdj3xuK872aLx1CmmM995oAhTR/zeg4=;
+        b=BiG5Sa2gL4o1f1YKG6RtUP30sxLxwd0W1PzGrNGCuWn3NfEl7tClUA/V0w6s/4umb6
+         CmOV7ea7EK63emIHsdwPvZFAZrpnmCktHBLPlhiumFwDmVCDez3HfrYXsoolugLd9Uz5
+         sciM0YeGXTHgvZKTH/Q49HH25RCrnJZy7q5zss28csEy2u4Cu+/dpHntGHV/2w501u9h
+         I7y+UuSPddYVOHvY1xVeKaYd6wzT4upHWhcsk/EkIgkWGq7cC+peHKehMcBKRBb08s80
+         xSAhKT6sC41LWUT49fof0M/QWI2ueom+ZqABXGNx0qcF9EOnNFwN+UnjufOh284NfYgO
+         gRpA==
+X-Gm-Message-State: AGi0PuY7pOva1DF4S11rYo45cT7g+1XwqjsTy590LSKpTIccWcqAVVIS
+        Px0NCmG4OwRcf6L1C1Iw571Iur0A5bUqt7M6/Nyt1Q==
+X-Google-Smtp-Source: APiQypIh87tWtIMtuteWC1af3Q4H+FkjslZ8xyNvCG2aA394n3dc+bOaNgbwVm/hpp4CR/gsTCwAOETr4pzr5lry2Mw=
+X-Received: by 2002:a02:a004:: with SMTP id a4mr3700717jah.18.1588697644142;
+ Tue, 05 May 2020 09:54:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200505101256.3121270-1-hch@lst.de>
-In-Reply-To: <20200505101256.3121270-1-hch@lst.de>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 5 May 2020 09:52:04 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgrHhaM1XCB=E3Zp2Br8E5c_kmVUTd5y06xh5sev5nRMA@mail.gmail.com>
-Message-ID: <CAHk-=wgrHhaM1XCB=E3Zp2Br8E5c_kmVUTd5y06xh5sev5nRMA@mail.gmail.com>
-Subject: Re: remove set_fs calls from the coredump code v6
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
+References: <20200504110344.17560-1-eesposit@redhat.com> <alpine.DEB.2.22.394.2005041429210.224786@chino.kir.corp.google.com>
+ <f2654143-b8e5-5a1f-8bd0-0cb0df2cd638@redhat.com>
+In-Reply-To: <f2654143-b8e5-5a1f-8bd0-0cb0df2cd638@redhat.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Tue, 5 May 2020 09:53:53 -0700
+Message-ID: <CALMp9eQYcLr_REzDC1kWTHX4SJWt7x+Zd1KwNvS1YGd5TVM1xA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/5] Statsfs: a new ram-based file sytem for Linux
+ kernel statistics
+To:     Emanuele Giuseppe Esposito <eesposit@redhat.com>
+Cc:     David Rientjes <rientjes@google.com>,
+        Jonathan Adams <jwadams@google.com>,
+        kvm list <kvm@vger.kernel.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
         Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jeremy Kerr <jk@ozlabs.org>, Arnd Bergmann <arnd@arndb.de>,
-        Oleg Nesterov <oleg@redhat.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Emanuele Giuseppe Esposito <e.emanuelegiuseppe@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, linux-mips@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 5, 2020 at 3:13 AM Christoph Hellwig <hch@lst.de> wrote:
+On Tue, May 5, 2020 at 2:18 AM Emanuele Giuseppe Esposito
+<eesposit@redhat.com> wrote:
 >
-> this series gets rid of playing with the address limit in the exec and
-> coredump code.  Most of this was fairly trivial, the biggest changes are
-> those to the spufs coredump code.
+>
+>
+> On 5/4/20 11:37 PM, David Rientjes wrote:
+> > Since this is becoming a generic API (good!!), maybe we can discuss
+> > possible ways to optimize gathering of stats in mass?
+>
+> Sure, the idea of a binary format was considered from the beginning in
+> [1], and it can be done either together with the current filesystem, or
+> as a replacement via different mount options.
 
-Ack, nice, and looks good.
-
-The only part I dislike is how we have that 'struct compat_siginfo' on
-the stack, which is a huge waste (most of it is the nasty padding to
-128 bytes).
-
-But that's not new, I only reacted to it because the code moved a bit.
-We cleaned up the regular siginfo to not have the padding in the
-kernel (and by "we" I mean "Eric Biederman did it after some prodding
-as part of his siginfo cleanups" - see commit 4ce5f9c9e754 "signal:
-Use a smaller struct siginfo in the kernel"),  and I wonder if we
-could do something similar with that compat thing.
-
-128 bytes of wasted kernel stack isn't the end of the world, but it's
-sad when the *actual* data is only 32 bytes or so.
-
-                Linus
+ASCII stats are not scalable. A binary format is definitely the way to go.
