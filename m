@@ -2,124 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B237E1C5B85
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 516111C5B8A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:36:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730211AbgEEPgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 11:36:18 -0400
-Received: from smtp-42a8.mail.infomaniak.ch ([84.16.66.168]:46965 "EHLO
-        smtp-42a8.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729250AbgEEPgR (ORCPT
+        id S1730330AbgEEPgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 11:36:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729250AbgEEPgl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 11:36:17 -0400
-Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 49GkMz6zCDzlhnlg;
-        Tue,  5 May 2020 17:36:15 +0200 (CEST)
-Received: from ns3096276.ip-94-23-54.eu (unknown [94.23.54.103])
-        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 49GkMy4bmmzlvfCB;
-        Tue,  5 May 2020 17:36:14 +0200 (CEST)
-Subject: Re: [PATCH v5 0/6] Add support for O_MAYEXEC
-To:     linux-kernel@vger.kernel.org
-Cc:     Aleksa Sarai <cyphar@cyphar.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Heimes <christian@python.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Deven Bowers <deven.desai@linux.microsoft.com>,
-        Eric Chiang <ericchiang@google.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mickael.salaun@ssi.gouv.fr>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        =?UTF-8?Q?Philippe_Tr=c3=a9buchet?= 
-        <philippe.trebuchet@ssi.gouv.fr>,
-        Scott Shell <scottsh@microsoft.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Steve Dower <steve.dower@python.org>,
-        Steve Grubb <sgrubb@redhat.com>,
-        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>,
-        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-References: <20200505153156.925111-1-mic@digikod.net>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <d4616bc0-39df-5d6c-9f5b-d84cf6e65960@digikod.net>
-Date:   Tue, 5 May 2020 17:36:14 +0200
-User-Agent: 
+        Tue, 5 May 2020 11:36:41 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90193C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 08:36:41 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id t9so1325259pjw.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 08:36:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WwxCkRHW3LLt11CwSWNDSa8Gob3WyF2l16Zu0juPB1E=;
+        b=qsSNLS2nAOF69rRydRSFpGTgir/jRB4Zxox9XTBqky6kpZyY1Qi/c5poTt/ioS2Wc9
+         OCCi7qRkUBaQQkV0XhJzHDwZkpfXmHVyW7ahUeIvKmVLuBK3L9fyjgcrT9a3PEGRQ6Ao
+         yvudtC4wo0ft0Z5cRiDCJpN1fbXmoW/iUOwknqTMg7VjpzT0wi9uR+sDNP21Rjon/iqR
+         ZBzD05KS0bLIaaY0dfWVmuOVmADaZHNYD+HemT1VguJV1+s7EBfL0bZJ2fIRPt87xNpS
+         jRUDc1X3an6C/lBOOUs7gLnkpOdJk9Z8Z880I1KT5WCze4sNYkf3ak85WURtk0HjnzOI
+         CF3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WwxCkRHW3LLt11CwSWNDSa8Gob3WyF2l16Zu0juPB1E=;
+        b=eNA2hVkLHVAG+Twb9o0OrGETekITk55WLP95Xg2Ihv5KZGjS+SKbFht53kzUVpoIaW
+         306SftSBlP3hFvlabO8/Qr/nHstTcxt6siWlAuSEA8Yxyut2MTXs8GSuqWWZiHT1Ce3D
+         f/kgRn6vlItbDBMVCN7vQRa0coaOCA9RxgJ4ZPmkxXswBiH/7BbSJBcIadBerMG4JT4H
+         k/3ZUvAqBxSKc5x39rXba7GV51PKA0z3GIBs8JDZ9e4mCVdfRKU5aoI+07B5HLL1MHk1
+         R29xAr689rytoHz6rp2yyR0ScHYARHa4zWjm67jcpk2djA1ghpcCbmF27ESvlKlgtsjd
+         Y05g==
+X-Gm-Message-State: AGi0PuYFFAjarX2jNii23yL/5z5JRK5SFPBGud01nxGt+7wqv6pqZvNC
+        sg8IjLqUd2S+phJV+nO0COTbB724SfMCAUDu7UyWnw==
+X-Google-Smtp-Source: APiQypJvP6wSu1cPxVKVqCewcZTF7AkEv6Px3jZaq/9uQ4S08BiRypUqyPv1V+E6apS+vGLgDIdU6r4tIUnFAzo1wDM=
+X-Received: by 2002:a17:902:eb54:: with SMTP id i20mr1537334pli.179.1588693000713;
+ Tue, 05 May 2020 08:36:40 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200505153156.925111-1-mic@digikod.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
-X-Antivirus: Dr.Web (R) for Unix mail servers drweb plugin ver.6.0.2.8
-X-Antivirus-Code: 0x100000
+References: <20200505135513.65265-1-arnd@arndb.de> <CAHp75VfmvXotH+NRt_YnNQW8O38Gas+ZfLH00jfhytM8w7ka3w@mail.gmail.com>
+ <CAK8P3a2pXZGbFvXpD5D4trGjxaie_NYi4hhUyYmKmv9A_HfRdA@mail.gmail.com>
+In-Reply-To: <CAK8P3a2pXZGbFvXpD5D4trGjxaie_NYi4hhUyYmKmv9A_HfRdA@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 5 May 2020 08:36:27 -0700
+Message-ID: <CAKwvOd=6jdRedjhcuQ0Bsr5hJ9djp8xLpLmT-bC9Wd-1GYK1fw@mail.gmail.com>
+Subject: Re: [PATCH] bitops: avoid clang shift-count-overflow warnings
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, May 5, 2020 at 8:33 AM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Tue, May 5, 2020 at 4:08 PM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> > On Tue, May 5, 2020 at 4:58 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> > > Clang normally does not warn about certain issues in inline functions when
+> > > it only happens in an eliminated code path. However if something else
+> > > goes wrong, it does tend to complain about the definition of hweight_long()
+> > > on 32-bit targets:
+> >
+> > Shouldn't it be fixed in CLang?
+> >
+> > > include/linux/bitops.h:75:41: error: shift count >= width of type [-Werror,-Wshift-count-overflow]
+> > >         return sizeof(w) == 4 ? hweight32(w) : hweight64(w);
+> > >                                                ^~~~~~~~~~~~
+> >
+> > sizeof(w) is compile-time constant. It can easily drop the second part
+> > without even looking at it.
+> >
+> > > Adding an explicit cast to __u64 avoids that warning and makes it easier
+> > > to read other output.
+> >
+> > Looks like papering over the real issue.
+>
+> I'm not sure if there is anything to be done about it in clang, since it
+> always does syntactic analysis before dead-code elimination by design.
 
-On 05/05/2020 17:31, Mickaël Salaün wrote:
-> Hi,
-> 
-> This fifth patch series add new kernel configurations (OMAYEXEC_STATIC,
-> OMAYEXEC_ENFORCE_MOUNT, and OMAYEXEC_ENFORCE_FILE) to enable to
-> configure the security policy at kernel build time.  As requested by
-> Mimi Zohar, I completed the series with one of her patches for IMA.
-> 
-> The goal of this patch series is to enable to control script execution
-> with interpreters help.  A new O_MAYEXEC flag, usable through
-> openat2(2), is added to enable userspace script interpreter to delegate
-> to the kernel (and thus the system security policy) the permission to
-> interpret/execute scripts or other files containing what can be seen as
-> commands.
-> 
-> A simple system-wide security policy can be enforced by the system
-> administrator through a sysctl configuration consistent with the mount
-> points or the file access rights.  The documentation patch explains the
-> prerequisites.
-> 
-> Furthermore, the security policy can also be delegated to an LSM, either
-> a MAC system or an integrity system.  For instance, the new kernel
-> MAY_OPENEXEC flag closes a major IMA measurement/appraisal interpreter
-> integrity gap by bringing the ability to check the use of scripts [1].
-> Other uses are expected, such as for openat2(2) [2], SGX integration
-> [3], bpffs [4] or IPE [5].
-> 
-> Userspace needs to adapt to take advantage of this new feature.  For
-> example, the PEP 578 [6] (Runtime Audit Hooks) enables Python 3.8 to be
-> extended with policy enforcement points related to code interpretation,
-> which can be used to align with the PowerShell audit features.
-> Additional Python security improvements (e.g. a limited interpreter
-> withou -c, stdin piping of code) are on their way.
-> 
-> The initial idea come from CLIP OS 4 and the original implementation has
-> been used for more than 12 years:
-> https://github.com/clipos-archive/clipos4_doc
-> 
-> An introduction to O_MAYEXEC was given at the Linux Security Summit
-> Europe 2018 - Linux Kernel Security Contributions by ANSSI:
-> https://www.youtube.com/watch?v=chNjCRtPKQY&t=17m15s
-> The "write xor execute" principle was explained at Kernel Recipes 2018 -
-> CLIP OS: a defense-in-depth OS:
-> https://www.youtube.com/watch?v=PjRE0uBtkHU&t=11m14s
-> 
-> This patch series can be applied on top of v5.7-rc4.  This can be tested
-> with CONFIG_SYSCTL.  I would really appreciate constructive comments on
-> this patch series.
-> 
-> Previous version:
-> https://lore.kernel.org/lkml/20200428175129.634352-1-mic@digikod.net/
+That's pretty much it.  We had a patch to Clang to use delayed
+diagnostics to delay emitting the warning in case the AST node was
+dropped, but it wasn't accepted in code review.
 
-The previous version (v4) is
-https://lore.kernel.org/lkml/20200430132320.699508-1-mic@digikod.net/
+>
+> It is a bit odd though that it only prints the warning sometimes, but
+
+Sometimes?
+
+> I suspect this is also something that works as designed. Maybe someone
+> on the clang-built-linux list knows more about the background.
+
+
+-- 
+Thanks,
+~Nick Desaulniers
