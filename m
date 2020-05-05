@@ -2,35 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDDCA1C59B2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:34:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFC181C59B9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:34:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729497AbgEEOeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:34:02 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57200 "EHLO mx2.suse.de"
+        id S1729670AbgEEOeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:34:46 -0400
+Received: from mga01.intel.com ([192.55.52.88]:10117 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727857AbgEEOeB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:34:01 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 003A9AB3D;
-        Tue,  5 May 2020 14:34:01 +0000 (UTC)
-Subject: Re: [PATCH] xenbus: avoid stack overflow warning
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        Yan Yankovskyi <yyankovskyi@gmail.com>, Wei Liu <wl@xen.org>,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-References: <20200505141546.824573-1-arnd@arndb.de>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <30d49e6d-570b-f6fd-3a6f-628abcc8b127@suse.com>
-Date:   Tue, 5 May 2020 16:33:58 +0200
+        id S1729142AbgEEOep (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 10:34:45 -0400
+IronPort-SDR: m3X7mIEB7tTfaLF17mfk2z5ysj7v4W6O4PK9ngLR78pBRSxTh28SskOU677H2x6GXyI3PXwTwC
+ apD5FTmVYSDQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2020 07:34:40 -0700
+IronPort-SDR: qrFj6iMtPzHsAywlLtyMywVTplrwJr0C8vOpRK7GA+E/Kw/OpjrehePNbXAVS+QBoAXTtr5oIU
+ BNFfxIzV/8QQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,355,1583222400"; 
+   d="scan'208";a="263187158"
+Received: from jmserbon-mobl1.amr.corp.intel.com (HELO [10.254.110.254]) ([10.254.110.254])
+  by orsmga006.jf.intel.com with ESMTP; 05 May 2020 07:34:39 -0700
+Subject: Re: [PATCH v2 1/1] fs/splice: add missing callback for inaccessible
+ pages
+To:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        Ulrich Weigand <uweigand@de.ibm.com>
+Cc:     Claudio Imbrenda <imbrenda@linux.ibm.com>, viro@zeniv.linux.org.uk,
+        david@redhat.com, akpm@linux-foundation.org, aarcange@redhat.com,
+        linux-mm@kvack.org, frankja@linux.ibm.com, sfr@canb.auug.org.au,
+        jhubbard@nvidia.com, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, jack@suse.cz, kirill@shutemov.name,
+        peterz@infradead.org, sean.j.christopherson@intel.com,
+        Ulrich.Weigand@de.ibm.com
+References: <20200430143825.3534128-1-imbrenda@linux.ibm.com>
+ <1a3f5107-9847-73d4-5059-c6ef9d293551@de.ibm.com>
+ <e3e95a35-b0e3-b733-92f4-98bcccbe7ca5@intel.com>
+ <3d379d9e-241c-ef3b-dcef-20fdd3b8740d@de.ibm.com>
+ <a10ec7ad-2648-950e-7f30-07c08e400e7b@intel.com>
+ <20200504134154.GA21001@oc3748833570.ibm.com>
+ <231da2f1-a6ef-0cf9-7f57-95e8b925997b@intel.com>
+ <45bc81bb-8765-ffff-6e47-8ee9702c8bcd@de.ibm.com>
+ <6e97a4b0-df4f-90c7-a6f7-61ee52e0833e@intel.com>
+ <da6bc7cb-ef13-08cd-f162-663b4a66043b@de.ibm.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <fcc9adea-598f-f882-c3e3-09d190cd5d52@intel.com>
+Date:   Tue, 5 May 2020 07:34:39 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200505141546.824573-1-arnd@arndb.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <da6bc7cb-ef13-08cd-f162-663b4a66043b@de.ibm.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -38,134 +103,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.05.20 16:15, Arnd Bergmann wrote:
-> The __xenbus_map_ring() function has two large arrays, 'map' and
-> 'unmap' on its stack. When clang decides to inline it into its caller,
-> xenbus_map_ring_valloc_hvm(), the total stack usage exceeds the warning
-> limit for stack size on 32-bit architectures.
-> 
-> drivers/xen/xenbus/xenbus_client.c:592:12: error: stack frame size of 1104 bytes in function 'xenbus_map_ring_valloc_hvm' [-Werror,-Wframe-larger-than=]
-> 
-> As far as I can tell, other compilers don't inline it here, so we get
-> no warning, but the stack usage is actually the same. It is possible
-> for both arrays to use the same location on the stack, but the compiler
-> cannot prove that this is safe because they get passed to external
-> functions that may end up using them until they go out of scope.
-> 
-> Move the two arrays into separate basic blocks to limit the scope
-> and force them to occupy less stack in total, regardless of the
-> inlining decision.
+On 5/5/20 7:31 AM, Christian Borntraeger wrote:
+>> So, the requirements are:
+>>
+>> 1. Allow host-side DMA and CPU access to shared pages
+>> 2. Stop host-side DMA and CPU access to encrypted pages
+>> 3. Allow pages to be converted between the states at the request of the
+>>    guest
+>>
+>> Stopping the DMA is pretty easy, even across the gazillions of drivers
+>> in the tree because even random ethernet drivers do stuff like:
+>>
+>>                 txdr->buffer_info[i].dma =
+>>                         dma_map_single(&pdev->dev, skb->data, skb->len,
+>>                                        DMA_TO_DEVICE);
+>>
+>> So the DMA can be stopped at the mapping layer.  It's a *LOT* easier to
+>> catch there since the IOMMUs already provide isolation between the I/O
+>> and CPU address spaces.
+> And your problem is that the guest could convert this after the dma_map?
+> So you looked into our code if this would help?
 
-Why don't you put both arrays into a union?
-
-
-Juergen
-
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->   drivers/xen/xenbus/xenbus_client.c | 74 +++++++++++++++++-------------
->   1 file changed, 41 insertions(+), 33 deletions(-)
-> 
-> diff --git a/drivers/xen/xenbus/xenbus_client.c b/drivers/xen/xenbus/xenbus_client.c
-> index 040d2a43e8e3..23ca70378e36 100644
-> --- a/drivers/xen/xenbus/xenbus_client.c
-> +++ b/drivers/xen/xenbus/xenbus_client.c
-> @@ -470,54 +470,62 @@ static int __xenbus_map_ring(struct xenbus_device *dev,
->   			     unsigned int flags,
->   			     bool *leaked)
->   {
-> -	struct gnttab_map_grant_ref map[XENBUS_MAX_RING_GRANTS];
-> -	struct gnttab_unmap_grant_ref unmap[XENBUS_MAX_RING_GRANTS];
->   	int i, j;
->   	int err = GNTST_okay;
->   
-> -	if (nr_grefs > XENBUS_MAX_RING_GRANTS)
-> -		return -EINVAL;
-> +	{
-> +		struct gnttab_map_grant_ref map[XENBUS_MAX_RING_GRANTS];
->   
-> -	for (i = 0; i < nr_grefs; i++) {
-> -		memset(&map[i], 0, sizeof(map[i]));
-> -		gnttab_set_map_op(&map[i], addrs[i], flags, gnt_refs[i],
-> -				  dev->otherend_id);
-> -		handles[i] = INVALID_GRANT_HANDLE;
-> -	}
-> +		if (nr_grefs > XENBUS_MAX_RING_GRANTS)
-> +			return -EINVAL;
->   
-> -	gnttab_batch_map(map, i);
-> +		for (i = 0; i < nr_grefs; i++) {
-> +			memset(&map[i], 0, sizeof(map[i]));
-> +			gnttab_set_map_op(&map[i], addrs[i], flags,
-> +					  gnt_refs[i], dev->otherend_id);
-> +			handles[i] = INVALID_GRANT_HANDLE;
-> +		}
-> +
-> +		gnttab_batch_map(map, i);
->   
-> -	for (i = 0; i < nr_grefs; i++) {
-> -		if (map[i].status != GNTST_okay) {
-> -			err = map[i].status;
-> -			xenbus_dev_fatal(dev, map[i].status,
-> +		for (i = 0; i < nr_grefs; i++) {
-> +			if (map[i].status != GNTST_okay) {
-> +				err = map[i].status;
-> +				xenbus_dev_fatal(dev, map[i].status,
->   					 "mapping in shared page %d from domain %d",
->   					 gnt_refs[i], dev->otherend_id);
-> -			goto fail;
-> -		} else
-> -			handles[i] = map[i].handle;
-> +				goto fail;
-> +			} else
-> +				handles[i] = map[i].handle;
-> +		}
->   	}
-> -
->   	return GNTST_okay;
->   
->    fail:
-> -	for (i = j = 0; i < nr_grefs; i++) {
-> -		if (handles[i] != INVALID_GRANT_HANDLE) {
-> -			memset(&unmap[j], 0, sizeof(unmap[j]));
-> -			gnttab_set_unmap_op(&unmap[j], (phys_addr_t)addrs[i],
-> -					    GNTMAP_host_map, handles[i]);
-> -			j++;
-> +	{
-> +		struct gnttab_unmap_grant_ref unmap[XENBUS_MAX_RING_GRANTS];
-> +
-> +		for (i = j = 0; i < nr_grefs; i++) {
-> +			if (handles[i] != INVALID_GRANT_HANDLE) {
-> +				memset(&unmap[j], 0, sizeof(unmap[j]));
-> +				gnttab_set_unmap_op(&unmap[j],
-> +						    (phys_addr_t)addrs[i],
-> +						    GNTMAP_host_map,
-> +						    handles[i]);
-> +				j++;
-> +			}
->   		}
-> -	}
->   
-> -	if (HYPERVISOR_grant_table_op(GNTTABOP_unmap_grant_ref, unmap, j))
-> -		BUG();
-> +		if (HYPERVISOR_grant_table_op(GNTTABOP_unmap_grant_ref,
-> +					      unmap, j))
-> +			BUG();
->   
-> -	*leaked = false;
-> -	for (i = 0; i < j; i++) {
-> -		if (unmap[i].status != GNTST_okay) {
-> -			*leaked = true;
-> -			break;
-> +		*leaked = false;
-> +		for (i = 0; i < j; i++) {
-> +			if (unmap[i].status != GNTST_okay) {
-> +				*leaked = true;
-> +				break;
-> +			}
->   		}
->   	}
->   
-> 
-
+Yep, it seemed like a close-enough problem.
