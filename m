@@ -2,140 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 019391C4F9F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 09:51:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F781C4F96
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 09:50:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728557AbgEEHuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 03:50:55 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:55064 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727784AbgEEHuy (ORCPT
+        id S1728395AbgEEHub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 03:50:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725320AbgEEHua (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 03:50:54 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0457emDC002878;
-        Tue, 5 May 2020 00:50:30 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=date : from : to :
- cc : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pfpt0818; bh=KToQK0u5Zh5L7XwHVqKPrKBZbWQjeJQWQryQKCGH3mk=;
- b=Bh2vpSYBgYt1zkERtKTvRX9IZ2FLB8vLiiQkQ3WlMs35fFQiPE36+5vPAeDWSInom5M6
- tHeFMf0UuPoOTrexRn+kNEvmgmfgQ2nkeML0Btjw38KLZMJIkmL04J1NPjEYUy5KW2ET
- 0scXCU8OCrScIkEKdCsiGXHfrw46ZFQonmmKXOxofQEETkDNsSFNhpwPZqL4ZP7zlpTo
- uCa7o4eYXQY3gopURB4WDRKBMJcqZDVuMrGmtdze/A2RV/9kB/v/X3B68WUKXZfxEIWV
- l0Ex5PQqzE3tc27I3jjhjaMUZLbZf+lmG39vAC0Ko8YC9dZ3mcNsbBgU26gl2wKJg3OA zw== 
-Received: from sc-exch04.marvell.com ([199.233.58.184])
-        by mx0b-0016f401.pphosted.com with ESMTP id 30srykqw19-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 05 May 2020 00:50:30 -0700
-Received: from SC-EXCH03.marvell.com (10.93.176.83) by SC-EXCH04.marvell.com
- (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 5 May
- 2020 00:50:28 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
- by SC-EXCH03.marvell.com (10.93.176.83) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Tue, 5 May 2020 00:50:28 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mr+b/Bq2PKCoikabWMrO0jssJBIX9nAkDZ0KQC9gEcq/j3K2vJ7fII79Bvurz9LGAk4niMNLWQX09I3R7oNtj0NEgAnillPWBRn+fs78fJvx6AxbPzTtUN89Fx92lB/GV2u1Kal3V6O0+fv6A1EnUc6u1Qa1Ryv8m2RMgVQRCsYXFaa8pGBY2cvIISYePiInaPWiU/8HJr4h4/sC9q+P8nU5w6mi5fk5GJ3RkGz8inzRtiKMgoz8/MzbeEl5xF1X0dO+8nUSfXeBpRl5Jc+Zh9HGoMOYW0Du8vgj0lcLYqO8b02G4L/AlXkXAofXNDUDAabircH4/8ZCTLMlpP3Hkw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KToQK0u5Zh5L7XwHVqKPrKBZbWQjeJQWQryQKCGH3mk=;
- b=DKJ8paeHx1gBlvDNB9107Kh3R0V+C1xJ/jYa1XZb3JSwce2c1cdAKwhmwJD2aI3e5X4sWdyYbIT+7dyGIU+16fcQvGuz6Rn5GSzlyydpArNg5kIFhLPvmwHFObKw9YaBTNZayYF6eOvfh9bunERybT8ykpnwWi8xLT2ofFFycCOh9DFE4gvFaNNHLMcqV0q0rd60aaSsbnDNXg3om/p/9DMA5gWracQPb3S2862xT+DHHfQpojh/7kb9yaV2qFYCzOMRgqtgqqjXWJ000Vx9ongzwrSWudU9NYJrJFt7TQjZLIyQ5AIWui3rmYqHAu+ptDzDaMeMy7Uvx1hGlYyGIw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
+        Tue, 5 May 2020 03:50:30 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73DC3C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 00:50:30 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id j5so705411wrq.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 00:50:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KToQK0u5Zh5L7XwHVqKPrKBZbWQjeJQWQryQKCGH3mk=;
- b=e1IO2cwm3AJmnMmR/2YIgRxVWpuncDTdXAzEuLNtNYGju6QR6+fL7wRQOErM84HXIwZFmrpEKchZJ+HX9zmN0c05nA1vySdMnhTOTrCOVnqlNeYOeusaBDCAifniGRNfZlWsX63SPJ4muvrz4yR2ILAA+3REPgf9pJTxUi2ACak=
-Authentication-Results: alien8.de; dkim=none (message not signed)
- header.d=none;alien8.de; dmarc=none action=none header.from=marvell.com;
-Received: from BYAPR18MB2661.namprd18.prod.outlook.com (2603:10b6:a03:136::26)
- by BYAPR18MB2902.namprd18.prod.outlook.com (2603:10b6:a03:10f::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.27; Tue, 5 May
- 2020 07:50:27 +0000
-Received: from BYAPR18MB2661.namprd18.prod.outlook.com
- ([fe80::a165:ffa5:f3eb:d62d]) by BYAPR18MB2661.namprd18.prod.outlook.com
- ([fe80::a165:ffa5:f3eb:d62d%7]) with mapi id 15.20.2958.030; Tue, 5 May 2020
- 07:50:27 +0000
-Date:   Tue, 5 May 2020 09:50:17 +0200
-From:   Robert Richter <rrichter@marvell.com>
-To:     Borislav Petkov <bp@alien8.de>
-CC:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Aristeu Rozanski <aris@redhat.com>,
-        Matthias Brugger <mbrugger@suse.com>,
-        <linux-edac@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 03/10] EDAC/ghes: Remove unused members of struct
- ghes_edac_pvt, rename it to ghes_mci
-Message-ID: <20200505075016.jrroszfnyjy4hsmd@rric.localdomain>
-References: <20200422115814.22205-1-rrichter@marvell.com>
- <20200422115814.22205-4-rrichter@marvell.com>
- <20200423175517.GG26021@zn.tnic>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200423175517.GG26021@zn.tnic>
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-ClientProxiedBy: HE1PR05CA0269.eurprd05.prod.outlook.com
- (2603:10a6:3:fc::21) To BYAPR18MB2661.namprd18.prod.outlook.com
- (2603:10b6:a03:136::26)
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=MSMf6NiPVJnfJUkRuy1vWS4FDE59P/dUzj8a3c84Uy0=;
+        b=AfFlJyDHY0paFWCrZ8xD58DgWRkVthJOn81gxjoEuzWs7GciAKwq+4bML/GzGrichu
+         61GfVAOt8HHRRt0cvSzty0QjWPKMaZXthuszlQ2ZhmM4J+iHVNzJfC7bixlC5yt8DVa0
+         babf1bwoiGGBrB84Xe303mLvmbHkM/YWEc1jw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=MSMf6NiPVJnfJUkRuy1vWS4FDE59P/dUzj8a3c84Uy0=;
+        b=pTEkqs3lUgTLPDFYCI8nwZULfpzqBXN6LKEEApfro5kk73vRsWu1zp79tZjDSylzaz
+         jRLjVn+aDqA7HDtrjpxLeuvOh8ZLwzTdcPa3oTWZsDberunr8cRllN8FwL1pZ7PR7KO9
+         m3Xdc2u/buymqJdrvqoPjkQ8c65Vdyvw+171iAYV8AoBnw9MTGxTbN5fTg/BGvGxoDe8
+         0m+CPp6QJ8k3KBy7fmReqNforFOb4ZehBAkZnlEGQVLDuATx5BO5xsL3Aw3ouE8DcGSc
+         XQlS260mtV6WkeCpkitsKamxboYcTcZ1AnS0trWLMkiw7oSo/PWNWX/+fi5J2pXXwI4c
+         5cvA==
+X-Gm-Message-State: AGi0Pua4d8BbXew51mitUV9+zPmM0yQcI48NaFB013MWJLRTiYfLcpxK
+        CKLb4V41Duh2O1TyvbAwssHd1Q==
+X-Google-Smtp-Source: APiQypJTM8quZSuTyhLXS9x2vuM40w03b/aC6rKa7CNq1YCilAX+AJ+wko84ndoM+KGU/y1l5CjN0A==
+X-Received: by 2002:adf:a2d7:: with SMTP id t23mr2116540wra.402.1588665029135;
+        Tue, 05 May 2020 00:50:29 -0700 (PDT)
+Received: from [192.168.1.149] (ip-5-186-116-45.cgn.fibianet.dk. [5.186.116.45])
+        by smtp.gmail.com with ESMTPSA id x16sm1772440wrn.76.2020.05.05.00.50.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 May 2020 00:50:28 -0700 (PDT)
+Subject: Re: [PATCH v4 14/18] static_call: Add static_cond_call()
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org,
+        mhiramat@kernel.org, bristot@redhat.com, jbaron@akamai.com,
+        torvalds@linux-foundation.org, tglx@linutronix.de,
+        mingo@kernel.org, namit@vmware.com, hpa@zytor.com, luto@kernel.org,
+        ard.biesheuvel@linaro.org, jpoimboe@redhat.com,
+        pbonzini@redhat.com, mathieu.desnoyers@efficios.com
+References: <20200501202849.647891881@infradead.org>
+ <20200501202944.593400184@infradead.org>
+ <1238787e-d97d-f09b-d76d-2df2dc273f4b@rasmusvillemoes.dk>
+ <20200503125813.GL3762@hirez.programming.kicks-ass.net>
+ <a53369f3-665a-af0e-efad-09ae456af847@rasmusvillemoes.dk>
+ <20200504201445.GQ3762@hirez.programming.kicks-ass.net>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <6cb31c72-ce0e-7923-daca-ce5ef414940b@rasmusvillemoes.dk>
+Date:   Tue, 5 May 2020 09:50:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from rric.localdomain (31.208.96.227) by HE1PR05CA0269.eurprd05.prod.outlook.com (2603:10a6:3:fc::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.20 via Frontend Transport; Tue, 5 May 2020 07:50:25 +0000
-X-Originating-IP: [31.208.96.227]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d73d18fb-ab57-45b6-514c-08d7f0c8f9bf
-X-MS-TrafficTypeDiagnostic: BYAPR18MB2902:
-X-Microsoft-Antispam-PRVS: <BYAPR18MB2902FE4425790B2B7C695EFED9A70@BYAPR18MB2902.namprd18.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-Forefront-PRVS: 0394259C80
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: pS0tQdX/aRIRUuEoJldhCXKNfVcygnJR9ZnBqGuNSqAD9i4PZhx8MIk36FMzGK7PAxGU1pcrkEimS3HSNfnxnBi4oBZ/ARpBD9c4o0Ds+s4oSLKWk6Hc2Ig8na3Jk3qtqb2wshJk4uGWGn0ZvtqABL+orUEwAsYxto+LjDp8Y4iQ5o39+LQxRml0Y27d/4JfagTdRjF3Bc32NgftQ8JOepELQHkYEaazrz+VMUwhxGFTeODAgOKJLARXRlk7tTGWbggtFSaxltwZuI8sIKN1WvIEzWeOIFzuT8q/jSHLp3PgzDL9C0cmuoXJPnAfLjEuBLMrmW6Fx9Y7AA3IuZTsw/h/QQCMucU5/y2jkBAC+Nidj3iwEyc1Ib9F4hERjqlAGIH7BRrvWRrlX6m6Lysy5Y+7ReQq6b4JCg9i6VyBgvW8ySJil44iwU5Vf9PSGYAcL6U9TnWc37jVsbO+bhUBPjVVnw1UXtXwDfVnpzn+FRVX8mYAm+UD0bIY3ecLq3/wgwPKQTsXcGxNfRDviA7u5Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR18MB2661.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(396003)(366004)(346002)(376002)(39860400002)(33430700001)(6916009)(26005)(5660300002)(33440700001)(7696005)(6506007)(52116002)(4326008)(4744005)(54906003)(53546011)(55016002)(9686003)(316002)(478600001)(86362001)(956004)(186003)(16526019)(8936002)(6666004)(66946007)(66476007)(66556008)(1076003)(8676002)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 76a8mTmIm7+VHOkPADgzFR0jX3okkZt1pDzep+kEfKhBmAecDuOyyGJVqedSlOxgdhWZNWjz3dQCX3fV4XqevGpewhOHGwXYhTjggD4goUEFhcAbcpjOGTCayvkylq9NycO9bnKLSaCTFaaAgjTWBdm2qxsWoCLOaXy2+xss3tBcq4OrsM7etGw+70hKqRRlepBvZQ71HDIxHv8fVqQEvVHdBtfyJASAGYU56qlNbb3/QRZ4nFsiaAd8tZfIxRQSJjzVk3164Ik09675YfpbsOqQ60IhNfdeYUit8EAKQSX9yIFpZ4LpLb65gdgZbmH7U1VELYy4Yf5O0MHB6KCxAbTSexxHSc7W1qb7nYozMKZi+bs98/inb4Fl6Lpue35UpGVPB0TQjJuF31ygJyL3z404txvtGcqPv9VasxMsYP2g67twE69upOU9hG9B4wKQ8qh4zY8tFC5UMz1ciWDYtDGNEyeAk2zQMb9tMgHEWShU/VTsbEGgSDNgHAAncu35wHMdsVBZ3xd5fmcudumdqgDdTp9lIzJTvJudjUoQq8V2Jxe0eWqTV7f/b8s4b2fkn0VLzVvkSrdTe6NZEEH5rrpIbT1kKh14rXKniH0Mkaf6/S5IL+1v855CJWZ21W9qRmuF3OKO/UBNJO2KeH3XWfoQG9f79TMbUEJlS/jDbtZsNVdupJSjtu1trkg6vFSGI1QiGJ/wXtJAnL78oJzzhhL+eY2SFX0z1xz7Uh392kCGWXyi0sK1UN2VwHYHz6wHp5n+O0XiELWxxcWZZcxAv5VINZT2WkUFOUsAJgNgULY=
-X-MS-Exchange-CrossTenant-Network-Message-Id: d73d18fb-ab57-45b6-514c-08d7f0c8f9bf
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 May 2020 07:50:27.2503
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jiEHDWMNK5KGJlC0bEt5ZM7G7aKEAGY77znkS324fQ6OVfeDkJPrUQqsnB6DrTzS4R0M1473MRg6Uu+xDoi9GQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR18MB2902
-X-OriginatorOrg: marvell.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-05-05_04:2020-05-04,2020-05-05 signatures=0
+In-Reply-To: <20200504201445.GQ3762@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23.04.20 19:55:17, Borislav Petkov wrote:
-> On Wed, Apr 22, 2020 at 01:58:07PM +0200, Robert Richter wrote:
-
-> > diff --git a/drivers/edac/ghes_edac.c b/drivers/edac/ghes_edac.c
-> > index cb3dab56a875..39efce0df881 100644
-> > --- a/drivers/edac/ghes_edac.c
-> > +++ b/drivers/edac/ghes_edac.c
-> > @@ -15,9 +15,7 @@
-> >  #include "edac_module.h"
-> >  #include <ras/ras_event.h>
-> >  
-> > -struct ghes_edac_pvt {
-> > -	struct list_head list;
-> > -	struct ghes *ghes;
-> > +struct ghes_mci {
+On 04/05/2020 22.14, Peter Zijlstra wrote:
+> On Mon, May 04, 2020 at 09:20:03AM +0200, Rasmus Villemoes wrote:
 > 
-> No, that should be "ghes_pvt" because it *is* ghes_edac's private
-> structure and there's also an mci pointer in it.
+>>
+>> Indeed, that is horrible. And it "fixes" the argument evaluation by
+>> changing the !HAVE_STATIC_CALL case to match the HAVE_STATIC_CALL, not
+>> the other way around,
+> 
+> Correct; making it the other way is far more 'interesting'. It would
+> basically mean combining the static_branch and static_call, but that
+> would also make it less optimal for simple forwarding cases.
 
-The ghes driver will use private data for both structs, mci and
-dimm_info. Thus I named it ghes_mci and ghes_dimm (see next patch) as
-they are counterparts. I could name it "ghes_pvt", but the meaning
-would be less obvious. Same for your suggestion in the next patch,
-struct dimm is too general and could cause namespace conflicts with
-other code (think of cscope etc.).
+Yes, I can see how implementing that would be quite hard.
 
--Robert
+>> which means that it is not a direct equivalent to the
+>>
+>>   if (foo)
+>>      foo(a, b, c)
+>>
+>> [which pattern of course has the READ_ONCE issue, but each individual
+>> existing site with that may be ok for various reasons].
+>>
+>> Is gcc smart enough to change the if (!func) to a jump across the
+>> function call (but still evaluting side effects in args), or is
+>> __static_call_nop actually emitted and called?
+> 
+> I was hoping it would be clever, but I just tried (find below) and it is
+> not -- although there's always hoping a newer version / clang might be
+> smarter.
+> 
+> It does indeed emit the nop function :/
+
+Hm.
+
+>> If the latter, then one
+>> might as well patch the write-side to do "WRITE_ONCE(foo, func ? :
+>> __static_call_nop)" and elide the test from __static_cond_call() - in
+>> fact, that just becomes a single READ_ONCE. [There's probably some
+>> annoying issue with making sure static initialization of foo points at
+>> __static_call_nop].
+> 
+> But that would not give a more clever compiler the ability to do the
+> 'right' thing here..
+
+True. However, I think it's unlikely we'll see a compiler being that
+clever anytime soon.
+
+Anyway, it's hard to judge what version of the !HAVE_STATIC_CALL
+implementation is best when there's no !HAVE_STATIC_CALL use cases to
+look at. I just want to ensure that whatever limitations or gotchas
+(e.g., "arguments are evaluated regardless of NULLness of func", or
+alternatively "arguments must not have side effects") it ends up with
+get documented.
+
+> 
+> #define __static_cond_call(name) \
+> ({ \
+> 	void *func = READ_ONCE(name.func); \
+> 	if (!func) \
+> 		func = &__static_call_nop; \
+> 	(typeof(__SCT__##name)*)func; \
+> })
+
+I think you can just make it
+
+#define __static_cond_call(name) \
+( \
+(typeof(__SCT__##name)*) ((void *)name.func ? : (void *)__static_call_nop) \
+)
+
+but that simplification is not enough to make gcc change its mind about
+how to compile it :( But I'm guessing that various sanitizers or static
+checkers might complain about the UB.
+
+Rasmus
