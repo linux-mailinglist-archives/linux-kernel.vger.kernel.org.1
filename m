@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1D7B1C53F3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 13:09:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A00431C53F8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 13:09:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728675AbgEELJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 07:09:18 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:2267 "EHLO
+        id S1728750AbgEELJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 07:09:45 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:2351 "EHLO
         smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728584AbgEELJR (ORCPT
+        with ESMTP id S1728584AbgEELJp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 07:09:17 -0400
+        Tue, 5 May 2020 07:09:45 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1588676957; x=1620212957;
+  t=1588676984; x=1620212984;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=iUKxsyy8EDqa4LYd6lWomJlLTmy2039pJ+ilYaUf9pk=;
-  b=XIpKJ2rLdc1Be6hOQ+Zi93U0jP6mJP0MTmCdyYd+NeipM2eDCV/RSVQL
-   BSOvBzl1RjEWQa7QzJnVGQTO/tFOJ7ymcuweluUXhwu3r8gKmET+XjDyq
-   ZWtwAsdvQe/ADzlCROLpZ52V1L7eFDcF1EryllLsca1JHd5xOhoeTD5II
-   A=;
-IronPort-SDR: PfAxMNMD/tn4hjaA4nnTVUT+SLwozyRxxH3gWbMPbWSedSZJPTUw3DWToGskf5iSTXm4Slkk0a
- c4v6NMPiehVQ==
+  bh=G8CneijCkhkmAYrW5RLVj9rtVs0AB1S5RMsQ7jnOqO0=;
+  b=LBgZ5L4z5+6SDMbgppa0/iffMmS4vQHpx/i79Eoq/Mi4akSAZ/EcZTiC
+   nPZnu4Ork274505XTVxj66OQM16POFeGEd7x/WzGR/uU6JdPnkYs67wdP
+   Kb6rvu3ym0y3FKFZjuLeLMUzSRkxpgjvp7hy53QWYoOQAEyIxlo447Y9i
+   0=;
+IronPort-SDR: Z+1x4t+fJpZlkPe+iUdrCADyZ6K/A56bGL4rfiX9/WEqvsdm0/no2lhuJip01WQQAsrpyFTkFD
+ cW3ZSIwvcUvg==
 X-IronPort-AV: E=Sophos;i="5.73,354,1583193600"; 
-   d="scan'208";a="33011899"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-90c42d1d.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 05 May 2020 11:09:15 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
-        by email-inbound-relay-2a-90c42d1d.us-west-2.amazon.com (Postfix) with ESMTPS id 7911EA218D;
-        Tue,  5 May 2020 11:09:12 +0000 (UTC)
+   d="scan'208";a="33011968"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-1c1b5cdd.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 05 May 2020 11:09:44 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2a-1c1b5cdd.us-west-2.amazon.com (Postfix) with ESMTPS id 259F3A1BEF;
+        Tue,  5 May 2020 11:09:42 +0000 (UTC)
 Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
  EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 5 May 2020 11:09:11 +0000
+ id 15.0.1497.2; Tue, 5 May 2020 11:09:41 +0000
 Received: from u886c93fd17d25d.ant.amazon.com (10.43.160.92) by
  EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 5 May 2020 11:08:56 +0000
+ id 15.0.1497.2; Tue, 5 May 2020 11:09:25 +0000
 From:   SeongJae Park <sjpark@amazon.com>
 To:     <akpm@linux-foundation.org>
 CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
@@ -55,9 +55,9 @@ CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
         <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
         <linux-damon@amazon.com>, <linux-mm@kvack.org>,
         <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v10 01/16] scripts/spelling: Add a few more typos
-Date:   Tue, 5 May 2020 13:08:00 +0200
-Message-ID: <20200505110815.10532-2-sjpark@amazon.com>
+Subject: [PATCH v10 02/16] mm/page_ext: Export lookup_page_ext() to GPL modules
+Date:   Tue, 5 May 2020 13:08:01 +0200
+Message-ID: <20200505110815.10532-3-sjpark@amazon.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200505110815.10532-1-sjpark@amazon.com>
 References: <20200505110815.10532-1-sjpark@amazon.com>
@@ -73,81 +73,26 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: SeongJae Park <sjpark@amazon.de>
 
-This commit adds typos found from DAMON patchset.
+This commit exports 'lookup_page_ext()' to GPL modules.  This will be
+used by DAMON.
 
 Signed-off-by: SeongJae Park <sjpark@amazon.de>
 ---
- scripts/spelling.txt | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ mm/page_ext.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/scripts/spelling.txt b/scripts/spelling.txt
-index ffa838f3a2b5..a8214d8e8e4b 100644
---- a/scripts/spelling.txt
-+++ b/scripts/spelling.txt
-@@ -59,6 +59,7 @@ actualy||actually
- acumulating||accumulating
- acumulative||accumulative
- acumulator||accumulator
-+acutally||actually
- adapater||adapter
- addional||additional
- additionaly||additionally
-@@ -245,6 +246,7 @@ calescing||coalescing
- calle||called
- callibration||calibration
- callled||called
-+callser||caller
- calucate||calculate
- calulate||calculate
- cancelation||cancellation
-@@ -664,6 +666,7 @@ hanlde||handle
- hanled||handled
- happend||happened
- harware||hardware
-+havind||having
- heirarchically||hierarchically
- helpfull||helpful
- hexdecimal||hexadecimal
-@@ -835,6 +838,7 @@ logile||logfile
- loobpack||loopback
- loosing||losing
- losted||lost
-+maangement||management
- machinary||machinery
- maibox||mailbox
- maintainance||maintenance
-@@ -999,6 +1003,7 @@ partiton||partition
- pased||passed
- passin||passing
- pathes||paths
-+pattrns||patterns
- pecularities||peculiarities
- peformance||performance
- peforming||performing
-@@ -1238,6 +1243,7 @@ shoule||should
- shrinked||shrunk
- siginificantly||significantly
- signabl||signal
-+significanly||significantly
- similary||similarly
- similiar||similar
- simlar||similar
-@@ -1352,6 +1358,7 @@ thead||thread
- therfore||therefore
- thier||their
- threds||threads
-+threee||three
- threshhold||threshold
- thresold||threshold
- throught||through
-@@ -1391,6 +1398,7 @@ tyep||type
- udpate||update
- uesd||used
- uknown||unknown
-+usccess||success
- usupported||unsupported
- uncommited||uncommitted
- unconditionaly||unconditionally
+diff --git a/mm/page_ext.c b/mm/page_ext.c
+index 4ade843ff588..71169b45bba9 100644
+--- a/mm/page_ext.c
++++ b/mm/page_ext.c
+@@ -131,6 +131,7 @@ struct page_ext *lookup_page_ext(const struct page *page)
+ 					MAX_ORDER_NR_PAGES);
+ 	return get_entry(base, index);
+ }
++EXPORT_SYMBOL_GPL(lookup_page_ext);
+ 
+ static int __init alloc_node_page_ext(int nid)
+ {
 -- 
 2.17.1
 
