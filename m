@@ -2,148 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCD461C5C39
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85C0C1C5C47
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:46:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730749AbgEEPpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 11:45:34 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:43115 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730708AbgEEPpb (ORCPT
+        id S1730795AbgEEPqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 11:46:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729636AbgEEPqB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 11:45:31 -0400
-Received: by mail-oi1-f193.google.com with SMTP id j16so2171804oih.10;
-        Tue, 05 May 2020 08:45:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ERx4rFY8Dz8RC1gA8oeju/oL9ln3h6g/sbUq2ZIsMqI=;
-        b=UfhzIl90Cx/F9yuIdyxeWiIAluj9jHVn52BAWVU7+xF4MUL2VQkgcVKpzRvtrMnzfD
-         /KVAbI+MORiK3Tzt0DxInwcc21gq6fifSNKoCckeGBpScp+MlJnXhb8p/8zE+UFBlMeU
-         SuvTfpDebNXhobP7xUsnv/cPtiXpDb86C+i4YJwpbL6QQeA3whkBGTHu57sqaUoBuBZW
-         Vbcvmm01xrNmGzHDBBDLZbJ9wB93B61DfBPD0UEpTAjr5gqsRqsIvHKD/v/VLHeTd63P
-         ae7M6/dQceBZwzCMlDj4jZiY+JV4X4CBaQuA18azQiGfFN/jURRWE4DgLf7gw0TqfhQg
-         tCiw==
-X-Gm-Message-State: AGi0PuY7ZK+8owYLfyC/KZQr8CqD03wZI+ocz+HRfuD5jAoOkJ4brE7Q
-        H9C6LPgc1VGFNU6YVec5mw==
-X-Google-Smtp-Source: APiQypLcJPiZQqfn4NTS17L4CqyYIL327lpeUG2R1ri3KMTOCuIxKZ2yhA2w+R3hoxnFV84blQoz4w==
-X-Received: by 2002:aca:3a55:: with SMTP id h82mr1248106oia.135.1588693530523;
-        Tue, 05 May 2020 08:45:30 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id m18sm625885oie.38.2020.05.05.08.45.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 May 2020 08:45:29 -0700 (PDT)
-Received: (nullmailer pid 11594 invoked by uid 1000);
-        Tue, 05 May 2020 15:45:29 -0000
-Date:   Tue, 5 May 2020 10:45:29 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Ivan Mikhaylov <i.mikhaylov@yadro.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v11 1/2] iio: proximity: provide device tree binding
- document
-Message-ID: <20200505154528.GB4630@bogus>
-References: <20200422160509.7117-1-i.mikhaylov@yadro.com>
- <20200422160509.7117-2-i.mikhaylov@yadro.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200422160509.7117-2-i.mikhaylov@yadro.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Tue, 5 May 2020 11:46:01 -0400
+Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 457D2C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 08:46:01 -0700 (PDT)
+Received: from ramsan ([IPv6:2a02:1810:ac12:ed60:bd97:8453:3b10:1832])
+        by andre.telenet-ops.be with bizsmtp
+        id b3le2200W3VwRR3013leCg; Tue, 05 May 2020 17:45:39 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan with esmtp (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1jVzlK-0003Gp-QD; Tue, 05 May 2020 17:45:38 +0200
+Received: from geert by rox.of.borg with local (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1jVzlK-00014u-Nq; Tue, 05 May 2020 17:45:38 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     soc@kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, Kevin Hilman <khilman@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH v2 0/3] ARM: Replace <linux/clk-provider.h> by <linux/of_clk.h>
+Date:   Tue,  5 May 2020 17:45:33 +0200
+Message-Id: <20200505154536.4099-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 07:05:08PM +0300, Ivan Mikhaylov wrote:
-> Mostly standard i2c driver with some additional led-current option
-> for vcnl3020.
-> 
-> Signed-off-by: Ivan Mikhaylov <i.mikhaylov@yadro.com>
-> ---
->  .../bindings/iio/proximity/vcnl3020.yaml      | 64 +++++++++++++++++++
+	Hi arm-soc folks,
 
-vishay,vcnl3020.yaml
+The OF clock helpers were moved to <linux/of_clk.h> a while ago.
+Hence code that is not a clock provider, but just needs to call
+of_clk_init(), can (and should) include <linux/of_clk.h> instead of
+<linux/clk-provider.h>.
 
->  1 file changed, 64 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/proximity/vcnl3020.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/iio/proximity/vcnl3020.yaml b/Documentation/devicetree/bindings/iio/proximity/vcnl3020.yaml
-> new file mode 100644
-> index 000000000000..ac47770609d2
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/proximity/vcnl3020.yaml
-> @@ -0,0 +1,64 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/iio/proximity/vcnl3020.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Integrated Proximity Sensor With Infrared Emitter
-> +
-> +maintainers:
-> +  - Ivan Mikhaylov <i.mikhaylov@yadro.com>
-> +
-> +description: |
-> +  The VCNL3020 is a fully integrated proximity sensor. Fully integrated means
-> +  that the infrared emitter is included in the package. It has 16-bit
-> +  resolution. It includes a signal processing IC and features standard I2C
-> +  communication interface. It features an interrupt function.
-> +
-> +  Specifications about the devices can be found at:
-> +  https://www.vishay.com/docs/84150/vcnl3020.pdf
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - vishay,vcnl3020
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  vdd-supply:
-> +    description: Regulator that provides power to the sensor
-> +
-> +  vddio-supply:
-> +    description: Regulator that provides power to the bus
-> +
-> +  vishay,led-current-microamp:
-> +    description:
-> +      IR LED current value with valid Range = 0 to 20d. e.g. 0 = 0 mA,
-> +      1 = 10 mA, 20 = 200 mA. LED Current is limited to 200 mA for values
-> +      higher than decimal 20.
-> +    enum: [0, 10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000,
-> +          100000, 110000, 120000, 130000, 140000, 150000, 160000, 170000,
-> +          180000, 190000, 200000]
-> +    default: 20000
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +examples:
-> +  - |
-> +    i2c {
-> +
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        proximity@13 {
-> +              compatible = "vishay,vcnl3020";
-> +              reg = <0x13>;
-> +              vishay,led-current-microamp = <200000>;
-> +        };
-> +    };
-> -- 
-> 2.21.1
-> 
+This series contains the patches from [1] that haven't been applied yet.
+
+Changes compared to v1:
+  - Add Reviewed-by.
+
+Thanks for applying!
+
+[2] "[PATCH 0/7] ARM: Replace <linux/clk-provider.h> by <linux/of_clk.h>"
+    https://lore.kernel.org/r/20200212100830.446-1-geert+renesas@glider.be
+
+Geert Uytterhoeven (3):
+  ARM/time: Replace <linux/clk-provider.h> by <linux/of_clk.h>
+  ARM: mediatek: Replace <linux/clk-provider.h> by <linux/of_clk.h>
+  ARM: mmp: Replace <linux/clk-provider.h> by <linux/of_clk.h>
+
+ arch/arm/kernel/time.c            | 2 +-
+ arch/arm/mach-mediatek/mediatek.c | 2 +-
+ arch/arm/mach-mmp/mmp-dt.c        | 2 +-
+ arch/arm/mach-mmp/mmp2-dt.c       | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+-- 
+2.17.1
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
