@@ -2,204 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C8F21C5FEA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 20:19:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66A051C5FF4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 20:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730790AbgEESTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 14:19:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33662 "EHLO mail.kernel.org"
+        id S1730860AbgEESUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 14:20:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33990 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730258AbgEESTn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 14:19:43 -0400
-Received: from gmail.com (unknown [104.132.1.76])
+        id S1730258AbgEESUo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 14:20:44 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A218E20663;
-        Tue,  5 May 2020 18:19:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 80BBF206CC;
+        Tue,  5 May 2020 18:20:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588702782;
-        bh=yZzkSmvvKpe0G5yUuD0K6ah1YcmbfcINzZSizvYm2fE=;
+        s=default; t=1588702844;
+        bh=Osf2+bbLX5ojPeR3tQC6Sz7LiZfQOWyXMbHH9fy+sbg=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R67Z/lbPtsO5THBxKzX2UlLhSUm2vt0TOUX9sbZh4djBdEvxdDZsZKamROXY/lUDk
-         45RwmPjXsu/PJUGCFkivx2adACAXmQgXLE9PpopTyfNZZUgoXkvJRiKgv2s65OjKWz
-         ZxQGDWUnKqLxY8xjBuFDHX627MfXB7blez9pNJvE=
-Date:   Tue, 5 May 2020 11:19:41 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
-Subject: Re: [f2fs-dev] [PATCH] f2fs: get parent inode when recovering pino
-Message-ID: <20200505181941.GC98848@gmail.com>
-References: <20200505153139.201697-1-jaegeuk@kernel.org>
- <20200505165847.GA98848@gmail.com>
- <20200505181323.GA55221@google.com>
+        b=JRHW7xtkpoTcKO2iDm5MYyyHAfBRd3zGZaOmmKJJUlbUO2LfDpD1RqJ+xQrPsPgfs
+         OiW/t5pwpnasu3xt7bF4jSWSlH2a8LE2gQrkD66tWGWuaDnh7ZPZKzPjBqHM9k1jls
+         EmoPIqVXs4scU3njKLlP5L+oDZhgSgy+JQGDAPic=
+Date:   Tue, 5 May 2020 20:20:41 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Benjamin GAIGNARD <benjamin.gaignard@st.com>
+Cc:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE <alexandre.torgue@st.com>,
+        Loic PALLARDY <loic.pallardy@st.com>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 2/5] bus: stm32: Introduce firewall controller helpers
+Message-ID: <20200505182041.GB1216826@kroah.com>
+References: <20200505073308.22914-1-benjamin.gaignard@st.com>
+ <20200505073308.22914-3-benjamin.gaignard@st.com>
+ <20200505144013.GB838641@kroah.com>
+ <3f15fefa-b70f-5d20-c19b-3c42140a104c@st.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200505181323.GA55221@google.com>
+In-Reply-To: <3f15fefa-b70f-5d20-c19b-3c42140a104c@st.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 05, 2020 at 11:13:23AM -0700, Jaegeuk Kim wrote:
-> On 05/05, Eric Biggers wrote:
-> > On Tue, May 05, 2020 at 08:31:39AM -0700, Jaegeuk Kim wrote:
-> > > We had to grab the inode before retrieving i_ino.
-> > > 
-> > > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> > > ---
-> > >  fs/f2fs/file.c | 8 +++++++-
-> > >  1 file changed, 7 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> > > index a0a4413d6083b..9d4c3e3503567 100644
-> > > --- a/fs/f2fs/file.c
-> > > +++ b/fs/f2fs/file.c
-> > > @@ -168,6 +168,7 @@ static const struct vm_operations_struct f2fs_file_vm_ops = {
-> > >  static int get_parent_ino(struct inode *inode, nid_t *pino)
-> > >  {
-> > >  	struct dentry *dentry;
-> > > +	struct inode *parent;
-> > >  
-> > >  	inode = igrab(inode);
-> > >  	dentry = d_find_any_alias(inode);
-> > > @@ -175,8 +176,13 @@ static int get_parent_ino(struct inode *inode, nid_t *pino)
-> > >  	if (!dentry)
-> > >  		return 0;
-> > >  
-> > > -	*pino = parent_ino(dentry);
-> > > +	parent = igrab(d_inode(dentry->d_parent));
-> > >  	dput(dentry);
-> > > +	if (!parent)
-> > > +		return 0;
-> > > +
-> > > +	*pino = parent->i_ino;
-> > > +	iput(parent);
-> > >  	return 1;
+On Tue, May 05, 2020 at 03:00:53PM +0000, Benjamin GAIGNARD wrote:
 > 
-> Hi Eric,
 > 
-> > 
-> > This doesn't appear to be necessary.  parent_ino() is:
-> > 
-> > 	spin_lock(&dentry->d_lock);
-> > 	res = dentry->d_parent->d_inode->i_ino;
-> > 	spin_unlock(&dentry->d_lock);
-> > 
-> > Since dentry is locked and referenced, ->d_parent is stable and positive.
-> 
-> I see, thanks. :)
-> 
-> > 
-> > In the encrypt+casefold patch I was reviewing, it's indeed necessary, but only
-> > because there was a check of inode->i_flags added outside the locked region.
-> > The following would be simpler:
-> > 
-> >         spin_lock(&dentry->d_lock);
-> >         dir = dentry->d_parent->d_inode;
-> >         *pino = dir->i_ino;
-> >         needs_recovery = IS_ENCRYPTED(dir) && IS_CASEFOLDED(dir);
-> >         spin_unlock(&dentry->d_lock);
-> 
-> Ack.
-> 
-> > 
-> > BTW, d_find_any_alias() is unnecessary too.  This code should just be using
-> > file_dentry(file) from f2fs_do_sync_file().
-> 
-> How about this?
-> 
-> From 9aee969a413b1ed22b48573071bc93fbb4a2002d Mon Sep 17 00:00:00 2001
-> From: Jaegeuk Kim <jaegeuk@kernel.org>
-> Date: Tue, 5 May 2020 11:08:58 -0700
-> Subject: [PATCH] f2fs: remove unnecessary dentry locks
-> 
-> As Eric commented, let's kill unnecessary dentry ops when recovering
-> parent inode number.
-> 
-> Suggested-by: Eric Biggers <ebiggers@kernel.org>
-> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> ---
->  fs/f2fs/file.c | 26 ++++++--------------------
->  1 file changed, 6 insertions(+), 20 deletions(-)
-> 
-> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> index a0a4413d6083b..711cebad36fc5 100644
-> --- a/fs/f2fs/file.c
-> +++ b/fs/f2fs/file.c
-> @@ -165,21 +165,6 @@ static const struct vm_operations_struct f2fs_file_vm_ops = {
->  	.page_mkwrite	= f2fs_vm_page_mkwrite,
->  };
->  
-> -static int get_parent_ino(struct inode *inode, nid_t *pino)
-> -{
-> -	struct dentry *dentry;
-> -
-> -	inode = igrab(inode);
-> -	dentry = d_find_any_alias(inode);
-> -	iput(inode);
-> -	if (!dentry)
-> -		return 0;
-> -
-> -	*pino = parent_ino(dentry);
-> -	dput(dentry);
-> -	return 1;
-> -}
-> -
->  static inline enum cp_reason_type need_do_checkpoint(struct inode *inode)
->  {
->  	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
-> @@ -223,14 +208,15 @@ static bool need_inode_page_update(struct f2fs_sb_info *sbi, nid_t ino)
->  	return ret;
->  }
->  
-> -static void try_to_fix_pino(struct inode *inode)
-> +static void try_to_fix_pino(struct dentry *dentry)
->  {
-> +	struct inode *inode = d_inode(dentry);
->  	struct f2fs_inode_info *fi = F2FS_I(inode);
-> -	nid_t pino;
->  
->  	down_write(&fi->i_sem);
-> -	if (file_wrong_pino(inode) && inode->i_nlink == 1 &&
-> -			get_parent_ino(inode, &pino)) {
-> +	if (file_wrong_pino(inode) && inode->i_nlink == 1) {
-> +		nid_t pino = parent_ino(dentry);
-> +
->  		f2fs_i_pino_write(inode, pino);
->  		file_got_pino(inode);
->  	}
-> @@ -310,7 +296,7 @@ static int f2fs_do_sync_file(struct file *file, loff_t start, loff_t end,
->  		 * We've secured consistency through sync_fs. Following pino
->  		 * will be used only for fsynced inodes after checkpoint.
->  		 */
-> -		try_to_fix_pino(inode);
-> +		try_to_fix_pino(file_dentry(file));
->  		clear_inode_flag(inode, FI_APPEND_WRITE);
->  		clear_inode_flag(inode, FI_UPDATE_WRITE);
->  		goto out;
+> On 5/5/20 4:40 PM, Greg KH wrote:
+> > On Tue, May 05, 2020 at 09:33:05AM +0200, Benjamin Gaignard wrote:
+> >> The goal of these helpers are to offer an interface for the
+> >> hardware blocks controlling bus accesses rights.
+> >>
+> >> Bus firewall controllers are typically used to control if a
+> >> hardware block can perform read or write operations on bus.
+> >>
+> >> Smarter firewall controllers could be able to define accesses
+> >> rights per hardware blocks to control where they can read
+> >> or write.
+> >>
+> >> Firewall controller configurations are provided in device node,
+> >> parsed by the helpers and send to the driver to apply them.
+> >> Each controller may need different number and type of inputs
+> >> to configure the firewall so device-tree properties size have to
+> >> be define by using "#firewall-cells".
+> >> Firewall configurations properties have to be named "firewall-X"
+> >> on device node.
+> >> "firewall-names" keyword can also be used to give a name to
+> >> a specific configuration.
+> >>
+> >> Example of device-tree:
+> >> ctrl0: firewall@0 {
+> >> 	#firewall-cells = <2>;
+> >>        };
+> >>
+> >> foo: foo@0 {
+> >> 	firewall-names = "default", "setting1";
+> >> 	firewall-0 = <&ctrl0 1 2>;
+> >> 	firewall-1 = <&ctrl0 3 4>;
+> >> };
+> >>
+> >> Configurations could be applied with functions like
+> >> firewall_set_config_by_index() or firewall_set_config_by_name().
+> >>
+> >> firewall_set_default_config() function will apply the
+> >> configuration named "default" (if existing) or the configuration
+> >> with index 0 (i.e. firewall-0).
+> >>
+> >> Drivers could register/unregister themselves be calling
+> >> firewall_register/firewall_unregister functions.
+> >>
+> >> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@st.com>
+> >> ---
+> >>   drivers/bus/Kconfig          |   2 +
+> >>   drivers/bus/Makefile         |   2 +
+> >>   drivers/bus/stm32/Kconfig    |   3 +
+> >>   drivers/bus/stm32/Makefile   |   1 +
+> >>   drivers/bus/stm32/firewall.c | 266 +++++++++++++++++++++++++++++++++++++++++++
+> >>   drivers/bus/stm32/firewall.h |  75 ++++++++++++
+> >>   6 files changed, 349 insertions(+)
+> >>   create mode 100644 drivers/bus/stm32/Kconfig
+> >>   create mode 100644 drivers/bus/stm32/Makefile
+> >>   create mode 100644 drivers/bus/stm32/firewall.c
+> >>   create mode 100644 drivers/bus/stm32/firewall.h
+> >>
+> >> diff --git a/drivers/bus/Kconfig b/drivers/bus/Kconfig
+> >> index 6d4e4497b59b..843b356322d9 100644
+> >> --- a/drivers/bus/Kconfig
+> >> +++ b/drivers/bus/Kconfig
+> >> @@ -203,4 +203,6 @@ config DA8XX_MSTPRI
+> >>   source "drivers/bus/fsl-mc/Kconfig"
+> >>   source "drivers/bus/mhi/Kconfig"
+> >>   
+> >> +source "drivers/bus/stm32/Kconfig"
+> >> +
+> >>   endmenu
+> >> diff --git a/drivers/bus/Makefile b/drivers/bus/Makefile
+> >> index 05f32cd694a4..5e0e34b10235 100644
+> >> --- a/drivers/bus/Makefile
+> >> +++ b/drivers/bus/Makefile
+> >> @@ -37,3 +37,5 @@ obj-$(CONFIG_DA8XX_MSTPRI)	+= da8xx-mstpri.o
+> >>   
+> >>   # MHI
+> >>   obj-$(CONFIG_MHI_BUS)		+= mhi/
+> >> +
+> >> +obj-$(CONFIG_MACH_STM32MP157) 	+= stm32/
+> >> \ No newline at end of file
+> >> diff --git a/drivers/bus/stm32/Kconfig b/drivers/bus/stm32/Kconfig
+> >> new file mode 100644
+> >> index 000000000000..57221e833e2d
+> >> --- /dev/null
+> >> +++ b/drivers/bus/stm32/Kconfig
+> >> @@ -0,0 +1,3 @@
+> >> +config FIREWALL_CONTROLLERS
+> >> +	bool "Support of bus firewall controllers"
+> >> +	depends on OF
+> >> diff --git a/drivers/bus/stm32/Makefile b/drivers/bus/stm32/Makefile
+> >> new file mode 100644
+> >> index 000000000000..eb6b978d6450
+> >> --- /dev/null
+> >> +++ b/drivers/bus/stm32/Makefile
+> >> @@ -0,0 +1 @@
+> >> +obj-$(CONFIG_FIREWALL_CONTROLLERS) += firewall.o
+> >> diff --git a/drivers/bus/stm32/firewall.c b/drivers/bus/stm32/firewall.c
+> >> new file mode 100644
+> >> index 000000000000..95f716cf926f
+> >> --- /dev/null
+> >> +++ b/drivers/bus/stm32/firewall.c
+> >> @@ -0,0 +1,266 @@
+> >> +// SPDX-License-Identifier: GPL-2.0
+> >> +/*
+> >> + * Copyright (C) STMicroelectronics 2020 - All Rights Reserved
+> >> + * Author: Benjamin Gaignard <benjamin.gaignard@st.com> for STMicroelectronics.
+> >> + */
+> >> +
+> >> +#include <linux/device.h>
+> >> +#include <linux/err.h>
+> >> +#include <linux/init.h>
+> >> +#include <linux/kernel.h>
+> >> +#include <linux/list.h>
+> >> +#include <linux/of.h>
+> >> +#include <linux/slab.h>
+> >> +
+> >> +#include "firewall.h"
+> >> +
+> >> +/* Mutex taken to protect firewall_list */
+> >> +static DEFINE_MUTEX(firewall_list_mutex);
+> >> +
+> >> +/* Global list of firewall control devices */
+> >> +static LIST_HEAD(firewall_list);
+> > Why is that needed?  Why can't you just walk the list of devices on this
+> > "bus/class" if you really wanted to?
+> >
+> > Along those lines, why is this going around the driver model and
+> > ignoring it?  Shouldn't this be a bus and you have devices attached to
+> > it of the specific type?
+> This part of the series is only a a set of common functions and bindings
+> that I plan to reuse for futur STM32 SoCs.
+> The 'real' bus implementation is in patch 4.
 
-Actually, I think this is wrong because the fsync can be done via a file
-descriptor that was opened to a now-deleted link to the file.
+Then you don't need a "fake" list of devices in this patch, do you?  Why
+not just create the real bus and then have people use it, otherwise this
+sequence of review is really complicated as you must be deleting this
+code.  Right?  :)
 
-We need to find the dentry whose parent directory is still exists, i.e. the
-parent directory that is counting towards 'inode->i_nlink == 1'.
+Do it correct the first time please.
 
-I think d_find_alias() is what we're looking for.
+thanks,
 
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 6ab8f621a3c5..855f27468baa 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -165,13 +165,13 @@ static int get_parent_ino(struct inode *inode, nid_t *pino)
- {
-        struct dentry *dentry;
-
--       inode = igrab(inode);
--       dentry = d_find_any_alias(inode);
--       iput(inode);
-+       dentry = d_find_alias(inode);
-        if (!dentry)
-                return 0;
-
+greg k-h
