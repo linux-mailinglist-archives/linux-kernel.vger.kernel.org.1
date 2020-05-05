@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE1011C5911
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:21:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D80A61C587B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:15:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730225AbgEEOVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:21:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48836 "EHLO
+        id S1729763AbgEEOPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:15:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729257AbgEEOPK (ORCPT
+        by vger.kernel.org with ESMTP id S1729743AbgEEOPL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:15:10 -0400
+        Tue, 5 May 2020 10:15:11 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37DB8C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:15:10 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 554B8C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:15:11 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jVyLU-0001F2-G3; Tue, 05 May 2020 16:14:52 +0200
+        id 1jVyLV-0001Fp-RQ; Tue, 05 May 2020 16:14:53 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 08335FFC8D;
-        Tue,  5 May 2020 16:14:52 +0200 (CEST)
-Message-Id: <20200505134903.346741553@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 45DCDFFC8D;
+        Tue,  5 May 2020 16:14:53 +0200 (CEST)
+Message-Id: <20200505134903.439765290@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 05 May 2020 15:43:55 +0200
+Date:   Tue, 05 May 2020 15:43:56 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -44,7 +44,7 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Will Deacon <will@kernel.org>
-Subject: [patch V4 part 3 01/29] x86/traps: Mark fixup_bad_iret() noinstr
+Subject: [patch V4 part 3 02/29] x86/traps: Mark sync_regs() noinstr
 References: <20200505134354.774943181@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -57,51 +57,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is called from deep entry ASM in a situation where instrumentation
-will cause more harm than providing useful information.
+Replace the notrace and NOKPROBE annotations with noinstr.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/kernel/traps.c |   16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+ arch/x86/kernel/traps.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 --- a/arch/x86/kernel/traps.c
 +++ b/arch/x86/kernel/traps.c
-@@ -621,7 +621,7 @@ struct bad_iret_stack {
- 	struct pt_regs regs;
- };
- 
--asmlinkage __visible notrace
-+asmlinkage __visible noinstr
- struct bad_iret_stack *fixup_bad_iret(struct bad_iret_stack *s)
+@@ -639,14 +639,13 @@ NOKPROBE_SYMBOL(do_int3);
+  * to switch to the normal thread stack if the interrupted code was in
+  * user mode. The actual stack switch is done in entry_64.S
+  */
+-asmlinkage __visible notrace struct pt_regs *sync_regs(struct pt_regs *eregs)
++asmlinkage __visible noinstr struct pt_regs *sync_regs(struct pt_regs *eregs)
  {
- 	/*
-@@ -632,19 +632,21 @@ struct bad_iret_stack *fixup_bad_iret(st
- 	 * just below the IRET frame) and we want to pretend that the
- 	 * exception came from the IRET target.
- 	 */
--	struct bad_iret_stack *new_stack =
--		(struct bad_iret_stack *)this_cpu_read(cpu_tss_rw.x86_tss.sp0) - 1;
-+	struct bad_iret_stack tmp, *new_stack =
-+		(struct bad_iret_stack *)__this_cpu_read(cpu_tss_rw.x86_tss.sp0) - 1;
- 
--	/* Copy the IRET target to the new stack. */
--	memmove(&new_stack->regs.ip, (void *)s->regs.sp, 5*8);
-+	/* Copy the IRET target to the temporary storage. */
-+	memcpy(&tmp.regs.ip, (void *)s->regs.sp, 5*8);
- 
- 	/* Copy the remainder of the stack from the current stack. */
--	memmove(new_stack, s, offsetof(struct bad_iret_stack, regs.ip));
-+	memcpy(&tmp, s, offsetof(struct bad_iret_stack, regs.ip));
-+
-+	/* Update the entry stack */
-+	memcpy(new_stack, &tmp, sizeof(tmp));
- 
- 	BUG_ON(!user_mode(&new_stack->regs));
- 	return new_stack;
+ 	struct pt_regs *regs = (struct pt_regs *)this_cpu_read(cpu_current_top_of_stack) - 1;
+ 	if (regs != eregs)
+ 		*regs = *eregs;
+ 	return regs;
  }
--NOKPROBE_SYMBOL(fixup_bad_iret);
- #endif
+-NOKPROBE_SYMBOL(sync_regs);
  
- static bool is_sysenter_singlestep(struct pt_regs *regs)
+ struct bad_iret_stack {
+ 	void *error_entry_ret;
 
