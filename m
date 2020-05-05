@@ -2,243 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FF701C57C3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:02:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D03491C57FD
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729288AbgEEOCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:02:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46658 "EHLO
+        id S1729487AbgEEOES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:04:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728135AbgEEOCO (ORCPT
+        by vger.kernel.org with ESMTP id S1729315AbgEEODH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:02:14 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F056FC061A0F;
-        Tue,  5 May 2020 07:02:13 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id hi11so1158167pjb.3;
-        Tue, 05 May 2020 07:02:13 -0700 (PDT)
+        Tue, 5 May 2020 10:03:07 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BC41C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:03:07 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id z8so1968886wrw.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 07:03:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rKlq8O3c5copcC32HAW1rjhWIMxme3uga6U+C7OGHJ0=;
-        b=nr75qpnbNkPUaCzRZXdBcogDFrvnmc2gSoGUQLRIWPcHDRFpqgOUQiyXUIAI4VQBGA
-         fxBEVZm80tAQexmeaLuN3K/ZjE0jRWJlBvE/T9LluVyhXbFILCyLa3ElLczTstkf4qdq
-         FW2QwsqjOuV6aKl8VfhURQSYuP5iFEx3alG3IlA9LV9hqWkxGpECOjppWlhgLREwMTL8
-         qPzfErRdmyrJRVIk8IhYGP5V3jZ8mqP9zXhUfJ/jFi34sQ59h4O95x0PT0mfkZvTEQk6
-         WQilx5P7R6GDv1OWidyHE+QOMviQwoGyX51kvDIZlm5TNhyAqsg31TIKFJO3j+hnjoxz
-         zgLw==
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PK31tVWfgrccN1MBhDjrbakpYyyD2tO24v7BYQEkurI=;
+        b=a8DMxibRqTrZGmyZ0KLtsYlfgQSvtBtYx+i51AoL6kzVb3a3Zcw5KFc8r5emhX2L/e
+         qLVl57SKF7PdhjnPEnfYmiBsHkXDn94m+UKH2rLq8YYGcxS7EN5GAv4eWBPvoY1byN7N
+         QxZMFs3Qb+qVtydhG5IbCi+FEqOcJ0waPkxXqf2ILV3oLLL0N8BnwvrKySVqhV+H6q/X
+         68KP5IqC6ZqPMnSBCsQ0mVeuFaW8UzGdm+AMBhfl1Jooa4pbk4UE+wnG551wvwjBL9yZ
+         yo8Kq56xX0wXRuQs1Lf5bbGGIUhYjKU0+mCWMv1cZeNM2eZ0NXSh3Pl4lvUmp2tjq5pt
+         c2Dw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rKlq8O3c5copcC32HAW1rjhWIMxme3uga6U+C7OGHJ0=;
-        b=TKAlm4dQZ1AYiBlvxAZeONRAYRL+7IbcYim1QYNgVRzbDrtlm22uBSxHVdb2098jHu
-         vNFIStEu/HJiVqmetbrRii+4NSpmTKDFxOh0Fa/LxeI2Gcsa2dvTZCUsQP49Kza7iGT6
-         0ey/EXX0ZR9Vemx1YTNNte0TN0K5OE04IflqJmz0/ct6dFtueyLib8ycEs5o8GPnSNCE
-         5diWkXVtsznhUFTKHgFabChTusvSwlwc6CTYAFHQA9wsr3QTq40YQ84/eWOOSxTIkpp/
-         MwzH0OCqJcYAsP5OdzyDVjlLHwokvasn4YtKk9YOvsURo6WdF2FLVUg3c14YAc6MmD8p
-         RYLg==
-X-Gm-Message-State: AGi0PubK7jbWV1zmm/QVsZv4fIV6Lr5pvw5Rcou41v2dq96JKFUG3LSt
-        gPv0Gv+GpSyw67cn8ELhPWoTkeUbiU/pd0Mr+2A=
-X-Google-Smtp-Source: APiQypKPV25wPEZiONVtHiRM7MahgM9v51nz1yL9Frz3wKlrqfbdtZcP4Z7e/ybhH8pb45Ec99hS4Ho9FQh/pG3xLF8=
-X-Received: by 2002:a17:90a:fa81:: with SMTP id cu1mr3291971pjb.25.1588687333205;
- Tue, 05 May 2020 07:02:13 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PK31tVWfgrccN1MBhDjrbakpYyyD2tO24v7BYQEkurI=;
+        b=Mr4hqznmhmwvJO8BmTnKAeHRxFQE8dRombQauOskZ+UP/dxqsDlGv5o+JasqYTrgTU
+         CE1sgBKWRJFs95AyHR5jr4xQgJo8GDT4OLdE5xlQeci8GhF+CLgl89McaLouyieUzdMd
+         McxYTVAV6j8b6SfW1tDacGiqdoNJk53ybLDMs3IrPF4EYl/qxe+/XN3hKep18GEX07FF
+         C9Kx5nPhKFp7Lke0Ev9GJaknsriPPC56g6mHMZfSeFmgF+FgUd5mnaOlSs/v+WU2gMzY
+         QFFPwN2lb1xg8selSHG3U1h22Pyj69ga4g5/OCokbnENo/3fpG3BA0fnIIR6hYldw5Aq
+         etfA==
+X-Gm-Message-State: AGi0PuZ9xNrD5sM2BiAR+lGUomFDg+4wlfoaUt9ag/H31E1mYn+JIVfv
+        rBGvTgE62n+vqiY2g8y3amO01w==
+X-Google-Smtp-Source: APiQypJK0fRzPjzYsRI0o6WTCpJIb10ZVt2+vpQjB2QmGMKqpkl9pQ80cS/ZweDjU4zPMeSAzrIc8g==
+X-Received: by 2002:a5d:4711:: with SMTP id y17mr3781592wrq.49.1588687383658;
+        Tue, 05 May 2020 07:03:03 -0700 (PDT)
+Received: from localhost.localdomain (lfbn-nic-1-65-232.w2-15.abo.wanadoo.fr. [2.15.156.232])
+        by smtp.gmail.com with ESMTPSA id c190sm4075755wme.4.2020.05.05.07.03.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 May 2020 07:03:03 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Rob Herring <robh+dt@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Felix Fietkau <nbd@openwrt.org>,
+        John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Fabien Parent <fparent@baylibre.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH 00/11] mediatek: add support for MediaTek Ethernet MAC
+Date:   Tue,  5 May 2020 16:02:20 +0200
+Message-Id: <20200505140231.16600-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-References: <20200425133939.3508912-0-mholenko@antmicro.com>
- <20200425133939.3508912-5-mholenko@antmicro.com> <CAHp75VfsiAaZez7nv7Z7E-5NL0_xObzi_LZsiWbms54jNcyv6A@mail.gmail.com>
- <CAPk366R7ty-KAtnaTyqOH6rUewRd7Wvt6GSoB3bYpS+X_xT1CQ@mail.gmail.com>
-In-Reply-To: <CAPk366R7ty-KAtnaTyqOH6rUewRd7Wvt6GSoB3bYpS+X_xT1CQ@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 5 May 2020 17:02:06 +0300
-Message-ID: <CAHp75Ve+dJWMH722vsTQG92Y7nW8Ap+HKc2v_DV9JWquExp61Q@mail.gmail.com>
-Subject: Re: [PATCH v5 5/5] drivers/tty/serial: add LiteUART driver
-To:     Mateusz Holenko <mholenko@antmicro.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Stafford Horne <shorne@gmail.com>,
-        Karol Gugala <kgugala@antmicro.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Filip Kokosinski <fkokosinski@antmicro.com>,
-        Pawel Czarnecki <pczarnecki@internships.antmicro.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Icenowy Zheng <icenowy@aosc.io>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 4, 2020 at 4:44 PM Mateusz Holenko <mholenko@antmicro.com> wrote:
-> On Tue, Apr 28, 2020 at 5:50 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> > On Sat, Apr 25, 2020 at 2:45 PM Mateusz Holenko <mholenko@antmicro.com> wrote:
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-...
+This adds support for the Ethernet Controller present on MediaTeK SoCs
+from the MT8* family.
 
-> > > Signed-off-by: Filip Kokosinski <fkokosinski@antmicro.com>
-> > > Signed-off-by: Mateusz Holenko <mholenko@antmicro.com>
-> >
-> > Co-developed-by?
->
-> Most of the coding here is done by Filip Kokosinski - I'm responsible
-> for managing the patches and sending to LKML so I don't think I
-> qualify as a co-developer :)
+The first two patches add binding documents for the PERICFG syscon and
+for the MAC itself.
 
-I see.
+Patches 3/11 & 4/11 do some cleanup of the mediatek ethernet drivers
+directory.
 
-...
+Patch 5/11 provides a devres variant of register_netdev().
 
-> > > +#define OFF_RXTX       0x00
-> > > +#define SIZE_RXTX      1
-> > > +#define OFF_TXFULL     0x04
-> > > +#define SIZE_TXFULL    1
-> > > +#define OFF_RXEMPTY    0x08
-> > > +#define SIZE_RXEMPTY   1
-> > > +#define OFF_EV_STATUS  0x0c
-> > > +#define SIZE_EV_STATUS 1
-> > > +#define OFF_EV_PENDING 0x10
-> > > +#define SIZE_EV_PENDING        1
-> > > +#define OFF_EV_ENABLE  0x14
-> > > +#define SIZE_EV_ENABLE 1
-> >
-> > Why do you need all those SIZE_*?
+Patch 6/11 adds the new ethernet driver.
 
-> This is related to how LiteX peripherals (LiteUART being one of them)
-> handle register access.
-> The LiteX HW splits a classic 32-bit register into 4 32-bit registers,
-> each one containing only 8-bit part of it.
->
-> SIZE in this context means how many of those "subregisters" (still
-> 32-bit wide, but with only 8-bit of meaningful data) to read/write.
-> The "litex.h" header (patch 3 of this patchset) provides common
-> functions for doing it, but it must know the size for each register.
+The rest of the patches add DT fixups for the boards already supported
+upstream.
 
-So, can't you simple use them as is? I still didn't get how SIZE helps here.
+Bartosz Golaszewski (11):
+  dt-bindings: add a binding document for MediaTek PERICFG controller
+  dt-bindings: new: add yaml bindings for MediaTek Ethernet MAC
+  net: ethernet: mediatek: rename Kconfig prompt
+  net: ethernet: mediatek: remove unnecessary spaces from Makefile
+  net: core: provide devm_register_netdev()
+  net: ethernet: mtk-eth-mac: new driver
+  ARM64: dts: mediatek: add pericfg syscon to mt8516.dtsi
+  ARM64: dts: mediatek: add the ethernet node to mt8516.dtsi
+  ARM64: dts: mediatek: add an alias for ethernet0 for pumpkin boards
+  ARM64: dts: mediatek: add ethernet pins for pumpkin boards
+  ARM64: dts: mediatek: enable ethernet on pumpkin boards
 
-...
-
-> > > +static struct uart_driver liteuart_driver = {
-> > > +       .owner = THIS_MODULE,
-> > > +       .driver_name = DRIVER_NAME,
-> > > +       .dev_name = DEV_NAME,
-> >
-> > Much easier to see if any name collisions are happen by grepping
-> > similar struct definitions, but these macros are making life harder.
->
-> Do you mean to avoid indirection caused by defines and write e.g.,
-> `.driver_name = "liteuart"`?
->
-> OK, but the reason we have defines in the first place is because we
-> use the same name in many places and we want to avoid inconsistencies
-> (typos, partial rename, etc.).
-> What's more, looking at other serial drivers I see the notation is not
-> consistent - many of them use defines for name/major/minor as well.
-
-The problem here that .driver_name is a part of user visible
-interface, so, when you rename it it will affect the module alias.
-How DEV_NAME is shared? It should not be, otherwise it will collide
-with other drivers.
-
-> > > +       .major = DRIVER_MAJOR,
-> > > +       .minor = DRIVER_MINOR,
-> >
-> > Ditto.
-
-Ditto.
-
-> > > +};
-
-...
-
-> > > +static const char *liteuart_type(struct uart_port *port)
-> > > +{
-> > > +       return (port->type == PORT_LITEUART) ? DRIVER_NAME : NULL;
-> > > +}
-> >
-> > Do we need this check? Do we need a port type at all?
-
-> This is inspired by serial_core.c and other serial drivers.
-> We don't support any alternative `port->types` values so it's probably
-> not necessary for us, but it seems that this is how other serial
-> drivers are written too.
-
-Legacy drivers are not the best example to take. So, if you can
-survive without UART type, please go with it. Otherwise commit message
-should point out why it's needed so eagerly.
-
-...
-
-> > > +       /* look for aliases; auto-enumerate for free index if not found */
-> > > +       dev_id = of_alias_get_id(np, "serial");
-> > > +       if (dev_id < 0)
-> > > +               dev_id = find_first_zero_bit(liteuart_ports_in_use,
-> > > +                                            CONFIG_SERIAL_LITEUART_MAX_PORTS);
-> >
-> > Racy.
->
-> We'll protect it with a mutex to avoid race conditions.
-
-Rather consider to use xArray API.
-
-...
-
-> > > +               .of_match_table = of_match_ptr(liteuart_of_match),
-> >
-> > of_match_ptr() makes no sense (you have depends on OF).
->
-> You mean that `of_match_ptr(X)` resolves simply to `X` when
-> `CONFIG_OF` is defined?
-> In this context it surely can be simplified.
-
-Yes.
-
-...
-
-> > > +static int __init liteuart_console_init(void)
-> > > +{
-
-> > > +}
-> >
-> > > +
-> >
-> > Extra blank line.
->
-> You mean we should remove an empty line between the definition of
-> liteuart_console_init() and the call to console_initcall()? It seems
-> to be inconsistent across different drivers, but sure - no problem.
-
-Less LOCs is good (but keep common sense applied).
-
-...
-
-> > > +/* LiteUART */
-> > > +#define PORT_LITEUART  123
-> >
-> > We have holes in the list, use them.
-> >
-> > And again why we need this?
->
-> This is inspired by other serial drivers that also reserves
-> identifiers in this file and handles them the same way we do. We
-> simply followed the convention.
-
-See above. This ID is a part of UAPI which is kinda redundant nowadays.
-You need to provide a good argument for that. Otherwise, get rid of it.
+ .../arm/mediatek/mediatek,pericfg.yaml        |   34 +
+ .../bindings/net/mediatek,eth-mac.yaml        |   80 +
+ arch/arm64/boot/dts/mediatek/mt8516.dtsi      |   17 +
+ .../boot/dts/mediatek/pumpkin-common.dtsi     |   34 +
+ drivers/net/ethernet/mediatek/Kconfig         |    8 +-
+ drivers/net/ethernet/mediatek/Makefile        |    3 +-
+ drivers/net/ethernet/mediatek/mtk_eth_mac.c   | 1476 +++++++++++++++++
+ include/linux/netdevice.h                     |    4 +
+ net/core/dev.c                                |   48 +
+ net/ethernet/eth.c                            |    1 +
+ 10 files changed, 1703 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,pericfg.yaml
+ create mode 100644 Documentation/devicetree/bindings/net/mediatek,eth-mac.yaml
+ create mode 100644 drivers/net/ethernet/mediatek/mtk_eth_mac.c
 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.25.0
+
