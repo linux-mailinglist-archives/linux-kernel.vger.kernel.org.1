@@ -2,185 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87C9A1C5E32
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 18:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA5901C5E3B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 19:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730823AbgEEQ7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 12:59:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40116 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729553AbgEEQ7d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 12:59:33 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2C88F20746;
-        Tue,  5 May 2020 16:59:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588697972;
-        bh=um6UNX9+jOMlyvBzN0ZJZJ+wG/sI8Y+cz3tgOpWpop8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=a0vCNLJqkDinFm5b2Jp9DwKGH4IJ/sY2wiqiDminSTFmEFWUDgve9imF7jkWCpm3i
-         B3u5hPyRKVMPeA9Jw8loS3V1z01Jtmn1Hx991Q6FDGiJavGJEVZmK3t/IyCwMq1HMb
-         wF+sHsCglfaH/eQdu+Era1o099tDEaivJeF7V3EI=
-Date:   Tue, 5 May 2020 18:59:29 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     shuah <shuah@kernel.org>
-Cc:     Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 5.6 00/73] 5.6.11-rc1 review
-Message-ID: <20200505165929.GA1110961@kroah.com>
-References: <20200504165501.781878940@linuxfoundation.org>
- <3366716c-3a30-033d-4df6-4183eb262208@kernel.org>
- <82eb8f25-4e15-001a-1c4f-5f59400d352b@kernel.org>
- <s5h4ksubdh8.wl-tiwai@suse.de>
- <e7326300-faad-df0e-1918-a36b5be4b078@kernel.org>
- <9871eac6-29b7-2f0e-f383-2358b5a245d8@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9871eac6-29b7-2f0e-f383-2358b5a245d8@kernel.org>
+        id S1730530AbgEERCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 13:02:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728804AbgEERCi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 13:02:38 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B85C061A0F;
+        Tue,  5 May 2020 10:02:38 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id x25so3111351wmc.0;
+        Tue, 05 May 2020 10:02:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=4Fa9SRX5iGefguq9oBjY0ujY1kxsa+01Ny22B/LnyJg=;
+        b=Ota0VHhLwimGfuqQXDT5Cm/ryqh3nix86NndMnb4/lv3yKDFdLDPzSIF3rL/1VCQ8J
+         c5JfalcNar2PI5aHHHMY+BVkiHyCgS/qr2yRvC8BUxaoZs/Opr9bgDh2xFrJP+yHb42Z
+         kdx2HPpLIBmypvHxR8iRBlw8v1gkOvij88nxQSDewwTherDFxQJ6j7OmpK3SH1fQw3HN
+         JR95is0tt0sfsleV0tTGzH+7CKoFhWTSNDUvBySF3MBuNv/wH3VWrpoijovq8iblG4TK
+         hz7RBOvoR9VUpVy+vH4y2KnH/cXOX8RqaAUT5ZRUfRHzKwXm5tjdXa2WsQZMSAloY40o
+         Oudg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=4Fa9SRX5iGefguq9oBjY0ujY1kxsa+01Ny22B/LnyJg=;
+        b=YdFKyBzCQN0+/UT7zvIg6t2c1Ncz2jvPaFosUPdbRxf5eYkcV4rEtC9SxdodkTDabZ
+         bICF5XX9LyR7ddaKhTiW3RFQBGmPOnXFciSmUkcTrKdnDWUmsb0Mhg3AFseJ2xbj5KVT
+         Pk+379Sj5D7Lh9xBoFelYOkBE6Wtjif+gSIlnypJE6qRSrcdZGzyIKnoSgZeonawU+iG
+         IOOdHhqlPs5+PWHHNmGRxptkqA3gihrhnPtVtYhlF/0SnXovAGNDPYnsJAeT9CgL/glS
+         0k5LUtbNjjnILdMwLUi0ewYwE45bbmLYS4DE/rMPhehBPYEY6uy2IHiStND6tPLmAVv2
+         HTtA==
+X-Gm-Message-State: AGi0Pubm+Il/Fwg7lc+LMNRBm/b3JYC0t414HmzuZvyokkKOCWy7LeaC
+        zfkrxpmSNZgiJmlFs0/3SgE=
+X-Google-Smtp-Source: APiQypJAuuQIMcmMxXCSbON9abfTYyy02Wjgc8Q38il3f+5HzxAp3b1VaD3sXdGSeZIgUiwFGsXi7Q==
+X-Received: by 2002:a7b:c456:: with SMTP id l22mr4204827wmi.148.1588698156757;
+        Tue, 05 May 2020 10:02:36 -0700 (PDT)
+Received: from debian.home (ip51ccf9cd.speed.planet.nl. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id o6sm4397252wrw.63.2020.05.05.10.02.35
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 05 May 2020 10:02:36 -0700 (PDT)
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] arm64: dts: rockchip: fix phy nodename for rk3328
+Date:   Tue,  5 May 2020 19:02:27 +0200
+Message-Id: <20200505170227.6503-1-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20200321215423.12176-1-jbx6244@gmail.com>
+References: <20200321215423.12176-1-jbx6244@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 05, 2020 at 10:19:31AM -0600, shuah wrote:
-> On 5/5/20 9:43 AM, shuah wrote:
-> > On 5/5/20 9:36 AM, Takashi Iwai wrote:
-> > > On Tue, 05 May 2020 17:30:07 +0200,
-> > > shuah wrote:
-> > > > 
-> > > > On 5/5/20 9:25 AM, shuah wrote:
-> > > > > On 5/4/20 11:57 AM, Greg Kroah-Hartman wrote:
-> > > > > > This is the start of the stable review cycle for the 5.6.11 release.
-> > > > > > There are 73 patches in this series, all will be posted as a response
-> > > > > > to this one.  If anyone has any issues with these being
-> > > > > > applied, please
-> > > > > > let me know.
-> > > > > > 
-> > > > > > Responses should be made by Wed, 06 May 2020 16:52:55 +0000.
-> > > > > > Anything received after that time might be too late.
-> > > > > > 
-> > > > > > The whole patch series can be found in one patch at:
-> > > > > >      https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.6.11-rc1.gz
-> > > > > > 
-> > > > > > 
-> > > > > > or in the git tree and branch at:
-> > > > > >      git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-> > > > > > 
-> > > > > > linux-5.6.y
-> > > > > > and the diffstat can be found below.
-> > > > > > 
-> > > > > > thanks,
-> > > > > > 
-> > > > > > greg k-h
-> > > > > > 
-> > > > > > -------------
-> > > > > > Pseudo-Shortlog of commits:
-> > > > > > 
-> > > > > > Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > > > >       Linux 5.6.11-rc1
-> > > > > > 
-> > > > > 
-> > > > > > Takashi Iwai <tiwai@suse.de>
-> > > > > >       ALSA: pcm: oss: Place the plugin buffer overflow
-> > > > > > checks correctly
-> > > > > > 
-> > > > > > Vasily Khoruzhick <anarsoul@gmail.com>
-> > > > > >       ALSA: line6: Fix POD HD500 audio playback
-> > > > > > 
-> > > > > > Wu Bo <wubo40@huawei.com>
-> > > > > >       ALSA: hda/hdmi: fix without unlocked before return
-> > > > > > 
-> > > > > > Takashi Iwai <tiwai@suse.de>
-> > > > > >       ALSA: usb-audio: Correct a typo of NuPrime DAC-10 USB ID
-> > > > > > 
-> > > > > > Hui Wang <hui.wang@canonical.com>
-> > > > > >       ALSA: hda/realtek - Two front mics on a Lenovo ThinkCenter
-> > > > > > 
-> > > > > 
-> > > > > >    sound/core/oss/pcm_plugin.c                       | 20 ++++---
-> > > > > >    sound/isa/opti9xx/miro.c                          |  9 ++-
-> > > > > >    sound/isa/opti9xx/opti92x-ad1848.c                |  9 ++-
-> > > > > >    sound/pci/hda/patch_hdmi.c                        |  4 +-
-> > > > > >    sound/pci/hda/patch_realtek.c                     |  1 +
-> > > > > >    sound/usb/line6/podhd.c                           | 22 ++-----
-> > > > > >    sound/usb/quirks.c                                |  2 +-
-> > > > > >    78 files changed, 554 insertions(+), 297 deletions(-)
-> > > > > > 
-> > > > > > 
-> > > > > > 
-> > > > > 
-> > > > > Compiled and booted on my test system. Tons of the of following
-> > > > > errors in dmesg
-> > > > > 
-> > > > > Adding Takashi Iwai
-> > > > > 
-> > > > > [   33.980302] usb 2-2.4: 1:1: cannot set freq 48000 to ep 0x1
-> > > > > [   49.340581] usb 2-2.4: 2:1: cannot set freq 48000 to ep 0x82
-> > > > > [   59.580511] usb 2-2.4: 13:0: cannot get min/max values for
-> > > > > control 2 (id 13)
-> > > > > [   64.700532] usb 2-2.4: 9:0: cannot get min/max values for control
-> > > > > 2 (id 9)
-> > > > > [   69.792257] usb 2-2.4: 10:0: cannot get min/max values for
-> > > > > control 2 (id 10)
-> > > > > [   69.792736] usbcore: registered new interface driver snd-usb-audio
-> > > > > [   74.871038] usb 2-2.4: 9:0: cannot get min/max values for control
-> > > > > 2 (id 9)
-> > > > > [   79.967099] usb 2-2.4: 9:0: cannot get min/max values for control
-> > > > > 2 (id 9)
-> > > > > [   85.076961] usb 2-2.4: 9:0: cannot get min/max values for control
-> > > > > 2 (id 9)
-> > > > > [   90.191415] usb 2-2.4: 9:0: cannot get min/max values for control
-> > > > > 2 (id 9)
-> > > > > [   95.308843] usb 2-2.4: 9:0: cannot get min/max values for control
-> > > > > 2 (id 9)
-> > > > > 
-> > > > > followed by
-> > > > > 
-> > > > > [  131.172280] usb 2-2.4: 1:1: usb_set_interface failed (-110)
-> > > > > [  136.259909] usb 2-2.4: 1:1: usb_set_interface failed (-110)
-> > > > > [  141.380345] usb 2-2.4: 1:1: usb_set_interface failed (-110)
-> > > > > [  146.500227] usb 2-2.4: 1:1: usb_set_interface failed (-110)
-> > > > > [  151.620227] usb 2-2.4: 1:1: usb_set_interface failed (-110)
-> > > > > [  156.739899] usb 2-2.4: 1:1: usb_set_interface failed (-110)
-> > > > > [  161.859999] usb 2-2.4: 1:1: usb_set_interface failed (-110)
-> > > > > 
-> > > > > 
-> > > > > I have audio on that port. I haven't tried yet reverting these
-> > > > > sound patches yet. demsg is filling up with these messages for
-> > > > > sure.
-> > > > > 
-> > > > 
-> > > > I just tried Linux 5.7-rc4 and it also has this problem. New in rc4 as
-> > > > far as I can tell.
-> > > 
-> > > Then it's unlikely from the changes in sound/*, but I'd suspect rather
-> > > USB core side.  There is only one change for USB-audio driver and it's
-> > > a correction of USB device ID.
-> > > 
-> > > 
-> > 
-> > For what its worth not seeing this on 5.4.39-rc1 with the same set of
-> > sound changes. I will start bisect on 5.6.11-rc1
-> > 
-> 
-> I can't reproduce this problem on 5.7-rc1 and 5.6.11-rc1 after seeing
-> it once on both.
-> 
-> Tried powerdown vs reboot to see if it is tied to hardware init
-> sequence. Doesn't seem to make a difference. Oh well. I will
-> update if I see it again.
+A test with the command below gives for example this error:
 
-Thanks for the report, and for testing all of these.  Looks like your
-USB device got "stuck" in an odd state, if it shows up again, please let
-us know on linux-usb@vger.
+arch/arm64/boot/dts/rockchip/rk3328-evb.dt.yaml: phy@0:
+'#phy-cells' is a required property
 
-thanks,
+The phy nodename is normally used by a phy-handle.
+This node is however compatible with
+"ethernet-phy-id1234.d400", "ethernet-phy-ieee802.3-c22"
+which is just been added to 'ethernet-phy.yaml'.
+So change nodename to 'ethernet-phy' for which '#phy-cells'
+is not a required property
 
-greg k-h
+make ARCH=arm64 dtbs_check
+DT_SCHEMA_FILES=~/.local/lib/python3.5/site-packages/dtschema/schemas/
+phy/phy-provider.yaml
+
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+---
+Changes v2:
+  Reword commit message in the same way as in the patches for
+  'rk3228-evb.dts' and 'rk3229-xms6.dts'
+  that are already aproved.
+
+  Patch 2-6 of version 1 unchanged.
+---
+ arch/arm64/boot/dts/rockchip/rk3328.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3328.dtsi b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+index 931a9279e..fdf0e1b26 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+@@ -935,7 +935,7 @@
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 
+-			phy: phy@0 {
++			phy: ethernet-phy@0 {
+ 				compatible = "ethernet-phy-id1234.d400", "ethernet-phy-ieee802.3-c22";
+ 				reg = <0>;
+ 				clocks = <&cru SCLK_MAC2PHY_OUT>;
+-- 
+2.11.0
+
