@@ -2,190 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A1F41C54EA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 13:59:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66AB31C54F8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 14:00:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728238AbgEEL7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 07:59:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55638 "EHLO
+        id S1728897AbgEEMAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 08:00:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727090AbgEEL7W (ORCPT
+        by vger.kernel.org with ESMTP id S1728180AbgEEMAu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 07:59:22 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6298FC061A0F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 04:59:22 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id x73so1128691lfa.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 04:59:22 -0700 (PDT)
+        Tue, 5 May 2020 08:00:50 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AF37C061A0F;
+        Tue,  5 May 2020 05:00:50 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id g13so2381601wrb.8;
+        Tue, 05 May 2020 05:00:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uvyOYLDN9I6G44mzBr+eJp9UfWHxSSZYkeApkR1DRBs=;
-        b=hHN3cpNowtbVxjqPXfJfjcZuJmb+J5Kee+wNPfV9hQkfN6yoyfeyUucbR++axL8aVO
-         fpMlI4YRF0nBgFxj0vf15GhO5Tu6ZjZhlnzuV7hw2ZRQQlbMzyng/Z8bKQscC6Oaufq8
-         l1GmOUQksiW11jYhrFJ4wBF5dsH0k9uAhQH7d8UQF4PlFwcA3sCFOfkX/xyTMNnoIWOF
-         qytR5uXEloKnzfJ+g5FAPbCMc/nIfqmt+qIm3f1NMUgRG9dwDyRuYHU5O9nE8S85orQx
-         hNBEhK7Z/1qq73yW5LxMcV/YZUA6QH8SQO/N9TvmN4GiDfJHntWV+shP19bozbSAO+Xp
-         rBkQ==
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:autocrypt:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=tF3WbB2pv4eRwvX7f/qk4r+/L1hFqCVu/L56E4P64sY=;
+        b=TgBIuwg2scO0J8QIMsG2fUNN4bv+/vDjSCNGd1ukU1fzhIYqpyxpTNF6XCAVjbNxRU
+         CGo2AM3OfLY5F9jiD0Ha10k+Pne1TWW1mnnpV/PtIjh5BueAdNV031SL3vKCM9jPqwBb
+         cREP+tgbdGATYjsqizfreaKB3k22UP/6M28opYUi0hNc/oW4a3wsaM3vq6qwUcTm/dtV
+         kp9mKz6FVQuymsvWoOXgc9Xc7S4gWkIjvuETGlwOV7+zAbPnye3NhoGcRtxL6EI/8nOl
+         6qIonOM2ChIVf5UeAzumwJLEyTZ54snD8rFKyeZSRmu+FTpd6EbO7UmrduZcqxZMAvbQ
+         PlVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uvyOYLDN9I6G44mzBr+eJp9UfWHxSSZYkeApkR1DRBs=;
-        b=pUKyHAgIst9kw/cFDbE4552dZsX5FRzp88+clmTwetNBSWrVp/0NgWqX2tr7rLiU0u
-         HJbDbHAVFya7KOSRdPdgexTY65GStswx43y1FHFNySKZ1vq/VAE76xVtUY/zDqR+RMKf
-         9se6RCsVYvou6f1D5EeVtKlVDjUBhP4Hmn4iQAO/4kjTiiCAEh8/Ib5wLZ+WrnlykT33
-         +dVSmNbr3mrAApaXPmoqf6lzhoHQ8eUqeRZ6NtA/dhAZ5kzqR4nJLocZrAVAEG4NeDqq
-         2fY573sX2sb7fJG+D6abwwVO5phL9RNkoDinFjPoHYm9sF9eCdnFS0Mq2XO4nRxfwU36
-         9GIg==
-X-Gm-Message-State: AGi0PubP8TuFpSGfhrfTFwzNFe0WaETvoVzJxJGEIMcCNw7Q4dJpZwln
-        ScY3ynJEkD9Q5Ae39i/yL6I6lEVFe/lZal7JPL7xbg==
-X-Google-Smtp-Source: APiQypIOI/I3XWJ7qttW55NOmWj7VnuraK3AIGYXqHuHAPnirsq/4IwWVzOkmHsLKcQv2q+P2ChRK+/WFoZed5VuL3Y=
-X-Received: by 2002:a05:6512:1109:: with SMTP id l9mr1543834lfg.12.1588679960671;
- Tue, 05 May 2020 04:59:20 -0700 (PDT)
+        h=x-gm-message-state:to:cc:references:from:autocrypt:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=tF3WbB2pv4eRwvX7f/qk4r+/L1hFqCVu/L56E4P64sY=;
+        b=XtY2pJ0FbsU1kJYOS3lo1UeS6kitvGkPy+9qH6jLLntCdpOOAsqveER1pisjgoStfP
+         GIT2QdWf34heewC/FtQC4b+PQIYhcjbo+SnoL0zfnELGCbYWbJE3/ugapXGndSK6n4Zn
+         2aANud86xHQl7m/6Mz9kF8hg+lGXG8CqPz4eM8oQt/6jNbZ/Ln0OFtD7uctaeSQb5Tei
+         sItItzQ9tKxKgyzzf5E8pRetZwhDckU6VcS6gP++7WRUrwLJNz7xBavFS25BLIbUUonj
+         PmH/ogk9yzjtRV03M/pdq20yCTi8b0CWUZb5SEppWJP6DjU0tohY+MHo/XDjIpPeADin
+         1hXQ==
+X-Gm-Message-State: AGi0Pua5IOpvoE+wb8flUFuiUJgF+72YiperFrIwOkE36QDBoZ8RKfMS
+        uj1PInZQSoPgpivIXjTVC91aS3HDpys=
+X-Google-Smtp-Source: APiQypLSkPprqka8DbMhUNfoxV6nS5KtvoWUJKlJnVHmtkez8kHXJLy9dAs/Nb8wZyoBk34tWzOCLg==
+X-Received: by 2002:a5d:6742:: with SMTP id l2mr3115009wrw.138.1588680048537;
+        Tue, 05 May 2020 05:00:48 -0700 (PDT)
+Received: from [192.168.43.168] ([109.126.133.135])
+        by smtp.gmail.com with ESMTPSA id u2sm3477113wrd.40.2020.05.05.05.00.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 May 2020 05:00:48 -0700 (PDT)
+To:     Colin King <colin.king@canonical.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, linux-fsdevel@vger.kernel.org,
+        io-uring@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200505093343.41869-1-colin.king@canonical.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
+ 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 bA==
+Subject: Re: [PATCH]i[next] io_uring: remove redundant check on force_nonblock
+Message-ID: <250ed09d-ee20-3903-b766-97ef12011de6@gmail.com>
+Date:   Tue, 5 May 2020 14:59:41 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-References: <20200501205011.14899-1-grygorii.strashko@ti.com>
- <20200501205011.14899-4-grygorii.strashko@ti.com> <CADYN=9L+RtruRYKah0Bomh7UaPGQ==N9trd0ZoVQ3GTc-VY8Dg@mail.gmail.com>
- <1bf51157-9fee-1948-f9ff-116799d12731@ti.com> <CADYN=9LfqLLmKNHPfXEiQbaX8ELF78BL-vWUcX-VP3aQ86csNg@mail.gmail.com>
-In-Reply-To: <CADYN=9LfqLLmKNHPfXEiQbaX8ELF78BL-vWUcX-VP3aQ86csNg@mail.gmail.com>
-From:   Anders Roxell <anders.roxell@linaro.org>
-Date:   Tue, 5 May 2020 13:59:09 +0200
-Message-ID: <CADYN=9LDCE2sQca12D4ow3BkaxXi1_bnc4Apu7pP4vnA=5AOKA@mail.gmail.com>
-Subject: Re: [PATCH net-next 3/7] net: ethernet: ti: am65-cpsw-nuss: enable
- packet timestamping support
-To:     Grygorii Strashko <grygorii.strashko@ti.com>
-Cc:     Richard Cochran <richardcochran@gmail.com>,
-        Murali Karicheri <m-karicheri2@ti.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tero Kristo <t-kristo@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Networking <netdev@vger.kernel.org>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Nishanth Menon <nm@ti.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200505093343.41869-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 May 2020 at 13:16, Anders Roxell <anders.roxell@linaro.org> wrote:
->
-> On Tue, 5 May 2020 at 13:05, Grygorii Strashko <grygorii.strashko@ti.com> wrote:
-> >
-> > hi Anders,
->
-> Hi Grygorii,
+On 05/05/2020 12:33, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The check on force_nonblock is redundant as this is performed
+> several statements earlier and also returns with -EAGAIN. Remove
+> the redundant check.
 
-Hi again,
+It's kind of scary that such simple transformation is repeatedly done wrongly.
+In short, because force_nonblock is always false there, the equivalent
+transformation would be to delete it altogether.
 
->
-> >
-> > On 05/05/2020 13:17, Anders Roxell wrote:
-> > > On Fri, 1 May 2020 at 22:50, Grygorii Strashko <grygorii.strashko@ti.com> wrote:
-> > >>
-> > >> The MCU CPSW Common Platform Time Sync (CPTS) provides possibility to
-> > >> timestamp TX PTP packets and all RX packets.
-> > >>
-> > >> This enables corresponding support in TI AM65x/J721E MCU CPSW driver.
-> > >>
-> > >> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
-> > >> ---
-> > >>   drivers/net/ethernet/ti/Kconfig             |   1 +
-> > >>   drivers/net/ethernet/ti/am65-cpsw-ethtool.c |  24 ++-
-> > >>   drivers/net/ethernet/ti/am65-cpsw-nuss.c    | 172 ++++++++++++++++++++
-> > >>   drivers/net/ethernet/ti/am65-cpsw-nuss.h    |   6 +-
-> > >>   4 files changed, 201 insertions(+), 2 deletions(-)
-> > >>
-> > >> diff --git a/drivers/net/ethernet/ti/Kconfig b/drivers/net/ethernet/ti/Kconfig
-> > >> index 1f4e5b6dc686..2c7bd1ccaaec 100644
-> > >> --- a/drivers/net/ethernet/ti/Kconfig
-> > >> +++ b/drivers/net/ethernet/ti/Kconfig
-> > >> @@ -100,6 +100,7 @@ config TI_K3_AM65_CPSW_NUSS
-> > >>          depends on ARCH_K3 && OF && TI_K3_UDMA_GLUE_LAYER
-> > >>          select TI_DAVINCI_MDIO
-> > >>          imply PHY_TI_GMII_SEL
-> > >> +       imply TI_AM65_CPTS
-> > >
-> > > Should this be TI_K3_AM65_CPTS ?
+Kudos to Jens for his thoroughness. See
+https://lore.kernel.org/io-uring/529ea928-88a6-2cbe-ba8c-72b4c68cc7e8@kernel.dk/T/#u
 
-instead of 'imply TI_K3_AM65_CPTS' don't you want to do this:
-'depends on TI_K3_AM65_CPTS || !TI_K3_AM65_CPTS'
+> 
+> Addresses-Coverity: ("Logicall dead code")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  fs/io_uring.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/io_uring.c b/fs/io_uring.c
+> index e5dfbbd2aa34..4b1efb062f7f 100644
+> --- a/fs/io_uring.c
+> +++ b/fs/io_uring.c
+> @@ -2782,7 +2782,7 @@ static int io_splice(struct io_kiocb *req, bool force_nonblock)
+>  	poff_in = (sp->off_in == -1) ? NULL : &sp->off_in;
+>  	poff_out = (sp->off_out == -1) ? NULL : &sp->off_out;
+>  	ret = do_splice(in, poff_in, out, poff_out, sp->len, flags);
+> -	if (force_nonblock && ret == -EAGAIN)
+> +	if (ret == -EAGAIN)
+>  		return -EAGAIN;
+>  
+>  	io_put_file(req, in, (sp->flags & SPLICE_F_FD_IN_FIXED));
+> 
 
-
-Cheers,
-Anders
-
-> > >
-> > > I did an arm64 allmodconfig build on todays next tag: next-20200505
-> > > and got this undefined symbol:
-> > >
-> > > aarch64-linux-gnu-ld: drivers/net/ethernet/ti/am65-cpsw-nuss.o: in
-> > > function `am65_cpsw_init_cpts':
-> > > /srv/src/kernel/next/obj-arm64-next-20200505/../drivers/net/ethernet/ti/am65-cpsw-nuss.c:1685:
-> > > undefined reference to `am65_cpts_create'
-> > > aarch64-linux-gnu-ld:
-> > > /srv/src/kernel/next/obj-arm64-next-20200505/../drivers/net/ethernet/ti/am65-cpsw-nuss.c:1685:(.text+0x2e20):
-> > > relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol
-> > > `am65_cpts_create'
-> > > aarch64-linux-gnu-ld: drivers/net/ethernet/ti/am65-cpsw-nuss.o: in
-> > > function `am65_cpsw_nuss_tx_compl_packets':
-> > > /srv/src/kernel/next/obj-arm64-next-20200505/../drivers/net/ethernet/ti/am65-cpsw-nuss.c:923:
-> > > undefined reference to `am65_cpts_tx_timestamp'
-> > > aarch64-linux-gnu-ld:
-> > > /srv/src/kernel/next/obj-arm64-next-20200505/../drivers/net/ethernet/ti/am65-cpsw-nuss.c:923:(.text+0x4cf0):
-> > > relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol
-> > > `am65_cpts_tx_timestamp'
-> > > aarch64-linux-gnu-ld: drivers/net/ethernet/ti/am65-cpsw-nuss.o: in
-> > > function `am65_cpsw_nuss_ndo_slave_xmit':
-> > > /srv/src/kernel/next/obj-arm64-next-20200505/../drivers/net/ethernet/ti/am65-cpsw-nuss.c:1018:
-> > > undefined reference to `am65_cpts_prep_tx_timestamp'
-> > > aarch64-linux-gnu-ld:
-> > > /srv/src/kernel/next/obj-arm64-next-20200505/../drivers/net/ethernet/ti/am65-cpsw-nuss.c:1018:(.text+0x58fc):
-> > > relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol
-> > > `am65_cpts_prep_tx_timestamp'
-> > > aarch64-linux-gnu-ld: drivers/net/ethernet/ti/am65-cpsw-nuss.o: in
-> > > function `am65_cpsw_nuss_hwtstamp_set':
-> > > /srv/src/kernel/next/obj-arm64-next-20200505/../drivers/net/ethernet/ti/am65-cpsw-nuss.c:1265:
-> > > undefined reference to `am65_cpts_rx_enable'
-> > > aarch64-linux-gnu-ld:
-> > > /srv/src/kernel/next/obj-arm64-next-20200505/../drivers/net/ethernet/ti/am65-cpsw-nuss.c:1265:(.text+0x7564):
-> > > relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol
-> > > `am65_cpts_rx_enable'
-> > > aarch64-linux-gnu-ld: drivers/net/ethernet/ti/am65-cpsw-ethtool.o: in
-> > > function `am65_cpsw_get_ethtool_ts_info':
-> > > /srv/src/kernel/next/obj-arm64-next-20200505/../drivers/net/ethernet/ti/am65-cpsw-ethtool.c:713:
-> > > undefined reference to `am65_cpts_phc_index'
-> > > aarch64-linux-gnu-ld:
-> > > /srv/src/kernel/next/obj-arm64-next-20200505/../drivers/net/ethernet/ti/am65-cpsw-ethtool.c:713:(.text+0xbe8):
-> > > relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol
-> > > `am65_cpts_phc_index'
-> > > make[1]: *** [/srv/src/kernel/next/Makefile:1114: vmlinux] Error 1
-> > > make[1]: Target 'Image' not remade because of errors.
-> > > make: *** [Makefile:180: sub-make] Error 2
-> > > make: Target 'Image' not remade because of errors.
-> >
-> > Sry, I can't reproduce it net-next.
->
-> Oh I forgot to try net-next, sorry.
->
-> > trying next...
->
-> Thank you.
->
-> > What's your config?
->
-> This is the config [1] I used.
->
-> Cheers,
-> Anders
-> [1] https://people.linaro.org/~anders.roxell/kernel-next-20200505.config
->
-> >
-> > --
-> > Best regards,
-> > grygorii
+-- 
+Pavel Begunkov
