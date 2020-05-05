@@ -2,87 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A5F61C5D14
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 18:12:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED8221C5D25
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 18:13:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729926AbgEEQMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 12:12:30 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:33694 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729171AbgEEQM3 (ORCPT
+        id S1730625AbgEEQNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 12:13:45 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:5592 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729765AbgEEQNm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 12:12:29 -0400
-Received: by mail-oi1-f195.google.com with SMTP id o24so2463642oic.0;
-        Tue, 05 May 2020 09:12:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=P4uwIg6IznWYSiI4J+LB8KzTkIyPs2Mm/1Ia9wDW3Qw=;
-        b=Uf8Fm/+RQarS5djAk3ZuSuDk6ZIUfYeLVqqmBudontM/TxqpniBnxtKoJA077F4RNI
-         /iGW0UXRPytSUB+KHaeR9oep4tqisrQiKi7JGoKmMaNT9W4kyVmb0Hk2wXuEJ/xRlG8Q
-         BfGXpc20gzqBqKvcjg+rEk29K/o/Cbi0V6cFzcGO3TkVT2tVv8fDl6YPQIZ6Qmi87ydY
-         QvWOoi67TTwjGRiJGh6yTOGqXV/JrOHKpcPMflcvA1Gn8WEU/Vk0M7bx+5hG/N/Ka/BH
-         TbL8bdVznQ1E/dIewk/OvpbiF2kIyziU2Xe04EwIRLiVgV2vsLYkFnuJldupPz562DjE
-         gACw==
-X-Gm-Message-State: AGi0Pua5KQb338WRPQVMrTBRYQmZsmR+Np3ZooBSlFCPxTxNRarsZ4N4
-        hmJztXUlC8VBl3UtzA9Kpw==
-X-Google-Smtp-Source: APiQypLPTfyCDSQGXksszy6DzFalq0KOuLxkfmgzhJ5Qd4+1aprQV9wF6sc3emzl0a6+rBGzs5/Z+w==
-X-Received: by 2002:aca:ed13:: with SMTP id l19mr1736131oih.132.1588695148437;
-        Tue, 05 May 2020 09:12:28 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id t20sm698707ott.51.2020.05.05.09.12.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 May 2020 09:12:27 -0700 (PDT)
-Received: (nullmailer pid 21692 invoked by uid 1000);
-        Tue, 05 May 2020 16:12:26 -0000
-Date:   Tue, 5 May 2020 11:12:26 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     amirmizi6@gmail.com
-Cc:     Eyal.Cohen@nuvoton.com, jarkko.sakkinen@linux.intel.com,
-        oshrialkoby85@gmail.com, alexander.steffen@infineon.com,
-        mark.rutland@arm.com, peterhuewe@gmx.de, jgg@ziepe.ca,
-        arnd@arndb.de, gregkh@linuxfoundation.org, benoit.houyere@st.com,
-        eajames@linux.ibm.com, joel@jms.id.au, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        oshri.alkoby@nuvoton.com, tmaimon77@gmail.com, gcwilson@us.ibm.com,
-        kgoldman@us.ibm.com, Dan.Morav@nuvoton.com,
-        oren.tanami@nuvoton.com, shmulik.hager@nuvoton.com,
-        amir.mizinski@nuvoton.com
-Subject: Re: [PATCH v7 6/7] tpm: Add YAML schema for TPM TIS I2C options
-Message-ID: <20200505161226.GA555@bogus>
-References: <20200427124931.115697-1-amirmizi6@gmail.com>
- <20200427124931.115697-7-amirmizi6@gmail.com>
+        Tue, 5 May 2020 12:13:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1588695222; x=1620231222;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   mime-version;
+  bh=KzvE+DVjzy/zrI1y9QhRcUUXKHj3IDMUSCkxhsXLtEM=;
+  b=k1HmngUNjFBQkv/HnRiY35X/2hF2jlysrf67YglREdRs0vRKuGHZKeOg
+   B97YimC78pbA0oSPrXzZn046ox+ze0YnISZG0wDblOvDU2xKT5BhmmB3L
+   xhtKwWoEAP5G2Y3D52L4OPzbcv5MltSQQAqVJltO/J/XcA63Ni2EGe9F7
+   I=;
+IronPort-SDR: xjLM36pNFmpanr4FmO5MQR+NRdJl03/cefOtoL7Zf9khbQnmUXqUq526sBI2b1Ohg3vf9AZLE1
+ 3VvwQM1ViZXg==
+X-IronPort-AV: E=Sophos;i="5.73,355,1583193600"; 
+   d="scan'208";a="33080699"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1e-27fb8269.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 05 May 2020 16:13:38 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-1e-27fb8269.us-east-1.amazon.com (Postfix) with ESMTPS id 5D662A21BE;
+        Tue,  5 May 2020 16:13:35 +0000 (UTC)
+Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 5 May 2020 16:13:34 +0000
+Received: from u886c93fd17d25d.ant.amazon.com (10.43.160.26) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 5 May 2020 16:13:25 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     Eric Dumazet <edumazet@google.com>
+CC:     SeongJae Park <sjpark@amazon.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <sj38.park@gmail.com>, netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        SeongJae Park <sjpark@amazon.de>, <snu@amazon.com>,
+        <amit@kernel.org>, <stable@vger.kernel.org>
+Subject: Re: Re: Re: [PATCH net v2 0/2] Revert the 'socket_alloc' life cycle change
+Date:   Tue, 5 May 2020 18:13:02 +0200
+Message-ID: <20200505161302.547-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <CANn89iLHV2wyhk6-d6j_4=Ns01AEE5HSA4Qu3LO0gqKgcG81vQ@mail.gmail.com> (raw)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200427124931.115697-7-amirmizi6@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Originating-IP: [10.43.160.26]
+X-ClientProxiedBy: EX13D21UWB002.ant.amazon.com (10.43.161.177) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 03:49:30PM +0300, amirmizi6@gmail.com wrote:
-> From: Amir Mizinski <amirmizi6@gmail.com>
+On Tue, 5 May 2020 09:00:44 -0700 Eric Dumazet <edumazet@google.com> wrote:
+
+> On Tue, May 5, 2020 at 8:47 AM SeongJae Park <sjpark@amazon.com> wrote:
+> >
+> > On Tue, 5 May 2020 08:20:50 -0700 Eric Dumazet <eric.dumazet@gmail.com> wrote:
+> >
+> > >
+> > >
+> > > On 5/5/20 8:07 AM, SeongJae Park wrote:
+> > > > On Tue, 5 May 2020 07:53:39 -0700 Eric Dumazet <edumazet@google.com> wrote:
+> > > >
+> > >
+> > > >> Why do we have 10,000,000 objects around ? Could this be because of
+> > > >> some RCU problem ?
+> > > >
+> > > > Mainly because of a long RCU grace period, as you guess.  I have no idea how
+> > > > the grace period became so long in this case.
+> > > >
+> > > > As my test machine was a virtual machine instance, I guess RCU readers
+> > > > preemption[1] like problem might affected this.
+> > > >
+> > > > [1] https://www.usenix.org/system/files/conference/atc17/atc17-prasad.pdf
+> > > >
+> > > >>
+> > > >> Once Al patches reverted, do you have 10,000,000 sock_alloc around ?
+> > > >
+> > > > Yes, both the old kernel that prior to Al's patches and the recent kernel
+> > > > reverting the Al's patches didn't reproduce the problem.
+> > > >
+> > >
+> > > I repeat my question : Do you have 10,000,000 (smaller) objects kept in slab caches ?
+> > >
+> > > TCP sockets use the (very complex, error prone) SLAB_TYPESAFE_BY_RCU, but not the struct socket_wq
+> > > object that was allocated in sock_alloc_inode() before Al patches.
+> > >
+> > > These objects should be visible in kmalloc-64 kmem cache.
+> >
+> > Not exactly the 10,000,000, as it is only the possible highest number, but I
+> > was able to observe clear exponential increase of the number of the objects
+> > using slabtop.  Before the start of the problematic workload, the number of
+> > objects of 'kmalloc-64' was 5760, but I was able to observe the number increase
+> > to 1,136,576.
+> >
+> >           OBJS ACTIVE  USE OBJ SIZE  SLABS OBJ/SLAB CACHE SIZE NAME
+> > before:   5760   5088  88%    0.06K     90       64       360K kmalloc-64
+> > after:  1136576 1136576 100%    0.06K  17759       64     71036K kmalloc-64
+> >
 > 
-> Added a YAML schema to support tpm tis i2c related dt-bindings for the I2c
-> PTP based physical layer.
+> Great, thanks.
 > 
-> This patch adds the documentation for corresponding device tree bindings of
-> I2C based Physical TPM.
-> Refer to the 'I2C Interface Definition' section in
-> 'TCG PC Client PlatformTPMProfile(PTP) Specification' publication
-> for specification.
+> How recent is the kernel you are running for your experiment ?
 
-Again, DT bindings describe h/w devices, not just a protocol. A device 
-is more than just a protocol interface. There's clocks, power rails, 
-resets, interrupts, firmware, etc. 
+It's based on 5.4.35.
 
-Unless there's something special about TPM chips that makes none of this 
-applicable and no chip will ever have any quirks (or extensions) in 
-their protocol to work-around, then you need compatible string(s) that 
-are specific to the TPM chip. You can have tcg,tpm-tis-i2c as a 
-fallback, but you need specific compatible to handle any quirks.
+> 
+> Let's make sure the bug is not in RCU.
 
-Rob
+One thing I can currently say is that the grace period passes at last.  I
+modified the benchmark to repeat not 10,000 times but only 5,000 times to run
+the test without OOM but easily observable memory pressure.  As soon as the
+benchmark finishes, the memory were freed.
+
+If you need more tests, please let me know.
+
+
+Thanks,
+SeongJae Park
+
+> 
+> After Al changes, RCU got slightly better under stress.
+> 
