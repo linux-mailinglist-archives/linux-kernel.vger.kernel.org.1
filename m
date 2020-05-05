@@ -2,64 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0DB21C5C6D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:48:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E40C91C5C72
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:49:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730610AbgEEPsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 11:48:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35568 "EHLO
+        id S1730658AbgEEPsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 11:48:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730537AbgEEPsh (ORCPT
+        with ESMTP id S1729510AbgEEPst (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 11:48:37 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 022E0C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 08:48:37 -0700 (PDT)
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 7F04C737;
-        Tue,  5 May 2020 15:48:36 +0000 (UTC)
-Date:   Tue, 5 May 2020 09:48:35 -0600
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Christian Brauner <christian@brauner.io>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] samples: fix binderfs sample
-Message-ID: <20200505094835.47cc2d53@lwn.net>
-In-Reply-To: <20200429080113.wetsjwkfxfrarfvf@wittgenstein>
-References: <20200428212555.2806258-1-arnd@arndb.de>
-        <20200429080113.wetsjwkfxfrarfvf@wittgenstein>
-Organization: LWN.net
+        Tue, 5 May 2020 11:48:49 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7ADAC061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 08:48:49 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id n11so1182784pgl.9
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 08:48:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nM/a1FepYTfbkMrKI3vIR1lNGJ72CBefKVP3/JZIHXY=;
+        b=V3zxz3RoRcV4XcGG/nIKdTOXlXD48jyMwltpXd49vu+/cH8gzV/KVIF/XscLHQs4yt
+         WSaHm8hKTeUiUJw9u0xsAuxeoTRcilZXrxJuKgc/C/QNylpCD2f0f+lyOTX+qmrdi3wb
+         F39vPLJPZF4hPUD49GJZ5HlSTHsliK0wErZlK+eq3dZzz2H1uAXvWL1mq6/mnwbCYHrc
+         evjonFrybtwVM21q0sbrQZTwjWO4wjTpeFSWDlDc6gLrRcgFyK5TnaPAv5nz9EUnh2fe
+         bxPw4R4YTHpwJLk9igT1vOwGkbGessoDwgGmon792+t6hITyJ2TwZ5RFYVoaGKbXKatJ
+         oWVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nM/a1FepYTfbkMrKI3vIR1lNGJ72CBefKVP3/JZIHXY=;
+        b=MEBMJVF0/pQH84o6HA/WFt72xMY+UCzHcAmzmHm/RQeWDxsaKjowuOsOAIEEOpkgzA
+         9IuZrTXcMddtcyTOWqcA6C/+7vbJkOmRyVbuxuWZqlW/C1nyTzIwGMQLt9tr4W7+5DCo
+         Nj+HEmssOcTXVQ1ZJGVzuOwPCKjwR6UK46mC0sWxe0s1Ifr5zy2peXIBaR4vRt1xWvjo
+         +u8JvKX2ohw+fu7fFYCPAimH/ZzYf6MQG1rj47v3NBgdl/PNgfukIizLX7Y+4XAguJaY
+         Hbs01qfGeU4f6Xrf/5kb3Hm/5av1VFL480s7bsLrUBwIns/wUFgQ4pZa9depranH6BXI
+         DjWQ==
+X-Gm-Message-State: AGi0PuahLKx1kRZ8ENISgJXArV71lwdrpUXULkAtgtXDGVLj0j8Pj7af
+        lBUln6Usovr3DuQfdS1y3VJTmsyvIqW3BxLvnuQudQ==
+X-Google-Smtp-Source: APiQypJLl6xf4mRfh1BGf7W7IqcP4tJGvKSfO7yOCHR5PvUo1fpA2IsH/BSNnBIpKpMOsBeYdKt3ZFm8WhmVKrT8wx4=
+X-Received: by 2002:a65:5b84:: with SMTP id i4mr3510551pgr.263.1588693728706;
+ Tue, 05 May 2020 08:48:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+References: <20200505142519.1138945-1-arnd@arndb.de>
+In-Reply-To: <20200505142519.1138945-1-arnd@arndb.de>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 5 May 2020 08:48:36 -0700
+Message-ID: <CAKwvOdnBqYs1qJPm4apkGeHUgEZ+ZKe0j0h=eXWy9ACF+OS_HA@mail.gmail.com>
+Subject: Re: [PATCH] drm/amdgpu/dc: don't pass -mhard-float to clang
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Timothy Pearson <tpearson@raptorengineering.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        Charlene Liu <charlene.liu@amd.com>,
+        Anthony Koo <Anthony.Koo@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Apr 2020 10:01:13 +0200
-Christian Brauner <christian.brauner@ubuntu.com> wrote:
+On Tue, May 5, 2020 at 7:25 AM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> Clang does not appear to care, and instead prints a warning:
+>
+> clang: warning: argument unused during compilation: '-mhard-float' [-Wunused-command-line-argument]
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-> On Tue, Apr 28, 2020 at 11:25:33PM +0200, Arnd Bergmann wrote:
-> > A routine check for misspelled Kconfig symbols showed on instance
-> > from last year, the correct symbol name is CONFIG_ANDROID_BINDERFS,
-> > not CONFIG_CONFIG_ANDROID_BINDERFS, so the extra prefix must
-> > be removed in the Kconfig file to allow enabling the sample.
-> > 
-> > As the actual sample fails to build as a kernel module, change the
-> > Makefile enough to get to build as a hostprog instead.
-> > 
-> > Fixes: 9762dc1432e1 ("samples: add binderfs sample program")
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>  
-> 
-> Thanks for fixing this Arnd!
-> Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
-> 
-I've applied this, thanks.
+I want to be super careful here, this part of the build has been super
+tricky in the past.  Just noting before this potentially gets merged
+without any testing; we should verify the generated code does not
+change with Clang.  In the past, this code compiled but would GPF
+sometimes when called into via userspace (see my previous commits
+here).
 
-jon
+> ---
+>  drivers/gpu/drm/amd/display/dc/calcs/Makefile | 5 +++--
+>  drivers/gpu/drm/amd/display/dc/dcn20/Makefile | 5 +++--
+>  drivers/gpu/drm/amd/display/dc/dcn21/Makefile | 5 +++--
+>  drivers/gpu/drm/amd/display/dc/dml/Makefile   | 5 +++--
+>  drivers/gpu/drm/amd/display/dc/dsc/Makefile   | 5 +++--
+>  5 files changed, 15 insertions(+), 10 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/dc/calcs/Makefile b/drivers/gpu/drm/amd/display/dc/calcs/Makefile
+> index 4674aca8f206..64195cacf6fc 100644
+> --- a/drivers/gpu/drm/amd/display/dc/calcs/Makefile
+> +++ b/drivers/gpu/drm/amd/display/dc/calcs/Makefile
+> @@ -26,14 +26,15 @@
+>  #
+>
+>  ifdef CONFIG_X86
+> -calcs_ccflags := -mhard-float -msse
+> +calcs_ccflags := -msse
+>  endif
+>
+>  ifdef CONFIG_PPC64
+> -calcs_ccflags := -mhard-float -maltivec
+> +calcs_ccflags := -maltivec
+>  endif
+>
+>  ifdef CONFIG_CC_IS_GCC
+> +calcs_ccflags += -mhard-float
+>  ifeq ($(call cc-ifversion, -lt, 0701, y), y)
+>  IS_OLD_GCC = 1
+>  endif
+> diff --git a/drivers/gpu/drm/amd/display/dc/dcn20/Makefile b/drivers/gpu/drm/amd/display/dc/dcn20/Makefile
+> index 5fcaf78334ff..0d3ce716c753 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dcn20/Makefile
+> +++ b/drivers/gpu/drm/amd/display/dc/dcn20/Makefile
+> @@ -10,14 +10,15 @@ DCN20 = dcn20_resource.o dcn20_init.o dcn20_hwseq.o dcn20_dpp.o dcn20_dpp_cm.o d
+>  DCN20 += dcn20_dsc.o
+>
+>  ifdef CONFIG_X86
+> -CFLAGS_$(AMDDALPATH)/dc/dcn20/dcn20_resource.o := -mhard-float -msse
+> +CFLAGS_$(AMDDALPATH)/dc/dcn20/dcn20_resource.o := -msse
+>  endif
+>
+>  ifdef CONFIG_PPC64
+> -CFLAGS_$(AMDDALPATH)/dc/dcn20/dcn20_resource.o := -mhard-float -maltivec
+> +CFLAGS_$(AMDDALPATH)/dc/dcn20/dcn20_resource.o := -maltivec
+>  endif
+>
+>  ifdef CONFIG_CC_IS_GCC
+> +CFLAGS_$(AMDDALPATH)/dc/dcn20/dcn20_resource.o += -mhard-float
+>  ifeq ($(call cc-ifversion, -lt, 0701, y), y)
+>  IS_OLD_GCC = 1
+>  endif
+> diff --git a/drivers/gpu/drm/amd/display/dc/dcn21/Makefile b/drivers/gpu/drm/amd/display/dc/dcn21/Makefile
+> index 07684d3e375a..fd209d1cf6bb 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dcn21/Makefile
+> +++ b/drivers/gpu/drm/amd/display/dc/dcn21/Makefile
+> @@ -6,14 +6,15 @@ DCN21 = dcn21_init.o dcn21_hubp.o dcn21_hubbub.o dcn21_resource.o \
+>          dcn21_hwseq.o dcn21_link_encoder.o
+>
+>  ifdef CONFIG_X86
+> -CFLAGS_$(AMDDALPATH)/dc/dcn21/dcn21_resource.o := -mhard-float -msse
+> +CFLAGS_$(AMDDALPATH)/dc/dcn21/dcn21_resource.o := -msse
+>  endif
+>
+>  ifdef CONFIG_PPC64
+> -CFLAGS_$(AMDDALPATH)/dc/dcn21/dcn21_resource.o := -mhard-float -maltivec
+> +CFLAGS_$(AMDDALPATH)/dc/dcn21/dcn21_resource.o := -maltivec
+>  endif
+>
+>  ifdef CONFIG_CC_IS_GCC
+> +CFLAGS_$(AMDDALPATH)/dc/dcn21/dcn21_resource.o += -mhard-float
+>  ifeq ($(call cc-ifversion, -lt, 0701, y), y)
+>  IS_OLD_GCC = 1
+>  endif
+> diff --git a/drivers/gpu/drm/amd/display/dc/dml/Makefile b/drivers/gpu/drm/amd/display/dc/dml/Makefile
+> index 7ee8b8460a9b..fb74e79e15a2 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dml/Makefile
+> +++ b/drivers/gpu/drm/amd/display/dc/dml/Makefile
+> @@ -26,14 +26,15 @@
+>  # subcomponents.
+>
+>  ifdef CONFIG_X86
+> -dml_ccflags := -mhard-float -msse
+> +dml_ccflags := -msse
+>  endif
+>
+>  ifdef CONFIG_PPC64
+> -dml_ccflags := -mhard-float -maltivec
+> +dml_ccflags := -maltivec
+>  endif
+>
+>  ifdef CONFIG_CC_IS_GCC
+> +dml_ccflags += -mhard-float
+>  ifeq ($(call cc-ifversion, -lt, 0701, y), y)
+>  IS_OLD_GCC = 1
+>  endif
+> diff --git a/drivers/gpu/drm/amd/display/dc/dsc/Makefile b/drivers/gpu/drm/amd/display/dc/dsc/Makefile
+> index 3f66868df171..b0077f5c318d 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dsc/Makefile
+> +++ b/drivers/gpu/drm/amd/display/dc/dsc/Makefile
+> @@ -3,14 +3,15 @@
+>  # Makefile for the 'dsc' sub-component of DAL.
+>
+>  ifdef CONFIG_X86
+> -dsc_ccflags := -mhard-float -msse
+> +dsc_ccflags := -msse
+>  endif
+>
+>  ifdef CONFIG_PPC64
+> -dsc_ccflags := -mhard-float -maltivec
+> +dsc_ccflags := -maltivec
+>  endif
+>
+>  ifdef CONFIG_CC_IS_GCC
+> +dsc_ccflags += -mhard-float
+>  ifeq ($(call cc-ifversion, -lt, 0701, y), y)
+>  IS_OLD_GCC = 1
+>  endif
+> --
+> 2.26.0
+>
+
+
+-- 
+Thanks,
+~Nick Desaulniers
