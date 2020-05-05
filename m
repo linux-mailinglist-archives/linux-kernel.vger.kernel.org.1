@@ -2,86 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A71021C5893
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:16:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9063D1C58E8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:20:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729967AbgEEOPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:15:52 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:21065 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729939AbgEEOPr (ORCPT
+        id S1730522AbgEEOTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:19:40 -0400
+Received: from mout.kundenserver.de ([217.72.192.73]:37277 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730054AbgEEOQQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:15:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588688146;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Pdh8PaKKCB6jydt3X9bRNYULYYUuebIi6pG6NH9E+WA=;
-        b=SGdpEVbPEAjN3SCEYVeQkqTns2vgKa79DxnAe2GNy5jhLHw8BozivequjrM9KX/z1f5VEu
-        HXH2NExUKS1PZ7FXyWl423eYl2XSDT+9i4VPX3s1Ztj1WwiMq3T2HSXutQFwFUv3KCtKmM
-        QUbUIMD3ckKcoQcwU2jT5bXBwGl6MSA=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-304-pU2HBKlgNHmvixV7kj_Yig-1; Tue, 05 May 2020 10:15:44 -0400
-X-MC-Unique: pU2HBKlgNHmvixV7kj_Yig-1
-Received: by mail-qt1-f198.google.com with SMTP id d35so1762652qtc.20
-        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 07:15:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Pdh8PaKKCB6jydt3X9bRNYULYYUuebIi6pG6NH9E+WA=;
-        b=ODSCNeOxG7xlsqbhcVtYWEYEGQU5+aGx3o4zvYliGB0/HqV5dQFSs1D9qsYCmqCnlF
-         MZMYsAALrjLjlRng3teNEssILWfkCNL8HK63swVIrcJoXdbNDwRdR+slAZZnRPxoy4To
-         8SeNwujTBm99a2r16L2frtYDsS7SIQ/QTuT3Lu9bs+ETjwyC1OEk0JuDqjdch93OZp+3
-         xztzVlpI6azyFDB07ivGqT8z0ggr4iE6feUB5YVJVsJU9/90kdJmV6PSATyfTEnv+HGR
-         ueiRED1bcGvpXL6Dc4CFrVLubbz/773cWontA8jSXJojz0xaUaPONB03LhOoUGqY6pmG
-         +7uQ==
-X-Gm-Message-State: AGi0PubIX9nEnjs5w+yCeaTc1TTQyK4NAfVRW/zjh3f7Qom5TrZjLQfP
-        8E1iFShaMwNK+tWpTb7FknP3sGiTA3tiYJuWQgdN83oVBySTfu17JeQJuyrKPu0T3Tc4FU4dI+F
-        2c7c4bu0dqOYr6+PbSFdxpTxF
-X-Received: by 2002:aed:3eca:: with SMTP id o10mr2829914qtf.30.1588688143991;
-        Tue, 05 May 2020 07:15:43 -0700 (PDT)
-X-Google-Smtp-Source: APiQypI7Nwwnxis/I/GyVehDFWGlPcQsyscfxDqmFgtIZNy/E6RdlTN/1qONlWTO6ejDKf2kO4H/Dg==
-X-Received: by 2002:aed:3eca:: with SMTP id o10mr2829897qtf.30.1588688143786;
-        Tue, 05 May 2020 07:15:43 -0700 (PDT)
-Received: from xz-x1 ([2607:9880:19c0:32::2])
-        by smtp.gmail.com with ESMTPSA id h25sm1921298qte.37.2020.05.05.07.15.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 May 2020 07:15:42 -0700 (PDT)
-Date:   Tue, 5 May 2020 10:15:41 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        jmattson@google.com
-Subject: Re: [PATCH] KVM: x86: fix DR6 delivery for emulated hardware
- breakpoint
-Message-ID: <20200505141541.GI6299@xz-x1>
-References: <20200505113449.18478-1-pbonzini@redhat.com>
+        Tue, 5 May 2020 10:16:16 -0400
+Received: from localhost.localdomain ([149.172.19.189]) by
+ mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1MBV6n-1jQid641ol-00CwN4; Tue, 05 May 2020 16:16:08 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Evan Quan <evan.quan@amd.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
+        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
+        Monk Liu <Monk.Liu@amd.com>,
+        Kent Russell <kent.russell@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: [PATCH] amdgpu: fix integer overflow on 32-bit architectures
+Date:   Tue,  5 May 2020 16:15:59 +0200
+Message-Id: <20200505141606.837164-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200505113449.18478-1-pbonzini@redhat.com>
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:AkHFlSmgzp0jc+4llNiW+N+aB5OAyViD48sJ9HgEiVEF6fHsqQ/
+ my7xScjJabhxQy51veqRxDGj468ZcU2Y1qyA/vAWUNneRt7mAboEJtEMSf0s2KYcuIhxneJ
+ Vvf4HOqoO+vV98lY8TcGZhyq9Jzo8LXqSdQyDu6cAIZQuJO+ec6Z2IyWzTOXqFohOIDYfGl
+ XToXSuqrzN3OY0YATcdag==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:4EQ5IcEC00E=:KlLlWj4vyVL6/3IxXdVlFy
+ iRqdSEEX4aDUpKxY6hg6N1dWPK43VxA7TZYttNGVpXIpyxawAHjee1HRvrqb+HzATJWxvxsGD
+ Q/Tjvr6CEfoY+1CP7lT1pbzw20DbbUMsJu2ebpvFm5R/ic3GWJKvgGe/p0ofkxkWpOM4OKDIH
+ hxJmw+XvBJpM7ne3kn/a+L4dN50kueITd5SmkXEBt7OuVyQ+kKNkasA6WcLsXjk6/ZD/b1214
+ I48BAXqy+VTn02bnk7G89hi3P5vo/ZuQFLZU93xeHm9fdvoU4vyLBpzzq0+nwoOTH7i0l/xvO
+ FPlrWrrCGmvXr5aRpr9A9pI7fmHP6K2vhghcS1uTrg87fL9hKnLh8g7XysYxqlidjgbjiN83B
+ 62Dh3AEihexlbYZeA1dpOPvlsk0XlaZen6yD1HW0gTTIyEn/1r1n7eaanrG1fZViKWknI72/f
+ qeGhH3uU4RKyP6TZa2qCIDVQ0SARl6hTHvC9P0HvdDA82zVjqRx3AzT10hesKq8x1czlRJeKY
+ rSSzoadO5ogqzgCPAwBs7TFv4sS1K2Mc8AysvvqrZpb3QPU7DSX0FYp3NnM4OOcGD6H1ewxjg
+ b/KYBsyphRkgKHn7bLGznymg1KPOk2hotz9lzDrV7vKFtEaJ4wDaEabkUagz8JYKeKcdBDL+K
+ yU465Q5L24SuHzhfm/8Gjw0ZnrNXvMiNsbikd4MUZG78MHvHvTQEGD0ijwduMmz3Dkz4Mm6aQ
+ vlELC3mDFgcUkOQd1ur5gleJJsf4wCHPumesooBI3ccz9dqyU22QpvOc5st9PjX60klfXyMh2
+ xDDdQIRdBZ3gdeCaNzJCDgaP6leVG1gnnJlXnYpoke0b6J3R5Q=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 05, 2020 at 07:34:49AM -0400, Paolo Bonzini wrote:
-> Go through kvm_queue_exception_p so that the payload is correctly delivered
-> through the exit qualification, and add a kvm_update_dr6 call to
-> kvm_deliver_exception_payload that is needed on AMD.
-> 
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Multiplying 1000000000 by four overruns a 'long' variable, as clang
+points out:
 
-I still think we could also change this in handle_exception_nmi() and
-handle_dr() as mentioned in the other thread, but no strong opinion:
+drivers/gpu/drm/amd/amdgpu/amdgpu_device.c:4160:53: error: overflow in expression; result is -294967296 with type 'long' [-Werror,-Winteger-overflow]
+                expires = ktime_get_mono_fast_ns() + NSEC_PER_SEC * 4L;
+                                                                  ^
+Make this a 'long long' constant instead.
 
-Reviewed-by: Peter Xu <peterx@redhat.com>
+Fixes: 3f12acc8d6d4 ("drm/amdgpu: put the audio codec into suspend state before gpu reset V3")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+I'm not sure the ktime_get_mono_fast_ns() call is necessary here
+either. Is it intentional because ktime_get_ns() doesn't work
+during a driver suspend, or just a mistake?
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+index 6f93af972b0a..2e07e3e6b036 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+@@ -4157,7 +4157,7 @@ static int amdgpu_device_suspend_display_audio(struct amdgpu_device *adev)
+ 		 * the audio controller default autosuspend delay setting.
+ 		 * 4S used here is guaranteed to cover that.
+ 		 */
+-		expires = ktime_get_mono_fast_ns() + NSEC_PER_SEC * 4L;
++		expires = ktime_get_mono_fast_ns() + NSEC_PER_SEC * 4LL;
+ 
+ 	while (!pm_runtime_status_suspended(&(p->dev))) {
+ 		if (!pm_runtime_suspend(&(p->dev)))
 -- 
-Peter Xu
+2.26.0
 
