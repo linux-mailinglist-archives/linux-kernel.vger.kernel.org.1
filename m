@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C2421C590E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:21:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C45081C587D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:15:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729614AbgEEOVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:21:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48856 "EHLO
+        id S1729795AbgEEOPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:15:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729769AbgEEOPP (ORCPT
+        by vger.kernel.org with ESMTP id S1729778AbgEEOPQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:15:15 -0400
+        Tue, 5 May 2020 10:15:16 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68DFBC061A0F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:15:15 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0BC6C061A41
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:15:16 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jVyLZ-0001Hh-Hc; Tue, 05 May 2020 16:14:57 +0200
+        id 1jVyLa-0001J6-Pc; Tue, 05 May 2020 16:14:58 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 08E4A1001F5;
-        Tue,  5 May 2020 16:14:57 +0200 (CEST)
-Message-Id: <20200505134903.731004084@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 44A9AFFC8D;
+        Tue,  5 May 2020 16:14:58 +0200 (CEST)
+Message-Id: <20200505134903.841853522@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 05 May 2020 15:43:59 +0200
+Date:   Tue, 05 May 2020 15:44:00 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -44,8 +44,7 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Will Deacon <will@kernel.org>
-Subject: [patch V4 part 3 05/29] x86/traps: Split trap numbers out in a
- seperate header
+Subject: [patch V4 part 3 06/29] x86/entry/64: Reorder idtentries
 References: <20200505134354.774943181@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -60,92 +59,87 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-So they can be used in ASM code. For this it is also necessary to convert
-them to defines. Will be used for the rework of the entry code.
+Move them all together so verifying the cleanup patches for binary
+equivalence will be easier.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Andy Lutomirski <luto@kernel.org>
 Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
+Acked-by: Andy Lutomirski <luto@kernel.org>
 
 ---
- arch/x86/include/asm/trapnr.h |   31 +++++++++++++++++++++++++++++++
- arch/x86/include/asm/traps.h  |   26 +-------------------------
- 2 files changed, 32 insertions(+), 25 deletions(-)
+ arch/x86/entry/entry_64.S |   36 +++++++++++++++++-------------------
+ 1 file changed, 17 insertions(+), 19 deletions(-)
 
---- /dev/null
-+++ b/arch/x86/include/asm/trapnr.h
-@@ -0,0 +1,31 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_X86_TRAPNR_H
-+#define _ASM_X86_TRAPNR_H
+--- a/arch/x86/entry/entry_64.S
++++ b/arch/x86/entry/entry_64.S
+@@ -1021,20 +1021,36 @@ SYM_CODE_START(\sym)
+ SYM_CODE_END(\sym)
+ .endm
+ 
 +
-+/* Interrupts/Exceptions */
+ idtentry divide_error			do_divide_error			has_error_code=0
+ idtentry overflow			do_overflow			has_error_code=0
++idtentry int3				do_int3				has_error_code=0	create_gap=1
+ idtentry bounds				do_bounds			has_error_code=0
+ idtentry invalid_op			do_invalid_op			has_error_code=0
+ idtentry device_not_available		do_device_not_available		has_error_code=0
+-idtentry double_fault			do_double_fault			has_error_code=1 paranoid=2 read_cr2=1
+ idtentry coprocessor_segment_overrun	do_coprocessor_segment_overrun	has_error_code=0
+ idtentry invalid_TSS			do_invalid_TSS			has_error_code=1
+ idtentry segment_not_present		do_segment_not_present		has_error_code=1
++idtentry stack_segment			do_stack_segment		has_error_code=1
++idtentry general_protection		do_general_protection		has_error_code=1
+ idtentry spurious_interrupt_bug		do_spurious_interrupt_bug	has_error_code=0
+ idtentry coprocessor_error		do_coprocessor_error		has_error_code=0
+ idtentry alignment_check		do_alignment_check		has_error_code=1
+ idtentry simd_coprocessor_error		do_simd_coprocessor_error	has_error_code=0
+ 
++idtentry page_fault		do_page_fault		has_error_code=1	read_cr2=1
 +
-+#define X86_TRAP_DE		 0	/* Divide-by-zero */
-+#define X86_TRAP_DB		 1	/* Debug */
-+#define X86_TRAP_NMI		 2	/* Non-maskable Interrupt */
-+#define X86_TRAP_BP		 3	/* Breakpoint */
-+#define X86_TRAP_OF		 4	/* Overflow */
-+#define X86_TRAP_BR		 5	/* Bound Range Exceeded */
-+#define X86_TRAP_UD		 6	/* Invalid Opcode */
-+#define X86_TRAP_NM		 7	/* Device Not Available */
-+#define X86_TRAP_DF		 8	/* Double Fault */
-+#define X86_TRAP_OLD_MF		 9	/* Coprocessor Segment Overrun */
-+#define X86_TRAP_TS		10	/* Invalid TSS */
-+#define X86_TRAP_NP		11	/* Segment Not Present */
-+#define X86_TRAP_SS		12	/* Stack Segment Fault */
-+#define X86_TRAP_GP		13	/* General Protection Fault */
-+#define X86_TRAP_PF		14	/* Page Fault */
-+#define X86_TRAP_SPURIOUS	15	/* Spurious Interrupt */
-+#define X86_TRAP_MF		16	/* x87 Floating-Point Exception */
-+#define X86_TRAP_AC		17	/* Alignment Check */
-+#define X86_TRAP_MC		18	/* Machine Check */
-+#define X86_TRAP_XF		19	/* SIMD Floating-Point Exception */
-+#define X86_TRAP_VE		20	/* Virtualization Exception */
-+#define X86_TRAP_CP		21	/* Control Protection Exception */
-+#define X86_TRAP_IRET		32	/* IRET Exception */
-+
++#ifdef CONFIG_X86_MCE
++idtentry machine_check		do_mce			has_error_code=0 paranoid=1
 +#endif
---- a/arch/x86/include/asm/traps.h
-+++ b/arch/x86/include/asm/traps.h
-@@ -7,6 +7,7 @@
++idtentry debug			do_debug		has_error_code=0 paranoid=1 shift_ist=IST_INDEX_DB ist_offset=DB_STACK_OFFSET
++idtentry double_fault		do_double_fault		has_error_code=1 paranoid=2 read_cr2=1
++
++#ifdef CONFIG_XEN_PV
++idtentry hypervisor_callback	xen_do_hypervisor_callback	has_error_code=0
++idtentry xennmi			do_nmi				has_error_code=0
++idtentry xendebug		do_debug			has_error_code=0
++#endif
  
- #include <asm/debugreg.h>
- #include <asm/siginfo.h>			/* TRAP_TRACE, ... */
-+#include <asm/trapnr.h>
+ /*
+  * Reload gs selector with exception handling
+@@ -1085,8 +1101,6 @@ SYM_FUNC_END(do_softirq_own_stack)
+ .popsection
  
- #define dotraplinkage __visible
- 
-@@ -127,31 +128,6 @@ void __noreturn handle_stack_overflow(co
- 				      unsigned long fault_address);
- #endif
- 
--/* Interrupts/Exceptions */
--enum {
--	X86_TRAP_DE = 0,	/*  0, Divide-by-zero */
--	X86_TRAP_DB,		/*  1, Debug */
--	X86_TRAP_NMI,		/*  2, Non-maskable Interrupt */
--	X86_TRAP_BP,		/*  3, Breakpoint */
--	X86_TRAP_OF,		/*  4, Overflow */
--	X86_TRAP_BR,		/*  5, Bound Range Exceeded */
--	X86_TRAP_UD,		/*  6, Invalid Opcode */
--	X86_TRAP_NM,		/*  7, Device Not Available */
--	X86_TRAP_DF,		/*  8, Double Fault */
--	X86_TRAP_OLD_MF,	/*  9, Coprocessor Segment Overrun */
--	X86_TRAP_TS,		/* 10, Invalid TSS */
--	X86_TRAP_NP,		/* 11, Segment Not Present */
--	X86_TRAP_SS,		/* 12, Stack Segment Fault */
--	X86_TRAP_GP,		/* 13, General Protection Fault */
--	X86_TRAP_PF,		/* 14, Page Fault */
--	X86_TRAP_SPURIOUS,	/* 15, Spurious Interrupt */
--	X86_TRAP_MF,		/* 16, x87 Floating-Point Exception */
--	X86_TRAP_AC,		/* 17, Alignment Check */
--	X86_TRAP_MC,		/* 18, Machine Check */
--	X86_TRAP_XF,		/* 19, SIMD Floating-Point Exception */
--	X86_TRAP_IRET = 32,	/* 32, IRET Exception */
--};
+ #ifdef CONFIG_XEN_PV
+-idtentry hypervisor_callback xen_do_hypervisor_callback has_error_code=0
 -
  /*
-  * Page fault error code bits:
-  *
+  * A note on the "critical region" in our callback handler.
+  * We want to avoid stacking callback handlers due to events occurring
+@@ -1189,22 +1203,6 @@ apicinterrupt3 HYPERVISOR_CALLBACK_VECTO
+ 	acrn_hv_callback_vector acrn_hv_vector_handler
+ #endif
+ 
+-idtentry debug			do_debug		has_error_code=0	paranoid=1 shift_ist=IST_INDEX_DB ist_offset=DB_STACK_OFFSET
+-idtentry int3			do_int3			has_error_code=0	create_gap=1
+-idtentry stack_segment		do_stack_segment	has_error_code=1
+-
+-#ifdef CONFIG_XEN_PV
+-idtentry xennmi			do_nmi			has_error_code=0
+-idtentry xendebug		do_debug		has_error_code=0
+-#endif
+-
+-idtentry general_protection	do_general_protection	has_error_code=1
+-idtentry page_fault		do_page_fault		has_error_code=1	read_cr2=1
+-
+-#ifdef CONFIG_X86_MCE
+-idtentry machine_check		do_mce			has_error_code=0	paranoid=1
+-#endif
+-
+ /*
+  * Save all registers in pt_regs, and switch gs if needed.
+  * Use slow, but surefire "are we in kernel?" check.
 
