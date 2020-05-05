@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BDCB1C5865
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:15:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 130951C593E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:23:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729493AbgEEOOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:14:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48570 "EHLO
+        id S1730502AbgEEOXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:23:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729461AbgEEON5 (ORCPT
+        by vger.kernel.org with ESMTP id S1729123AbgEEON4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:13:57 -0400
+        Tue, 5 May 2020 10:13:56 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA9A3C061A41
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B105C061A10
         for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:13:56 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jVyKH-0000XS-Vy; Tue, 05 May 2020 16:13:38 +0200
+        id 1jVyKJ-0000YO-7G; Tue, 05 May 2020 16:13:39 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 78A5EFFC8D;
-        Tue,  5 May 2020 16:13:37 +0200 (CEST)
-Message-Id: <20200505134059.970057117@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id B35ADFFC8D;
+        Tue,  5 May 2020 16:13:38 +0200 (CEST)
+Message-Id: <20200505134100.075416272@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 05 May 2020 15:16:21 +0200
+Date:   Tue, 05 May 2020 15:16:22 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -43,10 +43,9 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Brian Gerst <brgerst@gmail.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch V4 part 1 19/36] x86/entry: Exclude low level entry code from
- sanitizing 
+        Will Deacon <will@kernel.org>
+Subject: [patch V4 part 1 20/36] vmlinux.lds.h: Create section for protection
+ against instrumentation
 References: <20200505131602.633487962@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -59,31 +58,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sanitizers are not really applicable to the fragile low level entry
-code. code. Entry code needs to carefully setup a normal 'runtime'
-environment.
+Some code pathes, especially the low level entry code, must be protected
+against instrumentation for various reasons:
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+ - Low level entry code can be a fragile beast, especially on x86.
+
+ - With NO_HZ_FULL RCU state needs to be established before using it.
+
+Having a dedicated section for such code allows to validate with tooling
+that no unsafe functions are invoked.
+
+Add the .noinstr.text section and the noinstr attribute to mark
+functions. noinstr implies notrace. Kprobes will gain a section check
+later.
+
+Provide also a set of markers: instr_begin()/end()
+
+These are used to mark code inside a noinstr function which calls
+into regular instrumentable text section as safe.
+
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/entry/Makefile |    8 ++++++++
- 1 file changed, 8 insertions(+)
+V2: Drop noinstr_call_begin()/end()
+---
+ include/asm-generic/sections.h    |    3 +++
+ include/asm-generic/vmlinux.lds.h |    4 ++++
+ include/linux/compiler.h          |   17 +++++++++++++++++
+ include/linux/compiler_types.h    |    4 ++++
+ scripts/mod/modpost.c             |    2 +-
+ 5 files changed, 29 insertions(+), 1 deletion(-)
 
---- a/arch/x86/entry/Makefile
-+++ b/arch/x86/entry/Makefile
-@@ -3,6 +3,14 @@
- # Makefile for the x86 low level entry code
- #
+--- a/include/asm-generic/sections.h
++++ b/include/asm-generic/sections.h
+@@ -53,6 +53,9 @@ extern char __ctors_start[], __ctors_end
+ /* Start and end of .opd section - used for function descriptors. */
+ extern char __start_opd[], __end_opd[];
  
-+KASAN_SANITIZE := n
-+UBSAN_SANITIZE := n
-+KCOV_INSTRUMENT := n
++/* Start and end of instrumentation protected text section */
++extern char __noinstr_text_start[], __noinstr_text_end[];
 +
-+CFLAGS_REMOVE_common.o = $(CC_FLAGS_FTRACE) -fstack-protector -fstack-protector-strong
-+CFLAGS_REMOVE_syscall_32.o = $(CC_FLAGS_FTRACE) -fstack-protector -fstack-protector-strong
-+CFLAGS_REMOVE_syscall_64.o = $(CC_FLAGS_FTRACE) -fstack-protector -fstack-protector-strong
-+
- OBJECT_FILES_NON_STANDARD_entry_64_compat.o := y
+ extern __visible const void __nosave_begin, __nosave_end;
  
- CFLAGS_syscall_64.o		+= $(call cc-option,-Wno-override-init,)
+ /* Function descriptor handling (if any).  Override in asm/sections.h */
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -551,6 +551,10 @@
+ #define TEXT_TEXT							\
+ 		ALIGN_FUNCTION();					\
+ 		*(.text.hot TEXT_MAIN .text.fixup .text.unlikely)	\
++		ALIGN_FUNCTION();					\
++		__noinstr_text_start = .;				\
++		*(.noinstr.text)					\
++		__noinstr_text_end = .;					\
+ 		*(.text..refcount)					\
+ 		*(.ref.text)						\
+ 	MEM_KEEP(init.text*)						\
+--- a/include/linux/compiler.h
++++ b/include/linux/compiler.h
+@@ -120,10 +120,27 @@ void ftrace_likely_update(struct ftrace_
+ /* Annotate a C jump table to allow objtool to follow the code flow */
+ #define __annotate_jump_table __section(.rodata..c_jump_table)
+ 
++/* Begin/end of an instrumentation safe region */
++#define instr_begin() ({						\
++	asm volatile("%c0:\n\t"						\
++		     ".pushsection .discard.instr_begin\n\t"		\
++		     ".long %c0b - .\n\t"				\
++		     ".popsection\n\t" : : "i" (__COUNTER__));		\
++})
++
++#define instr_end() ({							\
++	asm volatile("%c0:\n\t"						\
++		     ".pushsection .discard.instr_end\n\t"		\
++		     ".long %c0b - .\n\t"				\
++		     ".popsection\n\t" : : "i" (__COUNTER__));		\
++})
++
+ #else
+ #define annotate_reachable()
+ #define annotate_unreachable()
+ #define __annotate_jump_table
++#define instr_begin()		do { } while(0)
++#define instr_end()		do { } while(0)
+ #endif
+ 
+ #ifndef ASM_UNREACHABLE
+--- a/include/linux/compiler_types.h
++++ b/include/linux/compiler_types.h
+@@ -118,6 +118,10 @@ struct ftrace_likely_data {
+ #define notrace			__attribute__((__no_instrument_function__))
+ #endif
+ 
++/* Section for code which can't be instrumented at all */
++#define noinstr								\
++	noinline notrace __attribute((__section__(".noinstr.text")))
++
+ /*
+  * it doesn't make sense on ARM (currently the only user of __naked)
+  * to trace naked functions because then mcount is called without
+--- a/scripts/mod/modpost.c
++++ b/scripts/mod/modpost.c
+@@ -948,7 +948,7 @@ static void check_section(const char *mo
+ 
+ #define DATA_SECTIONS ".data", ".data.rel"
+ #define TEXT_SECTIONS ".text", ".text.unlikely", ".sched.text", \
+-		".kprobes.text", ".cpuidle.text"
++		".kprobes.text", ".cpuidle.text", ".noinstr.text"
+ #define OTHER_TEXT_SECTIONS ".ref.text", ".head.text", ".spinlock.text", \
+ 		".fixup", ".entry.text", ".exception.text", ".text.*", \
+ 		".coldtext"
 
