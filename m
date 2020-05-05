@@ -2,123 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B9E61C5D23
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 18:13:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5E6F1C5D28
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 18:13:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730565AbgEEQNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 12:13:37 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53008 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730095AbgEEQNc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 12:13:32 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 80D21AF4F;
-        Tue,  5 May 2020 16:13:32 +0000 (UTC)
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     f.fainelli@gmail.com, gregkh@linuxfoundation.org, wahrenst@gmx.net,
-        helgaas@kernel.org, linux-kernel@vger.kernel.org,
-        Mathias Nyman <mathias.nyman@intel.com>
-Cc:     linux-usb@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com, tim.gover@raspberrypi.org,
-        linux-pci@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Subject: [PATCH v8 4/4] USB: pci-quirks: Add Raspberry Pi 4 quirk
-Date:   Tue,  5 May 2020 18:13:17 +0200
-Message-Id: <20200505161318.26200-5-nsaenzjulienne@suse.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200505161318.26200-1-nsaenzjulienne@suse.de>
-References: <20200505161318.26200-1-nsaenzjulienne@suse.de>
+        id S1730588AbgEEQNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 12:13:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730157AbgEEQN3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 12:13:29 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE1DC061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 09:13:28 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id w18so1282426qvs.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 09:13:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NN0AhXtIWLO+HzOAES8HqNedREZZwt4I5Op/INZ8tT8=;
+        b=hqsTDeOOKt2oTCYnII9kbPDggfYoPKHu8fF8wHTD1Ksg0D2YpXT7fE3Pv3kcepcZkp
+         Ex5xph1tKfw47bEc7eiVeGV/Sdrddx2m7p3dtiBuOUcjO+Haf2dawpCwBLkQnNw3EWH9
+         vCteutFM4t4bCZpi4K9cll4khRu4fPEyY4kTZt3jgnuaUOVoIISkKJt7D5xA3UX3riqr
+         u/P3GpPal0LOm1MAG5RJ9V35KcifXo1ZgeqCflT3Vl/1hRHlANNOHp6GpD4SNNKgV2TB
+         7dXWckzAEXeBWtV6uMsL+vH+r0gg8nv3+qVr7lJQXCFvqm3pOP9wWZD+iTOFmFdRyq+d
+         DNCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NN0AhXtIWLO+HzOAES8HqNedREZZwt4I5Op/INZ8tT8=;
+        b=GXWgl0VblFmo+w34wM9dTxW9m+0TMeIgxIdprBbMpE4dMcs5K7kDM6UBYMaylTXdwC
+         rHXUQiQUJ9k3jAGfbycnNHXP4UzE3dSNYGMavjn3mmXjsryu2MQ/02nX6jeyYNCpCPVa
+         fm2K41sm5atkl+tGir5iR8vjjmTzk9Ik1WkD3oafEcDMj0TL/L1JyVGk4w0IiEG0X2wc
+         1E5d4x4V/ZkI6xfCf1Vh/2oG/tqq2kJbEt3i8Os8YAPG0H39km8GE0iE1q9ar0WrWi6n
+         9pEj+PGWi2viu2Z4OcddXbmj8qcS1Yc67xKmv9KGPyPDxZsiYPiOoRWcow/Ws+lQEgP6
+         knaw==
+X-Gm-Message-State: AGi0PuZSj1d3RzWKRn/LpS/acM9liAPiwuZsD7tow0PitForo/ETgNf+
+        LnOdQ9ZqziMrLkc9GWqKUqU=
+X-Google-Smtp-Source: APiQypLEHVVBQZlZoCeE3RwnN9M2t2NC/sXURxVYUEKvEHe6znRhtOuUtbqlkRQUAjqZUMIvtfjbMQ==
+X-Received: by 2002:a0c:9a08:: with SMTP id p8mr3601876qvd.54.1588695207450;
+        Tue, 05 May 2020 09:13:27 -0700 (PDT)
+Received: from quaco.ghostprotocols.net ([179.97.37.151])
+        by smtp.gmail.com with ESMTPSA id x124sm2070293qkd.32.2020.05.05.09.13.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 May 2020 09:13:26 -0700 (PDT)
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id CFD19409A3; Tue,  5 May 2020 13:13:24 -0300 (-03)
+Date:   Tue, 5 May 2020 13:13:24 -0300
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH v2 2/3] lib kallsyms: parse using io api
+Message-ID: <20200505161324.GW30487@kernel.org>
+References: <20200501221315.54715-1-irogers@google.com>
+ <20200501221315.54715-3-irogers@google.com>
+ <20200505142521.GD2041406@krava>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200505142521.GD2041406@krava>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On the Raspberry Pi 4, after a PCI reset, VL805's firmware may either be
-loaded directly from an EEPROM or, if not present, by the SoC's
-VideoCore. Inform VideoCore that VL805 was just reset.
+Em Tue, May 05, 2020 at 04:25:21PM +0200, Jiri Olsa escreveu:
+> On Fri, May 01, 2020 at 03:13:14PM -0700, Ian Rogers wrote:
+> 
+> SNIP
+> 
+> > diff --git a/tools/lib/symbol/kallsyms.c b/tools/lib/symbol/kallsyms.c
+> > index 1a7a9f877095..e335ac2b9e19 100644
+> > --- a/tools/lib/symbol/kallsyms.c
+> > +++ b/tools/lib/symbol/kallsyms.c
+> > @@ -1,7 +1,9 @@
+> >  // SPDX-License-Identifier: GPL-2.0
+> >  #include "symbol/kallsyms.h"
+> > +#include "api/io.h"
+> >  #include <stdio.h>
+> > -#include <stdlib.h>
+> > +#include <sys/stat.h>
+> > +#include <fcntl.h>
+> >  
+> >  u8 kallsyms2elf_type(char type)
+> >  {
+> > @@ -15,74 +17,62 @@ bool kallsyms__is_function(char symbol_type)
+> >  	return symbol_type == 'T' || symbol_type == 'W';
+> >  }
+> >  
+> > -/*
+> > - * While we find nice hex chars, build a long_val.
+> > - * Return number of chars processed.
+> > - */
+> > -int hex2u64(const char *ptr, u64 *long_val)
+> 
+> hi,
+> when you remove in here hex2u64, you'll break the compile:
+> 
+> 	  LINK     perf
+> 	/usr/bin/ld: perf-in.o: in function `modules__parse':
+> 	/home/jolsa/linux-perf/tools/perf/util/symbol.c:607: undefined reference to `hex2u64'
+> 	/usr/bin/ld: /home/jolsa/linux-perf/tools/perf/util/symbol.c:607: undefined reference to `hex2u64'
+> 	/usr/bin/ld: perf-in.o: in function `dso__load_perf_map':
+> 	/home/jolsa/linux-perf/tools/perf/util/symbol.c:1477: undefined reference to `hex2u64'
+> 	/usr/bin/ld: /home/jolsa/linux-perf/tools/perf/util/symbol.c:1483: undefined reference to `hex2u64'
+> 	collect2: error: ld returned 1 exit status
+> 	make[2]: *** [Makefile.perf:629: perf] Error 1
+> 	make[1]: *** [Makefile.perf:225: sub-make] Error 2
+> 	make: *** [Makefile:70: all] Error 2
+> 
+> that hex2u64 move needs to come before this change
 
-Also, as this creates a dependency between USB_PCI and VideoCore's
-firmware interface, and since USB_PCI can't be set as a module neither
-this can. Reflect that on the firmware interface Kconfg.
+I noticed this and fixed it all, was about to send this note I've added:
 
-Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
----
+---------------
 
-Changes since v5:
- - Fix Kconfig issue with allmodconfig
+Also we can't remove hex2u64() in this patch as this breaks the build:
 
-Changes since v4:
- - Do not split up error message
+  /usr/bin/ld: /tmp/build/perf/perf-in.o: in function `modules__parse':
+  /home/acme/git/perf/tools/perf/util/symbol.c:607: undefined reference to `hex2u64'
+  /usr/bin/ld: /home/acme/git/perf/tools/perf/util/symbol.c:607: undefined reference to `hex2u64'
+  /usr/bin/ld: /tmp/build/perf/perf-in.o: in function `dso__load_perf_map':
+  /home/acme/git/perf/tools/perf/util/symbol.c:1477: undefined reference to `hex2u64'
+  /usr/bin/ld: /home/acme/git/perf/tools/perf/util/symbol.c:1483: undefined reference to `hex2u64'
+  collect2: error: ld returned 1 exit status
 
-Changes since v3:
- - Add more complete error message
-
-Changes since v1:
- - Make RASPBERRYPI_FIRMWARE dependent on this quirk to make sure it
-   gets compiled when needed.
-
- drivers/firmware/Kconfig      |  3 ++-
- drivers/usb/host/pci-quirks.c | 16 ++++++++++++++++
- 2 files changed, 18 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
-index 8007d4aa76dc..b42140cff8ac 100644
---- a/drivers/firmware/Kconfig
-+++ b/drivers/firmware/Kconfig
-@@ -178,8 +178,9 @@ config ISCSI_IBFT
- 	  Otherwise, say N.
- 
- config RASPBERRYPI_FIRMWARE
--	tristate "Raspberry Pi Firmware Driver"
-+	bool "Raspberry Pi Firmware Driver"
- 	depends on BCM2835_MBOX
-+	default USB_PCI
- 	help
- 	  This option enables support for communicating with the firmware on the
- 	  Raspberry Pi.
-diff --git a/drivers/usb/host/pci-quirks.c b/drivers/usb/host/pci-quirks.c
-index 92150ecdb036..0b949acfa258 100644
---- a/drivers/usb/host/pci-quirks.c
-+++ b/drivers/usb/host/pci-quirks.c
-@@ -16,6 +16,9 @@
- #include <linux/export.h>
- #include <linux/acpi.h>
- #include <linux/dmi.h>
-+
-+#include <soc/bcm2835/raspberrypi-firmware.h>
-+
- #include "pci-quirks.h"
- #include "xhci-ext-caps.h"
- 
-@@ -1243,11 +1246,24 @@ static void quirk_usb_handoff_xhci(struct pci_dev *pdev)
- 
- static void quirk_usb_early_handoff(struct pci_dev *pdev)
- {
-+	int ret;
-+
- 	/* Skip Netlogic mips SoC's internal PCI USB controller.
- 	 * This device does not need/support EHCI/OHCI handoff
- 	 */
- 	if (pdev->vendor == 0x184e)	/* vendor Netlogic */
- 		return;
-+
-+	if (pdev->vendor == PCI_VENDOR_ID_VIA && pdev->device == 0x3483) {
-+		ret = rpi_firmware_init_vl805(pdev);
-+		if (ret) {
-+			/* Firmware might be outdated, or something failed */
-+			dev_warn(&pdev->dev,
-+				 "Failed to load VL805's firmware: %d. Will continue to attempt to work, but bad things might happen. You should fix this...\n",
-+				 ret);
-+		}
-+	}
-+
- 	if (pdev->class != PCI_CLASS_SERIAL_USB_UHCI &&
- 			pdev->class != PCI_CLASS_SERIAL_USB_OHCI &&
- 			pdev->class != PCI_CLASS_SERIAL_USB_EHCI &&
--- 
-2.26.2
-
+Leave it there, move it in the next patch.
