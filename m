@@ -2,122 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E7651C59AF
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:33:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 785A91C59B3
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:34:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729613AbgEEOdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:33:19 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:60172 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727857AbgEEOdS (ORCPT
+        id S1729659AbgEEOeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:34:11 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:46673 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727857AbgEEOeL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:33:18 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 045E73OF041810;
-        Tue, 5 May 2020 10:33:07 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 30s50gpn5j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 May 2020 10:33:07 -0400
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 045E7PCC044527;
-        Tue, 5 May 2020 10:33:06 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 30s50gpn4r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 May 2020 10:33:06 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 045EUj3A028193;
-        Tue, 5 May 2020 14:33:04 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma05fra.de.ibm.com with ESMTP id 30s0g5jvvk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 May 2020 14:33:04 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 045EX1wo8782182
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 5 May 2020 14:33:02 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D997542041;
-        Tue,  5 May 2020 14:33:01 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C0F5C4203F;
-        Tue,  5 May 2020 14:33:01 +0000 (GMT)
-Received: from oc3748833570.ibm.com (unknown [9.145.26.196])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  5 May 2020 14:33:01 +0000 (GMT)
-Received: by oc3748833570.ibm.com (Postfix, from userid 1000)
-        id 39CBED80361; Tue,  5 May 2020 16:33:01 +0200 (CEST)
-Date:   Tue, 5 May 2020 16:33:01 +0200
-From:   Ulrich Weigand <uweigand@de.ibm.com>
-To:     Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        viro@zeniv.linux.org.uk, david@redhat.com,
-        akpm@linux-foundation.org, aarcange@redhat.com, linux-mm@kvack.org,
-        frankja@linux.ibm.com, sfr@canb.auug.org.au, jhubbard@nvidia.com,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        jack@suse.cz, kirill@shutemov.name, peterz@infradead.org,
-        sean.j.christopherson@intel.com, Ulrich.Weigand@de.ibm.com
-Subject: Re: [PATCH v2 1/1] fs/splice: add missing callback for inaccessible
- pages
-Message-ID: <20200505143300.GA14113@oc3748833570.ibm.com>
-References: <20200430143825.3534128-1-imbrenda@linux.ibm.com>
- <1a3f5107-9847-73d4-5059-c6ef9d293551@de.ibm.com>
- <e3e95a35-b0e3-b733-92f4-98bcccbe7ca5@intel.com>
- <3d379d9e-241c-ef3b-dcef-20fdd3b8740d@de.ibm.com>
- <a10ec7ad-2648-950e-7f30-07c08e400e7b@intel.com>
- <20200504134154.GA21001@oc3748833570.ibm.com>
- <231da2f1-a6ef-0cf9-7f57-95e8b925997b@intel.com>
- <20200505135556.GA9920@oc3748833570.ibm.com>
- <fd300dca-f0b4-ce3b-4a97-244030624fbd@de.ibm.com>
- <d1de4fb2-dfe6-83fa-9973-2505d4c397ec@de.ibm.com>
+        Tue, 5 May 2020 10:34:11 -0400
+Received: from localhost.localdomain ([149.172.19.189]) by
+ mrelayeu.kundenserver.de (mreue108 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1Mof1D-1ila9N3wWf-00p29q; Tue, 05 May 2020 16:33:41 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Maya Erez <merez@codeaurora.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Dedy Lansky <dlansky@codeaurora.org>,
+        Ahmad Masri <amasri@codeaurora.org>,
+        Alexei Avshalom Lazar <ailizaro@codeaurora.org>,
+        Tzahi Sabo <stzahi@codeaurora.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Lior David <liord@codeaurora.org>,
+        linux-wireless@vger.kernel.org, wil6210@qti.qualcomm.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] wil6210: avoid gcc-10 zero-length-bounds warning
+Date:   Tue,  5 May 2020 16:33:24 +0200
+Message-Id: <20200505143332.1398524-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d1de4fb2-dfe6-83fa-9973-2505d4c397ec@de.ibm.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-05-05_08:2020-05-04,2020-05-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- clxscore=1015 impostorscore=0 adultscore=0 priorityscore=1501
- malwarescore=0 phishscore=0 mlxscore=0 spamscore=0 mlxlogscore=641
- bulkscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005050114
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:zDD9bs6aW0JYGWHkwYbnevv//40lQsm3jQwPwrI1bBnlk/bFmpk
+ kZ7UaQ0Fyi+SxjBcJf1zuSa0Sz3irK8/KXdIuShUrvRKkFNI9G4bvKnkf2cMEqIsjTTsWGc
+ iK24LCQ46DyASUuYCv6y4tJNO6BTxcEh+qtZzobf576RokNG5ZI0uC1W75wjZTJqMq7GEme
+ Uo4NzDp2i0EOhyU1cZHVg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:d7gL+ZdLOB4=:eXPbZb3icMUiHmpRvU3P0f
+ M/j7WeQ1Fe2vADPBhdEhyXAjOsnX7OVDvoWLybK1PrWEsAkAstoJPvhZM+RCmdRV3lv/1EsT+
+ 44/Z+e+X+Da8UKYza5hXGqw/ZPGO7V4fLMakWwFuCbiXlkPQIDBT2/bqgXPimuR5d5fJC6mVP
+ g9uQckF06ya8J9h4IvE9HKDN/kHNrf31RATZ5Y7xn51ELYjDvjxI6h2U/E8TcXTnS5LiUEb5/
+ aDd+IdzrTqIrn0DfIhw7cYg5nsLHp/18eSWzLVcfB4Z0sD+LEOop8WnAN4zi5H/JVXQx6+lKE
+ 9LQjWTnPxM+y9bZz36gnKnp0LxyPTF+H3HqKdwPnRfgWCaSjRRso7GDZfIXUeLLWN5l2djs6N
+ ifckdjTpXQZ/tb1vSjeb2a0yCZlx/Tft5hB1Xpg2EDf3QVwtoVA2Y4bzT8G77zMYQAXbpo6kd
+ V69z9mJgSDwSAdjeIVlsDSWI0UY/auf0jLRrIU+xpqsddEtPGchSVvGKSnsf91tP8yfhxvW4h
+ jhgfu1ZAXXwd7yXViQzRgS/tj5tnBv2jk6XdmuHJjV6oZf4nrci4d65prswmwZbqF9Ix0WJAe
+ D09TT3ksA0HDEGb/+OmuUsWReSvYjFdpWQIjSY/ufPnu3YW4OvUkxo0e2CLLTuIO3Q8dCSxUg
+ CgMkfvEUzgMq9hhFKob5FNd02ssBqNbOf2vUpf0u0HPPPxWzilNtRh6Jm2sWxld/uy+dQpi7i
+ wW7YUvshuEd78jav7rBxdQ9+Pa6RmFVEY81D1Rt8ebKSWR4+xQNb8BPOOGdxzKr1u3mpIIHoa
+ ukyeR0YuBwbIWhdNrvfxDYx86WvWYTBaH24UoFOhAqbFfP8UPQ=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 05, 2020 at 04:03:00PM +0200, Christian Borntraeger wrote:
-> > Just looked at 
-> > commit 88b1a17dfc3ed7728316478fae0f5ad508f50397  mm: add 'try_get_page()' helper function
-> > 
-> > which says:
-> >     Also like 'get_page()', you can't use this function unless you already
-> >     had a reference to the page.  The intent is that you can use this
-> >     exactly like get_page(), but in situations where you want to limit the
-> >     maximum reference count.
-> >     
-> >     The code currently does an unconditional WARN_ON_ONCE() if we ever hit
-> >     the reference count issues (either zero or negative), as a notification
-> >     that the conditional non-increment actually happened.
-> > 
-> > If try_get_page must not be called with an existing reference, that means
-> 		s/not//
-> > that when we call it the page reference is already higher and our freeze
-> > will never succeed. That would imply that we cannot trigger this. No?
+gcc-10 warns about accesses inside of a zero-length array:
 
-Well, my understanding is that the "existing" reference may be one of the
-references that is expected by our freeze code, in particular in gup the
-existing reference is simply the one from the pte.  So in this case our
-freeze *would* succeeed.
+drivers/net/wireless/ath/wil6210/cfg80211.c: In function 'wil_cfg80211_scan':
+drivers/net/wireless/ath/wil6210/cfg80211.c:970:23: error: array subscript 255 is outside the bounds of an interior zero-length array 'struct <anonymous>[0]' [-Werror=zero-length-bounds]
+  970 |   cmd.cmd.channel_list[cmd.cmd.num_channels++].channel = ch - 1;
+      |   ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from drivers/net/wireless/ath/wil6210/wil6210.h:17,
+                 from drivers/net/wireless/ath/wil6210/cfg80211.c:11:
+drivers/net/wireless/ath/wil6210/wmi.h:477:4: note: while referencing 'channel_list'
+  477 |  } channel_list[0];
+      |    ^~~~~~~~~~~~
 
-Bye,
-Ulrich
+Turn this into a flexible array to avoid the warning.
 
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+Gustavo has a patch to do it for all arrays in this file, and that
+should get merged as well, but this simpler patch is sufficient
+to shut up the warning.
+---
+ drivers/net/wireless/ath/wil6210/wmi.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/wil6210/wmi.h b/drivers/net/wireless/ath/wil6210/wmi.h
+index e3558136e0c4..5bba45c1de48 100644
+--- a/drivers/net/wireless/ath/wil6210/wmi.h
++++ b/drivers/net/wireless/ath/wil6210/wmi.h
+@@ -474,7 +474,7 @@ struct wmi_start_scan_cmd {
+ 	struct {
+ 		u8 channel;
+ 		u8 reserved;
+-	} channel_list[0];
++	} channel_list[];
+ } __packed;
+ 
+ #define WMI_MAX_PNO_SSID_NUM	(16)
 -- 
-  Dr. Ulrich Weigand
-  GNU/Linux compilers and toolchain
-  Ulrich.Weigand@de.ibm.com
+2.26.0
+
