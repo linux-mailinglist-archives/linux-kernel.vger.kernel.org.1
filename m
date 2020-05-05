@@ -2,137 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F24A31C56F6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 15:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A2841C575D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 15:48:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729016AbgEENbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 09:31:38 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50260 "EHLO mx2.suse.de"
+        id S1729083AbgEENs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 09:48:29 -0400
+Received: from m12-17.163.com ([220.181.12.17]:46070 "EHLO m12-17.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728912AbgEENbi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 09:31:38 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 06B06AC7B;
-        Tue,  5 May 2020 13:31:37 +0000 (UTC)
-Message-ID: <71f91033780ee9d95da2be44884d4d47efb03b5f.camel@suse.de>
-Subject: Re: [PATCH v2 4/4] PCI: brcmstb: Disable L0s component of ASPM if
- requested
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Jim Quinlan <james.quinlan@broadcom.com>
-Cc:     "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Rob Herring <robh@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
-        <linux-pci@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Date:   Tue, 05 May 2020 15:31:32 +0200
-In-Reply-To: <20200501142831.35174-5-james.quinlan@broadcom.com>
-References: <20200501142831.35174-1-james.quinlan@broadcom.com>
-         <20200501142831.35174-5-james.quinlan@broadcom.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-/WMc+4hb6CwtaW97uLCZ"
-User-Agent: Evolution 3.36.2 
+        id S1728898AbgEENs3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 09:48:29 -0400
+X-Greylist: delayed 955 seconds by postgrey-1.27 at vger.kernel.org; Tue, 05 May 2020 09:48:27 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Subject:From:Message-ID:Date:MIME-Version; bh=vtE9L
+        BKKqPY2QgOdCyMuZW9mjYDyjGtNVqWc4Ka9luo=; b=bpuZ7YTYNZo8qjLCX6F9U
+        ay8iGfhemsjWMvllBx3GKhJ2anA8/6VNjQXiQqR11jgKHjYSFM0cd3YiXkgkIwSS
+        BOsWXdIVUF8umu3yxdlGCG4kJFMgFqbc8uK+/7XmSmdNqdLvpKojArPHjk2jz/Q5
+        1tIjBv3mehZ4LaEbnKmgbY=
+Received: from [192.168.1.7] (unknown [120.244.110.63])
+        by smtp13 (Coremail) with SMTP id EcCowAB37v3carFejW99BA--.112S2;
+        Tue, 05 May 2020 21:32:12 +0800 (CST)
+Subject: Re: fs: jfs: fix a possible data race in txBegin()
+To:     Dave Kleikamp <dave.kleikamp@oracle.com>,
+        Markus Elfring <Markus.Elfring@web.de>,
+        Jia-Ju Bai <baijiaju1990@gmail.com>,
+        jfs-discussion@lists.sourceforge.net
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <5ef374a5-0e2e-5c74-a827-0148c384f6e3@web.de>
+ <abbb03ec-7ce3-08b6-7d08-420743067f19@gmail.com>
+ <fa6fabec-8cc5-fc62-657f-3794e9405fac@web.de>
+ <df165b9f-7a51-a632-b1a0-a2cf1efa1915@oracle.com>
+From:   Jia-Ju Bai <baijiaju1990@163.com>
+Message-ID: <565e317a-396e-9221-11bb-bc8c76cc9f7a@163.com>
+Date:   Tue, 5 May 2020 21:32:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
+In-Reply-To: <df165b9f-7a51-a632-b1a0-a2cf1efa1915@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID: EcCowAB37v3carFejW99BA--.112S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrKrWkWFy8ZFyUuF1UKw45Jrb_yoWDCFc_uF
+        s5CFyUGwn8uF1rXFZ7Jw4fZry3Zw47ZF1Yywn5JrW7J3s3tFs5CFZ7KFyYy3W5tF9akrsr
+        Ca1Sqw4Dt3W2qjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5M5l5UUUUU==
+X-Originating-IP: [120.244.110.63]
+X-CM-SenderInfo: xedlyx5dmximizq6il2tof0z/1tbiVhwbelqzk2jEvAAAsB
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---=-/WMc+4hb6CwtaW97uLCZ
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2020-05-01 at 10:28 -0400, Jim Quinlan wrote:
-> From: Jim Quinlan <jquinlan@broadcom.com>
->=20
-> Some informal internal experiments has shown that the BrcmSTB ASPM L0s
-> savings may introduce an undesirable noise signal on some customers'
-> boards.  In addition, L0s was found lacking in realized power savings,
-> especially relative to the L1 ASPM component.  This is BrcmSTB's
-> experience and may not hold for others.  At any rate, if the
-> 'aspm-no-l0s' property is present L0s will be disabled.
->=20
-> Signed-off-by: Jim Quinlan <jquinlan@broadcom.com>
-> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+On 2020/5/5 21:23, Dave Kleikamp wrote:
+> On 5/5/20 12:12 AM, Markus Elfring wrote:
+>>> I am not sure how to add the tag "Fixes"...
+>> How helpful do you find the available software documentation?
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?id=47cf1b422e6093aee2a3e55d5e162112a2c69870#n183
+>>
+>>
+>>> I need to find which previous commit add the code about txBegin()?
+>> I suggest to take another look at corresponding source code places
+>> by a command like “git blame”.
+>> https://git-scm.com/book/en/v2/Git-Tools-Debugging-with-Gits
+> I suspect that the problem was in the code much longer than it has been
+> under git source control.
 
-Modulo the new generic dt property:
-
-Acked-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-
-Regards,
-Nicolas
-
-> ---
->  drivers/pci/controller/pcie-brcmstb.c | 14 +++++++++++++-
->  1 file changed, 13 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/pci/controller/pcie-brcmstb.c
-> b/drivers/pci/controller/pcie-brcmstb.c
-> index 5b0dec5971b8..73020b4ff090 100644
-> --- a/drivers/pci/controller/pcie-brcmstb.c
-> +++ b/drivers/pci/controller/pcie-brcmstb.c
-> @@ -41,6 +41,9 @@
->  #define PCIE_RC_CFG_PRIV1_ID_VAL3			0x043c
->  #define  PCIE_RC_CFG_PRIV1_ID_VAL3_CLASS_CODE_MASK	0xffffff
-> =20
-> +#define PCIE_RC_CFG_PRIV1_LINK_CAPABILITY			0x04dc
-> +#define  PCIE_RC_CFG_PRIV1_LINK_CAPABILITY_ASPM_SUPPORT_MASK	0xc00
-> +
->  #define PCIE_RC_DL_MDIO_ADDR				0x1100
->  #define PCIE_RC_DL_MDIO_WR_DATA				0x1104
->  #define PCIE_RC_DL_MDIO_RD_DATA				0x1108
-> @@ -693,7 +696,7 @@ static int brcm_pcie_setup(struct brcm_pcie *pcie)
->  	int num_out_wins =3D 0;
->  	u16 nlw, cls, lnksta;
->  	int i, ret;
-> -	u32 tmp;
-> +	u32 tmp, aspm_support;
-> =20
->  	/* Reset the bridge */
->  	brcm_pcie_bridge_sw_init_set(pcie, 1);
-> @@ -803,6 +806,15 @@ static int brcm_pcie_setup(struct brcm_pcie *pcie)
->  		num_out_wins++;
->  	}
-> =20
-> +	/* Don't advertise L0s capability if 'aspm-no-l0s' */
-> +	aspm_support =3D PCIE_LINK_STATE_L1;
-> +	if (!of_property_read_bool(pcie->np, "aspm-no-l0s"))
-> +		aspm_support |=3D PCIE_LINK_STATE_L0S;
-> +	tmp =3D readl(base + PCIE_RC_CFG_PRIV1_LINK_CAPABILITY);
-> +	u32p_replace_bits(&tmp, aspm_support,
-> +		PCIE_RC_CFG_PRIV1_LINK_CAPABILITY_ASPM_SUPPORT_MASK);
-> +	writel(tmp, base + PCIE_RC_CFG_PRIV1_LINK_CAPABILITY);
-> +
->  	/*
->  	 * For config space accesses on the RC, show the right class for
->  	 * a PCIe-PCIe bridge (the default setting is to be EP mode).
+I agree, because "git blame" shows the last change to txBegin() is 
+commit 1da177e4c3f4, which was submitted in 2005...
+And this commit just added or merged the filesystem to the Linux kernel.
+Thus, adding the tag "Fixes" of this commit should be useless...
 
 
---=-/WMc+4hb6CwtaW97uLCZ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl6xarQACgkQlfZmHno8
-x/5F2Af+NaU0XhF5SOoN9k/cqs0QD3cUh2gPJSrKgygCuqC79eeu2CIH9k3OmXSK
-2ArwxrQvKZS8cw8icZPETD6PuD5Z0bWmeUbl7dbTZwReORzCUeFGGjbFJUCw6mLv
-gzxQ1QTT60/rf2BeVu520PJeCB/KAnsiqwNo63UJhGYsdExXwGLyQqmgldCCfktl
-9i8QE/4C4Ne3A1QXj0aowFHD9pCI54bYj3UeDFo2Z7C0Hb2vMAt+KDkGiR40dDF2
-FBaM1gII/IUVqt12qLngl2aYjCWa8VQro6Hz53IM/Bkf1QVUbjYNq3GsIXph4sLQ
-81jE683L/9ZlfI95hcoWXr8aaqGdsQ==
-=aXbi
------END PGP SIGNATURE-----
-
---=-/WMc+4hb6CwtaW97uLCZ--
+Best wishes,
+Jia-Ju Bai
 
