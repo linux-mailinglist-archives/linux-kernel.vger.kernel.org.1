@@ -2,140 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 889231C5920
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:22:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE9371C58EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:20:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730303AbgEEOWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:22:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729273AbgEEOWQ (ORCPT
+        id S1730121AbgEEOUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:20:11 -0400
+Received: from mout.kundenserver.de ([212.227.17.13]:45565 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729997AbgEEOQF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:22:16 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECEF4C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:22:15 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id v4so2614994wme.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 07:22:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YHnzzrHgTyHcjX/CeefsmIEudaBUoBiusDg0FK4q7VY=;
-        b=WramJSl4+uskKedIHN68dPfXwQ/JWF+7d43lGgSUtg9uMCjB27RieYVrxRNCiESioY
-         qQAjepPNqXaKLzvAd80rsaqCFeopkR4uGXt7IqAdCYXXu9pgquU5zI/UiGrDkc+yeh/T
-         1CIy4eJHsTlDiebyEJu6B7BpqUnS6SjguezbmKJ2iuKyjeroDCACh63Avjg6X/WKNq8y
-         VvJo8RcMTZPoZKGb1azBhV5ipKE7OtRG5tE93+24jqZG1M+GMUHOmPzJD/8cCntKFYMv
-         27h5azse6AypM9z9xYtJOUU9+W2RBvRcU/L3QRlt/mZnHnaqiWCBInSRYqf61knVPmLc
-         ApVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YHnzzrHgTyHcjX/CeefsmIEudaBUoBiusDg0FK4q7VY=;
-        b=BsErOsJnCFD/Cbv66rC1/fIJzPvkHZD6uGfyRWKSdbdxkO1WNkDhpt/vOwD0BERbIf
-         uQEECAjQcLu3clY5mcSpTYyvn9LNZeszQrFXv1+8NDlmKX5/lN459BSvIJxF9zVXn8U0
-         8SsBngfKIj8MkVapBg029FTb3W6zWVigNtfYpb5Rr+hPFE3wxwFzjyAFwN8vD0EMyQjV
-         HThn8AJpG9jAkliTUtBvtlm9r02g2cWk7Zayn59CNTbO/mQXgTKf7+sTTiXc35R+rPGn
-         SIdg0AUjuRoL6wz/4TlDNyr3nNgk3DSHAsQfxYRuzYPvR9lqdMVdVqYT0lyTvTKnYEUE
-         LJMQ==
-X-Gm-Message-State: AGi0PuZ3slKUZ4EQi45rDFrYpqhweuS29CcJ0Nq+S8AluLpZyEqeIsna
-        nseebHVhPdrnkXTMdUqSJJTCgLOPm3arng==
-X-Google-Smtp-Source: APiQypIYYxJUTLtY0WESmB6qxDcBGH0IJp2gBONDCsRvlDuzCDaiTDtCUBp5/jTtlYEeVlexqtQGJw==
-X-Received: by 2002:a7b:c250:: with SMTP id b16mr3771611wmj.100.1588688132584;
-        Tue, 05 May 2020 07:15:32 -0700 (PDT)
-Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
-        by smtp.gmail.com with ESMTPSA id s6sm4023786wmh.17.2020.05.05.07.15.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 May 2020 07:15:31 -0700 (PDT)
-Date:   Tue, 5 May 2020 15:15:29 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        patches@linaro.org
-Subject: Re: [PATCH v2] arm64: cacheflush: Fix KGDB trap detection
-Message-ID: <20200505141529.2qb35fbqudtac3ys@holly.lan>
-References: <20200504170518.2959478-1-daniel.thompson@linaro.org>
- <20200504204803.GA5657@willie-the-truck>
+        Tue, 5 May 2020 10:16:05 -0400
+Received: from localhost.localdomain ([149.172.19.189]) by
+ mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1M9nEJ-1jSNK23B49-005rjT; Tue, 05 May 2020 16:15:47 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Yan Yankovskyi <yyankovskyi@gmail.com>, Wei Liu <wl@xen.org>,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: [PATCH] xenbus: avoid stack overflow warning
+Date:   Tue,  5 May 2020 16:15:37 +0200
+Message-Id: <20200505141546.824573-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200504204803.GA5657@willie-the-truck>
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:A6tw1zrTOAQW5yW+MxCDJvOopLSS/Ga3YzKkHajnYByzROmhf/Z
+ UCjmaSkpNjyjF6nnYkDrgoDTQcQKOsy9GqpcEYeDBFITW4FIlbQVan7MDSfBvVH5vKDNaMG
+ I57/Bb6kf/hHfTGPMDXpo9MiGKtA/lQKOkRk2jrdXtJteCeqspXA4ZRf6fi0zCQjBphQskO
+ vo1QzWOdqSAs5HBhhLKyg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:AVDw9QU2Bq0=:RtvByz9YZEMaNPXxSQQaan
+ cDa1tb8w5qa0/seyrGG5bEJDTWS1bQ6DU6Z3caE8AVZWP1DLGjx3JqQeK/1xFSA7XkiiMJyhk
+ g9yWhIyFP3lr0xAKhrdIAeNeM227xqBDcoaJzkkSz7XLlBTcbuKxl+ZBf6c7IvRpJTium5Wpy
+ wbna0RoQzxMBC5A1ijVWpzJPTQ7zvqxiSFQvyLxdIYvMvoRuaB1v0r0X2ffQfaZ/Czv/uqxyY
+ E9XMnNAgucakN6lhB6eQ6MOsvvookARXupmUbbnYbrkjFuSavXZ5pPP4YBTM6PZq3heRt0Ffb
+ JXcfBQqCOIzDgg7z68QhXEjzhQzOU4skSyZfx4/PAjDqxOMtEfkTgAIUF067/bJHW4AdVoJMY
+ X+QbTqcaz/Ajz1Bf4V8+HNe3gCPNTAZr5Ybk5lRqkDoEqY/Ks4zyMQ/eR4+CxwQJ9LlAs7EQJ
+ h6UvsBe6lcNJlmhfiIaAlxlQjzHwYJ2LmHLpAEq9YFUPDzY2vcYxrehJKsZD3z9sR9EMwrX1I
+ SCBTxeQ5jjvIOIGLuslnh9tYC1VW3T9yt9QsuzcNAm2vg28xGYLkrNxvRpFlltV+SGz4EriaI
+ ZKIpN/t8zQ1fTUnto9/GFaHTg0xIITo1QroKaSzEh2NeBZt5Z1ioW6I3pIWOY2xIhgHsRK/NH
+ UIcynKaRVx7azRrZE9UI8sHcKSwYGlA0KhQM/SBjFqUO6NKyqrqMAwhYjVYdRmoSIMoeKxDMm
+ ZE/GCuMVoM+OE+Jo4mT72blCEhI8HrcXl2M0M3aXX9f7P/C/S9P0oo9BzRoS655scEfNndInz
+ 7spEwdABS87Ga/MwDfUpMag/fwUWsaGdnX00Lewh0xtIkUjZQc=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 04, 2020 at 09:48:04PM +0100, Will Deacon wrote:
-> On Mon, May 04, 2020 at 06:05:18PM +0100, Daniel Thompson wrote:
-> > flush_icache_range() contains a bodge to avoid issuing IPIs when the kgdb
-> > trap handler is running because issuing IPIs is unsafe (and not needed)
-> > in this execution context. However the current test, based on
-> > kgdb_connected is flawed: it both over-matches and under-matches.
-> > 
-> > The over match occurs because kgdb_connected is set when gdb attaches
-> > to the stub and remains set during normal running. This is relatively
-> > harmelss because in almost all cases irq_disabled() will be false.
-> > 
-> > The under match is more serious. When kdb is used instead of kgdb to access
-> > the debugger then kgdb_connected is not set in all the places that the
-> > debug core updates sw breakpoints (and hence flushes the icache). This
-> > can lead to deadlock.
-> > 
-> > Fix by replacing the ad-hoc check with the proper kgdb macro. This also
-> > allows us to drop the #ifdef wrapper.
-> > 
-> > Fixes: 3b8c9f1cdfc5 ("arm64: IPI each CPU after invalidating the I-cache for kernel mappings")
-> > Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
-> > Reviewed-by: Douglas Anderson <dianders@chromium.org>
-> > ---
-> > 
-> > Notes:
-> >     v2: Improve the commit message based based on feedback from Doug
-> >         Anderson
-> > 
-> >  arch/arm64/include/asm/cacheflush.h | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/arch/arm64/include/asm/cacheflush.h b/arch/arm64/include/asm/cacheflush.h
-> > index e6cca3d4acf7..ce50c1f1f1ea 100644
-> > --- a/arch/arm64/include/asm/cacheflush.h
-> > +++ b/arch/arm64/include/asm/cacheflush.h
-> > @@ -79,7 +79,7 @@ static inline void flush_icache_range(unsigned long start, unsigned long end)
-> >  	 * IPI all online CPUs so that they undergo a context synchronization
-> >  	 * event and are forced to refetch the new instructions.
-> >  	 */
-> > -#ifdef CONFIG_KGDB
-> > +
-> >  	/*
-> >  	 * KGDB performs cache maintenance with interrupts disabled, so we
-> >  	 * will deadlock trying to IPI the secondary CPUs. In theory, we can
-> > @@ -89,9 +89,9 @@ static inline void flush_icache_range(unsigned long start, unsigned long end)
-> >  	 * the patching operation, so we don't need extra IPIs here anyway.
-> >  	 * In which case, add a KGDB-specific bodge and return early.
-> >  	 */
-> > -	if (kgdb_connected && irqs_disabled())
-> > +	if (in_dbg_master())
-> 
-> Does this imply that irqs are disabled?
+The __xenbus_map_ring() function has two large arrays, 'map' and
+'unmap' on its stack. When clang decides to inline it into its caller,
+xenbus_map_ring_valloc_hvm(), the total stack usage exceeds the warning
+limit for stack size on 32-bit architectures.
 
-Yes.
+drivers/xen/xenbus/xenbus_client.c:592:12: error: stack frame size of 1104 bytes in function 'xenbus_map_ring_valloc_hvm' [-Werror,-Wframe-larger-than=]
 
-Assuming CONFIG_KGDB is enabled then in_dbg_master() expands to:
+As far as I can tell, other compilers don't inline it here, so we get
+no warning, but the stack usage is actually the same. It is possible
+for both arrays to use the same location on the stack, but the compiler
+cannot prove that this is safe because they get passed to external
+functions that may end up using them until they go out of scope.
 
-    (raw_smp_processor_id() == atomic_read(&kgdb_active))
+Move the two arrays into separate basic blocks to limit the scope
+and force them to occupy less stack in total, regardless of the
+inlining decision.
 
-kgdb_active is written to from exactly four locations in the kernel and
-all are within a single function, albeit a very big function with control
-flow the that could politely be called "quirky". I try not to think about
-what it might be impolitely called.
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/xen/xenbus/xenbus_client.c | 74 +++++++++++++++++-------------
+ 1 file changed, 41 insertions(+), 33 deletions(-)
 
-kgdb_active is only ever set to a value other than -1 when we are
-executing the kgdb exception handler and interrupts have been
-explicitly disabled.
+diff --git a/drivers/xen/xenbus/xenbus_client.c b/drivers/xen/xenbus/xenbus_client.c
+index 040d2a43e8e3..23ca70378e36 100644
+--- a/drivers/xen/xenbus/xenbus_client.c
++++ b/drivers/xen/xenbus/xenbus_client.c
+@@ -470,54 +470,62 @@ static int __xenbus_map_ring(struct xenbus_device *dev,
+ 			     unsigned int flags,
+ 			     bool *leaked)
+ {
+-	struct gnttab_map_grant_ref map[XENBUS_MAX_RING_GRANTS];
+-	struct gnttab_unmap_grant_ref unmap[XENBUS_MAX_RING_GRANTS];
+ 	int i, j;
+ 	int err = GNTST_okay;
+ 
+-	if (nr_grefs > XENBUS_MAX_RING_GRANTS)
+-		return -EINVAL;
++	{
++		struct gnttab_map_grant_ref map[XENBUS_MAX_RING_GRANTS];
+ 
+-	for (i = 0; i < nr_grefs; i++) {
+-		memset(&map[i], 0, sizeof(map[i]));
+-		gnttab_set_map_op(&map[i], addrs[i], flags, gnt_refs[i],
+-				  dev->otherend_id);
+-		handles[i] = INVALID_GRANT_HANDLE;
+-	}
++		if (nr_grefs > XENBUS_MAX_RING_GRANTS)
++			return -EINVAL;
+ 
+-	gnttab_batch_map(map, i);
++		for (i = 0; i < nr_grefs; i++) {
++			memset(&map[i], 0, sizeof(map[i]));
++			gnttab_set_map_op(&map[i], addrs[i], flags,
++					  gnt_refs[i], dev->otherend_id);
++			handles[i] = INVALID_GRANT_HANDLE;
++		}
++
++		gnttab_batch_map(map, i);
+ 
+-	for (i = 0; i < nr_grefs; i++) {
+-		if (map[i].status != GNTST_okay) {
+-			err = map[i].status;
+-			xenbus_dev_fatal(dev, map[i].status,
++		for (i = 0; i < nr_grefs; i++) {
++			if (map[i].status != GNTST_okay) {
++				err = map[i].status;
++				xenbus_dev_fatal(dev, map[i].status,
+ 					 "mapping in shared page %d from domain %d",
+ 					 gnt_refs[i], dev->otherend_id);
+-			goto fail;
+-		} else
+-			handles[i] = map[i].handle;
++				goto fail;
++			} else
++				handles[i] = map[i].handle;
++		}
+ 	}
+-
+ 	return GNTST_okay;
+ 
+  fail:
+-	for (i = j = 0; i < nr_grefs; i++) {
+-		if (handles[i] != INVALID_GRANT_HANDLE) {
+-			memset(&unmap[j], 0, sizeof(unmap[j]));
+-			gnttab_set_unmap_op(&unmap[j], (phys_addr_t)addrs[i],
+-					    GNTMAP_host_map, handles[i]);
+-			j++;
++	{
++		struct gnttab_unmap_grant_ref unmap[XENBUS_MAX_RING_GRANTS];
++
++		for (i = j = 0; i < nr_grefs; i++) {
++			if (handles[i] != INVALID_GRANT_HANDLE) {
++				memset(&unmap[j], 0, sizeof(unmap[j]));
++				gnttab_set_unmap_op(&unmap[j],
++						    (phys_addr_t)addrs[i],
++						    GNTMAP_host_map,
++						    handles[i]);
++				j++;
++			}
+ 		}
+-	}
+ 
+-	if (HYPERVISOR_grant_table_op(GNTTABOP_unmap_grant_ref, unmap, j))
+-		BUG();
++		if (HYPERVISOR_grant_table_op(GNTTABOP_unmap_grant_ref,
++					      unmap, j))
++			BUG();
+ 
+-	*leaked = false;
+-	for (i = 0; i < j; i++) {
+-		if (unmap[i].status != GNTST_okay) {
+-			*leaked = true;
+-			break;
++		*leaked = false;
++		for (i = 0; i < j; i++) {
++			if (unmap[i].status != GNTST_okay) {
++				*leaked = true;
++				break;
++			}
+ 		}
+ 	}
+ 
+-- 
+2.26.0
 
-
-Daniel.
