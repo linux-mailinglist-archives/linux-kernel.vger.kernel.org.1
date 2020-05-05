@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D3111C5873
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:15:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3E7B1C5918
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:22:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729684AbgEEOOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:14:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48748 "EHLO
+        id S1730283AbgEEOWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:22:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729651AbgEEOOp (ORCPT
+        by vger.kernel.org with ESMTP id S1729657AbgEEOOq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:14:45 -0400
+        Tue, 5 May 2020 10:14:46 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A250C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:14:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BFCDC061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:14:46 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jVyL5-00014K-8h; Tue, 05 May 2020 16:14:27 +0200
+        id 1jVyL6-00015T-BN; Tue, 05 May 2020 16:14:28 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 87C22FFC8D;
-        Tue,  5 May 2020 16:14:26 +0200 (CEST)
-Message-Id: <20200505134341.180329835@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id C63931001F5;
+        Tue,  5 May 2020 16:14:27 +0200 (CEST)
+Message-Id: <20200505134341.272248024@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 05 May 2020 15:41:23 +0200
+Date:   Tue, 05 May 2020 15:41:24 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -43,9 +43,9 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Brian Gerst <brgerst@gmail.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>
-Subject: [patch V4 part 2 11/18] x86/entry/64: Mark
- ___preempt_schedule_notrace() thunk noinstr
+        Will Deacon <will@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: [patch V4 part 2 12/18] x86,objtool: Make entry_64_compat.S objtool clean
 References: <20200505134112.272268764@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -58,57 +58,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Code calling this from noinstr sections, e.g. entry code, has interrupts
-disabled, so the actual call into the scheduler code does not happen.
+Currently entry_64_compat is exempt from objtool, but with vmlinux
+mode there is no hiding it.
 
-The objtool section check complains nevertheless, so mark the call "safe".
+Make the following changes to make it pass:
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+ - change entry_SYSENTER_compat to STT_NOTYPE; it's not a function
+   and doesn't have function type stack setup.
+
+ - mark all STT_NOTYPE symbols with UNWIND_HINT_EMPTY; so we do
+   validate them and don't treat them as unreachable.
+
+ - don't abuse RSP as a temp register, this confuses objtool
+   mightily as it (rightfully) thinks we're doing unspeakable
+   things to the stack.
+
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/x86/entry/thunk_64.S |   18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+ arch/x86/entry/Makefile          |    2 --
+ arch/x86/entry/entry_64_compat.S |   25 ++++++++++++++++++++-----
+ 2 files changed, 20 insertions(+), 7 deletions(-)
 
---- a/arch/x86/entry/thunk_64.S
-+++ b/arch/x86/entry/thunk_64.S
-@@ -12,6 +12,7 @@
- #include <asm/irqflags.h>
+--- a/arch/x86/entry/Makefile
++++ b/arch/x86/entry/Makefile
+@@ -11,8 +11,6 @@ CFLAGS_REMOVE_common.o = $(CC_FLAGS_FTRA
+ CFLAGS_REMOVE_syscall_32.o = $(CC_FLAGS_FTRACE) -fstack-protector -fstack-protector-strong
+ CFLAGS_REMOVE_syscall_64.o = $(CC_FLAGS_FTRACE) -fstack-protector -fstack-protector-strong
  
- .code64
-+.section .noinstr.text, "ax"
+-OBJECT_FILES_NON_STANDARD_entry_64_compat.o := y
+-
+ CFLAGS_syscall_64.o		+= $(call cc-option,-Wno-override-init,)
+ CFLAGS_syscall_32.o		+= $(call cc-option,-Wno-override-init,)
+ obj-y				:= entry_$(BITS).o thunk_$(BITS).o syscall_$(BITS).o
+--- a/arch/x86/entry/entry_64_compat.S
++++ b/arch/x86/entry/entry_64_compat.S
+@@ -46,12 +46,14 @@
+  * ebp  user stack
+  * 0(%ebp) arg6
+  */
+-SYM_FUNC_START(entry_SYSENTER_compat)
++SYM_CODE_START(entry_SYSENTER_compat)
++	UNWIND_HINT_EMPTY
+ 	/* Interrupts are off on entry. */
+ 	SWAPGS
  
- 	/* rdi:	arg1 ... normal C conventions. rax is saved/restored. */
- 	.macro THUNK name, func, put_ret_addr_in_rdi=0, check_if=0
-@@ -49,10 +50,24 @@ SYM_FUNC_START_NOALIGN(\name)
- 	movq 8(%rbp), %rdi
- 	.endif
+-	/* We are about to clobber %rsp anyway, clobbering here is OK */
+-	SWITCH_TO_KERNEL_CR3 scratch_reg=%rsp
++	pushq	%rax
++	SWITCH_TO_KERNEL_CR3 scratch_reg=%rax
++	popq	%rax
  
-+	/*
-+	 * noinstr callers will have interrupts disabled and will thus
-+	 * not get here. Annotate the call as objtool does not know about
-+	 * this and would complain about leaving the noinstr section.
-+	 */
-+1:
-+	.pushsection .discard.instr_begin
-+	.long 1b - .
-+	.popsection
+ 	movq	PER_CPU_VAR(cpu_current_top_of_stack), %rsp
+ 
+@@ -104,6 +106,9 @@ SYM_FUNC_START(entry_SYSENTER_compat)
+ 	xorl	%r14d, %r14d		/* nospec   r14 */
+ 	pushq   $0			/* pt_regs->r15 = 0 */
+ 	xorl	%r15d, %r15d		/* nospec   r15 */
 +
- 	call \func
-+2:
-+	.pushsection .discard.instr_end
-+	.long 2b - .
-+	.popsection
++	UNWIND_HINT_REGS
 +
- 	jmp  .L_restore
- SYM_FUNC_END(\name)
--	_ASM_NOKPROBE(\name)
- 	.endm
+ 	cld
  
- #ifdef CONFIG_TRACE_IRQFLAGS
-@@ -82,6 +97,5 @@ SYM_CODE_START_LOCAL_NOALIGN(.L_restore)
- 	popq %rdi
- 	popq %rbp
- 	ret
--	_ASM_NOKPROBE(.L_restore)
- SYM_CODE_END(.L_restore)
- #endif
+ 	/*
+@@ -141,7 +146,7 @@ SYM_FUNC_START(entry_SYSENTER_compat)
+ 	popfq
+ 	jmp	.Lsysenter_flags_fixed
+ SYM_INNER_LABEL(__end_entry_SYSENTER_compat, SYM_L_GLOBAL)
+-SYM_FUNC_END(entry_SYSENTER_compat)
++SYM_CODE_END(entry_SYSENTER_compat)
+ 
+ /*
+  * 32-bit SYSCALL entry.
+@@ -191,6 +196,7 @@ SYM_FUNC_END(entry_SYSENTER_compat)
+  * 0(%esp) arg6
+  */
+ SYM_CODE_START(entry_SYSCALL_compat)
++	UNWIND_HINT_EMPTY
+ 	/* Interrupts are off on entry. */
+ 	swapgs
+ 
+@@ -241,6 +247,8 @@ SYM_INNER_LABEL(entry_SYSCALL_compat_aft
+ 	pushq   $0			/* pt_regs->r15 = 0 */
+ 	xorl	%r15d, %r15d		/* nospec   r15 */
+ 
++	UNWIND_HINT_REGS
++
+ 	movq	%rsp, %rdi
+ 	call	do_fast_syscall_32
+ 	/* XEN PV guests always use IRET path */
+@@ -328,6 +336,7 @@ SYM_CODE_END(entry_SYSCALL_compat)
+  * ebp  arg6
+  */
+ SYM_CODE_START(entry_INT80_compat)
++	UNWIND_HINT_EMPTY
+ 	/*
+ 	 * Interrupts are off on entry.
+ 	 */
+@@ -349,8 +358,11 @@ SYM_CODE_START(entry_INT80_compat)
+ 
+ 	/* Need to switch before accessing the thread stack. */
+ 	SWITCH_TO_KERNEL_CR3 scratch_reg=%rdi
++
+ 	/* In the Xen PV case we already run on the thread stack. */
+-	ALTERNATIVE "movq %rsp, %rdi", "jmp .Lint80_keep_stack", X86_FEATURE_XENPV
++	ALTERNATIVE "", "jmp .Lint80_keep_stack", X86_FEATURE_XENPV
++
++	movq	%rsp, %rdi
+ 	movq	PER_CPU_VAR(cpu_current_top_of_stack), %rsp
+ 
+ 	pushq	6*8(%rdi)		/* regs->ss */
+@@ -389,6 +401,9 @@ SYM_CODE_START(entry_INT80_compat)
+ 	xorl	%r14d, %r14d		/* nospec   r14 */
+ 	pushq   %r15                    /* pt_regs->r15 */
+ 	xorl	%r15d, %r15d		/* nospec   r15 */
++
++	UNWIND_HINT_REGS
++
+ 	cld
+ 
+ 	movq	%rsp, %rdi
 
