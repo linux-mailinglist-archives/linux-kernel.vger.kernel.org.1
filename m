@@ -2,91 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F412F1C5295
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 12:08:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 598B51C52C2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 12:13:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728684AbgEEKIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 06:08:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57594 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728238AbgEEKIU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 06:08:20 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 57C5E206B9;
-        Tue,  5 May 2020 10:08:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588673299;
-        bh=S4OvD3THrqAQKuLduHlxBJEKdVeJl7/rqkq6RJ2Vb14=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=nrCuaVmZqjpy20leR1WT4PjlQ9kE8WDRu7+fFr4RhuykskZYI0e55I4MXJdRZxeco
-         6jWWb7nSu8p69wN7eCcB4Z4nOm3CIWG2zeHsOi0ocA44IkIM1y0tngbpcz4Ktjc6g+
-         XAq6Kx1sgFMYvYaol/e1lFJ++q/nnXLlTQACm0EA=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1jVuUr-009N59-OW; Tue, 05 May 2020 11:08:17 +0100
+        id S1728637AbgEEKNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 06:13:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725766AbgEEKNM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 06:13:12 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED89AC061A0F;
+        Tue,  5 May 2020 03:13:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=ncJk3Hy4dw1GXdM3XrwfaxwhaN20YHNFbgRW0igSO6Q=; b=Z68OL98GDKc9lPf5hyO1BAr5o+
+        xMc+UIPj/LuL8Rh036j/7iay/ncZhMMEomofD47iiQ2PEry3DUdts8KqP7yn0UXPdzUojC/Zea/Xz
+        RL/yW8xYZ9YTrRkjzIdd3FfFEWNNfXuDWzHtU54QvIb6IAI6mLBLvSIgfBMFebmGBYzL+hoslZZy9
+        uGKWiRILrNEm1OzKlQ2wneeYp3AOOvHorPebbsHrrpgh1vDGbx7MGQStlRVJtiONZEHuhFZUK1lmU
+        fjXpuvLGt4F7u3YkXV5yRj1FfP4y1j/KsoZnrTPXE94r2dkn7MUF5FM3SM1SPAMIRnmp+WxYRyPkj
+        i4QEV0IQ==;
+Received: from [2001:4bb8:191:66b6:c70:4a89:bc61:2] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jVuZO-0006tK-Hs; Tue, 05 May 2020 10:12:58 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Jeremy Kerr <jk@ozlabs.org>, Arnd Bergmann <arnd@arndb.de>,
+        Oleg Nesterov <oleg@redhat.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>, x86@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: remove set_fs calls from the coredump code v6
+Date:   Tue,  5 May 2020 12:12:49 +0200
+Message-Id: <20200505101256.3121270-1-hch@lst.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 05 May 2020 11:08:17 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        kgdb-bugreport@lists.sourceforge.net,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, julien.thierry.kdev@gmail.com
-Subject: Re: [RFC Patch v1 2/4] irqchip/gic-v3: Add support to handle SGI as
- pseudo NMI
-In-Reply-To: <CAFA6WYOn+DLf77C1+e5bq-NdT+o4=o32oPu2b3bxD_U+mLQ3WQ@mail.gmail.com>
-References: <1587726554-32018-1-git-send-email-sumit.garg@linaro.org>
- <1587726554-32018-3-git-send-email-sumit.garg@linaro.org>
- <20200425112950.3a4815b6@why> <6fd3d96181ec53f735ef1b6a79d28da1@kernel.org>
- <CAFA6WYPNNNZeX5zpadayfiZ7P_mHmiREpUd5LZ3Jp+TjGVqoEw@mail.gmail.com>
- <ac57cb4bbb6507ee98f199d68a514503@kernel.org>
- <CAFA6WYMheJxeKVC_YWN9owNJhcWTBsaOCvZXxq=GVj5ROJ0cvg@mail.gmail.com>
- <20200430101322.420e4052@why>
- <CAFA6WYO+NGLfNkOah4YzXx5XuaDh=QtWHgnMBwwMFY1zRt15GQ@mail.gmail.com>
- <CAFA6WYPxiwxpJitX7fCSESUvQSa9Dq89GwL4e3w33ooetV=ysw@mail.gmail.com>
- <CAFA6WYOn+DLf77C1+e5bq-NdT+o4=o32oPu2b3bxD_U+mLQ3WQ@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.3
-Message-ID: <306aecc560a9503e500fbf1f512c6d30@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: sumit.garg@linaro.org, daniel.thompson@linaro.org, jason@lakedaemon.net, catalin.marinas@arm.com, dianders@chromium.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, jason.wessel@windriver.com, kgdb-bugreport@lists.sourceforge.net, tglx@linutronix.de, will@kernel.org, julien.thierry.kdev@gmail.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-05-05 05:09, Sumit Garg wrote:
-> On Fri, 1 May 2020 at 18:33, Sumit Garg <sumit.garg@linaro.org> wrote:
+Hi all,
 
-[...]
+this series gets rid of playing with the address limit in the exec and
+coredump code.  Most of this was fairly trivial, the biggest changes are
+those to the spufs coredump code.
 
-> In case there are no major objections to this approach, I will post
-> complete v2 patch-set (alongwith Marc's patches) for detailed review.
+Changes since v5:
+ - fix uaccess under spinlock in spufs (Jeremy)
+ - remove use of access_ok in spufs
 
-As this is still a work in progress (I'm currently wrestling with
-the stupid RPi driver), whatever you have is unlikely to apply on
-top of the final series.
+Changes since v4:
+ - change some goto names as suggested by Linus
 
-I'm not going to stop you from posting the patches, it is just that
-they will be obsolete by the end of the week...
+Changes since v3:
+ - fix x86 compilation with x32 in the new version of the signal code
+ - split the exec patches into a new series
 
-Thanks,
+Changes since v2:
+ - don't cleanup the compat siginfo calling conventions, use the patch
+   variant from Eric with slight coding style fixes instead.
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+Changes since v1:
+ - properly spell NUL
+ - properly handle the compat siginfo case in ELF coredumps
+
