@@ -2,76 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C2541C5B32
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:31:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8B571C5B47
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:32:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729982AbgEEPbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 11:31:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59980 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729281AbgEEPbk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 11:31:40 -0400
-Received: from localhost (unknown [104.132.1.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3EDF92078C;
-        Tue,  5 May 2020 15:31:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588692700;
-        bh=10UQQl3GPfT8mcIMbnLtvCSvPWaMAUPM/kBH8ajFl40=;
-        h=From:To:Cc:Subject:Date:From;
-        b=HVY0pEgbAVyz6IqLvBZ+IAFiCCA7HoCpCBshkAB7xGhGO4uSDrUtwD2ZVCZ9I4C+C
-         jbloa10/2h+K7Ygp7jK04JFUsG6e0EtkkH/eTnRXAMrtKnRkaoO6ETvjAO0Z9+36t5
-         aVt+W3WZEw3RkFaT4DxJJAMSc7dYncstrhRsW7bA=
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
-Cc:     Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: [PATCH] f2fs: get parent inode when recovering pino
-Date:   Tue,  5 May 2020 08:31:39 -0700
-Message-Id: <20200505153139.201697-1-jaegeuk@kernel.org>
-X-Mailer: git-send-email 2.26.2.526.g744177e7f7-goog
+        id S1730088AbgEEPca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 11:32:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730090AbgEEPc2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 11:32:28 -0400
+Received: from smtp-bc0d.mail.infomaniak.ch (smtp-bc0d.mail.infomaniak.ch [IPv6:2001:1600:3:17::bc0d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20266C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 08:32:27 -0700 (PDT)
+Received: from smtp-2-0000.mail.infomaniak.ch (unknown [10.5.36.107])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 49GkHQ3pJnzlhWgZ;
+        Tue,  5 May 2020 17:32:18 +0200 (CEST)
+Received: from localhost (unknown [94.23.54.103])
+        by smtp-2-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 49GkHP3cXJzlq4Rd;
+        Tue,  5 May 2020 17:32:17 +0200 (CEST)
+From:   =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Heimes <christian@python.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Deven Bowers <deven.desai@linux.microsoft.com>,
+        Eric Chiang <ericchiang@google.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mickael.salaun@ssi.gouv.fr>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        =?UTF-8?q?Philippe=20Tr=C3=A9buchet?= 
+        <philippe.trebuchet@ssi.gouv.fr>,
+        Scott Shell <scottsh@microsoft.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Steve Dower <steve.dower@python.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>,
+        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH v5 0/6] Add support for O_MAYEXEC
+Date:   Tue,  5 May 2020 17:31:50 +0200
+Message-Id: <20200505153156.925111-1-mic@digikod.net>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Antivirus: Dr.Web (R) for Unix mail servers drweb plugin ver.6.0.2.8
+X-Antivirus-Code: 0x100000
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We had to grab the inode before retrieving i_ino.
+Hi,
 
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
----
- fs/f2fs/file.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+This fifth patch series add new kernel configurations (OMAYEXEC_STATIC,
+OMAYEXEC_ENFORCE_MOUNT, and OMAYEXEC_ENFORCE_FILE) to enable to
+configure the security policy at kernel build time.  As requested by
+Mimi Zohar, I completed the series with one of her patches for IMA.
 
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index a0a4413d6083b..9d4c3e3503567 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -168,6 +168,7 @@ static const struct vm_operations_struct f2fs_file_vm_ops = {
- static int get_parent_ino(struct inode *inode, nid_t *pino)
- {
- 	struct dentry *dentry;
-+	struct inode *parent;
- 
- 	inode = igrab(inode);
- 	dentry = d_find_any_alias(inode);
-@@ -175,8 +176,13 @@ static int get_parent_ino(struct inode *inode, nid_t *pino)
- 	if (!dentry)
- 		return 0;
- 
--	*pino = parent_ino(dentry);
-+	parent = igrab(d_inode(dentry->d_parent));
- 	dput(dentry);
-+	if (!parent)
-+		return 0;
-+
-+	*pino = parent->i_ino;
-+	iput(parent);
- 	return 1;
- }
- 
+The goal of this patch series is to enable to control script execution
+with interpreters help.  A new O_MAYEXEC flag, usable through
+openat2(2), is added to enable userspace script interpreter to delegate
+to the kernel (and thus the system security policy) the permission to
+interpret/execute scripts or other files containing what can be seen as
+commands.
+
+A simple system-wide security policy can be enforced by the system
+administrator through a sysctl configuration consistent with the mount
+points or the file access rights.  The documentation patch explains the
+prerequisites.
+
+Furthermore, the security policy can also be delegated to an LSM, either
+a MAC system or an integrity system.  For instance, the new kernel
+MAY_OPENEXEC flag closes a major IMA measurement/appraisal interpreter
+integrity gap by bringing the ability to check the use of scripts [1].
+Other uses are expected, such as for openat2(2) [2], SGX integration
+[3], bpffs [4] or IPE [5].
+
+Userspace needs to adapt to take advantage of this new feature.  For
+example, the PEP 578 [6] (Runtime Audit Hooks) enables Python 3.8 to be
+extended with policy enforcement points related to code interpretation,
+which can be used to align with the PowerShell audit features.
+Additional Python security improvements (e.g. a limited interpreter
+withou -c, stdin piping of code) are on their way.
+
+The initial idea come from CLIP OS 4 and the original implementation has
+been used for more than 12 years:
+https://github.com/clipos-archive/clipos4_doc
+
+An introduction to O_MAYEXEC was given at the Linux Security Summit
+Europe 2018 - Linux Kernel Security Contributions by ANSSI:
+https://www.youtube.com/watch?v=chNjCRtPKQY&t=17m15s
+The "write xor execute" principle was explained at Kernel Recipes 2018 -
+CLIP OS: a defense-in-depth OS:
+https://www.youtube.com/watch?v=PjRE0uBtkHU&t=11m14s
+
+This patch series can be applied on top of v5.7-rc4.  This can be tested
+with CONFIG_SYSCTL.  I would really appreciate constructive comments on
+this patch series.
+
+Previous version:
+https://lore.kernel.org/lkml/20200428175129.634352-1-mic@digikod.net/
+
+
+[1] https://lore.kernel.org/lkml/1544647356.4028.105.camel@linux.ibm.com/
+[2] https://lore.kernel.org/lkml/20190904201933.10736-6-cyphar@cyphar.com/
+[3] https://lore.kernel.org/lkml/CALCETrVovr8XNZSroey7pHF46O=kj_c5D9K8h=z2T_cNrpvMig@mail.gmail.com/
+[4] https://lore.kernel.org/lkml/CALCETrVeZ0eufFXwfhtaG_j+AdvbzEWE0M3wjXMWVEO7pj+xkw@mail.gmail.com/
+[5] https://lore.kernel.org/lkml/20200406221439.1469862-12-deven.desai@linux.microsoft.com/
+[6] https://www.python.org/dev/peps/pep-0578/
+
+Regards,
+
+Mickaël Salaün (5):
+  fs: Add support for an O_MAYEXEC flag on openat2(2)
+  fs: Add a MAY_EXECMOUNT flag to infer the noexec mount property
+  fs: Enable to enforce noexec mounts or file exec through O_MAYEXEC
+  selftest/openat2: Add tests for O_MAYEXEC enforcing
+  doc: Add documentation for the fs.open_mayexec_enforce sysctl
+
+Mimi Zohar (1):
+  ima: add policy support for the new file open MAY_OPENEXEC flag
+
+ Documentation/ABI/testing/ima_policy          |   2 +-
+ Documentation/admin-guide/sysctl/fs.rst       |  44 +++
+ fs/fcntl.c                                    |   2 +-
+ fs/namei.c                                    |  89 ++++-
+ fs/open.c                                     |   8 +
+ include/linux/fcntl.h                         |   2 +-
+ include/linux/fs.h                            |   9 +
+ include/uapi/asm-generic/fcntl.h              |   7 +
+ kernel/sysctl.c                               |   9 +
+ security/Kconfig                              |  26 ++
+ security/integrity/ima/ima_main.c             |   3 +-
+ security/integrity/ima/ima_policy.c           |  15 +-
+ tools/testing/selftests/kselftest_harness.h   |   3 +
+ tools/testing/selftests/openat2/Makefile      |   3 +-
+ tools/testing/selftests/openat2/config        |   1 +
+ tools/testing/selftests/openat2/helpers.h     |   1 +
+ .../testing/selftests/openat2/omayexec_test.c | 330 ++++++++++++++++++
+ 17 files changed, 544 insertions(+), 10 deletions(-)
+ create mode 100644 tools/testing/selftests/openat2/config
+ create mode 100644 tools/testing/selftests/openat2/omayexec_test.c
+
 -- 
-2.26.2.526.g744177e7f7-goog
+2.26.2
 
