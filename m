@@ -2,69 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C72D1C54F1
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 14:00:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F4631C5504
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 14:05:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728878AbgEEL77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 07:59:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727090AbgEEL76 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 07:59:58 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AC6AC061A0F;
-        Tue,  5 May 2020 04:59:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=REPCft4TfvdeWRVXri2o1wuqZJcFojbavxrdrjtttCI=; b=NWIHP2gLwMqhCrrP0wSUBPv/7z
-        G7dxQhOCiYv0w/rVrLpvagaryypM4WVVrVT3d96a0dX4gHH3uH/bISMCDo7chbiqvapAgCfGxdYWB
-        5OWaNHLX4wYaHdJN6OvdzMnl2MxU+AceWTvhlzlHxfc+9+bmYyZ7Bfu37w0Iy9zZhNpucB4vmTHaJ
-        z563vHi53bukqAgYai33YDQikFMZsdCs1yPrbEso6bhPlyXfHA7ebfkSIz74UByYomhc8DfMmIcqj
-        30SF4G+p9UdMv/jzsXFgM5E0I3y4YLfe2uwd5KP1StlJI+y9n0aOA0bYljdtXbftau0rzofUJZwno
-        XQhNFf8A==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jVwEk-0004lb-81; Tue, 05 May 2020 11:59:46 +0000
-Date:   Tue, 5 May 2020 04:59:46 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Jeff Layton <jlayton@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 54/61] afs: Wait on PG_fscache before
- modifying/releasing a page
-Message-ID: <20200505115946.GF16070@bombadil.infradead.org>
-References: <158861203563.340223.7585359869938129395.stgit@warthog.procyon.org.uk>
- <158861253957.340223.7465334678444521655.stgit@warthog.procyon.org.uk>
+        id S1728736AbgEEMFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 08:05:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57864 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727090AbgEEMFO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 08:05:14 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6260C206A4;
+        Tue,  5 May 2020 12:05:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588680313;
+        bh=bK5N6cPviP+5CuDHCJsCJS64jDtjE4iLNlvSfRpPdJ4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ATTDZkYhTWScPWm7/yMYpCBcnZoLEuEXwCmNTSf3BhAqni2MqDeUVhEn6WlfWsLMR
+         J+9KiJt1WUJ301j+8xFZu1E6cZNOZaYsGr8c85O1QqazB6iB4hBvAoXxMWwowYoJP5
+         gyhLIgD1E1XDMi+WTCv9MMQZHdZCSCsTdB6b8y1E=
+Date:   Tue, 5 May 2020 14:05:09 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Christian Lamparter <chunkeey@googlemail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andreas =?iso-8859-1?Q?B=F6hler?= <dev@aboehler.at>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v12 2/5] usb: renesas-xhci: Add the renesas xhci driver
+Message-ID: <20200505120509.GA116918@kroah.com>
+References: <20200430165920.1345409-1-vkoul@kernel.org>
+ <20200430165920.1345409-3-vkoul@kernel.org>
+ <81e0eff0-8b40-3c47-e39b-929e1dc07fd5@linux.intel.com>
+ <20200504143438.GT1375924@vkoul-mobl>
+ <20200505110438.GC93160@kroah.com>
+ <20200505113354.GX1375924@vkoul-mobl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <158861253957.340223.7465334678444521655.stgit@warthog.procyon.org.uk>
+In-Reply-To: <20200505113354.GX1375924@vkoul-mobl>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 04, 2020 at 06:15:39PM +0100, David Howells wrote:
-> PG_fscache is going to be used to indicate that a page is being written to
-> the cache, and that the page should not be modified or released until it's
-> finished.
+On Tue, May 05, 2020 at 05:03:54PM +0530, Vinod Koul wrote:
+> On 05-05-20, 13:04, Greg Kroah-Hartman wrote:
+> > On Mon, May 04, 2020 at 08:04:38PM +0530, Vinod Koul wrote:
 > 
-> Make afs_invalidatepage() and afs_releasepage() wait for it.
+> > > > > --- a/drivers/usb/host/Makefile
+> > > > > +++ b/drivers/usb/host/Makefile
+> > > > > @@ -70,7 +70,7 @@ obj-$(CONFIG_USB_OHCI_HCD_DAVINCI)	+= ohci-da8xx.o
+> > > > >  obj-$(CONFIG_USB_UHCI_HCD)	+= uhci-hcd.o
+> > > > >  obj-$(CONFIG_USB_FHCI_HCD)	+= fhci.o
+> > > > >  obj-$(CONFIG_USB_XHCI_HCD)	+= xhci-hcd.o
+> > > > > -obj-$(CONFIG_USB_XHCI_PCI)	+= xhci-pci.o
+> > > > > +obj-$(CONFIG_USB_XHCI_PCI)	+= xhci-pci.o xhci-pci-renesas.o
+> > > > 
+> > > > Hmm, now we end up with two modules, xhci-pci and xhci-pci-renesas, even if
+> > > > xhci-pci-renesas just includes helper functions to load firmware for renesas.
+> > > 
+> > > Right, these are two modules. Do you forsee an issue with two ko's
+> > 
+> > Two kos should be fine, but as you aren't giving people the option to
+> > not select this, it's a bit harsh to add it.
+> > 
+> > Can this be a separate module/config option?  Why force everyone to need
+> > this additional code if they do not have this hardware?
+> 
+> Since the code is moved out and is based on PCI ID of the device, this
+> wont be invoked at all for folks not having this hardware. But adding a
+> config option would work too and avoid renaming file.
 
-Well, why?  Keeping a refcount on the page will prevent it from going
-away while it's being written to storage.  And the fact that it's
-being written to this cache is no reason to delay the truncate of a file
-(is it?)  Similarly, I don't see why we need to wait for the page to make
-it to the cache before we start to modify it.  Certainly we'll need to
-re-write it to the cache since the cache is now stale, but why should
-we wait for the now-stale write to complete?
+Yes, it would not be "invoked", but it still would always be loaded into
+memory.  Please only load this code if the hardware is present in the
+system.
 
+thanks,
+
+greg k-h
