@@ -2,78 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DEA91C5AAE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:11:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 506F31C5AA5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:10:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729686AbgEEPLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 11:11:11 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:52307 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729359AbgEEPLK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 11:11:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588691469;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=QDdz0u1MDabvWLnuf8Me9gjoJIrk3ictomM8OSd7hgE=;
-        b=OlVBEYtTN5ju6swVnEj8N3Mo0sNqYeeSjK3FbLpo99ZEGX5dSBbn4807ddMhtxBzB3DtCp
-        NjOws0wnePq8QLplGLOutfJ5sZg1jo1GuxGwK1I520i/tyzKloCk51HeeH4qXlETMfCO5G
-        BvDolbQy3t2NN9BnMrn61oL4BuQa1To=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-170-UqbHH1zxM6yBvkxPJMqzEA-1; Tue, 05 May 2020 11:11:05 -0400
-X-MC-Unique: UqbHH1zxM6yBvkxPJMqzEA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E690A872FEA;
-        Tue,  5 May 2020 15:11:03 +0000 (UTC)
-Received: from llong.com (ovpn-114-81.rdu2.redhat.com [10.10.114.81])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C4D295D9D5;
-        Tue,  5 May 2020 15:10:59 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Jonathan Corbet <corbet@lwn.net>, Tony Luck <tony.luck@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Robert Richter <rrichter@marvell.com>
-Cc:     linux-edac@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Waiman Long <longman@redhat.com>
-Subject: [PATCH] doc: Fix some typo errors in ras.rst
-Date:   Tue,  5 May 2020 11:10:49 -0400
-Message-Id: <20200505151049.11134-1-longman@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+        id S1730192AbgEEPKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 11:10:07 -0400
+Received: from foss.arm.com ([217.140.110.172]:42940 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729349AbgEEPKG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 11:10:06 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5E3BA1FB;
+        Tue,  5 May 2020 08:10:03 -0700 (PDT)
+Received: from [10.37.8.251] (unknown [10.37.8.251])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 38A083F68F;
+        Tue,  5 May 2020 08:10:02 -0700 (PDT)
+Subject: Re: [PATCH v2 0/4] kselftest: Extend vDSO tests
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>
+References: <20200429112834.24908-1-vincenzo.frascino@arm.com>
+ <CAK8P3a3u05wF1DT3Wnvmapc0jixu+gp_YG=KTEN9-n4JedJ9BA@mail.gmail.com>
+ <b9b313b5-697e-b92e-1aca-7ad07a640a03@arm.com>
+ <CAK8P3a0hUG3-21=HCrxxjQSxFJsDBu704NQCiOW6jNpZV5Ns8w@mail.gmail.com>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <e59bd06b-188c-c3c4-859e-3ced3ea0bb69@arm.com>
+Date:   Tue, 5 May 2020 16:11:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <CAK8P3a0hUG3-21=HCrxxjQSxFJsDBu704NQCiOW6jNpZV5Ns8w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix typo errors.
+Hi Arnd,
 
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- Documentation/admin-guide/ras.rst | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+On 5/5/20 4:07 PM, Arnd Bergmann wrote:
+> On Tue, May 5, 2020 at 5:03 PM Vincenzo Frascino
+> <vincenzo.frascino@arm.com> wrote:
+>> On 5/5/20 3:50 PM, Arnd Bergmann wrote:
+>>> On Wed, Apr 29, 2020 at 1:34 PM Vincenzo Frascino <vincenzo.frascino@arm.com> wrote:
+>>>
+>>> Not sure if you are aware of the recent bug report about clock_gettime64()
+>>> returning invalid times on some arm32 kernels:
+>>> https://github.com/raspberrypi/linux/issues/3579
+>>>
+>>
+>> No, I was not aware of the problem. There has been no mention on the arm list
+>> (unless I missed it). I can try to have a look at it as soon as I get some time.
+> 
+> Right, it was on only on the musl list, and I had pinged you on IRC, but you
+> must have been offline.
+> 
 
-diff --git a/Documentation/admin-guide/ras.rst b/Documentation/admin-guide/ras.rst
-index 0310db624964..8b1803b2606f 100644
---- a/Documentation/admin-guide/ras.rst
-+++ b/Documentation/admin-guide/ras.rst
-@@ -156,10 +156,10 @@ the labels provided by the BIOS won't match the real ones.
- ECC memory
- ----------
- 
--As mentioned on the previous section, ECC memory has extra bits to be
--used for error correction. So, on 64 bit systems, a memory module
--has 64 bits of *data width*, and 74 bits of *total width*. So, there are
--8 bits extra bits to be used for the error detection and correction
-+As mentioned on the previous section, ECC memory has extra bits to
-+be used for error correction. So, on 64 bit systems, a memory module
-+has 64 bits of *data width*, and 72 bits of *total width*. So, there
-+are 8 extra bits to be used for the error detection and correction
- mechanisms. Those extra bits are called *syndrome*\ [#f1]_\ [#f2]_.
- 
- So, when the cpu requests the memory controller to write a word with
+Sorry about that, I did not get your message :( The only thing I can think it is
+that if it was last to last week, I was on holiday... Anyway thanks for pointing
+this out.
+
+>>> Regardless of when that gets fixed or by whom, I wonder if kselftest should
+>>> also check for consistency, i.e. call both the vdso and the syscall version of
+>>> clock_gettime() and clock_gettime64() and check that the results are always
+>>> in sequence.
+>>>
+>>
+>> The test #4 partially does that: it calls syscall-vdso-syscall and verifies that
+>> the sequencing is correct. I reused the x86 code for that. I could extend it to
+>> clock_gettime64() and make sure it builds on all the platforms.
+> 
+> Sounds good to me.
+> 
+>        Arnd
+> 
+
 -- 
-2.18.1
-
+Regards,
+Vincenzo
