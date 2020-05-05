@@ -2,189 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B4C31C5968
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:26:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3862C1C595E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:25:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729971AbgEEOZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:25:41 -0400
-Received: from mout.kundenserver.de ([212.227.126.130]:43169 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729310AbgEEOZk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:25:40 -0400
-Received: from localhost.localdomain ([149.172.19.189]) by
- mrelayeu.kundenserver.de (mreue010 [212.227.15.129]) with ESMTPA (Nemesis) id
- 1MJVU0-1jpiHq2SC0-00Jpo7; Tue, 05 May 2020 16:25:22 +0200
-From:   Arnd Bergmann <arnd@arndb.de>
-To:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Timothy Pearson <tpearson@raptorengineering.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-        Charlene Liu <charlene.liu@amd.com>,
-        Anthony Koo <Anthony.Koo@amd.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: [PATCH] drm/amdgpu/dc: don't pass -mhard-float to clang
-Date:   Tue,  5 May 2020 16:24:56 +0200
-Message-Id: <20200505142519.1138945-1-arnd@arndb.de>
-X-Mailer: git-send-email 2.26.0
+        id S1729696AbgEEOZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:25:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55042 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729310AbgEEOZG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 10:25:06 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 18EFC206B9;
+        Tue,  5 May 2020 14:25:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588688706;
+        bh=K0bIucW1nhsO/NsokpCDnFKIwn428xqF3PCKp10lWG0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HCNVpVKs7B9iJ4XdJ4WAO52eI5W+BZfYmUu/nyABcJi9oBgQWoI1sj/7QYISeMxXQ
+         MrEl+1yvHOdGETqKKHwV8F+mtpn81J5uR2SxanS7d2wXE8kWXu0IXfT5oS+ZJspPFT
+         OE0QoRePheXpWqd66axcJh4WDHoczOdcIk6bGbHc=
+Date:   Tue, 5 May 2020 16:25:04 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Rahul Tanwar <rahul.tanwar@linux.intel.com>
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        andriy.shevchenko@intel.com
+Subject: Re: [PATCH] serial: lantiq: Add x86 in Kconfig dependencies for
+ Lantiq serial driver
+Message-ID: <20200505142504.GA832370@kroah.com>
+References: <96fd193c0a8939d27641ff93573545c02313048f.1588577002.git.rahul.tanwar@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:kyuCbCEFYOcHR9DitYTjAbdHsjMrBAl6tRD/hASI8cLhgsKb51z
- 4SM5jXD33rd9/xC4Ev/039yaCDjFmF940iPtDNjHpkoyNLksYCThRDq3NxoD5XAj9b56A+N
- Wn1FMJsGA+XcWsm8tu1gT6IJamHNPqS//MWiN5SJg/G/fHJknT72vtObM6aOgfGAKtrJpXy
- 2uj8DD9Q4oJPQ0wB4c8yg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:zuXYTAazwNE=:PutM/bcLCGJjXJnOuEuYkH
- ZYpn4w7i2HwOMEBxnl8nED8rAiamNiwCxhrgA18hTQyg/lkPUp39/qIPXLPi3Z0xE83px2DKu
- ktQ86tTo2g5qB588P9fOBUEiVXI0iu3VX9yzyocfYCaCB0fz+MHFjKeiSV1q55BtLzDGOqWG1
- 9VoJ+D3p5nhYeRUyWS4H8XoojR+X2Ne3OfTL5pPuTW8NMIfF7twoyVo+L897h7mmku9BKWJqR
- ahqfIzW13oTTMA3W/PoKXRtWxpzNEQ0HEbYykyVAoQbGdVJq30sfAiXLGaFUw6MyGjPfLqBxv
- EN9q2TxRx+wyFVulikYVOaduHdAwjG6FU1maMCdzIcNP5rE1OLjQLywYBBCziS46+obh9J4dV
- K1cdjItfVQUFOoKzmZTEpHcdS0xkbPRQARihqQcuYmI0qug3JwpQo/Si19/NoVYvUZNHdL+Z7
- ksMqzvtFiE74x5kMdFAAmDTvCqY/7X3hq8T6kR9aCFNN2giRR909dKlMC76msaQFcdfggubY1
- yIBDsnLNXTQPcr3pIPWbxt1Mo6rY6j4kaoEJjXQ2AWEq7z06KQNGV87ooVcyi2Wag3NcUDcmK
- SQ+AvWrCQ4spBhCBt+RawkuBvWH4emWNZ//soISOPpuCipnlu+XkdidFfYhfCTYx/5LdPPUo4
- JK1mGkJAe4P7+JEqTKlxn8bwSv7eGO+a0OvJKK2nsrv/aOSvUd7UYH/0T7i2dt3RmkjGKRyzA
- Q00x5Iezmpf4ojKXOh+y7MBF9RbadJpAEiStCnqyCN7juVfsCadGE2d+BXgkE/FmZmpyZ2B2t
- avuyqPcFNOJpGaZHCb1llcI/0ZQQm3FbIKEJqyQXc7iUb5dP9s=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <96fd193c0a8939d27641ff93573545c02313048f.1588577002.git.rahul.tanwar@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clang does not appear to care, and instead prints a warning:
+On Mon, May 04, 2020 at 04:03:52PM +0800, Rahul Tanwar wrote:
+> Lantiq serial driver/IP is reused for a x86 based SoC as well.
+> Update the Kconfig accordingly.
+> 
+> Signed-off-by: Rahul Tanwar <rahul.tanwar@linux.intel.com>
+> ---
+>  drivers/tty/serial/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
+> index 0aea76cd67ff..4b0a7b98f8c7 100644
+> --- a/drivers/tty/serial/Kconfig
+> +++ b/drivers/tty/serial/Kconfig
+> @@ -1035,7 +1035,7 @@ config SERIAL_SIFIVE_CONSOLE
+>  
+>  config SERIAL_LANTIQ
+>  	bool "Lantiq serial driver"
+> -	depends on LANTIQ
+> +	depends on (LANTIQ || X86) || COMPILE_TEST
+>  	select SERIAL_CORE
+>  	select SERIAL_CORE_CONSOLE
+>  	select SERIAL_EARLYCON
+> -- 
+> 2.11.0
+> 
 
-clang: warning: argument unused during compilation: '-mhard-float' [-Wunused-command-line-argument]
+Any reason this can't also be a module?
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/gpu/drm/amd/display/dc/calcs/Makefile | 5 +++--
- drivers/gpu/drm/amd/display/dc/dcn20/Makefile | 5 +++--
- drivers/gpu/drm/amd/display/dc/dcn21/Makefile | 5 +++--
- drivers/gpu/drm/amd/display/dc/dml/Makefile   | 5 +++--
- drivers/gpu/drm/amd/display/dc/dsc/Makefile   | 5 +++--
- 5 files changed, 15 insertions(+), 10 deletions(-)
+thanks,
 
-diff --git a/drivers/gpu/drm/amd/display/dc/calcs/Makefile b/drivers/gpu/drm/amd/display/dc/calcs/Makefile
-index 4674aca8f206..64195cacf6fc 100644
---- a/drivers/gpu/drm/amd/display/dc/calcs/Makefile
-+++ b/drivers/gpu/drm/amd/display/dc/calcs/Makefile
-@@ -26,14 +26,15 @@
- #
- 
- ifdef CONFIG_X86
--calcs_ccflags := -mhard-float -msse
-+calcs_ccflags := -msse
- endif
- 
- ifdef CONFIG_PPC64
--calcs_ccflags := -mhard-float -maltivec
-+calcs_ccflags := -maltivec
- endif
- 
- ifdef CONFIG_CC_IS_GCC
-+calcs_ccflags += -mhard-float
- ifeq ($(call cc-ifversion, -lt, 0701, y), y)
- IS_OLD_GCC = 1
- endif
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn20/Makefile b/drivers/gpu/drm/amd/display/dc/dcn20/Makefile
-index 5fcaf78334ff..0d3ce716c753 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn20/Makefile
-+++ b/drivers/gpu/drm/amd/display/dc/dcn20/Makefile
-@@ -10,14 +10,15 @@ DCN20 = dcn20_resource.o dcn20_init.o dcn20_hwseq.o dcn20_dpp.o dcn20_dpp_cm.o d
- DCN20 += dcn20_dsc.o
- 
- ifdef CONFIG_X86
--CFLAGS_$(AMDDALPATH)/dc/dcn20/dcn20_resource.o := -mhard-float -msse
-+CFLAGS_$(AMDDALPATH)/dc/dcn20/dcn20_resource.o := -msse
- endif
- 
- ifdef CONFIG_PPC64
--CFLAGS_$(AMDDALPATH)/dc/dcn20/dcn20_resource.o := -mhard-float -maltivec
-+CFLAGS_$(AMDDALPATH)/dc/dcn20/dcn20_resource.o := -maltivec
- endif
- 
- ifdef CONFIG_CC_IS_GCC
-+CFLAGS_$(AMDDALPATH)/dc/dcn20/dcn20_resource.o += -mhard-float
- ifeq ($(call cc-ifversion, -lt, 0701, y), y)
- IS_OLD_GCC = 1
- endif
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn21/Makefile b/drivers/gpu/drm/amd/display/dc/dcn21/Makefile
-index 07684d3e375a..fd209d1cf6bb 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn21/Makefile
-+++ b/drivers/gpu/drm/amd/display/dc/dcn21/Makefile
-@@ -6,14 +6,15 @@ DCN21 = dcn21_init.o dcn21_hubp.o dcn21_hubbub.o dcn21_resource.o \
- 	 dcn21_hwseq.o dcn21_link_encoder.o
- 
- ifdef CONFIG_X86
--CFLAGS_$(AMDDALPATH)/dc/dcn21/dcn21_resource.o := -mhard-float -msse
-+CFLAGS_$(AMDDALPATH)/dc/dcn21/dcn21_resource.o := -msse
- endif
- 
- ifdef CONFIG_PPC64
--CFLAGS_$(AMDDALPATH)/dc/dcn21/dcn21_resource.o := -mhard-float -maltivec
-+CFLAGS_$(AMDDALPATH)/dc/dcn21/dcn21_resource.o := -maltivec
- endif
- 
- ifdef CONFIG_CC_IS_GCC
-+CFLAGS_$(AMDDALPATH)/dc/dcn21/dcn21_resource.o += -mhard-float
- ifeq ($(call cc-ifversion, -lt, 0701, y), y)
- IS_OLD_GCC = 1
- endif
-diff --git a/drivers/gpu/drm/amd/display/dc/dml/Makefile b/drivers/gpu/drm/amd/display/dc/dml/Makefile
-index 7ee8b8460a9b..fb74e79e15a2 100644
---- a/drivers/gpu/drm/amd/display/dc/dml/Makefile
-+++ b/drivers/gpu/drm/amd/display/dc/dml/Makefile
-@@ -26,14 +26,15 @@
- # subcomponents.
- 
- ifdef CONFIG_X86
--dml_ccflags := -mhard-float -msse
-+dml_ccflags := -msse
- endif
- 
- ifdef CONFIG_PPC64
--dml_ccflags := -mhard-float -maltivec
-+dml_ccflags := -maltivec
- endif
- 
- ifdef CONFIG_CC_IS_GCC
-+dml_ccflags += -mhard-float
- ifeq ($(call cc-ifversion, -lt, 0701, y), y)
- IS_OLD_GCC = 1
- endif
-diff --git a/drivers/gpu/drm/amd/display/dc/dsc/Makefile b/drivers/gpu/drm/amd/display/dc/dsc/Makefile
-index 3f66868df171..b0077f5c318d 100644
---- a/drivers/gpu/drm/amd/display/dc/dsc/Makefile
-+++ b/drivers/gpu/drm/amd/display/dc/dsc/Makefile
-@@ -3,14 +3,15 @@
- # Makefile for the 'dsc' sub-component of DAL.
- 
- ifdef CONFIG_X86
--dsc_ccflags := -mhard-float -msse
-+dsc_ccflags := -msse
- endif
- 
- ifdef CONFIG_PPC64
--dsc_ccflags := -mhard-float -maltivec
-+dsc_ccflags := -maltivec
- endif
- 
- ifdef CONFIG_CC_IS_GCC
-+dsc_ccflags += -mhard-float
- ifeq ($(call cc-ifversion, -lt, 0701, y), y)
- IS_OLD_GCC = 1
- endif
--- 
-2.26.0
-
+greg k-h
