@@ -2,209 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C58A61C5F40
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 19:50:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 718561C5F46
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 19:51:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730496AbgEERuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 13:50:16 -0400
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:54327 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728804AbgEERuP (ORCPT
+        id S1730620AbgEERvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 13:51:22 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:43668 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730564AbgEERvV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 13:50:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1588701015; x=1620237015;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   mime-version;
-  bh=OkQZKUOL3TTS+35wtst/9Q/Kbx4xZMSPgBdO3UWtrDI=;
-  b=h7XoXfr7OEYevH3TcLIA64yTN9/GszX9QE4Bp5CCaacvSnOmvBZ9ZuYx
-   TjK7xyXfshKk2ke5wiRK4FrMcUpZmjrzAYHhSTOZiT2+cyXwWMPa3M3mF
-   J3eFL6BGoxLArt2hA4PyOO/FX7+NWQWVXS81+mmZov7rgcRK6X/UoBXJH
-   I=;
-IronPort-SDR: fZ94NPI2OGn9+nPA+DbNVxEwsi5oqRpaYYiR5zqP9WHcx2DkpumUAWvkI4STMUWfS2UWtKLH/F
- +YOI3eBjhJrA==
-X-IronPort-AV: E=Sophos;i="5.73,356,1583193600"; 
-   d="scan'208";a="42845175"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1e-27fb8269.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 05 May 2020 17:50:13 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1e-27fb8269.us-east-1.amazon.com (Postfix) with ESMTPS id 2C961A1CE1;
-        Tue,  5 May 2020 17:50:08 +0000 (UTC)
-Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 5 May 2020 17:50:08 +0000
-Received: from u886c93fd17d25d.ant.amazon.com (10.43.160.92) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 5 May 2020 17:50:00 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-CC:     Eric Dumazet <eric.dumazet@gmail.com>,
-        SeongJae Park <sjpark@amazon.com>,
-        Eric Dumazet <edumazet@google.com>,
-        David Miller <davem@davemloft.net>,
-        "Al Viro" <viro@zeniv.linux.org.uk>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        <sj38.park@gmail.com>, netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        SeongJae Park <sjpark@amazon.de>, <snu@amazon.com>,
-        <amit@kernel.org>, <stable@vger.kernel.org>
-Subject: Re: Re: [PATCH net v2 0/2] Revert the 'socket_alloc' life cycle change
-Date:   Tue, 5 May 2020 19:49:43 +0200
-Message-ID: <20200505174943.10384-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200505172358.GC2869@paulmck-ThinkPad-P72> (raw)
+        Tue, 5 May 2020 13:51:21 -0400
+Received: by mail-pf1-f194.google.com with SMTP id v63so1219632pfb.10;
+        Tue, 05 May 2020 10:51:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=cN+c0TAgCOlkFWBaF5foyo3htOvmHpO3q6sLeWVc0hA=;
+        b=qoUQwb5Crbom0QEajz4g4CjL99ZZTk5kwpRrTjm5+MZVitBo9kYsGvS5BfS56yXyhv
+         BrskgavtJUhpf2eg6KTQtQLXGWd3Sdwnc8bZAi0ZIy3FdXfPHZQ5wWU11F6lJoV9wFIb
+         yFb5TS0AaBRO2tERABhrd65tolWtX1X4P/E3xWYcCdfhPqNN4zd5Gj+CCfBZMI9s9FxV
+         loA+NAQux7YVzwkdU2NRPP7atqDjYv+jeaOidNyPaLYk7G/SfuFaziZJeWKuDRkTLmJe
+         /eBkGnwQVmYJ3YDwy8bD3Bjdss+VBWGvVFWdcbVY4dQGa6O74EilBGIdjmH4rQGtRIAn
+         C3lQ==
+X-Gm-Message-State: AGi0PuYOm0wmE4yrbux3prezvLeTf/AayJVSqEvAzCjltpYq2aWMcyY4
+        2znbT41/Ue7TK0/OZ2Eq7DzAgiCPSSk=
+X-Google-Smtp-Source: APiQypKDmVEHxp2kzQ0Os7lQFK4gehg8n4NjwhqbnaJ+sPp7i+3LUrLOrGPDoIwOjr/w1h7ZcGnyUA==
+X-Received: by 2002:a62:6807:: with SMTP id d7mr4300566pfc.296.1588701078622;
+        Tue, 05 May 2020 10:51:18 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:b435:750c:4181:403d? ([2601:647:4000:d7:b435:750c:4181:403d])
+        by smtp.gmail.com with ESMTPSA id p66sm2532164pfb.65.2020.05.05.10.51.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 May 2020 10:51:17 -0700 (PDT)
+Subject: Re: [PATCH] MAINTAINERS: Add missing header files to BLOCK LAYER
+ section
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200505140728.29369-1-geert+renesas@glider.be>
+From:   Bart Van Assche <bvanassche@acm.org>
+Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
+ mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
+ LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
+ fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
+ AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
+ 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
+ AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
+ igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
+ Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
+ jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
+ macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
+ CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
+ RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
+ PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
+ eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
+ lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
+ T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
+ ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
+ CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
+ oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
+ //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
+ mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
+ goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
+Message-ID: <4029235a-1431-1dc2-8846-e79eb44b07b2@acm.org>
+Date:   Tue, 5 May 2020 10:51:16 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.160.92]
-X-ClientProxiedBy: EX13D43UWC001.ant.amazon.com (10.43.162.69) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+In-Reply-To: <20200505140728.29369-1-geert+renesas@glider.be>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 May 2020 10:23:58 -0700 "Paul E. McKenney" <paulmck@kernel.org> wrote:
+On 2020-05-05 07:07, Geert Uytterhoeven wrote:
+> The various <linux/blk*.h> header files are part of the Block Layer.
+> Add them to the corresponding section in the MAINTAINERS file, so
+> scripts/get_maintainer.pl will pick them up.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index f3fd61cde5125f74..16644a41d42737fe 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -3136,6 +3136,7 @@ S:	Maintained
+>  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git
+>  F:	block/
+>  F:	drivers/block/
+> +F:	include/linux/blk*
+>  F:	kernel/trace/blktrace.c
+>  F:	lib/sbitmap.c
 
-> On Tue, May 05, 2020 at 09:25:06AM -0700, Eric Dumazet wrote:
-> > 
-> > 
-> > On 5/5/20 9:13 AM, SeongJae Park wrote:
-> > > On Tue, 5 May 2020 09:00:44 -0700 Eric Dumazet <edumazet@google.com> wrote:
-> > > 
-> > >> On Tue, May 5, 2020 at 8:47 AM SeongJae Park <sjpark@amazon.com> wrote:
-> > >>>
-> > >>> On Tue, 5 May 2020 08:20:50 -0700 Eric Dumazet <eric.dumazet@gmail.com> wrote:
-> > >>>
-> > >>>>
-> > >>>>
-> > >>>> On 5/5/20 8:07 AM, SeongJae Park wrote:
-> > >>>>> On Tue, 5 May 2020 07:53:39 -0700 Eric Dumazet <edumazet@google.com> wrote:
-> > >>>>>
-> > >>>>
-> > >>>>>> Why do we have 10,000,000 objects around ? Could this be because of
-> > >>>>>> some RCU problem ?
-> > >>>>>
-> > >>>>> Mainly because of a long RCU grace period, as you guess.  I have no idea how
-> > >>>>> the grace period became so long in this case.
-> > >>>>>
-> > >>>>> As my test machine was a virtual machine instance, I guess RCU readers
-> > >>>>> preemption[1] like problem might affected this.
-> > >>>>>
-> > >>>>> [1] https://www.usenix.org/system/files/conference/atc17/atc17-prasad.pdf
-> 
-> If this is the root cause of the problem, then it will be necessary to
-> provide a hint to the hypervisor.  Or, in the near term, avoid loading
-> the hypervisor the point that vCPU preemption is so lengthy.
-> 
-> RCU could also provide some sort of pre-stall-warning notification that
-> some of the CPUs aren't passing through quiescent states, which might
-> allow the guest OS's userspace to take corrective action.
-> 
-> But first, what are you doing to either confirm or invalidate the
-> hypothesis that this might be due to vCPU preemption?
-
-Nothing, I was just guessing.  Sorry if this made you confused.
-
-> 
-> > >>>>>> Once Al patches reverted, do you have 10,000,000 sock_alloc around ?
-> > >>>>>
-> > >>>>> Yes, both the old kernel that prior to Al's patches and the recent kernel
-> > >>>>> reverting the Al's patches didn't reproduce the problem.
-> > >>>>>
-> > >>>>
-> > >>>> I repeat my question : Do you have 10,000,000 (smaller) objects kept in slab caches ?
-> > >>>>
-> > >>>> TCP sockets use the (very complex, error prone) SLAB_TYPESAFE_BY_RCU, but not the struct socket_wq
-> > >>>> object that was allocated in sock_alloc_inode() before Al patches.
-> > >>>>
-> > >>>> These objects should be visible in kmalloc-64 kmem cache.
-> > >>>
-> > >>> Not exactly the 10,000,000, as it is only the possible highest number, but I
-> > >>> was able to observe clear exponential increase of the number of the objects
-> > >>> using slabtop.  Before the start of the problematic workload, the number of
-> > >>> objects of 'kmalloc-64' was 5760, but I was able to observe the number increase
-> > >>> to 1,136,576.
-> > >>>
-> > >>>           OBJS ACTIVE  USE OBJ SIZE  SLABS OBJ/SLAB CACHE SIZE NAME
-> > >>> before:   5760   5088  88%    0.06K     90       64       360K kmalloc-64
-> > >>> after:  1136576 1136576 100%    0.06K  17759       64     71036K kmalloc-64
-> > >>>
-> > >>
-> > >> Great, thanks.
-> > >>
-> > >> How recent is the kernel you are running for your experiment ?
-> > > 
-> > > It's based on 5.4.35.
-> 
-> Is it possible to retest on v5.6?  I have been adding various mechanisms
-> to make RCU keep up better with heavy callback overload.
-
-I will try soon!
-
-> 
-> Also, could you please provide the .config?  If either NO_HZ_FULL or
-> RCU_NOCB_CPU, please also provide the kernel boot parameters.
-
-NO_HZ_FULL is not set, but RCU_NOCB_CPU is y.
-
-I think I should check whether it's ok to share the full config and boot
-parameters.  Please wait this.
-
-> 
-> > >> Let's make sure the bug is not in RCU.
-> > > 
-> > > One thing I can currently say is that the grace period passes at last.  I
-> > > modified the benchmark to repeat not 10,000 times but only 5,000 times to run
-> > > the test without OOM but easily observable memory pressure.  As soon as the
-> > > benchmark finishes, the memory were freed.
-> > > 
-> > > If you need more tests, please let me know.
-> > 
-> > I would ask Paul opinion on this issue, because we have many objects
-> > being freed after RCU grace periods.
-> 
-> As always, "It depends."
-> 
-> o	If the problem is a too-long RCU reader, RCU is prohibited from
-> 	ending the grace period.  The reader duration must be shortened,
-> 	and until it is shortened, there is nothing RCU can do.
-> 
-> o	In some special cases of the above, RCU can and does help, for
-> 	example, by enlisting the aid of cond_resched().  So perhaps
-> 	there is a long in-kernel loop that needs a cond_resched().
-> 
-> 	And perhaps RCU can help for some types of vCPU preemption.
-> 
-> o	As Al suggested offline and as has been discussed in the past,
-> 	it would not be hard to cause RCU to burn CPU to attain faster
-> 	grace periods during OOM events.  This could be helpful, but only
-> 	given that RCU readers are completing in reasonable timeframes.
-
-Totally agreed.
-
-> 
-> > If RCU subsystem can not keep-up, I guess other workloads will also suffer.
-> 
-> If readers are not excessively long, RCU should be able to keep up.
-> (In the absence of misconfigurations, for example, both NO_HZ_FULL and
-> then binding all the rcuo kthreads to a single CPU on a 100-CPU system
-> or some such.)
-> 
-> > Sure, we can revert patches there and there trying to work around the issue,
-> > but for objects allocated from process context, we should not have these problems.
-> 
-> Agreed, let's get more info on what is happening to RCU.
-> 
-> One approach is to shorten the RCU CPU stall warning timeout
-> (rcupdate.rcu_cpu_stall_timeout=10 for 10 seconds).
-
-I will also try this and let you know the results.
-
-
-Thanks,
-SeongJae Park
-
-> 
-> 							Thanx, Paul
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
