@@ -2,147 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39D371C6002
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 20:25:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 013751C6031
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 20:36:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730618AbgEESZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 14:25:19 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:16860 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728351AbgEESZS (ORCPT
+        id S1728920AbgEESg0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 May 2020 14:36:26 -0400
+Received: from mailrelay4.webfaction.com ([185.20.51.6]:39276 "EHLO
+        mailrelay4.webfaction.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726618AbgEESgZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 14:25:18 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 045IBPHI008778;
-        Tue, 5 May 2020 11:24:58 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=5qiY0srS9h9agIpM2Oxf1rm/mKaGuknD/3XFLB+T1hk=;
- b=pa64f3RfbfVBjan77fbcHB42ZmqwmwQ3zIq5iFPJsnegLm5Wrc8d6gPCMBXVTQLL5+4Y
- 5its3hgZcQH9pyaC12KMV7YCXK8WEFPcaz+P2927nuNDVCyNgbdIfJeFRWvyT80q0t6Y
- 4ueh2gKjqxaJxt+QHCNDDKENZjdJtz4Kjz4= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 30srvq4mmh-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 05 May 2020 11:24:58 -0700
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Tue, 5 May 2020 11:24:57 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=c1ScWYdLF+OIL2JgNePaXfjriJIvAfPN1yr9/YIlus0mvU7VJmfoWsWC6AYvnzdYwLK+NbXzdr7Kd0wF5Xp7u8BmTU69MEdMCJm7Rf9U3B4Ey7ZbNkmwVFlfN7jf5H0IaHU3n1dqLWVIPg0hdte4VJWGIyCRg5oR3jL+wCLBkEEbsOcIYK/2mxjqyf1rUV4YU7W8Vl28CtUwszqmToMVTPfXGkJ8I3sCW1jMBH/SpWj8LYOw+AXq3Dg0W7vVR3RW+AeE2c8bEuScn2wMfpuzPNO5hpyOy/HARk7Wt/185DfZJH0ag1kLlRQHa9WifbUKALSuSgCpcWCUn4hxom5LIg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5qiY0srS9h9agIpM2Oxf1rm/mKaGuknD/3XFLB+T1hk=;
- b=fm8SJZFSLEs8M6Xj64F+tUl3Nd60+H5d8Fp5OVXFSvvNsffE7i70SOti1Facw0DVb+tNOLeJX3ntvk6L7DxKWsFGkR+SYsfZN8bNgW37g5E9wDYYpuGk0gmKb1ESz0SStYe9MCSGLfYuKYI805mWDhwQzIV+LodMss3V/MvMnffnabCdfN85W30zMYv8h31iWHtvZWZ72BB3fFkhaqVFBXo9lrFsKvp9NXM+n4U4dH74mjo+pjLsf9v3cphDCkIcZf65eiBMUGEni5j8Y3TJ0oYetSSUuvVxHk6J51fH0MsJLgexSMdxANZaxCB+kr4To0RXbs2VEI0Evs02yRoX8g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5qiY0srS9h9agIpM2Oxf1rm/mKaGuknD/3XFLB+T1hk=;
- b=Q5GBM2aiDyzT8Owu1dF9+YzpewAMSZSf1JoyF2dSx3HzI+lrv1T6uIihX0flTt1dXsrUUyrB6pk/BrOhDV3ZVt4Y4UMdJCUkFudBrb0FyLQHV5uLJew+3uE6KjaUF+GjEc9tvLNtgkrbWjUO6rNv604BCTw/fhDS879QpQYiu3Q=
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
- by BYAPR15MB3095.namprd15.prod.outlook.com (2603:10b6:a03:fe::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.29; Tue, 5 May
- 2020 18:24:55 +0000
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::bdf1:da56:867d:f8a2]) by BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::bdf1:da56:867d:f8a2%7]) with mapi id 15.20.2958.030; Tue, 5 May 2020
- 18:24:55 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-CC:     Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, "Yonghong Song" <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: [PATCH] sysctl: fix unused function warning
-Thread-Topic: [PATCH] sysctl: fix unused function warning
-Thread-Index: AQHWIuaL0VYevdo+b0WUUZxvV8sSKaiZzyaA
-Date:   Tue, 5 May 2020 18:24:55 +0000
-Message-ID: <F51BF018-3035-489D-8232-6D23A426D179@fb.com>
-References: <20200505140734.503701-1-arnd@arndb.de>
-In-Reply-To: <20200505140734.503701-1-arnd@arndb.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3608.80.23.2.2)
-authentication-results: arndb.de; dkim=none (message not signed)
- header.d=none;arndb.de; dmarc=none action=none header.from=fb.com;
-x-originating-ip: [2620:10d:c090:400::5:182a]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a2bcf25f-2b91-4de0-b897-08d7f1219c7f
-x-ms-traffictypediagnostic: BYAPR15MB3095:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR15MB3095910783033C1E650A22F0B3A70@BYAPR15MB3095.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:3383;
-x-forefront-prvs: 0394259C80
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: xpkBR2naYopRMJfrRkwmPs7f/OB/GgrOOzcrb8rnIBr6HIoU/p7KRaq8nfeKtwrrj2QRZz5wKyTWWvUMjr2ntwyODZMGP3Py+CeV7HbO6yXAOYbjA2GmnMlUDq4Hk8vEXQm2glZsDGCFkfW1FHfSEWLRmoBGmBT4bNqOpbEMWxRARAEawSy2pDV9tdescA00bYpNOtsTsjcqo0vB6dyvd0ymjhjenu4eVAoZ6RhgThoi0jy6x10vPRgNTrZ/0XS0ls3wzkd+VysM6OYMqYreJA8Z8HZlj3qk27fLr10bsulUfv21oBTNlk9ll9CgU8NcKnWjthq/+xF/G6a3js6PAdmbyfJU1BljUjDuaSUa+erI+A2hqpSqVt5epQCJSPPhksa2UKbzYG88i7prPCJiPa0vo1iCRAAaY228WukCZ3tQ+qGtdH5hyxmrpGyM9OQU31MwRaDQuYr2D2yLFBJQ1eHe/ij12JhyWwSie+9w2IQjHDVmi/Rc5NTf8cMPL2RWdEglbTS+Z0eT1YKeKWwEdw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(33430700001)(186003)(53546011)(36756003)(2616005)(6512007)(498600001)(6506007)(8676002)(5660300002)(4744005)(33440700001)(33656002)(8936002)(6916009)(66556008)(66446008)(66476007)(66946007)(71200400001)(64756008)(7416002)(86362001)(6486002)(2906002)(54906003)(76116006)(4326008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: YrIiBCmReANr/wLDnFx+Zhi8FEJP6UwU42b98xdJZgyCO2Lx9yukW3qt9uizZo4VEkSp7zhoDAyGxjXTDVXnEO0Wp578wFRg+/7Ooj5gDLRlL3ft0fIMhPfYPe2DDboZ0EFUbhY3rbfB/SMjl3MEv0WRUfGlIlwnukbwFX3wCvUkw3wUy7jUBL2vTItY+j0roD6elmCIxKpazfpDKCfJO5hg2u+hbI9hqug0YoD5WuH547XDUISIltG9etqAB8Nt8qN+HjbfUIpmbjfTpTbQqTrWsDiz6be5+j2IcHkoZD+67G6Sse7FZYxPIU1rU0EPO2SO7tO6w+86FzL6DBTgpyugiM9/3rhdZIihLVixTTfJ5YjtVdLlKIJJh0MY7Ec4QuRDAp54j6twcA8JeYqkD4ScrrnberOlwEEqrAyPwjcezMaR3NIrPR+GQb4yf6l+zS2bAWymZ72AhK924Ek0QLZU/qcRUG49vNubZWZPrFVdDvQBbDDs/VpRbajgfaH4WlKUJ++V0XSXvvXbPjPkOjbZmqqWjyFfuSolVwaTwetgzy92xZKiUBoKZpjVcUS8KYlIhqz5GN0/FCTaohkdcGGHSlNx6OGveGTPdK+P1GK4DW7au8Fr/NSHsA6aG+BbdAGuDU67yehX0LzlJ5RXUHoZm/Sb/QS66qTRq1t8v9qVJe7MVdc9VoUZGz7x5ZkFxUBKsKFxddAK2fpApKF88ECpfM7op6lV3GbiKT+8vPNyFfIys0ZUG8fz5rJk7b2fxE5Bs1qqT8HF+BryqGVgG1o98bgtQbVb8Lf4bYK5YsUSjnjMxnCoGD26HsLXGFdKhsRJcutVbnW0cpB6IS/xCA==
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <54B066A8ACB88B4EBB983D4A2C8B4A45@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Tue, 5 May 2020 14:36:25 -0400
+X-Greylist: delayed 567 seconds by postgrey-1.27 at vger.kernel.org; Tue, 05 May 2020 14:36:22 EDT
+Received: from mailrelay3.webfaction.com (mailrelay3.webfaction.com [207.38.93.110])
+        by mailrelay4.webfaction.com (Postfix) with ESMTPS id BDA21A6CCF;
+        Tue,  5 May 2020 18:26:31 +0000 (UTC)
+Received: from mailrelay2.webfaction.com (mailrelay2.webfaction.com [185.20.50.247])
+        by mailrelay3.webfaction.com (Postfix) with ESMTPS id BD4652A4BD8;
+        Tue,  5 May 2020 18:26:29 +0000 (UTC)
+Received: from smtp.webfaction.com (mail6.webfaction.com [31.170.123.134])
+        by mailrelay2.webfaction.com (Postfix) with ESMTPS id 75E1A1018AD;
+        Tue,  5 May 2020 18:26:27 +0000 (UTC)
+Received: from jeremy.localnet (host-37-191-188-128.lynet.no [37.191.188.128])
+        by smtp.webfaction.com (Postfix) with ESMTPSA id 168686016ACF2;
+        Tue,  5 May 2020 18:26:27 +0000 (UTC)
+From:   Paul Boddie <paul@boddie.org.uk>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Dave Airlie <airlied@linux.ie>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Andy Yan <andy.yan@rock-chips.com>,
+        Yakir Yang <ykk@rock-chips.com>,
+        Vladimir Zapolskiy <vladimir_zapolskiy@mentor.com>,
+        linux-mips@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        MIPS Creator CI20 Development 
+        <mips-creator-ci20-dev@googlegroups.com>
+Subject: Re: DRM interaction problems on Ingenic CI20 / jz4780 with dw-hdmi and ingenic-drm
+Date:   Tue, 05 May 2020 20:26:10 +0200
+Message-ID: <79437309.Fv5JZGVDrq@jeremy>
+User-Agent: KMail/4.14.1 (Linux/3.16.0-10-586; KDE/4.14.2; i686; ; )
+In-Reply-To: <YC8S9Q.M96AR8DWGF0F1@crapouillou.net>
+References: <ED77DCA8-FF50-4E9E-A4B8-688262774723@goldelico.com> <125Q8Q.9F49TXF6ZICX1@crapouillou.net> <YC8S9Q.M96AR8DWGF0F1@crapouillou.net>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: a2bcf25f-2b91-4de0-b897-08d7f1219c7f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 May 2020 18:24:55.7025
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: fGmwkGu4e9q+C7412U3XO25M0TxIJ8SkHUQhbomohNzn2rUSJpIwVnV5eXGkL9VNGZX5x2f/5OP2LV0F9fs5Qg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3095
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-05-05_10:2020-05-04,2020-05-05 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 adultscore=0
- spamscore=0 phishscore=0 mlxlogscore=656 bulkscore=0 clxscore=1011
- malwarescore=0 lowpriorityscore=0 priorityscore=1501 suspectscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005050139
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="iso-8859-1"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Monday 4. May 2020 03.05.22 Paul Cercueil wrote:
+> 
+> > Le sam. 11 avril 2020 à 16:14, H. Nikolaus Schaller <hns@goldelico.com> a
+> > écrit :
+> >> 
+> >> So far we have identified two issues.
+> >> 
+> >> The first is that HPD interrupts are not properly processed.
+> >> 
+> >> drm_helper_hpd_irq_event() is called by HPD events but
+> >> dev->mode_config.poll_enabled is false.
+> 
+> This is to be used when there's no hardware interrupt. I believe you
+> have one, right? Then call drm_kms_helper_hotplug_event() from the
+> interrupt handler instead.
 
+What we have in drivers/gpu/drm/bridge/synopsys/dw-hdmi.c is a function called 
+dw_hdmi_irq which appears to be the thread_fn for HDMI interrupts (alongside 
+the dw_hdmi_hardirq which is the handler), initialised by a call to 
+devm_request_threaded_irq.
 
-> On May 5, 2020, at 7:07 AM, Arnd Bergmann <arnd@arndb.de> wrote:
->=20
-> The newly added bpf_stats_handler function has the wrong #ifdef
-> check around it, leading to an unused-function warning when
-> CONFIG_SYSCTL is disabled:
->=20
-> kernel/sysctl.c:205:12: error: unused function 'bpf_stats_handler' [-Werr=
-or,-Wunused-function]
-> static int bpf_stats_handler(struct ctl_table *table, int write,
->=20
-> Fix the check to match the reference.
->=20
-> Fixes: d46edd671a14 ("bpf: Sharing bpf runtime stats with BPF_ENABLE_STAT=
-S")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+In dw_hdmi_irq, a hotplug event seems to cause drm_helper_hpd_irq_event to be 
+called. However...
 
-Acked-by: Song Liu <songliubraving@fb.com>
+[...]
 
-Thanks for the fix!
+> >> The jz4780 hdmi subsystem (drm/bridge/dw-hdmi.c) uses
+> >> 
+> >> 	connector->polled = DRM_CONNECTOR_POLL_HPD;
+> >> 
+> >> but shouldn't this enable polling? Note that there seems to be
+> >> no (direct) call to drm_kms_helper_poll_init().
+> >> 
+> >> If we set dev->mode_config.poll_enabled = true in
+> >> drm_helper_hpd_irq_event() things start to work.
+> >> 
+> >> Please can you clarify what would be best practise here to
+> >> get HPD event handling working.
+> 
+> Remove that - this stuff is for hardware without interrupts, where
+> everything has to be polled.
 
+Yes, I think this must be a mistake in the driver. In 
+drm_helper_hpd_irq_event, the connector is tested for the 
+DRM_CONNECTOR_POLL_HPD flag and skips the connector. It isn't clear whether 
+this actually matters for the other hardware using this technology, 
+documentation being rather thin on the ground.
+
+> >> The other issue is in dw-hdmi.c:
+> >> 
+> >> We found out that ingenic_drm_encoder_atomic_check() fails because
+> >> 
+> >> info->num_bus_formats == 0
+> >> 
+> >> and not 1. This blocks further initialization.
+> >> 
+> >> The reason seems to be that dw_hdmi_bridge_attach() does not call
+> >> drm_display_info_set_bus_formats() with a proper format like
+> >> other drivers (e.g. drm/bridge/ti-tfp410.c) are doing.
+> >> 
+> >> We have patched to set a single bus format MEDIA_BUS_FMT_RGB888_1X24
+> >> and then DRM setup seems to work (although we still have no valid
+> >> HDMI signal but that is likely something else).
+> >> 
+> >> Please can you explain how setting the bus format should be fixed
+> >> in dw-hdmi.c.
+> 
+> I'm not sure, but that information may come from EDID data. Are you
+> able to obtain video modes from the connected monitor?
+
+The modes are definitely received, or at least the list of modes given by 
+/sys/devices/platform/13050000.lcd/drm/card0/card0-HDMI-A-1/modes is viable.
+
+However, it rather looked like the bus format information wasn't being set and 
+that this inhibited the completion of the initialisation process which, if 
+completed, would ultimately cause the format to be set. (This being the short 
+version of the story as I remember it right now.) So, the problem presents 
+itself as an initialisation order problem.
+
+I removed the flag from the connector to see if it makes any difference, but 
+it doesn't look like it. Here is what /sys/kernel/debug/dri/0/state contains:
+
+plane[31]: plane-0
+        crtc=(null)
+        fb=0
+        crtc-pos=0x0+0+0
+        src-pos=0.000000x0.000000+0.000000+0.000000
+        rotation=1
+        normalized-zpos=0
+        color-encoding=ITU-R BT.601 YCbCr
+        color-range=YCbCr limited range
+crtc[32]: crtc-0
+        enable=0
+        active=0
+        self_refresh_active=0
+        planes_changed=0
+        mode_changed=0
+        active_changed=0
+        connectors_changed=0
+        color_mgmt_changed=0
+        plane_mask=0
+        connector_mask=0
+        encoder_mask=0
+        mode: "": 0 0 0 0 0 0 0 0 0 0 0x0 0x0
+connector[34]: HDMI-A-1
+        crtc=(null)
+        self_refresh_aware=0
+
+The crtc member values do not look encouraging. In fact, it just looks like 
+most structure members are uninitialised.
+
+Thanks for the advice: I spent some time the other day reviewing various 
+aspects of the Synopsys drivers of different vintages (Ingenic 3.0.8 non-DRM 
+driver for JZ4780, MIPS/Ingenic 3.18 DRM driver for JZ4780 based on Freescale 
+driver code, the recent generic DRM bridge driver), and so this information is 
+timely and valuable.
+
+Paul
+
+P.S. Sorry if this message goes to far too many people. I don't want to 
+"personalise" it by taking people off the recipients list, but I realise that 
+this is probably not interesting to most recipients, either. Feel free to trim 
+recipients if replying.
