@@ -2,95 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65B271C4C3D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 04:43:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93E8E1C4C48
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 04:44:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728025AbgEECnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 22:43:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726516AbgEECnW (ORCPT
+        id S1728270AbgEECoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 22:44:37 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:24566 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726635AbgEECog (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 22:43:22 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70B61C061A0F;
-        Mon,  4 May 2020 19:43:22 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id a21so16682ljj.11;
-        Mon, 04 May 2020 19:43:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=b517Qv61xjeiuOiaYHCLpTy52t01kqYfbxe2GzTQY68=;
-        b=oYTUQT4/gmaq3BbLehfUaJCRqwrFdcCeTvWtKNEO/U4TQlqIhfOuGBOmSGjcQATOVI
-         SkkiyfBHANOGTZ80VCfe3V4K2/zXyVX+X5OmP8tXSBIM5K/X61l0uxdFNDzgKDoOggeZ
-         GsEri4bMItrtKfDnlI9vSEEHZiq2MUuFIyBR+HYzfLskRFgZ5hbrHE7Q/l7egTNDNboH
-         sLb5p8b7iltX30P3YNMXWdPSJqi1Xit1e5blNj8nn5GkV1jr4j5Us6UvizQCA7p1otEY
-         fumCxGQeXCkklFsL9gu/V1DkcoCjDPqu9Xkf70n2BTSBcb8s1Haa58gpEqhcv599XB68
-         rYJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=b517Qv61xjeiuOiaYHCLpTy52t01kqYfbxe2GzTQY68=;
-        b=lwFEZHTotuxz7NsqIpZ9mR2eDhGKB529R8HVZBEpVhfhOG4uTisd4s/6jJEbRZmW1i
-         IFZ3YZj3+qAjbzzWDhTFfsesdc3krgDvQoO69uOj4nL/31HdU1Vxd3XVo4zc5OdynFDV
-         cBgX78FKYkqp8h6Qr3MgDgvWIREVMwC0UrPBUaZSyAgl4rJvojvYhaW7kLzTBEzhdInd
-         Ln7TjaP45Us09wtIptLo6YhmKOQ4Lrp43bO26/1dFXmU51YGbuw50noxZ+MDA0PXo5lT
-         X+2tiRum9l2sp+P0P7W5bjZzA464QQNv/JgSTH2x0j5UmiWOmOc4ufr4MnC/+QRGalYU
-         m6Fw==
-X-Gm-Message-State: AGi0PuZ5rmnVxiyh9rclxQM+4QuZv2MJvQB46pYXaEMeXRFhIIGRCe/p
-        XLvY5jGNiLRqaT/FN9vcLB+ehDIy
-X-Google-Smtp-Source: APiQypLpfrlFV2uVzWp1G7rujyzQLmFNC7OLXRnHAHWDvf9srg0Ol2e+9LnEpEmWm8/HiCA5FHy15g==
-X-Received: by 2002:a2e:3209:: with SMTP id y9mr391311ljy.154.1588646600566;
-        Mon, 04 May 2020 19:43:20 -0700 (PDT)
-Received: from [192.168.2.145] (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
-        by smtp.googlemail.com with ESMTPSA id b2sm635352lfi.14.2020.05.04.19.43.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 May 2020 19:43:20 -0700 (PDT)
-Subject: Re: [RFC PATCH v12 6/9] media: tegra: Add Tegra210 Video input driver
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
-        thierry.reding@gmail.com, jonathanh@nvidia.com, frankc@nvidia.com,
-        hverkuil@xs4all.nl, sakari.ailus@iki.fi, helen.koike@collabora.com
-Cc:     sboyd@kernel.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1588645920-20557-1-git-send-email-skomatineni@nvidia.com>
- <1588645920-20557-7-git-send-email-skomatineni@nvidia.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <db5ef9b8-dc2b-7db7-8f70-a4e223af1fc9@gmail.com>
-Date:   Tue, 5 May 2020 05:43:19 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <1588645920-20557-7-git-send-email-skomatineni@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Mon, 4 May 2020 22:44:36 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1588646675; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=cnbXS/68+99rkBapeyeMgdaXL1PCbfw3dbdVHYAn7W8=; b=cxJgSxTlBZCCre76NIswxaS1M81xNAi91Te/kF04A1r16IeiqTK5ioK7fhDM/BcFC98gw/uw
+ T7yKXCmOGDzpKkWbLDgdrdzB8Z7mMBd8e79QIPgpPtH13qwbJnz/qyVYsdnKV7LgkHxI/QrL
+ zE0Vuj09s/bdBf3ieEgLsDYI5pU=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5eb0d312.7fa23d905b90-smtp-out-n03;
+ Tue, 05 May 2020 02:44:34 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 219C9C433BA; Tue,  5 May 2020 02:44:34 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from bbhatt-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5F7B9C433D2;
+        Tue,  5 May 2020 02:44:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5F7B9C433D2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     mani@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hemantk@codeaurora.org, jhugo@codeaurora.org,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH v5 0/8] Bug fixes and improved logging in MHI
+Date:   Mon,  4 May 2020 19:44:14 -0700
+Message-Id: <1588646662-25785-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-05.05.2020 05:31, Sowjanya Komatineni пишет:
-> Tegra210 contains a powerful Video Input (VI) hardware controller
-> which can support up to 6 MIPI CSI camera sensors.
-> 
-> Each Tegra CSI port can be one-to-one mapped to VI channel and can
-> capture from an external camera sensor connected to CSI or from
-> built-in test pattern generator.
-> 
-> Tegra210 supports built-in test pattern generator from CSI to VI.
-> 
-> This patch adds a v4l2 capture driver with media interface for
-> Tegra210 built-in CSI to VI test pattern generator.
-> 
-> This patch includes TPG support only and all the video pipeline
-> configuration happens through the video device node.
-> 
-> Acked-by: Thierry Reding <treding@nvidia.com>
-> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
-> ---
+A set of patches for bug fixes and improved logging in mhi/core/boot.c.
+Verified on x86 and arm64 platforms.
 
-Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
+v5:
+-Updated the macro MHI_RANDOM_U32_NONZERO to take a bitmask as the input
+parameter and output a non-zero value between 1 and U32_MAX
+
+v4:
+-Dropped the change: bus: mhi: core: WARN_ON for malformed vector table
+-Updated bus: mhi: core: Read transfer length from an event properly to include
+parse rsc events
+-Use prandom_u32_max() instead of prandom_u32 to avoid if check in
+bus: mhi: core: Ensure non-zero session or sequence ID values are used
+
+v3:
+-Fixed signed-off-by tags
+-Add a refactor patch for MHI queue APIs
+-Commit text fix in bus: mhi: core: Read transfer length from an event properly
+-Fix channel ID range check for ctrl and data event rings processing
+
+v2:
+-Fix channel ID range check potential infinite loop
+-Add appropriate signed-off-by tags
+
+Bhaumik Bhatt (4):
+  bus: mhi: core: Handle firmware load using state worker
+  bus: mhi: core: Return appropriate error codes for AMSS load failure
+  bus: mhi: core: Improve debug logs for loading firmware
+  bus: mhi: core: Ensure non-zero session or sequence ID values are used
+
+Hemant Kumar (4):
+  bus: mhi: core: Refactor mhi queue APIs
+  bus: mhi: core: Cache intmod from mhi event to mhi channel
+  bus: mhi: core: Add range check for channel id received in event ring
+  bus: mhi: core: Read transfer length from an event properly
+
+ drivers/bus/mhi/core/boot.c     |  75 ++++++++++++------------
+ drivers/bus/mhi/core/init.c     |   5 +-
+ drivers/bus/mhi/core/internal.h |   6 +-
+ drivers/bus/mhi/core/main.c     | 124 ++++++++++++++++++++--------------------
+ drivers/bus/mhi/core/pm.c       |   6 +-
+ include/linux/mhi.h             |   2 -
+ 6 files changed, 109 insertions(+), 109 deletions(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
