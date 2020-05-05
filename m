@@ -2,178 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B4211C5490
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 13:41:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 806F41C548A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 13:40:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728806AbgEELlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 07:41:03 -0400
-Received: from mail-eopbgr680072.outbound.protection.outlook.com ([40.107.68.72]:63300
-        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728708AbgEELlC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 07:41:02 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XJretdBr/Z5mtTK9VyVKuWVz2DSvIWOia+/O8l60SkiMaw9X6f7WyQlLZQ6Qi5regiDIBED2aqPF6W6Pql2ChsOh3oUG8nYLQ+dBisSrc3OFR5uTz9kl8y3heZOrULbHbvJlHzxapZ9QL+Q4yxD9TM4xp2ynS3fsYy+nCU9eGq439o1TcHZfEZmX0wgLqI45AWQiKSXpGDCtKjLPm1jJVcrVk7yJ0ETWYpAaZ7oNfcDCHHe3cWgUc+MNchZYaPLhDSxuLrL0VFqvcBHlOGy8AiRG1DWRAySJfVrvsnt/MR5EStiiJXvLMZlVu+mowfS7i5c3BtWh04J4evW9SBh4Tg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=j/cUPb92+AIYMAFpgQxkJ5eiso9nPoYGvHidfwS8w0Y=;
- b=WgtrtKgV85j769xIsYGvyo1sDzSD4XKG7QF7pZW3P/VCW86ra42T75OkCz7PkPLg/Dn+D+SaqmdgfsszBF87EXKLeVKhh8v0sn1BCEKwqgZBEczfYeJvnCiuU11WqXUd0HWU7B8zADmvw2iiXnjtmgMJr7yY1hyzAV35kIiRbZ36kJa9yva++5qzYzw28L49ORLxD+SDv4qX4z5I6Aqu1Tylq/lefzN7RXH6MZdPY51+zDzRbw7/mkitXPKUucWcEAYU6lK4hTLEWnMvMyO4ukEyGVQXrj/pV8Wg4njSJDK0xdgStw7u/VD7DcwbXtV+YePzio2D/z1a/3V8CoetcA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=j/cUPb92+AIYMAFpgQxkJ5eiso9nPoYGvHidfwS8w0Y=;
- b=ACklc3mIHMYX3au/+vHI+pSpbnx5NEThGC6bJACrBvjnXUQF4LnjFPDpC4fpG8uMPzhyfUdDOOOOjxPeUV6/vr/zrLmQU/rGHn/GvSgnKsaatjtpO8cmQEeT2dQyf5/RF2LmDKUbUqKVcUpavmW3qksk6b44NwJqpCI14suR+hw=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-Received: from MWHPR12MB1855.namprd12.prod.outlook.com (2603:10b6:300:10e::23)
- by MWHPR12MB1423.namprd12.prod.outlook.com (2603:10b6:300:14::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.29; Tue, 5 May
- 2020 11:40:57 +0000
-Received: from MWHPR12MB1855.namprd12.prod.outlook.com
- ([fe80::c455:6257:3c8a:7010]) by MWHPR12MB1855.namprd12.prod.outlook.com
- ([fe80::c455:6257:3c8a:7010%3]) with mapi id 15.20.2958.030; Tue, 5 May 2020
- 11:40:57 +0000
-From:   Akshu Agrawal <akshu.agrawal@amd.com>
-Cc:     akshu.agrawal@amd.com,
-        Ravulapati Vishnu vardhan rao 
-        <Vishnuvardhanrao.Ravulapati@amd.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        alsa-devel@alsa-project.org (moderated list:SOUND - SOC LAYER / DYNAMIC
-        AUDIO POWER MANAGEM...), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] ASoC: amd :High hw_level while simultaneous capture
-Date:   Tue,  5 May 2020 17:10:20 +0530
-Message-Id: <20200505114023.251409-1-akshu.agrawal@amd.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-ClientProxiedBy: MA1PR0101CA0033.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a00:22::19) To MWHPR12MB1855.namprd12.prod.outlook.com
- (2603:10b6:300:10e::23)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ETHANOL2.amd.com (165.204.156.251) by MA1PR0101CA0033.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:22::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.20 via Frontend Transport; Tue, 5 May 2020 11:40:54 +0000
-X-Mailer: git-send-email 2.17.1
-X-Originating-IP: [165.204.156.251]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: ab51b49e-c6cc-4be8-0bf2-08d7f0e92d17
-X-MS-TrafficTypeDiagnostic: MWHPR12MB1423:|MWHPR12MB1423:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MWHPR12MB1423F75675A1D2A33B718A72F8A70@MWHPR12MB1423.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:466;
-X-Forefront-PRVS: 0394259C80
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xliPbxF5ysYV4UTbHGgcR+OtnymlXZZL/Zu3kl9y9S5M+i5mXFBm7M9GSoY1XWK8iPkFypjKqAEB/efYNXZNgGL+rrh3du0ycK+uhxr4rJiaS7lMF4wzmZQ/Wg2Tli8TRx3HSKeAuR2sMQSEHlyhU8AaLSaP6rLPTLfQFn8Y8YkCyIbLMZ2eER00Fe+tcuOhjJul7gFBVLWCE41c7rOGXyWu7MRJ+rGIFfwY/T6KJnED0eRdExvCTWNxKy56Vqhn/C93XvCahwlZYtExXeKVpAICBZZ2DvkaW2kLvfr9CO99U/OfzXCPqzUoYQD0TXXPdQI94kTgTqyoG+6C3Jb3mAW2YlhIKHZB0ecycIP5lNpGmvkzJrStZQ3xPy4YfXpp/kPOijruKDBuRIJIpbEwlf0iS5Uvu9Xd0Dry2gUDwji1LN6aQMHHKRq3eSge7rBSzrDJKTsVolgJbQKs8feYGOHVcrVlJEmqCxsTkEKQnG4g+Bb/jPBrFPgTv8Z27U/lvlOzKJnXgYfqjPFTLLCqAfRpKY3zZgfn7xmT7Ria/Zg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR12MB1855.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(366004)(136003)(39860400002)(376002)(346002)(33430700001)(8676002)(478600001)(956004)(36756003)(44832011)(6486002)(2906002)(4326008)(2616005)(109986005)(186003)(66946007)(26005)(16526019)(86362001)(1076003)(6666004)(54906003)(8936002)(7696005)(316002)(52116002)(33440700001)(66556008)(66476007)(5660300002)(266003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 98pRMPbRpbXlwPmFiDMcf/WUwcE+OzZwRr3Z+tFhLRbLGEvhRmjQzW9JsSEK+q3pg9sDBaqz0Kp9Ljui9YlYqELY174jp2KCqQ3T0Erc3J+XATpz4lVOPDUjFLLdsJPMis8J2LnbwBEqJJb7yT/z2lYZ1UCaRqoPr+l7VLerYFkSuC4GmmLSip+jV2WWvnkgMGx5PfC702pyzWxPY20vXnGL2U2eC7/6NaR8IVeabhizezKJOgnm2CyqiaoD+1z+RmeMIkc2/8qEc7Wa6iY3UXbmX32k1NELD+ckk58nb85EvgsDk1jphhx99HrBuXqLuW1A4CcIb67swPONIIJQvJWv7RBAwbmJVuMZe4vI5Orf4pD3QKS52M/Vua2sPQZO7nJilmDTbHbRBnRYw/5XHqr3CygTSVlOUiuBDU/fHu+DywO2XCOKx0cjeusEpaUCGEbeMkZssr+Xg0IjwxKDH95OnaEqmEz2kRtgS4MjjFLZwZt79tdZbaAmENLa5QiG+v9Z9nehE6ni9hEIM0usf0fDcQA/AOK6yPOEf3Spkr5vT+7LPykVG/eSI358hlFY8jSUW0T2QHxQ9JbbDtqbWZt/iTDfcBNK1V3Glldqc8nYdLe9wqGKnQcPMpNwALf/rtXJEOe4yEflnH+/SW1CsIqzLID7jerBRurwv92WEI+INb8p75j4XkF7emxNaXuw2PKPdUgFzn9xbrdZ0oVyuJI7vQIu0ocds3HY/Uh1xF/DoifMgKBZv6N4DfopPPDNvbRKLJDQQUcHxFZ5XnfUWRsFNjMEF7KvyJgbZei48DIpDXGBLX1503gDAfpCRAVu
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ab51b49e-c6cc-4be8-0bf2-08d7f0e92d17
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 May 2020 11:40:57.3184
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LUOuvKG09L4wtkMzPTln4qhgH+vqVOPVPWksIOLOCHoLgVbhJeA/yaO1zqci0tsAVfrK2bBGjC5SQBJvJ9//uQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1423
-To:     unlisted-recipients:; (no To-header on input)
+        id S1728690AbgEELkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 07:40:53 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:47704 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728233AbgEELkw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 07:40:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588678850;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OlAdU6/nOacYHUCLOD5Zi1nKBtXm6BwKAesECeCW+3s=;
+        b=H+4VVqsO1F5z84GTqlaJXrIMF7UvnB6NWcm9vXEp7sspp2sBekLyB0kEUrDNDhLZ9mhdvC
+        ZMJsG4UupX+L5553mYgjO6tJOXuyBgLMuS5TDGw9UaCfCMDyxQoWR4IYLvFVk05zru0lhS
+        +SvPDNCBqqdGfZ8awq795D7evklb13E=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-148-GmWvodbxNKSrZrkiXB3jvQ-1; Tue, 05 May 2020 07:40:47 -0400
+X-MC-Unique: GmWvodbxNKSrZrkiXB3jvQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 09C51835B40;
+        Tue,  5 May 2020 11:40:46 +0000 (UTC)
+Received: from maximlenovopc.usersys.redhat.com (unknown [10.35.206.34])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C03B219C4F;
+        Tue,  5 May 2020 11:40:44 +0000 (UTC)
+Message-ID: <bec5e02f456a1be682e680c06326afd183c23318.camel@redhat.com>
+Subject: Re: AVIC related warning in enable_irq_window
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Date:   Tue, 05 May 2020 14:40:43 +0300
+In-Reply-To: <efbe933a-3ab6-fa57-37fb-affc87369948@amd.com>
+References: <9ce7bb5c4fb8bcc4ac21103f7534a6edfcbe195d.camel@redhat.com>
+         <758b27a8-74c0-087d-d90b-d95faee2f561@redhat.com>
+         <c5c32371-4b4e-1382-c616-3830ba46bf85@amd.com>
+         <159382e7fdf0f9b50d79e29554842289e92e1ed7.camel@redhat.com>
+         <d22d32de-5d91-662a-bf53-8cfb115dbe8d@redhat.com>
+         <c81cf9bb-840a-d076-bc0e-496916621bdd@amd.com>
+         <23b0dfe5-eba4-136b-0d4a-79f57f8a03ff@redhat.com>
+         <efbe933a-3ab6-fa57-37fb-affc87369948@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
+On Tue, 2020-05-05 at 14:55 +0700, Suravee Suthikulpanit wrote:
+> Paolo / Maxim,
+> 
+> On 5/4/20 5:49 PM, Paolo Bonzini wrote:
+> > On 04/05/20 12:37, Suravee Suthikulpanit wrote:
+> > > On 5/4/20 4:25 PM, Paolo Bonzini wrote:
+> > > > On 04/05/20 11:13, Maxim Levitsky wrote:
+> > > > > On Mon, 2020-05-04 at 15:46 +0700, Suravee Suthikulpanit wrote:
+> > > > > > On 5/2/20 11:42 PM, Paolo Bonzini wrote:
+> > > > > > > On 02/05/20 15:58, Maxim Levitsky wrote:
+> > > > > > > > The AVIC is disabled by svm_toggle_avic_for_irq_window, which calls
+> > > > > > > > kvm_request_apicv_update, which broadcasts the
+> > > > > > > > KVM_REQ_APICV_UPDATE vcpu request,
+> > > > > > > > however it doesn't broadcast it to CPU on which now we are
+> > > > > > > > running, which seems OK,
+> > > > > > > > because the code that handles that broadcast runs on each VCPU
+> > > > > > > > entry, thus when this CPU will enter guest mode it will notice 
+> > > > > > > > and disable the AVIC. >>>>>>>
+> > > > > > > > However later in svm_enable_vintr, there is test
+> > > > > > > > 'WARN_ON(kvm_vcpu_apicv_active(&svm->vcpu));'
+> > > > > > > > which is still true on current CPU because of the above.
+> > > > > > > 
+> > > > > > > Good point!  We can just remove the WARN_ON I think.  Can you send
+> > > > > > > a patch?
+> > > > > > > 
+> > > > > > 
+> > > > > > Instead, as an alternative to remove the WARN_ON(), would it be
+> > > > > > better to just explicitly calling kvm_vcpu_update_apicv(vcpu) 
+> > > > > > to update the apicv_active flag right after kvm_request_apicv_update()?
+> > > > > > 
+> > > > > 
+> > > > > This should work IMHO, other that the fact kvm_vcpu_update_apicv will
+> > > > > be called again, when this vcpu is entered since the KVM_REQ_APICV_UPDATE
+> > > > > will still be pending on it.
+> > > > > It shoudn't be a problem, and we can even add a check to do nothing
+> > > > > when it is called while avic is already in target enable state.
+> > > > 
+> > > > I thought about that but I think it's a bit confusing.  If we want to
+> > > > keep the WARN_ON, Maxim can add an equivalent one to svm_vcpu_run, which
+> > > > is even better because the invariant is clearer.
+> > > > 
+> > > > WARN_ON((vmcb->control.int_ctl & (AVIC_ENABLE_MASK | V_IRQ_MASK))
+> > > >      == (AVIC_ENABLE_MASK | V_IRQ_MASK));
+> > > > 
+> 
+> Based on my experiment, it seems that the hardware sets the V_IRQ_MASK bit
+> when #VMEXIT despite this bit being ignored when AVIC is enabled.
+> (I'll double check w/ HW team on this.) In this case, I don't think we can
+> use the WARN_ON() as suggested above.
+> 
+> I think we should keep the warning in the svm_set_vintr() since we want to know
+> if the V_IRQ, V_INTR_PRIO, V_IGN_TPR, and V_INTR_VECTOR are ignored when calling
+> svm_set_vintr().
+> 
+> Instead, I would consider explicitly call kvm_vcpu_update_apicv() since it would
+> be benefit from not having to wait for the next vcpu_enter_guest for this vcpu to process
+> the request. This is less confusing to me. In this case, we would need to
+> kvm_clear_request(KVM_REQ_APICV_UPDATE) for this vcpu as well.
+> 
+> On the other hand, would be it useful to implement kvm_make_all_cpus_request_but_self(),
+> which sends request to all other corpus excluding itself?
+> 
+> > By the way, there is another possible cleanup: the clearing
+> > of V_IRQ_MASK can be removed from interrupt_window_interception since it
+> > has already called svm_clear_vintr.
+> 
+> Maxim, I can help with the clean up patches if you would prefer.
 
-Simultaneous capture on dmic and headset mic is having
-issue with high hw_level being reported.
+I currently am waiting for the decision on how to we are going to fix this.
+I don't have a strong opinion on how to fix this, but at least I think that we know
+what is going on. 
 
-Issue Can be reproduced by:
-arecord -D hw:2,0 -f dat -d 60 /tmp/test0 &
-arecord -D hw:2,2 -f dat -d 60 /tmp/test1 &
-cat /proc/asound/card2/pcm?c/sub0/status
+Initially I was thinking that something was broken in AVIC, especially when I noticed
+that guest would hang when I did LatencyMon benchmark in it.
+Luckily the other fix that I tested and reviewed seems to fix those hangs.
 
-Signed-off-by: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
----
- sound/soc/amd/raven/acp3x-pcm-dma.c | 37 +++++++++++++++++++----------
- 1 file changed, 24 insertions(+), 13 deletions(-)
+In a few days I plan to do some nvme passthrough stress testing as I used to do when I was
+developing my nvme-mdev driver with AVIC. I am very curios on how this will turn out.
 
-diff --git a/sound/soc/amd/raven/acp3x-pcm-dma.c b/sound/soc/amd/raven/acp3x-pcm-dma.c
-index e362f0bc9e46..a36c5cb848cd 100644
---- a/sound/soc/amd/raven/acp3x-pcm-dma.c
-+++ b/sound/soc/amd/raven/acp3x-pcm-dma.c
-@@ -241,14 +241,6 @@ static int acp3x_dma_open(struct snd_soc_component *component,
- 		adata->i2ssp_play_stream && !adata->i2ssp_capture_stream)
- 		rv_writel(1, adata->acp3x_base + mmACP_EXTERNAL_INTR_ENB);
- 
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
--		adata->play_stream = substream;
--		adata->i2ssp_play_stream = substream;
--	} else {
--		adata->capture_stream = substream;
--		adata->i2ssp_capture_stream = substream;
--	}
--
- 	i2s_data->acp3x_base = adata->acp3x_base;
- 	runtime->private_data = i2s_data;
- 	return ret;
-@@ -263,23 +255,42 @@ static int acp3x_dma_hw_params(struct snd_soc_component *component,
- 	struct snd_soc_pcm_runtime *prtd;
- 	struct snd_soc_card *card;
- 	struct acp3x_platform_info *pinfo;
-+	struct i2s_dev_data *adata;
- 	u64 size;
- 
- 	prtd = substream->private_data;
- 	card = prtd->card;
- 	pinfo = snd_soc_card_get_drvdata(card);
-+	adata = dev_get_drvdata(component->dev);
- 	rtd = substream->runtime->private_data;
- 	if (!rtd)
- 		return -EINVAL;
- 
--	if (pinfo)
--		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+	if (pinfo) {
-+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 			rtd->i2s_instance = pinfo->play_i2s_instance;
--		else
-+			switch (rtd->i2s_instance) {
-+			case I2S_BT_INSTANCE:
-+				adata->play_stream = substream;
-+				break;
-+			case I2S_SP_INSTANCE:
-+			default:
-+				adata->i2ssp_play_stream = substream;
-+			}
-+		} else {
- 			rtd->i2s_instance = pinfo->cap_i2s_instance;
--	else
-+			switch (rtd->i2s_instance) {
-+			case I2S_BT_INSTANCE:
-+				adata->capture_stream = substream;
-+				break;
-+			case I2S_SP_INSTANCE:
-+			default:
-+				adata->i2ssp_capture_stream = substream;
-+			}
-+		}
-+	} else {
- 		pr_err("pinfo failed\n");
--
-+	}
- 	size = params_buffer_bytes(params);
- 	rtd->dma_addr = substream->dma_buffer.addr;
- 	rtd->num_pages = (PAGE_ALIGN(size) >> PAGE_SHIFT);
--- 
-2.17.1
+Best regards,
+	Maxim Levitsky
+
+> 
+> Thanks,
+> Suravee
+> 
+> 
+> > Paolo
+> > 
+> 
+> 
+
 
