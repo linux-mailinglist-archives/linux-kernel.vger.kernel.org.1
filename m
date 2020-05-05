@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 096091C58E9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:20:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3BAC1C58E4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:20:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730533AbgEEOTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:19:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49090 "EHLO
+        id S1730041AbgEEOTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:19:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730050AbgEEOQO (ORCPT
+        by vger.kernel.org with ESMTP id S1730059AbgEEOQQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:16:14 -0400
+        Tue, 5 May 2020 10:16:16 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B9AC061A0F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:16:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 706E0C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:16:16 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jVyMY-0001zI-Bf; Tue, 05 May 2020 16:15:58 +0200
+        id 1jVyMZ-00020R-LS; Tue, 05 May 2020 16:15:59 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id D7539FFC8D;
-        Tue,  5 May 2020 16:15:57 +0200 (CEST)
-Message-Id: <20200505135314.426347351@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 1B557FFC8D;
+        Tue,  5 May 2020 16:15:59 +0200 (CEST)
+Message-Id: <20200505135314.518622698@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 05 May 2020 15:49:37 +0200
+Date:   Tue, 05 May 2020 15:49:38 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -44,8 +44,7 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Will Deacon <will@kernel.org>
-Subject: [patch V4 part 4 11/24] x86/mce: Use untraced rd/wrmsr in the MCE
- offline/crash check
+Subject: [patch V4 part 4 12/24] x86/idtentry: Provide IDTENTRY_XEN for XEN/PV
 References: <20200505134926.578885807@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -58,39 +57,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mce_check_crashing_cpu() is called right at the entry of the MCE
-handler. It uses mce_rdmsr() and mce_wrmsr() which are wrappers around
-rdmsr() and wrmsr() to handle the MCE error injection mechanism, which is
-pointless in this context, i.e. when the MCE hits an offline CPU or the
-system is already marked crashing.
-
-The MSR access can also be traced, so use the untraceable variants. This
-is also safe vs. XEN paravirt as these MSRs are not affected by XEN PV
-modifications.
+XEN/PV has special wrappers for NMI and DB exceptions. They redirect these
+exceptions through regular IDTENTRY points. Provide the necessary IDTENTRY
+macros to make this work
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/kernel/cpu/mce/core.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/x86/include/asm/idtentry.h |   16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -1108,7 +1108,7 @@ static noinstr bool mce_check_crashing_c
- 	    (crashing_cpu != -1 && crashing_cpu != cpu)) {
- 		u64 mcgstatus;
+--- a/arch/x86/include/asm/idtentry.h
++++ b/arch/x86/include/asm/idtentry.h
+@@ -168,6 +168,18 @@ static __always_inline void __##func(str
+ #define DECLARE_IDTENTRY_DEBUG		DECLARE_IDTENTRY_IST
+ #define DEFINE_IDTENTRY_DEBUG		DEFINE_IDTENTRY_IST
  
--		mcgstatus = mce_rdmsrl(MSR_IA32_MCG_STATUS);
-+		mcgstatus = __rdmsr(MSR_IA32_MCG_STATUS);
++/**
++ * DECLARE_IDTENTRY_XEN - Declare functions for XEN redirect IDT entry points
++ * @vector:	Vector number (ignored for C)
++ * @func:	Function name of the entry point
++ *
++ * Used for xennmi and xendebug redirections. No DEFINE as this is all ASM
++ * indirection magic.
++ */
++#define DECLARE_IDTENTRY_XEN(vector, func)				\
++	asmlinkage void xen_asm_exc_xen##func(void);			\
++	asmlinkage void asm_exc_xen##func(void)
++
+ #else /* !__ASSEMBLY__ */
  
- 		if (boot_cpu_data.x86_vendor == X86_VENDOR_ZHAOXIN) {
- 			if (mcgstatus & MCG_STATUS_LMCES)
-@@ -1116,7 +1116,7 @@ static noinstr bool mce_check_crashing_c
- 		}
+ /*
+@@ -203,6 +215,10 @@ static __always_inline void __##func(str
+ /* No ASM code emitted for NMI */
+ #define DECLARE_IDTENTRY_NMI(vector, func)
  
- 		if (mcgstatus & MCG_STATUS_RIPV) {
--			mce_wrmsrl(MSR_IA32_MCG_STATUS, 0);
-+			__wrmsr(MSR_IA32_MCG_STATUS, 0, 0);
- 			return true;
- 		}
- 	}
++/* XEN NMI and DB wrapper */
++#define DECLARE_IDTENTRY_XEN(vector, func)				\
++	idtentry vector asm_exc_xen##func exc_##func has_error_code=0 sane=1
++
+ #endif /* __ASSEMBLY__ */
+ 
+ /*
 
