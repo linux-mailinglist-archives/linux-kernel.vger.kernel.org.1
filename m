@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B5F01C5939
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7911D1C5931
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:23:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730508AbgEEOX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:23:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48578 "EHLO
+        id S1729506AbgEEOOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:14:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729471AbgEEON6 (ORCPT
+        by vger.kernel.org with ESMTP id S1729475AbgEEON7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:13:58 -0400
+        Tue, 5 May 2020 10:13:59 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24B54C061A0F
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDFA2C061A0F
         for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:13:58 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jVyKK-0000Za-G2; Tue, 05 May 2020 16:13:40 +0200
+        id 1jVyKL-0000aY-MG; Tue, 05 May 2020 16:13:41 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id EE108FFC8D;
-        Tue,  5 May 2020 16:13:39 +0200 (CEST)
-Message-Id: <20200505134100.179862032@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 33338FFC8D;
+        Tue,  5 May 2020 16:13:41 +0200 (CEST)
+Message-Id: <20200505134100.270771162@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 05 May 2020 15:16:23 +0200
+Date:   Tue, 05 May 2020 15:16:24 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -44,7 +44,8 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Will Deacon <will@kernel.org>
-Subject: [patch V4 part 1 21/36] kprobes: Prevent probes in .noinstr.text section
+Subject: [patch V4 part 1 22/36] tracing: Provide lockdep less
+ trace_hardirqs_on/off() variants
 References: <20200505131602.633487962@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -57,78 +58,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instrumentation is forbidden in the .noinstr.text section. Make kprobes
-respect this.
+trace_hardirqs_on/off() is only partially safe vs. RCU idle. The tracer
+core itself is safe, but the resulting tracepoints can be utilized by
+e.g. BPF which is unsafe.
+
+Provide variants which do not contain the lockdep invocation so the lockdep
+and tracer invocations can be split at the call site and placed properly.
+
+The new variants also do not use rcuidle as they are going to be called
+from entry code after/before context tracking.
+
+Name them so they match the lockdep counterparts.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- include/linux/module.h |    2 ++
- kernel/kprobes.c       |   18 ++++++++++++++++++
- kernel/module.c        |    3 +++
- 3 files changed, 23 insertions(+)
+V3: Renamed to trace_hardirqs_on/off_prepare().
+V2: New patch
+---
+ include/linux/irqflags.h        |    4 ++++
+ kernel/trace/trace_preemptirq.c |   37 +++++++++++++++++++++++++++++++++++++
+ 2 files changed, 41 insertions(+)
 
---- a/include/linux/module.h
-+++ b/include/linux/module.h
-@@ -458,6 +458,8 @@ struct module {
- 	void __percpu *percpu;
- 	unsigned int percpu_size;
- #endif
-+	void *noinstr_text_start;
-+	unsigned int noinstr_text_size;
- 
- #ifdef CONFIG_TRACEPOINTS
- 	unsigned int num_tracepoints;
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -2229,6 +2229,12 @@ static int __init populate_kprobe_blackl
- 	/* Symbols in __kprobes_text are blacklisted */
- 	ret = kprobe_add_area_blacklist((unsigned long)__kprobes_text_start,
- 					(unsigned long)__kprobes_text_end);
-+	if (ret)
-+		return ret;
-+
-+	/* Symbols in noinstr section are blacklisted */
-+	ret = kprobe_add_area_blacklist((unsigned long)__noinstr_text_start,
-+					(unsigned long)__noinstr_text_end);
- 
- 	return ret ? : arch_populate_kprobe_blacklist();
- }
-@@ -2248,6 +2254,12 @@ static void add_module_kprobe_blacklist(
- 		end = start + mod->kprobes_text_size;
- 		kprobe_add_area_blacklist(start, end);
- 	}
-+
-+	start = (unsigned long)mod->noinstr_text_start;
-+	if (start) {
-+		end = start + mod->noinstr_text_size;
-+		kprobe_add_area_blacklist(start, end);
-+	}
- }
- 
- static void remove_module_kprobe_blacklist(struct module *mod)
-@@ -2265,6 +2277,12 @@ static void remove_module_kprobe_blackli
- 		end = start + mod->kprobes_text_size;
- 		kprobe_remove_area_blacklist(start, end);
- 	}
-+
-+	start = (unsigned long)mod->noinstr_text_start;
-+	if (start) {
-+		end = start + mod->noinstr_text_size;
-+		kprobe_remove_area_blacklist(start, end);
-+	}
- }
- 
- /* Module notifier call back, checking kprobes on the module */
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -3150,6 +3150,9 @@ static int find_module_sections(struct m
- 	}
+--- a/include/linux/irqflags.h
++++ b/include/linux/irqflags.h
+@@ -29,6 +29,8 @@
  #endif
  
-+	mod->noinstr_text_start = section_objs(info, ".noinstr.text", 1,
-+						&mod->noinstr_text_size);
+ #ifdef CONFIG_TRACE_IRQFLAGS
++  extern void trace_hardirqs_on_prepare(void);
++  extern void trace_hardirqs_off_prepare(void);
+   extern void trace_hardirqs_on(void);
+   extern void trace_hardirqs_off(void);
+ # define lockdep_hardirq_context(p)	((p)->hardirq_context)
+@@ -96,6 +98,8 @@ do {						\
+ 	  } while (0)
+ 
+ #else
++# define trace_hardirqs_on_prepare()		do { } while (0)
++# define trace_hardirqs_off_prepare()		do { } while (0)
+ # define trace_hardirqs_on()		do { } while (0)
+ # define trace_hardirqs_off()		do { } while (0)
+ # define lockdep_hardirq_context(p)	0
+--- a/kernel/trace/trace_preemptirq.c
++++ b/kernel/trace/trace_preemptirq.c
+@@ -19,6 +19,24 @@
+ /* Per-cpu variable to prevent redundant calls when IRQs already off */
+ static DEFINE_PER_CPU(int, tracing_irq_cpu);
+ 
++/*
++ * Like trace_hardirqs_on() but without the lockdep invocation. This is
++ * used in the low level entry code where the ordering vs. RCU is important
++ * and lockdep uses a staged approach which splits the lockdep hardirq
++ * tracking into a RCU on and a RCU off section.
++ */
++void trace_hardirqs_on_prepare(void)
++{
++	if (this_cpu_read(tracing_irq_cpu)) {
++		if (!in_nmi())
++			trace_irq_enable(CALLER_ADDR0, CALLER_ADDR1);
++		tracer_hardirqs_on(CALLER_ADDR0, CALLER_ADDR1);
++		this_cpu_write(tracing_irq_cpu, 0);
++	}
++}
++EXPORT_SYMBOL(trace_hardirqs_on_prepare);
++NOKPROBE_SYMBOL(trace_hardirqs_on_prepare);
 +
- #ifdef CONFIG_TRACEPOINTS
- 	mod->tracepoints_ptrs = section_objs(info, "__tracepoints_ptrs",
- 					     sizeof(*mod->tracepoints_ptrs),
+ void trace_hardirqs_on(void)
+ {
+ 	if (this_cpu_read(tracing_irq_cpu)) {
+@@ -33,6 +51,25 @@ void trace_hardirqs_on(void)
+ EXPORT_SYMBOL(trace_hardirqs_on);
+ NOKPROBE_SYMBOL(trace_hardirqs_on);
+ 
++/*
++ * Like trace_hardirqs_off() but without the lockdep invocation. This is
++ * used in the low level entry code where the ordering vs. RCU is important
++ * and lockdep uses a staged approach which splits the lockdep hardirq
++ * tracking into a RCU on and a RCU off section.
++ */
++void trace_hardirqs_off_prepare(void)
++{
++	if (!this_cpu_read(tracing_irq_cpu)) {
++		this_cpu_write(tracing_irq_cpu, 1);
++		tracer_hardirqs_off(CALLER_ADDR0, CALLER_ADDR1);
++		if (!in_nmi())
++			trace_irq_disable(CALLER_ADDR0, CALLER_ADDR1);
++	}
++
++}
++EXPORT_SYMBOL(trace_hardirqs_off_prepare);
++NOKPROBE_SYMBOL(trace_hardirqs_off_prepare);
++
+ void trace_hardirqs_off(void)
+ {
+ 	if (!this_cpu_read(tracing_irq_cpu)) {
 
