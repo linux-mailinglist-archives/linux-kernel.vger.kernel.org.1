@@ -2,102 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05D821C4C31
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 04:33:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65B271C4C3D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 04:43:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728398AbgEECcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 22:32:53 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:15051 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726926AbgEECcx (ORCPT
+        id S1728025AbgEECnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 22:43:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726516AbgEECnW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 22:32:53 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1588645972; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=aWsP1jrgv5VOaBcGYPLjJDNZ7GM9ZWmCxTTYgdbAIYY=;
- b=cZvRbE58igWDnlPdPtJqq7I1aOuqoNOq+mGkXiBcm2evBXA0CRlnHHW2OQ3a0Ttq6LikAgn6
- sHHp4PYGuEUKKMyHyfym2glzgRgzU01ZT2OdFQ41WFKFxgvKyENBI05rE99F2vORGKrKZcpt
- nuug/0MQOJqkg4k/HT7VGMZ5F1I=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3A4F5C433BA; Tue,  5 May 2020 02:32:42 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id ACAD7C433D2;
-        Tue,  5 May 2020 02:32:41 +0000 (UTC)
+        Mon, 4 May 2020 22:43:22 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70B61C061A0F;
+        Mon,  4 May 2020 19:43:22 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id a21so16682ljj.11;
+        Mon, 04 May 2020 19:43:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=b517Qv61xjeiuOiaYHCLpTy52t01kqYfbxe2GzTQY68=;
+        b=oYTUQT4/gmaq3BbLehfUaJCRqwrFdcCeTvWtKNEO/U4TQlqIhfOuGBOmSGjcQATOVI
+         SkkiyfBHANOGTZ80VCfe3V4K2/zXyVX+X5OmP8tXSBIM5K/X61l0uxdFNDzgKDoOggeZ
+         GsEri4bMItrtKfDnlI9vSEEHZiq2MUuFIyBR+HYzfLskRFgZ5hbrHE7Q/l7egTNDNboH
+         sLb5p8b7iltX30P3YNMXWdPSJqi1Xit1e5blNj8nn5GkV1jr4j5Us6UvizQCA7p1otEY
+         fumCxGQeXCkklFsL9gu/V1DkcoCjDPqu9Xkf70n2BTSBcb8s1Haa58gpEqhcv599XB68
+         rYJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=b517Qv61xjeiuOiaYHCLpTy52t01kqYfbxe2GzTQY68=;
+        b=lwFEZHTotuxz7NsqIpZ9mR2eDhGKB529R8HVZBEpVhfhOG4uTisd4s/6jJEbRZmW1i
+         IFZ3YZj3+qAjbzzWDhTFfsesdc3krgDvQoO69uOj4nL/31HdU1Vxd3XVo4zc5OdynFDV
+         cBgX78FKYkqp8h6Qr3MgDgvWIREVMwC0UrPBUaZSyAgl4rJvojvYhaW7kLzTBEzhdInd
+         Ln7TjaP45Us09wtIptLo6YhmKOQ4Lrp43bO26/1dFXmU51YGbuw50noxZ+MDA0PXo5lT
+         X+2tiRum9l2sp+P0P7W5bjZzA464QQNv/JgSTH2x0j5UmiWOmOc4ufr4MnC/+QRGalYU
+         m6Fw==
+X-Gm-Message-State: AGi0PuZ5rmnVxiyh9rclxQM+4QuZv2MJvQB46pYXaEMeXRFhIIGRCe/p
+        XLvY5jGNiLRqaT/FN9vcLB+ehDIy
+X-Google-Smtp-Source: APiQypLpfrlFV2uVzWp1G7rujyzQLmFNC7OLXRnHAHWDvf9srg0Ol2e+9LnEpEmWm8/HiCA5FHy15g==
+X-Received: by 2002:a2e:3209:: with SMTP id y9mr391311ljy.154.1588646600566;
+        Mon, 04 May 2020 19:43:20 -0700 (PDT)
+Received: from [192.168.2.145] (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
+        by smtp.googlemail.com with ESMTPSA id b2sm635352lfi.14.2020.05.04.19.43.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 May 2020 19:43:20 -0700 (PDT)
+Subject: Re: [RFC PATCH v12 6/9] media: tegra: Add Tegra210 Video input driver
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
+        thierry.reding@gmail.com, jonathanh@nvidia.com, frankc@nvidia.com,
+        hverkuil@xs4all.nl, sakari.ailus@iki.fi, helen.koike@collabora.com
+Cc:     sboyd@kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1588645920-20557-1-git-send-email-skomatineni@nvidia.com>
+ <1588645920-20557-7-git-send-email-skomatineni@nvidia.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <db5ef9b8-dc2b-7db7-8f70-a4e223af1fc9@gmail.com>
+Date:   Tue, 5 May 2020 05:43:19 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 04 May 2020 19:32:41 -0700
-From:   bbhatt@codeaurora.org
-To:     Jeffrey Hugo <jhugo@codeaurora.org>
-Cc:     mani@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, hemantk@codeaurora.org
-Subject: Re: [PATCH v4 8/8] bus: mhi: core: Ensure non-zero session or
- sequence ID values are used
-In-Reply-To: <2a249d99-b1e7-7943-0ed4-d5529f7abc33@codeaurora.org>
-References: <1588386725-1165-1-git-send-email-bbhatt@codeaurora.org>
- <1588386725-1165-9-git-send-email-bbhatt@codeaurora.org>
- <2a249d99-b1e7-7943-0ed4-d5529f7abc33@codeaurora.org>
-Message-ID: <623c100dc1850c8d8f9a6412d7153fd1@codeaurora.org>
-X-Sender: bbhatt@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+In-Reply-To: <1588645920-20557-7-git-send-email-skomatineni@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-05-04 07:33, Jeffrey Hugo wrote:
-> On 5/1/2020 8:32 PM, Bhaumik Bhatt wrote:
->> While writing any sequence or session identifiers, it is possible that
->> the host could write a zero value, whereas only non-zero values should
->> be supported writes to those registers. Ensure that the host does not
->> write a non-zero value for them and also log them in debug messages.
->> 
->> Suggested-by: Jeffrey Hugo <jhugo@codeaurora.org>
->> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
->> ---
->>   drivers/bus/mhi/core/boot.c     | 15 +++++++--------
->>   drivers/bus/mhi/core/internal.h |  1 +
->>   2 files changed, 8 insertions(+), 8 deletions(-)
->> 
->> diff --git a/drivers/bus/mhi/core/boot.c b/drivers/bus/mhi/core/boot.c
->> index e5fcde1..9fe9c59 100644
->> --- a/drivers/bus/mhi/core/boot.c
->> +++ b/drivers/bus/mhi/core/boot.c
->> @@ -43,10 +43,7 @@ void mhi_rddm_prepare(struct mhi_controller 
->> *mhi_cntrl,
->>   		      lower_32_bits(mhi_buf->dma_addr));
->>     	mhi_write_reg(mhi_cntrl, base, BHIE_RXVECSIZE_OFFS, 
->> mhi_buf->len);
->> -	sequence_id = prandom_u32() & BHIE_RXVECSTATUS_SEQNUM_BMSK;
->> -
->> -	if (unlikely(!sequence_id))
->> -		sequence_id = 1;
->> +	sequence_id = (MHI_RANDOM_U32_NONZERO & 
->> BHIE_RXVECSTATUS_SEQNUM_BMSK);
+05.05.2020 05:31, Sowjanya Komatineni пишет:
+> Tegra210 contains a powerful Video Input (VI) hardware controller
+> which can support up to 6 MIPI CSI camera sensors.
 > 
-> I don't think this math works.  For example, if MHI_RANDOM_U32_NONZERO
-> is 0x0FF0, and BHIE_RXVECSTATUS_SEQNUM_BMSK is 0xF, then sequence_id
-> will end up being 0.
+> Each Tegra CSI port can be one-to-one mapped to VI channel and can
+> capture from an external camera sensor connected to CSI or from
+> built-in test pattern generator.
+> 
+> Tegra210 supports built-in test pattern generator from CSI to VI.
+> 
+> This patch adds a v4l2 capture driver with media interface for
+> Tegra210 built-in CSI to VI test pattern generator.
+> 
+> This patch includes TPG support only and all the video pipeline
+> configuration happens through the video device node.
+> 
+> Acked-by: Thierry Reding <treding@nvidia.com>
+> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+> ---
 
-In this case, SEQNUM BMSK is set to 0x3FFFFFFF so this change will still 
-work as
-we only supplied a non-zero number macro to AND with the mask.
-However, I agree that may not be the case always that we would know the 
-bitmask
-in advance so it is better to fix it for good.
-
-Thanks for the catch! I have updated the change to have the macro take 
-the
-bitmask as a parameter and output a non-zero value.
+Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
