@@ -2,100 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1D901C5792
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 15:56:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB39A1C5789
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 15:55:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729200AbgEEN4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 09:56:07 -0400
-Received: from mout.kundenserver.de ([212.227.17.10]:57651 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729040AbgEEN4G (ORCPT
+        id S1729180AbgEENz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 09:55:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729118AbgEENz2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 09:56:06 -0400
-Received: from localhost.localdomain ([149.172.19.189]) by
- mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPA (Nemesis) id
- 1MAxPb-1jP4Hl36TZ-00BIW3; Tue, 05 May 2020 15:55:56 +0200
-From:   Arnd Bergmann <arnd@arndb.de>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: [PATCH] bitops: avoid clang shift-count-overflow warnings
-Date:   Tue,  5 May 2020 15:54:57 +0200
-Message-Id: <20200505135513.65265-1-arnd@arndb.de>
-X-Mailer: git-send-email 2.26.0
+        Tue, 5 May 2020 09:55:28 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 788FCC061A10
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 06:55:27 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id l19so1687312lje.10
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 06:55:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9W+5Jm1b81UkwC63+rGAZ2lTBixHqKEHTO4R5ClYteM=;
+        b=mEWDTOsvRfH8ej77W5x3aLADfUstdTw6WfDghmv/Zkfa8SB4RMzBaziHPDJ5p3x3dw
+         7Dm4RQuOT4V1GffWyPxuMAT7l2ovGSh6LqZCI00mh05SP8aV5/fGZzfuF1f8IJbIhv5W
+         cx89leMpPTfjAg/KVbmWmQki2ryF8mHz3DddN76pv7OPWhwlfMf+PP7yISHf/1HO5Ag4
+         55DEYLd3k3ZVRwrK6U2M3xrcHTt8ja3dboNFFlZ0eIt+vZbS8MaxIpProcXDIyiQ7O2/
+         46u71QHnQDhmcSM3yx/4VeoPp8QHhBWvXzZ011t1Gt0dzDpVGWM6RjtTxcU3zWOEZeYX
+         SJAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9W+5Jm1b81UkwC63+rGAZ2lTBixHqKEHTO4R5ClYteM=;
+        b=UfyIAAXQMYSboYY2dI/7PTlAYRIg1yI2H3oLwoTcUQUr2dpmump4RpNdw//WFUPXzM
+         /WWtNMtcT7TWOhefCw1hQ1fGTUWjGEZDy+0fWUrFhDk5Q93ZFGwr5DhiGbbBaQY1jMes
+         Ms2StEJ4c9pOGTURZ4Fx5J5+M7okkrrrSP0+0i8TqBx/HUd4kMxAWjWNQKZWltLfMDRI
+         v6CH9PyOH/m6B8zJKDx4FCxXqqlk82xivx5QeFlqlAhQmqH8X+a89HCfZbSJ65sWvArF
+         zCbg0TGDD1E2HbzLZiWTNbvWsfRNqNfGDMxAMvheOu0sxD5LWkyYX9JXICWmJrcu1zU+
+         KZuA==
+X-Gm-Message-State: AGi0PuZdZFjG7yBZDVzSKl7b0L3YDuxLq07mIFfl0Vsh2GX93MHTxuCj
+        AbZNM0Anq50u0RQLlA9o5KQq/o2bzrap0a0Jt8P/eA==
+X-Google-Smtp-Source: APiQypKWE2FCFxKV2s9wAYb49OyHcE3r3lTHSIiwCOLimy5/O6x2crNpb4pMbTs0tmwgyWjKOUYCCNEguBVeAM1ggek=
+X-Received: by 2002:a2e:b6cf:: with SMTP id m15mr1852440ljo.168.1588686925417;
+ Tue, 05 May 2020 06:55:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:BiSQj1YLbY/CRWKicFaaFMBElVVvRY9U5E+P2ZVt/EQnQS7Iiz8
- 5s17kUqWTn8PdXT8cr1iN7ynO0bvtGxc9R2tF19Z7ZcKg1HtUXsHwB75LIm2d6fGNJKaHOF
- Y9c/7XJQ7nvzhPkdl7XHpTsbgxlO267dmTtvSigxCbHiiuiay3zpEdmMi1Av2QbsIadoAlX
- DBV4/H6YDAcF4cdvJvi3w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:xJB1mQosZZc=:uTAUDwbFciv0vIToh8Se3v
- u66nD+WooNufSWVYPx6EP0Dv45Item0Y82oh57iB6ENOrVQDUM1efgqIG3nbYrG9GsNDRXylo
- ufQOqnJH36rTqYbhUB7r/8JAJaDxrr6j0AOY16mYQ/2Cn4WfFtRZsHfmSw7qU+YnTINVurqec
- G2JurhcjR2+DsN7JrrFcrwmo5/qhAAKcQAhLuXcJGs61b0ddEF6dUfMf/dirOZKtEY6lECheE
- RsIfztgIapkSvP+YOirMiytEXFpYIMwy385AgTALgyfiRCojACKrxU8SW10H0OAhgpstZGM8X
- DkmqMU9qvdlxQJfna4tV4Sy/7CNkRhP3Fl6U8uCoFDUKpNYrGZz9bmABS0XVpEmTpw3tEk22g
- BbORpLZ0VICrmi29qkTrZW7L/QUoAivPh6HVoISVb4iCOx9YYO6VZ+gxhiT+MrAMBjx80MToX
- qgdtEH5b6QUthnpdXdznxraGaDmgnrJwfcpiMP+RMpfsBvCbwUoH36RWNrPLZcMgTqloKV48t
- gkCTFbfB4eSATJPghVICy08UQhH3rp/HsQyR/nHEJ0YNVjPECgzuaHoO2/JTRGdPNIusFr2VS
- psar5BZRBbt/WwlE8CzNc6jiFX0anczwdblziFl1n0WDMrkh8oB3CiUqY74ityD0G1/J8lOKu
- LhtuPCd3puiOHQrdicXCRHxt5SLoBhJ3a0oGP8EWe8+4k557leFT2Zs0WogRpiFJCfqH0LCc9
- d1WczhTSThLBUYzRYCRpy2BTWtTe+iDNrjJfE0g2Up70ncAC3kOkEA4cT4HsUiLxctLuIfJMm
- fDf63ut2/+mk2uTnmMgR0RzgP+B7wdpgd74N8ePkSg2mdC/5FQ=
+References: <20200428161355.6377-1-schatzberg.dan@gmail.com>
+ <20200428214653.GD2005@dread.disaster.area> <20200429022732.GA401038@cmpxchg.org>
+ <20200505062946.GH2005@dread.disaster.area>
+In-Reply-To: <20200505062946.GH2005@dread.disaster.area>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 5 May 2020 06:55:14 -0700
+Message-ID: <CALvZod6b8o3rtgvbR6LVBtSmynTiWomyvKdbN_Dyg58Th5Yk-A@mail.gmail.com>
+Subject: Re: [PATCH v5 0/4] Charge loop device i/o to issuing cgroup
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Dan Schatzberg <schatzberg.dan@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>, Roman Gushchin <guro@fb.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:FILESYSTEMS (VFS and infrastructure)" 
+        <linux-fsdevel@vger.kernel.org>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
+        <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clang normally does not warn about certain issues in inline functions when
-it only happens in an eliminated code path. However if something else
-goes wrong, it does tend to complain about the definition of hweight_long()
-on 32-bit targets:
+On Mon, May 4, 2020 at 11:30 PM Dave Chinner <david@fromorbit.com> wrote:
+>
+> On Tue, Apr 28, 2020 at 10:27:32PM -0400, Johannes Weiner wrote:
+> > On Wed, Apr 29, 2020 at 07:47:34AM +1000, Dave Chinner wrote:
+> > > On Tue, Apr 28, 2020 at 12:13:46PM -0400, Dan Schatzberg wrote:
+> > > > This patch series does some
+> > > > minor modification to the loop driver so that each cgroup can make
+> > > > forward progress independently to avoid this inversion.
+> > > >
+> > > > With this patch series applied, the above script triggers OOM kills
+> > > > when writing through the loop device as expected.
+> > >
+> > > NACK!
+> > >
+> > > The IO that is disallowed should fail with ENOMEM or some similar
+> > > error, not trigger an OOM kill that shoots some innocent bystander
+> > > in the head. That's worse than using BUG() to report errors...
+> >
+> > Did you actually read the script?
+>
 
-include/linux/bitops.h:75:41: error: shift count >= width of type [-Werror,-Wshift-count-overflow]
-        return sizeof(w) == 4 ? hweight32(w) : hweight64(w);
-                                               ^~~~~~~~~~~~
-include/asm-generic/bitops/const_hweight.h:29:49: note: expanded from macro 'hweight64'
- define hweight64(w) (__builtin_constant_p(w) ? __const_hweight64(w) : __arch_hweight64(w))
-                                                ^~~~~~~~~~~~~~~~~~~~
-include/asm-generic/bitops/const_hweight.h:21:76: note: expanded from macro '__const_hweight64'
- define __const_hweight64(w) (__const_hweight32(w) + __const_hweight32((w) >> 32))
-                                                                           ^  ~~
-include/asm-generic/bitops/const_hweight.h:20:49: note: expanded from macro '__const_hweight32'
- define __const_hweight32(w) (__const_hweight16(w) + __const_hweight16((w) >> 16))
-                                                ^
-include/asm-generic/bitops/const_hweight.h:19:72: note: expanded from macro '__const_hweight16'
- define __const_hweight16(w) (__const_hweight8(w)  + __const_hweight8((w)  >> 8 ))
-                                                                       ^
-include/asm-generic/bitops/const_hweight.h:12:9: note: expanded from macro '__const_hweight8'
-          (!!((w) & (1ULL << 2))) +     \
+Before responding, I want to make it clear that the OOM behavior which
+you are objecting to is already present in the kernel and is
+independent of this patch series. This patch series is only connecting
+the charging links which were missing for the loop device.
 
-Adding an explicit cast to __u64 avoids that warning and makes it easier
-to read other output.
+> Of course I did. You specifically mean this bit:
+>
+> echo 64M > $CGROUP/memory.max;
+> mount -t tmpfs -o size=512m tmpfs /tmp;
+> truncate -s 512m /tmp/backing_file
+> losetup $LOOP_DEV /tmp/backing_file
+> dd if=/dev/zero of=$LOOP_DEV bs=1M count=256;
+>
+> And with this patch set the dd gets OOM killed because the
+> /tmp/backing_file usage accounted to the cgroup goes over 64MB and
+> so tmpfs OOM kills the IO...
+>
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- include/linux/bitops.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+A few queries to better understand your objection:
 
-diff --git a/include/linux/bitops.h b/include/linux/bitops.h
-index 9acf654f0b19..99f2ac30b1d9 100644
---- a/include/linux/bitops.h
-+++ b/include/linux/bitops.h
-@@ -72,7 +72,7 @@ static inline int get_bitmask_order(unsigned int count)
- 
- static __always_inline unsigned long hweight_long(unsigned long w)
- {
--	return sizeof(w) == 4 ? hweight32(w) : hweight64(w);
-+	return sizeof(w) == 4 ? hweight32(w) : hweight64((__u64)w);
- }
- 
- /**
--- 
-2.26.0
+Let's forget about the cgroup for a second. Let's suppose I am running
+this script on a system/VM having 64 MiB. In your opinion what should
+happen?
 
+Next let's add the swap to the 64 MiB system/VM/cgroup and re-run the
+script, what should be the correct behavior?
+
+Next replace the tmpfs with any other disk backed file system and
+re-run the script in a 64 MiB system/VM/cgroup, what should be the
+correct behavior?
+
+> As I said: that's very broken behaviour from a storage stack
+> perspective.
+>
+> > It's OOMing because it's creating 256M worth of tmpfs pages inside a
+> > 64M cgroup. It's not killing an innocent bystander, it's killing in
+> > the cgroup that is allocating all that memory - after Dan makes sure
+> > that memory is accounted to its rightful owner.
+>
+> What this example does is turn /tmp into thinly provisioned storage
+> for $CGROUP via a restricted quota. It has a device size of 512MB,
+> but only has physical storage capacity of 64MB, as constrained by
+> the cgroup memory limit.  You're dealing with management of -storage
+> devices- and -IO error reporting- here, not memory management.
+>
+> When thin provisioned storage runs out of space - for whatever
+> reason - and it cannot resolve the issue by blocking, then it *must*
+> return ENOSPC to the IO submitter to tell it the IO has failed. This
+> is no different to if we set a quota on /tmp/backing_file and it is
+> exhausted at 64MB of data written - we fail the IO with ENOSPC or
+> EDQUOT, depending on which quota we used.
+>
+> IOWs, we have solid expectations on how block devices report
+> unsolvable resource shortages during IO because those errors have to
+> be handled correctly by whatever is submitting the IO. We do not use
+> the OOM-killer to report or resolve ENOSPC errors.
+>
+> Indeed, once you've killed the dd, that CGROUP still consumes 64MB
+> of tmpfs space in /tmp/backing_file, in which case any further IO to
+> $LOOP_DEV is also going to OOM kill. These are horrible semantics
+> for reporting errors to userspace.
+>
+> And if the OOM-killer actually frees the 64MB of data written to
+> /tmp/backing_file through the $LOOP_DEV, then you're actually
+> corrupting the storage and ensuring that nobody can read the data
+> that was written to $LOOP_DEV.
+>
+> So now lets put a filesystem on $LOOP_DEV in the above example, and
+> write out data to the filesystem which does IO to $LOOP_DEV. Just by
+> chance, the filesystem does some metadata writes iin the context of
+> the user process doing the writes (because journalling, etc) and
+> that metadata IO is what pushes the loop device over the cgroup's
+> memory limit.
+>
+> You kill the user application even though it wasn't directly
+> responsible for going over the 64MB limit of space in $LOOP_DEV.
+> What happens now to the filesystem's metadata IO?  Did $LOOP_DEV
+> return an error, or after the OOM kill did the IO succeed?  What
+> happens if all the IO being generated from the user application is
+> metadata and that starts failing - killing the user application
+> doesn't help anything - the filesystem IO is failing and that's
+> where the errors need to be reported.
+>
+> And if the answer is "metadata IO isn't accounted to the $CGROUP"
+> then what happens when the tmpfs actually runs out of it's 512MB of
+> space because of all the metadata the filesystem wrote (e.g. create
+> lots of zero length files)? That's an ENOSPC error, and we'll get
+> that from $LOOP_DEV just fine.
+>
+> So why should the same error - running out of tmpfs space vs running
+> out of CGROUP quota space on tmpfs be handled differently? Either
+> they are both ENOSPC IO errors, or they are both OOM kill vectors
+> because tmpfs space has run out...
+>
+> See the problem here? We report storage resource shortages
+> (whatever the cause) by IO errors, not by killing userspace
+> processes. Userspace may be able to handle the IO error sanely; it
+> has no warning or choice when you use OOM kill to report ENOSPC
+> errors...
+>
+> > As opposed to before this series, where all this memory isn't
+> > accounted properly and goes to the root cgroup - where, ironically, it
+> > could cause OOM and kill an actually innocent bystander.
+>
+> Johannes, I didn't question the need for the functionality. I
+> questioned the implementation and pointed out fundamental problems
+> it has as well as the architectural questions raised by needing
+> special kthread-based handling for correct accounting of
+> cgroup-aware IO.
+>
+> It's a really bad look to go shoot the messenger when it's clear you
+> haven't understood the message that was delivered.
+>
+> -Dave.
+> --
+> Dave Chinner
+> david@fromorbit.com
