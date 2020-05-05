@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09ACD1C5896
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:16:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEB711C58F1
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:20:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730003AbgEEOQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:16:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49038 "EHLO
+        id S1729460AbgEEOUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:20:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729295AbgEEOQD (ORCPT
+        by vger.kernel.org with ESMTP id S1729994AbgEEOQE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:16:03 -0400
+        Tue, 5 May 2020 10:16:04 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC632C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:16:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 133F1C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:16:04 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jVyMK-0001mm-ND; Tue, 05 May 2020 16:15:44 +0200
+        id 1jVyMM-0001ni-6q; Tue, 05 May 2020 16:15:46 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 448D9FFC8D;
-        Tue,  5 May 2020 16:15:44 +0200 (CEST)
-Message-Id: <20200505134926.578885807@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 7F25CFFC8D;
+        Tue,  5 May 2020 16:15:45 +0200 (CEST)
+Message-Id: <20200505135313.410702173@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 05 May 2020 15:49:26 +0200
+Date:   Tue, 05 May 2020 15:49:27 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -43,9 +43,13 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Brian Gerst <brgerst@gmail.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>
-Subject: [patch V4 part 4 00/24] x86/entry: Entry/exception code rework, nasty
- exceptions
+        Will Deacon <will@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: [patch V4 part 4 01/24] x86/int3: Ensure that poke_int3_handler() is
+ not traced
+References: <20200505134926.578885807@linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-transfer-encoding: 8-bit
 X-Linutronix-Spam-Score: -1.0
 X-Linutronix-Spam-Level: -
@@ -55,74 +59,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Folks,
+From: Thomas Gleixner <tglx@linutronix.de>
 
-This is the forth part of the rework series. Part 3 can be found here:
+In order to ensure poke_int3_handler() is completely self contained -- this
+is called while modifying other text, imagine the fun of hitting another
+INT3 -- ensure that everything it uses is not traced.
 
- https://lore.kernel.org/r/20200505134354.774943181@linutronix.de
+The primary means here is to force inlining; bsearch() is notrace because
+all of lib/ is.
 
-The series has a total of 138 patches and is split into 5 parts. The base
-for this 4th series is:
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ arch/x86/include/asm/ptrace.h        |    2 +-
+ arch/x86/include/asm/text-patching.h |   11 +++++++----
+ arch/x86/kernel/alternative.c        |   13 ++++++-------
+ 3 files changed, 14 insertions(+), 12 deletions(-)
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git entry-v4-part-3
-
-The full series with all parts applied is available here:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git entry-v4-part-5
-
-The forth part, i.e. this series is available from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git entry-v4-part-4
+--- a/arch/x86/include/asm/ptrace.h
++++ b/arch/x86/include/asm/ptrace.h
+@@ -123,7 +123,7 @@ static inline void regs_set_return_value
+  * On x86_64, vm86 mode is mercifully nonexistent, and we don't need
+  * the extra check.
+  */
+-static inline int user_mode(struct pt_regs *regs)
++static __always_inline int user_mode(struct pt_regs *regs)
+ {
+ #ifdef CONFIG_X86_32
+ 	return ((regs->cs & SEGMENT_RPL_MASK) | (regs->flags & X86_VM_MASK)) >= USER_RPL;
+--- a/arch/x86/include/asm/text-patching.h
++++ b/arch/x86/include/asm/text-patching.h
+@@ -64,7 +64,7 @@ extern void text_poke_finish(void);
  
-This part contains the modifications for complex and nasty exceptions and traps:
+ #define DISP32_SIZE		4
+ 
+-static inline int text_opcode_size(u8 opcode)
++static __always_inline int text_opcode_size(u8 opcode)
+ {
+ 	int size = 0;
+ 
+@@ -118,12 +118,14 @@ extern __ro_after_init struct mm_struct
+ extern __ro_after_init unsigned long poking_addr;
+ 
+ #ifndef CONFIG_UML_X86
+-static inline void int3_emulate_jmp(struct pt_regs *regs, unsigned long ip)
++static __always_inline
++void int3_emulate_jmp(struct pt_regs *regs, unsigned long ip)
+ {
+ 	regs->ip = ip;
+ }
+ 
+-static inline void int3_emulate_push(struct pt_regs *regs, unsigned long val)
++static __always_inline
++void int3_emulate_push(struct pt_regs *regs, unsigned long val)
+ {
+ 	/*
+ 	 * The int3 handler in entry_64.S adds a gap between the
+@@ -138,7 +140,8 @@ static inline void int3_emulate_push(str
+ 	*(unsigned long *)regs->sp = val;
+ }
+ 
+-static inline void int3_emulate_call(struct pt_regs *regs, unsigned long func)
++static __always_inline
++void int3_emulate_call(struct pt_regs *regs, unsigned long func)
+ {
+ 	int3_emulate_push(regs, regs->ip - INT3_INSN_SIZE + CALL_INSN_SIZE);
+ 	int3_emulate_jmp(regs, func);
+--- a/arch/x86/kernel/alternative.c
++++ b/arch/x86/kernel/alternative.c
+@@ -957,7 +957,8 @@ struct bp_patching_desc {
+ 
+ static struct bp_patching_desc *bp_desc;
+ 
+-static inline struct bp_patching_desc *try_get_desc(struct bp_patching_desc **descp)
++static __always_inline
++struct bp_patching_desc *try_get_desc(struct bp_patching_desc **descp)
+ {
+ 	struct bp_patching_desc *desc = READ_ONCE(*descp); /* rcu_dereference */
+ 
+@@ -967,18 +968,18 @@ static inline struct bp_patching_desc *t
+ 	return desc;
+ }
+ 
+-static inline void put_desc(struct bp_patching_desc *desc)
++static __always_inline void put_desc(struct bp_patching_desc *desc)
+ {
+ 	smp_mb__before_atomic();
+ 	atomic_dec(&desc->refs);
+ }
+ 
+-static inline void *text_poke_addr(struct text_poke_loc *tp)
++static __always_inline void *text_poke_addr(struct text_poke_loc *tp)
+ {
+ 	return _stext + tp->rel_addr;
+ }
+ 
+-static int notrace patch_cmp(const void *key, const void *elt)
++static int noinstr patch_cmp(const void *key, const void *elt)
+ {
+ 	struct text_poke_loc *tp = (struct text_poke_loc *) elt;
+ 
+@@ -988,9 +989,8 @@ static int notrace patch_cmp(const void
+ 		return 1;
+ 	return 0;
+ }
+-NOKPROBE_SYMBOL(patch_cmp);
+ 
+-int notrace poke_int3_handler(struct pt_regs *regs)
++int noinstr poke_int3_handler(struct pt_regs *regs)
+ {
+ 	struct bp_patching_desc *desc;
+ 	struct text_poke_loc *tp;
+@@ -1064,7 +1064,6 @@ int notrace poke_int3_handler(struct pt_
+ 	put_desc(desc);
+ 	return ret;
+ }
+-NOKPROBE_SYMBOL(poke_int3_handler);
+ 
+ #define TP_VEC_MAX (PAGE_SIZE / sizeof(struct text_poke_loc))
+ static struct text_poke_loc tp_vec[TP_VEC_MAX];
 
- - Conversion of int3 including a full isolation of the text poke handler
-   so it is fully self contained, i.e does not call out into any
-   instrumentable code.
-
- - Conversion of NMI handling including protection against instrumentation
-
- - Conversion of #DB with separation of the user and kernel mode entries
-
- - Conversion of #MC and #DF
-
-The objtool check for the noinstr.text correctness is not yet added to the
-build machinery and has to be invoked manually for now:
-
-   objtool check -fal vmlinux.o
-
-The checking only works for builtin code as objtool cannot do a combined
-analysis of vmlinux.o and a module.o
-
-Thanks,
-
-	tglx
-
-8<----------
- arch/x86/entry/entry_32.S            |   38 ----
- arch/x86/entry/entry_64.S            |   35 +---
- arch/x86/include/asm/desc.h          |    8 
- arch/x86/include/asm/idtentry.h      |  235 +++++++++++++++++++++++++++++
- arch/x86/include/asm/mce.h           |    2 
- arch/x86/include/asm/ptrace.h        |    2 
- arch/x86/include/asm/text-patching.h |   11 -
- arch/x86/include/asm/traps.h         |   23 --
- arch/x86/kernel/alternative.c        |   25 +--
- arch/x86/kernel/cpu/common.c         |    6 
- arch/x86/kernel/cpu/mce/core.c       |   91 ++++++++---
- arch/x86/kernel/cpu/mce/inject.c     |    4 
- arch/x86/kernel/cpu/mce/internal.h   |    2 
- arch/x86/kernel/cpu/mce/p5.c         |    8 
- arch/x86/kernel/cpu/mce/winchip.c    |    8 
- arch/x86/kernel/doublefault_32.c     |   10 -
- arch/x86/kernel/hw_breakpoint.c      |    6 
- arch/x86/kernel/idt.c                |   22 +-
- arch/x86/kernel/nmi.c                |   14 -
- arch/x86/kernel/traps.c              |  283 ++++++++++++++++++++++++-----------
- arch/x86/kvm/vmx/vmx.c               |    2 
- arch/x86/xen/enlighten_pv.c          |   17 +-
- arch/x86/xen/xen-asm_64.S            |   12 -
- include/linux/bsearch.h              |   26 ++-
- kernel/time/timekeeping.c            |    2 
- lib/bsearch.c                        |   22 --
- 26 files changed, 615 insertions(+), 299 deletions(-)
