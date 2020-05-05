@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71B4A1C5945
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:24:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5D4C1C585F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:14:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730027AbgEEOXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:23:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48548 "EHLO
+        id S1729478AbgEEON7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:13:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729372AbgEEONx (ORCPT
+        by vger.kernel.org with ESMTP id S1729450AbgEEONx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 5 May 2020 10:13:53 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEADAC061A0F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:13:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DF77C061A10
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:13:53 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jVyKF-0000Vo-Gm; Tue, 05 May 2020 16:13:35 +0200
+        id 1jVyKG-0000Wg-ON; Tue, 05 May 2020 16:13:36 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id F3A7FFFC8D;
-        Tue,  5 May 2020 16:13:34 +0200 (CEST)
-Message-Id: <20200505134059.771170126@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 3C0B8FFC8D;
+        Tue,  5 May 2020 16:13:36 +0200 (CEST)
+Message-Id: <20200505134059.878578033@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 05 May 2020 15:16:19 +0200
+Date:   Tue, 05 May 2020 15:16:20 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -44,7 +44,8 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Will Deacon <will@kernel.org>
-Subject: [patch V4 part 1 17/36] kprobes: Support NOKPROBE_SYMBOL() in modules
+Subject: [patch V4 part 1 18/36] samples/kprobes: Add __kprobes and
+ NOKPROBE_SYMBOL() for handlers.
 References: <20200505131602.633487962@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -59,87 +60,62 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Masami Hiramatsu <mhiramat@kernel.org>
 
-Support NOKPROBE_SYMBOL() in modules. NOKPROBE_SYMBOL() records only symbol
-address in "_kprobe_blacklist" section in the module.
+Add __kprobes and NOKPROBE_SYMBOL() for sample kprobe handlers.
 
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lkml.kernel.org/r/158523419989.24735.6665260504057165207.stgit@devnote2
+Link: https://lkml.kernel.org/r/158523421177.24735.16273975317343670204.stgit@devnote2
 
 ---
- include/linux/module.h |    2 ++
- kernel/kprobes.c       |   17 +++++++++++++++++
- kernel/module.c        |    3 +++
- 3 files changed, 22 insertions(+)
+ samples/kprobes/kprobe_example.c    |    6 ++++--
+ samples/kprobes/kretprobe_example.c |    2 ++
+ 2 files changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/module.h b/include/linux/module.h
-index 369c354f9207..1192097c9a69 100644
---- a/include/linux/module.h
-+++ b/include/linux/module.h
-@@ -492,6 +492,8 @@ struct module {
- #ifdef CONFIG_KPROBES
- 	void *kprobes_text_start;
- 	unsigned int kprobes_text_size;
-+	unsigned long *kprobe_blacklist;
-+	unsigned int num_kprobe_blacklist;
- #endif
+--- a/samples/kprobes/kprobe_example.c
++++ b/samples/kprobes/kprobe_example.c
+@@ -25,7 +25,7 @@ static struct kprobe kp = {
+ };
  
- #ifdef CONFIG_LIVEPATCH
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index b7549992b9bd..9eb5acf0a9f3 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -2192,6 +2192,11 @@ static void kprobe_remove_area_blacklist(unsigned long start, unsigned long end)
- 	}
+ /* kprobe pre_handler: called just before the probed instruction is executed */
+-static int handler_pre(struct kprobe *p, struct pt_regs *regs)
++static int __kprobes handler_pre(struct kprobe *p, struct pt_regs *regs)
+ {
+ #ifdef CONFIG_X86
+ 	pr_info("<%s> pre_handler: p->addr = 0x%p, ip = %lx, flags = 0x%lx\n",
+@@ -54,7 +54,7 @@ static int handler_pre(struct kprobe *p,
  }
  
-+static void kprobe_remove_ksym_blacklist(unsigned long entry)
-+{
-+	kprobe_remove_area_blacklist(entry, entry + 1);
-+}
-+
- int __init __weak arch_populate_kprobe_blacklist(void)
+ /* kprobe post_handler: called after the probed instruction is executed */
+-static void handler_post(struct kprobe *p, struct pt_regs *regs,
++static void __kprobes handler_post(struct kprobe *p, struct pt_regs *regs,
+ 				unsigned long flags)
  {
+ #ifdef CONFIG_X86
+@@ -90,6 +90,8 @@ static int handler_fault(struct kprobe *
+ 	/* Return 0 because we don't handle the fault. */
  	return 0;
-@@ -2231,6 +2236,12 @@ static int __init populate_kprobe_blacklist(unsigned long *start,
- static void add_module_kprobe_blacklist(struct module *mod)
- {
- 	unsigned long start, end;
-+	int i;
-+
-+	if (mod->kprobe_blacklist) {
-+		for (i = 0; i < mod->num_kprobe_blacklist; i++)
-+			kprobe_add_ksym_blacklist(mod->kprobe_blacklist[i]);
-+	}
+ }
++/* NOKPROBE_SYMBOL() is also available */
++NOKPROBE_SYMBOL(handler_fault);
  
- 	start = (unsigned long)mod->kprobes_text_start;
- 	if (start) {
-@@ -2242,6 +2253,12 @@ static void add_module_kprobe_blacklist(struct module *mod)
- static void remove_module_kprobe_blacklist(struct module *mod)
+ static int __init kprobe_init(void)
  {
- 	unsigned long start, end;
-+	int i;
-+
-+	if (mod->kprobe_blacklist) {
-+		for (i = 0; i < mod->num_kprobe_blacklist; i++)
-+			kprobe_remove_ksym_blacklist(mod->kprobe_blacklist[i]);
-+	}
+--- a/samples/kprobes/kretprobe_example.c
++++ b/samples/kprobes/kretprobe_example.c
+@@ -48,6 +48,7 @@ static int entry_handler(struct kretprob
+ 	data->entry_stamp = ktime_get();
+ 	return 0;
+ }
++NOKPROBE_SYMBOL(entry_handler);
  
- 	start = (unsigned long)mod->kprobes_text_start;
- 	if (start) {
-diff --git a/kernel/module.c b/kernel/module.c
-index f7712a923d63..7be011dacd8a 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -3197,6 +3197,9 @@ static int find_module_sections(struct module *mod, struct load_info *info)
- #ifdef CONFIG_KPROBES
- 	mod->kprobes_text_start = section_objs(info, ".kprobes.text", 1,
- 						&mod->kprobes_text_size);
-+	mod->kprobe_blacklist = section_objs(info, "_kprobe_blacklist",
-+						sizeof(unsigned long),
-+						&mod->num_kprobe_blacklist);
- #endif
- 	mod->extable = section_objs(info, "__ex_table",
- 				    sizeof(*mod->extable), &mod->num_exentries);
-
+ /*
+  * Return-probe handler: Log the return value and duration. Duration may turn
+@@ -67,6 +68,7 @@ static int ret_handler(struct kretprobe_
+ 			func_name, retval, (long long)delta);
+ 	return 0;
+ }
++NOKPROBE_SYMBOL(ret_handler);
+ 
+ static struct kretprobe my_kretprobe = {
+ 	.handler		= ret_handler,
 
