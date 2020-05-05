@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96BF41C590C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:21:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DE451C5887
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:16:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729831AbgEEOVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:21:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48868 "EHLO
+        id S1729807AbgEEOPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:15:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729782AbgEEOPS (ORCPT
+        by vger.kernel.org with ESMTP id S1729797AbgEEOPU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:15:18 -0400
+        Tue, 5 May 2020 10:15:20 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46212C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:15:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29E2DC061A10
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:15:20 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jVyLd-0001Kl-9w; Tue, 05 May 2020 16:15:01 +0200
+        id 1jVyLe-0001Lf-Np; Tue, 05 May 2020 16:15:02 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id BCEFAFFC8D;
-        Tue,  5 May 2020 16:15:00 +0200 (CEST)
-Message-Id: <20200505134904.058904490@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 026EDFFC8D;
+        Tue,  5 May 2020 16:15:02 +0200 (CEST)
+Message-Id: <20200505134904.166735365@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 05 May 2020 15:44:02 +0200
+Date:   Tue, 05 May 2020 15:44:03 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -44,7 +44,7 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Will Deacon <will@kernel.org>
-Subject: [patch V4 part 3 08/29] x86/entry/64: Provide sane error entry/exit
+Subject: [patch V4 part 3 09/29] x86/entry/32: Provide macro to emit IDT entry stubs
 References: <20200505134354.774943181@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -57,91 +57,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For gradual conversion provide a macro parameter and the required code
-which allows to handle instrumentation and interrupt flags tracking in C.
+From: Thomas Gleixner <tglx@linutronix.de>
+
+32 and 64 bit have unnecessary different ways to populate the exception
+entry code. Provide a idtentry macro which allows to consolidate all of
+that.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
 ---
- arch/x86/entry/entry_64.S |   22 +++++++++++++++++++---
- 1 file changed, 19 insertions(+), 3 deletions(-)
+V3: Remove the INVD bug asm. Can be done in C (Brian)
+---
+ arch/x86/entry/entry_32.S |   68 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 68 insertions(+)
 
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -500,8 +500,9 @@ SYM_CODE_END(spurious_entries_start)
-  * @vector:		Vector number
-  * @cfunc:		C function to be called
-  * @has_error_code:	Hardware pushed error code on stack
-+ * @sane:		Sane variant which handles irq tracing, context tracking in C
-  */
--.macro idtentry_body vector cfunc has_error_code:req
-+.macro idtentry_body vector cfunc has_error_code:req sane=0
+--- a/arch/x86/entry/entry_32.S
++++ b/arch/x86/entry/entry_32.S
+@@ -44,6 +44,7 @@
+ #include <asm/asm.h>
+ #include <asm/smap.h>
+ #include <asm/frame.h>
++#include <asm/trapnr.h>
+ #include <asm/nospec-branch.h>
  
- 	call	error_entry
- 	UNWIND_HINT_REGS
-@@ -515,6 +516,7 @@ SYM_CODE_END(spurious_entries_start)
- 		GET_CR2_INTO(%r12);
- 	.endif
+ #include "calling.h"
+@@ -726,6 +727,31 @@
  
-+	.if \sane == 0
- 	TRACE_IRQS_OFF
- 
- #ifdef CONFIG_CONTEXT_TRACKING
-@@ -523,6 +525,7 @@ SYM_CODE_END(spurious_entries_start)
- 	CALL_enter_from_user_mode
- .Lfrom_kernel_no_ctxt_tracking_\@:
- #endif
-+	.endif
- 
- 	movq	%rsp, %rdi			/* pt_regs pointer into 1st argument*/
- 
-@@ -539,7 +542,11 @@ SYM_CODE_END(spurious_entries_start)
- 
- 	call	\cfunc
- 
-+	.if \sane == 0
- 	jmp	error_exit
-+	.else
-+	jmp	error_return
-+	.endif
+ .Lend_\@:
  .endm
- 
- /**
-@@ -548,11 +555,12 @@ SYM_CODE_END(spurious_entries_start)
-  * @asmsym:		ASM symbol for the entry point
-  * @cfunc:		C function to be called
-  * @has_error_code:	Hardware pushed error code on stack
-+ * @sane:		Sane variant which handles irq tracing, context tracking in C
-  *
-  * The macro emits code to set up the kernel context for straight forward
-  * and simple IDT entries. No IST stack, no paranoid entry checks.
-  */
--.macro idtentry vector asmsym cfunc has_error_code:req
++
++/**
++ * idtentry - Macro to generate entry stubs for simple IDT entries
++ * @vector:		Vector number
++ * @asmsym:		ASM symbol for the entry point
++ * @cfunc:		C function to be called
++ * @has_error_code:	Hardware pushed error code on stack
++ * @sane:		Compatibility flag with 64bit
++ */
 +.macro idtentry vector asmsym cfunc has_error_code:req sane=0
- SYM_CODE_START(\asmsym)
- 	UNWIND_HINT_IRET_REGS offset=\has_error_code*8
- 	ASM_CLAC
-@@ -575,7 +583,7 @@ SYM_CODE_START(\asmsym)
- .Lfrom_usermode_no_gap_\@:
- 	.endif
- 
--	idtentry_body \vector \cfunc \has_error_code
-+	idtentry_body \vector \cfunc \has_error_code \sane
- 
- _ASM_NOKPROBE(\asmsym)
- SYM_CODE_END(\asmsym)
-@@ -1405,6 +1413,14 @@ SYM_CODE_START_LOCAL(error_exit)
- 	jmp	.Lretint_user
- SYM_CODE_END(error_exit)
- 
-+SYM_CODE_START_LOCAL(error_return)
-+	UNWIND_HINT_REGS
-+	DEBUG_ENTRY_ASSERT_IRQS_OFF
-+	testb	$3, CS(%rsp)
-+	jz	restore_regs_and_return_to_kernel
-+	jmp	swapgs_restore_regs_and_return_to_usermode
-+SYM_CODE_END(error_return)
++SYM_CODE_START(\asmsym)
++	ASM_CLAC
++	cld
++
++	.if \has_error_code == 0
++		pushl	$0		/* Clear the error code */
++	.endif
++
++	/* Push the C-function address into the GS slot */
++	pushl	$\cfunc
++	/* Invoke the common exception entry */
++	jmp	handle_exception
++SYM_CODE_END(\asmsym)
++.endm
 +
  /*
-  * Runs on exception stack.  Xen PV does not go through this path at all,
-  * so we can use real assembly here.
+  * %eax: prev task
+  * %edx: next task
+@@ -1517,6 +1543,48 @@ SYM_CODE_START_LOCAL_NOALIGN(common_exce
+ 	jmp	ret_from_exception
+ SYM_CODE_END(common_exception)
+ 
++SYM_CODE_START_LOCAL_NOALIGN(handle_exception)
++	/* the function address is in %gs's slot on the stack */
++	SAVE_ALL switch_stacks=1 skip_gs=1 unwind_espfix=1
++	ENCODE_FRAME_POINTER
++
++	/* fixup %gs */
++	GS_TO_REG %ecx
++	movl	PT_GS(%esp), %edi		# get the function address
++	REG_TO_PTGS %ecx
++	SET_KERNEL_GS %ecx
++
++	/* fixup orig %eax */
++	movl	PT_ORIG_EAX(%esp), %edx		# get the error code
++	movl	$-1, PT_ORIG_EAX(%esp)		# no syscall to restart
++
++	movl	%esp, %eax			# pt_regs pointer
++	CALL_NOSPEC edi
++
++#ifdef CONFIG_VM86
++	movl	PT_EFLAGS(%esp), %eax		# mix EFLAGS and CS
++	movb	PT_CS(%esp), %al
++	andl	$(X86_EFLAGS_VM | SEGMENT_RPL_MASK), %eax
++#else
++	/*
++	 * We can be coming here from child spawned by kernel_thread().
++	 */
++	movl	PT_CS(%esp), %eax
++	andl	$SEGMENT_RPL_MASK, %eax
++#endif
++	cmpl	$USER_RPL, %eax			# returning to v8086 or userspace ?
++	jnb	ret_to_user
++
++	PARANOID_EXIT_TO_KERNEL_MODE
++	BUG_IF_WRONG_CR3
++	RESTORE_REGS 4
++	jmp	.Lirq_return
++
++ret_to_user:
++	movl	%esp, %eax
++	jmp	restore_all_switch_stack
++SYM_CODE_END(handle_exception)
++
+ SYM_CODE_START(debug)
+ 	/*
+ 	 * Entry from sysenter is now handled in common_exception
 
