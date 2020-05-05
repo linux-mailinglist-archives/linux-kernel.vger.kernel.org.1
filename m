@@ -2,125 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D80B1C5857
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:13:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABEB91C592B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:23:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729321AbgEEONg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:13:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729146AbgEEONf (ORCPT
+        id S1729587AbgEEOOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:14:32 -0400
+Received: from mout.kundenserver.de ([217.72.192.73]:36381 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729559AbgEEOOW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:13:35 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B1E4C061A0F;
-        Tue,  5 May 2020 07:13:35 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id mq3so1186874pjb.1;
-        Tue, 05 May 2020 07:13:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vUI7H3zEQ9H8QIwCQ24EAq2pWsz3laTp86kjJwGCy2A=;
-        b=YkZw8YQXDccsDbBS4C0O5LMJGsSXIuT1ovPSHZeibMB4ZhJbetT5karBIQDGZyMu0k
-         IBdRJNOVOa1GNEbhoAuCCrvOK95e4ExfkjwNMMqw8yyFSpe6/HZclQjj/o/y/DEjyXQf
-         D8bD98dH4TU8N9iILFu6DwhyrLrlFYj24qKgldff3S35uVjPxaC8qpPHMbhOElowls51
-         NA+CUw+XfSpefYj0MsjjxqdD/1An+fcrvFfnPRdSVMHOAFB4Q7IZukrTfCHjNl6LuXlX
-         SkcXFYf+6CloWECw34gLTvnp/U4XgJ2AEyem4IDuABqVEJH0tksWHndPxMQsIdIQQlgL
-         50zQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vUI7H3zEQ9H8QIwCQ24EAq2pWsz3laTp86kjJwGCy2A=;
-        b=T/TvscqHdAIbMR/l9sfaTewI3wA0V+khggHHL3YFmdAyCvd1e1LkHhj33RmC7V3klf
-         YQyheZtE8PimCDkc/EdiMIdMFIMgDt8TxXDOGyG/Yr5tRNQotUji9SMxzDKF3l1Az5Rx
-         Dy/Q2oF8vl9xexPWXa97iw6ZWr69rwrKXmE/ri5Yplg97c38W4Te9VQjuNBmYAydYWJn
-         h6xm12uxfEfVlUWrZfSqwgwu68h/KLC0SvGgtyVGugdUCf1PhK0qW2NRbh04q31tNuz+
-         9s0XkPbNT0RjVEeXVEx7Q3yN5Z8q3sdz2Y2SP1Fak01Ety715SdKOEyQ9Ln5+T+RVvrF
-         N9Hg==
-X-Gm-Message-State: AGi0PuZYt4ZOwzb4DO6RhM+acBpokbvxX//GHQ0qfPzJHk7+6gVgz3lR
-        DXSSWABZRi1x0PfVLxbe27g8OPLfqSVqDIYdUZk=
-X-Google-Smtp-Source: APiQypKwqHcpUrfpqYd5uUdTyj3td5+1Wg/esi83wvGDAF8yQlrbm2K4xPgTkvNlPBQj0TfYH1WbhCd8ME96fqQEWY0=
-X-Received: by 2002:a17:90a:37a3:: with SMTP id v32mr3401271pjb.2.1588688015023;
- Tue, 05 May 2020 07:13:35 -0700 (PDT)
+        Tue, 5 May 2020 10:14:22 -0400
+Received: from localhost.localdomain ([149.172.19.189]) by
+ mrelayeu.kundenserver.de (mreue108 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1MBDrM-1jQzi83buY-00CePX; Tue, 05 May 2020 16:14:02 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Kevin Hilman <khilman@kernel.org>,
+        Aaro Koskinen <aaro.koskinen@iki.fi>,
+        Tony Lindgren <tony@atomide.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        afzal mohammed <afzal.mohd.ma@gmail.com>,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: omap1: fix irq setup
+Date:   Tue,  5 May 2020 16:13:48 +0200
+Message-Id: <20200505141400.767312-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-References: <20200505132905.10276-1-calvin.johnson@oss.nxp.com> <20200505132905.10276-4-calvin.johnson@oss.nxp.com>
-In-Reply-To: <20200505132905.10276-4-calvin.johnson@oss.nxp.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 5 May 2020 17:13:28 +0300
-Message-ID: <CAHp75Ve4RMhfkNjO9NtNpjT9uRi3p1BAifCGDrB2fhAyBA8YtQ@mail.gmail.com>
-Subject: Re: [net-next PATCH v3 3/5] phylink: Introduce phylink_fwnode_phy_connect()
-To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
-Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        linux.cj@gmail.com, Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Varun Sethi <V.Sethi@nxp.com>,
-        "Rajesh V . Bikkina" <rajesh.bikkina@nxp.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        netdev <netdev@vger.kernel.org>, Marcin Wojtas <mw@semihalf.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Makarand Pawagi <makarand.pawagi@nxp.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Pankaj Bansal <pankaj.bansal@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:LvLPepcWVA3cOq/dneR4EUFbqygTCx28UhrDXt4MYSPcNJ4mrgn
+ +QPxmj7Yxy4NuRDL2I3gKatumDNFanxLYw86EEXLQeaxf2uHxTPjdRxsZ0nyaJR+ncJanxy
+ 4nbOjM2H44/xEfwf5IKaHiR31MSIY7ePR1EXQ4Pd0jnyhEqjx5026Ue0/bycDgRv8VJvbSE
+ z15LpjYn+K1X0KpouEG5A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:HMPeHO7MWj0=:QCVLcwagAi7moRTbEI8t4o
+ uzWUr479RSv5Yd9emDprIzlpJRBuT53YlMq5+Ph3I8BO22ZitbEGM7a0XAZV1RVBCFf25N678
+ TSSXd/DZRqPeNA1XgKo27ZE4YfC4aoy7CMpcWIcubWLSwahc2Xd649/RRCJ1m2OeQSpcVNUVy
+ 0S4sfhFaScwVX+oUmWSX3LSejHiSqhMTHxBHagCNqDQkYUgvY7Lk1ZLRLLfo5qI9Tgegs8PwV
+ kV18Qh/OM9PwyUWsjmUIMGZZdeyBpHb7wox2LZZQ/jMUiOLhxzFzpIn3U0Vd/3+pBq1tSf40P
+ ijm0zpuP258+KqWNNf26tgKSlX70j7WNSfTQw5lEjoGpNy0LG3ZHY2lDnbNHOrzrGDkVma1ZW
+ QAUaXOEPlSk2TUXpiNbWsdDdJRKkkz6tSZFsz+tcZa1mCrVp06VXvlpZCDUqidndoJUdqcqTR
+ tTRJSfP9TXKy9QTHkPTSZVr8WxIrcvil34FhEJeiuF0CYUXDWOQLlegPiXAfQ7qD7AHXkTvKh
+ KU3SyvnFld/2S3Ux5n9p6oUgmDcLzE+N+w34hvIMfikZPCamItyAGjJX08clxNMQae1cg+qed
+ 2mMf1XNBAplayot4r50g5EN56RUtCME/8OHkIuIDeQa8l75/AnBimnkj6cz1aPm+9W2i1Pw2N
+ CaQwxqyVNrY45q70PsMqbGXLktumgD0UiY3EMai9x6tPj3+vvsDz+XHg9FtGCe2SDKjL/V6UJ
+ xSbQ3spM4NH7kQgc9kGalLumeO36TZI2qKqiV1K/BSrh2/DKj2yWD0pmUoP6MYOEwQAs1t/cO
+ nDRnVmQi9zqpnZnWAibQPwqWUIJdJXK6XyLcf6VORR8tpPigNQ=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 5, 2020 at 4:29 PM Calvin Johnson
-<calvin.johnson@oss.nxp.com> wrote:
->
-> Define phylink_fwnode_phy_connect() to connect phy specified by
-> a fwnode to a phylink instance.
+A recent cleanup introduced a bug on any omap1 machine that has
+no wakeup IRQ, i.e. omap15xx:
 
-...
+arch/arm/mach-omap1/pm.c:656:11: error: variable 'irq' is used uninitialized whenever 'if' condition is false [-Werror,-Wsometimes-uninitialized]
+        else if (cpu_is_omap16xx())
+                 ^~~~~~~~~~~~~~~~~
+include/linux/soc/ti/omap1-soc.h:115:30: note: expanded from macro 'cpu_is_omap16xx'
+ #  define cpu_is_omap16xx()             is_omap16xx()
+                                        ^~~~~~~~~~~~~
+arch/arm/mach-omap1/pm.c:658:18: note: uninitialized use occurs here
+        if (request_irq(irq, omap_wakeup_interrupt, 0, "peripheral wakeup",
+                        ^~~
+arch/arm/mach-omap1/pm.c:656:7: note: remove the 'if' if its condition is always true
+        else if (cpu_is_omap16xx())
+             ^~~~~~~~~~~~~~~~~~~~~~
+arch/arm/mach-omap1/pm.c:611:9: note: initialize the variable 'irq' to silence this warning
+        int irq;
+               ^
 
-> +       int ret = 0;
+Move this code into a separate function to deal with it cleanly.
 
-Redundant assignment.
+Fixes: b75ca5217743 ("ARM: OMAP: replace setup_irq() by request_irq()")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/arm/mach-omap1/pm.c | 25 +++++++++++++++++--------
+ 1 file changed, 17 insertions(+), 8 deletions(-)
 
-> +       if ((IS_ERR(phy_fwnode)) && pl->cfg_link_an_mode == MLO_AN_PHY)
-
-No Lisp, please.
-
-> +               return -ENODEV;
-
-...
-
-> +       phy_dev = fwnode_phy_find_device(phy_fwnode);
-> +       fwnode_handle_put(phy_fwnode);
-
-Hmm... Isn't it racy? I mean if you put fwnode here the phy_dev may
-already be gone before you call phy_attach_direct, right?
-
-> +       if (!phy_dev)
-> +               return -ENODEV;
-> +
-> +       ret = phy_attach_direct(pl->netdev, phy_dev, flags,
-> +                               pl->link_interface);
-> +       if (ret)
-> +               return ret;
-> +
-> +       ret = phylink_bringup_phy(pl, phy_dev, pl->link_config.interface);
-> +       if (ret)
-> +               phy_detach(phy_dev);
-> +
-> +       return ret;
-
+diff --git a/arch/arm/mach-omap1/pm.c b/arch/arm/mach-omap1/pm.c
+index 0f8064bd40ae..266aa08aa8ed 100644
+--- a/arch/arm/mach-omap1/pm.c
++++ b/arch/arm/mach-omap1/pm.c
+@@ -605,10 +605,25 @@ static const struct platform_suspend_ops omap_pm_ops = {
+ 	.valid		= suspend_valid_only_mem,
+ };
+ 
++static void omap_wakeup_init(void)
++{
++	int irq;
++
++	if (cpu_is_omap7xx())
++		irq = INT_7XX_WAKE_UP_REQ;
++	else if (cpu_is_omap16xx())
++		irq = INT_1610_WAKE_UP_REQ;
++	else
++		return;
++
++	if (request_irq(irq, omap_wakeup_interrupt, 0, "peripheral wakeup",
++			NULL))
++		pr_err("Failed to request irq %d (peripheral wakeup)\n", irq);
++}
++
+ static int __init omap_pm_init(void)
+ {
+ 	int error = 0;
+-	int irq;
+ 
+ 	if (!cpu_class_is_omap1())
+ 		return -ENODEV;
+@@ -651,13 +666,7 @@ static int __init omap_pm_init(void)
+ 
+ 	arm_pm_idle = omap1_pm_idle;
+ 
+-	if (cpu_is_omap7xx())
+-		irq = INT_7XX_WAKE_UP_REQ;
+-	else if (cpu_is_omap16xx())
+-		irq = INT_1610_WAKE_UP_REQ;
+-	if (request_irq(irq, omap_wakeup_interrupt, 0, "peripheral wakeup",
+-			NULL))
+-		pr_err("Failed to request irq %d (peripheral wakeup)\n", irq);
++	omap_wakeup_init();
+ 
+ 	/* Program new power ramp-up time
+ 	 * (0 for most boards since we don't lower voltage when in deep sleep)
 -- 
-With Best Regards,
-Andy Shevchenko
+2.26.0
+
