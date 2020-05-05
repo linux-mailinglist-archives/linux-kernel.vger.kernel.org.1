@@ -2,94 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D46E51C5B6B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:33:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85BD51C5B66
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:33:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730369AbgEEPdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 11:33:18 -0400
-Received: from mout.kundenserver.de ([212.227.17.10]:37727 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730294AbgEEPdO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 11:33:14 -0400
-Received: from mail-qv1-f52.google.com ([209.85.219.52]) by
- mrelayeu.kundenserver.de (mreue109 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MWzXj-1jcRci1Yvh-00XKoM for <linux-kernel@vger.kernel.org>; Tue, 05 May
- 2020 17:33:09 +0200
-Received: by mail-qv1-f52.google.com with SMTP id h6so1186196qvz.8
-        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 08:33:09 -0700 (PDT)
-X-Gm-Message-State: AGi0PuYgEdWF7KwXpLIp/Dzcu8VUrynE5k3/bss2pHCzZX8bY0J2sBGw
-        EQNTdaEDWKglLTCqRsKbuLJ5NlXs0/7kPHnzuM8=
-X-Google-Smtp-Source: APiQypKi+Ro1FkVr8aZ7R5oobwEjqddqyrwqKnkhiPYFwQe3BVEOGTB2p+wgr4EGsrM1IFrKfwx/lMZ7RhrsGa/pl/I=
-X-Received: by 2002:a0c:ea43:: with SMTP id u3mr3087685qvp.211.1588692788292;
- Tue, 05 May 2020 08:33:08 -0700 (PDT)
+        id S1730325AbgEEPdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 11:33:06 -0400
+Received: from ms.lwn.net ([45.79.88.28]:50126 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730294AbgEEPdA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 11:33:00 -0400
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id D6C1331A;
+        Tue,  5 May 2020 15:32:59 +0000 (UTC)
+Date:   Tue, 5 May 2020 09:32:58 -0600
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Robert Richter <rrichter@marvell.com>,
+        linux-edac@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] doc: Fix some typo errors in ras.rst
+Message-ID: <20200505093258.77d052f5@lwn.net>
+In-Reply-To: <20200505151049.11134-1-longman@redhat.com>
+References: <20200505151049.11134-1-longman@redhat.com>
+Organization: LWN.net
 MIME-Version: 1.0
-References: <20200505135513.65265-1-arnd@arndb.de> <CAHp75VfmvXotH+NRt_YnNQW8O38Gas+ZfLH00jfhytM8w7ka3w@mail.gmail.com>
-In-Reply-To: <CAHp75VfmvXotH+NRt_YnNQW8O38Gas+ZfLH00jfhytM8w7ka3w@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 5 May 2020 17:32:52 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2pXZGbFvXpD5D4trGjxaie_NYi4hhUyYmKmv9A_HfRdA@mail.gmail.com>
-Message-ID: <CAK8P3a2pXZGbFvXpD5D4trGjxaie_NYi4hhUyYmKmv9A_HfRdA@mail.gmail.com>
-Subject: Re: [PATCH] bitops: avoid clang shift-count-overflow warnings
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:LeKvahs+0QPEYPHY+LX9T6yukbxEy+4e8gezUfPOtOTJQDGlRdt
- hEpqFbgCT3EppHmXwM/XYtvbrVi2iPDIKIazHMALxvvkrDks2XwmXvhx5k6sFlAXWB14usR
- 8tMK6l1iOVTwINs7d8svJxNK6Ys86pYHVK3VC6EeLYQAvDTFLrAWlftwe0VNSMXd0UT/l2E
- Av4sx8uYF6tiKN3+M4sfQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:0KrKmJxOtJk=:0NfnL/z9P2v4dDW1EBFrkr
- cOYkG9tIQ8hjhthh//OQY8cEb5tdXcQdYX6mbhmum8+uzhEeg/QjdTKIn0o3Rpu/0/cwcgXqP
- 3OyVgYrSp19B465gCjtgJetdDVuM1ko/lWdgkcalNvtgzKEaTElfi+D8NN6FJ6LMX7VYxRQjT
- qSRsODXWLnTTytx8zymD/p9jECdYVjSoJey8O8hk5SAJh2s/6v3WHfVcMaPpJID9xcnX04KH1
- 5mXvqN63R1nEIPkGT7kng83vHve24Sb72N6aWEGK2dsVGjUGHTnJEr6lf7v/eWmjhmsXyQFeM
- qqFdqDTfnU4GScG51g0c82URB6g1WzB9dC5aVj/9rwip0pNssGDMLrFe8khkuJnE1v08T7hNO
- AH8CMwju+P7Cjc422vwoqIA6T8fhAhJ4ByoVilm/vPZrEwVvJBhU7+LpDNzdUE+8CpkNip1Y1
- zkThna/bdSXwUot6i7FqvAI+gzS2CBwXZJBGL9sn6A9aPNUDhQbmnGvA9AcvQD7QnOS/s1aFd
- TRCg8ZWQ+36qxC6FxNkh3x9jZH9/riMs2L43j1mhNI8dDwm5xV0yqKvCG4LAEIZS/MR6yUP90
- V1cCVCuhvXSgyoM3xvIqJ9AeN/M31irxF4u3rFTFZF+frsJnyX1Ve3TWK3UPqF/H+s5vOW4rv
- cPHwpeCZJzH1hpksmaD4RHWyE23oJHHA4psrI7SDoEplWxISej5332ureXd4Zgw+hKjf99OTY
- ZqYVgxqNA4ZiyQjcXfSpg5U13pdV1E/OwghDW4Jg+jjgWfY5SoQIEb0/gW7Xp49QxwuUADG6m
- WMvlhee1AQ68LeMaZKJCnstSjpX0cWv4bC2CSSMJlW9H02zDeg=
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 5, 2020 at 4:08 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Tue, May 5, 2020 at 4:58 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> > Clang normally does not warn about certain issues in inline functions when
-> > it only happens in an eliminated code path. However if something else
-> > goes wrong, it does tend to complain about the definition of hweight_long()
-> > on 32-bit targets:
->
-> Shouldn't it be fixed in CLang?
->
-> > include/linux/bitops.h:75:41: error: shift count >= width of type [-Werror,-Wshift-count-overflow]
-> >         return sizeof(w) == 4 ? hweight32(w) : hweight64(w);
-> >                                                ^~~~~~~~~~~~
->
-> sizeof(w) is compile-time constant. It can easily drop the second part
-> without even looking at it.
->
-> > Adding an explicit cast to __u64 avoids that warning and makes it easier
-> > to read other output.
->
-> Looks like papering over the real issue.
+On Tue,  5 May 2020 11:10:49 -0400
+Waiman Long <longman@redhat.com> wrote:
 
-I'm not sure if there is anything to be done about it in clang, since it
-always does syntactic analysis before dead-code elimination by design.
+> Fix typo errors.
+> 
+> Signed-off-by: Waiman Long <longman@redhat.com>
+> ---
+>  Documentation/admin-guide/ras.rst | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/ras.rst b/Documentation/admin-guide/ras.rst
+> index 0310db624964..8b1803b2606f 100644
+> --- a/Documentation/admin-guide/ras.rst
+> +++ b/Documentation/admin-guide/ras.rst
+> @@ -156,10 +156,10 @@ the labels provided by the BIOS won't match the real ones.
+>  ECC memory
+>  ----------
+>  
+> -As mentioned on the previous section, ECC memory has extra bits to be
+> -used for error correction. So, on 64 bit systems, a memory module
+> -has 64 bits of *data width*, and 74 bits of *total width*. So, there are
+> -8 bits extra bits to be used for the error detection and correction
+> +As mentioned on the previous section, ECC memory has extra bits to
+> +be used for error correction. So, on 64 bit systems, a memory module
+> +has 64 bits of *data width*, and 72 bits of *total width*. So, there
+> +are 8 extra bits to be used for the error detection and correction
+>  mechanisms. Those extra bits are called *syndrome*\ [#f1]_\ [#f2]_.
 
-It is a bit odd though that it only prints the warning sometimes, but
-I suspect this is also something that works as designed. Maybe someone
-on the clang-built-linux list knows more about the background.
+So I had to work to figure out what the change was, since you didn't say
+in the changelog and you refilled the paragraph.  But this looks like a
+*factual* error, giving the wrong number of bits, right?  It seems like
+the changelog should say that.  Do the people who know about this stuff
+agree that the change is correct?
 
-         Arnd
+Thanks,
+
+jon
