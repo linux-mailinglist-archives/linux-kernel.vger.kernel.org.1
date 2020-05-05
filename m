@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F3081C5BD6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23BFC1C5BDD
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:42:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730474AbgEEPmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 11:42:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34478 "EHLO
+        id S1730482AbgEEPmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 11:42:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729447AbgEEPmO (ORCPT
+        with ESMTP id S1729629AbgEEPmm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 11:42:14 -0400
+        Tue, 5 May 2020 11:42:42 -0400
 Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA912C061A0F;
-        Tue,  5 May 2020 08:42:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0323C061A0F;
+        Tue,  5 May 2020 08:42:41 -0700 (PDT)
 Received: from lwn.net (localhost [127.0.0.1])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 42E86737;
-        Tue,  5 May 2020 15:42:14 +0000 (UTC)
-Date:   Tue, 5 May 2020 09:42:13 -0600
+        by ms.lwn.net (Postfix) with ESMTPSA id AB78731A;
+        Tue,  5 May 2020 15:42:41 +0000 (UTC)
+Date:   Tue, 5 May 2020 09:42:40 -0600
 From:   Jonathan Corbet <corbet@lwn.net>
-To:     Vitor Massaru Iha <vitor@massaru.org>
-Cc:     linux-doc@vger.kernel.org, mchehab@kernel.org,
-        linux-kernel@vger.kernel.org, brendanhiggins@google.com,
-        skhan@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [RESEND] doc: misc-device: add uacce to toctree(index)
-Message-ID: <20200505094213.6c652cc6@lwn.net>
-In-Reply-To: <20200430225828.114033-1-vitor@massaru.org>
-References: <20200430225828.114033-1-vitor@massaru.org>
+To:     Federico Vaga <federico.vaga@vaga.pv.it>
+Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH] doc:it_IT: align Italian translation
+Message-ID: <20200505094240.5b525754@lwn.net>
+In-Reply-To: <20200430222037.4480-1-federico.vaga@vaga.pv.it>
+References: <20200430222037.4480-1-federico.vaga@vaga.pv.it>
 Organization: LWN.net
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -40,27 +37,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Apr 2020 19:58:28 -0300
-Vitor Massaru Iha <vitor@massaru.org> wrote:
+On Fri,  1 May 2020 00:20:37 +0200
+Federico Vaga <federico.vaga@vaga.pv.it> wrote:
 
-> This fixes:
+> Translation for the following patches:
 > 
-> Documentation/misc-devices/uacce.rst: WARNING: document isn't included in any toctree
+> commit c4f4af4094d6 ("docs: Add documentation for Symbol Namespaces")
+> commit 36bc683dde0a ("kernel-doc: rename the kernel-doc directive 'functions' to 'identifiers'")
+> commit a035d552a93b ("Makefile: Globally enable fall-through warning")
+> commit b9918bdcac1f ("Documentation/process: Add fallthrough pseudo-keyword")
+> commit 58ad30cf91f0 ("docs: fix reference to core-api/namespaces.rst")
+> commit fb0e0ffe7fc8 ("Documentation: bring process docs up to date")
+> commit 7af51678b6d3 ("docs: deprecated.rst: Add BUG()-family")
+> commit 7929b9836ed0 ("docs: Remove :c:func: from process/deprecated.rst")
+> commit 76136e028d3b ("docs: deprecated.rst: Clean up fall-through details")
+> commit d8401f504b49 ("docs: deprecated.rst: Add %p to the list")
+> commit b1735296cef9 ("docs: locking: Drop :c:func: throughout")
+> commit 6adb7755996f ("docs: locking: Add 'need' to hardirq section")
 > 
-> Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
+> Signed-off-by: Federico Vaga <federico.vaga@vaga.pv.it>
 > ---
->  Documentation/misc-devices/index.rst | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/misc-devices/index.rst b/Documentation/misc-devices/index.rst
-> index c1dcd2628911..1ecc05fbe6f4 100644
-> --- a/Documentation/misc-devices/index.rst
-> +++ b/Documentation/misc-devices/index.rst
-> @@ -21,4 +21,5 @@ fit into other categories.
->     lis3lv02d
->     max6875
->     mic/index
-> +   uacce
+>  .../it_IT/doc-guide/kernel-doc.rst            |  25 ++-
+>  .../it_IT/kernel-hacking/hacking.rst          |  18 ++
+>  .../it_IT/kernel-hacking/locking.rst          | 172 +++++++++---------
+>  .../translations/it_IT/process/2.Process.rst  |  95 +++++-----
+>  .../it_IT/process/coding-style.rst            |   6 +-
+>  .../translations/it_IT/process/deprecated.rst | 130 +++++++++++--
+>  6 files changed, 287 insertions(+), 159 deletions(-)
 
 Applied, thanks.
 
