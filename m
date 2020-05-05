@@ -2,39 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A6661C55D0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 14:43:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 833CB1C55D5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 14:43:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728923AbgEEMnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 08:43:13 -0400
-Received: from verein.lst.de ([213.95.11.211]:35163 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728569AbgEEMnM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 08:43:12 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 135E768C4E; Tue,  5 May 2020 14:43:08 +0200 (CEST)
-Date:   Tue, 5 May 2020 14:43:08 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Tim Waugh <tim@cyberelk.net>, Borislav Petkov <bp@alien8.de>,
-        Jan Kara <jack@suse.com>, linux-block@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/8] hfs: stop using ioctl_by_bdev
-Message-ID: <20200505124308.GA26266@lst.de>
-References: <20200504135927.2835750-1-hch@lst.de> <20200504135927.2835750-6-hch@lst.de>
+        id S1728943AbgEEMn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 08:43:27 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:50243 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728512AbgEEMn1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 08:43:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588682606;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QvblSLfFZRo0c25upM8T9PfnHCbkleHxSvyb57+CDAY=;
+        b=QOqVmkTlVl9pOFEnJsmwcbOi062aUmQe3mj0IV9gdpktGUgciIsZgd9VIEKHm1nfIU54wd
+        1b1PGlk73zVKri+3w0JZLadMMRRLovhyKWOdNYUtN9sb2lUzE8WSZ+b7c+R37xFZVs14qQ
+        nsDXgYcyweO86+OWE654Po7xBNKh6Ng=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-133-IrthXCA0OrWchj2813q8Nw-1; Tue, 05 May 2020 08:43:24 -0400
+X-MC-Unique: IrthXCA0OrWchj2813q8Nw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 076C3872FEA;
+        Tue,  5 May 2020 12:43:22 +0000 (UTC)
+Received: from localhost (ovpn-12-78.pek2.redhat.com [10.72.12.78])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 97E372E025;
+        Tue,  5 May 2020 12:43:17 +0000 (UTC)
+Date:   Tue, 5 May 2020 20:43:14 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Qian Cai <cai@lca.pw>
+Cc:     Mel Gorman <mgorman@suse.de>, Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>
+Subject: Re: compaction: VM_BUG_ON_PAGE(!zone_spans_pfn(page_zone(page), pfn))
+Message-ID: <20200505124314.GA5029@MiWiFi-R3L-srv>
+References: <8C537EB7-85EE-4DCF-943E-3CC0ED0DF56D@lca.pw>
+ <20200424034353.GD4247@MiWiFi-R3L-srv>
+ <A49F2991-4319-4207-9B6E-CC8563102C27@lca.pw>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200504135927.2835750-6-hch@lst.de>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <A49F2991-4319-4207-9B6E-CC8563102C27@lca.pw>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jens,
+Hi,
 
-can you pick up this patch as well?  I forgot about hfs earlier and this
-was only added to the most recent resend.  The changes are identical to
-those in hfsplus.
+On 04/24/20 at 09:45am, Qian Cai wrote:
+>=20
+>=20
+> > On Apr 23, 2020, at 11:43 PM, Baoquan He <bhe@redhat.com> wrote:
+> >=20
+> > On 04/23/20 at 05:25pm, Qian Cai wrote:
+> >> Compaction starts to crash below on linux-next today. The faulty pag=
+e belongs to Node 0 DMA32 zone.
+> >> I=E2=80=99ll continue to narrow it down, but just want to give a hea=
+dup in case someone could beat me to it.
+> >>=20
+> >> Debug output from free_area_init_core()
+> >> [    0.000000] KK start page =3D ffffea0000000040, end page =3D ffff=
+ea0000040000, nid =3D 0 DMA
+> >> [    0.000000] KK start page =3D ffffea0000040000, end page =3D ffff=
+ea0004000000, nid =3D 0 DMA32
+> >> [    0.000000] KK start page =3D ffffea0004000000, end page =3D ffff=
+ea0012000000, nid =3D 0 NORMAL
+> >> [    0.000000] KK start page =3D ffffea0012000000, end page =3D ffff=
+ea0021fc0000, nid =3D 4 NORMAL
+> >=20
+> > Where are these printed? They are the direct mapping address of page?
+>=20
+> From this debug patch. Yes, direct mapping.
+
+Can you try below patch? I may get why this is caused, not sure if the
+place is right.=20
+
+diff --git a/mm/compaction.c b/mm/compaction.c
+index 177c11a8f3b9..e26972f26414 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -1409,7 +1409,9 @@ fast_isolate_freepages(struct compact_control *cc)
+ 				cc->free_pfn =3D highest;
+ 			} else {
+ 				if (cc->direct_compaction && pfn_valid(min_pfn)) {
+-					page =3D pfn_to_page(min_pfn);
++					page =3D pageblock_pfn_to_page(min_pfn,
++						pageblock_end_pfn(min_pfn),
++						cc->zone);
+ 					cc->free_pfn =3D min_pfn;
+ 				}
+ 			}
+
