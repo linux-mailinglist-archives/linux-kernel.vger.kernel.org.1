@@ -2,115 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 669D31C5917
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E765B1C590F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:21:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730383AbgEEOV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:21:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50124 "EHLO
+        id S1730241AbgEEOVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:21:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729256AbgEEOV4 (ORCPT
+        by vger.kernel.org with ESMTP id S1729915AbgEEOVn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:21:56 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13B45C061A0F;
-        Tue,  5 May 2020 07:21:56 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id 207so1086068pgc.6;
-        Tue, 05 May 2020 07:21:56 -0700 (PDT)
+        Tue, 5 May 2020 10:21:43 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DA80C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:21:43 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id u10so876516pls.8
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 07:21:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=cPehjVZlHj3aHIpwlaH11wYRizkllSVBKTyEpG1u9o8=;
-        b=cQe6rtuYwQupTWb2O+AmXwy/AngOD5Gs7e004xd9rHZ8q0lFfYjREUPKhrReYPNq+y
-         Y+LFSx278dRQWd4kuh6dz9PX70JoD+PBkFrX6cAgBKSl4eIl8dSUWj6XCkiKYL3aa9bC
-         Bcxyclf2McA4goDo32h13h1kKMPxHbcRadw7TI9B2ynWCS8Jn2urb3BxH0ZiShuakOh0
-         M0NZgA9Ejv2g1rHRUcvXf+CSBa16TUnzfCJeOOGNoqOPgvMAOb1ry/qz6qOe9fa45sDl
-         9LNqnq714nyPQ17T8yZ4QlvQRvh7rb5qewA3WdIXi01mf/9V7W/X1Vs3HopzbBLiKtrn
-         2baA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=eAUuDffef+SKab6BV2gqJGaP2t29oArGlcFYJfwH38U=;
+        b=tuCqbnvR1GkWNemBW671Bn9V6e9Y1SHREsa4AEipbKin/vpc+1ek5T5KgnHQnwmVBs
+         1AvEz6DMQa03Zbbbi6nMpmUs1dcd6jWZUtKwr+WaYPBnMhHO5U8itz1WBcZxWbb8SbVB
+         nloUXBdOWHcSeiqIXiPk5hST46aIhSh98bI3EHLpki1W+x1dvvFeMWc5ggcPKFwld2SY
+         WaAr/fseUTNKgh8CWhAlGqSk1XQl2FQOoqOVym7rstXcEqiAIolGEcouCZVEA8cWxy9t
+         5IGVglH9r0elFsQQRStQkosB0y1WSJN/T2McNQQpDLWoPvHr2Sg1HFAXKb1Qu5A76/Lg
+         RGuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=cPehjVZlHj3aHIpwlaH11wYRizkllSVBKTyEpG1u9o8=;
-        b=QK82PuiXB3KVWcJwb8IbpPerj0OO0ragzm8yRVGpaBDy6QzJ7Fzche4GGlpy7kbteV
-         mqSE2E9hIahwu0UZFttXozbjEEEzXU2wG/2mcIRwDd5hAjuvHK/53HUswmxYoOJfnPu9
-         AHz/JCUbeHgYsj27APY/UhrxLCcGN0v6JI+5UB4KdimOgUPKM+anrW4aFQRC449s+ziM
-         CSQIbg0P+ofVMkelzWe1cCltP+iBMIDxejO0/0kB1rs/ns4lpCbEkw3cV8wT9Rf84RE6
-         ogE2jQpZ/xiC3boW7FmH/f/UGaqNDecrRROqoOuq6p1TeLDAMhQoUpdnPSrCEEESuCWy
-         LTKw==
-X-Gm-Message-State: AGi0PubosorSy67EL2Kp7o5ldTMDPR7RnVTN5dymRZlgGY3MF3JQWQ1D
-        LwslKdI5SR+zvL2vZSlsfuc=
-X-Google-Smtp-Source: APiQypLEf1iEWLOIV3zKy//l6iBpXlZXz4d2EO3uWFl2oLEiwZOq4ELIBlobuJS0yMohcdO7rPPZow==
-X-Received: by 2002:a63:8d4b:: with SMTP id z72mr2992726pgd.376.1588688515628;
-        Tue, 05 May 2020 07:21:55 -0700 (PDT)
-Received: from localhost.localdomain ([120.244.110.63])
-        by smtp.gmail.com with ESMTPSA id o63sm2235060pjb.40.2020.05.05.07.21.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 May 2020 07:21:55 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=eAUuDffef+SKab6BV2gqJGaP2t29oArGlcFYJfwH38U=;
+        b=SJokVnxTBKuVR5uQfM3pttKmN2CdEJXF5sZHqp5VQT5lvv3TWjYHteQMioLdp+rfUc
+         8FKDFjFrTclWFSh7EJwImNl04NjnSqpW1IZhrcDnBZvUjKClUpWpBzbGrVZ4RdQK0ksp
+         p8hDjol7taA9bnX+791scQBvUkU9IkabsMJ3o6WirUhvgY3d9mjF0nPmyDWt8kDWsvKd
+         9y0bx2w/wGyX6NdWUrlPqrjj3ispdJoRyseCpng6K9yzRDKWNN3nsWUM8l029gsIL3hB
+         BQFjdU85IOasvZc3ZyVU0Gv57YJvEl3SoO61uxHmoncE9QsVQxGjMUQZNyWWQFP38KCF
+         vu+w==
+X-Gm-Message-State: AGi0PubuLZHiqEZbkaWWum81+tS/vNkFS289tQRjrVTCwV+7E6yS6VeS
+        4cBMwDPFoy2NS1L6M9xGv86SFkJlIi3mXQ==
+X-Google-Smtp-Source: APiQypLtMbBtDxHog4ustBbrIiIeMpG8jnVA0urpR7RWuus7RBw9XgTQgxEw7+Q4LWVAMFuB9Q0WmQ==
+X-Received: by 2002:a17:90a:d711:: with SMTP id y17mr3375951pju.11.1588688502228;
+        Tue, 05 May 2020 07:21:42 -0700 (PDT)
+Received: from [192.168.1.7] ([120.244.110.63])
+        by smtp.gmail.com with ESMTPSA id l16sm1687705pgh.35.2020.05.05.07.21.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 May 2020 07:21:41 -0700 (PDT)
+Subject: Re: [PATCH v2] fs: jfs: fix a possible data race in
+ metapage_writepage()
+To:     Markus Elfring <Markus.Elfring@web.de>,
+        Jia-Ju Bai <baijiaju1990@gmail.com>,
+        jfs-discussion@lists.sourceforge.net
+Cc:     Dave Kleikamp <shaggy@kernel.org>, linux-kernel@vger.kernel.org
+References: <20200505135313.28793-1-baijiaju1990@gmail.com>
+ <d3e126df-e7f6-00bd-aa3c-ea39fcd1582e@web.de>
 From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-To:     mchehab@kernel.org, kstewart@linuxfoundation.org,
-        tomasbortoli@gmail.com, gregkh@linuxfoundation.org, sean@mess.org,
-        allison@lohutok.net, tglx@linutronix.de
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [PATCH] media: usb: ttusb-dec: avoid buffer overflow in ttusb_dec_handle_irq() when DMA failures/attacks occur
-Date:   Tue,  5 May 2020 22:21:10 +0800
-Message-Id: <20200505142110.7620-1-baijiaju1990@gmail.com>
-X-Mailer: git-send-email 2.17.1
+Message-ID: <05f9211d-6f57-b613-b584-a6d84b163645@gmail.com>
+Date:   Tue, 5 May 2020 22:21:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+MIME-Version: 1.0
+In-Reply-To: <d3e126df-e7f6-00bd-aa3c-ea39fcd1582e@web.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In ttusb_dec_init_usb():
-  dec->irq_buffer = usb_alloc_coherent(...)
 
-Thus, "dec->irq_buffer" is a DMA value, and it is assigned to "buffer"
-in ttusb_dec_handle_irq():
-  char *buffer = dec->irq_buffer;
 
-When DMA failures or attacks occur, the value of buffer[4] can be
-changed at any time. In this case, "buffer[4] - 1 < ARRAY_SIZE(rc_keys)"
-can be first satisfied, and then the value of buffer[4] can be changed
-to a large number, causing a buffer-overflow vulnerability.
+On 2020/5/5 22:15, Markus Elfring wrote:
+>> This data race is found by our concurrency fuzzer.
+> * How do you think about to replace the word “is” by “was”?
 
-To avoid the risk of this vulnerability, buffer[4] is assigned to a
-non-DMA local variable "index" at the beginning of
-ttusb_dec_handle_irq(), and then this variable replaces each use of
-buffer[4] in the function.
+Okay.
 
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
----
- drivers/media/usb/ttusb-dec/ttusb_dec.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+> * Is this analysis tool publicly available?
 
-diff --git a/drivers/media/usb/ttusb-dec/ttusb_dec.c b/drivers/media/usb/ttusb-dec/ttusb_dec.c
-index 3198f9624b7c..8543c552515b 100644
---- a/drivers/media/usb/ttusb-dec/ttusb_dec.c
-+++ b/drivers/media/usb/ttusb-dec/ttusb_dec.c
-@@ -250,6 +250,7 @@ static void ttusb_dec_handle_irq( struct urb *urb)
- 	struct ttusb_dec *dec = urb->context;
- 	char *buffer = dec->irq_buffer;
- 	int retval;
-+	u8 index = buffer[4];
- 
- 	switch(urb->status) {
- 		case 0: /*success*/
-@@ -281,11 +282,11 @@ static void ttusb_dec_handle_irq( struct urb *urb)
- 		 * this should/could be added later ...
- 		 * for now lets report each signal as a key down and up
- 		 */
--		if (buffer[4] - 1 < ARRAY_SIZE(rc_keys)) {
--			dprintk("%s:rc signal:%d\n", __func__, buffer[4]);
--			input_report_key(dec->rc_input_dev, rc_keys[buffer[4] - 1], 1);
-+		if (index - 1 < ARRAY_SIZE(rc_keys)) {
-+			dprintk("%s:rc signal:%d\n", __func__, index);
-+			input_report_key(dec->rc_input_dev, rc_keys[index - 1], 1);
- 			input_sync(dec->rc_input_dev);
--			input_report_key(dec->rc_input_dev, rc_keys[buffer[4] - 1], 0);
-+			input_report_key(dec->rc_input_dev, rc_keys[index - 1], 0);
- 			input_sync(dec->rc_input_dev);
- 		}
- 	}
--- 
-2.17.1
+Not yet, because we are still developing this tool...
 
+>
+> …
+>> ---
+>>   fs/jfs/jfs_metapage.c | 11 +++++++++--
+> I suggest to omit the triple dashes before this information.
+
+Okay, thanks.
+
+
+Best wishes,
+Jia-Ju Bai
