@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5169D1C5928
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:23:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BDC61C5930
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:23:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729536AbgEEOOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:14:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48602 "EHLO
+        id S1729548AbgEEOXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:23:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729461AbgEEOOF (ORCPT
+        by vger.kernel.org with ESMTP id S1729509AbgEEOOH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:14:05 -0400
+        Tue, 5 May 2020 10:14:07 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20DE2C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:14:05 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAD62C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:14:07 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jVyKQ-0000eu-Mv; Tue, 05 May 2020 16:13:46 +0200
+        id 1jVyKR-0000gL-Rd; Tue, 05 May 2020 16:13:48 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 262B71001F5;
-        Tue,  5 May 2020 16:13:46 +0200 (CEST)
-Message-Id: <20200505134100.681374113@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 5F41FFFC8D;
+        Tue,  5 May 2020 16:13:47 +0200 (CEST)
+Message-Id: <20200505134100.771491291@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 05 May 2020 15:16:28 +0200
+Date:   Tue, 05 May 2020 15:16:29 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -44,8 +44,9 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Will Deacon <will@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch V4 part 1 26/36] printk: Prepare for nested printk_nmi_enter()
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Subject: [patch V4 part 1 27/36] arm64: Prepare arch_nmi_enter() for recursion
 References: <20200505131602.633487962@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -58,55 +59,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Petr Mladek <pmladek@suse.com>
+From: Frederic Weisbecker <frederic@kernel.org>
 
-There is plenty of space in the printk_context variable. Reserve one byte
-there for the NMI context to be on the safe side.
-
-It should never overflow. The BUG_ON(in_nmi() == NMI_MASK) in nmi_enter()
-will trigger much earlier.
-
-Signed-off-by: Petr Mladek <pmladek@suse.com>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lkml.kernel.org/r/20200224121331.tnkvp6mmjchm4s2i@pathway.suse.cz
+Cc: Will Deacon <will@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
 ---
- kernel/printk/internal.h    |    8 +++++---
- kernel/printk/printk_safe.c |    4 ++--
- 2 files changed, 7 insertions(+), 5 deletions(-)
+ arch/arm64/include/asm/hardirq.h |   78 +++++++++++++++++++++++++++++----------
+ 1 file changed, 59 insertions(+), 19 deletions(-)
 
---- a/kernel/printk/internal.h
-+++ b/kernel/printk/internal.h
-@@ -6,9 +6,11 @@
+--- a/arch/arm64/include/asm/hardirq.h
++++ b/arch/arm64/include/asm/hardirq.h
+@@ -32,30 +32,70 @@ u64 smp_irq_stat_cpu(unsigned int cpu);
  
- #ifdef CONFIG_PRINTK
+ struct nmi_ctx {
+ 	u64 hcr;
++	unsigned int cnt;
+ };
  
--#define PRINTK_SAFE_CONTEXT_MASK	 0x3fffffff
--#define PRINTK_NMI_DIRECT_CONTEXT_MASK	 0x40000000
--#define PRINTK_NMI_CONTEXT_MASK		 0x80000000
-+#define PRINTK_SAFE_CONTEXT_MASK	0x007ffffff
-+#define PRINTK_NMI_DIRECT_CONTEXT_MASK	0x008000000
-+#define PRINTK_NMI_CONTEXT_MASK		0xff0000000
-+
-+#define PRINTK_NMI_CONTEXT_OFFSET	0x010000000
+ DECLARE_PER_CPU(struct nmi_ctx, nmi_contexts);
  
- extern raw_spinlock_t logbuf_lock;
+-#define arch_nmi_enter()							\
+-	do {									\
+-		if (is_kernel_in_hyp_mode()) {					\
+-			struct nmi_ctx *nmi_ctx = this_cpu_ptr(&nmi_contexts);	\
+-			nmi_ctx->hcr = read_sysreg(hcr_el2);			\
+-			if (!(nmi_ctx->hcr & HCR_TGE)) {			\
+-				write_sysreg(nmi_ctx->hcr | HCR_TGE, hcr_el2);	\
+-				isb();						\
+-			}							\
+-		}								\
+-	} while (0)
++#define arch_nmi_enter()						\
++do {									\
++	struct nmi_ctx *___ctx;						\
++	u64 ___hcr;							\
++									\
++	if (!is_kernel_in_hyp_mode())					\
++		break;							\
++									\
++	___ctx = this_cpu_ptr(&nmi_contexts);				\
++	if (___ctx->cnt) {						\
++		___ctx->cnt++;						\
++		break;							\
++	}								\
++									\
++	___hcr = read_sysreg(hcr_el2);					\
++	if (!(___hcr & HCR_TGE)) {					\
++		write_sysreg(___hcr | HCR_TGE, hcr_el2);		\
++		isb();							\
++	}								\
++	/*								\
++	 * Make sure the sysreg write is performed before ___ctx->cnt	\
++	 * is set to 1. NMIs that see cnt == 1 will rely on us.		\
++	 */								\
++	barrier();							\
++	___ctx->cnt = 1;                                                \
++	/*								\
++	 * Make sure ___ctx->cnt is set before we save ___hcr. We	\
++	 * don't want ___ctx->hcr to be overwritten.			\
++	 */								\
++	barrier();							\
++	___ctx->hcr = ___hcr;						\
++} while (0)
  
---- a/kernel/printk/printk_safe.c
-+++ b/kernel/printk/printk_safe.c
-@@ -295,12 +295,12 @@ static __printf(1, 0) int vprintk_nmi(co
+-#define arch_nmi_exit()								\
+-	do {									\
+-		if (is_kernel_in_hyp_mode()) {					\
+-			struct nmi_ctx *nmi_ctx = this_cpu_ptr(&nmi_contexts);	\
+-			if (!(nmi_ctx->hcr & HCR_TGE))				\
+-				write_sysreg(nmi_ctx->hcr, hcr_el2);		\
+-		}								\
+-	} while (0)
++#define arch_nmi_exit()							\
++do {									\
++	struct nmi_ctx *___ctx;						\
++	u64 ___hcr;							\
++									\
++	if (!is_kernel_in_hyp_mode())					\
++		break;							\
++									\
++	___ctx = this_cpu_ptr(&nmi_contexts);				\
++	___hcr = ___ctx->hcr;						\
++	/*								\
++	 * Make sure we read ___ctx->hcr before we release		\
++	 * ___ctx->cnt as it makes ___ctx->hcr updatable again.		\
++	 */								\
++	barrier();							\
++	___ctx->cnt--;							\
++	/*								\
++	 * Make sure ___ctx->cnt release is visible before we		\
++	 * restore the sysreg. Otherwise a new NMI occurring		\
++	 * right after write_sysreg() can be fooled and think		\
++	 * we secured things for it.					\
++	 */								\
++	barrier();							\
++	if (!___ctx->cnt && !(___hcr & HCR_TGE))			\
++		write_sysreg(___hcr, hcr_el2);				\
++} while (0)
  
- void notrace printk_nmi_enter(void)
+ static inline void ack_bad_irq(unsigned int irq)
  {
--	this_cpu_or(printk_context, PRINTK_NMI_CONTEXT_MASK);
-+	this_cpu_add(printk_context, PRINTK_NMI_CONTEXT_OFFSET);
- }
- 
- void notrace printk_nmi_exit(void)
- {
--	this_cpu_and(printk_context, ~PRINTK_NMI_CONTEXT_MASK);
-+	this_cpu_sub(printk_context, PRINTK_NMI_CONTEXT_OFFSET);
- }
- 
- /*
 
