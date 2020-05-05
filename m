@@ -2,61 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E04551C6068
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 20:48:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B34931C607B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 20:56:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729007AbgEESsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 14:48:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35494 "EHLO
+        id S1728351AbgEES4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 14:56:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726350AbgEESs1 (ORCPT
+        with ESMTP id S1727083AbgEES4W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 14:48:27 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B955CC061A0F;
-        Tue,  5 May 2020 11:48:27 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::d71])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id BC5A7127F9DC3;
-        Tue,  5 May 2020 11:48:26 -0700 (PDT)
-Date:   Tue, 05 May 2020 11:48:25 -0700 (PDT)
-Message-Id: <20200505.114825.1476000329624313198.davem@davemloft.net>
-To:     sjpark@amazon.com
-Cc:     viro@zeniv.linux.org.uk, kuba@kernel.org,
-        gregkh@linuxfoundation.org, edumazet@google.com,
-        sj38.park@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sjpark@amazon.de
-Subject: Re: [PATCH net v2 0/2] Revert the 'socket_alloc' life cycle change
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200505081035.7436-1-sjpark@amazon.com>
-References: <20200505081035.7436-1-sjpark@amazon.com>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 05 May 2020 11:48:27 -0700 (PDT)
+        Tue, 5 May 2020 14:56:22 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DA73C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 11:56:20 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id d16so2662460edv.8
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 11:56:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0aeZoygCkgdrdhCxkXT0t0qKXTgK7qHp5yzHDFCrrt4=;
+        b=OrJoG2wV8NG38EDX42NRpQ3EMDSZgAZf0hVOcarbH8A4++ycqW8Y9x/9hb4ZNBZlqN
+         dBkmuhTl6HbYw63JIBeijQn6SIb61l3l6ZRUEMNPIwYceF2Qq58dZcj35hiyFqu2rx7R
+         OenyZW/iEsgRhBpi0c1mDGw5mrptZx2nvvV+A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0aeZoygCkgdrdhCxkXT0t0qKXTgK7qHp5yzHDFCrrt4=;
+        b=OWImQP7AJ4lW9ATQtZsiOuL2jtKy8CRaN563KJW+IvbJkJnuv7cZTs6JGeUo3K5G0D
+         2Ad/3R1EyyTwfWkDqClWFeGDb1S7UxEqOEw9rL5IY5/J10+6A3xLxqzue03rMR7qDvkr
+         bEXGlv9S0Rqt9S/Eq/KZvYsSFZw1GQUEDyg1A7woRPg5iUUtXDbyIeLCF6Ela2XZZBrW
+         /hfNeSkyKuG5fECzzrM54iUeJfLgf169Pegbn6ZbCDX066U4BUR4wHwoM5HXtzvercWv
+         p1vhZYjPZU1d9b+NTQyIKdLRbDFPiWtU5e0lIk4eCrRAZQ7wzmwbkUfqNvbrFl3Cs8Tl
+         EmGA==
+X-Gm-Message-State: AGi0PuZqlCG5p/Dse1jgBQRN/MpN2VVI8qRpcxNn3+dhaJZwc+GQuAzH
+        wQHI0NBInwDiNitGf1DkwAiF9ORdXnA=
+X-Google-Smtp-Source: APiQypJwFG2E5fw75bLhroRoVpYqh9ST6I66f+9lenp//FEM/cBZW3/cpm8/FiDpKsFsqo4lnJ3d+g==
+X-Received: by 2002:a50:a7e4:: with SMTP id i91mr3837997edc.381.1588704978715;
+        Tue, 05 May 2020 11:56:18 -0700 (PDT)
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com. [209.85.221.46])
+        by smtp.gmail.com with ESMTPSA id s18sm343391ejm.63.2020.05.05.11.56.18
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 May 2020 11:56:18 -0700 (PDT)
+Received: by mail-wr1-f46.google.com with SMTP id y4so3776511wrm.11
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 11:56:18 -0700 (PDT)
+X-Received: by 2002:ac2:4da1:: with SMTP id h1mr2492888lfe.152.1588704525320;
+ Tue, 05 May 2020 11:48:45 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200501202849.647891881@infradead.org> <20200501202944.593400184@infradead.org>
+ <1238787e-d97d-f09b-d76d-2df2dc273f4b@rasmusvillemoes.dk> <20200503125813.GL3762@hirez.programming.kicks-ass.net>
+ <a53369f3-665a-af0e-efad-09ae456af847@rasmusvillemoes.dk> <20200504201445.GQ3762@hirez.programming.kicks-ass.net>
+ <20200505093625.GE5298@hirez.programming.kicks-ass.net> <CAKwvOd=cP8UCX0+5pZ3AqzvOM8LKzLJJ_heDhrghqJdOnHoGMg@mail.gmail.com>
+ <CAKwvOdkL+2Gvn2mkZ8cdHN=1F5cHQHii57ocD0RFeLJxEt=TUQ@mail.gmail.com>
+In-Reply-To: <CAKwvOdkL+2Gvn2mkZ8cdHN=1F5cHQHii57ocD0RFeLJxEt=TUQ@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 5 May 2020 11:48:29 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiUd=fcpegFLK4VK9iFfrO5BmpGKDszGpuyJkDdz4JaoQ@mail.gmail.com>
+Message-ID: <CAHk-=wiUd=fcpegFLK4VK9iFfrO5BmpGKDszGpuyJkDdz4JaoQ@mail.gmail.com>
+Subject: Re: [PATCH v4 14/18] static_call: Add static_cond_call()
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Nadav Amit <namit@vmware.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.com>
-Date: Tue, 5 May 2020 10:10:33 +0200
+On Tue, May 5, 2020 at 11:28 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> Changing
+> void *func = READ_ONCE(name.func); \
+> to
+> void *func = &READ_ONCE(name.func); \
 
-> From: SeongJae Park <sjpark@amazon.de>
-> 
-> The commit 6d7855c54e1e ("sockfs: switch to ->free_inode()") made the
-> deallocation of 'socket_alloc' to be done asynchronously using RCU, as
-> same to 'sock.wq'.  And the following commit 333f7909a857 ("coallocate
-> socket_sq with socket itself") made those to have same life cycle.
-> 
-> The changes made the code much more simple, but also made 'socket_alloc'
-> live longer than before.  For the reason, user programs intensively
-> repeating allocations and deallocations of sockets could cause memory
-> pressure on recent kernels.
-> 
-> To avoid the problem, this commit reverts the changes.
+What? That makes no sense.
 
-Series applied and queued up for -stable, thanks.
+Yes,
+
+    void *func = foo;
+
+and
+
+   void *func = &foo;
+
+are the same thing, _if_ "foo" is an actual function, because then
+"foo" degrades from a function to a pointer to a function as part of C
+type semantics.
+
+But that's not the case here. READ_ONCE(name.func) isn't a function -
+it's a pointer to a function. So it doesn't degrade to anything at
+all, and adding a '&' in front ot it completely changes the meaning of
+the expression. So now the '&' changes it from "pointer to a function"
+to "pointer to a pointer to a function", and the end result is not the
+same thing any more.
+
+Without the "&" it will call the function "bar" (which is the function
+pointer that was assigned).
+
+With the "&", it will not not call a function at all, it will do a
+call to an address that is actually data of type "struct
+static_call_key".
+
+That's also why the NULL pointer check goes away: now the pointer is a
+pointer to static data, which can never be NULL.
+
+That said, I found it interesting that the volatile read also goes
+away. That struck me as strange. But then I thought about it somem
+more, and realized that the '&' basically just peels off the '*', so
+now there isn't any actual volatile access any more, which is why the
+read went away too.
+
+Anyway, adding that '&' completely changes the meaning of the test.
+
+Your initial reaction that "you can't compile away the read and the
+test of NULL" was correct, I think.
+
+                   Linus
