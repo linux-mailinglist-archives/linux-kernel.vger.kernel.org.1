@@ -2,200 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 173B61C60FD
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 21:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4058F1C6106
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 21:28:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727857AbgEETZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 15:25:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727785AbgEETZl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 15:25:41 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E85C061A10
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 12:25:40 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id k133so2852712oih.12
-        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 12:25:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RKLj+Bvazx+0GBaDeiW8XR54CzGKY4AHaP4cILqovw8=;
-        b=SJdtgGTW5rf7rigkvrS0mGJrpwJvn5sAzRAkkSYrU2yWA/lI6TmCZF0sq1SvNFwlg1
-         kREVUdbiAPDNjSfxcJ7oIXu434wnGVlmGdtL6WbnnD9hbqTKUgJpUSsrG2XH0oFtkDpS
-         blRYXGrjL79B5wOO2fnZ53Ph/JTysPZXNngkk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RKLj+Bvazx+0GBaDeiW8XR54CzGKY4AHaP4cILqovw8=;
-        b=SP9iu/gNxacJUYlhtgQicjHmbwyx2amok7FH3ZgD4Ch1OCEhVpQPs0x3GDLhup+Bkw
-         UpSwPs/EUsCXnntcHwj76SeyfaW1TFbjwIuMSVjnn91mtHWm4FhK+hILHHKcrJ5L4BHW
-         e9VuRzMrGBe2e68BmEodJWMdCeA96ClPAReuI/pfiBorxIMcLzaXXPTSWbYOflcMZeRW
-         aiS7noQDLRpoAlYL1AdLDluVK/u/TT4JdPSVl86uYjYpLI8IVVQStBM3PTHLNOmax6yN
-         kJuqpSlLjI0OuVCSasHVqX4Gzx/QhlT8RVqKLia43K+QWi/0rMN9rnGMJQ789XN5AVoz
-         421g==
-X-Gm-Message-State: AGi0PuazG49SxivEqIEjHWw8GjqdcfcYU4GsW/lPAy/QjHV9I4WJW0IB
-        wLrv9qsYeGiixoIdOKgX7GTg/um/yByqC9aY6aMTzkpz
-X-Google-Smtp-Source: APiQypJj1DkGUZt7VIZXosUiRMoBR0Hk5xmD/ibsZ1474R2bICyoP6W/sR5eJX+NBmdVffk3jmYWOAdQstorpI7Bi6g=
-X-Received: by 2002:aca:403:: with SMTP id 3mr227565oie.166.1588706739870;
- Tue, 05 May 2020 12:25:39 -0700 (PDT)
+        id S1728894AbgEET2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 15:28:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40300 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726350AbgEET2K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 15:28:10 -0400
+Received: from kernel.org (unknown [104.132.0.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6E7E0206B9;
+        Tue,  5 May 2020 19:28:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588706890;
+        bh=usynuOR1E69N5AJk67ILaNhdKMo/Dyy/RKGLkmis1xo=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=Avl9qAu9qsa4YCgPnESVnktkOzDptTWX6NQHwh9lYOc2aJ7DhJG17FctXiT2JyEvW
+         9zFKeFyDYRgQcaA9Bn9KYPyLAIkzocXgfD4eJVo33wK2MLz0WqtTiaAKbte0UIWMt+
+         4T0CI5y6LNp7WKc+rFZtFesD+36ygm8Gf0YWc1Qo=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20200505140231.16600-1-brgl@bgdev.pl> <20200505140231.16600-6-brgl@bgdev.pl>
-In-Reply-To: <20200505140231.16600-6-brgl@bgdev.pl>
-From:   Edwin Peer <edwin.peer@broadcom.com>
-Date:   Tue, 5 May 2020 12:25:03 -0700
-Message-ID: <CAKOOJTzcNr7mc9xusQm3nCzkq5P=ha-si3fizeEL2_KJUOC3-Q@mail.gmail.com>
-Subject: Re: [PATCH 05/11] net: core: provide devm_register_netdev()
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Felix Fietkau <nbd@openwrt.org>,
-        John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Fabien Parent <fparent@baylibre.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200505083001.52564-1-yuehaibing@huawei.com>
+References: <20200505083001.52564-1-yuehaibing@huawei.com>
+Subject: Re: [PATCH -next] clk: Remove unused inline function clk_debug_reparent
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        YueHaibing <yuehaibing@huawei.com>
+To:     YueHaibing <yuehaibing@huawei.com>, mturquette@baylibre.com
+Date:   Tue, 05 May 2020 12:28:09 -0700
+Message-ID: <158870688968.26370.16781214256369290362@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 5, 2020 at 7:05 AM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
->
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
->
-> Provide devm_register_netdev() - a device resource managed variant
-> of register_netdev(). This new helper will only work for net_device
-> structs that have a parent device assigned and are devres managed too.
->
-> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Quoting YueHaibing (2020-05-05 01:30:01)
+> There's no callers in-tree anymore.
+>=20
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 > ---
->  include/linux/netdevice.h |  4 ++++
->  net/core/dev.c            | 48 +++++++++++++++++++++++++++++++++++++++
->  net/ethernet/eth.c        |  1 +
->  3 files changed, 53 insertions(+)
->
-> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> index 130a668049ab..433bd5ca2efc 100644
-> --- a/include/linux/netdevice.h
-> +++ b/include/linux/netdevice.h
-> @@ -1515,6 +1515,8 @@ struct net_device_ops {
->   * @IFF_FAILOVER_SLAVE: device is lower dev of a failover master device
->   * @IFF_L3MDEV_RX_HANDLER: only invoke the rx handler of L3 master device
->   * @IFF_LIVE_RENAME_OK: rename is allowed while device is up and running
-> + * @IFF_IS_DEVRES: this structure was allocated dynamically and is managed by
-> + *     devres
->   */
->  enum netdev_priv_flags {
->         IFF_802_1Q_VLAN                 = 1<<0,
-> @@ -1548,6 +1550,7 @@ enum netdev_priv_flags {
->         IFF_FAILOVER_SLAVE              = 1<<28,
->         IFF_L3MDEV_RX_HANDLER           = 1<<29,
->         IFF_LIVE_RENAME_OK              = 1<<30,
-> +       IFF_IS_DEVRES                   = 1<<31,
->  };
->
->  #define IFF_802_1Q_VLAN                        IFF_802_1Q_VLAN
-> @@ -4206,6 +4209,7 @@ struct net_device *alloc_netdev_mqs(int sizeof_priv, const char *name,
->                          count)
->
->  int register_netdev(struct net_device *dev);
-> +int devm_register_netdev(struct net_device *ndev);
->  void unregister_netdev(struct net_device *dev);
->
->  /* General hardware address lists handling functions */
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index 522288177bbd..99db537c9468 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -9519,6 +9519,54 @@ int register_netdev(struct net_device *dev)
->  }
->  EXPORT_SYMBOL(register_netdev);
->
-> +struct netdevice_devres {
-> +       struct net_device *ndev;
-> +};
-> +
-> +static void devm_netdev_release(struct device *dev, void *this)
-> +{
-> +       struct netdevice_devres *res = this;
-> +
-> +       unregister_netdev(res->ndev);
-> +}
-> +
-> +/**
-> + *     devm_register_netdev - resource managed variant of register_netdev()
-> + *     @ndev: device to register
-> + *
-> + *     This is a devres variant of register_netdev() for which the unregister
-> + *     function will be call automatically when the parent device of ndev
-> + *     is detached.
-> + */
-> +int devm_register_netdev(struct net_device *ndev)
-> +{
-> +       struct netdevice_devres *dr;
-> +       int ret;
-> +
-> +       /* struct net_device itself must be devres managed. */
-> +       BUG_ON(!(ndev->priv_flags & IFF_IS_DEVRES));
-> +       /* struct net_device must have a parent device - it will be the device
-> +        * managing this resource.
-> +        */
 
-Catching static programming errors seems like an expensive use of the
-last runtime flag in the enum. It would be weird to devres manage the
-unregister and not also choose to manage the underlying memory in the
-same fashion, so it wouldn't be an obvious mistake to make. If it must
-be enforced, one could also iterate over the registered release
-functions and check for the presence of devm_free_netdev without
-burning the flag.
-
-> +       BUG_ON(!ndev->dev.parent);
-> +
-> +       dr = devres_alloc(devm_netdev_release, sizeof(*dr), GFP_KERNEL);
-> +       if (!dr)
-> +               return -ENOMEM;
-> +
-> +       ret = register_netdev(ndev);
-> +       if (ret) {
-> +               devres_free(dr);
-> +               return ret;
-> +       }
-> +
-> +       dr->ndev = ndev;
-> +       devres_add(ndev->dev.parent, dr);
-> +
-> +       return 0;
-> +}
-> +EXPORT_SYMBOL(devm_register_netdev);
-> +
->  int netdev_refcnt_read(const struct net_device *dev)
->  {
->         int i, refcnt = 0;
-> diff --git a/net/ethernet/eth.c b/net/ethernet/eth.c
-> index c8b903302ff2..ce9b5e576f20 100644
-> --- a/net/ethernet/eth.c
-> +++ b/net/ethernet/eth.c
-> @@ -423,6 +423,7 @@ struct net_device *devm_alloc_etherdev_mqs(struct device *dev, int sizeof_priv,
->
->         *dr = netdev;
->         devres_add(dev, dr);
-> +       netdev->priv_flags |= IFF_IS_DEVRES;
->
->         return netdev;
->  }
-> --
-> 2.25.0
->
-
-Regards,
-Edwin Peer
+Applied to clk-next
