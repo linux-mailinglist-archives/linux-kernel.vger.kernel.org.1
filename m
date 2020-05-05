@@ -2,153 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E34511C5B2B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C2541C5B32
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:31:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729956AbgEEPaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 11:30:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57848 "EHLO mail.kernel.org"
+        id S1729982AbgEEPbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 11:31:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59980 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729281AbgEEPaJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 11:30:09 -0400
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net [24.9.64.241])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1729281AbgEEPbk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 11:31:40 -0400
+Received: from localhost (unknown [104.132.1.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 181F3206B9;
-        Tue,  5 May 2020 15:30:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3EDF92078C;
+        Tue,  5 May 2020 15:31:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588692608;
-        bh=eJrWG80ogV3Gj9Sbj3/SJNMeUIC26HQBDFVpeMaABME=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=r6SYV4TXkGkGFgh+h0Ie+vs060eXdhY7pLWbZM4RJEw8/ujHB0xqMVzkfDZHgeMFL
-         NjSbxocjsoyqJ0cNXvmQAeOSjkKzJy2KpyqGo4fk+x3+m8W6us4X52cu2lQk8qpKlb
-         yF1OAOLuzyPvmAEUStvjLvMRhtjh/GkQSpx9dfa4=
-Subject: Re: [PATCH 5.6 00/73] 5.6.11-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        torvalds@linux-foundation.org
-Cc:     akpm@linux-foundation.org, linux@roeck-us.net,
-        patches@kernelci.org, ben.hutchings@codethink.co.uk,
-        lkft-triage@lists.linaro.org, stable@vger.kernel.org,
-        shuah <shuah@kernel.org>
-References: <20200504165501.781878940@linuxfoundation.org>
- <3366716c-3a30-033d-4df6-4183eb262208@kernel.org>
-From:   shuah <shuah@kernel.org>
-Message-ID: <82eb8f25-4e15-001a-1c4f-5f59400d352b@kernel.org>
-Date:   Tue, 5 May 2020 09:30:07 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        s=default; t=1588692700;
+        bh=10UQQl3GPfT8mcIMbnLtvCSvPWaMAUPM/kBH8ajFl40=;
+        h=From:To:Cc:Subject:Date:From;
+        b=HVY0pEgbAVyz6IqLvBZ+IAFiCCA7HoCpCBshkAB7xGhGO4uSDrUtwD2ZVCZ9I4C+C
+         jbloa10/2h+K7Ygp7jK04JFUsG6e0EtkkH/eTnRXAMrtKnRkaoO6ETvjAO0Z9+36t5
+         aVt+W3WZEw3RkFaT4DxJJAMSc7dYncstrhRsW7bA=
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: [PATCH] f2fs: get parent inode when recovering pino
+Date:   Tue,  5 May 2020 08:31:39 -0700
+Message-Id: <20200505153139.201697-1-jaegeuk@kernel.org>
+X-Mailer: git-send-email 2.26.2.526.g744177e7f7-goog
 MIME-Version: 1.0
-In-Reply-To: <3366716c-3a30-033d-4df6-4183eb262208@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/5/20 9:25 AM, shuah wrote:
-> On 5/4/20 11:57 AM, Greg Kroah-Hartman wrote:
->> This is the start of the stable review cycle for the 5.6.11 release.
->> There are 73 patches in this series, all will be posted as a response
->> to this one.  If anyone has any issues with these being applied, please
->> let me know.
->>
->> Responses should be made by Wed, 06 May 2020 16:52:55 +0000.
->> Anything received after that time might be too late.
->>
->> The whole patch series can be found in one patch at:
->>     https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.6.11-rc1.gz 
->>
->> or in the git tree and branch at:
->>     git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git 
->> linux-5.6.y
->> and the diffstat can be found below.
->>
->> thanks,
->>
->> greg k-h
->>
->> -------------
->> Pseudo-Shortlog of commits:
->>
->> Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->>      Linux 5.6.11-rc1
->>
-> 
->> Takashi Iwai <tiwai@suse.de>
->>      ALSA: pcm: oss: Place the plugin buffer overflow checks correctly
->>
->> Vasily Khoruzhick <anarsoul@gmail.com>
->>      ALSA: line6: Fix POD HD500 audio playback
->>
->> Wu Bo <wubo40@huawei.com>
->>      ALSA: hda/hdmi: fix without unlocked before return
->>
->> Takashi Iwai <tiwai@suse.de>
->>      ALSA: usb-audio: Correct a typo of NuPrime DAC-10 USB ID
->>
->> Hui Wang <hui.wang@canonical.com>
->>      ALSA: hda/realtek - Two front mics on a Lenovo ThinkCenter
->>
-> 
->>   sound/core/oss/pcm_plugin.c                       | 20 ++++---
->>   sound/isa/opti9xx/miro.c                          |  9 ++-
->>   sound/isa/opti9xx/opti92x-ad1848.c                |  9 ++-
->>   sound/pci/hda/patch_hdmi.c                        |  4 +-
->>   sound/pci/hda/patch_realtek.c                     |  1 +
->>   sound/usb/line6/podhd.c                           | 22 ++-----
->>   sound/usb/quirks.c                                |  2 +-
->>   78 files changed, 554 insertions(+), 297 deletions(-)
->>
->>
->>
-> 
-> Compiled and booted on my test system. Tons of the of following
-> errors in dmesg
-> 
-> Adding Takashi Iwai
-> 
-> [   33.980302] usb 2-2.4: 1:1: cannot set freq 48000 to ep 0x1
-> [   49.340581] usb 2-2.4: 2:1: cannot set freq 48000 to ep 0x82
-> [   59.580511] usb 2-2.4: 13:0: cannot get min/max values for control 2 
-> (id 13)
-> [   64.700532] usb 2-2.4: 9:0: cannot get min/max values for control 2 
-> (id 9)
-> [   69.792257] usb 2-2.4: 10:0: cannot get min/max values for control 2 
-> (id 10)
-> [   69.792736] usbcore: registered new interface driver snd-usb-audio
-> [   74.871038] usb 2-2.4: 9:0: cannot get min/max values for control 2 
-> (id 9)
-> [   79.967099] usb 2-2.4: 9:0: cannot get min/max values for control 2 
-> (id 9)
-> [   85.076961] usb 2-2.4: 9:0: cannot get min/max values for control 2 
-> (id 9)
-> [   90.191415] usb 2-2.4: 9:0: cannot get min/max values for control 2 
-> (id 9)
-> [   95.308843] usb 2-2.4: 9:0: cannot get min/max values for control 2 
-> (id 9)
-> 
-> followed by
-> 
-> [  131.172280] usb 2-2.4: 1:1: usb_set_interface failed (-110)
-> [  136.259909] usb 2-2.4: 1:1: usb_set_interface failed (-110)
-> [  141.380345] usb 2-2.4: 1:1: usb_set_interface failed (-110)
-> [  146.500227] usb 2-2.4: 1:1: usb_set_interface failed (-110)
-> [  151.620227] usb 2-2.4: 1:1: usb_set_interface failed (-110)
-> [  156.739899] usb 2-2.4: 1:1: usb_set_interface failed (-110)
-> [  161.859999] usb 2-2.4: 1:1: usb_set_interface failed (-110)
-> 
-> 
-> I have audio on that port. I haven't tried yet reverting these
-> sound patches yet. demsg is filling up with these messages for
-> sure.
-> 
+We had to grab the inode before retrieving i_ino.
 
-I just tried Linux 5.7-rc4 and it also has this problem. New in rc4 as
-far as I can tell.
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+---
+ fs/f2fs/file.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-thanks,
--- Shuah
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index a0a4413d6083b..9d4c3e3503567 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -168,6 +168,7 @@ static const struct vm_operations_struct f2fs_file_vm_ops = {
+ static int get_parent_ino(struct inode *inode, nid_t *pino)
+ {
+ 	struct dentry *dentry;
++	struct inode *parent;
+ 
+ 	inode = igrab(inode);
+ 	dentry = d_find_any_alias(inode);
+@@ -175,8 +176,13 @@ static int get_parent_ino(struct inode *inode, nid_t *pino)
+ 	if (!dentry)
+ 		return 0;
+ 
+-	*pino = parent_ino(dentry);
++	parent = igrab(d_inode(dentry->d_parent));
+ 	dput(dentry);
++	if (!parent)
++		return 0;
++
++	*pino = parent->i_ino;
++	iput(parent);
+ 	return 1;
+ }
+ 
+-- 
+2.26.2.526.g744177e7f7-goog
 
