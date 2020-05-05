@@ -2,167 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C75F01C5976
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:28:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C375C1C597D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:28:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729481AbgEEO1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:27:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51048 "EHLO
+        id S1729531AbgEEO2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:28:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729346AbgEEO1t (ORCPT
+        by vger.kernel.org with ESMTP id S1729308AbgEEO2K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:27:49 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45F61C061A0F;
-        Tue,  5 May 2020 07:27:48 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id t9so1215266pjw.0;
-        Tue, 05 May 2020 07:27:48 -0700 (PDT)
+        Tue, 5 May 2020 10:28:10 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5A13C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:28:09 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id g10so1506360lfj.13
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 07:28:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0d2zCfXjqEkoPjXPCO2eW50jfsT6IHtXFCM1nqKnraI=;
-        b=FMGNXT2fKKRoI0Pby3QgAP4Puaf5obX+oQRGw4q02LmDjkOt+RB6cbjPh0JwHzPXfm
-         AHgHRP5heysnfoNbOXjMjPwe8r8YvUqZYGmP0RO83fTG6L+69/EfRbWXibcjJEy4klyV
-         ZkVXEgz1N+v2K2Upz/9ML8/Ba9tJGB9+/XJ9/7DVg8asisv+bu2bxXRwNeUmRu4GS+rQ
-         rnmONhdRXEj+ZJuD0x7PLI2XHbxKq8lKli1c1n4pX2VMrBHmcR28oHgqtcjOLi7KktiM
-         b8StMxT9POylTHoanWOo3dIONP33MQIuul6kPigKUGMMWQ3HZmwaUKYbJBSJB+xZNnaH
-         zY0w==
+         :cc:content-transfer-encoding;
+        bh=+uAwrnVW9vl6fCjTny0Qx0tOY7EJAzfPhuaRYgJwZTI=;
+        b=u5hW8PHzJahWFyul2XkcmX+OO4CaXeWzoWY71xAAYmRT12aQyNIVWRm61Sg1OYvSf2
+         SXDHU6P+/AZ6P+IrR77i8+e4ShQn5nCWn31kFTm22XQOkX3bir+LrMU5Dm+GzmR6znCb
+         kFR3n96RxsBGnFs1v1TSrySHtsXKm9K39n9LPPcS8e5DJ1u7BcUJlCNrah3etkMMEjO1
+         Ri4jVv7NoGM7XiJOvtIU3Wcoj5OClz5aWRUkcmxCJ86QqXZgqnGSpmRXT+NjoMGAt9wo
+         Z4yM6y/P+HmRlZuo7/ePTArkmoi0e8NaaRyvMgHkIG8H3WKzopcgJrITlazuhtvK7rgh
+         3img==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0d2zCfXjqEkoPjXPCO2eW50jfsT6IHtXFCM1nqKnraI=;
-        b=icpyOGM7V3Lj9PJQO6gvlswQnj7J4IHV0uB5If0bkIbI1vroxNNT5d99CedpzeCkbb
-         xXWtQsCfuN6zgdUL6a1yuiFhZb5gLw1hlspxqn4ElJYmgrT1cFPScKrkRSIxZCOrHz3L
-         aePNq+eoo/UmqwK9Spm0pCQh0XmzXhEI90mlxM3O1dlt5HItVqftUWzlIOihZw0C2eVe
-         BUpBlPI2/vr7iof0Fueo+Kc1x/HOOew0hrEHbtyoy2S/3B1UXJ12OzghauTFpuo96iEO
-         7O/HVkzDj/AbdhQt90pJNYpnlTI3Pl9WjIkqCBa9qzkwrJ6gOUSJ5uT4HRfoLBbz4gvQ
-         JCzA==
-X-Gm-Message-State: AGi0PuYTCai6Cv7s/X3Oj7Hh9T3qme0msReFwrkwSHl2/zur5q6T+Nmb
-        rsDqlbekm0iI2mD56ic+J3pJBM8AqYxoKD96cDs=
-X-Google-Smtp-Source: APiQypI3q+uz07fz96ONWB3ggyRrtBojxXIGIS+eu+fruU+zGJ0LKKFfiU+ajF4EFSxYHvXi9wX/IzALXoeJqGzIQko=
-X-Received: by 2002:a17:90a:fa81:: with SMTP id cu1mr3442100pjb.25.1588688867728;
- Tue, 05 May 2020 07:27:47 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=+uAwrnVW9vl6fCjTny0Qx0tOY7EJAzfPhuaRYgJwZTI=;
+        b=Mu3cpBvVKl4s9IbyswWQT1DELBA4mU+/1ZCgJ+HQ/oLovdEKsIJvrf4xEZEjrlwZf7
+         0+RuIG+4kDgb1gnVYpqk+qI1KYxbFeZgy3PYScdFES0EliFGrwXBPyXW5CroKlkkf24w
+         SarBxzoyNZ5L91AS7Pc0qXOFLQk4G5PQgSJrqLoYuAHOLv6nZZtpZsl6eopmfHF68zYU
+         LWqH2PvIX4q9iBLsN7mGsWSZn68owl9JwNN0j7FAgCd45uCWKEGEePWUq/aZC9Hmk7Ch
+         ECE57e9caheHzlq8+ZOZMJLhqu6dPoxoX5QCRboAI1V3ZT5iCSH+xxVAPMmf7vk0P4Ap
+         c9jA==
+X-Gm-Message-State: AGi0PuZL/wXiUhJshdeWOhzTl9zyDzk35OrC2gJinIfutf2Uj2EGQuXy
+        7ofcDoKK0/Mle5QUvCyGijRXu2rIvcLds+xR+XdyRU1rxj0ZHg==
+X-Google-Smtp-Source: APiQypKlYrUPwwfMUuA8+0KSmGw0C746f6/PsmNEXiY4KhylVTyFuq1tsKFUBFmRIwZhzKUqk3m2th9smiFVOhmyM4k=
+X-Received: by 2002:a19:3817:: with SMTP id f23mr1863422lfa.6.1588688887748;
+ Tue, 05 May 2020 07:28:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200502182951.114231-1-hdegoede@redhat.com> <20200502182951.114231-5-hdegoede@redhat.com>
- <7c3e5f844a224ff780cd8e3b3f5f7641@AUSX13MPC101.AMER.DELL.COM>
- <13a8ec94-1eae-4d95-7238-85c612ebc896@redhat.com> <afe7c366c97f4ab18d5a98a9695ceff6@AUSX13MPC101.AMER.DELL.COM>
-In-Reply-To: <afe7c366c97f4ab18d5a98a9695ceff6@AUSX13MPC101.AMER.DELL.COM>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 5 May 2020 17:27:41 +0300
-Message-ID: <CAHp75VcNJFfgshhL_pYsHodF1pMNySw08Z_4jr-vVkE-Xpj_ng@mail.gmail.com>
-Subject: Re: [PATCH 4/5] platform/x86: intel-vbtn: Also handle tablet-mode
- switch on "Detachable" and "Portable" chassis-types
-To:     Mario Limonciello <Mario.Limonciello@dell.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200504165501.781878940@linuxfoundation.org>
+In-Reply-To: <20200504165501.781878940@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 5 May 2020 19:57:55 +0530
+Message-ID: <CA+G9fYtwpo01W30vF8PRNrDOxVgyVwyViC5RCmLvLu04t98u4Q@mail.gmail.com>
+Subject: Re: [PATCH 5.6 00/73] 5.6.11-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        lkft-triage@lists.linaro.org,
+        linux- stable <stable@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 5, 2020 at 5:22 PM <Mario.Limonciello@dell.com> wrote:
+On Mon, 4 May 2020 at 23:36, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> > -----Original Message-----
-> > From: platform-driver-x86-owner@vger.kernel.org <platform-driver-x86-
-> > owner@vger.kernel.org> On Behalf Of Hans de Goede
-> > Sent: Tuesday, May 5, 2020 4:06 AM
-> > To: Limonciello, Mario; dvhart@infradead.org; andy@infradead.org
-> > Cc: linux-acpi@vger.kernel.org; platform-driver-x86@vger.kernel.org; linux-
-> > kernel@vger.kernel.org
-> > Subject: Re: [PATCH 4/5] platform/x86: intel-vbtn: Also handle tablet-mode
-> > switch on "Detachable" and "Portable" chassis-types
-> >
-> >
-> > [EXTERNAL EMAIL]
-> >
-> > Hi,
-> >
-> > On 5/4/20 5:37 PM, Mario.Limonciello@dell.com wrote:
-> > >
-> > >
-> > >> -----Original Message-----
-> > >> From: Hans de Goede <hdegoede@redhat.com>
-> > >> Sent: Saturday, May 2, 2020 1:30 PM
-> > >> To: Darren Hart; Andy Shevchenko; Limonciello, Mario
-> > >> Cc: Hans de Goede; linux-acpi@vger.kernel.org; platform-driver-
-> > >> x86@vger.kernel.org; linux-kernel@vger.kernel.org
-> > >> Subject: [PATCH 4/5] platform/x86: intel-vbtn: Also handle tablet-mode
-> > switch
-> > >> on "Detachable" and "Portable" chassis-types
-> > >>
-> > >>
-> > >> [EXTERNAL EMAIL]
-> > >>
-> > >> Commit de9647efeaa9 ("platform/x86: intel-vbtn: Only activate tablet mode
-> > >> switch on 2-in-1's") added a DMI chassis-type check to avoid accidentally
-> > >> reporting SW_TABLET_MODE = 1 to userspace on laptops.
-> > >>
-> > >> Some devices with a detachable keyboard and using the intel-vbnt (INT33D6)
-> > >> interface to report if they are in tablet mode (keyboard detached) or not,
-> > >> report 32 / "Detachable" as chassis-type, e.g. the HP Pavilion X2 series.
-> > >>
-> > >> Other devices with a detachable keyboard and using the intel-vbnt (INT33D6)
-> > >> interface to report SW_TABLET_MODE, report 8 / "Portable" as chassis-type.
-> > >> The Dell Venue 11 Pro 7130 is an example of this.
-> > >>
-> > >> Extend the DMI chassis-type check to also accept Portables and Detachables
-> > >> so that the intel-vbtn driver will report SW_TABLET_MODE on these devices.
-> > >>
-> > >> Note the chassis-type check was originally added to avoid a false-positive
-> > >> tablet-mode report on the Dell XPS 9360 laptop. To the best of my knowledge
-> > >> that laptop is using a chassis-type of 9 / "Laptop", so after this commit
-> > >> we still ignore the tablet-switch for that chassis-type.
-> > >
-> > > Yes that's correct.
-> > >
-> > >>
-> > >> Fixes: de9647efeaa9 ("platform/x86: intel-vbtn: Only activate tablet mode
-> > >> switch on 2-in-1's")
-> > >> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-> > >> ---
-> > >> Looking at the Microsoft Windows documentation for tablet-mode reporting:
-> > >> https://docs.microsoft.com/en-us/windows-hardware/drivers/gpiobtn/button-
-> > >> implementation
-> > >>
-> > >> Then the presence of a tablet-mode switch is indicated by the presence
-> > >> of a PNP0C60 compatible ACPI devices. There are 2 ways in which this device
-> > >> can report the tablet-mode. 1. Directly providing a GpioInt resource inside
-> > >> the PNP0C60 device, 2. Through injecting events from a Windows driver.
-> > >>
-> > >> It seems that the intel-vbtn / the INT33D6 ACPI device is the ACPI side
-> > >> of Intel's generic solution for the case where the tablet-mode comes from
-> > >> the embedded-controller and needs to be "injected".
-> > >>
-> > >> This all suggests that it might be better to replace the chassis-type
-> > >> check with a acpi_dev_present("PNP0C60", NULL, -1) check.
-> > >>
-> > >> Mario, can you provide an acpidump and alsa-info.sh output for the
-> > >> Dell XPS 9360, so that I can check if that might help with the issue
-> > >> there, and thus is a potential candidate to replace the chassis-type
-> > >> check?
-> > >
-> > > Unfortunately with WFH right now, I don't have access to a XPS 9630 to
-> > > double check the patch series.
-> > >
-> > > However I do agree this should be a good approach.
-> >
-> > Ok, so lets stick with the chassis-type check (as amended by this patch)
-> > for now then. Then once you are able to go to your office again, we
-> > can examine the acpi_dev_present("PNP0C60", NULL, -1) alternative.
+> This is the start of the stable review cycle for the 5.6.11 release.
+> There are 73 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> I know XPS 13's are pretty popular, perhaps someone on the mailing list who has
-> one can share ACPI dump in the interim.
+> Responses should be made by Wed, 06 May 2020 16:52:55 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.6.11-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.6.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-https://github.com/intel/dptfxtract/issues/13
-?
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Summary
+------------------------------------------------------------------------
+
+kernel: 5.6.11-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.6.y
+git commit: 6cd4bcd666cd831acf192bd7350b94121469ebcb
+git describe: v5.6.10-74-g6cd4bcd666cd
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-5.6-oe/bui=
+ld/v5.6.10-74-g6cd4bcd666cd
+
+No regressions (compared to build v5.6.10)
+
+No fixes (compared to build v5.6.10)
+
+Ran 29045 total tests in the following environments and test suites.
+
+Environments
+--------------
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- nxp-ls2088
+- qemu_arm
+- qemu_arm64
+- qemu_i386
+- qemu_x86_64
+- x15
+- x86
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* install-android-platform-tools-r2800
+* kselftest
+* kselftest/drivers
+* kselftest/filesystems
+* libgpiod
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-io-tests
+* kvm-unit-tests
+* libhugetlbfs
+* ltp-containers-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-securebits-tests
+* perf
+* kselftest/net
+* kselftest/networking
+* ltp-commands-tests
+* ltp-cve-tests
+* ltp-fs-tests
+* ltp-hugetlb-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-open-posix-tests
+* ltp-sched-tests
+* ltp-syscalls-tests
+* network-basic-tests
+* v4l2-compliance
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-native/drivers
+* kselftest-vsyscall-mode-native/filesystems
+* kselftest-vsyscall-mode-native/net
+* kselftest-vsyscall-mode-native/networking
+* kselftest-vsyscall-mode-none
+* kselftest-vsyscall-mode-none/drivers
+* kselftest-vsyscall-mode-none/filesystems
+* kselftest-vsyscall-mode-none/net
+* kselftest-vsyscall-mode-none/networking
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
