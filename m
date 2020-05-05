@@ -2,85 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74CE51C5B95
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:38:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 473781C5BA3
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:39:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730140AbgEEPiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 11:38:23 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:37259 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729276AbgEEPiX (ORCPT
+        id S1730396AbgEEPi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 11:38:56 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:39771 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729276AbgEEPiz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 11:38:23 -0400
-Received: by mail-oi1-f194.google.com with SMTP id r25so2335440oij.4;
-        Tue, 05 May 2020 08:38:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=kqQrkElLVWgKrW0ocIK6no1Eo72/15ji6o+a599XdUg=;
-        b=CfrW0kZs1N7xQV8YSJo4KJASPyM3oQVRbxwp7dA2dnXgoBSBlOU7YUlIS0xJc8LuPn
-         /u2WkdAJF0NhnLM1tjTvvzPxU623oE7kZveH8TCciBLIRe8q9bFz5wKwWqakiCLmujIX
-         nEXLwlIyvFhb1VEby7nld0ii9WUb+YfmhuwU4gzNwxli4LOorPvxweka8IIDDi2rFt8T
-         dyBpyl+FRLyvyI1Amso0EI+qE0b7isQVzUz9W3ijjDwxqYKFtxmsOjFba0NXcJDglQgU
-         apJIIXyMBdgmnh/k0pVrMqYcK5PSTVEftW+azO9kUWhaXgjlWzCOwzHNin3XzGNlATAS
-         Y6nQ==
-X-Gm-Message-State: AGi0Pubnz5beSXZjdv7yPFLZoCQSpYvjKaPt2feb1xjhFGYwsDu6UleQ
-        w6j6/4g08jFbVAi4/snOPw==
-X-Google-Smtp-Source: APiQypKYusD1gPoY+0joGmEA7TK8cSMo/0ZQO2nI0p43i7rGC3r3RtktHEbFfvgfs6RduoaUzLO7zg==
-X-Received: by 2002:aca:5806:: with SMTP id m6mr2830103oib.178.1588693102213;
-        Tue, 05 May 2020 08:38:22 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id p17sm656724oot.17.2020.05.05.08.38.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 May 2020 08:38:21 -0700 (PDT)
-Received: (nullmailer pid 28227 invoked by uid 1000);
-        Tue, 05 May 2020 15:38:19 -0000
-Date:   Tue, 5 May 2020 10:38:19 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Amit Kucheria <amit.kucheria@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
-Subject: Re: [PATCH 2/2] dt-bindings: thermal: tsens: Add zeroc interrupt
- support in yaml
-Message-ID: <20200505153819.GA19181@bogus>
-References: <20200505111204.963-1-manafm@codeaurora.org>
- <20200505111204.963-3-manafm@codeaurora.org>
+        Tue, 5 May 2020 11:38:55 -0400
+Received: from localhost.localdomain ([149.172.19.189]) by
+ mrelayeu.kundenserver.de (mreue011 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1MdNse-1iweps3DMG-00ZMLU; Tue, 05 May 2020 17:38:40 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Vladimir Oltean <olteanv@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH] [net-next, v2] dsa: sja1105: dynamically allocate stats structure
+Date:   Tue,  5 May 2020 17:38:19 +0200
+Message-Id: <20200505153834.1437767-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200505111204.963-3-manafm@codeaurora.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:Bh13PbOFLRcVbfsxdpNxOCz10zCbKaRSrYe3NBwEcgKKrMQUnXM
+ N/7bKe6eyT4HrM6m/PTZy/7zyd+TkuTxsSMZcPxXAzZRMkMEEQo2Ah/bZMPlbeaBNG1J3ax
+ PJfsPb84pa8r05m8l4MZeiOSQzgdUoWyCOCyaRf3hXLu3hW3VaHUDn/X1zy3DNsbr2hScYZ
+ 4BJQJr/OHk3mEG/Q+sCow==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:oCYYc5N0GXI=:+vWtTkunBfUxKZhYKXfcYJ
+ nP70/QVR6iB36EwCq+h9db2bUhRp2D0ardfof1Y4h5ghv8wYsjfnGcStKL3ktgHAw3HBg+rlL
+ CAQDToKiPNmwZUGs7S1sQTTWZ2+86LR/WjpJgIwXfbwuzghzAVPAJ97jH12Dm4/n//5bzeMmQ
+ /PxxGyw2o3Y6Y3cvAg1p6qawfWn3ZFa8hoZ3lxu4Kwr3xLpUIzS3UWORCn1mnFwQe7GLBswIW
+ lAfr6SswAliaQor9f+MWyrUJ17YTvCwjJsDoUZScHoqPPpAHyO97R6PgvZOPf56OD/IOSTU2k
+ drlS91I0um+S6ai4Vz5YmhYQzO0vb1zsHnYe/JdXeocEE/7LroDGA/V5MKlY12ET6yrDjSj9u
+ sX8DQ8+4Z7UjSOJ5wH9cAx1yqBCn5/Hf+TTJhdTeXeA0qHBBotrZD3fDAFx23qXq/g+xNpCEh
+ rBfzUhVDRfryd0YIbnn1bxpIscGScUqiHqQjUFcHriJ/zfkusIwsX7AttmVgybFNLruL7bUUl
+ fEZj3AtCOizhLGbNZFDGc4E+Dh4VguNDoRcaMbZzdsz4rcc7uFkEfVnsjpk2tDuzWMWA7hlUw
+ 4RlJvXEBE/OXulf3Ntp4E8UUgI/xb4FqKwQAj7dZzCm+9Mp4D0z5o+WtfywqRhnTGQmn6PVvT
+ zwwmQmwR/fMrFexrD4ybL/hZGEPrYUN+vzVxwv6GJsLvvFKeNKzS9zjrzg1iVR1RTRVbvdm5I
+ yEUEsug04AsgHRPLkaRvB1v7yPgQip19h5gr0gEQHw+ZDqh+dWd9AlZ8/ECtmXIbmV+VOukPF
+ mfycg7NmcFiJIOIVxeRnXNt9qpi3uXd0oUyIFpGnMTk1nu7p5A=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  5 May 2020 16:42:04 +0530, Manaf Meethalavalappu Pallikunhi wrote:
-> Add 0C (zeroc) interrupt support for tsens in yaml.
-> 
-> Signed-off-by: Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
-> ---
->  Documentation/devicetree/bindings/thermal/qcom-tsens.yaml | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
-> 
+The addition of sja1105_port_status_ether structure into the
+statistics causes the frame size to go over the warning limit:
 
-My bot found errors running 'make dt_binding_check' on your patch:
+drivers/net/dsa/sja1105/sja1105_ethtool.c:421:6: error: stack frame size of 1104 bytes in function 'sja1105_get_ethtool_stats' [-Werror,-Wframe-larger-than=]
 
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/thermal/qcom-tsens.example.dt.yaml: thermal-sensor@c263000: interrupt-names: ['uplow', 'critical', 'zeroc'] is too long
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/thermal/qcom-tsens.example.dt.yaml: thermal-sensor@c263000: interrupts: [[0, 506, 4], [0, 508, 4], [0, 510, 1]] is too long
+Use dynamic allocation to avoid this.
 
-See https://patchwork.ozlabs.org/patch/1283470
+Fixes: 336aa67bd027 ("net: dsa: sja1105: show more ethtool statistics counters for P/Q/R/S")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+v2: remove extra ';'
+    remove bogus include/linux/warnings.h change
+---
+ drivers/net/dsa/sja1105/sja1105_ethtool.c | 144 +++++++++++-----------
+ 1 file changed, 74 insertions(+), 70 deletions(-)
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure dt-schema is up to date:
+diff --git a/drivers/net/dsa/sja1105/sja1105_ethtool.c b/drivers/net/dsa/sja1105/sja1105_ethtool.c
+index d742ffcbfce9..709f035055c5 100644
+--- a/drivers/net/dsa/sja1105/sja1105_ethtool.c
++++ b/drivers/net/dsa/sja1105/sja1105_ethtool.c
+@@ -421,92 +421,96 @@ static char sja1105pqrs_extra_port_stats[][ETH_GSTRING_LEN] = {
+ void sja1105_get_ethtool_stats(struct dsa_switch *ds, int port, u64 *data)
+ {
+ 	struct sja1105_private *priv = ds->priv;
+-	struct sja1105_port_status status;
++	struct sja1105_port_status *status;
+ 	int rc, i, k = 0;
+ 
+-	memset(&status, 0, sizeof(status));
++	status = kzalloc(sizeof(*status), GFP_KERNEL);
++	if (!status)
++		goto out;
+ 
+-	rc = sja1105_port_status_get(priv, &status, port);
++	rc = sja1105_port_status_get(priv, status, port);
+ 	if (rc < 0) {
+ 		dev_err(ds->dev, "Failed to read port %d counters: %d\n",
+ 			port, rc);
+-		return;
++		goto out;
+ 	}
+ 	memset(data, 0, ARRAY_SIZE(sja1105_port_stats) * sizeof(u64));
+-	data[k++] = status.mac.n_runt;
+-	data[k++] = status.mac.n_soferr;
+-	data[k++] = status.mac.n_alignerr;
+-	data[k++] = status.mac.n_miierr;
+-	data[k++] = status.mac.typeerr;
+-	data[k++] = status.mac.sizeerr;
+-	data[k++] = status.mac.tctimeout;
+-	data[k++] = status.mac.priorerr;
+-	data[k++] = status.mac.nomaster;
+-	data[k++] = status.mac.memov;
+-	data[k++] = status.mac.memerr;
+-	data[k++] = status.mac.invtyp;
+-	data[k++] = status.mac.intcyov;
+-	data[k++] = status.mac.domerr;
+-	data[k++] = status.mac.pcfbagdrop;
+-	data[k++] = status.mac.spcprior;
+-	data[k++] = status.mac.ageprior;
+-	data[k++] = status.mac.portdrop;
+-	data[k++] = status.mac.lendrop;
+-	data[k++] = status.mac.bagdrop;
+-	data[k++] = status.mac.policeerr;
+-	data[k++] = status.mac.drpnona664err;
+-	data[k++] = status.mac.spcerr;
+-	data[k++] = status.mac.agedrp;
+-	data[k++] = status.hl1.n_n664err;
+-	data[k++] = status.hl1.n_vlanerr;
+-	data[k++] = status.hl1.n_unreleased;
+-	data[k++] = status.hl1.n_sizeerr;
+-	data[k++] = status.hl1.n_crcerr;
+-	data[k++] = status.hl1.n_vlnotfound;
+-	data[k++] = status.hl1.n_ctpolerr;
+-	data[k++] = status.hl1.n_polerr;
+-	data[k++] = status.hl1.n_rxfrm;
+-	data[k++] = status.hl1.n_rxbyte;
+-	data[k++] = status.hl1.n_txfrm;
+-	data[k++] = status.hl1.n_txbyte;
+-	data[k++] = status.hl2.n_qfull;
+-	data[k++] = status.hl2.n_part_drop;
+-	data[k++] = status.hl2.n_egr_disabled;
+-	data[k++] = status.hl2.n_not_reach;
++	data[k++] = status->mac.n_runt;
++	data[k++] = status->mac.n_soferr;
++	data[k++] = status->mac.n_alignerr;
++	data[k++] = status->mac.n_miierr;
++	data[k++] = status->mac.typeerr;
++	data[k++] = status->mac.sizeerr;
++	data[k++] = status->mac.tctimeout;
++	data[k++] = status->mac.priorerr;
++	data[k++] = status->mac.nomaster;
++	data[k++] = status->mac.memov;
++	data[k++] = status->mac.memerr;
++	data[k++] = status->mac.invtyp;
++	data[k++] = status->mac.intcyov;
++	data[k++] = status->mac.domerr;
++	data[k++] = status->mac.pcfbagdrop;
++	data[k++] = status->mac.spcprior;
++	data[k++] = status->mac.ageprior;
++	data[k++] = status->mac.portdrop;
++	data[k++] = status->mac.lendrop;
++	data[k++] = status->mac.bagdrop;
++	data[k++] = status->mac.policeerr;
++	data[k++] = status->mac.drpnona664err;
++	data[k++] = status->mac.spcerr;
++	data[k++] = status->mac.agedrp;
++	data[k++] = status->hl1.n_n664err;
++	data[k++] = status->hl1.n_vlanerr;
++	data[k++] = status->hl1.n_unreleased;
++	data[k++] = status->hl1.n_sizeerr;
++	data[k++] = status->hl1.n_crcerr;
++	data[k++] = status->hl1.n_vlnotfound;
++	data[k++] = status->hl1.n_ctpolerr;
++	data[k++] = status->hl1.n_polerr;
++	data[k++] = status->hl1.n_rxfrm;
++	data[k++] = status->hl1.n_rxbyte;
++	data[k++] = status->hl1.n_txfrm;
++	data[k++] = status->hl1.n_txbyte;
++	data[k++] = status->hl2.n_qfull;
++	data[k++] = status->hl2.n_part_drop;
++	data[k++] = status->hl2.n_egr_disabled;
++	data[k++] = status->hl2.n_not_reach;
+ 
+ 	if (priv->info->device_id == SJA1105E_DEVICE_ID ||
+ 	    priv->info->device_id == SJA1105T_DEVICE_ID)
+-		return;
++		goto out;;
+ 
+ 	memset(data + k, 0, ARRAY_SIZE(sja1105pqrs_extra_port_stats) *
+ 			sizeof(u64));
+ 	for (i = 0; i < 8; i++) {
+-		data[k++] = status.hl2.qlevel_hwm[i];
+-		data[k++] = status.hl2.qlevel[i];
++		data[k++] = status->hl2.qlevel_hwm[i];
++		data[k++] = status->hl2.qlevel[i];
+ 	}
+-	data[k++] = status.ether.n_drops_nolearn;
+-	data[k++] = status.ether.n_drops_noroute;
+-	data[k++] = status.ether.n_drops_ill_dtag;
+-	data[k++] = status.ether.n_drops_dtag;
+-	data[k++] = status.ether.n_drops_sotag;
+-	data[k++] = status.ether.n_drops_sitag;
+-	data[k++] = status.ether.n_drops_utag;
+-	data[k++] = status.ether.n_tx_bytes_1024_2047;
+-	data[k++] = status.ether.n_tx_bytes_512_1023;
+-	data[k++] = status.ether.n_tx_bytes_256_511;
+-	data[k++] = status.ether.n_tx_bytes_128_255;
+-	data[k++] = status.ether.n_tx_bytes_65_127;
+-	data[k++] = status.ether.n_tx_bytes_64;
+-	data[k++] = status.ether.n_tx_mcast;
+-	data[k++] = status.ether.n_tx_bcast;
+-	data[k++] = status.ether.n_rx_bytes_1024_2047;
+-	data[k++] = status.ether.n_rx_bytes_512_1023;
+-	data[k++] = status.ether.n_rx_bytes_256_511;
+-	data[k++] = status.ether.n_rx_bytes_128_255;
+-	data[k++] = status.ether.n_rx_bytes_65_127;
+-	data[k++] = status.ether.n_rx_bytes_64;
+-	data[k++] = status.ether.n_rx_mcast;
+-	data[k++] = status.ether.n_rx_bcast;
++	data[k++] = status->ether.n_drops_nolearn;
++	data[k++] = status->ether.n_drops_noroute;
++	data[k++] = status->ether.n_drops_ill_dtag;
++	data[k++] = status->ether.n_drops_dtag;
++	data[k++] = status->ether.n_drops_sotag;
++	data[k++] = status->ether.n_drops_sitag;
++	data[k++] = status->ether.n_drops_utag;
++	data[k++] = status->ether.n_tx_bytes_1024_2047;
++	data[k++] = status->ether.n_tx_bytes_512_1023;
++	data[k++] = status->ether.n_tx_bytes_256_511;
++	data[k++] = status->ether.n_tx_bytes_128_255;
++	data[k++] = status->ether.n_tx_bytes_65_127;
++	data[k++] = status->ether.n_tx_bytes_64;
++	data[k++] = status->ether.n_tx_mcast;
++	data[k++] = status->ether.n_tx_bcast;
++	data[k++] = status->ether.n_rx_bytes_1024_2047;
++	data[k++] = status->ether.n_rx_bytes_512_1023;
++	data[k++] = status->ether.n_rx_bytes_256_511;
++	data[k++] = status->ether.n_rx_bytes_128_255;
++	data[k++] = status->ether.n_rx_bytes_65_127;
++	data[k++] = status->ether.n_rx_bytes_64;
++	data[k++] = status->ether.n_rx_mcast;
++	data[k++] = status->ether.n_rx_bcast;
++out:
++	kfree(status);
+ }
+ 
+ void sja1105_get_strings(struct dsa_switch *ds, int port,
+-- 
+2.26.0
 
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
-
-Please check and re-submit.
