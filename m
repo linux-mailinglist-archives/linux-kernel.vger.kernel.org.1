@@ -2,196 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 610BE1C58E1
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF5751C589A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:16:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730491AbgEEOTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:19:18 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:32523 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730081AbgEEOQW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:16:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588688180;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=s1Gnhsex7IEz73A8ZB5poIdfMPTSBcM675dHjORTals=;
-        b=O0ZpsJPdU5JMWeB1bvmn0A0EGd1yYmQzfVvr9FnbkWU8b7BsEHtfagIDZnP30x0JbGqqQe
-        tv0vW+FC52+RirflELHCvAlzfO5pYxuXBJ0BBoCo/C08tKXtV7p8WUbAVOQQ4oBfwbTSvF
-        8H3FSgR0t1olra8HIZn6gSfm979AAPQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-433-nheUdfDqPmaV8UOOzq7zCg-1; Tue, 05 May 2020 10:16:06 -0400
-X-MC-Unique: nheUdfDqPmaV8UOOzq7zCg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1730094AbgEEOQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:16:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40808 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730064AbgEEOQS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 10:16:18 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8D272872FE0;
-        Tue,  5 May 2020 14:16:04 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-116-211.rdu2.redhat.com [10.10.116.211])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0F0495D9D5;
-        Tue,  5 May 2020 14:16:03 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 59771222F75; Tue,  5 May 2020 10:16:03 -0400 (EDT)
-Date:   Tue, 5 May 2020 10:16:03 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>
-Subject: Re: [PATCH RFC 1/6] Revert "KVM: async_pf: Fix #DF due to inject
- "Page not Present" and "Page Ready" exceptions simultaneously"
-Message-ID: <20200505141603.GA7155@redhat.com>
-References: <20200429093634.1514902-1-vkuznets@redhat.com>
- <20200429093634.1514902-2-vkuznets@redhat.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 5ADCE2084D;
+        Tue,  5 May 2020 14:16:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588688177;
+        bh=P3dVZ6HHUBjc/qORlz0QU3njyZSqdafXLPZfhjOru0M=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=TrSglO9HXHB70ltVjy4tDjvxtMsSqJ5r1RT8TygcRq/Ym7C8yePe5HIhWZtuj9n2b
+         H/dpJMqzQFEi2iEIZiCmxJZdau9WM6mDFwgOR/QwtJQtPL1uxg4edyH+QBC3S4LxxR
+         lflL8REbfBusTNZbaxoVHb8oPbkeChrE9S4BN1Ug=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 38A4F3521001; Tue,  5 May 2020 07:16:17 -0700 (PDT)
+Date:   Tue, 5 May 2020 07:16:17 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Marco Elver <elver@google.com>
+Cc:     David Gow <davidgow@google.com>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] kcsan: Add test suite
+Message-ID: <20200505141617.GY2869@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200427143507.49654-1-elver@google.com>
+ <CANpmjNOv7VXv9LtWHWBx1-an+1+WxjtzDNBF+rKsOm+ybmvwog@mail.gmail.com>
+ <CABVgOSnr8CX5tN9u_wafxSiyyVcM9nL_nX2ufrSdRi=jdWjerg@mail.gmail.com>
+ <CANpmjNMhVcR6TiLv29HqSvVVurUMwtHiokodPyzvwFSeE6UpZw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200429093634.1514902-2-vkuznets@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <CANpmjNMhVcR6TiLv29HqSvVVurUMwtHiokodPyzvwFSeE6UpZw@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 11:36:29AM +0200, Vitaly Kuznetsov wrote:
-> Commit 9a6e7c39810e (""KVM: async_pf: Fix #DF due to inject "Page not
-> Present" and "Page Ready" exceptions simultaneously") added a protection
-> against 'page ready' notification coming before 'page not ready' is
-> delivered.
-
-Hi Vitaly,
-
-Description of the commit seems to suggest that it is solving double
-fault issue. That is both "page not present" and "page ready" exceptions
-got queued and on next vcpu entry, it will result in double fault.
-
-It does not seem to solve the issue of "page not ready" being delivered
-before "page ready". That guest can handle already and its not an issue.
-
-> This situation seems to be impossible since commit 2a266f23550b
-> ("KVM MMU: check pending exception before injecting APF) which added
-> 'vcpu->arch.exception.pending' check to kvm_can_do_async_pf.
-
-This original commit description is confusing too. It says.
-
-"For example, when two APF's for page ready happen after one exit and
- the first one becomes pending, the second one will result in #DF.
- Instead, just handle the second page fault synchronously."
-
-So it seems to be trying to protect against that two "page ready"
-exceptions don't get queued simultaneously. But you can't fall back
-to synchronous mechanism once you have started the async pf prototocol.
-Once you have started async page fault protocol by sending "page not
-reay", you have to send "page ready". So I am not sure how above commit
-solved the issue of two "page ready" not being queued at the same time.
-
-I am wondering what problem did this commit solve. It looks like it
-can avoid queueing two "page not ready" events. But can that even happen?
-
+On Tue, May 05, 2020 at 03:01:45PM +0200, Marco Elver wrote:
+> On Tue, 5 May 2020 at 07:00, David Gow <davidgow@google.com> wrote:
+> >
+> > On Mon, Apr 27, 2020 at 11:23 PM 'Marco Elver' via kasan-dev
+> > <kasan-dev@googlegroups.com> wrote:
+> > >
+> > > On Mon, 27 Apr 2020 at 16:35, Marco Elver <elver@google.com> wrote:
+> > > >
+> > > > This adds KCSAN test focusing on behaviour of the integrated runtime.
+> > > > Tests various race scenarios, and verifies the reports generated to
+> > > > console. Makes use of KUnit for test organization, and the Torture
+> > > > framework for test thread control.
+> > > >
+> > > > Signed-off-by: Marco Elver <elver@google.com>
+> > > > ---
+> > >
+> > > +KUnit devs
+> > > We had some discussions on how to best test sanitizer runtimes, and we
+> > > believe that this test is what testing sanitizer runtimes should
+> > > roughly look like. Note that, for KCSAN there are various additional
+> > > complexities like multiple threads, and report generation isn't
+> > > entirely deterministic (need to run some number of iterations to get
+> > > reports, may get multiple reports, etc.).
+> >
+> > Thanks very much for writing the test. I do think that it goes a
+> > little outside what we'd normally expect of a unit test (notably with
+> > the issues around determinism and threading), but it's good to see
+> > KUnit being pushed in new directions a bit.
+> >
+> > The biggest issue in my mind is the possibility that the
+> > non-determinism of the tests could cause false positives. If we're
+> > trying to run as many KUnit tests as possible as part of continuous
+> > integration systems or as a condition for accepting patches, having
+> > flaky tests could be annoying. The KCSAN tests seem to break/fail
+> > as-is when run on single-core machines (at least, under qemu), so some
+> > way of documenting this as a requirement would probably be necessary,
+> > too.
 > 
-> On x86, kvm_arch_async_page_present() has only one call site:
-> kvm_check_async_pf_completion() loop and we only enter the loop when
-> kvm_arch_can_inject_async_page_present(vcpu) which when async pf msr
-> is enabled, translates into kvm_can_do_async_pf().
-
-kvm_check_async_pf_completion() skips injecting "page ready" if fault
-can't be injected now. Does that mean we leave it queued and it will
-be injected after next exit.
-
-If yes, then previous commit kind of makes sense. When it will not
-queue up two exceptions at the same time but will wait for queuing
-up the exception after next exit. But commit description still seems
-to be wrong in the sense it is not falling back to synchronous page
-fault for "page ready" events.
-
-try_async_pf() also calls kvm_can_do_async_pf(). And IIUC, it will
-fall back to synchrounous fault if injecting async_pf is not possible
-at this point of time. So that means despite the fact that async pf
-is enabled, all the page faults might not take that route and some
-will fall back to synchrounous faults. I am concerned that how will
-this work for reporting errors back to guest (for virtiofs use case).
-If we are relying on async pf mechanism to also be able to report
-errors back, then we can't afford to do synchrounous page faults becase
-we don't have a way to report errors back to guest and it will hang (if
-page can't be faulted in).
-
-So either we need a way to report errors back while doing synchrounous
-page faults or we can't fall back to synchorounous page faults while
-async page faults are enabled. 
-
-While we are reworking async page mechanism, want to make sure that
-error reporting part has been taken care of as part of design. Don't
-want to be dealing with it after the fact.
-
-Thanks
-Vivek
-
-
+> True. Although note that we require CONFIG_KCSAN=y for this test to be
+> enabled, so I don't think it's a big problem for a regular CI setups.
+> For a KCSAN setup, I'd expect that we know that running on a
+> single-core system doesn't yield much interesting results regardless
+> of tests being run.
 > 
-> There is also one problem with the cancellation mechanism. We don't seem
-> to check that the 'page not ready' notification we're cancelling matches
-> the 'page ready' notification so in theory, we may erroneously drop two
-> valid events.
+> The non-deterministic nature of concurrent tests will never entirely
+> go away, but I think with the right preconditions met (at least N
+> CPUs, where N depends on PREEMPT_NONE, PREEMPT_VOLUNTARY or PREEMPT)
+> the tests here should not normally fail.
 > 
-> Revert the commit. apf_get_user() stays as we will need it for the new
-> 'page ready notifications via interrupt' mechanism.
+> > One possibility would be to add support for "skipped" tests to KUnit
+> > (the TAP specification allows for it), so that the KCSAN test could
+> > detect cases where it's not reliable, and skip itself (leaving a note
+> > as to why). In the short term, though, we'd absolutely need some
+> > documentation around the dependencies for the test.
 > 
-> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> ---
->  arch/x86/kvm/x86.c | 16 +---------------
->  1 file changed, 1 insertion(+), 15 deletions(-)
+> That would be nice. For the time being, I will add a precondition
+> check to test_init(), and print a warning if the test needs to be
+> skipped.
 > 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index c5835f9cb9ad..b93133ee07ba 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -10430,7 +10430,6 @@ void kvm_arch_async_page_present(struct kvm_vcpu *vcpu,
->  				 struct kvm_async_pf *work)
->  {
->  	struct x86_exception fault;
-> -	u32 val;
->  
->  	if (work->wakeup_all)
->  		work->arch.token = ~0; /* broadcast wakeup */
-> @@ -10439,19 +10438,7 @@ void kvm_arch_async_page_present(struct kvm_vcpu *vcpu,
->  	trace_kvm_async_pf_ready(work->arch.token, work->cr2_or_gpa);
->  
->  	if (vcpu->arch.apf.msr_val & KVM_ASYNC_PF_ENABLED &&
-> -	    !apf_get_user(vcpu, &val)) {
-> -		if (val == KVM_PV_REASON_PAGE_NOT_PRESENT &&
-> -		    vcpu->arch.exception.pending &&
-> -		    vcpu->arch.exception.nr == PF_VECTOR &&
-> -		    !apf_put_user(vcpu, 0)) {
-> -			vcpu->arch.exception.injected = false;
-> -			vcpu->arch.exception.pending = false;
-> -			vcpu->arch.exception.nr = 0;
-> -			vcpu->arch.exception.has_error_code = false;
-> -			vcpu->arch.exception.error_code = 0;
-> -			vcpu->arch.exception.has_payload = false;
-> -			vcpu->arch.exception.payload = 0;
-> -		} else if (!apf_put_user(vcpu, KVM_PV_REASON_PAGE_READY)) {
-> +	    !apf_put_user(vcpu, KVM_PV_REASON_PAGE_READY)) {
->  			fault.vector = PF_VECTOR;
->  			fault.error_code_valid = true;
->  			fault.error_code = 0;
-> @@ -10459,7 +10446,6 @@ void kvm_arch_async_page_present(struct kvm_vcpu *vcpu,
->  			fault.address = work->arch.token;
->  			fault.async_page_fault = true;
->  			kvm_inject_page_fault(vcpu, &fault);
-> -		}
->  	}
->  	vcpu->arch.apf.halted = false;
->  	vcpu->arch.mp_state = KVM_MP_STATE_RUNNABLE;
-> -- 
-> 2.25.3
+> > (For the record, the failures I saw were all due to running under qemu
+> > emulating as a uniprocessor/single-core machine: with
+> > CONFIG_PREEMPT_VOLUNTARY, it would just hang after creating the first
+> > couple of threads. With CONFIG_PREEMPT, the tests completed, but the
+> > majority of them failed.)
 > 
+> Right, let me try to fix those at least. I'll send v2.
+> 
+> (Paul: If you prefer a separate patch rather than v2, let me know.)
 
+A v2 would work well, thank you!
+
+							Thanx, Paul
+
+> > > The main thing, however, is that we want to verify the actual output
+> > > (or absence of it) to console. This is what the KCSAN test does using
+> > > the 'console' tracepoint. Could KUnit provide some generic
+> > > infrastructure to check console output, like is done in the test here?
+> > > Right now I couldn't say what the most useful generalization of this
+> > > would be (without it just being a wrapper around the console
+> > > tracepoint), because the way I've decided to capture and then match
+> > > console output is quite test-specific. For now we can replicate this
+> > > logic on a per-test basis, but it would be extremely useful if there
+> > > was a generic interface that KUnit could provide in future.
+> >
+> > This is something we've discussed here a couple of times as well.
+> > While I'll confess to being a little bit wary of having tests rely too
+> > heavily on console output: it risks being a bit fragile if the exact
+> > contents or formatting of messages change, or ends up having a lot of
+> > string formatting and/or parsing code in the tests. I do agree,
+> > though, that it probably needs to be at least a part of testing things
+> > like sanitizers where the ultimate goal is to produce console output.
+> > I'm not exactly sure how we'd implement it yet, so it's probably not
+> > going to happen extremely soon, but what you have here looks to me
+> > like a good example we can generalise as needed.
+> 
+> The fragility due to formatting etc. for the sanitizers is exactly
+> what we want, since any change in console output could be a bug. But
+> as you say, for other tests, it might not make much sense.
+> 
+> Thanks,
+> -- Marco
