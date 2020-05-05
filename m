@@ -2,137 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE95C1C5527
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 14:12:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CCBA1C552E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 14:12:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728951AbgEEMMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 08:12:39 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:53184 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728939AbgEEMMi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 08:12:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588680756;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EEdhDweLqjW8jAvmPi06Mv3yVCqRblNSuBY59q+aBGE=;
-        b=ONMyolrGXE/ZYZyhBoAhYlkoHzO6Cf6c7RWbmGKlUzzXpcCAEJNZEHit/v4aLnoVkMJJ1N
-        aZP+N4zupBL/OxGvl1B6YoXzsIxmOqRZNSNVYxS8VVPInx6canph25O0s3S8ZuMWBToF/9
-        SY0YNq7OcJZx+whPJDaMpqPCQEUqbnk=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-65-bU2sUMYFPEuhRfRjuB53iw-1; Tue, 05 May 2020 08:12:34 -0400
-X-MC-Unique: bU2sUMYFPEuhRfRjuB53iw-1
-Received: by mail-wr1-f72.google.com with SMTP id a12so1109174wrv.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 05:12:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=EEdhDweLqjW8jAvmPi06Mv3yVCqRblNSuBY59q+aBGE=;
-        b=IYtYVnP2l0eco17PfKei9s/v/3rsXDMzKXGMpsrB+aYRmzPHcWx34eaN1CgHjnhEep
-         8Bt/oqOgolb418JjRcUzMsv4fNkGnQu76bPTmIe9UMBDpHyvva4crKRQlN91VqoTfLBR
-         r021Z6I0lQrYpDZOqBu1btYlMVQDJqTnJ375ElyJJmNsEzTWPdva1Kuvp4DQcG648UtZ
-         A1dbcMsAbkf3nQtGvpEX1d8gtr2BJ8aDruG2vAsdpdz+tLzA4BEvGWLoEY00EkIAxRjn
-         AN0Dr0HNQJTZDH1t41N+SSX9cWjRlqcC2KW8UPN4eVI5xkK+TXyptyE+geeBoozaJ0vb
-         CHCg==
-X-Gm-Message-State: AGi0PuaD5V0XmBTsw7JXkC/rvk0fH37df3q/E+Ae1jlLdulKPMacVZil
-        2vzi9urI85R90wGdCBbQTfPBYVIfmjpdvwSnIUQDDmCmGvKVEuiKd6ZL1l9+CmBDlaA79Bn3qpu
-        aS5vJKCKG6adINa4g9C2A4gwC
-X-Received: by 2002:a1c:4603:: with SMTP id t3mr2953707wma.103.1588680753464;
-        Tue, 05 May 2020 05:12:33 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJjwpqisMjfWbOwDPbPwXCspJW62o+EO0zALtr5RNTbzzXcDRGIep8Gx5rPbVmkARENzHhqSg==
-X-Received: by 2002:a1c:4603:: with SMTP id t3mr2953691wma.103.1588680753226;
-        Tue, 05 May 2020 05:12:33 -0700 (PDT)
-Received: from [192.168.178.58] ([151.20.132.175])
-        by smtp.gmail.com with ESMTPSA id n21sm3251171wra.15.2020.05.05.05.12.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 May 2020 05:12:32 -0700 (PDT)
-Subject: Re: AVIC related warning in enable_irq_window
-To:     Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-References: <9ce7bb5c4fb8bcc4ac21103f7534a6edfcbe195d.camel@redhat.com>
- <758b27a8-74c0-087d-d90b-d95faee2f561@redhat.com>
- <c5c32371-4b4e-1382-c616-3830ba46bf85@amd.com>
- <159382e7fdf0f9b50d79e29554842289e92e1ed7.camel@redhat.com>
- <d22d32de-5d91-662a-bf53-8cfb115dbe8d@redhat.com>
- <c81cf9bb-840a-d076-bc0e-496916621bdd@amd.com>
- <23b0dfe5-eba4-136b-0d4a-79f57f8a03ff@redhat.com>
- <efbe933a-3ab6-fa57-37fb-affc87369948@amd.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <6e94e9e1-64d1-de62-3bdb-75be99ddbb35@redhat.com>
-Date:   Tue, 5 May 2020 14:12:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1728970AbgEEMMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 08:12:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37404 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728957AbgEEMMp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 08:12:45 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3463E206A4;
+        Tue,  5 May 2020 12:12:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588680764;
+        bh=lRSSmIip0z2BoR+RQ+3hQQVFRY5K07HxlK441PUvO4w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Vvd6pPIdmUOLnPSSOEbgshPimjHlXn8Jb0pT005eaNVQM/O1gReGl7Hz3fjulp0N9
+         2HhwCwhWBvnLs/L1MlRsx2W3CcZZ2qWetwd9To2K5swDT65NzY4tKUWS8kpBYA19l4
+         +ZuM12CP6wKprD2xtAJnC4YlWJo3Av3GWnxT/Gmo=
+Date:   Tue, 5 May 2020 13:12:39 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3 04/16] arm64/cpufeature: Introduce ID_PFR2 CPU register
+Message-ID: <20200505121239.GI19710@willie-the-truck>
+References: <1588426445-24344-1-git-send-email-anshuman.khandual@arm.com>
+ <1588426445-24344-5-git-send-email-anshuman.khandual@arm.com>
+ <20200505111241.GF19710@willie-the-truck>
+ <20200505111607.GA82823@C02TD0UTHF1T.local>
+ <20200505112718.GH19710@willie-the-truck>
+ <20200505115054.GC82823@C02TD0UTHF1T.local>
 MIME-Version: 1.0
-In-Reply-To: <efbe933a-3ab6-fa57-37fb-affc87369948@amd.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200505115054.GC82823@C02TD0UTHF1T.local>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/05/20 09:55, Suravee Suthikulpanit wrote:
->> WARN_ON((vmcb->control.int_ctl & (AVIC_ENABLE_MASK | V_IRQ_MASK))
->>     == (AVIC_ENABLE_MASK | V_IRQ_MASK));
->
-> Based on my experiment, it seems that the hardware sets the V_IRQ_MASK bit
-> when #VMEXIT despite this bit being ignored when AVIC is enabled.
-> (I'll double check w/ HW team on this.) In this case, I don't think we can
-> use the WARN_ON() as suggested above.
-
-Indeed this is even documented:
-
-NOTE: This value is written back to the VMCB at #VMEXIT.
-      This field is ignored on VMRUN when AVIC is
-      enabled.
-
-> I think we should keep the warning in the svm_set_vintr() since we want
-> to know if the V_IRQ, V_INTR_PRIO, V_IGN_TPR, and V_INTR_VECTOR are ignored when
-> calling svm_set_vintr().
+On Tue, May 05, 2020 at 12:50:54PM +0100, Mark Rutland wrote:
+> On Tue, May 05, 2020 at 12:27:19PM +0100, Will Deacon wrote:
+> > On Tue, May 05, 2020 at 12:16:07PM +0100, Mark Rutland wrote:
+> > > On Tue, May 05, 2020 at 12:12:41PM +0100, Will Deacon wrote:
+> > > > On Sat, May 02, 2020 at 07:03:53PM +0530, Anshuman Khandual wrote:
+> > > > > diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+> > > > > index e5317a6367b6..c977449e02db 100644
+> > > > > --- a/arch/arm64/include/asm/sysreg.h
+> > > > > +++ b/arch/arm64/include/asm/sysreg.h
+> > > > > @@ -153,6 +153,7 @@
+> > > > >  #define SYS_MVFR0_EL1			sys_reg(3, 0, 0, 3, 0)
+> > > > >  #define SYS_MVFR1_EL1			sys_reg(3, 0, 0, 3, 1)
+> > > > >  #define SYS_MVFR2_EL1			sys_reg(3, 0, 0, 3, 2)
+> > > > > +#define SYS_ID_PFR2_EL1			sys_reg(3, 0, 0, 3, 4)
+> > > > 
+> > > > nit: but please group these defines by name rather than encoding.
+> > > 
+> > > So far we've *always* grouped these by encoding in this file, so can we
+> > > keep things that way for now? Otherwise we're inconsistent with both
+> > > schemes.
+> > 
+> > Hmm, but it's really hard to read sorted that way and we'll end up with
+> > duplicate definitions like we had for some of the field offsets already.
 > 
-> Instead, I would consider explicitly call kvm_vcpu_update_apicv() since
-> it would be benefit from not having to wait for the next vcpu_enter_guest for
-> this vcpu to process the request. This is less confusing to me. In this case,
-> we would need to kvm_clear_request(KVM_REQ_APICV_UPDATE) for this vcpu as well.
+> I appreciate that, and don't disagree that the current scheme is not
+> obvious.
 > 
-> On the other hand, would be it useful to implement
-> kvm_make_all_cpus_request_but_self(),
-> which sends request to all other vcpus excluding itself?
+> I just want to ensure that we don't make things less consistent, and if
+> we're going to change the scheme in order to make that easier, it should
+> be a separate patch. There'll be other changes like MMFR4_EL1, and we
+> should probably add a comment as to what the policy is either way (e.g.
+> if we're just grouping at the top level, or if that should be sorted
+> too).
 
-Yes, that's also a possibility.  It's not too much extra complication if
-we add a new argument to kvm_make_vcpus_request_mask, like this:
+Ok, I added a comment below.
 
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 74bdb7bf3295..8f9dadb1ef42 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -258,7 +258,7 @@ static inline bool kvm_kick_many_cpus(const struct cpumask *cpus, bool wait)
- 	return true;
- }
+Will
+
+--->8
+
+commit be7ab6a6cdb0a6d7b10883094c2adf96f5d4e1e8
+Author: Will Deacon <will@kernel.org>
+Date:   Tue May 5 13:08:02 2020 +0100
+
+    arm64: cpufeature: Group indexed system register definitions by name
+    
+    Some system registers contain an index in the name (e.g. ID_MMFR<n>_EL1)
+    and, while this index often follows the register encoding, newer additions
+    to the architecture are necessarily tacked on the end. Sorting these
+    registers by encoding therefore becomes a bit of a mess.
+    
+    Group the indexed system register definitions by name so that it's easier to
+    read and will hopefully reduce the chance of us accidentally introducing
+    duplicate definitions in the future.
+    
+    Signed-off-by: Will Deacon <will@kernel.org>
+
+diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+index 2dd3f4ca9780..194684301df0 100644
+--- a/arch/arm64/include/asm/sysreg.h
++++ b/arch/arm64/include/asm/sysreg.h
+@@ -105,6 +105,10 @@
+ #define SYS_DC_CSW			sys_insn(1, 0, 7, 10, 2)
+ #define SYS_DC_CISW			sys_insn(1, 0, 7, 14, 2)
  
--bool kvm_make_vcpus_request_mask(struct kvm *kvm, unsigned int req,
-+bool kvm_make_vcpus_request_mask(struct kvm *kvm, unsigned int req, struct kvm_vcpu *except,
- 				 unsigned long *vcpu_bitmap, cpumask_var_t tmp)
- {
- 	int i, cpu, me;
-@@ -270,6 +270,8 @@ bool kvm_make_vcpus_request_mask(struct kvm *kvm, unsigned int req,
- 	kvm_for_each_vcpu(i, vcpu, kvm) {
- 		if (vcpu_bitmap && !test_bit(i, vcpu_bitmap))
- 			continue;
-+		if (vcpu == except)
-+			continue;
++/*
++ * System registers, organised loosely by encoding but grouped together
++ * where the architected name contains an index. e.g. ID_MMFR<n>_EL1.
++ */
+ #define SYS_OSDTRRX_EL1			sys_reg(2, 0, 0, 0, 2)
+ #define SYS_MDCCINT_EL1			sys_reg(2, 0, 0, 2, 0)
+ #define SYS_MDSCR_EL1			sys_reg(2, 0, 0, 2, 2)
+@@ -140,6 +144,7 @@
+ #define SYS_ID_MMFR1_EL1		sys_reg(3, 0, 0, 1, 5)
+ #define SYS_ID_MMFR2_EL1		sys_reg(3, 0, 0, 1, 6)
+ #define SYS_ID_MMFR3_EL1		sys_reg(3, 0, 0, 1, 7)
++#define SYS_ID_MMFR4_EL1		sys_reg(3, 0, 0, 2, 6)
  
- 		kvm_make_request(req, vcpu);
- 		cpu = vcpu->cpu;
-
-
-Paolo
+ #define SYS_ID_ISAR0_EL1		sys_reg(3, 0, 0, 2, 0)
+ #define SYS_ID_ISAR1_EL1		sys_reg(3, 0, 0, 2, 1)
+@@ -147,7 +152,6 @@
+ #define SYS_ID_ISAR3_EL1		sys_reg(3, 0, 0, 2, 3)
+ #define SYS_ID_ISAR4_EL1		sys_reg(3, 0, 0, 2, 4)
+ #define SYS_ID_ISAR5_EL1		sys_reg(3, 0, 0, 2, 5)
+-#define SYS_ID_MMFR4_EL1		sys_reg(3, 0, 0, 2, 6)
+ #define SYS_ID_ISAR6_EL1		sys_reg(3, 0, 0, 2, 7)
+ 
+ #define SYS_MVFR0_EL1			sys_reg(3, 0, 0, 3, 0)
 
