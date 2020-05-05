@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE4D61C57EC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:05:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 671C81C57D3
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:03:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729444AbgEEODn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:03:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46862 "EHLO
+        id S1729397AbgEEODW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:03:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729365AbgEEODR (ORCPT
+        by vger.kernel.org with ESMTP id S1729378AbgEEODS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:03:17 -0400
+        Tue, 5 May 2020 10:03:18 -0400
 Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 890E8C061A10
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:03:16 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id y3so2931245wrt.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 07:03:16 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33EF0C061A41
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:03:18 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id y4so2660918wrm.11
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 07:03:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=cLB08H4ZIlTMzvj5hInDPm3tTNq7mk/XtYoMNSk6v2w=;
-        b=cVzH1dPGpMqAXPxKb2+d0LSY7/HTueVOi2Sdclc1d5WFXroNiTnCGax06ZRUzUzxBC
-         BUh3y57hEA0QKHn0p8LMuwuIGxUcGlnDrT6dMvKvVo8CknIBmfP+WtMUK/RXkzf+hQAd
-         CG7wMuCkKOANszSzqBn9jqXq1Ze5auYS7lGvNg5z+nbF8yG827NVgpPaFCp8YOAnKKI0
-         h6VO7RNUL3pV+so74edRAnGDHHHcdwfPC6u++KxWTUZe+FCdgfTpNkF93LmwoywsYj/K
-         gYxW4eQvxZ3fbG8FUAlWnbR/kU00rYU8f+Gn2FKmBkWJv/OV0h6bhhfiL4fJ8mrEn4a6
-         vcng==
+        bh=1qePp19LiRiOBXtccpgQ+eI6GUOhz0auoBWQ11adkXY=;
+        b=LQwCci65NzZKH7S/k3KLNL9uDqCmT0NhL3+vr0FbsT08zlA7KCjEKKJA3sZtnf2+C9
+         MgO3OOfj1iU8OOWJHAIFg37vsHsbgcG/ty8jsHreNlysA9n/Au6JLGB7Xxv750eTBgT+
+         Sl+iLzCZd3APUglRO82tTPfZvQVLMJ3uavNHAqLe/avFh/YZADgXqEMvzVqRopDktCy2
+         JBbLkT1YWVum/i0H4xsIcA/O3SnOtyCQ72Fc/9gVx/ow94+06PK5wjuMsmA86t5vb78a
+         f1BNH1aOQZ6Kmm6CjzEh853K5kHs/8DpEoorye+0Q8Vxs8MX0SzFaarHH6cmphLUotuV
+         jc4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=cLB08H4ZIlTMzvj5hInDPm3tTNq7mk/XtYoMNSk6v2w=;
-        b=lazy1QzUIeRmY7c+8lBkZlCxkEyiI1fdoCy4WnjvWx0o6EseQlCUQJbg9Cv8yztri7
-         MmgmLFSVa67gP6A3DEnmDYBahrqLxuV4EHhVPCN+bSvItro16koJmgi0XtxyUgIBX2rG
-         7yh+U0tjMKgpkseVMYAbgwzIxVRx405h3WMYrrXv2p4BDO1JNsUg19G/jfCcFqZ8zwAU
-         chHHxFT0m68z9HZLRCJgOdbpSZPBhkfe/CNEKAXIkE1gkEyYfHOCsLHFjVYcQJ9cuQn2
-         DiMjwSJ2P5moFSuZ8fW0oTjZpQm39ApjMwiF8GuzDD1IGttkETJv8kMndp//biZ0CBS2
-         Q4JQ==
-X-Gm-Message-State: AGi0PuZZlOLrQ2Ih/7gQnIXJdXm9Famdm0yfoa5O/Y2jsMbrtI+UuGNW
-        jk0y843bOW/TQDzy0WPkUzMq3C6KyVk=
-X-Google-Smtp-Source: APiQypLYiuxJLzQGcByYdRNRqjThYrVDv5Mb46r0e9HU0s7k3vsW2WSb3TSlR7LGVUwNfPWr1XlEkg==
-X-Received: by 2002:a5d:4043:: with SMTP id w3mr3951385wrp.266.1588687395284;
-        Tue, 05 May 2020 07:03:15 -0700 (PDT)
+        bh=1qePp19LiRiOBXtccpgQ+eI6GUOhz0auoBWQ11adkXY=;
+        b=fGTe/k9HxSlfc7+m4UUZC05xT9n++a8W0/lKkWBYDcPYRQwqc4O6qjYfgPmdQPJ6tI
+         Tmb6vE2C4YkWxqQKkhDlpOL4mmjxw9ofat1SY/hKH3KKCXeQVpXifWEiHomUj1V9yPMO
+         +R/UUw1KlpYoHZrAfaSXTVILYBicf+vaEMO0rs/jT+xx0sI+0284d2yCF5h68G1nCwLb
+         vTZ7tep6ogco6OZ5VVsAXutwRsXZW5Lf9BS3ZUCTGars3yuUPLIaeu9beA61QafThbeF
+         YE5oZUVS3M6xaBhLwxSH74i3AXM4UV4HGTHfrGvqnfXF4ImfcKPc89uDYkftqAJY6gXp
+         iMVg==
+X-Gm-Message-State: AGi0PuZKQcuSKI3ic5kIIoltZPf6+SY18eEYxltBj/9u8zyNIvVD3m05
+        LBapzgNzGkFnnm1HERqSIZEm7w==
+X-Google-Smtp-Source: APiQypKqTKjLTaeehBmyF8ZBLt7Ztsq7bEei0OsGAye1X2D3s2hQaZgytBvFg7WpUlAYtX37tEZNHw==
+X-Received: by 2002:adf:ab5c:: with SMTP id r28mr3827494wrc.384.1588687396984;
+        Tue, 05 May 2020 07:03:16 -0700 (PDT)
 Received: from localhost.localdomain (lfbn-nic-1-65-232.w2-15.abo.wanadoo.fr. [2.15.156.232])
-        by smtp.gmail.com with ESMTPSA id c190sm4075755wme.4.2020.05.05.07.03.13
+        by smtp.gmail.com with ESMTPSA id c190sm4075755wme.4.2020.05.05.07.03.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 May 2020 07:03:14 -0700 (PDT)
+        Tue, 05 May 2020 07:03:16 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Rob Herring <robh+dt@kernel.org>,
         "David S . Miller" <davem@davemloft.net>,
@@ -63,9 +63,9 @@ Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 08/11] ARM64: dts: mediatek: add the ethernet node to mt8516.dtsi
-Date:   Tue,  5 May 2020 16:02:28 +0200
-Message-Id: <20200505140231.16600-9-brgl@bgdev.pl>
+Subject: [PATCH 09/11] ARM64: dts: mediatek: add an alias for ethernet0 for pumpkin boards
+Date:   Tue,  5 May 2020 16:02:29 +0200
+Message-Id: <20200505140231.16600-10-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <20200505140231.16600-1-brgl@bgdev.pl>
 References: <20200505140231.16600-1-brgl@bgdev.pl>
@@ -78,37 +78,26 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Add the Ethernet MAC node to mt8516.dtsi. This defines parameters common
-to all the boards based on this SoC.
+Add the ethernet0 alias for ethernet so that u-boot can find this node
+and fill in the MAC address.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- arch/arm64/boot/dts/mediatek/mt8516.dtsi | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ arch/arm64/boot/dts/mediatek/pumpkin-common.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8516.dtsi b/arch/arm64/boot/dts/mediatek/mt8516.dtsi
-index 8cedaf74ae86..89af661e7f63 100644
---- a/arch/arm64/boot/dts/mediatek/mt8516.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8516.dtsi
-@@ -406,6 +406,18 @@ mmc2: mmc@11170000 {
- 			status = "disabled";
- 		};
+diff --git a/arch/arm64/boot/dts/mediatek/pumpkin-common.dtsi b/arch/arm64/boot/dts/mediatek/pumpkin-common.dtsi
+index a31093d7142b..97d9b000c37e 100644
+--- a/arch/arm64/boot/dts/mediatek/pumpkin-common.dtsi
++++ b/arch/arm64/boot/dts/mediatek/pumpkin-common.dtsi
+@@ -9,6 +9,7 @@
+ / {
+ 	aliases {
+ 		serial0 = &uart0;
++		ethernet0 = &ethernet;
+ 	};
  
-+		ethernet: ethernet@11180000 {
-+			compatible = "mediatek,mt8516-eth";
-+			reg = <0 0x11180000 0 0x1000>;
-+			mediatek,pericfg = <&pericfg>;
-+			interrupts = <GIC_SPI 111 IRQ_TYPE_LEVEL_LOW>;
-+			clocks = <&topckgen CLK_TOP_RG_ETH>,
-+				 <&topckgen CLK_TOP_66M_ETH>,
-+				 <&topckgen CLK_TOP_133M_ETH>;
-+			clock-names = "core", "reg", "trans";
-+			status = "disabled";
-+		};
-+
- 		rng: rng@1020c000 {
- 			compatible = "mediatek,mt8516-rng",
- 				     "mediatek,mt7623-rng";
+ 	chosen {
 -- 
 2.25.0
 
