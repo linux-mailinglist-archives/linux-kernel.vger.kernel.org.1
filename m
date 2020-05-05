@@ -2,103 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE1421C4F98
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 09:50:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E79011C4FA1
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 09:51:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728491AbgEEHum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 03:50:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727784AbgEEHum (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 03:50:42 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4448EC061A0F;
-        Tue,  5 May 2020 00:50:41 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id f11so606081ljp.1;
-        Tue, 05 May 2020 00:50:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=mJhZOZvknx96YuEoIZ2lqzNSjlIdDACHMJ5KWHSNI14=;
-        b=Jizk0qQFeKxlo8BmZLCqFT59LkhWbkXaUm0JvMxInhtI9stFaerYXfYpUUKPMTu00J
-         ecApN3Lk7NeLleo2HSyydSUzr5PNBpX5ZaYGCOwcIZ8FNZeUSp6jCnJn2qwxzrEggFKq
-         1Vk6FhUySRdnFAJVz0hmZwzqRN91fkmic/fkWJa7EBS7346q7U2NR8t39kmZk6qZwFRT
-         nB5YHtcurGSRefimxZBJKyQRhlTZjt+cqCYyFYsJP75irnzM+Mcas/7fzG3lVukrzZmT
-         h24/VnE5bsE+UK0XL6HiChm201DbTx71pM/PuhoPiCKm6pAYUZ6YvH3rYpazj8VXwWD6
-         jHzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
-         :date:message-id:mime-version;
-        bh=mJhZOZvknx96YuEoIZ2lqzNSjlIdDACHMJ5KWHSNI14=;
-        b=cM/Ejt9zSsea2Ng1CuC3C4QasqJ2XmSvycHw5qBqAbA94gblOCP/wCsdabW4y0+DHU
-         eGCa8s3iCdVqhbEeVOhRX+9/QJOq9kWSymjrKz0xuks4xiwN2Tfng7S0ZmQQzo5rGQ7n
-         ZWZ/L/U64wyqYqI7K/9S8nC3lMa0mShkojonLV9JvfCsg0qL9oaw6w9czJj/875B3oWP
-         7Zup/IatpUcymLDHl0pqEZFODYWb/wAyNbt/0pR+mZA+1YLnkSkp6w7kel76KEgocMat
-         vaGi73o1Qc10McZs456iiYEMHFshzKo5GmTkE9vA3Mg01YYpPYBeo9YBKBkmeFLT1k24
-         H/VA==
-X-Gm-Message-State: AGi0Puad4TrqYdX/BAgyR9bNHsQ0fJ6wfbona4bVqk5TUsi/RENt+LyP
-        jxbOkSsaSbzFkPPQejADVMU=
-X-Google-Smtp-Source: APiQypJwsh0uX8J+3lDVtKC/e8pRKH67pL7DjJ9HXCeAvh1fxGH8InEw1kyUTUPeGekvJ5dU+OHkSA==
-X-Received: by 2002:a2e:9996:: with SMTP id w22mr1008682lji.59.1588665039763;
-        Tue, 05 May 2020 00:50:39 -0700 (PDT)
-Received: from saruman (91-155-214-58.elisa-laajakaista.fi. [91.155.214.58])
-        by smtp.gmail.com with ESMTPSA id k18sm1510096lfg.81.2020.05.05.00.50.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 05 May 2020 00:50:39 -0700 (PDT)
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Andrey Konovalov <andreyknvl@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-Subject: Re: [PATCH USB 2/2] usb: raw-gadget: fix typo in uapi headers
-In-Reply-To: <059e7e0ff26cc7d6e85275f764e31d85db867c4b.1587690539.git.andreyknvl@google.com>
-References: <ca6b79b47313aa7ee9d8c24c5a7f595772764171.1587690539.git.andreyknvl@google.com> <059e7e0ff26cc7d6e85275f764e31d85db867c4b.1587690539.git.andreyknvl@google.com>
-Date:   Tue, 05 May 2020 10:50:34 +0300
-Message-ID: <87y2q6akhh.fsf@kernel.org>
+        id S1728518AbgEEHvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 03:51:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43648 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727784AbgEEHvK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 03:51:10 -0400
+Received: from mail-il1-f179.google.com (mail-il1-f179.google.com [209.85.166.179])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A992E2075A;
+        Tue,  5 May 2020 07:51:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588665069;
+        bh=jc+H61N9vNsq7z6RWa8sVHyNz5abdZOteKU9Ks7UD2o=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=dT/T1VRCyX6urOLpGh8Qqe/AGU8FLYkvpxCqNRT3e/RZpEq7ubRnwEbK6KLodRQfK
+         rOeKTs2jOdGGJdtH2s5GSKH/adp6pSYpLR0DwLWszmd07GamjXiYb1VSaezS7ILqNj
+         tOHWJcBalmMJtTg35IVKzDL4yBMonGgY+JMCs38E=
+Received: by mail-il1-f179.google.com with SMTP id x2so147572ilp.13;
+        Tue, 05 May 2020 00:51:09 -0700 (PDT)
+X-Gm-Message-State: AGi0PuYFMrKZurVXdPr5nxygwduwmXzp/n9EvKDd3j9mE1YCVxew4gFu
+        nbQ+eHZHivmePQVnFEHLnNyTF8Ns22mz338miyY=
+X-Google-Smtp-Source: APiQypKmBGnftntz4dokwvJE/6EYRD4xwAb8w3zjNrSiqbYOWOIaqAG+92Pnmf8Y+LYP2xpDueVpen4xanrngfwBUFA=
+X-Received: by 2002:a92:405:: with SMTP id 5mr2256629ile.279.1588665069102;
+ Tue, 05 May 2020 00:51:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+References: <091e3fc3bdbc5f480af7d3b3ac096d174a4480d0.1588273612.git.joe@perches.com>
+ <ec53e67b3ac928922807db3cb1585e911971dadc.1588273612.git.joe@perches.com>
+ <CAMj1kXHwdy3BTqt-q_qnezyz666BcqKiFxeumfsD+Qjy5qRzZA@mail.gmail.com> <f1926d434cdeb091405ef8c01a90c0140d296bed.camel@perches.com>
+In-Reply-To: <f1926d434cdeb091405ef8c01a90c0140d296bed.camel@perches.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 5 May 2020 09:50:58 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGQ7dLNMnheWViBh7BnHd00kWw0AW2aF7i7S2wGti0qKg@mail.gmail.com>
+Message-ID: <CAMj1kXGQ7dLNMnheWViBh7BnHd00kWw0AW2aF7i7S2wGti0qKg@mail.gmail.com>
+Subject: Re: [trivial PATCH] efi/libstub: Reduce efi_printk object size
+To:     Joe Perches <joe@perches.com>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>, X86 ML <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+On Mon, 4 May 2020 at 20:29, Joe Perches <joe@perches.com> wrote:
+>
+> Use a few more common kernel styles.
+>
+> Trivially reduce efi_printk object size by using a dereference to
+> a temporary instead of multiple dereferences of the same object.
+>
+> Use efi_printk(const char *str) and static or static const for its
+> internal variables.
+>
+> Use the more common form of while instead of a for loop.
+>
+> Change efi_char16_printk argument to const.
+>
+> Signed-off-by: Joe Perches <joe@perches.com>
 
-Andrey Konovalov <andreyknvl@google.com> writes:
+Thanks Joe.
 
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 
-return -ENOCHANGELOG
+> ---
+>  drivers/firmware/efi/libstub/efi-stub-helper.c | 16 ++++++++--------
+>  drivers/firmware/efi/libstub/efistub.h         |  6 +++---
+>  2 files changed, 11 insertions(+), 11 deletions(-)
+>
+> diff --git a/drivers/firmware/efi/libstub/efi-stub-helper.c b/drivers/firmware/efi/libstub/efi-stub-helper.c
+> index 1c92ac231f94..dfd72a4360ac 100644
+> --- a/drivers/firmware/efi/libstub/efi-stub-helper.c
+> +++ b/drivers/firmware/efi/libstub/efi-stub-helper.c
+> @@ -26,19 +26,19 @@ bool __pure __efi_soft_reserve_enabled(void)
+>         return !efi_nosoftreserve;
+>  }
+>
+> -void efi_printk(char *str)
+> +void efi_printk(const char *str)
+>  {
+> -       char *s8;
+> +       char s8;
+>
+> -       for (s8 = str; *s8; s8++) {
+> -               efi_char16_t ch[2] = { 0 };
+> +       while ((s8 = *str++)) {
 
-=2D-=20
-balbi
+I'm not sure I prefer the assignment-as-truth-value construct over the
+original for () tbh
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+> +               static efi_char16_t ch[2] = {0, 0};
+>
 
------BEGIN PGP SIGNATURE-----
+UEFI code could potentially be reentrant, so this should not be static.
 
-iQIzBAEBCAAdFiEElLzh7wn96CXwjh2IzL64meEamQYFAl6xGsoACgkQzL64meEa
-mQYUDBAAxMRssVJC1mciz/vwFtxsZjLPKIe8BSFhAU7jrWxXqtA+7D3QLYd5JLvw
-4xzZnTOSw/AOa/YAdsgGCQOpvNwqCBlQkR0EmaFEyIKNLwg28I+R23pVAT5cGX5r
-lUPymKhGnvPmSjau74MZkdMlPL8hp0c6iGFbq4OykXNilBWnX9FqmsjLle54S7cq
-FRbmQTA6GfLMw+O7DpET5rjI/vV3gosobuiYJE7ntB9luoz3RGnUmva7TTeaK+I8
-MWGcjppGG3pgeVbfSNIm0rQhATgoXwS6qGWtU9HV6+S5yaEZTbbVWwZKvDyxOelI
-SzfTsZK20u0BhzqgP6NBJKcDIk0c2mPF70rWUdwBRbMxhejFcYWiFXs9IITxwtRr
-mVUc8GjujXzMgk3mzG/UNQigNWpGGzvAeUFo5ft5fnYckcsmN3IlotthVFDXE25g
-3JPG/Lv5kDsYBOsarbgUsRN8VlJKHfyygST5B+MxVZnYZh7xY+qrR97mYA9ZdaEz
-gW/WCykw424CoWvNHl4OXXDP44eiBDtUDcedPHGoY43YM63fK439yeeSCAM73b7S
-4f9P+GU1uIYUvZ8VZjnhKB94VdBzO2F1HkdswZOl9uAFNmZvcPPiIMYdhSEwMT+8
-OvcTBCCEjG0UMS1kvu6uNhtCeFy4HdoeRAcLt9+Y8Iy81ngYTBA=
-=7IjE
------END PGP SIGNATURE-----
---=-=-=--
+> -               ch[0] = *s8;
+> -               if (*s8 == '\n') {
+> -                       efi_char16_t nl[2] = { '\r', 0 };
+> +               if (s8 == '\n') {
+> +                       static const efi_char16_t nl[2] = { '\r', 0 };
+>                         efi_char16_printk(nl);
+
+We cannot make this const, unfortunately (see below). But we can clean
+this up by using L"\r" as the initializer.
+
+>                 }
+>
+> +               ch[0] = s8;
+>                 efi_char16_printk(ch);
+>         }
+>  }
+> @@ -284,7 +284,7 @@ void *get_efi_config_table(efi_guid_t guid)
+>         return NULL;
+>  }
+>
+> -void efi_char16_printk(efi_char16_t *str)
+> +void efi_char16_printk(const efi_char16_t *str)
+>  {
+>         efi_call_proto(efi_table_attr(efi_system_table, con_out),
+>                        output_string, str);
+> diff --git a/drivers/firmware/efi/libstub/efistub.h b/drivers/firmware/efi/libstub/efistub.h
+> index 5ff63230a1f1..a03a92c665f0 100644
+> --- a/drivers/firmware/efi/libstub/efistub.h
+> +++ b/drivers/firmware/efi/libstub/efistub.h
+> @@ -251,7 +251,7 @@ union efi_simple_text_output_protocol {
+>         struct {
+>                 void *reset;
+>                 efi_status_t (__efiapi *output_string)(efi_simple_text_output_protocol_t *,
+> -                                                      efi_char16_t *);
+> +                                                      const efi_char16_t *);
+
+This prototype comes straight from the UEFI specification, and even
+though it is dumb that they forgot about const-qualified pointers
+entirely, I would prefer not to deviate from this.
+
+>                 void *test_string;
+>         };
+>         struct {
+> @@ -599,7 +599,7 @@ efi_status_t efi_exit_boot_services(void *handle,
+>                                     void *priv,
+>                                     efi_exit_boot_map_processing priv_func);
+>
+> -void efi_char16_printk(efi_char16_t *);
+> +void efi_char16_printk(const efi_char16_t *str);
+>
+>  efi_status_t allocate_new_fdt_and_exit_boot(void *handle,
+>                                             unsigned long *new_fdt_addr,
+> @@ -624,7 +624,7 @@ efi_status_t check_platform_features(void);
+>
+>  void *get_efi_config_table(efi_guid_t guid);
+>
+> -void efi_printk(char *str);
+> +void efi_printk(const char *str);
+>
+>  void efi_free(unsigned long size, unsigned long addr);
+>
+>
