@@ -2,91 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0D8D1C5A72
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:05:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AC8C1C5A76
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:07:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729637AbgEEPF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 11:05:56 -0400
-Received: from mout.kundenserver.de ([212.227.17.10]:45737 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729289AbgEEPF4 (ORCPT
+        id S1729702AbgEEPHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 11:07:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729261AbgEEPHV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 11:05:56 -0400
-Received: from mail-qt1-f174.google.com ([209.85.160.174]) by
- mrelayeu.kundenserver.de (mreue109 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MeTwY-1ixkms2AE8-00aVVb for <linux-kernel@vger.kernel.org>; Tue, 05 May
- 2020 17:05:54 +0200
-Received: by mail-qt1-f174.google.com with SMTP id o10so2182114qtr.6
-        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 08:05:54 -0700 (PDT)
-X-Gm-Message-State: AGi0PuYgI5VMGcYjoyYUHQGFUh7MRgyK7S4cUYgO7QHvX2U999PO4Lhw
-        QUqHftBFOqHMi5Abq1hdMCXRHzaUKvm2/9M1s84=
-X-Google-Smtp-Source: APiQypIR7vH0WXUp0OPhxznI7N9wD6FLnsemn1PKoTpVnTbO51oR7Xi+pKQllQDLJGgGte/T9jjh0J1jEWOgAOxSrWk=
-X-Received: by 2002:ac8:4e2c:: with SMTP id d12mr3185805qtw.204.1588691153393;
- Tue, 05 May 2020 08:05:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200505141137.665940-1-arnd@arndb.de> <CANpmjNNwgkVR6kjFudrR4ga--PigU5Mx69HZ1mhCAQ0GCLqQGg@mail.gmail.com>
-In-Reply-To: <CANpmjNNwgkVR6kjFudrR4ga--PigU5Mx69HZ1mhCAQ0GCLqQGg@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 5 May 2020 17:05:36 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3r35VrKVfpn_q2YYhxkvH9j0+3MnMqgRM6R=QOcsE96Q@mail.gmail.com>
-Message-ID: <CAK8P3a3r35VrKVfpn_q2YYhxkvH9j0+3MnMqgRM6R=QOcsE96Q@mail.gmail.com>
-Subject: Re: [PATCH] kcsan: fix section mismatch for __write_once_size/blacklisted_initcalls
-To:     Marco Elver <elver@google.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Alexander Potapenko <glider@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Will Deacon <will@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:wHaPXKqqLF8BrOpibOskofyczDCHi+EE2KBbTlMy29ECZjXUFpY
- KBUMkojGDA+yTK12F/E1mvlhAkC+qwnDpPk3FXFz1Lh+L8pXny5dshocvDsgWEv06YsWuTP
- gw1dttnyA7VtmfDl4UICxzOiEIiE8igtF1sNikn1W41JYuLEopV1dab4LQX6tTk7Y/+e5RX
- M7QUF8U4OLJmZ2JGOQQrA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:/J0Xbigm78M=:j0cHlhev7jkoVp9TRG+zKC
- XIDSmOF3ztOR/e9zJ4GuPySw5dBF8JU5SQ1JYsxpIJ+L7fGLVHFqW3yGdG1HOBYUX2z+rvfqC
- QRBa3TqzZY+PmJANv9QoG1LYLHYUuVc52FYqs/I5Uls6Eyy8BhGti8w/Jwb9rxMxhQuXQ0RKT
- rJ9Jhpzxz3t3wrOgjusT9PKM7ZOrwurPzYKwe1qAvbR+r47twAxnN01LJnPvOlSrkGiVi676a
- LUKKKrZVDhJSW2OaoGnjKTSuuww/CJtbVeSUJkSfrkxrFbOU/HbbTQxRK2olTz77HaeQ88NV2
- FiOE0XF6ZuK1RB1R36kMog1sZpdIW6QnV+5CQyTwAJeq/iNPzr7i3md6sUeQ/txUbKeYMG1ns
- LYZCFHRpZit3lnE2cLW9eUpo2lonxbGtKk6WTAVyvDgPonk2CvXYTOPafZDDL7KcrCkbyQpoF
- gsVrRsE0cbd2KrzRlJdXOpG0Dfp17Z0BBbi3ZpAKwHWM0b3HOKB9vTkh1csB264pkEhkjPJra
- mWFlqpNyjto3x2IiGbYrsJzH56mEbyxhhuU8WaNfx71EERdQy9izdY+kaENbXyNPeAY6SYJsw
- CAkwWUJRcPwjUpfH26nK9r0K47NYE+K7nV5R2aSmZSSQvRZ3KveYRt1vM13aLKwA2qgixqsvM
- NCjbZlhcBanUGnBVpubd864ZmJDYbddTkRB32u16gw0Abi01YklU1SwOw/4XpLDuTuL74/QVe
- qtWaj0xXwbSaAL+RYsnziRb+0Ly2PELH/OzGX3/Y3dtNA/eiK3k9yoysreuz1Ti28AEHVSdID
- ogq5JDggZEong6SiQx8/YPV0WkRUPU3Ys1cOsFFVOCzf096PW0=
+        Tue, 5 May 2020 11:07:21 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02395C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 08:07:19 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id a5so1272002pjh.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 08:07:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=NNSggG8Wl6Z2agG/S9qpStjU4wnFQtE7sVRqgF3O2SA=;
+        b=ATleuhRiRQfJoQB7YZpPeMfKei9oHPfil5eo65s1qErJeraVVqGckXZ7t9jm669HaR
+         CaLgi0kxys53GjsORZU48HrCqHEdzpusMbIGjkfaWAd6g4ktCmapOLVDYNxvVCzSnV/P
+         AyMaJf9C+4xiYLzIfF6MnOttq3ntTEJZ4bC+OjUQFiZbRju7IGYQN+fx119mohvADQq3
+         SpiAE3zRv67KHjqtXa3ljXS8MCuAj5SqD1t2gLrJ2KiP2awFeIlgjQdMAtSIjitgwmaj
+         jqq7h0FxOihAd+3vQSicrxs9ZRs6/8kYZqdzct8DnK0up2m4HHabRm6u/gK3NJcE+kaC
+         +qvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=NNSggG8Wl6Z2agG/S9qpStjU4wnFQtE7sVRqgF3O2SA=;
+        b=LueMESMZW5kgHsdSMNJW9r0tHBPDVtSUqxInQBFT6NOgYx4Ue/LVnZDXn1r7dMJpps
+         uee5QWEuhaudXQ2WH46Xb7t6kLjZZQwjUTf7FpdTvldtjyuULsdr82CF8lg1ouzqUa0k
+         SVCijhIDwUt/gTUXPQcJUQbc/FtIKKEY/nQbnRs2EPHrj6Gl96irNme43vMVMZt7WbRF
+         VRWGPgZluRxwnbOfI7UXfH+8nxcz2J77oUw529xAodXe3VrrhZpfF4IAZLwX4PKKLk3k
+         VDil/fn2m8lkHE/Vkfej/oUegGLhzsZHVdrlD1963k0HDo6WwynGP3jTfChb8hMIijGj
+         18Vw==
+X-Gm-Message-State: AGi0PuYKUrb3VsJLx+teksG6F+07y5LJHk8jKKbdsPkYypqGJrGpAQCF
+        DUUsjsVAC6Dr+I54CxWTjck=
+X-Google-Smtp-Source: APiQypKKaFBiGAzBA+lIxZist3gssDZ3s3mi6ZC/ZC39EDj0QRPYGPHgze6Vuwa3Axx5S8BdVKhZOQ==
+X-Received: by 2002:a17:902:eb12:: with SMTP id l18mr3326160plb.269.1588691239346;
+        Tue, 05 May 2020 08:07:19 -0700 (PDT)
+Received: from localhost.localdomain ([120.244.110.63])
+        by smtp.gmail.com with ESMTPSA id c2sm2229997pfp.118.2020.05.05.08.07.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 May 2020 08:07:18 -0700 (PDT)
+From:   Jia-Ju Bai <baijiaju1990@gmail.com>
+To:     shaggy@kernel.org, Markus.Elfring@web.de
+Cc:     jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        Jia-Ju Bai <baijiaju1990@gmail.com>
+Subject: [PATCH v2] fs: jfs: fix possible data races in txExit()
+Date:   Tue,  5 May 2020 23:06:50 +0800
+Message-Id: <20200505150650.9156-1-baijiaju1990@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 5, 2020 at 4:17 PM 'Marco Elver' via Clang Built Linux
-<clang-built-linux@googlegroups.com> wrote:
-> On Tue, 5 May 2020 at 16:11, Arnd Bergmann <arnd@arndb.de> wrote:
-> > So far, my randconfig checks found two such instances, one for read_once
-> > and one for write_once. There are probably a couple more in random
-> > configurations, but I guess they are rare enough that we can just work
-> > around them like this.
->
-> [+Cc Will]
->
-> Thanks for testing and fixing this. Note that this may no longer be
-> necessary once Will's patches land. Also noted here:
-> https://lkml.kernel.org/r/CANpmjNNw6M9Gqj6WGTHH4Cegu8roTVu5x6Vqs_tCBxX3gPwL4A@mail.gmail.com
->
-> For reference, Will's series:
-> https://lore.kernel.org/lkml/20200421151537.19241-1-will@kernel.org/
+The functions txEnd() and txExit() can be concurrently executed in the
+following call contexts:
 
-Right, good point. If that is going to get merged for the same release, we don't
-need my workarounds and I'll just keep them applied locally in my linux-next
-randconfig tree for the moment.
+Thread1: 
+  jfs_lazycommit()
+    txLazyCommit()
+      txEnd()
+Thread2:
+  exit_jfs_fs()
+    txExit()
 
-      Arnd
+In txEnd():
+  struct tblock *tblk = tid_to_tblock(tid);
+  // #define tid_to_tblock(tid) (&TxBlock[tid])
+
+In txExit():
+  vfree(TxBlock);
+  TxBlock = NULL;
+
+Data races can occur for the global variable TxBlock, and they 
+can cause use-after-free bugs and null-pointer dereferences.
+These data races were found by our concurrency fuzzer.
+
+Thus call txExit() after the filesystem stops the threads 
+that run jfs_lazycommit().
+
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+---
+v2:
+* Change the description.
+  Thank Markus Elfring for good advice.
+
+ fs/jfs/super.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/jfs/super.c b/fs/jfs/super.c
+index b2dc4d1f9dcc..8c80397df336 100644
+--- a/fs/jfs/super.c
++++ b/fs/jfs/super.c
+@@ -1027,13 +1027,13 @@ static void __exit exit_jfs_fs(void)
+ 
+ 	jfs_info("exit_jfs_fs called");
+ 
+-	txExit();
+ 	metapage_exit();
+ 
+ 	kthread_stop(jfsIOthread);
+ 	for (i = 0; i < commit_threads; i++)
+ 		kthread_stop(jfsCommitThread[i]);
+ 	kthread_stop(jfsSyncThread);
++	txExit();
+ #ifdef PROC_FS_JFS
+ 	jfs_proc_clean();
+ #endif
+-- 
+2.17.1
+
