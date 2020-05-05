@@ -2,133 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F15B51C5C48
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:46:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B964A1C5C4E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730806AbgEEPqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 11:46:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730312AbgEEPqB (ORCPT
+        id S1730818AbgEEPqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 11:46:12 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:42429 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730302AbgEEPqK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 11:46:01 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9218EC061A10;
-        Tue,  5 May 2020 08:46:01 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id s20so975995plp.6;
-        Tue, 05 May 2020 08:46:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cW7zcIJFnttVMMcvhKofjB7umzWccwAfCSkWG/hmw+A=;
-        b=XGSsCxMiCQ8UcZsyIyPPlVzuIWwo5jGRQh0MmMQ8tU+7WT53LEhk+69l/nABmlVcx2
-         evybuJWkhNx6+53juCKMFhlDj6MWGAWplavC4s+5MI4sGhQM2w87SsIUdZ88ISri/kXU
-         xasKUQ7DXKunoJgzTeH1kv7J74HOtktJwoz27xzD9dPklhtIYIMZ75oVrNKr6Sqnty1p
-         d96AQsooXSLpXQsyIxqVPnGTUdjxTeKjZgKTV72biPnnDirT0Fx7U7EV/xpPRPL+/GU/
-         4fhbLOe6H/GBu48oP5i1nSK05oAXOQV19reC2D5wog6XNjqOYN5ceel/BVucDQK1WU8A
-         dVqA==
+        Tue, 5 May 2020 11:46:10 -0400
+Received: by mail-ot1-f68.google.com with SMTP id m18so2011090otq.9;
+        Tue, 05 May 2020 08:46:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=cW7zcIJFnttVMMcvhKofjB7umzWccwAfCSkWG/hmw+A=;
-        b=XsVM686M7Fu1zret4QDWEisT4gzfg2rrJY9fxf+AYlhjcul5Uwkj86CpZ5i8erBXZL
-         m2oD9RR/Ogoj9HOxsgEztF7fiQfchEhQ7EqwnqSf77tfTiheV4PrGQwjzecV4HPS/qf4
-         tRIfWi6nHQRaBuJtu7lVPSsslaoV0fRQGn8lNsKSsnqwxEBrZnI6bJ9cscu4crdY2pvO
-         F0cK4rkxuvZ21i0t9E48C92nczPSrxapYexwvUTu0nOUHQPce6Y3K9AyhpxxDAij8Rrv
-         YOf7URyCJLjl4kofbbfeEsVugY4GFZ+z3K2HvP3SdEpAzC8lED7FW6mU90gZD3+12+Ne
-         wX0g==
-X-Gm-Message-State: AGi0PuYLQEhCajWpqkI6Ckj57cGetPsd+i3rMNebxkAcgU3p4la8zuL4
-        Cpbbg5TJdyzmsMiiT8vk43C0M9jM
-X-Google-Smtp-Source: APiQypJYpoEc9GOsHaoZZ3gtvXYBZP//KU75GlEU/E2N52QyuBhRxzOj/tUJL3qoQxfKgY9cxmADCQ==
-X-Received: by 2002:a17:90a:24e6:: with SMTP id i93mr3960494pje.13.1588693560897;
-        Tue, 05 May 2020 08:46:00 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id d12sm2417246pfq.36.2020.05.05.08.45.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 May 2020 08:46:00 -0700 (PDT)
-Subject: Re: [PATCH 5.6 00/73] 5.6.11-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org
-References: <20200504165501.781878940@linuxfoundation.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <2c85f997-cf6a-3013-09fc-a56417cc56d3@roeck-us.net>
-Date:   Tue, 5 May 2020 08:45:59 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=pC5ug4JkZ/Q1WpOKLw3JKlztM2npyZ3pEia8DpeRqCM=;
+        b=I63xafTwMnX4W9jxGF1o8zUIhO9qhDw/Ksb0PVNgkxjuYXKccTSExtvsEbRCVyjlR/
+         NPvBR/2PC3kOy0i//tyMkUxlDtve17oUjyXEz+TIo7S9ZzdxcAXBJWzUy0l1Ae4T+jFf
+         0PvdKkoGdLO7BlHyvZUCzXxBCipHUXfKkuZwv+CnJkZ5NQGLlYZqxsYn3NkIwM83hufP
+         1IFkS6UrtQIFtHEc4IqFP4fRWGEAia6jMDkO2U56MywTNwjHVvMk74P71q+qQgt1c71p
+         j58hPSk82hk3zAoyc83P7KRNDG6OFifa7NmqnMtOvlxKFd7NzoMJPvvz7uL9ab/9wP2g
+         iSFA==
+X-Gm-Message-State: AGi0Pua9ff4L6vqMa+l5/zs9kL4jSxBlXuUraBVyCC8/RWk8ElY0VQbE
+        m89qzuevykB0u+ZU8wJ+4g==
+X-Google-Smtp-Source: APiQypK8wD7ubhAL2Dzd24hZqNu9gr5fEROybj1HrCSj0giazCxA5YvV8rF/q4mgDhvkKDnmlBl5lA==
+X-Received: by 2002:a05:6830:1d62:: with SMTP id l2mr3132718oti.316.1588693569153;
+        Tue, 05 May 2020 08:46:09 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id a93sm694156otc.12.2020.05.05.08.46.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 May 2020 08:46:08 -0700 (PDT)
+Received: (nullmailer pid 12692 invoked by uid 1000);
+        Tue, 05 May 2020 15:46:07 -0000
+Date:   Tue, 5 May 2020 10:46:07 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Saravanan Sekar <sravanhome@gmail.com>
+Cc:     lee.jones@linaro.org, andy.shevchenko@gmail.com,
+        robh+dt@kernel.org, jic23@kernel.org, knaack.h@gmx.de,
+        lars@metafoo.de, pmeerw@pmeerw.net, sre@kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-pm@vger.kernel.org,
+        Saravanan Sekar <sravanhome@gmail.com>
+Subject: Re: [PATCH v11 1/6] dt-bindings: mfd: add document bindings for
+ mp2629
+Message-ID: <20200505154607.GA12636@bogus>
+References: <20200430155810.21383-1-sravanhome@gmail.com>
+ <20200430155810.21383-2-sravanhome@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200504165501.781878940@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200430155810.21383-2-sravanhome@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/4/20 10:57 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.6.11 release.
-> There are 73 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Thu, 30 Apr 2020 17:58:05 +0200, Saravanan Sekar wrote:
+> Add device tree binding information for mp2629 mfd driver.
 > 
-> Responses should be made by Wed, 06 May 2020 16:52:55 +0000.
-> Anything received after that time might be too late.
+> Signed-off-by: Saravanan Sekar <sravanhome@gmail.com>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> ---
+>  .../devicetree/bindings/mfd/mps,mp2629.yaml   | 62 +++++++++++++++++++
+>  1 file changed, 62 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mfd/mps,mp2629.yaml
 > 
 
-Build results:
-	total: 155 pass: 155 fail: 0
-Qemu test results:
-	total: 427 pass: 427 fail: 0
-
-Guenter
+Reviewed-by: Rob Herring <robh@kernel.org>
