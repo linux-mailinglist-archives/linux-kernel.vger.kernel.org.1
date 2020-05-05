@@ -2,139 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B34931C607B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 20:56:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B0111C606C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 20:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728351AbgEES4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 14:56:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727083AbgEES4W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 14:56:22 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DA73C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 11:56:20 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id d16so2662460edv.8
-        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 11:56:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0aeZoygCkgdrdhCxkXT0t0qKXTgK7qHp5yzHDFCrrt4=;
-        b=OrJoG2wV8NG38EDX42NRpQ3EMDSZgAZf0hVOcarbH8A4++ycqW8Y9x/9hb4ZNBZlqN
-         dBkmuhTl6HbYw63JIBeijQn6SIb61l3l6ZRUEMNPIwYceF2Qq58dZcj35hiyFqu2rx7R
-         OenyZW/iEsgRhBpi0c1mDGw5mrptZx2nvvV+A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0aeZoygCkgdrdhCxkXT0t0qKXTgK7qHp5yzHDFCrrt4=;
-        b=OWImQP7AJ4lW9ATQtZsiOuL2jtKy8CRaN563KJW+IvbJkJnuv7cZTs6JGeUo3K5G0D
-         2Ad/3R1EyyTwfWkDqClWFeGDb1S7UxEqOEw9rL5IY5/J10+6A3xLxqzue03rMR7qDvkr
-         bEXGlv9S0Rqt9S/Eq/KZvYsSFZw1GQUEDyg1A7woRPg5iUUtXDbyIeLCF6Ela2XZZBrW
-         /hfNeSkyKuG5fECzzrM54iUeJfLgf169Pegbn6ZbCDX066U4BUR4wHwoM5HXtzvercWv
-         p1vhZYjPZU1d9b+NTQyIKdLRbDFPiWtU5e0lIk4eCrRAZQ7wzmwbkUfqNvbrFl3Cs8Tl
-         EmGA==
-X-Gm-Message-State: AGi0PuZqlCG5p/Dse1jgBQRN/MpN2VVI8qRpcxNn3+dhaJZwc+GQuAzH
-        wQHI0NBInwDiNitGf1DkwAiF9ORdXnA=
-X-Google-Smtp-Source: APiQypJwFG2E5fw75bLhroRoVpYqh9ST6I66f+9lenp//FEM/cBZW3/cpm8/FiDpKsFsqo4lnJ3d+g==
-X-Received: by 2002:a50:a7e4:: with SMTP id i91mr3837997edc.381.1588704978715;
-        Tue, 05 May 2020 11:56:18 -0700 (PDT)
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com. [209.85.221.46])
-        by smtp.gmail.com with ESMTPSA id s18sm343391ejm.63.2020.05.05.11.56.18
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 May 2020 11:56:18 -0700 (PDT)
-Received: by mail-wr1-f46.google.com with SMTP id y4so3776511wrm.11
-        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 11:56:18 -0700 (PDT)
-X-Received: by 2002:ac2:4da1:: with SMTP id h1mr2492888lfe.152.1588704525320;
- Tue, 05 May 2020 11:48:45 -0700 (PDT)
+        id S1728630AbgEESte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 14:49:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49280 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726350AbgEESte (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 14:49:34 -0400
+Received: from localhost (unknown [104.132.1.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 67636206CC;
+        Tue,  5 May 2020 18:49:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588704573;
+        bh=ULAX6o6dV7Arr39+KWwF1GLk85Khtp18oTR1aa35nLc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1w9SfD7t0QHoi2Cuzb+TJydGS28cJWuN2dBuFs/WTVmLa5agDw0MHj2ayxSZZ790F
+         fHkgDJ+uzz9rUmekT3oDLN+PyV+1P3AW4zpEGR2yyY6aJKenZhrZtCclrTwq5OKst2
+         CN/xctFxbvpOV/AqzClp23pP5MHFTtrspZn+2WVA=
+Date:   Tue, 5 May 2020 11:49:32 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Subject: Re: [f2fs-dev] [PATCH] f2fs: get parent inode when recovering pino
+Message-ID: <20200505184932.GC55221@google.com>
+References: <20200505153139.201697-1-jaegeuk@kernel.org>
+ <20200505165847.GA98848@gmail.com>
+ <20200505181323.GA55221@google.com>
+ <20200505181941.GC98848@gmail.com>
 MIME-Version: 1.0
-References: <20200501202849.647891881@infradead.org> <20200501202944.593400184@infradead.org>
- <1238787e-d97d-f09b-d76d-2df2dc273f4b@rasmusvillemoes.dk> <20200503125813.GL3762@hirez.programming.kicks-ass.net>
- <a53369f3-665a-af0e-efad-09ae456af847@rasmusvillemoes.dk> <20200504201445.GQ3762@hirez.programming.kicks-ass.net>
- <20200505093625.GE5298@hirez.programming.kicks-ass.net> <CAKwvOd=cP8UCX0+5pZ3AqzvOM8LKzLJJ_heDhrghqJdOnHoGMg@mail.gmail.com>
- <CAKwvOdkL+2Gvn2mkZ8cdHN=1F5cHQHii57ocD0RFeLJxEt=TUQ@mail.gmail.com>
-In-Reply-To: <CAKwvOdkL+2Gvn2mkZ8cdHN=1F5cHQHii57ocD0RFeLJxEt=TUQ@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 5 May 2020 11:48:29 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiUd=fcpegFLK4VK9iFfrO5BmpGKDszGpuyJkDdz4JaoQ@mail.gmail.com>
-Message-ID: <CAHk-=wiUd=fcpegFLK4VK9iFfrO5BmpGKDszGpuyJkDdz4JaoQ@mail.gmail.com>
-Subject: Re: [PATCH v4 14/18] static_call: Add static_cond_call()
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Nadav Amit <namit@vmware.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200505181941.GC98848@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 5, 2020 at 11:28 AM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> Changing
-> void *func = READ_ONCE(name.func); \
-> to
-> void *func = &READ_ONCE(name.func); \
+On 05/05, Eric Biggers wrote:
+> On Tue, May 05, 2020 at 11:13:23AM -0700, Jaegeuk Kim wrote:
+> > On 05/05, Eric Biggers wrote:
+> > > On Tue, May 05, 2020 at 08:31:39AM -0700, Jaegeuk Kim wrote:
+> > > > We had to grab the inode before retrieving i_ino.
+> > > > 
+> > > > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> > > > ---
+> > > >  fs/f2fs/file.c | 8 +++++++-
+> > > >  1 file changed, 7 insertions(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> > > > index a0a4413d6083b..9d4c3e3503567 100644
+> > > > --- a/fs/f2fs/file.c
+> > > > +++ b/fs/f2fs/file.c
+> > > > @@ -168,6 +168,7 @@ static const struct vm_operations_struct f2fs_file_vm_ops = {
+> > > >  static int get_parent_ino(struct inode *inode, nid_t *pino)
+> > > >  {
+> > > >  	struct dentry *dentry;
+> > > > +	struct inode *parent;
+> > > >  
+> > > >  	inode = igrab(inode);
+> > > >  	dentry = d_find_any_alias(inode);
+> > > > @@ -175,8 +176,13 @@ static int get_parent_ino(struct inode *inode, nid_t *pino)
+> > > >  	if (!dentry)
+> > > >  		return 0;
+> > > >  
+> > > > -	*pino = parent_ino(dentry);
+> > > > +	parent = igrab(d_inode(dentry->d_parent));
+> > > >  	dput(dentry);
+> > > > +	if (!parent)
+> > > > +		return 0;
+> > > > +
+> > > > +	*pino = parent->i_ino;
+> > > > +	iput(parent);
+> > > >  	return 1;
+> > 
+> > Hi Eric,
+> > 
+> > > 
+> > > This doesn't appear to be necessary.  parent_ino() is:
+> > > 
+> > > 	spin_lock(&dentry->d_lock);
+> > > 	res = dentry->d_parent->d_inode->i_ino;
+> > > 	spin_unlock(&dentry->d_lock);
+> > > 
+> > > Since dentry is locked and referenced, ->d_parent is stable and positive.
+> > 
+> > I see, thanks. :)
+> > 
+> > > 
+> > > In the encrypt+casefold patch I was reviewing, it's indeed necessary, but only
+> > > because there was a check of inode->i_flags added outside the locked region.
+> > > The following would be simpler:
+> > > 
+> > >         spin_lock(&dentry->d_lock);
+> > >         dir = dentry->d_parent->d_inode;
+> > >         *pino = dir->i_ino;
+> > >         needs_recovery = IS_ENCRYPTED(dir) && IS_CASEFOLDED(dir);
+> > >         spin_unlock(&dentry->d_lock);
+> > 
+> > Ack.
+> > 
+> > > 
+> > > BTW, d_find_any_alias() is unnecessary too.  This code should just be using
+> > > file_dentry(file) from f2fs_do_sync_file().
+> > 
+> > How about this?
+> > 
+> > From 9aee969a413b1ed22b48573071bc93fbb4a2002d Mon Sep 17 00:00:00 2001
+> > From: Jaegeuk Kim <jaegeuk@kernel.org>
+> > Date: Tue, 5 May 2020 11:08:58 -0700
+> > Subject: [PATCH] f2fs: remove unnecessary dentry locks
+> > 
+> > As Eric commented, let's kill unnecessary dentry ops when recovering
+> > parent inode number.
+> > 
+> > Suggested-by: Eric Biggers <ebiggers@kernel.org>
+> > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> > ---
+> >  fs/f2fs/file.c | 26 ++++++--------------------
+> >  1 file changed, 6 insertions(+), 20 deletions(-)
+> > 
+> > diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> > index a0a4413d6083b..711cebad36fc5 100644
+> > --- a/fs/f2fs/file.c
+> > +++ b/fs/f2fs/file.c
+> > @@ -165,21 +165,6 @@ static const struct vm_operations_struct f2fs_file_vm_ops = {
+> >  	.page_mkwrite	= f2fs_vm_page_mkwrite,
+> >  };
+> >  
+> > -static int get_parent_ino(struct inode *inode, nid_t *pino)
+> > -{
+> > -	struct dentry *dentry;
+> > -
+> > -	inode = igrab(inode);
+> > -	dentry = d_find_any_alias(inode);
+> > -	iput(inode);
+> > -	if (!dentry)
+> > -		return 0;
+> > -
+> > -	*pino = parent_ino(dentry);
+> > -	dput(dentry);
+> > -	return 1;
+> > -}
+> > -
+> >  static inline enum cp_reason_type need_do_checkpoint(struct inode *inode)
+> >  {
+> >  	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+> > @@ -223,14 +208,15 @@ static bool need_inode_page_update(struct f2fs_sb_info *sbi, nid_t ino)
+> >  	return ret;
+> >  }
+> >  
+> > -static void try_to_fix_pino(struct inode *inode)
+> > +static void try_to_fix_pino(struct dentry *dentry)
+> >  {
+> > +	struct inode *inode = d_inode(dentry);
+> >  	struct f2fs_inode_info *fi = F2FS_I(inode);
+> > -	nid_t pino;
+> >  
+> >  	down_write(&fi->i_sem);
+> > -	if (file_wrong_pino(inode) && inode->i_nlink == 1 &&
+> > -			get_parent_ino(inode, &pino)) {
+> > +	if (file_wrong_pino(inode) && inode->i_nlink == 1) {
+> > +		nid_t pino = parent_ino(dentry);
+> > +
+> >  		f2fs_i_pino_write(inode, pino);
+> >  		file_got_pino(inode);
+> >  	}
+> > @@ -310,7 +296,7 @@ static int f2fs_do_sync_file(struct file *file, loff_t start, loff_t end,
+> >  		 * We've secured consistency through sync_fs. Following pino
+> >  		 * will be used only for fsynced inodes after checkpoint.
+> >  		 */
+> > -		try_to_fix_pino(inode);
+> > +		try_to_fix_pino(file_dentry(file));
+> >  		clear_inode_flag(inode, FI_APPEND_WRITE);
+> >  		clear_inode_flag(inode, FI_UPDATE_WRITE);
+> >  		goto out;
+> 
+> Actually, I think this is wrong because the fsync can be done via a file
+> descriptor that was opened to a now-deleted link to the file.
+> 
+> We need to find the dentry whose parent directory is still exists, i.e. the
+> parent directory that is counting towards 'inode->i_nlink == 1'.
+> 
+> I think d_find_alias() is what we're looking for.
 
-What? That makes no sense.
+Yeah, it seems to happen when open/rename/fsync calls, or race condition of
+file deletion.
 
-Yes,
+> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> index 6ab8f621a3c5..855f27468baa 100644
+> --- a/fs/f2fs/file.c
+> +++ b/fs/f2fs/file.c
+> @@ -165,13 +165,13 @@ static int get_parent_ino(struct inode *inode, nid_t *pino)
+>  {
+>         struct dentry *dentry;
+> 
+> -       inode = igrab(inode);
+> -       dentry = d_find_any_alias(inode);
+> -       iput(inode);
+> +       dentry = d_find_alias(inode);
+>         if (!dentry)
+>                 return 0;
 
-    void *func = foo;
+How about this?
 
-and
+From 2a6b0e53e592854306062a2dc35db2d8f79062f2 Mon Sep 17 00:00:00 2001
+From: Jaegeuk Kim <jaegeuk@kernel.org>
+Date: Tue, 5 May 2020 11:33:29 -0700
+Subject: [PATCH] f2fs: find a living dentry when finding parent ino
 
-   void *func = &foo;
+We need to check any dentry still alive to get parent inode number.
 
-are the same thing, _if_ "foo" is an actual function, because then
-"foo" degrades from a function to a pointer to a function as part of C
-type semantics.
+Suggested-by: Eric Biggers <ebiggers@kernel.org>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+---
+ fs/f2fs/file.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-But that's not the case here. READ_ONCE(name.func) isn't a function -
-it's a pointer to a function. So it doesn't degrade to anything at
-all, and adding a '&' in front ot it completely changes the meaning of
-the expression. So now the '&' changes it from "pointer to a function"
-to "pointer to a pointer to a function", and the end result is not the
-same thing any more.
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index a0a4413d6083b..95139cb85faca 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -169,9 +169,8 @@ static int get_parent_ino(struct inode *inode, nid_t *pino)
+ {
+ 	struct dentry *dentry;
+ 
+-	inode = igrab(inode);
+-	dentry = d_find_any_alias(inode);
+-	iput(inode);
++	/* Need to check if valid dentry still exists. */
++	dentry = d_find_alias(inode);
+ 	if (!dentry)
+ 		return 0;
+ 
+-- 
+2.26.2.526.g744177e7f7-goog
 
-Without the "&" it will call the function "bar" (which is the function
-pointer that was assigned).
-
-With the "&", it will not not call a function at all, it will do a
-call to an address that is actually data of type "struct
-static_call_key".
-
-That's also why the NULL pointer check goes away: now the pointer is a
-pointer to static data, which can never be NULL.
-
-That said, I found it interesting that the volatile read also goes
-away. That struck me as strange. But then I thought about it somem
-more, and realized that the '&' basically just peels off the '*', so
-now there isn't any actual volatile access any more, which is why the
-read went away too.
-
-Anyway, adding that '&' completely changes the meaning of the test.
-
-Your initial reaction that "you can't compile away the read and the
-test of NULL" was correct, I think.
-
-                   Linus
