@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 520791C585C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:13:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A394E1C5935
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:23:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729431AbgEEONw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:13:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48526 "EHLO
+        id S1730445AbgEEOXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:23:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729370AbgEEONt (ORCPT
+        by vger.kernel.org with ESMTP id S1729502AbgEEOOH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:13:49 -0400
+        Tue, 5 May 2020 10:14:07 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2A96C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:13:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0739FC061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:14:07 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jVyKA-0000SA-GY; Tue, 05 May 2020 16:13:30 +0200
+        id 1jVyKB-0000TD-Nb; Tue, 05 May 2020 16:13:31 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id F0E33FFC8D;
-        Tue,  5 May 2020 16:13:29 +0200 (CEST)
-Message-Id: <20200505134059.369802541@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 3ABFCFFC8D;
+        Tue,  5 May 2020 16:13:31 +0200 (CEST)
+Message-Id: <20200505134059.462640294@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 05 May 2020 15:16:15 +0200
+Date:   Tue, 05 May 2020 15:16:16 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -44,7 +44,7 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Will Deacon <will@kernel.org>
-Subject: [patch V4 part 1 13/36] x86/kvm: Restrict ASYNC_PF to user space
+Subject: [patch V4 part 1 14/36] x86/entry: Get rid of ist_begin/end_non_atomic()
 References: <20200505131602.633487962@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -57,179 +57,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The async page fault injection into kernel space creates more problems than
-it solves. The host has absolutely no knowledge about the state of the
-guest if the fault happens in CPL0. The only restriction for the host is
-interrupt disabled state. If interrupts are enabled in the guest then the
-exception can hit arbitrary code. The HALT based wait in non-preemotible
-code is a hacky replacement for a proper hypercall.
+This is completely overengineered and definitely not an interface which
+should be made available to anything else than this particular MCE case.
 
-For the ongoing work to restrict instrumentation and make the RCU idle
-interaction well defined the required extra work for supporting async
-pagefault in CPL0 is just not justified and creates complexity for a
-dubious benefit.
-
-The CPL3 injection is well defined and does not cause any issues as it is
-more or less the same as a regular page fault from CPL3.
-
-Suggested-by: Andy Lutomirski <luto@kernel.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/kernel/kvm.c |  100 +++-----------------------------------------------
- 1 file changed, 7 insertions(+), 93 deletions(-)
+ arch/x86/include/asm/traps.h   |    2 --
+ arch/x86/kernel/cpu/mce/core.c |    6 ++++--
+ arch/x86/kernel/traps.c        |   37 -------------------------------------
+ 3 files changed, 4 insertions(+), 41 deletions(-)
 
---- a/arch/x86/kernel/kvm.c
-+++ b/arch/x86/kernel/kvm.c
-@@ -75,7 +75,6 @@ struct kvm_task_sleep_node {
- 	struct swait_queue_head wq;
- 	u32 token;
- 	int cpu;
--	bool use_halt;
- };
+--- a/arch/x86/include/asm/traps.h
++++ b/arch/x86/include/asm/traps.h
+@@ -120,8 +120,6 @@ asmlinkage void smp_irq_move_cleanup_int
  
- static struct kvm_task_sleep_head {
-@@ -98,8 +97,7 @@ static struct kvm_task_sleep_node *_find
- 	return NULL;
- }
+ extern void ist_enter(struct pt_regs *regs);
+ extern void ist_exit(struct pt_regs *regs);
+-extern void ist_begin_non_atomic(struct pt_regs *regs);
+-extern void ist_end_non_atomic(void);
  
--static bool kvm_async_pf_queue_task(u32 token, bool use_halt,
--				    struct kvm_task_sleep_node *n)
-+static bool kvm_async_pf_queue_task(u32 token, struct kvm_task_sleep_node *n)
- {
- 	u32 key = hash_32(token, KVM_TASK_SLEEP_HASHBITS);
- 	struct kvm_task_sleep_head *b = &async_pf_sleepers[key];
-@@ -117,7 +115,6 @@ static bool kvm_async_pf_queue_task(u32
+ #ifdef CONFIG_VMAP_STACK
+ void __noreturn handle_stack_overflow(const char *message,
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -1352,13 +1352,15 @@ void notrace do_machine_check(struct pt_
  
- 	n->token = token;
- 	n->cpu = smp_processor_id();
--	n->use_halt = use_halt;
- 	init_swait_queue_head(&n->wq);
- 	hlist_add_head(&n->link, &b->list);
- 	raw_spin_unlock(&b->lock);
-@@ -138,7 +135,7 @@ void kvm_async_pf_task_wait_schedule(u32
+ 	/* Fault was in user mode and we need to take some action */
+ 	if ((m.cs & 3) == 3) {
+-		ist_begin_non_atomic(regs);
++		/* If this triggers there is no way to recover. Die hard. */
++		BUG_ON(!on_thread_stack() || !user_mode(regs));
+ 		local_irq_enable();
++		preempt_enable();
  
- 	lockdep_assert_irqs_disabled();
- 
--	if (!kvm_async_pf_queue_task(token, false, &n))
-+	if (!kvm_async_pf_queue_task(token, &n))
- 		return;
- 
- 	for (;;) {
-@@ -154,91 +151,10 @@ void kvm_async_pf_task_wait_schedule(u32
- }
- EXPORT_SYMBOL_GPL(kvm_async_pf_task_wait_schedule);
- 
--/*
-- * Invoked from the async page fault handler.
-- */
--static void kvm_async_pf_task_wait_halt(u32 token)
--{
--	struct kvm_task_sleep_node n;
--
--	if (!kvm_async_pf_queue_task(token, true, &n))
--		return;
--
--	for (;;) {
--		if (hlist_unhashed(&n.link))
--			break;
--		/*
--		 * No point in doing anything about RCU here. Any RCU read
--		 * side critical section or RCU watching section can be
--		 * interrupted by VMEXITs and the host is free to keep the
--		 * vCPU scheduled out as long as it sees fit. This is not
--		 * any different just because of the halt induced voluntary
--		 * VMEXIT.
--		 *
--		 * Also the async page fault could have interrupted any RCU
--		 * watching context, so invoking rcu_irq_exit()/enter()
--		 * around this is not gaining anything.
--		 */
--		native_safe_halt();
--		local_irq_disable();
--	}
--}
--
--/* Invoked from the async page fault handler */
--static void kvm_async_pf_task_wait(u32 token, bool usermode)
--{
--	bool can_schedule;
--
--	/*
--	 * No need to check whether interrupts were disabled because the
--	 * host will (hopefully) only inject an async page fault into
--	 * interrupt enabled regions.
--	 *
--	 * If CONFIG_PREEMPTION is enabled then check whether the code
--	 * which triggered the page fault is preemptible. This covers user
--	 * mode as well because preempt_count() is obviously 0 there.
--	 *
--	 * The check for rcu_preempt_depth() is also required because
--	 * voluntary scheduling inside a rcu read locked section is not
--	 * allowed.
--	 *
--	 * The idle task is already covered by this because idle always
--	 * has a preempt count > 0.
--	 *
--	 * If CONFIG_PREEMPTION is disabled only allow scheduling when
--	 * coming from user mode as there is no indication whether the
--	 * context which triggered the page fault could schedule or not.
--	 */
--	if (IS_ENABLED(CONFIG_PREEMPTION))
--		can_schedule = preempt_count() + rcu_preempt_depth() == 0;
--	else
--		can_schedule = usermode;
--
--	/*
--	 * If the kernel context is allowed to schedule then RCU is
--	 * watching because no preemptible code in the kernel is inside RCU
--	 * idle state. So it can be treated like user mode. User mode is
--	 * safe because the #PF entry invoked enter_from_user_mode().
--	 *
--	 * For the non schedulable case invoke rcu_irq_enter() for
--	 * now. This will be moved out to the pagefault entry code later
--	 * and only invoked when really needed.
--	 */
--	if (can_schedule) {
--		kvm_async_pf_task_wait_schedule(token);
--	} else {
--		rcu_irq_enter();
--		kvm_async_pf_task_wait_halt(token);
--		rcu_irq_exit();
--	}
--}
--
- static void apf_task_wake_one(struct kvm_task_sleep_node *n)
- {
- 	hlist_del_init(&n->link);
--	if (n->use_halt)
--		smp_send_reschedule(n->cpu);
--	else if (swq_has_sleeper(&n->wq))
-+	if (swq_has_sleeper(&n->wq))
- 		swake_up_one(&n->wq);
- }
- 
-@@ -337,8 +253,10 @@ bool __kvm_handle_async_pf(struct pt_reg
- 		panic("Host injected async #PF in interrupt disabled region\n");
- 
- 	if (reason == KVM_PV_REASON_PAGE_NOT_PRESENT) {
--		/* page is swapped out by the host. */
--		kvm_async_pf_task_wait(token, user_mode(regs));
-+		if (unlikely(!(user_mode(regs))))
-+			panic("Host injected async #PF in kernel mode\n");
-+		/* Page is swapped out by the host. */
-+		kvm_async_pf_task_wait_schedule(token);
+ 		if (kill_it || do_memory_failure(&m))
+ 			force_sig(SIGBUS);
++		preempt_disable();
+ 		local_irq_disable();
+-		ist_end_non_atomic();
  	} else {
- 		rcu_irq_enter();
- 		kvm_async_pf_task_wake(token);
-@@ -397,10 +315,6 @@ static void kvm_guest_cpu_init(void)
- 		WARN_ON_ONCE(!static_branch_likely(&kvm_async_pf_enabled));
+ 		if (!fixup_exception(regs, X86_TRAP_MC, error_code, 0))
+ 			mce_panic("Failed kernel mode recovery", &m, msg);
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -117,43 +117,6 @@ void ist_exit(struct pt_regs *regs)
+ 		rcu_nmi_exit();
+ }
  
- 		pa = slow_virt_to_phys(this_cpu_ptr(&apf_reason));
+-/**
+- * ist_begin_non_atomic() - begin a non-atomic section in an IST exception
+- * @regs:	regs passed to the IST exception handler
+- *
+- * IST exception handlers normally cannot schedule.  As a special
+- * exception, if the exception interrupted userspace code (i.e.
+- * user_mode(regs) would return true) and the exception was not
+- * a double fault, it can be safe to schedule.  ist_begin_non_atomic()
+- * begins a non-atomic section within an ist_enter()/ist_exit() region.
+- * Callers are responsible for enabling interrupts themselves inside
+- * the non-atomic section, and callers must call ist_end_non_atomic()
+- * before ist_exit().
+- */
+-void ist_begin_non_atomic(struct pt_regs *regs)
+-{
+-	BUG_ON(!user_mode(regs));
 -
--#ifdef CONFIG_PREEMPTION
--		pa |= KVM_ASYNC_PF_SEND_ALWAYS;
--#endif
- 		pa |= KVM_ASYNC_PF_ENABLED;
- 
- 		if (kvm_para_has_feature(KVM_FEATURE_ASYNC_PF_VMEXIT))
+-	/*
+-	 * Sanity check: we need to be on the normal thread stack.  This
+-	 * will catch asm bugs and any attempt to use ist_preempt_enable
+-	 * from double_fault.
+-	 */
+-	BUG_ON(!on_thread_stack());
+-
+-	preempt_enable_no_resched();
+-}
+-
+-/**
+- * ist_end_non_atomic() - begin a non-atomic section in an IST exception
+- *
+- * Ends a non-atomic section started with ist_begin_non_atomic().
+- */
+-void ist_end_non_atomic(void)
+-{
+-	preempt_disable();
+-}
+-
+ int is_valid_bugaddr(unsigned long addr)
+ {
+ 	unsigned short ud;
 
