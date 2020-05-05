@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E86231C58E0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:20:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE4A81C589C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:16:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730486AbgEEOTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:19:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49128 "EHLO
+        id S1729385AbgEEOQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:16:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730089AbgEEOQW (ORCPT
+        by vger.kernel.org with ESMTP id S1730100AbgEEOQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:16:22 -0400
+        Tue, 5 May 2020 10:16:25 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53ACCC061A10
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:16:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0592C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:16:24 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jVyMf-00025e-Oj; Tue, 05 May 2020 16:16:05 +0200
+        id 1jVyMh-00026f-2k; Tue, 05 May 2020 16:16:07 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 53C2FFFC8D;
-        Tue,  5 May 2020 16:16:05 +0200 (CEST)
-Message-Id: <20200505135314.992621707@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 8ECA9FFC8D;
+        Tue,  5 May 2020 16:16:06 +0200 (CEST)
+Message-Id: <20200505135315.084882104@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 05 May 2020 15:49:43 +0200
+Date:   Tue, 05 May 2020 15:49:44 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -44,8 +44,8 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Will Deacon <will@kernel.org>
-Subject: [patch V4 part 4 17/24] x86/entry/64: Remove error code clearing from
- #DB and #MCE ASM stub
+Subject: [patch V4 part 4 18/24] x86/entry: Provide IDTRENTRY_NOIST variants
+ for #DB and #MC
 References: <20200505134926.578885807@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -58,21 +58,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The C entry points do not expect an error code.
+Provide NOIST entry point macros which allows to implement NOIST variants
+of the C entry points. These are invoked when #DB or #MC enter from user
+space. This allows explicit handling of the difference between user mode
+and kernel mode entry later.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/entry/entry_64.S |    1 -
- 1 file changed, 1 deletion(-)
+ arch/x86/include/asm/idtentry.h |   19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
 
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -643,7 +643,6 @@ SYM_CODE_START(\asmsym)
- 	.endif
+--- a/arch/x86/include/asm/idtentry.h
++++ b/arch/x86/include/asm/idtentry.h
+@@ -138,10 +138,12 @@ static __always_inline void __##func(str
+  * @vector:	Vector number (ignored for C)
+  * @func:	Function name of the entry point
+  *
+- * Maps to DECLARE_IDTENTRY_RAW
++ * Maps to DECLARE_IDTENTRY_RAW, but declares also the NOIST C handler
++ * which is called from the ASM entry point on user mode entry
+  */
+ #define DECLARE_IDTENTRY_IST(vector, func)				\
+-	DECLARE_IDTENTRY_RAW(vector, func)
++	DECLARE_IDTENTRY_RAW(vector, func);				\
++	__visible void noist_##func(struct pt_regs *regs)
  
- 	movq	%rsp, %rdi		/* pt_regs pointer */
--	xorl	%esi, %esi		/* Clear the error code */
+ /**
+  * DEFINE_IDTENTRY_IST - Emit code for IST entry points
+@@ -152,6 +154,17 @@ static __always_inline void __##func(str
+ #define DEFINE_IDTENTRY_IST(func)					\
+ 	DEFINE_IDTENTRY_RAW(func)
  
- 	.if \vector == X86_TRAP_DB
- 		subq	$DB_STACK_OFFSET, CPU_TSS_IST(IST_INDEX_DB)
++/**
++ * DEFINE_IDTENTRY_NOIST - Emit code for NOIST entry points which
++ *			   belong to a IST entry point (MCE, DB)
++ * @func:	Function name of the entry point. Must be the same as
++ *		the function name of the corresponding IST variant
++ *
++ * Maps to DEFINE_IDTENTRY_RAW().
++ */
++#define DEFINE_IDTENTRY_NOIST(func)					\
++	DEFINE_IDTENTRY_RAW(noist_##func)
++
+ #else	/* CONFIG_X86_64 */
+ /* Maps to a regular IDTENTRY on 32bit for now */
+ # define DECLARE_IDTENTRY_IST		DECLARE_IDTENTRY
+@@ -161,12 +174,14 @@ static __always_inline void __##func(str
+ /* C-Code mapping */
+ #define DECLARE_IDTENTRY_MCE		DECLARE_IDTENTRY_IST
+ #define DEFINE_IDTENTRY_MCE		DEFINE_IDTENTRY_IST
++#define DEFINE_IDTENTRY_MCE_USER	DEFINE_IDTENTRY_NOIST
+ 
+ #define DECLARE_IDTENTRY_NMI		DECLARE_IDTENTRY_IST
+ #define DEFINE_IDTENTRY_NMI		DEFINE_IDTENTRY_IST
+ 
+ #define DECLARE_IDTENTRY_DEBUG		DECLARE_IDTENTRY_IST
+ #define DEFINE_IDTENTRY_DEBUG		DEFINE_IDTENTRY_IST
++#define DEFINE_IDTENTRY_DEBUG_USER	DEFINE_IDTENTRY_NOIST
+ 
+ /**
+  * DECLARE_IDTENTRY_XEN - Declare functions for XEN redirect IDT entry points
 
