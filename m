@@ -2,74 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB6631C5714
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 15:36:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E69771C571C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 15:37:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729141AbgEENgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 09:36:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42522 "EHLO
+        id S1729081AbgEENhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 09:37:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729089AbgEENgF (ORCPT
+        with ESMTP id S1728993AbgEENhI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 09:36:05 -0400
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 637A0C061A10
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 06:36:05 -0700 (PDT)
-Received: from ramsan ([IPv6:2a02:1810:ac12:ed60:bd97:8453:3b10:1832])
-        by xavier.telenet-ops.be with bizsmtp
-        id b1c32200D3VwRR3011c34F; Tue, 05 May 2020 15:36:03 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan with esmtp (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1jVxjv-0008Al-Gi; Tue, 05 May 2020 15:36:03 +0200
-Received: from geert by rox.of.borg with local (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1jVxjv-0006m4-En; Tue, 05 May 2020 15:36:03 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Brian Norris <briannorris@chromium.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Rajat Jain <rajatja@google.com>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v4 resend 2] dt-bindings: net: btusb: DT fix s/interrupt-name/interrupt-names/
-Date:   Tue,  5 May 2020 15:36:02 +0200
-Message-Id: <20200505133602.25987-1-geert+renesas@glider.be>
+        Tue, 5 May 2020 09:37:08 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D73CC061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 06:37:07 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id h12so1169073pjz.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 06:37:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=6DxkBtXBsRjhDSSt5bpda9bBdLdSPYMqKL2JOYrqLyA=;
+        b=FmIiMP1UrVnSztbbKw3HZJ10u19Ocye85lgZ/wBOpNCZsYUgKIQ5IWz+LRho31l73D
+         jHOBgcVl9Nc87EibSBZOJFrq3n1E/QHgRkDvqVnRWG7OOOkvMb3MCPpVEHyphy4Iorzz
+         6tSO4qSudgq2nOR1/RWngDiZ6tyHbq1uqf3T4qZK/W7uH+/mvfmFkX7ul4qro4vjefFa
+         vzao3OIUv0QV5W3Ine1fo2PCRLO3nC2pUtx3SSxV4gsSf4OGq6ReWTBPoojl2sbEhNL5
+         ovfiDalwxNI3iw1OQSkN2vaSk7tQpNx24HnWwqvVs8kMHG8RXdIB006F1ULBjam+gTZq
+         gHhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=6DxkBtXBsRjhDSSt5bpda9bBdLdSPYMqKL2JOYrqLyA=;
+        b=Aj29pyydqa/oz27ZT+m5Pt6XZsTi4uEt/4LOUyxYiLuARDAt8XF+EFcbd8Bz6842on
+         FEcJ/+qG2iPq9NKAnbnS2JQXKWxs07lRNia5RSf9Q64axrhOaL/5JG4u5EapbaOizU0K
+         M9Nts3jYxg0Cjx7+Uec56yBvDXj2cVLP1OM8kR1LyR3I6OJ426DJbsxFMShjUREyc24P
+         a0DcTTALNLOh2n62k9xyxWNCbNKHqE1rTYBf74yl0wB5ZEGuhQASKpfNk7i6y6j1sFY+
+         BmmToyR6cveWPzWDOIjet/eJ0ZJNmQrgWSZz36ZdpQ8P9Rn+k11FnYjKj3Ed0/Mwtexm
+         lF1w==
+X-Gm-Message-State: AGi0PuZgnhzILp5xRUMQcVNKixA8mqlbWfFkVtWGqeHSHnXqFTwpLAb7
+        wRqdJBs+Ff896iJLpZtTl19RyQ==
+X-Google-Smtp-Source: APiQypKk5N1JogeWsMMibegsVTghCE8uN86ssgVDs3UVsbQlfg5lphbt3V+rSFAO2pEmg+JafdyVfg==
+X-Received: by 2002:a17:902:fe06:: with SMTP id g6mr3272478plj.105.1588685826838;
+        Tue, 05 May 2020 06:37:06 -0700 (PDT)
+Received: from localhost ([2400:8904::f03c:91ff:fe8a:bbe4])
+        by smtp.gmail.com with ESMTPSA id j5sm1561737pgi.5.2020.05.05.06.37.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 05 May 2020 06:37:06 -0700 (PDT)
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Tor Jeremiassen <tor@ti.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Leo Yan <leo.yan@linaro.org>
+Subject: [PATCH] perf cs-etm: Move defined of traceid_list
+Date:   Tue,  5 May 2020 21:36:42 +0800
+Message-Id: <20200505133642.4756-1-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The standard DT property name is "interrupt-names".
+The variable 'traceid_list' is defined in the header file cs-etm.h,
+if multiple C files include cs-etm.h the compiler might complaint for
+multiple definition of 'traceid_list'.
 
-Fixes: fd913ef7ce619467 ("Bluetooth: btusb: Add out-of-band wakeup support")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Acked-by: Rob Herring <robh@kernel.org>
+To fix multiple definition error, move the definition of 'traceid_list'
+into cs-etm.c.
+
+Fixes: cd8bfd8c973e ("perf tools: Add processing of coresight metadata")
+Reported-by: Thomas Backlund <tmb@mageia.org>
+Signed-off-by: Leo Yan <leo.yan@linaro.org>
+Reviewed-by: Mike Leach <mike.leach@linaro.org>
+Tested-by: Mike Leach <mike.leach@linaro.org>
+Tested-by: Thomas Backlund <tmb@mageia.org>
 ---
-v4:
-  - Add Acked-by,
+ tools/perf/util/cs-etm.c | 3 +++
+ tools/perf/util/cs-etm.h | 3 ---
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-v3:
-  - New.
----
- Documentation/devicetree/bindings/net/btusb.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/net/btusb.txt b/Documentation/devicetree/bindings/net/btusb.txt
-index b1ad6ee68e909318..c51dd99dc0d3cb73 100644
---- a/Documentation/devicetree/bindings/net/btusb.txt
-+++ b/Documentation/devicetree/bindings/net/btusb.txt
-@@ -38,7 +38,7 @@ Following example uses irq pin number 3 of gpio0 for out of band wake-on-bt:
- 	compatible = "usb1286,204e";
- 	reg = <1>;
- 	interrupt-parent = <&gpio0>;
--	interrupt-name = "wakeup";
-+	interrupt-names = "wakeup";
- 	interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
-     };
+diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
+index 62d2f9b9ce1b..381d9708e9bd 100644
+--- a/tools/perf/util/cs-etm.c
++++ b/tools/perf/util/cs-etm.c
+@@ -94,6 +94,9 @@ struct cs_etm_queue {
+ 	struct cs_etm_traceid_queue **traceid_queues;
  };
+ 
++/* RB tree for quick conversion between traceID and metadata pointers */
++static struct intlist *traceid_list;
++
+ static int cs_etm__update_queues(struct cs_etm_auxtrace *etm);
+ static int cs_etm__process_queues(struct cs_etm_auxtrace *etm);
+ static int cs_etm__process_timeless_queues(struct cs_etm_auxtrace *etm,
+diff --git a/tools/perf/util/cs-etm.h b/tools/perf/util/cs-etm.h
+index 650ecc2a6349..4ad925d6d799 100644
+--- a/tools/perf/util/cs-etm.h
++++ b/tools/perf/util/cs-etm.h
+@@ -114,9 +114,6 @@ enum cs_etm_isa {
+ 	CS_ETM_ISA_T32,
+ };
+ 
+-/* RB tree for quick conversion between traceID and metadata pointers */
+-struct intlist *traceid_list;
+-
+ struct cs_etm_queue;
+ 
+ struct cs_etm_packet {
 -- 
 2.17.1
 
