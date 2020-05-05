@@ -2,60 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D8991C55D9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 14:44:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43A661C55DC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 14:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728962AbgEEMo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 08:44:26 -0400
-Received: from verein.lst.de ([213.95.11.211]:35169 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728497AbgEEMo0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 08:44:26 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id A5B2068C4E; Tue,  5 May 2020 14:44:23 +0200 (CEST)
-Date:   Tue, 5 May 2020 14:44:23 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Stefan Haberland <sth@linux.ibm.com>
-Cc:     Christoph Hellwig <hch@lst.de>, axboe@kernel.dk,
-        linux-block@vger.kernel.org, hoeppner@linux.ibm.com,
-        linux-s390@vger.kernel.org, heiko.carstens@de.ibm.com,
-        gor@linux.ibm.com, borntraeger@de.ibm.com,
-        linux-kernel@vger.kernel.org,
-        Peter Oberparleiter <oberpar@linux.ibm.com>
-Subject: Re: [PATCH 1/1] s390/dasd: remove ioctl_by_bdev from DASD driver
-Message-ID: <20200505124423.GA26313@lst.de>
-References: <20200430111754.98508-1-sth@linux.ibm.com> <20200430111754.98508-2-sth@linux.ibm.com> <20200430131351.GA24813@lst.de> <4ab11558-9f2b-02ee-d191-c9a5cc38de0f@linux.ibm.com> <70f541fe-a678-8952-0753-32707d21e337@linux.ibm.com>
+        id S1728982AbgEEMoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 08:44:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728497AbgEEMoz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 08:44:55 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0FAEC061A0F;
+        Tue,  5 May 2020 05:44:54 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jVwwF-001UFP-0k; Tue, 05 May 2020 12:44:43 +0000
+Date:   Tue, 5 May 2020 13:44:42 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     SeongJae Park <sjpark@amazon.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, gregkh@linuxfoundation.org,
+        edumazet@google.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, SeongJae Park <sjpark@amazon.de>
+Subject: Re: [PATCH net 0/2] Revert the 'socket_alloc' life cycle change
+Message-ID: <20200505124442.GX23230@ZenIV.linux.org.uk>
+References: <20200505072841.25365-1-sjpark@amazon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <70f541fe-a678-8952-0753-32707d21e337@linux.ibm.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20200505072841.25365-1-sjpark@amazon.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 04, 2020 at 10:45:33AM +0200, Stefan Haberland wrote:
-> > findthe corresponding device for example. Not sure if this is that easy.
+On Tue, May 05, 2020 at 09:28:39AM +0200, SeongJae Park wrote:
+> From: SeongJae Park <sjpark@amazon.de>
 > 
-> I did some additional research on this.
-> What I could imagine:
+> The commit 6d7855c54e1e ("sockfs: switch to ->free_inode()") made the
+> deallocation of 'socket_alloc' to be done asynchronously using RCU, as
+> same to 'sock.wq'.  And the following commit 333f7909a857 ("coallocate
+> socket_sq with socket itself") made those to have same life cycle.
 > 
-> The gendisk->private_data pointer currently contains a pointer to
-> the dasd_devmap structure. This one is also reachable by iterating
-> over an exported dasd_hashlist.
-> So I could export the dasd_hashlist symbol, iterate over it and try
-> to find the dasd_devmap pointer I have from the gendisk->private_data
-> pointer.
-> This would ensure that the gendisk belongs to the DASD driver and I
-> could use the additional information that is somehow reachable through
-> the gendisk->private_data pointer.
+> The changes made the code much more simple, but also made 'socket_alloc'
+> live longer than before.  For the reason, user programs intensively
+> repeating allocations and deallocations of sockets could cause memory
+> pressure on recent kernels.
 > 
-> But again, I am not sure if this additional code and effort is needed.
-> From my point of view checking the gendisk->major for DASD_MAJOR is
-> OK to ensure that the device belongs to the DASD driver.
+> To avoid the problem, this commit reverts the changes.
 
-With CONFIG_DEBUG_BLOCK_EXT_DEVT you can't rely on major numbers.
-
-And compared to all the complications I think the biodasdinfo method
-is the least of all those evils.  Jens, any opinion?
+Is it "could cause" or is it "have been actually observed to"?
