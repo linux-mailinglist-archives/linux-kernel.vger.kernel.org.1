@@ -2,165 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1D8D1C64A0
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 01:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 412931C64AB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 01:56:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729222AbgEEXrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 19:47:40 -0400
-Received: from gateway24.websitewelcome.com ([192.185.51.228]:40284 "EHLO
-        gateway24.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728717AbgEEXrk (ORCPT
+        id S1729530AbgEEX4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 19:56:01 -0400
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:63600 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728642AbgEEX4B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 19:47:40 -0400
-Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
-        by gateway24.websitewelcome.com (Postfix) with ESMTP id 06A2E77DD
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 18:47:39 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id W7Hmj2Oa6VQh0W7Hnj8acH; Tue, 05 May 2020 18:47:39 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Type:MIME-Version:Message-ID:Subject:
-        Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=KOPjXpRAEDO9gDVQmxGovICcFiqsKOmDUl+JG+lNPqw=; b=YkBgmP2mcQEg2kn3TFnvNRqZON
-        KRE3srpQZuM58jSwKcE26UGT6J4v/6H5OGCZPeOPJHti8lOK/EXnx5hlb3xh5K2WN18GM6EcY2mXJ
-        aBmy/jjw2C22bdJr56JFSOIskhf9PuefI+j5jy+kGNdBdqc3UjkyZUjL3XC3qbDJA0cmQ9FtFesJJ
-        ortTHl9lbXEcU7AhkCJSG+/KaoYXcJw0XKEHnBN/VM8XHa6wZSRDy3kxZ8bKI5y/v0tYrncaMayGZ
-        UW+zyn19zNlqrIMLg/2RlePCiXmS30vn4kdnTSVDDQWKCX5Na5jb2aCu1G81cN9pBlJ9HJvu2vilV
-        Hgb57vuA==;
-Received: from [189.207.59.248] (port=57526 helo=embeddedor)
-        by gator4166.hostgator.com with esmtpa (Exim 4.92)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1jW7Hm-003MYG-Ki; Tue, 05 May 2020 18:47:38 -0500
-Date:   Tue, 5 May 2020 18:52:05 -0500
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-To:     Jussi Kivilinna <jussi.kivilinna@iki.fi>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH][next] rndis_wlan: Remove logically dead code
-Message-ID: <20200505235205.GA18539@embeddedor>
+        Tue, 5 May 2020 19:56:01 -0400
+Received: from mail-vk1-f179.google.com (mail-vk1-f179.google.com [209.85.221.179]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 045NtZnN006317
+        for <linux-kernel@vger.kernel.org>; Wed, 6 May 2020 08:55:36 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 045NtZnN006317
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1588722936;
+        bh=Y9RWxiRgOZwnVwD83VxXe/juAd1avld7+FovXshP7OI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Btemxv12bE2TFIaNRp2UDHOS+O3LYyBMJGNElW4v+e2RRb9kLax99VIJr88qnnKCk
+         vtNOxapLTEh9uMnvC1aa3cAJXu/iMLSCz9+DzSHxCAkqtH4WgzA3l2vNthRTjCbrj8
+         i9i/O8D2nXJG3vJYPdcjjBhHEDX1vs+0He0eyGsGE9AiHzdDJa5WIv3tTNnOojIxhx
+         csgoJRpVVGdYGc7yAYJlQMN5moc1lyAxh2wNuZcXJZuzdWAmv4uB8UR7nNpn6MPLdm
+         1i+ZrioO3PVKf48AEPFd2HRbpFaArrHtYn1fsWbe4igMHEFKMGpBtidbwm53an9WA1
+         UectidQhDHQug==
+X-Nifty-SrcIP: [209.85.221.179]
+Received: by mail-vk1-f179.google.com with SMTP id w68so54837vke.5
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 16:55:36 -0700 (PDT)
+X-Gm-Message-State: AGi0Puaq//sSBa7ybQqI+AXeBU4qXftfHYy6z4fGHuY7NF98Rry/o9I7
+        t22olPIqo/MWs1RquPbdW1CUr/QXuHL1FTKiIkM=
+X-Google-Smtp-Source: APiQypI+/RbUwYA5RFpvV4RyRz1fC3Ok15Mm/8/k0F/GZ2w3vpKCGOdJSdoDo/J+o9eBlCt2hs0jYbW5su9myiejCGo=
+X-Received: by 2002:a1f:1ed1:: with SMTP id e200mr4979912vke.96.1588722934713;
+ Tue, 05 May 2020 16:55:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 189.207.59.248
-X-Source-L: No
-X-Exim-ID: 1jW7Hm-003MYG-Ki
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: (embeddedor) [189.207.59.248]:57526
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 6
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+References: <20200428212555.2806258-1-arnd@arndb.de>
+In-Reply-To: <20200428212555.2806258-1-arnd@arndb.de>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 6 May 2020 08:54:58 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAT6-F2qB5=gxZjxwNuArcbiTzsmhHApMUipxy+=QAu6ag@mail.gmail.com>
+Message-ID: <CAK7LNAT6-F2qB5=gxZjxwNuArcbiTzsmhHApMUipxy+=QAu6ag@mail.gmail.com>
+Subject: Re: [PATCH] samples: fix binderfs sample
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Christian Brauner <christian@brauner.io>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-caps_buf is always of size sizeof(*caps) because
-sizeof(caps->auth_encr_pair) * 16 is always zero. Notice
-that when using zero-length arrays, sizeof evaluates to zero[1].
+Hi Arnd,
 
-So, the code introduced by 
-commit 0308383f9591 ("rndis_wlan: get max_num_pmkids from device")
-is logically dead, hence is never executed and can be removed. As a
-consequence, the rest of the related code can be refactored a bit.
 
-Notice that this code has been out there since March 2010.
+On Wed, Apr 29, 2020 at 6:26 AM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> A routine check for misspelled Kconfig symbols showed on instance
+> from last year, the correct symbol name is CONFIG_ANDROID_BINDERFS,
+> not CONFIG_CONFIG_ANDROID_BINDERFS, so the extra prefix must
+> be removed in the Kconfig file to allow enabling the sample.
+>
+> As the actual sample fails to build as a kernel module, change the
+> Makefile enough to get to build as a hostprog instead.
+>
+> Fixes: 9762dc1432e1 ("samples: add binderfs sample program")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  samples/Kconfig           | 2 +-
+>  samples/binderfs/Makefile | 6 +++++-
+>  2 files changed, 6 insertions(+), 2 deletions(-)
+>
+> diff --git a/samples/Kconfig b/samples/Kconfig
+> index 5c31971a5745..e0b747cc90c9 100644
+> --- a/samples/Kconfig
+> +++ b/samples/Kconfig
+> @@ -171,7 +171,7 @@ config SAMPLE_VFIO_MDEV_MBOCHS
+>
+>  config SAMPLE_ANDROID_BINDERFS
+>         bool "Build Android binderfs example"
+> -       depends on CONFIG_ANDROID_BINDERFS
+> +       depends on ANDROID_BINDERFS
+>         help
+>           Builds a sample program to illustrate the use of the Android binderfs
+>           filesystem.
+> diff --git a/samples/binderfs/Makefile b/samples/binderfs/Makefile
+> index ea4c93d36256..a3ac5476338a 100644
+> --- a/samples/binderfs/Makefile
+> +++ b/samples/binderfs/Makefile
+> @@ -1,2 +1,6 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+> -obj-$(CONFIG_SAMPLE_ANDROID_BINDERFS) += binderfs_example.o
+> +ifndef CROSS_COMPILE
+> +ifdef CONFIG_SAMPLE_ANDROID_BINDERFS
+> +hostprogs := binderfs_example
+> +endif
+> +endif
+> --
+> 2.26.0
+>
 
-[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
----
-In case this is actually a 10-year old bug, then we might want
-calculate the size of caps_buf through the use of the struct_size
-helper:
 
-struct_size(caps, auth_encr_pair, 16);
+binderfs_example.c includes <linux/android/binderfs.h>.
 
-and we might also want to allocate dynamic memory instead, as we
-cannot do u8 caps_buf[struct_size(caps, auth_encr_pair, 16)];
-due to -Wvla.
+This uapi header is very new.
 
-Thanks
+include/uapi/linux/android/binderfs.h was added by
+commit c13295ad219d8bb0e47942d4cfc8251de449a67e
+i.e. Linux  5.0
+
+
+If this sample is compiled by a compiler with kernel headers
+older than Linux 5.0, it will fail to build.
+
+
+Documentation/process/changes.rst defines the minumal
+GCC version, but the minimal kernel header version
+is undefined.
+
+Is there any criteria when to add
+'-I usr/include' ?
+
+
+At least, this is this case, I think.
+
 --
-Gustavo
-
- drivers/net/wireless/rndis_wlan.c | 24 ++++++++----------------
- 1 file changed, 8 insertions(+), 16 deletions(-)
-
-diff --git a/drivers/net/wireless/rndis_wlan.c b/drivers/net/wireless/rndis_wlan.c
-index 52375f3e430a..8852a1832951 100644
---- a/drivers/net/wireless/rndis_wlan.c
-+++ b/drivers/net/wireless/rndis_wlan.c
-@@ -312,17 +312,11 @@ struct ndis_80211_assoc_info {
- 	__le32 offset_resp_ies;
- } __packed;
- 
--struct ndis_80211_auth_encr_pair {
--	__le32 auth_mode;
--	__le32 encr_mode;
--} __packed;
--
- struct ndis_80211_capability {
- 	__le32 length;
- 	__le32 version;
- 	__le32 num_pmkids;
- 	__le32 num_auth_encr_pair;
--	struct ndis_80211_auth_encr_pair auth_encr_pair[0];
- } __packed;
- 
- struct ndis_80211_bssid_info {
-@@ -3109,8 +3103,7 @@ static int rndis_wlan_get_caps(struct usbnet *usbdev, struct wiphy *wiphy)
- 		__le32	num_items;
- 		__le32	items[8];
- 	} networks_supported;
--	struct ndis_80211_capability *caps;
--	u8 caps_buf[sizeof(*caps) + sizeof(caps->auth_encr_pair) * 16];
-+	struct ndis_80211_capability caps;
- 	int len, retval, i, n;
- 	struct rndis_wlan_private *priv = get_rndis_wlan_priv(usbdev);
- 
-@@ -3140,19 +3133,18 @@ static int rndis_wlan_get_caps(struct usbnet *usbdev, struct wiphy *wiphy)
- 	}
- 
- 	/* get device 802.11 capabilities, number of PMKIDs */
--	caps = (struct ndis_80211_capability *)caps_buf;
--	len = sizeof(caps_buf);
-+	len = sizeof(caps);
- 	retval = rndis_query_oid(usbdev,
- 				 RNDIS_OID_802_11_CAPABILITY,
--				 caps, &len);
-+				 &caps, &len);
- 	if (retval >= 0) {
- 		netdev_dbg(usbdev->net, "RNDIS_OID_802_11_CAPABILITY -> len %d, "
- 				"ver %d, pmkids %d, auth-encr-pairs %d\n",
--				le32_to_cpu(caps->length),
--				le32_to_cpu(caps->version),
--				le32_to_cpu(caps->num_pmkids),
--				le32_to_cpu(caps->num_auth_encr_pair));
--		wiphy->max_num_pmkids = le32_to_cpu(caps->num_pmkids);
-+				le32_to_cpu(caps.length),
-+				le32_to_cpu(caps.version),
-+				le32_to_cpu(caps.num_pmkids),
-+				le32_to_cpu(caps.num_auth_encr_pair));
-+		wiphy->max_num_pmkids = le32_to_cpu(caps.num_pmkids);
- 	} else
- 		wiphy->max_num_pmkids = 0;
- 
--- 
-2.26.2
-
+Best Regards
+Masahiro Yamada
