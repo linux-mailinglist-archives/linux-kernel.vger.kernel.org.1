@@ -2,80 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D92C31C628D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 23:01:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C3FF1C6293
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 23:03:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729202AbgEEVB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 17:01:56 -0400
-Received: from sonic314-14.consmr.mail.bf2.yahoo.com ([74.6.132.124]:43569
-        "EHLO sonic314-14.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728076AbgEEVBz (ORCPT
+        id S1729240AbgEEVDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 17:03:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726350AbgEEVDD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 17:01:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1588712514; bh=TYgdp/zNeW9P5rVjVpFopjba7a+Fm8hxyemx2bQVZd8=; h=Date:From:Reply-To:Subject:References:From:Subject; b=TZcybDLxX4dkZhvXjiufsU35A4MzMOsgjFXidE50enOkCjQXvUuHcmWlJOBbJw3nmcARIQNrWiT9reS6H/GLVmr8B3BOGUHmjb9CaZFk1+QXxIt8jIOu+f5B19BnJUPgcSp2r1vVEL3BBMuyp0ydLdlUSf044b+5PW2flSGCWyhs+eKCXr5DYbHUoaQjhag55TFXJHBfVFsila22X/N6eC5OPTR8xK9zgOuppqBzyxdzSjYF57VOgs7tqlqiw7IgzqOBE9F8ZbNgE1wbKQP80Gsgeieed9S/iT22PKv/v92FCl+WjNwnBjtbeNZxbhKadb5efp8DEin2MQZAepv5eg==
-X-YMail-OSG: tGpajZEVM1nzAsv3uVnqTQgVa0tyz.Km7Zh92hzC2kou0zYoAbYvv8bVBdK2wwb
- J.b72zI2OqMvCp4tlcAoTQ0meVT4vxPpYs7l_ZWvdWD6V4._Gjvawk1bXr9K7oLlPmMmH2r0LVps
- 21fNpXnB64ANppoOCSF3R9KoSQnBHwV3UasL2hJga44MBot4Bbnrj5KIDR.QjbMxbXcgS0Ph2XIX
- j56OH6kO1RLvEzvMVqbLsNqbNTFzu5KUqjeFsU.HgS9iIXYfQjwnrRIB1LFG2WoPzTLMshMElXnw
- xT.3oijGyPJXtP58CPUjjinmbc6QlZNirMdXzTxZ4xD776hTfUmKHL1NNoQje2gyv2udojFZpKY4
- lWJFIUudsOCvVbb32tYwBhKr6T5UiisJr.6LvcSfQSsCnhANNcRjYRpF_3eVeH4quCgTPu3UqO9X
- HNLOogNbncOrsUf4DWzAFBBW2wSLiu6bqP1MIeB5_2F9UzCliV6e_6xb4zivKj6RNiZ7zDcmLdqi
- 5NFQg2_yuGwzIe6t3nDuoL5ZYOW.eMqPKlJoOa3fGB13RImGIUuPy2D51cm4Ww5dobAb4llIp_Yz
- Ona4kOaOcxQFh.hTgjC3Oos6wz4HyUbz9sHLq8kK6tiw7T_ofne2PO0FtVNogbQFQ8w7AdKa1qka
- 0IUga1HbgAVCVqqfzChR_KuOxaL4EjCK8y3AEd06h12BTlXVQUg4HNZz_VyXjPBwk9TgpvJoBY4A
- t1hjp6KMq5OCsxkH8rVwZqfZW11hY4w4InpiHQ7YueqDIa2WMcyqmsLV1UaetsNaT5xJ3BJsfZOJ
- BRGmktwna2JublBhkp1LIbbRCBVMAC9BWTVOpNw.O2OP7Yh2d83HsDIBXrCUHJ_vTjL4hMEFbuDk
- vAu3.NztL.JWyOlr8WYx1rwMR_avHF7CsvRo67WxymPEvxu4SVffP_bC7284IBwuM7mgUmTn8CEy
- dM2QlBhrolO4x9bFZexMfeyP40XRpGbq0grAwdI4R2lD2.qFYe1BBk0q.TBtpAP6j4TQ8B9p0_Yn
- qd8kCHjEuz9j2ZM9_eE4ZJFr7TwEcKomXd1qJOjWjAsmDOtgUMypZxiHaffIGtH_u_V1Op8m_HGO
- p2rodbVmJm4XQ2En09G2GTJMhHI0_nr4Szgm8rEb8e5jMOWvFhpP3oCt2b9Psz9ibkZVewVPlKiA
- R2Au91POdNXoATC3Eo8OQrV4Wqhh44d7RKmKcdGK9peq1PNz.dax71MYwJ9KSRA1dIG96uf0.kTT
- 5X3w1JMwQ6o4QDXWdZjXRgegzBtCKgpeOCima5rFf..a_.erKXqnGZs4mtbD1dwn63SuOhnEz6C_
- RECWKj0dm1wZKeKePhGbTm8D4TiP_
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic314.consmr.mail.bf2.yahoo.com with HTTP; Tue, 5 May 2020 21:01:54 +0000
-Date:   Tue, 5 May 2020 21:01:53 +0000 (UTC)
-From:   Mrs m compola <mmrsgrorvinte@gmail.com>
-Reply-To: mcompola444@gmail.com
-Message-ID: <1871545299.1235281.1588712513516@mail.yahoo.com>
-Subject: Dear Friend, My present internet connection is very slow in case
- you
+        Tue, 5 May 2020 17:03:03 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CD13C061A0F;
+        Tue,  5 May 2020 14:03:03 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id 18so1516282pfx.6;
+        Tue, 05 May 2020 14:03:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=I0mJ2TcquxeD51nWsq3E4nLfZAHxaYExvmCD1KmEor4=;
+        b=sCFTVHBEXnXfa1xp6uvtRZEwgsGiCG2yXlzboVYMIi9rGcWn8do+UM6d9a3dAmwkns
+         3bsgfETPukuOY6/+/YdOSBsXNbhJxoaQK3pZC9C3iDbF3eAX1Pm/8TbTtku1PFE0x6gq
+         O2rK7lV7kHPsgotN/VmJ2xhTWCu0lFjdK0rhJKPv+4DHilTAH6wHVJkCxB1FJlBZd1OF
+         /kkSTU2JUMAwR3+yJx3ZTBt4Qnq4LXiz7qj0hkJAhlAKKF9K0BHvm2Ttlc/Fio4nqxsu
+         qCGQw0yskh9H/m8rJ/bc9dGbUfRLnaxZ0Fa1jZ6KPjTqvr9at+IPe1uVcjJafSgHUpO2
+         IkPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=I0mJ2TcquxeD51nWsq3E4nLfZAHxaYExvmCD1KmEor4=;
+        b=AoGIdy4TwLbPtdcIFHNBOjPR++MtS7KZnOi6/AFbdhtEolLz1hniihAbq9nC1Vcb4+
+         StjE/0fCTM5JKvvVdHYoZSOjhUNKlTnRJf1niv76KkscJH/+pcvKLmyjxJeoR4Mrynfh
+         c39zo0S0E6AZMaWwjBifRF/FJPY5sbd1p9Y58aHnaXVzuMUZ4gbxiSrEX8hh5/8GigAg
+         v+hTqamPTBPpLEUvYQuMuMXhfWrIDuErx11Yk913V+860Jbg2YgkZxUYMqCfqyKF+mtn
+         ifFLBCxuNKj8wFIgTQi033SoodVFv3wSGcxyUHM5zLhJqkfbA0vREbQ3uCXcf6ggIPX2
+         pEQg==
+X-Gm-Message-State: AGi0PuZzFak2jAYO/RycAzguvdFIMH7vudK831uidzcMguzmF4GmnP0C
+        OgkhVG8XBwGbBr9ZlGiRI3UqkRF+
+X-Google-Smtp-Source: APiQypK1bTzKL4DMFCMy93hdHrWtgQuj+/O3stBdm+tz5wtvb683MA4JT2c7GwWBvUzkV4twPhaHvg==
+X-Received: by 2002:a63:5542:: with SMTP id f2mr4186377pgm.384.1588712581832;
+        Tue, 05 May 2020 14:03:01 -0700 (PDT)
+Received: from bender.lan (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
+        by smtp.gmail.com with ESMTPSA id s199sm2873249pfs.124.2020.05.05.14.03.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 May 2020 14:03:01 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     olteanv@gmail.com, Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [RFC net] net: dsa: Add missing reference counting
+Date:   Tue,  5 May 2020 14:02:53 -0700
+Message-Id: <20200505210253.20311-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-References: <1871545299.1235281.1588712513516.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.15756 YMailNodin Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.129 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+If we are probed through platform_data we would be intentionally
+dropping the reference count on master after dev_to_net_device()
+incremented it. If we are probed through Device Tree,
+of_find_net_device() does not do a dev_hold() at all.
 
+Ensure that the DSA master device is properly reference counted by
+holding it as soon as the CPU port is successfully initialized and later
+released during dsa_switch_release_ports(). dsa_get_tag_protocol() does
+a short de-reference, so we hold and release the master at that time,
+too.
 
-Dear Friend, My present internet connection is very slow in case you
-received my email in your spam
+Fixes: 83c0afaec7b7 ("net: dsa: Add new binding implementation")
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+ net/dsa/dsa2.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-How are you today?.With due respect to your person and much sincerity
-of purpose,Well it is a pleasure to contact you on this regard and i
-pray that this will turn out to be everlasting relationship for both
-of us. However it's just my urgent need for a Foreign partner that
-made me to contact you for this Transaction,I got your contact from
-internet, while searching for a reliable someone that I can go into
-partnership with. I am Mrs.mcompola, from BURKINA FASO, West
-Africa .Presently i work in the Bank as bill and exchange manager.
+diff --git a/net/dsa/dsa2.c b/net/dsa/dsa2.c
+index d90665b465b8..875231252ada 100644
+--- a/net/dsa/dsa2.c
++++ b/net/dsa/dsa2.c
+@@ -626,6 +626,7 @@ static enum dsa_tag_protocol dsa_get_tag_protocol(struct dsa_port *dp,
+ 	 * happens the switch driver may want to know if its tagging protocol
+ 	 * is going to work in such a configuration.
+ 	 */
++	dev_hold(master);
+ 	if (dsa_slave_dev_check(master)) {
+ 		mdp = dsa_slave_to_port(master);
+ 		mds = mdp->ds;
+@@ -633,6 +634,7 @@ static enum dsa_tag_protocol dsa_get_tag_protocol(struct dsa_port *dp,
+ 		tag_protocol = mds->ops->get_tag_protocol(mds, mdp_upstream,
+ 							  DSA_TAG_PROTO_NONE);
+ 	}
++	dev_put(master);
+ 
+ 	/* If the master device is not itself a DSA slave in a disjoint DSA
+ 	 * tree, then return immediately.
+@@ -657,6 +659,7 @@ static int dsa_port_parse_cpu(struct dsa_port *dp, struct net_device *master)
+ 		return PTR_ERR(tag_ops);
+ 	}
+ 
++	dev_hold(master);
+ 	dp->master = master;
+ 	dp->type = DSA_PORT_TYPE_CPU;
+ 	dp->filter = tag_ops->filter;
+@@ -858,6 +861,8 @@ static void dsa_switch_release_ports(struct dsa_switch *ds)
+ 		if (dp->ds != ds)
+ 			continue;
+ 		list_del(&dp->list);
++		if (dsa_port_is_cpu(dp))
++			dev_put(dp->master);
+ 		kfree(dp);
+ 	}
+ }
+-- 
+2.20.1
 
-I have the opportunity of transferring the left over fund $5.4 Million
-us dollars of one of my Bank clients who died in the collapsing of the
-world trade center on september 11th 2001.I have placed this fund to
-and escrow account without name of beneficiary.i will use my position
-here in the bank to effect a hitch free transfer of the fund to your
-bank account and there will be no trace.
-
-I agree that 40% of this money will be for you as my foriegn
-partner,50% for me while 10% will be for the expenses that will occur
-in this transaction .If you are really interested in my proposal
-further details of the Transfer will be forwarded unto you as soon as
-I receive your willingness mail for successful transfer.
-
-Yours Faithfully,
-Mrs.mcompola444@gmail.com
