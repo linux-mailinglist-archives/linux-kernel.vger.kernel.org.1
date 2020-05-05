@@ -2,139 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1939D1C58BC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1D901C5792
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 15:56:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730390AbgEEORs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:17:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730286AbgEEORQ (ORCPT
+        id S1729200AbgEEN4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 09:56:07 -0400
+Received: from mout.kundenserver.de ([212.227.17.10]:57651 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729040AbgEEN4G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:17:16 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B81EC061A10
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:17:16 -0700 (PDT)
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jVyNX-0002gB-DZ; Tue, 05 May 2020 16:16:59 +0200
-Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id E92111001F5;
-        Tue,  5 May 2020 16:16:58 +0200 (CEST)
-Message-Id: <20200505135831.175237951@linutronix.de>
-User-Agent: quilt/0.65
-Date:   Tue, 05 May 2020 15:54:12 +0200
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Tue, 5 May 2020 09:56:06 -0400
+Received: from localhost.localdomain ([149.172.19.189]) by
+ mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1MAxPb-1jP4Hl36TZ-00BIW3; Tue, 05 May 2020 15:55:56 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>
-Subject: [patch V4 part 5 31/31] x86/entry: Remove the TRACE_IRQS cruft
-References: <20200505135341.730586321@linutronix.de>
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: [PATCH] bitops: avoid clang shift-count-overflow warnings
+Date:   Tue,  5 May 2020 15:54:57 +0200
+Message-Id: <20200505135513.65265-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:BiSQj1YLbY/CRWKicFaaFMBElVVvRY9U5E+P2ZVt/EQnQS7Iiz8
+ 5s17kUqWTn8PdXT8cr1iN7ynO0bvtGxc9R2tF19Z7ZcKg1HtUXsHwB75LIm2d6fGNJKaHOF
+ Y9c/7XJQ7nvzhPkdl7XHpTsbgxlO267dmTtvSigxCbHiiuiay3zpEdmMi1Av2QbsIadoAlX
+ DBV4/H6YDAcF4cdvJvi3w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:xJB1mQosZZc=:uTAUDwbFciv0vIToh8Se3v
+ u66nD+WooNufSWVYPx6EP0Dv45Item0Y82oh57iB6ENOrVQDUM1efgqIG3nbYrG9GsNDRXylo
+ ufQOqnJH36rTqYbhUB7r/8JAJaDxrr6j0AOY16mYQ/2Cn4WfFtRZsHfmSw7qU+YnTINVurqec
+ G2JurhcjR2+DsN7JrrFcrwmo5/qhAAKcQAhLuXcJGs61b0ddEF6dUfMf/dirOZKtEY6lECheE
+ RsIfztgIapkSvP+YOirMiytEXFpYIMwy385AgTALgyfiRCojACKrxU8SW10H0OAhgpstZGM8X
+ DkmqMU9qvdlxQJfna4tV4Sy/7CNkRhP3Fl6U8uCoFDUKpNYrGZz9bmABS0XVpEmTpw3tEk22g
+ BbORpLZ0VICrmi29qkTrZW7L/QUoAivPh6HVoISVb4iCOx9YYO6VZ+gxhiT+MrAMBjx80MToX
+ qgdtEH5b6QUthnpdXdznxraGaDmgnrJwfcpiMP+RMpfsBvCbwUoH36RWNrPLZcMgTqloKV48t
+ gkCTFbfB4eSATJPghVICy08UQhH3rp/HsQyR/nHEJ0YNVjPECgzuaHoO2/JTRGdPNIusFr2VS
+ psar5BZRBbt/WwlE8CzNc6jiFX0anczwdblziFl1n0WDMrkh8oB3CiUqY74ityD0G1/J8lOKu
+ LhtuPCd3puiOHQrdicXCRHxt5SLoBhJ3a0oGP8EWe8+4k557leFT2Zs0WogRpiFJCfqH0LCc9
+ d1WczhTSThLBUYzRYCRpy2BTWtTe+iDNrjJfE0g2Up70ncAC3kOkEA4cT4HsUiLxctLuIfJMm
+ fDf63ut2/+mk2uTnmMgR0RzgP+B7wdpgd74N8ePkSg2mdC/5FQ=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No more users.
+Clang normally does not warn about certain issues in inline functions when
+it only happens in an eliminated code path. However if something else
+goes wrong, it does tend to complain about the definition of hweight_long()
+on 32-bit targets:
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+include/linux/bitops.h:75:41: error: shift count >= width of type [-Werror,-Wshift-count-overflow]
+        return sizeof(w) == 4 ? hweight32(w) : hweight64(w);
+                                               ^~~~~~~~~~~~
+include/asm-generic/bitops/const_hweight.h:29:49: note: expanded from macro 'hweight64'
+ define hweight64(w) (__builtin_constant_p(w) ? __const_hweight64(w) : __arch_hweight64(w))
+                                                ^~~~~~~~~~~~~~~~~~~~
+include/asm-generic/bitops/const_hweight.h:21:76: note: expanded from macro '__const_hweight64'
+ define __const_hweight64(w) (__const_hweight32(w) + __const_hweight32((w) >> 32))
+                                                                           ^  ~~
+include/asm-generic/bitops/const_hweight.h:20:49: note: expanded from macro '__const_hweight32'
+ define __const_hweight32(w) (__const_hweight16(w) + __const_hweight16((w) >> 16))
+                                                ^
+include/asm-generic/bitops/const_hweight.h:19:72: note: expanded from macro '__const_hweight16'
+ define __const_hweight16(w) (__const_hweight8(w)  + __const_hweight8((w)  >> 8 ))
+                                                                       ^
+include/asm-generic/bitops/const_hweight.h:12:9: note: expanded from macro '__const_hweight8'
+          (!!((w) & (1ULL << 2))) +     \
+
+Adding an explicit cast to __u64 avoids that warning and makes it easier
+to read other output.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/x86/entry/entry_64.S       |   13 -------------
- arch/x86/entry/thunk_64.S       |    9 +--------
- arch/x86/include/asm/irqflags.h |   10 ----------
- 3 files changed, 1 insertion(+), 31 deletions(-)
+ include/linux/bitops.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -53,19 +53,6 @@ SYM_CODE_START(native_usergs_sysret64)
- SYM_CODE_END(native_usergs_sysret64)
- #endif /* CONFIG_PARAVIRT */
+diff --git a/include/linux/bitops.h b/include/linux/bitops.h
+index 9acf654f0b19..99f2ac30b1d9 100644
+--- a/include/linux/bitops.h
++++ b/include/linux/bitops.h
+@@ -72,7 +72,7 @@ static inline int get_bitmask_order(unsigned int count)
  
--.macro TRACE_IRQS_FLAGS flags:req
--#ifdef CONFIG_TRACE_IRQFLAGS
--	btl	$9, \flags		/* interrupts off? */
--	jnc	1f
--	TRACE_IRQS_ON
--1:
--#endif
--.endm
--
--.macro TRACE_IRQS_IRETQ
--	TRACE_IRQS_FLAGS EFLAGS(%rsp)
--.endm
--
- /*
-  * 64-bit SYSCALL instruction entry. Up to 6 arguments in registers.
-  *
---- a/arch/x86/entry/thunk_64.S
-+++ b/arch/x86/entry/thunk_64.S
-@@ -3,7 +3,6 @@
-  * Save registers before calling assembly functions. This avoids
-  * disturbance of register allocation in some inline assembly constructs.
-  * Copyright 2001,2002 by Andi Kleen, SuSE Labs.
-- * Added trace_hardirqs callers - Copyright 2007 Steven Rostedt, Red Hat, Inc.
-  */
- #include <linux/linkage.h>
- #include "calling.h"
-@@ -70,11 +69,6 @@ SYM_FUNC_START_NOALIGN(\name)
- SYM_FUNC_END(\name)
- 	.endm
- 
--#ifdef CONFIG_TRACE_IRQFLAGS
--	THUNK trace_hardirqs_on_thunk,trace_hardirqs_on_caller, put_ret_addr_in_rdi=1
--	THUNK trace_hardirqs_off_thunk,trace_hardirqs_off_caller, put_ret_addr_in_rdi=1
--#endif
--
- #ifdef CONFIG_PREEMPTION
- 	THUNK preempt_schedule_thunk, preempt_schedule
- 	EXPORT_SYMBOL(preempt_schedule_thunk)
-@@ -83,8 +77,7 @@ SYM_FUNC_END(\name)
- 	EXPORT_SYMBOL(preempt_schedule_notrace_thunk)
- #endif
- 
--#if defined(CONFIG_TRACE_IRQFLAGS) \
-- || defined(CONFIG_PREEMPTION)
-+#ifdef CONFIG_PREEMPTION
- SYM_CODE_START_LOCAL_NOALIGN(.L_restore)
- 	popq %r11
- 	popq %r10
---- a/arch/x86/include/asm/irqflags.h
-+++ b/arch/x86/include/asm/irqflags.h
-@@ -171,14 +171,4 @@ static inline int arch_irqs_disabled(voi
+ static __always_inline unsigned long hweight_long(unsigned long w)
+ {
+-	return sizeof(w) == 4 ? hweight32(w) : hweight64(w);
++	return sizeof(w) == 4 ? hweight32(w) : hweight64((__u64)w);
  }
- #endif /* !__ASSEMBLY__ */
  
--#ifdef __ASSEMBLY__
--#ifdef CONFIG_TRACE_IRQFLAGS
--#  define TRACE_IRQS_ON		call trace_hardirqs_on_thunk;
--#  define TRACE_IRQS_OFF	call trace_hardirqs_off_thunk;
--#else
--#  define TRACE_IRQS_ON
--#  define TRACE_IRQS_OFF
--#endif
--#endif /* __ASSEMBLY__ */
--
- #endif
+ /**
+-- 
+2.26.0
 
