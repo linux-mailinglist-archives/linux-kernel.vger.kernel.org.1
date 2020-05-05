@@ -2,86 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 506F31C5AA5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:10:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 850AD1C5AB3
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:11:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730192AbgEEPKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 11:10:07 -0400
-Received: from foss.arm.com ([217.140.110.172]:42940 "EHLO foss.arm.com"
+        id S1729854AbgEEPLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 11:11:42 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:2490 "EHLO rere.qmqm.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729349AbgEEPKG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 11:10:06 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5E3BA1FB;
-        Tue,  5 May 2020 08:10:03 -0700 (PDT)
-Received: from [10.37.8.251] (unknown [10.37.8.251])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 38A083F68F;
-        Tue,  5 May 2020 08:10:02 -0700 (PDT)
-Subject: Re: [PATCH v2 0/4] kselftest: Extend vDSO tests
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>
-References: <20200429112834.24908-1-vincenzo.frascino@arm.com>
- <CAK8P3a3u05wF1DT3Wnvmapc0jixu+gp_YG=KTEN9-n4JedJ9BA@mail.gmail.com>
- <b9b313b5-697e-b92e-1aca-7ad07a640a03@arm.com>
- <CAK8P3a0hUG3-21=HCrxxjQSxFJsDBu704NQCiOW6jNpZV5Ns8w@mail.gmail.com>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <e59bd06b-188c-c3c4-859e-3ced3ea0bb69@arm.com>
-Date:   Tue, 5 May 2020 16:11:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1729359AbgEEPLl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 11:11:41 -0400
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 49GjqZ4kvgz8r;
+        Tue,  5 May 2020 17:11:38 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1588691499; bh=69YTMc1MT+A51zlzuZgEqvLApEm0SUOq8lZn3zUGa1o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ch3UdGqN0/ZNnxEIoAdn1qKmaKIi19O8LiOzfkzYLvn4N9JBmC1/WgmbXS9f+rXhY
+         hcvAONABtpJL06SefZFiR6dlapNx4l0Ex7I/iBH8dYxZSdjiypnpM6rju/B1F7scKV
+         3gowWo4YCh8U64WW8y0eoI4RMaGyUu1+JiIXeMSQKuIEhi5oJAJZw894VM/B4Dd3Fe
+         AtKmRkMRLmSIkBKi19ajuzEb9BH83KjzvDUKEmi7Bihze21QH9QkbqNlQJF0+vbLx8
+         Xd6hYZoj41Pwxcp7/81xc+Dyav4CftyztWsag+lmxrkLcyaAH9X4lp1MctIUX5+cwY
+         JqDN2BXXiUCWA==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+Date:   Tue, 5 May 2020 17:11:36 +0200
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        David Heidelberg <david@ixit.cz>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Stephen Warren <swarren@wwwdotorg.org>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Pedro =?iso-8859-2?Q?=C2ngelo?= <pangelo@void.io>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Zack Pearsall <zpearsall@yahoo.com>,
+        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 0/6] Support NVIDIA Tegra-based Acer A500 and Nexus 7
+ devices
+Message-ID: <20200505151136.GA26776@qmqm.qmqm.pl>
+References: <20200505022517.30523-1-digetx@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a0hUG3-21=HCrxxjQSxFJsDBu704NQCiOW6jNpZV5Ns8w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200505022517.30523-1-digetx@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+On Tue, May 05, 2020 at 05:25:11AM +0300, Dmitry Osipenko wrote:
+> Hello,
+> 
+> This series introduces upstream kernel support for Acer Iconia Tab A500
+> and ASUS Google Nexus 7 tablet devices. Please review and apply, thanks
+> in advance.
+> 
+> Changelog:
+> 
+> v7: - This version brings support for a Nexus 7 variant that uses Ti PMIC
+>       instead of the Maxim PMIC. Previously we assumed that variant with
+>       the Ti PMIC doesn't exist in a wild, but turned out that it was a
+>       wrong assumption. In a result the device-trees are separated into
+>       more DTSI pieces, which combined together form the final device-tree.
+>       Thanks to Zack Pearsall for testing the Ti version!
+[...]
 
-On 5/5/20 4:07 PM, Arnd Bergmann wrote:
-> On Tue, May 5, 2020 at 5:03 PM Vincenzo Frascino
-> <vincenzo.frascino@arm.com> wrote:
->> On 5/5/20 3:50 PM, Arnd Bergmann wrote:
->>> On Wed, Apr 29, 2020 at 1:34 PM Vincenzo Frascino <vincenzo.frascino@arm.com> wrote:
->>>
->>> Not sure if you are aware of the recent bug report about clock_gettime64()
->>> returning invalid times on some arm32 kernels:
->>> https://github.com/raspberrypi/linux/issues/3579
->>>
->>
->> No, I was not aware of the problem. There has been no mention on the arm list
->> (unless I missed it). I can try to have a look at it as soon as I get some time.
-> 
-> Right, it was on only on the musl list, and I had pinged you on IRC, but you
-> must have been offline.
-> 
+Hi Dmitry!
 
-Sorry about that, I did not get your message :( The only thing I can think it is
-that if it was last to last week, I was on holiday... Anyway thanks for pointing
-this out.
+This Ti-based (PM269) version might be very similar to Asus TF300T I have.
+I'll have a look on your DT during the weekend.
 
->>> Regardless of when that gets fixed or by whom, I wonder if kselftest should
->>> also check for consistency, i.e. call both the vdso and the syscall version of
->>> clock_gettime() and clock_gettime64() and check that the results are always
->>> in sequence.
->>>
->>
->> The test #4 partially does that: it calls syscall-vdso-syscall and verifies that
->> the sequencing is correct. I reused the x86 code for that. I could extend it to
->> clock_gettime64() and make sure it builds on all the platforms.
-> 
-> Sounds good to me.
-> 
->        Arnd
-> 
-
--- 
-Regards,
-Vincenzo
+Best Regards,
+Micha³ Miros³aw
