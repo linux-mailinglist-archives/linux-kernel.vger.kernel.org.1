@@ -2,96 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E0841C6065
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 20:46:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D72C1C6102
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 21:27:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728916AbgEESqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 14:46:50 -0400
-Received: from mga04.intel.com ([192.55.52.120]:12607 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727857AbgEESqt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 14:46:49 -0400
-IronPort-SDR: Nrie9m902qG7hC7UmYGycGsmH0Qp7VeJoRUntPyZI2AJgzgmetUAQNqAWGtQnLRCs9J4IK0oOE
- PEBRvwkNwhRg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2020 11:46:49 -0700
-IronPort-SDR: Zl0erL2P/LHcga8DoFAsH/CBgpruycTzPlOtKFEzODlGgqHhZIIT3uUrhepGIon31y4mixTlSb
- lu6PfPfsVO/Q==
-X-IronPort-AV: E=Sophos;i="5.73,356,1583222400"; 
-   d="scan'208";a="461495172"
-Received: from agluck-desk2.sc.intel.com ([10.3.52.68])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2020 11:46:49 -0700
-From:   Tony Luck <tony.luck@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Tony Luck <tony.luck@intel.com>, Jue Wang <juew@google.com>,
-        Dan Williams <dan.j.williams@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] x86/mm: Don't try to change poison pages to uncacheable in a guest
-Date:   Tue,  5 May 2020 11:46:48 -0700
-Message-Id: <20200505184648.2264-1-tony.luck@intel.com>
-X-Mailer: git-send-email 2.21.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1728810AbgEET1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 15:27:12 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:56385
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726350AbgEET1L (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 15:27:11 -0400
+X-IronPort-AV: E=Sophos;i="5.73,356,1583190000"; 
+   d="scan'208";a="347819655"
+Received: from palace.rsr.lip6.fr (HELO palace.lip6.fr) ([132.227.105.202])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/AES256-SHA256; 05 May 2020 21:27:09 +0200
+From:   Julia Lawall <Julia.Lawall@inria.fr>
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     kernel-janitors@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
+        virtualization@lists.linux-foundation.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        eugene.volanschi@inria.fr
+Subject: [PATCH] iommu/virtio: reverse arguments to list_add
+Date:   Tue,  5 May 2020 20:47:47 +0200
+Message-Id: <1588704467-13431-1-git-send-email-Julia.Lawall@inria.fr>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-An interesting thing happened when a guest Linux instance took
-a machine check. The VMM unmapped the bad page from guest physical
-space and passed the machine check to the guest.
+Elsewhere in the file, there is a list_for_each_entry with
+&vdev->resv_regions as the second argument, suggesting that
+&vdev->resv_regions is the list head.  So exchange the
+arguments on the list_add call to put the list head in the
+second argument.
 
-Linux took all the normal actions to offline the page from the process
-that was using it. But then guest Linux crashed because it said there
-was a second machine check inside the kernel with this stack trace:
+Fixes: 2a5a31487445 ("iommu/virtio: Add probe request")
+Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
 
-do_memory_failure
-    set_mce_nospec
-         set_memory_uc
-              _set_memory_uc
-                   change_page_attr_set_clr
-                        cpa_flush
-                             clflush_cache_range_opt
-
-This was odd, because a CLFLUSH instruction shouldn't raise a machine
-check (it isn't consuming the data). Further investigation showed that
-the VMM had passed in another machine check because is appeared that the
-guest was accessing the bad page.
-
-Fix is to check whether Linux is running as a guest. If it is, there is no
-point in trying to change the cache mode of the bad page. The VMM has taken
-the whole page away.
-
-Reported-by: Jue Wang <juew@google.com>
-Tested-by: Jue Wang <juew@google.com>
-Fixes: 284ce4011ba6 ("x86/memory_failure: Introduce {set, clear}_mce_nospec()")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Tony Luck <tony.luck@intel.com>
 ---
- arch/x86/include/asm/set_memory.h | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/iommu/virtio-iommu.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/include/asm/set_memory.h b/arch/x86/include/asm/set_memory.h
-index ec2c0a094b5d..e8b7e8a82d7a 100644
---- a/arch/x86/include/asm/set_memory.h
-+++ b/arch/x86/include/asm/set_memory.h
-@@ -91,6 +91,14 @@ static inline int set_mce_nospec(unsigned long pfn)
- 	unsigned long decoy_addr;
- 	int rc;
+diff --git a/drivers/iommu/virtio-iommu.c b/drivers/iommu/virtio-iommu.c
+index d5cac4f46ca5..4e1d11af23c8 100644
+--- a/drivers/iommu/virtio-iommu.c
++++ b/drivers/iommu/virtio-iommu.c
+@@ -453,7 +453,7 @@ static int viommu_add_resv_mem(struct viommu_endpoint *vdev,
+ 	if (!region)
+ 		return -ENOMEM;
  
-+	/*
-+	 * If we are running as a guest, then the hypervisor
-+	 * will have removed all access from the page. So no
-+	 * point trying to make it uncacheable
-+	 */
-+	if (boot_cpu_has(X86_FEATURE_HYPERVISOR))
-+		return 0;
-+
- 	/*
- 	 * Mark the linear address as UC to make sure we don't log more
- 	 * errors because of speculative access to the page.
--- 
-2.21.1
+-	list_add(&vdev->resv_regions, &region->list);
++	list_add(&region->list, &vdev->resv_regions);
+ 	return 0;
+ }
+ 
 
