@@ -2,170 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDA4E1C6208
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 22:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9CA81C6219
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 22:32:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729279AbgEEU2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 16:28:33 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:27508 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728853AbgEEU2d (ORCPT
+        id S1729146AbgEEUcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 16:32:19 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:58654 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726350AbgEEUcS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 16:28:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588710511;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lsuCFXl/9WOx+SBnmB7pmiseEGcoxnWbSyyl0YYGeOg=;
-        b=M3vEo/vWgu9TQ1vOhcB9XNxX68jxHxpt9zX6SM756H3eBI23riTUsyMqwFo5wdQoQPqWNR
-        G4PhlDyfoeHbNcP+nh2nNdnIE/BaA3dkpBKqG8xaqpYqBrvawm+fqm8X8snWhvGOSdQFyP
-        L/uWvI163bpOqigQU0thVdfRMxlrfcg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-119-P4G-wqi_OwKaMgqGSpAdZg-1; Tue, 05 May 2020 16:28:29 -0400
-X-MC-Unique: P4G-wqi_OwKaMgqGSpAdZg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0BC56100CCC2;
-        Tue,  5 May 2020 20:28:28 +0000 (UTC)
-Received: from treble (ovpn-119-47.rdu2.redhat.com [10.10.119.47])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6F06319C58;
-        Tue,  5 May 2020 20:28:25 +0000 (UTC)
-Date:   Tue, 5 May 2020 15:28:23 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] bpf: Tweak BPF jump table optimizations for objtool
- compatibility
-Message-ID: <20200505202823.zkmq6t55fxspqazk@treble>
-References: <b581438a16e78559b4cea28cf8bc74158791a9b3.1588273491.git.jpoimboe@redhat.com>
- <20200501190930.ptxyml5o4rviyo26@ast-mbp.dhcp.thefacebook.com>
- <20200501192204.cepwymj3fln2ngpi@treble>
- <20200501194053.xyahhknjjdu3gqix@ast-mbp.dhcp.thefacebook.com>
- <20200501195617.czrnfqqcxfnliz3k@treble>
- <20200502030622.yrszsm54r6s6k6gq@ast-mbp.dhcp.thefacebook.com>
- <20200502192105.xp2osi5z354rh4sm@treble>
- <20200505174300.gech3wr5v6kkho35@ast-mbp.dhcp.thefacebook.com>
- <20200505181108.hwcqanvw3qf5qyxk@treble>
- <20200505195320.lyphpnprn3sjijf6@ast-mbp.dhcp.thefacebook.com>
+        Tue, 5 May 2020 16:32:18 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jW4Eh-0006W8-CV; Tue, 05 May 2020 14:32:15 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jW4Ef-0006JU-Rg; Tue, 05 May 2020 14:32:15 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jeremy Kerr <jk@ozlabs.org>, Arnd Bergmann <arnd@arndb.de>,
+        Oleg Nesterov <oleg@redhat.com>,
+        "the arch\/x86 maintainers" <x86@kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200505101256.3121270-1-hch@lst.de>
+        <CAHk-=wgrHhaM1XCB=E3Zp2Br8E5c_kmVUTd5y06xh5sev5nRMA@mail.gmail.com>
+Date:   Tue, 05 May 2020 15:28:50 -0500
+In-Reply-To: <CAHk-=wgrHhaM1XCB=E3Zp2Br8E5c_kmVUTd5y06xh5sev5nRMA@mail.gmail.com>
+        (Linus Torvalds's message of "Tue, 5 May 2020 09:52:04 -0700")
+Message-ID: <877dxqgm7x.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200505195320.lyphpnprn3sjijf6@ast-mbp.dhcp.thefacebook.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain
+X-XM-SPF: eid=1jW4Ef-0006JU-Rg;;;mid=<877dxqgm7x.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19LmJDSmWFKMWb2UuEaurqQBJ8BfhbCMgQ=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4975]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa08 0; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: ; sa08 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Linus Torvalds <torvalds@linux-foundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 983 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 13 (1.3%), b_tie_ro: 11 (1.1%), parse: 0.73
+        (0.1%), extract_message_metadata: 13 (1.4%), get_uri_detail_list: 2.0
+        (0.2%), tests_pri_-1000: 6 (0.6%), tests_pri_-950: 1.29 (0.1%),
+        tests_pri_-900: 1.07 (0.1%), tests_pri_-90: 219 (22.3%), check_bayes:
+        204 (20.7%), b_tokenize: 7 (0.7%), b_tok_get_all: 10 (1.0%),
+        b_comp_prob: 3.2 (0.3%), b_tok_touch_all: 179 (18.2%), b_finish: 1.39
+        (0.1%), tests_pri_0: 200 (20.4%), check_dkim_signature: 0.45 (0.0%),
+        check_dkim_adsp: 2.5 (0.3%), poll_dns_idle: 505 (51.4%), tests_pri_10:
+        1.93 (0.2%), tests_pri_500: 524 (53.3%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: remove set_fs calls from the coredump code v6
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 05, 2020 at 12:53:20PM -0700, Alexei Starovoitov wrote:
-> On Tue, May 05, 2020 at 01:11:08PM -0500, Josh Poimboeuf wrote:
-> > On Tue, May 05, 2020 at 10:43:00AM -0700, Alexei Starovoitov wrote:
-> > > > Or, if you want to minimize the patch's impact on other arches, and keep
-> > > > the current patch the way it is (with bug fixed and changed patch
-> > > > description), that's fine too.  I can change the patch description
-> > > > accordingly.
-> > > > 
-> > > > Or if you want me to measure the performance impact of the +40% code
-> > > > growth, and *then* decide what to do, that's also fine.  But you'd need
-> > > > to tell me what tests to run.
-> > > 
-> > > I'd like to minimize the risk and avoid code churn,
-> > > so how about we step back and debug it first?
-> > > Which version of gcc are you using and what .config?
-> > > I've tried:
-> > > Linux version 5.7.0-rc2 (gcc version 10.0.1 20200505 (prerelease) (GCC)
-> > > CONFIG_UNWINDER_ORC=y
-> > > # CONFIG_RETPOLINE is not set
-> > > 
-> > > and objtool didn't complain.
-> > > I would like to reproduce it first before making any changes.
-> > 
-> > Revert
-> > 
-> >   3193c0836f20 ("bpf: Disable GCC -fgcse optimization for ___bpf_prog_run()")
-> > 
-> > and compile with retpolines off (and either ORC or FP, doesn't matter).
-> > 
-> > I'm using GCC 9.3.1:
-> > 
-> >   kernel/bpf/core.o: warning: objtool: ___bpf_prog_run()+0x8dc: sibling call from callable instruction with modified stack frame
-> > 
-> > That's the original issue described in that commit.
-> 
-> I see something different.
-> With gcc 8, 9, and 10 and CCONFIG_UNWINDER_FRAME_POINTER=y
-> I see:
-> kernel/bpf/core.o: warning: objtool: ___bpf_prog_run()+0x4837: call without frame pointer save/setup
-> and sure enough assembly code for ___bpf_prog_run does not countain frame setup
-> though -fno-omit-frame-pointer flag was passed at command line.
-> Then I did:
-> static u64 /*__no_fgcse*/ ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
-> and the assembly had proper frame, but objtool wasn't happy:
-> kernel/bpf/core.o: warning: objtool: ___bpf_prog_run()+0x480a: sibling call from callable instruction with modified stack frame
-> 
-> gcc 6.3 doesn't have objtool warning with and without -fno-gcse.
-> 
-> Looks like we have two issues here.
-> First gcc 8, 9 and 10 have a severe bug with __attribute__((optimize("")))
-> In this particular case passing -fno-gcse somehow overruled -fno-omit-frame-pointer
-> which is serious issue. powerpc is using __nostackprotector. I don't understand
-> how it can keep working with newer gcc-s. May be got lucky.
-> Plenty of other projects use various __attribute__((optimize("")))
-> they all have to double check that their vesion of GCC produces correct code.
-> Can somebody reach out to gcc folks for explanation?
+Linus Torvalds <torvalds@linux-foundation.org> writes:
 
-Right.  I've mentioned this several times now.  That's why my patch
-reverts 3193c0836f20.  I don't see any other way around it.  The GCC
-manual even says this attribute should not be used in production code.
+> On Tue, May 5, 2020 at 3:13 AM Christoph Hellwig <hch@lst.de> wrote:
+>>
+>> this series gets rid of playing with the address limit in the exec and
+>> coredump code.  Most of this was fairly trivial, the biggest changes are
+>> those to the spufs coredump code.
+>
+> Ack, nice, and looks good.
+>
+> The only part I dislike is how we have that 'struct compat_siginfo' on
+> the stack, which is a huge waste (most of it is the nasty padding to
+> 128 bytes).
+>
+> But that's not new, I only reacted to it because the code moved a bit.
+> We cleaned up the regular siginfo to not have the padding in the
+> kernel (and by "we" I mean "Eric Biederman did it after some prodding
+> as part of his siginfo cleanups" - see commit 4ce5f9c9e754 "signal:
+> Use a smaller struct siginfo in the kernel"),  and I wonder if we
+> could do something similar with that compat thing.
+>
+> 128 bytes of wasted kernel stack isn't the end of the world, but it's
+> sad when the *actual* data is only 32 bytes or so.
 
-> The second objtool issue is imo minor one. It can be worked around for now
-> and fixed for real later.
+We probably can.   After introducing a kernel_compat_siginfo that is
+the size that userspace actually would need.
 
-Ok, so keep the patch like v1 (but with the bug fixed)?  Or did you want
-to get rid of 'goto select_insn' altogether?
+It isn't something I want to mess with until this code gets merged, as I
+think the set_fs cleanups are more important.
 
-> > > Also since objtool cannot follow the optimizations compiler is doing
-> > > how about admit the design failure and teach objtool to build ORC
-> > > (and whatever else it needs to build) based on dwarf for the functions where
-> > > it cannot understand the assembly code ?
-> > > Otherwise objtool will forever be playing whackamole with compilers.
-> > 
-> > I agree it's not a good long term approach.  But DWARF has its own
-> > issues and we can't rely on it for live patching.
-> 
-> Curious what is the issue with dwarf and live patching ?
-> I'm sure dwarf is enough to build ORC tables.
 
-DWARF is a best-effort thing, but for live patching, unwinding has to be
-100% accurate.
+Christoph made some good points about how ugly the #ifdefs are in
+the generic copy_siginfo_to_user32 implementation.
 
-For assembly code it was impossible to keep all the DWARF CFI
-annotations always up to date and to ensure they were correct.
+I am thinking the right fix is to introduce.
+	- TS_X32 as a companion to TS_COMPAT in the x86_64.
+        - Modify in_x32_syscall() to test TS_X32
+        - Implement x32_copy_siginfo_to_user32 that forces TS_X32 to be
+          set. AKA:
+        
+	        x32_copy_siginfo_to_user32()
+	        {
+	        	unsigned long state = current_thread_info()->state;
+	                current_thread_info()->state |= TS_X32;
+	                copy_siginfo_to_user32();
+	                current_thread_info()->state = state;
+	        }
 
-Even for C code there were DWARF problems with inline asm, alternatives
-patching, jump labels, etc.
+That would make the #ifdefs go away, but I don't yet know what the x86
+maintainers would say about that scheme.  I think it is a good path as
+it would isolate the runtime cost of that weird SIGCHLD siginfo format
+to just x32.  Then ia32 in compat mode would not need to pay.
 
-> > As I mentioned we have a plan to use a compiler plugin to annotate jump
-> > tables (including GCC switch tables).  But the approach taken by this
-> > patch should be good enough for now.
-> 
-> I don't have gcc 7 around. Could you please test the workaround with gcc 7,8,9,10
-> and several clang versions? With ORC and with FP ? and retpoline on/off ?
-> I don't see any issues with ORC=y. objtool complains with FP=y only for my configs.
-> I want to make sure the workaround is actually effective.
+Once I get that then it will be easier to introduce a yet another helper
+of copy_siginfo_to_user32 that generates just the kernel_compat_siginfo
+part, and the two visible derivatives can call memset and clear_user
+to clear the unset parts.
 
-Again, if you revert 3193c0836f20, you will see the issue...
+I am assuming you don't don't mind having a full siginfo in
+elf_note_info that ultimately gets copied into the core dump?
 
-I can certainly test on the matrix of compilers/configs you suggested.
-
--- 
-Josh
-
+Eric
