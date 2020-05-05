@@ -2,131 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EEEF1C577E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 15:53:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A2461C58DB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729133AbgEENxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 09:53:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45320 "EHLO
+        id S1729872AbgEEOS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:18:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728965AbgEENxu (ORCPT
+        by vger.kernel.org with ESMTP id S1730144AbgEEOQi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 09:53:50 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2DD0C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 06:53:50 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id x15so920730pfa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 06:53:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=QJU1rgdyR3dsjV2URMfZxPtiLnMEVx7zziz4YW88wtc=;
-        b=I9RO3pgjGmr1FZpr0FwTzwdMQZjnnQ/wVjovFIecF1T58ixbSFm2fJTWOqsJQ+QiHg
-         OyJFLLZyE5MrODJ7pAmAy3cKW7fO7d9SZOH8/p55bXqM1ySA0LLe6GZ4LP9nHsoIhRBI
-         5TqYq3nNSBYoL+U8t/9YNBd2CVnf/oW0AKwN9Aj+dI0UVFEMsiM5iLDXSMIyiSyA0h7+
-         C6kWDkjUSP+ebxyGtTmhkRcALPduflyZwo1on3TtMGHfANUKwPXUSFUZt8NoZWV5s45v
-         aSCOBUSupfNy1R/dN+O+5R0A4/Uc0YEUHBDJDnAcYaXZGx9D7Qt2Q1Z90tIDjrRTWhAH
-         tFcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=QJU1rgdyR3dsjV2URMfZxPtiLnMEVx7zziz4YW88wtc=;
-        b=rz5VPNGgYxw4HxpF3uKYCjW874TjPD4P1HjaasZrbKofmvmjL8m45e2yOS2OwTDrsy
-         fP+LkeRJyetPZm2H1njGbgF2PoGd2IRjY4TBgam8zplgsNpNyCbxf4fRt8/XO0Pw0m5Z
-         zz8FnJDJku8dRYsFzCXcBOcKFuMHcP16TIoP0xvWtdDjwI2DMtwX99pDqV/QHGUnNCyY
-         MrN8VJqjj9kikZhnqJ94SX77P2HgBhIVwT4kChhMiVWxa351A1R7d2aXVJ9ci8HvE4Iu
-         PP1m6wK5bAdz9BWOfQGjRKeN23wd10TzktzPSOMPtKUp2c1ZoqdkTVvF+JtRqFZORR+X
-         w/tw==
-X-Gm-Message-State: AGi0PuYTEbgdQCzM9fERGh/Hc8/4Gtk0/jaQnyS8lTnF7z/jcxoYFpLw
-        benOgGySwtufDYuApdplVxlLq4ZvTNHYUQ==
-X-Google-Smtp-Source: APiQypJTpVbLFJfbC4pTfe+3bRqpJK6v1l7Gl1XmYpllcrZp8mtXHfu530JzQx2s1IZ5/Qt1u+NwBQ==
-X-Received: by 2002:a62:e51a:: with SMTP id n26mr3180048pff.301.1588686829155;
-        Tue, 05 May 2020 06:53:49 -0700 (PDT)
-Received: from localhost.localdomain ([120.244.110.63])
-        by smtp.gmail.com with ESMTPSA id i15sm2061013pfo.195.2020.05.05.06.53.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 May 2020 06:53:48 -0700 (PDT)
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-To:     shaggy@kernel.org, Markus.Elfring@web.de
-Cc:     jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [PATCH v2] fs: jfs: fix a possible data race in metapage_writepage()
-Date:   Tue,  5 May 2020 21:53:13 +0800
-Message-Id: <20200505135313.28793-1-baijiaju1990@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 5 May 2020 10:16:38 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB618C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:16:37 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jVyMv-0002EZ-0E; Tue, 05 May 2020 16:16:21 +0200
+Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 8BB0FFFC8D;
+        Tue,  5 May 2020 16:16:20 +0200 (CEST)
+Message-Id: <20200505135341.730586321@linutronix.de>
+User-Agent: quilt/0.65
+Date:   Tue, 05 May 2020 15:53:41 +0200
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>
+Subject: [patch V4 part 5 00/31] x86/entry: Entry/exception code rework,
+Content-transfer-encoding: 8-bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The functions metapage_writepage() and lmPostGC() can be concurrently 
-executed in the following call contexts:
+#PF/interrupts/system vectors
 
-Thread1:
-  metapage_writepage()
+Folks!
 
-Thread2:
-  lbmIODone()
-    lmPostGC()
+This is the fifth part of the rework series. Part 4 can be found here:
 
-In metapage_writepage():
-  if (mp->log && !(mp->log->cflag & logGC_PAGEOUT))
+ https://lore.kernel.org/r/20200505134926.578885807@linutronix.de
 
-In lmPostGC():
-  spin_lock_irqsave(&log->gclock, flags);
-  ...
-  log->cflag &= ~logGC_PAGEOUT
-  ...
-  spin_unlock_irqrestore(&log->gclock, flags);
+The series has a total of 138 patches and is split into 5 parts. The base
+for this 5th series is:
 
-The memory addresses of mp->log->cflag and log->cflag can be identical,
-and thus a data race can occur.
+  git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git entry-v4-part-4
 
-This data race is found by our concurrency fuzzer.
+The fifth part, i.e. the full series is available from:
 
-Thus use the spin lock "mp->log->gclock" for the assignment of 
-the data structure member "log->cflag" to a local variable 
-in this function implementation.
-
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
----
-v2:
-* Change the description.
-  Thank Markus Elfring for good advice.
-
----
- fs/jfs/jfs_metapage.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/fs/jfs/jfs_metapage.c b/fs/jfs/jfs_metapage.c
-index a2f5338a5ea1..026c11b2572d 100644
---- a/fs/jfs/jfs_metapage.c
-+++ b/fs/jfs/jfs_metapage.c
-@@ -351,6 +351,7 @@ static int metapage_writepage(struct page *page, struct writeback_control *wbc)
- 	unsigned long bio_offset = 0;
- 	int offset;
- 	int bad_blocks = 0;
-+	uint cflag;
+  git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git entry-v4-part-5
  
- 	page_start = (sector_t)page->index <<
- 		     (PAGE_SHIFT - inode->i_blkbits);
-@@ -370,8 +371,14 @@ static int metapage_writepage(struct page *page, struct writeback_control *wbc)
- 			 * Make sure this page isn't blocked indefinitely.
- 			 * If the journal isn't undergoing I/O, push it
- 			 */
--			if (mp->log && !(mp->log->cflag & logGC_PAGEOUT))
--				jfs_flush_journal(mp->log, 0);
-+
-+			if (mp->log) {
-+				spin_lock_irq(&mp->log->gclock);
-+				cflag = mp->log->cflag;
-+				spin_unlock_irq(&mp->log->gclock);
-+				if (!(cflag & logGC_PAGEOUT))
-+					jfs_flush_journal(mp->log, 0);
-+			}
- 			continue;
- 		}
- 
--- 
-2.17.1
+This part contains the modifications for interrupts and exceptions and the
+final cleanups:
+
+ - Conversion of the pagefault handler including conditional RCU entry
+   handling which is also utilized for the optimized handling of the
+   rescheduling IPI.
+
+ - Conversion of interrupt and system vector handling to utilize the
+   exception and traps entry code instead of having a completely separate
+   implementation for no reason.
+
+ - Moving the interrupt stack switching into C code to simplify the
+   ordering vs. the entry mechanics.
+
+ - Final cleanup and removal of all the ASM IRQ tracing maze.
+
+At the end this removes 750 lines of ASM and macro maze.
+
+The objtool check for the noinstr.text correctness is not yet added to the
+build machinery and has to be invoked manually for now:
+
+   objtool check -fal vmlinux.o
+
+The checking only works for builtin code as objtool cannot do a combined
+analysis of vmlinux.o and a module.o
+
+Known issues:
+
+   There is an issue with the framepointer based unwinder. objtool
+   complains about inconsistent stack state, and the actual unwinding
+   accross a stack boundary contains the '?' markers. This is due to the
+   stack switching in C inline ASM. The problem is halfways understood and
+   worked on. This does not affect the rest of the series and will be fixed
+   in the next days. With ORC both objtool and the actual unwinding works
+   correctly.
+
+Thanks,
+
+	tglx
+
+8<----------
+ arch/x86/include/asm/acrn.h                |   11 
+ arch/x86/include/asm/entry_arch.h          |   56 --
+ b/arch/x86/entry/calling.h                 |   25 -
+ b/arch/x86/entry/common.c                  |  203 +++++++++-
+ b/arch/x86/entry/entry_32.S                |  260 +------------
+ b/arch/x86/entry/entry_64.S                |  543 +----------------------------
+ b/arch/x86/entry/thunk_64.S                |    9 
+ b/arch/x86/hyperv/hv_init.c                |    9 
+ b/arch/x86/include/asm/apic.h              |   33 -
+ b/arch/x86/include/asm/hw_irq.h            |   22 -
+ b/arch/x86/include/asm/idtentry.h          |  248 +++++++++++++
+ b/arch/x86/include/asm/irq.h               |    6 
+ b/arch/x86/include/asm/irq_stack.h         |   91 ++++
+ b/arch/x86/include/asm/irq_work.h          |    1 
+ b/arch/x86/include/asm/irqflags.h          |   10 
+ b/arch/x86/include/asm/mshyperv.h          |   13 
+ b/arch/x86/include/asm/trace/common.h      |    4 
+ b/arch/x86/include/asm/trace/irq_vectors.h |   17 
+ b/arch/x86/include/asm/traps.h             |   21 -
+ b/arch/x86/include/asm/uv/uv_bau.h         |    8 
+ b/arch/x86/kernel/apic/apic.c              |   39 +-
+ b/arch/x86/kernel/apic/msi.c               |    3 
+ b/arch/x86/kernel/apic/vector.c            |    5 
+ b/arch/x86/kernel/cpu/acrn.c               |    9 
+ b/arch/x86/kernel/cpu/mce/amd.c            |    5 
+ b/arch/x86/kernel/cpu/mce/therm_throt.c    |    5 
+ b/arch/x86/kernel/cpu/mce/threshold.c      |    5 
+ b/arch/x86/kernel/cpu/mshyperv.c           |   22 -
+ b/arch/x86/kernel/head_64.S                |    7 
+ b/arch/x86/kernel/idt.c                    |   42 +-
+ b/arch/x86/kernel/irq.c                    |   46 --
+ b/arch/x86/kernel/irq_64.c                 |   54 ++
+ b/arch/x86/kernel/irq_work.c               |    6 
+ b/arch/x86/kernel/kvm.c                    |   14 
+ b/arch/x86/kernel/nmi.c                    |   11 
+ b/arch/x86/kernel/smp.c                    |   59 +--
+ b/arch/x86/kernel/tracepoint.c             |   17 
+ b/arch/x86/mm/fault.c                      |   69 ++-
+ b/arch/x86/platform/uv/tlb_uv.c            |    2 
+ b/arch/x86/xen/enlighten_hvm.c             |   12 
+ b/arch/x86/xen/enlighten_pv.c              |    2 
+ b/arch/x86/xen/setup.c                     |    4 
+ b/arch/x86/xen/smp_pv.c                    |    3 
+ b/arch/x86/xen/xen-asm_32.S                |   12 
+ b/arch/x86/xen/xen-asm_64.S                |    4 
+ b/arch/x86/xen/xen-ops.h                   |    1 
+ b/drivers/xen/events/events_base.c         |    6 
+ b/drivers/xen/preempt.c                    |    2 
+ b/include/linux/hardirq.h                  |   31 +
+ b/include/xen/events.h                     |    7 
+ b/include/xen/xen-ops.h                    |    4 
+ b/kernel/softirq.c                         |   35 +
+ 52 files changed, 920 insertions(+), 1213 deletions(-)
+
 
