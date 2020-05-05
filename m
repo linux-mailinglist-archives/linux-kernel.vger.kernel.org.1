@@ -2,134 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F9DA1C62A7
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 23:10:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC4BB1C62CC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 23:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729281AbgEEVKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 17:10:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728135AbgEEVKB (ORCPT
+        id S1729400AbgEEVQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 17:16:22 -0400
+Received: from azure.elm.relay.mailchannels.net ([23.83.212.7]:21897 "EHLO
+        azure.elm.relay.mailchannels.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726593AbgEEVQW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 17:10:01 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 888BDC061A0F;
-        Tue,  5 May 2020 14:09:59 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id ck5so1788275qvb.11;
-        Tue, 05 May 2020 14:09:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gxAlApzzt5Fr2H0K0z2Ers4SPsXxQpIbe0gDV+IiJdk=;
-        b=ZlG07WlUkAyur6dQ7aip9K3opgyw/I5mnWql1zI3HeSEU7nbUhBt2lsaZGx3VMayp2
-         xzo83Oj5Jh1zKx0mQyCEN8VYFFajXjc+hf+8KPdeCMnfe9Z7xpsBzd4JJwcakBInOPVZ
-         9Z1gMFw+OtfuB/7gbwJRxua5SlKm2nKvUuwM4Dm+H2WfxUBZZd9Rr/8NCgRxUgTiSNyM
-         dkopESb2AeeDUZ2C3UzJ7x9j2LCbDIxd1yzgtCWLL35jLo7sgkyMKtyIhn7j16evOKbo
-         kY7GM9DNyd586Cg2Ge9xHqaKxkVfVb7YNP+L3fM5IpykrP7IXbMGMJHrl9r13TnWzi07
-         RTAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=gxAlApzzt5Fr2H0K0z2Ers4SPsXxQpIbe0gDV+IiJdk=;
-        b=D4xU3Ts0yHU2lgdPM+Tv9+5WXc/DSFp4Gr3DqjAUJWQSgLDc9/Si1fM4mEuCfRpUOv
-         uXfchdBl5RnfdscI6OlwZRUVXpktfJ0pLtK1It00AbdKQx6gAktw16aumAkg8DxzcB+7
-         ZM9S5Mzp01QlZD30VzM+NM0AFyOLsBJq7sytGhcwbK/gl3t/P1iBTC/T06XdHWHCvct5
-         e2HXM3GQHbQMghioAh84yqFmw5PZK6eC4VtkmlIspPhJSmAywa9YV0EJQ7HSJogx2mPO
-         ILuq3B2ZvMc2M3xx0DaLtPW1Ps4JklHnbBiune0C0t8o3NQ1iX4XEYiY8HIK6k5W4yGU
-         CLvA==
-X-Gm-Message-State: AGi0Pual3tSta5p3RRpBSwWTzrg679gnV3qtl3kVZjeqlavb+GLGhN+4
-        NXDjA4jB3cGxAZC4C6dL6NUcT0MEkqI=
-X-Google-Smtp-Source: APiQypKA728Pg2MgizEDYb92QcuJxH1yoE0zafaProJrjubchOTsCxZq92aUE19dCNx9WJcJMZi7lw==
-X-Received: by 2002:ad4:4f86:: with SMTP id em6mr4980156qvb.218.1588712998509;
-        Tue, 05 May 2020 14:09:58 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:8365])
-        by smtp.gmail.com with ESMTPSA id i42sm3059938qtc.83.2020.05.05.14.09.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 May 2020 14:09:57 -0700 (PDT)
-Date:   Tue, 5 May 2020 17:09:56 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     "J. Bruce Fields" <bfields@fieldses.org>
-Cc:     "J. Bruce Fields" <bfields@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "open list:NFS, SUNRPC, AND..." <linux-nfs@vger.kernel.org>,
-        Jeff Layton <jlayton@redhat.com>,
-        David Howells <dhowells@redhat.com>, Shaohua Li <shli@fb.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/4] allow multiple kthreadd's
-Message-ID: <20200505210956.GA3350@mtj.thefacebook.com>
-References: <1588348912-24781-1-git-send-email-bfields@redhat.com>
- <CAHk-=wiGhZ_5xCRyUN+yMFdneKMQ-S8fBvdBp8o-JWPV4v+nVw@mail.gmail.com>
- <20200501182154.GG5462@mtj.thefacebook.com>
- <20200505021514.GA43625@pick.fieldses.org>
- <20200505210118.GC27966@fieldses.org>
+        Tue, 5 May 2020 17:16:22 -0400
+X-Greylist: delayed 347 seconds by postgrey-1.27 at vger.kernel.org; Tue, 05 May 2020 17:16:20 EDT
+X-Sender-Id: dreamhost|x-authsender|cosmos@claycon.org
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+        by relay.mailchannels.net (Postfix) with ESMTP id E4934217C5;
+        Tue,  5 May 2020 21:10:32 +0000 (UTC)
+Received: from pdx1-sub0-mail-a81.g.dreamhost.com (100-96-14-72.trex.outbound.svc.cluster.local [100.96.14.72])
+        (Authenticated sender: dreamhost)
+        by relay.mailchannels.net (Postfix) with ESMTPA id D2E4121571;
+        Tue,  5 May 2020 21:10:31 +0000 (UTC)
+X-Sender-Id: dreamhost|x-authsender|cosmos@claycon.org
+Received: from pdx1-sub0-mail-a81.g.dreamhost.com (pop.dreamhost.com
+ [64.90.62.162])
+        (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384)
+        by 0.0.0.0:2500 (trex/5.18.8);
+        Tue, 05 May 2020 21:10:32 +0000
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: dreamhost|x-authsender|cosmos@claycon.org
+X-MailChannels-Auth-Id: dreamhost
+X-Dime-Belong: 0e93ce12409d9a2c_1588713032364_388507154
+X-MC-Loop-Signature: 1588713032363:3409722952
+X-MC-Ingress-Time: 1588713032363
+Received: from pdx1-sub0-mail-a81.g.dreamhost.com (localhost [127.0.0.1])
+        by pdx1-sub0-mail-a81.g.dreamhost.com (Postfix) with ESMTP id 772E97F54F;
+        Tue,  5 May 2020 14:10:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=claycon.org; h=date:from
+        :to:cc:subject:message-id:references:mime-version:content-type
+        :in-reply-to; s=claycon.org; bh=STzotpNkYuoHScArrDXLcdtc0xg=; b=
+        GG+21uGOy/pgyKuWGO4rQksDL8rwHBhH9Pc7xd1fHyenhBcRa2Sdq9skbUrz7crV
+        JGAIRUyQ0e/sv9xrNWP+r64HR1WQ9soDr8KbgOsZ/nElw5q/ko/DZM4bGEnrLt9v
+        KRLwATBTJRYS6gsdqfVIVUYSLmT4qDMvzP0fzw9jG8M=
+Received: from ps29521.dreamhostps.com (ps29521.dreamhostps.com [69.163.186.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cosmos@claycon.org)
+        by pdx1-sub0-mail-a81.g.dreamhost.com (Postfix) with ESMTPSA id 8D7E87F0EF;
+        Tue,  5 May 2020 14:10:29 -0700 (PDT)
+Date:   Tue, 5 May 2020 16:10:29 -0500
+X-DH-BACKEND: pdx1-sub0-mail-a81
+From:   Clay Harris <bugs@claycon.org>
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jann Horn <jannh@google.com>, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH for-5.7] splice: move f_mode checks to do_{splice,tee}()
+Message-ID: <20200505211029.azfj2c4scoh6x2kx@ps29521.dreamhostps.com>
+References: <51b4370ef70eebf941f6cef503943d7f7de3ea4d.1588621153.git.asml.silence@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200505210118.GC27966@fieldses.org>
+In-Reply-To: <51b4370ef70eebf941f6cef503943d7f7de3ea4d.1588621153.git.asml.silence@gmail.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-VR-OUT-STATUS: OK
+X-VR-OUT-SCORE: -100
+X-VR-OUT-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduhedrjeejgddvvdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucggtfgfnhhsuhgsshgtrhhisggvpdfftffgtefojffquffvnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeffhffvuffkfhggtggujggfsehttdertddtredvnecuhfhrohhmpeevlhgrhicujfgrrhhrihhsuceosghughhssegtlhgrhigtohhnrdhorhhgqeenucggtffrrghtthgvrhhnpefgtdekjeehffefvdfhhedttdehkeejgfegiedtjedthfeuvdfgieevkeekvdfhvdenucfkphepieelrdduieefrddukeeirdejgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdphhgvlhhopehpshdvleehvddurdgurhgvrghmhhhoshhtphhsrdgtohhmpdhinhgvthepieelrdduieefrddukeeirdejgedprhgvthhurhhnqdhprghthhepvehlrgihucfjrghrrhhishcuoegsuhhgshestghlrgihtghonhdrohhrgheqpdhmrghilhhfrhhomhepsghughhssegtlhgrhigtohhnrdhorhhgpdhnrhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, May 04 2020 at 22:39:35 +0300, Pavel Begunkov quoth thus:
 
-On Tue, May 05, 2020 at 05:01:18PM -0400, J. Bruce Fields wrote:
-> On Mon, May 04, 2020 at 10:15:14PM -0400, J. Bruce Fields wrote:
-> > Though now I'm feeling greedy: it would be nice to have both some kind
-> > of global flag, *and* keep kthread->data pointing to svc_rqst (as that
-> > would give me a simpler and quicker way to figure out which client is
-> > conflicting).  Could I take a flag bit in kthread->flags, maybe?
+> do_splice() is used by io_uring, as will be do_tee(). Move f_mode
+> checks from sys_{splice,tee}() to do_{splice,tee}(), so they're
+> enforced for io_uring as well.
+
+I'm not seeing any check against splicing a pipe to itself in the
+io_uring path, although maybe I just missed it.  As the comment
+below says: /* Splicing to self would be fun, but... */ .
+
+> Fixes: 7d67af2c0134 ("io_uring: add splice(2) support")
+> Reported-by: Jann Horn <jannh@google.com>
+> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+> ---
+>  fs/splice.c | 45 ++++++++++++++++++---------------------------
+>  1 file changed, 18 insertions(+), 27 deletions(-)
 > 
-> Would something like this be too hacky?:
-
-It's not the end of the world but a bit hacky. I wonder whether something
-like the following would work better for identifying worker type so that you
-can do sth like
-
- if (kthread_fn(current) == nfsd)
-        return kthread_data(current);
- else
-        return NULL;     
-
-Thanks.
-
-diff --git a/kernel/kthread.c b/kernel/kthread.c
-index bfbfa481be3a..4f3ab9f2c994 100644
---- a/kernel/kthread.c
-+++ b/kernel/kthread.c
-@@ -46,6 +46,7 @@ struct kthread_create_info
- struct kthread {
- 	unsigned long flags;
- 	unsigned int cpu;
-+	int (*threadfn)(void *);
- 	void *data;
- 	struct completion parked;
- 	struct completion exited;
-@@ -152,6 +153,13 @@ bool kthread_freezable_should_stop(bool *was_frozen)
- }
- EXPORT_SYMBOL_GPL(kthread_freezable_should_stop);
- 
-+void *kthread_fn(struct task_struct *task)
-+{
-+	if (task->flags & PF_KTHREAD)
-+		return to_kthread(task)->threadfn;
-+	return NULL;
-+}
-+
- /**
-  * kthread_data - return data value specified on kthread creation
-  * @task: kthread task in question
-@@ -244,6 +252,7 @@ static int kthread(void *_create)
- 		do_exit(-ENOMEM);
- 	}
- 
-+	self->threadfn = threadfn;
- 	self->data = data;
- 	init_completion(&self->exited);
- 	init_completion(&self->parked);
-
--- 
-tejun
+> diff --git a/fs/splice.c b/fs/splice.c
+> index 4735defc46ee..fd0a1e7e5959 100644
+> --- a/fs/splice.c
+> +++ b/fs/splice.c
+> @@ -1118,6 +1118,10 @@ long do_splice(struct file *in, loff_t __user *off_in,
+>  	loff_t offset;
+>  	long ret;
+>  
+> +	if (unlikely(!(in->f_mode & FMODE_READ) ||
+> +		     !(out->f_mode & FMODE_WRITE)))
+> +		return -EBADF;
+> +
+>  	ipipe = get_pipe_info(in);
+>  	opipe = get_pipe_info(out);
+>  
+> @@ -1125,12 +1129,6 @@ long do_splice(struct file *in, loff_t __user *off_in,
+>  		if (off_in || off_out)
+>  			return -ESPIPE;
+>  
+> -		if (!(in->f_mode & FMODE_READ))
+> -			return -EBADF;
+> -
+> -		if (!(out->f_mode & FMODE_WRITE))
+> -			return -EBADF;
+> -
+>  		/* Splicing to self would be fun, but... */
+>  		if (ipipe == opipe)
+>  			return -EINVAL;
+> @@ -1153,9 +1151,6 @@ long do_splice(struct file *in, loff_t __user *off_in,
+>  			offset = out->f_pos;
+>  		}
+>  
+> -		if (unlikely(!(out->f_mode & FMODE_WRITE)))
+> -			return -EBADF;
+> -
+>  		if (unlikely(out->f_flags & O_APPEND))
+>  			return -EINVAL;
+>  
+> @@ -1440,15 +1435,11 @@ SYSCALL_DEFINE6(splice, int, fd_in, loff_t __user *, off_in,
+>  	error = -EBADF;
+>  	in = fdget(fd_in);
+>  	if (in.file) {
+> -		if (in.file->f_mode & FMODE_READ) {
+> -			out = fdget(fd_out);
+> -			if (out.file) {
+> -				if (out.file->f_mode & FMODE_WRITE)
+> -					error = do_splice(in.file, off_in,
+> -							  out.file, off_out,
+> -							  len, flags);
+> -				fdput(out);
+> -			}
+> +		out = fdget(fd_out);
+> +		if (out.file) {
+> +			error = do_splice(in.file, off_in, out.file, off_out,
+> +					  len, flags);
+> +			fdput(out);
+>  		}
+>  		fdput(in);
+>  	}
+> @@ -1770,6 +1761,10 @@ static long do_tee(struct file *in, struct file *out, size_t len,
+>  	struct pipe_inode_info *opipe = get_pipe_info(out);
+>  	int ret = -EINVAL;
+>  
+> +	if (unlikely(!(in->f_mode & FMODE_READ) ||
+> +		     !(out->f_mode & FMODE_WRITE)))
+> +		return -EBADF;
+> +
+>  	/*
+>  	 * Duplicate the contents of ipipe to opipe without actually
+>  	 * copying the data.
+> @@ -1795,7 +1790,7 @@ static long do_tee(struct file *in, struct file *out, size_t len,
+>  
+>  SYSCALL_DEFINE4(tee, int, fdin, int, fdout, size_t, len, unsigned int, flags)
+>  {
+> -	struct fd in;
+> +	struct fd in, out;
+>  	int error;
+>  
+>  	if (unlikely(flags & ~SPLICE_F_ALL))
+> @@ -1807,14 +1802,10 @@ SYSCALL_DEFINE4(tee, int, fdin, int, fdout, size_t, len, unsigned int, flags)
+>  	error = -EBADF;
+>  	in = fdget(fdin);
+>  	if (in.file) {
+> -		if (in.file->f_mode & FMODE_READ) {
+> -			struct fd out = fdget(fdout);
+> -			if (out.file) {
+> -				if (out.file->f_mode & FMODE_WRITE)
+> -					error = do_tee(in.file, out.file,
+> -							len, flags);
+> -				fdput(out);
+> -			}
+> +		out = fdget(fdout);
+> +		if (out.file) {
+> +			error = do_tee(in.file, out.file, len, flags);
+> +			fdput(out);
+>  		}
+>   		fdput(in);
+>   	}
+> -- 
+> 2.24.0
