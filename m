@@ -2,115 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D317C1C6400
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 00:37:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F18CB1C640C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 00:39:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729480AbgEEWgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 18:36:54 -0400
-Received: from mga09.intel.com ([134.134.136.24]:41852 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729447AbgEEWgt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 18:36:49 -0400
-IronPort-SDR: bteAh34PnL9qc00zRqBok2KDIVIgGCA5bn+3UR4SRDKCcGyGJk2OrZOUWnRDrpKMmh0h5ZDCuu
- 3VEGF7b5lzxw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2020 15:36:48 -0700
-IronPort-SDR: 712HFudz9AZH15e6tZm2gewlKugR/9Yp98LKlkHFKE3XDortyf7EjsDUqrFh8hqFDwFzb5g88L
- 6d5WctPODkuw==
-X-IronPort-AV: E=Sophos;i="5.73,357,1583222400"; 
-   d="scan'208";a="284410861"
-Received: from rchatre-s.jf.intel.com ([10.54.70.76])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2020 15:36:48 -0700
-From:   Reinette Chatre <reinette.chatre@intel.com>
-To:     tglx@linutronix.de, fenghua.yu@intel.com, bp@alien8.de,
-        tony.luck@intel.com
-Cc:     kuo-lang.tseng@intel.com, mingo@redhat.com, babu.moger@amd.com,
-        hpa@zytor.com, x86@kernel.org, linux-kernel@vger.kernel.org,
-        Reinette Chatre <reinette.chatre@intel.com>
-Subject: [PATCH V2 7/7] x86/resctrl: Support wider MBM counters
-Date:   Tue,  5 May 2020 15:36:18 -0700
-Message-Id: <69d52abd5b14794d3a0f05ba7c755ed1f4c0d5ed.1588715690.git.reinette.chatre@intel.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <cover.1588715690.git.reinette.chatre@intel.com>
-References: <cover.1588715690.git.reinette.chatre@intel.com>
+        id S1729581AbgEEWiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 18:38:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728076AbgEEWiJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 18:38:09 -0400
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 443DBC061A0F;
+        Tue,  5 May 2020 15:38:09 -0700 (PDT)
+Received: by mail-vs1-xe42.google.com with SMTP id z1so44431vsn.11;
+        Tue, 05 May 2020 15:38:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cSfOB6yrL6iM3GyhSHKNdhh/qVQczJxQFfOD6vN+UVE=;
+        b=IvCyOTvYkL9YYbiYrwA/mKR7RsQ9/72wb6Sjv34ObwQF7QxQCSj55IPG2i6djLLHCu
+         2xrC4Nvg6/k7RyED3gdGWAzYBefYivdrQJSQhfJzGK7zCjn4Qj02Fy6pA0wKQJzjhlrS
+         WErK39Y+pAZyZGY3QSuK9SYo77xHLMCKC2NedbdWry8uEc4Eap6/WHnBsmL8RMWNOKW9
+         zScbUvNK6O7VDLlH9igh4CYW2dSeJRQI0zuJ/kYgjqI79Sko/KNsQHW/o2qIOTguUo0b
+         X4NusdIO7nAP0mZ06qI7XwmfbpW1rI5bHwtpHxaJxatWTJyby0bVO+JtDpIhEethjO87
+         E/FQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cSfOB6yrL6iM3GyhSHKNdhh/qVQczJxQFfOD6vN+UVE=;
+        b=hv7e8i9UbUxzC2iZfQCtzNIucr7s/QcR7c/QNdctHNC7tUmbcGvhykCaFgc2w8CE8m
+         461g+HbL8gM9fedWHdTVoIsLqolt25jmiXtvIEX5bb12RplDde6wZr7hDUlQDMiNmw47
+         LTLUsd7ixJd3upxPbsMYE7YYdla/bGWMWUWqw7nSGxQ142ambMHBaFkB/MIfKLu9wiIp
+         lPxB085dZCyhieUHmdK2Ae9f944nSSsatm6uC0IP9n1MUQxVYWzwI/rEmaPkA7RNT84j
+         ViPwZFX/zpT3OlNxuDzIrZiOorAOkDz+JhP5fm7w7xV+iFRmTMGQCPUi4Ij/VPrpYyHY
+         w1wQ==
+X-Gm-Message-State: AGi0PubkZmUPuykbGNfgtSistIX22LEzIFCTHnyYoqB/ikljM9qHmjYb
+        +yLPWcvpcBPEhLUcJtCBxI9xeQUN/rH7/oI0IK7P/Q==
+X-Google-Smtp-Source: APiQypIr9PI9/22peB1Fu3YgqrXSGAkGpCURNRdQGoxcO7miuw0Unp0PDignsXow25GHQ1rp6a3oJuLH1/qGyjX1M7s=
+X-Received: by 2002:a67:1502:: with SMTP id 2mr5322645vsv.80.1588718288093;
+ Tue, 05 May 2020 15:38:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAHmME9oMcfY4nwkknwN9c4rB-O7xD4GCAOFPoZCbdnq=034=Vw@mail.gmail.com>
+ <20200505215503.691205-1-Jason@zx2c4.com> <CAKwvOdk32cDowvrqRPKDRpf2ZiXh=jVnBTmhM-NWD=Ownq9v3w@mail.gmail.com>
+ <20200505222540.GA230458@ubuntu-s3-xlarge-x86>
+In-Reply-To: <20200505222540.GA230458@ubuntu-s3-xlarge-x86>
+From:   George Burgess IV <george.burgess.iv@gmail.com>
+Date:   Tue, 5 May 2020 15:37:31 -0700
+Message-ID: <CAKh6zBEs50b6XmCn4O7JCgcrKOc3Q7Y28yxcWtAu30HJjqGpBg@mail.gmail.com>
+Subject: Re: [PATCH] Kbuild: disable FORTIFY_SOURCE on clang-10
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Kees Cook <keescook@chromium.org>,
+        George Burgess <gbiv@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The original Memory Bandwidth Monitoring (MBM) architectural
-definition defines counters of up to 62 bits in the
-IA32_QM_CTR MSR while the first-generation MBM implementation
-uses statically defined 24 bit counters.
+This code generated by Clang here is the unfortunate side-effect of a
+bug introduced during Clang-10's development phase. From discussion
+with Kees on the links Nick mentioned, I surmise that FORTIFY in the
+kernel never worked as well for Clang as it does for GCC today. In
+many cases, it'd compile into nothing, but with the aforementioned
+Clang bug, it would turn into very suboptimal code.
 
-The MBM CPUID enumeration properties have been expanded to include
-the MBM counter width, encoded as an offset from 24 bits.
+Kees sounded interested in getting a FORTIFY that plays more nicely
+with Clang into the kernel. Until that happens, we'll be in a world
+where an unpatched Clang-10 generates suboptimal code, and where a
+patched Clang-10 only FORTIFYs a subset of the kernel's `mem*`/`str*`
+functions. (I haven't checked assembly, but I assume that not every
+FORTIFY'ed function gets compiled into 'nothingness').
 
-While eight bits are available for the counter width offset
-IA32_QM_CTR MSR only supports 62 bit counters. A sanity check,
-with warning printed when encountered, is added to ensure counters
-cannot exceed the 62 bit limit.
+I don't have sufficient context to be opinionated on whether it's
+"better" to prefer a subset of opportune checks vs better codegen on
+unpatched versions of clang.
 
-Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
----
- arch/x86/kernel/cpu/resctrl/internal.h | 8 +++++++-
- arch/x86/kernel/cpu/resctrl/monitor.c  | 8 +++++++-
- 2 files changed, 14 insertions(+), 2 deletions(-)
+If we do turn it off, it'd be nice to have some idea of when it can be
+turned back on (do we need a modified implementation as mentioned
+earlier? N months after clang's next point release is released,
+provided the fixes land in it?)
 
-diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-index 58b002c31655..f20a47d120b1 100644
---- a/arch/x86/kernel/cpu/resctrl/internal.h
-+++ b/arch/x86/kernel/cpu/resctrl/internal.h
-@@ -31,7 +31,7 @@
- 
- #define CQM_LIMBOCHECK_INTERVAL	1000
- 
--#define MBM_CNTR_WIDTH			24
-+#define MBM_CNTR_WIDTH_BASE		24
- #define MBM_OVERFLOW_INTERVAL		1000
- #define MAX_MBA_BW			100u
- #define MBA_IS_LINEAR			0x4
-@@ -40,6 +40,12 @@
- 
- #define RMID_VAL_ERROR			BIT_ULL(63)
- #define RMID_VAL_UNAVAIL		BIT_ULL(62)
-+/*
-+ * With the above fields in use 62 bits remain in MSR_IA32_QM_CTR for
-+ * data to be returned. The counter width is discovered from the hardware
-+ * as an offset from MBM_CNTR_WIDTH_BASE.
-+ */
-+#define MBM_CNTR_WIDTH_OFFSET_MAX (62 - MBM_CNTR_WIDTH_BASE)
- 
- 
- struct rdt_fs_context {
-diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
-index df964c03f6c6..837d7d012b7b 100644
---- a/arch/x86/kernel/cpu/resctrl/monitor.c
-+++ b/arch/x86/kernel/cpu/resctrl/monitor.c
-@@ -618,12 +618,18 @@ static void l3_mon_evt_init(struct rdt_resource *r)
- 
- int rdt_get_mon_l3_config(struct rdt_resource *r)
- {
-+	unsigned int mbm_offset = boot_cpu_data.x86_cache_mbm_width_offset;
- 	unsigned int cl_size = boot_cpu_data.x86_cache_size;
- 	int ret;
- 
- 	r->mon_scale = boot_cpu_data.x86_cache_occ_scale;
- 	r->num_rmid = boot_cpu_data.x86_cache_max_rmid + 1;
--	r->mbm_width = MBM_CNTR_WIDTH;
-+	r->mbm_width = MBM_CNTR_WIDTH_BASE;
-+
-+	if (mbm_offset > 0 && mbm_offset <= MBM_CNTR_WIDTH_OFFSET_MAX)
-+		r->mbm_width += mbm_offset;
-+	else if (mbm_offset > MBM_CNTR_WIDTH_OFFSET_MAX)
-+		pr_warn("Ignoring impossible MBM counter offset\n");
- 
- 	/*
- 	 * A reasonable upper limit on the max threshold is the number
--- 
-2.21.0
+> I can file an upstream PR for Tom to take a look out later tonight.
 
+Thank you for the bisection and for handling the merge :)
+
+
+
+
+
+On Tue, May 5, 2020 at 3:25 PM Nathan Chancellor
+<natechancellor@gmail.com> wrote:
+>
+> On Tue, May 05, 2020 at 03:02:16PM -0700, 'Nick Desaulniers' via Clang Built Linux wrote:
+> > On Tue, May 5, 2020 at 2:55 PM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
+> > >
+> > > clang-10 has a broken optimization stage that doesn't enable the
+> > > compiler to prove at compile time that certain memcpys are within
+> > > bounds, and thus the outline memcpy is always called, resulting in
+> > > horrific performance, and in some cases, excessive stack frame growth.
+> > > Here's a simple reproducer:
+> > >
+> > >     typedef unsigned long size_t;
+> > >     void *c(void *dest, const void *src, size_t n) __asm__("memcpy");
+> > >     extern inline __attribute__((gnu_inline)) void *memcpy(void *dest, const void *src, size_t n) { return c(dest, src, n); }
+> > >     void blah(char *a)
+> > >     {
+> > >       unsigned long long b[10], c[10];
+> > >       int i;
+> > >
+> > >       memcpy(b, a, sizeof(b));
+> > >       for (i = 0; i < 10; ++i)
+> > >         c[i] = b[i] ^ b[9 - i];
+> > >       for (i = 0; i < 10; ++i)
+> > >         b[i] = c[i] ^ a[i];
+> > >       memcpy(a, b, sizeof(b));
+> > >     }
+> > >
+> > > Compile this with clang-9 and clang-10 and observe:
+> > >
+> > > zx2c4@thinkpad /tmp/curve25519-hacl64-stack-frame-size-test $ clang-10 -Wframe-larger-than=0 -O3 -c b.c -o c10.o
+> > > b.c:5:6: warning: stack frame size of 104 bytes in function 'blah' [-Wframe-larger-than=]
+> > > void blah(char *a)
+> > >      ^
+> > > 1 warning generated.
+> > > zx2c4@thinkpad /tmp/curve25519-hacl64-stack-frame-size-test $ clang-9 -Wframe-larger-than=0 -O3 -c b.c -o c9.o
+> > >
+> > > Looking at the disassembly of c10.o and c9.o, one can see that c9.o is
+> > > properly optimized in the obvious way one would expect, while c10.o has
+> > > blown up and includes extern calls to memcpy.
+> > >
+> > > This is present on the most trivial bits of code. Thus, for clang-10, we
+> > > just set __NO_FORTIFY globally, so that this issue won't be incurred.
+> > >
+> > > Cc: Arnd Bergmann <arnd@arndb.de>
+> > > Cc: LKML <linux-kernel@vger.kernel.org>
+> > > Cc: clang-built-linux <clang-built-linux@googlegroups.com>
+> > > Cc: Kees Cook <keescook@chromium.org>
+> > > Cc: George Burgess <gbiv@google.com>
+> > > Cc: Nick Desaulniers <ndesaulniers@google.com>
+> > > Link: https://bugs.llvm.org/show_bug.cgi?id=45802
+> > > Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+> >
+> > I'm going to request this not be merged until careful comment from
+> > George and Kees. My hands are quite full at the moment with other
+> > regressions.  I suspect these threads may be relevant, though I
+> > haven't had time to read through them myself.
+> > https://github.com/ClangBuiltLinux/linux/issues/979
+> > https://github.com/ClangBuiltLinux/linux/pull/980
+>
+> I believe these issues are one in the same. I did a reverse bisect with
+> Arnd's test case and converged on George's first patch:
+>
+> https://github.com/llvm/llvm-project/commit/2dd17ff08165e6118e70f00e22b2c36d2d4e0a9a
+>
+> I think that in lieu of this patch, we should have that patch and its
+> follow-up fix merged into 10.0.1.
+>
+> I can file an upstream PR for Tom to take a look out later tonight.
+>
+> Cheers,
+> Nathan
+>
+> > > ---
+> > >  Makefile | 7 +++++++
+> > >  1 file changed, 7 insertions(+)
+> > >
+> > > diff --git a/Makefile b/Makefile
+> > > index 49b2709ff44e..f022f077591d 100644
+> > > --- a/Makefile
+> > > +++ b/Makefile
+> > > @@ -768,6 +768,13 @@ KBUILD_CFLAGS += -Wno-gnu
+> > >  # source of a reference will be _MergedGlobals and not on of the whitelisted names.
+> > >  # See modpost pattern 2
+> > >  KBUILD_CFLAGS += -mno-global-merge
+> > > +
+> > > +# clang-10 has a broken optimization stage that causes memcpy to always be
+> > > +# outline, resulting in excessive stack frame growth and poor performance.
+> > > +ifeq ($(shell test $(CONFIG_CLANG_VERSION) -ge 100000 && test $(CONFIG_CLANG_VERSION) -lt 110000; echo $$?),0)
+> > > +KBUILD_CFLAGS += -D__NO_FORTIFY
+> > > +endif
+> > > +
+> > >  else
+> > >
+> > >  # These warnings generated too much noise in a regular build.
+> > > --
+> > > 2.26.2
+> > >
+> >
+> >
+> > --
+> > Thanks,
+> > ~Nick Desaulniers
+> >
+> > --
+> > You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> > To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> > To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/CAKwvOdk32cDowvrqRPKDRpf2ZiXh%3DjVnBTmhM-NWD%3DOwnq9v3w%40mail.gmail.com.
+>
+> --
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20200505222540.GA230458%40ubuntu-s3-xlarge-x86.
