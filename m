@@ -2,92 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A93B1C5407
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 13:10:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79DFB1C5419
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 13:13:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728840AbgEELKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 07:10:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50326 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725766AbgEELKu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 07:10:50 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728893AbgEELMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 07:12:51 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:60814 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728879AbgEELMt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 07:12:49 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1588677168; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=0eyelEi64rXXRGTuED+vS31cCGjUGaQJnhSz6yhcSRw=; b=Olwc02+7ZRHjYM9+XhKdXNsWjnFfsKezDGa/M1uYspKt1X8CRKCt8/yhJDTwwrjKmE2ueRy6
+ xeatEusQLk2cQBOjdgieiS0geOtnxnK6rLVSYokAwCGNugQ5SsdVwAfuzTjhs2RrRtlwPIsn
+ AIPBWwzoq0/EEm+jwaYRmKxBJAU=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5eb14a23.7f36f9414a40-smtp-out-n05;
+ Tue, 05 May 2020 11:12:35 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AAE28C433CB; Tue,  5 May 2020 11:12:34 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.0
+Received: from codeaurora.org (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A1ED0206B8;
-        Tue,  5 May 2020 11:10:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588677049;
-        bh=tLnC3k0rye0luMgLxFSFH5txN4xnLzlLq84ZHZhCA2Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Xcd5vIJgLtqRrkuJPCcdbU5b2WtJlWCm7UfhN/ckq+9vmS9qPWkYH8U94I7Ta3xG6
-         B3gwrGBf+MKsezEyVcBIqJfTF5o0pjmu+4FRTfre6YfZi2V53Ty7hZuThX/Y1cO5vq
-         S39yKwl2ZnHA6kNGQTole+6zuVkz6j6CVXpE84w0=
-Date:   Tue, 5 May 2020 12:10:45 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3 03/16] arm64/cpufeature: Make doublelock a signed
- feature in ID_AA64DFR0
-Message-ID: <20200505111045.GE19710@willie-the-truck>
-References: <1588426445-24344-1-git-send-email-anshuman.khandual@arm.com>
- <1588426445-24344-4-git-send-email-anshuman.khandual@arm.com>
+        (Authenticated sender: manafm)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id EA761C433D2;
+        Tue,  5 May 2020 11:12:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EA761C433D2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=manafm@codeaurora.org
+From:   Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Amit Kucheria <amit.kucheria@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
+Subject: [PATCH 0/2] Add 0C (zeorC) interrupt support to tsens driver
+Date:   Tue,  5 May 2020 16:42:02 +0530
+Message-Id: <20200505111204.963-1-manafm@codeaurora.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1588426445-24344-4-git-send-email-anshuman.khandual@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 02, 2020 at 07:03:52PM +0530, Anshuman Khandual wrote:
-> Double lock feature can have the following possible values.
-> 
-> 0b0000 - Double lock implemented
-> 0b1111 - Double lock not implemented
-> 
-> But in case of a conflict the safe value should be 0b1111. Hence this must
-> be a signed feature instead. Also change FTR_EXACT to FTR_LOWER_SAFE.
-> 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> 
-> Suggested-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->  arch/arm64/kernel/cpufeature.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> index 51386dade423..cba43e4a5c79 100644
-> --- a/arch/arm64/kernel/cpufeature.c
-> +++ b/arch/arm64/kernel/cpufeature.c
-> @@ -338,7 +338,7 @@ static const struct arm64_ftr_bits ftr_id_mmfr0[] = {
->  };
->  
->  static const struct arm64_ftr_bits ftr_id_aa64dfr0[] = {
-> -	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_EXACT, 36, 28, 0),
-> +	S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, 36, 28, 0),
+Changes:
+* Add zeroc interrupt support to tsens driver
+* Update zeroc interrupt support in yaml
 
-Wait, isn't this buggered today? Shouldn't that 28 be a 4? I think we really
-need to:
+Manaf Meethalavalappu Pallikunhi (2):
+  drivers: thermal: tsens: Add 0C (zeorC) interrupt support
+  dt-bindings: thermal: tsens: Add zeroc interrupt support in yaml
 
-	1. Make it impossible to describe overlapping fields, incomplete
-	   registers etc (ideally at build-time)
+ .../bindings/thermal/qcom-tsens.yaml          |  7 +-
+ drivers/thermal/qcom/tsens-common.c           | 72 ++++++++++++++++++-
+ drivers/thermal/qcom/tsens-v2.c               |  7 ++
+ drivers/thermal/qcom/tsens.c                  | 51 +++++++++++--
+ drivers/thermal/qcom/tsens.h                  | 11 +++
+ 5 files changed, 140 insertions(+), 8 deletions(-)
 
-	2. Have a macro that for 4-bit fields so you don't have to type '4'
-	   all the time
-
-Suzuki, any ideas how we can make this a bit more robust?
-
-Will
+-- 
+2.26.2
