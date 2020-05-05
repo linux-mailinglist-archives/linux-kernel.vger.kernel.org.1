@@ -2,224 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E973F1C5C83
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 966421C5C8B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:51:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730090AbgEEPuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 11:50:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35808 "EHLO
+        id S1730430AbgEEPun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 11:50:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729871AbgEEPuI (ORCPT
+        with ESMTP id S1729791AbgEEPum (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 11:50:08 -0400
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EDDFC061A10
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 08:50:08 -0700 (PDT)
-Received: from ramsan ([IPv6:2a02:1810:ac12:ed60:bd97:8453:3b10:1832])
-        by baptiste.telenet-ops.be with bizsmtp
-        id b3pl2200A3VwRR3013plnF; Tue, 05 May 2020 17:49:45 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan with esmtp (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1jVzpJ-0003KC-DL; Tue, 05 May 2020 17:49:45 +0200
-Received: from geert by rox.of.borg with local (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1jVzpJ-0001Cw-A3; Tue, 05 May 2020 17:49:45 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v2] dt-bindings: timer: renesas: tmu: Convert to json-schema
-Date:   Tue,  5 May 2020 17:49:44 +0200
-Message-Id: <20200505154944.4598-1-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.17.1
+        Tue, 5 May 2020 11:50:42 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73923C061A0F;
+        Tue,  5 May 2020 08:50:41 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id q24so561357pjd.1;
+        Tue, 05 May 2020 08:50:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=JCrj+xSNWBgnwkluYH5yEj5tGeDPbhNC0cOOAJmWsIw=;
+        b=dLgjlrJiG1l7gqN/69aiOdShJzV9KUD6CqPH5jgg6I9Glx8GrbLD+r+oJBiqXNL2ri
+         qKbLgBhx50Srw1bqJO4PVtSpX/AUueLxCR3/qlUjMpQTXHwy+yzQsEoTOs0Y31SsiCM3
+         kt3OUD4zkRiD27wXNRjXSRGro7/wekhe5W16MW9d3nB0oJCR5i6u5IpHRhS7AhVwh+cQ
+         A4xLE7LbgDpcsKzt9WxS2z0+E9/fQy4p3QyXVJOrjqrsgerRFQn+gxwDKp7nob6Fvv4s
+         ag8zuUDd8N8eV6bB9GFKFaAyom3ExodeY2u373oIyKLB4y6ZephmlYR4m49Z/eSi5mEB
+         G7jw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-transfer-encoding:content-language;
+        bh=JCrj+xSNWBgnwkluYH5yEj5tGeDPbhNC0cOOAJmWsIw=;
+        b=QsNzIfq0tb0VQRCTwqW8WYP4KvFqLfhu/qcRHyj54q1DsWHaGig5c4kiynakC+NKJF
+         lRNyqllgwJRFf9M+fMTCG3kU4EYDgGlo9Umrfo8ijs7DB254p9Li8Tz3o1yHe9LftJHd
+         qdD4+Lp1ItiPtxgJRyYH6asKbVBgWw/azJ5HRx6y+GIOFGsMtttHaYFgNGSCoybr8xbl
+         gL0XlZ/h3th+bvyWj+ueS3/O+hRfLQXc5yEnnq+9f6g/TYunQEVdFZvyBCD1mjjj1vj8
+         vE3o88TBzhHDcar3oxOWj0NvY6HXG0tjWkIIlnZbtLieKnp5yPcjz+njzBPOFjCztk7g
+         Y/vA==
+X-Gm-Message-State: AGi0PuYw2tbclJjXCe7N9HJMktbihNosLZ92mQK0L6gi727S8NGP+8e9
+        okXr/CfhUQxLYQJWTCCvt/d48SqyidIaOA==
+X-Google-Smtp-Source: APiQypJ454qWi/idspGEYJX34417WWKUgWzgyWzx8xGegXqIyJ8D2Mi0dVFhUi8YvDBu5nBrYloHkg==
+X-Received: by 2002:a17:90a:68c1:: with SMTP id q1mr3834462pjj.35.1588693840419;
+        Tue, 05 May 2020 08:50:40 -0700 (PDT)
+Received: from [192.168.1.7] ([120.244.110.63])
+        by smtp.gmail.com with ESMTPSA id p64sm2498102pjp.7.2020.05.05.08.50.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 May 2020 08:50:39 -0700 (PDT)
+To:     davem@davemloft.net, gregkh@linuxfoundation.org, kuba@kernel.org,
+        christophe.jaillet@wanadoo.fr, leon@kernel.org, tglx@linutronix.de
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+From:   Jia-Ju Bai <baijiaju1990@gmail.com>
+Subject: [BUG] net: chelsio: Possible buffer overflow caused by DMA
+ failures/attacks
+Message-ID: <95e19362-b9c9-faf9-3f9e-f6f4c65a6aff@gmail.com>
+Date:   Tue, 5 May 2020 23:50:28 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the Renesas R-Mobile/R-Car Timer Unit (TMU) Device Tree binding
-documentation to json-schema.
+In alloc_rx_resources():
+     sge->respQ.entries =
+         pci_alloc_consistent(pdev, size, &sge->respQ.dma_addr);
 
-Document missing properties.
-Update the example to match reality.
+Thus, "sge->respQ.entries" is a DMA value, and it is assigned to
+"e" in process_pure_responses():
+     struct sge *sge = adapter->sge;
+     struct respQ *q = &sge->respQ;
+     struct respQ_e *e = &q->entries[q->cidx];
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
-v2:
-  - Add missing "additionalProperties: false",
-  - Add Reviewed-by.
----
- .../devicetree/bindings/timer/renesas,tmu.txt | 49 ---------
- .../bindings/timer/renesas,tmu.yaml           | 99 +++++++++++++++++++
- 2 files changed, 99 insertions(+), 49 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/timer/renesas,tmu.txt
- create mode 100644 Documentation/devicetree/bindings/timer/renesas,tmu.yaml
+When DMA failures or attacks occur, the data stored in "e" can be
+changed at any time. In this case, the value of "e->FreelistQid"
+can be a large number to cause buffer overflow when the
+following code is executed:
+     const struct freelQ *fl = &sge->freelQ[e->FreelistQid];
 
-diff --git a/Documentation/devicetree/bindings/timer/renesas,tmu.txt b/Documentation/devicetree/bindings/timer/renesas,tmu.txt
-deleted file mode 100644
-index 29159f4e65abece9..0000000000000000
---- a/Documentation/devicetree/bindings/timer/renesas,tmu.txt
-+++ /dev/null
-@@ -1,49 +0,0 @@
--* Renesas R-Mobile/R-Car Timer Unit (TMU)
--
--The TMU is a 32-bit timer/counter with configurable clock inputs and
--programmable compare match.
--
--Channels share hardware resources but their counter and compare match value
--are independent. The TMU hardware supports up to three channels.
--
--Required Properties:
--
--  - compatible: must contain one or more of the following:
--    - "renesas,tmu-r8a7740" for the r8a7740 TMU
--    - "renesas,tmu-r8a774a1" for the r8a774A1 TMU
--    - "renesas,tmu-r8a774b1" for the r8a774B1 TMU
--    - "renesas,tmu-r8a774c0" for the r8a774C0 TMU
--    - "renesas,tmu-r8a7778" for the r8a7778 TMU
--    - "renesas,tmu-r8a7779" for the r8a7779 TMU
--    - "renesas,tmu-r8a77970" for the r8a77970 TMU
--    - "renesas,tmu-r8a77980" for the r8a77980 TMU
--    - "renesas,tmu" for any TMU.
--      This is a fallback for the above renesas,tmu-* entries
--
--  - reg: base address and length of the registers block for the timer module.
--
--  - interrupts: interrupt-specifier for the timer, one per channel.
--
--  - clocks: a list of phandle + clock-specifier pairs, one for each entry
--    in clock-names.
--  - clock-names: must contain "fck" for the functional clock.
--
--Optional Properties:
--
--  - #renesas,channels: number of channels implemented by the timer, must be 2
--    or 3 (if not specified the value defaults to 3).
--
--
--Example: R8A7779 (R-Car H1) TMU0 node
--
--	tmu0: timer@ffd80000 {
--		compatible = "renesas,tmu-r8a7779", "renesas,tmu";
--		reg = <0xffd80000 0x30>;
--		interrupts = <0 32 IRQ_TYPE_LEVEL_HIGH>,
--			     <0 33 IRQ_TYPE_LEVEL_HIGH>,
--			     <0 34 IRQ_TYPE_LEVEL_HIGH>;
--		clocks = <&mstp0_clks R8A7779_CLK_TMU0>;
--		clock-names = "fck";
--
--		#renesas,channels = <3>;
--	};
-diff --git a/Documentation/devicetree/bindings/timer/renesas,tmu.yaml b/Documentation/devicetree/bindings/timer/renesas,tmu.yaml
-new file mode 100644
-index 0000000000000000..621addf87a52195f
---- /dev/null
-+++ b/Documentation/devicetree/bindings/timer/renesas,tmu.yaml
-@@ -0,0 +1,99 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/timer/renesas,tmu.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Renesas R-Mobile/R-Car Timer Unit (TMU)
-+
-+maintainers:
-+  - Geert Uytterhoeven <geert+renesas@glider.be>
-+  - Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-+
-+description:
-+  The TMU is a 32-bit timer/counter with configurable clock inputs and
-+  programmable compare match.
-+
-+  Channels share hardware resources but their counter and compare match value
-+  are independent. The TMU hardware supports up to three channels.
-+
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          - renesas,tmu-r8a7740  # R-Mobile A1
-+          - renesas,tmu-r8a774a1 # RZ/G2M
-+          - renesas,tmu-r8a774b1 # RZ/G2N
-+          - renesas,tmu-r8a774c0 # RZ/G2E
-+          - renesas,tmu-r8a7778  # R-Car M1A
-+          - renesas,tmu-r8a7779  # R-Car H1
-+          - renesas,tmu-r8a77970 # R-Car V3M
-+          - renesas,tmu-r8a77980 # R-Car V3H
-+      - const: renesas,tmu
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    minItems: 2
-+    maxItems: 3
-+
-+  clocks:
-+    maxItems: 1
-+
-+  clock-names:
-+    const: fck
-+
-+  power-domains:
-+    maxItems: 1
-+
-+  resets:
-+    maxItems: 1
-+
-+  '#renesas,channels':
-+    allOf:
-+      - $ref: /schemas/types.yaml#/definitions/uint32
-+      - enum: [ 2, 3 ]
-+      - default: 3
-+    description:
-+      Number of channels implemented by the timer.
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+  - power-domains
-+
-+if:
-+  not:
-+    properties:
-+      compatible:
-+        contains:
-+          enum:
-+            - renesas,tmu-r8a7740
-+            - renesas,tmu-r8a7778
-+            - renesas,tmu-r8a7779
-+then:
-+  required:
-+    - resets
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/r8a7779-clock.h>
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/power/r8a7779-sysc.h>
-+    tmu0: timer@ffd80000 {
-+            compatible = "renesas,tmu-r8a7779", "renesas,tmu";
-+            reg = <0xffd80000 0x30>;
-+            interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>,
-+                         <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>,
-+                         <GIC_SPI 34 IRQ_TYPE_LEVEL_HIGH>;
-+            clocks = <&mstp0_clks R8A7779_CLK_TMU0>;
-+            clock-names = "fck";
-+            power-domains = <&sysc R8A7779_PD_ALWAYS_ON>;
-+            #renesas,channels = <3>;
-+    };
--- 
-2.17.1
+Similarly, "sge->respQ.entries" is also assigned to "e" in
+process_responses():
+     struct sge *sge = adapter->sge;
+     struct respQ *q = &sge->respQ;
+     struct respQ_e *e = &q->entries[q->cidx];
+
+When DMA failures or attacks occur, the data stored in "e" can be
+changed at any time. In this case, the value of "e->FreelistQid"
+can be a large number to cause buffer overflow when the
+following code is executed:
+     struct freelQ *fl = &sge->freelQ[e->FreelistQid];
+
+Considering that DMA can fail or be attacked, I think that it is 
+dangerous to
+use a DMA value (or any value tainted by it) as an array index or a 
+control-flow
+condition. However, I have found many such dangerous cases in Linux 
+device drivers
+through my static-analysis tool and code review.
+I am not sure whether my opinion is correct, so I want to listen to your 
+points of view.
+Thanks in advance :)
+
+
+Best wishes,
+Jia-Ju Bai
 
