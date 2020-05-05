@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 532631C5790
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 15:56:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A1861C5793
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 15:56:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729192AbgEENz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 09:55:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45684 "EHLO
+        id S1729211AbgEEN4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 09:56:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728180AbgEENz7 (ORCPT
+        by vger.kernel.org with ESMTP id S1729202AbgEEN4I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 09:55:59 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19A28C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 06:55:59 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id t7so858616plr.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 06:55:59 -0700 (PDT)
+        Tue, 5 May 2020 09:56:08 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 214DBC061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 06:56:08 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id u22so814577plq.12
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 06:56:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=DYoV4g+eBtUMQiWGeiHqcByOOgkJemjo7RNmxRSrxEU=;
-        b=RXHFNjbEfNN2/RlW1Hul1jwbxxG2m59QspzJlL0uZadHZCe7vTBfRFMqgL28fkluis
-         4HNC/CsUdbtnzQfr5FTpjcvJJ+rv6WYK+lUGRIUeT4nf/6K+hIExT9LqIIroo8ZJLwvO
-         ARnvblBicwU+0VfADtPkEF9RwlVm0Jq5qVa0aHKGs5JZrsrUaRACs3+CJ6ea/BDtrVIP
-         cjG9rmEYTcUQjM0Ui/CCl/pEuFG6l7xDSTpcKDTBfjirK6OVzKS+lvrqiCt8Rzw0HiNA
-         rgVmx6HMgEHnu7e9qRFlgI+zJqT49/usJD/ZKlIMA2YF99X/Yz3KVltk9MBNnTtZPPos
-         5GOg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=tNBFhF/ggXZPZwGUiqxzSB760pgCcUxpJ37blThJNEI=;
+        b=wutoE5vzHDt141cP+zqKw13AsxyZDmqimG3VCe2kulHk/dcLheB3goxZFqDEPpqLtx
+         +2y45IsDhYVBFgtvCZRq43rFlnLr8Hz3ZUgo+chXAJd85QkXjRaAT/LGdcVAqYMt+01C
+         Gg14jvUlpkcH2tJqBJFxDROu7sCUcugNbVqJ3Dh9w4Lgz76F5ThR2mnQR8EIceAmkRg8
+         ZBA53qVz8Vipf4SyUiJnQTr0b2FT+DlIe7G48uqUT2FrSpNucBisrhkzT2fY9/tH4UAY
+         v6cplZvE0huOpeElysBBMsZe3RVlLeYSU0sClPfO5mRug51Hlba9zGAUkDrzW4WBOyGf
+         Kowg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=DYoV4g+eBtUMQiWGeiHqcByOOgkJemjo7RNmxRSrxEU=;
-        b=ph7F1cUM2o3SbtAi/RbNodJm9rije+XctrTcipWLpUwPMzZ2ToYuAP8ll4zJ0GdO59
-         66Bib8xps1AET7WvABSW3UGkhbvxSqB1tTz2NJrSn8Qe3cvXhobS/mc5ITqjPTvwVZYd
-         HlZhAAxxGU865pBuGThCkMaG7DaiCJCT+JPDJKfdO+3JCw749j3BDhBxQk8lyZI1kGZ4
-         klFrOL6BD/nX1nENcm6CbUx22HSvTMJ3iseb3ePIYGAfAXq5CRNtzGKfXs7gXn5kR5EV
-         IcLppUjhpkt+2n/2IbPU2ZlBehMsVXUzaTvdr1HCkpFpjqm0lTpI7Pql0PSrDoho6HJg
-         tYjg==
-X-Gm-Message-State: AGi0PuY5xeoXxVI5L45frWhn5DKgYCOSLjr2rkCObq3vypZlJWS08ueY
-        qCulBcw32JH86McZYlwhZnnThw==
-X-Google-Smtp-Source: APiQypK8A+s0fLvlIkTj9fiCvSROntMoJtckKK/YWvVvyq1ctUdfysHnkou/Uk3gNoYgVsDCI5hF2g==
-X-Received: by 2002:a17:902:a706:: with SMTP id w6mr2987753plq.173.1588686958545;
-        Tue, 05 May 2020 06:55:58 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=tNBFhF/ggXZPZwGUiqxzSB760pgCcUxpJ37blThJNEI=;
+        b=aM6iIz+Cq4FNc3dCWeX2fu+8/7MTLN0B7gOb649SxGwh0hXrW8veJTHoP6egWmBHCh
+         oWpZLgRLD+rK/XUrE9q53nE2On6ou0DhFf9e3LKIKCpdhYee2ClDQc1adk+c414BAqBO
+         LyAvlKYu7KZAr4cAz5xa59Fiww+jQHyYTVbI+wNMWlEnqy4m0ZVGMolq7ektb+nmeol/
+         5+v2Y/KpwkLbcO9rfoz6wBQBDPbARdm945kwY2X4SNyjD74+wxoe1sqQTn31rtJxk4FX
+         d8tN3XDqrsHoY0m2g9QH0rEjCwEoNaiOeUKJ3a1hnJE+ZEdqWJ1jhyNNALF0Speu+ajT
+         0hXg==
+X-Gm-Message-State: AGi0PuaL+xjZCo1kyG5wDkzde0L5kLJlG6jtEUPo74ih+jdJzOUbodGT
+        b1Adm4icN/bo2Nm23zgEtuYmXg==
+X-Google-Smtp-Source: APiQypKwZbjoFvZHFkTi/sqRdibF0HSyFnmyfTDs/xFUevEDLWaZ7rJkx5mSRCyfkXmk4NQvg0TvpQ==
+X-Received: by 2002:a17:902:d70f:: with SMTP id w15mr3387846ply.55.1588686967626;
+        Tue, 05 May 2020 06:56:07 -0700 (PDT)
 Received: from localhost ([2400:8904::f03c:91ff:fe8a:bbe4])
-        by smtp.gmail.com with ESMTPSA id ie17sm2136120pjb.19.2020.05.05.06.55.57
+        by smtp.gmail.com with ESMTPSA id w2sm2068101pfc.194.2020.05.05.06.56.06
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 05 May 2020 06:55:58 -0700 (PDT)
+        Tue, 05 May 2020 06:56:07 -0700 (PDT)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
@@ -68,56 +69,104 @@ To:     Peter Zijlstra <peterz@infradead.org>,
         "Ben Dooks (Codethink)" <ben.dooks@codethink.co.uk>,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v2 0/3] arm64: perf_event: Fix time offset prior to epoch
-Date:   Tue,  5 May 2020 21:55:41 +0800
-Message-Id: <20200505135544.6003-1-leo.yan@linaro.org>
+Subject: [PATCH v2 1/3] time/sched_clock: Add new variant sched_clock_register_epoch()
+Date:   Tue,  5 May 2020 21:55:42 +0800
+Message-Id: <20200505135544.6003-2-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200505135544.6003-1-leo.yan@linaro.org>
+References: <20200505135544.6003-1-leo.yan@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch set is to fix time offset prior to epoch for Arm arch timer.
-This series is mainly following on suggestions on LKML [1].
+Except the sched clock's raw counter is used by sched clock itself, it
+also can be used by other purposes in the same system, e.g. the raw
+counter can be injected into hardware tracing data (like Arm's SPE) and
+Perf tool can capture trace data and extract the raw counter from it
+which finally can be used to generate timestamp.
 
-To acheive the accurate time offset for a clock source prior to epoch,
-patch 01 adds a new variant sched_clock_register_epoch() which allows to
-output an extra argument for time offset prior to sched clock's
-registration.
+Perf tool needs a way to convert sched clock's raw counter cycles into a
+nanosecond that can be compared against values coming out of sched_clock.
 
-Patch 02 is to add handling for time offset in Arm arch timer driver, As
-Will Deacon suggested to "disable the perf userpage if sched_clock
-changes clocksource too" [2], after thinking about this suggestion, the
-race condition doesn't exist between sched_clock's registration and perf
-userpage.  The reason is sched_clock's registration is finished in
-system's initialisation phase and at this point it has no chance to use
-any userpage by Perf tool.  For this reason let's keep the code simple
-and don't acquire all Perf events' seqlock during sched_clock's
-registration.
+To do this accurately, this patch adds a new variant API
+sched_clock_register_epoch() with introducing an extra argument
+'epoch_offset', as its naming indicates, this argument contains the
+offset time (in nanosecond) for the clock source has been enabled prior
+to epoch.
 
-Patch 03 is simply to pass time offset from arch timer driver
-(clocksource driver) to perf event.
+Signed-off-by: Leo Yan <leo.yan@linaro.org>
+---
+ include/linux/sched_clock.h | 10 ++++++++++
+ kernel/time/sched_clock.c   | 13 ++++++++++++-
+ 2 files changed, 22 insertions(+), 1 deletion(-)
 
-[1] https://lkml.org/lkml/2020/3/20/199
-[2] https://lkml.org/lkml/2020/5/1/906
-
-Changes from v1:
-- Added patch 01 to retrieve more accurate offset when sched clock
-  registration;
-- Added patch 02 to handle time offset in arch timer driver.
-
-Leo Yan (3):
-  time/sched_clock: Add new variant sched_clock_register_epoch()
-  clocksource/drivers/arm_arch_timer: Handle time offset prior to epoch
-  arm64: perf_event: Fix time_offset for arch timer
-
- arch/arm64/kernel/perf_event.c       |  8 ++++++--
- drivers/clocksource/arm_arch_timer.c | 10 +++++++++-
- include/clocksource/arm_arch_timer.h |  6 ++++++
- include/linux/sched_clock.h          | 10 ++++++++++
- kernel/time/sched_clock.c            | 13 ++++++++++++-
- 5 files changed, 43 insertions(+), 4 deletions(-)
-
+diff --git a/include/linux/sched_clock.h b/include/linux/sched_clock.h
+index 0bb04a96a6d4..98965c0c7cd4 100644
+--- a/include/linux/sched_clock.h
++++ b/include/linux/sched_clock.h
+@@ -10,6 +10,10 @@ extern void generic_sched_clock_init(void);
+ 
+ extern void sched_clock_register(u64 (*read)(void), int bits,
+ 				 unsigned long rate);
++
++extern void sched_clock_register_epoch(u64 (*read)(void), int bits,
++				       unsigned long rate,
++				       u64 *epoch_offset);
+ #else
+ static inline void generic_sched_clock_init(void) { }
+ 
+@@ -17,6 +21,12 @@ static inline void sched_clock_register(u64 (*read)(void), int bits,
+ 					unsigned long rate)
+ {
+ }
++
++static inline void sched_clock_register_epoch(u64 (*read)(void), int bits,
++					      unsigned long rate,
++					      u64 *epoch_offset)
++{
++}
+ #endif
+ 
+ #endif
+diff --git a/kernel/time/sched_clock.c b/kernel/time/sched_clock.c
+index fa3f800d7d76..b402196afc3f 100644
+--- a/kernel/time/sched_clock.c
++++ b/kernel/time/sched_clock.c
+@@ -165,7 +165,8 @@ static enum hrtimer_restart sched_clock_poll(struct hrtimer *hrt)
+ }
+ 
+ void __init
+-sched_clock_register(u64 (*read)(void), int bits, unsigned long rate)
++sched_clock_register_epoch(u64 (*read)(void), int bits, unsigned long rate,
++			   u64 *epoch_offset)
+ {
+ 	u64 res, wrap, new_mask, new_epoch, cyc, ns;
+ 	u32 new_mult, new_shift;
+@@ -204,6 +205,10 @@ sched_clock_register(u64 (*read)(void), int bits, unsigned long rate)
+ 	rd.epoch_cyc		= new_epoch;
+ 	rd.epoch_ns		= ns;
+ 
++	/* Output epoch offset (ns) to clock event driver */
++	if (epoch_offset)
++		*epoch_offset = cyc_to_ns(new_epoch & new_mask, new_mult, new_shift) - ns;
++
+ 	update_clock_read_data(&rd);
+ 
+ 	if (sched_clock_timer.function != NULL) {
+@@ -240,6 +245,12 @@ sched_clock_register(u64 (*read)(void), int bits, unsigned long rate)
+ 	pr_debug("Registered %pS as sched_clock source\n", read);
+ }
+ 
++void __init
++sched_clock_register(u64 (*read)(void), int bits, unsigned long rate)
++{
++	sched_clock_register_epoch(read, bits, rate, NULL);
++}
++
+ void __init generic_sched_clock_init(void)
+ {
+ 	/*
 -- 
 2.17.1
 
