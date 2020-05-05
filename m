@@ -2,91 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C09D1C5C14
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:44:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6FBA1C5C24
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:45:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730193AbgEEPoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 11:44:32 -0400
-Received: from mout.kundenserver.de ([212.227.126.187]:57819 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729406AbgEEPoc (ORCPT
+        id S1730653AbgEEPoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 11:44:55 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:64380 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730520AbgEEPox (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 11:44:32 -0400
-Received: from mail-qt1-f182.google.com ([209.85.160.182]) by
- mrelayeu.kundenserver.de (mreue011 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1N2Dks-1j9PQO04is-013i4t for <linux-kernel@vger.kernel.org>; Tue, 05 May
- 2020 17:44:30 +0200
-Received: by mail-qt1-f182.google.com with SMTP id o10so2317001qtr.6
-        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 08:44:29 -0700 (PDT)
-X-Gm-Message-State: AGi0PubZ3oHpqlDrpxDCWXs0Ex2WfxRUn0vFN+5SCOKpJZjTgRda+P0S
-        KBRP3L7xXUja5Zn5tzA4SCurA7+mY6J+rqQqyGE=
-X-Google-Smtp-Source: APiQypKNtPguK+ulqQ4i6SK7Ce6bqxOdI3T602y80XUl2TrrVe85Tvx5Ec/8CWUGTZaYu9rhiqgaxxFH/yXelnYzKqM=
-X-Received: by 2002:ac8:2bce:: with SMTP id n14mr3338921qtn.18.1588693468940;
- Tue, 05 May 2020 08:44:28 -0700 (PDT)
+        Tue, 5 May 2020 11:44:53 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1588693492; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=S242E4d9Q+x3WazT0LfEblmsx0Y/I8PQEL3G5k/rxP8=; b=ZinHeuD1v+4jTK72AWc67vFygYv5mwimVc7ANG6FwW2UYSYs0WrF7pTZgYNy6OY0Eu4d8H7B
+ UrnijSiKWS+8lZu+duTcoLlq/wPQiZl62V2XYdBi+QglMbDy+KiwgqO+hZdHU/3RfdP0Y4vv
+ WTNsXvto6EF/sU5CXxiu9pdRvGU=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5eb189e5.7fcd01fa8c38-smtp-out-n03;
+ Tue, 05 May 2020 15:44:37 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 03FD1C44788; Tue,  5 May 2020 15:44:36 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6992FC433F2;
+        Tue,  5 May 2020 15:44:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6992FC433F2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Maya Erez <merez@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dedy Lansky <dlansky@codeaurora.org>,
+        Ahmad Masri <amasri@codeaurora.org>,
+        Alexei Avshalom Lazar <ailizaro@codeaurora.org>,
+        Tzahi Sabo <stzahi@codeaurora.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Lior David <liord@codeaurora.org>,
+        linux-wireless@vger.kernel.org, wil6210@qti.qualcomm.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] wil6210: avoid gcc-10 zero-length-bounds warning
+References: <20200505143332.1398524-1-arnd@arndb.de>
+Date:   Tue, 05 May 2020 18:44:31 +0300
+In-Reply-To: <20200505143332.1398524-1-arnd@arndb.de> (Arnd Bergmann's message
+        of "Tue, 5 May 2020 16:33:24 +0200")
+Message-ID: <877dxqcrog.fsf@kamboji.qca.qualcomm.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-References: <20200505135513.65265-1-arnd@arndb.de> <CAHp75VfmvXotH+NRt_YnNQW8O38Gas+ZfLH00jfhytM8w7ka3w@mail.gmail.com>
- <CAK8P3a2pXZGbFvXpD5D4trGjxaie_NYi4hhUyYmKmv9A_HfRdA@mail.gmail.com> <CAKwvOd=6jdRedjhcuQ0Bsr5hJ9djp8xLpLmT-bC9Wd-1GYK1fw@mail.gmail.com>
-In-Reply-To: <CAKwvOd=6jdRedjhcuQ0Bsr5hJ9djp8xLpLmT-bC9Wd-1GYK1fw@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 5 May 2020 17:44:12 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3khvHTf2qALrGQoh5iunHkWOqPXSt1A1_7sO7m2JxMVg@mail.gmail.com>
-Message-ID: <CAK8P3a3khvHTf2qALrGQoh5iunHkWOqPXSt1A1_7sO7m2JxMVg@mail.gmail.com>
-Subject: Re: [PATCH] bitops: avoid clang shift-count-overflow warnings
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:LCcWCikVgejYL2qzpPBajIzWxxlimPOVFv4PsSFgLzX8bc0OnBV
- pw8XBDLnzAFNjh7G/yUNmxEXrMMDcAojUvOnoQA+YBmh+cljPhWPlXfdcpew7yPtSYJjnLv
- KRzjM9vj1s+UX9gjAExHaUBpgQK9tO/VJFIe59BnaH4yXiX+Qh/T+UFCVDAYyARUXXnVwTq
- rWMzWAgFmLdHNh/0ZcfmQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:1B9b7PalzfE=:t99IXN8uM5wZ8Fi0O2neLy
- 4iXlCb5oK9uI5kO4T2ds+wyzcuOc6niVDDZbjhlJwHCwjZjFWRoYxOVz9JLhj+i1KTsuvdJjF
- /rupbsXqOoH4gZyT2ohwLwylon3gqct3PzqXvD2IG/JwBEEe7eTpG4u3iImbP44DRg7kxzFwD
- ueEuSwBRHFHdktv38GgZAEcScXZzxaGrGknjlIy7bPTNsKgAeG5nmXAKnMatdQ/5I8BNAy4la
- yONRwghwmtt+LyKzvQkCvIYR6nyCL+FM7by9D//RrVBhC0EcW1X2/uP57HsMJmHu8mMq6MIRt
- DTi6JcYifkcJk1hjurAMQfsIyVZIj0hwrYHF5mNb4gCLAl9pPSs38YC68W6jOZaT4ifYw+ygz
- ULLTcNJjZAI9DFKU2TJmk10lueNJmijGy+sEvG7BiQyxu/z3SJTtWMT9/TU1JSH+Mz85i+dl2
- 4vY9A+ROAwGDCk6Kr5rZMYKlb2IzWwL5EKp6R/5e9jPDO1hV1kAJPzFvG8fZ5x5Qx6NcCfgSO
- gmE6dNU69Ub+vYXc95Ud+kSzxBiUmL9RqRpZnZQJK+BVohh+7OyQT07n+0Hi1JSgvnXkPU8Rp
- /cZpg/kGL0p/SSXQtq3IM7ZriwH6iBQT2vO+M0l4KHMw1p3e4XntbIyEQzEDEh5nHav/2S9Sl
- ZFj/+YLHIIvZ8wJUJYUuigUn3WiQIKMQi3MSafEiDIU4AAnT9LLSF2XQ9WeuuJpxLENFTStiP
- I3SxmKu4pwAI4JYoqCWv5SMHv/cRp3YqFC6+uFSqRgCikSCArVGMBejCdhEoFKW2ZdoBTXiUQ
- Am8jS+ZqriL/o+pxQSVfO7lSms1LlEEmSwYbT8Z/jRlXoOaPhA=
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 5, 2020 at 5:36 PM 'Nick Desaulniers' via Clang Built
-Linux <clang-built-linux@googlegroups.com> wrote:
-> On Tue, May 5, 2020 at 8:33 AM Arnd Bergmann <arnd@arndb.de> wrote:
-> >
-> > I'm not sure if there is anything to be done about it in clang, since it
-> > always does syntactic analysis before dead-code elimination by design.
->
-> That's pretty much it.  We had a patch to Clang to use delayed
-> diagnostics to delay emitting the warning in case the AST node was
-> dropped, but it wasn't accepted in code review.
->
-> >
-> > It is a bit odd though that it only prints the warning sometimes, but
->
-> Sometimes?
+Arnd Bergmann <arnd@arndb.de> writes:
 
-Well, the file is included everywhere in the kernel, but we normally
-don't get the
-warning at all. However, I sometimes make incorrect changes to one file that
-cause some other warning, and the result is an stream of warnings about
-things like this one that are normally hidden. The shift count warning is the
-one that shows up the most. I should try to come up with a better way to
-reproduce it.
+> gcc-10 warns about accesses inside of a zero-length array:
+>
+> drivers/net/wireless/ath/wil6210/cfg80211.c: In function 'wil_cfg80211_scan':
+> drivers/net/wireless/ath/wil6210/cfg80211.c:970:23: error: array
+> subscript 255 is outside the bounds of an interior zero-length array
+> 'struct <anonymous>[0]' [-Werror=zero-length-bounds]
+>   970 |   cmd.cmd.channel_list[cmd.cmd.num_channels++].channel = ch - 1;
+>       |   ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+> In file included from drivers/net/wireless/ath/wil6210/wil6210.h:17,
+>                  from drivers/net/wireless/ath/wil6210/cfg80211.c:11:
+> drivers/net/wireless/ath/wil6210/wmi.h:477:4: note: while referencing 'channel_list'
+>   477 |  } channel_list[0];
+>       |    ^~~~~~~~~~~~
+>
+> Turn this into a flexible array to avoid the warning.
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> Gustavo has a patch to do it for all arrays in this file, and that
+> should get merged as well, but this simpler patch is sufficient
+> to shut up the warning.
 
-        Arnd
+I don't see Gustavo's patch yet so I'll take this one first.
+
+-- 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
