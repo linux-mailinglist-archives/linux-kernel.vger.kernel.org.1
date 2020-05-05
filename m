@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C7241C5888
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:16:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 554341C587C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:15:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729245AbgEEOPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:15:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48876 "EHLO
+        id S1729369AbgEEOPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:15:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729800AbgEEOPU (ORCPT
+        by vger.kernel.org with ESMTP id S1729756AbgEEOPO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:15:20 -0400
+        Tue, 5 May 2020 10:15:14 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B224C061A41
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:15:20 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2941C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:15:13 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jVyLX-0001GX-0e; Tue, 05 May 2020 16:14:55 +0200
+        id 1jVyLY-0001HN-PX; Tue, 05 May 2020 16:14:57 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 838F5FFC8D;
-        Tue,  5 May 2020 16:14:54 +0200 (CEST)
-Message-Id: <20200505134903.531534675@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id C093DFFC8D;
+        Tue,  5 May 2020 16:14:55 +0200 (CEST)
+Message-Id: <20200505134903.622702796@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 05 May 2020 15:43:57 +0200
+Date:   Tue, 05 May 2020 15:43:58 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -44,8 +44,8 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Will Deacon <will@kernel.org>
-Subject: [patch V4 part 3 03/29] x86/entry: Disable interrupts for
- native_load_gs_index() in C code
+Subject: [patch V4 part 3 04/29] x86/traps: Make interrupt enable/disable
+ symmetric in C code
 References: <20200505134354.774943181@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -58,86 +58,172 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is absolutely no point in doing this in ASM code. Move it to C.
+Traps enable interrupts conditionally but rely on the ASM return code to
+disable them again. That results in redundant interrupt disable and trace
+calls.
 
+Make the trap handlers disable interrupts before returning to avoid that,
+which allows simplification of the ASM entry code.
+
+Originally-by: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
- arch/x86/entry/entry_64.S            |   19 +++++++------------
- arch/x86/include/asm/special_insns.h |   14 ++++++++++++--
- 2 files changed, 19 insertions(+), 14 deletions(-)
 
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -1036,27 +1036,22 @@ idtentry alignment_check		do_alignment_c
- idtentry simd_coprocessor_error		do_simd_coprocessor_error	has_error_code=0
- 
- 
--	/*
--	 * Reload gs selector with exception handling
--	 * edi:  new selector
--	 */
-+/*
-+ * Reload gs selector with exception handling
-+ * edi:  new selector
-+ */
- .pushsection .text, "ax"
--SYM_FUNC_START(native_load_gs_index)
-+SYM_FUNC_START(asm_native_load_gs_index)
- 	FRAME_BEGIN
--	pushfq
--	DISABLE_INTERRUPTS(CLBR_ANY & ~CLBR_RDI)
--	TRACE_IRQS_OFF
- 	SWAPGS
- .Lgs_change:
- 	movl	%edi, %gs
- 2:	ALTERNATIVE "", "mfence", X86_BUG_SWAPGS_FENCE
- 	SWAPGS
--	TRACE_IRQS_FLAGS (%rsp)
--	popfq
- 	FRAME_END
- 	ret
--SYM_FUNC_END(native_load_gs_index)
--EXPORT_SYMBOL(native_load_gs_index)
-+SYM_FUNC_END(asm_native_load_gs_index)
-+EXPORT_SYMBOL(asm_native_load_gs_index)
- .popsection
- 
- 	_ASM_EXTABLE(.Lgs_change, .Lbad_gs)
---- a/arch/x86/include/asm/special_insns.h
-+++ b/arch/x86/include/asm/special_insns.h
-@@ -7,6 +7,7 @@
- 
- #include <asm/nops.h>
- #include <asm/processor-flags.h>
-+#include <linux/irqflags.h>
- #include <linux/jump_label.h>
- 
- /*
-@@ -129,7 +130,16 @@ static inline void native_wbinvd(void)
- 	asm volatile("wbinvd": : :"memory");
+---
+ arch/x86/kernel/traps.c |   28 +++++++++++++++++++---------
+ arch/x86/mm/fault.c     |   15 +++++++++++++--
+ 2 files changed, 32 insertions(+), 11 deletions(-)
+
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -201,6 +201,7 @@ static void do_error_trap(struct pt_regs
+ 			NOTIFY_STOP) {
+ 		cond_local_irq_enable(regs);
+ 		do_trap(trapnr, signr, str, regs, error_code, sicode, addr);
++		cond_local_irq_disable(regs);
+ 	}
  }
  
--extern asmlinkage void native_load_gs_index(unsigned);
-+extern asmlinkage void asm_native_load_gs_index(unsigned int selector);
+@@ -399,6 +400,8 @@ dotraplinkage void do_bounds(struct pt_r
+ 		die("bounds", regs, error_code);
+ 
+ 	do_trap(X86_TRAP_BR, SIGSEGV, "bounds", regs, error_code, 0, NULL);
 +
-+static inline void native_load_gs_index(unsigned int selector)
-+{
-+	unsigned long flags;
-+
-+	local_irq_save(flags);
-+	asm_native_load_gs_index(selector);
-+	local_irq_restore(flags);
-+}
- 
- static inline unsigned long __read_cr4(void)
- {
-@@ -186,7 +196,7 @@ static inline void wbinvd(void)
- 
- #ifdef CONFIG_X86_64
- 
--static inline void load_gs_index(unsigned selector)
-+static inline void load_gs_index(unsigned int selector)
- {
- 	native_load_gs_index(selector);
++	cond_local_irq_disable(regs);
  }
+ 
+ enum kernel_gp_hint {
+@@ -458,12 +461,13 @@ dotraplinkage void do_general_protection
+ 
+ 	if (static_cpu_has(X86_FEATURE_UMIP)) {
+ 		if (user_mode(regs) && fixup_umip_exception(regs))
+-			return;
++			goto exit;
+ 	}
+ 
+ 	if (v8086_mode(regs)) {
+ 		local_irq_enable();
+ 		handle_vm86_fault((struct kernel_vm86_regs *) regs, error_code);
++		local_irq_disable();
+ 		return;
+ 	}
+ 
+@@ -475,12 +479,11 @@ dotraplinkage void do_general_protection
+ 
+ 		show_signal(tsk, SIGSEGV, "", desc, regs, error_code);
+ 		force_sig(SIGSEGV);
+-
+-		return;
++		goto exit;
+ 	}
+ 
+ 	if (fixup_exception(regs, X86_TRAP_GP, error_code, 0))
+-		return;
++		goto exit;
+ 
+ 	tsk->thread.error_code = error_code;
+ 	tsk->thread.trap_nr = X86_TRAP_GP;
+@@ -492,11 +495,11 @@ dotraplinkage void do_general_protection
+ 	if (!preemptible() &&
+ 	    kprobe_running() &&
+ 	    kprobe_fault_handler(regs, X86_TRAP_GP))
+-		return;
++		goto exit;
+ 
+ 	ret = notify_die(DIE_GPF, desc, regs, error_code, X86_TRAP_GP, SIGSEGV);
+ 	if (ret == NOTIFY_STOP)
+-		return;
++		goto exit;
+ 
+ 	if (error_code)
+ 		snprintf(desc, sizeof(desc), "segment-related " GPFSTR);
+@@ -518,6 +521,8 @@ dotraplinkage void do_general_protection
+ 
+ 	die_addr(desc, regs, error_code, gp_addr);
+ 
++exit:
++	cond_local_irq_disable(regs);
+ }
+ NOKPROBE_SYMBOL(do_general_protection);
+ 
+@@ -775,7 +780,7 @@ static void math_error(struct pt_regs *r
+ 
+ 	if (!user_mode(regs)) {
+ 		if (fixup_exception(regs, trapnr, error_code, 0))
+-			return;
++			goto exit;
+ 
+ 		task->thread.error_code = error_code;
+ 		task->thread.trap_nr = trapnr;
+@@ -783,7 +788,7 @@ static void math_error(struct pt_regs *r
+ 		if (notify_die(DIE_TRAP, str, regs, error_code,
+ 					trapnr, SIGFPE) != NOTIFY_STOP)
+ 			die(str, regs, error_code);
+-		return;
++		goto exit;
+ 	}
+ 
+ 	/*
+@@ -797,10 +802,12 @@ static void math_error(struct pt_regs *r
+ 	si_code = fpu__exception_code(fpu, trapnr);
+ 	/* Retry when we get spurious exceptions: */
+ 	if (!si_code)
+-		return;
++		goto exit;
+ 
+ 	force_sig_fault(SIGFPE, si_code,
+ 			(void __user *)uprobe_get_trap_addr(regs));
++exit:
++	cond_local_irq_disable(regs);
+ }
+ 
+ dotraplinkage void do_coprocessor_error(struct pt_regs *regs, long error_code)
+@@ -855,6 +862,8 @@ do_device_not_available(struct pt_regs *
+ 
+ 		info.regs = regs;
+ 		math_emulate(&info);
++
++		cond_local_irq_disable(regs);
+ 		return;
+ 	}
+ #endif
+@@ -885,6 +894,7 @@ dotraplinkage void do_iret_error(struct
+ 		do_trap(X86_TRAP_IRET, SIGILL, "iret exception", regs, error_code,
+ 			ILL_BADSTK, (void __user *)NULL);
+ 	}
++	local_irq_disable();
+ }
+ #endif
+ 
+--- a/arch/x86/mm/fault.c
++++ b/arch/x86/mm/fault.c
+@@ -927,6 +927,8 @@ static void
+ 
+ 		force_sig_fault(SIGSEGV, si_code, (void __user *)address);
+ 
++		local_irq_disable();
++
+ 		return;
+ 	}
+ 
+@@ -1548,9 +1550,18 @@ do_page_fault(struct pt_regs *regs, unsi
+ 		return;
+ 
+ 	/* Was the fault on kernel-controlled part of the address space? */
+-	if (unlikely(fault_in_kernel_space(address)))
++	if (unlikely(fault_in_kernel_space(address))) {
+ 		do_kern_addr_fault(regs, hw_error_code, address);
+-	else
++	} else {
+ 		do_user_addr_fault(regs, hw_error_code, address);
++		/*
++		 * User address page fault handling might have reenabled
++		 * interrupts. Fixing up all potential exit points of
++		 * do_user_addr_fault() and its leaf functions is just not
++		 * doable w/o creating an unholy mess or turning the code
++		 * upside down.
++		 */
++		local_irq_disable();
++	}
+ }
+ NOKPROBE_SYMBOL(do_page_fault);
 
