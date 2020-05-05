@@ -2,69 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B21A1C528C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 12:06:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F412F1C5295
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 12:08:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728601AbgEEKGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 06:06:18 -0400
-Received: from foss.arm.com ([217.140.110.172]:36158 "EHLO foss.arm.com"
+        id S1728684AbgEEKIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 06:08:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727931AbgEEKGR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 06:06:17 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E61F631B;
-        Tue,  5 May 2020 03:06:16 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0E2423F305;
-        Tue,  5 May 2020 03:06:15 -0700 (PDT)
-Date:   Tue, 5 May 2020 11:06:13 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Zou Wei <zou_wei@huawei.com>
-Cc:     wangzhou1@hisilicon.com, amurray@thegoodpenguin.co.uk,
-        bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next v2] PCI: dwc: Make hisi_pcie_platform_ops static
-Message-ID: <20200505100613.GC12543@e121166-lin.cambridge.arm.com>
-References: <1587611883-26960-1-git-send-email-zou_wei@huawei.com>
+        id S1728238AbgEEKIU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 06:08:20 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 57C5E206B9;
+        Tue,  5 May 2020 10:08:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588673299;
+        bh=S4OvD3THrqAQKuLduHlxBJEKdVeJl7/rqkq6RJ2Vb14=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=nrCuaVmZqjpy20leR1WT4PjlQ9kE8WDRu7+fFr4RhuykskZYI0e55I4MXJdRZxeco
+         6jWWb7nSu8p69wN7eCcB4Z4nOm3CIWG2zeHsOi0ocA44IkIM1y0tngbpcz4Ktjc6g+
+         XAq6Kx1sgFMYvYaol/e1lFJ++q/nnXLlTQACm0EA=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1jVuUr-009N59-OW; Tue, 05 May 2020 11:08:17 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1587611883-26960-1-git-send-email-zou_wei@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 05 May 2020 11:08:17 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        kgdb-bugreport@lists.sourceforge.net,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, julien.thierry.kdev@gmail.com
+Subject: Re: [RFC Patch v1 2/4] irqchip/gic-v3: Add support to handle SGI as
+ pseudo NMI
+In-Reply-To: <CAFA6WYOn+DLf77C1+e5bq-NdT+o4=o32oPu2b3bxD_U+mLQ3WQ@mail.gmail.com>
+References: <1587726554-32018-1-git-send-email-sumit.garg@linaro.org>
+ <1587726554-32018-3-git-send-email-sumit.garg@linaro.org>
+ <20200425112950.3a4815b6@why> <6fd3d96181ec53f735ef1b6a79d28da1@kernel.org>
+ <CAFA6WYPNNNZeX5zpadayfiZ7P_mHmiREpUd5LZ3Jp+TjGVqoEw@mail.gmail.com>
+ <ac57cb4bbb6507ee98f199d68a514503@kernel.org>
+ <CAFA6WYMheJxeKVC_YWN9owNJhcWTBsaOCvZXxq=GVj5ROJ0cvg@mail.gmail.com>
+ <20200430101322.420e4052@why>
+ <CAFA6WYO+NGLfNkOah4YzXx5XuaDh=QtWHgnMBwwMFY1zRt15GQ@mail.gmail.com>
+ <CAFA6WYPxiwxpJitX7fCSESUvQSa9Dq89GwL4e3w33ooetV=ysw@mail.gmail.com>
+ <CAFA6WYOn+DLf77C1+e5bq-NdT+o4=o32oPu2b3bxD_U+mLQ3WQ@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.3
+Message-ID: <306aecc560a9503e500fbf1f512c6d30@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: sumit.garg@linaro.org, daniel.thompson@linaro.org, jason@lakedaemon.net, catalin.marinas@arm.com, dianders@chromium.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, jason.wessel@windriver.com, kgdb-bugreport@lists.sourceforge.net, tglx@linutronix.de, will@kernel.org, julien.thierry.kdev@gmail.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 23, 2020 at 11:18:03AM +0800, Zou Wei wrote:
-> Fix the following sparse warning:
-> 
-> drivers/pci/controller/dwc/pcie-hisi.c:365:21: warning:
-> symbol 'hisi_pcie_platform_ops' was not declared. Should it be static?
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zou Wei <zou_wei@huawei.com>
-> ---
->  drivers/pci/controller/dwc/pcie-hisi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On 2020-05-05 05:09, Sumit Garg wrote:
+> On Fri, 1 May 2020 at 18:33, Sumit Garg <sumit.garg@linaro.org> wrote:
 
-Applied to pci/dwc, thanks.
+[...]
 
-Lorenzo
+> In case there are no major objections to this approach, I will post
+> complete v2 patch-set (alongwith Marc's patches) for detailed review.
 
-> diff --git a/drivers/pci/controller/dwc/pcie-hisi.c b/drivers/pci/controller/dwc/pcie-hisi.c
-> index 6d9e1b2..11f5ff7 100644
-> --- a/drivers/pci/controller/dwc/pcie-hisi.c
-> +++ b/drivers/pci/controller/dwc/pcie-hisi.c
-> @@ -362,7 +362,7 @@ static int hisi_pcie_platform_init(struct pci_config_window *cfg)
->  	return 0;
->  }
->  
-> -struct pci_ecam_ops hisi_pcie_platform_ops = {
-> +static struct pci_ecam_ops hisi_pcie_platform_ops = {
->  	.bus_shift    = 20,
->  	.init         =  hisi_pcie_platform_init,
->  	.pci_ops      = {
-> -- 
-> 2.6.2
-> 
+As this is still a work in progress (I'm currently wrestling with
+the stupid RPi driver), whatever you have is unlikely to apply on
+top of the final series.
+
+I'm not going to stop you from posting the patches, it is just that
+they will be obsolete by the end of the week...
+
+Thanks,
+
+         M.
+-- 
+Jazz is not dead. It just smells funny...
