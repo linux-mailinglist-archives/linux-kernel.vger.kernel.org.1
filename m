@@ -2,72 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE1DB1C4BEE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 04:26:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2917B1C4C30
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 04:32:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728295AbgEEC0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 May 2020 22:26:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726531AbgEEC0s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 May 2020 22:26:48 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5A11C061A0F;
-        Mon,  4 May 2020 19:26:47 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id h26so63088lfg.6;
-        Mon, 04 May 2020 19:26:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=9duifyysftuOHq6stxeBoXSaEQaPvw17HHZ03swcqDE=;
-        b=mNNLX/8UHRXI7rljEUdJDpRw2lUx2rUaLuqDEePk686GHNQ6bAL2Ys1d3O8JMgBZP+
-         yXsBPGaFV8WW+IEhlQlbLkN96Zaf4CqkWsgw0zZGEhyiMBGyLWLXPjhqPgZQW1Zjl8q1
-         SYI9lFN/PBNQIzX4dc+4daRPw7/LvH0bm5EHe4GhoQ1OV/KyG3+LVw+mvgFGEkpGEY46
-         tCa4kivavxWZgEz3Z/mqD+vTysiKKOQkTLryrIHvmQ4vcE9kzOl2GfXXAxgMOFByKtP+
-         nNm9+rjb4MxISFmdXd2Gc3X/GaFOMPDAsRPVMsWNTV5XR+pfhVuLXbvHP8s5CD5Y8qMw
-         vY5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9duifyysftuOHq6stxeBoXSaEQaPvw17HHZ03swcqDE=;
-        b=RBliiNGbr4uAZOELpfFcDMTv77Se1q8B8k4TuGUxpWbHDzZaTDNTPaOQ6FYi0QrTQD
-         wupvrjHDbKMW6f+jcCa0gcRhfmG/7D1373qEe7rgpq42E54dCq5gQnhTPVcP//hIZqaU
-         olHnOkWPgDYMLL/3oczwzsME6fZpgreh4dYRX5z/ZsL0vQgGHgXNfAhW9VaGeC2THNXL
-         5zxOKkaYjswHwRzaBYRPsmdAOIzKOUhIA4asUPRZ2KJnk7hrD1xaVEs6WBGD6ERn8hp2
-         1rWwgR0G0X/DxEvtt92tEmb/7broEzseFSjtpo/e+zimBz1ifKeYKf6YqSNmoGieYPT+
-         7uYg==
-X-Gm-Message-State: AGi0PuYzAJ37XCxRCx9RyreWx+Fc+EoSQXkjDi82X4R7JX73VCaMqo6O
-        AzHdjr6q8L8YL6Trf98v8ag=
-X-Google-Smtp-Source: APiQypKERqHRObkzlz8mvV/y9D/ECBhuz9QcK72Jwyrc7iOWc3JRU3mm2HwJ7pvu6b0C82oWPyNUew==
-X-Received: by 2002:a19:f610:: with SMTP id x16mr65818lfe.79.1588645606392;
-        Mon, 04 May 2020 19:26:46 -0700 (PDT)
-Received: from localhost.localdomain (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
-        by smtp.gmail.com with ESMTPSA id l25sm449251lfh.71.2020.05.04.19.26.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 May 2020 19:26:45 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        David Heidelberg <david@ixit.cz>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Stephen Warren <swarren@wwwdotorg.org>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        =?UTF-8?q?Pedro=20=C3=82ngelo?= <pangelo@void.io>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Zack Pearsall <zpearsall@yahoo.com>
-Cc:     linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v7 6/6] ARM: tegra_defconfig: Enable options useful for Nexus 7 and Acer A500
-Date:   Tue,  5 May 2020 05:25:17 +0300
-Message-Id: <20200505022517.30523-7-digetx@gmail.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200505022517.30523-1-digetx@gmail.com>
-References: <20200505022517.30523-1-digetx@gmail.com>
+        id S1728313AbgEECcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 May 2020 22:32:07 -0400
+Received: from mga05.intel.com ([192.55.52.43]:57048 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726550AbgEECcG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 May 2020 22:32:06 -0400
+IronPort-SDR: S/eUHMmZdrb3/rxTBFyoDfKKVZKqBehczdx/3XEh8ZtgsL5lnC3cCoiombAEMCMAeGTr7oNT7b
+ TDDepbVOPwMA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2020 19:32:05 -0700
+IronPort-SDR: IfdmrP2wfQf8Lx5BTI5+eXhZ4uw5o1DT6e/G6FaqZxw159+6/n4OgW+v59p8v38chH3331c+6W
+ gALjvXY1X9Ag==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,354,1583222400"; 
+   d="scan'208";a="277726366"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga002.jf.intel.com with ESMTP; 04 May 2020 19:32:04 -0700
+Received: from debox1-hc.jf.intel.com (debox1-hc.jf.intel.com [10.54.75.159])
+        by linux.intel.com (Postfix) with ESMTP id 36C35580609;
+        Mon,  4 May 2020 19:32:05 -0700 (PDT)
+From:   "David E. Box" <david.e.box@linux.intel.com>
+To:     bhelgaas@google.com, andy@infradead.org,
+        alexander.h.duyck@intel.com
+Cc:     "David E. Box" <david.e.box@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>
+Subject: [PATCH 2/3] mfd: Intel Platform Monitoring Technology support
+Date:   Mon,  4 May 2020 19:31:48 -0700
+Message-Id: <20200505023149.11630-1-david.e.box@linux.intel.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200505013206.11223-1-david.e.box@linux.intel.com>
+References: <20200505013206.11223-1-david.e.box@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -75,176 +46,310 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable several very useful options and drivers for hardware that is found
-on Nexus 7 and Acer A500 tablet devices. Please note that some drivers may
-require firmware files extracted from original Android image.
+Intel Platform Monitoring Technology (PMT) is an architecture for
+enumerating and accessing hardware monitoring facilities. PMT supports
+multiple types of monitoring capabilities. Capabilities are discovered
+using PCIe DVSEC with the Intel VID. Each capability is discovered as a
+separate DVSEC instance in a device's config space. This driver uses MFD to
+manage the creation of platform devices for each type so that they may be
+controlled by their own drivers (to be introduced).  Support is included
+for the 3 current capability types, Telemetry, Watcher, and Crashlog. The
+features are available on new Intel platforms starting from Tiger Lake for
+which support is added. Tiger Lake however will not support Watcher and
+Crashlog even though the capabilities appear on the device. So add a quirk
+facility and use it to disable them.
 
-Link: https://github.com/digetx/linux-firmware
-Link: https://github.com/digetx/alsa-ucm-conf
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
 ---
- arch/arm/configs/tegra_defconfig | 42 ++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+ MAINTAINERS                 |   5 ++
+ drivers/mfd/Kconfig         |  10 +++
+ drivers/mfd/Makefile        |   1 +
+ drivers/mfd/intel_pmt.c     | 174 ++++++++++++++++++++++++++++++++++++
+ include/linux/intel-dvsec.h |  44 +++++++++
+ 5 files changed, 234 insertions(+)
+ create mode 100644 drivers/mfd/intel_pmt.c
+ create mode 100644 include/linux/intel-dvsec.h
 
-diff --git a/arch/arm/configs/tegra_defconfig b/arch/arm/configs/tegra_defconfig
-index 0029259a6bf5..b382f06f835b 100644
---- a/arch/arm/configs/tegra_defconfig
-+++ b/arch/arm/configs/tegra_defconfig
-@@ -10,6 +10,8 @@ CONFIG_RT_GROUP_SCHED=y
- CONFIG_CGROUP_FREEZER=y
- CONFIG_CGROUP_CPUACCT=y
- CONFIG_CGROUP_DEBUG=y
-+CONFIG_NAMESPACES=y
-+CONFIG_USER_NS=y
- CONFIG_BLK_DEV_INITRD=y
- # CONFIG_ELF_CORE is not set
- CONFIG_EMBEDDED=y
-@@ -18,6 +20,7 @@ CONFIG_SLAB=y
- CONFIG_ARCH_TEGRA=y
- CONFIG_SMP=y
- CONFIG_HIGHMEM=y
-+CONFIG_SECCOMP=y
- CONFIG_ZBOOT_ROM_TEXT=0x0
- CONFIG_ZBOOT_ROM_BSS=0x0
- CONFIG_KEXEC=y
-@@ -63,11 +66,17 @@ CONFIG_BT_RFCOMM=y
- CONFIG_BT_BNEP=y
- CONFIG_BT_HIDP=y
- CONFIG_BT_HCIBTUSB=m
-+CONFIG_BT_HCIUART=y
-+CONFIG_BT_HCIUART_BCM=y
- CONFIG_CFG80211=y
- CONFIG_MAC80211=y
- CONFIG_RFKILL=y
- CONFIG_RFKILL_INPUT=y
- CONFIG_RFKILL_GPIO=y
-+CONFIG_NFC=y
-+CONFIG_NFC_HCI=y
-+CONFIG_NFC_SHDLC=y
-+CONFIG_NFC_PN544_I2C=y
- CONFIG_PCI=y
- CONFIG_PCIEPORTBUS=y
- CONFIG_PCI_MSI=y
-@@ -106,20 +115,24 @@ CONFIG_INPUT_JOYDEV=y
- CONFIG_INPUT_EVDEV=y
- CONFIG_KEYBOARD_GPIO=y
- CONFIG_KEYBOARD_TEGRA=y
-+CONFIG_KEYBOARD_CAP11XX=y
- CONFIG_KEYBOARD_CROS_EC=y
- CONFIG_MOUSE_PS2_ELANTECH=y
- CONFIG_INPUT_TOUCHSCREEN=y
- CONFIG_TOUCHSCREEN_ATMEL_MXT=y
-+CONFIG_TOUCHSCREEN_ELAN=y
- CONFIG_TOUCHSCREEN_WM97XX=y
- # CONFIG_TOUCHSCREEN_WM9705 is not set
- # CONFIG_TOUCHSCREEN_WM9713 is not set
- CONFIG_TOUCHSCREEN_STMPE=y
- CONFIG_INPUT_MISC=y
-+CONFIG_INPUT_GPIO_VIBRA=y
- # CONFIG_LEGACY_PTYS is not set
- CONFIG_SERIAL_8250=y
- CONFIG_SERIAL_8250_CONSOLE=y
- CONFIG_SERIAL_OF_PLATFORM=y
- CONFIG_SERIAL_TEGRA=y
-+CONFIG_SERIAL_DEV_BUS=y
- # CONFIG_HW_RANDOM is not set
- # CONFIG_I2C_COMPAT is not set
- CONFIG_I2C_CHARDEV=y
-@@ -131,10 +144,12 @@ CONFIG_SPI_TEGRA114=y
- CONFIG_SPI_TEGRA20_SFLASH=y
- CONFIG_SPI_TEGRA20_SLINK=y
- CONFIG_PINCTRL_AS3722=y
-+CONFIG_PINCTRL_MAX77620=y
- CONFIG_PINCTRL_PALMAS=y
- CONFIG_GPIO_SYSFS=y
- CONFIG_GPIO_PCA953X=y
- CONFIG_GPIO_PCA953X_IRQ=y
-+CONFIG_GPIO_MAX77620=y
- CONFIG_GPIO_PALMAS=y
- CONFIG_GPIO_TPS6586X=y
- CONFIG_GPIO_TPS65910=y
-@@ -142,13 +157,21 @@ CONFIG_POWER_RESET=y
- CONFIG_POWER_RESET_AS3722=y
- CONFIG_POWER_RESET_GPIO=y
- CONFIG_BATTERY_SBS=y
-+CONFIG_BATTERY_BQ27XXX=y
-+CONFIG_CHARGER_GPIO=y
-+CONFIG_CHARGER_SMB347=y
- CONFIG_CHARGER_TPS65090=y
- CONFIG_SENSORS_LM90=y
- CONFIG_SENSORS_LM95245=y
-+CONFIG_THERMAL=y
-+CONFIG_THERMAL_STATISTICS=y
-+CONFIG_CPU_THERMAL=y
- CONFIG_WATCHDOG=y
-+CONFIG_MAX77620_WATCHDOG=y
- CONFIG_TEGRA_WATCHDOG=y
- CONFIG_MFD_AS3722=y
- CONFIG_MFD_CROS_EC=y
-+CONFIG_MFD_MAX77620=y
- CONFIG_MFD_MAX8907=y
- CONFIG_MFD_STMPE=y
- CONFIG_MFD_PALMAS=y
-@@ -159,6 +182,7 @@ CONFIG_REGULATOR=y
- CONFIG_REGULATOR_FIXED_VOLTAGE=y
- CONFIG_REGULATOR_AS3722=y
- CONFIG_REGULATOR_GPIO=y
-+CONFIG_REGULATOR_MAX77620=y
- CONFIG_REGULATOR_MAX8907=y
- CONFIG_REGULATOR_PALMAS=y
- CONFIG_REGULATOR_TPS51632=y
-@@ -174,7 +198,10 @@ CONFIG_USB_GSPCA=y
- CONFIG_DRM=y
- CONFIG_DRM_NOUVEAU=m
- CONFIG_DRM_TEGRA=y
-+CONFIG_DRM_TEGRA_STAGING=y
-+CONFIG_DRM_PANEL_LVDS=y
- CONFIG_DRM_PANEL_SIMPLE=y
-+CONFIG_DRM_LVDS_CODEC=y
- # CONFIG_LCD_CLASS_DEVICE is not set
- CONFIG_BACKLIGHT_CLASS_DEVICE=y
- # CONFIG_BACKLIGHT_GENERIC is not set
-@@ -238,6 +265,7 @@ CONFIG_RTC_CLASS=y
- CONFIG_RTC_DRV_AS3722=y
- CONFIG_RTC_DRV_DS1307=y
- CONFIG_RTC_DRV_MAX8907=y
-+CONFIG_RTC_DRV_MAX77686=y
- CONFIG_RTC_DRV_PALMAS=y
- CONFIG_RTC_DRV_TPS6586X=y
- CONFIG_RTC_DRV_TPS65910=y
-@@ -259,11 +287,18 @@ CONFIG_ARCH_TEGRA_2x_SOC=y
- CONFIG_ARCH_TEGRA_3x_SOC=y
- CONFIG_ARCH_TEGRA_114_SOC=y
- CONFIG_ARCH_TEGRA_124_SOC=y
-+CONFIG_PM_DEVFREQ=y
-+CONFIG_ARM_TEGRA_DEVFREQ=y
-+CONFIG_ARM_TEGRA20_DEVFREQ=y
- CONFIG_MEMORY=y
- CONFIG_IIO=y
-+CONFIG_KXCJK1013=y
- CONFIG_MPU3050_I2C=y
-+CONFIG_INV_MPU6050_I2C=y
-+CONFIG_AL3010=y
- CONFIG_SENSORS_ISL29018=y
- CONFIG_SENSORS_ISL29028=y
-+CONFIG_AK8974=y
- CONFIG_AK8975=y
- CONFIG_PWM=y
- CONFIG_PWM_TEGRA=y
-@@ -283,6 +318,13 @@ CONFIG_TMPFS_POSIX_ACL=y
- CONFIG_SQUASHFS=y
- CONFIG_SQUASHFS_LZO=y
- CONFIG_SQUASHFS_XZ=y
-+CONFIG_PSTORE=y
-+CONFIG_PSTORE_LZO_COMPRESS=y
-+CONFIG_PSTORE_LZ4_COMPRESS=y
-+CONFIG_PSTORE_LZ4HC_COMPRESS=y
-+CONFIG_PSTORE_842_COMPRESS=y
-+CONFIG_PSTORE_CONSOLE=y
-+CONFIG_PSTORE_RAM=y
- CONFIG_NFS_FS=y
- CONFIG_NFS_V4=y
- CONFIG_ROOT_NFS=y
+diff --git a/MAINTAINERS b/MAINTAINERS
+index e64e5db31497..bacf7ecd4d21 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -8783,6 +8783,11 @@ S:	Maintained
+ F:	arch/x86/include/asm/intel_telemetry.h
+ F:	drivers/platform/x86/intel_telemetry*
+ 
++INTEL PMT DRIVER
++M:	"David E. Box" <david.e.box@linux.intel.com>
++S:	Maintained
++F:	drivers/mfd/intel_pmt.c
++
+ INTEL UNCORE FREQUENCY CONTROL
+ M:	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+ L:	platform-driver-x86@vger.kernel.org
+diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+index 0a59249198d3..c673031acdf1 100644
+--- a/drivers/mfd/Kconfig
++++ b/drivers/mfd/Kconfig
+@@ -632,6 +632,16 @@ config MFD_INTEL_MSIC
+ 	  Passage) chip. This chip embeds audio, battery, GPIO, etc.
+ 	  devices used in Intel Medfield platforms.
+ 
++config MFD_INTEL_PMT
++	tristate "Intel Platform Monitoring Technology support"
++	depends on PCI
++	select MFD_CORE
++	help
++	  The Intel Platform Monitoring Technology (PMT) is an interface that
++	  provides access to hardware monitor registers. This driver supports
++	  Telemetry, Watcher, and Crashlog PTM capabilities/devices for
++	  platforms starting from Tiger Lake.
++
+ config MFD_IPAQ_MICRO
+ 	bool "Atmel Micro ASIC (iPAQ h3100/h3600/h3700) Support"
+ 	depends on SA1100_H3100 || SA1100_H3600
+diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
+index f935d10cbf0f..0041f673faa1 100644
+--- a/drivers/mfd/Makefile
++++ b/drivers/mfd/Makefile
+@@ -212,6 +212,7 @@ obj-$(CONFIG_MFD_INTEL_LPSS)	+= intel-lpss.o
+ obj-$(CONFIG_MFD_INTEL_LPSS_PCI)	+= intel-lpss-pci.o
+ obj-$(CONFIG_MFD_INTEL_LPSS_ACPI)	+= intel-lpss-acpi.o
+ obj-$(CONFIG_MFD_INTEL_MSIC)	+= intel_msic.o
++obj-$(CONFIG_MFD_INTEL_PMT)	+= intel_pmt.o
+ obj-$(CONFIG_MFD_PALMAS)	+= palmas.o
+ obj-$(CONFIG_MFD_VIPERBOARD)    += viperboard.o
+ obj-$(CONFIG_MFD_RC5T583)	+= rc5t583.o rc5t583-irq.o
+diff --git a/drivers/mfd/intel_pmt.c b/drivers/mfd/intel_pmt.c
+new file mode 100644
+index 000000000000..c48a2b82ca99
+--- /dev/null
++++ b/drivers/mfd/intel_pmt.c
+@@ -0,0 +1,174 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Intel Platform Monitoring Technology MFD driver
++ *
++ * Copyright (c) 2020, Intel Corporation.
++ * All Rights Reserved.
++ *
++ * Authors: David E. Box <david.e.box@linux.intel.com>
++ */
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/pci.h>
++#include <linux/platform_device.h>
++#include <linux/pm.h>
++#include <linux/pm_runtime.h>
++#include <linux/mfd/core.h>
++#include <linux/intel-dvsec.h>
++
++#define TELEM_DEV_NAME		"pmt_telemetry"
++#define WATCHER_DEV_NAME	"pmt_watcher"
++#define CRASHLOG_DEV_NAME	"pmt_crashlog"
++
++static const struct pmt_platform_info tgl_info = {
++	.quirks = PMT_QUIRK_NO_WATCHER | PMT_QUIRK_NO_CRASHLOG,
++};
++
++static int
++pmt_add_dev(struct pci_dev *pdev, struct intel_dvsec_header *header,
++	    struct pmt_platform_info *info)
++{
++	struct mfd_cell *cell, *tmp;
++	const char *name;
++	int i;
++
++	switch (header->id) {
++	case DVSEC_INTEL_ID_TELEM:
++		name = TELEM_DEV_NAME;
++		break;
++	case DVSEC_INTEL_ID_WATCHER:
++		if (info->quirks && PMT_QUIRK_NO_WATCHER) {
++			dev_info(&pdev->dev, "Watcher not supported\n");
++			return 0;
++		}
++		name = WATCHER_DEV_NAME;
++		break;
++	case DVSEC_INTEL_ID_CRASHLOG:
++		if (info->quirks && PMT_QUIRK_NO_WATCHER) {
++			dev_info(&pdev->dev, "Crashlog not supported\n");
++			return 0;
++		}
++		name = CRASHLOG_DEV_NAME;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	cell = devm_kcalloc(&pdev->dev, header->num_entries,
++			    sizeof(*cell), GFP_KERNEL);
++	if (!cell)
++		return -ENOMEM;
++
++	/* Create a platform device for each entry. */
++	for (i = 0, tmp = cell; i < header->num_entries; i++, tmp++) {
++		struct resource *res;
++
++		res = devm_kzalloc(&pdev->dev, sizeof(*res), GFP_KERNEL);
++		if (!res)
++			return -ENOMEM;
++
++		tmp->name = name;
++
++		res->start = pdev->resource[header->tbir].start +
++			     header->offset +
++			     (i * (INTEL_DVSEC_ENTRY_SIZE << 2));
++		res->end = res->start + (header->entry_size << 2) - 1;
++		res->flags = IORESOURCE_MEM;
++
++		tmp->resources = res;
++		tmp->num_resources = 1;
++		tmp->platform_data = header;
++		tmp->pdata_size = sizeof(*header);
++
++	}
++
++	return devm_mfd_add_devices(&pdev->dev, PLATFORM_DEVID_AUTO, cell,
++				    header->num_entries, NULL, 0, NULL);
++}
++
++static int
++pmt_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
++{
++	u16 vid;
++	u32 table;
++	int ret, pos = 0, last_pos = 0;
++	struct pmt_platform_info *info;
++	struct intel_dvsec_header header;
++
++	ret = pcim_enable_device(pdev);
++	if (ret)
++		return ret;
++
++	info = devm_kmemdup(&pdev->dev, (void *)id->driver_data, sizeof(*info),
++			    GFP_KERNEL);
++
++	if (!info)
++		return -ENOMEM;
++
++	while ((pos = pci_find_next_ext_capability(pdev, pos, PCI_EXT_CAP_ID_DVSEC))) {
++		pci_read_config_word(pdev, pos + PCI_DVSEC_HEADER1, &vid);
++		if (vid != PCI_VENDOR_ID_INTEL)
++			continue;
++
++		pci_read_config_word(pdev, pos + PCI_DVSEC_HEADER2,
++				     &header.id);
++
++		pci_read_config_byte(pdev, pos + INTEL_DVSEC_ENTRIES,
++				     &header.num_entries);
++
++		pci_read_config_byte(pdev, pos + INTEL_DVSEC_SIZE,
++				     &header.entry_size);
++
++		if (!header.num_entries || !header.entry_size)
++			return -EINVAL;
++
++		pci_read_config_dword(pdev, pos + INTEL_DVSEC_TABLE,
++				      &table);
++
++		header.tbir = INTEL_DVSEC_TABLE_BAR(table);
++		header.offset = INTEL_DVSEC_TABLE_OFFSET(table);
++		ret = pmt_add_dev(pdev, &header, info);
++		if (ret)
++			dev_warn(&pdev->dev,
++				 "Failed to add devices for DVSEC id %d\n",
++				 header.id);
++		last_pos = pos;
++	}
++
++	if (!last_pos) {
++		dev_err(&pdev->dev, "No supported PMT capabilities found.\n");
++		return -ENODEV;
++	}
++
++	pm_runtime_put(&pdev->dev);
++	pm_runtime_allow(&pdev->dev);
++
++	return 0;
++}
++
++static void pmt_pci_remove(struct pci_dev *pdev)
++{
++	pm_runtime_forbid(&pdev->dev);
++	pm_runtime_get_sync(&pdev->dev);
++}
++
++static const struct pci_device_id pmt_pci_ids[] = {
++	/* TGL */
++	{ PCI_VDEVICE(INTEL, 0x9a0d), (kernel_ulong_t)&tgl_info },
++	{ }
++};
++MODULE_DEVICE_TABLE(pci, pmt_pci_ids);
++
++static struct pci_driver pmt_pci_driver = {
++	.name = "intel-pmt",
++	.id_table = pmt_pci_ids,
++	.probe = pmt_pci_probe,
++	.remove = pmt_pci_remove,
++};
++
++module_pci_driver(pmt_pci_driver);
++
++MODULE_AUTHOR("David E. Box <david.e.box@linux.intel.com>");
++MODULE_DESCRIPTION("Intel Platform Monitoring Technology MFD driver");
++MODULE_LICENSE("GPL v2");
+diff --git a/include/linux/intel-dvsec.h b/include/linux/intel-dvsec.h
+new file mode 100644
+index 000000000000..94f606bf8eae
+--- /dev/null
++++ b/include/linux/intel-dvsec.h
+@@ -0,0 +1,44 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef INTEL_DVSEC_H
++#define INTEL_DVSEC_H
++
++#include <linux/types.h>
++
++#define DVSEC_INTEL_ID_TELEM	2
++#define DVSEC_INTEL_ID_WATCHER	3
++#define DVSEC_INTEL_ID_CRASHLOG	4
++
++/* Intel DVSEC capability vendor space offsets */
++#define INTEL_DVSEC_ENTRIES		0xA
++#define INTEL_DVSEC_SIZE		0xB
++#define INTEL_DVSEC_TABLE		0xC
++#define INTEL_DVSEC_TABLE_BAR(x)	((x) & GENMASK(2, 0))
++#define INTEL_DVSEC_TABLE_OFFSET(x)	((x) >> 3)
++
++#define INTEL_DVSEC_ENTRY_SIZE		4
++
++/* DVSEC header */
++struct intel_dvsec_header {
++	u16	length;
++	u16	id;
++	u8	num_entries;
++	u8	entry_size;
++	u8	entry_max;
++	u8	tbir;
++	u32	offset;
++};
++
++enum pmt_quirks {
++	/* Watcher capability not supported */
++	PMT_QUIRK_NO_WATCHER	= (1 << 0),
++
++	/* Crashlog capability not supported */
++	PMT_QUIRK_NO_CRASHLOG	= (1 << 1),
++};
++
++struct pmt_platform_info {
++	unsigned long quirks;
++	struct intel_dvsec_header **capabilities;
++};
++
++#endif
 -- 
-2.26.0
+2.20.1
 
