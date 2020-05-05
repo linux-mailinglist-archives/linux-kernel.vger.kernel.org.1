@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D3721C5938
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21AF61C5866
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730493AbgEEOXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:23:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48598 "EHLO
+        id S1729173AbgEEOOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:14:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729237AbgEEOOE (ORCPT
+        by vger.kernel.org with ESMTP id S1729495AbgEEOOE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 5 May 2020 10:14:04 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D012C061A0F
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A417BC061A0F
         for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:14:04 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jVyKO-0000cz-7G; Tue, 05 May 2020 16:13:44 +0200
+        id 1jVyKP-0000e0-LJ; Tue, 05 May 2020 16:13:45 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id A5813FFC8D;
-        Tue,  5 May 2020 16:13:43 +0200 (CEST)
-Message-Id: <20200505134100.484532537@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id DFA4AFFC8D;
+        Tue,  5 May 2020 16:13:44 +0200 (CEST)
+Message-Id: <20200505134100.575356107@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 05 May 2020 15:16:26 +0200
+Date:   Tue, 05 May 2020 15:16:27 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -43,9 +43,8 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Brian Gerst <brgerst@gmail.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [patch V4 part 1 24/36] lockdep: Prepare for noinstr sections
+        Will Deacon <will@kernel.org>
+Subject: [patch V4 part 1 25/36] rcu/tree: Mark the idle relevant functions noinstr
 References: <20200505131602.633487962@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -58,214 +57,337 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+These functions are invoked from context tracking and other places in the
+low level entry code. Move them into the .noinstr.text section to exclude
+them from instrumentation.
 
-Force inlining and prevent instrumentation of all sorts by marking the
-functions which are invoked from low level entry code with 'noinstr'.
+Mark the places which are safe to invoke traceable functions with
+instr_begin/end() so objtool won't complain.
 
-Split the irqflags tracking into two parts. One which does the heavy
-lifting while RCU is watching and the final one which can be invoked after
-RCU is turned off.
-
-Signed-off-by: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- include/linux/irqflags.h        |    2 +
- include/linux/sched.h           |    1 
- kernel/locking/lockdep.c        |   70 ++++++++++++++++++++++++++++++----------
- kernel/trace/trace_preemptirq.c |    2 +
- lib/debug_locks.c               |    2 -
- 5 files changed, 59 insertions(+), 18 deletions(-)
+ kernel/rcu/tree.c        |   85 +++++++++++++++++++++++++----------------------
+ kernel/rcu/tree_plugin.h |    4 +-
+ kernel/rcu/update.c      |    7 +--
+ 3 files changed, 52 insertions(+), 44 deletions(-)
 
---- a/include/linux/irqflags.h
-+++ b/include/linux/irqflags.h
-@@ -19,11 +19,13 @@
- #ifdef CONFIG_PROVE_LOCKING
-   extern void lockdep_softirqs_on(unsigned long ip);
-   extern void lockdep_softirqs_off(unsigned long ip);
-+  extern void lockdep_hardirqs_on_prepare(unsigned long ip);
-   extern void lockdep_hardirqs_on(unsigned long ip);
-   extern void lockdep_hardirqs_off(unsigned long ip);
- #else
-   static inline void lockdep_softirqs_on(unsigned long ip) { }
-   static inline void lockdep_softirqs_off(unsigned long ip) { }
-+  static inline void lockdep_hardirqs_on_prepare(unsigned long ip) { }
-   static inline void lockdep_hardirqs_on(unsigned long ip) { }
-   static inline void lockdep_hardirqs_off(unsigned long ip) { }
- #endif
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -983,6 +983,7 @@ struct task_struct {
- 	unsigned int			hardirq_disable_event;
- 	int				hardirqs_enabled;
- 	int				hardirq_context;
-+	u64				hardirq_chain_key;
- 	unsigned long			softirq_disable_ip;
- 	unsigned long			softirq_enable_ip;
- 	unsigned int			softirq_disable_event;
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -3639,9 +3639,6 @@ static void __trace_hardirqs_on_caller(u
- {
- 	struct task_struct *curr = current;
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -75,9 +75,6 @@
+  */
+ #define RCU_DYNTICK_CTRL_MASK 0x1
+ #define RCU_DYNTICK_CTRL_CTR  (RCU_DYNTICK_CTRL_MASK + 1)
+-#ifndef rcu_eqs_special_exit
+-#define rcu_eqs_special_exit() do { } while (0)
+-#endif
  
--	/* we'll do an OFF -> ON transition: */
--	curr->hardirqs_enabled = 1;
--
- 	/*
- 	 * We are going to turn hardirqs on, so set the
- 	 * usage bit for all held locks:
-@@ -3653,16 +3650,13 @@ static void __trace_hardirqs_on_caller(u
- 	 * bit for all held locks. (disabled hardirqs prevented
- 	 * this bit from being set before)
+ static DEFINE_PER_CPU_SHARED_ALIGNED(struct rcu_data, rcu_data) = {
+ 	.dynticks_nesting = 1,
+@@ -229,7 +226,7 @@ void rcu_softirq_qs(void)
+  * RCU is watching prior to the call to this function and is no longer
+  * watching upon return.
+  */
+-static void rcu_dynticks_eqs_enter(void)
++static noinstr void rcu_dynticks_eqs_enter(void)
+ {
+ 	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+ 	int seq;
+@@ -253,7 +250,7 @@ static void rcu_dynticks_eqs_enter(void)
+  * called from an extended quiescent state, that is, RCU is not watching
+  * prior to the call to this function and is watching upon return.
+  */
+-static void rcu_dynticks_eqs_exit(void)
++static noinstr void rcu_dynticks_eqs_exit(void)
+ {
+ 	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+ 	int seq;
+@@ -270,8 +267,6 @@ static void rcu_dynticks_eqs_exit(void)
+ 	if (seq & RCU_DYNTICK_CTRL_MASK) {
+ 		atomic_andnot(RCU_DYNTICK_CTRL_MASK, &rdp->dynticks);
+ 		smp_mb__after_atomic(); /* _exit after clearing mask. */
+-		/* Prefer duplicate flushes to losing a flush. */
+-		rcu_eqs_special_exit();
+ 	}
+ }
+ 
+@@ -299,7 +294,7 @@ static void rcu_dynticks_eqs_online(void
+  *
+  * No ordering, as we are sampling CPU-local information.
+  */
+-static bool rcu_dynticks_curr_cpu_in_eqs(void)
++static __always_inline bool rcu_dynticks_curr_cpu_in_eqs(void)
+ {
+ 	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+ 
+@@ -566,7 +561,7 @@ EXPORT_SYMBOL_GPL(rcutorture_get_gp_data
+  * the possibility of usermode upcalls having messed up our count
+  * of interrupt nesting level during the prior busy period.
+  */
+-static void rcu_eqs_enter(bool user)
++static noinstr void rcu_eqs_enter(bool user)
+ {
+ 	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+ 
+@@ -581,12 +576,14 @@ static void rcu_eqs_enter(bool user)
+ 	}
+ 
+ 	lockdep_assert_irqs_disabled();
++	instr_begin();
+ 	trace_rcu_dyntick(TPS("Start"), rdp->dynticks_nesting, 0, atomic_read(&rdp->dynticks));
+ 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
+ 	rdp = this_cpu_ptr(&rcu_data);
+ 	do_nocb_deferred_wakeup(rdp);
+ 	rcu_prepare_for_idle();
+ 	rcu_preempt_deferred_qs(current);
++	instr_end();
+ 	WRITE_ONCE(rdp->dynticks_nesting, 0); /* Avoid irq-access tearing. */
+ 	// RCU is watching here ...
+ 	rcu_dynticks_eqs_enter();
+@@ -623,7 +620,7 @@ void rcu_idle_enter(void)
+  * If you add or remove a call to rcu_user_enter(), be sure to test with
+  * CONFIG_RCU_EQS_DEBUG=y.
+  */
+-void rcu_user_enter(void)
++noinstr void rcu_user_enter(void)
+ {
+ 	lockdep_assert_irqs_disabled();
+ 	rcu_eqs_enter(true);
+@@ -656,19 +653,23 @@ static __always_inline void rcu_nmi_exit
+ 	 * leave it in non-RCU-idle state.
  	 */
--	if (curr->softirqs_enabled)
-+	if (curr->softirqs_enabled) {
- 		if (!mark_held_locks(curr, LOCK_ENABLED_SOFTIRQ))
- 			return;
--
--	curr->hardirq_enable_ip = ip;
--	curr->hardirq_enable_event = ++curr->irq_events;
--	debug_atomic_inc(hardirqs_on_events);
-+	}
- }
- 
--void lockdep_hardirqs_on(unsigned long ip)
-+void lockdep_hardirqs_on_prepare(unsigned long ip)
- {
- 	if (unlikely(!debug_locks || current->lockdep_recursion))
+ 	if (rdp->dynticks_nmi_nesting != 1) {
++		instr_begin();
+ 		trace_rcu_dyntick(TPS("--="), rdp->dynticks_nmi_nesting, rdp->dynticks_nmi_nesting - 2,
+ 				  atomic_read(&rdp->dynticks));
+ 		WRITE_ONCE(rdp->dynticks_nmi_nesting, /* No store tearing. */
+ 			   rdp->dynticks_nmi_nesting - 2);
++		instr_end();
  		return;
-@@ -3698,20 +3692,62 @@ void lockdep_hardirqs_on(unsigned long i
- 	if (DEBUG_LOCKS_WARN_ON(current->hardirq_context))
- 		return;
- 
-+	current->hardirq_chain_key = current->curr_chain_key;
-+
- 	current->lockdep_recursion++;
- 	__trace_hardirqs_on_caller(ip);
- 	lockdep_recursion_finish();
- }
--NOKPROBE_SYMBOL(lockdep_hardirqs_on);
-+EXPORT_SYMBOL_GPL(lockdep_hardirqs_on_prepare);
-+
-+void noinstr lockdep_hardirqs_on(unsigned long ip)
-+{
-+	struct task_struct *curr = current;
-+
-+	if (unlikely(!debug_locks || curr->lockdep_recursion))
-+		return;
-+
-+	if (curr->hardirqs_enabled) {
-+		/*
-+		 * Neither irq nor preemption are disabled here
-+		 * so this is racy by nature but losing one hit
-+		 * in a stat is not a big deal.
-+		 */
-+		__debug_atomic_inc(redundant_hardirqs_on);
-+		return;
-+	}
-+
-+	/*
-+	 * We're enabling irqs and according to our state above irqs weren't
-+	 * already enabled, yet we find the hardware thinks they are in fact
-+	 * enabled.. someone messed up their IRQ state tracing.
-+	 */
-+	if (DEBUG_LOCKS_WARN_ON(!irqs_disabled()))
-+		return;
-+
-+	/*
-+	 * Ensure the lock stack remained unchanged between
-+	 * lockdep_hardirqs_on_prepare() and lockdep_hardirqs_on().
-+	 */
-+	DEBUG_LOCKS_WARN_ON(current->hardirq_chain_key !=
-+			    current->curr_chain_key);
-+
-+	/* we'll do an OFF -> ON transition: */
-+	curr->hardirqs_enabled = 1;
-+	curr->hardirq_enable_ip = ip;
-+	curr->hardirq_enable_event = ++curr->irq_events;
-+	debug_atomic_inc(hardirqs_on_events);
-+}
-+EXPORT_SYMBOL_GPL(lockdep_hardirqs_on);
- 
- /*
-  * Hardirqs were disabled:
-  */
--void lockdep_hardirqs_off(unsigned long ip)
-+void noinstr lockdep_hardirqs_off(unsigned long ip)
- {
- 	struct task_struct *curr = current;
- 
--	if (unlikely(!debug_locks || current->lockdep_recursion))
-+	if (unlikely(!debug_locks || curr->lockdep_recursion))
- 		return;
- 
- 	/*
-@@ -3732,7 +3768,7 @@ void lockdep_hardirqs_off(unsigned long
- 	} else
- 		debug_atomic_inc(redundant_hardirqs_off);
- }
--NOKPROBE_SYMBOL(lockdep_hardirqs_off);
-+EXPORT_SYMBOL_GPL(lockdep_hardirqs_off);
- 
- /*
-  * Softirqs will be enabled:
-@@ -4408,8 +4444,8 @@ static void print_unlock_imbalance_bug(s
- 	dump_stack();
- }
- 
--static int match_held_lock(const struct held_lock *hlock,
--					const struct lockdep_map *lock)
-+static noinstr int match_held_lock(const struct held_lock *hlock,
-+				   const struct lockdep_map *lock)
- {
- 	if (hlock->instance == lock)
- 		return 1;
-@@ -4696,7 +4732,7 @@ static int
- 	return 0;
- }
- 
--static nokprobe_inline
-+static __always_inline
- int __lock_is_held(const struct lockdep_map *lock, int read)
- {
- 	struct task_struct *curr = current;
-@@ -4956,7 +4992,7 @@ void lock_release(struct lockdep_map *lo
- }
- EXPORT_SYMBOL_GPL(lock_release);
- 
--int lock_is_held_type(const struct lockdep_map *lock, int read)
-+noinstr int lock_is_held_type(const struct lockdep_map *lock, int read)
- {
- 	unsigned long flags;
- 	int ret = 0;
---- a/kernel/trace/trace_preemptirq.c
-+++ b/kernel/trace/trace_preemptirq.c
-@@ -46,6 +46,7 @@ void trace_hardirqs_on(void)
- 		this_cpu_write(tracing_irq_cpu, 0);
  	}
  
-+	lockdep_hardirqs_on_prepare(CALLER_ADDR0);
- 	lockdep_hardirqs_on(CALLER_ADDR0);
- }
- EXPORT_SYMBOL(trace_hardirqs_on);
-@@ -93,6 +94,7 @@ NOKPROBE_SYMBOL(trace_hardirqs_off);
- 		this_cpu_write(tracing_irq_cpu, 0);
- 	}
++	instr_begin();
+ 	/* This NMI interrupted an RCU-idle CPU, restore RCU-idleness. */
+ 	trace_rcu_dyntick(TPS("Startirq"), rdp->dynticks_nmi_nesting, 0, atomic_read(&rdp->dynticks));
+ 	WRITE_ONCE(rdp->dynticks_nmi_nesting, 0); /* Avoid store tearing. */
  
-+	lockdep_hardirqs_on_prepare(CALLER_ADDR0);
- 	lockdep_hardirqs_on(CALLER_ADDR0);
- }
- EXPORT_SYMBOL(trace_hardirqs_on_caller);
---- a/lib/debug_locks.c
-+++ b/lib/debug_locks.c
-@@ -36,7 +36,7 @@ EXPORT_SYMBOL_GPL(debug_locks_silent);
- /*
-  * Generic 'turn off all lock debugging' function:
+ 	if (irq)
+ 		rcu_prepare_for_idle();
++	instr_end();
+ 
+ 	// RCU is watching here ...
+ 	rcu_dynticks_eqs_enter();
+@@ -684,7 +685,7 @@ static __always_inline void rcu_nmi_exit
+  * If you add or remove a call to rcu_nmi_exit(), be sure to test
+  * with CONFIG_RCU_EQS_DEBUG=y.
   */
--int debug_locks_off(void)
-+noinstr int debug_locks_off(void)
+-void rcu_nmi_exit(void)
++void noinstr rcu_nmi_exit(void)
  {
- 	if (debug_locks && __debug_locks_off()) {
- 		if (!debug_locks_silent) {
+ 	rcu_nmi_exit_common(false);
+ }
+@@ -708,7 +709,7 @@ void rcu_nmi_exit(void)
+  * If you add or remove a call to rcu_irq_exit(), be sure to test with
+  * CONFIG_RCU_EQS_DEBUG=y.
+  */
+-void rcu_irq_exit(void)
++void noinstr rcu_irq_exit(void)
+ {
+ 	lockdep_assert_irqs_disabled();
+ 	rcu_nmi_exit_common(true);
+@@ -737,7 +738,7 @@ void rcu_irq_exit_irqson(void)
+  * allow for the possibility of usermode upcalls messing up our count of
+  * interrupt nesting level during the busy period that is just now starting.
+  */
+-static void rcu_eqs_exit(bool user)
++static void noinstr rcu_eqs_exit(bool user)
+ {
+ 	struct rcu_data *rdp;
+ 	long oldval;
+@@ -755,12 +756,14 @@ static void rcu_eqs_exit(bool user)
+ 	// RCU is not watching here ...
+ 	rcu_dynticks_eqs_exit();
+ 	// ... but is watching here.
++	instr_begin();
+ 	rcu_cleanup_after_idle();
+ 	trace_rcu_dyntick(TPS("End"), rdp->dynticks_nesting, 1, atomic_read(&rdp->dynticks));
+ 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
+ 	WRITE_ONCE(rdp->dynticks_nesting, 1);
+ 	WARN_ON_ONCE(rdp->dynticks_nmi_nesting);
+ 	WRITE_ONCE(rdp->dynticks_nmi_nesting, DYNTICK_IRQ_NONIDLE);
++	instr_end();
+ }
+ 
+ /**
+@@ -791,7 +794,7 @@ void rcu_idle_exit(void)
+  * If you add or remove a call to rcu_user_exit(), be sure to test with
+  * CONFIG_RCU_EQS_DEBUG=y.
+  */
+-void rcu_user_exit(void)
++void noinstr rcu_user_exit(void)
+ {
+ 	rcu_eqs_exit(1);
+ }
+@@ -839,28 +842,35 @@ static __always_inline void rcu_nmi_ente
+ 			rcu_cleanup_after_idle();
+ 
+ 		incby = 1;
+-	} else if (irq && tick_nohz_full_cpu(rdp->cpu) &&
+-		   rdp->dynticks_nmi_nesting == DYNTICK_IRQ_NONIDLE &&
+-		   READ_ONCE(rdp->rcu_urgent_qs) &&
+-		   !READ_ONCE(rdp->rcu_forced_tick)) {
+-		// We get here only if we had already exited the extended
+-		// quiescent state and this was an interrupt (not an NMI).
+-		// Therefore, (1) RCU is already watching and (2) The fact
+-		// that we are in an interrupt handler and that the rcu_node
+-		// lock is an irq-disabled lock prevents self-deadlock.
+-		// So we can safely recheck under the lock.
+-		raw_spin_lock_rcu_node(rdp->mynode);
+-		if (rdp->rcu_urgent_qs && !rdp->rcu_forced_tick) {
+-			// A nohz_full CPU is in the kernel and RCU
+-			// needs a quiescent state.  Turn on the tick!
+-			WRITE_ONCE(rdp->rcu_forced_tick, true);
+-			tick_dep_set_cpu(rdp->cpu, TICK_DEP_BIT_RCU);
++	} else if (irq) {
++		instr_begin();
++		if (tick_nohz_full_cpu(rdp->cpu) &&
++		    rdp->dynticks_nmi_nesting == DYNTICK_IRQ_NONIDLE &&
++		    READ_ONCE(rdp->rcu_urgent_qs) &&
++		    !READ_ONCE(rdp->rcu_forced_tick)) {
++			// We get here only if we had already exited the
++			// extended quiescent state and this was an
++			// interrupt (not an NMI).  Therefore, (1) RCU is
++			// already watching and (2) The fact that we are in
++			// an interrupt handler and that the rcu_node lock
++			// is an irq-disabled lock prevents self-deadlock.
++			// So we can safely recheck under the lock.
++			raw_spin_lock_rcu_node(rdp->mynode);
++			if (rdp->rcu_urgent_qs && !rdp->rcu_forced_tick) {
++				// A nohz_full CPU is in the kernel and RCU
++				// needs a quiescent state.  Turn on the tick!
++				WRITE_ONCE(rdp->rcu_forced_tick, true);
++				tick_dep_set_cpu(rdp->cpu, TICK_DEP_BIT_RCU);
++			}
++			raw_spin_unlock_rcu_node(rdp->mynode);
+ 		}
+-		raw_spin_unlock_rcu_node(rdp->mynode);
++		instr_end();
+ 	}
++	instr_begin();
+ 	trace_rcu_dyntick(incby == 1 ? TPS("Endirq") : TPS("++="),
+ 			  rdp->dynticks_nmi_nesting,
+ 			  rdp->dynticks_nmi_nesting + incby, atomic_read(&rdp->dynticks));
++	instr_end();
+ 	WRITE_ONCE(rdp->dynticks_nmi_nesting, /* Prevent store tearing. */
+ 		   rdp->dynticks_nmi_nesting + incby);
+ 	barrier();
+@@ -869,11 +879,10 @@ static __always_inline void rcu_nmi_ente
+ /**
+  * rcu_nmi_enter - inform RCU of entry to NMI context
+  */
+-void rcu_nmi_enter(void)
++noinstr void rcu_nmi_enter(void)
+ {
+ 	rcu_nmi_enter_common(false);
+ }
+-NOKPROBE_SYMBOL(rcu_nmi_enter);
+ 
+ /**
+  * rcu_irq_enter - inform RCU that current CPU is entering irq away from idle
+@@ -897,7 +906,7 @@ NOKPROBE_SYMBOL(rcu_nmi_enter);
+  * If you add or remove a call to rcu_irq_enter(), be sure to test with
+  * CONFIG_RCU_EQS_DEBUG=y.
+  */
+-void rcu_irq_enter(void)
++noinstr void rcu_irq_enter(void)
+ {
+ 	lockdep_assert_irqs_disabled();
+ 	rcu_nmi_enter_common(true);
+@@ -942,7 +951,7 @@ static void rcu_disable_urgency_upon_qs(
+  * if the current CPU is not in its idle loop or is in an interrupt or
+  * NMI handler, return true.
+  */
+-bool notrace rcu_is_watching(void)
++noinstr bool rcu_is_watching(void)
+ {
+ 	bool ret;
+ 
+@@ -986,7 +995,7 @@ void rcu_request_urgent_qs_task(struct t
+  * RCU on an offline processor during initial boot, hence the check for
+  * rcu_scheduler_fully_active.
+  */
+-bool rcu_lockdep_current_cpu_online(void)
++noinstr bool rcu_lockdep_current_cpu_online(void)
+ {
+ 	struct rcu_data *rdp;
+ 	struct rcu_node *rnp;
+@@ -994,12 +1003,12 @@ bool rcu_lockdep_current_cpu_online(void
+ 
+ 	if (in_nmi() || !rcu_scheduler_fully_active)
+ 		return true;
+-	preempt_disable();
++	preempt_disable_notrace();
+ 	rdp = this_cpu_ptr(&rcu_data);
+ 	rnp = rdp->mynode;
+ 	if (rdp->grpmask & rcu_rnp_online_cpus(rnp))
+ 		ret = true;
+-	preempt_enable();
++	preempt_enable_notrace();
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(rcu_lockdep_current_cpu_online);
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -2553,7 +2553,7 @@ static void rcu_bind_gp_kthread(void)
+ }
+ 
+ /* Record the current task on dyntick-idle entry. */
+-static void rcu_dynticks_task_enter(void)
++static void noinstr rcu_dynticks_task_enter(void)
+ {
+ #if defined(CONFIG_TASKS_RCU) && defined(CONFIG_NO_HZ_FULL)
+ 	WRITE_ONCE(current->rcu_tasks_idle_cpu, smp_processor_id());
+@@ -2561,7 +2561,7 @@ static void rcu_dynticks_task_enter(void
+ }
+ 
+ /* Record no current task on dyntick-idle exit. */
+-static void rcu_dynticks_task_exit(void)
++static void noinstr rcu_dynticks_task_exit(void)
+ {
+ #if defined(CONFIG_TASKS_RCU) && defined(CONFIG_NO_HZ_FULL)
+ 	WRITE_ONCE(current->rcu_tasks_idle_cpu, -1);
+--- a/kernel/rcu/update.c
++++ b/kernel/rcu/update.c
+@@ -95,7 +95,7 @@ module_param(rcu_normal_after_boot, int,
+  * Similarly, we avoid claiming an RCU read lock held if the current
+  * CPU is offline.
+  */
+-static bool rcu_read_lock_held_common(bool *ret)
++static noinstr bool rcu_read_lock_held_common(bool *ret)
+ {
+ 	if (!debug_lockdep_rcu_enabled()) {
+ 		*ret = 1;
+@@ -112,7 +112,7 @@ static bool rcu_read_lock_held_common(bo
+ 	return false;
+ }
+ 
+-int rcu_read_lock_sched_held(void)
++noinstr int rcu_read_lock_sched_held(void)
+ {
+ 	bool ret;
+ 
+@@ -270,13 +270,12 @@ struct lockdep_map rcu_callback_map =
+ 	STATIC_LOCKDEP_MAP_INIT("rcu_callback", &rcu_callback_key);
+ EXPORT_SYMBOL_GPL(rcu_callback_map);
+ 
+-int notrace debug_lockdep_rcu_enabled(void)
++noinstr int notrace debug_lockdep_rcu_enabled(void)
+ {
+ 	return rcu_scheduler_active != RCU_SCHEDULER_INACTIVE && debug_locks &&
+ 	       current->lockdep_recursion == 0;
+ }
+ EXPORT_SYMBOL_GPL(debug_lockdep_rcu_enabled);
+-NOKPROBE_SYMBOL(debug_lockdep_rcu_enabled);
+ 
+ /**
+  * rcu_read_lock_held() - might we be in RCU read-side critical section?
 
