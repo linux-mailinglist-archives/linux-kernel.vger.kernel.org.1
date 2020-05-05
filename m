@@ -2,85 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 284091C6470
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 01:22:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A1661C6474
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 01:23:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729624AbgEEXWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 19:22:55 -0400
-Received: from mail.zx2c4.com ([192.95.5.64]:48629 "EHLO mail.zx2c4.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728076AbgEEXWz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 19:22:55 -0400
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id f738d374;
-        Tue, 5 May 2020 23:10:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
-        :references:in-reply-to:from:date:message-id:subject:to:cc
-        :content-type; s=mail; bh=l2C3eGUZm0cGSrtG5eEab6sxYaM=; b=SeDwSb
-        yn2Zee+fmI/17Fiftl1FOfY1ba1n+vgk5HAZNms4Z2oPSAGJPMxoMFsplZ9K1l3V
-        cGiraIm+5V3zyAynv3m1RIB/0qA5dTXLDpLd/YBKUb8HTL7jvssKJJ8dvigqD65A
-        5rtC1o6fnJMFJgfBIE2V2eC6HdPgREalkossHOT7jVrAxd7xZkaiYLAfc2nXmKfo
-        VzyHQy2gwbY2+3sNsCFChilNm2eOPxJNsViUVeVHgAMJ75Jc6cBEx7wucbcgvvH+
-        SA3ST7ASFTqz7RC6QhqSGNAHhPwk5qHHdtR3OEgpK80fsC+pZmru9f+rX57CTUdd
-        cIbZkugKXFiCrJsA==
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 1ce01312 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Tue, 5 May 2020 23:10:18 +0000 (UTC)
-Received: by mail-io1-f46.google.com with SMTP id w11so208087iov.8;
-        Tue, 05 May 2020 16:22:53 -0700 (PDT)
-X-Gm-Message-State: AGi0PublBl+yTXAVZIKw7Z+bJOSBoWqmwicskUHJr7l36wv9r/X/C7nr
-        J37F8U+qEy17ZWHm2wh9lQWXp/9+PXPpsNiDQd8=
-X-Google-Smtp-Source: APiQypJqRUfqrgcUx2pI/zt5ty6fSBfyjcvaFYUblPYalQ/j6fLp2KKxWN5jLWtm/o1Eba9uMrLwhZDX2cvbBF6VU1k=
-X-Received: by 2002:a5e:9401:: with SMTP id q1mr5640448ioj.80.1588720973419;
- Tue, 05 May 2020 16:22:53 -0700 (PDT)
+        id S1729655AbgEEXXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 19:23:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729641AbgEEXXR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 19:23:17 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2743C061A10
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 16:23:16 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id 18so49679pfv.8
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 16:23:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=F4zJ2Wyns0vWJ/VWVLN8p0gKZwpMoM7NNXMOTPjWGo8=;
+        b=Vc55/O8Hn/65Ur4l0r7kF61Ee72u7Mj2dHcVB8s5vddf1pRLtKJ+SSUOSoa2lEuC83
+         CtDyJZy6EL9hSjfTI6jsk2VFGvkSJJdGAJwyoEVcJ+htyASspxPGM7k7FAFlYfIr21tO
+         QcEPgHEYgTGpxY4PQYbfhNAYRULqlS6zzszQU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=F4zJ2Wyns0vWJ/VWVLN8p0gKZwpMoM7NNXMOTPjWGo8=;
+        b=nDGkWtg+KG4vzCWjkpcTaeFQMK/jmu4nc+OBWOgYaZ62vxDwLF8JHQWPwWkVxAmb0Z
+         PR5W1XzVaVN2acsnmwcVCz+9oAoWyr9YDObWRO5sfqYftNn8ItFrxsSn1f52eRNz+Vz9
+         PXCd6sKrFsmzjS48GnokSV3vpQtdVRTHgqaB32drMZhCpZa8+MlVAzbp0EkMgiT+a35a
+         9eKGoKZMCWpVjf+3432pmCyK5rhy4vS7SARh8Vm66GRLoPoak4JtMpTpC4wycTsaH+re
+         FpbE9hBlhHWQqwMb4fIXwOhxzDL4dWPipbUEHpLI+FAmeGbI3o+lpaAdX7MkAZkOUrKg
+         Z5vw==
+X-Gm-Message-State: AGi0PuaOAdALyElqYJk6KnA/wF6cCY0Dm7/eHrMtyn98DMX2xr7Wz3U/
+        uGt8+qzGXyWL9bKSzoTBcW+AlQ==
+X-Google-Smtp-Source: APiQypLvtC8n0a9vwNk9Ryexcufu5OYvbfhZPdrSJ4nmiaOmEQoxagwQrmZnsNARoblWFqiBDRVw7w==
+X-Received: by 2002:a63:ff42:: with SMTP id s2mr4812221pgk.410.1588720996544;
+        Tue, 05 May 2020 16:23:16 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id k186sm169139pga.94.2020.05.05.16.23.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 May 2020 16:23:15 -0700 (PDT)
+Date:   Tue, 5 May 2020 16:23:14 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sysctl: Make sure proc handlers can't expose heap memory
+Message-ID: <202005051621.90DE28B@keescook>
+References: <202005041205.C7AF4AF@keescook>
+ <20200504195937.GS11244@42.do-not-panic.com>
+ <202005041329.169799C65D@keescook>
+ <20200504215903.GT11244@42.do-not-panic.com>
+ <20200505063441.GA3877399@kroah.com>
+ <202005051339.5F1979C4DF@keescook>
+ <20200505220327.GV11244@42.do-not-panic.com>
 MIME-Version: 1.0
-References: <CAHmME9oMcfY4nwkknwN9c4rB-O7xD4GCAOFPoZCbdnq=034=Vw@mail.gmail.com>
- <20200505215503.691205-1-Jason@zx2c4.com> <CAKwvOdk32cDowvrqRPKDRpf2ZiXh=jVnBTmhM-NWD=Ownq9v3w@mail.gmail.com>
- <20200505222540.GA230458@ubuntu-s3-xlarge-x86> <CAHmME9qs0iavoBqd_z_7Xibyz7oxY+FRt+sHyy+sBa1wQc66ww@mail.gmail.com>
- <202005051617.F9B32B5526@keescook> <CAHmME9q3zFe4e1xnpptJ27zywGqngZK2K7LCVzDSoG__ht=fNA@mail.gmail.com>
-In-Reply-To: <CAHmME9q3zFe4e1xnpptJ27zywGqngZK2K7LCVzDSoG__ht=fNA@mail.gmail.com>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Tue, 5 May 2020 17:22:42 -0600
-X-Gmail-Original-Message-ID: <CAHmME9oWTv8YE63FboK4qNmy5vt2pLGyOkP52gPWVRGrhN67SQ@mail.gmail.com>
-Message-ID: <CAHmME9oWTv8YE63FboK4qNmy5vt2pLGyOkP52gPWVRGrhN67SQ@mail.gmail.com>
-Subject: Re: [PATCH] Kbuild: disable FORTIFY_SOURCE on clang-10
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Arnd Bergmann <arnd@arndb.de>, George Burgess <gbiv@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200505220327.GV11244@42.do-not-panic.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 5, 2020 at 5:22 PM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
->
-> On Tue, May 5, 2020 at 5:19 PM Kees Cook <keescook@chromium.org> wrote:
-> >
-> > On Tue, May 05, 2020 at 04:37:38PM -0600, Jason A. Donenfeld wrote:
-> > > On Tue, May 5, 2020 at 4:25 PM Nathan Chancellor
-> > > <natechancellor@gmail.com> wrote:
-> > > > I believe these issues are one in the same. I did a reverse bisect with
-> > > > Arnd's test case and converged on George's first patch:
-> > > >
-> > > > https://github.com/llvm/llvm-project/commit/2dd17ff08165e6118e70f00e22b2c36d2d4e0a9a
-> > > >
-> > > > I think that in lieu of this patch, we should have that patch and its
-> > > > follow-up fix merged into 10.0.1.
-> > >
-> > > If this is fixed in 10.0.1, do we even need to patch the kernel at
-> > > all? Or can we just leave it be, considering most organizations using
-> > > clang know what they're getting into? I'd personally prefer the
-> > > latter, so that we don't clutter things.
-> >
-> > I agree: I'd rather this was fixed in 10.0.1 (but if we do want a
-> > kernel-side work-around for 10.0.0, I would suggest doing the version
-> > check in the Kconfig for FORTIFY_SOURCE instead of in the Makefile,
-> > as that's where these things are supposed to live these days).
->
-> Indeed this belongs in the Makefile. I can send a patch adjusting
+On Tue, May 05, 2020 at 10:03:27PM +0000, Luis Chamberlain wrote:
+> On Tue, May 05, 2020 at 01:41:44PM -0700, Kees Cook wrote:
+> > Right -- while it'd be nice if the developer noticed it, it is _usually_
+> > an unsuspecting end user (or fuzzer), in which case we absolutely want a
+> > WARN (and not a BUG![1]) and have the situations handled gracefully, so
+> > it can be reported and fixed.
+> 
+> I've been using WARN*() for this exact purpose before, so I am as
+> surprised as you are bout these concerns. However if we have folks
 
-er, Kconfig, is what I meant to type.
+I don't see any mismatch here: it's not user-reachable, which is what
+Greg said. WARN is for non-user-reachable "impossible situations". We
+want to know if those can be hit (via bad API usage, races, etc). If
+it's reachable from userspace, then it can't be a WARN() any more and
+needs to be pr_warn().
+
+> shipping with panic-on-warn this would be rather detrimental to our
+> goals.
+> 
+> Greg, are you aware of folks shipping with panic-on-warn on some products?
+
+People shipping with panic_on_warn are expecting to panic for WARNs like
+this. :P
+
+-- 
+Kees Cook
