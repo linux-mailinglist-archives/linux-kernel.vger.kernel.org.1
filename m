@@ -2,125 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F22001C5C7C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E973F1C5C83
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:50:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730048AbgEEPts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 11:49:48 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:38232 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729150AbgEEPts (ORCPT
+        id S1730090AbgEEPuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 11:50:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729871AbgEEPuI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 11:49:48 -0400
-Received: by mail-wm1-f65.google.com with SMTP id g12so2885820wmh.3;
-        Tue, 05 May 2020 08:49:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xduNJNk72lfTzo2Qmvpc5OFvX5tJ6mFglpcx46T2q98=;
-        b=MeOG/1vgoXo2FyResWWECqKPJ3KLdcOAx7OwwgEr+Ysf/n7eYH1hwx+XVPsJwpbhk4
-         xrbXiAZcS52EU1ZapTBhsb+kHnf3sIVs+C1i/dnmxdMTdZsZ10W+D0C9FJgEgi3loTi/
-         ckvGR0yLtGGSciC+eHAsjCxbwObJmZ23405FZTL2qVfklVHDih3ZWvIobkRgkCWbTVqX
-         9czH1q+Ba4FpHvyIod7JrW6vCvbF8WTIkHU7/iVlowxoy5zq/1iJZB6GHrmj6eJf3J8s
-         9juSEBhOEKedGMbJze5faU5B84wqo0Iil+TP1teWoxxw/QfJH1ihp4t7t5zPHgx8p2im
-         OzUg==
-X-Gm-Message-State: AGi0PuY3YxTmSDv3CTbO5vZz1QQy57DPunBT/uR5w2BhnobPT8QN/LzL
-        7n/X1+sK3i59LayqbGkUP5pNS0mW
-X-Google-Smtp-Source: APiQypJjEcrRcBT3LAv7V6UcyX48IsZBqT8tBP0izJb0ESRiEEAZy28VRx0LO7yBVK/IWaJoVVZDeg==
-X-Received: by 2002:a1c:1dc3:: with SMTP id d186mr3955032wmd.90.1588693785850;
-        Tue, 05 May 2020 08:49:45 -0700 (PDT)
-Received: from localhost (ip-37-188-183-9.eurotel.cz. [37.188.183.9])
-        by smtp.gmail.com with ESMTPSA id h10sm3891154wrv.29.2020.05.05.08.49.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 May 2020 08:49:44 -0700 (PDT)
-Date:   Tue, 5 May 2020 17:49:43 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
-        Greg Thelen <gthelen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] memcg: oom: ignore oom warnings from memory.max
-Message-ID: <20200505154943.GR16322@dhcp22.suse.cz>
-References: <20200504065600.GA22838@dhcp22.suse.cz>
- <CALvZod5Ao2PEFPEOckW6URBfxisp9nNpNeon1GuctuHehqk_6Q@mail.gmail.com>
- <20200504141136.GR22838@dhcp22.suse.cz>
- <CALvZod7Ls7rTDOr5vXwEiPneLqbq3JoxfFBxZZ71YWgvLkNr5A@mail.gmail.com>
- <20200504150052.GT22838@dhcp22.suse.cz>
- <CALvZod7EeQm-T4dsBddfMY_szYw3m8gRh5R5GfjQiuQAtCocug@mail.gmail.com>
- <20200504160613.GU22838@dhcp22.suse.cz>
- <CALvZod79hWns9366B+8ZK2Roz8c+vkdA80HqFNMep56_pumdRQ@mail.gmail.com>
- <20200505152712.GB58018@cmpxchg.org>
- <CALvZod48mu1w=fjpD=GXqCMdNq_8rExQ177_EP+Lx+TvR6fw+w@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod48mu1w=fjpD=GXqCMdNq_8rExQ177_EP+Lx+TvR6fw+w@mail.gmail.com>
+        Tue, 5 May 2020 11:50:08 -0400
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EDDFC061A10
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 08:50:08 -0700 (PDT)
+Received: from ramsan ([IPv6:2a02:1810:ac12:ed60:bd97:8453:3b10:1832])
+        by baptiste.telenet-ops.be with bizsmtp
+        id b3pl2200A3VwRR3013plnF; Tue, 05 May 2020 17:49:45 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan with esmtp (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1jVzpJ-0003KC-DL; Tue, 05 May 2020 17:49:45 +0200
+Received: from geert by rox.of.borg with local (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1jVzpJ-0001Cw-A3; Tue, 05 May 2020 17:49:45 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH v2] dt-bindings: timer: renesas: tmu: Convert to json-schema
+Date:   Tue,  5 May 2020 17:49:44 +0200
+Message-Id: <20200505154944.4598-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 05-05-20 08:35:45, Shakeel Butt wrote:
-> On Tue, May 5, 2020 at 8:27 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> >
-> > On Mon, May 04, 2020 at 12:23:51PM -0700, Shakeel Butt wrote:
-> > > On Mon, May 4, 2020 at 9:06 AM Michal Hocko <mhocko@kernel.org> wrote:
-> > > > I really hate to repeat myself but this is no different from a regular
-> > > > oom situation.
-> > >
-> > > Conceptually yes there is no difference but there is no *divine
-> > > restriction* to not make a difference if there is a real world
-> > > use-case which would benefit from it.
-> >
-> > I would wholeheartedly agree with this in general.
-> >
-> > However, we're talking about the very semantics that set memory.max
-> > apart from memory.high: triggering OOM kills to enforce the limit.
-> >
-> > > > when the kernel cannot act and mentions that along with the
-> > > > oom report so that whoever consumes that information can debug or act on
-> > > > that fact.
-> > > >
-> > > > Silencing the oom report is simply removing a potentially useful
-> > > > aid to debug further a potential problem.
-> > >
-> > > *Potentially* useful for debugging versus actually beneficial for
-> > > "sweep before tear down" use-case. Also I am not saying to make "no
-> > > dumps for memory.max when no eligible tasks" a set in stone rule. We
-> > > can always reevaluate when such information will actually be useful.
-> > >
-> > > Johannes/Andrew, what's your opinion?
-> >
-> > I still think that if you want to sweep without triggering OOMs,
-> > memory.high has the matching semantics.
-> >
-> > As you pointed out, it doesn't work well for foreign charges, but that
-> > is more of a limitation in the implementation than in the semantics:
-> >
-> >         /*
-> >          * If the hierarchy is above the normal consumption range, schedule
-> >          * reclaim on returning to userland.  We can perform reclaim here
-> >          * if __GFP_RECLAIM but let's always punt for simplicity and so that
-> >          * GFP_KERNEL can consistently be used during reclaim.  @memcg is
-> >          * not recorded as it most likely matches current's and won't
-> >          * change in the meantime.  As high limit is checked again before
-> >          * reclaim, the cost of mismatch is negligible.
-> >          */
-> >
-> > Wouldn't it be more useful to fix that instead? It shouldn't be much
-> > of a code change to do sync reclaim in try_charge().
-> 
-> Sync reclaim would really simplify the remote charging case. Though
-> should sync reclaim only be done for remote charging or for all?
+Convert the Renesas R-Mobile/R-Car Timer Unit (TMU) Device Tree binding
+documentation to json-schema.
 
-The simplest way around that would be to always do sync reclaim for
-unpopulated memcgs because those do not have any user context to reclaim
-from and for restricted allocation contexts like atomic allocations
-maybe also for GFP_NO{IO,FS}.
+Document missing properties.
+Update the example to match reality.
+
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
+v2:
+  - Add missing "additionalProperties: false",
+  - Add Reviewed-by.
+---
+ .../devicetree/bindings/timer/renesas,tmu.txt | 49 ---------
+ .../bindings/timer/renesas,tmu.yaml           | 99 +++++++++++++++++++
+ 2 files changed, 99 insertions(+), 49 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/timer/renesas,tmu.txt
+ create mode 100644 Documentation/devicetree/bindings/timer/renesas,tmu.yaml
+
+diff --git a/Documentation/devicetree/bindings/timer/renesas,tmu.txt b/Documentation/devicetree/bindings/timer/renesas,tmu.txt
+deleted file mode 100644
+index 29159f4e65abece9..0000000000000000
+--- a/Documentation/devicetree/bindings/timer/renesas,tmu.txt
++++ /dev/null
+@@ -1,49 +0,0 @@
+-* Renesas R-Mobile/R-Car Timer Unit (TMU)
+-
+-The TMU is a 32-bit timer/counter with configurable clock inputs and
+-programmable compare match.
+-
+-Channels share hardware resources but their counter and compare match value
+-are independent. The TMU hardware supports up to three channels.
+-
+-Required Properties:
+-
+-  - compatible: must contain one or more of the following:
+-    - "renesas,tmu-r8a7740" for the r8a7740 TMU
+-    - "renesas,tmu-r8a774a1" for the r8a774A1 TMU
+-    - "renesas,tmu-r8a774b1" for the r8a774B1 TMU
+-    - "renesas,tmu-r8a774c0" for the r8a774C0 TMU
+-    - "renesas,tmu-r8a7778" for the r8a7778 TMU
+-    - "renesas,tmu-r8a7779" for the r8a7779 TMU
+-    - "renesas,tmu-r8a77970" for the r8a77970 TMU
+-    - "renesas,tmu-r8a77980" for the r8a77980 TMU
+-    - "renesas,tmu" for any TMU.
+-      This is a fallback for the above renesas,tmu-* entries
+-
+-  - reg: base address and length of the registers block for the timer module.
+-
+-  - interrupts: interrupt-specifier for the timer, one per channel.
+-
+-  - clocks: a list of phandle + clock-specifier pairs, one for each entry
+-    in clock-names.
+-  - clock-names: must contain "fck" for the functional clock.
+-
+-Optional Properties:
+-
+-  - #renesas,channels: number of channels implemented by the timer, must be 2
+-    or 3 (if not specified the value defaults to 3).
+-
+-
+-Example: R8A7779 (R-Car H1) TMU0 node
+-
+-	tmu0: timer@ffd80000 {
+-		compatible = "renesas,tmu-r8a7779", "renesas,tmu";
+-		reg = <0xffd80000 0x30>;
+-		interrupts = <0 32 IRQ_TYPE_LEVEL_HIGH>,
+-			     <0 33 IRQ_TYPE_LEVEL_HIGH>,
+-			     <0 34 IRQ_TYPE_LEVEL_HIGH>;
+-		clocks = <&mstp0_clks R8A7779_CLK_TMU0>;
+-		clock-names = "fck";
+-
+-		#renesas,channels = <3>;
+-	};
+diff --git a/Documentation/devicetree/bindings/timer/renesas,tmu.yaml b/Documentation/devicetree/bindings/timer/renesas,tmu.yaml
+new file mode 100644
+index 0000000000000000..621addf87a52195f
+--- /dev/null
++++ b/Documentation/devicetree/bindings/timer/renesas,tmu.yaml
+@@ -0,0 +1,99 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/timer/renesas,tmu.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Renesas R-Mobile/R-Car Timer Unit (TMU)
++
++maintainers:
++  - Geert Uytterhoeven <geert+renesas@glider.be>
++  - Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
++
++description:
++  The TMU is a 32-bit timer/counter with configurable clock inputs and
++  programmable compare match.
++
++  Channels share hardware resources but their counter and compare match value
++  are independent. The TMU hardware supports up to three channels.
++
++properties:
++  compatible:
++    items:
++      - enum:
++          - renesas,tmu-r8a7740  # R-Mobile A1
++          - renesas,tmu-r8a774a1 # RZ/G2M
++          - renesas,tmu-r8a774b1 # RZ/G2N
++          - renesas,tmu-r8a774c0 # RZ/G2E
++          - renesas,tmu-r8a7778  # R-Car M1A
++          - renesas,tmu-r8a7779  # R-Car H1
++          - renesas,tmu-r8a77970 # R-Car V3M
++          - renesas,tmu-r8a77980 # R-Car V3H
++      - const: renesas,tmu
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    minItems: 2
++    maxItems: 3
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    const: fck
++
++  power-domains:
++    maxItems: 1
++
++  resets:
++    maxItems: 1
++
++  '#renesas,channels':
++    allOf:
++      - $ref: /schemas/types.yaml#/definitions/uint32
++      - enum: [ 2, 3 ]
++      - default: 3
++    description:
++      Number of channels implemented by the timer.
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++  - power-domains
++
++if:
++  not:
++    properties:
++      compatible:
++        contains:
++          enum:
++            - renesas,tmu-r8a7740
++            - renesas,tmu-r8a7778
++            - renesas,tmu-r8a7779
++then:
++  required:
++    - resets
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/r8a7779-clock.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/power/r8a7779-sysc.h>
++    tmu0: timer@ffd80000 {
++            compatible = "renesas,tmu-r8a7779", "renesas,tmu";
++            reg = <0xffd80000 0x30>;
++            interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>,
++                         <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>,
++                         <GIC_SPI 34 IRQ_TYPE_LEVEL_HIGH>;
++            clocks = <&mstp0_clks R8A7779_CLK_TMU0>;
++            clock-names = "fck";
++            power-domains = <&sysc R8A7779_PD_ALWAYS_ON>;
++            #renesas,channels = <3>;
++    };
 -- 
-Michal Hocko
-SUSE Labs
+2.17.1
+
