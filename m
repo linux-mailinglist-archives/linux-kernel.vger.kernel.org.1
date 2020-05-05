@@ -2,140 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7ABF1C598B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C75F01C5976
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729344AbgEEOaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:30:04 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:58760 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727785AbgEEOaD (ORCPT
+        id S1729481AbgEEO1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:27:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729346AbgEEO1t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:30:03 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 045ENgFB045021;
-        Tue, 5 May 2020 14:29:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=r54KCjpGckUZ0+38YAKSbRe8tu2P51ZrL5EpCNolNxE=;
- b=wttvTI9ioTIfbdblHI6hVQZW1y3CmRRzqbBaXH7BCIj5KsIRY4TpKL00c0WNNcmiDakq
- EjOiGKFvxzmyZxPtCH8Er2wPDZ/EHgMZs/1eJWoBN+whHSgTyVeeOQacTeANTlRaXlZy
- NpbQUoVfmlK3AtmPH6uGv+rb94WymK8yFLEQfuDUNAOU3OBdDpf6bi8VM8PwpeYl1MYq
- rEVMzlKwVTzTfqPWvA71u3n6n6xKdAFaVS3EOA7jEO0/Ckj9HS5734CnSAm20FLQEKMM
- Vv9SWZMQbpGHEsZcDLouVDHpLulErvXuNFKB26OYP2AXY1HSIzge6+GNlECm8JytPpg4 xg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 30s09r53ev-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 05 May 2020 14:29:41 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 045EMkXK004117;
-        Tue, 5 May 2020 14:27:40 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 30sjdt4tju-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 05 May 2020 14:27:39 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 045ERcD7020913;
-        Tue, 5 May 2020 14:27:38 GMT
-Received: from [192.168.0.190] (/68.201.65.98)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 05 May 2020 07:27:38 -0700
-Subject: Re: [PATCH v2] fs: jfs: fix a possible data race in
- metapage_writepage()
-To:     Markus Elfring <Markus.Elfring@web.de>,
-        Jia-Ju Bai <baijiaju1990@gmail.com>,
-        jfs-discussion@lists.sourceforge.net
-Cc:     Dave Kleikamp <shaggy@kernel.org>, linux-kernel@vger.kernel.org
-References: <20200505135313.28793-1-baijiaju1990@gmail.com>
- <d3e126df-e7f6-00bd-aa3c-ea39fcd1582e@web.de>
-From:   Dave Kleikamp <dave.kleikamp@oracle.com>
-Autocrypt: addr=dave.kleikamp@oracle.com; prefer-encrypt=mutual; keydata=
- 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
- rnNNL3zBkwD3nWcTxFnX
-Message-ID: <7149f225-7915-77b0-9b36-d100ca4a0658@oracle.com>
-Date:   Tue, 5 May 2020 09:27:33 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 5 May 2020 10:27:49 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45F61C061A0F;
+        Tue,  5 May 2020 07:27:48 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id t9so1215266pjw.0;
+        Tue, 05 May 2020 07:27:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0d2zCfXjqEkoPjXPCO2eW50jfsT6IHtXFCM1nqKnraI=;
+        b=FMGNXT2fKKRoI0Pby3QgAP4Puaf5obX+oQRGw4q02LmDjkOt+RB6cbjPh0JwHzPXfm
+         AHgHRP5heysnfoNbOXjMjPwe8r8YvUqZYGmP0RO83fTG6L+69/EfRbWXibcjJEy4klyV
+         ZkVXEgz1N+v2K2Upz/9ML8/Ba9tJGB9+/XJ9/7DVg8asisv+bu2bxXRwNeUmRu4GS+rQ
+         rnmONhdRXEj+ZJuD0x7PLI2XHbxKq8lKli1c1n4pX2VMrBHmcR28oHgqtcjOLi7KktiM
+         b8StMxT9POylTHoanWOo3dIONP33MQIuul6kPigKUGMMWQ3HZmwaUKYbJBSJB+xZNnaH
+         zY0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0d2zCfXjqEkoPjXPCO2eW50jfsT6IHtXFCM1nqKnraI=;
+        b=icpyOGM7V3Lj9PJQO6gvlswQnj7J4IHV0uB5If0bkIbI1vroxNNT5d99CedpzeCkbb
+         xXWtQsCfuN6zgdUL6a1yuiFhZb5gLw1hlspxqn4ElJYmgrT1cFPScKrkRSIxZCOrHz3L
+         aePNq+eoo/UmqwK9Spm0pCQh0XmzXhEI90mlxM3O1dlt5HItVqftUWzlIOihZw0C2eVe
+         BUpBlPI2/vr7iof0Fueo+Kc1x/HOOew0hrEHbtyoy2S/3B1UXJ12OzghauTFpuo96iEO
+         7O/HVkzDj/AbdhQt90pJNYpnlTI3Pl9WjIkqCBa9qzkwrJ6gOUSJ5uT4HRfoLBbz4gvQ
+         JCzA==
+X-Gm-Message-State: AGi0PuYTCai6Cv7s/X3Oj7Hh9T3qme0msReFwrkwSHl2/zur5q6T+Nmb
+        rsDqlbekm0iI2mD56ic+J3pJBM8AqYxoKD96cDs=
+X-Google-Smtp-Source: APiQypI3q+uz07fz96ONWB3ggyRrtBojxXIGIS+eu+fruU+zGJ0LKKFfiU+ajF4EFSxYHvXi9wX/IzALXoeJqGzIQko=
+X-Received: by 2002:a17:90a:fa81:: with SMTP id cu1mr3442100pjb.25.1588688867728;
+ Tue, 05 May 2020 07:27:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <d3e126df-e7f6-00bd-aa3c-ea39fcd1582e@web.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9612 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0 mlxscore=0
- bulkscore=0 adultscore=0 phishscore=0 mlxlogscore=904 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2005050117
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9612 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0
- lowpriorityscore=0 spamscore=0 adultscore=0 clxscore=1011 suspectscore=0
- priorityscore=1501 malwarescore=0 mlxlogscore=948 phishscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005050117
+References: <20200502182951.114231-1-hdegoede@redhat.com> <20200502182951.114231-5-hdegoede@redhat.com>
+ <7c3e5f844a224ff780cd8e3b3f5f7641@AUSX13MPC101.AMER.DELL.COM>
+ <13a8ec94-1eae-4d95-7238-85c612ebc896@redhat.com> <afe7c366c97f4ab18d5a98a9695ceff6@AUSX13MPC101.AMER.DELL.COM>
+In-Reply-To: <afe7c366c97f4ab18d5a98a9695ceff6@AUSX13MPC101.AMER.DELL.COM>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 5 May 2020 17:27:41 +0300
+Message-ID: <CAHp75VcNJFfgshhL_pYsHodF1pMNySw08Z_4jr-vVkE-Xpj_ng@mail.gmail.com>
+Subject: Re: [PATCH 4/5] platform/x86: intel-vbtn: Also handle tablet-mode
+ switch on "Detachable" and "Portable" chassis-types
+To:     Mario Limonciello <Mario.Limonciello@dell.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/5/20 9:15 AM, Markus Elfring wrote:
->> This data race is found by our concurrency fuzzer.
-> 
-> * How do you think about to replace the word “is” by “was”?
-> 
-> * Is this analysis tool publicly available?
-> 
-> 
-> …
->> ---
->>  fs/jfs/jfs_metapage.c | 11 +++++++++--
-> 
-> I suggest to omit the triple dashes before this information.
+On Tue, May 5, 2020 at 5:22 PM <Mario.Limonciello@dell.com> wrote:
+>
+> > -----Original Message-----
+> > From: platform-driver-x86-owner@vger.kernel.org <platform-driver-x86-
+> > owner@vger.kernel.org> On Behalf Of Hans de Goede
+> > Sent: Tuesday, May 5, 2020 4:06 AM
+> > To: Limonciello, Mario; dvhart@infradead.org; andy@infradead.org
+> > Cc: linux-acpi@vger.kernel.org; platform-driver-x86@vger.kernel.org; linux-
+> > kernel@vger.kernel.org
+> > Subject: Re: [PATCH 4/5] platform/x86: intel-vbtn: Also handle tablet-mode
+> > switch on "Detachable" and "Portable" chassis-types
+> >
+> >
+> > [EXTERNAL EMAIL]
+> >
+> > Hi,
+> >
+> > On 5/4/20 5:37 PM, Mario.Limonciello@dell.com wrote:
+> > >
+> > >
+> > >> -----Original Message-----
+> > >> From: Hans de Goede <hdegoede@redhat.com>
+> > >> Sent: Saturday, May 2, 2020 1:30 PM
+> > >> To: Darren Hart; Andy Shevchenko; Limonciello, Mario
+> > >> Cc: Hans de Goede; linux-acpi@vger.kernel.org; platform-driver-
+> > >> x86@vger.kernel.org; linux-kernel@vger.kernel.org
+> > >> Subject: [PATCH 4/5] platform/x86: intel-vbtn: Also handle tablet-mode
+> > switch
+> > >> on "Detachable" and "Portable" chassis-types
+> > >>
+> > >>
+> > >> [EXTERNAL EMAIL]
+> > >>
+> > >> Commit de9647efeaa9 ("platform/x86: intel-vbtn: Only activate tablet mode
+> > >> switch on 2-in-1's") added a DMI chassis-type check to avoid accidentally
+> > >> reporting SW_TABLET_MODE = 1 to userspace on laptops.
+> > >>
+> > >> Some devices with a detachable keyboard and using the intel-vbnt (INT33D6)
+> > >> interface to report if they are in tablet mode (keyboard detached) or not,
+> > >> report 32 / "Detachable" as chassis-type, e.g. the HP Pavilion X2 series.
+> > >>
+> > >> Other devices with a detachable keyboard and using the intel-vbnt (INT33D6)
+> > >> interface to report SW_TABLET_MODE, report 8 / "Portable" as chassis-type.
+> > >> The Dell Venue 11 Pro 7130 is an example of this.
+> > >>
+> > >> Extend the DMI chassis-type check to also accept Portables and Detachables
+> > >> so that the intel-vbtn driver will report SW_TABLET_MODE on these devices.
+> > >>
+> > >> Note the chassis-type check was originally added to avoid a false-positive
+> > >> tablet-mode report on the Dell XPS 9360 laptop. To the best of my knowledge
+> > >> that laptop is using a chassis-type of 9 / "Laptop", so after this commit
+> > >> we still ignore the tablet-switch for that chassis-type.
+> > >
+> > > Yes that's correct.
+> > >
+> > >>
+> > >> Fixes: de9647efeaa9 ("platform/x86: intel-vbtn: Only activate tablet mode
+> > >> switch on 2-in-1's")
+> > >> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> > >> ---
+> > >> Looking at the Microsoft Windows documentation for tablet-mode reporting:
+> > >> https://docs.microsoft.com/en-us/windows-hardware/drivers/gpiobtn/button-
+> > >> implementation
+> > >>
+> > >> Then the presence of a tablet-mode switch is indicated by the presence
+> > >> of a PNP0C60 compatible ACPI devices. There are 2 ways in which this device
+> > >> can report the tablet-mode. 1. Directly providing a GpioInt resource inside
+> > >> the PNP0C60 device, 2. Through injecting events from a Windows driver.
+> > >>
+> > >> It seems that the intel-vbtn / the INT33D6 ACPI device is the ACPI side
+> > >> of Intel's generic solution for the case where the tablet-mode comes from
+> > >> the embedded-controller and needs to be "injected".
+> > >>
+> > >> This all suggests that it might be better to replace the chassis-type
+> > >> check with a acpi_dev_present("PNP0C60", NULL, -1) check.
+> > >>
+> > >> Mario, can you provide an acpidump and alsa-info.sh output for the
+> > >> Dell XPS 9360, so that I can check if that might help with the issue
+> > >> there, and thus is a potential candidate to replace the chassis-type
+> > >> check?
+> > >
+> > > Unfortunately with WFH right now, I don't have access to a XPS 9630 to
+> > > double check the patch series.
+> > >
+> > > However I do agree this should be a good approach.
+> >
+> > Ok, so lets stick with the chassis-type check (as amended by this patch)
+> > for now then. Then once you are able to go to your office again, we
+> > can examine the acpi_dev_present("PNP0C60", NULL, -1) alternative.
+>
+> I know XPS 13's are pretty popular, perhaps someone on the mailing list who has
+> one can share ACPI dump in the interim.
 
-That's standard. There's no need to the diffstat to persist in the
-commit message.
+https://github.com/intel/dptfxtract/issues/13
+?
 
-> 
-> Regards,
-> Markus
-> 
+-- 
+With Best Regards,
+Andy Shevchenko
