@@ -2,79 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B04391C54CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 13:53:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9C791C54D1
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 13:54:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728821AbgEELxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 07:53:17 -0400
-Received: from foss.arm.com ([217.140.110.172]:38182 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725766AbgEELxQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 07:53:16 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4E61A30E;
-        Tue,  5 May 2020 04:53:16 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4EE683F68F;
-        Tue,  5 May 2020 04:53:15 -0700 (PDT)
-Date:   Tue, 5 May 2020 12:53:13 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH] PCI: dwc: Fix inner MSI IRQ domain registration
-Message-ID: <20200505115313.GF12543@e121166-lin.cambridge.arm.com>
-References: <20200501113921.366597-1-maz@kernel.org>
+        id S1728845AbgEELyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 07:54:40 -0400
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:11182 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725766AbgEELyj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 07:54:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1588679679; x=1620215679;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   mime-version;
+  bh=8BQjmnGt09a7PAHU18wEkeIfDAmDAJHpQTHJEnn6w0k=;
+  b=aUUbOoS2RtAtpHXKclGfaQLW6yeqezbmLc+xAOZADImRYqhuXlfysdcB
+   DbKzin9MwuUY68ikfclv0PQHuf9nT7iXe8hGrqJPtTQiou6LarrqFPTh8
+   7TpMroLAXhXLwllHhN0h78QiX22+f8v324m//4UsmIMjXt2GQVjjgjRci
+   g=;
+IronPort-SDR: FZlmZwqxqqUZrb6JmIrTHUBiXbJoSIHpzmQ1GRvTLuYiD3jqOlzFxcoLjShd7Mzo8yVjiLfolf
+ NMGkI93GDOTw==
+X-IronPort-AV: E=Sophos;i="5.73,354,1583193600"; 
+   d="scan'208";a="28942070"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2a-69849ee2.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 05 May 2020 11:54:25 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2a-69849ee2.us-west-2.amazon.com (Postfix) with ESMTPS id A54A5A22CE;
+        Tue,  5 May 2020 11:54:24 +0000 (UTC)
+Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 5 May 2020 11:54:24 +0000
+Received: from u886c93fd17d25d.ant.amazon.com (10.43.161.204) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 5 May 2020 11:54:18 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     SeongJae Park <sjpark@amazon.com>
+CC:     <davem@davemloft.net>, <viro@zeniv.linux.org.uk>,
+        <kuba@kernel.org>, <gregkh@linuxfoundation.org>,
+        <edumazet@google.com>, <sj38.park@gmail.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        SeongJae Park <sjpark@amazon.de>, <snu@amazon.com>,
+        <amit@kernel.org>, <stable@vger.kernel.org>
+Subject: Re: [PATCH net v2 0/2] Revert the 'socket_alloc' life cycle change
+Date:   Tue, 5 May 2020 13:54:02 +0200
+Message-ID: <20200505115402.25768-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200505081035.7436-1-sjpark@amazon.com> (raw)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200501113921.366597-1-maz@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-Originating-IP: [10.43.161.204]
+X-ClientProxiedBy: EX13D06UWC004.ant.amazon.com (10.43.162.97) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 01, 2020 at 12:39:21PM +0100, Marc Zyngier wrote:
-> On a system that uses the internal DWC MSI widget, I get this
-> warning from debugfs when CONFIG_GENERIC_IRQ_DEBUGFS is selected:
-> 
->   debugfs: File ':soc:pcie@fc000000' in directory 'domains' already present!
-> 
-> This is due to the fact that the DWC MSI code tries to register two
-> IRQ domains for the same firmware node, without telling the low
-> level code how to distinguish them (by setting a bus token). This
-> further confuses debugfs which tries to create corresponding
-> files for each domain.
-> 
-> Fix it by tagging the inner domain as DOMAIN_BUS_NEXUS, which is
-> the closest thing we have as to "generic MSI".
-> 
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> ---
->  drivers/pci/controller/dwc/pcie-designware-host.c | 2 ++
->  1 file changed, 2 insertions(+)
+CC-ing stable@vger.kernel.org and adding some more explanations.
 
-Applied to pci/dwc, thanks !
+On Tue, 5 May 2020 10:10:33 +0200 SeongJae Park <sjpark@amazon.com> wrote:
 
-Lorenzo
+> From: SeongJae Park <sjpark@amazon.de>
+> 
+> The commit 6d7855c54e1e ("sockfs: switch to ->free_inode()") made the
+> deallocation of 'socket_alloc' to be done asynchronously using RCU, as
+> same to 'sock.wq'.  And the following commit 333f7909a857 ("coallocate
+> socket_sq with socket itself") made those to have same life cycle.
+> 
+> The changes made the code much more simple, but also made 'socket_alloc'
+> live longer than before.  For the reason, user programs intensively
+> repeating allocations and deallocations of sockets could cause memory
+> pressure on recent kernels.
 
-> diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-> index 395feb8ca051..3c43311bb95c 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-> @@ -264,6 +264,8 @@ int dw_pcie_allocate_domains(struct pcie_port *pp)
->  		return -ENOMEM;
->  	}
->  
-> +	irq_domain_update_bus_token(pp->irq_domain, DOMAIN_BUS_NEXUS);
-> +
->  	pp->msi_domain = pci_msi_create_irq_domain(fwnode,
->  						   &dw_pcie_msi_domain_info,
->  						   pp->irq_domain);
+I found this problem on a production virtual machine utilizing 4GB memory while
+running lebench[1].  The 'poll big' test of lebench opens 1000 sockets, polls
+and closes those.  This test is repeated 10,000 times.  Therefore it should
+consume only 1000 'socket_alloc' objects at once.  As size of socket_alloc is
+about 800 Bytes, it's only 800 KiB.  However, on the recent kernels, it could
+consume up to 10,000,000 objects (about 8 GiB).  On the test machine, I
+confirmed it consuming about 4GB of the system memory and results in OOM.
+
+[1] https://github.com/LinuxPerfStudy/LEBench
+
+> 
+> To avoid the problem, this commit reverts the changes.
+
+I also tried to make fixup rather than reverts, but I couldn't easily find
+simple fixup.  As the commits 6d7855c54e1e and 333f7909a857 were for code
+refactoring rather than performance optimization, I thought introducing complex
+fixup for this problem would make no sense.  Meanwhile, the memory pressure
+regression could affect real machines.  To this end, I decided to quickly
+revert the commits first and consider better refactoring later.
+
+
+Thanks,
+SeongJae Park
+
+> 
+> SeongJae Park (2):
+>   Revert "coallocate socket_wq with socket itself"
+>   Revert "sockfs: switch to ->free_inode()"
+> 
+>  drivers/net/tap.c      |  5 +++--
+>  drivers/net/tun.c      |  8 +++++---
+>  include/linux/if_tap.h |  1 +
+>  include/linux/net.h    |  4 ++--
+>  include/net/sock.h     |  4 ++--
+>  net/core/sock.c        |  2 +-
+>  net/socket.c           | 23 ++++++++++++++++-------
+>  7 files changed, 30 insertions(+), 17 deletions(-)
+> 
 > -- 
-> 2.26.2
-> 
+> 2.17.1
