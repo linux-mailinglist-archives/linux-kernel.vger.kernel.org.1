@@ -2,94 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6FBA1C5C24
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:45:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5532A1C5C1A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:44:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730653AbgEEPoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 11:44:55 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:64380 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730520AbgEEPox (ORCPT
+        id S1730499AbgEEPon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 11:44:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729510AbgEEPom (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 11:44:53 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1588693492; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=S242E4d9Q+x3WazT0LfEblmsx0Y/I8PQEL3G5k/rxP8=; b=ZinHeuD1v+4jTK72AWc67vFygYv5mwimVc7ANG6FwW2UYSYs0WrF7pTZgYNy6OY0Eu4d8H7B
- UrnijSiKWS+8lZu+duTcoLlq/wPQiZl62V2XYdBi+QglMbDy+KiwgqO+hZdHU/3RfdP0Y4vv
- WTNsXvto6EF/sU5CXxiu9pdRvGU=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5eb189e5.7fcd01fa8c38-smtp-out-n03;
- Tue, 05 May 2020 15:44:37 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 03FD1C44788; Tue,  5 May 2020 15:44:36 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6992FC433F2;
-        Tue,  5 May 2020 15:44:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6992FC433F2
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Maya Erez <merez@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dedy Lansky <dlansky@codeaurora.org>,
-        Ahmad Masri <amasri@codeaurora.org>,
-        Alexei Avshalom Lazar <ailizaro@codeaurora.org>,
-        Tzahi Sabo <stzahi@codeaurora.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Lior David <liord@codeaurora.org>,
-        linux-wireless@vger.kernel.org, wil6210@qti.qualcomm.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] wil6210: avoid gcc-10 zero-length-bounds warning
-References: <20200505143332.1398524-1-arnd@arndb.de>
-Date:   Tue, 05 May 2020 18:44:31 +0300
-In-Reply-To: <20200505143332.1398524-1-arnd@arndb.de> (Arnd Bergmann's message
-        of "Tue, 5 May 2020 16:33:24 +0200")
-Message-ID: <877dxqcrog.fsf@kamboji.qca.qualcomm.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        Tue, 5 May 2020 11:44:42 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41F6DC061A0F;
+        Tue,  5 May 2020 08:44:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=4pG9Q3mxGfQII0zN/KiOtZT4U+FTy9kLkMvMkZu6fuA=; b=aDgjCnQ88jQ8GWFdgLyeqhtywg
+        4RPASZALdwfDM4GEFmKBqGjztwc5XP2UhxJQ4+jaUW9tf6+iQklDSbXlEDQayXqxCOiWMpxtilwdA
+        qp5fykFBHZVnEqCXoKwGlpmPY9ZWatL+x47eD0VMek2+hRum8YLdbmR0a2Iyqi3M2nRUbRoaQqIlP
+        jsZladMw2HtoZURiCgQsp/MwTnPYCsFnoE4TLRv+s9p+GYNhWayJPcsnIm0MxlP2fGRWP2lWct/uo
+        oHca+LId/MCvpFZSlrm3j1tjVqMkj42sniuYrbHH/nWWF0D1RfTSFI3Hs29hcwIOnq1v7hwdGeZ94
+        Ibk/A2Ng==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jVzkM-0004EJ-PU; Tue, 05 May 2020 15:44:38 +0000
+Subject: Re: [PATCH v5 3/6] fs: Enable to enforce noexec mounts or file exec
+ through O_MAYEXEC
+To:     =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>,
+        linux-kernel@vger.kernel.org
+Cc:     Aleksa Sarai <cyphar@cyphar.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Heimes <christian@python.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Deven Bowers <deven.desai@linux.microsoft.com>,
+        Eric Chiang <ericchiang@google.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mickael.salaun@ssi.gouv.fr>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        =?UTF-8?Q?Philippe_Tr=c3=a9buchet?= 
+        <philippe.trebuchet@ssi.gouv.fr>,
+        Scott Shell <scottsh@microsoft.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Steve Dower <steve.dower@python.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>,
+        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+References: <20200505153156.925111-1-mic@digikod.net>
+ <20200505153156.925111-4-mic@digikod.net>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <fb6e2d7d-a372-3e79-214d-3ac9a451cd0a@infradead.org>
+Date:   Tue, 5 May 2020 08:44:35 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20200505153156.925111-4-mic@digikod.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd Bergmann <arnd@arndb.de> writes:
+On 5/5/20 8:31 AM, Mickaël Salaün wrote:
+> diff --git a/security/Kconfig b/security/Kconfig
+> index cd3cc7da3a55..d8fac9240d14 100644
+> --- a/security/Kconfig
+> +++ b/security/Kconfig
+> @@ -230,6 +230,32 @@ config STATIC_USERMODEHELPER_PATH
+>  	  If you wish for all usermode helper programs to be disabled,
+>  	  specify an empty string here (i.e. "").
+>  
+> +menuconfig OMAYEXEC_STATIC
+> +	tristate "Configure O_MAYEXEC behavior at build time"
+> +	---help---
+> +	  Enable to enforce O_MAYEXEC at build time, and disable the dedicated
+> +	  fs.open_mayexec_enforce sysctl.
 
-> gcc-10 warns about accesses inside of a zero-length array:
->
-> drivers/net/wireless/ath/wil6210/cfg80211.c: In function 'wil_cfg80211_scan':
-> drivers/net/wireless/ath/wil6210/cfg80211.c:970:23: error: array
-> subscript 255 is outside the bounds of an interior zero-length array
-> 'struct <anonymous>[0]' [-Werror=zero-length-bounds]
->   970 |   cmd.cmd.channel_list[cmd.cmd.num_channels++].channel = ch - 1;
->       |   ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
-> In file included from drivers/net/wireless/ath/wil6210/wil6210.h:17,
->                  from drivers/net/wireless/ath/wil6210/cfg80211.c:11:
-> drivers/net/wireless/ath/wil6210/wmi.h:477:4: note: while referencing 'channel_list'
->   477 |  } channel_list[0];
->       |    ^~~~~~~~~~~~
->
-> Turn this into a flexible array to avoid the warning.
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-> Gustavo has a patch to do it for all arrays in this file, and that
-> should get merged as well, but this simpler patch is sufficient
-> to shut up the warning.
+That help message is a bit confusing IMO.  Does setting/enabling OMAYEXEC_STATIC
+both enforce O_MAYEXEC at build time and also disable the dedicated sysctl?
 
-I don't see Gustavo's patch yet so I'll take this one first.
+Or are these meant to be alternatives, one for what Enabling this kconfig symbol
+does and the other for what Disabling this symbol does?  If so, it doesn't
+say that.
+
+> +
+> +	  See Documentation/admin-guide/sysctl/fs.rst for more details.
+> +
+> +if OMAYEXEC_STATIC
+> +
+> +config OMAYEXEC_ENFORCE_MOUNT
+> +	bool "Mount restriction"
+> +	default y
+> +	---help---
+> +	  Forbid opening files with the O_MAYEXEC option if their underlying VFS is
+> +	  mounted with the noexec option or if their superblock forbids execution
+> +	  of its content (e.g., /proc).
+> +
+> +config OMAYEXEC_ENFORCE_FILE
+> +	bool "File permission restriction"
+> +	---help---
+> +	  Forbid opening files with the O_MAYEXEC option if they are not marked as
+> +	  executable for the current process (e.g., POSIX permissions).
+> +
+> +endif # OMAYEXEC_STATIC
+> +
+>  source "security/selinux/Kconfig"
+>  source "security/smack/Kconfig"
+>  source "security/tomoyo/Kconfig"
+
 
 -- 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+~Randy
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
