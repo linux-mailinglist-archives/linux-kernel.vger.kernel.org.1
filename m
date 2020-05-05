@@ -2,96 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F2B1C5483
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 13:36:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B4211C5490
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 13:41:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728732AbgEELgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 07:36:21 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:35913 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725766AbgEELgU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 07:36:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588678579;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=x2FjQAZY3rz08zRV+CTT5963v5ngAxHKCBr7Wo/WiIQ=;
-        b=L9mXACcrHHgeMQitfRYzNJm9ZUCrDW6KJkhLP4OOAQ1LPS3WDmFjBcLaTI4FNpZDTceGH2
-        MJ3RybjPPm3klNH2q9BbnzabrRldLX4h1da6KQX1hzoP3Dw/shQgfxENUHUUqcyZASjlPw
-        gEMQ+n7KgQk5E6yZIdE9X2SEEvkmkpg=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-363-FmW_YfCEPiSnfCkK8GoHag-1; Tue, 05 May 2020 07:36:18 -0400
-X-MC-Unique: FmW_YfCEPiSnfCkK8GoHag-1
-Received: by mail-wr1-f70.google.com with SMTP id h12so1056469wrr.19
-        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 04:36:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=x2FjQAZY3rz08zRV+CTT5963v5ngAxHKCBr7Wo/WiIQ=;
-        b=d8ZLoiClPREh9QHKcHKzx3R/c0FIN9xZHLEEBAYe7/Yn4KlcIcgH4QlMeHh08uOuHc
-         uTiln2BvIJ1MHBqRQSAlON320C0hvWHXRhHM3jvFi/FLWAceFm5K8itsE6rNWIMOVavl
-         tDiA/Ft5Ld5+w8kenpX9sHFAYlwZxJPwCcw2VOabFHMHXLxFSgPhr5pJPX0HBh7ubQH4
-         ivLjnkWD3UUHuDa8Umb3HmPwjVEjx8WXWzJcWyiA0NzkKQNtManb/9EAA2jQEmFS19Ta
-         LWYdWa8uGI6DlBvPdYAIqCaP7xpNPRqah9PZjAcJmqUzJFj3TCMEK0iaaq8fPza8JHP6
-         72Pg==
-X-Gm-Message-State: AGi0PuaXIqJftUTCLFsNt7BSTs3aaDe1nwu/tPYFyxityeLbiEesWfu7
-        VUKCyCpXwBjpr1K+aG1cvRVKXVLukUqugEriBqPCUmN9qNYmG3QfBYrxd9AzbuOgZRhEnCZVkIH
-        qRlhutE5r+sX1MyBrHXX38Vsj
-X-Received: by 2002:a5d:5112:: with SMTP id s18mr3415013wrt.426.1588678576954;
-        Tue, 05 May 2020 04:36:16 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJl60n9MQpiFkNCbieDx9axKTRmRnusJD4ycTvR5+jsKe4L9ARtHDkdV2u7AzEdxcAHwg3gog==
-X-Received: by 2002:a5d:5112:: with SMTP id s18mr3414988wrt.426.1588678576724;
-        Tue, 05 May 2020 04:36:16 -0700 (PDT)
-Received: from [192.168.178.58] ([151.20.132.175])
-        by smtp.gmail.com with ESMTPSA id t16sm3262550wmi.27.2020.05.05.04.36.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 May 2020 04:36:16 -0700 (PDT)
-Subject: Re: [PATCH 0/3] KVM: x86: cleanup and fixes for debug register
- accesses
-To:     Peter Xu <peterx@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-References: <20200504155558.401468-1-pbonzini@redhat.com>
- <20200504185530.GE6299@xz-x1>
- <06dcafe8-8278-a818-ad76-36f3bbbcc0a2@redhat.com>
- <20200504234904.GG6299@xz-x1>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <d09671ef-0a9d-c854-7715-d3077e09e734@redhat.com>
-Date:   Tue, 5 May 2020 13:36:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1728806AbgEELlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 07:41:03 -0400
+Received: from mail-eopbgr680072.outbound.protection.outlook.com ([40.107.68.72]:63300
+        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728708AbgEELlC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 07:41:02 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XJretdBr/Z5mtTK9VyVKuWVz2DSvIWOia+/O8l60SkiMaw9X6f7WyQlLZQ6Qi5regiDIBED2aqPF6W6Pql2ChsOh3oUG8nYLQ+dBisSrc3OFR5uTz9kl8y3heZOrULbHbvJlHzxapZ9QL+Q4yxD9TM4xp2ynS3fsYy+nCU9eGq439o1TcHZfEZmX0wgLqI45AWQiKSXpGDCtKjLPm1jJVcrVk7yJ0ETWYpAaZ7oNfcDCHHe3cWgUc+MNchZYaPLhDSxuLrL0VFqvcBHlOGy8AiRG1DWRAySJfVrvsnt/MR5EStiiJXvLMZlVu+mowfS7i5c3BtWh04J4evW9SBh4Tg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=j/cUPb92+AIYMAFpgQxkJ5eiso9nPoYGvHidfwS8w0Y=;
+ b=WgtrtKgV85j769xIsYGvyo1sDzSD4XKG7QF7pZW3P/VCW86ra42T75OkCz7PkPLg/Dn+D+SaqmdgfsszBF87EXKLeVKhh8v0sn1BCEKwqgZBEczfYeJvnCiuU11WqXUd0HWU7B8zADmvw2iiXnjtmgMJr7yY1hyzAV35kIiRbZ36kJa9yva++5qzYzw28L49ORLxD+SDv4qX4z5I6Aqu1Tylq/lefzN7RXH6MZdPY51+zDzRbw7/mkitXPKUucWcEAYU6lK4hTLEWnMvMyO4ukEyGVQXrj/pV8Wg4njSJDK0xdgStw7u/VD7DcwbXtV+YePzio2D/z1a/3V8CoetcA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=j/cUPb92+AIYMAFpgQxkJ5eiso9nPoYGvHidfwS8w0Y=;
+ b=ACklc3mIHMYX3au/+vHI+pSpbnx5NEThGC6bJACrBvjnXUQF4LnjFPDpC4fpG8uMPzhyfUdDOOOOjxPeUV6/vr/zrLmQU/rGHn/GvSgnKsaatjtpO8cmQEeT2dQyf5/RF2LmDKUbUqKVcUpavmW3qksk6b44NwJqpCI14suR+hw=
+Authentication-Results: amd.com; dkim=none (message not signed)
+ header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
+Received: from MWHPR12MB1855.namprd12.prod.outlook.com (2603:10b6:300:10e::23)
+ by MWHPR12MB1423.namprd12.prod.outlook.com (2603:10b6:300:14::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.29; Tue, 5 May
+ 2020 11:40:57 +0000
+Received: from MWHPR12MB1855.namprd12.prod.outlook.com
+ ([fe80::c455:6257:3c8a:7010]) by MWHPR12MB1855.namprd12.prod.outlook.com
+ ([fe80::c455:6257:3c8a:7010%3]) with mapi id 15.20.2958.030; Tue, 5 May 2020
+ 11:40:57 +0000
+From:   Akshu Agrawal <akshu.agrawal@amd.com>
+Cc:     akshu.agrawal@amd.com,
+        Ravulapati Vishnu vardhan rao 
+        <Vishnuvardhanrao.Ravulapati@amd.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        alsa-devel@alsa-project.org (moderated list:SOUND - SOC LAYER / DYNAMIC
+        AUDIO POWER MANAGEM...), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] ASoC: amd :High hw_level while simultaneous capture
+Date:   Tue,  5 May 2020 17:10:20 +0530
+Message-Id: <20200505114023.251409-1-akshu.agrawal@amd.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: MA1PR0101CA0033.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a00:22::19) To MWHPR12MB1855.namprd12.prod.outlook.com
+ (2603:10b6:300:10e::23)
 MIME-Version: 1.0
-In-Reply-To: <20200504234904.GG6299@xz-x1>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ETHANOL2.amd.com (165.204.156.251) by MA1PR0101CA0033.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:22::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.20 via Frontend Transport; Tue, 5 May 2020 11:40:54 +0000
+X-Mailer: git-send-email 2.17.1
+X-Originating-IP: [165.204.156.251]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: ab51b49e-c6cc-4be8-0bf2-08d7f0e92d17
+X-MS-TrafficTypeDiagnostic: MWHPR12MB1423:|MWHPR12MB1423:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR12MB1423F75675A1D2A33B718A72F8A70@MWHPR12MB1423.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:466;
+X-Forefront-PRVS: 0394259C80
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xliPbxF5ysYV4UTbHGgcR+OtnymlXZZL/Zu3kl9y9S5M+i5mXFBm7M9GSoY1XWK8iPkFypjKqAEB/efYNXZNgGL+rrh3du0ycK+uhxr4rJiaS7lMF4wzmZQ/Wg2Tli8TRx3HSKeAuR2sMQSEHlyhU8AaLSaP6rLPTLfQFn8Y8YkCyIbLMZ2eER00Fe+tcuOhjJul7gFBVLWCE41c7rOGXyWu7MRJ+rGIFfwY/T6KJnED0eRdExvCTWNxKy56Vqhn/C93XvCahwlZYtExXeKVpAICBZZ2DvkaW2kLvfr9CO99U/OfzXCPqzUoYQD0TXXPdQI94kTgTqyoG+6C3Jb3mAW2YlhIKHZB0ecycIP5lNpGmvkzJrStZQ3xPy4YfXpp/kPOijruKDBuRIJIpbEwlf0iS5Uvu9Xd0Dry2gUDwji1LN6aQMHHKRq3eSge7rBSzrDJKTsVolgJbQKs8feYGOHVcrVlJEmqCxsTkEKQnG4g+Bb/jPBrFPgTv8Z27U/lvlOzKJnXgYfqjPFTLLCqAfRpKY3zZgfn7xmT7Ria/Zg=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR12MB1855.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(366004)(136003)(39860400002)(376002)(346002)(33430700001)(8676002)(478600001)(956004)(36756003)(44832011)(6486002)(2906002)(4326008)(2616005)(109986005)(186003)(66946007)(26005)(16526019)(86362001)(1076003)(6666004)(54906003)(8936002)(7696005)(316002)(52116002)(33440700001)(66556008)(66476007)(5660300002)(266003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 98pRMPbRpbXlwPmFiDMcf/WUwcE+OzZwRr3Z+tFhLRbLGEvhRmjQzW9JsSEK+q3pg9sDBaqz0Kp9Ljui9YlYqELY174jp2KCqQ3T0Erc3J+XATpz4lVOPDUjFLLdsJPMis8J2LnbwBEqJJb7yT/z2lYZ1UCaRqoPr+l7VLerYFkSuC4GmmLSip+jV2WWvnkgMGx5PfC702pyzWxPY20vXnGL2U2eC7/6NaR8IVeabhizezKJOgnm2CyqiaoD+1z+RmeMIkc2/8qEc7Wa6iY3UXbmX32k1NELD+ckk58nb85EvgsDk1jphhx99HrBuXqLuW1A4CcIb67swPONIIJQvJWv7RBAwbmJVuMZe4vI5Orf4pD3QKS52M/Vua2sPQZO7nJilmDTbHbRBnRYw/5XHqr3CygTSVlOUiuBDU/fHu+DywO2XCOKx0cjeusEpaUCGEbeMkZssr+Xg0IjwxKDH95OnaEqmEz2kRtgS4MjjFLZwZt79tdZbaAmENLa5QiG+v9Z9nehE6ni9hEIM0usf0fDcQA/AOK6yPOEf3Spkr5vT+7LPykVG/eSI358hlFY8jSUW0T2QHxQ9JbbDtqbWZt/iTDfcBNK1V3Glldqc8nYdLe9wqGKnQcPMpNwALf/rtXJEOe4yEflnH+/SW1CsIqzLID7jerBRurwv92WEI+INb8p75j4XkF7emxNaXuw2PKPdUgFzn9xbrdZ0oVyuJI7vQIu0ocds3HY/Uh1xF/DoifMgKBZv6N4DfopPPDNvbRKLJDQQUcHxFZ5XnfUWRsFNjMEF7KvyJgbZei48DIpDXGBLX1503gDAfpCRAVu
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ab51b49e-c6cc-4be8-0bf2-08d7f0e92d17
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 May 2020 11:40:57.3184
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: LUOuvKG09L4wtkMzPTln4qhgH+vqVOPVPWksIOLOCHoLgVbhJeA/yaO1zqci0tsAVfrK2bBGjC5SQBJvJ9//uQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1423
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/05/20 01:49, Peter Xu wrote:
->> The guest debugging test would basically cover the gdbstub case, which
->> is different from kvm-unit-tests.  It would run similar tests to
->> kvm-unit-tests, but #DB and #BP exceptions would be replaced by
->> KVM_EXIT_DEBUG, and MOVs to DR would be replaced by KVM_SET_GUEST_DEBUG.
->>
->> It could also cover exception payload support in KVM_GET_VCPU_EVENTS,
->> but that is more complicated because it would require support for
->> exceptions in the selftests.
->
-> Yep, I guess the in-guest debug test will still need the exception support,
-> though I also guess we don't need that when we have the kvm unit test
+From: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
 
-We can still use it in order to test for example live migration with
-pending debug exceptions (KVM_GET_VCPU_EVENTS), but it's less important
-indeed.
+Simultaneous capture on dmic and headset mic is having
+issue with high hw_level being reported.
 
-Paolo
+Issue Can be reproduced by:
+arecord -D hw:2,0 -f dat -d 60 /tmp/test0 &
+arecord -D hw:2,2 -f dat -d 60 /tmp/test1 &
+cat /proc/asound/card2/pcm?c/sub0/status
+
+Signed-off-by: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
+---
+ sound/soc/amd/raven/acp3x-pcm-dma.c | 37 +++++++++++++++++++----------
+ 1 file changed, 24 insertions(+), 13 deletions(-)
+
+diff --git a/sound/soc/amd/raven/acp3x-pcm-dma.c b/sound/soc/amd/raven/acp3x-pcm-dma.c
+index e362f0bc9e46..a36c5cb848cd 100644
+--- a/sound/soc/amd/raven/acp3x-pcm-dma.c
++++ b/sound/soc/amd/raven/acp3x-pcm-dma.c
+@@ -241,14 +241,6 @@ static int acp3x_dma_open(struct snd_soc_component *component,
+ 		adata->i2ssp_play_stream && !adata->i2ssp_capture_stream)
+ 		rv_writel(1, adata->acp3x_base + mmACP_EXTERNAL_INTR_ENB);
+ 
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+-		adata->play_stream = substream;
+-		adata->i2ssp_play_stream = substream;
+-	} else {
+-		adata->capture_stream = substream;
+-		adata->i2ssp_capture_stream = substream;
+-	}
+-
+ 	i2s_data->acp3x_base = adata->acp3x_base;
+ 	runtime->private_data = i2s_data;
+ 	return ret;
+@@ -263,23 +255,42 @@ static int acp3x_dma_hw_params(struct snd_soc_component *component,
+ 	struct snd_soc_pcm_runtime *prtd;
+ 	struct snd_soc_card *card;
+ 	struct acp3x_platform_info *pinfo;
++	struct i2s_dev_data *adata;
+ 	u64 size;
+ 
+ 	prtd = substream->private_data;
+ 	card = prtd->card;
+ 	pinfo = snd_soc_card_get_drvdata(card);
++	adata = dev_get_drvdata(component->dev);
+ 	rtd = substream->runtime->private_data;
+ 	if (!rtd)
+ 		return -EINVAL;
+ 
+-	if (pinfo)
+-		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++	if (pinfo) {
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 			rtd->i2s_instance = pinfo->play_i2s_instance;
+-		else
++			switch (rtd->i2s_instance) {
++			case I2S_BT_INSTANCE:
++				adata->play_stream = substream;
++				break;
++			case I2S_SP_INSTANCE:
++			default:
++				adata->i2ssp_play_stream = substream;
++			}
++		} else {
+ 			rtd->i2s_instance = pinfo->cap_i2s_instance;
+-	else
++			switch (rtd->i2s_instance) {
++			case I2S_BT_INSTANCE:
++				adata->capture_stream = substream;
++				break;
++			case I2S_SP_INSTANCE:
++			default:
++				adata->i2ssp_capture_stream = substream;
++			}
++		}
++	} else {
+ 		pr_err("pinfo failed\n");
+-
++	}
+ 	size = params_buffer_bytes(params);
+ 	rtd->dma_addr = substream->dma_buffer.addr;
+ 	rtd->num_pages = (PAGE_ALIGN(size) >> PAGE_SHIFT);
+-- 
+2.17.1
 
