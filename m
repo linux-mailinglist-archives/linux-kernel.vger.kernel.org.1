@@ -2,84 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C31911C5426
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 13:14:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54CBD1C5435
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 13:15:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728835AbgEELOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 07:14:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54006 "EHLO mail.kernel.org"
+        id S1728946AbgEELPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 07:15:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55494 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728624AbgEELOW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 07:14:22 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        id S1727090AbgEELPp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 07:15:45 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F267C206B9;
-        Tue,  5 May 2020 11:14:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 128C8206B9;
+        Tue,  5 May 2020 11:15:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588677262;
-        bh=0K2DpxSvS3/qR26Gr3apwXgTBLAzGZEQ2x9wJfhnTxs=;
+        s=default; t=1588677344;
+        bh=vtu5GHsCjBoB2Bedh5aRks/mxahJYgZlfE34xp2wlIw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PQ0hNzy9lxbvL4cILbgFbeZ/9NRJSCI9Rbt0kC9oprAvlHm2yBVvqjud3RbtPKAtC
-         xZAccWb+uKtskmlWSPhSyWJZ7S/fPiZxJ8SI3C+POiOvAOBDZ82GH9nJeE1fhSJW6+
-         mHAXafyh7JbkC3s7kT6femZL1bDttkNKfZmtYBmA=
-Date:   Tue, 5 May 2020 12:14:17 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3 08/16] arm64/cpufeature: Add remaining feature bits in
- ID_MMFR4 register
-Message-ID: <20200505111417.GG19710@willie-the-truck>
-References: <1588426445-24344-1-git-send-email-anshuman.khandual@arm.com>
- <1588426445-24344-9-git-send-email-anshuman.khandual@arm.com>
+        b=kfNfW74SAPPvuZBiqOh+oyuxA4W7PhgS2sqto2isWgf0GkDP1HvE12vOqBpdEDTH3
+         3JJKJiWRsEAkqIDxdPRivgstpfyHjirzHSB7dkmBQSNF5EuU2KV/ETkeyaHa5C1GDy
+         lJ1XykGskWnkg2UXe9KQec/8WX+KB06Cy70oPhtY=
+Date:   Tue, 5 May 2020 12:15:41 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Leslie =?utf-8?B?SHNpYSjlpI/pgqbpgLJfUGVnYXRyb24p?= 
+        <Leslie_Hsia@pegatroncorp.com>
+Cc:     "knaack.h@gmx.de" <knaack.h@gmx.de>,
+        "lars@metafoo.de" <lars@metafoo.de>,
+        "pmeerw@pmeerw.net" <pmeerw@pmeerw.net>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Hermes =?utf-8?B?SHNpZWgo6Kyd5pe75YqtX1BlZ2F0cm9uKQ==?= 
+        <Hermes_Hsieh@pegatroncorp.com>,
+        "jesse.sung@canonical.com" <jesse.sung@canonical.com>,
+        "jic23@kernel.org" <jic23@kernel.org>
+Subject: Re: [PATCH] ASoC: tas5805m: Add TAS5805M amplifier driver
+Message-ID: <20200505111541.GB5377@sirena.org.uk>
+References: <754706C925201D4896E92CCAD6B38E4401F0F7B98A@PTW-EX-38.PEGA.CORP.PEGATRON>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="JP+T4n/bALQSJXh8"
 Content-Disposition: inline
-In-Reply-To: <1588426445-24344-9-git-send-email-anshuman.khandual@arm.com>
+In-Reply-To: <754706C925201D4896E92CCAD6B38E4401F0F7B98A@PTW-EX-38.PEGA.CORP.PEGATRON>
+X-Cookie: Poverty begins at home.
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 02, 2020 at 07:03:57PM +0530, Anshuman Khandual wrote:
-> Enable all remaining feature bits like EVT, CCIDX, LSM, HPDS, CnP, XNX,
-> SpecSEI in ID_MMFR4 register per ARM DDI 0487F.a.
-> 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> 
-> Suggested-by: Mark Rutland <mark.rutland@arm.com>
-> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->  arch/arm64/include/asm/sysreg.h |  8 ++++++++
->  arch/arm64/kernel/cpufeature.c  | 13 +++++++++++++
->  2 files changed, 21 insertions(+)
-> 
-> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
-> index f9e3b9350540..0f34927f52b9 100644
-> --- a/arch/arm64/include/asm/sysreg.h
-> +++ b/arch/arm64/include/asm/sysreg.h
-> @@ -790,6 +790,14 @@
->  #define ID_ISAR6_DP_SHIFT		4
->  #define ID_ISAR6_JSCVT_SHIFT		0
->  
-> +#define ID_MMFR4_EVT_SHIFT		28
-> +#define ID_MMFR4_CCIDX_SHIFT		24
-> +#define ID_MMFR4_LSM_SHIFT		20
-> +#define ID_MMFR4_HPDS_SHIFT		16
-> +#define ID_MMFR4_CNP_SHIFT		12
-> +#define ID_MMFR4_XNX_SHIFT		8
 
-Why didn't you add ID_MMFR4_AC2_SHIFT as well?
+--JP+T4n/bALQSJXh8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Will
+On Tue, May 05, 2020 at 10:36:29AM +0000, Leslie Hsia(=E5=A4=8F=E9=82=A6=E9=
+=80=B2_Pegatron) wrote:
+
+> +struct tas5805m_priv {
+> +       struct regmap *regmap;
+> +       /* mutex for getting the mutex and release */
+> +       struct mutex lock;
+> +};
+
+This actually appears to be for device initialization somehow - the
+comment isn't super enlightening.  It's not clear to me that there are
+any potential races here - the PM stuff and device probe and removal are
+already locked further up the stack.
+
+> +/* Initialize the TAS5805M and set the volume to -6.5db,
+> + * and set it to Play mode.
+> + */
+> +static const struct reg_sequence tas5805m_init_dsp[] =3D {
+> +       { TAS5805M_REG_DEV_CTL2, TAS5805M_DEV_STAT_DSLEEP },
+> +       { TAS5805M_REG_DEV_CTL2, TAS5805M_DEV_STAT_HIZ },
+> +       { TAS5805M_REG_DEV_CTL2, TAS5805M_DEV_STAT_DSLEEP },
+> +       /* set volume to -6.5dB */
+> +       { TAS5805M_REG_VOL_CTL,  TAS5805M_DIG_VOL_DB },
+> +       { TAS5805M_REG_DEV_CTL2, TAS5805M_DEV_STAT_PLAY },
+> +};
+
+You should use the chip defaults unless the configuration is so obvious
+that almost all users would want the same setting.  This avoids the
+kernel having to take decisions about which use case to support, a
+volume that makes sense for one system may not make sense for others.
+
+> +/* Setting the TAS5805M state and save the config in the default page. */
+> +static int tas5805m_set_device_state(struct tas5805m_priv *tas5805m,
+> +                                       int state)
+> +{
+> +       int ret =3D 0;
+> +
+> +       ret =3D regmap_write(tas5805m->regmap, TAS5805M_REG_DEV_RESET,
+> +                               TAS5805M_DEV_STAT_RESET);
+> +       if (ret !=3D 0)
+> +               return -EINVAL;
+> +
+> +       /* Saving the config to the default page of the default book */
+> +       ret =3D regmap_write(tas5805m->regmap,
+> +                       TAS5805M_REG_DEV_BOOK,
+> +                       TAS5805M_DEV_BOOK_DEFAULT_PAGE);
+
+regmap has support for paging, you should probably describe the pages in
+the regmap config.  Right now I don't think things are going to work
+well since there are no pages described but caching is enabled which
+means that regmap will cache values that are getting paged out.
+
+> +static int tas5805m_i2c_remove(struct i2c_client *i2c)
+> +{
+> +       return 0;
+> +}
+
+You can just delete empty functions like this, if things can safely be
+left empty then they can just be removed entirely.
+
+> +MODULE_DEVICE_TABLE(acpi, tas5805m_acpi_match);
+> +#else
+> +#define st_accel_acpi_match NULL
+> +#endif
+
+This is redundant, ACPI_PTR() won't reference the value unless ACPI is
+enabled.
+
+> +#else
+> +#define tas5805m_dsp_power_pm_ops NULL
+> +#endif
+> +
+> +static struct i2c_driver tas5805m_i2c_driver =3D {
+> +       .driver =3D {
+> +               .name =3D TAS5805M_DRV_NAME,
+> +               .acpi_match_table =3D ACPI_PTR(tas5805m_acpi_match),
+> +               .pm =3D tas5805m_dsp_power_pm_ops,
+
+Use SET_SYSTEM_SLEEP_PM_OPS() and remove the else case above.
+
+--JP+T4n/bALQSJXh8
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6xSt0ACgkQJNaLcl1U
+h9CiMAf/ZKvO/0B6pAjUy/yQVw4VWZBx6OHrixkNWwV7g1HLaYngtK6Tp3mbn5bE
+k6pUrhlRYfcY0djwIAxjfnEn/ZWSaHXkz35ihcxewxtd2BTMvekDsoIDjoFEfRFe
+qsYiiNXB9s//7rt88m2oZdKhFPEC/rqIjZJhN5LLlEcfctfDFoOWMQIOIPyMFf7C
+Ee7xV7i6H9+HwseTQBXUjME/m4yJBmUnQTgmuNp1BJwaPpNHi6qXcKnNx7KASo++
+n566C4jap0vQ0eFERtUkdOEp4tR5Lm2rbMnxMmrj6lynAJNOzhqe30yhxKvmZBfi
+ggBxKBnsLSnFN67EhYFw24Gr7qOJgA==
+=cB/8
+-----END PGP SIGNATURE-----
+
+--JP+T4n/bALQSJXh8--
