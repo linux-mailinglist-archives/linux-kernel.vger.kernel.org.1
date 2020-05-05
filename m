@@ -2,86 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33C461C61A5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 22:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 201891C61E2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 22:19:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729059AbgEEUKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 16:10:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728356AbgEEUKh (ORCPT
+        id S1728940AbgEEUTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 16:19:10 -0400
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:56431 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727785AbgEEUTK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 16:10:37 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 084C6C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 13:10:37 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id z1so1445259pfn.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 13:10:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=Sttwj9+++HR+1VhnJuAjEhjW0sDdTaju3mSXfhlj8P8=;
-        b=VCMMgaphbNxg+Q7DTHKjrov27rYBuH37S+xcFFO8LAU821H+q0E3CgvrR8jX/GZFqi
-         yi8UE04cq0TB+C6nITXL+cAZoSze6Fp/pFEY3B28eA1o0PnEf4Fv/l2+1vm5hF6SpwPI
-         WK8F4I09WT1eXspEyouXUhEIjwVYoU4m8llHLzLS7w+unkeLnPinsMZoXuuBCUhzki/9
-         /VZEixiLabs2seul8+P7lZ6bkSHmw8bB/gJZ+MDH96C+hQmGhQgXnGlg+HbFaVq7Woeq
-         yf4N3fR/gsspjAN1KFwbCpV5Ebrj8E/DHGT1cy663fNnU57I5bcQbBKfENNciWrQG2VO
-         V69g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Sttwj9+++HR+1VhnJuAjEhjW0sDdTaju3mSXfhlj8P8=;
-        b=cCGwGcnKylkNROCCrxEOKeDVprO+ziLj3fnod7g8bDGdlP/ckOD/+TH8A/NJgagADt
-         yd7pQKFuLpXSPyggpvNC8Q+T/gskgViV1e4S+MF+DHeQFkjXZ93YB9YdEP1k1m1kIEIU
-         3Au6fw11rM+IUpvUjkyKCCSLZQiS1wxgAZWOD01QVayds0dn/BGTtPBBsuYE/Yvj9qUC
-         y+1XLJm5knIRHwO7nGHms0JL4NC4RExei5xGkSezT0ZUqQZSsrpqFUpSuN+YfNxAI0Os
-         Q15Snio5oTz7tBSbv+1AUCtSKwnwP0iBNsO1UBi6Y9y0OnRDYzk4T+Ke/yqk3LuWXswx
-         fVng==
-X-Gm-Message-State: AGi0PubWgVInYlMcKezXWJQ7X4mxXTqcaSLgMDRA41JkoLz6ndFGHw1T
-        O6ZWnG373m0qEoDQ2VyKiII=
-X-Google-Smtp-Source: APiQypIELrT1XwxWS7ofmHB8LiFrvRIrDLQqgQdrjdL0LO5fwnoP2+7H+Wz46VJ28HkN1P6q2zANIA==
-X-Received: by 2002:a65:62ce:: with SMTP id m14mr3961456pgv.29.1588709436534;
-        Tue, 05 May 2020 13:10:36 -0700 (PDT)
-Received: from jordon-HP-15-Notebook-PC.domain.name ([122.167.156.195])
-        by smtp.gmail.com with ESMTPSA id v64sm2745288pfb.20.2020.05.05.13.10.32
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 05 May 2020 13:10:35 -0700 (PDT)
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-To:     arnd@arndb.de, gregkh@linuxfoundation.org, jgg@ziepe.ca,
-        hubcap@omnibond.com, daniel.vetter@ffwll.ch, dvhart@infradead.org,
-        sgarzare@redhat.com, tglx@linutronix.de, ira.weiny@intel.com
-Cc:     linux-kernel@vger.kernel.org,
-        Souptick Joarder <jrdr.linux@gmail.com>
-Subject: [PATCH] VMCI: Avoid extra check for access_ok()
-Date:   Wed,  6 May 2020 01:48:32 +0530
-Message-Id: <1588709912-8065-1-git-send-email-jrdr.linux@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        Tue, 5 May 2020 16:19:10 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01419;MF=yang.shi@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Txb6obD_1588709945;
+Received: from US-143344MP.local(mailfrom:yang.shi@linux.alibaba.com fp:SMTPD_---0Txb6obD_1588709945)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 06 May 2020 04:19:07 +0800
+Subject: Re: [RFC][PATCH 1/2] mm/migrate: remove extra page_count() check
+To:     Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Cc:     npiggin@gmail.com, akpm@linux-foundation.org, willy@infradead.org,
+        linux-mm@kvack.org
+References: <20200501210516.DFAFF456@viggo.jf.intel.com>
+ <20200501210518.DA161B7E@viggo.jf.intel.com>
+From:   Yang Shi <yang.shi@linux.alibaba.com>
+Message-ID: <2aa6a7b8-fc9b-e903-a665-c4cd516392b8@linux.alibaba.com>
+Date:   Tue, 5 May 2020 13:18:55 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:52.0)
+ Gecko/20100101 Thunderbird/52.7.0
+MIME-Version: 1.0
+In-Reply-To: <20200501210518.DA161B7E@viggo.jf.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-get_user_pages_fast() is already having a check for the same. This
-double check can be removed.
 
-Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
----
- drivers/misc/vmw_vmci/vmci_host.c | 2 --
- 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/misc/vmw_vmci/vmci_host.c b/drivers/misc/vmw_vmci/vmci_host.c
-index ce16d6b..2d8328d9 100644
---- a/drivers/misc/vmw_vmci/vmci_host.c
-+++ b/drivers/misc/vmw_vmci/vmci_host.c
-@@ -233,8 +233,6 @@ static int vmci_host_setup_notify(struct vmci_ctx *context,
- 	 * about the size.
- 	 */
- 	BUILD_BUG_ON(sizeof(bool) != sizeof(u8));
--	if (!access_ok((void __user *)uva, sizeof(u8)))
--		return VMCI_ERROR_GENERIC;
- 
- 	/*
- 	 * Lock physical page backing a given user VA.
--- 
-1.9.1
+On 5/1/20 2:05 PM, Dave Hansen wrote:
+> From: Dave Hansen <dave.hansen@linux.intel.com>
+>
+> This is not a bug fix.  It was found by inspection, but I believe
+> that it is confusing as it stands.
+>
+> First, page_ref_freeze() is implemented internally with:
+>
+> 	atomic_cmpxchg(&page->_refcount, expected, 0) == expected
+>
+> The "cmp" part of cmpxchg is making sure that _refcount==expected
+> which means that there's an implicit check here, equivalent to:
+>
+> 	page_count(page) == expected_count
+>
+> This appears to have originated in "e286781: mm: speculative page
+> references", which is pretty ancient.  This check is also somewhat
+> dangerous to have here because it might lead someone to think that
+> page_ref_freeze() *doesn't* do its own page_count() checking.
+>
+> Remove the unnecessary check.
+
+Make sense to me. Acked-by: Yang Shi <yang.shi@linux.alibaba.com>
+
+>
+> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Nicholas Piggin <npiggin@gmail.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Cc: Yang Shi <yang.shi@linux.alibaba.com>
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>
+>   b/mm/migrate.c |    3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff -puN mm/migrate.c~remove_extra_page_count_check mm/migrate.c
+> --- a/mm/migrate.c~remove_extra_page_count_check	2020-05-01 14:00:42.331525924 -0700
+> +++ b/mm/migrate.c	2020-05-01 14:00:42.336525924 -0700
+> @@ -425,11 +425,12 @@ int migrate_page_move_mapping(struct add
+>   	newzone = page_zone(newpage);
+>   
+>   	xas_lock_irq(&xas);
+> -	if (page_count(page) != expected_count || xas_load(&xas) != page) {
+> +	if (xas_load(&xas) != page) {
+>   		xas_unlock_irq(&xas);
+>   		return -EAGAIN;
+>   	}
+>   
+> +	/* Freezing will fail if page_count()!=expected_count */
+>   	if (!page_ref_freeze(page, expected_count)) {
+>   		xas_unlock_irq(&xas);
+>   		return -EAGAIN;
+> _
 
