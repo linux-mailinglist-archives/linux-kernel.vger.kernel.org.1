@@ -2,119 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60E3E1C4EB8
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 09:02:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91F5E1C4EBF
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 09:03:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728171AbgEEHC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 03:02:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725320AbgEEHC1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 03:02:27 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B1FAC061A0F;
-        Tue,  5 May 2020 00:02:27 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id i13so961794oie.9;
-        Tue, 05 May 2020 00:02:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qfsI1Ae/gqByhDdxZCxdOk6CE5/Yy0Hxtg5XtcaRpu8=;
-        b=umG6XOaKe/xvpUZeb+ZoINdQdF6RfrbdVKqruPqkdIJ3fN4ToRiF/OLriv7P70gpss
-         +7l7G+K7OdLaaw7rteichaKB0E6oUI12pB1ztiSsenG/+MVo4pPUNUOsUiQPXi/Gob3C
-         o0xRew0aPGmj1QwayCuMxqN95fzZk17nsUD/lExn8Wlcsheal9pzwjie9/u7PgTrGsyh
-         mWnqWj3earegjwCMKdLYOAo0hNQPJLzWM9+Wk8Rk2CGTVltXrw+MmLqBFEloTEGNBeaw
-         LUkn7aq2OlSq72zQMipu9yhlE9cWuqFuV7Tjnpah+So7NmMcgCCQvtODO4p9dRk5Hay8
-         YhYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qfsI1Ae/gqByhDdxZCxdOk6CE5/Yy0Hxtg5XtcaRpu8=;
-        b=T1ZzxKnWQvye0APIhOHVVY5s8NmWKw/Oxb98q+WE1DmXsErobofUqezpwPerOOSu7V
-         QP/LSRPItAOlbEHjuKHMC9fzSIGakFwG/8DRDjBNOOFvPWzwsqxZYiyBC6xLjHl8QSsz
-         VYbAP/zwIgoeeNpB3UvAvNeSPjHkjXgXwLUyJBEek79Hq4JX8R1/DFl9WMs8K5G/SW+M
-         BoW/6SWXZkM92jRiIVIcHCFQnNYX1uolXjwJ4lVmCBLWYPymfiyav5pA8hXYVSKvqXUr
-         Ktixpm5nelw6RrWxa/STdI9UXiXlY8b+JeqFotZVwubovD1mepNC9crtEnSDGq+QjWdi
-         ee4g==
-X-Gm-Message-State: AGi0PubSNO4Yh4Mod1TuLaN+M2uj+93Fu1Yw+pcXIz/WHtEeWAIMR0ix
-        0b6HuSZDagUprDrYBTYxvJI8z1wO2a7xhp4IAsY=
-X-Google-Smtp-Source: APiQypJ2xrC1M/0qN6b4tO9XZLdzWwTN5fdKRF0qgDKiz+8gLvFQDr/+AKJ8ps3kVV5UKQj3RHOQjIA0St1A71S1ZTw=
-X-Received: by 2002:a54:4e84:: with SMTP id c4mr1569779oiy.142.1588662146271;
- Tue, 05 May 2020 00:02:26 -0700 (PDT)
+        id S1728303AbgEEHDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 03:03:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40356 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725320AbgEEHDD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 03:03:03 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0D7A32064A;
+        Tue,  5 May 2020 07:03:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588662181;
+        bh=zAlWUmcdaF8WTwICSO+uRSrsxqZGsPVUm6mh4zXuIDA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dTGYIyOBwm4RViwa2CRVuqc3Fu73qzw4TLHyzqZmNf6n2r7j+vV4+Fnl43d8bLScV
+         S6h3L/df02xxA09RHK8mhDGK0BBPPUSSl4eTLGB3zoGLHYFjOv7LH4ah9AqTfi2mJ0
+         zT/vy4/H5QROjHfwWE1wf7jmT8LCmAhv4FLjCGqI=
+Date:   Tue, 5 May 2020 09:02:59 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     stable@vger.kernel.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        Sasha Levin <sashal@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Tobias Urdin <tobias.urdin@binero.com>
+Subject: Re: [PATCH 4.19 STABLE 2/2] KVM: VMX: Mark RCX, RDX and RSI as
+ clobbered in vmx_vcpu_run()'s asm blob
+Message-ID: <20200505070259.GA3946129@kroah.com>
+References: <20200505012348.17099-1-sean.j.christopherson@intel.com>
+ <20200505012348.17099-3-sean.j.christopherson@intel.com>
+ <20200505061502.GA3874653@kroah.com>
+ <20200505062731.GA17313@linux.intel.com>
 MIME-Version: 1.0
-References: <0000000000005a8fe005a4b8a114@google.com> <20200504190348.iphzmd7micvidh46@treble>
- <CAM_iQpVu11xwKS5OEhDKmtbnP83oFNy9jBoAROS78-ECPEBWdw@mail.gmail.com>
-In-Reply-To: <CAM_iQpVu11xwKS5OEhDKmtbnP83oFNy9jBoAROS78-ECPEBWdw@mail.gmail.com>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Tue, 5 May 2020 00:02:15 -0700
-Message-ID: <CAM_iQpVsWkJQaWG01kz8C0J8oSPq23RNKfgAfgUs3dpSDRHFaQ@mail.gmail.com>
-Subject: Re: BUG: stack guard page was hit in unwind_next_frame
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     syzbot <syzbot+e73ceacfd8560cc8a3ca@syzkaller.appspotmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        shile.zhang@linux.alibaba.com,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200505062731.GA17313@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 4, 2020 at 6:06 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
->
-> On Mon, May 4, 2020 at 12:08 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> >
-> > On Sat, May 02, 2020 at 11:36:11PM -0700, syzbot wrote:
-> > > Hello,
-> > >
-> > > syzbot found the following crash on:
-> > >
-> > > HEAD commit:    8999dc89 net/x25: Fix null-ptr-deref in x25_disconnect
-> > > git tree:       net
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=16004440100000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=b7a70e992f2f9b68
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=e73ceacfd8560cc8a3ca
-> > > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> > >
-> > > Unfortunately, I don't have any reproducer for this crash yet.
-> > >
-> > > IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> > > Reported-by: syzbot+e73ceacfd8560cc8a3ca@syzkaller.appspotmail.com
-> >
-> > Infinite loop in network code.
->
-> It is not a loop, it is an unbound recursion where netdev events
-> trigger between bond master and slave back and forth.
->
-> Let me see how this can be fixed properly.
+On Mon, May 04, 2020 at 11:27:31PM -0700, Sean Christopherson wrote:
+> On Tue, May 05, 2020 at 08:15:02AM +0200, Greg Kroah-Hartman wrote:
+> > On Mon, May 04, 2020 at 06:23:48PM -0700, Sean Christopherson wrote:
+> > > Save RCX, RDX and RSI to fake outputs to coerce the compiler into
+> > > treating them as clobbered.  RCX in particular is likely to be reused by
+> > > the compiler to dereference the 'struct vcpu_vmx' pointer, which will
+> > > result in a null pointer dereference now that RCX is zeroed by the asm
+> > > blob.
+> > > 
+> > > Add ASM_CALL_CONSTRAINT to fudge around an issue where <something>
+> > > during modpost can't find vmx_return when specifying output constraints.
+> > > 
+> > > Reported-by: Tobias Urdin <tobias.urdin@binero.com>
+> > > Fixes: b4be98039a92 ("KVM: VMX: Zero out *all* general purpose registers after VM-Exit")
+> > > Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> > > ---
+> > >  arch/x86/kvm/vmx.c | 3 ++-
+> > >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/arch/x86/kvm/vmx.c b/arch/x86/kvm/vmx.c
+> > > index 5b06a98ffd4c..54c8b4dc750d 100644
+> > > --- a/arch/x86/kvm/vmx.c
+> > > +++ b/arch/x86/kvm/vmx.c
+> > > @@ -10882,7 +10882,8 @@ static void __noclone vmx_vcpu_run(struct kvm_vcpu *vcpu)
+> > >  		".global vmx_return \n\t"
+> > >  		"vmx_return: " _ASM_PTR " 2b \n\t"
+> > >  		".popsection"
+> > > -	      : : "c"(vmx), "d"((unsigned long)HOST_RSP), "S"(evmcs_rsp),
+> > > +	      : ASM_CALL_CONSTRAINT, "=c"((int){0}), "=d"((int){0}), "=S"((int){0})
+> > > +	      : "c"(vmx), "d"((unsigned long)HOST_RSP), "S"(evmcs_rsp),
+> > >  		[launched]"i"(offsetof(struct vcpu_vmx, __launched)),
+> > >  		[fail]"i"(offsetof(struct vcpu_vmx, fail)),
+> > >  		[host_rsp]"i"(offsetof(struct vcpu_vmx, host_rsp)),
+> > > -- 
+> > > 2.26.0
+> > > 
+> > 
+> > What is the git commit id of this patch in Linus's tree?
+> 
+> There is none.  In upstream at the time of the offending commit (b4be98039a92
+> in 4.19, 0e0ab73c9a024 upstream), the inline asm blob had previously been
+> moved to a dedicated helper, __vmx_vcpu_run(), that was intentionally put
+> into a separate compilation unit, i.e. consuming the clobbered register
+> was effectively impossible because %rcx is volatile and __vmx_vcpu_run()
+> couldn't itself be inlined.
+> 
+> To make things more confusing, the inline asm blob got moved into a proper
+> asm subroutine shortly thereafter.  Things really start to diverge from
+> current upstream right around the time of this commit.
 
-The following patch works for me, I think it is reasonable to stop
-the netdev event propagation from upper to lower device, but I am
-not sure whether this will miss the netdev event in complex
-multi-layer setups.
+Then you need to document the heck out of the fact that this is not
+upstream, why it is different from upstream, and why we can't just take
+what upstream did instead in the changelog.  That way, when this patch
+turns out to be buggy (hint, 90% of the times they are), we know why
+this was done the way it was so we can revert it and know who to
+complain to :)
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 522288177bbd..ece50ae346c3 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -8907,7 +8907,7 @@ static void netdev_sync_lower_features(struct
-net_device *upper,
-                        netdev_dbg(upper, "Disabling feature %pNF on
-lower dev %s.\n",
-                                   &feature, lower->name);
-                        lower->wanted_features &= ~feature;
--                       netdev_update_features(lower);
-+                       __netdev_update_features(lower);
+thanks,
 
-                        if (unlikely(lower->features & feature))
-                                netdev_WARN(upper, "failed to disable
-%pNF on %s!\n",
+greg k-h
