@@ -2,142 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA9511C5386
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 12:44:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 887DD1C5397
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 12:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728729AbgEEKow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 06:44:52 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:36852 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728233AbgEEKov (ORCPT
+        id S1728672AbgEEKrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 06:47:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728497AbgEEKrc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 06:44:51 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200505104449euoutp02fdc4c173021fb21eb8cd6b1fe1475c1b~MG-DXLUe90463504635euoutp02B
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 10:44:49 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200505104449euoutp02fdc4c173021fb21eb8cd6b1fe1475c1b~MG-DXLUe90463504635euoutp02B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1588675489;
-        bh=4zaPs3Z9slWwLwaCtTCwkNSjU0e+c0O/4EL1XzMdquE=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=CIg0h4qspAOP9PZ82sJOaI/2DsGbHTgNqWFMrh5M+re3Qd7FExXbAYky4eH266SQD
-         FJwbT/FBNMgQTD7Jk/LrW2zvV/HSE+BlOJqWdq62IPKRHIp8SCgdmfROg+kD/XUe0e
-         IS4ZWloYuR4DCJPju0icBGuirNxWFROtFn/1fe5E=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200505104449eucas1p2d3c3f4831806c8ab1593eaa897fcd6bf~MG-C_m4Lg2225722257eucas1p2I;
-        Tue,  5 May 2020 10:44:49 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id 53.33.60679.1A341BE5; Tue,  5
-        May 2020 11:44:49 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200505104448eucas1p2c685623a3df9ea52315da9da96ab16c0~MG-Cm5Skk3246232462eucas1p2y;
-        Tue,  5 May 2020 10:44:48 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200505104448eusmtrp1e4d85cba64f6a7780d3fb10e753c0c1b~MG-CjTOx_2386723867eusmtrp1d;
-        Tue,  5 May 2020 10:44:48 +0000 (GMT)
-X-AuditID: cbfec7f4-0e5ff7000001ed07-83-5eb143a1f511
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 03.91.07950.0A341BE5; Tue,  5
-        May 2020 11:44:48 +0100 (BST)
-Received: from [106.210.88.143] (unknown [106.210.88.143]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200505104447eusmtip2cdb5cf9630df80a6721b078e97316a11~MG-Bpa7J_2913229132eusmtip2p;
-        Tue,  5 May 2020 10:44:47 +0000 (GMT)
-Subject: Re: [PATCH v3 01/25] dma-mapping: add generic helpers for mapping
- sgtable objects
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     dri-devel@lists.freedesktop.org, iommu@lists.linux-foundation.org,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
-        Robin Murphy <robin.murphy@arm.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        linux-arm-kernel@lists.infradead.org,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Joerg Roedel <joro@8bytes.org>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <908eedcb-00df-3467-40fc-b15d91c7e625@samsung.com>
-Date:   Tue, 5 May 2020 12:44:48 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
-        Thunderbird/68.7.0
+        Tue, 5 May 2020 06:47:32 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00976C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 03:47:31 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id s8so928229pgq.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 03:47:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=nvbM8c1Z/qdFrh3t6fLfLCpLiA9WBZW2/oqn8XwcHpY=;
+        b=KixiIuLhTOxYmPkU/svFJAyvGfpUNSMreSsO8G5B3WbOjqVysVZmgu0NRQxjWlo91Z
+         uxnJxkc4n4tyg4W2W16MunYTT3GQRTI1laKW31C5ayWWjuDet/VkNv4tkOMe3OYGKXcZ
+         g1MK8xB5N+YUNlmYpMttVjdVRS0TrPJCj5vuenVYyjxRRaU0MLHYTxAR63eKIwQL/lN/
+         PDA1inZOR1ARo1LRXheCmvBnMsWw6dO/AZObsFpZU61UK7bHH0ZGbmEQhXTaywYKcwB9
+         7SliFXEiXdj9I7ea2zpeScC9qjYDMN9hmpUjSpSaRwgrTnSjpKwiLPlOXRKFwnopF6MS
+         TK8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=nvbM8c1Z/qdFrh3t6fLfLCpLiA9WBZW2/oqn8XwcHpY=;
+        b=lJSnbZ73JhYzjKu5PzmSqZtp3f3xZklqQCPNSZA/6hCRotnn7QqD+3ELKKI/q22vPV
+         ziyku3PSmWn5huLzYBaXYiQnWxnimBvxiLizw4d0I2RHvnpUXFzyA2RBS/KULh2uj5bE
+         p+DuiFvVW9a31ZUNuIg3RofD3GxG8dcY5JHNwRO9bn+RWQ+EFH0LbO+VDekY5krY4D5z
+         ZND8a79t5WLbx9NSaUfbgl08KBL0hhawq3rLHsUXtX+JczczpL1ev3rPRgXZTT/tUkMi
+         QYjDhmvmJkPyMQXeuOWksUTJOZodhIH2RHzeO1/s0eGzckxOI61xAnAQ6lkyDD7ySDAC
+         ROkA==
+X-Gm-Message-State: AGi0PuYHUP8eFnAGvcjQXNVcJlsBQAxL4kXPB8LTvPWvz291mL2y5Tli
+        RrSDYa9QrBEbjBreadTpY5ZDGg==
+X-Google-Smtp-Source: APiQypIXXmXXHkFirtUenC4bDqREP8INqJcmI51kYdQprj47QK/EnA5cfm5D/hAe76MwUcvJvKCuDA==
+X-Received: by 2002:a62:5209:: with SMTP id g9mr2677791pfb.220.1588675651326;
+        Tue, 05 May 2020 03:47:31 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([2600:3c01::f03c:91ff:fe8a:bb03])
+        by smtp.gmail.com with ESMTPSA id d12sm1649260pjx.1.2020.05.05.03.47.27
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 05 May 2020 03:47:30 -0700 (PDT)
+Date:   Tue, 5 May 2020 18:47:29 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Mike Leach <mike.leach@linaro.org>
+Cc:     Thomas Backlund <tmb@mageia.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki Kuruppassery Poulose <suzuki.poulose@arm.com>
+Subject: Re: perf build error with gcc 10 on arm and aarch64
+Message-ID: <20200505104728.GB17996@leoy-ThinkPad-X240s>
+References: <2869c4f6-9adf-3d55-a41d-a42865ae56f2@mageia.org>
+ <20200505041050.GA8131@leoy-ThinkPad-X240s>
+ <CAJ9a7Vh8nqT5zGO1XPzWhPTpmMK+rx-S6DXvzPC4m31Fjkr+rQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200505102234.GA15038@lst.de>
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SeUgUcRTH+e3M7I5rGz9XZV8WBVtkSnlUxJAhRQfzV0YERaa16qDmVTtq
-        KUHmkWlm1v5RbuaVZd5lth4ZpVCTaItk2KGl4qZoea5Gmh3ujpb/vePz3vd94dGEsotyokMj
-        ozltpCZcLZWThpczxk0Fux/6e9QL9swVY4uEeXizimL+GK4RzNvpMSlTUvZCwuQ/82LSbj2Q
-        MVNv+yRMdX8nxXQ05EiZpnETtdOWNTXlStjy3HLEPv2eT7K133sptueyIGEfFZ1nu373E6zu
-        fTFin3xIkLKZNaWINVevPmB7VL4jiAsPjeW07t4n5CGtQid1qpA+a5roIhPQO2k6sqEBb4Xn
-        7YOydCSnlfg+gm/GRkJMphBkfm1bSMwIuvqzyMWRuuQaSmwUI/iZp1ugxhAUdTwjLJQ9PgYp
-        nQPIEjtgNXwZfo0sEIHHJTB0vc/akGJPSB9Jt16iwN7wM6HMWifxOrg9q5uXo2lH7Ac3Og+J
-        iB20ZJusV9jgjaBLGreOEngN1I7kEGKsgo+mPIlFC/AFGq5OPZZa9gDeAyVCoOjAHoaFGpkY
-        r4JWXQYp8kkI+owVMjHJQNCReBOJlBd0G2etiwjsAlUN7mJ5F0w+Tl7Yvxzej9iJNyyH64Yb
-        hFhWwKWLSpFeD3qh8p9sU/sbIgup9Uuc6Ze40S9xo/+vm4/IUqTiYviIYI7fHMmdceM1EXxM
-        ZLBbYFRENZp/udbfwlQdapgLaEaYRupliiPmKn8lpYnl4yKaEdCE2kFx78cDf6UiSBMXz2mj
-        jmtjwjm+Ga2kSbVKsaVwyE+JgzXRXBjHneK0i10JbeOUgEB9qG2tT+D4PreA/YmuQoNhQFV/
-        5+k+FOab2us4F20WiEoHOwYqYGWQrPB0RYps++Fg33OjycQKfyZ+2uEkPuj8CXqyXmUXVGyg
-        +NOp8s0eLq4uidmNJFEwOBEy46ydju++a1jjszOg53OcfvK4ee/tlm2/qtJym0a9VChITfIh
-        Gk9XQstr/gL8Y+P1bgMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrLIsWRmVeSWpSXmKPExsVy+t/xe7oLnDfGGfQ9N7XoPXeSyWLjjPWs
-        Fv+3TWS2uPL1PZvFytVHmSwW7Le26Jy9gd3iy5WHTBabHl9jtbi8aw6bxcEPT1gduD2eHJzH
-        5LFm3hpGj73fFrB4bP/2gNXjfvdxJo/NS+o9bv97zOwx+cZyRo/dNxvYPPq2rGL0+LxJLoA7
-        Ss+mKL+0JFUhI7+4xFYp2tDCSM/Q0kLPyMRSz9DYPNbKyFRJ384mJTUnsyy1SN8uQS/j9PFr
-        rAWLOCqefLzN0sB4na2LkZNDQsBEYkfLFtYuRi4OIYGljBJbV81ggkjISJyc1sAKYQtL/LnW
-        xQZR9JZRYu3ra8wgCWGBGInWa88YQWwRASWJp6/OMoIUMQt8YJJ4NnMlWEJI4DmjxJS9niA2
-        m4ChRNfbLrDVvAJ2Er8bVoPVsAioSMz9NZmli5GDQ1QgVqLloiZEiaDEyZlPWEBsTgEdicnN
-        H8BamQXMJOZtfsgMYctLbH87B8oWl7j1ZD7TBEahWUjaZyFpmYWkZRaSlgWMLKsYRVJLi3PT
-        c4uN9IoTc4tL89L1kvNzNzECo3rbsZ9bdjB2vQs+xCjAwajEw7vh6/o4IdbEsuLK3EOMEhzM
-        SiK8y35siBPiTUmsrEotyo8vKs1JLT7EaAr020RmKdHkfGDCySuJNzQ1NLewNDQ3Njc2s1AS
-        5+0QOBgjJJCeWJKanZpakFoE08fEwSnVwOhb+2Dighh70z3Lt+7bPPepsGqK2oT3qmsbrzj+
-        P1vK94zf7NdU+323DefPK70+xfO304qzNgayXGxXVhxYI8yZr26Yyd68WeT5olM8EiKdeR+n
-        3nXV9nXo/taf6X8q6s7BmNmyzMKSJ87uLfZLC/D2ZldO2NIWJbLfa2X0tsxJAguFz7ilhCmx
-        FGckGmoxFxUnAgA0vfUqAAMAAA==
-X-CMS-MailID: 20200505104448eucas1p2c685623a3df9ea52315da9da96ab16c0
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200505084624eucas1p2a9a5c4d2aece2c1555a5480c19c2e050
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200505084624eucas1p2a9a5c4d2aece2c1555a5480c19c2e050
-References: <20200505083926.28503-1-m.szyprowski@samsung.com>
-        <CGME20200505084624eucas1p2a9a5c4d2aece2c1555a5480c19c2e050@eucas1p2.samsung.com>
-        <20200505084614.30424-1-m.szyprowski@samsung.com>
-        <20200505102234.GA15038@lst.de>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJ9a7Vh8nqT5zGO1XPzWhPTpmMK+rx-S6DXvzPC4m31Fjkr+rQ@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph,
+Hi Mike,
 
-On 05.05.2020 12:22, Christoph Hellwig wrote:
->> +static inline int dma_map_sgtable_attrs(struct device *dev,
->> +	struct sg_table *sgt, enum dma_data_direction dir, unsigned long attrs)
-> Two tab indents for parameter continuation, please.
->
-> Can we also skip the separate _attrs version?  The existing ones have the
-> separate _attrs variant as there were pre-existing versions without the
-> attrs argument and lots of users, but that doesn't really apply here as
-> an extra 0 argument isn't really an issue.
+On Tue, May 05, 2020 at 11:26:49AM +0100, Mike Leach wrote:
+> Hi Leo,
+> 
+> This is caused by GCC 10 new default to -fno-common. Temporarily
+> adding this to perf build reproduces issue with other compilers,
+> including x86 build of perf with cs-etm.
 
-Okay.
+Good to know how to reproduce this issue.
 
->> +static inline size_t iommu_map_sgtable(struct iommu_domain *domain,
->> +			unsigned long iova, struct sg_table *sgt, int prot)
->> +{
->> +	return iommu_map_sg(domain, iova, sgt->sgl, sgt->orig_nents, prot);
->> +}
-> Should this be a separate patch due to the different subsystems?
->
-> FYI, I'll happily pick up the prep patches in an immutable branch of
-> the dma-mapping tree one we have settled on the details.
+> As such - your fix is good to resolve this issue.
+> 
+> Tested by / Reviewed by Mike Leach <mike.leach@linaro.org>
 
-Okay.
+Will send out patch to LKML soon.
 
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+Thank you for the testing and reviewing.
 
+Thanks,
+Leo
+
+> On Tue, 5 May 2020 at 05:11, Leo Yan <leo.yan@linaro.org> wrote:
+> >
+> > Hi Thomas,
+> >
+> > [ + Mathieu/Mike/Suzuki ]
+> >
+> > On Mon, May 04, 2020 at 10:22:27PM +0300, Thomas Backlund wrote:
+> > > This is building perf from kernel-5.6.10 on armv7hl and aarch64:
+> > >
+> > > Compiler is gcc 10.1.0-RC
+> > >
+> > >
+> > >   LD       perf-in.o
+> > > ld: arch/perf-in.o: in function `.LANCHOR0':
+> > > /home/iurt/rpmbuild/BUILD/kernel-arm/linux-5.6/tools/perf/util/include/../../util/cs-etm.h:118:
+> > > multiple definition of `traceid_list'; util/perf-in.o:/home/iurt/rpmbuild/BUILD/kernel-arm/linux-5.6/tools/perf/util/cs-etm.h:118:
+> > > first defined here
+> > > make[3]: *** [/home/iurt/rpmbuild/BUILD/kernel-arm/linux-5.6/tools/build/Makefile.build:145:
+> > > perf-in.o] Error 1
+> > >
+> > >   LD       perf-in.o
+> > > ld: arch/perf-in.o:/home/iurt/rpmbuild/BUILD/kernel-aarch64/linux-5.6/tools/perf/util/include/../../util/cs-etm.h:118:
+> > > multiple definition of `traceid_list'; util/perf-in.o:/home/iurt/rpmbuild/BUILD/kernel-aarch64/linux-5.6/tools/perf/util/cs-etm.h:118:
+> > > first defined here
+> > > make[3]: *** [/home/iurt/rpmbuild/BUILD/kernel-aarch64/linux-5.6/tools/build/Makefile.build:145:
+> > > perf-in.o] Error 1
+> > > make[2]: *** [Makefile.perf:616: perf-in.o] Error 2
+> > > make[1]: *** [Makefile.perf:225: sub-make] Error 2
+> > > make: *** [Makefile:70: all] Error 2
+> > >
+> > >
+> > > The same build succeeds with gcc 9.3.0
+> >
+> > Thanks for reporting the issue.
+> >
+> > Could you help confirm if below change can resolve this issue?
+> >
+> > Thanks,
+> > Leo
+> >
+> > ---8<---
+> >
+> > Subject: [PATCH] perf cs-etm: Move defined of traceid_list
+> >
+> > The variable 'traceid_list' is defined in the header file cs-etm.h,
+> > if multiple C files include cs-etm.h the compiler might complaint for
+> > multiple definition of 'traceid_list'.
+> >
+> > To fix multiple definition error, move the definition of 'traceid_list'
+> > into cs-etm.c.
+> >
+> > Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> > ---
+> >  tools/perf/util/cs-etm.c | 3 +++
+> >  tools/perf/util/cs-etm.h | 3 ---
+> >  2 files changed, 3 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
+> > index 62d2f9b9ce1b..381d9708e9bd 100644
+> > --- a/tools/perf/util/cs-etm.c
+> > +++ b/tools/perf/util/cs-etm.c
+> > @@ -94,6 +94,9 @@ struct cs_etm_queue {
+> >         struct cs_etm_traceid_queue **traceid_queues;
+> >  };
+> >
+> > +/* RB tree for quick conversion between traceID and metadata pointers */
+> > +static struct intlist *traceid_list;
+> > +
+> >  static int cs_etm__update_queues(struct cs_etm_auxtrace *etm);
+> >  static int cs_etm__process_queues(struct cs_etm_auxtrace *etm);
+> >  static int cs_etm__process_timeless_queues(struct cs_etm_auxtrace *etm,
+> > diff --git a/tools/perf/util/cs-etm.h b/tools/perf/util/cs-etm.h
+> > index 650ecc2a6349..4ad925d6d799 100644
+> > --- a/tools/perf/util/cs-etm.h
+> > +++ b/tools/perf/util/cs-etm.h
+> > @@ -114,9 +114,6 @@ enum cs_etm_isa {
+> >         CS_ETM_ISA_T32,
+> >  };
+> >
+> > -/* RB tree for quick conversion between traceID and metadata pointers */
+> > -struct intlist *traceid_list;
+> > -
+> >  struct cs_etm_queue;
+> >
+> >  struct cs_etm_packet {
+> > --
+> > 2.17.1
+> 
+> 
+> 
+> -- 
+> Mike Leach
+> Principal Engineer, ARM Ltd.
+> Manchester Design Centre. UK
