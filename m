@@ -2,100 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FE221C4E5C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 08:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB00B1C4E60
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 08:35:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727998AbgEEGeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 02:34:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43978 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725320AbgEEGeq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 02:34:46 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A1000206CC;
-        Tue,  5 May 2020 06:34:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588660484;
-        bh=EI2muG+asOrX7U2AolxDsDkX4CxBCxnvK0ZMzAVDPkY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QdoHgdZF/l07H77l97vo9if8+kenXB2DfksMgw4UDb33B73x4x2EAIv8KgviOz1Bg
-         4vQONFdBYgzx+WY+P/Tlxr5Qkpneac17nfvyIf0wG1N0s0ChfpxmIpb/h4Iy9zHkaY
-         2dx7bO1DFTi4prxw6mDDvctE3BVqkhPgMykUwm2U=
-Date:   Tue, 5 May 2020 08:34:41 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>, Christoph Hellwig <hch@lst.de>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sysctl: Make sure proc handlers can't expose heap memory
-Message-ID: <20200505063441.GA3877399@kroah.com>
-References: <202005041205.C7AF4AF@keescook>
- <20200504195937.GS11244@42.do-not-panic.com>
- <202005041329.169799C65D@keescook>
- <20200504215903.GT11244@42.do-not-panic.com>
+        id S1728208AbgEEGfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 02:35:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725320AbgEEGfV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 02:35:21 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA025C061A0F
+        for <linux-kernel@vger.kernel.org>; Mon,  4 May 2020 23:35:20 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1jVrAe-0003kw-01; Tue, 05 May 2020 08:35:12 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1jVrAa-0001QN-BM; Tue, 05 May 2020 08:35:08 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Kubecek <mkubecek@suse.cz>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        David Jander <david@protonic.nl>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>, mkl@pengutronix.de,
+        Marek Vasut <marex@denx.de>,
+        Christian Herber <christian.herber@nxp.com>
+Subject: [PATCH net-next v6 0/2] provide support for PHY master/slave configuration
+Date:   Tue,  5 May 2020 08:35:04 +0200
+Message-Id: <20200505063506.3848-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200504215903.GT11244@42.do-not-panic.com>
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 04, 2020 at 09:59:03PM +0000, Luis Chamberlain wrote:
-> On Mon, May 04, 2020 at 01:32:07PM -0700, Kees Cook wrote:
-> > On Mon, May 04, 2020 at 07:59:37PM +0000, Luis Chamberlain wrote:
-> > > On Mon, May 04, 2020 at 12:08:55PM -0700, Kees Cook wrote:
-> > > > Just as a precaution, make sure that proc handlers don't accidentally
-> > > > grow "count" beyond the allocated kbuf size.
-> > > > 
-> > > > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > > > ---
-> > > > This applies to hch's sysctl cleanup tree...
-> > > > ---
-> > > >  fs/proc/proc_sysctl.c | 3 +++
-> > > >  1 file changed, 3 insertions(+)
-> > > > 
-> > > > diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
-> > > > index 15030784566c..535ab26473af 100644
-> > > > --- a/fs/proc/proc_sysctl.c
-> > > > +++ b/fs/proc/proc_sysctl.c
-> > > > @@ -546,6 +546,7 @@ static ssize_t proc_sys_call_handler(struct file *filp, void __user *ubuf,
-> > > >  	struct inode *inode = file_inode(filp);
-> > > >  	struct ctl_table_header *head = grab_header(inode);
-> > > >  	struct ctl_table *table = PROC_I(inode)->sysctl_entry;
-> > > > +	size_t count_max = count;
-> > > >  	void *kbuf;
-> > > >  	ssize_t error;
-> > > >  
-> > > > @@ -590,6 +591,8 @@ static ssize_t proc_sys_call_handler(struct file *filp, void __user *ubuf,
-> > > >  
-> > > >  	if (!write) {
-> > > >  		error = -EFAULT;
-> > > > +		if (WARN_ON(count > count_max))
-> > > > +			count = count_max;
-> > > 
-> > > That would crash a system with panic-on-warn. I don't think we want that?
-> > 
-> > Eh? None of the handlers should be making this mistake currently and
-> > it's not a mistake that can be controlled from userspace. WARN() is
-> > absolutely what's wanted here: report an impossible situation (and
-> > handle it gracefully for the bulk of users that don't have
-> > panic_on_warn set).
-> 
-> Alrighty, Greg are you OK with this type of WARN_ON()? You recently
-> expressed concerns over its use due to panic-on-warn on another patch.
+changes v6:
+- use NL_SET_ERR_MSG_ATTR in ethnl_update_linkmodes
+- add sanity checks in the ioctl interface
+- use bool for ethnl_validate_master_slave_cfg()
 
-We should never call WARN() on any path that a user can trigger.
+changes v5:
+- set MASTER_SLAVE_CFG_UNSUPPORTED as default value
+- send a netlink error message on validation error
+- more code fixes
 
-If it is just a "the developer called this api in a foolish way" then we
-could use a WARN_ON() to have them realize their mistake, but in my
-personal experience, foolish developers don't even notice that kind of
-mistake :(
+changes v4:
+- rename port_mode to master_slave 
+- move validation code to net/ethtool/linkmodes.c 
+- add UNSUPPORTED state and avoid sending unsupported fields
+- more formatting and naming fixes
+- tja11xx: support only force mode
+- tja11xx: mark state as unsupported
 
-thanks,
+changes v3:
+- provide separate field for config and state.
+- make state rejected on set
+- add validation
 
-greg k-h
+changes v2:
+- change names. Use MASTER_PREFERRED instead of MULTIPORT
+- configure master/slave only on request. Default configuration can be
+  provided by PHY or eeprom
+- status and configuration to the user space.
+
+Oleksij Rempel (2):
+  ethtool: provide UAPI for PHY master/slave configuration.
+  net: phy: tja11xx: add support for master-slave configuration
+
+ Documentation/networking/ethtool-netlink.rst | 35 ++++----
+ drivers/net/phy/nxp-tja11xx.c                | 43 +++++++++
+ drivers/net/phy/phy.c                        |  4 +-
+ drivers/net/phy/phy_device.c                 | 94 ++++++++++++++++++++
+ include/linux/phy.h                          |  3 +
+ include/uapi/linux/ethtool.h                 | 16 +++-
+ include/uapi/linux/ethtool_netlink.h         |  2 +
+ include/uapi/linux/mii.h                     |  2 +
+ net/ethtool/ioctl.c                          |  6 ++
+ net/ethtool/linkmodes.c                      | 53 +++++++++++
+ 10 files changed, 240 insertions(+), 18 deletions(-)
+
+-- 
+2.26.2
+
