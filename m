@@ -2,93 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F73E1C6169
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 21:57:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EF691C6195
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 22:07:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728885AbgEET5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 15:57:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726350AbgEET5J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 15:57:09 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75AA7C061A0F;
-        Tue,  5 May 2020 12:57:09 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id j14so2398771lfg.9;
-        Tue, 05 May 2020 12:57:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=U8xNbatZYDJg5E4K6HPS1HOygBlr1yXucatKboZeD4o=;
-        b=ceHY7FSRl6wIu6JczPxHSQFgLm7A3fIwfXdWA4b98i21Na3SxLCM78w8cZbXwqCwDX
-         1+mithseYDnTLdOTiQRboJ6mX0y50GjkmiCQWGuh26rxcNc6sNguiGzXViZTlpfBeE8h
-         U4WGHF/UREMm/mJ9qxetY/wue82ZkBJRdz1JbU/vwESaGIEgUwK5gqpJONks077me7dz
-         LVrs0rOr+OBxxyQ3zKM8gBjoJ6aMAXB+fRWKz/U+NXOJrmGl/qNU5lJRPj9A1etD7zuz
-         9E1ylz7uzJBqQ+xqijrPDJM7EFoQ1ew80/yG4OuaXFfyYmmvppBuKp9b/Babf2Q8T/iO
-         IUJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U8xNbatZYDJg5E4K6HPS1HOygBlr1yXucatKboZeD4o=;
-        b=coekYnXzkmhaCLd/Ls/aVFiah5LzVrZ1x6tTg5p5D8tvihg0zwx95cJ5is1T6NyzhS
-         WzFQtYAsUNvb3SU3hzGhScfp88wRPJ9Ho2XCVLdGf1K+bIf/daAiItkzqdWRwrleusCv
-         bzuo5bqsTi1WSDKwl6Li5/DQZt9W67ql5Z/+r850XWj3NajkKHTYfzWfWz5MFXng0G0p
-         46t95qtxsCTQlgW9shzsJOITTFWXRhtLc5ie8OLCEa5k/2+DAm86UdOH6sEDibYm/UTU
-         rc3+kEhlqaUasEGfXXMMQDbpk7qxGpJhEqMKy+E7iQQSFh59CQUEHfFobjXuleriQkxZ
-         iXyw==
-X-Gm-Message-State: AGi0PubjmYwobRi4/KL1YhXEAMadf8fEi/eUI/RCZgg+3GP6+NR+MCt3
-        n6S0IuXXaBPVesgnTj9pVoU29dhjsKppn76GVmY=
-X-Google-Smtp-Source: APiQypLM6WUeEOST02t3M86IqCwu+plzoI77TF8QVnk5/olRMs4ioXXFDolNkp2s9YiGvHKreQc2WhFDSNRqbwwVYPw=
-X-Received: by 2002:a19:7f17:: with SMTP id a23mr980350lfd.38.1588708627914;
- Tue, 05 May 2020 12:57:07 -0700 (PDT)
+        id S1729072AbgEEUHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 16:07:07 -0400
+Received: from mail.zx2c4.com ([192.95.5.64]:59929 "EHLO mail.zx2c4.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728569AbgEEUHH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 16:07:07 -0400
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 318e206f;
+        Tue, 5 May 2020 19:54:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
+        :references:in-reply-to:from:date:message-id:subject:to:cc
+        :content-type; s=mail; bh=usExkLZzTo+s7Ni/6F6b27S3A0o=; b=RIT+d+
+        kYZjKMjN0Oi4werOuJaG/Ue+FahbxZSd+K4iB6REfNMtbDULbKttGBkBUuj+8U/I
+        CIaN3DzntxeTeBdx6e0kp58iK3T9tXRn8nwW+IosL25yvQPq2XpQModGLPAJ8zwa
+        g5ivRfnGg30rWqlWM+xmdAB9zPzKZS8OzlmHyT6DtebfeNwiNVh05vpoWFwU6jYJ
+        m1CTcjnFJbhux60b7r2qs566F53HRbAKzkLoBsyRxjx7A8qRI+1IIy0ugOS1kQRj
+        v38yDj73vKsg4yg0qWCgwcuThCbxysy+D4ySjp0/yYnEMSLtaP2QVwxQ+si9Mx34
+        2khr5pUpBgmtotzQ==
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id d7eb683e (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Tue, 5 May 2020 19:54:30 +0000 (UTC)
+Received: by mail-il1-f169.google.com with SMTP id r2so2443877ilo.6;
+        Tue, 05 May 2020 13:07:04 -0700 (PDT)
+X-Gm-Message-State: AGi0PuazqeyWAA702UffdSDe7B5CaGvakxdsWmNpeiK0v6RCjx0rJfAt
+        QLKv7/j/pp4RYjvNdFYPQTWnUrZ7WoBSaPHvebI=
+X-Google-Smtp-Source: APiQypIbrq5BimrpgkqS3H4zSchqYRWQJ5afcQiOi4WgV4Z/1/duDp5O8TBtdE54uH7v86Gkyl7M0plAdTTyiC9H8Os=
+X-Received: by 2002:a92:5c82:: with SMTP id d2mr5605707ilg.231.1588709223915;
+ Tue, 05 May 2020 13:07:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200505100049.191351-1-yuehaibing@huawei.com>
-In-Reply-To: <20200505100049.191351-1-yuehaibing@huawei.com>
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-Date:   Wed, 6 May 2020 01:35:03 +0530
-Message-ID: <CAFqt6zYfX68YBjtErDEC35Y-SSsGS1Sy=9Yz35h8-pOztq+5HA@mail.gmail.com>
-Subject: Re: [PATCH -next] mm: remove duplicated include from madvise.c
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian@brauner.io>,
-        Linux-MM <linux-mm@kvack.org>, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
+References: <20200505141327.746184-1-arnd@arndb.de>
+In-Reply-To: <20200505141327.746184-1-arnd@arndb.de>
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date:   Tue, 5 May 2020 14:06:52 -0600
+X-Gmail-Original-Message-ID: <CAHmME9oTO7DiWCXoeCBjmPOBMoZQ2hUhHjZ4_oi-nVP_9pRpSg@mail.gmail.com>
+Message-ID: <CAHmME9oTO7DiWCXoeCBjmPOBMoZQ2hUhHjZ4_oi-nVP_9pRpSg@mail.gmail.com>
+Subject: Re: [PATCH] net: wireguard: avoid unused variable warning
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        WireGuard mailing list <wireguard@lists.zx2c4.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 5, 2020 at 3:26 PM YueHaibing <yuehaibing@huawei.com> wrote:
+On Tue, May 5, 2020 at 8:13 AM Arnd Bergmann <arnd@arndb.de> wrote:
 >
-> Remove duplicated include.
+> clang points out a harmless use of uninitialized variables that
+> get passed into a local function but are ignored there:
 >
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> In file included from drivers/net/wireguard/ratelimiter.c:223:
+> drivers/net/wireguard/selftest/ratelimiter.c:173:34: error: variable 'skb6' is uninitialized when used here [-Werror,-Wuninitialized]
+>                 ret = timings_test(skb4, hdr4, skb6, hdr6, &test_count);
+>                                                ^~~~
+> drivers/net/wireguard/selftest/ratelimiter.c:123:29: note: initialize the variable 'skb6' to silence this warning
+>         struct sk_buff *skb4, *skb6;
+>                                    ^
+>                                     = NULL
+> drivers/net/wireguard/selftest/ratelimiter.c:173:40: error: variable 'hdr6' is uninitialized when used here [-Werror,-Wuninitialized]
+>                 ret = timings_test(skb4, hdr4, skb6, hdr6, &test_count);
+>                                                      ^~~~
+> drivers/net/wireguard/selftest/ratelimiter.c:125:22: note: initialize the variable 'hdr6' to silence this warning
+>         struct ipv6hdr *hdr6;
+>                             ^
 
-Tested-by: Souptick Joarder <jrdr.linux@gmail.com>
+Seems like the code is a bit easier to read and is more uniform
+looking by just initializing those two variables to NULL, like the
+warning suggests. If you don't mind, I'll queue something up in my
+tree to this effect.
 
-> ---
->  mm/madvise.c | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/mm/madvise.c b/mm/madvise.c
-> index 8fec261457a6..f8be54dd92d3 100644
-> --- a/mm/madvise.c
-> +++ b/mm/madvise.c
-> @@ -29,7 +29,6 @@
->  #include <linux/swapops.h>
->  #include <linux/shmem_fs.h>
->  #include <linux/mmu_notifier.h>
-> -#include <linux/sched/mm.h>
->  #include <linux/uio.h>
->
->  #include <asm/tlb.h>
->
->
->
->
->
->
+By the way, I'm having a bit of a hard time reproducing the warning
+with either clang-10 or clang-9. Just for my own curiosity, would you
+mind sending the .config that results in this?
+
+Jason
