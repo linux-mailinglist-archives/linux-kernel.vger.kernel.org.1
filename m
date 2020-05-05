@@ -2,121 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9187E1C5954
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6DFF1C595D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:25:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730127AbgEEOYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:24:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729315AbgEEOYf (ORCPT
+        id S1730182AbgEEOZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:25:03 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:1111 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729310AbgEEOZB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:24:35 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A9DBC061A0F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:24:35 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id q7so2432998qkf.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 07:24:35 -0700 (PDT)
+        Tue, 5 May 2020 10:25:01 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=z7jVxqc7TYDxLD35G2tT1fTPM95gzbd5Aqe8HIKsqWE=;
-        b=GPKOxTXyID7KCIVJRJo+1menSzg+R+tV1g62FhqmTgUHSM7IVkoCBY+O6Sk64a4BqZ
-         G+9NNXKGsF9XsRUTQykvp14C1HvCQP40QPp/S3dSpo+iul/4Ny4QxeMGCbR/PhfVDGyY
-         LRMm701EleKexfywr/6329rQBKCThTBEMvQKnVli5GbZzZebINQUozWnRQvax50NomSB
-         rJdlH5RLwSvu8vGHl9cbLVtfO0iYPtNY2epyStFyIJMsboF3RSEevwOcR7lXZ4+47yIK
-         V/dKJo1DcG1IX+ONR8wRA0Wn85kJckK0cHIr+vEZAoVFyTMtJwhd8ogRmToS4bjBuskM
-         k7hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to:content-transfer-encoding;
-        bh=z7jVxqc7TYDxLD35G2tT1fTPM95gzbd5Aqe8HIKsqWE=;
-        b=rSJs2saABBjGdgO3XzabvDpQXNYA/ZT62W49YsAdBuIM79dldxxqbGkR8BfznmV4Xp
-         CcjursaSUemTM4i5B5RA1TLBzT9SC5xN5Dut9ivDewpZPYQfIZr/Ot1EHCDei5Yelt8N
-         a1D0LEAgGCBdVPNo3OkUOfSyEGBL5YLNw6r1sTskD+NM/7UgeFJC+EjbyhrY/C8Da4Lr
-         ppbMFDjhcEKv1+LXfTyfRn5gy3wJ+4KgIZmJsoZ1tcIwcE+X/zxS26kM685i8aqqpedd
-         XA+avOEee7hAEexFXkOFimLQKfAviL0lmRdWsFhaDZ6xvjq4dfemk6ytmnhTflCPzAxZ
-         jc5g==
-X-Gm-Message-State: AGi0PubIN/alLdWBStknu0hevKK4K8ZxHoFQxjRbSe0OXOktjye5Lj6/
-        YW1YEE/3O3pAr93aAH5uupl4JqZAIV07w725OBo=
-X-Google-Smtp-Source: APiQypIazf8D4NwTk2ba322YEOFc8KDPPPQqMUJcJX9ybQQ29Mwqp+Q7N11g5Djpq+EqG5kEG8H3sBuBCBAD6aXpxnc=
-X-Received: by 2002:a37:9a13:: with SMTP id c19mr2479150qke.51.1588688674526;
- Tue, 05 May 2020 07:24:34 -0700 (PDT)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1588688701; x=1620224701;
+  h=from:to:cc:date:message-id:in-reply-to:mime-version:
+   subject;
+  bh=ojTidh3cJPjzb7MTzavDHG/Iog3Nq7tt/PoUVo4tNM0=;
+  b=tU1r3LxnO0+ug1AGRvb9Zj1USBa2ddk2a6WFEfNM3hYDMxz2gcjeaeu6
+   S9WX+ETK5PKqjQvowSr4RtVHZwTjTacNovUKfhrNRZgSVur9S3kX+1f0q
+   veZadMLpYQPDgLlKA+AqEqcuzvYqrMTkQEgf77sFH0PxKqi+oJTzRK7D5
+   o=;
+IronPort-SDR: qzP7/t0VQlCoEyHgzMOm+FcDazZKa7SPTsfmnaMXRlnRnktZMFZmGGERqIkjMST9Px+8lduc8D
+ Ik2kaMA9VG2A==
+X-IronPort-AV: E=Sophos;i="5.73,355,1583193600"; 
+   d="scan'208";a="42794246"
+Subject: Re: RE: [PATCH net 0/2] Revert the 'socket_alloc' life cycle change
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-c300ac87.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 05 May 2020 14:24:59 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2b-c300ac87.us-west-2.amazon.com (Postfix) with ESMTPS id B47FFA2318;
+        Tue,  5 May 2020 14:24:58 +0000 (UTC)
+Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 5 May 2020 14:24:58 +0000
+Received: from u886c93fd17d25d.ant.amazon.com (10.43.160.180) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 5 May 2020 14:24:52 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+CC:     SeongJae Park <sjpark@amazon.com>, <davem@davemloft.net>,
+        <kuba@kernel.org>, <gregkh@linuxfoundation.org>,
+        <edumazet@google.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, SeongJae Park <sjpark@amazon.de>
+Date:   Tue, 5 May 2020 16:24:37 +0200
+Message-ID: <20200505142437.22822-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200505124442.GX23230@ZenIV.linux.org.uk>
 MIME-Version: 1.0
-Received: by 2002:a0c:f689:0:0:0:0:0 with HTTP; Tue, 5 May 2020 07:24:33 -0700 (PDT)
-From:   "Mrs. vivian Ouedrago" <vivian.OuedragoBrown@gmail.com>
-Date:   Tue, 5 May 2020 07:24:33 -0700
-X-Google-Sender-Auth: CDxwzchD25jSXvSwcJaSU0v5hCU
-Message-ID: <CADSfHSgn0wcz_Lq0iGSdykZNZ5YuSA=uqagMTcGiv1Vy-4ARmA@mail.gmail.com>
-Subject: =?UTF-8?Q?D=C4=81rgais_Dieva_izredz=C4=93tais?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Originating-IP: [10.43.160.180]
+X-ClientProxiedBy: EX13D01UWA001.ant.amazon.com (10.43.160.60) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-D=C4=81rgais Dieva izredz=C4=93tais
+On Tue, 5 May 2020 13:44:42 +0100 Al Viro <viro@zeniv.linux.org.uk> wrote:
 
-Es rakstu jums =C5=A1o v=C4=93stuli ar smag=C4=81m asar=C4=81m ac=C4=ABs un=
- sird=C4=AB ar liel=C4=81m
-b=C4=93d=C4=81m. Mans v=C4=81rds ir vivian Ouedrago kundze, es esmu no Tuni=
-sijas un
-sazin=C4=81jos ar jums no Burkinafaso slimn=C4=ABcas, es gribu jums to pate=
-ikt,
-jo es Jums nav citas iesp=C4=93jas k=C4=81 pateikt, kad mani uzrun=C4=81ja =
-atv=C4=93rties
-jums, es apprec=C4=93jos ar Ouedrago Smitu Braunu, kur=C5=A1 devi=C5=86us g=
-adus
-str=C4=81d=C4=81ja ar Tunisijas v=C4=93stnieku Burkinafaso, pirms vi=C5=86=
-=C5=A1 nomira 2005.
-gad=C4=81. prec=C4=93jies vienpadsmit gadus bez b=C4=93rna.
+> CAUTION: This email originated from outside of the organization. Do not cli=
+> ck links or open attachments unless you can confirm the sender and know the=
+>  content is safe.
+> 
+> 
+> 
+> On Tue, May 05, 2020 at 09:28:39AM +0200, SeongJae Park wrote:
+> > From: SeongJae Park <sjpark@amazon.de>
+> >
+> > The commit 6d7855c54e1e ("sockfs: switch to ->free_inode()") made the
+> > deallocation of 'socket_alloc' to be done asynchronously using RCU, as
+> > same to 'sock.wq'.  And the following commit 333f7909a857 ("coallocate
+> > socket_sq with socket itself") made those to have same life cycle.
+> >
+> > The changes made the code much more simple, but also made 'socket_alloc'
+> > live longer than before.  For the reason, user programs intensively
+> > repeating allocations and deallocations of sockets could cause memory
+> > pressure on recent kernels.
+> >
+> > To avoid the problem, this commit reverts the changes.
+> 
+> Is it "could cause" or is it "have been actually observed to"?
 
-Vi=C5=86=C5=A1 nomira p=C4=93c =C4=ABsas slim=C4=ABbas, kas ilga tikai piec=
-as dienas. Kop=C5=A1 vi=C5=86a
-n=C4=81ves es nol=C4=93mu v=C4=93lreiz neprec=C4=93ties. Kad mans miru=C5=
-=A1ais v=C4=ABrs bija
-dz=C4=ABvs, vi=C5=86=C5=A1 noguld=C4=ABja USD 8,5 miljonus (asto=C5=86i mil=
-joni pieci simti
-t=C5=ABksto=C5=A1u dol=C4=81ru) bank=C4=81 Ouagadougou galvaspils=C4=93t=C4=
-=81 Burkina Fasoin
-rietum=C4=81frik=C4=81. =C5=A0obr=C4=ABd =C5=A1=C4=AB nauda joproj=C4=81m a=
-trodas banka. Vi=C5=86=C5=A1 padar=C4=ABja =C5=A1o
-naudu pieejamu zelta eksportam no Burkinafaso kalnr=C5=ABpniec=C4=ABbas.
+Actually observed.  Sorry for lack of that explanation.  Could you please refer
+to this link?
+https://lore.kernel.org/netdev/20200505115402.25768-1-sjpark@amazon.com/
 
-Nesen =C4=81rsts man teica, ka v=C4=93=C5=BEa probl=C4=93mas d=C4=93=C4=BC =
-es neturpin=C4=81=C5=A1os septi=C5=86us
-m=C4=93ne=C5=A1us. Tas, kas mani visvair=C4=81k trauc=C4=93, ir mana insult=
-a slim=C4=ABba.
-Uzzin=C4=81jis manu st=C4=81vokli, es nol=C4=93mu =C5=A1o naudu nodot jums,=
- lai r=C5=ABp=C4=93tos
-par maz=C4=81k privili=C4=A3=C4=93tajiem cilv=C4=93kiem, j=C5=ABs =C5=A1o n=
-audu izlietosit t=C4=81, k=C4=81 es
-=C5=A1eit nor=C4=81d=C4=AB=C5=A1u. Es v=C4=93los, lai j=C5=ABs pa=C5=86emtu=
- 30 procentus no kop=C4=93j=C4=81s
-naudas person=C4=ABgai lieto=C5=A1anai. Kam=C4=93r 70% naudas tiks novirz=
-=C4=ABti
-labdar=C4=ABbas "cilv=C4=93kiem uz ielas un pal=C4=ABdz=C4=ABbas snieg=C5=
-=A1anai b=C4=93rnunam=C4=81. Es
-uzaugu k=C4=81 b=C4=81renis, un man nav neviena k=C4=81 manai =C4=A3imenei.=
- loceklis,
-tikai cen=C5=A1oties saglab=C4=81t Dieva namu. Es to daru, lai Dievs piedot=
-u
-mysins un pie=C5=86emtu manu dv=C4=93seli parad=C4=ABz=C4=93, jo =C5=A1=C4=
-=AB slim=C4=ABba mani ir tik
-=C4=BCoti cietusi.
 
-Tikl=C4=ABdz es sa=C5=86em=C5=A1u j=C5=ABsu atbildi, es jums nor=C4=81d=C4=
-=AB=C5=A1u bankas kontaktu
-Burkinafaso, k=C4=81 ar=C4=AB uzdo=C5=A1u bankas vad=C4=ABt=C4=81jam jums i=
-zsniegt pilnvaras
-v=C4=93stuli, kas jums apliecin=C4=81s pa=C5=A1reiz=C4=93jo naudas l=C4=ABd=
-zek=C4=BCu sa=C5=86=C4=93m=C4=93ju
-bank=C4=81, ti, ja j=C5=ABs nodro=C5=A1in=C4=81sit man, ka j=C5=ABs r=C4=AB=
-kosities atbilsto=C5=A1i, k=C4=81
-es =C5=A1eit nor=C4=81d=C4=ABju.
-
-No vivian Ouedrago kundzes
+Thanks,
+SeongJae Park
