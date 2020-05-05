@@ -2,101 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09D831C6211
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 22:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 156981C6215
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 22:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729311AbgEEU3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 16:29:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728135AbgEEU3X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 16:29:23 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C616AC061A0F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 13:29:21 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id b188so3789759qkd.9
-        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 13:29:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WwYjE2GWrCctkg5EjStPqPCb7vhBmi7tE/P9TjGv2ws=;
-        b=jWS2YE5/k4w9jAJiOHdnPf2vhCEK04lsSUmN/uqo6B6PuxZ9i97vhOmdGUOfVSzWdN
-         xv1oBs8lYqPB9/d3YhjguC+h7JIUWFNQhS2YcT4MrENkWgfFBTQfVOePVjatG1Gtzapq
-         XbAn3lQQLD1vOeUoyA9KHCPytRYPiL5K7H3tWI6RxBNn9Dc2xT+VwBFKIENzsXJWFbi4
-         xkLRUbpHt1O7QCjRxJL+fEt3p8dUFiAahZ9vUjyCmN0woJeSoFmtCE1Y3MWN1qvMGAqX
-         zJC50kYZv1JNr5uinJOuv1ZB7HjKRh8hR/94TDfXIiHougFONoTuhK/1fay8zMPd4oTp
-         ISlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WwYjE2GWrCctkg5EjStPqPCb7vhBmi7tE/P9TjGv2ws=;
-        b=B4fPNo8HsW9c0zJLQ9iGHikKPTxIfhipVTv1bexwZgny8yiyfNldstaO13oBCUNFsT
-         3dHjszJiZHpVyaK65JWLCsydsg7Sz1iruAALVMbv+zXBmLd+g2dDzKqsWCVHTm2xkSbz
-         MzCwyveSTbYm3ue3e/aNVpp+eKMtMN1lfjCJs2xky/SLsBR8tg0sJ9hW6DtZP19MY8MO
-         BPyTRhk3NWnPcFvDmdg8xpD6miam/zrR8Mkrww69zK78Nhbm3NJhum/L1rdcf0vAyo0J
-         WZ2QokVvBdE2NKxwH2fp5w6cCzEPC3drCHjMdVeHwnKDYV76LyGGqqIBChG1oWhfHJXh
-         UPxw==
-X-Gm-Message-State: AGi0PubFuviLPrV9ZexB6cu6Tqm8x3g6IuVPFcgmpZ8RGo035rf9MuYY
-        bDmlKoqk2sxexqqI77W2eQk=
-X-Google-Smtp-Source: APiQypLBsuL5EJrI4oViXGYALNZSAMkPrqKzEylAsSSsoTTEXj5JA53hZBhQj6y6TLXI2+4DtCIC3Q==
-X-Received: by 2002:ae9:c301:: with SMTP id n1mr5351742qkg.300.1588710560838;
-        Tue, 05 May 2020 13:29:20 -0700 (PDT)
-Received: from betazed.lan1 (cpe-142-255-49-197.nyc.res.rr.com. [142.255.49.197])
-        by smtp.gmail.com with ESMTPSA id p22sm2554582qtb.91.2020.05.05.13.29.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 May 2020 13:29:20 -0700 (PDT)
-From:   Tony Fischetti <tony.fischetti@gmail.com>
-To:     tglx@linutronix.de, mingo@redhat.com
-Cc:     bp@alien8.de, x86@kernel.org, hpa@zytor.com, bhe@redhat.com,
-        dyoung@redhat.com, dave.hansen@linux.intel.com, linux@roeck-us.net,
-        keescook@chromium.org, dan.j.williams@intel.com,
-        linux-kernel@vger.kernel.org, tony.fischetti@gmail.com
-Subject: [PATCH v2] x86/setup: Add boot messages about cmdline builtins
-Date:   Tue,  5 May 2020 16:29:11 -0400
-Message-Id: <20200505202911.10254-1-tony.fischetti@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        id S1729221AbgEEUal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 16:30:41 -0400
+Received: from mga04.intel.com ([192.55.52.120]:19441 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726350AbgEEUaj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 16:30:39 -0400
+IronPort-SDR: DiVctmsuo6NFfq3aiMN8ovntNLRdZh6oylGmuTB5pq1G4w54GiSSJHE65Tf+pvGp457sj0I4nx
+ M+GGVKzON4iA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2020 13:30:38 -0700
+IronPort-SDR: LTsLVNynuMvupe9F5TehduwJoPxwdqrtMZVAWE+7Uy2iFi5W70dMqgZuwgNSfksT8JlSUYyIlc
+ WYocCaVaStag==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,356,1583222400"; 
+   d="scan'208";a="304596938"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 05 May 2020 13:30:37 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jW4D7-0003Fa-2K; Wed, 06 May 2020 04:30:37 +0800
+Date:   Wed, 06 May 2020 04:29:44 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ b08c5abac814d5838fdf8f1a8685e7dd95afd004
+Message-ID: <5eb1ccb8.hQC2R8CV37o6CsTk%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While the ability to override or append to the boot command line has
-been added, the boot messages contain no information as to whether the
-cmdline was manipulated by the build-time options. This patch, for x86,
-adds boot messages specifying the intital cmdline, and the final cmdline
-after possible manipulation via the kernel config.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  master
+branch HEAD: b08c5abac814d5838fdf8f1a8685e7dd95afd004  Merge branch 'x86/boot'
 
-Signed-off-by: Tony Fischetti <tony.fischetti@gmail.com>
+elapsed time: 485m
+
+configs tested: 162
+configs skipped: 0
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                           efm32_defconfig
+arm                         at91_dt_defconfig
+arm                        shmobile_defconfig
+arm64                               defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                           sunxi_defconfig
+arm                        multi_v7_defconfig
+arm64                            allyesconfig
+arm                              allyesconfig
+arm64                            allmodconfig
+arm                              allmodconfig
+arm64                             allnoconfig
+arm                               allnoconfig
+sparc                            allyesconfig
+nds32                             allnoconfig
+powerpc                          g5_defconfig
+powerpc                           allnoconfig
+i386                             allyesconfig
+i386                             alldefconfig
+i386                                defconfig
+i386                              debian-10.3
+i386                              allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                        generic_defconfig
+ia64                          tiger_defconfig
+ia64                         bigsur_defconfig
+ia64                             allyesconfig
+ia64                             alldefconfig
+m68k                       m5475evb_defconfig
+m68k                             allmodconfig
+m68k                       bvme6000_defconfig
+m68k                           sun3_defconfig
+m68k                          multi_defconfig
+nios2                         3c120_defconfig
+nios2                         10m50_defconfig
+c6x                        evmc6678_defconfig
+c6x                              allyesconfig
+openrisc                 simple_smp_defconfig
+openrisc                    or1ksim_defconfig
+nds32                               defconfig
+csky                                defconfig
+alpha                               defconfig
+h8300                       h8s-sim_defconfig
+h8300                     edosk2674_defconfig
+xtensa                          iss_defconfig
+h8300                    h8300h-sim_defconfig
+xtensa                       common_defconfig
+arc                                 defconfig
+arc                              allyesconfig
+microblaze                      mmu_defconfig
+microblaze                    nommu_defconfig
+mips                      fuloong2e_defconfig
+mips                      malta_kvm_defconfig
+mips                            ar7_defconfig
+mips                             allyesconfig
+mips                         64r6el_defconfig
+mips                              allnoconfig
+mips                           32r2_defconfig
+mips                             allmodconfig
+mips                malta_kvm_guest_defconfig
+mips                         tb0287_defconfig
+mips                       capcella_defconfig
+mips                           ip32_defconfig
+mips                  decstation_64_defconfig
+mips                      loongson3_defconfig
+mips                          ath79_defconfig
+mips                        bcm63xx_defconfig
+parisc                            allnoconfig
+parisc                generic-64bit_defconfig
+parisc                generic-32bit_defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                      chrp32_defconfig
+powerpc                             defconfig
+powerpc                       holly_defconfig
+powerpc                       ppc64_defconfig
+powerpc                          rhel-kconfig
+powerpc                  mpc866_ads_defconfig
+powerpc                    amigaone_defconfig
+powerpc                    adder875_defconfig
+powerpc                     ep8248e_defconfig
+powerpc                     mpc512x_defconfig
+m68k                 randconfig-a001-20200502
+mips                 randconfig-a001-20200502
+nds32                randconfig-a001-20200502
+alpha                randconfig-a001-20200502
+parisc               randconfig-a001-20200502
+riscv                randconfig-a001-20200502
+xtensa               randconfig-a001-20200503
+openrisc             randconfig-a001-20200503
+csky                 randconfig-a001-20200503
+i386                 randconfig-b003-20200503
+x86_64               randconfig-b002-20200503
+i386                 randconfig-b001-20200503
+x86_64               randconfig-b003-20200503
+x86_64               randconfig-b001-20200503
+i386                 randconfig-b002-20200503
+x86_64               randconfig-d001-20200505
+i386                 randconfig-d003-20200505
+i386                 randconfig-d001-20200505
+x86_64               randconfig-d003-20200505
+x86_64               randconfig-d002-20200505
+i386                 randconfig-d002-20200505
+i386                 randconfig-e003-20200505
+x86_64               randconfig-e002-20200505
+x86_64               randconfig-e003-20200505
+x86_64               randconfig-e001-20200505
+i386                 randconfig-e002-20200505
+i386                 randconfig-e001-20200505
+i386                 randconfig-f003-20200505
+x86_64               randconfig-f001-20200505
+x86_64               randconfig-f003-20200505
+i386                 randconfig-f001-20200505
+i386                 randconfig-f002-20200505
+x86_64               randconfig-a003-20200505
+x86_64               randconfig-a001-20200505
+i386                 randconfig-a001-20200505
+i386                 randconfig-a003-20200505
+i386                 randconfig-a002-20200505
+i386                 randconfig-g003-20200505
+i386                 randconfig-g002-20200505
+i386                 randconfig-g001-20200505
+x86_64               randconfig-g002-20200505
+ia64                 randconfig-a001-20200505
+powerpc              randconfig-a001-20200505
+arm                  randconfig-a001-20200505
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+s390                       zfcpdump_defconfig
+s390                          debug_defconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                             alldefconfig
+s390                                defconfig
+sh                          rsk7269_defconfig
+sh                               allmodconfig
+sh                            titan_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                                allnoconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                                  defconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
+
 ---
- arch/x86/kernel/setup.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 4b3fa6cd3106..ee90dffcfd79 100644
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -828,7 +828,7 @@ void __init setup_arch(char **cmdline_p)
- 	 */
- 	__flush_tlb_all();
- #else
--	printk(KERN_INFO "Command line: %s\n", boot_command_line);
-+	pr_info("Initial command line: %s\n", boot_command_line);
- 	boot_cpu_data.x86_phys_bits = MAX_PHYSMEM_BITS;
- #endif
- 
-@@ -916,6 +916,7 @@ void __init setup_arch(char **cmdline_p)
- #endif
- 
- 	strlcpy(command_line, boot_command_line, COMMAND_LINE_SIZE);
-+	pr_info("Final command line: %s\n", command_line);
- 	*cmdline_p = command_line;
- 
- 	/*
--- 
-2.20.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
