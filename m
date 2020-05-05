@@ -2,92 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC88F1C5CBB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:57:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 142BC1C5CB8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730575AbgEEP5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 11:57:44 -0400
-Received: from mga06.intel.com ([134.134.136.31]:43147 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730542AbgEEP5k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 11:57:40 -0400
-IronPort-SDR: pxVk6H4+g/DPi1API8PUDhb+n0YDmQ1z6s1oIYu59+ndSxn62jOGYeXbey4C6o1YxWdWdosD0h
- cgPVDsnT2wpw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2020 08:57:39 -0700
-IronPort-SDR: alrkhE+2C4qXPTodsAh59qKNIdgUTi4My5rtciJamlWkLe/Gs6yVOlSzDYbd6Bd6u+HzoFRuZW
- MicWtTkTw92Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,355,1583222400"; 
-   d="scan'208";a="249494130"
-Received: from crojewsk-mobl1.ger.corp.intel.com (HELO [10.249.151.151]) ([10.249.151.151])
-  by fmsmga007.fm.intel.com with ESMTP; 05 May 2020 08:57:33 -0700
-Subject: Re: [PATCH V2] ASoC: Intel: boards: Use FS as nau8825 sysclk in
- nau88125_* machine
-To:     =?UTF-8?Q?Rados=c5=82aw_Biernacki?= <rad@semihalf.com>
-Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Lech Betlej <Lech.Betlej@intel.com>,
-        alsa-devel@alsa-project.org, Todd Broch <tbroch@google.com>,
-        Harshapriya <harshapriya.n@intel.com>,
-        John Hsu <KCHSU0@nuvoton.com>, linux-kernel@vger.kernel.org,
-        "Sienkiewicz, Michal" <michal.sienkiewicz@intel.com>,
-        Ben Zhang <benzh@chromium.org>,
-        Mac Chiang <mac.chiang@intel.com>,
-        Yong Zhi <yong.zhi@intel.com>, Marcin Wojtas <mw@semihalf.com>,
-        Vamshi Krishna <vamshi.krishna.gopal@intel.com>,
-        Alex Levin <levinale@google.com>
-References: <20200501193141.30293-1-rad@semihalf.com>
- <3ad44b75-387f-da75-d7b2-3a16ed00550c@linux.intel.com>
- <CAOs-w0LPeKgooa_98x_Jkzus-Y5Kad7pDby0CriDGb6nTp_6sA@mail.gmail.com>
-From:   Cezary Rojewski <cezary.rojewski@intel.com>
-Message-ID: <efca85c3-7078-efaa-88b5-536c8debea3d@intel.com>
-Date:   Tue, 5 May 2020 17:57:32 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1730471AbgEEP5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 11:57:38 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:38058 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729892AbgEEP5h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 11:57:37 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 0CBCB1C023E; Tue,  5 May 2020 17:57:35 +0200 (CEST)
+Date:   Tue, 5 May 2020 17:57:34 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Pavel Machek <pavel@denx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Stable <stable@vger.kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Vinod Koul <vkoul@kernel.org>
+Subject: Re: [PATCH 4.19 28/37] dmaengine: dmatest: Fix iteration non-stop
+ logic
+Message-ID: <20200505155734.GA10069@duo.ucw.cz>
+References: <20200504165448.264746645@linuxfoundation.org>
+ <20200504165451.307643203@linuxfoundation.org>
+ <20200505123159.GC28722@amd>
+ <CAHp75VeM+qwh5rHL7RDdacru0jPSB9me2aTs__jdy749dTKRng@mail.gmail.com>
+ <20200505125818.GA31126@amd>
+ <CAHp75VcKreeQpjROdL23XGqgVu+F_0eL5DsJ=5APEQUO9V69EQ@mail.gmail.com>
+ <20200505133700.GA31753@amd>
+ <CAHp75Ve+pzhamZXiKxHF+VD8yfsjRF2coattHyiD+0aa7Fy2DA@mail.gmail.com>
+ <20200505153227.GI13035@sasha-vm>
 MIME-Version: 1.0
-In-Reply-To: <CAOs-w0LPeKgooa_98x_Jkzus-Y5Kad7pDby0CriDGb6nTp_6sA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="17pEHd4RhPHOinZp"
+Content-Disposition: inline
+In-Reply-To: <20200505153227.GI13035@sasha-vm>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>>
->>> 2) Currently Skylake does not output MCLK/FS when the back-end DAI op
->>>      hw_param is called, so we cannot switch to MCLK/FS in hw_param.  This
->>>      patch reduces pop by letting nau8825 keep using its internal VCO clock
->>>      during widget power up sequence, until SNDRV_PCM_TRIGGER_START when
->>>      MCLK/FS is available. Once device resumes, the system will only enable
->>>      power sequence for playback without doing hardware parameter, audio
->>>      format, and PLL configure. In the mean time, the jack detecion sequence
->>>      has changed PLL parameters and switched to internal clock. Thus, the
->>>      playback signal distorted without correct PLL parameters.  That is why
->>>      we need to configure the PLL again in SNDRV_PCM_TRIGGER_RESUME case.
->>
->> IIRC the FS can be controlled with the clk_ api with the Skylake driver,
->> as done for some KBL platforms. Or is this not supported by the firmware
->> used by this machine?
-> 
-> According to Ben, SKL had limitations in FW for managing the clk's
-> back in the days.
-> Can you point to the other driver you mention so we can cross check?
-> 
 
-Skylake driver is found within:
-	/sound/soc/intel/skylake
-directory.
+--17pEHd4RhPHOinZp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-"SKL had limitations in FW" - that's misleading. This is neither FW 
-issue nor HW 'limitation'. SKL is an older platform and its goals and 
-design was different than say APL+. Basically, your needs do not align 
-with what's present on SKL hw.
+On Tue 2020-05-05 11:32:27, Sasha Levin wrote:
+> On Tue, May 05, 2020 at 05:05:37PM +0300, Andy Shevchenko wrote:
+> > On Tue, May 5, 2020 at 4:37 PM Pavel Machek <pavel@denx.de> wrote:
+> > > On Tue 2020-05-05 16:19:11, Andy Shevchenko wrote:
+> > > > On Tue, May 5, 2020 at 3:58 PM Pavel Machek <pavel@denx.de> wrote:
+> > > > > On Tue 2020-05-05 15:51:16, Andy Shevchenko wrote:
+> > > > > > On Tue, May 5, 2020 at 3:37 PM Pavel Machek <pavel@denx.de> wro=
+te:
+> > > > > Yeah, I pointed that out above. Both && and || permit short
+> > > > > execution. But that does not matter, as neither "params->iteratio=
+ns"
+> > > > > nor "total_tests >=3D params->iterations" have side effects.
+> > > > >
+> > > > > Where is the runtime difference?
+> > > >
+> > > > We have to check *both* conditions. If we don't check iterations, we
+> > > > just wait indefinitely until somebody tells us to stop.
+> > > > Everything in the commit message and mentioned there commit IDs whi=
+ch
+> > > > you may check.
+> > >=20
+> > > No.
+> >=20
+> > Yes. Please, read carefully the commit message (for your convenience I
+> > emphasized above). I don't want to spend time on this basics stuff
+> > anymore.
+>=20
+> I'm a bit confused about this too. Maybe it's too early in the morning,
+> so I wrote this little test program:
+>=20
+> #include <stdio.h>
+> #include <stdlib.h>
+>=20
+> int main(int argc, char *argv[])
+> {
+>        int a =3D atoi(argv[1]);
+>        int b =3D atoi(argv[2]);
+>=20
+>        if (!a && !b)
+>                printf("A");
+>        else
+>                printf("B");
+>=20
+>        if (!(a || b))
+>                printf("A");
+>        else
+>                printf("B");
+>=20
+>        printf("\n");
+>=20
+>        return 0;
+> }
+>=20
+> Andy, could you give an example of two values which will print something
+> other than "AA" or "BB"?
 
-Czarek
+The issue here is "sideffects". Does b have to be evaluated at all?
+There is no difference between
+
+      int a, b;
+      if (a && b)
+
+and
+
+	if ((!!a) & (!!b))
+=2E
+
+But there would be difference between
+
+      int a, b;
+        if (a && b++)
+
+and
+	if ((!!a) & (!!(b++)))
+
+But:
+
+1) && and || behave same way w.r.t. side effects
+
+2) in the patch we are talking about b has no important side effects
+
+Best regards,
+								Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--17pEHd4RhPHOinZp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXrGM7gAKCRAw5/Bqldv6
+8ieJAJ4v4FEtbiT64CSr1N7iWJDlt5yAyQCgt4ofhBcePU1F0Lwfl6ckQtbf7gc=
+=NMSn
+-----END PGP SIGNATURE-----
+
+--17pEHd4RhPHOinZp--
