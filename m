@@ -2,149 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 124C61C52EB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 12:17:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA6EC1C52E9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 12:17:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728779AbgEEKRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 06:17:41 -0400
-Received: from smtp.asem.it ([151.1.184.197]:56537 "EHLO smtp.asem.it"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728608AbgEEKRj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 06:17:39 -0400
-Received: from webmail.asem.it
-        by asem.it (smtp.asem.it)
-        (SecurityGateway 6.5.2)
-        with ESMTP id SG000235780.MSG 
-        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 12:17:30 +0200S
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-    s=s1024; d=asem.it;
-    h=from:to:cc:subject:date:message-id:in-reply-to:mime-version:
-      content-type;
-    bh=KNWTREnx6gdyIGMCjc8N04D/sn/FYso+cwDCKrUO1J0=;
-    b=SG9Nmx0cntNtmIx+3RnCkroCiWgJ7ZyP80OYDqiE8lssJMSEHZ3wzg4upyZAk9
-      mZvE6P0GAWDQX9NsTfkjYyPowCv0JaP04bav0JQFSsCQISViihzlyxF7rWA4W5
-      WVrSZvRG7AyaK7gMfPGb0jVAY6tTEHPYQAjgj+RnWeX+3Is=
-Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1261.35; Tue, 5
- May 2020 12:17:29 +0200
-Received: from flavio-x.asem.intra (172.16.17.208) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server id 15.1.1261.35 via Frontend
- Transport; Tue, 5 May 2020 12:17:29 +0200
-From:   Flavio Suligoi <f.suligoi@asem.it>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-CC:     <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Flavio Suligoi <f.suligoi@asem.it>
-Subject: [PATCH 2/2] docs: acpi: fix old http link and improve document format
-Date:   Tue, 5 May 2020 12:17:16 +0200
-Message-ID: <1588673836-9954-2-git-send-email-f.suligoi@asem.it>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1588673836-9954-1-git-send-email-f.suligoi@asem.it>
-References: <1588673836-9954-1-git-send-email-f.suligoi@asem.it>
+        id S1728735AbgEEKRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 06:17:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728608AbgEEKRg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 06:17:36 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CAAFC061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 03:17:35 -0700 (PDT)
+Received: from dude02.hi.pengutronix.de ([2001:67c:670:100:1d::28] helo=dude02.lab.pengutronix.de)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1jVudl-0006U8-R3; Tue, 05 May 2020 12:17:29 +0200
+Received: from mfe by dude02.lab.pengutronix.de with local (Exim 4.92)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1jVudl-0000fG-DQ; Tue, 05 May 2020 12:17:29 +0200
+Date:   Tue, 5 May 2020 12:17:29 +0200
+From:   Marco Felsch <m.felsch@pengutronix.de>
+To:     Robert Foss <robert.foss@linaro.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Sakari Ailus <sakari.ailus@iki.fi>,
+        Maxime Ripard <maxime@cerno.tech>, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Dongchun Zhu <dongchun.zhu@mediatek.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Tomasz Figa <tfiga@chromium.org>, Ben Kao <ben.kao@intel.com>
+Subject: Re: [PATCH v7 3/3] media: ov8856: Implement sensor module revision
+ identification
+Message-ID: <20200505101729.GF18755@pengutronix.de>
+References: <20200505100129.104673-1-robert.foss@linaro.org>
+ <20200505100129.104673-4-robert.foss@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
-X-SGSPF-Result: none (smtp.asem.it)
-X-SGOP-RefID: str=0001.0A09020E.5EB13D3A.0003,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200505100129.104673-4-robert.foss@linaro.org>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 12:16:56 up 73 days, 21:33, 142 users,  load average: 0.19, 1.60,
+ 15.64
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::28
+X-SA-Exim-Mail-From: mfe@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The website:
+Hi Robert,
 
-    http://wiki.minnowboard.org
+On 20-05-05 12:01, Robert Foss wrote:
+> Query the sensor for its module revision, and compare it
+> to known revisions.
+> 
+> Currently 2A and 1B revision indentification is supported.
+> 
+> Signed-off-by: Robert Foss <robert.foss@linaro.org>
+> ---
+> 
+> - Changes since v3:
+>   * Actually add module revision 2A
+> 
+> - Changes since v2:
+>   * Add module revision 2A
+>   * Sakari: Remove ov8856_check_revision()
+>   * Sakari: Stop EEPROM streaming mode
+> 
+>  drivers/media/i2c/ov8856.c | 53 ++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 53 insertions(+)
+> 
+> diff --git a/drivers/media/i2c/ov8856.c b/drivers/media/i2c/ov8856.c
+> index e6418a79801e..3c82c3e588d7 100644
+> --- a/drivers/media/i2c/ov8856.c
+> +++ b/drivers/media/i2c/ov8856.c
+> @@ -32,6 +32,19 @@
+>  #define OV8856_MODE_STANDBY		0x00
+>  #define OV8856_MODE_STREAMING		0x01
+>  
+> +/* module revisions */
+> +#define OV8856_2A_MODULE		0x01
+> +#define OV8856_1B_MODULE		0x02
+> +
+> +/* the OTP read-out buffer is at 0x7000 and 0xf is the offset
+> + * of the byte in the OTP that means the module revision
+> + */
+> +#define OV8856_MODULE_REVISION		0x700f
+> +#define OV8856_OTP_MODE_CTRL		0x3d84
+> +#define OV8856_OTP_LOAD_CTRL		0x3d81
+> +#define OV8856_OTP_MODE_AUTO		0x00
+> +#define OV8856_OTP_LOAD_CTRL_ENABLE	BIT(0)
+> +
+>  /* vertical-timings from sensor */
+>  #define OV8856_REG_VTS			0x380e
+>  #define OV8856_VTS_MAX			0x7fff
+> @@ -1152,6 +1165,46 @@ static int ov8856_identify_module(struct ov8856 *ov8856)
+>  		return -ENXIO;
+>  	}
+>  
+> +	ret = ov8856_write_reg(ov8856, OV8856_REG_MODE_SELECT,
+> +			       OV8856_REG_VALUE_08BIT, OV8856_MODE_STREAMING);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = ov8856_write_reg(ov8856, OV8856_OTP_MODE_CTRL,
+> +			       OV8856_REG_VALUE_08BIT, OV8856_OTP_MODE_AUTO);
+> +	if (ret) {
+> +		dev_err(&client->dev, "failed to set otp mode");
+> +		return ret;
+> +	}
+> +
+> +	ret = ov8856_write_reg(ov8856, OV8856_OTP_LOAD_CTRL,
+> +			       OV8856_REG_VALUE_08BIT,
+> +			       OV8856_OTP_LOAD_CTRL_ENABLE);
+> +	if (ret) {
+> +		dev_err(&client->dev, "failed to enable load control");
+> +		return ret;
+> +	}
+> +
+> +	ret = ov8856_read_reg(ov8856, OV8856_MODULE_REVISION,
+> +			      OV8856_REG_VALUE_08BIT, &val);
+> +	if (ret) {
+> +		dev_err(&client->dev, "failed to read module revision");
+> +		return ret;
+> +	}
+> +
+> +	dev_info(&client->dev, "OV8856 revision %x (%s) at address 0x%02x\n",
+> +		val,
+> +		val == OV8856_2A_MODULE ? "2A" :
+> +		val == OV8856_1B_MODULE ? "1B" : "unknown revision",
+> +		client->addr);
 
-doesn't exist anymore. The same pages are moved to:
+Pls check the alignment here too.
 
-    https://www.elinux.org/Minnowboard
+Regards,
+  Marco
 
-Other improvements concern the introduction of some rst
-semantic markup in the document.
-
-Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
----
- Documentation/admin-guide/acpi/ssdt-overlays.rst | 40 ++++++++++++------------
- 1 file changed, 20 insertions(+), 20 deletions(-)
-
-diff --git a/Documentation/admin-guide/acpi/ssdt-overlays.rst b/Documentation/admin-guide/acpi/ssdt-overlays.rst
-index da37455..5c090da 100644
---- a/Documentation/admin-guide/acpi/ssdt-overlays.rst
-+++ b/Documentation/admin-guide/acpi/ssdt-overlays.rst
-@@ -63,7 +63,7 @@ which can then be compiled to AML binary format::
-     ASL Input:     minnomax.asl - 30 lines, 614 bytes, 7 keywords
-     AML Output:    minnowmax.aml - 165 bytes, 6 named objects, 1 executable opcodes
- 
--[1] http://wiki.minnowboard.org/MinnowBoard_MAX#Low_Speed_Expansion_Connector_.28Top.29
-+[1] https://www.elinux.org/Minnowboard:MinnowMax#Low_Speed_Expansion_.28Top.29
- 
- The resulting AML code can then be loaded by the kernel using one of the methods
- below.
-@@ -76,9 +76,9 @@ when the system does not support EFI or when there is not enough EFI storage.
- 
- It works in a similar way with initrd based ACPI tables override/upgrade: SSDT
- aml code must be placed in the first, uncompressed, initrd under the
--"kernel/firmware/acpi" path. Multiple files can be used and this will translate
--in loading multiple tables. Only SSDT and OEM tables are allowed. See
--initrd_table_override.txt for more details.
-+``kernel/firmware/acpi`` path. Multiple files can be used and this will
-+translate in loading multiple tables. Only SSDT and OEM tables are allowed. See
-+``Documentation/admin-guide/acpi/initrd_table_override.rst`` for more details.
- 
- Here is an example::
- 
-@@ -105,21 +105,21 @@ is also work underway to implement EFI support for loading user defined SSDTs
- and using this method will make it easier to convert to the EFI loading
- mechanism when that will arrive.
- 
--In order to load SSDTs from an EFI variable the efivar_ssdt kernel command line
--parameter can be used. The argument for the option is the variable name to
-+In order to load SSDTs from an EFI variable the ``efivar_ssdt`` kernel command
-+line parameter can be used. The argument for the option is the variable name to
- use. If there are multiple variables with the same name but with different
- vendor GUIDs, all of them will be loaded.
- 
- In order to store the AML code in an EFI variable the efivarfs filesystem can be
--used. It is enabled and mounted by default in /sys/firmware/efi/efivars in all
--recent distribution.
--
--Creating a new file in /sys/firmware/efi/efivars will automatically create a new
--EFI variable. Updating a file in /sys/firmware/efi/efivars will update the EFI
--variable. Please note that the file name needs to be specially formatted as
--"Name-GUID" and that the first 4 bytes in the file (little-endian format)
--represent the attributes of the EFI variable (see EFI_VARIABLE_MASK in
--include/linux/efi.h). Writing to the file must also be done with one write
-+used. It is enabled and mounted by default in ``/sys/firmware/efi/efivars``
-+in all recent distribution.
-+
-+Creating a new file in ``/sys/firmware/efi/efivars`` will automatically create
-+a new EFI variable. Updating a file in ``/sys/firmware/efi/efivars`` will update
-+the EFI variable. Please note that the file name needs to be specially formatted
-+as "Name-GUID" and that the first 4 bytes in the file (little-endian format)
-+represent the attributes of the EFI variable (see ``EFI_VARIABLE_MASK`` in
-+``include/linux/efi.h``). Writing to the file must also be done with one write
- operation.
- 
- For example, you can use the following bash script to create/update an EFI
-@@ -168,12 +168,12 @@ Loading ACPI SSDTs from configfs
- ================================
- 
- This option allows loading of user defined SSDTs from userspace via the configfs
--interface. The CONFIG_ACPI_CONFIGFS option must be select and configfs must be
--mounted. In the following examples, we assume that configfs has been mounted in
--/config.
-+interface. The ``CONFIG_ACPI_CONFIGFS`` option must be select and configfs must
-+be mounted. In the following examples, we assume that configfs has been mounted
-+in ``/config``.
- 
--New tables can be loading by creating new directories in /config/acpi/table/ and
--writing the SSDT aml code in the aml attribute::
-+New tables can be loading by creating new directories in ``/config/acpi/table/``
-+and writing the SSDT aml code in the aml attribute::
- 
-     cd /config/acpi/table
-     mkdir my_ssdt
--- 
-2.7.4
-
+> +
+> +	ret = ov8856_write_reg(ov8856, OV8856_REG_MODE_SELECT,
+> +			       OV8856_REG_VALUE_08BIT, OV8856_MODE_STANDBY);
+> +	if (ret) {
+> +		dev_err(&client->dev, "failed to exit streaming mode");
+> +		return ret;
+> +	}
+> +
+>  	return 0;
+>  }
+>  
+> -- 
+> 2.25.1
