@@ -2,84 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 627071C5A9C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:09:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F9901C5A9E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729796AbgEEPJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 11:09:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37492 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729320AbgEEPJW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 11:09:22 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3E4DF2078D;
-        Tue,  5 May 2020 15:09:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588691361;
-        bh=wehOs7TzzSRDwsIiBrb11QEbyguhnDAUrPFjehEcsWw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EyaqCaFCUiFGU75ZiQ7lP/igTsu2wIlIHWUSD6+l2UJXUc/h+OJW+8gTjIs0ZICMo
-         Py1MVzr2BsXo41HNEwcnLiGZG8HI3+eUekL+yTwId7gnF4Oz26D6m9Q74+aSJFNItE
-         BmSem2l5jrxSksyLXkKfBJgNDYKiYzBrc4IxcT7Q=
-Date:   Tue, 5 May 2020 16:09:16 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        patches@linaro.org
-Subject: Re: [PATCH v2] arm64: cacheflush: Fix KGDB trap detection
-Message-ID: <20200505150916.GC24239@willie-the-truck>
-References: <20200504170518.2959478-1-daniel.thompson@linaro.org>
- <20200504204803.GA5657@willie-the-truck>
- <20200505141529.2qb35fbqudtac3ys@holly.lan>
+        id S1730170AbgEEPJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 11:09:41 -0400
+Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:19877 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729712AbgEEPJk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 11:09:40 -0400
+Received: from [192.168.42.210] ([93.23.13.215])
+        by mwinf5d12 with ME
+        id b39d220044ePWwV0339dV3; Tue, 05 May 2020 17:09:39 +0200
+X-ME-Helo: [192.168.42.210]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 05 May 2020 17:09:39 +0200
+X-ME-IP: 93.23.13.215
+Subject: Re: [PATCH 2/4 v2] firmware: stratix10-svc: Unmap some previously
+ memremap'ed memory
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     richard.gong@linux.intel.com, atull@kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <cover.1588142343.git.christophe.jaillet@wanadoo.fr>
+ <43505dc3a4b405d1c7d4a0fa74c67eda3e8bdb75.1588142343.git.christophe.jaillet@wanadoo.fr>
+ <20200505144355.GC838641@kroah.com>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <5bae5684-6b3e-e94c-7745-046bd24c4f4b@wanadoo.fr>
+Date:   Tue, 5 May 2020 17:09:38 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200505141529.2qb35fbqudtac3ys@holly.lan>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200505144355.GC838641@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 05, 2020 at 03:15:29PM +0100, Daniel Thompson wrote:
-> On Mon, May 04, 2020 at 09:48:04PM +0100, Will Deacon wrote:
-> > On Mon, May 04, 2020 at 06:05:18PM +0100, Daniel Thompson wrote:
-> > > diff --git a/arch/arm64/include/asm/cacheflush.h b/arch/arm64/include/asm/cacheflush.h
-> > > index e6cca3d4acf7..ce50c1f1f1ea 100644
-> > > --- a/arch/arm64/include/asm/cacheflush.h
-> > > +++ b/arch/arm64/include/asm/cacheflush.h
-> > > @@ -79,7 +79,7 @@ static inline void flush_icache_range(unsigned long start, unsigned long end)
-> > >  	 * IPI all online CPUs so that they undergo a context synchronization
-> > >  	 * event and are forced to refetch the new instructions.
-> > >  	 */
-> > > -#ifdef CONFIG_KGDB
-> > > +
-> > >  	/*
-> > >  	 * KGDB performs cache maintenance with interrupts disabled, so we
-> > >  	 * will deadlock trying to IPI the secondary CPUs. In theory, we can
-> > > @@ -89,9 +89,9 @@ static inline void flush_icache_range(unsigned long start, unsigned long end)
-> > >  	 * the patching operation, so we don't need extra IPIs here anyway.
-> > >  	 * In which case, add a KGDB-specific bodge and return early.
-> > >  	 */
-> > > -	if (kgdb_connected && irqs_disabled())
-> > > +	if (in_dbg_master())
-> > 
-> > Does this imply that irqs are disabled?
-> 
-> Yes.
-> 
-> Assuming CONFIG_KGDB is enabled then in_dbg_master() expands to:
-> 
->     (raw_smp_processor_id() == atomic_read(&kgdb_active))
+Le 05/05/2020 à 16:43, Greg KH a écrit :
+> On Wed, Apr 29, 2020 at 08:52:43AM +0200, Christophe JAILLET wrote:
+>> In 'svc_create_memory_pool()' we memremap some memory. This has to be
+>> undone in case of error and if the driver is removed.
+>>
+>> The easiest way to do it is to use 'devm_memremap()'.
+>>
+>> Fixes: 7ca5ce896524 ("firmware: add Intel Stratix10 service layer driver")
+>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>> ---
+>>   drivers/firmware/stratix10-svc.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/firmware/stratix10-svc.c b/drivers/firmware/stratix10-svc.c
+>> index 3a176e62754a..de5870f76c5e 100644
+>> --- a/drivers/firmware/stratix10-svc.c
+>> +++ b/drivers/firmware/stratix10-svc.c
+>> @@ -631,7 +631,7 @@ svc_create_memory_pool(struct platform_device *pdev,
+>>   	end = rounddown(sh_memory->addr + sh_memory->size, PAGE_SIZE);
+>>   	paddr = begin;
+>>   	size = end - begin;
+>> -	va = memremap(paddr, size, MEMREMAP_WC);
+>> +	va = devm_memremap(dev, paddr, size, MEMREMAP_WC);
+>>   	if (!va) {
+>>   		dev_err(dev, "fail to remap shared memory\n");
+>>   		return ERR_PTR(-EINVAL);
+> And there was no previous unmap happening when the pool was torn down
+> that now needs to be removed?
 
-Aha, so this can drop the raw_ prefix and call smp_processor_id() instead?
-I can queue the arm64 patch regardless.
+I don't think so, there is no memunmap call in 'stratix10-svc.c'
 
-Cheers,
+CJ
 
-Will
+> thanks,
+>
+> greg k-h
+>
+
