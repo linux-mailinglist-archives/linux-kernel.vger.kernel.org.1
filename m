@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9579E1C5A64
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:03:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7634E1C5A70
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729826AbgEEPDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 11:03:11 -0400
-Received: from foss.arm.com ([217.140.110.172]:42624 "EHLO foss.arm.com"
+        id S1729884AbgEEPEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 11:04:31 -0400
+Received: from foss.arm.com ([217.140.110.172]:42692 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729808AbgEEPDK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 11:03:10 -0400
+        id S1729324AbgEEPEa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 11:04:30 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EC3901FB;
-        Tue,  5 May 2020 08:03:09 -0700 (PDT)
-Received: from [10.37.8.251] (unknown [10.37.8.251])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C824E3F68F;
-        Tue,  5 May 2020 08:03:08 -0700 (PDT)
-Subject: Re: [PATCH v2 0/4] kselftest: Extend vDSO tests
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 294CF31B;
+        Tue,  5 May 2020 08:04:30 -0700 (PDT)
+Received: from bogus (unknown [10.37.12.47])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 195943F68F;
+        Tue,  5 May 2020 08:04:27 -0700 (PDT)
+Date:   Tue, 5 May 2020 16:04:21 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
 To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>
-References: <20200429112834.24908-1-vincenzo.frascino@arm.com>
- <CAK8P3a3u05wF1DT3Wnvmapc0jixu+gp_YG=KTEN9-n4JedJ9BA@mail.gmail.com>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <b9b313b5-697e-b92e-1aca-7ad07a640a03@arm.com>
-Date:   Tue, 5 May 2020 16:04:13 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+Cc:     Peng Fan <peng.fan@nxp.com>, Marc Zyngier <maz@kernel.org>,
+        Steven Price <steven.price@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] firmware: arm_scmi: fix psci dependency
+Message-ID: <20200505150421.GA23612@bogus>
+References: <20200505140820.536615-1-arnd@arndb.de>
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a3u05wF1DT3Wnvmapc0jixu+gp_YG=KTEN9-n4JedJ9BA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200505140820.536615-1-arnd@arndb.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -43,48 +42,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi Arnd,
 
-On 5/5/20 3:50 PM, Arnd Bergmann wrote:
-> On Wed, Apr 29, 2020 at 1:34 PM Vincenzo Frascino
-> <vincenzo.frascino@arm.com> wrote:
->>
->> This series extends the kselftests for the vDSO library making sure: that
->> they compile correctly on non x86 platforms, that they can be cross
->> compiled and introducing new tests that verify the correctness of the
->> library.
->>
->> The so extended vDSO kselftests have been verified on all the platforms
->> supported by the unified vDSO library [1].
->>
->> The only new patch that this series introduces is the first one, patch 2 and
->> patch 3 have already been reviewed in past as part of other series [2] [3].
->>
->> [1] https://lore.kernel.org/lkml/20190621095252.32307-1-vincenzo.frascino@arm.com
->> [2] https://lore.kernel.org/lkml/20190621095252.32307-26-vincenzo.frascino@arm.com
->> [3] https://lore.kernel.org/lkml/20190523112116.19233-4-vincenzo.frascino@arm.com
-> 
-> Hi Vincenzo,
-> 
-> Not sure if you are aware of the recent bug report about clock_gettime64()
-> returning invalid times on some arm32 kernels:
-> https://github.com/raspberrypi/linux/issues/3579
-> 
+On Tue, May 05, 2020 at 04:08:08PM +0200, Arnd Bergmann wrote:
+> When CONFIG_ARM_PSCI_FW is disabled but CONFIG_HAVE_ARM_SMCCC is enabled,
+> arm-scmi runs into a link failure:
+>
+> arm-linux-gnueabi-ld: drivers/firmware/arm_scmi/smc.o: in function `smc_send_message':
+> smc.c:(.text+0x200): undefined reference to `arm_smccc_1_1_get_conduit'
+>
+> Use an inline helper to default to version v1.0 in the absence of psci.
+>
 
-No, I was not aware of the problem. There has been no mention on the arm list
-(unless I missed it). I can try to have a look at it as soon as I get some time.
+Thanks for fixing this. I was thinking if we can separate PSCI and SMCCC
+quickly as a fix for this but I think he needs to be discussed in detail.
 
-> Regardless of when that gets fixed or by whom, I wonder if kselftest should
-> also check for consistency, i.e. call both the vdso and the syscall version of
-> clock_gettime() and clock_gettime64() and check that the results are always
-> in sequence.
-> 
+I am fine with this fix as is and happy to apply to my tree if no one
+objects.
 
-The test #4 partially does that: it calls syscall-vdso-syscall and verifies that
-the sequencing is correct. I reused the x86 code for that. I could extend it to
-clock_gettime64() and make sure it builds on all the platforms.
+Sorry but taking this patch as opportunity to discuss how to carry the
+dependency in future. Just a proposal,
 
->       Arnd
-> 
+1. Introduce a DT node for SMCCC v1.2+
+2. The new SMCCC driver(strictly speaking library/few APIs) can probe 
+   independent of PSCI if DT node is present
+3. Else we fallback on PSCI and detect the SMCCC version for v1.1 and
+   v1.2
+4. Assume v1.0 if
+	a. PSCI FEATURE returns NOT_SUPPORTED for ARM_SMCCC_VERSION_FUNC_ID
+	b. CONFIG_ARM_PSCI{,_FW} is not defined
 
--- 
+Mark/Will/Marc,
+
+Any other use-case config missed above ?
+
+--
 Regards,
-Vincenzo
+Sudeep
