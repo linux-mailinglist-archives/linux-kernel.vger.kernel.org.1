@@ -2,131 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4E531C63A0
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 00:04:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5306C1C5A4B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:00:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729060AbgEEWEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 18:04:24 -0400
-Received: from mga02.intel.com ([134.134.136.20]:48051 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727785AbgEEWEX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 18:04:23 -0400
-IronPort-SDR: /RnhK7h5k59VMlvMt8V+WbILtuVBh3x2YbEmUBqbXHd2hQqsv/ik/JgxD5WTRcpB1DToMEecZp
- Hgw9JufC7sIQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2020 15:04:20 -0700
-IronPort-SDR: y6UqgH1vxBwoaEF3R9aoJcRP4PwHDFLbYrd6lJw4h/SkEGEpO/usT3X8LjWcUD0ncc8j/uixfi
- DIxqFLnT0P7w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,356,1583222400"; 
-   d="scan'208";a="278022605"
-Received: from krogers-mobl1.amr.corp.intel.com (HELO [10.255.229.42]) ([10.255.229.42])
-  by orsmga002.jf.intel.com with ESMTP; 05 May 2020 15:04:16 -0700
-Subject: Re: [PATCH V2] ASoC: Intel: boards: Use FS as nau8825 sysclk in
- nau88125_* machine
-To:     =?UTF-8?Q?Rados=c5=82aw_Biernacki?= <rad@semihalf.com>
-Cc:     Lech Betlej <Lech.Betlej@intel.com>, alsa-devel@alsa-project.org,
-        Todd Broch <tbroch@google.com>,
-        Harshapriya <harshapriya.n@intel.com>,
-        John Hsu <KCHSU0@nuvoton.com>,
-        Alex Levin <levinale@google.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        "Sienkiewicz, Michal" <michal.sienkiewicz@intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Ben Zhang <benzh@chromium.org>,
-        Mac Chiang <mac.chiang@intel.com>,
-        Vamshi Krishna <vamshi.krishna.gopal@intel.com>,
-        Marcin Wojtas <mw@semihalf.com>, linux-kernel@vger.kernel.org,
-        Yong Zhi <yong.zhi@intel.com>
-References: <20200501193141.30293-1-rad@semihalf.com>
- <3ad44b75-387f-da75-d7b2-3a16ed00550c@linux.intel.com>
- <CAOs-w0LPeKgooa_98x_Jkzus-Y5Kad7pDby0CriDGb6nTp_6sA@mail.gmail.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <8b97bf43-ddd8-df81-90e7-9e87c19af1ab@linux.intel.com>
-Date:   Tue, 5 May 2020 10:00:03 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1729634AbgEEPAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 11:00:35 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:52879 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729235AbgEEPAb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 11:00:31 -0400
+Received: from mail-qv1-f43.google.com ([209.85.219.43]) by
+ mrelayeu.kundenserver.de (mreue012 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1M6H7o-1jTl4Q0ZdQ-006cvC; Tue, 05 May 2020 17:00:30 +0200
+Received: by mail-qv1-f43.google.com with SMTP id p13so1109209qvt.12;
+        Tue, 05 May 2020 08:00:29 -0700 (PDT)
+X-Gm-Message-State: AGi0PuZmBpVYAiEFjxHnkMj44pEum+WuhQRrU2a7ujZa/Yq3jfSU5GQx
+        3OA5ZUWaGF8Bg8GHBmE253KaY34iezgcjlVUnWU=
+X-Google-Smtp-Source: APiQypKrddD0XLM23ERKqp8jN3+C82vh7NIDRBG0Uf01KOrVl399PbZ2DcqmCHoRuZCUuRyJT5cdYW0eG7pmsStXQPk=
+X-Received: by 2002:a0c:e781:: with SMTP id x1mr3317423qvn.4.1588690828960;
+ Tue, 05 May 2020 08:00:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAOs-w0LPeKgooa_98x_Jkzus-Y5Kad7pDby0CriDGb6nTp_6sA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200505143028.1290686-1-arnd@arndb.de> <b287bb2f-28e2-7a41-e015-aa5a0cb3b5d7@embeddedor.com>
+In-Reply-To: <b287bb2f-28e2-7a41-e015-aa5a0cb3b5d7@embeddedor.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 5 May 2020 17:00:12 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0v-hK+Ury86-1D2_jfOFgR8ZTEFKVQZBWJq3dW=MuSzw@mail.gmail.com>
+Message-ID: <CAK8P3a0v-hK+Ury86-1D2_jfOFgR8ZTEFKVQZBWJq3dW=MuSzw@mail.gmail.com>
+Subject: Re: [PATCH] fsnotify: avoid gcc-10 zero-length-bounds warning
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Jan Kara <jack@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:rxM3GBXNbjQCzWEHPzyHTPa7qUdjCipkeA/r6+eAINZgG1WPD/j
+ LYmMxQV7mBG3+0cXIAYsOZgIRjxVNaBydlVjKiCd6bH91u9kN1lCzlPAitJy3aAGek/a+GR
+ FyY1X3GZ6hmlLpBFCgwH/zaTtO4D3Vx4/Tk7ThJ9rsfXh2oBg2YCdJuHP85TzmLHl0KucaQ
+ jISdWaYRwtnpuIqS2gDcg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:5mt9Fx4RWYw=:9fCUuVrwzdfJlVlyuFtWcn
+ 1CPajEk6NCZx936DBzJvYz7hnImlDfykx6qoA4ZlvvN9oJF3HRFs68WQ8lC0WhJbl7XIEqwDo
+ mrlfZgdgM56ZNF3JoYkVryfdc+VVYi3PZs3ZisMzx+e4HjOpQfV/V3YA9Tf3swKKhpo4fzzmV
+ XKtzwIH+XoVyM/Iig3bcS5w2V2Ppl2PX05K9BfTaDvhnxQhUmYaGHjQsAV0jbPABqjCmg4DrX
+ ZovnnD+hKl+w69j/RgFWRme0yxiHgEkiscaaPxBYaXFQNYIIrjn6YcVQDdsHPfazqh0SltOkJ
+ sge/PhaHU7sh4sW+81+4TWDN5mTZwnBv0kasxxvsKcIdYDJ93eQEVQCpuweKqW2OfnpYvDrqQ
+ OzdgdbFS48epsofYftSPyqERaOrRH8+2mDc8nHXUfAp4/5Ii4AlQPT/Afcb6Tf/ju1O9vOg7O
+ VSo0c7fjuq1XBQhnYhqGIgCiVjcD9cokSVgyH1Cq2V9/3UAfdqaaicWolocH9GBfGDi5X4i3F
+ Omf+wpbZ1eQdgcVa2HOmJr8Vk5v7lDBe/DhNGClZbtfSfD03h4AY5zCxy9qd9gsBO8iAIhI6+
+ VIdCRPeeQ5ZStIS2q86S9qvlX1gc5O+L76wIxNdM8QuZc4ZUHqIRal4acBO1VWN1CSjOcCIyp
+ ypzWzNAakklCar1zG3nll8K2oZJ1rk7x6S8A4XnRXmqbKBII1KDGBU7jdBzFSPPtuudtGB/vE
+ msRaKD+ItnUa+cqdZwkKoiWyA5pnomIHBMAzkzWuiBNhNSWAQgrBx/7SIR72Vp5t9xEJ/dJdt
+ b87hLa1M4Ui0nTz4Ua8ktzLSqxIQZKTZJIquBHmgPisW6Y59Z4=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, May 5, 2020 at 4:35 PM Gustavo A. R. Silva
+<gustavo@embeddedor.com> wrote:
+> On 5/5/20 09:30, Arnd Bergmann wrote:
+> > gcc-10 warns about accesses into the f_handle[] zero-length array.
+> >
+> > fs/notify/fdinfo.c: In function 'show_mark_fhandle':
+> > fs/notify/fdinfo.c:66:47: error: array subscript 'i' is outside the bounds of an interior zero-length array 'unsigned char[0]' [-Werror=zero-length-bounds]
+> >    66 |   seq_printf(m, "%02x", (int)f.handle.f_handle[i]);
+> >       |                              ~~~~~~~~~~~~~~~~~^~~
+> > In file included from fs/notify/fdinfo.c:3:
+> > include/linux/fs.h:988:16: note: while referencing 'f_handle'
+> >   988 |  unsigned char f_handle[0];
+> >       |                ^~~~~~~~
+> >
+> > This is solved by using a flexible array instead.
+> >
+> > Cc: Gustavo A. R. Silva <gustavo@embeddedor.com>
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > ---
+> > Gustavo has done the same thing as part of a treewide change, but keeping
+> > this separate lets us backport it to stable kernels more easily later.
+>
+> Arnd,
+>
+> I wonder why would we need to backport these changes to -stable... merely
+> because of the use of a new version of GCC?
 
->>> This single fix address two issues on machines with nau88125:
->>> 1) Audio distortion, due to lack of required clock rate on MCLK line
->>> 2) Loud audible "pops" on headphones if there is no sysclk during nau8825
->>>      playback power up sequence
->>>
->>> Explanation for:
->>> 1) Due to Skylake HW limitation, MCLK pin can only output 24MHz clk
->>>      rate (it can be only connected to XTAL parent clk). The BCLK pin
->>>      can be driven by dividers and therefore FW is able to set it to rate
->>>      required by chosen audio format. According to nau8825 datasheet, 256*FS
->>>      sysclk gives the best audio quality and the only way to achieve this
->>>      (taking into account the above limitations) its to regenerate the MCLK
->>>      from BCLK on nau8825 side by FFL. Without required clk rate, audio is
->>>      distorted by added harmonics.
->>
->> The BCLK is going to be a multiple of 50 * Fs due to clocking
->> restrictions. Can the codec regenerate a good-enough sysclk from this?
-> 
-> According to Intel, silicon has a limitation, on SKL/KBL only clk_id =
-> SKL_XTAL, .name = "xtal" is available for IO domain.
-> As mentioned in the commit:
-> MCLK is generated by using 24MHz Xtal directly or applying a divider
-> (so no way of achieving the rate required by audio format).
-> BCLK/FS is generated from 24MHz and uses dividers and additional
-> padding bits are used to match the clock source.
-> Next gen silicon has the possibility of using additional clock sources.
-> 
-> Summing up, using MCLK from SKL to NAU88L25 is not an option.
-> The only option we found is to use BCLK and regen the required clock
-> rate by FLL on the NAU88l25 side.
+Yes, we usually backport trivial warning fixes to stable kernels to allow
+building those with any modern compiler version.
 
-Right, this 24 MHz is a recurring problem.
-But what I was asking was if the NAU8825 is fine working with e.g. a 
-2.4MHz bit clock. i.e. with 25 bit slots or padding at the end of the frame?
-
-> 
->>>
->>> 2) Currently Skylake does not output MCLK/FS when the back-end DAI op
->>>      hw_param is called, so we cannot switch to MCLK/FS in hw_param.  This
->>>      patch reduces pop by letting nau8825 keep using its internal VCO clock
->>>      during widget power up sequence, until SNDRV_PCM_TRIGGER_START when
->>>      MCLK/FS is available. Once device resumes, the system will only enable
->>>      power sequence for playback without doing hardware parameter, audio
->>>      format, and PLL configure. In the mean time, the jack detecion sequence
->>>      has changed PLL parameters and switched to internal clock. Thus, the
->>>      playback signal distorted without correct PLL parameters.  That is why
->>>      we need to configure the PLL again in SNDRV_PCM_TRIGGER_RESUME case.
->>
->> IIRC the FS can be controlled with the clk_ api with the Skylake driver,
->> as done for some KBL platforms. Or is this not supported by the firmware
->> used by this machine?
-> 
-> According to Ben, SKL had limitations in FW for managing the clk's
-> back in the days.
-> Can you point to the other driver you mention so we can cross check?
-
-There are two KBL drivers that control the SSP clocks from the machine 
-driver, but indeed I don't know if this would work on Firmware, it'd be 
-a question for Lech/Cezary.
-
-kbl_rt5663_max98927.c:          ret = clk_prepare_enable(priv->mclk);
-kbl_rt5663_max98927.c:          ret = clk_prepare_enable(priv->sclk);
-kbl_rt5663_rt5514_max98927.c:           ret = 
-clk_prepare_enable(priv->mclk);
-kbl_rt5663_rt5514_max98927.c:           ret = 
-clk_prepare_enable(priv->sclk);
-kbl_rt5663_rt5514_max98927.c:                   ret = 
-clk_prepare_enable(priv->mclk);
-
-
+       Arnd
