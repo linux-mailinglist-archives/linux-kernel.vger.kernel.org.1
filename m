@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA0AD1C58B5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:17:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2687B1C58B6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 16:17:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729582AbgEEORe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 10:17:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49330 "EHLO
+        id S1730376AbgEEORq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 10:17:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730266AbgEEORM (ORCPT
+        by vger.kernel.org with ESMTP id S1730288AbgEEORQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 10:17:12 -0400
+        Tue, 5 May 2020 10:17:16 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7071C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:17:11 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BA48C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 07:17:16 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jVyNS-0002dE-Jp; Tue, 05 May 2020 16:16:54 +0200
+        id 1jVyNT-0002e7-P0; Tue, 05 May 2020 16:16:55 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 000BEFFC8D;
-        Tue,  5 May 2020 16:16:53 +0200 (CEST)
-Message-Id: <20200505135830.777430576@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 38CB6FFC8D;
+        Tue,  5 May 2020 16:16:55 +0200 (CEST)
+Message-Id: <20200505135830.882516167@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Tue, 05 May 2020 15:54:08 +0200
+Date:   Tue, 05 May 2020 15:54:09 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -44,7 +44,7 @@ Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Will Deacon <will@kernel.org>
-Subject: [patch V4 part 5 27/31] x86/entry: Make enter_from_user_mode() static
+Subject: [patch V4 part 5 28/31] x86/entry/32: Remove redundant irq disable code
 References: <20200505135341.730586321@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -57,22 +57,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ASM users are gone. All callers are local.
+From: Thomas Gleixner <tglx@linutronix.de>
+
+All exceptions/interrupts return with interrupts disabled now. No point in
+doing this in ASM again.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
- arch/x86/entry/common.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/entry/common.c
-+++ b/arch/x86/entry/common.c
-@@ -54,7 +54,7 @@
-  * 2) Invoke context tracking if enabled to reactivate RCU
-  * 3) Trace interrupts off state
-  */
--__visible noinstr void enter_from_user_mode(void)
-+static noinstr void enter_from_user_mode(void)
- {
- 	enum ctx_state state = ct_state();
+---
+ arch/x86/entry/entry_32.S |   76 ----------------------------------------------
+ 1 file changed, 76 deletions(-)
+
+--- a/arch/x86/entry/entry_32.S
++++ b/arch/x86/entry/entry_32.S
+@@ -51,34 +51,6 @@
  
+ 	.section .entry.text, "ax"
+ 
+-/*
+- * We use macros for low-level operations which need to be overridden
+- * for paravirtualization.  The following will never clobber any registers:
+- *   INTERRUPT_RETURN (aka. "iret")
+- *   GET_CR0_INTO_EAX (aka. "movl %cr0, %eax")
+- *   ENABLE_INTERRUPTS_SYSEXIT (aka "sti; sysexit").
+- *
+- * For DISABLE_INTERRUPTS/ENABLE_INTERRUPTS (aka "cli"/"sti"), you must
+- * specify what registers can be overwritten (CLBR_NONE, CLBR_EAX/EDX/ECX/ANY).
+- * Allowing a register to be clobbered can shrink the paravirt replacement
+- * enough to patch inline, increasing performance.
+- */
+-
+-#ifdef CONFIG_PREEMPTION
+-# define preempt_stop(clobbers)	DISABLE_INTERRUPTS(clobbers); TRACE_IRQS_OFF
+-#else
+-# define preempt_stop(clobbers)
+-#endif
+-
+-.macro TRACE_IRQS_IRET
+-#ifdef CONFIG_TRACE_IRQFLAGS
+-	testl	$X86_EFLAGS_IF, PT_EFLAGS(%esp)     # interrupts off?
+-	jz	1f
+-	TRACE_IRQS_ON
+-1:
+-#endif
+-.endm
+-
+ #define PTI_SWITCH_MASK         (1 << PAGE_SHIFT)
+ 
+ /*
+@@ -881,38 +853,6 @@ SYM_CODE_START(ret_from_fork)
+ SYM_CODE_END(ret_from_fork)
+ .popsection
+ 
+-/*
+- * Return to user mode is not as complex as all this looks,
+- * but we want the default path for a system call return to
+- * go as quickly as possible which is why some of this is
+- * less clear than it otherwise should be.
+- */
+-
+-	# userspace resumption stub bypassing syscall exit tracing
+-SYM_CODE_START_LOCAL(ret_from_exception)
+-	preempt_stop(CLBR_ANY)
+-ret_from_intr:
+-#ifdef CONFIG_VM86
+-	movl	PT_EFLAGS(%esp), %eax		# mix EFLAGS and CS
+-	movb	PT_CS(%esp), %al
+-	andl	$(X86_EFLAGS_VM | SEGMENT_RPL_MASK), %eax
+-#else
+-	/*
+-	 * We can be coming here from child spawned by kernel_thread().
+-	 */
+-	movl	PT_CS(%esp), %eax
+-	andl	$SEGMENT_RPL_MASK, %eax
+-#endif
+-	cmpl	$USER_RPL, %eax
+-	jb	restore_all_kernel		# not returning to v8086 or userspace
+-
+-	DISABLE_INTERRUPTS(CLBR_ANY)
+-	TRACE_IRQS_OFF
+-	movl	%esp, %eax
+-	call	prepare_exit_to_usermode
+-	jmp	restore_all_switch_stack
+-SYM_CODE_END(ret_from_exception)
+-
+ SYM_ENTRY(__begin_SYSENTER_singlestep_region, SYM_L_GLOBAL, SYM_A_NONE)
+ /*
+  * All code from here through __end_SYSENTER_singlestep_region is subject
+@@ -1147,22 +1087,6 @@ SYM_FUNC_START(entry_INT80_32)
+ 	 */
+ 	INTERRUPT_RETURN
+ 
+-restore_all_kernel:
+-#ifdef CONFIG_PREEMPTION
+-	DISABLE_INTERRUPTS(CLBR_ANY)
+-	cmpl	$0, PER_CPU_VAR(__preempt_count)
+-	jnz	.Lno_preempt
+-	testl	$X86_EFLAGS_IF, PT_EFLAGS(%esp)	# interrupts off (exception path) ?
+-	jz	.Lno_preempt
+-	call	preempt_schedule_irq
+-.Lno_preempt:
+-#endif
+-	TRACE_IRQS_IRET
+-	PARANOID_EXIT_TO_KERNEL_MODE
+-	BUG_IF_WRONG_CR3
+-	RESTORE_REGS 4
+-	jmp	.Lirq_return
+-
+ .section .fixup, "ax"
+ SYM_CODE_START(asm_exc_iret_error)
+ 	pushl	$0				# no error code
 
