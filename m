@@ -2,143 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 851F31C5F4C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 19:51:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 612B71C5F33
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 19:47:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730706AbgEERvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 13:51:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48892 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730685AbgEERv2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 13:51:28 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9EEE1206B9;
-        Tue,  5 May 2020 17:51:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588701087;
-        bh=r1NrOndU3YS+eWt28dmHa/oAPjSkGoQJ/pvTSw5jq/A=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t75d5toBn8C/owlGNazWmDP3BOtSidvPKmezqRfAnkoUhyPEKiECNOJcaD1L92pfh
-         DBiQkwplUzakgMjJ5CEZYZah0kCNyLGFumEqJfbrWFbpPe8YMImoQ988s5GGXyaA9i
-         EKijL/urhdBf9031GrTJDZoeIOAHVryPi6aP4bZo=
-From:   Mark Brown <broonie@kernel.org>
-To:     Shuah Khan <shuah@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 3/3] selftests: vdso: Add a selftest for vDSO getcpu()
-Date:   Tue,  5 May 2020 18:47:28 +0100
-Message-Id: <20200505174728.46594-4-broonie@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200505174728.46594-1-broonie@kernel.org>
-References: <20200505174728.46594-1-broonie@kernel.org>
+        id S1730457AbgEERrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 13:47:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729315AbgEERrk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 13:47:40 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67317C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 10:47:39 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id r14so1235000pfg.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 10:47:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=E59gdCn7b/m1/us+3FVlm14/hmF9iuj5/6dTwUQ7gS4=;
+        b=Ryjj2stnr8r+NJrfxoXOm2874nFlhlTekRuMu1qPScqui7fbLdeDGbs5o0B6vVLi9a
+         FjdcgskOu2syyZPhOaOhjw/W+fWi+PKgn9Gv+2N5TX622cO/PVy0g5Mg2GBqoOTOM8P/
+         PtDFLIZdaedNB6VgahKUfRfl/y0OGii06I73OFyXg5KY4NJj9fhgQZ/FjkJx0t34C3vK
+         nspEhX8fzFh+FM76BAgqIOSS/KH9EWpz62v5QXpSjwAPCMq400dHPnqtYV+zJm9qnxPB
+         lUNNOCDnrbCFsPGuG0FdI05KHeQAlyrNwCneDrJmYgguw+ncy15h5TmV7+nZG39rN2xG
+         WGag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=E59gdCn7b/m1/us+3FVlm14/hmF9iuj5/6dTwUQ7gS4=;
+        b=WMsZ3Fa8rLEAgCx0kaMAjECHxEXe4J2DBSfX3/XrdI473t3C2yBwtqQyEoUZ/H9hji
+         xFIT8U2uS+MqhmVSI2ZdwqPr1J3VJpGt9j7/1M28NcN78oAMFehJf182c8vnGgHujck6
+         SuCo9Q1mw0MPkqVf8Yd9DZCXcnAFHtmxasoQiiAIC/D2zw4QvwvhTyY1c/Ei5Kv/zW4a
+         jlCvTudTVx93gwm42WerSDvULzYR7AhMQy/dC7U4ZkeU2kYq3s53xRt+HQNE3AM1AgtP
+         E5uO8ee458mNXLfkdjJkMJ3AGBRHhc0ToZv8oA64y6x1KPkQrbQll6J7Tape48lkUYlU
+         4kmA==
+X-Gm-Message-State: AGi0PuY7ooE7pYKsJM6VRlRBcsDseU4/J16UALpCgU5LIqPdxGPRPECa
+        muBz7y0FYr1ImoBqZisG7c/U5pO5ZQg+MT5s/1cEQQ==
+X-Google-Smtp-Source: APiQypJ4UBjUXmbP9k6xl5SiwMOZpg0ggz/1t2R7Nd+6NK+s3+B4M0Pv22X3OSY1y6bgvXCgr0oW6TquGUrizROaJlc=
+X-Received: by 2002:a62:146:: with SMTP id 67mr4221059pfb.169.1588700858460;
+ Tue, 05 May 2020 10:47:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200310221747.2848474-1-jesse.brandeburg@intel.com>
+ <20200504193524.GA221287@google.com> <20200504181443.00007a3d@intel.com>
+ <20200505151438.GP185537@smile.fi.intel.com> <CAKwvOdn503VpMu6x5qtmeQrcVnwkAqu6gnoU0Pb99sX98aZPHQ@mail.gmail.com>
+In-Reply-To: <CAKwvOdn503VpMu6x5qtmeQrcVnwkAqu6gnoU0Pb99sX98aZPHQ@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 5 May 2020 10:47:28 -0700
+Message-ID: <CAKwvOdmPj1jecqD86pT9p6pJYckG5_Q5x0ZWQGyCOj-3J-s=Jw@mail.gmail.com>
+Subject: Re: [PATCH v6 1/2] x86: fix bitops.h warning with a moved cast
+To:     Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Ilie Halip <ilie.halip@gmail.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Provide a very basic selftest for getcpu() which similarly to our existing
-test for gettimeofday() looks up the function in the vDSO and prints the
-results it gets if the function exists and succeeds.
+On Tue, May 5, 2020 at 10:29 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> On Tue, May 5, 2020 at 8:14 AM Andy Shevchenko
+> <andriy.shevchenko@intel.com> wrote:
+> >
+> > On Mon, May 04, 2020 at 06:14:43PM -0700, Jesse Brandeburg wrote:
+> > > On Mon, 4 May 2020 12:51:12 -0700
+> > > Nick Desaulniers <ndesaulniers@google.com> wrote:
+> > >
+> > > > Sorry for the very late report.  It turns out that if your config
+> > > > tickles __builtin_constant_p just right, this now produces invalid
+> > > > assembly:
+> > > >
+> > > > $ cat foo.c
+> > > > long a(long b, long c) {
+> > > >   asm("orb\t%1, %0" : "+q"(c): "r"(b));
+> > > >   return c;
+> > > > }
+> > > > $ gcc foo.c
+> > > > foo.c: Assembler messages:
+> > > > foo.c:2: Error: `%rax' not allowed with `orb'
+> > > >
+> > > > The "q" constraint only has meanting on -m32 otherwise is treated as
+> > > > "r".
+> > > >
+> > > > Since we have the mask (& 0xff), can we drop the `b` suffix from the
+> > > > instruction? Or is a revert more appropriate? Or maybe another way to
+> > > > skin this cat?
+> > >
+> > > Figures that such a small change can create problems :-( Sorry for the
+> > > thrash!
+> > >
+> > > The patches in the link below basically add back the cast, but I'm
+> > > interested to see if any others can come up with a better fix that
+> > > a) passes the above code generation test
+> > > b) still keeps sparse happy
+> > > c) passes the test module and the code inspection
+> > >
+> > > If need be I'm OK with a revert of the original patch to fix the issue
+> > > in the short term, but it seems to me there must be a way to satisfy
+> > > both tools.  We went through several iterations on the way to the final
+> > > patch that we might be able to pluck something useful from.
+> >
+> > For me the below seems to work:
+>
+> Yep:
+> https://github.com/ClangBuiltLinux/linux/issues/961#issuecomment-623785987
+> https://github.com/ClangBuiltLinux/linux/issues/961#issuecomment-624162497
+> Sedat wrote the same patch 22 days ago; I didn't notice before
+> starting this thread.  I will sign off on his patch, add your
+> Suggested by tag, and send shortly.
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- tools/testing/selftests/vDSO/.gitignore       |  1 +
- tools/testing/selftests/vDSO/Makefile         |  3 +-
- .../testing/selftests/vDSO/vdso_test_getcpu.c | 50 +++++++++++++++++++
- 3 files changed, 53 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/vDSO/vdso_test_getcpu.c
+Started a new thread:
+https://lore.kernel.org/lkml/20200505174423.199985-1-ndesaulniers@google.com/T/#u
 
-diff --git a/tools/testing/selftests/vDSO/.gitignore b/tools/testing/selftests/vDSO/.gitignore
-index 74f49bd5f6dd..5eb64d41e541 100644
---- a/tools/testing/selftests/vDSO/.gitignore
-+++ b/tools/testing/selftests/vDSO/.gitignore
-@@ -1,4 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0-only
- vdso_test
- vdso_test_gettimeofday
-+vdso_test_getcpu
- vdso_standalone_test_x86
-diff --git a/tools/testing/selftests/vDSO/Makefile b/tools/testing/selftests/vDSO/Makefile
-index ae15d700b62e..0069f2f83f86 100644
---- a/tools/testing/selftests/vDSO/Makefile
-+++ b/tools/testing/selftests/vDSO/Makefile
-@@ -4,7 +4,7 @@ include ../lib.mk
- uname_M := $(shell uname -m 2>/dev/null || echo not)
- ARCH ?= $(shell echo $(uname_M) | sed -e s/i.86/x86/ -e s/x86_64/x86/)
- 
--TEST_GEN_PROGS := $(OUTPUT)/vdso_test_gettimeofday
-+TEST_GEN_PROGS := $(OUTPUT)/vdso_test_gettimeofday $(OUTPUT)/vdso_test_getcpu
- ifeq ($(ARCH),x86)
- TEST_GEN_PROGS += $(OUTPUT)/vdso_standalone_test_x86
- endif
-@@ -18,6 +18,7 @@ endif
- 
- all: $(TEST_GEN_PROGS)
- $(OUTPUT)/vdso_test_gettimeofday: parse_vdso.c vdso_test_gettimeofday.c
-+$(OUTPUT)/vdso_test_getcpu: parse_vdso.c vdso_test_getcpu.c
- $(OUTPUT)/vdso_standalone_test_x86: vdso_standalone_test_x86.c parse_vdso.c
- 	$(CC) $(CFLAGS) $(CFLAGS_vdso_standalone_test_x86) \
- 		vdso_standalone_test_x86.c parse_vdso.c \
-diff --git a/tools/testing/selftests/vDSO/vdso_test_getcpu.c b/tools/testing/selftests/vDSO/vdso_test_getcpu.c
-new file mode 100644
-index 000000000000..a9dd3db145f3
---- /dev/null
-+++ b/tools/testing/selftests/vDSO/vdso_test_getcpu.c
-@@ -0,0 +1,50 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * vdso_test_getcpu.c: Sample code to test parse_vdso.c and vDSO getcpu()
-+ *
-+ * Copyright (c) 2020 Arm Ltd
-+ */
-+
-+#include <stdint.h>
-+#include <elf.h>
-+#include <stdio.h>
-+#include <sys/auxv.h>
-+#include <sys/time.h>
-+
-+#include "../kselftest.h"
-+#include "parse_vdso.h"
-+
-+const char *version = "LINUX_2.6";
-+const char *name = "__vdso_getcpu";
-+
-+struct getcpu_cache;
-+typedef long (*getcpu_t)(unsigned int *, unsigned int *,
-+			 struct getcpu_cache *);
-+
-+int main(int argc, char **argv)
-+{
-+	unsigned long sysinfo_ehdr = getauxval(AT_SYSINFO_EHDR);
-+	if (!sysinfo_ehdr) {
-+		printf("AT_SYSINFO_EHDR is not present!\n");
-+		return KSFT_SKIP;
-+	}
-+
-+	vdso_init_from_sysinfo_ehdr(getauxval(AT_SYSINFO_EHDR));
-+
-+	getcpu_t get_cpu = (getcpu_t)vdso_sym(version, name);
-+	if (!get_cpu) {
-+		printf("Could not find %s\n", name);
-+		return KSFT_SKIP;
-+	}
-+
-+	unsigned int cpu, node;
-+	long ret = get_cpu(&cpu, &node, 0);
-+	if (ret == 0) {
-+		printf("Running on CPU %u node %u\n", cpu, node);
-+	} else {
-+		printf("%s failed\n", name);
-+		return KSFT_FAIL;
-+	}
-+
-+	return 0;
-+}
+>
+> >
+> >
+> > diff --git a/arch/x86/include/asm/bitops.h b/arch/x86/include/asm/bitops.h
+> > index b392571c1f1d1..139122e5b25b1 100644
+> > --- a/arch/x86/include/asm/bitops.h
+> > +++ b/arch/x86/include/asm/bitops.h
+> > @@ -54,7 +54,7 @@ arch_set_bit(long nr, volatile unsigned long *addr)
+> >         if (__builtin_constant_p(nr)) {
+> >                 asm volatile(LOCK_PREFIX "orb %1,%0"
+> >                         : CONST_MASK_ADDR(nr, addr)
+> > -                       : "iq" (CONST_MASK(nr) & 0xff)
+> > +                       : "iq" ((u8)(CONST_MASK(nr) & 0xff))
+> >                         : "memory");
+> >         } else {
+> >                 asm volatile(LOCK_PREFIX __ASM_SIZE(bts) " %1,%0"
+> > @@ -74,7 +74,7 @@ arch_clear_bit(long nr, volatile unsigned long *addr)
+> >         if (__builtin_constant_p(nr)) {
+> >                 asm volatile(LOCK_PREFIX "andb %1,%0"
+> >                         : CONST_MASK_ADDR(nr, addr)
+> > -                       : "iq" (CONST_MASK(nr) ^ 0xff));
+> > +                       : "iq" ((u8)(CONST_MASK(nr) ^ 0xff)));
+> >         } else {
+> >                 asm volatile(LOCK_PREFIX __ASM_SIZE(btr) " %1,%0"
+> >                         : : RLONG_ADDR(addr), "Ir" (nr) : "memory");
+> >
+> >
+> > --
+> > With Best Regards,
+> > Andy Shevchenko
+> >
+> >
+>
+>
+> --
+> Thanks,
+> ~Nick Desaulniers
+
+
+
 -- 
-2.20.1
-
+Thanks,
+~Nick Desaulniers
