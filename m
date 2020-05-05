@@ -2,115 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD56A1C6411
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 00:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 821D01C641E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 00:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729327AbgEEWoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 18:44:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726568AbgEEWoH (ORCPT
+        id S1729507AbgEEWrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 18:47:39 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:42552 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729229AbgEEWrh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 18:44:07 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BF6EC061A0F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 15:44:07 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id p13so1908533qvt.12
-        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 15:44:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=massaru-org.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=C76LIzi+5JEntbZy/qpJ0FbBUCkVF2NVl+l3fJXGdsQ=;
-        b=oiObcX6jBSeqxuVh18DxaP4VKpyAStp5GGdizA7cYt7WmM6dWbuGQxBEL+VVoIUoDS
-         ku8zmELuSS6v2qq/ewa5IGUmKfU1iJyBxNXu5tieOc9Fg7O/h6ARn4CbxdSx3sngwN7P
-         EEXC+owDs1Gi0O0EncsKBljKwVT4X2TuPXsU1rFQgyxcqNF9LjhT02wYkxMfR8aUXww7
-         p6+++CupbZ6LKHySeJgjAwRgwXZbB1Kin250GH4Raw+JGTZMtxqoUDIWW18Zst6JPlnq
-         xpCTHnxhduEM9lWP+uY1GPfZ458TP3yzoWOnG3LUPTIbN+CX5FTJVLp25HD2Jh/Ebus7
-         KYjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=C76LIzi+5JEntbZy/qpJ0FbBUCkVF2NVl+l3fJXGdsQ=;
-        b=kQrFkHl8q+vbhKsPPvhZOXILJNOK61oHvecUsekKqGFTxNTKI3Ar7y6dcqrFP5/r2o
-         MHIW8udsORJ8Ez2QdiWBxsGk1J5+3dSUELXlhbWcV+FMX4LZUtW3ta5gqTBBH4pyuv9U
-         Qp09zXkMheDEX998l0RJfZ9eyi9mqCJor3MyfGDw3yzYJ6OWDOxQ1RnEQ5hrUk9NJjub
-         N/ZiEqPybukImcyytTAIFJPisBbx3TRucSm7oMWHFtew7h+vTD1JbSAaN6/+k7JkbQhW
-         IKOSlTgGZ58CNfqEkTWPnTSsiXdjxqRaxD/1cn/p/iGFbPkzCXnp3DdrnXRsDfMKgu5F
-         klPg==
-X-Gm-Message-State: AGi0PuY1WGGuM6/UaUuKDZIomXcKsW1SdpoyHjqHe7w1LpB1o/biKrJR
-        ICuDwJrPXRwnY1ypIX+ZDN2tmQ==
-X-Google-Smtp-Source: APiQypLneX5+0+lcyzB0u8ws0ZzKSXPK5claKysblIbIb96NIdVrq1gVior7r/FubUDA45y7URkDvw==
-X-Received: by 2002:ad4:55a5:: with SMTP id f5mr5000177qvx.133.1588718646066;
-        Tue, 05 May 2020 15:44:06 -0700 (PDT)
-Received: from bbking.lan ([2804:14c:4a5:36c::cd2])
-        by smtp.gmail.com with ESMTPSA id u11sm3058126qtj.10.2020.05.05.15.44.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 May 2020 15:44:05 -0700 (PDT)
-Message-ID: <c092c2f7659d344744bd4400bccc2bb6f774b998.camel@massaru.org>
-Subject: Re: [PATCH] docs: s390: Fix wrong label Guest2 instead of Guest3
-From:   Vitor Massaru Iha <vitor@massaru.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-doc@vger.kernel.org, akrowiak@linux.ibm.com,
-        pmorel@linux.ibm.com, pasic@linux.ibm.com,
-        heiko.carstens@de.ibm.com, gor@linux.ibm.com,
-        borntraeger@de.ibm.com, linux-kernel@vger.kernel.org,
-        brendanhiggins@google.com, skhan@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Date:   Tue, 05 May 2020 19:44:01 -0300
-In-Reply-To: <20200505094632.0d34f72b@lwn.net>
-References: <20200430221238.101838-1-vitor@massaru.org>
-         <20200505094632.0d34f72b@lwn.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Tue, 5 May 2020 18:47:37 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1588718857; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=UjYtfzsCuuezQPd0Hb5Vo+ec14plHVnuK/Pw66j+4G4=; b=Rvsqkvz0VnHL5tj/dgcU1mlFsEwftcv/WIudVQ8+dTembT5i8abI3/qQVAdDImvhoI1PJhqC
+ sFEIBVOX1QUnqQqGfrMOXqI/BTp8W8DRQ8U5JIhTS0DlrQ2MweeKWDen01rvw7wEGEm5Gf7I
+ q3cJ7xARC9tdTUIg1kDQu4xtBrY=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5eb1ecf8.7f7940673960-smtp-out-n03;
+ Tue, 05 May 2020 22:47:20 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CCDAFC433BA; Tue,  5 May 2020 22:47:20 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from bbhatt-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 19ECBC433CB;
+        Tue,  5 May 2020 22:47:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 19ECBC433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     mani@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hemantk@codeaurora.org, jhugo@codeaurora.org,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH v6 0/8] Bug fixes and improved logging in MHI
+Date:   Tue,  5 May 2020 15:47:04 -0700
+Message-Id: <1588718832-4891-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-05-05 at 09:46 -0600, Jonathan Corbet wrote:
-> On Thu, 30 Apr 2020 19:12:38 -0300
-> Vitor Massaru Iha <vitor@massaru.org> wrote:
-> 
-> > This fixes:
-> > 
-> > Documentation/s390/vfio-ap.rst:488: WARNING: duplicate label
-> > s390/vfio-ap:guest2, other instance in
-> > /home/iha/sdb/opensource/lkmp/linux_doc/Documentation/s390/vfio-
-> > ap.rst
-> > 
-> > Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
-> > ---
-> >  Documentation/s390/vfio-ap.rst | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/Documentation/s390/vfio-ap.rst
-> > b/Documentation/s390/vfio-ap.rst
-> > index b5c51f7c748d..367e27ec3c50 100644
-> > --- a/Documentation/s390/vfio-ap.rst
-> > +++ b/Documentation/s390/vfio-ap.rst
-> > @@ -484,7 +484,7 @@ CARD.DOMAIN TYPE  MODE
-> >  05.00ff     CEX5A Accelerator
-> >  =========== ===== ============
-> >  
-> > -Guest2
-> > +Guest3
-> >  ------
-> >  =========== ===== ============
-> >  CARD.DOMAIN TYPE  MODE
-> 
-> Applied, thanks.
-> 
-> Note, though, that while the patch does "fix" the warning, what it
-> really
-> fixes is (as suggested in the subject) an incorrect heading; the
-> warning
-> was just a symptom.
+A set of patches for bug fixes and improved logging in mhi/core/boot.c.
+Verified on x86 and arm64 platforms.
 
-Thanks Jon, I will be careful about that.
-> 
-> jon
+v6:
+-Updated the MHI_RANDOM_U32_NONZERO to only give a random number upto the
+supplied bitmask
 
+v5:
+-Updated the macro MHI_RANDOM_U32_NONZERO to take a bitmask as the input
+parameter and output a non-zero value between 1 and U32_MAX
+
+v4:
+-Dropped the change: bus: mhi: core: WARN_ON for malformed vector table
+-Updated bus: mhi: core: Read transfer length from an event properly to include
+parse rsc events
+-Use prandom_u32_max() instead of prandom_u32 to avoid if check in
+bus: mhi: core: Ensure non-zero session or sequence ID values are used
+
+v3:
+-Fixed signed-off-by tags
+-Add a refactor patch for MHI queue APIs
+-Commit text fix in bus: mhi: core: Read transfer length from an event properly
+-Fix channel ID range check for ctrl and data event rings processing
+
+v2:
+-Fix channel ID range check potential infinite loop
+-Add appropriate signed-off-by tags
+
+Bhaumik Bhatt (4):
+  bus: mhi: core: Handle firmware load using state worker
+  bus: mhi: core: Return appropriate error codes for AMSS load failure
+  bus: mhi: core: Improve debug logs for loading firmware
+  bus: mhi: core: Ensure non-zero session or sequence ID values are used
+
+Hemant Kumar (4):
+  bus: mhi: core: Refactor mhi queue APIs
+  bus: mhi: core: Cache intmod from mhi event to mhi channel
+  bus: mhi: core: Add range check for channel id received in event ring
+  bus: mhi: core: Read transfer length from an event properly
+
+ drivers/bus/mhi/core/boot.c     |  75 ++++++++++++------------
+ drivers/bus/mhi/core/init.c     |   5 +-
+ drivers/bus/mhi/core/internal.h |   5 +-
+ drivers/bus/mhi/core/main.c     | 124 ++++++++++++++++++++--------------------
+ drivers/bus/mhi/core/pm.c       |   6 +-
+ include/linux/mhi.h             |   2 -
+ 6 files changed, 108 insertions(+), 109 deletions(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
