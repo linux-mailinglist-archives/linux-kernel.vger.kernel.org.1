@@ -2,53 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ED591C5BAB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:40:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3AED1C5BB0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 17:40:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730196AbgEEPkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 11:40:01 -0400
-Received: from muru.com ([72.249.23.125]:52872 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729317AbgEEPkA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 11:40:00 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id E842080A5;
-        Tue,  5 May 2020 15:40:48 +0000 (UTC)
-Date:   Tue, 5 May 2020 08:39:57 -0700
-From:   Tony Lindgren <tony@atomide.com>
-To:     afzal mohammed <afzal.mohd.ma@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Kevin Hilman <khilman@kernel.org>,
-        Aaro Koskinen <aaro.koskinen@iki.fi>,
-        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: omap1: fix irq setup
-Message-ID: <20200505153957.GK37466@atomide.com>
-References: <20200505141400.767312-1-arnd@arndb.de>
- <20200505143017.GA5263@afzalpc>
+        id S1730424AbgEEPkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 11:40:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729317AbgEEPkO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 11:40:14 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAF62C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 08:40:13 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id t9so1331221pjw.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 08:40:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=bSFaPsY9Q06ol7z3I9i5NZy6Mx1BYRJOSiQQ/ADJ9Gg=;
+        b=N+27bzh+IMZfcRnh55NZgeIVBEml3gus4hp7iFUF6zcjpxNRyptB9OdCDWaJewid8l
+         zzggysGdilyS219iat2RsDVXdStYATE8skmp1BvkxX5T9jRUe2HsvL7E8uFvItikAObz
+         b9gwPB/r+co6aVYZdf0ShOVytK37AWhko/qoZYFNboprhcDhWsLbd8cCM/IIjsTSpz0l
+         f0N33fSctiP/mSHFqqUFrW/2BkUX+VQR/hx6ChD1Nv4YIqbI+uTvDE1JGGvhyFc4EI5/
+         crIBcVXx9W3f0frtN+DBlHtDkiDZWz/viDcRZu+ychATsekTG9x5kHtynjiBy6DeCqjM
+         owQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=bSFaPsY9Q06ol7z3I9i5NZy6Mx1BYRJOSiQQ/ADJ9Gg=;
+        b=UXYV0AhadCKfBqw97pk+xdTlaUJ23qWMmjguVN/JqvYsJRMAa9GBLbLJ2zGcmn0h1Y
+         fFmBeMSragi1uF8/Y/f7Wwt9qnd8vdVWslbfWp31sIyxIx4CZdHTP844k7KeyF4hbkCS
+         BU4twd9klBgsL924RYQ8pU+Wctm5JAaK/sSnIHM6aTsshcLb6KwdEESm/Uz1zK14s/M7
+         JJ4XVQs8DHt412o/zg8QmHvhyxgWyTwY5T0eEetXjulVYunvWOX3tei1VY1UwGqyJzq7
+         2fw0cevNEz1dMu1kBFk5wilbqAO6U8eDkLF2Wqc/19Y69pTsDPzD72XqdLpYcf9pRwmm
+         SgQw==
+X-Gm-Message-State: AGi0PuYCM99Jk1hpVKMollfMdkwTgVZMYv4aHsK3odMJr2qSgtYJgVq2
+        HLxnslSmGUwhsCdZJRb8RGppHGpXYVD4QCgWnHZ7Kg==
+X-Google-Smtp-Source: APiQypJk7WFBLwQNHlWpEpX+GDFUCZgtHUU8RxuEIsH3h6aMqRYcSuecN1kdds/zND2KUHypdFOJyiF/OToVqwLaK+A=
+X-Received: by 2002:a17:90a:8c85:: with SMTP id b5mr3737036pjo.187.1588693212806;
+ Tue, 05 May 2020 08:40:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200505143017.GA5263@afzalpc>
+References: <20200505141606.837164-1-arnd@arndb.de> <e4a852b2-807b-bc73-7328-bcc399341085@amd.com>
+In-Reply-To: <e4a852b2-807b-bc73-7328-bcc399341085@amd.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 5 May 2020 08:39:59 -0700
+Message-ID: <CAKwvOd=JLsksy5adE_rnRKetqAMcSFsJPHXVsidOP9RPo+YpCA@mail.gmail.com>
+Subject: Re: [PATCH] amdgpu: fix integer overflow on 32-bit architectures
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Evan Quan <evan.quan@amd.com>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
+        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
+        Monk Liu <Monk.Liu@amd.com>,
+        Kent Russell <kent.russell@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Alex Deucher <alexdeucher@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* afzal mohammed <afzal.mohd.ma@gmail.com> [200505 14:31]:
-> Hi,
-> 
-> On Tue, May 05, 2020 at 04:13:48PM +0200, Arnd Bergmann wrote:
-> 
-> > A recent cleanup introduced a bug on any omap1 machine that has
-> > no wakeup IRQ, i.e. omap15xx:
-> 
-> > Move this code into a separate function to deal with it cleanly.
-> > 
-> > Fixes: b75ca5217743 ("ARM: OMAP: replace setup_irq() by request_irq()")
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> 
-> Sorry for the mistake and thanks for the fix,
-> 
-> Acked-by: afzal mohammed <afzal.mohd.ma@gmail.com>
+See also https://lore.kernel.org/lkml/CADnq5_NdtZh5_RGDWKJ9c_42XLvrncCs5DDU=
+1YSptfZP94KXkQ@mail.gmail.com/T/#me707e09e92c6e487285e8bb382a607e4e782c249
 
-Acked-by: Tony Lindgren <tony@atomide.com>
+On Tue, May 5, 2020 at 7:17 AM Christian K=C3=B6nig <christian.koenig@amd.c=
+om> wrote:
+>
+> Am 05.05.20 um 16:15 schrieb Arnd Bergmann:
+> > Multiplying 1000000000 by four overruns a 'long' variable, as clang
+> > points out:
+> >
+> > drivers/gpu/drm/amd/amdgpu/amdgpu_device.c:4160:53: error: overflow in =
+expression; result is -294967296 with type 'long' [-Werror,-Winteger-overfl=
+ow]
+> >                  expires =3D ktime_get_mono_fast_ns() + NSEC_PER_SEC * =
+4L;
+> >                                                                    ^
+> > Make this a 'long long' constant instead.
+> >
+> > Fixes: 3f12acc8d6d4 ("drm/amdgpu: put the audio codec into suspend stat=
+e before gpu reset V3")
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>
+> Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
+>
+> > ---
+> > I'm not sure the ktime_get_mono_fast_ns() call is necessary here
+> > either. Is it intentional because ktime_get_ns() doesn't work
+> > during a driver suspend, or just a mistake?
+> > ---
+> >   drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/d=
+rm/amd/amdgpu/amdgpu_device.c
+> > index 6f93af972b0a..2e07e3e6b036 100644
+> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> > @@ -4157,7 +4157,7 @@ static int amdgpu_device_suspend_display_audio(st=
+ruct amdgpu_device *adev)
+> >                * the audio controller default autosuspend delay setting=
+.
+> >                * 4S used here is guaranteed to cover that.
+> >                */
+> > -             expires =3D ktime_get_mono_fast_ns() + NSEC_PER_SEC * 4L;
+> > +             expires =3D ktime_get_mono_fast_ns() + NSEC_PER_SEC * 4LL=
+;
+> >
+> >       while (!pm_runtime_status_suspended(&(p->dev))) {
+> >               if (!pm_runtime_suspend(&(p->dev)))
+>
+> --
+> You received this message because you are subscribed to the Google Groups=
+ "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an=
+ email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgi=
+d/clang-built-linux/e4a852b2-807b-bc73-7328-bcc399341085%40amd.com.
+
+
+
+--=20
+Thanks,
+~Nick Desaulniers
