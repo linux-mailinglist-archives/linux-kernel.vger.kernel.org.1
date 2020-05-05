@@ -2,72 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31FA31C5CE5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 18:04:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24C7C1C5CEB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 May 2020 18:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730176AbgEEQEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 12:04:33 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47106 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729398AbgEEQEd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 12:04:33 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 882CBAF22;
-        Tue,  5 May 2020 16:04:34 +0000 (UTC)
-Subject: Re: [PATCH v2 02/15] ARM: actions: Drop unneeded select of COMMON_CLK
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     soc@kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Kevin Hilman <khilman@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-References: <20200505150722.1575-1-geert+renesas@glider.be>
- <20200505150722.1575-3-geert+renesas@glider.be>
-From:   =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>
-Organization: SUSE Software Solutions Germany GmbH
-Message-ID: <89ad77c9-4bc8-039e-1ba5-e8eb67734597@suse.de>
-Date:   Tue, 5 May 2020 18:04:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1729746AbgEEQF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 12:05:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729195AbgEEQF4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 12:05:56 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35485C061A41
+        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 09:05:56 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id f13so3371465wrm.13
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 09:05:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=njl+I1KZR8dAJRFqU7HOVFmyMwpktP+Payzdk7cqiZo=;
+        b=pCbw8Q2Djt96EsEtPl4Xwf9WOgp+W7CXvZgaxdqcpirmNYjSYs2lAQfYP/qBeN/imW
+         qVMnYbtAIPWG5WvEXKrE3XH56YcQ5PblSP5dxSicG19C+Fm9IHnOwcV3lDboZ/rahDZX
+         KaV7vV6svD+bncNQN5UeWvAx1zaJqLFE+x33f58dhDIhxEQ+WgOKmPKT3J6RZ8o0i06h
+         kf7BZ1v3yDpTlV6C7mQTqSZbNF8qq3GoMgdq9JlBFZzbejBN6FDDzVfxn08kDc2K1pZP
+         dwfSr/9J/i1UZKnhFzYWvndqFjCsIHYjOlxrqmpfh+pStSpfhfIEGQUBA5z85DMujbZr
+         MQUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=njl+I1KZR8dAJRFqU7HOVFmyMwpktP+Payzdk7cqiZo=;
+        b=BOAxSv5O9PzcbFPj2+b+qW+xG6uLChSC8tPLCXu6U548enL8/Q/1LGw8q/TQLXRd2W
+         8c4qUdbSuQGWq30EaVAByValTnL+7vJOSUvkrd/yZzMxFGtIjIBo+es88KychJsThubQ
+         1KN51SqY9Q76fMDu6+qnuS9UoL9oZexUGvTT5/Hkqoou5AcHsuVojcQ4UpwJvJaMAEvH
+         u739pei2rC6yZISeF3WRu68RloJOaTXhRY66m2avTYCsUPrv2ntJwqOpyM2F6/h/wISH
+         9knFTGiXL/OvkZLX3Qkg4P6MgAjhd+LhJatZQvVSCX7Iw3MiCrCDWTZ9ahH2/lkU6WX5
+         PgDQ==
+X-Gm-Message-State: AGi0Pua0y/o04t8D5l2cugZai8liFPc5eTzgp2Uyog9tHjDNRV2Kurgb
+        LOatgdtJAe0YGuI0n9Q98NqD8Q==
+X-Google-Smtp-Source: APiQypLoB4fjwTQJDOAaK7x/BgWoRefOlMYzgeBPm4DGbTUjdPo8UYmkhAaAStq6Y7TclKEt1oNfMQ==
+X-Received: by 2002:a5d:6107:: with SMTP id v7mr4240620wrt.270.1588694754820;
+        Tue, 05 May 2020 09:05:54 -0700 (PDT)
+Received: from localhost (cag06-3-82-243-161-21.fbx.proxad.net. [82.243.161.21])
+        by smtp.gmail.com with ESMTPSA id l19sm4636869wmj.14.2020.05.05.09.05.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 May 2020 09:05:54 -0700 (PDT)
+References: <20200428210229.703309-1-martin.blumenstingl@googlemail.com> <20200428210229.703309-3-martin.blumenstingl@googlemail.com> <1jlfmdi9uw.fsf@starbuckisacylon.baylibre.com> <CAPDyKFoEh8qKYFONo1SHnvwhDwjUa5bMnnT1Kbu8=4rd=T-8Kg@mail.gmail.com> <1jh7x1i3hj.fsf@starbuckisacylon.baylibre.com> <CAPDyKFq_USCNNps3s4+C_1hriycrxtRMKJvnPFcP59CZmLXbGw@mail.gmail.com>
+User-agent: mu4e 1.3.3; emacs 26.3
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     Stephen Boyd <sboyd@kernel.org>,
+        "open list\:ARM\/Amlogic Meson..." 
+        <linux-amlogic@lists.infradead.org>,
+        "linux-mmc\@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jianxin Pan <jianxin.pan@amlogic.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        yinxin_1989@aliyun.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        lnykww@gmail.com, Anand Moon <linux.amoon@gmail.com>
+Subject: Re: [PATCH v6 2/2] mmc: host: meson-mx-sdhc: new driver for the Amlogic Meson SDHC host
+In-reply-to: <CAPDyKFq_USCNNps3s4+C_1hriycrxtRMKJvnPFcP59CZmLXbGw@mail.gmail.com>
+Date:   Tue, 05 May 2020 18:05:53 +0200
+Message-ID: <1j1rnygye6.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-In-Reply-To: <20200505150722.1575-3-geert+renesas@glider.be>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
 
-Am 05.05.20 um 17:07 schrieb Geert Uytterhoeven:
-> Support for Actions Semi SoCs depends on ARCH_MULTI_V7, and thus on
-> ARCH_MULTIPLATFORM.
-> As the latter selects COMMON_CLK, there is no need for ARCH_ACTIONS to
-> select COMMON_CLK.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> Cc: Andreas Färber <afaerber@suse.de>
-> Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
-> Reviewed-by: Andreas Färber <afaerber@suse.de>
-> ---
-> v2:
->    - Add Acked-by, Reviewed-by.
-> ---
->   arch/arm/mach-actions/Kconfig | 1 -
->   1 file changed, 1 deletion(-)
+On Tue 05 May 2020 at 10:17, Ulf Hansson <ulf.hansson@linaro.org> wrote:
 
-Do you intend to apply the whole series through soc (my assumption due 
-to soc in To), or should I pick this one up as maintainer?
+> [...]
+>
+>> >> > +
+>> >> > +     return devm_of_clk_add_hw_provider(dev, of_clk_hw_onecell_get,
+>> >> > +                                        onecell_data);
+>> >>
+>> >> I think registering a provider for a module that does not provide clocks
+>> >> to any other device is a bit overkill.
+>> >>
+>> >> I understand the matter is getting the per-user clk* pointer.
+>> >> Since this is the module registering the clock, you can use clk_hw->clk
+>> >> to get it.
+>> >>
+>> >> Once you have the clk* of the leaf clocks, you don't even need to keep
+>> >> track of the clk_hw* since you are using devm_
+>> >>
+>> >> Afterward, we should propably discuss with Stephen if something should
+>> >> be added in CCF to get a struct clk* from struct clk_hw*.
+>> >>
+>> >
+>> > [...]
+>> >
+>> > Hmm.
+>> >
+>> > I am not sure the above is a good idea, at all. Unless, I am
+>> > misunderstanding your point, which may be the case.
+>> >
+>> > I think above "shortcuts" could lead to abuse of the clock framework
+>> > and its internal data structures. When going forward, this could make
+>> > it unnecessary harder to maintain the clock framework.
+>> >
+>> > I know, it's not my responsibility, but from my experience with MMC
+>> > and SDIO interfaces, is that those have been too easy abuse - since
+>> > most of the data structures and interfaces have been exported. Now,
+>> > it's hard to roll back that, if you see what I mean.
+>>
+>> Indeed, it worth clarifying this first.
+>>
+>> With clk_register deprecated in favor of clk_hw_register, we are likely
+>> to see that case rise elsewhere.
+>>
+>
+> So, according to the separate discussion [1], I think we can let
+> Martin decide what option to implement at this point.
+>
+> 1. Implement the "clk_hw_get_clk()" approach. The preferred option,
+> but requires wider changes of the clock subsystem as well.
+>
+> 2. Keep the existing approach, with devm_clk_get(). I am fine with
+> this as well, we can always switch to 1) later on.
 
-Thanks,
-Andreas
+I have a problem with this approach.
+The dt-bindings would include "#clock-cells = <1>" for a device that
+does not actually provide and only needs it has a temporary work around.
+Those bindings are supposed to be stable ...
 
--- 
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 Nürnberg, Germany
-GF: Felix Imendörffer
-HRB 36809 (AG Nürnberg)
+I have proposed 2 other short term solutions, let's see how it goes
+
+>
+> [...]
+>
+> Kind regards
+> Uffe
+>
+> [1]
+> https://www.spinics.net/lists/linux-clk/msg48373.html
+
