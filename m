@@ -2,740 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75DF71C7DB2
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 01:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A66EC1C7DBA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 01:05:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726742AbgEFXDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 19:03:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726638AbgEFXDh (ORCPT
+        id S1727082AbgEFXFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 19:05:32 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:43241 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726129AbgEFXF2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 19:03:37 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 643D2C0610D5
-        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 16:03:37 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id a5so1759383pjh.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 16:03:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=kjlu6jLhTR0mjPxKSv4MeMF5dowraSJMcDdgueJikqY=;
-        b=OULtPmE9cd47ZlIgzMJ3Nbvhx0kRi9cWu20RgfWkodlLZOWrYZeE+2Z5j/SllyGhXY
-         MZtC68Y9pOCn0bCYNPJma7j6vI3KdFvQvhdDYDEzq8rUKmLTAX2FiLgtHuE/eVy1pNL4
-         9WOvzXqcDv5hbbjb/DMXZKjC7GprOI3cn0lKI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=kjlu6jLhTR0mjPxKSv4MeMF5dowraSJMcDdgueJikqY=;
-        b=U51OxOCkhY8r0EnaK3NsuNKSBRU010/WAZRqac8YH+0oFhG2l49j9CzvwKLQLyoWGb
-         Xo9BwbU/VWqtiTfXLaMdWrrc6zaiBa558STQHSuceTi/ZgkPqdW260PmAfaMGl/BFI66
-         DBosz/unNn7vyHDG+VbHHxcwCZbz2aTfuJLsnANILYXI2yHxE6WMCq5jv+7hkOyON+sy
-         bKVYvhHrY4NmxtOzw7gFoH0w2Umf022i11CzNhawv5ODzBQoH+caA6Esz+FQ5iglYqFf
-         QHzB1P09/8+6zsnkt2Ia14Yw/CO9hKPE5lFVv+VWcvaq3baKoe+dNVLCYCbv7kB185JA
-         MvHg==
-X-Gm-Message-State: AGi0PubBfEN3WVH+jgfEEYgkVecNO8ec57yW2ZshrB33f4YZhTH6nHbz
-        gk9ll5NCS93761w1fgIZhCQx2Q==
-X-Google-Smtp-Source: APiQypLNlgKPIqLB43O5isKe57M2dySb/RubmDJ/Y16gDv5x7H2bvBn7VcI4YkyyDqi4M3z0J2L5pw==
-X-Received: by 2002:a17:90a:1b67:: with SMTP id q94mr11776831pjq.84.1588806216585;
-        Wed, 06 May 2020 16:03:36 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:4cc0:7eee:97c9:3c1a])
-        by smtp.gmail.com with ESMTPSA id 207sm2397772pgh.34.2020.05.06.16.03.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 May 2020 16:03:36 -0700 (PDT)
-From:   Gwendal Grignou <gwendal@chromium.org>
-To:     enric.balletbo@collabora.com, jic23@kernel.org
-Cc:     bleung@chromium.org, groeck@chromium.org,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        Gwendal Grignou <gwendal@chromium.org>
-Subject: [PATCH v2 3/3] iio: cros_ec_light: Add support for RGB sensor
-Date:   Wed,  6 May 2020 16:03:24 -0700
-Message-Id: <20200506230324.139241-4-gwendal@chromium.org>
-X-Mailer: git-send-email 2.26.2.526.g744177e7f7-goog
-In-Reply-To: <20200506230324.139241-1-gwendal@chromium.org>
-References: <20200506230324.139241-1-gwendal@chromium.org>
+        Wed, 6 May 2020 19:05:28 -0400
+Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20200506230524epoutp0214f4f4ba9f5c83223934c08564d28f3d~Mku8xni2s3120931209epoutp028
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 23:05:24 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20200506230524epoutp0214f4f4ba9f5c83223934c08564d28f3d~Mku8xni2s3120931209epoutp028
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1588806324;
+        bh=nmHW3hqfsceJoD/TfyBfmBuJRD/79Pt15nGHE8W3KWU=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=QwwzYHcvnmSl4tJSrv7qIJGZ9sCzl4D9yNY7ep2uITclPweo67agdRipPqWnCHzwA
+         gJiy4LMgrVQtZVKO8hF5S3WAdbAHaK+OT/ruH3RKh/WbMNcXsKpV+ZvNJff52QVV70
+         0O90egQXhQMY2uzT9kJovxVeMoaDwKNXY71HkG0o=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
+        20200506230524epcas2p492966ea9e85735a13051d58f8134d0c2~Mku8bwa5M0647206472epcas2p4b;
+        Wed,  6 May 2020 23:05:24 +0000 (GMT)
+Received: from epsmges2p2.samsung.com (unknown [182.195.40.191]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 49HXHj5v88zMqYkb; Wed,  6 May
+        2020 23:05:21 +0000 (GMT)
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        FD.C3.04704.1B243BE5; Thu,  7 May 2020 08:05:21 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTPA id
+        20200506230521epcas2p4936c698d7dad36716631189b4f532ac1~Mku5sAPIJ3166131661epcas2p4a;
+        Wed,  6 May 2020 23:05:21 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200506230521epsmtrp1a1151a35072f8f8c7f34df5cad53d740~Mku5rJwFE0959009590epsmtrp1T;
+        Wed,  6 May 2020 23:05:21 +0000 (GMT)
+X-AuditID: b6c32a46-811ff70000001260-3d-5eb342b1fbaa
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        84.FA.25866.1B243BE5; Thu,  7 May 2020 08:05:21 +0900 (KST)
+Received: from KORCO004660 (unknown [12.36.155.199]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20200506230521epsmtip2bb6ba760297dcd1241768add21aea2d3~Mku5cYFfL1363413634epsmtip2B;
+        Wed,  6 May 2020 23:05:20 +0000 (GMT)
+From:   "Hyunki Koo" <hyunki00.koo@samsung.com>
+To:     "'Bartlomiej Zolnierkiewicz'" <b.zolnierkie@samsung.com>
+Cc:     "'Kukjin Kim'" <kgene@kernel.org>,
+        "'Krzysztof Kozlowski'" <krzk@kernel.org>,
+        "'Greg Kroah-Hartman'" <gregkh@linuxfoundation.org>,
+        "'Jiri Slaby'" <jslaby@suse.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-samsung-soc@vger.kernel.org>,
+        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+In-Reply-To: <1b230724-c87b-aa28-f850-ecdeb0542dba@samsung.com>
+Subject: RE: [PATCH v10 3/3] tty: samsung_tty: 32-bit access for TX/RX hold
+ registers
+Date:   Thu, 7 May 2020 08:05:20 +0900
+Message-ID: <010b01d623fa$d0f26130$72d72390$@samsung.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQJFl2PsmRe3/s9lzyUQ9PcEeehh2AH96kRjAjcc4uIB42yit6eMAdEA
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrIJsWRmVeSWpSXmKPExsWy7bCmhe5Gp81xBht3GFhsnLGe1aJ58Xo2
+        iykbPjBZ9D9+zWxx/vwGdotNj6+xWlzeNYfNYsb5fUwWZxb3sjtwemxa1cnmsX/uGnaPzUvq
+        Pfq2rGL0WL/lKovH501yAWxROTYZqYkpqUUKqXnJ+SmZeem2St7B8c7xpmYGhrqGlhbmSgp5
+        ibmptkouPgG6bpk5QEcpKZQl5pQChQISi4uV9O1sivJLS1IVMvKLS2yVUgtScgoMDQv0ihNz
+        i0vz0vWS83OtDA0MjEyBKhNyMnZt3cRasEy1YuXyE+wNjBtluxg5OSQETCRePr3P2sXIxSEk
+        sINRYtHOD+wQzidGidfTuhkhnM+MEhu3NTLCtFz/MJcNIrGLUeLe6QdQLS8ZJbbuP8gEUsUm
+        oCtxefETIJuDQ0TARuL2K3WQGmaBPUwSHb9/gcU5BewltizTBCkXFgiXWP7zBdgCFgEViasH
+        vzKDlPAKWEo8uB8EEuYVEJQ4OfMJC4jNLKAtsWzha2aIexQkfj5dxgpiiwi4SfxZ+J4VokZE
+        YnZnGzPIWgmBlRwSzY1H2UFmSgi4SMw+zAbRKyzx6vgWdghbSuJlfxuUXS+xr20iO0RvD6PE
+        zw9PWSESxhKznrUzgsxhFtCUWL9LH2KkssSRW1Cn8Ul0HP4LtYlXoqNNCKJRTWLdtxdMELaM
+        xJqnu9gnMCrNQvLYLCSPzULywCyEXQsYWVYxiqUWFOempxYbFRghR/UmRnBy1XLbwbjknM8h
+        RgEORiUe3gPLNsUJsSaWFVfmHmKU4GBWEuHl+bExTog3JbGyKrUoP76oNCe1+BCjKTDYJzJL
+        iSbnAxN/Xkm8oamRmZmBpamFqZmRhZI47ybumzFCAumJJanZqakFqUUwfUwcnFINjCa8XWYS
+        hbf6fC2viH74UvEia/azwBUxsz6I5LYXyYvrzdyz/E9fqWKxRH3rvoeB69XOVf05Htf5welH
+        Lcea2Q9P8+YFpU6YcvD8zVtadXozU7ZxOJY2x35LurXI7O/WgnVbZp/4xtV3/wfrH2aWLbfF
+        botVSZke/3haVzD+gUuG/BqvlzdnXlBiKc5INNRiLipOBAC0XziyxAMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupnkeLIzCtJLcpLzFFi42LZdlhJXnej0+Y4g+kt7BYbZ6xntWhevJ7N
+        YsqGD0wW/Y9fM1ucP7+B3WLT42usFpd3zWGzmHF+H5PFmcW97A6cHptWdbJ57J+7ht1j85J6
+        j74tqxg91m+5yuLxeZNcAFsUl01Kak5mWWqRvl0CV0bn5XuMBUtVKv6s2MPawLhOpouRk0NC
+        wETi+oe5bF2MXBxCAjsYJV7872GHSMhITHixhBnCFpa433KEFaLoOaNE79d1TCAJNgFdicuL
+        nwDZHBwiAjYSt1+pg4SZBQ4xSZyalwxR/4VR4lNHCyNIDaeAvcSWZZogNcICoRK3Vn5hBLFZ
+        BFQkrh78ygxSwitgKfHgfhBImFdAUOLkzCcsECO1JXoftjLC2MsWvoY6TUHi59NlrCC2iICb
+        xJ+F71khakQkZne2MU9gFJ6FZNQsJKNmIRk1C0nLAkaWVYySqQXFuem5xYYFRnmp5XrFibnF
+        pXnpesn5uZsYwXGmpbWDcc+qD3qHGJk4GA8xSnAwK4nw8vzYGCfEm5JYWZValB9fVJqTWnyI
+        UZqDRUmc9+ushXFCAumJJanZqakFqUUwWSYOTqkGpoLnxwwNqpqrEtfZdHcnX9C+sIH14s+G
+        5T9UFgju8GZoEv3yPVFZ9HXv5ihL800hX3/c4AtQm3/+xvfyR21mCzwt7/yfdWBn0rUNrEE9
+        XfeZIqwPH1aZ1pNxLCfihUfgceeo4uX73160776b2ng125BNsExTJWx1hbfnXoOWRXlTONfx
+        di1Nrom7vPHlyqaSx/9PbJoS6/rehtV1T3Tlw0bviIvsXAtt2a4GWi+ft3iabsaeIAd+V7/q
+        MGVH21dGoXqmD7jOlgQzPgrqnymXkvJ84yr9HmHTWgeOp7u6Sj6c21XnGLiATfnuys+NZxnr
+        L59bsKNZ2z3DWObbgt9TVHiPXFlga3XQhS/tzn1+JZbijERDLeai4kQA1g95VSIDAAA=
+X-CMS-MailID: 20200506230521epcas2p4936c698d7dad36716631189b4f532ac1
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200506080258epcas2p4f242fb66a2145f76b0e108014ee351fb
+References: <20200506080242.18623-1-hyunki00.koo@samsung.com>
+        <CGME20200506080258epcas2p4f242fb66a2145f76b0e108014ee351fb@epcas2p4.samsung.com>
+        <20200506080242.18623-3-hyunki00.koo@samsung.com>
+        <1b230724-c87b-aa28-f850-ecdeb0542dba@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for color sensors behind EC like TCS3400.
-The color data can be presented in Red Green Blue color space (RGB) or
-the CIE 1931 XYZ color space (XYZ).
-In XYZ mode, the sensor is configured for auto calibrating its channels
-and is the "normal" mode.
-The driver tells the EC to switch between the 2 modes by using the
-calibration command.
-When the sensor is in calibration mode, only clear and RGB channels are
-available. In normal mode, only clear and XYZ are.
-When RGB channels are enabled, the sensor switches to calibration mode
-when the buffer is enabled.
-
-When reading trhough sysfs command, set calibration mode and then read
-the channel(s). A command will be issue for each read, so the channels
-may come from different sensor sample.
-When using the buffer, after setting the mask, when the buffer is
-enabled, the calibration will be set based on the channel mask.
-
-libiio tools can be used to gather sensor information:
-iio_readdev -s 10 cros-ec-light \
-illuminance_clear illuminance_x illuminance_y illuminance_z
-
-To match IIO ABI, the clear illuminance channel has been renamed
-in_illuminance_clear_raw from in_illuminance_input.
-
-Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
----
- drivers/iio/light/cros_ec_light_prox.c        | 469 +++++++++++++++---
- drivers/platform/chrome/cros_ec_sensorhub.c   |   3 +
- .../linux/iio/common/cros_ec_sensors_core.h   |   1 -
- .../linux/platform_data/cros_ec_commands.h    |   2 +
- 4 files changed, 404 insertions(+), 71 deletions(-)
-
-diff --git a/drivers/iio/light/cros_ec_light_prox.c b/drivers/iio/light/cros_ec_light_prox.c
-index 2198b50909ed0..83bd3057b334c 100644
---- a/drivers/iio/light/cros_ec_light_prox.c
-+++ b/drivers/iio/light/cros_ec_light_prox.c
-@@ -17,82 +17,188 @@
- #include <linux/module.h>
- #include <linux/platform_data/cros_ec_commands.h>
- #include <linux/platform_data/cros_ec_proto.h>
-+#include <linux/platform_data/cros_ec_sensorhub.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- 
- /*
-- * We only represent one entry for light or proximity. EC is merging different
-- * light sensors to return the what the eye would see. For proximity, we
-- * currently support only one light source.
-+ * We may present up to 7 channels:
-+ *
-+ * +-----+-----+-----+-----+-----+-----+-----+
-+ * |Clear|  X  |  Y  |  Z  | RED |BLUE |GREEN|
-+ * |Prox |     |     |     |     |     |     |
-+ * +-----+-----+-----+-----+-----+-----+-----+
-+ *
-+ * Prox[imity] is presented by proximity sensors.
-+ * The clear channel is supported by single and color light sensors.
-+ * Color light sensor either reports color information in the RGB space or
-+ * the CIE 1931 XYZ (XYZ) color space.
-  */
--#define CROS_EC_LIGHT_PROX_MAX_CHANNELS (1 + 1)
-+#define CROS_EC_LIGHT_CLEAR_OR_PROXIMITY_MASK GENMASK(0, 0)
-+#define CROS_EC_LIGHT_XYZ_SPACE_MASK GENMASK(3, 1)
-+#define CROS_EC_LIGHT_RGB_SPACE_MASK (6, 4)
-+
-+/*
-+ * We always represent one entry for light or proximity, and all
-+ * samples can be timestamped.
-+ */
-+#define CROS_EC_LIGHT_PROX_MIN_CHANNELS (1 + 1)
-+
-+static const unsigned long cros_ec_light_prox_bitmasks[] = {
-+	CROS_EC_LIGHT_CLEAR_OR_PROXIMITY_MASK,
-+	CROS_EC_LIGHT_XYZ_SPACE_MASK,
-+	CROS_EC_LIGHT_XYZ_SPACE_MASK | CROS_EC_LIGHT_CLEAR_OR_PROXIMITY_MASK,
-+	CROS_EC_LIGHT_RGB_SPACE_MASK,
-+	CROS_EC_LIGHT_RGB_SPACE_MASK | CROS_EC_LIGHT_CLEAR_OR_PROXIMITY_MASK,
-+	0,
-+};
-+
-+#define CROS_EC_LIGHT_IDX_TO_CHAN(_idx) (((_idx) - 1) % CROS_EC_SENSOR_MAX_AXIS)
- 
- /* State data for ec_sensors iio driver. */
- struct cros_ec_light_prox_state {
- 	/* Shared by all sensors */
- 	struct cros_ec_sensors_core_state core;
- 
--	struct iio_chan_spec channels[CROS_EC_LIGHT_PROX_MAX_CHANNELS];
-+	/* Calibration information for the color channels. */
-+	struct calib_data rgb_calib[CROS_EC_SENSOR_MAX_AXIS];
- };
- 
-+static void cros_ec_light_channel_common(struct iio_chan_spec *channel)
-+{
-+	channel->info_mask_shared_by_all =
-+		BIT(IIO_CHAN_INFO_SAMP_FREQ);
-+	channel->info_mask_shared_by_all_available =
-+		BIT(IIO_CHAN_INFO_SAMP_FREQ);
-+	channel->scan_type.realbits = CROS_EC_SENSOR_BITS;
-+	channel->scan_type.storagebits = CROS_EC_SENSOR_BITS;
-+	channel->ext_info = cros_ec_sensors_ext_info;
-+	channel->scan_type.sign = 'u';
-+}
-+
-+static int
-+cros_ec_light_extra_send_host_cmd(struct cros_ec_sensors_core_state *state,
-+				  int increment, u16 opt_length)
-+{
-+	u8 save_sensor_num = state->param.info.sensor_num;
-+	int ret;
-+
-+	state->param.info.sensor_num += increment;
-+	ret = cros_ec_motion_send_host_cmd(state, opt_length);
-+	state->param.info.sensor_num = save_sensor_num;
-+	return ret;
-+}
-+
-+static int cros_ec_light_prox_read_data(struct iio_dev *indio_dev,
-+					struct iio_chan_spec const *chan,
-+					int *val)
-+{
-+	struct cros_ec_light_prox_state *st = iio_priv(indio_dev);
-+	int ret;
-+	int idx = chan->scan_index;
-+	s16 data;
-+
-+	/*
-+	 * The data coming from the light sensor is
-+	 * pre-processed and represents the ambient light
-+	 * illuminance reading expressed in lux.
-+	 */
-+	if (idx == 0) {
-+		ret = cros_ec_sensors_read_cmd(indio_dev, 1, &data);
-+		if (ret < 0)
-+			return ret;
-+		*val = data;
-+	} else {
-+		ret = cros_ec_light_extra_send_host_cmd(
-+				&st->core, 1, sizeof(st->core.resp->data));
-+		if (ret)
-+			return ret;
-+		*val = st->core.resp->data.data[CROS_EC_LIGHT_IDX_TO_CHAN(idx)];
-+	}
-+	return IIO_VAL_INT;
-+}
-+
-+static int cros_ec_light_read_color_scale(struct cros_ec_light_prox_state *st,
-+					  int idx, int *val, int *val2)
-+{
-+	int ret, i;
-+	u16 scale;
-+
-+	st->core.param.cmd = MOTIONSENSE_CMD_SENSOR_SCALE;
-+	st->core.param.sensor_scale.flags = 0;
-+	if (idx == 0)
-+		ret = cros_ec_motion_send_host_cmd(&st->core, 0);
-+	else
-+		ret = cros_ec_light_extra_send_host_cmd(&st->core, 1, 0);
-+	if (ret)
-+		return ret;
-+
-+	if (idx == 0) {
-+		scale = st->core.resp->sensor_scale.scale[0];
-+		st->core.calib[0].scale = scale;
-+	} else {
-+		for (i = CROS_EC_SENSOR_X; i < CROS_EC_SENSOR_MAX_AXIS; i++)
-+			st->rgb_calib[i].scale =
-+				st->core.resp->sensor_scale.scale[i];
-+		scale = st->rgb_calib[CROS_EC_LIGHT_IDX_TO_CHAN(idx)].scale;
-+	}
-+	/*
-+	 * scale is a number x.y, where x is coded on 1 bit,
-+	 * y coded on 15 bits, between 0 and 9999.
-+	 */
-+	*val = scale >> 15;
-+	*val2 = ((scale & 0x7FFF) * 1000000LL) /
-+		MOTION_SENSE_DEFAULT_SCALE;
-+	return IIO_VAL_INT_PLUS_MICRO;
-+}
-+
- static int cros_ec_light_prox_read(struct iio_dev *indio_dev,
- 				   struct iio_chan_spec const *chan,
- 				   int *val, int *val2, long mask)
- {
- 	struct cros_ec_light_prox_state *st = iio_priv(indio_dev);
--	u16 data = 0;
--	s64 val64;
--	int ret;
-+	int i, ret;
- 	int idx = chan->scan_index;
-+	s64 val64;
- 
- 	mutex_lock(&st->core.cmd_lock);
--
- 	switch (mask) {
- 	case IIO_CHAN_INFO_RAW:
--		if (chan->type == IIO_PROXIMITY) {
--			ret = cros_ec_sensors_read_cmd(indio_dev, 1 << idx,
--						     (s16 *)&data);
--			if (ret)
--				break;
--			*val = data;
--			ret = IIO_VAL_INT;
--		} else {
--			ret = -EINVAL;
--		}
--		break;
--	case IIO_CHAN_INFO_PROCESSED:
--		if (chan->type == IIO_LIGHT) {
--			ret = cros_ec_sensors_read_cmd(indio_dev, 1 << idx,
--						     (s16 *)&data);
--			if (ret)
--				break;
--			/*
--			 * The data coming from the light sensor is
--			 * pre-processed and represents the ambient light
--			 * illuminance reading expressed in lux.
--			 */
--			*val = data;
--			ret = IIO_VAL_INT;
--		} else {
--			ret = -EINVAL;
--		}
-+		ret = cros_ec_light_prox_read_data(indio_dev, chan, val);
- 		break;
- 	case IIO_CHAN_INFO_CALIBBIAS:
- 		st->core.param.cmd = MOTIONSENSE_CMD_SENSOR_OFFSET;
- 		st->core.param.sensor_offset.flags = 0;
- 
--		ret = cros_ec_motion_send_host_cmd(&st->core, 0);
-+		if (idx == 0)
-+			ret = cros_ec_motion_send_host_cmd(&st->core, 0);
-+		else
-+			ret = cros_ec_light_extra_send_host_cmd(
-+					&st->core, 1, 0);
- 		if (ret)
- 			break;
--
--		/* Save values */
--		st->core.calib[0].offset =
--			st->core.resp->sensor_offset.offset[0];
--
--		*val = st->core.calib[idx].offset;
-+		if (idx == 0) {
-+			*val = st->core.calib[0].offset =
-+				st->core.resp->sensor_offset.offset[0];
-+		} else {
-+			for (i = CROS_EC_SENSOR_X; i < CROS_EC_SENSOR_MAX_AXIS;
-+			     i++)
-+				st->rgb_calib[i].offset =
-+					st->core.resp->sensor_offset.offset[i];
-+			i = CROS_EC_LIGHT_IDX_TO_CHAN(idx);
-+			*val = st->rgb_calib[i].offset;
-+		}
- 		ret = IIO_VAL_INT;
- 		break;
- 	case IIO_CHAN_INFO_CALIBSCALE:
-+		if (indio_dev->num_channels > CROS_EC_LIGHT_PROX_MIN_CHANNELS) {
-+			ret = cros_ec_light_read_color_scale(st, idx, val,
-+							     val2);
-+			break;
-+		}
-+		/* RANGE is used for calibration in 1 channel sensors. */
-+		fallthrough;
-+	case IIO_CHAN_INFO_SCALE:
- 		/*
- 		 * RANGE is used for calibration
- 		 * scale is a number x.y, where x is coded on 16 bits,
-@@ -121,29 +227,85 @@ static int cros_ec_light_prox_read(struct iio_dev *indio_dev,
- 	return ret;
- }
- 
-+static int cros_ec_light_write_color_scale(struct cros_ec_light_prox_state *st,
-+					   int idx, int val, int val2)
-+{
-+	int i;
-+	u16 scale;
-+
-+	if (val >= 2) {
-+		/*
-+		 * The user space is sending values already
-+		 * multiplied by MOTION_SENSE_DEFAULT_SCALE.
-+		 */
-+		scale = val;
-+	} else {
-+		u64 val64 = val2 * MOTION_SENSE_DEFAULT_SCALE;
-+
-+		do_div(val64, 1000000);
-+		scale = (val << 15) | val64;
-+	}
-+
-+	st->core.param.cmd = MOTIONSENSE_CMD_SENSOR_SCALE;
-+	st->core.param.sensor_offset.flags = MOTION_SENSE_SET_OFFSET;
-+	st->core.param.sensor_offset.temp = EC_MOTION_SENSE_INVALID_CALIB_TEMP;
-+	if (idx == 0) {
-+		st->core.calib[0].scale = scale;
-+		st->core.param.sensor_scale.scale[0] = scale;
-+		return cros_ec_motion_send_host_cmd(&st->core, 0);
-+	}
-+
-+	st->rgb_calib[CROS_EC_LIGHT_IDX_TO_CHAN(idx)].scale = scale;
-+	for (i = CROS_EC_SENSOR_X; i < CROS_EC_SENSOR_MAX_AXIS; i++)
-+		st->core.param.sensor_scale.scale[i] = st->rgb_calib[i].scale;
-+	return cros_ec_light_extra_send_host_cmd(&st->core, 1, 0);
-+}
-+
- static int cros_ec_light_prox_write(struct iio_dev *indio_dev,
- 			       struct iio_chan_spec const *chan,
- 			       int val, int val2, long mask)
- {
- 	struct cros_ec_light_prox_state *st = iio_priv(indio_dev);
--	int ret;
-+	int ret, i;
- 	int idx = chan->scan_index;
- 
- 	mutex_lock(&st->core.cmd_lock);
- 
- 	switch (mask) {
- 	case IIO_CHAN_INFO_CALIBBIAS:
--		st->core.calib[idx].offset = val;
- 		/* Send to EC for each axis, even if not complete */
- 		st->core.param.cmd = MOTIONSENSE_CMD_SENSOR_OFFSET;
- 		st->core.param.sensor_offset.flags = MOTION_SENSE_SET_OFFSET;
--		st->core.param.sensor_offset.offset[0] =
--			st->core.calib[0].offset;
- 		st->core.param.sensor_offset.temp =
- 					EC_MOTION_SENSE_INVALID_CALIB_TEMP;
--		ret = cros_ec_motion_send_host_cmd(&st->core, 0);
-+		if (idx == 0) {
-+			st->core.calib[0].offset = val;
-+			st->core.param.sensor_offset.offset[0] = val;
-+			ret = cros_ec_motion_send_host_cmd(&st->core, 0);
-+		} else {
-+			i = CROS_EC_LIGHT_IDX_TO_CHAN(idx);
-+			st->rgb_calib[i].offset = val;
-+			for (i = CROS_EC_SENSOR_X;
-+			     i < CROS_EC_SENSOR_MAX_AXIS;
-+			     i++)
-+				st->core.param.sensor_offset.offset[i] =
-+					st->rgb_calib[i].offset;
-+			ret = cros_ec_light_extra_send_host_cmd(
-+					&st->core, 1, 0);
-+		}
- 		break;
- 	case IIO_CHAN_INFO_CALIBSCALE:
-+		if (indio_dev->num_channels > CROS_EC_LIGHT_PROX_MIN_CHANNELS) {
-+			ret = cros_ec_light_write_color_scale(st, idx,
-+							      val, val2);
-+			break;
-+		}
-+		/*
-+		 * For sensors with only one channel, _RANGE is used
-+		 * instead of _SCALE.
-+		 */
-+		fallthrough;
-+	case IIO_CHAN_INFO_SCALE:
- 		st->core.param.cmd = MOTIONSENSE_CMD_SENSOR_RANGE;
- 		st->core.param.sensor_range.data = (val << 16) | (val2 / 100);
- 		ret = cros_ec_motion_send_host_cmd(&st->core, 0);
-@@ -159,27 +321,154 @@ static int cros_ec_light_prox_write(struct iio_dev *indio_dev,
- 	return ret;
- }
- 
-+static int cros_ec_light_push_data(struct iio_dev *indio_dev,
-+				   s16 *data,
-+				   s64 timestamp)
-+{
-+	struct cros_ec_sensors_core_state *st = iio_priv(indio_dev);
-+	unsigned long scan_mask;
-+
-+	if (!indio_dev->active_scan_mask)
-+		return 0;
-+
-+	scan_mask = *indio_dev->active_scan_mask;
-+	if ((scan_mask & ~CROS_EC_LIGHT_CLEAR_OR_PROXIMITY_MASK) == 0)
-+		/*
-+		 * Only one channel at most is used.
-+		 * Use regular push function.
-+		 */
-+		return cros_ec_sensors_push_data(indio_dev, data, timestamp);
-+
-+	if (scan_mask & CROS_EC_LIGHT_CLEAR_OR_PROXIMITY_MASK)
-+		/*
-+		 * Save clear channel, will be used when RGB data arrives.
-+		 */
-+		st->samples[0] = data[0];
-+
-+	return 0;
-+}
-+
-+static int cros_ec_light_push_data_rgb(struct iio_dev *indio_dev,
-+				       s16 *data,
-+				       s64 timestamp)
-+{
-+	struct cros_ec_sensors_core_state *st = iio_priv(indio_dev);
-+	s16 *out;
-+	unsigned long scan_mask;
-+	unsigned int i;
-+
-+	if (!indio_dev->active_scan_mask)
-+		return 0;
-+
-+	scan_mask = *indio_dev->active_scan_mask;
-+	/*
-+	 * Send all data needed.
-+	 */
-+	out = (s16 *)st->samples;
-+	for_each_set_bit(i,
-+			 indio_dev->active_scan_mask,
-+			 indio_dev->masklength) {
-+		if (i > 0)
-+			*out = data[CROS_EC_LIGHT_IDX_TO_CHAN(i)];
-+		out++;
-+	}
-+	iio_push_to_buffers_with_timestamp(indio_dev, st->samples, timestamp);
-+	return 0;
-+}
-+
-+static irqreturn_t cros_ec_light_capture(int irq, void *p)
-+{
-+	struct iio_poll_func *pf = p;
-+	struct iio_dev *indio_dev = pf->indio_dev;
-+	struct cros_ec_sensors_core_state *st = iio_priv(indio_dev);
-+	int ret, i, idx = 0;
-+	s16 data;
-+	const unsigned long scan_mask = *indio_dev->active_scan_mask;
-+
-+	mutex_lock(&st->cmd_lock);
-+
-+	/* Clear capture data. */
-+	memset(st->samples, 0, indio_dev->scan_bytes);
-+
-+	/* Read first channel. */
-+	ret = cros_ec_sensors_read_cmd(indio_dev, 1, &data);
-+	if (ret < 0) {
-+		mutex_unlock(&st->cmd_lock);
-+		goto done;
-+	}
-+	if (scan_mask & CROS_EC_LIGHT_CLEAR_OR_PROXIMITY_MASK)
-+		((s16 *)st->samples)[idx++] = data;
-+
-+	/* Read remaining channels. */
-+	if ((scan_mask & CROS_EC_LIGHT_XYZ_SPACE_MASK) ||
-+	    (scan_mask & CROS_EC_LIGHT_RGB_SPACE_MASK)) {
-+		ret = cros_ec_light_extra_send_host_cmd(
-+				st, 1, sizeof(st->resp->data));
-+		if (ret < 0) {
-+			mutex_unlock(&st->cmd_lock);
-+			goto done;
-+		}
-+		for (i = 0; i < CROS_EC_SENSOR_MAX_AXIS; i++)
-+			((s16 *)st->samples)[idx++] = st->resp->data.data[i];
-+	}
-+	mutex_unlock(&st->cmd_lock);
-+
-+	iio_push_to_buffers_with_timestamp(indio_dev, st->samples,
-+					   iio_get_time_ns(indio_dev));
-+
-+done:
-+	iio_trigger_notify_done(indio_dev->trig);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static int cros_ec_light_prox_update_scan_mode(struct iio_dev *indio_dev,
-+					       const unsigned long *scan_mask)
-+{
-+	struct cros_ec_sensors_core_state *st = iio_priv(indio_dev);
-+	int ret;
-+	bool enable_raw_mode;
-+
-+	if (*scan_mask & CROS_EC_LIGHT_XYZ_SPACE_MASK)
-+		enable_raw_mode = false;
-+	else if (*scan_mask & CROS_EC_LIGHT_RGB_SPACE_MASK)
-+		enable_raw_mode = true;
-+	else
-+		/* Just clear channel or proxmity, nothing to do. */
-+		return 0;
-+
-+	mutex_lock(&st->cmd_lock);
-+	st->param.cmd = MOTIONSENSE_CMD_PERFORM_CALIB;
-+	st->param.perform_calib.enable = enable_raw_mode;
-+	ret = cros_ec_motion_send_host_cmd(st, 0);
-+	mutex_unlock(&st->cmd_lock);
-+
-+	return ret;
-+}
-+
- static const struct iio_info cros_ec_light_prox_info = {
- 	.read_raw = &cros_ec_light_prox_read,
- 	.write_raw = &cros_ec_light_prox_write,
- 	.read_avail = &cros_ec_sensors_core_read_avail,
-+	.update_scan_mode = &cros_ec_light_prox_update_scan_mode,
- };
- 
- static int cros_ec_light_prox_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
-+	struct cros_ec_sensorhub *sensor_hub = dev_get_drvdata(dev->parent);
- 	struct iio_dev *indio_dev;
- 	struct cros_ec_light_prox_state *state;
- 	struct iio_chan_spec *channel;
--	int ret;
-+	int ret, i, num_channels = CROS_EC_LIGHT_PROX_MIN_CHANNELS;
- 
- 	indio_dev = devm_iio_device_alloc(dev, sizeof(*state));
- 	if (!indio_dev)
- 		return -ENOMEM;
- 
- 	ret = cros_ec_sensors_core_init(pdev, indio_dev, true,
--					cros_ec_sensors_capture,
--					cros_ec_sensors_push_data);
-+					cros_ec_light_capture,
-+					cros_ec_light_push_data);
- 	if (ret)
- 		return ret;
- 
-@@ -189,28 +478,40 @@ static int cros_ec_light_prox_probe(struct platform_device *pdev)
- 	state = iio_priv(indio_dev);
- 	state->core.type = state->core.resp->info.type;
- 	state->core.loc = state->core.resp->info.location;
--	channel = state->channels;
- 
--	/* Common part */
--	channel->info_mask_shared_by_all =
--		BIT(IIO_CHAN_INFO_SAMP_FREQ);
--	channel->info_mask_shared_by_all_available =
--		BIT(IIO_CHAN_INFO_SAMP_FREQ);
--	channel->scan_type.realbits = CROS_EC_SENSOR_BITS;
--	channel->scan_type.storagebits = CROS_EC_SENSOR_BITS;
--	channel->scan_type.shift = 0;
--	channel->scan_index = 0;
--	channel->ext_info = cros_ec_sensors_ext_info;
--	channel->scan_type.sign = 'u';
-+	/* Check if we need more sensors for RGB (or XYZ). */
-+	state->core.param.cmd = MOTIONSENSE_CMD_INFO;
-+	if (cros_ec_light_extra_send_host_cmd(&state->core, 1, 0) == 0 &&
-+	    state->core.resp->info.type == MOTIONSENSE_TYPE_LIGHT_RGB)
-+		num_channels += 2 * CROS_EC_SENSOR_MAX_AXIS;
-+
-+	channel = devm_kcalloc(dev, num_channels, sizeof(*channel), 0);
-+	if (!channel)
-+		return -ENOMEM;
-+
-+	indio_dev->channels = channel;
-+	indio_dev->num_channels = num_channels;
-+	indio_dev->available_scan_masks = cros_ec_light_prox_bitmasks;
- 
-+	cros_ec_light_channel_common(channel);
- 	/* Sensor specific */
- 	switch (state->core.type) {
- 	case MOTIONSENSE_TYPE_LIGHT:
- 		channel->type = IIO_LIGHT;
-+		if (num_channels > CROS_EC_LIGHT_PROX_MIN_CHANNELS) {
-+			/*
-+			 * To set a global scale, as CALIB_SCALE for RGB sensor
-+			 * is limited between 0 and 2.
-+			 */
-+			channel->info_mask_shared_by_all |=
-+				BIT(IIO_CHAN_INFO_SCALE);
-+		}
- 		channel->info_mask_separate =
--			BIT(IIO_CHAN_INFO_PROCESSED) |
-+			BIT(IIO_CHAN_INFO_RAW) |
- 			BIT(IIO_CHAN_INFO_CALIBBIAS) |
- 			BIT(IIO_CHAN_INFO_CALIBSCALE);
-+		channel->modified = 1;
-+		channel->channel2 = IIO_MOD_LIGHT_CLEAR;
- 		break;
- 	case MOTIONSENSE_TYPE_PROX:
- 		channel->type = IIO_PROXIMITY;
-@@ -223,20 +524,48 @@ static int cros_ec_light_prox_probe(struct platform_device *pdev)
- 		dev_warn(dev, "Unknown motion sensor\n");
- 		return -EINVAL;
- 	}
-+	channel++;
-+
-+	if (num_channels > CROS_EC_LIGHT_PROX_MIN_CHANNELS) {
-+		u8 sensor_num = state->core.param.info.sensor_num;
-+		int idx;
-+
-+		for (i = CROS_EC_SENSOR_X, idx = 1; i < CROS_EC_SENSOR_MAX_AXIS;
-+				i++, channel++, idx++) {
-+			cros_ec_light_channel_common(channel);
-+			channel->info_mask_separate = BIT(IIO_CHAN_INFO_RAW);
-+			channel->scan_index = idx;
-+			channel->modified = 1;
-+			channel->channel2 = IIO_MOD_X + i;
-+			channel->type = IIO_LIGHT;
-+		}
-+		for (i = CROS_EC_SENSOR_X; i < CROS_EC_SENSOR_MAX_AXIS;
-+				i++, channel++, idx++) {
-+			cros_ec_light_channel_common(channel);
-+			channel->info_mask_separate =
-+				BIT(IIO_CHAN_INFO_RAW) |
-+				BIT(IIO_CHAN_INFO_CALIBBIAS) |
-+				BIT(IIO_CHAN_INFO_CALIBSCALE);
-+			channel->scan_index = idx;
-+			channel->modified = 1;
-+			channel->channel2 = IIO_MOD_LIGHT_RED + i;
-+			channel->type = IIO_LIGHT;
-+		}
-+		cros_ec_sensorhub_register_push_data(
-+				sensor_hub,
-+				sensor_num + 1,
-+				indio_dev,
-+				cros_ec_light_push_data_rgb);
-+	}
- 
- 	/* Timestamp */
--	channel++;
- 	channel->type = IIO_TIMESTAMP;
- 	channel->channel = -1;
--	channel->scan_index = 1;
-+	channel->scan_index = num_channels - 1;
- 	channel->scan_type.sign = 's';
- 	channel->scan_type.realbits = 64;
- 	channel->scan_type.storagebits = 64;
- 
--	indio_dev->channels = state->channels;
--
--	indio_dev->num_channels = CROS_EC_LIGHT_PROX_MAX_CHANNELS;
--
- 	state->core.read_ec_sensors_data = cros_ec_sensors_read_cmd;
- 
- 	return devm_iio_device_register(dev, indio_dev);
-diff --git a/drivers/platform/chrome/cros_ec_sensorhub.c b/drivers/platform/chrome/cros_ec_sensorhub.c
-index b7f2c00db5e1e..f85191ab2ee34 100644
---- a/drivers/platform/chrome/cros_ec_sensorhub.c
-+++ b/drivers/platform/chrome/cros_ec_sensorhub.c
-@@ -103,6 +103,9 @@ static int cros_ec_sensorhub_register(struct device *dev,
- 		case MOTIONSENSE_TYPE_LIGHT:
- 			name = "cros-ec-light";
- 			break;
-+		case MOTIONSENSE_TYPE_LIGHT_RGB:
-+			/* Processed with cros-ec-light. */
-+			continue;
- 		case MOTIONSENSE_TYPE_ACTIVITY:
- 			name = "cros-ec-activity";
- 			break;
-diff --git a/include/linux/iio/common/cros_ec_sensors_core.h b/include/linux/iio/common/cros_ec_sensors_core.h
-index 7bc961defa87e..c31766c64bf94 100644
---- a/include/linux/iio/common/cros_ec_sensors_core.h
-+++ b/include/linux/iio/common/cros_ec_sensors_core.h
-@@ -26,7 +26,6 @@ enum {
- 
- /*
-  * 4 16 bit channels are allowed.
-- * Good enough for current sensors, they use up to 3 16 bit vectors.
-  */
- #define CROS_EC_SAMPLE_SIZE  (sizeof(s64) * 2)
- 
-diff --git a/include/linux/platform_data/cros_ec_commands.h b/include/linux/platform_data/cros_ec_commands.h
-index 395c9b2b05c66..e8b51e112c191 100644
---- a/include/linux/platform_data/cros_ec_commands.h
-+++ b/include/linux/platform_data/cros_ec_commands.h
-@@ -2342,6 +2342,7 @@ enum motionsensor_type {
- 	MOTIONSENSE_TYPE_ACTIVITY = 5,
- 	MOTIONSENSE_TYPE_BARO = 6,
- 	MOTIONSENSE_TYPE_SYNC = 7,
-+	MOTIONSENSE_TYPE_LIGHT_RGB = 8,
- 	MOTIONSENSE_TYPE_MAX,
- };
- 
-@@ -2375,6 +2376,7 @@ enum motionsensor_chip {
- 	MOTIONSENSE_CHIP_LSM6DS3 = 17,
- 	MOTIONSENSE_CHIP_LSM6DSO = 18,
- 	MOTIONSENSE_CHIP_LNG2DM = 19,
-+	MOTIONSENSE_CHIP_TCS3400 = 20,
- 	MOTIONSENSE_CHIP_MAX,
- };
- 
--- 
-2.26.2.526.g744177e7f7-goog
+On 5/6/20 8:03 PM, Bartlomiej Zolnierkiewicz wrote:
+> On 5/6/20 10:02 AM, Hyunki Koo wrote:
+> > Support 32-bit access for the TX/RX hold registers UTXH and URXH.
+> >
+> > This is required for some newer SoCs.
+>=20
+> Krzysztof has asked this previously but I couldn't find the answer in
+> previous mails:
+>=20
+> Do you plan to upstream support for these newer SoCs?
+>=20
+> If not (i.e. this code is only to support Android GKI) then the code you =
+are
+> adding now may be removed at any time later during cleanups (due to
+> lack of the in-kernel users).
+>=20
+> Best regards,
+> --
+> Bartlomiej Zolnierkiewicz
+> Samsung R&D Institute Poland
+> Samsung Electronics
+>=20
+> > Signed-off-by: Hyunki Koo <hyunki00.koo=40samsung.com>
+> > Reviewed-by: Krzysztof Kozlowski <krzk=40kernel.org> Tested on Odroid
+> > HC1 (Exynos5422):
+> > Tested-by: Krzysztof Kozlowski <krzk=40kernel.org>
+> > ---
+> >  drivers/tty/serial/samsung_tty.c =7C 62
+> > ++++++++++++++++++++++++++++++++++++----
+> >  1 file changed, 57 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/tty/serial/samsung_tty.c
+> > b/drivers/tty/serial/samsung_tty.c
+> > index 326b0164609c..6ef614d8648c 100644
+> > --- a/drivers/tty/serial/samsung_tty.c
+> > +++ b/drivers/tty/serial/samsung_tty.c
+> > =40=40 -154,10 +154,33 =40=40 struct s3c24xx_uart_port =7B  =23define
+> > portaddrl(port, reg) =5C
+> >  	((unsigned long *)(unsigned long)((port)->membase + (reg)))
+> >
+> > -=23define rd_reg(port, reg) (readb_relaxed(portaddr(port, reg)))
+> > +static u32 rd_reg(struct uart_port *port, u32 reg) =7B
+> > +	switch (port->iotype) =7B
+> > +	case UPIO_MEM:
+> > +		return readb_relaxed(portaddr(port, reg));
+> > +	case UPIO_MEM32:
+> > +		return readl_relaxed(portaddr(port, reg));
+> > +	default:
+> > +		return 0;
+> > +	=7D
+> > +	return 0;
+> > +=7D
+> > +
+> >  =23define rd_regl(port, reg) (readl_relaxed(portaddr(port, reg)))
+> >
+> > -=23define wr_reg(port, reg, val) writeb_relaxed(val, portaddr(port,
+> > reg))
+> > +static void wr_reg(struct uart_port *port, u32 reg, u32 val) =7B
+> > +	switch (port->iotype) =7B
+> > +	case UPIO_MEM:
+> > +		writeb_relaxed(val, portaddr(port, reg));
+> > +		break;
+> > +	case UPIO_MEM32:
+> > +		writel_relaxed(val, portaddr(port, reg));
+> > +		break;
+> > +	=7D
+> > +=7D
+> > +
+> >  =23define wr_regl(port, reg, val) writel_relaxed(val, portaddr(port,
+> > reg))
+> >
+> >  /* Byte-order aware bit setting/clearing functions. */ =40=40 -1974,7
+> > +1997,7 =40=40 static int s3c24xx_serial_probe(struct platform_device
+> *pdev)
+> >  	struct device_node *np =3D pdev->dev.of_node;
+> >  	struct s3c24xx_uart_port *ourport;
+> >  	int index =3D probe_index;
+> > -	int ret;
+> > +	int ret, prop =3D 0;
+> >
+> >  	if (np) =7B
+> >  		ret =3D of_alias_get_id(np, =22serial=22); =40=40 -2000,10
+> +2023,27 =40=40 static
+> > int s3c24xx_serial_probe(struct platform_device *pdev)
+> >  			dev_get_platdata(&pdev->dev) :
+> >  			ourport->drv_data->def_cfg;
+> >
+> > -	if (np)
+> > +	if (np) =7B
+> >  		of_property_read_u32(np,
+> >  			=22samsung,uart-fifosize=22, &ourport->port.fifosize);
+> >
+> > +		if (of_property_read_u32(np, =22reg-io-width=22, &prop) =3D=3D
+> 0) =7B
+> > +			switch (prop) =7B
+> > +			case 1:
+> > +				ourport->port.iotype =3D UPIO_MEM;
+> > +				break;
+> > +			case 4:
+> > +				ourport->port.iotype =3D UPIO_MEM32;
+> > +				break;
+> > +			default:
+> > +				dev_warn(&pdev->dev, =22unsupported
+> reg-io-width (%d)=5Cn=22,
+> > +						prop);
+> > +				ret =3D -EINVAL;
+> > +				break;
+> > +			=7D
+> > +		=7D
+> > +	=7D
+> > +
+> >  	if (ourport->drv_data->fifosize=5Bindex=5D)
+> >  		ourport->port.fifosize =3D ourport->drv_data-
+> >fifosize=5Bindex=5D;
+> >  	else if (ourport->info->fifosize)
+> > =40=40 -2587,6 +2627,18 =40=40
+> module_platform_driver(samsung_serial_driver);
+> >   * Early console.
+> >   */
+> >
+> > +static void wr_reg_barrier(struct uart_port *port, u32 reg, u32 val)
+> > +=7B
+> > +	switch (port->iotype) =7B
+> > +	case UPIO_MEM:
+> > +		writeb(val, portaddr(port, reg));
+> > +		break;
+> > +	case UPIO_MEM32:
+> > +		writel(val, portaddr(port, reg));
+> > +		break;
+> > +	=7D
+> > +=7D
+> > +
+> >  struct samsung_early_console_data =7B
+> >  	u32 txfull_mask;
+> >  =7D;
+> > =40=40 -2612,7 +2664,7 =40=40 static void samsung_early_putc(struct
+> uart_port *port, int c)
+> >  	else
+> >  		samsung_early_busyuart(port);
+> >
+> > -	writeb(c, port->membase + S3C2410_UTXH);
+> > +	wr_reg_barrier(port, S3C2410_UTXH, c);
+> >  =7D
+> >
+> >  static void samsung_early_write(struct console *con, const char *s,
+> >
+Hi
+We don't have plan to upstream for new SOCs yet,
+This code is only to support Android GKI,=20
+But it should not be not removed=20
 
