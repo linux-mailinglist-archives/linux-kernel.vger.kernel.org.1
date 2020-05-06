@@ -2,76 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9778D1C75BB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 18:08:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4088C1C75BF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 18:08:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729875AbgEFQIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 12:08:12 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:35300 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729418AbgEFQIM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 12:08:12 -0400
-Received: by mail-wm1-f68.google.com with SMTP id r26so3374464wmh.0;
-        Wed, 06 May 2020 09:08:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HG4juwLkpA3lPMHgXzAH+5UcLg1AB2lQeps7Ou5A7I4=;
-        b=hs2Eew4EbrR7fqyTeQR7qgvilYC6hKFlj84PKVvxTFd8yOSwHC/X4xCsSh9FSfX/r/
-         9vkEpIp6zV9Jou58gp71q8+eiwa8n6iYp3n2bfdX9ZcYhPTiHATOi+W7bjTKT/gsuGSi
-         T8msLpjxc1x1R2G00UVsETtsJqdSISsPT/mm3QakFxyMTqig8RfvIUJ+v+k2JIedoX/z
-         qCpqSK+8r/3vHSl02amhWL03Du2GtSejBHOsdNjgk0oJ1R2eK+oFvLdKXn+qCU2zlLLe
-         mMC8RGkJPG/gQReJViKgOftjlQowEthwqspBKxPb/80fpAMRm3QFn9CeIozpGdUtgdNw
-         EY+w==
-X-Gm-Message-State: AGi0Pubuykj06ILspGZf48tZB6zKh1br9Qja3omdfk7tuEeRfVDg7p4a
-        sw3uvb5Yn8XuqB/OB6Llb0LncwaS
-X-Google-Smtp-Source: APiQypJ9Msc2eoTwoHeh58vNZgD8yGEzKZTMjuCYxPO32gZYLSHjNsJdk1SWChD6SLVoOZODPfseYA==
-X-Received: by 2002:a7b:cb0c:: with SMTP id u12mr5648769wmj.137.1588781289856;
-        Wed, 06 May 2020 09:08:09 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2.j3c5onc20sse1dnehy4noqpfcg.zx.internal.cloudapp.net ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id l16sm3355699wrp.91.2020.05.06.09.08.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 May 2020 09:08:09 -0700 (PDT)
-From:   Wei Liu <wei.liu@kernel.org>
-To:     linux-hyperv@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, mikelley@microsoft.com,
-        Wei Liu <wei.liu@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>
-Subject: [PATCH] Driver: hv: vmbus: drop a no long applicable comment
-Date:   Wed,  6 May 2020 16:08:05 +0000
-Message-Id: <20200506160806.118965-1-wei.liu@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        id S1729993AbgEFQIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 12:08:32 -0400
+Received: from mga04.intel.com ([192.55.52.120]:28209 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729418AbgEFQIc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 12:08:32 -0400
+IronPort-SDR: yrlxRYEaFP4Y3VvlTB+Q0ona/Tf3zP3fMIucSanXsqDQb1+H7ATUOBA4Gh9xl+6IXfXkVBp4nV
+ 8nPGA1mKELEw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2020 09:08:31 -0700
+IronPort-SDR: NU3ZhMKaIkYLN4PShP2gq588DCSUTnjimPOb+vM6IGIQSBcOMsYzAPwucL6a0CIrs/CAwSIMPK
+ o4titVUmP0Ew==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,359,1583222400"; 
+   d="scan'208";a="296231988"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
+  by orsmga008.jf.intel.com with ESMTP; 06 May 2020 09:08:31 -0700
+Date:   Wed, 6 May 2020 09:08:31 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [patch V4 part 1 20/36] vmlinux.lds.h: Create section for
+ protection against instrumentation
+Message-ID: <20200506160831.GB3329@linux.intel.com>
+References: <20200505131602.633487962@linutronix.de>
+ <20200505134100.075416272@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200505134100.075416272@linutronix.de>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-None of the things mentioned in the comment is initialized in hv_init.
-They've been moved elsewhere.
+On Tue, May 05, 2020 at 03:16:22PM +0200, Thomas Gleixner wrote:
+> Provide also a set of markers: instr_begin()/end()
+> 
+> These are used to mark code inside a noinstr function which calls
+> into regular instrumentable text section as safe.
 
-Signed-off-by: Wei Liu <wei.liu@kernel.org>
----
- drivers/hv/vmbus_drv.c | 1 -
- 1 file changed, 1 deletion(-)
+...
 
-diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
-index 3a27f6c5f3de..7efdcadc335e 100644
---- a/drivers/hv/vmbus_drv.c
-+++ b/drivers/hv/vmbus_drv.c
-@@ -1396,7 +1396,6 @@ static int vmbus_bus_init(void)
- {
- 	int ret;
- 
--	/* Hypervisor initialization...setup hypercall page..etc */
- 	ret = hv_init();
- 	if (ret != 0) {
- 		pr_err("Unable to initialize the hypervisor - 0x%x\n", ret);
--- 
-2.20.1
+> --- a/include/linux/compiler.h
+> +++ b/include/linux/compiler.h
+> @@ -120,10 +120,27 @@ void ftrace_likely_update(struct ftrace_
+>  /* Annotate a C jump table to allow objtool to follow the code flow */
+>  #define __annotate_jump_table __section(.rodata..c_jump_table)
+>  
+> +/* Begin/end of an instrumentation safe region */
+> +#define instr_begin() ({						\
+> +	asm volatile("%c0:\n\t"						\
+> +		     ".pushsection .discard.instr_begin\n\t"		\
+> +		     ".long %c0b - .\n\t"				\
+> +		     ".popsection\n\t" : : "i" (__COUNTER__));		\
+> +})
+> +
+> +#define instr_end() ({							\
+> +	asm volatile("%c0:\n\t"						\
+> +		     ".pushsection .discard.instr_end\n\t"		\
+> +		     ".long %c0b - .\n\t"				\
+> +		     ".popsection\n\t" : : "i" (__COUNTER__));		\
+> +})
+
+Any chance we could spell these out, i.e. instrumentation_begin/end()?  I
+can't help but read these as "instruction_begin/end".  At a glance, the
+long names shouldn't cause any wrap/indentation issues.
+
+E.g. some of the usage in KVM is especially confusing
+
+--- a/arch/x86/kvm/vmx/ops.h
++++ b/arch/x86/kvm/vmx/ops.h
+@@ -146,7 +146,9 @@ do {						\
+ 			  : : op1 : "cc" : error, fault);		\
+ 	return;								\
+ error:									\
++	instr_begin();							\
+ 	insn##_error(error_args);					\
++	instr_end();							\
+ 	return;								\
+ fault:									\
+ 	kvm_spurious_fault();						\
+@@ -161,7 +163,9 @@ do {						\
+ 			  : : op1, op2 : "cc" : error, fault);		\
+ 	return;								\
+ error:									\
++	instr_begin();							\
+ 	insn##_error(error_args);					\
++	instr_end();							\
+ 	return;								\
+ fault:									\
+ 	kvm_spurious_fault();						\
 
