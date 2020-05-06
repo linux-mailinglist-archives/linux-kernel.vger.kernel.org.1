@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 810A51C7462
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:25:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66B611C7464
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:25:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729722AbgEFPXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 11:23:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39420 "EHLO mail.kernel.org"
+        id S1729747AbgEFPXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 11:23:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39584 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729368AbgEFPXg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 11:23:36 -0400
+        id S1729730AbgEFPXj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 11:23:39 -0400
 Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A7D79221F7;
-        Wed,  6 May 2020 15:23:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 24A4921582;
+        Wed,  6 May 2020 15:23:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588778615;
-        bh=nV4FsL4gaZCGSOLpt7rbGhej7HcCC9CYYjzvzRjlWzg=;
+        s=default; t=1588778619;
+        bh=cryxoolwZQORYUYy7a5ctHZ8Vx9RfNNlzIea5qUqpKw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d7w65TE3vCKrgmEnYo7ZNRN1hjisCTG+RB3zqNLkcQoyQgV9f3TXWP2tZeFwGQRKU
-         zjL+RMWu8cQiQjDinXb2VLsPoEBkzBqcdSZ/1mpZ68LDATwdX+A313WCUTblam+Oz4
-         5vZiyHZCeiLVtha0jVs60kxDqFKMBH8tO56XswGk=
+        b=Xe3WuTG8XXC+ExDs0/1dASi4EYFLo1i+gMihoRLacBLixNIqdfej/n5zynuxP2f7v
+         c/swTLeNWsBO1OajCE3/7OPO2ZNHshPKNOp6CY/fiGBOjaAVgcZ5FM8756MSU07mdD
+         3mRd1d/WijAnSLygJ7R6Nni4of1YkUrhYTJvEgZU=
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
 To:     Ingo Molnar <mingo@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>
@@ -35,9 +35,9 @@ Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 14/91] perf c2c: Remove unneeded semicolon
-Date:   Wed,  6 May 2020 12:21:17 -0300
-Message-Id: <20200506152234.21977-15-acme@kernel.org>
+Subject: [PATCH 15/91] perf tools: Remove unneeded semicolons
+Date:   Wed,  6 May 2020 12:21:18 -0300
+Message-Id: <20200506152234.21977-16-acme@kernel.org>
 X-Mailer: git-send-email 2.21.1
 In-Reply-To: <20200506152234.21977-1-acme@kernel.org>
 References: <20200506152234.21977-1-acme@kernel.org>
@@ -52,9 +52,13 @@ From: Zou Wei <zou_wei@huawei.com>
 
 Fixes coccicheck warnings:
 
- tools/perf/builtin-c2c.c:1712:2-3: Unneeded semicolon
- tools/perf/builtin-c2c.c:1928:2-3: Unneeded semicolon
- tools/perf/builtin-c2c.c:2962:2-3: Unneeded semicolon
+  tools/perf/builtin-diff.c:1565:2-3: Unneeded semicolon
+  tools/perf/builtin-lock.c:778:2-3: Unneeded semicolon
+  tools/perf/builtin-mem.c:126:2-3: Unneeded semicolon
+  tools/perf/util/intel-pt-decoder/intel-pt-pkt-decoder.c:555:2-3: Unneeded semicolon
+  tools/perf/util/ordered-events.c:317:2-3: Unneeded semicolon
+  tools/perf/util/synthetic-events.c:1131:2-3: Unneeded semicolon
+  tools/perf/util/trace-event-read.c:78:2-3: Unneeded semicolon
 
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Zou Wei <zou_wei@huawei.com>
@@ -63,35 +67,49 @@ Cc: Jiri Olsa <jolsa@redhat.com>
 Cc: Mark Rutland <mark.rutland@arm.com>
 Cc: Namhyung Kim <namhyung@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/1588064336-70456-1-git-send-email-zou_wei@huawei.com
+Link: http://lore.kernel.org/lkml/1588065523-71423-1-git-send-email-zou_wei@huawei.com
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/perf/builtin-c2c.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ tools/perf/builtin-diff.c                               | 2 +-
+ tools/perf/builtin-lock.c                               | 2 +-
+ tools/perf/builtin-mem.c                                | 2 +-
+ tools/perf/util/intel-pt-decoder/intel-pt-pkt-decoder.c | 2 +-
+ tools/perf/util/ordered-events.c                        | 2 +-
+ tools/perf/util/synthetic-events.c                      | 2 +-
+ tools/perf/util/trace-event-read.c                      | 2 +-
+ 7 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/tools/perf/builtin-c2c.c b/tools/perf/builtin-c2c.c
-index 0d544c4fb4be..0e14c1821dcb 100644
---- a/tools/perf/builtin-c2c.c
-+++ b/tools/perf/builtin-c2c.c
-@@ -1709,7 +1709,7 @@ static struct c2c_dimension *get_dimension(const char *name)
+diff --git a/tools/perf/builtin-diff.c b/tools/perf/builtin-diff.c
+index c94a002f295e..59d40f036587 100644
+--- a/tools/perf/builtin-diff.c
++++ b/tools/perf/builtin-diff.c
+@@ -1562,7 +1562,7 @@ hpp__entry_pair(struct hist_entry *he, struct hist_entry *pair,
  
- 		if (!strcmp(dim->name, name))
- 			return dim;
--	};
-+	}
- 
- 	return NULL;
- }
-@@ -1925,7 +1925,7 @@ static bool he__display(struct hist_entry *he, struct c2c_stats *stats)
- 		FILTER_HITM(tot_hitm);
  	default:
- 		break;
+ 		BUG_ON(1);
 -	};
 +	}
+ }
  
- #undef FILTER_HITM
+ static void
+diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
+index 474dfd59d7eb..543d82fec556 100644
+--- a/tools/perf/builtin-lock.c
++++ b/tools/perf/builtin-lock.c
+@@ -775,7 +775,7 @@ static void dump_threads(void)
+ 		pr_info("%10d: %s\n", st->tid, thread__comm_str(t));
+ 		node = rb_next(node);
+ 		thread__put(t);
+-	};
++	}
+ }
  
-@@ -2959,7 +2959,7 @@ static int perf_c2c__record(int argc, const char **argv)
+ static void dump_map(void)
+diff --git a/tools/perf/builtin-mem.c b/tools/perf/builtin-mem.c
+index a13f5817d6fc..68a7eb84561a 100644
+--- a/tools/perf/builtin-mem.c
++++ b/tools/perf/builtin-mem.c
+@@ -123,7 +123,7 @@ static int __cmd_record(int argc, const char **argv, struct perf_mem *mem)
  
  		rec_argv[i++] = "-e";
  		rec_argv[i++] = perf_mem_events__name(j);
@@ -100,6 +118,58 @@ index 0d544c4fb4be..0e14c1821dcb 100644
  
  	if (all_user)
  		rec_argv[i++] = "--all-user";
+diff --git a/tools/perf/util/intel-pt-decoder/intel-pt-pkt-decoder.c b/tools/perf/util/intel-pt-decoder/intel-pt-pkt-decoder.c
+index 0ccf10a0bf44..4ce109993e74 100644
+--- a/tools/perf/util/intel-pt-decoder/intel-pt-pkt-decoder.c
++++ b/tools/perf/util/intel-pt-decoder/intel-pt-pkt-decoder.c
+@@ -552,7 +552,7 @@ static int intel_pt_do_get_packet(const unsigned char *buf, size_t len,
+ 		break;
+ 	default:
+ 		break;
+-	};
++	}
+ 
+ 	if (!(byte & BIT(0))) {
+ 		if (byte == 0)
+diff --git a/tools/perf/util/ordered-events.c b/tools/perf/util/ordered-events.c
+index 359db2b1fcef..48c8f609441b 100644
+--- a/tools/perf/util/ordered-events.c
++++ b/tools/perf/util/ordered-events.c
+@@ -314,7 +314,7 @@ static int __ordered_events__flush(struct ordered_events *oe, enum oe_flush how,
+ 	case OE_FLUSH__NONE:
+ 	default:
+ 		break;
+-	};
++	}
+ 
+ 	pr_oe_time(oe->next_flush, "next_flush - ordered_events__flush PRE  %s, nr_events %u\n",
+ 		   str[how], oe->nr_events);
+diff --git a/tools/perf/util/synthetic-events.c b/tools/perf/util/synthetic-events.c
+index 1ea9adaef9c7..89b390623b63 100644
+--- a/tools/perf/util/synthetic-events.c
++++ b/tools/perf/util/synthetic-events.c
+@@ -1181,7 +1181,7 @@ void cpu_map_data__synthesize(struct perf_record_cpu_map_data *data, struct perf
+ 		synthesize_mask((struct perf_record_record_cpu_map *)data->data, map, max);
+ 	default:
+ 		break;
+-	};
++	}
+ }
+ 
+ static struct perf_record_cpu_map *cpu_map_event__new(struct perf_cpu_map *map)
+diff --git a/tools/perf/util/trace-event-read.c b/tools/perf/util/trace-event-read.c
+index 8593d3c200c6..f507dff713c9 100644
+--- a/tools/perf/util/trace-event-read.c
++++ b/tools/perf/util/trace-event-read.c
+@@ -75,7 +75,7 @@ static void skip(int size)
+ 		r = size > BUFSIZ ? BUFSIZ : size;
+ 		do_read(buf, r);
+ 		size -= r;
+-	};
++	}
+ }
+ 
+ static unsigned int read4(struct tep_handle *pevent)
 -- 
 2.21.1
 
