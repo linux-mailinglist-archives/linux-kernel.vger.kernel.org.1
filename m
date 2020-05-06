@@ -2,301 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E383D1C707A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 14:39:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F34A41C706E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 14:37:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728230AbgEFMje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 08:39:34 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:34836 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728133AbgEFMjd (ORCPT
+        id S1728109AbgEFMhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 08:37:47 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:36360 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727067AbgEFMhq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 08:39:33 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 046Cboq7117730;
-        Wed, 6 May 2020 12:38:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=jkiqCFb8ZO557s3RPly9WeIuqgOYis3wsQUlecisOxk=;
- b=FJr3sr6b3hNO+Pa2lyjlrr/VbwfqGv10LSEe5L9w9WDxzMQHPtvXfoDXqOVfpfpSgEl1
- BXnoUCH7bUuDHx+y/qufvzMmq5g5rnLMKkreBsY934w27EzGlW3e1UMU8u2d2+/2w2YC
- aruhtnhMH4mcOiBNekHES5+sMGb1J4APngw2OXHCQaAoHERkkJY/pyWzyrs3T452nF3/
- erOmTGowY/LSB4cZu/sb90guBPsLpKggqFukDyIavwrJm9Q0wP8sFNv5E/2ixZJdE3du
- EGYsyMb6JDnXMelEnFMuq8fapZhJfMabp34Ku013lxFVMIgne+sunW0By2ApPV2U/a2Z 8Q== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 30s09ra3sr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 06 May 2020 12:38:36 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 046CblAj139420;
-        Wed, 6 May 2020 12:38:36 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 30t1r7r55t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 06 May 2020 12:38:36 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 046CcVLB001358;
-        Wed, 6 May 2020 12:38:31 GMT
-Received: from linux-1.home (/10.175.10.30)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 06 May 2020 05:38:31 -0700
-Subject: Re: [patch V4 part 1 03/36] sched: Clean up scheduler_ipi()
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
+        Wed, 6 May 2020 08:37:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588768665;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=s1MktsIoJtjuCK1LIHvBtwFHwePnfE+EvLWoNj84r9o=;
+        b=TemheLuScOS/0GLmlAwKqCZccXkeRQanV9t61T+tU5U+Yi/32PEcesUit3bG2FWQEVUkx1
+        WKIbgbu0FZLvjEbWC/nK1HovZAQHITt4Qib+WEHucDKt17LJc8MHTsKs1y6XlEdNvHjLz+
+        w6XVeDA5TbijsqGCFXioMCkvGVTPnVA=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-510-NoBxukqMP_iuMvZq34wtQA-1; Wed, 06 May 2020 08:37:43 -0400
+X-MC-Unique: NoBxukqMP_iuMvZq34wtQA-1
+Received: by mail-wm1-f70.google.com with SMTP id o26so813436wmh.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 05:37:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=s1MktsIoJtjuCK1LIHvBtwFHwePnfE+EvLWoNj84r9o=;
+        b=MwsG0XjQq16RvAjMSG6feWwI/sICYU6g/FS3wJuKfDQCw1Vm9zum/PRoqsPtZUTS+1
+         A7iW2e3cfncaVLfTTqRJibhwI5chNExzACAQC9UFJLfXWemYs9r2nfcx5wAnSyvSfyUS
+         BRK4sLxWtnvNFJE/yrf7NDDD2v/LMh4rCeUwcnOHDODVp3cnCgvOjSd5tMnLI4aZDkfp
+         hIsObo0bA1q/sxjKUj4OlL61K69i8LTDyPYvX/UnDe0lHx3G8CjgsW/ppXNByzbuyGRQ
+         YU3BU1oCjglZF49PQ4oNXFI5feF95L31RRXo+rjlf4L4bwnztM/Nbzk4YAYav7uaQPgY
+         doog==
+X-Gm-Message-State: AGi0PuYNJgYH8VdtMdItAW8eo9kqFozvdH/uQDItZQdw7MzI2lSYllhO
+        fcqI+WggCerCTiBRsR5KegF+DVmQLfUSA61FauefS9VGBsMRtIrUdqNIJwbbrubxAwXCOblkgJA
+        bOFH0c6mNnOh4STWN5CBolCl3
+X-Received: by 2002:adf:c7c3:: with SMTP id y3mr9163128wrg.196.1588768662158;
+        Wed, 06 May 2020 05:37:42 -0700 (PDT)
+X-Google-Smtp-Source: APiQypJfUIWJzOGHjxR7ZkM0uW5dIfQKZeIuCzQQj1rRLmusBGoAtRKo0sKNGPghmxkMEb2uokVfnQ==
+X-Received: by 2002:adf:c7c3:: with SMTP id y3mr9163084wrg.196.1588768661793;
+        Wed, 06 May 2020 05:37:41 -0700 (PDT)
+Received: from localhost.localdomain ([151.29.188.60])
+        by smtp.gmail.com with ESMTPSA id z1sm2871826wmf.15.2020.05.06.05.37.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 May 2020 05:37:41 -0700 (PDT)
+Date:   Wed, 6 May 2020 14:37:38 +0200
+From:   Juri Lelli <juri.lelli@redhat.com>
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-References: <20200505131602.633487962@linutronix.de>
- <20200505134058.361859938@linutronix.de>
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-Message-ID: <f969427d-a151-2c69-a779-a2b602e39d9e@oracle.com>
-Date:   Wed, 6 May 2020 14:37:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Luca Abeni <luca.abeni@santannapisa.it>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Wei Wang <wvw@google.com>, Quentin Perret <qperret@google.com>,
+        Alessio Balsini <balsini@google.com>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/6] sched/deadline: Add dl_bw_capacity()
+Message-ID: <20200506123738.GJ17381@localhost.localdomain>
+References: <20200427083709.30262-1-dietmar.eggemann@arm.com>
+ <20200427083709.30262-4-dietmar.eggemann@arm.com>
+ <23bde551-0d91-4bfe-ce65-40af9fbfdef9@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20200505134058.361859938@linutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9612 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 suspectscore=4
- spamscore=0 mlxlogscore=999 malwarescore=0 phishscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2005060099
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9612 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0
- lowpriorityscore=0 spamscore=0 adultscore=0 clxscore=1015 suspectscore=4
- priorityscore=1501 malwarescore=0 mlxlogscore=999 phishscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005060099
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <23bde551-0d91-4bfe-ce65-40af9fbfdef9@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 5/5/20 3:16 PM, Thomas Gleixner wrote:
-> The scheduler IPI has grown weird and wonderful over the years, time
-> for spring cleaning.
+On 06/05/20 12:54, Dietmar Eggemann wrote:
+> On 27/04/2020 10:37, Dietmar Eggemann wrote:
 > 
-> Move all the non-trivial stuff out of it and into a regular smp function
-> call IPI. This then reduces the schedule_ipi() to most of it's former MOP
-> glory and ensures to keep the interrupt vector lean and mean.
+> [...]
 > 
-> Aside of that avoiding the full irq_enter() in the x86 IPI implementation
-> is incorrect as scheduler_ipi() can be instrumented. To work around that
-> scheduler_ipi() had an irq_enter/exit() hack when heavy work was
-> pending. This is gone now.
+> > diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+> > index 4ae22bfc37ae..eb23e6921d94 100644
+> > --- a/kernel/sched/deadline.c
+> > +++ b/kernel/sched/deadline.c
+> > @@ -69,6 +69,25 @@ static inline int dl_bw_cpus(int i)
+> >  
+> >  	return cpus;
+> >  }
+> > +
+> > +static inline unsigned long dl_bw_capacity(int i)
+> > +{
+> > +	struct root_domain *rd = cpu_rq(i)->rd;
+> > +	unsigned long cap;
+> > +
+> > +	RCU_LOCKDEP_WARN(!rcu_read_lock_sched_held(),
+> > +			 "sched RCU must be held");
+> > +
+> > +	if (cpumask_subset(rd->span, cpu_active_mask))
+> > +		return rd->sum_cpu_capacity;
+> > +
+> > +	cap = 0;
+> > +
+> > +	for_each_cpu_and(i, rd->span, cpu_active_mask)
+> > +		cap += capacity_orig_of(i);
+> > +
+> > +	return cap;
+> > +}
 > 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
->   kernel/sched/core.c  |   64 +++++++++++++++++++++++----------------------------
->   kernel/sched/fair.c  |    5 +--
->   kernel/sched/sched.h |    6 +++-
->   3 files changed, 36 insertions(+), 39 deletions(-)
+> There is an issue w/ excl. cpusets and cpuset.sched_load_balance=0. The
+> latter is needed to demonstrate the problem since DL task affinity can't
+> be altered.
 > 
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -219,6 +219,13 @@ void update_rq_clock(struct rq *rq)
->   	update_rq_clock_task(rq, delta);
->   }
->   
-> +static inline void
-> +rq_csd_init(struct rq *rq, call_single_data_t *csd, smp_call_func_t func)
-> +{
-> +	csd->flags = 0;
-> +	csd->func = func;
-> +	csd->info = rq;
-> +}
->   
->   #ifdef CONFIG_SCHED_HRTICK
->   /*
-> @@ -314,16 +321,14 @@ void hrtick_start(struct rq *rq, u64 del
->   	hrtimer_start(&rq->hrtick_timer, ns_to_ktime(delay),
->   		      HRTIMER_MODE_REL_PINNED_HARD);
->   }
-> +
->   #endif /* CONFIG_SMP */
->   
->   static void hrtick_rq_init(struct rq *rq)
->   {
->   #ifdef CONFIG_SMP
-> -	rq->hrtick_csd.flags = 0;
-> -	rq->hrtick_csd.func = __hrtick_start;
-> -	rq->hrtick_csd.info = rq;
-> +	rq_csd_init(rq, &rq->hrtick_csd, __hrtick_start);
->   #endif
-> -
->   	hrtimer_init(&rq->hrtick_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL_HARD);
->   	rq->hrtick_timer.function = hrtick;
->   }
-> @@ -650,6 +655,16 @@ static inline bool got_nohz_idle_kick(vo
->   	return false;
->   }
->   
-> +static void nohz_csd_func(void *info)
-> +{
-> +	struct rq *rq = info;
-> +
-> +	if (got_nohz_idle_kick()) {
-> +		rq->idle_balance = 1;
-> +		raise_softirq_irqoff(SCHED_SOFTIRQ);
-> +	}
-> +}
-> +
->   #else /* CONFIG_NO_HZ_COMMON */
->   
->   static inline bool got_nohz_idle_kick(void)
-> @@ -2292,6 +2307,11 @@ void sched_ttwu_pending(void)
->   	rq_unlock_irqrestore(rq, &rf);
->   }
->   
-> +static void wake_csd_func(void *info)
-> +{
-> +	sched_ttwu_pending();
-> +}
-> +
->   void scheduler_ipi(void)
->   {
->   	/*
-> @@ -2300,34 +2320,6 @@ void scheduler_ipi(void)
->   	 * this IPI.
->   	 */
->   	preempt_fold_need_resched();
-> -
-> -	if (llist_empty(&this_rq()->wake_list) && !got_nohz_idle_kick())
-> -		return;
-> -
-> -	/*
-> -	 * Not all reschedule IPI handlers call irq_enter/irq_exit, since
-> -	 * traditionally all their work was done from the interrupt return
-> -	 * path. Now that we actually do some work, we need to make sure
-> -	 * we do call them.
-> -	 *
-> -	 * Some archs already do call them, luckily irq_enter/exit nest
-> -	 * properly.
-> -	 *
-> -	 * Arguably we should visit all archs and update all handlers,
-> -	 * however a fair share of IPIs are still resched only so this would
-> -	 * somewhat pessimize the simple resched case.
-> -	 */
-> -	irq_enter();
-> -	sched_ttwu_pending();
-> -
-> -	/*
-> -	 * Check if someone kicked us for doing the nohz idle load balance.
-> -	 */
-> -	if (unlikely(got_nohz_idle_kick())) {
-> -		this_rq()->idle_balance = 1;
-> -		raise_softirq_irqoff(SCHED_SOFTIRQ);
-> -	}
-> -	irq_exit();
->   }
->   
->   static void ttwu_queue_remote(struct task_struct *p, int cpu, int wake_flags)
-> @@ -2336,9 +2328,9 @@ static void ttwu_queue_remote(struct tas
->   
->   	p->sched_remote_wakeup = !!(wake_flags & WF_MIGRATED);
->   
-> -	if (llist_add(&p->wake_entry, &cpu_rq(cpu)->wake_list)) {
-> +	if (llist_add(&p->wake_entry, &rq->wake_list)) {
->   		if (!set_nr_if_polling(rq->idle))
-> -			smp_send_reschedule(cpu);
-> +			smp_call_function_single_async(cpu, &rq->wake_csd);
->   		else
->   			trace_sched_wake_idle_without_ipi(cpu);
->   	}
-> @@ -6685,12 +6677,16 @@ void __init sched_init(void)
->   		rq->avg_idle = 2*sysctl_sched_migration_cost;
->   		rq->max_idle_balance_cost = sysctl_sched_migration_cost;
->   
-> +		rq_csd_init(rq, &rq->wake_csd, wake_csd_func);
-> +
->   		INIT_LIST_HEAD(&rq->cfs_tasks);
->   
->   		rq_attach_root(rq, &def_root_domain);
->   #ifdef CONFIG_NO_HZ_COMMON
->   		rq->last_blocked_load_update_tick = jiffies;
->   		atomic_set(&rq->nohz_flags, 0);
-> +
-> +		rq_csd_init(rq, &rq->nohz_csd, nohz_csd_func);
->   #endif
->   #endif /* CONFIG_SMP */
->   		hrtick_rq_init(rq);
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -10009,12 +10009,11 @@ static void kick_ilb(unsigned int flags)
->   		return;
->   
->   	/*
-> -	 * Use smp_send_reschedule() instead of resched_cpu().
-> -	 * This way we generate a sched IPI on the target CPU which
-> +	 * This way we generate an IPI on the target CPU which
->   	 * is idle. And the softirq performing nohz idle load balance
->   	 * will be run before returning from the IPI.
->   	 */
-> -	smp_send_reschedule(ilb_cpu);
-> +	smp_call_function_single_async(ilb_cpu, &cpu_rq(ilb_cpu)->wake_csd);
+> A CPU in such a cpuset has its rq attached to def_root_domain which does
+> not have its 'sum_cpu_capacity' properly set.
 
-This should be nohz_csd instead of wake_csd, no? I.e.:
+Hummm, but if sched_load_balance is disabled it means that we've now got
+a subset of CPUs which (from a DL AC pow) are partitioned. So, I'd tend
+to say that we actually want to check new tasks bw requirement against
+the available bandwidth of the particular CPU they happen to be running
+(and will continue to run) when setscheduler is called.
 
-        smp_call_function_single_async(ilb_cpu, &cpu_rq(ilb_cpu)->nohz_csd);
+If then load balance is enabled again, AC check we did above should
+still be valid for all tasks admitted in the meantime, no?
 
-
-With that:
-
-Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
-
-alex.
-
-
->   }
->   
->   /*
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -890,9 +890,10 @@ struct rq {
->   #ifdef CONFIG_SMP
->   	unsigned long		last_blocked_load_update_tick;
->   	unsigned int		has_blocked_load;
-> +	call_single_data_t	nohz_csd;
->   #endif /* CONFIG_SMP */
->   	unsigned int		nohz_tick_stopped;
-> -	atomic_t nohz_flags;
-> +	atomic_t		nohz_flags;
->   #endif /* CONFIG_NO_HZ_COMMON */
->   
->   	unsigned long		nr_load_updates;
-> @@ -979,7 +980,7 @@ struct rq {
->   
->   	/* This is used to determine avg_idle's max value */
->   	u64			max_idle_balance_cost;
-> -#endif
-> +#endif /* CONFIG_SMP */
->   
->   #ifdef CONFIG_IRQ_TIME_ACCOUNTING
->   	u64			prev_irq_time;
-> @@ -1021,6 +1022,7 @@ struct rq {
->   #endif
->   
->   #ifdef CONFIG_SMP
-> +	call_single_data_t	wake_csd;
->   	struct llist_head	wake_list;
->   #endif
->   
-> 
