@@ -2,141 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CE8F1C7511
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:37:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2BC91C7521
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:40:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729481AbgEFPhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 11:37:00 -0400
-Received: from fieldses.org ([173.255.197.46]:47704 "EHLO fieldses.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725887AbgEFPg7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 11:36:59 -0400
-Received: by fieldses.org (Postfix, from userid 2815)
-        id 918B71507; Wed,  6 May 2020 11:36:58 -0400 (EDT)
-Date:   Wed, 6 May 2020 11:36:58 -0400
-From:   "J. Bruce Fields" <bfields@fieldses.org>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     "J. Bruce Fields" <bfields@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "open list:NFS, SUNRPC, AND..." <linux-nfs@vger.kernel.org>,
-        Jeff Layton <jlayton@redhat.com>,
-        David Howells <dhowells@redhat.com>, Shaohua Li <shli@fb.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/4] allow multiple kthreadd's
-Message-ID: <20200506153658.GA21307@fieldses.org>
-References: <1588348912-24781-1-git-send-email-bfields@redhat.com>
- <CAHk-=wiGhZ_5xCRyUN+yMFdneKMQ-S8fBvdBp8o-JWPV4v+nVw@mail.gmail.com>
- <20200501182154.GG5462@mtj.thefacebook.com>
- <20200505021514.GA43625@pick.fieldses.org>
- <20200505210118.GC27966@fieldses.org>
- <20200505210956.GA3350@mtj.thefacebook.com>
- <20200505212527.GA1265@fieldses.org>
+        id S1729597AbgEFPke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 11:40:34 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:32956 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729573AbgEFPkd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 11:40:33 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 046Fbepv058881;
+        Wed, 6 May 2020 15:39:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=u9YRqhjsd5q90YS3XgAURj//X9gBQ/Yx8tv2Q2a0T94=;
+ b=s1cPznPoJAQuids8kpAzAPQOcoloJWuFkDIu4ui8VWolcvJjpJ7S2VX/Ib8KW2QMQRZM
+ 9I5hvxrwtwrVpGyNt/PTjTg5iJ0myvpbc1kXkT/vI5aDy31QqcfrmibxYPM9kXjR4DgD
+ rLZSM894fa744Bw0EtoxFd46sqp9hIbhx+4VoZ8EvVWJ3zNG4KwX05xF55VruAN3Cy9m
+ UXEkfOdYDOTjYR2mcH5CB1sYA62TXOuiWGUvfrfc2Uev/bBgeWgTvT3mV+N7ayWjWl4V
+ UvhxpMlhedsizNXdoyaI5ep93d5IeVSNJuXlndYC9s139GyZd+TOX84D4X1mmz24Aj4M NA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 30s09rb5vn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 06 May 2020 15:39:44 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 046FbTTK156529;
+        Wed, 6 May 2020 15:39:44 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 30sjnjtw2r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 06 May 2020 15:39:43 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 046FdgZT013634;
+        Wed, 6 May 2020 15:39:42 GMT
+Received: from linux-1.home (/10.175.10.30)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 06 May 2020 08:39:42 -0700
+Subject: Re: [patch V4 part 1 15/36] kprobes: Lock kprobe_mutex while showing
+ kprobe_blacklist
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>
+References: <20200505131602.633487962@linutronix.de>
+ <20200505134059.571125195@linutronix.de>
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+Message-ID: <6cc6b979-c5e5-6898-5879-ba5dac413e61@oracle.com>
+Date:   Wed, 6 May 2020 17:38:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200505212527.GA1265@fieldses.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20200505134059.571125195@linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9613 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 adultscore=0 phishscore=0
+ mlxlogscore=999 bulkscore=0 malwarescore=0 spamscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005060125
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9613 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0
+ lowpriorityscore=0 spamscore=0 adultscore=0 clxscore=1015 suspectscore=0
+ priorityscore=1501 malwarescore=0 mlxlogscore=999 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005060125
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 05, 2020 at 05:25:27PM -0400, J. Bruce Fields wrote:
-> On Tue, May 05, 2020 at 05:09:56PM -0400, Tejun Heo wrote:
-> > It's not the end of the world but a bit hacky. I wonder whether something
-> > like the following would work better for identifying worker type so that you
-> > can do sth like
-> > 
-> >  if (kthread_fn(current) == nfsd)
-> >         return kthread_data(current);
-> >  else
-> >         return NULL;     
+
+On 5/5/20 3:16 PM, Thomas Gleixner wrote:
+> From: Masami Hiramatsu <mhiramat@kernel.org>
 > 
-> Yes, definitely more generic, looks good to me.
+> Lock kprobe_mutex while showing kprobe_blacklist to prevent updating the
+> kprobe_blacklist.
+> 
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Link: https://lkml.kernel.org/r/158523417665.24735.10253198878535635600.stgit@devnote2
+> 
+> ---
+>   kernel/kprobes.c |    8 +++++++-
+>   1 file changed, 7 insertions(+), 1 deletion(-)
 
-This is what I'm testing with.
+Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
 
-If it's OK with you, could I add your Signed-off-by and take it through
-the nfsd tree? I'll have some other patches that will depend on it.
+alex.
 
---b.
-
-
-commit 379bfe5257b6
-Author: Tejun Heo <tj@kernel.org>
-Date:   Tue May 5 21:26:07 2020 -0400
-
-    kthread: save thread function
-    
-    It's handy to keep the kthread_fn just as a unique cookie to identify
-    classes of kthreads.  E.g. if you can verify that a given task is
-    running your thread_fn, then you may know what sort of type kthread_data
-    points to.
-    
-    We'll use this in nfsd to pass some information into the vfs.  Note it
-    will need kthread_data() exported too.
-    
-    Signed-off-by: J. Bruce Fields <bfields@redhat.com>
-
-diff --git a/include/linux/kthread.h b/include/linux/kthread.h
-index 8bbcaad7ef0f..c00ee443833f 100644
---- a/include/linux/kthread.h
-+++ b/include/linux/kthread.h
-@@ -57,6 +57,7 @@ bool kthread_should_stop(void);
- bool kthread_should_park(void);
- bool __kthread_should_park(struct task_struct *k);
- bool kthread_freezable_should_stop(bool *was_frozen);
-+void *kthread_fn(struct task_struct *k);
- void *kthread_data(struct task_struct *k);
- void *kthread_probe_data(struct task_struct *k);
- int kthread_park(struct task_struct *k);
-diff --git a/kernel/kthread.c b/kernel/kthread.c
-index bfbfa481be3a..b87c4a9ba91d 100644
---- a/kernel/kthread.c
-+++ b/kernel/kthread.c
-@@ -46,6 +46,7 @@ struct kthread_create_info
- struct kthread {
- 	unsigned long flags;
- 	unsigned int cpu;
-+	int (*threadfn)(void *);
- 	void *data;
- 	struct completion parked;
- 	struct completion exited;
-@@ -152,6 +153,20 @@ bool kthread_freezable_should_stop(bool *was_frozen)
- }
- EXPORT_SYMBOL_GPL(kthread_freezable_should_stop);
- 
-+/**
-+ * kthread_fn - return the function specified on kthread creation
-+ * @task: kthread task in question
-+ *
-+ * Returns NULL if the task is not a kthread.
-+ */
-+void *kthread_fn(struct task_struct *task)
-+{
-+	if (task->flags & PF_KTHREAD)
-+		return to_kthread(task)->threadfn;
-+	return NULL;
-+}
-+EXPORT_SYMBOL_GPL(kthread_fn);
-+
- /**
-  * kthread_data - return data value specified on kthread creation
-  * @task: kthread task in question
-@@ -164,6 +179,7 @@ void *kthread_data(struct task_struct *task)
- {
- 	return to_kthread(task)->data;
- }
-+EXPORT_SYMBOL_GPL(kthread_data);
- 
- /**
-  * kthread_probe_data - speculative version of kthread_data()
-@@ -244,6 +260,7 @@ static int kthread(void *_create)
- 		do_exit(-ENOMEM);
- 	}
- 
-+	self->threadfn = threadfn;
- 	self->data = data;
- 	init_completion(&self->exited);
- 	init_completion(&self->parked);
+> --- a/kernel/kprobes.c
+> +++ b/kernel/kprobes.c
+> @@ -2426,6 +2426,7 @@ static const struct file_operations debu
+>   /* kprobes/blacklist -- shows which functions can not be probed */
+>   static void *kprobe_blacklist_seq_start(struct seq_file *m, loff_t *pos)
+>   {
+> +	mutex_lock(&kprobe_mutex);
+>   	return seq_list_start(&kprobe_blacklist, *pos);
+>   }
+>   
+> @@ -2452,10 +2453,15 @@ static int kprobe_blacklist_seq_show(str
+>   	return 0;
+>   }
+>   
+> +static void kprobe_blacklist_seq_stop(struct seq_file *f, void *v)
+> +{
+> +	mutex_unlock(&kprobe_mutex);
+> +}
+> +
+>   static const struct seq_operations kprobe_blacklist_seq_ops = {
+>   	.start = kprobe_blacklist_seq_start,
+>   	.next  = kprobe_blacklist_seq_next,
+> -	.stop  = kprobe_seq_stop,	/* Reuse void function */
+> +	.stop  = kprobe_blacklist_seq_stop,
+>   	.show  = kprobe_blacklist_seq_show,
+>   };
+>   
+> 
