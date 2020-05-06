@@ -2,108 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDADB1C72E7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 16:33:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A6401C72EB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 16:35:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728972AbgEFOdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 10:33:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728836AbgEFOdy (ORCPT
+        id S1729066AbgEFOe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 10:34:59 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:32886 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728854AbgEFOe6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 10:33:54 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AE38C061A41
-        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 07:33:54 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id w137so1085384ybg.8
-        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 07:33:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XbqSj0zLlZxwhc6FbfH4AgPdBJNe+u7Ez5XFOAJ4dlE=;
-        b=sMK2gxKz00XlJrqT2IQRh3RVnLny1lQB0H+zg4sYGFloaiAo/v9DJLCWh3yavgGR9t
-         c9UH85bbgwNnZ8rYaAmhkL9RXQ0ojcvHwdGPEORoemyMdhnQh1F34HjrbRUWcPnC06if
-         XXQz6FU/rVCvlSYCU7ys0+0E0Twdld4F+lZM4DENbx1STo8XrEe+V2fdFnCkStrpVY/p
-         AtTCq68fOOYR2goQGPNTKBBoBU+ce30sIhhZuhLPmFihWqnJd1lOneugUIJwibLPGWmh
-         wHKs3CJjA3fRLTTjL74ocbYlbKhUsFm/Mv/m6kMUuQOJXTxOg2QqsPJd/cn1IoG3HMml
-         gn/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XbqSj0zLlZxwhc6FbfH4AgPdBJNe+u7Ez5XFOAJ4dlE=;
-        b=CY5gjmT2P0vRU126EmpAoA1o1eB0gLzhi72iLe/HuPHMdx3cyT/DuTmNjBCUXLmEHF
-         pfvANbRr9L9cHyF/A28rYT7q95f1OILwY6SGKDvSsU4iPVq38PzbrM/lXRcuZueyxD54
-         GfJ6Jd8eElqsnzNXNyc6wf9Td9KhpYhyGY1cLoaiOtw/NWft0rMRsSsp10yMAA4mcyej
-         2NGddfyWYIGQfg6ZwKZQMEoiApvasnJq2ZdFjZax8aWbUKDZyGpH6aw/N889nU567QSu
-         pXbn49mYXh2ST5Xcl5Co2srSrNFVIg18kOmfH4rEXXrrvUzUrW4kjqge/lS4hvQNOxqx
-         KXIQ==
-X-Gm-Message-State: AGi0Puan0ExvSalVAcjjkaLLntksoZ8aJ7v/JQ/OH5PA2OvIY2UZLQyf
-        hlObrLx8uYkKwqjgQ2/DQqQ0gc+iInEAtOvhNj3Ueg==
-X-Google-Smtp-Source: APiQypLa55+6CY2rDCiL0pAlUnndI/LxWB5VFYnf5D/Y4Vob6Fja7SVSAFXSw3DhrjJqMzyBFM1EmuD9ZAmaq6mtXSQ=
-X-Received: by 2002:a25:bc53:: with SMTP id d19mr13792238ybk.395.1588775632988;
- Wed, 06 May 2020 07:33:52 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200505184955.GO2869@paulmck-ThinkPad-P72> <20200506125926.29844-1-sjpark@amazon.com>
-In-Reply-To: <20200506125926.29844-1-sjpark@amazon.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 6 May 2020 07:33:41 -0700
-Message-ID: <CANn89iL2ZRa9CtypuZXL_+aGQmiqxP9q7eutozJ6G8b=QWjZKw@mail.gmail.com>
-Subject: Re: Re: Re: Re: Re: [PATCH net v2 0/2] Revert the 'socket_alloc' life
- cycle change
-To:     SeongJae Park <sjpark@amazon.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        sj38.park@gmail.com, netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        SeongJae Park <sjpark@amazon.de>, snu@amazon.com,
-        amit@kernel.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 6 May 2020 10:34:58 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1588775698; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=BxYWW/V07NnyjLGX0Gsq/lFAzNYmsfwcD2OCxNrEX1o=; b=g/T5BN6QnXO1tRrUTBvse9fQV0tg5EsJII+O1T4zHvdHUslzu4XxAI1i9ETq37b7tKwFWo/t
+ YcvlD7nlIMvf7Xj7ZmkeDcoKBe7kCt3vpSKC7MnLSDAbeW8RoklU4YttHrlJM77K+TvzLqUN
+ pcZQUmI12CzNsyp6kNqUYmqXJ4E=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5eb2cb01.7f3cb7d7fbc8-smtp-out-n05;
+ Wed, 06 May 2020 14:34:41 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D32E9C43636; Wed,  6 May 2020 14:34:40 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from vbadigan-linux.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: vbadigan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1D2E2C432C2;
+        Wed,  6 May 2020 14:34:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1D2E2C432C2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=vbadigan@codeaurora.org
+From:   Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+To:     adrian.hunter@intel.com, ulf.hansson@linaro.org
+Cc:     stummala@codeaurora.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+Subject: [PATCH V1 0/2] CQE fixes
+Date:   Wed,  6 May 2020 20:04:01 +0530
+Message-Id: <1588775643-18037-1-git-send-email-vbadigan@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 6, 2020 at 5:59 AM SeongJae Park <sjpark@amazon.com> wrote:
->
-> TL; DR: It was not kernel's fault, but the benchmark program.
->
-> So, the problem is reproducible using the lebench[1] only.  I carefully read
-> it's code again.
->
-> Before running the problem occurred "poll big" sub test, lebench executes
-> "context switch" sub test.  For the test, it sets the cpu affinity[2] and
-> process priority[3] of itself to '0' and '-20', respectively.  However, it
-> doesn't restore the values to original value even after the "context switch" is
-> finished.  For the reason, "select big" sub test also run binded on CPU 0 and
-> has lowest nice value.  Therefore, it can disturb the RCU callback thread for
-> the CPU 0, which processes the deferred deallocations of the sockets, and as a
-> result it triggers the OOM.
->
-> We confirmed the problem disappears by offloading the RCU callbacks from the
-> CPU 0 using rcu_nocbs=0 boot parameter or simply restoring the affinity and/or
-> priority.
->
-> Someone _might_ still argue that this is kernel problem because the problem
-> didn't occur on the old kernels prior to the Al's patches.  However, setting
-> the affinity and priority was available because the program received the
-> permission.  Therefore, it would be reasonable to blame the system
-> administrators rather than the kernel.
->
-> So, please ignore this patchset, apology for making confuse.  If you still has
-> some doubts or need more tests, please let me know.
->
-> [1] https://github.com/LinuxPerfStudy/LEBench
-> [2] https://github.com/LinuxPerfStudy/LEBench/blob/master/TEST_DIR/OS_Eval.c#L820
-> [3] https://github.com/LinuxPerfStudy/LEBench/blob/master/TEST_DIR/OS_Eval.c#L822
->
->
-> Thanks,
-> SeongJae Park
+Fixes for a couple of issues observed with CQE. One with CQE completion
+path and the other one is with CQE recovery path.
 
-No harm done, thanks for running more tests and root-causing the issue !
+Sarthak Garg (1):
+  mmc: core: Fix recursive locking issue in CQE recovery path
+
+Veerabhadrarao Badiganti (1):
+  mmc: core: Check request type before completing the request
+
+ drivers/mmc/core/block.c |  3 ++-
+ drivers/mmc/core/queue.c | 11 ++++++-----
+ 2 files changed, 8 insertions(+), 6 deletions(-)
+
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc., is a member of Code Aurora Forum, a Linux Foundation Collaborative Project
