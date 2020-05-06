@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 827CF1C74AA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0CE81C74BE
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730291AbgEFP1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 11:27:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50130 "EHLO mail.kernel.org"
+        id S1730395AbgEFP2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 11:28:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729776AbgEFP1D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 11:27:03 -0400
+        id S1730276AbgEFP1G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 11:27:06 -0400
 Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C34F421744;
-        Wed,  6 May 2020 15:27:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 51C26215A4;
+        Wed,  6 May 2020 15:27:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588778822;
-        bh=6/MZLryqsguiqHUYd5D/S1PSMtmBuk2KDAFGXptidJM=;
+        s=default; t=1588778825;
+        bh=aeWBUBWeRr6delzKTXK7RaODizKMIgDD1pPEz3w4ua4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dWx0DFu0FtmMb8LVtvxfUKFdNkZshYZlzNLp5U4FGCRgfpQQUDhA2RvH+AWZv49cK
-         ddoJdHKRIC4Gi3eGQd6gffYwDQqqPFSE5FkbJjRxeHcVmJRZT0bu78gznheGvuRNby
-         2zm4lFVrYlHyftc6sUHF7hTBky+ycQGhIiz6uxtk=
+        b=sdbRbodPNhaoAOfaq9+iNx+fPhGOmNjRUHqLzhsBhlONAl3iDFlD5vHhEvS/HrgZ9
+         bEGoA++dFajAYGUiFWk3QV4AgP5Kr+hgP4P2hvVn5KSssvJwVW/BviuhEoA3BcwSGE
+         DoLdz+2PpIgIXV50ODwGMAt/UGVpEC4P43A9EwXc=
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
 To:     Ingo Molnar <mingo@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>
@@ -31,9 +31,9 @@ Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
         linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         Adrian Hunter <adrian.hunter@intel.com>
-Subject: [PATCH 77/91] perf stat: Rename perf_evsel__*() operating on 'struct evsel *' to evsel__*()
-Date:   Wed,  6 May 2020 12:22:20 -0300
-Message-Id: <20200506152234.21977-78-acme@kernel.org>
+Subject: [PATCH 78/91] perf kmem: Rename perf_evsel__*() operating on 'struct evsel *' to evsel__*()
+Date:   Wed,  6 May 2020 12:22:21 -0300
+Message-Id: <20200506152234.21977-79-acme@kernel.org>
 X-Mailer: git-send-email 2.21.1
 In-Reply-To: <20200506152234.21977-1-acme@kernel.org>
 References: <20200506152234.21977-1-acme@kernel.org>
@@ -54,52 +54,90 @@ Cc: Jiri Olsa <jolsa@kernel.org>
 Cc: Namhyung Kim <namhyung@kernel.org>
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/perf/builtin-stat.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ tools/perf/builtin-kmem.c | 33 ++++++++++++++-------------------
+ 1 file changed, 14 insertions(+), 19 deletions(-)
 
-diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index b2a971961364..e0c1ad23c768 100644
---- a/tools/perf/builtin-stat.c
-+++ b/tools/perf/builtin-stat.c
-@@ -238,9 +238,8 @@ static int write_stat_round_event(u64 tm, u64 type)
- 
- #define SID(e, x, y) xyarray__entry(e->core.sample_id, x, y)
- 
--static int
--perf_evsel__write_stat_event(struct evsel *counter, u32 cpu, u32 thread,
--			     struct perf_counts_values *count)
-+static int evsel__write_stat_event(struct evsel *counter, u32 cpu, u32 thread,
-+				   struct perf_counts_values *count)
- {
- 	struct perf_sample_id *sid = SID(counter, cpu, thread);
- 
-@@ -297,7 +296,7 @@ static int read_counter_cpu(struct evsel *counter, struct timespec *rs, int cpu)
- 		perf_counts__set_loaded(counter->counts, cpu, thread, false);
- 
- 		if (STAT_RECORD) {
--			if (perf_evsel__write_stat_event(counter, cpu, thread, count)) {
-+			if (evsel__write_stat_event(counter, cpu, thread, count)) {
- 				pr_err("failed to write stat event\n");
- 				return -1;
- 			}
-@@ -410,7 +409,7 @@ static void workload_exec_failed_signal(int signo __maybe_unused, siginfo_t *inf
- 	workload_exec_errno = info->si_value.sival_int;
+diff --git a/tools/perf/builtin-kmem.c b/tools/perf/builtin-kmem.c
+index 0a296fbf9194..38a5ab683ebc 100644
+--- a/tools/perf/builtin-kmem.c
++++ b/tools/perf/builtin-kmem.c
+@@ -169,8 +169,7 @@ static int insert_caller_stat(unsigned long call_site,
+ 	return 0;
  }
  
--static bool perf_evsel__should_store_id(struct evsel *counter)
-+static bool evsel__should_store_id(struct evsel *counter)
+-static int perf_evsel__process_alloc_event(struct evsel *evsel,
+-					   struct perf_sample *sample)
++static int evsel__process_alloc_event(struct evsel *evsel, struct perf_sample *sample)
  {
- 	return STAT_RECORD || counter->core.attr.read_format & PERF_FORMAT_ID;
+ 	unsigned long ptr = evsel__intval(evsel, sample, "ptr"),
+ 		      call_site = evsel__intval(evsel, sample, "call_site");
+@@ -188,10 +187,9 @@ static int perf_evsel__process_alloc_event(struct evsel *evsel,
+ 	return 0;
  }
-@@ -635,7 +634,7 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
- 		if (l > stat_config.unit_width)
- 			stat_config.unit_width = l;
  
--		if (perf_evsel__should_store_id(counter) &&
-+		if (evsel__should_store_id(counter) &&
- 		    evsel__store_ids(counter, evsel_list))
- 			return -1;
- 	}
+-static int perf_evsel__process_alloc_node_event(struct evsel *evsel,
+-						struct perf_sample *sample)
++static int evsel__process_alloc_node_event(struct evsel *evsel, struct perf_sample *sample)
+ {
+-	int ret = perf_evsel__process_alloc_event(evsel, sample);
++	int ret = evsel__process_alloc_event(evsel, sample);
+ 
+ 	if (!ret) {
+ 		int node1 = cpu__get_node(sample->cpu),
+@@ -232,8 +230,7 @@ static struct alloc_stat *search_alloc_stat(unsigned long ptr,
+ 	return NULL;
+ }
+ 
+-static int perf_evsel__process_free_event(struct evsel *evsel,
+-					  struct perf_sample *sample)
++static int evsel__process_free_event(struct evsel *evsel, struct perf_sample *sample)
+ {
+ 	unsigned long ptr = evsel__intval(evsel, sample, "ptr");
+ 	struct alloc_stat *s_alloc, *s_caller;
+@@ -784,8 +781,7 @@ static int parse_gfp_flags(struct evsel *evsel, struct perf_sample *sample,
+ 	return 0;
+ }
+ 
+-static int perf_evsel__process_page_alloc_event(struct evsel *evsel,
+-						struct perf_sample *sample)
++static int evsel__process_page_alloc_event(struct evsel *evsel, struct perf_sample *sample)
+ {
+ 	u64 page;
+ 	unsigned int order = evsel__intval(evsel, sample, "order");
+@@ -857,8 +853,7 @@ static int perf_evsel__process_page_alloc_event(struct evsel *evsel,
+ 	return 0;
+ }
+ 
+-static int perf_evsel__process_page_free_event(struct evsel *evsel,
+-						struct perf_sample *sample)
++static int evsel__process_page_free_event(struct evsel *evsel, struct perf_sample *sample)
+ {
+ 	u64 page;
+ 	unsigned int order = evsel__intval(evsel, sample, "order");
+@@ -1371,15 +1366,15 @@ static int __cmd_kmem(struct perf_session *session)
+ 	struct evsel *evsel;
+ 	const struct evsel_str_handler kmem_tracepoints[] = {
+ 		/* slab allocator */
+-		{ "kmem:kmalloc",		perf_evsel__process_alloc_event, },
+-    		{ "kmem:kmem_cache_alloc",	perf_evsel__process_alloc_event, },
+-		{ "kmem:kmalloc_node",		perf_evsel__process_alloc_node_event, },
+-    		{ "kmem:kmem_cache_alloc_node", perf_evsel__process_alloc_node_event, },
+-		{ "kmem:kfree",			perf_evsel__process_free_event, },
+-    		{ "kmem:kmem_cache_free",	perf_evsel__process_free_event, },
++		{ "kmem:kmalloc",		evsel__process_alloc_event, },
++		{ "kmem:kmem_cache_alloc",	evsel__process_alloc_event, },
++		{ "kmem:kmalloc_node",		evsel__process_alloc_node_event, },
++		{ "kmem:kmem_cache_alloc_node", evsel__process_alloc_node_event, },
++		{ "kmem:kfree",			evsel__process_free_event, },
++		{ "kmem:kmem_cache_free",	evsel__process_free_event, },
+ 		/* page allocator */
+-		{ "kmem:mm_page_alloc",		perf_evsel__process_page_alloc_event, },
+-		{ "kmem:mm_page_free",		perf_evsel__process_page_free_event, },
++		{ "kmem:mm_page_alloc",		evsel__process_page_alloc_event, },
++		{ "kmem:mm_page_free",		evsel__process_page_free_event, },
+ 	};
+ 
+ 	if (!perf_session__has_traces(session, "kmem record"))
 -- 
 2.21.1
 
