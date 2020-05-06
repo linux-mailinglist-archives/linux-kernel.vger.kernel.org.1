@@ -2,90 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49D0E1C68B5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 08:23:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BE6A1C687B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 08:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728441AbgEFGXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 02:23:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727051AbgEFGXM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 02:23:12 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76D52C061A10;
-        Tue,  5 May 2020 23:23:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=1V9FXGwvoUyADOJtECmZzXrzilRy7l0jj6styYqt0KU=; b=WRFvLxLA/MEdLMrePczuELjuEW
-        72WQod2YCGoc0J7XuWxFW5Y83J/ykdaW/Fvtk4rs7oIQKRnkopymKyz3EwOuypFcUXYqHVjttqChT
-        ZWZNpoWAW9huIiQ+2137fhpck8Jvk/OBURKnP8nGMpNXmGD2pqVc7U+++Rpk2a2Bk7XJ02fZnKKsU
-        IEroVJ/nwQQ94XE+aNULG0kXWN5Eggp6JsjK1mQHpJq/Xtrfl5qzt8d1FvzbHRkBpEs4Bug8AGZs1
-        Sj9Fq+m0wtnluKjoULPl+k1peWL6urmnAGcvGAut03L8y2xEcPesIPXq+cvi5XhfJas+TJjKchnlZ
-        cprmKauQ==;
-Received: from [2001:4bb8:191:66b6:c70:4a89:bc61:2] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jWDSY-0006rv-M1; Wed, 06 May 2020 06:23:11 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     x86@kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-parisc@vger.kernel.org, linux-um@lists.infradead.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 15/15] x86: use non-set_fs based maccess routines
-Date:   Wed,  6 May 2020 08:22:23 +0200
-Message-Id: <20200506062223.30032-16-hch@lst.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200506062223.30032-1-hch@lst.de>
-References: <20200506062223.30032-1-hch@lst.de>
+        id S1728094AbgEFGWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 02:22:23 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:57721 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726438AbgEFGWU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 02:22:20 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49H62K5cz7z9sRY;
+        Wed,  6 May 2020 16:22:17 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1588746138;
+        bh=G3Z6HoHYd6geL9nF1n1OLlMWHSetC862Eqtc2CC7NUY=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=WLZEwpJwZOMApJCIktUBNCy+p6Eatb3o9IoiUEO/FKw5eAaoXrKRUaD64xYH33Swd
+         sCMVcHP9OpWt6cJJbMpCEYFjIHme9Xd0ujWyzQydQTBCnQtASeOYis6+p6HcWbGx8o
+         h0YREBz/jeLf32TI2tRVwz2YHH8H7d6648dK0DyiQ3E4BVKBfw3ye2kDJJHQR5u/xK
+         tuXlXKGbS/z/7c8xjfWSuZbPZKQ0mU6gqdX4E9fofiFDtGB/y8eJLD7pmKIe/1Yl/f
+         jzErh5ITSr8IOeqOylK20G3hHBKdPC6zyMn/YyL7v2zJhUHU81nFQlkGXp49Ozkj3l
+         tFVMTmvmXIaEA==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Wolfram Sang <wsa@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, kernel@pengutronix.de,
+        Rob Herring <robh+dt@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, devicetree@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH] powerpc/5200: update contact email
+In-Reply-To: <20200505160410.GH2468@ninjato>
+References: <20200502142642.18979-1-wsa@kernel.org> <877dxsdl5e.fsf@mpe.ellerman.id.au> <20200505160410.GH2468@ninjato>
+Date:   Wed, 06 May 2020 16:22:33 +1000
+Message-ID: <87imh9d1li.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Provide arch_kernel_read and arch_kernel_write routines to implement the
-maccess routines without messing with set_fs and without stac/clac that
-opens up access to user space.
+Wolfram Sang <wsa@kernel.org> writes:
+>> > My 'pengutronix' address is defunct for years. Merge the entries and use
+>> > the proper contact address.
+>> 
+>> Is there any point adding the new address? It's just likely to bit-rot
+>> one day too.
+>
+> At least, this one is a group address, not an individual one, so less
+> likey.
+>
+>> I figure the git history is a better source for more up-to-date emails.
+>
+> But yes, can still be argued. I won't persist if you don't like it.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- arch/x86/include/asm/uaccess.h | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+That's fine, I'll merge this. You've already gone to the trouble to send
+it and it's better than what we have now.
 
-diff --git a/arch/x86/include/asm/uaccess.h b/arch/x86/include/asm/uaccess.h
-index d8f283b9a569c..765e18417b3ba 100644
---- a/arch/x86/include/asm/uaccess.h
-+++ b/arch/x86/include/asm/uaccess.h
-@@ -523,5 +523,21 @@ do {									\
- 	unsafe_copy_loop(__ucu_dst, __ucu_src, __ucu_len, u8, label);	\
- } while (0)
- 
-+#define HAVE_ARCH_PROBE_KERNEL
-+
-+#define arch_kernel_read(dst, src, type, err_label)			\
-+do {									\
-+        int __kr_err;							\
-+									\
-+	__get_user_size(*((type *)dst), (__force type __user *)src,	\
-+			sizeof(type), __kr_err);			\
-+        if (unlikely(__kr_err))						\
-+		goto err_label;						\
-+} while (0)
-+
-+#define arch_kernel_write(dst, src, type, err_label)			\
-+	__put_user_size(*((type *)(src)), (__force type __user *)(dst),	\
-+			sizeof(type), err_label)
-+
- #endif /* _ASM_X86_UACCESS_H */
- 
--- 
-2.26.2
-
+cheers
