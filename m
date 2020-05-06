@@ -2,81 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33BD91C6C09
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 10:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28FC61C6C10
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 10:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728946AbgEFImR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 04:42:17 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:33883 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728475AbgEFImQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 04:42:16 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1588754536; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=xj3E/SpCjWDvkJx+g6pYrv8tXv0DsbD4yvgEyoegG7I=;
- b=k/kqyoptqKr5chNSs7NnhzMu/3SehTuaTL4NNV8AeswmK6iiNiR69h55jpu03Wu2anI2zmYt
- QKbiqN1+tp32RnwbsnmvCCJx6cU9WsJNGqqiCkl1QRiZufGxMi6d56vxVi0u2MQCuQwWIx7O
- 9E41cjXy+jVnLPQ5Q51UHz+jePo=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5eb27864.7f4fb31c2d18-smtp-out-n03;
- Wed, 06 May 2020 08:42:12 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 50A33C433F2; Wed,  6 May 2020 08:42:11 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
-        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D2E29C43637;
-        Wed,  6 May 2020 08:42:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D2E29C43637
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S1728870AbgEFInM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 04:43:12 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:50458 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727956AbgEFInM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 04:43:12 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id A378A75A4B1ED3E052B9;
+        Wed,  6 May 2020 16:43:06 +0800 (CST)
+Received: from [127.0.0.1] (10.166.213.7) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Wed, 6 May 2020
+ 16:43:01 +0800
+Subject: Re: [PATCH] ARM: OMAP2+: remove unneeded variable "errata" in
+ configure_dma_errata()
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+CC:     <tony@atomide.com>, <peter.ujfalusi@ti.com>,
+        <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200506061900.19832-1-yanaijie@huawei.com>
+ <20200506082941.GA1559@shell.armlinux.org.uk>
+From:   Jason Yan <yanaijie@huawei.com>
+Message-ID: <c24dfb33-bbce-732e-c242-f4f4e6a1e04f@huawei.com>
+Date:   Wed, 6 May 2020 16:43:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] brcmsmac: remove Comparison to bool in brcms_b_txstatus()
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200504113357.41422-1-yanaijie@huawei.com>
-References: <20200504113357.41422-1-yanaijie@huawei.com>
-To:     Jason Yan <yanaijie@huawei.com>
-Cc:     <arend.vanspriel@broadcom.com>, <franky.lin@broadcom.com>,
-        <hante.meuleman@broadcom.com>, <chi-hsien.lin@cypress.com>,
-        <wright.feng@cypress.com>, <davem@davemloft.net>,
-        <yuehaibing@huawei.com>, <linux-wireless@vger.kernel.org>,
-        <brcm80211-dev-list.pdl@broadcom.com>,
-        <brcm80211-dev-list@cypress.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Jason Yan <yanaijie@huawei.com>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20200506084211.50A33C433F2@smtp.codeaurora.org>
-Date:   Wed,  6 May 2020 08:42:11 +0000 (UTC)
+In-Reply-To: <20200506082941.GA1559@shell.armlinux.org.uk>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.166.213.7]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jason Yan <yanaijie@huawei.com> wrote:
 
-> Fix the following coccicheck warning:
+
+ÔÚ 2020/5/6 16:29, Russell King - ARM Linux admin Ð´µÀ:
+> On Wed, May 06, 2020 at 02:19:00PM +0800, Jason Yan wrote:
+>> Fix the following coccicheck warning:
+>>
+>> arch/arm/mach-omap2/dma.c:82:10-16: Unneeded variable: "errata". Return
+>> "0" on line 161
 > 
-> drivers/net/wireless/broadcom/brcm80211/brcmsmac/main.c:1060:6-12:
-> WARNING: Comparison to bool
+> NAK.  Look closer at what the code is doing, thanks.
 > 
-> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+> This warning is basically incorrect.
+> 
 
-Patch applied to wireless-drivers-next.git, thanks.
+OK, the macro SET_DMA_ERRATA is using this variable.
 
-4f5cf93395d7 brcmsmac: remove Comparison to bool in brcms_b_txstatus()
-
--- 
-https://patchwork.kernel.org/patch/11525541/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
