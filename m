@@ -2,209 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F35D1C8E02
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 16:11:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 919D81C75C2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 18:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728470AbgEGOLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 10:11:12 -0400
-Received: from mail1.bemta26.messagelabs.com ([85.158.142.3]:13694 "EHLO
-        mail1.bemta26.messagelabs.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726518AbgEGOLG (ORCPT
+        id S1730040AbgEFQIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 12:08:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729418AbgEFQIx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 10:11:06 -0400
-Received: from [100.113.2.173] (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256 bits))
-        by server-3.bemta.az-a.eu-central-1.aws.symcld.net id 49/28-40432-4F614BE5; Thu, 07 May 2020 14:11:00 +0000
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrIIsWRWlGSWpSXmKPExsVy8MN7Xd0vYlv
-  iDM7NkreYf+Qcq8XhRS8YLW5++sZqcXnXHDaLpdcvMlm07j3C7sDmsWbeGkaPnbPusntsWtXJ
-  5vF5k1wASxRrZl5SfkUCa8avR4+YCm5rVqz6tZGxgfGCUhcjF4eQwBpGid1P9rB0MXICOZUSn
-  682M4PYvAIREvMaHjOC2JwCZhL7b61j72LkAKoxlbi8VBEkzCagI/Fo5nomEJtFQEXixt/DYL
-  awgK/EsTc72UFsEYFyiQMfZ7KC7GIWmMYosefjYaj5ghInZz4B28ssICFx8MULZogbtCTOrVn
-  FOIGRdxaSsllIyhYwMq1itEwqykzPKMlNzMzRNTQw0DU0NNY11jU0MtJLrNJN1Est1U1OzSsp
-  SgTK6iWWF+sVV+Ym56To5aWWbGIEhmtKIXPVDsaLy9/rHWKU5GBSEuVd8nlznBBfUn5KZUZic
-  UZ8UWlOavEhRhkODiUJ3v0iW+KEBItS01Mr0jJzgLEDk5bg4FES4bUGxo8Qb3FBYm5xZjpE6h
-  SjMcfvDUsWMXM8uHpvFbMQS15+XqqUOG8mSKkASGlGaR7cIFhMX2KUlRLmZWRgYBDiKUgtys0
-  sQZV/xSjOwagkzHtUFGgKT2ZeCdy+V0CnMAGd8vnTJpBTShIRUlINTEX3HawuLhVT31skUMCb
-  0XBu4pK00kQDafmTzdf/C9bcXj953gMVv4oVWvt/i00NE3bL3HFJZO0ei4zkj4f8U49+Y9P9G
-  rHhkZDth3jNN18S7pybGvgvKmD2zFutmxSctl2byKK+/XFTyvpn+co8SUefv13ik6twoNv/OI
-  /vLzP30iM6NT4L57/o1X/XP/PiZ76b25Ke75Y8UVc96ZxJOuN7m8W3zXtTekwnlcw3Kb/SLFt
-  4JovfIihcezfvM61D99PZe17uCYt1zFT95C8k7jyTLU9/2h+1ZQH159d93ftlzo2pQgxnXhzK
-  jU27azH/tOG9vb/6bdW2pi9c7e9opPzhSQmHfdjSFZ5Mq3p9FymxFGckGmoxFxUnAgA2XLTaZ
-  AMAAA==
-X-Env-Sender: roy.im.opensource@diasemi.com
-X-Msg-Ref: server-19.tower-223.messagelabs.com!1588860659!2836654!3
-X-Originating-IP: [193.240.239.45]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.50.1; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 13099 invoked from network); 7 May 2020 14:11:00 -0000
-Received: from unknown (HELO NB-EX-CASHUB01.diasemi.com) (193.240.239.45)
-  by server-19.tower-223.messagelabs.com with ECDHE-RSA-AES256-SHA384 encrypted SMTP; 7 May 2020 14:11:00 -0000
-Received: from krsrvapps-03.diasemi.com (10.95.17.51) by
- NB-EX-CASHUB01.diasemi.com (10.1.16.140) with Microsoft SMTP Server id
- 14.3.468.0; Thu, 7 May 2020 16:10:58 +0200
-Received: by krsrvapps-03.diasemi.com (Postfix, from userid 22266)      id
- 19A2B13F673; Thu,  7 May 2020 23:10:57 +0900 (KST)
-Message-ID: <ee344a1919a690734ed429bc63d82d5e9fc4a003.1588781316.git.Roy.Im@diasemi.com>
-In-Reply-To: <cover.1588781316.git.Roy.Im@diasemi.com>
-References: <cover.1588781316.git.Roy.Im@diasemi.com>
-From:   Roy Im <roy.im.opensource@diasemi.com>
-Date:   Thu, 7 May 2020 01:08:36 +0900
-Subject: [PATCH V13 2/3] dt-bindings: input: Add document bindings for DA7280
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Support Opensource <support.opensource@diasemi.com>,
-        <devicetree@vger.kernel.org>, <linux-input@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
+        Wed, 6 May 2020 12:08:53 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 168D8C061A0F;
+        Wed,  6 May 2020 09:08:53 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id x73so1827306lfa.2;
+        Wed, 06 May 2020 09:08:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=if5qgNlscRmpJPzG9Z3gnyaxZ0iIBynHsVjhr1Dlctg=;
+        b=eyheCbu3Wl4jWBLi16KmwXC3GUZfSR8nyYtYtWYhHzvEAIgisTgNndWd+2/Dmn4Fu3
+         1/oZO1IAPn6+vOlMTBDdlshLkF7l+t81nke8HHUt/QG94oWJqyYv91zK/x8cIh2JkzYY
+         SiY6Acsis1eShDIqatzkzYNXXugeecGd27RlgztExMUWAy7ZyTg+hq899Yt9jwljo6NT
+         oTUEHhn9ghJ9p/zYohANqpmvT5SK6bz6NY+aHmz3H2IcRdRkvmLUpcLxtsR0QBj8Wziu
+         Vesw1YJeeNK8g67yToViiZOrPAaIQJBycwOimRy0oehpSLGYq4Y838PHAzbbzZBH0LR8
+         sHlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=if5qgNlscRmpJPzG9Z3gnyaxZ0iIBynHsVjhr1Dlctg=;
+        b=iHd6nt9IcjtqEYsGsJqaL+Ll2ZHXzeeiPgI56bQu28tzvsIQF6Zans+BjzBHEQ+mlH
+         RGAZTGfnqd0Ea1NjUv/J+qPTeiFL0oX7WYgdeyaMQMGqlKLRXOwrDgMmo97RaiSaXInZ
+         ZXVgpqFxoxTRXF61ciDivbaTPMNjigKok40ddkjV2JeEH5EewhwXMvs3Nhg+R7q8dDIL
+         /iZkLNy9iOy2QQLGXwLSnvoDdgX2aHZyFGEXenxhWzm4UacrZGsG1FLfbifjx3qi+8Yw
+         mDkR7R3U1ZkAa+RGfP6xAm+oAiC8xDB2P4n1+2muBXCIg6VQCO77+NK16aPAQt4lCYVR
+         elGw==
+X-Gm-Message-State: AGi0Pubbj+LscFvT8jQXhpE4Wb50njhBJxa/SLBTyRtOC1NumS8Hncwf
+        qYCXi8wQk9yFseJvujT18WGR2M1y6pR28Fo/WZ0=
+X-Google-Smtp-Source: APiQypIkTeJRFv9Pb7bCztfKTE6r/gqFVdDFRACyd8JugwVuYo9Fzohu16CEHDV6PG4WB2H/mhehSpBDfnzO3UangrI=
+X-Received: by 2002:ac2:4105:: with SMTP id b5mr5786969lfi.94.1588781331398;
+ Wed, 06 May 2020 09:08:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <1588706059-4208-1-git-send-email-jrdr.linux@gmail.com>
+ <0bfe4a8a-0d91-ef9b-066f-2ea7c68571b3@nvidia.com> <CAFqt6zZMsQkOdjAb2k1EjwX=DtZ8gKfbRzwvreHOX-0vJLngNg@mail.gmail.com>
+ <20200506100649.GI17863@quack2.suse.cz> <CAFqt6zYaNkJ4AfVzutXS=JsN4fE41ZAvnw03vHWpdyiRHY1m_w@mail.gmail.com>
+ <20200506125930.GJ17863@quack2.suse.cz>
+In-Reply-To: <20200506125930.GJ17863@quack2.suse.cz>
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+Date:   Wed, 6 May 2020 21:38:40 +0530
+Message-ID: <CAFqt6zZztn_AiaGAhV+_uwrnVdKY-xLsxOwYBt-zGmLaat+OhQ@mail.gmail.com>
+Subject: Re: [RFC] mm/gup.c: Updated return value of {get|pin}_user_pages_fast()
+To:     Jan Kara <jack@suse.cz>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        Tony Luck <tony.luck@intel.com>, fenghua.yu@intel.com,
+        Rob Springer <rspringer@google.com>,
+        Todd Poynor <toddpoynor@google.com>, benchan@chromium.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        santosh.shilimkar@oracle.com,
+        "David S. Miller" <davem@davemloft.net>, kuba@kernel.org,
+        Ira Weiny <ira.weiny@intel.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        inux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "open list:ANDROID DRIVERS" <devel@driverdev.osuosl.org>,
+        tee-dev@lists.linaro.org, Linux-MM <linux-mm@kvack.org>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add device tree binding information for DA7280 haptic driver.
-Example bindings for DA7280 are added.
+On Wed, May 6, 2020 at 6:29 PM Jan Kara <jack@suse.cz> wrote:
+>
+> On Wed 06-05-20 17:51:39, Souptick Joarder wrote:
+> > On Wed, May 6, 2020 at 3:36 PM Jan Kara <jack@suse.cz> wrote:
+> > >
+> > > On Wed 06-05-20 02:06:56, Souptick Joarder wrote:
+> > > > On Wed, May 6, 2020 at 1:08 AM John Hubbard <jhubbard@nvidia.com> wrote:
+> > > > >
+> > > > > On 2020-05-05 12:14, Souptick Joarder wrote:
+> > > > > > Currently {get|pin}_user_pages_fast() have 3 return value 0, -errno
+> > > > > > and no of pinned pages. The only case where these two functions will
+> > > > > > return 0, is for nr_pages <= 0, which doesn't find a valid use case.
+> > > > > > But if at all any, then a -ERRNO will be returned instead of 0, which
+> > > > > > means {get|pin}_user_pages_fast() will have 2 return values -errno &
+> > > > > > no of pinned pages.
+> > > > > >
+> > > > > > Update all the callers which deals with return value 0 accordingly.
+> > > > >
+> > > > > Hmmm, seems a little shaky. In order to do this safely, I'd recommend
+> > > > > first changing gup_fast/pup_fast so so that they return -EINVAL if
+> > > > > the caller specified nr_pages==0, and of course auditing all callers,
+> > > > > to ensure that this won't cause problems.
+> > > >
+> > > > While auditing it was figured out, there are 5 callers which cares for
+> > > > return value
+> > > > 0 of gup_fast/pup_fast. What problem it might cause if we change
+> > > > gup_fast/pup_fast
+> > > > to return -EINVAL and update all the callers in a single commit ?
+> > >
+> > > Well, first I'd ask a different question: Why do you want to change the
+> > > current behavior? It's not like the current behavior is confusing.  Callers
+> > > that pass >0 pages can happily rely on the simple behavior of < 0 return on
+> > > error or > 0 return if we mapped some pages. Callers that can possibly ask
+> > > to map 0 pages can get 0 pages back - kind of expected - and I don't see
+> > > any benefit in trying to rewrite these callers to handle -EINVAL instead...
+> >
+> > Callers with a request to map 0 pages doesn't have a valid use case. But if any
+> > caller end up doing it mistakenly, -errno should be returned to caller
+> > rather than 0
+> > which will indicate more precisely that map 0 pages is not a valid
+> > request from caller.
+>
+> Well, I believe this depends on the point of view. Similarly as reading 0
+> bytes is successful, we could consider mapping 0 pages successful as well.
+> And there can be valid cases where number of pages to map is computed from
+> some input and when 0 pages should be mapped, it is not a problem and your
+> change would force such callers to special case this with explicitely
+> checking for 0 pages to map and not calling GUP in that case at all.
+>
+> I'm not saying what you propose is necessarily bad, I just say I don't find
+> it any better than the current behavior and so IMO it's not worth the
+> churn. Now if you can come up with some examples of current in-kernel users
+> who indeed do get the handling of the return value wrong, I could be
+> convinced otherwise.
 
-Reviewed-by: Rob Herring <robh@kernel.org>.
+There are 5 callers of {get|pin}_user_pages_fast().
 
-Signed-off-by: Roy Im <roy.im.opensource@diasemi.com>
+arch/ia64/kernel/err_inject.c#L145
+staging/gasket/gasket_page_table.c#L489
 
----
-v13: No changes.
-v12: No changes.
-v11: No changes.
-v10: No changes.
-v9: No changes.
-v8: Updated descriptions for new properties.
-v7: No changes.
-v6: No changes.
-v5: Updated descriptions and fixed errors.
-v4: Fixed commit message, properties.
-v3: Fixed subject format.
-v2: No changes
+Checking return value 0 doesn't make sense for above 2.
 
+drivers/platform/goldfish/goldfish_pipe.c#L277
+net/rds/rdma.c#L165
+drivers/tee/tee_shm.c#L262
 
- .../devicetree/bindings/input/dlg,da7280.txt       | 109 +++++++++++++++++++++
- 1 file changed, 109 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/input/dlg,da7280.txt
+These 3 callers have calculated the no of pages value before passing it to
+{get|pin}_user_pages_fast(). But if they end up passing nr_pages <= 0, a return
+value of either 0 or -EINVAL doesn't going to harm any existing
+behavior of callers.
 
-diff --git a/Documentation/devicetree/bindings/input/dlg,da7280.txt b/Documentation/devicetree/bindings/input/dlg,da7280.txt
-new file mode 100644
-index 0000000..e6b719d
---- /dev/null
-+++ b/Documentation/devicetree/bindings/input/dlg,da7280.txt
-@@ -0,0 +1,109 @@
-+Dialog Semiconductor DA7280 Haptics bindings
-+
-+Required properties:
-+- compatible: Should be "dlg,da7280".
-+- reg: Specifies the I2C slave address.
-+
-+- interrupt-parent : Specifies the phandle of the interrupt controller to
-+  which the IRQs from DA7280 are delivered to.
-+
-+- dlg,actuator-type: Set Actuator type. it should be one of:
-+  "LRA" - Linear Resonance Actuator type.
-+  "ERM-bar" - Bar type Eccentric Rotating Mass.
-+  "ERM-coin" - Coin type Eccentric Rotating Mass.
-+
-+- dlg,const-op-mode: Haptic operation mode for FF_CONSTANT.
-+  Possible values:
-+	1 - Direct register override(DRO) mode triggered by i2c(default),
-+	2 - PWM data source mode controlled by PWM duty,
-+- dlg,periodic-op-mode: Haptic operation mode for FF_PERIODIC.
-+  Possible values:
-+	1 - Register triggered waveform memory(RTWM) mode, the pattern
-+	    assigned to the PS_SEQ_ID played as much times as PS_SEQ_LOOP,
-+	2 - Edge triggered waveform memory(ETWM) mode, external GPI(N)
-+	    control are required to enable/disable and it needs to keep
-+	    device enabled by sending magnitude (X > 0),
-+	    the pattern is assigned to the GPI(N)_SEQUENCE_ID below.
-+	The default value is 1 for both of the operation modes.
-+	For more details, please see the datasheet.
-+
-+- dlg,nom-microvolt: Nominal actuator voltage rating.
-+  Valid values: 0 - 6000000.
-+- dlg,abs-max-microvolt: Absolute actuator maximum voltage rating.
-+  Valid values: 0 - 6000000.
-+- dlg,imax-microamp: Actuator max current rating.
-+  Valid values: 0 - 252000.
-+  Default: 130000.
-+- dlg,impd-micro-ohms: the impedance of the actuator in micro ohms.
-+  Valid values: 0 - 1500000000.
-+
-+Optional properties:
-+- pwms : phandle to the physical PWM(Pulse Width Modulation) device.
-+  PWM properties should be named "pwms". And number of cell is different
-+  for each pwm device.
-+  (See Documentation/devicetree/bindings/pwm/pwm.txt
-+   for further information relating to pwm properties)
-+
-+- dlg,ps-seq-id: the PS_SEQ_ID(pattern ID in waveform memory inside chip)
-+  to play back when RTWM-MODE is enabled.
-+  Valid range: 0 - 15.
-+- dlg,ps-seq-loop: the PS_SEQ_LOOP, Number of times the pre-stored sequence
-+  pointed to by PS_SEQ_ID or GPI(N)_SEQUENCE_ID is repeated.
-+  Valid range: 0 - 15.
-+- dlg,gpiN-seq-id: the GPI(N)_SEQUENCE_ID, pattern to play
-+  when gpi0 is triggered, 'N' must be 0 - 2.
-+  Valid range: 0 - 15.
-+- dlg,gpiN-mode: the pattern mode which can select either
-+  "Single-pattern" or "Multi-pattern", 'N' must be 0 - 2.
-+- dlg,gpiN-polarity: gpiN polarity which can be chosen among
-+  "Rising-edge", "Falling-edge" and "Both-edge",
-+  'N' must be 0 - 2
-+  Haptic will work by this edge option in case of ETWM mode.
-+
-+- dlg,resonant-freq-hz: use in case of LRA.
-+  the frequency range: 50 - 300.
-+  Default: 205.
-+
-+- dlg,bemf-sens-enable: Enable for internal loop computations.
-+- dlg,freq-track-enable: Enable for resonant frequency tracking.
-+- dlg,acc-enable: Enable for active acceleration.
-+- dlg,rapid-stop-enable: Enable for rapid stop.
-+- dlg,amp-pid-enable: Enable for the amplitude PID.
-+- dlg,mem-array: Customized waveform memory(patterns) data downloaded to
-+  the device during initialization. This is an array of 100 values(u8).
-+
-+For further information, see device datasheet.
-+
-+======
-+
-+Example:
-+
-+	haptics: da7280-haptics@4a {
-+		compatible = "dlg,da7280";
-+		reg = <0x4a>;
-+		interrupt-parent = <&gpio6>;
-+		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
-+		dlg,actuator-type = "LRA";
-+		dlg,dlg,const-op-mode = <1>;
-+		dlg,dlg,periodic-op-mode = <1>;
-+		dlg,nom-microvolt = <2000000>;
-+		dlg,abs-max-microvolt = <2000000>;
-+		dlg,imax-microamp = <170000>;
-+		dlg,resonant-freq-hz = <180>;
-+		dlg,impd-micro-ohms = <10500000>;
-+		dlg,freq-track-enable;
-+		dlg,rapid-stop-enable;
-+		dlg,mem-array = <
-+ 		  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
-+ 		  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
-+ 		  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
-+ 		  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
-+ 		  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
-+ 		  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
-+ 		  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
-+ 		  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
-+ 		  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
-+ 		  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
-+		>;
-+
-+	};
--- 
-end-of-patch for PATCH V13
-
+IMO, it is safe to return -errno for nr_pages <= 0, for
+{get|pin}_user_pages_fast().
