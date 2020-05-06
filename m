@@ -2,94 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04F0A1C73CB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:15:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 420D91C73F0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729421AbgEFPPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 11:15:14 -0400
-Received: from smtprelay0241.hostedemail.com ([216.40.44.241]:60978 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728821AbgEFPPN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 11:15:13 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id B51AB246E;
-        Wed,  6 May 2020 15:15:11 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3871:3872:3874:4250:4321:5007:8603:10004:10400:10848:11026:11232:11473:11657:11658:11914:12043:12048:12220:12296:12297:12438:12663:12740:12760:12895:13069:13161:13229:13255:13311:13357:13439:14096:14097:14181:14659:14721:21080:21627:30054:30055:30069:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: bears23_ff76a315943a
-X-Filterd-Recvd-Size: 2948
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf10.hostedemail.com (Postfix) with ESMTPA;
-        Wed,  6 May 2020 15:15:09 +0000 (UTC)
-Message-ID: <2208e464cd8bd399cfb9b49abb5aed211f27b3a8.camel@perches.com>
-Subject: Re: [PATCH -next] iwlwifi: pcie: Use bitwise instead of arithmetic
- operator for flags
-From:   Joe Perches <joe@perches.com>
-To:     Luciano Coelho <luciano.coelho@intel.com>,
-        Samuel Zou <zou_wei@huawei.com>, johannes.berg@intel.com,
-        emmanuel.grumbach@intel.com, linuxwifi@intel.com,
-        kvalo@codeaurora.org, davem@davemloft.net,
-        Julia Lawall <julia.lawall@lip6.fr>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, cocci <cocci@systeme.lip6.fr>
-Date:   Wed, 06 May 2020 08:15:08 -0700
-In-Reply-To: <bfd6b3a7db0c50cd3d084510bd43c9e540688edd.camel@intel.com>
-References: <1588734423-33988-1-git-send-email-zou_wei@huawei.com>
-         <f8b258e0c8bb073c445090e637195df2fc989543.camel@perches.com>
-         <bfd6b3a7db0c50cd3d084510bd43c9e540688edd.camel@intel.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.1-2 
+        id S1729524AbgEFPQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 11:16:01 -0400
+Received: from mail-oln040092254027.outbound.protection.outlook.com ([40.92.254.27]:22535
+        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729447AbgEFPPw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 11:15:52 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mr3xND6MI/Am3TP/x+KKG0+cR2hKuGchycm1L4JX2JbuqWRmicWRr8rlwrY72kglGmqGDd7AsIbnGavRh3C2yLGyNWO7pPF9zvzgqCOsOtAkHHIORzdAnY06d+XwnNp5qdBV3ir5RXxVEzOH5ivoiqzsL7F4fDslrcAY2rt81wg+OHbTgAes9uuCARAlqN2u4y9i7rxLN/cFMu30Ai46BGSwStMipfKodfEpLT5/uvK8wGbYavkQuy6eRtih9BJCYjhdkgUjmjJQnLG+eEZa3CxXMf8T0dLm1WgnJFiYdayTXJmje80zu0w1PkiyRsaAyh6/+xjaESoHwaXuSyILrw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RI4ZvFeMjLzYlGY1rF1hJ/6aYiLbdudKeutSOZqRRQg=;
+ b=lH2EF5cTvwYtGMUab1n67O+1uM3POxnxmolGoLRbQx0u6F1YJy0SU3uuVOOVsj97VEr6x5HQYqVedPdQ9sXYD4JCbRbBXDs50a34voeWarLyoaOzhy9F6cKyo7k0F4QZZMflILS1GAmQa3EQPJqQPIID4ofBXylNOHrSUt69BvWEz+fuSksT7+AFGFNLWtbaHidDzg0CgP3Ys1wnv09CcD1yqcH6xqY2RZJxwXWJQjKPWjk4wL40afPgIdf6CA7xVUTg1Zcdm41rQLfSTnNz7W+5y4DgZw+lcqTEZscH1Dc03cJisvrrqPkvWjncLsoZBduyrInmXtYdA/ZFOIOO2Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=outlook.com.au; dmarc=pass action=none
+ header.from=outlook.com.au; dkim=pass header.d=outlook.com.au; arc=none
+Received: from HK2APC01FT026.eop-APC01.prod.protection.outlook.com
+ (2a01:111:e400:7ebc::4b) by
+ HK2APC01HT238.eop-APC01.prod.protection.outlook.com (2a01:111:e400:7ebc::490)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.27; Wed, 6 May
+ 2020 15:15:47 +0000
+Received: from PSXP216MB0438.KORP216.PROD.OUTLOOK.COM (10.152.248.53) by
+ HK2APC01FT026.mail.protection.outlook.com (10.152.248.174) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2979.27 via Frontend Transport; Wed, 6 May 2020 15:15:47 +0000
+X-IncomingTopHeaderMarker: OriginalChecksum:700999ACCD16A2AFF04FE910C14BCBEE942B6EEEC7A4D6D4100AA494BB72F075;UpperCasedChecksum:34E65D70D797FC91C0465C7C0162B7E24C00D4C5A55E5D55CB9095B1A76B7D04;SizeAsReceived:8489;Count:48
+Received: from PSXP216MB0438.KORP216.PROD.OUTLOOK.COM
+ ([fe80::21f1:20fb:d1f:8e25]) by PSXP216MB0438.KORP216.PROD.OUTLOOK.COM
+ ([fe80::21f1:20fb:d1f:8e25%7]) with mapi id 15.20.2979.028; Wed, 6 May 2020
+ 15:15:46 +0000
+Date:   Wed, 6 May 2020 23:15:36 +0800
+From:   Nicholas Johnson <nicholas.johnson-opensource@outlook.com.au>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Lukas Wunner <lukas@wunner.de>,
+        Alex Deucher <alexdeucher@gmail.com>,
+        "Zhou, David(ChunMing)" <David1.Zhou@amd.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>
+Subject: Re: [PATCH 0/1] Fiji GPU audio register timeout when in BACO state
+Message-ID: <PSXP216MB0438F42EB2405C4215DF0BF280A40@PSXP216MB0438.KORP216.PROD.OUTLOOK.COM>
+References: <CADnq5_Mjb_FnNOzjUfJZ7GSDzi-+Cfc1ZTuqm7UWCWVvY6DU_w@mail.gmail.com>
+ <s5hwo5xj98v.wl-tiwai@suse.de>
+ <PSXP216MB0438FE3E1CA577805BEC23C880AA0@PSXP216MB0438.KORP216.PROD.OUTLOOK.COM>
+ <s5hh7x0kiwb.wl-tiwai@suse.de>
+ <PSXP216MB04381A30909F66867E6B6BCC80AA0@PSXP216MB0438.KORP216.PROD.OUTLOOK.COM>
+ <s5h1ro4kgog.wl-tiwai@suse.de>
+ <s5h7dxuizep.wl-tiwai@suse.de>
+ <20200502071728.fn2fcqvt6aies3zu@wunner.de>
+ <s5h368iiyos.wl-tiwai@suse.de>
+ <s5hpnbmhcmu.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <s5hpnbmhcmu.wl-tiwai@suse.de>
+X-ClientProxiedBy: SYAPR01CA0034.ausprd01.prod.outlook.com (2603:10c6:1:1::22)
+ To PSXP216MB0438.KORP216.PROD.OUTLOOK.COM (2603:1096:300:d::20)
+X-Microsoft-Original-Message-ID: <20200506151536.GA4636@nicholas-dell-linux>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from nicholas-dell-linux (2001:44b8:605f:11:45ec:d37e:a989:bf24) by SYAPR01CA0034.ausprd01.prod.outlook.com (2603:10c6:1:1::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.26 via Frontend Transport; Wed, 6 May 2020 15:15:42 +0000
+X-Microsoft-Original-Message-ID: <20200506151536.GA4636@nicholas-dell-linux>
+X-TMN:  [ZFrRSr9vjLRyEvwVgo3i/0Zmw7a1m9PV7o4xUgDwV/s2y3VWHBIesyYDYIIOArlX]
+X-MS-PublicTrafficType: Email
+X-IncomingHeaderCount: 48
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-Correlation-Id: 03fab1b8-c161-455e-05e3-08d7f1d0592c
+X-MS-TrafficTypeDiagnostic: HK2APC01HT238:
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YFzYRAoBbjotzjAlpBV/qB1xfckF1pztQsz+6mgOuEc7L0PkkGca/inFo3/AzjPrSi+szvPbO1O9YFo3Sha/qGI6UH4k5YBnUhWE63bLpNsqfX2tzNndFYuc5co/u4ePN/Xls5SlfZMGZjIokqvUGYW1H1+F0VC1Q55W33kxdE+FAkONYYaMJlNdl+qlw0glYyft6Y88Kyi7/IVlN/r7Jw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:0;SRV:;IPV:NLI;SFV:NSPM;H:PSXP216MB0438.KORP216.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFTY:;SFS:;DIR:OUT;SFP:1901;
+X-MS-Exchange-AntiSpam-MessageData: H+qiLUzndFozG4cbIahV27ULRI5oAOHjUib5yboapRrMuugOUHkgbSa3HUuCKYPPYCKoptmL5wWb8Ol6Nu95YJw6uxUgzkkyRKjob8IPhhLjSfNEGk5+GuAvHNNQIMODV5ex6TCdAsG6oMyLozZtpLOljl2W//vTcQfOEg2mXrgCqooPsHzFnqib5GFB7GRAXPCgzTiMARL9uZNz231Lcg==
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 03fab1b8-c161-455e-05e3-08d7f1d0592c
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 May 2020 15:15:46.5255
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK2APC01HT238
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-05-06 at 16:51 +0300, Luciano Coelho wrote:
-> On Tue, 2020-05-05 at 20:19 -0700, Joe Perches wrote:
-> > On Wed, 2020-05-06 at 11:07 +0800, Samuel Zou wrote:
-> > > This silences the following coccinelle warning:
+On Sat, May 02, 2020 at 12:09:13PM +0200, Takashi Iwai wrote:
+> On Sat, 02 May 2020 09:27:31 +0200,
+> Takashi Iwai wrote:
+> > 
+> > On Sat, 02 May 2020 09:17:28 +0200,
+> > Lukas Wunner wrote:
 > > > 
-> > > "WARNING: sum of probable bitmasks, consider |"
+> > > On Sat, May 02, 2020 at 09:11:58AM +0200, Takashi Iwai wrote:
+> > > > --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> > > > +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> > > > @@ -673,6 +673,12 @@ static int amdgpu_dm_audio_component_bind(struct device *kdev,
+> > > >  	struct amdgpu_device *adev = dev->dev_private;
+> > > >  	struct drm_audio_component *acomp = data;
+> > > >  
+> > > > +	if (!device_link_add(hda_kdev, kdev, DL_FLAG_STATELESS |
+> > > > +			     DL_FLAG_PM_RUNTIME)) {
+> > > > +		DRM_ERROR("DM: cannot add device link to audio device\n");
+> > > > +		return -ENOMEM;
+> > > > +	}
+> > > > +
+> > > 
+> > > Doesn't this duplicate drivers/pci/quirks.c:quirk_gpu_hda() ?
 > > 
-> > I suggest instead ignoring bad and irrelevant warnings.
+> > Gah, you're right, that was the place I overlooked.
+> > It was a typical "false Eureka right-after-wakeup" phenomenon :)
+> > Need a vaccine aka coffee...
 > > 
-> > PREFIX_LEN is 32 not 0x20 or BIT(5)
-> > PCI_DUMP_SIZE is 352
-> > 
-> > > diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/trans.c b/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
-> > []
-> > > @@ -109,9 +109,9 @@ void iwl_trans_pcie_dump_regs(struct iwl_trans *trans)
-> > >  
-> > >  	/* Alloc a max size buffer */
-> > >  	alloc_size = PCI_ERR_ROOT_ERR_SRC +  4 + PREFIX_LEN;
-> > > -	alloc_size = max_t(u32, alloc_size, PCI_DUMP_SIZE + PREFIX_LEN);
-> > > -	alloc_size = max_t(u32, alloc_size, PCI_MEM_DUMP_SIZE + PREFIX_LEN);
-> > > -	alloc_size = max_t(u32, alloc_size, PCI_PARENT_DUMP_SIZE + PREFIX_LEN);
-> > > +	alloc_size = max_t(u32, alloc_size, PCI_DUMP_SIZE | PREFIX_LEN);
-> > > +	alloc_size = max_t(u32, alloc_size, PCI_MEM_DUMP_SIZE | PREFIX_LEN);
-> > > +	alloc_size = max_t(u32, alloc_size, PCI_PARENT_DUMP_SIZE | PREFIX_LEN);
-> > >  
-> > >  	buf = kmalloc(alloc_size, GFP_ATOMIC);
-> > >  	if (!buf)
+> > So the runtime PM dependency must be already placed there, and the
+> > problem is not the lack of the dependency tree but the really other
+> > timing issue.  Back to square.
 > 
-> Yeah, those macros are clearly not bitmasks.  I'm dropping this patch.
+> One interesting test is to open the stream while the mode isn't set
+> yet and see whether the same problem appears.
+> Namely, after the monitor is connected but no mode is set, run
+> directly like
+>    aplay -Dhdmi:1,0 foo.wav
+> You might need to wrap the command with pasuspender if PA is active.
+I could not figure out how to get the interface for aplay set other than 
+not specifying it and having it find the default device (which can 
+change). I even used aplay -L and aplay -l to show devices. I could not 
+get it working.
 
-Can the cocci script that generated this warning
+Is there anything else I can try? I did not apply the last patch when it 
+was pointed out that it is already a quirk.
 
-scripts/coccinelle/misc/orplus.cocci
-
-be dropped or improved to validate the likelihood that
-the defines or constants used are more likely than
-not are bit values?
-
-Maybe these should be defined as hex or BIT or BIT_ULL
-or GENMASK or the like?
-
-
-Right now it seems it just tests for two constants.
-
-
+Regards,
+Nicholas
+> 
+> 
+> Takashi
