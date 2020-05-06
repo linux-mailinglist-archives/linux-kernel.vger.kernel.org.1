@@ -2,90 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C9EA1C6CBD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 11:19:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E3101C6CD9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 11:26:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729030AbgEFJTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 05:19:52 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:3861 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728385AbgEFJTw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 05:19:52 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id ED36674D501AC1816258;
-        Wed,  6 May 2020 17:19:49 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 6 May 2020 17:19:39 +0800
-From:   Samuel Zou <zou_wei@huawei.com>
-To:     <dan.j.williams@intel.com>, <vkoul@kernel.org>
-CC:     <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Samuel Zou <zou_wei@huawei.com>
-Subject: [PATCH -next] dmaengine: ti: k3-udma: Use PTR_ERR_OR_ZERO() to simplify code
-Date:   Wed, 6 May 2020 17:25:46 +0800
-Message-ID: <1588757146-38858-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        id S1729033AbgEFJ0t convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 May 2020 05:26:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728385AbgEFJ0s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 05:26:48 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79459C061A0F
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 02:26:48 -0700 (PDT)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1jWGK5-0000MG-HH; Wed, 06 May 2020 11:26:37 +0200
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1jWGK2-0004UH-Q5; Wed, 06 May 2020 11:26:34 +0200
+Message-ID: <b1af9917885ee3da60de1385edd2d8094ecb3b7d.camel@pengutronix.de>
+Subject: Re: [PATCH v2 22/91] reset: Move reset-simple header out of
+ drivers/reset
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Maxime Ripard <maxime@cerno.tech>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Eric Anholt <eric@anholt.net>
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-rpi-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>
+Date:   Wed, 06 May 2020 11:26:34 +0200
+In-Reply-To: <6f7651682a6dab539bd89c80704c8303bbae68bd.1587742492.git-series.maxime@cerno.tech>
+References: <cover.d1e741d37e43e1ba2d2ecd93fc81d42a6df99d14.1587742492.git-series.maxime@cerno.tech>
+         <6f7651682a6dab539bd89c80704c8303bbae68bd.1587742492.git-series.maxime@cerno.tech>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes coccicheck warnings:
+On Fri, 2020-04-24 at 17:34 +0200, Maxime Ripard wrote:
+> The reset-simple code can be useful for drivers outside of drivers/reset
+> that have a few reset controls as part of their features. Let's move it to
+> include/linux/reset.
+> 
+> Cc: Philipp Zabel <p.zabel@pengutronix.de>
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 
-drivers/dma/ti/k3-udma.c:1294:1-3: WARNING: PTR_ERR_OR_ZERO can be used
-drivers/dma/ti/k3-udma.c:1311:1-3: WARNING: PTR_ERR_OR_ZERO can be used
-drivers/dma/ti/k3-udma.c:1376:1-3: WARNING: PTR_ERR_OR_ZERO can be used
+Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Samuel Zou <zou_wei@huawei.com>
----
- drivers/dma/ti/k3-udma.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+Do you need the reset patches applied together with this series, or can
+I pick them up individually?
 
-diff --git a/drivers/dma/ti/k3-udma.c b/drivers/dma/ti/k3-udma.c
-index 0a04174..f5775ca 100644
---- a/drivers/dma/ti/k3-udma.c
-+++ b/drivers/dma/ti/k3-udma.c
-@@ -1291,10 +1291,8 @@ static int udma_get_tchan(struct udma_chan *uc)
- 	}
- 
- 	uc->tchan = __udma_reserve_tchan(ud, uc->config.channel_tpl, -1);
--	if (IS_ERR(uc->tchan))
--		return PTR_ERR(uc->tchan);
- 
--	return 0;
-+	return PTR_ERR_OR_ZERO(uc->tchan);
- }
- 
- static int udma_get_rchan(struct udma_chan *uc)
-@@ -1308,10 +1306,8 @@ static int udma_get_rchan(struct udma_chan *uc)
- 	}
- 
- 	uc->rchan = __udma_reserve_rchan(ud, uc->config.channel_tpl, -1);
--	if (IS_ERR(uc->rchan))
--		return PTR_ERR(uc->rchan);
- 
--	return 0;
-+	return PTR_ERR_OR_ZERO(uc->rchan);
- }
- 
- static int udma_get_chan_pair(struct udma_chan *uc)
-@@ -1373,10 +1369,8 @@ static int udma_get_rflow(struct udma_chan *uc, int flow_id)
- 	}
- 
- 	uc->rflow = __udma_get_rflow(ud, flow_id);
--	if (IS_ERR(uc->rflow))
--		return PTR_ERR(uc->rflow);
- 
--	return 0;
-+	return PTR_ERR_OR_ZERO(uc->rflow);
- }
- 
- static void udma_put_rchan(struct udma_chan *uc)
--- 
-2.6.2
-
+regards
+Philipp
