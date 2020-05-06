@@ -2,98 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D96E61C7C98
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 23:40:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EBA11C7C95
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 23:40:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730029AbgEFVk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 17:40:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33152 "EHLO
+        id S1729875AbgEFVkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 17:40:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728621AbgEFVk6 (ORCPT
+        by vger.kernel.org with ESMTP id S1728621AbgEFVko (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 17:40:58 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC661C061A0F;
-        Wed,  6 May 2020 14:40:57 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id w2so3440797edx.4;
-        Wed, 06 May 2020 14:40:57 -0700 (PDT)
+        Wed, 6 May 2020 17:40:44 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB7AEC061A0F;
+        Wed,  6 May 2020 14:40:42 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id rh22so2705113ejb.12;
+        Wed, 06 May 2020 14:40:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=LXXs5LjNhXfTMDLlshuYhmrYmHs5uv6Ir1TO6JX74Qw=;
-        b=QrhsV9z5Ly7gtxIhu16wP0b+RIj2Cys6z7a/RIhLtLIAYGRmpN0xTUrudpNbfuNwLq
-         8aswalpES5l5EEI0geh/NnIEKuJEzh5vXnu3u989LTUOqApWSsOuNzZdHUO4xREim/OU
-         283+bvMXk97s2NRNwPfrAYs96I2SlG7JqGH3B+mKna91VGjyZYZAr6piSwOsIKTfM4eL
-         g9JT2boMYrni98DIKtHx0gVgBeo2/sVP3qLd1OoVej1/6GovMo0k61if9Wht8yd4eCCj
-         cjP2AMER+XK45Cg7MnjUppMkYBvY5xvUUjGe7A/+LZgyA57i92nXTQw/Ci4SL5Rz4tdL
-         ACSA==
+        bh=ICA08eo2A+qP7RtXmrfg2CY1fdR7TD7YkRgnps9JOzE=;
+        b=cH/93Cd9cgBcrTrT7Mv6ggZmvk02MtrgH1b/9h+qdX57UGj0tckw19IPgbfASl0az9
+         Ix9a291erbKk7XqEl1Bw1YwWxnxnmXQ7Iw5j3FeeOnyLebw5ye44+k+r31/jC+BpRLV3
+         8PpwgMGHPp9GaHEKB8KcDSW5lAUyfLfsGaXWKWaHu2NtuqFLop8xt17Rrj4hz+AYzrgz
+         bNO0APyAprnHMK/1cGt4nv2CKnZbetJJjipsqubhdUD3ADfVAyZv0YlO+egx+caIcfd2
+         wGhLyylogXp7AHKVRkMQ+WTYsENt9wFYv4SaHIh8Hz0Ca/KuwVcRzvHh/zjioqimXnKU
+         ZG/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=LXXs5LjNhXfTMDLlshuYhmrYmHs5uv6Ir1TO6JX74Qw=;
-        b=o78gxvcVi5DjbIRMXbtRU9JRSSlYKHkspVFS87vvDN6oNLYgLLjeFn5g/GqnaYkzsQ
-         RaFVdqw1i78KmDvkppNFWcMMDWDfAR8vOsyFPtU6ArNcnBZBcp1NhruFCKVFc0p/POzV
-         GSqhW4jjc5aJQctZQbWqzAZWUD5dg4632WB3QBWYd1UbWFg0cprhuymzLfnGoJVO7TDX
-         gP2tFL1aHe7XTVAenM4LwBE5RgrrWW7GcIItkOHUxodmSBnVV3r8uLODsQiQ/cEUjUOo
-         fguLslYq3vS/+jWG4wsnQqD5BDaQDnldGxwhVbIZJPB4De8WvFbYgye5uoKFhAm1y7fP
-         sFrw==
-X-Gm-Message-State: AGi0PubeZuQy6aM78mKkmKsNY6/TLqgzeW2SpOtctwjbzxTwLQ/SEM7q
-        yDBeIGH7PTamx6mNnpiVG/d7Je9XyI2TEsSHafM=
-X-Google-Smtp-Source: APiQypJgWIk0ip7ySmymMEWqtUOhgHq7HRKnJvWS8Q9T1ZrhWCiLPpV+NYi8cPogzhd9NXi/bhzkYmUl8zrSjzjMlMU=
-X-Received: by 2002:aa7:db0b:: with SMTP id t11mr8508257eds.304.1588801256576;
- Wed, 06 May 2020 14:40:56 -0700 (PDT)
+        bh=ICA08eo2A+qP7RtXmrfg2CY1fdR7TD7YkRgnps9JOzE=;
+        b=E0+WL+BwEfmeZPz5MYIaZgygoJQYlw8UrIGZbqRKP4rLYbFAQFx9ZzEhuPf2f24xyf
+         Nrl2DoNtnRTHz5slm90MgEKJUfVw23ha0MYMMMyTMEY2+xnrA2VKo8uLHE7yojw1WmzT
+         tdyYrNRjZGZquJtjosGk1Dlf+D1izJY1SC9kKzlfwoWFIRWRISIfGbMRaashGkZKJ2nx
+         7RMOzXEzuj6GWTIed4CaXp99JsppFwb2W9syIEaq+vIC28NeuAz7fDsrE4tcYy0AZRCc
+         /57KreG/T1m8ORqna7IJUOCfJEabnRkxmPXuesd8bJ0Eb89NMmZidiwgQ/z5p+06QhNj
+         cMrw==
+X-Gm-Message-State: AGi0PuZk1gpf+mAx/G54essh71pC61nwz+Z567/C38M1im2c7YHv1QsC
+        uQKoBWknJjvGVPxOr3N/XizNXQCpuF7G9sJPtGU=
+X-Google-Smtp-Source: APiQypJnw0Jz2ypKpzJSJkiIrfJb3kLjeivaSwH/8wusiDlBWyXe5u+Atl3yINQgW/XjkecO1pqvluM/TJX9osgD2PE=
+X-Received: by 2002:a17:906:355b:: with SMTP id s27mr9460830eja.184.1588801241411;
+ Wed, 06 May 2020 14:40:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200501203505.144362-1-konradybcio@gmail.com> <1bd1e0ea-0be3-340c-9c2a-0e7a03017cc4@linaro.org>
-In-Reply-To: <1bd1e0ea-0be3-340c-9c2a-0e7a03017cc4@linaro.org>
-From:   Konrad Dybcio <konradybcio@gmail.com>
-Date:   Wed, 6 May 2020 23:40:20 +0200
-Message-ID: <CAMS8qEWGX-55yGfd4QGO9OE5b2oaaiWdoe1=v2uPVhKJ2LKrZQ@mail.gmail.com>
-Subject: Re: [PATCH 0/2] Add support for venus on msm8939
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Cc:     skrzynka@konradybcio.pl, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-media@vger.kernel.org, DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Vincent Knecht <vincent.knecht@mailoo.org>
+References: <20200505210253.20311-1-f.fainelli@gmail.com> <20200505172302.GB1170406@t480s.localdomain>
+ <d681a82b-5d4b-457f-56de-3a439399cb3d@gmail.com>
+In-Reply-To: <d681a82b-5d4b-457f-56de-3a439399cb3d@gmail.com>
+From:   Vladimir Oltean <olteanv@gmail.com>
+Date:   Thu, 7 May 2020 00:40:30 +0300
+Message-ID: <CA+h21hpvC6ST2iv-4xjpwpmRHQJvk-AufYFvG0J=5KzUgcnC5A@mail.gmail.com>
+Subject: Re: [RFC net] net: dsa: Add missing reference counting
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
+        netdev <netdev@vger.kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stan,
+Hi Florian,
 
-Unfortunately it seems like I made some mistakes, as I've pointed out
-in the reply in [1/2] patch,
-and therefore this submission can go to the bin and wait for a v2. But
-answering your question
-wrt to 8939:
+On Thu, 7 May 2020 at 00:24, Florian Fainelli <f.fainelli@gmail.com> wrote:
+>
+>
+>
+> On 5/5/2020 2:23 PM, Vivien Didelot wrote:
+> > On Tue,  5 May 2020 14:02:53 -0700, Florian Fainelli <f.fainelli@gmail.com> wrote:
+> >> If we are probed through platform_data we would be intentionally
+> >> dropping the reference count on master after dev_to_net_device()
+> >> incremented it. If we are probed through Device Tree,
+> >> of_find_net_device() does not do a dev_hold() at all.
+> >>
+> >> Ensure that the DSA master device is properly reference counted by
+> >> holding it as soon as the CPU port is successfully initialized and later
+> >> released during dsa_switch_release_ports(). dsa_get_tag_protocol() does
+> >> a short de-reference, so we hold and release the master at that time,
+> >> too.
+> >>
+> >> Fixes: 83c0afaec7b7 ("net: dsa: Add new binding implementation")
+> >> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> >
+> > Reviewed-by: Vivien Didelot <vivien.didelot@gmail.com>
+> >
+> Andrew, Vladimir, any thoughts on that?
+> --
+> Florian
 
-The platform is currently shaping out good, as we can reuse a large
-number of 8916 drivers.
-At the moment we have 4 out of 8 cores working reliably with
-out-of-tree patches (8939 doesn't support psci)
-and the latter 8 cores aren't there only because of the core
-interconnect not being handled yet
-(well they can be enabled but performance goes waaaay down when one does so).
-As for other features, I have adreno, iommu, i2c, sdhci and other
-basic things like that working,
-and Vincent Knecht (cc) with an Alcatel Idol 3 5.5 (same SoC) even
-reportedly got USB and
-Wi-Fi to work (though we have different hardware in both situations).
-Currently Vincent and I have local support for the aforementioned
-Alcatel, Asus Zenfone 2 Laser
-1080p (Z00T) and partial support (as in no panel yet) for Sony Xperia
-M4 Aqua with Linaro
-folks preparing some drivers (like GCC) for an unknown-to-me 8939 board
-(or perhaps a phone, too?). I already pushed Adreno 405 enablement to
-mesa, too and it's
-going to be there in the next release, so this platform will only get
-better from now.
+I might be completely off because I guess I just don't understand what
+is the goal of keeping a reference to the DSA master in this way for
+the entire lifetime of the DSA switch. I think that dev_hold is for
+short-term things that cannot complete atomically, but I think that
+you are trying to prevent the DSA master from getting freed from under
+our feet, which at the moment would fault the kernel instantaneously?
 
-Konrad
+If this is correct, it certainly doesn't do what it intends to do:
+echo 0000\:00\:00.5> /sys/bus/pci/drivers/mscc_felix/unbind
+[   71.576333] unregister_netdevice: waiting for swp0 to become free.
+Usage count = 1
+(hangs there)
+
+But if I'm right and that's indeed what you want to achieve, shouldn't
+we be using device links instead?
+https://www.kernel.org/doc/html/v4.14/driver-api/device_link.html
+
+Thanks,
+-Vladimir
