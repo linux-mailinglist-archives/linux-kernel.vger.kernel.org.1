@@ -2,75 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB6721C70BB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 14:49:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05F211C70DC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 14:53:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728293AbgEFMs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 08:48:58 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:3823 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728181AbgEFMs6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 08:48:58 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id C3A5226F2CDBECB1275D;
-        Wed,  6 May 2020 20:48:55 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 6 May 2020 20:48:49 +0800
-From:   Wei Yongjun <weiyongjun1@huawei.com>
-To:     <gregkh@linuxfoundation.org>, <simon@nikanor.nu>,
-        <jeremy@azazel.net>, <dan.carpenter@oracle.com>
-CC:     Wei Yongjun <weiyongjun1@huawei.com>, <devel@driverdev.osuosl.org>,
-        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
-Subject: [PATCH -next] staging: kpc2000: fix error return code in kp2000_pcie_probe()
-Date:   Wed, 6 May 2020 12:52:55 +0000
-Message-ID: <20200506125255.90336-1-weiyongjun1@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1728600AbgEFMxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 08:53:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36036 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728092AbgEFMxV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 08:53:21 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8A2E22073A;
+        Wed,  6 May 2020 12:53:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588769601;
+        bh=GLqGiShNV7uuHX1J4JVdEeZ8Lm493f3dGVJYOjNFwFM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ecG4eBfuUCMEVv8mQ1OercE8djLhgASVwNICQvA98pjw2xky52wgWRWglzCHCz2+r
+         R3UAk95i0uT52IkxlFoJan8cyKK6F3Rnge3TttIYTQ1Y4mAqbAwsXSa8DmbgWTYcIo
+         a4uziYES9AHwqBmU2vcNSY6Eta7vOlPn5ecrl5oU=
+Date:   Wed, 6 May 2020 13:53:16 +0100
+From:   Will Deacon <will@kernel.org>
+To:     =?utf-8?B?77+91rXvv73vv73vv70vRE9OR0hZRU9L?= CHOE 
+        <d7271.choe@samsung.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        hosung0.kim@samsung.com, changki.kim@samsung.com,
+        hajun.sung@samsung.com, gregkh@google.com, youngmin.nam@samsung.com
+Subject: Re: Reqeust export symbol for API in arch/arm64/*
+Message-ID: <20200506125315.GH8043@willie-the-truck>
+References: <CGME20200506124645epcas2p25a8efbe59fa20194e19d642227dd47ae@epcas2p2.samsung.com>
+ <00bc01d623a4$669d1e70$33d75b50$@samsung.com>
 MIME-Version: 1.0
-Content-Type:   text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <00bc01d623a4$669d1e70$33d75b50$@samsung.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function. Also
-removed var 'rv' since we can use 'err' instead.
+On Wed, May 06, 2020 at 09:46:45PM +0900, �ֵ���/DONGHYEOK CHOE wrote:
+> I am software engineer in charge of BSP (Samsung SOC vendor).
+> 
+> Recently, Google introduced GKI from Android R version.
+> We cannot use mainline API without 'export symbol' by the GKI policy.
+> But we want to make an arm64 specific vendor driver in {kernel source
+> root}/drivers/soc/samsung/*.
+> 
+> Could you support us to use the below APIs?
 
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
----
- drivers/staging/kpc2000/kpc2000/core.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+Sorry, but as a general rule of thumb the kernel doesn't EXPORT symbols
+that are not used by in-tree modules. You'll need to submit your drivers
+along with the patches doing the exports if they are to be considered
+for inclusion.
 
-diff --git a/drivers/staging/kpc2000/kpc2000/core.c b/drivers/staging/kpc2000/kpc2000/core.c
-index 7b00d7069e21..14e07742dc9d 100644
---- a/drivers/staging/kpc2000/kpc2000/core.c
-+++ b/drivers/staging/kpc2000/kpc2000/core.c
-@@ -298,7 +298,6 @@ static int kp2000_pcie_probe(struct pci_dev *pdev,
- {
- 	int err = 0;
- 	struct kp2000_device *pcard;
--	int rv;
- 	unsigned long reg_bar_phys_addr;
- 	unsigned long reg_bar_phys_len;
- 	unsigned long dma_bar_phys_addr;
-@@ -445,11 +444,11 @@ static int kp2000_pcie_probe(struct pci_dev *pdev,
- 	if (err < 0)
- 		goto err_release_dma;
- 
--	rv = request_irq(pcard->pdev->irq, kp2000_irq_handler, IRQF_SHARED,
-+	err = request_irq(pcard->pdev->irq, kp2000_irq_handler, IRQF_SHARED,
- 			 pcard->name, pcard);
--	if (rv) {
-+	if (err) {
- 		dev_err(&pcard->pdev->dev,
--			"%s: failed to request_irq: %d\n", __func__, rv);
-+			"%s: failed to request_irq: %d\n", __func__, err);
- 		goto err_disable_msi;
- 	}
+Thanks,
 
-
-
+Will
