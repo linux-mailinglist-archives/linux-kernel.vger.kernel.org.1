@@ -2,64 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4168C1C6C43
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 10:55:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3241F1C6C5A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 11:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728850AbgEFIzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 04:55:13 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:3816 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726935AbgEFIzN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 04:55:13 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id E0B60D0BB59F771AB944;
-        Wed,  6 May 2020 16:55:09 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 6 May 2020 16:54:59 +0800
-From:   Samuel Zou <zou_wei@huawei.com>
-To:     <ajayg@nvidia.com>
-CC:     <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Samuel Zou <zou_wei@huawei.com>
-Subject: [PATCH -next] i2c: nvidia-gpu: Use PTR_ERR_OR_ZERO() to simplify code
-Date:   Wed, 6 May 2020 17:01:10 +0800
-Message-ID: <1588755670-38476-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        id S1729023AbgEFJBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 05:01:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43150 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728679AbgEFJBb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 05:01:31 -0400
+Received: from coco.lan (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 97440206B8;
+        Wed,  6 May 2020 09:01:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588755690;
+        bh=4sIpXubP0+sC8ylxmrF8TVm46EBH4JzVOxBG2NmOZFw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=lRL5L2xpknMLiaSJ2rXgF9zUKhEQqN9Udn0GejmwRbdhZsqrwey3OQXwZLC33P+KZ
+         IEoA5XO+CJ4iKAD8MaWXe5MwAIp/Avpg1KyLxKL27NnCbVyCQBPNTq/5xcYW3+3GKb
+         n5sasde/HOjxjaCeTe/rcuYpIMWQt7hgSgigiI9s=
+Date:   Wed, 6 May 2020 11:01:25 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
+Cc:     "sean@mess.org" <sean@mess.org>,
+        "kstewart@linuxfoundation.org" <kstewart@linuxfoundation.org>,
+        "allison@lohutok.net" <allison@lohutok.net>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "skhan@linuxfoundation.org" <skhan@linuxfoundation.org>,
+        "linux-kernel-mentees@lists.linuxfoundation.org" 
+        <linux-kernel-mentees@lists.linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC, WIP, v4 11/11] media: vidtv: Add a MPEG Transport Stream
+ Multiplexer
+Message-ID: <20200506110125.03f42b03@coco.lan>
+In-Reply-To: <48DFD57D-AE44-4117-A408-F6D557281FB0@getmailspring.com>
+References: <20200503111338.53db66b8@coco.lan>
+        <48DFD57D-AE44-4117-A408-F6D557281FB0@getmailspring.com>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes coccicheck warning:
+Em Wed, 6 May 2020 04:05:25 -0300
+"Daniel W. S. Almeida" <dwlsalmeida@gmail.com> escreveu:
 
-drivers/i2c/busses/i2c-nvidia-gpu.c:280:1-3: WARNING: PTR_ERR_OR_ZERO can be used
+> Hi Mauro! Thank you for reviewing this!
+> 
+> 
+> >> Add a MPEG Transport Stream multiplexer responsible for polling encoders,
+> >> interleaving packets, padding the resulting stream with NULL packets if
+> >> necessary and then delivering the resulting TS packets to the bridge
+> >> driver so it can feed the demux.
+> >> 
+> >> This patch includes a "channel" abstraction, which attempts to map a
+> >> MPEG service into a struct that vidtv can work with.
+> >> 
+> >> When vidtv boots, it will create some hardcoded channels:
+> >> 
+> >> -Their services will be concatenated to populate the SDT.
+> >> -Their programs will be concatenated to populate the PAT
+> >> -For each program in the PAT, a PMT section will be created
+> >> -The PMT section for a channel will be assigned its streams.
+> >> -Every stream will have its corresponding encoder polled to produce
+> >> TS packets
+> >> -These packets may be interleaved by the mux and then delivered to
+> >> the bridg
+> >> 
+> >> Signed-off-by: Daniel W. S. Almeida <dwlsalmeida@gmail.com>  
+> > 
+> > The same notes I made on previous patches apply here.  
+> 
+> I did not understand this. Do you mean to say that I should remove these
+> dashes in the beginning of the lines?
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Samuel Zou <zou_wei@huawei.com>
----
- drivers/i2c/busses/i2c-nvidia-gpu.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+No. I just meant to say that I won't be repeating the comments I made
+about WARN_ON, bit order, and other generic comments on other patches 
+that will also apply here :-)
 
-diff --git a/drivers/i2c/busses/i2c-nvidia-gpu.c b/drivers/i2c/busses/i2c-nvidia-gpu.c
-index f5d25ce..dba5d11 100644
---- a/drivers/i2c/busses/i2c-nvidia-gpu.c
-+++ b/drivers/i2c/busses/i2c-nvidia-gpu.c
-@@ -277,10 +277,8 @@ static int gpu_populate_client(struct gpu_i2c_dev *i2cd, int irq)
- 	i2cd->gpu_ccgx_ucsi->irq = irq;
- 	i2cd->gpu_ccgx_ucsi->properties = ccgx_props;
- 	i2cd->ccgx_client = i2c_new_client_device(&i2cd->adapter, i2cd->gpu_ccgx_ucsi);
--	if (IS_ERR(i2cd->ccgx_client))
--		return PTR_ERR(i2cd->ccgx_client);
- 
--	return 0;
-+	return PTR_ERR_OR_ZERO(i2cd->ccgx_client);
- }
- 
- static int gpu_i2c_probe(struct pci_dev *pdev, const struct pci_device_id *id)
--- 
-2.6.2
-
+Thanks,
+Mauro
