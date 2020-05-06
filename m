@@ -2,151 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 793B41C78CE
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 19:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95CCD1C78DA
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 20:02:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729907AbgEFR7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 13:59:35 -0400
-Received: from smtprelay0095.hostedemail.com ([216.40.44.95]:58586 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728082AbgEFR7e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 13:59:34 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 6D120100F0730;
-        Wed,  6 May 2020 17:59:33 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:69:355:379:800:960:968:973:988:989:1260:1277:1311:1313:1314:1345:1437:1515:1516:1518:1534:1543:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:2904:3138:3139:3140:3141:3142:3353:3865:3867:3868:3871:3872:4250:4321:4419:4605:5007:6119:7903:10004:10400:10848:11026:11473:11658:11914:12043:12296:12297:12438:12555:12679:12760:12986:13095:13439:13972:14093:14097:14181:14394:14659:14721:21080:21433:21451:21627:21990:30012:30054,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: goose43_8d7d6b1af7508
-X-Filterd-Recvd-Size: 4257
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf02.hostedemail.com (Postfix) with ESMTPA;
-        Wed,  6 May 2020 17:59:32 +0000 (UTC)
-Message-ID: <4ca58f594156d1311f2207d755da89879e060333.camel@perches.com>
-Subject: [PATCH] clocksource: davinci: Use a more common logging style
-From:   Joe Perches <joe@perches.com>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Date:   Wed, 06 May 2020 10:59:30 -0700
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.1-2 
+        id S1729313AbgEFSCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 14:02:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50122 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727872AbgEFSCd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 14:02:33 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D13FF20753;
+        Wed,  6 May 2020 18:02:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588788152;
+        bh=z92+mQf7UCpY5n67Uv6gibVlbx0OePllFMQQ+ADBjAs=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=vvPXHot6utJAOBEWMZwD3stj37CKE8NYtkDGePF2p5nCueY8btewNWSfB4NJwjMGO
+         C0Sa+xsxR2SQLwgvoGpm5wNZsPf34KxIKH715zS7enj7aYbmnnuFb7TV1z4qoFm/7x
+         89qOrLSnJQpiXy3L9jf6vUhzYCm56dFuSIC8Qg4w=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id BB102352306C; Wed,  6 May 2020 11:02:32 -0700 (PDT)
+Date:   Wed, 6 May 2020 11:02:32 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Marco Elver <elver@google.com>
+Cc:     Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: Please can I have a stable KCSAN branch for 5.8?
+Message-ID: <20200506180232.GB2869@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200506132816.GJ8043@willie-the-truck>
+ <20200506143616.GY2869@paulmck-ThinkPad-P72>
+ <20200506144141.GA12919@willie-the-truck>
+ <CANpmjNP3ge49sXJZS-KaL5bpEq0rmc4CqepjGRbtbCVwm7rwpw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANpmjNP3ge49sXJZS-KaL5bpEq0rmc4CqepjGRbtbCVwm7rwpw@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This code is using a newline termination on a #define pr_fmt but
-pr_<level> uses have a terminating newline on the format.
+On Wed, May 06, 2020 at 05:26:56PM +0200, Marco Elver wrote:
+> On Wed, 6 May 2020 at 16:41, Will Deacon <will@kernel.org> wrote:
+> >
+> > Hi Paul,
+> >
+> > Cheers for the quick reply!
+> >
+> > On Wed, May 06, 2020 at 07:36:16AM -0700, Paul E. McKenney wrote:
+> > > On Wed, May 06, 2020 at 02:28:17PM +0100, Will Deacon wrote:
+> > > > I'm looking to rebase my READ_ONCE() series [1] on top of the KCSAN patches
+> > > > so that we can get them in for 5.8. However, tip/locking/kcsan seems to be
+> > > > missing some bits:
+> > > >
+> > > >   * An update to checkpatch.pl to warn about missing comments for
+> > > >     data_race():
+> > > >
+> > > >     https://lore.kernel.org/r/20200401101714.44781-1-elver@google.com
+> > >
+> > > For some reason, I thought this was going up some other tree, but I do
+> > > not see it in -next.  So unless I hear otherwise, I will pull it into
+> > > the v5.8 kcsan branch.
+> >
+> > Brill, thanks.
+> >
+> > > >   * I'm unable to apply these two patches from Marco that are needed for
+> > > >     my READ_ONCE() work:
+> > > >
+> > > >     https://lore.kernel.org/lkml/20200424154730.190041-1-elver@google.com/
+> > > >
+> > > >     I think these depend on stuff that has been queued by Paul, and appears
+> > > >     in linux-next, but to be honest with you I'm quite confused about what
+> > > >     is queued for 5.8 and what isn't.
+> > >
+> > > This one is queued, but I currently have it in the v5.9 pile (but
+> > > tentatively for v5.8).  Unless Marco tells me otherwise, I will move it
+> > > to the v5.8 branch, which will be part of my pull request next week.
+> >
+> > Great, then this would all show up on tip/locking/kscan, right?
+> >
+> > > > What's the best base for me to use?
+> > >
+> > > The -next tree has the latter, but not yet the former.
+> >
+> > That probably means -next is good enough for me to cook a new version of my
+> > series, and then I can make a proper branch next week.
+> >
+> > > Hopefully we can get this straightened out, and please accept my apologies
+> > > for the hassle!
+> >
+> > No need to apologise, I just couldn't figure out what was what and decided
+> > it was easier to ask the experts ;)
+> 
+> Just confirming that I don't see any issues with the plan -- the
+> patches that Will needs are good to go into the v5.8 branch.
 
-Remove the newline from the pr_fmt and add it to the pr_<level> uses.
+OK, I have updated -rcu's kcsan and kcsan-dev branches.  Could you please
+double-check, given that pull-request time is quite soon?
 
-Miscellanea:
-
-o Remove an unnecessary OOM message as a dump_stack() is already
-  done by the kernel memory subsystem on these allocation failures
-
-Signed-off-by: Joe Perches <joe@perches.com>
----
- drivers/clocksource/timer-davinci.c | 22 ++++++++++------------
- 1 file changed, 10 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/clocksource/timer-davinci.c b/drivers/clocksource/timer-davinci.c
-index e421946a91c5..aae938368230 100644
---- a/drivers/clocksource/timer-davinci.c
-+++ b/drivers/clocksource/timer-davinci.c
-@@ -18,7 +18,7 @@
- #include <clocksource/timer-davinci.h>
- 
- #undef pr_fmt
--#define pr_fmt(fmt) "%s: " fmt "\n", __func__
-+#define pr_fmt(fmt) "%s: " fmt, __func__
- 
- #define DAVINCI_TIMER_REG_TIM12			0x10
- #define DAVINCI_TIMER_REG_TIM34			0x14
-@@ -250,20 +250,20 @@ int __init davinci_timer_register(struct clk *clk,
- 
- 	rv = clk_prepare_enable(clk);
- 	if (rv) {
--		pr_err("Unable to prepare and enable the timer clock");
-+		pr_err("Unable to prepare and enable the timer clock\n");
- 		return rv;
- 	}
- 
- 	if (!request_mem_region(timer_cfg->reg.start,
- 				resource_size(&timer_cfg->reg),
- 				"davinci-timer")) {
--		pr_err("Unable to request memory region");
-+		pr_err("Unable to request memory region\n");
- 		return -EBUSY;
- 	}
- 
- 	base = ioremap(timer_cfg->reg.start, resource_size(&timer_cfg->reg));
- 	if (!base) {
--		pr_err("Unable to map the register range");
-+		pr_err("Unable to map the register range\n");
- 		return -ENOMEM;
- 	}
- 
-@@ -271,10 +271,8 @@ int __init davinci_timer_register(struct clk *clk,
- 	tick_rate = clk_get_rate(clk);
- 
- 	clockevent = kzalloc(sizeof(*clockevent), GFP_KERNEL | __GFP_NOFAIL);
--	if (!clockevent) {
--		pr_err("Error allocating memory for clockevent data");
-+	if (!clockevent)
- 		return -ENOMEM;
--	}
- 
- 	clockevent->dev.name = "tim12";
- 	clockevent->dev.features = CLOCK_EVT_FEAT_ONESHOT;
-@@ -298,7 +296,7 @@ int __init davinci_timer_register(struct clk *clk,
- 			 davinci_timer_irq_timer, IRQF_TIMER,
- 			 "clockevent/tim12", clockevent);
- 	if (rv) {
--		pr_err("Unable to request the clockevent interrupt");
-+		pr_err("Unable to request the clockevent interrupt\n");
- 		return rv;
- 	}
- 
-@@ -325,7 +323,7 @@ int __init davinci_timer_register(struct clk *clk,
- 
- 	rv = clocksource_register_hz(&davinci_clocksource.dev, tick_rate);
- 	if (rv) {
--		pr_err("Unable to register clocksource");
-+		pr_err("Unable to register clocksource\n");
- 		return rv;
- 	}
- 
-@@ -343,20 +341,20 @@ static int __init of_davinci_timer_register(struct device_node *np)
- 
- 	rv = of_address_to_resource(np, 0, &timer_cfg.reg);
- 	if (rv) {
--		pr_err("Unable to get the register range for timer");
-+		pr_err("Unable to get the register range for timer\n");
- 		return rv;
- 	}
- 
- 	rv = of_irq_to_resource_table(np, timer_cfg.irq,
- 				      DAVINCI_TIMER_NUM_IRQS);
- 	if (rv != DAVINCI_TIMER_NUM_IRQS) {
--		pr_err("Unable to get the interrupts for timer");
-+		pr_err("Unable to get the interrupts for timer\n");
- 		return rv;
- 	}
- 
- 	clk = of_clk_get(np, 0);
- 	if (IS_ERR(clk)) {
--		pr_err("Unable to get the timer clock");
-+		pr_err("Unable to get the timer clock\n");
- 		return PTR_ERR(clk);
- 	}
- 
-
-
+							Thanx, Paul
