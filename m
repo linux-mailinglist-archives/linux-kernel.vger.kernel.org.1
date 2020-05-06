@@ -2,80 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 936341C720C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 15:48:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E7B1C721A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 15:50:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728482AbgEFNsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 09:48:40 -0400
-Received: from cmccmta2.chinamobile.com ([221.176.66.80]:13177 "EHLO
-        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725801AbgEFNsk (ORCPT
+        id S1728795AbgEFNuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 09:50:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728738AbgEFNuv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 09:48:40 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.13]) by rmmx-syy-dmz-app07-12007 (RichMail) with SMTP id 2ee75eb2c006200-276df; Wed, 06 May 2020 21:47:50 +0800 (CST)
-X-RM-TRANSID: 2ee75eb2c006200-276df
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from [192.168.0.101] (unknown[112.0.146.193])
-        by rmsmtp-syy-appsvr07-12007 (RichMail) with SMTP id 2ee75eb2c004224-cf21d;
-        Wed, 06 May 2020 21:47:50 +0800 (CST)
-X-RM-TRANSID: 2ee75eb2c004224-cf21d
-Subject: Re: [PATCH] ASoC: qcom: Use devm_platform_ioremap_resource_byname()to
- simplify code
-To:     kbuild test robot <lkp@intel.com>, broonie@kernel.org,
-        bgoswami@codeaurora.org, plai@codeaurora.org, perex@perex.cz,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc:     kbuild-all@lists.01.org
-References: <20200504072820.5328-1-tangbin@cmss.chinamobile.com>
- <202005051301.uK51h1pS%lkp@intel.com>
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-Message-ID: <4b2fba97-6f04-622c-f69a-ba00de19335d@cmss.chinamobile.com>
-Date:   Wed, 6 May 2020 21:48:34 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 6 May 2020 09:50:51 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E9A1C061A0F
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 06:50:51 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id x4so2695144wmj.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 06:50:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=I/qG/Ox9dCbdx5Qwe5iyaFRLkkPugTYpk411h+gVkoI=;
+        b=L3V4zgLgR3PEs4EfZbCdU/LZ6RsghbYvTAgfaDCCQS5tt5+XvqAR3zlTPxnSzV7/tm
+         IjcJAwPeyneoAtS3npxUG/3wsZyKdf7/Y2z2V+UEf0MIHgrB11T/6mC89nq6cC+L8fXr
+         lNoFeKxvIytrvvbCIW+ZBLrd2ldiwYmgnhM9l6TzsiV3KdzfdflEoLzFzzOp0PSGewfe
+         1zDcytVUzXM4pdZbPRPfXQareLPB2SygRzfgA/hajBRCiWFj3bkwHZtLITbBoRSBsBMj
+         NgJ52EtnXNnQMGSVfKsHb0bKp6DyODz42UmSUN8cryQZydwPlqOFVu1E71HXpuNVHnrM
+         KYuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=I/qG/Ox9dCbdx5Qwe5iyaFRLkkPugTYpk411h+gVkoI=;
+        b=eQQxJ1jNCHkPJK460W7zp4tk8Ay17+bhAVhAPaVUmVH9429DNPgtrbUqYgRe3btBdE
+         akm/E0ZAAype0ZHbEJ8WxcvOWQ4P1W6pWvDt3Va0OixNv3XqNlCUQNiQS9aNEk/UIcrQ
+         g6lTrEoItAsb5Yyfm1cmw0NKSScZ1WXkDT3DwVdcNa2zLACEQ+aaZZm98hsWn5TGmhkh
+         qU5t4gsPR5KbLp+irAH/6ZslmDL6PolTsMQ9cLCUGiW0Oc8SvjC+XG4RdiWwG0ysuEWP
+         wUiGEG4HiqhDeYBPrgdXF6TjAaedtYf5nZKvJ5+8VQ6IGDEfd0shUvxdIZSDZMNFevbu
+         ezOQ==
+X-Gm-Message-State: AGi0PubKD8L9QdU6v3wfeJQ/Uwgn6pDq6dxADApxNZtfatL2G7ha1cUN
+        yVzmvpSGB9p/vRDCsjsA/jLGEQ==
+X-Google-Smtp-Source: APiQypJYkQsg7V5Lp/ORrO0FfGs/HMwOchKbXYQOh9lEmsS29K376blp3Us4qv4u4RPPv/hkLROiZw==
+X-Received: by 2002:a1c:bd54:: with SMTP id n81mr4385872wmf.141.1588773049725;
+        Wed, 06 May 2020 06:50:49 -0700 (PDT)
+Received: from localhost (cag06-3-82-243-161-21.fbx.proxad.net. [82.243.161.21])
+        by smtp.gmail.com with ESMTPSA id n6sm2939428wrs.81.2020.05.06.06.50.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 May 2020 06:50:48 -0700 (PDT)
+References: <20200122092526.2436421-1-jbrunet@baylibre.com> <6f661498f58c6a519095d0657413f4b89d3ef21e.camel@pengutronix.de> <1jimi2tqsn.fsf@starbuckisacylon.baylibre.com>
+User-agent: mu4e 1.3.3; emacs 26.3
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Kevin Hilman <khilman@baylibre.com>
+Cc:     linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: reset: meson: add gxl internal dac reset
+In-reply-to: <1jimi2tqsn.fsf@starbuckisacylon.baylibre.com>
+Date:   Wed, 06 May 2020 15:50:47 +0200
+Message-ID: <1jy2q5f9zc.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-In-Reply-To: <202005051301.uK51h1pS%lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 2020/5/5 13:35, kbuild test robot wrote:
-> Hi Tang,
->
-> Thank you for the patch! Yet something to improve:
->
-> [auto build test ERROR on asoc/for-next]
-> [also build test ERROR on v5.7-rc4 next-20200504]
-> [if your patch is applied to the wrong git tree, please drop us a note to help
-> improve the system. BTW, we also suggest to use '--base' option to specify the
-> base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
->
-> url:    https://github.com/0day-ci/linux/commits/Tang-Bin/ASoC-qcom-Use-devm_platform_ioremap_resource_byname-to-simplify-code/20200505-051041
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-> config: sh-allmodconfig (attached as .config)
-> compiler: sh4-linux-gcc (GCC) 9.3.0
-> reproduce:
->          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->          chmod +x ~/bin/make.cross
->          # save the attached .config to linux build tree
->          COMPILER_INSTALL_PATH=$HOME/0day GCC_VERSION=9.3.0 make.cross ARCH=sh
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kbuild test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>):
->
->     sound/soc/qcom/lpass-cpu.c: In function 'asoc_qcom_lpass_cpu_platform_probe':
->>> sound/soc/qcom/lpass-cpu.c:445:21: error: expected ';' before 'if'
+On Tue 14 Apr 2020 at 10:28, Jerome Brunet <jbrunet@baylibre.com> wrote:
 
-Sorry, please forget this patch, it's my fault.
+> On Thu 23 Jan 2020 at 11:13, Philipp Zabel <p.zabel@pengutronix.de> wrote:
+>
+>> On Wed, 2020-01-22 at 10:25 +0100, Jerome Brunet wrote:
+>>> Add the reset line of the internal DAC found on the amlogic gxl SoC family
+>>> 
+>>> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+>>> ---
+>>>  include/dt-bindings/reset/amlogic,meson-gxbb-reset.h | 2 +-
+>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>> 
+>>> diff --git a/include/dt-bindings/reset/amlogic,meson-gxbb-reset.h b/include/dt-bindings/reset/amlogic,meson-gxbb-reset.h
+>>> index ea5058618863..883bfd3bcbad 100644
+>>> --- a/include/dt-bindings/reset/amlogic,meson-gxbb-reset.h
+>>> +++ b/include/dt-bindings/reset/amlogic,meson-gxbb-reset.h
+>>> @@ -69,7 +69,7 @@
+>>>  #define RESET_SYS_CPU_L2		58
+>>>  #define RESET_SYS_CPU_P			59
+>>>  #define RESET_SYS_CPU_MBIST		60
+>>> -/*					61	*/
+>>> +#define RESET_ACODEC			61
+>>>  /*					62	*/
+>>>  /*					63	*/
+>>>  /*	RESET2					*/
+>>
+>> Thank you, applied to reset/next.
+>
+> Hi Philip,
+>
+> It seems reset/next has not made it to v5.7-rc1
+>
+> Would it be possible to provide an immutable branch with this change, or
+> maybe let Kevin apply this change through the amlogic tree ?
+>
+> It would allow us to progress on some DT changes during this new cycle.
+>
+> Thanks
+> Jerome
 
-Thanks
+Hi Philip, how can we move forward on this ?
 
-
+>
+>>
+>> regards
+>> Philipp
 
