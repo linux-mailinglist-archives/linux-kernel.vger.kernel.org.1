@@ -2,35 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35DAA1C6B0F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 10:10:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1DD31C6AD3
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 10:07:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728706AbgEFIJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 04:09:59 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:46381 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728670AbgEFIJw (ORCPT
+        id S1728451AbgEFIHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 04:07:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46724 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728290AbgEFIHI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 04:09:52 -0400
-X-Originating-IP: 86.202.105.35
-Received: from localhost (lfbn-lyo-1-9-35.w86-202.abo.wanadoo.fr [86.202.105.35])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 471DD240005;
-        Wed,  6 May 2020 08:09:50 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        kamel.bouhara@bootlin.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: [PATCH v3 9/9] clocksource/drivers/timer-atmel-tcb: add sama5d2 support
-Date:   Wed,  6 May 2020 10:05:54 +0200
-Message-Id: <20200506080554.283177-10-alexandre.belloni@bootlin.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200506080554.283177-1-alexandre.belloni@bootlin.com>
-References: <20200506080554.283177-1-alexandre.belloni@bootlin.com>
+        Wed, 6 May 2020 04:07:08 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DBC6C061A0F
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 01:07:08 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id e16so1020308wra.7
+        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 01:07:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OUoKNxV4vqNDiSef+ICdZkoAIRUHcuIito46USVrX6M=;
+        b=QDOkJjkIqKcQFKzMtVFjf9SjZTn75nCiyUVtEd6/RVU7pmbDF53lIX6A6pzHESbBQn
+         EaBb90lnUbW8TJE9AwRJnT5uWamLTS+P+d9dXTNafMthB2LP746m4B6OyFprwbAxVfJc
+         zYIItU2Fb7iUBdzQ+s2XmdsDkuh38HfV3EpwQzWyWRuRTBMcOSfaC0OJN+NCoqMMnc6V
+         z0eTeuse+KwoI6EIc2PB+rvwEmmczcyElkBHX0Kaq5SoBQVnPRgUUz3Mu35CYVOdsc77
+         c/EABh02rWBGO/NX33BtZ61A/lMERYWNfW07Qqd2DPxFr6k7Gx2d4166hYWlXG6Jf9A9
+         PXtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OUoKNxV4vqNDiSef+ICdZkoAIRUHcuIito46USVrX6M=;
+        b=QVCIHuJ+Ourt1coLysdhQAPVbDv7WXgnEjMsp8oZl45qpx/BINKrfS3wt5rOOdbtt+
+         /mwBUmmQzH902WWSHJdmovevrCV5dVarFdOPLhZeHkcxy4+tZNzN4YLuzqPTAT7qEY6M
+         ODXEitRH36lfQIlMgWst+Qv0HJhoArsE11NOKEQAVTB9D9ofTvpek3engA5u6Ut4k8Hg
+         QUlnIMFqdeJ77BVgV1IqWvYmRtZ39Gefnf/NkHDx/Wc6GBylMKku4v3n9rFmlWCmPrX4
+         RhSt7Wi/2xNE1zHby/g8dPxfV8vOqwIJswI+6IXAN6HwTQwoPbRiSt6NP8RwQkmxr/IA
+         GcCw==
+X-Gm-Message-State: AGi0Pua2hdbzaAI5SqVh5nVDdYCV0AohssNnrkd9fkJjAabXeBkhZ1V7
+        n50P3qgsKiz5Nb2oblnUWKPZsg==
+X-Google-Smtp-Source: APiQypLFXloAanL5BZXsPuyvyXKqG7TKKwVlSQtxJg0wIvbD0RxyshxpV59rlJmEtRwk/c2IWPXQcA==
+X-Received: by 2002:adf:a1cb:: with SMTP id v11mr6651006wrv.39.1588752426703;
+        Wed, 06 May 2020 01:07:06 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:e35:2ec0:82b0:4460:3fd3:382:4a71])
+        by smtp.gmail.com with ESMTPSA id 185sm1872098wmc.32.2020.05.06.01.07.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 May 2020 01:07:06 -0700 (PDT)
+From:   Neil Armstrong <narmstrong@baylibre.com>
+To:     khilman@baylibre.com
+Cc:     linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>
+Subject: [PATCH v2 0/2] arm64: meson-sm1: add support for Hardkernel ODROID-C4
+Date:   Wed,  6 May 2020 10:07:00 +0200
+Message-Id: <20200506080702.6645-1-narmstrong@baylibre.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -38,47 +64,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The first divisor for the sama5d2 is actually the gclk selector. Because
-the currently remaining divisors are fitting the use case, currently ensure
-it is skipped.
+This serie adds support for the Hardkernel Odroid-C4 single board computer.
 
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
----
- drivers/clocksource/timer-atmel-tcb.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+The Odroid-C4 is the Odroid-C2 successor with same form factor, but using
+a modern Amlogic S905X3 (SM1) SoC and 4x USB3 ports.
 
-diff --git a/drivers/clocksource/timer-atmel-tcb.c b/drivers/clocksource/timer-atmel-tcb.c
-index ccb77b9cb489..e373b02d509a 100644
---- a/drivers/clocksource/timer-atmel-tcb.c
-+++ b/drivers/clocksource/timer-atmel-tcb.c
-@@ -359,9 +359,15 @@ static struct atmel_tcb_config tcb_sam9x5_config = {
- 	.counter_width = 32,
- };
- 
-+static struct atmel_tcb_config tcb_sama5d2_config = {
-+	.counter_width = 32,
-+	.has_gclk = 1,
-+};
-+
- static const struct of_device_id atmel_tcb_of_match[] = {
- 	{ .compatible = "atmel,at91rm9200-tcb", .data = &tcb_rm9200_config, },
- 	{ .compatible = "atmel,at91sam9x5-tcb", .data = &tcb_sam9x5_config, },
-+	{ .compatible = "atmel,sama5d2-tcb", .data = &tcb_sama5d2_config, },
- 	{ /* sentinel */ }
- };
- 
-@@ -426,7 +432,10 @@ static int __init tcb_clksrc_init(struct device_node *node)
- 
- 	/* How fast will we be counting?  Pick something over 5 MHz.  */
- 	rate = (u32) clk_get_rate(t0_clk);
--	for (i = 0; i < ARRAY_SIZE(atmel_tcb_divisors); i++) {
-+	i = 0;
-+	if (tc.tcb_config->has_gclk)
-+		i = 1;
-+	for (; i < ARRAY_SIZE(atmel_tcb_divisors); i++) {
- 		unsigned divisor = atmel_tcb_divisors[i];
- 		unsigned tmp;
- 
+Fully functionnal:
+- USB2+USB3
+- USB2 OTG
+- eMMC
+- SDCard
+- HDMI
+- DVFS
+- Gigabit Ethernet with RTL8211F PHY
+- ADC
+- Debug UART
+- Infrared Receiver
+
+Missing:
+- HDMI audio
+
+Changes since v1 at [1]:
+- Add missing IR node
+
+[1] http://lore.kernel.org/r/20200424124406.13870-1-narmstrong@baylibre.com
+
+Dongjin Kim (1):
+  arm64: dts: meson-sm1: add support for Hardkernel ODROID-C4
+
+Neil Armstrong (1):
+  dt-bindings: arm: amlogic: add odroid-c4 bindings
+
+ .../devicetree/bindings/arm/amlogic.yaml      |   1 +
+ arch/arm64/boot/dts/amlogic/Makefile          |   1 +
+ .../boot/dts/amlogic/meson-sm1-odroid-c4.dts  | 402 ++++++++++++++++++
+ 3 files changed, 404 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/amlogic/meson-sm1-odroid-c4.dts
+
 -- 
-2.26.2
+2.22.0
 
