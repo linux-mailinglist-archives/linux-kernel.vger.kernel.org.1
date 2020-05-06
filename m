@@ -2,62 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4C3A1C7436
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:22:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B32181C745E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:25:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729505AbgEFPV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 11:21:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729449AbgEFPVt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 11:21:49 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B22FC0610D5
-        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 08:21:49 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id x10so617963plr.4
-        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 08:21:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=w8mOPg/WJbpwFq17aNXqVhrLVAgEDXC59soVlAVNO7M=;
-        b=E4l5km+thT0FJN99T1qK6r+jZ/T1hE87pBpi1b0c57RVkyyrYY8hypmTzqsM9e1sQy
-         dtGW9l83v1OHSz1rMVx4Oo67ORv+sI7FXVxG6lnvHhTmBLuSosSemsGxVEMjV4mgJoyq
-         UX4wr1DxrKnVg/tYeIsPYBaQMjqJ0v4zQ1af4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=w8mOPg/WJbpwFq17aNXqVhrLVAgEDXC59soVlAVNO7M=;
-        b=Lahz5HB/azPGPqUVR6B9misKeTKQVj4OpVRdd/rL4Uf8FPtmhVpKomdiqZFEffjvST
-         4YuaZelgyuaFSMMa6cyWMKtrvRBLfH6odY7SihMGVRArv02uHwz5iejKmA0AUJ7qPUbV
-         MDXwrP0o/dOW5WYQDNJ6YFdY7cPFaFUrW1ccfI6qMheYjg1As1TyGqYFDC9SUncXSXqf
-         udM0VLENrNPJV5b87pRSb+iwr0V99bF22xyAWm35Zu+4WC/ocrzu9NIHmhlfEHfS5mFG
-         Nkzp0jJpBy3OAR7iGnoOYxHdMnEmX60G7Gv60I39p12JSDyq3LjDjyU1D1ebHT6oXEoB
-         8HbA==
-X-Gm-Message-State: AGi0PuaZxE/ah/6YKrTJy32DpWlnenBtWppmNhykugn/KsEt2VySM8yv
-        PzvXjrOg5bZuNVPzpHBbKDEghQ==
-X-Google-Smtp-Source: APiQypImz2oOSfSE3NNLgEnKlJ1DyO7DE2gnMXI8IWGlXIr31bRhCeiiTy+8pWm2DPD63Dz7bYJfbw==
-X-Received: by 2002:a17:902:8a94:: with SMTP id p20mr582793plo.57.1588778508927;
-        Wed, 06 May 2020 08:21:48 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id r21sm4921156pjo.2.2020.05.06.08.21.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 May 2020 08:21:45 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Luis Henriques <lhenriques@suse.com>
-Subject: [PATCH 08/10] pstore: Add locking around superblock changes
-Date:   Wed,  6 May 2020 08:21:12 -0700
-Message-Id: <20200506152114.50375-9-keescook@chromium.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200506152114.50375-1-keescook@chromium.org>
-References: <20200506152114.50375-1-keescook@chromium.org>
+        id S1729686AbgEFPX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 11:23:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38866 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728991AbgEFPXX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 11:23:23 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DD50020936;
+        Wed,  6 May 2020 15:23:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588778601;
+        bh=39Jg3cXu7I2r8+B/pgGj8SDoeLcEGV7+mir/9N/ZlLg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=x9Z1+tr0WMM5t4skLeVUn8PgUOCtY6Q4zpHokHjTDS1qKvYRD94kIt9X+ihUeYywE
+         aesDOAXlLOHrUKAK17kKgHJZ1A/2KB84r8QtaFMjyUNlZhkzHusPPKeUMVrVj/UOES
+         ihNR/iHvtCM5D6pLHF9nnjkn4ritRkh6/QCUO39Q=
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+        Clark Williams <williams@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Andrey Zhizhikin <andrey.z@gmail.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Stephane Eranian <eranian@google.com>
+Subject: [PATCH 10/91] tools api: Add a lightweight buffered reading api
+Date:   Wed,  6 May 2020 12:21:13 -0300
+Message-Id: <20200506152234.21977-11-acme@kernel.org>
+X-Mailer: git-send-email 2.21.1
+In-Reply-To: <20200506152234.21977-1-acme@kernel.org>
+References: <20200506152234.21977-1-acme@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -65,199 +52,512 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nothing was protecting changes to the pstorefs superblock. Add locking
-and refactor away is_pstore_mounted(), instead using a helper to add a
-way to safely lock the pstorefs root inode during filesystem changes.
+From: Ian Rogers <irogers@google.com>
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
+The synthesize benchmark shows the majority of execution time going to
+fgets and sscanf, necessary to parse /proc/pid/maps. Add a new buffered
+reading library that will be used to replace these calls in a follow-up
+CL. Add tests for the library to perf test.
+
+Committer tests:
+
+  $ perf test api
+  63: Test api io                                           : Ok
+  $
+
+Signed-off-by: Ian Rogers <irogers@google.com>
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+Acked-by: Namhyung Kim <namhyung@kernel.org>
+Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Andrey Zhizhikin <andrey.z@gmail.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Kan Liang <kan.liang@linux.intel.com>
+Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Petr Mladek <pmladek@suse.com>
+Cc: Stephane Eranian <eranian@google.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Link: http://lore.kernel.org/lkml/20200415054050.31645-3-irogers@google.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- fs/pstore/inode.c    | 65 +++++++++++++++++++++++++++++---------------
- fs/pstore/internal.h |  1 -
- fs/pstore/platform.c |  5 ++--
- 3 files changed, 45 insertions(+), 26 deletions(-)
+ tools/lib/api/io.h              | 112 ++++++++++++
+ tools/perf/tests/Build          |   1 +
+ tools/perf/tests/api-io.c       | 304 ++++++++++++++++++++++++++++++++
+ tools/perf/tests/builtin-test.c |   4 +
+ tools/perf/tests/tests.h        |   1 +
+ 5 files changed, 422 insertions(+)
+ create mode 100644 tools/lib/api/io.h
+ create mode 100644 tools/perf/tests/api-io.c
 
-diff --git a/fs/pstore/inode.c b/fs/pstore/inode.c
-index 5f08b21b7a46..e13482c8e180 100644
---- a/fs/pstore/inode.c
-+++ b/fs/pstore/inode.c
-@@ -31,6 +31,9 @@
- static DEFINE_MUTEX(records_list_lock);
- static LIST_HEAD(records_list);
- 
-+static DEFINE_MUTEX(pstore_sb_lock);
-+static struct super_block *pstore_sb;
+diff --git a/tools/lib/api/io.h b/tools/lib/api/io.h
+new file mode 100644
+index 000000000000..b7e55b5f8a4a
+--- /dev/null
++++ b/tools/lib/api/io.h
+@@ -0,0 +1,112 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Lightweight buffered reading library.
++ *
++ * Copyright 2019 Google LLC.
++ */
++#ifndef __API_IO__
++#define __API_IO__
 +
- struct pstore_private {
- 	struct list_head list;
- 	struct pstore_record *record;
-@@ -282,11 +285,25 @@ static const struct super_operations pstore_ops = {
- 	.show_options	= pstore_show_options,
- };
- 
--static struct super_block *pstore_sb;
--
--bool pstore_is_mounted(void)
-+struct dentry *psinfo_lock_root(void)
- {
--	return pstore_sb != NULL;
-+	struct dentry *root;
++struct io {
++	/* File descriptor being read/ */
++	int fd;
++	/* Size of the read buffer. */
++	unsigned int buf_len;
++	/* Pointer to storage for buffering read. */
++	char *buf;
++	/* End of the storage. */
++	char *end;
++	/* Currently accessed data pointer. */
++	char *data;
++	/* Set true on when the end of file on read error. */
++	bool eof;
++};
 +
-+	mutex_lock(&pstore_sb_lock);
-+	/*
-+	 * Having no backend is fine -- no records appear.
-+	 * Not being mounted is fine -- nothing to do.
-+	 */
-+	if (!psinfo || !pstore_sb) {
-+		mutex_unlock(&pstore_sb_lock);
-+		return NULL;
++static inline void io__init(struct io *io, int fd,
++			    char *buf, unsigned int buf_len)
++{
++	io->fd = fd;
++	io->buf_len = buf_len;
++	io->buf = buf;
++	io->end = buf;
++	io->data = buf;
++	io->eof = false;
++}
++
++/* Reads one character from the "io" file with similar semantics to fgetc. */
++static inline int io__get_char(struct io *io)
++{
++	char *ptr = io->data;
++
++	if (io->eof)
++		return -1;
++
++	if (ptr == io->end) {
++		ssize_t n = read(io->fd, io->buf, io->buf_len);
++
++		if (n <= 0) {
++			io->eof = true;
++			return -1;
++		}
++		ptr = &io->buf[0];
++		io->end = &io->buf[n];
 +	}
++	io->data = ptr + 1;
++	return *ptr;
++}
 +
-+	root = pstore_sb->s_root;
-+	inode_lock(d_inode(root));
-+	mutex_unlock(&pstore_sb_lock);
++/* Read a hexadecimal value with no 0x prefix into the out argument hex. If the
++ * first character isn't hexadecimal returns -2, io->eof returns -1, otherwise
++ * returns the character after the hexadecimal value which may be -1 for eof.
++ * If the read value is larger than a u64 the high-order bits will be dropped.
++ */
++static inline int io__get_hex(struct io *io, __u64 *hex)
++{
++	bool first_read = true;
 +
-+	return root;
- }
- 
- /*
-@@ -303,20 +320,18 @@ int pstore_mkfile(struct dentry *root, struct pstore_record *record)
- 	struct pstore_private	*private, *pos;
- 	size_t			size = record->size + record->ecc_notice_size;
- 
--	WARN_ON(!inode_is_locked(d_inode(root)));
-+	if (WARN_ON(!inode_is_locked(d_inode(root))))
-+		return -EINVAL;
- 
-+	rc = -EEXIST;
-+	/* Skip records that are already present in the filesystem. */
- 	mutex_lock(&records_list_lock);
- 	list_for_each_entry(pos, &records_list, list) {
- 		if (pos->record->type == record->type &&
- 		    pos->record->id == record->id &&
--		    pos->record->psi == record->psi) {
--			rc = -EEXIST;
--			break;
--		}
-+		    pos->record->psi == record->psi)
-+			goto fail;
- 	}
--	mutex_unlock(&records_list_lock);
--	if (rc)
--		return rc;
- 
- 	rc = -ENOMEM;
- 	inode = pstore_get_inode(root->d_sb);
-@@ -346,7 +361,6 @@ int pstore_mkfile(struct dentry *root, struct pstore_record *record)
- 
- 	d_add(dentry, inode);
- 
--	mutex_lock(&records_list_lock);
- 	list_add(&private->list, &records_list);
- 	mutex_unlock(&records_list_lock);
- 
-@@ -356,8 +370,8 @@ int pstore_mkfile(struct dentry *root, struct pstore_record *record)
- 	free_pstore_private(private);
- fail_inode:
- 	iput(inode);
--
- fail:
-+	mutex_unlock(&records_list_lock);
- 	return rc;
- }
- 
-@@ -369,16 +383,13 @@ int pstore_mkfile(struct dentry *root, struct pstore_record *record)
-  */
- void pstore_get_records(int quiet)
- {
--	struct pstore_info *psi = psinfo;
- 	struct dentry *root;
- 
--	if (!psi || !pstore_sb)
-+	root = psinfo_lock_root();
-+	if (!root)
- 		return;
- 
--	root = pstore_sb->s_root;
--
--	inode_lock(d_inode(root));
--	pstore_get_backend_records(psi, root, quiet);
-+	pstore_get_backend_records(psinfo, root, quiet);
- 	inode_unlock(d_inode(root));
- }
- 
-@@ -386,8 +397,6 @@ static int pstore_fill_super(struct super_block *sb, void *data, int silent)
- {
- 	struct inode *inode;
- 
--	pstore_sb = sb;
--
- 	sb->s_maxbytes		= MAX_LFS_FILESIZE;
- 	sb->s_blocksize		= PAGE_SIZE;
- 	sb->s_blocksize_bits	= PAGE_SHIFT;
-@@ -408,6 +417,10 @@ static int pstore_fill_super(struct super_block *sb, void *data, int silent)
- 	if (!sb->s_root)
- 		return -ENOMEM;
- 
-+	mutex_lock(&pstore_sb_lock);
-+	pstore_sb = sb;
-+	mutex_unlock(&pstore_sb_lock);
++	*hex = 0;
++	while (true) {
++		int ch = io__get_char(io);
 +
- 	pstore_get_records(0);
- 
- 	return 0;
-@@ -421,9 +434,17 @@ static struct dentry *pstore_mount(struct file_system_type *fs_type,
- 
- static void pstore_kill_sb(struct super_block *sb)
- {
-+	mutex_lock(&pstore_sb_lock);
-+	WARN_ON(pstore_sb != sb);
++		if (ch < 0)
++			return ch;
++		if (ch >= '0' && ch <= '9')
++			*hex = (*hex << 4) | (ch - '0');
++		else if (ch >= 'a' && ch <= 'f')
++			*hex = (*hex << 4) | (ch - 'a' + 10);
++		else if (ch >= 'A' && ch <= 'F')
++			*hex = (*hex << 4) | (ch - 'A' + 10);
++		else if (first_read)
++			return -2;
++		else
++			return ch;
++		first_read = false;
++	}
++}
 +
- 	kill_litter_super(sb);
- 	pstore_sb = NULL;
++/* Read a positive decimal value with out argument dec. If the first character
++ * isn't a decimal returns -2, io->eof returns -1, otherwise returns the
++ * character after the decimal value which may be -1 for eof. If the read value
++ * is larger than a u64 the high-order bits will be dropped.
++ */
++static inline int io__get_dec(struct io *io, __u64 *dec)
++{
++	bool first_read = true;
 +
-+	mutex_lock(&records_list_lock);
- 	INIT_LIST_HEAD(&records_list);
-+	mutex_unlock(&records_list_lock);
++	*dec = 0;
++	while (true) {
++		int ch = io__get_char(io);
 +
-+	mutex_unlock(&pstore_sb_lock);
- }
++		if (ch < 0)
++			return ch;
++		if (ch >= '0' && ch <= '9')
++			*dec = (*dec * 10) + ch - '0';
++		else if (first_read)
++			return -2;
++		else
++			return ch;
++		first_read = false;
++	}
++}
++
++#endif /* __API_IO__ */
+diff --git a/tools/perf/tests/Build b/tools/perf/tests/Build
+index b3d1bf13ca07..c75557aeef0e 100644
+--- a/tools/perf/tests/Build
++++ b/tools/perf/tests/Build
+@@ -56,6 +56,7 @@ perf-y += mem2node.o
+ perf-y += maps.o
+ perf-y += time-utils-test.o
+ perf-y += genelf.o
++perf-y += api-io.o
  
- static struct file_system_type pstore_fs_type = {
-diff --git a/fs/pstore/internal.h b/fs/pstore/internal.h
-index 7062ea4bc57c..fe5f7ef7323f 100644
---- a/fs/pstore/internal.h
-+++ b/fs/pstore/internal.h
-@@ -33,7 +33,6 @@ extern void	pstore_get_backend_records(struct pstore_info *psi,
- 					   struct dentry *root, int quiet);
- extern int	pstore_mkfile(struct dentry *root,
- 			      struct pstore_record *record);
--extern bool	pstore_is_mounted(void);
- extern void	pstore_record_init(struct pstore_record *record,
- 				   struct pstore_info *psi);
+ $(OUTPUT)tests/llvm-src-base.c: tests/bpf-script-example.c tests/Build
+ 	$(call rule_mkdir)
+diff --git a/tools/perf/tests/api-io.c b/tools/perf/tests/api-io.c
+new file mode 100644
+index 000000000000..2ada86ad6084
+--- /dev/null
++++ b/tools/perf/tests/api-io.c
+@@ -0,0 +1,304 @@
++// SPDX-License-Identifier: GPL-2.0-only
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <fcntl.h>
++#include <limits.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <unistd.h>
++
++#include "debug.h"
++#include "tests.h"
++#include <api/io.h>
++#include <linux/kernel.h>
++
++#define TEMPL "/tmp/perf-test-XXXXXX"
++
++#define EXPECT_EQUAL(val, expected)                             \
++do {								\
++	if (val != expected) {					\
++		pr_debug("%s:%d: %d != %d\n",			\
++			__FILE__, __LINE__, val, expected);	\
++		ret = -1;					\
++	}							\
++} while (0)
++
++#define EXPECT_EQUAL64(val, expected)                           \
++do {								\
++	if (val != expected) {					\
++		pr_debug("%s:%d: %lld != %lld\n",		\
++			__FILE__, __LINE__, val, expected);	\
++		ret = -1;					\
++	}							\
++} while (0)
++
++static int make_test_file(char path[PATH_MAX], const char *contents)
++{
++	ssize_t contents_len = strlen(contents);
++	int fd;
++
++	strcpy(path, TEMPL);
++	fd = mkstemp(path);
++	if (fd < 0) {
++		pr_debug("mkstemp failed");
++		return -1;
++	}
++	if (write(fd, contents, contents_len) < contents_len) {
++		pr_debug("short write");
++		close(fd);
++		unlink(path);
++		return -1;
++	}
++	close(fd);
++	return 0;
++}
++
++static int setup_test(char path[PATH_MAX], const char *contents,
++		      size_t buf_size, struct io *io)
++{
++	if (make_test_file(path, contents))
++		return -1;
++
++	io->fd = open(path, O_RDONLY);
++	if (io->fd < 0) {
++		pr_debug("Failed to open '%s'\n", path);
++		unlink(path);
++		return -1;
++	}
++	io->buf = malloc(buf_size);
++	if (io->buf == NULL) {
++		pr_debug("Failed to allocate memory");
++		close(io->fd);
++		unlink(path);
++		return -1;
++	}
++	io__init(io, io->fd, io->buf, buf_size);
++	return 0;
++}
++
++static void cleanup_test(char path[PATH_MAX], struct io *io)
++{
++	free(io->buf);
++	close(io->fd);
++	unlink(path);
++}
++
++static int do_test_get_char(const char *test_string, size_t buf_size)
++{
++	char path[PATH_MAX];
++	struct io io;
++	int ch, ret = 0;
++	size_t i;
++
++	if (setup_test(path, test_string, buf_size, &io))
++		return -1;
++
++	for (i = 0; i < strlen(test_string); i++) {
++		ch = io__get_char(&io);
++
++		EXPECT_EQUAL(ch, test_string[i]);
++		EXPECT_EQUAL(io.eof, false);
++	}
++	ch = io__get_char(&io);
++	EXPECT_EQUAL(ch, -1);
++	EXPECT_EQUAL(io.eof, true);
++
++	cleanup_test(path, &io);
++	return ret;
++}
++
++static int test_get_char(void)
++{
++	int i, ret = 0;
++	size_t j;
++
++	static const char *const test_strings[] = {
++		"12345678abcdef90",
++		"a\nb\nc\nd\n",
++		"\a\b\t\v\f\r",
++	};
++	for (i = 0; i <= 10; i++) {
++		for (j = 0; j < ARRAY_SIZE(test_strings); j++) {
++			if (do_test_get_char(test_strings[j], 1 << i))
++				ret = -1;
++		}
++	}
++	return ret;
++}
++
++static int do_test_get_hex(const char *test_string,
++			__u64 val1, int ch1,
++			__u64 val2, int ch2,
++			__u64 val3, int ch3,
++			bool end_eof)
++{
++	char path[PATH_MAX];
++	struct io io;
++	int ch, ret = 0;
++	__u64 hex;
++
++	if (setup_test(path, test_string, 4, &io))
++		return -1;
++
++	ch = io__get_hex(&io, &hex);
++	EXPECT_EQUAL64(hex, val1);
++	EXPECT_EQUAL(ch, ch1);
++
++	ch = io__get_hex(&io, &hex);
++	EXPECT_EQUAL64(hex, val2);
++	EXPECT_EQUAL(ch, ch2);
++
++	ch = io__get_hex(&io, &hex);
++	EXPECT_EQUAL64(hex, val3);
++	EXPECT_EQUAL(ch, ch3);
++
++	EXPECT_EQUAL(io.eof, end_eof);
++
++	cleanup_test(path, &io);
++	return ret;
++}
++
++static int test_get_hex(void)
++{
++	int ret = 0;
++
++	if (do_test_get_hex("12345678abcdef90",
++				0x12345678abcdef90, -1,
++				0, -1,
++				0, -1,
++				true))
++		ret = -1;
++
++	if (do_test_get_hex("1\n2\n3\n",
++				1, '\n',
++				2, '\n',
++				3, '\n',
++				false))
++		ret = -1;
++
++	if (do_test_get_hex("12345678ABCDEF90;a;b",
++				0x12345678abcdef90, ';',
++				0xa, ';',
++				0xb, -1,
++				true))
++		ret = -1;
++
++	if (do_test_get_hex("0x1x2x",
++				0, 'x',
++				1, 'x',
++				2, 'x',
++				false))
++		ret = -1;
++
++	if (do_test_get_hex("x1x",
++				0, -2,
++				1, 'x',
++				0, -1,
++				true))
++		ret = -1;
++
++	if (do_test_get_hex("10000000000000000000000000000abcdefgh99i",
++				0xabcdef, 'g',
++				0, -2,
++				0x99, 'i',
++				false))
++		ret = -1;
++
++	return ret;
++}
++
++static int do_test_get_dec(const char *test_string,
++			__u64 val1, int ch1,
++			__u64 val2, int ch2,
++			__u64 val3, int ch3,
++			bool end_eof)
++{
++	char path[PATH_MAX];
++	struct io io;
++	int ch, ret = 0;
++	__u64 dec;
++
++	if (setup_test(path, test_string, 4, &io))
++		return -1;
++
++	ch = io__get_dec(&io, &dec);
++	EXPECT_EQUAL64(dec, val1);
++	EXPECT_EQUAL(ch, ch1);
++
++	ch = io__get_dec(&io, &dec);
++	EXPECT_EQUAL64(dec, val2);
++	EXPECT_EQUAL(ch, ch2);
++
++	ch = io__get_dec(&io, &dec);
++	EXPECT_EQUAL64(dec, val3);
++	EXPECT_EQUAL(ch, ch3);
++
++	EXPECT_EQUAL(io.eof, end_eof);
++
++	cleanup_test(path, &io);
++	return ret;
++}
++
++static int test_get_dec(void)
++{
++	int ret = 0;
++
++	if (do_test_get_dec("12345678abcdef90",
++				12345678, 'a',
++				0, -2,
++				0, -2,
++				false))
++		ret = -1;
++
++	if (do_test_get_dec("1\n2\n3\n",
++				1, '\n',
++				2, '\n',
++				3, '\n',
++				false))
++		ret = -1;
++
++	if (do_test_get_dec("12345678;1;2",
++				12345678, ';',
++				1, ';',
++				2, -1,
++				true))
++		ret = -1;
++
++	if (do_test_get_dec("0x1x2x",
++				0, 'x',
++				1, 'x',
++				2, 'x',
++				false))
++		ret = -1;
++
++	if (do_test_get_dec("x1x",
++				0, -2,
++				1, 'x',
++				0, -1,
++				true))
++		ret = -1;
++
++	if (do_test_get_dec("10000000000000000000000000000000000000000000000000000000000123456789ab99c",
++				123456789, 'a',
++				0, -2,
++				99, 'c',
++				false))
++		ret = -1;
++
++	return ret;
++}
++
++int test__api_io(struct test *test __maybe_unused,
++		int subtest __maybe_unused)
++{
++	int ret = 0;
++
++	if (test_get_char())
++		ret = TEST_FAIL;
++	if (test_get_hex())
++		ret = TEST_FAIL;
++	if (test_get_dec())
++		ret = TEST_FAIL;
++	return ret;
++}
+diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
+index b6322eb0f423..3471ec52ea11 100644
+--- a/tools/perf/tests/builtin-test.c
++++ b/tools/perf/tests/builtin-test.c
+@@ -309,6 +309,10 @@ static struct test generic_tests[] = {
+ 		.desc = "Test jit_write_elf",
+ 		.func = test__jit_write_elf,
+ 	},
++	{
++		.desc = "Test api io",
++		.func = test__api_io,
++	},
+ 	{
+ 		.desc = "maps__merge_in",
+ 		.func = test__maps__merge_in,
+diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
+index 61a1ab032080..d6d4ac34eeb7 100644
+--- a/tools/perf/tests/tests.h
++++ b/tools/perf/tests/tests.h
+@@ -112,6 +112,7 @@ int test__mem2node(struct test *t, int subtest);
+ int test__maps__merge_in(struct test *t, int subtest);
+ int test__time_utils(struct test *t, int subtest);
+ int test__jit_write_elf(struct test *test, int subtest);
++int test__api_io(struct test *test, int subtest);
  
-diff --git a/fs/pstore/platform.c b/fs/pstore/platform.c
-index 03bc847a6951..55f46837a7f4 100644
---- a/fs/pstore/platform.c
-+++ b/fs/pstore/platform.c
-@@ -460,7 +460,7 @@ static void pstore_dump(struct kmsg_dumper *dumper,
- 		}
- 
- 		ret = psinfo->write(&record);
--		if (ret == 0 && reason == KMSG_DUMP_OOPS && pstore_is_mounted())
-+		if (ret == 0 && reason == KMSG_DUMP_OOPS)
- 			pstore_new_entry = 1;
- 
- 		total += record.size;
-@@ -594,8 +594,7 @@ int pstore_register(struct pstore_info *psi)
- 	if (psi->flags & PSTORE_FLAGS_DMESG)
- 		allocate_buf_for_compression();
- 
--	if (pstore_is_mounted())
--		pstore_get_records(0);
-+	pstore_get_records(0);
- 
- 	if (psi->flags & PSTORE_FLAGS_DMESG)
- 		pstore_register_kmsg();
+ bool test__bp_signal_is_supported(void);
+ bool test__bp_account_is_supported(void);
 -- 
-2.20.1
+2.21.1
 
