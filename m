@@ -2,330 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B41E11C7E3A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 01:55:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1EF61C7E06
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 01:42:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728529AbgEFXza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 19:55:30 -0400
-Received: from mga12.intel.com ([192.55.52.136]:35795 "EHLO mga12.intel.com"
+        id S1728176AbgEFXmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 19:42:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55518 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728483AbgEFXz2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 19:55:28 -0400
-IronPort-SDR: GCdbSq8YQMzltMuIorefuTKW8ypv5WiamUnCSL4Omcu5QVLQ8spNfWaHdQmCYPsf5Y4KAON4P6
- vyGDMGgKNEaQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2020 16:55:20 -0700
-IronPort-SDR: hDjKBQAjG74fdY55cMuXOXGU9I2V35Lv1XkTeGeBRGMBfl6opcQYgeYga3yzWKEjbxny2L0P4x
- 0EMjz1nJqnNQ==
-X-IronPort-AV: E=Sophos;i="5.73,361,1583222400"; 
-   d="scan'208";a="461645509"
-Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.16])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2020 16:55:19 -0700
-Subject: [PATCH] ACPI: Drop rcu usage for MMIO mappings
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     rafael.j.wysocki@intel.com
-Cc:     stable@vger.kernel.org, Len Brown <lenb@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Ira Weiny <ira.weiny@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Myron Stowe <myron.stowe@redhat.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org
-Date:   Wed, 06 May 2020 16:39:09 -0700
-Message-ID: <158880834905.2183490.15616329469420234017.stgit@dwillia2-desk3.amr.corp.intel.com>
-User-Agent: StGit/0.18-3-g996c
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        id S1728105AbgEFXmJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 19:42:09 -0400
+Received: from localhost (unknown [137.135.114.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9B4F22075E;
+        Wed,  6 May 2020 23:42:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588808528;
+        bh=xE5UCydrZdLXC/0XxDrxTwDC9mtYeBtrSi/8/nUIkvM=;
+        h=Date:From:To:To:To:To:Cc:Cc:Cc:Subject:In-Reply-To:References:
+         From;
+        b=nqe9SqGytaIBBrEi3MDQGKxroo/OKW/2JmNAyJIHcPryUGOWIr63DUKGCW/iQk9Yd
+         agccir07kwNrVdVwW4xcx6WmJ5x322ePsd+SbNlHmQlQmAkH2Jc4078ORCGR587uM4
+         IdZ12TBrplw6jl8uVj+nU7QF80br7AXhdYjlvu6I=
+Date:   Wed, 06 May 2020 23:42:07 +0000
+From:   Sasha Levin <sashal@kernel.org>
+To:     Sasha Levin <sashal@kernel.org>
+To:     Michal Simek <michal.simek@xilinx.com>
+To:     Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
+To:     linux-kernel@vger.kernel.org, monstr@monstr.eu
+Cc:     Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
+Cc:     stable <stable@vger.kernel.org>
+Cc:     stable@vger.kernel.org
+Subject: Re: [PATCH v2] tty: xilinx_uartps: Fix missing id assignment to the console
+In-Reply-To: <ed3111533ef5bd342ee5ec504812240b870f0853.1588602446.git.michal.simek@xilinx.com>
+References: <ed3111533ef5bd342ee5ec504812240b870f0853.1588602446.git.michal.simek@xilinx.com>
+Message-Id: <20200506234208.9B4F22075E@mail.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Recently a performance problem was reported for a process invoking a
-non-trival ASL program. The method call in this case ends up
-repetitively triggering a call path like:
+Hi
 
-    acpi_ex_store
-    acpi_ex_store_object_to_node
-    acpi_ex_write_data_to_field
-    acpi_ex_insert_into_field
-    acpi_ex_write_with_update_rule
-    acpi_ex_field_datum_io
-    acpi_ex_access_region
-    acpi_ev_address_space_dispatch
-    acpi_ex_system_memory_space_handler
-    acpi_os_map_cleanup.part.14
-    _synchronize_rcu_expedited.constprop.89
-    schedule
+[This is an automated email]
 
-The end result of frequent synchronize_rcu_expedited() invocation is
-tiny sub-millisecond spurts of execution where the scheduler freely
-migrates this apparently sleepy task. The overhead of frequent scheduler
-invocation multiplies the execution time by a factor of 2-3X.
+This commit has been processed because it contains a -stable tag.
+The stable tag indicates that it's relevant for the following trees: all
 
-For example, performance improves from 16 minutes to 7 minutes for a
-firmware update procedure across 24 devices.
+The bot has tested the following trees: v5.6.10, v5.4.38, v4.19.120, v4.14.178, v4.9.221, v4.4.221.
 
-Perhaps the rcu usage was intended to allow for not taking a sleeping
-lock in the acpi_os_{read,write}_memory() path which ostensibly could be
-called from an APEI NMI error interrupt? Neither rcu_read_lock() nor
-ioremap() are interrupt safe, so add a WARN_ONCE() to validate that rcu
-was not serving as a mechanism to avoid direct calls to ioremap(). Even
-the original implementation had a spin_lock_irqsave(), but that is not
-NMI safe.
+v5.6.10: Build OK!
+v5.4.38: Build OK!
+v4.19.120: Failed to apply! Possible dependencies:
+    024ca329bfb9 ("serial: uartps: Register own uart console and driver structures")
+    10a5315b47b0 ("serial: uartps: Fill struct uart_driver in probe()")
+    14090ad1805f ("serial: uartps: Move alias reading higher in probe()")
+    18cc7ac8a28e ("Revert "serial: uartps: Register own uart console and driver structures"")
+    427c8ae9bebc ("serial: uartps: Change logic how console_port is setup")
+    46a460f0150a ("serial: uartps: Do not use static struct uart_driver out of probe()")
+    8da1a3940da4 ("Revert "serial: uartps: Use the same dynamic major number for all ports"")
+    ab262666018d ("serial: uartps: Use the same dynamic major number for all ports")
+    bed25ac0e2b6 ("serial: uartps: Move Port ID to device data structure")
+    e4bbb5194ea3 ("serial: uartps: Move register to probe based on run time detection")
 
-APEI itself already has some concept of avoiding ioremap() from
-interrupt context (see erst_exec_move_data()), if the new warning
-triggers it means that APEI either needs more instrumentation like that
-to pre-emptively fail, or more infrastructure to arrange for pre-mapping
-the resources it needs in NMI context.
+v4.14.178: Failed to apply! Possible dependencies:
+    024ca329bfb9 ("serial: uartps: Register own uart console and driver structures")
+    0413fe045dda ("serial: uartps: Use dynamic array for console port")
+    0a84bae7edfb ("serial: uartps: Remove static port array")
+    10a5315b47b0 ("serial: uartps: Fill struct uart_driver in probe()")
+    14090ad1805f ("serial: uartps: Move alias reading higher in probe()")
+    18cc7ac8a28e ("Revert "serial: uartps: Register own uart console and driver structures"")
+    1f2107223e5b ("serial: uartps: Move cnds_uart_get_port to probe")
+    427c8ae9bebc ("serial: uartps: Change logic how console_port is setup")
+    46a460f0150a ("serial: uartps: Do not use static struct uart_driver out of probe()")
+    8da1a3940da4 ("Revert "serial: uartps: Use the same dynamic major number for all ports"")
+    ab262666018d ("serial: uartps: Use the same dynamic major number for all ports")
+    e4bbb5194ea3 ("serial: uartps: Move register to probe based on run time detection")
 
-Cc: <stable@vger.kernel.org>
-Fixes: 620242ae8c3d ("ACPI: Maintain a list of ACPI memory mapped I/O remappings")
-Cc: Len Brown <lenb@kernel.org>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Ira Weiny <ira.weiny@intel.com>
-Cc: James Morse <james.morse@arm.com>
-Cc: Erik Kaneda <erik.kaneda@intel.com>
-Cc: Myron Stowe <myron.stowe@redhat.com>
-Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
----
- drivers/acpi/osl.c |  117 +++++++++++++++++++++++++---------------------------
- 1 file changed, 57 insertions(+), 60 deletions(-)
+v4.9.221: Failed to apply! Possible dependencies:
+    024ca329bfb9 ("serial: uartps: Register own uart console and driver structures")
+    0413fe045dda ("serial: uartps: Use dynamic array for console port")
+    0a84bae7edfb ("serial: uartps: Remove static port array")
+    10a5315b47b0 ("serial: uartps: Fill struct uart_driver in probe()")
+    14090ad1805f ("serial: uartps: Move alias reading higher in probe()")
+    18cc7ac8a28e ("Revert "serial: uartps: Register own uart console and driver structures"")
+    1f2107223e5b ("serial: uartps: Move cnds_uart_get_port to probe")
+    46a460f0150a ("serial: uartps: Do not use static struct uart_driver out of probe()")
+    4b9d33c6a306 ("serial: uartps: Fix suspend functionality")
+    81e33b51ed69 ("serial: xuartps: Cleanup the clock enable")
+    8da1a3940da4 ("Revert "serial: uartps: Use the same dynamic major number for all ports"")
+    ab262666018d ("serial: uartps: Use the same dynamic major number for all ports")
+    d62100f1aac2 ("serial: xilinx_uartps: Add pm runtime support")
+    d653c43aefed ("serial: xilinx_uartps: Fix the error path")
+    e4bbb5194ea3 ("serial: uartps: Move register to probe based on run time detection")
+    ecfc5771ef06 ("serial: xuartps: Enable clocks in the pm disable case also")
 
-diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
-index 762c5d50b8fe..207528c71e9c 100644
---- a/drivers/acpi/osl.c
-+++ b/drivers/acpi/osl.c
-@@ -214,13 +214,13 @@ acpi_physical_address __init acpi_os_get_root_pointer(void)
- 	return pa;
- }
- 
--/* Must be called with 'acpi_ioremap_lock' or RCU read lock held. */
- static struct acpi_ioremap *
- acpi_map_lookup(acpi_physical_address phys, acpi_size size)
- {
- 	struct acpi_ioremap *map;
- 
--	list_for_each_entry_rcu(map, &acpi_ioremaps, list, acpi_ioremap_lock_held())
-+	lockdep_assert_held(&acpi_ioremap_lock);
-+	list_for_each_entry(map, &acpi_ioremaps, list)
- 		if (map->phys <= phys &&
- 		    phys + size <= map->phys + map->size)
- 			return map;
-@@ -228,7 +228,6 @@ acpi_map_lookup(acpi_physical_address phys, acpi_size size)
- 	return NULL;
- }
- 
--/* Must be called with 'acpi_ioremap_lock' or RCU read lock held. */
- static void __iomem *
- acpi_map_vaddr_lookup(acpi_physical_address phys, unsigned int size)
- {
-@@ -263,7 +262,8 @@ acpi_map_lookup_virt(void __iomem *virt, acpi_size size)
- {
- 	struct acpi_ioremap *map;
- 
--	list_for_each_entry_rcu(map, &acpi_ioremaps, list, acpi_ioremap_lock_held())
-+	lockdep_assert_held(&acpi_ioremap_lock);
-+	list_for_each_entry(map, &acpi_ioremaps, list)
- 		if (map->virt <= virt &&
- 		    virt + size <= map->virt + map->size)
- 			return map;
-@@ -360,7 +360,7 @@ void __iomem __ref
- 	map->size = pg_sz;
- 	map->refcount = 1;
- 
--	list_add_tail_rcu(&map->list, &acpi_ioremaps);
-+	list_add_tail(&map->list, &acpi_ioremaps);
- 
- out:
- 	mutex_unlock(&acpi_ioremap_lock);
-@@ -374,20 +374,13 @@ void *__ref acpi_os_map_memory(acpi_physical_address phys, acpi_size size)
- }
- EXPORT_SYMBOL_GPL(acpi_os_map_memory);
- 
--/* Must be called with mutex_lock(&acpi_ioremap_lock) */
--static unsigned long acpi_os_drop_map_ref(struct acpi_ioremap *map)
--{
--	unsigned long refcount = --map->refcount;
--
--	if (!refcount)
--		list_del_rcu(&map->list);
--	return refcount;
--}
--
--static void acpi_os_map_cleanup(struct acpi_ioremap *map)
-+static void acpi_os_drop_map_ref(struct acpi_ioremap *map)
- {
--	synchronize_rcu_expedited();
-+	lockdep_assert_held(&acpi_ioremap_lock);
-+	if (--map->refcount > 0)
-+		return;
- 	acpi_unmap(map->phys, map->virt);
-+	list_del(&map->list);
- 	kfree(map);
- }
- 
-@@ -408,7 +401,6 @@ static void acpi_os_map_cleanup(struct acpi_ioremap *map)
- void __ref acpi_os_unmap_iomem(void __iomem *virt, acpi_size size)
- {
- 	struct acpi_ioremap *map;
--	unsigned long refcount;
- 
- 	if (!acpi_permanent_mmap) {
- 		__acpi_unmap_table(virt, size);
-@@ -422,11 +414,8 @@ void __ref acpi_os_unmap_iomem(void __iomem *virt, acpi_size size)
- 		WARN(true, PREFIX "%s: bad address %p\n", __func__, virt);
- 		return;
- 	}
--	refcount = acpi_os_drop_map_ref(map);
-+	acpi_os_drop_map_ref(map);
- 	mutex_unlock(&acpi_ioremap_lock);
--
--	if (!refcount)
--		acpi_os_map_cleanup(map);
- }
- EXPORT_SYMBOL_GPL(acpi_os_unmap_iomem);
- 
-@@ -461,7 +450,6 @@ void acpi_os_unmap_generic_address(struct acpi_generic_address *gas)
- {
- 	u64 addr;
- 	struct acpi_ioremap *map;
--	unsigned long refcount;
- 
- 	if (gas->space_id != ACPI_ADR_SPACE_SYSTEM_MEMORY)
- 		return;
-@@ -477,11 +465,8 @@ void acpi_os_unmap_generic_address(struct acpi_generic_address *gas)
- 		mutex_unlock(&acpi_ioremap_lock);
- 		return;
- 	}
--	refcount = acpi_os_drop_map_ref(map);
-+	acpi_os_drop_map_ref(map);
- 	mutex_unlock(&acpi_ioremap_lock);
--
--	if (!refcount)
--		acpi_os_map_cleanup(map);
- }
- EXPORT_SYMBOL(acpi_os_unmap_generic_address);
- 
-@@ -700,55 +685,71 @@ int acpi_os_read_iomem(void __iomem *virt_addr, u64 *value, u32 width)
- 	return 0;
- }
- 
-+static void __iomem *acpi_os_rw_map(acpi_physical_address phys_addr,
-+				    unsigned int size, bool *did_fallback)
-+{
-+	void __iomem *virt_addr = NULL;
-+
-+	if (WARN_ONCE(in_interrupt(), "ioremap in interrupt context\n"))
-+		return NULL;
-+
-+	/* Try to use a cached mapping and fallback otherwise */
-+	*did_fallback = false;
-+	mutex_lock(&acpi_ioremap_lock);
-+	virt_addr = acpi_map_vaddr_lookup(phys_addr, size);
-+	if (virt_addr)
-+		return virt_addr;
-+	mutex_unlock(&acpi_ioremap_lock);
-+
-+	virt_addr = acpi_os_ioremap(phys_addr, size);
-+	*did_fallback = true;
-+
-+	return virt_addr;
-+}
-+
-+static void acpi_os_rw_unmap(void __iomem *virt_addr, bool did_fallback)
-+{
-+	if (did_fallback) {
-+		/* in the fallback case no lock is held */
-+		iounmap(virt_addr);
-+		return;
-+	}
-+
-+	mutex_unlock(&acpi_ioremap_lock);
-+}
-+
- acpi_status
- acpi_os_read_memory(acpi_physical_address phys_addr, u64 *value, u32 width)
- {
--	void __iomem *virt_addr;
- 	unsigned int size = width / 8;
--	bool unmap = false;
-+	bool did_fallback = false;
-+	void __iomem *virt_addr;
- 	u64 dummy;
- 	int error;
- 
--	rcu_read_lock();
--	virt_addr = acpi_map_vaddr_lookup(phys_addr, size);
--	if (!virt_addr) {
--		rcu_read_unlock();
--		virt_addr = acpi_os_ioremap(phys_addr, size);
--		if (!virt_addr)
--			return AE_BAD_ADDRESS;
--		unmap = true;
--	}
--
-+	virt_addr = acpi_os_rw_map(phys_addr, size, &did_fallback);
-+	if (!virt_addr)
-+		return AE_BAD_ADDRESS;
- 	if (!value)
- 		value = &dummy;
- 
- 	error = acpi_os_read_iomem(virt_addr, value, width);
- 	BUG_ON(error);
- 
--	if (unmap)
--		iounmap(virt_addr);
--	else
--		rcu_read_unlock();
--
-+	acpi_os_rw_unmap(virt_addr, did_fallback);
- 	return AE_OK;
- }
- 
- acpi_status
- acpi_os_write_memory(acpi_physical_address phys_addr, u64 value, u32 width)
- {
--	void __iomem *virt_addr;
- 	unsigned int size = width / 8;
--	bool unmap = false;
-+	bool did_fallback = false;
-+	void __iomem *virt_addr;
- 
--	rcu_read_lock();
--	virt_addr = acpi_map_vaddr_lookup(phys_addr, size);
--	if (!virt_addr) {
--		rcu_read_unlock();
--		virt_addr = acpi_os_ioremap(phys_addr, size);
--		if (!virt_addr)
--			return AE_BAD_ADDRESS;
--		unmap = true;
--	}
-+	virt_addr = acpi_os_rw_map(phys_addr, size, &did_fallback);
-+	if (!virt_addr)
-+		return AE_BAD_ADDRESS;
- 
- 	switch (width) {
- 	case 8:
-@@ -767,11 +768,7 @@ acpi_os_write_memory(acpi_physical_address phys_addr, u64 value, u32 width)
- 		BUG();
- 	}
- 
--	if (unmap)
--		iounmap(virt_addr);
--	else
--		rcu_read_unlock();
--
-+	acpi_os_rw_unmap(virt_addr, did_fallback);
- 	return AE_OK;
- }
- 
+v4.4.221: Failed to apply! Possible dependencies:
+    024ca329bfb9 ("serial: uartps: Register own uart console and driver structures")
+    10a5315b47b0 ("serial: uartps: Fill struct uart_driver in probe()")
+    14090ad1805f ("serial: uartps: Move alias reading higher in probe()")
+    18cc7ac8a28e ("Revert "serial: uartps: Register own uart console and driver structures"")
+    354fb1a7d7e5 ("tty: xuartps: Cleanup: Reformat if-else")
+    373e882f9ecf ("tty: xuartps: Refactor IRQ handling")
+    3816b2f886d0 ("serial: xuartps: Adds RXBS register support for zynqmp")
+    46a460f0150a ("serial: uartps: Do not use static struct uart_driver out of probe()")
+    4b9d33c6a306 ("serial: uartps: Fix suspend functionality")
+    55861d11c5c8 ("tty: xuartps: Move request_irq to after setting up the HW")
+    5ede4a5cde27 ("tty: xuartps: Move RX path into helper function")
+    6e14f7c1f2c2 ("tty: xuartps: Improve startup function")
+    81e33b51ed69 ("serial: xuartps: Cleanup the clock enable")
+    8da1a3940da4 ("Revert "serial: uartps: Use the same dynamic major number for all ports"")
+    a19eda0f49e5 ("tty: xuartps: Acquire port lock for shutdown")
+    a8df6a51600a ("tty: xuartps: Remove '_OFFSET' suffix from #defines")
+    ab262666018d ("serial: uartps: Use the same dynamic major number for all ports")
+    aea8f3ddcf5d ("tty: xuartps: Clear interrupt status register in shutdown")
+    e3538c37ee38 ("tty: xuartps: Beautify read-modify writes")
+    e4bbb5194ea3 ("serial: uartps: Move register to probe based on run time detection")
+    ea8dd8e58576 ("tty: xuartps: Don't consider circular buffer when enabling transmitter")
 
+
+NOTE: The patch will not be queued to stable trees until it is upstream.
+
+How should we proceed with this patch?
+
+-- 
+Thanks
+Sasha
