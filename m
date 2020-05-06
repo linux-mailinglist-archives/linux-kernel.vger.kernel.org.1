@@ -2,155 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF9D11C7D2C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 00:19:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69BC01C7D33
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 00:22:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730206AbgEFWTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 18:19:32 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:53497 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729114AbgEFWTb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 18:19:31 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49HWGk1kvcz9sP7;
-        Thu,  7 May 2020 08:19:26 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1588803569;
-        bh=cvnMZTLI2KRIxxSUz/K4Hmuh15cwPhFtGK6dZGCUSU8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hnOw9cEZq94+CAbYxDvqRzI/w57/afztYTZ+FX1zfjWIdL6dcEIc1v78Vm34ivBLS
-         JCFWI93rNJHn24szr9SSUp3UNkq6w8XXqkyidtzj7h0o8RrehTeEiIxoJoWmbMAXku
-         grM/NSreaRTmeb//r4TKY6fz7iTN2+Zhhl27wTy/O8slmuvEq7jyjJaTq0md6RohG6
-         /mFbWUjqznMutDBADLNpYHrQCI4yHhfPjcaIuwigPnhS+fxSvYQeJftMSWgUeofgFR
-         /90VYp7Lf39sc+vHVezRctIR8LOPIbRN09A3D34xQuXn0qzt4bSyTs4xQ+5kOGe1dd
-         dv127hcYpVniw==
-Date:   Thu, 7 May 2020 08:19:23 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
+        id S1730102AbgEFWWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 18:22:11 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:54572 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729985AbgEFWWK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 18:22:10 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 046MHrU3036994;
+        Wed, 6 May 2020 22:21:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=z+LlBKYna795Gom/3fJzeJIvqJa67ZsX6LqoW2jCPmw=;
+ b=oTF5oYGzvMAaLEqGhwJwqGVZSNd0qmF+hqs17v/mtJznVezka3nNb4zCuJI6pK+vr1K0
+ oD/X4v62FjJC2F2GpaDlwS0jESSFZNlqj1GIGrDYMq6e06juxUrJJlguLlQLH6sM/GJT
+ hAucB9ZAFXNV3Q//UujMxQq29RKurkzwCPIJaVtdiIspWUik0oNEIdijsJEkZIZ0Lb4U
+ NHCSP/ZWi3vUl6hPMtX/kwez3cxr76QpetK36yIXwXzMCL1/uzS2tkB5lC+w0cOtvzCH
+ h1TDllx9dJyNQFIKiY9ijR/Ez9xB5JLyXRzNxqZ9i0mpOcbGbIJBeLAO4YReqhw2FNrQ Sw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 30s1gncv3k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 06 May 2020 22:21:15 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 046MHmhR062218;
+        Wed, 6 May 2020 22:21:14 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 30t1r8vcdm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 06 May 2020 22:21:14 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 046ML6cm029131;
+        Wed, 6 May 2020 22:21:06 GMT
+Received: from ca-dmjordan1.us.oracle.com (/10.211.9.48)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 06 May 2020 15:21:05 -0700
+Date:   Wed, 6 May 2020 18:21:27 -0400
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Michal Hocko <mhocko@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Russell King <rmk+kernel@arm.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: ARM: futex: Address build warning
-Message-ID: <20200507081924.7c77bfc9@canb.auug.org.au>
-In-Reply-To: <87pncao2ph.fsf@nanos.tec.linutronix.de>
-References: <20200330134746.627dcd93@canb.auug.org.au>
-        <20200401085753.617c1636@canb.auug.org.au>
-        <877dyzv6y2.fsf@nanos.tec.linutronix.de>
-        <20200402090051.741905cd@canb.auug.org.au>
-        <874ku2q18k.fsf@nanos.tec.linutronix.de>
-        <20200413100112.2e114e24@canb.auug.org.au>
-        <87pncao2ph.fsf@nanos.tec.linutronix.de>
+        Randy Dunlap <rdunlap@infradead.org>,
+        Shile Zhang <shile.zhang@linux.alibaba.com>,
+        Tejun Heo <tj@kernel.org>, Zi Yan <ziy@nvidia.com>,
+        linux-crypto@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 6/7] mm: parallelize deferred_init_memmap()
+Message-ID: <20200506222127.l3p2a2vjavwz2bdl@ca-dmjordan1.us.oracle.com>
+References: <20200430201125.532129-1-daniel.m.jordan@oracle.com>
+ <20200430201125.532129-7-daniel.m.jordan@oracle.com>
+ <CAKgT0Uf7e5514SOi8dmkB5oXUK9bwqD_z-5KJ_F3MUn3CAQyPQ@mail.gmail.com>
+ <3C3C62BE-6363-41C3-834C-C3124EB3FFAB@joshtriplett.org>
+ <CAKgT0UdBv-Wj98P2wMFGDSihPLKWFsqpu77ZmO+eA51uteZ-Ag@mail.gmail.com>
+ <20200505014844.ulp4rtih7adtcicm@ca-dmjordan1.us.oracle.com>
+ <20200505020916.mve4ijrg4z5h7eh5@ca-dmjordan1.us.oracle.com>
+ <CAKgT0UdE1ex_aAyMeR3PWtVcmXL8cUtjqy0J8hLpnFm42yn82w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ScnmteIMj_Vg.3wJi0L3LjA";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKgT0UdE1ex_aAyMeR3PWtVcmXL8cUtjqy0J8hLpnFm42yn82w@mail.gmail.com>
+User-Agent: NeoMutt/20180716
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9613 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 suspectscore=0
+ spamscore=0 mlxlogscore=999 malwarescore=0 phishscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005060177
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9613 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 mlxscore=0
+ spamscore=0 clxscore=1015 priorityscore=1501 bulkscore=0 phishscore=0
+ impostorscore=0 malwarescore=0 lowpriorityscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005060177
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ScnmteIMj_Vg.3wJi0L3LjA
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, May 05, 2020 at 07:55:43AM -0700, Alexander Duyck wrote:
+> One question about this data. What is the power management
+> configuration on the systems when you are running these tests? I'm
+> just curious if CPU frequency scaling, C states, and turbo are
+> enabled?
 
-Hi all,
+Yes, intel_pstate is loaded in active mode without hwp and with turbo enabled
+(those power management docs are great by the way!) and intel_idle is in use
+too.
 
-On Tue, 14 Apr 2020 11:07:22 +0200 Thomas Gleixner <tglx@linutronix.de> wro=
-te:
->
-> Stephen reported the following build warning on a ARM multi_v7_defconfig
-> build with GCC 9.2.1:
->=20
-> kernel/futex.c: In function 'do_futex':
-> kernel/futex.c:1676:17: warning: 'oldval' may be used uninitialized in th=
-is function [-Wmaybe-uninitialized]
->  1676 |   return oldval =3D=3D cmparg;
->       |          ~~~~~~~^~~~~~~~~
-> kernel/futex.c:1652:6: note: 'oldval' was declared here
->  1652 |  int oldval, ret;
->       |      ^~~~~~
->=20
-> introduced by commit a08971e9488d ("futex: arch_futex_atomic_op_inuser()
-> calling conventions change").
->=20
-> While that change should not make any difference it confuses GCC which
-> fails to work out that oldval is not referenced when the return value is
-> not zero.
->=20
-> GCC fails to properly analyze arch_futex_atomic_op_inuser(). It's not the
-> early return, the issue is with the assembly macros. GCC fails to detect
-> that those either set 'ret' to 0 and set oldval or set 'ret' to -EFAULT
-> which makes oldval uninteresting. The store to the callsite supplied oldv=
-al
-> pointer is conditional on ret =3D=3D 0.
->=20
-> The straight forward way to solve this is to make the store unconditional.
->=20
-> Aside of addressing the build warning this makes sense anyway because it
-> removes the conditional from the fastpath. In the error case the stored
-> value is uninteresting and the extra store does not matter at all.
->=20
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Link: https://lore.kernel.org/r/874ku2q18k.fsf@nanos.tec.linutronix.de
-> ---
->  arch/arm/include/asm/futex.h |    9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
->=20
-> --- a/arch/arm/include/asm/futex.h
-> +++ b/arch/arm/include/asm/futex.h
-> @@ -165,8 +165,13 @@ arch_futex_atomic_op_inuser(int op, int
->  	preempt_enable();
->  #endif
-> =20
-> -	if (!ret)
-> -		*oval =3D oldval;
-> +	/*
-> +	 * Store unconditionally. If ret !=3D 0 the extra store is the least
-> +	 * of the worries but GCC cannot figure out that __futex_atomic_op()
-> +	 * is either setting ret to -EFAULT or storing the old value in
-> +	 * oldval which results in a uninitialized warning at the call site.
-> +	 */
-> +	*oval =3D oldval;
-> =20
->  	return ret;
->  }
+> I ask because that is what I have seen usually make the
+> difference in these kind of workloads as the throughput starts
+> dropping off as you start seeing the core frequency lower and more
+> cores become active.
 
-Any response to this?  I am still getting the warning ...
-
-The warning was introduced by commit
-
-  a08971e9488d ("futex: arch_futex_atomic_op_inuser() calling conventions c=
-hange")
-
-Which has been in Linus' tree since before v5.7-rc1.  Should this go in
-via the tip tree, the arm tree, or will I just send ti to Linus myself?
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/ScnmteIMj_Vg.3wJi0L3LjA
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl6zN+wACgkQAVBC80lX
-0GwZmwf/aePLWiH5arcTzhuOXIsMsYUaw6sCxEllNlLA36DHq3f4kC0k8c6NeDIY
-hD91S189DeTo9UBXSebPNQ0s3YnypjcURfRAEfY3tWzxjAJDV9f2WR4z56y6j4ML
-HF26mQ1OvX0So+blF7IUlfkP/f5aAWuyWRMEhXGV0Iios0w219NwLW30hbHbU5F/
-GBeSE31PDPL4P+hxypPhubB6E8pH/H8LkgdFeezbDx4qLIBgQhKR8kGczi6Jbxmn
-1F6HMqPkVLMoeMBy7tTUV2uxLPRLgDHo4jhHurQLQ4LrGvIMdzEgFau25xwStNOL
-4dL7EHIuSvFiYPtAGpjeRFY/HKrpuQ==
-=qjow
------END PGP SIGNATURE-----
-
---Sig_/ScnmteIMj_Vg.3wJi0L3LjA--
+If I follow, you're saying there's a chance performance would improve with the
+above disabled, but how often would a system be configured that way?  Even if
+it were faster, the machine is configured how it's configured, or am I missing
+your point?
