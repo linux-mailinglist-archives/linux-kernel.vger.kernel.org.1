@@ -2,89 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 236701C747A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 808701C7433
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:21:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729928AbgEFPY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 11:24:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43800 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729941AbgEFPYz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 11:24:55 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6925F214D8;
-        Wed,  6 May 2020 15:24:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588778695;
-        bh=HsxfhgV8QRqXmmmB6VHO8X9GXo0SOUbM4uHLZKA7oyY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CDnkrol/pmRPY/m0AbvX3d85FG5lZCqpB8Y2L7DIJLsP25woiSLlXM5JsQ7aU+JVr
-         9fDQRkd9uWbhm1bD0gOXglcyxHak/6hNANBxmEb5YyIurvAKlrXNvliRLcCxRldkgK
-         pm8Raa3lZnHUqRYBK9gZYY9oYm+xvbRLgnAfLSDQ=
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-        Clark Williams <williams@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>, Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>,
-        clang-built-linux@googlegroups.com,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 35/91] perf parse-events: Fix another memory leaks found on parse_events()
-Date:   Wed,  6 May 2020 12:21:38 -0300
-Message-Id: <20200506152234.21977-36-acme@kernel.org>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20200506152234.21977-1-acme@kernel.org>
-References: <20200506152234.21977-1-acme@kernel.org>
+        id S1729472AbgEFPVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 11:21:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729445AbgEFPVt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 11:21:49 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C2D8C061A10
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 08:21:48 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id 7so2575657pjo.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 08:21:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=l3dvl4KUVW6lOYjk9hPMXPvcXmJ6hlVZhKPWrOvasd0=;
+        b=XsLCj3cbL0qXcpaGnYJ+pvkth0mpbhYdjiVyqlK1a4thH9KlvZQ6S9vg0C5M5uuMCM
+         mASFpDbRVQRlfUdKJYhvC1nXCdOWvgwjWZ0X+QA/IJKG2AFDb9YKiSAF/ft4dR4pwuKC
+         DlyUogAWlJAU6XfQVAfQIoC92KD8eYuzCQjM3vMVIuOajaWBVre2GEXpCCUa5MG6IU+0
+         Hi3yXyMUjrPsa9S9QybHlcZVDBGptarfLfubZAzlGAmhQutDUJ3g+xLR0lc1KLO+28A2
+         kmazSm1h1IKzKZCXYaTck5/J0d9yJ9HENYKVDD1uq1QrakTyxGNd7DqwBKdJcprUJBxq
+         2loA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=l3dvl4KUVW6lOYjk9hPMXPvcXmJ6hlVZhKPWrOvasd0=;
+        b=DyMq8pgkD2AWjK/BMrGmPP0mMDfW8SLAI0vTXqJjzU73mN4KDqjyyM1xdWmtJO4vjp
+         kG5Gd0yb7wZnqdfLyFgGhfKqsSv+7aBC5B4DGQCx3yERYHUfGl2VTjRMWr3pe+dTfVov
+         qSuBGr9O9+Awcd00bMDnJ7mXED0XlGRNWvJP0R/8cri3BcKas0W9bsJjMEM3rxsUWzkJ
+         nPr+CywxCAt6m/VeOLuMf9N2PcLHDnVRtFdV6dZnMzhM1g8I/evWT1kRH0genEgbL31i
+         dhEf2IPCcfS/qvOwrvenov0Aaq7oWyhH7rid7jJJuOEqu34rQGUSRisoFWQNdyZi5+5E
+         hMow==
+X-Gm-Message-State: AGi0PuYX2U6wQJnnpZVmWPV4MCKhMc/c+8uxIx88bcLAEbSt64ZTHQR+
+        73kwLy7IpxnZLyEi90LD786qKw==
+X-Google-Smtp-Source: APiQypIRqbdsbg6eMigkHYaGO2ldIooYnkYRCiQwznGcabDVCdyPDkuqXpty5XxiCeBTGEXP0X35Yw==
+X-Received: by 2002:a17:90b:19d7:: with SMTP id nm23mr8124949pjb.211.1588778508025;
+        Wed, 06 May 2020 08:21:48 -0700 (PDT)
+Received: from hermes.lan (204-195-22-127.wavecable.com. [204.195.22.127])
+        by smtp.gmail.com with ESMTPSA id a17sm2190402pfr.24.2020.05.06.08.21.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 May 2020 08:21:47 -0700 (PDT)
+Date:   Wed, 6 May 2020 08:21:39 -0700
+From:   Stephen Hemminger <stephen@networkplumber.org>
+To:     Po Liu <Po.Liu@nxp.com>
+Cc:     dsahern@gmail.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, vinicius.gomes@intel.com,
+        davem@davemloft.net, vlad@buslov.dev, claudiu.manoil@nxp.com,
+        vladimir.oltean@nxp.com, alexandru.marginean@nxp.com
+Subject: Re: [v4,iproute2-next 1/2] iproute2-next:tc:action: add a gate
+ control action
+Message-ID: <20200506082139.58dff261@hermes.lan>
+In-Reply-To: <20200506084020.18106-1-Po.Liu@nxp.com>
+References: <20200503063251.10915-2-Po.Liu@nxp.com>
+        <20200506084020.18106-1-Po.Liu@nxp.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ian Rogers <irogers@google.com>
+On Wed,  6 May 2020 16:40:19 +0800
+Po Liu <Po.Liu@nxp.com> wrote:
 
-Fix another memory leak found by applying LLVM's libfuzzer on parse_events().
+> 		} else if (matches(*argv, "base-time") == 0) {
+> +			NEXT_ARG();
+> +			if (get_u64(&base_time, *argv, 10)) {
+> +				invalidarg = "base-time";
+> +				goto err_arg;
+> +			}
+> +		} else if (matches(*argv, "cycle-time") == 0) {
+> +			NEXT_ARG();
+> +			if (get_u64(&cycle_time, *argv, 10)) {
+> +				invalidarg = "cycle-time";
+> +				goto err_arg;
+> +			}
+> +		} else if (matches(*argv, "cycle-time-ext") == 0) {
+> +			NEXT_ARG();
+> +			if (get_u64(&cycle_time_ext, *argv, 10)) {
+> +				invalidarg = "cycle-time-ext";
+> +				goto err_arg;
+> +			}
 
-Signed-off-by: Ian Rogers <irogers@google.com>
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Leo Yan <leo.yan@linaro.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Stephane Eranian <eranian@google.com>
-Cc: clang-built-linux@googlegroups.com
-Link: http://lore.kernel.org/lkml/20200319023101.82458-1-irogers@google.com
-[ split from a larger patch ]
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
----
- tools/perf/util/parse-events.y | 1 +
- 1 file changed, 1 insertion(+)
+Could all these time values use existing TC helper routines?
+See get_time().  The way you have it makes sense for hardware
+but stands out versus the rest of tc.
 
-diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
-index 6ece67ed244a..c4ca932d092d 100644
---- a/tools/perf/util/parse-events.y
-+++ b/tools/perf/util/parse-events.y
-@@ -326,6 +326,7 @@ PE_NAME opt_pmu_config
- 	}
- 	parse_events_terms__delete($2);
- 	parse_events_terms__delete(orig_terms);
-+	free(pattern);
- 	free($1);
- 	$$ = list;
- #undef CLEANUP_YYABORT
--- 
-2.21.1
-
+It maybe that the kernel UAPI is wrong, and should be using same
+time units as rest of tc. Forgot to review that part of the patch.
