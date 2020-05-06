@@ -2,81 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 441FC1C6948
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 08:47:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5A0B1C6955
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 08:48:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728204AbgEFGr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 02:47:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34662 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727812AbgEFGr2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 02:47:28 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6416A20747;
-        Wed,  6 May 2020 06:47:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588747647;
-        bh=ytOXmRnuZmgcXJAyYOWuXoaPYMAO9uUP+QC5d6j+MkI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xFB7udiounmte/IcpA4rp1CpfNw82L5bqVkGORTzgtHS1hadKlp2JNdmv9eFjtfl5
-         wN3RhBH5VBVvi1s4CmVevAhN+e3SzwNnU4LqxxrZAU2DiazTohyjR/N8eRSTYpnIwV
-         oX/npF5HnUU8BBrUjTWQuOenU3Rz+r/EAMi4sAT4=
-Date:   Wed, 6 May 2020 08:47:25 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     ashwin-h <ashwinh@vmware.com>
-Cc:     vyasevich@gmail.com, nhorman@tuxdriver.com, davem@davemloft.net,
-        linux-sctp@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, srivatsab@vmware.com,
-        srivatsa@csail.mit.edu, rostedt@goodmis.org, srostedt@vmware.com,
-        ashwin.hiranniah@gmail.com, Xin Long <lucien.xin@gmail.com>
-Subject: Re: [PATCH 1/2] sctp: implement memory accounting on tx path
-Message-ID: <20200506064725.GC2273049@kroah.com>
-References: <cover.1588242081.git.ashwinh@vmware.com>
- <4ce6c13946803700d235082b9c52460ed38dab1e.1588242081.git.ashwinh@vmware.com>
+        id S1728282AbgEFGsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 02:48:25 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:3858 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727812AbgEFGsY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 02:48:24 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 42B22F69CB94B7516A49;
+        Wed,  6 May 2020 14:48:21 +0800 (CST)
+Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server (TLS) id 14.3.487.0; Wed, 6 May 2020
+ 14:48:19 +0800
+Subject: Re: [f2fs-dev] [PATCH] f2fs: remove redundant check in
+ f2fs_force_buffered_io
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>
+CC:     <kernel-team@android.com>, <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+References: <20200504143538.159967-1-jaegeuk@kernel.org>
+ <b18c4be5-b56d-6b6e-3f99-d2fe05d330eb@kernel.org>
+ <20200505032358.GA136485@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <3b13c020-74a2-d351-15a8-261f6901b3da@huawei.com>
+Date:   Wed, 6 May 2020 14:48:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4ce6c13946803700d235082b9c52460ed38dab1e.1588242081.git.ashwinh@vmware.com>
+In-Reply-To: <20200505032358.GA136485@google.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.134.22.195]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 06, 2020 at 07:50:53PM +0530, ashwin-h wrote:
-> From: Xin Long <lucien.xin@gmail.com>
+On 2020/5/5 11:23, Jaegeuk Kim wrote:
+> On 05/05, Chao Yu wrote:
+>> On 2020-5-4 22:35, Jaegeuk Kim wrote:
+>>> From: Daeho Jeong <daehojeong@google.com>
+>>>
+>>> We already checked whether the file is compressed or not in
+>>> f2fs_post_read_required(). So removed f2fs_compressed_file()
+>>> in f2fs_force_buffered_io().
+>>
+>> Agreed, since I have sent similar patch before:
+>>
+>> https://lkml.org/lkml/2020/3/24/1819
 > 
-> commit 1033990ac5b2ab6cee93734cb6d301aa3a35bcaa upstream.
-> 
-> Now when sending packets, sk_mem_charge() and sk_mem_uncharge() have been
-> used to set sk_forward_alloc. We just need to call sk_wmem_schedule() to
-> check if the allocated should be raised, and call sk_mem_reclaim() to
-> check if the allocated should be reduced when it's under memory pressure.
-> 
-> If sk_wmem_schedule() returns false, which means no memory is allowed to
-> allocate, it will block and wait for memory to become available.
-> 
-> Note different from tcp, sctp wait_for_buf happens before allocating any
-> skb, so memory accounting check is done with the whole msg_len before it
-> too.
-> 
-> Reported-by: Matteo Croce <mcroce@redhat.com>
-> Tested-by: Matteo Croce <mcroce@redhat.com>
-> Acked-by: Neil Horman <nhorman@tuxdriver.com>
-> Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-> Signed-off-by: Xin Long <lucien.xin@gmail.com>
-> Signed-off-by: David S. Miller <davem@davemloft.net>
-> Signed-off-by: Ashwin H <ashwinh@vmware.com>
-> ---
->  net/sctp/socket.c | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
+> Heh, as I couldn't find yours, I was actually waiting for you to point out. :)
 
-<formletter>
+Well, all patches sent to f2fs mailing list have been archived in
+lore.kernel.org/linux-f2fs-devel. :)
 
-This is not the correct way to submit patches for inclusion in the
-stable kernel tree.  Please read:
-    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-for how to do this properly.
+https://lore.kernel.org/linux-f2fs-devel/20200229104906.12061-1-yuchao0@huawei.com/
 
-</formletter>
+> 
+>>
+>> Just want to know what's the change of backport concern now.
+> 
+> Old ICE support had to decouple f2fs_post_read_required() and
+> f2fs_forced_buffered_io(). Now, I decide to manage this as we
+
+Copied.
+
+> need to manage this for one kernel version only.
+
+Okay, thanks for the explanation.
+
+Thanks,
+
+> 
+> Thanks,
+> 
+>>
+>> Thanks,
+>>
+>>>
+>>> Signed-off-by: Daeho Jeong <daehojeong@google.com>
+>>> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+>>> ---
+>>>  fs/f2fs/f2fs.h | 2 --
+>>>  1 file changed, 2 deletions(-)
+>>>
+>>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+>>> index 6b7b963641696..01a00fc808361 100644
+>>> --- a/fs/f2fs/f2fs.h
+>>> +++ b/fs/f2fs/f2fs.h
+>>> @@ -4064,8 +4064,6 @@ static inline bool f2fs_force_buffered_io(struct inode *inode,
+>>>  		return true;
+>>>  	if (f2fs_is_multi_device(sbi))
+>>>  		return true;
+>>> -	if (f2fs_compressed_file(inode))
+>>> -		return true;
+>>>  	/*
+>>>  	 * for blkzoned device, fallback direct IO to buffered IO, so
+>>>  	 * all IOs can be serialized by log-structured write.
+>>>
+> 
+> 
+> _______________________________________________
+> Linux-f2fs-devel mailing list
+> Linux-f2fs-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+> .
+> 
