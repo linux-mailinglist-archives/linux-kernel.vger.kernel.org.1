@@ -2,80 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 772571C6BCB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 10:32:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF87B1C6BD2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 10:33:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728854AbgEFIcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 04:32:21 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:59402 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728732AbgEFIcU (ORCPT
+        id S1728832AbgEFIdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 04:33:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728702AbgEFIdK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 04:32:20 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1588753940; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=dtx3Rp21IPiCAR5qCT/OcwOnwvEUdhGk2oHx/m6ir5c=;
- b=elmZLrGc5qk3GLHEFMv+hsRyIjMkbqctX3xUMhWUNIdDba3EYlTlWT/KtPDI3Pjt/v9fHvJU
- +RIRC2hpIhJwC+yVvKonFYn60aKDf68gOuMnEnmfvHqn/gWbdeV2muV905FG5fi/qEcA6iHo
- FJYvldT4WdUSN/NE1N/c1+ZNqnc=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5eb27609.7f2e20474c70-smtp-out-n05;
- Wed, 06 May 2020 08:32:09 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4272FC433BA; Wed,  6 May 2020 08:32:09 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
-        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 172FEC433F2;
-        Wed,  6 May 2020 08:32:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 172FEC433F2
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        Wed, 6 May 2020 04:33:10 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D6A5C061A0F
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 01:33:10 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jWFTw-0007Ru-1O; Wed, 06 May 2020 10:32:44 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id 746FF1001F5; Wed,  6 May 2020 10:32:43 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        "Peter Zijlstra \(Intel\)" <peterz@infradead.org>
+Subject: Re: [patch V4 part 1 03/36] sched: Clean up scheduler_ipi()
+In-Reply-To: <20200505134058.361859938@linutronix.de>
+References: <20200505131602.633487962@linutronix.de> <20200505134058.361859938@linutronix.de>
+Date:   Wed, 06 May 2020 10:32:43 +0200
+Message-ID: <87mu6lo444.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH v2] ipw2x00: Remove a memory allocation failure log
- message
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200424154527.27309-1-christophe.jaillet@wanadoo.fr>
-References: <20200424154527.27309-1-christophe.jaillet@wanadoo.fr>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     stas.yakovlev@gmail.com, davem@davemloft.net,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20200506083209.4272FC433BA@smtp.codeaurora.org>
-Date:   Wed,  6 May 2020 08:32:09 +0000 (UTC)
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
+Thomas Gleixner <tglx@linutronix.de> writes:
 
-> Axe a memory allocation failure log message. This message is useless and
-> incorrect (vmalloc is not used here for the memory allocation)
-> 
-> This has been like that since the very beginning of this driver in
-> commit 43f66a6ce8da ("Add ipw2200 wireless driver.")
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Bah. I managed to lose the
 
-Patch applied to wireless-drivers-next.git, thanks.
+  From: Peterz
 
-c03e3fe91c19 ipw2x00: Remove a memory allocation failure log message
+line somehow.
 
--- 
-https://patchwork.kernel.org/patch/11508307/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
