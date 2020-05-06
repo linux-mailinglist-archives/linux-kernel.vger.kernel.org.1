@@ -2,86 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B17D61C6E27
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 12:15:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DB3F1C6E37
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 12:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729210AbgEFKPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 06:15:07 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:58645 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726354AbgEFKPG (ORCPT
+        id S1728880AbgEFKT0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 May 2020 06:19:26 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:50207 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728465AbgEFKTX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 06:15:06 -0400
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id E833922EDE;
-        Wed,  6 May 2020 12:15:01 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1588760104;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nAAw+xDlfmFE1PfS+rEU4ez9NFhnFnvHiViZ3xvNAjw=;
-        b=EqiyYX8rMFKm4ilqILTgN1nc1EwQkfTsMRvUtxdbWGDMPV//E1lru0wM/ukjLURl1X48OP
-        suuwpvyMemfPmvR3qgZJnnwXlzuKxxEmGxXjSBH8fRm8/1qJXxxp/olDPtcEQEmsriMABz
-        MQang03KtcdxXv6b0rpAvfz54QJGy4A=
+        Wed, 6 May 2020 06:19:23 -0400
+X-Originating-IP: 90.76.143.236
+Received: from localhost (lfbn-tou-1-1075-236.w90-76.abo.wanadoo.fr [90.76.143.236])
+        (Authenticated sender: antoine.tenart@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 442881BF238;
+        Wed,  6 May 2020 10:16:41 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 06 May 2020 12:15:01 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Matthias May <matthias.may@neratec.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrew Lunn <andrew@lunn.ch>,
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20200504213136.26458-4-michael@walle.cc>
+References: <20200504213136.26458-1-michael@walle.cc> <20200504213136.26458-4-michael@walle.cc>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
         Florian Fainelli <f.fainelli@gmail.com>,
         Heiner Kallweit <hkallweit1@gmail.com>,
         Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [RFC net-next] net: phy: at803x: add cable diagnostics support
-In-Reply-To: <00e8202e-1786-27f4-3bfc-accc5a01787d@neratec.com>
-References: <20200503181517.4538-1-michael@walle.cc>
- <00e8202e-1786-27f4-3bfc-accc5a01787d@neratec.com>
-User-Agent: Roundcube Webmail/1.4.4
-Message-ID: <c09c5c851e64f374fe9f7f575113f432@walle.cc>
-X-Sender: michael@walle.cc
+        "David S . Miller" <davem@davemloft.net>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Michael Walle <michael@walle.cc>
+Subject: Re: [PATCH net-next v2 3/3] net: phy: mscc: use phy_package_shared
+To:     Michael Walle <michael@walle.cc>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+From:   Antoine Tenart <antoine.tenart@bootlin.com>
+Message-ID: <158876019421.468345.17020929384276599315@kwain>
+Date:   Wed, 06 May 2020 12:16:35 +0200
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2020-05-06 11:01, schrieb Matthias May:
-> I've worked with this PHY quite often and we've hacked together some
-> support for the CDT in uboot.
+Hello Michael,
+
+Quoting Michael Walle (2020-05-04 23:31:36)
 > 
-> Have you done any tests with the cable on the other side being plugged 
-> in?
+> diff --git a/drivers/net/phy/mscc/mscc_main.c b/drivers/net/phy/mscc/mscc_main.c
+> index 5391acdece05..a505286b2195 100644
+> --- a/drivers/net/phy/mscc/mscc_main.c
+> +++ b/drivers/net/phy/mscc/mscc_main.c
+> -static bool vsc8584_is_pkg_init(struct phy_device *phydev, bool reversed)
+> +static void vsc8584_get_base_addr(struct phy_device *phydev)
+>  {
+> -       struct mii_bus *bus = phydev->mdio.bus;
+> -       struct vsc8531_private *vsc8531;
+> -       struct phy_device *phy;
+> -       int i, addr;
+> -
+> -       /* VSC8584 is a Quad PHY */
+> -       for (i = 0; i < 4; i++) {
+> -               vsc8531 = phydev->priv;
+> -
+> -               if (reversed)
+> -                       addr = vsc8531->base_addr - i;
+> -               else
+> -                       addr = vsc8531->base_addr + i;
+> -
+> -               phy = mdiobus_get_phy(bus, addr);
+> -               if (!phy)
+> -                       continue;
+> +       struct vsc8531_private *vsc8531 = phydev->priv;
+> +       u16 val, addr;
+>  
+> -               if ((phy->phy_id & phydev->drv->phy_id_mask) !=
+> -                   (phydev->drv->phy_id & phydev->drv->phy_id_mask))
+> -                       continue;
+> +       mutex_lock(&phydev->mdio.bus->mdio_lock);
+> +       __phy_write(phydev, MSCC_EXT_PAGE_ACCESS, MSCC_PHY_PAGE_EXTENDED);
+>  
+> -               vsc8531 = phy->priv;
+> +       addr = __phy_read(phydev, MSCC_PHY_EXT_PHY_CNTL_4);
+> +       addr >>= PHY_CNTL_4_ADDR_POS;
+>  
+> -               if (vsc8531 && vsc8531->pkg_init)
+> -                       return true;
+> -       }
+> +       val = __phy_read(phydev, MSCC_PHY_ACTIPHY_CNTL);
 
-yes
+You should restore the page to MSCC_PHY_PAGE_STANDARD here.
 
-> 
-> With the cable being plugged in, we something (1 out of 10 or so)
-> observed that the test returns with a failure.
-> --> AT803X_CDT_STATUS_STAT_FAIL in AT803X_CDT_STATUS
-> 
-> Often you get the correct result if you simply try again. Sometimes
-> however it gets into a "stuck" state where it just
-> returns FAIL for ~3~10 seconds. After some that it seems to recover
-> and gets the correct result again.
+> +       mutex_unlock(&phydev->mdio.bus->mdio_lock);
+>  
+> -       return false;
+> +       if (val & PHY_ADDR_REVERSED)
+> +               vsc8531->base_addr = phydev->mdio.addr + addr;
+> +       else
+> +               vsc8531->base_addr = phydev->mdio.addr - addr;
+>  }
 
-its actually pretty stable for the following sequence (see also code
-above):
+Thanks for the series!
+Antoine
 
-restart AN -> wait 1.5s -> start test
-
-Only thing I've noticed is that if you perform the test without
-waiting for the AN to complete beforehand there might be some
-failed states. Seems like the "restart an" doesn't work while
-AN is still running. But that seems to be the link partner
-who disturbs the measurement.
-And it seems that AN is a requirement to do successful testing
-(or to silence the link partner I guess).
-
--michael
+-- 
+Antoine Ténart, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
