@@ -2,71 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58B321C6A51
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 09:47:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BC511C6A83
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 09:53:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728379AbgEFHrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 03:47:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40914 "EHLO mail.kernel.org"
+        id S1728528AbgEFHxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 03:53:49 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:49626 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728112AbgEFHrG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 03:47:06 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7FCAA206D5;
-        Wed,  6 May 2020 07:47:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588751226;
-        bh=Gy838ztyqCG5xOQTV55+0XD3VL4icmY3tcw8oDEYSe8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=TJzSurVFZBHYjYPslkAFJl8bZoHDihSXjN5If4Wyh1L3BM4s/Aihe7fxiG6U30NvW
-         4Mfjx64/at/+615BiVDDJCdCvTZBi1zdnDdnz5FHOJMpel0pZ5/CQfLz0lVuZ1q7zg
-         WAMAM8Vye2aLljQt9M/rCPc5vYdFuifml9MGfJH8=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        Danit Goldberg <danitg@mellanox.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next 00/10] Various clean ups to ib_cm
-Date:   Wed,  6 May 2020 10:46:51 +0300
-Message-Id: <20200506074701.9775-1-leon@kernel.org>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1728412AbgEFHxs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 03:53:48 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 376A4200B13;
+        Wed,  6 May 2020 09:53:46 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D8A98200B0B;
+        Wed,  6 May 2020 09:53:36 +0200 (CEST)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 965C2402A8;
+        Wed,  6 May 2020 15:53:24 +0800 (SGT)
+From:   Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
+To:     xiaoliang.yang_1@nxp.com, po.liu@nxp.com, claudiu.manoil@nxp.com,
+        alexandru.marginean@nxp.com, vladimir.oltean@nxp.com,
+        leoyang.li@nxp.com, mingkai.hu@nxp.com, andrew@lunn.ch,
+        f.fainelli@gmail.com, vivien.didelot@gmail.com,
+        davem@davemloft.net, jiri@resnulli.us, idosch@idosch.org,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, horatiu.vultur@microchip.com,
+        alexandre.belloni@bootlin.com, allan.nielsen@microchip.com,
+        joergen.andreasen@microchip.com, UNGLinuxDriver@microchip.com,
+        nikolay@cumulusnetworks.com, roopa@cumulusnetworks.com,
+        linux-devel@linux.nxdi.nxp.com
+Subject: [PATCH v1 net-next 0/6] net: ocelot: VCAP IS1 and ES0 support
+Date:   Wed,  6 May 2020 15:48:54 +0800
+Message-Id: <20200506074900.28529-1-xiaoliang.yang_1@nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@mellanox.com>
+This series patches adds support for VCAP IS1 and ES0 module.
 
-From Jason,
+VCAP IS1 supports FLOW_ACTION_VLAN_MANGLE action to filter MAC, IP,
+VLAN, protocol, and TCP/UDP ports keys and retag vlan tag.
 
-These are intended to be no-functional change edits that tidy up the
-code flow or coding style.
+VCAP ES0 supports FLOW_ACTION_VLAN_PUSH action to filter vlan keys
+and push a specific vlan tag to frames.
 
-Thanks
+Vladimir Oltean (3):
+  net: mscc: ocelot: introduce a new ocelot_target_{read,write} API
+  net: mscc: ocelot: generalize existing code for VCAP IS2
+  net: dsa: tag_ocelot: use VLAN information from tagging header when
+    available
 
-Danit Goldberg (1):
-  RDMA/cm: Remove unused store to ret in cm_rej_handler
+Xiaoliang Yang (3):
+  net: mscc: ocelot: change vcap to be compatible with full and quad
+    entry
+  net: mscc: ocelot: VCAP IS1 support
+  net: mscc: ocelot: VCAP ES0 support
 
-Jason Gunthorpe (9):
-  RDMA/addr: Mark addr_resolve as might_sleep()
-  RDMA/cm: Remove return code from add_cm_id_to_port_list
-  RDMA/cm: Pull duplicated code into cm_queue_work_unlock()
-  RDMA/cm: Pass the cm_id_private into cm_cleanup_timewait
-  RDMA/cm: Add a note explaining how the timewait is eventually freed
-  RDMA/cm: Make find_remote_id() return a cm_id_private
-  RDMA/cm: Remove the cm_free_id() wrapper function
-  RDMA/cm: Remove needless cm_id variable
-  RDMA/cm: Increment the refcount inside cm_find_listen()
+ drivers/net/dsa/ocelot/felix.c            |   2 -
+ drivers/net/dsa/ocelot/felix.h            |   2 -
+ drivers/net/dsa/ocelot/felix_vsc9959.c    | 186 +++++-
+ drivers/net/ethernet/mscc/ocelot.c        |  10 +
+ drivers/net/ethernet/mscc/ocelot_ace.c    | 727 ++++++++++++++++------
+ drivers/net/ethernet/mscc/ocelot_ace.h    |  12 +
+ drivers/net/ethernet/mscc/ocelot_board.c  |   5 +-
+ drivers/net/ethernet/mscc/ocelot_flower.c |  33 +-
+ drivers/net/ethernet/mscc/ocelot_io.c     |  17 +
+ drivers/net/ethernet/mscc/ocelot_regs.c   |  21 +-
+ drivers/net/ethernet/mscc/ocelot_s2.h     |  64 --
+ include/soc/mscc/ocelot.h                 |  39 +-
+ include/soc/mscc/ocelot_vcap.h            | 200 +++++-
+ net/dsa/tag_ocelot.c                      |  29 +
+ 14 files changed, 1041 insertions(+), 306 deletions(-)
+ delete mode 100644 drivers/net/ethernet/mscc/ocelot_s2.h
 
- drivers/infiniband/core/addr.c |   4 +
- drivers/infiniband/core/cm.c   | 239 +++++++++++----------------------
- 2 files changed, 85 insertions(+), 158 deletions(-)
-
---
-2.26.2
+-- 
+2.17.1
 
