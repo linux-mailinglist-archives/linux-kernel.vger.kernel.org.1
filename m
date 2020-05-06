@@ -2,193 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E40781C6564
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 03:09:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E22C1C656A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 03:14:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729539AbgEFBJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 21:09:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38542 "EHLO
+        id S1729683AbgEFBOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 21:14:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728512AbgEFBJe (ORCPT
+        by vger.kernel.org with ESMTP id S1729509AbgEFBOn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 21:09:34 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EF91C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 18:09:33 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id mq3so51964pjb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 18:09:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SktkFFCj6f5QA03u6t+h6bT244ONZZg07FZfFSbGQhc=;
-        b=H10ahALKAILI5hqGa0yUV3fGKJx7fOYUI3kdCvO9CKjzq0DjSQls8eqmbGwkVib2Xm
-         dojReo/MPYuk223jIb2yrYbONKsFs6Jf1z9RFFXSq+kbIZZdoYQWJgaRPhXCH9fByaJM
-         JqvN+hOaafbetujtMcCDyU6B41olAdP/afunlknFk4lCEXNfdZX4l8OE+vBaXAMR70FP
-         j+az0m32y2Aag4eLNUwd9Bw/Lla6jgYC9l7DwxF+1iBhqWaqFnf9dRtGRWu5YG9QpY03
-         4A7VEynqH1/s4jBeuM+qCnhIKUzoZVdHcBQLgzMCcVtMpgz7hMJxNrQYUkOUkFLc+kmX
-         dc6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SktkFFCj6f5QA03u6t+h6bT244ONZZg07FZfFSbGQhc=;
-        b=HxIn4Zcz+CikYXH8kuW09TbVgta6ZwkEAcuO6YlN6K6HHblXZ3+aTr9LDjTnBn8GbK
-         3TrGNFKyS+C/rfqrjYP4SxPqp81drooIccvIIL6FPnRE9/NR2HmnOh1ewIBy+vQx508c
-         H9of58E9wU5kCEfxnFe+vQnTzrB8tnrUuJCDkDXcdnvIxhUs0Vz/ZRdiIJiUF52K5aFl
-         DggwwC5z+Emt5VUhS56+/6iaxIfjAEy9zpbpB+0dPeY2FcCaMXF/QQ4eK8w7g74Qo+zh
-         yHaFQAVwaEYPDOmrNEw1QWFlaoF6laxxcA+a7RkKXRY1jT5CD/T2eFV/Dxn6NpeVp2XC
-         FiwQ==
-X-Gm-Message-State: AGi0PubhwPyPbw+qz/kOgCq9MdwsiYTpdc/N/j1qjTj9QJMR7w/69/49
-        a+5sfGLxvIWXPJZ1nVyqAiit9Q==
-X-Google-Smtp-Source: APiQypL0Ju3ryEjQ9NLdLf6LuWnZdN59jgzn1SiCq0inOcOVQWyKRROKMfb5JSWo+gUzf0+0pN9Efw==
-X-Received: by 2002:a17:90a:30a5:: with SMTP id h34mr6135410pjb.171.1588727372890;
-        Tue, 05 May 2020 18:09:32 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id s76sm274303pgc.85.2020.05.05.18.09.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 May 2020 18:09:32 -0700 (PDT)
-Date:   Tue, 5 May 2020 18:10:17 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     ohad@wizery.com, loic.pallardy@st.com, arnaud.pouliquen@st.com,
-        s-anna@ti.com, linux-remoteproc@vger.kernel.org, corbet@lwn.net,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 10/14] remoteproc: Deal with synchronisation when
- shutting down
-Message-ID: <20200506011017.GG2329931@builder.lan>
-References: <20200424200135.28825-1-mathieu.poirier@linaro.org>
- <20200424200135.28825-11-mathieu.poirier@linaro.org>
+        Tue, 5 May 2020 21:14:43 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35AB0C061A0F;
+        Tue,  5 May 2020 18:14:43 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jW8dr-001qeZ-HD; Wed, 06 May 2020 01:14:31 +0000
+Date:   Wed, 6 May 2020 02:14:31 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] securityfs: Add missing d_delete() call on removal
+Message-ID: <20200506011431.GB23230@ZenIV.linux.org.uk>
+References: <202005051626.7648DC65@keescook>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200424200135.28825-11-mathieu.poirier@linaro.org>
+In-Reply-To: <202005051626.7648DC65@keescook>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 24 Apr 13:01 PDT 2020, Mathieu Poirier wrote:
-
-> The remoteproc core must not allow function rproc_shutdown() to
-> proceed if currently synchronising with a remote processor and
-> the synchronisation operations of that remote processor does not
-> support it.  Also part of the process is to set the synchronisation
-> flag so that the remoteproc core can make the right decisions when
-> restarting the system.
+On Tue, May 05, 2020 at 04:40:35PM -0700, Kees Cook wrote:
+> After using simple_unlink(), a call to d_delete() is needed in addition
+> to dput().
 > 
-> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 > ---
->  drivers/remoteproc/remoteproc_core.c     | 32 ++++++++++++++++++++++++
->  drivers/remoteproc/remoteproc_internal.h |  7 ++++++
->  2 files changed, 39 insertions(+)
+> Is this correct? I went looking around and there are a lot of variations
+> on the simple_unlink() pattern...
 > 
-> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-> index 3a84a38ba37b..48afa1f80a8f 100644
-> --- a/drivers/remoteproc/remoteproc_core.c
-> +++ b/drivers/remoteproc/remoteproc_core.c
-> @@ -1849,6 +1849,27 @@ int rproc_boot(struct rproc *rproc)
->  }
->  EXPORT_SYMBOL(rproc_boot);
->  
-> +static bool rproc_can_shutdown(struct rproc *rproc)
-> +{
-> +	/*
-> +	 * The remoteproc core is the lifecycle manager, no problem
-> +	 * calling for a shutdown.
-> +	 */
-> +	if (!rproc_needs_syncing(rproc))
-> +		return true;
-> +
-> +	/*
-> +	 * The remoteproc has been loaded by another entity (as per above
-> +	 * condition) and the platform code has given us the capability
-> +	 * of stopping it.
-> +	 */
-> +	if (rproc->sync_ops->stop)
-> +		return true;
-> +
-> +	/* Any other condition should not be allowed */
-> +	return false;
-> +}
-> +
->  /**
->   * rproc_shutdown() - power off the remote processor
->   * @rproc: the remote processor
-> @@ -1879,6 +1900,9 @@ void rproc_shutdown(struct rproc *rproc)
->  		return;
->  	}
->  
-> +	if (!rproc_can_shutdown(rproc))
-> +		goto out;
+> Many using explicit locking and combinations of d_drop(), __d_drop(), etc.
 
-There's been a request mentioned of it being possible to shut down Linux
-and having the remote processor keep running.
+Quite a few of those should switch to simple_recursive_removal().  As for
+securityfs...  d_drop() is _probably_ a saner variant, but looking at the
+callers of that thing... at least IMA ones seem to be garbage.
 
-By skipping the rest of shutdown we will not stop or unprepare
-subdevices, so presumably the remote processor won't know that
-virtio/rpmsg is down. Is that ok?
+They _might_ work since nobody else is around that early to screw them over,
+but... I'm not too optimistic about that.  And the lack of d_delete()/d_drop()
+here is the least of the problems, really - look at e.g. the bulk of those
+suckers in ima_fs_init().  And check the callchain - it'll lead you to this
+        if (error && strcmp(hash_algo_name[ima_hash_algo],
+                            CONFIG_IMA_DEFAULT_HASH) != 0) {
+                pr_info("Allocating %s failed, going to use default hash algorithm %s\n",
+                        hash_algo_name[ima_hash_algo], CONFIG_IMA_DEFAULT_HASH);
+                hash_setup_done = 0;
+                hash_setup(CONFIG_IMA_DEFAULT_HASH);
+                error = ima_init();
+        }
 
-> +
->  	/* if the remote proc is still needed, bail out */
->  	if (!atomic_dec_and_test(&rproc->power))
->  		goto out;
-> @@ -1898,6 +1922,14 @@ void rproc_shutdown(struct rproc *rproc)
->  	kfree(rproc->cached_table);
->  	rproc->cached_table = NULL;
->  	rproc->table_ptr = NULL;
-> +
-> +	/*
-> +	 * The remote processor has been switched off - tell the core what
-> +	 * operation to use from hereon, i.e whether an external entity will
-> +	 * reboot the remote processor or it is now the remoteproc core's
-> +	 * responsability.
-> +	 */
-> +	rproc_set_sync_flag(rproc, RPROC_SYNC_STATE_SHUTDOWN);
+        error = register_blocking_lsm_notifier(&ima_lsm_policy_notifier);
 
-As asked on a previous patch, what would it mean if after_stop is true?
+And the other IMA caller (in ima_release_policy()) is... misguided, to put it
+politely.  This kind of "unlink on final close" makes no sense - if nothing
+else, it can be looked up until that very point.  Moreover, this
+        inode->i_mode &= ~S_IWUSR;
+is obviously racy wrt permission(), and there's no damn reason to do it there.
+These checks belong in ->open() and they shouldn't rely upon the damn thing
+disappearing from directory or permission() failing, etc..
 
-It seems like this state would be similar to the "already-booted" state
-that we might encounter at probe time.
+And looking at their ->open()... ouch.  ->f_flags & O_ACCMODE is almost
+never the right thing to check.  It should be looking at ->f_mode &
+FMODE_{READ,WRITE}.
 
-Regards,
-Bjorn
+I hadn't looked into details for EVM, but at the first glance it's similar
+to IMA failure handling.  And probably relies upon nobody being able to
+open that stuff while the things are being set up.  There seems to be
+something in TPM as well - and by the look of it they are trying to work
+around the use of unsuitable primitive, and none too well, at that.
+I mean,
+        int err;
+        struct seq_file *seq;
+        struct tpm_chip_seqops *chip_seqops;
+        const struct seq_operations *seqops;
+        struct tpm_chip *chip;
 
->  out:
->  	mutex_unlock(&rproc->lock);
->  }
-> diff --git a/drivers/remoteproc/remoteproc_internal.h b/drivers/remoteproc/remoteproc_internal.h
-> index 61500981155c..7dcc0a26892b 100644
-> --- a/drivers/remoteproc/remoteproc_internal.h
-> +++ b/drivers/remoteproc/remoteproc_internal.h
-> @@ -27,6 +27,9 @@ struct rproc_debug_trace {
->  /*
->   * enum rproc_sync_states - remote processsor sync states
->   *
-> + * @RPROC_SYNC_STATE_SHUTDOWN	state to use after the remoteproc core
-> + *				has shutdown (rproc_shutdown()) the
-> + *				remote processor.
->   * @RPROC_SYNC_STATE_CRASHED	state to use after the remote processor
->   *				has crashed but has not been recovered by
->   *				the remoteproc core yet.
-> @@ -36,6 +39,7 @@ struct rproc_debug_trace {
->   * operation to use.
->   */
->  enum rproc_sync_states {
-> +	RPROC_SYNC_STATE_SHUTDOWN,
->  	RPROC_SYNC_STATE_CRASHED,
->  };
->  
-> @@ -43,6 +47,9 @@ static inline void rproc_set_sync_flag(struct rproc *rproc,
->  				       enum rproc_sync_states state)
->  {
->  	switch (state) {
-> +	case RPROC_SYNC_STATE_SHUTDOWN:
-> +		rproc->sync_with_rproc = rproc->sync_flags.after_stop;
-> +		break;
->  	case RPROC_SYNC_STATE_CRASHED:
->  		rproc->sync_with_rproc = rproc->sync_flags.after_crash;
->  		break;
-> -- 
-> 2.20.1
-> 
+        inode_lock(inode);
+        if (!inode->i_private) {
+                inode_unlock(inode);
+                return -ENODEV;
+        }
+        chip_seqops = (struct tpm_chip_seqops *)inode->i_private;
+        seqops = chip_seqops->seqops;
+        chip = chip_seqops->chip;
+        get_device(&chip->dev);
+        inode_unlock(inode);
+
+        /* now register seq file */
+        err = seq_open(file, seqops);
+        if (!err) {
+                seq = file->private_data;
+                seq->private = chip;
+        }
+
+        return err;
+doesn't look sane - late error would appear to leak &chip->dev...
