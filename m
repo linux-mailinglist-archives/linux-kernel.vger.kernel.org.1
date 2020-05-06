@@ -2,66 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB98E1C673B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 07:10:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA4861C6758
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 07:19:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726906AbgEFFKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 01:10:17 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:3852 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725821AbgEFFKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 01:10:17 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 57FC7CF745FA5A634122;
-        Wed,  6 May 2020 13:10:14 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 6 May 2020 13:10:04 +0800
-From:   Wei Yongjun <weiyongjun1@huawei.com>
-To:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>
-CC:     Wei Yongjun <weiyongjun1@huawei.com>,
+        id S1726825AbgEFFTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 01:19:00 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:41089 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725771AbgEFFTA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 01:19:00 -0400
+X-UUID: 86d09f1015a844cb9f53b78527a4df92-20200506
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=uJZg8sC2cd+BcgzYcwDrLwJbXHxd7+JuJtTz708pa/0=;
+        b=cfZMNlqWK3x2jhkWQIAI1mvtjTFqhnQOWzsv0VY4UeJ+xlT9PZDUPwumH2oOrWUqxhk6QeGNY+aoaYIUkt6BZk2AHRrmPhVdNs9EQ3IjAlC8ynAJ/hFh5ahpaDaPXVfAeCIuoJfsCqGy4qnCLeL17LN0/SROQKOEdu8WvkN1aPY=;
+X-UUID: 86d09f1015a844cb9f53b78527a4df92-20200506
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
+        (envelope-from <walter-zh.wu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1650363527; Wed, 06 May 2020 13:18:57 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 6 May 2020 13:18:55 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 6 May 2020 13:18:54 +0800
+From:   Walter Wu <walter-zh.wu@mediatek.com>
+To:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+CC:     <kasan-dev@googlegroups.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
-Subject: [PATCH -next] firmware: imx: scu: Fix possible memory leak in imx_scu_probe()
-Date:   Wed, 6 May 2020 05:14:10 +0000
-Message-ID: <20200506051410.27219-1-weiyongjun1@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        Walter Wu <walter-zh.wu@mediatek.com>
+Subject: [PATCH 0/3] kasan: memorize and print call_rcu stack
+Date:   Wed, 6 May 2020 13:18:53 +0800
+Message-ID: <20200506051853.14380-1-walter-zh.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type:   text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'chan_name' is malloced in imx_scu_probe() and should be freed
-before leaving from the error handling cases, otherwise it will
-cause memory leak.
-
-Fixes: edbee095fafb ("firmware: imx: add SCU firmware driver support")
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
----
- drivers/firmware/imx/imx-scu.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/firmware/imx/imx-scu.c b/drivers/firmware/imx/imx-scu.c
-index b3da2e193ad2..176ddd151375 100644
---- a/drivers/firmware/imx/imx-scu.c
-+++ b/drivers/firmware/imx/imx-scu.c
-@@ -314,6 +314,7 @@ static int imx_scu_probe(struct platform_device *pdev)
- 			if (ret != -EPROBE_DEFER)
- 				dev_err(dev, "Failed to request mbox chan %s ret %d\n",
- 					chan_name, ret);
-+			kfree(chan_name);
- 			return ret;
- 		}
-
-
+VGhpcyBwYXRjaHNldCBpbXByb3ZlcyBLQVNBTiByZXBvcnRzIGJ5IG1ha2luZyB0aGVtIHRvIGhh
+dmUNCmNhbGxfcmN1KCkgY2FsbCBzdGFjayBpbmZvcm1hdGlvbi4gSXQgaXMgaGVscGZ1bCBmb3Ig
+cHJvZ3JhbW1lcnMNCnRvIHNvbHZlIHVzZS1hZnRlci1mcmVlIG9yIGRvdWJsZS1mcmVlIG1lbW9y
+eSBpc3N1ZS4NCg0KVGhlIEtBU0FOIHJlcG9ydCB3YXMgYXMgZm9sbG93cyhjbGVhbmVkIHVwIHNs
+aWdodGx5KToNCg0KQlVHOiBLQVNBTjogdXNlLWFmdGVyLWZyZWUgaW4ga2FzYW5fcmN1X3JlY2xh
+aW0rMHg1OC8weDYwDQoNCkZyZWVkIGJ5IHRhc2sgMDoNCiBzYXZlX3N0YWNrKzB4MjQvMHg1MA0K
+IF9fa2FzYW5fc2xhYl9mcmVlKzB4MTEwLzB4MTc4DQoga2FzYW5fc2xhYl9mcmVlKzB4MTAvMHgx
+OA0KIGtmcmVlKzB4OTgvMHgyNzANCiBrYXNhbl9yY3VfcmVjbGFpbSsweDFjLzB4NjANCiByY3Vf
+Y29yZSsweDhiNC8weDEwZjgNCiByY3VfY29yZV9zaSsweGMvMHgxOA0KIGVmaV9oZWFkZXJfZW5k
+KzB4MjM4LzB4YTZjDQoNCkZpcnN0IGNhbGxfcmN1KCkgY2FsbCBzdGFjazoNCiBzYXZlX3N0YWNr
+KzB4MjQvMHg1MA0KIGthc2FuX3JlY29yZF9jYWxscmN1KzB4YzgvMHhkOA0KIGNhbGxfcmN1KzB4
+MTkwLzB4NTgwDQoga2FzYW5fcmN1X3VhZisweDFkOC8weDI3OA0KDQpMYXN0IGNhbGxfcmN1KCkg
+Y2FsbCBzdGFjazoNCihzdGFjayBpcyBub3QgYXZhaWxhYmxlKQ0KDQoNCkFkZCBuZXcgQ09ORklH
+IG9wdGlvbiB0byByZWNvcmQgZmlyc3QgYW5kIGxhc3QgY2FsbF9yY3UoKSBjYWxsIHN0YWNrDQph
+bmQgS0FTQU4gcmVwb3J0IHByaW50cyB0d28gY2FsbF9yY3UoKSBjYWxsIHN0YWNrLg0KDQpUaGlz
+IG9wdGlvbiBkb2Vzbid0IGluY3JlYXNlIHRoZSBjb3N0IG9mIG1lbW9yeSBjb25zdW1wdGlvbi4g
+SXQgaXMNCm9ubHkgc3VpdGFibGUgZm9yIGdlbmVyaWMgS0FTQU4uDQoNClsxXWh0dHBzOi8vYnVn
+emlsbGEua2VybmVsLm9yZy9zaG93X2J1Zy5jZ2k/aWQ9MTk4NDM3DQoNCldhbHRlciBXdSAoMyk6
+DQpyY3Uva2FzYW46IHJlY29yZCBhbmQgcHJpbnQgY2FsbF9yY3UoKSBjYWxsIHN0YWNrDQprYXNh
+bjogcmVjb3JkIGFuZCBwcmludCB0aGUgZnJlZSB0cmFjaw0Ka2FzYW46IGFkZCBLQVNBTl9SQ1Vf
+U1RBQ0tfUkVDT1JEIGRvY3VtZW50YXRpb24NCg0KRG9jdW1lbnRhdGlvbi9kZXYtdG9vbHMva2Fz
+YW4ucnN0IHwgMjEgKysrKysrKysrKysrKysrKysrKysrDQppbmNsdWRlL2xpbnV4L2thc2FuLmgg
+ICAgICAgICAgICAgfCAgNyArKysrKysrDQprZXJuZWwvcmN1L3RyZWUuYyAgICAgICAgICAgICAg
+ICAgfCAgNSArKysrKw0KbGliL0tjb25maWcua2FzYW4gICAgICAgICAgICAgICAgIHwgMTEgKysr
+KysrKysrKysNCm1tL2thc2FuL2NvbW1vbi5jICAgICAgICAgICAgICAgICB8IDMxICsrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysNCm1tL2thc2FuL2thc2FuLmggICAgICAgICAgICAgICAg
+ICB8IDEyICsrKysrKysrKysrKw0KbW0va2FzYW4vcmVwb3J0LmMgICAgICAgICAgICAgICAgIHwg
+NTMgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0N
+CjcgZmlsZXMgY2hhbmdlZCwgMTMzIGluc2VydGlvbnMoKyksIDcgZGVsZXRpb25zKC0pDQo=
 
