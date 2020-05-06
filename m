@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F41161C7D13
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 00:17:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EEB21C7D26
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 00:17:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730127AbgEFWRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 18:17:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38784 "EHLO
+        id S1730252AbgEFWR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 18:17:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728621AbgEFWRF (ORCPT
+        by vger.kernel.org with ESMTP id S1730102AbgEFWRG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 18:17:05 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09802C061A10
-        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 15:17:05 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id z8so4020893wrw.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 15:17:04 -0700 (PDT)
+        Wed, 6 May 2020 18:17:06 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38A1BC061A0F
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 15:17:06 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id z6so4505442wml.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 15:17:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=MMsqSs/SSZ3pe/sBbExNqHgguhkBo7qZyyilemVOFmk=;
-        b=R/XprMhFIHT73MOJsNm/08fO4X1XbkAG8F09dAKe5z7OhBsUZKFIr+hbWrI4dU4PpN
-         ClomDlzaWGVcCoNAjnpvhsQvdzvalf9g2X3azJZ/6zlFKmQ9sMLyiMnn8lpCLDW+JzqR
-         2BNXZj6cNzAgkxQOgWTitjGL0M0/PjSTEVW3TYgUddQnB9x/v+3bb7XjmtEqT8XKPwG8
-         Ep1vNi8AA9JYHabMT9wxwLYjDOd4QNfip9AsvZRIvWWEgRg3zYqD1R48xhPrJLPZ1Uqx
-         R5w7BF2kSIf6qoD/2n9xTKPMrBacFnzO1AKCU35bO1D233Fdtt9Y6fR3zhKWo1DzITWe
-         MTWg==
+        bh=Prp52Y5a00MQ7UiUFWgZ97mkG5T8OKjyV13VHzZiu9w=;
+        b=ty5aisb66j++kRcNuPiouXtTHM526s505r/8/KWSGy1fFWSsaW6lvLqi8kpDpWFDGQ
+         0G0UPaU1VsEJByjGzxhJozHIEGCuOzRqyaCWzOwWPBJUMSho6m/dAqmANTx/meQ6/9rI
+         U5sU9lv2FgJZu1BnANKM1A9joLIMrWoHazw6EIVw39Sf6do1qCJNS/2MuY0EZma/cNYL
+         QtmpcnuBMm81K5gDBlJfo2Iktk9WQghJ6K25/O+Abqu+vXwSy4f4QkhgRtSckO3kd3Rg
+         psjB/0QACh5xNw1dELfa9BrHntHte31KWln0LhUn4bdPEGJE3b6BG0xPNJzcY/NDyeIF
+         gcFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=MMsqSs/SSZ3pe/sBbExNqHgguhkBo7qZyyilemVOFmk=;
-        b=S2Rpgrcl+dxWYLzlRnKNfB5JXJWvuW6/12thlq4jvqOkH4ZmCHL3eZtMhxoGWzd1jS
-         5cUghh7vWdzXJPYX2hPBXNrq1ARWKchn5bD6RzmylfP8S2BPE+P8+ygCfHHgqdohKScc
-         ELsqSm4DfO99eTnOe0a19vqDKjHIS1yL1wf5NBVSmhfXQ5KfkxUk4DmXSqXLJr2SxZJK
-         NsvmcnGq9/9m59b8mUJwXsaflOJyYKewZtKMVGsXIHTTqckSvPuiEhV7YcNyASdC70i0
-         hlWr+oB3XvcXf3oMO3I50uFKfIcSPWeWVX8TyZ9tTBYbeHB0EVdSNQfd+7WSTUrjq4TK
-         2uHQ==
-X-Gm-Message-State: AGi0PubiHBGDx9fR7bLuiNy4N6FuL/ckCyQ7z9ayxAhdvNU3bOs6G9jq
-        f50fP2ARhhgb58eWoqisC2ROzg==
-X-Google-Smtp-Source: APiQypJQBg086iQTTx6VFZFje8o4xqNCPjNd3ec/pqGfUNwp2w2xdZlzaN3MmJl8MdEj1hpq6QMcdw==
-X-Received: by 2002:a5d:4905:: with SMTP id x5mr13089933wrq.158.1588803423764;
-        Wed, 06 May 2020 15:17:03 -0700 (PDT)
+        bh=Prp52Y5a00MQ7UiUFWgZ97mkG5T8OKjyV13VHzZiu9w=;
+        b=JY9xSjm0IsIRClWCQnoUoD6mxqnqXyYEdnKu0lennpN+IOG3hvAbQpohYVnfn+gIbk
+         Gjd7a79FKrF6EfHjihu5T2hqCApv0BapJFeMz+Au3Ur46E11Dhk+ssR7sPvJ4C+GQDU6
+         KNciGlS8wN5GX3ICBM3DsYwFwKL0EqiMYhsTKbJ6AxjxvyWqrwS1gl6OeB52A2gY6/3T
+         Br3tdPC2ht72ZhypQxCsDZXxe7oygKUBAzQ8A/kGAbZ86cTnvFkzvhKIf9zAb/FSzGB5
+         iwLJGpCTI1gGX6+OPUjX/qObhBYYIr91YchTqc/0xSkvwmefNUCxDYk+ZlX2+hUulrmk
+         xyVQ==
+X-Gm-Message-State: AGi0PuaT0hpHHXSrHTG+jpSlJCZs1B393bkErhXoget3JZAIFiWlYI2G
+        nbOgyQ4Y3w7CMrZVv7/pPCO2qK25ZUo=
+X-Google-Smtp-Source: APiQypIpHP2oFvyp2Nvd8um8TY8hC/bSKyCdRHrOH3fcUf7Mt2X9JVVO9azjqnAb8r6HBLBWYrUKCw==
+X-Received: by 2002:a7b:ce88:: with SMTP id q8mr7095559wmj.161.1588803424929;
+        Wed, 06 May 2020 15:17:04 -0700 (PDT)
 Received: from starbuck.lan (cag06-3-82-243-161-21.fbx.proxad.net. [82.243.161.21])
-        by smtp.googlemail.com with ESMTPSA id f5sm4760671wrp.70.2020.05.06.15.17.02
+        by smtp.googlemail.com with ESMTPSA id f5sm4760671wrp.70.2020.05.06.15.17.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 May 2020 15:17:03 -0700 (PDT)
+        Wed, 06 May 2020 15:17:04 -0700 (PDT)
 From:   Jerome Brunet <jbrunet@baylibre.com>
 To:     Kevin Hilman <khilman@baylibre.com>
 Cc:     Jerome Brunet <jbrunet@baylibre.com>,
         linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 2/7] arm64: dts: meson: p230-q200: add internal DAC support
-Date:   Thu,  7 May 2020 00:16:51 +0200
-Message-Id: <20200506221656.477379-3-jbrunet@baylibre.com>
+Subject: [PATCH 3/7] arm64: dts: meson: libretech-cc: add internal DAC support
+Date:   Thu,  7 May 2020 00:16:52 +0200
+Message-Id: <20200506221656.477379-4-jbrunet@baylibre.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <20200506221656.477379-1-jbrunet@baylibre.com>
 References: <20200506221656.477379-1-jbrunet@baylibre.com>
@@ -67,20 +67,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the necessary bits to support the internal audio DAC the p230/q200
-reference design derivated boards. The output of this DAC is provided
-on the 3.5mm jack connector
+Add the internal DAC support on the libretech CC. The output of this
+DAC is provided on the 3.5mm jack connector.
 
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 ---
- .../boot/dts/amlogic/meson-gx-p23x-q20x.dtsi  | 32 +++++++++++++++++++
- 1 file changed, 32 insertions(+)
+ .../amlogic/meson-gxl-s905x-libretech-cc.dts  | 30 +++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-gx-p23x-q20x.dtsi b/arch/arm64/boot/dts/amlogic/meson-gx-p23x-q20x.dtsi
-index acb05a756aca..6b57e15aade3 100644
---- a/arch/arm64/boot/dts/amlogic/meson-gx-p23x-q20x.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-gx-p23x-q20x.dtsi
-@@ -16,6 +16,13 @@ aliases {
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-libretech-cc.dts b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-libretech-cc.dts
+index d81382b36049..5ae7bb6209cb 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-libretech-cc.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-libretech-cc.dts
+@@ -22,6 +22,13 @@ aliases {
  		ethernet0 = &ethmac;
  	};
  
@@ -91,25 +90,23 @@ index acb05a756aca..6b57e15aade3 100644
 +		enable-gpios = <&gpio GPIOH_5 GPIO_ACTIVE_HIGH>;
 +	};
 +
- 	spdif_dit: audio-codec-0 {
- 		#sound-dai-cells = <0>;
- 		compatible = "linux,spdif-dit";
-@@ -115,6 +122,14 @@ hdmi_connector_in: endpoint {
+ 	chosen {
+ 		stdout-path = "serial0:115200n8";
+ 	};
+@@ -129,6 +136,12 @@ vddio_boot: regulator-vddio_boot {
  	sound {
  		compatible = "amlogic,gx-sound-card";
- 		model = "GX-P230-Q200";
+ 		model = "GXL-LIBRETECH-S905X-CC";
 +		audio-aux-devs = <&dio2133>;
 +		audio-widgets = "Line", "Lineout";
-+		audio-routing = "AU2 INL", "ACODEC LOLP",
-+				"AU2 INR", "ACODEC LORP",
-+				"AU2 INL", "ACODEC LOLN",
++		audio-routing = "AU2 INL", "ACODEC LOLN",
 +				"AU2 INR", "ACODEC LORN",
 +				"Lineout", "AU2 OUTL",
 +				"Lineout", "AU2 OUTR";
  		assigned-clocks = <&clkc CLKID_MPLL0>,
  				  <&clkc CLKID_MPLL1>,
  				  <&clkc CLKID_MPLL2>;
-@@ -140,6 +155,10 @@ dai-link-2 {
+@@ -150,6 +163,10 @@ dai-link-1 {
  			codec-0 {
  				sound-dai = <&aiu AIU_HDMI CTRL_I2S>;
  			};
@@ -119,13 +116,13 @@ index acb05a756aca..6b57e15aade3 100644
 +			};
  		};
  
- 		dai-link-3 {
-@@ -157,9 +176,22 @@ codec-0 {
+ 		dai-link-2 {
+@@ -159,9 +176,22 @@ codec-0 {
  				sound-dai = <&hdmi_tx>;
  			};
  		};
 +
-+		dai-link-5 {
++		dai-link-3 {
 +			sound-dai = <&aiu AIU_ACODEC CTRL_OUT>;
 +
 +			codec-0 {
@@ -142,7 +139,7 @@ index acb05a756aca..6b57e15aade3 100644
 +
  &aiu {
  	status = "okay";
- 	pinctrl-0 = <&spdif_out_h_pins>;
+ };
 -- 
 2.25.4
 
