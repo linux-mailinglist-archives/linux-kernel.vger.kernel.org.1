@@ -2,59 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 997571C6600
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 04:51:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 155001C6601
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 04:51:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726267AbgEFCvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 22:51:04 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:46451 "EHLO ozlabs.org"
+        id S1726538AbgEFCvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 22:51:08 -0400
+Received: from ozlabs.org ([203.11.71.1]:39119 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725900AbgEFCvE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 22:51:04 -0400
+        id S1725900AbgEFCvH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 22:51:07 -0400
 Received: by ozlabs.org (Postfix, from userid 1034)
-        id 49H1Lb02frz9sSw; Wed,  6 May 2020 12:51:02 +1000 (AEST)
+        id 49H1Ld6Wwmz9sT5; Wed,  6 May 2020 12:51:05 +1000 (AEST)
 X-powerpc-patch-notification: thanks
-X-powerpc-patch-commit: e4a884cc28fa3f5d8b81de46998ffe29b4ad169e
-In-Reply-To: <1586249263-14048-2-git-send-email-ego@linux.vnet.ibm.com>
-To:     "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Vaidyanathan Srinivasan <svaidy@linux.vnet.ibm.com>,
-        Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Tyrel Datwyler <tyreld@linux.ibm.com>
+X-powerpc-patch-commit: 43c8a496fa37187b54f7df71fb8262acc6bf6200
+In-Reply-To: <1588154448-56759-1-git-send-email-wangxiongfeng2@huawei.com>
+To:     Xiongfeng Wang <wangxiongfeng2@huawei.com>, <geoff@infradead.org>,
+        <benh@kernel.crashing.org>, <paulus@samba.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <wangxiongfeng2@huawei.com>
 From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-Cc:     "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/5] powerpc: Move idle_loop_prolog()/epilog() functions to header file
-Message-Id: <49H1Lb02frz9sSw@ozlabs.org>
-Date:   Wed,  6 May 2020 12:51:02 +1000 (AEST)
+Subject: Re: [PATCH] powerpc/ps3: Move static keyword to the front of declaration
+Message-Id: <49H1Ld6Wwmz9sT5@ozlabs.org>
+Date:   Wed,  6 May 2020 12:51:05 +1000 (AEST)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-04-07 at 08:47:39 UTC, "Gautham R. Shenoy" wrote:
-> From: "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
+On Wed, 2020-04-29 at 10:00:48 UTC, Xiongfeng Wang wrote:
+> Move the static keyword to the front of declaration of 'vuart_bus_priv',
+> and resolve the following compiler warning that can be seen when
+> building with warnings enabled (W=1):
 > 
-> Currently prior to entering an idle state on a Linux Guest, the
-> pseries cpuidle driver implement an idle_loop_prolog() and
-> idle_loop_epilog() functions which ensure that idle_purr is correctly
-> computed, and the hypervisor is informed that the CPU cycles have been
-> donated.
+> drivers/ps3/ps3-vuart.c:867:1: warning: ‘static’ is not at beginning of declaration [-Wold-style-declaration]
+>  } static vuart_bus_priv;
+>  ^
 > 
-> These prolog and epilog functions are also required in the default
-> idle call, i.e pseries_lpar_idle(). Hence move these accessor
-> functions to a common header file and call them from
-> pseries_lpar_idle(). Since the existing header files such as
-> asm/processor.h have enough clutter, create a new header file
-> asm/idle.h. Finally rename idle_loop_prolog() and idle_loop_epilog()
-> to pseries_idle_prolog() and pseries_idle_epilog() as they are only
-> relavent for on pseries guests.
-> 
-> Signed-off-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
 
-Series applied to powerpc next, thanks.
+Applied to powerpc next, thanks.
 
-https://git.kernel.org/powerpc/c/e4a884cc28fa3f5d8b81de46998ffe29b4ad169e
+https://git.kernel.org/powerpc/c/43c8a496fa37187b54f7df71fb8262acc6bf6200
 
 cheers
