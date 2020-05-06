@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0CE81C74BE
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:28:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 690A71C74AC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:27:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730395AbgEFP2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 11:28:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50254 "EHLO mail.kernel.org"
+        id S1730304AbgEFP1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 11:27:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730276AbgEFP1G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 11:27:06 -0400
+        id S1730286AbgEFP1I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 11:27:08 -0400
 Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 51C26215A4;
-        Wed,  6 May 2020 15:27:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CE95A2145D;
+        Wed,  6 May 2020 15:27:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588778825;
-        bh=aeWBUBWeRr6delzKTXK7RaODizKMIgDD1pPEz3w4ua4=;
+        s=default; t=1588778827;
+        bh=44XUKIVi/6k2wGeb2mPlZ9v42x3xytmKf7KdEkkac/A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sdbRbodPNhaoAOfaq9+iNx+fPhGOmNjRUHqLzhsBhlONAl3iDFlD5vHhEvS/HrgZ9
-         bEGoA++dFajAYGUiFWk3QV4AgP5Kr+hgP4P2hvVn5KSssvJwVW/BviuhEoA3BcwSGE
-         DoLdz+2PpIgIXV50ODwGMAt/UGVpEC4P43A9EwXc=
+        b=pjduP1yFcwY/KHAJcQYYhpVZZ2yoOM1nE1UmaPaxyCwYnWz0e5lmuNvzuVyVBW+4T
+         0Ka4GWtfOQXgOuhorwskaPaLsBOlJgETcohhbY4jvKpX71FlTlSsZsjF8ZwzQyC8ng
+         UJxRkl2AAyIgYvOVmrAlcpLMz0x30OxphmN5nQeE=
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
 To:     Ingo Molnar <mingo@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>
@@ -31,9 +31,9 @@ Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
         linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         Adrian Hunter <adrian.hunter@intel.com>
-Subject: [PATCH 78/91] perf kmem: Rename perf_evsel__*() operating on 'struct evsel *' to evsel__*()
-Date:   Wed,  6 May 2020 12:22:21 -0300
-Message-Id: <20200506152234.21977-79-acme@kernel.org>
+Subject: [PATCH 79/91] perf lock: Rename perf_evsel__*() operating on 'struct evsel *' to evsel__*()
+Date:   Wed,  6 May 2020 12:22:22 -0300
+Message-Id: <20200506152234.21977-80-acme@kernel.org>
 X-Mailer: git-send-email 2.21.1
 In-Reply-To: <20200506152234.21977-1-acme@kernel.org>
 References: <20200506152234.21977-1-acme@kernel.org>
@@ -54,90 +54,65 @@ Cc: Jiri Olsa <jolsa@kernel.org>
 Cc: Namhyung Kim <namhyung@kernel.org>
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/perf/builtin-kmem.c | 33 ++++++++++++++-------------------
- 1 file changed, 14 insertions(+), 19 deletions(-)
+ tools/perf/builtin-lock.c | 20 ++++++++------------
+ 1 file changed, 8 insertions(+), 12 deletions(-)
 
-diff --git a/tools/perf/builtin-kmem.c b/tools/perf/builtin-kmem.c
-index 0a296fbf9194..38a5ab683ebc 100644
---- a/tools/perf/builtin-kmem.c
-+++ b/tools/perf/builtin-kmem.c
-@@ -169,8 +169,7 @@ static int insert_caller_stat(unsigned long call_site,
+diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
+index 5a19dc2f1636..f0a1dbacb46c 100644
+--- a/tools/perf/builtin-lock.c
++++ b/tools/perf/builtin-lock.c
+@@ -657,32 +657,28 @@ static struct trace_lock_handler report_lock_ops  = {
+ 
+ static struct trace_lock_handler *trace_handler;
+ 
+-static int perf_evsel__process_lock_acquire(struct evsel *evsel,
+-					     struct perf_sample *sample)
++static int evsel__process_lock_acquire(struct evsel *evsel, struct perf_sample *sample)
+ {
+ 	if (trace_handler->acquire_event)
+ 		return trace_handler->acquire_event(evsel, sample);
  	return 0;
  }
  
--static int perf_evsel__process_alloc_event(struct evsel *evsel,
--					   struct perf_sample *sample)
-+static int evsel__process_alloc_event(struct evsel *evsel, struct perf_sample *sample)
+-static int perf_evsel__process_lock_acquired(struct evsel *evsel,
+-					      struct perf_sample *sample)
++static int evsel__process_lock_acquired(struct evsel *evsel, struct perf_sample *sample)
  {
- 	unsigned long ptr = evsel__intval(evsel, sample, "ptr"),
- 		      call_site = evsel__intval(evsel, sample, "call_site");
-@@ -188,10 +187,9 @@ static int perf_evsel__process_alloc_event(struct evsel *evsel,
+ 	if (trace_handler->acquired_event)
+ 		return trace_handler->acquired_event(evsel, sample);
  	return 0;
  }
  
--static int perf_evsel__process_alloc_node_event(struct evsel *evsel,
--						struct perf_sample *sample)
-+static int evsel__process_alloc_node_event(struct evsel *evsel, struct perf_sample *sample)
+-static int perf_evsel__process_lock_contended(struct evsel *evsel,
+-					      struct perf_sample *sample)
++static int evsel__process_lock_contended(struct evsel *evsel, struct perf_sample *sample)
  {
--	int ret = perf_evsel__process_alloc_event(evsel, sample);
-+	int ret = evsel__process_alloc_event(evsel, sample);
- 
- 	if (!ret) {
- 		int node1 = cpu__get_node(sample->cpu),
-@@ -232,8 +230,7 @@ static struct alloc_stat *search_alloc_stat(unsigned long ptr,
- 	return NULL;
- }
- 
--static int perf_evsel__process_free_event(struct evsel *evsel,
--					  struct perf_sample *sample)
-+static int evsel__process_free_event(struct evsel *evsel, struct perf_sample *sample)
- {
- 	unsigned long ptr = evsel__intval(evsel, sample, "ptr");
- 	struct alloc_stat *s_alloc, *s_caller;
-@@ -784,8 +781,7 @@ static int parse_gfp_flags(struct evsel *evsel, struct perf_sample *sample,
+ 	if (trace_handler->contended_event)
+ 		return trace_handler->contended_event(evsel, sample);
  	return 0;
  }
  
--static int perf_evsel__process_page_alloc_event(struct evsel *evsel,
--						struct perf_sample *sample)
-+static int evsel__process_page_alloc_event(struct evsel *evsel, struct perf_sample *sample)
+-static int perf_evsel__process_lock_release(struct evsel *evsel,
+-					    struct perf_sample *sample)
++static int evsel__process_lock_release(struct evsel *evsel, struct perf_sample *sample)
  {
- 	u64 page;
- 	unsigned int order = evsel__intval(evsel, sample, "order");
-@@ -857,8 +853,7 @@ static int perf_evsel__process_page_alloc_event(struct evsel *evsel,
- 	return 0;
+ 	if (trace_handler->release_event)
+ 		return trace_handler->release_event(evsel, sample);
+@@ -849,10 +845,10 @@ static void sort_result(void)
  }
  
--static int perf_evsel__process_page_free_event(struct evsel *evsel,
--						struct perf_sample *sample)
-+static int evsel__process_page_free_event(struct evsel *evsel, struct perf_sample *sample)
- {
- 	u64 page;
- 	unsigned int order = evsel__intval(evsel, sample, "order");
-@@ -1371,15 +1366,15 @@ static int __cmd_kmem(struct perf_session *session)
- 	struct evsel *evsel;
- 	const struct evsel_str_handler kmem_tracepoints[] = {
- 		/* slab allocator */
--		{ "kmem:kmalloc",		perf_evsel__process_alloc_event, },
--    		{ "kmem:kmem_cache_alloc",	perf_evsel__process_alloc_event, },
--		{ "kmem:kmalloc_node",		perf_evsel__process_alloc_node_event, },
--    		{ "kmem:kmem_cache_alloc_node", perf_evsel__process_alloc_node_event, },
--		{ "kmem:kfree",			perf_evsel__process_free_event, },
--    		{ "kmem:kmem_cache_free",	perf_evsel__process_free_event, },
-+		{ "kmem:kmalloc",		evsel__process_alloc_event, },
-+		{ "kmem:kmem_cache_alloc",	evsel__process_alloc_event, },
-+		{ "kmem:kmalloc_node",		evsel__process_alloc_node_event, },
-+		{ "kmem:kmem_cache_alloc_node", evsel__process_alloc_node_event, },
-+		{ "kmem:kfree",			evsel__process_free_event, },
-+		{ "kmem:kmem_cache_free",	evsel__process_free_event, },
- 		/* page allocator */
--		{ "kmem:mm_page_alloc",		perf_evsel__process_page_alloc_event, },
--		{ "kmem:mm_page_free",		perf_evsel__process_page_free_event, },
-+		{ "kmem:mm_page_alloc",		evsel__process_page_alloc_event, },
-+		{ "kmem:mm_page_free",		evsel__process_page_free_event, },
- 	};
+ static const struct evsel_str_handler lock_tracepoints[] = {
+-	{ "lock:lock_acquire",	 perf_evsel__process_lock_acquire,   }, /* CONFIG_LOCKDEP */
+-	{ "lock:lock_acquired",	 perf_evsel__process_lock_acquired,  }, /* CONFIG_LOCKDEP, CONFIG_LOCK_STAT */
+-	{ "lock:lock_contended", perf_evsel__process_lock_contended, }, /* CONFIG_LOCKDEP, CONFIG_LOCK_STAT */
+-	{ "lock:lock_release",	 perf_evsel__process_lock_release,   }, /* CONFIG_LOCKDEP */
++	{ "lock:lock_acquire",	 evsel__process_lock_acquire,   }, /* CONFIG_LOCKDEP */
++	{ "lock:lock_acquired",	 evsel__process_lock_acquired,  }, /* CONFIG_LOCKDEP, CONFIG_LOCK_STAT */
++	{ "lock:lock_contended", evsel__process_lock_contended, }, /* CONFIG_LOCKDEP, CONFIG_LOCK_STAT */
++	{ "lock:lock_release",	 evsel__process_lock_release,   }, /* CONFIG_LOCKDEP */
+ };
  
- 	if (!perf_session__has_traces(session, "kmem record"))
+ static bool force;
 -- 
 2.21.1
 
