@@ -2,157 +2,345 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 879E21C7599
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 18:00:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D45301C758D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729775AbgEFQAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 12:00:03 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:36256 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727984AbgEFQAD (ORCPT
+        id S1729932AbgEFP6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 11:58:19 -0400
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:26338 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729698AbgEFP6I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 12:00:03 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 046Fx9Ct106891;
-        Wed, 6 May 2020 15:59:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=LOQ/A3fG6m7wFDoUQdwF4Fo8BrWLMmlp7AtGe0BFJ8c=;
- b=augVEg3tSFiYs2V+PISkeevIH2eox669hc9KqKo1DTANfKi6mX2QEzQK4HvkHJjV039B
- dR7eg8fsgr93p9OkEPqdRRebdb8YzzU5kHQLLuU+5Gc/07nd/Vp6XST2dgc0hbBajCmd
- QGPzJ7GqLYJPULNplElGgLb2nQFQAdugNaH9uACdRlMxCuqT5QXuvUwdt63M497wc4XN
- cQjSw2BcQ5uLY53Dvr02v7pd8L4cvSTebN4vrVvJICGHYBTR2p8sHl498IoWks9/WDvG
- IRXDUPv8P+VmdhG9oB1dR/HbcG20Vyvg1LbvshCziP/TwywFVhIqUdcWuRN7sZrGp+j9 Cg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 30usgq2br2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 06 May 2020 15:59:14 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 046FvRZM046369;
-        Wed, 6 May 2020 15:59:13 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 30sjnjvup3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 06 May 2020 15:59:13 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 046FxAqg010711;
-        Wed, 6 May 2020 15:59:10 GMT
-Received: from linux-1.home (/10.175.10.30)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 06 May 2020 08:59:09 -0700
-Subject: Re: [patch V4 part 1 18/36] samples/kprobes: Add __kprobes and
- NOKPROBE_SYMBOL() for handlers.
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>
-References: <20200505131602.633487962@linutronix.de>
- <20200505134059.878578033@linutronix.de>
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-Message-ID: <0de1b743-74ee-5c9a-4eed-ff999c9aa370@oracle.com>
-Date:   Wed, 6 May 2020 17:57:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Wed, 6 May 2020 11:58:08 -0400
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 046Fri6X028143;
+        Wed, 6 May 2020 10:58:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=PODMain02222019;
+ bh=AYBRmqrnY/0hIkelt5w9rQXDpdGMDLG6zT7tw23pw20=;
+ b=AJSuHTZi1pdlJhBl2LksEmuzU9fdS5hY4DRy2mxRWhPL62LYdhS2B+NAfdxyzCbC8R4J
+ kTcL74c3LNpW5FSY+FJ2euYAV6mVCbwWcuVwnc3GZCkAREWaXk5jXQuavfkeRfl9ytSa
+ FVvsQjGPgJHL1aaB6VErKAkkZzgTybXwT8mw4JtC2SiyPBOyQzZ1M7DBSG0xjPiDyhGq
+ AxUH37ecz0HnWfvv+tfiplP/gKR4I8ORETrZVh4t9SOg+iY47tiJ+LhqxF/bjOg2Y7Ch
+ ED1nTltdnGnPRsf1Q6JKbbCXpp/mfZmtS4KwraQAscIHKUnuJF0F+Of6C3xZqUu18gKW Ew== 
+Authentication-Results: ppops.net;
+        spf=fail smtp.mailfrom=ckeepax@opensource.cirrus.com
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0a-001ae601.pphosted.com with ESMTP id 30s6937h76-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 06 May 2020 10:58:02 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 6 May 2020
+ 16:57:59 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Wed, 6 May 2020 16:57:59 +0100
+Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 5046545A;
+        Wed,  6 May 2020 15:57:59 +0000 (UTC)
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     <cw00.choi@samsung.com>, <robh+dt@kernel.org>,
+        <lee.jones@linaro.org>, <linus.walleij@linaro.org>,
+        <broonie@kernel.org>
+CC:     <myungjoo.ham@samsung.com>, <lgirdwood@gmail.com>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <patches@opensource.cirrus.com>
+Subject: [PATCH v2 6/7] pinctrl: madera: Move binding over to dtschema
+Date:   Wed, 6 May 2020 16:57:57 +0100
+Message-ID: <20200506155758.14643-6-ckeepax@opensource.cirrus.com>
+X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20200506155758.14643-1-ckeepax@opensource.cirrus.com>
+References: <20200506155758.14643-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
-In-Reply-To: <20200505134059.878578033@linutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9613 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 adultscore=0 phishscore=0
- mlxlogscore=999 bulkscore=0 malwarescore=0 spamscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2005060128
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9613 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxscore=0
- priorityscore=1501 lowpriorityscore=0 malwarescore=0 clxscore=1015
- mlxlogscore=999 spamscore=0 adultscore=0 bulkscore=0 phishscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005060128
+Content-Type: text/plain
+X-Proofpoint-SPF-Result: fail
+X-Proofpoint-SPF-Record: v=spf1 include:spf-001ae601.pphosted.com include:spf.protection.outlook.com
+ ip4:5.172.152.52 -all
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
+ lowpriorityscore=0 mlxscore=0 phishscore=0 bulkscore=0 malwarescore=0
+ spamscore=0 priorityscore=1501 impostorscore=0 suspectscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005060127
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
 
-On 5/5/20 3:16 PM, Thomas Gleixner wrote:
-> From: Masami Hiramatsu <mhiramat@kernel.org>
-> 
-> Add __kprobes and NOKPROBE_SYMBOL() for sample kprobe handlers.
-> 
-> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Link: https://lkml.kernel.org/r/158523421177.24735.16273975317343670204.stgit@devnote2
-> 
-> ---
->   samples/kprobes/kprobe_example.c    |    6 ++++--
->   samples/kprobes/kretprobe_example.c |    2 ++
->   2 files changed, 6 insertions(+), 2 deletions(-)
+New since v1, putting in the same series as Arizona since they share the
+same regulator binding.
 
-Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
+Thanks,
+Charles
 
-alex.
+ .../bindings/pinctrl/cirrus,madera-pinctrl.txt     |  99 --------------
+ .../devicetree/bindings/pinctrl/cirrus,madera.yaml | 147 +++++++++++++++++++++
+ 2 files changed, 147 insertions(+), 99 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/pinctrl/cirrus,madera-pinctrl.txt
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/cirrus,madera.yaml
 
-> 
-> --- a/samples/kprobes/kprobe_example.c
-> +++ b/samples/kprobes/kprobe_example.c
-> @@ -25,7 +25,7 @@ static struct kprobe kp = {
->   };
->   
->   /* kprobe pre_handler: called just before the probed instruction is executed */
-> -static int handler_pre(struct kprobe *p, struct pt_regs *regs)
-> +static int __kprobes handler_pre(struct kprobe *p, struct pt_regs *regs)
->   {
->   #ifdef CONFIG_X86
->   	pr_info("<%s> pre_handler: p->addr = 0x%p, ip = %lx, flags = 0x%lx\n",
-> @@ -54,7 +54,7 @@ static int handler_pre(struct kprobe *p,
->   }
->   
->   /* kprobe post_handler: called after the probed instruction is executed */
-> -static void handler_post(struct kprobe *p, struct pt_regs *regs,
-> +static void __kprobes handler_post(struct kprobe *p, struct pt_regs *regs,
->   				unsigned long flags)
->   {
->   #ifdef CONFIG_X86
-> @@ -90,6 +90,8 @@ static int handler_fault(struct kprobe *
->   	/* Return 0 because we don't handle the fault. */
->   	return 0;
->   }
-> +/* NOKPROBE_SYMBOL() is also available */
-> +NOKPROBE_SYMBOL(handler_fault);
->   
->   static int __init kprobe_init(void)
->   {
-> --- a/samples/kprobes/kretprobe_example.c
-> +++ b/samples/kprobes/kretprobe_example.c
-> @@ -48,6 +48,7 @@ static int entry_handler(struct kretprob
->   	data->entry_stamp = ktime_get();
->   	return 0;
->   }
-> +NOKPROBE_SYMBOL(entry_handler);
->   
->   /*
->    * Return-probe handler: Log the return value and duration. Duration may turn
-> @@ -67,6 +68,7 @@ static int ret_handler(struct kretprobe_
->   			func_name, retval, (long long)delta);
->   	return 0;
->   }
-> +NOKPROBE_SYMBOL(ret_handler);
->   
->   static struct kretprobe my_kretprobe = {
->   	.handler		= ret_handler,
-> 
+diff --git a/Documentation/devicetree/bindings/pinctrl/cirrus,madera-pinctrl.txt b/Documentation/devicetree/bindings/pinctrl/cirrus,madera-pinctrl.txt
+deleted file mode 100644
+index b0e36cf0d289e..0000000000000
+--- a/Documentation/devicetree/bindings/pinctrl/cirrus,madera-pinctrl.txt
++++ /dev/null
+@@ -1,99 +0,0 @@
+-Cirrus Logic Madera class audio codecs pinctrl driver
+-
+-The Cirrus Logic Madera codecs provide a number of GPIO functions for
+-interfacing to external hardware and to provide logic outputs to other devices.
+-Certain groups of GPIO pins also have an alternate function, normally as an
+-audio interface.
+-
+-The set of available GPIOs, functions and alternate function groups differs
+-between codecs so refer to the datasheet for the codec for further information
+-on what is supported on that device.
+-
+-The properties for this driver exist within the parent MFD driver node.
+-
+-See also
+-  the core bindings for the parent MFD driver:
+-    Documentation/devicetree/bindings/mfd/madera.txt
+-
+-  the generic pinmix bindings:
+-    Documentation/devicetree/bindings/pinctrl/pinctrl-bindings.txt
+-
+-Required properties of parent mfd node:
+-  - pinctrl-names : must be "default"
+-  - pinctrl-0 : a phandle to the node containing the subnodes containing default
+-      configurations
+-
+-Required subnodes:
+-  One subnode is required to contain the default settings. It contains an
+-  arbitrary number of configuration subnodes, one for each group or pin
+-  configuration you want to apply as a default.
+-
+-Required properties of configuration subnodes:
+-  - groups : name of one pin group to configure. One of:
+-	aif1, aif2, aif3, aif4, mif1, mif2, mif3, pdmspk1, pdmspk2,
+-	dmic4, dmic5, dmic6,
+-	gpio1, gpio2, ..., gpio40
+-    The gpioN groups select the single pin of this name for configuration
+-
+-Optional properties of configuration subnodes:
+-  Any configuration option not explicitly listed in the dts will be left at
+-  chip default setting.
+-
+-  - function : name of function to assign to this group. One of:
+-	aif1, aif2, aif3, aif4, mif1, mif2, mif3, pdmspk1, pdmspk2,
+-	dmic3, dmic4, dmic5, dmic6,
+-	io, dsp-gpio, irq1, irq2,
+-	fll1-clk, fll1-lock, fll2-clk, fll2-lock, fll3-clk, fll3-lock,
+-	fllao-clk, fllao-lock,
+-	opclk, opclk-async, pwm1, pwm2, spdif,
+-	asrc1-in1-lock, asrc1-in2-lock, asrc2-in1-lock, asrc2-in2-lock,
+-	spkl-short-circuit, spkr-short-circuit, spk-shutdown,
+-	spk-overheat-shutdown, spk-overheat-warn,
+-	timer1-sts, timer2-sts, timer3-sts, timer4-sts, timer5-sts, timer6-sts,
+-	timer7-sts, timer8-sts,
+-	log1-fifo-ne, log2-fifo-ne, log3-fifo-ne, log4-fifo-ne, log5-fifo-ne,
+-	log6-fifo-ne, log7-fifo-ne, log8-fifo-ne,
+-
+-  - bias-disable : disable pull-up and pull-down
+-  - bias-bus-hold : enable buskeeper
+-  - bias-pull-up : output is pulled-up
+-  - bias-pull-down : output is pulled-down
+-  - drive-push-pull : CMOS output
+-  - drive-open-drain : open-drain output
+-  - drive-strength : drive strength in mA. Valid values are 4 or 8
+-  - input-schmitt-enable : enable schmitt-trigger mode
+-  - input-schmitt-disable : disable schmitt-trigger mode
+-  - input-debounce : A value of 0 disables debounce, a value !=0 enables
+-	debounce
+-  - output-low : set the pin to output mode with low level
+-  - output-high : set the pin to output mode with high level
+-
+-Example:
+-
+-cs47l85@0 {
+-	compatible = "cirrus,cs47l85";
+-
+-	pinctrl-names = "default";
+-	pinctrl-0 = <&cs47l85_defaults>;
+-
+-	cs47l85_defaults: cs47l85-gpio-defaults {
+-		aif1 {
+-			groups = "aif1";
+-			function = "aif1";
+-			bias-bus-hold;
+-		};
+-
+-		aif2 {
+-			groups = "aif2";
+-			function = "aif2";
+-			bias-bus-hold;
+-		};
+-
+-		opclk {
+-			groups = "gpio1";
+-			function = "opclk";
+-			bias-pull-up;
+-			drive-strength = <8>;
+-		};
+-	};
+-};
+diff --git a/Documentation/devicetree/bindings/pinctrl/cirrus,madera.yaml b/Documentation/devicetree/bindings/pinctrl/cirrus,madera.yaml
+new file mode 100644
+index 0000000000000..07a13429ca6c4
+--- /dev/null
++++ b/Documentation/devicetree/bindings/pinctrl/cirrus,madera.yaml
+@@ -0,0 +1,147 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/pinctrl/cirrus,madera.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Cirrus Logic Madera class audio CODECs pinctrl driver
++
++maintainers:
++  - patches@opensource.cirrus.com
++
++description: |
++  The Cirrus Logic Madera codecs provide a number of GPIO functions for
++  interfacing to external hardware and to provide logic outputs to other devices.
++  Certain groups of GPIO pins also have an alternate function, normally as an
++  audio interface.
++
++  The set of available GPIOs, functions and alternate function groups differs
++  between CODECs so refer to the datasheet for the CODEC for further information
++  on what is supported on that device.
++
++  The properties for this driver exist within the parent MFD driver node.
++
++  See also the core bindings for the parent MFD driver:
++
++    Documentation/devicetree/bindings/mfd/cirrus,madera.yaml
++
++  And the generic pinmix bindings:
++
++    Documentation/devicetree/bindings/pinctrl/pinctrl-bindings.txt
++
++properties:
++  pinctrl-0:
++    description:
++      A phandle to the node containing the subnodes containing default
++      configurations.
++
++  pinctrl-names:
++    description:
++      A pinctrl state named "default" must be defined.
++    const: default
++
++patternProperties:
++  '^.*-pins$':
++    description:
++      One subnode is required to contain the default settings. It
++      contains an arbitrary number of configuration subnodes, one for
++      each group or pin configuration you want to apply as a default.
++    patternProperties:
++      '^.*-pin$':
++        type: object
++        allOf:
++          - $ref: "pincfg-node.yaml#"
++          - $ref: "pinmux-node.yaml#"
++        properties:
++          groups:
++            description:
++              Name of one pin group to configure.
++            enum: [ aif1, aif2, aif3, aif4, mif1, mif2, mif3, pdmspk1,
++                    pdmspk2, dmic4, dmic5, dmic6, gpio1, gpio2, gpio3,
++                    gpio4, gpio5, gpio6, gpio7, gpio7, gpio8, gpio9,
++                    gpio10, gpio11, gpio12, gpio13, gpio14, gpio15,
++                    gpio16, gpio17, gpio17, gpio18, gpio19, gpio20,
++                    gpio21, gpio22, gpio23, gpio24, gpio25, gpio26,
++                    gpio27, gpio27, gpio28, gpio29, gpio30, gpio31,
++                    gpio32, gpio33, gpio34, gpio35, gpio36, gpio37,
++                    gpio37, gpio38, gpio39 ]
++
++          function:
++            description:
++              Name of function to assign to this group.
++            enum: [ aif1, aif2, aif3, aif4, mif1, mif2, mif3,
++                    pdmspk1, pdmspk2, dmic3, dmic4, dmic5,
++                    dmic6, io, dsp-gpio, irq1, irq2, fll1-clk,
++                    fll1-lock, fll2-clk, fll2-lock, fll3-clk,
++                    fll3-lock, fllao-clk, fllao-lock, opclk,
++                    opclk-async, pwm1, pwm2, spdif, asrc1-in1-lock,
++                    asrc1-in2-lock, asrc2-in1-lock, asrc2-in2-lock,
++                    spkl-short-circuit, spkr-short-circuit,
++                    spk-shutdown, spk-overheat-shutdown,
++                    spk-overheat-warn, timer1-sts, timer2-sts,
++                    timer3-sts, timer4-sts, timer5-sts, timer6-sts,
++                    timer7-sts, timer8-sts, log1-fifo-ne,
++                    log2-fifo-ne, log3-fifo-ne, log4-fifo-ne,
++                    log5-fifo-ne, log6-fifo-ne, log7-fifo-ne,
++                    log8-fifo-ne ]
++
++          bias-disable:
++            description:
++              Disable pull-up and pull-down.
++
++          bias-bus-hold:
++            description:
++              Enable buskeeper.
++
++          bias-pull-up:
++            description:
++              Output is pulled-up.
++
++          bias-pull-down:
++            description:
++              Output is pulled-down.
++
++          drive-push-pull:
++            description:
++              CMOS output.
++
++          drive-open-drain:
++            description:
++              Open-drain output.
++
++          drive-strength:
++            description:
++              Drive strength in mA.
++            enum: [ 4, 8 ]
++
++          input-schmitt-enable:
++            description:
++              Enable schmitt-trigger mode.
++
++          input-schmitt-disable:
++            description:
++              Disable schmitt-trigger mode.
++
++          input-debounce:
++            description:
++              A zero value disables debounce, non-zero value enables
++              debounce.
++
++          output-low:
++            description:
++              Set the pin to output mode with low level.
++
++          output-high:
++            description:
++              Set the pin to output mode with high level.
++
++        additionalProperties: false
++
++        required:
++          - groups
++
++    additionalProperties: false
++
++required:
++  - pinctrl-0
++  - pinctrl-names
+-- 
+2.11.0
+
