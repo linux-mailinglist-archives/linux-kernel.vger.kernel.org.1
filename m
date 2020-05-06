@@ -2,85 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A43F1C6944
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 08:47:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C9C91C6954
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 08:47:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728128AbgEFGrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 02:47:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34332 "EHLO mail.kernel.org"
+        id S1728275AbgEFGro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 02:47:44 -0400
+Received: from mout.gmx.net ([212.227.17.20]:47019 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727812AbgEFGrU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 02:47:20 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E42E820714;
-        Wed,  6 May 2020 06:47:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588747639;
-        bh=N4qdH4OxIaQgxglHU2KrfcqJnuqVbOOhzNp8eDLs7cA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aaCtrUnoxK/t+p/gX3MACzVfu6fXeGjp1x/VjQTWZYC3kNxGjOKEwd+6pNCyUFd+T
-         dd+BkwFu4NNMv5m58jhy698NXJGwWgnRjOy9VzMpb9NS7TE+zCiLgbM2hiF2eLwjSG
-         dOOPJUpt9uq0qFqWUr+pZBQwcf5j2jfz9lStbokI=
-Date:   Wed, 6 May 2020 08:47:17 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     ashwin-h <ashwinh@vmware.com>
-Cc:     vyasevich@gmail.com, nhorman@tuxdriver.com, davem@davemloft.net,
-        linux-sctp@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, srivatsab@vmware.com,
-        srivatsa@csail.mit.edu, rostedt@goodmis.org, srostedt@vmware.com,
-        ashwin.hiranniah@gmail.com, Xin Long <lucien.xin@gmail.com>
-Subject: Re: [PATCH 2/2] sctp: implement memory accounting on rx path
-Message-ID: <20200506064717.GB2273049@kroah.com>
-References: <cover.1588242081.git.ashwinh@vmware.com>
- <b2d9886afc672b4120f101eeb9217e68abb61471.1588242081.git.ashwinh@vmware.com>
+        id S1727812AbgEFGrn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 02:47:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1588747647;
+        bh=hO88QHkEwrRqwifsGMJLO23pyLom4frjxgEUyj9P83s=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=NQWyk4a22wEfqor3GHw6TNgP35oPNmP+FviFHd39bWVDRjgmrTQW4psPkVfgyHL76
+         kOztWkDVJFm5Y++L31zuV7RQ+CjNzIqbxgALvOw1vGLfE3FQgBzN0hd5w6RDofrhne
+         fN6c6II4XEmkIv2M6mmfYxKYKbY2JaKsGSxsw3rU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from hsiangkao-HP-ZHAN-66-Pro-G1 ([120.242.76.42]) by mail.gmx.com
+ (mrgmx104 [212.227.17.174]) with ESMTPSA (Nemesis) id
+ 1MZCfJ-1jaqNT0Nnt-00V5nD; Wed, 06 May 2020 08:47:27 +0200
+Date:   Wed, 6 May 2020 14:47:19 +0800
+From:   Gao Xiang <hsiangkao@gmx.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@android.com,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [f2fs-dev] [PATCH] f2fs: get parent inode when recovering pino
+Message-ID: <20200506064709.GA25482@hsiangkao-HP-ZHAN-66-Pro-G1>
+References: <20200505153139.201697-1-jaegeuk@kernel.org>
+ <20200505165847.GA98848@gmail.com>
+ <20200505181323.GA55221@google.com>
+ <20200505181941.GC98848@gmail.com>
+ <20200506001403.GA2101@hsiangkao-HP-ZHAN-66-Pro-G1>
+ <20200506012428.GG128280@sol.localdomain>
+ <20200506015813.GA9256@hsiangkao-HP-ZHAN-66-Pro-G1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b2d9886afc672b4120f101eeb9217e68abb61471.1588242081.git.ashwinh@vmware.com>
+In-Reply-To: <20200506015813.GA9256@hsiangkao-HP-ZHAN-66-Pro-G1>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Provags-ID: V03:K1:z6dtdIcZRcSYYph0RGMRdGYvIpDIYF8mz+BYGilcVnLYpEXyg/g
+ mFR8hgBLc0U/As4vQQXjMXzV40093msxEuzJUUh8FIhgivuJI9T50alip1rHMHI6VGfOi0w
+ 5auoIOjOQZbm123Z5TvIA+Lk63KkQ3ai6p+cyDk0MQwedoKnjMp5OTzdMOzO+k9d+YB2Ko0
+ uU0i4dijVkg60MGHVFpoQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:spzX94Rvc9Y=:Wwm8mk3c5+AdN+K91dNCm9
+ /dp58Sb+t6/IYOi1wtRT9WN/nKeLuzqqboXLS/vv6yk90m0vaESkL0mweBW4JyzO7G7RA77tG
+ X3Vn4kZ0AOfvheD/63jfo6RzGHHdw6BqYYbUCgcauVVmDckhx2+LeRCO6r2ozabkBpHay7XJp
+ BKkrqEFrdXe+hMGBMmgtUZwXgolyrS53FdoLcebX18G//mG2tklxmIz+slXZoR5EJMUkQz3Wh
+ d6OYawIFALwHx9omWBJwB/hogCcezV7CIqWLBamcxjHg1ap8bHpjgyrIkG8MkECMImmf76YmY
+ S3mY2EwkFGCBaqRf5wEbt8M/06cYZHJRzDwoqpSOF0iJ1WiSwoxOGl85HcJIfe9m+uYxaTOUf
+ 5T7ps0It5C+fTS7xtqKSwtnagOnPgCfgP4zXLqyYaf8SoU2Dxx8M6Ck32cj/Bsu9mVfYsBLBa
+ n/hTY3TLlBW810WpguEYXCmDfikbx7QEDaFaFKPNR1XXAuLV0ncoNDJJPc8zieleT1uEF+SA9
+ WlIkeRfqX+2Ll9urFmSAibDl6z4tRhg+2PiHkJ7vtVczxfDpQGCSHyToMqN/7DuGEQZf/iThN
+ odgg2Vf6kNxKaXUl2KBZbWullaQ6kEgjGoJlzB2ZIaon4JlcnXKNMUoPn7YYE5rY29baJSNY9
+ 4iZDI6vTbUDRcecpxrWJxFYB6rCUPGRDGHkHezsxfrIeLH4ep5uv6wdXbUmPWMtS4kaKaWpBq
+ TdlbpEOlz7lTEQsuRijSAqrRbs4BuaACbmfp4Jr4nbMCsC3OS8tkBrgWC30J1AaZoMnL+8V3B
+ Y2Ygy5w0DzKafUdXr2Xyq4FUpWk72s8hgMfND6QFPDRw20XBMafYCodZdAWXlsc417Fr7roc+
+ G5KnwQh+tvP5G/hYYsNozpDqfqb0nUnMr/Q6f5kFfzmKYEvElBhkDpUTu5Rkc4WBTDgqUwym9
+ 8lOdShEfZGEZ3PDuCRfUk+Yqh2rSICFZ1IPVHM1aHqsikGhVcUoKoyOdhtaZ0HREF/FW2MMSt
+ cERaqxV8uSRCTQw/sxkMwuePsA8faxZZK4GXIRwvfxn3APnqRMHAFxJqMvDKZHOmhhHSSLYko
+ VTifxOe8wazQWUzkWuQw+1pKojOphgbCITYATckXAWTSgR9HvehSaj+wMeaRoviWLR3P8ue5t
+ Yo+IXIZMHsp6QUWZHRg1b6NN3GKv2lfckqFEumXl7DRUnfDRDPXKXqHXdrqLSMj14+4kdo/aw
+ nNKZNeOJeTpvtsayc
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 06, 2020 at 07:50:54PM +0530, ashwin-h wrote:
-> From: Xin Long <lucien.xin@gmail.com>
-> 
-> commit 9dde27de3e5efa0d032f3c891a0ca833a0d31911 upstream.
-> 
-> sk_forward_alloc's updating is also done on rx path, but to be consistent
-> we change to use sk_mem_charge() in sctp_skb_set_owner_r().
-> 
-> In sctp_eat_data(), it's not enough to check sctp_memory_pressure only,
-> which doesn't work for mem_cgroup_sockets_enabled, so we change to use
-> sk_under_memory_pressure().
-> 
-> When it's under memory pressure, sk_mem_reclaim() and sk_rmem_schedule()
-> should be called on both RENEGE or CHUNK DELIVERY path exit the memory
-> pressure status as soon as possible.
-> 
-> Note that sk_rmem_schedule() is using datalen to make things easy there.
-> 
-> Reported-by: Matteo Croce <mcroce@redhat.com>
-> Tested-by: Matteo Croce <mcroce@redhat.com>
-> Acked-by: Neil Horman <nhorman@tuxdriver.com>
-> Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-> Signed-off-by: Xin Long <lucien.xin@gmail.com>
-> Signed-off-by: David S. Miller <davem@davemloft.net>
-> Signed-off-by: Ashwin H <ashwinh@vmware.com>
-> ---
->  include/net/sctp/sctp.h |  2 +-
->  net/sctp/sm_statefuns.c |  6 ++++--
->  net/sctp/ulpevent.c     | 19 ++++++++-----------
->  net/sctp/ulpqueue.c     |  3 ++-
->  4 files changed, 15 insertions(+), 15 deletions(-)
+On Wed, May 06, 2020 at 09:58:22AM +0800, Gao Xiang wrote:
+> On Tue, May 05, 2020 at 06:24:28PM -0700, Eric Biggers wrote:
+> > On Wed, May 06, 2020 at 08:14:07AM +0800, Gao Xiang wrote:
+> > > >
+> > > > Actually, I think this is wrong because the fsync can be done via =
+a file
+> > > > descriptor that was opened to a now-deleted link to the file.
+> > >
+> > > I'm still confused about this...
+> > >
+> > > I don't know what's wrong with this version from my limited knowledg=
+e?
+> > >  inode itself is locked when fsyncing, so
+> > >
+> > >    if the fsync inode->i_nlink =3D=3D 1, this inode has only one har=
+d link
+> > >    (not deleted yet) and should belong to a single directory; and
+> > >
+> > >    the only one parent directory would not go away (not deleted as w=
+ell)
+> > >    since there are some dirents in it (not empty).
+> > >
+> > > Could kindly explain more so I would learn more about this scenario?
+> > > Thanks a lot!
+> >
+> > i_nlink =3D=3D 1 just means that there is one non-deleted link.  There=
+ can be links
+> > that have since been deleted, and file descriptors can still be open t=
+o them.
+>
+> Thanks for your inspiration. You are right, thanks.
+>
+> Correct my words... I didn't check f2fs code just now, it seems f2fs doe=
+sn't
+> take inode_lock as some other fs like __generic_file_fsync or ubifs_fsyn=
+c.
+>
+> And i_sem locks nlink / try_to_fix_pino similarly in some extent. It see=
+ms
+> no race by using d_find_alias here. Thanks again.
+>
 
-<formletter>
+(think more little bit just now...)
 
-This is not the correct way to submit patches for inclusion in the
-stable kernel tree.  Please read:
-    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-for how to do this properly.
+ Thread 1:                                           Thread 2 (fsync):
+  vfs_unlink                                          try_to_fix_pino
+    f2fs_unlink
+       f2fs_delete_entry
+         f2fs_drop_nlink  (i_sem, inode->i_nlink =3D 1)
 
-</formletter>
+  (...   but this dentry still hashed)                  i_sem, check inode=
+->i_nlink =3D 1
+                                                        i_sem d_find_alias
+
+  d_delete
+
+I'm not sure if fsync could still use some wrong alias by chance..
+completely untested, maybe just noise...
+
+Thanks,
+Gao Xiang
+
