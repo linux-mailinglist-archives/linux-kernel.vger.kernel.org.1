@@ -2,207 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 867A61C7C33
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 23:16:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40B8B1C7C2E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 23:16:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730070AbgEFVQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 17:16:05 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:50440 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730010AbgEFVQC (ORCPT
+        id S1730037AbgEFVP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 17:15:57 -0400
+Received: from esa2.microchip.iphmx.com ([68.232.149.84]:27581 "EHLO
+        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730010AbgEFVPz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 17:16:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588799760;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7DyNQyHWzxz6uGwnYuDMaMxKcoBgqV2azBIQN2WlEbE=;
-        b=Lzkk0XPiz/rIXY4mx8nYhnQW8pyi26qpHoaa0SQPPc/BeUO94nhrTXSXtKx3Pk18IO0H9L
-        b2YDMyghovFz1V4akvz85RAyctfe6M4N4tE79YoFh1UNK4OPOH/wbdRNFOO+8X0SRaV9Kf
-        m/THqYpyonKQjgM+UoEoy8ed9wvH4Gg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-368-4EyUww1uN9-HEr2kbOQ9Eg-1; Wed, 06 May 2020 17:15:56 -0400
-X-MC-Unique: 4EyUww1uN9-HEr2kbOQ9Eg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 854D1A0BD8;
-        Wed,  6 May 2020 21:15:54 +0000 (UTC)
-Received: from treble (ovpn-115-96.rdu2.redhat.com [10.10.115.96])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B71E4707A5;
-        Wed,  6 May 2020 21:15:49 +0000 (UTC)
-Date:   Wed, 6 May 2020 16:15:47 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org,
-        mhiramat@kernel.org, bristot@redhat.com, jbaron@akamai.com,
-        torvalds@linux-foundation.org, tglx@linutronix.de,
-        mingo@kernel.org, namit@vmware.com, hpa@zytor.com, luto@kernel.org,
-        ard.biesheuvel@linaro.org, pbonzini@redhat.com,
-        mathieu.desnoyers@efficios.com
-Subject: Re: [PATCH v4 16/18] static_call: Allow early init
-Message-ID: <20200506211547.2vnuhkfzhgbi27dm@treble>
-References: <20200501202849.647891881@infradead.org>
- <20200501202944.706674211@infradead.org>
+        Wed, 6 May 2020 17:15:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1588799754; x=1620335754;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=T+Ll8tZc9vYZAorA7aIZMRWepCCE5u9iReBymxXDYg4=;
+  b=YExOBa0Ch2lsnTIEv/S2mEh8T46XKYqyMARqFAr69/rKuamBopfLTTLK
+   aerPG8KU595F0DczxIGp8ebK+tTozNpXL0BIKcCUiqZlkBLTXg8TpFVs/
+   HnDltDCkQgsykFEzJBgbzzdsrS//6nLqHpqwBybVS2ommFPkmtfG4bQOW
+   mKKkzclZp/9jkZFRPrJrAIrb1xqg3SFDycWK3iOWI5EXPBM84m+jWRNf7
+   hsNVGubs0kjP/TSqppG+tGnu5vEVeWPfLuo1aYpfqcvAc7NzcOky5MTxU
+   x1FjBgFnjLpTHLXPYMfaKNjZ04VXAU7o1Zi+yAeTckxRA/OQ5i+qF1Mud
+   w==;
+IronPort-SDR: FAxJtZKujh/IpUWRggqLlWrFDVr26ZPMRf8zPt/VsCzUf9getOXlzsPn7K/I4p/GlbYUgNblYn
+ jINB5g8TEnmy86dtrqlFYQca+eBxKXYN7AqCPhwDggg38p/i9OLbgurop55ZXXhIqit23sLHkf
+ wXDlFz57QhcFDL4INrSq5UDtkE/Ei5qewuIyETqp0hNYW9l1F0nb6v4FCviMWpyA6nOB+loiUp
+ rOxY0/VR5mPFW50sX0glTzpHkFLtNMcWmWFEpDSfyprVaZkjsrGizGB1NFR0IRZQjWeulJYjH2
+ aIA=
+X-IronPort-AV: E=Sophos;i="5.73,360,1583218800"; 
+   d="scan'208";a="74455046"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 06 May 2020 14:15:53 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 6 May 2020 14:15:55 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex01.mchp-main.com
+ (10.10.85.143) with Microsoft SMTP Server id 15.1.1713.5 via Frontend
+ Transport; Wed, 6 May 2020 14:15:54 -0700
+Date:   Wed, 6 May 2020 23:15:51 +0200
+From:   "Allan W. Nielsen" <allan.nielsen@microchip.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+CC:     Xiaoliang Yang <xiaoliang.yang_1@nxp.com>, Po Liu <po.liu@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandru Marginean <alexandru.marginean@nxp.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "Li Yang" <leoyang.li@nxp.com>, Mingkai Hu <mingkai.hu@nxp.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Jiri Pirko" <jiri@resnulli.us>, Ido Schimmel <idosch@idosch.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Joergen Andreasen <joergen.andreasen@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
+        Roopa Prabhu <roopa@cumulusnetworks.com>,
+        <linux-devel@linux.nxdi.nxp.com>
+Subject: Re: [PATCH v1 net-next 4/6] net: mscc: ocelot: VCAP IS1 support
+Message-ID: <20200506211551.cf6mlad7ysmuqfvq@ws.localdomain>
+References: <20200506074900.28529-1-xiaoliang.yang_1@nxp.com>
+ <20200506074900.28529-5-xiaoliang.yang_1@nxp.com>
+ <20200506094345.n4zdgjvctwiz4pkh@ws.localdomain>
+ <CA+h21hoqJC_CJB=Sg=-JanXw3S_WANgjsfYjU+ffqn6YCDMzrA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20200501202944.706674211@infradead.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <CA+h21hoqJC_CJB=Sg=-JanXw3S_WANgjsfYjU+ffqn6YCDMzrA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 01, 2020 at 10:29:05PM +0200, Peter Zijlstra wrote:
-> In order to use static_call() to wire up x86_pmu, we need to
-> initialize earlier; copy some of the tricks from jump_label to enable
-> this.
-> 
-> Primarily we overload key->next to store a sites pointer when there
-> are no modules, this avoids having to use kmalloc() to initialize the
-> sites and allows us to run much earlier.
-> 
-> (arguably, this is much much earlier than needed for perf, but it
-> might allow other uses.)
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  arch/x86/kernel/setup.c       |    2 +
->  arch/x86/kernel/static_call.c |    8 +++++-
->  include/linux/static_call.h   |   15 ++++++++++--
->  kernel/static_call.c          |   52 +++++++++++++++++++++++++++++++++++++++---
->  4 files changed, 71 insertions(+), 6 deletions(-)
+Hi Vladimir,
 
-This doesn't work when the key is defined in a module.  In
-__static_call_update(), first.site_mod->mod is NULL, but
-static_call_key_sites() points to the module's call sites.
+On 06.05.2020 13:53, Vladimir Oltean wrote:
+>On Wed, 6 May 2020 at 12:45, Allan W. Nielsen
+><allan.nielsen@microchip.com> wrote:
+>>
+>> Hi Xiaoliang,
+>>
+>> On 06.05.2020 15:48, Xiaoliang Yang wrote:
+>> >VCAP IS1 is a VCAP module which can filter MAC, IP, VLAN, protocol, and
+>> >TCP/UDP ports keys, and do Qos and VLAN retag actions.
+>> >This patch added VCAP IS1 support in ocelot ace driver, which can supports
+>> >vlan modify action of tc filter.
+>> >Usage:
+>> >        tc qdisc add dev swp0 ingress
+>> >        tc filter add dev swp0 protocol 802.1Q parent ffff: flower \
+>> >        skip_sw vlan_id 1 vlan_prio 1 action vlan modify id 2 priority 2
+>> I skimmed skimmed through the patch serie, and the way I understood it
+>> is that you look at the action, and if it is a VLAN operation, then you
+>> put it in IS1 and if it is one of the other then put it in IS2.
+>>
+>> This is how the HW is designed - I'm aware of that.
+>>
+>> But how will this work if you have 2 rules, 1 modifying the VLAN and
+>> another rule dropping certain packets?
+>>
+>
+>At the moment, the driver does not support more than 1 action. We
+>might need to change that, but we can still install more filters with
+>the same key and still be fine (see more below). When there is more
+>than 1 action, the IS1 stuff will be combined into a single rule
+>programmed into IS1, and the IS2 stuff will be combined into a single
+>new rule with the same keys installed into VCAP IS2. Would that not
+>work?
+>
+>> The SW model have these two rules in the same table, and can stop
+>> process at the first match. SW will do the action of the first frame
+>> matching.
+>>
+>
+>Actually I think this is an incorrect assumption - software stops at
+>the first action only if told to do so. Let me copy-paste a text from
+>a different email thread.
 
-This seems to fix it (sorry, also has the 'next' -> 'mods' rename).
-The actual fix is in static_call_key_sites() and static_call_key_mods().
+I'm still not able to see how this proposal will give us the same
+behavioral in SW and in HW.
 
-diff --git a/include/linux/static_call.h b/include/linux/static_call.h
-index e112553cfce6..ee55075707f1 100644
---- a/include/linux/static_call.h
-+++ b/include/linux/static_call.h
-@@ -110,9 +110,10 @@ struct static_call_mod {
- struct static_call_key {
- 	void *func;
- 	union {
--		/* bit0 => 0 - next, 1 - sites */
-+		/* bit 0: 0 = mods; 1 = sites */
- 		unsigned long type;
--		struct static_call_mod *next;
-+
-+		struct static_call_mod *mods;
- 		struct static_call_site *sites;
- 	};
- };
-diff --git a/kernel/static_call.c b/kernel/static_call.c
-index 783953db28c4..d78e50c5b8a3 100644
---- a/kernel/static_call.c
-+++ b/kernel/static_call.c
-@@ -94,23 +94,23 @@ static inline void static_call_sort_entries(struct static_call_site *start,
- 	     static_call_site_cmp, static_call_site_swap);
- }
- 
--static inline bool static_call_key_has_next(struct static_call_key *key)
-+static inline bool static_call_key_has_mods(struct static_call_key *key)
- {
- 	return !(key->type & 1);
- }
- 
--static inline struct static_call_mod *static_call_key_next(struct static_call_key *key)
-+static inline struct static_call_mod *static_call_key_mods(struct static_call_key *key)
- {
--	if (static_call_key_has_next(key))
--		return key->next->next;
-+	if (!static_call_key_has_mods(key))
-+		return NULL;
- 
--	return NULL;
-+	return key->mods;
- }
- 
- static inline struct static_call_site *static_call_key_sites(struct static_call_key *key)
- {
--	if (static_call_key_has_next(key))
--		return key->next->sites;
-+	if (static_call_key_has_mods(key))
-+		return NULL;
- 
- 	return (struct static_call_site *)(key->type & ~1);
- }
-@@ -118,7 +118,12 @@ static inline struct static_call_site *static_call_key_sites(struct static_call_
- void __static_call_update(struct static_call_key *key, void *tramp, void *func)
- {
- 	struct static_call_site *site, *stop;
--	struct static_call_mod *site_mod, first;
-+	struct static_call_mod *site_mod;
-+	struct static_call_mod first = {
-+		.next = static_call_key_mods(key),
-+		.mod = NULL,
-+		.sites = static_call_key_sites(key),
-+	};
- 
- 	cpus_read_lock();
- 	static_call_lock();
-@@ -137,17 +142,14 @@ void __static_call_update(struct static_call_key *key, void *tramp, void *func)
- 	if (WARN_ON_ONCE(!static_call_initialized))
- 		goto done;
- 
--	first = (struct static_call_mod){
--		.next = static_call_key_next(key),
--		.mod = NULL,
--		.sites = static_call_key_sites(key),
--	};
--
- 	for (site_mod = &first; site_mod; site_mod = site_mod->next) {
- 		if (!site_mod->sites) {
- 			/*
- 			 * This can happen if the static call key is defined in
- 			 * a module which doesn't use it.
-+			 *
-+			 * It also happens in the has_mods case, where the
-+			 * 'first' entry has no sites associated with it.
- 			 */
- 			continue;
- 		}
-@@ -228,12 +230,12 @@ static int __static_call_init(struct module *mod,
- 			if (!site_mod)
- 				return -ENOMEM;
- 
--			if (!static_call_key_has_next(key)) {
-+			if (!static_call_key_has_mods(key)) {
- 				site_mod->mod = NULL;
- 				site_mod->next = NULL;
- 				site_mod->sites = static_call_key_sites(key);
- 
--				key->next = site_mod;
-+				key->mods = site_mod;
- 
- 				site_mod = kzalloc(sizeof(*site_mod), GFP_KERNEL);
- 				if (!site_mod)
-@@ -242,8 +244,8 @@ static int __static_call_init(struct module *mod,
- 
- 			site_mod->mod = mod;
- 			site_mod->sites = site;
--			site_mod->next = key->next;
--			key->next = site_mod;
-+			site_mod->next = key->mods;
-+			key->mods = site_mod;
- 		}
- 
- do_transform:
-@@ -328,7 +330,7 @@ static void static_call_del_module(struct module *mod)
- 
- 		prev_key = key;
- 
--		for (prev = &key->next, site_mod = key->next;
-+		for (prev = &key->mods, site_mod = key->mods;
- 		     site_mod && site_mod->mod != mod;
- 		     prev = &site_mod->next, site_mod = site_mod->next)
- 			;
+A simple example:
+
+tc qdisc add dev enp0s3 ingress
+tc filter add dev enp0s3 protocol 802.1Q parent ffff: \
+     prio 10 flower vlan_id 5 action vlan modify id 10
+tc filter add dev enp0s3 protocol 802.1Q parent ffff: \
+     prio 20 flower src_mac 00:00:00:00:00:08 action drop
+
+We can then inject a frame with VID 5 and smac ::08:
+$ ef tx tap0 eth smac 00:00:00:00:00:08 ctag vid 5 
+
+We can then check the filter and see that it only hit the first rule:
+
+$ tc -s filter show dev enp0s3 ingress
+filter protocol 802.1Q pref 10 flower chain 0
+filter protocol 802.1Q pref 10 flower chain 0 handle 0x1
+   vlan_id 5
+   not_in_hw
+         action order 1: vlan  modify id 10 protocol 802.1Q priority 0 pipe
+          index 1 ref 1 bind 1 installed 19 sec used 6 sec
+         Action statistics:
+         Sent 42 bytes 1 pkt (dropped 0, overlimits 0 requeues 0)
+         backlog 0b 0p requeues 0
+
+filter protocol 802.1Q pref 20 flower chain 0
+filter protocol 802.1Q pref 20 flower chain 0 handle 0x1
+   src_mac 00:00:00:00:00:08
+   not_in_hw
+         action order 1: gact action drop
+          random type none pass val 0
+          index 1 ref 1 bind 1 installed 11 sec used 11 sec
+         Action statistics:
+         Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0)
+         backlog 0b 0p requeues 0
+
+If this was done with the proposed HW offload, then both rules would
+have been hit and we would have a different behavioral.
+
+This can be fixed by adding the "continue" action to the first rule:
+
+tc filter add dev enp0s3 protocol 802.1Q parent ffff: \
+     prio 10 flower vlan_id 5 action vlan modify id 10 continue
+tc filter add dev enp0s3 protocol 802.1Q parent ffff: \
+     prio 20 flower src_mac 00:00:00:00:00:08 action drop
+
+But that would again break if we add 2 rules manipulating the VLAN (as
+the HW does not continue with in a single TCAM).
+
+My point is: I do not think we can hide the fact that this is done
+in independent TCAMs in the silicon.
+
+I think it is possible to do this with the chain feature (even though it
+is not a perfect match), but it would require more analysis.
+
+/Allan
 
