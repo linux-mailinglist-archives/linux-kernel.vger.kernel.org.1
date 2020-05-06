@@ -2,112 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 966CD1C77EB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 19:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD9D21C77F3
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 19:33:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728802AbgEFRbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 13:31:44 -0400
-Received: from smtp04.smtpout.orange.fr ([80.12.242.126]:33507 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728711AbgEFRbo (ORCPT
+        id S1728920AbgEFRc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 13:32:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726093AbgEFRc4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 13:31:44 -0400
-Received: from [192.168.1.41] ([92.148.185.155])
-        by mwinf5d27 with ME
-        id bVXe2200R3MbWjg03VXfnK; Wed, 06 May 2020 19:31:41 +0200
-X-ME-Helo: [192.168.1.41]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Wed, 06 May 2020 19:31:41 +0200
-X-ME-IP: 92.148.185.155
-Subject: Re: [PATCH] iio: sca3000: Remove an erroneous 'get_device()'
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald <pmeerw@pmeerw.net>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
-References: <20200506035206.192173-1-christophe.jaillet@wanadoo.fr>
- <CAHp75Vdi+ZYpQPHgoREQ6LTaUHTPmNkR7ULZaVNTJr7Bvh-q9Q@mail.gmail.com>
-From:   Marion & Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <0a8cd600-2b21-2076-1355-8c97d7ceb709@wanadoo.fr>
-Date:   Wed, 6 May 2020 19:31:38 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 6 May 2020 13:32:56 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4286C061A0F
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 10:32:55 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id d16so2682479edv.8
+        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 10:32:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zINnKrADJ456wEG+eExotg4mZm+1AAItrQjk1QMDkRw=;
+        b=gU8Xg+y94kUk/jJIxbbaNYMn4rphbC4fBnewawj1Uh/frMvnwP7mLkSJpsbqZmnsg0
+         dy0V++iiQf7VFwxKL8e4ZMwSo/ZVZtqDaZM/ACqSLASsNUwmiLgHErctdGmSUYPtROyE
+         0XFlBPlZZnopz7Ar9VUqla93WH7yAvMdnSlgiq8m7kgKrUDEyOcWQCDakebeXhePjTl3
+         7f4Sd9Q/s79BGA5MkzfBUc1QFR+hOp4j32DrpmCG0opc52MYma1Rz6VLQ71R8PqEuK9f
+         3IH0431rnvHokYkc5P7f0fnmSwzqr6/uYVPAk0sEJJl/zFtsUXKnEc+HRQ8kPUuztXv3
+         POPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zINnKrADJ456wEG+eExotg4mZm+1AAItrQjk1QMDkRw=;
+        b=KKT5nDyb0npiLGelCDLoRt7Vr3F3dHASoP3LjDzKaYnNtiJoXVA+kTP7RcvIFhorZw
+         QHDKTh8382QjACaUDmeW42KScR0b/DZPs5K4NEKCSh9h49GUHXKUW/zC6BZEQ41vHY9m
+         K9R2XsurfD5K7df+8cm7ZTzym/WJ1BGRxjEjf5Z47/CLslaDlVmVrt+SSgRg8MihMrzs
+         yY3LJZqv6tZFZkLY8GnPPy+4j4TiV1OIrUFv8zaMkZNSpyy7kGLfaKjgyxqAjoY86wCz
+         EVVx2yJEYwR7+mo+0cGfbYTvO8qH9uz7p4fUnTlhkqCAzF8RqSsgc4OOjL2uSMEwTwth
+         cogA==
+X-Gm-Message-State: AGi0Puaky9Gfpz2yAaN30sTJh2G3w37DbqzxgmczxKOjkeL8re1Dzqle
+        9eucCg8FOCtF5fX2yibx+IJeKClTI5tC3rf/I6nwVg==
+X-Google-Smtp-Source: APiQypJRjLXomMpn1XVcFOW8Zv8LVVjTey/4sLxDYEh8dNjtfEU+SBnFiqdM5Xz7Nz2pyENEky70nKqDHLseidxPiUk=
+X-Received: by 2002:a50:fb92:: with SMTP id e18mr7868188edq.177.1588786374285;
+ Wed, 06 May 2020 10:32:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAHp75Vdi+ZYpQPHgoREQ6LTaUHTPmNkR7ULZaVNTJr7Bvh-q9Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20200506172158.218366-1-bgeffon@google.com> <CAEXW_YQ+iC9tot+HbHARiXz_o_KrDU7LjvuyPkj46DVfGvSOng@mail.gmail.com>
+In-Reply-To: <CAEXW_YQ+iC9tot+HbHARiXz_o_KrDU7LjvuyPkj46DVfGvSOng@mail.gmail.com>
+From:   Brian Geffon <bgeffon@google.com>
+Date:   Wed, 6 May 2020 10:32:18 -0700
+Message-ID: <CADyq12xRzr53hM7_ejEG-O8kDF5XBdrLM7yWVpbByd8pOWsTrA@mail.gmail.com>
+Subject: Re: [PATCH] userfaultfd: fix remap event with MREMAP_DONTUNMAP.
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Sonny Rao <sonnyrao@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+It hasn't landed in a stable kernel yet, 5.7 is rc4 so I don't think
+it needs to cc stable, right?
 
-Le 06/05/2020 à 12:38, Andy Shevchenko a écrit :
-> On Wed, May 6, 2020 at 6:55 AM Christophe JAILLET
-> <christophe.jaillet@wanadoo.fr> wrote:
->> This looks really unusual to have a 'get_device()' hidden in a 'dev_err()'
->> call.
->> Remove it.
->>
->> While at it add a missing \n at the end of the message.
->>
-> It should have Fixes tag because it is a quite an issue (get_device()
-> breaks reference counting with all problems we may expect).
+Andrew, I'd be happy to mail a new patch if necessary, otherwise here
+is the fixes:
 
-Agreed and I usually do, but here, I've lost track when this driver has 
-gone out of staging.
+Fixes: e346b38 ("mm/mremap: add MREMAP_DONTUNMAP to mremap()")
 
-Based on:
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/log/drivers/iio/accel/sca3000.c
-The issue was already there on 2016/10/23, but when I try to go one step 
-further:
+Brian
 
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/drivers/staging/iio/accel/sca3000.c?id=2ccf61442ff142d2dde7c47471c2798a4d78b0ad
-^^^^         ^^^^^^^
-works but if I try to see the log for that:
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/log/drivers/staging/iio/accel/sca3000.c
-^^^         ^^^^^^^
-is empty.
 
-Most of the time, when I do it like that it works just fine, but not on 
-this file.
-
-Any other way to navigate in history of moved file would be appreciated.
-
-CJ
-
+On Wed, May 6, 2020 at 10:28 AM Joel Fernandes <joel@joelfernandes.org> wrote:
 >
->> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->> ---
->> This patch is purely speculative.
->> I've looked a bit arround and see no point for this get_device() but other
->> eyes are welcomed :)
->> ---
->>   drivers/iio/accel/sca3000.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/iio/accel/sca3000.c b/drivers/iio/accel/sca3000.c
->> index 66d768d971e1..6e429072e44a 100644
->> --- a/drivers/iio/accel/sca3000.c
->> +++ b/drivers/iio/accel/sca3000.c
->> @@ -980,7 +980,7 @@ static int sca3000_read_data(struct sca3000_state *st,
->>          st->tx[0] = SCA3000_READ_REG(reg_address_high);
->>          ret = spi_sync_transfer(st->us, xfer, ARRAY_SIZE(xfer));
->>          if (ret) {
->> -               dev_err(get_device(&st->us->dev), "problem reading register");
->> +               dev_err(&st->us->dev, "problem reading register\n");
->>                  return ret;
->>          }
->>
->> --
->> 2.25.1
->>
+> On Wed, May 6, 2020 at 1:22 PM Brian Geffon <bgeffon@google.com> wrote:
+> >
+> > A user is not required to set a new address when using
+> > MREMAP_DONTUNMAP as it can be used without MREMAP_FIXED.
+> > When doing so the remap event will use new_addr which may not
+> > have been set and we didn't propagate it back other then
+> > in the return value of remap_to.
+> >
+> > Because ret is always the new address it's probably more
+> > correct to use it rather than new_addr on the remap_event_complete
+> > call, and it resolves this bug.
+> >
 >
+> Does it need Fixes: tag, and CC to stable? Going into a stable kernel
+> will mean the stable kernel merges into ChromeOS also gets it.
+>
+> thanks,
+>
+>  - Joel
+>
+> > Signed-off-by: Brian Geffon <bgeffon@google.com>
+> > ---
+> >  mm/mremap.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/mm/mremap.c b/mm/mremap.c
+> > index c881abeba0bf..6aa6ea605068 100644
+> > --- a/mm/mremap.c
+> > +++ b/mm/mremap.c
+> > @@ -794,7 +794,7 @@ SYSCALL_DEFINE5(mremap, unsigned long, addr, unsigned long, old_len,
+> >         if (locked && new_len > old_len)
+> >                 mm_populate(new_addr + old_len, new_len - old_len);
+> >         userfaultfd_unmap_complete(mm, &uf_unmap_early);
+> > -       mremap_userfaultfd_complete(&uf, addr, new_addr, old_len);
+> > +       mremap_userfaultfd_complete(&uf, addr, ret, old_len);
+> >         userfaultfd_unmap_complete(mm, &uf_unmap);
+> >         return ret;
+> >  }
+> > --
+> > 2.26.2.526.g744177e7f7-goog
+> >
