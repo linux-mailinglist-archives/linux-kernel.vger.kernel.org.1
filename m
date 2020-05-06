@@ -2,121 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A56E1C6FFC
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 14:09:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C94D1C7015
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 14:14:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728049AbgEFMI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 08:08:56 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:35766 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726516AbgEFMI4 (ORCPT
+        id S1727971AbgEFMOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 08:14:21 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:40916 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727792AbgEFMOV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 08:08:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588766934;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hAmivG5aDvvl7e+GYdcGOegOdLibFaOeKZvY0VQjVvw=;
-        b=Plbwo/PE2+V4u6YvfBr1uAWPQoOVp/i7AUUJYYmDt0zGGJR/7kVy7fYyo51ZH1gwt6RINM
-        b9uMqjIpz35Ll6Z3VqSFpbYK1YVh2VrfMVDsTwS7EdYQLptV8nfRe856ViWAxOs66iESCb
-        5wJ549L9/cs56FSDsmvhJr8l6ipJQFU=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-17-dim5yPweMjihhTdXp0GEZQ-1; Wed, 06 May 2020 08:08:53 -0400
-X-MC-Unique: dim5yPweMjihhTdXp0GEZQ-1
-Received: by mail-wr1-f70.google.com with SMTP id h12so1197160wrr.19
-        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 05:08:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=hAmivG5aDvvl7e+GYdcGOegOdLibFaOeKZvY0VQjVvw=;
-        b=kWNyo9bUO9X52nADJPU2uQTnAKpI2XQpRSIZpa3arzBYkVCPQdw7hP+u+iXAxFRThf
-         PCgNi768jC73OqT8bDW6uR0J7BGtcbZesQ5QIvv5BpJt1e/D4k/q+8kptrMtGAU6S7Yn
-         EEW1GSMV0M+GSD/LzTzWQ5tsRA5hsh/H6ceYPsXL6/anmYdHy2M6rnpedgDV3ufrzJqa
-         zLHhlNTbuB2poTAnJxPYsSspTOWbfnsA1jef3djIkZSTziSbW+Ygu82HMDwVjejDsu8+
-         LhONXAFWY8w0ZPZFZES2b6jqQ/sixoBWDgKmNIdgs8yv2aAvU6ghB8wO/3pnv4dwhsJS
-         h1fw==
-X-Gm-Message-State: AGi0PuaPrg4y32L/DbIeuwpuo3xEQGHJpVXsA9Fuwg0GXHrkIMEytcI1
-        CYVg141AbgWpxPQLexGU00g624mbbxzwYtollEhQtQEJZxZ8mZaIq37TNykPZL8KOSH3az4f4Tl
-        N1DJwAk9xS3BINvuSzkyHPzuj
-X-Received: by 2002:a1c:f416:: with SMTP id z22mr4204002wma.32.1588766931875;
-        Wed, 06 May 2020 05:08:51 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJBsIQXXLBh7+polD0/FRHAo1jIr0FLeGcQ49ZR50oVFkk3bBSfh+noTe2EUmUQ7wGzC4gACg==
-X-Received: by 2002:a1c:f416:: with SMTP id z22mr4203979wma.32.1588766931683;
-        Wed, 06 May 2020 05:08:51 -0700 (PDT)
-Received: from redhat.com (bzq-109-66-7-121.red.bezeqint.net. [109.66.7.121])
-        by smtp.gmail.com with ESMTPSA id s17sm2634468wmc.48.2020.05.06.05.08.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 May 2020 05:08:51 -0700 (PDT)
-Date:   Wed, 6 May 2020 08:08:48 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: [PATCH net-next 2/2] virtio-net: fix the XDP truesize
- calculation for mergeable buffers
-Message-ID: <20200506075807-mutt-send-email-mst@kernel.org>
-References: <20200506061633.16327-1-jasowang@redhat.com>
- <20200506061633.16327-2-jasowang@redhat.com>
- <20200506033259-mutt-send-email-mst@kernel.org>
- <789fc6e6-9667-a609-c777-a9b1fed72f41@redhat.com>
+        Wed, 6 May 2020 08:14:21 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 046C7ijV046993;
+        Wed, 6 May 2020 12:13:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=sE1J9KpsdkE2duem5k+nnW/gLGRolEnst8TqxIIihT8=;
+ b=mRTseJNwHVILox0U4mcRLBHsYojoEcuuMB/0KHmXmrSmEP8vt5tKY8NOhf5aNyFvyMbv
+ T6GXB2xXeMVngRrV2e3SlYaOuHs2rA5ub0ZVp5H3Opka0A4LCy/2ASH7Ed5Zb9SrGVgF
+ LlvI3dbUn+1AlXLHo2/r8KNt99JDAMhHhaM3r/6SrDv1gTJiIlbRffFrFk4Oq3wdPMQh
+ pDRrqEhMXb1hKnk6ZLo9S3K6IkSqB4nHlct6k8z5gLKH7lmDv74QQCcI8uF7KdRRPHdl
+ kefKN7SULLsNNEI0TXul29UnCNzmWHMXCTAC3osWNG3VJhjXt27rNkC+Pl9jmjeJNs7P Aw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 30s1gn9sqj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 06 May 2020 12:13:10 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 046C7RS8061597;
+        Wed, 6 May 2020 12:13:09 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 30sjnj7ecr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 06 May 2020 12:13:09 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 046CD2gG021127;
+        Wed, 6 May 2020 12:13:05 GMT
+Received: from linux-1.home (/10.175.10.30)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 06 May 2020 05:13:00 -0700
+Subject: Re: [patch V4 part 1 02/36] x86/hw_breakpoint: Prevent data
+ breakpoints on cpu_entry_area
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+References: <20200505131602.633487962@linutronix.de>
+ <20200505134058.272448010@linutronix.de>
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+Message-ID: <fb9f513c-786c-af15-693d-3d76eb74fc35@oracle.com>
+Date:   Wed, 6 May 2020 14:11:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <789fc6e6-9667-a609-c777-a9b1fed72f41@redhat.com>
+In-Reply-To: <20200505134058.272448010@linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9612 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 adultscore=0 phishscore=0
+ mlxlogscore=999 bulkscore=0 malwarescore=0 spamscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005060096
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9612 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 mlxscore=0
+ spamscore=0 clxscore=1011 priorityscore=1501 bulkscore=0 phishscore=0
+ impostorscore=0 malwarescore=0 lowpriorityscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005060096
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 06, 2020 at 04:21:15PM +0800, Jason Wang wrote:
+
+On 5/5/20 3:16 PM, Thomas Gleixner wrote:
+> From: Andy Lutomirski <luto@kernel.org>
 > 
-> On 2020/5/6 下午3:37, Michael S. Tsirkin wrote:
-> > On Wed, May 06, 2020 at 02:16:33PM +0800, Jason Wang wrote:
-> > > We should not exclude headroom and tailroom when XDP is set. So this
-> > > patch fixes this by initializing the truesize from PAGE_SIZE when XDP
-> > > is set.
-> > > 
-> > > Cc: Jesper Dangaard Brouer<brouer@redhat.com>
-> > > Signed-off-by: Jason Wang<jasowang@redhat.com>
-> > Seems too aggressive, we do not use up the whole page for the size.
-> > 
-> > 
-> > 
+> A data breakpoint near the top of an IST stack will cause unresoverable
+
+typo: unresoverable -> unrecoverable
+
+> recursion.  A data breakpoint on the GDT, IDT, or TSS is terrifying.
+> Prevent either of these from happening.
 > 
-> For XDP yes, we do:
+> Co-developed-by: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Andy Lutomirski <luto@kernel.org>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>   arch/x86/kernel/hw_breakpoint.c |   25 +++++++++++++++++++++++++
+>   1 file changed, 25 insertions(+)
+
+Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
+
+alex.
+
+> --- a/arch/x86/kernel/hw_breakpoint.c
+> +++ b/arch/x86/kernel/hw_breakpoint.c
+> @@ -227,10 +227,35 @@ int arch_check_bp_in_kernelspace(struct
+>   	return (va >= TASK_SIZE_MAX) || ((va + len - 1) >= TASK_SIZE_MAX);
+>   }
+>   
+> +/*
+> + * Checks whether the range from addr to end, inclusive, overlaps the CPU
+> + * entry area range.
+> + */
+> +static inline bool within_cpu_entry_area(unsigned long addr, unsigned long end)
+> +{
+> +	return end >= CPU_ENTRY_AREA_PER_CPU &&
+> +	       addr < (CPU_ENTRY_AREA_PER_CPU + CPU_ENTRY_AREA_TOTAL_SIZE);
+> +}
+> +
+>   static int arch_build_bp_info(struct perf_event *bp,
+>   			      const struct perf_event_attr *attr,
+>   			      struct arch_hw_breakpoint *hw)
+>   {
+> +	unsigned long bp_end;
+> +
+> +	bp_end = attr->bp_addr + attr->bp_len - 1;
+> +	if (bp_end < attr->bp_addr)
+> +		return -EINVAL;
+> +
+> +	/*
+> +	 * Prevent any breakpoint of any type that overlaps the
+> +	 * cpu_entry_area.  This protects the IST stacks and also
+> +	 * reduces the chance that we ever find out what happens if
+> +	 * there's a data breakpoint on the GDT, IDT, or TSS.
+> +	 */
+> +	if (within_cpu_entry_area(attr->bp_addr, bp_end))
+> +		return -EINVAL;
+> +
+>   	hw->address = attr->bp_addr;
+>   	hw->mask = 0;
+>   
 > 
-> static unsigned int get_mergeable_buf_len(struct receive_queue *rq,
->                       struct ewma_pkt_len *avg_pkt_len,
->                       unsigned int room)
-> {
->     const size_t hdr_len = sizeof(struct virtio_net_hdr_mrg_rxbuf);
->     unsigned int len;
-> 
->     if (room)
->         return PAGE_SIZE - room;
-> 
-> ...
-> 
-> Thanks
-
-Hmm. But that's only for new buffers. Buffers that were outstanding
-before xdp was attached don't use the whole page, do they?
-
-
-
-
-Also, with TCP smallqueues blocking the queue like that might be a problem.
-Could you try and check performance impact of this?
-I looked at what other drivers do and I see they tend to copy the skb
-in XDP_PASS case. ATM we don't normally - but should we?
-
--- 
-MST
-
