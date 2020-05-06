@@ -2,84 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E65C1C7053
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 14:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3E7D1C705A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 14:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728173AbgEFMcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 08:32:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59938 "EHLO
+        id S1728219AbgEFMdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 08:33:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728093AbgEFMcl (ORCPT
+        by vger.kernel.org with ESMTP id S1725985AbgEFMdb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 08:32:41 -0400
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8803C061BD3
-        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 05:32:40 -0700 (PDT)
-Received: from ramsan ([IPv6:2a02:1810:ac12:ed60:6572:4a1f:d283:9ae8])
-        by andre.telenet-ops.be with bizsmtp
-        id bQYe2200Y3ZRV0X01QYeog; Wed, 06 May 2020 14:32:38 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan with esmtp (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1jWJE6-0000iD-GT; Wed, 06 May 2020 14:32:38 +0200
-Received: from geert by rox.of.borg with local (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1jWJE6-0001xC-FC; Wed, 06 May 2020 14:32:38 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
+        Wed, 6 May 2020 08:33:31 -0400
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E881C061A0F
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 05:33:31 -0700 (PDT)
+Received: by mail-vs1-xe43.google.com with SMTP id s11so862437vsm.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 05:33:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=r/H9a8fdUQMIeGLl1QzKMQEwsBfgzt/5wa51opjojDM=;
+        b=Al2hllyDJrpnAAgUMK4kmI3Q4IvOqQLe0OVjzxqXCK2z1jqaLkiyJi5DX4ENlFPf0W
+         zq3dCkbZ6StGLbPMWGN+pIeDc6ihuyLGPfl6IoTQYnyEGgNWapWnCjcQFlopRjCwChlR
+         IFqp5yy9xOiagdbFvp0nSlhH/Co0b5MutNTiMGGL3JrtpH8deu748hBqo6sjdzUYTw1/
+         JfRCay5/xUnGMlLQjoCnvI9Tlst1bNTeXqQ2GvhmCUOtz9WH1W3ZnCe6G9wZNli7v6JL
+         wn4mGFaQ2HLDiTV9IzsjMxEJPc13Bhm292vOZNkhKSUkyMP/Xx+1eZ5TKD+A7C4oYoKd
+         3CFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=r/H9a8fdUQMIeGLl1QzKMQEwsBfgzt/5wa51opjojDM=;
+        b=GgheousXal7PFhizecMvESq6dKdq9SHrXHK2GuNwFwFin1fM5qD/t8owuUSJPtchDz
+         q3gWazgZpgpKXQLcVfagxJiDkyyIVFnFj92eppkWARrKuQQnH6PPgNgJRIq3prg2r2xT
+         5sH5HSXpFUu0eRDwAOiezu6dPT5FroMBADZigRPc/b8qH8wYQIVgKpQb1WxQtEPQOQVP
+         WntlUdzq7qaYOMF9qlAn6BdC+7x0krDHM2x74/+yuLLUCEgpRUk8fqxM8jTzVgg39JaO
+         4WU0+56+vAH6s1C1jzpM8NXNNa1yAbHZp9Gt7u6Sb6VE7/xepDejCjUaJTlj8qeu37YL
+         90VA==
+X-Gm-Message-State: AGi0PuaGoZ9um00Jcx5Dod8XJUe0IliBWeuyM3bd1sQpsHGW78fqgumt
+        +XERhKonMe3XqPC8eNqNFEY9ohjYy+L1LFHC+w1Z7A==
+X-Google-Smtp-Source: APiQypIveNOAp+c/Cus1Zn/SarzWZcN4REWKyhbpRPZVcAdvDS7J0T6Lh9t3nKf/aERxl5/aNTXybAaSlEHODK+/ECQ=
+X-Received: by 2002:a05:6102:2e4:: with SMTP id j4mr7021578vsj.182.1588768410246;
+ Wed, 06 May 2020 05:33:30 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200504202243.5476-1-sibis@codeaurora.org> <20200504202243.5476-2-sibis@codeaurora.org>
+In-Reply-To: <20200504202243.5476-2-sibis@codeaurora.org>
+From:   Amit Kucheria <amit.kucheria@linaro.org>
+Date:   Wed, 6 May 2020 18:02:54 +0530
+Message-ID: <CAHLCerMMxQHK2FbtfyLAzU5Vi0HTM6sR5vdb1G_2bDo4m1KbCw@mail.gmail.com>
+Subject: Re: [PATCH v4 01/12] arm64: dts: qcom: sdm845: Add SoC compatible to MTP
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Nishanth Menon <nm@ti.com>, Andy Gross <agross@kernel.org>,
+        David Brown <david.brown@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Joseph Lo <josephl@nvidia.com>
-Cc:     linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH 2/2] memory: tegra: Drop <linux/clk-provider.h>
-Date:   Wed,  6 May 2020 14:32:36 +0200
-Message-Id: <20200506123236.7463-3-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200506123236.7463-1-geert+renesas@glider.be>
-References: <20200506123236.7463-1-geert+renesas@glider.be>
+        Mark Rutland <mark.rutland@arm.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Tegra EMC scaling support code is not a clock provider, but merely a
-clock consumer, and thus does not need to include
-<linux/clk-provider.h>.
+On Tue, May 5, 2020 at 1:54 AM Sibi Sankar <sibis@codeaurora.org> wrote:
+>
+> Add missing SoC compatible to SDM845 MTP board file.
+>
+> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
 
-Fixes: ec37a9a17afbfad5 ("memory: tegra: Add EMC scaling support code for Tegra210")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- drivers/memory/tegra/tegra210-emc-core.c | 1 -
- drivers/memory/tegra/tegra210-emc.h      | 1 -
- 2 files changed, 2 deletions(-)
+Reviewed-by: Amit Kucheria <amit.kucheria@linaro.org>
 
-diff --git a/drivers/memory/tegra/tegra210-emc-core.c b/drivers/memory/tegra/tegra210-emc-core.c
-index d64ffe27c2457c9e..cdd663ba4733d8ff 100644
---- a/drivers/memory/tegra/tegra210-emc-core.c
-+++ b/drivers/memory/tegra/tegra210-emc-core.c
-@@ -6,7 +6,6 @@
- #include <linux/bitfield.h>
- #include <linux/clk.h>
- #include <linux/clk/tegra.h>
--#include <linux/clk-provider.h>
- #include <linux/debugfs.h>
- #include <linux/delay.h>
- #include <linux/kernel.h>
-diff --git a/drivers/memory/tegra/tegra210-emc.h b/drivers/memory/tegra/tegra210-emc.h
-index 63b3d0a790f1a908..8988bcf1529072a7 100644
---- a/drivers/memory/tegra/tegra210-emc.h
-+++ b/drivers/memory/tegra/tegra210-emc.h
-@@ -7,7 +7,6 @@
- #define TEGRA210_EMC_H
- 
- #include <linux/clk.h>
--#include <linux/clk-provider.h>
- #include <linux/clk/tegra.h>
- #include <linux/io.h>
- #include <linux/platform_device.h>
--- 
-2.17.1
 
+> ---
+>
+> v4:
+>  * Picked up R-b from Matthias
+>
+>  arch/arm64/boot/dts/qcom/sdm845-mtp.dts | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sdm845-mtp.dts b/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
+> index 023e8b04c7f65..1372fe8601f50 100644
+> --- a/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
+> +++ b/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
+> @@ -13,7 +13,7 @@
+>
+>  / {
+>         model = "Qualcomm Technologies, Inc. SDM845 MTP";
+> -       compatible = "qcom,sdm845-mtp";
+> +       compatible = "qcom,sdm845-mtp", "qcom,sdm845";
+>
+>         aliases {
+>                 serial0 = &uart9;
+> --
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
