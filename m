@@ -2,71 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93D411C7BF3
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 23:05:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 066C91C7BF6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 23:10:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729830AbgEFVFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 17:05:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55848 "EHLO
+        id S1729391AbgEFVKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 17:10:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729615AbgEFVFw (ORCPT
+        by vger.kernel.org with ESMTP id S1728621AbgEFVKE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 17:05:52 -0400
+        Wed, 6 May 2020 17:10:04 -0400
 Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3585BC061A10
-        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 14:05:52 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id z6so4341545wml.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 14:05:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C99F2C061A0F;
+        Wed,  6 May 2020 14:10:03 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id x25so4078821wmc.0;
+        Wed, 06 May 2020 14:10:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=tj8yRsZqwIR2rd0ST6uRzCJiteMNac2JuB8CqQpzKzo=;
-        b=btFUsaZUI7aHMH1+7nfck5r1EhdwLHN6aX4I1EBStRsciW/X2Xx5yD9lPG21hYqylD
-         MMOyQjgUy7ZTQ+t8Zr348GJyEJj28+eZlLrYmHQQEasvLLZXw4WMfWFeG0m2q/s0z1/t
-         Dllt9GY61RVjV/YS/V9epJfpyEY/S4nk3bchSevQ6yYf/rXdCywkj5keeCGlDeHXUbVP
-         Ej+ELT4FbeUeg6hFzHEnJMbubnJrDO/wGoJjPqHfL49fcoWwVGQQisRMkh/O/dLeUsAV
-         E/11EKyedswlFN17tGQRD7cEfOuspMZPuzHaeer4q3vzg1CsLVLYMwASsb8HY4+w/hrz
-         lNnQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Y3rbQKHu7o2im/e5E3RSPiMp5YHJ3tSxbniLGmCUMFg=;
+        b=Hn0gc1Yj3U4MfSjnTPtlQqD91CNqRVHtTeIYjJJtg1dNUAaviMdzem5K2AbzXiRltb
+         67fpDh0gFjfWVaPMuFIjd2fCrb5sieAgs3Kb0QemO+p6FRXeQs7Wp7s3dG19Nd7/i0f3
+         5patmQKG37+XwjnpLHYlyaQGNim4vMfjld9njGuaZKM/33Kbvqe1seY0JXRFw3YYEsvY
+         5WLAjuaBz3apwNTv/atOpnR4o8BQOt1rV3xaviWp0lTSS2zUzd5j0MVTvubhLEkpremD
+         zXP0Ptc3SV+snKil6G46sEgc+iqYLSTQHxdYEESyeSjov5U2M5Qi6c8zErDnmH+hexR0
+         0eGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=tj8yRsZqwIR2rd0ST6uRzCJiteMNac2JuB8CqQpzKzo=;
-        b=sJEYQDoL2jCs+5uMds7sL/O2UGUXZ2vGqo6asEUYSVzHqBnsmaZKhaQJu+rUoe0kA7
-         2xxtgp3+DWfqarIeONTDlrgxpHsXlryuY4vgCkrBBhWK4gEp67WtpWpC8/mZJAPSbq2F
-         D4iw0LTOrvCGGN73/utgY/2jp5yu2WH1p1VYU8gIO/lXT5QLIrKVYkxXtWFUcj/kU6nQ
-         fsBTJbhTOYKv7lIjmPHlZdel9je67StnQ6aEdbAD8ucnC1yT9TYbkg/X7It0iNfHeCu/
-         qrpeEOu3T0MSaqJ1QIQiKHj+O+RN3BJ9YArPXP3011w2CexgWQ/haDinAt+YAQHX/vr8
-         cQLg==
-X-Gm-Message-State: AGi0PuaL+RdBEtFFTt5oM+zexNKgC+D0Kj/Hp0iDcojcCefoKBGFQjCL
-        wfYHVPldRvpmY28XIFWOgPfSKGppCYZ7Faqrw4M=
-X-Google-Smtp-Source: APiQypLjJVj6G6/1nXQqO75zyO6Hruf6db6OmjjSMcdI+UxM0tcrdfmG3hqJf9eQZ8oC71iCvSj0tN57OS/MKeHhBsc=
-X-Received: by 2002:a1c:bd54:: with SMTP id n81mr6236181wmf.141.1588799150881;
- Wed, 06 May 2020 14:05:50 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Y3rbQKHu7o2im/e5E3RSPiMp5YHJ3tSxbniLGmCUMFg=;
+        b=DS5gj9l4/Ez8gF5bI4xd5cYRsSYtZqDiC4//R2bwKAgojworZS3bOr1gsvDz2gcDHU
+         i5l+RjsIjUvQg79d9ejG5HvH9Kz6dVnNuEm450iU45upFlVUI7t0qtENPbItGSQNTEHR
+         7m4KtvtqVaAsZcmPHqs4YClgJKZQh8FTEnov2aG8LcpRHQ/mfUdFihqhWTcbMQGO7Dxb
+         EoOnsVAvHzjiu/o56wOET5A+CcXmEKNepRqTzaKehWGRWuahZuxEXlFExqDWIc3jmtmi
+         FUOJcUZ6v5LUsFmqyzo5i9sgXECoDz2F07NCXLKaiAu6wuTZ8wrxU62CRGxKVOp0tVRV
+         X/PA==
+X-Gm-Message-State: AGi0PuaycWuTf1saPoPvrbzme8FTJqaO+KYn1+ONEoVF55+wYaByBQGg
+        eO0/959LypYAzGRi304FOI8=
+X-Google-Smtp-Source: APiQypIqMBN1Bt9aSmemGVfbQ5HnoKxiEkTWnPreIzJg3/Rmkj4e86n21tqDW0PdqQL2Pwmm8fS8xw==
+X-Received: by 2002:a1c:2392:: with SMTP id j140mr6364478wmj.136.1588799402510;
+        Wed, 06 May 2020 14:10:02 -0700 (PDT)
+Received: from localhost.localdomain (abag125.neoplus.adsl.tpnet.pl. [83.6.170.125])
+        by smtp.googlemail.com with ESMTPSA id b191sm5135056wmd.39.2020.05.06.14.10.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 May 2020 14:10:01 -0700 (PDT)
+From:   Konrad Dybcio <konradybcio@gmail.com>
+Cc:     Konrad Dybcio <konradybcio@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [v4 PATCH 0/2] Add support for ASUS Z00T TM5P5 NT35596 panel
+Date:   Wed,  6 May 2020 23:09:54 +0200
+Message-Id: <20200506210957.344590-1-konradybcio@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Received: by 2002:a05:600c:ce:0:0:0:0 with HTTP; Wed, 6 May 2020 14:05:50
- -0700 (PDT)
-Reply-To: mrshermuycalle44@gmail.com
-From:   Sra Hermuy Calle <madamayvatomas05@gmail.com>
-Date:   Wed, 6 May 2020 21:05:50 +0000
-Message-ID: <CAAONuMKcoPg-3XWfwHY8uLZT=uvWGoj6k-J+swFfa25Ec3_KVQ@mail.gmail.com>
-Subject: DEAR BELOVED
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+changes since v3:
+- fix dt-bindings issue
+
+changes since v2:
+- fix Kconfig indentation
+
+changes since v1:
+- make `backlight_properties props` constant
+- a couple of line breaks
+- change name and compatible to reflect ASUS being the vendor
+- remove a redundant TODO
+
+Konrad Dybcio (2):
+  drivers: drm: panel: Add ASUS TM5P5 NT35596 panel driver
+  dt-bindings: display: Document ASUS Z00T TM5P5 NT35596 panel
+    compatible
+
+ .../panel/asus,z00t-tm5p5-nt35596.yaml        |  56 +++
+ drivers/gpu/drm/panel/Kconfig                 |  10 +
+ drivers/gpu/drm/panel/Makefile                |   1 +
+ .../drm/panel/panel-asus-z00t-tm5p5-n35596.c  | 367 ++++++++++++++++++
+ 4 files changed, 434 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/panel/asus,z00t-tm5p5-nt35596.yaml
+ create mode 100644 drivers/gpu/drm/panel/panel-asus-z00t-tm5p5-n35596.c
+
 -- 
-Dear friend,
+2.26.2
 
-Sorry to invade into your privacy through this medieum. I have bad health
-condition and i'm just looking for someone trustworthy to invest on a
-charity work for me.
-If you're interested, kindly reply back as soon as possible for
-further explanation.
-
-Thanks for your collaboration.
-
-Mrs. Hermuy Calle
