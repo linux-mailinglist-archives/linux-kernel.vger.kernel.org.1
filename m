@@ -2,95 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B7E41C742D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:21:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 103011C746F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:25:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729389AbgEFPVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 11:21:34 -0400
-Received: from foss.arm.com ([217.140.110.172]:38946 "EHLO foss.arm.com"
+        id S1729829AbgEFPYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 11:24:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41646 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729264AbgEFPVd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 11:21:33 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F2E2CD6E;
-        Wed,  6 May 2020 08:21:32 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6BA333F68F;
-        Wed,  6 May 2020 08:21:31 -0700 (PDT)
-Date:   Wed, 6 May 2020 16:21:26 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     Wei Hu <weh@microsoft.com>, KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Dexuan Cui <decui@microsoft.com>
-Subject: Re: [PATCH v2 1/2] PCI: hv: Fix the PCI HyperV probe failure path to
- release resource properly
-Message-ID: <20200506152126.GA2911@e121166-lin.cambridge.arm.com>
-References: <20200501053617.24689-1-weh@microsoft.com>
- <20200505150315.GA16228@e121166-lin.cambridge.arm.com>
- <SG2P153MB02136EA9764D340F3D81DF2DBBA40@SG2P153MB0213.APCP153.PROD.OUTLOOK.COM>
- <20200506110930.GA31068@e121166-lin.cambridge.arm.com>
- <SG2P153MB0213216D3C150AA4758FCBB8BBA40@SG2P153MB0213.APCP153.PROD.OUTLOOK.COM>
- <MW2PR2101MB1052F033623F91A0FF991DE4D7A40@MW2PR2101MB1052.namprd21.prod.outlook.com>
+        id S1729165AbgEFPYR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 11:24:17 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3E00421775;
+        Wed,  6 May 2020 15:24:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588778656;
+        bh=J2eKfGcJ625lz3TJzXVprS9ZeeY4NXg6IrpB4wOTLdI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=a4NLrOu5pVhqjsPWUmdfSjgnEEbkkh/feXRcxSceVedaV/x9NMGWE3rOQJs2CvYjl
+         xgtmQ9iODBIEZn++dCS5kJk+/hM1GFFkt57OJ8onBU1m0Wb+F1AwoGt2eL6GmUHeKp
+         6gupCh/uHgKS4sSEQS/qxNI4WvSU4CFIXZJfo1rc=
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+        Clark Williams <williams@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Song Liu <songliubraving@fb.com>
+Subject: [PATCH 23/91] perf record: Move sb_evlist to 'struct record'
+Date:   Wed,  6 May 2020 12:21:26 -0300
+Message-Id: <20200506152234.21977-24-acme@kernel.org>
+X-Mailer: git-send-email 2.21.1
+In-Reply-To: <20200506152234.21977-1-acme@kernel.org>
+References: <20200506152234.21977-1-acme@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MW2PR2101MB1052F033623F91A0FF991DE4D7A40@MW2PR2101MB1052.namprd21.prod.outlook.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 06, 2020 at 02:55:17PM +0000, Michael Kelley wrote:
+From: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-[...]
+Where state related to a 'perf record' session is grouped.
 
-> > Hv_pci_bus_exit() calls hv_send_resources_released() to release all child resources.
-> > These child resources were allocated in hv_send_resources_allocated().
-> > Hv_send_resources_allocated() could fail in the middle, leaving some child resources
-> > allocated and rest not. Without adding this variable to record the highest slot number that
-> > resource has been successfully allocated, calling hv_send_resources_released() could
-> > cause spurious resource release requests being sent to hypervisor.
-> > 
-> > This had been fine since hv_pci_bus_exit() was never called in error path before this patch
-> > was
-> > introduced. To add this call to clean the pci state in the error path, we need to know the
-> > starting
-> > point in child device that resource has not been allocated. Hence this variable
-> > is used in hv_send_resources_allocated() to record this point and in
-> > hv_send_resource_released() to start deallocating child resources.
-> > 
-> > I can add to the commit log if you are fine with this explanation.
-> > 
-> 
-> FWIW, I think of this patch as follows:
-> 
-> In some error cases in hv_pci_probe(), allocated resources are not
-> freed.  Fix this by adding a field to keep track of the high water mark
-> for slots that have resources allocated to them.  In case of an error, this
-> high water mark is used to know which slots have resources that
-> must be released.  Since slots are numbered starting with zero, a
-> value of -1 indicates no slots have been allocated resources.  There
-> may be unused slots in the range between slot 0 and the high
-> water mark slot, but these slots are already ignored by the existing code
-> in the allocate and release loops with the call to get_pcichild_wslot().
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Song Liu <songliubraving@fb.com>
+Link: http://lore.kernel.org/lkml/20200429131106.27974-2-acme@kernel.org
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/perf/builtin-record.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-That's much clearer now - please add these bits of info to the commit
-log, it is essential that developers can find an explanation for a
-change like this one there IMO.
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index bf3a6f7df463..a6d887d97ceb 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -87,6 +87,7 @@ struct record {
+ 	struct auxtrace_record	*itr;
+ 	struct evlist	*evlist;
+ 	struct perf_session	*session;
++	struct evlist		*sb_evlist;
+ 	int			realtime_prio;
+ 	bool			no_buildid;
+ 	bool			no_buildid_set;
+@@ -1447,7 +1448,6 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ 	struct perf_data *data = &rec->data;
+ 	struct perf_session *session;
+ 	bool disabled = false, draining = false;
+-	struct evlist *sb_evlist = NULL;
+ 	int fd;
+ 	float ratio = 0;
+ 
+@@ -1582,9 +1582,9 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ 	}
+ 
+ 	if (!opts->no_bpf_event)
+-		bpf_event__add_sb_event(&sb_evlist, &session->header.env);
++		bpf_event__add_sb_event(&rec->sb_evlist, &session->header.env);
+ 
+-	if (perf_evlist__start_sb_thread(sb_evlist, &rec->opts.target)) {
++	if (perf_evlist__start_sb_thread(rec->sb_evlist, &rec->opts.target)) {
+ 		pr_debug("Couldn't start the BPF side band thread:\nBPF programs starting from now on won't be annotatable\n");
+ 		opts->no_bpf_event = true;
+ 	}
+@@ -1858,7 +1858,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ 	perf_session__delete(session);
+ 
+ 	if (!opts->no_bpf_event)
+-		perf_evlist__stop_sb_thread(sb_evlist);
++		perf_evlist__stop_sb_thread(rec->sb_evlist);
+ 	return status;
+ }
+ 
+-- 
+2.21.1
 
-Overall the code changes are fine, I am not a big fan of the (void)
-cast (I don't think error codes should be ignored) but it is acceptable,
-in this context.
-
-Thank you for taking some time to review the code together.
-
-Lorenzo
