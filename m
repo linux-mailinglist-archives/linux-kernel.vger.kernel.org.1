@@ -2,77 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEAC11C7884
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 19:47:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACEC81C7890
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 19:49:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729598AbgEFRrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 13:47:52 -0400
-Received: from verein.lst.de ([213.95.11.211]:42252 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728566AbgEFRrv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 13:47:51 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id C3AAB68C7B; Wed,  6 May 2020 19:47:47 +0200 (CEST)
-Date:   Wed, 6 May 2020 19:47:47 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-parisc@vger.kernel.org,
-        linux-um <linux-um@lists.infradead.org>,
-        Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 08/15] maccess: rename strnlen_unsafe_user to
- strnlen_user_unsafe
-Message-ID: <20200506174747.GA7549@lst.de>
-References: <20200506062223.30032-1-hch@lst.de> <20200506062223.30032-9-hch@lst.de> <CAHk-=wj3T6u_kj8r9f3aGXCjuyN210_gJC=AXPFm9=wL-dGALA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wj3T6u_kj8r9f3aGXCjuyN210_gJC=AXPFm9=wL-dGALA@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+        id S1730096AbgEFRtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 13:49:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729681AbgEFRtG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 13:49:06 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F40E4C061A10
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 10:49:04 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id l18so3229325wrn.6
+        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 10:49:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=srtH8bskiQrF0mpCWsWnCxht+uD1HNatLGnWm/k2SmY=;
+        b=I2C97RMATzMD8KLXLxy2rBCkuviQnKAhn6fSB5//HbcMzxaD2e96LoiXeaJMbjd4Ze
+         z3WcT3MOAG0FWtphVfkRUz4MDwS4w8jZk/K8eiGZYojVuasbWBc8vXv9OxMaCppZWP9l
+         aWrB+a240sIDDHYIVj1I9q3PMCKXYFrWKm60r4bL3HLGVOacpQr+qyWnvtA3Xe7rAs2j
+         XPq3PAkTrdfxBw10Lnjd7DusLULQgghR+ZFTzzdSg/6CiQNXdBf8a/SbCMLaI5k7AIA5
+         GgQjByqUdwYyt4u4huOJAkSsZLu+mCcXzbPgALmqAMqK/TZiOeub5XrUCImv67rN0CaB
+         Cnkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=srtH8bskiQrF0mpCWsWnCxht+uD1HNatLGnWm/k2SmY=;
+        b=jX2QSexktjzx6/8nJKV7vN+nRjiSt7k1KBPNiMunAGJOvgTVvWWKk+jl5/AEnR60Hf
+         qaa74+hVIXLKeHUiRG88Ctjnb8D4eliFMvNuMLeitdjXkTznbZ7hLGcrBM2ilTWkJ18F
+         xcSJ5pxw5Zqop0Ssx91V5wHzBCBvFYhpIEOKOHWRRv8skBd0KqsXE9iK+b3IibEiWl8r
+         XtTn5cRWZUcOswwrIXeZ5q6MeihgnuCPUi18eRw2AFVIS+G+jiuIKd9CDkKC5k0bDIlr
+         gWa0PeUt0L5udwXNjx47lvQTNUIpQamqdOrLZLSg7RkSeuWDxGv8qKx23wFR8bnMb8bh
+         Vufg==
+X-Gm-Message-State: AGi0PuY+HotH93UB8feUv7Iqsl/Jshlnv9iHsRLSjOSniwlEnSm+c1K5
+        vNS95scPa9aOcn3sfnjGUu3FaXTQMSbsrQ==
+X-Google-Smtp-Source: APiQypJzrOxOnaeMZj2hShOBa2tNuW6vZBCQSqhwPsIO3GIRxw5ow3FX2cybrUz8TcJ9VkWpKvsviQ==
+X-Received: by 2002:a5d:498b:: with SMTP id r11mr10685245wrq.368.1588787343455;
+        Wed, 06 May 2020 10:49:03 -0700 (PDT)
+Received: from lmecxl0524.home (2a01cb058702ff00bc4b798f4f30d41e.ipv6.abo.wanadoo.fr. [2a01:cb05:8702:ff00:bc4b:798f:4f30:d41e])
+        by smtp.gmail.com with ESMTPSA id n6sm1997992wrt.58.2020.05.06.10.49.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 May 2020 10:49:02 -0700 (PDT)
+From:   Etienne Carriere <etienne.carriere@linaro.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        devicetree@vger.kernel.org, alexandre.torgue@st.com,
+        mcoquelin.stm32@gmail.com, robh+dt@kernel.org,
+        Etienne Carriere <etienne.carriere@st.com>
+Subject: [PATCH] ARM: dts: stm32: bump PSCI to version 1.0 on stm32mp15x
+Date:   Wed,  6 May 2020 19:48:40 +0200
+Message-Id: <20200506174840.19856-1-etienne.carriere@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 06, 2020 at 10:44:15AM -0700, Linus Torvalds wrote:
-> So while I think using a consistent convention is good, and it's true
-> that there is a difference in the convention between the two cases
-> ("unsafe" at the beginning vs end), one of them is actually about the
-> safety and security of the operation (and we have automated logic
-> these days to verify it on x86), the other has nothing to do with
-> "safety", really.
-> 
-> Would it be better to standardize around a "probe_xyz()" naming?
+From: Etienne Carriere <etienne.carriere@st.com>
 
-So:
+Declare PSCI v1.0 support instead of v0.1 as the former is supported
+by the PSCI firmware stacks stm32mp15x relies on.
 
-  probe_strncpy, probe_strncpy_user, probe_strnlen_user?
+Signed-off-by: Etienne Carriere <etienne.carriere@st.com>
+---
+ arch/arm/boot/dts/stm32mp151.dtsi | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Sounds weird, but at least it is consistent.
+diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
+index 3ea05ba48215..ebceead1b120 100644
+--- a/arch/arm/boot/dts/stm32mp151.dtsi
++++ b/arch/arm/boot/dts/stm32mp151.dtsi
+@@ -24,10 +24,8 @@
+ 	};
+ 
+ 	psci {
+-		compatible = "arm,psci";
++		compatible = "arm,psci-1.0";
+ 		method = "smc";
+-		cpu_off = <0x84000002>;
+-		cpu_on = <0x84000003>;
+ 	};
+ 
+ 	intc: interrupt-controller@a0021000 {
+-- 
+2.17.1
 
-> Or perhaps a "xyz_nofault()" naming?
-
-That sounds a little better:
-
-   strncpy_nofault, strncpy_user_nofault, strnlen_user_nofault
-
-> I realize this is nit-picky, and I think the patch series as-is is
-> already an improvement, but I do think our naming in this area is
-> really quite bad.
-
-Always open for improvements :)
-
-> The fact that we have "probe_kernel_read()" but then
-> "strncpy_from_user_unsafe()" for the _same_ conceptual difference
-> really tells me how inconsistent the naming for these kinds of "we
-> can't take page faults" is. No?
-
-True.  If we wanted to do _nofaul, what would the basic read/write
-versions be?
