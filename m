@@ -2,118 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DEF31C6A7E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 09:53:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA4351C6A5E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 09:48:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728508AbgEFHxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 03:53:41 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:53446 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728412AbgEFHxl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 03:53:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588751619;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8W0xSmvUlYVndDM8MoTsGUiUlHlecuHz50ZkJqJ3zCY=;
-        b=Blpzrd2Wm0O93KkVoSr1gHv6p+sBFkuXSXZOtue0JcgVJj5D4vrnSn0Md2XvG5gsoDvf4z
-        rRBUyUEu+fgKB0LTd61nNmnA8rD+0HldQIVjWnFdL4x0xfYrYtuh7TIwd1zsHFf25jy41R
-        h+CLBr6obYatALYAFJaZb2dOZV4F93g=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-453-XFdgnQjZP5aZb8ahg5twRw-1; Wed, 06 May 2020 03:53:36 -0400
-X-MC-Unique: XFdgnQjZP5aZb8ahg5twRw-1
-Received: by mail-wr1-f72.google.com with SMTP id f15so899179wrj.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 00:53:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8W0xSmvUlYVndDM8MoTsGUiUlHlecuHz50ZkJqJ3zCY=;
-        b=PDCCG/n6w7aTbjIDYM13Mv4hO3hDUgkk2cPauIBeTMkDq/a3Lij7F8az0M5P3oBfkd
-         slvptknd47q478mkyaU36QGG5hOZvlbLhPx07Pb53RwKejIwhNWhA86aGohkkyVHpUJw
-         Ad2MKbRFLqizNCt79NQ1HumzKoEqWK3iJYeN5UMlX/0pBv1TnM8fIbtC1Ri+A3pB4W3j
-         hr3rkFfRhWM/dOlu2DdtFAH1FGmtZloEJEa2XNyYUTwFIEBbUx9Q+4rj6rgz5GblT9Bw
-         kv3zaPnHCCPLBXlj85IpLjyf65pdT+eRs05gjyltyylfkeLojWLghVFCm1XYiahl5oAA
-         1eMw==
-X-Gm-Message-State: AGi0PubjHK1dAaiAm3wtabB4KW+xyhYKsRgJ8mvQy/0ZTCCZdSBRIteN
-        xrylKqE6gZXYlIFjpuX/LQyRi0YxY34yt7y1XH6OUDyUGk95OkQfcFBGV3nytnscRNosjp7I5GG
-        oy2BotBj6TZM9EWXMPqxW1WNi
-X-Received: by 2002:a5d:6692:: with SMTP id l18mr8511147wru.423.1588751614940;
-        Wed, 06 May 2020 00:53:34 -0700 (PDT)
-X-Google-Smtp-Source: APiQypI/1wp+em/vQpb50Bo7ALnQIlQcctHrYO0O4kec4Eg43lHoV1FZjHRLjxj87amFb1+gASDZpQ==
-X-Received: by 2002:a5d:6692:: with SMTP id l18mr8511130wru.423.1588751614751;
-        Wed, 06 May 2020 00:53:34 -0700 (PDT)
-Received: from redhat.com (bzq-109-66-7-121.red.bezeqint.net. [109.66.7.121])
-        by smtp.gmail.com with ESMTPSA id p190sm1710263wmp.38.2020.05.06.00.53.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 May 2020 00:53:34 -0700 (PDT)
-Date:   Wed, 6 May 2020 03:53:31 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: [PATCH net-next 1/2] virtio-net: don't reserve space for vnet
- header for XDP
-Message-ID: <20200506033834-mutt-send-email-mst@kernel.org>
-References: <20200506061633.16327-1-jasowang@redhat.com>
+        id S1728425AbgEFHsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 03:48:20 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:50036 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728335AbgEFHsU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 03:48:20 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id EDDA8548B739D91516FA;
+        Wed,  6 May 2020 15:48:17 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 6 May 2020 15:48:10 +0800
+From:   Samuel Zou <zou_wei@huawei.com>
+To:     <njavali@marvell.com>, <GR-QLogic-Storage-Upstream@marvell.com>,
+        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Samuel Zou <zou_wei@huawei.com>
+Subject: [PATCH -next] scsi: qla2xxx: Use PTR_ERR_OR_ZERO() to simplify code
+Date:   Wed, 6 May 2020 15:54:10 +0800
+Message-ID: <1588751650-37186-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200506061633.16327-1-jasowang@redhat.com>
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 06, 2020 at 02:16:32PM +0800, Jason Wang wrote:
-> We tried to reserve space for vnet header before
-> xdp.data_hard_start. But this is useless since the packet could be
-> modified by XDP which may invalidate the information stored in the
-> header and there's no way for XDP to know the existence of the vnet
-> header currently.
+Fixes coccicheck warning:
 
-What do you mean? Doesn't XDP_PASS use the header in the buffer?
+drivers/scsi/qla2xxx/tcm_qla2xxx.c:1488:1-3: WARNING: PTR_ERR_OR_ZERO can be used
 
-> So let's just not reserve space for vnet header in this case.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Samuel Zou <zou_wei@huawei.com>
+---
+ drivers/scsi/qla2xxx/tcm_qla2xxx.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-In any case, we can find out XDP does head adjustments
-if we need to.
-
-
-> Cc: Jesper Dangaard Brouer <brouer@redhat.com>
-> Signed-off-by: Jason Wang <jasowang@redhat.com>
-> ---
->  drivers/net/virtio_net.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index 11f722460513..98dd75b665a5 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -684,8 +684,8 @@ static struct sk_buff *receive_small(struct net_device *dev,
->  			page = xdp_page;
->  		}
->  
-> -		xdp.data_hard_start = buf + VIRTNET_RX_PAD + vi->hdr_len;
-> -		xdp.data = xdp.data_hard_start + xdp_headroom;
-> +		xdp.data_hard_start = buf + VIRTNET_RX_PAD;
-> +		xdp.data = xdp.data_hard_start + xdp_headroom + vi->hdr_len;
->  		xdp.data_end = xdp.data + len;
->  		xdp.data_meta = xdp.data;
->  		xdp.rxq = &rq->xdp_rxq;
-> @@ -845,7 +845,7 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
->  		 * the descriptor on if we get an XDP_TX return code.
->  		 */
->  		data = page_address(xdp_page) + offset;
-> -		xdp.data_hard_start = data - VIRTIO_XDP_HEADROOM + vi->hdr_len;
-> +		xdp.data_hard_start = data - VIRTIO_XDP_HEADROOM;
->  		xdp.data = data + vi->hdr_len;
->  		xdp.data_end = xdp.data + (len - vi->hdr_len);
->  		xdp.data_meta = xdp.data;
-> -- 
-> 2.20.1
+diff --git a/drivers/scsi/qla2xxx/tcm_qla2xxx.c b/drivers/scsi/qla2xxx/tcm_qla2xxx.c
+index 1f0a185..7c4157e 100644
+--- a/drivers/scsi/qla2xxx/tcm_qla2xxx.c
++++ b/drivers/scsi/qla2xxx/tcm_qla2xxx.c
+@@ -1485,10 +1485,8 @@ static int tcm_qla2xxx_check_initiator_node_acl(
+ 				       sizeof(struct qla_tgt_cmd),
+ 				       TARGET_PROT_ALL, port_name,
+ 				       qlat_sess, tcm_qla2xxx_session_cb);
+-	if (IS_ERR(se_sess))
+-		return PTR_ERR(se_sess);
+ 
+-	return 0;
++	return PTR_ERR_OR_ZERO(se_sess);
+ }
+ 
+ static void tcm_qla2xxx_update_sess(struct fc_port *sess, port_id_t s_id,
+-- 
+2.6.2
 
