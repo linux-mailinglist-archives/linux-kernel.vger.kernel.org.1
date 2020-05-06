@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4028A1C74C4
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:28:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13B951C749F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:26:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730034AbgEFP2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 11:28:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49250 "EHLO mail.kernel.org"
+        id S1730227AbgEFP0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 11:26:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49338 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730207AbgEFP0n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 11:26:43 -0400
+        id S1730216AbgEFP0q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 11:26:46 -0400
 Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AA7D621655;
-        Wed,  6 May 2020 15:26:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 323E621775;
+        Wed,  6 May 2020 15:26:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588778802;
-        bh=8yK0ehk2FJ+EzHdPdAYIuPaSPfjMDsdrFSEZkgF6TTE=;
+        s=default; t=1588778805;
+        bh=VUqJGWfnZIEcj7uXe3qha10yBeFTZsKI9VaYHJPuTfs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PSHEaa5nrPu+fZyZyt5LBbu35Ms/ireQdXlyrnW8mzVq6odnF2nW5ZUmc+Vknz3Yj
-         PHQ5mO623c5RRTEHsNv+nroSjG8e24vfAi67E+o1ojCurGv4IoglaayVYGVxQJlU06
-         Av8YWv12ZI5fCvwLKcETfme7CaIE40Q/Fmv4Ro08=
+        b=G4+grWfobDwxYa2oVYG4PgwF1JbppcJqQ/Z8/NJjyoEMWMsYmcWm4erUpYOiT+enV
+         DJm4G/XCxawBCj5OXyzDrKdPlYeOmIVE3HJDdcUQxzT0Jmdu/CIkRzMKuaB3R0N8nH
+         CJ93mTKDK7mp3puXZEYjcuj4x+3CpPMPEF8/U+IQ=
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
 To:     Ingo Molnar <mingo@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>
@@ -31,9 +31,9 @@ Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
         linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         Adrian Hunter <adrian.hunter@intel.com>
-Subject: [PATCH 69/91] perf evsel: Rename *perf_evsel__read*() to *evsel__read()
-Date:   Wed,  6 May 2020 12:22:12 -0300
-Message-Id: <20200506152234.21977-70-acme@kernel.org>
+Subject: [PATCH 70/91] perf evsel: Rename perf_evsel__parse_sample*() to evsel__parse_sample*()
+Date:   Wed,  6 May 2020 12:22:13 -0300
+Message-Id: <20200506152234.21977-71-acme@kernel.org>
 X-Mailer: git-send-email 2.21.1
 In-Reply-To: <20200506152234.21977-1-acme@kernel.org>
 References: <20200506152234.21977-1-acme@kernel.org>
@@ -46,7 +46,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-As those are 'struct evsel' methods, not part of tools/lib/perf/, aka
+As these are 'struct evsel' methods, not part of tools/lib/perf/, aka
 libperf, to whom the perf_ prefix belongs.
 
 Cc: Adrian Hunter <adrian.hunter@intel.com>
@@ -54,199 +54,162 @@ Cc: Jiri Olsa <jolsa@kernel.org>
 Cc: Namhyung Kim <namhyung@kernel.org>
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/perf/builtin-stat.c                  |  4 ++--
- tools/perf/tests/openat-syscall-all-cpus.c |  6 +++---
- tools/perf/tests/openat-syscall.c          |  6 +++---
- tools/perf/util/evsel.c                    | 17 +++++++----------
- tools/perf/util/evsel.h                    | 19 ++++++++-----------
- tools/perf/util/record.c                   |  5 ++---
- 6 files changed, 25 insertions(+), 32 deletions(-)
+ tools/perf/arch/x86/tests/perf-time-to-tsc.c | 6 ++----
+ tools/perf/builtin-inject.c                  | 2 +-
+ tools/perf/tests/openat-syscall-tp-fields.c  | 2 +-
+ tools/perf/tests/sample-parsing.c            | 4 ++--
+ tools/perf/util/evlist.c                     | 4 ++--
+ tools/perf/util/evsel.c                      | 9 ++++-----
+ tools/perf/util/evsel.h                      | 9 ++++-----
+ tools/perf/util/python.c                     | 2 +-
+ 8 files changed, 17 insertions(+), 21 deletions(-)
 
-diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index 6bc1336a0429..e3629ca69827 100644
---- a/tools/perf/builtin-stat.c
-+++ b/tools/perf/builtin-stat.c
-@@ -259,7 +259,7 @@ static int read_single_counter(struct evsel *counter, int cpu,
- 		count->val = val;
- 		return 0;
+diff --git a/tools/perf/arch/x86/tests/perf-time-to-tsc.c b/tools/perf/arch/x86/tests/perf-time-to-tsc.c
+index 909ead08a6f6..026d32ed078e 100644
+--- a/tools/perf/arch/x86/tests/perf-time-to-tsc.c
++++ b/tools/perf/arch/x86/tests/perf-time-to-tsc.c
+@@ -130,13 +130,11 @@ int test__perf_time_to_tsc(struct test *test __maybe_unused, int subtest __maybe
+ 				goto next_event;
+ 
+ 			if (strcmp(event->comm.comm, comm1) == 0) {
+-				CHECK__(perf_evsel__parse_sample(evsel, event,
+-								 &sample));
++				CHECK__(evsel__parse_sample(evsel, event, &sample));
+ 				comm1_time = sample.time;
+ 			}
+ 			if (strcmp(event->comm.comm, comm2) == 0) {
+-				CHECK__(perf_evsel__parse_sample(evsel, event,
+-								 &sample));
++				CHECK__(evsel__parse_sample(evsel, event, &sample));
+ 				comm2_time = sample.time;
+ 			}
+ next_event:
+diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
+index 842e940523b7..aad007bfb581 100644
+--- a/tools/perf/builtin-inject.c
++++ b/tools/perf/builtin-inject.c
+@@ -546,7 +546,7 @@ static int perf_inject__sched_stat(struct perf_tool *tool,
+ 	return 0;
+ found:
+ 	event_sw = &ent->event[0];
+-	perf_evsel__parse_sample(evsel, event_sw, &sample_sw);
++	evsel__parse_sample(evsel, event_sw, &sample_sw);
+ 
+ 	sample_sw.period = sample->period;
+ 	sample_sw.time	 = sample->time;
+diff --git a/tools/perf/tests/openat-syscall-tp-fields.c b/tools/perf/tests/openat-syscall-tp-fields.c
+index 6d026e8a7fa6..1dc2897d2df9 100644
+--- a/tools/perf/tests/openat-syscall-tp-fields.c
++++ b/tools/perf/tests/openat-syscall-tp-fields.c
+@@ -108,7 +108,7 @@ int test__syscall_openat_tp_fields(struct test *test __maybe_unused, int subtest
+ 					continue;
+ 				}
+ 
+-				err = perf_evsel__parse_sample(evsel, event, &sample);
++				err = evsel__parse_sample(evsel, event, &sample);
+ 				if (err) {
+ 					pr_debug("Can't parse sample, err = %d\n", err);
+ 					goto out_delete_evlist;
+diff --git a/tools/perf/tests/sample-parsing.c b/tools/perf/tests/sample-parsing.c
+index ab964db855ac..a0bdaf390ac8 100644
+--- a/tools/perf/tests/sample-parsing.c
++++ b/tools/perf/tests/sample-parsing.c
+@@ -298,10 +298,10 @@ static int do_test(u64 sample_type, u64 sample_regs, u64 read_format)
+ 
+ 	evsel.sample_size = __evsel__sample_size(sample_type);
+ 
+-	err = perf_evsel__parse_sample(&evsel, event, &sample_out);
++	err = evsel__parse_sample(&evsel, event, &sample_out);
+ 	if (err) {
+ 		pr_debug("%s failed for sample_type %#"PRIx64", error %d\n",
+-			 "perf_evsel__parse_sample", sample_type, err);
++			 "evsel__parse_sample", sample_type, err);
+ 		goto out_free;
  	}
--	return perf_evsel__read_counter(counter, cpu, thread);
-+	return evsel__read_counter(counter, cpu, thread);
+ 
+diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+index 404542b69543..0a0b760d6948 100644
+--- a/tools/perf/util/evlist.c
++++ b/tools/perf/util/evlist.c
+@@ -1439,7 +1439,7 @@ int perf_evlist__parse_sample(struct evlist *evlist, union perf_event *event,
+ 
+ 	if (!evsel)
+ 		return -EFAULT;
+-	return perf_evsel__parse_sample(evsel, event, sample);
++	return evsel__parse_sample(evsel, event, sample);
  }
  
- /*
-@@ -284,7 +284,7 @@ static int read_counter_cpu(struct evsel *counter, struct timespec *rs, int cpu)
+ int perf_evlist__parse_sample_timestamp(struct evlist *evlist,
+@@ -1450,7 +1450,7 @@ int perf_evlist__parse_sample_timestamp(struct evlist *evlist,
  
- 		/*
- 		 * The leader's group read loads data into its group members
--		 * (via perf_evsel__read_counter()) and sets their count->loaded.
-+		 * (via evsel__read_counter()) and sets their count->loaded.
- 		 */
- 		if (!perf_counts__is_loaded(counter->counts, cpu, thread) &&
- 		    read_single_counter(counter, cpu, thread, rs)) {
-diff --git a/tools/perf/tests/openat-syscall-all-cpus.c b/tools/perf/tests/openat-syscall-all-cpus.c
-index 93c176523e38..900934be22d2 100644
---- a/tools/perf/tests/openat-syscall-all-cpus.c
-+++ b/tools/perf/tests/openat-syscall-all-cpus.c
-@@ -103,15 +103,15 @@ int test__openat_syscall_event_on_all_cpus(struct test *test __maybe_unused, int
- 		if (cpus->map[cpu] >= CPU_SETSIZE)
- 			continue;
+ 	if (!evsel)
+ 		return -EFAULT;
+-	return perf_evsel__parse_sample_timestamp(evsel, event, timestamp);
++	return evsel__parse_sample_timestamp(evsel, event, timestamp);
+ }
  
--		if (perf_evsel__read_on_cpu(evsel, cpu, 0) < 0) {
--			pr_debug("perf_evsel__read_on_cpu\n");
-+		if (evsel__read_on_cpu(evsel, cpu, 0) < 0) {
-+			pr_debug("evsel__read_on_cpu\n");
- 			err = -1;
- 			break;
- 		}
- 
- 		expected = nr_openat_calls + cpu;
- 		if (perf_counts(evsel->counts, cpu, 0)->val != expected) {
--			pr_debug("perf_evsel__read_on_cpu: expected to intercept %d calls on cpu %d, got %" PRIu64 "\n",
-+			pr_debug("evsel__read_on_cpu: expected to intercept %d calls on cpu %d, got %" PRIu64 "\n",
- 				 expected, cpus->map[cpu], perf_counts(evsel->counts, cpu, 0)->val);
- 			err = -1;
- 		}
-diff --git a/tools/perf/tests/openat-syscall.c b/tools/perf/tests/openat-syscall.c
-index 8497a1fe9bac..db5d8bb8cd06 100644
---- a/tools/perf/tests/openat-syscall.c
-+++ b/tools/perf/tests/openat-syscall.c
-@@ -46,13 +46,13 @@ int test__openat_syscall_event(struct test *test __maybe_unused, int subtest __m
- 		close(fd);
- 	}
- 
--	if (perf_evsel__read_on_cpu(evsel, 0, 0) < 0) {
--		pr_debug("perf_evsel__read_on_cpu\n");
-+	if (evsel__read_on_cpu(evsel, 0, 0) < 0) {
-+		pr_debug("evsel__read_on_cpu\n");
- 		goto out_close_fd;
- 	}
- 
- 	if (perf_counts(evsel->counts, 0, 0)->val != nr_openat_calls) {
--		pr_debug("perf_evsel__read_on_cpu: expected to intercept %d calls, got %" PRIu64 "\n",
-+		pr_debug("evsel__read_on_cpu: expected to intercept %d calls, got %" PRIu64 "\n",
- 			 nr_openat_calls, perf_counts(evsel->counts, 0, 0)->val);
- 		goto out_close_fd;
- 	}
+ int perf_evlist__strerror_open(struct evlist *evlist,
 diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-index ded511c8def3..a11d1359ba81 100644
+index a11d1359ba81..b63d9eebe42f 100644
 --- a/tools/perf/util/evsel.c
 +++ b/tools/perf/util/evsel.c
-@@ -1317,8 +1317,7 @@ void perf_counts_values__scale(struct perf_counts_values *count,
- 		*pscaled = scaled;
- }
- 
--static int
--perf_evsel__read_one(struct evsel *evsel, int cpu, int thread)
-+static int evsel__read_one(struct evsel *evsel, int cpu, int thread)
- {
- 	struct perf_counts_values *count = perf_counts(evsel->counts, cpu, thread);
- 
-@@ -1378,8 +1377,7 @@ perf_evsel__process_group_data(struct evsel *leader,
+@@ -1964,8 +1964,8 @@ perf_event__check_size(union perf_event *event, unsigned int sample_size)
  	return 0;
  }
  
--static int
--perf_evsel__read_group(struct evsel *leader, int cpu, int thread)
-+static int evsel__read_group(struct evsel *leader, int cpu, int thread)
+-int perf_evsel__parse_sample(struct evsel *evsel, union perf_event *event,
+-			     struct perf_sample *data)
++int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
++			struct perf_sample *data)
  {
- 	struct perf_stat_evsel *ps = leader->stats;
- 	u64 read_format = leader->core.attr.read_format;
-@@ -1409,18 +1407,17 @@ perf_evsel__read_group(struct evsel *leader, int cpu, int thread)
- 	return perf_evsel__process_group_data(leader, cpu, thread, data);
+ 	u64 type = evsel->core.attr.sample_type;
+ 	bool swapped = evsel->needs_swap;
+@@ -2267,9 +2267,8 @@ int perf_evsel__parse_sample(struct evsel *evsel, union perf_event *event,
+ 	return 0;
  }
  
--int perf_evsel__read_counter(struct evsel *evsel, int cpu, int thread)
-+int evsel__read_counter(struct evsel *evsel, int cpu, int thread)
+-int perf_evsel__parse_sample_timestamp(struct evsel *evsel,
+-				       union perf_event *event,
+-				       u64 *timestamp)
++int evsel__parse_sample_timestamp(struct evsel *evsel, union perf_event *event,
++				  u64 *timestamp)
  {
- 	u64 read_format = evsel->core.attr.read_format;
- 
- 	if (read_format & PERF_FORMAT_GROUP)
--		return perf_evsel__read_group(evsel, cpu, thread);
--	else
--		return perf_evsel__read_one(evsel, cpu, thread);
-+		return evsel__read_group(evsel, cpu, thread);
-+
-+	return evsel__read_one(evsel, cpu, thread);
- }
- 
--int __perf_evsel__read_on_cpu(struct evsel *evsel,
--			      int cpu, int thread, bool scale)
-+int __evsel__read_on_cpu(struct evsel *evsel, int cpu, int thread, bool scale)
- {
- 	struct perf_counts_values count;
- 	size_t nv = scale ? 3 : 1;
+ 	u64 type = evsel->core.attr.sample_type;
+ 	const __u64 *array;
 diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-index 8d61109087a1..a87de95a66c8 100644
+index a87de95a66c8..4b5a411c403c 100644
 --- a/tools/perf/util/evsel.h
 +++ b/tools/perf/util/evsel.h
-@@ -265,35 +265,32 @@ static inline bool evsel__match2(struct evsel *e1, struct evsel *e2)
- 	       (e1->core.attr.config == e2->core.attr.config);
+@@ -293,12 +293,11 @@ static inline int evsel__read_on_cpu_scaled(struct evsel *evsel, int cpu, int th
+ 	return __evsel__read_on_cpu(evsel, cpu, thread, true);
  }
  
--int perf_evsel__read_counter(struct evsel *evsel, int cpu, int thread);
-+int evsel__read_counter(struct evsel *evsel, int cpu, int thread);
+-int perf_evsel__parse_sample(struct evsel *evsel, union perf_event *event,
+-			     struct perf_sample *sample);
++int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
++			struct perf_sample *sample);
  
--int __perf_evsel__read_on_cpu(struct evsel *evsel,
--			      int cpu, int thread, bool scale);
-+int __evsel__read_on_cpu(struct evsel *evsel, int cpu, int thread, bool scale);
+-int perf_evsel__parse_sample_timestamp(struct evsel *evsel,
+-				       union perf_event *event,
+-				       u64 *timestamp);
++int evsel__parse_sample_timestamp(struct evsel *evsel, union perf_event *event,
++				  u64 *timestamp);
  
- /**
-- * perf_evsel__read_on_cpu - Read out the results on a CPU and thread
-+ * evsel__read_on_cpu - Read out the results on a CPU and thread
-  *
-  * @evsel - event selector to read value
-  * @cpu - CPU of interest
-  * @thread - thread of interest
-  */
--static inline int perf_evsel__read_on_cpu(struct evsel *evsel,
--					  int cpu, int thread)
-+static inline int evsel__read_on_cpu(struct evsel *evsel, int cpu, int thread)
+ static inline struct evsel *perf_evsel__next(struct evsel *evsel)
  {
--	return __perf_evsel__read_on_cpu(evsel, cpu, thread, false);
-+	return __evsel__read_on_cpu(evsel, cpu, thread, false);
- }
+diff --git a/tools/perf/util/python.c b/tools/perf/util/python.c
+index 67810d31f88d..75a9b1d62bba 100644
+--- a/tools/perf/util/python.c
++++ b/tools/perf/util/python.c
+@@ -1044,7 +1044,7 @@ static PyObject *pyrf_evlist__read_on_cpu(struct pyrf_evlist *pevlist,
  
- /**
-- * perf_evsel__read_on_cpu_scaled - Read out the results on a CPU and thread, scaled
-+ * evsel__read_on_cpu_scaled - Read out the results on a CPU and thread, scaled
-  *
-  * @evsel - event selector to read value
-  * @cpu - CPU of interest
-  * @thread - thread of interest
-  */
--static inline int perf_evsel__read_on_cpu_scaled(struct evsel *evsel,
--						 int cpu, int thread)
-+static inline int evsel__read_on_cpu_scaled(struct evsel *evsel, int cpu, int thread)
- {
--	return __perf_evsel__read_on_cpu(evsel, cpu, thread, true);
-+	return __evsel__read_on_cpu(evsel, cpu, thread, true);
- }
+ 		pevent->evsel = evsel;
  
- int perf_evsel__parse_sample(struct evsel *evsel, union perf_event *event,
-diff --git a/tools/perf/util/record.c b/tools/perf/util/record.c
-index d297f4de253c..a4cc11592f6b 100644
---- a/tools/perf/util/record.c
-+++ b/tools/perf/util/record.c
-@@ -19,8 +19,7 @@
-  * However, if the leader is an AUX area event, then assume the event to sample
-  * is the next event.
-  */
--static struct evsel *perf_evsel__read_sampler(struct evsel *evsel,
--					      struct evlist *evlist)
-+static struct evsel *evsel__read_sampler(struct evsel *evsel, struct evlist *evlist)
- {
- 	struct evsel *leader = evsel->leader;
+-		err = perf_evsel__parse_sample(evsel, event, &pevent->sample);
++		err = evsel__parse_sample(evsel, event, &pevent->sample);
  
-@@ -43,7 +42,7 @@ static void evsel__config_leader_sampling(struct evsel *evsel, struct evlist *ev
- 	if (!leader->sample_read)
- 		return;
- 
--	read_sampler = perf_evsel__read_sampler(evsel, evlist);
-+	read_sampler = evsel__read_sampler(evsel, evlist);
- 
- 	if (evsel == read_sampler)
- 		return;
+ 		/* Consume the even only after we parsed it out. */
+ 		perf_mmap__consume(&md->core);
 -- 
 2.21.1
 
