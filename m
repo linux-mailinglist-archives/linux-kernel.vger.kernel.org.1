@@ -2,79 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0E5E1C6AEC
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 10:08:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39F671C6B24
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 10:15:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728625AbgEFIIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 04:08:38 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:27356 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728345AbgEFIIe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 04:08:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588752513;
+        id S1728475AbgEFIPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 04:15:00 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:43578 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728296AbgEFIPA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 04:15:00 -0400
+Received: from zn.tnic (p200300EC2F069600BCEB9C28D5742179.dip0.t-ipconnect.de [IPv6:2003:ec:2f06:9600:bceb:9c28:d574:2179])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3741B1EC0347;
+        Wed,  6 May 2020 10:14:58 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1588752898;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=CBWxp/RqrAZHRhIdtBhb3xri0XLzwh+Ch7QU+ftNF34=;
-        b=X5aij9Dcg2c93UiXjCx3F/VgGLUlK7pOUCYpH/bYM3QYiDkBSGh0H+oceIGQiF7O03vaEV
-        tAM8Jk8uRuPne4OoGVMRylpzKyTsqwfgTWG3njDnYngWMNqaZ2x5ZG5UaL+8YXkyqaIw5v
-        GGwZCsCSe+cvN9YtNFcYgdbqxo+4S5M=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-481-e_77Q8SLMRGJkrACzdZ5ug-1; Wed, 06 May 2020 04:08:32 -0400
-X-MC-Unique: e_77Q8SLMRGJkrACzdZ5ug-1
-Received: by mail-wm1-f70.google.com with SMTP id q5so787592wmc.9
-        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 01:08:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=CBWxp/RqrAZHRhIdtBhb3xri0XLzwh+Ch7QU+ftNF34=;
-        b=eW1AXyYQgISw3ms2BqjiOMhV+ad7ze5GLRhWxoK4Woesyro+8sdFetBACiSpd43DZp
-         XhBL7k471Kp6NP/AmXpWGnYJzJXWN18Sx0LV43DBGc4FCE6YJwx9wdGwCrDAJKkpd2+a
-         U0RmVMxfjDuffxuPWMAq6RDHASujOtz7GvgMpx44hSGp3fxrxIpuySpqo2cWTAW6f+nk
-         HoQ0/1qH5rcVCgE9JYs6pGeR+owS36ayFZReYZ2LEt6HyXPPG7N9MTI/jm1WEdsqyqEN
-         KJKKgMJHS9ZO9YwFbbdVQlUoRy0OGuVcOr2AxC1mFzbexolqumJvpG1EtjN5fZqCE4aM
-         1nqA==
-X-Gm-Message-State: AGi0Pua7wW61eX6OeX18OLpscphouBtKlr9S+Hronp9xQvd9aLu+jMbE
-        3vBWiQIZNnmYDih2BXI685yjrK9YTVRocLMGFv7ddlC7Dqxn49llTHt46pyVEjDcM6yFd1K/yYb
-        UQ/XEm/lgwvZ002gvGKx0odUB
-X-Received: by 2002:a5d:54c4:: with SMTP id x4mr8713636wrv.73.1588752511065;
-        Wed, 06 May 2020 01:08:31 -0700 (PDT)
-X-Google-Smtp-Source: APiQypKoYFzRFdcs5OUqDOntDuXyJrKD5k/C6ihqMqcjU/DctdS4/KReL94LfbKFGzcZw7Aen1K6xw==
-X-Received: by 2002:a5d:54c4:: with SMTP id x4mr8713617wrv.73.1588752510881;
-        Wed, 06 May 2020 01:08:30 -0700 (PDT)
-Received: from redhat.com (bzq-109-66-7-121.red.bezeqint.net. [109.66.7.121])
-        by smtp.gmail.com with ESMTPSA id g25sm1724902wmh.24.2020.05.06.01.08.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 May 2020 01:08:30 -0700 (PDT)
-Date:   Wed, 6 May 2020 04:08:27 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eugenio Perez Martin <eperezma@redhat.com>
-Subject: performance bug in virtio net xdp
-Message-ID: <20200506035704-mutt-send-email-mst@kernel.org>
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=s5RV4o9+46GjRd6gshEq1QxtSsdTZ2fduNFg5bSsMV4=;
+        b=E5Uf9V9XzZLS67J1Bqk811UzOJlTMg5M2KNVyQG3LgEvDqsOoUugPOz7QJASIOTKUA2JPp
+        ZwZciHNalYt2+yAElzuSBjRgnpMPyk0/56BKkLy6CdVS93vD10JCL3H73+gvj2vVLQG2Rb
+        QuEfkvBR0zly36F/hfMV9+wq0k2dRY4=
+Date:   Wed, 6 May 2020 10:14:54 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: Re: [patch V4 part 1 02/36] x86/hw_breakpoint: Prevent data
+ breakpoints on cpu_entry_area
+Message-ID: <20200506081454.GA25532@zn.tnic>
+References: <20200505131602.633487962@linutronix.de>
+ <20200505134058.272448010@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+In-Reply-To: <20200505134058.272448010@linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-So for mergeable bufs, we use ewma machinery to guess the correct buffer
-size. If we don't guess correctly, XDP has to do aggressive copies.
+On Tue, May 05, 2020 at 03:16:04PM +0200, Thomas Gleixner wrote:
+> From: Andy Lutomirski <luto@kernel.org>
+> 
+> A data breakpoint near the top of an IST stack will cause unresoverable
 
-Problem is, xdp paths do not update the ewma at all, except
-sometimes with XDP_PASS. So whatever we happen to have
-before we attach XDP, will mostly stay around.
+unrecoverable
 
-The fix is probably to update ewma unconditionally.
+> recursion.  A data breakpoint on the GDT, IDT, or TSS is terrifying.
+
+"terrifying" huh? Colorful. :)
+
+> Prevent either of these from happening.
+> 
+> Co-developed-by: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Andy Lutomirski <luto@kernel.org>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  arch/x86/kernel/hw_breakpoint.c |   25 +++++++++++++++++++++++++
+>  1 file changed, 25 insertions(+)
+
+Reviewed-by: Borislav Petkov <bp@suse.de>
 
 -- 
-MST
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
