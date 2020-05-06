@@ -2,128 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B3C91C6E5B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 12:27:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B35B51C6E66
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 12:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729099AbgEFK1p convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 May 2020 06:27:45 -0400
-Received: from mga14.intel.com ([192.55.52.115]:29055 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728713AbgEFK1o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 06:27:44 -0400
-IronPort-SDR: ag+EIYoBR4TVmXtX0WzlfT7BJzQlj/KzLh3belSJjnNk++1+b7qalEMpUjPj9Q2HgHiMIYOs1P
- 5MrsgL/O6jow==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2020 03:27:44 -0700
-IronPort-SDR: GUoiCivGoWEh00L1AYi7caXVsRR8Ir6+hS6yJ7Kdnc1B/DhsaZ5KbxJl3siUuW2Zssx26Lc+dC
- i6VhSvMUWXgQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,358,1583222400"; 
-   d="scan'208";a="369757094"
-Received: from fmsmsx105.amr.corp.intel.com ([10.18.124.203])
-  by fmsmga001.fm.intel.com with ESMTP; 06 May 2020 03:27:44 -0700
-Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
- FMSMSX105.amr.corp.intel.com (10.18.124.203) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Wed, 6 May 2020 03:27:44 -0700
-Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 6 May 2020 03:27:43 -0700
-Received: from shsmsx108.ccr.corp.intel.com (10.239.4.97) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
- via Frontend Transport; Wed, 6 May 2020 03:27:43 -0700
-Received: from shsmsx104.ccr.corp.intel.com ([169.254.5.210]) by
- SHSMSX108.ccr.corp.intel.com ([169.254.8.95]) with mapi id 14.03.0439.000;
- Wed, 6 May 2020 18:27:40 +0800
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>,
-        "Dey, Megha" <megha.dey@linux.intel.com>
-CC:     "Jiang, Dave" <dave.jiang@intel.com>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
-        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "Lin, Jing" <jing.lin@intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-Subject: RE: [PATCH RFC 04/15] drivers/base: Add support for a new IMS irq
- domain
-Thread-Topic: [PATCH RFC 04/15] drivers/base: Add support for a new IMS irq
- domain
-Thread-Index: AQHWGDVoji+pYTNAZUCFs9wcRhPwDaiGoCsAgAy5aQCAAyNRgIAABFYAgAABv4CAABuEAIAAxfiAgAOJvpA=
-Date:   Wed, 6 May 2020 10:27:40 +0000
-Message-ID: <AADFC41AFE54684AB9EE6CBC0274A5D19D903AED@SHSMSX104.ccr.corp.intel.com>
-References: <158751095889.36773.6009825070990637468.stgit@djiang5-desk3.ch.intel.com>
- <158751205175.36773.1874642824360728883.stgit@djiang5-desk3.ch.intel.com>
- <20200423201118.GA29567@ziepe.ca>
- <35f701d9-1034-09c7-8117-87fb8796a017@linux.intel.com>
- <20200503222513.GS26002@ziepe.ca>
- <1ededeb8-deff-4db7-40e5-1d5e8a800f52@linux.intel.com>
- <20200503224659.GU26002@ziepe.ca>
- <8ff2aace-0697-b8ef-de68-1bcc49d6727f@linux.intel.com>
- <20200504121401.GV26002@ziepe.ca>
-In-Reply-To: <20200504121401.GV26002@ziepe.ca>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [10.239.127.40]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-MIME-Version: 1.0
+        id S1729191AbgEFKad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 06:30:33 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:34508 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728338AbgEFKad (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 06:30:33 -0400
+Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1jWHIM-0008Fl-44; Wed, 06 May 2020 10:28:54 +0000
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     jani.nikula@linux.intel.com
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>,
+        =?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>,
+        Lucas De Marchi <lucas.demarchi@intel.com>,
+        Imre Deak <imre.deak@intel.com>,
+        Manasi Navare <manasi.d.navare@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Gwan-gyeong Mun <gwan-gyeong.mun@intel.com>,
+        Matt Roper <matthew.d.roper@intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Ramalingam C <ramalingam.c@intel.com>,
+        Uma Shankar <uma.shankar@intel.com>,
+        Juha-Pekka Heikkila <juhapekka.heikkila@gmail.com>,
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v5] drm/i915: Init lspcon chip dynamically
+Date:   Wed,  6 May 2020 18:28:02 +0800
+Message-Id: <20200506102844.26596-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Jason Gunthorpe <jgg@ziepe.ca>
-> Sent: Monday, May 4, 2020 8:14 PM
-> 
-> On Sun, May 03, 2020 at 05:25:28PM -0700, Dey, Megha wrote:
-> > > > The use case if when we have a device assigned to a guest and we
-> > > > want to allocate IMS(platform-msi) interrupts for that
-> > > > guest-assigned device. Currently, this is abstracted through a mdev
-> > > > interface.
-> > >
-> > > And the mdev has the pci_device internally, so it should simply pass
-> > > that pci_device to the platform_msi machinery.
-> >
-> > hmm i am not sure I follow this. mdev has a pci_device internally? which
-> > struct are you referring to here?
-> 
-> mdev in general may not, but any ADI trying to use mdev will
-> necessarily have access to a struct pci_device.
+On HP 800 G4 DM, if HDMI cable isn't plugged before boot, the HDMI port
+becomes useless and never responds to cable hotplugging:
+[    3.031904] [drm:lspcon_init [i915]] *ERROR* Failed to probe lspcon
+[    3.031945] [drm:intel_ddi_init [i915]] *ERROR* LSPCON init failed on port D
 
-Agree here. Mdev is just driver internal concept. It doesn't make sense to
-expose it in driver/base, just like how we avoided exposing mdev in iommu
-layer.
+Seems like the lspcon chip on the system only gets powered after the
+cable is plugged.
 
-Megha, every mdev/ADI has a parent device, which is the struct pci_device
-that Jason refers to. In irq domain level, it only needs to care about the
-PCI device and related IMS management. It doesn't matter whether the
-allocated IMS entry is used for a mdev or by parent driver itself.
+Consolidate lspcon_init() into lspcon_resume() to dynamically init
+lspcon chip, and make HDMI port work.
 
-Thanks
-Kevin
+Closes: https://gitlab.freedesktop.org/drm/intel/issues/203
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+v5:
+ - Consolidate lspcon_resume() with lspcon_init().
+ - Move more logic into lspcon code.
+
+v4:
+ - Trust VBT in intel_infoframe_init().
+ - Init lspcon in intel_dp_detect().
+
+v3:
+ - Make sure it's handled under long HPD case.
+
+v2: 
+ - Move lspcon_init() inside of intel_dp_hpd_pulse().
+
+ drivers/gpu/drm/i915/display/intel_ddi.c    | 19 +------
+ drivers/gpu/drm/i915/display/intel_dp.c     | 10 ++--
+ drivers/gpu/drm/i915/display/intel_hdmi.c   |  3 +-
+ drivers/gpu/drm/i915/display/intel_lspcon.c | 63 ++++++++++++---------
+ drivers/gpu/drm/i915/display/intel_lspcon.h |  3 +-
+ 5 files changed, 43 insertions(+), 55 deletions(-)
+
+diff --git a/drivers/gpu/drm/i915/display/intel_ddi.c b/drivers/gpu/drm/i915/display/intel_ddi.c
+index 5601673c3f30..798fd640da54 100644
+--- a/drivers/gpu/drm/i915/display/intel_ddi.c
++++ b/drivers/gpu/drm/i915/display/intel_ddi.c
+@@ -4770,7 +4770,7 @@ void intel_ddi_init(struct drm_i915_private *dev_priv, enum port port)
+ {
+ 	struct intel_digital_port *intel_dig_port;
+ 	struct intel_encoder *encoder;
+-	bool init_hdmi, init_dp, init_lspcon = false;
++	bool init_hdmi, init_dp;
+ 	enum phy phy = intel_port_to_phy(dev_priv, port);
+ 
+ 	init_hdmi = intel_bios_port_supports_dvi(dev_priv, port) ||
+@@ -4784,7 +4784,6 @@ void intel_ddi_init(struct drm_i915_private *dev_priv, enum port port)
+ 		 * is initialized before lspcon.
+ 		 */
+ 		init_dp = true;
+-		init_lspcon = true;
+ 		init_hdmi = false;
+ 		drm_dbg_kms(&dev_priv->drm, "VBT says port %c has lspcon\n",
+ 			    port_name(port));
+@@ -4869,22 +4868,6 @@ void intel_ddi_init(struct drm_i915_private *dev_priv, enum port port)
+ 			goto err;
+ 	}
+ 
+-	if (init_lspcon) {
+-		if (lspcon_init(intel_dig_port))
+-			/* TODO: handle hdmi info frame part */
+-			drm_dbg_kms(&dev_priv->drm,
+-				    "LSPCON init success on port %c\n",
+-				    port_name(port));
+-		else
+-			/*
+-			 * LSPCON init faied, but DP init was success, so
+-			 * lets try to drive as DP++ port.
+-			 */
+-			drm_err(&dev_priv->drm,
+-				"LSPCON init failed on port %c\n",
+-				port_name(port));
+-	}
+-
+ 	intel_infoframe_init(intel_dig_port);
+ 
+ 	return;
+diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
+index 6952b0295096..e26aa35d6e37 100644
+--- a/drivers/gpu/drm/i915/display/intel_dp.c
++++ b/drivers/gpu/drm/i915/display/intel_dp.c
+@@ -5938,15 +5938,14 @@ static enum drm_connector_status
+ intel_dp_detect_dpcd(struct intel_dp *intel_dp)
+ {
+ 	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
+-	struct intel_lspcon *lspcon = dp_to_lspcon(intel_dp);
++	struct intel_digital_port *dig_port = dp_to_dig_port(intel_dp);
+ 	u8 *dpcd = intel_dp->dpcd;
+ 	u8 type;
+ 
+ 	if (WARN_ON(intel_dp_is_edp(intel_dp)))
+ 		return connector_status_connected;
+ 
+-	if (lspcon->active)
+-		lspcon_resume(lspcon);
++	lspcon_resume(dig_port);
+ 
+ 	if (!intel_dp_get_dpcd(intel_dp))
+ 		return connector_status_disconnected;
+@@ -7198,14 +7197,13 @@ void intel_dp_encoder_reset(struct drm_encoder *encoder)
+ {
+ 	struct drm_i915_private *dev_priv = to_i915(encoder->dev);
+ 	struct intel_dp *intel_dp = enc_to_intel_dp(to_intel_encoder(encoder));
+-	struct intel_lspcon *lspcon = dp_to_lspcon(intel_dp);
++	struct intel_digital_port *dig_port = dp_to_dig_port(intel_dp);
+ 	intel_wakeref_t wakeref;
+ 
+ 	if (!HAS_DDI(dev_priv))
+ 		intel_dp->DP = intel_de_read(dev_priv, intel_dp->output_reg);
+ 
+-	if (lspcon->active)
+-		lspcon_resume(lspcon);
++	lspcon_resume(dig_port);
+ 
+ 	intel_dp->reset_link_params = true;
+ 
+diff --git a/drivers/gpu/drm/i915/display/intel_hdmi.c b/drivers/gpu/drm/i915/display/intel_hdmi.c
+index 010f37240710..643ad2127931 100644
+--- a/drivers/gpu/drm/i915/display/intel_hdmi.c
++++ b/drivers/gpu/drm/i915/display/intel_hdmi.c
+@@ -3155,7 +3155,8 @@ void intel_infoframe_init(struct intel_digital_port *intel_dig_port)
+ 		intel_dig_port->set_infoframes = g4x_set_infoframes;
+ 		intel_dig_port->infoframes_enabled = g4x_infoframes_enabled;
+ 	} else if (HAS_DDI(dev_priv)) {
+-		if (intel_dig_port->lspcon.active) {
++		if (intel_bios_is_lspcon_present(dev_priv,
++						 intel_dig_port->base.port)) {
+ 			intel_dig_port->write_infoframe = lspcon_write_infoframe;
+ 			intel_dig_port->read_infoframe = lspcon_read_infoframe;
+ 			intel_dig_port->set_infoframes = lspcon_set_infoframes;
+diff --git a/drivers/gpu/drm/i915/display/intel_lspcon.c b/drivers/gpu/drm/i915/display/intel_lspcon.c
+index d807c5648c87..f5f06d2a839a 100644
+--- a/drivers/gpu/drm/i915/display/intel_lspcon.c
++++ b/drivers/gpu/drm/i915/display/intel_lspcon.c
+@@ -525,44 +525,17 @@ u32 lspcon_infoframes_enabled(struct intel_encoder *encoder,
+ 	return enc_to_intel_lspcon(encoder)->active;
+ }
+ 
+-void lspcon_resume(struct intel_lspcon *lspcon)
+-{
+-	enum drm_lspcon_mode expected_mode;
+-
+-	if (lspcon_wake_native_aux_ch(lspcon)) {
+-		expected_mode = DRM_LSPCON_MODE_PCON;
+-		lspcon_resume_in_pcon_wa(lspcon);
+-	} else {
+-		expected_mode = DRM_LSPCON_MODE_LS;
+-	}
+-
+-	if (lspcon_wait_mode(lspcon, expected_mode) == DRM_LSPCON_MODE_PCON)
+-		return;
+-
+-	if (lspcon_change_mode(lspcon, DRM_LSPCON_MODE_PCON))
+-		DRM_ERROR("LSPCON resume failed\n");
+-	else
+-		DRM_DEBUG_KMS("LSPCON resume success\n");
+-}
+-
+ void lspcon_wait_pcon_mode(struct intel_lspcon *lspcon)
+ {
+ 	lspcon_wait_mode(lspcon, DRM_LSPCON_MODE_PCON);
+ }
+ 
+-bool lspcon_init(struct intel_digital_port *intel_dig_port)
++static bool lspcon_init(struct intel_digital_port *intel_dig_port)
+ {
+ 	struct intel_dp *dp = &intel_dig_port->dp;
+ 	struct intel_lspcon *lspcon = &intel_dig_port->lspcon;
+-	struct drm_device *dev = intel_dig_port->base.base.dev;
+-	struct drm_i915_private *dev_priv = to_i915(dev);
+ 	struct drm_connector *connector = &dp->attached_connector->base;
+ 
+-	if (!HAS_LSPCON(dev_priv)) {
+-		DRM_ERROR("LSPCON is not supported on this platform\n");
+-		return false;
+-	}
+-
+ 	lspcon->active = false;
+ 	lspcon->mode = DRM_LSPCON_MODE_INVALID;
+ 
+@@ -586,3 +559,37 @@ bool lspcon_init(struct intel_digital_port *intel_dig_port)
+ 	DRM_DEBUG_KMS("Success: LSPCON init\n");
+ 	return true;
+ }
++
++void lspcon_resume(struct intel_digital_port *intel_dig_port)
++{
++	struct intel_lspcon *lspcon = &intel_dig_port->lspcon;
++	struct drm_device *dev = intel_dig_port->base.base.dev;
++	struct drm_i915_private *dev_priv = to_i915(dev);
++	enum drm_lspcon_mode expected_mode;
++
++	if (!intel_bios_is_lspcon_present(dev_priv, intel_dig_port->base.port))
++		return;
++
++	if (!lspcon->active) {
++		if (!lspcon_init(intel_dig_port)) {
++			DRM_ERROR("LSPCON init failed on port %c\n",
++				  port_name(intel_dig_port->base.port));
++			return;
++		}
++	}
++
++	if (lspcon_wake_native_aux_ch(lspcon)) {
++		expected_mode = DRM_LSPCON_MODE_PCON;
++		lspcon_resume_in_pcon_wa(lspcon);
++	} else {
++		expected_mode = DRM_LSPCON_MODE_LS;
++	}
++
++	if (lspcon_wait_mode(lspcon, expected_mode) == DRM_LSPCON_MODE_PCON)
++		return;
++
++	if (lspcon_change_mode(lspcon, DRM_LSPCON_MODE_PCON))
++		DRM_ERROR("LSPCON resume failed\n");
++	else
++		DRM_DEBUG_KMS("LSPCON resume success\n");
++}
+diff --git a/drivers/gpu/drm/i915/display/intel_lspcon.h b/drivers/gpu/drm/i915/display/intel_lspcon.h
+index 37cfddf8a9c5..169db35db13e 100644
+--- a/drivers/gpu/drm/i915/display/intel_lspcon.h
++++ b/drivers/gpu/drm/i915/display/intel_lspcon.h
+@@ -15,8 +15,7 @@ struct intel_digital_port;
+ struct intel_encoder;
+ struct intel_lspcon;
+ 
+-bool lspcon_init(struct intel_digital_port *intel_dig_port);
+-void lspcon_resume(struct intel_lspcon *lspcon);
++void lspcon_resume(struct intel_digital_port *intel_dig_port);
+ void lspcon_wait_pcon_mode(struct intel_lspcon *lspcon);
+ void lspcon_write_infoframe(struct intel_encoder *encoder,
+ 			    const struct intel_crtc_state *crtc_state,
+-- 
+2.17.1
+
