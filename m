@@ -2,124 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70EDD1C6CB1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 11:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0DFA1C6CBF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 11:21:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729016AbgEFJRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 05:17:15 -0400
-Received: from mx07-00178001.pphosted.com ([62.209.51.94]:4952 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728385AbgEFJRO (ORCPT
+        id S1728777AbgEFJVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 05:21:24 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:42788 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728385AbgEFJVX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 05:17:14 -0400
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04697PPv015737;
-        Wed, 6 May 2020 11:17:02 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=VqFBe3qF20cGOA89aBohpMcGBG6ZZWxJV16qNY9PmWo=;
- b=dDaNLch6Ij6B7YztMRN7x8yS+n+gqvuruXugu/ZEwu3IFMX0KXLTyoIxK9sTCUSxM5cS
- vdWZdsVrlDYFpgkn3uDbh6byBdO8nhSyeHaAlEm7i4YUoOrGxmpn7OjmFWggLX76/tfC
- 8pTFBysQpGf+PQZB9nS1HONCBE1kxYEfHaEM15qI2DIxFjuCM6YkVqigngdoFndGDHEP
- G6JgunUGZv5zfF9NdqLhj8tvFFNCMxfLhIB7GZpWFUsIfl12ltMRfb7jmaPVWoLwz4+B
- YG6Jo+hlb2tYCLXdLITJ+tiIKjPMjQpsvRfmEkG8v5HZTXYSW81t5UEjxqpaoKjp3yaF MA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 30rxmvn3gy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 May 2020 11:17:02 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B75BA100034;
-        Wed,  6 May 2020 11:17:01 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag6node2.st.com [10.75.127.17])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 957AE2AB47F;
-        Wed,  6 May 2020 11:17:01 +0200 (CEST)
-Received: from [10.211.5.75] (10.75.127.49) by SFHDAG6NODE2.st.com
- (10.75.127.17) with Microsoft SMTP Server (TLS) id 15.0.1347.2; Wed, 6 May
- 2020 11:17:00 +0200
-Subject: Re: [PATCH v3 00/10] add STM32 FMC2 EBI controller driver
-To:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <robh+dt@kernel.org>, <mark.rutland@arm.com>,
-        <gregkh@linuxfoundation.org>, <boris.brezillon@collabora.com>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <devicetree@vger.kernel.org>, <marex@denx.de>
-References: <1588698668-25288-1-git-send-email-christophe.kerello@st.com>
-From:   Christophe Kerello <christophe.kerello@st.com>
-Message-ID: <dd56b6cb-3e99-0365-b1e6-211549e0ef21@st.com>
-Date:   Wed, 6 May 2020 11:16:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        Wed, 6 May 2020 05:21:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588756881;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aIo2zuJchWCSmqy9y7JZdRjvNdfxtS8vv0xwKTDl+iM=;
+        b=SMwrOBLn+Apx9jMwm0pLX+bFiXqleUdeAVLWUYRL+dpRQLJ6rl5Pd1pb2Yiuq3BgopEwML
+        kvALd4BZ9dcPrp2F3VopHGbpPx+w5HjO2ldtVrldAWrEg7l2QmF3ta7fru7A9D8kjOw46I
+        6jWV846I4/Z3Zn9ASOVX7kBomu997J0=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-363-G5iF5F6aPiyCW8gfT-F_5g-1; Wed, 06 May 2020 05:21:20 -0400
+X-MC-Unique: G5iF5F6aPiyCW8gfT-F_5g-1
+Received: by mail-wr1-f70.google.com with SMTP id u4so996564wrm.13
+        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 02:21:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=aIo2zuJchWCSmqy9y7JZdRjvNdfxtS8vv0xwKTDl+iM=;
+        b=tuVAqITKexhTy7mfMuk98kgTY7XxVtKOPWO9djlBsuSoGiMmwZBQQ3u4CDlh0IObno
+         4VcB4+weXb4U72D1dz4vKsbMAIcXbzE5aphSYfHMSIS6PVUSfTH0xpaz/hpcEdbqubbB
+         NG7CF5twftEJm3nGnQsVOFn5/mcllNHWCE5WDYSu5ZW7/6LMip2cjVLZ6PCtP7sT/SYk
+         eXC5dA74VJR5tzaiozDbv8L0F6lEcu0rXuVRT0m/SmKrHSk0hvPwhg5+i4buiwgEX8uU
+         LEQPGnPXQQa9i8cKEyWqFvuyVYPW7KViMTzlLA6RpTGG6J+vTtIvzN9udoapzn2PhFNe
+         lO+Q==
+X-Gm-Message-State: AGi0PuaQbO5M/2pu0pW2B1Hm04kC6Y5/rwZbd2SHFoI57N+p4FkreW+N
+        X8jiO9OsXXCk7auztcJa2z/DmWyVoJUJt8hMu/NMBLCiVAC1q6gX/7bmdZ8EYpY3F/znf9668kX
+        etKicaISzXRhXrEMtG8bVoFAd
+X-Received: by 2002:a05:600c:225a:: with SMTP id a26mr3297082wmm.104.1588756879041;
+        Wed, 06 May 2020 02:21:19 -0700 (PDT)
+X-Google-Smtp-Source: APiQypIjTzrGAR4XHcO8KggyM1MB+dxXNV1av9LaxnOCk+jHtQJuOYZkS4SQDdtE1ApTxRl4oA/LKA==
+X-Received: by 2002:a05:600c:225a:: with SMTP id a26mr3297051wmm.104.1588756878796;
+        Wed, 06 May 2020 02:21:18 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:11d7:2f21:f38b:17e? ([2001:b07:6468:f312:11d7:2f21:f38b:17e])
+        by smtp.gmail.com with ESMTPSA id 1sm2125032wmz.13.2020.05.06.02.21.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 May 2020 02:21:18 -0700 (PDT)
+Subject: Re: [patch V4 part 2 15/18] x86/kvm/svm: Handle hardirqs proper on
+ guest enter/exit
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>
+References: <20200505134112.272268764@linutronix.de>
+ <20200505134341.579034898@linutronix.de>
+ <baf61125-72f4-5fd1-9ba1-6d55a2efdddd@redhat.com>
+ <87imh9o3e1.fsf@nanos.tec.linutronix.de>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <cade8b44-4330-2dc1-e490-c2f001cc1c95@redhat.com>
+Date:   Wed, 6 May 2020 11:21:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <1588698668-25288-1-git-send-email-christophe.kerello@st.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <87imh9o3e1.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG4NODE3.st.com (10.75.127.12) To SFHDAG6NODE2.st.com
- (10.75.127.17)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-05-06_03:2020-05-04,2020-05-06 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 06/05/20 10:48, Thomas Gleixner wrote:
+> So for instrumentation, especially interrupt disabled tracing we must
+> track that change otherwise a latency analysis would claim that
+> interrupts were disabled for the full time a task spent in user
+> mode.
 
-Please do not spend time to review v3.
-V4 has been pushed to fix an issue in YAML bindings.
+Oh okay, that's clear now.  I would just replace the four bullets in the
+first comment with this sentence, and remove altogether the three
+bullets in the second comment.
 
-Regards,
-Christophe Kerello.
+Thanks,
 
-On 5/5/20 7:10 PM, Christophe Kerello wrote:
-> The FMC2 functional block makes the interface with: synchronous and
-> asynchronous static devices (such as PSNOR, PSRAM or other memory-mapped
-> peripherals) and NAND flash memories.
-> Its main purposes are:
->    - to translate AXI transactions into the appropriate external device
->      protocol
->    - to meet the access time requirements of the external devices
-> All external devices share the addresses, data and control signals with the
-> controller. Each external device is accessed by means of a unique Chip
-> Select. The FMC2 performs only one access at a time to an external device.
-> 
-> Changes in v3:
->   - NAND:
->     - rename labels used on errors
->     - add in the commit log the reason to increase FMC2_TIMEOUT_MS (patch 3)
->     - add Miquel reviewed-by tag (patches 2/4/5/9)
->   - EBI:
->     - move in memory folder
->     - merge MFD and BUS drivers to avoid a MFD driver
->   - bindings:
->     - pattern name has been modified
->     - vendor properties have been modified
->       - s/_/-/
->       - add unit suffix (-ns) on timing properties
-> 
-> Christophe Kerello (10):
->    mtd: rawnand: stm32_fmc2: manage all errors cases at probe time
->    mtd: rawnand: stm32_fmc2: remove useless inline comments
->    mtd: rawnand: stm32_fmc2: use FMC2_TIMEOUT_MS for timeouts
->    mtd: rawnand: stm32_fmc2: cleanup
->    mtd: rawnand: stm32_fmc2: use FIELD_PREP/FIELD_GET macros
->    dt-bindings: mtd: update STM32 FMC2 NAND controller documentation
->    dt-bindings: memory-controller: add STM32 FMC2 EBI controller
->      documentation
->    memory: stm32-fmc2-ebi: add STM32 FMC2 EBI controller driver
->    mtd: rawnand: stm32_fmc2: use regmap APIs
->    mtd: rawnand: stm32_fmc2: get resources from parent node
-> 
->   .../memory-controllers/st,stm32-fmc2-ebi.yaml      |  261 +++++
->   .../bindings/mtd/st,stm32-fmc2-nand.yaml           |   19 +-
->   drivers/memory/Kconfig                             |   10 +
->   drivers/memory/Makefile                            |    1 +
->   drivers/memory/stm32-fmc2-ebi.c                    | 1206 ++++++++++++++++++++
->   drivers/mtd/nand/raw/Kconfig                       |    1 +
->   drivers/mtd/nand/raw/stm32_fmc2_nand.c             | 1176 ++++++++++---------
->   7 files changed, 2061 insertions(+), 613 deletions(-)
->   create mode 100644 Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.yaml
->   create mode 100644 drivers/memory/stm32-fmc2-ebi.c
-> 
+Paolo
+
