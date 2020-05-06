@@ -2,102 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FD2C1C7868
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 19:45:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98CC21C7841
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 19:43:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730453AbgEFRoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 13:44:38 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:32938 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730377AbgEFRod (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 13:44:33 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id D1D928000CF8;
-        Wed,  6 May 2020 17:44:30 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id dpFA3fEHy6Gk; Wed,  6 May 2020 20:44:29 +0300 (MSK)
-From:   <Sergey.Semin@baikalelectronics.ru>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Matthias Kaehlcke <mka@chromium.org>
-CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <stable@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, Yue Hu <huyue2@yulong.com>,
-        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 20/20] cpufreq: Return zero on success in boost sw setting
-Date:   Wed, 6 May 2020 20:42:38 +0300
-Message-ID: <20200506174238.15385-21-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20200506174238.15385-1-Sergey.Semin@baikalelectronics.ru>
-References: <20200306124807.3596F80307C2@mail.baikalelectronics.ru>
- <20200506174238.15385-1-Sergey.Semin@baikalelectronics.ru>
+        id S1730006AbgEFRnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 13:43:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59098 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728094AbgEFRnu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 13:43:50 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2CB86208DB;
+        Wed,  6 May 2020 17:43:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588787028;
+        bh=YZsANvSKjkoobhC/OjUVOA5jZyPR7sjiwNq8DDRVE/U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VCtirk6C29s2nVSDVOrYapTNbzYm63MyYgr17LGRvuO6vCElDhTgO1+AuvxTipmqG
+         hU7lSDiUy+reDa0qGe66XRwl8SHOYbjhgb/xFm/pdU41rZZlTXynq8HoV2/srgybxE
+         TuY+I2rNtSNHafGqhznobx5MCHS1gADJdc3idqQE=
+Date:   Wed, 6 May 2020 19:43:45 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jia-Ju Bai <baijiaju1990@gmail.com>
+Cc:     mchehab@kernel.org, kstewart@linuxfoundation.org,
+        tomasbortoli@gmail.com, sean@mess.org, allison@lohutok.net,
+        tglx@linutronix.de, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: usb: ttusb-dec: avoid buffer overflow in
+ ttusb_dec_handle_irq() when DMA failures/attacks occur
+Message-ID: <20200506174345.GA3711921@kroah.com>
+References: <20200505142110.7620-1-baijiaju1990@gmail.com>
+ <20200505181042.GD1199718@kroah.com>
+ <0e4a86ee-8c4e-4ac3-8499-4e9a6ed7bd1e@gmail.com>
+ <20200506110722.GA2975410@kroah.com>
+ <b3af10e3-8709-3da0-6841-e5ddd6b4a609@gmail.com>
+ <20200506155257.GB3537174@kroah.com>
+ <46615f6e-11ec-6546-42a9-3490414f9550@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <46615f6e-11ec-6546-42a9-3490414f9550@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+On Thu, May 07, 2020 at 12:48:47AM +0800, Jia-Ju Bai wrote:
+> 
+> 
+> On 2020/5/6 23:52, Greg KH wrote:
+> > On Wed, May 06, 2020 at 11:30:22PM +0800, Jia-Ju Bai wrote:
+> > > 
+> > > On 2020/5/6 19:07, Greg KH wrote:
+> > > > On Wed, May 06, 2020 at 06:13:01PM +0800, Jia-Ju Bai wrote:
+> > > > > I have never modified DMA memory in the real world, but an attacker can use
+> > > > > a malicious device to do this.
+> > > > > There is a video that shows how to use the Inception tool to perform DMA
+> > > > > attacks and login in the Windows OS without password:
+> > > > > https://www.youtube.com/watch?v=HDhpy7RpUjM
+> > > > If you have control over the hardware, and can write to any DMA memory,
+> > > > again, there's almost nothing a kernel can do to protect from that.
+> > > I think that each device can only access its own DMA memory, instead of any
+> > > DMA memory for other hardware devices.
+> > That's not true at all for all systems that Linux runs on.
+> 
+> I am not sure to understand this.
+> For example, a driver requests DMA memory with "len" size by using:
+>    mem = dma_alloc_coherent(..., len, ...);
+> I think that the driver can only access DMA memory between "mem" and "mem +
+> len", is it true?
+> Can the driver access other DMA memory using some code like "mem + len *
+> 10"?
 
-Recent commit e61a41256edf ("cpufreq: dev_pm_qos_update_request() can
-return 1 on success") fixed a problem when active policies traverse
-was falsely stopped due to invalidly treating the non-zero return value
-from freq_qos_update_request() method as an error. Yes, that function
-can return positive values if the requested update actually took place.
-The current problem is that the returned value is then passed to the
-return cell of the cpufreq_boost_set_sw() (set_boost callback) method.
-This value is then also analyzed for being non-zero, which is also
-treated as having an error. As a result during the boost activation
-we'll get an error returned while having the QOS frequency update
-successfully performed. Fix this by returning a negative value from the
-cpufreq_boost_set_sw() if actual error was encountered and zero
-otherwise treating any positive values as the successful operations
-completion.
+Depends on the hardware platform.
 
-Fixes: 18c49926c4bf ("cpufreq: Add QoS requests for userspace constraints")
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
-Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Paul Burton <paulburton@kernel.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: linux-mips@vger.kernel.org
-Cc: devicetree@vger.kernel.org
-Cc: stable@vger.kernel.org
----
- drivers/cpufreq/cpufreq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> > > A feasible example is that, the attacker inserts a malicious device via
+> > > PCI-E bus in a locked computer, when the owner of this computer leaves.
+> > This is a semi-well-known issue.  It's been described in the past
+> > regarding thunderbolt devices, and odds are, more people will run across
+> > it again in the future and also complain about it.
+> > 
+> > The best solution is to solve this at the bus level, preventing
+> > different devices access to other memory areas.
+> > 
+> > And providing physical access control to systems that you care about
+> > this type of attack for.
+> > 
+> > Again, this isn't a new thing, but the ability for us to do much about
+> > it depends on the specific hardware control, and how we set defaults up.
+> 
+> Yes, I agree that this issue is not new, because DMA attacks are old
+> problems.
+> But I am a little surprised that many current drivers are still vulnerable
+> to DMA attacks.
 
-diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-index 045f9fe157ce..5870cdca88cf 100644
---- a/drivers/cpufreq/cpufreq.c
-+++ b/drivers/cpufreq/cpufreq.c
-@@ -2554,7 +2554,7 @@ static int cpufreq_boost_set_sw(int state)
- 			break;
- 	}
- 
--	return ret;
-+	return ret < 0 ? ret : 0;
- }
- 
- int cpufreq_boost_trigger_state(int state)
--- 
-2.25.1
+Given that the attack vector is very hard to actually do, that's not
+a suprise.
 
+It's only a very recent thing that Linux drivers have started to work on
+"we don't trust the data coming from the hardware" path.  Previously we
+always trusted that, but did not trust data coming from userspace.  So
+work on fixing up drivers in this area is always encouraged.
+
+An example of this would be all of the fuzzing that USB drivers have
+been getting with custom loop-back interfaces and the like over the past
+year or so.  Expanding that to "we don't trust PCI device data" should
+be the next step on this, and would help out your area as well.
+
+> > If you trust a device enough to plug it in, well, you need to trust it
+> > :)
+> 
+> Well, maybe I need to trust all devices in my computer :)
+> 
+> Anyway, thanks a lot for your patient explanation and reply.
+> If you have encountered other kinds of DMA-related bugs/vulnerabilities,
+> maybe I can help to detect them using my static-analysis tool :)
+
+Did you only find a problem in this one driver?  Have you run it on any
+more "complex" drivers and gotten any good results showing either that
+we are programming defensively in this area, or not?
+
+thanks,
+
+greg k-h
