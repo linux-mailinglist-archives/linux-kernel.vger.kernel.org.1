@@ -2,109 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ACED1C7DB8
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 01:05:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A75301C7DBF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 01:10:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726809AbgEFXF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 19:05:28 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:48776 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726612AbgEFXF1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 19:05:27 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 488E41C0241; Thu,  7 May 2020 01:05:26 +0200 (CEST)
-Date:   Thu, 7 May 2020 01:05:25 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     kernel list <linux-kernel@vger.kernel.org>,
-        linux-omap@vger.kernel.org, sre@kernel.org, nekit1000@gmail.com,
-        mpartap@gmx.net, merlijn@wizzup.org, martin_rysavy@centrum.cz
-Subject: Re: USB networking news, ofono for d4: less hacked version
-Message-ID: <20200506230525.GA22354@amd>
-References: <20200506101125.GA7490@amd>
- <20200506144338.GT37466@atomide.com>
+        id S1726946AbgEFXKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 19:10:13 -0400
+Received: from ozlabs.org ([203.11.71.1]:59205 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725782AbgEFXKM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 19:10:12 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49HXPG6MQ3z9sRY;
+        Thu,  7 May 2020 09:10:10 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1588806611;
+        bh=NKbfujZOrLKWiiQan91ejfOyxp39jVb/mWO081cKRBs=;
+        h=Date:From:To:Cc:Subject:From;
+        b=T+Tqy3V3UEci8qprSLZ2J2rGNBVYGDgYx5V4f+9k7dT1dCt5wiVo9UXn17TF5jo8j
+         8ozNA87gyfNrBiVJfHyiz1llOWdFQNaBNvqrkmFMuBHMtJRWxgHGl1BxF1OawogVRk
+         /JKEZbluevfh6Ro6X4dijZX6KqS6cK0/PdCXw8XUXRxId39GiaFAhtivks+7vXr2rx
+         mXBLgGR5SUi3yNWdgd/UH3NSQy2qUtFCAi1gRm8SkOSb48fcTyRbKIBJM1BXCB6VGi
+         C6SwpjLrocsBGGzTrVlaa8Ee5Np13rMwHQXI7ezhsHnav/7ffRJxxzt0P+dlE8aOvG
+         pKZTyOfWq5+4g==
+Date:   Thu, 7 May 2020 09:10:08 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Joel Stanley <joel@jms.id.au>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Manikandan Elumalai <manikandan.hcl.ers.epl@gmail.com>,
+        Andrew Jeffery <andrew@aj.id.au>, Vijay Khemka <vkhemka@fb.com>
+Subject: linux-next: build warning after merge of the aspeed tree
+Message-ID: <20200507091008.1bd38185@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="x+6KMIRAuhnl3hBn"
-Content-Disposition: inline
-In-Reply-To: <20200506144338.GT37466@atomide.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: multipart/signed; boundary="Sig_/fVJI0q5=a9ABUMQKFYa7GSl";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---x+6KMIRAuhnl3hBn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--Sig_/fVJI0q5=a9ABUMQKFYa7GSl
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-On Wed 2020-05-06 07:43:38, Tony Lindgren wrote:
-> * Pavel Machek <pavel@ucw.cz> [200506 10:12]:
-> > Hi!
-> >=20
-> > So... I found out that USB networking works way better when I don't
-> > attempt to charge the phone at the same. Yes, green light was
-> > blinking.
->=20
-> OK yes we don't have much of a charger detection currently and the
-> charger tries to reconnect with the LED blinking rapidly with an
-> empty battery.
+Hi all,
 
-Do you have an idea why that causes problems with usb data connection?
+After merging the aspeed tree, today's linux-next build (arm
+multi_v7_defconfig) produced this warning:
 
-I created a script to disable charging -- and that works. I also found
-out cable about 5cm long. Not nice to use, but works significantly
-better w.r.t. charging.
+arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev2.dts:126.11-130.4: Warning =
+(i2c_bus_reg): /ahb/apb/bus@1e78a000/i2c-bus@80/ipmb1@10: I2C bus unit addr=
+ess format error, expected "40000010"
+arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev2.dts:128.3-30: Warning (i2c=
+_bus_reg): /ahb/apb/bus@1e78a000/i2c-bus@80/ipmb1@10:reg: I2C address must =
+be less than 10-bits, got "0x40000010"
+arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev2.dts:137.11-141.4: Warning =
+(i2c_bus_reg): /ahb/apb/bus@1e78a000/i2c-bus@100/ipmb3@10: I2C bus unit add=
+ress format error, expected "40000010"
+arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev2.dts:139.3-30: Warning (i2c=
+_bus_reg): /ahb/apb/bus@1e78a000/i2c-bus@100/ipmb3@10:reg: I2C address must=
+ be less than 10-bits, got "0x40000010"
+arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev2.dts:148.11-152.4: Warning =
+(i2c_bus_reg): /ahb/apb/bus@1e78a000/i2c-bus@180/ipmb5@10: I2C bus unit add=
+ress format error, expected "40000010"
+arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev2.dts:150.3-30: Warning (i2c=
+_bus_reg): /ahb/apb/bus@1e78a000/i2c-bus@180/ipmb5@10:reg: I2C address must=
+ be less than 10-bits, got "0x40000010"
+arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev2.dts:159.11-163.4: Warning =
+(i2c_bus_reg): /ahb/apb/bus@1e78a000/i2c-bus@300/ipmb7@10: I2C bus unit add=
+ress format error, expected "40000010"
+arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev2.dts:161.3-30: Warning (i2c=
+_bus_reg): /ahb/apb/bus@1e78a000/i2c-bus@300/ipmb7@10:reg: I2C address must=
+ be less than 10-bits, got "0x40000010"
 
-> > To github.com:pavelmachek/ofono.git
-> >    e7b58fdd..1e7e5ce3  mux-v1.19-2 -> mux-v1.19-2
-> >=20
-> > which creates copy of atchat, so I don't damage existing
-> > functionality. It still seems to somehow work. Lot more work is still
-> > needed. Designed to work with latest kernel patches from Tony, using
-> > gsmmux interfaces.
->=20
-> OK, sounds like that should work :)
+Introduced by commit
 
-As I said, still ton of work to do :-(.
+  266056d3c61d ("ARM: dts: aspeed: Adding Facebook Yosemite V2 BMC")
 
-> I still need to figure update audio notifications for the current set of
-> gsmmux patches. Eventually maybe ofono can just set the voice call audio
-> routing using alsa. But let's get the kernel notifications working first
-> as we also need to fix up the audio parts for the earlier comments from
-> Peter and Sebastian.
-
-Ofono does not normally touch ALSA, so I'd prefer not to do it from
-there.
-
-But I might be confused. I recall some audio patches were needed for
-basic phone calls (setting up mixers to connect gsm<->audio), but
-those worked before gsmux support was enabled. (Maybe some hardcoded
-commands were needed to be sent to gsmmux somewhere).
-
-I assume neither gsmmux audio parts nor mixer parts are available in
--next at the moment?
-
-Best regards,
-									Pavel
 --=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
+Cheers,
+Stephen Rothwell
 
---x+6KMIRAuhnl3hBn
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+--Sig_/fVJI0q5=a9ABUMQKFYa7GSl
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
 
-iEYEARECAAYFAl6zQrUACgkQMOfwapXb+vJF1QCgqarLMWC4FO5LgMlW6LlCOlI2
-dhkAnRHc+zX0noNocp+CI5Hd0uRb0qFk
-=gjFT
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl6zQ9AACgkQAVBC80lX
+0Gw1lAf/RlzuiNx5cyhETGU6NBKJPZjTeo6NIRHXVwQ7q7exJrzYb+nhDQ4bFbPj
+2TbXoFijAIsATRED8hktXA081LSC/MzJo0rX6qHNmhDQWvO/RtGvKRvSloTHzB6E
+21JlC8zQpy64HJAmpMRHax8/1ITQwjtpPUng/a6lXoC4RpkRQYE5jZIFkkMG2OS7
+p/AojtKjN+NorqWc/G66jNh2P68/jmsq21yvXRB/lq08nPS4rA1Kg3s128hQ717Q
+P50gum7/hJmmbixaphk+xyylDgL1hJS2ObkPtjEnDAux/7hulXahT8Ib7Jxysrao
+eilmKFe2gYF0DaD/jzuInK8j/JWgLQ==
+=8pUC
 -----END PGP SIGNATURE-----
 
---x+6KMIRAuhnl3hBn--
+--Sig_/fVJI0q5=a9ABUMQKFYa7GSl--
