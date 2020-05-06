@@ -2,65 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96E651C7321
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 16:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C5AA1C732A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 16:43:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729244AbgEFOmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 10:42:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52094 "EHLO
+        id S1729265AbgEFOn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 10:43:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728712AbgEFOmb (ORCPT
+        with ESMTP id S1728769AbgEFOn2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 10:42:31 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95C53C061A0F;
-        Wed,  6 May 2020 07:42:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=PhdajbNn68yKLUpzBA64THvXTzqUMkhchAQNlpDFb4w=; b=faoi2zfZ65krF7BF3qUUJfKYRx
-        cniqB35eZxuYkKsNE+7KTwE4viLklY4E1t/hGQSOOiWztg9Mq00mIdcIzK0zkhTINMU6h7yaUVZrB
-        ZIFO1J0yGUnSvXTzi/E9QUILDu1ewOueuKnXU4GiY22Q5XuGKkOu4Lnj8dTPZ0CJ78sdHlTLVg4sp
-        uVb7g4b/xrl3q3R+euu8YSifXQmYB8AyWndN64wjgz01U+b4rUyKR1yf3WvHSSgf1Jy1QigWdNp2n
-        0iNhSgsNZJ5ipXOEoPNwb/vx7SM9/rHiMNAM7/17epxZmS6hX8z3nlAdbQ7+0H2fZezfwp6s2I76C
-        t7RSQVFg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jWLFQ-0001wI-Ty; Wed, 06 May 2020 14:42:08 +0000
-Date:   Wed, 6 May 2020 07:42:08 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Huacai Chen <chenhc@lemote.com>
-Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH v6] MIPS: Loongson: Add DMA support for LS7A
-Message-ID: <20200506144208.GD27643@infradead.org>
-References: <1588213867-32274-1-git-send-email-yangtiezhu@loongson.cn>
- <CAAhV-H5QBOnrqVbMfGf7H5vJ6UMhUxhkCqAzZiwRFn_VwTQHpA@mail.gmail.com>
- <7d7f6211-f6bc-daae-5b13-b54092e762a1@loongson.cn>
- <CAAhV-H7jX9uVwb+GnaKXHPBsBQY35YKccbDedLrmfp8-hveVfw@mail.gmail.com>
+        Wed, 6 May 2020 10:43:28 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5752C061A0F
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 07:43:27 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id g16so2269093eds.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 07:43:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ef/MKYQ5o7wpBd5E71PdTHAAiX3bVS8q0Det6zmMp4Q=;
+        b=kHo6MP4xV9gm4/l+y1zeMl6BZmIh4tyBgNceSvc1sj4c0mBeUd+sfY5iEdBNCMVBgb
+         NZFCLkjHOvl5CPqyBnzmT0ZUKNDWR3vnF7n6cNymuecK4Njt6bDFLuOBQWW5HBfeaLaW
+         ZucfMCs91UG2RjL2FPRatRYJVHM/aydwKKoFyW+9sZytQn/8NMFa0VH8enDH5vpye3p3
+         2GLUyWbFaQhgsxGtgpqsVdJRMCm8f6BbqHMShngToRtlL48x5zA2YBxyUKU1eJcwJaMD
+         kHpUZNXKvuyOh2DML/71BOy1W5/n8qXvsevImRFjk7m4yo163Us3B2kTv4k2gN2vm98V
+         nibw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ef/MKYQ5o7wpBd5E71PdTHAAiX3bVS8q0Det6zmMp4Q=;
+        b=gK5Hv/GG8KWxkskyD+lCDAp/7iYmC9U5lZh1rfY9HH5Xl+EY0wJ2A3lfGNO/4rEckg
+         aNpccf0Kw98beQTgpju9jQLjI2iOb+wMjk/v43qr4665dhcRFksWN1wuRvc8Q4DHPUmj
+         gmvo6oiI7TD25MiWUbjstxJalV6I12QMCq1yCs2ep8kYv1ESHcgoKR22Bg2fBs2Ptn27
+         NPMY7YMj4yxQPwfnT8mbDIqguH/dvZhKy+b0LeYeZnm5U71DMjIAEjybQXKFp5XjgQut
+         USmExZvv0JHDumr7yJJEsIGnS5TCUQNNqJRuOZExATLegWzlA76ObKMyi0n15PDG15T5
+         EVvg==
+X-Gm-Message-State: AGi0PuavabAZ9gdvcb2whceIpBgufTHwdduVkJWXiFQiLVp90S74ldqg
+        p02f4XiJJ0vbTMzYrseX9wKLscE0sC7TIBoHX9pKRw==
+X-Google-Smtp-Source: APiQypL1/pQhGhyT2fS1Xsi31EQjwmxdDLv/iuU0yAlT0rFz+35SEDcoonWukDS/42xAWz6GHbKUXAKV9/7RdIOywsI=
+X-Received: by 2002:a05:6402:356:: with SMTP id r22mr7716142edw.3.1588776206549;
+ Wed, 06 May 2020 07:43:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAhV-H7jX9uVwb+GnaKXHPBsBQY35YKccbDedLrmfp8-hveVfw@mail.gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+References: <20200505154510.93506-1-pasha.tatashin@soleen.com>
+ <20200505154510.93506-3-pasha.tatashin@soleen.com> <202005051444.14B6686@keescook>
+In-Reply-To: <202005051444.14B6686@keescook>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Wed, 6 May 2020 10:42:50 -0400
+Message-ID: <CA+CK2bA1_5e8HCwfMJSsCuN7qjRKYTNY2Q-UbJGGVPAEfZVgaw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/5] pstore/platform: pass max_reason to kmesg dump
+To:     Kees Cook <keescook@chromium.org>
+Cc:     James Morris <jmorris@namei.org>, Sasha Levin <sashal@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>, anton@enomsg.org,
+        ccross@android.com, Tony Luck <tony.luck@intel.com>,
+        robh+dt@kernel.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 06, 2020 at 04:47:30PM +0800, Huacai Chen wrote:
-> > For the above reasons, I think what you are concerned is not a
-> > big deal.
-> I don't think so, this is obviously a regression. If we can accept a
-> regression of RS780E, why we still maintain Loongson-2EF rather than
-> simply drop them?
+On Tue, May 5, 2020 at 5:59 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Tue, May 05, 2020 at 11:45:07AM -0400, Pavel Tatashin wrote:
+> > Add a new field to pstore_info that passes information about kmesg dump
+> > maximum reason.
+> >
+> > This allows a finer control of what kmesg dumps are stored on pstore
+> > device.
+> >
+> > Those clients that do not explicitly set this field (keep it equal to 0),
+> > get the default behavior: dump only Oops and Panics, and dump everything
+> > if printk.always_kmsg_dump is provided.
+> >
+> > Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+> > ---
+> >  fs/pstore/platform.c   | 4 +++-
+> >  include/linux/pstore.h | 3 +++
+> >  2 files changed, 6 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/fs/pstore/platform.c b/fs/pstore/platform.c
+> > index 408277ee3cdb..75bf8a43f92a 100644
+> > --- a/fs/pstore/platform.c
+> > +++ b/fs/pstore/platform.c
+> > @@ -602,8 +602,10 @@ int pstore_register(struct pstore_info *psi)
+> >       if (pstore_is_mounted())
+> >               pstore_get_records(0);
+> >
+> > -     if (psi->flags & PSTORE_FLAGS_DMESG)
+> > +     if (psi->flags & PSTORE_FLAGS_DMESG) {
+> > +             pstore_dumper.max_reason = psinfo->max_reason;
+> >               pstore_register_kmsg();
+> > +     }
+>
+> I haven't finished reading the whole series carefully, but I think
+> something we can do here to make things a bit more user-friendly is to
+> do the KMSG_DUMP_UNDEF value here to get us the "all" instead of INT_MAX:
+>
+>         if (psi->flags & PSTORE_FLAGS_DMESG) {
+>                 pstore_dumper.max_reason = psinfo->max_reason;
+>                 if (pstore_dumper.max_reason == KMSG_DUMP_UNDEF)
+>                         pstore_dumper.max_reason = KMSG_DUMP_MAX;
+>                 pstore_register_kmsg();
+>         }
+>
+> That way setting max_reason to 0 without setting dump_oops at all will
+> get "all". I think it'll need some tweaks to the next patch.
 
-While I much prefer to use the default, regression an otherwise
-working platform seems like a bad idea.  I don't really know much
-about the Loongson platforms, do they all boot using the same kernel
-image?
+Hm, but if we change it this way, it will change the behavior for
+other backends. With the current version of this patchset,
+when psinfo->max_reason is left undefined (0, KMSG_DUMP_UNDEF) -> the
+existing behaviour is honored, which means: printk chooses the kmesg
+dump level, and users can set dump for all reasons via printk
+always_kmsg_dump. This is what efi-pstore, erst, and nvram_64 are
+currently doing, and I am not sure we should change that.
+However, with the proposed change if the backend specifically sets
+max_reason: printk will use it and ignore always_kmsg_dump.
+
+Thank you,
+Pasha
