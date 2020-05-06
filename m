@@ -2,141 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D05C1C6DD2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 11:57:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58E051C6DC7
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 11:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729307AbgEFJ5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 05:57:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35832 "EHLO
+        id S1729191AbgEFJ5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 05:57:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729299AbgEFJ5r (ORCPT
+        by vger.kernel.org with ESMTP id S1728663AbgEFJ5d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 05:57:47 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2935C061A0F
-        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 02:57:46 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id x136so621412vsx.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 02:57:46 -0700 (PDT)
+        Wed, 6 May 2020 05:57:33 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9619C061A0F
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 02:57:32 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id 188so801513lfa.10
+        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 02:57:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=verdurent-com.20150623.gappssmtp.com; s=20150623;
+        d=android.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=cLVRESBoKPDQJtZ+ThuiAcYI3TdQCvmpu5N5ap/84vg=;
-        b=QvHcHNJv4TLk4yeHfEs21Cb+swsgc5BqyQVaDr8vGh+oOkIyjdNVK6vBnsXKt1Ro9p
-         lrbWbY9rsYAi6JYMsF181p9daiS8QWD+IGymftoG3EZHH7QOWQ8B704TB8nGmamk5N0/
-         UcjaM/2y/cqADBsPMReZoS3BUAf7j50WZZo6mRAVi2C3JyeTqzjhgNLISHmn+Wi7wSZ9
-         DmFgpjYKj+Iq8cdZyHzkwPUNn9cl+6zFjGKtkD2UE4xcQ70GFSHB9M1QyCPFzHABYV57
-         ZnRi4yBgQdUQelQh1HBHv32p1LwaKnuyUf7AfoAPkacmfXnsltTrRNejAN8HBeSPOuaF
-         5Eyg==
+        bh=3IciAwSgUVdB2/0PlCfDzeZhlzx2IzeWzIis4PFV64U=;
+        b=rjnasmRUS1qEdjQp+ja6ha+agOWNjFUJ0msq1PCXadJGzv7jxsQw6WX+NoEgi2nRWQ
+         KCdRe7egxySgra2xJjU2E/AXfi0H7SNJVzEGctfHwMYVzWtkPFNj62uxoq3xhoRsr1Nb
+         r3OhCQW9bCzOSwwCvogQnjH0NHyzKOXeCsqr4Qha1IkNlOFtq9X1SnfpNQqWE+MWQdKv
+         G3UyZzqao+FN4/VlQPr4Jy/EyIAFIKuihtkJ0swRQTBVAVUNmgGrTF1xtH4wmBwyCus/
+         S/+wx9Wl1EaSF62yyCN0rVRaw4bmGSaj//EWLvwNBXkV5M7+adjdhIC/5VMpESg6YA1Q
+         27BQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=cLVRESBoKPDQJtZ+ThuiAcYI3TdQCvmpu5N5ap/84vg=;
-        b=KUPHPNIpGu2TA6hMlDn79q6B3XcrrpP70bcoWkouU+fYeF73H4QYcNXxIuTGGGmveY
-         htPQe93LfOctD9c1eOa8qZX1eHUU3p2zq88y69ETyDn22uLL6Xb6QfFbTrC8eTdIfidt
-         czPeQPhmtpCqIffnTKKS+WvmJyYNbci4WNXMoDK251UuMALc/Qm0DBHG2mbR1VxB2pEl
-         m1DrCoLR1yUMvWbHldJVTa74Gjm2udPB2Y4YgN15rD/IKqhO4pPsyD6zM0L3F+fUzI7X
-         B0GmRALiH6aBNA7aLrcdB7MTpy6OosRA5OOec4bhXV+jWuYuEnHkKkvWYIa00qhShgW7
-         dYRw==
-X-Gm-Message-State: AGi0PuZ3YLwZaxcBO4c7iMgb6guRVGHLj7GfLr5TCV8QyTDsZLDLAdDs
-        SJj+D6qKTda3Y8/NhF3pf7BxQAsPyDX6Bme0aj9EtQ==
-X-Google-Smtp-Source: APiQypKLOZf+1q8lOTy5vDVF1evQNddQakrlqUF5XgociHzpoFintL/zhnSsv06HVF3oEHG2Eb1/X7JPOcMW2F7Qklo=
-X-Received: by 2002:a05:6102:407:: with SMTP id d7mr6020126vsq.159.1588759065941;
- Wed, 06 May 2020 02:57:45 -0700 (PDT)
+        bh=3IciAwSgUVdB2/0PlCfDzeZhlzx2IzeWzIis4PFV64U=;
+        b=iWqthbWhBMB5pxa0bra7TT4NZGpi0rMLP0bKQSdDp/lNWabICv7zFK2+SNoCSMS4bg
+         lgcI4uy22ZzXcAZE5HORvRVcLzdDJD8Aj96aAq6rJEwPzX94cReivuRFM9h8qMw0EyOC
+         eo2EEXhMD1kPXvLXBz6tgfN/vy0juODOynBbw1puzLYAxhR/isvl37sgbNq/8DdOJM6Z
+         1jqAw5ZemknI5CGObId35Y9ytE4tsY3UATVO4Odvf29MM42thN44LrPZlytZP+r0UfTo
+         HNuECdsQRrlDqMM5Edx1fq9ZTFzm1racNKi9jyyWsUegtYs4y9GBlpX16bj172nwhFG4
+         4/bA==
+X-Gm-Message-State: AGi0PuYiwx3skR3JUHB2WNiICqyD9YJ84VHqDiIZSkjf8B2EBM3evGzK
+        6umgXi72RVVzX43ssCTGWbl0X9+vMUIlcXMGmQafCQ==
+X-Google-Smtp-Source: APiQypKjKckRZENGEavMmGfKLuKsPiGZebpMxZI0LFDcf1uG4zlU1bqJhKI4tYpjLuic788pKPSvUVEiOIwiVaqSoXY=
+X-Received: by 2002:ac2:5988:: with SMTP id w8mr4606822lfn.75.1588759051401;
+ Wed, 06 May 2020 02:57:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200429103644.5492-1-daniel.lezcano@linaro.org> <20200429103644.5492-4-daniel.lezcano@linaro.org>
-In-Reply-To: <20200429103644.5492-4-daniel.lezcano@linaro.org>
-From:   Amit Kucheria <amit.kucheria@verdurent.com>
-Date:   Wed, 6 May 2020 15:27:10 +0530
-Message-ID: <CAHLCerPJkwi9o5p6UheC+bkdkSYu1fZu5jjWrOjWeSk8+R75ZQ@mail.gmail.com>
-Subject: Re: [PATCH v4 4/4] thermal: cpuidle: Register cpuidle cooling device
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        "open list:CPU IDLE TIME MANAGEMENT FRAMEWORK" 
-        <linux-pm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:CPUIDLE DRIVER - ARM PSCI" 
-        <linux-arm-kernel@lists.infradead.org>
+References: <20200429140341.13294-1-maco@android.com> <20200429140341.13294-11-maco@android.com>
+ <7d73bafe-5228-b02e-5b53-4a41543aebe3@gmail.com>
+In-Reply-To: <7d73bafe-5228-b02e-5b53-4a41543aebe3@gmail.com>
+From:   Martijn Coenen <maco@android.com>
+Date:   Wed, 6 May 2020 11:57:20 +0200
+Message-ID: <CAB0TPYGKmbeNt94CSMhXd0EuFpSM14DEYAwoGdhY79s=H9o1+g@mail.gmail.com>
+Subject: Re: [PATCH v4 10/10] loop: Add LOOP_CONFIGURE ioctl
+To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+        Ming Lei <ming.lei@redhat.com>,
+        Narayan Kamath <narayan@google.com>,
+        Zimuzo Ezeozue <zezeozue@google.com>, kernel-team@android.com,
+        Martijn Coenen <maco@google.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 4:07 PM Daniel Lezcano
-<daniel.lezcano@linaro.org> wrote:
->
-> The cpuidle driver can be used as a cooling device by injecting idle
-> cycles. The DT binding for the idle state added an optional
+On Wed, May 6, 2020 at 11:44 AM Michael Kerrisk (man-pages) >
+> Can we have also a patch for the loop.4 manual page please?
 
-Incomplete sentence.
+Ack, will do when the series lands.
 
-> When the property is set, register the cpuidle driver with the idle
-> state node pointer as a cooling device. The thermal framework will do
-> the association automatically with the thermal zone via the
-> cooling-device defined in the device tree cooling-maps section.
->
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Best,
+Martijn
 
-Conditionally,
-
-Reviewed-by: Amit Kucheria <amit.kucheria@linaro.org>
-
-
-> ---
->  - V4:
->    - Do not check the return value as the function does no longer return one
-> ---
->  drivers/cpuidle/cpuidle-arm.c  | 3 +++
->  drivers/cpuidle/cpuidle-psci.c | 3 +++
->  2 files changed, 6 insertions(+)
 >
-> diff --git a/drivers/cpuidle/cpuidle-arm.c b/drivers/cpuidle/cpuidle-arm.c
-> index 9e5156d39627..8c758920d699 100644
-> --- a/drivers/cpuidle/cpuidle-arm.c
-> +++ b/drivers/cpuidle/cpuidle-arm.c
-> @@ -8,6 +8,7 @@
+> Thanks,
 >
->  #define pr_fmt(fmt) "CPUidle arm: " fmt
+> Michael
 >
-> +#include <linux/cpu_cooling.h>
->  #include <linux/cpuidle.h>
->  #include <linux/cpumask.h>
->  #include <linux/cpu_pm.h>
-> @@ -124,6 +125,8 @@ static int __init arm_idle_init_cpu(int cpu)
->         if (ret)
->                 goto out_kfree_drv;
 >
-> +       cpuidle_cooling_register(drv);
-> +
->         return 0;
->
->  out_kfree_drv:
-> diff --git a/drivers/cpuidle/cpuidle-psci.c b/drivers/cpuidle/cpuidle-psci.c
-> index bae9140a65a5..1f38e0dfc9b2 100644
-> --- a/drivers/cpuidle/cpuidle-psci.c
-> +++ b/drivers/cpuidle/cpuidle-psci.c
-> @@ -9,6 +9,7 @@
->  #define pr_fmt(fmt) "CPUidle PSCI: " fmt
->
->  #include <linux/cpuhotplug.h>
-> +#include <linux/cpu_cooling.h>
->  #include <linux/cpuidle.h>
->  #include <linux/cpumask.h>
->  #include <linux/cpu_pm.h>
-> @@ -313,6 +314,8 @@ static int __init psci_idle_init_cpu(int cpu)
->         if (ret)
->                 goto out_kfree_drv;
->
-> +       cpuidle_cooling_register(drv);
-> +
->         return 0;
->
->  out_kfree_drv:
 > --
-> 2.17.1
->
+> Michael Kerrisk
+> Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+> Linux/UNIX System Programming Training: http://man7.org/training/
