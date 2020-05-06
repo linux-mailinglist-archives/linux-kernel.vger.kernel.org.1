@@ -2,42 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 778841C7457
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:25:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12B8D1C7432
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:21:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729611AbgEFPW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 11:22:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37682 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729251AbgEFPWy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 11:22:54 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BC3B52145D;
-        Wed,  6 May 2020 15:22:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588778574;
-        bh=57079+qnXPUNMO3c6YCLvvIFq90fxJ/NQOEsELRQXB8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0nzpQdYR3XX/fLVUUF9iOloyVxjrr5RxjwxhIrcGoKWWDKl/QArlCQIBbyQC0NGaM
-         sX408xIpgUDJIKKzIfuQfPTgQIwm6mdfx68y0o+TKqUwOr24aY4H3QC9wiWiXqhKTN
-         5Ud+vH9liGJsVKGUUsfA85yAcdvpJhF/Fkoz1hKM=
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-        Clark Williams <williams@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Jagadeesh Pagadala <jagdsh.linux@gmail.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 03/91] perf evlist: Remove duplicate headers
-Date:   Wed,  6 May 2020 12:21:06 -0300
-Message-Id: <20200506152234.21977-4-acme@kernel.org>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20200506152234.21977-1-acme@kernel.org>
-References: <20200506152234.21977-1-acme@kernel.org>
+        id S1729450AbgEFPVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 11:21:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729415AbgEFPVp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 11:21:45 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE6D1C061A41
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 08:21:45 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id t11so1242662pgg.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 08:21:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=abGIv/DdrNJt2Rz7dowQp90zZu4jBR2B6nuWuRnKkME=;
+        b=U9O3LFB1qlKclxe075qGu5xo3xrMDDz7IOdPPcNMZfhaK6oU8/KaCqfVrFbBojb+kF
+         RlstceOC3w4CsecV9rpMFOOR6f6gbx/qyvrTcLsqwy08jxuVW5VfpTDh4ZGVdF70hRDK
+         zrri0EQ9i7U7MezqI+VW/QkhRMsJTYHgj0wIs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=abGIv/DdrNJt2Rz7dowQp90zZu4jBR2B6nuWuRnKkME=;
+        b=SX27mw8oE9NhFm0dtk7PHHBXRSnA8QlKDGtcLu2ftCHvPC7zV+qO+BAeWIHw9+bz/I
+         fr/RVKIfnoOHmqxXANK1D3zNsbLpW+Q94XjvE66Wx6STMi1BK96X5sr5qVtojCb9fAAP
+         F33dNGdicAGwWLruDJM6zdlM6Xfnim4WRWGXnFX6mSEc8hBtCU7Vv/IePaF3GYWADBoT
+         oLb/U2Oq9j0aLQGyYDPOxJYTICZ7hez13uCO1PC0NGiDip3qPbQqElBlrrOk57Gkb88a
+         dEl1ixhSonjrb2+ZL/ydWdnjGdGSZrz+4rTjw+OKi++0etDywKodxQijeFbpbwlgtUc7
+         cw2A==
+X-Gm-Message-State: AGi0PuZ3Sf2pSIbDEwxkaoOSEn3TlcGPeMpU42J+kI/pJKCXxF0Z+qwX
+        CUzFi3YSx8cTGtPeybAkLmfSqA==
+X-Google-Smtp-Source: APiQypKRaz6yrGzT3/NYxjULwoEsys/LiTxAitWFf6a1UZRTEc+kLFR9zz4OeLSceQZ40Pvg5yMccg==
+X-Received: by 2002:aa7:808e:: with SMTP id v14mr8922680pff.168.1588778505369;
+        Wed, 06 May 2020 08:21:45 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id i72sm2287178pfe.104.2020.05.06.08.21.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 May 2020 08:21:41 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Luis Henriques <lhenriques@suse.com>
+Subject: [PATCH 02/10] pstore: Rename "pstore_lock" to "psinfo_lock"
+Date:   Wed,  6 May 2020 08:21:06 -0700
+Message-Id: <20200506152114.50375-3-keescook@chromium.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200506152114.50375-1-keescook@chromium.org>
+References: <20200506152114.50375-1-keescook@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -45,34 +65,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jagadeesh Pagadala <jagdsh.linux@gmail.com>
+The name "pstore_lock" sounds very global, but it is only supposed to be
+used for managing changes to "psinfo", so rename it accordingly.
 
-Code cleanup: Remove duplicate headers which are included twice.
-
-Signed-off-by: Jagadeesh Pagadala <jagdsh.linux@gmail.com>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Link: http://lore.kernel.org/lkml/1587276836-17088-1-git-send-email-jagdsh.linux@gmail.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- tools/lib/perf/evlist.c | 2 --
- 1 file changed, 2 deletions(-)
+ fs/pstore/platform.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/tools/lib/perf/evlist.c b/tools/lib/perf/evlist.c
-index 5b9f2ca50591..def55054c55b 100644
---- a/tools/lib/perf/evlist.c
-+++ b/tools/lib/perf/evlist.c
-@@ -11,10 +11,8 @@
- #include <internal/mmap.h>
- #include <internal/cpumap.h>
- #include <internal/threadmap.h>
--#include <internal/xyarray.h>
- #include <internal/lib.h>
- #include <linux/zalloc.h>
--#include <sys/ioctl.h>
- #include <stdlib.h>
- #include <errno.h>
- #include <unistd.h>
+diff --git a/fs/pstore/platform.c b/fs/pstore/platform.c
+index 44f8b9742263..347b6c07f4cf 100644
+--- a/fs/pstore/platform.c
++++ b/fs/pstore/platform.c
+@@ -69,10 +69,10 @@ static void pstore_dowork(struct work_struct *);
+ static DECLARE_WORK(pstore_work, pstore_dowork);
+ 
+ /*
+- * pstore_lock just protects "psinfo" during
++ * psinfo_lock just protects "psinfo" during
+  * calls to pstore_register()
+  */
+-static DEFINE_SPINLOCK(pstore_lock);
++static DEFINE_SPINLOCK(psinfo_lock);
+ struct pstore_info *psinfo;
+ 
+ static char *backend;
+@@ -574,11 +574,11 @@ int pstore_register(struct pstore_info *psi)
+ 		return -EINVAL;
+ 	}
+ 
+-	spin_lock(&pstore_lock);
++	spin_lock(&psinfo_lock);
+ 	if (psinfo) {
+ 		pr_warn("backend '%s' already loaded: ignoring '%s'\n",
+ 			psinfo->name, psi->name);
+-		spin_unlock(&pstore_lock);
++		spin_unlock(&psinfo_lock);
+ 		return -EBUSY;
+ 	}
+ 
+@@ -587,7 +587,7 @@ int pstore_register(struct pstore_info *psi)
+ 	psinfo = psi;
+ 	mutex_init(&psinfo->read_mutex);
+ 	sema_init(&psinfo->buf_lock, 1);
+-	spin_unlock(&pstore_lock);
++	spin_unlock(&psinfo_lock);
+ 
+ 
+ 	if (psi->flags & PSTORE_FLAGS_DMESG)
 -- 
-2.21.1
+2.20.1
 
