@@ -2,114 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D93DC1C6A1A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 09:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 355731C6A23
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 09:35:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728290AbgEFHd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 03:33:26 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:43535 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727067AbgEFHdZ (ORCPT
+        id S1728347AbgEFHfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 03:35:39 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:51374 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728331AbgEFHfh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 03:33:25 -0400
-Received: by mail-lj1-f196.google.com with SMTP id l19so1226301lje.10;
-        Wed, 06 May 2020 00:33:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=gqSLq5hYK1kARvrcxx2IEp0kLmYkQSACn9sSHMJ82lA=;
-        b=cG01hUdx0W+Qz+g3Sm/LwC7kw4wedKfV32eGSWMeT4rYrSbRjehbjDksptZVgyUDvY
-         YQEzUQIfxbavJ5TpQTqmHbcI+5QXSgjd99hSwM8MEECYPHERh34yIOZz/qtpEavvcj6O
-         xLMDYNUBo0a3OqlKQXG7mJ7E25X5fbc+lc92tuJfwaYzgN62iCq4UsFZZDMX/mKGiy9N
-         KXcZ8ZO7DM/PRFkbolGtjp6m+bDYUXhyQTUlQeSrLDGA2WH5wAAVtsJCeMKkDClrGo5z
-         BbmF3yLGvtG5R5TtS+Y+munQBhhUkUgF9kmvRo1a88f5MGvrhvvDLwjU3GR04eoAWDfS
-         Pr/Q==
-X-Gm-Message-State: AGi0PubsLYlSgQmwZd7vIk5+616HM+bfLJkKyL1b24lsCqCpghP76n34
-        9tdGKnondacUs7f3gk+nhIMIV1mGjk8=
-X-Google-Smtp-Source: APiQypK/rjTMEKQjwrihMSHs0l6ZePk08/ixRJDXogc1fWz5mEIO2VX+/gsgvaNAHhjpiK/pj5VDhw==
-X-Received: by 2002:a2e:9e4f:: with SMTP id g15mr4229689ljk.78.1588750401642;
-        Wed, 06 May 2020 00:33:21 -0700 (PDT)
-Received: from [192.168.8.104] ([213.87.156.203])
-        by smtp.gmail.com with ESMTPSA id t5sm923459lfc.69.2020.05.06.00.33.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 May 2020 00:33:21 -0700 (PDT)
-Subject: Re: [PATCH v3 0/4] floppy: suppress UBSAN warning in
- setup_rw_floppy()
-To:     linux-block@vger.kernel.org
-Cc:     Willy Tarreau <w@1wt.eu>, Christoph Hellwig <hch@infradead.org>,
-        Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org
-References: <20200501134416.72248-1-efremov@linux.com>
-From:   Denis Efremov <efremov@linux.com>
-Autocrypt: addr=efremov@linux.com; keydata=
- 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
-Message-ID: <958ca9dc-e912-54cb-8193-45c79b8ca0f0@linux.com>
-Date:   Wed, 6 May 2020 10:33:18 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 6 May 2020 03:35:37 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1588750537; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=wrYpcoVK8IdDRtNBeHLzn6UFclCXY1INuT6aKv4B83U=;
+ b=aF0DgDhlT8jz8g2jt37DqxPnOsE5ublK9Lr1n3czeC5/edj+Nk9O+TMz/qfllmO1z2VhjMhG
+ VPQyaRwbIdqYvcidhGgd64vG+vsWHocAw/9zvpt2w7sLhQRBgtVmisweYQNWUMFcw+oMVZ8b
+ xC6aOb7o6z7CeqVp/KUVMOJq2qE=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5eb268ba.7fd5852e1880-smtp-out-n01;
+ Wed, 06 May 2020 07:35:22 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 23F7AC4478F; Wed,  6 May 2020 07:35:22 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7EFC3C433F2;
+        Wed,  6 May 2020 07:35:21 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20200501134416.72248-1-efremov@linux.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Wed, 06 May 2020 13:05:21 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Mike Leach <mike.leach@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Russell King <linux@armlinux.org.uk>
+Subject: Re: [PATCH] coresight: dynamic-replicator: Fix handling of multiple
+ connections
+In-Reply-To: <ae0fe2050be01cc1403c7d53a0da8cb8@codeaurora.org>
+References: <20200426143725.18116-1-saiprakash.ranjan@codeaurora.org>
+ <cf5852e9-c3c1-3d31-46f0-0370719947ab@arm.com>
+ <CAJ9a7VgF3-Hdc7KSw9gVBeXSDHNguhqVhp60oK2XhCtr3DhDqg@mail.gmail.com>
+ <84918e7d-c933-3fa1-a61e-0615d4b3cf2c@arm.com>
+ <668ea1283a6dd6b34e701972f6f71034@codeaurora.org>
+ <5b0f5d77c4eec22d8048bb0ffa078345@codeaurora.org>
+ <759d47de-2101-39cf-2f1c-cfefebebd548@arm.com>
+ <7d343e96cf0701d91152fd14c2fdec42@codeaurora.org>
+ <CAJ9a7VgEiX19ukjwakNHBHDeZJ05f5Z7pAYG9iEnpXCuuDfBqg@mail.gmail.com>
+ <a4bba03d41a2b0145b3c6c19d48698eb@codeaurora.org>
+ <CAJ9a7Vj4eyv1n=RxuqfV=pdBN3SDG+ShYS5J4s40KJtqOnR7vw@mail.gmail.com>
+ <ae0fe2050be01cc1403c7d53a0da8cb8@codeaurora.org>
+Message-ID: <b8c1cc35846d425a1677c73fddf5874d@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/1/20 4:44 PM, Denis Efremov wrote
+Hi Suzuki, Mike,
+
+On 2020-04-29 22:41, Sai Prakash Ranjan wrote:
+> Hi Mike,
 > 
-> The first patch removes pr_cont() in setup_DMA() and prints the contents of
-> cmd buffer with print_hex_dump(). The last patch also touches these lines
-> and changes cmd buffer to fullcmd. The 2,3 patches introduce defines to
-> make it more clear why cmd_count in struct floppy_raw_cmd allows
-> out-of-bounds access for cmd, reply_count, reply fields. Last patch
-> handles the warning.
+> On 2020-04-29 22:28, Mike Leach wrote:
+>> Hi,
+>> 
+> 
+> [...]
+> 
+>>> >> > You need to find what is resetting the IDFILTERs to 0 for replicator1.
+>>> >> >
+>>> >>
+>>> >> That is right.
+>>> >>
+>>> >
+>>> > By default all replicators have the IDFILTER registers set to 0 out of
+>>> > hardware reset. This ensures that programmable replicators behave in
+>>> > the same way as non-programmable replicators out of reset.
+>>> >
+>>> > The  dynamic_replicator_reset() is of course a driver state reset -
+>>> > which filters out all trace on the output ports. The trace is then
+>>> > enabled when we set the trace path from source to sink.
+>>> >
+>>> 
+>>> Thanks for these explanations.
+>>> 
+>>> > It seems to me that you have 2 problems that need solving here:
+>>> >
+>>> > 1) Why does the reset_replicator() called from probe() _not_ work
+>>> > correctly on replicator 1? It seems to work later if you introduce a
+>>> > reset after more of the system has powered and booted. This is
+>>> > startiing to look a little like a PM / clocking issue.
+>>> 
+>>> reset_replicator() does work in probe correctly for both replicators,
+>>> below logs is collected before and after reset in probe. It is later
+>>> that it's set back to 0x0 and hence the suggestion to look at 
+>>> firmware
+>>> using this replicator1.
+>>> 
+>> OK - sorry I read your statement saying that replicator1 was 0 after
+>> the reset in probe(), rather than look at the logs.
+>> 
+>> From the logs it is working at the time probe() occurs, but by the
+>> time we come to enable the replicator later, something has reset these
+>> registers / hardware outside the control of the replicator driver.
+>> 
+> 
+> Yes, I will try to get some more information from the firmware side if
+> there is anything messing up.
+> 
 
-Applied,
+This turned out to be a clock/pm issue. To confirm, I just marked clk as 
+critical
+so that it won't be gated and I saw the replicator1(swao_replicator) 
+registers
+intact after probe. Also alternatively, I tried to comment out disabling 
+pclk
+to check if there is something wrong in amba pm and this keeps the 
+registers
+intact as well.
 
-https://github.com/evdenis/linux-floppy/tree/cleanups
+@@ -288,7 +295,7 @@ static int amba_probe(struct device *dev)
+                 pm_runtime_set_suspended(dev);
+                 pm_runtime_put_noidle(dev);
 
-Denis
+-               amba_put_disable_pclk(pcdev);
++               //amba_put_disable_pclk(pcdev);
+                 dev_pm_domain_detach(dev, true);
+         } while (0);
+
+Thanks,
+Sai
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
