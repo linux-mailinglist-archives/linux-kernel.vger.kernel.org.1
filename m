@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B4051C7496
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:26:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A44CF1C74C9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:28:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729702AbgEFP0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 11:26:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47552 "EHLO mail.kernel.org"
+        id S1730408AbgEFP2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 11:28:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47672 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730122AbgEFP0G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 11:26:06 -0400
+        id S1729660AbgEFP0I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 11:26:08 -0400
 Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5B8B821582;
-        Wed,  6 May 2020 15:26:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D8472214D8;
+        Wed,  6 May 2020 15:26:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588778765;
-        bh=FPkHc/RvbgYFVh8ltYHfCOXdWwkd5APRVEjSvY33Nfs=;
+        s=default; t=1588778767;
+        bh=am3dcov7VTVOBLjrzcKRU0QeSYjLNSxuICGe5GNiMrY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X90UbzvGQifV9V52XnOi6cPIO/WHC5USjSM0/1h33F+tzqgQUly7f6XcbTsak8dad
-         SaF6jsCaF1WC7syjJphbWuIBpMDifaFxtYxjIkqSKEMiU5g9GPbKwsShH0+dQ36sU9
-         Edmmy8pGnWBirwzBslzx+cMHlP0sZvsjCCKv2rWw=
+        b=J0c+2dairYdBOzA4ZvrSfqkIH8bQZnCgeUxUn8Q6ACcp6pyAvxVSWQVNxxBisGASb
+         tmkskAnob3d5o4tKcgtqMQYEW02s8NzAkRvBBTZaaI220CwAqxg8Hs8meGhiIO0Lwa
+         VVHmL2ipIjBhyFHFO/vhdfNQqYg6XLX7izycRvys=
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
 To:     Ingo Molnar <mingo@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>
@@ -31,9 +31,9 @@ Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
         linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         Adrian Hunter <adrian.hunter@intel.com>
-Subject: [PATCH 60/91] perf evsel: Rename perf_evsel__*filter*() to evsel__*filter*()
-Date:   Wed,  6 May 2020 12:22:03 -0300
-Message-Id: <20200506152234.21977-61-acme@kernel.org>
+Subject: [PATCH 61/91] perf evsel: Rename perf_evsel__open_per_*() to evsel__open_per_*()
+Date:   Wed,  6 May 2020 12:22:04 -0300
+Message-Id: <20200506152234.21977-62-acme@kernel.org>
 X-Mailer: git-send-email 2.21.1
 In-Reply-To: <20200506152234.21977-1-acme@kernel.org>
 References: <20200506152234.21977-1-acme@kernel.org>
@@ -54,190 +54,123 @@ Cc: Jiri Olsa <jolsa@kernel.org>
 Cc: Namhyung Kim <namhyung@kernel.org>
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/perf/builtin-trace.c     |  7 +++----
- tools/perf/util/auxtrace.c     |  6 +++---
- tools/perf/util/evlist.c       |  4 ++--
- tools/perf/util/evsel.c        | 15 +++++++--------
- tools/perf/util/evsel.h        |  7 +++----
- tools/perf/util/parse-events.c |  6 +++---
- 6 files changed, 21 insertions(+), 24 deletions(-)
+ tools/perf/tests/event-times.c    | 8 ++++----
+ tools/perf/tests/openat-syscall.c | 2 +-
+ tools/perf/util/evsel.c           | 7 ++-----
+ tools/perf/util/evsel.h           | 7 ++-----
+ tools/perf/util/stat.c            | 4 ++--
+ 5 files changed, 11 insertions(+), 17 deletions(-)
 
-diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
-index 1411e2735855..12b770abb87a 100644
---- a/tools/perf/builtin-trace.c
-+++ b/tools/perf/builtin-trace.c
-@@ -3164,10 +3164,9 @@ static int trace__set_ev_qualifier_tp_filter(struct trace *trace)
- 	if (filter == NULL)
- 		goto out_enomem;
+diff --git a/tools/perf/tests/event-times.c b/tools/perf/tests/event-times.c
+index 1e8a9f5c356d..db68894a6f40 100644
+--- a/tools/perf/tests/event-times.c
++++ b/tools/perf/tests/event-times.c
+@@ -72,7 +72,7 @@ static int attach__current_disabled(struct evlist *evlist)
  
--	if (!perf_evsel__append_tp_filter(trace->syscalls.events.sys_enter,
--					  filter)) {
-+	if (!evsel__append_tp_filter(trace->syscalls.events.sys_enter, filter)) {
- 		sys_exit = trace->syscalls.events.sys_exit;
--		err = perf_evsel__append_tp_filter(sys_exit, filter);
-+		err = evsel__append_tp_filter(sys_exit, filter);
+ 	evsel->core.attr.disabled = 1;
+ 
+-	err = perf_evsel__open_per_thread(evsel, threads);
++	err = evsel__open_per_thread(evsel, threads);
+ 	if (err) {
+ 		pr_debug("Failed to open event cpu-clock:u\n");
+ 		return err;
+@@ -96,7 +96,7 @@ static int attach__current_enabled(struct evlist *evlist)
+ 		return -1;
  	}
  
- 	free(filter);
-@@ -3801,7 +3800,7 @@ static int trace__expand_filter(struct trace *trace __maybe_unused, struct evsel
+-	err = perf_evsel__open_per_thread(evsel, threads);
++	err = evsel__open_per_thread(evsel, threads);
  
- 	if (new_filter != evsel->filter) {
- 		pr_debug("New filter for %s: %s\n", evsel->name, new_filter);
--		perf_evsel__set_filter(evsel, new_filter);
-+		evsel__set_filter(evsel, new_filter);
- 		free(new_filter);
+ 	perf_thread_map__put(threads);
+ 	return err == 0 ? TEST_OK : TEST_FAIL;
+@@ -125,7 +125,7 @@ static int attach__cpu_disabled(struct evlist *evlist)
+ 
+ 	evsel->core.attr.disabled = 1;
+ 
+-	err = perf_evsel__open_per_cpu(evsel, cpus, -1);
++	err = evsel__open_per_cpu(evsel, cpus, -1);
+ 	if (err) {
+ 		if (err == -EACCES)
+ 			return TEST_SKIP;
+@@ -152,7 +152,7 @@ static int attach__cpu_enabled(struct evlist *evlist)
+ 		return -1;
  	}
  
-diff --git a/tools/perf/util/auxtrace.c b/tools/perf/util/auxtrace.c
-index e12696fe6f65..c22ef2e3e079 100644
---- a/tools/perf/util/auxtrace.c
-+++ b/tools/perf/util/auxtrace.c
-@@ -2522,7 +2522,7 @@ static int parse_addr_filter(struct evsel *evsel, const char *filter,
- 			goto out_exit;
- 		}
+-	err = perf_evsel__open_per_cpu(evsel, cpus, -1);
++	err = evsel__open_per_cpu(evsel, cpus, -1);
+ 	if (err == -EACCES)
+ 		return TEST_SKIP;
  
--		if (perf_evsel__append_addr_filter(evsel, new_filter)) {
-+		if (evsel__append_addr_filter(evsel, new_filter)) {
- 			err = -ENOMEM;
- 			goto out_exit;
- 		}
-@@ -2540,7 +2540,7 @@ static int parse_addr_filter(struct evsel *evsel, const char *filter,
- 	return err;
- }
- 
--static int perf_evsel__nr_addr_filter(struct evsel *evsel)
-+static int evsel__nr_addr_filter(struct evsel *evsel)
- {
- 	struct perf_pmu *pmu = evsel__find_pmu(evsel);
- 	int nr_addr_filters = 0;
-@@ -2561,7 +2561,7 @@ int auxtrace_parse_filters(struct evlist *evlist)
- 
- 	evlist__for_each_entry(evlist, evsel) {
- 		filter = evsel->filter;
--		max_nr = perf_evsel__nr_addr_filter(evsel);
-+		max_nr = evsel__nr_addr_filter(evsel);
- 		if (!filter || !max_nr)
- 			continue;
- 		evsel->filter = NULL;
-diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-index 58228a54ecd7..410cd834c39a 100644
---- a/tools/perf/util/evlist.c
-+++ b/tools/perf/util/evlist.c
-@@ -995,7 +995,7 @@ int perf_evlist__set_tp_filter(struct evlist *evlist, const char *filter)
- 		if (evsel->core.attr.type != PERF_TYPE_TRACEPOINT)
- 			continue;
- 
--		err = perf_evsel__set_filter(evsel, filter);
-+		err = evsel__set_filter(evsel, filter);
- 		if (err)
- 			break;
+diff --git a/tools/perf/tests/openat-syscall.c b/tools/perf/tests/openat-syscall.c
+index 5ebffae18605..8497a1fe9bac 100644
+--- a/tools/perf/tests/openat-syscall.c
++++ b/tools/perf/tests/openat-syscall.c
+@@ -34,7 +34,7 @@ int test__openat_syscall_event(struct test *test __maybe_unused, int subtest __m
+ 		goto out_thread_map_delete;
  	}
-@@ -1015,7 +1015,7 @@ int perf_evlist__append_tp_filter(struct evlist *evlist, const char *filter)
- 		if (evsel->core.attr.type != PERF_TYPE_TRACEPOINT)
- 			continue;
  
--		err = perf_evsel__append_tp_filter(evsel, filter);
-+		err = evsel__append_tp_filter(evsel, filter);
- 		if (err)
- 			break;
- 	}
+-	if (perf_evsel__open_per_thread(evsel, threads) < 0) {
++	if (evsel__open_per_thread(evsel, threads) < 0) {
+ 		pr_debug("failed to open counter: %s, "
+ 			 "tweak /proc/sys/kernel/perf_event_paranoid?\n",
+ 			 str_error_r(errno, sbuf, sizeof(sbuf)));
 diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-index 4f03500253e3..4f271764cbf2 100644
+index 4f271764cbf2..bbd57e8fde7d 100644
 --- a/tools/perf/util/evsel.c
 +++ b/tools/perf/util/evsel.c
-@@ -1166,7 +1166,7 @@ void evsel__config(struct evsel *evsel, struct record_opts *opts,
- 		evsel__reset_sample_bit(evsel, BRANCH_STACK);
+@@ -1863,9 +1863,7 @@ void evsel__close(struct evsel *evsel)
+ 	perf_evsel__free_id(&evsel->core);
  }
  
--int perf_evsel__set_filter(struct evsel *evsel, const char *filter)
-+int evsel__set_filter(struct evsel *evsel, const char *filter)
+-int perf_evsel__open_per_cpu(struct evsel *evsel,
+-			     struct perf_cpu_map *cpus,
+-			     int cpu)
++int evsel__open_per_cpu(struct evsel *evsel, struct perf_cpu_map *cpus, int cpu)
  {
- 	char *new_filter = strdup(filter);
- 
-@@ -1179,13 +1179,12 @@ int perf_evsel__set_filter(struct evsel *evsel, const char *filter)
- 	return -1;
+ 	if (cpu == -1)
+ 		return evsel__open_cpu(evsel, cpus, NULL, 0,
+@@ -1874,8 +1872,7 @@ int perf_evsel__open_per_cpu(struct evsel *evsel,
+ 	return evsel__open_cpu(evsel, cpus, NULL, cpu, cpu + 1);
  }
  
--static int perf_evsel__append_filter(struct evsel *evsel,
--				     const char *fmt, const char *filter)
-+static int evsel__append_filter(struct evsel *evsel, const char *fmt, const char *filter)
+-int perf_evsel__open_per_thread(struct evsel *evsel,
+-				struct perf_thread_map *threads)
++int evsel__open_per_thread(struct evsel *evsel, struct perf_thread_map *threads)
  {
- 	char *new_filter;
- 
- 	if (evsel->filter == NULL)
--		return perf_evsel__set_filter(evsel, filter);
-+		return evsel__set_filter(evsel, filter);
- 
- 	if (asprintf(&new_filter, fmt, evsel->filter, filter) > 0) {
- 		free(evsel->filter);
-@@ -1196,14 +1195,14 @@ static int perf_evsel__append_filter(struct evsel *evsel,
- 	return -1;
+ 	return evsel__open(evsel, NULL, threads);
  }
- 
--int perf_evsel__append_tp_filter(struct evsel *evsel, const char *filter)
-+int evsel__append_tp_filter(struct evsel *evsel, const char *filter)
- {
--	return perf_evsel__append_filter(evsel, "(%s) && (%s)", filter);
-+	return evsel__append_filter(evsel, "(%s) && (%s)", filter);
- }
- 
--int perf_evsel__append_addr_filter(struct evsel *evsel, const char *filter)
-+int evsel__append_addr_filter(struct evsel *evsel, const char *filter)
- {
--	return perf_evsel__append_filter(evsel, "%s,%s", filter);
-+	return evsel__append_filter(evsel, "%s,%s", filter);
- }
- 
- /* Caller has to clear disabled after going through all CPUs. */
 diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-index ecd3ea89e12c..df64d89cd916 100644
+index df64d89cd916..e16a9b23556b 100644
 --- a/tools/perf/util/evsel.h
 +++ b/tools/perf/util/evsel.h
-@@ -225,10 +225,9 @@ void __evsel__reset_sample_bit(struct evsel *evsel, enum perf_event_sample_forma
- 
- void evsel__set_sample_id(struct evsel *evsel, bool use_sample_identifier);
- 
--int perf_evsel__set_filter(struct evsel *evsel, const char *filter);
--int perf_evsel__append_tp_filter(struct evsel *evsel, const char *filter);
--int perf_evsel__append_addr_filter(struct evsel *evsel,
--				   const char *filter);
-+int evsel__set_filter(struct evsel *evsel, const char *filter);
-+int evsel__append_tp_filter(struct evsel *evsel, const char *filter);
-+int evsel__append_addr_filter(struct evsel *evsel, const char *filter);
- int evsel__enable_cpu(struct evsel *evsel, int cpu);
- int evsel__enable(struct evsel *evsel);
+@@ -233,11 +233,8 @@ int evsel__enable(struct evsel *evsel);
  int evsel__disable(struct evsel *evsel);
-diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index 2252f494ff9f..899ced466197 100644
---- a/tools/perf/util/parse-events.c
-+++ b/tools/perf/util/parse-events.c
-@@ -2261,7 +2261,7 @@ static int set_filter(struct evsel *evsel, const void *arg)
+ int evsel__disable_cpu(struct evsel *evsel, int cpu);
+ 
+-int perf_evsel__open_per_cpu(struct evsel *evsel,
+-			     struct perf_cpu_map *cpus,
+-			     int cpu);
+-int perf_evsel__open_per_thread(struct evsel *evsel,
+-				struct perf_thread_map *threads);
++int evsel__open_per_cpu(struct evsel *evsel, struct perf_cpu_map *cpus, int cpu);
++int evsel__open_per_thread(struct evsel *evsel, struct perf_thread_map *threads);
+ int evsel__open(struct evsel *evsel, struct perf_cpu_map *cpus,
+ 		struct perf_thread_map *threads);
+ void evsel__close(struct evsel *evsel);
+diff --git a/tools/perf/util/stat.c b/tools/perf/util/stat.c
+index c27f01b944c5..3520b7443615 100644
+--- a/tools/perf/util/stat.c
++++ b/tools/perf/util/stat.c
+@@ -521,7 +521,7 @@ int create_perf_stat_counter(struct evsel *evsel,
  	}
  
- 	if (evsel->core.attr.type == PERF_TYPE_TRACEPOINT) {
--		if (perf_evsel__append_tp_filter(evsel, str) < 0) {
-+		if (evsel__append_tp_filter(evsel, str) < 0) {
- 			fprintf(stderr,
- 				"not enough memory to hold filter string\n");
- 			return -1;
-@@ -2286,7 +2286,7 @@ static int set_filter(struct evsel *evsel, const void *arg)
- 		return -1;
- 	}
+ 	if (target__has_cpu(target) && !target__has_per_thread(target))
+-		return perf_evsel__open_per_cpu(evsel, evsel__cpus(evsel), cpu);
++		return evsel__open_per_cpu(evsel, evsel__cpus(evsel), cpu);
  
--	if (perf_evsel__append_addr_filter(evsel, str) < 0) {
-+	if (evsel__append_addr_filter(evsel, str) < 0) {
- 		fprintf(stderr,
- 			"not enough memory to hold filter string\n");
- 		return -1;
-@@ -2317,7 +2317,7 @@ static int add_exclude_perf_filter(struct evsel *evsel,
- 
- 	snprintf(new_filter, sizeof(new_filter), "common_pid != %d", getpid());
- 
--	if (perf_evsel__append_tp_filter(evsel, new_filter) < 0) {
-+	if (evsel__append_tp_filter(evsel, new_filter) < 0) {
- 		fprintf(stderr,
- 			"not enough memory to hold filter string\n");
- 		return -1;
+-	return perf_evsel__open_per_thread(evsel, evsel->core.threads);
++	return evsel__open_per_thread(evsel, evsel->core.threads);
+ }
 -- 
 2.21.1
 
