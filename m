@@ -2,98 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92D341C741A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:19:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC531C7426
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729257AbgEFPTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 11:19:45 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:55464 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728821AbgEFPTo (ORCPT
+        id S1729377AbgEFPU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 11:20:59 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:38474 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728821AbgEFPU7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 11:19:44 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id BB4F92A2500
-Subject: Re: [PATCH v2 1/5] [media] mtk-mdp: remove mtk_mdp_comp.regs from
- mtk_mdp_comp.h
-To:     Eizan Miyamoto <eizan@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Houlong Wei <houlong.wei@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Minghsiu Tsai <minghsiu.tsai@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-mediatek@lists.infradead.org
-References: <20200506054920.109738-1-eizan@chromium.org>
- <20200506154832.v2.1.I0d52fd84fe481e254a10960b060f32c47ce0d202@changeid>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <0cd4d52b-e4bb-90c2-a5b5-a2e39169bf1c@collabora.com>
-Date:   Wed, 6 May 2020 17:19:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 6 May 2020 11:20:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1588778458; x=1620314458;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   mime-version;
+  bh=Qxz8YBQJMe0tFK5dHJ7HQYaq14w58zhXEZxLWPuYNeE=;
+  b=BC/sLKzDzARc1pQD/WzENadvk+JG4VV1rJZFWINw4+iGfN/1vkBz/vXW
+   RPsmLPCiyKzkOtQYD7r+1hTMugPzpgq6r+HHWSA5tpD7a7scq7OCXGetp
+   jrZxMWGf2f4vl/Mvy8pOTbTxTgEM8rrW/oJ4xb+uFBWzSWwhea76UzLDx
+   o=;
+IronPort-SDR: Ld8GMMi8Y88G+q0R5NC/a+LOiUcKRXJWMBHS1Vb9+4Qrjo2+QlB9FolQxA3SnFKWn7ta1QRKpi
+ +ozPwuTuHyJA==
+X-IronPort-AV: E=Sophos;i="5.73,359,1583193600"; 
+   d="scan'208";a="43082169"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1d-38ae4ad2.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 06 May 2020 15:20:56 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-1d-38ae4ad2.us-east-1.amazon.com (Postfix) with ESMTPS id A05A4A2171;
+        Wed,  6 May 2020 15:20:52 +0000 (UTC)
+Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 6 May 2020 15:20:51 +0000
+Received: from u886c93fd17d25d.ant.amazon.com (10.43.162.37) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 6 May 2020 15:20:43 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+CC:     SeongJae Park <sjpark@amazon.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        David Miller <davem@davemloft.net>,
+        "Al Viro" <viro@zeniv.linux.org.uk>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        <sj38.park@gmail.com>, netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        SeongJae Park <sjpark@amazon.de>, <snu@amazon.com>,
+        <amit@kernel.org>, <stable@vger.kernel.org>
+Subject: Re: Re: Re: Re: Re: Re: [PATCH net v2 0/2] Revert the 'socket_alloc' life cycle change
+Date:   Wed, 6 May 2020 17:20:25 +0200
+Message-ID: <20200506152025.22085-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200506144151.GZ2869@paulmck-ThinkPad-P72> (raw)
 MIME-Version: 1.0
-In-Reply-To: <20200506154832.v2.1.I0d52fd84fe481e254a10960b060f32c47ce0d202@changeid>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.43.162.37]
+X-ClientProxiedBy: EX13d09UWC004.ant.amazon.com (10.43.162.114) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eizan,
+On Wed, 6 May 2020 07:41:51 -0700 "Paul E. McKenney" <paulmck@kernel.org> wrote:
 
-Thank you for the patch.
+> On Wed, May 06, 2020 at 02:59:26PM +0200, SeongJae Park wrote:
+> > TL; DR: It was not kernel's fault, but the benchmark program.
+> > 
+> > So, the problem is reproducible using the lebench[1] only.  I carefully read
+> > it's code again.
+> > 
+> > Before running the problem occurred "poll big" sub test, lebench executes
+> > "context switch" sub test.  For the test, it sets the cpu affinity[2] and
+> > process priority[3] of itself to '0' and '-20', respectively.  However, it
+> > doesn't restore the values to original value even after the "context switch" is
+> > finished.  For the reason, "select big" sub test also run binded on CPU 0 and
+> > has lowest nice value.  Therefore, it can disturb the RCU callback thread for
+> > the CPU 0, which processes the deferred deallocations of the sockets, and as a
+> > result it triggers the OOM.
+> > 
+> > We confirmed the problem disappears by offloading the RCU callbacks from the
+> > CPU 0 using rcu_nocbs=0 boot parameter or simply restoring the affinity and/or
+> > priority.
+> > 
+> > Someone _might_ still argue that this is kernel problem because the problem
+> > didn't occur on the old kernels prior to the Al's patches.  However, setting
+> > the affinity and priority was available because the program received the
+> > permission.  Therefore, it would be reasonable to blame the system
+> > administrators rather than the kernel.
+> > 
+> > So, please ignore this patchset, apology for making confuse.  If you still has
+> > some doubts or need more tests, please let me know.
+> > 
+> > [1] https://github.com/LinuxPerfStudy/LEBench
+> > [2] https://github.com/LinuxPerfStudy/LEBench/blob/master/TEST_DIR/OS_Eval.c#L820
+> > [3] https://github.com/LinuxPerfStudy/LEBench/blob/master/TEST_DIR/OS_Eval.c#L822
+> 
+> Thank you for chasing this down!
+> 
+> I have had this sort of thing on my list as a potential issue, but given
+> that it is now really showing up, it sounds like it is time to bump
+> up its priority a bit.  Of course there are limits, so if userspace is
+> running at any of the real-time priorities, making sufficient CPU time
+> available to RCU's kthreads becomes userspace's responsibility.  But if
+> everything is running at SCHED_OTHER (which is this case here, correct?),
 
-On 6/5/20 7:49, Eizan Miyamoto wrote:
-> These fields are not used and can be removed.
-> 
-> Signed-off-by: eizan@chromium.org
+Correct.
 
-You need to drop the above line, for this and the other patches.
+> then it is reasonable for RCU to do some work to avoid this situation.
 
-> Reviewed-by: Enric Balletbo I Serra <enric.balletbo@collabora.com>
-> Signed-off-by: Eizan Miyamoto <eizan@chromium.org>
-> ---
+That would be also great!
+
 > 
-> Changes in v1: None
+> But still, yes, the immediate job is fixing the benchmark.  ;-)
+
+Totally agreed.
+
 > 
->  drivers/media/platform/mtk-mdp/mtk_mdp_comp.c | 1 -
->  drivers/media/platform/mtk-mdp/mtk_mdp_comp.h | 2 --
->  2 files changed, 3 deletions(-)
+> 							Thanx, Paul
 > 
-> diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c b/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c
-> index 58abfbdfb82d..c76cd61fb178 100644
-> --- a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c
-> +++ b/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c
-> @@ -106,7 +106,6 @@ int mtk_mdp_comp_init(struct device *dev, struct device_node *node,
->  	comp->dev_node = of_node_get(node);
->  	comp->id = comp_id;
->  	comp->type = mtk_mdp_matches[comp_id].type;
-> -	comp->regs = of_iomap(node, 0);
->  
->  	for (i = 0; i < ARRAY_SIZE(comp->clk); i++) {
->  		comp->clk[i] = of_clk_get(node, i);
-> diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.h b/drivers/media/platform/mtk-mdp/mtk_mdp_comp.h
-> index 998a4b953025..3b83bd6e0d8b 100644
-> --- a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.h
-> +++ b/drivers/media/platform/mtk-mdp/mtk_mdp_comp.h
-> @@ -38,7 +38,6 @@ enum mtk_mdp_comp_id {
->   * struct mtk_mdp_comp - the MDP's function component data
->   * @dev_node:	component device node
->   * @clk:	clocks required for component
-> - * @regs:	Mapped address of component registers.
->   * @larb_dev:	SMI device required for component
->   * @type:	component type
->   * @id:		component ID
-> @@ -46,7 +45,6 @@ enum mtk_mdp_comp_id {
->  struct mtk_mdp_comp {
->  	struct device_node	*dev_node;
->  	struct clk		*clk[2];
-> -	void __iomem		*regs;
->  	struct device		*larb_dev;
->  	enum mtk_mdp_comp_type	type;
->  	enum mtk_mdp_comp_id	id;
-> 
+> PS.  Why not just attack all potential issues on my list?  Because I
+>      usually learn quite a bit from seeing the problem actually happen.
+>      And sometimes other changes in RCU eliminate the potential issue
+>      before it has a chance to happen.
+
+Sounds interesting, I will try some of those in my spare time ;)
+
+
+Thanks,
+SeongJae Park
