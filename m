@@ -2,207 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE35C1C7B96
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 22:57:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 795101C7B9E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 22:58:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728665AbgEFU5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 16:57:23 -0400
-Received: from mga12.intel.com ([192.55.52.136]:24223 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726815AbgEFU5X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 16:57:23 -0400
-IronPort-SDR: 1XWkmVGK8EeIV+/028B7mkufU70eBMPTPWBUmaELTlOo/WPTNQUYLEwxyJ8P2ydWD/Eo4rTChC
- ZK92j4MUqFyA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2020 13:57:22 -0700
-IronPort-SDR: OcoLdokpty5EfWaPGQkgv16ZNzlxB9GRPRciS1hGNqt3nn8gPBtiB4XjbWRRJDscGq0LtdWDQO
- CO7U7zMtF+QQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,360,1583222400"; 
-   d="scan'208";a="461895340"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 06 May 2020 13:57:21 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1jWR6X-0009Cv-52; Thu, 07 May 2020 04:57:21 +0800
-Date:   Thu, 07 May 2020 04:56:53 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/build] BUILD SUCCESS
- 950a37078aa0ab63a57673e7027e8735e73d4bc6
-Message-ID: <5eb32495.zOfdosBni+esDpay%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S1729199AbgEFU5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 16:57:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726815AbgEFU5x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 16:57:53 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBA47C061A0F;
+        Wed,  6 May 2020 13:57:53 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::d71])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 8EDDD120F5281;
+        Wed,  6 May 2020 13:57:52 -0700 (PDT)
+Date:   Wed, 06 May 2020 13:57:51 -0700 (PDT)
+Message-Id: <20200506.135751.1936111471360870743.davem@davemloft.net>
+To:     yanaijie@huawei.com
+Cc:     roopa@cumulusnetworks.com, nikolay@cumulusnetworks.com,
+        kuba@kernel.org, bridge@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net: bridge: return false in br_mrp_enabled()
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200506061616.18929-1-yanaijie@huawei.com>
+References: <20200506061616.18929-1-yanaijie@huawei.com>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Wed, 06 May 2020 13:57:52 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/build
-branch HEAD: 950a37078aa0ab63a57673e7027e8735e73d4bc6  x86/build: Use $(CONFIG_SHELL)
+From: Jason Yan <yanaijie@huawei.com>
+Date: Wed, 6 May 2020 14:16:16 +0800
 
-elapsed time: 533m
+> Fix the following coccicheck warning:
+> 
+> net/bridge/br_private.h:1334:8-9: WARNING: return of 0/1 in function
+> 'br_mrp_enabled' with return type bool
+> 
+> Signed-off-by: Jason Yan <yanaijie@huawei.com>
 
-configs tested: 148
-configs skipped: 0
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-arm64                            allyesconfig
-arm                              allyesconfig
-arm64                            allmodconfig
-arm                              allmodconfig
-arm64                             allnoconfig
-arm                               allnoconfig
-sparc                            allyesconfig
-m68k                             allyesconfig
-ia64                              allnoconfig
-ia64                             allmodconfig
-c6x                               allnoconfig
-riscv                               defconfig
-csky                                defconfig
-ia64                             alldefconfig
-m68k                             allmodconfig
-m68k                           sun3_defconfig
-ia64                                defconfig
-riscv                            allyesconfig
-s390                             allyesconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                             alldefconfig
-i386                                defconfig
-i386                              debian-10.3
-ia64                             allyesconfig
-m68k                          multi_defconfig
-m68k                                defconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                              allyesconfig
-openrisc                         allyesconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                             allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
-arc                                 defconfig
-arc                              allyesconfig
-microblaze                       allyesconfig
-microblaze                        allnoconfig
-sh                               allmodconfig
-sh                                allnoconfig
-mips                             allyesconfig
-mips                         64r6el_defconfig
-mips                              allnoconfig
-mips                           32r2_defconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          alldefconfig
-powerpc                          rhel-kconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-m68k                 randconfig-a001-20200506
-mips                 randconfig-a001-20200506
-nds32                randconfig-a001-20200506
-parisc               randconfig-a001-20200506
-alpha                randconfig-a001-20200506
-riscv                randconfig-a001-20200506
-h8300                randconfig-a001-20200506
-nios2                randconfig-a001-20200506
-microblaze           randconfig-a001-20200506
-c6x                  randconfig-a001-20200506
-sparc64              randconfig-a001-20200506
-s390                 randconfig-a001-20200506
-xtensa               randconfig-a001-20200506
-sh                   randconfig-a001-20200506
-openrisc             randconfig-a001-20200506
-csky                 randconfig-a001-20200506
-xtensa               randconfig-a001-20200507
-sh                   randconfig-a001-20200507
-openrisc             randconfig-a001-20200507
-csky                 randconfig-a001-20200507
-i386                 randconfig-b003-20200506
-i386                 randconfig-b001-20200506
-x86_64               randconfig-b001-20200506
-x86_64               randconfig-b003-20200506
-i386                 randconfig-b002-20200506
-x86_64               randconfig-a003-20200506
-x86_64               randconfig-a001-20200506
-x86_64               randconfig-a002-20200506
-i386                 randconfig-a001-20200506
-i386                 randconfig-a002-20200506
-i386                 randconfig-a003-20200506
-i386                 randconfig-d003-20200506
-i386                 randconfig-d001-20200506
-x86_64               randconfig-d002-20200506
-i386                 randconfig-d002-20200506
-i386                 randconfig-e003-20200506
-x86_64               randconfig-e003-20200506
-x86_64               randconfig-e001-20200506
-i386                 randconfig-e002-20200506
-i386                 randconfig-e001-20200506
-i386                 randconfig-f003-20200506
-x86_64               randconfig-f001-20200506
-x86_64               randconfig-f003-20200506
-x86_64               randconfig-f002-20200506
-i386                 randconfig-f001-20200506
-i386                 randconfig-f002-20200506
-x86_64               randconfig-g003-20200506
-i386                 randconfig-g003-20200506
-i386                 randconfig-g002-20200506
-x86_64               randconfig-g001-20200506
-i386                 randconfig-g001-20200506
-x86_64               randconfig-g002-20200506
-i386                 randconfig-h002-20200506
-i386                 randconfig-h001-20200506
-i386                 randconfig-h003-20200506
-x86_64               randconfig-h002-20200506
-x86_64               randconfig-h003-20200506
-x86_64               randconfig-h001-20200506
-ia64                 randconfig-a001-20200506
-arm64                randconfig-a001-20200506
-arc                  randconfig-a001-20200506
-powerpc              randconfig-a001-20200506
-arm                  randconfig-a001-20200506
-sparc                randconfig-a001-20200506
-riscv                             allnoconfig
-riscv                            allmodconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                             alldefconfig
-s390                                defconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-um                               allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-x86_64                                  kexec
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Applied.
