@@ -2,89 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B020D1C772B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 18:51:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C5391C76F4
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 18:48:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730790AbgEFQvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 12:51:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730444AbgEFQsU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 12:48:20 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F83EC061A0F;
-        Wed,  6 May 2020 09:48:20 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id a21so3087597ljb.9;
-        Wed, 06 May 2020 09:48:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=IlweazdekYqS94U1Xj1r4OmuyOC1Nv3qU7YSDeCBRlM=;
-        b=AN3uHAOGD4JKrw8xuzUE7vpMKBJ5J8AJ/7JmX91Bmlt+py0Z7v16qngoQx+tkwuEVh
-         gDpn6xF1T0uGoHJmF8E0ezr227yjEmehoFoC75hYmJJ+AMM2GsbPnaoWgepSJv+B/vXa
-         PJT/p93k7uV1awCS2I4lP5lov50nMdUvCqkj9GU8Ua4CVJMEViYfoc9UKixCMp1mU4x4
-         A7iQ4nCVxlfU8K+H5FOSAfPpL6x8VVJBBx6YGA5VM+/2oythOg7/4oVj6mxPOt4mGHwK
-         ZcfNzwyMyLlHugrgi58R2Dr/grZOWsFfQPr+lewnPi6AYqpI44xbxkbMWTTIDE5JyL9I
-         pMUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=IlweazdekYqS94U1Xj1r4OmuyOC1Nv3qU7YSDeCBRlM=;
-        b=uO4dendeLXG1enmS0QZc5KIIr+yCo+02YCdu8NKt10G6M9MKQyQum3bfOjuBcj/LkY
-         ul0kuFOiV1Q+bLsbV8NFiBesUXCCTaeiBI3SfmX2vN1J2NU4ysWl+u2ziFJPXZtQgn1C
-         Y1ScKLcs0VTedGZrDFvlQqObLNKKxM0MzGCXgPraDMIYAW4K0d5CE71QH5US/yNPVqjL
-         AbrcKJiUWOMMfIQ5ma3uV21v/0l7DcZhNzL5CJpfvInCPNvsNPjwfDE45OQqahZw2f0c
-         VB0ulBcjkadaSLOB21Vm0MjVp3odAG6Jj6Fj/m9yx4DLYXS2gFA+Nb5rv2sT0YY9D7Rb
-         BQlg==
-X-Gm-Message-State: AGi0PuYNXh4Qr5w2eWD5aD/Ai4ymzBWYpIJOq1Xq321d/DkNj32SIfpo
-        M7VKtellgQQy723UroGSAFHDn1gTF9SaeSIo1+CuCw==
-X-Google-Smtp-Source: APiQypI2hjOb8TJaiPFfUG3oI9wfgz7TFR6gbZ+bohBeA0V3R1j0LyOpgLqQFPK3JItM2/KSqOJkEQ1G8J7Bw/Zepdo=
-X-Received: by 2002:a2e:9011:: with SMTP id h17mr5839071ljg.138.1588783698970;
- Wed, 06 May 2020 09:48:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAADnVQJfD1dLVsfg4=c4f6ftRNF_4z0wELjFq8z=7voi-Ak=7w@mail.gmail.com>
- <CAADnVQ+GOn4ZRGMZ+RScdSvM8gpXD9xbe3EYHCcUHdSs=i_NGA@mail.gmail.com>
-In-Reply-To: <CAADnVQ+GOn4ZRGMZ+RScdSvM8gpXD9xbe3EYHCcUHdSs=i_NGA@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 6 May 2020 09:48:07 -0700
-Message-ID: <CAADnVQLKuLu8wMJNO5w3AtFqyUTMmwzpctJMw0ORyUJM=M3bwA@mail.gmail.com>
-Subject: Re: pulling cap_perfmon
-To:     Ingo Molnar <mingo@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Network Development <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1730424AbgEFQsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 12:48:18 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:9381 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729414AbgEFQsK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 12:48:10 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 49HMwQ60yqz9tydh;
+        Wed,  6 May 2020 18:48:06 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id 9lwF8EZ8l9AR; Wed,  6 May 2020 18:48:06 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 49HMwQ4y1bz9txk0;
+        Wed,  6 May 2020 18:48:06 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 792D98B7C5;
+        Wed,  6 May 2020 18:48:08 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 4OCiJnyLs3tC; Wed,  6 May 2020 18:48:08 +0200 (CEST)
+Received: from localhost.localdomain (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3846B8B7C3;
+        Wed,  6 May 2020 18:48:08 +0200 (CEST)
+Received: by localhost.localdomain (Postfix, from userid 0)
+        id 08DB265911; Wed,  6 May 2020 16:48:08 +0000 (UTC)
+Message-Id: <ac85b6a034a67ef4186175cb6af208b8a9cdf4cf.1588783498.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <cover.1588783498.git.christophe.leroy@csgroup.eu>
+References: <cover.1588783498.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v2 03/45] powerpc/kasan: Fix shadow pages allocation failure
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Wed,  6 May 2020 16:48:08 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 4, 2020 at 1:52 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Thu, Apr 30, 2020 at 11:03 AM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > Hi Ingo,
-> >
-> > I'd like to pull
-> > commit 980737282232 ("capabilities: Introduce CAP_PERFMON to kernel
-> > and user space")
-> > into bpf-next to base my CAP_BPF work on top of it.
-> > could you please prepare a stable tag for me to pull ?
-> > Last release cycle Thomas did a tag for bpf+rt prerequisite patches and
-> > it all worked well during the merge window.
-> > I think that one commit will suffice.
-> >
-> > Thanks!
->
-> Looks like Ingo is offline.
-> Thomas,
-> could you please create a branch for me to pull?
->
-> Thanks!
+Doing kasan pages allocation in MMU_init is too early, kernel doesn't
+have access yet to the entire memory space and memblock_alloc() fails
+when the kernel is a bit big.
 
-ping
+Do it from kasan_init() instead.
+
+Fixes: 2edb16efc899 ("powerpc/32: Add KASAN support")
+Cc: stable@vger.kernel.org
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/include/asm/kasan.h      | 2 --
+ arch/powerpc/mm/init_32.c             | 2 --
+ arch/powerpc/mm/kasan/kasan_init_32.c | 4 +++-
+ 3 files changed, 3 insertions(+), 5 deletions(-)
+
+diff --git a/arch/powerpc/include/asm/kasan.h b/arch/powerpc/include/asm/kasan.h
+index fc900937f653..4769bbf7173a 100644
+--- a/arch/powerpc/include/asm/kasan.h
++++ b/arch/powerpc/include/asm/kasan.h
+@@ -27,12 +27,10 @@
+ 
+ #ifdef CONFIG_KASAN
+ void kasan_early_init(void);
+-void kasan_mmu_init(void);
+ void kasan_init(void);
+ void kasan_late_init(void);
+ #else
+ static inline void kasan_init(void) { }
+-static inline void kasan_mmu_init(void) { }
+ static inline void kasan_late_init(void) { }
+ #endif
+ 
+diff --git a/arch/powerpc/mm/init_32.c b/arch/powerpc/mm/init_32.c
+index 872df48ae41b..a6991ef8727d 100644
+--- a/arch/powerpc/mm/init_32.c
++++ b/arch/powerpc/mm/init_32.c
+@@ -170,8 +170,6 @@ void __init MMU_init(void)
+ 	btext_unmap();
+ #endif
+ 
+-	kasan_mmu_init();
+-
+ 	setup_kup();
+ 
+ 	/* Shortly after that, the entire linear mapping will be available */
+diff --git a/arch/powerpc/mm/kasan/kasan_init_32.c b/arch/powerpc/mm/kasan/kasan_init_32.c
+index 8b15fe09b967..b7c287adfd59 100644
+--- a/arch/powerpc/mm/kasan/kasan_init_32.c
++++ b/arch/powerpc/mm/kasan/kasan_init_32.c
+@@ -131,7 +131,7 @@ static void __init kasan_unmap_early_shadow_vmalloc(void)
+ 	flush_tlb_kernel_range(k_start, k_end);
+ }
+ 
+-void __init kasan_mmu_init(void)
++static void __init kasan_mmu_init(void)
+ {
+ 	int ret;
+ 	struct memblock_region *reg;
+@@ -159,6 +159,8 @@ void __init kasan_mmu_init(void)
+ 
+ void __init kasan_init(void)
+ {
++	kasan_mmu_init();
++
+ 	kasan_remap_early_shadow_ro();
+ 
+ 	clear_page(kasan_early_shadow_page);
+-- 
+2.25.0
+
