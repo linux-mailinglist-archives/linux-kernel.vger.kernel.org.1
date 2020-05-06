@@ -2,96 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5848F1C72D6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 16:29:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41FED1C72E9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 16:34:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728958AbgEFO3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 10:29:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47190 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728784AbgEFO3Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 10:29:16 -0400
-Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E5616206DB;
-        Wed,  6 May 2020 14:29:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588775356;
-        bh=AI9x0xuZnv9+yQgyWPjO6l+C5qqXvu+8N9ZTrnmdLqQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=l9ziEJ+J23audz5AAB8xRp6meeYXG0H4Vl2HNGDyIhk4r3CAfPnRYcjESzr4Y7UkJ
-         G96hwbUonGmeP3OEKHV1bYmcxci/JWls7X6RVUP3OzK+tnMQU6iehmPmVUen/3Z9h3
-         F3DkdQAufnb1EE6E4jyAeob0c7IOge0eOmFki6Ss=
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] perf-probe: Accept the instance number of kretprobe event
-Date:   Wed,  6 May 2020 23:29:12 +0900
-Message-Id: <158877535215.26469.1113127926699134067.stgit@devnote2>
-X-Mailer: git-send-email 2.20.1
-User-Agent: StGit/0.17.1-dirty
+        id S1729022AbgEFOeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 10:34:21 -0400
+Received: from cmccmta1.chinamobile.com ([221.176.66.79]:3523 "EHLO
+        cmccmta1.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728826AbgEFOeV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 10:34:21 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.11]) by rmmx-syy-dmz-app01-12001 (RichMail) with SMTP id 2ee15eb2c9d076f-2798f; Wed, 06 May 2020 22:29:36 +0800 (CST)
+X-RM-TRANSID: 2ee15eb2c9d076f-2798f
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost.localdomain (unknown[112.0.146.193])
+        by rmsmtp-syy-appsvr06-12006 (RichMail) with SMTP id 2ee65eb2c9cc322-73c3f;
+        Wed, 06 May 2020 22:29:36 +0800 (CST)
+X-RM-TRANSID: 2ee65eb2c9cc322-73c3f
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+To:     broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz,
+        matthias.bgg@gmail.com
+Cc:     alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Tang Bin <tangbin@cmss.chinamobile.com>,
+        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Subject: [PATCH] ASoC: mediatek: Fix error handling
+Date:   Wed,  6 May 2020 22:30:09 +0800
+Message-Id: <20200506143009.13368-1-tangbin@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.20.1.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the commit 6a13a0d7b4d1 ("ftrace/kprobe: Show the
-maxactive number on kprobe_events") introduced to show the
-instance number of kretprobe events, the length of the 1st
-format of the kprobe event will not 1, but it can be longer.
-This caused a parser error in perf-probe.
+If the function platform_get_irq() failed, the negative value
+returned will not be detected here. So fix error handling in
+mt6797_afe_pcm_dev_probe(). And when get irq failed, the function
+platform_get_irq() logs an error message, so remove redundant
+message here.
 
-Skip the length check the 1st format of the kprobe event
-to accept this instance number.
-
-Without this fix:
-
-  # perf probe -a vfs_read%return
-  Added new event:
-    probe:vfs_read__return (on vfs_read%return)
-
-  You can now use it in all perf tools, such as:
-
-  	perf record -e probe:vfs_read__return -aR sleep 1
-
-  # perf probe -l
-  Semantic error :Failed to parse event name: r16:probe/vfs_read__return
-    Error: Failed to show event list.
-
-And with this fixes:
-
-  # perf probe -a vfs_read%return
-  ...
-  # perf probe -l
-    probe:vfs_read__return (on vfs_read%return)
-
-
-Fixes: 6a13a0d7b4d1 ("ftrace/kprobe: Show the maxactive number on kprobe_events")
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: stable@vger.kernel.org
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=207587
+Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
 ---
- tools/perf/util/probe-event.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/mediatek/mt6797/mt6797-afe-pcm.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
-index eea132f512b0..c6bcf5709564 100644
---- a/tools/perf/util/probe-event.c
-+++ b/tools/perf/util/probe-event.c
-@@ -1765,8 +1765,7 @@ int parse_probe_trace_command(const char *cmd, struct probe_trace_event *tev)
- 	fmt1_str = strtok_r(argv0_str, ":", &fmt);
- 	fmt2_str = strtok_r(NULL, "/", &fmt);
- 	fmt3_str = strtok_r(NULL, " \t", &fmt);
--	if (fmt1_str == NULL || strlen(fmt1_str) != 1 || fmt2_str == NULL
--	    || fmt3_str == NULL) {
-+	if (fmt1_str == NULL || fmt2_str == NULL || fmt3_str == NULL) {
- 		semantic_error("Failed to parse event name: %s\n", argv[0]);
- 		ret = -EINVAL;
- 		goto out;
+diff --git a/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c b/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
+index 378bfc16e..a621dcf91 100644
+--- a/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
++++ b/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
+@@ -807,10 +807,9 @@ static int mt6797_afe_pcm_dev_probe(struct platform_device *pdev)
+ 
+ 	/* request irq */
+ 	irq_id = platform_get_irq(pdev, 0);
+-	if (!irq_id) {
+-		dev_err(dev, "%pOFn no irq found\n", dev->of_node);
+-		return -ENXIO;
+-	}
++	if (irq_id < 0)
++		return irq_id;
++
+ 	ret = devm_request_irq(dev, irq_id, mt6797_afe_irq_handler,
+ 			       IRQF_TRIGGER_NONE, "asys-isr", (void *)afe);
+ 	if (ret) {
+-- 
+2.20.1.windows.1
+
+
 
