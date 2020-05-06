@@ -2,82 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21E101C77F1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 19:32:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CC651C77F6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 19:33:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728807AbgEFRcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 13:32:46 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:41000 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726093AbgEFRcq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 13:32:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588786364;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VOdssxZdNaLS0bokQVJ/VEmm5cI5XKzXe3OI8bosrIM=;
-        b=bMHMJrvPWznKHuQLzc2q3LbB0XVE77nHkjn4FGignc86vuaecvP5VUFiHwqQC641MvJ254
-        cPbah0ESEaKS7LnfMWBnnhxzZcw0d2hXB6XDrnXYaWGWtpyWAOcM++w7x4S249yjYxSLu0
-        dIAqyuQBdd015MNoZYTFdVBkloiX80o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-438-NMff3vuvMxyKnVURQUHFjg-1; Wed, 06 May 2020 13:32:40 -0400
-X-MC-Unique: NMff3vuvMxyKnVURQUHFjg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3419F107ACCD;
-        Wed,  6 May 2020 17:32:38 +0000 (UTC)
-Received: from treble (ovpn-115-96.rdu2.redhat.com [10.10.115.96])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4EAB519451;
-        Wed,  6 May 2020 17:32:31 +0000 (UTC)
-Date:   Wed, 6 May 2020 12:32:29 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org,
-        mhiramat@kernel.org, bristot@redhat.com, jbaron@akamai.com,
-        torvalds@linux-foundation.org, tglx@linutronix.de,
-        mingo@kernel.org, namit@vmware.com, hpa@zytor.com, luto@kernel.org,
-        ard.biesheuvel@linaro.org, pbonzini@redhat.com,
-        mathieu.desnoyers@efficios.com
-Subject: Re: [PATCH v4 00/18] Add static_call()
-Message-ID: <20200506173229.hjl7s42hnz5bc23s@treble>
-References: <20200501202849.647891881@infradead.org>
+        id S1729301AbgEFRdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 13:33:23 -0400
+Received: from mga04.intel.com ([192.55.52.120]:35328 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728892AbgEFRdX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 13:33:23 -0400
+IronPort-SDR: eWBTP632oWShg35La9DNMsoJnQLdV4QTZSlXmdQWJ1KsMvKTsAxlX1emF6i5ajaCKSNU/fXRh/
+ nIKm2DxJ7B9w==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2020 10:33:22 -0700
+IronPort-SDR: hR4VvPQ1s8LInWNivzxzkSMAvnP0apxEVPJ4nIM8UCZrAXzyiX+MVxaq0FmecwSJPcksCvYdhn
+ BHDTRFkDwx1g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,360,1583222400"; 
+   d="scan'208";a="461835332"
+Received: from vvoggu-mobl1.amr.corp.intel.com (HELO ellie) ([10.213.175.52])
+  by fmsmga006.fm.intel.com with ESMTP; 06 May 2020 10:33:22 -0700
+From:   Vinicius Costa Gomes <vinicius.gomes@intel.com>
+To:     Murali Karicheri <m-karicheri2@ti.com>, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [net-next PATCH] net: hsr: fix incorrect type usage for protocol variable
+In-Reply-To: <20200506154107.575-1-m-karicheri2@ti.com>
+References: <20200506154107.575-1-m-karicheri2@ti.com>
+Date:   Wed, 06 May 2020 10:33:22 -0700
+Message-ID: <87368dufx9.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200501202849.647891881@infradead.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 01, 2020 at 10:28:49PM +0200, Peter Zijlstra wrote:
-> static_call(), is the idea of static_branch() applied to indirect function
-> calls. Remove a data load (indirection) by modifying the text.
-> 
-> The inline implementation still relies on objtool to generate the
-> .static_call_sites section, mostly because this is a natural place for x86_64
-> and works for both GCC and LLVM.  Other architectures can pick other means
-> if/when they implement the inline patching. The out-of-line (aka. trampoline)
-> variant doesn't require this.
-> 
-> Patches go on top of tip/objtool/core.
-> 
-> Patches can also be found here:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git x86/static_call
+Hi Murali,
 
-So this branch has
+Murali Karicheri <m-karicheri2@ti.com> writes:
 
-  45a5c99a226a ("x86/tlb: Move trace_tlb_flush() declaration")
+> Fix following sparse checker warning:-
+>
+> net/hsr/hsr_slave.c:38:18: warning: incorrect type in assignment (different base types)
+> net/hsr/hsr_slave.c:38:18:    expected unsigned short [unsigned] [usertype] protocol
+> net/hsr/hsr_slave.c:38:18:    got restricted __be16 [usertype] h_proto
+> net/hsr/hsr_slave.c:39:25: warning: restricted __be16 degrades to integer
+> net/hsr/hsr_slave.c:39:57: warning: restricted __be16 degrades to integer
+>
+> Signed-off-by: Murali Karicheri <m-karicheri2@ti.com>
+> ---
 
-but I didn't see it posted here.  I guess you dropped it because it's no
-longer needed b/c we fixed those 'undefined references' a different way.
+I think this patch should go via the net tree, as it is a warning fix.
+Anyway...
+
+Acked-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+
 
 -- 
-Josh
-
+Vinicius
