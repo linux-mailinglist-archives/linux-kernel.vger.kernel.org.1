@@ -2,66 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D5471C6AF1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 10:09:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E29F1C6B35
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 10:16:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728511AbgEFIJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 04:09:16 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:3859 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728217AbgEFIJQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 04:09:16 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 2A4DF91E451E0C16612A;
-        Wed,  6 May 2020 16:09:14 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 6 May 2020 16:09:07 +0800
-From:   Samuel Zou <zou_wei@huawei.com>
-To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>, <mripard@kernel.org>, <wens@csie.org>
-CC:     <alsa-devel@alsa-project.org>,
+        id S1728778AbgEFIQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 04:16:46 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:55491 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728371AbgEFIQK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 04:16:10 -0400
+X-UUID: 066c20606c9f4b2bae9d1154b51791b1-20200506
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=dQ3adS1R6v5Zhh8k4ubaG3dFg785IaheB/Dm6qnyvTk=;
+        b=frgQcoMejWx1+nJOwQd5o99qWSOUx6nW0tkXEQBp6lbjSLZB9r5lN0T+lvONc3Fx9+7ASF8p8SSc58mb0U4QCDYAKOGhRpTaP0otambjVAPft2IJf835IdKwYm5j8lI3l++VVizPNt1YZKTlr3vNaIuagpuDsRaHoFI40AhV/Fc=;
+X-UUID: 066c20606c9f4b2bae9d1154b51791b1-20200506
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <weiyi.lu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 444435114; Wed, 06 May 2020 16:16:06 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 6 May 2020 16:16:04 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 6 May 2020 16:16:04 +0800
+From:   Weiyi Lu <weiyi.lu@mediatek.com>
+To:     Enric Balletbo Serra <eballetbo@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Rob Herring <robh@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>
+CC:     James Liao <jamesjj.liao@mediatek.com>,
+        Fan Chen <fan.chen@mediatek.com>,
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Samuel Zou <zou_wei@huawei.com>
-Subject: [PATCH -next] ASoC: sun4i-i2s: Use PTR_ERR_OR_ZERO() to simplify code
-Date:   Wed, 6 May 2020 16:15:12 +0800
-Message-ID: <1588752912-37596-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, Weiyi Lu <weiyi.lu@mediatek.com>
+Subject: [PATCH v14 00/11] Mediatek MT8183 scpsys support 
+Date:   Wed, 6 May 2020 16:15:52 +0800
+Message-ID: <1588752963-19934-1-git-send-email-weiyi.lu@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes coccicheck warning:
-
-sound/soc/sunxi/sun4i-i2s.c:1177:1-3: WARNING: PTR_ERR_OR_ZERO can be used
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Samuel Zou <zou_wei@huawei.com>
----
- sound/soc/sunxi/sun4i-i2s.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index d0a8d58..72012a6 100644
---- a/sound/soc/sunxi/sun4i-i2s.c
-+++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -1174,10 +1174,8 @@ static int sun4i_i2s_init_regmap_fields(struct device *dev,
- 	i2s->field_fmt_sr =
- 			devm_regmap_field_alloc(dev, i2s->regmap,
- 						i2s->variant->field_fmt_sr);
--	if (IS_ERR(i2s->field_fmt_sr))
--		return PTR_ERR(i2s->field_fmt_sr);
- 
--	return 0;
-+	return PTR_ERR_OR_ZERO(i2s->field_fmt_sr);
- }
- 
- static int sun4i_i2s_probe(struct platform_device *pdev)
--- 
-2.6.2
+VGhpcyBzZXJpZXMgaXMgYmFzZWQgb24gdjUuNy1yYzENCg0KY2hhbmdlcyBzaW5jZSB2MTM6DQot
+IGRvY3VtZW50IG9wdGlvbmFsIHByb3BlcnR5ICJzbWktY29tbSINCi0gbW92ZSBkZWZpbmVzIGlu
+IHNjcHN5Yy5oIHRvIG10ay1zY3BzeXMuYyBkaXJlY3RseQ0KLSBtaW5vciBjb2Rpbmcgc3l0bGUg
+Zml4ZXMNCg0KY2hhbmdlIHNpbmNlIHYxMjoNCi0gc2VwYXJhdGUgdGhlIGZpeCBvZiBjb21tYSBh
+dCB0aGUgZW5kIGludG8gYSBuZXcgcGF0Y2ggW1BBVENIIDA5LzExXQ0KDQpjaGFuZ2VzIHNpbmNl
+IHYxMToNCi0gcmUtb3JkZXIgcGF0Y2hlcyAiUmVtb3ZlIGluZnJhY2ZnIG1pc2MgZHJpdmVyIHN1
+cHBvcnQiIGFuZCAiQWRkIG11bHRpcGxlIHN0ZXAgYnVzIHByb3RlY3Rpb24iDQotIGFkZCBjYXAg
+TVRLX1NDUERfU1JBTV9JU08gZm9yIGV4dHJhIHNyYW0gY29udHJvbA0KLSBtaW5vciBjb2Rpbmcg
+c3l0bGUgZml4ZXMgYW5kIHJld29yZCBjb21taXQgbWVzc2FnZXMNCg0KY2hhbmdlcyBzaW5jZSB2
+MTA6DQotIHNxdWFzaCBQQVRDSCAwNCBhbmQgUEFUQ0ggMDYgaW4gdjkgaW50byBpdHMgcHJldmlv
+dXMgcGF0Y2gNCi0gYWRkICJpZ25vcmVfY2xyX2FjayIgZm9yIG11bHRpcGxlIHN0ZXAgYnVzIHBy
+b3RlY3Rpb24gY29udHJvbCB0byBoYXZlIGEgY2xlYW4gZGVmaW5pdGlvbiBvZiBwb3dlciBkb21h
+aW4gZGF0YQ0KLSBrZWVwIHRoZSBtYXNrIHJlZ2lzdGVyIGJpdCBkZWZpbml0aW9ucyBhbmQgZG8g
+dGhlIHNhbWUgZm9yIE1UODE4Mw0KDQpjaGFuZ2VzIHNpbmNlIHY5Og0KLSBhZGQgbmV3IFBBVENI
+IDA0IGFuZCBQQVRDSCAwNiB0byByZXBsYWNlIGJ5IG5ldyBtZXRob2QgZm9yIGFsbCBjb21wYXRp
+Ymxlcw0KLSBhZGQgbmV3IFBBVENIIDA3IHRvIHJlbW92ZSBpbmZyYWNmZyBtaXNjIGRyaXZlcg0K
+LSBtaW5vciBjb2Rpbmcgc3l0bGUgZml4DQoNCmNoYW5nZXMgc2luY2Ugdjc6DQotIHJld29yZCBp
+biBiaW5kaW5nIGRvY3VtZW50IFtQQVRDSCAwMi8xNF0NCi0gZml4IGVycm9yIHJldHVybiBjaGVj
+a2luZyBidWcgaW4gc3Vic3lzIGNsb2NrIGNvbnRyb2wgW1BBVENIIDEwLzE0XQ0KLSBhZGQgcG93
+ZXIgZG9tYWlucyBwcm9wZXJpdHkgdG8gbWZnY2ZnIHBhdGNoIFtQQVRDSCAxNC8xNF0gZnJvbQ0K
+ICBodHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3BhdGNoLzExMTI2MTk5Lw0KDQpjaGFuZ2Vz
+IHNpbmNlIHY2Og0KLSByZW1vdmUgdGhlIHBhdGNoIG9mIFNQRFggbGljZW5zZSBpZGVudGlmaWVy
+IGJlY2F1c2UgaXQncyBhbHJlYWR5IGZpeGVkDQoNCmNoYW5nZXMgc2luY2UgdjU6DQotIGZpeCBk
+b2N1bWVudGF0aW9uIGluIFtQQVRDSCAwNC8xNF0NCi0gcmVtb3ZlIHVzZWxlc3MgdmFyaWFibGUg
+Y2hlY2tpbmcgYW5kIHJldXNlIEFQSSBvZiBjbG9jayBjb250cm9sIGluIFtQQVRDSCAwNi8xNF0N
+Ci0gY29kaW5nIHN0eWxlIGZpeCBvZiBidXMgcHJvdGVjdGlvbiBjb250cm9sIGluIFtQQVRDSCAw
+OC8xNF0NCi0gZml4IG5hbWluZyBvZiBuZXcgYWRkZWQgZGF0YSBpbiBbUEFUQ0ggMDkvMTRdDQot
+IHNtYWxsIHJlZmFjdG9yIG9mIG11bHRpcGxlIHN0ZXAgYnVzIHByb3RlY3Rpb24gY29udHJvbCBp
+biBbUEFUQ0ggMTAvMTRdDQoNCmNoYW5nZXMgc2luY2UgdjQ6DQotIGFkZCBwcm9wZXJ0eSB0byBt
+dDgxODMgc21pLWNvbW1vbg0KLSBzZXBlcmF0ZSByZWZhY3RvciBwYXRjaGVzIGFuZCBuZXcgYWRk
+IGZ1bmN0aW9uDQotIGFkZCBwb3dlciBjb250cm9sbGVyIGRldmljZSBub2RlDQoNCg0KV2VpeWkg
+THUgKDExKToNCiAgZHQtYmluZGluZ3M6IG1lZGlhdGVrOiBBZGQgcHJvcGVydHkgdG8gbXQ4MTgz
+IHNtaS1jb21tb24NCiAgZHQtYmluZGluZ3M6IHNvYzogQWRkIE1UODE4MyBwb3dlciBkdC1iaW5k
+aW5ncw0KICBzb2M6IG1lZGlhdGVrOiBBZGQgYmFzaWNfY2xrX25hbWUgdG8gc2NwX3Bvd2VyX2Rh
+dGENCiAgc29jOiBtZWRpYXRlazogUmVtb3ZlIGluZnJhY2ZnIG1pc2MgZHJpdmVyIHN1cHBvcnQN
+CiAgc29jOiBtZWRpYXRlazogQWRkIG11bHRpcGxlIHN0ZXAgYnVzIHByb3RlY3Rpb24gY29udHJv
+bA0KICBzb2M6IG1lZGlhdGVrOiBBZGQgc3Vic3lzIGNsb2NrIGNvbnRyb2wgZm9yIGJ1cyBwcm90
+ZWN0aW9uDQogIHNvYzogbWVkaWF0ZWs6IEFkZCBleHRyYSBzcmFtIGNvbnRyb2wNCiAgc29jOiBt
+ZWRpYXRlazogQWRkIE1UODE4MyBzY3BzeXMgc3VwcG9ydA0KICBzb2M6IG1lZGlhdGVrOiBBZGQg
+YSBjb21tYSBhdCB0aGUgZW5kDQogIGFybTY0OiBkdHM6IEFkZCBwb3dlciBjb250cm9sbGVyIGRl
+dmljZSBub2RlIG9mIE1UODE4Mw0KICBhcm02NDogZHRzOiBBZGQgcG93ZXItZG9tYWlucyBwcm9w
+ZXJ0eSB0byBtZmdjZmcNCg0KIC4uLi9tZWRpYXRlayxzbWktY29tbW9uLnR4dCAgICAgICAgICAg
+ICAgICAgICB8ICAgMiArLQ0KIC4uLi9iaW5kaW5ncy9zb2MvbWVkaWF0ZWsvc2Nwc3lzLnR4dCAg
+ICAgICAgICB8ICAyMSArLQ0KIGFyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ4MTgzLmR0
+c2kgICAgICB8ICA2MyArKw0KIGRyaXZlcnMvc29jL21lZGlhdGVrL0tjb25maWcgICAgICAgICAg
+ICAgICAgICB8ICAxMCAtDQogZHJpdmVycy9zb2MvbWVkaWF0ZWsvTWFrZWZpbGUgICAgICAgICAg
+ICAgICAgIHwgICAxIC0NCiBkcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstaW5mcmFjZmcuYyAgICAg
+ICAgICAgfCAgNzkgLS0NCiBkcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstc2Nwc3lzLmMgICAgICAg
+ICAgICAgfCA3MDYgKysrKysrKysrKysrKystLS0tDQogaW5jbHVkZS9kdC1iaW5kaW5ncy9wb3dl
+ci9tdDgxODMtcG93ZXIuaCAgICAgIHwgIDI2ICsNCiBpbmNsdWRlL2xpbnV4L3NvYy9tZWRpYXRl
+ay9pbmZyYWNmZy5oICAgICAgICAgfCAgMzkgLQ0KIDkgZmlsZXMgY2hhbmdlZCwgNjcyIGluc2Vy
+dGlvbnMoKyksIDI3NSBkZWxldGlvbnMoLSkNCiBkZWxldGUgbW9kZSAxMDA2NDQgZHJpdmVycy9z
+b2MvbWVkaWF0ZWsvbXRrLWluZnJhY2ZnLmMNCiBjcmVhdGUgbW9kZSAxMDA2NDQgaW5jbHVkZS9k
+dC1iaW5kaW5ncy9wb3dlci9tdDgxODMtcG93ZXIuaA0KIGRlbGV0ZSBtb2RlIDEwMDY0NCBpbmNs
+dWRlL2xpbnV4L3NvYy9tZWRpYXRlay9pbmZyYWNmZy5oDQo=
 
