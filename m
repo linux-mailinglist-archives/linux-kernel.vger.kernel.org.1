@@ -2,202 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9AC1C67B6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 07:53:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E0231C6770
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 07:27:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727799AbgEFFxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 01:53:33 -0400
-Received: from lgeamrelo12.lge.com ([156.147.23.52]:53637 "EHLO
-        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725771AbgEFFxc (ORCPT
+        id S1727067AbgEFF1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 01:27:02 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:42814 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725849AbgEFF1C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 01:53:32 -0400
-X-Greylist: delayed 1801 seconds by postgrey-1.27 at vger.kernel.org; Wed, 06 May 2020 01:53:30 EDT
-Received: from unknown (HELO lgeamrelo02.lge.com) (156.147.1.126)
-        by 156.147.23.52 with ESMTP; 6 May 2020 14:23:27 +0900
-X-Original-SENDERIP: 156.147.1.126
-X-Original-MAILFROM: iamjoonsoo.kim@lge.com
-Received: from unknown (HELO localhost) (10.177.220.187)
-        by 156.147.1.126 with ESMTP; 6 May 2020 14:23:27 +0900
-X-Original-SENDERIP: 10.177.220.187
-X-Original-MAILFROM: iamjoonsoo.kim@lge.com
-Date:   Wed, 6 May 2020 14:23:27 +0900
-From:   Joonsoo Kim <iamjoonsoo.kim@lge.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Laura Abbott <labbott@redhat.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Minchan Kim <minchan@kernel.org>,
-        Rik van Riel <riel@surriel.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Huang Rui <ray.huang@amd.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Pavel Machek <pavel@ucw.cz>, kernel-team@lge.com,
-        Christoph Hellwig <hch@infradead.org>,
-        Kexec Mailing List <kexec@lists.infradead.org>
-Subject: Re: [PATCH v2 03/10] kexec: separate PageHighMem() and
- PageHighMemZone() use case
-Message-ID: <20200506052327.GA25974@js1304-desktop>
-References: <1588130803-20527-1-git-send-email-iamjoonsoo.kim@lge.com>
- <1588130803-20527-4-git-send-email-iamjoonsoo.kim@lge.com>
- <87h7wzvjko.fsf@x220.int.ebiederm.org>
- <CAAmzW4MrD75+Prw=fQ=d5uXKgGy3urBwmxnNtoNsw5M1m9xjYQ@mail.gmail.com>
- <87ftcfpzjn.fsf@x220.int.ebiederm.org>
+        Wed, 6 May 2020 01:27:02 -0400
+X-UUID: a5bb50585ca341fa900c46b565d606fa-20200506
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=GyIzn8Fjf5emeqtXboCK49Lm5jVHGDGdEVCXXCPcZZs=;
+        b=FbLP9ZbngPwnOOUdKh6Z69BnqWzSsgwIvZNO1sTYwqcb78j+xhVGJNEKPNZoTv/yjnQrcSWcfknd/L7eIyWsFqqzzjJulMKcevO779Z5q+caOk9lKjnETPfKXgQdKtJKnzPUmXo1og3IfjK4pCjdpQF/6FG6EgWFgREwdIITtKk=;
+X-UUID: a5bb50585ca341fa900c46b565d606fa-20200506
+Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw02.mediatek.com
+        (envelope-from <walter-zh.wu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 810855708; Wed, 06 May 2020 13:26:57 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 6 May 2020 13:26:55 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 6 May 2020 13:26:55 +0800
+From:   Walter Wu <walter-zh.wu@mediatek.com>
+To:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Jonathan Corbet <corbet@lwn.net>
+CC:     <kasan-dev@googlegroups.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        Walter Wu <walter-zh.wu@mediatek.com>
+Subject: [PATCH 3/3] kasan: add KASAN_RCU_STACK_RECORD documentation
+Date:   Wed, 6 May 2020 13:26:55 +0800
+Message-ID: <20200506052655.14639-1-walter-zh.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87ftcfpzjn.fsf@x220.int.ebiederm.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 04, 2020 at 09:03:56AM -0500, Eric W. Biederman wrote:
-> 
-> I have added in the kexec mailling list.
-> 
-> Looking at the patch we are discussing it appears that the kexec code
-> could be doing much better in highmem situations today but is not.
+VGhpcyBhZGRzIHRoZSBkb2N1bWVudGF0aW9uIGZvciB0aGUgS0FTQU5fUkNVX1NUQUNLX1JFQ09S
+RCBjb25maWcgb3B0aW9uLg0KDQpTaWduZWQtb2ZmLWJ5OiBXYWx0ZXIgV3UgPHdhbHRlci16aC53
+dUBtZWRpYXRlay5jb20+DQpDYzogQW5kcmV5IFJ5YWJpbmluIDxhcnlhYmluaW5AdmlydHVvenpv
+LmNvbT4NCkNjOiBEbWl0cnkgVnl1a292IDxkdnl1a292QGdvb2dsZS5jb20+DQpDYzogQWxleGFu
+ZGVyIFBvdGFwZW5rbyA8Z2xpZGVyQGdvb2dsZS5jb20+DQpDYzogSm9uYXRoYW4gQ29yYmV0IDxj
+b3JiZXRAbHduLm5ldD4NCi0tLQ0KIERvY3VtZW50YXRpb24vZGV2LXRvb2xzL2thc2FuLnJzdCB8
+IDIxICsrKysrKysrKysrKysrKysrKysrKw0KIDEgZmlsZSBjaGFuZ2VkLCAyMSBpbnNlcnRpb25z
+KCspDQoNCmRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2Rldi10b29scy9rYXNhbi5yc3QgYi9E
+b2N1bWVudGF0aW9uL2Rldi10b29scy9rYXNhbi5yc3QNCmluZGV4IGM2NTJkNzQwNzM1ZC4uMzY4
+ZmYwZGFkMGQ3IDEwMDY0NA0KLS0tIGEvRG9jdW1lbnRhdGlvbi9kZXYtdG9vbHMva2FzYW4ucnN0
+DQorKysgYi9Eb2N1bWVudGF0aW9uL2Rldi10b29scy9rYXNhbi5yc3QNCkBAIC0yODEsMyArMjgx
+LDI0IEBAIHVubWFwcGVkLiBUaGlzIHdpbGwgcmVxdWlyZSBjaGFuZ2VzIGluIGFyY2gtc3BlY2lm
+aWMgY29kZS4NCiANCiBUaGlzIGFsbG93cyBgYFZNQVBfU1RBQ0tgYCBzdXBwb3J0IG9uIHg4Niwg
+YW5kIGNhbiBzaW1wbGlmeSBzdXBwb3J0IG9mDQogYXJjaGl0ZWN0dXJlcyB0aGF0IGRvIG5vdCBo
+YXZlIGEgZml4ZWQgbW9kdWxlIHJlZ2lvbi4NCisNCitDT05GSUdfS0FTQU5fUkNVX1NUQUNLX1JF
+Q09SRA0KK35+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+DQorDQorV2l0aCBDT05GSUdfS0FT
+QU5fUkNVX1NUQUNLX1JFQ09SRCwgd2hlbiBjYWxsX3JjdSgpIGlzIGNhbGxlZCwgaXQgd2lsbA0K
+K3N0b3JlIHRoZSBjYWxsX3JjdSgpIGNhbGwgc3RhY2sgaW50byBzbHViIGFsbG9jIG1ldGEtZGF0
+YS4gVGhlIGdvYWwNCitpcyB0byBwcmludCBjYWxsX3JjdSgpIGluZm9ybWF0aW9uIGluIEtBU0FO
+IHJlcG9ydC4gSXQgaXMgaGVscGZ1bCBmb3INCit1c2UtYWZ0ZXItZnJlZSBvciBkb3VibGUgZnJl
+ZSBtZW1vcnkgaXNzdWUuDQorDQorUmVjb3JkIGZpcnN0IGFuZCBsYXN0IGNhbGxfcmN1KCkgY2Fs
+bCBzdGFjayBhbmQgcHJpbnQgdHdvIGNhbGxfcmN1KCkNCitjYWxsIHN0YWNrIGluIEtBU0FOIHJl
+cG9ydC4NCisNCitUaGlzIG9wdGlvbiBkb2Vzbid0IGluY3JlYXNlIHRoZSBjb3N0IG9mIG1lbW9y
+eSBjb25zdW1wdGlvbiwgd2UgYWRkIHR3bw0KK2NhbGxfcmN1KCkgY2FsbCBzdGFjayBpbnRvIHN0
+cnVjdCBrYXNhbl9hbGxvY19tZXRhIGFuZCBzaXplIGlzIDggYnl0ZXMuDQorUmVtb3ZlIHRoZSBm
+cmVlIHRyYWNrIGZyb20gc3RydWN0IGthc2FuX2FsbG9jX21ldGEgYW5kIHNpemUgaXMgOCBieXRl
+cy4NCitTbyB3ZSBkb24ndCBlbmxhcmdlIHRoZSBzbHViIG1ldGEtZGF0YSBzaXplLg0KKw0KK1Ro
+aXMgb3B0aW9uIGlzIG9ubHkgc3VpdGFibGUgZm9yIGdlbmVyaWMgS0FTQU4uIEJlY2F1c2UgdGhl
+IGZyZWUgdHJhY2sNCitpcyBzdG9yZWQgaW4gZnJlZWQgb2JqZWN0LiBzbyBmcmVlIHRyYWNrIGlz
+IHZhbGlkIGluZm9ybWF0aW9uIG9ubHkgd2hlbg0KK2l0IGV4aXN0cyBpbiB0aGUgcXVhcmFudGlu
+ZS4gSWYgdGhlIHNsdWIgb2JqZWN0IGlzIGluLXVzZSBzdGF0ZSwgdGhlbg0KK0tBU0FOIHJlcG9y
+dCBkb2Vzbid0IHByaW50IGNhbGxfcmN1KCkgZnJlZSB0cmFjayBpbmZvcm1hdGlvbi4NCi0tIA0K
+Mi4xOC4wDQo=
 
-Sound great!
-
-> 
-> 
-> Joonsoo Kim <js1304@gmail.com> writes:
-> 
-> > 2020년 5월 1일 (금) 오후 11:06, Eric W. Biederman <ebiederm@xmission.com>님이 작성:
-> >>
-> >> js1304@gmail.com writes:
-> >>
-> >> > From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> >> >
-> >> > Until now, PageHighMem() is used for two different cases. One is to check
-> >> > if there is a direct mapping for this page or not. The other is to check
-> >> > the zone of this page, that is, weather it is the highmem type zone or not.
-> >> >
-> >> > Now, we have separate functions, PageHighMem() and PageHighMemZone() for
-> >> > each cases. Use appropriate one.
-> >> >
-> >> > Note that there are some rules to determine the proper macro.
-> >> >
-> >> > 1. If PageHighMem() is called for checking if the direct mapping exists
-> >> > or not, use PageHighMem().
-> >> > 2. If PageHighMem() is used to predict the previous gfp_flags for
-> >> > this page, use PageHighMemZone(). The zone of the page is related to
-> >> > the gfp_flags.
-> >> > 3. If purpose of calling PageHighMem() is to count highmem page and
-> >> > to interact with the system by using this count, use PageHighMemZone().
-> >> > This counter is usually used to calculate the available memory for an
-> >> > kernel allocation and pages on the highmem zone cannot be available
-> >> > for an kernel allocation.
-> >> > 4. Otherwise, use PageHighMemZone(). It's safe since it's implementation
-> >> > is just copy of the previous PageHighMem() implementation and won't
-> >> > be changed.
-> >> >
-> >> > I apply the rule #2 for this patch.
-> >>
-> >> Hmm.
-> >>
-> >> What happened to the notion of deprecating and reducing the usage of
-> >> highmem?  I know that we have some embedded architectures where it is
-> >> still important but this feels like it flies in the face of that.
-> >
-> > AFAIK, deprecating highmem requires some more time and, before then,
-> > we need to support it.
-> 
-> But it at least makes sense to look at what we are doing with highmem
-> and ask if it makes sense.
-> 
-> >> This part of kexec would be much more maintainable if it had a proper
-> >> mm layer helper that tested to see if the page matched the passed in
-> >> gfp flags.  That way the mm layer could keep changing and doing weird
-> >> gyrations and this code would not care.
-> >
-> > Good idea! I will do it.
-> >
-> >>
-> >> What would be really helpful is if there was a straight forward way to
-> >> allocate memory whose physical address fits in the native word size.
-> >>
-> >>
-> >> All I know for certain about this patch is that it takes a piece of code
-> >> that looked like it made sense, and transfroms it into something I can
-> >> not easily verify, and can not maintain.
-> >
-> > Although I decide to make a helper as you described above, I don't
-> > understand why you think that a new code isn't maintainable. It is just
-> > the same thing with different name. Could you elaborate more why do
-> > you think so?
-> 
-> Because the current code is already wrong.  It does not handle
-> the general case of what it claims to handle.  When the only distinction
-> that needs to be drawn is highmem or not highmem that is likely fine.
-> But now you are making it possible to draw more distinctions.  At which
-> point I have no idea which distinction needs to be drawn.
-> 
-> 
-> The code and the logic is about 20 years old.  When it was written I
-> don't recally taking numa seriously and the kernel only had 3 zones
-> as I recall (DMA aka the now deprecated GFP_DMA, NORMAL, and HIGH).
-> 
-> The code attempts to work around limitations of those old zones amd play
-> nice in a highmem world by allocating memory HIGH memory and not using
-> it if the memory was above 4G ( on 32bit ).
-> 
-> Looking the kernel now has GFP_DMA32 so on 32bit with highmem we should
-> probably be using that, when allocating memory.
-> 
-
-From quick investigation, unfortunately, ZONE_DMA32 isn't available on
-x86 32bit now so using GFP_DMA32 to allocate memory below 4G would not
-work. Enabling ZONE_DMA32 on x86 32bit would be not simple, so, IMHO, it
-would be better to leave the code as it is.
-
-> 
-> 
-> Further in dealing with this memory management situation we only
-> have two situations we call kimage_alloc_page.
-> 
-> For an indirect page which must have a valid page_address(page).
-> We could probably relax that if we cared to.
-> 
-> For a general kexec page to store the next kernel in until we switch.
-> The general pages can be in high memory.
-> 
-> In a highmem world all of those pages should be below 32bit.
-> 
-> 
-> 
-> Given that we fundamentally have two situations my sense is that we
-> should just refactor the code so that we never have to deal with:
-> 
-> 
-> 			/* The old page I have found cannot be a
-> 			 * destination page, so return it if it's
-> 			 * gfp_flags honor the ones passed in.
-> 			 */
-> 			if (!(gfp_mask & __GFP_HIGHMEM) &&
-> 			    PageHighMem(old_page)) {
-> 				kimage_free_pages(old_page);
-> 				continue;
-> 			}
-> 
-> Either we teach kimage_add_entry how to work with high memory pages
-> (still 32bit accessible) or we teach kimage_alloc_page to notice it is
-> an indirect page allocation and to always skip trying to reuse the page
-> it found in that case.
-> 
-> That way the code does not need to know about forever changing mm internals.
-
-Nice! I already have seen your patch and found that above two lines
-related to HIGHMEM are removed. Thanks for your help.
-
-Thanks.
