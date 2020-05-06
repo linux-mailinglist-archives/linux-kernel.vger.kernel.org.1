@@ -2,91 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E2431C65E2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 04:33:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEFF01C65DC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 04:27:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729838AbgEFCdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 22:33:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729509AbgEFCdg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 22:33:36 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F35C6C061A0F;
-        Tue,  5 May 2020 19:33:34 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id t3so539545qkg.1;
-        Tue, 05 May 2020 19:33:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gcP618iUXG0oqvLPr7DNo5hRWczpuu2twtPmXxdhVpw=;
-        b=R1384l/6yWHB4ooeXERU+zst6yVVl4qdVKUOLKPDL0IFR5k6aI6g7gRjbAuwT4BzKA
-         Z6KH+95F2q4yXt//grj2uZFTWLNoNm8Lu5dIBlqAf5q0PVULxKpDhwpgZFvf7hcM1z7o
-         JWEEw5dFLm4KLFcz3u7lzAjqWTBHjwaPx8OKXuovGeWFo+iTfTDqNgZ8cVEmx2m0Vs6k
-         EANIs7E1P/Hmi/gKrN2ZVtZbqWaVt+JTnGqrK3+DtfWnoQ9itU1GBE/rj7qiUUNBnx8m
-         YJeMGceUIQe7nPht9WV59pnmBnFXycdSyUqerr4PwnHuvfUnVMkw7uFBR3BIpqH5dNjA
-         mXwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gcP618iUXG0oqvLPr7DNo5hRWczpuu2twtPmXxdhVpw=;
-        b=k8pq+1jvN/xTFQLTx2Sw8R3oL1IKm7Mt5RFCp1vv1izecsHk92eQitkfekL2DQuC85
-         YEjESykZugT8ImT1Aa3Zn2kNVPf+Xvx17xqPlY7tyxjpjnq5utcFtj5RlCeDzlRemzuR
-         AzQfpQ4c0n8ptexAGLynMpEI6kPi+zGZYVeVLcC2oecCW8tBPyhMBVTuPOBDk9zSshB1
-         X5CY0eLMjGZs2N8NxgHsucyaeeWH9IEmaUNvzAmf3XjHFJfiKJtfLlSCOdegsndBkZaD
-         nuM7Ky7GrHVtItoRYuKUO6poJMfHTbYQ2+fL/7tAzwUEIJdJS1J4nzFl/wZduauw23og
-         Aihg==
-X-Gm-Message-State: AGi0PuYAfhpEWmOZfN4PXB7AZ4m/Mx5EsEN5oHIYMzx6tJ6c+SpTzx9U
-        Xaj5WPpv1VMokyI1h9KwJv24cakBYcVUr8LemYo=
-X-Google-Smtp-Source: APiQypKPqLRAV/6/dDdwBHpa1YXOYCMpbodQ4y1LcTQnjLMmx87XtQKGZI8fOwO9Tnx5Ay5TOzZj8htcdEBmp+Z16mI=
-X-Received: by 2002:a05:620a:89d:: with SMTP id b29mr6804070qka.103.1588732414259;
- Tue, 05 May 2020 19:33:34 -0700 (PDT)
+        id S1729774AbgEFC1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 22:27:35 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:51946 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729553AbgEFC1f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 22:27:35 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 69940334E4C9448177D9;
+        Wed,  6 May 2020 10:27:32 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 6 May 2020 10:27:25 +0800
+From:   Samuel Zou <zou_wei@huawei.com>
+To:     <mpe@ellerman.id.au>, <benh@kernel.crashing.org>,
+        <paulus@samba.org>
+CC:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        "Samuel Zou" <zou_wei@huawei.com>
+Subject: [PATCH -next] powerpc/kernel/sysfs: Use ARRAY_SIZE instead of calculating the array size
+Date:   Wed, 6 May 2020 10:33:36 +0800
+Message-ID: <1588732416-33233-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-References: <cover.1588320655.git.shengjiu.wang@nxp.com> <a933bafd2d6a60a69f840d9d4b613337efcf2816.1588320656.git.shengjiu.wang@nxp.com>
- <20200501102158.GA5276@sirena.org.uk>
-In-Reply-To: <20200501102158.GA5276@sirena.org.uk>
-From:   Shengjiu Wang <shengjiu.wang@gmail.com>
-Date:   Wed, 6 May 2020 10:33:23 +0800
-Message-ID: <CAA+D8ANDHHejFD1rYmFOG24yivpEJa+xO-WpVr=Vzfz9yW9H7g@mail.gmail.com>
-Subject: Re: [PATCH 2/3] ASoC: fsl_esai: Add support for imx8qm
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org, Takashi Iwai <tiwai@suse.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+fix coccinelle warning, use ARRAY_SIZE
 
-On Fri, May 1, 2020 at 6:23 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Fri, May 01, 2020 at 04:12:05PM +0800, Shengjiu Wang wrote:
-> > The difference for esai on imx8qm is that DMA device is EDMA.
-> >
-> > EDMA requires the period size to be multiple of maxburst. Otherwise
-> > the remaining bytes are not transferred and thus noise is produced.
->
-> If this constraint comes from the DMA controller then normally you'd
-> expect the DMA controller integration to be enforcing this - is there no
-> information in the DMA API that lets us know that this constraint is
-> there?
+arch/powerpc/kernel/sysfs.c:853:34-35: WARNING: Use ARRAY_SIZE
+arch/powerpc/kernel/sysfs.c:860:33-34: WARNING: Use ARRAY_SIZE
+arch/powerpc/kernel/sysfs.c:868:28-29: WARNING: Use ARRAY_SIZE
+arch/powerpc/kernel/sysfs.c:947:34-35: WARNING: Use ARRAY_SIZE
+arch/powerpc/kernel/sysfs.c:954:33-34: WARNING: Use ARRAY_SIZE
+arch/powerpc/kernel/sysfs.c:962:28-29: WARNING: Use ARRAY_SIZE
 
-No, I can't find one API for this.
-Do you have a recommendation?
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Samuel Zou <zou_wei@huawei.com>
+---
+ arch/powerpc/kernel/sysfs.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-best regards
-wang shengjiu
+diff --git a/arch/powerpc/kernel/sysfs.c b/arch/powerpc/kernel/sysfs.c
+index 571b325..13d2423 100644
+--- a/arch/powerpc/kernel/sysfs.c
++++ b/arch/powerpc/kernel/sysfs.c
+@@ -850,14 +850,14 @@ static int register_cpu_online(unsigned int cpu)
+ #ifdef HAS_PPC_PMC_IBM
+ 	case PPC_PMC_IBM:
+ 		attrs = ibm_common_attrs;
+-		nattrs = sizeof(ibm_common_attrs) / sizeof(struct device_attribute);
++		nattrs = ARRAY_SIZE(ibm_common_attrs);
+ 		pmc_attrs = classic_pmc_attrs;
+ 		break;
+ #endif /* HAS_PPC_PMC_IBM */
+ #ifdef HAS_PPC_PMC_G4
+ 	case PPC_PMC_G4:
+ 		attrs = g4_common_attrs;
+-		nattrs = sizeof(g4_common_attrs) / sizeof(struct device_attribute);
++		nattrs = ARRAY_SIZE(g4_common_attrs);
+ 		pmc_attrs = classic_pmc_attrs;
+ 		break;
+ #endif /* HAS_PPC_PMC_G4 */
+@@ -865,7 +865,7 @@ static int register_cpu_online(unsigned int cpu)
+ 	case PPC_PMC_PA6T:
+ 		/* PA Semi starts counting at PMC0 */
+ 		attrs = pa6t_attrs;
+-		nattrs = sizeof(pa6t_attrs) / sizeof(struct device_attribute);
++		nattrs = ARRAY_SIZE(pa6t_attrs);
+ 		pmc_attrs = NULL;
+ 		break;
+ #endif
+@@ -944,14 +944,14 @@ static int unregister_cpu_online(unsigned int cpu)
+ #ifdef HAS_PPC_PMC_IBM
+ 	case PPC_PMC_IBM:
+ 		attrs = ibm_common_attrs;
+-		nattrs = sizeof(ibm_common_attrs) / sizeof(struct device_attribute);
++		nattrs = ARRAY_SIZE(ibm_common_attrs);
+ 		pmc_attrs = classic_pmc_attrs;
+ 		break;
+ #endif /* HAS_PPC_PMC_IBM */
+ #ifdef HAS_PPC_PMC_G4
+ 	case PPC_PMC_G4:
+ 		attrs = g4_common_attrs;
+-		nattrs = sizeof(g4_common_attrs) / sizeof(struct device_attribute);
++		nattrs = ARRAY_SIZE(g4_common_attrs);
+ 		pmc_attrs = classic_pmc_attrs;
+ 		break;
+ #endif /* HAS_PPC_PMC_G4 */
+@@ -959,7 +959,7 @@ static int unregister_cpu_online(unsigned int cpu)
+ 	case PPC_PMC_PA6T:
+ 		/* PA Semi starts counting at PMC0 */
+ 		attrs = pa6t_attrs;
+-		nattrs = sizeof(pa6t_attrs) / sizeof(struct device_attribute);
++		nattrs = ARRAY_SIZE(pa6t_attrs);
+ 		pmc_attrs = NULL;
+ 		break;
+ #endif
+-- 
+2.6.2
+
