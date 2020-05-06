@@ -2,130 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A6581C6A28
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 09:37:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A5171C6A30
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 09:40:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728296AbgEFHhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 03:37:50 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:27384 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727937AbgEFHhu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 03:37:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588750668;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1DqHn9dPlmj80heFjYayVPfLacQlouJrbO3+dn30g+Y=;
-        b=IGosKOOhtur924OsjKmcDnLD1Co+WRdGMjZjU8XKvleAKVOpDZBRqnAZs4cYKveWm5PGRL
-        wYoC6n/164dbOuenEzD+SF6nSPP+y+AgjRygzhX8ZYBRAKxW8dI8/N6Y5JSEleZch8dNJS
-        6oz35GaK5vnBLxwzgSADBIpUq99+fu0=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-192-RMLvViSUPhmuJypugt_i9w-1; Wed, 06 May 2020 03:37:47 -0400
-X-MC-Unique: RMLvViSUPhmuJypugt_i9w-1
-Received: by mail-wr1-f69.google.com with SMTP id f2so874141wrm.9
-        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 00:37:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1DqHn9dPlmj80heFjYayVPfLacQlouJrbO3+dn30g+Y=;
-        b=AnIvqA8Pe2l3aVIFON19u/Xs6lGoLaqzxo8zB2XlpsKFePmvuy9dhjvBHkPjUDGytc
-         y/2zE+lmxFcV8UzmtDLq+sZE8veIr6QGXmUCrsA4uCmbut+1iudczXYFAuYJRVl0UQ71
-         b9zIe+TR6sGc1NjEDOvbiqyywr40nX6HJyremstL5kxXpKSnsC2FzghU6QkkTBJMZAjk
-         cvgX1DOjqkxiR/70CcOUNtejfGcrdN3rh/p1u9I1LrnoLHig80OoJwffdlb3jO8CSTAQ
-         RPrGacXYobfA9kYYTUgFNdKfuqIwt6CxLkTZGbP/RJy7ydyIQ+6a6AEtnfKEvAwiWi0P
-         RImA==
-X-Gm-Message-State: AGi0PuZbJIc93UAalC3mq9BHW7YvhNhF3evGMsKEOQIx85K885qDy0Ch
-        /UblXEScSsApxrwy9Q79XzcW/Qvv11P0rpviTV5W+ZLwQS8yLNnD6m8Bmg1QCC/Q3ibXYa4LtPH
-        yNw2i4vWn4ba3toYJW/XuL9ec
-X-Received: by 2002:adf:ce10:: with SMTP id p16mr7691543wrn.144.1588750665672;
-        Wed, 06 May 2020 00:37:45 -0700 (PDT)
-X-Google-Smtp-Source: APiQypLylGfrIQvy8pwm2otNVLPO1o3cMHW4JbPm3GLxsqO+x+n/Q0pR35QnHj4F0DC4IEX6mTgYDA==
-X-Received: by 2002:adf:ce10:: with SMTP id p16mr7691526wrn.144.1588750665498;
-        Wed, 06 May 2020 00:37:45 -0700 (PDT)
-Received: from redhat.com (bzq-109-66-7-121.red.bezeqint.net. [109.66.7.121])
-        by smtp.gmail.com with ESMTPSA id 19sm1655337wmo.3.2020.05.06.00.37.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 May 2020 00:37:45 -0700 (PDT)
-Date:   Wed, 6 May 2020 03:37:42 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: [PATCH net-next 2/2] virtio-net: fix the XDP truesize
- calculation for mergeable buffers
-Message-ID: <20200506033259-mutt-send-email-mst@kernel.org>
-References: <20200506061633.16327-1-jasowang@redhat.com>
- <20200506061633.16327-2-jasowang@redhat.com>
+        id S1728306AbgEFHkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 03:40:21 -0400
+Received: from mga05.intel.com ([192.55.52.43]:36587 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726897AbgEFHkU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 03:40:20 -0400
+IronPort-SDR: zFFu9M223WP0/MMosOpIwwvy7gNJt+Sjab1hBN8ElUy2a5R3CuKTGRK3Tj0C2X+8rzOYhcFPvt
+ eCRfF9dRP8pg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2020 00:40:19 -0700
+IronPort-SDR: QirAKY4LxgsJS8I4FdkzFFbfa513ClR/a4N5rxqtKlnQNz8Mz423RJZrNTJ9kiB9uoLAP3i3Ot
+ Xtdn6vKb03ng==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,358,1583222400"; 
+   d="scan'208";a="251127777"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga008.fm.intel.com with ESMTP; 06 May 2020 00:40:18 -0700
+Received: from [10.213.154.130] (ekotax-mobl.gar.corp.intel.com [10.213.154.130])
+        by linux.intel.com (Postfix) with ESMTP id 50A6658048A;
+        Wed,  6 May 2020 00:40:16 -0700 (PDT)
+Subject: Re: [PATCH 1/4] spi: lantiq: Synchronize interrupt handlers and
+ transfers
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Daniel Schwierzeck <daniel.schwierzeck@gmail.com>, robh@kernel.org,
+        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, hauke@hauke-m.de,
+        andriy.shevchenko@intel.com, cheol.yong.kim@intel.com,
+        chuanhua.lei@linux.intel.com, qi-ming.wu@intel.com
+References: <cover.1587702428.git.eswara.kota@linux.intel.com>
+ <3bf88d24b9cad9f3df1da8ed65bf55c05693b0f2.1587702428.git.eswara.kota@linux.intel.com>
+ <310ca761-e7ae-1192-99fd-a1960697806b@gmail.com>
+ <46f31699-e781-ae33-3ee5-d51e6940ee43@linux.intel.com>
+ <20200429121310.GH4201@sirena.org.uk>
+ <28f6511e-fe85-a834-1652-fd70def9ca88@linux.intel.com>
+ <20200505112339.GC5377@sirena.org.uk>
+From:   Dilip Kota <eswara.kota@linux.intel.com>
+Message-ID: <fce0b146-9ffc-839f-d34a-cb37206a0699@linux.intel.com>
+Date:   Wed, 6 May 2020 15:40:15 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200506061633.16327-2-jasowang@redhat.com>
+In-Reply-To: <20200505112339.GC5377@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 06, 2020 at 02:16:33PM +0800, Jason Wang wrote:
-> We should not exclude headroom and tailroom when XDP is set. So this
-> patch fixes this by initializing the truesize from PAGE_SIZE when XDP
-> is set.
-> 
-> Cc: Jesper Dangaard Brouer <brouer@redhat.com>
-> Signed-off-by: Jason Wang <jasowang@redhat.com>
 
-Seems too aggressive, we do not use up the whole page for the size.
+On 5/5/2020 7:23 PM, Mark Brown wrote:
+> On Mon, May 04, 2020 at 06:15:47PM +0800, Dilip Kota wrote:
+>> On 4/29/2020 8:13 PM, Mark Brown wrote:
+>
+>> I just tried to get the history of removing workqueue in SPI driver, on
+>> GRX500 (earlier chipset of LGM) the SPI transfers got timedout with
+>> workqueues during regression testing. Once changed to threaded IRQs
+>> transfers are working successfully.
+> That doesn't really explain why though, it just explains what.
+I didnt find more information about it. I will work to reproduce the 
+issue and share the detailed information sooner i get the accessibility 
+of the SoC (because of covid19 doing wfh)
 
-
-
-> ---
->  drivers/net/virtio_net.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index 98dd75b665a5..3f3aa8308918 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -1184,7 +1184,7 @@ static int add_recvbuf_mergeable(struct virtnet_info *vi,
->  	char *buf;
->  	void *ctx;
->  	int err;
-> -	unsigned int len, hole;
-> +	unsigned int len, hole, truesize;
->  
->  	/* Extra tailroom is needed to satisfy XDP's assumption. This
->  	 * means rx frags coalescing won't work, but consider we've
-> @@ -1194,6 +1194,7 @@ static int add_recvbuf_mergeable(struct virtnet_info *vi,
->  	if (unlikely(!skb_page_frag_refill(len + room, alloc_frag, gfp)))
->  		return -ENOMEM;
->  
-> +	truesize = headroom ? PAGE_SIZE : len;
->  	buf = (char *)page_address(alloc_frag->page) + alloc_frag->offset;
->  	buf += headroom; /* advance address leaving hole at front of pkt */
->  	get_page(alloc_frag->page);
-
-Is this really just on the XDP path? Looks like a confusing way to
-detect that.
-
-
-> @@ -1205,11 +1206,12 @@ static int add_recvbuf_mergeable(struct virtnet_info *vi,
->  		 * the current buffer.
->  		 */
->  		len += hole;
-> +		truesize += hole;
->  		alloc_frag->offset += hole;
->  	}
->  
->  	sg_init_one(rq->sg, buf, len);
-> -	ctx = mergeable_len_to_ctx(len, headroom);
-> +	ctx = mergeable_len_to_ctx(truesize, headroom);
->  	err = virtqueue_add_inbuf_ctx(rq->vq, rq->sg, 1, buf, ctx, gfp);
->  	if (err < 0)
->  		put_page(virt_to_head_page(buf));
-> -- 
-> 2.20.1
-
+Regards,
+Dilip
