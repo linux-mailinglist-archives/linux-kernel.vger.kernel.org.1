@@ -2,105 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A2C61C77A0
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 19:17:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9A6F1C77AC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 19:20:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729895AbgEFRRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 13:17:18 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:41740 "EHLO rere.qmqm.pl"
+        id S1729286AbgEFRT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 13:19:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725799AbgEFRRS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 13:17:18 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 49HNZ2700Gz8L;
-        Wed,  6 May 2020 19:17:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1588785435; bh=OEM7bOlF4icCh1XxlFqIfa1dT9YpIe2MTJF+1hvm8ww=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CKGCSWi/pj3ro+zfHoNh+j2tmFr1QwnLI6hoKavxCEOJJIVzUxu19hBUlu+DKOtSa
-         fAbOPRN7KKL+Vl3PTsGlYxVEkisakrMAJD/aIf3FrnEW3ExAp7Gb7oDefJH2GsmsyU
-         BsyprX5muaWMSD2kXLKK6XiL59w/XGCzf9WxNIKtKE3btJXw1LV7o09rhk9njn8NIl
-         msfg8jYQo9fdQW0wwr72tKWopcNSAnzi0CN0jRM0ROCQgLbAtr8pU58kD+fRwRBHWU
-         eEukRe1JM30ouJlAwYmSR5CeaVPzkFnhSXg/pFCVHT1g6WZcu4HQHroTaLOCmzG8hR
-         s7zYkRbeO8Lxw==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.2 at mail
-Date:   Wed, 6 May 2020 19:17:10 +0200
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Wolfram Sang <wsa@the-dreams.de>
-Cc:     Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Stefan Lengfeld <contact@stefanchrist.eu>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] i2c: at91: support atomic write xfer
-Message-ID: <20200506171710.GA6019@qmqm.qmqm.pl>
-References: <55613934b7d14ae4122b648c20351b63b03a1385.1584851536.git.mirq-linux@rere.qmqm.pl>
- <20200322143004.GB1091@ninjato>
- <20200322163013.GA25488@qmqm.qmqm.pl>
- <20200505155228.GG2468@ninjato>
- <20200505164739.GA5476@qmqm.qmqm.pl>
+        id S1728336AbgEFRT4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 13:19:56 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 303CA20736;
+        Wed,  6 May 2020 17:19:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588785595;
+        bh=Vx2laojPRA9af0b+TlZJnd1rj8BT6IbkCPf9uW8twE8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=iuGK0qrhphha7crkNxqfd/exR5+vrUBVOQvCaqmSpI6mMtTv2Bb9e5KAxHVaNhOJf
+         cqiBsvormrGZm4pmx0ZvNJS1V19n58ngNSsoNqdXvSsTy/98rlzZ+Y1iImcjRJgUcu
+         qekIZfCuEXFEPE/QxUXdK/yglIY8ZHVMjybnLH2o=
+Date:   Wed, 6 May 2020 10:19:53 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Fabien Parent <fparent@baylibre.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-mediatek@lists.infradead.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH 06/11] net: ethernet: mtk-eth-mac: new driver
+Message-ID: <20200506101953.208e5366@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <CAMRc=MfmuKd64YaqrkhGFThDZd0_tRecR5H0QLY0cDJWSM-VgQ@mail.gmail.com>
+References: <20200505140231.16600-1-brgl@bgdev.pl>
+        <20200505140231.16600-7-brgl@bgdev.pl>
+        <20200505110447.2404985c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <CAMRc=MfmuKd64YaqrkhGFThDZd0_tRecR5H0QLY0cDJWSM-VgQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200505164739.GA5476@qmqm.qmqm.pl>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 05, 2020 at 06:47:39PM +0200, Micha³ Miros³aw wrote:
-> On Tue, May 05, 2020 at 05:52:28PM +0200, Wolfram Sang wrote:
-[...]
-> > > BTW, I found this comment in i2c-core.h:
-> > > 
-> > >  * We only allow atomic transfers for very late communication, e.g. to send
-> > >  * the powerdown command to a PMIC. Atomic transfers are a corner case and not
-> > >  * for generic use! 
-> > > 
-> > > I think this covers the idea.
-> > 
-> > Well, since I implemented the atomic_xfer mechanism, I think I am the
-> > primary authority of what "covers the idea", so I will fix the comment
-> > above :) Note, there is also this comment in the way more user-visible
-> > include/linux/i2c.h:
-> > 
-> >  509  * @master_xfer_atomic: same as @master_xfer. Yet, only using atomic context
-> >  510  *   so e.g. PMICs can be accessed very late before shutdown. Optional.
+On Wed, 6 May 2020 09:09:52 +0200 Bartosz Golaszewski wrote:
+> > > +}  
+> >
+> > Why do you clean the TX ring from a work rather than from the NAPI
+> > context?
 > 
-> So, we don't have to wonder what the author had in mind. Lets expand
-> the idea then. :-) 
+> So this was unclear to me, that's why I went with a workqueue. The
+> budget argument in napi poll is for RX. Should I put some cap on the
+> number of TX descriptors processed in napi context?
+
+The prevailing wisdom is to not count the TX cleanup as work at all.
+I think the best practice is to first clean up all the TX you can, 
+and then do at must @budget of RX.
+
+Perhaps one day we will come up with a good way of capping TX, but
+today not counting it towards budget is the safe choice.
+
+> > > +static int mtk_mac_receive_packet(struct mtk_mac_priv *priv)
+> > > +{
+> > > +     struct net_device *ndev = mtk_mac_get_netdev(priv);
+> > > +     struct mtk_mac_ring *ring = &priv->rx_ring;
+> > > +     struct device *dev = mtk_mac_get_dev(priv);
+> > > +     struct mtk_mac_ring_desc_data desc_data;
+> > > +     struct sk_buff *new_skb;
+> > > +     int ret;
+> > > +
+> > > +     mtk_mac_lock(priv);
+> > > +     ret = mtk_mac_ring_pop_tail(ring, &desc_data);
+> > > +     mtk_mac_unlock(priv);
+> > > +     if (ret)
+> > > +             return -1;
+> > > +
+> > > +     mtk_mac_dma_unmap_rx(priv, &desc_data);
+> > > +
+> > > +     if ((desc_data.flags & MTK_MAC_DESC_BIT_RX_CRCE) ||
+> > > +         (desc_data.flags & MTK_MAC_DESC_BIT_RX_OSIZE)) {
+> > > +             /* Error packet -> drop and reuse skb. */
+> > > +             new_skb = desc_data.skb;
+> > > +             goto map_skb;
+> > > +     }
+> > > +
+> > > +     new_skb = mtk_mac_alloc_skb(ndev);
+> > > +     if (!new_skb) {
+> > > +             netdev_err(ndev, "out of memory for skb\n");  
+> >
+> > No need for printing, kernel will complain loudly about oom.
+> >  
+> > > +             ndev->stats.rx_dropped++;
+> > > +             new_skb = desc_data.skb;
+> > > +             goto map_skb;
+> > > +     }
+> > > +
+> > > +     skb_put(desc_data.skb, desc_data.len);
+> > > +     desc_data.skb->ip_summed = CHECKSUM_NONE;
+> > > +     desc_data.skb->protocol = eth_type_trans(desc_data.skb, ndev);
+> > > +     desc_data.skb->dev = ndev;
+> > > +     netif_receive_skb(desc_data.skb);
+> > > +
+> > > +map_skb:
+> > > +     desc_data.dma_addr = mtk_mac_dma_map_rx(priv, new_skb);
+> > > +     if (dma_mapping_error(dev, desc_data.dma_addr)) {
+> > > +             dev_kfree_skb(new_skb);
+> > > +             netdev_err(ndev, "DMA mapping error of RX descriptor\n");
+> > > +             return -ENOMEM;  
+> >
+> > In this case nothing will ever replenish the RX ring right? If we hit
+> > this condition 128 times the ring will be empty?
 > 
-> Shutdown is kind of special atomic context in that it is ok to do long
-> waits (as I2C requires) because nothing else is there to do. This is
-> very unlike normal atomic context. Do you plan to have it work in other
-> contexts? What are the idea and use cases for atomic-context transfers?
-> 
-> I guess we might want it for suspend/resume, but I think there is an
-> early stage (with all non-atomic stuff working) and NOIRQ stage (when
-> most everything is already shutdown). When a PMIC needs a read, I would
-> actually do it ("prepare" the PMIC) in the early stage if possible.
+> Indeed. What should I do if this fails though?
 
-For a followup, I did a quick grep for pm_power_off in i2c drivers [1]
-and looked around how are the shutdown handlers implemented. Mostly I
-see regmap_update_bits() (almost all with a regcache) and plain writes.
-No driver checks if the I2C controller provides atomic transfers - all
-assume it is possible.
+I think if you move things around it should work:
 
-Coming back to the original patch, I think that WARN on error from the
-atomic is transfer is missing here. The core tries to use normal
-master_xfer in atomic context as a fallback, but I'm not sure this
-actually works (I wrote the patch because it didn't).
+	skb = pop_tail();
+	if (!skb)
+		return;
 
-If the driver API had split submit and wait callbacks, this could be
-much easier, as there would only be need to implement atomic wait part
-differently most of the time.
+	new_skb = alloc();
+	if (!new_skb)
+		goto reuse;
 
-Best Regards,
-Micha³ Miros³aw
+	dma_map(new_skb);
+	if (error)
+		goto reuse;
+	
+	dma_unmap(skb);
 
-[1] grep -rl 'i2c\|smbus' $(grep pm_power_off -rl drivers/)
+	if (do_packet_processing()) 
+		free(skb);
+	else
+		receive(skb);
+
+	put_on_ring(new_skb);
+
