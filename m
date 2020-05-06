@@ -2,48 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B91311C7743
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 18:57:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FD7A1C776C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 19:06:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730213AbgEFQ46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 12:56:58 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:40734 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729414AbgEFQ45 (ORCPT
+        id S1730343AbgEFRGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 13:06:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729414AbgEFRGQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 12:56:57 -0400
-Received: by mail-wr1-f66.google.com with SMTP id e16so3046274wra.7
-        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 09:56:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=UAR3StJ1tjRjcPQPguO3q+ZrNyaW8mBxV+t84vp3JQk=;
-        b=rSLvDT7BsJgnXX5dFt/bCCv3rjkp9POk9u5jEh3iYBaRd6P3l6J2Y1nuVUPxpqbc/+
-         vTypRN4VUv5xQLMBiaIc5tcvWw4ZqXM3M1jHSsvxqXmaXsvxyalG8iLtie3mKfWv7qh8
-         xtEP8WqpVy0AuKd1odWrDndGR6iXer0XSGwoK/y3ym2vbhNEheIePIjUaKYCYyK7HWgT
-         sn305svfZ75xR0RjVp2aYOvpRDOthIdRgISBqrQYz+JDda3vrE0Vx4z64cajeUdB9HC+
-         +0+tkd8IR2NUdoms3Sl3j1LwzziFZEz0c55qdbow9MGbb1KCnctbonPSzrSCfHAlJvzH
-         OGDA==
-X-Gm-Message-State: AGi0PuaTtS1IBOGMneasGYc/h/H9VqmacJbFzDf5GIjzgizHYImz90r/
-        OFGG8MlG65+R3WwmnXBgRYk=
-X-Google-Smtp-Source: APiQypKZ0cJ4el/27ukSaL29mvN14Cb9ejX5GlSiZbyH+oRs0LbgOJNJeFatIDPQ8ZENpLYMBt/yUA==
-X-Received: by 2002:a5d:6b8a:: with SMTP id n10mr10193186wrx.36.1588784215607;
-        Wed, 06 May 2020 09:56:55 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2.j3c5onc20sse1dnehy4noqpfcg.zx.internal.cloudapp.net ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id v5sm3638531wrr.93.2020.05.06.09.56.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 May 2020 09:56:55 -0700 (PDT)
-Date:   Wed, 6 May 2020 16:56:53 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
+        Wed, 6 May 2020 13:06:16 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92F11C061A0F
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 10:06:16 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jWNUK-00008S-Rr; Wed, 06 May 2020 19:05:41 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id ECF241001F5; Wed,  6 May 2020 18:57:38 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
 Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Andy Lutomirski <luto@kernel.org>,
         Alexandre Chartre <alexandre.chartre@oracle.com>,
         Frederic Weisbecker <frederic@kernel.org>,
         Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Petr Mladek <pmladek@suse.com>,
         Steven Rostedt <rostedt@goodmis.org>,
@@ -53,88 +40,58 @@ Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
         Brian Gerst <brgerst@gmail.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>, Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Jason Chen CJ <jason.cj.chen@intel.com>,
-        Zhao Yakui <yakui.zhao@intel.com>
-Subject: Re: [patch V4 part 5 22/31] x86/entry: Convert various hypervisor
- vectors to IDTENTRY_SYSVEC
-Message-ID: <20200506165653.ttxa33llcynokaq2@liuwe-devbox-debian-v2.j3c5onc20sse1dnehy4noqpfcg.zx.internal.cloudapp.net>
-References: <20200505135341.730586321@linutronix.de>
- <20200505135830.298201197@linutronix.de>
+        Will Deacon <will@kernel.org>
+Subject: Re: [patch V4 part 1 20/36] vmlinux.lds.h: Create section for protection against instrumentation
+In-Reply-To: <20200506162848.GI5298@hirez.programming.kicks-ass.net>
+References: <20200505131602.633487962@linutronix.de> <20200505134100.075416272@linutronix.de> <20200506160831.GB3329@linux.intel.com> <20200506162848.GI5298@hirez.programming.kicks-ass.net>
+Date:   Wed, 06 May 2020 18:57:38 +0200
+Message-ID: <871rnxknlp.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200505135830.298201197@linutronix.de>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 05, 2020 at 03:54:03PM +0200, Thomas Gleixner wrote:
-> From: Thomas Gleixner <tglx@linutronix.de>
-> 
-> Convert various hypervisor vectors to IDTENTRY_SYSVEC
->   - Implement the C entry point with DEFINE_IDTENTRY_SYSVEC
->   - Emit the ASM stub with DECLARE_IDTENTRY_SYSVEC
->   - Remove the ASM idtentries in 64bit
->   - Remove the BUILD_INTERRUPT entries in 32bit
->   - Remove the old prototypes
-> 
-> No functional change.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Wei Liu <wei.liu@kernel.org>
-> Cc: Michael Kelley <mikelley@microsoft.com>
-> Cc: Jason Chen CJ <jason.cj.chen@intel.com>
-> Cc: Zhao Yakui <yakui.zhao@intel.com>
-> 
-> ---
->  arch/x86/entry/entry_32.S       |   14 --------------
->  arch/x86/entry/entry_64.S       |   17 -----------------
->  arch/x86/hyperv/hv_init.c       |    9 +++------
->  arch/x86/include/asm/acrn.h     |   11 -----------
->  arch/x86/include/asm/apic.h     |   20 --------------------
->  arch/x86/include/asm/idtentry.h |   10 ++++++++++
->  arch/x86/include/asm/mshyperv.h |   13 -------------
->  arch/x86/kernel/cpu/acrn.c      |    9 ++++-----
->  arch/x86/kernel/cpu/mshyperv.c  |   22 ++++++++++------------
->  9 files changed, 27 insertions(+), 98 deletions(-)
-> 
-> --- a/arch/x86/entry/entry_32.S
-> +++ b/arch/x86/entry/entry_32.S
-> @@ -1342,20 +1342,6 @@ BUILD_INTERRUPT3(xen_hvm_callback_vector
->  		 xen_evtchn_do_upcall)
->  #endif
->  
+Peter Zijlstra <peterz@infradead.org> writes:
+> On Wed, May 06, 2020 at 09:08:31AM -0700, Sean Christopherson wrote:
+>> On Tue, May 05, 2020 at 03:16:22PM +0200, Thomas Gleixner wrote:
+>> > Provide also a set of markers: instr_begin()/end()
+>> > 
+>> > These are used to mark code inside a noinstr function which calls
+>> > into regular instrumentable text section as safe.
+>> 
+>> ...
+>> 
+>> > --- a/include/linux/compiler.h
+>> > +++ b/include/linux/compiler.h
+>> > @@ -120,10 +120,27 @@ void ftrace_likely_update(struct ftrace_
+>> >  /* Annotate a C jump table to allow objtool to follow the code flow */
+>> >  #define __annotate_jump_table __section(.rodata..c_jump_table)
+>> >  
+>> > +/* Begin/end of an instrumentation safe region */
+>> > +#define instr_begin() ({						\
+>> > +	asm volatile("%c0:\n\t"						\
+>> > +		     ".pushsection .discard.instr_begin\n\t"		\
+>> > +		     ".long %c0b - .\n\t"				\
+>> > +		     ".popsection\n\t" : : "i" (__COUNTER__));		\
+>> > +})
+>> > +
+>> > +#define instr_end() ({							\
+>> > +	asm volatile("%c0:\n\t"						\
+>> > +		     ".pushsection .discard.instr_end\n\t"		\
+>> > +		     ".long %c0b - .\n\t"				\
+>> > +		     ".popsection\n\t" : : "i" (__COUNTER__));		\
+>> > +})
+>> 
+>> Any chance we could spell these out, i.e. instrumentation_begin/end()?  I
+>> can't help but read these as "instruction_begin/end".  At a glance, the
+>> long names shouldn't cause any wrap/indentation issues.
+>
+> The kernel naming convention is insn for instruction, not instr. That
+> said, you're not the first to be confused by this.
 
-You seem to have missed the Xen entry.
-
-> -
-> -#if IS_ENABLED(CONFIG_HYPERV)
-> -
-> -BUILD_INTERRUPT3(hyperv_callback_vector, HYPERVISOR_CALLBACK_VECTOR,
-> -		 hyperv_vector_handler)
-> -
-> -BUILD_INTERRUPT3(hyperv_reenlightenment_vector, HYPERV_REENLIGHTENMENT_VECTOR,
-> -		 hyperv_reenlightenment_intr)
-> -
-> -BUILD_INTERRUPT3(hv_stimer0_callback_vector, HYPERV_STIMER0_VECTOR,
-> -		 hv_stimer0_vector_handler)
-> -
-> -#endif /* CONFIG_HYPERV */
-> -
->  SYM_CODE_START_LOCAL_NOALIGN(handle_exception)
->  	/* the function address is in %gs's slot on the stack */
->  	SAVE_ALL switch_stacks=1 skip_gs=1 unwind_espfix=1
-> --- a/arch/x86/entry/entry_64.S
-> +++ b/arch/x86/entry/entry_64.S
-> @@ -1078,23 +1078,6 @@ apicinterrupt3 HYPERVISOR_CALLBACK_VECTO
->  	xen_hvm_callback_vector xen_evtchn_do_upcall
->  #endif
->  
-
-Ditto.
-
-Wei.
+I'm happy to spell it out. Was just lazy I guess.
