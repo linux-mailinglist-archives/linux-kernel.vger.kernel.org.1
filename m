@@ -2,122 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83E6B1C7441
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:22:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F4A71C74A6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:27:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729577AbgEFPWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 11:22:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729408AbgEFPWb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 11:22:31 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B0BC061A0F;
-        Wed,  6 May 2020 08:22:31 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id b188so2300896qkd.9;
-        Wed, 06 May 2020 08:22:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UTLapDh6d6sa8JwxWOzYsk+xzBhP38ZyiktZuaXRCHI=;
-        b=U4pPQvxDSFslfW9caqLL2iEZJPKAkK07gBRE9swSmx0eoxQPVz7uvid/DnJKkfomyj
-         Qku3qbx38HEbSOfJ/7i1rK5VqUxEEibBDynvO2JtYd8jsPBuOJSqRmf9xKjBERGYKZ/c
-         GwVO3uJ4W5YsQBhphnG0UlxOfdAiZY7MMHh26coLua4rQMY57/bVZgjbvxIjci01AlO0
-         ewa6+hKVqoH/lycs4MtAmlJ7rV8I6a8g+DuNUjC4k+8dyl5ql2VwKPagDk4SP6AXwoEm
-         8Z9eD0tLqSjlyEQl7gwggn3e8qjA6oVWT0Y0XI689Qu2uoxVdNMYqB78Auf/W78dQsFR
-         AQDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UTLapDh6d6sa8JwxWOzYsk+xzBhP38ZyiktZuaXRCHI=;
-        b=rgzrYk9Scp4Td9oizt3XIr0dLm0dndAzaMwO7+HPSEAOkfokZTrxmEHtFHhqV1qW3x
-         RaHTI3CAr3/hmcZg4bQg/1BswXK+h31iUQJUS5MUsMefCDjlap1HqQDYMWLFuGIEsmoY
-         WCJgloHBvKdgaw5NQKfylC3opLEu5QYNsUpdbCm2N8eNVEhhgpQcsjocL017bLSHt60L
-         1fqNsCDyVyekVbmcUGxxrIO+mW5ENDRbs+Xl0dCyOyupmAiNaO+QZTH5v92UkbMwYXf2
-         OnmkmOvRmCWqkHe6pwPBmyveEi63AXs96JAhwDPJKt5fIwIMEkaQm9ZIVlBV5HTEUwo8
-         mM6Q==
-X-Gm-Message-State: AGi0PuZ4EFC6XPHYdtoECMzHfiwXWv8DscfSp8CXaETUJpT1cRs5/7kc
-        fIlmy7IXpr3D2kp3L3t/fqroCjx9UIORBVAbjVA=
-X-Google-Smtp-Source: APiQypKsxvWF4y74GYdGypVDcJfTSzmgBGHkfDV88Yy1EbC8OSn5BNhqQrbQzK/PTVwD9mD+DIxmTIufp9t3uVKQClE=
-X-Received: by 2002:a37:a7d6:: with SMTP id q205mr6564216qke.85.1588778550313;
- Wed, 06 May 2020 08:22:30 -0700 (PDT)
+        id S1730279AbgEFP1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 11:27:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50048 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729797AbgEFP1A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 11:27:00 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 471EB2068E;
+        Wed,  6 May 2020 15:26:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588778820;
+        bh=t/PSX9d2JGSWgwkMAUj8EglMM9hX2N42kgQRM0azjQM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=UxBvCq1QPbABqiZzqgqY306ndrg8Ks8sskd7rguOcpBG/uC5gloxF8YR/6dF9ZhVw
+         ViQymqNJoaUVz2FIkxdL+ruN4HYsBPbLHqHk37gkbsCttd4EOeJAbVdhWKzokWLr0E
+         zjhadBeVnLbWIwu5p+J0qvbNrW7Yf8ZMLq6FoGnQ=
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+        Clark Williams <williams@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: [PATCH 76/91] perf evsel: Rename perf_evsel__store_ids() to evsel__store_id()
+Date:   Wed,  6 May 2020 12:22:19 -0300
+Message-Id: <20200506152234.21977-77-acme@kernel.org>
+X-Mailer: git-send-email 2.21.1
+In-Reply-To: <20200506152234.21977-1-acme@kernel.org>
+References: <20200506152234.21977-1-acme@kernel.org>
 MIME-Version: 1.0
-References: <20200506054920.109738-1-eizan@chromium.org> <20200506154832.v2.2.If340fa06d86053aaea25841b36741fe69c3126dd@changeid>
-In-Reply-To: <20200506154832.v2.2.If340fa06d86053aaea25841b36741fe69c3126dd@changeid>
-From:   Enric Balletbo Serra <eballetbo@gmail.com>
-Date:   Wed, 6 May 2020 17:22:19 +0200
-Message-ID: <CAFqH_53hZMxwR=Wk8YY485v_uAgPDh1MRs2ksv-BkfJ7TJGT6g@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] [media] mtk-mdp: handle vb2_dma_contig_set_max_seg_size
- errors during probe
-To:     Eizan Miyamoto <eizan@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Minghsiu Tsai <minghsiu.tsai@mediatek.com>,
-        Houlong Wei <houlong.wei@mediatek.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-media@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eizan,
+From: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-Thank you for your patch.
+As it is a 'struct evsel' method, not part of tools/lib/perf/, aka
+libperf, to whom the perf_ prefix belongs.
 
-Missatge de Eizan Miyamoto <eizan@chromium.org> del dia dc., 6 de maig
-2020 a les 7:51:
->
-> This is a cleanup to better handle errors during MDP probe.
->
-> Signed-off-by: eizan@chromium.org
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/perf/builtin-stat.c | 2 +-
+ tools/perf/util/evsel.c   | 2 +-
+ tools/perf/util/evsel.h   | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-As I commented on the first patch you should drop the above line.
+diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+index 188b2f957856..b2a971961364 100644
+--- a/tools/perf/builtin-stat.c
++++ b/tools/perf/builtin-stat.c
+@@ -636,7 +636,7 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
+ 			stat_config.unit_width = l;
+ 
+ 		if (perf_evsel__should_store_id(counter) &&
+-		    perf_evsel__store_ids(counter, evsel_list))
++		    evsel__store_ids(counter, evsel_list))
+ 			return -1;
+ 	}
+ 
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index 32d178a3f933..f3e60c45d59a 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -2588,7 +2588,7 @@ static int store_evsel_ids(struct evsel *evsel, struct evlist *evlist)
+ 	return 0;
+ }
+ 
+-int perf_evsel__store_ids(struct evsel *evsel, struct evlist *evlist)
++int evsel__store_ids(struct evsel *evsel, struct evlist *evlist)
+ {
+ 	struct perf_cpu_map *cpus = evsel->core.cpus;
+ 	struct perf_thread_map *threads = evsel->core.threads;
+diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
+index d76111c2d6a8..351c0aaf2a11 100644
+--- a/tools/perf/util/evsel.h
++++ b/tools/perf/util/evsel.h
+@@ -403,5 +403,5 @@ static inline bool evsel__has_br_stack(const struct evsel *evsel)
+ 
+ struct perf_env *evsel__env(struct evsel *evsel);
+ 
+-int perf_evsel__store_ids(struct evsel *evsel, struct evlist *evlist);
++int evsel__store_ids(struct evsel *evsel, struct evlist *evlist);
+ #endif /* __PERF_EVSEL_H */
+-- 
+2.21.1
 
-> Signed-off-by: Eizan Miyamoto <eizan@chromium.org>
-
-Other than that:
-
-Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-
-> ---
->
-> Changes in v1:
-> - remove unnecessary error handling labels in favor of err_m2m_register
->
->  drivers/media/platform/mtk-mdp/mtk_mdp_core.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_core.c b/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
-> index aeaed2cf4458..9b24b8d46eb7 100644
-> --- a/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
-> +++ b/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
-> @@ -193,7 +193,11 @@ static int mtk_mdp_probe(struct platform_device *pdev)
->
->         platform_set_drvdata(pdev, mdp);
->
-> -       vb2_dma_contig_set_max_seg_size(&pdev->dev, DMA_BIT_MASK(32));
-> +       ret = vb2_dma_contig_set_max_seg_size(&pdev->dev, DMA_BIT_MASK(32));
-> +       if (ret) {
-> +               dev_err(&pdev->dev, "Failed to set vb2 dma mag seg size\n");
-> +               goto err_m2m_register;
-> +       }
->
->         pm_runtime_enable(dev);
->         dev_dbg(dev, "mdp-%d registered successfully\n", mdp->id);
-> --
-> 2.26.2.526.g744177e7f7-goog
->
->
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
