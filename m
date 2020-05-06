@@ -2,183 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40B8B1C7C2E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 23:16:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 395D41C7C36
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 23:17:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730037AbgEFVP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 17:15:57 -0400
-Received: from esa2.microchip.iphmx.com ([68.232.149.84]:27581 "EHLO
-        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730010AbgEFVPz (ORCPT
+        id S1729737AbgEFVRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 17:17:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728888AbgEFVRb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 17:15:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1588799754; x=1620335754;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=T+Ll8tZc9vYZAorA7aIZMRWepCCE5u9iReBymxXDYg4=;
-  b=YExOBa0Ch2lsnTIEv/S2mEh8T46XKYqyMARqFAr69/rKuamBopfLTTLK
-   aerPG8KU595F0DczxIGp8ebK+tTozNpXL0BIKcCUiqZlkBLTXg8TpFVs/
-   HnDltDCkQgsykFEzJBgbzzdsrS//6nLqHpqwBybVS2ommFPkmtfG4bQOW
-   mKKkzclZp/9jkZFRPrJrAIrb1xqg3SFDycWK3iOWI5EXPBM84m+jWRNf7
-   hsNVGubs0kjP/TSqppG+tGnu5vEVeWPfLuo1aYpfqcvAc7NzcOky5MTxU
-   x1FjBgFnjLpTHLXPYMfaKNjZ04VXAU7o1Zi+yAeTckxRA/OQ5i+qF1Mud
-   w==;
-IronPort-SDR: FAxJtZKujh/IpUWRggqLlWrFDVr26ZPMRf8zPt/VsCzUf9getOXlzsPn7K/I4p/GlbYUgNblYn
- jINB5g8TEnmy86dtrqlFYQca+eBxKXYN7AqCPhwDggg38p/i9OLbgurop55ZXXhIqit23sLHkf
- wXDlFz57QhcFDL4INrSq5UDtkE/Ei5qewuIyETqp0hNYW9l1F0nb6v4FCviMWpyA6nOB+loiUp
- rOxY0/VR5mPFW50sX0glTzpHkFLtNMcWmWFEpDSfyprVaZkjsrGizGB1NFR0IRZQjWeulJYjH2
- aIA=
-X-IronPort-AV: E=Sophos;i="5.73,360,1583218800"; 
-   d="scan'208";a="74455046"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 06 May 2020 14:15:53 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 6 May 2020 14:15:55 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex01.mchp-main.com
- (10.10.85.143) with Microsoft SMTP Server id 15.1.1713.5 via Frontend
- Transport; Wed, 6 May 2020 14:15:54 -0700
-Date:   Wed, 6 May 2020 23:15:51 +0200
-From:   "Allan W. Nielsen" <allan.nielsen@microchip.com>
-To:     Vladimir Oltean <olteanv@gmail.com>
-CC:     Xiaoliang Yang <xiaoliang.yang_1@nxp.com>, Po Liu <po.liu@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandru Marginean <alexandru.marginean@nxp.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "Li Yang" <leoyang.li@nxp.com>, Mingkai Hu <mingkai.hu@nxp.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Jiri Pirko" <jiri@resnulli.us>, Ido Schimmel <idosch@idosch.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Joergen Andreasen <joergen.andreasen@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
-        Roopa Prabhu <roopa@cumulusnetworks.com>,
-        <linux-devel@linux.nxdi.nxp.com>
-Subject: Re: [PATCH v1 net-next 4/6] net: mscc: ocelot: VCAP IS1 support
-Message-ID: <20200506211551.cf6mlad7ysmuqfvq@ws.localdomain>
-References: <20200506074900.28529-1-xiaoliang.yang_1@nxp.com>
- <20200506074900.28529-5-xiaoliang.yang_1@nxp.com>
- <20200506094345.n4zdgjvctwiz4pkh@ws.localdomain>
- <CA+h21hoqJC_CJB=Sg=-JanXw3S_WANgjsfYjU+ffqn6YCDMzrA@mail.gmail.com>
+        Wed, 6 May 2020 17:17:31 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30AFEC061A41
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 14:17:31 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id b8so991213plm.11
+        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 14:17:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bHL3TCbZSVY2fY8pK4XpL92L8KHu3Q1pRXqDpleq+io=;
+        b=YYwwgrSQvQ9dTd1lotXO8pdQekhEC2A1cd0Sx4H5u9eyKmscleQOuRfvk8MoYW80cU
+         0Ch/u9M3kotYkExS+646CjlVMuQYoUSUZNUfJ2mmRvudHnmG9c2neAaeLpSB5c74ZjbF
+         LADPNADiw6WfWiGIUGy8MgNcS6UTYgRNw4nrs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bHL3TCbZSVY2fY8pK4XpL92L8KHu3Q1pRXqDpleq+io=;
+        b=jncDLOjQ9td0FKw5gxZJ11WDCXXjRE8RZGzn/LIm7etakxggxDY512jIwj/lX1o/VG
+         +0SlEFgi+D9hJsEMkNJmZ1GpXzedi2E2XnfTDgPu+IwlqdpOuffCPNETOiRtTNSHyK+g
+         /oW7qSoTk2rLvWssrgNYUgWlHzxIY8Nwc7qUbc+T1Ed11DERy9HXpd8ABgBK1RyJK7Y0
+         Qk3wkSeBp4sAHHRyHOIzoMcCWbKmqpq09Pl0qZdKiric1Qj3dn1LCJCzVZETx0EQLV6j
+         UmhoguZ+R/habsHLsuCNHJNXepcNQPFyxniGykqnkivP3+OKxauo++VTgIeMb5kRS/Is
+         /j7A==
+X-Gm-Message-State: AGi0PuZb4tXju01JPzK0hCwlfPEUX3JFdQ3k6ImCQkKqnrI8/5gpkvy7
+        nXIe5RwvFIeU34SINRUmYXG8zA==
+X-Google-Smtp-Source: APiQypIO+MV5rfj61rKq9gZ6jFXrGGOrTEad7gG6HHHLb2+aMV1Qk523+Rt+BnExFpt2ko7aQbfPSQ==
+X-Received: by 2002:a17:90b:19d6:: with SMTP id nm22mr8651002pjb.225.1588799850551;
+        Wed, 06 May 2020 14:17:30 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id g184sm2667391pfb.80.2020.05.06.14.17.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 May 2020 14:17:29 -0700 (PDT)
+Date:   Wed, 6 May 2020 14:17:28 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc:     Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>, jmorris@namei.org,
+        sashal@kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 4/6] pstore/ram: Introduce max_reason and convert
+ dump_oops
+Message-ID: <202005061416.4A6114910@keescook>
+References: <20200506211523.15077-1-keescook@chromium.org>
+ <20200506211523.15077-5-keescook@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+h21hoqJC_CJB=Sg=-JanXw3S_WANgjsfYjU+ffqn6YCDMzrA@mail.gmail.com>
+In-Reply-To: <20200506211523.15077-5-keescook@chromium.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vladimir,
+On Wed, May 06, 2020 at 02:15:21PM -0700, Kees Cook wrote:
+> From: Pavel Tatashin <pasha.tatashin@soleen.com>
+> 
+> Now that pstore_register() can correctly pass max_reason to the kmesg
+> dump facility, introduce a new "max_reason" module parameter and
+> "max-reason" Device Tree field.
+> 
+> The "dump_oops" module parameter and "dump-oops" Device
+> Tree field are now considered deprecated, but are now automatically
+> converted to their corresponding max_reason values when present, though
+> the new max_reason setting has precedence.
+> 
+> For struct ramoops_platform_data, the "dump_oops" member is entirely
+> replaced by a new "max_reason" member, with the only existing user
+> updated in place.
+> 
+> Additionally remove the "reason" filter logic from ramoops_pstore_write(),
+> as that is not specifically needed anymore, though technically
+> this is a change in behavior for any ramoops users also setting the
+> printk.always_kmsg_dump boot param, which will cause ramoops to behave as
+> if max_reason was set to KMSG_DUMP_MAX.
+> 
+> Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+> Link: https://lore.kernel.org/r/20200505154510.93506-4-pasha.tatashin@soleen.com
+> Link: https://lore.kernel.org/r/20200505154510.93506-5-pasha.tatashin@soleen.com
+> Co-developed-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  Documentation/admin-guide/ramoops.rst     | 14 +++++--
+>  drivers/platform/chrome/chromeos_pstore.c |  2 +-
+>  fs/pstore/ram.c                           | 51 +++++++++++++++--------
+>  include/linux/pstore_ram.h                |  2 +-
+>  4 files changed, 45 insertions(+), 24 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/ramoops.rst b/Documentation/admin-guide/ramoops.rst
+> index 6dbcc5481000..a60a96218ba9 100644
+> --- a/Documentation/admin-guide/ramoops.rst
+> +++ b/Documentation/admin-guide/ramoops.rst
+> @@ -32,11 +32,17 @@ memory to be mapped strongly ordered, and atomic operations on strongly ordered
+>  memory are implementation defined, and won't work on many ARMs such as omaps.
+>  
+>  The memory area is divided into ``record_size`` chunks (also rounded down to
+> -power of two) and each oops/panic writes a ``record_size`` chunk of
+> +power of two) and each kmesg dump writes a ``record_size`` chunk of
+>  information.
+>  
+> -Dumping both oopses and panics can be done by setting 1 in the ``dump_oops``
+> -variable while setting 0 in that variable dumps only the panics.
+> +Limiting which kinds of kmsg dumps are stored can be controlled via
+> +the ``max_reason`` value, as defined in include/linux/kmsg_dump.h's
+> +``enum kmsg_dump_reason``. For example, to store both Oopses and Panics,
+> +``max_reason`` should be set to 2 (KMSG_DUMP_OOPS), to store only Panics
+> +``max_reason`` should be set to 1 (KMSG_DUMP_PANIC). Setting this to 0
+> +(KMSG_DUMP_UNDEF), means the reason filtering will be controlled by the
+> +``printk.always_kmsg_dump`` boot param: if unset, it'll be KMSG_DUMP_OOPS,
+> +otherwise KMSG_DUMP_MAX.
+>  
+>  The module uses a counter to record multiple dumps but the counter gets reset
+>  on restart (i.e. new dumps after the restart will overwrite old ones).
+> @@ -90,7 +96,7 @@ Setting the ramoops parameters can be done in several different manners:
+>          .mem_address            = <...>,
+>          .mem_type               = <...>,
+>          .record_size            = <...>,
+> -        .dump_oops              = <...>,
+> +        .max_reason             = <...>,
+>          .ecc                    = <...>,
+>    };
+>  
+> diff --git a/drivers/platform/chrome/chromeos_pstore.c b/drivers/platform/chrome/chromeos_pstore.c
+> index d13770785fb5..fa51153688b4 100644
+> --- a/drivers/platform/chrome/chromeos_pstore.c
+> +++ b/drivers/platform/chrome/chromeos_pstore.c
+> @@ -57,7 +57,7 @@ static struct ramoops_platform_data chromeos_ramoops_data = {
+>  	.record_size	= 0x40000,
+>  	.console_size	= 0x20000,
+>  	.ftrace_size	= 0x20000,
+> -	.dump_oops	= 1,
+> +	.max_reason	= KMSG_DUMP_OOPS,
+>  };
+>  
+>  static struct platform_device chromeos_ramoops = {
+> diff --git a/fs/pstore/ram.c b/fs/pstore/ram.c
+> index c2f76b650f91..b8dac1d04e96 100644
+> --- a/fs/pstore/ram.c
+> +++ b/fs/pstore/ram.c
+> @@ -57,10 +57,15 @@ module_param(mem_type, uint, 0600);
+>  MODULE_PARM_DESC(mem_type,
+>  		"set to 1 to try to use unbuffered memory (default 0)");
+>  
+> -static int dump_oops = 1;
+> -module_param(dump_oops, int, 0600);
+> +static int ramoops_dump_oops = -1;
+> +module_param_named(dump_oops, ramoops_dump_oops, int, 0400);
+>  MODULE_PARM_DESC(dump_oops,
+> -		"set to 1 to dump oopses, 0 to only dump panics (default 1)");
+> +		 "set to 1 to dump oopses & panics, 0 to only dump panics (deprecated: use max_reason instead)");
+> +
+> +static int ramoops_max_reason = KMESG_DUMP_OOPS;
 
-On 06.05.2020 13:53, Vladimir Oltean wrote:
->On Wed, 6 May 2020 at 12:45, Allan W. Nielsen
-><allan.nielsen@microchip.com> wrote:
->>
->> Hi Xiaoliang,
->>
->> On 06.05.2020 15:48, Xiaoliang Yang wrote:
->> >VCAP IS1 is a VCAP module which can filter MAC, IP, VLAN, protocol, and
->> >TCP/UDP ports keys, and do Qos and VLAN retag actions.
->> >This patch added VCAP IS1 support in ocelot ace driver, which can supports
->> >vlan modify action of tc filter.
->> >Usage:
->> >        tc qdisc add dev swp0 ingress
->> >        tc filter add dev swp0 protocol 802.1Q parent ffff: flower \
->> >        skip_sw vlan_id 1 vlan_prio 1 action vlan modify id 2 priority 2
->> I skimmed skimmed through the patch serie, and the way I understood it
->> is that you look at the action, and if it is a VLAN operation, then you
->> put it in IS1 and if it is one of the other then put it in IS2.
->>
->> This is how the HW is designed - I'm aware of that.
->>
->> But how will this work if you have 2 rules, 1 modifying the VLAN and
->> another rule dropping certain packets?
->>
->
->At the moment, the driver does not support more than 1 action. We
->might need to change that, but we can still install more filters with
->the same key and still be fine (see more below). When there is more
->than 1 action, the IS1 stuff will be combined into a single rule
->programmed into IS1, and the IS2 stuff will be combined into a single
->new rule with the same keys installed into VCAP IS2. Would that not
->work?
->
->> The SW model have these two rules in the same table, and can stop
->> process at the first match. SW will do the action of the first frame
->> matching.
->>
->
->Actually I think this is an incorrect assumption - software stops at
->the first action only if told to do so. Let me copy-paste a text from
->a different email thread.
+This is what I get for a "quick change right before sending". This
+is a typo and should be KMSG_DUMP_OOPS. :|
 
-I'm still not able to see how this proposal will give us the same
-behavioral in SW and in HW.
-
-A simple example:
-
-tc qdisc add dev enp0s3 ingress
-tc filter add dev enp0s3 protocol 802.1Q parent ffff: \
-     prio 10 flower vlan_id 5 action vlan modify id 10
-tc filter add dev enp0s3 protocol 802.1Q parent ffff: \
-     prio 20 flower src_mac 00:00:00:00:00:08 action drop
-
-We can then inject a frame with VID 5 and smac ::08:
-$ ef tx tap0 eth smac 00:00:00:00:00:08 ctag vid 5 
-
-We can then check the filter and see that it only hit the first rule:
-
-$ tc -s filter show dev enp0s3 ingress
-filter protocol 802.1Q pref 10 flower chain 0
-filter protocol 802.1Q pref 10 flower chain 0 handle 0x1
-   vlan_id 5
-   not_in_hw
-         action order 1: vlan  modify id 10 protocol 802.1Q priority 0 pipe
-          index 1 ref 1 bind 1 installed 19 sec used 6 sec
-         Action statistics:
-         Sent 42 bytes 1 pkt (dropped 0, overlimits 0 requeues 0)
-         backlog 0b 0p requeues 0
-
-filter protocol 802.1Q pref 20 flower chain 0
-filter protocol 802.1Q pref 20 flower chain 0 handle 0x1
-   src_mac 00:00:00:00:00:08
-   not_in_hw
-         action order 1: gact action drop
-          random type none pass val 0
-          index 1 ref 1 bind 1 installed 11 sec used 11 sec
-         Action statistics:
-         Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0)
-         backlog 0b 0p requeues 0
-
-If this was done with the proposed HW offload, then both rules would
-have been hit and we would have a different behavioral.
-
-This can be fixed by adding the "continue" action to the first rule:
-
-tc filter add dev enp0s3 protocol 802.1Q parent ffff: \
-     prio 10 flower vlan_id 5 action vlan modify id 10 continue
-tc filter add dev enp0s3 protocol 802.1Q parent ffff: \
-     prio 20 flower src_mac 00:00:00:00:00:08 action drop
-
-But that would again break if we add 2 rules manipulating the VLAN (as
-the HW does not continue with in a single TCAM).
-
-My point is: I do not think we can hide the fact that this is done
-in independent TCAMs in the silicon.
-
-I think it is possible to do this with the chain feature (even though it
-is not a perfect match), but it would require more analysis.
-
-/Allan
-
+-- 
+Kees Cook
