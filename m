@@ -2,62 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FF7C1C743B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:22:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE8E81C745C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:25:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729550AbgEFPWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 11:22:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729403AbgEFPVr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 11:21:47 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8518C061A10
-        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 08:21:47 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id x15so1151952pfa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 08:21:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=yYP6yxdymrxxL7hUVPNJiyuT/lyDa/+W7RPc1DbYPHc=;
-        b=YL2uiFT8hDsK5U6H0DNA4rGJ4iLiS87bkVFGZgceoC5OLrZspZqhasZRGqHyw9vEAa
-         s9XlnM/1Fn3F/Ij8OzmWwOgALL0FbKAuMoB8IBWoKEAcP5kn3DFrNWqQ5Y4KvvjCiS9O
-         hKo3tqEoLGUCkJFXiNPcPscNPZHFDHpi3hemI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=yYP6yxdymrxxL7hUVPNJiyuT/lyDa/+W7RPc1DbYPHc=;
-        b=WCLbnpYJ2wn76Zwd1rmYjXAseK/dpBTw8lf7pyet5CpYV+zCTtTpOPMUm7hV07LuBC
-         kXSdenqos5wJxHu+D9wNk2LnrzAR8aAAHt+2bvw4dBapmyJIYne3TzE1SensmTIgz9ZZ
-         UC+hMWvbnneDWFKlfA3R0Q1IgQ/IbaBWkQSdg9TE9BJyoxX+Ua2aTcmdTRPlhaDvi8wY
-         wyFoYUrHbjutm3TtTYlKdnk/Y/0rvFitpiTxFF+6gRweP6zFVNXNbc4shlzhhVzIda3+
-         8YgqRqaclKRmvjbYxCvaEN946bUTXibNBPk3RXaRo7ICy0qOmtGiSXGpESiS0gEwR6qc
-         DSsg==
-X-Gm-Message-State: AGi0PuY7yA+1tT7hkNjc0mNHRIUAQy2ueaRsiQXndUlLeFR1IDNjpVZJ
-        80f9dnsKlHzPxycwbOsOgeJrHA==
-X-Google-Smtp-Source: APiQypKsPGQTXvWajEoICKm/o+r5Lp4Itu7fJOsuFBcfRstMYwMcoK8cNblDOotBDBm6wLDOYj2HBw==
-X-Received: by 2002:a62:f247:: with SMTP id y7mr8793849pfl.200.1588778507388;
-        Wed, 06 May 2020 08:21:47 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id t80sm2231606pfc.23.2020.05.06.08.21.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 May 2020 08:21:45 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Luis Henriques <lhenriques@suse.com>
-Subject: [PATCH 07/10] pstore: Refactor pstorefs record list removal
-Date:   Wed,  6 May 2020 08:21:11 -0700
-Message-Id: <20200506152114.50375-8-keescook@chromium.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200506152114.50375-1-keescook@chromium.org>
-References: <20200506152114.50375-1-keescook@chromium.org>
+        id S1729667AbgEFPXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 11:23:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38556 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729066AbgEFPXO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 11:23:14 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 423CA2192A;
+        Wed,  6 May 2020 15:23:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588778593;
+        bh=hGqVc2n5n9GdKslcB1rWXutM97MIZOt9oy7q2MkEhDo=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=FzxhHcjHTpje77VADSd5PCgIqnXXCyYVTPEntBM6OQUWJaVvyr7o3pFtnNsAz7hEx
+         cmBDtTi01TzWCgzZNMAI/EkN9aGtx9KBBXB8XhotvP/IR1erdE8vF/8EvR2bvh/DSp
+         ANN5W9egWdMpW8Gv4HQzxftNb0PvovPg2GOytnd0=
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+        Clark Williams <williams@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tony Jones <tonyj@suse.de>,
+        yuzhoujian <yuzhoujian@didichuxing.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH 08/91] perf record: Add num-synthesize-threads option
+Date:   Wed,  6 May 2020 12:21:11 -0300
+Message-Id: <20200506152234.21977-9-acme@kernel.org>
+X-Mailer: git-send-email 2.21.1
+In-Reply-To: <20200506152234.21977-1-acme@kernel.org>
+References: <20200506152234.21977-1-acme@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -65,63 +53,214 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "unlink" handling should perform list removal (which can also make
-sure records don't get double-erased), and the "evict" handling should
-be responsible only for memory freeing.
+From: Stephane Eranian <eranian@google.com>
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
+To control degree of parallelism of the synthesize_mmap() code which
+is scanning /proc/PID/task/PID/maps and can be time consuming.
+Mimic perf top way of handling the option.
+If not specified will default to 1 thread, i.e. default behavior before
+this option.
+
+On a desktop computer the processing of /proc/PID/task/PID/maps isn't
+slow enough to warrant parallel processing and the thread creation has
+some cost - hence the default of 1. On a loaded server with
+>100 cores it is possible to see synthesis times in the order of
+seconds and in this case having the option is desirable.
+
+As the processing is a synchronization point, it is legitimate to worry if
+Amdahl's law will apply to this patch. Profiling with this patch in
+place:
+https://lore.kernel.org/lkml/20200415054050.31645-4-irogers@google.com/
+shows:
+...
+      - 32.59% __perf_event__synthesize_threads
+         - 32.54% __event__synthesize_thread
+            + 22.13% perf_event__synthesize_mmap_events
+            + 6.68% perf_event__get_comm_ids.constprop.0
+            + 1.49% process_synthesized_event
+            + 1.29% __GI___readdir64
+            + 0.60% __opendir
+...
+That is the processing is 1.49% of execution time and there is plenty to
+make parallel. This is shown in the benchmark in this patch:
+
+https://lore.kernel.org/lkml/20200415054050.31645-2-irogers@google.com/
+
+  Computing performance of multi threaded perf event synthesis by
+  synthesizing events on CPU 0:
+   Number of synthesis threads: 1
+     Average synthesis took: 127729.000 usec (+- 3372.880 usec)
+     Average num. events: 21548.600 (+- 0.306)
+     Average time per event 5.927 usec
+   Number of synthesis threads: 2
+     Average synthesis took: 88863.500 usec (+- 385.168 usec)
+     Average num. events: 21552.800 (+- 0.327)
+     Average time per event 4.123 usec
+   Number of synthesis threads: 3
+     Average synthesis took: 83257.400 usec (+- 348.617 usec)
+     Average num. events: 21553.200 (+- 0.327)
+     Average time per event 3.863 usec
+   Number of synthesis threads: 4
+     Average synthesis took: 75093.000 usec (+- 422.978 usec)
+     Average num. events: 21554.200 (+- 0.200)
+     Average time per event 3.484 usec
+   Number of synthesis threads: 5
+     Average synthesis took: 64896.600 usec (+- 353.348 usec)
+     Average num. events: 21558.000 (+- 0.000)
+     Average time per event 3.010 usec
+   Number of synthesis threads: 6
+     Average synthesis took: 59210.200 usec (+- 342.890 usec)
+     Average num. events: 21560.000 (+- 0.000)
+     Average time per event 2.746 usec
+   Number of synthesis threads: 7
+     Average synthesis took: 54093.900 usec (+- 306.247 usec)
+     Average num. events: 21562.000 (+- 0.000)
+     Average time per event 2.509 usec
+   Number of synthesis threads: 8
+     Average synthesis took: 48938.700 usec (+- 341.732 usec)
+     Average num. events: 21564.000 (+- 0.000)
+     Average time per event 2.269 usec
+
+Where average time per synthesized event goes from 5.927 usec with 1
+thread to 2.269 usec with 8. This isn't a linear speed up as not all of
+synthesize code has been made parallel. If the synthesis time was about
+10 seconds then using 8 threads may bring this down to less than 4.
+
+Signed-off-by: Stephane Eranian <eranian@google.com>
+Reviewed-by: Ian Rogers <irogers@google.com>
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Alexey Budankov <alexey.budankov@linux.intel.com>
+Cc: Kan Liang <kan.liang@linux.intel.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Tony Jones <tonyj@suse.de>
+Cc: yuzhoujian <yuzhoujian@didichuxing.com>
+Link: http://lore.kernel.org/lkml/20200422155038.9380-1-irogers@google.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- fs/pstore/inode.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+ tools/perf/Documentation/perf-record.txt |  4 +++
+ tools/perf/builtin-record.c              | 34 ++++++++++++++++++++++--
+ tools/perf/util/record.h                 |  1 +
+ 3 files changed, 37 insertions(+), 2 deletions(-)
 
-diff --git a/fs/pstore/inode.c b/fs/pstore/inode.c
-index 92ebcc75434f..5f08b21b7a46 100644
---- a/fs/pstore/inode.c
-+++ b/fs/pstore/inode.c
-@@ -177,10 +177,21 @@ static int pstore_unlink(struct inode *dir, struct dentry *dentry)
- {
- 	struct pstore_private *p = d_inode(dentry)->i_private;
- 	struct pstore_record *record = p->record;
-+	int rc = 0;
+diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
+index b3f3b3f1c161..6e8b4649307c 100644
+--- a/tools/perf/Documentation/perf-record.txt
++++ b/tools/perf/Documentation/perf-record.txt
+@@ -596,6 +596,10 @@ Make a copy of /proc/kcore and place it into a directory with the perf data file
+ Limit the sample data max size, <size> is expected to be a number with
+ appended unit character - B/K/M/G
  
- 	if (!record->psi->erase)
- 		return -EPERM;
- 
-+	/* Make sure we can't race while removing this file. */
-+	mutex_lock(&records_list_lock);
-+	if (!list_empty(&p->list))
-+		list_del_init(&p->list);
-+	else
-+		rc = -ENOENT;
-+	mutex_unlock(&records_list_lock);
-+	if (rc)
-+		return rc;
++--num-thread-synthesize::
++	The number of threads to run when synthesizing events for existing processes.
++	By default, the number of threads equals 1.
 +
- 	mutex_lock(&record->psi->read_mutex);
- 	record->psi->erase(record);
- 	mutex_unlock(&record->psi->read_mutex);
-@@ -193,12 +204,7 @@ static void pstore_evict_inode(struct inode *inode)
- 	struct pstore_private	*p = inode->i_private;
+ SEE ALSO
+ --------
+ linkperf:perf-stat[1], linkperf:perf-list[1], linkperf:perf-intel-pt[1]
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index 1ab349abe904..2e8011f179f2 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -43,6 +43,7 @@
+ #include "util/time-utils.h"
+ #include "util/units.h"
+ #include "util/bpf-event.h"
++#include "util/util.h"
+ #include "asm/bug.h"
+ #include "perf.h"
  
- 	clear_inode(inode);
--	if (p) {
--		mutex_lock(&records_list_lock);
--		list_del(&p->list);
--		mutex_unlock(&records_list_lock);
--		free_pstore_private(p);
--	}
-+	free_pstore_private(p);
+@@ -50,6 +51,7 @@
+ #include <inttypes.h>
+ #include <locale.h>
+ #include <poll.h>
++#include <pthread.h>
+ #include <unistd.h>
+ #include <sched.h>
+ #include <signal.h>
+@@ -503,6 +505,20 @@ static int process_synthesized_event(struct perf_tool *tool,
+ 	return record__write(rec, NULL, event, event->header.size);
  }
  
- static const struct inode_operations pstore_dir_inode_operations = {
-@@ -417,6 +423,7 @@ static void pstore_kill_sb(struct super_block *sb)
++static int process_locked_synthesized_event(struct perf_tool *tool,
++				     union perf_event *event,
++				     struct perf_sample *sample __maybe_unused,
++				     struct machine *machine __maybe_unused)
++{
++	static pthread_mutex_t synth_lock = PTHREAD_MUTEX_INITIALIZER;
++	int ret;
++
++	pthread_mutex_lock(&synth_lock);
++	ret = process_synthesized_event(tool, event, sample, machine);
++	pthread_mutex_unlock(&synth_lock);
++	return ret;
++}
++
+ static int record__pushfn(struct mmap *map, void *to, void *bf, size_t size)
  {
- 	kill_litter_super(sb);
- 	pstore_sb = NULL;
-+	INIT_LIST_HEAD(&records_list);
- }
+ 	struct record *rec = to;
+@@ -1288,6 +1304,7 @@ static int record__synthesize(struct record *rec, bool tail)
+ 	struct perf_tool *tool = &rec->tool;
+ 	int fd = perf_data__fd(data);
+ 	int err = 0;
++	event_op f = process_synthesized_event;
  
- static struct file_system_type pstore_fs_type = {
+ 	if (rec->opts.tail_synthesize != tail)
+ 		return 0;
+@@ -1402,9 +1419,18 @@ static int record__synthesize(struct record *rec, bool tail)
+ 	if (err < 0)
+ 		pr_warning("Couldn't synthesize cgroup events.\n");
+ 
++	if (rec->opts.nr_threads_synthesize > 1) {
++		perf_set_multithreaded();
++		f = process_locked_synthesized_event;
++	}
++
+ 	err = __machine__synthesize_threads(machine, tool, &opts->target, rec->evlist->core.threads,
+-					    process_synthesized_event, opts->sample_address,
+-					    1);
++					    f, opts->sample_address,
++					    rec->opts.nr_threads_synthesize);
++
++	if (rec->opts.nr_threads_synthesize > 1)
++		perf_set_singlethreaded();
++
+ out:
+ 	return err;
+ }
+@@ -2232,6 +2258,7 @@ static struct record record = {
+ 			.default_per_cpu = true,
+ 		},
+ 		.mmap_flush          = MMAP_FLUSH_DEFAULT,
++		.nr_threads_synthesize = 1,
+ 	},
+ 	.tool = {
+ 		.sample		= process_sample_event,
+@@ -2421,6 +2448,9 @@ static struct option __record_options[] = {
+ #endif
+ 	OPT_CALLBACK(0, "max-size", &record.output_max_size,
+ 		     "size", "Limit the maximum size of the output file", parse_output_max_size),
++	OPT_UINTEGER(0, "num-thread-synthesize",
++		     &record.opts.nr_threads_synthesize,
++		     "number of threads to run for event synthesis"),
+ 	OPT_END()
+ };
+ 
+diff --git a/tools/perf/util/record.h b/tools/perf/util/record.h
+index 24316458be20..923565c3b155 100644
+--- a/tools/perf/util/record.h
++++ b/tools/perf/util/record.h
+@@ -68,6 +68,7 @@ struct record_opts {
+ 	int	      affinity;
+ 	int	      mmap_flush;
+ 	unsigned int  comp_level;
++	unsigned int  nr_threads_synthesize;
+ };
+ 
+ extern const char * const *record_usage;
 -- 
-2.20.1
+2.21.1
 
