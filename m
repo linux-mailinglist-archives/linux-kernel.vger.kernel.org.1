@@ -2,93 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF28E1C6CA7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 11:16:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70EDD1C6CB1
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 11:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728935AbgEFJQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 05:16:12 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:44108 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728385AbgEFJQM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 05:16:12 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 49EA1F029C3B287432E4;
-        Wed,  6 May 2020 17:16:08 +0800 (CST)
-Received: from [127.0.0.1] (10.166.215.55) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Wed, 6 May 2020
- 17:16:05 +0800
-Subject: Re: [PATCH 2/4] mm/swap: use SECTORS_PER_PAGE_SHIFT to clean up code
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-To:     Matthew Wilcox <willy@infradead.org>
-CC:     Minchan Kim <minchan@kernel.org>, Nitin Gupta <ngupta@vflare.org>,
-        "Sergey Senozhatsky" <sergey.senozhatsky.work@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        linux-block <linux-block@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>, Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        dm-devel <dm-devel@redhat.com>, Song Liu <song@kernel.org>,
-        linux-raid <linux-raid@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20200505115543.1660-1-thunder.leizhen@huawei.com>
- <20200505115543.1660-3-thunder.leizhen@huawei.com>
- <20200505172520.GI16070@bombadil.infradead.org>
- <32ba9907-60ad-27c0-c565-e7b5c80ab03c@huawei.com>
- <bddd596b-2e8e-42aa-70cc-41583b15c548@huawei.com>
-Message-ID: <8fefbfb2-1100-fab2-0383-e57343dc44f5@huawei.com>
-Date:   Wed, 6 May 2020 17:16:04 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1729016AbgEFJRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 05:17:15 -0400
+Received: from mx07-00178001.pphosted.com ([62.209.51.94]:4952 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728385AbgEFJRO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 05:17:14 -0400
+Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04697PPv015737;
+        Wed, 6 May 2020 11:17:02 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=VqFBe3qF20cGOA89aBohpMcGBG6ZZWxJV16qNY9PmWo=;
+ b=dDaNLch6Ij6B7YztMRN7x8yS+n+gqvuruXugu/ZEwu3IFMX0KXLTyoIxK9sTCUSxM5cS
+ vdWZdsVrlDYFpgkn3uDbh6byBdO8nhSyeHaAlEm7i4YUoOrGxmpn7OjmFWggLX76/tfC
+ 8pTFBysQpGf+PQZB9nS1HONCBE1kxYEfHaEM15qI2DIxFjuCM6YkVqigngdoFndGDHEP
+ G6JgunUGZv5zfF9NdqLhj8tvFFNCMxfLhIB7GZpWFUsIfl12ltMRfb7jmaPVWoLwz4+B
+ YG6Jo+hlb2tYCLXdLITJ+tiIKjPMjQpsvRfmEkG8v5HZTXYSW81t5UEjxqpaoKjp3yaF MA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 30rxmvn3gy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 May 2020 11:17:02 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B75BA100034;
+        Wed,  6 May 2020 11:17:01 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag6node2.st.com [10.75.127.17])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 957AE2AB47F;
+        Wed,  6 May 2020 11:17:01 +0200 (CEST)
+Received: from [10.211.5.75] (10.75.127.49) by SFHDAG6NODE2.st.com
+ (10.75.127.17) with Microsoft SMTP Server (TLS) id 15.0.1347.2; Wed, 6 May
+ 2020 11:17:00 +0200
+Subject: Re: [PATCH v3 00/10] add STM32 FMC2 EBI controller driver
+To:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <robh+dt@kernel.org>, <mark.rutland@arm.com>,
+        <gregkh@linuxfoundation.org>, <boris.brezillon@collabora.com>
+CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <devicetree@vger.kernel.org>, <marex@denx.de>
+References: <1588698668-25288-1-git-send-email-christophe.kerello@st.com>
+From:   Christophe Kerello <christophe.kerello@st.com>
+Message-ID: <dd56b6cb-3e99-0365-b1e6-211549e0ef21@st.com>
+Date:   Wed, 6 May 2020 11:16:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <bddd596b-2e8e-42aa-70cc-41583b15c548@huawei.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <1588698668-25288-1-git-send-email-christophe.kerello@st.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.166.215.55]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.49]
+X-ClientProxiedBy: SFHDAG4NODE3.st.com (10.75.127.12) To SFHDAG6NODE2.st.com
+ (10.75.127.17)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-05-06_03:2020-05-04,2020-05-06 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+Please do not spend time to review v3.
+V4 has been pushed to fix an issue in YAML bindings.
 
-On 2020/5/6 11:47, Leizhen (ThunderTown) wrote:
+Regards,
+Christophe Kerello.
+
+On 5/5/20 7:10 PM, Christophe Kerello wrote:
+> The FMC2 functional block makes the interface with: synchronous and
+> asynchronous static devices (such as PSNOR, PSRAM or other memory-mapped
+> peripherals) and NAND flash memories.
+> Its main purposes are:
+>    - to translate AXI transactions into the appropriate external device
+>      protocol
+>    - to meet the access time requirements of the external devices
+> All external devices share the addresses, data and control signals with the
+> controller. Each external device is accessed by means of a unique Chip
+> Select. The FMC2 performs only one access at a time to an external device.
 > 
+> Changes in v3:
+>   - NAND:
+>     - rename labels used on errors
+>     - add in the commit log the reason to increase FMC2_TIMEOUT_MS (patch 3)
+>     - add Miquel reviewed-by tag (patches 2/4/5/9)
+>   - EBI:
+>     - move in memory folder
+>     - merge MFD and BUS drivers to avoid a MFD driver
+>   - bindings:
+>     - pattern name has been modified
+>     - vendor properties have been modified
+>       - s/_/-/
+>       - add unit suffix (-ns) on timing properties
 > 
-> On 2020/5/6 9:33, Leizhen (ThunderTown) wrote:
->>
->>
->> On 2020/5/6 1:25, Matthew Wilcox wrote:
->>> On Tue, May 05, 2020 at 07:55:41PM +0800, Zhen Lei wrote:
->>>> +++ b/mm/swapfile.c
->>>> @@ -177,8 +177,8 @@ static int discard_swap(struct swap_info_struct *si)
->>>>  
->>>>  	/* Do not discard the swap header page! */
->>>>  	se = first_se(si);
->>>> -	start_block = (se->start_block + 1) << (PAGE_SHIFT - 9);
->>>> -	nr_blocks = ((sector_t)se->nr_pages - 1) << (PAGE_SHIFT - 9);
->>>> +	start_block = (se->start_block + 1) << SECTORS_PER_PAGE_SHIFT;
->>>> +	nr_blocks = ((sector_t)se->nr_pages - 1) << SECTORS_PER_PAGE_SHIFT;
->>>
->>> Thinking about this some more, wouldn't this look better?
->>>
->>> 	start_block = page_sectors(se->start_block + 1);
->>> 	nr_block = page_sectors(se->nr_pages - 1);
->>>
->>
->> OK，That's fine, it's clearer. And in this way, there won't be more than 80 columns.
+> Christophe Kerello (10):
+>    mtd: rawnand: stm32_fmc2: manage all errors cases at probe time
+>    mtd: rawnand: stm32_fmc2: remove useless inline comments
+>    mtd: rawnand: stm32_fmc2: use FMC2_TIMEOUT_MS for timeouts
+>    mtd: rawnand: stm32_fmc2: cleanup
+>    mtd: rawnand: stm32_fmc2: use FIELD_PREP/FIELD_GET macros
+>    dt-bindings: mtd: update STM32 FMC2 NAND controller documentation
+>    dt-bindings: memory-controller: add STM32 FMC2 EBI controller
+>      documentation
+>    memory: stm32-fmc2-ebi: add STM32 FMC2 EBI controller driver
+>    mtd: rawnand: stm32_fmc2: use regmap APIs
+>    mtd: rawnand: stm32_fmc2: get resources from parent node
 > 
-> Should we rename "page_sectors" to "page_to_sectors"? Because we may need to define
-> "sectors_to_page" also.
-
-Change the "sectors_to_page" to "sectors_to_npage", npage means "number of pages"
-or "page number". To distinguish the use case of "pfn_to_page()" etc. The latter
-returns the pointer of "struct page".
-
+>   .../memory-controllers/st,stm32-fmc2-ebi.yaml      |  261 +++++
+>   .../bindings/mtd/st,stm32-fmc2-nand.yaml           |   19 +-
+>   drivers/memory/Kconfig                             |   10 +
+>   drivers/memory/Makefile                            |    1 +
+>   drivers/memory/stm32-fmc2-ebi.c                    | 1206 ++++++++++++++++++++
+>   drivers/mtd/nand/raw/Kconfig                       |    1 +
+>   drivers/mtd/nand/raw/stm32_fmc2_nand.c             | 1176 ++++++++++---------
+>   7 files changed, 2061 insertions(+), 613 deletions(-)
+>   create mode 100644 Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.yaml
+>   create mode 100644 drivers/memory/stm32-fmc2-ebi.c
 > 
->>
->>>
->>> .
->>>
-
