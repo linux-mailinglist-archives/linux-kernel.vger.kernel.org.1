@@ -2,118 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C80701C7A09
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 21:16:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 868E21C7A12
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 21:16:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728485AbgEFTQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 15:16:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43758 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728410AbgEFTQQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 15:16:16 -0400
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 49C9E2075A;
-        Wed,  6 May 2020 19:16:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588792575;
-        bh=THl2Lpu9sfzGxpEl85CqvltCNIh7W5yIuzClFt9bv4U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bjYUPi2pTno6Scq4ERj8iiHIh0GEoMacr7jaA2J4s/5IsEU1LWt5+o/FCoeLtkmFK
-         DxxtXGvfDR1GG96aaJqEqyebWNFBkIFPkxTQQzxoqE1ij9FvnN6vpdfeXvcarR2rp6
-         V5nPvdyZqzQ0PF6fqZkn4/A5yvF/qrA1pH9uGbDY=
-Date:   Wed, 6 May 2020 12:16:13 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Gao Xiang <hsiangkao@gmx.com>
-Cc:     Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [f2fs-dev] [PATCH] f2fs: get parent inode when recovering pino
-Message-ID: <20200506191613.GB842@sol.localdomain>
-References: <20200505153139.201697-1-jaegeuk@kernel.org>
- <20200505165847.GA98848@gmail.com>
- <20200505181323.GA55221@google.com>
- <20200505181941.GC98848@gmail.com>
- <20200506001403.GA2101@hsiangkao-HP-ZHAN-66-Pro-G1>
- <20200506012428.GG128280@sol.localdomain>
- <20200506015813.GA9256@hsiangkao-HP-ZHAN-66-Pro-G1>
- <20200506064709.GA25482@hsiangkao-HP-ZHAN-66-Pro-G1>
+        id S1728590AbgEFTQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 15:16:33 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:45792 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728410AbgEFTQa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 15:16:30 -0400
+Received: by mail-ot1-f67.google.com with SMTP id e20so2296647otk.12;
+        Wed, 06 May 2020 12:16:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=RffY1VKIuHSTUWSQQaHo7x6JeP+WjY39egkTgOhujrc=;
+        b=c5UykAeQ1gYmZRITApNL+xBRUvKZG4l3oi1dw6GzoUZU1SC8p1CO+ToFirjqueEEU5
+         2IUKRUIp4+bZjenTvuWAxrqPtb+MhqlgKMNw8HLLfxuGuj+OTyrngX8DAZLLQ4ilTUNL
+         wyCpV83+qY0UOf3QrDEDPSlnlFxNfbmvycwTbw1nXH4GX7EmTtBue+LFFzxhiHwnJWII
+         9t1UysyHx5WRdR0YeXiXyKSpwO+Txd79E9xz9R7WtRuB6QwLjQmvaJC8Ww5PBihkMeDV
+         BzIrvEa7nHbsAZ5bY5iPD4SUph0bzyK9A1ZhGL88rAbt8Zaj+X5IVz3LMnTAxYXOTGR5
+         4GSw==
+X-Gm-Message-State: AGi0PubO8RHjiDSXrnK3HyNtsnI0IG3MdOkB8gaXGrKtdeHrDEVT+RP0
+        LYmx3YyeHQWlFf7XHHfBrA==
+X-Google-Smtp-Source: APiQypKX7Yv5OxxTXIw4EebyAUNARWZ7M2l2W40uhAxBhtZnJdkyt9oNdwaILP/riNyqVgTQ5qC/Hg==
+X-Received: by 2002:a9d:68d8:: with SMTP id i24mr7690098oto.371.1588792589363;
+        Wed, 06 May 2020 12:16:29 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id f14sm726909otl.62.2020.05.06.12.16.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 May 2020 12:16:28 -0700 (PDT)
+Received: (nullmailer pid 21925 invoked by uid 1000);
+        Wed, 06 May 2020 19:16:27 -0000
+Date:   Wed, 6 May 2020 14:16:27 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Ivan Mikhaylov <i.mikhaylov@yadro.com>
+Cc:     Ivan Mikhaylov <i.mikhaylov@yadro.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH v12 1/2] dt-bindings: proximity: provide vcnl3020 device
+ tree binding document
+Message-ID: <20200506191542.GA20381@bogus>
+References: <20200506010809.6348-1-i.mikhaylov@yadro.com>
+ <20200506010809.6348-2-i.mikhaylov@yadro.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200506064709.GA25482@hsiangkao-HP-ZHAN-66-Pro-G1>
+In-Reply-To: <20200506010809.6348-2-i.mikhaylov@yadro.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 06, 2020 at 02:47:19PM +0800, Gao Xiang wrote:
-> On Wed, May 06, 2020 at 09:58:22AM +0800, Gao Xiang wrote:
-> > On Tue, May 05, 2020 at 06:24:28PM -0700, Eric Biggers wrote:
-> > > On Wed, May 06, 2020 at 08:14:07AM +0800, Gao Xiang wrote:
-> > > > >
-> > > > > Actually, I think this is wrong because the fsync can be done via a file
-> > > > > descriptor that was opened to a now-deleted link to the file.
-> > > >
-> > > > I'm still confused about this...
-> > > >
-> > > > I don't know what's wrong with this version from my limited knowledge?
-> > > >  inode itself is locked when fsyncing, so
-> > > >
-> > > >    if the fsync inode->i_nlink == 1, this inode has only one hard link
-> > > >    (not deleted yet) and should belong to a single directory; and
-> > > >
-> > > >    the only one parent directory would not go away (not deleted as well)
-> > > >    since there are some dirents in it (not empty).
-> > > >
-> > > > Could kindly explain more so I would learn more about this scenario?
-> > > > Thanks a lot!
-> > >
-> > > i_nlink == 1 just means that there is one non-deleted link.  There can be links
-> > > that have since been deleted, and file descriptors can still be open to them.
-> >
-> > Thanks for your inspiration. You are right, thanks.
-> >
-> > Correct my words... I didn't check f2fs code just now, it seems f2fs doesn't
-> > take inode_lock as some other fs like __generic_file_fsync or ubifs_fsync.
-> >
-> > And i_sem locks nlink / try_to_fix_pino similarly in some extent. It seems
-> > no race by using d_find_alias here. Thanks again.
-> >
+On Wed, 6 May 2020 04:08:08 +0300, Ivan Mikhaylov wrote:
+> Mostly standard i2c driver with some additional led-current option
+> for vcnl3020.
 > 
-> (think more little bit just now...)
-> 
->  Thread 1:                                           Thread 2 (fsync):
->   vfs_unlink                                          try_to_fix_pino
->     f2fs_unlink
->        f2fs_delete_entry
->          f2fs_drop_nlink  (i_sem, inode->i_nlink = 1)
-> 
->   (...   but this dentry still hashed)                  i_sem, check inode->i_nlink = 1
->                                                         i_sem d_find_alias
-> 
->   d_delete
-> 
-> I'm not sure if fsync could still use some wrong alias by chance..
-> completely untested, maybe just noise...
+> Signed-off-by: Ivan Mikhaylov <i.mikhaylov@yadro.com>
+> ---
+>  .../iio/proximity/vishay,vcnl3020.yaml        | 65 +++++++++++++++++++
+>  1 file changed, 65 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/proximity/vishay,vcnl3020.yaml
 > 
 
-Right, good observation.  My patch makes it better, but it's still broken.
+My bot found errors running 'make dt_binding_check' on your patch:
 
-I don't know how to fix it.  If we see i_nlink == 1 and multiple hashed
-dentries, there doesn't appear to be a way to distingush which one corresponds
-to the remaining link on-disk (if any; it may not even be in the dcache), and
-which correspond to links that vfs_unlink() has deleted from disk but hasn't yet
-done d_delete() on.
+Documentation/devicetree/bindings/iio/proximity/vishay,vcnl3020.yaml: $id: relative path/filename doesn't match actual path or filename
+	expected: http://devicetree.org/schemas/iio/proximity/vishay,vcnl3020.yaml#
 
-One idea would be choose one, then take inode_lock_shared(dir) and do
-__f2fs_find_entry() to check if the dentry is really still on-disk.  That's
-heavyweight and error-prone though, and the locking could cause problems.
+See https://patchwork.ozlabs.org/patch/1284005
 
-I'm wondering though, does f2fs really need try_to_fix_pino() at all, and did it
-ever really work?  It never actually updates the f2fs_inode::i_name to match the
-new directory.  So independently of this bug with deleted links, I don't see how
-it can possibly work as intended.
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure dt-schema is up to date:
 
-- Eric
+pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+
+Please check and re-submit.
