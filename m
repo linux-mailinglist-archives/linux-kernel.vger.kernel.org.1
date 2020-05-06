@@ -2,97 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C4301C7C5B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 23:24:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AE1A1C7C51
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 23:22:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730003AbgEFVYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 17:24:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728878AbgEFVYR (ORCPT
+        id S1729809AbgEFVWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 17:22:12 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:62404 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729261AbgEFVWM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 17:24:17 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 577F2C061A0F;
-        Wed,  6 May 2020 14:24:17 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id ms17so1599417pjb.0;
-        Wed, 06 May 2020 14:24:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qEFVXmKO5kMfWeWugqhBonvnrOemaIWnCcTFn0Q/jzU=;
-        b=TVS1/yv2Sppwgh2iNN17Ti7v2bNzqatDrYGLVInJ31yQlKh6dwxguQ3peYq9/FlrA9
-         S9X19MX/ODodXfx494AafbBQOJys6imFXVq4iu1GYDShHuDN6IhuX9PO/YPkxm2n9GOY
-         GZy1SDwzm8mH5cZFnLKAATDHoL0w5ndeWBtoSfyN8zJhatKb0gVxuugpGKTXmPsKjXmE
-         Uh5IVPAszfKuPU6at/vOcuALTm+1uGHu7YIqtq4ihVdLbWIkjQvW6l4XuzVpIx94c4D9
-         rSr3SgYVlpyiGc650Vb4uGTEu7LDHSeRuE6Xs2DlZHzCSA4T4QAxXjTliCyLOEsq0SDX
-         YwTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qEFVXmKO5kMfWeWugqhBonvnrOemaIWnCcTFn0Q/jzU=;
-        b=Nr+KizACLcuKpFm9SmtP4o0bP4dD1YBVFpurXnXmnASNEtdQUzPG8CrM/h/7Gm6+WR
-         Pr2MYk886AT+Nb24JO1gfMLu/IQqUzqB5jGv4QsOMll/7+sw9B6lycGRnQxEiG1pe63Y
-         p9xlFh5fyXaBJ4b5mdgYeBvxRYtP9YX9/cQduSsHN/tf4yZ8oKlXfgSRW3ch2gygmIzf
-         Og8nJ95LJTo3t2M75wxfqv81rkpNoWEDRDqSkUMouniB9O3KAUYXvuIdINq+zX3GZ/Z4
-         qP7FeT+dMOX3Wz2h7pewShb4Eez9kiFEoER1qUQuHSFpKoMbce6eToCurXIg0mPxvU5Q
-         HQZA==
-X-Gm-Message-State: AGi0PuYi7LC2C5zOWUwDezedsfUECh3AwEFcAQ/HW+ACZg6D4qKz38WG
-        jw00nGW/5OmGFMYjsxfvyQTVg5kf
-X-Google-Smtp-Source: APiQypLU1rrY1dsf/YEVp/nbsvlzdDdVmsxnrILCvnWZqjUGXkFJRZtCZfmeHITrkDRRWRZ4eNrgEw==
-X-Received: by 2002:a17:90a:b10f:: with SMTP id z15mr12137304pjq.188.1588800256275;
-        Wed, 06 May 2020 14:24:16 -0700 (PDT)
-Received: from [10.230.188.43] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id x193sm2912545pfd.54.2020.05.06.14.24.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 May 2020 14:24:15 -0700 (PDT)
-Subject: Re: [RFC net] net: dsa: Add missing reference counting
-To:     Vivien Didelot <vivien.didelot@gmail.com>
-Cc:     netdev@vger.kernel.org, olteanv@gmail.com,
-        Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200505210253.20311-1-f.fainelli@gmail.com>
- <20200505172302.GB1170406@t480s.localdomain>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <d681a82b-5d4b-457f-56de-3a439399cb3d@gmail.com>
-Date:   Wed, 6 May 2020 14:24:14 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Firefox/68.0 Thunderbird/68.7.0
+        Wed, 6 May 2020 17:22:12 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 046L2enM143800;
+        Wed, 6 May 2020 17:22:11 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30u8srveeu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 May 2020 17:22:11 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 046L3rlX148174;
+        Wed, 6 May 2020 17:22:11 -0400
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30u8srveef-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 May 2020 17:22:11 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 046LKkBO004196;
+        Wed, 6 May 2020 21:22:10 GMT
+Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
+        by ppma04dal.us.ibm.com with ESMTP id 30s0g75hm5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 May 2020 21:22:10 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 046LM8kP51052986
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 6 May 2020 21:22:08 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 958A1BE051;
+        Wed,  6 May 2020 21:22:08 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8C6A9BE053;
+        Wed,  6 May 2020 21:22:07 +0000 (GMT)
+Received: from localhost.localdomain.com (unknown [9.85.180.129])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed,  6 May 2020 21:22:07 +0000 (GMT)
+From:   Jared Rossi <jrossi@linux.ibm.com>
+To:     Eric Farman <farman@linux.ibm.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Halil Pasic <pasic@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/1] vfio-ccw: Enable transparent CCW IPL from DASD
+Date:   Wed,  6 May 2020 17:24:39 -0400
+Message-Id: <20200506212440.31323-1-jrossi@linux.ibm.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-In-Reply-To: <20200505172302.GB1170406@t480s.localdomain>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-06_09:2020-05-05,2020-05-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 spamscore=0 lowpriorityscore=0 clxscore=1015 mlxscore=0
+ mlxlogscore=857 impostorscore=0 adultscore=0 suspectscore=0 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005060170
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Remove the explicit prefetch check when using vfio-ccw devices.
+This check does not trigger in practice as all Linux channel programs
+are intended to use prefetch.
 
+Version 4 makes only stylistic and word choice changes to comments
+and/or documentation.
 
-On 5/5/2020 2:23 PM, Vivien Didelot wrote:
-> On Tue,  5 May 2020 14:02:53 -0700, Florian Fainelli <f.fainelli@gmail.com> wrote:
->> If we are probed through platform_data we would be intentionally
->> dropping the reference count on master after dev_to_net_device()
->> incremented it. If we are probed through Device Tree,
->> of_find_net_device() does not do a dev_hold() at all.
->>
->> Ensure that the DSA master device is properly reference counted by
->> holding it as soon as the CPU port is successfully initialized and later
->> released during dsa_switch_release_ports(). dsa_get_tag_protocol() does
->> a short de-reference, so we hold and release the master at that time,
->> too.
->>
->> Fixes: 83c0afaec7b7 ("net: dsa: Add new binding implementation")
->> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> 
-> Reviewed-by: Vivien Didelot <vivien.didelot@gmail.com>
-> 
-Andrew, Vladimir, any thoughts on that?
+Jared Rossi (1):
+  vfio-ccw: Enable transparent CCW IPL from DASD
+
+ Documentation/s390/vfio-ccw.rst |  6 ++++++
+ drivers/s390/cio/vfio_ccw_cp.c  | 19 ++++++++++++-------
+ 2 files changed, 18 insertions(+), 7 deletions(-)
+
 -- 
-Florian
+2.17.0
+
