@@ -2,191 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4C4C1C6B64
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 10:20:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93FD11C6B74
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 10:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728891AbgEFIUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 04:20:03 -0400
-Received: from mga09.intel.com ([134.134.136.24]:8281 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728712AbgEFIT5 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 04:19:57 -0400
-IronPort-SDR: NZ8P64XlD+kYF27usswiXNnphp66f8bbhv1wJNdiATuon6FiPPp+YnCrif5E74VPvczE19jFUU
- 4YZFgtJM7uDQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2020 01:19:56 -0700
-IronPort-SDR: jfT4IrRly8gK0qfRYGh7zoa2bXakxRPAT+XKrcQ28m+5qRZ8ZhPrUhpD5XMTa+JFHFD7WMA4T0
- F21EZm5P440g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,358,1583222400"; 
-   d="scan'208";a="249705053"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.255.29.46]) ([10.255.29.46])
-  by fmsmga007.fm.intel.com with ESMTP; 06 May 2020 01:19:52 -0700
-Subject: Re: [PATCH v2 1/2] perf evsel: Create counts for collecting summary
- data
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-References: <20200502020705.19295-1-yao.jin@linux.intel.com>
- <20200502020705.19295-2-yao.jin@linux.intel.com>
- <20200504235059.GG1916255@krava>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <52f68553-e880-4da7-90d5-6bf5ebb6a5a7@linux.intel.com>
-Date:   Wed, 6 May 2020 16:19:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1728679AbgEFIVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 04:21:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728296AbgEFIVK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 04:21:10 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE6EC061A0F
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 01:21:10 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jWFIJ-00078r-3P; Wed, 06 May 2020 10:20:43 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id 4D7351001F5; Wed,  6 May 2020 10:20:42 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [patch V4 part 5 02/31] x86/entry: Provide helpers for execute on irqstack
+In-Reply-To: <20200505135828.316937774@linutronix.de>
+References: <20200505135341.730586321@linutronix.de> <20200505135828.316937774@linutronix.de>
+Date:   Wed, 06 May 2020 10:20:42 +0200
+Message-ID: <87pnbho4o5.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20200504235059.GG1916255@krava>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
-
-On 5/5/2020 7:50 AM, Jiri Olsa wrote:
-> On Sat, May 02, 2020 at 10:07:04AM +0800, Jin Yao wrote:
->> It would be useful to support the overall statistics for perf-stat
->> interval mode. For example, report the summary at the end of
->> "perf-stat -I" output.
->>
->> But since perf-stat can support many aggregation modes, such as
->> --per-thread, --per-socket, -M and etc, we need a solution which
->> doesn't bring much complexity.
->>
->> The idea is to create new 'evsel->summary_counts' which sums up the
->> counts delta per interval. Before reporting the summary, we copy the
->> data from evsel->summary_counts to evsel->counts, and next we just
->> follow current code.
->>
->>   v2:
->>   ---
->>   Rebase to perf/core branch
->>
->> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
->> ---
->>   tools/perf/util/evsel.c | 10 ++++++++--
->>   tools/perf/util/evsel.h |  1 +
->>   tools/perf/util/stat.c  | 20 ++++++++++++++++++++
->>   3 files changed, 29 insertions(+), 2 deletions(-)
->>
->> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
->> index a75bcb95bf23..abc503dd6eda 100644
->> --- a/tools/perf/util/evsel.c
->> +++ b/tools/perf/util/evsel.c
->> @@ -1280,22 +1280,28 @@ void evsel__delete(struct evsel *evsel)
->>   void evsel__compute_deltas(struct evsel *evsel, int cpu, int thread,
->>   			   struct perf_counts_values *count)
->>   {
->> -	struct perf_counts_values tmp;
->> +	struct perf_counts_values tmp, *summary;
->>   
->> -	if (!evsel->prev_raw_counts)
->> +	if (!evsel->prev_raw_counts || !evsel->summary_counts)
->>   		return;
->>   
->>   	if (cpu == -1) {
->>   		tmp = evsel->prev_raw_counts->aggr;
->>   		evsel->prev_raw_counts->aggr = *count;
->> +		summary = &evsel->summary_counts->aggr;
->>   	} else {
->>   		tmp = *perf_counts(evsel->prev_raw_counts, cpu, thread);
->>   		*perf_counts(evsel->prev_raw_counts, cpu, thread) = *count;
->> +		summary = perf_counts(evsel->summary_counts, cpu, thread);
-> 
-> shouldn't this be enough?
-> 
-> 		perf_counts(evsel->summary_counts, cpu, thread) = *count
-> 
-> without the code below.. and similar for aggr case
-> however I still wonder if we should count this in
-> perf_stat_process_counter and only for interval mode
+Thomas Gleixner <tglx@linutronix.de> writes:
+> That also allows to move the xen hypercall extra magic code and the softirq
+> stack switching into C.
 >
+> The mechanism is straight forward:
+>
+>   1) Store the current stack pointer on top of the interrupt stack. That's
+>      required for the unwinder. 
+>
+>   2) Switch the stack pointer
+>
+>   3) Call the function
+>
+>   4) Restore the stackpointer
+>
+> The full code sequence to make the unwinder happy is:
+>
+>     	pushq	%rbp
+> 	movq	%rsp, %rbp
+> 	movq    $(top_of_hardirq_stack - 8), %reg
+> 	movq	%rsp, (%reg)
+>   	movq	%reg , %rsp
+> 	call    function
+> 	popq	%rsp
+> 	leaveq
+> 	
+> While the following sequence would spare the 'popq %rsp':
+>
+>     	pushq	%rbp
+> 	movq    $(top_of_hardirq_stack - 8), %rbp
+> 	movq	%rsp, (%rrbp)
+>   	xchgq	%rbp, %rsp
+> 	call    function
+>  	movq	%rbp, %rsp
+> 	leaveq
 
-Actually I have an easier way, which just resets the prev_raw counters. For example,
+So I stared some more into that.
 
-@@ -724,6 +727,12 @@ static int __run_perf_stat(int argc, const char **argv, int 
-run_idx)
+The push rbp is wrong for the frame unwinder case. That one is happy
+(except for objtool) with the most minimalistic variant:
 
-         update_stats(&walltime_nsecs_stats, t1 - t0);
+	movq	%%rsp, (%[tos])
+        movq	%[tos], %%rsp
+        call	function
+        popq	%%rsp
 
-+       if (interval) {
-+               stat_config.interval = 0;
-+               stat_config.summary = true;
-+               perf_evlist__reset_prev_raw_counts(evsel_list);
-+       }
-+
-         /*
-          * Closing a group leader splits the group, and as we only disable
-          * group leaders, results in remaining events becoming enabled. To
+which is not surprising because for the frame unwinder this is similar
+to the 'gcc aligns stack in the middle of the function' handling. BP
+still has to point to the previous frame. Adjustment of BP must only
+happen on function entry.
 
-But if we just directly copy from current counts, the summary result looks a bit 
-confused.
+The stack border convention of having the pointer to the previous stack
+in the top word is sufficient for this.
 
-For example,
+objtool complains though:
 
-root@kbl-ppc:/# perf stat -e cycles -I1000 --interval-count 2
-#           time             counts unit events
-      1.000402302          2,943,521      cycles
-      2.001333982          2,146,165      cycles
+ warning: objtool: do_softirq_own_stack()+0x67: return with modified stack frame
 
-  Performance counter stats for 'system wide':
+That obviously makes also the ORC unwinder unhappty as objtool fails to
+provide the right hint. But also for ORC this construct should be
+completely sufficient.
 
-          5,880,031      cycles
+I'm exploring another idea right now, but wanted to share the info.
 
-        2.002805025 seconds time elapsed
+Thanks,
 
-2,943,521 + 2,146,165 != 5,880,031
-
-That's because the counter is still enabled after interval printing. So at the 
-time of printing summary, the counts are sightly increased. User may be confused 
-for the summary result (why it's not equal to the sum of interval values?).
-
->>   	}
->>   
->>   	count->val = count->val - tmp.val;
->>   	count->ena = count->ena - tmp.ena;
->>   	count->run = count->run - tmp.run;
->> +
->> +	summary->val += count->val;
->> +	summary->ena += count->ena;
->> +	summary->run += count->run;
->>   }
->>   
->>   void perf_counts_values__scale(struct perf_counts_values *count,
->> diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
->> index 783246bf8d0d..430639c99d04 100644
->> --- a/tools/perf/util/evsel.h
->> +++ b/tools/perf/util/evsel.h
->> @@ -46,6 +46,7 @@ struct evsel {
->>   	char			*filter;
->>   	struct perf_counts	*counts;
->>   	struct perf_counts	*prev_raw_counts;
->> +	struct perf_counts	*summary_counts;
-> 
-> 'sum_counts' might be better
-> 
-
-That's OK. :)
-
-Thanks
-Jin Yao
-
-> jirka
-> 
->>   	int			idx;
->>   	unsigned long		max_events;
->>   	unsigned long		nr_events_printed;
->> diff --git a/tools/perf/util/stat.c b/tools/perf/util/stat.c
->> index 774468341851..c3fd008b4e84 100644
->> --- a/tools/perf/util/stat.c
-> 
-> SNIP
-> 
+        tglx
