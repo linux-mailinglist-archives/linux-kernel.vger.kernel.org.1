@@ -2,145 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AF541C7E27
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 01:50:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7AFB1C7E22
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 01:50:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728391AbgEFXuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 19:50:44 -0400
-Received: from mga11.intel.com ([192.55.52.93]:22516 "EHLO mga11.intel.com"
+        id S1728300AbgEFXuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 19:50:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725887AbgEFXue (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 19:50:34 -0400
-IronPort-SDR: jof/3rPbb9FPWE/FstfGpnNpuwzobHtLALOg7vafv7QI7Z8pxXuhCclVww84s2Ode2qtmzgsBw
- jDhidq+dZx9A==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2020 16:50:31 -0700
-IronPort-SDR: 9sNPWl6NHJRwt/Qx2aLUX8d+XLEBJrueDqYI9OOBKgEeH5SRLqpbLmf1UkHa85o4etq+9abTUJ
- mRgHZlshZ+5A==
-X-IronPort-AV: E=Sophos;i="5.73,361,1583222400"; 
-   d="scan'208";a="435084104"
-Received: from rchatre-s.jf.intel.com ([10.54.70.76])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2020 16:50:30 -0700
-From:   Reinette Chatre <reinette.chatre@intel.com>
-To:     tglx@linutronix.de, fenghua.yu@intel.com, bp@alien8.de,
-        tony.luck@intel.com
-Cc:     kuo-lang.tseng@intel.com, ravi.v.shankar@intel.com,
-        mingo@redhat.com, babu.moger@amd.com, hpa@zytor.com,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH V3 4/4] x86/resctrl: Use appropriate API for strings terminated by newline
-Date:   Wed,  6 May 2020 16:49:55 -0700
-Message-Id: <a99e4de3dc3f0e60281de1274ccb064071200fd9.1588808538.git.reinette.chatre@intel.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <cover.1588808537.git.reinette.chatre@intel.com>
-References: <cover.1588808537.git.reinette.chatre@intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1725887AbgEFXuG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 19:50:06 -0400
+Subject: Re: [GIT PULL] chrome-platform fixes for v5.7-rc5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588809005;
+        bh=3LkVkW8FFEro8XBmMgoTmhrvLLXaBTA0Q4LwBsyWelA=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=u5NBy9+VEJBfcTDCCQeGoDGZqEtgvIEW+Xi9PHSdRMXaj/wOtCl8Z6FoiRg2yjoYN
+         G1mk17xyhza9KyKeZrLRW2PSwxCmzVaWgnhlpk4POQwSGGKlsjhUq6Hm0EKFZEjNZA
+         1qHiWJt829IE7oeJkw7KI9a25wOSVyLtwAA4ZrLY=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20200506224737.GA159981@google.com>
+References: <20200506224737.GA159981@google.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200506224737.GA159981@google.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/chrome-platform/linux.git
+ tags/tag-chrome-platform-fixes-for-v5.7-rc5
+X-PR-Tracked-Commit-Id: b31d1d2b1c3a8452f425b09ebd374ecd3ddd5179
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: b9388959ba507c7a48ac18e4aa3b63b8a910ed99
+Message-Id: <158880900584.4672.10849861127175850912.pr-tracker-bot@kernel.org>
+Date:   Wed, 06 May 2020 23:50:05 +0000
+To:     Benson Leung <bleung@google.com>
+Cc:     torvalds@linux-foundation.org, bleung@kernel.org,
+        bleung@chromium.org, bleung@google.com,
+        enric.balletbo@collabora.com, linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The user input to files in the resctrl filesystem are expected to be
-terminated with a newline. Testing the user input includes a test for
-the presence of a newline and then replacing the newline with NUL
-byte followed by comparison using strcmp().
+The pull request you sent on Wed, 6 May 2020 15:47:37 -0700:
 
-sysfs_streq() exists to test if strings are equal, treating both NUL and
-newline-then-NUL as equivalent string terminations. Even more,
-sysfs_match_string() exists to match a given string in an array using
-sysfs_streq().
+> git://git.kernel.org/pub/scm/linux/kernel/git/chrome-platform/linux.git tags/tag-chrome-platform-fixes-for-v5.7-rc5
 
-Replace existing strcmp() comparisons of strings that are terminated
-with a newline with more appropriate sysfs_streq() via the
-sysfs_match_string() API that can perform the match across the different
-mode strings that are already maintained in an array.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/b9388959ba507c7a48ac18e4aa3b63b8a910ed99
 
-Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
----
- arch/x86/kernel/cpu/resctrl/rdtgroup.c | 32 ++++++++++++++------------
- 1 file changed, 17 insertions(+), 15 deletions(-)
+Thank you!
 
-diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index c60a3b307f7d..e70694892c02 100644
---- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-+++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -1408,12 +1408,11 @@ static ssize_t rdtgroup_mode_write(struct kernfs_open_file *of,
- {
- 	struct rdtgroup *rdtgrp;
- 	enum rdtgrp_mode mode;
--	int ret = 0;
-+	int user_m;
-+	int ret;
- 
--	/* Valid input requires a trailing newline */
--	if (nbytes == 0 || buf[nbytes - 1] != '\n')
-+	if (nbytes == 0)
- 		return -EINVAL;
--	buf[nbytes - 1] = '\0';
- 
- 	rdtgrp = rdtgroup_kn_lock_live(of->kn);
- 	if (!rdtgrp) {
-@@ -1425,11 +1424,17 @@ static ssize_t rdtgroup_mode_write(struct kernfs_open_file *of,
- 
- 	mode = rdtgrp->mode;
- 
--	if ((!strcmp(buf, "shareable") && mode == RDT_MODE_SHAREABLE) ||
--	    (!strcmp(buf, "exclusive") && mode == RDT_MODE_EXCLUSIVE) ||
--	    (!strcmp(buf, "pseudo-locksetup") &&
--	     mode == RDT_MODE_PSEUDO_LOCKSETUP) ||
--	    (!strcmp(buf, "pseudo-locked") && mode == RDT_MODE_PSEUDO_LOCKED))
-+	ret = sysfs_match_string(rdt_mode_str, buf);
-+	if (ret < 0) {
-+		rdt_last_cmd_puts("Unknown or unsupported mode\n");
-+		goto out;
-+	}
-+
-+	user_m = ret;
-+	ret = 0;
-+
-+	/* Do nothing and return success if user asks for current mode */
-+	if (user_m == mode)
- 		goto out;
- 
- 	if (mode == RDT_MODE_PSEUDO_LOCKED) {
-@@ -1438,14 +1443,14 @@ static ssize_t rdtgroup_mode_write(struct kernfs_open_file *of,
- 		goto out;
- 	}
- 
--	if (!strcmp(buf, "shareable")) {
-+	if (user_m == RDT_MODE_SHAREABLE) {
- 		if (rdtgrp->mode == RDT_MODE_PSEUDO_LOCKSETUP) {
- 			ret = rdtgroup_locksetup_exit(rdtgrp);
- 			if (ret)
- 				goto out;
- 		}
- 		rdtgrp->mode = RDT_MODE_SHAREABLE;
--	} else if (!strcmp(buf, "exclusive")) {
-+	} else if (user_m == RDT_MODE_EXCLUSIVE) {
- 		if (!rdtgroup_mode_test_exclusive(rdtgrp)) {
- 			ret = -EINVAL;
- 			goto out;
-@@ -1456,14 +1461,11 @@ static ssize_t rdtgroup_mode_write(struct kernfs_open_file *of,
- 				goto out;
- 		}
- 		rdtgrp->mode = RDT_MODE_EXCLUSIVE;
--	} else if (!strcmp(buf, "pseudo-locksetup")) {
-+	} else if (user_m == RDT_MODE_PSEUDO_LOCKSETUP) {
- 		ret = rdtgroup_locksetup_enter(rdtgrp);
- 		if (ret)
- 			goto out;
- 		rdtgrp->mode = RDT_MODE_PSEUDO_LOCKSETUP;
--	} else {
--		rdt_last_cmd_puts("Unknown or unsupported mode\n");
--		ret = -EINVAL;
- 	}
- 
- out:
 -- 
-2.21.0
-
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
