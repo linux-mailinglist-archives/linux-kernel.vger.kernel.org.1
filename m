@@ -2,108 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E8161C765D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 18:31:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B78341C7677
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 18:32:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730308AbgEFQbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 12:31:17 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:58226 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730135AbgEFQao (ORCPT
+        id S1730403AbgEFQbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 12:31:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730338AbgEFQb0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 12:30:44 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 046GUePd116970;
-        Wed, 6 May 2020 11:30:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1588782640;
-        bh=9LE9eXZasQk176rF4p3NIKvT/TvKZtJkmV5cK0LlcCU=;
-        h=From:To:Subject:Date:In-Reply-To:References;
-        b=kBjKZAtvyGPqDihkhuUHuPQUpix1zHVbJaJaL474zOtgvqS/YpUY14W7Ap6rTc2N2
-         9Ieau0tu6k2P0hppeFknh0Nkhnz268PGFjirktp/Nv47hhERwgMyDfpCfvcJONtrV0
-         0Hwgw/YAKur3O+nUxbzrqaURUyy3BPy8lFUyIshc=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 046GUetB022075
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 6 May 2020 11:30:40 -0500
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 6 May
- 2020 11:30:40 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 6 May 2020 11:30:40 -0500
-Received: from uda0868495.fios-router.home (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 046GUXDq119719;
-        Wed, 6 May 2020 11:30:40 -0500
-From:   Murali Karicheri <m-karicheri2@ti.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-api@vger.kernel.org>,
-        <nsekhar@ti.com>, <grygorii.strashko@ti.com>
-Subject: [net-next RFC PATCH 13/13] net: prp: enhance debugfs to display PRP specific info in node table
-Date:   Wed, 6 May 2020 12:30:33 -0400
-Message-ID: <20200506163033.3843-14-m-karicheri2@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200506163033.3843-1-m-karicheri2@ti.com>
-References: <20200506163033.3843-1-m-karicheri2@ti.com>
+        Wed, 6 May 2020 12:31:26 -0400
+Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 205B2C061A0F
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 09:31:26 -0700 (PDT)
+Received: by mail-vk1-xa42.google.com with SMTP id p139so690850vkd.7
+        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 09:31:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FiB9pQXmMO6J13wRygH5wpmcQuT6bpeBnplQ+yoWqy4=;
+        b=syehwF6nfAGze51brJjFnUAcXmSHB8FPB4pfxWc8SG6Aqa4Tem6+CFPiSLPrQSdHte
+         r+SFPnZlwqFeixuSetvwES7+awv3/hy73Y68iyZHVbZ51ei1puiteuVzWEiPLX8fKGmf
+         im1pZ55RH9HrzEdYUusQ70GrGcKai+do7bKUbwnb2psU5O4xmrplAU/4voLvbLyTWoD0
+         PdrQVb+Aei2sTJqsnoSFjLQWN9YHPKlz6OViM7ZFNJkFS0nx0/miXdO15nD/a8yjWMPu
+         y1jnV2dp1wd5NFFkkeBVE0xyAPjoyHBLHqqTR9ezZvUlIA5OYJT+dC2ObbEv49QEeEGB
+         6lXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FiB9pQXmMO6J13wRygH5wpmcQuT6bpeBnplQ+yoWqy4=;
+        b=FyDVIY134H1KhKmT92saDbjkYvOZoyaC0eFLxcwg2MHs+V+WIqrlfXeHdNERe0Yj8a
+         RJJkz+JxIHBEYXYel27JeJaJGHgDErLYUJUv5+/fqrdgxOFI5xMqoZCRtXZlQ86RdDqG
+         T6SUy6yaVmpRpDjrWdaRCMHqqosoSOGyJTKmoUWiQ8c19uHcNt9/T1lVHqwsQIe/7iu/
+         w/WU/d+3Wd/bzxBsRCfQowCoQQNu+xYlyvBW7FzdT2YAf1Z3F0f6HfsB9Zp9eadBx0ZE
+         s6b8p+Tg1gVrVzf+EgYJOfwtSSe9QFnmKL6zGskwG73DokAIUpA10MztjNaD/XuwUlTB
+         MplQ==
+X-Gm-Message-State: AGi0PuZdk3KLeZlmds6i/zT8kWD8zv3/ULKWgnMqZp8jXWrWpW5go2rA
+        bM7/2g8c4Q22y8MZfUjnoAu35GKjYZvercMIRny4Bg==
+X-Google-Smtp-Source: APiQypKpUnyKEH6JytKdnsuKIPTizThoHvdxVZCbosHBLsSAAvQY9gGYjrD60PyyFN0U1l8pWmf9tlPrnU9IVFfxork=
+X-Received: by 2002:a1f:31cf:: with SMTP id x198mr7906893vkx.101.1588782685228;
+ Wed, 06 May 2020 09:31:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <1588348794-4511-1-git-send-email-yanxiaoyong5@gmail.com>
+ <CAHQZ30Btybck2ts8FGru_GDP63e6-ZdxN_mF5Wbp4L1XeTPAtQ@mail.gmail.com> <2020050201173899657320@gmail.com>
+In-Reply-To: <2020050201173899657320@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 6 May 2020 18:30:48 +0200
+Message-ID: <CAPDyKFrZebubtoQ-uNwdHc6qpUXz16-3w4U+DkqvnAMbe0-S-g@mail.gmail.com>
+Subject: Re: Re: [PATCH] mmc/core:fix mmc_sd_hw_reset oops mmc_sd_hw_reset
+ function may be oops if the ejection of sd and the reset of sd simultaneously occur
+To:     "yanxiaoyong5@gmail.com" <yanxiaoyong5@gmail.com>
+Cc:     Raul Rangel <rrangel@chromium.org>,
+        Avri Altman <avri.altman@wdc.com>,
+        kstewart <kstewart@linuxfoundation.org>,
+        tglx <tglx@linutronix.de>, linux-mmc <linux-mmc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Print PRP specific information from node table as part of debugfs
-node table display
+On Fri, 1 May 2020 at 19:18, yanxiaoyong5@gmail.com
+<yanxiaoyong5@gmail.com> wrote:
+>
+>  it is a race condition,the situation as follows:
+>         a                                                                           b
+>  mmc_rescan
+>      mmc_sd_detect
+>           mmc_get_card
+>               __mmc_reclaim_host
+>           card is not present                                       __mmc_reclaim_host
+>           mmc_put_card                                                 wait a __mmc_release_host
+>               __mmc_release_host
+>                     set b TASK_RUNNING
+>           mmc_sd_remove
 
-Signed-off-by: Murali Karicheri <m-karicheri2@ti.com>
----
- net/hsr-prp/hsr_prp_debugfs.c | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
+mmc_sd_remove() calls mmc_remove_card(), which calls device_del() on
+the corresponding card->dev.
 
-diff --git a/net/hsr-prp/hsr_prp_debugfs.c b/net/hsr-prp/hsr_prp_debugfs.c
-index 7d8dd5ab3afd..28580de4de44 100644
---- a/net/hsr-prp/hsr_prp_debugfs.c
-+++ b/net/hsr-prp/hsr_prp_debugfs.c
-@@ -37,7 +37,11 @@ hsr_prp_node_table_show(struct seq_file *sfp, void *data)
- 
- 	seq_puts(sfp, "Node Table entries\n");
- 	seq_puts(sfp, "MAC-Address-A,   MAC-Address-B, time_in[A], ");
--	seq_puts(sfp, "time_in[B], Address-B port\n");
-+	seq_puts(sfp, "time_in[B], Address-B port");
-+	if (priv->prot_version == PRP_V1)
-+		seq_puts(sfp, ", san_a, san_b\n");
-+	else
-+		seq_puts(sfp, "\n");
- 	rcu_read_lock();
- 	list_for_each_entry_rcu(node, &priv->node_db, mac_list) {
- 		/* skip self node */
-@@ -48,7 +52,12 @@ hsr_prp_node_table_show(struct seq_file *sfp, void *data)
- 		print_mac_address(sfp, &node->macaddress_B[0]);
- 		seq_printf(sfp, "0x%lx, ", node->time_in[HSR_PRP_PT_SLAVE_A]);
- 		seq_printf(sfp, "0x%lx ", node->time_in[HSR_PRP_PT_SLAVE_B]);
--		seq_printf(sfp, "0x%x\n", node->addr_B_port);
-+		seq_printf(sfp, "0x%x", node->addr_B_port);
-+
-+		if (priv->prot_version == PRP_V1)
-+			seq_printf(sfp, ", %x, %x\n", node->san_a, node->san_b);
-+		else
-+			seq_puts(sfp, "\n");
- 	}
- 	rcu_read_unlock();
- 	return 0;
-@@ -57,7 +66,8 @@ hsr_prp_node_table_show(struct seq_file *sfp, void *data)
- /* hsr_prp_node_table_open - Open the node_table file
-  *
-  * Description:
-- * This routine opens a debugfs file node_table of specific hsr device
-+ * This routine opens a debugfs file node_table of specific hsr
-+ * or prp device
-  */
- static int
- hsr_prp_node_table_open(struct inode *inode, struct file *filp)
--- 
-2.17.1
+That leads to ->remove() callback gets invoked for card->dev (see
+mmc_blk_remove()), which ideally should clean up everything mmc block
+device related. In other words, beyond this point there should be no
+thread/user that can call mmc_hw_reset() (which invokes
+mmc_sd_hw_reset().
 
+>                host->card =NULL
+>                                                                                (b starts to run)
+>                                                                                mmc_sd_hw_reset
+>                                                                                    finds host->cards is NULL,then oops
+
+So, from the above reasoning I need to ask, have you really seen the
+NULL pointer exception happening? (then we need to look more closely
+at mmc_blk_remove()) Or do you think there is a problem from a
+code-inspection point of view?
+
+Kind regards
+Uffe
