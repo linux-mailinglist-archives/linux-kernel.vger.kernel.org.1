@@ -2,105 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8D841C7659
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 18:31:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 061231C7685
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 18:33:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730244AbgEFQa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 12:30:59 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:35132 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730212AbgEFQa4 (ORCPT
+        id S1730445AbgEFQcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 12:32:45 -0400
+Received: from asavdk4.altibox.net ([109.247.116.15]:58596 "EHLO
+        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730295AbgEFQco (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 12:30:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588782655;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tSUQHAQlY7PhB1CMSPEa9ZgQrRD15euTGzalw6ZzZR8=;
-        b=WV35MQD06vkvVsk8LCAua89e3gG1JG8xysgdNTxnUtvLOlsVDUV0jSO27EY1hIp+cUsc1+
-        TpZjRqVQgZFE8L/d06sjm5yRuOQXEtreVZFjOZx2ZRadraCJBciareBk0D8il6/SKD4IE/
-        609UoHglql17nFhyca8K6c7KuR4BdPY=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-251-Q13TuKkXNbO_W4P1bovn6g-1; Wed, 06 May 2020 12:30:53 -0400
-X-MC-Unique: Q13TuKkXNbO_W4P1bovn6g-1
-Received: by mail-wm1-f71.google.com with SMTP id h6so1523463wmi.7
-        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 09:30:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tSUQHAQlY7PhB1CMSPEa9ZgQrRD15euTGzalw6ZzZR8=;
-        b=I9yAxRTpsx6oFpWxM3RhivLn8we7rjiXKx9QHOIHRjAAmKwKAn4UWZe9+btrzs8VJ2
-         5Dbrz5tmyhkI149WTMX+d6IEtaulQVLWUMfxXRUN+sHFbv6C6SNpwBazbqYNNGsctkRr
-         aOptkOK9dEznzTYZFrVLoLcdjdi1KpgaSr3Rl06fQ+YGC4AMiNQT5nW6QqyaoYJ/1Uyc
-         YHA2v4btd3+NnFZ5MYSnJBLnZQtSi98rekd1adei2FOamSVqtd/PcwDH4d5KNfZgi/j5
-         ZIAg/8DXwxx6YGF/jQtofDnXgVA4gouHFu3JKPTAAU43EA3Rf0jg/LWZXUuBk3DthKcL
-         iABQ==
-X-Gm-Message-State: AGi0Pub7Dp6wuXvdPEN6UcTXhfd2wCLVdqx26HrdLb3Cs7ePueiIc8TM
-        eh6+pYxmAp95pHYFNrzV+Z3PrT2h82+9ioKLBrflXpqZL5jGPsQbb1sJuNrfxFRKyhC/0575Yij
-        dA2OPG9oRK6ZyalO2jTiQRW33
-X-Received: by 2002:a7b:c399:: with SMTP id s25mr5140609wmj.169.1588782652112;
-        Wed, 06 May 2020 09:30:52 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJTP3V/5TCFRJx9MxMBaSz92xOqGZitDKvJVsqE7DLtHLB+Swt6r384A6P5/3ZRst3QHjuzDw==
-X-Received: by 2002:a7b:c399:: with SMTP id s25mr5140588wmj.169.1588782651844;
-        Wed, 06 May 2020 09:30:51 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:11d7:2f21:f38b:17e? ([2001:b07:6468:f312:11d7:2f21:f38b:17e])
-        by smtp.gmail.com with ESMTPSA id x5sm3240420wro.12.2020.05.06.09.30.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 May 2020 09:30:51 -0700 (PDT)
-Subject: Re: [PATCH 0/4] KVM: SVM: Fix AVIC warning when enable irq window
-To:     Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     joro@8bytes.org, jon.grimm@amd.com, mlevitsk@redhat.com
-References: <1588771076-73790-1-git-send-email-suravee.suthikulpanit@amd.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <d918ad5a-f7c0-7915-9a98-e33bef34b623@redhat.com>
-Date:   Wed, 6 May 2020 18:30:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Wed, 6 May 2020 12:32:44 -0400
+Received: from ravnborg.org (unknown [158.248.194.18])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk4.altibox.net (Postfix) with ESMTPS id B68C980500;
+        Wed,  6 May 2020 18:32:38 +0200 (CEST)
+Date:   Wed, 6 May 2020 18:32:37 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v5 1/6] of_graph: add of_graph_get_local_port()
+Message-ID: <20200506163237.GA19296@ravnborg.org>
+References: <20200418170703.1583-1-digetx@gmail.com>
+ <20200418170703.1583-2-digetx@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1588771076-73790-1-git-send-email-suravee.suthikulpanit@amd.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200418170703.1583-2-digetx@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=MOBOZvRl c=1 sm=1 tr=0
+        a=UWs3HLbX/2nnQ3s7vZ42gw==:117 a=UWs3HLbX/2nnQ3s7vZ42gw==:17
+        a=kj9zAlcOel0A:10 a=pGLkceISAAAA:8 a=7gkXJVJtAAAA:8 a=e5mUnYsNAAAA:8
+        a=cgQggk8NgEdHG04IN60A:9 a=CjuIK1q_8ugA:10 a=E9Po1WZjFZOl8hwRPBS3:22
+        a=Vxmtnl_E_bksehYqCbjh:22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/05/20 15:17, Suravee Suthikulpanit wrote:
-> Introduce kvm_make_all_cpus_request_except(), which is used
-> in the subsequent patch 2 to fix AVIC warning.
-> 
-> Also include miscelleneous clean ups.
-> 
-> Thanks,
-> Suravee
-> 
-> Suravee Suthikulpanit (4):
->   KVM: Introduce kvm_make_all_cpus_request_except()
->   KVM: SVM: Fixes setting V_IRQ while AVIC is still enabled
->   KVM: SVM: Merge svm_enable_vintr into svm_set_vintr
->   KVM: SVM: Remove unnecessary V_IRQ unsetting
-> 
->  arch/x86/include/asm/kvm_host.h |  2 +-
->  arch/x86/kvm/hyperv.c           |  6 ++++--
->  arch/x86/kvm/i8254.c            |  4 ++--
->  arch/x86/kvm/svm/avic.c         |  2 +-
->  arch/x86/kvm/svm/svm.c          | 18 ++++++------------
->  arch/x86/kvm/x86.c              | 16 +++++++++++++---
->  include/linux/kvm_host.h        |  3 +++
->  virt/kvm/kvm_main.c             | 14 +++++++++++---
->  8 files changed, 41 insertions(+), 24 deletions(-)
-> 
+Hi Dmitry
 
-I merged patches 1-3-4, you can send out 2 independently.
+On Sat, Apr 18, 2020 at 08:06:58PM +0300, Dmitry Osipenko wrote:
+> In some case, like a DRM display code for example, it's useful to silently
+> check whether port node exists at all in a device-tree before proceeding
+> with parsing the graph.
+> 
+> This patch adds of_graph_get_local_port() which returns pointer to a local
+> port node, or NULL if graph isn't specified in a device-tree for a given
+> device node.
+> 
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Nice little helper function.
+Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
 
-Thanks,
+Rob - OK to commit to drm-misc-next?
 
-Paolo
+	Sam
 
+> ---
+>  drivers/of/property.c    | 32 +++++++++++++++++++++++---------
+>  include/linux/of_graph.h |  7 +++++++
+>  2 files changed, 30 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/of/property.c b/drivers/of/property.c
+> index 252e4f600155..5dbeccaabb86 100644
+> --- a/drivers/of/property.c
+> +++ b/drivers/of/property.c
+> @@ -608,15 +608,7 @@ struct device_node *of_graph_get_next_endpoint(const struct device_node *parent,
+>  	 * parent port node.
+>  	 */
+>  	if (!prev) {
+> -		struct device_node *node;
+> -
+> -		node = of_get_child_by_name(parent, "ports");
+> -		if (node)
+> -			parent = node;
+> -
+> -		port = of_get_child_by_name(parent, "port");
+> -		of_node_put(node);
+> -
+> +		port = of_graph_get_local_port(parent);
+>  		if (!port) {
+>  			pr_err("graph: no port node found in %pOF\n", parent);
+>  			return NULL;
+> @@ -765,6 +757,28 @@ struct device_node *of_graph_get_remote_port(const struct device_node *node)
+>  }
+>  EXPORT_SYMBOL(of_graph_get_remote_port);
+>  
+> +/**
+> + * of_graph_get_local_port() - get local port node
+> + * @node: pointer to a local endpoint device_node
+> + *
+> + * Return: First local port node associated with local endpoint node linked
+> + *	   to @node. Use of_node_put() on it when done.
+> + */
+> +struct device_node *of_graph_get_local_port(const struct device_node *node)
+> +{
+> +	struct device_node *ports, *port;
+> +
+> +	ports = of_get_child_by_name(node, "ports");
+> +	if (ports)
+> +		node = ports;
+> +
+> +	port = of_get_child_by_name(node, "port");
+> +	of_node_put(ports);
+> +
+> +	return port;
+> +}
+> +EXPORT_SYMBOL(of_graph_get_local_port);
+> +
+>  int of_graph_get_endpoint_count(const struct device_node *np)
+>  {
+>  	struct device_node *endpoint;
+> diff --git a/include/linux/of_graph.h b/include/linux/of_graph.h
+> index 01038a6aade0..1fdeb72c7765 100644
+> --- a/include/linux/of_graph.h
+> +++ b/include/linux/of_graph.h
+> @@ -54,6 +54,7 @@ struct device_node *of_graph_get_remote_port_parent(
+>  struct device_node *of_graph_get_remote_port(const struct device_node *node);
+>  struct device_node *of_graph_get_remote_node(const struct device_node *node,
+>  					     u32 port, u32 endpoint);
+> +struct device_node *of_graph_get_local_port(const struct device_node *node);
+>  #else
+>  
+>  static inline int of_graph_parse_endpoint(const struct device_node *node,
+> @@ -116,6 +117,12 @@ static inline struct device_node *of_graph_get_remote_node(
+>  	return NULL;
+>  }
+>  
+> +static inline struct device_node *of_graph_get_local_port(
+> +					const struct device_node *node)
+> +{
+> +	return NULL;
+> +}
+> +
+>  #endif /* CONFIG_OF */
+>  
+>  #endif /* __LINUX_OF_GRAPH_H */
+> -- 
+> 2.26.0
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
