@@ -2,65 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BE6A1C687B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 08:22:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDCAF1C68D6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 08:24:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728094AbgEFGWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 02:22:23 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:57721 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726438AbgEFGWU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 02:22:20 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1728488AbgEFGX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 02:23:56 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:49501 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728470AbgEFGXy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 02:23:54 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1588746234; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=dFXYFwmr9Kq7E8BnIqmlk7XAccUM4rpE8P+I2uOZkSc=;
+ b=k86+QaKwPIfcgAABM1b5rrXzvR3u46DonMWCqoojAVBXiNJurtALRBKhzLHLJYLaBC4MrTOL
+ X8PBbKd6aDoTADM7dwZtHFgv8RaxEa1a3krwGITzSlmbuxjkuadWH5AQeKMYAa/U1qUuoyoY
+ ODK+Lhzo8oUHPwGMSyf+KjtWboU=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5eb257e3.7f79bd2a2e68-smtp-out-n03;
+ Wed, 06 May 2020 06:23:31 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 74420C43637; Wed,  6 May 2020 06:23:30 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
+        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49H62K5cz7z9sRY;
-        Wed,  6 May 2020 16:22:17 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1588746138;
-        bh=G3Z6HoHYd6geL9nF1n1OLlMWHSetC862Eqtc2CC7NUY=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=WLZEwpJwZOMApJCIktUBNCy+p6Eatb3o9IoiUEO/FKw5eAaoXrKRUaD64xYH33Swd
-         sCMVcHP9OpWt6cJJbMpCEYFjIHme9Xd0ujWyzQydQTBCnQtASeOYis6+p6HcWbGx8o
-         h0YREBz/jeLf32TI2tRVwz2YHH8H7d6648dK0DyiQ3E4BVKBfw3ye2kDJJHQR5u/xK
-         tuXlXKGbS/z/7c8xjfWSuZbPZKQ0mU6gqdX4E9fofiFDtGB/y8eJLD7pmKIe/1Yl/f
-         jzErh5ITSr8IOeqOylK20G3hHBKdPC6zyMn/YyL7v2zJhUHU81nFQlkGXp49Ozkj3l
-         tFVMTmvmXIaEA==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Wolfram Sang <wsa@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, kernel@pengutronix.de,
-        Rob Herring <robh+dt@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, devicetree@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] powerpc/5200: update contact email
-In-Reply-To: <20200505160410.GH2468@ninjato>
-References: <20200502142642.18979-1-wsa@kernel.org> <877dxsdl5e.fsf@mpe.ellerman.id.au> <20200505160410.GH2468@ninjato>
-Date:   Wed, 06 May 2020 16:22:33 +1000
-Message-ID: <87imh9d1li.fsf@mpe.ellerman.id.au>
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E677EC4478F;
+        Wed,  6 May 2020 06:23:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E677EC4478F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] ath11k: Replace zero-length array with flexible-array
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200504201224.GA32282@embeddedor>
+References: <20200504201224.GA32282@embeddedor>
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20200506062330.74420C43637@smtp.codeaurora.org>
+Date:   Wed,  6 May 2020 06:23:30 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wolfram Sang <wsa@kernel.org> writes:
->> > My 'pengutronix' address is defunct for years. Merge the entries and use
->> > the proper contact address.
->> 
->> Is there any point adding the new address? It's just likely to bit-rot
->> one day too.
->
-> At least, this one is a group address, not an individual one, so less
-> likey.
->
->> I figure the git history is a better source for more up-to-date emails.
->
-> But yes, can still be argued. I won't persist if you don't like it.
+"Gustavo A. R. Silva" <gustavo@embeddedor.com> wrote:
 
-That's fine, I'll merge this. You've already gone to the trouble to send
-it and it's better than what we have now.
+> The current codebase makes use of the zero-length array language
+> extension to the C90 standard, but the preferred mechanism to declare
+> variable-length types such as these ones is a flexible array member[1][2],
+> introduced in C99:
+> 
+> struct foo {
+>         int stuff;
+>         struct boo array[];
+> };
+> 
+> By making use of the mechanism above, we will get a compiler warning
+> in case the flexible array does not occur last in the structure, which
+> will help us prevent some kind of undefined behavior bugs from being
+> inadvertently introduced[3] to the codebase from now on.
+> 
+> Also, notice that, dynamic memory allocations won't be affected by
+> this change:
+> 
+> "Flexible array members have incomplete type, and so the sizeof operator
+> may not be applied. As a quirk of the original implementation of
+> zero-length arrays, sizeof evaluates to zero."[1]
+> 
+> sizeof(flexible-array-member) triggers a warning because flexible array
+> members have incomplete type[1]. There are some instances of code in
+> which the sizeof operator is being incorrectly/erroneously applied to
+> zero-length arrays and the result is zero. Such instances may be hiding
+> some bugs. So, this work (flexible-array member conversions) will also
+> help to get completely rid of those sorts of issues.
+> 
+> This issue was found with the help of Coccinelle.
+> 
+> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+> [2] https://github.com/KSPP/linux/issues/21
+> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-cheers
+Patch applied to ath-next branch of ath.git, thanks.
+
+14dd3a71ccb7 ath11k: Replace zero-length array with flexible-array
+
+-- 
+https://patchwork.kernel.org/patch/11527611/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
