@@ -2,150 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E1841C7D77
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 00:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEE231C7D7A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 00:37:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730301AbgEFWgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 18:36:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41866 "EHLO
+        id S1730359AbgEFWhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 18:37:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729675AbgEFWgm (ORCPT
+        with ESMTP id S1729675AbgEFWhG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 18:36:42 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22BCEC061A0F;
-        Wed,  6 May 2020 15:36:42 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id h4so4150727ljg.12;
-        Wed, 06 May 2020 15:36:42 -0700 (PDT)
+        Wed, 6 May 2020 18:37:06 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29924C061A0F;
+        Wed,  6 May 2020 15:37:06 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id t12so1780998ile.9;
+        Wed, 06 May 2020 15:37:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=B+lR9RibOagVSsl39LZ9OK8akQe4JLP7xJR19GpLf1o=;
-        b=Tsm34CKsvSLpR0vTdnP3NXEIfocWbivLXWk8w+tAJE4vffmJ6ALKGmPAv3YVr6sNTJ
-         PZhbhmMAaEJIGzYHbhPiJhHEcc3P37y+LVjHDK11d/zgxezjvH1QIiHmKvMoSMWkso+F
-         p9iRxQbECLqV26uxb4vt/iaRUo0fe68iCd2eQJXK51S3tYRbCQQUDyELDVHtlMplWRNW
-         irFmAnBBMMqbfnHmGW3cJyIwJGM1Pxx4RSYQMyd9fYnCp+iUIqYBaZwM9HpTy2VzOZIz
-         eDFakF5MmrzMKhoY8RzaeIbBgiMHs/uPr8z5P2yWV6A8M/DD3+sBc68tVFny5VTRfxSO
-         q+Iw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EqjtatwoK6H8Lcx1Rhpj+GxNACQFKFH+9PeapNxu2JM=;
+        b=MTekYnJP90JNHZTmsIuBlkEn4myBtRaTxukh4xi/ctVgI0KxdRIcicfubDzM7VNSZ1
+         RGnmh3eNtWnS6SV/MGvc8hBdCQxR5ICDyfnkBTkDuDtjc9eW0Mzg+iCG6ErR8hfnkO2b
+         yFHfKAQy8Q5u8XYIetUR8EACxcHMqHfa64OXKnnnPhaPPklkvNf9o6hVjGzqN2REgr6h
+         TTrpAsZIxGLfpn6AhkibRAy2gsztNp7IS/7EPP2Kaq7AsykcWwzSFZXfzFQpyFXwwrdT
+         xmX/YuqCf66apZ5qP/laKCkxPO7cjwyn7lyNtSqhqJRANdjsYjfmeWhoeTvMeiUeIA/L
+         xMnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=B+lR9RibOagVSsl39LZ9OK8akQe4JLP7xJR19GpLf1o=;
-        b=jdV95793K56F2VxemgqF4SBIs0eE6YIQHOSwaDBlYNtM2rGGF3dQw7ZZJLKRxHVm1K
-         zH+4+qS3TDeXdsW2G6+v8f3ElXAvMkE6dwFHT6grG0M4u6jCvIUsnqjEZ++NvuO+hwma
-         3K9xMmIa6RxBbpOi8/aLCw7S6cKNbtVqkaZA6snSuk7N6S+fw4Oh59SNwTT5DQG40bxg
-         QAhPg9VrbkJNUH8eC/a5IuEnYgF6JlmOcewbN++xY3y4ImI/UuKW8X6Xeezq8T6mHDX2
-         BKhq651gY5VRkrBuvSeVyrY+tPDucARZWH08A/EOxknBJicoY2jJqtmQBdC76pORY9nz
-         u00w==
-X-Gm-Message-State: AGi0PubTqOBRW2uVSFCrKnlOECXMUUWltAIPW1ElaedLROplcSrij9AZ
-        q/UMVvhW62Z+dptQJ/kzFow=
-X-Google-Smtp-Source: APiQypIn3b6fKkJd20UjwwrJFveGF8cjFc17xH6wdHxzh2I3WM+a3Zo4qxNiMUlQ/0tz6anyOynLdA==
-X-Received: by 2002:a2e:9b13:: with SMTP id u19mr6438685lji.161.1588804600577;
-        Wed, 06 May 2020 15:36:40 -0700 (PDT)
-Received: from mobilestation ([176.213.3.142])
-        by smtp.gmail.com with ESMTPSA id j19sm404666lfh.19.2020.05.06.15.36.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 May 2020 15:36:39 -0700 (PDT)
-Date:   Thu, 7 May 2020 01:36:36 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Michael Walle <michael@walle.cc>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Tony Xie <tony.xie@rock-chips.com>, Wen He <wen.he_1@nxp.com>,
-        Mike Looijmans <mike.looijmans@topic.nl>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Joel Stanley <joel@jms.id.au>, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org
-Subject: Re: [PATCH v2 3/4] clk: Add Baikal-T1 CCU PLLs driver
-Message-ID: <20200506223636.pgegmxc2z4uqbnbg@mobilestation>
-References: <20200306130053.BCBFC803078F@mail.baikalelectronics.ru>
- <20200506222300.30895-1-Sergey.Semin@baikalelectronics.ru>
- <20200506222300.30895-4-Sergey.Semin@baikalelectronics.ru>
- <9259445e-86a8-8e4a-58c9-822bd00d62f8@infradead.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EqjtatwoK6H8Lcx1Rhpj+GxNACQFKFH+9PeapNxu2JM=;
+        b=SS4dpuFzNWOtGBbnQhVbuu8FrurbkR3rpe2lVMcWcHOhbtoDRhVx19NeFT2Hf3DPt2
+         2KLQmM3xzgBNTpdalZsK8Xj5inMZDWqPQ/XVtLAEhSsxxXZ64B3bn1E9F8ZFdECYgpyT
+         VoSI64lfFlj5XDcraA8BeuZuCML8VBTqQnUK9ghcPMFM96JcRJ2+Oh0AamkKH3sR6keB
+         DjyUQks4xtQPJrW0D5gQGMia3CGWD55U9nLVyDUo/h8gmRW/YLdoBCFAi8qTgV2uLVsd
+         1yTiWPHIa/DGnoUY7jXouGuTDdWW2tfOnayZJK6yh3u+KXgl3tj3Ot81iXHwCLjhDyBq
+         K/5A==
+X-Gm-Message-State: AGi0PubHpmkv11JFryR2BfGKyEkBNT+PbXkH5c5JZECkdBg1td30d07d
+        vq0LAnEiNwlUyOHrwQIP1Inv5dPhXfcZBeGf0w0=
+X-Google-Smtp-Source: APiQypJh1i3df2NxoyGwheWAG3Ch1BHPcr0BNM6f4zyqUF6px9kD/RgBXFKKX/b6OduGEY0oNq/GyoKLcUIe4Bk+1bQ=
+X-Received: by 2002:a92:858b:: with SMTP id f133mr10241065ilh.97.1588804625313;
+ Wed, 06 May 2020 15:37:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9259445e-86a8-8e4a-58c9-822bd00d62f8@infradead.org>
+References: <20200430201125.532129-1-daniel.m.jordan@oracle.com>
+ <20200430201125.532129-7-daniel.m.jordan@oracle.com> <CAKgT0Uf7e5514SOi8dmkB5oXUK9bwqD_z-5KJ_F3MUn3CAQyPQ@mail.gmail.com>
+ <3C3C62BE-6363-41C3-834C-C3124EB3FFAB@joshtriplett.org> <CAKgT0UdBv-Wj98P2wMFGDSihPLKWFsqpu77ZmO+eA51uteZ-Ag@mail.gmail.com>
+ <20200505014844.ulp4rtih7adtcicm@ca-dmjordan1.us.oracle.com>
+ <20200505020916.mve4ijrg4z5h7eh5@ca-dmjordan1.us.oracle.com>
+ <CAKgT0UdE1ex_aAyMeR3PWtVcmXL8cUtjqy0J8hLpnFm42yn82w@mail.gmail.com> <20200506222127.l3p2a2vjavwz2bdl@ca-dmjordan1.us.oracle.com>
+In-Reply-To: <20200506222127.l3p2a2vjavwz2bdl@ca-dmjordan1.us.oracle.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Wed, 6 May 2020 15:36:54 -0700
+Message-ID: <CAKgT0UcZhnCtM4YP3L9kbtghNp9vOzSpVm5WC1164OVmRHLaMA@mail.gmail.com>
+Subject: Re: [PATCH 6/7] mm: parallelize deferred_init_memmap()
+To:     Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Michal Hocko <mhocko@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Shile Zhang <shile.zhang@linux.alibaba.com>,
+        Tejun Heo <tj@kernel.org>, Zi Yan <ziy@nvidia.com>,
+        linux-crypto@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, May 6, 2020 at 3:21 PM Daniel Jordan <daniel.m.jordan@oracle.com> wrote:
+>
+> On Tue, May 05, 2020 at 07:55:43AM -0700, Alexander Duyck wrote:
+> > One question about this data. What is the power management
+> > configuration on the systems when you are running these tests? I'm
+> > just curious if CPU frequency scaling, C states, and turbo are
+> > enabled?
+>
+> Yes, intel_pstate is loaded in active mode without hwp and with turbo enabled
+> (those power management docs are great by the way!) and intel_idle is in use
+> too.
+>
+> > I ask because that is what I have seen usually make the
+> > difference in these kind of workloads as the throughput starts
+> > dropping off as you start seeing the core frequency lower and more
+> > cores become active.
+>
+> If I follow, you're saying there's a chance performance would improve with the
+> above disabled, but how often would a system be configured that way?  Even if
+> it were faster, the machine is configured how it's configured, or am I missing
+> your point?
 
-On Wed, May 06, 2020 at 03:27:57PM -0700, Randy Dunlap wrote:
-> Hi,
-> 
-> Typo(s):
-> 
-> On 5/6/20 3:22 PM, Serge Semin wrote:
-> > diff --git a/drivers/clk/baikal-t1/Kconfig b/drivers/clk/baikal-t1/Kconfig
-> > new file mode 100644
-> > index 000000000000..e1257af9f49e
-> > --- /dev/null
-> > +++ b/drivers/clk/baikal-t1/Kconfig
-> > @@ -0,0 +1,30 @@
-> > +# SPDX-License-Identifier: GPL-2.0-only
-> > +config CLK_BAIKAL_T1
-> > +	bool "Baikal-T1 Clocks Control Unit interface"
-> > +	depends on (MIPS_BAIKAL_T1 && OF) || COMPILE_TEST
-> > +	default MIPS_BAIKAL_T1
-> > +	help
-> > +	  Clocks Control Unit is the core of Baikal-T1 SoC System Controller
-> > +	  responsible for the chip subsystems clocking and resetting. It
-> > +	  consists of multiple global clock domains, which can be reset by
-> > +	  means of the CCU control registers. These domains and devices placed
-> > +	  in them are fed with clocks generated by a hierarchy of PLLs,
-> > +	  configurable and fixed clock dividers. Enable this option to be able
-> > +	  to select Baikal-T1 CCU PLLs and Dividers drivers.
-> > +
-> > +if CLK_BAIKAL_T1
-> > +
-> > +config CLK_BT1_CCU_PLL
-> > +	bool "Baikal-T1 CCU PLLs support"
-> > +	select MFD_SYSCON
-> > +	default MIPS_BAIKAL_T1
-> > +	help
-> > +	  Enable this to support the PLLs embedded into the Baikal-T1 SoC
-> > +	  System Controller. These are five PLLs placed at the root of the
-> > +	  clocks hierarchy, right after an external reference osciallator
-> 
-> 	                                                      oscillator
+I think you might be missing my point. What I was getting at is that I
+know for performance testing sometimes C states and P states get
+disabled in order to get consistent results between runs, it sounds
+like you have them enabled though. I was just wondering if you had
+disabled them or not. If they were disabled then you wouldn't get the
+benefits of turbo and as such adding more cores wouldn't come at a
+penalty, while with it enabled the first few cores should start to
+slow down as they fell out of turbo mode. So it may be part of the
+reason why you are only hitting about 10x at full core count.
 
-Fixed. Thanks.
-
-> 
-> > +	  (normally of 25MHz). They are used to generate high frequency
-> > +	  signals, which are either directly wired to the consumers (like
-> > +	  CPUs, DDR, etc) or passed over the clock dividers to be only then
-> 
-> and while you are here:
-> 
->                      etc.)
-
-Thanks again.
-
--Sergey
-
-> 
-> > +	  used as an individual reference clock of a target device.
-> > +
-> > +endif
-> 
-> thanks.
-> -- 
-> ~Randy
-> 
+As it stands I think your code may speed up a bit if you split the
+work up based on section instead of max order. That would get rid of
+any cache bouncing you may be doing on the pageblock flags and reduce
+the overhead for splitting the work up into individual pieces since
+each piece will be bigger.
