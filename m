@@ -2,173 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18BA61C78E7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 20:06:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0DA21C78EF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 20:08:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729400AbgEFSGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 14:06:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56094 "EHLO
+        id S1730131AbgEFSIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 14:08:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728082AbgEFSGk (ORCPT
+        with ESMTP id S1730058AbgEFSIg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 14:06:40 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8A92C061A0F
-        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 11:06:40 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id t11so1470133pgg.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 11:06:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FE2Opx3hl+uW9jxp1ZVpnasVASKfoo+q149+dKG+qhY=;
-        b=hTnD7UKuMzIgfb5irQV+tZgWTnCYthgLCG21//72Z4Wio0uJW/dBsPCdj3wbKSnlE1
-         vXYCSuIrPhejTchJur0h3EB072yeY2noMGfG7bevc++IXG64YfO8eCkJGZj1QlSAdzJL
-         9l4CwFe9uWCtFWouHMu6CYCvLqj4skiIXD3wi8ea4U58AvmWMdSJOIg+jMrE1OTj66Pa
-         Hc4cC+Kj4OP2CC2uWDlNQ/4xVSrMXjd4jbXX8uyvozgmWRL7oJScP+DJtmij6M/ymSaO
-         /F0AsmB07ttNqKmiT39sdTnD2hKA8HSD8k7V/5B1DojDvm/vxAjIC3cHVnFR/Y8hKx2y
-         pMCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FE2Opx3hl+uW9jxp1ZVpnasVASKfoo+q149+dKG+qhY=;
-        b=c5qQ6szH+FvWWOBr6M/99ElTqYzajHdvAMp/uNG6UcynXOGMRBpzkl5RDC7ZPsBtPF
-         0z269kPPFSijKCRPXeFwwbZBrgqrwuwbEqn86687VbXL/alICYmXoCp4r++Q9s2WfVHE
-         XdS07m+oBQCk0GJCqvFdCLh2kFN4KjVj0jhbRZmsugqJOKb/9fVgpNBaJTVHAYxRXaaW
-         DfthA5YiVCIELZ8bDKbyftJchSo4XK7AIXjlW0wXo0GIFfsgKeK7fUoETFgxoiWmzmNb
-         ToC1bq2SMNcfPz9r6UOO3iI7xo1McLJZAXNI5SEB81Ffo/UToJIF3tb2nUzBnDHgZe5+
-         DDxQ==
-X-Gm-Message-State: AGi0Pub8MxdXNmAGoT2dZx6Ge8fskcOW+ID0l2YmwNvq5Fkc4dYedPB6
-        BjBN57gtFp7lmA7eAuSm2MHieg==
-X-Google-Smtp-Source: APiQypLsrgGXX0cuoyAtpxCXsjMUB+pCfX4jIYB7vsfKEQH7brHN2pyTA23mas7aRrd9qaBbObi80w==
-X-Received: by 2002:a62:8741:: with SMTP id i62mr9894246pfe.7.1588788399619;
-        Wed, 06 May 2020 11:06:39 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:bc61:d85d:eb16:9036])
-        by smtp.gmail.com with ESMTPSA id w12sm2432267pfq.133.2020.05.06.11.06.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 May 2020 11:06:38 -0700 (PDT)
-Date:   Wed, 6 May 2020 11:06:32 -0700
-From:   Benson Leung <bleung@google.com>
-To:     Prashant Malani <pmalani@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, heikki.krogerus@linux.intel.com,
-        twawrzynczak@chromium.org, Benson Leung <bleung@chromium.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH 1/2] dt-bindings: chrome: Add cros-ec-typec mux props
-Message-ID: <20200506180632.GA112329@google.com>
-References: <20200422222242.241699-1-pmalani@chromium.org>
+        Wed, 6 May 2020 14:08:36 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0327C061A0F;
+        Wed,  6 May 2020 11:08:35 -0700 (PDT)
+Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tip-bot2@linutronix.de>)
+        id 1jWOT6-0001Ex-Aa; Wed, 06 May 2020 20:08:28 +0200
+Received: from [127.0.1.1] (localhost [IPv6:::1])
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id E95231C03AB;
+        Wed,  6 May 2020 20:08:27 +0200 (CEST)
+Date:   Wed, 06 May 2020 18:08:27 -0000
+From:   "tip-bot2 for Reinette Chatre" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cache] x86/resctrl: Support CPUID enumeration of MBM counter width
+Cc:     Borislav Petkov <bp@suse.de>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: =?utf-8?q?=3Cafa3af2f753f6bc301fb743bc8944e749cb24afa=2E15887?=
+ =?utf-8?q?15690=2Egit=2Ereinette=2Echatre=40intel=2Ecom=3E?=
+References: =?utf-8?q?=3Cafa3af2f753f6bc301fb743bc8944e749cb24afa=2E158871?=
+ =?utf-8?q?5690=2Egit=2Ereinette=2Echatre=40intel=2Ecom=3E?=
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="C7zPtVaVf+AK4Oqc"
-Content-Disposition: inline
-In-Reply-To: <20200422222242.241699-1-pmalani@chromium.org>
+Message-ID: <158878850788.8414.11435107400308715284.tip-bot2@tip-bot2>
+X-Mailer: tip-git-log-daemon
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the x86/cache branch of tip:
 
---C7zPtVaVf+AK4Oqc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Commit-ID:     f3d44f18b0662327c42128b9d3604489bdb6e36f
+Gitweb:        https://git.kernel.org/tip/f3d44f18b0662327c42128b9d3604489bdb6e36f
+Author:        Reinette Chatre <reinette.chatre@intel.com>
+AuthorDate:    Tue, 05 May 2020 15:36:17 -07:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Wed, 06 May 2020 18:02:41 +02:00
 
-Hi Prashant,
+x86/resctrl: Support CPUID enumeration of MBM counter width
 
-On Wed, Apr 22, 2020 at 03:22:39PM -0700, Prashant Malani wrote:
-> Add properties for mode, orientation and USB data role switches for
-> Type C connectors. When available, these will allow the Type C connector
-> class port driver to configure the various switches according to USB PD
-> information (like orientation, alt mode etc.) provided by the Chrome OS
-> EC controller.
->=20
-> Signed-off-by: Prashant Malani <pmalani@chromium.org>
+The original Memory Bandwidth Monitoring (MBM) architectural
+definition defines counters of up to 62 bits in the
+IA32_QM_CTR MSR while the first-generation MBM implementation
+uses statically defined 24 bit counters.
 
-Acked-By: Benson Leung <bleung@chromium.org>
+Expand the MBM CPUID enumeration properties to include the MBM
+counter width. The previously undefined EAX output register contains,
+in bits [7:0], the MBM counter width encoded as an offset from
+24 bits. Enumerating this property is only specified for Intel
+CPUs.
 
+Suggested-by: Borislav Petkov <bp@suse.de>
+Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/afa3af2f753f6bc301fb743bc8944e749cb24afa.1588715690.git.reinette.chatre@intel.com
+---
+ arch/x86/include/asm/processor.h   | 3 ++-
+ arch/x86/kernel/cpu/resctrl/core.c | 5 +++++
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
-Thanks,
-Benson
-
-> ---
->  .../bindings/chrome/google,cros-ec-typec.yaml | 27 ++++++++++++++++++-
->  1 file changed, 26 insertions(+), 1 deletion(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/chrome/google,cros-ec-type=
-c.yaml b/Documentation/devicetree/bindings/chrome/google,cros-ec-typec.yaml
-> index 6d7396ab8bee..b5814640aa32 100644
-> --- a/Documentation/devicetree/bindings/chrome/google,cros-ec-typec.yaml
-> +++ b/Documentation/devicetree/bindings/chrome/google,cros-ec-typec.yaml
-> @@ -21,7 +21,21 @@ properties:
->      const: google,cros-ec-typec
-> =20
->    connector:
-> -    $ref: /schemas/connector/usb-connector.yaml#
-> +    allOf:
-> +      - $ref: /schemas/connector/usb-connector.yaml#
-> +      - type: object
-> +        properties:
-> +          mode-switch:
-> +            description: Reference to a DT node for the USB Type C Multi=
-plexer
-> +              controlling the data lines routing for this connector.
-> +
-> +          orientation-switch:
-> +            description: Reference to a DT node for the USB Type C orien=
-tation
-> +              switch for this connector.
-> +
-> +          usb-role-switch:
-> +            description: Reference to a DT node for the USB Data role sw=
-itch
-> +              for this connector.
-> =20
->  required:
->    - compatible
-> @@ -49,6 +63,17 @@ examples:
->              data-role =3D "dual";
->              try-power-role =3D "source";
->            };
-> +
-> +          connector@1 {
-> +            compatible =3D "usb-c-connector";
-> +            reg =3D <1>;
-> +            power-role =3D "dual";
-> +            data-role =3D "host";
-> +            try-power-role =3D "source";
-> +            mode-switch =3D <&typec_mux>;
-> +            orientation-switch =3D <&typec_orientation_switch>;
-> +            usb-role-switch =3D <&typec_mux>;
-> +          };
->          };
->        };
->      };
-> --=20
-> 2.26.1.301.g55bc3eb7cb9-goog
->=20
-
---=20
-Benson Leung
-Staff Software Engineer
-Chrome OS Kernel
-Google Inc.
-bleung@google.com
-Chromium OS Project
-bleung@chromium.org
-
---C7zPtVaVf+AK4Oqc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQCtZK6p/AktxXfkOlzbaomhzOwwgUCXrL8qAAKCRBzbaomhzOw
-wjVLAQDAT6R1kgL+06r1tSeEIB9nl4MxBCCxuzFDH+IkrY00OQEA3cKAH7Ac/jOR
-UAz3ne6IqKpqgoS8M5v5+AaZ2pBXJgQ=
-=aGiA
------END PGP SIGNATURE-----
-
---C7zPtVaVf+AK4Oqc--
+diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+index 3bcf27c..c4e8fd7 100644
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -113,9 +113,10 @@ struct cpuinfo_x86 {
+ 	/* in KB - valid for CPUS which support this call: */
+ 	unsigned int		x86_cache_size;
+ 	int			x86_cache_alignment;	/* In bytes */
+-	/* Cache QoS architectural values: */
++	/* Cache QoS architectural values, valid only on the BSP: */
+ 	int			x86_cache_max_rmid;	/* max index */
+ 	int			x86_cache_occ_scale;	/* scale to bytes */
++	int			x86_cache_mbm_width_offset;
+ 	int			x86_power;
+ 	unsigned long		loops_per_jiffy;
+ 	/* cpuid returned max cores value: */
+diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
+index d597907..12f967c 100644
+--- a/arch/x86/kernel/cpu/resctrl/core.c
++++ b/arch/x86/kernel/cpu/resctrl/core.c
+@@ -964,6 +964,7 @@ void resctrl_cpu_detect(struct cpuinfo_x86 *c)
+ 	if (!cpu_has(c, X86_FEATURE_CQM_LLC)) {
+ 		c->x86_cache_max_rmid  = -1;
+ 		c->x86_cache_occ_scale = -1;
++		c->x86_cache_mbm_width_offset = -1;
+ 		return;
+ 	}
+ 
+@@ -980,6 +981,10 @@ void resctrl_cpu_detect(struct cpuinfo_x86 *c)
+ 
+ 		c->x86_cache_max_rmid  = ecx;
+ 		c->x86_cache_occ_scale = ebx;
++		if (c->x86_vendor == X86_VENDOR_INTEL)
++			c->x86_cache_mbm_width_offset = eax & 0xff;
++		else
++			c->x86_cache_mbm_width_offset = -1;
+ 	}
+ }
+ 
