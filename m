@@ -2,161 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29B771C79CD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 21:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D95A1C79D8
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 21:03:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726897AbgEFTBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 15:01:47 -0400
-Received: from smtprelay0035.hostedemail.com ([216.40.44.35]:34224 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726356AbgEFTBq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 15:01:46 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 9A33D180A7340;
-        Wed,  6 May 2020 19:01:45 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1535:1544:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3355:3622:3865:3866:3867:3868:3870:3871:3872:3874:4321:4605:5007:6119:7903:8603:10004:10848:11026:11232:11657:11658:11914:12043:12048:12296:12297:12438:12555:12679:12740:12760:12895:13019:13161:13229:13439:14096:14097:14659:14721:21080:21212:21433:21451:21627:21972:21990:30045:30054:30075:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: kiss33_6657176918f26
-X-Filterd-Recvd-Size: 5441
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf11.hostedemail.com (Postfix) with ESMTPA;
-        Wed,  6 May 2020 19:01:43 +0000 (UTC)
-Message-ID: <006e29037a9314fb286a5d6d84905bce99cef6c7.camel@perches.com>
-Subject: Re: [PATCH] drm/amdgpu: allocate large structures dynamically
-From:   Joe Perches <joe@perches.com>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Hawking Zhang <Hawking.Zhang@amd.com>,
-        John Clements <john.clements@amd.com>
-Cc:     Tao Zhou <tao.zhou1@amd.com>, Guchun Chen <guchun.chen@amd.com>,
-        Dennis Li <Dennis.Li@amd.com>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Date:   Wed, 06 May 2020 12:01:41 -0700
-In-Reply-To: <20200505140208.284473-1-arnd@arndb.de>
-References: <20200505140208.284473-1-arnd@arndb.de>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.1-2 
+        id S1727799AbgEFTDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 15:03:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60740 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725985AbgEFTDK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 15:03:10 -0400
+Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2539520A8B;
+        Wed,  6 May 2020 19:03:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588791790;
+        bh=Yqg0FR03ICsngX2rB2sb2xuYkFg82NaW1zU2YIloR8Y=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=bflTPGqsgd+C46NDp/kwSeS28/ILDYVhFL2jv6BZuKjpMUR/ktwXLjhxxhqV4DNxw
+         BdV11rDjdoML/1GZLEggZCBW3Rv5+aD1y+3mF+n45ozmDuANoOdC0IriusDb27jvo9
+         q1hg6eJ4AJRQ26qvWHRcDAwDx1PTrIFvQ0txMZVk=
+Received: by mail-ot1-f43.google.com with SMTP id i27so2269092ota.7;
+        Wed, 06 May 2020 12:03:10 -0700 (PDT)
+X-Gm-Message-State: AGi0PuZEh5UQxYharW/JZCj4jfLCggDzrUz/geGqhTsr1EzUkIr8Vxo1
+        KmI4Uxy3tiSQbG9DLSvOB1Gbilms3QdG7gAbiQ==
+X-Google-Smtp-Source: APiQypK+MaFY1Iurl8mjdABioyqSrQP03zlo2Xmdf7/+1qRLRnupLAu9sz8qI0nEExTPXKjiGpEvDyKMczIxLkNxBhk=
+X-Received: by 2002:a9d:1441:: with SMTP id h59mr7763912oth.192.1588791789287;
+ Wed, 06 May 2020 12:03:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20200427124931.115697-1-amirmizi6@gmail.com> <20200427124931.115697-7-amirmizi6@gmail.com>
+ <20200505161226.GA555@bogus> <c2760659-ec14-237e-e060-5d9a2d7c7e4a@gmail.com>
+In-Reply-To: <c2760659-ec14-237e-e060-5d9a2d7c7e4a@gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 6 May 2020 14:02:57 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLEkoa1+nnWBQHah14_6BozkMzjcSpbk-hhLS=Rnqaa8Q@mail.gmail.com>
+Message-ID: <CAL_JsqLEkoa1+nnWBQHah14_6BozkMzjcSpbk-hhLS=Rnqaa8Q@mail.gmail.com>
+Subject: Re: [PATCH v7 6/7] tpm: Add YAML schema for TPM TIS I2C options
+To:     Amir Mizinski <amirmizi6@gmail.com>
+Cc:     Eyal.Cohen@nuvoton.com,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Oshri Alkobi <oshrialkoby85@gmail.com>,
+        Alexander Steffen <alexander.steffen@infineon.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        benoit.houyere@st.com, Eddie James <eajames@linux.ibm.com>,
+        Joel Stanley <joel@jms.id.au>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-integrity@vger.kernel.org,
+        IS20 Oshri Alkoby <oshri.alkoby@nuvoton.com>,
+        Tomer Maimon <tmaimon77@gmail.com>, gcwilson@us.ibm.com,
+        kgoldman@us.ibm.com, IS30 Dan Morav <Dan.Morav@nuvoton.com>,
+        oren.tanami@nuvoton.com, shmulik.hager@nuvoton.com,
+        amir.mizinski@nuvoton.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-05-05 at 16:01 +0200, Arnd Bergmann wrote:
-> After the structure was padded to 1024 bytes, it is no longer
-> suitable for being a local variable, as the function surpasses
-> the warning limit for 32-bit architectures:
-> 
-> drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c:587:5: error: stack frame size of 1072 bytes in function 'amdgpu_ras_feature_enable' [-Werror,-Wframe-larger-than=]
-> int amdgpu_ras_feature_enable(struct amdgpu_device *adev,
->     ^
-> 
-> Use kzalloc() instead to get it from the heap.
-[]
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-[]
-> @@ -588,19 +588,23 @@ int amdgpu_ras_feature_enable(struct amdgpu_device *adev,
->  		struct ras_common_if *head, bool enable)
->  {
->  	struct amdgpu_ras *con = amdgpu_ras_get_context(adev);
-> -	union ta_ras_cmd_input info;
-> +	union ta_ras_cmd_input *info;
->  	int ret;
->  
->  	if (!con)
->  		return -EINVAL;
->  
-> +        info = kzalloc(sizeof(union ta_ras_cmd_input), GFP_KERNEL);
+On Wed, May 6, 2020 at 10:20 AM Amir Mizinski <amirmizi6@gmail.com> wrote:
+>
+>
+> On 2020-05-05 16:12, Rob Herring wrote:
+> > On Mon, Apr 27, 2020 at 03:49:30PM +0300, amirmizi6@gmail.com wrote:
+> >> From: Amir Mizinski <amirmizi6@gmail.com>
+> >>
+> >> Added a YAML schema to support tpm tis i2c related dt-bindings for the I2c
+> >> PTP based physical layer.
+> >>
+> >> This patch adds the documentation for corresponding device tree bindings of
+> >> I2C based Physical TPM.
+> >> Refer to the 'I2C Interface Definition' section in
+> >> 'TCG PC Client PlatformTPMProfile(PTP) Specification' publication
+> >> for specification.
+> >
+> > Again, DT bindings describe h/w devices, not just a protocol. A device
+> > is more than just a protocol interface. There's clocks, power rails,
+> > resets, interrupts, firmware, etc.
+> >
+> > Unless there's something special about TPM chips that makes none of this
+> > applicable and no chip will ever have any quirks (or extensions) in
+> > their protocol to work-around, then you need compatible string(s) that
+> > are specific to the TPM chip. You can have tcg,tpm-tis-i2c as a
+> > fallback, but you need specific compatible to handle any quirks.
+> >
+> > Rob
+>
+> Hello Rob, currently yes. All TPM chip are implemented according to the TGC specs and should use the same properties for this I2C driver.
+> I can't say for sure that it will be the case in the future.
 
-Spaces were used for indentation here not a tab.
-It might be useful to run your proposed patches through checkpatch
+Exactly. That's the issue. If you have just "tcg,tpm-tis-i2c" and need
+to handle some difference in the future, then you can't without
+updating the DT. You must be able to handle future issues without
+updating the DT.
 
-Is this an actual bug fix as the previous use didn't
-zero unused info members?
+> Shouldn't we use the standard "tcg,tpm-tis-i2c" compatible, and if a specific TPM chip will deviate from the specs, the vendor should add an additional compatible string for it?
 
-> +	if (!info)
-> +		return -ENOMEM;
-> +
->  	if (!enable) {
-> -		info.disable_features = (struct ta_ras_disable_features_input) {
-> +		info->disable_features = (struct ta_ras_disable_features_input) {
->  			.block_id =  amdgpu_ras_block_to_ta(head->block),
->  			.error_type = amdgpu_ras_error_to_ta(head->type),
->  		};
->  	} else {
-> -		info.enable_features = (struct ta_ras_enable_features_input) {
-> +		info->enable_features = (struct ta_ras_enable_features_input) {
->  			.block_id =  amdgpu_ras_block_to_ta(head->block),
->  			.error_type = amdgpu_ras_error_to_ta(head->type),
->  		};
-> @@ -609,26 +613,33 @@ int amdgpu_ras_feature_enable(struct amdgpu_device *adev,
->  	/* Do not enable if it is not allowed. */
->  	WARN_ON(enable && !amdgpu_ras_is_feature_allowed(adev, head));
->  	/* Are we alerady in that state we are going to set? */
-> -	if (!(!!enable ^ !!amdgpu_ras_is_feature_enabled(adev, head)))
-> -		return 0;
-> +	if (!(!!enable ^ !!amdgpu_ras_is_feature_enabled(adev, head))) {
+Name something where multiple vendors have implemented a spec and
+there's no deviation. It simply doesn't exist. How would you know?
 
-And trivia:
+Does the TPM spec define all the things I listed above outside of just
+the I2C protocol?
 
-The !! uses with bool seem unnecessary and it's probably better
-to make amdgpu_ras_is_feature_enabled to return bool.
+Also, what version of the spec is "tcg,tpm-tis-i2c"? Few specs have
+only 1 version.
 
-Maybe something like:
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-index 538895cfd862..05c4eaf0ddfa 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-@@ -526,16 +526,16 @@ void amdgpu_ras_parse_status_code(struct amdgpu_device* adev,
- }
- 
- /* feature ctl begin */
--static int amdgpu_ras_is_feature_allowed(struct amdgpu_device *adev,
--		struct ras_common_if *head)
-+static bool amdgpu_ras_is_feature_allowed(struct amdgpu_device *adev,
-+					  struct ras_common_if *head)
- {
- 	struct amdgpu_ras *con = amdgpu_ras_get_context(adev);
- 
- 	return con->hw_supported & BIT(head->block);
- }
- 
--static int amdgpu_ras_is_feature_enabled(struct amdgpu_device *adev,
--		struct ras_common_if *head)
-+static bool amdgpu_ras_is_feature_enabled(struct amdgpu_device *adev,
-+					  struct ras_common_if *head)
- {
- 	struct amdgpu_ras *con = amdgpu_ras_get_context(adev);
- 
-@@ -560,7 +560,7 @@ static int __amdgpu_ras_feature_enable(struct amdgpu_device *adev,
- 	 */
- 	if (!amdgpu_ras_is_feature_allowed(adev, head))
- 		return 0;
--	if (!(!!enable ^ !!amdgpu_ras_is_feature_enabled(adev, head)))
-+	if (!(enable ^ amdgpu_ras_is_feature_enabled(adev, head)))
- 		return 0;
- 
- 	if (enable) {
-@@ -609,7 +609,7 @@ int amdgpu_ras_feature_enable(struct amdgpu_device *adev,
- 	/* Do not enable if it is not allowed. */
- 	WARN_ON(enable && !amdgpu_ras_is_feature_allowed(adev, head));
- 	/* Are we alerady in that state we are going to set? */
--	if (!(!!enable ^ !!amdgpu_ras_is_feature_enabled(adev, head)))
-+	if (!(enable ^ amdgpu_ras_is_feature_enabled(adev, head)))
- 		return 0;
- 
- 	if (!amdgpu_ras_intr_triggered()) {
-
-
-
+Rob
