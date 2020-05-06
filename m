@@ -2,240 +2,339 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58CD51C7435
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:22:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CFEF1C74CE
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:30:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729526AbgEFPWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 11:22:01 -0400
-Received: from mga14.intel.com ([192.55.52.115]:49108 "EHLO mga14.intel.com"
+        id S1729986AbgEFPZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 11:25:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729476AbgEFPVy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 11:21:54 -0400
-IronPort-SDR: uh8ZBvJGGpEmN7ggeM8+zosQ80ciAOqjZdNP0ageNKxXNSlqvbY188Mj9g0s2dVXC7InZXgXyB
- hevdE0tq9Bsw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2020 08:21:53 -0700
-IronPort-SDR: jaIF5hZlOSX83fPUAUoxIbJIRGPQgGAU04AVIVce2ggtjU8BamnEPpvv6GIye4gyMiGB3b+M27
- gLmVv4/ET1kQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,359,1583222400"; 
-   d="scan'208";a="461795067"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 06 May 2020 08:21:52 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1jWLrq-000HUD-W0; Wed, 06 May 2020 23:21:50 +0800
-Date:   Wed, 06 May 2020 23:21:42 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:dev.2020.04.29a] BUILD SUCCESS
- d54b2ad6d7f4caed123d988135478ae257357081
-Message-ID: <5eb2d606.KnmjG8ryIlrjPxSb%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1729963AbgEFPZJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 11:25:09 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6685920CC7;
+        Wed,  6 May 2020 15:25:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588778708;
+        bh=CRdjMxD2DTbYn0p9O5orpsfGdV+/xlwQcwOt1kBnK64=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Q5t+dnEWejJ3Ze8MObSKxK6GXWKUyTTqH/VrqhTu51tOEsqS0bY4qwk3dlicCCo9L
+         b+jTU/oDK6V02+fO+P7Qv7RswabNkq1+x726UjydZzy0TbEIOjBLn30VeUqB99IuCo
+         tExe4Co8XY46gnESDFJy8KPoZTiLwU6XTgd6QvSQ=
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+        Clark Williams <williams@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH 39/91] perf thread-stack: Add branch stack support
+Date:   Wed,  6 May 2020 12:21:42 -0300
+Message-Id: <20200506152234.21977-40-acme@kernel.org>
+X-Mailer: git-send-email 2.21.1
+In-Reply-To: <20200506152234.21977-1-acme@kernel.org>
+References: <20200506152234.21977-1-acme@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2020.04.29a
-branch HEAD: d54b2ad6d7f4caed123d988135478ae257357081  doc: Timer problems can cause RCU CPU stall warnings
+From: Adrian Hunter <adrian.hunter@intel.com>
 
-elapsed time: 7134m
+Intel PT already has support for creating branch stacks for each context
+(per-cpu or per-thread). In the more common per-cpu case, the branch stack
+is not separated for different threads, instead being cleared in between
+each sample.
 
-configs tested: 181
-configs skipped: 10
+That approach will not work very well for adding branch stacks to
+regular events. The branch stacks really need to be accumulated
+separately for each thread.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+As a start to accomplishing that, this patch adds support for putting
+branch stack support into the thread-stack. The advantages are:
 
-arm64                            allyesconfig
-arm                              allyesconfig
-arm64                            allmodconfig
-arm                              allmodconfig
-arm64                             allnoconfig
-arm                               allnoconfig
-sparc                            allyesconfig
-m68k                             allyesconfig
-c6x                              allyesconfig
-ia64                              allnoconfig
-arc                                 defconfig
-sparc64                           allnoconfig
-sh                               allmodconfig
-sparc64                             defconfig
-riscv                             allnoconfig
-microblaze                        allnoconfig
-m68k                                defconfig
-i386                             alldefconfig
-s390                             allyesconfig
-powerpc                             defconfig
-ia64                                defconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                                defconfig
-i386                              debian-10.3
-ia64                             allmodconfig
-ia64                             allyesconfig
-ia64                             alldefconfig
-m68k                             allmodconfig
-m68k                           sun3_defconfig
-m68k                          multi_defconfig
-csky                             allyesconfig
-alpha                            allyesconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                                defconfig
-alpha                               defconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
-arc                              allyesconfig
-microblaze                       allyesconfig
-sh                                allnoconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                               allnoconfig
-openrisc                         allyesconfig
-mips                             allyesconfig
-mips                         64r6el_defconfig
-mips                              allnoconfig
-mips                           32r2_defconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                          rhel-kconfig
-powerpc                           allnoconfig
-powerpc                          allyesconfig
-powerpc                          alldefconfig
-powerpc                          allmodconfig
-parisc               randconfig-a001-20200430
-mips                 randconfig-a001-20200430
-m68k                 randconfig-a001-20200430
-riscv                randconfig-a001-20200430
-alpha                randconfig-a001-20200430
-nds32                randconfig-a001-20200430
-h8300                randconfig-a001-20200501
-nios2                randconfig-a001-20200501
-microblaze           randconfig-a001-20200501
-c6x                  randconfig-a001-20200501
-sparc64              randconfig-a001-20200501
-h8300                randconfig-a001-20200502
-nios2                randconfig-a001-20200502
-microblaze           randconfig-a001-20200502
-c6x                  randconfig-a001-20200502
-sparc64              randconfig-a001-20200502
-s390                 randconfig-a001-20200430
-xtensa               randconfig-a001-20200430
-csky                 randconfig-a001-20200430
-openrisc             randconfig-a001-20200430
-sh                   randconfig-a001-20200430
-i386                 randconfig-b003-20200501
-x86_64               randconfig-b002-20200501
-i386                 randconfig-b001-20200501
-x86_64               randconfig-b003-20200501
-x86_64               randconfig-b001-20200501
-i386                 randconfig-b002-20200501
-i386                 randconfig-b001-20200430
-i386                 randconfig-b002-20200430
-x86_64               randconfig-b001-20200430
-i386                 randconfig-b003-20200430
-x86_64               randconfig-b002-20200430
-x86_64               randconfig-b003-20200430
-i386                 randconfig-b003-20200506
-i386                 randconfig-b001-20200506
-x86_64               randconfig-b001-20200506
-x86_64               randconfig-b003-20200506
-i386                 randconfig-b002-20200506
-x86_64               randconfig-c001-20200430
-i386                 randconfig-c001-20200430
-i386                 randconfig-c002-20200430
-x86_64               randconfig-c002-20200430
-x86_64               randconfig-c003-20200430
-i386                 randconfig-c003-20200430
-i386                 randconfig-d003-20200502
-i386                 randconfig-d001-20200502
-x86_64               randconfig-d002-20200502
-i386                 randconfig-d002-20200502
-i386                 randconfig-e003-20200506
-x86_64               randconfig-e003-20200506
-x86_64               randconfig-e001-20200506
-i386                 randconfig-e002-20200506
-i386                 randconfig-e001-20200506
-x86_64               randconfig-e002-20200430
-i386                 randconfig-e003-20200430
-x86_64               randconfig-e003-20200430
-i386                 randconfig-e002-20200430
-x86_64               randconfig-e001-20200430
-i386                 randconfig-e001-20200430
-i386                 randconfig-f003-20200501
-x86_64               randconfig-f001-20200501
-x86_64               randconfig-f003-20200501
-i386                 randconfig-f001-20200501
-i386                 randconfig-f002-20200501
-i386                 randconfig-f003-20200506
-x86_64               randconfig-f001-20200506
-x86_64               randconfig-f003-20200506
-x86_64               randconfig-f002-20200506
-i386                 randconfig-f001-20200506
-i386                 randconfig-f002-20200506
-x86_64               randconfig-g003-20200506
-i386                 randconfig-g003-20200506
-i386                 randconfig-g002-20200506
-x86_64               randconfig-g001-20200506
-i386                 randconfig-g001-20200506
-x86_64               randconfig-g002-20200506
-i386                 randconfig-h002-20200506
-i386                 randconfig-h001-20200506
-i386                 randconfig-h003-20200506
-x86_64               randconfig-h002-20200506
-x86_64               randconfig-h003-20200506
-x86_64               randconfig-h001-20200506
-i386                 randconfig-h002-20200430
-i386                 randconfig-h003-20200430
-x86_64               randconfig-h001-20200430
-x86_64               randconfig-h003-20200430
-i386                 randconfig-h001-20200430
-ia64                 randconfig-a001-20200501
-arc                  randconfig-a001-20200501
-powerpc              randconfig-a001-20200501
-arm                  randconfig-a001-20200501
-sparc                randconfig-a001-20200501
-sparc                randconfig-a001-20200430
-arc                  randconfig-a001-20200430
-ia64                 randconfig-a001-20200430
-powerpc              randconfig-a001-20200430
-arm                  randconfig-a001-20200430
-riscv                            allyesconfig
-riscv                               defconfig
-riscv                            allmodconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                             alldefconfig
-s390                                defconfig
-sparc                               defconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-um                               allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-x86_64                                  kexec
+1. the branches are accumulated separately for each thread
+2. the branch stack is cleared only in between continuous traces
 
+This helps pave the way for adding branch stacks to regular events, not
+just synthesized events as at present.
+
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Link: http://lore.kernel.org/lkml/20200429150751.12570-2-adrian.hunter@intel.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ tools/perf/util/intel-bts.c    |   2 +-
+ tools/perf/util/intel-pt.c     |   2 +-
+ tools/perf/util/thread-stack.c | 113 +++++++++++++++++++++++++++++----
+ tools/perf/util/thread-stack.h |   5 +-
+ 4 files changed, 108 insertions(+), 14 deletions(-)
+
+diff --git a/tools/perf/util/intel-bts.c b/tools/perf/util/intel-bts.c
+index 059e1c805ed0..506112f52619 100644
+--- a/tools/perf/util/intel-bts.c
++++ b/tools/perf/util/intel-bts.c
+@@ -432,7 +432,7 @@ static int intel_bts_process_buffer(struct intel_bts_queue *btsq,
+ 					    le64_to_cpu(branch->from),
+ 					    le64_to_cpu(branch->to),
+ 					    btsq->intel_pt_insn.length,
+-					    buffer->buffer_nr + 1);
++					    buffer->buffer_nr + 1, true, 0, 0);
+ 		if (filter && !(filter & btsq->sample_flags))
+ 			continue;
+ 		err = intel_bts_synth_branch_sample(btsq, branch);
+diff --git a/tools/perf/util/intel-pt.c b/tools/perf/util/intel-pt.c
+index 30e1ee6d3e40..bdb84470f7d0 100644
+--- a/tools/perf/util/intel-pt.c
++++ b/tools/perf/util/intel-pt.c
+@@ -2033,7 +2033,7 @@ static int intel_pt_sample(struct intel_pt_queue *ptq)
+ 	    pt->synth_opts.thread_stack)
+ 		thread_stack__event(ptq->thread, ptq->cpu, ptq->flags, state->from_ip,
+ 				    state->to_ip, ptq->insn_len,
+-				    state->trace_nr);
++				    state->trace_nr, true, 0, 0);
+ 	else
+ 		thread_stack__set_trace_nr(ptq->thread, ptq->cpu, state->trace_nr);
+ 
+diff --git a/tools/perf/util/thread-stack.c b/tools/perf/util/thread-stack.c
+index 83f6c83f5617..79698831b4b9 100644
+--- a/tools/perf/util/thread-stack.c
++++ b/tools/perf/util/thread-stack.c
+@@ -80,6 +80,10 @@ struct thread_stack_entry {
+  * @comm: current comm
+  * @arr_sz: size of array if this is the first element of an array
+  * @rstate: used to detect retpolines
++ * @br_stack_rb: branch stack (ring buffer)
++ * @br_stack_sz: maximum branch stack size
++ * @br_stack_pos: current position in @br_stack_rb
++ * @mispred_all: mark all branches as mispredicted
+  */
+ struct thread_stack {
+ 	struct thread_stack_entry *stack;
+@@ -95,6 +99,10 @@ struct thread_stack {
+ 	struct comm *comm;
+ 	unsigned int arr_sz;
+ 	enum retpoline_state_t rstate;
++	struct branch_stack *br_stack_rb;
++	unsigned int br_stack_sz;
++	unsigned int br_stack_pos;
++	bool mispred_all;
+ };
+ 
+ /*
+@@ -126,13 +134,26 @@ static int thread_stack__grow(struct thread_stack *ts)
+ }
+ 
+ static int thread_stack__init(struct thread_stack *ts, struct thread *thread,
+-			      struct call_return_processor *crp)
++			      struct call_return_processor *crp,
++			      bool callstack, unsigned int br_stack_sz)
+ {
+ 	int err;
+ 
+-	err = thread_stack__grow(ts);
+-	if (err)
+-		return err;
++	if (callstack) {
++		err = thread_stack__grow(ts);
++		if (err)
++			return err;
++	}
++
++	if (br_stack_sz) {
++		size_t sz = sizeof(struct branch_stack);
++
++		sz += br_stack_sz * sizeof(struct branch_entry);
++		ts->br_stack_rb = zalloc(sz);
++		if (!ts->br_stack_rb)
++			return -ENOMEM;
++		ts->br_stack_sz = br_stack_sz;
++	}
+ 
+ 	if (thread->maps && thread->maps->machine) {
+ 		struct machine *machine = thread->maps->machine;
+@@ -150,7 +171,9 @@ static int thread_stack__init(struct thread_stack *ts, struct thread *thread,
+ }
+ 
+ static struct thread_stack *thread_stack__new(struct thread *thread, int cpu,
+-					      struct call_return_processor *crp)
++					      struct call_return_processor *crp,
++					      bool callstack,
++					      unsigned int br_stack_sz)
+ {
+ 	struct thread_stack *ts = thread->ts, *new_ts;
+ 	unsigned int old_sz = ts ? ts->arr_sz : 0;
+@@ -176,7 +199,7 @@ static struct thread_stack *thread_stack__new(struct thread *thread, int cpu,
+ 		ts += cpu;
+ 
+ 	if (!ts->stack &&
+-	    thread_stack__init(ts, thread, crp))
++	    thread_stack__init(ts, thread, crp, callstack, br_stack_sz))
+ 		return NULL;
+ 
+ 	return ts;
+@@ -319,6 +342,9 @@ static int __thread_stack__flush(struct thread *thread, struct thread_stack *ts)
+ 
+ 	if (!crp) {
+ 		ts->cnt = 0;
++		ts->br_stack_pos = 0;
++		if (ts->br_stack_rb)
++			ts->br_stack_rb->nr = 0;
+ 		return 0;
+ 	}
+ 
+@@ -353,8 +379,33 @@ int thread_stack__flush(struct thread *thread)
+ 	return err;
+ }
+ 
++static void thread_stack__update_br_stack(struct thread_stack *ts, u32 flags,
++					  u64 from_ip, u64 to_ip)
++{
++	struct branch_stack *bs = ts->br_stack_rb;
++	struct branch_entry *be;
++
++	if (!ts->br_stack_pos)
++		ts->br_stack_pos = ts->br_stack_sz;
++
++	ts->br_stack_pos -= 1;
++
++	be              = &bs->entries[ts->br_stack_pos];
++	be->from        = from_ip;
++	be->to          = to_ip;
++	be->flags.value = 0;
++	be->flags.abort = !!(flags & PERF_IP_FLAG_TX_ABORT);
++	be->flags.in_tx = !!(flags & PERF_IP_FLAG_IN_TX);
++	/* No support for mispredict */
++	be->flags.mispred = ts->mispred_all;
++
++	if (bs->nr < ts->br_stack_sz)
++		bs->nr += 1;
++}
++
+ int thread_stack__event(struct thread *thread, int cpu, u32 flags, u64 from_ip,
+-			u64 to_ip, u16 insn_len, u64 trace_nr)
++			u64 to_ip, u16 insn_len, u64 trace_nr, bool callstack,
++			unsigned int br_stack_sz, bool mispred_all)
+ {
+ 	struct thread_stack *ts = thread__stack(thread, cpu);
+ 
+@@ -362,12 +413,13 @@ int thread_stack__event(struct thread *thread, int cpu, u32 flags, u64 from_ip,
+ 		return -EINVAL;
+ 
+ 	if (!ts) {
+-		ts = thread_stack__new(thread, cpu, NULL);
++		ts = thread_stack__new(thread, cpu, NULL, callstack, br_stack_sz);
+ 		if (!ts) {
+ 			pr_warning("Out of memory: no thread stack\n");
+ 			return -ENOMEM;
+ 		}
+ 		ts->trace_nr = trace_nr;
++		ts->mispred_all = mispred_all;
+ 	}
+ 
+ 	/*
+@@ -381,8 +433,14 @@ int thread_stack__event(struct thread *thread, int cpu, u32 flags, u64 from_ip,
+ 		ts->trace_nr = trace_nr;
+ 	}
+ 
+-	/* Stop here if thread_stack__process() is in use */
+-	if (ts->crp)
++	if (br_stack_sz)
++		thread_stack__update_br_stack(ts, flags, from_ip, to_ip);
++
++	/*
++	 * Stop here if thread_stack__process() is in use, or not recording call
++	 * stack.
++	 */
++	if (ts->crp || !callstack)
+ 		return 0;
+ 
+ 	if (flags & PERF_IP_FLAG_CALL) {
+@@ -430,6 +488,7 @@ static void __thread_stack__free(struct thread *thread, struct thread_stack *ts)
+ {
+ 	__thread_stack__flush(thread, ts);
+ 	zfree(&ts->stack);
++	zfree(&ts->br_stack_rb);
+ }
+ 
+ static void thread_stack__reset(struct thread *thread, struct thread_stack *ts)
+@@ -554,6 +613,38 @@ void thread_stack__sample_late(struct thread *thread, int cpu,
+ 	}
+ }
+ 
++void thread_stack__br_sample(struct thread *thread, int cpu,
++			     struct branch_stack *dst, unsigned int sz)
++{
++	struct thread_stack *ts = thread__stack(thread, cpu);
++	const size_t bsz = sizeof(struct branch_entry);
++	struct branch_stack *src;
++	struct branch_entry *be;
++	unsigned int nr;
++
++	dst->nr = 0;
++
++	if (!ts)
++		return;
++
++	src = ts->br_stack_rb;
++	if (!src->nr)
++		return;
++
++	dst->nr = min((unsigned int)src->nr, sz);
++
++	be = &dst->entries[0];
++	nr = min(ts->br_stack_sz - ts->br_stack_pos, (unsigned int)dst->nr);
++	memcpy(be, &src->entries[ts->br_stack_pos], bsz * nr);
++
++	if (src->nr >= ts->br_stack_sz) {
++		sz -= nr;
++		be = &dst->entries[nr];
++		nr = min(ts->br_stack_pos, sz);
++		memcpy(be, &src->entries[0], bsz * ts->br_stack_pos);
++	}
++}
++
+ struct call_return_processor *
+ call_return_processor__new(int (*process)(struct call_return *cr, u64 *parent_db_id, void *data),
+ 			   void *data)
+@@ -921,7 +1012,7 @@ int thread_stack__process(struct thread *thread, struct comm *comm,
+ 	}
+ 
+ 	if (!ts) {
+-		ts = thread_stack__new(thread, sample->cpu, crp);
++		ts = thread_stack__new(thread, sample->cpu, crp, true, 0);
+ 		if (!ts)
+ 			return -ENOMEM;
+ 		ts->comm = comm;
+diff --git a/tools/perf/util/thread-stack.h b/tools/perf/util/thread-stack.h
+index 8962ddc4e1ab..c279a0cbbdd0 100644
+--- a/tools/perf/util/thread-stack.h
++++ b/tools/perf/util/thread-stack.h
+@@ -81,13 +81,16 @@ struct call_return_processor {
+ };
+ 
+ int thread_stack__event(struct thread *thread, int cpu, u32 flags, u64 from_ip,
+-			u64 to_ip, u16 insn_len, u64 trace_nr);
++			u64 to_ip, u16 insn_len, u64 trace_nr, bool callstack,
++			unsigned int br_stack_sz, bool mispred_all);
+ void thread_stack__set_trace_nr(struct thread *thread, int cpu, u64 trace_nr);
+ void thread_stack__sample(struct thread *thread, int cpu, struct ip_callchain *chain,
+ 			  size_t sz, u64 ip, u64 kernel_start);
+ void thread_stack__sample_late(struct thread *thread, int cpu,
+ 			       struct ip_callchain *chain, size_t sz, u64 ip,
+ 			       u64 kernel_start);
++void thread_stack__br_sample(struct thread *thread, int cpu,
++			     struct branch_stack *dst, unsigned int sz);
+ int thread_stack__flush(struct thread *thread);
+ void thread_stack__free(struct thread *thread);
+ size_t thread_stack__depth(struct thread *thread, int cpu);
+-- 
+2.21.1
+
