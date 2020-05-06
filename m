@@ -2,173 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D54D71C7532
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:42:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6494D1C7535
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:42:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729765AbgEFPl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 11:41:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729668AbgEFPlw (ORCPT
+        id S1729807AbgEFPmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 11:42:18 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:46896 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729148AbgEFPmS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 11:41:52 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B828BC061A0F;
-        Wed,  6 May 2020 08:41:51 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id e20so1695319otk.12;
-        Wed, 06 May 2020 08:41:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/4Bf7uYJizHHCHu/IYW7D03zmrwhqK6qEQ4Buf+txbw=;
-        b=O41+Bmx8B9NB10qlOMxkKc0/Rv3M6Si5CS/dzS1zYHq3s3oh4P78J7myxdWBSa8y7s
-         TD5F8clLMBWSS1ZLwUnEC80SEY2vxP/eG5egZesXB3oTOocuQV8YKmYGSHFexTzy0lQA
-         x6c14L+ldRqF5Nd/eK3gLz7QSa2FI5PiEnU0D8seFKuPxVS/oBHGIha5cS/7p9Mouuqe
-         THcE6aPAzEfYI65zy/Ffx4s5unLOIJsNqQTlboU+HHBE1Grx2Ouxkr8TIdBtuUd2PCjM
-         4f0tdzFCeGgvCPpfNRoGlgdhQY/+lGA6IoNjql+Ks0i2xqgQYonpZV09sQOuXW/qsynV
-         NnqA==
+        Wed, 6 May 2020 11:42:18 -0400
+Received: by mail-pg1-f194.google.com with SMTP id q124so933677pgq.13;
+        Wed, 06 May 2020 08:42:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/4Bf7uYJizHHCHu/IYW7D03zmrwhqK6qEQ4Buf+txbw=;
-        b=snOQJvCxRngpebz6HC0Kjk20I6iK1mEENBfM+7I0Xv/ZOP3lbGcEdUM6kv850bBhRe
-         wHIMNFK3G8ZaQJQuxLUqWWtVhTCmnyt2Pu/mL0S+UUMOgZLpun3p4hXni5rGP7JoQMx+
-         gXexA82wr1Vn+/vaZNabk8RR3Zx2+iHLig8q8STf/lFqxIfkEczJCE8WhM0EG4NfOKkW
-         d6R174ZVXwiWbhPsstmLxLa2/noMcxCcVhfMaVP9G7ZD8pxQwtXRGO8hq/50Z+tqtCbr
-         y6AK4JT8uL/y8eaHh0fA2rE8qTCUOLkcxPNKXKDjb84IGMRrIJMTezD4rxxy+56TKORm
-         sgSA==
-X-Gm-Message-State: AGi0Puay2YBpaucN9nnfhh0zgdkwwXKX0n0qEuc4d9XhGHzjtFsaJNyP
-        wmLj9RWaTJzwTY+6rbzr5gk=
-X-Google-Smtp-Source: APiQypII0o5v6UpXX6yiU/YBF8h71UF/2SWu7x/H3RFRnCZA7CNKMbDeTyEgZQ762wQ2tp22LhtsWQ==
-X-Received: by 2002:a9d:569:: with SMTP id 96mr6710053otw.59.1588779710938;
-        Wed, 06 May 2020 08:41:50 -0700 (PDT)
-Received: from ubuntu-s3-xlarge-x86 ([2604:1380:4111:8b00::1])
-        by smtp.gmail.com with ESMTPSA id k19sm655259oof.33.2020.05.06.08.41.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 May 2020 08:41:50 -0700 (PDT)
-Date:   Wed, 6 May 2020 08:41:48 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Sedat Dilek <sedat.dilek@gmail.com>, stable@vger.kernel.org,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        "kernelci . org bot" <bot@kernelci.org>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Ilie Halip <ilie.halip@gmail.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Marco Elver <elver@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] x86: bitops: fix build regression
-Message-ID: <20200506154148.GC1213645@ubuntu-s3-xlarge-x86>
-References: <20200505174423.199985-1-ndesaulniers@google.com>
- <20200506043028.GA663805@ubuntu-s3-xlarge-x86>
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=p8vqcBfi44I5OkhEhqufSEM+gjE4sBS2tKiTaMtMmIg=;
+        b=l6dtqCaxNPJ3b85Fwb9MsTUMECg8FOZ9nmMFDey2UjSPnXAg3cmSbG+21DxUN8LX/J
+         Pzcdt+X4CBtSIcnDBHhxmwowzPO2iRbqOzEdODtp/LO0YUjRlJvw64pX/O1K2ws20AmC
+         bJdIrAZlXLOnW7r3pWllTU/Sn1eFCjAgeZSzNO+n/ZDof953JorRXL4Kz7L2hbBDKZRD
+         ZEj65/Gy1ZjC8Bk9qL2IbSvtwm9MnXRtzuzC1uS2s0XDsb1ynb9xvy5MfJLWUIs0YyTt
+         aSjzje1rrhybcLRrot4pRa8+4GrMQjUwYAOzE6Wi+H2jwWHvS8I+B2ZB87tmeTnN+5F7
+         U8Cg==
+X-Gm-Message-State: AGi0PuYbYopkUFsuLLjQrjfQlPKiE07jObXf6Nf9SDhqCFEhqn8tawLe
+        LIm293VeICmv1ejClpC73xuKXEJ5uqA=
+X-Google-Smtp-Source: APiQypIioMtLWPemCQ+EgNryu+/+fz+7elzisVRIO8OFNX+4uBRFu5FRxuWq3TM9Bc8jdLL5n6rjeQ==
+X-Received: by 2002:aa7:8d93:: with SMTP id i19mr8940039pfr.112.1588779736000;
+        Wed, 06 May 2020 08:42:16 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:901f:c4d7:864c:c3a5? ([2601:647:4000:d7:901f:c4d7:864c:c3a5])
+        by smtp.gmail.com with ESMTPSA id gd17sm5157195pjb.21.2020.05.06.08.42.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 May 2020 08:42:14 -0700 (PDT)
+Subject: Re: [PATCH -next] scsi: qla2xxx: Use PTR_ERR_OR_ZERO() to simplify
+ code
+To:     Samuel Zou <zou_wei@huawei.com>, njavali@marvell.com,
+        GR-QLogic-Storage-Upstream@marvell.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1588751650-37186-1-git-send-email-zou_wei@huawei.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
+ mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
+ LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
+ fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
+ AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
+ 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
+ AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
+ igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
+ Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
+ jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
+ macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
+ CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
+ RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
+ PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
+ eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
+ lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
+ T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
+ ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
+ CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
+ oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
+ //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
+ mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
+ goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
+Message-ID: <5693adb3-8f5c-efcc-8e63-38a8311c90b9@acm.org>
+Date:   Wed, 6 May 2020 08:42:12 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200506043028.GA663805@ubuntu-s3-xlarge-x86>
+In-Reply-To: <1588751650-37186-1-git-send-email-zou_wei@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 05, 2020 at 09:30:28PM -0700, Nathan Chancellor wrote:
-> On Tue, May 05, 2020 at 10:44:22AM -0700, Nick Desaulniers wrote:
-> > From: Sedat Dilek <sedat.dilek@gmail.com>
-> > 
-> > It turns out that if your config tickles __builtin_constant_p via
-> > differences in choices to inline or not, this now produces invalid
-> > assembly:
-> > 
-> > $ cat foo.c
-> > long a(long b, long c) {
-> >   asm("orb\t%1, %0" : "+q"(c): "r"(b));
-> >   return c;
-> > }
-> > $ gcc foo.c
-> > foo.c: Assembler messages:
-> > foo.c:2: Error: `%rax' not allowed with `orb'
-> > 
-> > The "q" constraint only has meanting on -m32 otherwise is treated as
-> > "r".
-> > 
-> > This is easily reproducible via Clang+CONFIG_STAGING=y+CONFIG_VT6656=m,
-> > or Clang+allyesconfig.
+On 2020-05-06 00:54, Samuel Zou wrote:
+> Fixes coccicheck warning:
 > 
-> For what it's worth, I don't see this with allyesconfig.
+> drivers/scsi/qla2xxx/tcm_qla2xxx.c:1488:1-3: WARNING: PTR_ERR_OR_ZERO can be used
 > 
-> > Keep the masking operation to appease sparse (`make C=1`), add back the
-> > cast in order to properly select the proper 8b register alias.
-> > 
-> >  [Nick: reworded]
-> > 
-> > Cc: stable@vger.kernel.org
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Samuel Zou <zou_wei@huawei.com>
+> ---
+>  drivers/scsi/qla2xxx/tcm_qla2xxx.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
 > 
-> The offending commit was added in 5.7-rc1; we shouldn't need to
-> Cc stable since this should be picked up as an -rc fix.
-> 
-> > Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>
-> > Link: https://github.com/ClangBuiltLinux/linux/issues/961
-> > Link: https://lore.kernel.org/lkml/20200504193524.GA221287@google.com/
-> > Fixes: 1651e700664b4 ("x86: Fix bitops.h warning with a moved cast")
-> > Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
-> > Reported-by: kernelci.org bot <bot@kernelci.org>
-> > Suggested-by: Andy Shevchenko <andriy.shevchenko@intel.com>
-> > Suggested-by: Ilie Halip <ilie.halip@gmail.com>
-> 
-> Not to split hairs but this is Ilie's diff, he should probably be the
-> author with Sedat's Reported-by/Tested-by.
-> 
-> https://github.com/ClangBuiltLinux/linux/issues/961#issuecomment-608239458
-> 
-> But eh, it's all a team effort plus that can only happen with Ilie's
-> explicit consent for a Signed-off-by.
-> 
-> I am currently doing a set of builds with clang-11 with this patch on
-> top of 5.7-rc4 to make sure that all of the cases I have found work.
-> Once that is done, I'll comment back with a tag.
+> diff --git a/drivers/scsi/qla2xxx/tcm_qla2xxx.c b/drivers/scsi/qla2xxx/tcm_qla2xxx.c
+> index 1f0a185..7c4157e 100644
+> --- a/drivers/scsi/qla2xxx/tcm_qla2xxx.c
+> +++ b/drivers/scsi/qla2xxx/tcm_qla2xxx.c
+> @@ -1485,10 +1485,8 @@ static int tcm_qla2xxx_check_initiator_node_acl(
+>  				       sizeof(struct qla_tgt_cmd),
+>  				       TARGET_PROT_ALL, port_name,
+>  				       qlat_sess, tcm_qla2xxx_session_cb);
+> -	if (IS_ERR(se_sess))
+> -		return PTR_ERR(se_sess);
+>  
+> -	return 0;
+> +	return PTR_ERR_OR_ZERO(se_sess);
+>  }
 
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-Tested-by: Nathan Chancellor <natechancellor@gmail.com> # build
+Can the Hulk check that verifies where PTR_ERR_OR_ZERO() can be
+introduced be deactivated? I think this patch makes the code less
+readable instead of making it more readable.
 
-> > Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
-> > Signed-off-by: Sedat Dilek <sedat.dilek@gmail.com>
-> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> > ---
-> >  arch/x86/include/asm/bitops.h | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/arch/x86/include/asm/bitops.h b/arch/x86/include/asm/bitops.h
-> > index b392571c1f1d..139122e5b25b 100644
-> > --- a/arch/x86/include/asm/bitops.h
-> > +++ b/arch/x86/include/asm/bitops.h
-> > @@ -54,7 +54,7 @@ arch_set_bit(long nr, volatile unsigned long *addr)
-> >  	if (__builtin_constant_p(nr)) {
-> >  		asm volatile(LOCK_PREFIX "orb %1,%0"
-> >  			: CONST_MASK_ADDR(nr, addr)
-> > -			: "iq" (CONST_MASK(nr) & 0xff)
-> > +			: "iq" ((u8)(CONST_MASK(nr) & 0xff))
-> >  			: "memory");
-> >  	} else {
-> >  		asm volatile(LOCK_PREFIX __ASM_SIZE(bts) " %1,%0"
-> > @@ -74,7 +74,7 @@ arch_clear_bit(long nr, volatile unsigned long *addr)
-> >  	if (__builtin_constant_p(nr)) {
-> >  		asm volatile(LOCK_PREFIX "andb %1,%0"
-> >  			: CONST_MASK_ADDR(nr, addr)
-> > -			: "iq" (CONST_MASK(nr) ^ 0xff));
-> > +			: "iq" ((u8)(CONST_MASK(nr) ^ 0xff)));
-> >  	} else {
-> >  		asm volatile(LOCK_PREFIX __ASM_SIZE(btr) " %1,%0"
-> >  			: : RLONG_ADDR(addr), "Ir" (nr) : "memory");
-> > -- 
-> > 2.26.2.526.g744177e7f7-goog
-> > 
-> 
-> Cheers,
-> Nathan
+Thanks,
+
+Bart.
