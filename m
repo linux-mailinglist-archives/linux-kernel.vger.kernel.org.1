@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79DF41C6AFD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 10:10:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35DAA1C6B0F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 10:10:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728690AbgEFIJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 04:09:55 -0400
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:45667 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728664AbgEFIJv (ORCPT
+        id S1728706AbgEFIJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 04:09:59 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:46381 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728670AbgEFIJw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 04:09:51 -0400
+        Wed, 6 May 2020 04:09:52 -0400
 X-Originating-IP: 86.202.105.35
 Received: from localhost (lfbn-lyo-1-9-35.w86-202.abo.wanadoo.fr [86.202.105.35])
         (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 9E65CC0005;
-        Wed,  6 May 2020 08:09:48 +0000 (UTC)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 471DD240005;
+        Wed,  6 May 2020 08:09:50 +0000 (UTC)
 From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
 To:     Daniel Lezcano <daniel.lezcano@linaro.org>
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -25,9 +25,9 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         kamel.bouhara@bootlin.com, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: [PATCH v3 8/9] clocksource/drivers/timer-atmel-tcb: allow selecting first divider
-Date:   Wed,  6 May 2020 10:05:53 +0200
-Message-Id: <20200506080554.283177-9-alexandre.belloni@bootlin.com>
+Subject: [PATCH v3 9/9] clocksource/drivers/timer-atmel-tcb: add sama5d2 support
+Date:   Wed,  6 May 2020 10:05:54 +0200
+Message-Id: <20200506080554.283177-10-alexandre.belloni@bootlin.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200506080554.283177-1-alexandre.belloni@bootlin.com>
 References: <20200506080554.283177-1-alexandre.belloni@bootlin.com>
@@ -38,32 +38,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The divider selection algorithm never allowed to get index 0. It was also
-continuing to look for dividers, trying to find the slow clock selection.
-This is not necessary anymore.
+The first divisor for the sama5d2 is actually the gclk selector. Because
+the currently remaining divisors are fitting the use case, currently ensure
+it is skipped.
 
 Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 ---
- drivers/clocksource/timer-atmel-tcb.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/clocksource/timer-atmel-tcb.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/clocksource/timer-atmel-tcb.c b/drivers/clocksource/timer-atmel-tcb.c
-index 8fcd4d74c54b..ccb77b9cb489 100644
+index ccb77b9cb489..e373b02d509a 100644
 --- a/drivers/clocksource/timer-atmel-tcb.c
 +++ b/drivers/clocksource/timer-atmel-tcb.c
-@@ -432,10 +432,8 @@ static int __init tcb_clksrc_init(struct device_node *node)
+@@ -359,9 +359,15 @@ static struct atmel_tcb_config tcb_sam9x5_config = {
+ 	.counter_width = 32,
+ };
  
- 		tmp = rate / divisor;
- 		pr_debug("TC: %u / %-3u [%d] --> %u\n", rate, divisor, i, tmp);
--		if (best_divisor_idx > 0) {
--			if (tmp < 5 * 1000 * 1000)
--				continue;
--		}
-+		if ((best_divisor_idx >= 0) && (tmp < 5 * 1000 * 1000))
-+			break;
- 		divided_rate = tmp;
- 		best_divisor_idx = i;
- 	}
++static struct atmel_tcb_config tcb_sama5d2_config = {
++	.counter_width = 32,
++	.has_gclk = 1,
++};
++
+ static const struct of_device_id atmel_tcb_of_match[] = {
+ 	{ .compatible = "atmel,at91rm9200-tcb", .data = &tcb_rm9200_config, },
+ 	{ .compatible = "atmel,at91sam9x5-tcb", .data = &tcb_sam9x5_config, },
++	{ .compatible = "atmel,sama5d2-tcb", .data = &tcb_sama5d2_config, },
+ 	{ /* sentinel */ }
+ };
+ 
+@@ -426,7 +432,10 @@ static int __init tcb_clksrc_init(struct device_node *node)
+ 
+ 	/* How fast will we be counting?  Pick something over 5 MHz.  */
+ 	rate = (u32) clk_get_rate(t0_clk);
+-	for (i = 0; i < ARRAY_SIZE(atmel_tcb_divisors); i++) {
++	i = 0;
++	if (tc.tcb_config->has_gclk)
++		i = 1;
++	for (; i < ARRAY_SIZE(atmel_tcb_divisors); i++) {
+ 		unsigned divisor = atmel_tcb_divisors[i];
+ 		unsigned tmp;
+ 
 -- 
 2.26.2
 
