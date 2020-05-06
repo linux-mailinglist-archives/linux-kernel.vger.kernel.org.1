@@ -2,146 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E7F51C7A31
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 21:24:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 373B31C7A1D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 21:21:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728866AbgEFTYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 15:24:08 -0400
-Received: from node.akkea.ca ([192.155.83.177]:50628 "EHLO node.akkea.ca"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728772AbgEFTYG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 15:24:06 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by node.akkea.ca (Postfix) with ESMTP id 65B5E4E200C;
-        Wed,  6 May 2020 19:18:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akkea.ca; s=mail;
-        t=1588792706; bh=LHoulxi1vTiKQKmc4GVw+S12/3VEaL+Jud01OzrChlU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=jWuvWWHIIGzaT0qvMjH/2HdacRQlCU0aGAG3XWwW4cC60lZxoTlmwGxrn0ZDYwV2f
-         rS2MsrMBebv8GOjo/h4OSTiZiQXut5VIQPQWWeWxiiUrOmc/XsQUlxlrFSl5K2pGya
-         awNKgKrogmqhKocm7IvPTKvvbJfxeKqdOnW9b0I8=
-X-Virus-Scanned: Debian amavisd-new at mail.akkea.ca
-Received: from node.akkea.ca ([127.0.0.1])
-        by localhost (mail.akkea.ca [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 410gAoNv7bRR; Wed,  6 May 2020 19:18:26 +0000 (UTC)
-Received: from midas.localdomain (S0106788a2041785e.gv.shawcable.net [70.66.86.75])
-        by node.akkea.ca (Postfix) with ESMTPSA id BFB5E4E2003;
-        Wed,  6 May 2020 19:18:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akkea.ca; s=mail;
-        t=1588792706; bh=LHoulxi1vTiKQKmc4GVw+S12/3VEaL+Jud01OzrChlU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=jWuvWWHIIGzaT0qvMjH/2HdacRQlCU0aGAG3XWwW4cC60lZxoTlmwGxrn0ZDYwV2f
-         rS2MsrMBebv8GOjo/h4OSTiZiQXut5VIQPQWWeWxiiUrOmc/XsQUlxlrFSl5K2pGya
-         awNKgKrogmqhKocm7IvPTKvvbJfxeKqdOnW9b0I8=
-From:   Angus Ainslie <angus@akkea.ca>
-To:     angus@akkea.ca
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        id S1728492AbgEFTU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 15:20:56 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:33468 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727975AbgEFTUz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 15:20:55 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 92CE48030808;
+        Wed,  6 May 2020 19:20:52 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Wr0HOHLMXTqE; Wed,  6 May 2020 22:20:51 +0300 (MSK)
+Date:   Wed, 6 May 2020 22:20:49 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Sam Ravnborg <sam@ravnborg.org>
+CC:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Rob Herring <robh+dt@kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] dt-bindings: usb: ti,tps6598x: add dt binding doc
-Date:   Wed,  6 May 2020 12:17:18 -0700
-Message-Id: <20200506191718.2144752-3-angus@akkea.ca>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200506191718.2144752-1-angus@akkea.ca>
-References: <20200506191718.2144752-1-angus@akkea.ca>
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Arnd Bergmann <arnd@arndb.de>, <linux-mips@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>, Rob Herring <robh@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Mark Brown <broonie@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 03/20] dt-bindings: Add vendor prefix for Baikal
+ Electronics, JSC
+Message-ID: <20200506192049.bznhiwra5a43ao26@mobilestation>
+References: <20200306124807.3596F80307C2@mail.baikalelectronics.ru>
+ <20200506174238.15385-1-Sergey.Semin@baikalelectronics.ru>
+ <20200506174238.15385-4-Sergey.Semin@baikalelectronics.ru>
+ <20200506175553.GA7775@ravnborg.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200506175553.GA7775@ravnborg.org>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the tps6598x driver
+Hi Sam,
 
-Signed-off-by: Angus Ainslie <angus@akkea.ca>
----
- .../devicetree/bindings/usb/ti,tps6598x.yaml  | 75 +++++++++++++++++++
- 1 file changed, 75 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/usb/ti,tps6598x.yaml
+On Wed, May 06, 2020 at 07:55:53PM +0200, Sam Ravnborg wrote:
+> Hi Sergey.
+> 
+> On Wed, May 06, 2020 at 08:42:21PM +0300, Sergey.Semin@baikalelectronics.ru wrote:
+> > From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> > 
+> > Add "BAIKAL ELECTRONICS, JSC" to the list of devicetree vendor prefixes
+> > as "baikal".
+> > 
+> > Website: http://www.baikalelectronics.com
+> > 
+> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> > Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> > Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> > Cc: Paul Burton <paulburton@kernel.org>
+> > Cc: Ralf Baechle <ralf@linux-mips.org>
+> > Cc: Arnd Bergmann <arnd@arndb.de>
+> > Cc: linux-mips@vger.kernel.org
+> > Cc: linux-pm@vger.kernel.org
+> > 
+> > ---
+> > 
+> > Changelog v2:
+> > - Fix author and SoB emails mismatch.
+> 
+> > - Add 'baikal' vendor prefix instead of ambiguous 'be'.
+> Agree, much better.
+> 
+> > ---
+> >  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+> >  1 file changed, 2 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> > index d3891386d671..674c0d07c0ad 100644
+> > --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> > +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> > @@ -139,6 +139,8 @@ patternProperties:
+> >      description: Azoteq (Pty) Ltd
+> >    "^azw,.*":
+> >      description: Shenzhen AZW Technology Co., Ltd.
+> > +  "^baikal,.*":
+> > +    description: BAIKAL ELECTRONICS, JSC
+> Baikal do not use ALL UPPSECASE on their website for their name.
+> So please use same case use as they do themself.
+> 
 
-diff --git a/Documentation/devicetree/bindings/usb/ti,tps6598x.yaml b/Documentation/devicetree/bindings/usb/ti,tps6598x.yaml
-new file mode 100644
-index 000000000000..925db38aaf84
---- /dev/null
-+++ b/Documentation/devicetree/bindings/usb/ti,tps6598x.yaml
-@@ -0,0 +1,75 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/usb/ti,tps6598x.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: TI tps6598x driver
-+
-+maintainers:
-+  -
-+
-+properties:
-+  $nodename:
-+    pattern: '^usb-pd@.*'
-+
-+  compatible:
-+    oneOf:
-+      - enum:
-+        - ti,tps6598x
-+      - items:
-+        - const: ti,tps6598x
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  connector:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    typec_pd: usb-pd@3f {
-+      compatible = "ti,tps6598x";
-+      reg = <0x3f>;
-+      pinctrl-names = "default";
-+      pinctrl-0 = <&pinctrl_typec>, <&pinctrl_tcpc>;
-+      interrupt-parent = <&gpio1>;
-+      interrupts = <10 IRQ_TYPE_LEVEL_LOW>;
-+
-+      connector {
-+        compatible = "usb-c-connector";
-+        label = "USB-C";
-+        data-role = "dual";
-+
-+        ports {
-+          #address-cells = <1>;
-+          #size-cells = <0>;
-+
-+          port@0 {
-+            reg = <0>;
-+
-+            usb_con_hs: endpoint {
-+              remote-endpoint = <&typec_hs>;
-+            };
-+          };
-+
-+          port@1 {
-+            reg = <1>;
-+
-+            usb_con_ss: endpoint {
-+              remote-endpoint = <&typec_ss>;
-+            };
-+          };
-+        };
-+      };
-+    };
--- 
-2.25.1
+It's not like me can't be considered as part of them.) I discussed the
+upper-case and normal version with our managers half a year ago and we
+came up to use the upper-case version. From Russian legal point of view
+it's also the upper-cased version what counts. I don't really know why
+the site use different naming, but in the internal documents it's always
+as submitted. Anyway I asked this question one more time to our managers.
+If they say to use as you suggest, then I'll resend an update in v3
+patchset, if v3 doesn't get to be necessary I'll send a followup patch
+with fix.
 
+-Sergey
+
+> 
+> 	Sam
+> 
+> >    "^bananapi,.*":
+> >      description: BIPAI KEJI LIMITED
+> >    "^beacon,.*":
+> > -- 
+> > 2.25.1
