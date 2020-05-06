@@ -2,45 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71B581C7459
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:25:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D2621C7437
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:22:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729634AbgEFPXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 11:23:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38030 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729066AbgEFPXB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 11:23:01 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E3C5C21582;
-        Wed,  6 May 2020 15:22:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588778580;
-        bh=3poGCfoHv6RLLha8vGccUZROKWq5eBnytzRzET+Ssd4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CXT998eti5eWUvuxsbgcaCP35OWxFGXlHvTcR7T3W9ef3T/KYY1lzj9InLqN36m4W
-         /4vsgre181tKIVSRJ8FlJFP0rars9nU0+D940z9hJk2nV/5WAW6BOwPw+7C6soTuR7
-         XKJp1eaEk1Kh66mGyLafJjrJt2q50ZHwTIhUgrhg=
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-        Clark Williams <williams@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>, Jin Yao <yao.jin@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 05/91] perf stat: Zero all the 'ena' and 'run' array slot stats for interval mode
-Date:   Wed,  6 May 2020 12:21:08 -0300
-Message-Id: <20200506152234.21977-6-acme@kernel.org>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20200506152234.21977-1-acme@kernel.org>
-References: <20200506152234.21977-1-acme@kernel.org>
+        id S1729489AbgEFPVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 11:21:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729442AbgEFPVs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 11:21:48 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7CC1C061A41
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 08:21:48 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id f7so1132768pfa.9
+        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 08:21:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=KnDu3tZEBuDEdkah0E91muUvxOc37NwJBlrIsTXyDX4=;
+        b=SEOaL+ZTp6AU/8DsJmrVhdThhOeF+iFeYv4VY3pk/57OnoLmKbB6caoJgIgwJAfGS+
+         3F0kvKXV0zV8FWf5cpsy+Gco8hcIIxOJaeBJYQaj0Su0tQXMUxDF0I/1T3AGyIRM6teK
+         22CfJXAbVu596XkudelUD0YRb+ssyRiWUc7Sk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=KnDu3tZEBuDEdkah0E91muUvxOc37NwJBlrIsTXyDX4=;
+        b=lHstzrktiMDUJq3dOXC9O6bvmW6F67P8f0YdR7opcE1gMx2Lu/Qc4yt7lf8J/QxaiF
+         ykkaQQU/Y3EgkrD6cKyOfB+ubTNlYhvd0V/JH7IsI0oGYZcXwXkEo7a2e6zKAykCjuoR
+         avld0ia3xBX/5CwwuvSrK65FLKFzpEjx+gAK7mU7iXCQR7l2rrqcXe/U6z+SLILDI70z
+         /3CYIKjKerhixnHA91QSa73otmB907pnEk5xOROrg6JjsMpM5sMj+ry3t8Q78FyZlRFN
+         eoYiAMMEkx5eoyTjliyjr79uIHi/iWwfrSGt/MW6njXi8vFLWRgT/DOdzRf+9XbsGTKX
+         bdow==
+X-Gm-Message-State: AGi0PuYlzyWVdaSOG+r2Qe2SmAPiJLXy6ViCw0IQuf3dxCu/YoWuqcdX
+        KClDFnohsRDnZEdgFrWlOwiHmw==
+X-Google-Smtp-Source: APiQypIWSULl1oSen40Hk9tsVsH4QAL8lM3EbX1mpQ9nhUX5fAi4/jGssKYijSqyhBXKfx3iyjANtQ==
+X-Received: by 2002:aa7:808e:: with SMTP id v14mr8922923pff.168.1588778508246;
+        Wed, 06 May 2020 08:21:48 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id p1sm5360532pjf.15.2020.05.06.08.21.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 May 2020 08:21:45 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Luis Henriques <lhenriques@suse.com>
+Subject: [PATCH 05/10] pstore: Convert "records_list" locking to mutex
+Date:   Wed,  6 May 2020 08:21:09 -0700
+Message-Id: <20200506152114.50375-6-keescook@chromium.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200506152114.50375-1-keescook@chromium.org>
+References: <20200506152114.50375-1-keescook@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -48,48 +65,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jin Yao <yao.jin@linux.intel.com>
+The pstorefs internal list lock doesn't need to be a spinlock and will
+create problems when trying to access the list in the subsequent patch
+that will walk the pstorefs records during pstore_unregister(). Change
+this to a mutex to avoid may_sleep() warnings when unregistering devices.
 
-As the code comments in perf_stat_process_counter() say, we calculate
-counter's data every interval, and the display code shows ps->res_stats
-avg value. We need to zero the stats for interval mode.
-
-But the current code only zeros the res_stats[0], it doesn't zero the
-res_stats[1] and res_stats[2], which are for ena and run of counter.
-
-This patch zeros the whole res_stats[] for interval mode.
-
-Fixes: 51fd2df1e882 ("perf stat: Fix interval output values")
-Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Jin Yao <yao.jin@intel.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Kan Liang <kan.liang@linux.intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/20200409070755.17261-1-yao.jin@linux.intel.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- tools/perf/util/stat.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ fs/pstore/inode.c | 17 +++++++----------
+ 1 file changed, 7 insertions(+), 10 deletions(-)
 
-diff --git a/tools/perf/util/stat.c b/tools/perf/util/stat.c
-index 5f26137b8d60..242476eb808c 100644
---- a/tools/perf/util/stat.c
-+++ b/tools/perf/util/stat.c
-@@ -368,8 +368,10 @@ int perf_stat_process_counter(struct perf_stat_config *config,
- 	 * interval mode, otherwise overall avg running
- 	 * averages will be shown for each interval.
- 	 */
--	if (config->interval)
--		init_stats(ps->res_stats);
-+	if (config->interval) {
-+		for (i = 0; i < 3; i++)
-+			init_stats(&ps->res_stats[i]);
-+	}
+diff --git a/fs/pstore/inode.c b/fs/pstore/inode.c
+index 5cc09cb315f9..92ebcc75434f 100644
+--- a/fs/pstore/inode.c
++++ b/fs/pstore/inode.c
+@@ -22,14 +22,13 @@
+ #include <linux/magic.h>
+ #include <linux/pstore.h>
+ #include <linux/slab.h>
+-#include <linux/spinlock.h>
+ #include <linux/uaccess.h>
  
- 	if (counter->per_pkg)
- 		zero_per_pkg(counter);
+ #include "internal.h"
+ 
+ #define	PSTORE_NAMELEN	64
+ 
+-static DEFINE_SPINLOCK(records_list_lock);
++static DEFINE_MUTEX(records_list_lock);
+ static LIST_HEAD(records_list);
+ 
+ struct pstore_private {
+@@ -192,13 +191,12 @@ static int pstore_unlink(struct inode *dir, struct dentry *dentry)
+ static void pstore_evict_inode(struct inode *inode)
+ {
+ 	struct pstore_private	*p = inode->i_private;
+-	unsigned long		flags;
+ 
+ 	clear_inode(inode);
+ 	if (p) {
+-		spin_lock_irqsave(&records_list_lock, flags);
++		mutex_lock(&records_list_lock);
+ 		list_del(&p->list);
+-		spin_unlock_irqrestore(&records_list_lock, flags);
++		mutex_unlock(&records_list_lock);
+ 		free_pstore_private(p);
+ 	}
+ }
+@@ -297,12 +295,11 @@ int pstore_mkfile(struct dentry *root, struct pstore_record *record)
+ 	int			rc = 0;
+ 	char			name[PSTORE_NAMELEN];
+ 	struct pstore_private	*private, *pos;
+-	unsigned long		flags;
+ 	size_t			size = record->size + record->ecc_notice_size;
+ 
+ 	WARN_ON(!inode_is_locked(d_inode(root)));
+ 
+-	spin_lock_irqsave(&records_list_lock, flags);
++	mutex_lock(&records_list_lock);
+ 	list_for_each_entry(pos, &records_list, list) {
+ 		if (pos->record->type == record->type &&
+ 		    pos->record->id == record->id &&
+@@ -311,7 +308,7 @@ int pstore_mkfile(struct dentry *root, struct pstore_record *record)
+ 			break;
+ 		}
+ 	}
+-	spin_unlock_irqrestore(&records_list_lock, flags);
++	mutex_unlock(&records_list_lock);
+ 	if (rc)
+ 		return rc;
+ 
+@@ -343,9 +340,9 @@ int pstore_mkfile(struct dentry *root, struct pstore_record *record)
+ 
+ 	d_add(dentry, inode);
+ 
+-	spin_lock_irqsave(&records_list_lock, flags);
++	mutex_lock(&records_list_lock);
+ 	list_add(&private->list, &records_list);
+-	spin_unlock_irqrestore(&records_list_lock, flags);
++	mutex_unlock(&records_list_lock);
+ 
+ 	return 0;
+ 
 -- 
-2.21.1
+2.20.1
 
