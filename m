@@ -2,141 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBFF71C7704
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 18:49:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B9CF1C7716
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 18:50:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730654AbgEFQtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 12:49:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730590AbgEFQsy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 12:48:54 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB1E8C061A0F
-        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 09:48:54 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id 145so1260925pfw.13
-        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 09:48:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fYzSetl93/pxTqOYZg3cigxftxW+mQd4kGIUi5KwOak=;
-        b=FqU4WoJo+MTUD/KuwTuWbIi1/OIw/pyW/WVA3Ta5gFizuevTaucdpaWlqWdZDC9QV6
-         Uorc0KUybzJHP7y6KidDbMyV9jl06Gfnwau4aly8fKI+HxFCl83TnxCUGWU0/hqTcLgu
-         N7q5IMxBj3G46TivSejtqD3BWfgDnl1nI87HgXKhPaR8Hr2LjN9pSOMiPXFRDxqsZ/hV
-         Y9uZ8BvvNgw/D9qAR/YVbLs7kk2JERu2M8rAD3laOXlVSI0Yk7OKy6m08Zx/JqL6XEnT
-         C+wFEmlhWEye70V+mnCiPbFyRxBhZEqhLIMcsJYySOzmnm4+DURTY85OM7web784lVyb
-         NK9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fYzSetl93/pxTqOYZg3cigxftxW+mQd4kGIUi5KwOak=;
-        b=aZHT+RD5dyO79dBdv+OdbAZSmrQ5KefIVWRkO1VCvZP8Rk1XUSCKE3rreb+CruzTpe
-         s4v8fCLixiPjcQePEswfpStVQnR/e7TNBUdhgLt7iX6J40sXmUt4sTm+ALgbnuUHnrGQ
-         IPe/w1bnu40/LZ/EUYWbfJ9/xMtZ7Mp+WtqnEvzxsVcAX+DYEqfu9o6kIHnPQDEOcHz6
-         in2WeT8lbhfC9kEOh3e7h5BCtqgi6OhAFoRyv6ZaKYukb3XqJ4pq7sx/C+sdyY0SauUQ
-         ex2EbbCbOI1UB8KbBleY2LNmN3VjbuQRzs3qjk32NJSSPFWW87ZWeftxg00weZlM0wwV
-         pc1g==
-X-Gm-Message-State: AGi0PuZfIRkO9dzFbkirdpXpJg3eeABIaEX7TXXELtFDJigA2SE8zceV
-        CJjhJdtOFq+eE/pNxLCpRwsc/Xq/jegmWLjv0iK5u0+3
-X-Google-Smtp-Source: APiQypJPuB5aNYxOypntRL79UjBg9Im7SyOd5hvAG2g0VRMfZ0uw63UR2tZW30r3WUcvW1I8D7suUJE2CsbMOQO/kZA=
-X-Received: by 2002:aa7:81cf:: with SMTP id c15mr9185836pfn.211.1588783733947;
- Wed, 06 May 2020 09:48:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <202005051617.F9B32B5526@keescook> <20200506001453.764332-1-Jason@zx2c4.com>
- <202005051953.AF54DA4@keescook> <20200506035351.GA599026@ubuntu-s3-xlarge-x86>
-In-Reply-To: <20200506035351.GA599026@ubuntu-s3-xlarge-x86>
-From:   George Burgess <gbiv@google.com>
-Date:   Wed, 6 May 2020 09:48:17 -0700
-Message-ID: <CA+rzOEmt8MUiXZcN7LPz3yedteHodxLN20L1UPtb2qXKeuunrw@mail.gmail.com>
-Subject: Re: [PATCH v2] security: disable FORTIFY_SOURCE on clang
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        arnd@arndb.de, Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1730528AbgEFQsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 12:48:40 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:2642 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730430AbgEFQsT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 12:48:19 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 49HMwc1lg8z9v4kL;
+        Wed,  6 May 2020 18:48:16 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id jtASpwUJimnB; Wed,  6 May 2020 18:48:16 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 49HMwc0szKz9v4kF;
+        Wed,  6 May 2020 18:48:16 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id D32498B7C5;
+        Wed,  6 May 2020 18:48:17 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id kaieKq_lwJck; Wed,  6 May 2020 18:48:17 +0200 (CEST)
+Received: from localhost.localdomain (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 878DD8B7C3;
+        Wed,  6 May 2020 18:48:17 +0200 (CEST)
+Received: by localhost.localdomain (Postfix, from userid 0)
+        id 564C465911; Wed,  6 May 2020 16:48:17 +0000 (UTC)
+Message-Id: <6dec030615efb66f937d05496afe5626549d2cdf.1588783498.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <cover.1588783498.git.christophe.leroy@csgroup.eu>
+References: <cover.1588783498.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v2 12/45] powerpc/ptdump: Properly handle non standard page
+ size
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Wed,  6 May 2020 16:48:17 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I took a bit to poke Clang here. Building an arbitrary file with
-`CONFIG_FORTIFY_SOURCE=y`, none of the functions in this range
-https://github.com/ClangBuiltLinux/linux/blob/0bee0cece/include/linux/string.h#L274-L468
-have FORTIFY'ed definitions emitted by clang, i.e., the added FORTIFY checks
-aren't helping. Happy to check other functions elsewhere if they exist,
-but given that this entire block seems to be a functional nop...
+In order to properly display information regardless of the page size,
+it is necessary to take into account real page size.
 
-Reviewed-by: George Burgess IV <gbiv@google.com>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Fixes: cabe8138b23c ("powerpc: dump as a single line areas mapping a single physical page.")
+Cc: stable@vger.kernel.org
+---
+ arch/powerpc/mm/ptdump/ptdump.c | 22 +++++++++++++---------
+ 1 file changed, 13 insertions(+), 9 deletions(-)
 
+diff --git a/arch/powerpc/mm/ptdump/ptdump.c b/arch/powerpc/mm/ptdump/ptdump.c
+index 1f97668853e3..64434b66f240 100644
+--- a/arch/powerpc/mm/ptdump/ptdump.c
++++ b/arch/powerpc/mm/ptdump/ptdump.c
+@@ -60,6 +60,7 @@ struct pg_state {
+ 	unsigned long start_address;
+ 	unsigned long start_pa;
+ 	unsigned long last_pa;
++	unsigned long page_size;
+ 	unsigned int level;
+ 	u64 current_flags;
+ 	bool check_wx;
+@@ -168,9 +169,9 @@ static void dump_addr(struct pg_state *st, unsigned long addr)
+ #endif
+ 
+ 	pt_dump_seq_printf(st->seq, REG "-" REG " ", st->start_address, addr - 1);
+-	if (st->start_pa == st->last_pa && st->start_address + PAGE_SIZE != addr) {
++	if (st->start_pa == st->last_pa && st->start_address + st->page_size != addr) {
+ 		pt_dump_seq_printf(st->seq, "[" REG "]", st->start_pa);
+-		delta = PAGE_SIZE >> 10;
++		delta = st->page_size >> 10;
+ 	} else {
+ 		pt_dump_seq_printf(st->seq, " " REG " ", st->start_pa);
+ 		delta = (addr - st->start_address) >> 10;
+@@ -195,10 +196,11 @@ static void note_prot_wx(struct pg_state *st, unsigned long addr)
+ }
+ 
+ static void note_page(struct pg_state *st, unsigned long addr,
+-	       unsigned int level, u64 val)
++	       unsigned int level, u64 val, int shift)
+ {
+ 	u64 flag = val & pg_level[level].mask;
+ 	u64 pa = val & PTE_RPN_MASK;
++	unsigned long page_size = 1 << shift;
+ 
+ 	/* At first no level is set */
+ 	if (!st->level) {
+@@ -207,6 +209,7 @@ static void note_page(struct pg_state *st, unsigned long addr,
+ 		st->start_address = addr;
+ 		st->start_pa = pa;
+ 		st->last_pa = pa;
++		st->page_size = page_size;
+ 		pt_dump_seq_printf(st->seq, "---[ %s ]---\n", st->marker->name);
+ 	/*
+ 	 * Dump the section of virtual memory when:
+@@ -218,7 +221,7 @@ static void note_page(struct pg_state *st, unsigned long addr,
+ 	 */
+ 	} else if (flag != st->current_flags || level != st->level ||
+ 		   addr >= st->marker[1].start_address ||
+-		   (pa != st->last_pa + PAGE_SIZE &&
++		   (pa != st->last_pa + st->page_size &&
+ 		    (pa != st->start_pa || st->start_pa != st->last_pa))) {
+ 
+ 		/* Check the PTE flags */
+@@ -246,6 +249,7 @@ static void note_page(struct pg_state *st, unsigned long addr,
+ 		st->start_address = addr;
+ 		st->start_pa = pa;
+ 		st->last_pa = pa;
++		st->page_size = page_size;
+ 		st->current_flags = flag;
+ 		st->level = level;
+ 	} else {
+@@ -261,7 +265,7 @@ static void walk_pte(struct pg_state *st, pmd_t *pmd, unsigned long start)
+ 
+ 	for (i = 0; i < PTRS_PER_PTE; i++, pte++) {
+ 		addr = start + i * PAGE_SIZE;
+-		note_page(st, addr, 4, pte_val(*pte));
++		note_page(st, addr, 4, pte_val(*pte), PAGE_SHIFT);
+ 
+ 	}
+ }
+@@ -278,7 +282,7 @@ static void walk_pmd(struct pg_state *st, pud_t *pud, unsigned long start)
+ 			/* pmd exists */
+ 			walk_pte(st, pmd, addr);
+ 		else
+-			note_page(st, addr, 3, pmd_val(*pmd));
++			note_page(st, addr, 3, pmd_val(*pmd), PTE_SHIFT);
+ 	}
+ }
+ 
+@@ -294,7 +298,7 @@ static void walk_pud(struct pg_state *st, pgd_t *pgd, unsigned long start)
+ 			/* pud exists */
+ 			walk_pmd(st, pud, addr);
+ 		else
+-			note_page(st, addr, 2, pud_val(*pud));
++			note_page(st, addr, 2, pud_val(*pud), PMD_SHIFT);
+ 	}
+ }
+ 
+@@ -313,7 +317,7 @@ static void walk_pagetables(struct pg_state *st)
+ 			/* pgd exists */
+ 			walk_pud(st, pgd, addr);
+ 		else
+-			note_page(st, addr, 1, pgd_val(*pgd));
++			note_page(st, addr, 1, pgd_val(*pgd), PUD_SHIFT);
+ 	}
+ }
+ 
+@@ -368,7 +372,7 @@ static int ptdump_show(struct seq_file *m, void *v)
+ 
+ 	/* Traverse kernel page tables */
+ 	walk_pagetables(&st);
+-	note_page(&st, 0, 0, 0);
++	note_page(&st, 0, 0, 0, 0);
+ 	return 0;
+ }
+ 
+-- 
+2.25.0
 
-On Tue, May 5, 2020 at 8:53 PM Nathan Chancellor
-<natechancellor@gmail.com> wrote:
->
-> On Tue, May 05, 2020 at 07:54:09PM -0700, Kees Cook wrote:
-> > On Tue, May 05, 2020 at 06:14:53PM -0600, Jason A. Donenfeld wrote:
-> > > clang-10 has a broken optimization stage that doesn't allow the
-> > > compiler to prove at compile time that certain memcpys are within
-> > > bounds, and thus the outline memcpy is always called, resulting in
-> > > horrific performance, and in some cases, excessive stack frame growth.
-> > > Here's a simple reproducer:
-> > >
-> > >     typedef unsigned long size_t;
-> > >     void *c(void *dest, const void *src, size_t n) __asm__("memcpy");
-> > >     extern inline __attribute__((gnu_inline)) void *memcpy(void *dest, const void *src, size_t n) { return c(dest, src, n); }
-> > >     void blah(char *a)
-> > >     {
-> > >       unsigned long long b[10], c[10];
-> > >       int i;
-> > >
-> > >       memcpy(b, a, sizeof(b));
-> > >       for (i = 0; i < 10; ++i)
-> > >         c[i] = b[i] ^ b[9 - i];
-> > >       for (i = 0; i < 10; ++i)
-> > >         b[i] = c[i] ^ a[i];
-> > >       memcpy(a, b, sizeof(b));
-> > >     }
-> > >
-> > > Compile this with clang-9 and clang-10 and observe:
-> > >
-> > > zx2c4@thinkpad /tmp/curve25519-hacl64-stack-frame-size-test $ clang-10 -Wframe-larger-than=0 -O3 -c b.c -o c10.o
-> > > b.c:5:6: warning: stack frame size of 104 bytes in function 'blah' [-Wframe-larger-than=]
-> > > void blah(char *a)
-> > >      ^
-> > > 1 warning generated.
-> > > zx2c4@thinkpad /tmp/curve25519-hacl64-stack-frame-size-test $ clang-9 -Wframe-larger-than=0 -O3 -c b.c -o c9.o
-> > >
-> > > Looking at the disassembly of c10.o and c9.o, one can see that c9.o is
-> > > properly optimized in the obvious way one would expect, while c10.o has
-> > > blown up and includes extern calls to memcpy.
-> > >
-> > > But actually, for versions of clang earlier than 10, fortify source
-> > > mostly does nothing. So, between being broken and doing nothing, it
-> > > probably doesn't make sense to pretend to offer this option. So, this
-> > > commit just disables it entirely when compiling with clang.
-> > >
-> > > Cc: Arnd Bergmann <arnd@arndb.de>
-> > > Cc: LKML <linux-kernel@vger.kernel.org>
-> > > Cc: clang-built-linux <clang-built-linux@googlegroups.com>
-> > > Cc: Kees Cook <keescook@chromium.org>
-> > > Cc: George Burgess <gbiv@google.com>
-> > > Cc: Nick Desaulniers <ndesaulniers@google.com>
-> > > Link: https://bugs.llvm.org/show_bug.cgi?id=45802
-> > > Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
-> >
-> > Grudgingly,
-> >
-> > Reviewed-by: Kees Cook <keescook@chromium.org>
-> >
-> > --
-> > Kees Cook
-> >
->
-> I feel like you should finish your investigation into how broken this
-> actually is before we give it the hammer like this but if it is going
-> in regardless...
->
-> Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
