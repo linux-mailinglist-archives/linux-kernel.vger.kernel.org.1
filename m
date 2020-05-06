@@ -2,108 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AB0E1C7545
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:46:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BC8B1C7553
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729669AbgEFPqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 11:46:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729148AbgEFPqP (ORCPT
+        id S1729477AbgEFPuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 11:50:00 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:35412 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729340AbgEFPuA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 11:46:15 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6058C061A10
-        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 08:46:13 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id c18so2194757ile.5
-        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 08:46:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QT2YN6oqKqg6700ugZaaaxIxPh7KJTUan3y27PnGKts=;
-        b=J/GhKerOoarXIYXI3Rx+JWkjRs7CCOiRPgY+0225MXwMQMVB0it64dmgW6lpUI5o0Q
-         yH6/E22JHPpFY7NS7CnEvTyK9tFqq1yV9g6N4rAbwlqaUOry02ETNNre4XdxElRL19F2
-         pNHdP5k4fWMSt7askz6QOiDDWXSO/VoIe0Fh0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QT2YN6oqKqg6700ugZaaaxIxPh7KJTUan3y27PnGKts=;
-        b=n/yDQ0AQTh3RQ7cY/++6QGES2AmsFvIqQnL7WoPfMtuYf8KXngYpGEGPFsbgibi/NJ
-         vfq3NFewl2S74oG/U8n2prOE4+fftqs3+eObq60Eh/mkkGrNDOevv6nb2hpj8iXMpUPR
-         Ddn3Wk/b8eOIjzQTzG7ta7+T9ztNBNaRzkTqWHavVcXymZiyuZMCdo3fMXGkwwSy4XXi
-         iHjUavifucuLSGOVhe0AVF0KJ0/Qq2ZyK6vkllPXjvET/Jr6ml9lm00f/jTDQcbfo6Cg
-         FdJcItn+un5RTiQmdGUZatazWzBCbjwxZ/GVQ2sg37z1p6w2KQxfcqYZNTmWA/CGiTZ0
-         +7YA==
-X-Gm-Message-State: AGi0Pua00LNUkdHOw8t+g6gYKxAfQ+EgILh2gQhPgD00K/9zvfD9HjDP
-        hvMbrbxmAhH9t0EcI/64ZP8G1w==
-X-Google-Smtp-Source: APiQypIkBH8t6x3OXeefHkp9yWiD5BTjf+mpTuKXbtUT2nXa+csoEMlMwpIi8Fir10PaPz6LZpH1Cg==
-X-Received: by 2002:a92:1949:: with SMTP id e9mr9877680ilm.106.1588779973174;
-        Wed, 06 May 2020 08:46:13 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id t1sm1208096iln.4.2020.05.06.08.46.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 May 2020 08:46:11 -0700 (PDT)
-Subject: Re: [PATCH] selftests/ftrace: mark irqsoff_tracer.tc test as
- unresolved if the test module does not exist
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Po-Hsu Lin <po-hsu.lin@canonical.com>
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        shuah <shuah@kernel.org>, mingo@redhat.com,
-        Masami Hiramatsu <mhiramat@kernel.org>, joel@joelfernandes.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20200505101445.27063-1-po-hsu.lin@canonical.com>
- <20200505090912.7114f420@gandalf.local.home>
- <CAMy_GT8r8H21Ly3N5VFkiPi0qUCkPCvy8SU3Ns2vesaS8xvffQ@mail.gmail.com>
- <20200506114351.1b45e82f@gandalf.local.home>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <ac9c5f4a-3288-0f6a-dbb7-1b7dcd0c7a87@linuxfoundation.org>
-Date:   Wed, 6 May 2020 09:46:10 -0600
+        Wed, 6 May 2020 11:50:00 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 046Flnco076239;
+        Wed, 6 May 2020 15:48:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=R6Jr3ckmzUF/i0gaJhqPnI4DJl+xMsIk8W2RRjXtnNk=;
+ b=WMSBNI+QkBZdJiYl7ybSGH3yC6BareJGRXZEzE/iXGW6HStX1wEzAHkq9gEmkCgCzUt8
+ tVzP5bWIUgcSjgVlt7cx983QgO3uWmAeTrmkQSTgNKx5NRsbodu1RkfgXIp7QSYLSH9U
+ 4nrf6sY9B1qEfxFtBdlj9aUCb9SCPx714i0u7YoWS7j3r4xJBG8/Z1axlDGUHQYYJJDf
+ 8QQYc/mXx/WBGkL+ld+Q8PruK8T8L3AhL9jbBPJhznMwFEscs6Ffr1uCfAOHyQJCePdn
+ 6eUziPyG7S3DkmtiW4iLlSoTBUO2lCHZvwUpgR1PKUgYPnrUKTfAX0Ue/unv+7iGoeKt eQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 30s1gnb114-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 06 May 2020 15:48:53 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 046FfTQq170371;
+        Wed, 6 May 2020 15:48:52 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 30sjnjuxem-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 06 May 2020 15:48:52 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 046FmnRD018410;
+        Wed, 6 May 2020 15:48:49 GMT
+Received: from linux-1.home (/10.175.10.30)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 06 May 2020 08:48:49 -0700
+Subject: Re: [patch V4 part 1 16/36] kprobes: Support __kprobes blacklist in
+ modules
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>
+References: <20200505131602.633487962@linutronix.de>
+ <20200505134059.678201813@linutronix.de>
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+Message-ID: <98d22df9-a96b-0217-6be1-78fcf19f9d3f@oracle.com>
+Date:   Wed, 6 May 2020 17:47:36 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <20200506114351.1b45e82f@gandalf.local.home>
+In-Reply-To: <20200505134059.678201813@linutronix.de>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9613 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 adultscore=0 phishscore=0
+ mlxlogscore=999 bulkscore=0 malwarescore=0 spamscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005060126
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9613 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 mlxscore=0
+ spamscore=0 clxscore=1015 priorityscore=1501 bulkscore=0 phishscore=0
+ impostorscore=0 malwarescore=0 lowpriorityscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005060126
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/6/20 9:43 AM, Steven Rostedt wrote:
-> On Wed, 6 May 2020 09:46:21 +0800
-> Po-Hsu Lin <po-hsu.lin@canonical.com> wrote:
-> 
->> On Tue, May 5, 2020 at 9:09 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->>>
->>>
->>> You keep forgetting to Cc Shuah's other email.
->> Thanks!
->> I got the recipients list from the get_mainter.pl.
-> 
-> Hmm.
-> 
-> Seems like that is what get_maintainer.pl does:
-> 
-> Steven Rostedt <rostedt@goodmis.org> (maintainer:TRACING)
-> Ingo Molnar <mingo@redhat.com> (maintainer:TRACING)
-> Shuah Khan <shuah@kernel.org> (maintainer:KERNEL SELFTEST FRAMEWORK)
-> linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK)
-> linux-kernel@vger.kernel.org (open list)
-> 
-> And looking at the code, it appears it will only take the first email
-> address found in the file.
-> 
-> Shuah, if you prefer the linuxfoundation.org email, you need to update
-> MAINTAINERS file to have that one first.
-> 
 
-When I updated the MAINTAINERS file, I was hoping both addresses will be
-in the output. It doesn't appear to be working the way I assumed it
-would. I will send in patch to update to switch them.
+On 5/5/20 3:16 PM, Thomas Gleixner wrote:
+> From: Masami Hiramatsu <mhiramat@kernel.org>
+> 
+> Support __kprobes attribute for blacklist functions in modules.  The
+> __kprobes attribute functions are stored in .kprobes.text section.
+> 
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Link: https://lkml.kernel.org/r/158523418821.24735.15379873028352411526.stgit@devnote2
+> 
+> ---
+>   include/linux/module.h |    4 ++++
+>   kernel/kprobes.c       |   42 ++++++++++++++++++++++++++++++++++++++++++
+>   kernel/module.c        |    4 ++++
+>   3 files changed, 50 insertions(+)
 
-thanks,
--- Shuah
+Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
+
+alex.
+
+> --- a/include/linux/module.h
+> +++ b/include/linux/module.h
+> @@ -489,6 +489,10 @@ struct module {
+>   	unsigned int num_ftrace_callsites;
+>   	unsigned long *ftrace_callsites;
+>   #endif
+> +#ifdef CONFIG_KPROBES
+> +	void *kprobes_text_start;
+> +	unsigned int kprobes_text_size;
+> +#endif
+>   
+>   #ifdef CONFIG_LIVEPATCH
+>   	bool klp; /* Is this a livepatch module? */
+> --- a/kernel/kprobes.c
+> +++ b/kernel/kprobes.c
+> @@ -2179,6 +2179,19 @@ int kprobe_add_area_blacklist(unsigned l
+>   	return 0;
+>   }
+>   
+> +/* Remove all symbols in given area from kprobe blacklist */
+> +static void kprobe_remove_area_blacklist(unsigned long start, unsigned long end)
+> +{
+> +	struct kprobe_blacklist_entry *ent, *n;
+> +
+> +	list_for_each_entry_safe(ent, n, &kprobe_blacklist, list) {
+> +		if (ent->start_addr < start || ent->start_addr >= end)
+> +			continue;
+> +		list_del(&ent->list);
+> +		kfree(ent);
+> +	}
+> +}
+> +
+>   int __init __weak arch_populate_kprobe_blacklist(void)
+>   {
+>   	return 0;
+> @@ -2215,6 +2228,28 @@ static int __init populate_kprobe_blackl
+>   	return ret ? : arch_populate_kprobe_blacklist();
+>   }
+>   
+> +static void add_module_kprobe_blacklist(struct module *mod)
+> +{
+> +	unsigned long start, end;
+> +
+> +	start = (unsigned long)mod->kprobes_text_start;
+> +	if (start) {
+> +		end = start + mod->kprobes_text_size;
+> +		kprobe_add_area_blacklist(start, end);
+> +	}
+> +}
+> +
+> +static void remove_module_kprobe_blacklist(struct module *mod)
+> +{
+> +	unsigned long start, end;
+> +
+> +	start = (unsigned long)mod->kprobes_text_start;
+> +	if (start) {
+> +		end = start + mod->kprobes_text_size;
+> +		kprobe_remove_area_blacklist(start, end);
+> +	}
+> +}
+> +
+>   /* Module notifier call back, checking kprobes on the module */
+>   static int kprobes_module_callback(struct notifier_block *nb,
+>   				   unsigned long val, void *data)
+> @@ -2225,6 +2260,11 @@ static int kprobes_module_callback(struc
+>   	unsigned int i;
+>   	int checkcore = (val == MODULE_STATE_GOING);
+>   
+> +	if (val == MODULE_STATE_COMING) {
+> +		mutex_lock(&kprobe_mutex);
+> +		add_module_kprobe_blacklist(mod);
+> +		mutex_unlock(&kprobe_mutex);
+> +	}
+>   	if (val != MODULE_STATE_GOING && val != MODULE_STATE_LIVE)
+>   		return NOTIFY_DONE;
+>   
+> @@ -2255,6 +2295,8 @@ static int kprobes_module_callback(struc
+>   				kill_kprobe(p);
+>   			}
+>   	}
+> +	if (val == MODULE_STATE_GOING)
+> +		remove_module_kprobe_blacklist(mod);
+>   	mutex_unlock(&kprobe_mutex);
+>   	return NOTIFY_DONE;
+>   }
+> --- a/kernel/module.c
+> +++ b/kernel/module.c
+> @@ -3194,6 +3194,10 @@ static int find_module_sections(struct m
+>   					    sizeof(*mod->ei_funcs),
+>   					    &mod->num_ei_funcs);
+>   #endif
+> +#ifdef CONFIG_KPROBES
+> +	mod->kprobes_text_start = section_objs(info, ".kprobes.text", 1,
+> +						&mod->kprobes_text_size);
+> +#endif
+>   	mod->extable = section_objs(info, "__ex_table",
+>   				    sizeof(*mod->extable), &mod->num_exentries);
+>   
+> 
