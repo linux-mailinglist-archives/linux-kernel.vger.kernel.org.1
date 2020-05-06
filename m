@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AF5A1C74AE
+	by mail.lfdr.de (Postfix) with ESMTP id C75AA1C74AF
 	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:27:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730313AbgEFP1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 11:27:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50474 "EHLO mail.kernel.org"
+        id S1730325AbgEFP1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 11:27:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50634 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729717AbgEFP1L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 11:27:11 -0400
+        id S1729470AbgEFP1N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 11:27:13 -0400
 Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5842221835;
-        Wed,  6 May 2020 15:27:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D4C8821744;
+        Wed,  6 May 2020 15:27:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588778830;
-        bh=dXhCXXY2ZW+kWGma87ESoXkSdg8h8CDl5lv+yquUJqw=;
+        s=default; t=1588778832;
+        bh=UJP9UDgZosTOzGyCxhOJ49B9NFTN8ef3BH66WXZVCaU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vk+9/XCgGD5bgu6llKhfNe7DysODaZXiL62/BEjVXxCIOIsvKrtjcqLagrp8mzi2/
-         LLwtaJpxhJyjemuPH9/adHPTpSn+mzwj0bLl00XG6hINBegj+ktbnTyM1tNB3GaYQ5
-         uG3wbjduOGMg72DaRHunI6lQMVTmcfE6y3Zv75P8=
+        b=atSWk8nF16hHPpEJn3SaMvIQ+CbezRWLsmtpmZnw08dnVOdzbjhU7XUevIZlznO3I
+         ab5fQ7alSDGQ1UW0OBSElZPldd+XnBD73d3/BS+wIWK2PCF+uyOAyA4Kjex92tXK/Y
+         T2/+iYStLs5AqEK1JZrJQv4KH9h7WNkF/VmGjEU0=
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
 To:     Ingo Molnar <mingo@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>
@@ -31,9 +31,9 @@ Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
         linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         Adrian Hunter <adrian.hunter@intel.com>
-Subject: [PATCH 80/91] perf sched: Rename perf_evsel__*() operating on 'struct evsel *' to evsel__*()
-Date:   Wed,  6 May 2020 12:22:23 -0300
-Message-Id: <20200506152234.21977-81-acme@kernel.org>
+Subject: [PATCH 81/91] perf script: Rename perf_evsel__*() operating on 'struct evsel *' to evsel__*()
+Date:   Wed,  6 May 2020 12:22:24 -0300
+Message-Id: <20200506152234.21977-82-acme@kernel.org>
 X-Mailer: git-send-email 2.21.1
 In-Reply-To: <20200506152234.21977-1-acme@kernel.org>
 References: <20200506152234.21977-1-acme@kernel.org>
@@ -54,74 +54,135 @@ Cc: Jiri Olsa <jolsa@kernel.org>
 Cc: Namhyung Kim <namhyung@kernel.org>
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/perf/builtin-sched.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+ tools/perf/builtin-script.c | 53 +++++++++++++------------------------
+ 1 file changed, 19 insertions(+), 34 deletions(-)
 
-diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
-index b99398031131..459e4229945e 100644
---- a/tools/perf/builtin-sched.c
-+++ b/tools/perf/builtin-sched.c
-@@ -1848,7 +1848,7 @@ static inline void print_sched_time(unsigned long long nsecs, int width)
-  * returns runtime data for event, allocating memory for it the
-  * first time it is used.
-  */
--static struct evsel_runtime *perf_evsel__get_runtime(struct evsel *evsel)
-+static struct evsel_runtime *evsel__get_runtime(struct evsel *evsel)
- {
- 	struct evsel_runtime *r = evsel->priv;
+diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
+index fee56474377b..56d7bcd12671 100644
+--- a/tools/perf/builtin-script.c
++++ b/tools/perf/builtin-script.c
+@@ -351,10 +351,8 @@ static const char *output_field2str(enum perf_output_field field)
  
-@@ -1863,10 +1863,9 @@ static struct evsel_runtime *perf_evsel__get_runtime(struct evsel *evsel)
- /*
-  * save last time event was seen per cpu
-  */
--static void perf_evsel__save_time(struct evsel *evsel,
--				  u64 timestamp, u32 cpu)
-+static void evsel__save_time(struct evsel *evsel, u64 timestamp, u32 cpu)
- {
--	struct evsel_runtime *r = perf_evsel__get_runtime(evsel);
-+	struct evsel_runtime *r = evsel__get_runtime(evsel);
+ #define PRINT_FIELD(x)  (output[output_type(attr->type)].fields & PERF_OUTPUT_##x)
  
- 	if (r == NULL)
- 		return;
-@@ -1890,9 +1889,9 @@ static void perf_evsel__save_time(struct evsel *evsel,
+-static int perf_evsel__do_check_stype(struct evsel *evsel,
+-				      u64 sample_type, const char *sample_msg,
+-				      enum perf_output_field field,
+-				      bool allow_user_set)
++static int evsel__do_check_stype(struct evsel *evsel, u64 sample_type, const char *sample_msg,
++				 enum perf_output_field field, bool allow_user_set)
+ {
+ 	struct perf_event_attr *attr = &evsel->core.attr;
+ 	int type = output_type(attr->type);
+@@ -383,16 +381,13 @@ static int perf_evsel__do_check_stype(struct evsel *evsel,
+ 	return 0;
  }
  
- /* returns last time this event was seen on the given cpu */
--static u64 perf_evsel__get_time(struct evsel *evsel, u32 cpu)
-+static u64 evsel__get_time(struct evsel *evsel, u32 cpu)
+-static int perf_evsel__check_stype(struct evsel *evsel,
+-				   u64 sample_type, const char *sample_msg,
+-				   enum perf_output_field field)
++static int evsel__check_stype(struct evsel *evsel, u64 sample_type, const char *sample_msg,
++			      enum perf_output_field field)
  {
--	struct evsel_runtime *r = perf_evsel__get_runtime(evsel);
-+	struct evsel_runtime *r = evsel__get_runtime(evsel);
- 
- 	if ((r == NULL) || (r->last_time == NULL) || (cpu >= r->ncpu))
- 		return 0;
-@@ -2548,7 +2547,7 @@ static int timehist_sched_change_event(struct perf_tool *tool,
- 		goto out;
- 	}
- 
--	tprev = perf_evsel__get_time(evsel, sample->cpu);
-+	tprev = evsel__get_time(evsel, sample->cpu);
- 
- 	/*
- 	 * If start time given:
-@@ -2631,7 +2630,7 @@ static int timehist_sched_change_event(struct perf_tool *tool,
- 		tr->ready_to_run = 0;
- 	}
- 
--	perf_evsel__save_time(evsel, sample->time, sample->cpu);
-+	evsel__save_time(evsel, sample->time, sample->cpu);
- 
- 	return rc;
+-	return perf_evsel__do_check_stype(evsel, sample_type, sample_msg, field,
+-					  false);
++	return evsel__do_check_stype(evsel, sample_type, sample_msg, field, false);
  }
-@@ -2941,7 +2940,7 @@ static int timehist_check_attr(struct perf_sched *sched,
- 	struct evsel_runtime *er;
  
- 	list_for_each_entry(evsel, &evlist->core.entries, core.node) {
--		er = perf_evsel__get_runtime(evsel);
-+		er = evsel__get_runtime(evsel);
- 		if (er == NULL) {
- 			pr_err("Failed to allocate memory for evsel runtime data\n");
- 			return -1;
+-static int perf_evsel__check_attr(struct evsel *evsel,
+-				  struct perf_session *session)
++static int perf_evsel__check_attr(struct evsel *evsel, struct perf_session *session)
+ {
+ 	struct perf_event_attr *attr = &evsel->core.attr;
+ 	bool allow_user_set;
+@@ -404,32 +399,28 @@ static int perf_evsel__check_attr(struct evsel *evsel,
+ 					       HEADER_AUXTRACE);
+ 
+ 	if (PRINT_FIELD(TRACE) &&
+-		!perf_session__has_traces(session, "record -R"))
++	    !perf_session__has_traces(session, "record -R"))
+ 		return -EINVAL;
+ 
+ 	if (PRINT_FIELD(IP)) {
+-		if (perf_evsel__check_stype(evsel, PERF_SAMPLE_IP, "IP",
+-					    PERF_OUTPUT_IP))
++		if (evsel__check_stype(evsel, PERF_SAMPLE_IP, "IP", PERF_OUTPUT_IP))
+ 			return -EINVAL;
+ 	}
+ 
+ 	if (PRINT_FIELD(ADDR) &&
+-		perf_evsel__do_check_stype(evsel, PERF_SAMPLE_ADDR, "ADDR",
+-					   PERF_OUTPUT_ADDR, allow_user_set))
++	    evsel__do_check_stype(evsel, PERF_SAMPLE_ADDR, "ADDR", PERF_OUTPUT_ADDR, allow_user_set))
+ 		return -EINVAL;
+ 
+ 	if (PRINT_FIELD(DATA_SRC) &&
+-		perf_evsel__check_stype(evsel, PERF_SAMPLE_DATA_SRC, "DATA_SRC",
+-					PERF_OUTPUT_DATA_SRC))
++	    evsel__check_stype(evsel, PERF_SAMPLE_DATA_SRC, "DATA_SRC", PERF_OUTPUT_DATA_SRC))
+ 		return -EINVAL;
+ 
+ 	if (PRINT_FIELD(WEIGHT) &&
+-		perf_evsel__check_stype(evsel, PERF_SAMPLE_WEIGHT, "WEIGHT",
+-					PERF_OUTPUT_WEIGHT))
++	    evsel__check_stype(evsel, PERF_SAMPLE_WEIGHT, "WEIGHT", PERF_OUTPUT_WEIGHT))
+ 		return -EINVAL;
+ 
+ 	if (PRINT_FIELD(SYM) &&
+-		!(evsel->core.attr.sample_type & (PERF_SAMPLE_IP|PERF_SAMPLE_ADDR))) {
++	    !(evsel->core.attr.sample_type & (PERF_SAMPLE_IP|PERF_SAMPLE_ADDR))) {
+ 		pr_err("Display of symbols requested but neither sample IP nor "
+ 			   "sample address\navailable. Hence, no addresses to convert "
+ 		       "to symbols.\n");
+@@ -441,7 +432,7 @@ static int perf_evsel__check_attr(struct evsel *evsel,
+ 		return -EINVAL;
+ 	}
+ 	if (PRINT_FIELD(DSO) &&
+-		!(evsel->core.attr.sample_type & (PERF_SAMPLE_IP|PERF_SAMPLE_ADDR))) {
++	    !(evsel->core.attr.sample_type & (PERF_SAMPLE_IP|PERF_SAMPLE_ADDR))) {
+ 		pr_err("Display of DSO requested but no address to convert.\n");
+ 		return -EINVAL;
+ 	}
+@@ -458,33 +449,27 @@ static int perf_evsel__check_attr(struct evsel *evsel,
+ 		return -EINVAL;
+ 	}
+ 	if ((PRINT_FIELD(PID) || PRINT_FIELD(TID)) &&
+-		perf_evsel__check_stype(evsel, PERF_SAMPLE_TID, "TID",
+-					PERF_OUTPUT_TID|PERF_OUTPUT_PID))
++	    evsel__check_stype(evsel, PERF_SAMPLE_TID, "TID", PERF_OUTPUT_TID|PERF_OUTPUT_PID))
+ 		return -EINVAL;
+ 
+ 	if (PRINT_FIELD(TIME) &&
+-		perf_evsel__check_stype(evsel, PERF_SAMPLE_TIME, "TIME",
+-					PERF_OUTPUT_TIME))
++	    evsel__check_stype(evsel, PERF_SAMPLE_TIME, "TIME", PERF_OUTPUT_TIME))
+ 		return -EINVAL;
+ 
+ 	if (PRINT_FIELD(CPU) &&
+-		perf_evsel__do_check_stype(evsel, PERF_SAMPLE_CPU, "CPU",
+-					   PERF_OUTPUT_CPU, allow_user_set))
++	    evsel__do_check_stype(evsel, PERF_SAMPLE_CPU, "CPU", PERF_OUTPUT_CPU, allow_user_set))
+ 		return -EINVAL;
+ 
+ 	if (PRINT_FIELD(IREGS) &&
+-		perf_evsel__check_stype(evsel, PERF_SAMPLE_REGS_INTR, "IREGS",
+-					PERF_OUTPUT_IREGS))
++	    evsel__check_stype(evsel, PERF_SAMPLE_REGS_INTR, "IREGS", PERF_OUTPUT_IREGS))
+ 		return -EINVAL;
+ 
+ 	if (PRINT_FIELD(UREGS) &&
+-		perf_evsel__check_stype(evsel, PERF_SAMPLE_REGS_USER, "UREGS",
+-					PERF_OUTPUT_UREGS))
++	    evsel__check_stype(evsel, PERF_SAMPLE_REGS_USER, "UREGS", PERF_OUTPUT_UREGS))
+ 		return -EINVAL;
+ 
+ 	if (PRINT_FIELD(PHYS_ADDR) &&
+-		perf_evsel__check_stype(evsel, PERF_SAMPLE_PHYS_ADDR, "PHYS_ADDR",
+-					PERF_OUTPUT_PHYS_ADDR))
++	    evsel__check_stype(evsel, PERF_SAMPLE_PHYS_ADDR, "PHYS_ADDR", PERF_OUTPUT_PHYS_ADDR))
+ 		return -EINVAL;
+ 
+ 	return 0;
 -- 
 2.21.1
 
