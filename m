@@ -2,66 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12D1E1C692D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 08:42:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 791601C6930
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 08:42:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727976AbgEFGmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 02:42:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33630 "EHLO
+        id S1728166AbgEFGmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 02:42:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727778AbgEFGmq (ORCPT
+        by vger.kernel.org with ESMTP id S1727778AbgEFGmt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 02:42:46 -0400
+        Wed, 6 May 2020 02:42:49 -0400
 Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78FA5C061A0F;
-        Tue,  5 May 2020 23:42:46 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id n11so351600pgl.9;
-        Tue, 05 May 2020 23:42:46 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B51C8C061A0F;
+        Tue,  5 May 2020 23:42:49 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id q124so343844pgq.13;
+        Tue, 05 May 2020 23:42:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=Liq4U1nmJp+k1QseFVbXa0y7jGlGm2IcoibIba6bIN4=;
-        b=QJXMohOTAWtXIbpZubPh2LhaWiMq0ZGIq0L2bnRHMjcmGM/qNb2cfMeJlBM5rLvlte
-         T9eOd/OVDHbQWnD9mwKEjWvtsl0lZ3psBAWlOFkDkmKKLNS11BtBtYhlaIKBPxQK0L22
-         NNBB5H7yrCzqTh2ZrpSlqlsBFK/9ikpvANfd+ZT86mABSQfaKlAwhE/Brp70ZaXBQSu1
-         CN5fL0eDswOdCzd1tjhv87EdSymR4nUIIZ1qI+BnM5d/q/HlHuwL06b4Pg3YYcvELMgB
-         DCBxUPHcHkX5kfPsYbD4mqMkAZJ+AQCY+6Szf7RjtpS+S+AR/y81bNKUJvM8e2CJ/ETY
-         nuOg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=6OYAtQovas94oeU9iNU8MsCCycx+f76DGkCEYi2Qp+I=;
+        b=l/A7OFjUswLmXEWx30U77o4/Wz7vsqghg9D/5bpCSueH68jULm3lmf58hL8+qMqpAJ
+         i1747OQhv44vyaZ58GQ0UTYJmOp9034n+D9ebtjM6DSA82ofsmBaIhAWJIPk1YOzNvZj
+         YewtH6m3zMLHZujXRq3dLBkfEXJAc/Xbe00F/UDNj/KbK0tPLv3jQq8IVf9E72uaZQ0M
+         dboPrjM4njMwLoj/Wq+/bNOKAYaCvaC5uwF1GuX1EAA9Bl7OMz23N1S5/+cxbQVMrqS6
+         jMPE6+Q3/ZdlMYlnh2fT25NXVSzpa+jRXnGqlPIL+UU5p4wYGne40lOXu5YdT7tNjxKw
+         GxXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Liq4U1nmJp+k1QseFVbXa0y7jGlGm2IcoibIba6bIN4=;
-        b=cMViMU2lKnB13uqDY+Yo7zxFTPImkGp6ItWOUU7onqNnepPsTuHmMuasU9t+H2KaHN
-         KWsRicuW04j0sIdpW0K+ZXusbZ3vvym1FvpdLkr+JOxZ9K9CWbOpAsbV0n9fL5TIISIr
-         mYoR31/SN346ikETBXyUJU+y44Seq537ssJV+e2bYxp5/0ZQriHdg4/oi/kjriB7vCJu
-         fdoOr0pg3V30MLK364RhC9dW8cWMDucERh3nemnhesS/5KdAYqbeGRda4b7ChmYQrWgE
-         FG5LlEhSwsKgpwJuymo2k2cH12wQrHpZ+6MXqOul6QAZ3H4fOEHot7LD8EHogGpU6WYT
-         P9Vw==
-X-Gm-Message-State: AGi0PuZzkRVM1Diajb5PkLM5bn5rGEL77DjRfh3WuUJK5NvTIRCLNJwf
-        Aov4jDer/CmY7Q+8ud24tFs=
-X-Google-Smtp-Source: APiQypL4f1fBXLMhRTVK8DI+lv01KkC0rfikO3bHWD+7BkH2eVp9KWSsqAGBycmCNOlzG+hbh0ZLcg==
-X-Received: by 2002:a63:4503:: with SMTP id s3mr5973180pga.85.1588747366086;
-        Tue, 05 May 2020 23:42:46 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=6OYAtQovas94oeU9iNU8MsCCycx+f76DGkCEYi2Qp+I=;
+        b=ahOGoW7vMhwIxMDCQsx9z2Ui8oywRDipDx6+pvBR+DBBnIhdqPuLH0wJNCB7naBKOi
+         74DbEpxFLqUzqT+ZdpujWmsdIFReJk3GdEQohjCBEZ5KQe9Z3Nl1HqfmPLO9lom/yjpA
+         nk0y1CalRdOcY5o/r+mHqMB3FGGdce71oNAHcKVmUVzUxowe+skbShvXL2V3a0rDsgfv
+         1P3FxLXXzyIhNahYHon0o/cYZbAn/3iB6VeqJhbzWv5Z5sHUanqkmshfgTP4PX2mAF4f
+         6iClqG1GpKUh8kalBb7Er6ztZ7WYd5iFHjigwUczVT50eufn2IAdgt1mt9h1BLNAsJpd
+         g1Mw==
+X-Gm-Message-State: AGi0PuZ8eryAQKeImMHiaBocVqIpiBBeDCK7eqZ7V2jRBjidIJ4TG5Sd
+        OcP39w2ueWY16lsxh4UPtpU=
+X-Google-Smtp-Source: APiQypLjH1m7IH+Es3ImYbRw2ZMow3U5CDc3acH8t4Lng+3TAVYPSQ/UIQdCmjvWz6d0JGPABQhw/Q==
+X-Received: by 2002:a65:6795:: with SMTP id e21mr928114pgr.171.1588747369351;
+        Tue, 05 May 2020 23:42:49 -0700 (PDT)
 Received: from fmin-OptiPlex-7060.nreal.work ([103.206.190.146])
-        by smtp.gmail.com with ESMTPSA id b75sm3793254pjc.23.2020.05.05.23.42.43
+        by smtp.gmail.com with ESMTPSA id b75sm3793254pjc.23.2020.05.05.23.42.46
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 05 May 2020 23:42:45 -0700 (PDT)
+        Tue, 05 May 2020 23:42:49 -0700 (PDT)
 From:   dillon.minfei@gmail.com
 To:     mturquette@baylibre.com, sboyd@kernel.org,
         mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
         sam@ravnborg.org
 Cc:     linux-clk@vger.kernel.org,
         linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: 
-Date:   Wed,  6 May 2020 14:42:37 +0800
-Message-Id: <1588747358-31306-1-git-send-email-dillon.minfei@gmail.com>
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        dillon min <dillon.minfei@gmail.com>
+Subject: [PATCH 4/4] clk: stm32f4: fix ltdc driver hang as clk set rate failed
+Date:   Wed,  6 May 2020 14:42:38 +0800
+Message-Id: <1588747358-31306-2-git-send-email-dillon.minfei@gmail.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1588747358-31306-1-git-send-email-dillon.minfei@gmail.com>
+References: <1588747358-31306-1-git-send-email-dillon.minfei@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: dillon min <dillon.minfei@gmail.com>
 
-Fix stm32f429's ltdc driver loading hang in ltdc clk enable. set clk_hw to the
-wrong offset of clks in stm32f4_rcc_register_pll, should be PLL_SAI
+should use PLL_SAI offset of clks , not PLL_VCO_SAI
+else can not get clk gate.
+
+Signed-off-by: dillon min <dillon.minfei@gmail.com>
+---
+ drivers/clk/clk-stm32f4.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/clk/clk-stm32f4.c b/drivers/clk/clk-stm32f4.c
+index 18117ce..bdebe05 100644
+--- a/drivers/clk/clk-stm32f4.c
++++ b/drivers/clk/clk-stm32f4.c
+@@ -129,7 +129,8 @@ static const struct stm32f4_gate_data stm32f429_gates[] __initconst = {
+ 	{ STM32F4_RCC_APB2ENR, 20,	"spi5",		"apb2_div" },
+ 	{ STM32F4_RCC_APB2ENR, 21,	"spi6",		"apb2_div" },
+ 	{ STM32F4_RCC_APB2ENR, 22,	"sai1",		"apb2_div" },
+-	{ STM32F4_RCC_APB2ENR, 26,	"ltdc",		"apb2_div" },
++	{ STM32F4_RCC_APB2ENR, 26,	"ltdc",		"apb2_div",
++		CLK_IGNORE_UNUSED },
+ };
+ 
+ static const struct stm32f4_gate_data stm32f469_gates[] __initconst = {
+@@ -1754,10 +1755,10 @@ static void __init stm32f4_rcc_init(struct device_node *np)
+ 	stm32f4_rcc_register_pll("vco_in", &data->pll_data[0],
+ 			&stm32f4_clk_lock);
+ 
+-	clks[PLL_VCO_I2S] = stm32f4_rcc_register_pll("vco_in",
++	clks[PLL_I2S] = stm32f4_rcc_register_pll("vco_in",
+ 			&data->pll_data[1], &stm32f4_clk_lock);
+ 
+-	clks[PLL_VCO_SAI] = stm32f4_rcc_register_pll("vco_in",
++	clks[PLL_SAI] = stm32f4_rcc_register_pll("vco_in",
+ 			&data->pll_data[2], &stm32f4_clk_lock);
+ 
+ 	for (n = 0; n < MAX_POST_DIV; n++) {
+-- 
+2.7.4
+
