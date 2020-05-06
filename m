@@ -2,69 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0BAE1C71F3
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 15:44:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D38A1C71ED
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 15:43:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728824AbgEFNoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 09:44:05 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:48494 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726218AbgEFNoF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 09:44:05 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 060CB89C0AE97CCD2E89;
-        Wed,  6 May 2020 21:44:03 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Wed, 6 May 2020
- 21:43:53 +0800
-From:   Jason Yan <yanaijie@huawei.com>
-To:     <tsbogend@alpha.franken.de>, <yanaijie@huawei.com>,
-        <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] MIPS: Octeon: Remove dead code in __cvmx_helper_npi_probe()
-Date:   Wed, 6 May 2020 21:43:15 +0800
-Message-ID: <20200506134315.32810-1-yanaijie@huawei.com>
-X-Mailer: git-send-email 2.21.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.28]
-X-CFilter-Loop: Reflected
+        id S1728763AbgEFNnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 09:43:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50516 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728714AbgEFNnn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 09:43:43 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 179F32068E;
+        Wed,  6 May 2020 13:43:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588772622;
+        bh=ae3GP0U6pasVaUKLtgU6Vciyjz+k7sQFS9ZHzrnCFHM=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=rzc0nC+zJlDFCMYnNFoRcU1mMgvethdBUp285FEq2HQTA6OZdGS+GbTdPPdXlYG2l
+         YfQvJmifunxdaRK8ObfDGCcOPm9Gu7Iv44t/2305zxM4r/LbwHFF6leH9C1pDU1OV5
+         kxSH8u2xzbq94NHydjwEOOdW3157navLgyxx1ft0=
+Date:   Wed, 06 May 2020 14:43:40 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Akshu Agrawal <akshu.agrawal@amd.com>
+Cc:     "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
+        <alsa-devel@alsa-project.org>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ravulapati Vishnu vardhan rao 
+        <Vishnuvardhanrao.Ravulapati@amd.com>
+In-Reply-To: <20200506102602.140790-1-akshu.agrawal@amd.com>
+References: <20200506102602.140790-1-akshu.agrawal@amd.com>
+Subject: Re: [PATCH] ASoC: amd :High hw_level while simultaneous capture
+Message-Id: <158877262009.52279.13901500480638545510.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This code has been marked dead for more than 10 years. Seems no need to
-keep it now.
+On Wed, 6 May 2020 15:56:00 +0530, Akshu Agrawal wrote:
+> Simultaneous capture on dmic and headset mic is having
+> issue with high hw_level being reported.
+> 
+> Issue Can be reproduced by:
+> arecord -D hw:2,0 -f dat -d 60 /tmp/test0 &
+> arecord -D hw:2,2 -f dat -d 60 /tmp/test1 &
+> cat /proc/asound/card2/pcm?c/sub0/status
+> 
+> [...]
 
-Signed-off-by: Jason Yan <yanaijie@huawei.com>
----
- arch/mips/cavium-octeon/executive/cvmx-helper-npi.c | 12 ------------
- 1 file changed, 12 deletions(-)
+Applied to
 
-diff --git a/arch/mips/cavium-octeon/executive/cvmx-helper-npi.c b/arch/mips/cavium-octeon/executive/cvmx-helper-npi.c
-index cc94cfa545b4..cb210d2ef0c4 100644
---- a/arch/mips/cavium-octeon/executive/cvmx-helper-npi.c
-+++ b/arch/mips/cavium-octeon/executive/cvmx-helper-npi.c
-@@ -59,18 +59,6 @@ int __cvmx_helper_npi_probe(int interface)
- 		 && !OCTEON_IS_MODEL(OCTEON_CN52XX_PASS1_X))
- 		/* The packet engines didn't exist before pass 2 */
- 		return 4;
--#if 0
--	/*
--	 * Technically CN30XX, CN31XX, and CN50XX contain packet
--	 * engines, but nobody ever uses them. Since this is the case,
--	 * we disable them here.
--	 */
--	else if (OCTEON_IS_MODEL(OCTEON_CN31XX)
--		 || OCTEON_IS_MODEL(OCTEON_CN50XX))
--		return 2;
--	else if (OCTEON_IS_MODEL(OCTEON_CN30XX))
--		return 1;
--#endif
- #endif
- 	return 0;
- }
--- 
-2.21.1
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.7
 
+Thanks!
+
+[1/1] ASoC: amd :High hw_level while simultaneous capture
+      commit: 5a8117840a8c654c3cdf2f465e9406112d7e492d
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
