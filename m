@@ -2,109 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83C251C74FD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:34:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 806201C7514
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:38:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729479AbgEFPec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 11:34:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727984AbgEFPec (ORCPT
+        id S1729443AbgEFPif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 11:38:35 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:53340 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725887AbgEFPif (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 11:34:32 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F28B3C061A0F
-        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 08:34:31 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id f8so635077plt.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 08:34:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Gb2TqqmmU2qOWGfoFSijSCwJM2igRhwccR0CWHmE4pM=;
-        b=oEhUT0Ufn+nJY7KEy1YZKbHTppMxHGRjgiK0K6/qIDtvjoNBRFfPPmvqXs7xjKpt0s
-         kypw0Y/2r1ktwvEChy0w9RutTZ4YC+netbwrszcqxir3JA/SZ0Cqn3v/vjD72T5EJ62W
-         dBqHktrHl5BDGJiZXZtUanyNjMJMcyXtmsjP4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Gb2TqqmmU2qOWGfoFSijSCwJM2igRhwccR0CWHmE4pM=;
-        b=U6C7Jhl/FokAJA4b58a9EdenT+B2lay24VMNSlx6BcqsxmF7+V0mWG2JZTZwJplBud
-         eicO+0S8xNFSN50RRxAN5pgzXSPDW6+JrT5Im+ogXeJCfixgjBwfGZXLBmGzfAki4v1K
-         e3Nh3n1u75uTWO/gm6p25EjdII/L9KjXh2TiszJdPEQouBFO5hLZsXJsRtAAGTyTwlJc
-         CdUGbVBsjljgCxy5+yr/SUFFPslkaRw0sJ5fPdfbfbZmRamEmZyfgaHVh9w7JU8Ay7mA
-         9uSZxLqejT+OS526TolQCXws7BTn+YmEw8Nvb6I7qpouxiOlGyIkxVNAN4f4YH0BrO2j
-         ArJQ==
-X-Gm-Message-State: AGi0PuattESS/QHok7y2Yuwya35q49Cd3qvS1jdBfCJCEjw7Yep6f1NQ
-        0KQOwrc4g8p4nk0GoRI8gDp8nw==
-X-Google-Smtp-Source: APiQypKAC5fjwvNCBfn2l3Itu4c/lAUzq6/AohL7JUYZevpFrxGdy1xepw7tko5JMzww4m0sOoG8Ug==
-X-Received: by 2002:a17:902:23:: with SMTP id 32mr8696193pla.40.1588779271527;
-        Wed, 06 May 2020 08:34:31 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id o1sm5230528pjs.39.2020.05.06.08.34.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 May 2020 08:34:30 -0700 (PDT)
-Date:   Wed, 6 May 2020 08:34:29 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] securityfs: Add missing d_delete() call on removal
-Message-ID: <202005060831.C05759E@keescook>
-References: <202005051626.7648DC65@keescook>
- <20200506011431.GB23230@ZenIV.linux.org.uk>
- <202005052024.2D7626C742@keescook>
- <20200506040252.GC23230@ZenIV.linux.org.uk>
+        Wed, 6 May 2020 11:38:35 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 046Fbi0p052060;
+        Wed, 6 May 2020 15:37:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=j1Xe1r0jUzWMXNoigXzq+GaoW22b0gC2NvzvR16qr2Q=;
+ b=P99HOglqOP07Lr6/hHy/jBpu++dHXQZ4yBthI2A2BX5gB5CP9UP6fYwQO8p705VMfUMc
+ BXxokfjcwMc2AycCqWtX12PQh+qzSAxjJcJztRAPG4jhbrQRp9iUve2mZZubp5TSb8Gq
+ zJL5sWg6rWpuvAHGTtzV3VS2XdDtEryWRA1LJUhBHIsdx48DjoWriILGlzo/YNfPRV5x
+ yh9PGZAQyMXVpBr/rZBItSvO4hHQ1ysqWCZ+6kRmvJgGZvEK6IfiHrKw2hE0UUJUAOrB
+ GlE4TQ6zYuX/i7UOST+bjqVUKfy/TMkeUBFiWZ3DS/kWHjIFcYAYgIErUcaKOkKjiqLI fg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 30s1gnaxsw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 06 May 2020 15:37:44 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 046FIdjS085335;
+        Wed, 6 May 2020 15:35:44 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 30us7n0e43-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 06 May 2020 15:35:44 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 046FZfS9030023;
+        Wed, 6 May 2020 15:35:42 GMT
+Received: from linux-1.home (/10.175.10.30)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 06 May 2020 08:35:41 -0700
+Subject: Re: [patch V4 part 1 14/36] x86/entry: Get rid of
+ ist_begin/end_non_atomic()
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>
+References: <20200505131602.633487962@linutronix.de>
+ <20200505134059.462640294@linutronix.de>
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+Message-ID: <e0037089-113c-d262-bae0-1beacf4198d8@oracle.com>
+Date:   Wed, 6 May 2020 17:34:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200506040252.GC23230@ZenIV.linux.org.uk>
+In-Reply-To: <20200505134059.462640294@linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9613 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 suspectscore=0
+ mlxlogscore=999 malwarescore=0 phishscore=0 mlxscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005060124
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9613 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 mlxscore=0
+ spamscore=0 clxscore=1015 priorityscore=1501 bulkscore=0 phishscore=0
+ impostorscore=0 malwarescore=0 lowpriorityscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005060125
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 06, 2020 at 05:02:52AM +0100, Al Viro wrote:
-> On Tue, May 05, 2020 at 08:28:33PM -0700, Kees Cook wrote:
-> > On Wed, May 06, 2020 at 02:14:31AM +0100, Al Viro wrote:
-> > > On Tue, May 05, 2020 at 04:40:35PM -0700, Kees Cook wrote:
-> > > > After using simple_unlink(), a call to d_delete() is needed in addition
-> > > > to dput().
-> > > > 
-> > > > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > > > ---
-> > > > Is this correct? I went looking around and there are a lot of variations
-> > > > on the simple_unlink() pattern...
-> > > > 
-> > > > Many using explicit locking and combinations of d_drop(), __d_drop(), etc.
-> > > 
-> > > Quite a few of those should switch to simple_recursive_removal().  As for
-> > > securityfs...  d_drop() is _probably_ a saner variant, but looking at the
-> > > callers of that thing... at least IMA ones seem to be garbage.
-> > 
-> > Hmm, I dunno. I hadn't looked at these yet. I'm not sure what's needed
-> > for those cases.
-> > 
-> > Is my patch to add d_delete() correct, though? I'm trying to construct
-> > the right set of calls for pstore's filesystem, and I noticed that most
-> > will do simple_unlink(), d_delete(), dput(), but securityfs seemed to be
-> > missing it.
+
+On 5/5/20 3:16 PM, Thomas Gleixner wrote:
+> This is completely overengineered and definitely not an interface which
+> should be made available to anything else than this particular MCE case.
 > 
-> d_drop().  d_delete() is for the situations when you want the sucker
-> to become a hashed negative, if at all possible.
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>   arch/x86/include/asm/traps.h   |    2 --
+>   arch/x86/kernel/cpu/mce/core.c |    6 ++++--
+>   arch/x86/kernel/traps.c        |   37 -------------------------------------
+>   3 files changed, 4 insertions(+), 41 deletions(-)
 
-I'm not sure what that means. :) Should stuff like apparmorfs be changed
-to d_drop()?
+Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
 
-> Re pstore: context, please.
+alex.
 
-Just posted the whole series:
-https://lore.kernel.org/lkml/20200506152114.50375-1-keescook@chromium.org/
-
-But the specific question was driven by this patch:
-https://lore.kernel.org/lkml/20200506152114.50375-11-keescook@chromium.org/
-
--- 
-Kees Cook
+> --- a/arch/x86/include/asm/traps.h
+> +++ b/arch/x86/include/asm/traps.h
+> @@ -120,8 +120,6 @@ asmlinkage void smp_irq_move_cleanup_int
+>   
+>   extern void ist_enter(struct pt_regs *regs);
+>   extern void ist_exit(struct pt_regs *regs);
+> -extern void ist_begin_non_atomic(struct pt_regs *regs);
+> -extern void ist_end_non_atomic(void);
+>   
+>   #ifdef CONFIG_VMAP_STACK
+>   void __noreturn handle_stack_overflow(const char *message,
+> --- a/arch/x86/kernel/cpu/mce/core.c
+> +++ b/arch/x86/kernel/cpu/mce/core.c
+> @@ -1352,13 +1352,15 @@ void notrace do_machine_check(struct pt_
+>   
+>   	/* Fault was in user mode and we need to take some action */
+>   	if ((m.cs & 3) == 3) {
+> -		ist_begin_non_atomic(regs);
+> +		/* If this triggers there is no way to recover. Die hard. */
+> +		BUG_ON(!on_thread_stack() || !user_mode(regs));
+>   		local_irq_enable();
+> +		preempt_enable();
+>   
+>   		if (kill_it || do_memory_failure(&m))
+>   			force_sig(SIGBUS);
+> +		preempt_disable();
+>   		local_irq_disable();
+> -		ist_end_non_atomic();
+>   	} else {
+>   		if (!fixup_exception(regs, X86_TRAP_MC, error_code, 0))
+>   			mce_panic("Failed kernel mode recovery", &m, msg);
+> --- a/arch/x86/kernel/traps.c
+> +++ b/arch/x86/kernel/traps.c
+> @@ -117,43 +117,6 @@ void ist_exit(struct pt_regs *regs)
+>   		rcu_nmi_exit();
+>   }
+>   
+> -/**
+> - * ist_begin_non_atomic() - begin a non-atomic section in an IST exception
+> - * @regs:	regs passed to the IST exception handler
+> - *
+> - * IST exception handlers normally cannot schedule.  As a special
+> - * exception, if the exception interrupted userspace code (i.e.
+> - * user_mode(regs) would return true) and the exception was not
+> - * a double fault, it can be safe to schedule.  ist_begin_non_atomic()
+> - * begins a non-atomic section within an ist_enter()/ist_exit() region.
+> - * Callers are responsible for enabling interrupts themselves inside
+> - * the non-atomic section, and callers must call ist_end_non_atomic()
+> - * before ist_exit().
+> - */
+> -void ist_begin_non_atomic(struct pt_regs *regs)
+> -{
+> -	BUG_ON(!user_mode(regs));
+> -
+> -	/*
+> -	 * Sanity check: we need to be on the normal thread stack.  This
+> -	 * will catch asm bugs and any attempt to use ist_preempt_enable
+> -	 * from double_fault.
+> -	 */
+> -	BUG_ON(!on_thread_stack());
+> -
+> -	preempt_enable_no_resched();
+> -}
+> -
+> -/**
+> - * ist_end_non_atomic() - begin a non-atomic section in an IST exception
+> - *
+> - * Ends a non-atomic section started with ist_begin_non_atomic().
+> - */
+> -void ist_end_non_atomic(void)
+> -{
+> -	preempt_disable();
+> -}
+> -
+>   int is_valid_bugaddr(unsigned long addr)
+>   {
+>   	unsigned short ud;
+> 
