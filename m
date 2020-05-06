@@ -2,156 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1910A1C64F8
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 02:19:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 783681C6500
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 02:22:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729229AbgEFATD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 20:19:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728356AbgEFATD (ORCPT
+        id S1729526AbgEFAWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 20:22:46 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:41834 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728609AbgEFAWp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 20:19:03 -0400
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 242C8C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 May 2020 17:19:03 -0700 (PDT)
-Received: by mail-vs1-xe44.google.com with SMTP id g2so11444vsb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 17:19:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uxf7PIfuQA1AmzwbgiAc6qi52bK5LTEy5mM67o299pg=;
-        b=YP9DojNnvL0GKT59bxFJk7GMLrsEk2LCd5aowl6qLFcQdpPAxIs6zTVGg2i6fYhDJz
-         dyvRxqWVH9vP7aAeBY2R+7ovwrMKFqgr+zf5hfdg2ome+cQL9T+tX2oEiMp15mZ3FxB7
-         qL0Sg3ZHqsoiZp8InrBjMlJzG2kBeeYmEkBsk=
+        Tue, 5 May 2020 20:22:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588724564;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QoqKXjvHS1POFny3QwrSW9RfCPL+8QBVwaJ8hMnU7Dg=;
+        b=GMtg5u3V3ux1e2JFEZCzfioibkN0672ovbrqgn4rLmVYbfAIjNLeakLioPgT9G0tQFqeVF
+        xEph5LjebH2eDgAqKuML7WbHeEU3t/sJ2Oicd5JoHWwJvZ+119HkbIv41oQE9SYN06xkOl
+        2CEN6gx8Ec8hlWErCnbcHjniNWyX2wE=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-391-dlb8Rp0uOKyabShiwyvtng-1; Tue, 05 May 2020 20:22:42 -0400
+X-MC-Unique: dlb8Rp0uOKyabShiwyvtng-1
+Received: by mail-wr1-f72.google.com with SMTP id 30so304948wrq.15
+        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 17:22:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uxf7PIfuQA1AmzwbgiAc6qi52bK5LTEy5mM67o299pg=;
-        b=e1emW5Z4YJELKh4Ap5aXGYNXKJZLPekNEvdMOKAEnRoZi5zuDwWvhmj+il8oVhH2hD
-         VlgNO7xUJig731xffSV31i4SmCAFikBgikTeE+zuQBFI2xCYLf2HYsh+FS0Woe8k7zPz
-         /g1/+EEQ9jpb7Y8Qg8nNuH2ilefvErGOuqTP+GYAQCJ8Wzn9uhWOXjKtdmOgMN5yo4/3
-         4MSoXIRdsthqzQwwt1UBZE6Gi0Y1c8OTHf33AeaEaH2Grr9BaHE6mh7j0i6VlFxJZpOm
-         ZGzkL8TtyXIDjB3B6aOU5a4v7lkiOI5GWB07UUjVEIS/4WgMmGZTLaeu+mnkJHU4xZtc
-         Ysng==
-X-Gm-Message-State: AGi0PubZgKtj48Erp4w3U2Tw3iIZ9pjDEsUVbXJM3f8HewxlP61RFAL4
-        aC4TPZr4BGD4ypX0iOwDjn9TdrMnbxU=
-X-Google-Smtp-Source: APiQypKPMioIXPbmV+hY0AZtVeD4NXoa+IxIbXUqZYZGeKjYB7rip1TsSdogKQcRJaZhIpc1fwrIzA==
-X-Received: by 2002:a67:f957:: with SMTP id u23mr5877488vsq.146.1588724341905;
-        Tue, 05 May 2020 17:19:01 -0700 (PDT)
-Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com. [209.85.217.41])
-        by smtp.gmail.com with ESMTPSA id q25sm84107uap.1.2020.05.05.17.19.00
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 May 2020 17:19:00 -0700 (PDT)
-Received: by mail-vs1-f41.google.com with SMTP id g2so11397vsb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 05 May 2020 17:19:00 -0700 (PDT)
-X-Received: by 2002:a05:6102:4d:: with SMTP id k13mr5406597vsp.198.1588724340078;
- Tue, 05 May 2020 17:19:00 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QoqKXjvHS1POFny3QwrSW9RfCPL+8QBVwaJ8hMnU7Dg=;
+        b=iWQjjuipLjKZ8wU+/bqs+EzdmkaXFKB/KgXU8BRhV0U5iaw9e2uvNaPkZLpTllcY3f
+         UyiOgHB/TFiCbpKwMJ75m5AJPPhm9zqBTO2vxZarFosrhxoo23pq+nj5+gbRAeVrAWBB
+         h3Q97yPXycs+o4ynYByvF1N63Y6UKQkEpbiPONjkODBmoG7LvDx0WNcgdkloZbwjOwkd
+         zJJAojo3OCAdJVb0jJm/sopCjoGrklMmttmZFiPY4Jj9nQw9b/drCuUFGis1QJdjxTWK
+         Mac2BqVw94Z+lBP937jyLu5ytVxUn5Dhci8rz90Oec0ayDHSnLws77fynnp8JyjnoU0D
+         gpAA==
+X-Gm-Message-State: AGi0PubG+mTRcTDq9rB/lThyawimRiHImJ7gzLI8jCE6kuRgRcw9I/D8
+        Z+OVo0CA6Cu3bTaFUrn7u+fa7MUwr+STMkk09SgWonRXE4scZsoRK8Nqh6Lj/L5BHGKGTpxfi8C
+        fcfKOTyiS2iZ8Wa6cV3rhaoOc
+X-Received: by 2002:adf:f4c4:: with SMTP id h4mr6674140wrp.142.1588724561119;
+        Tue, 05 May 2020 17:22:41 -0700 (PDT)
+X-Google-Smtp-Source: APiQypJmoSpO73yXNDTz8jDLDw6M0OmFQm9c8vXZNzPGPO9rFjmHx4lA5SH/ADZzc+i0KYiNA0+Q4A==
+X-Received: by 2002:adf:f4c4:: with SMTP id h4mr6674112wrp.142.1588724560893;
+        Tue, 05 May 2020 17:22:40 -0700 (PDT)
+Received: from redhat.com (bzq-109-66-7-121.red.bezeqint.net. [109.66.7.121])
+        by smtp.gmail.com with ESMTPSA id n12sm299685wrj.95.2020.05.05.17.22.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 May 2020 17:22:40 -0700 (PDT)
+Date:   Tue, 5 May 2020 20:22:37 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Bharat Bhushan <bbhushan2@marvell.com>
+Cc:     jean-philippe@linaro.org, joro@8bytes.org, jasowang@redhat.com,
+        virtualization@lists.linux-foundation.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        eric.auger.pro@gmail.com, eric.auger@redhat.com
+Subject: Re: [PATCH v5] iommu/virtio: Use page size bitmap supported by
+ endpoint
+Message-ID: <20200505200659-mutt-send-email-mst@kernel.org>
+References: <20200505093004.1935-1-bbhushan2@marvell.com>
 MIME-Version: 1.0
-References: <20200504213624.1.Ibc8eeddcee94984a608d6900b46f9ffde4045da4@changeid>
- <20200505082436.GD9658@pendragon.ideasonboard.com> <CAD=FV=WjUpwu5204K8yHzqsJv4vQX5S5CArH1Kj_kqjhZzTc9A@mail.gmail.com>
- <20200505210609.GA6094@pendragon.ideasonboard.com> <CAD=FV=UnGOYh8JX2=fEAqPN7wqANc0QevTirNO-WUDYMPqXcrg@mail.gmail.com>
- <20200505211401.GC6094@pendragon.ideasonboard.com> <CAD=FV=WgRC-HViMxttF4VK+n48HNRuqAau8S7mgx6oSWsbZcgA@mail.gmail.com>
-In-Reply-To: <CAD=FV=WgRC-HViMxttF4VK+n48HNRuqAau8S7mgx6oSWsbZcgA@mail.gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 5 May 2020 17:18:48 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=U8_Krob9oftJjzrYs1zrbLr9WZ-HSStv5_rbq9MpTChw@mail.gmail.com>
-Message-ID: <CAD=FV=U8_Krob9oftJjzrYs1zrbLr9WZ-HSStv5_rbq9MpTChw@mail.gmail.com>
-Subject: Re: [PATCH] drm/bridge: ti-sn65dsi86: Implement lane reordering + polarity
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <seanpaul@chromium.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200505093004.1935-1-bbhushan2@marvell.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, May 05, 2020 at 03:00:04PM +0530, Bharat Bhushan wrote:
+> Different endpoint can support different page size, probe
+> endpoint if it supports specific page size otherwise use
+> global page sizes.
+> 
+> Signed-off-by: Bharat Bhushan <bbhushan2@marvell.com>
+> ---
+> v4->v5:
+>  - Rebase to Linux v5.7-rc4
+> 
+> v3->v4:
+>  - Fix whitespace error
+> 
+> v2->v3:
+>  - Fixed error return for incompatible endpoint
+>  - __u64 changed to __le64 in header file
+> 
+>  drivers/iommu/virtio-iommu.c      | 48 ++++++++++++++++++++++++++++---
+>  include/uapi/linux/virtio_iommu.h |  7 +++++
+>  2 files changed, 51 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/iommu/virtio-iommu.c b/drivers/iommu/virtio-iommu.c
+> index d5cac4f46ca5..9513d2ab819e 100644
+> --- a/drivers/iommu/virtio-iommu.c
+> +++ b/drivers/iommu/virtio-iommu.c
+> @@ -78,6 +78,7 @@ struct viommu_endpoint {
+>  	struct viommu_dev		*viommu;
+>  	struct viommu_domain		*vdomain;
+>  	struct list_head		resv_regions;
+> +	u64				pgsize_bitmap;
+>  };
+>  
+>  struct viommu_request {
+> @@ -415,6 +416,19 @@ static int viommu_replay_mappings(struct viommu_domain *vdomain)
+>  	return ret;
+>  }
+>  
+> +static int viommu_set_pgsize_bitmap(struct viommu_endpoint *vdev,
+> +				    struct virtio_iommu_probe_pgsize_mask *mask,
+> +				    size_t len)
+> +{
+> +	u64 pgsize_bitmap = le64_to_cpu(mask->pgsize_bitmap);
+> +
+> +	if (len < sizeof(*mask))
 
-On Tue, May 5, 2020 at 2:24 PM Doug Anderson <dianders@chromium.org> wrote:
+This is too late to validate length, you have dereferenced it already.
+do it before the read pls.
+
+> +		return -EINVAL;
+
+OK but note that guest will then just proceed to ignore the
+property. Is that really OK? Wouldn't host want to know?
+
+
+> +
+> +	vdev->pgsize_bitmap = pgsize_bitmap;
+
+what if bitmap is 0? Is that a valid size? I see a bunch of
+BUG_ON with that value ...
+
+I also see a bunch of code like e.g. this:
+
+        pg_size = 1UL << __ffs(pgsize_bitmap);
+
+which probably won't DTRT on a 32 bit guest if the bitmap has bits
+set in the high word.
+
+
+
+> +	return 0;
+> +}
+> +
+>  static int viommu_add_resv_mem(struct viommu_endpoint *vdev,
+>  			       struct virtio_iommu_probe_resv_mem *mem,
+>  			       size_t len)
+> @@ -499,6 +513,9 @@ static int viommu_probe_endpoint(struct viommu_dev *viommu, struct device *dev)
+>  		case VIRTIO_IOMMU_PROBE_T_RESV_MEM:
+>  			ret = viommu_add_resv_mem(vdev, (void *)prop, len);
+>  			break;
+> +		case VIRTIO_IOMMU_PROBE_T_PAGE_SIZE_MASK:
+> +			ret = viommu_set_pgsize_bitmap(vdev, (void *)prop, len);
+> +			break;
+>  		default:
+>  			dev_err(dev, "unknown viommu prop 0x%x\n", type);
+>  		}
+> @@ -630,7 +647,7 @@ static int viommu_domain_finalise(struct viommu_endpoint *vdev,
+>  
+>  	vdomain->id		= (unsigned int)ret;
+>  
+> -	domain->pgsize_bitmap	= viommu->pgsize_bitmap;
+> +	domain->pgsize_bitmap	= vdev->pgsize_bitmap;
+>  	domain->geometry	= viommu->geometry;
+>  
+>  	vdomain->map_flags	= viommu->map_flags;
+> @@ -654,6 +671,29 @@ static void viommu_domain_free(struct iommu_domain *domain)
+>  	kfree(vdomain);
+>  }
+>  
+> +/*
+> + * Check whether the endpoint's capabilities are compatible with other
+> + * endpoints in the domain. Report any inconsistency.
+> + */
+> +static bool viommu_endpoint_is_compatible(struct viommu_endpoint *vdev,
+> +					  struct viommu_domain *vdomain)
+> +{
+> +	struct device *dev = vdev->dev;
+> +
+> +	if (vdomain->viommu != vdev->viommu) {
+> +		dev_err(dev, "cannot attach to foreign vIOMMU\n");
+> +		return false;
+> +	}
+> +
+> +	if (vdomain->domain.pgsize_bitmap != vdev->pgsize_bitmap) {
+> +		dev_err(dev, "incompatible domain bitmap 0x%lx != 0x%llx\n",
+> +			vdomain->domain.pgsize_bitmap, vdev->pgsize_bitmap);
+> +		return false;
+> +	}
+
+I'm confused by this. So let's assume host supports pages sizes
+of 4k, 2M, 1G. It signals this in the properties. Nice.
+Now domain supports 4k, 2M and that's all. Why is that a problem?
+Just don't use 1G ...
+
+
+> +
+> +	return true;
+> +}
+> +
+>  static int viommu_attach_dev(struct iommu_domain *domain, struct device *dev)
+>  {
+>  	int i;
+> @@ -670,9 +710,8 @@ static int viommu_attach_dev(struct iommu_domain *domain, struct device *dev)
+>  		 * owns it.
+>  		 */
+>  		ret = viommu_domain_finalise(vdev, domain);
+> -	} else if (vdomain->viommu != vdev->viommu) {
+> -		dev_err(dev, "cannot attach to foreign vIOMMU\n");
+> -		ret = -EXDEV;
+> +	} else if (!viommu_endpoint_is_compatible(vdev, vdomain)) {
+> +		ret = -EINVAL;
+>  	}
+>  	mutex_unlock(&vdomain->mutex);
+>  
+> @@ -886,6 +925,7 @@ static int viommu_add_device(struct device *dev)
+>  
+>  	vdev->dev = dev;
+>  	vdev->viommu = viommu;
+> +	vdev->pgsize_bitmap = viommu->pgsize_bitmap;
+>  	INIT_LIST_HEAD(&vdev->resv_regions);
+>  	dev_iommu_priv_set(dev, vdev);
+>  
+> diff --git a/include/uapi/linux/virtio_iommu.h b/include/uapi/linux/virtio_iommu.h
+> index 48e3c29223b5..2cced7accc99 100644
+> --- a/include/uapi/linux/virtio_iommu.h
+> +++ b/include/uapi/linux/virtio_iommu.h
+
+As any virtio UAPI change, you need to copy virtio TC at some point
+before this is merged ...
+
+> @@ -111,6 +111,7 @@ struct virtio_iommu_req_unmap {
+>  
+>  #define VIRTIO_IOMMU_PROBE_T_NONE		0
+>  #define VIRTIO_IOMMU_PROBE_T_RESV_MEM		1
+> +#define VIRTIO_IOMMU_PROBE_T_PAGE_SIZE_MASK	2
+>  
+>  #define VIRTIO_IOMMU_PROBE_T_MASK		0xfff
 >
-> Hi,
->
-> On Tue, May 5, 2020 at 2:14 PM Laurent Pinchart
-> <laurent.pinchart@ideasonboard.com> wrote:
-> >
-> > > I'll add this documentation into the comments of the yaml, but I'm not
-> > > going to try to implement enforcement at the yaml level.
-> >
-> > Why not ? :-)
->
-> Because trying to describe anything in the yaml bindings that doesn't
-> fit in the exact pattern of things that the yaml bindings are designed
-> to check is like constructing the empire state building with only
-> toothpicks.
->
-> If you want to suggest some syntax that would actually make this
-> doable without blowing out the yaml bindings then I'm happy to add it.
-> Me being naive would assume that we'd need to do an exhaustive list of
-> the OK combinations.  That would be fine for the 1-land and 2-lane
-> cases, but for 4 lanes that means adding 256 entries to the bindings.
->
-> I think the correct way to do this would require adding code in the
-> <https://github.com/devicetree-org/dt-schema> project but that's
-> really only done for generic subsystem-level concepts and not for a
-> single driver.
 
-OK.  Looked at your review of the .yaml and the "uniqueItems" is
-probably the bit I didn't think of.  With that I can limit this but
-it's still a little awkward.  I still haven't figured out how to force
-data-lanes and lane-polarities to have the same number of items, too.
-I'll add this as an add-on patch to my v2 and folks can decide if they
-like it or hate it.
+Does host need to know that guest will ignore the page size mask?
+Maybe we need a feature bit.
+  
+> @@ -119,6 +120,12 @@ struct virtio_iommu_probe_property {
+>  	__le16					length;
+>  };
+>  
+> +struct virtio_iommu_probe_pgsize_mask {
+> +	struct virtio_iommu_probe_property	head;
+> +	__u8					reserved[4];
+> +	__le64					pgsize_bitmap;
+> +};
+> +
 
-# See ../../media/video-interface.txt for details.
-data-lanes:
-  oneOf:
-    - minItems: 1
-      maxItems: 1
-      uniqueItems: true
-      items:
-        enum:
-          - 0
-          - 1
-      description:
-        If you have 1 logical lane it can go to either physical
-        port 0 or port 1.  Port 0 is suggested.
+This is UAPI. Document the format of pgsize_bitmap please.
 
-    - minItems: 2
-      maxItems: 2
-      uniqueItems: true
-      items:
-        enum:
-          - 0
-          - 1
-      description:
-        If you have 2 logical lanes they can be reordered on
-        physical ports 0 and 1.
 
-    - minItems: 4
-      maxItems: 4
-      uniqueItems: true
-      items:
-        enum:
-          - 0
-          - 1
-          - 2
-          - 3
-      description:
-        If you have 4 logical lanes they can be reordered on
-        in any way.
+>  #define VIRTIO_IOMMU_RESV_MEM_T_RESERVED	0
+>  #define VIRTIO_IOMMU_RESV_MEM_T_MSI		1
+>  
+> -- 
+> 2.17.1
 
--Doug
