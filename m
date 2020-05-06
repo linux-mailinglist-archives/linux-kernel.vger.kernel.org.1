@@ -2,134 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 406DC1C779C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 19:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6DED1C77A2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 19:17:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729773AbgEFRRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 13:17:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48294 "EHLO
+        id S1729976AbgEFRRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 13:17:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725799AbgEFRRI (ORCPT
+        with ESMTP id S1729900AbgEFRRS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 13:17:08 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E001FC061A0F
-        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 10:17:07 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id u6so3215171ljl.6
-        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 10:17:07 -0700 (PDT)
+        Wed, 6 May 2020 13:17:18 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88CA7C061A10
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 10:17:18 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id f15so771962plr.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 10:17:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=07w3M3fjX49pguIvUyZoChyUZSwRCf3IidBIG7ARz+M=;
-        b=Bv/hOfS/WKD94FxyU/YzCqrVj0cnpXp1XV6cBa438o2cwpkU6Wr+f350ViQfVa6Pks
-         wl5GeBrkIxOCebVW+g8QQLUTBHtaBKpbeQzuqS1y1aUAfuuPYRirIXsPMGsWo+2i2yP+
-         2Y7tG8jeDeIFeF0PTzl6ilF5ps4kaSpbd4RHI=
+        bh=/k/x3jvD4hIY8pDNsyuRYJAWCjnjlkQj95o1100b+nU=;
+        b=AoWlyDRvgvgfz7OXgRvmqbZq6U8eVGyvK/25YzVKraEel8OmtkOdz2BW5cyKKN+B9T
+         lEgbKudq8lqfvZcc0Bi648R42oxIhUjrYoffQ8Pl1H0dbp92fpYcf/ynrRCKVnTxHnc2
+         jkJnZkh325ckYdhrmmHLfDG16i0rJSiyd+Zv3Qt4C+5MhFk8kmN7vsaFKHVJhFnVi28I
+         BUftmHbmElrqRsxk91bDZkkdM2b6RMZpk2ctFThP4FhABx3J6RNF4W7EfO8FzFbMsf7v
+         CCXjr9xbkvksrdNlppx8YSdgFiilZJpQOX2Atv6Tgjvh+0RwwMnHTy8wof2Roe99T5MU
+         Cf8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=07w3M3fjX49pguIvUyZoChyUZSwRCf3IidBIG7ARz+M=;
-        b=ls3ocgNOSAqfiVb3NMpNvqkcDe52MN+p4I2LhR5y/pm2FsXRPxIhGxxiKQodmFJEvD
-         XrZ+YgYuOgnuOCFhwABG9zX6BnFafxBj/yY68LPS2Zyzozxn4fIA2i9xQv6fDyZtlibU
-         1Ohm6JpU007zkCzthbxebbGatJwzvnMCG4JmlvjghqzlX97amqmRhb/P4VWo4KEF830D
-         m3FFuu4kBAgrKCOTBIMcIsoH8Ia5Uh09Hu8qelhhP55RRRCjVLCV6a5PV4AuqPtR8g5j
-         5b3kZPFuKYrU8N6VDlmzvsosQfhhcCuwpsr7dPO4kAM9jOjXwLlH5AdfUYiGlonzGlzn
-         PUWg==
-X-Gm-Message-State: AGi0PuaTIKOUMEmPRK89svQy581T5wwHAJazzvtL008OOdEjKVRE8Lp7
-        t1ja0GdwzP4OeISAt6SiFCUiGviAwWM=
-X-Google-Smtp-Source: APiQypLQtfOorSSp8sRQJ6Lgkm3ya5zROd4trcLNhk1Nh6dHOoxKQ1bE/gZNEsKDtmDfGRc/fSYoIA==
-X-Received: by 2002:a2e:a292:: with SMTP id k18mr5489575lja.263.1588785425673;
-        Wed, 06 May 2020 10:17:05 -0700 (PDT)
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
-        by smtp.gmail.com with ESMTPSA id o22sm1709115ljj.100.2020.05.06.10.17.04
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 May 2020 10:17:04 -0700 (PDT)
-Received: by mail-lj1-f178.google.com with SMTP id b2so3228030ljp.4
-        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 10:17:04 -0700 (PDT)
-X-Received: by 2002:a2e:814e:: with SMTP id t14mr5608093ljg.204.1588785423772;
- Wed, 06 May 2020 10:17:03 -0700 (PDT)
+        bh=/k/x3jvD4hIY8pDNsyuRYJAWCjnjlkQj95o1100b+nU=;
+        b=LKoa0aHAj2W6PfDmkhhcIHmakKNhaxGjMxJyl9bx5N7idi8z+KgXb98skhKWV0NEOm
+         /sMt6hR/biLKDorI9GlgxLFS0KYEDFdSN7qKFe2Fg1//R283ZNlnrOaJKNhK3uakUyd2
+         DuccwxOA8gmCrDIRnUd59v0TbLtAhDZOQJ71HsRiayljaszruRTNwWjLOTanllAFlJEf
+         i/TkRM6vyuX3bjM2PmVRqblxYwXPXgO3UVbBaJyHY4u9AiZn/08elntFntV/6RBTS5fm
+         Z+qBKHraIFi+5q4vcXJGa19h5sx5BA0voYg1aN/L9+JQM9iREEHYnitw3VvmEwT/CXiT
+         9xxg==
+X-Gm-Message-State: AGi0PuY5cpur0PpwymywS+ADSBXhRggS/wsxOZY/2pPjnPR8/XxU4u38
+        CiqChZ58QG/lG15XBTz5Ddxbnjdocf8xcHjTOLHYbQ==
+X-Google-Smtp-Source: APiQypLnpQ9fey9MWfkvN5jK3cTisnhcJeTBQn37c1umPrLJpul/zCxeo6IzqY/pYCZUn/CL8vsxMaNBNscsUYb0zG8=
+X-Received: by 2002:a17:902:ac87:: with SMTP id h7mr8736134plr.119.1588785437559;
+ Wed, 06 May 2020 10:17:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200501202849.647891881@infradead.org> <20200501202944.593400184@infradead.org>
- <1238787e-d97d-f09b-d76d-2df2dc273f4b@rasmusvillemoes.dk> <20200503125813.GL3762@hirez.programming.kicks-ass.net>
- <a53369f3-665a-af0e-efad-09ae456af847@rasmusvillemoes.dk> <20200504201445.GQ3762@hirez.programming.kicks-ass.net>
- <20200505093625.GE5298@hirez.programming.kicks-ass.net> <CAKwvOd=cP8UCX0+5pZ3AqzvOM8LKzLJJ_heDhrghqJdOnHoGMg@mail.gmail.com>
- <20200506135128.GR3762@hirez.programming.kicks-ass.net>
-In-Reply-To: <20200506135128.GR3762@hirez.programming.kicks-ass.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 6 May 2020 10:16:47 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjdLY-E3m21_QcHUauakW3qAAOCe2rxzuFEm-Af_oqG0g@mail.gmail.com>
-Message-ID: <CAHk-=wjdLY-E3m21_QcHUauakW3qAAOCe2rxzuFEm-Af_oqG0g@mail.gmail.com>
-Subject: Re: [PATCH v4 14/18] static_call: Add static_cond_call()
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Nadav Amit <namit@vmware.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
+References: <20200506055245.3013374-1-jiaxun.yang@flygoat.com>
+In-Reply-To: <20200506055245.3013374-1-jiaxun.yang@flygoat.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 6 May 2020 10:17:06 -0700
+Message-ID: <CAKwvOdkmK7QdbZFKCCao9W8cJcOR_M-LyOkL3_Ms7amegv499w@mail.gmail.com>
+Subject: Re:
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "Maciej W . Rozycki" <macro@linux-mips.org>,
+        Fangrui Song <maskray@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Jouni Hogander <jouni.hogander@unikie.com>,
+        Kevin Darbyshire-Bryant <ldir@darbyshire-bryant.me.uk>,
+        Borislav Petkov <bp@suse.de>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 6, 2020 at 6:51 AM Peter Zijlstra <peterz@infradead.org> wrote:
+On Tue, May 5, 2020 at 10:52 PM Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
 >
-> I was hoping for:
+> Subject: [PATCH v6] MIPS: Truncate link address into 32bit for 32bit kernel
+> In-Reply-To: <20200413062651.3992652-1-jiaxun.yang@flygoat.com>
 >
->         bar:                                    # @bar
->                 movl    %edi, .L_x$local(%rip)
->                 retq
->         ponies:                                 # @ponies
->                 movq    .Lfoo$local(%rip), %rax
->                 testq   %rax, %rax
->                 jz      1f
->                 jmpq    *%rcx                   # TAILCALL
->         1:
->                 retq
+> LLD failed to link vmlinux with 64bit load address for 32bit ELF
+> while bfd will strip 64bit address into 32bit silently.
+> To fix LLD build, we should truncate load address provided by platform
+> into 32bit for 32bit kernel.
+>
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> Link: https://github.com/ClangBuiltLinux/linux/issues/786
+> Link: https://sourceware.org/bugzilla/show_bug.cgi?id=25784
+> Reviewed-by: Fangrui Song <maskray@google.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+> Cc: Maciej W. Rozycki <macro@linux-mips.org>
 
-If you want to just avoid the 'cmov', the best way to do that is to
-insert a barrier() on one side of the if-statement.
+Cool, this revision looks a bit simpler. Thanks for chasing this.
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
 
-That breaks the ability to turn the conditional jump into a cmov.
+> ---
+> V2: Take MaskRay's shell magic.
+>
+> V3: After spent an hour on dealing with special character issue in
+> Makefile, I gave up to do shell hacks and write a util in C instead.
+> Thanks Maciej for pointing out Makefile variable problem.
+>
+> v4: Finally we managed to find a Makefile method to do it properly
+> thanks to Kees. As it's too far from the initial version, I removed
+> Review & Test tag from Nick and Fangrui and Cc instead.
+>
+> v5: Care vmlinuz as well.
+>
+> v6: Rename to LIKER_LOAD_ADDRESS
+> ---
+>  arch/mips/Makefile                 | 13 ++++++++++++-
+>  arch/mips/boot/compressed/Makefile |  2 +-
+>  arch/mips/kernel/vmlinux.lds.S     |  2 +-
+>  3 files changed, 14 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/mips/Makefile b/arch/mips/Makefile
+> index e1c44aed8156..68c0f22fefc0 100644
+> --- a/arch/mips/Makefile
+> +++ b/arch/mips/Makefile
+> @@ -288,12 +288,23 @@ ifdef CONFIG_64BIT
+>    endif
+>  endif
+>
+> +# When linking a 32-bit executable the LLVM linker cannot cope with a
+> +# 32-bit load address that has been sign-extended to 64 bits.  Simply
+> +# remove the upper 32 bits then, as it is safe to do so with other
+> +# linkers.
+> +ifdef CONFIG_64BIT
+> +       load-ld                 = $(load-y)
+> +else
+> +       load-ld                 = $(subst 0xffffffff,0x,$(load-y))
+> +endif
+> +
+>  KBUILD_AFLAGS  += $(cflags-y)
+>  KBUILD_CFLAGS  += $(cflags-y)
+> -KBUILD_CPPFLAGS += -DVMLINUX_LOAD_ADDRESS=$(load-y)
+> +KBUILD_CPPFLAGS += -DVMLINUX_LOAD_ADDRESS=$(load-y) -DLINKER_LOAD_ADDRESS=$(load-ld)
+>  KBUILD_CPPFLAGS += -DDATAOFFSET=$(if $(dataoffset-y),$(dataoffset-y),0)
+>
+>  bootvars-y     = VMLINUX_LOAD_ADDRESS=$(load-y) \
+> +                 LINKER_LOAD_ADDRESS=$(load-ld) \
+>                   VMLINUX_ENTRY_ADDRESS=$(entry-y) \
+>                   PLATFORM="$(platform-y)" \
+>                   ITS_INPUTS="$(its-y)"
+> diff --git a/arch/mips/boot/compressed/Makefile b/arch/mips/boot/compressed/Makefile
+> index 0df0ee8a298d..3d391256ab7e 100644
+> --- a/arch/mips/boot/compressed/Makefile
+> +++ b/arch/mips/boot/compressed/Makefile
+> @@ -90,7 +90,7 @@ ifneq ($(zload-y),)
+>  VMLINUZ_LOAD_ADDRESS := $(zload-y)
+>  else
+>  VMLINUZ_LOAD_ADDRESS = $(shell $(obj)/calc_vmlinuz_load_addr \
+> -               $(obj)/vmlinux.bin $(VMLINUX_LOAD_ADDRESS))
+> +               $(obj)/vmlinux.bin $(LINKER_LOAD_ADDRESS))
+>  endif
+>  UIMAGE_LOADADDR = $(VMLINUZ_LOAD_ADDRESS)
+>
+> diff --git a/arch/mips/kernel/vmlinux.lds.S b/arch/mips/kernel/vmlinux.lds.S
+> index a5f00ec73ea6..5226cd8e4bee 100644
+> --- a/arch/mips/kernel/vmlinux.lds.S
+> +++ b/arch/mips/kernel/vmlinux.lds.S
+> @@ -55,7 +55,7 @@ SECTIONS
+>         /* . = 0xa800000000300000; */
+>         . = 0xffffffff80300000;
+>  #endif
+> -       . = VMLINUX_LOAD_ADDRESS;
+> +       . = LINKER_LOAD_ADDRESS;
+>         /* read-only */
+>         _text = .;      /* Text and read-only data */
+>         .text : {
+>
+> --
 
-HOWEVER.
-
-It looks like noth clang and gcc will move the indirect jump to the
-conditional sites, but then neither of them is smart enough to just
-turn the indirect jump into one direct jump.
-
-Strange. So you still get an indirect call for just the "ret" case.
-The code looks actively stupid with
-
-gcc:
-  .L7:
-        movl    $__static_call_nop, %eax
-        jmp     *%rax
-
-clang:
-  .LBB1_1:
-        mov     eax, offset __static_call_nop
-        jmp     rax                     # TAILCALL
-
-despite the barrier not being between those two points. The only
-difference is the assembler syntax.
-
-Odd. That's such a trivial and obvious optimization. But presumably
-it's a pattern that just doesn't happen normally.
-
-                Linus
+-- 
+Thanks,
+~Nick Desaulniers
