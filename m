@@ -2,147 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A70C1C6D1E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 11:40:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D3E11C6D34
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 11:41:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728306AbgEFJkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 05:40:05 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:33123 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729059AbgEFJkD (ORCPT
+        id S1729152AbgEFJk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 05:40:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729140AbgEFJk4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 05:40:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588758002;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kJ4kEjO/bwheMovYORrIfy7ArmLVCRzD0yejl3ZmrDY=;
-        b=XD+HdxkjPRi5aoYZtsT0NGoAKDp15lWqrzc1KcyAe0zUaZPpD0Dcw1/04+fxVgQhUfNlbf
-        Y3qEiynKov6o+UJ6mJnsrwYhEuXND3pgDj4SWNzrbhzBEFqZhgGCY/u5klXTxwS8NlUOgT
-        DyiJtSuuhFFgs33u9a80mChV5qtUa3E=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-353-xgKsvrljPsaJ1l0Gc-O8tg-1; Wed, 06 May 2020 05:40:00 -0400
-X-MC-Unique: xgKsvrljPsaJ1l0Gc-O8tg-1
-Received: by mail-wr1-f70.google.com with SMTP id x8so1015111wrl.16
-        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 02:40:00 -0700 (PDT)
+        Wed, 6 May 2020 05:40:56 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 085AAC0610D6
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 02:40:55 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id 18so704080pfv.8
+        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 02:40:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=vD1UqfrD+8G67ZG0pk7nKVe25aWfDdDdLHrnvf7jzfU=;
+        b=KvJRJi6qOtrX/rBOoQsTZLUkSfBvQdu9h/4+EdVDDs/J5byw2E0mzoUXp1eC8Orvze
+         q6hqPkGcts5lTQBw0D4S/Cz+jaHQk2n1hN66o+ukcLOY5WugjSP3Gz71wnJLxfwJorMs
+         /c0teWN45OseabH/vQt+QAymLDwGbjghnKAd49dd6OJMvACLLa4ZYGSYuXrDhUFAp5OL
+         +sAF3mfRpF3rYSErIO3gvJ29sKlVxhnDWgxaUyoGfiIE7i/dIT+wLTUMyg3PMFvH4eRJ
+         VwWLQvxVbPKruzO51E/y07VAGO+uEFEe/igxqcdakVkJigWCn4vZDWQsLejTBLdYx2Dy
+         E6FA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kJ4kEjO/bwheMovYORrIfy7ArmLVCRzD0yejl3ZmrDY=;
-        b=UlD3uC9YgvCBHJ7MSwwEHPvtszdV18GB7JhK3Oe305emhN0E80jfq1MtU33PBjuKtp
-         7uecO5fI2PlOAsXRAbp9uYpYVM39Xg8FNuOxZo5S5bhTM2tBUyqxdmsHCkg5oRVW8LNX
-         jwk0XeR6S+amw2/i7f/2A0P6PvvilfcFv925vssPf9GV5cWeK61c2YW+bx4sHYzK0148
-         ZgBJTylGdxWEwamp4ako7gLzoh7AfoOOnx5RVdNeNrbrnComNXdsjQ9F8Hd3bjombK11
-         ahbJ1IeUgmFCRpGAW60nbeoiycAy6i3A9HBzhY6A6r8S6ADnPQnpNRBX/+B7n1pVM3Ni
-         F5SQ==
-X-Gm-Message-State: AGi0PuYjxLvj5owFiWJ5EMMHf/kx3Z9Yu5FkaKx9Ws/DXwxsw4l9mVCo
-        kS2+IrsMEZwntUCbE7ZqX6zJjvVcFcxzozgRGDnUMYPOhq85yS1XMKLk+FqolZPqKegxuCCJjW1
-        pc+dylt2iWQrSfTMDS0r5Y2U/
-X-Received: by 2002:a5d:4c4b:: with SMTP id n11mr8949401wrt.139.1588757999148;
-        Wed, 06 May 2020 02:39:59 -0700 (PDT)
-X-Google-Smtp-Source: APiQypK13X0Zo4jMSTyL7ujAS9WuUrdxRvvZsqJbiGw8vpveKPhCdyH4OKPB+Frf82bNzjKr1/MqGg==
-X-Received: by 2002:a5d:4c4b:: with SMTP id n11mr8949372wrt.139.1588757998970;
-        Wed, 06 May 2020 02:39:58 -0700 (PDT)
-Received: from redhat.com (bzq-109-66-7-121.red.bezeqint.net. [109.66.7.121])
-        by smtp.gmail.com with ESMTPSA id m4sm1993050wrb.42.2020.05.06.02.39.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 May 2020 02:39:58 -0700 (PDT)
-Date:   Wed, 6 May 2020 05:39:55 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Justin He <Justin.He@arm.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "ldigby@redhat.com" <ldigby@redhat.com>,
-        "n.b@live.com" <n.b@live.com>,
-        "stefanha@redhat.com" <stefanha@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [GIT PULL] vhost: fixes
-Message-ID: <20200506053948-mutt-send-email-mst@kernel.org>
-References: <20200504081540-mutt-send-email-mst@kernel.org>
- <AM6PR08MB40696EFF8BE389C134AC04F6F7A40@AM6PR08MB4069.eurprd08.prod.outlook.com>
- <20200506031918-mutt-send-email-mst@kernel.org>
- <20200506092546.o6prnn4d66tavmjl@steredhat>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200506092546.o6prnn4d66tavmjl@steredhat>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=vD1UqfrD+8G67ZG0pk7nKVe25aWfDdDdLHrnvf7jzfU=;
+        b=WkaFQeddIVSgWXbkQy1X3IXbeEHz05m8RFOyYRiZFVE5W5WyXrFpDCzBHCyUzMKd7+
+         mNBy3WYC4ctAqcDsY1fwg/HY/2/oqZtF4Gjg9F42KdSV4RQW037/1cj/l9x6ZiLrJlfw
+         +jMw6R8GtKeqtC57QXHgKtvEEY2qMc/JhwBRfXgP6cPTRewYz6wfLQUy5HifHuVfmJbj
+         CW02mG2GavxCVpoCA9PLHzxCDaS5U1zC6NIMYe9A24A3k0QE9qyYk12bDm2txqMXyVNw
+         zO4UV3YQN1dQnJZd6vRWCmq5G4fCrrL69yFZiuTCSo8dCcmZOmUPCGt5AM/R3Dbz59n6
+         osTw==
+X-Gm-Message-State: AGi0PubDD7a5jMm+I0f3eo2nGuCpmkV0H9axbd7vRG6PXYSq1kyCWKK3
+        3duhk7dBniXECfJVgpGX6hgkgA==
+X-Google-Smtp-Source: APiQypIrk3bnOWjBbptmchGrzTVPv9yWszHBj3wqvJUotuBAP7f8mseJIJrPRksgRfu5mw3a49jKrA==
+X-Received: by 2002:a62:68c1:: with SMTP id d184mr7216402pfc.138.1588758054382;
+        Wed, 06 May 2020 02:40:54 -0700 (PDT)
+Received: from localhost.localdomain ([117.252.68.141])
+        by smtp.gmail.com with ESMTPSA id a2sm1337360pfg.106.2020.05.06.02.40.46
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 06 May 2020 02:40:53 -0700 (PDT)
+From:   Sumit Garg <sumit.garg@linaro.org>
+To:     jarkko.sakkinen@linux.intel.com, zohar@linux.ibm.com,
+        jejb@linux.ibm.com
+Cc:     dhowells@redhat.com, jens.wiklander@linaro.org, corbet@lwn.net,
+        jmorris@namei.org, serge@hallyn.com, casey@schaufler-ca.com,
+        janne.karhunen@gmail.com, daniel.thompson@linaro.org,
+        Markus.Wamser@mixed-mode.de, keyrings@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        op-tee@lists.trustedfirmware.org, tee-dev@lists.linaro.org,
+        Sumit Garg <sumit.garg@linaro.org>
+Subject: [PATCH v4 0/4] Introduce TEE based Trusted Keys support
+Date:   Wed,  6 May 2020 15:10:13 +0530
+Message-Id: <1588758017-30426-1-git-send-email-sumit.garg@linaro.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 06, 2020 at 11:25:46AM +0200, Stefano Garzarella wrote:
-> On Wed, May 06, 2020 at 03:19:55AM -0400, Michael S. Tsirkin wrote:
-> > On Wed, May 06, 2020 at 03:28:47AM +0000, Justin He wrote:
-> > > Hi Michael
-> > > 
-> > > > -----Original Message-----
-> > > > From: Michael S. Tsirkin <mst@redhat.com>
-> > > > Sent: Monday, May 4, 2020 8:16 PM
-> > > > To: Linus Torvalds <torvalds@linux-foundation.org>
-> > > > Cc: kvm@vger.kernel.org; virtualization@lists.linux-foundation.org;
-> > > > netdev@vger.kernel.org; linux-kernel@vger.kernel.org; Justin He
-> > > > <Justin.He@arm.com>; ldigby@redhat.com; mst@redhat.com; n.b@live.com;
-> > > > stefanha@redhat.com
-> > > > Subject: [GIT PULL] vhost: fixes
-> > > >
-> > > > The following changes since commit
-> > > > 6a8b55ed4056ea5559ebe4f6a4b247f627870d4c:
-> > > >
-> > > >   Linux 5.7-rc3 (2020-04-26 13:51:02 -0700)
-> > > >
-> > > > are available in the Git repository at:
-> > > >
-> > > >   https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
-> > > >
-> > > > for you to fetch changes up to
-> > > > 0b841030625cde5f784dd62aec72d6a766faae70:
-> > > >
-> > > >   vhost: vsock: kick send_pkt worker once device is started (2020-05-02
-> > > > 10:28:21 -0400)
-> > > >
-> > > > ----------------------------------------------------------------
-> > > > virtio: fixes
-> > > >
-> > > > A couple of bug fixes.
-> > > >
-> > > > Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> > > >
-> > > > ----------------------------------------------------------------
-> > > > Jia He (1):
-> > > >       vhost: vsock: kick send_pkt worker once device is started
-> > > 
-> > > Should this fix also be CC-ed to stable? Sorry I forgot to cc it to stable.
-> > > 
-> > > --
-> > > Cheers,
-> > > Justin (Jia He)
-> > 
-> > 
-> > Go ahead, though recently just including Fixes seems to be enough.
-> > 
-> 
-> The following patch Justin refers to does not contain the "Fixes:" tag:
-> 
-> 0b841030625c vhost: vsock: kick send_pkt worker once device is started
-> 
-> 
-> I think we should merge it on stable branches, so if needed, I can backport
-> and send it.
-> 
-> Stefano
+Add support for TEE based trusted keys where TEE provides the functionality
+to seal and unseal trusted keys using hardware unique key. Also, this is
+an alternative in case platform doesn't possess a TPM device.
 
-Go ahead.
+This patch-set has been tested with OP-TEE based early TA which can be
+found here [1].
+
+[1] https://github.com/OP-TEE/optee_os/pull/3838
+
+Changes in v4:
+1. Pushed independent TEE features separately:
+  - Part of recent TEE PR: https://lkml.org/lkml/2020/5/4/1062
+2. Updated trusted-encrypted doc with TEE as a new trust source.
+3. Rebased onto latest tpmdd/master.
+
+Changes in v3:
+1. Update patch #2 to support registration of multiple kernel pages.
+2. Incoporate dependency patch #4 in this patch-set:
+   https://patchwork.kernel.org/patch/11091435/
+
+Changes in v2:
+1. Add reviewed-by tags for patch #1 and #2.
+2. Incorporate comments from Jens for patch #3.
+3. Switch to use generic trusted keys framework.
+
+Sumit Garg (4):
+  KEYS: trusted: Add generic trusted keys framework
+  KEYS: trusted: Introduce TEE based Trusted Keys
+  doc: trusted-encrypted: updates with TEE as a new trust source
+  MAINTAINERS: Add entry for TEE based Trusted Keys
+
+ Documentation/security/keys/trusted-encrypted.rst | 203 ++++++++++---
+ MAINTAINERS                                       |   8 +
+ include/keys/trusted-type.h                       |  48 ++++
+ include/keys/trusted_tee.h                        |  66 +++++
+ include/keys/trusted_tpm.h                        |  15 -
+ security/keys/Kconfig                             |   3 +
+ security/keys/trusted-keys/Makefile               |   2 +
+ security/keys/trusted-keys/trusted_common.c       | 336 ++++++++++++++++++++++
+ security/keys/trusted-keys/trusted_tee.c          | 282 ++++++++++++++++++
+ security/keys/trusted-keys/trusted_tpm1.c         | 335 ++++-----------------
+ 10 files changed, 974 insertions(+), 324 deletions(-)
+ create mode 100644 include/keys/trusted_tee.h
+ create mode 100644 security/keys/trusted-keys/trusted_common.c
+ create mode 100644 security/keys/trusted-keys/trusted_tee.c
 
 -- 
-MST
+2.7.4
 
