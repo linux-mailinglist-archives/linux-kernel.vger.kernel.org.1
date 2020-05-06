@@ -2,77 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 744961C75A5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 18:03:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92B441C75AF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 18:05:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729936AbgEFQDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 12:03:11 -0400
-Received: from foss.arm.com ([217.140.110.172]:40174 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729251AbgEFQDK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 12:03:10 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F30BFD6E;
-        Wed,  6 May 2020 09:03:04 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A1A133F68F;
-        Wed,  6 May 2020 09:03:03 -0700 (PDT)
-References: <20200503083407.GA27766@iZj6chx1xj0e0buvshuecpZ> <CAKfTPtCNG9Y4xNA-iLd+JRRsUCA1+SkkFFRbbzk5n7q6v401tw@mail.gmail.com> <20200505134056.GA31680@iZj6chx1xj0e0buvshuecpZ> <20200505142711.GA12952@vingu-book> <jhjftcd1hmx.mognet@arm.com> <CAKfTPtCM7mE7a63rXB4cG5gHn03ArjTB1ZBje=qEWOGR9mj67g@mail.gmail.com>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Peng Liu <iwtbavbm@gmail.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
+        id S1729986AbgEFQFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 12:05:18 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:40876 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729418AbgEFQFS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 12:05:18 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 046G3AKk111143;
+        Wed, 6 May 2020 16:04:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=gxGliN3rA/OmNwubwue86m81HXzC2y0mNMBvFANHIAE=;
+ b=JfUipbxqAxX6uP53g8rJxlwWJEZMwrT+veuzveybzGCdOyoX9BgjcZq1uCrciOlPBvW0
+ ll1Fn2RpJJ25+t4XebcbwPH0FnM/CID1lGHLHo1GiwApTzDZRvZcOPLR+S8Dwd9bkJam
+ B0agXW/QrbtwvbPffw6FexDeLrt/G9Ksq0CjQvPzwfCcHqaGqPGL2GQBKuZFLdqBRmWF
+ JAjeMS//90Snmjh6SfGFeHnEv2OXZy26RVvgUagXO1CryTkjjP6p5zVvGMQiUBc7VzqM
+ u997U8O1iTOg+B8J2AekCmUEKFjDyTpAFhK1+1hr2/RCcNd8Q58JRcvYeBPYHt8bUwGS ew== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 30usgq2cvm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 06 May 2020 16:04:22 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 046G1moj073302;
+        Wed, 6 May 2020 16:04:21 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 30t1r85kjb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 06 May 2020 16:04:21 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 046G4IUs017886;
+        Wed, 6 May 2020 16:04:18 GMT
+Received: from linux-1.home (/10.175.10.30)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 06 May 2020 09:04:18 -0700
+Subject: Re: [patch V4 part 1 19/36] x86/entry: Exclude low level entry code
+ from sanitizing
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] sched/fair: Fix nohz.next_balance update
-In-reply-to: <CAKfTPtCM7mE7a63rXB4cG5gHn03ArjTB1ZBje=qEWOGR9mj67g@mail.gmail.com>
-Date:   Wed, 06 May 2020 17:02:56 +0100
-Message-ID: <jhjv9l9yrtb.mognet@arm.com>
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+References: <20200505131602.633487962@linutronix.de>
+ <20200505134059.970057117@linutronix.de>
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+Message-ID: <a5d3866a-af7f-bf0a-4864-16db9965e39f@oracle.com>
+Date:   Wed, 6 May 2020 18:03:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20200505134059.970057117@linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9613 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 suspectscore=0
+ spamscore=0 mlxlogscore=999 malwarescore=0 phishscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005060129
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9613 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxscore=0
+ priorityscore=1501 lowpriorityscore=0 malwarescore=0 clxscore=1015
+ mlxlogscore=999 spamscore=0 adultscore=0 bulkscore=0 phishscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005060129
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 06/05/20 14:45, Vincent Guittot wrote:
->> But then we may skip an update if we goto abort, no? Imagine we have just
->> NOHZ_STATS_KICK, so we don't call any rebalance_domains(), and then as we
->> go through the last NOHZ CPU in the loop we hit need_resched(). We would
->> end in the abort part without any update to nohz.next_balance, despite
->> having accumulated relevant data in the local next_balance variable.
->
-> Yes but on the other end, the last CPU has not been able to run the
-> rebalance_domain so we must not move  nohz.next_balance otherwise it
-> will have to wait for at least another full period
-> In fact, I think that we have a problem with current implementation
-> because if we abort because  local cpu because busy we might end up
-> skipping idle load balance for a lot of idle CPUs
->
-> As an example, imagine that we have 10 idle CPUs with the same
-> rq->next_balance which equal nohz.next_balance.  _nohz_idle_balance
-> starts on CPU0, it processes idle lb for CPU1 but then has to abort
-> because of need_resched. If we update nohz.next_balance like
-> currently, the next idle load balance  will happen after a full
-> balance interval whereas we still have 8 CPUs waiting for running an
-> idle load balance.
->
-> My proposal also fixes this problem
->
+On 5/5/20 3:16 PM, Thomas Gleixner wrote:
+> The sanitizers are not really applicable to the fragile low level entry
+> code. code. Entry code needs to carefully setup a normal 'runtime'
 
-That's a very good point; so with NOHZ_BALANCE_KICK we can reduce
-nohz.next_balance via rebalance_domains(), and otherwise we would only
-increase it if we go through a complete for_each_cpu() loop in
-_nohz_idle_balance().
+typo: code. code.
 
-That said, if for some reason we keep bailing out of the loop, we won't
-push nohz.next_balance forward and thus may repeatedly nohz-balance only
-the first few CPUs in the NOHZ mask. I think that can happen if we have
-say 2 tasks pinned to a single rq, in that case nohz_balancer_kick() will
-kick a NOHZ balance whenever now >= nohz.next_balance.
+Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
+
+alex.
+
+
+> environment.
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>   arch/x86/entry/Makefile |    8 ++++++++
+>   1 file changed, 8 insertions(+)
+> 
+> --- a/arch/x86/entry/Makefile
+> +++ b/arch/x86/entry/Makefile
+> @@ -3,6 +3,14 @@
+>   # Makefile for the x86 low level entry code
+>   #
+>   
+> +KASAN_SANITIZE := n
+> +UBSAN_SANITIZE := n
+> +KCOV_INSTRUMENT := n
+> +
+> +CFLAGS_REMOVE_common.o = $(CC_FLAGS_FTRACE) -fstack-protector -fstack-protector-strong
+> +CFLAGS_REMOVE_syscall_32.o = $(CC_FLAGS_FTRACE) -fstack-protector -fstack-protector-strong
+> +CFLAGS_REMOVE_syscall_64.o = $(CC_FLAGS_FTRACE) -fstack-protector -fstack-protector-strong
+> +
+>   OBJECT_FILES_NON_STANDARD_entry_64_compat.o := y
+>   
+>   CFLAGS_syscall_64.o		+= $(call cc-option,-Wno-override-init,)
+> 
