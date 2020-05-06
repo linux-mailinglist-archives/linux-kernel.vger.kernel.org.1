@@ -2,81 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85AFB1C71EB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 15:43:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 936341C720C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 15:48:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728738AbgEFNnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 09:43:43 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:3825 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728248AbgEFNnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 09:43:42 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id AA80028CC3C2A4686EED;
-        Wed,  6 May 2020 21:43:36 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 6 May 2020 21:43:29 +0800
-From:   Wei Yongjun <weiyongjun1@huawei.com>
-To:     <gregkh@linuxfoundation.org>, <simon@nikanor.nu>,
-        <jeremy@azazel.net>, <dan.carpenter@oracle.com>
-CC:     Wei Yongjun <weiyongjun1@huawei.com>, <devel@driverdev.osuosl.org>,
-        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
-Subject: [PATCH -next v2] staging: kpc2000: fix error return code in kp2000_pcie_probe()
-Date:   Wed, 6 May 2020 13:47:35 +0000
-Message-ID: <20200506134735.102041-1-weiyongjun1@huawei.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200506125255.90336-1-weiyongjun1@huawei.com>
-References: <20200506125255.90336-1-weiyongjun1@huawei.com>
+        id S1728482AbgEFNsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 09:48:40 -0400
+Received: from cmccmta2.chinamobile.com ([221.176.66.80]:13177 "EHLO
+        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725801AbgEFNsk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 09:48:40 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.13]) by rmmx-syy-dmz-app07-12007 (RichMail) with SMTP id 2ee75eb2c006200-276df; Wed, 06 May 2020 21:47:50 +0800 (CST)
+X-RM-TRANSID: 2ee75eb2c006200-276df
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from [192.168.0.101] (unknown[112.0.146.193])
+        by rmsmtp-syy-appsvr07-12007 (RichMail) with SMTP id 2ee75eb2c004224-cf21d;
+        Wed, 06 May 2020 21:47:50 +0800 (CST)
+X-RM-TRANSID: 2ee75eb2c004224-cf21d
+Subject: Re: [PATCH] ASoC: qcom: Use devm_platform_ioremap_resource_byname()to
+ simplify code
+To:     kbuild test robot <lkp@intel.com>, broonie@kernel.org,
+        bgoswami@codeaurora.org, plai@codeaurora.org, perex@perex.cz,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc:     kbuild-all@lists.01.org
+References: <20200504072820.5328-1-tangbin@cmss.chinamobile.com>
+ <202005051301.uK51h1pS%lkp@intel.com>
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+Message-ID: <4b2fba97-6f04-622c-f69a-ba00de19335d@cmss.chinamobile.com>
+Date:   Wed, 6 May 2020 21:48:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type:   text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+In-Reply-To: <202005051301.uK51h1pS%lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function. Also
-removed var 'rv' since we can use 'err' instead.
 
-Fixes: 7dc7967fc39a ("staging: kpc2000: add initial set of Daktronics drivers")
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
----
-v1 -> v2: fix code aligns and add fixes
----
- drivers/staging/kpc2000/kpc2000/core.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+On 2020/5/5 13:35, kbuild test robot wrote:
+> Hi Tang,
+>
+> Thank you for the patch! Yet something to improve:
+>
+> [auto build test ERROR on asoc/for-next]
+> [also build test ERROR on v5.7-rc4 next-20200504]
+> [if your patch is applied to the wrong git tree, please drop us a note to help
+> improve the system. BTW, we also suggest to use '--base' option to specify the
+> base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+>
+> url:    https://github.com/0day-ci/linux/commits/Tang-Bin/ASoC-qcom-Use-devm_platform_ioremap_resource_byname-to-simplify-code/20200505-051041
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+> config: sh-allmodconfig (attached as .config)
+> compiler: sh4-linux-gcc (GCC) 9.3.0
+> reproduce:
+>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>          chmod +x ~/bin/make.cross
+>          # save the attached .config to linux build tree
+>          COMPILER_INSTALL_PATH=$HOME/0day GCC_VERSION=9.3.0 make.cross ARCH=sh
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kbuild test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
+>
+>     sound/soc/qcom/lpass-cpu.c: In function 'asoc_qcom_lpass_cpu_platform_probe':
+>>> sound/soc/qcom/lpass-cpu.c:445:21: error: expected ';' before 'if'
 
-diff --git a/drivers/staging/kpc2000/kpc2000/core.c b/drivers/staging/kpc2000/kpc2000/core.c
-index 7b00d7069e21..358d7b2f4ad1 100644
---- a/drivers/staging/kpc2000/kpc2000/core.c
-+++ b/drivers/staging/kpc2000/kpc2000/core.c
-@@ -298,7 +298,6 @@ static int kp2000_pcie_probe(struct pci_dev *pdev,
- {
- 	int err = 0;
- 	struct kp2000_device *pcard;
--	int rv;
- 	unsigned long reg_bar_phys_addr;
- 	unsigned long reg_bar_phys_len;
- 	unsigned long dma_bar_phys_addr;
-@@ -445,11 +444,11 @@ static int kp2000_pcie_probe(struct pci_dev *pdev,
- 	if (err < 0)
- 		goto err_release_dma;
- 
--	rv = request_irq(pcard->pdev->irq, kp2000_irq_handler, IRQF_SHARED,
--			 pcard->name, pcard);
--	if (rv) {
-+	err = request_irq(pcard->pdev->irq, kp2000_irq_handler, IRQF_SHARED,
-+			  pcard->name, pcard);
-+	if (err) {
- 		dev_err(&pcard->pdev->dev,
--			"%s: failed to request_irq: %d\n", __func__, rv);
-+			"%s: failed to request_irq: %d\n", __func__, err);
- 		goto err_disable_msi;
- 	}
+Sorry, please forget this patch, it's my fault.
+
+Thanks
 
 
 
