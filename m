@@ -2,47 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61EBE1C745B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:25:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 227171C743A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:22:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729655AbgEFPXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 11:23:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38368 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729066AbgEFPXJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 11:23:09 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3732421775;
-        Wed,  6 May 2020 15:23:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588778588;
-        bh=Hb64Q63oMZlKV2BsNDJujDgEug1FiI9q3SPI+/21yS4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OXfLXR6P0ym/eI3JPv5doXglG0tKccS2piQ1zgxXGX67+tHF6SonJ4GwEyeBPENU4
-         YvGX8IJLsM3wyZs2EM+oZZGu45IZ4QHeXTtoGz2Vhnk4MC8aV4Gw1pyBqRvL4Oe6Ol
-         aT6iP9BzI30deC9RsjQ9OfGEgNpBPY6UvJq7Gsk0=
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-        Clark Williams <williams@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Tommi Rantala <tommi.t.rantala@nokia.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mamatha Inamdar <mamatha4@linux.vnet.ibm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Subject: [PATCH 07/91] perf test session topology: Fix data path
-Date:   Wed,  6 May 2020 12:21:10 -0300
-Message-Id: <20200506152234.21977-8-acme@kernel.org>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20200506152234.21977-1-acme@kernel.org>
-References: <20200506152234.21977-1-acme@kernel.org>
+        id S1729542AbgEFPWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 11:22:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729432AbgEFPVs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 11:21:48 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B775C061A0F
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 08:21:47 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id o18so916049pgg.8
+        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 08:21:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=6FPHhltyts4CbjXyjzAz4UzPIGw8eB8kjsShSwpY9GA=;
+        b=n0RKQ4Pvfh57lj8l+w7gRc28SobAcNrostqD2b+3d/Tm4/w1v7ec2dpBWqsALFCaFt
+         mNozt1CXfQCJueFPxbU9SbxEbBmal9djZSkRG29EyWpcIpiJnPRFfBv+faC+IoD6wKCZ
+         8W7sKMBJKZCHAqKJ7fcpJQw0TyKK/+SUh65Oo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=6FPHhltyts4CbjXyjzAz4UzPIGw8eB8kjsShSwpY9GA=;
+        b=bAeoCmeNYTrmIcSYWQJlYHvlrQB2A4Wn4iVXM/dyxuotn60Tk7jayu+8Jw28Y02XF5
+         Prz5P5if9N1SQ/hF4zh8g54bLmYc1zquS0GhnYL56jCTiLOPIXIxa/MsPvcta0bwfLtw
+         V6hfv6jiRibRiG868EcAx2o5w8EeXzgDJ2JUIEOU3PsCpgW/meZyYrN46Os1/ojL0ERd
+         eESLIRe+fty+rL6GN7jPFfwZlXrrFS1s9Ef8lfohqtjxVoiJA2Sd26XrSdCcxr5iR63T
+         s7dXLndztx4Za6lMRH0vJxKLSGWUdhf2GSVxrxYFakB3rqu9QGJzlVQ4m7LQmgPOMJjH
+         Yg1A==
+X-Gm-Message-State: AGi0PuZZEtzvXtgwXMIIiqMcIWVu3OFIt58MJcuf9E1+nOaUDBjjyldj
+        doyEcRq/h3caq6g8MZMTRyh/Mg==
+X-Google-Smtp-Source: APiQypLh9RvGoT0iwrPdwog7Mjn6D6HHWosykg+YX13mR5pqaXMKMBjVJQn6T/AVtBF9pPq01E4uTA==
+X-Received: by 2002:a62:1bd0:: with SMTP id b199mr8648232pfb.283.1588778506852;
+        Wed, 06 May 2020 08:21:46 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id a2sm2130015pfg.106.2020.05.06.08.21.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 May 2020 08:21:45 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Luis Henriques <lhenriques@suse.com>
+Subject: [PATCH 06/10] pstore: Add proper unregister lock checking
+Date:   Wed,  6 May 2020 08:21:10 -0700
+Message-Id: <20200506152114.50375-7-keescook@chromium.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200506152114.50375-1-keescook@chromium.org>
+References: <20200506152114.50375-1-keescook@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -50,97 +65,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tommi Rantala <tommi.t.rantala@nokia.com>
+The pstore backend lock wasn't being used during pstore_unregister().
+Add sanity check and locking.
 
-Commit 2d4f27999b88 ("perf data: Add global path holder") missed path
-conversion in tests/topology.c, causing the "Session topology" testcase
-to "hang" (waits forever for input from stdin) when doing "ssh $VM perf
-test".
-
-Can be reproduced by running "cat | perf test topo", and crashed by
-replacing cat with true:
-
-  $ true | perf test -v topo
-  40: Session topology                                      :
-  --- start ---
-  test child forked, pid 3638
-  templ file: /tmp/perf-test-QPvAch
-  incompatible file format
-  incompatible file format (rerun with -v to learn more)
-  free(): invalid pointer
-  test child interrupted
-  ---- end ----
-  Session topology: FAILED!
-
-Committer testing:
-
-Reproduced the above result before the patch and after it is back
-working:
-
-  # true | perf test -v topo
-  41: Session topology                                      :
-  --- start ---
-  test child forked, pid 19374
-  templ file: /tmp/perf-test-YOTEQg
-  CPU 0, core 0, socket 0
-  CPU 1, core 1, socket 0
-  CPU 2, core 2, socket 0
-  CPU 3, core 3, socket 0
-  CPU 4, core 0, socket 0
-  CPU 5, core 1, socket 0
-  CPU 6, core 2, socket 0
-  CPU 7, core 3, socket 0
-  test child finished with 0
-  ---- end ----
-  Session topology: Ok
-  #
-
-Fixes: 2d4f27999b88 ("perf data: Add global path holder")
-Signed-off-by: Tommi Rantala <tommi.t.rantala@nokia.com>
-Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Mamatha Inamdar <mamatha4@linux.vnet.ibm.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Link: http://lore.kernel.org/lkml/20200423115341.562782-1-tommi.t.rantala@nokia.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- tools/perf/tests/topology.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+ fs/pstore/platform.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/tests/topology.c b/tools/perf/tests/topology.c
-index 4a800499d7c3..22daf2bdf5fa 100644
---- a/tools/perf/tests/topology.c
-+++ b/tools/perf/tests/topology.c
-@@ -33,10 +33,8 @@ static int session_write_header(char *path)
- {
- 	struct perf_session *session;
- 	struct perf_data data = {
--		.file      = {
--			.path = path,
--		},
--		.mode      = PERF_DATA_MODE_WRITE,
-+		.path = path,
-+		.mode = PERF_DATA_MODE_WRITE,
- 	};
+diff --git a/fs/pstore/platform.c b/fs/pstore/platform.c
+index d0ce22237589..03bc847a6951 100644
+--- a/fs/pstore/platform.c
++++ b/fs/pstore/platform.c
+@@ -69,8 +69,9 @@ static void pstore_dowork(struct work_struct *);
+ static DECLARE_WORK(pstore_work, pstore_dowork);
  
- 	session = perf_session__new(&data, false, NULL);
-@@ -63,10 +61,8 @@ static int check_cpu_topology(char *path, struct perf_cpu_map *map)
+ /*
+- * psinfo_lock just protects "psinfo" during
+- * calls to pstore_register()
++ * psinfo_lock protects "psinfo" during calls to
++ * pstore_register(), pstore_unregister(), and
++ * the filesystem mount/unmount routines.
+  */
+ static DEFINE_MUTEX(psinfo_lock);
+ struct pstore_info *psinfo;
+@@ -626,6 +627,18 @@ EXPORT_SYMBOL_GPL(pstore_register);
+ 
+ void pstore_unregister(struct pstore_info *psi)
  {
- 	struct perf_session *session;
- 	struct perf_data data = {
--		.file      = {
--			.path = path,
--		},
--		.mode      = PERF_DATA_MODE_READ,
-+		.path = path,
-+		.mode = PERF_DATA_MODE_READ,
- 	};
- 	int i;
++	/* It's okay to unregister nothing. */
++	if (!psi)
++		return;
++
++	mutex_lock(&psinfo_lock);
++
++	/* Only one backend can be registered at a time. */
++	if (WARN_ON(psi != psinfo)) {
++		mutex_unlock(&psinfo_lock);
++		return;
++	}
++
+ 	/* Stop timer and make sure all work has finished. */
+ 	pstore_update_ms = -1;
+ 	del_timer_sync(&pstore_timer);
+@@ -644,6 +657,7 @@ void pstore_unregister(struct pstore_info *psi)
+ 
+ 	psinfo = NULL;
+ 	backend = NULL;
++	mutex_unlock(&psinfo_lock);
+ }
+ EXPORT_SYMBOL_GPL(pstore_unregister);
  
 -- 
-2.21.1
+2.20.1
 
