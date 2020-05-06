@@ -2,214 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CD7B1C6BF3
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 10:39:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 325211C6C37
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 10:48:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728811AbgEFIj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 04:39:58 -0400
-Received: from mail-il1-f195.google.com ([209.85.166.195]:45881 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728524AbgEFIj5 (ORCPT
+        id S1728915AbgEFIsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 04:48:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728367AbgEFIsu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 04:39:57 -0400
-Received: by mail-il1-f195.google.com with SMTP id i16so943780ils.12;
-        Wed, 06 May 2020 01:39:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sQZRu3UTjV+/kLJxLqBTxgv9YHYyyavj3ZSdubKbJCI=;
-        b=HM7iIL5SES4Y2mqOxjaTKo674lUQuxcDXj/nJn866vM4q2Nn9gsREhOP8VVZ8nL/bA
-         Wn0sIM9shfnU7Rn1/YnbpG3R2DmJnLVB5Qjjlxs6dJyRV7tDj41UH90eEqF55pzkU/dE
-         gnPNmkt9GpHKqxZLiA8kW9BRwBWUTJ6fvzXQy02FJpQ3nz0bbVcIqMIiCppOneNdIv0x
-         BSDrsLphYba2JQAQkC1Bt8unv47CVkPSsUcB9KsRRpBqG53iS7saZYoh1grxk5cHouMo
-         PBl8nDoZCM6VLQpzunQJYC30i71iVDYmIcQlVuPiXXLIWoiClCeD6UQUGoJpVrWiHe61
-         imZA==
-X-Gm-Message-State: AGi0PuZc+Nc1rv8XJLliFCufQ8q4X1nYM3ONxXCUPfaYYiYCShhp89II
-        td37qRZp8Skxf1f3NDD4HecKbPOIUsC8Sywiyds=
-X-Google-Smtp-Source: APiQypJhL5x4h6yRyrQcH4I8C6qpXD2jAX+nlqG3C7D9G5pkYUXsahCUXP2HkUMXF39EcBY9bS+dFjnQzmYXOtQ5WtA=
-X-Received: by 2002:a92:c52a:: with SMTP id m10mr7949632ili.208.1588754396262;
- Wed, 06 May 2020 01:39:56 -0700 (PDT)
+        Wed, 6 May 2020 04:48:50 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA20EC061A0F
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 01:48:49 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jWFj5-0007pW-Ij; Wed, 06 May 2020 10:48:23 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id F063D1001F5; Wed,  6 May 2020 10:48:22 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [patch V4 part 2 15/18] x86/kvm/svm: Handle hardirqs proper on guest enter/exit
+In-Reply-To: <baf61125-72f4-5fd1-9ba1-6d55a2efdddd@redhat.com>
+References: <20200505134112.272268764@linutronix.de> <20200505134341.579034898@linutronix.de> <baf61125-72f4-5fd1-9ba1-6d55a2efdddd@redhat.com>
+Date:   Wed, 06 May 2020 10:48:22 +0200
+Message-ID: <87imh9o3e1.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <1588213867-32274-1-git-send-email-yangtiezhu@loongson.cn>
- <CAAhV-H5QBOnrqVbMfGf7H5vJ6UMhUxhkCqAzZiwRFn_VwTQHpA@mail.gmail.com> <7d7f6211-f6bc-daae-5b13-b54092e762a1@loongson.cn>
-In-Reply-To: <7d7f6211-f6bc-daae-5b13-b54092e762a1@loongson.cn>
-From:   Huacai Chen <chenhc@lemote.com>
-Date:   Wed, 6 May 2020 16:47:30 +0800
-Message-ID: <CAAhV-H7jX9uVwb+GnaKXHPBsBQY35YKccbDedLrmfp8-hveVfw@mail.gmail.com>
-Subject: Re: [PATCH v6] MIPS: Loongson: Add DMA support for LS7A
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Tiezhu,
+Paolo Bonzini <pbonzini@redhat.com> writes:
 
-On Wed, May 6, 2020 at 2:39 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
+> On 05/05/20 15:41, Thomas Gleixner wrote:
+>>  	/*
+>> -	 * Tell context tracking that this CPU is back.
+>> +	 * VMEXIT disables interrupts (host state, see the CLI in the ASM
+>> +	 * above),
 >
-> On 04/30/2020 02:19 PM, Huacai Chen wrote:
-> > Hi  Christoph,
-> >
-> > On Thu, Apr 30, 2020 at 10:31 AM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
-> >> In the current market, the most used bridge chip on the Loongson
-> >> platform are RS780E and LS7A, the RS780E bridge chip is already
-> >> supported by the mainline kernel.
-> >>
-> >> In order to use the default implementation of __phys_to_dma() and
-> >> __dma_to_phys() in dma-direct.h, remove CONFIG_ARCH_HAS_PHYS_TO_DMA
-> >> and then set the bus's DMA limit to 36 bit for RS780E to maintain
-> >> downward compatibility.
-> > I know that you want use the default implementation of __phys_to_dma()
-> > and __dma_to_phys() as more as possible. But, if that is "impossible"
-> > on Loongson-3, should we still be forced to use the default? Yes, this
-> > patch makes the default version work, but it limit the device's DMA
-> > capability, which is not what we want.
->
-> Hi Huacai,
->
-> We know that the AMD RS780E bridge chip has been discontinued for
-> some years, as time goes by, it will gradually quit the stage of
-> history.
->
-> Today and in the future, the most popular used bridge chip on the
-> Loongson platform is LS7A, so the initial aim of this patch is to
-> add DMA support for LS7A, at the same time, we should maintain
-> downward compatibility for RS780E.
->
-> For the above reasons, I think what you are concerned is not a
-> big deal.
-I don't think so, this is obviously a regression. If we can accept a
-regression of RS780E, why we still maintain Loongson-2EF rather than
-simply drop them?
+> Apart from the small inaccuracy in that CLI has moved to vmenter.S, the
 
+yes, that's a leftover from an earlier version.
+
+> comments and commit message don't really help my understanding of why
+> this is needed.
 >
-> Thanks,
-> Tiezhu Yang
+> It's true that interrupts cause a vmexit, and therefore from the
+> processor point of view it's as if they are enabled.  However, the
+> interrupt remains latched until local_irq_enable() in vcpu_enter_guest,
+> so from the point of view of the kernel interrupts are still disabled. I
+> don't understand why it's necessary to inform tracing and lockdep about
+> a processor-internal state that doesn't percolate up to the kernel.
 >
-> >
-> >> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> >> ---
-> >>
-> >> Hi Christoph and Jiaxun,
-> >>
-> >> Thank you very much for your suggestions.
-> >>
-> >> v5:
-> >>    - use the default implementation of __phys_to_dma()
-> >>      and __dma_to_phys() in dma-direct.h
-> >>
-> >> v6:
-> >>    - make loongson_dma_config() static
-> >>    - put ls7a things before rs780 things
-> >>
-> >>   arch/mips/Kconfig                                  |  1 -
-> >>   arch/mips/include/asm/mach-loongson64/boot_param.h |  5 +++++
-> >>   arch/mips/loongson64/dma.c                         | 22 +++++++++++-----------
-> >>   arch/mips/loongson64/env.c                         |  2 ++
-> >>   4 files changed, 18 insertions(+), 12 deletions(-)
-> >>
-> >> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-> >> index 9f15539..12b6bdb 100644
-> >> --- a/arch/mips/Kconfig
-> >> +++ b/arch/mips/Kconfig
-> >> @@ -1454,7 +1454,6 @@ choice
-> >>   config CPU_LOONGSON64
-> >>          bool "Loongson 64-bit CPU"
-> >>          depends on SYS_HAS_CPU_LOONGSON64
-> >> -       select ARCH_HAS_PHYS_TO_DMA
-> >>          select CPU_MIPSR2
-> >>          select CPU_HAS_PREFETCH
-> >>          select CPU_SUPPORTS_64BIT_KERNEL
-> >> diff --git a/arch/mips/include/asm/mach-loongson64/boot_param.h b/arch/mips/include/asm/mach-loongson64/boot_param.h
-> >> index f082d87..0c07a96 100644
-> >> --- a/arch/mips/include/asm/mach-loongson64/boot_param.h
-> >> +++ b/arch/mips/include/asm/mach-loongson64/boot_param.h
-> >> @@ -197,6 +197,7 @@ enum loongson_bridge_type {
-> >>          RS780E = 2
-> >>   };
-> >>
-> >> +struct pci_dev;
-> >>   struct loongson_system_configuration {
-> >>          u32 nr_cpus;
-> >>          u32 nr_nodes;
-> >> @@ -221,9 +222,13 @@ struct loongson_system_configuration {
-> >>          u32 nr_sensors;
-> >>          struct sensor_device sensors[MAX_SENSORS];
-> >>          u64 workarounds;
-> >> +       void (*dma_config)(struct pci_dev *pdev);
-> >>   };
-> >>
-> >>   extern struct efi_memory_map_loongson *loongson_memmap;
-> >>   extern struct loongson_system_configuration loongson_sysconf;
-> >>
-> >> +extern void ls7a_dma_config(struct pci_dev *pdev);
-> >> +extern void rs780e_dma_config(struct pci_dev *pdev);
-> >> +
-> >>   #endif
-> >> diff --git a/arch/mips/loongson64/dma.c b/arch/mips/loongson64/dma.c
-> >> index 5e86635..ef40b0d 100644
-> >> --- a/arch/mips/loongson64/dma.c
-> >> +++ b/arch/mips/loongson64/dma.c
-> >> @@ -1,24 +1,24 @@
-> >>   // SPDX-License-Identifier: GPL-2.0
-> >> -#include <linux/dma-direct.h>
-> >> +#include <linux/pci.h>
-> >>   #include <linux/init.h>
-> >>   #include <linux/swiotlb.h>
-> >>
-> >> -dma_addr_t __phys_to_dma(struct device *dev, phys_addr_t paddr)
-> >> +void ls7a_dma_config(struct pci_dev *pdev)
-> >>   {
-> >> -       /* We extract 2bit node id (bit 44~47, only bit 44~45 used now) from
-> >> -        * Loongson-3's 48bit address space and embed it into 40bit */
-> >> -       long nid = (paddr >> 44) & 0x3;
-> >> -       return ((nid << 44) ^ paddr) | (nid << 37);
-> >>   }
-> >>
-> >> -phys_addr_t __dma_to_phys(struct device *dev, dma_addr_t daddr)
-> >> +void rs780e_dma_config(struct pci_dev *pdev)
-> >>   {
-> >> -       /* We extract 2bit node id (bit 44~47, only bit 44~45 used now) from
-> >> -        * Loongson-3's 48bit address space and embed it into 40bit */
-> >> -       long nid = (daddr >> 37) & 0x3;
-> >> -       return ((nid << 37) ^ daddr) | (nid << 44);
-> >> +       pdev->dev.bus_dma_limit = DMA_BIT_MASK(36);
-> >>   }
-> >>
-> >> +static void loongson_dma_config(struct pci_dev *pdev)
-> >> +{
-> >> +       loongson_sysconf.dma_config(pdev);
-> >> +}
-> >> +
-> >> +DECLARE_PCI_FIXUP_EARLY(PCI_ANY_ID, PCI_ANY_ID, loongson_dma_config);
-> >> +
-> >>   void __init plat_swiotlb_setup(void)
-> >>   {
-> >>          swiotlb_init(1);
-> >> diff --git a/arch/mips/loongson64/env.c b/arch/mips/loongson64/env.c
-> >> index 71f4aaf..496f401 100644
-> >> --- a/arch/mips/loongson64/env.c
-> >> +++ b/arch/mips/loongson64/env.c
-> >> @@ -192,8 +192,10 @@ void __init prom_init_env(void)
-> >>          if (vendor == PCI_VENDOR_ID_LOONGSON && device == 0x7a00) {
-> >>                  pr_info("The bridge chip is LS7A\n");
-> >>                  loongson_sysconf.bridgetype = LS7A;
-> >> +               loongson_sysconf.dma_config = ls7a_dma_config;
-> >>          } else {
-> >>                  pr_info("The bridge chip is RS780E or SR5690\n");
-> >>                  loongson_sysconf.bridgetype = RS780E;
-> >> +               loongson_sysconf.dma_config = rs780e_dma_config;
-> >>          }
-> >>   }
-> >> --
-> >> 2.1.0
-> >>
+> For VMX indeed some care is necessary, because we the interrupt is eaten
+> rather than latched.  Therefore, we call the interrupt handler from
+> handle_external_interrupt_irqoff while EFLAGS.IF is still clear.
+> However, if informing trace and lockdep turns out to be unnecessary
+> after all for SVM, it should be okay (and clearer) to place the code in
+> handle_external_interrupt_irqoff (also in arch/x86/kvm/vmx/vmx.c) .
 >
+> Instead, if I'm wrong, the four steps above are the same in code and
+> comment, and same for the three steps in the comment below.  Can you
+> replace them with the "why" of this change?
+
+Sorry, yes the changelog and the comments are not really helpful.
+
+From an instrumentation point of view, entering guest mode or returning
+to user mode is more or less the same.
+
+On return to user mode the kernel disables interrupts and the
+sysret/iret reenables them. When entering the kernel from user mode via
+syscall/exception the entry disables interrupts again. So for
+instrumentation, especially interrupt disabled tracing we must track
+that change otherwise a latency analysis would claim that interrupts
+were disabled for the full time a task spent in user mode.
+
+For guest mode this is practically the same. Before we enter the guest
+the host state has to flip back to 'interrupts enabled' and on vmexit
+reestablish the interrupt disabled state. The reason of the vmexit
+(interrupt, trapped access, halt) is irrelevant from a host state
+perspective so the tracking really needs to be right at the edge like we
+do for the user mode transitions.
+
+I'll sit down and write up more coherent comments and changelog.
+
+Thanks,
+
+        tglx
