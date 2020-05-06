@@ -2,52 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 098B71C6C64
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 11:04:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B77471C6C69
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 11:07:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728938AbgEFJEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 05:04:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46906 "EHLO mail.kernel.org"
+        id S1728979AbgEFJHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 05:07:30 -0400
+Received: from a3.inai.de ([88.198.85.195]:44678 "EHLO a3.inai.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726935AbgEFJEn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 05:04:43 -0400
-Received: from localhost (unknown [122.181.213.114])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1351920714;
-        Wed,  6 May 2020 09:04:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588755882;
-        bh=UmRfIgrDkfkbhyaF1rH3TCqqTzBBRSFZuTzOSYuwxaI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DwIYbt28Tk7K7gzQRm9dsEZZR1/ORFvc/F7lF3Ro/JpkC49+1aSnZzrv/lhtmToJI
-         KIAx/skmpMjkbY4W0hK0bi6nDtgZjgCps0yT9kEDMa1NWibBJxUXMM59iEp9JlaG6V
-         FqcqcBLWSr9sHuwL1gZ+0SuciCFPZ6wZsENjiSAw=
-Date:   Wed, 6 May 2020 14:34:33 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Wesley Cheng <wcheng@codeaurora.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, kishon@ti.com,
-        robh+dt@kernel.org, sboyd@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, jackp@codeaurora.org
-Subject: Re: [PATCH] dt-bindings: phy: usb-snps-femto-v2: Add regulator
- entries to example
-Message-ID: <20200506090433.GA1375924@vkoul-mobl>
-References: <1588753589-22673-1-git-send-email-wcheng@codeaurora.org>
+        id S1728474AbgEFJHa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 05:07:30 -0400
+Received: by a3.inai.de (Postfix, from userid 25121)
+        id E9DD35872FA74; Wed,  6 May 2020 11:07:23 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by a3.inai.de (Postfix) with ESMTP id E894D60C40095;
+        Wed,  6 May 2020 11:07:23 +0200 (CEST)
+Date:   Wed, 6 May 2020 11:07:23 +0200 (CEST)
+From:   Jan Engelhardt <jengelh@inai.de>
+To:     Huang Qijun <dknightjun@gmail.com>
+cc:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
+        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
+        yhs@fb.com, andriin@fb.com, john.fastabend@gmail.com,
+        kpsingh@chromium.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH] netfilter: fix make target xt_TCPMSS.o error.
+In-Reply-To: <20200506065021.2881-1-dknightjun@gmail.com>
+Message-ID: <nycvar.YFH.7.76.2005061106420.3951@n3.vanv.qr>
+References: <20200506065021.2881-1-dknightjun@gmail.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1588753589-22673-1-git-send-email-wcheng@codeaurora.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06-05-20, 01:26, Wesley Cheng wrote:
-> Fix errors reported by dt_binding_check, due to missing required
-> regulators in the example node.
+On Wednesday 2020-05-06 08:50, Huang Qijun wrote:
 
-Applied, thanks
+>When compiling netfilter, there will be an error
+>"No rule to make target 'net/netfilter/xt_TCPMSS.o'",
+>because the xt_TCPMSS.c in the makefile is uppercase,
+>and the file name of the source file (xt_tcpmss.c) is lowercase.
 
--- 
-~Vinod
+>-obj-$(CONFIG_NETFILTER_XT_TARGET_TCPMSS) += xt_TCPMSS.o
+>+obj-$(CONFIG_NETFILTER_XT_TARGET_TCPMSS) += xt_tcpmss.o
+
+Uhm, no:
+
+11:07 a4:../net/netfilter » ls -l xt_*[Mm][Ss]*.c
+-rw-r--r-- 1 jengelh users 8948 Feb 27 09:30 xt_TCPMSS.c
+-rw-r--r-- 1 jengelh users 2459 Feb 27 09:30 xt_tcpmss.c
