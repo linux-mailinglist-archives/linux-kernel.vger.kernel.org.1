@@ -2,70 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A05441C7236
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 15:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EEC21C71F7
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 15:45:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728912AbgEFNyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 09:54:06 -0400
-Received: from alexa-out-blr-02.qualcomm.com ([103.229.18.198]:21794 "EHLO
-        alexa-out-blr-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728662AbgEFNyF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 09:54:05 -0400
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by alexa-out-blr-02.qualcomm.com with ESMTP/TLS/AES256-SHA; 06 May 2020 19:24:00 +0530
-Received: from minint-dvc2thc.qualcomm.com (HELO sartgarg-linux.qualcomm.com) ([10.206.24.245])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 06 May 2020 19:23:56 +0530
-Received: by sartgarg-linux.qualcomm.com (Postfix, from userid 2339771)
-        id 0E0162654; Wed,  6 May 2020 19:23:56 +0530 (IST)
-From:   Sarthak Garg <sartgarg@codeaurora.org>
-To:     adrian.hunter@intel.com, ulf.hansson@linaro.org
-Cc:     vbadigan@codeaurora.org, stummala@codeaurora.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Sarthak Garg <sartgarg@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: [PATCH V1 2/2] mmc: sdhci-msm: Use maximum possible data timeout value
-Date:   Wed,  6 May 2020 19:14:31 +0530
-Message-Id: <1588772671-19675-3-git-send-email-sartgarg@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1588772671-19675-1-git-send-email-sartgarg@codeaurora.org>
-References: <1588772671-19675-1-git-send-email-sartgarg@codeaurora.org>
+        id S1728621AbgEFNpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 09:45:04 -0400
+Received: from foss.arm.com ([217.140.110.172]:36894 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726129AbgEFNpD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 09:45:03 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 01841D6E;
+        Wed,  6 May 2020 06:45:03 -0700 (PDT)
+Received: from bogus (unknown [10.37.8.198])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 369513F68F;
+        Wed,  6 May 2020 06:45:01 -0700 (PDT)
+Date:   Wed, 6 May 2020 14:44:53 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Peng Fan <peng.fan@nxp.com>, Marc Zyngier <maz@kernel.org>,
+        Steven Price <steven.price@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] firmware: arm_scmi: fix psci dependency
+Message-ID: <20200506134438.GA27915@bogus>
+References: <20200505140820.536615-1-arnd@arndb.de>
+ <20200505150421.GA23612@bogus>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200505150421.GA23612@bogus>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The MSM SD controller defines the usage of 0xF in data
-timeout counter register (0x2E) which is actually a reserved
-bit as per specification. This would result in maximum of 21.26 secs
-timeout value.
+On Tue, May 05, 2020 at 04:04:21PM +0100, Sudeep Holla wrote:
+> Hi Arnd,
+>
+> On Tue, May 05, 2020 at 04:08:08PM +0200, Arnd Bergmann wrote:
+> > When CONFIG_ARM_PSCI_FW is disabled but CONFIG_HAVE_ARM_SMCCC is enabled,
+> > arm-scmi runs into a link failure:
+> >
+> > arm-linux-gnueabi-ld: drivers/firmware/arm_scmi/smc.o: in function `smc_send_message':
+> > smc.c:(.text+0x200): undefined reference to `arm_smccc_1_1_get_conduit'
+> >
+> > Use an inline helper to default to version v1.0 in the absence of psci.
+> >
+>
+> Thanks for fixing this. I was thinking if we can separate PSCI and SMCCC
+> quickly as a fix for this but I think he needs to be discussed in detail.
+>
+> I am fine with this fix as is and happy to apply to my tree if no one
+> objects.
+>
+> Sorry but taking this patch as opportunity to discuss how to carry the
+> dependency in future. Just a proposal,
+>
+> 1. Introduce a DT node for SMCCC v1.2+
 
-Some SDcard taking more time than 2.67secs (timeout value corresponding
-to 0xE) and with that observed data timeout errors.
-So increasing the timeout value to max possible timeout.
+Sorry for the confusion and the above note might have scared people.
+Also I misunderstood some internal discussions we had as part of my
+SMCCC SOC_ID series[1]. I realised(rather Mark made me realise) this
+SCMI SMC is kind of dependent on PSCI as we reuse the conduit from there.
+So for now I will make it depend on PSCI to fix the build temporarily.
 
-Signed-off-by: Sahitya Tummala <stummala@codeaurora.org>
-Signed-off-by: Sarthak Garg <sartgarg@codeaurora.org>
----
- drivers/mmc/host/sdhci-msm.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Also I will try to work out if we can move HAVE_ARCH_SMCCC to something
+like HAVE_ARCH_RAW_SMCCC and use HAVE_ARCH_SMCCC for newer changes that
+depend on PSCI for probing and conduit. The legacy SMCCC can then go under
+HAVE_ARCH_RAW_SMCCC. This was Mark's suggestion, I will try to work it
+out and may be post it as part of my SMCCC SOC_ID series also moving
+code under drivers/firmware/smccc
 
-diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
-index 8a055dd..909855b 100644
---- a/drivers/mmc/host/sdhci-msm.c
-+++ b/drivers/mmc/host/sdhci-msm.c
-@@ -1888,7 +1888,8 @@ static const struct sdhci_pltfm_data sdhci_msm_pdata = {
- 		  SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN |
- 		  SDHCI_QUIRK_MULTIBLOCK_READ_ACMD12,
- 
--	.quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN,
-+	.quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN |
-+		SDHCI_QUIRK2_USE_RESERVED_MAX_TIMEOUT,
- 	.ops = &sdhci_msm_ops,
- };
- 
--- 
-2.7.4
+--
+Regards,
+Sudeep
 
+[1] https://lore.kernel.org/r/20200504092905.10580-1-sudeep.holla@arm.com
