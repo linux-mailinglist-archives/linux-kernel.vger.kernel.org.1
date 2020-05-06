@@ -2,77 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11CE41C7775
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 19:09:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD2D81C7779
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 19:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729939AbgEFRJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 13:09:15 -0400
-Received: from smtprelay0052.hostedemail.com ([216.40.44.52]:37598 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729414AbgEFRJP (ORCPT
+        id S1729936AbgEFRLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 13:11:42 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:33642 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727984AbgEFRLl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 13:09:15 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 57B3B18007091;
-        Wed,  6 May 2020 17:09:14 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:560:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2553:2559:2562:2731:2828:2895:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3870:3871:3872:3873:3874:4321:5007:6119:6238:7514:7875:9010:10004:10400:10848:11232:11658:11914:12043:12297:12555:12740:12760:12895:12986:13069:13311:13357:13439:13870:14096:14097:14180:14181:14659:14721:21060:21080:21451:21627:21939:30054:30060:30070:30083:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:3,LUA_SUMMARY:none
-X-HE-Tag: ants64_8ab334094600b
-X-Filterd-Recvd-Size: 2212
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf11.hostedemail.com (Postfix) with ESMTPA;
-        Wed,  6 May 2020 17:09:13 +0000 (UTC)
-Message-ID: <db73e101ef0899149cf297e912cb2cb1e2572067.camel@perches.com>
-Subject: Re: MAINTAINERS: Wrong ordering in S390 PCI SUBSYSTEM
-From:   Joe Perches <joe@perches.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Pierre Morel <pmorel@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Wed, 06 May 2020 10:09:11 -0700
-In-Reply-To: <CAHp75VeNiuJ7QXvNO2=W_TjEjjK3xRbg0-Don6HkSOHV5LXRbA@mail.gmail.com>
-References: <alpine.DEB.2.21.2005060741520.7719@felia>
-         <CAHp75VeNiuJ7QXvNO2=W_TjEjjK3xRbg0-Don6HkSOHV5LXRbA@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.1-2 
+        Wed, 6 May 2020 13:11:41 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 046H7ej3030352;
+        Wed, 6 May 2020 17:10:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=Gh/bK3Ozxr+vWT2YLDN3MVNexDkHsD1zfFjnuMYLraY=;
+ b=bJ5JSEUHz2V1KrFRLwAaLoL3zQkcfkOhfsJHe1Kjino4+BEOTrYXnL2iAPpKgEEbvPWA
+ PkctDI9k12t1btxIo+fVxWHgnHFuJEFA0tjv2crFkguMV4Ncs3BGSdFD6v0QNnm+CTul
+ VvQzQGYpYlXPTJGLzDEvABEzcxJJzKW7Idca1Ye4sHMAUM5zMVO75HH6etryCasAp8gA
+ 7lMvZQryayMetQChY3vlMg64fZyr5AIC6r4PMdweIq4lZ6pVBqHycr3nvxu5t8iHhZYj
+ 6yLkohqoZI1HFqnxIOyMoGysClPmt0/miMOfFArjuUmLm6/m85gtHcJGVWo2MhWSfgDA dg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 30s09rbpwd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 06 May 2020 17:10:45 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 046H6oCO017727;
+        Wed, 6 May 2020 17:10:44 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 30sjdvxuuw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 06 May 2020 17:10:42 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 046HAc2n018609;
+        Wed, 6 May 2020 17:10:38 GMT
+Received: from linux-1.home (/10.175.10.30)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 06 May 2020 10:10:38 -0700
+Subject: Re: [patch V4 part 1 36/36] rcu: Make RCU IRQ enter/exit functions
+ rely on in_nmi()
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+References: <20200505131602.633487962@linutronix.de>
+ <20200505134101.617130349@linutronix.de>
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+Message-ID: <8c963392-0f43-3867-7f31-1644ac1592c9@oracle.com>
+Date:   Wed, 6 May 2020 19:09:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
+In-Reply-To: <20200505134101.617130349@linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9613 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0 mlxscore=0
+ bulkscore=0 adultscore=0 phishscore=0 mlxlogscore=999 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005060138
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9613 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0
+ lowpriorityscore=0 spamscore=0 adultscore=0 clxscore=1015 suspectscore=0
+ priorityscore=1501 malwarescore=0 mlxlogscore=999 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005060138
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-05-06 at 13:51 +0300, Andy Shevchenko wrote:
-> On Wed, May 6, 2020 at 8:46 AM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
-> > Hi Pierre,
-> > 
-> > with your commit de267a7c71ba ("s390/pci: Documentation for zPCI"),
-> > visible on next-20200505, ./scripts/checkpatch.pl -f MAINTAINERS
-> > complains:
-> > 
-> > WARNING: Misordered MAINTAINERS entry - list file patterns in alphabetic order
-> > #14723: FILE: MAINTAINERS:14723:
-> > +F:     drivers/pci/hotplug/s390_pci_hpc.c
-> > +F:     Documentation/s390/pci.rst
-> > 
-> > 
-> > This is due to wrong ordering of the entries in your submission. If you
-> > would like me to send you a patch fixing that, please just let me know.
-> > 
-> > It is a recent addition to checkpatch.pl to report ordering problems in
-> > MAINTAINERS, so you might have not seen that at submission time.
+
+On 5/5/20 3:16 PM, Thomas Gleixner wrote:
+> From: Paul E. McKenney <paulmck@kernel.org>
 > 
-> Why not to send a patch?
-> Same for the rest of similar mails from you.
+> The rcu_nmi_enter_common() and rcu_nmi_exit_common() functions take an
+> "irq" parameter that indicates whether these functions are invoked from
+> an irq handler (irq==true) or an NMI handler (irq==false).  However,
+> recent changes have applied notrace to a few critical functions such
+> that rcu_nmi_enter_common() and rcu_nmi_exit_common() many now rely
+> on in_nmi().  Note that in_nmi() works no differently than before,
+> but rather that tracing is now prohibited in code regions where in_nmi()
+> would incorrectly report NMI state.
+> 
+> Therefore remove the "irq" parameter and inlines rcu_nmi_enter_common() and
+> rcu_nmi_exit_common() into rcu_nmi_enter() and rcu_nmi_exit(),
+> respectively.
+> 
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>   kernel/rcu/tree.c |   47 +++++++++++++++--------------------------------
+>   1 file changed, 15 insertions(+), 32 deletions(-)
 
-Frequently an original patch, which has yet to hit Linus' tree,
-can be updated before being upstreamed to avoid unnecessary
-additional patches.
+I already sent a RB for the first patches for this serie, and went through the
+remaining of them (20-36). I am not very familiar with some these areas so for
+what it's worth:
 
-It's also good form so the author of the original patch can be
-aware of possible defects in submission.
+Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
+
+alex.
 
 
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -627,16 +627,18 @@ noinstr void rcu_user_enter(void)
+>   }
+>   #endif /* CONFIG_NO_HZ_FULL */
+>   
+> -/*
+> +/**
+> + * rcu_nmi_exit - inform RCU of exit from NMI context
+> + *
+>    * If we are returning from the outermost NMI handler that interrupted an
+>    * RCU-idle period, update rdp->dynticks and rdp->dynticks_nmi_nesting
+>    * to let the RCU grace-period handling know that the CPU is back to
+>    * being RCU-idle.
+>    *
+> - * If you add or remove a call to rcu_nmi_exit_common(), be sure to test
+> + * If you add or remove a call to rcu_nmi_exit(), be sure to test
+>    * with CONFIG_RCU_EQS_DEBUG=y.
+>    */
+> -static __always_inline void rcu_nmi_exit_common(bool irq)
+> +noinstr void rcu_nmi_exit(void)
+>   {
+>   	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+>   
+> @@ -667,7 +669,7 @@ static __always_inline void rcu_nmi_exit
+>   	trace_rcu_dyntick(TPS("Startirq"), rdp->dynticks_nmi_nesting, 0, atomic_read(&rdp->dynticks));
+>   	WRITE_ONCE(rdp->dynticks_nmi_nesting, 0); /* Avoid store tearing. */
+>   
+> -	if (irq)
+> +	if (!in_nmi())
+>   		rcu_prepare_for_idle();
+>   	instr_end();
+>   
+> @@ -675,22 +677,11 @@ static __always_inline void rcu_nmi_exit
+>   	rcu_dynticks_eqs_enter();
+>   	// ... but is no longer watching here.
+>   
+> -	if (irq)
+> +	if (!in_nmi())
+>   		rcu_dynticks_task_enter();
+>   }
+>   
+>   /**
+> - * rcu_nmi_exit - inform RCU of exit from NMI context
+> - *
+> - * If you add or remove a call to rcu_nmi_exit(), be sure to test
+> - * with CONFIG_RCU_EQS_DEBUG=y.
+> - */
+> -void noinstr rcu_nmi_exit(void)
+> -{
+> -	rcu_nmi_exit_common(false);
+> -}
+> -
+> -/**
+>    * rcu_irq_exit - inform RCU that current CPU is exiting irq towards idle
+>    *
+>    * Exit from an interrupt handler, which might possibly result in entering
+> @@ -712,7 +703,7 @@ void noinstr rcu_nmi_exit(void)
+>   void noinstr rcu_irq_exit(void)
+>   {
+>   	lockdep_assert_irqs_disabled();
+> -	rcu_nmi_exit_common(true);
+> +	rcu_nmi_exit();
+>   }
+>   
+>   /*
+> @@ -801,7 +792,7 @@ void noinstr rcu_user_exit(void)
+>   #endif /* CONFIG_NO_HZ_FULL */
+>   
+>   /**
+> - * rcu_nmi_enter_common - inform RCU of entry to NMI context
+> + * rcu_nmi_enter - inform RCU of entry to NMI context
+>    * @irq: Is this call from rcu_irq_enter?
+>    *
+>    * If the CPU was idle from RCU's viewpoint, update rdp->dynticks and
+> @@ -810,10 +801,10 @@ void noinstr rcu_user_exit(void)
+>    * long as the nesting level does not overflow an int.  (You will probably
+>    * run out of stack space first.)
+>    *
+> - * If you add or remove a call to rcu_nmi_enter_common(), be sure to test
+> + * If you add or remove a call to rcu_nmi_enter(), be sure to test
+>    * with CONFIG_RCU_EQS_DEBUG=y.
+>    */
+> -static __always_inline void rcu_nmi_enter_common(bool irq)
+> +noinstr void rcu_nmi_enter(void)
+>   {
+>   	long incby = 2;
+>   	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+> @@ -831,18 +822,18 @@ static __always_inline void rcu_nmi_ente
+>   	 */
+>   	if (rcu_dynticks_curr_cpu_in_eqs()) {
+>   
+> -		if (irq)
+> +		if (!in_nmi())
+>   			rcu_dynticks_task_exit();
+>   
+>   		// RCU is not watching here ...
+>   		rcu_dynticks_eqs_exit();
+>   		// ... but is watching here.
+>   
+> -		if (irq)
+> +		if (!in_nmi())
+>   			rcu_cleanup_after_idle();
+>   
+>   		incby = 1;
+> -	} else if (irq) {
+> +	} else if (!in_nmi()) {
+>   		instr_begin();
+>   		if (tick_nohz_full_cpu(rdp->cpu) &&
+>   		    rdp->dynticks_nmi_nesting == DYNTICK_IRQ_NONIDLE &&
+> @@ -877,14 +868,6 @@ static __always_inline void rcu_nmi_ente
+>   }
+>   
+>   /**
+> - * rcu_nmi_enter - inform RCU of entry to NMI context
+> - */
+> -noinstr void rcu_nmi_enter(void)
+> -{
+> -	rcu_nmi_enter_common(false);
+> -}
+> -
+> -/**
+>    * rcu_irq_enter - inform RCU that current CPU is entering irq away from idle
+>    *
+>    * Enter an interrupt handler, which might possibly result in exiting
+> @@ -909,7 +892,7 @@ noinstr void rcu_nmi_enter(void)
+>   noinstr void rcu_irq_enter(void)
+>   {
+>   	lockdep_assert_irqs_disabled();
+> -	rcu_nmi_enter_common(true);
+> +	rcu_nmi_enter();
+>   }
+>   
+>   /*
+> 
