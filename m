@@ -2,92 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87AF71C76F2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 18:48:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B020D1C772B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 18:51:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730251AbgEFQsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 12:48:13 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:2785 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730046AbgEFQsK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 12:48:10 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 49HMwQ0Hkrz9tybj;
-        Wed,  6 May 2020 18:48:06 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 3HTx1EqzAKdt; Wed,  6 May 2020 18:48:05 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 49HMwP6T2Mz9txk0;
-        Wed,  6 May 2020 18:48:05 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id AC0638B7C5;
-        Wed,  6 May 2020 18:48:07 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id j45Xcg18OEBK; Wed,  6 May 2020 18:48:07 +0200 (CEST)
-Received: from localhost.localdomain (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2FAFA8B7C3;
-        Wed,  6 May 2020 18:48:07 +0200 (CEST)
-Received: by localhost.localdomain (Postfix, from userid 0)
-        id 00C0F65911; Wed,  6 May 2020 16:48:06 +0000 (UTC)
-Message-Id: <2be05185972e755ffc830073c4d3e01447d68118.1588783498.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <cover.1588783498.git.christophe.leroy@csgroup.eu>
-References: <cover.1588783498.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v2 02/45] powerpc/kasan: Fix issues by lowering
- KASAN_SHADOW_END
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Wed,  6 May 2020 16:48:06 +0000 (UTC)
+        id S1730790AbgEFQvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 12:51:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730444AbgEFQsU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 12:48:20 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F83EC061A0F;
+        Wed,  6 May 2020 09:48:20 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id a21so3087597ljb.9;
+        Wed, 06 May 2020 09:48:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=IlweazdekYqS94U1Xj1r4OmuyOC1Nv3qU7YSDeCBRlM=;
+        b=AN3uHAOGD4JKrw8xuzUE7vpMKBJ5J8AJ/7JmX91Bmlt+py0Z7v16qngoQx+tkwuEVh
+         gDpn6xF1T0uGoHJmF8E0ezr227yjEmehoFoC75hYmJJ+AMM2GsbPnaoWgepSJv+B/vXa
+         PJT/p93k7uV1awCS2I4lP5lov50nMdUvCqkj9GU8Ua4CVJMEViYfoc9UKixCMp1mU4x4
+         A7iQ4nCVxlfU8K+H5FOSAfPpL6x8VVJBBx6YGA5VM+/2oythOg7/4oVj6mxPOt4mGHwK
+         ZcfNzwyMyLlHugrgi58R2Dr/grZOWsFfQPr+lewnPi6AYqpI44xbxkbMWTTIDE5JyL9I
+         pMUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=IlweazdekYqS94U1Xj1r4OmuyOC1Nv3qU7YSDeCBRlM=;
+        b=uO4dendeLXG1enmS0QZc5KIIr+yCo+02YCdu8NKt10G6M9MKQyQum3bfOjuBcj/LkY
+         ul0kuFOiV1Q+bLsbV8NFiBesUXCCTaeiBI3SfmX2vN1J2NU4ysWl+u2ziFJPXZtQgn1C
+         Y1ScKLcs0VTedGZrDFvlQqObLNKKxM0MzGCXgPraDMIYAW4K0d5CE71QH5US/yNPVqjL
+         AbrcKJiUWOMMfIQ5ma3uV21v/0l7DcZhNzL5CJpfvInCPNvsNPjwfDE45OQqahZw2f0c
+         VB0ulBcjkadaSLOB21Vm0MjVp3odAG6Jj6Fj/m9yx4DLYXS2gFA+Nb5rv2sT0YY9D7Rb
+         BQlg==
+X-Gm-Message-State: AGi0PuYNXh4Qr5w2eWD5aD/Ai4ymzBWYpIJOq1Xq321d/DkNj32SIfpo
+        M7VKtellgQQy723UroGSAFHDn1gTF9SaeSIo1+CuCw==
+X-Google-Smtp-Source: APiQypI2hjOb8TJaiPFfUG3oI9wfgz7TFR6gbZ+bohBeA0V3R1j0LyOpgLqQFPK3JItM2/KSqOJkEQ1G8J7Bw/Zepdo=
+X-Received: by 2002:a2e:9011:: with SMTP id h17mr5839071ljg.138.1588783698970;
+ Wed, 06 May 2020 09:48:18 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAADnVQJfD1dLVsfg4=c4f6ftRNF_4z0wELjFq8z=7voi-Ak=7w@mail.gmail.com>
+ <CAADnVQ+GOn4ZRGMZ+RScdSvM8gpXD9xbe3EYHCcUHdSs=i_NGA@mail.gmail.com>
+In-Reply-To: <CAADnVQ+GOn4ZRGMZ+RScdSvM8gpXD9xbe3EYHCcUHdSs=i_NGA@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 6 May 2020 09:48:07 -0700
+Message-ID: <CAADnVQLKuLu8wMJNO5w3AtFqyUTMmwzpctJMw0ORyUJM=M3bwA@mail.gmail.com>
+Subject: Re: pulling cap_perfmon
+To:     Ingo Molnar <mingo@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Network Development <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At the time being, KASAN_SHADOW_END is 0x100000000, which
-is 0 in 32 bits representation.
+On Mon, May 4, 2020 at 1:52 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Thu, Apr 30, 2020 at 11:03 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > Hi Ingo,
+> >
+> > I'd like to pull
+> > commit 980737282232 ("capabilities: Introduce CAP_PERFMON to kernel
+> > and user space")
+> > into bpf-next to base my CAP_BPF work on top of it.
+> > could you please prepare a stable tag for me to pull ?
+> > Last release cycle Thomas did a tag for bpf+rt prerequisite patches and
+> > it all worked well during the merge window.
+> > I think that one commit will suffice.
+> >
+> > Thanks!
+>
+> Looks like Ingo is offline.
+> Thomas,
+> could you please create a branch for me to pull?
+>
+> Thanks!
 
-This leads to a couple of issues:
-- kasan_remap_early_shadow_ro() does nothing because the comparison
-k_cur < k_end is always false.
-- In ptdump, address comparison for markers display fails and the
-marker's name is printed at the start of the KASAN area instead of
-being printed at the end.
-
-However, there is no need to shadow the KASAN shadow area itself,
-so the KASAN shadow area can stop shadowing memory at the start
-of itself.
-
-With a PAGE_OFFSET set to 0xc0000000, KASAN shadow area is then going
-from 0xf8000000 to 0xff000000.
-
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Fixes: cbd18991e24f ("powerpc/mm: Fix an Oops in kasan_mmu_init()")
-Cc: stable@vger.kernel.org
----
- arch/powerpc/include/asm/kasan.h | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/arch/powerpc/include/asm/kasan.h b/arch/powerpc/include/asm/kasan.h
-index fbff9ff9032e..fc900937f653 100644
---- a/arch/powerpc/include/asm/kasan.h
-+++ b/arch/powerpc/include/asm/kasan.h
-@@ -23,9 +23,7 @@
- 
- #define KASAN_SHADOW_OFFSET	ASM_CONST(CONFIG_KASAN_SHADOW_OFFSET)
- 
--#define KASAN_SHADOW_END	0UL
--
--#define KASAN_SHADOW_SIZE	(KASAN_SHADOW_END - KASAN_SHADOW_START)
-+#define KASAN_SHADOW_END	(-(-KASAN_SHADOW_START >> KASAN_SHADOW_SCALE_SHIFT))
- 
- #ifdef CONFIG_KASAN
- void kasan_early_init(void);
--- 
-2.25.0
-
+ping
