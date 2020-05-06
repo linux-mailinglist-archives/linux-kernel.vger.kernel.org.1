@@ -2,87 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 868E21C7A12
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 21:16:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 741231C7A2D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 21:24:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728590AbgEFTQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 15:16:33 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:45792 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728410AbgEFTQa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 15:16:30 -0400
-Received: by mail-ot1-f67.google.com with SMTP id e20so2296647otk.12;
-        Wed, 06 May 2020 12:16:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=RffY1VKIuHSTUWSQQaHo7x6JeP+WjY39egkTgOhujrc=;
-        b=c5UykAeQ1gYmZRITApNL+xBRUvKZG4l3oi1dw6GzoUZU1SC8p1CO+ToFirjqueEEU5
-         2IUKRUIp4+bZjenTvuWAxrqPtb+MhqlgKMNw8HLLfxuGuj+OTyrngX8DAZLLQ4ilTUNL
-         wyCpV83+qY0UOf3QrDEDPSlnlFxNfbmvycwTbw1nXH4GX7EmTtBue+LFFzxhiHwnJWII
-         9t1UysyHx5WRdR0YeXiXyKSpwO+Txd79E9xz9R7WtRuB6QwLjQmvaJC8Ww5PBihkMeDV
-         BzIrvEa7nHbsAZ5bY5iPD4SUph0bzyK9A1ZhGL88rAbt8Zaj+X5IVz3LMnTAxYXOTGR5
-         4GSw==
-X-Gm-Message-State: AGi0PubO8RHjiDSXrnK3HyNtsnI0IG3MdOkB8gaXGrKtdeHrDEVT+RP0
-        LYmx3YyeHQWlFf7XHHfBrA==
-X-Google-Smtp-Source: APiQypKX7Yv5OxxTXIw4EebyAUNARWZ7M2l2W40uhAxBhtZnJdkyt9oNdwaILP/riNyqVgTQ5qC/Hg==
-X-Received: by 2002:a9d:68d8:: with SMTP id i24mr7690098oto.371.1588792589363;
-        Wed, 06 May 2020 12:16:29 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id f14sm726909otl.62.2020.05.06.12.16.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 May 2020 12:16:28 -0700 (PDT)
-Received: (nullmailer pid 21925 invoked by uid 1000);
-        Wed, 06 May 2020 19:16:27 -0000
-Date:   Wed, 6 May 2020 14:16:27 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Ivan Mikhaylov <i.mikhaylov@yadro.com>
-Cc:     Ivan Mikhaylov <i.mikhaylov@yadro.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v12 1/2] dt-bindings: proximity: provide vcnl3020 device
- tree binding document
-Message-ID: <20200506191542.GA20381@bogus>
-References: <20200506010809.6348-1-i.mikhaylov@yadro.com>
- <20200506010809.6348-2-i.mikhaylov@yadro.com>
+        id S1728844AbgEFTYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 15:24:07 -0400
+Received: from node.akkea.ca ([192.155.83.177]:50624 "EHLO node.akkea.ca"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727110AbgEFTYG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 15:24:06 -0400
+X-Greylist: delayed 341 seconds by postgrey-1.27 at vger.kernel.org; Wed, 06 May 2020 15:24:06 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by node.akkea.ca (Postfix) with ESMTP id 972204E204D;
+        Wed,  6 May 2020 19:18:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akkea.ca; s=mail;
+        t=1588792705; bh=nJQ+uZEobk9pv0R9RtKOcEH3N7tNKBUrCdD5M9CPY54=;
+        h=From:To:Cc:Subject:Date;
+        b=sXGC/0l4sto0QB8MImtMcdGW6+pc8WCY7Niu0LCs/Beqy1mQdKi3mp7Oug4Uk5RPz
+         cv1LD3sOAFT/2UyDq95leVcq6r6Zm79tlnHqCxPPEM/PTIChF9BcsMleVDxYU9pN74
+         IehlQyTgvQVn9wNxUrYUXYbpZlwbEHqiAh1bMdf4=
+X-Virus-Scanned: Debian amavisd-new at mail.akkea.ca
+Received: from node.akkea.ca ([127.0.0.1])
+        by localhost (mail.akkea.ca [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 6yC_2xNZ-Abi; Wed,  6 May 2020 19:18:25 +0000 (UTC)
+Received: from midas.localdomain (S0106788a2041785e.gv.shawcable.net [70.66.86.75])
+        by node.akkea.ca (Postfix) with ESMTPSA id EA9A24E2003;
+        Wed,  6 May 2020 19:18:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akkea.ca; s=mail;
+        t=1588792705; bh=nJQ+uZEobk9pv0R9RtKOcEH3N7tNKBUrCdD5M9CPY54=;
+        h=From:To:Cc:Subject:Date;
+        b=sXGC/0l4sto0QB8MImtMcdGW6+pc8WCY7Niu0LCs/Beqy1mQdKi3mp7Oug4Uk5RPz
+         cv1LD3sOAFT/2UyDq95leVcq6r6Zm79tlnHqCxPPEM/PTIChF9BcsMleVDxYU9pN74
+         IehlQyTgvQVn9wNxUrYUXYbpZlwbEHqiAh1bMdf4=
+From:   Angus Ainslie <angus@akkea.ca>
+To:     angus@akkea.ca
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] tps6598x: add device tree hooks and document
+Date:   Wed,  6 May 2020 12:17:16 -0700
+Message-Id: <20200506191718.2144752-1-angus@akkea.ca>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200506010809.6348-2-i.mikhaylov@yadro.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 May 2020 04:08:08 +0300, Ivan Mikhaylov wrote:
-> Mostly standard i2c driver with some additional led-current option
-> for vcnl3020.
-> 
-> Signed-off-by: Ivan Mikhaylov <i.mikhaylov@yadro.com>
-> ---
->  .../iio/proximity/vishay,vcnl3020.yaml        | 65 +++++++++++++++++++
->  1 file changed, 65 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/proximity/vishay,vcnl3020.yaml
-> 
+Add device tree compatible string for tps6598x driver and create the dt binding doc for the driver
 
-My bot found errors running 'make dt_binding_check' on your patch:
+Angus Ainslie (2):
+  usb: typec: tps6598x: add device tree hooks
+  dt-bindings: usb: ti,tps6598x: add dt binding doc
 
-Documentation/devicetree/bindings/iio/proximity/vishay,vcnl3020.yaml: $id: relative path/filename doesn't match actual path or filename
-	expected: http://devicetree.org/schemas/iio/proximity/vishay,vcnl3020.yaml#
+ .../devicetree/bindings/usb/ti,tps6598x.yaml  | 75 +++++++++++++++++++
+ drivers/usb/typec/tps6598x.c                  |  7 ++
+ 2 files changed, 82 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/usb/ti,tps6598x.yaml
 
-See https://patchwork.ozlabs.org/patch/1284005
+-- 
+2.25.1
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure dt-schema is up to date:
-
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
-
-Please check and re-submit.
