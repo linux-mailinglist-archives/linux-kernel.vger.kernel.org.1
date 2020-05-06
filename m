@@ -2,181 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47A411C7577
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:56:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB0401C756D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:54:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729595AbgEFP4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 11:56:05 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:48314 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729059AbgEFP4F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 11:56:05 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 046FreEV088070;
-        Wed, 6 May 2020 15:55:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=ZjrWcRXhjCPQfBaBj9IYXL9NvrBVUY2eff6UWTiOghc=;
- b=So6xgNGpGBUqLKIjTkmiaX64QmrEtooajOhF5JpdghVHO6DJgcmZwNcIk1Bh74u0RYKA
- gk6RdjWQ1fuhq6dshI6vk8KrY14Ueg2oWSr3uroJLZG4Aj/lh/aQIIh7Faoml7jUsJ7D
- NevQdDdb38e9K3+84hebMHtbiZup/RBo1gXg7YbKyoU/cOp+yNkE2GjgZ8YSAzSeaNND
- 473TNm14c+mdkIUrduaMYwUMeCjm4WzFCs1nkYTkmSCsSQfZiZFhpwDSUmbWkZpq85MY
- CuF1pTNkSm7lU7y4sRVdeQY/YLb5f30lSToLYp4wfYRur8UGOGZ4TIRLi5akrHZxZv+H VA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 30s09rb956-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 06 May 2020 15:55:19 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 046Fpl13016852;
-        Wed, 6 May 2020 15:55:19 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 30t1r84uhd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 06 May 2020 15:55:18 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 046FtGvj008638;
-        Wed, 6 May 2020 15:55:16 GMT
-Received: from linux-1.home (/10.175.10.30)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 06 May 2020 08:55:16 -0700
-Subject: Re: [patch V4 part 1 17/36] kprobes: Support NOKPROBE_SYMBOL() in
- modules
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>
-References: <20200505131602.633487962@linutronix.de>
- <20200505134059.771170126@linutronix.de>
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-Message-ID: <09a1e24a-8d7a-130e-75be-629d1f588a82@oracle.com>
-Date:   Wed, 6 May 2020 17:54:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1729788AbgEFPyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 11:54:41 -0400
+Received: from fieldses.org ([173.255.197.46]:47730 "EHLO fieldses.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728991AbgEFPyl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 11:54:41 -0400
+Received: by fieldses.org (Postfix, from userid 2815)
+        id 8876B1507; Wed,  6 May 2020 11:54:40 -0400 (EDT)
+Date:   Wed, 6 May 2020 11:54:40 -0400
+From:   "J. Bruce Fields" <bfields@fieldses.org>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     "J. Bruce Fields" <bfields@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "open list:NFS, SUNRPC, AND..." <linux-nfs@vger.kernel.org>,
+        Jeff Layton <jlayton@redhat.com>,
+        David Howells <dhowells@redhat.com>, Shaohua Li <shli@fb.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/4] allow multiple kthreadd's
+Message-ID: <20200506155440.GB21307@fieldses.org>
+References: <1588348912-24781-1-git-send-email-bfields@redhat.com>
+ <CAHk-=wiGhZ_5xCRyUN+yMFdneKMQ-S8fBvdBp8o-JWPV4v+nVw@mail.gmail.com>
+ <20200501182154.GG5462@mtj.thefacebook.com>
+ <20200505021514.GA43625@pick.fieldses.org>
+ <20200505210118.GC27966@fieldses.org>
+ <20200505210956.GA3350@mtj.thefacebook.com>
+ <20200505212527.GA1265@fieldses.org>
+ <20200506153658.GA21307@fieldses.org>
+ <20200506153920.GB3350@mtj.thefacebook.com>
 MIME-Version: 1.0
-In-Reply-To: <20200505134059.771170126@linutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9613 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 suspectscore=0
- spamscore=0 mlxlogscore=999 malwarescore=0 phishscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2005060127
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9613 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0
- lowpriorityscore=0 spamscore=0 adultscore=0 clxscore=1015 suspectscore=0
- priorityscore=1501 malwarescore=0 mlxlogscore=999 phishscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005060127
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200506153920.GB3350@mtj.thefacebook.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, May 06, 2020 at 11:39:20AM -0400, Tejun Heo wrote:
+> Hello, Bruce.
+> 
+> On Wed, May 06, 2020 at 11:36:58AM -0400, J. Bruce Fields wrote:
+> > On Tue, May 05, 2020 at 05:25:27PM -0400, J. Bruce Fields wrote:
+> > > On Tue, May 05, 2020 at 05:09:56PM -0400, Tejun Heo wrote:
+> > > > It's not the end of the world but a bit hacky. I wonder whether something
+> > > > like the following would work better for identifying worker type so that you
+> > > > can do sth like
+> > > > 
+> > > >  if (kthread_fn(current) == nfsd)
+> > > >         return kthread_data(current);
+> > > >  else
+> > > >         return NULL;     
+> > > 
+> > > Yes, definitely more generic, looks good to me.
+> > 
+> > This is what I'm testing with.
+> > 
+> > If it's OK with you, could I add your Signed-off-by and take it through
+> > the nfsd tree? I'll have some other patches that will depend on it.
+> 
+> Please feel free to use the code however you see fit. Given that it'll be
+> originating from you, my signed-off-by might not be the right tag. Something
+> like Original-patch-by should be good (nothing is fine too).
 
-On 5/5/20 3:16 PM, Thomas Gleixner wrote:
-> From: Masami Hiramatsu <mhiramat@kernel.org>
-> 
-> Support NOKPROBE_SYMBOL() in modules. NOKPROBE_SYMBOL() records only symbol
-> address in "_kprobe_blacklist" section in the module.
-> 
-> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Link: https://lkml.kernel.org/r/158523419989.24735.6665260504057165207.stgit@devnote2
-> 
-> ---
->   include/linux/module.h |    2 ++
->   kernel/kprobes.c       |   17 +++++++++++++++++
->   kernel/module.c        |    3 +++
->   3 files changed, 22 insertions(+)
+OK, I'll do that, thanks!
 
-Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
-
-alex.
-
-> diff --git a/include/linux/module.h b/include/linux/module.h
-> index 369c354f9207..1192097c9a69 100644
-> --- a/include/linux/module.h
-> +++ b/include/linux/module.h
-> @@ -492,6 +492,8 @@ struct module {
->   #ifdef CONFIG_KPROBES
->   	void *kprobes_text_start;
->   	unsigned int kprobes_text_size;
-> +	unsigned long *kprobe_blacklist;
-> +	unsigned int num_kprobe_blacklist;
->   #endif
->   
->   #ifdef CONFIG_LIVEPATCH
-> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> index b7549992b9bd..9eb5acf0a9f3 100644
-> --- a/kernel/kprobes.c
-> +++ b/kernel/kprobes.c
-> @@ -2192,6 +2192,11 @@ static void kprobe_remove_area_blacklist(unsigned long start, unsigned long end)
->   	}
->   }
->   
-> +static void kprobe_remove_ksym_blacklist(unsigned long entry)
-> +{
-> +	kprobe_remove_area_blacklist(entry, entry + 1);
-> +}
-> +
->   int __init __weak arch_populate_kprobe_blacklist(void)
->   {
->   	return 0;
-> @@ -2231,6 +2236,12 @@ static int __init populate_kprobe_blacklist(unsigned long *start,
->   static void add_module_kprobe_blacklist(struct module *mod)
->   {
->   	unsigned long start, end;
-> +	int i;
-> +
-> +	if (mod->kprobe_blacklist) {
-> +		for (i = 0; i < mod->num_kprobe_blacklist; i++)
-> +			kprobe_add_ksym_blacklist(mod->kprobe_blacklist[i]);
-> +	}
->   
->   	start = (unsigned long)mod->kprobes_text_start;
->   	if (start) {
-> @@ -2242,6 +2253,12 @@ static void add_module_kprobe_blacklist(struct module *mod)
->   static void remove_module_kprobe_blacklist(struct module *mod)
->   {
->   	unsigned long start, end;
-> +	int i;
-> +
-> +	if (mod->kprobe_blacklist) {
-> +		for (i = 0; i < mod->num_kprobe_blacklist; i++)
-> +			kprobe_remove_ksym_blacklist(mod->kprobe_blacklist[i]);
-> +	}
->   
->   	start = (unsigned long)mod->kprobes_text_start;
->   	if (start) {
-> diff --git a/kernel/module.c b/kernel/module.c
-> index f7712a923d63..7be011dacd8a 100644
-> --- a/kernel/module.c
-> +++ b/kernel/module.c
-> @@ -3197,6 +3197,9 @@ static int find_module_sections(struct module *mod, struct load_info *info)
->   #ifdef CONFIG_KPROBES
->   	mod->kprobes_text_start = section_objs(info, ".kprobes.text", 1,
->   						&mod->kprobes_text_size);
-> +	mod->kprobe_blacklist = section_objs(info, "_kprobe_blacklist",
-> +						sizeof(unsigned long),
-> +						&mod->num_kprobe_blacklist);
->   #endif
->   	mod->extable = section_objs(info, "__ex_table",
->   				    sizeof(*mod->extable), &mod->num_exentries);
-> 
-> 
+--b.
