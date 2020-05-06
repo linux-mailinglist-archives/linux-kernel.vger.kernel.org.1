@@ -2,71 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1206D1C7498
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:26:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF6A91C74AB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:27:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730180AbgEFP02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 11:26:28 -0400
-Received: from smtprelay0235.hostedemail.com ([216.40.44.235]:37094 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729936AbgEFP0O (ORCPT
+        id S1729804AbgEFP1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 11:27:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729321AbgEFP1K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 11:26:14 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 17CEDFB47;
-        Wed,  6 May 2020 15:26:13 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2693:2828:2910:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3874:4250:4321:5007:10004:10400:10848:11026:11232:11473:11658:11914:12297:12533:12740:12760:12895:13069:13311:13357:13439:14096:14097:14659:14721:21080:21433:21627:21795:30051:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: soda31_704d25b6cc816
-X-Filterd-Recvd-Size: 2183
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf12.hostedemail.com (Postfix) with ESMTPA;
-        Wed,  6 May 2020 15:26:11 +0000 (UTC)
-Message-ID: <dfe10cb0359c37dff46c93dfacf909dd33b2593f.camel@perches.com>
-Subject: Re: [PATCH] printk: Add loglevel for "do not print to consoles".
-From:   Joe Perches <joe@perches.com>
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Petr Mladek <pmladek@suse.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
-        Dmitry Safonov <dima@arista.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Yafang Shao <laoar.shao@gmail.com>
-Date:   Wed, 06 May 2020 08:26:10 -0700
-In-Reply-To: <344199f1-639b-ee93-2388-57b0549641f9@i-love.sakura.ne.jp>
-References: <20200424024239.63607-1-penguin-kernel@I-love.SAKURA.ne.jp>
-         <20200425004609.GE8982@jagdpanzerIV.localdomain>
-         <842ff40b-a232-6098-4333-996a3033b30a@i-love.sakura.ne.jp>
-         <20200427062117.GC486@jagdpanzerIV.localdomain>
-         <4dae86af-1d9a-f5a8-cff6-aa91ec038a79@i-love.sakura.ne.jp>
-         <344199f1-639b-ee93-2388-57b0549641f9@i-love.sakura.ne.jp>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.1-2 
+        Wed, 6 May 2020 11:27:10 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01621C061A0F
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 08:27:10 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id j4so1652797otr.11
+        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 08:27:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eGCPGsfl7EJQhLcR9ZieFJstYFNUvzZMzq7K6tCpWfI=;
+        b=m7COmbV1y0NEdyCMq26y5R+ozIPQe1e9b1i1dIt42RXkxYKygKk8qebi6Q/me4A0lN
+         UBZZjUWKYbs09g2A8AdY9VzJbzoVXyX1pS05tF5EHI16MUIGnhdr3OzDZVPLGi2F54gx
+         BANbNSEVkW6CAZvM5hUZcSdYE5VcBvhdwfzsb/qspdMe5QXjukpCXM9p7CL2nAk0halH
+         aah8NiadUrFjK48eQYJ+lesiZK+6N1frpq0C8OlKq3VZYtOMzo2StzkCj4RvJR2uMK+U
+         IFuXePage1+LpAKZNDJmkjr0/dOu1yCOanPI8sPHexiN5vFJo+x7x8At2jxCFzloJnRW
+         LcFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eGCPGsfl7EJQhLcR9ZieFJstYFNUvzZMzq7K6tCpWfI=;
+        b=M6fZglTlxpXpU07fQyHtKUnIMZegMYeqzGRax6URe6ug2LN08S35ceD9WMX6LVkwd2
+         25QeEFds3SWCV58BUTrmD5fuhuZCmPwgfRqCrAE/ihKnxm3xMLp4sb5RnaZH+uTxTbyW
+         hKndA6pJLFhBt9eCfjzRfRbO0RNOSrmxYTnBkAkCRu/XPy/vHsiEG8SxR9BmFgTcfMyF
+         hO5PbZAY36YAQbMXNEqtKtLKihKLkD7liHjo1MuG77nf6xs9ihxH7yV2ITeTdII3uLzh
+         TdrUje9VaiZQVueLDG2qcwlXXGqHjsHWbYdXIFAo7G63aLFcSfhJL7mQomu//54QsQD9
+         WdBA==
+X-Gm-Message-State: AGi0PubtCCRCvonmBwaUsqEzdofl9PtUQDhuRN3FVNj4nCBUpZ4vuuI1
+        BVCIHh/hJJKdxb5cjE2Tl1G1ZsEO510bUYaa8Be1hQ==
+X-Google-Smtp-Source: APiQypIqZWUxuWlmvC0ioWT1YVFM8EdmBNF42IIaMVKHKcXRJP3qmACdQXoTRe722ZwPySImoGaL5yF47tWDjWNckhc=
+X-Received: by 2002:a9d:412:: with SMTP id 18mr7072719otc.233.1588778829122;
+ Wed, 06 May 2020 08:27:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20200506132816.GJ8043@willie-the-truck> <20200506143616.GY2869@paulmck-ThinkPad-P72>
+ <20200506144141.GA12919@willie-the-truck>
+In-Reply-To: <20200506144141.GA12919@willie-the-truck>
+From:   Marco Elver <elver@google.com>
+Date:   Wed, 6 May 2020 17:26:56 +0200
+Message-ID: <CANpmjNP3ge49sXJZS-KaL5bpEq0rmc4CqepjGRbtbCVwm7rwpw@mail.gmail.com>
+Subject: Re: Please can I have a stable KCSAN branch for 5.8?
+To:     Will Deacon <will@kernel.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-05-06 at 18:45 +0900, Tetsuo Handa wrote:
-> On 2020/04/28 20:33, Tetsuo Handa wrote:
-> > On 2020/04/27 15:21, Sergey Senozhatsky wrote:
-> > > > KERN_NO_CONSOLES is for type of messages where "saved for later analysis" is
-> > > > important but "printed for immediate notification" is not important.
-> > > > In other words, KERN_NO_CONSOLES is NOT for dying messages where "printed for
-> > > > immediate notification" is important.
-> > > 
-> > > per-console loglevel is a user configurable parameter.
-> > > KERN_NO_CONSOLES is a hard-coded policy.
-> > 
-> > But given that whether to use KERN_NO_CONSOLES is configurable via e.g. sysctl,
-> > KERN_NO_CONSOLES will become a user configurable parameter. What's still wrong?
-> > 
-> 
-> Any problems remaining?
+On Wed, 6 May 2020 at 16:41, Will Deacon <will@kernel.org> wrote:
+>
+> Hi Paul,
+>
+> Cheers for the quick reply!
+>
+> On Wed, May 06, 2020 at 07:36:16AM -0700, Paul E. McKenney wrote:
+> > On Wed, May 06, 2020 at 02:28:17PM +0100, Will Deacon wrote:
+> > > I'm looking to rebase my READ_ONCE() series [1] on top of the KCSAN patches
+> > > so that we can get them in for 5.8. However, tip/locking/kcsan seems to be
+> > > missing some bits:
+> > >
+> > >   * An update to checkpatch.pl to warn about missing comments for
+> > >     data_race():
+> > >
+> > >     https://lore.kernel.org/r/20200401101714.44781-1-elver@google.com
+> >
+> > For some reason, I thought this was going up some other tree, but I do
+> > not see it in -next.  So unless I hear otherwise, I will pull it into
+> > the v5.8 kcsan branch.
+>
+> Brill, thanks.
+>
+> > >   * I'm unable to apply these two patches from Marco that are needed for
+> > >     my READ_ONCE() work:
+> > >
+> > >     https://lore.kernel.org/lkml/20200424154730.190041-1-elver@google.com/
+> > >
+> > >     I think these depend on stuff that has been queued by Paul, and appears
+> > >     in linux-next, but to be honest with you I'm quite confused about what
+> > >     is queued for 5.8 and what isn't.
+> >
+> > This one is queued, but I currently have it in the v5.9 pile (but
+> > tentatively for v5.8).  Unless Marco tells me otherwise, I will move it
+> > to the v5.8 branch, which will be part of my pull request next week.
+>
+> Great, then this would all show up on tip/locking/kscan, right?
+>
+> > > What's the best base for me to use?
+> >
+> > The -next tree has the latter, but not yet the former.
+>
+> That probably means -next is good enough for me to cook a new version of my
+> series, and then I can make a proper branch next week.
+>
+> > Hopefully we can get this straightened out, and please accept my apologies
+> > for the hassle!
+>
+> No need to apologise, I just couldn't figure out what was what and decided
+> it was easier to ask the experts ;)
 
-printk_get_level / printk_skip_level and the various
-uses of %pV using printk_get_level
+Just confirming that I don't see any issues with the plan -- the
+patches that Will needs are good to go into the v5.8 branch.
 
+Thanks,
+-- Marco
