@@ -2,111 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 609DA1C754A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:47:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C4521C7543
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:46:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729321AbgEFPri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 11:47:38 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:47436 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728428AbgEFPrh (ORCPT
+        id S1729553AbgEFPqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 11:46:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33834 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729148AbgEFPqD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 11:47:37 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jWMGk-0006bR-Ln; Wed, 06 May 2020 09:47:34 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jWMGi-0006AO-Iz; Wed, 06 May 2020 09:47:34 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Wed, 6 May 2020 11:46:03 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02C0EC061A0F
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 08:46:02 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id a5so1091479pjh.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 08:46:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+AoWjl9qm/9ONcKycsC0yd4jPr3qRbLth7/5z1t+XVo=;
+        b=TcJwiF9PZJ7weYuO7y5YljNF/n80dtvLxhRuBe3ZyDkIc/4wV5E/MZPhnlFGn9ocv4
+         YBYDfadH8szxYIYL+r6z3W09w6cEDJ31wp9dskHioIjVDyTmJnX8M552EwQya9gu/Bre
+         y0h/R9JdLaMiA7vpQqitsz//Jlmpx24z9YOnUanV53vffwnQFN7feRX2i7F8P4idZ83n
+         QzEmaQYeuFB5RrPn9Y1BdikXDWTZeODBAvMsoyXrEXkXMQZk4flzNsBdDU6Zx9DC68Kp
+         BGrmdrPw7B4Tary1iOpPmeQTbFSYfQMLTiCvuZrXWGLHQ3mif0aEXth1jdbIkLMwVrKM
+         6kUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+AoWjl9qm/9ONcKycsC0yd4jPr3qRbLth7/5z1t+XVo=;
+        b=ngdHrPPp+ys0Uz5hCtvYvVHFL9U7jQqx7vTb97nox1sYygxE4cUR6aW08JNPL4yQOn
+         MFfCRz3CyQRpnG7q++PzHgFrnKVWBgDUjlFIDzvhXZzBL9QSXQB4SQ99hxMrnLAhNgg2
+         Xa6pjDlxBx5svpsfjPOnwGosC8do++AW9MQUgHYgYsZ53yvPNlzLyXDP1Hdb/7UJzCa9
+         wgDH0m3hSeU7UyxFvLz8jEkevMOtskDSuRAGodNG7sfi6lfqWE2trcKhQ6OoME+1CbBB
+         wWjMiltLjRpzuGirGuwUK757w1hP3wlbpWbKNYHa30exhz9thUr0OQt+a7wUQn0G0i//
+         3Aqg==
+X-Gm-Message-State: AGi0PuawQy11RYIWLMPE+skvcS/sU/BDw4JIuJJs1A3f5uBTrL7Al38k
+        WylvzcKYthHsNnaINv5Ru58scA==
+X-Google-Smtp-Source: APiQypLqUZX1ljzKvY3YflM7oBKNSvZrofamAqbFh6JhKo4XNOgo9b/+6kkq7eJMh6gxLe+YbfKl5Q==
+X-Received: by 2002:a17:90a:a888:: with SMTP id h8mr10608900pjq.174.1588779961070;
+        Wed, 06 May 2020 08:46:01 -0700 (PDT)
+Received: from google.com ([2620:15c:2ce:0:9efe:9f1:9267:2b27])
+        by smtp.gmail.com with ESMTPSA id i18sm5217925pjx.33.2020.05.06.08.45.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 May 2020 08:46:00 -0700 (PDT)
+Date:   Wed, 6 May 2020 08:45:56 -0700
+From:   Fangrui Song <maskray@google.com>
+To:     Nathan Chancellor <natechancellor@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Torsten Duwe <duwe@lst.de>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Amit Daniel Kachhap <amit.kachhap@arm.com>,
+        Torsten Duwe <duwe@suse.de>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        AKASHI Takahiro <takahiro.akashi@linaro.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Julien Thierry <jthierry@redhat.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jeremy Kerr <jk@ozlabs.org>, Arnd Bergmann <arnd@arndb.de>,
-        Oleg Nesterov <oleg@redhat.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20200505101256.3121270-1-hch@lst.de>
-        <CAHk-=wgrHhaM1XCB=E3Zp2Br8E5c_kmVUTd5y06xh5sev5nRMA@mail.gmail.com>
-        <877dxqgm7x.fsf@x220.int.ebiederm.org> <20200506063134.GA11391@lst.de>
-Date:   Wed, 06 May 2020 10:44:07 -0500
-In-Reply-To: <20200506063134.GA11391@lst.de> (Christoph Hellwig's message of
-        "Wed, 6 May 2020 08:31:34 +0200")
-Message-ID: <87lfm5cblk.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Marc Zyngier <maz@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Alexandre Ghiti <alex@ghiti.fr>,
+        Kristina Martsenko <kristina.martsenko@arm.com>,
+        Ionela Voinescu <ionela.voinescu@arm.com>,
+        Steve Capper <steve.capper@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: [PATCH] arm64: disable patchable function entry on big-endian
+ clang builds
+Message-ID: <20200506154556.5fsxzs3vbfwixggd@google.com>
+References: <20200505141257.707945-1-arnd@arndb.de>
+ <20200505142556.GF82823@C02TD0UTHF1T.local>
+ <20200505194243.5bfc6ec6@blackhole>
+ <20200506034523.GA564255@ubuntu-s3-xlarge-x86>
+ <CAK8P3a24EiEvGAenL0FdgGakmwWi=giReOJuiisnzkgC_SuhZg@mail.gmail.com>
+ <20200506153156.GA1213645@ubuntu-s3-xlarge-x86>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jWMGi-0006AO-Iz;;;mid=<87lfm5cblk.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18n7ilHkYpqhNUvG5niq5VycMEtqxB6v30=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa02.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
-        version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4986]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa02 0; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: ; sa02 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Christoph Hellwig <hch@lst.de>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 1706 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 3.6 (0.2%), b_tie_ro: 2.4 (0.1%), parse: 0.62
-        (0.0%), extract_message_metadata: 9 (0.5%), get_uri_detail_list: 0.65
-        (0.0%), tests_pri_-1000: 3.9 (0.2%), tests_pri_-950: 1.01 (0.1%),
-        tests_pri_-900: 0.81 (0.0%), tests_pri_-90: 107 (6.3%), check_bayes:
-        105 (6.1%), b_tokenize: 4.1 (0.2%), b_tok_get_all: 5 (0.3%),
-        b_comp_prob: 1.24 (0.1%), b_tok_touch_all: 92 (5.4%), b_finish: 0.67
-        (0.0%), tests_pri_0: 154 (9.0%), check_dkim_signature: 0.37 (0.0%),
-        check_dkim_adsp: 2.3 (0.1%), poll_dns_idle: 1409 (82.6%),
-        tests_pri_10: 1.68 (0.1%), tests_pri_500: 1422 (83.4%), rewrite_mail:
-        0.00 (0.0%)
-Subject: Re: remove set_fs calls from the coredump code v6
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200506153156.GA1213645@ubuntu-s3-xlarge-x86>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christoph Hellwig <hch@lst.de> writes:
-
-> On Tue, May 05, 2020 at 03:28:50PM -0500, Eric W. Biederman wrote:
->> We probably can.   After introducing a kernel_compat_siginfo that is
->> the size that userspace actually would need.
->> 
->> It isn't something I want to mess with until this code gets merged, as I
->> think the set_fs cleanups are more important.
->> 
->> 
->> Christoph made some good points about how ugly the #ifdefs are in
->> the generic copy_siginfo_to_user32 implementation.
+On 2020-05-06, Nathan Chancellor wrote:
+>On Wed, May 06, 2020 at 12:22:58PM +0200, Arnd Bergmann wrote:
+>> On Wed, May 6, 2020 at 5:45 AM Nathan Chancellor
+>> <natechancellor@gmail.com> wrote:
+>> > On Tue, May 05, 2020 at 07:42:43PM +0200, Torsten Duwe wrote:
+>> > > On Tue, 5 May 2020 15:25:56 +0100 Mark Rutland <mark.rutland@arm.com> wrote:
+>> > > > On Tue, May 05, 2020 at 04:12:36PM +0200, Arnd Bergmann wrote:
+>> > > > This practically rules out a BE distro kernel with things like PAC,
+>> > > > which isn't ideal.
+>> >
+>> > To be fair, are there big endian AArch64 distros?
+>> >
+>> > https://wiki.debian.org/Arm64Port: "There is also a big-endian version
+>> > of the architecture/ABI: aarch64_be-linux-gnu but we're not supporting
+>> > that in Debian (so there is no corresponding Debian architecture name)
+>> > and hopefully will never have to. Nevertheless you might want to check
+>> > for this by way of completeness in upstream code."
+>> >
+>> > OpenSUSE and Fedora don't appear to have support for big endian.
+>>
+>> I don't think any of the binary distros ship big endian ARM64. There are
+>> a couple of users that tend to build everything from source using Yocto
+>> or similar embedded distros, but as far as I can tell this is getting less
+>> common over time as applications get ported to be compatible with
+>> big-endian, or get phased out and replaced by code running on regular
+>> little-endian systems.
+>>
+>> The users we see today are likely in telco, military or aerospace
+>> settings (While earth is mostly little-endian these days, space is
+>> definitely big-endian) that got ported from big-endian hardware, but
+>> often with a high degree of customization and long service life.
 >
-> Take a look at the series you are replying to, the magic x86 ifdefs are
-> entirely gone from the common code :)
+>Ah yes, that makes sense, thanks for the information and background.
+>Helps orient myself for the future.
+>
+>> My policy for Arm specific kernel code submissions is generally that
+>> it should be written so it can work on either big-endian or little-endian
+>> using the available abstractions (just like any architecture independent
+>> code), but I don't normally expect it to be tested on big endian.
+>>
+>> There are some important examples of code that just doesn't work
+>> on big-endian because it's far too hard, e.g. the UEFI runtime services.
+>> That is also ok, if anyone really needs it, they can do the work.
+>>
+>> > > I suggest to get a quote from clang folks first about their schedule and
+>> > > regarded importance of patchable-function-entries on BE, and leave it as
+>> > > is: broken on certain clang configurations. It's not the kernel's fault.
+>> >
+>> > We can file an upstream PR (https://bugs.llvm.org) to talk about this
+>> > (although I've CC'd Fangrui) but you would rather the kernel fail to
+>> > work properly than prevent the user from being able to select that
+>> > option? Why even have the "select" or "depends on" keyword then?
 
-Interesting.
+Created https://reviews.llvm.org/D79495 to allow the function attribute
+'patchable_function_entry' on aarch64_be.
+I think -fpatchable-function-entry= just works.
 
-That is a different way of achieving that, and I don't hate it.
-  
-I still want whatever you are doing to settle before I touch that code
-again.  Removing the set_fs is important and I have other fish to fry
-at the moment.
+Note, LLD does not support aarch64_be
+(https://github.com/ClangBuiltLinux/linux/issues/380).
 
-Eric
-
-
-
+>> I definitely want all randconfig kernels to build without warnings,
+>> and I agree with you that making it just fail at build time is not
+>> a good solution.
+>>
+>> > That said, I do think we should hold off on this patch until we hear
+>> > from the LLVM developers.
+>>
+>> +1
+>>
+>>       Arnd
+>
+>Glad we are on the same page.
+>
+>Cheers,
+>Nathan
