@@ -2,102 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B78341C7677
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 18:32:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8D841C7659
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 18:31:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730403AbgEFQbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 12:31:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730338AbgEFQb0 (ORCPT
+        id S1730244AbgEFQa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 12:30:59 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:35132 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730212AbgEFQa4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 12:31:26 -0400
-Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 205B2C061A0F
-        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 09:31:26 -0700 (PDT)
-Received: by mail-vk1-xa42.google.com with SMTP id p139so690850vkd.7
-        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 09:31:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FiB9pQXmMO6J13wRygH5wpmcQuT6bpeBnplQ+yoWqy4=;
-        b=syehwF6nfAGze51brJjFnUAcXmSHB8FPB4pfxWc8SG6Aqa4Tem6+CFPiSLPrQSdHte
-         r+SFPnZlwqFeixuSetvwES7+awv3/hy73Y68iyZHVbZ51ei1puiteuVzWEiPLX8fKGmf
-         im1pZ55RH9HrzEdYUusQ70GrGcKai+do7bKUbwnb2psU5O4xmrplAU/4voLvbLyTWoD0
-         PdrQVb+Aei2sTJqsnoSFjLQWN9YHPKlz6OViM7ZFNJkFS0nx0/miXdO15nD/a8yjWMPu
-         y1jnV2dp1wd5NFFkkeBVE0xyAPjoyHBLHqqTR9ezZvUlIA5OYJT+dC2ObbEv49QEeEGB
-         6lXg==
+        Wed, 6 May 2020 12:30:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588782655;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tSUQHAQlY7PhB1CMSPEa9ZgQrRD15euTGzalw6ZzZR8=;
+        b=WV35MQD06vkvVsk8LCAua89e3gG1JG8xysgdNTxnUtvLOlsVDUV0jSO27EY1hIp+cUsc1+
+        TpZjRqVQgZFE8L/d06sjm5yRuOQXEtreVZFjOZx2ZRadraCJBciareBk0D8il6/SKD4IE/
+        609UoHglql17nFhyca8K6c7KuR4BdPY=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-251-Q13TuKkXNbO_W4P1bovn6g-1; Wed, 06 May 2020 12:30:53 -0400
+X-MC-Unique: Q13TuKkXNbO_W4P1bovn6g-1
+Received: by mail-wm1-f71.google.com with SMTP id h6so1523463wmi.7
+        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 09:30:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FiB9pQXmMO6J13wRygH5wpmcQuT6bpeBnplQ+yoWqy4=;
-        b=FyDVIY134H1KhKmT92saDbjkYvOZoyaC0eFLxcwg2MHs+V+WIqrlfXeHdNERe0Yj8a
-         RJJkz+JxIHBEYXYel27JeJaJGHgDErLYUJUv5+/fqrdgxOFI5xMqoZCRtXZlQ86RdDqG
-         T6SUy6yaVmpRpDjrWdaRCMHqqosoSOGyJTKmoUWiQ8c19uHcNt9/T1lVHqwsQIe/7iu/
-         w/WU/d+3Wd/bzxBsRCfQowCoQQNu+xYlyvBW7FzdT2YAf1Z3F0f6HfsB9Zp9eadBx0ZE
-         s6b8p+Tg1gVrVzf+EgYJOfwtSSe9QFnmKL6zGskwG73DokAIUpA10MztjNaD/XuwUlTB
-         MplQ==
-X-Gm-Message-State: AGi0PuZdk3KLeZlmds6i/zT8kWD8zv3/ULKWgnMqZp8jXWrWpW5go2rA
-        bM7/2g8c4Q22y8MZfUjnoAu35GKjYZvercMIRny4Bg==
-X-Google-Smtp-Source: APiQypKpUnyKEH6JytKdnsuKIPTizThoHvdxVZCbosHBLsSAAvQY9gGYjrD60PyyFN0U1l8pWmf9tlPrnU9IVFfxork=
-X-Received: by 2002:a1f:31cf:: with SMTP id x198mr7906893vkx.101.1588782685228;
- Wed, 06 May 2020 09:31:25 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tSUQHAQlY7PhB1CMSPEa9ZgQrRD15euTGzalw6ZzZR8=;
+        b=I9yAxRTpsx6oFpWxM3RhivLn8we7rjiXKx9QHOIHRjAAmKwKAn4UWZe9+btrzs8VJ2
+         5Dbrz5tmyhkI149WTMX+d6IEtaulQVLWUMfxXRUN+sHFbv6C6SNpwBazbqYNNGsctkRr
+         aOptkOK9dEznzTYZFrVLoLcdjdi1KpgaSr3Rl06fQ+YGC4AMiNQT5nW6QqyaoYJ/1Uyc
+         YHA2v4btd3+NnFZ5MYSnJBLnZQtSi98rekd1adei2FOamSVqtd/PcwDH4d5KNfZgi/j5
+         ZIAg/8DXwxx6YGF/jQtofDnXgVA4gouHFu3JKPTAAU43EA3Rf0jg/LWZXUuBk3DthKcL
+         iABQ==
+X-Gm-Message-State: AGi0Pub7Dp6wuXvdPEN6UcTXhfd2wCLVdqx26HrdLb3Cs7ePueiIc8TM
+        eh6+pYxmAp95pHYFNrzV+Z3PrT2h82+9ioKLBrflXpqZL5jGPsQbb1sJuNrfxFRKyhC/0575Yij
+        dA2OPG9oRK6ZyalO2jTiQRW33
+X-Received: by 2002:a7b:c399:: with SMTP id s25mr5140609wmj.169.1588782652112;
+        Wed, 06 May 2020 09:30:52 -0700 (PDT)
+X-Google-Smtp-Source: APiQypJTP3V/5TCFRJx9MxMBaSz92xOqGZitDKvJVsqE7DLtHLB+Swt6r384A6P5/3ZRst3QHjuzDw==
+X-Received: by 2002:a7b:c399:: with SMTP id s25mr5140588wmj.169.1588782651844;
+        Wed, 06 May 2020 09:30:51 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:11d7:2f21:f38b:17e? ([2001:b07:6468:f312:11d7:2f21:f38b:17e])
+        by smtp.gmail.com with ESMTPSA id x5sm3240420wro.12.2020.05.06.09.30.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 May 2020 09:30:51 -0700 (PDT)
+Subject: Re: [PATCH 0/4] KVM: SVM: Fix AVIC warning when enable irq window
+To:     Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     joro@8bytes.org, jon.grimm@amd.com, mlevitsk@redhat.com
+References: <1588771076-73790-1-git-send-email-suravee.suthikulpanit@amd.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <d918ad5a-f7c0-7915-9a98-e33bef34b623@redhat.com>
+Date:   Wed, 6 May 2020 18:30:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-References: <1588348794-4511-1-git-send-email-yanxiaoyong5@gmail.com>
- <CAHQZ30Btybck2ts8FGru_GDP63e6-ZdxN_mF5Wbp4L1XeTPAtQ@mail.gmail.com> <2020050201173899657320@gmail.com>
-In-Reply-To: <2020050201173899657320@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 6 May 2020 18:30:48 +0200
-Message-ID: <CAPDyKFrZebubtoQ-uNwdHc6qpUXz16-3w4U+DkqvnAMbe0-S-g@mail.gmail.com>
-Subject: Re: Re: [PATCH] mmc/core:fix mmc_sd_hw_reset oops mmc_sd_hw_reset
- function may be oops if the ejection of sd and the reset of sd simultaneously occur
-To:     "yanxiaoyong5@gmail.com" <yanxiaoyong5@gmail.com>
-Cc:     Raul Rangel <rrangel@chromium.org>,
-        Avri Altman <avri.altman@wdc.com>,
-        kstewart <kstewart@linuxfoundation.org>,
-        tglx <tglx@linutronix.de>, linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1588771076-73790-1-git-send-email-suravee.suthikulpanit@amd.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 1 May 2020 at 19:18, yanxiaoyong5@gmail.com
-<yanxiaoyong5@gmail.com> wrote:
->
->  it is a race condition,the situation as follows:
->         a                                                                           b
->  mmc_rescan
->      mmc_sd_detect
->           mmc_get_card
->               __mmc_reclaim_host
->           card is not present                                       __mmc_reclaim_host
->           mmc_put_card                                                 wait a __mmc_release_host
->               __mmc_release_host
->                     set b TASK_RUNNING
->           mmc_sd_remove
+On 06/05/20 15:17, Suravee Suthikulpanit wrote:
+> Introduce kvm_make_all_cpus_request_except(), which is used
+> in the subsequent patch 2 to fix AVIC warning.
+> 
+> Also include miscelleneous clean ups.
+> 
+> Thanks,
+> Suravee
+> 
+> Suravee Suthikulpanit (4):
+>   KVM: Introduce kvm_make_all_cpus_request_except()
+>   KVM: SVM: Fixes setting V_IRQ while AVIC is still enabled
+>   KVM: SVM: Merge svm_enable_vintr into svm_set_vintr
+>   KVM: SVM: Remove unnecessary V_IRQ unsetting
+> 
+>  arch/x86/include/asm/kvm_host.h |  2 +-
+>  arch/x86/kvm/hyperv.c           |  6 ++++--
+>  arch/x86/kvm/i8254.c            |  4 ++--
+>  arch/x86/kvm/svm/avic.c         |  2 +-
+>  arch/x86/kvm/svm/svm.c          | 18 ++++++------------
+>  arch/x86/kvm/x86.c              | 16 +++++++++++++---
+>  include/linux/kvm_host.h        |  3 +++
+>  virt/kvm/kvm_main.c             | 14 +++++++++++---
+>  8 files changed, 41 insertions(+), 24 deletions(-)
+> 
 
-mmc_sd_remove() calls mmc_remove_card(), which calls device_del() on
-the corresponding card->dev.
+I merged patches 1-3-4, you can send out 2 independently.
 
-That leads to ->remove() callback gets invoked for card->dev (see
-mmc_blk_remove()), which ideally should clean up everything mmc block
-device related. In other words, beyond this point there should be no
-thread/user that can call mmc_hw_reset() (which invokes
-mmc_sd_hw_reset().
+Thanks,
 
->                host->card =NULL
->                                                                                (b starts to run)
->                                                                                mmc_sd_hw_reset
->                                                                                    finds host->cards is NULL,then oops
+Paolo
 
-So, from the above reasoning I need to ask, have you really seen the
-NULL pointer exception happening? (then we need to look more closely
-at mmc_blk_remove()) Or do you think there is a problem from a
-code-inspection point of view?
-
-Kind regards
-Uffe
