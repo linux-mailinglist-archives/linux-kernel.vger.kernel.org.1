@@ -2,90 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F9FA1C669C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 06:08:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CF831C66A9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 06:17:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726320AbgEFEIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 00:08:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725300AbgEFEI3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 00:08:29 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D7A8C061A0F;
-        Tue,  5 May 2020 21:08:29 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id f18so803502lja.13;
-        Tue, 05 May 2020 21:08:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LPWbtQ2Ipi4zH8vFVUvc1d3VaVsHhfFkCiz+akQxQ1s=;
-        b=SPtmcHHr7tdZpS0WGhctRtDuSDha+MZN0YPNsafUc94yqdQQVOWg+FFAibD7bYwRcT
-         ChxKdbH+LmcX0Rvq7EKy5C8TSpbxks24+h9EKUpw8TU9nWGWtKyWBa2Ynk7Lns9gY88T
-         wD33/dUlXqDWH3jN4KPYMyMSODGSdh4Hk5LQmXrwINK3Ps6NTBIx5x+lNinwPBeSP4Yp
-         jaP2XWlJ67knCfWI9qwm43DDdECSC5o58Pvp8BujjfuoKG9hB973GOM25XPkznf90NaD
-         dgrLEpPBxWOh9Nokt7AjQoHpr8vpylaZrVJ3CE2Lt1W7StqcNYEQCUoP/4I7FDShybGs
-         G2gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LPWbtQ2Ipi4zH8vFVUvc1d3VaVsHhfFkCiz+akQxQ1s=;
-        b=mPPZUdjLciJB0yqN0/aHApVgA/L2SyZmjWVMtaOYwe71/GJkb4lqBtv4peXyXuVEGe
-         WzJ+VjqVuRSkvCQh2At6PHt+6/SO93fKRhE5FfZg84NNdx2FGUHNpqFhxFAXlz1vbtKz
-         2a+fKG2uVio6Arpl6jO4Ge7H6uTqfFIsnDB/gjmxBNQ3X/0z560qFvtc9DIOtPhhe8pG
-         7wlh1Snp6c50UWvJ7lTY5s3cB1mOx+UH5L42SQU1/FcipvpLTHwmds45o/sKsyv6Hgl1
-         l9bMEbTALpCDL/w0ryQRGdFoPt8bM7HlzBvoLgnPzBg1z+cbX9VLDDvL65ORFD+yvLKd
-         9nMA==
-X-Gm-Message-State: AGi0PuY7oVDlohQIPyloCw9gtew6Mtp1HER83T67MyTVINMdWW18elUb
-        aJ6Xs/0hSbBfJWDPwAHhbbhOtKjhVAqQgvztDwhH7BL/
-X-Google-Smtp-Source: APiQypKyYbeaZXkor2B9STYZVK6rBc3QfwXRGW5JhnrzYAQrroZdvsTvW5yGJLC5aQ7SXFwwdMZFdVwjfqymFbU7KQU=
-X-Received: by 2002:a2e:8056:: with SMTP id p22mr3689511ljg.266.1588738107661;
- Tue, 05 May 2020 21:08:27 -0700 (PDT)
+        id S1726382AbgEFERh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 00:17:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57498 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725300AbgEFERh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 00:17:37 -0400
+Received: from localhost (unknown [122.181.213.114])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 40E57206D5;
+        Wed,  6 May 2020 04:17:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588738657;
+        bh=naqyp/H03c6y4iLNNY9qG1yMwqkqKKJO6Juu0Kr3MXI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eyh+xxkUnMKs8UNQTwVOGAznBrv+Cz2ViPf6RD+unlnTEZkU9EIttDjVHxdZXqN9C
+         xWcOZ8NsPEMwCbJ756utNRX6RlRGBKxXUWgDtVC2CmIwHD7BGCnjH2M+uvxuToMm86
+         di8GKLOnviCzLvLfMpUPAaKEQSUALYkdqm64d2AA=
+Date:   Wed, 6 May 2020 09:47:32 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Wesley Cheng <wcheng@codeaurora.org>
+Cc:     Rob Herring <robh@kernel.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, kishon@ti.com, robh+dt@kernel.org,
+        mark.rutland@arm.com, p.zabel@pengutronix.de,
+        mgautam@codeaurora.org, sboyd@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, jackp@codeaurora.org
+Subject: Re: [PATCH v8 1/5] dt-bindings: phy: Add binding for
+ qcom,usb-snps-femto-v2
+Message-ID: <20200506041732.GY1375924@vkoul-mobl>
+References: <1588636467-23409-1-git-send-email-wcheng@codeaurora.org>
+ <1588636467-23409-2-git-send-email-wcheng@codeaurora.org>
+ <20200505133408.GA24731@bogus>
+ <d1b6c7f2-69d8-027d-267d-22018484441e@codeaurora.org>
 MIME-Version: 1.0
-References: <CAEAjamvq+puThrxfo80TOy=xgbQEQNT6xvxy4w6hP2O1By66uw@mail.gmail.com>
- <20200501070538.GB887524@kroah.com>
-In-Reply-To: <20200501070538.GB887524@kroah.com>
-From:   Kyungtae Kim <kt0755@gmail.com>
-Date:   Wed, 6 May 2020 00:08:16 -0400
-Message-ID: <CAEAjamsTt5E0NgauzFXYzN=GK2-y0tvgYx9B26kYAbBkDqfagg@mail.gmail.com>
-Subject: Re: KASAN: slab-out-of-bounds Read in gadget_dev_desc_UDC_store
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     balbi@kernel.org, syzkaller <syzkaller@googlegroups.com>,
-        USB list <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dave Tian <dave.jing.tian@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d1b6c7f2-69d8-027d-267d-22018484441e@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 01, 2020 at 09:05:38AM +0200, Greg KH wrote:
-> On Thu, Apr 30, 2020 at 11:03:54PM -0400, Kyungtae Kim wrote:
-> > We report a bug (in linux-5.6.8) found by FuzzUSB (a modified version
-> > of syzkaller).
-> >
-> > This happened when the size of "name" buffer is smaller than that of
-> > "page" buffer
-> > (after function kstrdup executed at line 263).
-> > I guess it comes from the "page" buffer containing 0 value in the middle.
-> > So accessing the "name" buffer with "len" variable, which is used to
-> > indicate the size of "page" buffer,
-> > triggered memory access violation.
-> > To fix, it may need to check the size of name buffer, and try to use
-> > right index variable.
->
-> Can you submit a patch for this as you have a reproducer to test the
-> issue?
->
-> thanks,
->
-> greg k-h
+On 05-05-20, 12:38, Wesley Cheng wrote:
+> 
+> 
+> On 5/5/2020 6:34 AM, Rob Herring wrote:
+> > On Mon,  4 May 2020 16:54:23 -0700, Wesley Cheng wrote:
+> >> This binding shows the descriptions and properties for the
+> >> Synopsis Femto USB PHY V2 used on QCOM platforms.
+> >>
+> >> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+> >> Reviewed-by: Rob Herring <robh@kernel.org>
+> >> Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+> >> ---
+> >>  .../bindings/phy/qcom,usb-snps-femto-v2.yaml       | 77 ++++++++++++++++++++++
+> >>  1 file changed, 77 insertions(+)
+> >>  create mode 100644 Documentation/devicetree/bindings/phy/qcom,usb-snps-femto-v2.yaml
+> >>
+> > 
+> > My bot found errors running 'make dt_binding_check' on your patch:
+> > 
+> > /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/phy/qcom,usb-snps-femto-v2.example.dt.yaml: phy@88e2000: 'vdda-pll-supply' is a required property
+> > /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/phy/qcom,usb-snps-femto-v2.example.dt.yaml: phy@88e2000: 'vdda18-supply' is a required property
+> > /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/phy/qcom,usb-snps-femto-v2.example.dt.yaml: phy@88e2000: 'vdda33-supply' is a required property
+> > 
+> > See https://patchwork.ozlabs.org/patch/1283143
+> > 
+> > If you already ran 'make dt_binding_check' and didn't see the above
+> > error(s), then make sure dt-schema is up to date:
+> > 
+> > pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+> > 
+> > Please check and re-submit.
+> > 
+> 
+> Hi Rob,
+> 
+> I updated the dt-schema version, and I can see the same error.  Will fix
+> and resubmit.  I also realized that the dt_binding_check doesn't stop if
 
-I just submitted a patch after testing with the repro.
+No, pls submit the fix against already applied patches and also give
+credit to Rob by adding a "Reported-by: ..."
 
-Regards,
-Kyungtae
+> errors are detected in the example DT checking phase, and that was
+> probably why I missed this initially.  I'll pass the DT_SCHEMA_FILES
+> argument to my specific binding next time to help verify my file.
+> Thanks again!
+> 
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+
+-- 
+~Vinod
