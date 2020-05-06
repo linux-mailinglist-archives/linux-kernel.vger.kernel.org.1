@@ -2,74 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41FED1C72E9
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 16:34:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68A041C72DC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 16:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729022AbgEFOeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 10:34:21 -0400
-Received: from cmccmta1.chinamobile.com ([221.176.66.79]:3523 "EHLO
-        cmccmta1.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728826AbgEFOeV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 10:34:21 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.11]) by rmmx-syy-dmz-app01-12001 (RichMail) with SMTP id 2ee15eb2c9d076f-2798f; Wed, 06 May 2020 22:29:36 +0800 (CST)
-X-RM-TRANSID: 2ee15eb2c9d076f-2798f
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain (unknown[112.0.146.193])
-        by rmsmtp-syy-appsvr06-12006 (RichMail) with SMTP id 2ee65eb2c9cc322-73c3f;
-        Wed, 06 May 2020 22:29:36 +0800 (CST)
-X-RM-TRANSID: 2ee65eb2c9cc322-73c3f
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-To:     broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz,
-        matthias.bgg@gmail.com
-Cc:     alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>,
-        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Subject: [PATCH] ASoC: mediatek: Fix error handling
-Date:   Wed,  6 May 2020 22:30:09 +0800
-Message-Id: <20200506143009.13368-1-tangbin@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.20.1.windows.1
+        id S1728994AbgEFOaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 10:30:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49618 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728740AbgEFOaU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 10:30:20 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4B77820769;
+        Wed,  6 May 2020 14:30:19 +0000 (UTC)
+Date:   Wed, 6 May 2020 10:30:17 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Xiao Yang <yangx.jy@cn.fujitsu.com>, linux-kernel@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>
+Subject: [PATCH] tracing: Wait for preempt irq delay thread to finish
+Message-ID: <20200506103017.72abd2cd@gandalf.local.home>
+In-Reply-To: <20200506093805.1f86f3f0@gandalf.local.home>
+References: <20200424223630.224895-1-joel@joelfernandes.org>
+        <5EA80319.7080005@cn.fujitsu.com>
+        <20200428104409.0995ceb0@gandalf.local.home>
+        <20200428104543.3926eaaf@gandalf.local.home>
+        <5EA96AE8.6000707@cn.fujitsu.com>
+        <20200429123141.580f89ce@gandalf.local.home>
+        <20200429191224.GA75562@google.com>
+        <20200506093805.1f86f3f0@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the function platform_get_irq() failed, the negative value
-returned will not be detected here. So fix error handling in
-mt6797_afe_pcm_dev_probe(). And when get irq failed, the function
-platform_get_irq() logs an error message, so remove redundant
-message here.
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+Running on a slower machine, it is possible that the preempt delay kernel
+thread may still be executing if the module was immediately removed after
+added, and this can cause the kernel to crash as the kernel thread might be
+executing after its code has been removed.
+
+There's no reason that the caller of the code shouldn't just wait for the
+delay thread to finish, as the thread can also be created by a trigger in
+the sysfs code, which also has the same issues.
+
+Link: http://lore.kernel.org/r/5EA2B0C8.2080706@cn.fujitsu.com
+
+Cc: stable@vger.kernel.org
+Fixes: 793937236d1ee ("lib: Add module for testing preemptoff/irqsoff latency tracers")
+Reported-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- sound/soc/mediatek/mt6797/mt6797-afe-pcm.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ kernel/trace/preemptirq_delay_test.c | 30 ++++++++++++++++++++++------
+ 1 file changed, 24 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c b/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
-index 378bfc16e..a621dcf91 100644
---- a/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
-+++ b/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
-@@ -807,10 +807,9 @@ static int mt6797_afe_pcm_dev_probe(struct platform_device *pdev)
+diff --git a/kernel/trace/preemptirq_delay_test.c b/kernel/trace/preemptirq_delay_test.c
+index 31c0fad4cb9e..c4c86de63cf9 100644
+--- a/kernel/trace/preemptirq_delay_test.c
++++ b/kernel/trace/preemptirq_delay_test.c
+@@ -113,22 +113,42 @@ static int preemptirq_delay_run(void *data)
  
- 	/* request irq */
- 	irq_id = platform_get_irq(pdev, 0);
--	if (!irq_id) {
--		dev_err(dev, "%pOFn no irq found\n", dev->of_node);
--		return -ENXIO;
--	}
-+	if (irq_id < 0)
-+		return irq_id;
+ 	for (i = 0; i < s; i++)
+ 		(testfuncs[i])(i);
 +
- 	ret = devm_request_irq(dev, irq_id, mt6797_afe_irq_handler,
- 			       IRQF_TRIGGER_NONE, "asys-isr", (void *)afe);
- 	if (ret) {
++	set_current_state(TASK_INTERRUPTIBLE);
++	while (!kthread_should_stop()) {
++		schedule();
++		set_current_state(TASK_INTERRUPTIBLE);
++	}
++
++	__set_current_state(TASK_RUNNING);
++
+ 	return 0;
+ }
+ 
+-static struct task_struct *preemptirq_start_test(void)
++static int preemptirq_run_test(void)
+ {
++	struct task_struct *task;
++
+ 	char task_name[50];
+ 
+ 	snprintf(task_name, sizeof(task_name), "%s_test", test_mode);
+-	return kthread_run(preemptirq_delay_run, NULL, task_name);
++	task =  kthread_run(preemptirq_delay_run, NULL, task_name);
++	if (IS_ERR(task))
++		return PTR_ERR(task);
++	if (task)
++		kthread_stop(task);
++	return 0;
+ }
+ 
+ 
+ static ssize_t trigger_store(struct kobject *kobj, struct kobj_attribute *attr,
+ 			 const char *buf, size_t count)
+ {
+-	preemptirq_start_test();
++	ssize_t ret;
++
++	ret = preemptirq_run_test();
++	if (ret)
++		return ret;
+ 	return count;
+ }
+ 
+@@ -148,11 +168,9 @@ static struct kobject *preemptirq_delay_kobj;
+ 
+ static int __init preemptirq_delay_init(void)
+ {
+-	struct task_struct *test_task;
+ 	int retval;
+ 
+-	test_task = preemptirq_start_test();
+-	retval = PTR_ERR_OR_ZERO(test_task);
++	retval = preemptirq_run_test();
+ 	if (retval != 0)
+ 		return retval;
+ 
 -- 
-2.20.1.windows.1
-
-
+2.20.1
 
