@@ -2,296 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 461A41C7494
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:26:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1206D1C7498
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:26:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730148AbgEFP0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 11:26:16 -0400
-Received: from foss.arm.com ([217.140.110.172]:39160 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730114AbgEFP0D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 11:26:03 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 55172101E;
-        Wed,  6 May 2020 08:26:02 -0700 (PDT)
-Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 54C163F68F;
-        Wed,  6 May 2020 08:26:01 -0700 (PDT)
-Date:   Wed, 6 May 2020 16:25:50 +0100
-From:   Dave Martin <Dave.Martin@arm.com>
-To:     Cristian Marussi <cristian.marussi@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Jonathan.Cameron@Huawei.com, james.quinlan@broadcom.com,
-        lukasz.luba@arm.com, sudeep.holla@arm.com
-Subject: Re: [PATCH v7 1/9] firmware: arm_scmi: Add notification
- protocol-registration
-Message-ID: <20200506152550.GA21779@arm.com>
-References: <20200504163855.54548-1-cristian.marussi@arm.com>
- <20200504163855.54548-2-cristian.marussi@arm.com>
+        id S1730180AbgEFP02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 11:26:28 -0400
+Received: from smtprelay0235.hostedemail.com ([216.40.44.235]:37094 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729936AbgEFP0O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 11:26:14 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 17CEDFB47;
+        Wed,  6 May 2020 15:26:13 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2693:2828:2910:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3874:4250:4321:5007:10004:10400:10848:11026:11232:11473:11658:11914:12297:12533:12740:12760:12895:13069:13311:13357:13439:14096:14097:14659:14721:21080:21433:21627:21795:30051:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: soda31_704d25b6cc816
+X-Filterd-Recvd-Size: 2183
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf12.hostedemail.com (Postfix) with ESMTPA;
+        Wed,  6 May 2020 15:26:11 +0000 (UTC)
+Message-ID: <dfe10cb0359c37dff46c93dfacf909dd33b2593f.camel@perches.com>
+Subject: Re: [PATCH] printk: Add loglevel for "do not print to consoles".
+From:   Joe Perches <joe@perches.com>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Petr Mladek <pmladek@suse.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
+        Dmitry Safonov <dima@arista.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Yafang Shao <laoar.shao@gmail.com>
+Date:   Wed, 06 May 2020 08:26:10 -0700
+In-Reply-To: <344199f1-639b-ee93-2388-57b0549641f9@i-love.sakura.ne.jp>
+References: <20200424024239.63607-1-penguin-kernel@I-love.SAKURA.ne.jp>
+         <20200425004609.GE8982@jagdpanzerIV.localdomain>
+         <842ff40b-a232-6098-4333-996a3033b30a@i-love.sakura.ne.jp>
+         <20200427062117.GC486@jagdpanzerIV.localdomain>
+         <4dae86af-1d9a-f5a8-cff6-aa91ec038a79@i-love.sakura.ne.jp>
+         <344199f1-639b-ee93-2388-57b0549641f9@i-love.sakura.ne.jp>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.1-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200504163855.54548-2-cristian.marussi@arm.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 04, 2020 at 05:38:47PM +0100, Cristian Marussi wrote:
-> Add core SCMI Notifications protocol-registration support: allow protocols
-> to register their own set of supported events, during their initialization
-> phase. Notification core can track multiple platform instances by their
-> handles.
+On Wed, 2020-05-06 at 18:45 +0900, Tetsuo Handa wrote:
+> On 2020/04/28 20:33, Tetsuo Handa wrote:
+> > On 2020/04/27 15:21, Sergey Senozhatsky wrote:
+> > > > KERN_NO_CONSOLES is for type of messages where "saved for later analysis" is
+> > > > important but "printed for immediate notification" is not important.
+> > > > In other words, KERN_NO_CONSOLES is NOT for dying messages where "printed for
+> > > > immediate notification" is important.
+> > > 
+> > > per-console loglevel is a user configurable parameter.
+> > > KERN_NO_CONSOLES is a hard-coded policy.
+> > 
+> > But given that whether to use KERN_NO_CONSOLES is configurable via e.g. sysctl,
+> > KERN_NO_CONSOLES will become a user configurable parameter. What's still wrong?
+> > 
 > 
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-> ---
-> V4 --> V5
-> - fixed kernel-doc
-> - added barriers for registered protocols and events
-> - using kfifo_alloc and devm_add_action_or_reset
-> V3 --> V4
-> - removed scratch ISR buffer, move scratch BH buffer into protocol
->   descriptor
-> - converted registered_protocols and registered_events from hashtables
->   into bare fixed-sized arrays
-> - removed unregister protocols' routines (never called really)
-> V2 --> V3
-> - added scmi_notify_instance to track target platform instance
-> V1 --> V2
-> - splitted out of V1 patch 04
-> - moved from IDR maps to real HashTables to store events
-> - scmi_notifications_initialized is now an atomic_t
-> - reviewed protocol registration/unregistration to use devres
-> - fixed:
->   drivers/firmware/arm_scmi/notify.c:483:18-23: ERROR:
->   	reference preceded by free on line 482
-> 
-> Reported-by: kbuild test robot <lkp@intel.com>
-> Reported-by: Julia Lawall <julia.lawall@lip6.fr>
-> ---
->  drivers/firmware/arm_scmi/Makefile |   2 +-
->  drivers/firmware/arm_scmi/common.h |   4 +
->  drivers/firmware/arm_scmi/notify.c | 444 +++++++++++++++++++++++++++++
->  drivers/firmware/arm_scmi/notify.h |  56 ++++
->  include/linux/scmi_protocol.h      |   3 +
->  5 files changed, 508 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/firmware/arm_scmi/notify.c
->  create mode 100644 drivers/firmware/arm_scmi/notify.h
+> Any problems remaining?
 
-[...]
+printk_get_level / printk_skip_level and the various
+uses of %pV using printk_get_level
 
-> diff --git a/drivers/firmware/arm_scmi/notify.c b/drivers/firmware/arm_scmi/notify.c
-
-[...]
-
-> +int scmi_register_protocol_events(const struct scmi_handle *handle,
-> +				  u8 proto_id, size_t queue_sz,
-> +				  const struct scmi_protocol_event_ops *ops,
-> +				  const struct scmi_event *evt, int num_events,
-> +				  int num_sources)
-> +{
-> +	int i;
-> +	size_t payld_sz = 0;
-> +	struct scmi_registered_protocol_events_desc *pd;
-> +	struct scmi_notify_instance *ni = handle->notify_priv;
-> +
-> +	if (!ops || !evt || proto_id >= SCMI_MAX_PROTO)
-> +		return -EINVAL;
-> +
-> +	/* Ensure atomic value is updated */
-> +	smp_mb__before_atomic();
-> +	if (unlikely(!ni || !atomic_read(&ni->initialized)))
-> +		return -EAGAIN;
-
-The atomics/barriers don't look quite right to me here.
-
-I'd have expected:
-
-scmi_register_protocol_events()
-{
-	if (atomic_read(&ni->initialized))
-		return -EAGAIN;
-	smp_mb_after_atomic();
-
-	/* ... */
-}
-
-to pair with:
-
-scmi_notification_init()
-{
-	/* ... */
-
-	smp_mb__before_atomic();
-	atomic_set(&ni->enabled, 1);
-}
-
-
-...however, do we need to allow these two functions to race with each
-other at all?  (I haven't tried to understand the wider context here,
-so if there really is no way to avoid initialisation racing with use I
-guess we may have to do something like this.  We don't want callers
-to dumbly spin on this function though.)
-
-
-In other patches in the series, calls to scmi_register_protocol_events()
-seem to be assuming there is no race: the return value is not checked.
-Possibly a bug?
-
-
-I'm not sure about scmi_notification_exit() (see below).
-
-> +
-> +	/* Attach to the notification main devres group */
-> +	if (!devres_open_group(ni->handle->dev, ni->gid, GFP_KERNEL))
-> +		return -ENOMEM;
-> +
-> +	for (i = 0; i < num_events; i++)
-> +		payld_sz = max_t(size_t, payld_sz, evt[i].max_payld_sz);
-> +	pd = scmi_allocate_registered_protocol_desc(ni, proto_id, queue_sz,
-> +				    sizeof(struct scmi_event_header) + payld_sz,
-> +						    num_events, ops);
-> +	if (IS_ERR(pd))
-> +		goto err;
-> +
-> +	for (i = 0; i < num_events; i++, evt++) {
-> +		struct scmi_registered_event *r_evt;
-> +
-> +		r_evt = devm_kzalloc(ni->handle->dev, sizeof(*r_evt),
-> +				     GFP_KERNEL);
-> +		if (!r_evt)
-> +			goto err;
-> +		r_evt->proto = pd;
-> +		r_evt->evt = evt;
-> +
-> +		r_evt->sources = devm_kcalloc(ni->handle->dev, num_sources,
-> +					      sizeof(refcount_t), GFP_KERNEL);
-> +		if (!r_evt->sources)
-> +			goto err;
-> +		r_evt->num_sources = num_sources;
-> +		mutex_init(&r_evt->sources_mtx);
-> +
-> +		r_evt->report = devm_kzalloc(ni->handle->dev,
-> +					     evt->max_report_sz, GFP_KERNEL);
-> +		if (!r_evt->report)
-> +			goto err;
-> +
-> +		pd->registered_events[i] = r_evt;
-> +		/* Ensure events are updated */
-> +		smp_wmb();
-> +		pr_info("SCMI Notifications: registered event - %X\n",
-> +			MAKE_ALL_SRCS_KEY(r_evt->proto->id, r_evt->evt->id));
-> +	}
-> +
-> +	/* Register protocol and events...it will never be removed */
-> +	ni->registered_protocols[proto_id] = pd;
-> +	/* Ensure protocols are updated */
-> +	smp_wmb();
-> +
-> +	devres_close_group(ni->handle->dev, ni->gid);
-> +
-> +	return 0;
-> +
-> +err:
-> +	pr_warn("SCMI Notifications - Proto:%X - Registration Failed !\n",
-> +		proto_id);
-> +	/* A failing protocol registration does not trigger full failure */
-> +	devres_close_group(ni->handle->dev, ni->gid);
-> +
-> +	return -ENOMEM;
-> +}
-> +
-> +/**
-> + * scmi_notification_init()  - Initializes Notification Core Support
-> + * @handle: The handle identifying the platform instance to initialize
-> + *
-> + * This function lays out all the basic resources needed by the notification
-> + * core instance identified by the provided handle: once done, all of the
-> + * SCMI Protocols can register their events with the core during their own
-> + * initializations.
-> + *
-> + * Note that failing to initialize the core notifications support does not
-> + * cause the whole SCMI Protocols stack to fail its initialization.
-> + *
-> + * SCMI Notification Initialization happens in 2 steps:
-> + * * initialization: basic common allocations (this function) -> @initialized
-> + * * registration: protocols asynchronously come into life and registers their
-> + *		   own supported list of events with the core; this causes
-> + *		   further per-protocol allocations
-> + *
-> + * Any user's callback registration attempt, referring a still not registered
-> + * event, will be registered as pending and finalized later (if possible)
-> + * by scmi_protocols_late_init() work.
-> + * This allows for lazy initialization of SCMI Protocols due to late (or
-> + * missing) SCMI drivers' modules loading.
-> + *
-> + * Return: 0 on Success
-> + */
-> +int scmi_notification_init(struct scmi_handle *handle)
-> +{
-> +	void *gid;
-> +	struct scmi_notify_instance *ni;
-> +
-> +	gid = devres_open_group(handle->dev, NULL, GFP_KERNEL);
-> +	if (!gid)
-> +		return -ENOMEM;
-> +
-> +	ni = devm_kzalloc(handle->dev, sizeof(*ni), GFP_KERNEL);
-> +	if (!ni)
-> +		goto err;
-> +
-> +	ni->gid = gid;
-> +	ni->handle = handle;
-> +
-> +	ni->registered_protocols = devm_kcalloc(handle->dev, SCMI_MAX_PROTO,
-> +						sizeof(char *), GFP_KERNEL);
-> +	if (!ni->registered_protocols)
-> +		goto err;
-> +
-> +	handle->notify_priv = ni;
-> +
-> +	atomic_set(&ni->initialized, 1);
-> +	atomic_set(&ni->enabled, 1);
-> +	/* Ensure atomic values are updated */
-> +	smp_mb__after_atomic();
-> +
-> +	pr_info("SCMI Notifications Core Initialized.\n");
-> +
-> +	devres_close_group(handle->dev, ni->gid);
-> +
-> +	return 0;
-> +
-> +err:
-> +	pr_warn("SCMI Notifications - Initialization Failed.\n");
-> +	devres_release_group(handle->dev, NULL);
-> +	return -ENOMEM;
-> +}
-> +
-> +/**
-> + * scmi_notification_exit()  - Shutdown and clean Notification core
-> + * @handle: The handle identifying the platform instance to shutdown
-> + */
-> +void scmi_notification_exit(struct scmi_handle *handle)
-> +{
-> +	struct scmi_notify_instance *ni = handle->notify_priv;
-> +
-> +	if (unlikely(!ni || !atomic_read(&ni->initialized)))
-> +		return;
-> +
-> +	atomic_set(&ni->enabled, 0);
-> +	/* Ensure atomic values are updated */
-> +	smp_mb__after_atomic();
-
-If users can race with this, we're dead: the atomic by itself doesn't
-ensure that handle is not in use once we arrive here.  Should this
-be a refcount instead?
-
-If users can't race with this, we probably don't protection here.
-
-
-I may be misunderstanding what this code is doing...
-
-Cheers
----Dave
