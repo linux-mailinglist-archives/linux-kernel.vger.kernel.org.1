@@ -2,71 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0511D1C674D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 07:12:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB98E1C673B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 07:10:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727123AbgEFFM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 01:12:27 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59278 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725821AbgEFFM1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 01:12:27 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id E896DACD5;
-        Wed,  6 May 2020 05:12:28 +0000 (UTC)
-Subject: Re: [PATCH] xenbus: avoid stack overflow warning
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Yan Yankovskyi <yyankovskyi@gmail.com>, Wei Liu <wl@xen.org>,
-        xen-devel <xen-devel@lists.xenproject.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-References: <20200505141546.824573-1-arnd@arndb.de>
- <30d49e6d-570b-f6fd-3a6f-628abcc8b127@suse.com>
- <CAK8P3a0mWH=Zcq180+cTRMpqOkGt05xDP1+kCTP6yc9grAg2VQ@mail.gmail.com>
- <48893239-dde9-4e94-040d-859f4348816d@suse.com>
- <CAK8P3a2_7+_a_cwDK1cwfrJX4azQJhd_Y0xB18cCUn6=p7fVsg@mail.gmail.com>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <2c6e4b36-6618-1889-55c4-16eeb1ef6f57@suse.com>
-Date:   Wed, 6 May 2020 07:12:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726906AbgEFFKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 01:10:17 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:3852 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725821AbgEFFKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 01:10:17 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 57FC7CF745FA5A634122;
+        Wed,  6 May 2020 13:10:14 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 6 May 2020 13:10:04 +0800
+From:   Wei Yongjun <weiyongjun1@huawei.com>
+To:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>
+CC:     Wei Yongjun <weiyongjun1@huawei.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
+Subject: [PATCH -next] firmware: imx: scu: Fix possible memory leak in imx_scu_probe()
+Date:   Wed, 6 May 2020 05:14:10 +0000
+Message-ID: <20200506051410.27219-1-weiyongjun1@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a2_7+_a_cwDK1cwfrJX4azQJhd_Y0xB18cCUn6=p7fVsg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type:   text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.05.20 22:57, Arnd Bergmann wrote:
-> On Tue, May 5, 2020 at 6:02 PM Jürgen Groß <jgross@suse.com> wrote:
->> On 05.05.20 17:01, Arnd Bergmann wrote:
->>> On Tue, May 5, 2020 at 4:34 PM Jürgen Groß <jgross@suse.com> wrote:
->>>> On 05.05.20 16:15, Arnd Bergmann wrote:
->>>
->>> I considered that as well, and don't really mind either way. I think it does
->>> get a bit ugly whatever we do. If you prefer the union, I can respin the
->>> patch that way.
->>
->> Hmm, thinking more about it I think the real clean solution would be to
->> extend struct map_ring_valloc_hvm to cover the pv case, too, to add the
->> map and unmap arrays (possibly as a union) to it and to allocate it
->> dynamically instead of having it on the stack.
->>
->> Would you be fine doing this?
-> 
-> This is a little more complex than I'd want to do without doing any testing
-> (and no, I don't want to do the testing either) ;-)
-> 
-> It does sound like a better approach though.
+'chan_name' is malloced in imx_scu_probe() and should be freed
+before leaving from the error handling cases, otherwise it will
+cause memory leak.
 
-I take this as you are fine with me writing the patch and adding you as
-"Reported-by:"?
+Fixes: edbee095fafb ("firmware: imx: add SCU firmware driver support")
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+---
+ drivers/firmware/imx/imx-scu.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/firmware/imx/imx-scu.c b/drivers/firmware/imx/imx-scu.c
+index b3da2e193ad2..176ddd151375 100644
+--- a/drivers/firmware/imx/imx-scu.c
++++ b/drivers/firmware/imx/imx-scu.c
+@@ -314,6 +314,7 @@ static int imx_scu_probe(struct platform_device *pdev)
+ 			if (ret != -EPROBE_DEFER)
+ 				dev_err(dev, "Failed to request mbox chan %s ret %d\n",
+ 					chan_name, ret);
++			kfree(chan_name);
+ 			return ret;
+ 		}
 
 
-Juergen
+
