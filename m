@@ -2,65 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF87B1C6BD2
+	by mail.lfdr.de (Postfix) with ESMTP id 831911C6BD1
 	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 10:33:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728832AbgEFIdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 04:33:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728702AbgEFIdK (ORCPT
+        id S1728519AbgEFIdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 04:33:09 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:15298 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728362AbgEFIdI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 04:33:10 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D6A5C061A0F
-        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 01:33:10 -0700 (PDT)
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jWFTw-0007Ru-1O; Wed, 06 May 2020 10:32:44 +0200
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id 746FF1001F5; Wed,  6 May 2020 10:32:43 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        "Peter Zijlstra \(Intel\)" <peterz@infradead.org>
-Subject: Re: [patch V4 part 1 03/36] sched: Clean up scheduler_ipi()
-In-Reply-To: <20200505134058.361859938@linutronix.de>
-References: <20200505131602.633487962@linutronix.de> <20200505134058.361859938@linutronix.de>
-Date:   Wed, 06 May 2020 10:32:43 +0200
-Message-ID: <87mu6lo444.fsf@nanos.tec.linutronix.de>
+        Wed, 6 May 2020 04:33:08 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1588753987; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=qH+vCEx8KLreAZPwfhn/ZHD1N/t4AEdE0BQqkYtDN/M=;
+ b=min2XTjsIQuYO8FPuUWmuvUDj/uYiGsJpFyqfp3yr+GWwKY0byc+87RwFeW/67j4Q22Yw3VM
+ JCixrggibp5zYxSr7jcM4DSmUXyzEWiMW7i9m1NeibbBEnmX6RHDZrcNob8LX5GGK++KEC/Z
+ IL9zSQWYyH5K7brUpAaYv0TaESI=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5eb27639.7fcea71aba08-smtp-out-n02;
+ Wed, 06 May 2020 08:32:57 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5F2ABC43637; Wed,  6 May 2020 08:32:57 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
+        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 49389C433BA;
+        Wed,  6 May 2020 08:32:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 49389C433BA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] rtlwifi: use true,false for bool variable in
+ rtl_init_rfkill()
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200426094115.23294-1-yanaijie@huawei.com>
+References: <20200426094115.23294-1-yanaijie@huawei.com>
+To:     Jason Yan <yanaijie@huawei.com>
+Cc:     <pkshih@realtek.com>, <davem@davemloft.net>,
+        <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Jason Yan <yanaijie@huawei.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20200506083257.5F2ABC43637@smtp.codeaurora.org>
+Date:   Wed,  6 May 2020 08:32:57 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thomas Gleixner <tglx@linutronix.de> writes:
+Jason Yan <yanaijie@huawei.com> wrote:
 
-Bah. I managed to lose the
+> The 'blocked' is a bool variable, and '==' expression itself is bool
+> too. So no need to convert it to 0/1.
+> 
+> This fixes the following coccicheck warning:
+> 
+> drivers/net/wireless/realtek/rtlwifi/base.c:508:13-41: WARNING:
+> Comparison of 0/1 to bool variable
+> 
+> Signed-off-by: Jason Yan <yanaijie@huawei.com>
 
-  From: Peterz
+Patch applied to wireless-drivers-next.git, thanks.
 
-line somehow.
+fb1a9fc550cf rtlwifi: use true,false for bool variable in rtl_init_rfkill()
 
+-- 
+https://patchwork.kernel.org/patch/11510335/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
