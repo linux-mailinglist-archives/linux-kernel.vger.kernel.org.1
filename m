@@ -2,100 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 824D41C6D50
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 11:41:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 643C41C6D28
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 11:40:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729194AbgEFJlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 05:41:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729193AbgEFJlb (ORCPT
+        id S1729132AbgEFJki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 05:40:38 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:50107 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729060AbgEFJki (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 05:41:31 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DFA6C061A0F
-        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 02:41:31 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id b6so250145plz.13
-        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 02:41:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=3DDovhauMkogXrTb9Ryx5FL/QviqwI6Y6CqY+5NUf+I=;
-        b=Q9VGl04I1Ad+Dbvc+uiDufa8ZJ1I95O88iQvrExlbyd0dBjQfw7k1ZnpT9vokfRZoq
-         3TyWH/918m4KX8t1xCfXFKZhmfyNjsvWrm4hN1PS957h64Fo803NipqyraoLiJPzOLsT
-         fGZjISK1IEzk3gZ334PXrMiZaXvyvE9iIOjdlLa3Dc7thCpguXyF4xhp84OqPDmeG+Rm
-         GJZCSpBtkmmshn52PgWyycZVyDwA7XGVv46WjoL2Hig6fWalWB23JkGiuIFST0LdR19S
-         XCHEDIUW4ls5t3mV3MGvsvLym0ewqzWZxx+SOI2V5DCLETyfTm2TAUMHR68aVe3Ofkm4
-         Ncfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=3DDovhauMkogXrTb9Ryx5FL/QviqwI6Y6CqY+5NUf+I=;
-        b=Ii314W2Q2qFvppd0vgF/nRbyKz1nxunEe2BAjuEF9y8Kj/uiNBc/4wRnQbnFf5+RyT
-         gAIsw0phirggLsk+VegX5zPHcFv92NbAVaQhr97k3lGEL7ukxtVUJ8+yjxKzyKJrduyL
-         ygLwKjfVqDl7BcS43ZiWfhMQnZoWUvyCkPxzSDtgpnjpGJh8hHS0HIE8LVmCQjWzSOxh
-         mbK8dfOt1RI5SueVnVfhkU5kHPbryB4ALuzVbeOwyluayTxD+bg1p5XbhiBBNcTgDYgo
-         z9bhKEmRaLGcWAzLYD0zQ94Z8+9SRZvX4GHWXaGMmpP5uk48TkwQHIyGEiEk8WkdnHRw
-         CodQ==
-X-Gm-Message-State: AGi0PuYT8iC7N3W9sTwUm88s5tmXv4Emzn6D7KBpuRutWhJ5UhFhB2wK
-        CmDXBDVFIhHC1B9mweIqxD9Y8Q==
-X-Google-Smtp-Source: APiQypJep+vzKwYkiq8tNVcoRKBQqvygmDMiU3wmwYTRCujJ4dpxH504cMcQBD+J7HVm3fH3jpT+vw==
-X-Received: by 2002:a17:902:b187:: with SMTP id s7mr7558369plr.0.1588758090965;
-        Wed, 06 May 2020 02:41:30 -0700 (PDT)
-Received: from localhost.localdomain ([117.252.68.141])
-        by smtp.gmail.com with ESMTPSA id a2sm1337360pfg.106.2020.05.06.02.41.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 06 May 2020 02:41:30 -0700 (PDT)
-From:   Sumit Garg <sumit.garg@linaro.org>
-To:     jarkko.sakkinen@linux.intel.com, zohar@linux.ibm.com,
-        jejb@linux.ibm.com
-Cc:     dhowells@redhat.com, jens.wiklander@linaro.org, corbet@lwn.net,
-        jmorris@namei.org, serge@hallyn.com, casey@schaufler-ca.com,
-        janne.karhunen@gmail.com, daniel.thompson@linaro.org,
-        Markus.Wamser@mixed-mode.de, keyrings@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        op-tee@lists.trustedfirmware.org, tee-dev@lists.linaro.org,
-        Sumit Garg <sumit.garg@linaro.org>
-Subject: [PATCH v4 4/4] MAINTAINERS: Add entry for TEE based Trusted Keys
-Date:   Wed,  6 May 2020 15:10:17 +0530
-Message-Id: <1588758017-30426-5-git-send-email-sumit.garg@linaro.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1588758017-30426-1-git-send-email-sumit.garg@linaro.org>
-References: <1588758017-30426-1-git-send-email-sumit.garg@linaro.org>
+        Wed, 6 May 2020 05:40:38 -0400
+X-Originating-IP: 42.109.197.213
+Received: from localhost (unknown [42.109.197.213])
+        (Authenticated sender: me@yadavpratyush.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 5B7AC240004;
+        Wed,  6 May 2020 09:40:32 +0000 (UTC)
+Date:   Wed, 6 May 2020 15:10:28 +0530
+From:   Pratyush Yadav <me@yadavpratyush.com>
+To:     masonccyang@mxic.com.tw
+Cc:     Boris Brezillon <boris.brezillon@collabora.com>,
+        broonie@kernel.org, juliensu@mxic.com.tw,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-spi@vger.kernel.org, miquel.raynal@bootlin.com,
+        Pratyush Yadav <p.yadav@ti.com>, richard@nod.at,
+        tudor.ambarus@microchip.com, vigneshr@ti.com
+Subject: Re: [PATCH v2 0/5] mtd: spi-nor: Add support for Octal 8D-8D-8D mode
+Message-ID: <20200506094028.2asq56goslfd2ngo@yadavpratyush.com>
+References: <1587451187-6889-1-git-send-email-masonccyang@mxic.com.tw>
+ <20200421092328.129308f6@collabora.com>
+ <20200427175536.2mmei2fy6f7bg6jm@yadavpratyush.com>
+ <OF18214CA5.6A9B2B30-ON48258558.001D894C-48258558.002249E0@mxic.com.tw>
+ <20200428085401.574wmo6qddmumd7q@yadavpratyush.com>
+ <OF04289CE2.B346916F-ON48258559.002280BD-48258559.00295800@mxic.com.tw>
+ <20200429181856.kkavelcczylg4yxf@yadavpratyush.com>
+ <OF28AE0642.4F34D6BB-ON4825855F.002D6E58-4825855F.003458C9@mxic.com.tw>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <OF28AE0642.4F34D6BB-ON4825855F.002D6E58-4825855F.003458C9@mxic.com.tw>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add MAINTAINERS entry for TEE based Trusted Keys framework.
+On 05/05/20 05:31PM, masonccyang@mxic.com.tw wrote:
+> Hi Pratyush,
+> > > I can't apply your patches to enable xSPI Octal mode for 
+> > > mx25uw51245g because your patches set up Octal protocol first and 
+> > > then using Octal protocol to write Configuration Register 2(CFG 
+> > > Reg2). I think driver
+> > > should write CFG Reg2 in SPI 1-1-1 mode (power on state) and make sure
+> > > write CFG Reg 2 is success and then setup Octa protocol in the last.
+> > 
+> > Register writes should work in 1S mode, because nor->reg_proto is only 
+> > set _after_ 8D mode is enabled (see spi_nor_octal_dtr_enable()). In 
+> > fact, both patch 15 and 16 in my series use register writes in 1S mode.
+> 
+> but I didn't see driver roll back "nor->read/write_proto = 1" 
+> if xxx->octal_dtr_enable() return failed!
 
-Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
----
- MAINTAINERS | 8 ++++++++
- 1 file changed, 8 insertions(+)
+I copied what spi_nor_quad_enable() did, and made failure fatal. So if 
+xxx->octal_dtr_enable() fails, the probe would fail and the flash would 
+be unusable. You can try your hand at a fallback system where you try 
+all possible protocols available, but I think that should be a different 
+patchset.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b816a45..fc8bf16 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9403,6 +9403,14 @@ F:	include/keys/trusted-type.h
- F:	include/keys/trusted_tpm.h
- F:	security/keys/trusted-keys/
- 
-+KEYS-TRUSTED-TEE
-+M:	Sumit Garg <sumit.garg@linaro.org>
-+L:	linux-integrity@vger.kernel.org
-+L:	keyrings@vger.kernel.org
-+S:	Supported
-+F:	include/keys/trusted_tee.h
-+F:	security/keys/trusted-keys/trusted_tee.c
-+
- KEYS/KEYRINGS
- M:	David Howells <dhowells@redhat.com>
- M:	Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 -- 
-2.7.4
-
+Regards,
+Pratyush Yadav
