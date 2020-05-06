@@ -2,84 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F35F1C78AA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 19:51:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 967141C78B1
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 19:52:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729477AbgEFRu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 13:50:56 -0400
-Received: from mga04.intel.com ([192.55.52.120]:36635 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728686AbgEFRu4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 13:50:56 -0400
-IronPort-SDR: 9nHmKby63c6/aIsHoFrwt5j2TDcddnFBd+6XRj0l/oLpMh6XZ72kAoyaGLCqazEYWa8ozuZtqn
- 7l+KFG4b59YA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2020 10:50:51 -0700
-IronPort-SDR: xm8tvqQxOE1rPKi9rbOCo7TO3uBzKdp1kfpW8KZL0EdRthEnS3SB3m0Ijjh17ghi7cG2E/af2F
- YVm1NUd2QXMA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,360,1583222400"; 
-   d="scan'208";a="461518608"
-Received: from orsmsx102.amr.corp.intel.com ([10.22.225.129])
-  by fmsmga005.fm.intel.com with ESMTP; 06 May 2020 10:50:51 -0700
-Received: from orsmsx158.amr.corp.intel.com (10.22.240.20) by
- ORSMSX102.amr.corp.intel.com (10.22.225.129) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Wed, 6 May 2020 10:50:50 -0700
-Received: from orsmsx101.amr.corp.intel.com ([169.254.8.204]) by
- ORSMSX158.amr.corp.intel.com ([169.254.10.56]) with mapi id 14.03.0439.000;
- Wed, 6 May 2020 10:50:49 -0700
-From:   "Derrick, Jonathan" <jonathan.derrick@intel.com>
-To:     "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "drake@endlessm.com" <drake@endlessm.com>
-CC:     "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "joro@8bytes.org" <joro@8bytes.org>, "hch@lst.de" <hch@lst.de>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jsnitsel@redhat.com" <jsnitsel@redhat.com>,
-        "Prakhya, Sai Praneeth" <sai.praneeth.prakhya@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>
-Subject: Re: [PATCH v4 0/3] Replace private domain with per-group default
- domain
-Thread-Topic: [PATCH v4 0/3] Replace private domain with per-group default
- domain
-Thread-Index: AQHWI0qLt8RTAcgRzUWht5gocxEdBqiaxYyAgAEGfQA=
-Date:   Wed, 6 May 2020 17:50:48 +0000
-Message-ID: <d0fa0782473f5c7ef63dcded596ab6694b74b149.camel@intel.com>
-References: <20200506015947.28662-1-baolu.lu@linux.intel.com>
-         <CAD8Lp47E2CDmHTEGSpqYfxxKB4a+JY6VzZdL9e65P7YxqfL9Ag@mail.gmail.com>
-In-Reply-To: <CAD8Lp47E2CDmHTEGSpqYfxxKB4a+JY6VzZdL9e65P7YxqfL9Ag@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.254.179.93]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <07B3CD54AE2C8B4387A28686CBB77ED0@intel.com>
-Content-Transfer-Encoding: base64
+        id S1729935AbgEFRwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 13:52:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729631AbgEFRwM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 13:52:12 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F63BC061A41
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 10:52:12 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id e25so3342562ljg.5
+        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 10:52:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3iDM/PlD1cl2Emprrc8UkVlx+lvpjZ6KITj+kMZS4vU=;
+        b=Onj6RpBSdppxiHflDIfnU8/+fh2nF8mikY4k8DOvMwZvX/ZFfIXNMSG/+sP3oK2sr9
+         mIhcfJjCn3ECmIQwwRaGtud3qgvzJv+DPfXc8ePIDpNWfdp4Yhjfmi+BT3ywIKw7jV7e
+         fK1DuRTDXTp/q9VjTTMWhXsXHEy4B8ih7FSH0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3iDM/PlD1cl2Emprrc8UkVlx+lvpjZ6KITj+kMZS4vU=;
+        b=lRnbGxgAQ5GPIQ2uMSPdxynxI6buOcLH3Q7zDWL9fJeyqNjgwNox39r+HnNjimTOe0
+         91OtcoUfOUXjsj5rc6yc9NIfTCFNgvmHJzm6kIDnSRv6xSSy/Rc+I/lajZ8YDh0IXzsf
+         KGy0eLyAFXT+EuD+857Zc1KBp3p9EagZWQYks3RfbZGP3Q/5P+sp8CtQgoQa1IUiHaxr
+         TfMCNsNH1VIDw7KfjMMLJ60eZZIGKWmefcMb3GqhuZHNLZVTfj30qnmRLW+8bxrDEQHP
+         gE3w2N/7EhuH+3Z1vN3F+pZQQmFQYA4viFUBw+yqbjFxmh/FS+7xl4E4vhKea1rHaneK
+         uDLw==
+X-Gm-Message-State: AGi0PuamNBG5Cl2799eTW+dDIBw/Y07YWPuQ65zHdht7uMRy8Xy0A3eI
+        hmDTD3fbsIFjouRVd3cakDc97Q47v6w=
+X-Google-Smtp-Source: APiQypLugzCJP7gGoJzb0pJ2EFgH/U7C0QU2yg+SXRUY5Uzy62nyRtjRQuWEp2VkWBPchIho4LsIYw==
+X-Received: by 2002:a2e:909a:: with SMTP id l26mr5634823ljg.262.1588787529720;
+        Wed, 06 May 2020 10:52:09 -0700 (PDT)
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
+        by smtp.gmail.com with ESMTPSA id p8sm1720754ljn.93.2020.05.06.10.52.08
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 May 2020 10:52:08 -0700 (PDT)
+Received: by mail-lj1-f176.google.com with SMTP id u15so3354448ljd.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 10:52:08 -0700 (PDT)
+X-Received: by 2002:a2e:8512:: with SMTP id j18mr5893926lji.201.1588787527821;
+ Wed, 06 May 2020 10:52:07 -0700 (PDT)
 MIME-Version: 1.0
+References: <20200506062223.30032-1-hch@lst.de> <20200506062223.30032-16-hch@lst.de>
+In-Reply-To: <20200506062223.30032-16-hch@lst.de>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 6 May 2020 10:51:51 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wi6E5z_aKr9NX+QcEJqJvSyrDbO3ypPugxstcPV5EPSMQ@mail.gmail.com>
+Message-ID: <CAHk-=wi6E5z_aKr9NX+QcEJqJvSyrDbO3ypPugxstcPV5EPSMQ@mail.gmail.com>
+Subject: Re: [PATCH 15/15] x86: use non-set_fs based maccess routines
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     "the arch/x86 maintainers" <x86@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-parisc@vger.kernel.org,
+        linux-um <linux-um@lists.infradead.org>,
+        Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIwLTA1LTA2IGF0IDEwOjA5ICswODAwLCBEYW5pZWwgRHJha2Ugd3JvdGU6DQo+
-IE9uIFdlZCwgTWF5IDYsIDIwMjAgYXQgMTA6MDMgQU0gTHUgQmFvbHUgPGJhb2x1Lmx1QGxpbnV4
-LmludGVsLmNvbT4gd3JvdGU6DQo+ID4gaHR0cHM6Ly9sa21sLm9yZy9sa21sLzIwMjAvNC8xNC82
-MTYNCj4gPiBbVGhpcyBoYXMgYmVlbiBhcHBsaWVkIGluIGlvbW11L25leHQuXQ0KPiA+IA0KPiA+
-IEhlbmNlLCB0aGVyZSBpcyBubyBuZWVkIHRvIGtlZXAgdGhlIHByaXZhdGUgZG9tYWluIGltcGxl
-bWVudGF0aW9uDQo+ID4gaW4gdGhlIEludGVsIElPTU1VIGRyaXZlci4gVGhpcyBwYXRjaCBzZXJp
-ZXMgYWltcyB0byByZW1vdmUgaXQuDQo+IA0KPiBJIGFwcGxpZWQgdGhlc2UgcGF0Y2hlcyBvbiB0
-b3Agb2YgSm9lcmcncyBicmFuY2ggYW5kIGNvbmZpcm1lZCB0aGF0DQo+IHRoZXkgZml4IHRoZSBp
-c3N1ZSBkaXNjdXNzZWQgaW4gdGhlIHRocmVhZDoNCj4gDQo+IFtQQVRDSCB2Ml0gaW9tbXUvdnQt
-ZDogY29uc2lkZXIgcmVhbCBQQ0kgZGV2aWNlIHdoZW4gY2hlY2tpbmcgaWYNCj4gbWFwcGluZyBp
-cyBuZWVkZWQNCj4gKHRoZSBwYXRjaCB0aGVyZSBpcyBubyBsb25nZXIgbmVlZGVkKQ0KPiANCj4g
-VGVzdGVkLWJ5OiBEYW5pZWwgRHJha2UgPGRyYWtlQGVuZGxlc3NtLmNvbT4NCj4gDQo+IFRoYW5r
-cyENCg0KTG9va3MgbGlrZSB0aGUga2V5IHRvIHRoZSByZWFsIERNQSBkZXYgZml4IHdhcyByZW1v
-dmluZw0KaWRlbnRpdHlfbWFwcGluZygpIHBhdGhzIHRoYXQgbGVkIHRvIGRldi0+YXJjaGRhdGEu
-aW9tbXUgPT0gTlVMTCAtPiBETUENCmRvbWFpbg0KDQpXb3JrcyBncmVhdCBmb3IgbWUgYXMgd2Vs
-bA0KDQpSZXZpZXdlZC1ieTogSm9uIERlcnJpY2sgPGpvbmF0aGFuLmRlcnJpY2tAaW50ZWwuY29t
-Pg0K
+On Tue, May 5, 2020 at 11:23 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> +#define arch_kernel_read(dst, src, type, err_label)                    \
+> +       __get_user_size(*((type *)dst), (__force type __user *)src,     \
+> +                       sizeof(type), __kr_err);                        \
+..
+> +#define arch_kernel_write(dst, src, type, err_label)                   \
+> +       __put_user_size(*((type *)(src)), (__force type __user *)(dst), \
+> +                       sizeof(type), err_label)
+
+My private tree no longer has those __get/put_user_size() things,
+because "unsafe_get/put_user()" is the only thing that remains with my
+conversion to asm goto.
+
+And we're actively trying to get rid of the whole __get_user() mess.
+Admittedly "__get_user_size()" is just the internal helper that
+doesn't have the problem, but it really is an internal helper for a
+legacy operation, and the new op that uses it is that
+"unsafe_get_user()".
+
+Also, because you use __get_user_size(), you then have to duplicate
+the error handling logic that we already have in unsafe_get_user().
+
+IOW - is there some reason why you didn't just make these use
+"unsafe_get/put_user()" directly, and avoid both of those issues?
+
+              Linus
