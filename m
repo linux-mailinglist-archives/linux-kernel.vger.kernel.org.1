@@ -2,74 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 667CE1C683B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 08:14:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD9221C684D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 08:17:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727944AbgEFGOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 02:14:43 -0400
-Received: from mga11.intel.com ([192.55.52.93]:13733 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726495AbgEFGOm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 02:14:42 -0400
-IronPort-SDR: Aea8bJ0TPKSGcD2+YdR056vVwmezCMYnZNc80YCGOkgY80P0/ClkoH5fuIy38WYW8/isyxkgmZ
- WLdX2Fwf4M4g==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2020 23:14:42 -0700
-IronPort-SDR: 8SU0ZqGeDxAqRO3wxKhezSMu6O2lsRivPI+hZNxm7YSA4YXKFMebS7DjQxzKlx6yRlYm9rM62J
- 4aPiWNDugCFA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,358,1583222400"; 
-   d="scan'208";a="369691803"
-Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
-  by fmsmga001.fm.intel.com with SMTP; 05 May 2020 23:14:39 -0700
-Received: by lahna (sSMTP sendmail emulation); Wed, 06 May 2020 09:14:38 +0300
-Date:   Wed, 6 May 2020 09:14:38 +0300
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     bhelgaas@google.com, Heiner Kallweit <hkallweit1@gmail.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Keith Busch <keith.busch@intel.com>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        Krzysztof Wilczynski <kw@linux.com>,
-        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] PCI/ASPM: Enable ASPM for bridge-to-bridge link
-Message-ID: <20200506061438.GR487496@lahna.fi.intel.com>
-References: <20200505122801.12903-1-kai.heng.feng@canonical.com>
- <20200505173423.26968-1-kai.heng.feng@canonical.com>
+        id S1727891AbgEFGRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 02:17:11 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:3808 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726495AbgEFGRK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 02:17:10 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 2F845A04B3344AC12140;
+        Wed,  6 May 2020 14:17:05 +0800 (CST)
+Received: from huawei.com (10.175.124.28) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Wed, 6 May 2020
+ 14:16:55 +0800
+From:   Jason Yan <yanaijie@huawei.com>
+To:     <roopa@cumulusnetworks.com>, <nikolay@cumulusnetworks.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>,
+        <bridge@lists.linux-foundation.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Jason Yan <yanaijie@huawei.com>
+Subject: [PATCH net-next] net: bridge: return false in br_mrp_enabled()
+Date:   Wed, 6 May 2020 14:16:16 +0800
+Message-ID: <20200506061616.18929-1-yanaijie@huawei.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200505173423.26968-1-kai.heng.feng@canonical.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.28]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 06, 2020 at 01:34:21AM +0800, Kai-Heng Feng wrote:
-> The TI PCIe-to-PCI bridge prevents the Intel SoC from entering power
-> state deeper than PC3 due to disabled ASPM, consumes lots of unnecessary
-> power. On Windows ASPM L1 is enabled on the device and its upstream
-> bridge, so it can make the Intel SoC reach PC8 or PC10 to save lots of
-> power.
-> 
-> In short, ASPM always gets disabled on bridge-to-bridge link.
+Fix the following coccicheck warning:
 
-Excelent finding :) I've heard several reports complaining that we can't
-enter PC10 when TBT is enabled and I guess this explains it.
+net/bridge/br_private.h:1334:8-9: WARNING: return of 0/1 in function
+'br_mrp_enabled' with return type bool
 
-> The special case was part of first ASPM introduction patch, commit
-> 7d715a6c1ae5 ("PCI: add PCI Express ASPM support"). However, it didn't
-> explain why ASPM needs to be disabled in special bridge-to-bridge case.
-> 
-> Let's remove the the special case, as PCIe spec already envisioned ASPM
-> on bridge-to-bridge link.
-> 
-> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=207571
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Signed-off-by: Jason Yan <yanaijie@huawei.com>
+---
+ net/bridge/br_private.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+diff --git a/net/bridge/br_private.h b/net/bridge/br_private.h
+index c35647cb138a..78d3a951180d 100644
+--- a/net/bridge/br_private.h
++++ b/net/bridge/br_private.h
+@@ -1331,7 +1331,7 @@ static inline int br_mrp_process(struct net_bridge_port *p, struct sk_buff *skb)
+ 
+ static inline bool br_mrp_enabled(struct net_bridge *br)
+ {
+-	return 0;
++	return false;
+ }
+ 
+ static inline void br_mrp_port_del(struct net_bridge *br,
+-- 
+2.21.1
+
