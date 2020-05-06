@@ -2,135 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1B661C74E6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:30:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D82821C74EC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:32:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729669AbgEFPai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 11:30:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59644 "EHLO
+        id S1729540AbgEFPcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 11:32:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729931AbgEFPag (ORCPT
+        with ESMTP id S1729003AbgEFPb7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 11:30:36 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B22DC061A0F
-        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 08:30:36 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id q24so1045499pjd.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 08:30:36 -0700 (PDT)
+        Wed, 6 May 2020 11:31:59 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97471C061A0F
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 08:31:59 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id c3so1682292otp.8
+        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 08:31:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=QdMtxniSWK3PkWXNKwBL1UPHuRFtnVNhLkmVLBdfg9k=;
-        b=Q/9X3HqpDpP1bpMyEce6+77MmK6MN+XVjRdiAxqecgTGYNf3lBxevqb2kiejal14bb
-         WjYaodQ0NtKSLfkI4ehZZNQCWbD4wu0b8/wpICLtZi+IHB10p/r0x/OfvVfBgznsLkHH
-         mBJthd/pdvQ9+cBWw2Oz5oYEAiMhlyPElCbek=
+        bh=HGob2W+jtJ1wxr5TyUwXRK5f3ACyssA5mwEkdojnzSc=;
+        b=ft34+Tuj1/EXggzTdLuevyBjykqE8Mo6BrUQeaVcw0R26trAW03x2IpOBwVX+aWtN+
+         zenPFzWx92ITkR0k2zz/kScA82yz+x+GJpQQ9bjvzKrl+llIb59Dw88EiShplEqNKGf5
+         QV7Zgmr9AiRNNRkhp257Q9EbG7UA/k8IA8smqoPoLeMlZc14E9IEsR446khqN8j0PzOz
+         e3enOxOtzg7qzTWl/NJv4tgCCBvCOMn0EwZl57xNr4a7I9QvqhNlM8UHOyPCxZP/4fu9
+         32fEWgM1q4dPoIPW9Mp/d3xx/l1PdjgM4oJGfPC+ZWvtFbKFgWr9sHtxu9ffO85zcG4X
+         50oA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=QdMtxniSWK3PkWXNKwBL1UPHuRFtnVNhLkmVLBdfg9k=;
-        b=O5R+YuaAOTNTFQFpo7FdHVmGwM0Gtgfv4Mgqchci6y8HV4ebNB/f+3d6+J6BMJZO4d
-         17n54GWr4Fm2KO6KnSltnEVXiD129mIEH4RDNyJ+BmEOAm4qtoi7fpvoBctc3ZeqjKlM
-         SDutyj50QlhCU4MUUMjSnYV02UdCx+sRYQMedAS5R/7a39n1RE4gBwwuzhe53k2BnUG3
-         ILz+QsoQu7v4GXpmLwOIdl3MnjDFqXmmNIrEO8f1I44MnqKQEC8ykhnVWXuvN1BZ/K0U
-         SeuqN4klg3QV9daImGj/f2NNgrHHjIUmfF9ZkgUjgAQDx/Vxe1IotAL5Jc6/scwmG25I
-         D+Tg==
-X-Gm-Message-State: AGi0Puash/pJbOrpTFMUf9BEiWMJbzSK5s5AsPTtbIh2vv9IpscbYJhl
-        1Pe6CrrRf6wn1sMrEna0iVDb/g==
-X-Google-Smtp-Source: APiQypLr2NM9l03AagLLZo6M94o8eGZFpNOjjoclEjyQPblQQ32jPFWaWB507XPHEGNsAcVzeN19jg==
-X-Received: by 2002:a17:90a:21ce:: with SMTP id q72mr9815638pjc.0.1588779036158;
-        Wed, 06 May 2020 08:30:36 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 82sm2099813pfv.214.2020.05.06.08.30.34
+        bh=HGob2W+jtJ1wxr5TyUwXRK5f3ACyssA5mwEkdojnzSc=;
+        b=aN8NEYy+Z8YgpFLw98rG4StbgWixw4uNu6YuTv3o49lamtZYNQ5I+tWCyHqZXc9mbP
+         ttElam/zahfpsWLfUZXWn0BaItdIgW4C7FF47j/KNK807jUl3AP+eayXtTt12VM2Ptr7
+         Owj/W9PUsBvzzom+A5lXyJPn+RQa1GeIBb5mgmN+F2DUw6pkOIKlK3bSOdtIdzEpVXUA
+         qMe9CtiWWHBd80AF+tbddGj9OdjGIsqirC4UFTJDYyW4gcr8/9MsDXIUSuiQiUmKWLI8
+         x6dLnPFrE0p7+N16mvVsWyLyWKei9W1sYH7GglnbjNz11DJwpGDzcCoC/IILByllw5yq
+         L/VA==
+X-Gm-Message-State: AGi0PubQeQqGVpiVVRV1ZRgUXN2X5Zkl7KTdotJgKJmrV4zk04C77wIU
+        t5Q0TnfVftE1HpH4bpMDCs0OxGkYJzg=
+X-Google-Smtp-Source: APiQypLu+rugV5iMHAMDUMStivxbyqze+0IvgUKVeYPMJwAz9l+XPCxlS3esB3VFosY4NfT4vVb8qA==
+X-Received: by 2002:a05:6830:1d9c:: with SMTP id y28mr7465935oti.280.1588779118864;
+        Wed, 06 May 2020 08:31:58 -0700 (PDT)
+Received: from ubuntu-s3-xlarge-x86 ([2604:1380:4111:8b00::1])
+        by smtp.gmail.com with ESMTPSA id m189sm600819oig.12.2020.05.06.08.31.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 May 2020 08:30:34 -0700 (PDT)
-Date:   Wed, 6 May 2020 08:30:33 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Rob Landley <rob@landley.net>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        linux-fsdevel@vger.kernel.org, Al Viro <viro@ZenIV.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 6/7] exec: Move most of setup_new_exec into flush_old_exec
-Message-ID: <202005060829.A09C366D0@keescook>
-References: <87h7wujhmz.fsf@x220.int.ebiederm.org>
- <87ftcei2si.fsf@x220.int.ebiederm.org>
- <202005051354.C7E2278688@keescook>
- <87368ddsc9.fsf@x220.int.ebiederm.org>
+        Wed, 06 May 2020 08:31:58 -0700 (PDT)
+Date:   Wed, 6 May 2020 08:31:56 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Torsten Duwe <duwe@lst.de>, Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Amit Daniel Kachhap <amit.kachhap@arm.com>,
+        Torsten Duwe <duwe@suse.de>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        AKASHI Takahiro <takahiro.akashi@linaro.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Julien Thierry <jthierry@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Alexandre Ghiti <alex@ghiti.fr>,
+        Kristina Martsenko <kristina.martsenko@arm.com>,
+        Ionela Voinescu <ionela.voinescu@arm.com>,
+        Steve Capper <steve.capper@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Fangrui Song <maskray@google.com>
+Subject: Re: [PATCH] arm64: disable patchable function entry on big-endian
+ clang builds
+Message-ID: <20200506153156.GA1213645@ubuntu-s3-xlarge-x86>
+References: <20200505141257.707945-1-arnd@arndb.de>
+ <20200505142556.GF82823@C02TD0UTHF1T.local>
+ <20200505194243.5bfc6ec6@blackhole>
+ <20200506034523.GA564255@ubuntu-s3-xlarge-x86>
+ <CAK8P3a24EiEvGAenL0FdgGakmwWi=giReOJuiisnzkgC_SuhZg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87368ddsc9.fsf@x220.int.ebiederm.org>
+In-Reply-To: <CAK8P3a24EiEvGAenL0FdgGakmwWi=giReOJuiisnzkgC_SuhZg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 06, 2020 at 09:57:10AM -0500, Eric W. Biederman wrote:
-> Kees Cook <keescook@chromium.org> writes:
-> 
-> > On Tue, May 05, 2020 at 02:45:33PM -0500, Eric W. Biederman wrote:
-> >> 
-> >> The current idiom for the callers is:
-> >> 
-> >> flush_old_exec(bprm);
-> >> set_personality(...);
-> >> setup_new_exec(bprm);
-> >> 
-> >> In 2010 Linus split flush_old_exec into flush_old_exec and
-> >> setup_new_exec.  With the intention that setup_new_exec be what is
-> >> called after the processes new personality is set.
-> >> 
-> >> Move the code that doesn't depend upon the personality from
-> >> setup_new_exec into flush_old_exec.  This is to facilitate future
-> >> changes by having as much code together in one function as possible.
+On Wed, May 06, 2020 at 12:22:58PM +0200, Arnd Bergmann wrote:
+> On Wed, May 6, 2020 at 5:45 AM Nathan Chancellor
+> <natechancellor@gmail.com> wrote:
+> > On Tue, May 05, 2020 at 07:42:43PM +0200, Torsten Duwe wrote:
+> > > On Tue, 5 May 2020 15:25:56 +0100 Mark Rutland <mark.rutland@arm.com> wrote:
+> > > > On Tue, May 05, 2020 at 04:12:36PM +0200, Arnd Bergmann wrote:
+> > > > This practically rules out a BE distro kernel with things like PAC,
+> > > > which isn't ideal.
 > >
-> > Er, I *think* this is okay, but I have some questions below which
-> > maybe you already investigated (and should perhaps get called out in
-> > the changelog).
+> > To be fair, are there big endian AArch64 distros?
+> >
+> > https://wiki.debian.org/Arm64Port: "There is also a big-endian version
+> > of the architecture/ABI: aarch64_be-linux-gnu but we're not supporting
+> > that in Debian (so there is no corresponding Debian architecture name)
+> > and hopefully will never have to. Nevertheless you might want to check
+> > for this by way of completeness in upstream code."
+> >
+> > OpenSUSE and Fedora don't appear to have support for big endian.
 > 
-> I will see if I can expand more on the review that I have done.
+> I don't think any of the binary distros ship big endian ARM64. There are
+> a couple of users that tend to build everything from source using Yocto
+> or similar embedded distros, but as far as I can tell this is getting less
+> common over time as applications get ported to be compatible with
+> big-endian, or get phased out and replaced by code running on regular
+> little-endian systems.
 > 
-> I saw this as moving thre lines and the personality setting later in the
-> code, rather than moving a bunch of lines up
-> 
-> AKA these lines:
-> >> +	arch_pick_mmap_layout(me->mm, &bprm->rlim_stack);
-> >> +
-> >> +	arch_setup_new_exec();
-> >> +
-> >> +	/* Set the new mm task size. We have to do that late because it may
-> >> +	 * depend on TIF_32BIT which is only updated in flush_thread() on
-> >> +	 * some architectures like powerpc
-> >> +	 */
-> >> +	me->mm->task_size = TASK_SIZE;
-> 
-> 
-> I verified carefully that only those three lines can depend upon the
-> personality changes.
-> 
-> Your concern if anything depends on those moved lines I haven't looked
-> at so closely so I will go back through and do that.  I don't actually
-> expect anything depends upon those three lines because they should only
-> be changing architecture specific state.  But that is general handwaving
-> not actually careful review which tends to turn up suprises in exec.
+> The users we see today are likely in telco, military or aerospace
+> settings (While earth is mostly little-endian these days, space is
+> definitely big-endian) that got ported from big-endian hardware, but
+> often with a high degree of customization and long service life.
 
-Right -- I looked through all of it (see my last email) and I think it's
-all okay, but I was curious if you'd looked too. :)
+Ah yes, that makes sense, thanks for the information and background.
+Helps orient myself for the future.
 
-> Speaking of while I was looking through the lsm hooks again I just
-> realized that 613cc2b6f272 ("fs: exec: apply CLOEXEC before changing
-> dumpable task flags") only fixed half the problem.  So I am going to
-> take a quick detour fix that then come back to this.  As that directly
-> affects this code motion.
+> My policy for Arm specific kernel code submissions is generally that
+> it should be written so it can work on either big-endian or little-endian
+> using the available abstractions (just like any architecture independent
+> code), but I don't normally expect it to be tested on big endian.
+> 
+> There are some important examples of code that just doesn't work
+> on big-endian because it's far too hard, e.g. the UEFI runtime services.
+> That is also ok, if anyone really needs it, they can do the work.
+> 
+> > > I suggest to get a quote from clang folks first about their schedule and
+> > > regarded importance of patchable-function-entries on BE, and leave it as
+> > > is: broken on certain clang configurations. It's not the kernel's fault.
+> >
+> > We can file an upstream PR (https://bugs.llvm.org) to talk about this
+> > (although I've CC'd Fangrui) but you would rather the kernel fail to
+> > work properly than prevent the user from being able to select that
+> > option? Why even have the "select" or "depends on" keyword then?
+> 
+> I definitely want all randconfig kernels to build without warnings,
+> and I agree with you that making it just fail at build time is not
+> a good solution.
+> 
+> > That said, I do think we should hold off on this patch until we hear
+> > from the LLVM developers.
+> 
+> +1
+> 
+>       Arnd
 
-Oh yay. :) Thanks for catching it!
+Glad we are on the same page.
 
--- 
-Kees Cook
+Cheers,
+Nathan
