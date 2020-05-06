@@ -2,112 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E8481C7130
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 14:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A361C713B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 15:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728540AbgEFM7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 08:59:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56334 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728081AbgEFM7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 08:59:34 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id D694CAC90;
-        Wed,  6 May 2020 12:59:34 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id CEA541E12A8; Wed,  6 May 2020 14:59:30 +0200 (CEST)
-Date:   Wed, 6 May 2020 14:59:30 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Souptick Joarder <jrdr.linux@gmail.com>
-Cc:     Jan Kara <jack@suse.cz>, John Hubbard <jhubbard@nvidia.com>,
-        Tony Luck <tony.luck@intel.com>, fenghua.yu@intel.com,
-        Rob Springer <rspringer@google.com>,
-        Todd Poynor <toddpoynor@google.com>, benchan@chromium.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        santosh.shilimkar@oracle.com,
-        "David S. Miller" <davem@davemloft.net>, kuba@kernel.org,
-        Ira Weiny <ira.weiny@intel.com>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        inux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "open list:ANDROID DRIVERS" <devel@driverdev.osuosl.org>,
-        tee-dev@lists.linaro.org, Linux-MM <linux-mm@kvack.org>,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        rds-devel@oss.oracle.com
-Subject: Re: [RFC] mm/gup.c: Updated return value of
- {get|pin}_user_pages_fast()
-Message-ID: <20200506125930.GJ17863@quack2.suse.cz>
-References: <1588706059-4208-1-git-send-email-jrdr.linux@gmail.com>
- <0bfe4a8a-0d91-ef9b-066f-2ea7c68571b3@nvidia.com>
- <CAFqt6zZMsQkOdjAb2k1EjwX=DtZ8gKfbRzwvreHOX-0vJLngNg@mail.gmail.com>
- <20200506100649.GI17863@quack2.suse.cz>
- <CAFqt6zYaNkJ4AfVzutXS=JsN4fE41ZAvnw03vHWpdyiRHY1m_w@mail.gmail.com>
+        id S1728714AbgEFNBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 09:01:02 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:26957 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727964AbgEFNBC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 09:01:02 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1588770061; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=EEVpYpqQ1QRwHdkwdt5mqy1ieqOZLEZitiAbr0eLLME=; b=HKi1CUmO241oStvHDtRmFf/ztsXSQocP8rYnDeiJOXuj2MGUddq9w70BQjmGVj+VgI8RxhuG
+ h2iV840w0dXMD8hIRyLsaTA5f35IADmktx1i+u4aSEaBDIGNYfhU/L0cl/+G5KduycAbvxx9
+ LpoimeqKaUwouy8c3eycS3CPSks=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5eb2b4e8.7fc83cd1fdf8-smtp-out-n03;
+ Wed, 06 May 2020 13:00:24 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 0BFC2C00456; Wed,  6 May 2020 13:00:20 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.43.57] (unknown [27.59.131.204])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: vbadigan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B9225C433BA;
+        Wed,  6 May 2020 13:00:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B9225C433BA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=vbadigan@codeaurora.org
+Subject: Re: [PATCH v5 1/5] mmc: core: Extend mmc_of_parse() to parse CQE
+ bindings
+To:     Chun-Hung Wu <chun-hung.wu@mediatek.com>, mirq-linux@rere.qmqm.pl,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Al Cooper <alcooperx@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Chaotian Jing <chaotian.jing@mediatek.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Pan Bian <bianpan2016@163.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Allison Randal <allison@lohutok.net>,
+        Mathieu Malaterre <malat@debian.org>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Kuohong Wang <kuohong.wang@mediatek.com>,
+        Yong Mao <yong.mao@mediatek.com>
+Cc:     kernel-team@android.com, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        devicetree@vger.kernel.org, wsd_upstream@mediatek.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org
+References: <1588031768-23677-1-git-send-email-chun-hung.wu@mediatek.com>
+ <1588031768-23677-2-git-send-email-chun-hung.wu@mediatek.com>
+From:   Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+Message-ID: <9bc2454f-0b42-e256-7927-2564b56f369f@codeaurora.org>
+Date:   Wed, 6 May 2020 18:30:04 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFqt6zYaNkJ4AfVzutXS=JsN4fE41ZAvnw03vHWpdyiRHY1m_w@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1588031768-23677-2-git-send-email-chun-hung.wu@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 06-05-20 17:51:39, Souptick Joarder wrote:
-> On Wed, May 6, 2020 at 3:36 PM Jan Kara <jack@suse.cz> wrote:
-> >
-> > On Wed 06-05-20 02:06:56, Souptick Joarder wrote:
-> > > On Wed, May 6, 2020 at 1:08 AM John Hubbard <jhubbard@nvidia.com> wrote:
-> > > >
-> > > > On 2020-05-05 12:14, Souptick Joarder wrote:
-> > > > > Currently {get|pin}_user_pages_fast() have 3 return value 0, -errno
-> > > > > and no of pinned pages. The only case where these two functions will
-> > > > > return 0, is for nr_pages <= 0, which doesn't find a valid use case.
-> > > > > But if at all any, then a -ERRNO will be returned instead of 0, which
-> > > > > means {get|pin}_user_pages_fast() will have 2 return values -errno &
-> > > > > no of pinned pages.
-> > > > >
-> > > > > Update all the callers which deals with return value 0 accordingly.
-> > > >
-> > > > Hmmm, seems a little shaky. In order to do this safely, I'd recommend
-> > > > first changing gup_fast/pup_fast so so that they return -EINVAL if
-> > > > the caller specified nr_pages==0, and of course auditing all callers,
-> > > > to ensure that this won't cause problems.
-> > >
-> > > While auditing it was figured out, there are 5 callers which cares for
-> > > return value
-> > > 0 of gup_fast/pup_fast. What problem it might cause if we change
-> > > gup_fast/pup_fast
-> > > to return -EINVAL and update all the callers in a single commit ?
-> >
-> > Well, first I'd ask a different question: Why do you want to change the
-> > current behavior? It's not like the current behavior is confusing.  Callers
-> > that pass >0 pages can happily rely on the simple behavior of < 0 return on
-> > error or > 0 return if we mapped some pages. Callers that can possibly ask
-> > to map 0 pages can get 0 pages back - kind of expected - and I don't see
-> > any benefit in trying to rewrite these callers to handle -EINVAL instead...
-> 
-> Callers with a request to map 0 pages doesn't have a valid use case. But if any
-> caller end up doing it mistakenly, -errno should be returned to caller
-> rather than 0
-> which will indicate more precisely that map 0 pages is not a valid
-> request from caller.
 
-Well, I believe this depends on the point of view. Similarly as reading 0
-bytes is successful, we could consider mapping 0 pages successful as well.
-And there can be valid cases where number of pages to map is computed from
-some input and when 0 pages should be mapped, it is not a problem and your
-change would force such callers to special case this with explicitely
-checking for 0 pages to map and not calling GUP in that case at all.
+On 4/28/2020 5:26 AM, Chun-Hung Wu wrote:
+> Parse CQE bindings "supports-cqe" and "disable-cqe-dcmd"
+> in mmc_of_parse().
+>
+> Signed-off-by: Chun-Hung Wu <chun-hung.wu@mediatek.com>
+> ---
+>   drivers/mmc/core/host.c | 5 +++++
+>   1 file changed, 5 insertions(+)
+>
+> diff --git a/drivers/mmc/core/host.c b/drivers/mmc/core/host.c
+> index c876872..47521c6 100644
+> --- a/drivers/mmc/core/host.c
+> +++ b/drivers/mmc/core/host.c
+> @@ -302,6 +302,11 @@ int mmc_of_parse(struct mmc_host *host)
+>   		host->caps2 |= MMC_CAP2_NO_SD;
+>   	if (device_property_read_bool(dev, "no-mmc"))
+>   		host->caps2 |= MMC_CAP2_NO_MMC;
+> +	if (device_property_read_bool(dev, "supports-cqe"))
+> +		host->caps2 |= MMC_CAP2_CQE;
 
-I'm not saying what you propose is necessarily bad, I just say I don't find
-it any better than the current behavior and so IMO it's not worth the
-churn. Now if you can come up with some examples of current in-kernel users
-who indeed do get the handling of the return value wrong, I could be
-convinced otherwise.
+This change is breaking emmc driver on qcom platforms where this dt 
+property is defined.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+[    1.543453]  cqhci_deactivate+0xc/0x38
+[    1.545627]  sdhci_msm_reset+0x40/0x58
+[    1.549447]  sdhci_do_reset+0x48/0x7c
+[    1.553180]  __sdhci_read_caps+0x7c/0x214
+[    1.556913]  sdhci_setup_host+0x58/0xce8
+[    1.560905]  sdhci_msm_probe+0x588/0x8a4
+[    1.564900]  platform_drv_probe+0x4c/0xb0
+
+So, we cant have this flag defined before sdhci_setup_host().
+
+I will have to clear this cap and re-enable it in our initialization.
+
+> +	if (!device_property_read_bool(dev, "disable-cqe-dcmd")) {
+> +		host->caps2 |= MMC_CAP2_CQE_DCMD;
+> +	}
+>   
+>   	/* Must be after "non-removable" check */
+>   	if (device_property_read_u32(dev, "fixed-emmc-driver-type", &drv_type) == 0) {
