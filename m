@@ -2,172 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86E8B1C76D9
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 18:44:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34D791C76C5
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 18:43:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730109AbgEFQo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 12:44:26 -0400
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:39790 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730055AbgEFQoV (ORCPT
+        id S1729980AbgEFQnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 12:43:13 -0400
+Received: from asavdk4.altibox.net ([109.247.116.15]:59734 "EHLO
+        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727984AbgEFQnN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 12:44:21 -0400
-Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com [209.85.222.46]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 046GhjRm017691;
-        Thu, 7 May 2020 01:43:46 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 046GhjRm017691
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1588783426;
-        bh=utvgGRsMw8+CW4P3BXfPw8wbFM86fzbR5axYMY0vIGg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=HVH9aqAW7dSrdCAjK6LWzWts7qi2i3l9S1k/K3/lF6QsA57Ee6mFgi8K6fwZERevF
-         rjCXb5fR5X2r4POSS6b8fjaiRn0t2cQk1AeEGXRt9wL+uQDy4ASmfOiC+ew0tjRC+x
-         bGLyot+eGg+hRaeaiyKW7Hr3KxZJmsW2zqxmTtyrKvmvS9W6F1rkmA2UQgk/ZWXbvy
-         jsJIl03DzkDtOxu39qqNndEyguJO/fmWeMWTPt59h320vs1fcLIz+0RqLbE5a2jLx/
-         vHKsWeeOcmAuLyiiLftS7dibF6eA1SMP+X2kS9phHcrcQ25sB/uAMLcj6xUIbkWNiW
-         JsJJogMZ5YlRw==
-X-Nifty-SrcIP: [209.85.222.46]
-Received: by mail-ua1-f46.google.com with SMTP id u12so742721uau.10;
-        Wed, 06 May 2020 09:43:46 -0700 (PDT)
-X-Gm-Message-State: AGi0PuaII36n1U0693WqgVgZ0rGswZYbWwux97Wn0dOFJTlDch2l9p9u
-        XIll8Z3it55Hgnnc4CWPYqwZk32QvPfwPPPzSTk=
-X-Google-Smtp-Source: APiQypLwLaVV3HiKerrKQmnXe6ZFcFF3HTIhVjsUpf+ssyj1nm7hvmk9gnii/QfOzPVIh3ds2SJSZMDp2FaPdcevn04=
-X-Received: by 2002:ab0:4ac9:: with SMTP id t9mr8255622uae.40.1588783425219;
- Wed, 06 May 2020 09:43:45 -0700 (PDT)
+        Wed, 6 May 2020 12:43:13 -0400
+Received: from ravnborg.org (unknown [158.248.194.18])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk4.altibox.net (Postfix) with ESMTPS id CFD69804B9;
+        Wed,  6 May 2020 18:43:09 +0200 (CEST)
+Date:   Wed, 6 May 2020 18:43:08 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v5 4/6] drm/tegra: output: Support DRM bridges
+Message-ID: <20200506164308.GD19296@ravnborg.org>
+References: <20200418170703.1583-1-digetx@gmail.com>
+ <20200418170703.1583-5-digetx@gmail.com>
 MIME-Version: 1.0
-References: <nycvar.YSQ.7.76.2004231102480.2671@knanqh.ubzr>
- <87imhqb3le.fsf@intel.com> <nycvar.YSQ.7.76.2004231155060.2671@knanqh.ubzr>
-In-Reply-To: <nycvar.YSQ.7.76.2004231155060.2671@knanqh.ubzr>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 7 May 2020 01:43:08 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARpRMZb18FFnX1WPV4Xzh2B_n2E+KLf5QXqiqkZEKhTbQ@mail.gmail.com>
-Message-ID: <CAK7LNARpRMZb18FFnX1WPV4Xzh2B_n2E+KLf5QXqiqkZEKhTbQ@mail.gmail.com>
-Subject: Re: [PATCH] kconfig: allow for conditional dependencies
-To:     Nicolas Pitre <nico@fluxnic.net>
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200418170703.1583-5-digetx@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=MOBOZvRl c=1 sm=1 tr=0
+        a=UWs3HLbX/2nnQ3s7vZ42gw==:117 a=UWs3HLbX/2nnQ3s7vZ42gw==:17
+        a=kj9zAlcOel0A:10 a=pGLkceISAAAA:8 a=7gkXJVJtAAAA:8 a=e5mUnYsNAAAA:8
+        a=EUr2AM-oRzLbqJR9WOUA:9 a=CjuIK1q_8ugA:10 a=E9Po1WZjFZOl8hwRPBS3:22
+        a=Vxmtnl_E_bksehYqCbjh:22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 24, 2020 at 1:05 AM Nicolas Pitre <nico@fluxnic.net> wrote:
->
-> On Thu, 23 Apr 2020, Jani Nikula wrote:
->
-> > On Thu, 23 Apr 2020, Nicolas Pitre <nico@fluxnic.net> wrote:
-> > > This might appear to be a strange concept, but sometimes we want
-> > > a dependency to be conditionally applied. One such case is currently
-> > > expressed with:
-> > >
-> > >         depends on FOO || !FOO
-> > >
-> > > This pattern is strange enough to give one's pause. Given that it is
-> > > also frequent, let's make the intent more obvious with some syntaxic
-> > > sugar by effectively making dependencies optionally conditional.
-> > >
-> > > This also makes the kconfig language more uniform.
-> >
-> > Thanks, I prefer this over all the previous proposals. Versatile yet
-> > self-explanatory.
-> >
-> > > Signed-off-by: Nicolas Pitre <nico@fluxnic.net>
-> > >
-> > > diff --git a/Documentation/kbuild/kconfig-language.rst b/Documentation/kbuild/kconfig-language.rst
-> > > index d0111dd264..0f841e0037 100644
-> > > --- a/Documentation/kbuild/kconfig-language.rst
-> > > +++ b/Documentation/kbuild/kconfig-language.rst
-> > > @@ -114,7 +114,7 @@ applicable everywhere (see syntax).
-> > >    This is a shorthand notation for a type definition plus a value.
-> > >    Optionally dependencies for this default value can be added with "if".
-> > >
-> > > -- dependencies: "depends on" <expr>
-> > > +- dependencies: "depends on" <expr> ["if" <expr>]
-> > >
-> > >    This defines a dependency for this menu entry. If multiple
-> > >    dependencies are defined, they are connected with '&&'. Dependencies
-> > > @@ -130,6 +130,16 @@ applicable everywhere (see syntax).
-> > >     bool "foo"
-> > >     default y
-> > >
-> > > +  The dependency definition itself may be conditional by appending "if"
-> > > +  followed by an expression. If such expression is false (n) then this
-> > > +  dependency is ignored. One possible use case is:
-> > > +
-> > > +    config FOO
-> > > +   tristate
-> > > +   depends on BAZ if BAZ != n
-> >
-> > I presume this is the same as
-> >
-> >       depends on BAZ if BAZ
-> >
-> > which makes me wonder if that should be the example. At least current
-> > usage for select is predominantly
-> >
-> >       select FOO if BAR
-> >
-> > without "!= n".
->
-> Yes, it is the same thing. I prefer making the documentation a little
-> more explicit than necessary so the explanation is really obvious.
-
-
-For the case of 'select',
-
-  select FOO if BAR != n
-
-is NOT equivalent to:
-
-  select FOO if BAR
-
-
-
-I do not think "if <expr>" in Kconfig
-is so easy to understand.
-I tend to hesitate to extend it.
-
-Sometimes, it means "the property is visible if <expr> != n".
-Sometimes, not.
-
-
-
-
-For the case of 'depends on',
-the 'depends on' is effective if <expr> != n
-because Nicolas implemented it in this way.
-
-
-
-We can do:
-
-    depends on X || X = n
-
-instead of:
-
-    depends on X || !X
-
-        or
-
-    depends on X if X
-
-
-
-
-
-
-I guess the source of the complaint is
-!X is difficult to understand
-when X is tristate.
-
-But, is there any confusion in 'X = n' ?
-I think not.
-
--- 
-Best Regards
-Masahiro Yamada
+On Sat, Apr 18, 2020 at 08:07:01PM +0300, Dmitry Osipenko wrote:
+> Newer Tegra device-trees will specify a video output graph which involves
+> a bridge. This patch adds initial support for the DRM bridges to the Tegra
+> DRM output.
+> 
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Acked-by: Sam Ravnborg <sam@ravnborg.org>
+> ---
+>  drivers/gpu/drm/tegra/drm.h    |  2 ++
+>  drivers/gpu/drm/tegra/output.c | 12 ++++++++++++
+>  2 files changed, 14 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/tegra/drm.h b/drivers/gpu/drm/tegra/drm.h
+> index 804869799305..cccd368b6752 100644
+> --- a/drivers/gpu/drm/tegra/drm.h
+> +++ b/drivers/gpu/drm/tegra/drm.h
+> @@ -12,6 +12,7 @@
+>  #include <linux/of_gpio.h>
+>  
+>  #include <drm/drm_atomic.h>
+> +#include <drm/drm_bridge.h>
+>  #include <drm/drm_edid.h>
+>  #include <drm/drm_encoder.h>
+>  #include <drm/drm_fb_helper.h>
+> @@ -116,6 +117,7 @@ struct tegra_output {
+>  	struct device_node *of_node;
+>  	struct device *dev;
+>  
+> +	struct drm_bridge *bridge;
+>  	struct drm_panel *panel;
+>  	struct i2c_adapter *ddc;
+>  	const struct edid *edid;
+> diff --git a/drivers/gpu/drm/tegra/output.c b/drivers/gpu/drm/tegra/output.c
+> index a6a711d54e88..ccd1421f1b24 100644
+> --- a/drivers/gpu/drm/tegra/output.c
+> +++ b/drivers/gpu/drm/tegra/output.c
+> @@ -5,6 +5,7 @@
+>   */
+>  
+>  #include <drm/drm_atomic_helper.h>
+> +#include <drm/drm_of.h>
+>  #include <drm/drm_panel.h>
+>  #include <drm/drm_simple_kms_helper.h>
+>  
+> @@ -99,8 +100,19 @@ int tegra_output_probe(struct tegra_output *output)
+>  	if (!output->of_node)
+>  		output->of_node = output->dev->of_node;
+>  
+> +	err = drm_of_find_panel_or_bridge(output->of_node, -1, -1,
+> +					  &output->panel, &output->bridge);
+> +	if (err && err != -ENODEV)
+> +		return err;
+> +
+>  	panel = of_parse_phandle(output->of_node, "nvidia,panel", 0);
+>  	if (panel) {
+> +		/*
+> +		 * Don't mix nvidia,panel phandle with the graph in a
+> +		 * device-tree.
+> +		 */
+> +		WARN_ON(output->panel || output->bridge);
+> +
+>  		output->panel = of_drm_find_panel(panel);
+>  		of_node_put(panel);
+>  
+> -- 
+> 2.26.0
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
