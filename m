@@ -2,119 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F8F31C7490
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:26:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F2FB1C74D1
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729651AbgEFP0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 11:26:02 -0400
-Received: from smtp2.axis.com ([195.60.68.18]:64270 "EHLO smtp2.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729606AbgEFPZs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 11:25:48 -0400
+        id S1729792AbgEFP25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 11:28:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729639AbgEFPZx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 11:25:53 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2A54C061A0F;
+        Wed,  6 May 2020 08:25:53 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id e6so1032110pjt.4;
+        Wed, 06 May 2020 08:25:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; l=1984; q=dns/txt; s=axis-central1;
-  t=1588778747; x=1620314747;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=g4pSnXC9ETSX82mL7jdj/f/E60NtYuVks+hnYgNlpAE=;
-  b=NKcnOcbz+JCP5wFQb4GS5aTEgqywBPIw0bFCxq2t7iFBe9Z4DFl4XLXj
-   x3botCuS7l/7OqQA5uyCyI+aTi/JSY3l40fqdHsIxPwuX05k5ZIKpdASo
-   3OQOdj3yOGfD1aqKtExEJDenRbs2Zmjjz0GjD62DYbtBmnIEQ3olxpNJe
-   zhbOWQE1O+vKlEXWpKaGsfnk9YGX2yEoO8xueqaMrhDjHo/JDJ60aofy3
-   jpA9HibLsDqoc0VV+soyTsr/56I82L8fHLXQ6f9ukLeo2h9K3bpilXg4L
-   bf3XKH6uW+PnH8z1UlG1/eIFcswrhFXjGMipeTN3p6/DmRhZYF4whZOyC
-   g==;
-IronPort-SDR: AKBGHpcM8BafnapRQsr1FxP3dvICNjoNiKOvJze/+/IugtOp7sq8s6+xM8k6OISvdahdvSesLQ
- y+KB0pKhJ8uYqtklAe7SGgadnPokY0B7z8aizYJ5Srqi1xo7o5MaS/tYmg4H6Jrr+epHco5pwW
- ka31te4LKvOcNeWtTojZxFx6vZv41ZSHUhwyX2ATO4AtgKTRAH8aRAsvqlG65IU2O0z7tkpNPg
- HRYj9S7mulBTjiQxGRUJDvSgLvxhMrgEIHVfye8OLeqzM5NSWaZ3W+8jrQ+5HPyoVDXxRg5Abz
- utA=
-X-IronPort-AV: E=Sophos;i="5.73,359,1583190000"; 
-   d="scan'208";a="8222270"
-From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-To:     <linux@armlinux.org.uk>, <jeyu@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kernel@axis.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>
-Subject: [PATCH 2/2] ARM: module: fix handling of unwind init sections
-Date:   Wed, 6 May 2020 17:25:33 +0200
-Message-ID: <20200506152533.31286-2-vincent.whitchurch@axis.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200506152533.31286-1-vincent.whitchurch@axis.com>
-References: <20200506152533.31286-1-vincent.whitchurch@axis.com>
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uOcIBwBnUauldiWLndzVmwzZBKURfhS3mRHhqqKZPOs=;
+        b=Ei0k57VLk7N4E1tLvvZ/W7MHkb57jABqquZr5M0n8FHzv94us4sIsfRRTTjtwzJC3C
+         XZpXtiP/3hYpjwUSQyzP7ItePPVEhLJEFdi942IWT4mUMySrX+xg2Hl5R9txLGwkXqQm
+         /r+OvYPRXzuCALy7Rphp6MDbF2lYVmLEmiFiC7aLT2jhENPb2YSyi7A0hpWmZLMVDEBg
+         zf2ZdcRPeDbZ8JhtAI2YC8GjaVL9R45v/JCP1frBXL9Yz56FitLq8IqFvQiQ7HvhtubW
+         F9FxRsMODSAsct79wjZKuI+Nhp2PyaJLU9aXV8lhXbrBJEt+LVl1v8+QZA7HgV6laDK0
+         bYqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uOcIBwBnUauldiWLndzVmwzZBKURfhS3mRHhqqKZPOs=;
+        b=tS8b8qoG8xYBQXDaz/he1CcsuBn+uZE9qz9f8+GvYPothiZm/m0KOpkP2RJ4Bt8ypE
+         heEl4oJ4L9NEIVZERAkF3M/G7F2/gkiiK5fWiThGwuoPjQYsnCNMh9xtuf/mN1SS0lig
+         n79Y01NSCaZzkp9JkyhSuZFXX3Cb0lapUM81kXGk6ZSwmRGS0q7ezCHFGXlmRV23Xbf0
+         rysQr5YgHrJDq8qTyUsCrnly/xjRWGWDFa+7Uq7dztGs3fMZ0Kq1J2VEdQFYIEcqNskk
+         +LPy6oz8gBsVX0p25o0XYMJjFZ5/wmVtiQ9iHV9eWg42tPi9DCyZKGitzO4WU9B7ATD+
+         tDdA==
+X-Gm-Message-State: AGi0PuaXbp99uPURkuHY25NYl4CL+7VlCnvLGOph7y4vAkB2Qh3oTcBC
+        y+cPM4SNHLBLo+rtCSYiqMPC/a4jpTQlteAHiro=
+X-Google-Smtp-Source: APiQypL6R11GbtDukVgWq3NIFn7VvgbUZ3iiF6XhKRJwUfyY+0Iw+ZOcqDtJEjUYcXU7X5ra+HAqDCooSrMRgUlXWCY=
+X-Received: by 2002:a17:90a:fa81:: with SMTP id cu1mr10273546pjb.25.1588778753308;
+ Wed, 06 May 2020 08:25:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+References: <20200325231422.1502366-1-heiko@sntech.de> <20200325231422.1502366-8-heiko@sntech.de>
+In-Reply-To: <20200325231422.1502366-8-heiko@sntech.de>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 6 May 2020 18:25:45 +0300
+Message-ID: <CAHp75Vef2Gu3Kz97FK6gQRS8dnAhnFFdWK1sqjZuf8tarx3LAw@mail.gmail.com>
+Subject: Re: [PATCH v2 7/7] serial: 8250_dw: add em485 support
+To:     Heiko Stuebner <heiko@sntech.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Matwey V. Kornilov" <matwey.kornilov@gmail.com>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Lukas Wunner <lukas@wunner.de>,
+        christoph.muellner@theobroma-systems.com,
+        Giulio Benetti <giulio.benetti@micronovasrl.com>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unwind information for init sections is placed in .ARM.exidx.init.text
-and .ARM.extab.init.text.  The module core doesn't know that these are
-init sections so they are allocated along with the core sections, and if
-the core and init sections get allocated in different memory regions
-(which is possible with CONFIG_ARM_MODULE_PLTS=y) and they can't reach
-each other, relocation fails:
+On Thu, Mar 26, 2020 at 1:17 AM Heiko Stuebner <heiko@sntech.de> wrote:
 
-  final section addresses:
-  	...
-  	0x7f800000 .init.text
-	..
-  	0xcbb54078 .ARM.exidx.init.text
-	..
+If it's not covered by either yours or Lukas' series, perhaps worth to
+address as well.
 
- section 16 reloc 0 sym '': relocation 42 out of range (0xcbb54078 ->
- 0x7f800000)
+.../8250_port.c:1427: warning: Function parameter or member 'p
+' not described in 'serial8250_em485_stop_tx'
+.../8250_port.c:1427: warning: Excess function parameter 'up'
+description in 'serial8250_em485_stop_tx'
 
-Fix this by informing the module core that these sections are init
-sections, and by removing the init unwind tables before the module core
-frees the init sections.
-
-Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
----
- arch/arm/kernel/module.c | 22 +++++++++++++++++++---
- 1 file changed, 19 insertions(+), 3 deletions(-)
-
-diff --git a/arch/arm/kernel/module.c b/arch/arm/kernel/module.c
-index deef17f34bd2..af0a8500a24e 100644
---- a/arch/arm/kernel/module.c
-+++ b/arch/arm/kernel/module.c
-@@ -55,6 +55,13 @@ void *module_alloc(unsigned long size)
- }
- #endif
- 
-+bool module_init_section(const char *name)
-+{
-+	return strstarts(name, ".init") ||
-+		strstarts(name, ".ARM.extab.init") ||
-+		strstarts(name, ".ARM.exidx.init");
-+}
-+
- bool module_exit_section(const char *name)
- {
- 	return strstarts(name, ".exit") ||
-@@ -409,8 +416,17 @@ module_arch_cleanup(struct module *mod)
- #ifdef CONFIG_ARM_UNWIND
- 	int i;
- 
--	for (i = 0; i < ARM_SEC_MAX; i++)
--		if (mod->arch.unwind[i])
--			unwind_table_del(mod->arch.unwind[i]);
-+	for (i = 0; i < ARM_SEC_MAX; i++) {
-+		unwind_table_del(mod->arch.unwind[i]);
-+		mod->arch.unwind[i] = NULL;
-+	}
-+#endif
-+}
-+
-+void __weak module_arch_freeing_init(struct module *mod)
-+{
-+#ifdef CONFIG_ARM_UNWIND
-+	unwind_table_del(mod->arch.unwind[ARM_SEC_INIT]);
-+	mod->arch.unwind[ARM_SEC_INIT] = NULL;
- #endif
- }
 -- 
-2.25.1
-
+With Best Regards,
+Andy Shevchenko
