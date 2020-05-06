@@ -2,104 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 449FF1C6F99
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 13:45:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E61B91C6FA3
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 13:48:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727937AbgEFLp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 07:45:56 -0400
-Received: from skedge03.snt-world.com ([91.208.41.68]:60176 "EHLO
-        skedge03.snt-world.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726516AbgEFLpz (ORCPT
+        id S1727804AbgEFLrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 07:47:55 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:6394 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725796AbgEFLry (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 07:45:55 -0400
-Received: from sntmail14r.snt-is.com (unknown [10.203.32.184])
-        by skedge03.snt-world.com (Postfix) with ESMTP id 586F467A6F3;
-        Wed,  6 May 2020 13:45:49 +0200 (CEST)
-Received: from sntmail12r.snt-is.com (10.203.32.182) by sntmail14r.snt-is.com
- (10.203.32.184) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 6 May 2020
- 13:45:48 +0200
-Received: from sntmail12r.snt-is.com ([fe80::e551:8750:7bba:3305]) by
- sntmail12r.snt-is.com ([fe80::e551:8750:7bba:3305%3]) with mapi id
- 15.01.1913.007; Wed, 6 May 2020 13:45:48 +0200
-From:   Schrempf Frieder <frieder.schrempf@kontron.de>
-To:     Adam Ford <aford173@gmail.com>
-CC:     Anson Huang <Anson.Huang@nxp.com>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        "Fabio Estevam" <festevam@gmail.com>,
-        Leonard Crestez <leonard.crestez@nxp.com>,
-        "Li Jun" <jun.li@nxp.com>, Lucas Stach <l.stach@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Peng Fan <peng.fan@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        "Sascha Hauer" <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        "S.j. Wang" <shengjiu.wang@nxp.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "etnaviv@lists.freedesktop.org" <etnaviv@lists.freedesktop.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 4/4] arm64: dts: imx8mm: Add GPU nodes for 2D and 3D
- core using Etnaviv
-Thread-Topic: [RFC PATCH 4/4] arm64: dts: imx8mm: Add GPU nodes for 2D and 3D
- core using Etnaviv
-Thread-Index: AQHWHu1XU8cnqZiR7kmt3VxL/7fb7aiWVM8AgASDlAA=
-Date:   Wed, 6 May 2020 11:45:48 +0000
-Message-ID: <0df68f7c-13d2-5bd6-e27a-4bf8534f88fb@kontron.de>
-References: <20200430124602.14463-1-frieder.schrempf@kontron.de>
- <20200430124602.14463-5-frieder.schrempf@kontron.de>
- <CAHCN7xJ=srZxygtG6hW_+us=qH1heY-k=EosavYH9tDk-KG0Bw@mail.gmail.com>
-In-Reply-To: <CAHCN7xJ=srZxygtG6hW_+us=qH1heY-k=EosavYH9tDk-KG0Bw@mail.gmail.com>
-Accept-Language: de-DE, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.25.9.193]
-x-c2processedorg: 51b406b7-48a2-4d03-b652-521f56ac89f3
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <D5D0FB36A8FD884AA9AA8B63FC338A6F@snt-world.com>
-Content-Transfer-Encoding: base64
+        Wed, 6 May 2020 07:47:54 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5eb2a3a40000>; Wed, 06 May 2020 04:46:44 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Wed, 06 May 2020 04:47:54 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Wed, 06 May 2020 04:47:54 -0700
+Received: from [10.25.78.179] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 6 May
+ 2020 11:47:52 +0000
+Subject: Re: [PATCH] phy: tegra: Use PTR_ERR_OR_ZERO() to simplify code
+To:     Aishwarya Ramakrishnan <aishwaryarj100@gmail.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <digetx@gmail.com>
+References: <20200505150058.17674-1-aishwaryarj100@gmail.com>
+X-Nvconfidentiality: public
+From:   Vidya Sagar <vidyas@nvidia.com>
+Message-ID: <be185976-3d12-f49d-6131-39f5075e0190@nvidia.com>
+Date:   Wed, 6 May 2020 17:17:49 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-X-SnT-MailScanner-Information: Please contact the ISP for more information
-X-SnT-MailScanner-ID: 586F467A6F3.A2ED9
-X-SnT-MailScanner: Not scanned: please contact your Internet E-Mail Service Provider for details
-X-SnT-MailScanner-SpamCheck: 
-X-SnT-MailScanner-From: frieder.schrempf@kontron.de
-X-SnT-MailScanner-To: aford173@gmail.com, anson.huang@nxp.com,
-        christian.gmeiner@gmail.com, daniel.baluta@nxp.com,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        etnaviv@lists.freedesktop.org, festevam@gmail.com, jun.li@nxp.com,
-        kernel@pengutronix.de, l.stach@pengutronix.de,
-        leonard.crestez@nxp.com, linux+etnaviv@armlinux.org.uk,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, peng.fan@nxp.com,
-        s.hauer@pengutronix.de, shawnguo@kernel.org, shengjiu.wang@nxp.com
-X-Spam-Status: No
+In-Reply-To: <20200505150058.17674-1-aishwaryarj100@gmail.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1588765604; bh=BJBqJSRQf6+TfAc5agbOFu+x857JC8+7fnNqVj7P1aE=;
+        h=X-PGP-Universal:Subject:To:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=lXAvBhJkbpUiZOHzaAwwDF61VpqdKcCQGjDYB34C2b8sPNq7TrGSB3yvPYtbmQ2h6
+         +MUrs1BzMuJRLLzbOQt5hu6exzpC4jTOGViSMgvjbkuolxNc1WLbewql4IROEm6lNQ
+         cnRpdROBQ9U8rfQMeenem0ZdDaHxAOV41X+s2Qi8bwK+V2ZuWuYmQTdcZCkLUGWMdL
+         f0KRQqtmzsrfmiFZpuS0hsMnvYQVMj14ttF9m5thK8LtIfBXbFpi3Ie7fPZ3tPOOiK
+         KYtnFLAkCBGhjbr9DR8YCI2R0NcUWpwWguuDKRaHxKmZD7OC0NFQ33dePxQ8kwkzL8
+         m/SopzUpAFZCQ==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMDMuMDUuMjAgMTY6NDksIEFkYW0gRm9yZCB3cm90ZToNCj4gT24gVGh1LCBBcHIgMzAsIDIw
-MjAgYXQgNzo0NiBBTSBTY2hyZW1wZiBGcmllZGVyDQo+IDxmcmllZGVyLnNjaHJlbXBmQGtvbnRy
-b24uZGU+IHdyb3RlOg0KPj4NCj4+IEZyb206IEZyaWVkZXIgU2NocmVtcGYgPGZyaWVkZXIuc2No
-cmVtcGZAa29udHJvbi5kZT4NCj4+DQo+PiBBY2NvcmRpbmcgdG8gdGhlIGRvY3VtZW50cywgdGhl
-IGkuTVg4TS1NaW5pIGZlYXR1cmVzIGEgR0MzMjAgYW5kIGENCj4+IEdDTmFub1VsdHJhIEdQVSBj
-b3JlLiBFdG5hdml2IGRldGVjdHMgdGhlbSBhczoNCj4+DQo+PiAgICAgICAgICBldG5hdml2LWdw
-dSAzODAwMDAwMC5ncHU6IG1vZGVsOiBHQzYwMCwgcmV2aXNpb246IDQ2NTMNCj4+ICAgICAgICAg
-IGV0bmF2aXYtZ3B1IDM4MDA4MDAwLmdwdTogbW9kZWw6IEdDNTIwLCByZXZpc2lvbjogNTM0MQ0K
-Pj4NCj4+IFRoaXMgc2VlbXMgdG8gd29yayBmaW5lIG1vcmUgb3IgbGVzcyB3aXRob3V0IGFueSBj
-aGFuZ2VzIHRvIHRoZSBIV0RCLA0KPj4gd2hpY2ggc3RpbGwgbWlnaHQgYmUgbmVlZGVkIGluIHRo
-ZSBmdXR1cmUgdG8gY29ycmVjdCBzb21lIGZlYXR1cmVzLA0KPj4gZXRjLg0KPj4NCj4+IFNpZ25l
-ZC1vZmYtYnk6IEZyaWVkZXIgU2NocmVtcGYgPGZyaWVkZXIuc2NocmVtcGZAa29udHJvbi5kZT4N
-Cj4+IC0tLQ0KPiBTaW5jZSBub3QgZXZlcnlvbmUgdXNlcyB0aGUgM0Qgb3IgMkQsIHdvdWxkIGl0
-IG1ha2Ugc2Vuc2UgdG8gbWFyayB0aGVtDQo+IGFzIGRpc2FibGVkIGJ5IGRlZmF1bHQgYW5kIGxl
-dCBwZW9wbGUgd2hvIG5lZWQgdGhlIDNEIGFuZCAyRCBlbmFibGUNCj4gdGhlbSBhdCB0aGVpciBy
-ZXNwZWN0aXZlIGJvYXJkIGZpbGVzPw0KDQpJIHdvdWxkIHJhdGhlciBrZWVwIGl0IHRoZSB3YXkg
-aXQgaGFzIGJlZW4gZG9uZSBmb3Igb3RoZXIgU29Dcy4gTG9va2luZyANCmF0IHRoZSBpLk1YNiBk
-ZXZpY2V0cmVlcywgdGhleSBhbGwgc2VlbSB0byBoYXZlIHRoZSBHUFVzIGVuYWJsZWQgYnkgZGVm
-YXVsdC4=
+Thanks for pushing this change.
+I'm fine with this change as it is attempting to change only the last 
+occurrence of the (IS_ERR(...)) + PTR_ERR combination.
+But, this code was initially written with PTR_ERR_OR_ZERO() itself but 
+later changed to use (IS_ERR(...)) + PTR_ERR based on the review comment 
+from Dmitry Osipenko ( https://lkml.org/lkml/2019/6/20/1457 )
+
+Adding Dmitry as well to review the change.
+
+I'm fine with this change.
+Reviewed-by: Vidya Sagar <vidyas@nvidia.com>
+
+On 05-May-20 8:30 PM, Aishwarya Ramakrishnan wrote:
+> External email: Use caution opening links or attachments
+> 
+> 
+> PTR_ERR_OR_ZERO contains if(IS_ERR(...)) + PTR_ERR.
+> 
+> Generated by: scripts/coccinelle/api/ptr_ret.cocci
+> 
+> Signed-off-by: Aishwarya Ramakrishnan <aishwaryarj100@gmail.com>
+> ---
+>   drivers/phy/tegra/phy-tegra194-p2u.c | 5 +----
+>   1 file changed, 1 insertion(+), 4 deletions(-)
+> 
+> diff --git a/drivers/phy/tegra/phy-tegra194-p2u.c b/drivers/phy/tegra/phy-tegra194-p2u.c
+> index 7042bed9feaa..42394d27f4cb 100644
+> --- a/drivers/phy/tegra/phy-tegra194-p2u.c
+> +++ b/drivers/phy/tegra/phy-tegra194-p2u.c
+> @@ -92,10 +92,7 @@ static int tegra_p2u_probe(struct platform_device *pdev)
+>          phy_set_drvdata(generic_phy, phy);
+> 
+>          phy_provider = devm_of_phy_provider_register(dev, of_phy_simple_xlate);
+> -       if (IS_ERR(phy_provider))
+> -               return PTR_ERR(phy_provider);
+> -
+> -       return 0;
+> +       return PTR_ERR_OR_ZERO(phy_provider);
+>   }
+> 
+>   static const struct of_device_id tegra_p2u_id_table[] = {
+> --
+> 2.17.1
+> 
