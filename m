@@ -2,302 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B87C1C75DD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 18:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03EAC1C760E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 18:16:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730219AbgEFQLU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 May 2020 12:11:20 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2159 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730208AbgEFQLO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 12:11:14 -0400
-Received: from lhreml703-cah.china.huawei.com (unknown [172.18.7.108])
-        by Forcepoint Email with ESMTP id 08BA7A6B66337BCE45B5;
-        Wed,  6 May 2020 17:11:12 +0100 (IST)
-Received: from fraeml704-chm.china.huawei.com (10.206.15.53) by
- lhreml703-cah.china.huawei.com (10.201.108.44) with Microsoft SMTP Server
- (TLS) id 14.3.487.0; Wed, 6 May 2020 17:11:11 +0100
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml704-chm.china.huawei.com (10.206.15.53) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Wed, 6 May 2020 18:11:10 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.1913.007;
- Wed, 6 May 2020 18:11:10 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "david.safford@gmail.com" <david.safford@gmail.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "jmorris@namei.org" <jmorris@namei.org>
-CC:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>
-Subject: RE: [RFC][PATCH 1/3] evm: Move hooks outside LSM infrastructure
-Thread-Topic: [RFC][PATCH 1/3] evm: Move hooks outside LSM infrastructure
-Thread-Index: AQHWHfmwvisCdHYC6kmVk7fgFWuzYaibRKAQ
-Date:   Wed, 6 May 2020 16:11:10 +0000
-Message-ID: <96ef56e0bcb64b83a0180b09b87a67e6@huawei.com>
-References: <20200429073935.11913-1-roberto.sassu@huawei.com>
-In-Reply-To: <20200429073935.11913-1-roberto.sassu@huawei.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.220.71.158]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1729747AbgEFQP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 12:15:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38578 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729481AbgEFQP5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 12:15:57 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 534F1C061A0F
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 09:15:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=le1OFYu72/kMH5Lgm/DrtMirSfET+FXsAUvpWVi5058=; b=zoRnF2zyubEwJ1uXDboQzy+lmw
+        TeQ0m76xZtlNZL9Nc+Qv608OIhmCYJfsy/mD8VxnTBRUsAWaZ7WFJkvb4MgqK9Q/5uYevKLKGVQRo
+        qv0V3grPNpRvWcUxMfREGpbgGkRMM5Ck7eQ8xZnyKnDxjI3ob5XwUOgb+P6Wm6xQMc/hCukFim56v
+        QDYYiu8MnJjRhfvPqs0sYTr8mue1VCM/xvVRiQOZX3cUeqWfabin5dXLZUG/3pH/XKeJd4mv5OLqn
+        pM6GqQkYo5q4xtCef0Dc7F2FXq5yvyg+71Yau8ZmqWtNQNkgba/3BaKYUxLczqtUSc4BeWfz5118T
+        j8IcLuEQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jWMhg-00061K-Pq; Wed, 06 May 2020 16:15:24 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A1B1F30018B;
+        Wed,  6 May 2020 18:15:22 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7E9CC203ECDC3; Wed,  6 May 2020 18:15:22 +0200 (CEST)
+Date:   Wed, 6 May 2020 18:15:22 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org,
+        mhiramat@kernel.org, bristot@redhat.com, jbaron@akamai.com,
+        torvalds@linux-foundation.org, tglx@linutronix.de,
+        mingo@kernel.org, namit@vmware.com, hpa@zytor.com, luto@kernel.org,
+        ard.biesheuvel@linaro.org, pbonzini@redhat.com,
+        mathieu.desnoyers@efficios.com
+Subject: Re: [PATCH v4 07/18] static_call: Add inline static call
+ infrastructure
+Message-ID: <20200506161522.GT3762@hirez.programming.kicks-ass.net>
+References: <20200501202849.647891881@infradead.org>
+ <20200501202944.186964469@infradead.org>
+ <20200505221051.x6mz33ylqy62m4s4@treble>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200505221051.x6mz33ylqy62m4s4@treble>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: Roberto Sassu
-> Sent: Wednesday, April 29, 2020 9:40 AM
-> To: zohar@linux.ibm.com; david.safford@gmail.com;
-> viro@zeniv.linux.org.uk; jmorris@namei.org
-> Cc: linux-fsdevel@vger.kernel.org; linux-integrity@vger.kernel.org; linux-
-> security-module@vger.kernel.org; linux-kernel@vger.kernel.org; Silviu
-> Vlasceanu <Silviu.Vlasceanu@huawei.com>; Roberto Sassu
-> <roberto.sassu@huawei.com>
-> Subject: [RFC][PATCH 1/3] evm: Move hooks outside LSM infrastructure
+On Tue, May 05, 2020 at 05:10:51PM -0500, Josh Poimboeuf wrote:
+> On Fri, May 01, 2020 at 10:28:56PM +0200, Peter Zijlstra wrote:
+> > +#ifdef CONFIG_HAVE_STATIC_CALL_INLINE
+> > +
+> > +struct static_call_mod {
+> > +	struct static_call_mod *next;
+> > +	struct module *mod; /* for vmlinux, mod == NULL */
+> > +	struct static_call_site *sites;
+> > +};
+> > +
+> > +struct static_call_key {
+> > +	void *func;
+> > +	struct static_call_mod *next;
+> > +};
+> 
+> "next" implies it links to another key.  How about "mods" or
+> "site_mods"?
+> 
+> > +++ b/include/linux/static_call_types.h
+> > @@ -2,14 +2,27 @@
+> >  #ifndef _STATIC_CALL_TYPES_H
+> >  #define _STATIC_CALL_TYPES_H
+> >  
+> > +#include <linux/types.h>
+> >  #include <linux/stringify.h>
+> >  
+> >  #define STATIC_CALL_PREFIX		__SC__
+> > +#define STATIC_CALL_PREFIX_STR		__stringify(STATIC_CALL_PREFIX)
+> > +#define STATIC_CALL_PREFIX_LEN		(sizeof(STATIC_CALL_PREFIX_STR) - 1)
+> 
+> STATIC_CALL_KEY_PREFIX_STR
+> STATIC_CALL_KEY_PREFIX_LEN
+> 
 
-Any thought on this? The implementation can be discussed later.
+> > +#ifdef CONFIG_MODULES
+> > +		if (site_mod->mod) {
+> > +			stop = site_mod->mod->static_call_sites +
+> > +			       site_mod->mod->num_static_call_sites;
+> > +		}
+> > +#endif
+> 
+> Instead of defining 'mod' in the inner loop below, it can be set at the
+> top of the outer loop above.  Then the above 'stop' calculation can
+> be a little less verbose.
 
-I just wanted a feedback on the approach, if this is the right direction
-to solve the problem.
-
-Thanks
-
-Roberto
-
-HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
-Managing Director: Li Peng, Li Jian, Shi Yanli
-
-
-> EVM is a module for the protection of the integrity of file metadata. It
-> protects security-relevant extended attributes, and some file attributes
-> such as the UID and the GID. It protects their integrity with an HMAC or
-> with a signature.
-> 
-> What makes EVM different from other LSMs is that it makes a security
-> decision depending on multiple pieces of information, which cannot be
-> managed atomically by the system.
-> 
-> Example: cp -a file.orig file.dest
-> 
-> If security.selinux, security.ima and security.evm must be preserved, cp
-> will invoke setxattr() for each xattr, and EVM performs a verification
-> during each operation. The problem is that copying security.evm from
-> file.orig to file.dest will likely break the following EVM verifications if
-> some metadata still have to be copied. EVM has no visibility on the
-> metadata of the source file, so it cannot determine when the copy can be
-> considered complete.
-> 
-> On the other hand, EVM has to check metadata during every operation to
-> ensure that there is no transition from corrupted metadata, e.g. after an
-> offline attack, to valid ones after the operation. An HMAC update would
-> prevent the corruption to be detected, as the HMAC on the new values
-> would
-> be correct. Thus, to avoid this issue, EVM has to return an error to the
-> system call so that its execution will be interrupted.
-> 
-> A solution that would satisfy both requirements, not breaking user space
-> applications and detecting corrupted metadata is to let metadata operations
-> be completed successfully and to pass the result of the EVM verification
-> from the pre hooks to the post hooks. In this way, the HMAC update can be
-> avoided if the verification wasn't successful.
-> 
-> This approach will bring another important benefit: it is no longer
-> required that every file has a valid HMAC or signature. Instead of always
-> enforcing metadata integrity, even when it is not relevant for IMA, EVM
-> will let IMA decide for files selected with the appraisal policy,
-> depending on the result of the requested verification.
-> 
-> The main problem is that the result of the verification currently cannot be
-> passed from the pre hooks to the post hooks, due to how the LSM API is
-> defined. A possible solution would be to use integrity_iint_cache for this
-> purpose, but it will increase the memory pressure, as new structures will
-> be allocated also for metadata operations, not only for measurement,
-> appraisal and audit. Another solution would be to extend the LSM API, but
-> it seems not worthwhile as EVM would be the only module getting a benefit
-> from this change.
-> 
-> Given that pre and post hooks are called from the same system call, a more
-> efficient solution seems to move the hooks outside the LSM infrastructure,
-> so that the return value of the pre hooks can be passed to the post hooks.
-> A predefined error (-EAGAIN) will be used to signal to the system call to
-> continue the execution. Otherwise, if the pre hooks return -EPERM, the
-> system calls will behave as before and will immediately return before
-> metadata are changed.
-> 
-> Overview of the changes:
-> 
-> evm_inode_init_security()	LSM (no change)
-> evm_inode_setxattr()		LSM -> vfs_setxattr()
-> evm_inode_post_setxattr()	LSM -> vfs_setxattr()
-> evm_inode_removexattr()		LSM -> vfs_removexattr()
-> evm_inode_post_removexattr()	vfs_removexattr() (no change)
-> evm_inode_setattr()		LSM -> vfs_setattr()
-> evm_inode_post_setattr()	vfs_setattr() (no change)
-> evm_verifyxattr()		outside LSM (no change)
-> 
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> ---
->  fs/attr.c           |  5 ++++-
->  fs/xattr.c          | 17 +++++++++++++++--
->  security/security.c | 18 +++---------------
->  3 files changed, 22 insertions(+), 18 deletions(-)
-> 
-> diff --git a/fs/attr.c b/fs/attr.c
-> index b4bbdbd4c8ca..8f26d7d2e3b4 100644
-> --- a/fs/attr.c
-> +++ b/fs/attr.c
-> @@ -224,7 +224,7 @@ int notify_change(struct dentry * dentry, struct iattr
-> * attr, struct inode **de
->  {
->  	struct inode *inode = dentry->d_inode;
->  	umode_t mode = inode->i_mode;
-> -	int error;
-> +	int error, evm_error;
->  	struct timespec64 now;
->  	unsigned int ia_valid = attr->ia_valid;
-> 
-> @@ -328,6 +328,9 @@ int notify_change(struct dentry * dentry, struct iattr
-> * attr, struct inode **de
->  	error = security_inode_setattr(dentry, attr);
->  	if (error)
->  		return error;
-> +	evm_error = evm_inode_setattr(dentry, attr);
-> +	if (evm_error)
-> +		return evm_error;
->  	error = try_break_deleg(inode, delegated_inode);
->  	if (error)
->  		return error;
-> diff --git a/fs/xattr.c b/fs/xattr.c
-> index e13265e65871..3b323b75b741 100644
-> --- a/fs/xattr.c
-> +++ b/fs/xattr.c
-> @@ -183,6 +183,7 @@ int __vfs_setxattr_noperm(struct dentry *dentry,
-> const char *name,
->  			fsnotify_xattr(dentry);
->  			security_inode_post_setxattr(dentry, name, value,
->  						     size, flags);
-> +			evm_inode_post_setxattr(dentry, name, value,
-> size);
->  		}
->  	} else {
->  		if (unlikely(is_bad_inode(inode)))
-> @@ -210,7 +211,7 @@ vfs_setxattr(struct dentry *dentry, const char
-> *name, const void *value,
->  		size_t size, int flags)
->  {
->  	struct inode *inode = dentry->d_inode;
-> -	int error;
-> +	int error, evm_error;
-> 
->  	error = xattr_permission(inode, name, MAY_WRITE);
->  	if (error)
-> @@ -221,6 +222,12 @@ vfs_setxattr(struct dentry *dentry, const char
-> *name, const void *value,
->  	if (error)
->  		goto out;
-> 
-> +	evm_error = evm_inode_setxattr(dentry, name, value, size);
-> +	if (evm_error) {
-> +		error = evm_error;
-> +		goto out;
-> +	}
-> +
->  	error = __vfs_setxattr_noperm(dentry, name, value, size, flags);
-> 
->  out:
-> @@ -382,7 +389,7 @@ int
->  vfs_removexattr(struct dentry *dentry, const char *name)
->  {
->  	struct inode *inode = dentry->d_inode;
-> -	int error;
-> +	int error, evm_error;
-> 
->  	error = xattr_permission(inode, name, MAY_WRITE);
->  	if (error)
-> @@ -393,6 +400,12 @@ vfs_removexattr(struct dentry *dentry, const char
-> *name)
->  	if (error)
->  		goto out;
-> 
-> +	evm_error = evm_inode_removexattr(dentry, name);
-> +	if (evm_error) {
-> +		error = evm_error;
-> +		goto out;
-> +	}
-> +
->  	error = __vfs_removexattr(dentry, name);
-> 
->  	if (!error) {
-> diff --git a/security/security.c b/security/security.c
-> index 7fed24b9d57e..e1368ab34cee 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-> @@ -1255,14 +1255,9 @@ int security_inode_permission(struct inode
-> *inode, int mask)
-> 
->  int security_inode_setattr(struct dentry *dentry, struct iattr *attr)
->  {
-> -	int ret;
-> -
->  	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
->  		return 0;
-> -	ret = call_int_hook(inode_setattr, 0, dentry, attr);
-> -	if (ret)
-> -		return ret;
-> -	return evm_inode_setattr(dentry, attr);
-> +	return call_int_hook(inode_setattr, 0, dentry, attr);
->  }
->  EXPORT_SYMBOL_GPL(security_inode_setattr);
-> 
-> @@ -1291,10 +1286,7 @@ int security_inode_setxattr(struct dentry *dentry,
-> const char *name,
->  		ret = cap_inode_setxattr(dentry, name, value, size, flags);
->  	if (ret)
->  		return ret;
-> -	ret = ima_inode_setxattr(dentry, name, value, size);
-> -	if (ret)
-> -		return ret;
-> -	return evm_inode_setxattr(dentry, name, value, size);
-> +	return ima_inode_setxattr(dentry, name, value, size);
->  }
-> 
->  void security_inode_post_setxattr(struct dentry *dentry, const char
-> *name,
-> @@ -1303,7 +1295,6 @@ void security_inode_post_setxattr(struct dentry
-> *dentry, const char *name,
->  	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
->  		return;
->  	call_void_hook(inode_post_setxattr, dentry, name, value, size,
-> flags);
-> -	evm_inode_post_setxattr(dentry, name, value, size);
->  }
-> 
->  int security_inode_getxattr(struct dentry *dentry, const char *name)
-> @@ -1335,10 +1326,7 @@ int security_inode_removexattr(struct dentry
-> *dentry, const char *name)
->  		ret = cap_inode_removexattr(dentry, name);
->  	if (ret)
->  		return ret;
-> -	ret = ima_inode_removexattr(dentry, name);
-> -	if (ret)
-> -		return ret;
-> -	return evm_inode_removexattr(dentry, name);
-> +	return ima_inode_removexattr(dentry, name);
->  }
-> 
->  int security_inode_need_killpriv(struct dentry *dentry)
-> --
-> 2.17.1
-
+All done!
