@@ -2,98 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41A8E1C78AE
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 19:52:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BCA01C78C1
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 19:56:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729550AbgEFRwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 13:52:12 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:30748 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728682AbgEFRwL (ORCPT
+        id S1729249AbgEFR4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 13:56:01 -0400
+Received: from asavdk4.altibox.net ([109.247.116.15]:39512 "EHLO
+        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728682AbgEFR4A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 13:52:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588787530;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PccgT4HcaWivoQJELX6s064gYPyC7GJ8hEzArxp6bSo=;
-        b=O030j6FVTQFKVjU4FIp86y4Ea9RA3Jl3NIv4fOgMDghEvVgknKp2TYCE4VGqWRE4Yj+aci
-        sNvKadbKN2RBGhTpWdqXlXKuYTBNO8jH5712rpixm9p+KPRktEDmcXydKhUdwh5crEASpS
-        O5Wx5kwI7CxBm+a8B6X/RJblhvFsZ70=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-18-_9hIsZFvO4CVbuqmJET5Rg-1; Wed, 06 May 2020 13:52:08 -0400
-X-MC-Unique: _9hIsZFvO4CVbuqmJET5Rg-1
-Received: by mail-qv1-f72.google.com with SMTP id dh14so3110199qvb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 10:52:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PccgT4HcaWivoQJELX6s064gYPyC7GJ8hEzArxp6bSo=;
-        b=tMPG4RitiSTP41ercvxn0qt3UsiH+uUBtrs7oQmYokCa3VRc74jqjM5mnVVozmDfx5
-         /eCdcwPhOAWCTC6msrjeQ654VufeM3mFjKCdYpuvZa2a975iwQRAuyJaqCw9d8MzBmkA
-         VeTajHky6/acat9hoTPkqXhrPyx1ocQIKbG6XN3akL5wpe1LtZE9hofdwaZKUlEn2BYI
-         5h9om6I/xP8JYzL3bzAX7bJNRRSIE23gRDXTFoU1GYMaBjrXdoPOWr9hSp0+B7Zi01FR
-         yw/zWeY/rqeJ4wlMC+b44ecpMcH4tfpsO9gzZ9X4bNfGuKNNwO2pATuRX1H8eoNvSn4j
-         l7zA==
-X-Gm-Message-State: AGi0PuaxZazFEjzY/x/PQttSwGvMiaDZ4PUf8koYFTo4LZtI4de449ee
-        w22KtHHQ4al296zVLUQ0iuU4pmk9/KqD0R66Zk2ve9LJRnffecVUEtQOPt+HrhOfU0mRrXVj9Sr
-        o7uiRB/AMNUo1JRiyXkHc14w0
-X-Received: by 2002:a0c:eb0e:: with SMTP id j14mr8833832qvp.230.1588787528179;
-        Wed, 06 May 2020 10:52:08 -0700 (PDT)
-X-Google-Smtp-Source: APiQypIEJqjL0kBwvh6GJDj8Y+OGS2ZJU8ac0dpoSTDogz807A439jh3hQqMmnsT0hI1Wj4xBIwqBw==
-X-Received: by 2002:a0c:eb0e:: with SMTP id j14mr8833802qvp.230.1588787527914;
-        Wed, 06 May 2020 10:52:07 -0700 (PDT)
-Received: from xz-x1 ([2607:9880:19c0:32::2])
-        by smtp.gmail.com with ESMTPSA id k43sm2237118qtk.67.2020.05.06.10.52.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 May 2020 10:52:07 -0700 (PDT)
-Date:   Wed, 6 May 2020 13:52:06 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Subject: Re: [PATCH 7/9] KVM: x86: simplify dr6 accessors in kvm_x86_ops
-Message-ID: <20200506175206.GQ6299@xz-x1>
-References: <20200506111034.11756-1-pbonzini@redhat.com>
- <20200506111034.11756-8-pbonzini@redhat.com>
- <20200506160623.GO6299@xz-x1>
- <2d44c75f-00df-3cae-31a8-982a0b95f0b0@redhat.com>
+        Wed, 6 May 2020 13:56:00 -0400
+Received: from ravnborg.org (unknown [158.248.194.18])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk4.altibox.net (Postfix) with ESMTPS id A7879803E8;
+        Wed,  6 May 2020 19:55:54 +0200 (CEST)
+Date:   Wed, 6 May 2020 19:55:53 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Sergey.Semin@baikalelectronics.ru
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-mips@vger.kernel.org,
+        linux-pm@vger.kernel.org, Rob Herring <robh@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 03/20] dt-bindings: Add vendor prefix for Baikal
+ Electronics, JSC
+Message-ID: <20200506175553.GA7775@ravnborg.org>
+References: <20200306124807.3596F80307C2@mail.baikalelectronics.ru>
+ <20200506174238.15385-1-Sergey.Semin@baikalelectronics.ru>
+ <20200506174238.15385-4-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2d44c75f-00df-3cae-31a8-982a0b95f0b0@redhat.com>
+In-Reply-To: <20200506174238.15385-4-Sergey.Semin@baikalelectronics.ru>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=MOBOZvRl c=1 sm=1 tr=0
+        a=UWs3HLbX/2nnQ3s7vZ42gw==:117 a=UWs3HLbX/2nnQ3s7vZ42gw==:17
+        a=kj9zAlcOel0A:10 a=TLxTtJ4aAAAA:8 a=kMJVNwr6AAAA:8 a=VwQbUJbxAAAA:8
+        a=WPyIoOwQAAAA:8 a=dgCgqi4eL6prslsqsKIA:9 a=CjuIK1q_8ugA:10
+        a=_W40VfXogbFAZmU3Lp3v:22 a=JuFFHv0FCeTakqPUSLWB:22
+        a=AjGcO6oz07-iQ99wixmX:22 a=S-HzPIwwDS8t1QcwSuWs:22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 06, 2020 at 06:09:23PM +0200, Paolo Bonzini wrote:
-> On 06/05/20 18:06, Peter Xu wrote:
-> > On Wed, May 06, 2020 at 07:10:32AM -0400, Paolo Bonzini wrote:
-> >> kvm_x86_ops.set_dr6 is only ever called with vcpu->arch.dr6 as the
-> >> second argument, and for both SVM and VMX the VMCB value is kept
-> >> synchronized with vcpu->arch.dr6 on #DB; we can therefore remove the
-> >> read accessor.
-> >>
-> >> For the write accessor we can avoid the retpoline penalty on Intel
-> >> by accepting a NULL value and just skipping the call in that case.
-> >>
-> >> Suggested-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> >> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> > (I think this patch and the previous one seem to be the same as the previous
-> >  version.  Anyway...)
+Hi Sergey.
+
+On Wed, May 06, 2020 at 08:42:21PM +0300, Sergey.Semin@baikalelectronics.ru wrote:
+> From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 > 
-> Yes, I placed them here because they are needed to solve the SVM bugs in
-> patch 8.  Sorry for not adding your Reviewed-by.
+> Add "BAIKAL ELECTRONICS, JSC" to the list of devicetree vendor prefixes
+> as "baikal".
+> 
+> Website: http://www.baikalelectronics.com
+> 
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: Paul Burton <paulburton@kernel.org>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: linux-mips@vger.kernel.org
+> Cc: linux-pm@vger.kernel.org
+> 
+> ---
+> 
+> Changelog v2:
+> - Fix author and SoB emails mismatch.
 
-That's not a problem to me. :) Instead I'm more afraid of not noticing some
-trivial difference in the patch comparing to the last one.
+> - Add 'baikal' vendor prefix instead of ambiguous 'be'.
+Agree, much better.
 
-Thanks,
+> ---
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> index d3891386d671..674c0d07c0ad 100644
+> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> @@ -139,6 +139,8 @@ patternProperties:
+>      description: Azoteq (Pty) Ltd
+>    "^azw,.*":
+>      description: Shenzhen AZW Technology Co., Ltd.
+> +  "^baikal,.*":
+> +    description: BAIKAL ELECTRONICS, JSC
+Baikal do not use ALL UPPSECASE on their website for their name.
+So please use same case use as they do themself.
 
--- 
-Peter Xu
 
+	Sam
+
+>    "^bananapi,.*":
+>      description: BIPAI KEJI LIMITED
+>    "^beacon,.*":
+> -- 
+> 2.25.1
