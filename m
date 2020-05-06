@@ -2,77 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B59661C6A0B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 09:26:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81D881C6A2C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 09:38:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728128AbgEFH0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 03:26:49 -0400
-Received: from mail-out.m-online.net ([212.18.0.10]:34449 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727067AbgEFH0t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 03:26:49 -0400
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 49H7Sj70s3z1rx7x;
-        Wed,  6 May 2020 09:26:45 +0200 (CEST)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 49H7Sj52Hxz1qqkL;
-        Wed,  6 May 2020 09:26:45 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id LgHs-hPbv2Fl; Wed,  6 May 2020 09:26:44 +0200 (CEST)
-X-Auth-Info: 2z9cDoItip41685WZkAmKeL5Dft+6xIYW+Pc0QNYXAd0dhdAMI46HXdeyiZo6LBw
-Received: from igel.home (ppp-46-244-183-249.dynamic.mnet-online.de [46.244.183.249])
+        id S1728359AbgEFHid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 03:38:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38472 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727067AbgEFHid (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 03:38:33 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Wed,  6 May 2020 09:26:44 +0200 (CEST)
-Received: by igel.home (Postfix, from userid 1000)
-        id 1B3342C0D4E; Wed,  6 May 2020 09:26:44 +0200 (CEST)
-From:   Andreas Schwab <schwab@linux-m68k.org>
-To:     Anup Patel <anup@brainfault.org>
-Cc:     Sagar Kadam <sagar.kadam@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        "vigneshr@ti.com" <vigneshr@ti.com>,
-        "tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>,
-        "richard@nod.at" <richard@nod.at>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-        "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>
-Subject: Re: [PATCH 1/2] riscv: defconfig: enable spi nor on Hifive
- Unleashed A00 board.
-References: <BN8PR13MB2611968A7252308925FF18B399A70@BN8PR13MB2611.namprd13.prod.outlook.com>
-        <mhng-29e22ca7-538a-4094-923f-8fbc0fd327b9@palmerdabbelt-glaptop1>
-        <BYAPR13MB2614FE811C8DD83BBDD3A26599A40@BYAPR13MB2614.namprd13.prod.outlook.com>
-        <CAAhSdy2-ECrOP=kZOTXxj1t+f8NrcYjbXKDRwPB3KU36mDmWWg@mail.gmail.com>
-X-Yow:  I feel like I'm in a Toilet Bowl with a thumbtack in my forehead!!
-Date:   Wed, 06 May 2020 09:26:44 +0200
-In-Reply-To: <CAAhSdy2-ECrOP=kZOTXxj1t+f8NrcYjbXKDRwPB3KU36mDmWWg@mail.gmail.com>
-        (Anup Patel's message of "Wed, 6 May 2020 10:39:39 +0530")
-Message-ID: <87d07h8qx7.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.0.91 (gnu/linux)
+        by mail.kernel.org (Postfix) with ESMTPSA id B216220735;
+        Wed,  6 May 2020 07:32:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588750376;
+        bh=Y1LEEe+kkf6vU7B4UsWqodC8jLCx0BRsN/zYtJeEjvE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=I5feX9SVlod6nQUrokIJem+6I1ByfhYGOk+CesqWuk2wyAkt4RXSZAzsX7v1+XHzw
+         4DHHxD+eEyyVXNUeQgoKdApHpR2IzkSgNtvuBR/5AtvjmSXKGWNQuEdjTsPn/kaqLI
+         9lKQllYCeCb3g9sV3dmmZ0E2yTndn+rdkJrAGN70=
+Date:   Wed, 6 May 2020 09:32:53 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Hyunki Koo <hyunki00.koo@samsung.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, linux-serial@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 2/3] dt-bindings: serial: Add reg-io-width compatible
+Message-ID: <20200506073253.GB2336830@kroah.com>
+References: <20200506070009.16809-1-hyunki00.koo@samsung.com>
+ <CGME20200506070024epcas2p2868e11349d2fee83d340df7fa181f704@epcas2p2.samsung.com>
+ <20200506070009.16809-2-hyunki00.koo@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200506070009.16809-2-hyunki00.koo@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mai 06 2020, Anup Patel wrote:
+On Wed, May 06, 2020 at 04:00:06PM +0900, Hyunki Koo wrote:
+> Add a description for reg-io-width options for the samsung serial
+> UART peripheral.
+> 
+> Signed-off-by: Hyunki Koo <hyunki00.koo@samsung.com>
+> ---
+>  Documentation/devicetree/bindings/serial/samsung_uart.yaml | 8 ++++++++
+>  1 file changed, 8 insertions(+)
 
-> We had build issues in past by selecting major driver subsystems
-> in Kconfig.socs
->
-> I suggest to select SPI_SIFIVE from Kconfig.socs
+You dropped the reviewed-by tag that Rob gave on the previous version of
+this patch.
 
-SPI_SIFIVE can be m, don't override that.
+Please put that back and resend.
 
-Andreas.
+thanks,
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+greg k-h
