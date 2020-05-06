@@ -2,140 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FCE71C6CD0
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 11:25:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C9EA1C6CBD
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 11:19:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728885AbgEFJZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 05:25:56 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:49162 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728685AbgEFJZz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 05:25:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588757154;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Bim1c8eCjYcLbuTSswn0dpCBvXNi8zOQ0N1tlPafZn4=;
-        b=a/WX2MvpVfdLwgMlWsGaXFmhPJcEm7GcakNQf4XqzojKV3Faq0mIzyu3iSox1aInkgs6G2
-        3kXdS1nfFOMklUg4HOCBZHDgQMasoFz6YVizWYfuT7YcnmF96jDMbwGqbTZaYEkyJMCYHv
-        uyows5NyV74pEW5pv34t7DNBcGNFeTI=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-210-lo9OQhJ0PheWydVUmrhFzQ-1; Wed, 06 May 2020 05:25:50 -0400
-X-MC-Unique: lo9OQhJ0PheWydVUmrhFzQ-1
-Received: by mail-wr1-f69.google.com with SMTP id p2so998922wrx.12
-        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 02:25:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Bim1c8eCjYcLbuTSswn0dpCBvXNi8zOQ0N1tlPafZn4=;
-        b=ECsRNko5OxVT7H32n9LFxUvCTNQEhqu2yLWRF1RjIzApaSIW9U3sjO55WMAvstQ8pC
-         5K/koVqzNF8avla+UDheAH7B7IDsaQOm9VdP1lCYHWayPAqj98A0Q7i7nkAHDhEtO9DJ
-         q8ud7zgn0LVcgEvynNGsgMuESP19lnjioHveBFLF0PUAqgeY1UpMQTjls+O8ajGti1Ll
-         QQq56bA2XhQ7P5QnJWCmdxian8zhLECT0/ZyY69ITViI25b8T2WQgE3Cdys8wiMeUvUK
-         48pjFuo1BItlZg8xu8Okeq3YS8xYuJ2+c/Grue6gtYelSmumexKimeQWPe7bCBXA+Ynj
-         xLOg==
-X-Gm-Message-State: AGi0PuZKCHyctQTo2BITureSwzW4ubj/RKTnNQf6kBMDABSEXrmam0s9
-        9hOURnqCAbQ1p1N5BBH46g2NH2IOWyAzvJgNQFUFgZkHqzxvW4rDTgSeVTUoq39GMGlqk61rcMM
-        8wywKbYRT1V7rj3oGBYXh6G1Q
-X-Received: by 2002:adf:dfcd:: with SMTP id q13mr7131679wrn.22.1588757149675;
-        Wed, 06 May 2020 02:25:49 -0700 (PDT)
-X-Google-Smtp-Source: APiQypKDcQLCEb81yrXyKaZpg3LwlEaXE+I6k94/3G8d4AwC2GS8U1KX5Fn5b7fyFPoR8Cv9PqLECw==
-X-Received: by 2002:adf:dfcd:: with SMTP id q13mr7131657wrn.22.1588757149453;
-        Wed, 06 May 2020 02:25:49 -0700 (PDT)
-Received: from steredhat (host108-207-dynamic.49-79-r.retail.telecomitalia.it. [79.49.207.108])
-        by smtp.gmail.com with ESMTPSA id c25sm2030281wmb.44.2020.05.06.02.25.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 May 2020 02:25:48 -0700 (PDT)
-Date:   Wed, 6 May 2020 11:25:46 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     Justin He <Justin.He@arm.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "ldigby@redhat.com" <ldigby@redhat.com>,
-        "n.b@live.com" <n.b@live.com>,
-        "stefanha@redhat.com" <stefanha@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [GIT PULL] vhost: fixes
-Message-ID: <20200506092546.o6prnn4d66tavmjl@steredhat>
-References: <20200504081540-mutt-send-email-mst@kernel.org>
- <AM6PR08MB40696EFF8BE389C134AC04F6F7A40@AM6PR08MB4069.eurprd08.prod.outlook.com>
- <20200506031918-mutt-send-email-mst@kernel.org>
+        id S1729030AbgEFJTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 05:19:52 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:3861 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728385AbgEFJTw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 05:19:52 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id ED36674D501AC1816258;
+        Wed,  6 May 2020 17:19:49 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 6 May 2020 17:19:39 +0800
+From:   Samuel Zou <zou_wei@huawei.com>
+To:     <dan.j.williams@intel.com>, <vkoul@kernel.org>
+CC:     <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Samuel Zou <zou_wei@huawei.com>
+Subject: [PATCH -next] dmaengine: ti: k3-udma: Use PTR_ERR_OR_ZERO() to simplify code
+Date:   Wed, 6 May 2020 17:25:46 +0800
+Message-ID: <1588757146-38858-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200506031918-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 06, 2020 at 03:19:55AM -0400, Michael S. Tsirkin wrote:
-> On Wed, May 06, 2020 at 03:28:47AM +0000, Justin He wrote:
-> > Hi Michael
-> > 
-> > > -----Original Message-----
-> > > From: Michael S. Tsirkin <mst@redhat.com>
-> > > Sent: Monday, May 4, 2020 8:16 PM
-> > > To: Linus Torvalds <torvalds@linux-foundation.org>
-> > > Cc: kvm@vger.kernel.org; virtualization@lists.linux-foundation.org;
-> > > netdev@vger.kernel.org; linux-kernel@vger.kernel.org; Justin He
-> > > <Justin.He@arm.com>; ldigby@redhat.com; mst@redhat.com; n.b@live.com;
-> > > stefanha@redhat.com
-> > > Subject: [GIT PULL] vhost: fixes
-> > >
-> > > The following changes since commit
-> > > 6a8b55ed4056ea5559ebe4f6a4b247f627870d4c:
-> > >
-> > >   Linux 5.7-rc3 (2020-04-26 13:51:02 -0700)
-> > >
-> > > are available in the Git repository at:
-> > >
-> > >   https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
-> > >
-> > > for you to fetch changes up to
-> > > 0b841030625cde5f784dd62aec72d6a766faae70:
-> > >
-> > >   vhost: vsock: kick send_pkt worker once device is started (2020-05-02
-> > > 10:28:21 -0400)
-> > >
-> > > ----------------------------------------------------------------
-> > > virtio: fixes
-> > >
-> > > A couple of bug fixes.
-> > >
-> > > Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> > >
-> > > ----------------------------------------------------------------
-> > > Jia He (1):
-> > >       vhost: vsock: kick send_pkt worker once device is started
-> > 
-> > Should this fix also be CC-ed to stable? Sorry I forgot to cc it to stable.
-> > 
-> > --
-> > Cheers,
-> > Justin (Jia He)
-> 
-> 
-> Go ahead, though recently just including Fixes seems to be enough.
-> 
+Fixes coccicheck warnings:
 
-The following patch Justin refers to does not contain the "Fixes:" tag:
+drivers/dma/ti/k3-udma.c:1294:1-3: WARNING: PTR_ERR_OR_ZERO can be used
+drivers/dma/ti/k3-udma.c:1311:1-3: WARNING: PTR_ERR_OR_ZERO can be used
+drivers/dma/ti/k3-udma.c:1376:1-3: WARNING: PTR_ERR_OR_ZERO can be used
 
-0b841030625c vhost: vsock: kick send_pkt worker once device is started
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Samuel Zou <zou_wei@huawei.com>
+---
+ drivers/dma/ti/k3-udma.c | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
 
-
-I think we should merge it on stable branches, so if needed, I can backport
-and send it.
-
-Stefano
+diff --git a/drivers/dma/ti/k3-udma.c b/drivers/dma/ti/k3-udma.c
+index 0a04174..f5775ca 100644
+--- a/drivers/dma/ti/k3-udma.c
++++ b/drivers/dma/ti/k3-udma.c
+@@ -1291,10 +1291,8 @@ static int udma_get_tchan(struct udma_chan *uc)
+ 	}
+ 
+ 	uc->tchan = __udma_reserve_tchan(ud, uc->config.channel_tpl, -1);
+-	if (IS_ERR(uc->tchan))
+-		return PTR_ERR(uc->tchan);
+ 
+-	return 0;
++	return PTR_ERR_OR_ZERO(uc->tchan);
+ }
+ 
+ static int udma_get_rchan(struct udma_chan *uc)
+@@ -1308,10 +1306,8 @@ static int udma_get_rchan(struct udma_chan *uc)
+ 	}
+ 
+ 	uc->rchan = __udma_reserve_rchan(ud, uc->config.channel_tpl, -1);
+-	if (IS_ERR(uc->rchan))
+-		return PTR_ERR(uc->rchan);
+ 
+-	return 0;
++	return PTR_ERR_OR_ZERO(uc->rchan);
+ }
+ 
+ static int udma_get_chan_pair(struct udma_chan *uc)
+@@ -1373,10 +1369,8 @@ static int udma_get_rflow(struct udma_chan *uc, int flow_id)
+ 	}
+ 
+ 	uc->rflow = __udma_get_rflow(ud, flow_id);
+-	if (IS_ERR(uc->rflow))
+-		return PTR_ERR(uc->rflow);
+ 
+-	return 0;
++	return PTR_ERR_OR_ZERO(uc->rflow);
+ }
+ 
+ static void udma_put_rchan(struct udma_chan *uc)
+-- 
+2.6.2
 
