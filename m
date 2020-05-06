@@ -2,65 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B5FE1C663C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 05:19:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F0481C664F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 05:28:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726742AbgEFDT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 May 2020 23:19:57 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:3807 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726029AbgEFDT5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 May 2020 23:19:57 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 1F04FAA9770614B36C3B;
-        Wed,  6 May 2020 11:19:52 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 6 May 2020 11:19:43 +0800
-From:   Samuel Zou <zou_wei@huawei.com>
-To:     <agross@kernel.org>, <bjorn.andersson@linaro.org>,
-        <vkoul@kernel.org>, <sanyog.r.kale@intel.com>,
-        <pierre-louis.bossart@linux.intel.com>
-CC:     <linux-arm-msm@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>, Samuel Zou <zou_wei@huawei.com>
-Subject: [PATCH -next] soundwire: qcom: Use IRQF_ONESHOT
-Date:   Wed, 6 May 2020 11:25:53 +0800
-Message-ID: <1588735553-34219-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        id S1726796AbgEFD2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 May 2020 23:28:49 -0400
+Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:34497 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726616AbgEFD2s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 May 2020 23:28:48 -0400
+Received: from localhost.localdomain ([93.23.13.221])
+        by mwinf5d40 with ME
+        id bFUd2200E4m9Yy503FUdZx; Wed, 06 May 2020 05:28:45 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Wed, 06 May 2020 05:28:45 +0200
+X-ME-IP: 93.23.13.221
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     gxt@pku.edu.cn, arnd@arndb.de
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] i2c: puv3: Fix an error handling path in 'puv3_i2c_probe()'
+Date:   Wed,  6 May 2020 05:28:24 +0200
+Message-Id: <20200506032824.191633-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes coccicheck error:
+There is a spurious 'put_device()' in the remove function.
+A reference to 'pdev->dev' is taken in the probe function without a
+corresponding 'get_device()' to increment the refcounted reference.
 
-drivers/soundwire/qcom.c:815:7-32: ERROR: Threaded IRQ with
-no primary handler requested without IRQF_ONESHOT
+Add the missing 'get_device()' and update the error handling path
+accordingly.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Samuel Zou <zou_wei@huawei.com>
+Fixes: d10e4a660d11 ("unicore32 machine related files: add i2c bus drivers for pkunity-v3 soc")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- drivers/soundwire/qcom.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+This patch is provided as-is. It is not even compile tested because I don't
+use cross-compiler.
 
-diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-index e08a17c..a2a35f7 100644
---- a/drivers/soundwire/qcom.c
-+++ b/drivers/soundwire/qcom.c
-@@ -814,7 +814,8 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+It is purely speculative and based on what looks like an unbalanced
+'put_device()' in the remove function.
+---
+ drivers/i2c/busses/i2c-puv3.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/i2c/busses/i2c-puv3.c b/drivers/i2c/busses/i2c-puv3.c
+index 5cec5a36807d..62a4b860d3c0 100644
+--- a/drivers/i2c/busses/i2c-puv3.c
++++ b/drivers/i2c/busses/i2c-puv3.c
+@@ -203,18 +203,20 @@ static int puv3_i2c_probe(struct platform_device *pdev)
+ 			mem->start);
+ 	adapter->algo = &puv3_i2c_algorithm;
+ 	adapter->class = I2C_CLASS_HWMON;
+-	adapter->dev.parent = &pdev->dev;
++	adapter->dev.parent = get_device(&pdev->dev);
  
- 	ret = devm_request_threaded_irq(dev, ctrl->irq, NULL,
- 					qcom_swrm_irq_handler,
--					IRQF_TRIGGER_RISING,
-+					IRQF_TRIGGER_RISING |
-+					IRQF_ONESHOT,
- 					"soundwire", ctrl);
- 	if (ret) {
- 		dev_err(dev, "Failed to request soundwire irq\n");
+ 	platform_set_drvdata(pdev, adapter);
+ 
+ 	adapter->nr = pdev->id;
+ 	rc = i2c_add_numbered_adapter(adapter);
+ 	if (rc)
+-		goto fail_add_adapter;
++		goto fail_put_device;
+ 
+ 	dev_info(&pdev->dev, "PKUnity v3 i2c bus adapter.\n");
+ 	return 0;
+ 
++fail_put_device:
++	put_device(&pdev->dev);
+ fail_add_adapter:
+ 	kfree(adapter);
+ fail_nomem:
 -- 
-2.6.2
+2.25.1
 
