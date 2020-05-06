@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3B7B1C7723
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 18:50:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8C531C7721
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 18:50:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730766AbgEFQut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 12:50:49 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:2642 "EHLO pegase1.c-s.fr"
+        id S1730755AbgEFQui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 12:50:38 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:56659 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730468AbgEFQsZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 12:48:25 -0400
+        id S1730349AbgEFQs1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 12:48:27 -0400
 Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 49HMwk2Z4Wz9v4kH;
-        Wed,  6 May 2020 18:48:22 +0200 (CEST)
+        by localhost (Postfix) with ESMTP id 49HMwl30w6z9v4kJ;
+        Wed,  6 May 2020 18:48:23 +0200 (CEST)
 X-Virus-Scanned: Debian amavisd-new at c-s.fr
 Received: from pegase1.c-s.fr ([192.168.12.234])
         by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id q06Ta3EM9nWJ; Wed,  6 May 2020 18:48:22 +0200 (CEST)
+        with ESMTP id RYSiBUilMn30; Wed,  6 May 2020 18:48:23 +0200 (CEST)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 49HMwk1PJNz9v4kF;
-        Wed,  6 May 2020 18:48:22 +0200 (CEST)
+        by pegase1.c-s.fr (Postfix) with ESMTP id 49HMwl1CbRz9v4kF;
+        Wed,  6 May 2020 18:48:23 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 04A518B7C5;
-        Wed,  6 May 2020 18:48:24 +0200 (CEST)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 012C38B7C5;
+        Wed,  6 May 2020 18:48:25 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id v1Lfu_ueeMfF; Wed,  6 May 2020 18:48:23 +0200 (CEST)
+        with ESMTP id r0rc0Ei-aZke; Wed,  6 May 2020 18:48:24 +0200 (CEST)
 Received: from localhost.localdomain (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id B06028B7C3;
-        Wed,  6 May 2020 18:48:23 +0200 (CEST)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B8D5B8B7C3;
+        Wed,  6 May 2020 18:48:24 +0200 (CEST)
 Received: by localhost.localdomain (Postfix, from userid 0)
-        id 7F00065911; Wed,  6 May 2020 16:48:23 +0000 (UTC)
-Message-Id: <6363ce9f8eeeceed49d512557f06be4ccf20138b.1588783498.git.christophe.leroy@csgroup.eu>
+        id 87E6965911; Wed,  6 May 2020 16:48:24 +0000 (UTC)
+Message-Id: <43d54becd07cdaca253858c9446bc51643846989.1588783498.git.christophe.leroy@csgroup.eu>
 In-Reply-To: <cover.1588783498.git.christophe.leroy@csgroup.eu>
 References: <cover.1588783498.git.christophe.leroy@csgroup.eu>
 From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v2 18/45] powerpc/mm: Refactor pte_update() on nohash/32
+Subject: [PATCH v2 19/45] powerpc/mm: Refactor pte_update() on book3s/32
 To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
         Michael Ellerman <mpe@ellerman.id.au>
 Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Wed,  6 May 2020 16:48:23 +0000 (UTC)
+Date:   Wed,  6 May 2020 16:48:24 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -58,18 +58,27 @@ when CONFIG_PTE_64BIT is set and 'unsigned long' otherwise.
 
 Refactor pte_update() using pte_basic_t.
 
+While we are at it, drop the comment on 44x which is not applicable
+to book3s version of pte_update().
+
 Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- arch/powerpc/include/asm/nohash/32/pgtable.h | 26 +++-----------------
- 1 file changed, 4 insertions(+), 22 deletions(-)
+ arch/powerpc/include/asm/book3s/32/pgtable.h | 58 +++++++-------------
+ 1 file changed, 20 insertions(+), 38 deletions(-)
 
-diff --git a/arch/powerpc/include/asm/nohash/32/pgtable.h b/arch/powerpc/include/asm/nohash/32/pgtable.h
-index 523c4c3876c5..9eaf386a747b 100644
---- a/arch/powerpc/include/asm/nohash/32/pgtable.h
-+++ b/arch/powerpc/include/asm/nohash/32/pgtable.h
-@@ -222,12 +222,9 @@ static inline void pmd_clear(pmd_t *pmdp)
-  * to properly flush the virtually tagged instruction cache of
-  * those implementations.
+diff --git a/arch/powerpc/include/asm/book3s/32/pgtable.h b/arch/powerpc/include/asm/book3s/32/pgtable.h
+index 7549393c4c43..d1108d25e2e5 100644
+--- a/arch/powerpc/include/asm/book3s/32/pgtable.h
++++ b/arch/powerpc/include/asm/book3s/32/pgtable.h
+@@ -253,53 +253,35 @@ extern void flush_hash_entry(struct mm_struct *mm, pte_t *ptep,
+  * and the PTE may be either 32 or 64 bit wide. In the later case,
+  * when using atomic updates, only the low part of the PTE is
+  * accessed atomically.
+- *
+- * In addition, on 44x, we also maintain a global flag indicating
+- * that an executable user mapping was modified, which is needed
+- * to properly flush the virtually tagged instruction cache of
+- * those implementations.
   */
 -#ifndef CONFIG_PTE_64BIT
 -static inline unsigned long pte_update(pte_t *p,
@@ -77,44 +86,64 @@ index 523c4c3876c5..9eaf386a747b 100644
 -				       unsigned long set)
 +static inline pte_basic_t pte_update(pte_t *p, unsigned long clr, unsigned long set)
  {
--#ifdef PTE_ATOMIC_UPDATES
-+#if defined(PTE_ATOMIC_UPDATES) && !defined(CONFIG_PTE_64BIT)
- 	unsigned long old, tmp;
- 
- 	__asm__ __volatile__("\
-@@ -241,8 +238,8 @@ static inline unsigned long pte_update(pte_t *p,
- 	: "r" (p), "r" (clr), "r" (set), "m" (*p)
- 	: "cc" );
- #else /* PTE_ATOMIC_UPDATES */
--	unsigned long old = pte_val(*p);
--	unsigned long new = (old & ~clr) | set;
-+	pte_basic_t old = pte_val(*p);
-+	pte_basic_t new = (old & ~(pte_basic_t)clr) | set;
- 
- #if defined(CONFIG_PPC_8xx) && defined(CONFIG_PPC_16K_PAGES)
- 	p->pte = p->pte1 = p->pte2 = p->pte3 = new;
-@@ -257,21 +254,6 @@ static inline unsigned long pte_update(pte_t *p,
- #endif
- 	return old;
- }
+-	unsigned long old, tmp;
+-
+-	__asm__ __volatile__("\
+-1:	lwarx	%0,0,%3\n\
+-	andc	%1,%0,%4\n\
+-	or	%1,%1,%5\n"
+-"	stwcx.	%1,0,%3\n\
+-	bne-	1b"
+-	: "=&r" (old), "=&r" (tmp), "=m" (*p)
+-	: "r" (p), "r" (clr), "r" (set), "m" (*p)
+-	: "cc" );
+-
+-	return old;
+-}
 -#else /* CONFIG_PTE_64BIT */
 -static inline unsigned long long pte_update(pte_t *p,
 -					    unsigned long clr,
 -					    unsigned long set)
 -{
--	unsigned long long old = pte_val(*p);
--	*p = __pte((old & ~(unsigned long long)clr) | set);
--
--#ifdef CONFIG_44x
--	if ((old & _PAGE_USER) && (old & _PAGE_EXEC))
--		icache_44x_need_flush = 1;
--#endif
--	return old;
--}
+-	unsigned long long old;
++	pte_basic_t old;
+ 	unsigned long tmp;
+ 
+-	__asm__ __volatile__("\
+-1:	lwarx	%L0,0,%4\n\
+-	lwzx	%0,0,%3\n\
+-	andc	%1,%L0,%5\n\
+-	or	%1,%1,%6\n"
+-"	stwcx.	%1,0,%4\n\
+-	bne-	1b"
++	__asm__ __volatile__(
++#ifndef CONFIG_PTE_64BIT
++"1:	lwarx	%0, 0, %3\n"
++"	andc	%1, %0, %4\n"
++#else
++"1:	lwarx	%L0, 0, %3\n"
++"	lwz	%0, -4(%3)\n"
++"	andc	%1, %L0, %4\n"
++#endif
++"	or	%1, %1, %5\n"
++"	stwcx.	%1, 0, %3\n"
++"	bne-	1b"
+ 	: "=&r" (old), "=&r" (tmp), "=m" (*p)
+-	: "r" (p), "r" ((unsigned long)(p) + 4), "r" (clr), "r" (set), "m" (*p)
++#ifndef CONFIG_PTE_64BIT
++	: "r" (p),
++#else
++	: "b" ((unsigned long)(p) + 4),
++#endif
++	  "r" (clr), "r" (set), "m" (*p)
+ 	: "cc" );
+ 
+ 	return old;
+ }
 -#endif /* CONFIG_PTE_64BIT */
  
- #define __HAVE_ARCH_PTEP_TEST_AND_CLEAR_YOUNG
- static inline int __ptep_test_and_clear_young(unsigned int context, unsigned long addr, pte_t *ptep)
+ /*
+  * 2.6 calls this without flushing the TLB entry; this is wrong
 -- 
 2.25.0
 
