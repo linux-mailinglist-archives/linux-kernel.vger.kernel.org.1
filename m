@@ -2,83 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C1151C6B88
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 10:23:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 531731C6B94
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 10:24:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728750AbgEFIW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 04:22:58 -0400
-Received: from mga14.intel.com ([192.55.52.115]:19981 "EHLO mga14.intel.com"
+        id S1728573AbgEFIYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 04:24:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728573AbgEFIW6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 04:22:58 -0400
-IronPort-SDR: 3Ako+PfXdeFEIKKuckXNebe1S4pUGL0UU9lkAPZrryEyktDLWvkjXJE+WyWDTDalvQbQeVxpda
- f5C2kzuZ16kw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2020 01:22:57 -0700
-IronPort-SDR: zzl/daXJ0Oc7LgXfevtb/pXR40XCMnV3NryHB9opA31ZugUP9uNZBg7KMhVaAbYy82E8S3ZdAx
- 7m7bWACakU1Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,358,1583222400"; 
-   d="scan'208";a="461682447"
-Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.23])
-  by fmsmga006.fm.intel.com with ESMTP; 06 May 2020 01:22:55 -0700
-From:   "Huang\, Ying" <ying.huang@intel.com>
-To:     Wei Yang <richard.weiyang@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
-Subject: Re: [PATCH 3/3] mm/swapfile.c: count won't be bigger than SWAP_MAP_MAX
-References: <20200501015259.32237-1-richard.weiyang@gmail.com>
-        <20200501015259.32237-3-richard.weiyang@gmail.com>
-        <20200501154853.bca4cfb7b2558bd43a4942f3@linux-foundation.org>
-        <20200502132911.u6y6hkh56ik4ojne@master>
-Date:   Wed, 06 May 2020 16:22:54 +0800
-In-Reply-To: <20200502132911.u6y6hkh56ik4ojne@master> (Wei Yang's message of
-        "Sat, 2 May 2020 13:29:11 +0000")
-Message-ID: <87k11pv5ep.fsf@yhuang-dev.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S1727956AbgEFIYt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 04:24:49 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7CF51206E6;
+        Wed,  6 May 2020 08:24:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588753489;
+        bh=/WPfbJquieUPIKiO6Ciow9laJ/MI4AxasPfQ3zVwzko=;
+        h=From:To:Cc:Subject:Date:From;
+        b=TTmO/ni6FB69UC8PUWqYLqi4YFZHPwoQyrwKQpYksGaz95suoRvRgGjUIXXp3byFB
+         CPKsFPJLQlu/USduvGkEOVQKkLQcpQttLEtuIICQe5EghQHufB+jY5OJMKBAw8NuVC
+         X2e8DpayLM5q+m3TWnkhxvl1vLT2JbjO5EGKc3e8=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Sagi Grimberg <sagi@rimberg.me>,
+        Yishai Hadas <yishaih@mellanox.com>
+Subject: [PATCH rdma-next v1 00/10] Enable asynchronous event FD per object
+Date:   Wed,  6 May 2020 11:24:34 +0300
+Message-Id: <20200506082444.14502-1-leon@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wei Yang <richard.weiyang@gmail.com> writes:
+From: Leon Romanovsky <leonro@mellanox.com>
 
-> On Fri, May 01, 2020 at 03:48:53PM -0700, Andrew Morton wrote:
->>On Fri,  1 May 2020 01:52:59 +0000 Wei Yang <richard.weiyang@gmail.com> wrote:
->>
->>> When the condition is true, there are two possibilities:
->>
->>I'm struggling with this one.
->>
->>>    1. count == SWAP_MAP_BAD
->>>    2. count == (SWAP_MAP_MAX & COUNT_CONTINUED) == SWAP_MAP_SHMEM
->>
->>I'm not sure what 2. is trying to say.  For a start, (SWAP_MAP_MAX &
->>COUNT_CONTINUED) is zero.  I guess it meant "|"?
->
-> Oops, you are right. It should be (SWAP_MAP_MAX | COUNT_CONTINUED).
->
-> Sorry for the confusion.
->
->>
->>Also, the return value documentation says we return EINVAL for migration
->>entries.  Where's that happening, or is the comment out of date?
->>
->
-> Not paid attention to this.
->
-> Take look into the code, I don't find a relationship between the swap count
-> and migration. Seems we just make a migration entry but not duplicate it.  
-> If my understanding is correct.
+Changelog:
+v1: Forgot to add patch "IB/uverbs: Move QP, SRQ, WQ type and flags to UAPI"
+v0: https://lore.kernel.org/lkml/20200506074049.8347-1-leon@kernel.org
 
-Per my understanding, one functionality of the error path is to catch
-the behavior that shouldn't happen at all.  For example, if
-__swap_duplicate() is called for the migration entry because of some
-race condition.
+-------------------------------------------------------------------------------
+From Yishai:
 
-Best Regards,
-Huang, Ying
+This series enables applicable events objects (i.e. QP, SRQ, CQ, WQ) to
+be created with their own asynchronous event FD.
+
+Before this series any affiliated event on an object was reported on the
+first asynchronous event FD that was created on the context without the
+ability to create and use a dedicated FD for it.
+
+With this series we enable granularity and control for the usage per
+object, according to the application's usage.
+
+For example, a secondary process that uses the same command FD as of the
+master one, can create its own objects with its dedicated event FD to be
+able to get the events for them once occurred, this couldn't be done
+before this series.
+
+To achieve the above, any 'create' method for the applicable objects was
+extended to get from rdma-core its optional event FD, if wasn't
+supplied, the default one from the context will be used.
+
+As we prefer to not extend the 'write' mode KABIs anymore and fully
+move to the 'ioct' mode, as part of this extension QP, SRQ and WQ
+create/destroy commands were introduced over 'ioctl', the CQ KABI was
+extended over its existing 'ioctl' create command.
+
+As part of moving to 'ioctl' for the above objects the frame work was
+improved to abort a fully created uobject upon some later error, some
+flows were consolidated with the 'write' mode and few bugs were found
+and fixed.
+
+Yishai
+
+Jason Gunthorpe (2):
+  RDMA/core: Allow the ioctl layer to abort a fully created uobject
+  RDMA/core: Consolidate ib_create_srq flows
+
+Yishai Hadas (8):
+  IB/uverbs: Refactor related objects to use their own asynchronous
+    event FD
+  IB/uverbs: Extend CQ to get its own asynchronous event FD
+  IB/uverbs: Cleanup wq/srq context usage from uverbs layer
+  IB/uverbs: Move QP, SRQ, WQ type and flags to UAPI
+  IB/uverbs: Introduce create/destroy SRQ commands over ioctl
+  IB/uverbs: Fix create WQ to use the given user handle
+  IB/uverbs: Introduce create/destroy WQ commands over ioctl
+  IB/uverbs: Introduce create/destroy QP commands over ioctl
+
+ drivers/infiniband/core/Makefile              |   5 +-
+ drivers/infiniband/core/rdma_core.c           |  28 +-
+ drivers/infiniband/core/rdma_core.h           |   7 +-
+ drivers/infiniband/core/uverbs.h              |  21 +-
+ drivers/infiniband/core/uverbs_cmd.c          |  73 ++--
+ drivers/infiniband/core/uverbs_ioctl.c        |  22 +-
+ drivers/infiniband/core/uverbs_main.c         |  16 +-
+ drivers/infiniband/core/uverbs_std_types.c    |  95 -----
+ drivers/infiniband/core/uverbs_std_types_cq.c |  17 +-
+ drivers/infiniband/core/uverbs_std_types_mr.c |  12 +-
+ drivers/infiniband/core/uverbs_std_types_qp.c | 401 ++++++++++++++++++
+ .../infiniband/core/uverbs_std_types_srq.c    | 233 ++++++++++
+ drivers/infiniband/core/uverbs_std_types_wq.c | 194 +++++++++
+ drivers/infiniband/core/uverbs_uapi.c         |   3 +
+ drivers/infiniband/core/verbs.c               |  29 +-
+ drivers/infiniband/hw/mlx5/devx.c             |  10 +-
+ drivers/infiniband/hw/mlx5/main.c             |  24 +-
+ drivers/infiniband/hw/mlx5/qos.c              |  13 +-
+ include/rdma/ib_verbs.h                       |  75 ++--
+ include/rdma/uverbs_ioctl.h                   |   3 +
+ include/rdma/uverbs_std_types.h               |   2 +-
+ include/rdma/uverbs_types.h                   |   3 +-
+ include/uapi/rdma/ib_user_ioctl_cmds.h        |  81 ++++
+ include/uapi/rdma/ib_user_ioctl_verbs.h       |  43 ++
+ 24 files changed, 1163 insertions(+), 247 deletions(-)
+ create mode 100644 drivers/infiniband/core/uverbs_std_types_qp.c
+ create mode 100644 drivers/infiniband/core/uverbs_std_types_srq.c
+ create mode 100644 drivers/infiniband/core/uverbs_std_types_wq.c
+
+--
+2.26.2
+
