@@ -2,74 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 719B61C728E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 16:17:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BFEA1C7293
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 16:18:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728849AbgEFORO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 10:17:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57666 "EHLO mail.kernel.org"
+        id S1728957AbgEFOSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 10:18:03 -0400
+Received: from foss.arm.com ([217.140.110.172]:37474 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726114AbgEFORO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 10:17:14 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3F948206D5;
-        Wed,  6 May 2020 14:17:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588774633;
-        bh=E2FPRMOtJPQ28Jn0CD58CEFJGl3jwphHRxnRKSQWI6g=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=DaPlaRDy0v4tHoZdrLe0I2dX6GTf+R8IzmF1viAzoLmOMnZyexJZ8+pmrygf//lAH
-         4MDE2hAsaLAVTfBR7wjPHzR40f4Vjpsd+ojmGE30XzdjdWTKRzIOd3TDQDSDyvB4A1
-         gpAYD5ejPwZy9vWaZUm3zX51ZR3qhjJBYuFzTqUc=
-Date:   Wed, 06 May 2020 15:17:11 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Jason Yan <yanaijie@huawei.com>, linux-kernel@vger.kernel.org,
-        lgirdwood@gmail.com
-In-Reply-To: <20200506061726.19289-1-yanaijie@huawei.com>
-References: <20200506061726.19289-1-yanaijie@huawei.com>
-Subject: Re: [PATCH] regulator: db8500-prcmu: Use true,false for bool variable
-Message-Id: <158877463128.38550.10089198425831753344.b4-ty@kernel.org>
+        id S1726114AbgEFOSC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 10:18:02 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9F0B6D6E;
+        Wed,  6 May 2020 07:18:01 -0700 (PDT)
+Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9EAA13F68F;
+        Wed,  6 May 2020 07:18:00 -0700 (PDT)
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH v3 0/5] kselftest: Extend vDSO tests
+Date:   Wed,  6 May 2020 15:17:26 +0100
+Message-Id: <20200506141731.14660-1-vincenzo.frascino@arm.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 May 2020 14:17:26 +0800, Jason Yan wrote:
-> Fix the following coccicheck warning:
-> 
-> drivers/regulator/db8500-prcmu.c:184:1-17: WARNING: Assignment of 0/1 to
-> bool variable
-> 
-> Signed-off-by: Jason Yan <yanaijie@huawei.com>
-> 
-> [...]
+This series extends the kselftests for the vDSO library making sure: that
+they compile correctly on non x86 platforms, that they can be cross
+compiled and introducing new tests that verify the correctness of the
+library.
 
-Applied to
+The so extended vDSO kselftests have been verified on all the platforms
+supported by the unified vDSO library [1].
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-5.8
+The only new patch that this series introduces is the first one, patch 2 and
+patch 3 have already been reviewed in past as part of other series [2] [3].
 
-Thanks!
+[1] https://lore.kernel.org/lkml/20190621095252.32307-1-vincenzo.frascino@arm.com
+[2] https://lore.kernel.org/lkml/20190621095252.32307-26-vincenzo.frascino@arm.com
+[3] https://lore.kernel.org/lkml/20190523112116.19233-4-vincenzo.frascino@arm.com
 
-[1/1] regulator: db8500-prcmu: Use true,false for bool variable
-      commit: aab5fd7a1b7b931487694b527322f48f423701c7
+Changes:
+--------
+v3:
+  - Added correctness test for clock_gettime64.
+  - Rebased on 5.7-rc4.
+v2:
+  - Addressed review comments from Andy.
+  - Rebased on 5.7-rc3.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Vincenzo Frascino (5):
+  kselftest: Enable vDSO test on non x86 platforms
+  kselftest: Extend vDSO selftest
+  kselftest: Extend vDSO selftest to clock_getres
+  kselftest: Move test_vdso to the vDSO test suite
+  kselftest: Extend vdso correctness test to clock_gettime64
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+ tools/testing/selftests/Makefile              |   1 +
+ tools/testing/selftests/vDSO/Makefile         |  16 +-
+ .../selftests/vDSO/vdso_clock_getres.c        | 124 +++++++++
+ tools/testing/selftests/vDSO/vdso_config.h    |  92 +++++++
+ .../vdso_correctness_test.c}                  | 115 ++++++++-
+ tools/testing/selftests/vDSO/vdso_full_test.c | 244 ++++++++++++++++++
+ tools/testing/selftests/x86/Makefile          |   2 +-
+ 7 files changed, 586 insertions(+), 8 deletions(-)
+ create mode 100644 tools/testing/selftests/vDSO/vdso_clock_getres.c
+ create mode 100644 tools/testing/selftests/vDSO/vdso_config.h
+ rename tools/testing/selftests/{x86/test_vdso.c => vDSO/vdso_correctness_test.c} (73%)
+ create mode 100644 tools/testing/selftests/vDSO/vdso_full_test.c
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+-- 
+2.26.2
 
-Thanks,
-Mark
