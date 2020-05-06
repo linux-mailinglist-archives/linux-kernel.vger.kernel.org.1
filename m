@@ -2,304 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BCAF1C70A4
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 14:47:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 943001C70AA
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 14:47:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728507AbgEFMqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 08:46:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57914 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728248AbgEFMqS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 08:46:18 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B69F0206DD;
-        Wed,  6 May 2020 12:46:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588769177;
-        bh=m6PoFH6AUQP7MS3kqLegI5qgM8ppoQywHKEd/3ENm3w=;
-        h=Date:From:To:Cc:Subject:From;
-        b=euz8mDd4Y51huiYVPP57c9bQJdmwgDT/BKee1OKPgwNXW/sR2bGLURjnojtEM1Lse
-         ID55BrERjjrqAA/EsPuW06w7f6/aKwPhTbcNKyB9xVnRRIInZxOg0/+36JodM5c+Ul
-         sl48edE5y2oEVt96vnnyaY6hSv9XPQGsQARSw1Ag=
-Date:   Wed, 6 May 2020 14:46:15 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        torvalds@linux-foundation.org, stable@vger.kernel.org
-Cc:     lwn@lwn.net, Jiri Slaby <jslaby@suse.cz>
-Subject: Linux 5.4.39
-Message-ID: <20200506124615.GA3145866@kroah.com>
+        id S1728544AbgEFMqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 08:46:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728528AbgEFMqd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 08:46:33 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A226C061A41
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 05:46:33 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id a21so2159619ljj.11
+        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 05:46:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6I5B71LB2tx8NkY3iMd5afhpiClRHsfBP+XO7hQfwQ0=;
+        b=TI0vfp3TRQ+fo+Ftt8w28gJvS8/Fx92njAumbEuZ9+grZMLXauPna5er/RZoObVc1H
+         8Id0Pn99SUAm7ROLJA7nYVUVW3Sr9eNJzc69Hv0k9QTpWdz7pwg1n7StSrZWqOFa+Swa
+         vtPpIXsB+ye2J3WWvl2WAbXhy28q0nWi+vklvYn3bX++b8G/qKfm8v0z8My5r7qLiKS5
+         sZfKqEOgunIYs9qjCjI4KQOTHbVR4Fbux34GFW2xCkO3xZY+tXkMNrgeZsAmniLNt+r5
+         tBiVyTwgHeK9PYqHI8NoWXxTjFTrf6BExXtiXHUsC2zi2le0W2Kz9Fq//m2aq4cRpQr9
+         l5hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6I5B71LB2tx8NkY3iMd5afhpiClRHsfBP+XO7hQfwQ0=;
+        b=ZoXfOT989GtwbO0Qt8cfV7VU9zOR3nRStKzEYNMsa0nsI0FlmDl2bFnELWWDtTyVTe
+         zC8LnJBo6ekOr0xWpf4Vw7jYpi5vExXUTByKtwgLNQSXMi43r+i9wbZXkNFjtuu9+w4e
+         EZqxoP6Y6AnaAcfeqE6MqVxZkVBR8Dch8IKLyidAxq4yQUgPTPSIie0qF5BJwePmWLUU
+         QxvoPPJ1ne0V22KDhdQQggzXHR/U3JWdh3OhE8zrzaSsgjpmfxhyPxiW5hdsfSSBtJ6q
+         8+0lGIEy9s/oOTpPrzwOf7hHpli78NjTwhNHAZqvFzi5Ib6uqm7WaC/CbuUIKubNE7Ak
+         IOFw==
+X-Gm-Message-State: AGi0PuZ/uOLm52U19u9ktFrOFHEiIFw3BtQteOairgW2/KYvr8v5+7FV
+        0riU0daoqX/YWlReR3yvE5Lp1Qk8q4ss3hQVyGZLtw==
+X-Google-Smtp-Source: APiQypKjSNXNsOwm10b3OBfJycZDQ2nv5L9JVoyA1mI806Vv9L519kB9NbY3ozJ7XHzgJ+kpouOaXHhCmwG2pl4nGkY=
+X-Received: by 2002:a2e:2ac2:: with SMTP id q185mr4713852ljq.125.1588769191594;
+ Wed, 06 May 2020 05:46:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="fUYQa+Pmc3FrFX/N"
-Content-Disposition: inline
+References: <20200503172206.13782-1-xc-racer2@live.ca> <BN6PR04MB0660B420EFA83668BBF4F315A3A90@BN6PR04MB0660.namprd04.prod.outlook.com>
+In-Reply-To: <BN6PR04MB0660B420EFA83668BBF4F315A3A90@BN6PR04MB0660.namprd04.prod.outlook.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 6 May 2020 14:46:20 +0200
+Message-ID: <CACRpkdb3kG=7SQg8RGh1F=8=_mivV6p_zxpodFT=M-f3PmiyYQ@mail.gmail.com>
+Subject: Re: [PATCH 2/5] input: misc: bma150: Conditionally disable bma023 support
+To:     Jonathan Bakker <xc-racer2@live.ca>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald <pmeerw@pmeerw.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux Input <linux-input@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, May 3, 2020 at 7:22 PM Jonathan Bakker <xc-racer2@live.ca> wrote:
 
---fUYQa+Pmc3FrFX/N
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> The bma180 IIO driver has been extended for support for bma023.
+> However, this could cause conflicts with this driver.  Since some
+> setups may depend upon the evdev setup, disable support in this
+> driver for the bma023 only when the IIO driver is being built.
+>
+> Signed-off-by: Jonathan Bakker <xc-racer2@live.ca>
 
-I'm announcing the release of the 5.4.39 kernel.
+I would just fix this with KConfig instead, like add mutually
+exclusive depends on these two drivers.
 
-All users of the 5.4 kernel series must upgrade.
+Set this input driver as:
+depends on BMA180=n
 
-The updated 5.4.y git tree can be found at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linu=
-x-5.4.y
-and can be browsed at the normal kernel.org git web browser:
-	https://git.kernel.org/?p=3Dlinux/kernel/git/stable/linux-stable.git;a=3Ds=
-ummary
+And the IIO driver as:
+depends on INPUT_BMA150=n
 
-thanks,
+It's a rough measure but this input driver should anyway
+go away.
 
-greg k-h
-
-------------
-
- Makefile                                          |    2=20
- arch/arm/boot/dts/imx6qdl-sr-som-ti.dtsi          |    1=20
- arch/arm64/kernel/vdso/Makefile                   |    2=20
- drivers/acpi/device_pm.c                          |    4 -
- drivers/crypto/caam/caamalg.c                     |    2=20
- drivers/dma-buf/dma-buf.c                         |    3=20
- drivers/dma/dmatest.c                             |    6 -
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |   38 +++++++++--
- drivers/gpu/drm/drm_edid.c                        |    2=20
- drivers/gpu/drm/qxl/qxl_cmd.c                     |   10 +--
- drivers/gpu/drm/qxl/qxl_display.c                 |    6 -
- drivers/gpu/drm/qxl/qxl_draw.c                    |    7 +-
- drivers/gpu/drm/qxl/qxl_ioctl.c                   |    5 -
- drivers/hv/vmbus_drv.c                            |   43 ++++++++++---
- drivers/i2c/busses/i2c-amd-mp2-pci.c              |    2=20
- drivers/i2c/busses/i2c-aspeed.c                   |    5 +
- drivers/i2c/busses/i2c-bcm-iproc.c                |    3=20
- drivers/infiniband/core/cm.c                      |   27 +++-----
- drivers/infiniband/core/rdma_core.c               |    4 -
- drivers/infiniband/hw/mlx4/main.c                 |    3=20
- drivers/infiniband/hw/mlx5/qp.c                   |    4 -
- drivers/infiniband/sw/rdmavt/cq.c                 |    4 -
- drivers/infiniband/sw/rdmavt/mmap.c               |    4 -
- drivers/infiniband/sw/rdmavt/qp.c                 |    4 -
- drivers/infiniband/sw/rdmavt/srq.c                |    4 -
- drivers/infiniband/sw/siw/siw_qp_tx.c             |   15 +++-
- drivers/iommu/amd_iommu_init.c                    |    2=20
- drivers/iommu/qcom_iommu.c                        |    5 +
- drivers/md/dm-mpath.c                             |    6 +
- drivers/md/dm-verity-fec.c                        |    2=20
- drivers/md/dm-writecache.c                        |   52 +++++++++++-----
- drivers/mmc/host/cqhci.c                          |   21 +++---
- drivers/mmc/host/meson-mx-sdio.c                  |   11 ---
- drivers/mmc/host/sdhci-msm.c                      |    2=20
- drivers/mmc/host/sdhci-pci-core.c                 |    3=20
- drivers/mmc/host/sdhci-xenon.c                    |   10 +++
- drivers/nvme/host/core.c                          |    2=20
- drivers/scsi/qla2xxx/qla_os.c                     |   35 +++++------
- drivers/target/target_core_iblock.c               |    2=20
- drivers/vfio/vfio_iommu_type1.c                   |    6 -
- fs/btrfs/block-group.c                            |   16 +++--
- fs/btrfs/relocation.c                             |    1=20
- fs/btrfs/transaction.c                            |   13 +++-
- fs/btrfs/tree-log.c                               |   43 ++++++++++++-
- fs/nfs/nfs3acl.c                                  |   22 ++++--
- fs/nfs/nfs4proc.c                                 |    8 ++
- fs/ocfs2/dlmfs/dlmfs.c                            |   27 +++-----
- fs/super.c                                        |    2=20
- include/linux/nfs_xdr.h                           |    2=20
- include/linux/sunrpc/clnt.h                       |    5 +
- include/uapi/linux/dma-buf.h                      |    6 +
- kernel/power/hibernate.c                          |    7 ++
- security/selinux/hooks.c                          |   70 ++++++++++++++---=
------
- sound/core/oss/pcm_plugin.c                       |   20 +++---
- sound/isa/opti9xx/miro.c                          |    9 +-
- sound/isa/opti9xx/opti92x-ad1848.c                |    9 +-
- sound/pci/hda/patch_hdmi.c                        |    4 -
- sound/pci/hda/patch_realtek.c                     |    1=20
- sound/usb/line6/podhd.c                           |   22 +-----
- sound/usb/quirks.c                                |    2=20
- 60 files changed, 426 insertions(+), 232 deletions(-)
-
-Adrian Hunter (1):
-      mmc: sdhci-pci: Fix eMMC driver strength for BYT-based controllers
-
-Aharon Landau (1):
-      RDMA/mlx5: Set GRH fields in query QP on RoCE
-
-Al Viro (1):
-      dlmfs_file_write(): fix the bogosity in handling non-zero *ppos
-
-Alaa Hleihel (1):
-      RDMA/mlx4: Initialize ib_spec on the stack
-
-Andreas Gruenbacher (1):
-      nfs: Fix potential posix_acl refcnt leak in nfs3_set_acl
-
-Andy Shevchenko (2):
-      dmaengine: dmatest: Fix iteration non-stop logic
-      dmaengine: dmatest: Fix process hang when reading 'wait' parameter
-
-Arnd Bergmann (1):
-      ALSA: opti9xx: shut up gcc-10 range warning
-
-Dan Carpenter (2):
-      i2c: amd-mp2-pci: Fix Oops in amd_mp2_pci_init() error handling
-      RDMA/cm: Fix an error check in cm_alloc_id_priv()
-
-Daniel Vetter (1):
-      dma-buf: Fix SET_NAME ioctl uapi
-
-David Disseldorp (1):
-      scsi: target/iblock: fix WRITE SAME zeroing
-
-David Howells (1):
-      Fix use after free in get_tree_bdev()
-
-Dexuan Cui (2):
-      Drivers: hv: vmbus: Fix Suspend-to-Idle for Generation-2 VM
-      PM: hibernate: Freeze kernel threads in software_resume()
-
-Douglas Anderson (1):
-      mmc: cqhci: Avoid false "cqhci: CQE stuck on" by not open-coding time=
-out loop
-
-Filipe Manana (1):
-      btrfs: fix partial loss of prealloc extent past i_size after fsync
-
-Gabriel Krisman Bertazi (1):
-      dm multipath: use updated MPATHF_QUEUE_IO on mapping for bio-based mp=
-ath
-
-Greg Kroah-Hartman (1):
-      Linux 5.4.39
-
-Hui Wang (1):
-      ALSA: hda/realtek - Two front mics on a Lenovo ThinkCenter
-
-Iuliana Prodan (1):
-      crypto: caam - fix the address of the last entry of S/G
-
-Jason Gunthorpe (2):
-      RDMA/siw: Fix potential siw_mem refcnt leak in siw_fastreg_mr()
-      RDMA/cm: Fix ordering of xa_alloc_cyclic() in ib_create_cm_id()
-
-Kai-Heng Feng (1):
-      PM: ACPI: Output correct message on target power state
-
-Leon Romanovsky (2):
-      RDMA/core: Prevent mixed use of FDs between shared ufiles
-      RDMA/core: Fix race between destroy and release FD object
-
-Marek Beh=FAn (1):
-      mmc: sdhci-xenon: fix annoying 1.8V regulator warning
-
-Martin Blumenstingl (2):
-      mmc: meson-mx-sdio: Set MMC_CAP_WAIT_WHILE_BUSY
-      mmc: meson-mx-sdio: remove the broken ->card_busy() op
-
-Martin Wilck (2):
-      scsi: qla2xxx: set UNLOADING before waiting for session deletion
-      scsi: qla2xxx: check UNLOADING before posting async work
-
-Mikulas Patocka (1):
-      dm writecache: fix data corruption when reloading the target
-
-Niklas Cassel (1):
-      nvme: prevent double free in nvme_alloc_ns() error handling
-
-Olga Kornievskaia (1):
-      NFSv4.1: fix handling of backchannel binding in BIND_CONN_TO_SESSION
-
-Paul Moore (1):
-      selinux: properly handle multiple messages in selinux_netlink_send()
-
-Qu Wenruo (1):
-      btrfs: transaction: Avoid deadlock due to bad initialization timing o=
-f fs_info::journal_info
-
-Rayagonda Kokatanur (1):
-      i2c: iproc: generate stop event for slave writes
-
-Rodrigo Siqueira (1):
-      drm/amd/display: Fix green screen issue after suspend
-
-Russell King (1):
-      ARM: dts: imx6qdl-sr-som-ti: indicate powering off wifi is safe
-
-Sean Christopherson (1):
-      vfio/type1: Fix VA->PA translation for PFNMAP VMAs in vaddr_get_pfn()
-
-Sudip Mukherjee (1):
-      IB/rdmavt: Always return ERR_PTR from rvt_create_mmap_info()
-
-Sunwook Eom (1):
-      dm verity fec: fix hash block number in verity_fec_decode
-
-Suravee Suthikulpanit (1):
-      iommu/amd: Fix legacy interrupt remapping for x2APIC-enabled system
-
-Takashi Iwai (2):
-      ALSA: usb-audio: Correct a typo of NuPrime DAC-10 USB ID
-      ALSA: pcm: oss: Place the plugin buffer overflow checks correctly
-
-Tang Bin (1):
-      iommu/qcom: Fix local_base status check
-
-Vasily Averin (3):
-      drm/qxl: qxl_release leak in qxl_draw_dirty_fb()
-      drm/qxl: qxl_release leak in qxl_hw_surface_alloc()
-      drm/qxl: qxl_release use after free
-
-Vasily Khoruzhick (1):
-      ALSA: line6: Fix POD HD500 audio playback
-
-Veerabhadrarao Badiganti (1):
-      mmc: sdhci-msm: Enable host capabilities pertains to R1b response
-
-Ville Syrj=E4l=E4 (1):
-      drm/edid: Fix off-by-one in DispID DTD pixel clock
-
-Vincenzo Frascino (1):
-      arm64: vdso: Add -fasynchronous-unwind-tables to cflags
-
-Wu Bo (1):
-      ALSA: hda/hdmi: fix without unlocked before return
-
-Xiyu Yang (2):
-      btrfs: fix transaction leak in btrfs_recover_relocation
-      btrfs: fix block group leak when removing fails
-
-Yan Zhao (1):
-      vfio: avoid possible overflow in vfio_iommu_type1_pin_pages
-
-ryan_chen (1):
-      i2c: aspeed: Avoid i2c interrupt status clear race condition.
-
-
---fUYQa+Pmc3FrFX/N
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEZH8oZUiU471FcZm+ONu9yGCSaT4FAl6ysZYACgkQONu9yGCS
-aT4Kcw/8DS9j1o9WAP4Le4+QGMdbbscUxelU8R+E8ngIM99qPBKqAml3whY85x3U
-ZjijgerFn6UW+1+hv4Ta2EdbZLWQOYylFJiezW3yun45quQ2Mh0VXL8exejCXBo9
-+PWEargH/SUkAs+8LXBdY0GXJqF8DboMq8iKnz+9fOeNGoe9YYErRaqxqh8Y/OOI
-2/BeanXBaaZib5fgZwoibp+qu8AKd4d9nU6yCLtrwV0EkaffrYp8TEU8QyBjRkSH
-qwfB8P9DOqPWFxs+KI2oEuDDxETMs0XDOD3NUy/wKMgW2+ONdQ7pIgpZPMDls4G5
-CUE8q2Ya7d+fd9jSR5pmtnFbkg+XYeihSXDvqw2lpSij+jJMzWIdpyo3TP0sW57T
-bkAIDDXCpsy/xaTdXLYuf8YJuOotsSVFbMNspQi9kUj1U6mQNKZmFEK1vJFz7LKp
-Yo3QRolrlWZYxlseuX9I9kIcntisInc4S+oy5AjYcoIXdJbZlAvx0PWjhZ69hoK/
-+hBoCzViRGNIi8C/BPtoVbt25DQtVfRpv5V+RrPeb5n61+U4t8ur0VlK+/D9RCRB
-uDmGTccaQ2SCKlfs8TmeuFiXVeC6pFv6qT4YNW9qwXcSdeOQ51f1oMpoA0z5LbAv
-jvbN32nSAufvXhDu1G3uQ5uodPD4GBcLbyE9ByNuvN5nnZoZMfs=
-=oXCd
------END PGP SIGNATURE-----
-
---fUYQa+Pmc3FrFX/N--
+Yours,
+Linus Walleij
