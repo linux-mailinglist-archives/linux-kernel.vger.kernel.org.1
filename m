@@ -2,95 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFF0D1C756F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:54:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21B591C757A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:56:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729829AbgEFPyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 11:54:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35252 "EHLO
+        id S1729862AbgEFP4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 11:56:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728991AbgEFPyy (ORCPT
+        with ESMTP id S1728991AbgEFP4y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 11:54:54 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C169CC061A0F;
-        Wed,  6 May 2020 08:54:54 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id a32so1094333pje.5;
-        Wed, 06 May 2020 08:54:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=oj5IPbhmqssdAfqNx5StxpYP2G7pyEkKBU7FcMWIgfM=;
-        b=kI1OL9TG/f/VjVz1rY/Omul7eFLv44yR2GlyC+qH8ZJEfvnoVW4l+5cCrIwUi0eC3E
-         tm5fLsqOWeOxCT9BTLgjfd+vwV5juYEG6ep1lmQRJLSLBtIHvakLQnWUCDdQzj+aOcJy
-         zadM5jF/N9AYw2YczAu773y1vJnwadukYOd5t51CydJ4p3/C45X8TFdUJhGWHlFFUsbX
-         I0VdRgyk82TJOLMbHe/2LlCX9Lfv68KoYr8Wra7fx+DQzzbAivDT1vmm3oBjvVS+nchs
-         xcsWP7jFs2BWLb+P5PxgwblYt/UU71hWo6A59dKYkrHbwI0wPqh5vhWNLyVV7lsZgxbm
-         uwNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=oj5IPbhmqssdAfqNx5StxpYP2G7pyEkKBU7FcMWIgfM=;
-        b=mnGILTIgeJu2HwQkuEeTb7HCtZ2PLbVmcihJAKZD3TEWmA7xVCwCr81AAHAiCXFoKx
-         QwaQue1TxMJPVo+MVqHUR39yIj11U4V+MgXSULV/2dfCfh2sVemt/0SElf2CJUj2kyam
-         sqiuouqJ0Qp6VRnY5CNDFjVA62kQGlbZ/CBM6T7d4hvpV71+Q4C99G7lamTYcq4sD/5M
-         DAujE4rIuQR+jY9ldjdVOIzCObAH3cYSXZnKj2+3vFXDLE92VuJgMG1RrzURWq9zY9yg
-         uqMVbFhaPfkR7SXIG3ywTmrdLcpeaYd+GGW5UAj/HggyJQaOAN6/9aXMdLLbIzwdt8Gd
-         jwgA==
-X-Gm-Message-State: AGi0PuZjKGFWy/kxH18YS1O0EjleDnDxTQDfNoAjGSHV9WsVSufV45Ro
-        Hj2Uov5fPSbrYxfNRaBIO6c=
-X-Google-Smtp-Source: APiQypIsJ165wI8qSWOP7w9JHOxs1R4H0GK0DDlrPg/3yM2r+hY5wFT6D2pp1pZUIuiV2g2TVs707w==
-X-Received: by 2002:a17:90a:35f0:: with SMTP id r103mr10529961pjb.167.1588780494358;
-        Wed, 06 May 2020 08:54:54 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id g14sm2199196pfh.49.2020.05.06.08.54.52
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 06 May 2020 08:54:53 -0700 (PDT)
-Date:   Wed, 6 May 2020 08:54:52 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Wolfram Sang <wsa@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, kernel@pengutronix.de,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org
-Subject: Re: [PATCH] hwmon: adt7411: update contact email
-Message-ID: <20200506155452.GA30343@roeck-us.net>
-References: <20200502142700.19254-1-wsa@kernel.org>
+        Wed, 6 May 2020 11:56:54 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C539C061A0F;
+        Wed,  6 May 2020 08:56:54 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id E30A9542;
+        Wed,  6 May 2020 17:56:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1588780613;
+        bh=JqP+SOCphmyvR7LY5kOsdyerYHIGqof5vTW6QMlbE0I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JSCJRr1YjHYhNJEGPipbcitzN44oikeZK4tjqwRcMKFUE4bUrDOMma8NIzvzBgk0S
+         5gJAR9gGYZ7ytOiUKewbJSais47zFkOxx0YnkZW8MXmf+cT8rRSO/PxqG9mwqEQD+v
+         AjYuBY3gGFlLCdse5mLMf21yRvmsRIJ/EgkXX6ME=
+Date:   Wed, 6 May 2020 18:56:47 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Sean Paul <seanpaul@chromium.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] drm/bridge: ti-sn65dsi86: Implement lane reordering +
+ polarity
+Message-ID: <20200506155647.GD15206@pendragon.ideasonboard.com>
+References: <20200504213624.1.Ibc8eeddcee94984a608d6900b46f9ffde4045da4@changeid>
+ <20200505082436.GD9658@pendragon.ideasonboard.com>
+ <CAD=FV=WjUpwu5204K8yHzqsJv4vQX5S5CArH1Kj_kqjhZzTc9A@mail.gmail.com>
+ <20200505210609.GA6094@pendragon.ideasonboard.com>
+ <CAD=FV=UnGOYh8JX2=fEAqPN7wqANc0QevTirNO-WUDYMPqXcrg@mail.gmail.com>
+ <20200505211401.GC6094@pendragon.ideasonboard.com>
+ <CAD=FV=WgRC-HViMxttF4VK+n48HNRuqAau8S7mgx6oSWsbZcgA@mail.gmail.com>
+ <CAD=FV=U8_Krob9oftJjzrYs1zrbLr9WZ-HSStv5_rbq9MpTChw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200502142700.19254-1-wsa@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAD=FV=U8_Krob9oftJjzrYs1zrbLr9WZ-HSStv5_rbq9MpTChw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 02, 2020 at 04:27:00PM +0200, Wolfram Sang wrote:
-> My 'pengutronix' address is defunct for years. Merge the entries and use
-> the proper contact address.
+Hi Doug,
+
+On Tue, May 05, 2020 at 05:18:48PM -0700, Doug Anderson wrote:
+> On Tue, May 5, 2020 at 2:24 PM Doug Anderson wrote:
+> > On Tue, May 5, 2020 at 2:14 PM Laurent Pinchart wrote:
+> > >
+> > > > I'll add this documentation into the comments of the yaml, but I'm not
+> > > > going to try to implement enforcement at the yaml level.
+> > >
+> > > Why not ? :-)
+> >
+> > Because trying to describe anything in the yaml bindings that doesn't
+> > fit in the exact pattern of things that the yaml bindings are designed
+> > to check is like constructing the empire state building with only
+> > toothpicks.
+> >
+> > If you want to suggest some syntax that would actually make this
+> > doable without blowing out the yaml bindings then I'm happy to add it.
+> > Me being naive would assume that we'd need to do an exhaustive list of
+> > the OK combinations.  That would be fine for the 1-land and 2-lane
+> > cases, but for 4 lanes that means adding 256 entries to the bindings.
+> >
+> > I think the correct way to do this would require adding code in the
+> > <https://github.com/devicetree-org/dt-schema> project but that's
+> > really only done for generic subsystem-level concepts and not for a
+> > single driver.
 > 
-> Signed-off-by: Wolfram Sang <wsa@kernel.org>
+> OK.  Looked at your review of the .yaml and the "uniqueItems" is
+> probably the bit I didn't think of.  With that I can limit this but
+> it's still a little awkward.  I still haven't figured out how to force
+> data-lanes and lane-polarities to have the same number of items, too.
+> I'll add this as an add-on patch to my v2 and folks can decide if they
+> like it or hate it.
 
-Applied.
+Thanks for looking into it. Looks good to me. Regarding the same number
+of items I would assume it should be possible, I would be surprised if
+the schemas allowed a different number of items for clocks and
+clock-names for instance, but maybe that's not implemented yet. In any
+case, no big deal.
 
-Thanks,
-Guenter
-
-> ---
->  drivers/hwmon/adt7411.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+> # See ../../media/video-interface.txt for details.
+> data-lanes:
+>   oneOf:
+>     - minItems: 1
+>       maxItems: 1
+>       uniqueItems: true
+>       items:
+>         enum:
+>           - 0
+>           - 1
+>       description:
+>         If you have 1 logical lane it can go to either physical
+>         port 0 or port 1.  Port 0 is suggested.
 > 
-> diff --git a/drivers/hwmon/adt7411.c b/drivers/hwmon/adt7411.c
-> index c7010b91bc13..5a839cc2ed1c 100644
-> --- a/drivers/hwmon/adt7411.c
-> +++ b/drivers/hwmon/adt7411.c
-> @@ -716,7 +716,6 @@ static struct i2c_driver adt7411_driver = {
->  
->  module_i2c_driver(adt7411_driver);
->  
-> -MODULE_AUTHOR("Sascha Hauer <s.hauer@pengutronix.de> and "
-> -	"Wolfram Sang <w.sang@pengutronix.de>");
-> +MODULE_AUTHOR("Sascha Hauer, Wolfram Sang <kernel@pengutronix.de>");
->  MODULE_DESCRIPTION("ADT7411 driver");
->  MODULE_LICENSE("GPL v2");
+>     - minItems: 2
+>       maxItems: 2
+>       uniqueItems: true
+>       items:
+>         enum:
+>           - 0
+>           - 1
+>       description:
+>         If you have 2 logical lanes they can be reordered on
+>         physical ports 0 and 1.
+> 
+>     - minItems: 4
+>       maxItems: 4
+>       uniqueItems: true
+>       items:
+>         enum:
+>           - 0
+>           - 1
+>           - 2
+>           - 3
+>       description:
+>         If you have 4 logical lanes they can be reordered on
+>         in any way.
+
+-- 
+Regards,
+
+Laurent Pinchart
