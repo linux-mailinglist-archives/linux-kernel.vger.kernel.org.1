@@ -2,62 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D2621C7437
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:22:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E85BB1C745A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:25:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729489AbgEFPVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 11:21:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729442AbgEFPVs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 11:21:48 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7CC1C061A41
-        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 08:21:48 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id f7so1132768pfa.9
-        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 08:21:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=KnDu3tZEBuDEdkah0E91muUvxOc37NwJBlrIsTXyDX4=;
-        b=SEOaL+ZTp6AU/8DsJmrVhdThhOeF+iFeYv4VY3pk/57OnoLmKbB6caoJgIgwJAfGS+
-         3F0kvKXV0zV8FWf5cpsy+Gco8hcIIxOJaeBJYQaj0Su0tQXMUxDF0I/1T3AGyIRM6teK
-         22CfJXAbVu596XkudelUD0YRb+ssyRiWUc7Sk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=KnDu3tZEBuDEdkah0E91muUvxOc37NwJBlrIsTXyDX4=;
-        b=lHstzrktiMDUJq3dOXC9O6bvmW6F67P8f0YdR7opcE1gMx2Lu/Qc4yt7lf8J/QxaiF
-         ykkaQQU/Y3EgkrD6cKyOfB+ubTNlYhvd0V/JH7IsI0oGYZcXwXkEo7a2e6zKAykCjuoR
-         avld0ia3xBX/5CwwuvSrK65FLKFzpEjx+gAK7mU7iXCQR7l2rrqcXe/U6z+SLILDI70z
-         /3CYIKjKerhixnHA91QSa73otmB907pnEk5xOROrg6JjsMpM5sMj+ry3t8Q78FyZlRFN
-         eoYiAMMEkx5eoyTjliyjr79uIHi/iWwfrSGt/MW6njXi8vFLWRgT/DOdzRf+9XbsGTKX
-         bdow==
-X-Gm-Message-State: AGi0PuYlzyWVdaSOG+r2Qe2SmAPiJLXy6ViCw0IQuf3dxCu/YoWuqcdX
-        KClDFnohsRDnZEdgFrWlOwiHmw==
-X-Google-Smtp-Source: APiQypIWSULl1oSen40Hk9tsVsH4QAL8lM3EbX1mpQ9nhUX5fAi4/jGssKYijSqyhBXKfx3iyjANtQ==
-X-Received: by 2002:aa7:808e:: with SMTP id v14mr8922923pff.168.1588778508246;
-        Wed, 06 May 2020 08:21:48 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id p1sm5360532pjf.15.2020.05.06.08.21.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 May 2020 08:21:45 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Luis Henriques <lhenriques@suse.com>
-Subject: [PATCH 05/10] pstore: Convert "records_list" locking to mutex
-Date:   Wed,  6 May 2020 08:21:09 -0700
-Message-Id: <20200506152114.50375-6-keescook@chromium.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200506152114.50375-1-keescook@chromium.org>
-References: <20200506152114.50375-1-keescook@chromium.org>
+        id S1729646AbgEFPXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 11:23:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38182 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729066AbgEFPXF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 11:23:05 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 61651214D8;
+        Wed,  6 May 2020 15:23:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588778584;
+        bh=xWb7Q9d/2MhE5zO1NY4W3a8Nv3VFPDPk99Mwi82bNRQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=HBjZdfu3v6UCkz8/imT29usHsw3agazG/mrLj0BEdQvSl8P9bhvgYzdCNkEaVQSsV
+         1lFXC+x4n/pPBmhKjJHQoZhAtIy46rniejwcJgN8ZJimnyAGROLl31xKwD/FCz2z3c
+         YGdQ3tO8FZ2zLb2uR+r8UYgli0M8CvDkxebn9iQU=
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+        Clark Williams <williams@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, Kajol Jain <kjain@linux.ibm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>, Jin Yao <yao.jin@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH 06/91] perf stat: Improve runtime stat for interval mode
+Date:   Wed,  6 May 2020 12:21:09 -0300
+Message-Id: <20200506152234.21977-7-acme@kernel.org>
+X-Mailer: git-send-email 2.21.1
+In-Reply-To: <20200506152234.21977-1-acme@kernel.org>
+References: <20200506152234.21977-1-acme@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -65,87 +49,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pstorefs internal list lock doesn't need to be a spinlock and will
-create problems when trying to access the list in the subsequent patch
-that will walk the pstorefs records during pstore_unregister(). Change
-this to a mutex to avoid may_sleep() warnings when unregistering devices.
+From: Jin Yao <yao.jin@linux.intel.com>
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
+For interval mode, the metric is printed after the '#' character if it
+exists. But it's not calculated by the counts generated in this
+interval.
+
+See the following examples:
+
+  root@kbl-ppc:~# perf stat -M CPI -I1000 --interval-count 2
+  #           time             counts unit events
+       1.000422803            764,809      inst_retired.any          #      2.9 CPI
+       1.000422803          2,234,932      cycles
+       2.001464585          1,960,061      inst_retired.any          #      1.6 CPI
+       2.001464585          4,022,591      cycles
+
+The second CPI should not be 1.6 (4,022,591/1,960,061 is 2.1)
+
+  root@kbl-ppc:~# perf stat -e cycles,instructions -I1000 --interval-count 2
+  #           time             counts unit events
+       1.000429493          2,869,311      cycles
+       1.000429493            816,875      instructions              #    0.28  insn per cycle
+       2.001516426          9,260,973      cycles
+       2.001516426          5,250,634      instructions              #    0.87  insn per cycle
+
+The second 'insn per cycle' should not be 0.87 (5,250,634/9,260,973 is
+0.57).
+
+The current code uses a global variable 'rt_stat' for tracking and
+updating the std dev of runtime stat. Unlike the counts, 'rt_stat' is not
+reset for interval. While the counts are reset for interval.
+
+  perf_stat_process_counter()
+  {
+          if (config->interval)
+                  init_stats(ps->res_stats);
+  }
+
+So for interval mode, the 'rt_stat' variable should be reset too.
+
+This patch resets 'rt_stat' before read_counters(), so the runtime stat
+is only calculated by the counts generated in this interval.
+
+With this patch:
+
+  root@kbl-ppc:~# perf stat -M CPI -I1000 --interval-count 2
+  #           time             counts unit events
+       1.000420924          2,408,818      inst_retired.any          #      2.1 CPI
+       1.000420924          5,010,111      cycles
+       2.001448579          2,798,407      inst_retired.any          #      1.6 CPI
+       2.001448579          4,599,861      cycles
+
+  root@kbl-ppc:~# perf stat -e cycles,instructions -I1000 --interval-count 2
+  #           time             counts unit events
+       1.000428555          2,769,714      cycles
+       1.000428555            774,462      instructions              #    0.28  insn per cycle
+       2.001471562          3,595,904      cycles
+       2.001471562          1,243,703      instructions              #    0.35  insn per cycle
+
+Now the second 'insn per cycle' and CPI are calculated by the counts
+generated in this interval.
+
+Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+Tested-By: Kajol Jain <kjain@linux.ibm.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Jin Yao <yao.jin@intel.com>
+Cc: Kan Liang <kan.liang@linux.intel.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Link: http://lore.kernel.org/lkml/20200420145417.6864-1-yao.jin@linux.intel.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- fs/pstore/inode.c | 17 +++++++----------
- 1 file changed, 7 insertions(+), 10 deletions(-)
+ tools/perf/Documentation/perf-stat.txt | 2 ++
+ tools/perf/builtin-stat.c              | 1 +
+ 2 files changed, 3 insertions(+)
 
-diff --git a/fs/pstore/inode.c b/fs/pstore/inode.c
-index 5cc09cb315f9..92ebcc75434f 100644
---- a/fs/pstore/inode.c
-+++ b/fs/pstore/inode.c
-@@ -22,14 +22,13 @@
- #include <linux/magic.h>
- #include <linux/pstore.h>
- #include <linux/slab.h>
--#include <linux/spinlock.h>
- #include <linux/uaccess.h>
+diff --git a/tools/perf/Documentation/perf-stat.txt b/tools/perf/Documentation/perf-stat.txt
+index 4d56586b2fb9..3fb5028aef08 100644
+--- a/tools/perf/Documentation/perf-stat.txt
++++ b/tools/perf/Documentation/perf-stat.txt
+@@ -176,6 +176,8 @@ Print count deltas every N milliseconds (minimum: 1ms)
+ The overhead percentage could be high in some cases, for instance with small, sub 100ms intervals.  Use with caution.
+ 	example: 'perf stat -I 1000 -e cycles -a sleep 5'
  
- #include "internal.h"
++If the metric exists, it is calculated by the counts generated in this interval and the metric is printed after #.
++
+ --interval-count times::
+ Print count deltas for fixed number of times.
+ This option should be used together with "-I" option.
+diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+index 9207b6c45475..3f050d85c277 100644
+--- a/tools/perf/builtin-stat.c
++++ b/tools/perf/builtin-stat.c
+@@ -359,6 +359,7 @@ static void process_interval(void)
+ 	clock_gettime(CLOCK_MONOTONIC, &ts);
+ 	diff_timespec(&rs, &ts, &ref_time);
  
- #define	PSTORE_NAMELEN	64
++	perf_stat__reset_shadow_per_stat(&rt_stat);
+ 	read_counters(&rs);
  
--static DEFINE_SPINLOCK(records_list_lock);
-+static DEFINE_MUTEX(records_list_lock);
- static LIST_HEAD(records_list);
- 
- struct pstore_private {
-@@ -192,13 +191,12 @@ static int pstore_unlink(struct inode *dir, struct dentry *dentry)
- static void pstore_evict_inode(struct inode *inode)
- {
- 	struct pstore_private	*p = inode->i_private;
--	unsigned long		flags;
- 
- 	clear_inode(inode);
- 	if (p) {
--		spin_lock_irqsave(&records_list_lock, flags);
-+		mutex_lock(&records_list_lock);
- 		list_del(&p->list);
--		spin_unlock_irqrestore(&records_list_lock, flags);
-+		mutex_unlock(&records_list_lock);
- 		free_pstore_private(p);
- 	}
- }
-@@ -297,12 +295,11 @@ int pstore_mkfile(struct dentry *root, struct pstore_record *record)
- 	int			rc = 0;
- 	char			name[PSTORE_NAMELEN];
- 	struct pstore_private	*private, *pos;
--	unsigned long		flags;
- 	size_t			size = record->size + record->ecc_notice_size;
- 
- 	WARN_ON(!inode_is_locked(d_inode(root)));
- 
--	spin_lock_irqsave(&records_list_lock, flags);
-+	mutex_lock(&records_list_lock);
- 	list_for_each_entry(pos, &records_list, list) {
- 		if (pos->record->type == record->type &&
- 		    pos->record->id == record->id &&
-@@ -311,7 +308,7 @@ int pstore_mkfile(struct dentry *root, struct pstore_record *record)
- 			break;
- 		}
- 	}
--	spin_unlock_irqrestore(&records_list_lock, flags);
-+	mutex_unlock(&records_list_lock);
- 	if (rc)
- 		return rc;
- 
-@@ -343,9 +340,9 @@ int pstore_mkfile(struct dentry *root, struct pstore_record *record)
- 
- 	d_add(dentry, inode);
- 
--	spin_lock_irqsave(&records_list_lock, flags);
-+	mutex_lock(&records_list_lock);
- 	list_add(&private->list, &records_list);
--	spin_unlock_irqrestore(&records_list_lock, flags);
-+	mutex_unlock(&records_list_lock);
- 
- 	return 0;
- 
+ 	if (STAT_RECORD) {
 -- 
-2.20.1
+2.21.1
 
