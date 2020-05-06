@@ -2,171 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F0E31C68FA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 08:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DF091C72BB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 16:24:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728073AbgEFGcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 02:32:36 -0400
-Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:4377 "EHLO
-        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725782AbgEFGcg (ORCPT
+        id S1729011AbgEFOYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 10:24:44 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:45679 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728947AbgEFOYo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 02:32:36 -0400
-Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
- EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
- 15.0.1156.6; Tue, 5 May 2020 23:32:29 -0700
-Received: from localhost.localdomain (ashwinh-vm-1.vmware.com [10.110.19.225])
-        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id 7F1E0400A2;
-        Tue,  5 May 2020 23:32:29 -0700 (PDT)
-From:   ashwin-h <ashwinh@vmware.com>
-To:     <vyasevich@gmail.com>, <nhorman@tuxdriver.com>
-CC:     <davem@davemloft.net>, <linux-sctp@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <srivatsab@vmware.com>, <srivatsa@csail.mit.edu>,
-        <rostedt@goodmis.org>, <srostedt@vmware.com>,
-        <gregkh@linuxfoundation.org>, <ashwin.hiranniah@gmail.com>,
-        Xin Long <lucien.xin@gmail.com>, Ashwin H <ashwinh@vmware.com>
-Subject: [PATCH 2/2] sctp: implement memory accounting on rx path
-Date:   Wed, 6 May 2020 19:50:54 +0530
-Message-ID: <b2d9886afc672b4120f101eeb9217e68abb61471.1588242081.git.ashwinh@vmware.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1588242081.git.ashwinh@vmware.com>
-References: <cover.1588242081.git.ashwinh@vmware.com>
+        Wed, 6 May 2020 10:24:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588775082;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dbddwc8AWoCH822EokkiRcp0XFOdJXpCOboNl38sqMs=;
+        b=ACHaDpy3T+8vAeh8aoJigXXeFPOf9C4HwA/U5jqHOKpbI6hZEFqZh3pVyMtZ0zLTGkJbE1
+        tBgTpG6hPgN7FRvJGPe1fHd6xT8qSvFW+rzk2gr9YuwBKK9W0hl/YXkvRNFgyli78q4Dly
+        eQ04N0YhT7FJfN+aoiDkfRESNnLn0MU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-308-7dSlh3iYM9GY009Ms9gsRQ-1; Wed, 06 May 2020 10:24:39 -0400
+X-MC-Unique: 7dSlh3iYM9GY009Ms9gsRQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E1CE281CBE1;
+        Wed,  6 May 2020 14:24:36 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-225.rdu2.redhat.com [10.10.118.225])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2557E6299C;
+        Wed,  6 May 2020 14:24:32 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20200506110942.GL16070@bombadil.infradead.org>
+References: <20200506110942.GL16070@bombadil.infradead.org> <20200505115946.GF16070@bombadil.infradead.org> <158861203563.340223.7585359869938129395.stgit@warthog.procyon.org.uk> <158861253957.340223.7465334678444521655.stgit@warthog.procyon.org.uk> <683739.1588751878@warthog.procyon.org.uk>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     dhowells@redhat.com, Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Jeff Layton <jlayton@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 54/61] afs: Wait on PG_fscache before modifying/releasing a page
 MIME-Version: 1.0
-Content-Type: text/plain
-Received-SPF: None (EX13-EDG-OU-002.vmware.com: ashwinh@vmware.com does not
- designate permitted sender hosts)
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <713140.1588775072.1@warthog.procyon.org.uk>
+Date:   Wed, 06 May 2020 15:24:32 +0100
+Message-ID: <713141.1588775072@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+Matthew Wilcox <willy@infradead.org> wrote:
 
-commit 9dde27de3e5efa0d032f3c891a0ca833a0d31911 upstream.
+> > Won't that screw up ITER_MAPPING?  Does that mean that ITER_MAPPING isn't
+> > viable?
+> 
+> Can you remind me why ITER_MAPPING needs:
+> 
+> "The caller must guarantee that the pages are all present and they must be
+> locked using PG_locked, PG_writeback or PG_fscache to prevent them from
+> going away or being migrated whilst they're being accessed."
+> 
+> An elevated refcount prevents migration, and it also prevents the pages
+> from being freed.  It doesn't prevent them from being truncated out of
+> the file, but it does ensure the pages aren't reallocated.
 
-sk_forward_alloc's updating is also done on rx path, but to be consistent
-we change to use sk_mem_charge() in sctp_skb_set_owner_r().
+ITER_MAPPING relies on the mapping to maintain the pointers to the pages so
+that it can find them rather than being like ITER_BVEC where there's a
+separate list.
 
-In sctp_eat_data(), it's not enough to check sctp_memory_pressure only,
-which doesn't work for mem_cgroup_sockets_enabled, so we change to use
-sk_under_memory_pressure().
+Truncate removes the pages from the mapping - at which point ITER_MAPPING can
+no longer find them.
 
-When it's under memory pressure, sk_mem_reclaim() and sk_rmem_schedule()
-should be called on both RENEGE or CHUNK DELIVERY path exit the memory
-pressure status as soon as possible.
-
-Note that sk_rmem_schedule() is using datalen to make things easy there.
-
-Reported-by: Matteo Croce <mcroce@redhat.com>
-Tested-by: Matteo Croce <mcroce@redhat.com>
-Acked-by: Neil Horman <nhorman@tuxdriver.com>
-Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Ashwin H <ashwinh@vmware.com>
----
- include/net/sctp/sctp.h |  2 +-
- net/sctp/sm_statefuns.c |  6 ++++--
- net/sctp/ulpevent.c     | 19 ++++++++-----------
- net/sctp/ulpqueue.c     |  3 ++-
- 4 files changed, 15 insertions(+), 15 deletions(-)
-
-diff --git a/include/net/sctp/sctp.h b/include/net/sctp/sctp.h
-index 2c6570e..fef8c33 100644
---- a/include/net/sctp/sctp.h
-+++ b/include/net/sctp/sctp.h
-@@ -421,7 +421,7 @@ static inline void sctp_skb_set_owner_r(struct sk_buff *skb, struct sock *sk)
- 	/*
- 	 * This mimics the behavior of skb_set_owner_r
- 	 */
--	sk->sk_forward_alloc -= event->rmem_len;
-+	sk_mem_charge(sk, event->rmem_len);
- }
- 
- /* Tests if the list has one and only one entry. */
-diff --git a/net/sctp/sm_statefuns.c b/net/sctp/sm_statefuns.c
-index 9f4d325..93cbf88 100644
---- a/net/sctp/sm_statefuns.c
-+++ b/net/sctp/sm_statefuns.c
-@@ -6444,13 +6444,15 @@ static int sctp_eat_data(const struct sctp_association *asoc,
- 	 * in sctp_ulpevent_make_rcvmsg will drop the frame if we grow our
- 	 * memory usage too much
- 	 */
--	if (*sk->sk_prot_creator->memory_pressure) {
-+	if (sk_under_memory_pressure(sk)) {
- 		if (sctp_tsnmap_has_gap(map) &&
- 		    (sctp_tsnmap_get_ctsn(map) + 1) == tsn) {
- 			pr_debug("%s: under pressure, reneging for tsn:%u\n",
- 				 __func__, tsn);
- 			deliver = SCTP_CMD_RENEGE;
--		 }
-+		} else {
-+			sk_mem_reclaim(sk);
-+		}
- 	}
- 
- 	/*
-diff --git a/net/sctp/ulpevent.c b/net/sctp/ulpevent.c
-index 8cb7d98..c2a7478 100644
---- a/net/sctp/ulpevent.c
-+++ b/net/sctp/ulpevent.c
-@@ -634,8 +634,9 @@ struct sctp_ulpevent *sctp_ulpevent_make_rcvmsg(struct sctp_association *asoc,
- 						gfp_t gfp)
- {
- 	struct sctp_ulpevent *event = NULL;
--	struct sk_buff *skb;
--	size_t padding, len;
-+	struct sk_buff *skb = chunk->skb;
-+	struct sock *sk = asoc->base.sk;
-+	size_t padding, datalen;
- 	int rx_count;
- 
- 	/*
-@@ -646,15 +647,12 @@ struct sctp_ulpevent *sctp_ulpevent_make_rcvmsg(struct sctp_association *asoc,
- 	if (asoc->ep->rcvbuf_policy)
- 		rx_count = atomic_read(&asoc->rmem_alloc);
- 	else
--		rx_count = atomic_read(&asoc->base.sk->sk_rmem_alloc);
-+		rx_count = atomic_read(&sk->sk_rmem_alloc);
- 
--	if (rx_count >= asoc->base.sk->sk_rcvbuf) {
-+	datalen = ntohs(chunk->chunk_hdr->length);
- 
--		if ((asoc->base.sk->sk_userlocks & SOCK_RCVBUF_LOCK) ||
--		    (!sk_rmem_schedule(asoc->base.sk, chunk->skb,
--				       chunk->skb->truesize)))
--			goto fail;
--	}
-+	if (rx_count >= sk->sk_rcvbuf || !sk_rmem_schedule(sk, skb, datalen))
-+		goto fail;
- 
- 	/* Clone the original skb, sharing the data.  */
- 	skb = skb_clone(chunk->skb, gfp);
-@@ -681,8 +679,7 @@ struct sctp_ulpevent *sctp_ulpevent_make_rcvmsg(struct sctp_association *asoc,
- 	 * The sender should never pad with more than 3 bytes.  The receiver
- 	 * MUST ignore the padding bytes.
- 	 */
--	len = ntohs(chunk->chunk_hdr->length);
--	padding = SCTP_PAD4(len) - len;
-+	padding = SCTP_PAD4(datalen) - datalen;
- 
- 	/* Fixup cloned skb with just this chunks data.  */
- 	skb_trim(skb, chunk->chunk_end - padding - skb->data);
-diff --git a/net/sctp/ulpqueue.c b/net/sctp/ulpqueue.c
-index 0b42710..7de9be3 100644
---- a/net/sctp/ulpqueue.c
-+++ b/net/sctp/ulpqueue.c
-@@ -1106,7 +1106,8 @@ void sctp_ulpq_renege(struct sctp_ulpq *ulpq, struct sctp_chunk *chunk,
- 			freed += sctp_ulpq_renege_frags(ulpq, needed - freed);
- 	}
- 	/* If able to free enough room, accept this chunk. */
--	if (freed >= needed) {
-+	if (sk_rmem_schedule(asoc->base.sk, chunk->skb, needed) &&
-+	    freed >= needed) {
- 		int retval = sctp_ulpq_tail_data(ulpq, chunk, gfp);
- 		/*
- 		 * Enter partial delivery if chunk has not been
--- 
-2.7.4
+David
 
