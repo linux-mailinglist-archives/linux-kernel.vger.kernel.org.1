@@ -2,90 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48E781C7352
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 16:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2244F1C733D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 16:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729212AbgEFOwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 10:52:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53698 "EHLO
+        id S1729167AbgEFOqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 10:46:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729148AbgEFOwu (ORCPT
+        with ESMTP id S1728712AbgEFOqy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 10:52:50 -0400
-X-Greylist: delayed 404 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 06 May 2020 07:52:50 PDT
-Received: from antares.kleine-koenig.org (antares.kleine-koenig.org [IPv6:2a01:4f8:c0c:3a97::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97D52C061A0F
-        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 07:52:50 -0700 (PDT)
-Received: by antares.kleine-koenig.org (Postfix, from userid 1000)
-        id 0FEC0976579; Wed,  6 May 2020 16:46:03 +0200 (CEST)
-Date:   Wed, 6 May 2020 16:46:02 +0200
-From:   Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <uwe@kleine-koenig.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     rafael.j.wysocki@intel.com, jroedel@suse.de, tglx@linutronix.de,
-        x86@kernel.org
-Subject: Failure to shutdown/reboot with intel_iommu=on
-Message-ID: <20200506144558.GA4019@taurus.defre.kleine-koenig.org>
+        Wed, 6 May 2020 10:46:54 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BF2BC061A0F
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 07:46:54 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id z17so1553232oto.4
+        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 07:46:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=o3F+DLGNtLRj4YOMWT2oFX2YAo4Us11+uegbWGPGt2Q=;
+        b=usD4QQNjpMxIAnHFM0L1oDYKTavN3mOhnpDw2CvZFL03GQ8nrAmCS7Y/2K6cL9CjOD
+         3sasUiqheTwPHVsm3vgDzVijA/kClx5HVzEGDLt5ziQAOXmukLjxZJIYktSttdDH5SgQ
+         2lXjeh8e73qP93ufvvo5t2sU/9ISlnLI9E2mxysanX25SCh41AW1gC0OJWoagypAKX8I
+         zNKCVmROn1sZmRyIApSuQamPyYOd4dLdAooXfGn7cJvJnpMW0fhxxG/94x6TrpaOJn7y
+         yJ/2ptbDPTQXojGgtPTgQVHiYvRzc8K9MZpry6jxKjT2EZiB482qaOrZbMk2YLwb3ahN
+         LOpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=o3F+DLGNtLRj4YOMWT2oFX2YAo4Us11+uegbWGPGt2Q=;
+        b=dYUzJ3Sxb5+vBUVCmS770KQHdjlIcZII3N83ShuWnb6Qzue2CJUSa+jvappI/dTEET
+         2T3tabSMP2ssBuiZpqOjJxGGnDYuedBpKA2LX+esXg5RjvH+tOI3vIjQ7DRTE7fwk0Ww
+         8R8M/em7F6rcjgkygBQuvPRi40y4NJ6MQ91kIW+cc7Ml2tU5utx/+xrg6ErcU/FLQbgd
+         vPDEqn1/gfUwvv0NcxpeXtl7hzsnbJhBTFNSj3LX3ug/lry4ZxTqZ6D7kl3x5Z8R3MI5
+         d38+i36SXa8xNtyR2k7vOOhv1qgb0GTiZhsXP63AOitoi6yPK0n2l5N3p1P6Vchg2P5S
+         zMvA==
+X-Gm-Message-State: AGi0PuadHuJBdhatHNyg1pXVKBFlodAfmBbWuZ78x20QsZqIMSP/gzYK
+        kKO3bBrlicpkMgRhySeUn+YLsUSKj+0DIOWUzrw=
+X-Google-Smtp-Source: APiQypLhJZzJdemTPljyt2Pc9iMfUxt+/t5yrMeZLPhmAAEMM5vZJL4yR5gApBKgWtEicOR97drSK5UU1WeUusvjTio=
+X-Received: by 2002:a9d:355:: with SMTP id 79mr6336463otv.275.1588776413921;
+ Wed, 06 May 2020 07:46:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="RnlQjJ0d97Da+TV1"
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+From:   =?UTF-8?B?5Lq/5LiA?= <teroincn@gmail.com>
+Date:   Wed, 6 May 2020 22:46:42 +0800
+Message-ID: <CANTwqXAwbiGwd3-6ShQw-kvnwNPk6Ev2Sc1yMTVH4+1=mxRQsA@mail.gmail.com>
+Subject: [BUG]is there a refcount leak in function mei_me_cl_rm_by_uuid?
+To:     tomas.winkler@intel.com
+Cc:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+HI, all
+When reviewing function mei_me_cl_rm_by_uuid=EF=BC=8C I notice that functio=
+n
+__mei_me_cl_by_uuid increases me_cl refcount
+and function _mei_me_cl_del delete a list node with decrement me_cl
+refcount , actually here cause a refcount leak as we haven't release
+the refcount
+by __mei_me_cl_by_uuid  ?
+similar issue happens in mei_me_cl_rm_by_uuid_id too.
 
---RnlQjJ0d97Da+TV1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+void mei_me_cl_rm_by_uuid(struct mei_device *dev, const uuid_le *uuid)
+{
+    struct mei_me_client *me_cl;
 
-Hello,
+    dev_dbg(dev->dev, "remove %pUl\n", uuid);
 
-On my Lenovo T460p I cannot shutdown and reboot when the iommu is
-enabled. This is using linux 5.2.7 as provided by Debian, 5.6.4 has the
-same problem. Suspend/resume also fails; I suspect this is the same
-issue.
+    down_write(&dev->me_clients_rwsem);
+    me_cl =3D __mei_me_cl_by_uuid(dev, uuid); /* increase a refcount */
+    __mei_me_cl_del(dev, me_cl); /* release the refcount with a list
+node deteled */
+    up_write(&dev->me_clients_rwsem);
+}
 
-When requesting power off the kernel messages just end with:
+Best regards,
 
-	sd 0:0:0:0: [sda] Synchronizing SCSI cache
-	sd 0:0:0:0: [sda] Stopping disk
-	e1000e: EEE TX LPI TIMER: 00000011
-	ACPI: Preparing to enter system sleep state S5
-	reboot: Power down
-	acpi_power_off called
-
-(photo at https://www.kleine-koenig.org/tmp/uklsiommu.jpg in case I
-mistyped something. Full dmesg and lspci -vvv at
-https://www.kleine-koenig.org/tmp/uklsiommu.tar.gz with and without
-iommu enabled.)
-
-With the iommu disabled (CONFIG_INTEL_IOMMU_DEFAULT_ON unset or
-intel_iommu=off on cmdline) the machine just works as expected
-(including working suspend/resume).
-
-I already talked to tglx on irc but unfortunately no new insights
-resulted from that.
-
-Any ideas how to fix or continue debugging the issue?
-
-Best regards
-Uwe
-
---RnlQjJ0d97Da+TV1
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl6yzaMACgkQwfwUeK3K
-7AlMdwf5Afr+w0Br3FyVlVy4pC4aUnHefouBHZNIol0+Hm5hb7VVMhoFw34+lR9E
-0PHaJD3e39LaNgGDmk+E+zl1hR9Agdc1n0/DzQ5lR3W7N6Eh7b8XCNKt2lJFCq4n
-GgGi7k7E8OOOZGJ+mcq+GY6olEa7XX1N1WVC7YSLONvAKbir8ZdBJfiFWBFTa7T7
-bR8WPemukFFF5SPcWMnWRQiAA3GTIN4ywxu0gyZgbY2/TbLI5GxiYRnbhn+Ua6L1
-uorkIbFMDfpznWC0tMlzQoqw2DmUMVLV36cf9I/jlBjkyGr4MNXa4BfsmT7iP39G
-tIVJaVmeE5w5B7Wand11hT6XvsXWGQ==
-=Uf1G
------END PGP SIGNATURE-----
-
---RnlQjJ0d97Da+TV1--
+Lin Yi.
