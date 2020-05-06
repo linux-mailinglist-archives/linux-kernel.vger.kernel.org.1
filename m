@@ -2,100 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 424E31C7D22
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 00:17:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 766FF1C7D2A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 00:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730214AbgEFWRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 18:17:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730133AbgEFWRP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 18:17:15 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96552C061A0F
-        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 15:17:13 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id h9so4028323wrt.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 15:17:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0MFeWzPc1RUZtMsyR+QF2WWvfCyhWcmegLUYlhF9UuM=;
-        b=JaFQGRB8TMety2Bpfl3x2Tww4yDno+k5vXFpcIGmmEwgw0PHZIuvG2a85Vs71Sfjt2
-         zChciYcyifEARUUlEOlqF4kUuBrfTcx0uvVh9zmIDd8qawpW46L1qLcPkjybPHT4ttCc
-         QVU7mcHUl/EXmPYSvjpzlb/FMQ9Q+Rlji8mNY+/HzIW91xBGRpAiFJn6Uw2jBMVJtdvR
-         scJNxd82CB2/Zx/dLCtXEl3Wpu4xNKAbY3Mby9XqKEf+ag8b7+INndGBnAZqOPKlnNfJ
-         x/9PXQ/EtDYsSYd2WPicz/HC/yX2OXROe5/PjjKDJbkflA9hsti9adA7ZxIXmoIFqugf
-         AtyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0MFeWzPc1RUZtMsyR+QF2WWvfCyhWcmegLUYlhF9UuM=;
-        b=sY9FPSFQfaYHfCS055AsKP89QZSVWg/2YximgID4Z8cM9Ua1jEO+Xyl4W57gNpGLw5
-         pEGqYt0fznjBtDt3CPP5kx/eF0fNVXv4qEQDbaPgVz1O68gGVEzuYmXjuAP8EA22jCP4
-         FQO2NxLXYbnWkxdb/kTnXxO9GH2vvSvhHj0GXGK4kGbykGgGibWxxc4cvpF94myjl6ws
-         lTiaY0MUE8cIuDjxI9EtS/7gj7b5Y7ouGU2AxkEJmFsiQ2GD/WfCViTKIan0N9JIzbbz
-         izMyeQmIlZCCeWjs0A5qLWSRcXgG5D9IDYcnO3nyHaLj8tJuPwQ2DzBnl5hz2X3OPhbj
-         fhNA==
-X-Gm-Message-State: AGi0PuaLVy7yAHhpVjHd5HnOrHXuNJhoL5S88vEmuJhVorvtOZ4E8/Wy
-        90/3YG0J7AFp0yeLfV7okTB24A==
-X-Google-Smtp-Source: APiQypLiZViN47s9MAPYRjk6QeZwCIgZBt9QugEWVSMLxczjeK4W2LTz5D+BLFR6byBDFaOO0xCSOA==
-X-Received: by 2002:a5d:550c:: with SMTP id b12mr11132976wrv.152.1588803432274;
-        Wed, 06 May 2020 15:17:12 -0700 (PDT)
-Received: from starbuck.lan (cag06-3-82-243-161-21.fbx.proxad.net. [82.243.161.21])
-        by smtp.googlemail.com with ESMTPSA id f5sm4760671wrp.70.2020.05.06.15.17.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 May 2020 15:17:11 -0700 (PDT)
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Kevin Hilman <khilman@baylibre.com>
-Cc:     Jerome Brunet <jbrunet@baylibre.com>,
-        linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 7/7] arm64: dts: meson: g12: add internal DAC glue
-Date:   Thu,  7 May 2020 00:16:56 +0200
-Message-Id: <20200506221656.477379-8-jbrunet@baylibre.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20200506221656.477379-1-jbrunet@baylibre.com>
-References: <20200506221656.477379-1-jbrunet@baylibre.com>
-MIME-Version: 1.0
-X-Patchwork-Bot: notify
+        id S1730301AbgEFWSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 18:18:35 -0400
+Received: from gate.crashing.org ([63.228.1.57]:41528 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729114AbgEFWSf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 18:18:35 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 046MI3xQ029691;
+        Wed, 6 May 2020 17:18:03 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 046MI1Hs029690;
+        Wed, 6 May 2020 17:18:01 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Wed, 6 May 2020 17:18:01 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, npiggin@gmail.com,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v4 1/2] powerpc/uaccess: Implement unsafe_put_user() using 'asm goto'
+Message-ID: <20200506221801.GW31009@gate.crashing.org>
+References: <23e680624680a9a5405f4b88740d2596d4b17c26.1587143308.git.christophe.leroy@c-s.fr> <87sggecv81.fsf@mpe.ellerman.id.au> <20200505153245.GN31009@gate.crashing.org> <87pnbhdgkw.fsf@mpe.ellerman.id.au> <20200506175849.GT31009@gate.crashing.org> <bd336b0f-9cf7-e2ce-e0a8-1891599638d1@csgroup.eu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <bd336b0f-9cf7-e2ce-e0a8-1891599638d1@csgroup.eu>
+User-Agent: Mutt/1.4.2.3i
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-add the internal DAC glue support on the g12 and sm1 family
-This glue connects the different TDM interfaces of the SoC to
-the internal audio DAC codec.
+On Wed, May 06, 2020 at 08:10:57PM +0200, Christophe Leroy wrote:
+> Le 06/05/2020 à 19:58, Segher Boessenkool a écrit :
+> >>  #define __put_user_asm_goto(x, addr, label, op)			\
+> >>  	asm volatile goto(					\
+> >>-		"1:	" op "%U1%X1 %0,%1	# put_user\n"	\
+> >>+		"1:	" op "%X1 %0,%1	# put_user\n"		\
+> >>  		EX_TABLE(1b, %l2)				\
+> >>  		:						\
+> >>-		: "r" (x), "m<>" (*addr)				\
+> >>+		: "r" (x), "m" (*addr)				\
+> >>  		:						\
+> >>  		: label)
+> >
+> >Like that.  But you will have to do that to *all* places we use the "<>"
+> >constraints, or wait for more stuff to fail?  And, there probably are
+> >places we *do* want update form insns used (they do help in some loops,
+> >for example)?
+> >
+> 
+> AFAICT, git grep "m<>" provides no result.
 
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
----
- arch/arm64/boot/dts/amlogic/meson-g12.dtsi | 9 +++++++++
- 1 file changed, 9 insertions(+)
+Ah, okay.
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-g12.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12.dtsi
-index 55d39020ec72..0d14409f509c 100644
---- a/arch/arm64/boot/dts/amlogic/meson-g12.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-g12.dtsi
-@@ -343,6 +343,15 @@ spdifout_b: audio-controller@680 {
- 			status = "disabled";
- 		};
- 
-+		toacodec: audio-controller@740 {
-+			compatible = "amlogic,g12a-toacodec";
-+			reg = <0x0 0x740 0x0 0x4>;
-+			#sound-dai-cells = <1>;
-+			sound-name-prefix = "TOACODEC";
-+			resets = <&clkc_audio AUD_RESET_TOACODEC>;
-+			status = "disabled";
-+		};
-+
- 		tohdmitx: audio-controller@744 {
- 			compatible = "amlogic,g12a-tohdmitx";
- 			reg = <0x0 0x744 0x0 0x4>;
--- 
-2.25.4
+> However many places have %Ux:
 
+<snip>
+
+Yes, all of those are from when "m" still meant what "m<>" is now.  For
+seeing how many update form insns can be generated (and how much that
+matters), these all should be fixed, at a minimum.
+
+
+Segher
