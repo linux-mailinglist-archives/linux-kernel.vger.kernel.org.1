@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13B951C749F
+	by mail.lfdr.de (Postfix) with ESMTP id 812011C74A0
 	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:26:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730227AbgEFP0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 11:26:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49338 "EHLO mail.kernel.org"
+        id S1730235AbgEFP0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 11:26:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49470 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730216AbgEFP0q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 11:26:46 -0400
+        id S1730226AbgEFP0s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 11:26:48 -0400
 Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 323E621775;
-        Wed,  6 May 2020 15:26:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B01A820B1F;
+        Wed,  6 May 2020 15:26:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588778805;
-        bh=VUqJGWfnZIEcj7uXe3qha10yBeFTZsKI9VaYHJPuTfs=;
+        s=default; t=1588778807;
+        bh=AK/VLemd1eskSAJfW+4TfMX+81FNMkJfinwfc7GGUcE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G4+grWfobDwxYa2oVYG4PgwF1JbppcJqQ/Z8/NJjyoEMWMsYmcWm4erUpYOiT+enV
-         DJm4G/XCxawBCj5OXyzDrKdPlYeOmIVE3HJDdcUQxzT0Jmdu/CIkRzMKuaB3R0N8nH
-         CJ93mTKDK7mp3puXZEYjcuj4x+3CpPMPEF8/U+IQ=
+        b=1MTytERbAk2rrkOUCiyIX/+f2B+tzNgFgyEjVWUN3FDFfxJDz0S6zV9Y9LPYD7CqN
+         D/OubuYM66AluNEFZGq6X7JtTVVj+0XMpEnJwlUUwbGLZrQRPwW5tSDgL+ZDUclxOz
+         S28vxlyo9PtIljy40wEbBzRNLWFJoKdgW4rh1HtM=
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
 To:     Ingo Molnar <mingo@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>
@@ -31,9 +31,9 @@ Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
         linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         Adrian Hunter <adrian.hunter@intel.com>
-Subject: [PATCH 70/91] perf evsel: Rename perf_evsel__parse_sample*() to evsel__parse_sample*()
-Date:   Wed,  6 May 2020 12:22:13 -0300
-Message-Id: <20200506152234.21977-71-acme@kernel.org>
+Subject: [PATCH 71/91] perf evsel: Rename perf_evsel__{prev,next}() to evsel__{prev,next}()
+Date:   Wed,  6 May 2020 12:22:14 -0300
+Message-Id: <20200506152234.21977-72-acme@kernel.org>
 X-Mailer: git-send-email 2.21.1
 In-Reply-To: <20200506152234.21977-1-acme@kernel.org>
 References: <20200506152234.21977-1-acme@kernel.org>
@@ -46,7 +46,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-As these are 'struct evsel' methods, not part of tools/lib/perf/, aka
+As those are 'struct evsel' methods, not part of tools/lib/perf/, aka
 libperf, to whom the perf_ prefix belongs.
 
 Cc: Adrian Hunter <adrian.hunter@intel.com>
@@ -54,162 +54,315 @@ Cc: Jiri Olsa <jolsa@kernel.org>
 Cc: Namhyung Kim <namhyung@kernel.org>
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/perf/arch/x86/tests/perf-time-to-tsc.c | 6 ++----
- tools/perf/builtin-inject.c                  | 2 +-
- tools/perf/tests/openat-syscall-tp-fields.c  | 2 +-
- tools/perf/tests/sample-parsing.c            | 4 ++--
- tools/perf/util/evlist.c                     | 4 ++--
- tools/perf/util/evsel.c                      | 9 ++++-----
- tools/perf/util/evsel.h                      | 9 ++++-----
- tools/perf/util/python.c                     | 2 +-
- 8 files changed, 17 insertions(+), 21 deletions(-)
+ tools/perf/tests/evsel-roundtrip-name.c |  2 +-
+ tools/perf/tests/parse-events.c         | 52 ++++++++++++-------------
+ tools/perf/ui/browsers/hists.c          |  4 +-
+ tools/perf/util/evsel.h                 |  4 +-
+ tools/perf/util/sort.c                  |  2 +-
+ 5 files changed, 32 insertions(+), 32 deletions(-)
 
-diff --git a/tools/perf/arch/x86/tests/perf-time-to-tsc.c b/tools/perf/arch/x86/tests/perf-time-to-tsc.c
-index 909ead08a6f6..026d32ed078e 100644
---- a/tools/perf/arch/x86/tests/perf-time-to-tsc.c
-+++ b/tools/perf/arch/x86/tests/perf-time-to-tsc.c
-@@ -130,13 +130,11 @@ int test__perf_time_to_tsc(struct test *test __maybe_unused, int subtest __maybe
- 				goto next_event;
- 
- 			if (strcmp(event->comm.comm, comm1) == 0) {
--				CHECK__(perf_evsel__parse_sample(evsel, event,
--								 &sample));
-+				CHECK__(evsel__parse_sample(evsel, event, &sample));
- 				comm1_time = sample.time;
- 			}
- 			if (strcmp(event->comm.comm, comm2) == 0) {
--				CHECK__(perf_evsel__parse_sample(evsel, event,
--								 &sample));
-+				CHECK__(evsel__parse_sample(evsel, event, &sample));
- 				comm2_time = sample.time;
- 			}
- next_event:
-diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
-index 842e940523b7..aad007bfb581 100644
---- a/tools/perf/builtin-inject.c
-+++ b/tools/perf/builtin-inject.c
-@@ -546,7 +546,7 @@ static int perf_inject__sched_stat(struct perf_tool *tool,
- 	return 0;
- found:
- 	event_sw = &ent->event[0];
--	perf_evsel__parse_sample(evsel, event_sw, &sample_sw);
-+	evsel__parse_sample(evsel, event_sw, &sample_sw);
- 
- 	sample_sw.period = sample->period;
- 	sample_sw.time	 = sample->time;
-diff --git a/tools/perf/tests/openat-syscall-tp-fields.c b/tools/perf/tests/openat-syscall-tp-fields.c
-index 6d026e8a7fa6..1dc2897d2df9 100644
---- a/tools/perf/tests/openat-syscall-tp-fields.c
-+++ b/tools/perf/tests/openat-syscall-tp-fields.c
-@@ -108,7 +108,7 @@ int test__syscall_openat_tp_fields(struct test *test __maybe_unused, int subtest
- 					continue;
+diff --git a/tools/perf/tests/evsel-roundtrip-name.c b/tools/perf/tests/evsel-roundtrip-name.c
+index f143de12e38a..61ecd8e33a01 100644
+--- a/tools/perf/tests/evsel-roundtrip-name.c
++++ b/tools/perf/tests/evsel-roundtrip-name.c
+@@ -53,7 +53,7 @@ static int perf_evsel__roundtrip_cache_name_test(void)
+ 					ret = -1;
  				}
  
--				err = perf_evsel__parse_sample(evsel, event, &sample);
-+				err = evsel__parse_sample(evsel, event, &sample);
- 				if (err) {
- 					pr_debug("Can't parse sample, err = %d\n", err);
- 					goto out_delete_evlist;
-diff --git a/tools/perf/tests/sample-parsing.c b/tools/perf/tests/sample-parsing.c
-index ab964db855ac..a0bdaf390ac8 100644
---- a/tools/perf/tests/sample-parsing.c
-+++ b/tools/perf/tests/sample-parsing.c
-@@ -298,10 +298,10 @@ static int do_test(u64 sample_type, u64 sample_regs, u64 read_format)
- 
- 	evsel.sample_size = __evsel__sample_size(sample_type);
- 
--	err = perf_evsel__parse_sample(&evsel, event, &sample_out);
-+	err = evsel__parse_sample(&evsel, event, &sample_out);
- 	if (err) {
- 		pr_debug("%s failed for sample_type %#"PRIx64", error %d\n",
--			 "perf_evsel__parse_sample", sample_type, err);
-+			 "evsel__parse_sample", sample_type, err);
- 		goto out_free;
+-				evsel = perf_evsel__next(evsel);
++				evsel = evsel__next(evsel);
+ 			}
+ 		}
  	}
+diff --git a/tools/perf/tests/parse-events.c b/tools/perf/tests/parse-events.c
+index 8d0c04855511..5b90ee3eda71 100644
+--- a/tools/perf/tests/parse-events.c
++++ b/tools/perf/tests/parse-events.c
+@@ -468,7 +468,7 @@ static int test__checkevent_list(struct evlist *evlist)
+ 	TEST_ASSERT_VAL("wrong precise_ip", !evsel->core.attr.precise_ip);
  
-diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-index 404542b69543..0a0b760d6948 100644
---- a/tools/perf/util/evlist.c
-+++ b/tools/perf/util/evlist.c
-@@ -1439,7 +1439,7 @@ int perf_evlist__parse_sample(struct evlist *evlist, union perf_event *event,
+ 	/* syscalls:sys_enter_openat:k */
+-	evsel = perf_evsel__next(evsel);
++	evsel = evsel__next(evsel);
+ 	TEST_ASSERT_VAL("wrong type", PERF_TYPE_TRACEPOINT == evsel->core.attr.type);
+ 	TEST_ASSERT_VAL("wrong sample_type",
+ 		PERF_TP_SAMPLE_TYPE == evsel->core.attr.sample_type);
+@@ -479,7 +479,7 @@ static int test__checkevent_list(struct evlist *evlist)
+ 	TEST_ASSERT_VAL("wrong precise_ip", !evsel->core.attr.precise_ip);
  
- 	if (!evsel)
- 		return -EFAULT;
--	return perf_evsel__parse_sample(evsel, event, sample);
-+	return evsel__parse_sample(evsel, event, sample);
- }
+ 	/* 1:1:hp */
+-	evsel = perf_evsel__next(evsel);
++	evsel = evsel__next(evsel);
+ 	TEST_ASSERT_VAL("wrong type", 1 == evsel->core.attr.type);
+ 	TEST_ASSERT_VAL("wrong config", 1 == evsel->core.attr.config);
+ 	TEST_ASSERT_VAL("wrong exclude_user", evsel->core.attr.exclude_user);
+@@ -501,7 +501,7 @@ static int test__checkevent_pmu_name(struct evlist *evlist)
+ 	TEST_ASSERT_VAL("wrong name", !strcmp(evsel__name(evsel), "krava"));
  
- int perf_evlist__parse_sample_timestamp(struct evlist *evlist,
-@@ -1450,7 +1450,7 @@ int perf_evlist__parse_sample_timestamp(struct evlist *evlist,
+ 	/* cpu/config=2/u" */
+-	evsel = perf_evsel__next(evsel);
++	evsel = evsel__next(evsel);
+ 	TEST_ASSERT_VAL("wrong number of entries", 2 == evlist->core.nr_entries);
+ 	TEST_ASSERT_VAL("wrong type", PERF_TYPE_RAW == evsel->core.attr.type);
+ 	TEST_ASSERT_VAL("wrong config",  2 == evsel->core.attr.config);
+@@ -529,7 +529,7 @@ static int test__checkevent_pmu_partial_time_callgraph(struct evlist *evlist)
+ 	TEST_ASSERT_VAL("wrong time",  !(PERF_SAMPLE_TIME & evsel->core.attr.sample_type));
  
- 	if (!evsel)
- 		return -EFAULT;
--	return perf_evsel__parse_sample_timestamp(evsel, event, timestamp);
-+	return evsel__parse_sample_timestamp(evsel, event, timestamp);
- }
+ 	/* cpu/config=2,call-graph=no,time=0,period=2000/ */
+-	evsel = perf_evsel__next(evsel);
++	evsel = evsel__next(evsel);
+ 	TEST_ASSERT_VAL("wrong type", PERF_TYPE_RAW == evsel->core.attr.type);
+ 	TEST_ASSERT_VAL("wrong config",  2 == evsel->core.attr.config);
+ 	/*
+@@ -577,7 +577,7 @@ static int test__checkevent_pmu_events_mix(struct evlist *evlist)
+ 	TEST_ASSERT_VAL("wrong pinned", !evsel->core.attr.pinned);
  
- int perf_evlist__strerror_open(struct evlist *evlist,
-diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-index a11d1359ba81..b63d9eebe42f 100644
---- a/tools/perf/util/evsel.c
-+++ b/tools/perf/util/evsel.c
-@@ -1964,8 +1964,8 @@ perf_event__check_size(union perf_event *event, unsigned int sample_size)
- 	return 0;
- }
+ 	/* cpu/pmu-event/u*/
+-	evsel = perf_evsel__next(evsel);
++	evsel = evsel__next(evsel);
+ 	TEST_ASSERT_VAL("wrong number of entries", 2 == evlist->core.nr_entries);
+ 	TEST_ASSERT_VAL("wrong type", PERF_TYPE_RAW == evsel->core.attr.type);
+ 	TEST_ASSERT_VAL("wrong exclude_user",
+@@ -658,7 +658,7 @@ static int test__group1(struct evlist *evlist)
+ 	TEST_ASSERT_VAL("wrong sample_read", !evsel->sample_read);
  
--int perf_evsel__parse_sample(struct evsel *evsel, union perf_event *event,
--			     struct perf_sample *data)
-+int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
-+			struct perf_sample *data)
- {
- 	u64 type = evsel->core.attr.sample_type;
- 	bool swapped = evsel->needs_swap;
-@@ -2267,9 +2267,8 @@ int perf_evsel__parse_sample(struct evsel *evsel, union perf_event *event,
- 	return 0;
- }
+ 	/* cycles:upp */
+-	evsel = perf_evsel__next(evsel);
++	evsel = evsel__next(evsel);
+ 	TEST_ASSERT_VAL("wrong type", PERF_TYPE_HARDWARE == evsel->core.attr.type);
+ 	TEST_ASSERT_VAL("wrong config",
+ 			PERF_COUNT_HW_CPU_CYCLES == evsel->core.attr.config);
+@@ -700,7 +700,7 @@ static int test__group2(struct evlist *evlist)
+ 	TEST_ASSERT_VAL("wrong sample_read", !evsel->sample_read);
  
--int perf_evsel__parse_sample_timestamp(struct evsel *evsel,
--				       union perf_event *event,
--				       u64 *timestamp)
-+int evsel__parse_sample_timestamp(struct evsel *evsel, union perf_event *event,
-+				  u64 *timestamp)
- {
- 	u64 type = evsel->core.attr.sample_type;
- 	const __u64 *array;
+ 	/* cache-references + :u modifier */
+-	evsel = perf_evsel__next(evsel);
++	evsel = evsel__next(evsel);
+ 	TEST_ASSERT_VAL("wrong type", PERF_TYPE_HARDWARE == evsel->core.attr.type);
+ 	TEST_ASSERT_VAL("wrong config",
+ 			PERF_COUNT_HW_CACHE_REFERENCES == evsel->core.attr.config);
+@@ -715,7 +715,7 @@ static int test__group2(struct evlist *evlist)
+ 	TEST_ASSERT_VAL("wrong sample_read", !evsel->sample_read);
+ 
+ 	/* cycles:k */
+-	evsel = perf_evsel__next(evsel);
++	evsel = evsel__next(evsel);
+ 	TEST_ASSERT_VAL("wrong type", PERF_TYPE_HARDWARE == evsel->core.attr.type);
+ 	TEST_ASSERT_VAL("wrong config",
+ 			PERF_COUNT_HW_CPU_CYCLES == evsel->core.attr.config);
+@@ -758,7 +758,7 @@ static int test__group3(struct evlist *evlist __maybe_unused)
+ 	TEST_ASSERT_VAL("wrong sample_read", !evsel->sample_read);
+ 
+ 	/* group1 cycles:kppp */
+-	evsel = perf_evsel__next(evsel);
++	evsel = evsel__next(evsel);
+ 	TEST_ASSERT_VAL("wrong type", PERF_TYPE_HARDWARE == evsel->core.attr.type);
+ 	TEST_ASSERT_VAL("wrong config",
+ 			PERF_COUNT_HW_CPU_CYCLES == evsel->core.attr.config);
+@@ -775,7 +775,7 @@ static int test__group3(struct evlist *evlist __maybe_unused)
+ 	TEST_ASSERT_VAL("wrong sample_read", !evsel->sample_read);
+ 
+ 	/* group2 cycles + G modifier */
+-	evsel = leader = perf_evsel__next(evsel);
++	evsel = leader = evsel__next(evsel);
+ 	TEST_ASSERT_VAL("wrong type", PERF_TYPE_HARDWARE == evsel->core.attr.type);
+ 	TEST_ASSERT_VAL("wrong config",
+ 			PERF_COUNT_HW_CPU_CYCLES == evsel->core.attr.config);
+@@ -793,7 +793,7 @@ static int test__group3(struct evlist *evlist __maybe_unused)
+ 	TEST_ASSERT_VAL("wrong sample_read", !evsel->sample_read);
+ 
+ 	/* group2 1:3 + G modifier */
+-	evsel = perf_evsel__next(evsel);
++	evsel = evsel__next(evsel);
+ 	TEST_ASSERT_VAL("wrong type", 1 == evsel->core.attr.type);
+ 	TEST_ASSERT_VAL("wrong config", 3 == evsel->core.attr.config);
+ 	TEST_ASSERT_VAL("wrong exclude_user", !evsel->core.attr.exclude_user);
+@@ -807,7 +807,7 @@ static int test__group3(struct evlist *evlist __maybe_unused)
+ 	TEST_ASSERT_VAL("wrong sample_read", !evsel->sample_read);
+ 
+ 	/* instructions:u */
+-	evsel = perf_evsel__next(evsel);
++	evsel = evsel__next(evsel);
+ 	TEST_ASSERT_VAL("wrong type", PERF_TYPE_HARDWARE == evsel->core.attr.type);
+ 	TEST_ASSERT_VAL("wrong config",
+ 			PERF_COUNT_HW_INSTRUCTIONS == evsel->core.attr.config);
+@@ -849,7 +849,7 @@ static int test__group4(struct evlist *evlist __maybe_unused)
+ 	TEST_ASSERT_VAL("wrong sample_read", !evsel->sample_read);
+ 
+ 	/* instructions:kp + p */
+-	evsel = perf_evsel__next(evsel);
++	evsel = evsel__next(evsel);
+ 	TEST_ASSERT_VAL("wrong type", PERF_TYPE_HARDWARE == evsel->core.attr.type);
+ 	TEST_ASSERT_VAL("wrong config",
+ 			PERF_COUNT_HW_INSTRUCTIONS == evsel->core.attr.config);
+@@ -892,7 +892,7 @@ static int test__group5(struct evlist *evlist __maybe_unused)
+ 	TEST_ASSERT_VAL("wrong sample_read", !evsel->sample_read);
+ 
+ 	/* instructions + G */
+-	evsel = perf_evsel__next(evsel);
++	evsel = evsel__next(evsel);
+ 	TEST_ASSERT_VAL("wrong type", PERF_TYPE_HARDWARE == evsel->core.attr.type);
+ 	TEST_ASSERT_VAL("wrong config",
+ 			PERF_COUNT_HW_INSTRUCTIONS == evsel->core.attr.config);
+@@ -907,7 +907,7 @@ static int test__group5(struct evlist *evlist __maybe_unused)
+ 	TEST_ASSERT_VAL("wrong sample_read", !evsel->sample_read);
+ 
+ 	/* cycles:G */
+-	evsel = leader = perf_evsel__next(evsel);
++	evsel = leader = evsel__next(evsel);
+ 	TEST_ASSERT_VAL("wrong type", PERF_TYPE_HARDWARE == evsel->core.attr.type);
+ 	TEST_ASSERT_VAL("wrong config",
+ 			PERF_COUNT_HW_CPU_CYCLES == evsel->core.attr.config);
+@@ -924,7 +924,7 @@ static int test__group5(struct evlist *evlist __maybe_unused)
+ 	TEST_ASSERT_VAL("wrong sample_read", !evsel->sample_read);
+ 
+ 	/* instructions:G */
+-	evsel = perf_evsel__next(evsel);
++	evsel = evsel__next(evsel);
+ 	TEST_ASSERT_VAL("wrong type", PERF_TYPE_HARDWARE == evsel->core.attr.type);
+ 	TEST_ASSERT_VAL("wrong config",
+ 			PERF_COUNT_HW_INSTRUCTIONS == evsel->core.attr.config);
+@@ -938,7 +938,7 @@ static int test__group5(struct evlist *evlist __maybe_unused)
+ 	TEST_ASSERT_VAL("wrong group_idx", perf_evsel__group_idx(evsel) == 1);
+ 
+ 	/* cycles */
+-	evsel = perf_evsel__next(evsel);
++	evsel = evsel__next(evsel);
+ 	TEST_ASSERT_VAL("wrong type", PERF_TYPE_HARDWARE == evsel->core.attr.type);
+ 	TEST_ASSERT_VAL("wrong config",
+ 			PERF_COUNT_HW_CPU_CYCLES == evsel->core.attr.config);
+@@ -977,7 +977,7 @@ static int test__group_gh1(struct evlist *evlist)
+ 	TEST_ASSERT_VAL("wrong group_idx", perf_evsel__group_idx(evsel) == 0);
+ 
+ 	/* cache-misses:G + :H group modifier */
+-	evsel = perf_evsel__next(evsel);
++	evsel = evsel__next(evsel);
+ 	TEST_ASSERT_VAL("wrong type", PERF_TYPE_HARDWARE == evsel->core.attr.type);
+ 	TEST_ASSERT_VAL("wrong config",
+ 			PERF_COUNT_HW_CACHE_MISSES == evsel->core.attr.config);
+@@ -1017,7 +1017,7 @@ static int test__group_gh2(struct evlist *evlist)
+ 	TEST_ASSERT_VAL("wrong group_idx", perf_evsel__group_idx(evsel) == 0);
+ 
+ 	/* cache-misses:H + :G group modifier */
+-	evsel = perf_evsel__next(evsel);
++	evsel = evsel__next(evsel);
+ 	TEST_ASSERT_VAL("wrong type", PERF_TYPE_HARDWARE == evsel->core.attr.type);
+ 	TEST_ASSERT_VAL("wrong config",
+ 			PERF_COUNT_HW_CACHE_MISSES == evsel->core.attr.config);
+@@ -1057,7 +1057,7 @@ static int test__group_gh3(struct evlist *evlist)
+ 	TEST_ASSERT_VAL("wrong group_idx", perf_evsel__group_idx(evsel) == 0);
+ 
+ 	/* cache-misses:H + :u group modifier */
+-	evsel = perf_evsel__next(evsel);
++	evsel = evsel__next(evsel);
+ 	TEST_ASSERT_VAL("wrong type", PERF_TYPE_HARDWARE == evsel->core.attr.type);
+ 	TEST_ASSERT_VAL("wrong config",
+ 			PERF_COUNT_HW_CACHE_MISSES == evsel->core.attr.config);
+@@ -1097,7 +1097,7 @@ static int test__group_gh4(struct evlist *evlist)
+ 	TEST_ASSERT_VAL("wrong group_idx", perf_evsel__group_idx(evsel) == 0);
+ 
+ 	/* cache-misses:H + :uG group modifier */
+-	evsel = perf_evsel__next(evsel);
++	evsel = evsel__next(evsel);
+ 	TEST_ASSERT_VAL("wrong type", PERF_TYPE_HARDWARE == evsel->core.attr.type);
+ 	TEST_ASSERT_VAL("wrong config",
+ 			PERF_COUNT_HW_CACHE_MISSES == evsel->core.attr.config);
+@@ -1135,7 +1135,7 @@ static int test__leader_sample1(struct evlist *evlist)
+ 	TEST_ASSERT_VAL("wrong sample_read", evsel->sample_read);
+ 
+ 	/* cache-misses - not sampling */
+-	evsel = perf_evsel__next(evsel);
++	evsel = evsel__next(evsel);
+ 	TEST_ASSERT_VAL("wrong type", PERF_TYPE_HARDWARE == evsel->core.attr.type);
+ 	TEST_ASSERT_VAL("wrong config",
+ 			PERF_COUNT_HW_CACHE_MISSES == evsel->core.attr.config);
+@@ -1149,7 +1149,7 @@ static int test__leader_sample1(struct evlist *evlist)
+ 	TEST_ASSERT_VAL("wrong sample_read", evsel->sample_read);
+ 
+ 	/* branch-misses - not sampling */
+-	evsel = perf_evsel__next(evsel);
++	evsel = evsel__next(evsel);
+ 	TEST_ASSERT_VAL("wrong type", PERF_TYPE_HARDWARE == evsel->core.attr.type);
+ 	TEST_ASSERT_VAL("wrong config",
+ 			PERF_COUNT_HW_BRANCH_MISSES == evsel->core.attr.config);
+@@ -1188,7 +1188,7 @@ static int test__leader_sample2(struct evlist *evlist __maybe_unused)
+ 	TEST_ASSERT_VAL("wrong sample_read", evsel->sample_read);
+ 
+ 	/* branch-misses - not sampling */
+-	evsel = perf_evsel__next(evsel);
++	evsel = evsel__next(evsel);
+ 	TEST_ASSERT_VAL("wrong type", PERF_TYPE_HARDWARE == evsel->core.attr.type);
+ 	TEST_ASSERT_VAL("wrong config",
+ 			PERF_COUNT_HW_BRANCH_MISSES == evsel->core.attr.config);
+@@ -1234,14 +1234,14 @@ static int test__pinned_group(struct evlist *evlist)
+ 	TEST_ASSERT_VAL("wrong pinned", evsel->core.attr.pinned);
+ 
+ 	/* cache-misses - can not be pinned, but will go on with the leader */
+-	evsel = perf_evsel__next(evsel);
++	evsel = evsel__next(evsel);
+ 	TEST_ASSERT_VAL("wrong type", PERF_TYPE_HARDWARE == evsel->core.attr.type);
+ 	TEST_ASSERT_VAL("wrong config",
+ 			PERF_COUNT_HW_CACHE_MISSES == evsel->core.attr.config);
+ 	TEST_ASSERT_VAL("wrong pinned", !evsel->core.attr.pinned);
+ 
+ 	/* branch-misses - ditto */
+-	evsel = perf_evsel__next(evsel);
++	evsel = evsel__next(evsel);
+ 	TEST_ASSERT_VAL("wrong config",
+ 			PERF_COUNT_HW_BRANCH_MISSES == evsel->core.attr.config);
+ 	TEST_ASSERT_VAL("wrong pinned", !evsel->core.attr.pinned);
+diff --git a/tools/perf/ui/browsers/hists.c b/tools/perf/ui/browsers/hists.c
+index 2936697bb696..f98a118dfc49 100644
+--- a/tools/perf/ui/browsers/hists.c
++++ b/tools/perf/ui/browsers/hists.c
+@@ -3512,13 +3512,13 @@ static int perf_evsel_menu__run(struct evsel_menu *menu,
+ 				if (pos->core.node.next == &evlist->core.entries)
+ 					pos = evlist__first(evlist);
+ 				else
+-					pos = perf_evsel__next(pos);
++					pos = evsel__next(pos);
+ 				goto browse_hists;
+ 			case K_UNTAB:
+ 				if (pos->core.node.prev == &evlist->core.entries)
+ 					pos = evlist__last(evlist);
+ 				else
+-					pos = perf_evsel__prev(pos);
++					pos = evsel__prev(pos);
+ 				goto browse_hists;
+ 			case K_SWITCH_INPUT_DATA:
+ 			case K_RELOAD:
 diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-index a87de95a66c8..4b5a411c403c 100644
+index 4b5a411c403c..a84a4f6bcf31 100644
 --- a/tools/perf/util/evsel.h
 +++ b/tools/perf/util/evsel.h
-@@ -293,12 +293,11 @@ static inline int evsel__read_on_cpu_scaled(struct evsel *evsel, int cpu, int th
- 	return __evsel__read_on_cpu(evsel, cpu, thread, true);
+@@ -299,12 +299,12 @@ int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
+ int evsel__parse_sample_timestamp(struct evsel *evsel, union perf_event *event,
+ 				  u64 *timestamp);
+ 
+-static inline struct evsel *perf_evsel__next(struct evsel *evsel)
++static inline struct evsel *evsel__next(struct evsel *evsel)
+ {
+ 	return list_entry(evsel->core.node.next, struct evsel, core.node);
  }
  
--int perf_evsel__parse_sample(struct evsel *evsel, union perf_event *event,
--			     struct perf_sample *sample);
-+int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
-+			struct perf_sample *sample);
- 
--int perf_evsel__parse_sample_timestamp(struct evsel *evsel,
--				       union perf_event *event,
--				       u64 *timestamp);
-+int evsel__parse_sample_timestamp(struct evsel *evsel, union perf_event *event,
-+				  u64 *timestamp);
- 
- static inline struct evsel *perf_evsel__next(struct evsel *evsel)
+-static inline struct evsel *perf_evsel__prev(struct evsel *evsel)
++static inline struct evsel *evsel__prev(struct evsel *evsel)
  {
-diff --git a/tools/perf/util/python.c b/tools/perf/util/python.c
-index 67810d31f88d..75a9b1d62bba 100644
---- a/tools/perf/util/python.c
-+++ b/tools/perf/util/python.c
-@@ -1044,7 +1044,7 @@ static PyObject *pyrf_evlist__read_on_cpu(struct pyrf_evlist *pevlist,
+ 	return list_entry(evsel->core.node.prev, struct evsel, core.node);
+ }
+diff --git a/tools/perf/util/sort.c b/tools/perf/util/sort.c
+index dc15ddc18b7d..dc23b349fff9 100644
+--- a/tools/perf/util/sort.c
++++ b/tools/perf/util/sort.c
+@@ -2354,7 +2354,7 @@ static struct evsel *find_evsel(struct evlist *evlist, char *event_name)
  
- 		pevent->evsel = evsel;
+ 		evsel = evlist__first(evlist);
+ 		while (--nr > 0)
+-			evsel = perf_evsel__next(evsel);
++			evsel = evsel__next(evsel);
  
--		err = perf_evsel__parse_sample(evsel, event, &pevent->sample);
-+		err = evsel__parse_sample(evsel, event, &pevent->sample);
- 
- 		/* Consume the even only after we parsed it out. */
- 		perf_mmap__consume(&md->core);
+ 		return evsel;
+ 	}
 -- 
 2.21.1
 
