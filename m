@@ -2,45 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 867BF1C7455
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:25:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BD421C7430
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:21:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729585AbgEFPWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 11:22:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37356 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729251AbgEFPWs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 11:22:48 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0851E215A4;
-        Wed,  6 May 2020 15:22:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588778567;
-        bh=XBTKbMNdQt+QeTWlJ3bmshCmhiKjZaPEYSsbOHhQlnI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gVr6jdqAmmdT3IZ74k4i6nVbHTwpFt1IZxPggRaTo4665HnR4g1QvoGRlSZJ4Anbs
-         +BEdrKV9hz2otV98tTieFgRVUHnPpSvcBc+V/PNBTiJHDNbVcupMVZc9zJ/fo0xq0n
-         ths9OGEu59dR7ImHEk0eT/nBQxfIsShDPe8/8cDA=
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-        Clark Williams <williams@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Tommi Rantala <tommi.t.rantala@nokia.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 01/91] perf cgroup: Avoid needless closing of unopened fd
-Date:   Wed,  6 May 2020 12:21:04 -0300
-Message-Id: <20200506152234.21977-2-acme@kernel.org>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20200506152234.21977-1-acme@kernel.org>
-References: <20200506152234.21977-1-acme@kernel.org>
+        id S1729417AbgEFPVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 11:21:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728821AbgEFPVn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 11:21:43 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABF5AC061A0F
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 08:21:43 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id w65so1128578pfc.12
+        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 08:21:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yvJTtl57sUO2WMjzmpPDnFligWXw+OCy735zrKtQaIk=;
+        b=BJcGak/P1jcd5LOiSqct2baSk98+CeP7xG9p5Yb35K6EzmHrQxRxruxkWl4s8vYdfP
+         5enKuYybYLArB5VnCKfCLyaSu5L6JB6IO9fjDACPJbwds5gMDSMW7b0VfGuFZCV9Kz/D
+         0BI8VsDa+D/YgnytlEEYXCINw5b1luLWH0T/E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yvJTtl57sUO2WMjzmpPDnFligWXw+OCy735zrKtQaIk=;
+        b=qEXwf9DGaPod6cKjD9K483X3p6szca7Y1ROhD325etRIxFcbHkElC28PImcR9pAqtY
+         J5XWEacpC6LiQj2YiGykf9ZSS3/l3zEPjhPIAmTrP1m8zVLval2rlcW68vDHoS6PutD8
+         HgXQi9i8s6Xvb0YfqI80EkgSOh6wHq8eqVnIWz7gyaHFZrhpKH+VZoCbCr426ZhAEVrm
+         6Q68AE94IK7y33dA66EjKE+PmXVdT6NNnPijVVK9E8qToWK5fc36obGAUB9QCOFvk7uS
+         ofDJiHBVW6laX5ystw95kDqAfnomWKwS4Yv5l+LNjvGLxW7gfP+uOUkvU8v6pheU5mXr
+         JIMw==
+X-Gm-Message-State: AGi0PubL1MvETpA7IPr9jfXXR9MyS+GuTy+xuG6F33YyEmu1QK3O3r+b
+        vRXhMWFKWhOV50wkb2uu2H+SXw==
+X-Google-Smtp-Source: APiQypLHOSSw3Hai2n77K1UhP/PuT1+8HCSkPUSeWThn6qQ+KlJ2HFXfYg8RCToFR6tHX38fI61Xcg==
+X-Received: by 2002:a63:a54f:: with SMTP id r15mr225264pgu.17.1588778503173;
+        Wed, 06 May 2020 08:21:43 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id w186sm2177312pff.83.2020.05.06.08.21.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 May 2020 08:21:41 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Luis Henriques <lhenriques@suse.com>
+Subject: [PATCH 00/10] pstore: Remove filesystem records when backend is unregistered
+Date:   Wed,  6 May 2020 08:21:04 -0700
+Message-Id: <20200506152114.50375-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -48,51 +63,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tommi Rantala <tommi.t.rantala@nokia.com>
+Hi,
 
-Do not bother with close() if fd is not valid, just to silence valgrind:
+This fixes a long-standing problem[1] with pstore where the filesystem
+view of backend records was not updated when the backend was unloaded
+(in a modular build) through pstore_unregister(). This series is
+mostly refactoring and improvements to the various locking semantics
+around management of the active backend and the filesystem mount before
+ultimately providing the routine to walk the filesystem to remove the
+records associated with a given backend.
 
-    $ valgrind ./perf script
-    ==59169== Memcheck, a memory error detector
-    ==59169== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
-    ==59169== Using Valgrind-3.14.0 and LibVEX; rerun with -h for copyright info
-    ==59169== Command: ./perf script
-    ==59169==
-    ==59169== Warning: invalid file descriptor -1 in syscall close()
-    ==59169== Warning: invalid file descriptor -1 in syscall close()
-    ==59169== Warning: invalid file descriptor -1 in syscall close()
-    ==59169== Warning: invalid file descriptor -1 in syscall close()
-    ==59169== Warning: invalid file descriptor -1 in syscall close()
-    ==59169== Warning: invalid file descriptor -1 in syscall close()
-    ==59169== Warning: invalid file descriptor -1 in syscall close()
-    ==59169== Warning: invalid file descriptor -1 in syscall close()
+I'm still doing more build and runtime testing, but I just wanted to get
+this posted so I can let other people look at it if they want while the
+testing finishes.
 
-Signed-off-by: Tommi Rantala <tommi.t.rantala@nokia.com>
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/20200417132330.119407-1-tommi.t.rantala@nokia.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
----
- tools/perf/util/cgroup.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Thanks!
 
-diff --git a/tools/perf/util/cgroup.c b/tools/perf/util/cgroup.c
-index b73fb7823048..050dea9f1e88 100644
---- a/tools/perf/util/cgroup.c
-+++ b/tools/perf/util/cgroup.c
-@@ -107,7 +107,8 @@ static int add_cgroup(struct evlist *evlist, const char *str)
- 
- static void cgroup__delete(struct cgroup *cgroup)
- {
--	close(cgroup->fd);
-+	if (cgroup->fd >= 0)
-+		close(cgroup->fd);
- 	zfree(&cgroup->name);
- 	free(cgroup);
- }
+-Kees
+
+[1] https://lore.kernel.org/lkml/87o8yrmv69.fsf@suse.com
+
+Kees Cook (10):
+  pstore: Drop useless try_module_get() for backend
+  pstore: Rename "pstore_lock" to "psinfo_lock"
+  pstore: Convert "psinfo" locking to mutex
+  pstore: Rename "allpstore" to "records_list"
+  pstore: Convert "records_list" locking to mutex
+  pstore: Add proper unregister lock checking
+  pstore: Refactor pstorefs record list removal
+  pstore: Add locking around superblock changes
+  pstore: Do not leave timer disabled for next backend
+  pstore: Remove filesystem records when backend is unregistered
+
+ fs/pstore/inode.c    | 127 +++++++++++++++++++++++++++++++------------
+ fs/pstore/internal.h |   2 +-
+ fs/pstore/platform.c |  72 ++++++++++++++----------
+ 3 files changed, 134 insertions(+), 67 deletions(-)
+
 -- 
-2.21.1
+2.20.1
 
