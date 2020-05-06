@@ -2,148 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D28F1C6E62
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 12:29:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2B7C1C6E6A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 12:33:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729181AbgEFK3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 06:29:15 -0400
-Received: from foss.arm.com ([217.140.110.172]:33274 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728338AbgEFK3O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 06:29:14 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D5F8730E;
-        Wed,  6 May 2020 03:29:13 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8658D3F71F;
-        Wed,  6 May 2020 03:29:12 -0700 (PDT)
-References: <20200503083407.GA27766@iZj6chx1xj0e0buvshuecpZ> <CAKfTPtCNG9Y4xNA-iLd+JRRsUCA1+SkkFFRbbzk5n7q6v401tw@mail.gmail.com> <20200505134056.GA31680@iZj6chx1xj0e0buvshuecpZ> <20200505142711.GA12952@vingu-book>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Peng Liu <iwtbavbm@gmail.com>, dietmar.eggemann@arm.com,
-        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched/fair: Fix nohz.next_balance update
-In-reply-to: <20200505142711.GA12952@vingu-book>
-Date:   Wed, 06 May 2020 11:29:10 +0100
-Message-ID: <jhjftcd1hmx.mognet@arm.com>
+        id S1729141AbgEFKdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 06:33:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728716AbgEFKdx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 06:33:53 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D4C4C061A41
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 03:33:52 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id e25so1792105ljg.5
+        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 03:33:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1rTt6LxaW/pHMjJunZzywGj8yOmnvtXY/IpJZLrkwj0=;
+        b=t4a2X1xZecTMAZKKfKloaMIBbKbLsi4VpQyqIWN1xF0DyDh1wVaRehTCJaZg2McT5O
+         HYJ0KfuCC6DXv3aXeqD5Vwy4k8q21/pCVGbunFsDZb2nIlgaBmr4apqE/EQpy/vLDkd8
+         MDFvBTOGgHO+TxmSLQWuOwNy0c8/4coKHUTxu7E6HNd55tCXva9mj7uHD+mT51/KMFJY
+         r7xAp6VJy25G+mWIQlCsDnFPYbpy6PL53rJ6yRT3lmIiGyDyh2o3xfoVaOFXKwrLUCK4
+         UjpCSUmfaix/bg0gfEkdJxZbbPdK2P6v5+JGizRJ0BjnVRzmyAAhWA6MkzD4YvrXtSEb
+         j/Hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1rTt6LxaW/pHMjJunZzywGj8yOmnvtXY/IpJZLrkwj0=;
+        b=dZBuOmRRohKqF7x0dy+xK2mbwsAWJ3QLCyz0MQvOrwMtTNT8wgXChdAv3p1j+5VvUq
+         mFY6cmtWCh2EZ9fiWQbr0nk/2EIPwkMCHcMkcE6BMOdh/HR0Wln+DvIGRBU6fFuhcOdN
+         vElMdNsKz3a6VhFzzJUXeDRaffvrUkt2u2Fthc5cAk8x9nggH3skMkDGnhVImcCxEp9s
+         9T8TULVwKfADRGDw/T5ggdbusBnfbtJcmWZCeCtDHovVCBqDXYWs/+sHvGtFAPh1jis0
+         0dhh1lIQ8SS8LvHbO6ZIEI0Lr41THv9nRX8iDxvHEZa+rvJQXrH48/e0334B5gFYl59Z
+         y5Aw==
+X-Gm-Message-State: AGi0Pub42LWFCD6NkiFuepc7l8ifAZxu4iPvuzEY2ktytMnZhSUnsE3d
+        TetuJPBPo075ChwSHegNhnDbBx8gKVLXQdvvV+Sk3w==
+X-Google-Smtp-Source: APiQypJ2iFf2i42ytFK2XNMo32cD+nb2gyVuT/JFrTqbobcbJ/UpsVR9eFZeVYgFYeicoDgdzICiyNX3uSgZYLIIfJ8=
+X-Received: by 2002:a2e:9842:: with SMTP id e2mr4512086ljj.273.1588761230232;
+ Wed, 06 May 2020 03:33:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20200505102700.7912-1-anders.roxell@linaro.org> <CABVgOS=awiwi7APWr5HgU6Eht-VAygWPeQyNsCnAF09OLpR46A@mail.gmail.com>
+In-Reply-To: <CABVgOS=awiwi7APWr5HgU6Eht-VAygWPeQyNsCnAF09OLpR46A@mail.gmail.com>
+From:   Anders Roxell <anders.roxell@linaro.org>
+Date:   Wed, 6 May 2020 12:33:38 +0200
+Message-ID: <CADYN=9Jdwd=3Rh=wyzO7eOxtyTSm+JqjF385iQjfMocpz1A3YA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/6] kunit: Kconfig: enable a KUNIT_RUN_ALL fragment
+To:     David Gow <davidgow@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        John Johansen <john.johansen@canonical.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ext4@vger.kernel.org,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        Marco Elver <elver@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi David,
 
-On 05/05/20 15:27, Vincent Guittot wrote:
-> So I would be in favor of something as simple as :
+Thank you for the review.
+
+On Wed, 6 May 2020 at 07:08, David Gow <davidgow@google.com> wrote:
 >
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 04098d678f3b..e028bc1c4744 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -10457,6 +10457,14 @@ static bool _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
->                 }
->         }
+> On Tue, May 5, 2020 at 6:27 PM Anders Roxell <anders.roxell@linaro.org> wrote:
+> >
+> > Make it easier to enable all KUnit fragments.  This is needed for kernel
+> > test-systems, so its easy to get all KUnit tests enabled and if new gets
+> > added they will be enabled as well.  Fragments that has to be builtin
+> > will be missed if CONFIG_KUNIT_RUN_ALL is set as a module.
+> >
+> > Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+> > ---
+> >  lib/kunit/Kconfig | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> >
+> > diff --git a/lib/kunit/Kconfig b/lib/kunit/Kconfig
+> > index 95d12e3d6d95..537f37bc8400 100644
+> > --- a/lib/kunit/Kconfig
+> > +++ b/lib/kunit/Kconfig
+> > @@ -41,4 +41,10 @@ config KUNIT_EXAMPLE_TEST
+> >           is intended for curious hackers who would like to understand how to
+> >           use KUnit for kernel development.
+> >
+> > +config KUNIT_RUN_ALL
+> > +       tristate "KUnit run all test"
 >
-> +       /*
-> +        * next_balance will be updated only when there is a need.
-> +        * When the CPU is attached to null domain for ex, it will not be
-> +        * updated.
-> +        */
-> +       if (likely(update_next_balance))
-> +               nohz.next_balance = next_balance;
-> +
->         /* Newly idle CPU doesn't need an update */
->         if (idle != CPU_NEWLY_IDLE) {
->                 update_blocked_averages(this_cpu);
-> @@ -10477,14 +10485,6 @@ static bool _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
->         if (has_blocked_load)
->                 WRITE_ONCE(nohz.has_blocked, 1);
+> I'm not 100% sure about this name and description. It only actually
+> "runs" the tests if they're builtin (as modules, they'll only run when
+> loaded).
 >
-> -       /*
-> -        * next_balance will be updated only when there is a need.
-> -        * When the CPU is attached to null domain for ex, it will not be
-> -        * updated.
-> -        */
-> -       if (likely(update_next_balance))
-> -               nohz.next_balance = next_balance;
-> -
->         return ret;
->  }
+> Would KUNIT_BUILD_ALL or KUNIT_ALL_TESTS
+
+I would like to go with KUNIT_ALL_TESTS if no one objects.
+
+> or similar be better?
+>
+> It also, as mentioned, only really runs all available (i.e., with
+> dependencies met in the current .config) tests (as distinct from the
+> --alltests flag to kunit.py, which builds UML with allyesconfig), it
+> might be good to add this to the description or help.
+>
+> Something like "Enable all KUnit tests" or "Enable all available KUnit
+> tests" (or even something about "all KUnit tests with satisfied
+> dependencies") might be clearer.
+
+I like "All KUnit tests with satisfied dependencies".
+
+>
+> > +       help
+> > +         Enables all KUnit tests, if they can be enabled.
+> > +         That depends on if KUnit is enabled as a module or builtin.
+> > +
+> I like the first line here, but the second one could use a bit more
+> explanation. Maybe copy some of the boilerplate text from other tests,
+> e.g.:
+>
+>           KUnit tests run during boot and output the results to the debug log
+>          in TAP format (http://testanything.org/). Only useful for kernel devs
+>          running the KUnit test harness, and not intended for inclusion into a
+>          production build.
+>
+>          For more information on KUnit and unit tests in general please refer
+>          to the KUnit documentation in Documentation/dev-tools/kunit/.
+>
+>          If unsure, say N.
+
+Makes much more sense, thanks.
+
+>
+> >  endif # KUNIT
+> > --
+> > 2.20.1
+> >
+>
+> Otherwise, this is looking good. I've done some quick testing, and it
+> all seems to work for me. As long as it's clear what the difference
+> between this and other ways of running "all tests" (like the
+> --alltests kunit.py option),
+
+Do you think it should be made clearer in some way?
+
+> I'm all for including this in.
 >
 
-But then we may skip an update if we goto abort, no? Imagine we have just
-NOHZ_STATS_KICK, so we don't call any rebalance_domains(), and then as we
-go through the last NOHZ CPU in the loop we hit need_resched(). We would
-end in the abort part without any update to nohz.next_balance, despite
-having accumulated relevant data in the local next_balance variable.
-
-Also note that in this case, nohz_idle_balance() will still return true.
-
-If we rip out just the one update we need from rebalance_domains(), then
-perhaps we could go with what Peng was initially suggesting? i.e. something
-like the below.
-
----
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 46b7bd41573f..0a292e0a0731 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -9934,22 +9934,8 @@ static void rebalance_domains(struct rq *rq, enum cpu_idle_type idle)
-         * When the cpu is attached to null domain for ex, it will not be
-         * updated.
-         */
--	if (likely(update_next_balance)) {
-+	if (likely(update_next_balance))
-                rq->next_balance = next_balance;
--
--#ifdef CONFIG_NO_HZ_COMMON
--		/*
--		 * If this CPU has been elected to perform the nohz idle
--		 * balance. Other idle CPUs have already rebalanced with
--		 * nohz_idle_balance() and nohz.next_balance has been
--		 * updated accordingly. This CPU is now running the idle load
--		 * balance for itself and we need to update the
--		 * nohz.next_balance accordingly.
--		 */
--		if ((idle == CPU_IDLE) && time_after(nohz.next_balance, rq->next_balance))
--			nohz.next_balance = rq->next_balance;
--#endif
--	}
- }
-
- static inline int on_null_domain(struct rq *rq)
-@@ -10315,6 +10301,11 @@ static bool _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
-        if (flags & NOHZ_BALANCE_KICK)
-                rebalance_domains(this_rq, CPU_IDLE);
-
-+	if (time_after(next_balance, this_rq->next_balance)) {
-+		next_balance = this_rq->next_balance;
-+		update_next_balance = 1;
-+	}
-+
-        WRITE_ONCE(nohz.next_blocked,
-                now + msecs_to_jiffies(LOAD_AVG_PERIOD));
-
-@@ -10551,6 +10542,17 @@ static __latent_entropy void run_rebalance_domains(struct softirq_action *h)
-        /* normal load balance */
-        update_blocked_averages(this_rq->cpu);
-        rebalance_domains(this_rq, idle);
-+
-+#ifdef CONFIG_NO_HZ_COMMON
-+	/*
-+	 * NOHZ idle CPUs will be rebalanced with nohz_idle_balance() and thus
-+	 * nohz.next_balance will be updated accordingly. If there was no NOHZ
-+	 * kick, then we just need to update nohz.next_balance wrt *this* CPU.
-+	 */
-+	if ((idle == CPU_IDLE) &&
-+	    time_after(nohz.next_balance, this_rq->next_balance))
-+		nohz.next_balance = this_rq->next_balance;
-+#endif
- }
-
- /*
----
+Cheers,
+Anders
