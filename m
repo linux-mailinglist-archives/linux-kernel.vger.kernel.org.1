@@ -2,183 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B0991C7C15
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 23:14:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 027BA1C7C21
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 23:15:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729633AbgEFVOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 17:14:04 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:34968 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729432AbgEFVOC (ORCPT
+        id S1729947AbgEFVPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 17:15:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57364 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729688AbgEFVPe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 17:14:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588799640;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NZxhiJYbxM1qqUjtcTHTmwQVVAW7Looq+iFDFA5dqgo=;
-        b=TPnm6EJy+Fn+FlpRf5xvFxl9hZo7VGtvQYACSLSf1aCaCAysbA2VtzPqmZb+qAos83a4b4
-        0I/J7zQkWXQwhYqTJ7en69+pxhWfAfRHqHGPKRBAtrrzZ5ChZVratQzjtvHFafC/2wDQR5
-        HW1qEaCcryesgtkW77UfcN1HUqM3yus=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-263-EyNsKzwvPsm-DHAaJIS9iw-1; Wed, 06 May 2020 17:13:59 -0400
-X-MC-Unique: EyNsKzwvPsm-DHAaJIS9iw-1
-Received: by mail-qv1-f71.google.com with SMTP id et5so3719270qvb.5
-        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 14:13:59 -0700 (PDT)
+        Wed, 6 May 2020 17:15:34 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 675E8C03C1A7
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 14:15:33 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id d184so1764185pfd.4
+        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 14:15:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=u/XCL1fsewz1wv+0YN1B6q5DwndvHtJ46IG2XGKxKkc=;
+        b=LJ17gtKZ5RCiSk4FFPSrLts9kY+6gVoaJHhHAK4elrJ5HYs7Re8PekuMrTMDTbowO/
+         SSluTHjRjYjytzyAq6hHqEC1n5fB2I22oH2gq4YFrhQCpZnhRo1qDJK3q5787DBLZiUz
+         R62JQc4JS07Vmp2QpY7YmwMyVoRd5SXQcqqIU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=NZxhiJYbxM1qqUjtcTHTmwQVVAW7Looq+iFDFA5dqgo=;
-        b=PZVTp4H8xBVQ/yoxnVpf3ScIaV9hpSc5kBewy+UtjmhjinjiK2z3k/xxJvr+Z2trFg
-         KHagNLvHla5vH6DHska98DrSe7WkYo1hv9GgszO8dc/Ocms5VW0LOuNzYm+WW0S9mFbE
-         b8BzNJgK94wMWC0Bj0D0OxV99IfRndfv5Z2t3QhXXsxVfQM5q23RYiGCaQEMWphRtwG7
-         aWEhmr8NO+/O2jLWCpDsPAwF3cqYaXpdWCERTxfFe0M2p4sQaDizqjDocjJdHONBhgr9
-         Felvu9dgvYapT9N7ZFor1RqMTiAMvbez4A82QrqJySBfjMBKvFU46WIRvtrXhYbSr88N
-         bfXQ==
-X-Gm-Message-State: AGi0PuZz2bk8h3i4cOGFJx06a5LBXT9dxb34Vys85Xt24IC4g82vC7jx
-        lsU0N1qsP1wtdPPx9Ky9DOfhgw9GoMrD8+SwUjKK76qxJqZ210mDdViWrxBWeXVTajbpQpuANkG
-        UuYLTBcS/dNu8DU05Fr/a3LYE
-X-Received: by 2002:a37:a310:: with SMTP id m16mr9623003qke.346.1588799638487;
-        Wed, 06 May 2020 14:13:58 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJBI0yo8r3Z8dCk2QYAiBQX+xeNtOpc5CrXQmfe7B7XVovD+2ApSgkbXVcQhsnFI4RYRJRQwg==
-X-Received: by 2002:a37:a310:: with SMTP id m16mr9622975qke.346.1588799638100;
-        Wed, 06 May 2020 14:13:58 -0700 (PDT)
-Received: from xz-x1 ([2607:9880:19c0:32::2])
-        by smtp.gmail.com with ESMTPSA id x125sm2716746qke.34.2020.05.06.14.13.56
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=u/XCL1fsewz1wv+0YN1B6q5DwndvHtJ46IG2XGKxKkc=;
+        b=Qjby5jIfp9kgqCV4gSP6Nh4zoQu95xhC3h4L9vBwM0gkj8LncH0AUXrfh/o/mdXZmm
+         JpvOK/TY1DXi2+PrmabzWuxRPxHtFziCQB84CJvjLxF4GqEjzQtVxP/rQhbeYWcrzeZz
+         qIGuqnrxbM1VNt2VlFvRFP8Tu5tU0pDCatISxmFFX4MYU5XTZJMbYs93ZsIsLLuIdDPk
+         xIgXBjLiQ4qwVU6TkBhU2MjY/lXEN8tCWqt4hmJrEE6hKMMjnR7cPlH734FHhQXsuxld
+         cth4zADZeAE7Tl5skl5CCYYNOletRByqJqsNykTro+E41yqlLl1Oc26oeJHJBLgj+fU1
+         Qzkw==
+X-Gm-Message-State: AGi0PubWBRwzKP5Z+PcUOH/cpe1objM9+yxJfbytPKJFI0+7jnjBfXm7
+        89aPRR/9GQfi8Zy34GcW2CQxiQ==
+X-Google-Smtp-Source: APiQypI/pTh6kOO0ohxDbY5vssPPtVaFSIZETH0t6dPMEwVl4GH4h+EMDj98Y0NsEBc9c6g4zYaF4w==
+X-Received: by 2002:a62:a11c:: with SMTP id b28mr2765864pff.180.1588799732927;
+        Wed, 06 May 2020 14:15:32 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id d2sm2752547pfc.7.2020.05.06.14.15.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 May 2020 14:13:57 -0700 (PDT)
-Date:   Wed, 6 May 2020 17:13:56 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Subject: Re: [PATCH 8/9] KVM: x86, SVM: do not clobber guest DR6 on
- KVM_EXIT_DEBUG
-Message-ID: <20200506211356.GD228260@xz-x1>
-References: <20200506111034.11756-1-pbonzini@redhat.com>
- <20200506111034.11756-9-pbonzini@redhat.com>
- <20200506181515.GR6299@xz-x1>
- <8f7f319c-4093-0ddc-f9f5-002c41d5622c@redhat.com>
+        Wed, 06 May 2020 14:15:29 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>, jmorris@namei.org,
+        sashal@kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH v3 0/6] allow ramoops to collect all kmesg_dump events
+Date:   Wed,  6 May 2020 14:15:17 -0700
+Message-Id: <20200506211523.15077-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <8f7f319c-4093-0ddc-f9f5-002c41d5622c@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 06, 2020 at 10:07:15PM +0200, Paolo Bonzini wrote:
-> On 06/05/20 20:15, Peter Xu wrote:
-> > On Wed, May 06, 2020 at 07:10:33AM -0400, Paolo Bonzini wrote:
-> >> On Intel, #DB exceptions transmit the DR6 value via the exit qualification
-> >> field of the VMCS, and the exit qualification only contains the description
-> >> of the precise event that caused a vmexit.
-> >>
-> >> On AMD, instead the DR6 field of the VMCB is filled in as if the #DB exception
-> >> was to be injected into the guest.  This has two effects when guest debugging
-> >> is in use:
-> >>
-> >> * the guest DR6 is clobbered
-> >>
-> >> * the kvm_run->debug.arch.dr6 field can accumulate more debug events, rather
-> >> than just the last one that happened.
-> >>
-> >> Fortunately, if guest debugging is in use we debug register reads and writes
-> >> are always intercepted.  Now that the guest DR6 is always synchronized with
-> >> vcpu->arch.dr6, we can just run the guest with an all-zero DR6 while guest
-> >> debugging is enabled, and restore the guest value when it is disabled.  This
-> >> fixes both problems.
-> >>
-> >> A testcase for the second issue is added in the next patch.
-> > 
-> > Is there supposed to be another test after this one, or the GD test?
-> 
-> It's the GD test.
+Hi!
 
-Oh... so is dr6 going to have some leftover bit set in the GD test if without
-this patch for AMD?  Btw, I noticed a small difference on Intel/AMD spec for
-this case, e.g., B[0-3] definitions on such leftover bits...
+This is my stab at rearranging a few things based on Pavel's series. Most
+things remain the same; I just tweaked how defaults are arranged and
+detected and expanded the wording in a few places. Pavel, how does this
+v3 look to you?
 
-Intel says:
+Pavel's original cover letter:
 
-        B0 through B3 (breakpoint condition detected) flags (bits 0 through 3)
-        — Indicates (when set) that its associated breakpoint condition was met
-        when a debug exception was generated. These flags are set if the
-        condition described for each breakpoint by the LENn, and R/Wn flags in
-        debug control register DR7 is true. They may or may not be set if the
-        breakpoint is not enabled by the Ln or the Gn flags in register
-        DR7. Therefore on a #DB, a debug handler should check only those B0-B3
-        bits which correspond to an enabled breakpoint.
+pstore /mnt/console-ramoops-0 outputs only messages below the console
+loglevel, and our console loglevel is set to 3 due to slowness of
+serial console. Which means only errors and worse types of messages
+are recorded. There is no way to have different log levels for
+different consoles.
 
-AMD says:
+This patch series adds a new option to ramoops: max_reason that enables
+it to collect kmdesg dumps for other reasons beside oops and panics.
 
-        Breakpoint-Condition Detected (B3–B0)—Bits 3:0. The processor updates
-        these four bits on every debug breakpoint or general-detect
-        condition. A bit is set to 1 if the corresponding address- breakpoint
-        register detects an enabled breakpoint condition, as specified by the
-        DR7 Ln, Gn, R/Wn and LENn controls, and is cleared to 0 otherwise. For
-        example, B1 (bit 1) is set to 1 if an address- breakpoint condition is
-        detected by DR1.
+How to quickly test:
 
-I'm not sure whether it means AMD B[0-3] bits are more strict on the Intel ones
-(if so, then the selftest could be a bit too strict to VMX).
+virtme-run --mods=auto --kdir --mods=auto --kdir . \
+	-a memmap=1G$8G -a ramoops.mem_address=0x200000000 \
+	-a ramoops.mem_size=0x100000 -a ramoops.record_size=32768 \
+	-a ramoops.max_reason=5 -a quiet --qemu-opts -m 8G
+..
+# reboot -f
 
-> >> +		/* This restores DR6 to all zeros.  */
-> >> +		kvm_update_dr6(vcpu);
-> > 
-> > I feel like it won't work as expected for KVM_GUESTDBG_SINGLESTEP, because at
-> > [2] below it'll go to the "else" instead so dr6 seems won't be cleared in that
-> > case.
-> 
-> You're right, I need to cover both cases that trigger #DB.
-> 
-> > Another concern I have is that, I mostly read kvm_update_dr6() as "apply the
-> > dr6 memory cache --> VMCB".  I'm worried this might confuse people (at least I
-> > used quite a few minutes to digest...) here because latest data should already
-> > be in the VMCB.
-> 
-> No, the latest guest register is always in vcpu->arch.dr6.  It's only
-> because of KVM_DEBUGREG_WONT_EXIT that kvm_update_dr6() needs to pass
-> vcpu->arch.dr6 to kvm_x86_ops.set_dr6.  Actually this patch could even
-> check KVM_DEBUGREG_WONT_EXIT instead of vcpu->guest_debug.  I'll take a
-> look tomorrow.
+After VM is back:
 
-OK.
+# mount -t pstore pstore /mnt
+# head /mnt/dmesg-ramoops-0
+Restart#1 Part1
+...
 
-> 
-> > Also, IMHO it would be fine to have invalid dr6 values during
-> > KVM_SET_GUEST_DEBUG.  I'm not sure whether my understanding is correct, but I
-> > see KVM_SET_GUEST_DEBUG needs to override the in-guest debug completely.
-> 
-> Sort of, userspace can try to juggle host and guest debugging (this is
-> why you have KVM_GUESTDBG_INJECT_DB and KVM_GUESTDBG_INJECT_BP).
 
-I see!
+Changelog:
 
-> 
-> > If we worry about dr6 being incorrect after KVM_SET_GUEST_DEBUG is disabled,
-> > IMHO we can reset dr6 in kvm_arch_vcpu_ioctl_set_guest_debug() properly before
-> > we return the debug registers to the guest.
-> > 
-> > PS. I cannot see above lines [1] in my local tree (which seems to be really a
-> > bugfix...).  I tried to use kvm/queue just in case I missed some patches, but I
-> > still didn't see them.  So am I reading the wrong tree here?
-> 
-> The patch is based on kvm/master, and indeed that line is from a bugfix
-> that I've posted yesterday ("KVM: SVM: fill in
-> kvm_run->debug.arch.dr[67]"). I had pushed that one right away, because
-> it was quite obviously suitable for 5.7.
+v3:
+ - expanded several comments and commit logs
+ - move max_reason member earlier in the structure
+ - refactored DT parsing to allow setting defaults
+ - changed how deprecated dump_oops fields are detected and parsed
+ - cleaned up some module param permissions
+v2: https://lore.kernel.org/lkml/20200505154510.93506-1-pasha.tatashin@soleen.com
+v1: https://lore.kernel.org/lkml/20200502143555.543636-1-pasha.tatashin@soleen.com
 
-Oh that's why it looks very familiar (because I read that patch.. :).  Then it
-makes sense now.  Thanks!
+
+Thanks!
+
+-Kees
+
+
+Kees Cook (2):
+  pstore/ram: Refactor DT size parsing
+  pstore/ram: Adjust module param permissions to reflect reality
+
+Pavel Tatashin (4):
+  printk: honor the max_reason field in kmsg_dumper
+  pstore/platform: Pass max_reason to kmesg dump
+  pstore/ram: Introduce max_reason and convert dump_oops
+  ramoops: Add max_reason optional field to ramoops DT node
+
+ Documentation/admin-guide/ramoops.rst         | 14 +++-
+ .../bindings/reserved-memory/ramoops.txt      | 13 ++-
+ drivers/platform/chrome/chromeos_pstore.c     |  2 +-
+ fs/pstore/platform.c                          |  4 +-
+ fs/pstore/ram.c                               | 83 ++++++++++++-------
+ include/linux/kmsg_dump.h                     |  1 +
+ include/linux/pstore.h                        |  7 ++
+ include/linux/pstore_ram.h                    |  2 +-
+ kernel/printk/printk.c                        | 15 +++-
+ 9 files changed, 97 insertions(+), 44 deletions(-)
 
 -- 
-Peter Xu
+2.20.1
 
