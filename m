@@ -2,191 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F01B01C7530
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:42:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B78E1C7534
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:42:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729746AbgEFPly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 11:41:54 -0400
-Received: from mout-p-101.mailbox.org ([80.241.56.151]:24776 "EHLO
-        mout-p-101.mailbox.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729066AbgEFPlu (ORCPT
+        id S1729781AbgEFPmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 11:42:09 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:50728 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729668AbgEFPmI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 11:41:50 -0400
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:105:465:1:2:0])
-        (using TLSv1.2 with cipher ECDHE-RSA-CHACHA20-POLY1305 (256/256 bits))
-        (No client certificate requested)
-        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 49HLRq0L5BzKmVK;
-        Wed,  6 May 2020 17:41:43 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp2.mailbox.org ([80.241.60.241])
-        by spamfilter03.heinlein-hosting.de (spamfilter03.heinlein-hosting.de [80.241.56.117]) (amavisd-new, port 10030)
-        with ESMTP id iNb9taX10f5N; Wed,  6 May 2020 17:41:38 +0200 (CEST)
-Date:   Thu, 7 May 2020 01:41:17 +1000
-From:   Aleksa Sarai <cyphar@cyphar.com>
-To:     "Lev R. Oshvang ." <levonshe@gmail.com>
-Cc:     =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
-        linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Heimes <christian@python.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Deven Bowers <deven.desai@linux.microsoft.com>,
-        Eric Chiang <ericchiang@google.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mickael.salaun@ssi.gouv.fr>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Philippe =?utf-8?Q?Tr=C3=A9buchet?= 
-        <philippe.trebuchet@ssi.gouv.fr>,
-        Scott Shell <scottsh@microsoft.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Steve Dower <steve.dower@python.org>,
-        Steve Grubb <sgrubb@redhat.com>,
-        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>,
-        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        LSM List <linux-security-module@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v5 0/6] Add support for O_MAYEXEC
-Message-ID: <20200506154117.gibiibfytrdl4exo@yavin.dot.cyphar.com>
-References: <20200505153156.925111-1-mic@digikod.net>
- <d4616bc0-39df-5d6c-9f5b-d84cf6e65960@digikod.net>
- <CAP22eLHres_shVWEC+2=wcKXRsQzfNKDAnyRd8yuO_gJ3Wi_JA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ljnqns477wlvxj5l"
-Content-Disposition: inline
-In-Reply-To: <CAP22eLHres_shVWEC+2=wcKXRsQzfNKDAnyRd8yuO_gJ3Wi_JA@mail.gmail.com>
-X-Rspamd-Queue-Id: BECC31754
-X-Rspamd-Score: -7.67 / 15.00 / 15.00
+        Wed, 6 May 2020 11:42:08 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 046F2Qod060973;
+        Wed, 6 May 2020 11:42:07 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 30uvm97051-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 May 2020 11:42:01 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 046FdOPj007467;
+        Wed, 6 May 2020 11:41:46 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 30uvm9703w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 May 2020 11:41:45 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 046FexB6027812;
+        Wed, 6 May 2020 15:41:42 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma03ams.nl.ibm.com with ESMTP id 30s0g5sg8g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 May 2020 15:41:42 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 046FeUs065732886
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 6 May 2020 15:40:30 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 08C35A404D;
+        Wed,  6 May 2020 15:41:40 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D47A0A4055;
+        Wed,  6 May 2020 15:41:39 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  6 May 2020 15:41:39 +0000 (GMT)
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pierre Morel <pmorel@linux.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>
+Subject: [RFC 0/2] Enable PF-VF linking with pdev->no_vf_scan (s390)
+Date:   Wed,  6 May 2020 17:41:37 +0200
+Message-Id: <20200506154139.90609-1-schnelle@linux.ibm.com>
+X-Mailer: git-send-email 2.17.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-05-06_07:2020-05-05,2020-05-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ suspectscore=0 clxscore=1015 adultscore=0 bulkscore=0 malwarescore=0
+ phishscore=0 mlxlogscore=461 lowpriorityscore=0 spamscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005060117
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Kernel Hackers,
 
---ljnqns477wlvxj5l
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+the following series enables PF-VF linking for architectures using the
+pdev->no_vf_scan flag (currently just s390). This includes kernel internal
+linking with pdev->physfn as well as creation of the relevant sysfs links.
+The former are required for example by libvirt to manage VFs.
 
-On 2020-05-06, Lev R. Oshvang . <levonshe@gmail.com> wrote:
-> On Tue, May 5, 2020 at 6:36 PM Micka=EBl Sala=FCn <mic@digikod.net> wrote:
-> >
-> >
-> > On 05/05/2020 17:31, Micka=EBl Sala=FCn wrote:
-> > > Hi,
-> > >
-> > > This fifth patch series add new kernel configurations (OMAYEXEC_STATI=
-C,
-> > > OMAYEXEC_ENFORCE_MOUNT, and OMAYEXEC_ENFORCE_FILE) to enable to
-> > > configure the security policy at kernel build time.  As requested by
-> > > Mimi Zohar, I completed the series with one of her patches for IMA.
-> > >
-> > > The goal of this patch series is to enable to control script execution
-> > > with interpreters help.  A new O_MAYEXEC flag, usable through
-> > > openat2(2), is added to enable userspace script interpreter to delega=
-te
-> > > to the kernel (and thus the system security policy) the permission to
-> > > interpret/execute scripts or other files containing what can be seen =
-as
-> > > commands.
-> > >
-> > > A simple system-wide security policy can be enforced by the system
-> > > administrator through a sysctl configuration consistent with the mount
-> > > points or the file access rights.  The documentation patch explains t=
-he
-> > > prerequisites.
-> > >
-> > > Furthermore, the security policy can also be delegated to an LSM, eit=
-her
-> > > a MAC system or an integrity system.  For instance, the new kernel
-> > > MAY_OPENEXEC flag closes a major IMA measurement/appraisal interpreter
-> > > integrity gap by bringing the ability to check the use of scripts [1].
-> > > Other uses are expected, such as for openat2(2) [2], SGX integration
-> > > [3], bpffs [4] or IPE [5].
-> > >
-> > > Userspace needs to adapt to take advantage of this new feature.  For
-> > > example, the PEP 578 [6] (Runtime Audit Hooks) enables Python 3.8 to =
-be
-> > > extended with policy enforcement points related to code interpretatio=
-n,
-> > > which can be used to align with the PowerShell audit features.
-> > > Additional Python security improvements (e.g. a limited interpreter
-> > > withou -c, stdin piping of code) are on their way.
-> > >
-> > > The initial idea come from CLIP OS 4 and the original implementation =
-has
-> > > been used for more than 12 years:
-> > > https://github.com/clipos-archive/clipos4_doc
-> > >
-> > > An introduction to O_MAYEXEC was given at the Linux Security Summit
-> > > Europe 2018 - Linux Kernel Security Contributions by ANSSI:
-> > > https://www.youtube.com/watch?v=3DchNjCRtPKQY&t=3D17m15s
-> > > The "write xor execute" principle was explained at Kernel Recipes 201=
-8 -
-> > > CLIP OS: a defense-in-depth OS:
-> > > https://www.youtube.com/watch?v=3DPjRE0uBtkHU&t=3D11m14s
-> > >
-> > > This patch series can be applied on top of v5.7-rc4.  This can be tes=
-ted
-> > > with CONFIG_SYSCTL.  I would really appreciate constructive comments =
-on
-> > > this patch series.
-> > >
-> > > Previous version:
-> > > https://lore.kernel.org/lkml/20200428175129.634352-1-mic@digikod.net/
-> >
-> > The previous version (v4) is
-> > https://lore.kernel.org/lkml/20200430132320.699508-1-mic@digikod.net/
->=20
->=20
-> Hi Michael
->=20
-> I have couple of question
-> 1. Why you did not add O_MAYEXEC to open()?
-> Some time ago (around v4.14) open() did not return EINVAL when
-> VALID_OPEN_FLAGS check failed.
-> Now it does, so I do not see a problem that interpreter will use
-> simple open(),  ( Although that path might be manipulated, but file
-> contents will be verified by IMA)
+The series consists of two patches against the featuress branch of
+git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git
 
-You don't get -EINVAL from open() in the case of unknown flags, that's
-something only openat2() does in the open*() family. Hence why it's only
-introduced for openat2().
+- PCI/IOV: Introduce pci_iov_sysfs_link() function
 
-> 2. When you apply a new flag to mount, it means that IMA will check
-> all files under this mount and it does not matter whether the file in
-> question is a script or not.
-> IMHO it is too hard overhead for performance reasons.
->=20
-> Regards,
-> LEv
+This patch factors the sysfs link creation out of pci_iov_add_virtfn() and
+into a new pci_iov_sysfs_link() function. On its own it also applies
+cleanly on v5.7-rc4.
+ 
+- s390/pci: create links between PFs and VFs
 
+This patch makes use of the pci_iov_sysfs_link() function introduced in the
+first patch to create the sysfs PF-VF links. It exploits recent work for
+multi-function support on s390 that gives us the real devfnto identify the
+parent PF of a given VF.
+Apart from these s390 specific support contained within arch/s390/ it also
+removes the fencing off of pci_iov_remove_virtfn() by the pdev->no_vf_scan
+flag making use of the common code path for clean VF removal.
+While this is common code s390 is currently the only case where
+pdev->no_vf_scan is true I can of course split this into a separate patch
+if requested but wanted to keep this together for the discussion.
 
---=20
-Aleksa Sarai
-Senior Software Engineer (Containers)
-SUSE Linux GmbH
-<https://www.cyphar.com/>
+Best regards and your feedback is welcome,
+Niklas Schnelle
 
---ljnqns477wlvxj5l
-Content-Type: application/pgp-signature; name="signature.asc"
+Niklas Schnelle (2):
+  PCI/IOV: Introduce pci_iov_sysfs_link() function
+  s390/pci: create links between PFs and VFs
 
------BEGIN PGP SIGNATURE-----
+ arch/s390/include/asm/pci.h     |  3 +-
+ arch/s390/include/asm/pci_clp.h |  3 +-
+ arch/s390/pci/pci_bus.c         | 69 ++++++++++++++++++++++++++++++++-
+ arch/s390/pci/pci_clp.c         |  1 +
+ drivers/pci/iov.c               | 39 ++++++++++++-------
+ include/linux/pci.h             |  8 ++++
+ 6 files changed, 105 insertions(+), 18 deletions(-)
 
-iHUEABYIAB0WIQSxZm6dtfE8gxLLfYqdlLljIbnQEgUCXrLamgAKCRCdlLljIbnQ
-Eo2EAQDv6NtU9F0Nl45n0HGqLDKRn1IEH5GBUZwhlkUR72xbbAD8CqwZXGFnsYZB
-+Che7WXy1zSGWAJq84tQAqCqj97ABAQ=
-=EWAe
------END PGP SIGNATURE-----
+-- 
+2.17.1
 
---ljnqns477wlvxj5l--
