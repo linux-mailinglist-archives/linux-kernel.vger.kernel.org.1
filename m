@@ -2,90 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 483CC1C73E8
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:15:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04F0A1C73CB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 17:15:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729492AbgEFPPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 11:15:46 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:33198 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729447AbgEFPPl (ORCPT
+        id S1729421AbgEFPPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 11:15:14 -0400
+Received: from smtprelay0241.hostedemail.com ([216.40.44.241]:60978 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728821AbgEFPPN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 11:15:41 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 046FFTWn065409;
-        Wed, 6 May 2020 10:15:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1588778129;
-        bh=lfI1h+3lQGMBFBStpi63mpUEBxVTfLRQlu/dzMBT+rU=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=UVdXiryiUy2GzhxnHBR+NqepfqIFuySgoXv7HakdfA05hiFHJ7A3wfM5G/BgaHow7
-         EvCboswm8dnhRPLzzGF6LyncINDpPFEJuhDH4fpOG3c2y9YAORrO0HTVTaTDxceew1
-         iFBYtBSadsGdWIsOt6YYDKS3wM890cShOgeIDpyc=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 046FFTfc017288;
-        Wed, 6 May 2020 10:15:29 -0500
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 6 May
- 2020 10:15:28 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 6 May 2020 10:15:28 -0500
-Received: from a0393678ub.india.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 046FEUgK119457;
-        Wed, 6 May 2020 10:15:24 -0500
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Tom Joseph <tjoseph@cadence.com>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <kishon@ti.com>
-Subject: [PATCH v4 14/14] MAINTAINERS: Add Kishon Vijay Abraham I for TI J721E SoC PCIe
-Date:   Wed, 6 May 2020 20:44:29 +0530
-Message-ID: <20200506151429.12255-15-kishon@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200506151429.12255-1-kishon@ti.com>
-References: <20200506151429.12255-1-kishon@ti.com>
+        Wed, 6 May 2020 11:15:13 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id B51AB246E;
+        Wed,  6 May 2020 15:15:11 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3871:3872:3874:4250:4321:5007:8603:10004:10400:10848:11026:11232:11473:11657:11658:11914:12043:12048:12220:12296:12297:12438:12663:12740:12760:12895:13069:13161:13229:13255:13311:13357:13439:14096:14097:14181:14659:14721:21080:21627:30054:30055:30069:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: bears23_ff76a315943a
+X-Filterd-Recvd-Size: 2948
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf10.hostedemail.com (Postfix) with ESMTPA;
+        Wed,  6 May 2020 15:15:09 +0000 (UTC)
+Message-ID: <2208e464cd8bd399cfb9b49abb5aed211f27b3a8.camel@perches.com>
+Subject: Re: [PATCH -next] iwlwifi: pcie: Use bitwise instead of arithmetic
+ operator for flags
+From:   Joe Perches <joe@perches.com>
+To:     Luciano Coelho <luciano.coelho@intel.com>,
+        Samuel Zou <zou_wei@huawei.com>, johannes.berg@intel.com,
+        emmanuel.grumbach@intel.com, linuxwifi@intel.com,
+        kvalo@codeaurora.org, davem@davemloft.net,
+        Julia Lawall <julia.lawall@lip6.fr>
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, cocci <cocci@systeme.lip6.fr>
+Date:   Wed, 06 May 2020 08:15:08 -0700
+In-Reply-To: <bfd6b3a7db0c50cd3d084510bd43c9e540688edd.camel@intel.com>
+References: <1588734423-33988-1-git-send-email-zou_wei@huawei.com>
+         <f8b258e0c8bb073c445090e637195df2fc989543.camel@perches.com>
+         <bfd6b3a7db0c50cd3d084510bd43c9e540688edd.camel@intel.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.1-2 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Kishon Vijay Abraham I as MAINTAINER for TI J721E SoC PCIe.
+On Wed, 2020-05-06 at 16:51 +0300, Luciano Coelho wrote:
+> On Tue, 2020-05-05 at 20:19 -0700, Joe Perches wrote:
+> > On Wed, 2020-05-06 at 11:07 +0800, Samuel Zou wrote:
+> > > This silences the following coccinelle warning:
+> > > 
+> > > "WARNING: sum of probable bitmasks, consider |"
+> > 
+> > I suggest instead ignoring bad and irrelevant warnings.
+> > 
+> > PREFIX_LEN is 32 not 0x20 or BIT(5)
+> > PCI_DUMP_SIZE is 352
+> > 
+> > > diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/trans.c b/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
+> > []
+> > > @@ -109,9 +109,9 @@ void iwl_trans_pcie_dump_regs(struct iwl_trans *trans)
+> > >  
+> > >  	/* Alloc a max size buffer */
+> > >  	alloc_size = PCI_ERR_ROOT_ERR_SRC +  4 + PREFIX_LEN;
+> > > -	alloc_size = max_t(u32, alloc_size, PCI_DUMP_SIZE + PREFIX_LEN);
+> > > -	alloc_size = max_t(u32, alloc_size, PCI_MEM_DUMP_SIZE + PREFIX_LEN);
+> > > -	alloc_size = max_t(u32, alloc_size, PCI_PARENT_DUMP_SIZE + PREFIX_LEN);
+> > > +	alloc_size = max_t(u32, alloc_size, PCI_DUMP_SIZE | PREFIX_LEN);
+> > > +	alloc_size = max_t(u32, alloc_size, PCI_MEM_DUMP_SIZE | PREFIX_LEN);
+> > > +	alloc_size = max_t(u32, alloc_size, PCI_PARENT_DUMP_SIZE | PREFIX_LEN);
+> > >  
+> > >  	buf = kmalloc(alloc_size, GFP_ATOMIC);
+> > >  	if (!buf)
+> 
+> Yeah, those macros are clearly not bitmasks.  I'm dropping this patch.
 
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
----
- MAINTAINERS | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Can the cocci script that generated this warning
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 2926327e4976..9d40e1318f7c 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12978,12 +12978,14 @@ S:	Maintained
- F:	Documentation/devicetree/bindings/pci/designware-pcie.txt
- F:	drivers/pci/controller/dwc/*designware*
- 
--PCI DRIVER FOR TI DRA7XX
-+PCI DRIVER FOR TI DRA7XX/J721E
- M:	Kishon Vijay Abraham I <kishon@ti.com>
- L:	linux-omap@vger.kernel.org
- L:	linux-pci@vger.kernel.org
-+L:	linux-arm-kernel@lists.infradead.org
- S:	Supported
- F:	Documentation/devicetree/bindings/pci/ti-pci.txt
-+F:	drivers/pci/controller/cadence/pci-j721e.c
- F:	drivers/pci/controller/dwc/pci-dra7xx.c
- 
- PCI DRIVER FOR TI KEYSTONE
--- 
-2.17.1
+scripts/coccinelle/misc/orplus.cocci
+
+be dropped or improved to validate the likelihood that
+the defines or constants used are more likely than
+not are bit values?
+
+Maybe these should be defined as hex or BIT or BIT_ULL
+or GENMASK or the like?
+
+
+Right now it seems it just tests for two constants.
+
 
