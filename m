@@ -2,91 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C3E71C71C6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 15:33:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE581C71CB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 15:38:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728375AbgEFNdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 09:33:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45154 "EHLO mail.kernel.org"
+        id S1728455AbgEFNiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 09:38:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47098 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728081AbgEFNdk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 09:33:40 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        id S1728081AbgEFNiH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 09:38:07 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B0A9F20575;
-        Wed,  6 May 2020 13:33:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588772019;
-        bh=v3oyKzRpXKnoipOROeHkbZncbFji/UHgVJbykoFkjj0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OqHlDNENnw2vLqj3tQkj3Rso6ty0BdOHA3e4bze1MXUn/5aJZlbBIyCIrTK5q+jfO
-         LaW8Xa19N0EVyeXfRfzadiGTQe9z5c/PTLkrvOuuh8xoGqrtnp4/XhZvpAg80mJhx8
-         Hm8200zS8D0Qd30h7d+uxP+iXAsl0eC5FtWNQlJw=
-Date:   Wed, 6 May 2020 14:33:33 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: Re: [patch V4 part 1 06/36] compiler: Simple READ/WRITE_ONCE()
- implementations
-Message-ID: <20200506133333.GK8043@willie-the-truck>
-References: <20200505131602.633487962@linutronix.de>
- <20200505134058.651504242@linutronix.de>
+        by mail.kernel.org (Postfix) with ESMTPSA id B556C20575;
+        Wed,  6 May 2020 13:38:06 +0000 (UTC)
+Date:   Wed, 6 May 2020 09:38:05 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Xiao Yang <yangx.jy@cn.fujitsu.com>, linux-kernel@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>
+Subject: Re: [PATCH] kernel/trace: Stop and wait for kthread on preempt irq
+ module unload
+Message-ID: <20200506093805.1f86f3f0@gandalf.local.home>
+In-Reply-To: <20200429191224.GA75562@google.com>
+References: <20200424223630.224895-1-joel@joelfernandes.org>
+        <5EA80319.7080005@cn.fujitsu.com>
+        <20200428104409.0995ceb0@gandalf.local.home>
+        <20200428104543.3926eaaf@gandalf.local.home>
+        <5EA96AE8.6000707@cn.fujitsu.com>
+        <20200429123141.580f89ce@gandalf.local.home>
+        <20200429191224.GA75562@google.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200505134058.651504242@linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 05, 2020 at 03:16:08PM +0200, Thomas Gleixner wrote:
-> READ/WRITE_ONCE_NOCHECK() is required for atomics in code which cannot be
-> instrumented like the x86 int3 text poke code. As READ/WRITE_ONCE() is
-> undergoing a rewrite, provide __{READ,WRITE}_ONCE_SCALAR().
+On Wed, 29 Apr 2020 15:12:24 -0400
+Joel Fernandes <joel@joelfernandes.org> wrote:
+
+> > Mine ;-)
+> > 
+> > The "kthread_should_stop()" is the normal way to end kernel threads. Using
+> > get/put is not the orthodox way.  
 > 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
->  include/linux/compiler.h |    8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> --- a/include/linux/compiler.h
-> +++ b/include/linux/compiler.h
-> @@ -313,6 +313,14 @@ unsigned long read_word_at_a_time(const
->  	__u.__val;					\
->  })
->  
-> +#define __READ_ONCE_SCALAR(x)				\
-> +	(*(const volatile typeof(x) *)&(x))
-> +
-> +#define __WRITE_ONCE_SCALAR(x, val)			\
-> +do {							\
-> +	*(volatile typeof(x) *)&(x) = val;		\
-> +} while (0)
+> Agreed :-) thanks.
 
-FWIW, these end up being called __READ_ONCE() and __WRITE_ONCE() after
-the rewrite; the *_SCALAR() variants will call into kcsan_check_atomic_*().
+And while I'm working on getting a new "urgent" branch out, I found this
+code is buggier than I thought. I'll have a new patch soon.
 
-If you go with that naming now, then any later conflict should fall out in
-the wash.
-
-Will
+-- Steve
