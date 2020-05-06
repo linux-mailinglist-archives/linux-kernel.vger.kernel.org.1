@@ -2,190 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 648481C76CC
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 18:44:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 898D01C76D4
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 18:44:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729995AbgEFQoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 12:44:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727984AbgEFQoM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 12:44:12 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87B11C061A0F;
-        Wed,  6 May 2020 09:44:12 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id o16so1542270qtb.13;
-        Wed, 06 May 2020 09:44:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=t7CgGDakZ6HBwLoyEuXzHSsFPvnCyBpRS/YoqjnzK6M=;
-        b=N5lLph8jiTGnSBatLuURZEb4yy06JEJ+bZRmXyC1PWnHC8sDPqjgr3/SqpyoJZA1DC
-         oV9HWnMj/XijqO2WVyWHSfC72ZE3oPq2liwvU6O39+3dbXsr/JLoSGjs9t5KtgrlUi+a
-         iPqZtalYYRB58LucAh7ylY2zUFmfXyAtWTi+8Tr9RwLiO8ZkXzqwXmv9t2NA1xdqQLR9
-         h5pd0V50OWPI4ALsdQJFxYQ1uiqLAbRnHTCIv6FtAHsewcu7DjA1HNpPDiNsRI0GbKOL
-         ox4FgFawO0NA0InSmxWKyAoSWFW02HC5ivRfLwXYYOjSL4CkC4oKilvcQReqotv0gNCo
-         tn6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=t7CgGDakZ6HBwLoyEuXzHSsFPvnCyBpRS/YoqjnzK6M=;
-        b=TOXu13XYGRhWBKMSf6l4pexBZ0UbgXRJTm6+N6Y15d7nyJmbYPmbBjQJErUR/Jc6as
-         anVJ7RqEB4FROLIhgU9FCuGUHrldwwrPRXIWJDradlj16pZKTecNITZ3/eX6GZ+mjEPN
-         Dikz8SDOk/rg61ltsVp/X5xF43zo5AkWBSIQwujYXdamKV3ANPSMy9/Bu7A7xzDVcC5A
-         2NNHXAGwgPIApqqw6yWyQHAjAsd3FYZF9GulYhWO5GUzImCuK5teu5zchnv8lATn0Wbc
-         XS3mHpWDa48+Lwr05QYNAawNqirJxIkqQ8DOf72+NB6zB0vrqH4oewKpJrJgmtFia9nL
-         nnXA==
-X-Gm-Message-State: AGi0PuZHb6r510KrrnQfrn6SrbR1ZDOSsgf40JQiOQbI0rhF/xO1GOyA
-        0399zB/isACZ5luB+NegEBFHxW2TCbA=
-X-Google-Smtp-Source: APiQypLpWj1Wxz1UeUcc7dMbxUPCp3rCGxhahy7fC/kMvfQlUpBR02ObZReFLwHMP51ydu8/wM5n2g==
-X-Received: by 2002:ac8:2783:: with SMTP id w3mr8989034qtw.265.1588783451454;
-        Wed, 06 May 2020 09:44:11 -0700 (PDT)
-Received: from quaco.ghostprotocols.net ([179.97.37.151])
-        by smtp.gmail.com with ESMTPSA id c7sm2031704qko.55.2020.05.06.09.44.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 May 2020 09:44:10 -0700 (PDT)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id CBE2A409A3; Wed,  6 May 2020 13:44:08 -0300 (-03)
-Date:   Wed, 6 May 2020 13:44:08 -0300
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 1/3] perf-probe: Fix to check blacklist address correctly
-Message-ID: <20200506164408.GA4323@kernel.org>
-References: <158763965400.30755.14484569071233923742.stgit@devnote2>
- <158763966411.30755.5882376357738273695.stgit@devnote2>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <158763966411.30755.5882376357738273695.stgit@devnote2>
-X-Url:  http://acmel.wordpress.com
+        id S1730253AbgEFQod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 12:44:33 -0400
+Received: from foss.arm.com ([217.140.110.172]:41042 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730126AbgEFQo1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 12:44:27 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EC6181042;
+        Wed,  6 May 2020 09:44:25 -0700 (PDT)
+Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 9E0DF3F305;
+        Wed,  6 May 2020 09:44:24 -0700 (PDT)
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Sudeep Holla <sudeep.holla@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        harb@amperecomputing.com
+Subject: [PATCH v3 5/7] firmware: smccc: Refactor SMCCC specific bits into separate file
+Date:   Wed,  6 May 2020 17:44:09 +0100
+Message-Id: <20200506164411.3284-6-sudeep.holla@arm.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200506164411.3284-1-sudeep.holla@arm.com>
+References: <20200506164411.3284-1-sudeep.holla@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Apr 23, 2020 at 08:01:04PM +0900, Masami Hiramatsu escreveu:
-> Fix to check kprobe blacklist address correctly with
-> relocated address by adjusting debuginfo address.
-> 
-> Since the address in the debuginfo is same as objdump,
-> it is different from relocated kernel address with KASLR.
-> Thus, the perf-probe always misses to catch the
-> blacklisted addresses.
+In order to add newer SMCCC v1.1+ functionality and to avoid cluttering
+PSCI firmware driver with SMCCC bits, let us move the SMCCC specific
+details under drivers/firmware/smccc/smccc.c
 
-Thanks, applied, sorry for the delay,
+We can also drop conduit and smccc_version from psci_operations structure
+as SMCCC was the sole user and now it maintains those.
 
-- Arnaldo
+No functionality change in this patch though.
+
+Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+---
+ MAINTAINERS                     |  9 +++++++++
+ drivers/firmware/Makefile       |  3 ++-
+ drivers/firmware/psci/psci.c    | 19 ++++---------------
+ drivers/firmware/smccc/Makefile |  3 +++
+ drivers/firmware/smccc/smccc.c  | 26 ++++++++++++++++++++++++++
+ include/linux/arm-smccc.h       | 11 +++++++++++
+ include/linux/psci.h            |  2 --
+ 7 files changed, 55 insertions(+), 18 deletions(-)
+ create mode 100644 drivers/firmware/smccc/Makefile
+ create mode 100644 drivers/firmware/smccc/smccc.c
+
+Hi Mark, Lorenzo,
+
+I have replicated PSCI entry in MAINTAINERS file and added myself to
+for SMCCC entry. If you prefer I can merge it under PSCI. Let me know
+your preference along with other review comments.
+
+Regards,
+Sudeep
+
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 2926327e4976..f32b0dfa49be 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -15474,6 +15474,15 @@ M:	Nicolas Pitre <nico@fluxnic.net>
+ S:	Odd Fixes
+ F:	drivers/net/ethernet/smsc/smc91x.*
  
-> Without this patch, perf probe can not detect the blacklist
-> addresses on KASLR enabled kernel.
-> 
-> =========
->   # perf probe kprobe_dispatcher
->   Failed to write event: Invalid argument
->     Error: Failed to add events.
-> =========
-> 
-> With this patch, it correctly shows the error message.
-> 
-> =========
->   # perf probe kprobe_dispatcher
->   kprobe_dispatcher is blacklisted function, skip it.
->   Probe point 'kprobe_dispatcher' not found.
->     Error: Failed to add events.
-> =========
-> 
-> Fixes: 9aaf5a5f479b ("perf probe: Check kprobes blacklist when adding new events")
-> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> Cc: stable@vger.kernel.org
-> ---
->  tools/perf/util/probe-event.c |   21 +++++++++++++++------
->  1 file changed, 15 insertions(+), 6 deletions(-)
-> 
-> diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
-> index eea132f512b0..f75df63309be 100644
-> --- a/tools/perf/util/probe-event.c
-> +++ b/tools/perf/util/probe-event.c
-> @@ -102,7 +102,7 @@ void exit_probe_symbol_maps(void)
->  	symbol__exit();
->  }
->  
-> -static struct ref_reloc_sym *kernel_get_ref_reloc_sym(void)
-> +static struct ref_reloc_sym *kernel_get_ref_reloc_sym(struct map **pmap)
->  {
->  	/* kmap->ref_reloc_sym should be set if host_machine is initialized */
->  	struct kmap *kmap;
-> @@ -114,6 +114,10 @@ static struct ref_reloc_sym *kernel_get_ref_reloc_sym(void)
->  	kmap = map__kmap(map);
->  	if (!kmap)
->  		return NULL;
-> +
-> +	if (pmap)
-> +		*pmap = map;
-> +
->  	return kmap->ref_reloc_sym;
->  }
->  
-> @@ -125,7 +129,7 @@ static int kernel_get_symbol_address_by_name(const char *name, u64 *addr,
->  	struct map *map;
->  
->  	/* ref_reloc_sym is just a label. Need a special fix*/
-> -	reloc_sym = kernel_get_ref_reloc_sym();
-> +	reloc_sym = kernel_get_ref_reloc_sym(NULL);
->  	if (reloc_sym && strcmp(name, reloc_sym->name) == 0)
->  		*addr = (reloc) ? reloc_sym->addr : reloc_sym->unrelocated_addr;
->  	else {
-> @@ -745,6 +749,7 @@ post_process_kernel_probe_trace_events(struct probe_trace_event *tevs,
->  				       int ntevs)
->  {
->  	struct ref_reloc_sym *reloc_sym;
-> +	struct map *map;
->  	char *tmp;
->  	int i, skipped = 0;
->  
-> @@ -753,7 +758,7 @@ post_process_kernel_probe_trace_events(struct probe_trace_event *tevs,
->  		return post_process_offline_probe_trace_events(tevs, ntevs,
->  						symbol_conf.vmlinux_name);
->  
-> -	reloc_sym = kernel_get_ref_reloc_sym();
-> +	reloc_sym = kernel_get_ref_reloc_sym(&map);
->  	if (!reloc_sym) {
->  		pr_warning("Relocated base symbol is not found!\n");
->  		return -EINVAL;
-> @@ -764,9 +769,13 @@ post_process_kernel_probe_trace_events(struct probe_trace_event *tevs,
->  			continue;
->  		if (tevs[i].point.retprobe && !kretprobe_offset_is_supported())
->  			continue;
-> -		/* If we found a wrong one, mark it by NULL symbol */
-> +		/*
-> +		 * If we found a wrong one, mark it by NULL symbol.
-> +		 * Since addresses in debuginfo is same as objdump, we need
-> +		 * to convert it to addresses on memory.
-> +		 */
->  		if (kprobe_warn_out_range(tevs[i].point.symbol,
-> -					  tevs[i].point.address)) {
-> +			map__objdump_2mem(map, tevs[i].point.address))) {
->  			tmp = NULL;
->  			skipped++;
->  		} else {
-> @@ -2936,7 +2945,7 @@ static int find_probe_trace_events_from_map(struct perf_probe_event *pev,
->  	/* Note that the symbols in the kmodule are not relocated */
->  	if (!pev->uprobes && !pev->target &&
->  			(!pp->retprobe || kretprobe_offset_is_supported())) {
-> -		reloc_sym = kernel_get_ref_reloc_sym();
-> +		reloc_sym = kernel_get_ref_reloc_sym(NULL);
->  		if (!reloc_sym) {
->  			pr_warning("Relocated base symbol is not found!\n");
->  			ret = -EINVAL;
-> 
-
++SECURE MONITOR CALL(SMC) CALLING CONVENTION (SMCCC)
++M:	Mark Rutland <mark.rutland@arm.com>
++M:	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
++M:	Sudeep Holla <sudeep.holla@arm.com>
++L:	linux-arm-kernel@lists.infradead.org
++S:	Maintained
++F:	drivers/firmware/smccc/
++F:	include/linux/arm-smccc.h
++
+ SMIA AND SMIA++ IMAGE SENSOR DRIVER
+ M:	Sakari Ailus <sakari.ailus@linux.intel.com>
+ L:	linux-media@vger.kernel.org
+diff --git a/drivers/firmware/Makefile b/drivers/firmware/Makefile
+index e9fb838af4df..99510be9f5ed 100644
+--- a/drivers/firmware/Makefile
++++ b/drivers/firmware/Makefile
+@@ -23,12 +23,13 @@ obj-$(CONFIG_TRUSTED_FOUNDATIONS) += trusted_foundations.o
+ obj-$(CONFIG_TURRIS_MOX_RWTM)	+= turris-mox-rwtm.o
+ 
+ obj-$(CONFIG_ARM_SCMI_PROTOCOL)	+= arm_scmi/
+-obj-y				+= psci/
+ obj-y				+= broadcom/
+ obj-y				+= meson/
+ obj-$(CONFIG_GOOGLE_FIRMWARE)	+= google/
+ obj-$(CONFIG_EFI)		+= efi/
+ obj-$(CONFIG_UEFI_CPER)		+= efi/
+ obj-y				+= imx/
++obj-y				+= psci/
++obj-y				+= smccc/
+ obj-y				+= tegra/
+ obj-y				+= xilinx/
+diff --git a/drivers/firmware/psci/psci.c b/drivers/firmware/psci/psci.c
+index 6a56d7196697..92013ecc2d9e 100644
+--- a/drivers/firmware/psci/psci.c
++++ b/drivers/firmware/psci/psci.c
+@@ -46,25 +46,14 @@
+  * require cooperation with a Trusted OS driver.
+  */
+ static int resident_cpu = -1;
++struct psci_operations psci_ops;
++static enum arm_smccc_conduit psci_conduit = SMCCC_CONDUIT_NONE;
+ 
+ bool psci_tos_resident_on(int cpu)
+ {
+ 	return cpu == resident_cpu;
+ }
+ 
+-struct psci_operations psci_ops = {
+-	.conduit = SMCCC_CONDUIT_NONE,
+-	.smccc_version = ARM_SMCCC_VERSION_1_0,
+-};
+-
+-enum arm_smccc_conduit arm_smccc_1_1_get_conduit(void)
+-{
+-	if (psci_ops.smccc_version < ARM_SMCCC_VERSION_1_1)
+-		return SMCCC_CONDUIT_NONE;
+-
+-	return psci_ops.conduit;
+-}
+-
+ typedef unsigned long (psci_fn)(unsigned long, unsigned long,
+ 				unsigned long, unsigned long);
+ static psci_fn *invoke_psci_fn;
+@@ -242,7 +231,7 @@ static void set_conduit(enum arm_smccc_conduit conduit)
+ 		WARN(1, "Unexpected PSCI conduit %d\n", conduit);
+ 	}
+ 
+-	psci_ops.conduit = conduit;
++	psci_conduit = conduit;
+ }
+ 
+ static int get_set_conduit_method(struct device_node *np)
+@@ -412,7 +401,7 @@ static void __init psci_init_smccc(void)
+ 		u32 ret;
+ 		ret = invoke_psci_fn(ARM_SMCCC_VERSION_FUNC_ID, 0, 0, 0);
+ 		if (ret >= ARM_SMCCC_VERSION_1_1) {
+-			psci_ops.smccc_version = ret;
++			arm_smccc_version_init(ret, psci_conduit);
+ 			ver = ret;
+ 		}
+ 	}
+diff --git a/drivers/firmware/smccc/Makefile b/drivers/firmware/smccc/Makefile
+new file mode 100644
+index 000000000000..6f369fe3f0b9
+--- /dev/null
++++ b/drivers/firmware/smccc/Makefile
+@@ -0,0 +1,3 @@
++# SPDX-License-Identifier: GPL-2.0
++#
++obj-$(CONFIG_HAVE_ARM_SMCCC_DISCOVERY)	+= smccc.o
+diff --git a/drivers/firmware/smccc/smccc.c b/drivers/firmware/smccc/smccc.c
+new file mode 100644
+index 000000000000..488699aae24f
+--- /dev/null
++++ b/drivers/firmware/smccc/smccc.c
+@@ -0,0 +1,26 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (C) 2020 Arm Limited
++ */
++
++#define pr_fmt(fmt) "smccc: " fmt
++
++#include <linux/arm-smccc.h>
++
++static u32 smccc_version = ARM_SMCCC_VERSION_1_0;
++static enum arm_smccc_conduit smccc_conduit = SMCCC_CONDUIT_NONE;
++
++void __init arm_smccc_version_init(u32 version, enum arm_smccc_conduit conduit)
++{
++	smccc_version = version;
++	smccc_conduit = conduit;
++}
++
++enum arm_smccc_conduit arm_smccc_1_1_get_conduit(void)
++{
++	if (smccc_version < ARM_SMCCC_VERSION_1_1)
++		return SMCCC_CONDUIT_NONE;
++
++	return smccc_conduit;
++}
++
+diff --git a/include/linux/arm-smccc.h b/include/linux/arm-smccc.h
+index 9d9a2e42e919..11fb20bfa8f7 100644
+--- a/include/linux/arm-smccc.h
++++ b/include/linux/arm-smccc.h
+@@ -5,6 +5,7 @@
+ #ifndef __LINUX_ARM_SMCCC_H
+ #define __LINUX_ARM_SMCCC_H
+ 
++#include <linux/init.h>
+ #include <uapi/linux/const.h>
+ 
+ /*
+@@ -89,6 +90,16 @@ enum arm_smccc_conduit {
+ 	SMCCC_CONDUIT_HVC,
+ };
+ 
++/**
++ * arm_smccc_version_init() - Sets SMCCC version and conduit
++ * @version: SMCCC version v1.1 or above
++ * @conduit: SMCCC_CONDUIT_SMC or SMCCC_CONDUIT_HVC
++ *
++ * When SMCCCv1.1 or above is not present, defaults to ARM_SMCCC_VERSION_1_0
++ * and SMCCC_CONDUIT_NONE respectively.
++ */
++void __init arm_smccc_version_init(u32 version, enum arm_smccc_conduit conduit);
++
+ /**
+  * arm_smccc_1_1_get_conduit()
+  *
+diff --git a/include/linux/psci.h b/include/linux/psci.h
+index 29bd0671e5bb..14ad9b9ebcd6 100644
+--- a/include/linux/psci.h
++++ b/include/linux/psci.h
+@@ -30,8 +30,6 @@ struct psci_operations {
+ 	int (*affinity_info)(unsigned long target_affinity,
+ 			unsigned long lowest_affinity_level);
+ 	int (*migrate_info_type)(void);
+-	enum arm_smccc_conduit conduit;
+-	u32 smccc_version;
+ };
+ 
+ extern struct psci_operations psci_ops;
 -- 
+2.17.1
 
-- Arnaldo
