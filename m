@@ -2,131 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 330E51C707E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 14:41:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71FFB1C7090
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 May 2020 14:44:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728148AbgEFMlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 08:41:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53962 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725887AbgEFMlu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 08:41:50 -0400
-Received: from [192.168.0.106] (unknown [202.53.39.250])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3468320575;
-        Wed,  6 May 2020 12:41:45 +0000 (UTC)
-Subject: Re: exec: Promised cleanups after introducing exec_update_mutex
-To:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Rob Landley <rob@landley.net>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        linux-fsdevel@vger.kernel.org, Al Viro <viro@ZenIV.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <87h7wujhmz.fsf@x220.int.ebiederm.org>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <5140633d-cbb6-58cb-4f05-31c5e6c75643@linux-m68k.org>
-Date:   Wed, 6 May 2020 22:41:43 +1000
+        id S1728314AbgEFMog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 08:44:36 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:35840 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727995AbgEFMog (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 08:44:36 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 046CfOe4118814;
+        Wed, 6 May 2020 12:43:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=Apqskal/b0nvOUTCatKWmbsNQirc8GyhXqenmq20Xb0=;
+ b=HoZygMGL3xRx8vFPswPMft+cOa5636uAi3evpeF2DLn3brrvYkPDCIqqQ4qeB6RYmWpf
+ RSowqqTLUyfH/TmJ+Gkcmkxe8axk2+KzbbliH3YqKS8nWl85tbyzG9Lw8vYUgBpgjoGP
+ qYxQaQTnrL9xCMp/LrwXXVA29OVBckMiRgTNFLhfr04kbWEfHtex7GbDvamGv0cZLcNO
+ 7rZvQDe8FupE9hXvtZJxvf6IsMsKxJ86JTOn3iYGkVNLFdyiZa9aXesJJs4jj29JiObE
+ syJevovZrkGhXMQZf7FOXt3Y9tR5V4kNYfCGRgJMXn7b+L6d18GHWQtD9s7J5gS1o2gM xA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 30s1gn9wya-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 06 May 2020 12:43:47 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 046CaioU158995;
+        Wed, 6 May 2020 12:43:47 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 30us7mkdc5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 06 May 2020 12:43:47 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 046ChjYB019533;
+        Wed, 6 May 2020 12:43:45 GMT
+Received: from linux-1.home (/10.175.10.30)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 06 May 2020 05:43:44 -0700
+Subject: Re: [patch V4 part 1 04/36] sched: Make scheduler_ipi inline
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>
+References: <20200505131602.633487962@linutronix.de>
+ <20200505134058.453581595@linutronix.de>
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+Message-ID: <3e191b63-9125-25a8-4784-e7a737d71b05@oracle.com>
+Date:   Wed, 6 May 2020 14:42:33 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <87h7wujhmz.fsf@x220.int.ebiederm.org>
+In-Reply-To: <20200505134058.453581595@linutronix.de>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9612 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 suspectscore=0
+ mlxlogscore=999 malwarescore=0 phishscore=0 mlxscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005060099
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9612 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 mlxscore=0
+ spamscore=0 clxscore=1015 priorityscore=1501 bulkscore=0 phishscore=0
+ impostorscore=0 malwarescore=0 lowpriorityscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005060099
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eric,
 
-On 6/5/20 5:39 am, Eric W. Biederman wrote:
-> In the patchset that introduced exec_update_mutex there were a few last
-> minute discoveries and fixes that left the code in a state that can
-> be very easily be improved.
+On 5/5/20 3:16 PM, Thomas Gleixner wrote:
+> Now that the scheduler IPI is trivial and simple again there is no point to
+> have the little function out of line. This simplifies the effort of
+> constraining the instrumentation nicely.
 > 
-> During the merge window we discussed the first three of these patches
-> and I promised I would resend them.
-> 
-> What the first patch does is it makes the the calls in the binfmts:
-> 	flush_old_exec();
->          /* set the personality */
->          setup_new_exec();
->          install_exec_creds();
-> 
-> With no sleeps or anything in between.
-> 
-> At the conclusion of this set of changes the the calls in the binfmts
-> are:
-> 	begin_new_exec();
->          /* set the personality */
->          setup_new_exec();
-> 
-> The intent is to make the code easier to follow and easier to change.
-> 
-> Eric W. Biederman (7):
->        binfmt: Move install_exec_creds after setup_new_exec to match binfmt_elf
->        exec: Make unlocking exec_update_mutex explict
->        exec: Rename the flag called_exec_mmap point_of_no_return
->        exec: Merge install_exec_creds into setup_new_exec
->        exec: In setup_new_exec cache current in the local variable me
->        exec: Move most of setup_new_exec into flush_old_exec
->        exec: Rename flush_old_exec begin_new_exec
-> 
->   Documentation/trace/ftrace.rst |   2 +-
->   arch/x86/ia32/ia32_aout.c      |   4 +-
->   fs/binfmt_aout.c               |   3 +-
->   fs/binfmt_elf.c                |   3 +-
->   fs/binfmt_elf_fdpic.c          |   3 +-
->   fs/binfmt_flat.c               |   4 +-
->   fs/exec.c                      | 162 ++++++++++++++++++++---------------------
->   include/linux/binfmts.h        |  10 +--
->   kernel/events/core.c           |   2 +-
->   9 files changed, 92 insertions(+), 101 deletions(-)
-
-I tested the the whole series on non-MMU m68k and non-MMU arm
-(exercising binfmt_flat) and it all tested out with no problems,
-so for the binfmt_flat changes:
-
-Tested-by: Greg Ungerer <gerg@linux-m68k.org>
-
-I reviewed the whole series too, and looks good to me:
-
-Reviewed-by: Greg Ungerer <gerg@linux-m68k.org>
-
-Regards
-Greg
-
-
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 > ---
-> 
-> These changes are against v5.7-rc3.
-> 
-> My intention once everything passes code reveiw is to place these
-> changes in a topic branch in my tree and then into linux-next, and
-> eventually to send Linus a pull when the next merge window opens.
-> Unless someone has a better idea.
-> 
-> I am a little concerned that I might conflict with the ongoing coredump
-> cleanups.
-> 
-> I have several follow up sets of changes with additional cleanups as
-> well but I am trying to keep everything small enough that the code can
-> be reviewed.
-> 
-> After enough cleanups I hope to reopen the conversation of dealing with
-> the livelock situation with cred_guard_mutex.  As I think figuring out
-> what to do becomes much easier once several of my planned
-> cleanups/improvements have been made.
-> 
-> But ultimately I just want to get exec to the point where when
-> we have disucssions on how to make exec better the code is in good
-> enough shape we can actually address the issues we see.
-> 
-> Eric
+>   include/linux/sched.h |   10 +++++++++-
+>   kernel/sched/core.c   |   10 ----------
+>   2 files changed, 9 insertions(+), 11 deletions(-)
+
+Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
+
+alex.
+
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -1719,7 +1719,15 @@ extern char *__get_task_comm(char *to, s
+>   })
+>   
+>   #ifdef CONFIG_SMP
+> -void scheduler_ipi(void);
+> +static __always_inline void scheduler_ipi(void)
+> +{
+> +	/*
+> +	 * Fold TIF_NEED_RESCHED into the preempt_count; anybody setting
+> +	 * TIF_NEED_RESCHED remotely (for the first time) will also send
+> +	 * this IPI.
+> +	 */
+> +	preempt_fold_need_resched();
+> +}
+>   extern unsigned long wait_task_inactive(struct task_struct *, long match_state);
+>   #else
+>   static inline void scheduler_ipi(void) { }
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -2312,16 +2312,6 @@ static void wake_csd_func(void *info)
+>   	sched_ttwu_pending();
+>   }
+>   
+> -void scheduler_ipi(void)
+> -{
+> -	/*
+> -	 * Fold TIF_NEED_RESCHED into the preempt_count; anybody setting
+> -	 * TIF_NEED_RESCHED remotely (for the first time) will also send
+> -	 * this IPI.
+> -	 */
+> -	preempt_fold_need_resched();
+> -}
+> -
+>   static void ttwu_queue_remote(struct task_struct *p, int cpu, int wake_flags)
+>   {
+>   	struct rq *rq = cpu_rq(cpu);
 > 
