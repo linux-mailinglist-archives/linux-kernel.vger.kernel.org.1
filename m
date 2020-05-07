@@ -2,108 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 111B41C9A27
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:58:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2475E1C9A76
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:04:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728522AbgEGS57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 14:57:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59320 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726926AbgEGS55 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 14:57:57 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8AB8620575;
-        Thu,  7 May 2020 18:57:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588877877;
-        bh=v54+jJXI55ev/ljByJU0bELFAb0LTCoWQZNBXlPcq6M=;
-        h=Date:From:To:Cc:Subject:From;
-        b=jNUUPCbHLXL+RGEmVjXV4LexFXr2GtNKv+s2Fi35Ni/57M7Xa2vVfUsuYHNYHLOao
-         ARkd0WBSfasJhdIAz1BUfP6UdO/swEaHn1/TJHozcEZrf70tNiIYfflYm8KOstj7A9
-         UQnSrNgiG+0Ms7UVehDBfqh/EnYUmasRl3Jdoeag=
-Date:   Thu, 7 May 2020 14:02:23 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>
-Cc:     linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] NFS: Replace zero-length array with flexible-array
-Message-ID: <20200507190223.GA15428@embeddedor>
+        id S1728288AbgEGTER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 15:04:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726491AbgEGTEQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 15:04:16 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75316C05BD09
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 12:04:16 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id u11so7428987iow.4
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 12:04:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3pqxVey+OpLP2Bd4SNRaSG1BkaFq4VbJOs0rt4HQddo=;
+        b=gjcJAVkP4QIWorSEpDgbJkla5yA2OQ+73EvwbD1hpKkYsiLRkc2/DORutpA5dLKFyG
+         ED5oRfQ5flpIt0TQKs0cqe1mx6aj4bcp0rL0SqdbUPeL4umAPqbcDEt1jgo2vq42J5yZ
+         59SAeMEmtJeBFrq42klJ0Hny+A0ztCq9Wi7bw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3pqxVey+OpLP2Bd4SNRaSG1BkaFq4VbJOs0rt4HQddo=;
+        b=ZqNqu+XU5W5dUydy6ZSXi2R3Ih9hYP3RNeL7bCus/dYmcNnM5+zk7zAKpX0FfLLJTW
+         Q7GHuXgmsg0SS5EmbAenfNiouPCHZwktJ3+dE6nodbCPcNOWdU/h/BQLZ+M8xOb0ZJM1
+         KC1prUq+B1meD9AKh9C6yDWmtyFjP8UvttluqgnhNEoIhtlUJ2prTHP2S8/gkRz9cb4r
+         1By9Lrt3aN4OKnRVDyIZJ1H9WnDpT4ZMAJdBxChAchbx4e+nzvVOlGq1XTxtmwVXr10s
+         D9k2BEL45fmoVJwG6kMF6SZTY0LphJjvtaLtZMqJwyKbzyq1chY15+DuqHLy1zPE49OR
+         zUiw==
+X-Gm-Message-State: AGi0PuZALw3BXdXfWVKzt7BkISHCIWoPk+jrhcR5NxPMURfAVRT0RXCZ
+        spynW/AC9oSVhQ49e6D4+1SlMQ==
+X-Google-Smtp-Source: APiQypKAmsWHJ9r4kPgM/xipjiM5IY3/ett50IEt8gHhzgxgys03OYoPt0tQU/FkMuKkNI0xy0z9LQ==
+X-Received: by 2002:a5d:8e0d:: with SMTP id e13mr15555692iod.132.1588878255676;
+        Thu, 07 May 2020 12:04:15 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id u17sm3087269ilb.86.2020.05.07.12.04.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 May 2020 12:04:14 -0700 (PDT)
+Subject: Re: [PATCH] tools/testing: Replace zero-length array with
+ flexible-array
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20200507185608.GA14779@embeddedor>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <94b19470-9ade-5fcc-00c7-324056d049de@linuxfoundation.org>
+Date:   Thu, 7 May 2020 13:04:14 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200507185608.GA14779@embeddedor>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current codebase makes use of the zero-length array language
-extension to the C90 standard, but the preferred mechanism to declare
-variable-length types such as these ones is a flexible array member[1][2],
-introduced in C99:
+On 5/7/20 12:56 PM, Gustavo A. R. Silva wrote:
+> The current codebase makes use of the zero-length array language
+> extension to the C90 standard, but the preferred mechanism to declare
+> variable-length types such as these ones is a flexible array member[1][2],
+> introduced in C99:
+> 
+> struct foo {
+>          int stuff;
+>          struct boo array[];
+> };
+> 
+> By making use of the mechanism above, we will get a compiler warning
+> in case the flexible array does not occur last in the structure, which
+> will help us prevent some kind of undefined behavior bugs from being
+> inadvertently introduced[3] to the codebase from now on.
+> 
+> Also, notice that, dynamic memory allocations won't be affected by
+> this change:
+> 
+> "Flexible array members have incomplete type, and so the sizeof operator
+> may not be applied. As a quirk of the original implementation of
+> zero-length arrays, sizeof evaluates to zero."[1]
+> 
+> sizeof(flexible-array-member) triggers a warning because flexible array
+> members have incomplete type[1]. There are some instances of code in
+> which the sizeof operator is being incorrectly/erroneously applied to
+> zero-length arrays and the result is zero. Such instances may be hiding
+> some bugs. So, this work (flexible-array member conversions) will also
+> help to get completely rid of those sorts of issues.
+> 
+> This issue was found with the help of Coccinelle.
+> 
+> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+> [2] https://github.com/KSPP/linux/issues/21
+> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>   tools/testing/selftests/nsfs/pidns.c |    2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/nsfs/pidns.c b/tools/testing/selftests/nsfs/pidns.c
+> index e0d86e1668c0..e3c772c6a7c7 100644
+> --- a/tools/testing/selftests/nsfs/pidns.c
+> +++ b/tools/testing/selftests/nsfs/pidns.c
+> @@ -27,7 +27,7 @@
+>   #define __stack_aligned__	__attribute__((aligned(16)))
+>   struct cr_clone_arg {
+>   	char stack[128] __stack_aligned__;
+> -	char stack_ptr[0];
+> +	char stack_ptr[];
+>   };
+>   
+>   static int child(void *args)
+> 
 
-struct foo {
-        int stuff;
-        struct boo array[];
-};
+Thanks for the patch. I will pull this in for 5.7-rc6
 
-By making use of the mechanism above, we will get a compiler warning
-in case the flexible array does not occur last in the structure, which
-will help us prevent some kind of undefined behavior bugs from being
-inadvertently introduced[3] to the codebase from now on.
-
-Also, notice that, dynamic memory allocations won't be affected by
-this change:
-
-"Flexible array members have incomplete type, and so the sizeof operator
-may not be applied. As a quirk of the original implementation of
-zero-length arrays, sizeof evaluates to zero."[1]
-
-sizeof(flexible-array-member) triggers a warning because flexible array
-members have incomplete type[1]. There are some instances of code in
-which the sizeof operator is being incorrectly/erroneously applied to
-zero-length arrays and the result is zero. Such instances may be hiding
-some bugs. So, this work (flexible-array member conversions) will also
-help to get completely rid of those sorts of issues.
-
-This issue was found with the help of Coccinelle.
-
-[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-[2] https://github.com/KSPP/linux/issues/21
-[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- include/linux/nfs4.h    |    2 +-
- include/linux/nfs_xdr.h |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/nfs4.h b/include/linux/nfs4.h
-index 82d8fb422092..7c4b63561035 100644
---- a/include/linux/nfs4.h
-+++ b/include/linux/nfs4.h
-@@ -38,7 +38,7 @@ struct nfs4_ace {
- 
- struct nfs4_acl {
- 	uint32_t	naces;
--	struct nfs4_ace	aces[0];
-+	struct nfs4_ace	aces[];
- };
- 
- #define NFS4_MAXLABELLEN	2048
-diff --git a/include/linux/nfs_xdr.h b/include/linux/nfs_xdr.h
-index 440230488025..6aad9b0a5062 100644
---- a/include/linux/nfs_xdr.h
-+++ b/include/linux/nfs_xdr.h
-@@ -1227,7 +1227,7 @@ struct nfs4_secinfo4 {
- 
- struct nfs4_secinfo_flavors {
- 	unsigned int		num_flavors;
--	struct nfs4_secinfo4	flavors[0];
-+	struct nfs4_secinfo4	flavors[];
- };
- 
- struct nfs4_secinfo_arg {
-
+thanks,
+-- Shuah
