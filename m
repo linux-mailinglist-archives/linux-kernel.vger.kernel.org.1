@@ -2,74 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92F971C8C71
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 15:34:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CE2D1C8C79
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 15:36:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726744AbgEGNeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 09:34:13 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:47232 "EHLO vps0.lunn.ch"
+        id S1726767AbgEGNgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 09:36:09 -0400
+Received: from mga09.intel.com ([134.134.136.24]:44669 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725964AbgEGNeN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 09:34:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=r6eWlavmJYFaBTK6r09hetkA8pAPpK8I2TqwDeTM2JY=; b=zP/tWS3SdCBoj5Lh0SgOxCGgXx
-        ghpwqWGrUjeN/zzDqNsQQ6KuGefokWV1EaFGrsXjvYiA2UfGipq633L0tD7ruCcxqJN22804AVigL
-        TpAYp5Dvula+Xey3wO3E6/yHCpxasC6be+Cl044t+PB+eTkWMLFlINgCy0Agtd/eOcTk=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
-        (envelope-from <andrew@lunn.ch>)
-        id 1jWgfC-001EFc-Fn; Thu, 07 May 2020 15:34:10 +0200
-Date:   Thu, 7 May 2020 15:34:10 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Diana Craciun <diana.craciun@oss.nxp.com>
-Cc:     linux-kernel@vger.kernel.org, stuyoder@gmail.com,
-        gregkh@linuxfoundation.org, leoyang.li@nxp.com,
-        Bharat Bhushan <Bharat.Bhushan@nxp.com>,
-        linux-arm-kernel@lists.infradead.org, laurentiu.tudor@nxp.com
-Subject: Re: [PATCH v2 03/12] bus/fsl-mc: add support for 'driver_override'
- in the mc-bus
-Message-ID: <20200507133410.GN208718@lunn.ch>
-References: <20200507073431.2710-1-diana.craciun@oss.nxp.com>
- <20200507073431.2710-4-diana.craciun@oss.nxp.com>
+        id S1725939AbgEGNgI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 09:36:08 -0400
+IronPort-SDR: L5CnpK4QsITrNNZJOnHTkQKTuE5ZUQdG1D0+q/36HjR+1nWJyfDd5ba3PSRSG+ahx1crdwMeOc
+ JwIzEcljPSUQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2020 06:36:07 -0700
+IronPort-SDR: 4D9yhjnF2nW6Y3BL3kWuHnrvdfW8DzzsX/kZnk451XCMyQ1n9KmGJB5KoAScE6dr3xb8vfufHw
+ UENGE2wDJ0Gw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,363,1583222400"; 
+   d="scan'208";a="305121240"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by FMSMGA003.fm.intel.com with ESMTP; 07 May 2020 06:36:05 -0700
+Received: from andy by smile with local (Exim 4.93)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1jWgh6-005DkF-Vr; Thu, 07 May 2020 16:36:08 +0300
+Date:   Thu, 7 May 2020 16:36:08 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Chen Zhou <chenzhou10@huawei.com>
+Cc:     akpm@linux-foundation.org, keescook@chromium.org,
+        peterz@infradead.org, gpiccoli@canonical.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] kernel.h: remove duplicate headers
+Message-ID: <20200507133608.GV185537@smile.fi.intel.com>
+References: <20200507131608.63373-1-chenzhou10@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200507073431.2710-4-diana.craciun@oss.nxp.com>
+In-Reply-To: <20200507131608.63373-1-chenzhou10@huawei.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 07, 2020 at 10:34:22AM +0300, Diana Craciun wrote:
-> From: Bharat Bhushan <Bharat.Bhushan@nxp.com>
-> 
-> This patch is required for vfio-fsl-mc meta driver to successfully bind
-> layerscape container devices for device passthrough. This patch adds
-> a mechanism to allow a layerscape device to specify a driver rather than
-> a layerscape driver provide a device match.
-> 
-> Example to allow a device (dprc.1) to specifically bind
-> with driver (vfio-fsl-mc):
->  - echo vfio-fsl-mc > /sys/bus/fsl-mc/devices/dprc.1/driver_override
->  - echo dprc.1 > /sys/bus/fsl-mc/drivers/fsl_mc_dprc/unbind
->  - echo dprc.1 > /sys/bus/fsl-mc/drivers/vfio-fsl-mc/bind
+On Thu, May 07, 2020 at 09:16:08PM +0800, Chen Zhou wrote:
+> Remove duplicate headers which are included twice.
 
-Hi Bharat, Diana
+Thanks, this is included in my patch set to split out some parts of this header
+to new headers.
 
-grep -r "/driver_override" Documentation 
-Documentation/ABI/testing/sysfs-bus-rpmsg:What:		/sys/bus/rpmsg/devices/.../driver_override
-Documentation/ABI/testing/sysfs-bus-pci:What:		/sys/bus/pci/devices/.../driver_override
-Documentation/ABI/testing/sysfs-bus-platform:What:		/sys/bus/platform/devices/.../driver_override
-Documentation/ABI/testing/sysfs-bus-css:What:		/sys/bus/css/devices/.../driver_override
-Documentation/ABI/testing/sysfs-bus-vmbus:What:		/sys/bus/vmbus/devices/.../driver_override
-Documentation/ABI/testing/sysfs-bus-amba:What:		/sys/bus/amba/devices/.../driver_override
+(It basically removes all occurrences of div64.h)
 
-Maybe it is time to move this into the core, and avoid yet another
-implementation of driver_override_store() and driver_override_show()
-functions etc.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-   Andrew
+
