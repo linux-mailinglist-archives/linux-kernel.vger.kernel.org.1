@@ -2,177 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D560E1C97A2
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 19:25:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DCC91C97A6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 19:25:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728357AbgEGRYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 13:24:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726950AbgEGRYq (ORCPT
-        <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 13:24:46 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F23AC05BD43
-        for <Linux-kernel@vger.kernel.org>; Thu,  7 May 2020 10:24:46 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id q206so3332243ybg.1
-        for <Linux-kernel@vger.kernel.org>; Thu, 07 May 2020 10:24:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Qwi/mLzlnIWo6FMJsWVhJEnxBXCBJt31KahfK+nSC0Q=;
-        b=LWfDDso3CgtTjnaJD88rEpOj8W0NhidIlYFA13IHjIvqkKcHU3ry454k5VeItAE2P0
-         i7nLoQw3BYJQmC1qBsiJ3hgfTxAtqiXx4P4Pye740pQpOw/l4pJNy/AL6XD1L2SQIl6P
-         P2C8uMrzJnyBGOuXoAg/GrZDECM0G7Nfgf7zJEXIG8UwNrRhPOT37rxv57KOXjrFoOCN
-         Y9sl0Nr5mum724HV43BR7pO8TBoODmJuSzcIoreHlwZQfn4XIOSnqhe8G887JbZBTAIo
-         Ni5jlNvC9+T0m3a9cZKNRFGRNSmZJedxkLiZ7EQddicxn2tMvaNgnmd9MiCObz044Ft0
-         suJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Qwi/mLzlnIWo6FMJsWVhJEnxBXCBJt31KahfK+nSC0Q=;
-        b=GElBbarM5yGcYJK7mesmiP689XTOxXsHs1WaAfhe7JAEKqm+G+G7lRsSAZrEnhmk+9
-         iEhO7RkSHdeExscYk9i/7mnNrTh+12b8JAlKHqQYbiVvK+DzaPj8cqqB0ZtyHm2vQGGG
-         aOEhBdBDu47Z0ntyUgoszKMg7DZfyle2uF3ZSjc9psUhZooeiqwOBdELE7cv4o10tNW4
-         eUz338C/mMzzEZ9XYvhQBN/rKgcHCSajkBAnalmmcH/bqUYQ/MM+z5XcJnSJmn1++7+o
-         lfRRajlzM97FweFmAtobJIT3syByuvnQ3F32Nr/aCNlbKhvcs6xQky9J7ryNFcKgDQLY
-         tWUA==
-X-Gm-Message-State: AGi0PuZDSEjswc+WU3omqcnpQgx6hmXUWPRZWalFPvf3ScUnwt/mcVbh
-        41p7NydGfGiKEATudFKS9I7wkwH/aza6XLWiUHQHTw==
-X-Google-Smtp-Source: APiQypKtWuh1zSMJ8f5a6u4OOAmP+GM9mskpuX5ChgmSySL0OT40yI9ciCA+7aw90CVi7PC4qZhfgnwixv4lJmtQDDQ=
-X-Received: by 2002:a25:4446:: with SMTP id r67mr3020164yba.41.1588872285289;
- Thu, 07 May 2020 10:24:45 -0700 (PDT)
+        id S1727870AbgEGRZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 13:25:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54398 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726308AbgEGRZS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 13:25:18 -0400
+Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 70AD320A8B;
+        Thu,  7 May 2020 17:25:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588872317;
+        bh=0hVoIDZy9AMfK5oLVFXR6QcoGQGRqyyEMc5BGHJA5Ro=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=WFr0jpGb0RaXq1QjTETgKMSSWQCNrAspzrY1b1X6O1k4eBRJh7yewzNw74DI/L8u9
+         r77aeNvTYkMbIseF/8uWYdilEHDNZjsl42sFgNP/8oznIb2aRGyVtmk07dJGvsnf98
+         TcXcrL1+IaUriCCogWG9r5NvTQJTV/zbANn45vLk=
+Date:   Thu, 7 May 2020 19:25:14 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Subject: Re: linux-next: Tree for May 7 (hid/hid-asus)
+In-Reply-To: <937ea192-1702-7ecd-5b90-d281a20f3c8f@infradead.org>
+Message-ID: <nycvar.YFH.7.76.2005071925000.25812@cbobk.fhfr.pm>
+References: <20200507181524.728b6b10@canb.auug.org.au> <937ea192-1702-7ecd-5b90-d281a20f3c8f@infradead.org>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-References: <20200430003618.17002-1-yao.jin@linux.intel.com>
- <20200430084529.GC1681583@krava> <66b84e3f-f7d8-bb65-616e-d159a509a439@huawei.com>
- <20200430111551.GC1694693@krava> <0195184b-0b43-f2fd-8d80-3b70d3f5a950@huawei.com>
- <8685d584-1d28-4648-8d85-2ea637f3c695@linux.intel.com> <20200507164642.GD31109@kernel.org>
-In-Reply-To: <20200507164642.GD31109@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 7 May 2020 10:24:34 -0700
-Message-ID: <CAP-5=fX21fHWAn8C7inhyfQhq7+qq2KL_8nbhZOPiJeo9NRCKw@mail.gmail.com>
-Subject: Re: [PATCH] perf parse-events: Use strcmp to compare the PMU name
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     "Jin, Yao" <yao.jin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Jiri Olsa <jolsa@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <Linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>, kan.liang@intel.com,
-        yao.jin@intel.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 7, 2020 at 9:46 AM Arnaldo Carvalho de Melo
-<arnaldo.melo@gmail.com> wrote:
->
-> Em Thu, Apr 30, 2020 at 09:38:34PM +0800, Jin, Yao escreveu:
-> > Hi John, Jiri,
-> >
-> > On 4/30/2020 7:48 PM, John Garry wrote:
-> > > On 30/04/2020 12:15, Jiri Olsa wrote:
-> > >
-> > > +
-> > >
-> > > > On Thu, Apr 30, 2020 at 09:54:18AM +0100, John Garry wrote:
-> > > > > On 30/04/2020 09:45, Jiri Olsa wrote:
-> > > > > > On Thu, Apr 30, 2020 at 08:36:18AM +0800, Jin Yao wrote:
-> > > > > > > A big uncore event group is split into multiple small groups which
-> > > > > > > only include the uncore events from the same PMU. This has been
-> > > > > > > supported in the commit 3cdc5c2cb924a ("perf parse-events: Handle
-> > > > > > > uncore event aliases in small groups properly").
-> > > > > > >
-> > > > > > > If the event's PMU name starts to repeat, it must be a new event.
-> > > > > > > That can be used to distinguish the leader from other members.
-> > > > > > > But now it only compares the pointer of pmu_name
-> > > > > > > (leader->pmu_name == evsel->pmu_name).
-> > > > > > >
-> > > > > > > If we use "perf stat -M LLC_MISSES.PCIE_WRITE -a" on cascadelakex,
-> > > > > > > the event list is:
-> > > > > > >
-> > > > > > > evsel->name                    evsel->pmu_name
-> > > > > > > ---------------------------------------------------------------
-> > > > > > > unc_iio_data_req_of_cpu.mem_write.part0        uncore_iio_4 (as leader)
-> > > > > > > unc_iio_data_req_of_cpu.mem_write.part0        uncore_iio_2
-> > > > > > > unc_iio_data_req_of_cpu.mem_write.part0        uncore_iio_0
-> > > > > > > unc_iio_data_req_of_cpu.mem_write.part0        uncore_iio_5
-> > > > > > > unc_iio_data_req_of_cpu.mem_write.part0        uncore_iio_3
-> > > > > > > unc_iio_data_req_of_cpu.mem_write.part0        uncore_iio_1
-> > > > > > > unc_iio_data_req_of_cpu.mem_write.part1        uncore_iio_4
-> > > > > > > ......
-> > > > > > >
-> > > > > > > For the event "unc_iio_data_req_of_cpu.mem_write.part1" with
-> > > > > > > "uncore_iio_4", it should be the event from PMU "uncore_iio_4".
-> > > > > > > It's not a new leader for this PMU.
-> > > > > > >
-> > > > > > > But if we use "(leader->pmu_name == evsel->pmu_name)", the check
-> > > > > > > would be failed and the event is stored to leaders[] as a new
-> > > > > > > PMU leader.
-> > > > > > >
-> > > > > > > So this patch uses strcmp to compare the PMU name between events.
-> > > > > > >
-> > > > > > > Fixes: 3cdc5c2cb924a ("perf parse-events: Handle uncore
-> > > > > > > event aliases in small groups properly")
-> > > > > > > Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
-> > > > > >
-> > > > > > looks good, any chance we could have automated test
-> > > > > > for this uncore leader setup logic? like maybe the way
-> > > > > > John did the pmu-events tests? like test will trigger
-> > > > > > only when there's the pmu/events in the system
-> > > > > >
-> > > > > > Acked-by: Jiri Olsa <jolsa@redhat.com>
-> > > > > >
-> > > > > > thanks,
-> > > > > > jirka
-> > > > >
-> > > > > Hi jirka,
-> > > > >
-> > > > > JFYI, this is effectively the same patch as I mentioned to you, which was a
-> > > > > fix for the same WARN:
-> > > > >
-> > > > > https://lore.kernel.org/linux-arm-kernel/1587120084-18990-2-git-send-email-john.garry@huawei.com/
-> > > > >
-> > > > >
-> > > > > but I found that it "fixed" d4953f7ef1a2 ("perf parse-events: Fix 3 use
-> > > > > after frees found with clang ASANutil/parse-events.c"), based on bisect
-> > > > > breakage
-> > > >
-> > > > hum right.. sorry I did not recalled that, there's
-> > > > also the warn removal in here, could you guys also
-> > > > plz sync on the fixes clauses?
-> > >
-> > > I just thought that it fixes d4953f7ef1a2, as I found that the pointer
-> > > equality fails from that commit. I assume the parse-events code was
-> > > sound before then (in that regard). That's all I know :)
-> > >
-> > > Thanks!
-> > >
-> >
-> > For 3cdc5c2cb924a, I just think it should use strcmp for pmu_name comparison
-> > rather than using pointer. But I'm OK to add d4953f7ef1a2 in fixes clauses.
-> > :)
->
-> So, I'm keeping Ian's patch, as I just applied it, and replaced the
-> fixes clause to:
->
-> Fixes: d4953f7ef1a2 ("perf parse-events: Fix 3 use after frees found with clang ASAN")
->
->
-> Would this be ok? Or does John's fix has something else in it (I haven't
-> checked).
+On Thu, 7 May 2020, Randy Dunlap wrote:
 
-It is great! This patch is the same as John's except it also removes a
-warning that can now no longer happen. As such this patch is the
-better and the Fixes is correct.
+> > Changes since 20200505:
+> > 
+> 
+> 
+> on i386 or x86_64:
+> 
+> ERROR: modpost: "usb_hid_driver" [drivers/hid/hid-asus.ko] undefined!
+> or
+> (when builtin:)
+> ld: drivers/hid/hid-asus.o: in function `asus_probe':
+> hid-asus.c:(.text+0x60f): undefined reference to `usb_hid_driver'
+> ld: hid-asus.c:(.text+0x689): undefined reference to `usb_hid_driver'
 
-Thanks,
-Ian
+This has been fixed in hid.git earlier today. Thanks,
 
-> - Arnaldo
+-- 
+Jiri Kosina
+SUSE Labs
+
