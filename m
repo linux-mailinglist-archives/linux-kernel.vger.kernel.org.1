@@ -2,139 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35E031C9EA3
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 00:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD6AE1C9EAD
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 00:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726950AbgEGWpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 18:45:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41232 "EHLO mail.kernel.org"
+        id S1726891AbgEGWum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 18:50:42 -0400
+Received: from mga18.intel.com ([134.134.136.126]:62950 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726770AbgEGWp3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 18:45:29 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C274220725;
-        Thu,  7 May 2020 22:45:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588891529;
-        bh=m6BQnVKIlUtyrdBpZe1PlvAZv15nUYwubFnQjyNpYOE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FqhYuwHu/gCZASVTcH8p9XI9PqStc01J6jRoOc4dpLZaEtCorgMNAlMkLyF+Z+5A/
-         toHFjg8LJxX05TsbJCUGlv3mrAJlsS9BLDA/RBSk+FAIWB8FMzYV7uaNiLDgT0W6vQ
-         geB1GancB2T8LkkZlAiiipAVdzAsTXo+MQWruYR0=
-Date:   Thu, 7 May 2020 17:49:55 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Richard Guy Briggs <rgb@redhat.com>
-Cc:     Paul Moore <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>,
-        linux-audit@redhat.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] audit: Replace zero-length array with flexible-array
-Message-ID: <20200507224955.GA22343@embeddedor>
-References: <20200507185041.GA13930@embeddedor>
- <20200507215812.ksvwcykfged7ye2a@madcap2.tricolour.ca>
+        id S1726515AbgEGWum (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 18:50:42 -0400
+IronPort-SDR: RjZvXOEqyBvSauYfgqDB9pF/wYilMCoFFAk8qkHwD1DpNoz2FLFas2I/BmmR0VJvaV5dM6o1YG
+ 7TQrydJZzprg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2020 15:50:41 -0700
+IronPort-SDR: A94YOimG+GBTCtRnotihIHXo/4uYOm9rsXy8xtuLX5Aw2+CVkRWX3diLimU1sfCOXtFd1OcX1r
+ bTWfMT7evkVA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,365,1583222400"; 
+   d="scan'208";a="278753786"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
+  by orsmga002.jf.intel.com with ESMTP; 07 May 2020 15:50:40 -0700
+Date:   Thu, 7 May 2020 15:50:40 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, dri-devel@lists.freedesktop.org,
+        Christian Koenig <christian.koenig@amd.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH V3 13/15] parisc/kmap: Remove duplicate kmap code
+Message-ID: <20200507225039.GA1428632@iweiny-DESK2.sc.intel.com>
+References: <20200507150004.1423069-1-ira.weiny@intel.com>
+ <20200507150004.1423069-14-ira.weiny@intel.com>
+ <20200507135258.f430182578c0d63b7488916e@linux-foundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200507215812.ksvwcykfged7ye2a@madcap2.tricolour.ca>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200507135258.f430182578c0d63b7488916e@linux-foundation.org>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 07, 2020 at 05:58:13PM -0400, Richard Guy Briggs wrote:
-> On 2020-05-07 13:50, Gustavo A. R. Silva wrote:
-> > The current codebase makes use of the zero-length array language
-> > extension to the C90 standard, but the preferred mechanism to declare
-> > variable-length types such as these ones is a flexible array member[1][2],
-> > introduced in C99:
-> > 
-> > struct foo {
-> >         int stuff;
-> >         struct boo array[];
-> > };
-> > 
-> > By making use of the mechanism above, we will get a compiler warning
-> > in case the flexible array does not occur last in the structure, which
-> > will help us prevent some kind of undefined behavior bugs from being
-> > inadvertently introduced[3] to the codebase from now on.
-> > 
-> > Also, notice that, dynamic memory allocations won't be affected by
-> > this change:
-> > 
-> > "Flexible array members have incomplete type, and so the sizeof operator
-> > may not be applied. As a quirk of the original implementation of
-> > zero-length arrays, sizeof evaluates to zero."[1]
-> > 
-> > sizeof(flexible-array-member) triggers a warning because flexible array
-> > members have incomplete type[1]. There are some instances of code in
-> > which the sizeof operator is being incorrectly/erroneously applied to
-> > zero-length arrays and the result is zero. Such instances may be hiding
-> > some bugs. So, this work (flexible-array member conversions) will also
-> > help to get completely rid of those sorts of issues.
-> > 
-> > This issue was found with the help of Coccinelle.
-> > 
-> > [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-> > [2] https://github.com/KSPP/linux/issues/21
-> > [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-> > 
-> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+On Thu, May 07, 2020 at 01:52:58PM -0700, Andrew Morton wrote:
+> On Thu,  7 May 2020 08:00:01 -0700 ira.weiny@intel.com wrote:
 > 
-> Sounds reasonable to me.  There's another in include/uapi/linux/audit.h
-
-Hi,
-
-I wouldn't advise to make any of these conversions in include/uapi/
-[1][2].
-
-> in struct audit_rule_data buf[0].  This alert also helped me fix another
-> one in a patchset I'm about to post (and will probably cause a merge
-> conflict but we can figure that out).
-
-Awesome. :)
-
-> 
-> Reviewed-by: Richard Guy Briggs <rgb@redhat.com>
->
-
-Thanks
---
-Gustavo
-
-[1] https://lore.kernel.org/lkml/20200424121553.GE26002@ziepe.ca/
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1e6e9d0f4859ec698d55381ea26f4136eff3afe1
-
-> > ---
-> >  include/linux/audit.h |    2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > parisc reimplements the kmap calls except to flush it's dcache.  This is
+> > arguably an abuse of kmap but regardless it is messy and confusing.
 > > 
-> > diff --git a/include/linux/audit.h b/include/linux/audit.h
-> > index f9ceae57ca8d..2b63aee6e9fa 100644
-> > --- a/include/linux/audit.h
-> > +++ b/include/linux/audit.h
-> > @@ -19,7 +19,7 @@
-> >  struct audit_sig_info {
-> >  	uid_t		uid;
-> >  	pid_t		pid;
-> > -	char		ctx[0];
-> > +	char		ctx[];
-> >  };
-> >  
-> >  struct audit_buffer;
-> > 
-> > 
-> > --
-> > Linux-audit mailing list
-> > Linux-audit@redhat.com
-> > https://www.redhat.com/mailman/listinfo/linux-audit
+> > Remove the duplicate code and have parisc define
+> > ARCH_HAS_FLUSH_ON_KUNMAP for a kunmap_flush_on_unmap() architecture
+> > specific call to flush the cache.
 > 
-> - RGB
+> checkpatch says:
 > 
-> --
-> Richard Guy Briggs <rgb@redhat.com>
-> Sr. S/W Engineer, Kernel Security, Base Operating Systems
-> Remote, Ottawa, Red Hat Canada
-> IRC: rgb, SunRaycer
-> Voice: +1.647.777.2635, Internal: (81) 32635
+> ERROR: #define of 'ARCH_HAS_FLUSH_ON_KUNMAP' is wrong - use Kconfig variables or standard guards instead
+> #69: FILE: arch/parisc/include/asm/cacheflush.h:103:
+> +#define ARCH_HAS_FLUSH_ON_KUNMAP
 > 
+> which is fair enough, I guess.  More conventional would be
+> 
+> arch/parisc/include/asm/cacheflush.h:
+> 
+> static inline void kunmap_flush_on_unmap(void *addr)
+> {
+> 	...
+> }
+> #define kunmap_flush_on_unmap kunmap_flush_on_unmap
+> 
+> 
+> include/linux/highmem.h:
+> 
+> #ifndef kunmap_flush_on_unmap
+> static inline void kunmap_flush_on_unmap(void *addr)
+> {
+> }
+> #define kunmap_flush_on_unmap kunmap_flush_on_unmap
+> #endif
+> 
+> 
+> static inline void kunmap_atomic_high(void *addr)
+> {
+> 	/* Mostly nothing to do in the CONFIG_HIGHMEM=n case as kunmap_atomic()
+> 	 * handles re-enabling faults + preemption */
+> 	kunmap_flush_on_unmap(addr);
+> }
+> 
+> 
+> but I don't really think it's worth bothering changing it.	
+> 
+> (Ditto patch 3/15)
+
+Yes I was following the pattern already there.
+
+I'll fix up the last patch now.
+Ira
+
