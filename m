@@ -2,490 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 063041C90AE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 16:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCBA11C90CC
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 16:53:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726924AbgEGOuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 10:50:54 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:45045 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726308AbgEGOuy (ORCPT
+        id S1726575AbgEGOwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 10:52:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726308AbgEGOwX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 10:50:54 -0400
+        Thu, 7 May 2020 10:52:23 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF713C05BD43
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 07:52:21 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id g16so4911444qtp.11
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 07:52:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1588863052; x=1620399052;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=3HykfrMuAvSxk/Z9eL73Fx0hL0swvG27YAflfdOqVpU=;
-  b=V/Xh3B7SOvgXCRDdrtCcm8OmYhMxOBzzopzowuFHLMp2RZU74yfM0F0H
-   6fQc8oztp+p+yG8+qIFufWZ8s8DJ52lKzYFWYtDOW76DdzowDKFFEEXgh
-   14MdFKnNRmTI1HWF+l9ucVu92+xjJusQB2Jw4kMeMikojk+lKbj4q6OCU
-   E=;
-IronPort-SDR: wyeGFy1c+3p8hpLZyh2p2yuYn+0aSEh0+FD8Gb/vxvyK17cla2noHyG6k8zU1A2SJwQ8V8z8kH
- MAjkKSoyNV1A==
-X-IronPort-AV: E=Sophos;i="5.73,364,1583193600"; 
-   d="scan'208";a="33578497"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-53356bf6.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 07 May 2020 14:50:51 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2a-53356bf6.us-west-2.amazon.com (Postfix) with ESMTPS id 22431A2415;
-        Thu,  7 May 2020 14:50:50 +0000 (UTC)
-Received: from EX13D01EUB001.ant.amazon.com (10.43.166.194) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 7 May 2020 14:50:49 +0000
-Received: from uf25486d27d2d5b.ant.amazon.com (10.43.162.200) by
- EX13D01EUB001.ant.amazon.com (10.43.166.194) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 7 May 2020 14:50:39 +0000
-From:   Talel Shenhar <talel@amazon.com>
-To:     <bp@alien8.de>, <mchehab@kernel.org>, <james.morse@arm.com>,
-        <talel@amazon.com>, <davem@davemloft.net>,
-        <gregkh@linuxfoundation.org>, <nicolas.ferre@microchip.com>,
-        <robh+dt@kernel.org>, <mark.rutland@arm.com>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <linux-edac@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     <hhhawa@amazon.com>, <ronenk@amazon.com>, <jonnyc@amazon.com>,
-        <hanochu@amazon.com>, <eitan@amazon.com>
-Subject: [PATCH v7 2/2] EDAC: al-mc-edac: Introduce Amazon's Annapurna Labs Memory Controller EDAC
-Date:   Thu, 7 May 2020 17:50:02 +0300
-Message-ID: <20200507145002.22010-3-talel@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200507145002.22010-1-talel@amazon.com>
-References: <20200507145002.22010-1-talel@amazon.com>
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WL/t9qE3+BAvQf1Jr0p8vij392YMfCOS2shO2YG+Teg=;
+        b=lFppU/itbca0im+qFX0dAnObD6Uxu4HbNf+tXnjPVzJKx4BP6YrzJFJyGoIaRVErgV
+         UGcWaG0c5e2k5Pkg7pJvUKXDeDBTO3ArpjPwuKLaCCndBiSQuuRZhTDe2PEXhCKgfWAA
+         9J8t80FAEiKY8Iv8FjYtpN5H2z6iEJGXmAxyOMKAaNypRmtxGE9w8bYP1jp5UADJgIXt
+         0dzSyR1byTembSnpND7VGWRq/wMCsquUoGsCLaPqnu1rVGaBssurq7Bwi79iyuJG5aib
+         TqevVY92nN3DOPdDk4R937IX7xyYg8lq/aWo/76F6q0vhwVVu/oFuWGj2fsbYQ+5IAXP
+         3trw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WL/t9qE3+BAvQf1Jr0p8vij392YMfCOS2shO2YG+Teg=;
+        b=efE+0ISqy5RuV76i+CrFb7ZVbz/C1aRfhcf1SVqHkjIr8fX6HrcFrqfDMz3w0fANtL
+         PUQQhgyvnK8vzwFTmmc8A5GaDjBdxwWlfklYJomaqnsFUGakeuPWs+U4f2Yqpr+W7zNC
+         C1I15f+zoAtwShpmmfmHZUGD6sx20ClGOiYq4xS6hgubaJ9ThkBEQ8rLvy1my1biKl8l
+         39efm5AQuJvwUoMOXe0aLGpln3HX8P9Ll8PqC84DrSoIxwG5JksdGbAPC4UUPNOvzG+b
+         l8JHrsAstlW0ZKbusei32wTdZwFdTY6J2ZN5kh2aiyl2AX3SsPjURlDaFNJdV9ZBcaPI
+         0GXA==
+X-Gm-Message-State: AGi0Pubb9/cplzHJ+WWLcKhBbBifucMnbWI0yObPw728Lz+o280aa7Lj
+        cNuV9kGYevsCMZaOFiYRahM=
+X-Google-Smtp-Source: APiQypJ7U0tDQwluiuO0qo5gFGm1ZkQtVRZy2uGUyDkcmmW6DUf2eLVMRCz3PBubAw/aXteZFuf6zA==
+X-Received: by 2002:ac8:6684:: with SMTP id d4mr8291352qtp.189.1588863140985;
+        Thu, 07 May 2020 07:52:20 -0700 (PDT)
+Received: from quaco.ghostprotocols.net ([179.97.37.151])
+        by smtp.gmail.com with ESMTPSA id w69sm4214507qka.75.2020.05.07.07.52.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 May 2020 07:52:20 -0700 (PDT)
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 5B60740AFD; Thu,  7 May 2020 11:52:17 -0300 (-03)
+Date:   Thu, 7 May 2020 11:52:17 -0300
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>, Paul Khuong <pvk@pvk.ca>
+Subject: Re: [PATCH 1/5] perf tools: Do not display extra info when there is
+ nothing to build
+Message-ID: <20200507145217.GA32641@kernel.org>
+References: <20200507095024.2789147-1-jolsa@kernel.org>
+ <20200507095024.2789147-2-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.162.200]
-X-ClientProxiedBy: EX13D25UWB003.ant.amazon.com (10.43.161.33) To
- EX13D01EUB001.ant.amazon.com (10.43.166.194)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200507095024.2789147-2-jolsa@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Amazon's Annapurna Labs Memory Controller EDAC supports ECC capability
-for error detection and correction (Single bit error correction, Double
-detection). This driver introduces EDAC driver for that capability.
+Em Thu, May 07, 2020 at 11:50:20AM +0200, Jiri Olsa escreveu:
+> Even with fully built tree, we still display extra output
+> when make is invoked, like:
+> 
+>   $ make
+>     BUILD:   Doing 'make -j8' parallel build
+>     DESCEND  plugins
+>   make[3]: Nothing to be done for 'plugins/libtraceevent-dynamic-list'.
+> 
+> Changing the make descend directly to plugins directory,
+> which quiets those messages down.
 
-Signed-off-by: Talel Shenhar <talel@amazon.com>
-Reviewed-by: James Morse <james.morse@arm.com>
----
- MAINTAINERS               |   7 +
- drivers/edac/Kconfig      |   7 +
- drivers/edac/Makefile     |   1 +
- drivers/edac/al_mc_edac.c | 354 ++++++++++++++++++++++++++++++++++++++
- 4 files changed, 369 insertions(+)
- create mode 100644 drivers/edac/al_mc_edac.c
+Thanks a lot for getting rid of that nuisance :-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 296de2b51c83..ecd591d84bdf 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -757,6 +757,13 @@ F:	drivers/tty/serial/altera_jtaguart.c
- F:	include/linux/altera_uart.h
- F:	include/linux/altera_jtaguart.h
+- Arnaldo
  
-+AMAZON ANNAPURNA LABS MEMORY CONTROLLER EDAC
-+M:	Talel Shenhar <talel@amazon.com>
-+M:	Talel Shenhar <talelshenhar@gmail.com>
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/edac/amazon,al-mc-edac.yaml
-+F:	drivers/edac/al_mc_edac.c
-+
- AMAZON ANNAPURNA LABS THERMAL MMIO DRIVER
- M:	Talel Shenhar <talel@amazon.com>
- S:	Maintained
-diff --git a/drivers/edac/Kconfig b/drivers/edac/Kconfig
-index 417dad635526..8c7fb7338e75 100644
---- a/drivers/edac/Kconfig
-+++ b/drivers/edac/Kconfig
-@@ -100,6 +100,13 @@ config EDAC_AMD64_ERROR_INJECTION
- 	  In addition, there are two control files, inject_read and inject_write,
- 	  which trigger the DRAM ECC Read and Write respectively.
- 
-+config EDAC_AL_MC
-+	tristate "Amazon's Annapurna Lab EDAC Memory Controller"
-+	depends on (ARCH_ALPINE || COMPILE_TEST)
-+	help
-+	  Support for error detection and correction for Amazon's Annapurna
-+	  Labs Alpine chips which allows 1 bit correction and 2 bits detection.
-+
- config EDAC_AMD76X
- 	tristate "AMD 76x (760, 762, 768)"
- 	depends on PCI && X86_32
-diff --git a/drivers/edac/Makefile b/drivers/edac/Makefile
-index d77200c9680b..528832910ec4 100644
---- a/drivers/edac/Makefile
-+++ b/drivers/edac/Makefile
-@@ -22,6 +22,7 @@ obj-$(CONFIG_EDAC_GHES)			+= ghes_edac.o
- edac_mce_amd-y				:= mce_amd.o
- obj-$(CONFIG_EDAC_DECODE_MCE)		+= edac_mce_amd.o
- 
-+obj-$(CONFIG_EDAC_AL_MC)		+= al_mc_edac.o
- obj-$(CONFIG_EDAC_AMD76X)		+= amd76x_edac.o
- obj-$(CONFIG_EDAC_CPC925)		+= cpc925_edac.o
- obj-$(CONFIG_EDAC_I5000)		+= i5000_edac.o
-diff --git a/drivers/edac/al_mc_edac.c b/drivers/edac/al_mc_edac.c
-new file mode 100644
-index 000000000000..b0ee48775c62
---- /dev/null
-+++ b/drivers/edac/al_mc_edac.c
-@@ -0,0 +1,354 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-+ */
-+#include <linux/bitfield.h>
-+#include <linux/bitops.h>
-+#include <linux/edac.h>
-+#include <linux/of_irq.h>
-+#include <linux/platform_device.h>
-+#include <linux/spinlock.h>
-+#include "edac_module.h"
-+
-+/* Registers Offset */
-+#define AL_MC_ECC_CFG		0x70
-+#define AL_MC_ECC_CLEAR		0x7c
-+#define AL_MC_ECC_ERR_COUNT	0x80
-+#define AL_MC_ECC_CE_ADDR0	0x84
-+#define AL_MC_ECC_CE_ADDR1	0x88
-+#define AL_MC_ECC_UE_ADDR0	0xa4
-+#define AL_MC_ECC_UE_ADDR1	0xa8
-+#define AL_MC_ECC_CE_SYND0	0x8c
-+#define AL_MC_ECC_CE_SYND1	0x90
-+#define AL_MC_ECC_CE_SYND2	0x94
-+#define AL_MC_ECC_UE_SYND0	0xac
-+#define AL_MC_ECC_UE_SYND1	0xb0
-+#define AL_MC_ECC_UE_SYND2	0xb4
-+
-+/* Registers Fields */
-+#define AL_MC_ECC_CFG_SCRUB_DISABLED	BIT(4)
-+
-+#define AL_MC_ECC_CLEAR_UE_COUNT	BIT(3)
-+#define AL_MC_ECC_CLEAR_CE_COUNT	BIT(2)
-+#define AL_MC_ECC_CLEAR_UE_ERR		BIT(1)
-+#define AL_MC_ECC_CLEAR_CE_ERR		BIT(0)
-+
-+#define AL_MC_ECC_ERR_COUNT_UE		GENMASK(31, 16)
-+#define AL_MC_ECC_ERR_COUNT_CE		GENMASK(15, 0)
-+
-+#define AL_MC_ECC_CE_ADDR0_RANK		GENMASK(25, 24)
-+#define AL_MC_ECC_CE_ADDR0_ROW		GENMASK(17, 0)
-+
-+#define AL_MC_ECC_CE_ADDR1_BG		GENMASK(25, 24)
-+#define AL_MC_ECC_CE_ADDR1_BANK		GENMASK(18, 16)
-+#define AL_MC_ECC_CE_ADDR1_COLUMN	GENMASK(11, 0)
-+
-+#define AL_MC_ECC_UE_ADDR0_RANK		GENMASK(25, 24)
-+#define AL_MC_ECC_UE_ADDR0_ROW		GENMASK(17, 0)
-+
-+#define AL_MC_ECC_UE_ADDR1_BG		GENMASK(25, 24)
-+#define AL_MC_ECC_UE_ADDR1_BANK		GENMASK(18, 16)
-+#define AL_MC_ECC_UE_ADDR1_COLUMN	GENMASK(11, 0)
-+
-+#define DRV_NAME "al_mc_edac"
-+#define AL_MC_EDAC_MSG_MAX 256
-+
-+struct al_mc_edac {
-+	void __iomem *mmio_base;
-+	spinlock_t lock;
-+	int irq_ce;
-+	int irq_ue;
-+};
-+
-+static void prepare_msg(char *message, size_t buffer_size,
-+			enum hw_event_mc_err_type type,
-+			u8 rank, u32 row, u8 bg, u8 bank, u16 column,
-+			u32 syn0, u32 syn1, u32 syn2)
-+{
-+	snprintf(message, buffer_size,
-+		 "%s rank=0x%x row=0x%x bg=0x%x bank=0x%x col=0x%x syn0: 0x%x syn1: 0x%x syn2: 0x%x",
-+		 type == HW_EVENT_ERR_UNCORRECTED ? "UE" : "CE",
-+		 rank, row, bg, bank, column, syn0, syn1, syn2);
-+}
-+
-+static int handle_ce(struct mem_ctl_info *mci)
-+{
-+	u32 eccerrcnt, ecccaddr0, ecccaddr1, ecccsyn0, ecccsyn1, ecccsyn2, row;
-+	struct al_mc_edac *al_mc = mci->pvt_info;
-+	char msg[AL_MC_EDAC_MSG_MAX];
-+	u16 ce_count, column;
-+	unsigned long flags;
-+	u8 rank, bg, bank;
-+
-+	eccerrcnt = readl_relaxed(al_mc->mmio_base + AL_MC_ECC_ERR_COUNT);
-+	ce_count = FIELD_GET(AL_MC_ECC_ERR_COUNT_CE, eccerrcnt);
-+	if (!ce_count)
-+		return 0;
-+
-+	ecccaddr0 = readl_relaxed(al_mc->mmio_base + AL_MC_ECC_CE_ADDR0);
-+	ecccaddr1 = readl_relaxed(al_mc->mmio_base + AL_MC_ECC_CE_ADDR1);
-+	ecccsyn0 = readl_relaxed(al_mc->mmio_base + AL_MC_ECC_CE_SYND0);
-+	ecccsyn1 = readl_relaxed(al_mc->mmio_base + AL_MC_ECC_CE_SYND1);
-+	ecccsyn2 = readl_relaxed(al_mc->mmio_base + AL_MC_ECC_CE_SYND2);
-+
-+	writel_relaxed(AL_MC_ECC_CLEAR_CE_COUNT | AL_MC_ECC_CLEAR_CE_ERR,
-+		       al_mc->mmio_base + AL_MC_ECC_CLEAR);
-+
-+	dev_dbg(mci->pdev, "eccuaddr0=0x%08x eccuaddr1=0x%08x\n",
-+		ecccaddr0, ecccaddr1);
-+
-+	rank = FIELD_GET(AL_MC_ECC_CE_ADDR0_RANK, ecccaddr0);
-+	row = FIELD_GET(AL_MC_ECC_CE_ADDR0_ROW, ecccaddr0);
-+
-+	bg = FIELD_GET(AL_MC_ECC_CE_ADDR1_BG, ecccaddr1);
-+	bank = FIELD_GET(AL_MC_ECC_CE_ADDR1_BANK, ecccaddr1);
-+	column = FIELD_GET(AL_MC_ECC_CE_ADDR1_COLUMN, ecccaddr1);
-+
-+	prepare_msg(msg, sizeof(msg), HW_EVENT_ERR_CORRECTED,
-+		    rank, row, bg, bank, column,
-+		    ecccsyn0, ecccsyn1, ecccsyn2);
-+
-+	spin_lock_irqsave(&al_mc->lock, flags);
-+	edac_mc_handle_error(HW_EVENT_ERR_CORRECTED, mci,
-+			     ce_count, 0, 0, 0, 0, 0, -1, mci->ctl_name, msg);
-+	spin_unlock_irqrestore(&al_mc->lock, flags);
-+
-+	return ce_count;
-+}
-+
-+static int handle_ue(struct mem_ctl_info *mci)
-+{
-+	u32 eccerrcnt, eccuaddr0, eccuaddr1, eccusyn0, eccusyn1, eccusyn2, row;
-+	struct al_mc_edac *al_mc = mci->pvt_info;
-+	char msg[AL_MC_EDAC_MSG_MAX];
-+	u16 ue_count, column;
-+	unsigned long flags;
-+	u8 rank, bg, bank;
-+
-+	eccerrcnt = readl_relaxed(al_mc->mmio_base + AL_MC_ECC_ERR_COUNT);
-+	ue_count = FIELD_GET(AL_MC_ECC_ERR_COUNT_UE, eccerrcnt);
-+	if (!ue_count)
-+		return 0;
-+
-+	eccuaddr0 = readl_relaxed(al_mc->mmio_base + AL_MC_ECC_UE_ADDR0);
-+	eccuaddr1 = readl_relaxed(al_mc->mmio_base + AL_MC_ECC_UE_ADDR1);
-+	eccusyn0 = readl_relaxed(al_mc->mmio_base + AL_MC_ECC_UE_SYND0);
-+	eccusyn1 = readl_relaxed(al_mc->mmio_base + AL_MC_ECC_UE_SYND1);
-+	eccusyn2 = readl_relaxed(al_mc->mmio_base + AL_MC_ECC_UE_SYND2);
-+
-+	writel_relaxed(AL_MC_ECC_CLEAR_UE_COUNT | AL_MC_ECC_CLEAR_UE_ERR,
-+		       al_mc->mmio_base + AL_MC_ECC_CLEAR);
-+
-+	dev_dbg(mci->pdev, "eccuaddr0=0x%08x eccuaddr1=0x%08x\n",
-+		eccuaddr0, eccuaddr1);
-+
-+	rank = FIELD_GET(AL_MC_ECC_UE_ADDR0_RANK, eccuaddr0);
-+	row = FIELD_GET(AL_MC_ECC_UE_ADDR0_ROW, eccuaddr0);
-+
-+	bg = FIELD_GET(AL_MC_ECC_UE_ADDR1_BG, eccuaddr1);
-+	bank = FIELD_GET(AL_MC_ECC_UE_ADDR1_BANK, eccuaddr1);
-+	column = FIELD_GET(AL_MC_ECC_UE_ADDR1_COLUMN, eccuaddr1);
-+
-+	prepare_msg(msg, sizeof(msg), HW_EVENT_ERR_UNCORRECTED,
-+		    rank, row, bg, bank, column,
-+		    eccusyn0, eccusyn1, eccusyn2);
-+
-+	spin_lock_irqsave(&al_mc->lock, flags);
-+	edac_mc_handle_error(HW_EVENT_ERR_UNCORRECTED, mci,
-+			     ue_count, 0, 0, 0, 0, 0, -1, mci->ctl_name, msg);
-+	spin_unlock_irqrestore(&al_mc->lock, flags);
-+
-+	return ue_count;
-+}
-+
-+static void al_mc_edac_check(struct mem_ctl_info *mci)
-+{
-+	struct al_mc_edac *al_mc = mci->pvt_info;
-+
-+	if (al_mc->irq_ue <= 0)
-+		handle_ue(mci);
-+
-+	if (al_mc->irq_ce <= 0)
-+		handle_ce(mci);
-+}
-+
-+static irqreturn_t al_mc_edac_irq_handler_ue(int irq, void *info)
-+{
-+	struct platform_device *pdev = info;
-+	struct mem_ctl_info *mci = platform_get_drvdata(pdev);
-+
-+	if (handle_ue(mci))
-+		return IRQ_HANDLED;
-+	return IRQ_NONE;
-+}
-+
-+static irqreturn_t al_mc_edac_irq_handler_ce(int irq, void *info)
-+{
-+	struct platform_device *pdev = info;
-+	struct mem_ctl_info *mci = platform_get_drvdata(pdev);
-+
-+	if (handle_ce(mci))
-+		return IRQ_HANDLED;
-+	return IRQ_NONE;
-+}
-+
-+static enum scrub_type al_mc_edac_get_scrub_mode(void __iomem *mmio_base)
-+{
-+	u32 ecccfg0;
-+
-+	ecccfg0 = readl(mmio_base + AL_MC_ECC_CFG);
-+
-+	if (FIELD_GET(AL_MC_ECC_CFG_SCRUB_DISABLED, ecccfg0))
-+		return SCRUB_NONE;
-+	else
-+		return SCRUB_HW_SRC;
-+}
-+
-+static void devm_al_mc_edac_free(void *data)
-+{
-+	edac_mc_free(data);
-+}
-+
-+static void devm_al_mc_edac_del(void *data)
-+{
-+	edac_mc_del_mc(data);
-+}
-+
-+static int al_mc_edac_probe(struct platform_device *pdev)
-+{
-+	struct edac_mc_layer layers[1];
-+	struct mem_ctl_info *mci;
-+	struct al_mc_edac *al_mc;
-+	void __iomem *mmio_base;
-+	struct dimm_info *dimm;
-+	int ret;
-+
-+	mmio_base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(mmio_base)) {
-+		dev_err(&pdev->dev, "failed to ioremap memory (%ld)\n",
-+			PTR_ERR(mmio_base));
-+		return PTR_ERR(mmio_base);
-+	}
-+
-+	layers[0].type = EDAC_MC_LAYER_CHIP_SELECT;
-+	layers[0].size = 1;
-+	layers[0].is_virt_csrow = false;
-+	mci = edac_mc_alloc(0, ARRAY_SIZE(layers), layers,
-+			    sizeof(struct al_mc_edac));
-+	if (!mci)
-+		return -ENOMEM;
-+
-+	ret = devm_add_action(&pdev->dev, devm_al_mc_edac_free, mci);
-+	if (ret) {
-+		edac_mc_free(mci);
-+		return ret;
-+	}
-+
-+	platform_set_drvdata(pdev, mci);
-+	al_mc = mci->pvt_info;
-+
-+	al_mc->mmio_base = mmio_base;
-+
-+	al_mc->irq_ue = of_irq_get_byname(pdev->dev.of_node, "ue");
-+	if (al_mc->irq_ue <= 0)
-+		dev_dbg(&pdev->dev,
-+			"no IRQ defined for UE - falling back to polling\n");
-+
-+	al_mc->irq_ce = of_irq_get_byname(pdev->dev.of_node, "ce");
-+	if (al_mc->irq_ce <= 0)
-+		dev_dbg(&pdev->dev,
-+			"no IRQ defined for CE - falling back to polling\n");
-+
-+	/*
-+	 * In case both interrupts (ue/ce) are to be found, use interrupt mode.
-+	 * In case none of the interrupt are foud, use polling mode.
-+	 * In case only one interrupt is found, use interrupt mode for it but
-+	 * keep polling mode enable for the other.
-+	 */
-+	if (al_mc->irq_ue <= 0 || al_mc->irq_ce <= 0) {
-+		edac_op_state = EDAC_OPSTATE_POLL;
-+		mci->edac_check = al_mc_edac_check;
-+	} else {
-+		edac_op_state = EDAC_OPSTATE_INT;
-+	}
-+
-+	spin_lock_init(&al_mc->lock);
-+
-+	mci->mtype_cap = MEM_FLAG_DDR3 | MEM_FLAG_DDR4;
-+	mci->edac_ctl_cap = EDAC_FLAG_NONE | EDAC_FLAG_SECDED;
-+	mci->edac_cap = EDAC_FLAG_SECDED;
-+	mci->mod_name = DRV_NAME;
-+	mci->ctl_name = "al_mc";
-+	mci->pdev = &pdev->dev;
-+	mci->scrub_mode = al_mc_edac_get_scrub_mode(mmio_base);
-+
-+	dimm = *mci->dimms;
-+	dimm->grain = 1;
-+
-+	ret = edac_mc_add_mc(mci);
-+	if (ret < 0) {
-+		dev_err(&pdev->dev,
-+			"fail to add memory controller device (%d)\n",
-+			ret);
-+		return ret;
-+	}
-+
-+	ret = devm_add_action(&pdev->dev, devm_al_mc_edac_del, &pdev->dev);
-+	if (ret) {
-+		edac_mc_del_mc(&pdev->dev);
-+		return ret;
-+	}
-+
-+	if (al_mc->irq_ue > 0) {
-+		ret = devm_request_irq(&pdev->dev,
-+				       al_mc->irq_ue,
-+				       al_mc_edac_irq_handler_ue,
-+				       IRQF_SHARED,
-+				       pdev->name,
-+				       pdev);
-+		if (ret != 0) {
-+			dev_err(&pdev->dev,
-+				"failed to request UE IRQ %d (%d)\n",
-+				al_mc->irq_ue, ret);
-+			return ret;
-+		}
-+	}
-+
-+	if (al_mc->irq_ce > 0) {
-+		ret = devm_request_irq(&pdev->dev,
-+				       al_mc->irq_ce,
-+				       al_mc_edac_irq_handler_ce,
-+				       IRQF_SHARED,
-+				       pdev->name,
-+				       pdev);
-+		if (ret != 0) {
-+			dev_err(&pdev->dev,
-+				"failed to request CE IRQ %d (%d)\n",
-+				al_mc->irq_ce, ret);
-+			return ret;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id al_mc_edac_of_match[] = {
-+	{ .compatible = "amazon,al-mc-edac", },
-+	{},
-+};
-+
-+MODULE_DEVICE_TABLE(of, al_mc_edac_of_match);
-+
-+static struct platform_driver al_mc_edac_driver = {
-+	.probe = al_mc_edac_probe,
-+	.driver = {
-+		.name = DRV_NAME,
-+		.of_match_table = al_mc_edac_of_match,
-+	},
-+};
-+
-+module_platform_driver(al_mc_edac_driver);
-+
-+MODULE_LICENSE("GPL v2");
-+MODULE_AUTHOR("Talel Shenhar");
-+MODULE_DESCRIPTION("Amazon's Annapurna Lab's Memory Controller EDAC Driver");
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  tools/perf/Makefile.perf | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+> index 94a495594e99..30e41dcd4095 100644
+> --- a/tools/perf/Makefile.perf
+> +++ b/tools/perf/Makefile.perf
+> @@ -278,6 +278,7 @@ strip-libs = $(filter-out -l%,$(1))
+>  
+>  ifneq ($(OUTPUT),)
+>    TE_PATH=$(OUTPUT)
+> +  PLUGINS_PATH=$(OUTPUT)
+>    BPF_PATH=$(OUTPUT)
+>    SUBCMD_PATH=$(OUTPUT)
+>    LIBPERF_PATH=$(OUTPUT)
+> @@ -288,6 +289,7 @@ else
+>  endif
+>  else
+>    TE_PATH=$(TRACE_EVENT_DIR)
+> +  PLUGINS_PATH=$(TRACE_EVENT_DIR)plugins/
+>    API_PATH=$(LIB_DIR)
+>    BPF_PATH=$(BPF_DIR)
+>    SUBCMD_PATH=$(SUBCMD_DIR)
+> @@ -297,7 +299,7 @@ endif
+>  LIBTRACEEVENT = $(TE_PATH)libtraceevent.a
+>  export LIBTRACEEVENT
+>  
+> -LIBTRACEEVENT_DYNAMIC_LIST = $(TE_PATH)plugins/libtraceevent-dynamic-list
+> +LIBTRACEEVENT_DYNAMIC_LIST = $(PLUGINS_PATH)libtraceevent-dynamic-list
+>  
+>  #
+>  # The static build has no dynsym table, so this does not work for
+> @@ -756,10 +758,10 @@ $(LIBTRACEEVENT): FORCE
+>  	$(Q)$(MAKE) -C $(TRACE_EVENT_DIR) $(LIBTRACEEVENT_FLAGS) O=$(OUTPUT) $(OUTPUT)libtraceevent.a
+>  
+>  libtraceevent_plugins: FORCE
+> -	$(Q)$(MAKE) -C $(TRACE_EVENT_DIR) $(LIBTRACEEVENT_FLAGS) O=$(OUTPUT) plugins
+> +	$(Q)$(MAKE) -C $(TRACE_EVENT_DIR)plugins $(LIBTRACEEVENT_FLAGS) O=$(OUTPUT) plugins
+>  
+>  $(LIBTRACEEVENT_DYNAMIC_LIST): libtraceevent_plugins
+> -	$(Q)$(MAKE) -C $(TRACE_EVENT_DIR) $(LIBTRACEEVENT_FLAGS) O=$(OUTPUT) $(OUTPUT)plugins/libtraceevent-dynamic-list
+> +	$(Q)$(MAKE) -C $(TRACE_EVENT_DIR)plugins $(LIBTRACEEVENT_FLAGS) O=$(OUTPUT) $(OUTPUT)libtraceevent-dynamic-list
+>  
+>  $(LIBTRACEEVENT)-clean:
+>  	$(call QUIET_CLEAN, libtraceevent)
+> -- 
+> 2.25.4
+> 
+
 -- 
-2.17.1
 
+- Arnaldo
