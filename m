@@ -2,64 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BA4A1C7F9B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 03:05:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9280A1C7F9A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 03:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728483AbgEGBFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 21:05:15 -0400
-Received: from mail1.windriver.com ([147.11.146.13]:41706 "EHLO
-        mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728049AbgEGBFM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728409AbgEGBFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 6 May 2020 21:05:12 -0400
-Received: from ALA-HCB.corp.ad.wrs.com (ala-hcb.corp.ad.wrs.com [147.11.189.41])
-        by mail1.windriver.com (8.15.2/8.15.2) with ESMTPS id 04714x0n014145
-        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
-        Wed, 6 May 2020 18:04:59 -0700 (PDT)
-Received: from pek-lpggp2 (128.224.153.75) by ALA-HCB.corp.ad.wrs.com
- (147.11.189.41) with Microsoft SMTP Server id 14.3.487.0; Wed, 6 May 2020
- 18:04:39 -0700
-Received: by pek-lpggp2 (Postfix, from userid 20544)    id C7017721D10; Thu,  7
- May 2020 09:04:08 +0800 (CST)
-From:   Jiping Ma <jiping.ma2@windriver.com>
-To:     <will.deacon@arm.com>, <mark.rutland@arm.com>,
-        <catalin.marinas@arm.com>, <jiping.ma2@windriver.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] perf: perf can not parser the backtrace of app with dwarf mode in the 32bit system and 64bit kernel.
-Date:   Thu, 7 May 2020 09:04:08 +0800
-Message-ID: <1588813448-161858-1-git-send-email-jiping.ma2@windriver.com>
-X-Mailer: git-send-email 1.9.1
-MIME-Version: 1.0
-Content-Type: text/plain
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728330AbgEGBFL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 21:05:11 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED55C061A10
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 18:05:11 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id s20so1366794plp.6
+        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 18:05:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cs.washington.edu; s=goo201206;
+        h=from:to:cc:subject:date:message-id;
+        bh=fDAxUkCWnLLNYKyqcom5jHpqbxcvX3Nwbyo0Ip8LuRk=;
+        b=h3+IYrojdj8XrOT2yXppvSlG8FlwZRoZQROyHHbykmQH5tWOadvP0qK0EZc5qCfLI6
+         IqjGPMkJRzQr+j+pWak8kvYgpGx4wUuuXT4NMxnU17wy8R779cxPMzCxmLH2fnU1Y8il
+         x/zIrMjy3HjgIAu+PpqzTq5b3BIs9elVKsoUU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=fDAxUkCWnLLNYKyqcom5jHpqbxcvX3Nwbyo0Ip8LuRk=;
+        b=q28t5bweruZQhJNmwOgF7Vs85foIykkQ+PhCy72TcjcL4nUHJ8lOoIByCmevO/ynAL
+         dtSAWdbegNfat4BADieAdx2sZh+2tg+OFFqZ2Qazf/auE2ciKM1ltY5w+6vxRUixtQN1
+         1zl/Ce8jZ9SVeAenl87oNTPAa3N7FPTUcqI+y+jP4SLgE2zfuVw0KkeyqCYFNoGuIAhV
+         B5c16bKeAFt8xgdYnO7fZhONZ0s4bP34HrL9Zh0a+16RFh5+ZBstLGvJyUntg9izi568
+         2p11vNPzl7AcQLjPb/udJ61eHCR+RngqdTbm526Rds6bc88ylyi8IOQB1YEKGwNc9G3a
+         Emfw==
+X-Gm-Message-State: AGi0PubpiUTuoxnObwnPh4AGftWPuiUxDGwvqGurYjbjuoi/2ip/FBny
+        Nk6n73LCVrMNMe4RszPzfEBKEA==
+X-Google-Smtp-Source: APiQypILpdn/n4nXzF+P/+vZkv7wDuleI/+evcTuS8G2sV3tj+B+qfsjlo61Cp/3MJ9nD2qqAg7YWA==
+X-Received: by 2002:a17:90a:d153:: with SMTP id t19mr13166154pjw.42.1588813510513;
+        Wed, 06 May 2020 18:05:10 -0700 (PDT)
+Received: from localhost.localdomain (c-73-53-94-119.hsd1.wa.comcast.net. [73.53.94.119])
+        by smtp.gmail.com with ESMTPSA id ev5sm6165250pjb.1.2020.05.06.18.05.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 May 2020 18:05:09 -0700 (PDT)
+From:   Luke Nelson <lukenels@cs.washington.edu>
+X-Google-Original-From: Luke Nelson <luke.r.nels@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Luke Nelson <luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Allison Randal <allison@lohutok.net>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Christoffer Dall <christoffer.dall@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: [RFC PATCH bpf-next 0/3] arm64 BPF JIT Optimizations
+Date:   Wed,  6 May 2020 18:05:00 -0700
+Message-Id: <20200507010504.26352-1-luke.r.nels@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Record PC value from regs[15], it should be regs[32] in REGS_ABI_32 mode,
-which cause perf parser the backtrace failed.
+This patch series introduces several optimizations to the arm64 BPF JIT.
+The optimizations make use of arm64 immediate instructions to avoid
+loading BPF immediates to temporary registers, when possible.
 
-Signed-off-by: Jiping Ma <jiping.ma2@windriver.com>
----
- arch/arm64/kernel/perf_regs.c | 4 ++++
- 1 file changed, 4 insertions(+)
+In the process, we discovered two bugs in the logical immediate encoding
+function in arch/arm64/kernel/insn.c using Serval. The series also fixes
+the two bugs before introducing the optimizations.
 
-diff --git a/arch/arm64/kernel/perf_regs.c b/arch/arm64/kernel/perf_regs.c
-index 0bbac61..04088e6 100644
---- a/arch/arm64/kernel/perf_regs.c
-+++ b/arch/arm64/kernel/perf_regs.c
-@@ -32,6 +32,10 @@ u64 perf_reg_value(struct pt_regs *regs, int idx)
- 	if ((u32)idx == PERF_REG_ARM64_PC)
- 		return regs->pc;
- 
-+	if (perf_reg_abi(current) == PERF_SAMPLE_REGS_ABI_32
-+		&& idx == 15)
-+		return regs->regs[PERF_REG_ARM64_PC];
-+
- 	return regs->regs[idx];
- }
- 
+Tested on aarch64 QEMU virt machine using test_bpf and test_verifier.
+
+Luke Nelson (3):
+  arm64: insn: Fix two bugs in encoding 32-bit logical immediates
+  bpf, arm64: Optimize AND,OR,XOR,JSET BPF_K using arm64 logical
+    immediates
+  bpf, arm64: Optimize ADD,SUB,JMP BPF_K using arm64 add/sub immediates
+
+ arch/arm64/kernel/insn.c      |  6 ++-
+ arch/arm64/net/bpf_jit.h      | 22 +++++++++++
+ arch/arm64/net/bpf_jit_comp.c | 73 ++++++++++++++++++++++++++++-------
+ 3 files changed, 85 insertions(+), 16 deletions(-)
+
+Cc: Xi Wang <xi.wang@gmail.com>
+
 -- 
-1.9.1
+2.17.1
 
