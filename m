@@ -2,66 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5BAB1C9B62
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:49:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CD0A1C9B57
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:45:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728015AbgEGTtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 15:49:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41676 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726326AbgEGTtl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 15:49:41 -0400
-Received: from localhost (mobile-166-175-190-200.mycingular.net [166.175.190.200])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 427EE208E4;
-        Thu,  7 May 2020 19:49:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588880981;
-        bh=3BFFez11ssEZqJXanr8tMIJWo0jrdd8+mi41ZiiNFeM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=JCOa7Rse7JB6N+5ceUwmomOh/fUwbhzciB1fjEKCZ4P9hwt7LCcA6xjlWVpbSfl0W
-         K9WobNpo7/gtNna+drJTplZg7iggn/2qcYb1lD+LoaGru6cNq26602ReVnO0yzoKXr
-         WM49CbDcNJ/6KUwWVxjXs4m35x7wmjHVje8Pe2H4=
-Date:   Thu, 7 May 2020 14:49:39 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lorenzo.pieralisi@arm.com, bhelgaas@google.com, robh@kernel.org,
-        rgummal@xilinx.com
-Subject: Re: [PATCH v7 2/2] PCI: xilinx-cpm: Add Versal CPM Root Port driver
-Message-ID: <20200507194939.GA21050@bjorn-Precision-5520>
+        id S1728567AbgEGTpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 15:45:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726326AbgEGTpx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 15:45:53 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11D41C05BD43
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 12:45:53 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id g185so766643qke.7
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 12:45:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=timesys-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=z/jYBC0J9QkfRK9H/zHRlhsgtFYHxAEt3SeV/+q0yv0=;
+        b=lR9gZIX45a7NOAUW7gO/TUP7kgP15l9Dy3x8IQB53ToCGkuWWhC/nVW8iIAWjhQGy2
+         trEj0TP/YH7S0QjEmfAc8//2v8Lq1FHMuGFqQW5oM8vhL+vJpTDLGDN9Hx3WTW00Tjos
+         0NaBw34V6BbrJleA2/aGtmFn19XfbRNwTbku7fDsp0U2/DJIkym1SrKuvCLk/cQlPhSx
+         ViHbvTuJBkqStOAQl9Uhw4+PDLdRhOrgDGKYkLk9vy8BrP++iZ/j/2RYIn0ao72LabQ3
+         kjmElQA6DOgPzgCwEK09hUHIbKcZW5BqKq64JAs8KBD7bzqVsY9F0mgHypwKgBq0PwLi
+         Nd6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=z/jYBC0J9QkfRK9H/zHRlhsgtFYHxAEt3SeV/+q0yv0=;
+        b=qjZw84+DBYlhqGuATUWTZ8nKIkPV7Hmk6e9N5//87/Di0Vu89pEwQ4dJws6rppZL0U
+         zovEHMHx7Tkbr3251Rr/C75OWWY1LC+BOLBprhorB7uzsyIu7RdmXhSRMQ3ovHq2UovR
+         0RSZSsQNnrBTIjS9jSIT1hCNxtKCED0AhJkagQQ79SSB4fjX4n99KpF35ffHX5ZhRBtV
+         w7Plael97csIE9TNfUf3Jd1SLW2aao45htQDPGfzYZWsPf5YNrAVblWCWzUmsu7I0X2F
+         NFFlDm/gGo3BjMyFXDLalS9Mu36+SLnxiU0DyYGA6vRV3TJbYa77Rn2PUSz/OUhL0fLD
+         MkDw==
+X-Gm-Message-State: AGi0PuaX0VBOQwCdObxo8K/HyRTWXGiv91bXKcGkmkKmJQ4VC5ANGu1n
+        oSBWc8Rr69IwSLJ+2MwA9IG65qJuYFFuPw==
+X-Google-Smtp-Source: APiQypL81TqxJs3IwyAikpGDMDxU+8lrSpnUTCQS4TfC8xfRR1Quc3xQtFqQjuI5gWDq3vMEf1CZhg==
+X-Received: by 2002:a37:6690:: with SMTP id a138mr16599091qkc.152.1588880752001;
+        Thu, 07 May 2020 12:45:52 -0700 (PDT)
+Received: from dfj.bfc.timesys.com (host142-13-dynamic.2-87-r.retail.telecomitalia.it. [87.2.13.142])
+        by smtp.gmail.com with ESMTPSA id s125sm2085616qkh.51.2020.05.07.12.45.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 May 2020 12:45:51 -0700 (PDT)
+From:   Angelo Dureghello <angelo.dureghello@timesys.com>
+To:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        zbr@ioremap.net
+Cc:     Angelo Dureghello <angelo.dureghello@timesys.com>
+Subject: [PATCH] w1: ds2430: fix eeprom size in driver description
+Date:   Thu,  7 May 2020 21:50:50 +0200
+Message-Id: <20200507195050.472483-1-angelo.dureghello@timesys.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1588852716-23132-3-git-send-email-bharat.kumar.gogada@xilinx.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 07, 2020 at 05:28:36PM +0530, Bharat Kumar Gogada wrote:
-> - Add support for Versal CPM as Root Port.
-> - The Versal ACAP devices include CCIX-PCIe Module (CPM). The integrated
->   block for CPM along with the integrated bridge can function
->   as PCIe Root Port.
-> - Bridge error and legacy interrupts in Versal CPM are handled using
->   Versal CPM specific interrupt line.
+Non functional fix, set Kb to b, to avoid any misundertanding.
 
-> +static inline bool cpm_pcie_link_up(struct xilinx_cpm_pcie_port *port)
-> +{
-> +	return (pcie_read(port, XILINX_CPM_PCIE_REG_PSCR) &
-> +		XILINX_CPM_PCIE_REG_PSCR_LNKUP) ? 1 : 0;
+Signed-off-by: Angelo Dureghello <angelo.dureghello@timesys.com>
+---
+ drivers/w1/slaves/w1_ds2430.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Almost all of the *_link_up() functions return "int".  I don't know if
-there's really any benefit to using "bool", but if you do, you should
-probably return "true" or "false" instead of 1/0.
+diff --git a/drivers/w1/slaves/w1_ds2430.c b/drivers/w1/slaves/w1_ds2430.c
+index 6fb0563fb2ae..75bb8a88620b 100644
+--- a/drivers/w1/slaves/w1_ds2430.c
++++ b/drivers/w1/slaves/w1_ds2430.c
+@@ -290,6 +290,6 @@ static struct w1_family w1_family_14 = {
+ module_w1_family(w1_family_14);
+ 
+ MODULE_AUTHOR("Angelo Dureghello <angelo.dureghello@timesys.com>");
+-MODULE_DESCRIPTION("w1 family 14 driver for DS2430, 256kb EEPROM");
++MODULE_DESCRIPTION("w1 family 14 driver for DS2430, 256b EEPROM");
+ MODULE_LICENSE("GPL");
+ MODULE_ALIAS("w1-family-" __stringify(W1_EEPROM_DS2430));
+-- 
+2.26.2
 
-> +	port->irq_misc = platform_get_irq(pdev, 0);
-> +	if (port->irq_misc <= 0) {
-
-Use:
-
-  if (port->irq_misc < 0) {
-
-See https://lore.kernel.org/r/20200501224042.141366-3-helgaas@kernel.org
