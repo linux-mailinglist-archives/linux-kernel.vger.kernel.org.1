@@ -2,74 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 671CE1C8302
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 09:03:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D97F31C8342
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 09:12:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725949AbgEGHDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 03:03:43 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:3833 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725440AbgEGHDn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 03:03:43 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id A4620EA74AE585F0F2A2;
-        Thu,  7 May 2020 15:03:41 +0800 (CST)
-Received: from huawei.com (10.175.113.25) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Thu, 7 May 2020
- 15:03:33 +0800
-From:   Zheng Zengkai <zhengzengkai@huawei.com>
-To:     <rjw@rjwysocki.net>, <lenb@kernel.org>
-CC:     <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <zhengzengkai@huawei.com>
-Subject: [PATCH -next] ACPI: debug: Make two functions static
-Date:   Thu, 7 May 2020 15:07:36 +0800
-Message-ID: <20200507070736.25418-1-zhengzengkai@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1725879AbgEGHMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 03:12:24 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:40474 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725802AbgEGHMY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 03:12:24 -0400
+Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1jWah6-0000SK-DG; Thu, 07 May 2020 07:11:44 +0000
+Date:   Thu, 7 May 2020 09:11:43 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     linux-kernel@vger.kernel.org, libc-alpha@sourceware.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jan Stancek <jstancek@redhat.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Christian Kellner <christian@kellner.me>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Florian Weimer <fw@deneb.enyo.de>,
+        Andreas Schwab <schwab@linux-m68k.org>,
+        Oleg Nesterov <oleg@redhat.com>, Tejun Heo <tj@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Dmitry V. Levin" <ldv@altlinux.org>,
+        Ingo Molnar <mingo@kernel.org>, Serge Hallyn <serge@hallyn.com>
+Subject: Re: [PATCH] clone: only use lower 32 flag bits
+Message-ID: <20200507071143.b4xp6jeqvsglzjmx@wittgenstein>
+References: <20200505174446.204918-1-christian.brauner@ubuntu.com>
+ <aa9e029703e184a56bcab9f0992cfff316136d16.camel@perches.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <aa9e029703e184a56bcab9f0992cfff316136d16.camel@perches.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix sparse warnings:
+On Wed, May 06, 2020 at 12:06:10PM -0700, Joe Perches wrote:
+> On Tue, 2020-05-05 at 19:44 +0200, Christian Brauner wrote:
+> > Jan reported an issue where an interaction between sign-extending clone's
+> > flag argument on ppc64le and the new CLONE_INTO_CGROUP feature causes
+> > clone() to consistently fail with EBADF.
+> []
+> > Let's fix this by always capping the upper 32 bits for the legacy clone()
+> > syscall. This ensures that we can't reach clone3() only features by
+> > accident via legacy clone as with the sign extension case and also that
+> > legacy clone() works exactly like before, i.e. ignoring any unknown flags.
+> > This solution risks no regressions and is also pretty clean.
+> > 
+> > I've chosen u32 and not unsigned int to visually indicate that we're
+> > capping this to 32 bits.
+> 
+> Perhaps use the lower_32_bits macro?
 
-drivers/acpi/acpi_dbg.c:748:12: warning:
- symbol 'acpi_aml_init' was not declared. Should it be static?
-drivers/acpi/acpi_dbg.c:774:13: warning:
- symbol 'acpi_aml_exit' was not declared. Should it be static?
+Oh neat, I wasn't aware of this helper since there are no users under
+kernel/*
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zheng Zengkai <zhengzengkai@huawei.com>
----
- drivers/acpi/acpi_dbg.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/acpi/acpi_dbg.c b/drivers/acpi/acpi_dbg.c
-index 7a265c2171c0..6041974c7627 100644
---- a/drivers/acpi/acpi_dbg.c
-+++ b/drivers/acpi/acpi_dbg.c
-@@ -745,7 +745,7 @@ static const struct acpi_debugger_ops acpi_aml_debugger = {
- 	.notify_command_complete = acpi_aml_notify_command_complete,
- };
- 
--int __init acpi_aml_init(void)
-+static int __init acpi_aml_init(void)
- {
- 	int ret;
- 
-@@ -771,7 +771,7 @@ int __init acpi_aml_init(void)
- 	return 0;
- }
- 
--void __exit acpi_aml_exit(void)
-+static void __exit acpi_aml_exit(void)
- {
- 	if (acpi_aml_initialized) {
- 		acpi_unregister_debugger(&acpi_aml_debugger);
--- 
-2.20.1
-
+Christian
