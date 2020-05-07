@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E0461C9BB4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 22:09:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59B951C9BCD
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 22:09:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728651AbgEGUJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 16:09:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45834 "EHLO
+        id S1728772AbgEGUJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 16:09:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728564AbgEGUJJ (ORCPT
+        by vger.kernel.org with ESMTP id S1728580AbgEGUJJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 7 May 2020 16:09:09 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65DD3C05BD09
-        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 13:09:08 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id l12so2972677pgr.10
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 13:09:08 -0700 (PDT)
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA7E8C05BD0A
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 13:09:09 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id s10so2524019plr.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 13:09:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=W1XDP2s0snxdLkMZdyukbleJr+uJ2UqLD4Yvp7W+lko=;
-        b=ReH1KmW6+/YuI4vEH69rEwtrRWO5C8B9NVFXhM9HjZxD7wtQrMTH9qKyhAIpVmoOsm
-         pJWravX1nnZSvRVcjDXlPsYk8CGgbnSgs/U+QzZhCnbMIq77X8tjlApJvXfDgzPLnxpC
-         dI+uHqhKsxVPzpFQqLvMF+bqXAiQAAz1PumIg=
+        bh=+igHgzIqWZe6OT6gTK1ehvXj127NSNGPVn9Isn122A8=;
+        b=XE5En1H+lpOUQAX8ckpo+HHEGAyxCAmUBvhkKbZMRLxQT47ProdK8zaHod/JbejEoB
+         sXh/Tu/5AhbLKSQfHn96xpSNZhK++iWxZEmNf3n00E7bbkO7DqQS+C+GLh9i60S4xQ0m
+         eWVJ5rkfjbi64nWZcUyAR1cMh0h46rlZb+HqE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=W1XDP2s0snxdLkMZdyukbleJr+uJ2UqLD4Yvp7W+lko=;
-        b=GX34bspqWiZZgy931wQjtZf+dtKZdz3/Y2kJ/p2vXRYP58WtSEiPF9P63W6OehRn6V
-         ri84dHfFa6NRP6fmY53nG2dlhNuHjQJL5NCHZKoEVZHGx7ZlfvEelq4qINg6bpwHBixr
-         8S+39nfIFYqvjvwwgZzyfhmLCVONct5bHQfYx+lxHC9lBXdBETR8kcjs48cxfju2Kg3C
-         1jmc2i8cTmtktMnQQCxKBq+FKJ7Y/YU0IuKumzFuj0YfdACftBVmTL3c3ocePpnutC/o
-         XgwRBc+PQBqpZEP9Iy9r3hwWdPZ1NhJBuLN9C/9i18QWF+LvCxO/qka5YLY4PrtzVE+y
-         glqg==
-X-Gm-Message-State: AGi0PuahTAHCUGu8Oc+mqyzqah+OM9xrHFz3NhuwfO4+idZm4mvt2J5X
-        k0WPMl1M1CchWd7KehLz7/J8cA==
-X-Google-Smtp-Source: APiQypKgAbnAivOMtSnMHwbQ3TDXgQaQ6YOXhF935haHfa4/tcGU8O7//3m/KM1t6hWHwzOPWSjJqg==
-X-Received: by 2002:a63:585c:: with SMTP id i28mr12849420pgm.363.1588882147971;
-        Thu, 07 May 2020 13:09:07 -0700 (PDT)
+        bh=+igHgzIqWZe6OT6gTK1ehvXj127NSNGPVn9Isn122A8=;
+        b=YGwJIjYBrGHSH8r7zGeQkQhOWTjAsnJndfYtqqivLvwZbJiew4SO4CfObPoB9SdeJY
+         iR2VdJtfSOUqmws3IoQLLNPofXNvwG9Bv73dBgLa3bqAwvUj4LHSZCqzjXghAqwqi4R3
+         EciS1kkd0dOm6RZ88xRIUhslzZPzyXu+Frc8yUgxvwq94e+HnMZqSAC70wqV9Ma+8E8r
+         L9ThZGDtTV+yVONGpdLvRm8gh413Y6K089ESlDbk62vpnY2kNAiIa+zOtZCzR+uRIF02
+         QOvYmNtdpep400g/OIr3b4cUxTf09JO0CfoRgrfbrbAOqoTM5+shhVCiIK5kXLjgsRtm
+         uQTQ==
+X-Gm-Message-State: AGi0PubDRstMb/y6jsfcBAvHzpl1rhzAocH4erDZ/lSnpx/7nHvxGqxx
+        d8nqskkodIK9H2+PCCs2zcqUTw==
+X-Google-Smtp-Source: APiQypL0biztyRxmF7Lwtt+4aWp6foHRtH/yfwnzRkceu6JjnF1a0fFW6TVpNoKxLoUIWIM9V/3cuQ==
+X-Received: by 2002:a17:902:7596:: with SMTP id j22mr14310656pll.226.1588882149206;
+        Thu, 07 May 2020 13:09:09 -0700 (PDT)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:24fa:e766:52c9:e3b2])
-        by smtp.gmail.com with ESMTPSA id d203sm5547601pfd.79.2020.05.07.13.09.06
+        by smtp.gmail.com with ESMTPSA id d203sm5547601pfd.79.2020.05.07.13.09.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2020 13:09:07 -0700 (PDT)
+        Thu, 07 May 2020 13:09:08 -0700 (PDT)
 From:   Douglas Anderson <dianders@chromium.org>
 To:     jason.wessel@windriver.com, daniel.thompson@linaro.org,
         gregkh@linuxfoundation.org
@@ -55,9 +55,9 @@ Cc:     corbet@lwn.net, frowand.list@gmail.com, bjorn.andersson@linaro.org,
         agross@kernel.org, catalin.marinas@arm.com, bp@alien8.de,
         Douglas Anderson <dianders@chromium.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v4 06/12] kgdb: Prevent infinite recursive entries to the debugger
-Date:   Thu,  7 May 2020 13:08:44 -0700
-Message-Id: <20200507130644.v4.6.I89de39f68736c9de610e6f241e68d8dbc44bc266@changeid>
+Subject: [PATCH v4 07/12] kgdboc: Remove useless #ifdef CONFIG_KGDB_SERIAL_CONSOLE in kgdboc
+Date:   Thu,  7 May 2020 13:08:45 -0700
+Message-Id: <20200507130644.v4.7.Icb528f03d0026d957e60f537aa711ada6fd219dc@changeid>
 X-Mailer: git-send-email 2.26.2.645.ge9eca65c58-goog
 In-Reply-To: <20200507200850.60646-1-dianders@chromium.org>
 References: <20200507200850.60646-1-dianders@chromium.org>
@@ -68,36 +68,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If we detect that we recursively entered the debugger we should hack
-our I/O ops to NULL so that the panic() in the next line won't
-actually cause another recursion into the debugger.  The first line of
-kgdb_panic() will check this and return.
+This file is only ever compiled if that config is on since the
+Makefile says:
 
+  obj-$(CONFIG_KGDB_SERIAL_CONSOLE) += kgdboc.o
+
+Let's get rid of the useless #ifdef.
+
+Reported-by: Daniel Thompson <daniel.thompson@linaro.org>
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
 ---
 
-Changes in v4: None
-Changes in v3:
-- ("kgdb: Prevent infinite recursive entries to the debugger") new for v3.
+Changes in v4:
+- ("kgdboc: Remove useless #ifdef...") new for v4.
 
+Changes in v3: None
 Changes in v2: None
 
- kernel/debug/debug_core.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/tty/serial/kgdboc.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/kernel/debug/debug_core.c b/kernel/debug/debug_core.c
-index 503c1630ca76..faf5bd4c34ee 100644
---- a/kernel/debug/debug_core.c
-+++ b/kernel/debug/debug_core.c
-@@ -532,6 +532,7 @@ static int kgdb_reenter_check(struct kgdb_state *ks)
+diff --git a/drivers/tty/serial/kgdboc.c b/drivers/tty/serial/kgdboc.c
+index 519d8cfbfbed..2e9158fff976 100644
+--- a/drivers/tty/serial/kgdboc.c
++++ b/drivers/tty/serial/kgdboc.c
+@@ -380,7 +380,6 @@ static struct kgdb_io kgdboc_io_ops = {
+ 	.post_exception		= kgdboc_post_exp_handler,
+ };
  
- 	if (exception_level > 1) {
- 		dump_stack();
-+		kgdb_io_module_registered = false;
- 		panic("Recursive entry to debugger");
- 	}
+-#ifdef CONFIG_KGDB_SERIAL_CONSOLE
+ static int kgdboc_option_setup(char *opt)
+ {
+ 	if (!opt) {
+@@ -409,7 +408,6 @@ static int __init kgdboc_early_init(char *opt)
+ }
  
+ early_param("ekgdboc", kgdboc_early_init);
+-#endif /* CONFIG_KGDB_SERIAL_CONSOLE */
+ 
+ module_init(init_kgdboc);
+ module_exit(exit_kgdboc);
 -- 
 2.26.2.645.ge9eca65c58-goog
 
