@@ -2,101 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4F841C9A9A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:13:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A62C1C9A9F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:14:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728384AbgEGTNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 15:13:49 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:38258 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726558AbgEGTNt (ORCPT
+        id S1728446AbgEGTOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 15:14:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728389AbgEGTOM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 15:13:49 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 590F2803087B;
-        Thu,  7 May 2020 19:13:40 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 7gxrh3JYj9Az; Thu,  7 May 2020 22:13:38 +0300 (MSK)
-Date:   Thu, 7 May 2020 22:13:37 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-CC:     Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, <linux-pm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, Zhou Yanjie <zhouyanjie@zoho.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 11/20] mips: MAAR: Use more precise address mask
-Message-ID: <20200507191337.la6z476myszqethj@mobilestation>
-References: <20200306124807.3596F80307C2@mail.baikalelectronics.ru>
- <20200506174238.15385-1-Sergey.Semin@baikalelectronics.ru>
- <20200506174238.15385-12-Sergey.Semin@baikalelectronics.ru>
- <20200507110951.GD11616@alpha.franken.de>
+        Thu, 7 May 2020 15:14:12 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29344C05BD09
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 12:14:10 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id i68so5786399qtb.5
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 12:14:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nIiwVFpw4ZhZjwUQ6twbeuIA8JamFmPyOdxqKvsHNzw=;
+        b=i6h3fRoK431NaGcWuZSoiubFhXGK4ascXHQ81NTAzyKnO1veaUBwv31Lnx87SCzFsj
+         EFJbIdZluGhNvnZ3GRpFsmn0MFqxMkqMvMzZifYQ7O0MdGVsjQR25EqQs53wBYlGNq7Y
+         Jv//aZOfa9zuoMFSXaCBOmPfG+qAap5Jz+KjxrEkpn6s/xL0qJQKvldi/z/6vw74tAQt
+         JA7mF7WIywRS/FGyhElTrSXA9FfuQkcjih/ARA7MDApK6AGqziN9mx9fBZidhoA44Xm8
+         HBlzTTk7xav1f835DSM/2RcyAIL2bSfTmeLgvhh3X6RI36+6Q8fQIZRYRXd3CIX9adkD
+         O5QQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nIiwVFpw4ZhZjwUQ6twbeuIA8JamFmPyOdxqKvsHNzw=;
+        b=HYe5d5KIwQQXvs2/Uw4RP9H2opsL01F9EVCbpLbSut89VyVjw1ejKNBVs5QDanLpAZ
+         zrqacDy7i0mjdY9ukayOAy/GBAoB8BoK64+252eJ5QOvQRt49MmfcwSi1EU+BYltDGby
+         N/esMvFXLICm0ta3XwQvs5R8gybHvuE3XTsjxA+mro0RYMr/AK8pTFDIQ3NVTwayUXAc
+         f+85CNT3XvRPaiIJivIfo/0TvzkZZ2t1gqub65oXHeqiW5TWCCzYC8TtKcE4RHDuDpHH
+         AdTw8zLNcBNfD6HCntnXRAyhCG/RnVMgT2PCYo3rng7sY47noPFqpbcH7gZdB5Mp7+2t
+         jzQA==
+X-Gm-Message-State: AGi0PubXnWvROpJj5Cj2u0H4+xN3n3v5Jqb1s/2J4BP+FcNBvJB71h5t
+        XFyP4UI5RuK4llIBU7zZLYC1yw==
+X-Google-Smtp-Source: APiQypLJj9gJVm+wPLLoPXnfggd+adXxW0v+bEwlFIia6pFfvUorxPaafp+9n1kJvQH7IrC7JMDeBg==
+X-Received: by 2002:ac8:1b58:: with SMTP id p24mr5639914qtk.29.1588878849189;
+        Thu, 07 May 2020 12:14:09 -0700 (PDT)
+Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id j8sm5094236qtk.85.2020.05.07.12.14.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 May 2020 12:14:08 -0700 (PDT)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net
+Cc:     evgreen@chromium.org.net, subashab@codeaurora.org,
+        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net 0/2] net: ipa: fix cleanup after modem crash
+Date:   Thu,  7 May 2020 14:14:02 -0500
+Message-Id: <20200507191404.31626-1-elder@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200507110951.GD11616@alpha.franken.de>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 07, 2020 at 01:09:51PM +0200, Thomas Bogendoerfer wrote:
-> On Wed, May 06, 2020 at 08:42:29PM +0300, Sergey.Semin@baikalelectronics.ru wrote:
-> > From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> > 
-> > Indeed according to the P5600/P6000 manual the MAAR pair register
-> > address field either takes [12:31] bits for 32-bits non-XPA systems
-> > and [12:35] otherwise. In any case the current address mask is just
-> > wrong for 64-bit and 32-bits XPA chips. So lets extend it to 39-bits
-> > value. This shall cover the 64-bits architecture and systems with XPA
-> > enabled, and won't cause any problem for non-XPA 32-bit systems, since
-> > the value will be just truncated when written to the 32-bits register.
-> 
-> according to MIPS32 Priveleged Resoure Architecture Rev. 6.02
-> ADDR spans from bit 12 to bit 55. So your patch fits only for P5600.
+The first patch in this series fixes a bug where the size of a data
+transfer request was never set, meaning it was 0.  The consequence
+of this was that such a transfer request would never complete if
+attempted, and led to a hung task timeout.
 
-> Does the wider mask cause any problems ?
+This data transfer is required for cleaning up IPA hardware state
+when recovering from a modem crash.  The code to implement this
+cleanup is already present, but its use was commented out because
+it hit the bug described above.  So the second patch in this series
+enables the use of that "tag process" cleanup code.
 
-No, it won't. Bits written to the [40:62] range will be just ignored,
-while reading from there should return zeros. Setting GENMASK_ULL(55, 12)
-would also work. Though this solution is a bit workarounding because
-MIPS_MAAR_ADDR wouldn't reflect the real mask of the ADDR field. Something
-like the next macro would work better:
+					-Alex
 
-+#define MIPS_MAAR_ADDR							\
-+({									\
-+	u64 __mask;							\
-+									\
-+	if (cpu_has_lpa && read_c0_pagegrain() & PG_ELPA) {		\
-+		__mask = GENMASK_ULL(55, 12);				\
-+	else								\
-+		__mask = GENMASK_ULL(31, 12);				\
-+									\
-+	__mask;								\
-+})
+Alex Elder (2):
+  net: ipa: set DMA length in gsi_trans_cmd_add()
+  net: ipa: use tag process on modem crash
 
-What do you think? What is better: the macro above or setting
-GENMASK_ULL(55, 12)?
+ drivers/net/ipa/gsi_trans.c |  5 +++--
+ drivers/net/ipa/ipa_cmd.c   | 14 +++-----------
+ 2 files changed, 6 insertions(+), 13 deletions(-)
 
-BTW I've just figured out, that since XPA is currently only supported by
-kernels with CPU_MIPS32x config enabled, then only MIPS32 may have extended
-physical addressing of 2^60 bytes if CONFIG_XPA is enabled. Generic MIPS64
-doesn't support the extended phys addressing so only 2^36 bytes are available
-on such platforms. (Loongson64 doesn't count, the platform code sets the
-PG_ELPA bit manually in kernel-entry-init.h)
+-- 
+2.20.1
 
--Sergey
-
-> 
-> Thomas.
-> 
-> -- 
-> Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-> good idea.                                                [ RFC1925, 2.3 ]
