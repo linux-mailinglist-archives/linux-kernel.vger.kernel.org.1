@@ -2,195 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E32061C9C76
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 22:33:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71DE61C9C7F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 22:35:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726885AbgEGUdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 16:33:44 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:41346 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726367AbgEGUdn (ORCPT
+        id S1726701AbgEGUfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 16:35:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726218AbgEGUfE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 16:33:43 -0400
-Received: by mail-pl1-f195.google.com with SMTP id u10so2538987pls.8;
-        Thu, 07 May 2020 13:33:44 -0700 (PDT)
+        Thu, 7 May 2020 16:35:04 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0500EC05BD43
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 13:35:06 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id b188so7623056qkd.9
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 13:35:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RSDWBO3KlSH7VUaml385yztVrt94O/2spKycJW0cj/0=;
+        b=r54QaoLh54AUaLYcMXfF56LEl3r+ooemYCoqO7ird14qYPBgk+62dOPtF7vzatUcbV
+         TI3dAf4vwvc6fqdSnpT5VVVntfLPsbm7TOVZwgePR0+8l471+2W99dDqiUxzazExetKX
+         2D04O4ZoLBnVFXEgZRHkSXONB2MPOpGWxoxumdV8WAdHwDr1mA7o051gdl5p4kl9iJ0K
+         aRNRtGRMR6m3YiPGHP6X4eXqSXxiJDR3uImh+palqnnsrf1bwQuO/N0Ob+junxtbcIxB
+         eyX0IXQP/lqCC0vmcAy9nERkERqWEpc0q4jOmLMsWsFillX71G0FWZTWqr+V5p9eNMZN
+         PSNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=MoMjwxwKEdXavhFslG5lFIMwK7mcqNgr2NAM0IYCo+k=;
-        b=ckTDDHaH3Aynu08VgrCmfgszHwqWSVElPfZ8mXAjcU4fnHiXvrOH7iqI7/4WB4et1A
-         X63XvHhl+VY0/2Sg1wrifnA8oWCw8sQqaddzlJaClciYr2grvMm8REik8gkbq/vlh3SD
-         KqkoNf5f5WiGl12NSQnqIPV6sJSxmbb1vlXSIE1QEh971vty5QW/+m1NXzMeRUzFSTEw
-         JeCEhc2y88rjxcvwK86DO0Cew0d2FPx5cN8eLh6S1rT6clFI6G+Ps97DEN9IVedRL9Tl
-         rghbiY+P4IBgGhLR3BumUk9h0+4DIVkufkCBWP/fmLOCfEjorxzMXd/CgKNF1L8v28/w
-         PVhg==
-X-Gm-Message-State: AGi0PuY/03iHl5AulhyPrVUzEKHOqRCuNLjBiK7cxJ+EfsOYRoJaEhKB
-        XONPNNwST8Nf1qdOY42tlx8=
-X-Google-Smtp-Source: APiQypKzOvsOb6uSbzYE/OPlbOBeyhXMRjRDiozG0ygWaqabRTDqfi9zOl/zJSiRsBKGN2PJSdrMRw==
-X-Received: by 2002:a17:902:7281:: with SMTP id d1mr15673761pll.78.1588883623569;
-        Thu, 07 May 2020 13:33:43 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id e12sm4414343pgv.16.2020.05.07.13.33.41
+         :mime-version:content-disposition:in-reply-to;
+        bh=RSDWBO3KlSH7VUaml385yztVrt94O/2spKycJW0cj/0=;
+        b=FWv91soS55DtavNT3imYFGCc+crqSmTd3p+UolmJ/PmfkstqwChXRHbD+0CInVVcYr
+         0StpwgbGu8itgIe5JgPTiQyn7mQ05qTiboMgu8QzXIO/R84hMLPrDc0qWFlm+zKbaMLK
+         Ec82vfywuHQpiXy3ecek+STvUhOOI5bO9jBWgvtoXlncHURxyEZ1V6BWp3gA75frT7F2
+         avL7czDzeP7/PzGB/8K8BL+GrTcU2ED058upx6OXx2tNLMnzy1SzbpcrOflmvnIKhy2t
+         9t46d+w2reXqgMbr3EiIx0RK1Ymw8K1iJG7yIx8k1VpCJ2rIuKzPbPR7NOeYjA8zPeIy
+         I4ig==
+X-Gm-Message-State: AGi0PuZaY3EkaNhfausflsN/yXMNY9YXJvZ4/6f/v+j6R3+JJY+1YYIa
+        91GP/XLO7I81HFd2CxPcFu7G0Q==
+X-Google-Smtp-Source: APiQypJnQGp+W8vdB4wl6qofgeQ17bUrjsLYFEjiibo3uV4je5mhYeTV9b+raRIejY0clyGjHc0k7A==
+X-Received: by 2002:a37:82c1:: with SMTP id e184mr17283899qkd.186.1588883705299;
+        Thu, 07 May 2020 13:35:05 -0700 (PDT)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id 124sm5220016qkn.73.2020.05.07.13.35.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2020 13:33:41 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id B7609403EA; Thu,  7 May 2020 20:33:40 +0000 (UTC)
-Date:   Thu, 7 May 2020 20:33:40 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Rafael Aquini <aquini@redhat.com>, Tso Ted <tytso@mit.edu>,
-        Adrian Bunk <bunk@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Jeff Mahoney <jeffm@suse.com>, Jiri Kosina <jikos@kernel.org>,
-        Jessica Yu <jeyu@suse.de>, Takashi Iwai <tiwai@suse.de>,
-        Ann Davis <AnDavis@suse.com>,
-        Richard Palethorpe <rpalethorpe@suse.de>
-Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        dyoung@redhat.com, bhe@redhat.com, corbet@lwn.net,
-        keescook@chromium.org, akpm@linux-foundation.org, cai@lca.pw,
-        rdunlap@infradead.org
-Subject: Re: [PATCH v2] kernel: add panic_on_taint
-Message-ID: <20200507203340.GZ11244@42.do-not-panic.com>
-References: <20200507180631.308441-1-aquini@redhat.com>
- <20200507182257.GX11244@42.do-not-panic.com>
- <20200507184307.GF205881@optiplex-lnx>
- <20200507184705.GG205881@optiplex-lnx>
+        Thu, 07 May 2020 13:35:04 -0700 (PDT)
+Date:   Thu, 7 May 2020 16:34:49 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
+        kernel-team@fb.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 02/19] mm: memcg: prepare for byte-sized vmstat items
+Message-ID: <20200507203449.GB161043@cmpxchg.org>
+References: <20200422204708.2176080-1-guro@fb.com>
+ <20200422204708.2176080-3-guro@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200507184705.GG205881@optiplex-lnx>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200422204708.2176080-3-guro@fb.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 07, 2020 at 02:47:05PM -0400, Rafael Aquini wrote:
-> On Thu, May 07, 2020 at 02:43:16PM -0400, Rafael Aquini wrote:
-> > On Thu, May 07, 2020 at 06:22:57PM +0000, Luis Chamberlain wrote:
-> > > On Thu, May 07, 2020 at 02:06:31PM -0400, Rafael Aquini wrote:
-> > > > diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-> > > > index 8a176d8727a3..b80ab660d727 100644
-> > > > --- a/kernel/sysctl.c
-> > > > +++ b/kernel/sysctl.c
-> > > > @@ -1217,6 +1217,13 @@ static struct ctl_table kern_table[] = {
-> > > >  		.extra1		= SYSCTL_ZERO,
-> > > >  		.extra2		= SYSCTL_ONE,
-> > > >  	},
-> > > > +	{
-> > > > +		.procname	= "panic_on_taint",
-> > > > +		.data		= &panic_on_taint,
-> > > > +		.maxlen		= sizeof(unsigned long),
-> > > > +		.mode		= 0644,
-> > > > +		.proc_handler	= proc_doulongvec_minmax,
-> > > > +	},
-> > > 
-> > > You sent this out before I could reply to the other thread on v1.
-> > > My thoughts on the min / max values, or lack here:
-> > >                                                                                 
-> > > Valid range doesn't mean "currently allowed defined" masks.                     
-> > > 
-> > > For example, if you expect to panic due to a taint, but a new taint type
-> > > you want was not added on an older kernel you would be under a very
-> > > *false* sense of security that your kernel may not have hit such a
-> > > taint, but the reality of the situation was that the kernel didn't
-> > > support that taint flag only added in future kernels.                           
-> > > 
-> > > You may need to define a new flag (MAX_TAINT) which should be the last
-> > > value + 1, the allowed max values would be                                      
-> > > 
-> > > (2^MAX_TAINT)-1                                                                 
-> > > 
-> > > or                                                                              
-> > > 
-> > > (1<<MAX_TAINT)-1  
-> > > 
-> > > Since this is to *PANIC* I think we do want to test ranges and ensure
-> > > only valid ones are allowed.
-> > >
-> > 
-> > Ok. I'm thinking in:
-> > 
-> > diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-> > index 8a176d8727a3..ee492431e7b0 100644
-> > --- a/kernel/sysctl.c
-> > +++ b/kernel/sysctl.c
-> > @@ -1217,6 +1217,15 @@ static struct ctl_table kern_table[] = {
-> >                 .extra1         = SYSCTL_ZERO,
-> >                 .extra2         = SYSCTL_ONE,
-> >         },
-> > +       {
-> > +               .procname       = "panic_on_taint",
-> > +               .data           = &panic_on_taint,
-> > +               .maxlen         = sizeof(unsigned long),
-> > +               .mode           = 0644,
-> > +               .proc_handler   = proc_doulongvec_minmax,
-> > +               .extra1         = SYSCTL_ZERO,
-> > +               .extra2         = (1 << TAINT_FLAGS_COUNT << 1) - 1,
-> 							^^^^^^^^
-> Without that crap, obviously. Sorry. That was a screw up on my side,
-> when copyin' and pasting.
+On Wed, Apr 22, 2020 at 01:46:51PM -0700, Roman Gushchin wrote:
+> To implement per-object slab memory accounting, we need to
+> convert slab vmstat counters to bytes. Actually, out of
+> 4 levels of counters: global, per-node, per-memcg and per-lruvec
+> only two last levels will require byte-sized counters.
+> It's because global and per-node counters will be counting the
+> number of slab pages, and per-memcg and per-lruvec will be
+> counting the amount of memory taken by charged slab objects.
+> 
+> Converting all vmstat counters to bytes or even all slab
+> counters to bytes would introduce an additional overhead.
+> So instead let's store global and per-node counters
+> in pages, and memcg and lruvec counters in bytes.
+> 
+> To make the API clean all access helpers (both on the read
+> and write sides) are dealing with bytes.
+> 
+> To avoid back-and-forth conversions a new flavor of helpers
+> is introduced, which always returns values in pages:
+> node_page_state_pages() and global_node_page_state_pages().
+> 
+> Actually new helpers are just reading raw values. Old helpers are
+> simple wrappers, which perform a conversion if the vmstat items are
+> in bytes. Because at the moment no one actually need bytes,
+> there are WARN_ON_ONCE() macroses inside to warn about inappropriate
+> use cases.
+> 
+> Thanks to Johannes Weiner for the idea of having the byte-sized API
+> on top of the page-sized internal storage.
+> 
+> Signed-off-by: Roman Gushchin <guro@fb.com>
 
-I really think that the implications of this needs a bit further review,
-hence the wider CCs.
-
-Since this can trivially crash a system, I think we need to be careful
-about this value. First, proc_doulongvec_minmax() will not suffice alone,
-we'll *at least* want to check for capable(CAP_SYS_ADMIN)) as in
-proc_taint().  Second first note that we *always* build proc_taint(), if
-just CONFIG_PROC_SYSCTL is enabled. That has been the way since it got
-merged via commit 34f5a39899f3f ("Add TAINT_USER and ability to set
-taint flags from userspace") since v2.6.21. We need to evaluate if this
-little *new* knob you are introducing merits its own kconfig tucked away
-under debugging first. The ship has already sailed for proc_taint().
-Anyone with CAP_SYS_ADMIN can taint.
-
-The good thing is that proc_taint() added its own TAINT_USER, *but*, hey
-it didn't use it. A panic-on-taint system would be able to tell if a
-panic was caused by proc_taint() throught the stack trace only. 
-If panic-on-taint proc was used *later* after a custom taint was set
-or happened naturally, no panic would trigger since your panic-on-taint
-check on your patch only happens on add_taint(). This means that for
-those thinking about using this for QA or security purposes, the only
-sensible *reliable* way to use panic-on-taint would be through cmdline,
-from boot. Post-boot means to enable this would either need to check
-existing taint flags, or we'd want to a way to check if this was not
-added post boot. Also, a post-booteed system with panic-on-taint could
-easily allow for reductions of the intended goal, thereby allowing one
-to cheat.
-
-I think a new TAINT_MODIFIED for use when proc_taint() is used is worth
-considering. Ted? Even though 'M' is taken -- I think its silly to rely
-on the character to be anything of meaning, once we run out of the
-alphabet letters that will be the way anyway, unless we-redo this a bit.
-Note we use value for when this is on and off, typically an empty space
-when a taint is not seen.
-
-The good thing is that proc_taint() only *increments* taint, it doesn't
-remove taints.
-
-Are we OK with panic-on-taint only with CAP_SYS_ADMIN?
-
-I can see this building up to a "testing" solution to ensure / gaurantee
-no bugs have happened during QA, but since QA would want the same binary
-for production it is hard to see this enabled for QA but not production.
-To resolve that last concern, if we do go with moving this under a
-kconfig value, a simple cmdline append would address the concerns. Ie,
-even if you enabled this mechanism through its kconfig you would not be
-able to modify the panic-on-tain unless you passed a cmdline option.
-
-Note that Vlastimil has some patches which are visible on linux-next,
-but not yet merged on Linus' tree, which enable these params to be set
-on the cmdline too now, so perhaps yet-another cmdline param is not
-needed anymore.
-
-I *think* that a cmdline route to enable this would likely remove the
-need for the kernel config for this. But even with Vlastimil's work
-merged, I think we'd want yet-another value to enable / disable this
-feature. Do we need yet-another-taint flag to tell us that this feature
-was enabled?
-
-  Luis
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
