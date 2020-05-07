@@ -2,132 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 292041C806C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 05:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CFED1C80D3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 06:23:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726736AbgEGDRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 23:17:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725862AbgEGDRH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 23:17:07 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3474FC061A10
-        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 20:17:07 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id g13so4514349wrb.8
-        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 20:17:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OqklJJgxCrgioUG9/0U8VvVyNxzQPptp+H1kEoRUcfM=;
-        b=rbtQf4Gr1SzoNJgT+TsCpnOedFkDlsI4GqX3HIApmxx6nalsQhD7JafeN3haqKF95q
-         9FLfc0iLXRofGuj8xSvJr9fCGoEGljqW0AfmoM25AwFBMv01MhzQk74GjUBq8Hxt5HTu
-         kF5LrtH67fdEpmW13BDlx/xM9q8ZC1pdAFNdCTsjb3r/+IQquQw3L1Mhmz5wPihbB8Oa
-         RKcHl2HZ6Swg7Mv+wXEaoj0P119W8tJ06Y6nXdXSmuhhAUF7MuBwIDsA9MO0zAZToS3O
-         JlWjOp3xPxrOLSgeM67Dve9aoviCMexgO0SwIEfM1UZpJ+jUSpQTzPg7wLqjsFeT0/pd
-         XxWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OqklJJgxCrgioUG9/0U8VvVyNxzQPptp+H1kEoRUcfM=;
-        b=Wq1mHhPds+wlKd/MJ9+iyjUELiUn8DEw5YAEOmyMEgMIgipQUpzK55SG4PolqDM9bO
-         2mM3l99YukS2wRm/xow1OJSvRgqn0htMBwFK8rzBbrp/XwuUSBZE3yL97YcIjzFsQSYf
-         3QsQld+MNL3xttwf95kYhxkRxhvaXvn1cNJ2I4p7W2f35cGci8aEXLf2RwkwlISuwuHV
-         2e2GGW2NGLfTWFu1+1QJxPs5u5/5gH5X3npCjGyNrhOb5VgEXHORWa28s3vHn7uSKmvC
-         h4W2p/dgJBqIIXWwDu2uGqWNsyGj23t38nngOsGFNJLNg4Mzr5TCuaPPC+3SURhd+BcA
-         jwVg==
-X-Gm-Message-State: AGi0PuaunB1ifyoReFvoa4P42xtw7Qjpuck2df3xJaZzVj4KDnrC0NnL
-        YepVDEOoTrGsuInlNzfl69IC7QUgntAPVzLhxNf/sw==
-X-Google-Smtp-Source: APiQypJ1wFSkBS5disj8Gxzhwhmj5hTspeDumfe4/uryjgVRkTODm3WVF6Mgksw5Lpz+kSadGCmEn0hnihhQMkh9SPY=
-X-Received: by 2002:adf:f907:: with SMTP id b7mr12664785wrr.203.1588821425549;
- Wed, 06 May 2020 20:17:05 -0700 (PDT)
+        id S1726235AbgEGEX3 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 7 May 2020 00:23:29 -0400
+Received: from smtp.h3c.com ([221.12.31.13]:35769 "EHLO h3cspam01-ex.h3c.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725802AbgEGEX2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 00:23:28 -0400
+X-Greylist: delayed 3576 seconds by postgrey-1.27 at vger.kernel.org; Thu, 07 May 2020 00:23:27 EDT
+Received: from h3cspam01-ex.h3c.com (localhost [127.0.0.2] (may be forged))
+        by h3cspam01-ex.h3c.com with ESMTP id 0473Nop1042756
+        for <linux-kernel@vger.kernel.org>; Thu, 7 May 2020 11:23:50 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
+        by h3cspam01-ex.h3c.com with ESMTPS id 0473NcBg042361
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 7 May 2020 11:23:38 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from localhost.localdomain (10.99.212.201) by
+ DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 7 May 2020 11:23:39 +0800
+From:   Xianting Tian <tian.xianting@h3c.com>
+To:     <mingo@redhat.com>, <peterz@infradead.org>,
+        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>,
+        <dietmar.eggemann@arm.com>, <rostedt@goodmis.org>,
+        <bsegall@google.com>, <mgorman@suse.de>
+CC:     <linux-kernel@vger.kernel.org>, <yubin@h3c.com>,
+        <tian.xianting@h3c.com>
+Subject: [PATCH] sched/fair: Fix typo in comment
+Date:   Thu, 7 May 2020 11:18:53 +0800
+Message-ID: <20200507031853.35994-1-tian.xianting@h3c.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20200505102709.7964-1-anders.roxell@linaro.org>
-In-Reply-To: <20200505102709.7964-1-anders.roxell@linaro.org>
-From:   David Gow <davidgow@google.com>
-Date:   Thu, 7 May 2020 11:16:54 +0800
-Message-ID: <CABVgOS=Qybfh_oMGmCONUWqZ3FRcKrwPU1pooSv1SsFumaCFjg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/6] kunit: default KUNIT_* fragments to KUNIT_RUN_ALL
-To:     Anders Roxell <anders.roxell@linaro.org>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        John Johansen <john.johansen@canonical.com>, jmorris@namei.org,
-        serge@hallyn.com, "Theodore Ts'o" <tytso@mit.edu>,
-        adilger.kernel@dilger.ca,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, linux-security-module@vger.kernel.org,
-        Marco Elver <elver@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.99.212.201]
+X-ClientProxiedBy: BJSMTP02-EX.srv.huawei-3com.com (10.63.20.133) To
+ DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66)
+Content-Transfer-Encoding: 8BIT
+X-DNSRBL: 
+X-MAIL: h3cspam01-ex.h3c.com 0473NcBg042361
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 5, 2020 at 6:27 PM Anders Roxell <anders.roxell@linaro.org> wrote:
->
-> This makes it easier to enable all KUnit fragments.
->
-> Adding 'if !KUNIT_RUN_ALL' so individual test can be turned of if
-> someone wants that even though KUNIT_RUN_ALL is enabled.
+check_prempt_curr() -> check_preempt_curr()
 
-nit: Should this be "turned off" rather than "turned of" (and
-"individual tests" rather than "individual test").
-It _may_ be worth re-wording it to explain the "if !KUNIT_RUN_ALL"
-change in more detail: that it's explicitly hiding the prompt if
-KUNIT_RUN_ALL is enabled.
-It's probably not worth redoing the patch just for this, but if you've
-got to re-do all these to change KUNIT_RUN_ALL to KUNIT_ALL_TESTS or
-similar, maybe.
+Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+---
+ kernel/sched/fair.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->
-> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 02f323b85..458ab5521 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -6858,7 +6858,7 @@ static void check_preempt_wakeup(struct rq *rq, struct task_struct *p, int wake_
 
-Reviewed-by: David Gow <davidgow@google.com>
-> ---
->  lib/kunit/Kconfig | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
->
-> diff --git a/lib/kunit/Kconfig b/lib/kunit/Kconfig
-> index 537f37bc8400..e6a60391fa6b 100644
-> --- a/lib/kunit/Kconfig
-> +++ b/lib/kunit/Kconfig
-> @@ -15,7 +15,8 @@ menuconfig KUNIT
->  if KUNIT
->
->  config KUNIT_DEBUGFS
-> -       bool "KUnit - Enable /sys/kernel/debug/kunit debugfs representation"
-> +       bool "KUnit - Enable /sys/kernel/debug/kunit debugfs representation" if !KUNIT_RUN_ALL
-> +       default KUNIT_RUN_ALL
->         help
->           Enable debugfs representation for kunit.  Currently this consists
->           of /sys/kernel/debug/kunit/<test_suite>/results files for each
-> @@ -23,7 +24,8 @@ config KUNIT_DEBUGFS
->           run that occurred.
->
->  config KUNIT_TEST
-> -       tristate "KUnit test for KUnit"
-> +       tristate "KUnit test for KUnit" if !KUNIT_RUN_ALL
-> +       default KUNIT_RUN_ALL
->         help
->           Enables the unit tests for the KUnit test framework. These tests test
->           the KUnit test framework itself; the tests are both written using
-> @@ -32,7 +34,8 @@ config KUNIT_TEST
->           expected.
->
->  config KUNIT_EXAMPLE_TEST
-> -       tristate "Example test for KUnit"
-> +       tristate "Example test for KUnit" if !KUNIT_RUN_ALL
-> +       default KUNIT_RUN_ALL
->         help
->           Enables an example unit test that illustrates some of the basic
->           features of KUnit. This test only exists to help new users understand
-> --
-> 2.20.1
->
+        /*
+         * This is possible from callers such as attach_tasks(), in which we
+-        * unconditionally check_prempt_curr() after an enqueue (which may have
++        * unconditionally check_preempt_curr() after an enqueue (which may have
+         * lead to a throttle).  This both saves work and prevents false
+         * next-buddy nomination below.
+         */
+--
+2.17.1
+
+-------------------------------------------------------------------------------------------------------------------------------------
+本邮件及其附件含有新华三集团的保密信息，仅限于发送给上面地址中列出
+的个人或群组。禁止任何其他人以任何形式使用（包括但不限于全部或部分地泄露、复制、
+或散发）本邮件中的信息。如果您错收了本邮件，请您立即电话或邮件通知发件人并删除本
+邮件！
+This e-mail and its attachments contain confidential information from New H3C, which is
+intended only for the person or entity whose address is listed above. Any use of the
+information contained herein in any way (including, but not limited to, total or partial
+disclosure, reproduction, or dissemination) by persons other than the intended
+recipient(s) is prohibited. If you receive this e-mail in error, please notify the sender
+by phone or email immediately and delete it!
