@@ -2,97 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9549D1C85FD
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 11:42:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D1DA1C85EB
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 11:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726069AbgEGJmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 05:42:49 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:44439 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725910AbgEGJms (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 05:42:48 -0400
-Received: from mail-pg1-f200.google.com ([209.85.215.200])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <koba.ko@canonical.com>)
-        id 1jWd3G-000232-7f
-        for linux-kernel@vger.kernel.org; Thu, 07 May 2020 09:42:46 +0000
-Received: by mail-pg1-f200.google.com with SMTP id g11so3723662pgd.20
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 02:42:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id;
-        bh=2c0eBBtIepmDWT5vtHR8eCLoQ0+DU8y3zdqCJbavP80=;
-        b=eExVK199R6uAt8yorrj+LXQhHqHS+jt7vdbUIvHRJ48YBlQVHcFTN6QtSDUB9EbePW
-         1rfG3Xnnoz2WCESYQ/lqXkut1NeUq1TBnt+Amkh6paX2dhuhuxCfxq96Ycj3Hbz2frpy
-         GMGyU9Je6wIlNlO7RM515838zThUWb0UmJfkDIs9FtUHM19DV8cLVbYAHyhPpjAeYJ/y
-         1Nqt0IcdDGVhRIdtCIste6WWkFnxeATUeSB+S5/wofhLsQrOdjog0NizWsLTmFO9LGn4
-         GDhxHOuxUcPn59Ckk6jtKsc0vd4gYnLAY9S0KQLySSYVziAODDXc70PQzdWrmHEgrLnc
-         f6ZA==
-X-Gm-Message-State: AGi0PubxEbtShrFn2SaGOyFdo5tbplUkhW6wYb0kN3+5M+QiCcWL54Eb
-        x2kwu2X8wf/Cs5Ej/SSSCnhlicQ00dKmlyl+RPihiasCEN1ZjvH2eWK0M4MugeqQ1ZS2VWA6rcd
-        6t94n5hy/E+NC+jHcykhcdYKNDIDoXIzEpW6TYH8FZA==
-X-Received: by 2002:a17:90a:3441:: with SMTP id o59mr3759898pjb.185.1588844564678;
-        Thu, 07 May 2020 02:42:44 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJeLg3AcGy7HrqF6YZ9GdowrY4PLIXUeYZxe5vuntsu3tjrUThWNi8FjX7u4WnCciQkOx+rRg==
-X-Received: by 2002:a17:90a:3441:: with SMTP id o59mr3759880pjb.185.1588844564483;
-        Thu, 07 May 2020 02:42:44 -0700 (PDT)
-Received: from canonical.com (111-249-71-140.dynamic-ip.hinet.net. [111.249.71.140])
-        by smtp.gmail.com with ESMTPSA id i190sm4423030pfe.114.2020.05.07.02.42.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 07 May 2020 02:42:43 -0700 (PDT)
-From:   koba.ko@canonical.com
-To:     Matthew Garrett <mjg59@srcf.ucam.org>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali.rohar@gmail.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] platform/x86: dell-laptop: don't register platform::micmute if the related tokens don't exist.
-Date:   Thu,  7 May 2020 17:42:42 +0800
-Message-Id: <20200507094242.7523-1-koba.ko@canonical.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726558AbgEGJi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 05:38:59 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:3884 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725809AbgEGJi7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 05:38:59 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 5BCF144FEA0FAA0A3F7F;
+        Thu,  7 May 2020 17:38:57 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 7 May 2020 17:38:49 +0800
+From:   Wei Yongjun <weiyongjun1@huawei.com>
+To:     Johan Hovold <johan@kernel.org>
+CC:     Wei Yongjun <weiyongjun1@huawei.com>,
+        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
+        Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH -next] gnss: sirf: fix error return code in sirf_probe()
+Date:   Thu, 7 May 2020 09:42:52 +0000
+Message-ID: <20200507094252.13914-1-weiyongjun1@huawei.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Type:   text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Koba Ko <koba.ko@canonical.com>
+Fix to return a negative error code from the error handling
+case instead of 0, as done elsewhere in this function.
 
-Error messge is issued,
-"platform::micmute: Setting an LED's brightness failed (-19)",
-Even the device isn't presented.
-
-Get the related tokens of SMBIOS, GLOBAL_MIC_MUTE_DISABLE/ENABLE.
-If one of two tokens doesn't exist, don't register platform::micmute.
-
-Signed-off-by: Koba Ko <koba.ko@canonical.com>
+Fixes: d2efbbd18b1e ("gnss: add driver for sirfstar-based receivers")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 ---
- drivers/platform/x86/dell-laptop.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ drivers/gnss/sirf.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/platform/x86/dell-laptop.c b/drivers/platform/x86/dell-laptop.c
-index 1e46022fb2c5..afc1ded83e56 100644
---- a/drivers/platform/x86/dell-laptop.c
-+++ b/drivers/platform/x86/dell-laptop.c
-@@ -2208,10 +2208,13 @@ static int __init dell_init(void)
+diff --git a/drivers/gnss/sirf.c b/drivers/gnss/sirf.c
+index effed3a8d398..2ecb1d3e8eeb 100644
+--- a/drivers/gnss/sirf.c
++++ b/drivers/gnss/sirf.c
+@@ -439,14 +439,18 @@ static int sirf_probe(struct serdev_device *serdev)
  
- 	dell_laptop_register_notifier(&dell_laptop_notifier);
- 
--	micmute_led_cdev.brightness = ledtrig_audio_get(LED_AUDIO_MICMUTE);
--	ret = led_classdev_register(&platform_device->dev, &micmute_led_cdev);
--	if (ret < 0)
--		goto fail_led;
-+	if (dell_smbios_find_token(GLOBAL_MIC_MUTE_DISABLE) &&
-+	    dell_smbios_find_token(GLOBAL_MIC_MUTE_ENABLE)) {
-+		micmute_led_cdev.brightness = ledtrig_audio_get(LED_AUDIO_MICMUTE);
-+		ret = led_classdev_register(&platform_device->dev, &micmute_led_cdev);
-+		if (ret < 0)
-+			goto fail_led;
+ 	data->on_off = devm_gpiod_get_optional(dev, "sirf,onoff",
+ 			GPIOD_OUT_LOW);
+-	if (IS_ERR(data->on_off))
++	if (IS_ERR(data->on_off)) {
++		ret = PTR_ERR(data->on_off);
+ 		goto err_put_device;
 +	}
  
- 	if (acpi_video_get_backlight_type() != acpi_backlight_vendor)
- 		return 0;
--- 
-2.17.1
+ 	if (data->on_off) {
+ 		data->wakeup = devm_gpiod_get_optional(dev, "sirf,wakeup",
+ 				GPIOD_IN);
+-		if (IS_ERR(data->wakeup))
++		if (IS_ERR(data->wakeup)) {
++			ret = PTR_ERR(data->wakeup);
+ 			goto err_put_device;
++		}
+ 
+ 		ret = regulator_enable(data->vcc);
+ 		if (ret)
+
+
 
