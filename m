@@ -2,75 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A6C61C82E1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 08:55:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F0D51C82F8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 09:00:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725927AbgEGGze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 02:55:34 -0400
-Received: from smtprelay0208.hostedemail.com ([216.40.44.208]:36912 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725809AbgEGGze (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 02:55:34 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 643B412F5C;
-        Thu,  7 May 2020 06:55:33 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3872:3874:4321:5007:10004:10400:10848:11026:11232:11473:11657:11658:11914:12043:12048:12296:12297:12438:12740:12895:13069:13311:13357:13439:13894:14659:14721:21080:21212:21627:21990:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: mass87_4d4fdba8e3930
-X-Filterd-Recvd-Size: 2187
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf08.hostedemail.com (Postfix) with ESMTPA;
-        Thu,  7 May 2020 06:55:31 +0000 (UTC)
-Message-ID: <777550697e44478c46768db5265dcdda094932f4.camel@perches.com>
-Subject: Re: [PATCH] drm/amdgpu: allocate large structures dynamically
-From:   Joe Perches <joe@perches.com>
-To:     christian.koenig@amd.com, Arnd Bergmann <arnd@arndb.de>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Hawking Zhang <Hawking.Zhang@amd.com>,
-        John Clements <john.clements@amd.com>
-Cc:     Guchun Chen <guchun.chen@amd.com>, Tao Zhou <tao.zhou1@amd.com>,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, Dennis Li <Dennis.Li@amd.com>
-Date:   Wed, 06 May 2020 23:55:30 -0700
-In-Reply-To: <845a2e12-538c-fb6d-db80-78e8adf1413f@gmail.com>
-References: <20200505140208.284473-1-arnd@arndb.de>
-         <006e29037a9314fb286a5d6d84905bce99cef6c7.camel@perches.com>
-         <845a2e12-538c-fb6d-db80-78e8adf1413f@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.1-2 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726521AbgEGHAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 03:00:23 -0400
+Received: from mga04.intel.com ([192.55.52.120]:18356 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726320AbgEGHAX (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 03:00:23 -0400
+IronPort-SDR: FrbUjn/qPGg3lgTX+XFchSdQ46VDQj6iuve+KJo+JPyUlE7DWxBh8zvIHd3u5CqLE5Pac+7/jr
+ LH5zGUkgFtXA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2020 00:00:22 -0700
+IronPort-SDR: uA48G0ak6r7Ujr3fd0rvZwpXAVxnEe39zJLxYSAJ3NTH4pk1M1y8/PzhaaJi6oiWs0hcOIGGpu
+ AZAwRAO+BXjA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,362,1583222400"; 
+   d="scan'208";a="370026057"
+Received: from kbl-ppc.sh.intel.com ([10.239.159.118])
+  by fmsmga001.fm.intel.com with ESMTP; 07 May 2020 00:00:20 -0700
+From:   Jin Yao <yao.jin@linux.intel.com>
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH v3 0/4] perf stat: Support overall statistics for interval mode
+Date:   Thu,  7 May 2020 14:58:18 +0800
+Message-Id: <20200507065822.8255-1-yao.jin@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-05-07 at 08:42 +0200, Christian König wrote:
-> Am 06.05.20 um 21:01 schrieb Joe Perches:
-[]
-> > And trivia:
-> > 
-> > The !! uses with bool seem unnecessary and it's probably better
-> > to make amdgpu_ras_is_feature_enabled to return bool.
-[]
-> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-[]
-> > @@ -560,7 +560,7 @@ static int __amdgpu_ras_feature_enable(struct amdgpu_device *adev,
-> >   	 */
-> >   	if (!amdgpu_ras_is_feature_allowed(adev, head))
-> >   		return 0;
-> > -	if (!(!!enable ^ !!amdgpu_ras_is_feature_enabled(adev, head)))
-> > +	if (!(enable ^ amdgpu_ras_is_feature_enabled(adev, head)))
-> 
-> And while we are at improving coding style I think that writing this as 
-> "if (enabled == amdgpu_ras_is_feature_enabled(adev, head))" would be 
-> much more readable.
+Currently perf-stat supports to print counts at regular interval (-I),
+but it's not very easy for user to get the overall statistics.
 
-<blink, chuckle> that's decidedly true...
+With this patchset, it supports to report the summary at the end of
+interval output.
 
+For example,
+
+ root@kbl-ppc:~# perf stat -e cycles -I1000 --interval-count 2
+ #           time             counts unit events
+      1.000412064          2,281,114      cycles
+      2.001383658          2,547,880      cycles
+
+  Performance counter stats for 'system wide':
+
+          4,828,994      cycles
+
+        2.002860349 seconds time elapsed
+
+ root@kbl-ppc:~# perf stat -e cycles,instructions -I1000 --interval-count 2
+ #           time             counts unit events
+      1.000389902          1,536,093      cycles
+      1.000389902            420,226      instructions              #    0.27  insn per cycle
+      2.001433453          2,213,952      cycles
+      2.001433453            735,465      instructions              #    0.33  insn per cycle
+
+  Performance counter stats for 'system wide':
+
+          3,750,045      cycles
+          1,155,691      instructions              #    0.31  insn per cycle
+
+        2.003023361 seconds time elapsed
+
+ root@kbl-ppc:~# perf stat -M CPI,IPC -I1000 --interval-count 2
+ #           time             counts unit events
+      1.000435121            905,303      inst_retired.any          #      2.9 CPI
+      1.000435121          2,663,333      cycles
+      1.000435121            914,702      inst_retired.any          #      0.3 IPC
+      1.000435121          2,676,559      cpu_clk_unhalted.thread
+      2.001615941          1,951,092      inst_retired.any          #      1.8 CPI
+      2.001615941          3,551,357      cycles
+      2.001615941          1,950,837      inst_retired.any          #      0.5 IPC
+      2.001615941          3,551,044      cpu_clk_unhalted.thread
+
+  Performance counter stats for 'system wide':
+
+          2,856,395      inst_retired.any          #      2.2 CPI
+          6,214,690      cycles
+          2,865,539      inst_retired.any          #      0.5 IPC
+          6,227,603      cpu_clk_unhalted.thread
+
+        2.003403078 seconds time elapsed
+
+ v3:
+ ---
+ 1. 'perf stat: Fix wrong per-thread runtime stat for interval mode'
+    is a new patch which fixes an existing issue found in test.
+
+ 2. We use the prev_raw_counts for summary counts. Drop the summary_counts in v2.
+
+ 3. Fix some issues.
+
+ v2:
+ ---
+ Rebase to perf/core branch
+
+Jin Yao (4):
+  perf stat: Fix wrong per-thread runtime stat for interval mode
+  perf counts: Reset prev_raw_counts counts
+  perf stat: Copy counts from prev_raw_counts to evsel->counts
+  perf stat: Report summary for interval mode
+
+ tools/perf/builtin-stat.c | 27 +++++++++++++++++++++++++--
+ tools/perf/util/counts.c  |  5 +++++
+ tools/perf/util/counts.h  |  2 ++
+ tools/perf/util/evsel.c   |  1 +
+ tools/perf/util/stat.c    | 27 ++++++++++++++++++++++++++-
+ tools/perf/util/stat.h    |  2 ++
+ 6 files changed, 61 insertions(+), 3 deletions(-)
+
+-- 
+2.17.1
 
