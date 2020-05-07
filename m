@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C46DB1C99D8
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:51:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 824161C99D9
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:51:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728326AbgEGSvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 14:51:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52192 "EHLO mail.kernel.org"
+        id S1728730AbgEGSvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 14:51:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52246 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727964AbgEGSvY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 14:51:24 -0400
+        id S1727964AbgEGSva (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 14:51:30 -0400
 Received: from embeddedor (unknown [189.207.59.248])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9977A2495D;
-        Thu,  7 May 2020 18:51:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 09BEA24957;
+        Thu,  7 May 2020 18:51:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588877483;
-        bh=kMFA0b6aS1twModq1yHlIZlHwtdzbcyRe3/MvSJiG0s=;
+        s=default; t=1588877489;
+        bh=jpe2+TjrMnwu2H2dyg8faPNc4w8u0PpZiuofrEf/xT4=;
         h=Date:From:To:Cc:Subject:From;
-        b=JCrk0uwwkhfkTLux/mgp5WxUeHMtQt5a6q0bHSOxYvZT8vyTogP0sJafOoEk4JRXW
-         PIZOaa/Q+GYFBzbxJk0/szjg53/lf2XEHowx2S/TdV4GAH2+FlRSOj6KMgpcKOOm5s
-         BsUeOg5xzmGksQMqfqO+76ntwhcL9D3rLq42GPKE=
-Date:   Thu, 7 May 2020 13:55:50 -0500
+        b=hz8cQChXh4vf4srecpx8AKf9ARB4tro3ux3p9bC04rzou9lBEqxu5pkbcV3YwAtr2
+         XUwYFhyS8iTI6CUN6Q+S9Uc74jYWdfW+65avnCLWTDVyt3HsikQ5A5dw0XkdBBQl+x
+         oPrZRUZlVP/L2sy9TBxninEpu8ywVfKmb8NKsai0=
+Date:   Thu, 7 May 2020 13:55:55 -0500
 From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Dave Kleikamp <shaggy@kernel.org>
-Cc:     jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Subject: [PATCH] JFS: Replace zero-length array with flexible-array
-Message-ID: <20200507185550.GA14715@embeddedor>
+To:     David Woodhouse <dwmw2@infradead.org>,
+        Richard Weinberger <richard@nod.at>
+Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] jffs2: Replace zero-length array with flexible-array
+Message-ID: <20200507185555.GA14739@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -75,40 +76,43 @@ This issue was found with the help of Coccinelle.
 
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- fs/jfs/jfs_dtree.c |    2 +-
- fs/jfs/jfs_xattr.h |    4 ++--
+ fs/jffs2/nodelist.h |    2 +-
+ fs/jffs2/summary.h  |    4 ++--
  2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/fs/jfs/jfs_dtree.c b/fs/jfs/jfs_dtree.c
-index 3acc954f7c04..837d42f61464 100644
---- a/fs/jfs/jfs_dtree.c
-+++ b/fs/jfs/jfs_dtree.c
-@@ -2964,7 +2964,7 @@ struct jfs_dirent {
- 	loff_t position;
- 	int ino;
- 	u16 name_len;
--	char name[0];
-+	char name[];
+diff --git a/fs/jffs2/nodelist.h b/fs/jffs2/nodelist.h
+index 0637271f3770..8ff4d1a1e774 100644
+--- a/fs/jffs2/nodelist.h
++++ b/fs/jffs2/nodelist.h
+@@ -259,7 +259,7 @@ struct jffs2_full_dirent
+ 	uint32_t ino; /* == zero for unlink */
+ 	unsigned int nhash;
+ 	unsigned char type;
+-	unsigned char name[0];
++	unsigned char name[];
  };
  
  /*
-diff --git a/fs/jfs/jfs_xattr.h b/fs/jfs/jfs_xattr.h
-index f0558b3348da..c50167a7bc50 100644
---- a/fs/jfs/jfs_xattr.h
-+++ b/fs/jfs/jfs_xattr.h
-@@ -17,12 +17,12 @@ struct jfs_ea {
- 	u8 flag;	/* Unused? */
- 	u8 namelen;	/* Length of name */
- 	__le16 valuelen;	/* Length of value */
--	char name[0];	/* Attribute name (includes null-terminator) */
-+	char name[];	/* Attribute name (includes null-terminator) */
- };			/* Value immediately follows name */
+diff --git a/fs/jffs2/summary.h b/fs/jffs2/summary.h
+index 60207a2ae952..e4131cb1f1d4 100644
+--- a/fs/jffs2/summary.h
++++ b/fs/jffs2/summary.h
+@@ -61,7 +61,7 @@ struct jffs2_sum_dirent_flash
+ 	jint32_t ino; 		/* == zero for unlink */
+ 	uint8_t nsize;		/* dirent name size */
+ 	uint8_t type;		/* dirent type */
+-	uint8_t name[0];	/* dirent name */
++	uint8_t name[];	/* dirent name */
+ } __attribute__((packed));
  
- struct jfs_ea_list {
- 	__le32 size;		/* overall size */
--	struct jfs_ea ea[0];	/* Variable length list */
-+	struct jfs_ea ea[];	/* Variable length list */
- };
+ struct jffs2_sum_xattr_flash
+@@ -117,7 +117,7 @@ struct jffs2_sum_dirent_mem
+ 	jint32_t ino; 		/* == zero for unlink */
+ 	uint8_t nsize;		/* dirent name size */
+ 	uint8_t type;		/* dirent type */
+-	uint8_t name[0];	/* dirent name */
++	uint8_t name[];	/* dirent name */
+ } __attribute__((packed));
  
- /* Macros for defining maxiumum number of bytes supported for EAs */
+ struct jffs2_sum_xattr_mem
 
