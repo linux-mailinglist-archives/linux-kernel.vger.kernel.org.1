@@ -2,94 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 137AC1C9CFE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 23:10:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02DB51C9D08
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 23:14:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726598AbgEGVKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 17:10:20 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:38001 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726218AbgEGVKU (ORCPT
+        id S1726638AbgEGVOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 17:14:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726268AbgEGVOl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 17:10:20 -0400
-Received: by mail-oi1-f195.google.com with SMTP id r66so6525706oie.5;
-        Thu, 07 May 2020 14:10:18 -0700 (PDT)
+        Thu, 7 May 2020 17:14:41 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB987C05BD43
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 14:14:39 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id k19so2577399pll.9
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 14:14:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=ioAtKKBLetMrNC3UOrZBDpCms01n9tKhgmw2P4KuQ10=;
+        b=EvyLgigNsQCXtN+ZrgfW3obNeN7n95kvB+iKsA3+ZKnx6Pg5GXwuwrpAimKciweQLh
+         A5IVBx9MVFabDi+Q4FiPn1IL+Ut97gCeTeb7mX2JJGN/XYRuTQAwLpP2rSFctxdoyafo
+         dTtwQ79hSAA/WHsbFnshcKXq7Ma1fctt8eopE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=vOJAT5al1D5jfLK3KCZe+EiKaiKoKpmEc2pvPJsPSMI=;
-        b=Z2hHdYFTCOCunFIh8PZ1MiclTsSpNzzJeSfr2gnLT/Nwumc+K0vDpSJYVVhTbG44tL
-         x0weV1osoeDSUDY/Szfmyj5cFBUuP5P6N+aoFlz9YxgA1LSdnbxm+SGnLfCrQh2A8tsf
-         PVrbMHUXWfWtj8QypCcvVH/Cq2rzhBkG6kUolLuJLo7jf0U/xjsOcgrBHTlQRzf65pQK
-         RFLtCsf+WvHy9oTX1BzVgUu1KAMpbcApbppSFTaANNwgzjCvkba++DRbtRBsO0SzTaZ0
-         awaOzkvqU+BpHGQMvelEGgHNatPielw7hLZ6XKUhqva2HwDkVrNxLlEkOGmDUu4B24y5
-         NSTA==
-X-Gm-Message-State: AGi0PuaKrUh+K1bFcEP5xhGoMM2Azvo84C3BuzESmQf0S8TEIbmkDc6k
-        MOwOXSiTYawkAs9wXEuxSDKfUrU=
-X-Google-Smtp-Source: APiQypKC8n4GIaDfFsylvmEQK/cN0izFWrgqXOZf1olkbDe/mTybNEvl2zkbWwcKLeEyl0uWqLvP3Q==
-X-Received: by 2002:aca:f454:: with SMTP id s81mr7657610oih.138.1588885817620;
-        Thu, 07 May 2020 14:10:17 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id p13sm1735241oom.34.2020.05.07.14.10.16
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=ioAtKKBLetMrNC3UOrZBDpCms01n9tKhgmw2P4KuQ10=;
+        b=c2dHXHXiY7DbMfGpi7ETR2/Z/fzy/vcalkfArje9swEwZWl2MY3mcavqWKs4o+bLnV
+         RTdrDsMcXkLTJcdYzdho7SSbzS27d6t/FmJVBEzhjkcovWt9bKwqhgxErwBdWo159fP4
+         3f4jr1BQTnDZzmBsntbKKVakM4pSTOS0v74mLie7xhvMFMsh8Nwqq2wTTZBPHFwVU8bs
+         MMKfs7uVLkKipUih8qdVsABZfYAGWDN+8RFadwfaQsSeGPl0MSUhavMwJmodlViic5xS
+         iDmnvgQYcjJxbvCZGwnkR+l+q9c7ZDMK9p07m8J15IRpRN7NuEPDcl2hR8fPSe4WjUxe
+         ZEmg==
+X-Gm-Message-State: AGi0PuYYZpFVWB8mc3VftyT5xR/lEWPKWdA7paFJVZAF8HHoM0Vb7HEG
+        MJPBpHiM1VMdcNLwtzsCxpX5Rg==
+X-Google-Smtp-Source: APiQypJ3ry9ekB/Mu6A+agxgYdfo7bbCE87C+rrfPRAkcpuV1AuLxv17o9r4CKcuSidKzhyfOYnUbA==
+X-Received: by 2002:a17:90a:fd94:: with SMTP id cx20mr2284622pjb.157.1588886079220;
+        Thu, 07 May 2020 14:14:39 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
+        by smtp.gmail.com with ESMTPSA id x63sm5873453pfc.56.2020.05.07.14.14.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2020 14:10:17 -0700 (PDT)
-Received: (nullmailer pid 32069 invoked by uid 1000);
-        Thu, 07 May 2020 21:10:15 -0000
-Date:   Thu, 7 May 2020 16:10:15 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Remi Pommarel <repk@triplefau.lt>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Xogium <contact@xogium.me>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH v4 04/12] PCI: aardvark: Improve link training
-Message-ID: <20200507211015.GA31477@bogus>
-References: <20200430080625.26070-1-pali@kernel.org>
- <20200430080625.26070-5-pali@kernel.org>
+        Thu, 07 May 2020 14:14:38 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200430080625.26070-5-pali@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200507192157.6831-1-sibis@codeaurora.org>
+References: <20200507192157.6831-1-sibis@codeaurora.org>
+Subject: Re: [PATCH v5] iommu/arm-smmu-qcom: Request direct mapping for modem device
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     bjorn.andersson@linaro.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, dianders@chromium.org,
+        evgreen@chromium.org, mka@chromium.org,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Sibi Sankar <sibis@codeaurora.org>, joro@8bytes.org,
+        robin.murphy@arm.com, will@kernel.org
+Date:   Thu, 07 May 2020 14:14:37 -0700
+Message-ID: <158888607765.26370.18078298627976225073@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Apr 2020 10:06:17 +0200, =?UTF-8?q?Pali=20Roh=C3=A1r?= wrote:
-> From: Marek Behún <marek.behun@nic.cz>
-> 
-> Currently the aardvark driver trains link in PCIe gen2 mode. This may
-> cause some buggy gen1 cards (such as Compex WLE900VX) to be unstable or
-> even not detected. Moreover when ASPM code tries to retrain link second
-> time, these cards may stop responding and link goes down. If gen1 is
-> used this does not happen.
-> 
-> Unconditionally forcing gen1 is not a good solution since it may have
-> performance impact on gen2 cards.
-> 
-> To overcome this, read 'max-link-speed' property (as defined in PCI
-> device tree bindings) and use this as max gen mode. Then iteratively try
-> link training at this mode or lower until successful. After successful
-> link training choose final controller gen based on Negotiated Link Speed
-> from Link Status register, which should match card speed.
-> 
-> Signed-off-by: Pali Rohár <pali@kernel.org>
-> Signed-off-by: Marek Behún <marek.behun@nic.cz>
-> ---
->  drivers/pci/controller/pci-aardvark.c | 114 ++++++++++++++++++++------
->  1 file changed, 89 insertions(+), 25 deletions(-)
-> 
+Quoting Sibi Sankar (2020-05-07 12:21:57)
+> The modem remote processor has two modes of access to the DDR, a direct
+> mode and through a SMMU which requires direct mapping. The configuration
+> of the modem SIDs is handled in TrustZone.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Is it "The configuration of the modem SIDs is typically handled by
+code running in the ARM CPU's secure mode, i.e. secure EL1"? And is that
+even true? I though it was programmed by EL2.
+
+> On platforms where TrustZone
+
+TrustZone is always there.
+
+> is absent this needs to be explicitly done from kernel. Add compatibles
+> for modem to opt in for direct mapping on such platforms.
+>=20
+> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+
+Is Sai the author? Or does this need a co-developed-by tag?
+
+> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+> ---
+>=20
+> V5
+>  * Reword commit message and drop unnecessary details
+
+I don't see any improvement! Probably because I don't understand _why_
+the modem needs a direct mapping. The commit text basically says "we
+need to do it because it isn't done in secure world sometimes". This is
+probably wrong what I wrote below, but I'd like to clarify to confirm my
+understanding. Maybe the commit text should say:
+
+The modem remote processor has two access paths to DDR. One path is
+directly connected to DDR and another path goes through an SMMU. The
+SMMU path is configured to be a direct mapping because it's used by
+various peripherals in the modem subsystem. Typically this direct
+mapping is configured by programming modem SIDs into the SMMU when EL2
+responds to a hyp call from the code that loads the modem binary in the
+secure world.
+
+In certain firmware configurations, especially when the kernel is
+entered at EL2, we don't want secure mode to make hyp calls to program
+the SMMU because the kernel is in full control of the SMMU. Let's add
+compatibles here so that we can have the kernel program the SIDs for the
+modem in these cases.
