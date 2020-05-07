@@ -2,131 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98E901C9BA6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 22:07:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 490A91C9BAA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 22:09:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728212AbgEGUHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 16:07:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45542 "EHLO
+        id S1728375AbgEGUJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 16:09:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726326AbgEGUHW (ORCPT
+        by vger.kernel.org with ESMTP id S1726320AbgEGUJA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 16:07:22 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFEF3C05BD43;
-        Thu,  7 May 2020 13:07:21 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id y3so7934833wrt.1;
-        Thu, 07 May 2020 13:07:21 -0700 (PDT)
+        Thu, 7 May 2020 16:09:00 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DA60C05BD09
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 13:09:00 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id 18so3540148pfx.6
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 13:09:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=SIPxEGkoigO/RdOn28FMwPwqLB9D7Bf2pDVWj4s0qzc=;
-        b=BKCgobvvRk12sNHbQdFp+jiN+mhqDLIsgN1BPt5/gOiz6w7q/RC36egt8JkAzGEfB2
-         rmw4ZCtt4ohfBNhFThzB8aMSnGCBgUATdSDMswU0j9M7NqMYFhjSxTsl7+wf0XvS6KRP
-         fG1xdg7y/0KiBK5yZMXDS4xFB5o4jIMi6Zv/5FLMDely/LqMO+GIoMPTyLC57O4ehli9
-         lf3OvA5mjrsOue86jHJzdbdsmqGjuuH1xDP7+989AKT2RVoltDdc+C6qZjcTJzt3ndNE
-         168Y43cITyDVhe7QmPGuIdO8MLIliZF6yB6sNWga9oyqdjMJw337OUCZsQeyLediPkHt
-         T+9w==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KL9EzEs11mB5Vs91mETITkzWTIesusmvUGDSfeOr+zo=;
+        b=DeX7kVLOVMXbc/cBjy87SIJViP8dRtLE9JYWsZFqz92vNtIdLIaHDD2So/Vd2PrSQB
+         t2VfgSYTGbi2BX5/C9YurQA0G8IKcqvp0bzWgxKkzmna4UJNbNj9GPhX1+1zcdVDv5Rq
+         Pg1z0yKWuhYTpeCBt87zjQyBVcfBvgtrNFwQI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=SIPxEGkoigO/RdOn28FMwPwqLB9D7Bf2pDVWj4s0qzc=;
-        b=Cb0TCZScrH/D0epUkn+QqwJdhtNDc7qDY37K6I0OFo7Dfv+zvcCSw69doMh5Cp5CNu
-         V2Me49vr/IRllWSE3WdIJwxwZUhV2Jop/Qu5n64H22RYLK93yvZ2QlYw9WFkviKpY/ux
-         blaCOwUA9y20A6eilYtwmJ1kxZyOpfTOedtBqMyXq28hEo/QShUQUiVGRZuNsFHFiqd6
-         eIvGBR+geZSsUsMKafq3i5aq7sijlK93UTGKs1oQg3MKoYdhoeWx4jcKPyPmUTs3Dd2d
-         tQoDd14Smz4Z6RQNYlu/Ae4auZxGlBeWyFKVODCo5WbdSdd1JzPX6J249n1BkCkYpkhM
-         J+2g==
-X-Gm-Message-State: AGi0PuaEwiHMGownWr8uQmF2fMnc/uDFNJC7cKd03QltryPLC5Cbagmp
-        PgfR3YVXSKZT3kjGxfmbRoRjVt2aing=
-X-Google-Smtp-Source: APiQypI8cqMnwNEw1dPA8CPIiiM5LeFDJj/l6ggkxKJc3616ZPFx9eahE4EJ1H2wPJFUTJw/ziTj3A==
-X-Received: by 2002:a5d:4447:: with SMTP id x7mr17126025wrr.299.1588882040490;
-        Thu, 07 May 2020 13:07:20 -0700 (PDT)
-Received: from localhost (p2E5BE57B.dip0.t-ipconnect.de. [46.91.229.123])
-        by smtp.gmail.com with ESMTPSA id 185sm10472035wmc.32.2020.05.07.13.07.19
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KL9EzEs11mB5Vs91mETITkzWTIesusmvUGDSfeOr+zo=;
+        b=GZ06xo4GDxPr7x8qxAuIkEgAtHXgx4ew9WPehsrSYMC4hQ8uWPtVriL6zLnc9ONFMe
+         a4tDAA1cmfd5IhBYpPROBpI8RI8JpTvx17vgVhqd8gW+vs44fSVxhXMjgHZiVUvYxSkB
+         01NKhxgHMuYgxMIjWvefveUozhyFCSNNKhclkASG06sWSen6VrxpjLKF4pbTnKGWjtUU
+         hn8WzdK79hc8WyPHypLArBxiPnQkbmPUyJwyu6TsjZLle06ODlOL2DtWytxgFQC9Vh4Q
+         uZ4gsTNLs2VvaMLEZDCOdkwxuXcdHcW/U3L1JprGJ6ZMfOP20QUaWlQ3v5r+XC0IL25v
+         G/ng==
+X-Gm-Message-State: AGi0Pub1RzS6mPO35FnZjIwStkMqSlFyijxx7vCEyuCnhQfscP67zPtL
+        nYQUi445NVAdZ2DEwtnoDqH7lg==
+X-Google-Smtp-Source: APiQypIqp2gxVzYysC4NWxVmcszy/VyS+36E00I7n9sMqgA1M9iq1T3DOjbMxV32ALA2B508gUnolw==
+X-Received: by 2002:a62:2cd7:: with SMTP id s206mr15067842pfs.183.1588882139748;
+        Thu, 07 May 2020 13:08:59 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:24fa:e766:52c9:e3b2])
+        by smtp.gmail.com with ESMTPSA id d203sm5547601pfd.79.2020.05.07.13.08.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2020 13:07:19 -0700 (PDT)
-Date:   Thu, 7 May 2020 22:07:18 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Joseph Lo <josephl@nvidia.com>, linux-tegra@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] memory: tegra: EMC scaling is not a clock provider
-Message-ID: <20200507200718.GD2981633@ulmo>
-References: <20200506123236.7463-1-geert+renesas@glider.be>
+        Thu, 07 May 2020 13:08:59 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     jason.wessel@windriver.com, daniel.thompson@linaro.org,
+        gregkh@linuxfoundation.org
+Cc:     corbet@lwn.net, frowand.list@gmail.com, bjorn.andersson@linaro.org,
+        linux-serial@vger.kernel.org, mingo@redhat.com, hpa@zytor.com,
+        jslaby@suse.com, kgdb-bugreport@lists.sourceforge.net,
+        sumit.garg@linaro.org, will@kernel.org, tglx@linutronix.de,
+        agross@kernel.org, catalin.marinas@arm.com, bp@alien8.de,
+        Douglas Anderson <dianders@chromium.org>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        Allison Randal <allison@lohutok.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Enrico Weigelt <info@metux.net>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        James Morse <james.morse@arm.com>,
+        Juergen Gross <jgross@suse.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Russell King <linux@armlinux.org.uk>,
+        jinho lim <jordan.lim@samsung.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: [PATCH v4 00/12] kgdb: Support late serial drivers; enable early debug w/ boot consoles
+Date:   Thu,  7 May 2020 13:08:38 -0700
+Message-Id: <20200507200850.60646-1-dianders@chromium.org>
+X-Mailer: git-send-email 2.26.2.645.ge9eca65c58-goog
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="veXX9dWIonWZEC6h"
-Content-Disposition: inline
-In-Reply-To: <20200506123236.7463-1-geert+renesas@glider.be>
-User-Agent: Mutt/1.13.1 (2019-12-14)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This whole pile of patches was motivated by me trying to get kgdb to
+work properly on a platform where my serial driver ended up being hit
+by the -EPROBE_DEFER virus (it wasn't practicing social distancing
+from other drivers).  Specifically my serial driver's parent device
+depended on a resource that wasn't available when its probe was first
+called.  It returned -EPROBE_DEFER which meant that when "kgdboc"
+tried to run its setup the serial driver wasn't there.  Unfortunately
+"kgdboc" never tried again, so that meant that kgdb was disabled until
+I manually enalbed it via sysfs.
 
---veXX9dWIonWZEC6h
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+While I could try to figure out how to get around the -EPROBE_DEFER
+somehow, the above problems could happen to anyone and -EPROBE_DEFER
+is generally considered something you just have to live with.  In any
+case the current "kgdboc" setup is a bit of a race waiting to happen.
+I _think_ I saw during early testing that even adding a msleep() in
+the typical serial driver's probe() is enough to trigger similar
+issues.
 
-On Wed, May 06, 2020 at 02:32:34PM +0200, Geert Uytterhoeven wrote:
-> 	Hi all,
->=20
-> The Tegra EMC scaling support code is not a clock provider, but merely a
-> clock consumer, and thus does not need to include
-> <linux/clk-provider.h>.
->=20
-> However, drivers/memory/tegra/tegra210-emc-table.c relies on
-> tegra210-emc.h to include <linux/of.h> through <linux/clk-provider.h>.
-> Hence the first patch makes <linux/of_reserved_mem.h> self-contained
-> first.
->=20
-> Thanks for your comments!
->=20
-> Geert Uytterhoeven (2):
->   of: Make <linux/of_reserved_mem.h> self-contained
->   memory: tegra: Drop <linux/clk-provider.h>
->=20
->  drivers/memory/tegra/tegra210-emc-core.c | 1 -
->  drivers/memory/tegra/tegra210-emc.h      | 1 -
->  include/linux/of_reserved_mem.h          | 1 +
->  3 files changed, 1 insertion(+), 2 deletions(-)
+I decided that for the above race the best attitude to get kgdb to
+register at boot was probably "if you can't beat 'em, join 'em".
+Thus, "kgdboc" now jumps on the -EPROBE_DEFER bandwagon (now that my
+driver uses it it's no longer a virus).  It does so a little awkwardly
+because "kgdboc" hasn't normally had a "struct device" associated with
+it, but it's really not _that_ ugly to make a platform device and
+seems less ugly than alternatives.
 
-Ah... I should've read the cover letter first. Looks like I need to take
-that first patch through the Tegra tree as well to avoid introducing the
-build error in the second patch.
+Unfortunately now on my system the debugger is one of the last things
+to register at boot.  That's OK for debugging problems that show up
+significantly after boot, but isn't so hot for all the boot problems
+that I end up debugging.  This motivated me to try to get something
+working a little earlier.
 
-Rob, do you mind if I pick up patch 1 of this into the same OF branch
-that I already carry the memory-region-names patches on?
+My first attempt was to try to get the existing "ekgdboc" to work
+earlier.  I tried that for a bit until I realized that it needed to
+work at the tty layer and I couldn't find any serial drivers that
+managed to register themselves to the tty layer super early at boot.
+The only documented use of "ekgdboc" is "ekgdboc=kbd" and that's a bit
+of a special snowflake.  Trying to get my serial driver and all its
+dependencies to probe normally and register the tty driver super early
+at boot seemed like a bad way to go.  In fact, all the complexity
+needed to do something like this is why the system already has a
+special concept of a "boot console" that lives only long enough to
+transition to the normal console.
 
-Thierry
+Leveraging the boot console seemed like a good way to go and that's
+what this series does.  I found that consoles could have a read()
+function, though I couldn't find anyone who implemented it.  I
+implemented it for two serial drivers for the devices I had easy
+access to, making the assumption that for boot consoles that we could
+assume read() and write() were polling-compatible (seems sane I
+think).
 
---veXX9dWIonWZEC6h
-Content-Type: application/pgp-signature; name="signature.asc"
+Now anyone who makes a small change to their serial driver can easily
+enable early kgdb debugging!
 
------BEGIN PGP SIGNATURE-----
+The devices I had for testing were:
+- arm32: rk3288-veyron-jerry
+- arm64: rk3399-gru-kevin
+- arm64: qcom-sc7180-trogdor (not mainline yet)
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl60anYACgkQ3SOs138+
-s6EaEw/9EGmZ4wRdJQnZKEPfSrkI8ezYGzEWDNRp9OC17IzFf2+rDPyHkuM6zynx
-sqWhXQeersjdUCJLMyRStJ47/ismsDY9Dsi/Y52S1Bhc9PibFbKO6GsEOUyiRaSa
-FQJX/LstrlkGtTsymCp7rXw1SnneQg4StyPI7pXmoNBZafCEdRVHAUt5atl3dKO1
-vPQolPeuzA9oaizomcnPKM2eY7JXxWw0J/ZnphMRcpPLkNXdGLcKb4IZocBS9DcX
-Qd/4Ipk5jMR4lILYOHweJFHV3FagRj8GSO/cotDSDPlPdxYPQF1XDNTRau2FAuv0
-fdft30qVrMr4XwZW5opTxafv90UZJXXtchexfUMx+SBgtQ8DGy1PLiNbKxyQjbcD
-SqKNNKIoz3LdcKv3PTBSmIsdROOPoKtO0lSTR3lqsc1gMWt/RVdnIoffOupFFxU/
-FLoXWUfbQojhjUg7NME0ViUVaJDrORqbbH6Wq7F7zNBTBJJPq+pC1G4jkvvuFmvG
-0s//QGxgO8hoZOE8++1pw+F1fybzkGOiDATBCxFBllutuHq897y9sgIk6FquRud4
-cf8wdwJ+fOAH1eHMTr/U3TXNMKm3YccLNYY6Iry8xDGU3/vAk8MsUrFkFKLSMIm5
-Lxd5rMApw+T2sZX2BDThuWZN38gotqCZhJbgBl0b/P1PnclP1IU=
-=qNDk
------END PGP SIGNATURE-----
+These are the devices I tested this series on.  I tried to test
+various combinations of enabling/disabling various options and I
+hopefully caught the corner cases, but I'd appreciate any extra
+testing people can do.  Notably I didn't test on x86, but (I think) I
+didn't touch much there so I shouldn't have broken anything.
 
---veXX9dWIonWZEC6h--
+When testing I found a few problems with actually dropping into the
+debugger super early on arm and arm64 devices.  Patches in this series
+should help with this.  For arm I just avoid dropping into the
+debugger until a little later and for arm64 I actually enable
+debugging super early.
+
+I realize that bits of this series might feel a little hacky, though
+I've tried to do things in the cleanest way I could without overly
+interferring with the rest of the kernel.  If you hate the way I
+solved a problem I would love it if you could provide guidance on how
+you think I could solve the problem better.
+
+This series (and my comments / documentation / commit messages) are
+now long enough that my eyes glaze over when I try to read it all over
+to double-check.  I've nontheless tried to double-check it, but I'm
+pretty sure I did something stupid.  Thank you ahead of time for
+pointing it out to me so I can fix it in v5.  If somehow I managed to
+not do anything stupid (really?) then thank you for double-checking me
+anyway.
+
+NOTE: v3 of the patch series tacks on support for an extra serial
+driver from Sumit Garg.  I've piled it onto the end of my series at
+his request just to keep everything together.
+
+Changes in v4:
+- ("kgdboc: Remove useless #ifdef...") new for v4.
+- Add "if KGDB" to "select ARCH_HAS_EARLY_DEBUG" in Kconfig.
+- Add comment about why we always return 0 in kgdboc_earlycon_init().
+- Major overhauls to commit message.
+- No more #ifdef CONFIG_KGDB_SERIAL_CONSOLE.
+- Now keep using bootcon even when the system stops.
+- Print "replacing" message before calling deinit().
+- earlycon should be static.
+- s/The the/The/
+
+Changes in v3:
+- ("kgdb: Prevent infinite recursive entries to the debugger") new for v3.
+- ("serial: amba-pl011: Support kgdboc_earlycon") pulled into my v3.
+- Add deinit() to I/O ops to know a driver can be replaced.
+- Added example in kgdb.rst
+- Change boolean weak function to KConfig.
+- Don't just neuter input, panic if earlycon vanishes.
+- No extra param to kgdb_register_io_module().
+- Removed unneeded sentence in kerenel-parameters doc.
+- Renamed earlycon_kgdboc to kgdboc_earlycon.
+- Simplify earlycon_kgdb deinit by using the deinit() function.
+- Suggest people use kgdboc_earlycon instead of ekgdboc.
+- { ; } ==> { }
+
+Changes in v2:
+- ("Revert "kgdboc: disable the console lock when in kgdb"") new for v2.
+- ("kgdb: Disable WARN_CONSOLE_UNLOCKED for all kgdb") new for v2.
+- Assumes we have ("kgdb: Disable WARN_CONSOLE_UNLOCKED for all kgdb")
+- Fix kgdbts, tty/mips_ejtag_fdc, and usb/early/ehci-dbgp
+
+Douglas Anderson (11):
+  kgdb: Disable WARN_CONSOLE_UNLOCKED for all kgdb
+  Revert "kgdboc: disable the console lock when in kgdb"
+  kgdboc: Use a platform device to handle tty drivers showing up late
+  kgdb: Delay "kgdbwait" to dbg_late_init() by default
+  arm64: Add call_break_hook() to early_brk64() for early kgdb
+  kgdb: Prevent infinite recursive entries to the debugger
+  kgdboc: Remove useless #ifdef CONFIG_KGDB_SERIAL_CONSOLE in kgdboc
+  kgdboc: Add kgdboc_earlycon to support early kgdb using boot consoles
+  Documentation: kgdboc: Document new kgdboc_earlycon parameter
+  serial: qcom_geni_serial: Support kgdboc_earlycon
+  serial: 8250_early: Support kgdboc_earlycon
+
+Sumit Garg (1):
+  serial: amba-pl011: Support kgdboc_earlycon
+
+ .../admin-guide/kernel-parameters.txt         |  20 ++
+ Documentation/dev-tools/kgdb.rst              |  24 ++
+ arch/arm64/Kconfig                            |   1 +
+ arch/arm64/include/asm/debug-monitors.h       |   2 +
+ arch/arm64/kernel/debug-monitors.c            |   2 +-
+ arch/arm64/kernel/traps.c                     |   3 +
+ arch/x86/Kconfig                              |   1 +
+ drivers/tty/serial/8250/8250_early.c          |  23 ++
+ drivers/tty/serial/amba-pl011.c               |  32 +++
+ drivers/tty/serial/kgdboc.c                   | 268 ++++++++++++++++--
+ drivers/tty/serial/qcom_geni_serial.c         |  32 +++
+ include/linux/kgdb.h                          |   4 +
+ kernel/debug/debug_core.c                     |  52 +++-
+ lib/Kconfig.kgdb                              |  18 ++
+ 14 files changed, 436 insertions(+), 46 deletions(-)
+
+-- 
+2.26.2.645.ge9eca65c58-goog
+
