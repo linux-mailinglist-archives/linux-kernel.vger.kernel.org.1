@@ -2,77 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CFB41C8E99
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 16:29:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DC331C9049
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 16:44:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728070AbgEGO2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 10:28:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54688 "EHLO mail.kernel.org"
+        id S1727106AbgEGOiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 10:38:14 -0400
+Received: from mga04.intel.com ([192.55.52.120]:47930 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727984AbgEGO2Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 10:28:16 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AE2F120870;
-        Thu,  7 May 2020 14:28:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588861696;
-        bh=Uegwi40m6VKoo3qYz46wXwuY83tyEhWX7RHlaRpzbXs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CYeYcgTQ0Ywxl4zeeXpRWLUXS/cuzDs8oE341xgiHkmSwuU6KjjJunsdP/Iva5X1U
-         4KVXKpp2ILdGiDIrDwJNE9NlcS9Xq6GmXV8Gf4OXkYmqVL9HptT3O/s2d2vylhgBIk
-         fLo1bNqo7rdyvzNRGokXdUxjcd8t3Vrf10d94dTU=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Vasily Averin <vvs@virtuozzo.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Sasha Levin <sashal@kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        spice-devel@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.6 39/50] drm/qxl: lost qxl_bo_kunmap_atomic_page in qxl_image_init_helper()
-Date:   Thu,  7 May 2020 10:27:15 -0400
-Message-Id: <20200507142726.25751-39-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200507142726.25751-1-sashal@kernel.org>
-References: <20200507142726.25751-1-sashal@kernel.org>
+        id S1727100AbgEGO1p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 10:27:45 -0400
+IronPort-SDR: QtZUc6qnAL3/kzD2RSlef++m0jl/rPUbTtABADjPSmHVNs/Ez4SbdgoWyfCUqnbKvjh2VBIjAI
+ C0VCGKNL0Umw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2020 07:27:44 -0700
+IronPort-SDR: FlxiV9tkifVn7SQpdJR7/GHu1h0vfLl0fpMDGosXbdVPsI4k9OWpjGR5wCx5IQQCHBfeEcRq+R
+ rvv4bnW83v2g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,364,1583222400"; 
+   d="scan'208";a="250105865"
+Received: from kawilli2-mobl.amr.corp.intel.com (HELO [10.251.4.116]) ([10.251.4.116])
+  by fmsmga007.fm.intel.com with ESMTP; 07 May 2020 07:27:34 -0700
+Subject: Re: [PATCH v2 -next] ASoC: SOF: Intel: Fix unused variable warning
+To:     YueHaibing <yuehaibing@huawei.com>, lgirdwood@gmail.com,
+        ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
+        daniel.baluta@nxp.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, joe@perches.com
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        sound-open-firmware@alsa-project.org
+References: <20200507031911.38644-1-yuehaibing@huawei.com>
+ <20200507072735.16588-1-yuehaibing@huawei.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <d3641489-e3c2-e525-567a-d0348c1eab4e@linux.intel.com>
+Date:   Thu, 7 May 2020 09:27:15 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
+In-Reply-To: <20200507072735.16588-1-yuehaibing@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasily Averin <vvs@virtuozzo.com>
 
-[ Upstream commit 5b5703dbafae74adfbe298a56a81694172caf5e6 ]
 
-v2: removed TODO reminder
+On 5/7/20 2:27 AM, YueHaibing wrote:
+> When CONFIG_SND_SOC_SOF_BAYTRAIL is not set, gcc warns:
+> 
+> sound/soc/sof/intel/byt.c:85:41: warning: ‘cht_debugfs’ defined but not used [-Wunused-const-variable=]
+>   static const struct snd_sof_debugfs_map cht_debugfs[] = {
+>                                           ^~~~~~~~~~~
+> Move the variable inside #ifdef
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Suggested-by: Joe Perches <joe@perches.com>
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-Link: http://patchwork.freedesktop.org/patch/msgid/a4e0ae09-a73c-1c62-04ef-3f990d41bea9@virtuozzo.com
-Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/gpu/drm/qxl/qxl_image.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Thanks for the patch.
 
-diff --git a/drivers/gpu/drm/qxl/qxl_image.c b/drivers/gpu/drm/qxl/qxl_image.c
-index 43688ecdd8a04..60ab7151b84dc 100644
---- a/drivers/gpu/drm/qxl/qxl_image.c
-+++ b/drivers/gpu/drm/qxl/qxl_image.c
-@@ -212,7 +212,8 @@ qxl_image_init_helper(struct qxl_device *qdev,
- 		break;
- 	default:
- 		DRM_ERROR("unsupported image bit depth\n");
--		return -EINVAL; /* TODO: cleanup */
-+		qxl_bo_kunmap_atomic_page(qdev, image_bo, ptr);
-+		return -EINVAL;
- 	}
- 	image->u.bitmap.flags = QXL_BITMAP_TOP_DOWN;
- 	image->u.bitmap.x = width;
--- 
-2.20.1
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
 
