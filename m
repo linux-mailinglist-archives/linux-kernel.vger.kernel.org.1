@@ -2,131 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35A9D1C9E01
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 23:58:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F0F31C9E08
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 23:59:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726792AbgEGV6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 17:58:30 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:52315 "EHLO
+        id S1727093AbgEGV7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 17:59:16 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:48044 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726437AbgEGV6a (ORCPT
+        with ESMTP id S1726809AbgEGV7O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 17:58:30 -0400
+        Thu, 7 May 2020 17:59:14 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588888708;
+        s=mimecast20190719; t=1588888753;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=YIdhd/O6VYCCThTyaA6We9R20n/Ae/tFi2XoFVio1ws=;
-        b=cz71TAguzSLFarGW6WObXNFwT+SyzAJhNN4PSTRa/Ifq4te4z+TvXdSLDhL4BNCrsEch4L
-        Ee47yNAGCL6+2N5pSON13KIpeJJpFMtKWzJGB9Z0647NlzHu0WM2FwxUTXW8n1s/nRyrFt
-        XtA2Eit8XN5xOlwT4j+Bd0mkwLTOj8U=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-352-tmgfVTAMOJGL0jzKrrXf8g-1; Thu, 07 May 2020 17:58:23 -0400
-X-MC-Unique: tmgfVTAMOJGL0jzKrrXf8g-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7B38718B649E;
-        Thu,  7 May 2020 21:58:22 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.3.128.9])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D00B21001B07;
-        Thu,  7 May 2020 21:58:15 +0000 (UTC)
-Date:   Thu, 7 May 2020 17:58:13 -0400
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Paul Moore <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>,
-        linux-audit@redhat.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] audit: Replace zero-length array with flexible-array
-Message-ID: <20200507215812.ksvwcykfged7ye2a@madcap2.tricolour.ca>
-References: <20200507185041.GA13930@embeddedor>
+        bh=zoaD/vZ99qPVucnfK3IScYf0rbMkx7qHOiz4Yv3Ogzg=;
+        b=Ni1mw1pBzEkIkKE11YYFAQf1jBwyRJNPYsA+w4J2sSLRQC3nZrbnNy6HPOlUrGWZWcT9Of
+        DAkVE/iC6yyEbThvTgO1CjpTB0yYzZaROkOQ421QDj7caYpdP9FviKu9s33G4SDSyrIjIP
+        0N5lg/rmxsJ998rVxoxz3KNnlKvayrk=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-501-tOHQU31MMQyHiKY5KnOeXg-1; Thu, 07 May 2020 17:59:11 -0400
+X-MC-Unique: tOHQU31MMQyHiKY5KnOeXg-1
+Received: by mail-qk1-f200.google.com with SMTP id z8so7330998qki.13
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 14:59:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zoaD/vZ99qPVucnfK3IScYf0rbMkx7qHOiz4Yv3Ogzg=;
+        b=F5i07GRY/hBDuXQLI2Ok0J1V5C4JrGSQy5DsXfvZw9xU1cxioXu4m5F3oA6bOFiOmw
+         63kqU7ZjSMupmUs2MgpcXqIzOr6A1EzTKGgia5essme5LfGyWU9mTNg0HImiTl7Gq7Iw
+         iwp+RDQamabnB7NcXmosETjqTXOQpFYQMrzKE8avbjJ3sQvVMUXA0PJB/WvGZkiYsjnJ
+         j/Sf4r1CHPvsL9hRwT/IjZBgDH1UBPpnEfEcxDNQmjV+NYp/VvnBh25RCihVM518A2pG
+         ao4DNDfASF3doDoqUuDU9FjoCUA4IODW1Amc261uZqFWvaIpJq8inYppCar1GOKxpSei
+         T1iQ==
+X-Gm-Message-State: AGi0PuaIBhedA3SvVw8NQhBr9vxCQbmrnphZWkYAms27AluOLreOObQH
+        Zm80C9R+UsCQ7N1icCZ+i2Slno5IKfPfWsEVk9AlmZR/E4vyorXXqr3BnjdVC9o2P3IuuIJy/Xd
+        qdOScsgoQuHs70YZsOJxouXxl
+X-Received: by 2002:aed:2dc1:: with SMTP id i59mr16853122qtd.182.1588888750767;
+        Thu, 07 May 2020 14:59:10 -0700 (PDT)
+X-Google-Smtp-Source: APiQypLd8+jTdEka04fZzv2vUUpL+dHbxVfK9jv6upQkE8gQ0PDY1mJ/wapufSn+uMj7hMA/3PNRSg==
+X-Received: by 2002:aed:2dc1:: with SMTP id i59mr16853106qtd.182.1588888750522;
+        Thu, 07 May 2020 14:59:10 -0700 (PDT)
+Received: from xz-x1 ([2607:9880:19c0:32::2])
+        by smtp.gmail.com with ESMTPSA id y3sm5259605qkc.4.2020.05.07.14.59.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 May 2020 14:59:09 -0700 (PDT)
+Date:   Thu, 7 May 2020 17:59:08 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cohuck@redhat.com, jgg@ziepe.ca
+Subject: Re: [PATCH v2 0/3] vfio-pci: Block user access to disabled device
+ MMIO
+Message-ID: <20200507215908.GQ228260@xz-x1>
+References: <158871401328.15589.17598154478222071285.stgit@gimli.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200507185041.GA13930@embeddedor>
-User-Agent: NeoMutt/20180716
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <158871401328.15589.17598154478222071285.stgit@gimli.home>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-05-07 13:50, Gustavo A. R. Silva wrote:
-> The current codebase makes use of the zero-length array language
-> extension to the C90 standard, but the preferred mechanism to declare
-> variable-length types such as these ones is a flexible array member[1][2],
-> introduced in C99:
+On Tue, May 05, 2020 at 03:54:36PM -0600, Alex Williamson wrote:
+> v2:
 > 
-> struct foo {
->         int stuff;
->         struct boo array[];
-> };
-> 
-> By making use of the mechanism above, we will get a compiler warning
-> in case the flexible array does not occur last in the structure, which
-> will help us prevent some kind of undefined behavior bugs from being
-> inadvertently introduced[3] to the codebase from now on.
-> 
-> Also, notice that, dynamic memory allocations won't be affected by
-> this change:
-> 
-> "Flexible array members have incomplete type, and so the sizeof operator
-> may not be applied. As a quirk of the original implementation of
-> zero-length arrays, sizeof evaluates to zero."[1]
-> 
-> sizeof(flexible-array-member) triggers a warning because flexible array
-> members have incomplete type[1]. There are some instances of code in
-> which the sizeof operator is being incorrectly/erroneously applied to
-> zero-length arrays and the result is zero. Such instances may be hiding
-> some bugs. So, this work (flexible-array member conversions) will also
-> help to get completely rid of those sorts of issues.
-> 
-> This issue was found with the help of Coccinelle.
-> 
-> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-> [2] https://github.com/KSPP/linux/issues/21
-> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> Locking in 3/ is substantially changed to avoid the retry scenario
+> within the fault handler, therefore a caller who does not allow retry
+> will no longer receive a SIGBUS on contention.  IOMMU invalidations
+> are still not included here, I expect that will be a future follow-on
+> change as we're not fundamentally changing that issue in this series.
+> The 'add to vma list only on fault' behavior is also still included
+> here, per the discussion I think it's still a valid approach and has
+> some advantages, particularly in a VM scenario where we potentially
+> defer the mapping until the MMIO BAR is actually DMA mapped into the
+> VM address space (or the guest driver actually accesses the device
+> if that DMA mapping is eliminated at some point).  Further discussion
+> and review appreciated.  Thanks,
 
-Sounds reasonable to me.  There's another in include/uapi/linux/audit.h
-in struct audit_rule_data buf[0].  This alert also helped me fix another
-one in a patchset I'm about to post (and will probably cause a merge
-conflict but we can figure that out).
+Hi, Alex,
 
-Reviewed-by: Richard Guy Briggs <rgb@redhat.com>
+I have a general question on the series.
 
-> ---
->  include/linux/audit.h |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/audit.h b/include/linux/audit.h
-> index f9ceae57ca8d..2b63aee6e9fa 100644
-> --- a/include/linux/audit.h
-> +++ b/include/linux/audit.h
-> @@ -19,7 +19,7 @@
->  struct audit_sig_info {
->  	uid_t		uid;
->  	pid_t		pid;
-> -	char		ctx[0];
-> +	char		ctx[];
->  };
->  
->  struct audit_buffer;
-> 
-> 
-> --
-> Linux-audit mailing list
-> Linux-audit@redhat.com
-> https://www.redhat.com/mailman/listinfo/linux-audit
+IIUC this series tries to protect illegal vfio userspace writes to device MMIO
+regions which may cause platform-level issues.  That makes perfect sense to me.
+However what if the write comes from the devices' side?  E.g.:
 
-- RGB
+  - Device A maps MMIO region X
 
---
-Richard Guy Briggs <rgb@redhat.com>
-Sr. S/W Engineer, Kernel Security, Base Operating Systems
-Remote, Ottawa, Red Hat Canada
-IRC: rgb, SunRaycer
-Voice: +1.647.777.2635, Internal: (81) 32635
+  - Device B do VFIO_IOMMU_DMA_MAP on Device A's MMIO region X
+    (so X's MMIO PFNs are mapped in device B's IOMMU page table)
+
+  - Device A clears PCI_COMMAND_MEMORY (reset, etc.)
+    - this should zap all existing vmas that mapping region X, however device
+      B's IOMMU page table is not aware of this?
+
+  - Device B writes to MMIO region X of device A even if PCI_COMMAND_MEMORY
+    cleared on device A's PCI_COMMAND register
+
+Could this happen?
+
+Thanks,
+
+-- 
+Peter Xu
 
