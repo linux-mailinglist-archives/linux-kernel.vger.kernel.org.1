@@ -2,104 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F9AE1C9E7A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 00:29:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91F321C9E7E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 00:31:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726761AbgEGW3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 18:29:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726437AbgEGW3s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 18:29:48 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A02D2C05BD43
-        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 15:29:48 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id x10so2669011plr.4
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 15:29:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XBVohqdeB+6SWxRGmmFJuyeMSq6V5Fxg2K5EHMfRPbg=;
-        b=SVUtOgJ/cbUQqk9bkdROMWL4W5JPsDsiMZDZf8AsZ1frUJ8JhyuudTUE8rWn529fjt
-         zBBBhj1sr+5Ac5H+SEfGbO6TcoE3arpFO1nWFhp/k5r9b0JIc3JY5ADF0/roHkioIe8w
-         5kiQJQkIUWgxXIQADgZFJyqwB4E/hAKXXyBYpT8twbgfwkNGMUnAV3pChZC9RXia55oa
-         biM+bv7h3CAtQj81S3lvq6TpHuMIIqGfdYCkWhpm7CDU9idd7SWS6Jp2DqPT2v1C6PMx
-         o8FjWzNlv6hP4GhvRpSu5UD3x1e6dQlLc2qO4LBvMIqUGS+AV5eapsn2T9JAr9hgmaDS
-         yN6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XBVohqdeB+6SWxRGmmFJuyeMSq6V5Fxg2K5EHMfRPbg=;
-        b=BA64SEOGSnZ/mAtX2qC072YwcEjsPiEYSCxIkqXaZSKx9FD+fUcf+Gudhx6k50lgOT
-         ATlSi1FGqm6+kzQ2nqv59rH+Jf/uYp9qXT6py8NQ0AZTyMl9jrpZVaO39s90ytcRN1/6
-         SHyiwxA58os/wKQzZpBZWk/g9GoIsZpz42jw1Fp0tEbIWKzyfShBHb8zL5lK7WmHcS91
-         ir+mgDCwEgUMNN4aGR82Fx2ISyQ/ESKXztuEdC80Cyod5OdV9XfKwBacIbaH9TrDGDHg
-         KyvM5FfqdArD8PjyXMrvqgyrx1hvF22kOqBJ0hiPqTtX2NqPa6CwZB/3JhOvf3TV59aZ
-         XnVA==
-X-Gm-Message-State: AGi0Puaw8XBXWtxeJ31YGw8DVKC8WaTzB0irVxiL3zjWBeWg0Qv6Fuv6
-        l+8RExy8W4T0noW/INQEgiL1ZPDsu113A7NHd0oSxg==
-X-Google-Smtp-Source: APiQypKkkPDq8z2qnwoJ0+Jzr4hD+NCrW6kDegAy6Pbin9Bdru3LFkaT4ibhl5aa9Qv/zb+4Fu+Kcej8KUECq9VfwFU=
-X-Received: by 2002:a17:90a:6d03:: with SMTP id z3mr2573417pjj.32.1588890587535;
- Thu, 07 May 2020 15:29:47 -0700 (PDT)
+        id S1726644AbgEGWbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 18:31:43 -0400
+Received: from mga03.intel.com ([134.134.136.65]:9417 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726437AbgEGWbm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 18:31:42 -0400
+IronPort-SDR: x0JDDpSAGYmdhzYLe3Vva7k0tQ8LO0nx1PXMSs9o4eAv2HFE1URSZ4dAyEIwkpKkfdoFTFsClh
+ eVObjR+cWYVw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2020 15:31:42 -0700
+IronPort-SDR: kbLRHyo+0ltdd62PrMP06uUWWD7UTdnXadny6XTSmUCZ/fuGQZkBhI1s7viP8JAV8O+0Lr8udz
+ Q97adQ9VwPxw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,365,1583222400"; 
+   d="scan'208";a="295879649"
+Received: from hhuan26-mobl1.amr.corp.intel.com ([10.255.72.181])
+  by fmsmga002.fm.intel.com with ESMTP; 07 May 2020 15:31:40 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To:     "Nathaniel McCallum" <npmccallum@redhat.com>
+Cc:     "Sean Christopherson" <sean.j.christopherson@intel.com>,
+        "Jarkko Sakkinen" <jarkko.sakkinen@linux.intel.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-sgx@vger.kernel.org, akpm@linux-foundation.org,
+        dave.hansen@intel.com, "Neil Horman" <nhorman@redhat.com>,
+        "Huang, Haitao" <haitao.huang@intel.com>,
+        andriy.shevchenko@linux.intel.com, tglx@linutronix.de,
+        "Svahn, Kai" <kai.svahn@intel.com>, bp@alien8.de,
+        "Josh Triplett" <josh@joshtriplett.org>, luto@kernel.org,
+        kai.huang@intel.com, "David Rientjes" <rientjes@google.com>,
+        "Xing, Cedric" <cedric.xing@intel.com>,
+        "Patrick Uiterwijk" <puiterwijk@redhat.com>
+Subject: Re: [PATCH v29 00/20] Intel SGX foundations
+References: <20200421215316.56503-1-jarkko.sakkinen@linux.intel.com>
+ <CAOASepPFe_ucuwe7JW_-+VBQ4=+sHqyGXOdA9kUbcYA_9=v0sA@mail.gmail.com>
+ <20200506221422.GK3329@linux.intel.com>
+ <op.0j8dm0zzwjvjmi@hhuan26-mobl1.amr.corp.intel.com>
+ <CAOASepNVckens=wiWpHj291EAo0ndi7GCVHd9j7BPn8rjy7Ykg@mail.gmail.com>
+Date:   Thu, 07 May 2020 17:31:39 -0500
 MIME-Version: 1.0
-References: <20200505174423.199985-1-ndesaulniers@google.com>
- <8A776DBC-03AF-485B-9AA6-5920E3C4ACB2@zytor.com> <20200507113422.GA3762@hirez.programming.kicks-ass.net>
- <CAMzpN2hXUYvLuTA63N56ef4DEzyWXt_uVVq6PV0r8YQT-YN42g@mail.gmail.com> <CAKwvOd=a3MR7osKBpbq=d41ieo7G9FtOp5Kok5por1P5ZS9s4g@mail.gmail.com>
-In-Reply-To: <CAKwvOd=a3MR7osKBpbq=d41ieo7G9FtOp5Kok5por1P5ZS9s4g@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 7 May 2020 15:29:35 -0700
-Message-ID: <CAKwvOd=Ogbp0oVgmF2B9cePjyWnvLLFRSp2EnaonA-ZFN3K7Dg@mail.gmail.com>
-Subject: Re: [PATCH] x86: bitops: fix build regression
-To:     Brian Gerst <brgerst@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        stable <stable@vger.kernel.org>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        "kernelci . org bot" <bot@kernelci.org>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Ilie Halip <ilie.halip@gmail.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Marco Elver <elver@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+From:   "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel Corp
+Message-ID: <op.0j9p6106wjvjmi@hhuan26-mobl1.amr.corp.intel.com>
+In-Reply-To: <CAOASepNVckens=wiWpHj291EAo0ndi7GCVHd9j7BPn8rjy7Ykg@mail.gmail.com>
+User-Agent: Opera Mail/1.0 (Win32)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 7, 2020 at 12:19 PM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> On Thu, May 7, 2020 at 7:00 AM Brian Gerst <brgerst@gmail.com> wrote:
-> >
-> > This change will make sparse happy and allow these cleanups:
-> > #define CONST_MASK(nr)                 ((u8)1 << ((nr) & 7))
->
-> yep, this is more elegant, IMO.  Will send a v3 later with this
-> change.  Looking at the uses of CONST_MASK, I noticed
-> arch_change_bit() currently has the (u8) cast from commit
-> 838e8bb71dc0c ("x86: Implement change_bit with immediate operand as
-> "lock xorb""), so that instance can get cleaned up with the above
-> suggestion.
+On Thu, 07 May 2020 11:49:15 -0500, Nathaniel McCallum  
+<npmccallum@redhat.com> wrote:
 
-Oh, we need the cast to be the final operation.  The binary AND and
-XOR in 2 of the 3 uses of CONST_MASK implicitly promote the operands
-of the binary operand to int, so the type of the evaluated
-subexpression is int.
-https://wiki.sei.cmu.edu/confluence/display/c/EXP14-C.+Beware+of+integer+promotion+when+performing+bitwise+operations+on+integer+types+smaller+than+int
-So I think this version (v2) is most precise fix, and would be better
-than defining more macros or (worse) using metaprogramming.
--- 
-Thanks,
-~Nick Desaulniers
+> On Thu, May 7, 2020 at 1:03 AM Haitao Huang
+> <haitao.huang@linux.intel.com> wrote:
+>>
+>> On Wed, 06 May 2020 17:14:22 -0500, Sean Christopherson
+>> <sean.j.christopherson@intel.com> wrote:
+>>
+>> > On Wed, May 06, 2020 at 05:42:42PM -0400, Nathaniel McCallum wrote:
+>> >> Tested on Enarx. This requires a patch[0] for v29 support.
+>> >>
+>> >> Tested-by: Nathaniel McCallum <npmccallum@redhat.com>
+>> >>
+>> >> However, we did uncover a small usability issue. See below.
+>> >>
+>> >> [0]:
+>> >>  
+>> https://github.com/enarx/enarx/pull/507/commits/80da2352aba46aa7bc6b4d1fccf20fe1bda58662
+>> >
+>> > ...
+>> >
+>> >> > * Disallow mmap(PROT_NONE) from /dev/sgx. Any mapping (e.g.
+>> >> anonymous) can
+>> >> >   be used to reserve the address range. Now /dev/sgx supports only
+>> >> opaque
+>> >> >   mappings to the (initialized) enclave data.
+>> >>
+>> >> The statement "Any mapping..." isn't actually true.
+>> >>
+>> >> Enarx creates a large enclave (currently 64GiB). This worked when we
+>> >> created a file-backed mapping on /dev/sgx/enclave. However, switching
+>> >> to an anonymous mapping fails with ENOMEM. We suspect this is because
+>> >> the kernel attempts to allocate all the pages and zero them but there
+>> >> is insufficient RAM available. We currently work around this by
+>> >> creating a shared mapping on /dev/zero.
+>> >
+>> > Hmm, the kernel shouldn't actually allocate physical pages unless  
+>> they're
+>> > written.  I'll see if I can reproduce.
+>> >
+>>
+>> For larger size mmap, I think it requires enabling vm overcommit mode 1:
+>> echo 1 | sudo tee /proc/sys/vm/overcommit_memory
+>
+> Which means the default experience isn't good.
+>
+
+
+Yes, it is not good default. But this is not sgx specific IIUC. Normal  
+applications would have the same issue if they ask for large mapping than  
+whatever limit kernel enforces by default.
