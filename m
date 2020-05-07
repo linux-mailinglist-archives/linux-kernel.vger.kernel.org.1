@@ -2,94 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C31E1C9DF3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 23:53:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C08E01C9DFE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 23:58:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726778AbgEGVw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 17:52:59 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:35817 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726437AbgEGVw7 (ORCPT
+        id S1726644AbgEGV6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 17:58:05 -0400
+Received: from mail-il1-f194.google.com ([209.85.166.194]:38116 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726437AbgEGV6F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 17:52:59 -0400
-Received: by mail-ot1-f67.google.com with SMTP id k110so5900245otc.2;
-        Thu, 07 May 2020 14:52:58 -0700 (PDT)
+        Thu, 7 May 2020 17:58:05 -0400
+Received: by mail-il1-f194.google.com with SMTP id c18so6804683ile.5;
+        Thu, 07 May 2020 14:58:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=CU/jhaPmhAqWWMxE+0ciw1zj8C+7RdKkmDqSPqeUli8=;
-        b=ECf0ToFO/iFtn71D4Kvx0tUpUrFRTQFNS8AwPf1AEerJpYWqShI01SNy/ud8UUea88
-         xDkqT/WojV6XxNF6HczHC/1IhoNkYRxkBsWABoP2mED4eouVtBAyeDCI+lrVYo0nbxW/
-         4Evwul7yLpuDrnTXV4fBN6uzGQFhDXqv0ulcglcX8P72RlAbElH9cggm6V4vlGRYpMea
-         ErW5nNRZvh1H9pb6fRdGOZw0Vwm99f9aOh23YhMFNdShOIC3lqYNe+bI6zlEpfhmCR/O
-         PTABrbBdr6OhJyzECgQmnyKcuP3Cjq1g4JyO+rT6kZm1K5U7/N2Y0JN5D9kXPg2PDo+t
-         zVxQ==
-X-Gm-Message-State: AGi0PuYoFJOtqifihA2XGYureuniW90G7TYOvf6T25RkkPVAJMAqlKS1
-        TkNs88uDjz/1tTqYSxiteg==
-X-Google-Smtp-Source: APiQypI1zeZzisqllNqDsttAgfTLEwQGuSYUTjKm2oOFsg8op6zupqbBMYh9erodVZ5cDOxXvTFLIw==
-X-Received: by 2002:a9d:592:: with SMTP id 18mr11812118otd.337.1588888378253;
-        Thu, 07 May 2020 14:52:58 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id w62sm1680584oia.32.2020.05.07.14.52.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2020 14:52:57 -0700 (PDT)
-Received: (nullmailer pid 8285 invoked by uid 1000);
-        Thu, 07 May 2020 21:52:56 -0000
-Date:   Thu, 7 May 2020 16:52:56 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     f.fainelli@gmail.com, gregkh@linuxfoundation.org, wahrenst@gmx.net,
-        helgaas@kernel.org, linux-kernel@vger.kernel.org,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        tim.gover@raspberrypi.org, linux-pci@vger.kernel.org,
-        linux-usb@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v8 4/4] USB: pci-quirks: Add Raspberry Pi 4 quirk
-Message-ID: <20200507215256.GA8228@bogus>
-References: <20200505161318.26200-1-nsaenzjulienne@suse.de>
- <20200505161318.26200-5-nsaenzjulienne@suse.de>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GI7tbDeUUOEa56ks8zKfYc4C3uORKh3Rq+YHa4B8fIs=;
+        b=lp5r0bNPyWv3GAesA97nDseDd3FliLrzwb/rNcOECzveb5UExPmBt7/cVbULtfoaln
+         ucmtdQG/+jF4pLZc+T77beljpmyvFQo7bkXmh/pVWQMM7KX7mUbuEfTcSgJOtCD9T9jp
+         +qAjSj7F4tEKvNG4KFUQ8QXeNH3+4AoKQviQNVBTzrlRFa/llrJvY65EjmOCz3mvyQom
+         dYEFe2Jt6yy4VhinChDTi1TyRcRixL2sPMHX4/9Hz0PirI54f4RtYvyLwjYNDjRt+cmv
+         twaZjeYLmD0ETkpah+IxWNz1dM51QXKEL4Ybvuzs5rxgPE2OsLR9ORLuL20t0KCLdlLn
+         JiFg==
+X-Gm-Message-State: AGi0PubJ2vc4y+Jkl2ZdWcAueoVF0hbld2VIxB06VTpakXOwgbEnLNLE
+        QA8OoVcU+4jnvSMFD2qydNc5EMvPO1I=
+X-Google-Smtp-Source: APiQypI+iDElsr2p1ZHpOctO/W21HEtkb++o96IuKTURr/XhzdkfhcqL3CM10Waq1sixCES6+TeJTg==
+X-Received: by 2002:a92:1d4e:: with SMTP id d75mr10484005ild.235.1588888683969;
+        Thu, 07 May 2020 14:58:03 -0700 (PDT)
+Received: from mail-io1-f42.google.com (mail-io1-f42.google.com. [209.85.166.42])
+        by smtp.gmail.com with ESMTPSA id 7sm847683ion.52.2020.05.07.14.58.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 May 2020 14:58:03 -0700 (PDT)
+Received: by mail-io1-f42.google.com with SMTP id j8so2243161iog.13;
+        Thu, 07 May 2020 14:58:03 -0700 (PDT)
+X-Received: by 2002:a02:cebb:: with SMTP id z27mr16202135jaq.32.1588888683009;
+ Thu, 07 May 2020 14:58:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200505161318.26200-5-nsaenzjulienne@suse.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200507112955.23520-1-geert+renesas@glider.be>
+In-Reply-To: <20200507112955.23520-1-geert+renesas@glider.be>
+From:   Li Yang <leoyang.li@nxp.com>
+Date:   Thu, 7 May 2020 16:57:51 -0500
+X-Gmail-Original-Message-ID: <CADRPPNTdv3R4t7JsjGuPP5h5APA7vcSMNK1vJMjzPtGw=Uw9-w@mail.gmail.com>
+Message-ID: <CADRPPNTdv3R4t7JsjGuPP5h5APA7vcSMNK1vJMjzPtGw=Uw9-w@mail.gmail.com>
+Subject: Re: [PATCH 0/4] qoriq: Add platform dependencies
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Shawn Guo <shawnguo@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amit.kucheria@verdurent.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-ide@vger.kernel.org,
+        linux-clk <linux-clk@vger.kernel.org>, linux-pm@vger.kernel.org,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  5 May 2020 18:13:17 +0200, Nicolas Saenz Julienne wrote:
-> On the Raspberry Pi 4, after a PCI reset, VL805's firmware may either be
-> loaded directly from an EEPROM or, if not present, by the SoC's
-> VideoCore. Inform VideoCore that VL805 was just reset.
-> 
-> Also, as this creates a dependency between USB_PCI and VideoCore's
-> firmware interface, and since USB_PCI can't be set as a module neither
-> this can. Reflect that on the firmware interface Kconfg.
-> 
-> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> ---
-> 
-> Changes since v5:
->  - Fix Kconfig issue with allmodconfig
-> 
-> Changes since v4:
->  - Do not split up error message
-> 
-> Changes since v3:
->  - Add more complete error message
-> 
-> Changes since v1:
->  - Make RASPBERRYPI_FIRMWARE dependent on this quirk to make sure it
->    gets compiled when needed.
-> 
->  drivers/firmware/Kconfig      |  3 ++-
->  drivers/usb/host/pci-quirks.c | 16 ++++++++++++++++
->  2 files changed, 18 insertions(+), 1 deletion(-)
-> 
+On Thu, May 7, 2020 at 6:31 AM Geert Uytterhoeven
+<geert+renesas@glider.be> wrote:
+>
+>         Hi all,
+>
+> Several QorIQ blocks are only present on Freescale or NXP SoCs.
+> This series adds platform dependencies to the corresponding config
+> ymbols, to avoid asking the user about them when configuring a kernel
+> without support for these SoCs.
+>
+> Most patches in this series are independent, but the third patch may
+> cause some Kconfig warnings when applied before the second patch, and
+> enabling the QorIQ CPU frequency scaling driver in a non-Layerscape
+> kernel.
+>
+> Thanks for your comments!
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Thanks.  The series looks good to me.
+
+Are we trying to merge them through the various driver subsystems or I
+can also pull them in through the fsl-soc tree.  If we want to go
+through driver subsystems:
+
+Acked-by: Li Yang <leoyang.li@nxp.com>
+
+>
+> Geert Uytterhoeven (4):
+>   ahci: qoriq: Add platform dependencies
+>   cpufreq: qoriq: Add platform dependencies
+>   clk: qoriq: Add platform dependencies
+>   thermal: qoriq: Add platform dependencies
+>
+>  drivers/ata/Kconfig     | 1 +
+>  drivers/clk/Kconfig     | 3 ++-
+>  drivers/cpufreq/Kconfig | 3 ++-
+>  drivers/thermal/Kconfig | 4 ++--
+>  4 files changed, 7 insertions(+), 4 deletions(-)
+>
+> --
+> 2.17.1
+>
+> Gr{oetje,eeting}s,
+>
+>                                                 Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                                             -- Linus Torvalds
