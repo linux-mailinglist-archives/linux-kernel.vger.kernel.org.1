@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A7421C9993
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BC1F1C9994
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:46:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728413AbgEGSqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 14:46:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47102 "EHLO mail.kernel.org"
+        id S1728436AbgEGSqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 14:46:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47264 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726467AbgEGSqc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 14:46:32 -0400
+        id S1726467AbgEGSqn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 14:46:43 -0400
 Received: from embeddedor (unknown [189.207.59.248])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 159D8216FD;
-        Thu,  7 May 2020 18:46:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 926952145D;
+        Thu,  7 May 2020 18:46:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588877192;
-        bh=8VacPoTbGjqVXDTwPuYe3Mg/26pmSYjPzGz8cwswqJk=;
+        s=default; t=1588877203;
+        bh=/TMN0lGZvihKadpmMuNf26UHOuRy1VAvFM+rEIbmEWw=;
         h=Date:From:To:Cc:Subject:From;
-        b=DedEP2mq6qrgUzakngn8r7xcVr2pM0OAetbvOrCdCURunFj9j6oKw6liEDu3jaFMc
-         7Xi0YhSgFEwnnm2wNZpibhKLlRtWfnsmN9RgFbAaOfIB7lBjmh46w4XTWJGbyCuAMb
-         OS8MV6bw4czSSQxV0exZm1/fIuoApmNvHSn2tSlY=
-Date:   Thu, 7 May 2020 13:50:57 -0500
+        b=mlWwbPq2jZykelvTIJ9s6B5u8cek58y3jhaZyweFDN9pJri2yF42B5jVsOe9pzupO
+         qNPWAhrdQoLXs0GTAbLIPHgEOko5vNGqxGuQlaBCK17SjCRy40htWKzNCReWlDvJjE
+         sLM6eAoaY0sRuPdr2CjPDv2a+aoULpdQXKRY/f/w=
+Date:   Thu, 7 May 2020 13:51:09 -0500
 From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] libbpf: Replace zero-length array with flexible-array
-Message-ID: <20200507185057.GA13981@embeddedor>
+To:     Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] can: peak_canfd: Replace zero-length array with
+ flexible-array
+Message-ID: <20200507185109.GA14002@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -80,62 +77,29 @@ This issue was found with the help of Coccinelle.
 
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- kernel/bpf/queue_stack_maps.c                        |    2 +-
- tools/lib/bpf/libbpf.c                               |    2 +-
- tools/lib/bpf/libbpf_internal.h                      |    2 +-
- tools/testing/selftests/bpf/progs/core_reloc_types.h |    2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/can/peak_canfd/peak_pciefd_main.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/bpf/queue_stack_maps.c b/kernel/bpf/queue_stack_maps.c
-index f697647ceb54..30e1373fd437 100644
---- a/kernel/bpf/queue_stack_maps.c
-+++ b/kernel/bpf/queue_stack_maps.c
-@@ -19,7 +19,7 @@ struct bpf_queue_stack {
- 	u32 head, tail;
- 	u32 size; /* max_entries + 1 */
+diff --git a/drivers/net/can/peak_canfd/peak_pciefd_main.c b/drivers/net/can/peak_canfd/peak_pciefd_main.c
+index d08a3d559114..6ad83a881039 100644
+--- a/drivers/net/can/peak_canfd/peak_pciefd_main.c
++++ b/drivers/net/can/peak_canfd/peak_pciefd_main.c
+@@ -146,7 +146,7 @@ struct pciefd_rx_dma {
+ 	__le32 irq_status;
+ 	__le32 sys_time_low;
+ 	__le32 sys_time_high;
+-	struct pucan_rx_msg msg[0];
++	struct pucan_rx_msg msg[];
+ } __packed __aligned(4);
  
--	char elements[0] __aligned(8);
-+	char elements[] __aligned(8);
+ /* Tx Link record */
+@@ -194,7 +194,7 @@ struct pciefd_board {
+ 	struct pci_dev *pci_dev;
+ 	int can_count;
+ 	spinlock_t cmd_lock;		/* 64-bits cmds must be atomic */
+-	struct pciefd_can *can[0];	/* array of network devices */
++	struct pciefd_can *can[];	/* array of network devices */
  };
  
- static struct bpf_queue_stack *bpf_queue_stack(struct bpf_map *map)
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 8f480e29a6b0..b9335c686353 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -8035,7 +8035,7 @@ static struct perf_buffer *__perf_buffer__new(int map_fd, size_t page_cnt,
- struct perf_sample_raw {
- 	struct perf_event_header header;
- 	uint32_t size;
--	char data[0];
-+	char data[];
- };
- 
- struct perf_sample_lost {
-diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-index 8c3afbd97747..50d70e90d5f1 100644
---- a/tools/lib/bpf/libbpf_internal.h
-+++ b/tools/lib/bpf/libbpf_internal.h
-@@ -153,7 +153,7 @@ struct btf_ext_info_sec {
- 	__u32	sec_name_off;
- 	__u32	num_info;
- 	/* Followed by num_info * record_size number of bytes */
--	__u8	data[0];
-+	__u8	data[];
- };
- 
- /* The minimum bpf_func_info checked by the loader */
-diff --git a/tools/testing/selftests/bpf/progs/core_reloc_types.h b/tools/testing/selftests/bpf/progs/core_reloc_types.h
-index 6d598cfbdb3e..34d84717c946 100644
---- a/tools/testing/selftests/bpf/progs/core_reloc_types.h
-+++ b/tools/testing/selftests/bpf/progs/core_reloc_types.h
-@@ -379,7 +379,7 @@ struct core_reloc_arrays___equiv_zero_sz_arr {
- 	struct core_reloc_arrays_substruct c[3];
- 	struct core_reloc_arrays_substruct d[1][2];
- 	/* equivalent to flexible array */
--	struct core_reloc_arrays_substruct f[0][2];
-+	struct core_reloc_arrays_substruct f[][2];
- };
- 
- struct core_reloc_arrays___fixed_arr {
+ /* supported device ids. */
 
