@@ -2,262 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A19811C83DF
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 09:55:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F0DA1C8405
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 09:57:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726356AbgEGHzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 03:55:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725862AbgEGHzG (ORCPT
+        id S1727099AbgEGH5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 03:57:16 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:27891 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725845AbgEGH5P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 03:55:06 -0400
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D33AC061A41
-        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 00:55:06 -0700 (PDT)
-Received: from ramsan ([IPv6:2a02:1810:ac12:ed60:6572:4a1f:d283:9ae8])
-        by michel.telenet-ops.be with bizsmtp
-        id bjv42200a3ZRV0X06jv4l4; Thu, 07 May 2020 09:55:05 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan with esmtp (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1jWbN2-0001WQ-Jm; Thu, 07 May 2020 09:55:04 +0200
-Received: from geert by rox.of.borg with local (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1jWbN2-0008PY-Gd; Thu, 07 May 2020 09:55:04 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     Yoshihiro Kaneko <ykaneko0929@gmail.com>,
-        devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v3] dt-bindings: irqchip: renesas-intc-irqpin: Convert to json-schema
-Date:   Thu,  7 May 2020 09:55:03 +0200
-Message-Id: <20200507075503.32291-1-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.17.1
+        Thu, 7 May 2020 03:57:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588838233;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=y9mwxyuCup0Q6hGGVaVop/Mcsx5sPEES6xR+JKy3xlE=;
+        b=hxVZJcBDiF9XWNz0ur4Dun5BEo26R1Mqd9OOf6LqmMDwvkOiQXSjIa7Scy5z9nom661t+P
+        ozshqaEWv1joaVwX3Z9X238YK3DAglLfRNTgLFpxz2T5r27C6wTpb9ymJFk0JiZ7j+wXvj
+        GWQQpTSS77H4JkK3bJDSNTSOVoKRpGw=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-179-YsvCxeH0NlScWpa0CkhEVg-1; Thu, 07 May 2020 03:57:10 -0400
+X-MC-Unique: YsvCxeH0NlScWpa0CkhEVg-1
+Received: by mail-wr1-f70.google.com with SMTP id a12so2940348wrv.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 00:57:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=y9mwxyuCup0Q6hGGVaVop/Mcsx5sPEES6xR+JKy3xlE=;
+        b=JnwxzLjIQoQjf56D/bwF4P1tHP2B45vumieJzHuJXsV8deP/ayVEikckTs8/nZ8Ni5
+         EaYub18vytmDk99RcSVRIg2fzgSNNJ0dG3n9YSRRHT+3lMJQuWzACUiETNIOB9Qr4LGc
+         wkKJXKjCZYgI/lHxDgNBmcm/k8e7z77lJCUGZFcJRjSbKUUnWCFPAyCdN4xuOHwI/yBq
+         IrFRq7k1qtpMXhlSidGP5cfVCk1GZ6patZgL6iePCKgeY9v1sccWzMCXnt6lfQkKldBf
+         3EUIi0FSgfa97ETji4ESbz+fNset8eOEol7REfGDgyVdtZOWlJAnhsRMwSktTQW6mSOA
+         rVsg==
+X-Gm-Message-State: AGi0PuYxj3mePhbONPP2klHC0I/gfuWFrpA4/4JCgxmVHY0APmKogK12
+        Wz0qzdBebdy5843taQynqbF//2LHOS/yMT/wUWASW60bKCokIv+0XtBD8A7mm/E7y4cg51k0SeS
+        jUY6eOynJT0wUcSskW3aySbW2
+X-Received: by 2002:a1c:3206:: with SMTP id y6mr8660128wmy.111.1588838228718;
+        Thu, 07 May 2020 00:57:08 -0700 (PDT)
+X-Google-Smtp-Source: APiQypJ1HGj369geDqMTet3EHW3ra3/6X7k36PjWNlzfDZu8OSHXRqpZOWKYn7h+nDpGIM9yv2dipw==
+X-Received: by 2002:a1c:3206:: with SMTP id y6mr8660098wmy.111.1588838228397;
+        Thu, 07 May 2020 00:57:08 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:8d3e:39e5:cd88:13cc? ([2001:b07:6468:f312:8d3e:39e5:cd88:13cc])
+        by smtp.gmail.com with ESMTPSA id m15sm6619827wmc.35.2020.05.07.00.57.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 May 2020 00:57:07 -0700 (PDT)
+Subject: Re: [PATCH v2] KVM: x86/pmu: Support full width counting
+To:     Like Xu <like.xu@linux.intel.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200507021452.174646-1-like.xu@linux.intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <3fb56700-7f0b-59e1-527a-f8eb601185b1@redhat.com>
+Date:   Thu, 7 May 2020 09:57:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <20200507021452.174646-1-like.xu@linux.intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yoshihiro Kaneko <ykaneko0929@gmail.com>
+On 07/05/20 04:14, Like Xu wrote:
+> +static inline u64 vmx_get_perf_capabilities(void)
+> +{
+> +	u64 perf_cap = 0;
+> +
+> +	if (boot_cpu_has(X86_FEATURE_PDCM))
+> +		rdmsrl(MSR_IA32_PERF_CAPABILITIES, perf_cap);
+> +
+> +	/* Currently, KVM only supports Full-Width Writes. */
+> +	perf_cap &= PMU_CAP_FW_WRITES;
+> +
+> +	return perf_cap;
+> +}
+> +
 
-Convert the Renesas Interrupt Controller (INTC) for external pins Device
-Tree binding documentation to json-schema.
+Since counters are virtualized, it seems to me that you can support
+PMU_CAP_FW_WRITES unconditionally, even if the host lacks it.  So just
+return PMU_CAP_FW_WRITES from this function.
 
-Signed-off-by: Yoshihiro Kaneko <ykaneko0929@gmail.com>
-Co-developed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-v3:
-  - Take over from Kaneko-san,
-  - Update license,
-  - Fix title,
-  - Remove standard descriptions,
-  - reg: fix minItems, add descriptions,
-  - interrupts: fix {min,max}Items,
-  - sense-bitfield-width: add enum and default, use description,
-  - control-parent: use description,
-  - Make clocks and power-domains required on SH/R-Mobile,
-  - Group interrupts in example,
+> +	case MSR_IA32_PERF_CAPABILITIES:
+> +		return 1; /* RO MSR */
+>  	default:
 
-v2:
-  - Correct Geert-san's E-mail address,
-  - Delete Guennadi-san from the maintainer of this binding,
-  - Give 'sense-bitfield-width' the uint32 type,
-  - Describe 'control-parent' property as a boolean.
----
- .../renesas,intc-irqpin.txt                   |  62 ----------
- .../renesas,intc-irqpin.yaml                  | 108 ++++++++++++++++++
- 2 files changed, 108 insertions(+), 62 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/renesas,intc-irqpin.txt
- create mode 100644 Documentation/devicetree/bindings/interrupt-controller/renesas,intc-irqpin.yaml
+You need to allow writes from the host if (data &
+~vmx_get_perf_capabilities()) == 0.
 
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/renesas,intc-irqpin.txt b/Documentation/devicetree/bindings/interrupt-controller/renesas,intc-irqpin.txt
-deleted file mode 100644
-index 772c550d3b4bcfe2..0000000000000000
---- a/Documentation/devicetree/bindings/interrupt-controller/renesas,intc-irqpin.txt
-+++ /dev/null
-@@ -1,62 +0,0 @@
--DT bindings for the R-/SH-Mobile irqpin controller
--
--Required properties:
--
--- compatible: has to be "renesas,intc-irqpin-<soctype>", "renesas,intc-irqpin"
--  as fallback.
--  Examples with soctypes are:
--    - "renesas,intc-irqpin-r8a7740" (R-Mobile A1)
--    - "renesas,intc-irqpin-r8a7778" (R-Car M1A)
--    - "renesas,intc-irqpin-r8a7779" (R-Car H1)
--    - "renesas,intc-irqpin-sh73a0" (SH-Mobile AG5)
--
--- reg: Base address and length of each register bank used by the external
--  IRQ pins driven by the interrupt controller hardware module. The base
--  addresses, length and number of required register banks varies with soctype.
--- interrupt-controller: Identifies the node as an interrupt controller.
--- #interrupt-cells: has to be <2>: an interrupt index and flags, as defined in
--  interrupts.txt in this directory.
--- interrupts: Must contain a list of interrupt specifiers. For each interrupt
--  provided by this irqpin controller instance, there must be one entry,
--  referring to the corresponding parent interrupt.
--
--Optional properties:
--
--- any properties, listed in interrupts.txt, and any standard resource allocation
--  properties
--- sense-bitfield-width: width of a single sense bitfield in the SENSE register,
--  if different from the default 4 bits
--- control-parent: disable and enable interrupts on the parent interrupt
--  controller, needed for some broken implementations
--- clocks: Must contain a reference to the functional clock.  This property is
--  mandatory if the hardware implements a controllable functional clock for
--  the irqpin controller instance.
--- power-domains: Must contain a reference to the power domain. This property is
--  mandatory if the irqpin controller instance is part of a controllable power
--  domain.
--
--
--Example
---------
--
--	irqpin1: interrupt-controller@e6900004 {
--		compatible = "renesas,intc-irqpin-r8a7740",
--			     "renesas,intc-irqpin";
--		#interrupt-cells = <2>;
--		interrupt-controller;
--		reg = <0xe6900004 4>,
--			<0xe6900014 4>,
--			<0xe6900024 1>,
--			<0xe6900044 1>,
--			<0xe6900064 1>;
--		interrupts = <0 149 IRQ_TYPE_LEVEL_HIGH
--			      0 149 IRQ_TYPE_LEVEL_HIGH
--			      0 149 IRQ_TYPE_LEVEL_HIGH
--			      0 149 IRQ_TYPE_LEVEL_HIGH
--			      0 149 IRQ_TYPE_LEVEL_HIGH
--			      0 149 IRQ_TYPE_LEVEL_HIGH
--			      0 149 IRQ_TYPE_LEVEL_HIGH
--			      0 149 IRQ_TYPE_LEVEL_HIGH>;
--		clocks = <&mstp2_clks R8A7740_CLK_INTCA>;
--		power-domains = <&pd_a4s>;
--	};
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/renesas,intc-irqpin.yaml b/Documentation/devicetree/bindings/interrupt-controller/renesas,intc-irqpin.yaml
-new file mode 100644
-index 0000000000000000..800243d3ee8ef42f
---- /dev/null
-+++ b/Documentation/devicetree/bindings/interrupt-controller/renesas,intc-irqpin.yaml
-@@ -0,0 +1,108 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/interrupt-controller/renesas,intc-irqpin.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Renesas Interrupt Controller (INTC) for external pins
-+
-+maintainers:
-+  - Geert Uytterhoeven <geert+renesas@glider.be>
-+
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          - renesas,intc-irqpin-r8a7740  # R-Mobile A1
-+          - renesas,intc-irqpin-r8a7778  # R-Car M1A
-+          - renesas,intc-irqpin-r8a7779  # R-Car H1
-+          - renesas,intc-irqpin-sh73a0   # SH-Mobile AG5
-+      - const: renesas,intc-irqpin
-+
-+  reg:
-+    minItems: 5
-+    items:
-+      - description: Interrupt control register
-+      - description: Interrupt priority register
-+      - description: Interrupt source register
-+      - description: Interrupt mask register
-+      - description: Interrupt mask clear register
-+      - description: Interrupt control register for ICR0 with IRLM0 bit
-+
-+  interrupt-controller: true
-+
-+  '#interrupt-cells':
-+    const: 2
-+
-+  interrupts:
-+    minItems: 1
-+    maxItems: 8
-+
-+  sense-bitfield-width:
-+    allOf:
-+      - $ref: /schemas/types.yaml#/definitions/uint32
-+      - enum: [2, 4]
-+        default: 4
-+    description:
-+      Width of a single sense bitfield in the SENSE register, if different from the
-+      default.
-+
-+  control-parent:
-+    type: boolean
-+    description:
-+      Disable and enable interrupts on the parent interrupt controller, needed for some
-+      broken implementations.
-+
-+  clocks:
-+    maxItems: 1
-+
-+  power-domains:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupt-controller
-+  - '#interrupt-cells'
-+  - interrupts
-+
-+if:
-+  properties:
-+    compatible:
-+      contains:
-+        enum:
-+          - renesas,intc-irqpin-r8a7740
-+          - renesas,intc-irqpin-sh73a0
-+then:
-+  required:
-+    - clocks
-+    - power-domains
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/r8a7740-clock.h>
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    irqpin1: interrupt-controller@e6900004 {
-+        compatible = "renesas,intc-irqpin-r8a7740", "renesas,intc-irqpin";
-+        reg = <0xe6900004 4>,
-+              <0xe6900014 4>,
-+              <0xe6900024 1>,
-+              <0xe6900044 1>,
-+              <0xe6900064 1>;
-+        interrupt-controller;
-+        #interrupt-cells = <2>;
-+        interrupts = <GIC_SPI 149 IRQ_TYPE_LEVEL_HIGH>,
-+                     <GIC_SPI 149 IRQ_TYPE_LEVEL_HIGH>,
-+                     <GIC_SPI 149 IRQ_TYPE_LEVEL_HIGH>,
-+                     <GIC_SPI 149 IRQ_TYPE_LEVEL_HIGH>,
-+                     <GIC_SPI 149 IRQ_TYPE_LEVEL_HIGH>,
-+                     <GIC_SPI 149 IRQ_TYPE_LEVEL_HIGH>,
-+                     <GIC_SPI 149 IRQ_TYPE_LEVEL_HIGH>,
-+                     <GIC_SPI 149 IRQ_TYPE_LEVEL_HIGH>;
-+        clocks = <&mstp2_clks R8A7740_CLK_INTCA>;
-+        power-domains = <&pd_a4s>;
-+    };
--- 
-2.17.1
+> -			if (!msr_info->host_initiated)
+> +		if ((pmc = get_gp_pmc(pmu, msr, MSR_IA32_PERFCTR0)) ||
+> +			(pmc = get_gp_pmc(pmu, msr, MSR_IA32_PMC0))) {
+> +			if (data & ~pmu->counter_bitmask[KVM_PMC_GP])
+> +				return 1;
+> +			if (!fw_writes_is_enabled(pmu))
+>  				data = (s64)(s32)data;
+
+
+You are dropping the test on msr_info->host_initiated here, you should
+keep it otherwise you allow full-width write to MSR_IA32_PERFCTR0 as
+well.  So:
+
+#define MSR_PMC_FULL_WIDTH_BIT      (MSR_IA32_PMC0 - MSR_IA32_PERFCTR0)
+
+	if (!msr_info->host_initiated && !(msr & MSR_PMC_FULL_WIDTH_BIT))
+		data = (s64)(s32)data;
+
+> +	case MSR_IA32_PERF_CAPABILITIES:
+> +		if (!nested)
+> +			return 1;
+> +		msr->data = vmx_get_perf_capabilities();
+> +		return 0;
+
+The !nested check is wrong.
+
+> 
+> +++ b/arch/x86/kvm/x86.c
+> @@ -1220,6 +1220,13 @@ static const u32 msrs_to_save_all[] = {
+>  	MSR_ARCH_PERFMON_EVENTSEL0 + 12, MSR_ARCH_PERFMON_EVENTSEL0 + 13,
+>  	MSR_ARCH_PERFMON_EVENTSEL0 + 14, MSR_ARCH_PERFMON_EVENTSEL0 + 15,
+>  	MSR_ARCH_PERFMON_EVENTSEL0 + 16, MSR_ARCH_PERFMON_EVENTSEL0 + 17,
+> +
+> +	MSR_IA32_PMC0, MSR_IA32_PMC0 + 1, MSR_IA32_PMC0 + 2,
+> +	MSR_IA32_PMC0 + 3, MSR_IA32_PMC0 + 4, MSR_IA32_PMC0 + 5,
+> +	MSR_IA32_PMC0 + 6, MSR_IA32_PMC0 + 7, MSR_IA32_PMC0 + 8,
+> +	MSR_IA32_PMC0 + 9, MSR_IA32_PMC0 + 10, MSR_IA32_PMC0 + 11,
+> +	MSR_IA32_PMC0 + 12, MSR_IA32_PMC0 + 13, MSR_IA32_PMC0 + 14,
+> +	MSR_IA32_PMC0 + 15, MSR_IA32_PMC0 + 16, MSR_IA32_PMC0 + 17,
+>  };
+
+This is not needed because the full-width content is already accessible
+from the host via MSR_IA32_PERFCTRn.
+
+Given the bugs, it is clear that you should also modify the pmu.c
+testcase for kvm-unit-tests to cover full-width writes (and especially
+the non-full-width write behavior of MSR_IA32_PERFCTRn).  Even before
+the QEMU side is begin worked on, you can test it with "-cpu
+host,migratable=off".
+
+Thanks,
+
+Paolo
 
