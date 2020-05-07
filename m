@@ -2,68 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A22B71C8BDA
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 15:15:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 497541C8BE5
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 15:17:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726393AbgEGNPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 09:15:07 -0400
-Received: from mga07.intel.com ([134.134.136.100]:20457 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726007AbgEGNPH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 09:15:07 -0400
-IronPort-SDR: O+JV0cHl8O1N+PMXwMXK47YRWjv8OyIDj5KvwNra425p8nxvZdwIyapP/ZJKfBI3FhJp60vJfJ
- 2V/I3wEAVhtQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2020 06:15:06 -0700
-IronPort-SDR: 8RSo0c3f2gSplsUiw0cxweuZNAgLDmDNfEWoYJnnNENEuf7bYXpmNJIA3/PIJdQ7YUowPVeCmK
- c53L2dJHdaYA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,363,1583222400"; 
-   d="scan'208";a="305116684"
-Received: from otc-lr-04.jf.intel.com ([10.54.39.143])
-  by FMSMGA003.fm.intel.com with ESMTP; 07 May 2020 06:15:06 -0700
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org
-Cc:     ak@linux.intel.com, eranian@google.com,
-        srinivas.pandruvada@linux.intel.com, rui.zhang@intel.com,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH] perf/x86/rapl: Add Ice Lake RAPL support
-Date:   Thu,  7 May 2020 06:14:18 -0700
-Message-Id: <1588857258-38213-1-git-send-email-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
+        id S1725948AbgEGNRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 09:17:39 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:55744 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725879AbgEGNRi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 09:17:38 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 047D9FjA072838;
+        Thu, 7 May 2020 13:16:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=fUbGWLFS+jWKkk/BdI0Cv8l5aoGUDqGExKPATn7zLRM=;
+ b=jmBKqgmlhAFGfYi4Z6xdQ35U3FsQGU0hPSeP5Rs5V5nPF9vY+1aa2quInKl7/+imF4w5
+ zbKh/6bjg+JNvHZnRtp+GHy/oDoAkqbKoXSz1uL+bhivLkELVX2VW0RPCdY8rzZPIcwf
+ joJ62mtbveiGA/aU5SMTmVuOgMnL1q7Uq6YT4QEKADKOQWhDRfr9aIo7Sr7fP44EibNc
+ ny6I3HFkeSgMVRCGrq/YeXbBJ7meEgQ5CWJpf4MJX2tcCAVjCX0V0z/47GApjH1dRy7m
+ WPEbN7ocxcKr9+wx8ORKQHlXGmTI2hTYdOolbVovbAyUkfW055ZWFNDpsKcK9E1bdzSp ow== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 30usgq74ra-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 07 May 2020 13:16:42 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 047D7ojp011987;
+        Thu, 7 May 2020 13:16:41 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 30t1rakxdx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 07 May 2020 13:16:41 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 047DGbEt028126;
+        Thu, 7 May 2020 13:16:37 GMT
+Received: from linux-1.home (/92.157.36.49)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 07 May 2020 06:16:37 -0700
+Subject: Re: [patch V4 part 2 02/18] x86/entry/32: Move non entry code into
+ .text section
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>
+References: <20200505134112.272268764@linutronix.de>
+ <20200505134340.320164650@linutronix.de>
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+Message-ID: <6e8a7549-9c0a-f863-fc7d-fcbfcb642bc4@oracle.com>
+Date:   Thu, 7 May 2020 15:15:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <20200505134340.320164650@linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9613 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 suspectscore=0
+ spamscore=0 mlxlogscore=999 malwarescore=0 phishscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005070107
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9613 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxscore=0
+ priorityscore=1501 lowpriorityscore=0 malwarescore=0 clxscore=1015
+ mlxlogscore=999 spamscore=0 adultscore=0 bulkscore=0 phishscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005070107
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
 
-Enable RAPL support for Intel Ice Lake X and Ice Lake D.
+On 5/5/20 3:41 PM, Thomas Gleixner wrote:
+> All ASM code which is not part of the entry functionality can move out into
+> the .text section. No reason to keep it in the non-instrumentable entry
+> section.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>   arch/x86/entry/entry_32.S |   11 ++++++++++-
+>   1 file changed, 10 insertions(+), 1 deletion(-)
+> 
+> --- a/arch/x86/entry/entry_32.S
+> +++ b/arch/x86/entry/entry_32.S
+> @@ -729,7 +729,8 @@
+>   /*
+>    * %eax: prev task
+>    * %edx: next task
+> - */
+> +*/
 
-For RAPL support, it is identical to Sky Lake X.
+Misaligned comment end, this line shouldn't change.
 
-Reported-by: Stephane Eranian <eranian@google.com>
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
----
- arch/x86/events/intel/rapl.c | 2 ++
- 1 file changed, 2 insertions(+)
+alex.
 
-diff --git a/arch/x86/events/intel/rapl.c b/arch/x86/events/intel/rapl.c
-index a5dbd25..9e1e141 100644
---- a/arch/x86/events/intel/rapl.c
-+++ b/arch/x86/events/intel/rapl.c
-@@ -738,6 +738,8 @@ static const struct x86_cpu_id rapl_model_match[] __initconst = {
- 	X86_MATCH_INTEL_FAM6_MODEL(ATOM_GOLDMONT_PLUS,	&model_hsw),
- 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_L,		&model_skl),
- 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE,		&model_skl),
-+	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_D,		&model_hsx),
-+	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_X,		&model_hsx),
- 	X86_MATCH_INTEL_FAM6_MODEL(COMETLAKE_L,		&model_skl),
- 	X86_MATCH_INTEL_FAM6_MODEL(COMETLAKE,		&model_skl),
- 	{},
--- 
-2.7.4
-
+> +.pushsection .text, "ax"
+>   SYM_CODE_START(__switch_to_asm)
+>   	/*
+>   	 * Save callee-saved registers
+> @@ -776,6 +777,7 @@ SYM_CODE_START(__switch_to_asm)
+>   
+>   	jmp	__switch_to
+>   SYM_CODE_END(__switch_to_asm)
+> +.popsection
+>   
+>   /*
+>    * The unwinder expects the last frame on the stack to always be at the same
+> @@ -784,6 +786,7 @@ SYM_CODE_END(__switch_to_asm)
+>    * asmlinkage function so its argument has to be pushed on the stack.  This
+>    * wrapper creates a proper "end of stack" frame header before the call.
+>    */
+> +.pushsection .text, "ax"
+>   SYM_FUNC_START(schedule_tail_wrapper)
+>   	FRAME_BEGIN
+>   
+> @@ -794,6 +797,8 @@ SYM_FUNC_START(schedule_tail_wrapper)
+>   	FRAME_END
+>   	ret
+>   SYM_FUNC_END(schedule_tail_wrapper)
+> +.popsection
+> +
+>   /*
+>    * A newly forked process directly context switches into this address.
+>    *
+> @@ -801,6 +806,7 @@ SYM_FUNC_END(schedule_tail_wrapper)
+>    * ebx: kernel thread func (NULL for user thread)
+>    * edi: kernel thread arg
+>    */
+> +.pushsection .text, "ax"
+>   SYM_CODE_START(ret_from_fork)
+>   	call	schedule_tail_wrapper
+>   
+> @@ -825,6 +831,7 @@ SYM_CODE_START(ret_from_fork)
+>   	movl	$0, PT_EAX(%esp)
+>   	jmp	2b
+>   SYM_CODE_END(ret_from_fork)
+> +.popsection
+>   
+>   /*
+>    * Return to user mode is not as complex as all this looks,
+> @@ -1693,6 +1700,7 @@ SYM_CODE_START(general_protection)
+>   	jmp	common_exception
+>   SYM_CODE_END(general_protection)
+>   
+> +.pushsection .text, "ax"
+>   SYM_CODE_START(rewind_stack_do_exit)
+>   	/* Prevent any naive code from trying to unwind to our caller. */
+>   	xorl	%ebp, %ebp
+> @@ -1703,3 +1711,4 @@ SYM_CODE_START(rewind_stack_do_exit)
+>   	call	do_exit
+>   1:	jmp 1b
+>   SYM_CODE_END(rewind_stack_do_exit)
+> +.popsection
+> 
