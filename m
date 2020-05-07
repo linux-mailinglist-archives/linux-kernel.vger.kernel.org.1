@@ -2,104 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6DC31C959E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 17:56:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFD5A1C95BE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 17:58:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727899AbgEGP4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 11:56:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727833AbgEGP4n (ORCPT
+        id S1728111AbgEGP6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 11:58:47 -0400
+Received: from www62.your-server.de ([213.133.104.62]:55438 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726029AbgEGP6r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 11:56:43 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58D86C05BD09
-        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 08:56:42 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id h9so7038483wrt.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 08:56:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=nexus-software-ie.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9nd2a3PO/+LDgm1Vu9n0q5s4h9DVCpLpJzPVuCZ63KU=;
-        b=Nx3LC3IbvKtNTVEmAzQ/KFOqYYpw/GP1+cD1yxWaXF9ZN50dmGcN+FwQzWUJHf2SiJ
-         HYOLhybnWiXpx+N6hpWSUtUUpne2o1FQunmFR88u7qw4m//q3YwjbfOeIl4v4Kd1WP1M
-         sQ1JUR9bi7Qr/c0rwFj1q7QG0YR52asMBJJ/Njqs7ZuKSnAIwWru6sdJinpKQ1IU2Hd0
-         bGT0DumcFKjKO5xedyLSFcC++pEDuhORe4ydAlnY3JwOAg731Zz3BV3xOToURDMTj8lA
-         Sk0Kc4rfad7Mav3BaoCGj4zJt6I0gBbPPqhsC6tC1ZBMMf/h/geoZwSDg+35zO1uk6sk
-         QzIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9nd2a3PO/+LDgm1Vu9n0q5s4h9DVCpLpJzPVuCZ63KU=;
-        b=lBUC8/R0Bq3k0u74M+Jhj3TasWT7yppZPdHPdO8x08DbnLYaziY8xCiY1suz4gsTXS
-         4pOsj0VJiGdiiUbHqTZ3VNZx63ThyRmGUwoj0JYutoiUXjFhLyMhjM8fwC+xdrbn58Qz
-         WBjzRiXs6m9ZCMsmISK3eg9Nbxwdd6bOtuJz1AHN390y+RQ11Ab+o4uQaoRq/xiaafvE
-         0IJaUJHcfaPDWwVgbaKLpymAg8MVBEMGBwvH4O8JbupaPqWV8jhJ2suHouZWP4Al3uTx
-         yshn6neEEOcWNeoRmjHCDG9S0F/KCOXq2CRjv6FKqTT40fKt/vFXrd8KwGLOK7bCCKt0
-         wsyQ==
-X-Gm-Message-State: AGi0PuaPTsdZrrxgWPnT2fq46qcLBXpR2MhUDcMCMWD1qvdrriOvr5rZ
-        rq5FZz0zmQSTbE+Tevg1ABNIjw==
-X-Google-Smtp-Source: APiQypLmKMr8r52sf+RwYWYfNgMHo75Wmz7UYlWGQpE7tOtOW43JsiTpxSwbqhBRyIHt2soCkzEApA==
-X-Received: by 2002:a5d:42cf:: with SMTP id t15mr15963353wrr.354.1588867001109;
-        Thu, 07 May 2020 08:56:41 -0700 (PDT)
-Received: from [192.168.0.38] ([176.61.57.127])
-        by smtp.gmail.com with ESMTPSA id c17sm8835844wrn.59.2020.05.07.08.56.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 May 2020 08:56:40 -0700 (PDT)
-Subject: Re: [PATCH v3 0/2] Add Qualcomm MSM8939 GCC binding and driver
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, mturquette@baylibre.com,
-        sboyd@kernel.org, robh+dt@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        shawn.guo@linaro.org, p.zabel@pengutronix.de,
-        Vincent Knecht <vincent.knecht@mailoo.org>,
-        Konrad Dybcio <konradybcio@gmail.com>
-References: <20200423103406.481289-1-bryan.odonoghue@linaro.org>
-From:   Bryan O'Donoghue <pure.logic@nexus-software.ie>
-Message-ID: <e9d181a9-938c-a69b-8325-2aabeefd0934@nexus-software.ie>
-Date:   Thu, 7 May 2020 16:57:15 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Thu, 7 May 2020 11:58:47 -0400
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jWiuH-0008Cw-Lt; Thu, 07 May 2020 17:57:53 +0200
+Received: from [178.195.186.98] (helo=pc-9.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jWiuH-0008HP-1i; Thu, 07 May 2020 17:57:53 +0200
+Subject: Re: [PATCH v2] bpf, i386: remove unneeded conversion to bool
+To:     Martin KaFai Lau <kafai@fb.com>, Jason Yan <yanaijie@huawei.com>
+Cc:     davem@davemloft.net, kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
+        udknight@gmail.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com, ast@kernel.org,
+        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        lukenels@cs.washington.edu, xi.wang@gmail.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200506140352.37154-1-yanaijie@huawei.com>
+ <20200506220443.pmszq4jnfr2pcjp4@kafai-mbp>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <1f762d57-7439-37e4-1cfb-f53df6dd47d0@iogearbox.net>
+Date:   Thu, 7 May 2020 17:57:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20200423103406.481289-1-bryan.odonoghue@linaro.org>
+In-Reply-To: <20200506220443.pmszq4jnfr2pcjp4@kafai-mbp>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25805/Thu May  7 14:14:46 2020)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/04/2020 11:34, Bryan O'Donoghue wrote:
-> V3:
-> This update removes the old clock name arrays which I forgot to prune in
-> the previous V2.
+On 5/7/20 12:04 AM, Martin KaFai Lau wrote:
+> On Wed, May 06, 2020 at 10:03:52PM +0800, Jason Yan wrote:
+>> The '==' expression itself is bool, no need to convert it to bool again.
+>> This fixes the following coccicheck warning:
+> Make sense.
 > 
-> git diff bod/clk-next+msm8939 bod/clk-next+msm8939-v2.1
+> It may belong to bpf-next instead.
+> 
+> Acked-by: Martin KaFai Lau <kafai@fb.com>
 
-I should have mentioned.
-
-If you want to test this you'll need to do the following to your 
-msm8939.dtsi
-
-diff --git a/arch/arm64/boot/dts/qcom/msm8939.dtsi 
-b/arch/arm64/boot/dts/qcom/msm8939.dtsi
-index 996425a70014..2d54ad7f99b6 100644
---- a/arch/arm64/boot/dts/qcom/msm8939.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8939.dtsi
-@@ -673,6 +673,10 @@ gcc: clock-controller@1800000 {
-                         reg = <0x1800000 0x80000>;
-+                       clock-names = "xo",
-+                                     "sleep_clk";
-+                       clocks = <&xo_board>,
-+                                <&sleep_clk>;
-                 };
-
-"xo" and "sleep_clk" names can be resolved.
-
----
-bod
+Applied, thanks!
