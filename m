@@ -2,149 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D78E1C8A2B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 14:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A469B1C8A34
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 14:14:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbgEGML2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 08:11:28 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:36259 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726575AbgEGML2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 08:11:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588853487;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EANwWfRY2fmMo9bV62Nn6bc92cfkBW2MVPtmjYJC3NY=;
-        b=e+7YLxbkZcJS1Ulq3SCV/IqNG+q6ZNKtROJhiTwI4zZ5OfMxWMPnfG7yOg6f8LdtzgnZos
-        y/RZy0OjFFTEi/fXwcWCg7ESRqYBJecjbqcms/0jTLXYPYJJ417e37hm26ip7ZJe2ve/py
-        +M/sIV/SYexEslRsVfJi2eaaaseaMjo=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-244-XoLCfDjBMvCFi5D8g2IskQ-1; Thu, 07 May 2020 08:11:25 -0400
-X-MC-Unique: XoLCfDjBMvCFi5D8g2IskQ-1
-Received: by mail-wr1-f69.google.com with SMTP id o6so3331119wrn.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 05:11:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EANwWfRY2fmMo9bV62Nn6bc92cfkBW2MVPtmjYJC3NY=;
-        b=KvjxCBPGt3olBvT9kU3FGm+B9D/B9HIATdZzcukdmTvEtipiaG+Zs6pcCzMz3wSWfX
-         yrHSCfxmJ0d7cuU5bNTjESjofafWgcJMaSgwKtmdPlI09+NXm0JX3ZZdVwXEtpE/+tCs
-         QaWMH9l/f/ESVdIsHzId8h1QwhcUNw04UDrhlwXBtuZBx1ox7wBXnDeq7210T5eMgywS
-         9CeNKraW1gd3P7Hrc+J+PdN/IUB7aru/udQ+6U8ZawyTPBMN06C64FswJzfmwbwHp0kt
-         COuwZ0M0yryegDgMcgiW2/GRrglJzSTJ6ehtjseyOMAqvlvgpZ7YPp1SdBMKP/mlRjOh
-         Bssg==
-X-Gm-Message-State: AGi0PuY6n7N6CBD0RjRtma3ZXt4YOg4v1gfIlgbCztxbebvKH+AM4Nib
-        wVRsLXuT92fQyoWYU4qtZcw8v3jtLKKVrkyHE4+ZLPZrZo802ZyrX08EGon3PWoXby15VIEMkqe
-        V3nKBOkDFvaMAdbB/zjkK5O8U
-X-Received: by 2002:a5d:4389:: with SMTP id i9mr15945330wrq.374.1588853484090;
-        Thu, 07 May 2020 05:11:24 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJ7D0RkcqeXu3YBCPljtvjPEqgvhppTkrE0OvAuBlPYmp89z6WlX+VSiChRymh96iq6D4Ha+A==
-X-Received: by 2002:a5d:4389:: with SMTP id i9mr15945306wrq.374.1588853483876;
-        Thu, 07 May 2020 05:11:23 -0700 (PDT)
-Received: from redhat.com (bzq-109-66-7-121.red.bezeqint.net. [109.66.7.121])
-        by smtp.gmail.com with ESMTPSA id v2sm8092084wrn.21.2020.05.07.05.11.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2020 05:11:23 -0700 (PDT)
-Date:   Thu, 7 May 2020 08:11:19 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        virtio-dev@lists.oasis-open.org,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Oscar Salvador <osalvador@suse.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Dan Williams <dan.j.williams@intel.com>, Qian Cai <cai@lca.pw>
-Subject: Re: [PATCH v3 07/15] mm/memory_hotplug: Introduce
- offline_and_remove_memory()
-Message-ID: <20200507080849-mutt-send-email-mst@kernel.org>
-References: <20200507103119.11219-1-david@redhat.com>
- <20200507103119.11219-8-david@redhat.com>
- <20200507064558-mutt-send-email-mst@kernel.org>
- <a915653f-232e-aa13-68f7-f988704fa84c@redhat.com>
- <441bfb92-ecfa-f54e-3661-b219ea166e55@redhat.com>
- <20200507073408-mutt-send-email-mst@kernel.org>
- <3bed2d1d-d94a-45ca-afe3-5e6ee660b0fc@redhat.com>
+        id S1726509AbgEGMOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 08:14:21 -0400
+Received: from mga17.intel.com ([192.55.52.151]:55358 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725903AbgEGMOU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 08:14:20 -0400
+IronPort-SDR: LsqasHE3mSiJjx2vM3UbQplJW9vNLaTwjNiKc8JTUpLgqNjdcCFEbZug7+fNiufgQ6Fi68JZRC
+ TubZeEKjymQA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2020 05:14:19 -0700
+IronPort-SDR: 61V9ALDR6QMUADZTZFRkDHgf3hERxwAarYX4mW9ugefLn1/6Irpabx+UhvF8LZ3flvNrPXYytv
+ h9oVEwp+TfOg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,363,1583222400"; 
+   d="scan'208";a="461827210"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 07 May 2020 05:14:18 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jWfPt-0008ds-LM; Thu, 07 May 2020 20:14:17 +0800
+Date:   Thu, 07 May 2020 20:13:52 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:rcu/next] BUILD SUCCESS
+ ad49dba5db65067e6a53256192749bc40e51833f
+Message-ID: <5eb3fb80.285aD9K0YocldEr+%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3bed2d1d-d94a-45ca-afe3-5e6ee660b0fc@redhat.com>
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 07, 2020 at 01:37:30PM +0200, David Hildenbrand wrote:
-> On 07.05.20 13:34, Michael S. Tsirkin wrote:
-> > On Thu, May 07, 2020 at 01:33:23PM +0200, David Hildenbrand wrote:
-> >>>> I get:
-> >>>>
-> >>>> error: sha1 information is lacking or useless (mm/memory_hotplug.c).
-> >>>> error: could not build fake ancestor
-> >>>>
-> >>>> which version is this against? Pls post patches on top of some tag
-> >>>> in Linus' tree if possible.
-> >>>
-> >>> As the cover states, latest linux-next. To be precise
-> >>>
-> >>> commit 6b43f715b6379433e8eb30aa9bcc99bd6a585f77 (tag: next-20200507,
-> >>> next/master)
-> >>> Author: Stephen Rothwell <sfr@canb.auug.org.au>
-> >>> Date:   Thu May 7 18:11:31 2020 +1000
-> >>>
-> >>>     Add linux-next specific files for 20200507
-> >>>
-> >>
-> >> The patches seem to apply cleanly on top of
-> >>
-> >> commit a811c1fa0a02c062555b54651065899437bacdbe (linus/master)
-> >> Merge: b9388959ba50 16f8036086a9
-> >> Author: Linus Torvalds <torvalds@linux-foundation.org>
-> >> Date:   Wed May 6 20:53:22 2020 -0700
-> >>
-> >>     Merge git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net
-> > 
-> > Because you have the relevant hashes in your git tree not pruned yet.
-> > Do a new clone and they won't apply.
-> > 
-> 
-> Yeah, most probably, it knows how to merge. I'm used to sending all my
-> -mm stuff based on -next, so this here is different.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  rcu/next
+branch HEAD: ad49dba5db65067e6a53256192749bc40e51833f  torture: Add --allcpus argument to the kvm.sh script
 
+elapsed time: 684m
 
-Documentation/process/5.Posting.rst addresses this:
+configs tested: 84
+configs skipped: 1
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Patches must be prepared against a specific version of the kernel.  As a
-general rule, a patch should be based on the current mainline as found in
-Linus's git tree.  When basing on mainline, start with a well-known release
-point - a stable or -rc release - rather than branching off the mainline at
-an arbitrary spot.
+arm64                            allyesconfig
+arm                              allyesconfig
+arm64                            allmodconfig
+arm                              allmodconfig
+arm64                             allnoconfig
+arm                               allnoconfig
+arm64                               defconfig
+arm                                 defconfig
+sparc                            allyesconfig
+m68k                             allyesconfig
+s390                             allmodconfig
+i386                              allnoconfig
+nios2                               defconfig
+um                                  defconfig
+nds32                             allnoconfig
+nds32                               defconfig
+mips                              allnoconfig
+nios2                            allyesconfig
+alpha                               defconfig
+parisc                           allyesconfig
+alpha                            allyesconfig
+m68k                              allnoconfig
+riscv                               defconfig
+sparc64                             defconfig
+c6x                               allnoconfig
+csky                                defconfig
+i386                                defconfig
+i386                              debian-10.3
+i386                             allyesconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+openrisc                         allyesconfig
+csky                             allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+microblaze                       allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                             allyesconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a012-20200507
+x86_64               randconfig-a004-20200507
+x86_64               randconfig-a006-20200507
+x86_64               randconfig-a002-20200507
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                                defconfig
+sparc                               defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
 
-It may become necessary to make versions against -mm, linux-next, or a
-subsystem tree, though, to facilitate wider testing and review.  Depending
-on the area of your patch and what is going on elsewhere, basing a patch
-against these other trees can require a significant amount of work
-resolving conflicts and dealing with API changes.
-
-
-
-
-
-> I'll wait a bit and then send v4 based on latest linus/master, adding
-> the two acks and reshuffling the MAINTAINERS patch. Thanks.
-> 
-> -- 
-> Thanks,
-> 
-> David / dhildenb
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
