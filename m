@@ -2,110 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 283841C9BAE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 22:09:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6642A1C9BA9
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 22:08:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728444AbgEGUJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 16:09:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728378AbgEGUJD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 16:09:03 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1BBFC05BD09
-        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 13:09:02 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id w65so3529029pfc.12
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 13:09:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=c/DsRm4g6gIbDNrt7b5XJT8F2ZdnzG78OB1C4FcIZRg=;
-        b=Wji61SIerY4A7CIjkXjeQbrgHiPO+IPz799kwT2t+CDnNp3fyN1ul6dEyGHysTzfpC
-         JZo5ah0CiyK9u/ZGlwjIyCE/GpmxmmZIYPu0KXJO2nZfLuj433mngzH/hie8b0wDBddz
-         NnCipZ1Khy+kmgpi29vWHoHozWaVMNYziA4dg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=c/DsRm4g6gIbDNrt7b5XJT8F2ZdnzG78OB1C4FcIZRg=;
-        b=a6FxLhnXaiY3EvDgn7H/vnXEjyRsKPJRL8dbuhSYwLzH+cBpmT2qs3rh+PjqU04XjN
-         wipJoDBbM1eEPGlR4wxiH5gDDb+xvlHNJamCCYz1wnMdSFbP8BCTBT8RkBnN7zEdiBji
-         IRR2V3JfOKKnqdVIBgfX2G0LBpi2xlFYoREgnswphvYMGLS2FNZyyuH/Gh3cNx0tciX5
-         hpXyM5I7Y1VpDx6CzLyUe/Tip3ICa7wqWP80pOCIO4qD84TX659wm8jTslE1gpfoKChJ
-         Q+pWbqxURtHRWuAqvoKy0KZpZiRh0eitVT5hVy7mY3t87s9fg9HbAFfSYvCKNqWAbGY9
-         OGqQ==
-X-Gm-Message-State: AGi0Pub44eXp3DrDQolXwLFpsKGLFIqLbguylL+6Z6cTBr4fUQWzyky1
-        FZvfFgFzHJzN8LRxgE72CF2AOQ==
-X-Google-Smtp-Source: APiQypICIyZYq+Lw5KlpKjR4sb4ChoSHP4P4KSBPQc5p5Oha2jBsP7gH0oqRg+pBV+ShiYgjJnWVXQ==
-X-Received: by 2002:a63:200b:: with SMTP id g11mr1896922pgg.22.1588882142461;
-        Thu, 07 May 2020 13:09:02 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:24fa:e766:52c9:e3b2])
-        by smtp.gmail.com with ESMTPSA id d203sm5547601pfd.79.2020.05.07.13.09.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2020 13:09:01 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     jason.wessel@windriver.com, daniel.thompson@linaro.org,
-        gregkh@linuxfoundation.org
-Cc:     corbet@lwn.net, frowand.list@gmail.com, bjorn.andersson@linaro.org,
-        linux-serial@vger.kernel.org, mingo@redhat.com, hpa@zytor.com,
-        jslaby@suse.com, kgdb-bugreport@lists.sourceforge.net,
-        sumit.garg@linaro.org, will@kernel.org, tglx@linutronix.de,
-        agross@kernel.org, catalin.marinas@arm.com, bp@alien8.de,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 02/12] Revert "kgdboc: disable the console lock when in kgdb"
-Date:   Thu,  7 May 2020 13:08:40 -0700
-Message-Id: <20200507130644.v4.2.I02258eee1497e55bcbe8dc477de90369c7c7c2c5@changeid>
-X-Mailer: git-send-email 2.26.2.645.ge9eca65c58-goog
-In-Reply-To: <20200507200850.60646-1-dianders@chromium.org>
-References: <20200507200850.60646-1-dianders@chromium.org>
+        id S1728018AbgEGUIp convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 7 May 2020 16:08:45 -0400
+Received: from mga07.intel.com ([134.134.136.100]:50154 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726320AbgEGUIo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 16:08:44 -0400
+IronPort-SDR: vHNozOPniD9IXduQ3g977zM8LzOGG69RxENbCHdtLGfdYbfmBb8Zt6bIqEfPI8bQLsLUx8mfxW
+ Y6FyNzGsBIhg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2020 13:08:43 -0700
+IronPort-SDR: kNBmpPTiIIT3xUKaY76vFUH7TgihcmBZxesy2tUDROkzb6YlRrOZj1162qnp/LLTSQ4pr3gdkf
+ ubUjilR2rcwQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,365,1583222400"; 
+   d="scan'208";a="370223059"
+Received: from fmsmsx103.amr.corp.intel.com ([10.18.124.201])
+  by fmsmga001.fm.intel.com with ESMTP; 07 May 2020 13:08:43 -0700
+Received: from hasmsx603.ger.corp.intel.com (10.184.107.143) by
+ FMSMSX103.amr.corp.intel.com (10.18.124.201) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Thu, 7 May 2020 13:08:43 -0700
+Received: from hasmsx602.ger.corp.intel.com (10.184.107.142) by
+ HASMSX603.ger.corp.intel.com (10.184.107.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 7 May 2020 23:08:41 +0300
+Received: from hasmsx602.ger.corp.intel.com ([10.184.107.142]) by
+ HASMSX602.ger.corp.intel.com ([10.184.107.142]) with mapi id 15.01.1713.004;
+ Thu, 7 May 2020 23:08:41 +0300
+From:   "Winkler, Tomas" <tomas.winkler@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] treewide: Replace zero-length array with flexible-array
+Thread-Topic: [PATCH] treewide: Replace zero-length array with flexible-array
+Thread-Index: AQHWJKBOJSsbWiWaH0mmen9kZErTsqidDUCQ
+Date:   Thu, 7 May 2020 20:08:40 +0000
+Message-ID: <7cf79b41ef1e479196f0a644b55ff67b@intel.com>
+References: <20200507185413.GA14583@embeddedor>
+In-Reply-To: <20200507185413.GA14583@embeddedor>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.2.0.6
+x-originating-ip: [10.184.70.1]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 81eaadcae81b4c1bf01649a3053d1f54e2d81cf1.
 
-Commit 81eaadcae81b ("kgdboc: disable the console lock when in kgdb")
-is no longer needed now that we have the patch ("kgdb: Disable
-WARN_CONSOLE_UNLOCKED for all kgdb").  Revert it.
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
----
+> -----Original Message-----
+> From: Gustavo A. R. Silva <gustavoars@kernel.org>
+> Sent: Thursday, May 07, 2020 21:54
+> To: Winkler, Tomas <tomas.winkler@intel.com>
+> Cc: linux-kernel@vger.kernel.org
+> Subject: [PATCH] treewide: Replace zero-length array with flexible-array
 
-Changes in v4: None
-Changes in v3: None
-Changes in v2:
-- ("Revert "kgdboc: disable the console lock when in kgdb"") new for v2.
 
- drivers/tty/serial/kgdboc.c | 4 ----
- 1 file changed, 4 deletions(-)
+Ack. 
 
-diff --git a/drivers/tty/serial/kgdboc.c b/drivers/tty/serial/kgdboc.c
-index c9f94fa82be4..8a1a4d1b6768 100644
---- a/drivers/tty/serial/kgdboc.c
-+++ b/drivers/tty/serial/kgdboc.c
-@@ -275,14 +275,10 @@ static void kgdboc_pre_exp_handler(void)
- 	/* Increment the module count when the debugger is active */
- 	if (!kgdb_connected)
- 		try_module_get(THIS_MODULE);
--
--	atomic_inc(&ignore_console_lock_warning);
- }
- 
- static void kgdboc_post_exp_handler(void)
- {
--	atomic_dec(&ignore_console_lock_warning);
--
- 	/* decrement the module count when the debugger detaches */
- 	if (!kgdb_connected)
- 		module_put(THIS_MODULE);
--- 
-2.26.2.645.ge9eca65c58-goog
+> 
+> The current codebase makes use of the zero-length array language extension to
+> the C90 standard, but the preferred mechanism to declare variable-length types
+> such as these ones is a flexible array member[1][2], introduced in C99:
+> 
+> struct foo {
+>         int stuff;
+>         struct boo array[];
+> };
+> 
+> By making use of the mechanism above, we will get a compiler warning in case
+> the flexible array does not occur last in the structure, which will help us prevent
+> some kind of undefined behavior bugs from being inadvertently introduced[3]
+> to the codebase from now on.
+> 
+> Also, notice that, dynamic memory allocations won't be affected by this change:
+> 
+> "Flexible array members have incomplete type, and so the sizeof operator may
+> not be applied. As a quirk of the original implementation of zero-length arrays,
+> sizeof evaluates to zero."[1]
+> 
+> sizeof(flexible-array-member) triggers a warning because flexible array
+> members have incomplete type[1]. There are some instances of code in which
+> the sizeof operator is being incorrectly/erroneously applied to zero-length
+> arrays and the result is zero. Such instances may be hiding some bugs. So, this
+> work (flexible-array member conversions) will also help to get completely rid of
+> those sorts of issues.
+> 
+> This issue was found with the help of Coccinelle.
+> 
+> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+> [2] https://github.com/KSPP/linux/issues/21
+> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>  samples/mei/mei-amt-version.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/samples/mei/mei-amt-version.c b/samples/mei/mei-amt-version.c
+> index 32234481ad7d..ad3e56042f96 100644
+> --- a/samples/mei/mei-amt-version.c
+> +++ b/samples/mei/mei-amt-version.c
+> @@ -267,7 +267,7 @@ struct amt_host_if_msg_header {  struct
+> amt_host_if_resp_header {
+>  	struct amt_host_if_msg_header header;
+>  	uint32_t status;
+> -	unsigned char data[0];
+> +	unsigned char data[];
+>  } __attribute__((packed));
+> 
+>  const uuid_le MEI_IAMTHIF = UUID_LE(0x12f80028, 0xb4b7, 0x4b2d,  \
 
