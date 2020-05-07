@@ -2,165 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F72D1C9AFB
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:24:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 837AC1C9ACE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726950AbgEGTYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 15:24:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44660 "EHLO mail.kernel.org"
+        id S1728329AbgEGTUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 15:20:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42138 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726491AbgEGTYu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 15:24:50 -0400
-Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726470AbgEGTUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 15:20:30 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C705E208D6;
-        Thu,  7 May 2020 19:24:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 733A3208E4;
+        Thu,  7 May 2020 19:20:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588879489;
-        bh=wW6HapZyPKcAS2pniJhuefRACI9qGnuvgtx2jsOUUYE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=tVFkrN62oIpbiYkxCjb/8By3qy2iMEIOcK+pWpF803xbdCZK8zJRavcXuPz8RhnBz
-         Cfm9DLoGHTPTo6WudSn26XaNslq6BVQbLrY2I1T6t3/67Jm1OKkxaPCfBpmJjMaahS
-         ONLGUPtYJwACf5Xt69gfZKdBghnpVBXq2Jk7rMOE=
-Received: by mail-io1-f49.google.com with SMTP id 19so1709952ioz.10;
-        Thu, 07 May 2020 12:24:49 -0700 (PDT)
-X-Gm-Message-State: AGi0PuaJA+0C+9YYiKQtzQOgB24RfwS3p71pXh28BCoeMa3d1J9mFswx
-        Ojlfq9HpstMYuj1Ej/DeN8N7FRdC2wyc9/kMMmg=
-X-Google-Smtp-Source: APiQypLRkklJ7aV3gPOvJS6Io4eaLQ9MNmNRgbveyH5ByIhA36D82P/M8hjRUyBis2HMj1IJCsrQAqmip8GynNzHFQg=
-X-Received: by 2002:a5d:8045:: with SMTP id b5mr15433368ior.16.1588879489201;
- Thu, 07 May 2020 12:24:49 -0700 (PDT)
+        s=default; t=1588879229;
+        bh=3VqhG5M9IiE8DSTOrbitM36BDnGXR2Iy8OLFUl4M59Q=;
+        h=Date:From:To:Cc:Subject:From;
+        b=xD71iI2IjdTHLJYeGoxqKBldpBQWeW/WJpA5U9keYgnlXf/QsA2Jms9ppHXu2v0Ar
+         xsI/teVQTCoRj67T9UHhrqT5WOpVWcbMeGQi6yJsWU1DY3/ezfZ5j+d6Sr3dAe+AFV
+         SMHiOmHfCK/V3qXlozjdQNIvI6jByOKJG+ARXYNs=
+Date:   Thu, 7 May 2020 14:24:56 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Sam Creasey <sammy@sammy.net>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] ethernet: i825xx: sun3_82586: Replace zero-length array with
+ flexible-array
+Message-ID: <20200507192456.GA16458@embeddedor>
 MIME-Version: 1.0
-References: <20200507183332.6153-1-lszubowi@redhat.com>
-In-Reply-To: <20200507183332.6153-1-lszubowi@redhat.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 7 May 2020 21:24:37 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXE-ozARWTkRhaG3h0H6-2B_B3hgqp+tR7j0Ved8j3i53w@mail.gmail.com>
-Message-ID: <CAMj1kXE-ozARWTkRhaG3h0H6-2B_B3hgqp+tR7j0Ved8j3i53w@mail.gmail.com>
-Subject: Re: [PATCH V3] efi/libstub/x86: Avoid EFI map buffer alloc in allocate_e820()
-To:     Lenny Szubowicz <lszubowi@redhat.com>
-Cc:     eric.snowberg@oracle.com, Ingo Molnar <mingo@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 May 2020 at 20:33, Lenny Szubowicz <lszubowi@redhat.com> wrote:
->
-> In allocate_e820(), call the EFI get_memory_map() service directly
-> instead of indirectly via efi_get_memory_map(). This avoids allocation
-> of a buffer and return of the full EFI memory map, which is not needed
-> here and would otherwise need to be freed.
->
-> Routine allocate_e820() only needs to know how many EFI memory
-> descriptors there are in the map to allocate an adequately sized
-> e820ext buffer, if it's needed. Note that since efi_get_memory_map()
-> returns a memory map buffer sized with extra headroom, allocate_e820()
-> now needs to explicitly factor that into the e820ext size calculation.
->
-> Signed-off-by: Lenny Szubowicz <lszubowi@redhat.com>
-> Suggested-by: Ard Biesheuvel <ardb@kernel.org>
+The current codebase makes use of the zero-length array language
+extension to the C90 standard, but the preferred mechanism to declare
+variable-length types such as these ones is a flexible array member[1][2],
+introduced in C99:
 
-Thanks Lenny. I'll get this queued up.
+struct foo {
+        int stuff;
+        struct boo array[];
+};
 
-> --
-> v3:
->   - Move define of EFI_MMAP_NR_SLACK_SLOTS to efistub.h instead
->     of providing a helper function to get it.
->
-> v2:
->   - Instead of freeing the EFI memory map buffer allocated by
->     efi_get_memory_map(), avoid the allocation in the first place.
->
->   - Changed the title of the patch because the v1 title no longer
->     applies. v1 ref:
->     https://lore.kernel.org/lkml/20200505190016.4350-1-lszubowi@redhat.com/
-> --
-> ---
->  drivers/firmware/efi/libstub/efistub.h  | 13 +++++++++++++
->  drivers/firmware/efi/libstub/mem.c      |  2 --
->  drivers/firmware/efi/libstub/x86-stub.c | 22 ++++++++--------------
->  3 files changed, 21 insertions(+), 16 deletions(-)
->
-> diff --git a/drivers/firmware/efi/libstub/efistub.h b/drivers/firmware/efi/libstub/efistub.h
-> index 67d26949fd26..62943992f02f 100644
-> --- a/drivers/firmware/efi/libstub/efistub.h
-> +++ b/drivers/firmware/efi/libstub/efistub.h
-> @@ -92,6 +92,19 @@ extern __pure efi_system_table_t  *efi_system_table(void);
->  #define EFI_LOCATE_BY_REGISTER_NOTIFY          1
->  #define EFI_LOCATE_BY_PROTOCOL                 2
->
-> +/*
-> + * An efi_boot_memmap is used by efi_get_memory_map() to return the
-> + * EFI memory map in a dynamically allocated buffer.
-> + *
-> + * The buffer allocated for the EFI memory map includes extra room for
-> + * a minimum of EFI_MMAP_NR_SLACK_SLOTS additional EFI memory descriptors.
-> + * This facilitates the reuse of the EFI memory map buffer when a second
-> + * call to ExitBootServices() is needed because of intervening changes to
-> + * the EFI memory map. Other related structures, e.g. x86 e820ext, need
-> + * to factor in this headroom requirement as well.
-> + */
-> +#define EFI_MMAP_NR_SLACK_SLOTS        8
-> +
->  struct efi_boot_memmap {
->         efi_memory_desc_t       **map;
->         unsigned long           *map_size;
-> diff --git a/drivers/firmware/efi/libstub/mem.c b/drivers/firmware/efi/libstub/mem.c
-> index 869a79c8946f..09f4fa01914e 100644
-> --- a/drivers/firmware/efi/libstub/mem.c
-> +++ b/drivers/firmware/efi/libstub/mem.c
-> @@ -5,8 +5,6 @@
->
->  #include "efistub.h"
->
-> -#define EFI_MMAP_NR_SLACK_SLOTS        8
-> -
->  static inline bool mmap_has_headroom(unsigned long buff_size,
->                                      unsigned long map_size,
->                                      unsigned long desc_size)
-> diff --git a/drivers/firmware/efi/libstub/x86-stub.c b/drivers/firmware/efi/libstub/x86-stub.c
-> index 05ccb229fb45..a0aeb1cda8e3 100644
-> --- a/drivers/firmware/efi/libstub/x86-stub.c
-> +++ b/drivers/firmware/efi/libstub/x86-stub.c
-> @@ -606,24 +606,18 @@ static efi_status_t allocate_e820(struct boot_params *params,
->                                   struct setup_data **e820ext,
->                                   u32 *e820ext_size)
->  {
-> -       unsigned long map_size, desc_size, buff_size;
-> -       struct efi_boot_memmap boot_map;
-> -       efi_memory_desc_t *map;
-> +       unsigned long map_size, desc_size;
->         efi_status_t status;
->         __u32 nr_desc;
->
-> -       boot_map.map            = &map;
-> -       boot_map.map_size       = &map_size;
-> -       boot_map.desc_size      = &desc_size;
-> -       boot_map.desc_ver       = NULL;
-> -       boot_map.key_ptr        = NULL;
-> -       boot_map.buff_size      = &buff_size;
-> +       /* Only need the size of the mem map and size of each mem descriptor */
-> +       map_size = 0;
-> +       status = efi_bs_call(get_memory_map, &map_size, NULL, NULL,
-> +                            &desc_size, NULL);
-> +       if (status != EFI_BUFFER_TOO_SMALL)
-> +               return (status != EFI_SUCCESS) ? status : EFI_UNSUPPORTED;
->
-> -       status = efi_get_memory_map(&boot_map);
-> -       if (status != EFI_SUCCESS)
-> -               return status;
-> -
-> -       nr_desc = buff_size / desc_size;
-> +       nr_desc = map_size / desc_size + EFI_MMAP_NR_SLACK_SLOTS;
->
->         if (nr_desc > ARRAY_SIZE(params->e820_table)) {
->                 u32 nr_e820ext = nr_desc - ARRAY_SIZE(params->e820_table);
-> --
-> 2.18.4
->
+By making use of the mechanism above, we will get a compiler warning
+in case the flexible array does not occur last in the structure, which
+will help us prevent some kind of undefined behavior bugs from being
+inadvertently introduced[3] to the codebase from now on.
+
+Also, notice that, dynamic memory allocations won't be affected by
+this change:
+
+"Flexible array members have incomplete type, and so the sizeof operator
+may not be applied. As a quirk of the original implementation of
+zero-length arrays, sizeof evaluates to zero."[1]
+
+sizeof(flexible-array-member) triggers a warning because flexible array
+members have incomplete type[1]. There are some instances of code in
+which the sizeof operator is being incorrectly/erroneously applied to
+zero-length arrays and the result is zero. Such instances may be hiding
+some bugs. So, this work (flexible-array member conversions) will also
+help to get completely rid of those sorts of issues.
+
+This issue was found with the help of Coccinelle.
+
+[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+[2] https://github.com/KSPP/linux/issues/21
+[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/net/ethernet/i825xx/sun3_82586.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/i825xx/sun3_82586.h b/drivers/net/ethernet/i825xx/sun3_82586.h
+index 79aef681ac85..451cb3d26cb5 100644
+--- a/drivers/net/ethernet/i825xx/sun3_82586.h
++++ b/drivers/net/ethernet/i825xx/sun3_82586.h
+@@ -250,7 +250,7 @@ struct mcsetup_cmd_struct
+   unsigned short cmd_cmd;
+   unsigned short cmd_link;
+   unsigned short mc_cnt;		/* number of bytes in the MC-List */
+-  unsigned char  mc_list[0][6];  	/* pointer to 6 bytes entries */
++  unsigned char  mc_list[][6];  	/* pointer to 6 bytes entries */
+ };
+ 
+ /*
+
