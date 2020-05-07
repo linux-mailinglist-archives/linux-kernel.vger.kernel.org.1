@@ -2,89 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 296AC1C9D4C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 23:33:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 695CF1C9D53
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 23:35:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726641AbgEGVdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 17:33:40 -0400
-Received: from mout.kundenserver.de ([212.227.17.10]:35769 "EHLO
+        id S1726767AbgEGVe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 17:34:58 -0400
+Received: from mout.kundenserver.de ([212.227.17.10]:45433 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726320AbgEGVdj (ORCPT
+        with ESMTP id S1726320AbgEGVe6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 17:33:39 -0400
+        Thu, 7 May 2020 17:34:58 -0400
 Received: from localhost.localdomain ([149.172.19.189]) by
  mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPA (Nemesis) id
- 1MxVfj-1jDKON2Jhp-00xv0X; Thu, 07 May 2020 23:33:26 +0200
+ 1M42Ss-1jWo9f1xCq-0004Xr; Thu, 07 May 2020 23:34:07 +0200
 From:   Arnd Bergmann <arnd@arndb.de>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] media: cxusb-analog: fix V4L2 dependency
-Date:   Thu,  7 May 2020 23:33:14 +0200
-Message-Id: <20200507213325.1843982-1-arnd@arndb.de>
+To:     Cheng-Yi Chiang <cychiang@chromium.org>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Tzung-Bi Shih <tzungbi@google.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Benson Leung <bleung@chromium.org>,
+        Yu-Hsuan Hsu <yuhsuan@chromium.org>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: cros_ec_codec: allocate shash_desc dynamically
+Date:   Thu,  7 May 2020 23:33:51 +0200
+Message-Id: <20200507213405.1869430-1-arnd@arndb.de>
 X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:Rv72NQ7lV3Em1OEsWqDRAyPR38KvtDNs+dtnkIuB+d8R9Xh2XAl
- 31PdnpcP4hqkNR0493P5xqUwSBY8QdnFmKiJD2mxoj3z21pJn5hobueEYT2fqztCUtnMQ87
- QEvRHgaQbgGcpVYqtFDZevReF6Rf1jjzxO4AYAgjlamInBgLWgupeTwtIpV/ulLOU25SW8C
- 1Zu8nTtMb0Phs/E9e9KYw==
+X-Provags-ID: V03:K1:mP81ucRfJ0n2J5vksalKCXqnqjJ2Qyi7rUxUi+Qw5uBcwTowcbw
+ i4m5Hv6OHNLto24ko3XxR5xHOB/S08y9gc/fl6B4hMFSideVdmA+s9jO6bt2XjI9ckPQVHW
+ a0BuPYhrCl89Hl1V4BKX941bK0n9qyEWWdIbAjh3hqak4MlQciGt4WGj1qMnC4WuCem81/5
+ q1TyibN00u3zbdg47U1lQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:vEyyDlsoHbA=:AHuUt9P5LntWj+2JvWGvNk
- dDkkwDbgcPkwUTzLqsmafxt57RiGWPDmuCiW8eVb+UpVbOmrmOmo5psU0YeP3U6vkc03oNSm7
- JS0adBDVTqCZG6XAOQU8cEcJErNlXKdi5YDuGKymLYl09MU/gChSF3uuZv2VybnizPG38ZpHP
- kEQ3VWL+OLJWi+o+MNZc4VNQwMw/BaMrwLFx0VP/mFJ4Hfkf0rpaEbQdIRGPWf0xn6cQaNuQg
- npPQL13lVm3Fm5froD3xVBNM07xJtSNfnGreM0wiqXy99DDkdtarIopjo2R/G3aJq9goxrdar
- YGWjP6JXCzYgpGBlRokIWFe7qZD6NG3c9MgqL5g4BI5QUqTQVEw34O57ntDFVkUDgmPD1C8CZ
- vYB5h/UjfwUXRV3/RYD6QjSyoWmcKlguE/eISUSBMemJd/1xUQHLmflWTPW6smsfy2UKE5Eyg
- Cq25LNXrk5dxiAIxNhJ6DsVpiNK0c4DX7PdKPbEpQTDKbXBCQMoXPRMS06iKViARHXMOZSTQ7
- wUPpRf6F7jz1aU/YtEJhz5ekkt/wh71oKN5MTUKfwRgN4Hd8mcZdEtYj2wEZRrevC2Ay98rJC
- FG+IPErjd+FKJB5JrtFeMt7fYuUGa3d1slFOtQpdsfQtGxfLwxyM594iK5WgTksW0BbS+ku/9
- K2uyqM6N1JJfCTcz9C04uCis6MChM2iSqj7VgNImMucrg9docymcOWAs6TwbTZtXy73OTtHu8
- dW+AYVzNNyQkmKTmBJp/feNH97lCcJgiRsFqw4aaZKYvEhP/ST7EIQDNgx3gqI+jQqztXuJ9u
- FEHIkPcuinQAglTmOyADeViAEp4oL5huwaDgtFxQwSPq11aA/g=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:YlYAs++/TXg=:+/xJSWcjlOALQmASEKD+mM
+ yE28stKlsO0l0oYH+yhPbxVPfRZki9ANaZmbRNEn0yVjhj16CnJSim2c857PjGt14hQYgPgkp
+ k5APNe8omUP9RjBt7FuD8RnUvoCvnfFB6c9xFQWnymlWIjc29Ino8gqkY9Hxo7dIgxZ44pjVY
+ Ierqf0RnUqWiPqlfb3qkMHqa9AM52UHzdjj+Wz7L2LzoDgVrON5iOf99LyVQ5h1wX82YvndCQ
+ f/nWAUfncfUMg5TSoL69r87E7PzMf99DQ6e5MxTDZRgW+jT780zp1/ezpiHbiWYRYaYBRRuLK
+ 5r7+09VMTHG5vhPgizR+alHKZU+A/ZpVmhd9xhgDsE0WKV6ygg6FrlA87mjgj620TNb9NHDSc
+ mByk1MtGAjpUVP75mbbUP4YJd3v3fVrXFhlNi6gvAX0h/JJLtGcrJOsLUabzJy/jH/Xw4mjgw
+ wL1GMyikEC48LiEH/mR7kzXv651QWh2Yq7lKkZLX48X2dbukfkawGM/4SEMoeo9IlAhFwIb6e
+ OMx3gzs9vyik72WDGU9WX8YX99gf7U2c5DdubkVP8ilLqK6z16NWgPFHQGFY82FwmJaDTxLR5
+ ceOO4/wrmqg/L3IAJEv+BEX7a73dTDoULgQlIQdTuwfi+quO5940TK2xLMYXDDEyFJ10wnYBr
+ oA9VmhZiTDFDkHmL1affrKaOyB6ZIxfVSNIq45GrNIQiCikuo9ZHI3DskR6ReMp5m1dXqcUb/
+ u8DKMoa1c8zAHWJASwBF/MIYpH8XOIv64i15hjgjbQyVdSm3eVK3sQQYmcZ3ZmGhW6vaJGJju
+ eWYfe+m33ifu3xeMhlQHaryqPW20krpS9URANAtmLjFORH1Dsk=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CONFIG_DVB_USB_CXUSB_ANALOG is a 'bool' symbol with a dependency on the
-tristate CONFIG_VIDEO_V4L2, which means it can be enabled as =y even
-when its dependency is =m. This leads to a link failure:
+The wov_hotword_model_put() function has multiple large variables on
+its stack, the largest of which is the result of SHASH_DESC_ON_STACK().
+In total, this exceeds the warning limit for 32-bit architectures:
 
-drivers/media/usb/dvb-usb/cxusb-analog.o: In function `cxusb_medion_analog_init':
-cxusb-analog.c:(.text+0x92): undefined reference to `v4l2_subdev_call_wrappers'
-drivers/media/usb/dvb-usb/cxusb-analog.o: In function `cxusb_medion_register_analog':
-cxusb-analog.c:(.text+0x466): undefined reference to `v4l2_device_register'
-cxusb-analog.c:(.text+0x4c3): undefined reference to `v4l2_i2c_new_subdev'
-cxusb-analog.c:(.text+0x4fb): undefined reference to `v4l2_subdev_call_wrappers'
-...
+sound/soc/codecs/cros_ec_codec.c:776:12: error: stack frame size of 1152 bytes in function 'wov_hotword_model_put' [-Werror,-Wframe-larger-than=]
 
-Change the dependency only disallow the analog portion of the driver
-in that configuration.
+The function already has a dynamic crypto_alloc_shash() allocation, so
+using kmalloc() for the descriptor is correct as well and does not
+introduce any additional failure scenarios. With this, the stack usage
+of wov_hotword_model_put() gets reduced to 480 bytes in my test
+configuration.
 
-Fixes: e478d4054054 ("media: cxusb: add analog mode support for Medion MD95700")
+Fixes: b6bc07d4360d ("ASoC: cros_ec_codec: support WoV")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/media/usb/dvb-usb/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/cros_ec_codec.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/media/usb/dvb-usb/Kconfig b/drivers/media/usb/dvb-usb/Kconfig
-index 15d29c91662f..25ba03edcb5c 100644
---- a/drivers/media/usb/dvb-usb/Kconfig
-+++ b/drivers/media/usb/dvb-usb/Kconfig
-@@ -151,6 +151,7 @@ config DVB_USB_CXUSB
- config DVB_USB_CXUSB_ANALOG
- 	bool "Analog support for the Conexant USB2.0 hybrid reference design"
- 	depends on DVB_USB_CXUSB && VIDEO_V4L2
-+	depends on VIDEO_V4L2=y || VIDEO_V4L2=DVB_USB_CXUSB
- 	select VIDEO_CX25840
- 	select VIDEOBUF2_VMALLOC
- 	help
+diff --git a/sound/soc/codecs/cros_ec_codec.c b/sound/soc/codecs/cros_ec_codec.c
+index d3dc42aa6825..1948bc6971f6 100644
+--- a/sound/soc/codecs/cros_ec_codec.c
++++ b/sound/soc/codecs/cros_ec_codec.c
+@@ -108,22 +108,23 @@ static int calculate_sha256(struct cros_ec_codec_priv *priv,
+ 			    uint8_t *buf, uint32_t size, uint8_t *digest)
+ {
+ 	struct crypto_shash *tfm;
++	struct shash_desc *desc;
+ 
+ 	tfm = crypto_alloc_shash("sha256", CRYPTO_ALG_TYPE_SHASH, 0);
+ 	if (IS_ERR(tfm)) {
+ 		dev_err(priv->dev, "can't alloc shash\n");
+ 		return PTR_ERR(tfm);
+ 	}
+-
+-	{
+-		SHASH_DESC_ON_STACK(desc, tfm);
+-
+-		desc->tfm = tfm;
+-
+-		crypto_shash_digest(desc, buf, size, digest);
+-		shash_desc_zero(desc);
++	desc = kmalloc(sizeof(*desc) + crypto_shash_descsize(tfm), GFP_KERNEL);
++	if (!desc) {
++		crypto_free_shash(tfm);
++		return -ENOMEM;
+ 	}
++	desc->tfm = tfm;
++	crypto_shash_digest(desc, buf, size, digest);
++	shash_desc_zero(desc);
+ 
++	kfree(desc);
+ 	crypto_free_shash(tfm);
+ 
+ #ifdef DEBUG
 -- 
 2.26.0
 
