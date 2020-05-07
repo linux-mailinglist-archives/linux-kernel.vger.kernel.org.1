@@ -2,58 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DC561C7F6D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 02:53:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8011F1C7F7B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 02:59:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728228AbgEGAxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 20:53:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725887AbgEGAxS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 20:53:18 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92642C061A0F;
-        Wed,  6 May 2020 17:53:18 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::d71])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 01E2B12783B7E;
-        Wed,  6 May 2020 17:53:17 -0700 (PDT)
-Date:   Wed, 06 May 2020 17:53:17 -0700 (PDT)
-Message-Id: <20200506.175317.102621048517657840.davem@davemloft.net>
-To:     grygorii.strashko@ti.com
-Cc:     netdev@vger.kernel.org, nsekhar@ti.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        m-karicheri2@ti.com
-Subject: Re: [PATCH] net: ethernet: ti: am65-cpsw-nuss: fix irqs type
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200505163126.13942-1-grygorii.strashko@ti.com>
-References: <20200505163126.13942-1-grygorii.strashko@ti.com>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Wed, 06 May 2020 17:53:18 -0700 (PDT)
+        id S1728270AbgEGA7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 20:59:05 -0400
+Received: from mga11.intel.com ([192.55.52.93]:26590 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726129AbgEGA7E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 20:59:04 -0400
+IronPort-SDR: F9CnFysz0Y0DxUvgceAnqgyN3L6E7mqNAQCFnWYfoC6xM6CwF1745GxdjxbFbV3ay6DbS+Azgs
+ PzedYohv/ORw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2020 17:59:04 -0700
+IronPort-SDR: HBHWzTc5qEKEfQUKVT27+UvyCL1wQmiUGmuWH1fJqN9zIu8Fpx9F4aaGHTinu4dkggs9ne6hVm
+ /jojBFq9QJhg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,361,1583222400"; 
+   d="scan'208";a="407461777"
+Received: from allen-box.sh.intel.com ([10.239.159.139])
+  by orsmga004.jf.intel.com with ESMTP; 06 May 2020 17:59:00 -0700
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     ashok.raj@intel.com, jacob.jun.pan@linux.intel.com,
+        Liu Yi L <yi.l.liu@intel.com>, kevin.tian@intel.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Lu Baolu <baolu.lu@linux.intel.com>
+Subject: [PATCH v4 0/5] iommu/vt-d: Add page request draining support
+Date:   Thu,  7 May 2020 08:55:29 +0800
+Message-Id: <20200507005534.3080-1-baolu.lu@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Grygorii Strashko <grygorii.strashko@ti.com>
-Date: Tue, 5 May 2020 19:31:26 +0300
+When a PASID is stopped or terminated, there can be pending PRQs
+(requests that haven't received responses) in the software and
+remapping hardware. The pending page requests must be drained
+so that the pasid could be reused. The chapter 7.10 in the VT-d
+specification specifies the software steps to drain pending page
+requests and responses.
 
-> The K3 INTA driver, which is source TX/RX IRQs for CPSW NUSS, defines IRQs
-> triggering type as EDGE by default, but triggering type for CPSW NUSS TX/RX
-> IRQs has to be LEVEL as the EDGE triggering type may cause unnecessary IRQs
-> triggering and NAPI scheduling for empty queues. It was discovered with
-> RT-kernel.
-> 
-> Fix it by explicitly specifying CPSW NUSS TX/RX IRQ type as
-> IRQF_TRIGGER_HIGH.
-> 
-> Fixes: 93a76530316a ("net: ethernet: ti: introduce am65x/j721e gigabit eth subsystem driver")
-> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+This includes two parts:
+ - PATCH 1/4 ~ 2/4: refactor the qi_submit_sync() to support multiple
+   descriptors per submission which will be used in the following
+   patch.
+ - PATCH 3/4 ~ 4/4: add page request drain support after a pasid entry
+   is torn down.
 
-Applied, thanks.
+Best regards,
+baolu
+
+Change log:
+v3->v4:
+  - Remove prq drain in mm notifier;
+  - Set PASID FPD bit when pasid is cleared in mm notifier and clear
+    it in unbound().
+
+ v2->v3:
+  - Address Kevin's review comments
+    - Squash the first 2 patches together;
+    - The prq thread is serialized, no need to consider reentrance;
+    - Ensure no new-coming prq before drain prq in queue;
+    - Handle page request overflow case.
+
+ v1->v2:
+  - Fix race between multiple prq handling threads.
+
+Lu Baolu (5):
+  iommu/vt-d: Multiple descriptors per qi_submit_sync()
+  iommu/vt-d: debugfs: Add support to show inv queue internals
+  iommu/vt-d: Disable non-recoverable fault processing before unbind
+  iommu/vt-d: Add page request draining support
+  iommu/vt-d: Remove redundant IOTLB flush
+
+ drivers/iommu/dmar.c                |  63 ++++++++------
+ drivers/iommu/intel-iommu-debugfs.c |  62 ++++++++++++++
+ drivers/iommu/intel-iommu.c         |   4 +-
+ drivers/iommu/intel-pasid.c         |  30 +++++--
+ drivers/iommu/intel-pasid.h         |   3 +-
+ drivers/iommu/intel-svm.c           | 123 ++++++++++++++++++++++++----
+ drivers/iommu/intel_irq_remapping.c |   2 +-
+ include/linux/intel-iommu.h         |  13 ++-
+ 8 files changed, 247 insertions(+), 53 deletions(-)
+
+-- 
+2.17.1
+
