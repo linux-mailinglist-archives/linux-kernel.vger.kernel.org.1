@@ -2,175 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E0911C96B4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 18:41:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37CDC1C96D8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 18:49:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726792AbgEGQlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 12:41:01 -0400
-Received: from mga18.intel.com ([134.134.136.126]:21292 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726074AbgEGQlB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 12:41:01 -0400
-IronPort-SDR: V+EVhH54npwUFooFSyBXESkwVRG1IV/ZUbtx9PuskHbq5ySbJf3W9vTlFNTzY0wYYsad+tWjz4
- PiHm4gSFQPoA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2020 09:41:00 -0700
-IronPort-SDR: y/fdpHUpuRWavjaCIWw/VG9lnFOMSx4/mDNd/RiY3KqeeUtX9aU7JBbcyzHWw5kNUzNIfcmL29
- 7V3gnCOklWRA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,364,1583222400"; 
-   d="scan'208";a="407699732"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga004.jf.intel.com with ESMTP; 07 May 2020 09:40:59 -0700
-Date:   Thu, 7 May 2020 09:47:06 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, ashok.raj@intel.com,
-        Liu Yi L <yi.l.liu@intel.com>, kevin.tian@intel.com,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH v4 2/5] iommu/vt-d: debugfs: Add support to show inv
- queue internals
-Message-ID: <20200507094706.6f6a605f@jacob-builder>
-In-Reply-To: <20200507005534.3080-3-baolu.lu@linux.intel.com>
-References: <20200507005534.3080-1-baolu.lu@linux.intel.com>
-        <20200507005534.3080-3-baolu.lu@linux.intel.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        id S1727086AbgEGQtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 12:49:21 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:55366 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726222AbgEGQtU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 12:49:20 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 047GltQV085445;
+        Thu, 7 May 2020 16:48:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=yIKBOEyYFtcnZSrQHZ63Llg0wM2ybFJLkN8J9aa02fQ=;
+ b=wxkYhOFwU+tW8VDjRLAutcIyUVXGvkhE7c2+1dvCPlZN5RvJ4dlAqGidtOr0dN+qBuGn
+ StTTM7ZcyEdyUYFOT7hCSQmJYi1o1yBa2saTm9yYPYtTgibk4F5We3PJOADucxPgfslk
+ A2JpD6rTqaOnpcqniZJ62KWREzy4D3PYIZjSVwu3DJz6qt+u5ZC3SVSsZuhRIAQspsu/
+ jEKa7GOOJMtOIOMumvWY547joeXxL3nOadls9KIouelXL9J8APCa0uunZF39vRQZzL5k
+ lcY3Hew8V7PNZ8KzPjdaN00WCb+Vl9WNNy1E7Tr4RDM/9/tpoJ639BOhEQtNfOe4vmAw Rw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 30veckjphe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 07 May 2020 16:48:30 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 047GlWlQ044604;
+        Thu, 7 May 2020 16:48:29 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 30sjnpwf4y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 07 May 2020 16:48:29 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 047GmSiV031930;
+        Thu, 7 May 2020 16:48:28 GMT
+Received: from linux-1.home (/92.157.36.49)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 07 May 2020 09:48:27 -0700
+Subject: Re: [patch V4 part 3 29/29] x86/entry/32: Convert IRET exception to
+ IDTENTRY_SW
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>
+References: <20200505134354.774943181@linutronix.de>
+ <20200505134906.128769226@linutronix.de>
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+Message-ID: <e50333c6-386d-6b77-dd67-ea213782b1b7@oracle.com>
+Date:   Thu, 7 May 2020 18:47:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20200505134906.128769226@linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9614 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 adultscore=0 phishscore=0
+ mlxlogscore=999 bulkscore=0 malwarescore=0 spamscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005070136
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9614 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 bulkscore=0
+ spamscore=0 malwarescore=0 impostorscore=0 clxscore=1015
+ lowpriorityscore=0 phishscore=0 mlxlogscore=999 suspectscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005070136
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Baolu,
 
-Very helpful feature, thanks for doing this. Just a small suggestion.
-
-On Thu,  7 May 2020 08:55:31 +0800
-Lu Baolu <baolu.lu@linux.intel.com> wrote:
-
-> Export invalidation queue internals of each iommu device through the
-> debugfs.
+On 5/5/20 3:44 PM, Thomas Gleixner wrote:
+> From: Thomas Gleixner <tglx@linutronix.de>
 > 
-> Example of such dump on a Skylake machine:
+> Convert the IRET exception handler to IDTENTRY_SW. This is slightly
+> different than the conversions of hardware exceptions as the IRET exception
+> is invoked via an exception table when IRET faults. So it just uses the
+> IDTENTRY_SW mechanism for consistency. It does not emit ASM code as it does
+> not fit the other idtentry exceptions.
 > 
-> $ sudo cat /sys/kernel/debug/iommu/intel/invalidation_queue
-> Invalidation queue on IOMMU: dmar1
->  Base: 0x1672c9000      Head: 80        Tail: 80
-> Index           qw0                     qw1                     status
->     0   0000000000000004        0000000000000000
-> 0000000000000000 1   0000000200000025        00000001672be804
-> 0000000000000000 2   0000000000000011        0000000000000000
-> 0000000000000000 3   0000000200000025        00000001672be80c
-> 0000000000000000 4   00000000000000d2        0000000000000000
-> 0000000000000000 5   0000000200000025        00000001672be814
-> 0000000000000000 6   0000000000000014        0000000000000000
-> 0000000000000000 7   0000000200000025        00000001672be81c
-> 0000000000000000 8   0000000000000014        0000000000000000
-> 0000000000000000 9   0000000200000025        00000001672be824
-> 0000000000000000
+>    - Implement the C entry point with DEFINE_IDTENTRY_SW() which maps to
+>      DEFINE_IDTENTRY()
+>    - Fixup the XEN/PV code
+>    - Remove the old prototyoes
+>    - Remove the RCU warning as the new entry macro ensures correctness
 > 
-Head and Tail shows the offset, and queue is dump with index. Would it
-be nice to mark where the Head and Tail is in the list?
-In your example, the queue is empty (H=T), would be nice to see where
-the previous entry is if there were any faults.
+> No functional change.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> 
 
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> ---
->  drivers/iommu/intel-iommu-debugfs.c | 62
-> +++++++++++++++++++++++++++++ 1 file changed, 62 insertions(+)
-> 
-> diff --git a/drivers/iommu/intel-iommu-debugfs.c
-> b/drivers/iommu/intel-iommu-debugfs.c index
-> 3eb1fe240fb0..e3089865b8f3 100644 ---
-> a/drivers/iommu/intel-iommu-debugfs.c +++
-> b/drivers/iommu/intel-iommu-debugfs.c @@ -372,6 +372,66 @@ static int
-> domain_translation_struct_show(struct seq_file *m, void *unused) }
->  DEFINE_SHOW_ATTRIBUTE(domain_translation_struct);
->  
-> +static void invalidation_queue_entry_show(struct seq_file *m,
-> +					  struct intel_iommu *iommu)
-> +{
-> +	int index, shift = qi_shift(iommu);
-> +	struct qi_desc *desc;
-> +	int offset;
-> +
-> +	if (ecap_smts(iommu->ecap))
-> +		seq_puts(m,
-> "Index\t\tqw0\t\t\tqw1\t\t\tqw2\t\t\tqw3\t\t\tstatus\n");
-> +	else
-> +		seq_puts(m, "Index\t\tqw0\t\t\tqw1\t\t\tstatus\n");
-> +
-> +	for (index = 0; index < QI_LENGTH; index++) {
-> +		offset = index << shift;
-> +		desc = iommu->qi->desc + offset;
-> +		if (ecap_smts(iommu->ecap))
-> +			seq_printf(m,
-> "%5d\t%016llx\t%016llx\t%016llx\t%016llx\t%016x\n",
-> +				   index, desc->qw0, desc->qw1,
-> +				   desc->qw2, desc->qw3,
-> +				   iommu->qi->desc_status[index]);
-> +		else
-> +			seq_printf(m,
-> "%5d\t%016llx\t%016llx\t%016x\n",
-> +				   index, desc->qw0, desc->qw1,
-> +				   iommu->qi->desc_status[index]);
-> +	}
-> +}
-> +
-> +static int invalidation_queue_show(struct seq_file *m, void *unused)
-> +{
-> +	struct dmar_drhd_unit *drhd;
-> +	struct intel_iommu *iommu;
-> +	unsigned long flags;
-> +	struct q_inval *qi;
-> +	int shift;
-> +
-> +	rcu_read_lock();
-> +	for_each_active_iommu(iommu, drhd) {
-> +		qi = iommu->qi;
-> +		shift = qi_shift(iommu);
-> +
-> +		if (!qi || !ecap_qis(iommu->ecap))
-> +			continue;
-> +
-> +		seq_printf(m, "Invalidation queue on IOMMU: %s\n",
-> iommu->name); +
-> +		raw_spin_lock_irqsave(&qi->q_lock, flags);
-> +		seq_printf(m, " Base: 0x%llx\tHead: %lld\tTail:
-> %lld\n",
-> +			   virt_to_phys(qi->desc),
-> +			   dmar_readq(iommu->reg + DMAR_IQH_REG) >>
-> shift,
-> +			   dmar_readq(iommu->reg + DMAR_IQT_REG) >>
-> shift);
-> +		invalidation_queue_entry_show(m, iommu);
-> +		raw_spin_unlock_irqrestore(&qi->q_lock, flags);
-> +		seq_putc(m, '\n');
-> +	}
-> +	rcu_read_unlock();
-> +
-> +	return 0;
-> +}
-> +DEFINE_SHOW_ATTRIBUTE(invalidation_queue);
-> +
->  #ifdef CONFIG_IRQ_REMAP
->  static void ir_tbl_remap_entry_show(struct seq_file *m,
->  				    struct intel_iommu *iommu)
-> @@ -490,6 +550,8 @@ void __init intel_iommu_debugfs_init(void)
->  	debugfs_create_file("domain_translation_struct", 0444,
->  			    intel_iommu_debug, NULL,
->  			    &domain_translation_struct_fops);
-> +	debugfs_create_file("invalidation_queue", 0444,
-> intel_iommu_debug,
-> +			    NULL, &invalidation_queue_fops);
->  #ifdef CONFIG_IRQ_REMAP
->  	debugfs_create_file("ir_translation_struct", 0444,
-> intel_iommu_debug, NULL, &ir_translation_struct_fops);
+For all patches of part 3:
 
-[Jacob Pan]
+Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
+
+alex
