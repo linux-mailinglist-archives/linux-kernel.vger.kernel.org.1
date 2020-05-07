@@ -2,136 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59DE61C9593
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 17:55:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A46141C959F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 17:56:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727884AbgEGPzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 11:55:21 -0400
-Received: from mga18.intel.com ([134.134.136.126]:17091 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726531AbgEGPzU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 11:55:20 -0400
-IronPort-SDR: rduIOAOwLWAAJKdiyqDBvB5TZrciCI/pqOqKJ5Q+Py4as7WE0sl//ktWJmhahEHbe7lh4LgzUh
- OASsyHtRIn7A==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2020 08:55:19 -0700
-IronPort-SDR: muapVYKlG/jL2kfEB5cLiKWVtT5GeCqaa4YI5TFTF3ShZk/Kq0feZ9BdVO3yf0EexXO6D3GR+F
- LlcRmtyxQROg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,364,1583222400"; 
-   d="scan'208";a="263980375"
-Received: from smericks-mobl.amr.corp.intel.com (HELO [10.252.140.100]) ([10.252.140.100])
-  by orsmga006.jf.intel.com with ESMTP; 07 May 2020 08:55:18 -0700
-Subject: Re: [PATCH v10 05/26] x86/cet/shstk: Add Kconfig option for user-mode
- Shadow Stack
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>
-References: <20200429220732.31602-1-yu-cheng.yu@intel.com>
- <20200429220732.31602-6-yu-cheng.yu@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <f4329e8c-0b3a-2c52-2145-08ea4dcab26e@intel.com>
-Date:   Thu, 7 May 2020 08:55:18 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1727970AbgEGP4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 11:56:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727934AbgEGP4s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 11:56:48 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 846B0C05BD09
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 08:56:48 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id n11so2674612pgl.9
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 08:56:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=U4KdTZSSvGXdLyAkfFlYS4xTwZLtxpXNVHHZanbHyrY=;
+        b=VXiRhE0ZcVgChEV9YLMBI5LqSPSuLL1x2VWIR2XrBzhuIXs92GT6nF89oGnDidQr2k
+         ZZuX1iQoEvkyz8/0EwEHoFC6huy7liXpn8lH6FVcwOJH+X3FaMgkBxnagukyHQk/Jrhm
+         tC5XSiiOJkEfRZj8S4Yl0Jei0QJD9BdJi4MLs+glW54pKxJcXmGm/v6iIZqCZlgcg3jZ
+         eRsbXx0FTK3WbXtdM1CRzjFIhuZRh/FvWcHOFrOcc53X2yNkgBhymOCEch9hqjv0ilB8
+         xs654zg70AZwXpe/Soo05ZZpRejd2WtXcs4DT9KbyFVKHpOyLUJaS6I13roBZAKLaWYm
+         Y57g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=U4KdTZSSvGXdLyAkfFlYS4xTwZLtxpXNVHHZanbHyrY=;
+        b=c7+29lEuaYq3DbX4LnXjCLCzSmXQI8vj/F0TzDvmWrokx4cEPaCGBuuLO4qDbh8gUb
+         FtHKd0VrpgnQipc6155qc0IGWRNmwp9nA5GtNu+/3E/HQjRyxpgknGDvBpAVxejJ5Oa+
+         gz3NBDKwelNCMxXq+W2UU6Sl7MGCv8zTuUvVVnLzvtIdEJv95gE7AzP5nKBi+ZmaQ6YC
+         W+tAZ9NNGqgMgz5RW8EjEyorhbORGtAPMFndB5hMFLj3Z52I+HtnL64sMoZKorhov1yR
+         pe9p+swicGGrnusc+FA5fanL4BPiAWL/kl4qx5L8w+aw3bpLFv3A0Zdq4rKnvUf6b4+g
+         nbVg==
+X-Gm-Message-State: AGi0Puasse8wTFsk4bbvK1LJ2fPeOZ9uvCMGj/Lrtlb8dKBm95gHJNPX
+        zfmZs4butzYIeaNW8d8Wcri9IIENgEVL/rhijwazxQ==
+X-Google-Smtp-Source: APiQypJXfH5bI+tvmiffFZMkHf3nRrhvoPtzJlA9tQAqPW3jf4NFtRe9tJWNZy67Juc6WFnNJzGovoEzqIT6DJNcl7M=
+X-Received: by 2002:a62:4e87:: with SMTP id c129mr14304792pfb.178.1588867007770;
+ Thu, 07 May 2020 08:56:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200429220732.31602-6-yu-cheng.yu@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <00000000000039420505a14e4951@google.com> <1588755226.13662.17.camel@suse.com>
+ <CAAeHK+zOdghTAu647iKBEU+0LqkYYOk0f7gPk_4T6BjNi=2sAQ@mail.gmail.com>
+In-Reply-To: <CAAeHK+zOdghTAu647iKBEU+0LqkYYOk0f7gPk_4T6BjNi=2sAQ@mail.gmail.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Thu, 7 May 2020 17:56:36 +0200
+Message-ID: <CAAeHK+xu_0BrnM5SKo5zNFvwunMDQWa+foD-y7MpnqjkP8tcbg@mail.gmail.com>
+Subject: Re: KASAN: slab-out-of-bounds Read in hfa384x_usbin_callback
+To:     Oliver Neukum <oneukum@suse.com>,
+        Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+7d42d68643a35f71ac8a@syzkaller.appspotmail.com>,
+        devel@driverdev.osuosl.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>, nishkadg.linux@gmail.com,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/29/20 3:07 PM, Yu-cheng Yu wrote:
-> +config X86_INTEL_SHADOW_STACK_USER
-> +	prompt "Intel Shadow Stacks for user-mode"
-> +	def_bool n
-> +	depends on CPU_SUP_INTEL && X86_64
-> +	depends on AS_HAS_SHADOW_STACK
-> +	select ARCH_USES_HIGH_VMA_FLAGS
-> +	select X86_INTEL_CET
-> +	select ARCH_HAS_SHADOW_STACK
+On Wed, May 6, 2020 at 1:50 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+>
+> On Wed, May 6, 2020 at 10:54 AM Oliver Neukum <oneukum@suse.com> wrote:
+> >
+> > Am Freitag, den 20.03.2020, 12:28 -0700 schrieb syzbot:
+> > > Hello,
+> > >
+> > > syzbot found the following crash on:
+> > >
+> > > HEAD commit:    e17994d1 usb: core: kcov: collect coverage from usb comple..
+> > > git tree:       https://github.com/google/kasan.git usb-fuzzer
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=11d74573e00000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=5d64370c438bc60
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=7d42d68643a35f71ac8a
+> > > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15fa561de00000
+> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15d74573e00000
+> > >
+> > > IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> > > Reported-by: syzbot+7d42d68643a35f71ac8a@syzkaller.appspotmail.com
+> > >
+> >
+> > Hi,
+> >
+> > is this bug still active and can a test be run on it? I requested one
+> > yesterday. If my analysis is correct this bug has security
+> > implications, so it is kind of important.
+>
+> I see your request in the queue and it's been registered and
+> completed, but for some reason syzbot didn't send an email with a
+> response.
+>
+> Let me try this once again:
+>
+> #syz test: https://github.com/google/kasan.git e17994d1
 
-I called protection keys: X86_INTEL_MEMORY_PROTECTION_KEYS
-
-AMD recently posted documentation which shows them implementing it as
-well.  The "INTEL_" is feeling now like a mistake.
-
-Going forward, we should probably avoid sticking the company name on
-them, if for no other reason than avoiding confusion and/or churn in the
-future.
-
-Shadow stacks, for instance, seem like something that another vendor
-might implement one day.  So, let's at least remove the "INTEL_" from
-the config option names themselves.  Mentioning Intel in the changelog
-and the Kconfig help text is fine.
+Still no response. Dmitry, any idea what could be wrong here?
