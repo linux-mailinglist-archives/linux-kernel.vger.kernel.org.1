@@ -2,170 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B1171C80B3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 06:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DEB81C80BD
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 06:10:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726913AbgEGEEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 00:04:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45776 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725446AbgEGEEr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 00:04:47 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E87BA207DD;
-        Thu,  7 May 2020 04:04:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588824286;
-        bh=GnLUxgmdXtnzY66D3hGDvqn+bBMebpp1lc+6hwlGfAo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ARhYmz2v+xSNYnTjr+O0bRqASsMPYHF68/hkeORs0hdYuJpIGt6+5S+XBbMJxInm0
-         fXVi6sK25p7Q7O9Me3ZaGCcKlv+MHDwpZ/cxELS/ewgC+/pcIENDfv/ukf9rw90M8B
-         ux2C56xh1pcJrsZxCW+7lg8KF2cXVlyicH+HBn1U=
-Date:   Wed, 6 May 2020 23:09:12 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH RESEND] tpm: eventlog: Replace zero-length array with
- flexible-array member
-Message-ID: <20200507040912.GA31382@embeddedor>
+        id S1726382AbgEGEKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 00:10:38 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:3875 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725601AbgEGEKi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 00:10:38 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 5E42A59B51338C268F28;
+        Thu,  7 May 2020 12:10:33 +0800 (CST)
+Received: from [127.0.0.1] (10.166.212.180) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Thu, 7 May 2020
+ 12:10:28 +0800
+Subject: Re: [PATCH -next] iwlwifi: pcie: Use bitwise instead of arithmetic
+ operator for flags
+To:     Joe Perches <joe@perches.com>,
+        Luciano Coelho <luciano.coelho@intel.com>,
+        <johannes.berg@intel.com>, <emmanuel.grumbach@intel.com>,
+        <linuxwifi@intel.com>, <kvalo@codeaurora.org>,
+        <davem@davemloft.net>, "Julia Lawall" <julia.lawall@lip6.fr>
+CC:     <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, cocci <cocci@systeme.lip6.fr>
+References: <1588734423-33988-1-git-send-email-zou_wei@huawei.com>
+ <f8b258e0c8bb073c445090e637195df2fc989543.camel@perches.com>
+ <bfd6b3a7db0c50cd3d084510bd43c9e540688edd.camel@intel.com>
+ <2208e464cd8bd399cfb9b49abb5aed211f27b3a8.camel@perches.com>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <8431ed30-b9c7-e91b-e6e6-2afd03dde360@huawei.com>
+Date:   Thu, 7 May 2020 12:10:27 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <2208e464cd8bd399cfb9b49abb5aed211f27b3a8.camel@perches.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.166.212.180]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current codebase makes use of the zero-length array language
-extension to the C90 standard, but the preferred mechanism to declare
-variable-length types such as these ones is a flexible array member[1][2],
-introduced in C99:
+Both of you are right.
+I neglected, and this patch is wrong.
 
-struct foo {
-        int stuff;
-        struct boo array[];
-};
+Thanks.
 
-By making use of the mechanism above, we will get a compiler warning
-in case the flexible array does not occur last in the structure, which
-will help us prevent some kind of undefined behavior bugs from being
-inadvertently introduced[3] to the codebase from now on.
-
-Also, notice that, dynamic memory allocations won't be affected by
-this change:
-
-"Flexible array members have incomplete type, and so the sizeof operator
-may not be applied. As a quirk of the original implementation of
-zero-length arrays, sizeof evaluates to zero."[1]
-
-sizeof(flexible-array-member) triggers a warning because flexible array
-members have incomplete type[1]. There are some instances of code in
-which the sizeof operator is being incorrectly/erroneously applied to
-zero-length arrays and the result is zero. Such instances may be hiding
-some bugs. So, this work (flexible-array member conversions) will also
-help to get completely rid of those sorts of issues.
-
-Also, the following issue shows up due to the flexible-array member
-having incomplete type[4]:
-
-drivers/char/tpm/eventlog/tpm2.c: In function ‘tpm2_bios_measurements_start’:
-drivers/char/tpm/eventlog/tpm2.c:54:46: error: invalid application of ‘sizeof’ to incomplete type ‘u8[]’ {aka ‘unsigned char[]’}
-   54 |  size = sizeof(struct tcg_pcr_event) - sizeof(event_header->event)
-      |                                              ^
-drivers/char/tpm/eventlog/tpm2.c: In function ‘tpm2_bios_measurements_next’:
-drivers/char/tpm/eventlog/tpm2.c:102:10: error: invalid application of ‘sizeof’ to incomplete type ‘u8[]’ {aka ‘unsigned char[]’}
-  102 |    sizeof(event_header->event) + event_header->event_size;
-      |          ^
-drivers/char/tpm/eventlog/tpm2.c: In function ‘tpm2_binary_bios_measurements_show’:
-drivers/char/tpm/eventlog/tpm2.c:140:10: error: invalid application of ‘sizeof’ to incomplete type ‘u8[]’ {aka ‘unsigned char[]’}
-  140 |    sizeof(event_header->event) + event_header->event_size;
-      |          ^
-scripts/Makefile.build:266: recipe for target 'drivers/char/tpm/eventlog/tpm2.o' failed
-make[3]: *** [drivers/char/tpm/eventlog/tpm2.o] Error 1
-
-As mentioned above: "Flexible array members have incomplete type, and
-so the sizeof operator may not be applied. As a quirk of the original
-implementation of zero-length arrays, sizeof evaluates to zero."[1] So,
-the sizeof(flexible-array) can be safely removed to fix the error above.
-
-Lastly, prefer sizeof(*ptr) over sizeof(struct foo).
-
-This issue was found with the help of Coccinelle.
-
-[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-[2] https://github.com/KSPP/linux/issues/21
-[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-[4] https://github.com/KSPP/linux/issues/43
-
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
----
-Hi,
-
-I'm resending this because LKML is eating some messages, recently.
-Sorry for the noise in case you've already received this patch.
-
-Thanks
-
- drivers/char/tpm/eventlog/tpm2.c | 10 +++-------
- include/linux/tpm_eventlog.h     |  2 +-
- 2 files changed, 4 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/char/tpm/eventlog/tpm2.c b/drivers/char/tpm/eventlog/tpm2.c
-index e741b1157525..351a2989b3c6 100644
---- a/drivers/char/tpm/eventlog/tpm2.c
-+++ b/drivers/char/tpm/eventlog/tpm2.c
-@@ -51,8 +51,7 @@ static void *tpm2_bios_measurements_start(struct seq_file *m, loff_t *pos)
- 	int i;
- 
- 	event_header = addr;
--	size = sizeof(struct tcg_pcr_event) - sizeof(event_header->event)
--		+ event_header->event_size;
-+	size = sizeof(*event_header) + event_header->event_size;
- 
- 	if (*pos == 0) {
- 		if (addr + size < limit) {
-@@ -98,8 +97,7 @@ static void *tpm2_bios_measurements_next(struct seq_file *m, void *v,
- 	event_header = log->bios_event_log;
- 
- 	if (v == SEQ_START_TOKEN) {
--		event_size = sizeof(struct tcg_pcr_event) -
--			sizeof(event_header->event) + event_header->event_size;
-+		event_size = sizeof(*event_header) + event_header->event_size;
- 		marker = event_header;
- 	} else {
- 		event = v;
-@@ -136,9 +134,7 @@ static int tpm2_binary_bios_measurements_show(struct seq_file *m, void *v)
- 	size_t size;
- 
- 	if (v == SEQ_START_TOKEN) {
--		size = sizeof(struct tcg_pcr_event) -
--			sizeof(event_header->event) + event_header->event_size;
--
-+		size = sizeof(*event_header) + event_header->event_size;
- 		temp_ptr = event_header;
- 
- 		if (size > 0)
-diff --git a/include/linux/tpm_eventlog.h b/include/linux/tpm_eventlog.h
-index c253461b1c4e..4f8c90c93c29 100644
---- a/include/linux/tpm_eventlog.h
-+++ b/include/linux/tpm_eventlog.h
-@@ -97,7 +97,7 @@ struct tcg_pcr_event {
- 	u32 event_type;
- 	u8 digest[20];
- 	u32 event_size;
--	u8 event[0];
-+	u8 event[];
- } __packed;
- 
- struct tcg_event_field {
--- 
-2.26.2
+On 2020/5/6 23:15, Joe Perches wrote:
+> On Wed, 2020-05-06 at 16:51 +0300, Luciano Coelho wrote:
+>> On Tue, 2020-05-05 at 20:19 -0700, Joe Perches wrote:
+>>> On Wed, 2020-05-06 at 11:07 +0800, Samuel Zou wrote:
+>>>> This silences the following coccinelle warning:
+>>>>
+>>>> "WARNING: sum of probable bitmasks, consider |"
+>>>
+>>> I suggest instead ignoring bad and irrelevant warnings.
+>>>
+>>> PREFIX_LEN is 32 not 0x20 or BIT(5)
+>>> PCI_DUMP_SIZE is 352
+>>>
+>>>> diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/trans.c b/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
+>>> []
+>>>> @@ -109,9 +109,9 @@ void iwl_trans_pcie_dump_regs(struct iwl_trans *trans)
+>>>>   
+>>>>   	/* Alloc a max size buffer */
+>>>>   	alloc_size = PCI_ERR_ROOT_ERR_SRC +  4 + PREFIX_LEN;
+>>>> -	alloc_size = max_t(u32, alloc_size, PCI_DUMP_SIZE + PREFIX_LEN);
+>>>> -	alloc_size = max_t(u32, alloc_size, PCI_MEM_DUMP_SIZE + PREFIX_LEN);
+>>>> -	alloc_size = max_t(u32, alloc_size, PCI_PARENT_DUMP_SIZE + PREFIX_LEN);
+>>>> +	alloc_size = max_t(u32, alloc_size, PCI_DUMP_SIZE | PREFIX_LEN);
+>>>> +	alloc_size = max_t(u32, alloc_size, PCI_MEM_DUMP_SIZE | PREFIX_LEN);
+>>>> +	alloc_size = max_t(u32, alloc_size, PCI_PARENT_DUMP_SIZE | PREFIX_LEN);
+>>>>   
+>>>>   	buf = kmalloc(alloc_size, GFP_ATOMIC);
+>>>>   	if (!buf)
+>>
+>> Yeah, those macros are clearly not bitmasks.  I'm dropping this patch.
+> 
+> Can the cocci script that generated this warning
+> 
+> scripts/coccinelle/misc/orplus.cocci
+> 
+> be dropped or improved to validate the likelihood that
+> the defines or constants used are more likely than
+> not are bit values?
+> 
+> Maybe these should be defined as hex or BIT or BIT_ULL
+> or GENMASK or the like?
+> 
+> 
+> Right now it seems it just tests for two constants.
+> 
+> 
+> 
+> .
+> 
 
