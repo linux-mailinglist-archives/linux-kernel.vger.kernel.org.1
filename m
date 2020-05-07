@@ -2,90 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAAA21C8700
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 12:36:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 105771C8707
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 12:40:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726542AbgEGKgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 06:36:54 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:37186 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726029AbgEGKgy (ORCPT
+        id S1726393AbgEGKkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 06:40:00 -0400
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:19592 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725809AbgEGKj7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 06:36:54 -0400
-Received: by mail-wr1-f66.google.com with SMTP id k1so5746678wrx.4;
-        Thu, 07 May 2020 03:36:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=pZWSW47Hk4klmt87hcwPwkObImlcY95sKfRd0toBmJU=;
-        b=BM6KlitUUSwniQpF6oHPboIZ1ud2xgLUzW/fQKM7H02kxBwdzKFl4IBHDVGq6OYAJ3
-         lF5pw49L5MlzamO/1A3atkNm1EJ3oyJ/SBtXNUVsvcWmaPty07nZf6HY5Fr9P+DGfYw9
-         Tp1ZqbE7sLTdoMnGSJeJsKYNi4DV2A5/d3s7Up48fVXi0kX1JXSGE9FGZ7C7yxA2hygW
-         coBt2FOrH1mvv5ylnOZE7ROHwEzLA98FmTrCRWa8fXTOZLISaj0fwZ1juLHsYTi+qZR2
-         GsFF1oAAH0u+o1xwgWuxg6HFKZOceY7eTbXX4i2e6XXOUl8YfvyGPB0+awzK+gJqwhyx
-         pXjQ==
-X-Gm-Message-State: AGi0PuayocxuR6QHXERAthds5Aukyrq9UZU+nTFZQySEPszQitKXrGTF
-        f/X5KROFvBrI3MTGzUUPWd8=
-X-Google-Smtp-Source: APiQypIXZ8cyeDfG9MrMePCnKlqUwdk30xTLpNPdN0Gi3zShoVWkDEsSVasl9emIKqgn4HGITIH1Lg==
-X-Received: by 2002:adf:e591:: with SMTP id l17mr10842806wrm.406.1588847812425;
-        Thu, 07 May 2020 03:36:52 -0700 (PDT)
-Received: from debian (44.142.6.51.dyn.plus.net. [51.6.142.44])
-        by smtp.gmail.com with ESMTPSA id i17sm7538752wml.23.2020.05.07.03.36.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2020 03:36:51 -0700 (PDT)
-Date:   Thu, 7 May 2020 11:36:49 +0100
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>
-Subject: Re: [PATCH] Driver: hv: vmbus: drop a no long applicable comment
-Message-ID: <20200507103649.qyz6x2wr6yodpmbe@debian>
-References: <20200506160806.118965-1-wei.liu@kernel.org>
- <MW2PR2101MB10521E94593C54B9E806CCBDD7A40@MW2PR2101MB1052.namprd21.prod.outlook.com>
+        Thu, 7 May 2020 06:39:59 -0400
+Received: from mail-vs1-f49.google.com (mail-vs1-f49.google.com [209.85.217.49]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 047AdRIF003000
+        for <linux-kernel@vger.kernel.org>; Thu, 7 May 2020 19:39:28 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 047AdRIF003000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1588847968;
+        bh=lOxb8f86Kz4Qx/da1Nx9cKkfwC10sWdTZOHVkCSBvsY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=FxIPosAPHVFKoVTylyUva1ucqgjg4LPf4iojY6P3QW531JJzC7dH6l109yc916HAL
+         ismKMTRrXALTf3m49Ie4wf1R4KUujOUqss+X3wXc7Vz6YrdkvEHegt2+RXoligaGjk
+         ru+I0JZGfuBbCRHj3azFfYrzs1PhEpkyTf+hn2kjcu6PeM/MOSflM6gCyjP4ZvtLiN
+         Sx1UI67sZsIwLrqQ9Y6eVR7zwHO0lH4AVtCQNUta5fA76WNX/aI9MCm2YP9jIfwYef
+         TjdfQ7K/NOaSszySwxhHsSfHxeg6xXhAVZPQ983C50UHh1nWAxsd79SxNrjwG1OdRS
+         AM68MnHgyjzBA==
+X-Nifty-SrcIP: [209.85.217.49]
+Received: by mail-vs1-f49.google.com with SMTP id z1so3038276vsn.11
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 03:39:28 -0700 (PDT)
+X-Gm-Message-State: AGi0PuYG03zqCyH5t+y+RE3ubb0YEJ/B1PL5NxEJI10SvB9pW6xQH6X5
+        wwToEBupgKJcV4y0OojFcm2DzzeUt0sCsUXUc3g=
+X-Google-Smtp-Source: APiQypLvQgdvpB6JF3Ctp0ZVQgz8+NQtkk0Pl86Zh+WWbuPjqKN4pC2owQPYtXJ/IQp2D5MLksXgq7PN1vXGRLIe0u0=
+X-Received: by 2002:a67:e94d:: with SMTP id p13mr11206427vso.215.1588847967057;
+ Thu, 07 May 2020 03:39:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MW2PR2101MB10521E94593C54B9E806CCBDD7A40@MW2PR2101MB1052.namprd21.prod.outlook.com>
-User-Agent: NeoMutt/20180716
+References: <CGME20200430125001epcas5p2a6f02e9888481cef96f32ba14450bc63@epcas5p2.samsung.com>
+ <1588250972-8507-1-git-send-email-maninder1.s@samsung.com> <1588250972-8507-4-git-send-email-maninder1.s@samsung.com>
+In-Reply-To: <1588250972-8507-4-git-send-email-maninder1.s@samsung.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 7 May 2020 19:38:51 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASf687MLf1oWqrUiOHtw=p9Ug02bi1r-KevsxnFtQni2g@mail.gmail.com>
+Message-ID: <CAK7LNASf687MLf1oWqrUiOHtw=p9Ug02bi1r-KevsxnFtQni2g@mail.gmail.com>
+Subject: Re: [PATCH 4/4] scripts/checkstack.pl: fix arm sp regex
+To:     Maninder Singh <maninder1.s@samsung.com>
+Cc:     "George G. Davis" <george_davis@mentor.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        a.sahrawat@samsung.com, Vaneet Narang <v.narang@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 06, 2020 at 05:49:05PM +0000, Michael Kelley wrote:
-> From: Wei Liu <wei.liu@kernel.org> Sent: Wednesday, May 6, 2020 9:08 AM
-> > 
-> > None of the things mentioned in the comment is initialized in hv_init.
-> > They've been moved elsewhere.
-> > 
-> > Signed-off-by: Wei Liu <wei.liu@kernel.org>
-> > ---
-> >  drivers/hv/vmbus_drv.c | 1 -
-> >  1 file changed, 1 deletion(-)
-> > 
-> > diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
-> > index 3a27f6c5f3de..7efdcadc335e 100644
-> > --- a/drivers/hv/vmbus_drv.c
-> > +++ b/drivers/hv/vmbus_drv.c
-> > @@ -1396,7 +1396,6 @@ static int vmbus_bus_init(void)
-> >  {
-> >  	int ret;
-> > 
-> > -	/* Hypervisor initialization...setup hypercall page..etc */
-> >  	ret = hv_init();
-> >  	if (ret != 0) {
-> >  		pr_err("Unable to initialize the hypervisor - 0x%x\n", ret);
-> > --
-> > 2.20.1
-> 
-> Reviewed-by:  Michael Kelley <mikelley@microsoft.com>
-> 
+On Thu, Apr 30, 2020 at 9:50 PM Maninder Singh <maninder1.s@samsung.com> wrote:
+>
+> if objdump has below entries;
+> c01ed608 <X>:
+> c01ed614:       e24ddff7        sub     sp, sp, #120    ; 0x78
+>
+> c01f0d50 <Y>:
+> c01f0d50:       e24dd094        sub     sp, sp, #140    ; 0x8c
+>
+> scripts fails to read stack usage.
+> so making regex $re for ARM similar to aarch64
+>
+> Signed-off-by: Vaneet Narang <v.narang@samsung.com>
+> Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
 
-Thanks.
 
-Applied to hyperv-next.
+This looks good to me, and it is a bug fix.
+
+Just a question about the SOB.
+
+
+Maninder Singh is the author and also the submitter, right?
+
+What does "Signed-off-by: Vaneet Narang <v.narang@samsung.com>" mean?
+
+Co-developed-by or something else?
+
+
+
+
+
+
+> ---
+>  scripts/checkstack.pl | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/scripts/checkstack.pl b/scripts/checkstack.pl
+> index b292ef4..e80de70 100755
+> --- a/scripts/checkstack.pl
+> +++ b/scripts/checkstack.pl
+> @@ -60,7 +60,7 @@ my (@stack, $re, $dre, $sub, $x, $xs, $funcre, $min_stack);
+>                 $dre = qr/^.*sub.*sp, sp, #(0x$x{1,8})/o;
+>         } elsif ($arch eq 'arm') {
+>                 #c0008ffc:      e24dd064        sub     sp, sp, #100    ; 0x64
+> -               $re = qr/.*sub.*sp, sp, #(([0-9]{2}|[3-9])[0-9]{2})/o;
+> +               $re = qr/.*sub.*sp, sp, #([0-9]{1,4})/o;
+>                 $sub = \&arm_push_handling;
+>         } elsif ($arch =~ /^x86(_64)?$/ || $arch =~ /^i[3456]86$/) {
+>                 #c0105234:       81 ec ac 05 00 00       sub    $0x5ac,%esp
+> --
+> 1.9.1
+>
+
+
+-- 
+Best Regards
+Masahiro Yamada
