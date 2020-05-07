@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3FA51C9ADD
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:21:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4B2C1C9ADF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728740AbgEGTVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 15:21:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42898 "EHLO mail.kernel.org"
+        id S1728756AbgEGTVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 15:21:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42994 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728309AbgEGTVT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 15:21:19 -0400
+        id S1728309AbgEGTVY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 15:21:24 -0400
 Received: from embeddedor (unknown [189.207.59.248])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 803F6208D6;
-        Thu,  7 May 2020 19:21:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CB1AA208D6;
+        Thu,  7 May 2020 19:21:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588879278;
-        bh=aqlr2HwcgwNB0L0TGQyC7gNsNCEQUaxHy93+aefD860=;
+        s=default; t=1588879284;
+        bh=LzS3WkLEkY5cS9HhYedg7dL8hIWbzOpus+g7yFKnoSg=;
         h=Date:From:To:Cc:Subject:From;
-        b=RfLzVnNgg/czziwLxPxd8ul5xeivwnNSpBsVZagIgzPnaIXBM9LSzQ4npZ1qwIReL
-         H7uPXlUOJd1ka0YmmnAdTnkXpgzlOaWe3xX6kmUTB6iYvKvCPVkt0byxaSu6fuC87x
-         VsEkgqR+2mzBAWT7pTbF4SoknARVvGlYLHTKLjj0=
-Date:   Thu, 7 May 2020 14:25:45 -0500
+        b=Kg8Ub230vZM5el8GxJinpdLe5+WYA+dyaY2jtwqzGtR5MG1v6hlsnhV4rsqkXE/Qi
+         EXp7+48CRJneGlH0ejE09Dful5Jy8MKRyZQju0qEsyrdbUVlP+gQtQ92VYZ13Ba43q
+         e01X+EEvPW+MnMfy44PfdsrXfxvlEod7W1fb1fcw=
+Date:   Thu, 7 May 2020 14:25:50 -0500
 From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] tty: Replace zero-length array with flexible-array
-Message-ID: <20200507192545.GA16662@embeddedor>
+To:     linux-kernel@vger.kernel.org
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>, linux-scsi@vger.kernel.org
+Subject: [PATCH] scsi: ufs: Replace zero-length array with flexible-array
+Message-ID: <20200507192550.GA16683@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -76,20 +76,20 @@ This issue was found with the help of Coccinelle.
 
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- include/linux/tty.h |    2 +-
+ drivers/scsi/ufs/ufshcd.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/tty.h b/include/linux/tty.h
-index bd5fe0e907e8..a99e9b8e4e31 100644
---- a/include/linux/tty.h
-+++ b/include/linux/tty.h
-@@ -66,7 +66,7 @@ struct tty_buffer {
- 	int read;
- 	int flags;
- 	/* Data points here */
--	unsigned long data[0];
-+	unsigned long data[];
- };
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 698e8d20b4ba..cd34a7873623 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -3223,7 +3223,7 @@ static inline int ufshcd_read_desc(struct ufs_hba *hba,
+ struct uc_string_id {
+ 	u8 len;
+ 	u8 type;
+-	wchar_t uc[0];
++	wchar_t uc[];
+ } __packed;
  
- /* Values for .flags field of tty_buffer */
+ /* replace non-printable or non-ASCII characters with spaces */
 
