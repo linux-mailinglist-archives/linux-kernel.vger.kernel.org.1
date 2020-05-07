@@ -2,114 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B60E1C9B8F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 22:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE8EE1C9B9A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 22:04:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728385AbgEGUEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 16:04:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45096 "EHLO
+        id S1728638AbgEGUEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 16:04:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726320AbgEGUEc (ORCPT
+        by vger.kernel.org with ESMTP id S1726320AbgEGUEt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 16:04:32 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4C1AC05BD43;
-        Thu,  7 May 2020 13:04:31 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id g13so7881525wrb.8;
-        Thu, 07 May 2020 13:04:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=FvhaiJ3h6ZyJvUgpCdCyaYIlUWzK0anfc0J+81pJ5QI=;
-        b=okdsFizyrPSw4e3/LCJm943UGkVocO9S28coEA/qEURQ+8+nGVGzWz29QX8yj4SYYJ
-         j1MshJ3QDySu/WRs7sts94FW8wIZoeMaHTM5AUUzxhG8S1XeUAwwEOv0dOWMwDwqcUuv
-         QNHW7ml+iPraZ6HLHXG2BbOW/hxDHrZWHuTxLexi65/OsHU9itSrUKs5mvS/UbktF1as
-         KSm009FvpeFYvRowMytc/UJoQRSHTKa9XAfDOzm4D9EcU4klpv1diHZ9tWbv1HQ5225V
-         KbInZJLnRn8x9z83wdBiXTvpM9JsmlIArOwQL9BypCTEJJD6w/4FY5xw8MkI5HwWHyJz
-         R0ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=FvhaiJ3h6ZyJvUgpCdCyaYIlUWzK0anfc0J+81pJ5QI=;
-        b=imHYp+DoIAKEU9+yMcpU1Oj8e4TKrd9TuekoGYCiI7bp4uStzBmeHg2ZmuSZwKfHUb
-         1+IS3pZDZbHtNZzWewX3SJpIwbVX4jpyZC5cQKgAQRJ3+0zHHYVtSWN5V09zONnTnIU1
-         Q9sttfNmKJ+DOe8eLH5/nGqpkqQ1xzpYvwYcJUL7F02a4fltjiWygNFpmXND4CSIsM8I
-         0x13qX5Xm7FcaaeboIRtx38Q7r5qKqEgUs66I6MU00WzteSb3ReX5jCqf9EpzV8EdEWC
-         zVqjpJj+a0qp/KnF8pAWc+e9Kj2XjdeYo/z1lEF2j7qWKWMGTUQLc8Krs09LySET+qRD
-         9MXw==
-X-Gm-Message-State: AGi0Pub7/YB/FBtpRo3x25G0v5fFpOK0VtPskXP/dKdNn1wyCHIsfPzF
-        uCSNrzqX7coiOz799AJWn/0=
-X-Google-Smtp-Source: APiQypJQ++drKO6HmujH0HcRFuNEZIifUWFB/uhKT4BW7F5AI0iyKirmo5KNvjNdTtLs7ciiXEUVdw==
-X-Received: by 2002:a5d:42c8:: with SMTP id t8mr17035281wrr.70.1588881870573;
-        Thu, 07 May 2020 13:04:30 -0700 (PDT)
-Received: from localhost (p2E5BE57B.dip0.t-ipconnect.de. [46.91.229.123])
-        by smtp.gmail.com with ESMTPSA id 33sm10227786wrk.61.2020.05.07.13.04.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2020 13:04:29 -0700 (PDT)
-Date:   Thu, 7 May 2020 22:04:28 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Joseph Lo <josephl@nvidia.com>, linux-tegra@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] of: Make <linux/of_reserved_mem.h> self-contained
-Message-ID: <20200507200428.GC2981633@ulmo>
-References: <20200506123236.7463-1-geert+renesas@glider.be>
- <20200506123236.7463-2-geert+renesas@glider.be>
+        Thu, 7 May 2020 16:04:49 -0400
+Received: from smtp.tuxdriver.com (tunnel92311-pt.tunnel.tserv13.ash1.ipv6.he.net [IPv6:2001:470:7:9c9::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E5DC4C05BD43;
+        Thu,  7 May 2020 13:04:48 -0700 (PDT)
+Received: from [107.15.85.130] (helo=localhost)
+        by smtp.tuxdriver.com with esmtpsa (TLSv1:AES256-SHA:256)
+        (Exim 4.63)
+        (envelope-from <nhorman@tuxdriver.com>)
+        id 1jWml4-0006aV-S7; Thu, 07 May 2020 16:04:44 -0400
+Date:   Thu, 7 May 2020 16:04:33 -0400
+From:   Neil Horman <nhorman@tuxdriver.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Vlad Yasevich <vyasevich@gmail.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        linux-sctp@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sctp: Replace zero-length array with flexible-array
+Message-ID: <20200507200433.GA2838429@hmswarspite.think-freely.org>
+References: <20200507192152.GA16230@embeddedor>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="w7PDEPdKQumQfZlR"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200506123236.7463-2-geert+renesas@glider.be>
-User-Agent: Mutt/1.13.1 (2019-12-14)
+In-Reply-To: <20200507192152.GA16230@embeddedor>
+X-Spam-Score: -2.9 (--)
+X-Spam-Status: No
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---w7PDEPdKQumQfZlR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, May 06, 2020 at 02:32:35PM +0200, Geert Uytterhoeven wrote:
-> <linux/of_reserved_mem.h> is not self-contained, as it uses
-> _OF_DECLARE() to define RESERVEDMEM_OF_DECLARE(), but does not include
-> <linux/of.h>.
->=20
-> Fix this by adding the missing include.
->=20
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+On Thu, May 07, 2020 at 02:21:52PM -0500, Gustavo A. R. Silva wrote:
+> The current codebase makes use of the zero-length array language
+> extension to the C90 standard, but the preferred mechanism to declare
+> variable-length types such as these ones is a flexible array member[1][2],
+> introduced in C99:
+> 
+> struct foo {
+>         int stuff;
+>         struct boo array[];
+> };
+> 
+> By making use of the mechanism above, we will get a compiler warning
+> in case the flexible array does not occur last in the structure, which
+> will help us prevent some kind of undefined behavior bugs from being
+> inadvertently introduced[3] to the codebase from now on.
+> 
+> Also, notice that, dynamic memory allocations won't be affected by
+> this change:
+> 
+> "Flexible array members have incomplete type, and so the sizeof operator
+> may not be applied. As a quirk of the original implementation of
+> zero-length arrays, sizeof evaluates to zero."[1]
+> 
+> sizeof(flexible-array-member) triggers a warning because flexible array
+> members have incomplete type[1]. There are some instances of code in
+> which the sizeof operator is being incorrectly/erroneously applied to
+> zero-length arrays and the result is zero. Such instances may be hiding
+> some bugs. So, this work (flexible-array member conversions) will also
+> help to get completely rid of those sorts of issues.
+> 
+> This issue was found with the help of Coccinelle.
+> 
+> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+> [2] https://github.com/KSPP/linux/issues/21
+> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 > ---
->  include/linux/of_reserved_mem.h | 1 +
->  1 file changed, 1 insertion(+)
-
-Reviewed-by: Thierry Reding <treding@nvidia.com>
-
---w7PDEPdKQumQfZlR
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl60acwACgkQ3SOs138+
-s6FsFA/7B7X7gehd5I0pTYnsO1phcr4+EnGh1T1c9A8M/5MqPcKsQcylY7g3R1kz
-3/rUSlzCOsUouLNzZsJE/sra1gVqC4eMeAEvmflM1EcijoVTsutz64qG273qsKkK
-AxbYqFrA/ghLL8/x8pKCGu9WOLmWoOGhq9LKx+SoAZ5i9Oe/kvg1eiTfO+ph7jZ8
-rOm01tFMdLuHKbAlWTilGTmMJ5SL6xZg0GRmmwDOWJTtnRDNKW4ooACxZQ9nkn/0
-oLkAobbxi0Jv/N5FlWhmN0e4R1ZIOMZk4o48Kjh2eoJRITqfUho167uoXR2db90o
-3kJ4Ug6a0niURulQhCWtCZAIkujCiXQ51KX9WLfd9iscor6pH1FuiDIiSLKIGc6M
-cD6Z4Bacg7oxMGOex5czPzPhEnTgvMfkzWVKsMhYqF7s8QbnTDdOvqvEIE2cBvp7
-uNw20L9vMUj4vQDNOPPy43nnbZoZsg44+nzfTR2NgKC1fpLyNbBfWSvR4rCb0uTd
-ptNxChFyvtXMMvd/b9GrmZkO24XlLh34fbNBApaGECXWBaehFunuct56k9tbBErW
-32wFoCsGYksfG1fGiZnhJ9foUhqtNXTbm4PhInvVy92nj1pQ70oHnTn0zwsQhnKt
-EOoV9Iv6IltW49/Kdz0KBunWyEUziOzhPBFrHXP1WF+6DqKUhtI=
-=V1u3
------END PGP SIGNATURE-----
-
---w7PDEPdKQumQfZlR--
+>  include/linux/sctp.h |   36 ++++++++++++++++++------------------
+>  1 file changed, 18 insertions(+), 18 deletions(-)
+> 
+> diff --git a/include/linux/sctp.h b/include/linux/sctp.h
+> index 8ccd82105de8..76731230bbc5 100644
+> --- a/include/linux/sctp.h
+> +++ b/include/linux/sctp.h
+> @@ -221,7 +221,7 @@ struct sctp_datahdr {
+>  	__be16 stream;
+>  	__be16 ssn;
+>  	__u32 ppid;
+> -	__u8  payload[0];
+> +	__u8  payload[];
+>  };
+>  
+>  struct sctp_data_chunk {
+> @@ -269,7 +269,7 @@ struct sctp_inithdr {
+>  	__be16 num_outbound_streams;
+>  	__be16 num_inbound_streams;
+>  	__be32 initial_tsn;
+> -	__u8  params[0];
+> +	__u8  params[];
+>  };
+>  
+>  struct sctp_init_chunk {
+> @@ -299,13 +299,13 @@ struct sctp_cookie_preserve_param {
+>  /* Section 3.3.2.1 Host Name Address (11) */
+>  struct sctp_hostname_param {
+>  	struct sctp_paramhdr param_hdr;
+> -	uint8_t hostname[0];
+> +	uint8_t hostname[];
+>  };
+>  
+>  /* Section 3.3.2.1 Supported Address Types (12) */
+>  struct sctp_supported_addrs_param {
+>  	struct sctp_paramhdr param_hdr;
+> -	__be16 types[0];
+> +	__be16 types[];
+>  };
+>  
+>  /* ADDIP Section 3.2.6 Adaptation Layer Indication */
+> @@ -317,25 +317,25 @@ struct sctp_adaptation_ind_param {
+>  /* ADDIP Section 4.2.7 Supported Extensions Parameter */
+>  struct sctp_supported_ext_param {
+>  	struct sctp_paramhdr param_hdr;
+> -	__u8 chunks[0];
+> +	__u8 chunks[];
+>  };
+>  
+>  /* AUTH Section 3.1 Random */
+>  struct sctp_random_param {
+>  	struct sctp_paramhdr param_hdr;
+> -	__u8 random_val[0];
+> +	__u8 random_val[];
+>  };
+>  
+>  /* AUTH Section 3.2 Chunk List */
+>  struct sctp_chunks_param {
+>  	struct sctp_paramhdr param_hdr;
+> -	__u8 chunks[0];
+> +	__u8 chunks[];
+>  };
+>  
+>  /* AUTH Section 3.3 HMAC Algorithm */
+>  struct sctp_hmac_algo_param {
+>  	struct sctp_paramhdr param_hdr;
+> -	__be16 hmac_ids[0];
+> +	__be16 hmac_ids[];
+>  };
+>  
+>  /* RFC 2960.  Section 3.3.3 Initiation Acknowledgement (INIT ACK) (2):
+> @@ -350,7 +350,7 @@ struct sctp_initack_chunk {
+>  /* Section 3.3.3.1 State Cookie (7) */
+>  struct sctp_cookie_param {
+>  	struct sctp_paramhdr p;
+> -	__u8 body[0];
+> +	__u8 body[];
+>  };
+>  
+>  /* Section 3.3.3.1 Unrecognized Parameters (8) */
+> @@ -384,7 +384,7 @@ struct sctp_sackhdr {
+>  	__be32 a_rwnd;
+>  	__be16 num_gap_ack_blocks;
+>  	__be16 num_dup_tsns;
+> -	union sctp_sack_variable variable[0];
+> +	union sctp_sack_variable variable[];
+>  };
+>  
+>  struct sctp_sack_chunk {
+> @@ -436,7 +436,7 @@ struct sctp_shutdown_chunk {
+>  struct sctp_errhdr {
+>  	__be16 cause;
+>  	__be16 length;
+> -	__u8  variable[0];
+> +	__u8  variable[];
+>  };
+>  
+>  struct sctp_operr_chunk {
+> @@ -594,7 +594,7 @@ struct sctp_fwdtsn_skip {
+>  
+>  struct sctp_fwdtsn_hdr {
+>  	__be32 new_cum_tsn;
+> -	struct sctp_fwdtsn_skip skip[0];
+> +	struct sctp_fwdtsn_skip skip[];
+>  };
+>  
+>  struct sctp_fwdtsn_chunk {
+> @@ -611,7 +611,7 @@ struct sctp_ifwdtsn_skip {
+>  
+>  struct sctp_ifwdtsn_hdr {
+>  	__be32 new_cum_tsn;
+> -	struct sctp_ifwdtsn_skip skip[0];
+> +	struct sctp_ifwdtsn_skip skip[];
+>  };
+>  
+>  struct sctp_ifwdtsn_chunk {
+> @@ -658,7 +658,7 @@ struct sctp_addip_param {
+>  
+>  struct sctp_addiphdr {
+>  	__be32	serial;
+> -	__u8	params[0];
+> +	__u8	params[];
+>  };
+>  
+>  struct sctp_addip_chunk {
+> @@ -718,7 +718,7 @@ struct sctp_addip_chunk {
+>  struct sctp_authhdr {
+>  	__be16 shkey_id;
+>  	__be16 hmac_id;
+> -	__u8   hmac[0];
+> +	__u8   hmac[];
+>  };
+>  
+>  struct sctp_auth_chunk {
+> @@ -733,7 +733,7 @@ struct sctp_infox {
+>  
+>  struct sctp_reconf_chunk {
+>  	struct sctp_chunkhdr chunk_hdr;
+> -	__u8 params[0];
+> +	__u8 params[];
+>  };
+>  
+>  struct sctp_strreset_outreq {
+> @@ -741,13 +741,13 @@ struct sctp_strreset_outreq {
+>  	__be32 request_seq;
+>  	__be32 response_seq;
+>  	__be32 send_reset_at_tsn;
+> -	__be16 list_of_streams[0];
+> +	__be16 list_of_streams[];
+>  };
+>  
+>  struct sctp_strreset_inreq {
+>  	struct sctp_paramhdr param_hdr;
+>  	__be32 request_seq;
+> -	__be16 list_of_streams[0];
+> +	__be16 list_of_streams[];
+>  };
+>  
+>  struct sctp_strreset_tsnreq {
+> 
+> 
+Acked-by: Neil Horman <nhorman@redhat.com>
