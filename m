@@ -2,117 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D760A1C9AA0
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:14:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A055D1C9AA5
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:15:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728469AbgEGTOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 15:14:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37264 "EHLO
+        id S1728532AbgEGTPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 15:15:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728389AbgEGTOO (ORCPT
+        by vger.kernel.org with ESMTP id S1728328AbgEGTPG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 15:14:14 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8A38C05BD09
-        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 12:14:12 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id c10so260839qka.4
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 12:14:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=wX5XMHdz/M+4Ly0oHrP6bxAEiJLYb6cRVv2K95uxWwg=;
-        b=T5BWfYqNoQpnrJCv2Ie2wfQiVRMiIaKJyfhlfrVqofUztNcEQUPykFlaw/fEkXaftJ
-         IFMjTrwM5xiQ7gMyBdrIrSvMGzAmcAFrhWFM/G10PVdY/mT419WU3MP4OneVGI7Ha2kv
-         PDp8jTbBPD6hECoa40AYj2kN6YAFtJneX1VgtqJE2hn3pGhDADp2kJr9ydJucBT5ciHn
-         +a19RDzcDiGTOKZe6l7WmR2rOCE+yyKnfQzHt62nNUroJsZQNsWqAimJVxY/V7Me7Vuk
-         WLQTtkXUsMghQp00pN/Lh8VswyWGwvi+bP/8IOaVZc4ijatKaOeKM+SYvxUevZ46Iog7
-         jheA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wX5XMHdz/M+4Ly0oHrP6bxAEiJLYb6cRVv2K95uxWwg=;
-        b=oBkxHgvgU3d+kq6wf1JrPJRgdr27D8SdaXBtAi2IUsHTLEYIN9RpsVKUPy4pRm7NUr
-         GS5qfKJMcWaaExOukUR5yJkvKm40EPZ5FeQ9phN4824UFyT66ht2d6FYP7emz3Mp0uQB
-         v4FEXDZ4TnWlpjju4GSbge7zdNtYPVRt3y3FUv8H1wBqJNXEKsgvoBWYyuxVc6FR7xpT
-         MG4sqe/QTerYvef9YU0FeBVcfpgWSRkcwQ7BEXji4fqHBfIJY0DpZvh4ndBs2W3M64d/
-         5o8IzaHyChOCcRuYcb7/t2f79Tj3x3mpAEe7xBfOOXh2Y3+aCCx9U7uibV1M8rVMckIl
-         J6FQ==
-X-Gm-Message-State: AGi0PubruDRdQwlLvYEFT2Hprfcs0ZMKRQ0SdtNUl/xEaRbvhT8l/qOc
-        5sSEbgSEfF7x7g2u6ulKiv6YHeQee88=
-X-Google-Smtp-Source: APiQypJGLda9xBHWwenDCQAcn6P3cH5cZURCVuyFJBA8E3DVDslgKP5Y2647O3Sycr93BkqdJvg8wA==
-X-Received: by 2002:a05:620a:13b5:: with SMTP id m21mr15794630qki.208.1588878852049;
-        Thu, 07 May 2020 12:14:12 -0700 (PDT)
-Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id j8sm5094236qtk.85.2020.05.07.12.14.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2020 12:14:11 -0700 (PDT)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net
-Cc:     evgreen@chromium.org.net, subashab@codeaurora.org,
-        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net 2/2] net: ipa: use tag process on modem crash
-Date:   Thu,  7 May 2020 14:14:04 -0500
-Message-Id: <20200507191404.31626-3-elder@linaro.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200507191404.31626-1-elder@linaro.org>
-References: <20200507191404.31626-1-elder@linaro.org>
+        Thu, 7 May 2020 15:15:06 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81663C05BD43;
+        Thu,  7 May 2020 12:15:06 -0700 (PDT)
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id CFFE6453;
+        Thu,  7 May 2020 19:15:04 +0000 (UTC)
+Date:   Thu, 7 May 2020 13:15:03 -0600
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Daniel Colascione <dancol@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Jerome Glisse <jglisse@redhat.com>, Shaohua Li <shli@fb.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, timmurray@google.com,
+        minchan@google.com, sspatil@google.com, lokeshgidra@google.com
+Subject: Re: [PATCH 2/2] Add a new sysctl knob:
+ unprivileged_userfaultfd_user_mode_only
+Message-ID: <20200507131503.02aba5a6@lwn.net>
+In-Reply-To: <20200506193816.GB228260@xz-x1>
+References: <20200423002632.224776-1-dancol@google.com>
+        <20200423002632.224776-3-dancol@google.com>
+        <20200506193816.GB228260@xz-x1>
+Organization: LWN.net
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-One part of recovering from a modem crash is performing a "tag
-sequence" of several IPA immediate commands, to clear the hardware
-pipeline.  The sequence ends with a data transfer request on the
-command endpoint (which is not otherwise done).  Unfortunately,
-attempting to do the data transfer led to a hang, so that request
-plus two other commands were commented out.
+On Wed, 6 May 2020 15:38:16 -0400
+Peter Xu <peterx@redhat.com> wrote:
 
-The previous commit fixes the bug that was causing that hang.  And
-with that bug fixed we can properly issue the tag sequence when the
-modem crashes, to return the hardware to a known state.
+> If this is going to be added... I am thinking whether it should be easier to
+> add another value for unprivileged_userfaultfd, rather than a new sysctl. E.g.:
+> 
+>   "0": unprivileged userfaultfd forbidden
+>   "1": unprivileged userfaultfd allowed (both user/kernel faults)
+>   "2": unprivileged userfaultfd allowed (only user faults)
+> 
+> Because after all unprivileged_userfaultfd_user_mode_only will be meaningless
+> (iiuc) if unprivileged_userfaultfd=0.  The default value will also be the same
+> as before ("1") then.
 
-Signed-off-by: Alex Elder <elder@linaro.org>
----
- drivers/net/ipa/ipa_cmd.c | 14 +++-----------
- 1 file changed, 3 insertions(+), 11 deletions(-)
+It occurs to me to wonder whether this interface should also let an admin
+block *privileged* user from handling kernel-space faults?  In a
+secure-boot/lockdown setting, this could be a hardening measure that keeps
+a (somewhat) restricted root user from expanding their privilege...?
 
-diff --git a/drivers/net/ipa/ipa_cmd.c b/drivers/net/ipa/ipa_cmd.c
-index d226b858742d..cee417181f98 100644
---- a/drivers/net/ipa/ipa_cmd.c
-+++ b/drivers/net/ipa/ipa_cmd.c
-@@ -628,23 +628,15 @@ static void ipa_cmd_transfer_add(struct gsi_trans *trans, u16 size)
- 
- void ipa_cmd_tag_process_add(struct gsi_trans *trans)
- {
--	ipa_cmd_register_write_add(trans, 0, 0, 0, true);
--#if 1
--	/* Reference these functions to avoid a compile error */
--	(void)ipa_cmd_ip_packet_init_add;
--	(void)ipa_cmd_ip_tag_status_add;
--	(void) ipa_cmd_transfer_add;
--#else
- 	struct ipa *ipa = container_of(trans->gsi, struct ipa, gsi);
--	struct gsi_endpoint *endpoint;
-+	struct ipa_endpoint *endpoint;
- 
- 	endpoint = ipa->name_map[IPA_ENDPOINT_AP_LAN_RX];
-+
-+	ipa_cmd_register_write_add(trans, 0, 0, 0, true);
- 	ipa_cmd_ip_packet_init_add(trans, endpoint->endpoint_id);
--
- 	ipa_cmd_ip_tag_status_add(trans, 0xcba987654321);
--
- 	ipa_cmd_transfer_add(trans, 4);
--#endif
- }
- 
- /* Returns the number of commands required for the tag process */
--- 
-2.20.1
-
+jon
