@@ -2,163 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F39B1C8297
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 08:37:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF4401C82A3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 08:39:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726029AbgEGGhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 02:37:07 -0400
-Received: from mga07.intel.com ([134.134.136.100]:64358 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725834AbgEGGhF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 02:37:05 -0400
-IronPort-SDR: V7UX6cCnAS3d7/l14tTaojqzTQ+C4B3BgBRxEprcGcrWwxUJ+4oHHH6vAi7DM6RsnieoP+9E0J
- 0BPfmqt4VvNQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2020 23:37:05 -0700
-IronPort-SDR: 8jk5RGkotiY5dqYGt2w5f7WBCS+FDzzhnI1GwLN9Qf8q6R0zo9l5Hx8N0iebgIYmHksgEF0C1Y
- n84hRBSyIVig==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,362,1583222400"; 
-   d="scan'208";a="435173728"
-Received: from fmsmsx108.amr.corp.intel.com ([10.18.124.206])
-  by orsmga005.jf.intel.com with ESMTP; 06 May 2020 23:37:05 -0700
-Received: from fmsmsx154.amr.corp.intel.com (10.18.116.70) by
- FMSMSX108.amr.corp.intel.com (10.18.124.206) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Wed, 6 May 2020 23:37:04 -0700
-Received: from FMSEDG001.ED.cps.intel.com (10.1.192.133) by
- FMSMSX154.amr.corp.intel.com (10.18.116.70) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Wed, 6 May 2020 23:37:04 -0700
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com (104.47.37.51) by
- edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server (TLS) id
- 14.3.439.0; Wed, 6 May 2020 23:37:04 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Rdc4W0OINrD+X5T2NW1Qtn7eKTTxDZA76+78ytFepvz5Ihl8HeieA86J3XHJ3ARUG5+WWH5DG+stKZPWn5i7ZamOtKvkJ8bLXIckW4Xe2bUyeQ1UWxsJEJytilDN6xr4M6+yRQAU9cu0hKtck/jEG+5ekbFSbBiBjOGb19DwcoKc3JNWiTcYWRLYAp0H8HRLmlBh/lQBU2w0X7HAnNfMprmTgXHdNAScXyIAX98KzURByuMr9j4Y+OSh8FwZ4VBClERQjQLeiq907Xrx7zSghv+IuaokW8+YIXKcKG3Axwm08aw4K2DdS/g0ldnjKCTBkAaQOD9zbN7N9yIfz1VqaA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HcOhJjG9WIveXdvVjiMFEA/Nra/PrUO3pbY88iy+S5o=;
- b=AUNqoB6Y4n+qP2iYVm0mxM5ebaOsKfCf4RlbD6MbrHyDvlhcj8Zcxy+beef0Ui5OXmKaJq2RPrE26HN/EkNntrmQSqbzkc3qfiJPb9aI6Umuk5hu+wtkqeYSjzKv29lZPZAnpjRMqPvquGbdcF4SXoDdJLE1jXeTcAwa05DbZ0MyzPcL9GrSSMB7jlq5oWBbQWcpDK5MjMx2pMzIWupBvZR1g2xR9hMjWQne3t4wDMXPammSPb8fhvwxbOcUK3Ntc6urNZS6sSWxxbvMGJNuH3vqVVi5DCKJpBSR6Trtye33O7KRZxzgnkkoJEHlyCnLRypoDy4rsXllyoTEe1VtuA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HcOhJjG9WIveXdvVjiMFEA/Nra/PrUO3pbY88iy+S5o=;
- b=posz9yWsoJMy/Ke4yeEjOa+i/sG+1nYYfsibKkYgip/yLK8n72wulBpdAuXohiS0/4aN0os1+2OOMMUSoOCPMf/fIec+tqP9dRZ1doEIfAARL1FLvP30kDFKPLkOkLeD1zLbyNNW+dQag0a5heXqLEa3ZJtx2x8NGaLq8oYrIWA=
-Received: from MWHPR11MB1645.namprd11.prod.outlook.com (2603:10b6:301:b::12)
- by MWHPR11MB1807.namprd11.prod.outlook.com (2603:10b6:300:112::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.28; Thu, 7 May
- 2020 06:37:02 +0000
-Received: from MWHPR11MB1645.namprd11.prod.outlook.com
- ([fe80::bc06:71a6:1cdd:59be]) by MWHPR11MB1645.namprd11.prod.outlook.com
- ([fe80::bc06:71a6:1cdd:59be%9]) with mapi id 15.20.2979.028; Thu, 7 May 2020
- 06:37:02 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     Lu Baolu <baolu.lu@linux.intel.com>, Joerg Roedel <joro@8bytes.org>
-CC:     "Raj, Ashok" <ashok.raj@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>
-Subject: RE: [PATCH v4 5/5] iommu/vt-d: Remove redundant IOTLB flush
-Thread-Topic: [PATCH v4 5/5] iommu/vt-d: Remove redundant IOTLB flush
-Thread-Index: AQHWJArPGqJyDnNz4U+UxtCjnL/77KicK6HQ
-Date:   Thu, 7 May 2020 06:37:02 +0000
-Message-ID: <MWHPR11MB16459175B02D3DAE0109E6F48CA50@MWHPR11MB1645.namprd11.prod.outlook.com>
-References: <20200507005534.3080-1-baolu.lu@linux.intel.com>
- <20200507005534.3080-6-baolu.lu@linux.intel.com>
-In-Reply-To: <20200507005534.3080-6-baolu.lu@linux.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.2.0.6
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [192.55.52.202]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 44c3b933-adb4-4801-a103-08d7f2510d67
-x-ms-traffictypediagnostic: MWHPR11MB1807:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR11MB180721FD4625EAF8AEB810E28CA50@MWHPR11MB1807.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2150;
-x-forefront-prvs: 03965EFC76
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ZuVcaFFDiOh1cbOmDfUJ2wR6od8PK3ipFyPjn4QagavnGCbET8TnntZsr6Bu6CH6HmKDJgKwQpWk/kv0cTickuMmbxz2TPm22H8DZFqB+A09a+3mu4n8bVd+khI+9QvlfJ4sk+pF7IeoH+UYHyZ1JQJO3IEpya793dwF9zSunK0UTEWN7bfaslrEkNBmiOexocl7yWvFL88NKdSphKFn5JGf51gAWMTg8kDA0WgZlOWH0KGwz3kSPLWVUaIioeRJw8A2+x7TBPJ01SwsyufNbr0MQDSVysSbM67Ptbc3edBNC7HZM0utVTH4msnaFcCiMhM1ujaVV6Nwk1oG7wIgI3UF3zEACd29S5e6r1WP5B8bdNKKHSYSn6KIueWECpv9wmI4gh/noXC/gIrJdY6XMWZ0xGsYLkgPenVZQfRnYwYctFwlGwoNACUx/8rc2s/YVsyIevvbUV/mMQ5AtLbsycA3Cb3lQQDXp3Z4ANinmg0bCcWTnK4kv7n72v1jDDuQyG4y+Ek/2vv+PYpR5K9DWw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB1645.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(396003)(39860400002)(136003)(366004)(376002)(346002)(33430700001)(478600001)(76116006)(5660300002)(4326008)(110136005)(66556008)(64756008)(66476007)(8936002)(66946007)(66446008)(54906003)(316002)(8676002)(86362001)(26005)(2906002)(186003)(71200400001)(7696005)(6506007)(33656002)(33440700001)(9686003)(55016002)(83280400001)(83320400001)(83300400001)(83290400001)(83310400001)(52536014);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: AtorIBVZxSuT3CI4FC3XvpKNr9nhw4RKbMkfWREdBehPyaPAavggjDTq/pLRvm2z12xvIvYdRv/p00Q4wQp7e+tnVwuIm/EosmQ46cTO7+DFnujk04h/t+r9fTae/M/bHYwA3hyEr3OM1Z0SONsnIpJZe0xDFD8NcxmhYSdXLm1rLnMRrZcczhGGRBR1en8NczyE+bRJYUwfbSHqpPsCUX9AGIfpBYi1G1Fl6Lt6LL0eccmPuiIP0alE+kGelZl+M4uL12XqrQ1EkMnzOm7Yk5lBd7YNbLGrldg2oE7E7gSyswBU2fnJfFIx8DYGdsdkAMmypraEb65gSYuknIfDEQ6l/nfJhW6IrwofHyikG80aVc4Hc46vIiHfBPVgQLTXZtJgFF5LdVtYBzY5+eM56d3w0L9ioQddHFlEYYUpfnCmCqVRMfZFJCJjpua1jDDgabM2+rblSh7QfVDe6a60lX+MM7EkfiU96Ei4UALUw8TMZsS+SYUobQ8jybVmwmYhC2Z0BdHMDfpKu/7V2fWVfbQx8nTDRB921NE2AQgp5ucQHye6PN7cEDcOZ675cUl/wMBIm/IWOm1ghYQi7CZQwXobUMDfawtO/tU3BoTmxKjgQhcciLSHspLU4A7V2IY3/2i4Lf/t3RhOVw2ua+C0rukhZopAkBZDnrlVnkOOiOKQHF/J0E27nBDDHfYu+82kLPVWHUxcaESRrJMy8FxoG8lJTkoq2S0POs0KsN8CCGiFDr9wlW9rwckgxQkuqgr3HgYDzSuHV8O5ejrRgQjBzJcXnQqrj9id4xHUiBuIN9Q=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1726382AbgEGGjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 02:39:49 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:54972 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725763AbgEGGjt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 02:39:49 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id EAF86B5CC73187F0CE21;
+        Thu,  7 May 2020 14:38:47 +0800 (CST)
+Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server (TLS) id 14.3.487.0; Thu, 7 May 2020
+ 14:38:43 +0800
+Subject: Re: [f2fs-dev] [PATCH] f2fs: get parent inode when recovering pino
+To:     Gao Xiang <hsiangkao@gmx.com>, Eric Biggers <ebiggers@kernel.org>
+CC:     Jaegeuk Kim <jaegeuk@kernel.org>, <kernel-team@android.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+References: <20200505153139.201697-1-jaegeuk@kernel.org>
+ <20200505165847.GA98848@gmail.com> <20200505181323.GA55221@google.com>
+ <20200505181941.GC98848@gmail.com>
+ <20200506001403.GA2101@hsiangkao-HP-ZHAN-66-Pro-G1>
+ <20200506012428.GG128280@sol.localdomain>
+ <20200506015813.GA9256@hsiangkao-HP-ZHAN-66-Pro-G1>
+ <20200506064709.GA25482@hsiangkao-HP-ZHAN-66-Pro-G1>
+ <20200506191613.GB842@sol.localdomain>
+ <20200506223623.GA27760@hsiangkao-HP-ZHAN-66-Pro-G1>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <3a837113-8081-6f01-4d8d-1d4b6600ec8c@huawei.com>
+Date:   Thu, 7 May 2020 14:38:39 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 44c3b933-adb4-4801-a103-08d7f2510d67
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 May 2020 06:37:02.6283
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: YvQ0Nec4NxmL2Tfr3SxHjuXMqsODHn/NIH85LrPCvdYBuHjuB3DKjzaeZlGGsFLBAI3G6sr/l06qCbCXPatfTA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1807
-X-OriginatorOrg: intel.com
+In-Reply-To: <20200506223623.GA27760@hsiangkao-HP-ZHAN-66-Pro-G1>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.134.22.195]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Lu Baolu
-> Sent: Thursday, May 7, 2020 8:56 AM
->=20
-> IOTLB flush already included in the PASID tear down and the page request
-> drain process. There is no need to flush again.
->=20
-> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> ---
->  drivers/iommu/intel-svm.c | 6 +-----
->  1 file changed, 1 insertion(+), 5 deletions(-)
->=20
-> diff --git a/drivers/iommu/intel-svm.c b/drivers/iommu/intel-svm.c
-> index 7256eb965cf6..5ff05adc96e9 100644
-> --- a/drivers/iommu/intel-svm.c
-> +++ b/drivers/iommu/intel-svm.c
-> @@ -209,11 +209,9 @@ static void intel_mm_release(struct mmu_notifier
-> *mn, struct mm_struct *mm)
->  	 * *has* to handle gracefully without affecting other processes.
->  	 */
->  	rcu_read_lock();
-> -	list_for_each_entry_rcu(sdev, &svm->devs, list) {
-> +	list_for_each_entry_rcu(sdev, &svm->devs, list)
->  		intel_pasid_tear_down_entry(svm->iommu, sdev->dev,
->  					    svm->pasid, true);
-> -		intel_flush_svm_range_dev(svm, sdev, 0, -1, 0);
-> -	}
->  	rcu_read_unlock();
->=20
->  }
-> @@ -407,7 +405,6 @@ int intel_svm_unbind_gpasid(struct device *dev, int
-> pasid)
->  			intel_pasid_tear_down_entry(iommu, dev,
->  						    svm->pasid, false);
->  			intel_svm_drain_prq(dev, svm->pasid);
-> -			intel_flush_svm_range_dev(svm, sdev, 0, -1, 0);
->  			kfree_rcu(sdev, rcu);
->=20
->  			if (list_empty(&svm->devs)) {
-> @@ -647,7 +644,6 @@ int intel_svm_unbind_mm(struct device *dev, int
-> pasid)
->  			intel_pasid_tear_down_entry(iommu, dev,
->  						    svm->pasid, false);
->  			intel_svm_drain_prq(dev, svm->pasid);
-> -			intel_flush_svm_range_dev(svm, sdev, 0, -1, 0);
->  			kfree_rcu(sdev, rcu);
->=20
->  			if (list_empty(&svm->devs)) {
-> --
-> 2.17.1
+On 2020/5/7 6:36, Gao Xiang wrote:
+> On Wed, May 06, 2020 at 12:16:13PM -0700, Eric Biggers wrote:
+>> On Wed, May 06, 2020 at 02:47:19PM +0800, Gao Xiang wrote:
+>>> On Wed, May 06, 2020 at 09:58:22AM +0800, Gao Xiang wrote:
+>>>> On Tue, May 05, 2020 at 06:24:28PM -0700, Eric Biggers wrote:
+>>>>> On Wed, May 06, 2020 at 08:14:07AM +0800, Gao Xiang wrote:
+>>>>>>>
+>>>>>>> Actually, I think this is wrong because the fsync can be done via a file
+>>>>>>> descriptor that was opened to a now-deleted link to the file.
+>>>>>>
+>>>>>> I'm still confused about this...
+>>>>>>
+>>>>>> I don't know what's wrong with this version from my limited knowledge?
+>>>>>>  inode itself is locked when fsyncing, so
+>>>>>>
+>>>>>>    if the fsync inode->i_nlink == 1, this inode has only one hard link
+>>>>>>    (not deleted yet) and should belong to a single directory; and
+>>>>>>
+>>>>>>    the only one parent directory would not go away (not deleted as well)
+>>>>>>    since there are some dirents in it (not empty).
+>>>>>>
+>>>>>> Could kindly explain more so I would learn more about this scenario?
+>>>>>> Thanks a lot!
+>>>>>
+>>>>> i_nlink == 1 just means that there is one non-deleted link.  There can be links
+>>>>> that have since been deleted, and file descriptors can still be open to them.
+>>>>
+>>>> Thanks for your inspiration. You are right, thanks.
+>>>>
+>>>> Correct my words... I didn't check f2fs code just now, it seems f2fs doesn't
+>>>> take inode_lock as some other fs like __generic_file_fsync or ubifs_fsync.
+>>>>
+>>>> And i_sem locks nlink / try_to_fix_pino similarly in some extent. It seems
+>>>> no race by using d_find_alias here. Thanks again.
+>>>>
+>>>
+>>> (think more little bit just now...)
+>>>
+>>>  Thread 1:                                           Thread 2 (fsync):
+>>>   vfs_unlink                                          try_to_fix_pino
+>>>     f2fs_unlink
+>>>        f2fs_delete_entry
+>>>          f2fs_drop_nlink  (i_sem, inode->i_nlink = 1)
+>>>
+>>>   (...   but this dentry still hashed)                  i_sem, check inode->i_nlink = 1
+>>>                                                         i_sem d_find_alias
+>>>
+>>>   d_delete
+>>>
+>>> I'm not sure if fsync could still use some wrong alias by chance..
+>>> completely untested, maybe just noise...
 
-Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+Another race condition could be:
+
+Thread 1 (fsync)		Thread 2 (rename)
+- f2fs_sync_fs
+- try_to_fix_pino
+				- f2fs_rename
+				 - down_write
+				 - file_lost_pino
+				 - up_write
+ - down_write
+ - file_got_pino
+ - up_write
+
+Thanks,
+
+>>>
+>>
+>> Right, good observation.  My patch makes it better, but it's still broken.
+>>
+>> I don't know how to fix it.  If we see i_nlink == 1 and multiple hashed
+>> dentries, there doesn't appear to be a way to distingush which one corresponds
+>> to the remaining link on-disk (if any; it may not even be in the dcache), and
+>> which correspond to links that vfs_unlink() has deleted from disk but hasn't yet
+>> done d_delete() on.
+>>
+>> One idea would be choose one, then take inode_lock_shared(dir) and do
+>> __f2fs_find_entry() to check if the dentry is really still on-disk.  That's
+>> heavyweight and error-prone though, and the locking could cause problems.
+>>
+>> I'm wondering though, does f2fs really need try_to_fix_pino() at all, and did it
+>> ever really work?  It never actually updates the f2fs_inode::i_name to match the
+>> new directory.  So independently of this bug with deleted links, I don't see how
+>> it can possibly work as intended.
+> 
+> Part of my humble opinion would be "update pino in rename/unlink/link... such ops
+> instead of in fsync" (maybe it makes better sense of locking)... But actually I'm
+> not a f2fs folk now, just curious about what the original patch resolved with
+> these new extra igrab/iput (as I said before, I could not find some clue previously).
+> 
+> Thanks,
+> Gao Xiang
+> 
+>>
+>> - Eric
+> 
+> 
+> _______________________________________________
+> Linux-f2fs-devel mailing list
+> Linux-f2fs-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+> .
+> 
