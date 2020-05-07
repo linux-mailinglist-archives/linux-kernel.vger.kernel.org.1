@@ -2,123 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5895E1C95ED
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 18:05:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 845461C95F6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 18:06:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726743AbgEGQFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 12:05:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726069AbgEGQFg (ORCPT
+        id S1727107AbgEGQGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 12:06:49 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:31041 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726308AbgEGQGt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 12:05:36 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AEF9C05BD43
-        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 09:05:36 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id z6so7469006wml.2
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 09:05:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=c3Yn1uFhyeEGKm1qKqAVff7fEGoJ/U2annZo6utmYLY=;
-        b=nDrvA3KOu4XURf6fZXpzyjFwAtf+wCmEuhlyxvCcjxZwioHQxVZHzlIj1vE9zWNRrn
-         EYTIMuo/iOK7oUBGVsWpE3OQh9Bdu+ehlCEZHMwWIzqx94ELhwiAfqpHnBcpoojM96me
-         HgCz+xoagRLL8HRLDa9gyunNHf9nuCiw95Ui+la7DaGE319zsfLs732IpZcvs9xCued+
-         jmeAivaRjVxT6T0AGON4HvQLegDcyxidgaTQH4+dUBxZlXvIN9BeMHF6ibK4J8GFsoTj
-         Xh/3EgHd8pJKLSBZXv737EHoIsQ8rb3dJsZvuw2N3tYHnk/sLzk5nQLXy07Ch2ZMd19W
-         5MVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=c3Yn1uFhyeEGKm1qKqAVff7fEGoJ/U2annZo6utmYLY=;
-        b=hYbpFmZUcu1mLjmuSbfEtkrgHDwiWiOudEPDIcXqt7wCcOfD/ZYAzY0V41BPWOFAzw
-         /LQ/y8DimD41q5MjjxwsQPYBx18SWz09JjgAJbYHjsB7D2lhJVmEYEeAlIq+d4lod0a4
-         +XAKxkvtmVPfcLKh43C1S+U4df+aj7tbQzHUBsf11XlO5tRa09JZTax3JWNkBkZzIsvY
-         wYtUYePo6IBY4wFlFG6ykQxI4tzJPUuQIk86QD90sM5r2S1AdtPrSB3S5FeJ/a5R6i2Z
-         ll1gko4q9/wCxFhEPABztft03oadPmSD2HkLfouVDJdSvyjF9S26c3O2Ln6iSpy8GTet
-         Y5lA==
-X-Gm-Message-State: AGi0PuYfD+7fCvRtXJr6xK5epWdD9aPAmRP8kejXyueStM+78tuwPezM
-        kRc6plmAfeGmER0zVZtx1CczcQ==
-X-Google-Smtp-Source: APiQypKC++tE4E5WgpsRRRcTc2tzFjmw+OZutPp4rNBCIQY0PQvVGm/yjn/jsgGhwbmB9q6GbEpP5Q==
-X-Received: by 2002:a1c:e910:: with SMTP id q16mr1625040wmc.158.1588867534735;
-        Thu, 07 May 2020 09:05:34 -0700 (PDT)
-Received: from [192.168.0.38] ([176.61.57.127])
-        by smtp.gmail.com with ESMTPSA id l1sm9150398wrc.24.2020.05.07.09.05.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 May 2020 09:05:34 -0700 (PDT)
-Subject: Re: [PATCH v3 0/2] Add Qualcomm MSM8939 GCC binding and driver
-To:     Bryan O'Donoghue <pure.logic@nexus-software.ie>, agross@kernel.org,
-        bjorn.andersson@linaro.org, mturquette@baylibre.com,
-        sboyd@kernel.org, robh+dt@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        shawn.guo@linaro.org, p.zabel@pengutronix.de,
-        Vincent Knecht <vincent.knecht@mailoo.org>,
-        Konrad Dybcio <konradybcio@gmail.com>
-References: <20200423103406.481289-1-bryan.odonoghue@linaro.org>
- <e9d181a9-938c-a69b-8325-2aabeefd0934@nexus-software.ie>
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Message-ID: <90cda746-2caa-cb79-9304-17a97886f1fc@linaro.org>
-Date:   Thu, 7 May 2020 17:06:08 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Thu, 7 May 2020 12:06:49 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1588867608; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Date: Message-ID: Subject: From: Cc: To: Sender;
+ bh=jwMeAfchhcLCYgXDQ+3RZuZwLazuFlu1qTBcfgi+Ub4=; b=UXfFLQuE6PIBT/8UMyM8JrOLygqVvPs1EXxVb3kkkVpZOaJR/ExUKKh1aQy96F4Kbqm96S39
+ nUCXJLnO0ydUWB25fGfGUDcc6WDy8HQ+PXKLuPGxWLBx9uO2wBUo16t1Ko8S1snc1uasfVEV
+ VBm5lX+8M4NNqAEMFgi681AoxHY=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5eb43201.7f45f5cc8260-smtp-out-n04;
+ Thu, 07 May 2020 16:06:25 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8B8F1C433D2; Thu,  7 May 2020 16:06:24 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.0.103] (unknown [49.204.184.20])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: neeraju)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 51EE5C433BA;
+        Thu,  7 May 2020 16:06:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 51EE5C433BA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=neeraju@codeaurora.org
+To:     julien.thierry.kdev@gmail.com, maz@kernel.org
+Cc:     linux-kernel@vger.kernel.org
+From:   Neeraj Upadhyay <neeraju@codeaurora.org>
+Subject: Query regarding pseudo nmi support on GIC V3 and request_nmi()
+Message-ID: <2a0d5719-b2c7-1287-e0b5-2dd8b1072e49@codeaurora.org>
+Date:   Thu, 7 May 2020 21:36:19 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <e9d181a9-938c-a69b-8325-2aabeefd0934@nexus-software.ie>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/05/2020 16:57, Bryan O'Donoghue wrote:
-> On 23/04/2020 11:34, Bryan O'Donoghue wrote:
->> V3:
->> This update removes the old clock name arrays which I forgot to prune in
->> the previous V2.
->>
->> git diff bod/clk-next+msm8939 bod/clk-next+msm8939-v2.1
-> 
-> I should have mentioned.
-> 
-> If you want to test this you'll need to do the following to your 
-> msm8939.dtsi
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/msm8939.dtsi 
-> b/arch/arm64/boot/dts/qcom/msm8939.dtsi
-> index 996425a70014..2d54ad7f99b6 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8939.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/msm8939.dtsi
-> @@ -673,6 +673,10 @@ gcc: clock-controller@1800000 {
->                          reg = <0x1800000 0x80000>;
-> +                       clock-names = "xo",
-> +                                     "sleep_clk";
-> +                       clocks = <&xo_board>,
-> +                                <&sleep_clk>;
->                  };
-> 
-> "xo" and "sleep_clk" names can be resolved.
-> 
-> ---
-> bod
+Hi,
 
-and this...
+I have one query regarding pseudo NMI support on GIC v3; from what I 
+could understand, GIC v3 supports pseudo NMI setup for SPIs and PPIs.
+However the request_nmi() in irq framework requires NMI to be per cpu
+interrupt source (it checks for IRQF_PERCPU). Can you please help
+understand this part, how SPIs can be configured as NMIs, if there is
+a per cpu interrupt source restriction?
 
-clocks {
-     xo_board: xo_board {
-         compatible = "fixed-clock";
-         #clock-cells = <0>;
-         clock-frequency = <19200000>;
-     };
 
-     sleep_clk: sleep_clk {
-         compatible = "fixed-clock";
-         #clock-cells = <0>;
-         clock-frequency = <32768>;
-     };
-};
 
+Thanks
+Neeraj
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member of the Code Aurora Forum, hosted by The Linux Foundation
