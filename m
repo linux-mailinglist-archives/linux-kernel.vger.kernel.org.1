@@ -2,71 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C8611C9839
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 19:46:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC7021C9838
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 19:46:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728143AbgEGRql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 13:46:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40560 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728098AbgEGRql (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 13:46:41 -0400
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B4F3324953
-        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 17:46:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588873601;
-        bh=TGNwlojB/j2uFXoocG2pNAWwUA/IRC4r9PXP+DroQd8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=wE06tAbGV1gRVvRxAM6LS+vA3RYqZzxbEtDEAOZRvPoJ+1cZTScO3nTE6wd6Ibp8T
-         AdeYSbT9HtXxEIcKZgmodjAkb9U1jE8PlkhmY2RjAhrezLQ9iA1PKuSwKio8fhsCDU
-         Mx7Vumw55255VkRS3+lo3dbxIUvwUNsejdzIVDyU=
-Received: by mail-wm1-f50.google.com with SMTP id y24so7834939wma.4
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 10:46:40 -0700 (PDT)
-X-Gm-Message-State: AGi0PuYQlynBGI34HXJq7FLoWihWAGsMVK9xaI4sAK2ey9sKK/HYCVML
-        QuSavoDBSntZ2RPkAt8w7HZUJXEXmyd5oc3Th6Myxg==
-X-Google-Smtp-Source: APiQypJszx9udG6z/Eq1Onn+5U4Td8r+fKcLNwzecNRPUViwMRgiuq1Kk10MNKt3JAej8ufVaI+H/zNKNYu/CesXgDM=
-X-Received: by 2002:a1c:3dd6:: with SMTP id k205mr11466099wma.138.1588873599199;
- Thu, 07 May 2020 10:46:39 -0700 (PDT)
+        id S1728120AbgEGRqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 13:46:34 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:40842 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728103AbgEGRqe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 13:46:34 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id AF2001C025A; Thu,  7 May 2020 19:46:32 +0200 (CEST)
+Date:   Thu, 7 May 2020 19:46:31 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Javier Malave <javier.malave@narfindustries.com>
+Cc:     bx@narfindustries.com, linux-kernel@vger.kernel.org,
+        ah@narfindustries.com
+Subject: Re: [RFC 0/9] Popcorn Linux Distributed Thread Execution
+Message-ID: <20200507174631.GE1216@bug>
+References: <0>
+ <cover.1588127445.git.javier.malave@narfindustries.com>
 MIME-Version: 1.0
-References: <20200505131602.633487962@linutronix.de> <20200505134059.462640294@linutronix.de>
-In-Reply-To: <20200505134059.462640294@linutronix.de>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Thu, 7 May 2020 10:46:26 -0700
-X-Gmail-Original-Message-ID: <CALCETrXQLbmCw=8jZR6UbKvCB8ERg+75RWJgBBr5aFGbtVZTDA@mail.gmail.com>
-Message-ID: <CALCETrXQLbmCw=8jZR6UbKvCB8ERg+75RWJgBBr5aFGbtVZTDA@mail.gmail.com>
-Subject: Re: [patch V4 part 1 14/36] x86/entry: Get rid of ist_begin/end_non_atomic()
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1588127445.git.javier.malave@narfindustries.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 5, 2020 at 7:13 AM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> This is completely overengineered and definitely not an interface which
-> should be made available to anything else than this particular MCE case.
+On Wed 2020-04-29 15:32:47, Javier Malave wrote:
+> This patch set adds the Popcorn Distributed Thread Execution support
+> to the kernel. It is based off of Linux 5.2 commit 72a20ce. We are
+> looking for feedback on design and implementation from the community.
 
-Sorry for the overengineering. :)
+You may want to cc linux-api mailing list...?
 
---Andy
+> Popcorn Linux is a Linux kernel-based software stack that enables
+> applications to execute, with a shared code base, on distributed hosts.
+> Popcorn allows applications to start execution on a particular host and
+> migrate, at run-time, to a remote host. Multi-threaded applications may
+> migrate any particular thread to any remote host. 
+
+Sounds like a lot of fun.
+
+> Popcorn Linux implements a software-based distributed shared memory 
+> by extending Linux's virtual memory subsystem and it enables processes 
+> on different machines to observe a common and coherent virtual address
+> space. Coherency of virtual memory pages of different hosts is ensured 
+> using a reader-replicate/writer-invalidate, page-level consistency protocol.
+
+Sounds interesting. I guess this needs very, very fast network. Do you have some performance numbers 
+somewhere?
+
+Best regards,
+									Pavel
+-- 
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
