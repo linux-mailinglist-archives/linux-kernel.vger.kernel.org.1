@@ -2,94 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 837AC1C9ACE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:20:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF3C91C9AFF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:25:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728329AbgEGTUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 15:20:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42138 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726470AbgEGTUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 15:20:30 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728204AbgEGTZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 15:25:06 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:33630 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727837AbgEGTZE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 15:25:04 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1588879504; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=Ix9XkAMYCQsp/8JQnx4zfbI/X7x9n8NFh7hLnjbOM8Q=; b=oaHQJr7Fnhpn9axu6zzRngnCgmBwXIognsjP3JrVGDkv1ICOlS/BI0gmQXJcFfLql1KN8lQZ
+ wHtW6LW+az3KLmPci+vh0cATQ+M7JX8ZDCk8xvfE1jZDvVhAo5D8SCU+4xmHxLtLeNeYviGo
+ U0nUq0jDfVK/X6gWCEbGdJWuN98=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5eb4608e.7f318b7827d8-smtp-out-n04;
+ Thu, 07 May 2020 19:25:02 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1F638C433D2; Thu,  7 May 2020 19:25:01 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [10.226.58.28] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 733A3208E4;
-        Thu,  7 May 2020 19:20:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588879229;
-        bh=3VqhG5M9IiE8DSTOrbitM36BDnGXR2Iy8OLFUl4M59Q=;
-        h=Date:From:To:Cc:Subject:From;
-        b=xD71iI2IjdTHLJYeGoxqKBldpBQWeW/WJpA5U9keYgnlXf/QsA2Jms9ppHXu2v0Ar
-         xsI/teVQTCoRj67T9UHhrqT5WOpVWcbMeGQi6yJsWU1DY3/ezfZ5j+d6Sr3dAe+AFV
-         SMHiOmHfCK/V3qXlozjdQNIvI6jByOKJG+ARXYNs=
-Date:   Thu, 7 May 2020 14:24:56 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Sam Creasey <sammy@sammy.net>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] ethernet: i825xx: sun3_82586: Replace zero-length array with
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 056A6C433BA;
+        Thu,  7 May 2020 19:24:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 056A6C433BA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jhugo@codeaurora.org
+Subject: Re: [PATCH] dmaengine: qcom: bam_dma: Replace zero-length array with
  flexible-array
-Message-ID: <20200507192456.GA16458@embeddedor>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200507185016.GA13883@embeddedor>
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+Message-ID: <1b3cda25-5f3a-5359-4bf7-d16a8364f545@codeaurora.org>
+Date:   Thu, 7 May 2020 13:24:57 -0600
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200507185016.GA13883@embeddedor>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current codebase makes use of the zero-length array language
-extension to the C90 standard, but the preferred mechanism to declare
-variable-length types such as these ones is a flexible array member[1][2],
-introduced in C99:
+On 5/7/2020 12:50 PM, Gustavo A. R. Silva wrote:
+> The current codebase makes use of the zero-length array language
+> extension to the C90 standard, but the preferred mechanism to declare
+> variable-length types such as these ones is a flexible array member[1][2],
+> introduced in C99:
+> 
+> struct foo {
+>          int stuff;
+>          struct boo array[];
+> };
+> 
+> By making use of the mechanism above, we will get a compiler warning
+> in case the flexible array does not occur last in the structure, which
+> will help us prevent some kind of undefined behavior bugs from being
+> inadvertently introduced[3] to the codebase from now on.
+> 
+> Also, notice that, dynamic memory allocations won't be affected by
+> this change:
+> 
+> "Flexible array members have incomplete type, and so the sizeof operator
+> may not be applied. As a quirk of the original implementation of
+> zero-length arrays, sizeof evaluates to zero."[1]
+> 
+> sizeof(flexible-array-member) triggers a warning because flexible array
+> members have incomplete type[1]. There are some instances of code in
+> which the sizeof operator is being incorrectly/erroneously applied to
+> zero-length arrays and the result is zero. Such instances may be hiding
+> some bugs. So, this work (flexible-array member conversions) will also
+> help to get completely rid of those sorts of issues.
+> 
+> This issue was found with the help of Coccinelle.
+> 
+> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+> [2] https://github.com/KSPP/linux/issues/21
+> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>   drivers/dma/qcom/bam_dma.c         |    2 +-
+>   drivers/firmware/qcom_scm-legacy.c |    2 +-
+>   2 files changed, 2 insertions(+), 2 deletions(-)
+> 
 
-struct foo {
-        int stuff;
-        struct boo array[];
-};
+Shouldn't these two files be two different patches?
 
-By making use of the mechanism above, we will get a compiler warning
-in case the flexible array does not occur last in the structure, which
-will help us prevent some kind of undefined behavior bugs from being
-inadvertently introduced[3] to the codebase from now on.
-
-Also, notice that, dynamic memory allocations won't be affected by
-this change:
-
-"Flexible array members have incomplete type, and so the sizeof operator
-may not be applied. As a quirk of the original implementation of
-zero-length arrays, sizeof evaluates to zero."[1]
-
-sizeof(flexible-array-member) triggers a warning because flexible array
-members have incomplete type[1]. There are some instances of code in
-which the sizeof operator is being incorrectly/erroneously applied to
-zero-length arrays and the result is zero. Such instances may be hiding
-some bugs. So, this work (flexible-array member conversions) will also
-help to get completely rid of those sorts of issues.
-
-This issue was found with the help of Coccinelle.
-
-[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-[2] https://github.com/KSPP/linux/issues/21
-[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/net/ethernet/i825xx/sun3_82586.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/i825xx/sun3_82586.h b/drivers/net/ethernet/i825xx/sun3_82586.h
-index 79aef681ac85..451cb3d26cb5 100644
---- a/drivers/net/ethernet/i825xx/sun3_82586.h
-+++ b/drivers/net/ethernet/i825xx/sun3_82586.h
-@@ -250,7 +250,7 @@ struct mcsetup_cmd_struct
-   unsigned short cmd_cmd;
-   unsigned short cmd_link;
-   unsigned short mc_cnt;		/* number of bytes in the MC-List */
--  unsigned char  mc_list[0][6];  	/* pointer to 6 bytes entries */
-+  unsigned char  mc_list[][6];  	/* pointer to 6 bytes entries */
- };
- 
- /*
-
+-- 
+Jeffrey Hugo
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
