@@ -2,164 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F33A41C864A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 12:01:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E60E1C863F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 12:00:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727076AbgEGKAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 06:00:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726744AbgEGKAQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 06:00:16 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C0F7C061A10;
-        Thu,  7 May 2020 03:00:16 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id 7so3669717pjo.0;
-        Thu, 07 May 2020 03:00:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=r9BrKcJnvJmQnTdOvCUMZHeGW+d+Z7GzgcJoLMueHRI=;
-        b=gPi+BOYYO7BXDrePnM7PlUZwlz4m22UGrS+9znZ0xgz4zX18sdWTjhgBTJK0MW6LXC
-         GT8U8Ud8SvFM5MkzPmfaFAewKtOvt8fGBol/xbrs7h+k2A5bIyMQu9wyf6O1L4hNrxaf
-         EcjoyENpgAbT/OjIhY5AFD47MsD8q+17fShhKbrPVehida8mQ8AcGJzjvWEZ4WWqL77y
-         AFwKDv9Xpr+/dK4AxptK9iDLtj38sD70MiSbRiMgRIKhuCXnIqpju5lLEllQghVRs2W6
-         IWW5ny8SZC2oXq7rI1ocXAvCi9s/hu+/xZ4ekmkz3kepqdJX9XnQ72t3wWV5NZ3hHI8Q
-         nMLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=r9BrKcJnvJmQnTdOvCUMZHeGW+d+Z7GzgcJoLMueHRI=;
-        b=glncX1Ie7V4HLSzbGBy3y4v9EcNK7G2Ht2dKW2E5QbqWo1M2f7EHBrczZCd9Qlyxpr
-         vGw8zibzu4+PUknqamHnYt8uclpdXkzy9Q1xCeoftqcbaDj7YUQIHUTPvzaW0blo+L7M
-         oAohGDCamhDFIr+TqWKGNr+6QRKt0ODSposdJMnuyVs2s1PdfJuLtGbacQJ6jALwyKBQ
-         ywd0oSdCyrNnpd0R1Jcpjz0a0YcikRXPxE9mcOCFfgco1sO95dX7unMC5dlCC9EfpcmV
-         guU9kF404Z0ZoXhW2ynFMG3fBMjY6aIlrORvprvGBYJNXDvAyoNU4JEOwmXGcG3AZ8pU
-         jAUQ==
-X-Gm-Message-State: AGi0Pubs4DrMekCtH1Ba7Cfv2E6Ckw+3wPMl3P079qtofUtuQhWX/WbC
-        p7ESc3nPXWoRCQgTTKNLSZklIAmEzfg=
-X-Google-Smtp-Source: APiQypJ/p27A3ApFLRTZbrZlwZ4OXNzXy/CNfPKjawprFoghQynBgR10A+xaiCvgerQ3+rqW5sdUiA==
-X-Received: by 2002:a17:902:c203:: with SMTP id 3mr13153122pll.242.1588845615538;
-        Thu, 07 May 2020 03:00:15 -0700 (PDT)
-Received: from [192.168.1.7] ([120.244.109.48])
-        by smtp.gmail.com with ESMTPSA id p190sm4450528pfp.207.2020.05.07.03.00.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 May 2020 03:00:14 -0700 (PDT)
-Subject: Re: [PATCH] media: usb: ttusb-dec: avoid buffer overflow in
- ttusb_dec_handle_irq() when DMA failures/attacks occur
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     mchehab@kernel.org, kstewart@linuxfoundation.org,
-        tomasbortoli@gmail.com, sean@mess.org, allison@lohutok.net,
-        tglx@linutronix.de, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200505142110.7620-1-baijiaju1990@gmail.com>
- <20200505181042.GD1199718@kroah.com>
- <0e4a86ee-8c4e-4ac3-8499-4e9a6ed7bd1e@gmail.com>
- <20200506110722.GA2975410@kroah.com>
- <b3af10e3-8709-3da0-6841-e5ddd6b4a609@gmail.com>
- <20200506155257.GB3537174@kroah.com>
- <46615f6e-11ec-6546-42a9-3490414f9550@gmail.com>
- <20200506174345.GA3711921@kroah.com>
- <4bc70ec6-e518-5f42-b336-c86e1f92619f@gmail.com>
- <20200507075237.GA1024567@kroah.com>
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-Message-ID: <e7233d0f-d21f-5b4c-cc77-e71eff1e8a47@gmail.com>
-Date:   Thu, 7 May 2020 17:59:58 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1726807AbgEGKAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 06:00:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38860 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726683AbgEGKAP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 06:00:15 -0400
+Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D06CB20870;
+        Thu,  7 May 2020 10:00:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588845614;
+        bh=5sZJWMajUh4vPySqA51QTeZbNJXETHrWyOeQvUNxR3U=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=jbXz3wPTNC8shMt8HNhEp6VmaFXT3FAF2/SoA1Zyei0p2qSuYCzbOfonD8QsHuw2o
+         Ab6IFebSzm6lvtRNC4Mf+U69s1y1xMPZhXgJBdQSn9pwM3ODnATl+Td0dUVu6rba0K
+         qFOM/QT2mZ3A6ClvIPvir4MMiYtY7A4FOnceuH8g=
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Network Development <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Wang Nan <wangnan0@huawei.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [RFC PATCH 2/3] arm64: kprobes: Support nested kprobes
+Date:   Thu,  7 May 2020 19:00:07 +0900
+Message-Id: <158884560738.12656.13619534422220572094.stgit@devnote2>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <158884558272.12656.7654266361809594662.stgit@devnote2>
+References: <158884558272.12656.7654266361809594662.stgit@devnote2>
+User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
-In-Reply-To: <20200507075237.GA1024567@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Make kprobes to accept 1-level nesting instead of missing it
+on arm64.
 
+Any kprobes hits in kprobes pre/post handler context can be
+nested at once. If the other kprobes hits in the nested pre/post
+handler context, that will be missed.
 
-On 2020/5/7 15:52, Greg KH wrote:
-> On Thu, May 07, 2020 at 01:15:22PM +0800, Jia-Ju Bai wrote:
->> At present, I only detect the cases that a DMA value *directly* taints array
->> index, loop condition and important kernel-interface calls (such as
->> request_irq()).
->> In this one driver, I only find two problems that mentioned in this patch.
->> With the kernel configuration "allyesconfig" in my x86_64 machine, I find
->> nearly 200 such problems (intra-procedurally and inter-procedurally) in all
->> the compiled device drivers.
->>
->> I also find that several drivers check the data from DMA memory, but some of
->> these checks can be bypassed.
->> Here is an example in drivers/scsi/esas2r/esas2r_vda.c:
->>
->> The function esas2r_read_vda() uses a DMA value "vi":
->>    struct atto_ioctl_vda *vi =
->>              (struct atto_ioctl_vda *)a->vda_buffer;
->>
->> Then esas2r_read_vda() calls esas2r_process_vda_ioctl() with vi:
->>    esas2r_process_vda_ioctl(a, vi, rq, &sgc);
->>
->> In esas2r_process_vda_ioctl(), the DMA value "vi->function" is
->> used at many places, such as:
->>    if (vi->function >= vercnt)
->>    ...
->>    if (vi->version > esas2r_vdaioctl_versions[vi->function])
->>    ...
->>
->> However, when DMA failures or attacks occur, the value of vi->function can
->> be changed at any time. In this case, vi->function can be first smaller than
->> vercnt, and then it can be larger than vercnt when it is used as the array
->> index of esas2r_vdaioctl_versions, causing a buffer-overflow vulnerability.
->>
->> I also submitted this patch, but no one has replied yet:
->> https://lore.kernel.org/lkml/20200504172412.25985-1-baijiaju1990@gmail.com/
-> It's only been a few days, give them time.
->
-> But, as with this patch, you might want to change your approach.  Having
-> the changelog say "this is a security problem!" really isn't that "real"
-> as the threat model is very obscure at this point in time.
->
-> Just say something like I referenced here, "read the value from memory
-> and test it and use that value instead of constantly reading from memory
-> each time in case it changes" is nicer and more realistic.  It's a
-> poential optimization as well, if the complier didn't already do it for
-> us automatically (which you really should look into...)
+We can test this feature on the kernel with
+CONFIG_KPROBE_EVENTS_ON_NOTRACE=y as below.
 
-Okay, I used objdump to generate the assembly code of ttusb_dec.o 
-(ttusb_dec.c is compiled with -O2).
-I found the following possible operations for "buffer[4] - 1" in the 
-assembly code:
-    ......
-    movsbl   0x4(%rbp), %r15d
-    lea          -0x1(%r15), %r13d
-    cmp        $0x19, %r13d
-    .....
-    movsbl   0x4(%rbp), %r13d
-    sub         $0x1, %r13d
-    .....
-    movsbl   0x4(%rbp), %ebp
-    sub         $0x1, %ebp
-    .....
+ # cd /sys/kernel/debug/tracing
+ # echo p ring_buffer_lock_reserve > kprobe_events
+ # echo p vfs_read >> kprobe_events
+ # echo stacktrace > events/kprobes/p_ring_buffer_lock_reserve_0/trigger
+ # echo 1 > events/kprobes/enable
+ # cat trace
+ ...
+               sh-211   [005] d..2    71.708242: p_ring_buffer_lock_reserve_0: (ring_buffer_lock_reserve+0x0/0x4c8)
+               sh-211   [005] d..2    71.709982: <stack trace>
+  => kprobe_dispatcher
+  => kprobe_breakpoint_handler
+  => call_break_hook
+  => brk_handler
+  => do_debug_exception
+  => el1_sync_handler
+  => el1_sync
+  => ring_buffer_lock_reserve
+  => kprobe_trace_func
+  => kprobe_dispatcher
+  => kprobe_breakpoint_handler
+  => call_break_hook
+  => brk_handler
+  => do_debug_exception
+  => el1_sync_handler
+  => el1_sync
+  => vfs_read
+  => __arm64_sys_read
+  => el0_svc_common.constprop.3
+  => do_el0_svc
+  => el0_sync_handler
+  => el0_sync
 
-Thus, I guess that the compiler does not optimize these three accesses 
-to "buffer[4] - 1".
-As you suggested, I will change my log and send a new patch, thanks :)
+This shows brk_handler is nested.
 
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+---
+ arch/arm64/include/asm/kprobes.h   |    5 ++
+ arch/arm64/kernel/probes/kprobes.c |   75 ++++++++++++++++++++----------------
+ 2 files changed, 46 insertions(+), 34 deletions(-)
 
->
-> If you make up a large series of these, I'd be glad to take them through
-> one of my trees to try to fix them all up at once, that's usually a
-> simpler way to do cross-tree changes like this.
->
+diff --git a/arch/arm64/include/asm/kprobes.h b/arch/arm64/include/asm/kprobes.h
+index 97e511d645a2..b2ebd3bad794 100644
+--- a/arch/arm64/include/asm/kprobes.h
++++ b/arch/arm64/include/asm/kprobes.h
+@@ -34,12 +34,15 @@ struct kprobe_step_ctx {
+ 	unsigned long match_addr;
+ };
+ 
++#define KPROBE_NEST_MAX 2
++
+ /* per-cpu kprobe control block */
+ struct kprobe_ctlblk {
+ 	unsigned int kprobe_status;
+ 	unsigned long saved_irqflag;
+-	struct prev_kprobe prev_kprobe;
++	struct prev_kprobe prev[KPROBE_NEST_MAX];
+ 	struct kprobe_step_ctx ss_ctx;
++	int nested;
+ };
+ 
+ void arch_remove_kprobe(struct kprobe *);
+diff --git a/arch/arm64/kernel/probes/kprobes.c b/arch/arm64/kernel/probes/kprobes.c
+index d1c95dcf1d78..27d52726277b 100644
+--- a/arch/arm64/kernel/probes/kprobes.c
++++ b/arch/arm64/kernel/probes/kprobes.c
+@@ -153,14 +153,18 @@ void __kprobes arch_remove_kprobe(struct kprobe *p)
+ 
+ static void __kprobes save_previous_kprobe(struct kprobe_ctlblk *kcb)
+ {
+-	kcb->prev_kprobe.kp = kprobe_running();
+-	kcb->prev_kprobe.status = kcb->kprobe_status;
++	int i = kcb->nested++;
++
++	kcb->prev[i].kp = kprobe_running();
++	kcb->prev[i].status = kcb->kprobe_status;
+ }
+ 
+ static void __kprobes restore_previous_kprobe(struct kprobe_ctlblk *kcb)
+ {
+-	__this_cpu_write(current_kprobe, kcb->prev_kprobe.kp);
+-	kcb->kprobe_status = kcb->prev_kprobe.status;
++	int i = --kcb->nested;
++
++	__this_cpu_write(current_kprobe, kcb->prev[i].kp);
++	kcb->kprobe_status = kcb->prev[i].status;
+ }
+ 
+ static void __kprobes set_current_kprobe(struct kprobe *p)
+@@ -168,6 +172,14 @@ static void __kprobes set_current_kprobe(struct kprobe *p)
+ 	__this_cpu_write(current_kprobe, p);
+ }
+ 
++static nokprobe_inline void pop_current_kprobe(struct kprobe_ctlblk *kcb)
++{
++	if (kcb->nested)
++		restore_previous_kprobe(kcb);
++	else
++		reset_current_kprobe();
++}
++
+ /*
+  * Interrupts need to be disabled before single-step mode is set, and not
+  * reenabled until after single-step mode ends.
+@@ -243,6 +255,10 @@ static int __kprobes reenter_kprobe(struct kprobe *p,
+ 	switch (kcb->kprobe_status) {
+ 	case KPROBE_HIT_SSDONE:
+ 	case KPROBE_HIT_ACTIVE:
++		if (kcb->nested < KPROBE_NEST_MAX - 1) {
++			save_previous_kprobe(kcb);
++			return 0;
++		}
+ 		kprobes_inc_nmissed_count(p);
+ 		setup_singlestep(p, regs, kcb, 1);
+ 		break;
+@@ -286,7 +302,7 @@ post_kprobe_handler(struct kprobe_ctlblk *kcb, struct pt_regs *regs)
+ 		cur->post_handler(cur, regs, 0);
+ 	}
+ 
+-	reset_current_kprobe();
++	pop_current_kprobe(kcb);
+ }
+ 
+ int __kprobes kprobe_fault_handler(struct pt_regs *regs, unsigned int fsr)
+@@ -309,11 +325,7 @@ int __kprobes kprobe_fault_handler(struct pt_regs *regs, unsigned int fsr)
+ 			BUG();
+ 
+ 		kernel_disable_single_step();
+-
+-		if (kcb->kprobe_status == KPROBE_REENTER)
+-			restore_previous_kprobe(kcb);
+-		else
+-			reset_current_kprobe();
++		pop_current_kprobe(kcb);
+ 
+ 		break;
+ 	case KPROBE_HIT_ACTIVE:
+@@ -357,30 +369,27 @@ static void __kprobes kprobe_handler(struct pt_regs *regs)
+ 	p = get_kprobe((kprobe_opcode_t *) addr);
+ 
+ 	if (p) {
+-		if (cur_kprobe) {
+-			if (reenter_kprobe(p, regs, kcb))
+-				return;
+-		} else {
+-			/* Probe hit */
+-			set_current_kprobe(p);
+-			kcb->kprobe_status = KPROBE_HIT_ACTIVE;
++		if (cur_kprobe && reenter_kprobe(p, regs, kcb))
++			return;
++		/* Probe hit */
++		set_current_kprobe(p);
++		kcb->kprobe_status = KPROBE_HIT_ACTIVE;
+ 
+-			/*
+-			 * If we have no pre-handler or it returned 0, we
+-			 * continue with normal processing.  If we have a
+-			 * pre-handler and it returned non-zero, it will
+-			 * modify the execution path and no need to single
+-			 * stepping. Let's just reset current kprobe and exit.
+-			 *
+-			 * pre_handler can hit a breakpoint and can step thru
+-			 * before return, keep PSTATE D-flag enabled until
+-			 * pre_handler return back.
+-			 */
+-			if (!p->pre_handler || !p->pre_handler(p, regs)) {
+-				setup_singlestep(p, regs, kcb, 0);
+-			} else
+-				reset_current_kprobe();
+-		}
++		/*
++		 * If we have no pre-handler or it returned 0, we
++		 * continue with normal processing.  If we have a
++		 * pre-handler and it returned non-zero, it will
++		 * modify the execution path and no need to single
++		 * stepping. Let's just reset current kprobe and exit.
++		 *
++		 * pre_handler can hit a breakpoint and can step thru
++		 * before return, keep PSTATE D-flag enabled until
++		 * pre_handler return back.
++		 */
++		if (!p->pre_handler || !p->pre_handler(p, regs)) {
++			setup_singlestep(p, regs, kcb, 0);
++		} else
++			pop_current_kprobe(kcb);
+ 	}
+ 	/*
+ 	 * The breakpoint instruction was removed right
 
-Okay, I will organize my found issues, and send them to you.
-Thanks :)
-
-
-Best wishes,
-Jia-Ju Bai
