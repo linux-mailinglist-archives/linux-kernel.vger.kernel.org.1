@@ -2,140 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A0BA1C887D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 13:40:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 927601C88B1
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 13:45:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726531AbgEGLkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 07:40:06 -0400
-Received: from mail-eopbgr70110.outbound.protection.outlook.com ([40.107.7.110]:4676
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725848AbgEGLkF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 07:40:05 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PY/rlHBI/GA6Ox+evhgewN1JrE96GThJ7RqaWlvvZXh/TLijrF50ffR+YNyzw3RaxqCaK67k+1CEoVjXT1iQR73R7y6HCVBeInVZWMChMnvk4a5aD8UXvj1Bo6+TYFvmv5iAdpg2CbWaEuguw5AFtVRM/leM8q7Vsx2/Fbo/CcY8TJtYbnVFhPD0J/5HfkLLpZTAu+HGQT15zI65+fuHX5Fb7UcDlH6cef9UEvSpbCN5S9X/aW2Qt9Ll8D3DiN3m7Gv7iW1fo8JaCtsG5mc8RcGKOPCKtBvvtomDzgh07CBEcRYPi896bAoVRM5vImw9vTfXZlNmvNyP1Cx2HOEZPw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=REG8EPehNarY/yGsa0fRI7+j40UTo7cDPWZwMPV7x5s=;
- b=fW+wTme0WB4TZxjoqlewCwHtGi28tfCX/vgE9/jVvv9Mj1s8HnIgaKoF7EW+RFA4XWsxwi2MxFrGVU4UAXWm7rj4X9Vc3FKfKHHSLKB2MLbsOeb9jT5DvgOf5pDKxIliZrlayXouM815epxesLZEZBft/ORt5MA3TIyQ0tJtDrXnZeJGne4unGRgAa1zfqIJxHg6I3aEhjFjYs8i/No0Xfh57QjhIu7HGeHsyPuRtCfSqIEBgA6c6atGr2aMJKch2vqhpTuSi/DaaN+Vf1YgOqggglsorlUQbCyIJxjQ21rnq18mwxGWio8t0DTaVx2AYi2+vsLQKLoC8Cdq2IUPoA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=toradex.com; dmarc=pass action=none header.from=toradex.com;
- dkim=pass header.d=toradex.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=toradex.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=REG8EPehNarY/yGsa0fRI7+j40UTo7cDPWZwMPV7x5s=;
- b=LGy0aG0fgW23CtMjN1U0FspwVKn6WneXgdZbEcWN8YsKBE/l9Dy60j9HGAN6A+mi5EbQUJGkspx2alshu9uuMDGwIBfytSr2CNJPNqF1FfccEQwgY0LSklcSQZuQw5hEYdD7EDlNNjGVm7bxCwCOUn6ymeI3bg3rRamUpE/+Fmc=
-Received: from AM6PR05MB6120.eurprd05.prod.outlook.com (2603:10a6:20b:a8::25)
- by AM6PR05MB4422.eurprd05.prod.outlook.com (2603:10a6:209:43::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.27; Thu, 7 May
- 2020 11:40:01 +0000
-Received: from AM6PR05MB6120.eurprd05.prod.outlook.com
- ([fe80::d8d3:ead7:9f42:4289]) by AM6PR05MB6120.eurprd05.prod.outlook.com
- ([fe80::d8d3:ead7:9f42:4289%6]) with mapi id 15.20.2979.030; Thu, 7 May 2020
- 11:40:01 +0000
-From:   Philippe Schenker <philippe.schenker@toradex.com>
-To:     "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
-        "dillon.minfei@gmail.com" <dillon.minfei@gmail.com>,
-        "alexandre.torgue@st.com" <alexandre.torgue@st.com>
-CC:     "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V2 3/4] ARM: dts: stm32: enable stmpe811 on stm32429-disco
- board
-Thread-Topic: [PATCH V2 3/4] ARM: dts: stm32: enable stmpe811 on
- stm32429-disco board
-Thread-Index: AQHWJGDUkh+1vWERX0ChStn6nGXI06icf7qA
-Date:   Thu, 7 May 2020 11:40:01 +0000
-Message-ID: <7f7ad11559ec728c72d3d4df19ca16fe6a57058e.camel@toradex.com>
-References: <1588850125-24344-1-git-send-email-dillon.minfei@gmail.com>
-In-Reply-To: <1588850125-24344-1-git-send-email-dillon.minfei@gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.36.2 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=toradex.com;
-x-originating-ip: [51.154.7.61]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 29fbc4f7-5b24-419c-9140-08d7f27b60de
-x-ms-traffictypediagnostic: AM6PR05MB4422:
-x-microsoft-antispam-prvs: <AM6PR05MB44221BADEA5EDEC59ABEC04BF4A50@AM6PR05MB4422.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4502;
-x-forefront-prvs: 03965EFC76
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: AxzFTOa8ZwZzlUHwLviCmW15pVlyFHD61ml8tbRAheNapEz6R2qqMQJZs5K0egBhJtCe8/KYwvRFwYymrgkeCxkrcdFEqv5OqUK5kdrF6nYkMQYSLQOqSxoBEQ/DSonEOPfEqy6VIaPBFa1sSfV6m6NaACmdJjRNAlZHPFH3620pL6MOzFJ+jgKU59CFEi+ldEcuHgKSg9tdF1SlDSDxDx9kUX3Pezpngve6c/GN46zqZb5/FJzCjCgzsSl9l2TELuTD5g6mjmk2kqpdfjPFNk0XxUDd6hEHLaydBtaBz9pEk+HIC1FZO91qyugRdJ4CMA03KSJQUPwIAN/F/+tbVCQyegzamce+r0rG+l9DClFuMoP2GtCq65KxQMJnyVGEez3FTEr+aVMsJ7fkfwUXraGDBrmWjQPS9xVC8GzQXjnVw+WiKIVeCl3wn75X4+3yq7SDoDYjyfIIB9Z0mHesVcJr2E3joAoN3iUxQMYb1H2ePavuTK/xHvQKXJVFKpl7SBI1ZjHPRweGAFe8hZ1rag==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR05MB6120.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(346002)(136003)(366004)(396003)(39850400004)(33430700001)(8936002)(33440700001)(6512007)(86362001)(6506007)(66946007)(44832011)(6486002)(2906002)(66556008)(186003)(66476007)(66446008)(64756008)(8676002)(36756003)(2616005)(110136005)(54906003)(5660300002)(83320400001)(83280400001)(83310400001)(316002)(478600001)(83290400001)(26005)(71200400001)(83300400001)(76116006)(4326008)(91956017);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: g237bnMKZYHSTxKGC0S2aRZgC+wlf9bYDfQvima5NeqHgOF+b/1YDLbo7xgWAJg7euX79jT1euKDhKz6u8bNpyJyUpG5AmHELThrHAOcvTXfjPNg/8nmCziSylUjJ8ZUBROIb7FxH3186lfraE/efIvtqFw1FDfO5e6wTRaixR4YHgYWOVllg1nSdj+3+UwuZX21F2Sg57dBJDD1TSfH8KYwksoQje6qMNI1tYDNi6xgN4hwSOUbepIgdWc7BHcmVZbKA6+0qwAyHb8B6Y4L04ClAgxAVL659vSAQboI2HPfbWGM0nqEGm4iYm1Y41jmf5jbi7OQdEyEvHt1Drfxogq1LQ5m5JpmrsW5P6qbKZHO7Wlea+mUhqA06f+qzOolGkNujjuzDJ+Mjw+YzQ7kVQlNdKtjTyp72wyPEzPFxy16pMpVA8Vg+tiLz/s6AONzr5xLaCwFU68Y7+HLHrL4yO/mqkGY7x1hbOrV/RuH2ckC4RiWIAgQkudgdKK19lJ+HNxExKUl+Ue27kVP2CM4RZ2BHsyoHu/mODsgUlXZTRiaao+uTyl7LWn4BTOa/wh02Ku8zucMy3kQlBfIUaJ2jZEtuVHwv1X+WW8E1t+CEod9z0UNThQDm1eze3wIGt6WxzB3B7IfzmwRA9ve91e6fqU/JbAtwubAPheVu0QOpldonwtclc1wV6GbHdy+m7h5URzEp99yoI//u45121TgOlBD0YfqRFmvEdUq3ueXrRXwoB0RC41z6xnp9kCJHB5ASkfoawRz1mj6vjF7p3IRTwoAv6D9JP0+I8JiHzQ6Pi4=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <014E3F861DA3C24E97B6948622A59A2E@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-OriginatorOrg: toradex.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 29fbc4f7-5b24-419c-9140-08d7f27b60de
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 May 2020 11:40:01.5313
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: d9995866-0d9b-4251-8315-093f062abab4
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: FkoWnmgKnXKPCVfB9l406okk2fIZ3OPQdaotk2TPJHn5dHgC03+PYc8NOglY1k0F3uA/i/cEhY5jD+4uzzHwCusuDIL9QXdFROhKUetwFOU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB4422
+        id S1726678AbgEGLo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 07:44:58 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37608 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725848AbgEGLo6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 07:44:58 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 54958ABE6;
+        Thu,  7 May 2020 11:44:59 +0000 (UTC)
+Date:   Thu, 07 May 2020 13:44:56 +0200
+Message-ID: <s5heerw3r5z.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     butt3rflyh4ck <butterflyhuangxx@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Amadeusz SX2awiX4ski <amadeuszx.slawinski@linux.intel.com>,
+        <security@kernel.org>, <alsa-devel@alsa-project.org>,
+        <tiwai@suse.com>, <linux-kernel@vger.kernel.org>,
+        syzkaller <syzkaller@googlegroups.com>
+Subject: Re: KASAN: use-after-free Write in snd_rawmidi_kernel_write1
+In-Reply-To: <s5hmu6k3u24.wl-tiwai@suse.de>
+References: <CAFcO6XMGT42wFBxEa01Ee5Msuecm+WiXnn4rc-VWkC4vTzycPg@mail.gmail.com>
+        <20200507082302.GF1024567@kroah.com>
+        <s5h8si45ard.wl-tiwai@suse.de>
+        <ecc5f76f-2e87-f634-b98c-9fbcad177d72@linux.intel.com>
+        <s5hpnbg3uch.wl-tiwai@suse.de>
+        <s5hmu6k3u24.wl-tiwai@suse.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIwLTA1LTA3IGF0IDE5OjE1ICswODAwLCBkaWxsb24ubWluZmVpQGdtYWlsLmNv
-bSB3cm90ZToNCj4gRnJvbTogZGlsbG9uIG1pbiA8ZGlsbG9uLm1pbmZlaUBnbWFpbC5jb20+DQo+
-IA0KPiBFbmFibGUgdGhlIHN0bXBlODExIHRvdWNoIHNjcmVlbiBvbiBzdG0zMjQyOS1kaXNjbyBi
-b2FyZC4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IGRpbGxvbiBtaW4gPGRpbGxvbi5taW5mZWlAZ21h
-aWwuY29tPg0KPiANCj4gW1BBVENIIDMvNF06IEFSTTogZHRzOiBzdG0zMjogZW5hYmxlIHN0bXBl
-ODExIG9uIHN0bTMyNDI5LWRpc2NvDQo+IA0KPiBWMjoNCj4gcGF0Y2ggMzogcmVtb3ZlIHVudXNl
-ZCBpZCwgYmxvY2tzLCBpcnEtdHJpZ2dlcg0KPiANCj4gVjE6DQo+IHBhdGNoIDQ6IGZpeCByZWFk
-IHRvdWNoIHNjcmVlbiB4eXogdGltZW91dCBidWcNCj4gcGF0Y2ggMzogZW5hYmxlIHN0bXBlX3Rv
-dWNoc2NyZWVuIG9uIHN0bTMyZjQyOS1kaXNjbyBib2FyZA0KPiBwYXRjaCAyOiBhZGQgaTJjMyBw
-aW4gbXV4IGZvciBzdG0zMmY0DQo+IHBhdGNoIDE6IGFkZCBpMmMzIGNvbnRyb2xsZXIgaW50ZXJm
-YWNlIGZvciBzdG0zMmY0DQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBkaWxsb24gbWluIDxkaWxsb24u
-bWluZmVpQGdtYWlsLmNvbT4NCg0KRm9yIHRoZSBTVE1QRSBwYXJ0Og0KDQpSZXZpZXdlZC1ieTog
-UGhpbGlwcGUgU2NoZW5rZXIgPHBoaWxpcHBlLnNjaGVua2VyQHRvcmFkZXguY29tPg0KDQo+IC0t
-LQ0KPiAgYXJjaC9hcm0vYm9vdC9kdHMvc3RtMzJmNDI5LWRpc2NvLmR0cyB8IDQ3DQo+ICsrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrDQo+ICAxIGZpbGUgY2hhbmdlZCwgNDcgaW5z
-ZXJ0aW9ucygrKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2FyY2gvYXJtL2Jvb3QvZHRzL3N0bTMyZjQy
-OS1kaXNjby5kdHMNCj4gYi9hcmNoL2FybS9ib290L2R0cy9zdG0zMmY0MjktZGlzY28uZHRzDQo+
-IGluZGV4IDMwYzBmNjcuLmZhZDFlYzEgMTAwNjQ0DQo+IC0tLSBhL2FyY2gvYXJtL2Jvb3QvZHRz
-L3N0bTMyZjQyOS1kaXNjby5kdHMNCj4gKysrIGIvYXJjaC9hcm0vYm9vdC9kdHMvc3RtMzJmNDI5
-LWRpc2NvLmR0cw0KPiBAQCAtNDksNiArNDksOCBAQA0KPiAgI2luY2x1ZGUgInN0bTMyZjQyOS5k
-dHNpIg0KPiAgI2luY2x1ZGUgInN0bTMyZjQyOS1waW5jdHJsLmR0c2kiDQo+ICAjaW5jbHVkZSA8
-ZHQtYmluZGluZ3MvaW5wdXQvaW5wdXQuaD4NCj4gKyNpbmNsdWRlIDxkdC1iaW5kaW5ncy9pbnRl
-cnJ1cHQtY29udHJvbGxlci9pcnEuaD4NCj4gKyNpbmNsdWRlIDxkdC1iaW5kaW5ncy9ncGlvL2dw
-aW8uaD4NCj4gIA0KPiAgLyB7DQo+ICAJbW9kZWwgPSAiU1RNaWNyb2VsZWN0cm9uaWNzIFNUTTMy
-RjQyOWktRElTQ08gYm9hcmQiOw0KPiBAQCAtMTI3LDMgKzEyOSw0OCBAQA0KPiAgCXBpbmN0cmwt
-bmFtZXMgPSAiZGVmYXVsdCI7DQo+ICAJc3RhdHVzID0gIm9rYXkiOw0KPiAgfTsNCj4gKw0KPiAr
-JmkyYzMgew0KPiArCXBpbmN0cmwtbmFtZXMgPSAiZGVmYXVsdCI7DQo+ICsJcGluY3RybC0wID0g
-PCZpMmMzX3BpbnM+Ow0KPiArCWNsb2NrLWZyZXF1ZW5jeSA9IDwxMDAwMDA+Ow0KPiArCXN0YXR1
-cyA9ICJva2F5IjsNCj4gKw0KPiArCXN0bXBlODExQDQxIHsNCj4gKwkJY29tcGF0aWJsZSA9ICJz
-dCxzdG1wZTgxMSI7DQo+ICsJCXJlZyA9IDwweDQxPjsNCj4gKwkJaW50ZXJydXB0cyA9IDwxNSBJ
-UlFfVFlQRV9FREdFX0ZBTExJTkc+Ow0KPiArCQlpbnRlcnJ1cHQtcGFyZW50ID0gPCZncGlvYT47
-DQo+ICsJCS8qIDMuMjUgTUh6IEFEQyBjbG9jayBzcGVlZCAqLw0KPiArCQlzdCxhZGMtZnJlcSA9
-IDwxPjsNCj4gKwkJLyogMTItYml0IEFEQyAqLw0KPiArCQlzdCxtb2QtMTJiID0gPDE+Ow0KPiAr
-CQkvKiBpbnRlcm5hbCBBREMgcmVmZXJlbmNlICovDQo+ICsJCXN0LHJlZi1zZWwgPSA8MD47DQo+
-ICsJCS8qIEFEQyBjb252ZXJzdGlvbiB0aW1lOiA4MCBjbG9ja3MgKi8NCj4gKwkJc3Qsc2FtcGxl
-LXRpbWUgPSA8ND47DQo+ICsNCj4gKwkJc3RtcGVfdG91Y2hzY3JlZW4gew0KPiArCQkJY29tcGF0
-aWJsZSA9ICJzdCxzdG1wZS10cyI7DQo+ICsJCQkvKiA4IHNhbXBsZSBhdmVyYWdlIGNvbnRyb2wg
-Ki8NCj4gKwkJCXN0LGF2ZS1jdHJsID0gPDM+Ow0KPiArCQkJLyogNyBsZW5ndGggZnJhY3Rpb25h
-bCBwYXJ0IGluIHogKi8NCj4gKwkJCXN0LGZyYWN0aW9uLXogPSA8Nz47DQo+ICsJCQkvKg0KPiAr
-CQkJICogNTAgbUEgdHlwaWNhbCA4MCBtQSBtYXggdG91Y2hzY3JlZW4gZHJpdmVycw0KPiArCQkJ
-ICogY3VycmVudCBsaW1pdCB2YWx1ZQ0KPiArCQkJICovDQo+ICsJCQlzdCxpLWRyaXZlID0gPDE+
-Ow0KPiArCQkJLyogMSBtcyBwYW5lbCBkcml2ZXIgc2V0dGxpbmcgdGltZSAqLw0KPiArCQkJc3Qs
-c2V0dGxpbmcgPSA8Mz47DQo+ICsJCQkvKiA1IG1zIHRvdWNoIGRldGVjdCBpbnRlcnJ1cHQgZGVs
-YXkgKi8NCj4gKwkJCXN0LHRvdWNoLWRldC1kZWxheSA9IDw1PjsNCj4gKwkJfTsNCj4gKw0KPiAr
-CQlzdG1wZV9hZGMgew0KPiArCQkJY29tcGF0aWJsZSA9ICJzdCxzdG1wZS1hZGMiOw0KPiArCQkJ
-LyogZm9yYmlkIHRvIHVzZSBBREMgY2hhbm5lbHMgMy0wICh0b3VjaCkgKi8NCj4gKwkJCXN0LG5v
-cmVxdWVzdC1tYXNrID0gPDB4MEY+Ow0KPiArCQl9Ow0KPiArCX07DQo+ICt9Ow0K
+On Thu, 07 May 2020 12:42:27 +0200,
+Takashi Iwai wrote:
+> 
+> On Thu, 07 May 2020 12:36:14 +0200,
+> Takashi Iwai wrote:
+> > 
+> > On Thu, 07 May 2020 12:27:41 +0200,
+> > Amadeusz SX2awiX4ski wrote:
+> > > 
+> > > So if I follow this correctly, you call spin_unlock_irqrestore twice
+> > > in case of error?
+> > 
+> > Erm no, this is obviously wrong.  The error path needs re-lock.
+> > Will respin the fix.
+> 
+> ... and below is the revised patch.
+
+and yet more brush up, with a slightly better description.
+This seems working on my local machine, but let me know if something
+still goes wrong.
+
+
+thanks,
+
+Takashi
+
+-- 8< --
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH v3] ALSA: rawmidi: Fix racy buffer resize under concurrent
+ accesses
+
+The rawmidi core allows user to resize the runtime buffer via ioctl,
+and this may lead to UAF when performed during concurrent reads or
+writes: the read/write functions unlock the runtime lock temporarily
+during copying form/to user-space, and that's the race window.
+
+This patch fixes the hole by introducing a reference counter for the
+runtime buffer read/write access and returns -EBUSY error when the
+resize is performed concurrently against read/write.
+
+Note that the ref count field is a simple integer instead of
+refcount_t here, since the all contexts accessing the buffer is
+basically protected with a spinlock, hence we need no expensive atomic
+ops.  Also, note that this busy check is needed only against read /
+write functions, and not in receive/transmit callbacks; the race can
+happen only at the spinlock hole mentioned in the above, while the
+whole function is protected for receive / transmit callbacks.
+
+Reported-by: butt3rflyh4ck <butterflyhuangxx@gmail.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/CAFcO6XMWpUVK_yzzCpp8_XP7+=oUpQvuBeCbMffEDkpe8jWrfg@mail.gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+v1->v2: Fix spinlock unbalance at error path of snd_rawmidi_kernel_read1()    
+v2->v3: Remove superfluous ref in receive/transmit; more detailed
+	patch description
+
+ include/sound/rawmidi.h |  1 +
+ sound/core/rawmidi.c    | 31 +++++++++++++++++++++++++++----
+ 2 files changed, 28 insertions(+), 4 deletions(-)
+
+diff --git a/include/sound/rawmidi.h b/include/sound/rawmidi.h
+index a36b7227a15a..334842daa904 100644
+--- a/include/sound/rawmidi.h
++++ b/include/sound/rawmidi.h
+@@ -61,6 +61,7 @@ struct snd_rawmidi_runtime {
+ 	size_t avail_min;	/* min avail for wakeup */
+ 	size_t avail;		/* max used buffer for wakeup */
+ 	size_t xruns;		/* over/underruns counter */
++	int buffer_ref;		/* buffer reference count */
+ 	/* misc */
+ 	spinlock_t lock;
+ 	wait_queue_head_t sleep;
+diff --git a/sound/core/rawmidi.c b/sound/core/rawmidi.c
+index 20dd08e1f675..2a688b711a9a 100644
+--- a/sound/core/rawmidi.c
++++ b/sound/core/rawmidi.c
+@@ -120,6 +120,17 @@ static void snd_rawmidi_input_event_work(struct work_struct *work)
+ 		runtime->event(runtime->substream);
+ }
+ 
++/* buffer refcount management: call with runtime->lock held */
++static inline void snd_rawmidi_buffer_ref(struct snd_rawmidi_runtime *runtime)
++{
++	runtime->buffer_ref++;
++}
++
++static inline void snd_rawmidi_buffer_unref(struct snd_rawmidi_runtime *runtime)
++{
++	runtime->buffer_ref--;
++}
++
+ static int snd_rawmidi_runtime_create(struct snd_rawmidi_substream *substream)
+ {
+ 	struct snd_rawmidi_runtime *runtime;
+@@ -669,6 +680,11 @@ static int resize_runtime_buffer(struct snd_rawmidi_runtime *runtime,
+ 		if (!newbuf)
+ 			return -ENOMEM;
+ 		spin_lock_irq(&runtime->lock);
++		if (runtime->buffer_ref) {
++			spin_unlock_irq(&runtime->lock);
++			kvfree(newbuf);
++			return -EBUSY;
++		}
+ 		oldbuf = runtime->buffer;
+ 		runtime->buffer = newbuf;
+ 		runtime->buffer_size = params->buffer_size;
+@@ -1019,8 +1035,10 @@ static long snd_rawmidi_kernel_read1(struct snd_rawmidi_substream *substream,
+ 	long result = 0, count1;
+ 	struct snd_rawmidi_runtime *runtime = substream->runtime;
+ 	unsigned long appl_ptr;
++	int err = 0;
+ 
+ 	spin_lock_irqsave(&runtime->lock, flags);
++	snd_rawmidi_buffer_ref(runtime);
+ 	while (count > 0 && runtime->avail) {
+ 		count1 = runtime->buffer_size - runtime->appl_ptr;
+ 		if (count1 > count)
+@@ -1039,16 +1057,19 @@ static long snd_rawmidi_kernel_read1(struct snd_rawmidi_substream *substream,
+ 		if (userbuf) {
+ 			spin_unlock_irqrestore(&runtime->lock, flags);
+ 			if (copy_to_user(userbuf + result,
+-					 runtime->buffer + appl_ptr, count1)) {
+-				return result > 0 ? result : -EFAULT;
+-			}
++					 runtime->buffer + appl_ptr, count1))
++				err = -EFAULT;
+ 			spin_lock_irqsave(&runtime->lock, flags);
++			if (err)
++				goto out;
+ 		}
+ 		result += count1;
+ 		count -= count1;
+ 	}
++ out:
++	snd_rawmidi_buffer_unref(runtime);
+ 	spin_unlock_irqrestore(&runtime->lock, flags);
+-	return result;
++	return result > 0 ? result : err;
+ }
+ 
+ long snd_rawmidi_kernel_read(struct snd_rawmidi_substream *substream,
+@@ -1342,6 +1363,7 @@ static long snd_rawmidi_kernel_write1(struct snd_rawmidi_substream *substream,
+ 			return -EAGAIN;
+ 		}
+ 	}
++	snd_rawmidi_buffer_ref(runtime);
+ 	while (count > 0 && runtime->avail > 0) {
+ 		count1 = runtime->buffer_size - runtime->appl_ptr;
+ 		if (count1 > count)
+@@ -1373,6 +1395,7 @@ static long snd_rawmidi_kernel_write1(struct snd_rawmidi_substream *substream,
+ 	}
+       __end:
+ 	count1 = runtime->avail < runtime->buffer_size;
++	snd_rawmidi_buffer_unref(runtime);
+ 	spin_unlock_irqrestore(&runtime->lock, flags);
+ 	if (count1)
+ 		snd_rawmidi_output_trigger(substream, 1);
+-- 
+2.25.0
+
