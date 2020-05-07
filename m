@@ -2,121 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A6351C8D9E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 16:08:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 786051C8DA3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 16:08:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727980AbgEGOHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 10:07:47 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:25736 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727903AbgEGOHn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 10:07:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588860462;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1AoI+9FyMu82WK4bZhrAK5V8JQ6RWrNZsFQbYJw2lb8=;
-        b=cMmKQFVQKKGKi3A8eBf2pDOFVWfZ3LjO2ZMbKfUXlf9oawbecNEEhbqTgFaDDUfOuDs0R9
-        xVhVVpQr6wHX86PxsWk98agb14s+azuxCpcxfnlRKAIXwdVfayaE36zuSseN22EpvYty4y
-        C4kNaIgIivoqetuU4Pugr6eQXNMqyfs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-61-vKGhe_kQMd-SMc6q1mPVXw-1; Thu, 07 May 2020 10:07:39 -0400
-X-MC-Unique: vKGhe_kQMd-SMc6q1mPVXw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1728035AbgEGOIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 10:08:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60618 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726268AbgEGOH7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 10:07:59 -0400
+Received: from Mani-XPS-13-9360 (unknown [157.46.59.191])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 422AA460;
-        Thu,  7 May 2020 14:07:37 +0000 (UTC)
-Received: from treble (ovpn-115-96.rdu2.redhat.com [10.10.115.96])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 059E670545;
-        Thu,  7 May 2020 14:07:35 +0000 (UTC)
-Date:   Thu, 7 May 2020 09:07:33 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        X86 ML <x86@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] bpf: Tweak BPF jump table optimizations for objtool
- compatibility
-Message-ID: <20200507140733.v4xlzjogtnpgu5lc@treble>
-References: <20200502192105.xp2osi5z354rh4sm@treble>
- <20200505174300.gech3wr5v6kkho35@ast-mbp.dhcp.thefacebook.com>
- <20200505181108.hwcqanvw3qf5qyxk@treble>
- <20200505195320.lyphpnprn3sjijf6@ast-mbp.dhcp.thefacebook.com>
- <20200505202823.zkmq6t55fxspqazk@treble>
- <20200505235939.utnmzqsn22cec643@ast-mbp.dhcp.thefacebook.com>
- <20200506155343.7x3slq3uasponb6w@treble>
- <CAADnVQJZ1rj1DB-Y=85itvfcHxnXVKjhJXpzqs6zZ6ZLpexhCQ@mail.gmail.com>
- <20200506211945.4qhrxqplzmt4ul66@treble>
- <20200507000357.grprluieqa324v5c@ast-mbp.dhcp.thefacebook.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id F03462084D;
+        Thu,  7 May 2020 14:07:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588860478;
+        bh=up72YqQmbXKsh+0pM1oCFb1Y0z05K3pNe8Mi871M7kc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jsUyk3GojI51408CO+VP69Uj5RZ4eJkVtRwanijT5SOihR0odMv6AqV9EZzz+J4vR
+         T6Tr+k2nnIhLGKQQWLg10jhz8YQoFL9axsSFvzcb+NeN05rqb4r2Q3PvDv3Hw90MXl
+         7te6rl2Rr1MRb/oDmEb64s1lK3JiRdPHtZK4Ev5U=
+Date:   Thu, 7 May 2020 19:37:50 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        fabrice.gasnier@st.com, andy.shevchenko@gmail.com,
+        robh+dt@kernel.org, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com
+Subject: Re: [PATCH v3 0/2] Add CTS/RTS gpio support to STM32 UART
+Message-ID: <20200507140750.GA2019@Mani-XPS-13-9360>
+References: <20200420170204.24541-1-mani@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200507000357.grprluieqa324v5c@ast-mbp.dhcp.thefacebook.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <20200420170204.24541-1-mani@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 06, 2020 at 05:03:57PM -0700, Alexei Starovoitov wrote:
-> > > > > diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
-> > > > > index d7ee4c6bad48..05104c3cc033 100644
-> > > > > --- a/include/linux/compiler-gcc.h
-> > > > > +++ b/include/linux/compiler-gcc.h
-> > > > > @@ -171,4 +171,4 @@
-> > > > >  #define __diag_GCC_8(s)
-> > > > >  #endif
-> > > > >
-> > > > > -#define __no_fgcse __attribute__((optimize("-fno-gcse")))
-> > > > > +#define __no_fgcse __attribute__((optimize("-fno-gcse,-fno-omit-frame-pointer")))
-> > > > > --
-> > > > > 2.23.0
-> > > > >
-> > > > > I've tested it with gcc 8,9,10 and clang 11 with FP=y and with ORC=y.
-> > > > > All works.
-> > > > > I think it's safer to go with frame pointers even for ORC=y considering
-> > > > > all the pain this issue had caused. Even if objtool gets confused again
-> > > > > in the future __bpf_prog_run() will have frame pointers and kernel stack
-> > > > > unwinding can fall back from ORC to FP for that frame.
-> > > > > wdyt?
-> > > >
-> > > > It seems dangerous to me.  The GCC manual recommends against it.
-> > > 
-> > > The manual can says that it's broken. That won't stop the world from using it.
-> > > Just google projects that are using it. For example: qt, lz4, unreal engine, etc
-> > > Telling compiler to disable gcse via flag is a guaranteed way to avoid
-> > > that optimization that breaks objtool whereas messing with C code is nothing
-> > > but guess work. gcc can still do gcse.
-> > 
-> > But the manual's right, it is broken.  How do you know other important
-> > flags won't also be stripped?
+Hi Greg,
+
+On Mon, Apr 20, 2020 at 10:32:02PM +0530, mani@kernel.org wrote:
+> From: Manivannan Sadhasivam <mani@kernel.org>
 > 
-> What flags are you worried about?
-> I've checked that important things like -mno-red-zone, -fsanitize are preserved.
+> Hello,
+> 
+> This patchset adds CTS/RTS gpio support to STM32 UART controller.
+> Eventhough the UART controller supports using dedicated CTS/RTS gpios,
+> sometimes we need to use different set of gpios for flow control.
+> 
+> This is necessary for the upcoming STM32MP1 based board called Stinger96
+> IoT-Box. On that board, a bluetooth chip is connected to one of the UART
+> controller but the CTS/RTS lines got swapped mistakenly. So this patchset
+> serves as a workaround for that hardware bug and also supports the
+> usecase of using any gpio for CTS/RTS functionality. As per the sugggestion
+> provided by Andy for v1, I've now switched to mctrl_gpio driver.
+> 
+> This patchset has been validated with Stinger96 IoT-Box connected to Murata
+> WiFi-BT combo chip.
+> 
 
-It's not any specific flags I'm worried about, it's all of them.  There
-are a lot of possibilities, with all the different configs, and arches.
-Flags are usually added for a good reason, so one randomly missing flag
-could have unforeseen results.
+Are you planning to take this series for 5.8?
 
-And I don't have any visibility into how GCC decides which flags to
-drop, and when.  But the docs aren't comforting.
+Thanks,
+Mani
 
-Even if things seem to work now, that could (silently) change at any
-point in time.  This time objtool warned about the missing frame
-pointer, but that's not necessarily going to happen for other flags.
-
-If we go this route, I would much rather do -fno-gcse on a file-wide
-basis.
-
--- 
-Josh
-
+> Thanks,
+> Mani
+> 
+> Changes in v3:
+> 
+> * Added Andy's reviewed-by tag
+> * Fixed minor issues spotted by Fabrice
+> 
+> Changes in v2:
+> 
+> As per the review by Andy:
+> 
+> * Switched to mctrl_gpio driver instead of using custom CTS/RTS
+>   implementation
+> * Removed the use of software flow control terminology.
+> 
+> Manivannan Sadhasivam (2):
+>   dt-bindings: serial: Document CTS/RTS gpios in STM32 UART
+>   tty: serial: Add modem control gpio support for STM32 UART
+> 
+>  .../bindings/serial/st,stm32-uart.yaml        | 14 +++++
+>  drivers/tty/serial/Kconfig                    |  1 +
+>  drivers/tty/serial/stm32-usart.c              | 53 ++++++++++++++++++-
+>  drivers/tty/serial/stm32-usart.h              |  1 +
+>  4 files changed, 67 insertions(+), 2 deletions(-)
+> 
+> -- 
+> 2.17.1
+> 
