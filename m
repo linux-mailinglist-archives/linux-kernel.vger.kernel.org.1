@@ -2,95 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8D911C8377
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 09:31:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C31F31C8382
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 09:35:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726382AbgEGHbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 03:31:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51036 "EHLO mail.kernel.org"
+        id S1726007AbgEGHfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 03:35:46 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:50116 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725802AbgEGHbV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 03:31:21 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D31242078C;
-        Thu,  7 May 2020 07:31:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588836681;
-        bh=Ibfrzr4aWOuipCvG0cP+Oq1YAQPydyzZWHO9VbwFXeE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Vy9K39+1uKfjiD/hPeV64uMHUe7pj44TE6ZxNNIUaw3S1NuLoVZlUlW08H3lP9Lws
-         ocUEtLJLEVHzZ08n4kCv8ih5TWvcp0SCDW1JdGG5aSYdOLs3C/wpoTB/vb6cRmpanX
-         Q6hCvBmV7MLRpbG4d6ukGbxSIPsJ70P3qBTcyJXI=
-Date:   Thu, 7 May 2020 09:31:19 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     mathias.nyman@intel.com,
-        "open list:USB XHCI DRIVER" <linux-usb@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] xhci: Make debug message consistent with bus and port
- number
-Message-ID: <20200507073119.GA876666@kroah.com>
-References: <20200507061755.13280-1-kai.heng.feng@canonical.com>
- <20200507064510.GA787064@kroah.com>
- <C4A734C8-D1C6-45BC-9C0A-92364EAEE3C0@canonical.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <C4A734C8-D1C6-45BC-9C0A-92364EAEE3C0@canonical.com>
+        id S1725783AbgEGHfp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 03:35:45 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 5C619200F19;
+        Thu,  7 May 2020 09:35:43 +0200 (CEST)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 4DDB1200F10;
+        Thu,  7 May 2020 09:35:43 +0200 (CEST)
+Received: from fsr-ub1864-111.ea.freescale.net (fsr-ub1864-111.ea.freescale.net [10.171.82.141])
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id F394A203C5;
+        Thu,  7 May 2020 09:35:42 +0200 (CEST)
+From:   Diana Craciun <diana.craciun@oss.nxp.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     laurentiu.tudor@nxp.com, stuyoder@gmail.com, leoyang.li@nxp.com,
+        linux-arm-kernel@lists.infradead.org, gregkh@linuxfoundation.org,
+        Diana Craciun <diana.craciun@oss.nxp.com>
+Subject: [PATCH v2 00/12] bus/fsl-mc: Extend mc-bus driver functionalities in preparation for mc-bus VFIO support
+Date:   Thu,  7 May 2020 10:34:19 +0300
+Message-Id: <20200507073431.2710-1-diana.craciun@oss.nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 07, 2020 at 03:15:01PM +0800, Kai-Heng Feng wrote:
-> 
-> 
-> > On May 7, 2020, at 14:45, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> > 
-> > On Thu, May 07, 2020 at 02:17:55PM +0800, Kai-Heng Feng wrote:
-> >> Current xhci debug message doesn't always output bus number, so it's
-> >> hard to figure out it's from USB2 or USB3 root hub.
-> >> 
-> >> In addition to that, some port numbers are offset to 0 and others are
-> >> offset to 1. Use the latter to match the USB core.
-> >> 
-> >> So use "bus number - port index + 1" to make debug message consistent.
-> >> 
-> >> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> >> ---
-> >> drivers/usb/host/xhci-hub.c | 41 +++++++++++++++++++++----------------
-> >> 1 file changed, 23 insertions(+), 18 deletions(-)
-> >> 
-> >> diff --git a/drivers/usb/host/xhci-hub.c b/drivers/usb/host/xhci-hub.c
-> >> index f37316d2c8fa..83088c262cc4 100644
-> >> --- a/drivers/usb/host/xhci-hub.c
-> >> +++ b/drivers/usb/host/xhci-hub.c
-> >> @@ -1241,7 +1241,8 @@ int xhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
-> >> 			temp = readl(ports[wIndex]->addr);
-> >> 			/* Disable port */
-> >> 			if (link_state == USB_SS_PORT_LS_SS_DISABLED) {
-> >> -				xhci_dbg(xhci, "Disable port %d\n", wIndex);
-> >> +				xhci_dbg(xhci, "Disable port %d-%d\n",
-> >> +					 hcd->self.busnum, wIndex + 1);
-> > 
-> > Shouldn't xhci_dbg() show the bus number already?  
-> 
-> It's the PCI bus number, different to USB2/USB3 root hub bus number...
+The vfio-mc bus driver needs some additional services to be exported by the
+mc-bus driver like:
+- a way to reset the DPRC container
+- driver_override support
+- functions to setup/tear down a DPRC
+- functions for allocating the pool of interrupts. In case of VFIO the
+interrupts are not configured at probe time, but later by userspace
+request
 
-But if this is using dev_dbg(), and it is, then you know how to look
-that up by seeing where that device is in sysfs at that point in time.
+v1 -> v2
+- Remove driver_override propagation through various functions
+- Cache the DPRC API version
 
-So why add this again?
+The patches are related with "vfio/fsl-mc: VFIO support for FSL-MC
+devices" patches, but the series were split because they are targeting
+different subsystems. However, the mc-bus patches may suffer changes
+when addressing the VFIO review comments.
 
-> > If not, please fix
-> > that up there instead of having to add it to all messages "by hand".
-> 
-> Not all xhci debug messages need roothub number in it.
+Bharat Bhushan (3):
+  bus/fsl-mc: add support for 'driver_override' in the mc-bus
+  bus/fsl-mc: Add dprc-reset-container support
+  bus/fsl-mc: Extend ICID size from 16bit to 32bit
 
-Why pick these random ones?  What makes these different?
+Diana Craciun (9):
+  bus/fsl-mc: Do no longer export the total number of irqs outside
+    dprc_scan_objects
+  bus/fsl-mc: Add a new parameter to dprc_scan_objects function
+  bus/fsl-mc: Set the QMAN/BMAN region flags
+  bus/fsl-mc: Cache the DPRC API version
+  bus/fsl-mc: Export a dprc scan function to be used by multiple
+    entities
+  bus/fsl-mc: Export a cleanup function for DPRC
+  bus/fsl-mc: Add a container setup function
+  bus/fsl_mc: Do not rely on caller to provide non NULL mc_io
+  bus/fsl-mc: Export IRQ pool handling functions to be used by VFIO
 
-Either all or none, be consistant please.
+ drivers/bus/fsl-mc/dprc-driver.c      | 181 ++++++++++++++++----------
+ drivers/bus/fsl-mc/dprc.c             | 103 +++++++++++++--
+ drivers/bus/fsl-mc/fsl-mc-allocator.c |  12 +-
+ drivers/bus/fsl-mc/fsl-mc-bus.c       |  64 ++++++++-
+ drivers/bus/fsl-mc/fsl-mc-private.h   |  28 ++--
+ drivers/bus/fsl-mc/mc-io.c            |   7 +-
+ include/linux/fsl/mc.h                |  29 ++++-
+ 7 files changed, 313 insertions(+), 111 deletions(-)
 
-greg k-h
+-- 
+2.17.1
+
