@@ -2,198 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B027B1C7FA1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 03:05:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86A3C1C7FB3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 03:06:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728575AbgEGBFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 21:05:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36874 "EHLO
+        id S1728544AbgEGBGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 21:06:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726807AbgEGBFS (ORCPT
+        with ESMTP id S1726807AbgEGBGt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 21:05:18 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFFE0C061A10
-        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 18:05:17 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id b6so1354702plz.13
-        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 18:05:17 -0700 (PDT)
+        Wed, 6 May 2020 21:06:49 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78F3BC061A0F
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 18:06:49 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id i19so1992737ioh.12
+        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 18:06:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cs.washington.edu; s=goo201206;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=35i1uOH32weCZseOrM7fgg14K7q1B6kLHtPYbgszlOo=;
-        b=R/LDR7DFzMXYZtRwYFLz7iACbiKbk+k+Fkge+bTZCHhLGYhkN4PhrbjMvBie2fQe2+
-         +eAjuQYI/c48Lsec6zz61Z9S5eMUUq/CRbcaT3r7NoM2/8p/Ifi8rb+EmEzXzyzm6zzs
-         P5IC8QPCu1DOeyp9e1xAwHT3aEwgIZBFbdcLA=
+        d=joelfernandes.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=of3KfhSUdjcRaAhhtS98nALCb0SeCwXToKZ3bm5aVW0=;
+        b=UhtGXIkCMYXfzHwRayibTEkrHWHkG1XzIQ5y1BMZWH8G+drB3N5LHYxjP1d+TuV08f
+         NJKEl1hgPTTnGXlFYqwun3zGwXx1G5gKO7J+tEu+ZX+IgVbd8hWfD7SBDJB59pKA/s/4
+         FTagE+4BCKWlq95uTeYFK1eCljj71lUhvBcqE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=35i1uOH32weCZseOrM7fgg14K7q1B6kLHtPYbgszlOo=;
-        b=tCZmAiJ19jiQHBjvRVh8zSCmitCMOSf4zRu5BeMl0Dt0foqxkYuXDJOBU1Uv5Pzu5Q
-         m63nkFNUD9BYPSHYxc5E3i3YqVU3BCRYFVd5eSC+zskWdJ+LvLIWevdBl64TE3mFOa9h
-         oKFQivs0AZ4cz9EbwU32InX7IGXHOp54tcB2YjYqbkmbCUqVXXjy+gPiB7XCVn6WhQpN
-         uFGx5zkhXIqb+/ZeMLVDzTDuMZ+R97hN2QMt7Q0ZIQE8qO+1NHLXofc5U9SF9QqbX/yE
-         CkolpyDa40yMpN8rBQ5csGBePX6xPQdwOWfRPBGD1C6qjFFb6XtULcoBme76d9aTHJ9U
-         fMdA==
-X-Gm-Message-State: AGi0PuYFTMxAck10LJmBXl84PUm8++TgMBqYuJAMiQ+4IKm4Q8pZTNcq
-        U7hVNNnLekgK71e7FdCw/e3H6A==
-X-Google-Smtp-Source: APiQypKFU2PaEl7A2Ov+j6vFjii0e84UEN8OWo1rfo+p71phRPmL3Wiz+FYt/QG7MmEDbct+2lejIA==
-X-Received: by 2002:a17:902:694b:: with SMTP id k11mr8267407plt.59.1588813517313;
-        Wed, 06 May 2020 18:05:17 -0700 (PDT)
-Received: from localhost.localdomain (c-73-53-94-119.hsd1.wa.comcast.net. [73.53.94.119])
-        by smtp.gmail.com with ESMTPSA id ev5sm6165250pjb.1.2020.05.06.18.05.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 May 2020 18:05:16 -0700 (PDT)
-From:   Luke Nelson <lukenels@cs.washington.edu>
-X-Google-Original-From: Luke Nelson <luke.r.nels@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Luke Nelson <luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Enrico Weigelt <info@metux.net>, Torsten Duwe <duwe@suse.de>,
-        Allison Randal <allison@lohutok.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Christoffer Dall <christoffer.dall@linaro.org>,
-        Marc Zyngier <maz@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: [RFC PATCH bpf-next 3/3] bpf, arm64: Optimize ADD,SUB,JMP BPF_K using arm64 add/sub immediates
-Date:   Wed,  6 May 2020 18:05:03 -0700
-Message-Id: <20200507010504.26352-4-luke.r.nels@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200507010504.26352-1-luke.r.nels@gmail.com>
-References: <20200507010504.26352-1-luke.r.nels@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=of3KfhSUdjcRaAhhtS98nALCb0SeCwXToKZ3bm5aVW0=;
+        b=PKGoSRVizmV938MreACCAW2rxoViJDEuAXddBKEQndvaDnJw7lxW3D745UMydDJosI
+         HyTOIrkBxWEZ14UsBJClKZhESzHfYjepUu0dckSZUI2m+jtwonatrSDIIt/F3rYjCnoN
+         X8WoXQkkX/6I1NaN7iqqI0JIbgkdAke0HhSVio0yhOKkDJYscPtGE9u414XDYBmip7MT
+         YnTCAsxNbpBPVU5AAer1EujEqlV+8drVZpLrS0LRtG8MsmCWGHkaU4pjJbNiHlj3abpe
+         ObR2NsrBsk/Ns+YMw9X4h2TYedddSnYk4hdo5EggfGizD5WyTzAjxHxheb4UM1DFHern
+         jAZQ==
+X-Gm-Message-State: AGi0PuY43BM1PxKI9jz89IPbY8WuSUp2/bxgaRNxavi1BL5nY6gb8WmH
+        1JwkrBFAoYzXOmfxDx4Iz8yL6Xnsi1Muv4bsdXYkPDcVroQ=
+X-Google-Smtp-Source: APiQypIhPDD2VryfsIP+QJWr3Q6Ie5B6ZGqJNucbPF/WIouLSZ5535SkF1Dox4SaU2fr+Fd//5tpVpHC7B1MreVXAAo=
+X-Received: by 2002:a02:a68e:: with SMTP id j14mr11373661jam.86.1588813608862;
+ Wed, 06 May 2020 18:06:48 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200506172158.218366-1-bgeffon@google.com>
+In-Reply-To: <20200506172158.218366-1-bgeffon@google.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Wed, 6 May 2020 21:06:37 -0400
+Message-ID: <CAEXW_YS_rAxHuj_Jr+0xWQSUyiOX3WKnJNevh2ReE=O+Xsp6SA@mail.gmail.com>
+Subject: Re: [PATCH] userfaultfd: fix remap event with MREMAP_DONTUNMAP.
+To:     Brian Geffon <bgeffon@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Sonny Rao <sonnyrao@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current code for BPF_{ADD,SUB} BPF_K loads the BPF immediate to a
-temporary register before performing the addition/subtraction. Similarly,
-BPF_JMP BPF_K cases load the immediate to a temporary register before
-comparison.
+On Wed, May 6, 2020 at 1:22 PM Brian Geffon <bgeffon@google.com> wrote:
+>
+> A user is not required to set a new address when using
+> MREMAP_DONTUNMAP as it can be used without MREMAP_FIXED.
+> When doing so the remap event will use new_addr which may not
+> have been set and we didn't propagate it back other then
+> in the return value of remap_to.
+>
+> Because ret is always the new address it's probably more
+> correct to use it rather than new_addr on the remap_event_complete
+> call, and it resolves this bug.
+>
+> Signed-off-by: Brian Geffon <bgeffon@google.com>
+> ---
+>  mm/mremap.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/mm/mremap.c b/mm/mremap.c
+> index c881abeba0bf..6aa6ea605068 100644
+> --- a/mm/mremap.c
+> +++ b/mm/mremap.c
+> @@ -794,7 +794,7 @@ SYSCALL_DEFINE5(mremap, unsigned long, addr, unsigned long, old_len,
+>         if (locked && new_len > old_len)
+>                 mm_populate(new_addr + old_len, new_len - old_len);
+>         userfaultfd_unmap_complete(mm, &uf_unmap_early);
+> -       mremap_userfaultfd_complete(&uf, addr, new_addr, old_len);
+> +       mremap_userfaultfd_complete(&uf, addr, ret, old_len);
 
-This patch introduces optimizations that use arm64 immediate add, sub,
-cmn, or cmp instructions when the BPF immediate fits. If the immediate
-does not fit, it falls back to using a temporary register.
+Not super familiar with this code, but thought I'd ask, does ret need
+to be checked for -ENOMEM before calling mremap_userfaultfd_complete?
+Sorry if I missed something.
 
-Example of generated code for BPF_ALU64_IMM(BPF_ADD, R0, 2):
+Thanks,
 
-without optimization:
+ - Joel
 
-  24: mov x10, #0x2
-  28: add x7, x7, x10
-
-with optimization:
-
-  24: add x7, x7, #0x2
-
-The code could use A64_{ADD,SUB}_I directly and check if it returns
-AARCH64_BREAK_FAULT, similar to how logical immediates are handled.
-However, aarch64_insn_gen_add_sub_imm from insn.c prints error messages
-when the immediate does not fit, and it's simpler to check if the
-immediate fits ahead of time.
-
-Co-developed-by: Xi Wang <xi.wang@gmail.com>
-Signed-off-by: Xi Wang <xi.wang@gmail.com>
-Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
----
- arch/arm64/net/bpf_jit.h      |  8 ++++++++
- arch/arm64/net/bpf_jit_comp.c | 36 +++++++++++++++++++++++++++++------
- 2 files changed, 38 insertions(+), 6 deletions(-)
-
-diff --git a/arch/arm64/net/bpf_jit.h b/arch/arm64/net/bpf_jit.h
-index f36a779949e6..923ae7ff68c8 100644
---- a/arch/arm64/net/bpf_jit.h
-+++ b/arch/arm64/net/bpf_jit.h
-@@ -100,6 +100,14 @@
- /* Rd = Rn OP imm12 */
- #define A64_ADD_I(sf, Rd, Rn, imm12) A64_ADDSUB_IMM(sf, Rd, Rn, imm12, ADD)
- #define A64_SUB_I(sf, Rd, Rn, imm12) A64_ADDSUB_IMM(sf, Rd, Rn, imm12, SUB)
-+#define A64_ADDS_I(sf, Rd, Rn, imm12) \
-+	A64_ADDSUB_IMM(sf, Rd, Rn, imm12, ADD_SETFLAGS)
-+#define A64_SUBS_I(sf, Rd, Rn, imm12) \
-+	A64_ADDSUB_IMM(sf, Rd, Rn, imm12, SUB_SETFLAGS)
-+/* Rn + imm12; set condition flags */
-+#define A64_CMN_I(sf, Rn, imm12) A64_ADDS_I(sf, A64_ZR, Rn, imm12)
-+/* Rn - imm12; set condition flags */
-+#define A64_CMP_I(sf, Rn, imm12) A64_SUBS_I(sf, A64_ZR, Rn, imm12)
- /* Rd = Rn */
- #define A64_MOV(sf, Rd, Rn) A64_ADD_I(sf, Rd, Rn, 0)
- 
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index 083e5d8a5e2c..561a2fea9cdd 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -167,6 +167,12 @@ static inline int epilogue_offset(const struct jit_ctx *ctx)
- 	return to - from;
- }
- 
-+static bool is_addsub_imm(u32 imm)
-+{
-+	/* Either imm12 or shifted imm12. */
-+	return !(imm & ~0xfff) || !(imm & ~0xfff000);
-+}
-+
- /* Stack must be multiples of 16B */
- #define STACK_ALIGN(sz) (((sz) + 15) & ~15)
- 
-@@ -479,13 +485,25 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
- 	/* dst = dst OP imm */
- 	case BPF_ALU | BPF_ADD | BPF_K:
- 	case BPF_ALU64 | BPF_ADD | BPF_K:
--		emit_a64_mov_i(is64, tmp, imm, ctx);
--		emit(A64_ADD(is64, dst, dst, tmp), ctx);
-+		if (is_addsub_imm(imm)) {
-+			emit(A64_ADD_I(is64, dst, dst, imm), ctx);
-+		} else if (is_addsub_imm(-imm)) {
-+			emit(A64_SUB_I(is64, dst, dst, -imm), ctx);
-+		} else {
-+			emit_a64_mov_i(is64, tmp, imm, ctx);
-+			emit(A64_ADD(is64, dst, dst, tmp), ctx);
-+		}
- 		break;
- 	case BPF_ALU | BPF_SUB | BPF_K:
- 	case BPF_ALU64 | BPF_SUB | BPF_K:
--		emit_a64_mov_i(is64, tmp, imm, ctx);
--		emit(A64_SUB(is64, dst, dst, tmp), ctx);
-+		if (is_addsub_imm(imm)) {
-+			emit(A64_SUB_I(is64, dst, dst, imm), ctx);
-+		} else if (is_addsub_imm(-imm)) {
-+			emit(A64_ADD_I(is64, dst, dst, -imm), ctx);
-+		} else {
-+			emit_a64_mov_i(is64, tmp, imm, ctx);
-+			emit(A64_SUB(is64, dst, dst, tmp), ctx);
-+		}
- 		break;
- 	case BPF_ALU | BPF_AND | BPF_K:
- 	case BPF_ALU64 | BPF_AND | BPF_K:
-@@ -639,8 +657,14 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
- 	case BPF_JMP32 | BPF_JSLT | BPF_K:
- 	case BPF_JMP32 | BPF_JSGE | BPF_K:
- 	case BPF_JMP32 | BPF_JSLE | BPF_K:
--		emit_a64_mov_i(is64, tmp, imm, ctx);
--		emit(A64_CMP(is64, dst, tmp), ctx);
-+		if (is_addsub_imm(imm)) {
-+			emit(A64_CMP_I(is64, dst, imm), ctx);
-+		} else if (is_addsub_imm(-imm)) {
-+			emit(A64_CMN_I(is64, dst, -imm), ctx);
-+		} else {
-+			emit_a64_mov_i(is64, tmp, imm, ctx);
-+			emit(A64_CMP(is64, dst, tmp), ctx);
-+		}
- 		goto emit_cond_jmp;
- 	case BPF_JMP | BPF_JSET | BPF_K:
- 	case BPF_JMP32 | BPF_JSET | BPF_K:
--- 
-2.17.1
-
+>         userfaultfd_unmap_complete(mm, &uf_unmap);
+>         return ret;
+>  }
+> --
+> 2.26.2.526.g744177e7f7-goog
+>
