@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E9551C999D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:47:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 934521C99A2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:47:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728520AbgEGSrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 14:47:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47778 "EHLO mail.kernel.org"
+        id S1728174AbgEGSrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 14:47:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48086 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728056AbgEGSrT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 14:47:19 -0400
+        id S1726467AbgEGSrd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 14:47:33 -0400
 Received: from embeddedor (unknown [189.207.59.248])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D8A782184D;
-        Thu,  7 May 2020 18:47:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 03278216FD;
+        Thu,  7 May 2020 18:47:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588877239;
-        bh=kmGDD3oC3EB4KQRIO7ZBSOzgTGdqiOKS8/Gs5OxyZzQ=;
+        s=default; t=1588877252;
+        bh=hsB9n2INTWN1VmYgZ/WGzwPJ/1oZaJjCRnmNcalKWHY=;
         h=Date:From:To:Cc:Subject:From;
-        b=aQxNvVL4LnuUDIlx7X8iJ3ft1lNV6QVFUbl5bZMcJufApldo3SFTFMFJplJfTqMaa
-         aQhG09ZmEJVF2CZLRxbvL8/rWJJi394/CcJOQZaO4qhDgaUmkMlfQd5uFA1pti9SQX
-         jSuf6bWpyzrCCe3uuZ9amCXb2unSpP7HAZCZO5xo=
-Date:   Thu, 7 May 2020 13:51:45 -0500
+        b=yIzpoyybS4DGE5hiqc7ckFaZ/DNl1r0ZpzgR0N+ecuWeBSI2pTxBFV7UzyDiAwOo1
+         HPIzQtZhazgltNSIsCjp+mokRDrbk7dXBP6Ybx4LQZdL37S1cBIxwknQch3pUW1RYR
+         QtX2A2NmKGThYpcjCO4vXbe4Y7RrGJDbRVbKNJAw=
+Date:   Thu, 7 May 2020 13:51:58 -0500
 From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] crypto: Replace zero-length array with flexible-array
-Message-ID: <20200507185145.GA14096@embeddedor>
+To:     Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com
+Cc:     dm-devel@redhat.com, linux-kernel@vger.kernel.org
+Subject: [PATCH] dm integrity: Replace zero-length array with flexible-array
+Message-ID: <20200507185158.GA14116@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -77,47 +76,132 @@ This issue was found with the help of Coccinelle.
 
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- drivers/crypto/chelsio/chcr_crypto.h |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/md/dm-crypt.c                          |    2 +-
+ drivers/md/dm-integrity.c                      |    2 +-
+ drivers/md/dm-log-writes.c                     |    2 +-
+ drivers/md/dm-raid.c                           |    2 +-
+ drivers/md/dm-raid1.c                          |    2 +-
+ drivers/md/dm-stats.c                          |    2 +-
+ drivers/md/dm-stripe.c                         |    2 +-
+ drivers/md/dm-switch.c                         |    2 +-
+ drivers/md/persistent-data/dm-btree-internal.h |    2 +-
+ 9 files changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/crypto/chelsio/chcr_crypto.h b/drivers/crypto/chelsio/chcr_crypto.h
-index 542bebae001f..1cc522a07aac 100644
---- a/drivers/crypto/chelsio/chcr_crypto.h
-+++ b/drivers/crypto/chelsio/chcr_crypto.h
-@@ -223,7 +223,7 @@ struct chcr_authenc_ctx {
+diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
+index 3df90daba89e..bac110987a65 100644
+--- a/drivers/md/dm-crypt.c
++++ b/drivers/md/dm-crypt.c
+@@ -212,7 +212,7 @@ struct crypt_config {
+ 	struct mutex bio_alloc_lock;
  
- struct __aead_ctx {
- 	struct chcr_gcm_ctx gcm[0];
--	struct chcr_authenc_ctx authenc[0];
-+	struct chcr_authenc_ctx authenc[];
+ 	u8 *authenc_key; /* space for keys in authenc() format (if used) */
+-	u8 key[0];
++	u8 key[];
  };
  
- struct chcr_aead_ctx {
-@@ -235,7 +235,7 @@ struct chcr_aead_ctx {
- 	u8 nonce[4];
- 	u16 hmac_ctrl;
- 	u16 mayverify;
--	struct	__aead_ctx ctx[0];
-+	struct	__aead_ctx ctx[];
+ #define MIN_IOS		64
+diff --git a/drivers/md/dm-integrity.c b/drivers/md/dm-integrity.c
+index 4094c47eca7f..fe39ed31b20d 100644
+--- a/drivers/md/dm-integrity.c
++++ b/drivers/md/dm-integrity.c
+@@ -92,7 +92,7 @@ struct journal_entry {
+ 		} s;
+ 		__u64 sector;
+ 	} u;
+-	commit_id_t last_bytes[0];
++	commit_id_t last_bytes[];
+ 	/* __u8 tag[0]; */
  };
  
- struct hmac_ctx {
-@@ -247,7 +247,7 @@ struct hmac_ctx {
- struct __crypto_ctx {
- 	struct hmac_ctx hmacctx[0];
- 	struct ablk_ctx ablkctx[0];
--	struct chcr_aead_ctx aeadctx[0];
-+	struct chcr_aead_ctx aeadctx[];
+diff --git a/drivers/md/dm-log-writes.c b/drivers/md/dm-log-writes.c
+index 8ea20b56b4d6..e3d35c6c9f71 100644
+--- a/drivers/md/dm-log-writes.c
++++ b/drivers/md/dm-log-writes.c
+@@ -127,7 +127,7 @@ struct pending_block {
+ 	char *data;
+ 	u32 datalen;
+ 	struct list_head list;
+-	struct bio_vec vecs[0];
++	struct bio_vec vecs[];
  };
  
- struct chcr_context {
-@@ -257,7 +257,7 @@ struct chcr_context {
- 	unsigned int  ntxq;
- 	unsigned int  nrxq;
- 	struct completion cbc_aes_aio_done;
--	struct __crypto_ctx crypto_ctx[0];
-+	struct __crypto_ctx crypto_ctx[];
+ struct per_bio_data {
+diff --git a/drivers/md/dm-raid.c b/drivers/md/dm-raid.c
+index 9a18bef0a5ff..10e8b2fe787b 100644
+--- a/drivers/md/dm-raid.c
++++ b/drivers/md/dm-raid.c
+@@ -254,7 +254,7 @@ struct raid_set {
+ 		int mode;
+ 	} journal_dev;
+ 
+-	struct raid_dev dev[0];
++	struct raid_dev dev[];
  };
  
- struct chcr_hctx_per_wr {
+ static void rs_config_backup(struct raid_set *rs, struct rs_layout *l)
+diff --git a/drivers/md/dm-raid1.c b/drivers/md/dm-raid1.c
+index 089aed57e083..2f655d9f4200 100644
+--- a/drivers/md/dm-raid1.c
++++ b/drivers/md/dm-raid1.c
+@@ -83,7 +83,7 @@ struct mirror_set {
+ 	struct work_struct trigger_event;
+ 
+ 	unsigned nr_mirrors;
+-	struct mirror mirror[0];
++	struct mirror mirror[];
+ };
+ 
+ DECLARE_DM_KCOPYD_THROTTLE_WITH_MODULE_PARM(raid1_resync_throttle,
+diff --git a/drivers/md/dm-stats.c b/drivers/md/dm-stats.c
+index 71417048256a..35d368c418d0 100644
+--- a/drivers/md/dm-stats.c
++++ b/drivers/md/dm-stats.c
+@@ -56,7 +56,7 @@ struct dm_stat {
+ 	size_t percpu_alloc_size;
+ 	size_t histogram_alloc_size;
+ 	struct dm_stat_percpu *stat_percpu[NR_CPUS];
+-	struct dm_stat_shared stat_shared[0];
++	struct dm_stat_shared stat_shared[];
+ };
+ 
+ #define STAT_PRECISE_TIMESTAMPS		1
+diff --git a/drivers/md/dm-stripe.c b/drivers/md/dm-stripe.c
+index fa813c0f993d..151d022b032d 100644
+--- a/drivers/md/dm-stripe.c
++++ b/drivers/md/dm-stripe.c
+@@ -41,7 +41,7 @@ struct stripe_c {
+ 	/* Work struct used for triggering events*/
+ 	struct work_struct trigger_event;
+ 
+-	struct stripe stripe[0];
++	struct stripe stripe[];
+ };
+ 
+ /*
+diff --git a/drivers/md/dm-switch.c b/drivers/md/dm-switch.c
+index 8a0f057b8122..bff4c7fa1cd2 100644
+--- a/drivers/md/dm-switch.c
++++ b/drivers/md/dm-switch.c
+@@ -53,7 +53,7 @@ struct switch_ctx {
+ 	/*
+ 	 * Array of dm devices to switch between.
+ 	 */
+-	struct switch_path path_list[0];
++	struct switch_path path_list[];
+ };
+ 
+ static struct switch_ctx *alloc_switch_ctx(struct dm_target *ti, unsigned nr_paths,
+diff --git a/drivers/md/persistent-data/dm-btree-internal.h b/drivers/md/persistent-data/dm-btree-internal.h
+index a240990a7f33..f4e644dd8101 100644
+--- a/drivers/md/persistent-data/dm-btree-internal.h
++++ b/drivers/md/persistent-data/dm-btree-internal.h
+@@ -38,7 +38,7 @@ struct node_header {
+ 
+ struct btree_node {
+ 	struct node_header header;
+-	__le64 keys[0];
++	__le64 keys[];
+ } __packed;
+ 
+ 
 
