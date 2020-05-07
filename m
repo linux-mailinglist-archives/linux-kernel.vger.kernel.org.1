@@ -2,128 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 340DF1C88C8
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 13:48:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D21961C88D9
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 13:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726644AbgEGLs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 07:48:28 -0400
-Received: from mga06.intel.com ([134.134.136.31]:64619 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725903AbgEGLs0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 07:48:26 -0400
-IronPort-SDR: 0WDD4SYlelv/CMqDGbsa+Qd1M0WI661zriOKiJ/LvooJuDx2HTCleMYzxo4s8Xh6kVqvsU8E99
- JqfAMf+jr5cw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2020 04:48:24 -0700
-IronPort-SDR: i8kWrQpgWn75L4Fe2QfqwBPYtA7TVrOdZfwcIB8+RUtpWKVTAnVGtzTQxXUsavF0TyDLC53E6+
- 81IX49BuWPHQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,363,1583222400"; 
-   d="scan'208";a="339328430"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.157]) ([10.237.72.157])
-  by orsmga001.jf.intel.com with ESMTP; 07 May 2020 04:48:21 -0700
-Subject: Re: [PATCH V1 2/2] mmc: core: Fix recursive locking issue in CQE
- recovery path
-To:     Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
-        ulf.hansson@linaro.org
-Cc:     stummala@codeaurora.org, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Sarthak Garg <sartgarg@codeaurora.org>, stable@vger.kernel.org,
-        Baolin Wang <baolin.wang@linaro.org>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Andreas Koop <andreas.koop@zf.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <1588775643-18037-1-git-send-email-vbadigan@codeaurora.org>
- <1588775643-18037-3-git-send-email-vbadigan@codeaurora.org>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <b4a01f2c-479a-2a23-58b7-64f16cbc17a2@intel.com>
-Date:   Thu, 7 May 2020 14:48:42 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <1588775643-18037-3-git-send-email-vbadigan@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1726625AbgEGLuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 07:50:19 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:60489 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726267AbgEGLuT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 07:50:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588852217;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=HpySo1fPq0F4Fe5nieQHEfTObO9AX94O/qzGxsIgTec=;
+        b=EuXEDKyXkcsbch+mo96bh7IWx/osBnm7S2Llw+ksM6vDZ0Cx9x4Rs06AyJq5GSDQLMl5sP
+        sK8xh+z6r76aSB8vF/1ih716ZBv8S/wryr6ZBfQXMr5FrbSG90wTzl4cH5SNV7xHrVnpor
+        bOtZGIZ+3TCil6ug1vqghHaH3JPeCRc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-119-vreDZiYOMKqkFon784JXFg-1; Thu, 07 May 2020 07:50:16 -0400
+X-MC-Unique: vreDZiYOMKqkFon784JXFg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0A080801504;
+        Thu,  7 May 2020 11:50:15 +0000 (UTC)
+Received: from virtlab511.virt.lab.eng.bos.redhat.com (virtlab511.virt.lab.eng.bos.redhat.com [10.19.152.198])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E24341C933;
+        Thu,  7 May 2020 11:50:11 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     peterx@redhat.com
+Subject: [PATCH v2 0/9] KVM_SET_GUEST_DEBUG tests and fixes, DR accessors cleanups
+Date:   Thu,  7 May 2020 07:50:02 -0400
+Message-Id: <20200507115011.494562-1-pbonzini@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/05/20 5:34 pm, Veerabhadrarao Badiganti wrote:
-> From: Sarthak Garg <sartgarg@codeaurora.org>
-> 
-> Consider the following stack trace
-> 
-> -001|raw_spin_lock_irqsave
-> -002|mmc_blk_cqe_complete_rq
-> -003|__blk_mq_complete_request(inline)
-> -003|blk_mq_complete_request(rq)
-> -004|mmc_cqe_timed_out(inline)
-> -004|mmc_mq_timed_out
-> 
-> mmc_mq_timed_out acquires the queue_lock for the first
-> time. The mmc_blk_cqe_complete_rq function also tries to acquire
-> the same queue lock resulting in recursive locking where the task
-> is spinning for the same lock which it has already acquired leading
-> to watchdog bark.
-> 
-> Fix this issue with the lock only for the required critical section.
-> 
-> Cc: <stable@vger.kernel.org> # v4.19+
-> Suggested-by: Sahitya Tummala <stummala@codeaurora.org>
-> Signed-off-by: Sarthak Garg <sartgarg@codeaurora.org>
-> ---
->  drivers/mmc/core/queue.c | 11 ++++++-----
->  1 file changed, 6 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
-> index 25bee3d..72bef39 100644
-> --- a/drivers/mmc/core/queue.c
-> +++ b/drivers/mmc/core/queue.c
-> @@ -107,7 +107,7 @@ static enum blk_eh_timer_return mmc_cqe_timed_out(struct request *req)
->  	case MMC_ISSUE_DCMD:
->  		if (host->cqe_ops->cqe_timeout(host, mrq, &recovery_needed)) {
->  			if (recovery_needed)
-> -				__mmc_cqe_recovery_notifier(mq);
-> +				mmc_cqe_recovery_notifier(mrq);
->  			return BLK_EH_RESET_TIMER;
->  		}
->  		/* No timeout (XXX: huh? comment doesn't make much sense) */
-> @@ -131,12 +131,13 @@ static enum blk_eh_timer_return mmc_mq_timed_out(struct request *req,
->  
->  	spin_lock_irqsave(&mq->lock, flags);
->  
-> -	if (mq->recovery_needed || !mq->use_cqe || host->hsq_enabled)
-> +	if (mq->recovery_needed || !mq->use_cqe || host->hsq_enabled) {
->  		ret = BLK_EH_RESET_TIMER;
-> -	else
-> +		spin_unlock_irqrestore(&mq->lock, flags);
-> +	} else {
-> +		spin_unlock_irqrestore(&mq->lock, flags);
->  		ret = mmc_cqe_timed_out(req);
-> -
-> -	spin_unlock_irqrestore(&mq->lock, flags);
-> +	}
+This new version of the patches improves the AMD bugfix where
+KVM_EXIT_DEBUG clobbers the guest DR6 and includes stale causes.
+The improved fix makes it possible to drop kvm_set_dr6 and
+kvm_update_dr6 altogether.
 
-This looks good, but I think there needs to be another change also.  I will
-send a patch for that, but in the meantime maybe you could straighten up the
-code flow through the spinlock e.g.
+v1->v2: - merge v1 patch 6 with get_dr6 part of v1 patch 7, cover nested SVM
+	- new patch "KVM: nSVM: trap #DB and #BP to userspace if guest debugging is on"
+	- rewritten patch 8 to get rid of set_dr6 completely
 
-	spin_lock_irqsave(&mq->lock, flags);
-	ignore = mq->recovery_needed || !mq->use_cqe || host->hsq_enabled;
-	spin_unlock_irqrestore(&mq->lock, flags);
+Paolo Bonzini (5):
+  KVM: x86: fix DR6 delivery for various cases of #DB injection
+  KVM: nSVM: trap #DB and #BP to userspace if guest debugging is on
+  KVM: SVM: keep DR6 synchronized with vcpu->arch.dr6
+  KVM: x86, SVM: isolate vcpu->arch.dr6 from vmcb->save.dr6
+  KVM: VMX: pass correct DR6 for GD userspace exit
 
-	return ignore ? BLK_EH_RESET_TIMER : mmc_cqe_timed_out(req);
+Peter Xu (4):
+  KVM: X86: Declare KVM_CAP_SET_GUEST_DEBUG properly
+  KVM: X86: Set RTM for DB_VECTOR too for KVM_EXIT_DEBUG
+  KVM: X86: Fix single-step with KVM_SET_GUEST_DEBUG
+  KVM: selftests: Add KVM_SET_GUEST_DEBUG test
 
-And add a fixes tag.
+ arch/powerpc/kvm/powerpc.c                    |   1 +
+ arch/s390/kvm/kvm-s390.c                      |   1 +
+ arch/x86/include/asm/kvm_host.h               |   3 +-
+ arch/x86/kvm/svm/nested.c                     |  39 +++-
+ arch/x86/kvm/svm/svm.c                        |  36 ++--
+ arch/x86/kvm/vmx/vmx.c                        |  23 +-
+ arch/x86/kvm/x86.c                            |  27 +--
+ tools/testing/selftests/kvm/Makefile          |   1 +
+ .../testing/selftests/kvm/include/kvm_util.h  |   2 +
+ tools/testing/selftests/kvm/lib/kvm_util.c    |   9 +
+ .../testing/selftests/kvm/x86_64/debug_regs.c | 202 ++++++++++++++++++
+ 11 files changed, 281 insertions(+), 63 deletions(-)
+ create mode 100644 tools/testing/selftests/kvm/x86_64/debug_regs.c
 
->  
->  	return ret;
->  }
-> 
+-- 
+2.18.2
 
