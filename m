@@ -2,126 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B68911C9B1B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5B6E1C9B1E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:30:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728485AbgEGTaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 15:30:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39792 "EHLO
+        id S1728556AbgEGTac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 15:30:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726515AbgEGTaU (ORCPT
+        by vger.kernel.org with ESMTP id S1726515AbgEGTab (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 15:30:20 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC8BDC05BD43;
-        Thu,  7 May 2020 12:30:20 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id d184so3500266pfd.4;
-        Thu, 07 May 2020 12:30:20 -0700 (PDT)
+        Thu, 7 May 2020 15:30:31 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37FF2C05BD43
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 12:30:31 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id y24so8154273wma.4
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 12:30:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wT+mRFdn10BsX6lr+zvdnj+FlyAlUAG454zQtB7yLh4=;
-        b=ISHzewaDihZtLo69vhscvBrzu5TSpNcrAqC8XTeHSFmzmLskKKNP9+JyWpZcMTy0Q3
-         XhmOPkZftMvsSN23wHjKRvaa3uMwlL8QJ41bN8XQ3wKGh9gHynk4n+amimeBZvA9FPZy
-         jgw0MHBKfONAIM64HzJ/Al9L+azKLTRiuB/z6Yaw42/kFwB40x4bch+YShGbKzKMx676
-         ZkX7yHoNS6ELrgjjZroV/WSvBTcYPVvVSz7JKG2ZGRamw307aF2DTvISry0Ndp0hGayv
-         7R0OhWzh27bg/TMG/eysVLtQbSyPCY+VbJlA/JI5E3QALXCEzCkzXPV4yjsGRmn7Uznl
-         SAMw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=jGYOOG4S+IK7R44bCL3+15LUjSoFWbm06GQmQafymao=;
+        b=BPr+dIxCL0jDNcVQt3hNyJAuVwcsOxXmOs9FqE3yG9VpGEq+FpKGlpRBK57fBvG6F/
+         aRkKHypMvY+BP6sU6lsPSWMxsi06QS5K5OyIktWb4hy6DeiW3QuUDAtULyEBeXJPK5me
+         7wG8Jc7yfrxu3A0wwnvGan/lfOm0c8l0AVO73JZqjuEIxwm2O8cmUQWFyI/sg11T7hBk
+         C0QaBv4El1L/Wyx4jKks4a2Wh065ei5N4uA0YQTp97/+/xzS7m83Mojs3LjdEeispGQH
+         pGR8cJb4r/XTY+FVYiz/12744k8+P1XFYEmGTrVcyWrY5DcBN7T/+WtR4h0V3ulLkz9e
+         9H6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wT+mRFdn10BsX6lr+zvdnj+FlyAlUAG454zQtB7yLh4=;
-        b=A99mKOn+11+j1McRQ8HAGz8v8JYZEwWdcYHTcZy4d0qUxFr1Z0A3ZHHOKbwGdkpdxo
-         3MUPiPdVthy+Qg2h03/VqfWfM/LA7Dg54GyUamSXDVJRBxaQYL+GcIcrEl99xadblrXj
-         UGcHYnae7KLtw7EiXXqI5DGn4pRN84LJIUFVUQnqUo+5P3GDEVW1aZgA/T7jpIUyLQF+
-         rCy1Bd6wNkZrWbP9QRSohOCWrD2Z/ougvGBSclj6fwMBLTYNwEcPCUslJWZfdLxRiJgq
-         lNrwwqO6PaOfEgzgTKSsDq/BU2nWz3/PYs2lNiAZEWeWx2jvkKHPqoYImaXsWVpxbEiR
-         E3Xw==
-X-Gm-Message-State: AGi0PuZ+F2pMdYbEkYXRiZYmXxb3lFf0eWAbTH7f+5pDkAGcmzxHEj5t
-        qy382Uo11xqmpPO38I+rKTw=
-X-Google-Smtp-Source: APiQypIQxy+/cA0vId2s+7hdgtueCxQZ/IiM5LLjgeUjNQ9AeHkkA/LYYMiAAamTg3sXHVYKgnEMzg==
-X-Received: by 2002:a63:4503:: with SMTP id s3mr12964794pga.85.1588879820170;
-        Thu, 07 May 2020 12:30:20 -0700 (PDT)
-Received: from dtor-ws ([2620:15c:202:201:3c2a:73a9:c2cf:7f45])
-        by smtp.gmail.com with ESMTPSA id t80sm5811824pfc.23.2020.05.07.12.30.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2020 12:30:19 -0700 (PDT)
-Date:   Thu, 7 May 2020 12:30:17 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Input: Replace zero-length array with flexible-array
-Message-ID: <20200507193017.GL89269@dtor-ws>
-References: <20200507185347.GA14499@embeddedor>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=jGYOOG4S+IK7R44bCL3+15LUjSoFWbm06GQmQafymao=;
+        b=d6YLx9Y5aVwJ6IQjWHur2TtcQmVUi1O0Pp0C3GjnIJw7wiHQ4VFQsIQN9lvihgId5i
+         /BYhL4g9SgHkvYojCeWOC/ourkwCQzR/ML2ln0ucY/2QfLjlZ/QMXMbQrQ3URA90XlCk
+         0Ijsswh37MDxmNujlaF4iHpueJywBUz0FXGUC7fPhVj2fAKrgCNJ+YwQfyzJIV0b0866
+         cQolfe1D49XKHQb7BMIxurkUfkhhu4mFe6G2aSd21YNEOH/TlB4xtqYa5OgtYg51gtpg
+         UKuLTJoz72vOhZQo9l84xHDendUxwKKz5IQm+zo7CGI/QR7cClr2h22l2zEZn8azlIBb
+         yKDQ==
+X-Gm-Message-State: AGi0PuZj2IrZPQm1KunN1Ux5ZUuT6IzVFZBaCp76KeUIQCtVb7Y+NMz/
+        vP1NYRP82WbvJvdg3n3kEAdcROGpMO79Hf8Jg5YeQQ==
+X-Google-Smtp-Source: APiQypLnMsHWUZ6AfhRaSweuuZ87qO7HYZJOhLG/9tAmkvJKbUc1IyeP/3LjoUiO1CfjhY1d0AEiW7yO0tQ4gRzGJ04=
+X-Received: by 2002:a7b:cc8e:: with SMTP id p14mr11699140wma.70.1588879829872;
+ Thu, 07 May 2020 12:30:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200507185347.GA14499@embeddedor>
+References: <20200507091311.10898-1-bernard@vivo.com> <462b6a26-2c25-f83a-887e-6d3a30072e71@amd.com>
+In-Reply-To: <462b6a26-2c25-f83a-887e-6d3a30072e71@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 7 May 2020 15:30:18 -0400
+Message-ID: <CADnq5_NfHc0FWCcANbKmDXCxF5BjcCMM6WzJzsZr=yTnhYwxJg@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/amd/amdgpu: cleanup coding style a bit
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Bernard Zhao <bernard@vivo.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Tom St Denis <tom.stdenis@amd.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Ori Messinger <Ori.Messinger@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, opensource.kernel@vivo.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 07, 2020 at 01:53:47PM -0500, Gustavo A. R. Silva wrote:
-> The current codebase makes use of the zero-length array language
-> extension to the C90 standard, but the preferred mechanism to declare
-> variable-length types such as these ones is a flexible array member[1][2],
-> introduced in C99:
-> 
-> struct foo {
->         int stuff;
->         struct boo array[];
-> };
-> 
-> By making use of the mechanism above, we will get a compiler warning
-> in case the flexible array does not occur last in the structure, which
-> will help us prevent some kind of undefined behavior bugs from being
-> inadvertently introduced[3] to the codebase from now on.
-> 
-> Also, notice that, dynamic memory allocations won't be affected by
-> this change:
-> 
-> "Flexible array members have incomplete type, and so the sizeof operator
-> may not be applied. As a quirk of the original implementation of
-> zero-length arrays, sizeof evaluates to zero."[1]
-> 
-> sizeof(flexible-array-member) triggers a warning because flexible array
-> members have incomplete type[1]. There are some instances of code in
-> which the sizeof operator is being incorrectly/erroneously applied to
-> zero-length arrays and the result is zero. Such instances may be hiding
-> some bugs. So, this work (flexible-array member conversions) will also
-> help to get completely rid of those sorts of issues.
-> 
-> This issue was found with the help of Coccinelle.
-> 
-> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-> [2] https://github.com/KSPP/linux/issues/21
-> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+On Thu, May 7, 2020 at 5:22 AM Christian K=C3=B6nig <christian.koenig@amd.c=
+om> wrote:
+>
+> Am 07.05.20 um 11:13 schrieb Bernard Zhao:
+> > There is DEVICE_ATTR mechanism in separate attribute define.
+> > So this change is to use attr array, also use
+> > sysfs_create_files in init function & sysfs_remove_files in
+> > fini function.
+> > This maybe make the code a bit readable.
+> >
+> > Signed-off-by: Bernard Zhao <bernard@vivo.com>
+>
+> Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
+>
 
-Applied, thank you.
+Applied with a minor change to make the array const to fix the build.
 
-> ---
->  drivers/input/keyboard/applespi.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/input/keyboard/applespi.c b/drivers/input/keyboard/applespi.c
-> index d38398526965..14362ebab9a9 100644
-> --- a/drivers/input/keyboard/applespi.c
-> +++ b/drivers/input/keyboard/applespi.c
-> @@ -186,7 +186,7 @@ struct touchpad_protocol {
->  	u8			number_of_fingers;
->  	u8			clicked2;
->  	u8			unknown3[16];
-> -	struct tp_finger	fingers[0];
-> +	struct tp_finger	fingers[];
->  };
->  
->  /**
-> 
+Alex
 
--- 
-Dmitry
+> >
+> > Changes since V1:
+> > *Use DEVICE_ATTR mechanism
+> >
+> > Link for V1:
+> > *https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Flo=
+re.kernel.org%2Fpatchwork%2Fpatch%2F1228076%2F&amp;data=3D02%7C01%7Cchristi=
+an.koenig%40amd.com%7C073b9043be5346b3c90c08d7f266e6fb%7C3dd8961fe4884e608e=
+11a82d994e183d%7C0%7C0%7C637244396096735223&amp;sdata=3DPjFsYvmw2pvVisZ6TzM=
+qOyoSr0m3DsFN%2F0q%2B%2FfBxACg%3D&amp;reserved=3D0
+> > ---
+> >   drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c | 43 ++++++-------------=
+-
+> >   1 file changed, 13 insertions(+), 30 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c b/drivers/gpu=
+/drm/amd/amdgpu/amdgpu_vram_mgr.c
+> > index 82a3299e53c0..57bbc70662ff 100644
+> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
+> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
+> > @@ -148,6 +148,15 @@ static DEVICE_ATTR(mem_info_vis_vram_used, S_IRUGO=
+,
+> >   static DEVICE_ATTR(mem_info_vram_vendor, S_IRUGO,
+> >                  amdgpu_mem_info_vram_vendor, NULL);
+> >
+> > +static struct attribute *amdgpu_vram_mgr_attributes[] =3D {
+> > +     &dev_attr_mem_info_vram_total.attr,
+> > +     &dev_attr_mem_info_vis_vram_total.attr,
+> > +     &dev_attr_mem_info_vram_used.attr,
+> > +     &dev_attr_mem_info_vis_vram_used.attr,
+> > +     &dev_attr_mem_info_vram_vendor.attr,
+> > +     NULL
+> > +};
+> > +
+> >   /**
+> >    * amdgpu_vram_mgr_init - init VRAM manager and DRM MM
+> >    *
+> > @@ -172,31 +181,9 @@ static int amdgpu_vram_mgr_init(struct ttm_mem_typ=
+e_manager *man,
+> >       man->priv =3D mgr;
+> >
+> >       /* Add the two VRAM-related sysfs files */
+> > -     ret =3D device_create_file(adev->dev, &dev_attr_mem_info_vram_tot=
+al);
+> > -     if (ret) {
+> > -             DRM_ERROR("Failed to create device file mem_info_vram_tot=
+al\n");
+> > -             return ret;
+> > -     }
+> > -     ret =3D device_create_file(adev->dev, &dev_attr_mem_info_vis_vram=
+_total);
+> > -     if (ret) {
+> > -             DRM_ERROR("Failed to create device file mem_info_vis_vram=
+_total\n");
+> > -             return ret;
+> > -     }
+> > -     ret =3D device_create_file(adev->dev, &dev_attr_mem_info_vram_use=
+d);
+> > -     if (ret) {
+> > -             DRM_ERROR("Failed to create device file mem_info_vram_use=
+d\n");
+> > -             return ret;
+> > -     }
+> > -     ret =3D device_create_file(adev->dev, &dev_attr_mem_info_vis_vram=
+_used);
+> > -     if (ret) {
+> > -             DRM_ERROR("Failed to create device file mem_info_vis_vram=
+_used\n");
+> > -             return ret;
+> > -     }
+> > -     ret =3D device_create_file(adev->dev, &dev_attr_mem_info_vram_ven=
+dor);
+> > -     if (ret) {
+> > -             DRM_ERROR("Failed to create device file mem_info_vram_ven=
+dor\n");
+> > -             return ret;
+> > -     }
+> > +     ret =3D sysfs_create_files(&adev->dev->kobj, amdgpu_vram_mgr_attr=
+ibutes);
+> > +     if (ret)
+> > +             DRM_ERROR("Failed to register sysfs\n");
+> >
+> >       return 0;
+> >   }
+> > @@ -219,11 +206,7 @@ static int amdgpu_vram_mgr_fini(struct ttm_mem_typ=
+e_manager *man)
+> >       spin_unlock(&mgr->lock);
+> >       kfree(mgr);
+> >       man->priv =3D NULL;
+> > -     device_remove_file(adev->dev, &dev_attr_mem_info_vram_total);
+> > -     device_remove_file(adev->dev, &dev_attr_mem_info_vis_vram_total);
+> > -     device_remove_file(adev->dev, &dev_attr_mem_info_vram_used);
+> > -     device_remove_file(adev->dev, &dev_attr_mem_info_vis_vram_used);
+> > -     device_remove_file(adev->dev, &dev_attr_mem_info_vram_vendor);
+> > +     sysfs_remove_files(&adev->dev->kobj, amdgpu_vram_mgr_attributes);
+> >       return 0;
+> >   }
+> >
+>
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
