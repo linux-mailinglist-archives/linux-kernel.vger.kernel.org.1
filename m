@@ -2,91 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3282B1C9EEE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 01:07:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA7611C9EF6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 01:12:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727852AbgEGXH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 19:07:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45246 "EHLO
+        id S1726690AbgEGXMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 19:12:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727823AbgEGXHW (ORCPT
+        by vger.kernel.org with ESMTP id S1726514AbgEGXMP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 19:07:22 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AED07C05BD09
-        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 16:07:22 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id b1so552746qtt.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 16:07:22 -0700 (PDT)
+        Thu, 7 May 2020 19:12:15 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78B0EC05BD43
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 16:12:15 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id w65so3762097pfc.12
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 16:12:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=cDgv5RBBNmmZoeVkSdRHbb+p5n1j6gbGkVNuskYknK8=;
-        b=irn2+fcrxp6NonlZzAmEkP+IcmaZPlVzbzxmfCG6lVabw4/G0dFt3sq6PNTCVMGxGG
-         mHrxFYOqL919h6uaxEl0JW7dIaw8NB10ABm7DPmqf/EhfuWGsilf0Zdh4cihFDxim+Mo
-         2oiV63mSEiHMYHoenvD/gjwZA2LAweN8EWw+tYVdcFwe7a8XKwwE9AkeASQmt+OrM6Ud
-         66rqMK51DOb0gUzTcrOl8r0cDm0oT8FMB5ERjpMlkKlVh00sAuv1oGi7o++rQCXNEyy3
-         NK/+1D+NyYl6NPUHDAAe/3i2dWdBxPkf5biMBOG9YHzAaT3acw0lJR7KTsOkpXlpkwHt
-         Jr4Q==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=J/3HPQN7W1ZKY/vF6kf3W74SkxKV+nge4or+WiAyuSA=;
+        b=KDcfxey5JIeGwWZPE5JoJOlaG6N/dElrdB6K50KHlFNelrxKbvTlkPWInDHxs8alm/
+         NX3IKCFYgAxWXCG9PdEvu9YXEAfEcE2Nze27cHGAKW5PPMDiXPcZsxWxOItkDTN0ekWq
+         LYsQeiFSGwWQ73N+eS/xnETE2JkSx8/6CnM7w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=cDgv5RBBNmmZoeVkSdRHbb+p5n1j6gbGkVNuskYknK8=;
-        b=I35EUaAX+xZWjSUgXUk6dIdpNLDbVY3eEIg60EIM2PoZrv1qau4aIv0nOeZo4dWS2B
-         cT1QQWofcojfCysZJQECMClcnzIVcj7B2ZQsTJuln6bJSvl/5y/75BRe1biijMTtPLnG
-         /UMbBLbn6u4gnhlsFOvwWx9SnWB+yTJG5JO8kKVk7RYOuxxcPte927kNTTvBGeKuxaNt
-         jifHqJEnANk+hV++7mA/QgAQgyfrdm+kmlkei0tPjU+8e6ACK5cNuWORppVBa784LhDr
-         ZrH5q81KUe5f/oUmwbfpzbSuYEV/ScNwysG6WqGMbhg6uQI2Y2S+768lpRTQbiEMziDK
-         H1kw==
-X-Gm-Message-State: AGi0PuZORUrR00iZmEFspNBG5hVA8JxxQStHGAzGtYH5LrN39GiTkzUp
-        CIv8OTjfa4ORC6Eihu/QbEfsnw==
-X-Google-Smtp-Source: APiQypJ8nv0rS/6ipD0+tlnjwjtkoEW9gBSgFlE4m3C077d6wO4jOE6P+FabQVeufE8QHwU+D1XMog==
-X-Received: by 2002:ac8:46c9:: with SMTP id h9mr16757891qto.128.1588892841789;
-        Thu, 07 May 2020 16:07:21 -0700 (PDT)
-Received: from [192.168.1.183] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id b126sm5170080qkc.119.2020.05.07.16.07.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 May 2020 16:07:21 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Qian Cai <cai@lca.pw>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH] kernel: add panic_on_taint
-Date:   Thu, 7 May 2020 19:07:20 -0400
-Message-Id: <6B423101-ACF4-49A3-AD53-ACBF87F1ABE0@lca.pw>
-References: <20200507221503.GL205881@optiplex-lnx>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org,
-        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        dyoung@redhat.com, Baoquan He <bhe@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>
-In-Reply-To: <20200507221503.GL205881@optiplex-lnx>
-To:     Rafael Aquini <aquini@redhat.com>
-X-Mailer: iPhone Mail (17D50)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=J/3HPQN7W1ZKY/vF6kf3W74SkxKV+nge4or+WiAyuSA=;
+        b=UJz7AJmPU0Nmvc2MvyCU3yd7SyWOoELc3R2D1kOYesJS5kjq1bgt4TpIvMA+i8ZhFm
+         V8h3Uip/UF66mk7rv2C4bWCOVAutVlDezIl90CYTCb4n6fjMRgkC9UFy0rHjViiwLyXV
+         ZQPwTlfkFu6gG2jhJx8HG5ORQe2CkpLp1KRPOJXEEDpCRGufC7k8iPKMmLv/1y/r/8W1
+         apeSpNOSuWb8AcaiZr5E1AEyP9YUXSRJj2hEcYn1CQoXxHoeNqYWnJOZWuf4N9zdpxzi
+         KKJFaNuJlVUB1ew1XuQSBNMAoxwDiNAPlJj+IqPWwERnrIwEPVYVpI0mjn17iV6LU9Kt
+         foVw==
+X-Gm-Message-State: AGi0PuYVqTpERviG8xd/dlaEmPspBi+8tGmrZkoyHLlJNIp627HZBNaG
+        FRZSiNuK/7Tff4Q9LI0GHZTOtw==
+X-Google-Smtp-Source: APiQypIkBJ7SdIhSa8KYeQISr03jagf7wOKIy319ImOEn53vTqQ6U/9cCflFav80DgkHzgPHRdd4JQ==
+X-Received: by 2002:a62:ed14:: with SMTP id u20mr16651128pfh.69.1588893134874;
+        Thu, 07 May 2020 16:12:14 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:24fa:e766:52c9:e3b2])
+        by smtp.gmail.com with ESMTPSA id w12sm5861057pfq.133.2020.05.07.16.12.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 May 2020 16:12:14 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     sumit.garg@linaro.org, Douglas Anderson <dianders@chromium.org>,
+        Chuhong Yuan <hslester96@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: [PATCH] kdb: Cleanup math with KDB_CMD_HISTORY_COUNT
+Date:   Thu,  7 May 2020 16:11:46 -0700
+Message-Id: <20200507161125.1.I2cce9ac66e141230c3644b8174b6c15d4e769232@changeid>
+X-Mailer: git-send-email 2.26.2.645.ge9eca65c58-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From code inspection the math in handle_ctrl_cmd() looks super sketchy
+because it subjects -1 from cmdptr and then does a "%
+KDB_CMD_HISTORY_COUNT".  It turns out that this code works because
+"cmdptr" is unsigned and KDB_CMD_HISTORY_COUNT is a nice power of 2.
+Let's make this a little less sketchy.
 
+This patch should be a no-op.
 
-> On May 7, 2020, at 6:15 PM, Rafael Aquini <aquini@redhat.com> wrote:
->=20
-> It's a reasonable and self-contained feature that we have a valid use for.=
-=20
-> I honestly fail to see it causing that amount of annoyance as you are=20
-> suggesting here.
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
 
-It is not a big trouble yet, but keeping an obsolete patch that not very str=
-aightforward to figure out that it will be superseded by the panic_on_taint p=
-atch will only cause more confusion the longer it has stayed in linux-next.
+ kernel/debug/kdb/kdb_main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-The thing is that even if you can=E2=80=99t get this panic_on_taint (the sup=
-erior solution) patch accepted for some reasons, someone else could still wo=
-rk on it until it get merged.
+diff --git a/kernel/debug/kdb/kdb_main.c b/kernel/debug/kdb/kdb_main.c
+index 515379cbf209..6865a0f58d38 100644
+--- a/kernel/debug/kdb/kdb_main.c
++++ b/kernel/debug/kdb/kdb_main.c
+@@ -1108,7 +1108,8 @@ static int handle_ctrl_cmd(char *cmd)
+ 	switch (*cmd) {
+ 	case CTRL_P:
+ 		if (cmdptr != cmd_tail)
+-			cmdptr = (cmdptr-1) % KDB_CMD_HISTORY_COUNT;
++			cmdptr = (cmdptr + KDB_CMD_HISTORY_COUNT - 1) %
++				 KDB_CMD_HISTORY_COUNT;
+ 		strscpy(cmd_cur, cmd_hist[cmdptr], CMD_BUFLEN);
+ 		return 1;
+ 	case CTRL_N:
+-- 
+2.26.2.645.ge9eca65c58-goog
 
-Thus, I failed to see any possibility we will go back to the inferior soluti=
-on (mm-slub-add-panic_on_error-to-the-debug-facilities.patch) by all means.=
