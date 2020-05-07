@@ -2,142 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 699331C8C81
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 15:37:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC94D1C8C83
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 15:38:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726750AbgEGNhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 09:37:16 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:28806 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725879AbgEGNhQ (ORCPT
+        id S1726683AbgEGNhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 09:37:50 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:16308 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725947AbgEGNht (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 09:37:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588858635;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc; bh=O3AKRuRPzjJT+CpU5kRHKo5Cn8muPZpj6Vd3OBhKeIM=;
-        b=Bpu/bzKjF61qbb0sEEjA3pxNLM38Ru+PvqVUEvEoOVjeXWQWurKIm/ODKLI60qLZNCa3Oe
-        /37AvNGYRmlz2/7jP7ACFW32U1v2f2daDguc4bTZWMjKECQ/dzFTi2yYIQrS7J9YAcc78e
-        fkOa5zBTyt5OS9T/2Seio7GlltoiRl0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-277-E11N9G6-PR-QtmuWiG1amA-1; Thu, 07 May 2020 09:37:10 -0400
-X-MC-Unique: E11N9G6-PR-QtmuWiG1amA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5DC7F1005510;
-        Thu,  7 May 2020 13:37:09 +0000 (UTC)
-Received: from lszubowi.redhat.com (ovpn-64-2.rdu2.redhat.com [10.10.64.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 575CC649A9;
-        Thu,  7 May 2020 13:37:08 +0000 (UTC)
-From:   Lenny Szubowicz <lszubowi@redhat.com>
-To:     ardb@kernel.org, eric.snowberg@oracle.com, mingo@kernel.org,
-        nivedita@alum.mit.edu, tglx@linutronix.de,
-        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V2] efi/libstub/x86: Avoid EFI map buffer alloc in allocate_e820()
-Date:   Thu,  7 May 2020 09:37:07 -0400
-Message-Id: <20200507133707.7123-1-lszubowi@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        Thu, 7 May 2020 09:37:49 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 047DWCgu110161;
+        Thu, 7 May 2020 09:37:33 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30twj0d26q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 May 2020 09:37:33 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 047DXwZa124917;
+        Thu, 7 May 2020 09:37:32 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30twj0d24u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 May 2020 09:37:32 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 047DUlTk010103;
+        Thu, 7 May 2020 13:37:30 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma02fra.de.ibm.com with ESMTP id 30s0g5cp36-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 May 2020 13:37:30 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 047DbSGM11731420
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 7 May 2020 13:37:28 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E7825AE058;
+        Thu,  7 May 2020 13:37:27 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D7029AE04D;
+        Thu,  7 May 2020 13:37:24 +0000 (GMT)
+Received: from localhost.in.ibm.com (unknown [9.85.97.135])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu,  7 May 2020 13:37:24 +0000 (GMT)
+From:   Parth Shah <parth@linux.ibm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     peterz@infradead.org, mingo@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, qais.yousef@arm.com,
+        chris.hyser@oracle.com, pkondeti@codeaurora.org,
+        valentin.schneider@arm.com, rjw@rjwysocki.net
+Subject: [RFC 0/4] IDLE gating in presence of latency-sensitive tasks
+Date:   Thu,  7 May 2020 19:07:19 +0530
+Message-Id: <20200507133723.18325-1-parth@linux.ibm.com>
+X-Mailer: git-send-email 2.17.2
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-07_08:2020-05-07,2020-05-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=935
+ priorityscore=1501 lowpriorityscore=0 bulkscore=0 spamscore=0 phishscore=0
+ malwarescore=0 impostorscore=0 suspectscore=0 mlxscore=0 clxscore=1011
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005070106
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In allocate_e820(), call the EFI get_memory_map() service directly
-instead of indirectly via efi_get_memory_map(). This avoids allocation
-of a buffer and return of the full EFI memory map, which is not needed
-here and would otherwise need to be freed.
+Abstract:
+=========
+The IDLE states provides a way to save power at the cost of wakeup
+latencies. The deeper the IDLE state selected by the CPUIDLE governor, the
+more the exit latency of the state will be. This exit latency adds to the
+task's wakeup latency. Hence choosing the best trade-off between the power
+save feature and the increase observable latency is what CPUIDLE governor
+focus upon.
 
-Routine allocate_e820() only needs to know how many EFI memory
-descriptors there are in the map to allocate an adequately sized
-e820ext buffer, if it's needed. Note that since efi_get_memory_map()
-returns a memory map buffer sized with extra headroom, allocate_e820()
-now needs to explicitly factor that into the e820ext size calculation.
+But CPUIDLE governor is generic in nature to provide best of both the
+worlds. However, the CPUIDLE governor does not have the capability to
+distinguish between latency sensitivity of tasks queued on the runqueue.
 
-Signed-off-by: Lenny Szubowicz <lszubowi@redhat.com>
-Suggested-by: Ard Biesheuvel <ardb@kernel.org>
---
-v2:
-  - Instead of freeing the EFI memory map buffer allocated by
-    efi_get_memory_map(), avoid the allocation in the first place.
+With the introduction of latency-nice attribute to provide the latency
+requirements from the userspace, the CPUIDLE governor can use it to
+identify latency sensitive tasks.
 
-  - Changed the title of the patch because the v1 title no longer
-    applies. v1 ref:
-    https://lore.kernel.org/lkml/20200505190016.4350-1-lszubowi@redhat.com/
---
----
- drivers/firmware/efi/libstub/efistub.h  |  2 ++
- drivers/firmware/efi/libstub/mem.c      |  5 +++++
- drivers/firmware/efi/libstub/x86-stub.c | 22 ++++++++--------------
- 3 files changed, 15 insertions(+), 14 deletions(-)
+Hence, this patch-set restricts the CPU running latency-sensitive tasks to
+go into any IDLE state, thus minimizing the impact of exit latency for such
+tasks. Expected results is better power-saving and comparable performance
+than compared to disabling all IDLE states.
 
-diff --git a/drivers/firmware/efi/libstub/efistub.h b/drivers/firmware/efi/libstub/efistub.h
-index 67d26949fd26..191468b771b6 100644
---- a/drivers/firmware/efi/libstub/efistub.h
-+++ b/drivers/firmware/efi/libstub/efistub.h
-@@ -616,6 +616,8 @@ void efi_printk(char *str);
- 
- void efi_free(unsigned long size, unsigned long addr);
- 
-+unsigned int efi_get_mmap_nr_slack_slots(void);
-+
- char *efi_convert_cmdline(efi_loaded_image_t *image, int *cmd_line_len,
- 			  unsigned long max_addr);
- 
-diff --git a/drivers/firmware/efi/libstub/mem.c b/drivers/firmware/efi/libstub/mem.c
-index 869a79c8946f..fc8b4fb08505 100644
---- a/drivers/firmware/efi/libstub/mem.c
-+++ b/drivers/firmware/efi/libstub/mem.c
-@@ -7,6 +7,11 @@
- 
- #define EFI_MMAP_NR_SLACK_SLOTS	8
- 
-+unsigned int efi_get_mmap_nr_slack_slots(void)
-+{
-+	return EFI_MMAP_NR_SLACK_SLOTS;
-+}
-+
- static inline bool mmap_has_headroom(unsigned long buff_size,
- 				     unsigned long map_size,
- 				     unsigned long desc_size)
-diff --git a/drivers/firmware/efi/libstub/x86-stub.c b/drivers/firmware/efi/libstub/x86-stub.c
-index 05ccb229fb45..9a5ee0678434 100644
---- a/drivers/firmware/efi/libstub/x86-stub.c
-+++ b/drivers/firmware/efi/libstub/x86-stub.c
-@@ -606,24 +606,18 @@ static efi_status_t allocate_e820(struct boot_params *params,
- 				  struct setup_data **e820ext,
- 				  u32 *e820ext_size)
- {
--	unsigned long map_size, desc_size, buff_size;
--	struct efi_boot_memmap boot_map;
--	efi_memory_desc_t *map;
-+	unsigned long map_size, desc_size;
- 	efi_status_t status;
- 	__u32 nr_desc;
- 
--	boot_map.map		= &map;
--	boot_map.map_size	= &map_size;
--	boot_map.desc_size	= &desc_size;
--	boot_map.desc_ver	= NULL;
--	boot_map.key_ptr	= NULL;
--	boot_map.buff_size	= &buff_size;
-+	/* Only need the size of the mem map and size of each mem descriptor */
-+	map_size = 0;
-+	status = efi_bs_call(get_memory_map, &map_size, NULL, NULL,
-+			     &desc_size, NULL);
-+	if (status != EFI_BUFFER_TOO_SMALL)
-+		return (status != EFI_SUCCESS) ? status : EFI_UNSUPPORTED;
- 
--	status = efi_get_memory_map(&boot_map);
--	if (status != EFI_SUCCESS)
--		return status;
--
--	nr_desc = buff_size / desc_size;
-+	nr_desc = map_size / desc_size + efi_get_mmap_nr_slack_slots();
- 
- 	if (nr_desc > ARRAY_SIZE(params->e820_table)) {
- 		u32 nr_e820ext = nr_desc - ARRAY_SIZE(params->e820_table);
+- Why not use PM_QoS?
+PM_QoS provide ways to assist CPUIDLE governor decision with per device(s)
+(like CPU, network, etc.) attributes.  This behavior of decision assistance
+at "per device" level lacks in providing the best of both power saving and
+the latency minimization for specific task only. Hence, PM_QoS like feature
+can be clubbed with scheduler to retrieve latency_nice information of a
+task and provide better decision at per task level.  This leads to
+providing better performance to only those CPUs which is queued up for
+running latency sensitive tasks and thus saving power from other CPUs.
+
+
+Implementation:
+===============
+- latency sensitive tasks are the task's marked with latency_nice == -20.
+- Use the per-CPU variable to keep track of the (to be) queued up latency
+  sensitive tasks.
+- CPUIDLE governor does not choose a non-polling idle state on such marked
+  CPUS until the percpu counter goes back to zero
+
+This strategy solves many latency related problems for the tasks showing
+sleep-wake-sleep pattern (basically most of GPU workloads, schbench,
+RT-app, database workloads, and many more).
+
+This series is based on latency_nice patch-set
+PATCH v5 https://lkml.org/lkml/2020/2/28/166
+
+One may use below file to set latency_nice value:
+- lnice.c: lnice -l -20 <workload>
+  https://github.com/parthsl/tools/blob/master/misc_scripts/lnice.c
+or
+- relnice.c: relnice -p <PID> -l 19
+  https://github.com/parthsl/tools/blob/master/misc_scripts/relnice.c
+
+
+Results:
+========
+# Baseline = tip/sched/core + latency_nice patches
+# w/ patch = Baseline + this patch-set + workload's latency_nice = -20
+
+=> Schbench (Lower is better)
+-----------------------------
+- Baseline:
+$> schbench -r 30
++---------------------+----------+-------------------------+-----------+
+| %ile Latency (in us)| Baseline | cpupower idle-set -D 10 | w/ patch  |
++---------------------+----------+-------------------------+-----------+
+| 50                  |      371 | 21                      | 22        |
+| 90                  |      729 | 33                      | 37        |
+| 99                  |      889 | 40 (-95%)               | 48 (-94%) |
+| max                 |     2197 | 59                      | 655       |
+| Avg. Energy (Watts) |       73 | 96 (+31%)               | 88 (+20%) |
++---------------------+----------+-------------------------+-----------+
+
+$> schbench -r 10 -m 2 -t 1
++---------------------+----------+-------------------------+-----------+
+| %ile Latency (in us)| Baseline | cpupower idle-set -D 10 | w/ patch  |
++---------------------+----------+-------------------------+-----------+
+| 50                  |      336 | 5                       | 4         |
+| 90                  |      464 | 7                       | 6         |
+| 99                  |      579 | 10 (-98%)               | 11 (-98%) |
+| max                 |      691 | 12                      | 489       |
+| Avg. Energy (Watts) |       28 | 40 (+42%)               | 33 (+17%) |
++---------------------+----------+-------------------------+-----------+
+
+
+=> PostgreSQL (lower is better):
+----------------------------------
+- 44 Clients running in parallel
+$> pgbench -T 30 -S -n -R 10  -c 44
++---------------------+----------+-------------------------+--------------+
+|                     | Baseline | cpupower idle-set -D 10 |   w/ patch   |
++---------------------+----------+-------------------------+--------------+
+| latency avg. (ms)   |    2.028 | 0.424 (-80%)            | 1.202 (-40%) |
+| latency stddev      |    3.149 | 0.473                   | 0.234        |
+| trans. completed    |      294 | 304 (+3%)               | 300 (+2%)    |
+| Avg. Energy (Watts) |     23.6 | 42.5 (+80%)             | 26.5 (+20%)  |
++---------------------+----------+-------------------------+--------------+
+
+- 1 Client running
+$> pgbench -T 30 -S -n -R 10 -c 1
++---------------------+----------+-------------------------+--------------+
+|                     | Baseline | cpupower idle-set -D 10 |   w/ patch   |
++---------------------+----------+-------------------------+--------------+
+| latency avg. (ms)   |    1.292 | 0.282 (-78%)            | 0.237 (-81%) |
+| latency stddev      |    0.572 | 0.126                   | 0.116        |
+| trans. completed    |      294 | 268 (-8%)               | 315 (+7%)    |
+| Avg. Energy (Watts) |      9.8 | 29.6 (+302%)            | 27.7 (+282%) |
++---------------------+----------+-------------------------+--------------+
+*trans. completed = Total transactions processed (Higher is better)
+
+
+Parth Shah (4):
+  sched/core: Introduce per_cpu counter to track latency sensitive tasks
+  sched/core: Set nr_lat_sensitive counter at various scheduler
+    entry/exit points
+  sched/idle: Disable idle call on least latency requirements
+  sched/idle: Add debugging bits to validate inconsistency in latency
+    sensitive task calculations
+
+ kernel/sched/core.c  | 32 ++++++++++++++++++++++++++++++--
+ kernel/sched/idle.c  |  8 +++++++-
+ kernel/sched/sched.h |  7 +++++++
+ 3 files changed, 44 insertions(+), 3 deletions(-)
+
 -- 
-2.18.4
+2.17.2
 
