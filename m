@@ -2,84 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1EB81C87E8
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 13:18:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6029F1C88A5
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 13:43:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727104AbgEGLRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 07:17:51 -0400
-Received: from foss.arm.com ([217.140.110.172]:56744 "EHLO foss.arm.com"
+        id S1725949AbgEGLn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 07:43:27 -0400
+Received: from elvis.franken.de ([193.175.24.41]:43591 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726222AbgEGLRv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 07:17:51 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6F4451FB;
-        Thu,  7 May 2020 04:17:50 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1F6A73F68F;
-        Thu,  7 May 2020 04:17:49 -0700 (PDT)
-References: <20200507110625.37254-1-yanaijie@huawei.com>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Jason Yan <yanaijie@huawei.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched/fair: Return true,false in voluntary_active_balance()
-In-reply-to: <20200507110625.37254-1-yanaijie@huawei.com>
-Date:   Thu, 07 May 2020 12:17:36 +0100
-Message-ID: <jhjpnbg6lkf.mognet@arm.com>
+        id S1726575AbgEGLnW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 07:43:22 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jWevq-00081e-06; Thu, 07 May 2020 13:43:14 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 903F3C0409; Thu,  7 May 2020 13:17:53 +0200 (CEST)
+Date:   Thu, 7 May 2020 13:17:53 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Sergey.Semin@baikalelectronics.ru
+Cc:     Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, Allison Randal <allison@lohutok.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 05/20] mips: cm: Add L2 ECC/parity errors reporting
+Message-ID: <20200507111753.GG11616@alpha.franken.de>
+References: <20200306124807.3596F80307C2@mail.baikalelectronics.ru>
+ <20200506174238.15385-1-Sergey.Semin@baikalelectronics.ru>
+ <20200506174238.15385-6-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200506174238.15385-6-Sergey.Semin@baikalelectronics.ru>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 07/05/20 12:06, Jason Yan wrote:
-> Fix the following coccicheck warning:
->
-> kernel/sched/fair.c:9375:9-10: WARNING: return of 0/1 in function
-> 'voluntary_active_balance' with return type bool
->
-
-It's perfectly safe to return 0/1 in a boolean function; that said seeing
-as this is the second attempt at "fixing" this I'm tempted to say we should
-pick it up...
-
-> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+On Wed, May 06, 2020 at 08:42:23PM +0300, Sergey.Semin@baikalelectronics.ru wrote:
+> From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> 
+> According to the MIPS32 InterAptiv software manual error codes 24 - 26
+> of CM2 indicate L2 ECC/parity error with switching to a corresponding
+> errors info fields. This patch provides these errors parsing code,
+> which handles the read/write uncorrectable and correctable ECC/parity
+> errors, and prints instruction causing the fault, RAM array type, cache
+> way/dword and syndrome associated with the faulty data.
+> 
+> Co-developed-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> Signed-off-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: Paul Burton <paulburton@kernel.org>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: linux-pm@vger.kernel.org
+> Cc: devicetree@vger.kernel.org
 > ---
->  kernel/sched/fair.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index b3bb4d6e49c3..e8390106ada4 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -9373,7 +9373,7 @@ voluntary_active_balance(struct lb_env *env)
->       struct sched_domain *sd = env->sd;
->
->       if (asym_active_balance(env))
-> -		return 1;
-> +		return true;
->
->       /*
->        * The dst_cpu is idle and the src_cpu CPU has only 1 CFS task.
-> @@ -9385,13 +9385,13 @@ voluntary_active_balance(struct lb_env *env)
->           (env->src_rq->cfs.h_nr_running == 1)) {
->               if ((check_cpu_capacity(env->src_rq, sd)) &&
->                   (capacity_of(env->src_cpu)*sd->imbalance_pct < capacity_of(env->dst_cpu)*100))
-> -			return 1;
-> +			return true;
->       }
->
->       if (env->migration_type == migrate_misfit)
-> -		return 1;
-> +		return true;
->
-> -	return 0;
-> +	return false;
->  }
->
->  static int need_active_balance(struct lb_env *env)
+>  arch/mips/kernel/mips-cm.c | 62 ++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 60 insertions(+), 2 deletions(-)
+
+applied to mips-next.
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
