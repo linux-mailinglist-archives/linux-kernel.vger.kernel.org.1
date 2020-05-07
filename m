@@ -2,87 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82F161C88E4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 13:51:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 268801C88F5
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 13:53:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727797AbgEGLun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 07:50:43 -0400
-Received: from mga01.intel.com ([192.55.52.88]:59334 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727769AbgEGLuj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 07:50:39 -0400
-IronPort-SDR: K8gq3h49VHpmZS0MqG+na4IjNG4n8aYqR44k2kPT7ga/PdFvCxmtm3VS4/lVxK7fQe9PcX4MJu
- I5+IApngKnPA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2020 04:50:39 -0700
-IronPort-SDR: 8bD02u6o+OKmozbXo9UsSMMfj9zmgxWFMnYTnkoWDvJi3GAkjFa/S1BKe4rDWplcn9g2Bgpyfn
- 2caRx6V10iYg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,363,1583222400"; 
-   d="scan'208";a="370094733"
-Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
-  by fmsmga001.fm.intel.com with SMTP; 07 May 2020 04:50:35 -0700
-Received: by lahna (sSMTP sendmail emulation); Thu, 07 May 2020 14:50:34 +0300
-Date:   Thu, 7 May 2020 14:50:34 +0300
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>, bhelgaas@google.com,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Keith Busch <keith.busch@intel.com>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        Krzysztof Wilczynski <kw@linux.com>,
-        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] PCI/ASPM: Enable ASPM for bridge-to-bridge link
-Message-ID: <20200507115034.GI487496@lahna.fi.intel.com>
-References: <20200506061438.GR487496@lahna.fi.intel.com>
- <20200506212947.GA455758@bjorn-Precision-5520>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200506212947.GA455758@bjorn-Precision-5520>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S1726515AbgEGLxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 07:53:30 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:30929 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725949AbgEGLx2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 07:53:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588852407;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc; bh=oJNhrRBC0c+BFGHFCS+s7JJ0R5CeLnnrd6LkdO80vW4=;
+        b=eVcMTPNeg+ykp27p3N50wSiYYUxAhCHWYkRn0MR8icydnKexkmOuNAh+MUXOVn2FLWn6Yd
+        0ZJ2DoBD6/L9NdyWJhChUPhJJUXyOV1hzdIxt6y8ql6Lgubg4CE/MTQyRa6dWQwAj3g0E2
+        eP1tIYzcSmTg9GP/Z7yoZEmdlDrczqQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-291-KMK427m6N2a7db-dpEdpog-1; Thu, 07 May 2020 07:53:23 -0400
+X-MC-Unique: KMK427m6N2a7db-dpEdpog-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AA47480058A;
+        Thu,  7 May 2020 11:53:22 +0000 (UTC)
+Received: from virtlab511.virt.lab.eng.bos.redhat.com (virtlab511.virt.lab.eng.bos.redhat.com [10.19.152.198])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 599246ACE6;
+        Thu,  7 May 2020 11:53:22 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: [GIT PULL] KVM changes for Linux 5.7-rc5
+Date:   Thu,  7 May 2020 07:53:22 -0400
+Message-Id: <20200507115322.495846-1-pbonzini@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 06, 2020 at 04:29:47PM -0500, Bjorn Helgaas wrote:
-> On Wed, May 06, 2020 at 09:14:38AM +0300, Mika Westerberg wrote:
-> > On Wed, May 06, 2020 at 01:34:21AM +0800, Kai-Heng Feng wrote:
-> > > The TI PCIe-to-PCI bridge prevents the Intel SoC from entering power
-> > > state deeper than PC3 due to disabled ASPM, consumes lots of unnecessary
-> > > power. On Windows ASPM L1 is enabled on the device and its upstream
-> > > bridge, so it can make the Intel SoC reach PC8 or PC10 to save lots of
-> > > power.
-> > > 
-> > > In short, ASPM always gets disabled on bridge-to-bridge link.
-> > 
-> > Excelent finding :) I've heard several reports complaining that we can't
-> > enter PC10 when TBT is enabled and I guess this explains it.
-> 
-> I'm curious about this.  I first read this patch as affecting
-> garden-variety Links between a Root Port or Downstream Port and the
-> Upstream Port of a switch.  But the case we're talking about is
-> specifically when the downstream device is PCI_EXP_TYPE_PCI_BRIDGE,
-> i.e., a PCIe to PCI/PCI-X bridge, not a switch.
-> 
-> AFAICT, a Link to a PCI bridge is still a normal Link and ASPM should
-> still work.  I'm sort of surprised that you'd find such a PCIe to
-> PCI/PCI-X bridge in a Thunderbolt topology, but maybe that's a common
-> thing?
+Linus,
 
-It actually is not common and now that you mention I'm wondering how
-this can help at all. I also thought this applies to all ports which
-would explain the issue we have but if it only applies to PCIe to
-PCI/PCI-X bridge it should not make any difference in TBT systems.
+The following changes since commit 00a6a5ef39e7db3648b35c86361058854db84c83:
 
-> I guess "PC8" and "PC10" are some sort of Intel-specific power states?
+  Merge tag 'kvm-ppc-fixes-5.7-1' of git://git.kernel.org/pub/scm/linux/kernel/git/paulus/powerpc into kvm-master (2020-04-21 09:39:55 -0400)
 
-Package C-state 8 and Package C-state 10. These are power states the
-whole (Intel) CPU package can enter when individual CPU cores are in
-correct low power states.
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+
+for you to fetch changes up to 2673cb6849722a4ffd74c27a9200a9ec43f64be3:
+
+  Merge tag 'kvm-s390-master-5.7-3' of git://git.kernel.org/pub/scm/linux/kernel/git/kvms390/linux into HEAD (2020-05-06 08:09:17 -0400)
+
+----------------------------------------------------------------
+Bugfixes, mostly for ARM and AMD, and more documentation.
+
+----------------------------------------------------------------
+
+Slightly bigger than usual because I couldn't send out what was pending
+for rc4, but there is nothing worrisome going on.  I have more
+fixes pending for guest debugging support (gdbstub) but I will send them
+next week.
+
+Thanks,
+
+Paolo
+
+Christian Borntraeger (1):
+      KVM: s390: Remove false WARN_ON_ONCE for the PQAP instruction
+
+Fangrui Song (1):
+      KVM: arm64: Delete duplicated label in invalid_vector
+
+Kashyap Chamarthy (1):
+      docs/virt/kvm: Document configuring and running nested guests
+
+Marc Zyngier (11):
+      KVM: arm: vgic: Fix limit condition when writing to GICD_I[CS]ACTIVER
+      KVM: arm64: PSCI: Narrow input registers when using 32bit functions
+      KVM: arm64: PSCI: Forbid 64bit functions for 32bit guests
+      KVM: arm: vgic: Synchronize the whole guest on GIC{D,R}_I{S,C}ACTIVER read
+      KVM: arm: vgic: Only use the virtual state when userspace accesses enable bits
+      KVM: arm: vgic-v2: Only use the virtual state when userspace accesses pending bits
+      Merge branch 'kvm-arm64/psci-fixes-5.7' into kvmarm-master/master
+      Merge branch 'kvm-arm64/vgic-fixes-5.7' into kvmarm-master/master
+      KVM: arm64: Save/restore sp_el0 as part of __guest_enter
+      KVM: arm64: vgic-v4: Initialize GICv4.1 even in the absence of a virtual ITS
+      KVM: arm64: Fix 32bit PC wrap-around
+
+Paolo Bonzini (6):
+      KVM: SVM: fill in kvm_run->debug.arch.dr[67]
+      Merge tag 'kvmarm-fixes-5.7-1' of git://git.kernel.org/.../kvmarm/kvmarm into kvm-master
+      Merge tag 'kvmarm-fixes-5.7-2' of git://git.kernel.org/.../kvmarm/kvmarm into kvm-master
+      kvm: ioapic: Restrict lazy EOI update to edge-triggered interrupts
+      kvm: x86: Use KVM CPU capabilities to determine CR4 reserved bits
+      Merge tag 'kvm-s390-master-5.7-3' of git://git.kernel.org/.../kvms390/linux into HEAD
+
+Peter Xu (2):
+      KVM: selftests: Fix build for evmcs.h
+      KVM: X86: Declare KVM_CAP_SET_GUEST_DEBUG properly
+
+Sean Christopherson (2):
+      KVM: nVMX: Replace a BUG_ON(1) with BUG() to squash clang warning
+      KVM: VMX: Explicitly clear RFLAGS.CF and RFLAGS.ZF in VM-Exit RSB path
+
+Suravee Suthikulpanit (1):
+      KVM: x86: Fixes posted interrupt check for IRQs delivery modes
+
+Zenghui Yu (2):
+      KVM: arm64: vgic-v3: Retire all pending LPIs on vcpu destroy
+      KVM: arm64: vgic-its: Fix memory leak on the error path of vgic_add_lpi()
+
+ Documentation/virt/kvm/index.rst                 |   2 +
+ Documentation/virt/kvm/running-nested-guests.rst | 276 +++++++++++++++++++++++
+ arch/arm64/kvm/guest.c                           |   7 +
+ arch/arm64/kvm/hyp/entry.S                       |  23 ++
+ arch/arm64/kvm/hyp/hyp-entry.S                   |   1 -
+ arch/arm64/kvm/hyp/sysreg-sr.c                   |  17 +-
+ arch/powerpc/kvm/powerpc.c                       |   1 +
+ arch/s390/kvm/kvm-s390.c                         |   1 +
+ arch/s390/kvm/priv.c                             |   4 +-
+ arch/x86/include/asm/kvm_host.h                  |   4 +-
+ arch/x86/kvm/ioapic.c                            |  10 +-
+ arch/x86/kvm/svm/svm.c                           |   2 +
+ arch/x86/kvm/vmx/nested.c                        |   2 +-
+ arch/x86/kvm/vmx/vmenter.S                       |   3 +
+ arch/x86/kvm/x86.c                               |  21 +-
+ tools/testing/selftests/kvm/include/evmcs.h      |   4 +-
+ tools/testing/selftests/kvm/lib/x86_64/vmx.c     |   3 +
+ virt/kvm/arm/hyp/aarch32.c                       |   8 +-
+ virt/kvm/arm/psci.c                              |  40 ++++
+ virt/kvm/arm/vgic/vgic-init.c                    |  19 +-
+ virt/kvm/arm/vgic/vgic-its.c                     |  11 +-
+ virt/kvm/arm/vgic/vgic-mmio-v2.c                 |  16 +-
+ virt/kvm/arm/vgic/vgic-mmio-v3.c                 |  31 +--
+ virt/kvm/arm/vgic/vgic-mmio.c                    | 228 ++++++++++++++-----
+ virt/kvm/arm/vgic/vgic-mmio.h                    |  19 ++
+ 25 files changed, 628 insertions(+), 125 deletions(-)
+ create mode 100644 Documentation/virt/kvm/running-nested-guests.rst
+
