@@ -2,124 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 139D61C86AF
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 12:28:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A4F71C86BE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 12:32:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726350AbgEGK2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 06:28:14 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:52796 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725848AbgEGK2N (ORCPT
+        id S1726451AbgEGKcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 06:32:01 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:59872 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725809AbgEGKcA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 06:28:13 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1588847293; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=505A69X26wFMczjQPH01/FWDBb9GRlXXRfy7TtInLmg=;
- b=oO2dLz1RrnYL2yseGm+JFj4IWrmjJ+nFuEObL3cGsp4eDkYwRR1UU/+j0xm80NVoQQZy1c0s
- QGgo/jn/wemBqKjeO3r8f/rQhnzkOkvXE0EzkauraXotZ/82BiK1tOVxK9O0QdMS5HzAzgBM
- XIvri604q1SViA+K/h37fNviSMM=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5eb3e2ba.7f0f90cf7d18-smtp-out-n01;
- Thu, 07 May 2020 10:28:10 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DD5CCC44793; Thu,  7 May 2020 10:28:07 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        Thu, 7 May 2020 06:32:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588847519;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=VLTLF8okWG2U8qocbOPYjuf/W5P0dXVCWo4Nb3iuQAg=;
+        b=HWfo/ttFkGYtqRBHinrbWAUXGMYA7twEqvIgY6sK2QxBEj+RZ4RpmJc9xjz2R0/JxN4LWy
+        pDajlhza+8EZBvA75EXp8SdxqZnMtnzbq3JjAab8KLVy2vdzWPbBGCgVfIiJ//1mafUEVg
+        F19+MdELaQO9s0QhrFUa4wEH4Jdecqs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-228-7KSFfIZuMTWeQ6b4FFHZvw-1; Thu, 07 May 2020 06:31:55 -0400
+X-MC-Unique: 7KSFfIZuMTWeQ6b4FFHZvw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E36D5C433F2;
-        Thu,  7 May 2020 10:28:06 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0208780183C;
+        Thu,  7 May 2020 10:31:51 +0000 (UTC)
+Received: from t480s.redhat.com (ovpn-113-245.ams2.redhat.com [10.36.113.245])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8D8415D9C5;
+        Thu,  7 May 2020 10:31:28 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, virtio-dev@lists.oasis-open.org,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Sebastien Boeuf <sebastien.boeuf@intel.com>,
+        Samuel Ortiz <samuel.ortiz@intel.com>,
+        Robert Bradford <robert.bradford@intel.com>,
+        Luiz Capitulino <lcapitulino@redhat.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        teawater <teawaterz@linux.alibaba.com>,
+        Igor Mammedov <imammedo@redhat.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Alexander Potapenko <glider@google.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Anthony Yznaga <anthony.yznaga@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Young <dyoung@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Juergen Gross <jgross@suse.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Len Brown <lenb@kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Oscar Salvador <osalvador@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Pavel Tatashin <pavel.tatashin@microsoft.com>,
+        Pingfan Liu <kernelfans@gmail.com>, Qian Cai <cai@lca.pw>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Wei Yang <richard.weiyang@gmail.com>
+Subject: [PATCH v3 00/15] virtio-mem: paravirtualized memory
+Date:   Thu,  7 May 2020 12:31:04 +0200
+Message-Id: <20200507103119.11219-1-david@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 07 May 2020 15:58:06 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@gmail.com>, jroedel@suse.de
-Cc:     Stephen Boyd <swboyd@chromium.org>,
-        iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Evan Green <evgreen@chromium.org>,
-        linux-arm-msm-owner@vger.kernel.org
-Subject: Re: [PATCHv4 0/6] iommu/arm-smmu: Allow client devices to select
- identity mapping
-In-Reply-To: <cover.1587407458.git.saiprakash.ranjan@codeaurora.org>
-References: <cover.1587407458.git.saiprakash.ranjan@codeaurora.org>
-Message-ID: <aa54fd00a6d353c72664e41b7a4a4e3d@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Will, Joerg
+This series is based on latest linux-next. The patches are located at:
+    https://github.com/davidhildenbrand/linux.git virtio-mem-v3
 
-On 2020-04-21 00:03, Sai Prakash Ranjan wrote:
-> This series allows DRM, Modem devices to set a default
-> identity mapping in qcom smmu implementation.
-> 
-> Patch 1 is cleanup to support other SoCs to call into
-> QCOM specific  implementation.
-> Patch 2 sets the default identity domain for DRM devices.
-> Patch 3 implements def_domain_type callback for arm-smmu.
-> Patch 4 sets the default identity domain for modem device.
-> Patch 5-6 adds the iommus property for mss pil.
-> 
-> This is based on Joerg's tree:
->  -
-> https://git.kernel.org/pub/scm/linux/kernel/git/joro/linux.git/log/?h=iommu-probe-device-v2
-> 
-> v4:
->  * Updated commit msg for mss pil requesting direct mapping
-> 
-> v3:
->  * Use arm_smmu_master_cfg to get impl instead of long way as per 
-> Robin.
->  * Use def_domain_type name for the callback in arm_smmu_imp as per 
-> Robin
-> 
-> Jordan Crouse (1):
->   iommu/arm-smmu: Allow client devices to select direct mapping
-> 
-> Sai Prakash Ranjan (2):
->   iommu: arm-smmu-impl: Convert to a generic reset implementation
->   iommu/arm-smmu: Implement iommu_ops->def_domain_type call-back
-> 
-> Sibi Sankar (3):
->   iommu/arm-smmu-qcom: Request direct mapping for modem device
->   dt-bindings: remoteproc: qcom: Add iommus property
->   arm64: dts: qcom: sdm845-cheza: Add iommus property
-> 
->  .../bindings/remoteproc/qcom,q6v5.txt         |  3 ++
->  arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi    |  5 +++
->  drivers/iommu/arm-smmu-impl.c                 |  8 ++--
->  drivers/iommu/arm-smmu-qcom.c                 | 37 +++++++++++++++++--
->  drivers/iommu/arm-smmu.c                      | 12 ++++++
->  drivers/iommu/arm-smmu.h                      |  1 +
->  6 files changed, 60 insertions(+), 6 deletions(-)
+Patch #1 - #10 where contained in v2 and only contain minor modifications
+(mostly smaller fixes). The remaining patches are new and contain smaller
+optimizations.
 
-This series is reviewed by Robin.
-Any chance this series can make it to 5.8?
+Details about virtio-mem can be found in the cover letter of v2 [1]. A
+basic QEMU implementation was posted yesterday [2].
 
-Thanks,
-Sai
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+[1] https://lkml.kernel.org/r/20200311171422.10484-1-david@redhat.com
+[2] https://lkml.kernel.org/r/20200506094948.76388-1-david@redhat.com
+
+v2 -> v3:
+- "virtio-mem: Paravirtualized memory hotplug"
+-- Include "linux/slab.h" to fix build issues
+-- Remember the "region_size", helpful for patch #11
+-- Minor simplifaction in virtio_mem_overlaps_range()
+-- Use notifier_from_errno() instead of notifier_to_errno() in notifier
+-- More reliable check for added memory when unloading the driver
+- "virtio-mem: Allow to specify an ACPI PXM as nid"
+-- Also print the nid
+- Added patch #11-#15
+
+Cc: Sebastien Boeuf <sebastien.boeuf@intel.com>
+Cc: Samuel Ortiz <samuel.ortiz@intel.com>
+Cc: Robert Bradford <robert.bradford@intel.com>
+Cc: Luiz Capitulino <lcapitulino@redhat.com>
+Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Cc: teawater <teawaterz@linux.alibaba.com>
+Cc: Igor Mammedov <imammedo@redhat.com>
+Cc: Dr. David Alan Gilbert <dgilbert@redhat.com>
+
+David Hildenbrand (15):
+  virtio-mem: Paravirtualized memory hotplug
+  virtio-mem: Allow to specify an ACPI PXM as nid
+  virtio-mem: Paravirtualized memory hotunplug part 1
+  virtio-mem: Paravirtualized memory hotunplug part 2
+  mm: Allow to offline unmovable PageOffline() pages via
+    MEM_GOING_OFFLINE
+  virtio-mem: Allow to offline partially unplugged memory blocks
+  mm/memory_hotplug: Introduce offline_and_remove_memory()
+  virtio-mem: Offline and remove completely unplugged memory blocks
+  virtio-mem: Better retry handling
+  MAINTAINERS: Add myself as virtio-mem maintainer
+  virtio-mem: Add parent resource for all added "System RAM"
+  virtio-mem: Drop manual check for already present memory
+  virtio-mem: Unplug subblocks right-to-left
+  virtio-mem: Use -ETXTBSY as error code if the device is busy
+  virtio-mem: Try to unplug the complete online memory block first
+
+ MAINTAINERS                     |    7 +
+ drivers/acpi/numa/srat.c        |    1 +
+ drivers/virtio/Kconfig          |   17 +
+ drivers/virtio/Makefile         |    1 +
+ drivers/virtio/virtio_mem.c     | 1962 +++++++++++++++++++++++++++++++
+ include/linux/memory_hotplug.h  |    1 +
+ include/linux/page-flags.h      |   10 +
+ include/uapi/linux/virtio_ids.h |    1 +
+ include/uapi/linux/virtio_mem.h |  208 ++++
+ mm/memory_hotplug.c             |   81 +-
+ mm/page_alloc.c                 |   26 +
+ mm/page_isolation.c             |    9 +
+ 12 files changed, 2314 insertions(+), 10 deletions(-)
+ create mode 100644 drivers/virtio/virtio_mem.c
+ create mode 100644 include/uapi/linux/virtio_mem.h
+
+--=20
+2.25.3
+
