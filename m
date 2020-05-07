@@ -2,68 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D866B1C9634
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 18:16:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73B581C9642
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 18:19:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727111AbgEGQQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 12:16:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726393AbgEGQQd (ORCPT
+        id S1727896AbgEGQTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 12:19:12 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:58411 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727845AbgEGQTH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 12:16:33 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D97A6C05BD43;
-        Thu,  7 May 2020 09:16:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Type:MIME-Version:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=A8uqttsFcU+RJDntrcBSCeABb5tI8iPtiiJqsyKDW04=; b=V1dxn1S+iYZZ/l2L4kNnzJsOKl
-        D5sgSRXA0U8TWty4HMvZv5pQyvRFkETw7KoQyMOmXOYOT9gbPtC+T57mcLDqekS5INAW8E4PeuMg0
-        HcNDr6JinkpcrJEcXTD7rSuLygBcrtYF/T4gLcpAtb3otJ+vJQpmct+098gJcFtL2Miz/2nTRhPPE
-        MREnEiK5hUlCWueg/4gMRkwnd5oHgyvXn+c2VtjzQhobuZqzYJ/W5aOwWLggS+wCiNbWmt2Li7/+j
-        /6JzjZCIEThKa3BrWMwMhf2jaDszjlexfq3EdRBNl9g05zYhjIAygk+X2ol2F7IcVI/3zJrlGItO8
-        h3zci7YQ==;
-Received: from [2001:4bb8:180:9d3f:c70:4a89:bc61:2] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jWjCI-0002gy-PH; Thu, 07 May 2020 16:16:31 +0000
-Date:   Thu, 7 May 2020 18:16:28 +0200
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Joel Becker <jlbec@evilplan.org>
-Subject: [GIT PULL] configfs fix for 5.7
-Message-ID: <20200507161628.GA440967@infradead.org>
+        Thu, 7 May 2020 12:19:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588868345;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WPWPHe3pgTIBihcXGk8hJCaqBjbGv2lpjNArereGrgk=;
+        b=fPnf4qH7qFk0fu7Y05MwVO7zfoT0G63u2FOHKHfg77J+A/o0B5VTta6HHaAqGJgKOhSUZd
+        GZiCxvneLUCZQJdBs7oBDYkUBfjBC9QJivE6jkb+F6UVmTucHJDUn+M3mabzgkM7WZ61mi
+        E5ObdqfgYpGuCHO8lW9rTwQAHBc8Bzg=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-311-_9kMBvvbMsGUNyybba33Ag-1; Thu, 07 May 2020 12:18:57 -0400
+X-MC-Unique: _9kMBvvbMsGUNyybba33Ag-1
+Received: by mail-qk1-f200.google.com with SMTP id x5so6277794qkn.20
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 09:18:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WPWPHe3pgTIBihcXGk8hJCaqBjbGv2lpjNArereGrgk=;
+        b=ZoQDKirMVqFEZDm+YlE4H+c3zY426W6wmO24DQ/Ey6O/3TGk9OJV2tsrrm0mqhvuND
+         Lp/bMSiwyUflZCpU6sl8aYiIcfzv/eU3a3ach2Bg1cCY2q67+73inegdMaqpyXvTdey7
+         5Ues98b3U6jf9CtOe6gTMvdSeR64md2IYg83WqX2+Dg6k+oDzX8HKhjQdppQB6EGph5E
+         /OCTavqTzMvNuRTu+a2mBITY9jGCfvwBEMXiR+VnZQgwZpDHv3sm+mMmYVOEgGvgsg8N
+         cLsqEspakig94AsZegj5tMszjpfP4xcC8wbPLRhvf6LtEGKBPb9uI/R5g1JmrkFCH8Hz
+         Z7LQ==
+X-Gm-Message-State: AGi0Pub4uTZWPt2fSgqrEtnrBaR5BMBPL75hb+knp7ImeTfhnwkPX3oe
+        ZmNsVllX3SNZ4tB7AaqfbR5L/7JYac+WQCbWEet6AW2wMeL3L4weMVm60fTDfx4oJ4tAgBBRj/i
+        7TDNONzSymHU+yxe2KgOI1Z9g
+X-Received: by 2002:ac8:5057:: with SMTP id h23mr14783766qtm.287.1588868336833;
+        Thu, 07 May 2020 09:18:56 -0700 (PDT)
+X-Google-Smtp-Source: APiQypKMXRz+2RdT4/NUmlbtskmTYfoso9urd97IW1y5qNWjs9Os8BEJwCtLJ++jqbfn/vjqoo8YLg==
+X-Received: by 2002:ac8:5057:: with SMTP id h23mr14783733qtm.287.1588868336490;
+        Thu, 07 May 2020 09:18:56 -0700 (PDT)
+Received: from xz-x1 ([2607:9880:19c0:32::2])
+        by smtp.gmail.com with ESMTPSA id i43sm2874675qte.37.2020.05.07.09.18.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 May 2020 09:18:55 -0700 (PDT)
+Date:   Thu, 7 May 2020 12:18:54 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH 9/9] KVM: VMX: pass correct DR6 for GD userspace exit
+Message-ID: <20200507161854.GF228260@xz-x1>
+References: <20200507115011.494562-1-pbonzini@redhat.com>
+ <20200507115011.494562-10-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20200507115011.494562-10-pbonzini@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 6a8b55ed4056ea5559ebe4f6a4b247f627870d4c:
+On Thu, May 07, 2020 at 07:50:11AM -0400, Paolo Bonzini wrote:
+> When KVM_EXIT_DEBUG is raised for the disabled-breakpoints case (DR7.GD),
+> DR6 was incorrectly copied from the value in the VM.  Instead,
+> DR6.BD should be set in order to catch this case.
+> 
+> On AMD this does not need any special code because the processor triggers
+> a #DB exception that is intercepted.  However, the testcase would fail
+> without the previous patch because both DR6.BS and DR6.BD would be set.
+> 
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
+>  arch/x86/kvm/vmx/vmx.c                        |  2 +-
+>  .../testing/selftests/kvm/x86_64/debug_regs.c | 24 ++++++++++++++++++-
+>  2 files changed, 24 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index e2b71b0cdfce..e45cf89c5821 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -4927,7 +4927,7 @@ static int handle_dr(struct kvm_vcpu *vcpu)
+>  		 * guest debugging itself.
+>  		 */
+>  		if (vcpu->guest_debug & KVM_GUESTDBG_USE_HW_BP) {
+> -			vcpu->run->debug.arch.dr6 = vcpu->arch.dr6;
+> +			vcpu->run->debug.arch.dr6 = DR6_BD | DR6_RTM | DR6_FIXED_1;
 
-  Linux 5.7-rc3 (2020-04-26 13:51:02 -0700)
+After a second thought I'm thinking whether it would be okay to have BS set in
+that test case.  I just remembered there's a test case in the kvm-unit-test
+that checks explicitly against BS leftover as long as dr6 is not cleared
+explicitly by the guest code, while the spec seems to have no explicit
+description on this case.
 
-are available in the Git repository at:
+Intead of above, I'm thinking whether we should allow the userspace to also
+change dr6 with the KVM_SET_GUEST_DEBUG ioctl when they wanted to (right now
+iiuc dr6 from userspace is completely ignored), instead of offering a fake dr6.
+Or to make it simple, maybe we can just check BD bit only?
 
-  git://git.infradead.org/users/hch/configfs.git tags/configfs-for-5.7
+Thanks,
 
-for you to fetch changes up to 8aebfffacfa379ba400da573a5bf9e49634e38cb:
+>  			vcpu->run->debug.arch.dr7 = dr7;
+>  			vcpu->run->debug.arch.pc = kvm_get_linear_rip(vcpu);
+>  			vcpu->run->debug.arch.exception = DB_VECTOR;
 
-  configfs: fix config_item refcnt leak in configfs_rmdir() (2020-04-27 08:17:10 +0200)
+-- 
+Peter Xu
 
-----------------------------------------------------------------
-configfs fix for 5.7
-
- - fix a refcount leak in configfs_rmdir (Xiyu Yang)
-
-----------------------------------------------------------------
-Xiyu Yang (1):
-      configfs: fix config_item refcnt leak in configfs_rmdir()
-
- fs/configfs/dir.c | 1 +
- 1 file changed, 1 insertion(+)
