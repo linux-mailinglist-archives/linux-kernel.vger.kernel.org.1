@@ -2,241 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F3A31C8B6A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 14:54:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4880C1C8B65
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 14:53:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726788AbgEGMxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 08:53:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34202 "EHLO
+        id S1726618AbgEGMxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 08:53:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726744AbgEGMx2 (ORCPT
+        by vger.kernel.org with ESMTP id S1725923AbgEGMxV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 08:53:28 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E3D0C05BD0A
-        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 05:53:28 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id fu13so2575584pjb.5
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 05:53:28 -0700 (PDT)
+        Thu, 7 May 2020 08:53:21 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD770C05BD43
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 05:53:19 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id g4so6192499ljl.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 05:53:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=dg37dPXwxVA1zqP4MAiCyHp11rv8jOO4t69xsBoKeZk=;
-        b=CAMQ+RDTsVu9QOQHwz0iwiqjE2LmE5RoACvrmmOyZPYirvUaE9vyOHbEPd2SHakBL1
-         z6w58itg6u+50ITk8EGaNNKSNx8IfXud9tyo1V+NQC0PCu34SAdLeY1f3jCSFCdNzTPa
-         LjX+t1wNydfEzdpfesbVExdAILK1uz/U3LIEC5tt6y5T2vg6wKryY0Hre4lua6BET3RD
-         NRTad+fmGO/i4qSzmct/pxWXJoFCLhgagVBIiOte9cgAHBjH2T11hBCyz3d5UAl0/wDJ
-         K3UCVUsoNgOPds2xjGcxZ0r2UZ48lUQLqwgEJUeVI21BruAV8rQGI1lRf2o3NPVK6CYt
-         /OBg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=itoFpk0rOnDLM0PwGwQS9avTS4/3qHGUdIW12cSPKBA=;
+        b=YcEl2bDRJI3iJB/8XtTG3CXQif1X5eYquMR0qzjP5Mpjs7ln8lzeYiI/LVLAweTafJ
+         Z6wpNJ/eBMsw+9R5PB85KJN2qZgP51MVjKRbPAFlEnJXJ95LGd8ryQm2/5HCQEzaHunB
+         TgqoS0zsvzozAROKQxZwxk8eAyiSyBxwNs2Eu01aqneS3eyqfunRRwrOMvvAZAXfVWE8
+         KNt40gSMiiKSK//wsn2rBR+sb7Bep9eQV2WZTWlYH5zGfwLd9ClOnIBtqrH6jG6nTIbF
+         6rkfR+lqm08l3D0S3/QBvBN38WvifoXjKyFHpctGJ+nOAlumAB0/2umm0L+/tUygS46Z
+         tVAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=dg37dPXwxVA1zqP4MAiCyHp11rv8jOO4t69xsBoKeZk=;
-        b=pC2nUXuJm/gJCa7AuXh9noJtcI7gOKhuxokMBUutIMOwwOcgrFsXXaqUFMhO9dKwCx
-         DhcidL9uc0XFtV24yugS8UJSexCGZAfMV86c7tXykRcIn9OVATKcJwuvQnwM87CXeOdv
-         lb2vAN/tqGW32X4LxiZrur03V0U7xsZlXDabIe24IpcuZX2wNfsh4q7ZsDjdj2f7Fd12
-         vLSjy8Ho5Xh2D3RpRMfX2ZVDf7DMvmUiHzPJ8WvJ3xCXv2u6VJWSQ4US3wZpKb/F8RBb
-         bV2E09bhYCmY+blx2bNUc1GmsbO9TB6ycwwc6TIeIOP1TlAcKUNlxuhoGXfGbM+k6gOO
-         z/Eg==
-X-Gm-Message-State: AGi0PubTq40fj4qiDDy2X+nj7UFQfsnq/+AUYmUKe2gO+tQ0o6MpfJoY
-        wEQ6Qm3qUqzHa4wZ6V+v0mdS
-X-Google-Smtp-Source: APiQypLK4Hz2TvmbLEiseouyYNMziY1XV2DJnEfo3pKeXD8olMyB7RxQNcawUu3AKZ59FccD/mE/aQ==
-X-Received: by 2002:a17:90a:2347:: with SMTP id f65mr15030520pje.165.1588856007677;
-        Thu, 07 May 2020 05:53:27 -0700 (PDT)
-Received: from localhost.localdomain ([2409:4072:6093:7a3f:4ddc:efce:d298:c431])
-        by smtp.gmail.com with ESMTPSA id q21sm4926190pfg.131.2020.05.07.05.53.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2020 05:53:27 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     davem@davemloft.net
-Cc:     kvalo@codeaurora.org, bjorn.andersson@linaro.org,
-        hemantk@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clew@codeaurora.org,
-        gregkh@linuxfoundation.org, netdev@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v2 1/2] net: qrtr: Add MHI transport layer
-Date:   Thu,  7 May 2020 18:23:05 +0530
-Message-Id: <20200507125306.32157-2-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200507125306.32157-1-manivannan.sadhasivam@linaro.org>
-References: <20200507125306.32157-1-manivannan.sadhasivam@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=itoFpk0rOnDLM0PwGwQS9avTS4/3qHGUdIW12cSPKBA=;
+        b=aT8VbI96BlzpJKOLwcehUIikcWbuHqBByjhEf99iE8m891oXE0qx3eJ/VnOsRSxjMX
+         TeW6Cjm+lHBmAbdViGub0u60Q37DwXP2OsFn9zd/oDGE+qDSpveB3TwWmIS0EN7Za6eW
+         LvXpwESa/84DeuPht2q+Dc2tP8dfiNnjpWd0XxGsZgZzJyrjI7cjQXwot2PRW5zkaWpg
+         iSAWKKZHiPXi8zYvb5PBKp0e1IUupE+0GiwAmfr3CuLV6q6Syi09dP2qXfAy48ipD7tA
+         t+W5aODKlTNtJy5iuNir11nrsUKTrBSx1AT+P58dTP+Si/TYTP+zBTLyUUCSGBTn+YqF
+         Q4WA==
+X-Gm-Message-State: AGi0PuaPqe5EUlxZvH/RaEABjFVlJnLeV6CePg+VTvZ7YePX8VEHjkJl
+        qmA9Fx/y/L0ANDwG9zDLANM2Impm4T9TocM9HUqkCw==
+X-Google-Smtp-Source: APiQypKMTiMm1C88aomNGpTtnhL8b0bf92b/ZVFoKyedTSXsbaoCwM1dqo2Nb6dx413A1ukBmk/N3InDh6JI1bE/vRo=
+X-Received: by 2002:a2e:95d2:: with SMTP id y18mr8327928ljh.65.1588855997313;
+ Thu, 07 May 2020 05:53:17 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200503083407.GA27766@iZj6chx1xj0e0buvshuecpZ>
+ <CAKfTPtCNG9Y4xNA-iLd+JRRsUCA1+SkkFFRbbzk5n7q6v401tw@mail.gmail.com>
+ <20200505134056.GA31680@iZj6chx1xj0e0buvshuecpZ> <20200505142711.GA12952@vingu-book>
+ <jhjftcd1hmx.mognet@arm.com> <CAKfTPtCM7mE7a63rXB4cG5gHn03ArjTB1ZBje=qEWOGR9mj67g@mail.gmail.com>
+ <jhjv9l9yrtb.mognet@arm.com> <20200507124104.GA2769@iZj6chx1xj0e0buvshuecpZ>
+In-Reply-To: <20200507124104.GA2769@iZj6chx1xj0e0buvshuecpZ>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 7 May 2020 14:53:05 +0200
+Message-ID: <CAKfTPtCjAd0k7482rjfznRFcWmxWWJzVMaSXu2yu4krttLqneQ@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: Fix nohz.next_balance update
+To:     Peng Liu <iwtbavbm@gmail.com>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MHI is the transport layer used for communicating to the external modems.
-Hence, this commit adds MHI transport layer support to QRTR for
-transferring the QMI messages over IPC Router.
+On Thu, 7 May 2020 at 14:41, Peng Liu <iwtbavbm@gmail.com> wrote:
+>
+> On Wed, May 06, 2020 at 05:02:56PM +0100, Valentin Schneider wrote:
+> >
+> > On 06/05/20 14:45, Vincent Guittot wrote:
+> > >> But then we may skip an update if we goto abort, no? Imagine we have just
+> > >> NOHZ_STATS_KICK, so we don't call any rebalance_domains(), and then as we
+> > >> go through the last NOHZ CPU in the loop we hit need_resched(). We would
+> > >> end in the abort part without any update to nohz.next_balance, despite
+> > >> having accumulated relevant data in the local next_balance variable.
+> > >
+> > > Yes but on the other end, the last CPU has not been able to run the
+> > > rebalance_domain so we must not move  nohz.next_balance otherwise it
+> > > will have to wait for at least another full period
+> > > In fact, I think that we have a problem with current implementation
+> > > because if we abort because  local cpu because busy we might end up
+> > > skipping idle load balance for a lot of idle CPUs
+> > >
+> > > As an example, imagine that we have 10 idle CPUs with the same
+> > > rq->next_balance which equal nohz.next_balance.  _nohz_idle_balance
+> > > starts on CPU0, it processes idle lb for CPU1 but then has to abort
+> > > because of need_resched. If we update nohz.next_balance like
+> > > currently, the next idle load balance  will happen after a full
+> > > balance interval whereas we still have 8 CPUs waiting for running an
+> > > idle load balance.
+> > >
+> > > My proposal also fixes this problem
+> > >
+> >
+> > That's a very good point; so with NOHZ_BALANCE_KICK we can reduce
+> > nohz.next_balance via rebalance_domains(), and otherwise we would only
+> > increase it if we go through a complete for_each_cpu() loop in
+> > _nohz_idle_balance().
+> >
+> > That said, if for some reason we keep bailing out of the loop, we won't
+> > push nohz.next_balance forward and thus may repeatedly nohz-balance only
+> > the first few CPUs in the NOHZ mask. I think that can happen if we have
+> > say 2 tasks pinned to a single rq, in that case nohz_balancer_kick() will
+> > kick a NOHZ balance whenever now >= nohz.next_balance.
+>
+> If we face the risk of "repeatly nohz-balance only the first few CPUs",
+> Maybe we could remember the interrupted CPU and start nohz-balance from
+> it next time. Just replace the loop in _nohz_idle_balance() like:
+>
+> for_each_cpu_wrap(cpu, nohz.idle_cpus_mask, nohz.anchor) {
+>         ...
+>         if (need_resched()) {
+>                 ...
+>                 nohz.anchor = cpu;
+>                 ...
+>         }
+>         ...
+> }
+>
+> This can mitigate the problem, but this can't help the extreme situation
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- net/qrtr/Kconfig  |   7 +++
- net/qrtr/Makefile |   2 +
- net/qrtr/mhi.c    | 127 ++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 136 insertions(+)
- create mode 100644 net/qrtr/mhi.c
+If we rerun _nohz_idle_balance before the balance interval, the 1st
+idle CPUs that has already been balanced will be skipped because there
+rq->next_balance will be after jiffies and we will start calling
+rebalance_domains for idle CPUs which have not yet been balance.
+So I'm not sure that this will help a lot because we have to go
+through all idle CPU to set the nohz.next_balance at the end
 
-diff --git a/net/qrtr/Kconfig b/net/qrtr/Kconfig
-index 63f89cc6e82c..8eb876471564 100644
---- a/net/qrtr/Kconfig
-+++ b/net/qrtr/Kconfig
-@@ -29,4 +29,11 @@ config QRTR_TUN
- 	  implement endpoints of QRTR, for purpose of tunneling data to other
- 	  hosts or testing purposes.
- 
-+config QRTR_MHI
-+	tristate "MHI IPC Router channels"
-+	depends on MHI_BUS
-+	help
-+	  Say Y here to support MHI based ipcrouter channels. MHI is the
-+	  transport used for communicating to external modems.
-+
- endif # QRTR
-diff --git a/net/qrtr/Makefile b/net/qrtr/Makefile
-index 32d4e923925d..1b1411d158a7 100644
---- a/net/qrtr/Makefile
-+++ b/net/qrtr/Makefile
-@@ -5,3 +5,5 @@ obj-$(CONFIG_QRTR_SMD) += qrtr-smd.o
- qrtr-smd-y	:= smd.o
- obj-$(CONFIG_QRTR_TUN) += qrtr-tun.o
- qrtr-tun-y	:= tun.o
-+obj-$(CONFIG_QRTR_MHI) += qrtr-mhi.o
-+qrtr-mhi-y	:= mhi.o
-diff --git a/net/qrtr/mhi.c b/net/qrtr/mhi.c
-new file mode 100644
-index 000000000000..ff0c41467fc1
---- /dev/null
-+++ b/net/qrtr/mhi.c
-@@ -0,0 +1,127 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2018-2020, The Linux Foundation. All rights reserved.
-+ */
-+
-+#include <linux/mhi.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/module.h>
-+#include <linux/skbuff.h>
-+#include <net/sock.h>
-+
-+#include "qrtr.h"
-+
-+struct qrtr_mhi_dev {
-+	struct qrtr_endpoint ep;
-+	struct mhi_device *mhi_dev;
-+	struct device *dev;
-+};
-+
-+/* From MHI to QRTR */
-+static void qcom_mhi_qrtr_dl_callback(struct mhi_device *mhi_dev,
-+				      struct mhi_result *mhi_res)
-+{
-+	struct qrtr_mhi_dev *qdev = dev_get_drvdata(&mhi_dev->dev);
-+	int rc;
-+
-+	if (!qdev || mhi_res->transaction_status)
-+		return;
-+
-+	rc = qrtr_endpoint_post(&qdev->ep, mhi_res->buf_addr,
-+				mhi_res->bytes_xferd);
-+	if (rc == -EINVAL)
-+		dev_err(qdev->dev, "invalid ipcrouter packet\n");
-+}
-+
-+/* From QRTR to MHI */
-+static void qcom_mhi_qrtr_ul_callback(struct mhi_device *mhi_dev,
-+				      struct mhi_result *mhi_res)
-+{
-+	struct sk_buff *skb = mhi_res->buf_addr;
-+
-+	if (skb->sk)
-+		sock_put(skb->sk);
-+	consume_skb(skb);
-+}
-+
-+/* Send data over MHI */
-+static int qcom_mhi_qrtr_send(struct qrtr_endpoint *ep, struct sk_buff *skb)
-+{
-+	struct qrtr_mhi_dev *qdev = container_of(ep, struct qrtr_mhi_dev, ep);
-+	int rc;
-+
-+	rc = skb_linearize(skb);
-+	if (rc)
-+		goto free_skb;
-+
-+	rc = mhi_queue_skb(qdev->mhi_dev, DMA_TO_DEVICE, skb, skb->len,
-+			   MHI_EOT);
-+	if (rc)
-+		goto free_skb;
-+
-+	if (skb->sk)
-+		sock_hold(skb->sk);
-+
-+	return rc;
-+
-+free_skb:
-+	kfree_skb(skb);
-+
-+	return rc;
-+}
-+
-+static int qcom_mhi_qrtr_probe(struct mhi_device *mhi_dev,
-+			       const struct mhi_device_id *id)
-+{
-+	struct qrtr_mhi_dev *qdev;
-+	int rc;
-+
-+	qdev = devm_kzalloc(&mhi_dev->dev, sizeof(*qdev), GFP_KERNEL);
-+	if (!qdev)
-+		return -ENOMEM;
-+
-+	qdev->mhi_dev = mhi_dev;
-+	qdev->dev = &mhi_dev->dev;
-+	qdev->ep.xmit = qcom_mhi_qrtr_send;
-+
-+	dev_set_drvdata(&mhi_dev->dev, qdev);
-+	rc = qrtr_endpoint_register(&qdev->ep, QRTR_EP_NID_AUTO);
-+	if (rc)
-+		return rc;
-+
-+	dev_dbg(qdev->dev, "Qualcomm MHI QRTR driver probed\n");
-+
-+	return 0;
-+}
-+
-+static void qcom_mhi_qrtr_remove(struct mhi_device *mhi_dev)
-+{
-+	struct qrtr_mhi_dev *qdev = dev_get_drvdata(&mhi_dev->dev);
-+
-+	qrtr_endpoint_unregister(&qdev->ep);
-+	dev_set_drvdata(&mhi_dev->dev, NULL);
-+}
-+
-+static const struct mhi_device_id qcom_mhi_qrtr_id_table[] = {
-+	{ .chan = "IPCR" },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(mhi, qcom_mhi_qrtr_id_table);
-+
-+static struct mhi_driver qcom_mhi_qrtr_driver = {
-+	.probe = qcom_mhi_qrtr_probe,
-+	.remove = qcom_mhi_qrtr_remove,
-+	.dl_xfer_cb = qcom_mhi_qrtr_dl_callback,
-+	.ul_xfer_cb = qcom_mhi_qrtr_ul_callback,
-+	.id_table = qcom_mhi_qrtr_id_table,
-+	.driver = {
-+		.name = "qcom_mhi_qrtr",
-+	},
-+};
-+
-+module_mhi_driver(qcom_mhi_qrtr_driver);
-+
-+MODULE_AUTHOR("Chris Lew <clew@codeaurora.org>");
-+MODULE_AUTHOR("Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>");
-+MODULE_DESCRIPTION("Qualcomm IPC-Router MHI interface driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.17.1
+> as @Vincent put, it always failed in the same CPU.
 
+In the case that i described above, the problem comes from the cpu
+that is selected to run the ilb but if we kick ilb again, it will not
+be selected again.
