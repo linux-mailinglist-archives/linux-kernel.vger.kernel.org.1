@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37F501C9AD9
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:21:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3FA51C9ADD
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:21:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728732AbgEGTVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 15:21:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42782 "EHLO mail.kernel.org"
+        id S1728740AbgEGTVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 15:21:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42898 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728309AbgEGTVN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 15:21:13 -0400
+        id S1728309AbgEGTVT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 15:21:19 -0400
 Received: from embeddedor (unknown [189.207.59.248])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D2662221F7;
-        Thu,  7 May 2020 19:21:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 803F6208D6;
+        Thu,  7 May 2020 19:21:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588879273;
-        bh=Fqz2PjC/jFV89A9kXw++EXBwCRqH25aWHuTpik2W34I=;
+        s=default; t=1588879278;
+        bh=aqlr2HwcgwNB0L0TGQyC7gNsNCEQUaxHy93+aefD860=;
         h=Date:From:To:Cc:Subject:From;
-        b=sIlWVVg+1ES+Eb2qBbHDRCjQ+Br9Roy/dbGcWJFqTZ/hZ3Ia2eHs7Pah817dUkshs
-         E8aX9VcPCHsTf7p/wpO/gZat2vnUAOz8oSMY02e6LDI6NKrTvgxrwqYsZbVoMY9d7x
-         yhr9+B+GOcWSofspsfYfjVDvKlhknDKYLGsrEUcg=
-Date:   Thu, 7 May 2020 14:25:39 -0500
+        b=RfLzVnNgg/czziwLxPxd8ul5xeivwnNSpBsVZagIgzPnaIXBM9LSzQ4npZ1qwIReL
+         H7uPXlUOJd1ka0YmmnAdTnkXpgzlOaWe3xX6kmUTB6iYvKvCPVkt0byxaSu6fuC87x
+         VsEkgqR+2mzBAWT7pTbF4SoknARVvGlYLHTKLjj0=
+Date:   Thu, 7 May 2020 14:25:45 -0500
 From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] tracing/probe: Replace zero-length array with flexible-array
-Message-ID: <20200507192539.GA16642@embeddedor>
+Subject: [PATCH] tty: Replace zero-length array with flexible-array
+Message-ID: <20200507192545.GA16662@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -76,20 +76,20 @@ This issue was found with the help of Coccinelle.
 
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- kernel/trace/trace_probe.h |    2 +-
+ include/linux/tty.h |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/trace/trace_probe.h b/kernel/trace/trace_probe.h
-index a0ff9e200ef6..a22b62813f8c 100644
---- a/kernel/trace/trace_probe.h
-+++ b/kernel/trace/trace_probe.h
-@@ -236,7 +236,7 @@ struct trace_probe_event {
- 	struct trace_event_call		call;
- 	struct list_head 		files;
- 	struct list_head		probes;
--	struct trace_uprobe_filter	filter[0];
-+	struct trace_uprobe_filter	filter[];
+diff --git a/include/linux/tty.h b/include/linux/tty.h
+index bd5fe0e907e8..a99e9b8e4e31 100644
+--- a/include/linux/tty.h
++++ b/include/linux/tty.h
+@@ -66,7 +66,7 @@ struct tty_buffer {
+ 	int read;
+ 	int flags;
+ 	/* Data points here */
+-	unsigned long data[0];
++	unsigned long data[];
  };
  
- struct trace_probe {
+ /* Values for .flags field of tty_buffer */
 
