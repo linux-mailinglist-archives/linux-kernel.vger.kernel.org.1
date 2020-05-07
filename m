@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F090B1C99E5
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:52:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF1E11C99E8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:52:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728776AbgEGSv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 14:51:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52746 "EHLO mail.kernel.org"
+        id S1728318AbgEGSwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 14:52:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53434 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728110AbgEGSv6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 14:51:58 -0400
+        id S1726598AbgEGSwi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 14:52:38 -0400
 Received: from embeddedor (unknown [189.207.59.248])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 949AC2495D;
-        Thu,  7 May 2020 18:51:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CDEB62495D;
+        Thu,  7 May 2020 18:52:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588877517;
-        bh=tb88XbEj5l3Q8hlLvjSFDYyXEsoljocVtv2zF60ic9c=;
+        s=default; t=1588877558;
+        bh=3p7eu1MK3/DsGvUUePG2CQuwCI8FRfOqNY3jSgtHysA=;
         h=Date:From:To:Cc:Subject:From;
-        b=YvnTNunoqaWZ81+jr/hN3xIN+LHMIOK4+Xrhzqz8vPKpFsOmeWNNFR2e7b4b5V1CC
-         RrlPTzEhNB9Uh4JhFQbbgyZSKY+m2+0wZOLcr46kneZ8yRBb5ZYb1Za5qhdDA6jXwX
-         MnVUTwGjzv3fAC5vKtvIYuiZ9v9gbEd363lYw1co=
-Date:   Thu, 7 May 2020 13:56:24 -0500
+        b=zB00JXfY5N8MCu9LU/I8NuwjUD5M9q/ClnQmv+hVQlVvpsXrkVTu3m56rngM3C+n9
+         Go00HNUmFc1Vkx/dki3yRfaduBm2NW11l74aOfqScy+rrRBylrS/cWl15Ebsj1aPR6
+         OrghsOeoKArBE2ljeAIM/cWfp/6EDDLxNGtUNN/I=
+Date:   Thu, 7 May 2020 13:57:04 -0500
 From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Eric Biederman <ebiederm@xmission.com>
-Cc:     kexec@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] kexec: Replace zero-length array with flexible-array
-Message-ID: <20200507185624.GA14851@embeddedor>
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] encrypted-keys: Replace zero-length array with flexible-array
+Message-ID: <20200507185704.GA14874@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -75,20 +76,20 @@ This issue was found with the help of Coccinelle.
 
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- include/linux/kexec.h |    2 +-
+ include/keys/encrypted-type.h |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/kexec.h b/include/linux/kexec.h
-index 1776eb2e43a4..ea67910ae6b7 100644
---- a/include/linux/kexec.h
-+++ b/include/linux/kexec.h
-@@ -208,7 +208,7 @@ struct crash_mem_range {
- struct crash_mem {
- 	unsigned int max_nr_ranges;
- 	unsigned int nr_ranges;
--	struct crash_mem_range ranges[0];
-+	struct crash_mem_range ranges[];
+diff --git a/include/keys/encrypted-type.h b/include/keys/encrypted-type.h
+index 9e9ccb20d586..38afb341c3f2 100644
+--- a/include/keys/encrypted-type.h
++++ b/include/keys/encrypted-type.h
+@@ -27,7 +27,7 @@ struct encrypted_key_payload {
+ 	unsigned short payload_datalen;		/* payload data length */
+ 	unsigned short encrypted_key_format;	/* encrypted key format */
+ 	u8 *decrypted_data;	/* decrypted data */
+-	u8 payload_data[0];	/* payload data + datablob + hmac */
++	u8 payload_data[];	/* payload data + datablob + hmac */
  };
  
- extern int crash_exclude_mem_range(struct crash_mem *mem,
+ extern struct key_type key_type_encrypted;
 
