@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD49F1C934D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 17:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36A781C934E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 17:02:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728255AbgEGPBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 11:01:11 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:4282 "EHLO huawei.com"
+        id S1728271AbgEGPBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 11:01:12 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:3902 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728219AbgEGPBF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727795AbgEGPBF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 7 May 2020 11:01:05 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id A6F3F9C4D0216598D07B;
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id DB54F71F3AD21596FD66;
         Thu,  7 May 2020 23:01:00 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
  DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 7 May 2020 23:00:53 +0800
+ 14.3.487.0; Thu, 7 May 2020 23:00:54 +0800
 From:   Kefeng Wang <wangkefeng.wang@huawei.com>
 To:     Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
         <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>
 CC:     Kefeng Wang <wangkefeng.wang@huawei.com>,
         Alan Kao <alankao@andestech.com>
-Subject: [PATCH -next] riscv: perf_event: Make some funciton static
-Date:   Thu, 7 May 2020 23:04:44 +0800
-Message-ID: <20200507150445.174390-1-wangkefeng.wang@huawei.com>
+Subject: [PATCH -next] riscv: perf: RISCV_BASE_PMU should be closeable
+Date:   Thu, 7 May 2020 23:04:45 +0800
+Message-ID: <20200507150445.174390-2-wangkefeng.wang@huawei.com>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200507150445.174390-1-wangkefeng.wang@huawei.com>
+References: <20200507150445.174390-1-wangkefeng.wang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
 X-Originating-IP: [10.175.113.25]
 X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
@@ -37,66 +39,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following warning detected when running make with W=1,
-../arch/riscv/kernel/perf_event.c:150:5: warning: no previous prototype for ‘riscv_map_cache_decode’ [-Wmissing-prototypes]
- int riscv_map_cache_decode(u64 config, unsigned int *type,
-     ^~~~~~~~~~~~~~~~~~~~~~
-../arch/riscv/kernel/perf_event.c:345:13: warning: no previous prototype for ‘riscv_base_pmu_handle_irq’ [-Wmissing-prototypes]
- irqreturn_t riscv_base_pmu_handle_irq(int irq_num, void *dev)
-             ^~~~~~~~~~~~~~~~~~~~~~~~~
-../arch/riscv/kernel/perf_event.c:364:6: warning: no previous prototype for ‘release_pmc_hardware’ [-Wmissing-prototypes]
- void release_pmc_hardware(void)
-      ^~~~~~~~~~~~~~~~~~~~
-../arch/riscv/kernel/perf_event.c:467:12: warning: no previous prototype for ‘init_hw_perf_events’ [-Wmissing-prototypes]
- int __init init_hw_perf_events(void)
-            ^~~~~~~~~~~~~~~~~~~
+As 178e9fc47aae("perf: riscv: preliminary RISC-V support") said,
+For RISCV_BASE_PMU, 'this option can also be disable to reduce kernel size',
+but it could not work well, we need diable both RISCV_BASE_PMU and
+PERF_EVENTS manually, or build error will occur when only disable
+RISCV_BASE_PMU.
 
 Cc: Alan Kao <alankao@andestech.com>
 Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 ---
- arch/riscv/kernel/perf_event.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/riscv/include/asm/perf_event.h | 8 ++------
+ arch/riscv/kernel/Makefile          | 2 +-
+ 2 files changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/arch/riscv/kernel/perf_event.c b/arch/riscv/kernel/perf_event.c
-index 91626d9ae5f2..c835f0362d94 100644
---- a/arch/riscv/kernel/perf_event.c
-+++ b/arch/riscv/kernel/perf_event.c
-@@ -147,7 +147,7 @@ static int riscv_map_hw_event(u64 config)
- 	return riscv_pmu->hw_events[config];
- }
+diff --git a/arch/riscv/include/asm/perf_event.h b/arch/riscv/include/asm/perf_event.h
+index 0234048b12bc..062efd3a1d5d 100644
+--- a/arch/riscv/include/asm/perf_event.h
++++ b/arch/riscv/include/asm/perf_event.h
+@@ -12,19 +12,14 @@
+ #include <linux/ptrace.h>
+ #include <linux/interrupt.h>
  
--int riscv_map_cache_decode(u64 config, unsigned int *type,
-+static int riscv_map_cache_decode(u64 config, unsigned int *type,
- 			   unsigned int *op, unsigned int *result)
- {
- 	return -ENOENT;
-@@ -342,7 +342,7 @@ static void riscv_pmu_del(struct perf_event *event, int flags)
++#ifdef CONFIG_RISCV_BASE_PMU
+ #define RISCV_BASE_COUNTERS	2
  
- static DEFINE_MUTEX(pmc_reserve_mutex);
+ /*
+  * The RISCV_MAX_COUNTERS parameter should be specified.
+  */
  
--irqreturn_t riscv_base_pmu_handle_irq(int irq_num, void *dev)
-+static irqreturn_t riscv_base_pmu_handle_irq(int irq_num, void *dev)
- {
- 	return IRQ_NONE;
- }
-@@ -361,7 +361,7 @@ static int reserve_pmc_hardware(void)
- 	return err;
- }
+-#ifdef CONFIG_RISCV_BASE_PMU
+ #define RISCV_MAX_COUNTERS	2
+-#endif
+-
+-#ifndef RISCV_MAX_COUNTERS
+-#error "Please provide a valid RISCV_MAX_COUNTERS for the PMU."
+-#endif
  
--void release_pmc_hardware(void)
-+static void release_pmc_hardware(void)
- {
- 	mutex_lock(&pmc_reserve_mutex);
- 	if (riscv_pmu->irq >= 0)
-@@ -464,7 +464,7 @@ static const struct of_device_id riscv_pmu_of_ids[] = {
- 	{ /* sentinel value */ }
+ /*
+  * These are the indexes of bits in counteren register *minus* 1,
+@@ -82,6 +77,7 @@ struct riscv_pmu {
+ 	int		irq;
  };
  
--int __init init_hw_perf_events(void)
-+static int __init init_hw_perf_events(void)
- {
- 	struct device_node *node = of_find_node_by_type(NULL, "pmu");
- 	const struct of_device_id *of_id;
++#endif
+ #ifdef CONFIG_PERF_EVENTS
+ #define perf_arch_bpf_user_pt_regs(regs) (struct user_regs_struct *)regs
+ #endif
+diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
+index 1f5736e996fd..b355cf485671 100644
+--- a/arch/riscv/kernel/Makefile
++++ b/arch/riscv/kernel/Makefile
+@@ -43,7 +43,7 @@ obj-$(CONFIG_MODULE_SECTIONS)	+= module-sections.o
+ obj-$(CONFIG_FUNCTION_TRACER)	+= mcount.o ftrace.o
+ obj-$(CONFIG_DYNAMIC_FTRACE)	+= mcount-dyn.o
+ 
+-obj-$(CONFIG_PERF_EVENTS)	+= perf_event.o
++obj-$(CONFIG_RISCV_BASE_PMU)	+= perf_event.o
+ obj-$(CONFIG_PERF_EVENTS)	+= perf_callchain.o
+ obj-$(CONFIG_HAVE_PERF_REGS)	+= perf_regs.o
+ obj-$(CONFIG_RISCV_SBI)		+= sbi.o
 -- 
 2.26.2
 
