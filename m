@@ -2,169 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FECC1C8D9C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 16:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A6351C8D9E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 16:08:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727884AbgEGOHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 10:07:39 -0400
-Received: from muru.com ([72.249.23.125]:53080 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727835AbgEGOHh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 10:07:37 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 3567680CD;
-        Thu,  7 May 2020 14:08:24 +0000 (UTC)
-Date:   Thu, 7 May 2020 07:07:32 -0700
-From:   Tony Lindgren <tony@atomide.com>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     kernel list <linux-kernel@vger.kernel.org>,
-        linux-omap@vger.kernel.org, sre@kernel.org, nekit1000@gmail.com,
-        mpartap@gmx.net, merlijn@wizzup.org, martin_rysavy@centrum.cz
-Subject: Re: USB networking news, ofono for d4: less hacked version
-Message-ID: <20200507140732.GU37466@atomide.com>
-References: <20200506101125.GA7490@amd>
- <20200506144338.GT37466@atomide.com>
- <20200506230525.GA22354@amd>
+        id S1727980AbgEGOHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 10:07:47 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:25736 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727903AbgEGOHn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 10:07:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588860462;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1AoI+9FyMu82WK4bZhrAK5V8JQ6RWrNZsFQbYJw2lb8=;
+        b=cMmKQFVQKKGKi3A8eBf2pDOFVWfZ3LjO2ZMbKfUXlf9oawbecNEEhbqTgFaDDUfOuDs0R9
+        xVhVVpQr6wHX86PxsWk98agb14s+azuxCpcxfnlRKAIXwdVfayaE36zuSseN22EpvYty4y
+        C4kNaIgIivoqetuU4Pugr6eQXNMqyfs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-61-vKGhe_kQMd-SMc6q1mPVXw-1; Thu, 07 May 2020 10:07:39 -0400
+X-MC-Unique: vKGhe_kQMd-SMc6q1mPVXw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 422AA460;
+        Thu,  7 May 2020 14:07:37 +0000 (UTC)
+Received: from treble (ovpn-115-96.rdu2.redhat.com [10.10.115.96])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 059E670545;
+        Thu,  7 May 2020 14:07:35 +0000 (UTC)
+Date:   Thu, 7 May 2020 09:07:33 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        X86 ML <x86@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] bpf: Tweak BPF jump table optimizations for objtool
+ compatibility
+Message-ID: <20200507140733.v4xlzjogtnpgu5lc@treble>
+References: <20200502192105.xp2osi5z354rh4sm@treble>
+ <20200505174300.gech3wr5v6kkho35@ast-mbp.dhcp.thefacebook.com>
+ <20200505181108.hwcqanvw3qf5qyxk@treble>
+ <20200505195320.lyphpnprn3sjijf6@ast-mbp.dhcp.thefacebook.com>
+ <20200505202823.zkmq6t55fxspqazk@treble>
+ <20200505235939.utnmzqsn22cec643@ast-mbp.dhcp.thefacebook.com>
+ <20200506155343.7x3slq3uasponb6w@treble>
+ <CAADnVQJZ1rj1DB-Y=85itvfcHxnXVKjhJXpzqs6zZ6ZLpexhCQ@mail.gmail.com>
+ <20200506211945.4qhrxqplzmt4ul66@treble>
+ <20200507000357.grprluieqa324v5c@ast-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200506230525.GA22354@amd>
+In-Reply-To: <20200507000357.grprluieqa324v5c@ast-mbp.dhcp.thefacebook.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Pavel Machek <pavel@ucw.cz> [200506 23:06]:
-> On Wed 2020-05-06 07:43:38, Tony Lindgren wrote:
-> > * Pavel Machek <pavel@ucw.cz> [200506 10:12]:
-> > > Hi!
+On Wed, May 06, 2020 at 05:03:57PM -0700, Alexei Starovoitov wrote:
+> > > > > diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
+> > > > > index d7ee4c6bad48..05104c3cc033 100644
+> > > > > --- a/include/linux/compiler-gcc.h
+> > > > > +++ b/include/linux/compiler-gcc.h
+> > > > > @@ -171,4 +171,4 @@
+> > > > >  #define __diag_GCC_8(s)
+> > > > >  #endif
+> > > > >
+> > > > > -#define __no_fgcse __attribute__((optimize("-fno-gcse")))
+> > > > > +#define __no_fgcse __attribute__((optimize("-fno-gcse,-fno-omit-frame-pointer")))
+> > > > > --
+> > > > > 2.23.0
+> > > > >
+> > > > > I've tested it with gcc 8,9,10 and clang 11 with FP=y and with ORC=y.
+> > > > > All works.
+> > > > > I think it's safer to go with frame pointers even for ORC=y considering
+> > > > > all the pain this issue had caused. Even if objtool gets confused again
+> > > > > in the future __bpf_prog_run() will have frame pointers and kernel stack
+> > > > > unwinding can fall back from ORC to FP for that frame.
+> > > > > wdyt?
+> > > >
+> > > > It seems dangerous to me.  The GCC manual recommends against it.
 > > > 
-> > > So... I found out that USB networking works way better when I don't
-> > > attempt to charge the phone at the same. Yes, green light was
-> > > blinking.
+> > > The manual can says that it's broken. That won't stop the world from using it.
+> > > Just google projects that are using it. For example: qt, lz4, unreal engine, etc
+> > > Telling compiler to disable gcse via flag is a guaranteed way to avoid
+> > > that optimization that breaks objtool whereas messing with C code is nothing
+> > > but guess work. gcc can still do gcse.
 > > 
-> > OK yes we don't have much of a charger detection currently and the
-> > charger tries to reconnect with the LED blinking rapidly with an
-> > empty battery.
+> > But the manual's right, it is broken.  How do you know other important
+> > flags won't also be stripped?
 > 
-> Do you have an idea why that causes problems with usb data connection?
+> What flags are you worried about?
+> I've checked that important things like -mno-red-zone, -fsanitize are preserved.
 
-If the charger is configured to draw too much current, the USB port
-or hub will cut it off. I have been carrying the following patch in
-droid4-pending-v5.6 that lowers the charge current if it fails, maybe
-see if that helps?
+It's not any specific flags I'm worried about, it's all of them.  There
+are a lot of possibilities, with all the different configs, and arches.
+Flags are usually added for a good reason, so one randomly missing flag
+could have unforeseen results.
 
-> I created a script to disable charging -- and that works. I also found
-> out cable about 5cm long. Not nice to use, but works significantly
-> better w.r.t. charging.
+And I don't have any visibility into how GCC decides which flags to
+drop, and when.  But the docs aren't comforting.
 
-Yeah some USB cables are really thin.
+Even if things seem to work now, that could (silently) change at any
+point in time.  This time objtool warned about the missing frame
+pointer, but that's not necessarily going to happen for other flags.
 
-> > I still need to figure update audio notifications for the current set of
-> > gsmmux patches. Eventually maybe ofono can just set the voice call audio
-> > routing using alsa. But let's get the kernel notifications working first
-> > as we also need to fix up the audio parts for the earlier comments from
-> > Peter and Sebastian.
-> 
-> Ofono does not normally touch ALSA, so I'd prefer not to do it from
-> there.
+If we go this route, I would much rather do -fno-gcse on a file-wide
+basis.
 
-OK
-
-> But I might be confused. I recall some audio patches were needed for
-> basic phone calls (setting up mixers to connect gsm<->audio), but
-> those worked before gsmux support was enabled. (Maybe some hardcoded
-> commands were needed to be sent to gsmmux somewhere).
-
-We're currently reconfiguring the TDM transport that based on the
-unsolicited messages on dlci1. I still need to figure out how to add
-that back while keeping the serdev-ngsm driver generic.
-
-I'm thinking maybe we'll just have the voice call audio driver also be a
-read-only consumer driver for dlci1 to listen to the unsolicited
-messages on dlci1, and also request n_gsm spin up /dev/gsmtty1.
-
-Then if at some point we have some Linux generic modem framework, it
-can provide some notifiers for the call state.
-
-> I assume neither gsmmux audio parts nor mixer parts are available in
-> -next at the moment?
-
-Sorry not yet, will post as soon as I have the audio notifiers part
-working, so it will be some days away still with time permitting.
-
-Regards,
-
-Tony
-
-8< -------------------------------
-From tony Mon Sep 17 00:00:00 2001
-From: Tony Lindgren <tony@atomide.com>
-Date: Sun, 16 Feb 2020 16:59:06 -0800
-Subject: [PATCH] power: supply: cpcap-charger: Adjust current based on
- charger interrupts
-
-When debugging why higher than 500 mA charge current does not work, I
-noticed that we start getting lots of chrgcurr1 interrupts if we attempt
-to charge at rates higher than the charger can provide.
-
-Cc: Merlijn Wajer <merlijn@wizzup.org>
-Cc: Pavel Machek <pavel@ucw.cz>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
----
- drivers/power/supply/cpcap-charger.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
-
-diff --git a/drivers/power/supply/cpcap-charger.c b/drivers/power/supply/cpcap-charger.c
---- a/drivers/power/supply/cpcap-charger.c
-+++ b/drivers/power/supply/cpcap-charger.c
-@@ -147,6 +147,8 @@ struct cpcap_charger_ddata {
- 	int status;
- 	int state;
- 	int voltage;
-+	int last_current;
-+	int last_current_retries;
- };
- 
- struct cpcap_interrupt_desc {
-@@ -616,6 +618,7 @@ static void cpcap_usb_detect(struct work_struct *work)
- 	/* Just init the state if a charger is connected with no chrg_det set */
- 	if (!s.chrg_det && s.chrgcurr1 && s.vbusvld) {
- 		cpcap_charger_update_state(ddata, CPCAP_CHARGER_DETECTING);
-+		ddata->last_current = 0;
- 
- 		return;
- 	}
-@@ -662,6 +665,30 @@ static void cpcap_usb_detect(struct work_struct *work)
- 		else
- 			max_current = CPCAP_REG_CRM_ICHRG_0A532;
- 
-+		switch (ddata->state) {
-+		case CPCAP_CHARGER_DETECTING:
-+			ddata->last_current_retries = 0;
-+			break;
-+		case CPCAP_CHARGER_DISCONNECTED:
-+			if (ddata->last_current > CPCAP_REG_CRM_ICHRG_0A532) {
-+				/* Attempt current 3 times before lowering */
-+				if (ddata->last_current_retries++ >= 3) {
-+					ddata->last_current--;
-+					ddata->last_current_retries = 0;
-+					/* Wait a bit for voltage to ramp up */
-+					usleep_range(40000, 50000);
-+				}
-+				max_current = ddata->last_current;
-+			}
-+			dev_info(ddata->dev, "enabling charger with current %i\n",
-+				 max_current);
-+			break;
-+		default:
-+			ddata->last_current_retries = 0;
-+			break;
-+		}
-+
-+		ddata->last_current = max_current;
- 		vchrg = cpcap_charger_voltage_to_regval(ddata->voltage);
- 		error = cpcap_charger_set_state(ddata,
- 						CPCAP_REG_CRM_VCHRG(vchrg),
 -- 
-2.26.2
+Josh
+
