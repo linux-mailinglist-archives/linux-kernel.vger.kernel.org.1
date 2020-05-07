@@ -2,188 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92DA51C8472
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 10:13:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71B811C8480
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 10:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726437AbgEGINb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 04:13:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46694 "EHLO
+        id S1727086AbgEGIO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 04:14:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726074AbgEGINa (ORCPT
+        by vger.kernel.org with ESMTP id S1725802AbgEGIOt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 04:13:30 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D5D7C0610D6
-        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 01:13:29 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id k1so5206429wrx.4
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 01:13:29 -0700 (PDT)
+        Thu, 7 May 2020 04:14:49 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D7AEC061A10
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 01:14:48 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id x13so6005170ybg.23
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 01:14:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=J7Nyoh6TN298A/zGPu60YeuCRUMyhvi1B0VPpIRXkD8=;
-        b=Df6/MbhaEVfEMhHwUNcTRMIYUT9M/0U7WL0VSOMhhFZneTCeZNZC/3pFk4TAipIMT0
-         xp2xcpNiCkBgvgse0AeKftj58pwORKkjnwon9g3du+eSV+2bCTkCgHj9OncMCGqlQKq3
-         VCmFUyFXhiGRf9t65xr3URIgKtRwHajRWxvybsS/qcjlM/xfXZR059+o9IyjvCXbW11P
-         ibj2b7//mwD0B6P7LmHtKZUWbxVVVXt+IrbU9Uj8yY4xoDzGO7zoJGxcrVc9o+ukPx0n
-         vhmsIJRFDQC9yL45QQtGgUt8nhqV3aMHTbtJxlaFY+Vanip1Ibg5gT9UlKsLc25W3hy/
-         3rnA==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=jJ+0WVT0o7QnePYWoDu2DLbS3PF1WBgkVDF9XXQH2a0=;
+        b=ivglXwvDfB4/pd8fDyiSer//832TB2EZ2jFXvGPGLpLtmfFxysFjth6U6ltV45e+nh
+         7cTyxgyoN8J/Vr8cBP0YOGwzl/YjLBCwWYRxSG6UP6VveKOyIvjOXDHYw0jL89LVAoA5
+         0b4nLuEjj8WZXKHMuua05G+Qf04QbzB5HgbeAgqN1gA2nRLqzTU8HLqEtYpXKHSscRS7
+         TUC/edfu14DK8bZ1RqEcE3pQmG+QxeueS7pi1KAQLqNIe4MmLwBfjQ3ViQdwoC7andKg
+         Z9UZjTS//VfS7phn1QXJyIPu2JCmIxtmyvkFhp6kH/v4Q1kXkm/FdmGy5r6cEXDwRvSc
+         jzHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=J7Nyoh6TN298A/zGPu60YeuCRUMyhvi1B0VPpIRXkD8=;
-        b=JgxWoo8YU8Ns0IzC1CzHvW4mqU2FoHUgJR4FLRYtHt0qH2KcSW6oyM72MN7FcIInGA
-         j/dIhKApNh9s7Wh8ig47epy3DmA1M5kWUWFunIenDUbTuyihy15t63kmdC2wd+IuxSmn
-         hCYmtSa3o0f4qE6dr7Yjv4YlojxYz/XwC9iLk97PiGmEcIUIt5cpxCIOw8V7/uUCOoi8
-         OGDUYJp5KXztMi79z6Jj8hnuDPFG5iHy55gIDjR292sNs9BDuTT42yQxuBlqRczdhCFw
-         S2zzbDBP8GCoZJKcLR79qyl2Io5BWCl0Kjb0heElaP3Dh4GNNinI83l+Kc0qd2wpoET/
-         TWZA==
-X-Gm-Message-State: AGi0PuavIFDOnY9hFpJeCWgrBu1gRQbd2NoDxO7ArKI80r89nW23P4WF
-        v6GXO1KL7jtXzW5zBYf6gmQvM5cob/kZnw==
-X-Google-Smtp-Source: APiQypJn2l9LEXuUtrCJU4T9xg/aguaE6+ll31meUQQy/XlK4lu1w23zu47PB8L6M4tnbGGhLUVbTA==
-X-Received: by 2002:adf:f652:: with SMTP id x18mr13797663wrp.262.1588839207953;
-        Thu, 07 May 2020 01:13:27 -0700 (PDT)
-Received: from [192.168.1.3] (212-5-158-166.ip.btc-net.bg. [212.5.158.166])
-        by smtp.googlemail.com with ESMTPSA id s18sm7542852wra.94.2020.05.07.01.13.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 May 2020 01:13:27 -0700 (PDT)
-Subject: Re: [PATCH 1/2] media: venus: Add support for MSM8939
-To:     Konrad Dybcio <konradybcio@gmail.com>
-Cc:     skrzynka@konradybcio.pl, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-media@vger.kernel.org, DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20200501203505.144362-1-konradybcio@gmail.com>
- <20200501203505.144362-2-konradybcio@gmail.com>
- <3d73eb09-ba4e-5706-042c-0d1894928a35@linaro.org>
- <CAMS8qEVa_uRdeHEGpjni-qwGqryVVRp9VY8Ej87MbSCfTqWOFA@mail.gmail.com>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <ed4b2b21-69f9-4272-2631-08e8e578096b@linaro.org>
-Date:   Thu, 7 May 2020 11:13:25 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <CAMS8qEVa_uRdeHEGpjni-qwGqryVVRp9VY8Ej87MbSCfTqWOFA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=jJ+0WVT0o7QnePYWoDu2DLbS3PF1WBgkVDF9XXQH2a0=;
+        b=p0Y0DfdPdFTUarC4N+ifxGOJVXJebl8KJZjypyAvnI++3yc4UjWhlEGHLHTpFAs0lZ
+         TTW9SeM3YPs3Z3QUfi2DfkQ0RpH2EIOBrwbEoxXeVT1pEes2XhG1QVik5pZ5kZKj3EmE
+         vclXhexHfB/YOXY83Is1ojZ74TT/yN/ITu3pW4vk6++0R4AYoqsAyRjQRcjmx6MX7TBc
+         JDOoxpYLxiEjig8hZWKpSPWn0ZdnaFhZNHVd8O9BMlS4Vh2EivYuceqKza0nWtN06DRc
+         lVWiwuU9Olb27VoYDbsnWszvnSY/qBGhGADMjg4e0MJxYTRsRkROJe3Re9vreHKW8PLM
+         7hJA==
+X-Gm-Message-State: AGi0PubrKk7qkzIJbg2lNtjnAKKc8HWpTwbyX4l17ibC0FmQmQCSypeW
+        6CJ+QewS1MuOPmeU4HkS0YAO6Yu+enZs
+X-Google-Smtp-Source: APiQypL12F/G/IG1P0vRR+5Jg8zc4/oiuJDwhAuqK50oi9mZH3/+YXbOSRjblC5OcgxtqRVov4Hi57WfIeic
+X-Received: by 2002:a25:c246:: with SMTP id s67mr19644886ybf.317.1588839287376;
+ Thu, 07 May 2020 01:14:47 -0700 (PDT)
+Date:   Thu,  7 May 2020 01:14:29 -0700
+Message-Id: <20200507081436.49071-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.26.2.526.g744177e7f7-goog
+Subject: [RFC PATCH 0/7] Share events between metrics
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        linux-kernel@vger.kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Konrad,
+Metric groups contain metrics. Metrics create groups of events to
+ideally be scheduled together. Often metrics refer to the same events,
+for example, a cache hit and cache miss rate. Using separate event
+groups means these metrics are multiplexed at different times and the
+counts don't sum to 100%. More multiplexing also decreases the
+accuracy of the measurement.
 
-On 5/7/20 12:23 AM, Konrad Dybcio wrote:
-> Hi Stan,
-> 
-> I have found some issues with the submitted GCC driver, related to
-> venus, but I have to further look into them locally and work out some
-> stuff. One of the things is that freq table for venus clock should be
-> changed to the values found here [1] (currently it has 8916
-> frequencies). When I find all the causes I'll resubmit this and
-> include them in the cover letter, as I might've overlooked something
-> wrt venus driver itself when creating this patch from my WIP branch.
-> Also it seems like I tested this very patch incorrectly (getting
-> segfaults in ffmpeg with v4l2m2m now)... Anyways, I'll get back to you
-> when I make it work for sure. Sorry again for the inconvenience.
+This change orders metrics from groups or the command line, so that
+the ones with the most events are set up first. Later metrics see if
+groups already provide their events, and reuse them if
+possible. Unnecessary events and groups are eliminated.
 
-OK. Thanks for the details, I'm waiting for good news :). If you need
-some help with Venus bringup ping me on IRC - my nickname is svarbanov
-on #v4l channel.
+RFC because:
+ - without this change events within a metric may get scheduled
+   together, after they may appear as part of a larger group and be
+   multiplexed at different times, lowering accuracy - however, less
+   multiplexing may compensate for this.
+ - libbpf's hashmap is used, however, libbpf is an optional
+   requirement for building perf.
+ - other things I'm not thinking of.
 
-Regarding to venus clocks, these two clocks exist in below gcc driver
-but missing in msm8916:
+Thanks!
 
-gcc_venus0_core0_vcodec0_clk
-gcc_venus0_core1_vcodec0_clk
+Ian Rogers (7):
+  perf expr: migrate expr ids table to libbpf's hashmap
+  perf metricgroup: change evlist_used to a bitmap
+  perf metricgroup: free metric_events on error
+  perf metricgroup: always place duration_time last
+  perf metricgroup: delay events string creation
+  perf metricgroup: order event groups by size
+  perf metricgroup: remove duped metric group events
 
-but the Venus IP block should be the same as in msm8916. Can you point
-me to the donwstream gcc driver or check from where they comes.
-
-> 
-> 
-> [1] https://github.com/konradybcio/android_kernel_asus_msm8916-1/blob/minimal/drivers/clk/qcom/clock-gcc-8936.c#L1613-L1618
-> 
-> Konrad
-> 
-> wt., 5 maj 2020 o 13:43 Stanimir Varbanov
-> <stanimir.varbanov@linaro.org> napisał(a):
->>
->> Hi Konrad,
->>
->> On 5/1/20 11:35 PM, Konrad Dybcio wrote:
->>> Signed-off-by: Konrad Dybcio <konradybcio@gmail.com>
->>> ---
->>>  drivers/media/platform/qcom/venus/core.c | 33 ++++++++++++++++++++++++
->>>  1 file changed, 33 insertions(+)
->>>
->>> diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
->>> index 194b10b987672..f3a15991ac763 100644
->>> --- a/drivers/media/platform/qcom/venus/core.c
->>> +++ b/drivers/media/platform/qcom/venus/core.c
->>> @@ -405,6 +405,38 @@ static const struct venus_resources msm8916_res = {
->>>       .fwname = "qcom/venus-1.8/venus.mdt",
->>>  };
->>>
->>> +static const struct freq_tbl msm8939_freq_table[] = {
->>> +     { 489600, 266670000 },  /* 1080p @ 60 */
->>> +     { 244800, 200000000 },  /* 1080p @ 30 */
->>> +     { 244800, 133330000 },  /* 1080p @ 30 (decode only) */
->>> +     { 220800, 133330000 },  /* 720p @ 60 (decode only?) */
->>> +     { 108000, 133330000 },  /* 720p @ 30*/
->>> +     { 72000, 133330000 },  /* VGA @ 60 */
->>> +     { 36000, 133330000 },  /* VGA @ 30 */
->>
->> 133MHz is the minimum clock frequency in the GCC driver? Do you think
->> that will change?
->>
->>> +};
->>> +
->>> +static const struct reg_val msm8939_reg_preset[] = {
->>> +     { 0xe0020, 0x0aaaaaaa },
->>> +     { 0xe0024, 0x0aaaaaaa },
->>> +     { 0x80124, 0x00000003 },
->>> +};
->>> +
->>> +static const struct venus_resources msm8939_res = {
->>> +     .freq_tbl = msm8939_freq_table,
->>> +     .freq_tbl_size = ARRAY_SIZE(msm8939_freq_table),
->>> +     .reg_tbl = msm8939_reg_preset,
->>> +     .reg_tbl_size = ARRAY_SIZE(msm8939_reg_preset),
->>> +     .clks = { "core", "iface", "bus", },
->>> +     .clks_num = 3,
->>> +     .max_load = 489600, /* 1080p @ 60 */
->>> +     .hfi_version = HFI_VERSION_1XX,
->>> +     .vmem_id = VIDC_RESOURCE_NONE,
->>> +     .vmem_size = 0,
->>> +     .vmem_addr = 0,
->>> +     .dma_mask = 0xddc00000 - 1,
->>> +     .fwname = "qcom/venus-1.8/venus.mdt",
->>> +};
->>> +
->>>  static const struct freq_tbl msm8996_freq_table[] = {
->>>       { 1944000, 520000000 }, /* 4k UHD @ 60 (decode only) */
->>>       {  972000, 520000000 }, /* 4k UHD @ 30 */
->>> @@ -567,6 +599,7 @@ static const struct venus_resources sc7180_res = {
->>>
->>>  static const struct of_device_id venus_dt_match[] = {
->>>       { .compatible = "qcom,msm8916-venus", .data = &msm8916_res, },
->>> +     { .compatible = "qcom,msm8939-venus", .data = &msm8939_res, },
->>>       { .compatible = "qcom,msm8996-venus", .data = &msm8996_res, },
->>>       { .compatible = "qcom,sdm845-venus", .data = &sdm845_res, },
->>>       { .compatible = "qcom,sdm845-venus-v2", .data = &sdm845_res_v2, },
->>>
->>
->> --
->> regards,
->> Stan
+ tools/perf/tests/expr.c       |  32 ++---
+ tools/perf/tests/pmu-events.c |  22 ++--
+ tools/perf/util/expr.c        | 125 ++++++++++--------
+ tools/perf/util/expr.h        |  22 ++--
+ tools/perf/util/expr.y        |  22 +---
+ tools/perf/util/metricgroup.c | 242 +++++++++++++++++++++-------------
+ tools/perf/util/stat-shadow.c |  46 ++++---
+ 7 files changed, 280 insertions(+), 231 deletions(-)
 
 -- 
-regards,
-Stan
+2.26.2.526.g744177e7f7-goog
+
