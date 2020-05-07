@@ -2,59 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6BB61C9437
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 17:13:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 523B11C9487
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 17:14:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727840AbgEGPNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 11:13:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56214 "EHLO
+        id S1728065AbgEGPN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 11:13:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726495AbgEGPNH (ORCPT
+        by vger.kernel.org with ESMTP id S1727945AbgEGPN3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 11:13:07 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBE99C05BD43;
-        Thu,  7 May 2020 08:13:07 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id v63so3120408pfb.10;
-        Thu, 07 May 2020 08:13:07 -0700 (PDT)
+        Thu, 7 May 2020 11:13:29 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 055EBC05BD09;
+        Thu,  7 May 2020 08:13:29 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id a5so2759972pjh.2;
+        Thu, 07 May 2020 08:13:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=1ZAU8RJ54KgdAB52+f9Z7ufUtSpBYmgCgDBOG+cMuYE=;
-        b=QjhJ7i5GuF+bCeVINbD/t4Un/z7ffvXwFDf89h7BmlpxAaG8DJjT48/slkf/BMUtzz
-         MfvDoU4TVtUx0wh4Y9XQUplIxpslIjg8HuSidJeiUkZ02K/oZAtZnSuHhsDvIgPzE/sm
-         yFJIGhjKcv6s9QH+dbFqyVMQYTEKOgcO/fjNKeblQ9GCHiqrdqHjcO+Bo/KP4qkme04A
-         PRFR08MQH2TctWzfBmTqWXi4RXsgBmA9shX+ZVRCmT9PBvKq1WcqWt0gjCl9xbzzbydD
-         XKoblPomTEy3GD64iAMdoBFN1BV/p8yXXxExO53SWkHPhLIrTq6mIX6TNx2W2aeE1XeY
-         U0uQ==
+        bh=yiQVRmgp68ZxdiqvhT5ZYHUwpUlX6w91CPHLUh7nmBg=;
+        b=pN6IJddrdMCePMv1pI1BDBoa0F276DfKumJlIhN92BfEjCfkgb9/MsOMSDHejXopqf
+         ucnuX1K9/ZKZZDF86o4brCuH3Y7XaY/axqfiF1yS2eonYLcFVB5VJatK5d/b/4O+ZEzU
+         kqRSjzXIn3CmbhhUaRxrK6/b8x7nbL+SHBwjXlX9ztneg3GW9DwmtwkLn8iWdXP2jiTM
+         3k2x6lv2Zdal7LW1hKTegJGT8gYRQHwieHCbLTehqCBaLDRzd0lPgh1PHDm5oaV2Ss/B
+         HE4trkhopv1dU2xvipduIRBvtdPYN01tMTh0lf2ehXRlFxKApdkr7JsOXPFIzq0xRQzG
+         m1ZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=1ZAU8RJ54KgdAB52+f9Z7ufUtSpBYmgCgDBOG+cMuYE=;
-        b=Xd6frzxMKDhz7bR7S+06cOgJMynfUmvojkfCpsBQSwwAjSFYN1FMsThOtI4ndbGpiw
-         kAIWErWJkgeamPJiB//Ssg21c7mKnM+EgCt/J2YP1+CU7CKi8zeNTpVrqYyUvWddTFUC
-         TftCOmb/PBf3WPV6nu8UZc+1s8rsKZCKjKmHI3vjJgfYE5mRsNZRDOGcfnTvWyOoTkQy
-         VXEbp5zZzW/ZVXyiB679hKvplEEOijqSLC4o/qsEJs6pKfWUbIbVEhtvtL7ScDWo9Hsb
-         RbMKLOYpC9pEjMRrjKSGpt3a2zaTdSq7foIW+mhdnV3SN6DbxzYvmJx4A3SPi6m1wVG5
-         jnYg==
-X-Gm-Message-State: AGi0PuY20GMYbwEH1HsPKyIfW2v6LeHclXerrGhaLzBDsTAKlgjgcglh
-        ntGuwHjHpE7GUgV0Ivm4GFY=
-X-Google-Smtp-Source: APiQypLh7vPZxj8lM5PWxfqMeI7I1WfHpATd46t0DuKukW9mHO65KqaevP4URujV0wgory7rOk+96w==
-X-Received: by 2002:aa7:8ecd:: with SMTP id b13mr14510119pfr.191.1588864387288;
-        Thu, 07 May 2020 08:13:07 -0700 (PDT)
+        bh=yiQVRmgp68ZxdiqvhT5ZYHUwpUlX6w91CPHLUh7nmBg=;
+        b=T4Vg0rDX7UAfJXS4yIBOljNDbzWLbt8YWtkIcav5RCuJD0AzQ/5alZeQ1nC81mbPKY
+         AreVsrI27wR1cLCVJ1f6xbfQb2HSaV3R3MzhBytfj1lwRcJEKw3F4am21EvC4kRxm19B
+         gBwkqDhVMAzYV9KxYZ9m3L3TSPzk0qGbAfhOYtaydb1a+td8yegl/qvKS9rUG51ayyJ4
+         1evNeZL7eGCrLKiQznRP9mj6WYmgeoDgjf9a3oFHpzKgtLZ20GUkFhyUvG6eZo1HJZ2m
+         O/dSLc/hyoQU32my1ZLN5kHD8a75J/AIQkVEjMwpd5q3JpMs/ZJ0DUOZ8PBQr4hD/Tbc
+         lRYA==
+X-Gm-Message-State: AGi0PuYeUj3iBM5E+EQbV2KTWLudabufqPrK3m8Qz7E0VMtvi9qpONv6
+        V56S97CVbVLtd7QwYy6R39A=
+X-Google-Smtp-Source: APiQypKFZJEGtv+7FjTJJO7j8FyFw9dJ/N0Kv8o2MoO68KoAp7Upx1lEnDahwA4pfht1tw9xQLKung==
+X-Received: by 2002:a17:90a:c7c8:: with SMTP id gf8mr607996pjb.226.1588864408655;
+        Thu, 07 May 2020 08:13:28 -0700 (PDT)
 Received: from suzukaze.ipads-lab.se.sjtu.edu.cn ([202.120.40.82])
-        by smtp.gmail.com with ESMTPSA id i190sm5215759pfe.114.2020.05.07.08.13.04
+        by smtp.gmail.com with ESMTPSA id f76sm5094969pfa.167.2020.05.07.08.13.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2020 08:13:06 -0700 (PDT)
+        Thu, 07 May 2020 08:13:28 -0700 (PDT)
 From:   Chuhong Yuan <hslester96@gmail.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        patches@opensource.cirrus.com, linux-input@vger.kernel.org,
+Cc:     "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>
-Subject: [PATCH] Input: wm831x-ts - add missed input_unregister_device
-Date:   Thu,  7 May 2020 23:12:59 +0800
-Message-Id: <20200507151259.792697-1-hslester96@gmail.com>
+Subject: [PATCH] net: microchip: encx24j600: add missed kthread_stop
+Date:   Thu,  7 May 2020 23:13:20 +0800
+Message-Id: <20200507151320.792759-1-hslester96@gmail.com>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -64,26 +63,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver calls input_register_device() in probe, but misses
-input_unregister_device() in remove.
-Add the missed function call to fix it.
+This driver calls kthread_run() in probe, but forgets to call
+kthread_stop() in probe failure and remove.
+Add the missed kthread_stop() to fix it.
 
 Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
 ---
- drivers/input/touchscreen/wm831x-ts.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/microchip/encx24j600.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/input/touchscreen/wm831x-ts.c b/drivers/input/touchscreen/wm831x-ts.c
-index 607d1aeb595d..db09dd473ada 100644
---- a/drivers/input/touchscreen/wm831x-ts.c
-+++ b/drivers/input/touchscreen/wm831x-ts.c
-@@ -379,6 +379,7 @@ static int wm831x_ts_remove(struct platform_device *pdev)
- {
- 	struct wm831x_ts *wm831x_ts = platform_get_drvdata(pdev);
+diff --git a/drivers/net/ethernet/microchip/encx24j600.c b/drivers/net/ethernet/microchip/encx24j600.c
+index 39925e4bf2ec..b25a13da900a 100644
+--- a/drivers/net/ethernet/microchip/encx24j600.c
++++ b/drivers/net/ethernet/microchip/encx24j600.c
+@@ -1070,7 +1070,7 @@ static int encx24j600_spi_probe(struct spi_device *spi)
+ 	if (unlikely(ret)) {
+ 		netif_err(priv, probe, ndev, "Error %d initializing card encx24j600 card\n",
+ 			  ret);
+-		goto out_free;
++		goto out_stop;
+ 	}
  
-+	input_unregister_device(wm831x_ts->input_dev);
- 	free_irq(wm831x_ts->pd_irq, wm831x_ts);
- 	free_irq(wm831x_ts->data_irq, wm831x_ts);
+ 	eidled = encx24j600_read_reg(priv, EIDLED);
+@@ -1088,6 +1088,8 @@ static int encx24j600_spi_probe(struct spi_device *spi)
+ 
+ out_unregister:
+ 	unregister_netdev(priv->ndev);
++out_stop:
++	kthread_stop(priv->kworker_task);
+ out_free:
+ 	free_netdev(ndev);
+ 
+@@ -1100,6 +1102,7 @@ static int encx24j600_spi_remove(struct spi_device *spi)
+ 	struct encx24j600_priv *priv = dev_get_drvdata(&spi->dev);
+ 
+ 	unregister_netdev(priv->ndev);
++	kthread_stop(priv->kworker_task);
+ 
+ 	free_netdev(priv->ndev);
  
 -- 
 2.26.2
