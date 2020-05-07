@@ -2,138 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB0AF1C907B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 16:44:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A8B41C9089
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 16:45:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728011AbgEGOnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 10:43:39 -0400
-Received: from mx0b-00328301.pphosted.com ([148.163.141.47]:49462 "EHLO
-        mx0b-00328301.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727857AbgEGOne (ORCPT
+        id S1728240AbgEGOod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 10:44:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726069AbgEGOod (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 10:43:34 -0400
-Received: from pps.filterd (m0156136.ppops.net [127.0.0.1])
-        by mx0b-00328301.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 047Ebhbf006057;
-        Thu, 7 May 2020 07:43:30 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=invensense.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : content-type :
- mime-version; s=pfpt1; bh=fEwmw9ER5fwbE7/630gcavOolHhI9ezXUsNWuYkyYSg=;
- b=iQC7hIwZ6pydHDAR0Pgm7WyUi+02kCJrJ2OKRZKWomBi+l777W8F0UzeZn3NqHnRi6yQ
- wSBoJHuJ4z6xKkTgMY4qK5GN5GOShYf/KCiuWi1lHFInuuRRtti1gz7jgQqlTNeZpTLq
- 7i9yIqhboLwVm/bho/e38fRWANpEfJX73JwP/SZo8xQR8t4JdPM16QFyrqx5s8oU8SZx
- dad+q+QS3JvBPFTBxOGOJXvRh2eH6eb2+/CsFtX2dlTpY+NrZpowHEeQxsf0LNQURQdg
- 2rQm6IOjDrCPLGWvC4K1VpEi1HGfEHekFQuUR4tTvMCBi2YQUszPCn5jQZt1oWYnhKbp 2A== 
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2040.outbound.protection.outlook.com [104.47.66.40])
-        by mx0b-00328301.pphosted.com with ESMTP id 30s4tnatww-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 May 2020 07:43:29 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nchpGGhKnoY6rsQnliL7SilrzTPnqnNijhl5ZZUYNWRD2P3xY80vK2SsheusNFqb4V/l4CIAHgfT9FVqLh6jcUcTFIdslmApCUH6vNqlur5iGcfVFQr9tyc4zjqKsLaMMK2CJ2DiHFZdYFChOMGsJZLGrj2jmGRYgG4h5sJ/dZfvKGSidGMkR0BNKOzkg2MDwyG8HZPyq9yIBXZh/38YeL/vQdrejpSLEB3OCgI2NA7oo/QJTOtjEh8SW16Fey7qiFCmV/NcuC8Qw/smDGfR0afdDOFCqBgYwl+WyUAPYALnhuAEObeeMD9xEkgn7ci8xcZ9vrDZWgFPyNLxYnbL5A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fEwmw9ER5fwbE7/630gcavOolHhI9ezXUsNWuYkyYSg=;
- b=MkdAhZwBfZ59wd4N4CMuEML6hT/iodIRYLNTjmM9qe1xdISo/Ixs2DoR5rM6FxDTG5UebKezf3RBU/DFc2YWLsCpmnV/QzBZobqZHx+8I7Wawwy9OkvTnZcLFFUpQBYPQEs99s/PoUjll12d6UUKE1YPjJIE6F63t2Vefpkn8sYZpANC2Hs2zPUTzOZ3ZFBAsRXndDVXvEFkuWPL2p+PofO5TUu/hdFL80hV+llsW4FHrSYeHVM0JDw/N02BEt16U03g930bUAyrEDlXmzIPyeLM8Evrr3lo2FEEAGwPvbaW/UVxmgJbnu5rf0LuiLfRRbCy7YHN6mu3ZcVpD+LRMw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=invensense.com; dmarc=pass action=none
- header.from=invensense.com; dkim=pass header.d=invensense.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=invensense.onmicrosoft.com; s=selector2-invensense-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fEwmw9ER5fwbE7/630gcavOolHhI9ezXUsNWuYkyYSg=;
- b=Ayp+xS08CizKyQLVV7390d0yKAI5qQPnDCQp2wVlSoXTsK6bYfT7EvI73NJ4K3+1eykfu9GMVPE2Xm4fwFF5kQauf+WdmjvkugQStWP6/qbaJ/sbjE2ziNUp+1GTkofor7iQYXtXpMcDuWqh3xdqrmi/IohVW1V2XZKiscNttdM=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=invensense.com;
-Received: from MN2PR12MB4422.namprd12.prod.outlook.com (2603:10b6:208:265::9)
- by MN2PR12MB4501.namprd12.prod.outlook.com (2603:10b6:208:269::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.27; Thu, 7 May
- 2020 14:43:29 +0000
-Received: from MN2PR12MB4422.namprd12.prod.outlook.com
- ([fe80::7471:da8b:8ca1:6af0]) by MN2PR12MB4422.namprd12.prod.outlook.com
- ([fe80::7471:da8b:8ca1:6af0%4]) with mapi id 15.20.2979.028; Thu, 7 May 2020
- 14:43:29 +0000
-From:   Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>
-To:     jic23@kernel.org, robh+dt@kernel.org, robh@kernel.org,
-        mchehab+huawei@kernel.org, davem@davemloft.net,
-        gregkh@linuxfoundation.org
-Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>
-Subject: [PATCH 12/12] MAINTAINERS: add entry for inv_icm42600 6-axis imu sensor
-Date:   Thu,  7 May 2020 16:42:22 +0200
-Message-Id: <20200507144222.20989-13-jmaneyrol@invensense.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200507144222.20989-1-jmaneyrol@invensense.com>
-References: <20200507144222.20989-1-jmaneyrol@invensense.com>
-Content-Type: text/plain
-X-ClientProxiedBy: LNXP265CA0048.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:5c::36) To MN2PR12MB4422.namprd12.prod.outlook.com
- (2603:10b6:208:265::9)
+        Thu, 7 May 2020 10:44:33 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEC83C05BD43
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 07:44:32 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jWhku-0003mc-Nz; Thu, 07 May 2020 16:44:08 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id 1A853102652; Thu,  7 May 2020 16:44:08 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>
+Subject: [patch V5 part 2 15/18] x86/kvm/svm: Handle hardirqs proper on guest enter/exit
+In-Reply-To: <cade8b44-4330-2dc1-e490-c2f001cc1c95@redhat.com>
+References: <20200505134112.272268764@linutronix.de> <20200505134341.579034898@linutronix.de> <baf61125-72f4-5fd1-9ba1-6d55a2efdddd@redhat.com> <87imh9o3e1.fsf@nanos.tec.linutronix.de> <cade8b44-4330-2dc1-e490-c2f001cc1c95@redhat.com>
+Date:   Thu, 07 May 2020 16:44:08 +0200
+Message-ID: <875zd7g5zb.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from frgnb-buildozer.invcorp.invensense.com (77.157.193.39) by LNXP265CA0048.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:5c::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.26 via Frontend Transport; Thu, 7 May 2020 14:43:27 +0000
-X-Mailer: git-send-email 2.17.1
-X-Originating-IP: [77.157.193.39]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: cf2f4123-155e-41bd-d99e-08d7f295019d
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4501:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR12MB4501819A3CE942A61E87DE60C4A50@MN2PR12MB4501.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1079;
-X-Forefront-PRVS: 03965EFC76
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2tIfo+rg3TeQfbiJBhZNPtIM4yhSo7GvAJ9c/pPjLd26Hq+qyltQ/5A5DRP7ooVJ6R31dhD9Ugav2gZW9TQhz3l78u4X3TFgZCa+bb+XsnHPYtTyse+v0rvtJ5Su1Hd08p3zWpXgiJxfxw7EXPyaGRo6S6JJd03njyxFXu/qdAAaNf/4jCS558Jlgsp9ww2rclxVUxwVhl8Kn2k+KRQ6Otn5J4fSTbmDueDexUdAGbXXfc+oPtehSBU92pO5YrGO30KeufELtZTp9BjkwKQZ5I2s6rSR1Fc6IlM6d7uapwJfHc0TsxHY5UPjHSVWEjZPXmHgNPSPMxYT4s/v2TkEVRZ5DuOKCl1XGboipQw6xgCDshW4nlO4sFqYkrsYdzbooJkFaGL0oHzBLjuOk6eql4NUTNgKboKlRnW7+TpjCO9tigiuQqjvLU3z2hx/ZfzxLwPLlIkOAXyJcNiXATibQ3dQUIYVwPfL6jKeDXkqE3fqhS10Wf2YHa9ceV9G0zs9GadAIXTbAaKf8sL6T3Nwk0MQDwEEz85b+X6cUuqMzxl/AuuJExxemaK7FgaqyaXLSgSnBCmLt/cQjQ1PugPyIDnjAC8aJqNSu6Oj3oG1Ln0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4422.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(346002)(376002)(136003)(396003)(39850400004)(366004)(33430700001)(966005)(107886003)(4326008)(8676002)(6486002)(2906002)(316002)(5660300002)(8936002)(1076003)(26005)(7696005)(33440700001)(66946007)(956004)(66476007)(52116002)(2616005)(86362001)(186003)(83320400001)(83280400001)(83310400001)(83290400001)(16526019)(478600001)(6666004)(36756003)(4744005)(66556008)(83300400001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 8Finn44NzEpmZo1n6xEKRDAnLHo4LdBDVBHqwQ4QYiMD8uYcibSGOjFqqsVUrKAtQ21nl3ateOCcWDp2ewMbra6PCEYbJZ7nFq+4LpRvimO7wKjkHRSNyR98aLl/+C3QvZ5kyDLkKcyrGj+8jY8oDJdQrKuYWSOUiLGNCpZdJKHhAQfnfFxjxkDNiOvDNvpL5aQE2STOsBl3UJoTPGf3Y7GLWr87d3qEn6HDlcdV7U5Zp/pqf7fX2IPjEZeEBfMpmziaqdk0rSSXTtkq1vQxQ3vNr7NPf1z04IQGumsnlWO7Bn5DuBmRJL/ZCunidZVkKGMy5hH+CrIEyGuuJ7r7eqo0VcD8jVF1QuaT3ATPVTUbKL9ascjoeV+v+MWomk7q+84hQ2Y+4IL5rjgwJ6GpN0krjXniBYOXx+2mMlgvY1x66VWKQTVjrV2kys+hGt0EetdYmO1lXMXWKog3oeL+NF/s5M2S47S912ansZDyaC7KRa/5EAtkhuJrorRyxZ3uZKDy7OVlOdBE1EzLoCNyOEAatFR5eQ07BTQAYN4FiZjieqZjmjqe4xqyJnOvco4s791QcSzy9DgLrwiyQXP3j3zCu4sYahSY9UhnK6XrNIIpKuZIqlddRizDlyY2uGmFfOLscW/1ZgXvmEFFB170/7nHl1qTj09iIdyyz8b+AdUTWn3Ek/vugB27gLoE7lKgHfKRJDlx4Y5V4EshNBLlIgJVjahSuYDcqkqSvm+A1kZeDOF9Bh7WDVzCgxCj8DjoRsoLy+Fs3GkrD8WwDdpA3k8yxKVvG0UDcHJh/6E/v1U=
-X-OriginatorOrg: invensense.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cf2f4123-155e-41bd-d99e-08d7f295019d
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 May 2020 14:43:29.0252
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 462b3b3b-e42b-47ea-801a-f1581aac892d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0gaTtrGRGO45yKmhpRN5PtKCblu0wodWVe3cP/paUxOEUvHdSjs5vTL8u+32Gp2czQxweyYagcy6w4OF1l/Z0D0sL8RLkew+4zsMtnHjEkE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4501
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-07_09:2020-05-07,2020-05-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 adultscore=0
- priorityscore=1501 spamscore=0 mlxlogscore=999 impostorscore=0
- suspectscore=0 phishscore=0 malwarescore=0 lowpriorityscore=0 bulkscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005070118
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add MAINTAINERS entry for InvenSense ICM-426xx IMU device.
+Entering guest mode is more or less the same as returning to user
+space. From an instrumentation point of view both leave kernel mode and the
+transition to guest or user mode reenables interrupts on the host. In user
+mode an interrupt is served directly and in guest mode it causes a VM exit
+which then handles or reinjects the interrupt.
 
-Signed-off-by: Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>
+The transition from guest mode or user mode to kernel mode disables
+interrupts, which needs to be recorded in instrumentation to set the
+correct state again.
+
+This is important for e.g. latency analysis because otherwise the execution
+time in guest or user mode would be wrongly accounted as interrupt disabled
+and could trigger false positives.
+
+Add hardirq tracing to guest enter/exit functions in the same way as it
+is done in the user mode enter/exit code, respecting the RCU requirements.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Sean Christopherson <sean.j.christopherson@intel.com>
 ---
- MAINTAINERS | 8 ++++++++
- 1 file changed, 8 insertions(+)
+V5: Adjust comments and changelog
+---
+ arch/x86/kvm/vmx/vmx.c |   27 +++++++++++++++++++++++++--
+ 1 file changed, 25 insertions(+), 2 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 10eb348c801c..1714390e2721 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8864,6 +8864,14 @@ F:	include/dt-bindings/interconnect/
- F:	include/linux/interconnect-provider.h
- F:	include/linux/interconnect.h
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -6604,9 +6604,21 @@ static void vmx_vcpu_run(struct kvm_vcpu
+ 	x86_spec_ctrl_set_guest(vmx->spec_ctrl, 0);
  
-+INVENSENSE ICM-426xx IMU DRIVER
-+M:	Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>
-+L:	linux-iio@vger.kernel.org
-+S:	Maintained
-+W	https://invensense.tdk.com/
-+F:	Documentation/devicetree/bindings/iio/imu/invensense,icm42600.yaml
-+F:	drivers/iio/imu/inv_icm42600/
-+
- INVENSENSE MPU-3050 GYROSCOPE DRIVER
- M:	Linus Walleij <linus.walleij@linaro.org>
- L:	linux-iio@vger.kernel.org
--- 
-2.17.1
-
+ 	/*
+-	 * Tell context tracking that this CPU is about to enter guest mode.
++	 * VMENTER enables interrupts (host state), but the kernel state is
++	 * interrupts disabled when this is invoked. Also tell RCU about
++	 * it. This is the same logic as for exit_to_user_mode().
++	 *
++	 * This ensures that e.g. latency analysis on the host observes
++	 * guest mode as interrupt enabled.
++	 *
++	 * guest_enter_irqoff() informs context tracking about the
++	 * transition to guest mode and if enabled adjusts RCU state
++	 * accordingly.
+ 	 */
++	trace_hardirqs_on_prepare();
++	lockdep_hardirqs_on_prepare(CALLER_ADDR0);
+ 	guest_enter_irqoff();
++	lockdep_hardirqs_on(CALLER_ADDR0);
+ 
+ 	/* L1D Flush includes CPU buffer clear to mitigate MDS */
+ 	if (static_branch_unlikely(&vmx_l1d_should_flush))
+@@ -6623,9 +6635,20 @@ static void vmx_vcpu_run(struct kvm_vcpu
+ 	vcpu->arch.cr2 = read_cr2();
+ 
+ 	/*
+-	 * Tell context tracking that this CPU is back.
++	 * VMEXIT disables interrupts (host state), but tracing and lockdep
++	 * have them in state 'on' as recorded before entering guest mode.
++	 * Same as enter_from_user_mode().
++	 *
++	 * guest_exit_irqoff() restores host context and reinstates RCU if
++	 * enabled and required.
++	 *
++	 * This needs to be done before the below as native_read_msr()
++	 * contains a tracepoint and x86_spec_ctrl_restore_host() calls
++	 * into world and some more.
+ 	 */
++	lockdep_hardirqs_off(CALLER_ADDR0);
+ 	guest_exit_irqoff();
++	trace_hardirqs_off_prepare();
+ 
+ 	/*
+ 	 * We do not use IBRS in the kernel. If this vCPU has used the
