@@ -2,112 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F481C96F9
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 19:00:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73D421C96FD
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 19:01:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726701AbgEGRAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 13:00:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726222AbgEGRAU (ORCPT
+        id S1727925AbgEGRBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 13:01:21 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:28878 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726778AbgEGRBV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 13:00:20 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BBBEC05BD43
-        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 10:00:20 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id j3so7096680ljg.8
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 10:00:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9a51Q0KJvE3zrPblIKzTSl+tjTR3Bde3DH99HzeKLKI=;
-        b=ibg8qmwWjVbS3FUiaxBOHr54QL17/uXAfjcKOSAWUMg75VnfQ93AsgVqCEi9PMtWa9
-         HLbY16J7t69k2RWxnYhd/nFAHBX8h3Z1/xTqVnT0oYVo74D17A5Y3MTeNlGz7fBMpBG+
-         gIkD5dglHn0fGdlGpiGoATeuiRXrUnkhRv3NyDPc1iSW2Qf4f/L7pnSVxV7/3Jf6IesD
-         QsrAE1xP8S7h0EEY6/UjSupjkRjY7AKKm3ZQRAphuMi58y8g3fwNHfqtC76KvN2c5JHo
-         J8kqfHofQwpOmg+u3p8lOMam4gk5lYN/2zzv/jGpP+lwgauKVKvj70nyhy4XNmrlLN6i
-         QWAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9a51Q0KJvE3zrPblIKzTSl+tjTR3Bde3DH99HzeKLKI=;
-        b=JrDEUiyfx2skROMXVHN8CJqlsol74hnzGIFoByOQ7Aj4YUGtXGghXhDN4Gp070Avs3
-         wgNoRgHNsj1vVd3LAA0ORCNs+Njo7zp4IqbMAJUU/34lSHSZqdTHTP3wcteC7ulqjkih
-         /tDLh8CzCwkOqNA0/rbfU1YHkeD8VlIkENJbBL+tFdH2rEEc4qhRvp3UI33w3iZTHys6
-         m14jHLIy2//w4bsG1L908Wmm+S6sGMjx+Me+aszdm2agluHnU+Te4iz4qmLHYbgZgYW+
-         F7ZLmy6N6snGGTk6q2KP8APGCAg2ySMNIWGiLlnMJRg3akdwft3t5nQkhGiNZo2+QO99
-         qFrQ==
-X-Gm-Message-State: AGi0PuYxXjx39wsMaCfRQgQkiKI7MMGXmVE1FlKiSZLvWqnZ7vBZMJJi
-        aNWIN79b2mJB/Wc8JjwCGsNYVNueYfKy4YNnQlo1Pw==
-X-Google-Smtp-Source: APiQypIyhbO51v7FfjXwxImM/+MjAA3HzPk6zunC+xStgsr9vkliLLFc7Iea0dnB3vM4lCl1ShWZ4lFbSgpYKbYdzdE=
-X-Received: by 2002:a2e:9713:: with SMTP id r19mr9127689lji.89.1588870818402;
- Thu, 07 May 2020 10:00:18 -0700 (PDT)
+        Thu, 7 May 2020 13:01:21 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1588870880; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=Q6e681XAMJUtZBJD87mrFbPc1YIIh9lR85Q2LRLTHXs=; b=tbjCYpXWd3B4rTtKkTy9rQoaBI3PC2bDM+5sxnNNqaNO5erikTnvl424MWF2i1uew4/Tv+aS
+ xKCjPEhpiTEmetCaMJW6bnV/piP97Lw2OZDbyRHQpjcEQ5TmyKTid/ARXrTQjR18Y1fw+7N5
+ 3DyWRNwifqxsBUgI0KCPuFaixHU=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5eb43ec2.7fc2d7a710a0-smtp-out-n03;
+ Thu, 07 May 2020 17:00:50 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B138FC432C2; Thu,  7 May 2020 17:00:49 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [10.131.209.195] (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C5532C433D2;
+        Thu,  7 May 2020 17:00:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C5532C433D2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
+Subject: Re: [PATCH v4 2/6] spi: spi-geni-qcom: Use OPP API to set clk/perf
+ state
+To:     viresh.kumar@linaro.org, sboyd@kernel.org,
+        bjorn.andersson@linaro.org, agross@kernel.org,
+        Mark Brown <broonie@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mka@chromium.org, Alok Chauhan <alokc@codeaurora.org>,
+        Akash Asthana <akashast@codeaurora.org>,
+        linux-spi@vger.kernel.org
+References: <1588507469-31889-1-git-send-email-rnayak@codeaurora.org>
+ <1588507469-31889-3-git-send-email-rnayak@codeaurora.org>
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+Message-ID: <acc7baf9-86a3-6c78-4d62-99d4b1baa12e@codeaurora.org>
+Date:   Thu, 7 May 2020 22:30:43 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <20200507163301.229070-1-shakeelb@google.com> <20200507164653.GM6345@dhcp22.suse.cz>
-In-Reply-To: <20200507164653.GM6345@dhcp22.suse.cz>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 7 May 2020 10:00:07 -0700
-Message-ID: <CALvZod5TmAnDoueej1nu5_VV9rQa6VYVRXqCYuh63P5HN-o9Sw@mail.gmail.com>
-Subject: Re: [PATCH] memcg: effective memory.high reclaim for remote charging
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
-        Greg Thelen <gthelen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1588507469-31889-3-git-send-email-rnayak@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 7, 2020 at 9:47 AM Michal Hocko <mhocko@kernel.org> wrote:
->
-> On Thu 07-05-20 09:33:01, Shakeel Butt wrote:
-> [...]
-> > @@ -2600,8 +2596,23 @@ static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
-> >                               schedule_work(&memcg->high_work);
-> >                               break;
-> >                       }
-> > -                     current->memcg_nr_pages_over_high += batch;
-> > -                     set_notify_resume(current);
-> > +
-> > +                     if (gfpflags_allow_blocking(gfp_mask))
-> > +                             reclaim_over_high(memcg, gfp_mask, batch);
-> > +
-> > +                     if (page_counter_read(&memcg->memory) <=
-> > +                         READ_ONCE(memcg->high))
-> > +                             break;
->
-> I am half way to a long weekend so bear with me. Shouldn't this be continue? The
-> parent memcg might be still in excess even the child got reclaimed,
-> right?
->
 
-The reclaim_high() actually already does this walk up to the root and
-reclaim from ones who are still over their high limit. Though having
-'continue' here is correct too.
+On 5/3/2020 5:34 PM, Rajendra Nayak wrote:
+> geni spi needs to express a perforamnce state requirement on CX
+> depending on the frequency of the clock rates. Use OPP table from
+> DT to register with OPP framework and use dev_pm_opp_set_rate() to
+> set the clk/perf state.
+> 
+> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Alok Chauhan <alokc@codeaurora.org>
+> Cc: Akash Asthana <akashast@codeaurora.org>
+> Cc: linux-spi@vger.kernel.org
+> ---
+> This patch has a dependency on the 'PATCH 1/6' in this series,
+> due to the changes in include/linux/qcom-geni-se.h
+> Its ideal if this and the previous patch gets merged via the
+> msm tree (once reviewed and ack'ed)
+> Greg has already responded he is fine with it for serial.
 
-> > +                     /*
-> > +                      * The above reclaim might not be able to do much. Punt
-> > +                      * the high reclaim to return to userland if the current
-> > +                      * task shares the hierarchy.
-> > +                      */
-> > +                     if (current->mm && mm_match_cgroup(current->mm, memcg)) {
-> > +                             current->memcg_nr_pages_over_high += batch;
-> > +                             set_notify_resume(current);
-> > +                     } else
-> > +                             schedule_work(&memcg->high_work);
-> >                       break;
-> >               }
-> >       } while ((memcg = parent_mem_cgroup(memcg)));
-> > --
-> > 2.26.2.526.g744177e7f7-goog
-> >
->
-> --
-> Michal Hocko
-> SUSE Labs
+Mark, would you be able to review/ack this patch so it can be
+taken in via the msm tree? 'PATCH 1/6' is Ack'd by Greg, and its
+going to land via the msm tree as well.
+
+> 
+>   drivers/spi/spi-geni-qcom.c | 26 +++++++++++++++++++++++---
+>   1 file changed, 23 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/spi/spi-geni-qcom.c b/drivers/spi/spi-geni-qcom.c
+> index c397242..bc2916f 100644
+> --- a/drivers/spi/spi-geni-qcom.c
+> +++ b/drivers/spi/spi-geni-qcom.c
+> @@ -7,6 +7,7 @@
+>   #include <linux/log2.h>
+>   #include <linux/module.h>
+>   #include <linux/platform_device.h>
+> +#include <linux/pm_opp.h>
+>   #include <linux/pm_runtime.h>
+>   #include <linux/qcom-geni-se.h>
+>   #include <linux/spi/spi.h>
+> @@ -95,7 +96,6 @@ static int get_spi_clk_cfg(unsigned int speed_hz,
+>   {
+>   	unsigned long sclk_freq;
+>   	unsigned int actual_hz;
+> -	struct geni_se *se = &mas->se;
+>   	int ret;
+>   
+>   	ret = geni_se_clk_freq_match(&mas->se,
+> @@ -112,9 +112,9 @@ static int get_spi_clk_cfg(unsigned int speed_hz,
+>   
+>   	dev_dbg(mas->dev, "req %u=>%u sclk %lu, idx %d, div %d\n", speed_hz,
+>   				actual_hz, sclk_freq, *clk_idx, *clk_div);
+> -	ret = clk_set_rate(se->clk, sclk_freq);
+> +	ret = dev_pm_opp_set_rate(mas->dev, sclk_freq);
+>   	if (ret)
+> -		dev_err(mas->dev, "clk_set_rate failed %d\n", ret);
+> +		dev_err(mas->dev, "dev_pm_opp_set_rate failed %d\n", ret);
+>   	return ret;
+>   }
+>   
+> @@ -561,6 +561,17 @@ static int spi_geni_probe(struct platform_device *pdev)
+>   	mas->se.wrapper = dev_get_drvdata(dev->parent);
+>   	mas->se.base = base;
+>   	mas->se.clk = clk;
+> +	mas->se.opp_table = dev_pm_opp_set_clkname(&pdev->dev, "se");
+> +	if (IS_ERR(mas->se.opp_table))
+> +		return PTR_ERR(mas->se.opp_table);
+> +	/* OPP table is optional */
+> +	ret = dev_pm_opp_of_add_table(&pdev->dev);
+> +	if (!ret) {
+> +		mas->se.has_opp_table = true;
+> +	} else if (ret != -ENODEV) {
+> +		dev_err(&pdev->dev, "invalid OPP table in device tree\n");
+> +		return ret;
+> +	}
+>   
+>   	spi->bus_num = -1;
+>   	spi->dev.of_node = dev->of_node;
+> @@ -596,6 +607,9 @@ static int spi_geni_probe(struct platform_device *pdev)
+>   spi_geni_probe_runtime_disable:
+>   	pm_runtime_disable(dev);
+>   	spi_master_put(spi);
+> +	if (mas->se.has_opp_table)
+> +		dev_pm_opp_of_remove_table(&pdev->dev);
+> +	dev_pm_opp_put_clkname(mas->se.opp_table);
+>   	return ret;
+>   }
+>   
+> @@ -604,6 +618,9 @@ static int spi_geni_remove(struct platform_device *pdev)
+>   	struct spi_master *spi = platform_get_drvdata(pdev);
+>   	struct spi_geni_master *mas = spi_master_get_devdata(spi);
+>   
+> +	if (mas->se.has_opp_table)
+> +		dev_pm_opp_of_remove_table(&pdev->dev);
+> +	dev_pm_opp_put_clkname(mas->se.opp_table);
+>   	/* Unregister _before_ disabling pm_runtime() so we stop transfers */
+>   	spi_unregister_master(spi);
+>   
+> @@ -617,6 +634,9 @@ static int __maybe_unused spi_geni_runtime_suspend(struct device *dev)
+>   	struct spi_master *spi = dev_get_drvdata(dev);
+>   	struct spi_geni_master *mas = spi_master_get_devdata(spi);
+>   
+> +	/* Drop the performance state vote */
+> +	dev_pm_opp_set_rate(dev, 0);
+> +
+>   	return geni_se_resources_off(&mas->se);
+>   }
+>   
+> 
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
