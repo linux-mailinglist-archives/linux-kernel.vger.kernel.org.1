@@ -2,92 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 267691C984D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 19:49:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 154DB1C9852
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 19:51:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728104AbgEGRtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 13:49:55 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:37628 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726367AbgEGRtz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 13:49:55 -0400
-Received: by mail-wm1-f65.google.com with SMTP id z6so7834916wml.2;
-        Thu, 07 May 2020 10:49:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uzx7yPipGDJlLzd9pOfuRh3M2JP+Q1gSc82f3ElJ8zY=;
-        b=SjSHKjg5wPelS7nsNbolhH2TI4JkNmfUEucLnOJLJf9QiVPOv+0J+0kz490Frs4sLN
-         L4C4uz6hdW4H4iOXTQruVf0a9f+Wz/Vn7+HPsLSQMxEvW6JFY2FaCUFswU6ktMkycw7c
-         wIP0CTLq6TVyOPtC8T1TPcYqQssWpIxTIynuuwVQT/XvdJhv+fMeSg5pTVj8XMxL2DTz
-         lKSqbeuADNCTDzCm+Pr4U04ZvzyL4s2GJ1Ty0OQzk+2F+OHGgXvzQ5iqn7Mxr1YFau1s
-         K/zv+p267aAB/vR0iyVoE7xTV+zbNIIGpfvP35F8MAhBKN62AEmtbd2EAvIVfii/qRXp
-         gixw==
-X-Gm-Message-State: AGi0PuaJsDBQWRjK+DjXDwGhvF4g2jpATOzvk7mMbmc3heFbra7D00Oo
-        yC0ra2weRcj53WT1ttdt0z4=
-X-Google-Smtp-Source: APiQypIzr87jhEXZelDUSzpK7Ud4dOVfvMCNVoLIJsfeJx8v5mGHEwPPoIyxRblXb/5q9zF8hQSNcQ==
-X-Received: by 2002:a1c:1fc9:: with SMTP id f192mr12578342wmf.129.1588873792788;
-        Thu, 07 May 2020 10:49:52 -0700 (PDT)
-Received: from localhost (ip-37-188-183-9.eurotel.cz. [37.188.183.9])
-        by smtp.gmail.com with ESMTPSA id k133sm9875442wma.0.2020.05.07.10.49.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2020 10:49:51 -0700 (PDT)
-Date:   Thu, 7 May 2020 19:49:49 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
-        Greg Thelen <gthelen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] memcg: effective memory.high reclaim for remote charging
-Message-ID: <20200507174949.GN6345@dhcp22.suse.cz>
-References: <20200507163301.229070-1-shakeelb@google.com>
- <20200507164653.GM6345@dhcp22.suse.cz>
- <CALvZod5TmAnDoueej1nu5_VV9rQa6VYVRXqCYuh63P5HN-o9Sw@mail.gmail.com>
+        id S1727778AbgEGRvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 13:51:14 -0400
+Received: from mga01.intel.com ([192.55.52.88]:26332 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726367AbgEGRvO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 13:51:14 -0400
+IronPort-SDR: R0cYG4A7OOXZIl6g+nYohZ7lbhZr1uWQFQhMxGP2CVpjD1oxCzXG3/NajucCi8zdqPS6P+UBZN
+ XIL+hvkx+q/A==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2020 10:51:13 -0700
+IronPort-SDR: V3DVH0xRnKf5l3LJZsiL+WE3XAvo1wmQRvSuEN5astS3+3DH5FWICFR/ZBi/w56Ja0UaKyRBEH
+ 2WXrMcHxNyAg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,364,1583222400"; 
+   d="scan'208";a="295800455"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga002.fm.intel.com with ESMTP; 07 May 2020 10:51:13 -0700
+Received: from [10.249.225.10] (abudanko-mobl.ccr.corp.intel.com [10.249.225.10])
+        by linux.intel.com (Postfix) with ESMTP id 7C1D55805EF;
+        Thu,  7 May 2020 10:51:11 -0700 (PDT)
+Subject: Re: [PATCH v2 02/11] perf evlist: implement control command handling
+ functions
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <d582cc3d-2302-c7e2-70d3-bc7ab6f628c3@linux.intel.com>
+ <142da58d-7ff1-ea73-89e0-30342a710aab@linux.intel.com>
+ <20200506202138.GF9893@kernel.org>
+ <68696671-50f7-7602-fc64-7802a8eab29a@linux.intel.com>
+ <20200507170136.GG31109@kernel.org>
+From:   Alexey Budankov <alexey.budankov@linux.intel.com>
+Organization: Intel Corp.
+Message-ID: <cbc522c3-d63d-e023-8bba-ce82c03ea16b@linux.intel.com>
+Date:   Thu, 7 May 2020 20:51:10 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod5TmAnDoueej1nu5_VV9rQa6VYVRXqCYuh63P5HN-o9Sw@mail.gmail.com>
+In-Reply-To: <20200507170136.GG31109@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 07-05-20 10:00:07, Shakeel Butt wrote:
-> On Thu, May 7, 2020 at 9:47 AM Michal Hocko <mhocko@kernel.org> wrote:
-> >
-> > On Thu 07-05-20 09:33:01, Shakeel Butt wrote:
-> > [...]
-> > > @@ -2600,8 +2596,23 @@ static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
-> > >                               schedule_work(&memcg->high_work);
-> > >                               break;
-> > >                       }
-> > > -                     current->memcg_nr_pages_over_high += batch;
-> > > -                     set_notify_resume(current);
-> > > +
-> > > +                     if (gfpflags_allow_blocking(gfp_mask))
-> > > +                             reclaim_over_high(memcg, gfp_mask, batch);
-> > > +
-> > > +                     if (page_counter_read(&memcg->memory) <=
-> > > +                         READ_ONCE(memcg->high))
-> > > +                             break;
-> >
-> > I am half way to a long weekend so bear with me. Shouldn't this be continue? The
-> > parent memcg might be still in excess even the child got reclaimed,
-> > right?
-> >
+
+On 07.05.2020 20:01, Arnaldo Carvalho de Melo wrote:
+> Em Thu, May 07, 2020 at 11:32:53AM +0300, Alexey Budankov escreveu:
+>>
+>> On 06.05.2020 23:21, Arnaldo Carvalho de Melo wrote:
+>>> Em Wed, May 06, 2020 at 09:19:22PM +0300, Alexey Budankov escreveu:
+>>>>
+>>>> Implement functions of initialization, finalization and processing
+>>>> of control commands coming from control file descriptors.
+>>>>
+>>>> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+>>>> ---
+>>>>  tools/perf/util/evlist.c | 100 +++++++++++++++++++++++++++++++++++++++
+>>>>  tools/perf/util/evlist.h |  12 +++++
+>>>>  2 files changed, 112 insertions(+)
+>>
+>> <SNIP>
+>>
+>>>> diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
+>>>> index 62f259d89b41..84386850c290 100644
+>>>> --- a/tools/perf/util/evlist.h
+>>>> +++ b/tools/perf/util/evlist.h
+>>>> @@ -358,4 +358,16 @@ void perf_evlist__force_leader(struct evlist *evlist);
+>>>>  struct evsel *perf_evlist__reset_weak_group(struct evlist *evlist,
+>>>>  						 struct evsel *evsel,
+>>>>  						bool close);
+>>>> +
+>>>> +enum evlist_ctl_cmd {
+>>>> +	CTL_CMD_UNSUPPORTED = 0,
+>>>> +	CTL_CMD_ENABLE = 'e',
+>>>> +	CTL_CMD_DISABLE = 'd',
+>>>> +	CTL_CMD_ACK = 'a'
+>>>> +};
+>>>
+>>> Can we make this a string, I think we'll eventually ask for lots more
+>>
+>> Like this?
+>>
+>> #define EVLIST__CTL_CMD_ENABLE	"enable"
+>> #define EVLIST__CTL_CMD_DISABLE	"disable"
+>> #define EVLIST__CTL_CMD_ACK	"ack"
 > 
-> The reclaim_high() actually already does this walk up to the root and
-> reclaim from ones who are still over their high limit. Though having
-> 'continue' here is correct too.
+> Yeah
 
-Ohh, right. As I've said weekend brain. I will have a proper look next
-week. This just hit my eyes.
+Well, ok. Accepted in v3.
+Command becomes of variable length of chars + \n, 
+in comparison to current single char + \n.
 
--- 
-Michal Hocko
-SUSE Labs
+>  
+>>> stuff, like asking for a --switch-output snapshot with --overwrite,
+>>> reconfiguring events to increase/decrease frequency, etc, interfacing
+>>> with PERF_EVENT_IOC_MODIFY_ATTRIBUTES, PERF_EVENT_IOC_SET_FILTER, etc.
+>>>
+>>> This will also allow us to have parameters, etc, wdyt?
+>>
+>> Being a part of this patch the extension will implement configurability
+>> that potentially could never be used.
+>>
+>> Switch from int to string commands of variable length belongs to
+>> the patches also implementing usage of that string commands.
+> 
+> Well, at that point we would have to support both, i.e. the way you're
+> doing now with integers, and as strings, otherwise 3rd party tooling
+> (vtune? :)) using this interface would break.
+> 
+> I.e. this is like the syscall interface.
+> 
+> So if we have "enable" now we can go ahead and forever understand that
+> as "please enable this evlist", but in the future we can extend it and
+> pass parameters to it, to control how that enablement will take place,
+> perhaps with a delay, etc.
+> 
+>>> Also please since these are events that deal with 'struct evlist', name
+>>> them with the evlist__ prefix, not the perf_evlist__ one, as those
+>>> should be used with 'struct perf_evlist', i.e. the one in libperf
+>>> (tools/lib/perf/).
+>>
+>> Accepted in v3.
+>>
+>>>
+>>> Right now this is inconsistent, we did it that way to minimize
+>>> disruption of the codebase when moving things from tools/perf/ to
+>>> tools/lib/perf/, but this confuses things and I just did a
+>>> s/perf_evsel__/evsel__) for things dealing with 'struct evsel', so lets
+>>> not add new ones with the wrong prefix, eventually we'll have perf_ only
+>>> for things in libperf.
+>>>
+>>>> +
+>>>> +int perf_evlist__initialize_ctlfd(struct evlist *evlist, int ctl_fd, int ctl_fd_ack);
+>>>> +int perf_evlist__finalize_ctlfd(struct evlist *evlist);
+>>>> +int perf_evlist__ctlfd_process(struct evlist *evlist, enum evlist_ctl_cmd *cmd);
+>>>> +
+>>>>  #endif /* __PERF_EVLIST_H */
+>>>> -- 
+>>>> 2.24.1
+>>>>
+>>>>
+>>>
+> 
