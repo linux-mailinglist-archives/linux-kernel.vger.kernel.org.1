@@ -2,97 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3824C1C9A23
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:58:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EFCD1C99ED
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:53:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728417AbgEGS5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 14:57:48 -0400
-Received: from nibbler.cm4all.net ([82.165.145.151]:58141 "EHLO
-        nibbler.cm4all.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728374AbgEGS5r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 14:57:47 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by nibbler.cm4all.net (Postfix) with ESMTP id 29BB8C022B
-        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 20:57:42 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at nibbler.cm4all.net
-Received: from nibbler.cm4all.net ([127.0.0.1])
-        by localhost (nibbler.cm4all.net [127.0.0.1]) (amavisd-new, port 10024)
-        with LMTP id tok-DwvzUYyB for <linux-kernel@vger.kernel.org>;
-        Thu,  7 May 2020 20:57:42 +0200 (CEST)
-Received: from zero.intern.cm-ag (zero.intern.cm-ag [172.30.16.10])
-        by nibbler.cm4all.net (Postfix) with SMTP id 08E05C0213
-        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 20:57:42 +0200 (CEST)
-Received: (qmail 2040 invoked from network); 7 May 2020 22:13:59 +0200
-Received: from unknown (HELO rabbit.intern.cm-ag) (172.30.3.1)
-  by zero.intern.cm-ag with SMTP; 7 May 2020 22:13:59 +0200
-Received: by rabbit.intern.cm-ag (Postfix, from userid 1023)
-        id D022A461450; Thu,  7 May 2020 20:57:41 +0200 (CEST)
-From:   Max Kellermann <mk@cm4all.com>
-To:     axboe@kernel.dk, linux-fsdevel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Max Kellermann <mk@cm4all.com>,
-        stable@vger.kernel.org
-Subject: [PATCH] fs/io_uring: fix O_PATH fds in openat, openat2, statx
-Date:   Thu,  7 May 2020 20:57:25 +0200
-Message-Id: <20200507185725.15840-1-mk@cm4all.com>
-X-Mailer: git-send-email 2.20.1
+        id S1728412AbgEGSxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 14:53:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54290 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726531AbgEGSxH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 14:53:07 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 499D32495D;
+        Thu,  7 May 2020 18:53:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588877586;
+        bh=OEDtrIDACeSx6XMGXUnVv6Jt/6XKkuNxDujuTveFYTI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=JSSP75dJCFD8LstJJsk+ol8lTwNF8QOBTIxpqCKvg1RHVIgcUdggnfXok/EijCgld
+         shpMAc7T6qudGXdulGsRU0yOg73jF5WzP7msdXqocdDlRps+QAClJ8wZxLsCOW4+QV
+         Q7e6qpgROdHplOcJgg+2wCUSCsTB/yJ1eFNRIA1w=
+Date:   Thu, 7 May 2020 13:57:33 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] kprobes: Replace zero-length array with flexible-array
+Message-ID: <20200507185733.GA14931@embeddedor>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If an operation's flag `needs_file` is set, the function
-io_req_set_file() calls io_file_get() to obtain a `struct file*`.
+The current codebase makes use of the zero-length array language
+extension to the C90 standard, but the preferred mechanism to declare
+variable-length types such as these ones is a flexible array member[1][2],
+introduced in C99:
 
-This fails for `O_PATH` file descriptors, because those have no
-`struct file*`, causing io_req_set_file() to throw `-EBADF`.  This
-breaks the operations `openat`, `openat2` and `statx`, where `O_PATH`
-file descriptors are commonly used.
+struct foo {
+        int stuff;
+        struct boo array[];
+};
 
-The solution is to simply remove `needs_file` (and the accompanying
-flag `fd_non_reg`).  This flag was never needed because those
-operations use numeric file descriptor and don't use the `struct
-file*` obtained by io_req_set_file().
+By making use of the mechanism above, we will get a compiler warning
+in case the flexible array does not occur last in the structure, which
+will help us prevent some kind of undefined behavior bugs from being
+inadvertently introduced[3] to the codebase from now on.
 
-Signed-off-by: Max Kellermann <mk@cm4all.com>
-Cc: stable@vger.kernel.org
+Also, notice that, dynamic memory allocations won't be affected by
+this change:
+
+"Flexible array members have incomplete type, and so the sizeof operator
+may not be applied. As a quirk of the original implementation of
+zero-length arrays, sizeof evaluates to zero."[1]
+
+sizeof(flexible-array-member) triggers a warning because flexible array
+members have incomplete type[1]. There are some instances of code in
+which the sizeof operator is being incorrectly/erroneously applied to
+zero-length arrays and the result is zero. Such instances may be hiding
+some bugs. So, this work (flexible-array member conversions) will also
+help to get completely rid of those sorts of issues.
+
+This issue was found with the help of Coccinelle.
+
+[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+[2] https://github.com/KSPP/linux/issues/21
+[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- fs/io_uring.c | 6 ------
- 1 file changed, 6 deletions(-)
+ include/linux/kprobes.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index a46de2cfc28e..d24f8e33323c 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -693,8 +693,6 @@ static const struct io_op_def io_op_defs[] = {
- 		.needs_file		= 1,
- 	},
- 	[IORING_OP_OPENAT] = {
--		.needs_file		= 1,
--		.fd_non_neg		= 1,
- 		.file_table		= 1,
- 		.needs_fs		= 1,
- 	},
-@@ -708,8 +706,6 @@ static const struct io_op_def io_op_defs[] = {
- 	},
- 	[IORING_OP_STATX] = {
- 		.needs_mm		= 1,
--		.needs_file		= 1,
--		.fd_non_neg		= 1,
- 		.needs_fs		= 1,
- 	},
- 	[IORING_OP_READ] = {
-@@ -739,8 +735,6 @@ static const struct io_op_def io_op_defs[] = {
- 		.unbound_nonreg_file	= 1,
- 	},
- 	[IORING_OP_OPENAT2] = {
--		.needs_file		= 1,
--		.fd_non_neg		= 1,
- 		.file_table		= 1,
- 		.needs_fs		= 1,
- 	},
--- 
-2.20.1
+diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
+index 04bdaf01112c..4477205e3e92 100644
+--- a/include/linux/kprobes.h
++++ b/include/linux/kprobes.h
+@@ -161,7 +161,7 @@ struct kretprobe_instance {
+ 	kprobe_opcode_t *ret_addr;
+ 	struct task_struct *task;
+ 	void *fp;
+-	char data[0];
++	char data[];
+ };
+ 
+ struct kretprobe_blackpoint {
 
