@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAB391C9AD7
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:21:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC8471C9AD8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:21:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728710AbgEGTVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 15:21:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42602 "EHLO mail.kernel.org"
+        id S1728716AbgEGTVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 15:21:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727837AbgEGTVD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 15:21:03 -0400
+        id S1728369AbgEGTVJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 15:21:09 -0400
 Received: from embeddedor (unknown [189.207.59.248])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0F31E208D6;
-        Thu,  7 May 2020 19:21:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 163A521835;
+        Thu,  7 May 2020 19:21:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588879263;
-        bh=XUSgEf5VZATk0joVHorJH82G4LKTsH9YORMcTuWgJx8=;
+        s=default; t=1588879268;
+        bh=qh1j1EPgFp9gEO4yUol6TFAoaToJnGzXm0ToAUgd8vA=;
         h=Date:From:To:Cc:Subject:From;
-        b=Q8PwtStoHbdOuAaPWapaZFjOpEN4+JXmLzJX1OYFdzrC1imgwk06ONtWGz4TkBs83
-         n8WkInB+Vxz7lJYZE7bbeGb3a/xoYkT/uMZR4V+6TyRoBGJeE79PwQztKcvR4jwra+
-         iI1/rhm+ghX7KpWAd4y9Mv95PZlRAdHXmHLE6t1Q=
-Date:   Thu, 7 May 2020 14:25:29 -0500
+        b=juFTsTqegvq3Bv4Q2LiuA8DtFUy8o/PXwJhVFoG153XAwDnoyikkW75jBlGZ+d+3i
+         SXYGKQVIOEPhhnUxU7c8JHjgnxHDcQ5yn74TK1z4ZjBNJ41QTvPbw64yHFwFtQ7lhs
+         6NmDIyesKEngYmbeZtxRFwUKpa+PiBIRYDPhtPC0=
+Date:   Thu, 7 May 2020 14:25:35 -0500
 From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Alex Dubov <oakad@yahoo.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] tifm: Replace zero-length array with flexible-array
-Message-ID: <20200507192529.GA16602@embeddedor>
+To:     Santosh Shilimkar <ssantosh@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] soc: ti: Replace zero-length array with flexible-array
+Message-ID: <20200507192535.GA16622@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -75,20 +75,20 @@ This issue was found with the help of Coccinelle.
 
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- include/linux/tifm.h |    2 +-
+ drivers/soc/ti/knav_qmss.h |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/tifm.h b/include/linux/tifm.h
-index 299cbb8c63bb..44073d06710f 100644
---- a/include/linux/tifm.h
-+++ b/include/linux/tifm.h
-@@ -124,7 +124,7 @@ struct tifm_adapter {
- 	int                 (*has_ms_pif)(struct tifm_adapter *fm,
- 					  struct tifm_dev *sock);
- 
--	struct tifm_dev     *sockets[0];
-+	struct tifm_dev     *sockets[];
+diff --git a/drivers/soc/ti/knav_qmss.h b/drivers/soc/ti/knav_qmss.h
+index 038aec352df7..a01eda720bf6 100644
+--- a/drivers/soc/ti/knav_qmss.h
++++ b/drivers/soc/ti/knav_qmss.h
+@@ -67,7 +67,7 @@ struct knav_reg_config {
+ 	u32		link_ram_size0;
+ 	u32		link_ram_base1;
+ 	u32		__pad2[2];
+-	u32		starvation[0];
++	u32		starvation[];
  };
  
- struct tifm_adapter *tifm_alloc_adapter(unsigned int num_sockets,
+ struct knav_reg_region {
 
