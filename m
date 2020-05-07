@@ -2,110 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6B191C9B66
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCDA71C9B6E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727983AbgEGTyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 15:54:12 -0400
-Received: from foss.arm.com ([217.140.110.172]:38360 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726320AbgEGTyM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 15:54:12 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0E7961FB;
-        Thu,  7 May 2020 12:54:11 -0700 (PDT)
-Received: from [192.168.122.166] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D60F83F68F;
-        Thu,  7 May 2020 12:54:09 -0700 (PDT)
-Subject: Re: [net-next PATCH v3 4/5] net: phy: Introduce fwnode_get_phy_id()
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Calvin Johnson <calvin.johnson@oss.nxp.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        linux.cj@gmail.com, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Varun Sethi <V.Sethi@nxp.com>,
-        "Rajesh V . Bikkina" <rajesh.bikkina@nxp.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        netdev <netdev@vger.kernel.org>, Marcin Wojtas <mw@semihalf.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Makarand Pawagi <makarand.pawagi@nxp.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Pankaj Bansal <pankaj.bansal@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-References: <20200505132905.10276-1-calvin.johnson@oss.nxp.com>
- <20200505132905.10276-5-calvin.johnson@oss.nxp.com>
- <67e263cf-5cd7-98d1-56ff-ebd9ac2265b6@arm.com>
- <CAHp75Vew8Fh6HEoOACk+J9KCpw+AE2t2+oFnXteK1eShopfYAA@mail.gmail.com>
-From:   Jeremy Linton <jeremy.linton@arm.com>
-Message-ID: <83ab4ca4-9c34-4cdd-4413-3b4cdf96727d@arm.com>
-Date:   Thu, 7 May 2020 14:54:09 -0500
+        id S1727799AbgEGT5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 15:57:45 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:44262 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726326AbgEGT5o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 15:57:44 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 047Ju5Tf146096;
+        Thu, 7 May 2020 19:56:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=xGWagjUnNTgLN2Rd77O+rud4vRPHdMaUKotPzqjSQfo=;
+ b=wE6j7YBwgQEy94HWDUmh8eCcVvQPVDwE0H/nH7wLK+pbMEgqS3WI8xdj2cWq919gkwHt
+ KQnHXXGdkp3BxYfUCK3fFGPkYWAHa+u0GhN8cUP9dozRG2+mg9OMS0tTnYQ7CjXADRgJ
+ 2aXhcSN35pxY7LHJSxTNxujhUPV5LQlpn1dXyY4UazM/qUIulTOoC6W7Xk8r8heFiiq4
+ OQ26EFSI4CKpRrguVFkdA1zJzU1sQxfpz+adr5xat++p0ekebrnV+OyAuaJrvTRYA1AG
+ UBNcF9guxlrBul+guA3az5jAqHcB3wN50B/qvtA95/ZfR9OvWmF29f6yprXp+Yls/K8l vQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 30vhvyjj3u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 07 May 2020 19:56:56 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 047Jqu4s142980;
+        Thu, 7 May 2020 19:56:56 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 30sjdytyfb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 07 May 2020 19:56:55 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 047JuqpC010292;
+        Thu, 7 May 2020 19:56:52 GMT
+Received: from linux.home (/92.157.36.49)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 07 May 2020 12:56:52 -0700
+Subject: Re: [patch V4 part 4 24/24] x86/entry: Convert double fault exception
+ to IDTENTRY_DF
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>
+References: <20200505134926.578885807@linutronix.de>
+ <20200505135315.686797857@linutronix.de>
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+Message-ID: <a75d9840-4563-9995-e8c5-b4d6cf4c2d09@oracle.com>
+Date:   Thu, 7 May 2020 21:55:42 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <CAHp75Vew8Fh6HEoOACk+J9KCpw+AE2t2+oFnXteK1eShopfYAA@mail.gmail.com>
+In-Reply-To: <20200505135315.686797857@linutronix.de>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9614 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0 mlxscore=0
+ bulkscore=0 adultscore=0 phishscore=0 mlxlogscore=999 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005070159
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9614 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 mlxlogscore=999
+ spamscore=0 phishscore=0 impostorscore=0 bulkscore=0 priorityscore=1501
+ malwarescore=0 mlxscore=0 adultscore=0 suspectscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005070159
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 5/7/20 12:27 PM, Andy Shevchenko wrote:
-> On Thu, May 7, 2020 at 4:26 PM Jeremy Linton <jeremy.linton@arm.com> wrote:
->> On 5/5/20 8:29 AM, Calvin Johnson wrote:
+On 5/5/20 3:49 PM, Thomas Gleixner wrote:
+> Convert #DF to IDTENTRY_DF
+>    - Implement the C entry point with DEFINE_IDTENTRY_DF
+>    - Emit the ASM stub with DECLARE_IDTENTRY_DF on 64bit
+>    - Remove the ASM idtentry in 64bit
+>    - Adjust the 32bit shim code
+>    - Fixup the XEN/PV code
+>    - Remove the old prototyoes
 > 
->>> +             if (sscanf(cp, "ethernet-phy-id%4x.%4x",
->>> +                        &upper, &lower) == 2) {
->>> +                     *phy_id = ((upper & 0xFFFF) << 16) | (lower & 0xFFFF);
->>> +                     return 0;
->>> +             }
+> No functional change.
 > 
->> Isn't the ACPI _CID() conceptually similar to the DT compatible
->> property?
-> 
-> Where?
-
-Not, sure I understand exactly what your asking. AFAIK, in general the 
-dt property is used to select a device driver/etc based on a more to 
-less compatible set of substrings. The phy case is a bit different 
-because it codes a numerical part number into the string rather than 
-just using arbitrary strings to select a driver and device. But it uses 
-that as a vendor selector for binding to the correct driver/device.
-
-Rephrasing the ACPI spec, the _CID() is either a single compatible id, 
-or a list of ids in order of preference. Each id is either a HID (string 
-or EISA type id) or a bus specific string encoding vendor/device/etc. 
-(https://elixir.bootlin.com/linux/v5.7-rc4/source/drivers/acpi/acpica/utids.c#L186). 
-One of the examples is "PCI\VEN_vvvv&DEV_dddd"
-
-So that latter case seems to be almost exactly what we have here.
-
-> 
->> It even appears to be getting used in a similar way to
->> identify particular phy drivers in this case.
-> 
-> _CID() is a string. It can't be used as pure number.
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 > 
 
-It does have a numeric version defined for EISA types. OTOH I suspect 
-that your right. If there were a "PHY\VEN_IDvvvv&ID_DDDD" definition, it 
-may not be ideal to parse it. Instead the normal ACPI model of exactly 
-matching the complete string in the phy driver might be more appropriate.
+For all patches of part 4:
 
-Similarly to how I suspect the next patch's use of "compatible" isn't 
-ideal either, because whether a device is c45 or not, should tend to be 
-fixed to a particular vendor/device implementation and not a firmware 
-provided property.
+Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
+
+alex.
