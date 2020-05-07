@@ -2,151 +2,422 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 577861C7E9E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 02:41:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF831C7F1E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 02:47:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726807AbgEGAlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 20:41:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725966AbgEGAlu (ORCPT
+        id S1728778AbgEGApp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 20:45:45 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:49254 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728708AbgEGApj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 20:41:50 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EAD5C061A0F;
-        Wed,  6 May 2020 17:41:50 -0700 (PDT)
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jWUbT-0006e2-IH; Thu, 07 May 2020 02:41:31 +0200
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id DE860102652; Thu,  7 May 2020 02:41:30 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     "Dr. Greg" <greg@enjellic.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-sgx@vger.kernel.org,
-        akpm@linux-foundation.org, dave.hansen@intel.com,
-        sean.j.christopherson@intel.com, nhorman@redhat.com,
-        npmccallum@redhat.com, haitao.huang@intel.com,
-        andriy.shevchenko@linux.intel.com, kai.svahn@intel.com,
-        bp@alien8.de, josh@joshtriplett.org, luto@kernel.org,
-        kai.huang@intel.com, rientjes@google.com, cedric.xing@intel.com,
-        puiterwijk@redhat.com
-Subject: Re: [PATCH v29 00/20] Intel SGX foundations
-In-Reply-To: <20200426165753.GA11046@wind.enjellic.com>
-References: <20200421215316.56503-1-jarkko.sakkinen@linux.intel.com> <20200426165753.GA11046@wind.enjellic.com>
-Date:   Thu, 07 May 2020 02:41:30 +0200
-Message-ID: <87d07gk24l.fsf@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+        Wed, 6 May 2020 20:45:39 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0470d0Rh076188;
+        Thu, 7 May 2020 00:44:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
+ bh=f+HGLsLngPlAifDSO//pUsSOr/CSejc37nW9hYK4Qnc=;
+ b=z0I83G489kwqDnyZRxNRtWp9rtxWw7wN408iq27oUAdeZsReLpruWyziVHztS77bwNn6
+ x4VzjF0+NjhFtXQj7HgxodLRuPF/MU+RRfM9sfl3x9rMUUrsBdX22KNaFVQkYvR4gb0G
+ GIjDZSvY41UDl8EgddIeJnvfziKYGA2CqzFNcdYx9zoSVRhTJwRy5n2uX5d47aRqOrk+
+ 1BeJQ/DCmF1Ob90s3tFwY/LSrv38CU1FjPItSL993Dk2IvBm7qocagzg7fQ24s7z6obz
+ EbD4dw7gn8tsfkOOTFjypce7GoaQE0XDekxtlI9ypFBbwZbeY8Pw1s872vI9ObIqDmab DQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 30s09rdfc3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 07 May 2020 00:44:36 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0470anji170838;
+        Thu, 7 May 2020 00:42:36 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 30us7p2kmn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 07 May 2020 00:42:35 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0470gWjC025345;
+        Thu, 7 May 2020 00:42:32 GMT
+Received: from ayz-linux.localdomain (/68.7.158.207)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 06 May 2020 17:42:32 -0700
+From:   Anthony Yznaga <anthony.yznaga@oracle.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     willy@infradead.org, corbet@lwn.net, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        rppt@linux.ibm.com, akpm@linux-foundation.org, hughd@google.com,
+        ebiederm@xmission.com, masahiroy@kernel.org, ardb@kernel.org,
+        ndesaulniers@google.com, dima@golovin.in, daniel.kiper@oracle.com,
+        nivedita@alum.mit.edu, rafael.j.wysocki@intel.com,
+        dan.j.williams@intel.com, zhenzhong.duan@oracle.com,
+        jroedel@suse.de, bhe@redhat.com, guro@fb.com,
+        Thomas.Lendacky@amd.com, andriy.shevchenko@linux.intel.com,
+        keescook@chromium.org, hannes@cmpxchg.org, minchan@kernel.org,
+        mhocko@kernel.org, ying.huang@intel.com,
+        yang.shi@linux.alibaba.com, gustavo@embeddedor.com,
+        ziqian.lzq@antfin.com, vdavydov.dev@gmail.com,
+        jason.zeng@intel.com, kevin.tian@intel.com, zhiyuan.lv@intel.com,
+        lei.l.li@intel.com, paul.c.lai@intel.com, ashok.raj@intel.com,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        kexec@lists.infradead.org
+Subject: [RFC 04/43] mm: PKRAM: implement page stream operations
+Date:   Wed,  6 May 2020 17:41:30 -0700
+Message-Id: <1588812129-8596-5-git-send-email-anthony.yznaga@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1588812129-8596-1-git-send-email-anthony.yznaga@oracle.com>
+References: <1588812129-8596-1-git-send-email-anthony.yznaga@oracle.com>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9613 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 suspectscore=2
+ mlxlogscore=999 malwarescore=0 phishscore=0 mlxscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005070001
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9613 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0
+ lowpriorityscore=0 spamscore=0 adultscore=0 clxscore=1015 suspectscore=2
+ priorityscore=1501 malwarescore=0 mlxlogscore=999 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005070001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greg,
+Using the pkram_save_page() function, one can populate PKRAM objects with
+memory pages which can later be loaded using the pkram_load_page()
+function. Saving a memory page to PKRAM is accomplished by recording
+its pfn and incrementing its refcount so that it will not be freed after
+the last user puts it.
 
-"Dr. Greg" <greg@enjellic.com> writes:
-> As an aside, for those who haven't spent the last 5+ years of their
-> life working with this technology.  SGX2 hardware platforms have the
-> ability to allow unrestricted code execution in enclave context.
+Originally-by: Vladimir Davydov <vdavydov.dev@gmail.com>
+Signed-off-by: Anthony Yznaga <anthony.yznaga@oracle.com>
+---
+ include/linux/pkram.h |   5 ++
+ mm/pkram.c            | 219 +++++++++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 221 insertions(+), 3 deletions(-)
 
-Unrestricted code execution even before loaded? Unrestricted by
-priviledge levels?
+diff --git a/include/linux/pkram.h b/include/linux/pkram.h
+index fabde2cd8203..f338d1c2aeb6 100644
+--- a/include/linux/pkram.h
++++ b/include/linux/pkram.h
+@@ -12,6 +12,11 @@ struct pkram_stream {
+ 	gfp_t gfp_mask;
+ 	struct pkram_node *node;
+ 	struct pkram_obj *obj;
++
++	struct pkram_link *link;		/* current link */
++	unsigned int entry_idx;		/* next entry in link */
++
++	unsigned long next_index;
+ };
+ 
+ #define PKRAM_NAME_MAX		256	/* including nul */
+diff --git a/mm/pkram.c b/mm/pkram.c
+index 4934ffd8b019..ab3053ca3539 100644
+--- a/mm/pkram.c
++++ b/mm/pkram.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ #include <linux/err.h>
+ #include <linux/gfp.h>
++#include <linux/io.h>
+ #include <linux/kernel.h>
+ #include <linux/list.h>
+ #include <linux/mm.h>
+@@ -10,8 +11,38 @@
+ #include <linux/string.h>
+ #include <linux/types.h>
+ 
++#include "internal.h"
++
++
++/*
++ * Represents a reference to a data page saved to PKRAM.
++ */
++typedef __u64 pkram_entry_t;
++
++#define PKRAM_ENTRY_FLAGS_SHIFT	0x5
++#define PKRAM_ENTRY_FLAGS_MASK	0x7f
++
++/*
++ * Keeps references to data pages saved to PKRAM.
++ * The structure occupies a memory page.
++ */
++struct pkram_link {
++	__u64	link_pfn;	/* points to the next link of the object */
++	__u64	index;		/* mapping index of first pkram_entry_t */
++
++	/*
++	 * the array occupies the rest of the link page; if the link is not
++	 * full, the rest of the array must be filled with zeros
++	 */
++	pkram_entry_t entry[0];
++};
++
++#define PKRAM_LINK_ENTRIES_MAX \
++	((PAGE_SIZE-sizeof(struct pkram_link))/sizeof(pkram_entry_t))
++
+ struct pkram_obj {
+-	__u64   obj_pfn;	/* points to the next object in the list */
++	__u64	link_pfn;	/* points to the first link of the object */
++	__u64	obj_pfn;	/* points to the next object in the list */
+ };
+ 
+ /*
+@@ -19,6 +50,10 @@ struct pkram_obj {
+  * independently of each other. The nodes are identified by unique name
+  * strings.
+  *
++ * References to data pages saved to a preserved memory node are kept in a
++ * singly-linked list of PKRAM link structures (see above), the node has a
++ * pointer to the head of.
++ *
+  * The structure occupies a memory page.
+  */
+ struct pkram_node {
+@@ -68,6 +103,37 @@ static struct pkram_node *pkram_find_node(const char *name)
+ 	return NULL;
+ }
+ 
++static void pkram_truncate_link(struct pkram_link *link)
++{
++	struct page *page;
++	pkram_entry_t p;
++	int i;
++
++	for (i = 0; i < PKRAM_LINK_ENTRIES_MAX; i++) {
++		p = link->entry[i];
++		if (!p)
++			continue;
++		page = pfn_to_page(PHYS_PFN(p));
++		put_page(page);
++	}
++}
++
++static void pkram_truncate_obj(struct pkram_obj *obj)
++{
++	unsigned long link_pfn;
++	struct pkram_link *link;
++
++	link_pfn = obj->link_pfn;
++	while (link_pfn) {
++		link = pfn_to_kaddr(link_pfn);
++		pkram_truncate_link(link);
++		link_pfn = link->link_pfn;
++		pkram_free_page(link);
++		cond_resched();
++	}
++	obj->link_pfn = 0;
++}
++
+ static void pkram_truncate_node(struct pkram_node *node)
+ {
+ 	unsigned long obj_pfn;
+@@ -76,6 +142,7 @@ static void pkram_truncate_node(struct pkram_node *node)
+ 	obj_pfn = node->obj_pfn;
+ 	while (obj_pfn) {
+ 		obj = pfn_to_kaddr(obj_pfn);
++		pkram_truncate_obj(obj);
+ 		obj_pfn = obj->obj_pfn;
+ 		pkram_free_page(obj);
+ 		cond_resched();
+@@ -83,6 +150,26 @@ static void pkram_truncate_node(struct pkram_node *node)
+ 	node->obj_pfn = 0;
+ }
+ 
++static void pkram_add_link(struct pkram_link *link, struct pkram_obj *obj)
++{
++	link->link_pfn = obj->link_pfn;
++	obj->link_pfn = page_to_pfn(virt_to_page(link));
++}
++
++static struct pkram_link *pkram_remove_link(struct pkram_obj *obj)
++{
++	struct pkram_link *current_link;
++
++	if (!obj->link_pfn)
++		return NULL;
++
++	current_link = pfn_to_kaddr(obj->link_pfn);
++	obj->link_pfn = current_link->link_pfn;
++	current_link->link_pfn = 0;
++
++	return current_link;
++}
++
+ static void pkram_stream_init(struct pkram_stream *ps,
+ 			     struct pkram_node *node, gfp_t gfp_mask)
+ {
+@@ -94,6 +181,9 @@ static void pkram_stream_init(struct pkram_stream *ps,
+ static void pkram_stream_init_obj(struct pkram_stream *ps, struct pkram_obj *obj)
+ {
+ 	ps->obj = obj;
++	ps->link = NULL;
++	ps->entry_idx = 0;
++	ps->next_index = 0;
+ }
+ 
+ /**
+@@ -295,9 +385,28 @@ void pkram_finish_load_obj(struct pkram_stream *ps)
+ {
+ 	struct pkram_node *node = ps->node;
+ 	struct pkram_obj *obj = ps->obj;
++	struct pkram_link *link = ps->link;
+ 
+ 	BUG_ON((node->flags & PKRAM_ACCMODE_MASK) != PKRAM_LOAD);
+ 
++	/*
++	 * If link is not null, then loading stopped within a pkram_link
++	 * unexpectedly.
++	 */
++	if (link) {
++		unsigned long link_pfn;
++
++		link_pfn = page_to_pfn(virt_to_page(link));
++		while (link_pfn) {
++			link = pfn_to_kaddr(link_pfn);
++			pkram_truncate_link(link);
++			link_pfn = link->link_pfn;
++			pkram_free_page(link);
++			cond_resched();
++		}
++	}
++
++	pkram_truncate_obj(obj);
+ 	pkram_free_page(obj);
+ }
+ 
+@@ -316,6 +425,44 @@ void pkram_finish_load(struct pkram_stream *ps)
+ 	pkram_free_page(node);
+ }
+ 
++/*
++ * Insert page to PKRAM node allocating a new PKRAM link if necessary.
++ */
++static int __pkram_save_page(struct pkram_stream *ps,
++			    struct page *page, short flags, unsigned long index)
++{
++	struct pkram_link *link = ps->link;
++	struct pkram_obj *obj = ps->obj;
++	pkram_entry_t p;
++
++	if (!link || ps->entry_idx >= PKRAM_LINK_ENTRIES_MAX ||
++	    index != ps->next_index) {
++		struct page *link_page;
++
++		link_page = pkram_alloc_page((ps->gfp_mask & GFP_RECLAIM_MASK) |
++					    __GFP_ZERO);
++		if (!link_page)
++			return -ENOMEM;
++
++		ps->link = link = page_address(link_page);
++		pkram_add_link(link, obj);
++
++		ps->entry_idx = 0;
++
++		ps->next_index = link->index = index;
++	}
++
++	ps->next_index++;
++
++	get_page(page);
++	p = page_to_phys(page);
++	p |= ((flags & PKRAM_ENTRY_FLAGS_MASK) << PKRAM_ENTRY_FLAGS_SHIFT);
++	link->entry[ps->entry_idx] = p;
++	ps->entry_idx++;
++
++	return 0;
++}
++
+ /**
+  * Save page @page to the preserved memory node and object associated with
+  * stream @ps. The stream must have been initialized with pkram_prepare_save()
+@@ -324,10 +471,72 @@ void pkram_finish_load(struct pkram_stream *ps)
+  * @flags specifies supplemental page state to be preserved.
+  *
+  * Returns 0 on success, -errno on failure.
++ *
++ * Error values:
++ *	%ENOMEM: insufficient amount of memory available
++ *
++ * Saving a page to preserved memory is simply incrementing its refcount so
++ * that it will not get freed after the last user puts it. That means it is
++ * safe to use the page as usual after it has been saved.
+  */
+ int pkram_save_page(struct pkram_stream *ps, struct page *page, short flags)
+ {
+-	return -ENOSYS;
++	struct pkram_node *node = ps->node;
++
++	BUG_ON((node->flags & PKRAM_ACCMODE_MASK) != PKRAM_SAVE);
++
++	BUG_ON(PageCompound(page));
++
++	return __pkram_save_page(ps, page, flags, page->index);
++}
++
++/*
++ * Extract the next page from preserved memory freeing a PKRAM link if it
++ * becomes empty.
++ */
++static struct page *__pkram_load_page(struct pkram_stream *ps, unsigned long *index, short *flags)
++{
++	struct pkram_link *link = ps->link;
++	struct page *page;
++	pkram_entry_t p;
++	short flgs;
++
++	if (!link) {
++		link = pkram_remove_link(ps->obj);
++		if (!link)
++			return NULL;
++
++		ps->link = link;
++		ps->entry_idx = 0;
++		ps->next_index = link->index;
++	}
++
++	BUG_ON(ps->entry_idx >= PKRAM_LINK_ENTRIES_MAX);
++
++	p = link->entry[ps->entry_idx];
++	BUG_ON(!p);
++
++	flgs = (p >> PKRAM_ENTRY_FLAGS_SHIFT) & PKRAM_ENTRY_FLAGS_MASK;
++	page = pfn_to_page(PHYS_PFN(p));
++
++	if (flags)
++		*flags = flgs;
++	if (index)
++		*index = ps->next_index;
++
++	ps->next_index++;
++
++	/* clear to avoid double free (see pkram_truncate_link()) */
++	link->entry[ps->entry_idx] = 0;
++
++	ps->entry_idx++;
++	if (ps->entry_idx >= PKRAM_LINK_ENTRIES_MAX ||
++	    !link->entry[ps->entry_idx]) {
++		ps->link = NULL;
++		pkram_free_page(link);
++	}
++
++	return page;
+ }
+ 
+ /**
+@@ -346,7 +555,11 @@ int pkram_save_page(struct pkram_stream *ps, struct page *page, short flags)
+  */
+ struct page *pkram_load_page(struct pkram_stream *ps, unsigned long *index, short *flags)
+ {
+-	return NULL;
++	struct pkram_node *node = ps->node;
++
++	BUG_ON((node->flags & PKRAM_ACCMODE_MASK) != PKRAM_LOAD);
++
++	return __pkram_load_page(ps, index, flags);
+ }
+ 
+ /**
+-- 
+2.13.3
 
-> No amount of LSM or IMA interventions can provide any control over
-> that.
-
-They can restrict what is started and loaded before anything SGX
-happens.
-
-If you want to make real technical arguments then please be specific and
-precise and spare us the handwaving marketing speak.
-
-> In fact, the Confidential Computing Consortium, sponsored by none
-> other then the Linux Foundation, has at its fundamental tenant,
-
-And that's relevant to the technical question in which way?
-
-> the notion of developing an eco-system that allows the execution of
-> code and processing of data, over which, the owner or administrator of
-> the platform has no visibility or control.  It would seem only logical
-> that adversarial interests would indulge themseleves in those
-> capabilities as well.
->
-> With respect to SGX and these issues, cryptographic policy management
-> is important for the same reason that 2-factor authentication is now
-> considered standard practice in the security industry.
->
-> We appreciate, Jarkko, that you feel that such infrastructure is
-> optional, like virtualization support, and is something that can go in
-> after the driver is mainlined.  As the diffstat for our patch points
-> out, the proposed support has virtually no impact on the driver, the
-> same cannot be said for virtualization capabilities.
-
-The diffstat of your patch is irrelevant. What's relevant is the fact
-that it is completely unreviewed and that it creates yet another user
-space visible ABI with a noticable lack of documentation. 
-
-> Moreover, adding support for key based policy management later would
-> require the addition of another ioctl in order to avoid ABI
-> compatibility issues.
-
-And that's a problem because? 
-
-> The current initialization ioctl is best suited, from an engineering
-> perspective, to support this type of infrastructure.
-
-What's wrong with having IOCTL_INIT_TYPE_A and IOCTL_INIT_TYPE_B?
-
-Nothing at all. It's pretty straight forward and in fact a better
-solution than a duct taped multiplexing all in one IOCTL_INIT_PONIES
-approach.
-
-> In fact, the necessary support was removed from the ioctl for
-> political reasons rather then for any valid engineering rationale on
-> flexible launch control platforms, particularly with our patch or an
-> equivalent approach.
-
-You're surely making a convincing technical argument by claiming that
-this was a political decision. The amount of non-technical, i.e.
-political arguments in your mail is definitely larger than the technical
-content.
-
-> Hopefully this is a reasoned technical approach to what has been a
-> long standing issue surrounding this technology.
-
-It's an approach which guarantees that the driver will miss the next
-merge window. If that's your intention, then please let us know.
-
-Merging the current set of patches does not prevent anything you want to
-be added. It's an extension to the base implementation and not a
-prerequisite.
-
-> Best wishes for a productive week.
->
-> Dr. Greg
-
-Thanks a lot for the best wishes. Unfortunately reading this email was
-not necessarily productive for me, but I surely wish that you can make
-productive use of my reply.
-
-Thanks,
-
-	tglx
-
-> ------------------------------------------------------------------------------
-> "Opportunity is missed by most people because it is dressed in overalls
->  and looks like work."
->                                 -- Thomas Edison
-
-------------------------------------------------------------------------------
- "Failure is simply the opportunity to begin again, this time more
-  intelligently"
-
-				--  Henry Ford
