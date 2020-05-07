@@ -2,71 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B96B1C7FD6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 03:34:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44BC71C7FDA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 03:44:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728641AbgEGBeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 21:34:00 -0400
-Received: from mail-il1-f194.google.com ([209.85.166.194]:40943 "EHLO
-        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728627AbgEGBd7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 21:33:59 -0400
-Received: by mail-il1-f194.google.com with SMTP id e8so494528ilm.7;
-        Wed, 06 May 2020 18:33:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vCylJgABUnzQ0E9XU7BvrcKk5G6SKChz6Kr+QXgAThA=;
-        b=WgAhf+HXN/Qxe4LBDcd7lU6AYbmId+rci4n7PfZbWKmDayj1gKrJ+3ZI6aH4DV/T/x
-         bukkxYmXookqL6BYvbhC3WVNV3FN8VSWkJ3mfp+y6Jw8C/HbABEP2t9wQVotPOLAA+S7
-         CGLz+eV83FpZ0ZvjQJUpNbLvQXFhAsgIOeFwiGHduiI9pjwJh3jFl7Bx3COoFhwNYAQ6
-         i5DKJfcUrEySHcy0NaK02SgDhFdYlcWqtE90hvp+XHVnjNRRNQUa6lVtZ2KTdEu0Ejy+
-         /A7SGrXG6a4Q1ghuuTFJnytH79ZdqAm7DSnoIiwbdRh3mwmRTqGSaJAsxfF984Au3ihV
-         X95Q==
-X-Gm-Message-State: AGi0PuYvEXBvgor0zHmMZf+wkOYIa8zHVPtdpF9SB7SKe22zOlQGNUmk
-        bVaIzgcPYyPKEfk/xFuCEhvgHjBbScm063ygpF4=
-X-Google-Smtp-Source: APiQypIUy1wGCEHo7jfnrv9dqP9uPJXJaBu6bRbhpsazSAtlvs/E5H0NgL+qI/G8CQVoWcBSVlRcMzFqsXIn9wbFZWQ=
-X-Received: by 2002:a92:5d0f:: with SMTP id r15mr11975672ilb.251.1588815238547;
- Wed, 06 May 2020 18:33:58 -0700 (PDT)
+        id S1726807AbgEGBo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 21:44:27 -0400
+Received: from mga09.intel.com ([134.134.136.24]:6616 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725809AbgEGBo1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 21:44:27 -0400
+IronPort-SDR: 6N689GoYbbiFjwOTKbUpZvaPr0P5ghg7kmEr/atT3rDuMmHM8zsWDoX9Br12UL39zbesZd+eb2
+ NGRd7QTt1+Dw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2020 18:44:26 -0700
+IronPort-SDR: x7Ssf6lco7Wy3QAaZQNW17zsRzE87Ll8AD4AqSxful+uzJEujz13sA7pQ03Xwegu6INtJxVLXb
+ WBWZM02N8inw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,361,1583222400"; 
+   d="scan'208";a="304977321"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 06 May 2020 18:44:25 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jWVaK-000B9m-Rx; Thu, 07 May 2020 09:44:24 +0800
+Date:   Thu, 07 May 2020 09:43:32 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ 5545b0d34f37831e20cb401ae8160284d20bba30
+Message-ID: <5eb367c4.OZdBsXfnKYjZg7LZ%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <1588213867-32274-1-git-send-email-yangtiezhu@loongson.cn>
- <CAAhV-H5QBOnrqVbMfGf7H5vJ6UMhUxhkCqAzZiwRFn_VwTQHpA@mail.gmail.com>
- <7d7f6211-f6bc-daae-5b13-b54092e762a1@loongson.cn> <CAAhV-H7jX9uVwb+GnaKXHPBsBQY35YKccbDedLrmfp8-hveVfw@mail.gmail.com>
- <20200506144208.GD27643@infradead.org>
-In-Reply-To: <20200506144208.GD27643@infradead.org>
-From:   Huacai Chen <chenhc@lemote.com>
-Date:   Thu, 7 May 2020 09:41:36 +0800
-Message-ID: <CAAhV-H4Mmu2LJx9crUTkOirH2RGr8XfHW7RCUmaT5T4mmYcaKg@mail.gmail.com>
-Subject: Re: [PATCH v6] MIPS: Loongson: Add DMA support for LS7A
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Christoph,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  master
+branch HEAD: 5545b0d34f37831e20cb401ae8160284d20bba30  Merge branch 'linus'
 
-On Wed, May 6, 2020 at 10:44 PM Christoph Hellwig <hch@infradead.org> wrote:
->
-> On Wed, May 06, 2020 at 04:47:30PM +0800, Huacai Chen wrote:
-> > > For the above reasons, I think what you are concerned is not a
-> > > big deal.
-> > I don't think so, this is obviously a regression. If we can accept a
-> > regression of RS780E, why we still maintain Loongson-2EF rather than
-> > simply drop them?
->
-> While I much prefer to use the default, regression an otherwise
-> working platform seems like a bad idea.  I don't really know much
-> about the Loongson platforms, do they all boot using the same kernel
-> image?
-All Loongson-3 machines (with LS7A bridge or RS780 bridge) use the
-same kernel image.
+elapsed time: 820m
+
+configs tested: 152
+configs skipped: 0
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm64                            allyesconfig
+arm                              allyesconfig
+arm64                            allmodconfig
+arm                              allmodconfig
+arm64                             allnoconfig
+arm                               allnoconfig
+sparc                            allyesconfig
+m68k                             allyesconfig
+m68k                             allmodconfig
+s390                             alldefconfig
+ia64                             alldefconfig
+sparc64                          allmodconfig
+c6x                               allnoconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                             alldefconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                           sun3_defconfig
+m68k                          multi_defconfig
+m68k                                defconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+microblaze                       allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                             allyesconfig
+mips                         64r6el_defconfig
+mips                              allnoconfig
+mips                           32r2_defconfig
+mips                             allmodconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+parisc                            allnoconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          alldefconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+m68k                 randconfig-a001-20200506
+mips                 randconfig-a001-20200506
+nds32                randconfig-a001-20200506
+parisc               randconfig-a001-20200506
+alpha                randconfig-a001-20200506
+riscv                randconfig-a001-20200506
+h8300                randconfig-a001-20200506
+nios2                randconfig-a001-20200506
+microblaze           randconfig-a001-20200506
+c6x                  randconfig-a001-20200506
+sparc64              randconfig-a001-20200506
+s390                 randconfig-a001-20200506
+xtensa               randconfig-a001-20200506
+sh                   randconfig-a001-20200506
+openrisc             randconfig-a001-20200506
+csky                 randconfig-a001-20200506
+xtensa               randconfig-a001-20200507
+sh                   randconfig-a001-20200507
+openrisc             randconfig-a001-20200507
+csky                 randconfig-a001-20200507
+i386                 randconfig-b003-20200506
+i386                 randconfig-b001-20200506
+x86_64               randconfig-b001-20200506
+x86_64               randconfig-b003-20200506
+i386                 randconfig-b002-20200506
+x86_64               randconfig-c002-20200506
+i386                 randconfig-c002-20200506
+i386                 randconfig-c003-20200506
+i386                 randconfig-c001-20200506
+i386                 randconfig-d003-20200506
+i386                 randconfig-d001-20200506
+x86_64               randconfig-d002-20200506
+i386                 randconfig-d002-20200506
+i386                 randconfig-e003-20200506
+x86_64               randconfig-e003-20200506
+x86_64               randconfig-e001-20200506
+i386                 randconfig-e002-20200506
+i386                 randconfig-e001-20200506
+i386                 randconfig-f003-20200506
+x86_64               randconfig-f001-20200506
+x86_64               randconfig-f003-20200506
+x86_64               randconfig-f002-20200506
+i386                 randconfig-f001-20200506
+i386                 randconfig-f002-20200506
+x86_64               randconfig-a003-20200506
+x86_64               randconfig-a001-20200506
+x86_64               randconfig-a002-20200506
+i386                 randconfig-a001-20200506
+i386                 randconfig-a002-20200506
+i386                 randconfig-a003-20200506
+x86_64               randconfig-g003-20200506
+i386                 randconfig-g003-20200506
+i386                 randconfig-g002-20200506
+x86_64               randconfig-g001-20200506
+i386                 randconfig-g001-20200506
+x86_64               randconfig-g002-20200506
+i386                 randconfig-h002-20200506
+i386                 randconfig-h001-20200506
+i386                 randconfig-h003-20200506
+x86_64               randconfig-h002-20200506
+x86_64               randconfig-h003-20200506
+x86_64               randconfig-h001-20200506
+ia64                 randconfig-a001-20200506
+arm64                randconfig-a001-20200506
+arc                  randconfig-a001-20200506
+powerpc              randconfig-a001-20200506
+arm                  randconfig-a001-20200506
+sparc                randconfig-a001-20200506
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                               defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                             defconfig
+um                               allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
