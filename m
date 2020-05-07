@@ -2,117 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFE941C9F51
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 01:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFBE31C9F56
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 01:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726807AbgEGXy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 19:54:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726476AbgEGXyZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 19:54:25 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42B4DC05BD43
-        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 16:54:24 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id a15so307566qvt.9
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 16:54:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=/raYmft6nSaYLNIgpOxoChFcf5nF1Q2ACz6k5lK6B/4=;
-        b=QSBVJtiYPNgCyg1Ax8MDmIonk9zKYH0IwrH/+u1j84YGMeisn3e+g5EGfpuObjJv7H
-         wXFl0tfpZnxNnL053pF5sRWfIpTmu9eUL4M/zurqAuPqCZexdEgP1pM2dggKDOZjnEyy
-         f6umf0+v8hfXZ4AZKWQYtiLz6vbcbQ/SZhptvHMrDLwUmI9k8+UWJ8gEEN+lNSZiuSKN
-         rgbjcYlDgqSq19b+5VbYruXqDxWlnvU6ogiMB6YnPypcQltpT5B/nG/bL2YQfDfbt0yM
-         FeKyBoa4zJpeEKZGnc4fSHBnCA/++Yf4pPt5kyhoPiECazyfelAm9wkjL4fNtPGd5gQE
-         5vUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/raYmft6nSaYLNIgpOxoChFcf5nF1Q2ACz6k5lK6B/4=;
-        b=GqTfz5JW+jmFBhdDRX+9cgvuEqHFX7Gj1YCbvHiyhlH39a+pmLdA+5wDy9twhT2BoM
-         3B98aWPi1lgalFWDvUiulpom5fr8q8JpxfMCtD8XyRCYoWIOWVRwreY4w1BnzFYFlhIh
-         GQo0RXTmiezKeq2UEcoFhK7UkbX+IhSZ+27BowduPu4Br2Ies4cF+hmg1kXonfzJiOJV
-         HxteT0tPUBuOIKytMbWU3qmvQrd2xJLeDi+jTYc3H6e9iRc69ucvvsqSOW0xrTxKxaWS
-         bcuLz3mmOh/h7GzNyQk2jWvT3JwrqZW+QceRNfaUY2vg4OjA9f5HA1vpS8uS1KEI5hyb
-         q2Iw==
-X-Gm-Message-State: AGi0PubQ+l5n/Lm3QiTCO4zGdC+6YQis226b5td0plIaXG7Iv982ESSk
-        5ABZU98jzaI323N+AOohOo2ubw==
-X-Google-Smtp-Source: APiQypJYoWIyvU8RY67V0VqBgsWt6nPorPZktKfWBDwkHhKb5x5+IKwxKG3GMtrHiOuUW542Jyo5Xw==
-X-Received: by 2002:ad4:4966:: with SMTP id p6mr61018qvy.161.1588895663160;
-        Thu, 07 May 2020 16:54:23 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id j11sm4877452qkk.33.2020.05.07.16.54.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 07 May 2020 16:54:22 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jWqLN-00070n-OS; Thu, 07 May 2020 20:54:21 -0300
-Date:   Thu, 7 May 2020 20:54:21 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, cohuck@redhat.com
-Subject: Re: [PATCH v2 1/3] vfio/type1: Support faulting PFNMAP vmas
-Message-ID: <20200507235421.GK26002@ziepe.ca>
-References: <158871401328.15589.17598154478222071285.stgit@gimli.home>
- <158871568480.15589.17339878308143043906.stgit@gimli.home>
- <20200507212443.GO228260@xz-x1>
+        id S1726924AbgEGX4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 19:56:02 -0400
+Received: from mga12.intel.com ([192.55.52.136]:20264 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726476AbgEGX4B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 19:56:01 -0400
+IronPort-SDR: DNsSTN6rlj5LOgpG0MrWL+B8/I7AxZt+gakJMXdHd93XOMH+IRnZYtdJ5PQB2nitDRaU0haGDk
+ WSrH/6R24BUA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2020 16:56:01 -0700
+IronPort-SDR: iEs/livO4XaCS9Xd78XhjQujNTjqiQPkzdY4J1feF/41Cd5RrvP6NYVo29We+XttNA82JA2F+O
+ b7E3SypcKjdA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,365,1583222400"; 
+   d="scan'208";a="260700278"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 07 May 2020 16:55:59 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jWqMx-0008lT-2R; Fri, 08 May 2020 07:55:59 +0800
+Date:   Fri, 08 May 2020 07:55:39 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/cpu] BUILD SUCCESS
+ e2abfc0448a46d8a137505aa180caf14070ec535
+Message-ID: <5eb49ffb.0IdUpAS+9cuLWSOU%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200507212443.GO228260@xz-x1>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 07, 2020 at 05:24:43PM -0400, Peter Xu wrote:
-> On Tue, May 05, 2020 at 03:54:44PM -0600, Alex Williamson wrote:
-> > With conversion to follow_pfn(), DMA mapping a PFNMAP range depends on
-> > the range being faulted into the vma.  Add support to manually provide
-> > that, in the same way as done on KVM with hva_to_pfn_remapped().
-> > 
-> > Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
-> >  drivers/vfio/vfio_iommu_type1.c |   36 +++++++++++++++++++++++++++++++++---
-> >  1 file changed, 33 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-> > index cc1d64765ce7..4a4cb7cd86b2 100644
-> > +++ b/drivers/vfio/vfio_iommu_type1.c
-> > @@ -317,6 +317,32 @@ static int put_pfn(unsigned long pfn, int prot)
-> >  	return 0;
-> >  }
-> >  
-> > +static int follow_fault_pfn(struct vm_area_struct *vma, struct mm_struct *mm,
-> > +			    unsigned long vaddr, unsigned long *pfn,
-> > +			    bool write_fault)
-> > +{
-> > +	int ret;
-> > +
-> > +	ret = follow_pfn(vma, vaddr, pfn);
-> > +	if (ret) {
-> > +		bool unlocked = false;
-> > +
-> > +		ret = fixup_user_fault(NULL, mm, vaddr,
-> > +				       FAULT_FLAG_REMOTE |
-> > +				       (write_fault ?  FAULT_FLAG_WRITE : 0),
-> > +				       &unlocked);
-> > +		if (unlocked)
-> > +			return -EAGAIN;
-> 
-> Hi, Alex,
-> 
-> IIUC this retry is not needed too because fixup_user_fault() will guarantee the
-> fault-in is done correctly with the valid PTE as long as ret==0, even if
-> unlocked==true.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/cpu
+branch HEAD: e2abfc0448a46d8a137505aa180caf14070ec535  x86/cpu/amd: Make erratum #1054 a legacy erratum
 
-It is true, and today it is fine, but be careful when reworking this
-to use notifiers as unlocked also means things like the vma pointer
-are invalidated.
+elapsed time: 484m
 
-Jason
+configs tested: 92
+configs skipped: 1
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+sparc                            allyesconfig
+m68k                             allyesconfig
+mips                             allmodconfig
+m68k                             allmodconfig
+i386                             allyesconfig
+riscv                            allyesconfig
+s390                             allmodconfig
+m68k                              allnoconfig
+alpha                               defconfig
+m68k                                defconfig
+sh                               allmodconfig
+openrisc                            defconfig
+csky                                defconfig
+i386                              allnoconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                           sun3_defconfig
+nios2                               defconfig
+nios2                            allyesconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+microblaze                       allyesconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                             allyesconfig
+mips                              allnoconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20200507
+i386                 randconfig-a004-20200507
+i386                 randconfig-a001-20200507
+i386                 randconfig-a002-20200507
+i386                 randconfig-a003-20200507
+i386                 randconfig-a006-20200507
+i386                 randconfig-a012-20200507
+i386                 randconfig-a016-20200507
+i386                 randconfig-a014-20200507
+i386                 randconfig-a011-20200507
+i386                 randconfig-a015-20200507
+i386                 randconfig-a013-20200507
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                                defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+sparc                               defconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
