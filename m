@@ -2,139 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D408A1C83C6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 09:47:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B9971C83CE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 09:48:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726579AbgEGHrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 03:47:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42652 "EHLO
+        id S1726580AbgEGHsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 03:48:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725802AbgEGHrj (ORCPT
+        by vger.kernel.org with ESMTP id S1725802AbgEGHst (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 03:47:39 -0400
+        Thu, 7 May 2020 03:48:49 -0400
 Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80C85C061A10
-        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 00:47:39 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id ms17so2278196pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 00:47:39 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7894EC061A10
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 00:48:49 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id h12so3544022pjz.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 00:48:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=TqXy+vuqTjO3oqyIdtSWrtx+1Hrshv6ESnu5XJvj/E8=;
-        b=NU2GkN1yjcH6u3KT3vkWXG9SlTvbwUqPD9S/3WdLd+Ohg7j9b+XdKAqIZCuUq9mP62
-         Ew2ih5yFbth9vRsBaElXi+MSFMhj8P6wa6Tbhc5sMdqV3G91rjC686sIsyzzmwAjlKv2
-         9jX6d5ig9dKA1YaCtAnvVWr2gggenToNSNKW2eXyKeTWKdypHml/OjW146/OSFq1CKM9
-         BeptFZEPuYszkZ+VaPMa5/4OhRPjiD1pURw8gmUjz/6jQz2B1pggXEezGQF+8qTa+WZD
-         lQj/DEU7cmLDm4JFVLl2pmfRhJwGClY1ddK66fM1eISD9suO5WVxP8muL4U2TLUkWPsp
-         B5RA==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kEi8oxDZgiljvgtqHAzPefxRibfafwVfxQ/Qf8yW+Y8=;
+        b=KoS/AZ5LkQ06GnueichQTw5LkHZltW8OYzL07W78aCY/jEMpQjuWh7wuJy6ZB52JF9
+         cQtWdsyrRLxnbTQ4UpRKkJIbsSuos+U2otKcDWJSQwQFnk1ZKfl8VN5y/+r4Kve5Cce1
+         PkL2hDDUzKrR7yFgUtTnx0P//wR8XmNUTAQKbChaXox4cDJGZXVijh7eu0cw7SaaeL+J
+         64gh3PZnMZCSLKPtOt9xrlo2pSoY4LqZGlvOh9RenU2SNbuyUXOlePqYFd2VppFRGvuB
+         0iZV8+1U95TcPNU6l1TrWpzcyT+0pS5HfrVyy4LJ34diEvBIZ/9GfT9+KwJNZmf/JLT4
+         HdZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=TqXy+vuqTjO3oqyIdtSWrtx+1Hrshv6ESnu5XJvj/E8=;
-        b=Mn5+pdTDUAvZhcuVEdPPRMf9xBzMIxBu2WbS+xwNea5mHg654v6gBEfLZn4gUDc2+Q
-         Ic5Cr3uYFRzz+zwd3HKwZAF8+1yAUzKeIQEu8meKDOKDvm0vzu86f9ESZlwwloRS1bcZ
-         r6FZbANh+sHDsylZw6mi52kmIiLS/vpTukBivlsflb9hRZ2xCSf2sKeUiutMVnVrL4ko
-         w3G3KzbnOrH6pUvsuR8K1mmxSXEYQCn3XQARgQwimKd+3RAQRKJGEZ3tLykFQB2E4HQD
-         Agz679LMum6UV7i9061p+UqOKSARqTTjzZShZUUiUjS5CHda9uCsqpeyPNxltsWwjc3I
-         WPvw==
-X-Gm-Message-State: AGi0PuYVgMgsVkGJExS2YQ+4Q84fn+su5g3E/uQefQIYePtLtNqWFINI
-        NCUK6ir3QiR0JZASzX3i5zc=
-X-Google-Smtp-Source: APiQypJCZvPn2WgwGdgm7EZr1FrGskXuaTUxgPsHrQygHo0xj1oOe2JLGZscA50x4REpF1O6/1Ky0g==
-X-Received: by 2002:a17:902:aa94:: with SMTP id d20mr11658129plr.15.1588837658982;
-        Thu, 07 May 2020 00:47:38 -0700 (PDT)
-Received: from fmin-OptiPlex-7060.nreal.work ([103.206.190.146])
-        by smtp.gmail.com with ESMTPSA id s22sm4020610pfd.51.2020.05.07.00.47.36
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kEi8oxDZgiljvgtqHAzPefxRibfafwVfxQ/Qf8yW+Y8=;
+        b=EzRpT4zF9D/1KXXndP7+0aaE6HhTqHZngu+2eC+q6cJjUL67qejpq301vzkTP99wIU
+         m2jagPAI2ODwWryDEC/V8bW0aN6SPAQwEZxFGASZ1NNpBP+O/lxsLXAjIj50URKLgX5c
+         In+PJ/tjvR5GsLJ/pmvWO8nayvSKov8OyqP+J3JGD7b2WirGcGBK/jwR82Dy2VMO0pUF
+         OB1eBSpxZBw/F9aGN3uYq845B2QIXbT3iNvOj3x/p1hSIYjrE6yX+dSb/ZIwOor9zlan
+         pj4o4anIunWSooA1xmqOhgnjXY/OKvXijTdZnoVxsh4zQxYz0Hx1yua+gRO66JQ2vXUa
+         E+dw==
+X-Gm-Message-State: AGi0PubYRzO2y4OxbpWTioVMCBWJxGOrTIxyWfDMlkwW6WQzmiBZCRJA
+        wPe1USm5Ln9RuO86fwKQOcRbGQ==
+X-Google-Smtp-Source: APiQypKAoFYTrSldjOFJstcAdWTPt3uaL44ouRw0Qq7rVOKEyY3vQADztgWZ5gKS/dcxuiTZuNG5Iw==
+X-Received: by 2002:a17:902:d68d:: with SMTP id v13mr12137714ply.294.1588837728965;
+        Thu, 07 May 2020 00:48:48 -0700 (PDT)
+Received: from Smcdef-MBP.lan ([103.136.221.73])
+        by smtp.gmail.com with ESMTPSA id w1sm3152843pgh.53.2020.05.07.00.48.44
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 07 May 2020 00:47:38 -0700 (PDT)
-From:   dillon.minfei@gmail.com
-To:     mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
-        philippe.schenker@toradex.com
-Cc:     linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        dillon min <dillon.minfei@gmail.com>
-Subject: [PATCH 3/4] ARM: dts: stm32: enable stmpe811 on stm32429-disco board
-Date:   Thu,  7 May 2020 15:47:34 +0800
-Message-Id: <1588837654-14315-1-git-send-email-dillon.minfei@gmail.com>
-X-Mailer: git-send-email 2.7.4
+        Thu, 07 May 2020 00:48:48 -0700 (PDT)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     rostedt@goodmis.org, mingo@kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH] tracing: Remove unused event variable in tracing_iter_reset
+Date:   Thu,  7 May 2020 15:47:39 +0800
+Message-Id: <20200507074739.43449-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: dillon min <dillon.minfei@gmail.com>
+We do not use the event variable, just remove it.
 
-Enable the stmpe811 touch screen on stm32429-disco board.
-
-Signed-off-by: dillon min <dillon.minfei@gmail.com>
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 ---
- arch/arm/boot/dts/stm32f429-disco.dts | 50 +++++++++++++++++++++++++++++++++++
- 1 file changed, 50 insertions(+)
+ kernel/trace/trace.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/stm32f429-disco.dts b/arch/arm/boot/dts/stm32f429-disco.dts
-index 30c0f67..f9f21c8 100644
---- a/arch/arm/boot/dts/stm32f429-disco.dts
-+++ b/arch/arm/boot/dts/stm32f429-disco.dts
-@@ -49,6 +49,8 @@
- #include "stm32f429.dtsi"
- #include "stm32f429-pinctrl.dtsi"
- #include <dt-bindings/input/input.h>
-+#include <dt-bindings/interrupt-controller/irq.h>
-+#include <dt-bindings/gpio/gpio.h>
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 8d2b988126250..6be74d2a7056f 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -3566,7 +3566,6 @@ static void *s_next(struct seq_file *m, void *v, loff_t *pos)
  
- / {
- 	model = "STMicroelectronics STM32F429i-DISCO board";
-@@ -127,3 +129,51 @@
- 	pinctrl-names = "default";
- 	status = "okay";
- };
-+
-+&i2c3 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2c3_pins>;
-+	clock-frequency = <100000>;
-+	status = "okay";
-+
-+	stmpe811@41 {
-+		compatible = "st,stmpe811";
-+		reg = <0x41>;
-+		interrupts = <15 IRQ_TYPE_EDGE_FALLING>;
-+		interrupt-parent = <&gpioa>;
-+		id = <0>;
-+		blocks = <0x5>;
-+		irq-trigger = <0x1>;
-+		/* 3.25 MHz ADC clock speed */
-+		st,adc-freq = <1>;
-+		/* 12-bit ADC */
-+		st,mod-12b = <1>;
-+		/* internal ADC reference */
-+		st,ref-sel = <0>;
-+		/* ADC converstion time: 80 clocks */
-+		st,sample-time = <4>;
-+
-+		stmpe_touchscreen {
-+			compatible = "st,stmpe-ts";
-+			/* 8 sample average control */
-+			st,ave-ctrl = <3>;
-+			/* 7 length fractional part in z */
-+			st,fraction-z = <7>;
-+			/*
-+			 * 50 mA typical 80 mA max touchscreen drivers
-+			 * current limit value
-+			 */
-+			st,i-drive = <1>;
-+			/* 1 ms panel driver settling time */
-+			st,settling = <3>;
-+			/* 5 ms touch detect interrupt delay */
-+			st,touch-det-delay = <5>;
-+		};
-+
-+		stmpe_adc {
-+			compatible = "st,stmpe-adc";
-+			/* forbid to use ADC channels 3-0 (touch) */
-+			st,norequest-mask = <0x0F>;
-+		};
-+	};
-+};
+ void tracing_iter_reset(struct trace_iterator *iter, int cpu)
+ {
+-	struct ring_buffer_event *event;
+ 	struct ring_buffer_iter *buf_iter;
+ 	unsigned long entries = 0;
+ 	u64 ts;
+@@ -3584,7 +3583,7 @@ void tracing_iter_reset(struct trace_iterator *iter, int cpu)
+ 	 * that a reset never took place on a cpu. This is evident
+ 	 * by the timestamp being before the start of the buffer.
+ 	 */
+-	while ((event = ring_buffer_iter_peek(buf_iter, &ts))) {
++	while (ring_buffer_iter_peek(buf_iter, &ts)) {
+ 		if (ts >= iter->array_buffer->time_start)
+ 			break;
+ 		entries++;
 -- 
-2.7.4
+2.11.0
 
