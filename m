@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E3511C99B1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:48:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B70741C99B5
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:48:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728116AbgEGSsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 14:48:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49450 "EHLO mail.kernel.org"
+        id S1728613AbgEGSsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 14:48:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728110AbgEGSsa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 14:48:30 -0400
+        id S1728110AbgEGSsg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 14:48:36 -0400
 Received: from embeddedor (unknown [189.207.59.248])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6B87724955;
-        Thu,  7 May 2020 18:48:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 18FF521BE5;
+        Thu,  7 May 2020 18:48:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588877309;
-        bh=71KkHS6CWvgF2ZJ7u+HnXKXGjPAZKfm5qx6YYtMLnTw=;
+        s=default; t=1588877315;
+        bh=eVID7GhEbcf0/8Q5jvZMrtErhyUthXxPmrIJvJbk/+0=;
         h=Date:From:To:Cc:Subject:From;
-        b=JLkZyB3N4vnxXrFo3L5FiN1MB37vTxsslqhBShcfEL5rIUTeAElYnta0RTMuH0HGd
-         eqxRKWN/4X/6iY+An1GAKYyxho06AWLXoUsLbzzbpQx+lPZzs2X5O2ZHsLeHsfW2a1
-         XgXtODNFxYJvXtelTpt2r466QcAoHAmpszNM6188=
-Date:   Thu, 7 May 2020 13:52:56 -0500
+        b=oGR62nntwkq79FCOWn7nFoj1c0oW3WjNOnphBMx4Dq82vtNhdigMNzMmLyQFKEC83
+         A0ZA+AbFawVcm9ae2RIV9vD6RbaS17vFxeyDGH+RbBTdnEKlmiLAfrz2jskEv5bsuF
+         6mfzbK2eQ9T3AzL1Kjk8CeWEw057BF+M6M44vK6w=
+Date:   Thu, 7 May 2020 13:53:01 -0500
 From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Wu Hao <hao.wu@intel.com>
-Cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] fpga: dfl: Replace zero-length array with flexible-array
-Message-ID: <20200507185256.GA14313@embeddedor>
+To:     Li Yang <leoyang.li@nxp.com>
+Cc:     linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] treewide: Replace zero-length array with flexible-array
+Message-ID: <20200507185301.GA14333@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -75,20 +76,20 @@ This issue was found with the help of Coccinelle.
 
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- drivers/fpga/dfl.h |    2 +-
+ include/linux/fsl/bestcomm/bestcomm.h |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/fpga/dfl.h b/drivers/fpga/dfl.h
-index 9f0e656de720..1cd51ea52ce1 100644
---- a/drivers/fpga/dfl.h
-+++ b/drivers/fpga/dfl.h
-@@ -235,7 +235,7 @@ struct dfl_feature_platform_data {
- 	unsigned long dev_status;
- 	void *private;
- 	int num;
--	struct dfl_feature features[0];
-+	struct dfl_feature features[];
+diff --git a/include/linux/fsl/bestcomm/bestcomm.h b/include/linux/fsl/bestcomm/bestcomm.h
+index a0e2e6b19b57..154e541ce57e 100644
+--- a/include/linux/fsl/bestcomm/bestcomm.h
++++ b/include/linux/fsl/bestcomm/bestcomm.h
+@@ -27,7 +27,7 @@
+  */
+ struct bcom_bd {
+ 	u32	status;
+-	u32	data[0];	/* variable payload size */
++	u32	data[];	/* variable payload size */
  };
  
- static inline
+ /* ======================================================================== */
 
