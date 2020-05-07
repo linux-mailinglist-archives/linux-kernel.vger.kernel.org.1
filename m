@@ -2,95 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC3F21C9A7F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04C111C9A5E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:03:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728224AbgEGTHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 15:07:01 -0400
-Received: from smtprelay0085.hostedemail.com ([216.40.44.85]:49812 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726320AbgEGTHA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 15:07:00 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id ED28114547;
-        Thu,  7 May 2020 19:06:59 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2691:2692:2828:2895:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3872:3874:4321:5007:6119:7903:10004:10400:10848:10967:11232:11658:11914:12114:12297:12740:12760:12895:13069:13161:13229:13311:13357:13439:14096:14097:14181:14659:14721:21080:21627:21990,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: pie60_3cdad48d2c733
-X-Filterd-Recvd-Size: 2688
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf16.hostedemail.com (Postfix) with ESMTPA;
-        Thu,  7 May 2020 19:06:58 +0000 (UTC)
-Message-ID: <96fe70f11245433ce4f19bffaf2d167dbf69a2a0.camel@perches.com>
-Subject: Re: [PATCH] sched/fair: Return true,false in
- voluntary_active_balance()
-From:   Joe Perches <joe@perches.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        Jason Yan <yanaijie@huawei.com>, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        bsegall@google.com, mgorman@suse.de, linux-kernel@vger.kernel.org
-Date:   Thu, 07 May 2020 12:06:56 -0700
-In-Reply-To: <20200507144534.09abd685@gandalf.local.home>
-References: <20200507110625.37254-1-yanaijie@huawei.com>
-         <jhjpnbg6lkf.mognet@arm.com> <20200507132828.1af39b80@gandalf.local.home>
-         <20200507133024.18dbe349@gandalf.local.home>
-         <f0e6f50e910238366b1d8f398c91d3066baac7cf.camel@perches.com>
-         <20200507144534.09abd685@gandalf.local.home>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.1-2 
+        id S1728578AbgEGTCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 15:02:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33490 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726598AbgEGTCk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 15:02:40 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 05AEA2083B;
+        Thu,  7 May 2020 19:02:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588878160;
+        bh=MvBOv5f4AnG3bBssPq+5ht2GAR9BRHaG65kfeHCY7fA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=nkas9jw1s+UvIwksoB7oU5kB8Bcc2Hp0PBvQHgvMXl8qMqFhhlcLcGXS5/wkNuAdd
+         qzp2zAqxS7vf/WtwS/7CN4aVSj2vNOKls0qI4RyMKLAPOZHZk/kQ2wK9MVZebAAcu0
+         sBHkjQXNb7PY9gN4oN25Dd/KYNylzqKctGkiKUS4=
+Date:   Thu, 7 May 2020 14:07:06 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] media: pwc: Replace zero-length array with flexible-array
+Message-ID: <20200507190706.GA15730@embeddedor>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-05-07 at 14:45 -0400, Steven Rostedt wrote:
-> On Thu, 07 May 2020 10:55:33 -0700
-> Joe Perches <joe@perches.com> wrote:
-> 
-> > > If anything, we can teach people to try to understand their fixes, to see
-> > > if something is really a fix or not. Blindly accepting changes like this,
-> > > is no different than blindly submitting patches because some tool says its
-> > > an issue.  
-> > 
-> > <shrug>
-> > 
-> > Most people seem to prefer bool returns with apparent bool constants
-> > even though true and false are enumerator constants (int) of 1 and 0
-> > in the kernel.
-> > 
-> > from include/linux/stddef.h:
-> > 
-> > enum {
-> > 	false	= 0,
-> > 	true	= 1
-> > };
-> 
-> Sure, do that for new code, but we don't need these patches popping up for
-> current code. That is, it's a preference not a bug.
+The current codebase makes use of the zero-length array language
+extension to the C90 standard, but the preferred mechanism to declare
+variable-length types such as these ones is a flexible array member[1][2],
+introduced in C99:
 
-People describe changes as a "fix" all the time for stuff
-that isn't an actual fix for a logic defect but is instead
-an update to a particular style preference.
+struct foo {
+        int stuff;
+        struct boo array[];
+};
 
-Then the "fix" word causes the patch to be rather uselessly
-applied to stable trees by AUTOSEL.
+By making use of the mechanism above, we will get a compiler warning
+in case the flexible array does not occur last in the structure, which
+will help us prevent some kind of undefined behavior bugs from being
+inadvertently introduced[3] to the codebase from now on.
 
-It's especially bad when the 'Fixes: <sha1> ("description")'
-tag is also added.
+Also, notice that, dynamic memory allocations won't be affected by
+this change:
 
-It's a difficult thing to regulate and I don't believe a
-good mechanism would be possible to add to checkpatch or
-coccinelle to help isolate these things.
+"Flexible array members have incomplete type, and so the sizeof operator
+may not be applied. As a quirk of the original implementation of
+zero-length arrays, sizeof evaluates to zero."[1]
 
-git diff -w sometimes helps, but that's not really a thing
-that checkpatch could do.
+sizeof(flexible-array-member) triggers a warning because flexible array
+members have incomplete type[1]. There are some instances of code in
+which the sizeof operator is being incorrectly/erroneously applied to
+zero-length arrays and the result is zero. Such instances may be hiding
+some bugs. So, this work (flexible-array member conversions) will also
+help to get completely rid of those sorts of issues.
 
-Any suggestions?
+This issue was found with the help of Coccinelle.
 
+[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+[2] https://github.com/KSPP/linux/issues/21
+[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/media/usb/pwc/pwc.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/usb/pwc/pwc.h b/drivers/media/usb/pwc/pwc.h
+index 3362962d0d00..b02a3c7b7742 100644
+--- a/drivers/media/usb/pwc/pwc.h
++++ b/drivers/media/usb/pwc/pwc.h
+@@ -193,7 +193,7 @@ struct pwc_raw_frame {
+ 				   decompressor) */
+ 	__u8   cmd[4];		/* the four byte of the command (in case of
+ 				   nala, only the first 3 bytes is filled) */
+-	__u8   rawframe[0];	/* frame_size = H / 4 * vbandlength */
++	__u8   rawframe[];	/* frame_size = H / 4 * vbandlength */
+ } __packed;
+ 
+ /* intermediate buffers with raw data from the USB cam */
 
