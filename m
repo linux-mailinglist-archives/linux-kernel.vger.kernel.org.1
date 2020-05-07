@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 086281C9AEA
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:22:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 785761C9AEF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:22:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728678AbgEGTWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 15:22:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43464 "EHLO mail.kernel.org"
+        id S1728784AbgEGTWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 15:22:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727799AbgEGTWi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 15:22:38 -0400
+        id S1727889AbgEGTWq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 15:22:46 -0400
 Received: from embeddedor (unknown [189.207.59.248])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2AF22208D6;
-        Thu,  7 May 2020 19:22:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A28F3208D6;
+        Thu,  7 May 2020 19:22:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588879357;
-        bh=qrpmzCPpQ9HFwu20utBp+1OHeWSt1E7WeS45pMG/mJs=;
+        s=default; t=1588879365;
+        bh=eMxBwmkartGXTYGADKlxhAJ/RgekzyG4eplZyM7RwHQ=;
         h=Date:From:To:Cc:Subject:From;
-        b=Fp/WP7t+5M1ymFQtuRe7hYifflClNVPTtZoQw9uQl4yIVRKjMOi+xt9rmlUxGLqZm
-         tY/iHj0FIqT36g/Uaff0wYK2dT7kjDU39258TKc5vefvt7ujUgpKApzBg+cry/AfTC
-         blajwso2+n7raYEqoC55p1i7IE4icUBvJZ0fwNsA=
-Date:   Thu, 7 May 2020 14:27:03 -0500
+        b=pZCS+/asI/pHxGRJC2Gj2OWLQWg9ywyNPIoJtvVKseI+kuRpbP/7albbvmWBnhRy5
+         /AEW/BC6t00F+QxnlsOrpPcF6dvGrW3sWP4u8IdSwTORRjH3TzuDxuHjuIucocD65E
+         +1MiAdmUYusbzcKw9c33+bLtbWf9AN6mCy0yPmCY=
+Date:   Thu, 7 May 2020 14:27:12 -0500
 From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-xfs@vger.kernel.org
-Cc:     linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] xfs: Replace zero-length array with flexible-array
-Message-ID: <20200507192703.GA16784@embeddedor>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] efi: Replace zero-length array with flexible-array
+Message-ID: <20200507192712.GA16805@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -76,20 +75,136 @@ This issue was found with the help of Coccinelle.
 
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- fs/xfs/libxfs/xfs_format.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/dma/ti-cppi5.h                   |    4 ++--
+ include/linux/efi.h                            |    2 +-
+ include/linux/mailbox/zynqmp-ipi-message.h     |    2 +-
+ include/linux/platform_data/cros_ec_commands.h |    4 ++--
+ include/linux/platform_data/cros_ec_proto.h    |    2 +-
+ kernel/params.c                                |    2 +-
+ kernel/tracepoint.c                            |    2 +-
+ scripts/kallsyms.c                             |    2 +-
+ 8 files changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/fs/xfs/libxfs/xfs_format.h b/fs/xfs/libxfs/xfs_format.h
-index 045556e78ee2..592f1c12ad36 100644
---- a/fs/xfs/libxfs/xfs_format.h
-+++ b/fs/xfs/libxfs/xfs_format.h
-@@ -1681,7 +1681,7 @@ struct xfs_acl_entry {
+diff --git a/include/linux/dma/ti-cppi5.h b/include/linux/dma/ti-cppi5.h
+index 579356ae447e..78c911269107 100644
+--- a/include/linux/dma/ti-cppi5.h
++++ b/include/linux/dma/ti-cppi5.h
+@@ -47,7 +47,7 @@ struct cppi5_host_desc_t {
+ 	u32 buf_info1;
+ 	u32 org_buf_len;
+ 	u64 org_buf_ptr;
+-	u32 epib[0];
++	u32 epib[];
+ } __packed;
  
- struct xfs_acl {
- 	__be32			acl_cnt;
--	struct xfs_acl_entry	acl_entry[0];
-+	struct xfs_acl_entry	acl_entry[];
+ #define CPPI5_DESC_MIN_ALIGN			(16U)
+@@ -139,7 +139,7 @@ struct cppi5_desc_epib_t {
+  */
+ struct cppi5_monolithic_desc_t {
+ 	struct cppi5_desc_hdr_t hdr;
+-	u32 epib[0];
++	u32 epib[];
  };
  
- /*
+ #define CPPI5_INFO2_MDESC_DATA_OFFSET_SHIFT	(18U)
+diff --git a/include/linux/efi.h b/include/linux/efi.h
+index 251f1f783cdf..a657850899f0 100644
+--- a/include/linux/efi.h
++++ b/include/linux/efi.h
+@@ -1234,7 +1234,7 @@ struct linux_efi_memreserve {
+ 	struct {
+ 		phys_addr_t	base;
+ 		phys_addr_t	size;
+-	} entry[0];
++	} entry[];
+ };
+ 
+ #define EFI_MEMRESERVE_SIZE(count) (sizeof(struct linux_efi_memreserve) + \
+diff --git a/include/linux/mailbox/zynqmp-ipi-message.h b/include/linux/mailbox/zynqmp-ipi-message.h
+index 9542b41eacfd..35ce84c8ca02 100644
+--- a/include/linux/mailbox/zynqmp-ipi-message.h
++++ b/include/linux/mailbox/zynqmp-ipi-message.h
+@@ -14,7 +14,7 @@
+  */
+ struct zynqmp_ipi_message {
+ 	size_t len;
+-	u8 data[0];
++	u8 data[];
+ };
+ 
+ #endif /* _LINUX_ZYNQMP_IPI_MESSAGE_H_ */
+diff --git a/include/linux/platform_data/cros_ec_commands.h b/include/linux/platform_data/cros_ec_commands.h
+index 69210881ebac..451885c697cc 100644
+--- a/include/linux/platform_data/cros_ec_commands.h
++++ b/include/linux/platform_data/cros_ec_commands.h
+@@ -5065,7 +5065,7 @@ struct ec_response_pd_log {
+ 	uint8_t type;       /* event type : see PD_EVENT_xx below */
+ 	uint8_t size_port;  /* [7:5] port number [4:0] payload size in bytes */
+ 	uint16_t data;      /* type-defined data payload */
+-	uint8_t payload[0]; /* optional additional data payload: 0..16 bytes */
++	uint8_t payload[]; /* optional additional data payload: 0..16 bytes */
+ } __ec_align4;
+ 
+ /* The timestamp is the microsecond counter shifted to get about a ms. */
+@@ -5691,7 +5691,7 @@ struct ec_response_fp_encryption_status {
+ 
+ struct ec_response_tp_frame_info {
+ 	uint32_t n_frames;
+-	uint32_t frame_sizes[0];
++	uint32_t frame_sizes[];
+ } __ec_align4;
+ 
+ /* Create a snapshot of current frame readings */
+diff --git a/include/linux/platform_data/cros_ec_proto.h b/include/linux/platform_data/cros_ec_proto.h
+index 383243326676..7f03e02c48cd 100644
+--- a/include/linux/platform_data/cros_ec_proto.h
++++ b/include/linux/platform_data/cros_ec_proto.h
+@@ -69,7 +69,7 @@ struct cros_ec_command {
+ 	uint32_t outsize;
+ 	uint32_t insize;
+ 	uint32_t result;
+-	uint8_t data[0];
++	uint8_t data[];
+ };
+ 
+ /**
+diff --git a/kernel/params.c b/kernel/params.c
+index 8e56f8b12d8f..55c07e3b9903 100644
+--- a/kernel/params.c
++++ b/kernel/params.c
+@@ -529,7 +529,7 @@ struct module_param_attrs
+ {
+ 	unsigned int num;
+ 	struct attribute_group grp;
+-	struct param_attribute attrs[0];
++	struct param_attribute attrs[];
+ };
+ 
+ #ifdef CONFIG_SYSFS
+diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
+index 73956eaff8a9..3ee46cda2692 100644
+--- a/kernel/tracepoint.c
++++ b/kernel/tracepoint.c
+@@ -50,7 +50,7 @@ static bool ok_to_free_tracepoints;
+  */
+ struct tp_probes {
+ 	struct rcu_head rcu;
+-	struct tracepoint_func probes[0];
++	struct tracepoint_func probes[];
+ };
+ 
+ static inline void *allocate_probes(int count)
+diff --git a/scripts/kallsyms.c b/scripts/kallsyms.c
+index 3e8dea6e0a95..6dc3078649fa 100644
+--- a/scripts/kallsyms.c
++++ b/scripts/kallsyms.c
+@@ -34,7 +34,7 @@ struct sym_entry {
+ 	unsigned int len;
+ 	unsigned int start_pos;
+ 	unsigned int percpu_absolute;
+-	unsigned char sym[0];
++	unsigned char sym[];
+ };
+ 
+ struct addr_range {
 
