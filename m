@@ -2,149 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B06A61C9685
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 18:30:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 704531C968B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 18:31:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727853AbgEGQaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 12:30:01 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:53577 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726308AbgEGQaA (ORCPT
+        id S1727909AbgEGQbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 12:31:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726222AbgEGQbB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 12:30:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588868999;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=e7iMCcJ0qsnQwLB3wwMjiGDP/YW9nSq1UVvNlnZHm78=;
-        b=WevyCnOpqs1K2QRjJtvprM91QoQRP2Ow6UlHmTioxFiXeXPd+88GoqFl2PoiZyguoDpaqG
-        xlD6fn8VRT0uqBUJ8fAuFTNf4kXFlatu1NILPS3+RRNew9wmxsw1aFaOEk90MiE8b5dm+V
-        whrdL1tn2JNEPF6t1I8QUw5wq2SJHd0=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-255-_D2I7j4LOeuuVKFW714jXA-1; Thu, 07 May 2020 12:29:57 -0400
-X-MC-Unique: _D2I7j4LOeuuVKFW714jXA-1
-Received: by mail-ed1-f69.google.com with SMTP id x14so2624863edv.2
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 09:29:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e7iMCcJ0qsnQwLB3wwMjiGDP/YW9nSq1UVvNlnZHm78=;
-        b=mszSMVu6e4K2mSLcw7I86zT3rNZLAs0gEnaVoDq7/0AY1sQvAmdV/PYSPcs05ugfzD
-         561qexuCG3KxVJN1ybWRO6C1GbRXtWp+C5ciyzSWHztTrOsebHnLw7EXxZg9gcH55eqs
-         PIjHj0EXJk1Zq5v+ABboi8C1jMCvmtWiV5n3POfSiespE2nvAmIfBh7B2YoFbYV1e1Cq
-         fTSfo26LIC0/dYhg4JrRyCwHjNh0ItHjzEhawE2gRZpWzRXeXFSrBY1HW3HVB/NuSEAu
-         YvbghwmxVoxQtAU59b6BPCEgdcLmUM+UmiFPGdcXuhMSlC5SndBkPVb29/iV2CaPP9Vy
-         tYSw==
-X-Gm-Message-State: AGi0PuZVLyNCTbBx+K+j1dJ2lWhcPzTn28njDtAZOkwuOqH9tTcQYU3M
-        kRPL2rg0Co9rSiah31bEA7QIU+x8YPfXfy7GmOwdAwIXXw4Rzgcxob2HjcYUgkrDL3OPvMoR4l7
-        /b9ZL0mGlVlBBJxhuD6EQZDHIc+J/O2jkWKMvMT12
-X-Received: by 2002:a17:907:2069:: with SMTP id qp9mr13369331ejb.137.1588868996404;
-        Thu, 07 May 2020 09:29:56 -0700 (PDT)
-X-Google-Smtp-Source: APiQypI/tAK72ofsR0W7siiARMS+UqHhSIuek7idqi6/W26qVAvJz1p0lEni/R1zsrh7MCp33PsxHvorkj/Tp1DUTxU=
-X-Received: by 2002:a17:907:2069:: with SMTP id qp9mr13369301ejb.137.1588868996149;
- Thu, 07 May 2020 09:29:56 -0700 (PDT)
+        Thu, 7 May 2020 12:31:01 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E49A7C05BD43;
+        Thu,  7 May 2020 09:31:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=3gVdJM0Xac05/DiybGJ/iKfbblmg8k1slb7wrkVhFUM=; b=qI+OiMJGTT/r2plFsf+28wiPCI
+        2xuIGAdK5DgYeC9KRbpiSZGpcscy3znvULgRQl4/ouzMBqIIKlcHAjVgi5TIlJ5h1RAb/XaaKf4Hh
+        sx9Ab1+0i9/rCgwZtdxmK4sMm0guanzI6yHXKGcGlhzXmDMgLemdTXQm4vstJrMlnY8ML0UcrYf1P
+        GST/iKWJScGCRYQKZk4G2cN1h1y6WVAFy2xPBq/KaTS9Q6Q+KP2UT4BNTCzPi89nTUUfidkVCquYO
+        6T55jp+vxkDkvvKZL1iWyJEuCc7rMRgdM7ze8AtbgmtGnQAArI8a07xIIhiI40EjUqtcOa4z/dU30
+        yHYpQt7Q==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jWjQH-0008QS-Do; Thu, 07 May 2020 16:30:57 +0000
+Subject: Re: [RFC 34/43] shmem: PKRAM: multithread preserving and restoring
+ shmem pages
+To:     Anthony Yznaga <anthony.yznaga@oracle.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     willy@infradead.org, corbet@lwn.net, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        rppt@linux.ibm.com, akpm@linux-foundation.org, hughd@google.com,
+        ebiederm@xmission.com, masahiroy@kernel.org, ardb@kernel.org,
+        ndesaulniers@google.com, dima@golovin.in, daniel.kiper@oracle.com,
+        nivedita@alum.mit.edu, rafael.j.wysocki@intel.com,
+        dan.j.williams@intel.com, zhenzhong.duan@oracle.com,
+        jroedel@suse.de, bhe@redhat.com, guro@fb.com,
+        Thomas.Lendacky@amd.com, andriy.shevchenko@linux.intel.com,
+        keescook@chromium.org, hannes@cmpxchg.org, minchan@kernel.org,
+        mhocko@kernel.org, ying.huang@intel.com,
+        yang.shi@linux.alibaba.com, gustavo@embeddedor.com,
+        ziqian.lzq@antfin.com, vdavydov.dev@gmail.com,
+        jason.zeng@intel.com, kevin.tian@intel.com, zhiyuan.lv@intel.com,
+        lei.l.li@intel.com, paul.c.lai@intel.com, ashok.raj@intel.com,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        kexec@lists.infradead.org
+References: <1588812129-8596-1-git-send-email-anthony.yznaga@oracle.com>
+ <1588812129-8596-35-git-send-email-anthony.yznaga@oracle.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <4e44858d-a416-696e-0d65-0b5ca8836b7d@infradead.org>
+Date:   Thu, 7 May 2020 09:30:55 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <CAE4VaGA4q4_qfC5qe3zaLRfiJhvMaSb2WADgOcQeTwmPvNat+A@mail.gmail.com>
- <20200312155640.GX3818@techsingularity.net> <CAE4VaGD8DUEi6JnKd8vrqUL_8HZXnNyHMoK2D+1-F5wo+5Z53Q@mail.gmail.com>
- <20200312214736.GA3818@techsingularity.net> <CAE4VaGCfDpu0EuvHNHwDGbR-HNBSAHY=yu3DJ33drKgymMTTOw@mail.gmail.com>
- <CAE4VaGC09OfU2zXeq2yp_N0zXMbTku5ETz0KEocGi-RSiKXv-w@mail.gmail.com>
- <20200320152251.GC3818@techsingularity.net> <CAE4VaGBGbTT8dqNyLWAwuiqL8E+3p1_SqP6XTTV71wNZMjc9Zg@mail.gmail.com>
- <20200320163843.GD3818@techsingularity.net> <CAE4VaGCf0P2ht+7nbGFHV8Dd=e4oDEUPNdRUUBokRWgKRxofAA@mail.gmail.com>
- <20200507155422.GD3758@techsingularity.net>
-In-Reply-To: <20200507155422.GD3758@techsingularity.net>
-From:   Jirka Hladky <jhladky@redhat.com>
-Date:   Thu, 7 May 2020 18:29:44 +0200
-Message-ID: <CAE4VaGCDTeE16nNmSS8fGzCBvHsO=qkJAW6yDiORAxgsPi-Ziw@mail.gmail.com>
-Subject: Re: [PATCH 00/13] Reconcile NUMA balancing decisions with the load
- balancer v6
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Hillf Danton <hdanton@sina.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Douglas Shakshober <dshaks@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Joe Mario <jmario@redhat.com>, Bill Gray <bgray@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1588812129-8596-35-git-send-email-anthony.yznaga@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mel,
+On 5/6/20 5:42 PM, Anthony Yznaga wrote:
+> Improve performance by multithreading the work to preserve and restore
+> shmem pages.
+> 
+> Add 'pkram_max_threads=' kernel option to specify the maximum number
+> of threads to use to preserve or restore the pages of a shmem file.
+> The default is 16.
 
-we are not targeting just OMP applications. We see the performance
-degradation also for other workloads, like SPECjbb2005 and
-SPECjvm2008. Even worse, it also affects a higher number of threads.
-For example, comparing 5.7.0-0.rc2 against 5.6 kernel, on 4 NUMA
-server with 2x AMD 7351 CPU, we see performance degradation 22% for 32
-threads (the system has 64 CPUs in total). We observe this degradation
-only when we run a single SPECjbb binary. When running 4 SPECjbb
-binaries in parallel, there is no change in performance between 5.6
-and 5.7.
+Hi,
+Please document kernel boot options in Documentation/admin-guide/kernel-parameters.txt.
 
-That's why we are asking for the kernel tunable, which we would add to
-the tuned profile. We don't expect users to change this frequently but
-rather to set the performance profile once based on the purpose of the
-server.
+> When preserving pages each thread saves chunks of a file to a pkram_obj
+> until no more no more chunks are available.
+> 
+> When restoring pages each thread loads pages using a copy of a
+> pkram_stream initialized by pkram_prepare_load_obj(). Under the hood
+> each thread ends up fetching and operating on pkram_link pages.
+> 
+> Signed-off-by: Anthony Yznaga <anthony.yznaga@oracle.com>
+> ---
+>  include/linux/pkram.h |   2 +
+>  mm/shmem_pkram.c      | 101 +++++++++++++++++++++++++++++++++++++++++++++++++-
+>  2 files changed, 101 insertions(+), 2 deletions(-)
 
-If you could prepare a patch for us, we would be more than happy to
-test it extensively. Based on the results, we can then evaluate if
-it's the way to go. Thoughts?
-
-Thanks a lot!
-Jirka
-
-On Thu, May 7, 2020 at 5:54 PM Mel Gorman <mgorman@techsingularity.net> wrote:
->
-> On Thu, May 07, 2020 at 05:24:17PM +0200, Jirka Hladky wrote:
-> > Hi Mel,
-> >
-> > > > Yes, it's indeed OMP.  With low threads count, I mean up to 2x number of
-> > > > NUMA nodes (8 threads on 4 NUMA node servers, 16 threads on 8 NUMA node
-> > > > servers).
-> > >
-> > > Ok, so we know it's within the imbalance threshold where a NUMA node can
-> > > be left idle.
-> >
-> > we have discussed today with my colleagues the performance drop for
-> > some workloads for low threads counts (roughly up to 2x number of NUMA
-> > nodes). We are worried that it can be a severe issue for some use
-> > cases, which require a full memory bandwidth even when only part of
-> > CPUs is used.
-> >
-> > We understand that scheduler cannot distinguish this type of workload
-> > from others automatically. However, there was an idea for a * new
-> > kernel tunable to control the imbalance threshold *. Based on the
-> > purpose of the server, users could set this tunable. See the tuned
-> > project, which allows creating performance profiles [1].
-> >
->
-> I'm not completely opposed to it but given that the setting is global,
-> I imagine it could have other consequences if two applications ran
-> at different times have different requirements. Given that it's OMP,
-> I would have imagined that an application that really cared about this
-> would specify what was needed using OMP_PLACES. Why would someone prefer
-> kernel tuning or a tuned profile over OMP_PLACES? After all, it requires
-> specific knowledge of the application even to know that a particular
-> tuned profile is needed.
->
-> --
-> Mel Gorman
-> SUSE Labs
->
-
-
+thanks.
 -- 
--Jirka
+~Randy
 
