@@ -2,70 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B9A51C97A9
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 19:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC0D1C97C4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 19:29:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728368AbgEGRZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 13:25:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54740 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726074AbgEGRZm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 13:25:42 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E8CDE20A8B;
-        Thu,  7 May 2020 17:25:40 +0000 (UTC)
-Date:   Thu, 7 May 2020 13:25:39 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Li Philip <philip.li@intel.com>,
-        Liu Yiding <yidingx.liu@intel.com>
-Subject: Re: [PATCH 3/3] selftests/ftrace: Use /bin/echo instead of built-in
- echo
-Message-ID: <20200507132539.7e081980@gandalf.local.home>
-In-Reply-To: <20200508005028.a825d53373721a13d6cc80fc@kernel.org>
-References: <158834025077.28357.15141584656220094821.stgit@devnote2>
-        <158834028054.28357.398159034694277189.stgit@devnote2>
-        <20200501101942.5c0da986@gandalf.local.home>
-        <20200502120842.9d93352083fb854295150235@kernel.org>
-        <20200507091207.5c3b1a92@gandalf.local.home>
-        <20200508005028.a825d53373721a13d6cc80fc@kernel.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1727898AbgEGR2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 13:28:40 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:46044 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726222AbgEGR2j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 13:28:39 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 047HRhk9088401;
+        Thu, 7 May 2020 17:28:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=KEw0jB4mu0JbwkEdmOt9aiMeM3LJb3HoOgTnR5MijrI=;
+ b=wiQ1w0Y6QiwmaWoz2lxTL09p6pVFMUiCX14mjp/3mO/q97r0ExDqmsilY8TUgrbnYgCm
+ dCJvlGa5Ca5FFZr8fs/7SBQAtYotbPFmw46Bxdjewn2hWucJxFIwjbOOCZ29evDTyANA
+ 7lsVsWLK9+jqNFZ0kp6VfTIKzF0ieuUPhGUjmXsvVZP8aJ93BGjNEan+ndATkxJ6x2ib
+ C87gXIanoccW6CmJDXMofRV0FmVys4CzMpGIcdk4j8Kz/px6WQ7ipWs3koyrq1BJy3RV
+ FXfuYg51UmoB4xFX99xSDcacFXZGE+0JtmBsiU6Sjt7TGWrK73sXMvDs6VhplyVMyo5e xQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 30vhvyhucu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 07 May 2020 17:28:36 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 047HHnfm193355;
+        Thu, 7 May 2020 17:26:36 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 30t1rb492u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 07 May 2020 17:26:35 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 047HQYYh014236;
+        Thu, 7 May 2020 17:26:34 GMT
+Received: from [192.168.1.33] (/70.114.128.235)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 07 May 2020 10:26:34 -0700
+Subject: Re: [PATCH] MAINTAINER: Update my email address
+To:     Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org
+References: <20200507161229.31448-1-himanshu.madhani@oracle.com>
+ <f83a2eb7013d203eab4be27f27ca0d996bbc5b47.camel@perches.com>
+ <0c9af33d-0101-119b-4512-7838a0e0e9a0@oracle.com>
+ <acb0794c5ba71b4d6ddc0b6a71252a4dfbfd497d.camel@perches.com>
+From:   Himanshu Madhani <himanshu.madhani@oracle.com>
+Message-ID: <a6524759-ac3d-836b-0e81-02037c8b4f94@oracle.com>
+Date:   Thu, 7 May 2020 12:26:34 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <acb0794c5ba71b4d6ddc0b6a71252a4dfbfd497d.camel@perches.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9614 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 suspectscore=0
+ spamscore=0 mlxlogscore=999 malwarescore=0 phishscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005070141
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9614 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 mlxlogscore=999
+ spamscore=0 phishscore=0 impostorscore=0 bulkscore=0 priorityscore=1501
+ malwarescore=0 mlxscore=0 adultscore=0 suspectscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005070142
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 May 2020 00:50:28 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-> > > Yes, I need Tom's review for this change. As far as I can test, this
-> > > fixes the test failure. If this isn't acceptable, we can use "alias echo=echo"
-> > > for this test case.
-> > >   
-> > 
-> > I still don't see how changing "keys=common_pid" to "keys=ip" has anything
-> > to do with the echo patch. If that is a problem, it should be a different
-> > patch with explanation to why "keys=common_pid" is broken.  
-> 
-> This test case uses a trace_marker event to make a histogram with
-> the common_pid key, and it expects the "echo" command is built-in command
-> so that the pid is same while writing several events to trace_marker.
-> I changed it to "ip" which is always same if trace_marker interface is
-> used.
-
-Can you explicitly state that in your change log? It wasn't obvious from
-what you meant with:
-
-"This also fixes some test cases which expects built-in echo command."
-
-Thanks!
-
--- Steve
+On 5/7/20 12:23 PM, Joe Perches wrote:
+> On Thu, 2020-05-07 at 12:08 -0500, himanshu.madhani@oracle.com wrote:
+>> On 5/7/20 11:57 AM, Joe Perches wrote:
+>>> On Thu, 2020-05-07 at 11:12 -0500, Himanshu Madhani wrote:
+>>>> I do not have access to my @marvell.com email ID anymore.
+>>>> Lets map my new email address correctly in .mailmap
+>>> Bad patch subject, this is a .mailmap patch.
+>>>
+>>> Maybe [PATCH] .mailmap: Update address of Himanshu Madhani
+>>>
+>> Okay. Thanks for pointing that out. I noticed that most of the patches
+>> submitted for .mailmap had MAINTAINER in there so i used that. I will
+>> repost with updated patch subject.
+> That's because those patches also generally update MAINTAINERS
+> entries and update .mailmap at the same time.
+Agree.  sent v2 with correct patch subject.
+> cheers, Joe
+>
+>>>> Signed-off-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+>>>> ---
+>>>>    .mailmap | 2 ++
+>>>>    1 file changed, 2 insertions(+)
+>>>>
+>>>> diff --git a/.mailmap b/.mailmap
+>>>> index db3754a41018..30d8c3f10ca7 100644
+>>>> --- a/.mailmap
+>>>> +++ b/.mailmap
+>>>> @@ -99,6 +99,8 @@ Henk Vergonet <Henk.Vergonet@gmail.com>
+>>>>    Henrik Kretzschmar <henne@nachtwindheim.de>
+>>>>    Henrik Rydberg <rydberg@bitmath.org>
+>>>>    Herbert Xu <herbert@gondor.apana.org.au>
+>>>> +Himanshu Madhani <himanshu.madhani@oracle.com>
+>>>> +Himanshu Madhani <hmadhani2024@gmail.com>
+>>>>    Jacob Shin <Jacob.Shin@amd.com>
+>>>>    Jaegeuk Kim <jaegeuk@kernel.org> <jaegeuk@google.com>
+>>>>    Jaegeuk Kim <jaegeuk@kernel.org> <jaegeuk@motorola.com>
