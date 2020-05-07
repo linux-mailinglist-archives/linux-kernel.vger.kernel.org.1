@@ -2,132 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A54E01C9809
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 19:40:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 348551C9815
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 19:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728199AbgEGRjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 13:39:46 -0400
-Received: from mout.web.de ([212.227.15.4]:59175 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727117AbgEGRjm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 13:39:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1588873161;
-        bh=it578jaaV4ZIrsHlqKP14QyEAmbJNdbtULPP6XwtYEE=;
-        h=X-UI-Sender-Class:Cc:Subject:To:From:Date;
-        b=aRxiMNsa4dh9j3LLSyD6UXB5LPLoe+NunN16UrTHgpq3nX1CjiSLWU30HVkkxHeHz
-         okjT4ADPwquv/9Aeab36Zikpt7dpTCFM9YZahuzDLWgvr5cBHjvWYPLc5mwyHKxhrV
-         ZeoLDSSnLcnEfNtnFd13vBlLrcBpd6WVojAY6NFY=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([93.132.29.220]) by smtp.web.de (mrweb003
- [213.165.67.108]) with ESMTPSA (Nemesis) id 0LiUF2-1iynBN0ZfI-00ciMO; Thu, 07
- May 2020 19:39:21 +0200
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Gross <andy.gross@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Marcel Holtmann <marcel@holtmann.org>
-Subject: Re: [PATCH] wcn36xx: Fix error handling path in wcn36xx_probe()
-To:     Christophe Jaillet <christophe.jaillet@wanadoo.fr>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        wcn36xx@lists.infradead.org
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-Message-ID: <5345c72b-8d18-74ba-a6fa-bdc0f7dfb4c3@web.de>
-Date:   Thu, 7 May 2020 19:39:17 +0200
+        id S1726778AbgEGRmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 13:42:31 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:46465 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726367AbgEGRmb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 13:42:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588873349;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dS0WUEY8VeRDN7lmBHiwBmpo9D+oZ69iTBhH8DiRzHQ=;
+        b=IkhYjbsk4Fe9fd/2+M7e27+GFSzrKUkccfl9MX77DTvP+nk8HKV9bdCGf4PKuEXNW/jXRW
+        tz+FgLPJzUk4RGHrZFxUTw6PmMu1jggB3u143q90AZP5eG3x3FeynJo76fBtYWtlQws/+Z
+        nkhniWAIJOWFI34y/Tq6me9DDajDPOk=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-389--YF5o3-DMdevWHgAt9v0Bg-1; Thu, 07 May 2020 13:42:28 -0400
+X-MC-Unique: -YF5o3-DMdevWHgAt9v0Bg-1
+Received: by mail-wr1-f69.google.com with SMTP id 30so3855656wrq.15
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 10:42:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dS0WUEY8VeRDN7lmBHiwBmpo9D+oZ69iTBhH8DiRzHQ=;
+        b=S8E2xxO0QqvrMz9ObUSFT4qkZv/ytZ3v01D2I1/Ps//PlICksNzJawqNll5Ux4dC89
+         Odq0/g2lSWz7zhnxkBAb/J7wX5okVHDYslD/INCvti1HDMFnTHDnWcX6vyhemZMlxTwn
+         kkAtZGjKEx30+QMyh6Eey6fI3iRx6yhYKi0ZfBv97z0gyDfjcwpYuey1NFv114COYdJ5
+         lljqeUczwpcmV8Xjyv9X2eQ46tEPSnMnk3xqmMtVSUduuU0DOTXAvPLpVJRC+c8Nbz0S
+         9ePhIxLyxyiarg+HI3AKLicso53+OX8zsC9WXhnI1tZzaQFfcv8Cij2YHTxuyZ+27O9z
+         uHbA==
+X-Gm-Message-State: AGi0PuYbzjXSovmiX1hCEDnjiihNlZsCmTRzHsOe2VJ9JFg6ummkYr1v
+        6Rz2OvVmmAXZqpszezeMiqgi0elT8hTHJsbuFdJNdW5ZVxNw4Eq/P0K7PfdTb0aP6qRu4rGypt9
+        K9+lebHgUgubHgD0/5ZZ8z93/
+X-Received: by 2002:a7b:c0d5:: with SMTP id s21mr11337196wmh.107.1588873346904;
+        Thu, 07 May 2020 10:42:26 -0700 (PDT)
+X-Google-Smtp-Source: APiQypJ2NeLasZrgSPXjWlLcCfOifYwtyuY/C/KWPEW0xlhdT0+GF5s1DA1gqBA6uhrvFIj8gcsfMA==
+X-Received: by 2002:a7b:c0d5:: with SMTP id s21mr11337160wmh.107.1588873346364;
+        Thu, 07 May 2020 10:42:26 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:8d3e:39e5:cd88:13cc? ([2001:b07:6468:f312:8d3e:39e5:cd88:13cc])
+        by smtp.gmail.com with ESMTPSA id w6sm9767182wrt.39.2020.05.07.10.42.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 May 2020 10:42:25 -0700 (PDT)
+Subject: Re: [PATCH 9/9] KVM: VMX: pass correct DR6 for GD userspace exit
+To:     Peter Xu <peterx@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+References: <20200507115011.494562-1-pbonzini@redhat.com>
+ <20200507115011.494562-10-pbonzini@redhat.com>
+ <20200507161854.GF228260@xz-x1>
+ <7abe5f7b-2b5a-4e32-34e2-f37d0afef00a@redhat.com>
+ <20200507163839.GG228260@xz-x1>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <db06ffa7-1e3c-14e5-28b8-5053f4383ecf@redhat.com>
+Date:   Thu, 7 May 2020 19:42:25 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ Thunderbird/68.6.0
 MIME-Version: 1.0
+In-Reply-To: <20200507163839.GG228260@xz-x1>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:XrySkeNw0LfVGUlxT/TTsIiPCNu/OLu0Fw0c9LMhXPt8vOlzJWH
- oIIABP35ohAGOHuYyu69btX7s2279g9+FJLyAI7/G0OXz2kEGRiY10oZVOSPDCMcZVxO1KK
- cOc780AJXwkiUX5vasmDLDAbjo5qzhS7Di2L9qsIcBKVKUbSVu1GJR3mCMyxNoWngAWS9Vh
- 2GdpNqEkiPqWabRxMsyWA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:gR7kmyRf5+I=:hbV6RdveU7focBUXqKuWwO
- GnrWOx6Nc1j+PSImVeQ/w/EOo8lXebp36Yzz1oxPDnzws/xE7qSaK15K22ATei7Lwi5JcKlTX
- 7JijR3JFO27OgBgmGQ9a9l4uhXNhb8YRKnpvvw8m3vQgjf7kP70DJ5erdnny5q0fXE5djlzOy
- xPBeqkHYblMwwpLIHdVUVt2+xhpUjPNXo30xY1JhmIXqw+g3PIgFgKdDo56o3MbSKAt/geuGg
- a8NKEr3t2CMsk6DKYZ255jscASk26RvD4SbUIW1CG+gKSCk/GAwXABzVQJOvXoTddctecNT1C
- smNHujA89sdaomkRmegd0kNkmH9QJspfuZai2UeBVlD3Dgjq6IZDyqSV7hOnVzOBTKNuZll8+
- PvpjtBBYS8FThzYxc3vJY2zYhf76cr6NQGef149PHPpL6QF7gq4qhdUAZtiUSHpLRsVvBXQHU
- qRHq9hTz9yK5ieozJXuAPTIOaLMu3E9dRrkaAG7auY56zIlMB7JoWH4xSTYjC8gcdwP/eFTtU
- R207cXj5ahX1pBPoiOjQbRvxvXd6GFcQ8lTBZ2Yb6EJiLwBFKqYNqxRAgq/kd6VUk5NJpQBhv
- vQRoYRmc0feRYQKNWUorBFapVTxC5aaCVEoAsU62CsJYZzYuwUSP2/Uxhh4vsbrDB6uO+tU67
- eZs4d8cOvCrndhwgZPyX1+MlXE4O58h6Y+ffwRHkiNvhTBd1W9iIaZ6vO5/m885+CblmDVUIj
- tP5UGQ2iwOKsU4MKBIL7i2RIpyV5caqC82DH036Ldg0L8OcgphyoXpYbYhHDS5QbhOAlNQQo1
- 5CSG7ehRw0jI2q8uEIZu08G9KBUMbdGdvveJ2/ubxGjJUk5k7CmUmq73aWqxDqwKgIY3J4dOg
- J5fUu+ApJtq13L2s3wGqpscXPjtq3hSuoh9zlZeTtNx5/Iu5vo5q9hjr5H0ZxDtbbeLx511u1
- j+CG3yO7S71SeO8WldbkFJG7+6+nTmZb7ztd8w53FGlh6E3TSIZnmS5IdwOqBE5aCJcjqFkLG
- jYz4a3Qyc00X85ljULrAHg44vNYMB3cVIL830fpTtgSHlZgN0gVKsCHXcMZCEKwV/iRSiG7DQ
- COhOiXZ48RVS0bu3GrT9buQCmVSbmtOQ+BfXy4WnKrMVUhOQOg+dFofWMgbxA1aeh5n1FX0Aq
- bQ6sX4lVxrLksR+hMWyqZ3iFqsI0R6zzkrcep9HcRD02ydNVb2nyIHuwJx9cmxeUVrzGlG6Ny
- ZikmEfV382rLuvUcp
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-=E2=80=A6
-> +++ b/drivers/net/wireless/ath/wcn36xx/main.c
-=E2=80=A6
-> @@ -1359,6 +1359,8 @@ static int wcn36xx_probe(struct platform_device *p=
-dev)
->  out_unmap:
->  	iounmap(wcn->ccu_base);
->  	iounmap(wcn->dxe_base);
-> +out_channel:
-> +	rpmsg_destroy_ept(wcn->smd_channel);
->  out_wq:
->  	ieee80211_free_hw(hw);
->  out_err:
+On 07/05/20 18:38, Peter Xu wrote:
+> On Thu, May 07, 2020 at 06:21:18PM +0200, Paolo Bonzini wrote:
+>> On 07/05/20 18:18, Peter Xu wrote:
+>>>>  		if (vcpu->guest_debug & KVM_GUESTDBG_USE_HW_BP) {
+>>>> -			vcpu->run->debug.arch.dr6 = vcpu->arch.dr6;
+>>>> +			vcpu->run->debug.arch.dr6 = DR6_BD | DR6_RTM | DR6_FIXED_1;
+>>> After a second thought I'm thinking whether it would be okay to have BS set in
+>>> that test case.  I just remembered there's a test case in the kvm-unit-test
+>>> that checks explicitly against BS leftover as long as dr6 is not cleared
+>>> explicitly by the guest code, while the spec seems to have no explicit
+>>> description on this case.
+>>
+>> Yes, I noticed that test as well.  But I don't like having different
+>> behavior for Intel and AMD, and the Intel behavior is more sensible.
+>> Also...
+> 
+> Do you mean the AMD behavior is more sensible instead? :)
 
-How do you think about to use the label =E2=80=9Cout_destroy_ept=E2=80=9D?
+No, I mean within the context of KVM_EXIT_DEBUG: the Intel behavior is
+to only include the latest debug exception in kvm_run's DR6 field, while
+the AMD behavior would be to include all of them.  This was an
+implementation detail (it happens because Intel sets kvm_run's DR6 from
+the exit qualification of #DB), but it's more sensible too.
 
-Regards,
-Markus
+In addition:
+
+* AMD was completely broken until this week, so the behavior of
+KVM_EXIT_DEBUG is defined de facto by kvm_intel.ko.  Userspace has not
+been required to set DR6 with KVM_SET_GUEST_DEBUG, and since we can
+emulate that on AMD, we should.
+
+* we have to fix anyway the fact that on AMD a KVM_EXIT_DEBUG is
+clobbering the contents of the guest's DR6
+
+>>> Intead of above, I'm thinking whether we should allow the userspace to also
+>>> change dr6 with the KVM_SET_GUEST_DEBUG ioctl when they wanted to (right now
+>>> iiuc dr6 from userspace is completely ignored), instead of offering a fake dr6.
+>>> Or to make it simple, maybe we can just check BD bit only?
+>>
+>> ... I'm afraid that this would be a backwards-incompatible change, and
+>> it would require changes in userspace.  If you look at v2, emulating the
+>> Intel behavior in AMD turns out to be self-contained and relatively
+>> elegant (will be better when we finish cleaning up nested SVM).
+> 
+> I'm still trying to read the other patches (I need some more digest because I'm
+> even less familiar with nested...).  I agree that it would be good to keep the
+> same behavior across Intel/AMD.  Actually that also does not violate Intel spec
+> because the AMD one is stricter.
+
+Again, careful---we're talking about KVM_EXIT_DEBUG, not the #DB exception.
+
+Thanks,
+
+Paolo
+
+> However I guess then we might also want to
+> fixup the kvm-unit-test too to aligh with the behaviors on leftover set bits.
+
