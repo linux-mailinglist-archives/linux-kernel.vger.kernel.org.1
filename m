@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EECB1C97D9
+	by mail.lfdr.de (Postfix) with ESMTP id 9BA871C97DA
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 19:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727119AbgEGRee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 13:34:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49934 "EHLO
+        id S1727867AbgEGReg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 13:34:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726308AbgEGRed (ORCPT
+        by vger.kernel.org with ESMTP id S1727092AbgEGRee (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 13:34:33 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63BA2C05BD43;
-        Thu,  7 May 2020 10:34:32 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id l25so3116560pgc.5;
-        Thu, 07 May 2020 10:34:32 -0700 (PDT)
+        Thu, 7 May 2020 13:34:34 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C88FC05BD43;
+        Thu,  7 May 2020 10:34:34 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id s18so2793330pgl.12;
+        Thu, 07 May 2020 10:34:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=dq0TqQky1nAFrd/UmJjerH5DUbLlLnhiDz64ca0nS+c=;
-        b=hMObaJ9HVlxG4n50o2vuRSuTVFtvgZLe+ePsZg7M8zjQkrYrF+8G8f/nYRGdUE9FTF
-         dxwSJBgOTxtx6eUlgXDFnsYLjyDMxu7miTpRn+Bv1wUIenabI2pBkbuRPWXXrSs4+rgy
-         wxVQVr5yWk6hdXQvB8AnN+KSskiLZv6jYBC3/S/TwWeFxEeeqo+KB/ao2w9GtrXy4wgM
-         YGaPADwdAy7TEYuAJ/L8nVY1yuOysSUPKdYItmwWFCs1b+mlgAGdCM36BA8xoBRhN9QM
-         OOBlXg346uqzRvvs+sRFhfk8FhDsz33ZLuU+8N7R9YwViHN+EADi8Uwo4WRv5mwmzW7l
-         5bjA==
+        bh=RS2ptxmKb3ffwIAhZDMnM3dCIs8tmDEdZCAAPTqFzQ8=;
+        b=odddMpjLL2dH2fC4tBa8E8pr7CPYFaiYVGu4lDrgU9SCEb6MlYEXlylyXly0z+fBQ5
+         k9yf1yXYjrXy7qHthqJUc54FgbdpOyb1rVynXSGY7oIFUzrQ0Yftde14FdoAqAw2LPX2
+         34xHE+g+JWobf5GhEk5a5WBeJHqygwWR0Fq3Dc53qO4oGltGJ2DuJ2vUKNGTsyXaF4+e
+         yPgjcoWQp1pFQflaI/2O7RWpeEprT91myXBy48I279ew8UPJY57LW0heJjgmRS5ryuLp
+         DSSTSeB1iRn2XA8lRjlbzFbwMI9DX4Zy6D/tv0EFI62sQCJp3RtqUDe1x7O9RTt8K/cW
+         NEJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=dq0TqQky1nAFrd/UmJjerH5DUbLlLnhiDz64ca0nS+c=;
-        b=LfQWD6WiNz/wTUD28fWjoCClUKd5xnIcq8V78pYAavweuN6rq7I4wWW3cFzZVCnKxk
-         BuWqXGv5cxrY7SMCIWq/SZE5BhvwZboFN20V9oOlgqRDw2D1PUTyJnVhuARkLX7AVYdR
-         fqHXyABzH7xUHlwqicsFb+1Qcn/8+y5uXORFroV6SzdT3gc6J32/H0RQjALRCH2xoZd2
-         dqAXMHJALiaSw5pQtf+QC4EPRHxxL0E2n/xvdZCakuTo6abgfkV60A0/b4uaa1/73Jg1
-         xB9JcQeVqQrRbOODrtfvJ4fQHT8zWik1Yobc9sQcIdSpEGPgQfbkmNCWRDd+eF+t2jEY
-         Klxw==
-X-Gm-Message-State: AGi0Pua3IKl6WMPjWrdUHFM98AngX6geTMXHyCPc3LTXr0pxYt1irobO
-        EdXcuTaHXXRjgkWL8sczHY/T+cKuUpk=
-X-Google-Smtp-Source: APiQypIV3Zm1S08mHH3bE+Xr9aHuLn6KCNX2TslhsTuRJ25Q+UiXwN6CeT1GXiSTkb1EwjNl93DdTw==
-X-Received: by 2002:a63:b51b:: with SMTP id y27mr11346880pge.400.1588872871533;
-        Thu, 07 May 2020 10:34:31 -0700 (PDT)
+        bh=RS2ptxmKb3ffwIAhZDMnM3dCIs8tmDEdZCAAPTqFzQ8=;
+        b=LG6Dd9zsXl6U8LaDJJQxiySvZ11d7c7C6RLhnhV1+1kDL0t282XestA937BnSsPy8T
+         oj8+XFm+xTrg1eHh8XxcpHi9eGfNJ9faAXe3v4qZBIb3C+vBOe9+hJAogdAQqNqXioRQ
+         4iQbLrfJGskROOUBfEEfekv1l2dcY+fI1jj4XpcUNS3AXCY46NWTBHbIQvzLnel1I4Vp
+         UBo6uMHYLBPfgPSg9GkMhEEcF9xx8nQGxBg41sZwPokoWAzaELj4Lc/KVKzL8N+aPOJ5
+         qa+vnBU/4WpwqfA580qY+tQl0jyYCyWgOCqq3i4rjlbxdBudlpixVLk0jI3QdMSV3+ch
+         kdwQ==
+X-Gm-Message-State: AGi0PuZ6CzZmmAxMJL+edfNCrv0+tMgWBYx+pvauetoBYTAp3u8SIYCi
+        rQJydTEhYarxAIR4X8aszZYno9jBSp0=
+X-Google-Smtp-Source: APiQypJ7VtkJExDL00fC4A0q7KThBRLb1QmGWQESRsAyRO8MPssMxkDyzZ5abrifclqiTjvvdD2M5A==
+X-Received: by 2002:a63:d013:: with SMTP id z19mr11807229pgf.202.1588872873572;
+        Thu, 07 May 2020 10:34:33 -0700 (PDT)
 Received: from stbsrv-and-01.and.broadcom.net ([192.19.231.250])
-        by smtp.gmail.com with ESMTPSA id y14sm5368802pff.205.2020.05.07.10.34.29
+        by smtp.gmail.com with ESMTPSA id y14sm5368802pff.205.2020.05.07.10.34.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2020 10:34:31 -0700 (PDT)
+        Thu, 07 May 2020 10:34:33 -0700 (PDT)
 From:   Al Cooper <alcooperx@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Al Cooper <alcooperx@gmail.com>,
@@ -59,9 +59,9 @@ Cc:     Al Cooper <alcooperx@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
         Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v7 1/5] usb: xhci: Change the XHCI link order in the Makefile
-Date:   Thu,  7 May 2020 13:34:04 -0400
-Message-Id: <20200507173408.20754-2-alcooperx@gmail.com>
+Subject: [PATCH v7 2/5] dt-bindings: Add Broadcom STB USB support
+Date:   Thu,  7 May 2020 13:34:05 -0400
+Message-Id: <20200507173408.20754-3-alcooperx@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200507173408.20754-1-alcooperx@gmail.com>
 References: <20200507173408.20754-1-alcooperx@gmail.com>
@@ -70,53 +70,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some BRCMSTB USB chips have an XHCI, EHCI and OHCI controller
-on the same port where XHCI handles 3.0 devices, EHCI handles 2.0
-devices and OHCI handles <2.0 devices. Currently the Makefile
-has XHCI linking at the bottom which will result in the XHIC driver
-initalizing after the EHCI and OHCI drivers and any installed 3.0
-device will be seen as a 2.0 device. Moving the XHCI linking
-above the EHCI and OHCI linking fixes the issue.
+Add DT bindings for Broadcom STB USB EHCI and XHCI drivers.
+
+NOTE: The OHCI driver is not included because it uses the generic
+      platform driver.
 
 Signed-off-by: Al Cooper <alcooperx@gmail.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- drivers/usb/host/Makefile | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+ .../bindings/usb/brcm,bcm7445-ehci.yaml       | 59 +++++++++++++++++++
+ .../devicetree/bindings/usb/usb-xhci.txt      |  1 +
+ 2 files changed, 60 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/usb/brcm,bcm7445-ehci.yaml
 
-diff --git a/drivers/usb/host/Makefile b/drivers/usb/host/Makefile
-index b191361257cc..a7f0b8ff7179 100644
---- a/drivers/usb/host/Makefile
-+++ b/drivers/usb/host/Makefile
-@@ -37,6 +37,16 @@ endif
- 
- obj-$(CONFIG_USB_PCI)	+= pci-quirks.o
- 
-+# NOTE: BRCMSTB systems require that xhci driver be linked before the
-+# ehci/ohci drivers because they share a port and need the XHCI driver
-+# to come up first to properly enumerate 3.0 devices.
-+obj-$(CONFIG_USB_XHCI_HCD)	+= xhci-hcd.o
-+obj-$(CONFIG_USB_XHCI_PCI)	+= xhci-pci.o
-+obj-$(CONFIG_USB_XHCI_PLATFORM) += xhci-plat-hcd.o
-+obj-$(CONFIG_USB_XHCI_HISTB)	+= xhci-histb.o
-+obj-$(CONFIG_USB_XHCI_MTK)	+= xhci-mtk.o
-+obj-$(CONFIG_USB_XHCI_TEGRA)	+= xhci-tegra.o
+diff --git a/Documentation/devicetree/bindings/usb/brcm,bcm7445-ehci.yaml b/Documentation/devicetree/bindings/usb/brcm,bcm7445-ehci.yaml
+new file mode 100644
+index 000000000000..2a9acf2b5a64
+--- /dev/null
++++ b/Documentation/devicetree/bindings/usb/brcm,bcm7445-ehci.yaml
+@@ -0,0 +1,59 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/usb/brcm,bcm7445-ehci.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- obj-$(CONFIG_USB_EHCI_HCD)	+= ehci-hcd.o
- obj-$(CONFIG_USB_EHCI_PCI)	+= ehci-pci.o
- obj-$(CONFIG_USB_EHCI_HCD_PLATFORM)	+= ehci-platform.o
-@@ -69,12 +79,6 @@ obj-$(CONFIG_USB_OHCI_HCD_DAVINCI)	+= ohci-da8xx.o
++title: Broadcom STB USB EHCI Controller Device Tree Bindings
++
++allOf:
++  - $ref: "usb-hcd.yaml"
++
++maintainers:
++  - Al Cooper <alcooperx@gmail.com>
++
++properties:
++  compatible:
++    const: brcm,bcm7445-ehci
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++    description: Clock specifier for the EHCI clock
++
++  clock-names:
++    const: sw_usb
++
++  phys:
++    maxItems: 1
++
++  phy-names:
++    const: usbphy
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - phys
++  - clocks
++
++additionalProperties: false
++
++examples:
++  - |
++    usb@f0b00300 {
++        compatible = "brcm,bcm7445-ehci";
++        reg = <0xf0b00300 0xa8>;
++        interrupts = <0x0 0x5a 0x0>;
++        phys = <&usbphy_0 0x0>;
++        phy-names = "usbphy";
++        clocks = <&usb20>;
++        clock-names = "sw_usb";
++    };
++
++...
+diff --git a/Documentation/devicetree/bindings/usb/usb-xhci.txt b/Documentation/devicetree/bindings/usb/usb-xhci.txt
+index dc025f126d71..23e89d798b1b 100644
+--- a/Documentation/devicetree/bindings/usb/usb-xhci.txt
++++ b/Documentation/devicetree/bindings/usb/usb-xhci.txt
+@@ -24,6 +24,7 @@ Required properties:
+       device
+     - "renesas,rcar-gen3-xhci" for a generic R-Car Gen3 or RZ/G2 compatible
+       device
++    - "brcm,bcm7445-xhci" for Broadcom STB SoCs with XHCI
+     - "xhci-platform" (deprecated)
  
- obj-$(CONFIG_USB_UHCI_HCD)	+= uhci-hcd.o
- obj-$(CONFIG_USB_FHCI_HCD)	+= fhci.o
--obj-$(CONFIG_USB_XHCI_HCD)	+= xhci-hcd.o
--obj-$(CONFIG_USB_XHCI_PCI)	+= xhci-pci.o
--obj-$(CONFIG_USB_XHCI_PLATFORM) += xhci-plat-hcd.o
--obj-$(CONFIG_USB_XHCI_HISTB)	+= xhci-histb.o
--obj-$(CONFIG_USB_XHCI_MTK)	+= xhci-mtk.o
--obj-$(CONFIG_USB_XHCI_TEGRA)	+= xhci-tegra.o
- obj-$(CONFIG_USB_SL811_HCD)	+= sl811-hcd.o
- obj-$(CONFIG_USB_SL811_CS)	+= sl811_cs.o
- obj-$(CONFIG_USB_U132_HCD)	+= u132-hcd.o
+     When compatible with the generic version, nodes must list the
 -- 
 2.17.1
 
