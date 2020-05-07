@@ -2,98 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04FA21C9E66
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 00:23:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 356F41C9E50
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 00:20:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727794AbgEGWXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 18:23:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56154 "EHLO mail.kernel.org"
+        id S1726683AbgEGWT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 18:19:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53362 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726491AbgEGWXd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 18:23:33 -0400
-Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
+        id S1726437AbgEGWT4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 18:19:56 -0400
+Received: from localhost (mobile-166-175-190-200.mycingular.net [166.175.190.200])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D1FE6207DD;
-        Thu,  7 May 2020 22:17:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 113672082E;
+        Thu,  7 May 2020 22:19:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588889858;
-        bh=y9ZhABsB0EXo6BAC1e210uaMX8S6w4Em2EKPNhZICwI=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=VwyKmdwInAwzlExGThh9y0vgmuCf2IwPqY/yX6MV+W8x+nuT2imHJ8reMZh0EMwRL
-         2sf4ST0OFZfG1bDn4yE9N8jG/FpyPToITTG1FGc8iDmu30hud2HKR5vEdG05/eOg8d
-         tarrWllJGaVnDsLgmBthOPVADPI0KipbAJppWe0k=
-Date:   Fri, 8 May 2020 00:17:34 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-cc:     live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Miroslav Benes <mbenes@suse.cz>
-Subject: Re: [PATCH v4 00/11] livepatch,module: Remove .klp.arch and
- module_disable_ro()
-In-Reply-To: <cover.1588173720.git.jpoimboe@redhat.com>
-Message-ID: <nycvar.YFH.7.76.2005080016330.25812@cbobk.fhfr.pm>
-References: <cover.1588173720.git.jpoimboe@redhat.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        s=default; t=1588889995;
+        bh=/VazbYPf8Ao1AjTLIv5tPrNXtqvkoTOm4G4776Dbhc8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=K0bH3KsYmxPVYkHl5vugmjzs8QQS0ryro2WGbz1InP5bfiyhgeqo7uIjtDfrwUQql
+         hmjEv0gWWIyrW1tK0QWJgeiSSD/EbH8MVXgdC4G2qqdO2cA+3VMpJT2pkEUI6pDnbV
+         EUaZrlAOaX0ccGQmfgTnvFWhkcuqFP5GborudZyI=
+Date:   Thu, 7 May 2020 17:19:53 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     bhelgaas@google.com, Heiner Kallweit <hkallweit1@gmail.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Keith Busch <keith.busch@intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        Krzysztof Wilczynski <kw@linux.com>,
+        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3] PCI/ASPM: Enable ASPM for bridge-to-bridge link
+Message-ID: <20200507221953.GA36865@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200505173423.26968-1-kai.heng.feng@canonical.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Apr 2020, Josh Poimboeuf wrote:
-
-> v4:
-> - Fixed rebase bisection regression [Miroslav]
-> - Made module_enable_ro() static [Jessica]
-> - Added Acked-by's
+On Wed, May 06, 2020 at 01:34:21AM +0800, Kai-Heng Feng wrote:
+> The TI PCIe-to-PCI bridge prevents the Intel SoC from entering power
+> state deeper than PC3 due to disabled ASPM, consumes lots of unnecessary
+> power. On Windows ASPM L1 is enabled on the device and its upstream
+> bridge, so it can make the Intel SoC reach PC8 or PC10 to save lots of
+> power.
 > 
+> In short, ASPM always gets disabled on bridge-to-bridge link.
+> 
+> The special case was part of first ASPM introduction patch, commit
+> 7d715a6c1ae5 ("PCI: add PCI Express ASPM support"). However, it didn't
+> explain why ASPM needs to be disabled in special bridge-to-bridge case.
+> 
+> Let's remove the the special case, as PCIe spec already envisioned ASPM
+> on bridge-to-bridge link.
+> 
+> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=207571
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+
+Applied to pci/aspm for v5.8, thanks!
+
+I did keep your Reviewed-by, Mika.  If the fact that this applies only
+to the PCIe-to-PCI/PCI-X case makes your reviewed-by invalid, just let
+me know and I'll drop it.
+
+> ---
 > v3:
-> - klp: split klp_write_relocations() into object/section specific
->   functions [joe]
-> - s390: fix plt/got writes [joe]
-> - s390: remove text_mutex usage [mbenes]
-> - x86: do text_poke_sync() before releasing text_mutex [peterz]
-> - split x86 text_mutex changes into separate patch [mbenes]
+>  - Remove the special case completely.
 > 
-> v2:
-> - add vmlinux.ko check [peterz]
-> - remove 'klp_object' forward declaration [mbenes]
-> - use text_mutex [jeyu]
-> - fix documentation TOC [jeyu]
-> - fix s390 issues [mbenes]
-> - upstream kpatch-build now supports this
->   (though it's only enabled for Linux >= 5.8)
+> v2: 
+>  - Enable ASPM on root complex <-> bridge <-> bridge, instead of using
+>    quirk.
+>  drivers/pci/pcie/aspm.c | 10 ----------
+>  1 file changed, 10 deletions(-)
 > 
-> These patches add simplifications and improvements for some issues Peter
-> found six months ago, as part of his non-writable text code (W^X)
-> cleanups.
+> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+> index 2378ed692534..b17e5ffd31b1 100644
+> --- a/drivers/pci/pcie/aspm.c
+> +++ b/drivers/pci/pcie/aspm.c
+> @@ -628,16 +628,6 @@ static void pcie_aspm_cap_init(struct pcie_link_state *link, int blacklist)
+>  
+>  	/* Setup initial capable state. Will be updated later */
+>  	link->aspm_capable = link->aspm_support;
+> -	/*
+> -	 * If the downstream component has pci bridge function, don't
+> -	 * do ASPM for now.
+> -	 */
+> -	list_for_each_entry(child, &linkbus->devices, bus_list) {
+> -		if (pci_pcie_type(child) == PCI_EXP_TYPE_PCI_BRIDGE) {
+> -			link->aspm_disable = ASPM_STATE_ALL;
+> -			break;
+> -		}
+> -	}
+>  
+>  	/* Get and check endpoint acceptable latencies */
+>  	list_for_each_entry(child, &linkbus->devices, bus_list) {
+> -- 
+> 2.17.1
 > 
-> Highlights:
-> 
-> - Remove the livepatch arch-specific .klp.arch sections, which were used
->   to do paravirt patching and alternatives patching for livepatch
->   replacement code.
-> 
-> - Add support for jump labels in patched code (only for static keys
->   which live in vmlinux).
-> 
-> - Remove the last module_disable_ro() usage.
-> 
-> For more background, see this thread:
-> 
->   https://lkml.kernel.org/r/20191021135312.jbbxsuipxldocdjk@treble
-> 
-> This has been tested with kpatch-build integration tests and klp-convert
-> selftests.
-
-I have now queued this whole set (with all the gathered Acks) in 
-livepatching.git#for-5.8/klp-module-fixups
-
--- 
-Jiri Kosina
-SUSE Labs
-
