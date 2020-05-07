@@ -2,105 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 902A21C81B7
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 07:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B02E31C8197
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 07:37:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727103AbgEGFju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 01:39:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726975AbgEGFjr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 01:39:47 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8D18C061A0F
-        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 22:39:47 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id b8so1496870plm.11
-        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 22:39:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WQVY27B5Rpvmtpn87gkSnEtPnw+gI7YkKA12CFPExLw=;
-        b=GIbdhZ+KwteXNyTV6ZfSKtTmCtmVcng5rL6ARiziorreG+LcFaiXYMaEFyBz4SP4Nu
-         yghoxzPjMA0vrhKyNoYQXReqldekiiyZg08B5qiYO/maBmggj8FaKuB2RuRRfwe91IDc
-         whXSPkw4wfvvTjnm5XBNAGwXYJkwUCLRWVjifhGe3R7I+HDydszVkzqCx/6WL2MiJvui
-         cX50Kb5n+A6ZDxbjM1QIZXc1HJ4EhDRGwQrwDGPvb4KcvA9GJYGm71mUPZ0sGPzoH6Hb
-         xZ/L4U6gWJMUV6a8+Ij9oTDpLdWd4mPOgHJvHqcbQRKp5J93BgiitEWyY4hr+Mg+stao
-         n3Ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WQVY27B5Rpvmtpn87gkSnEtPnw+gI7YkKA12CFPExLw=;
-        b=jT99XeMZaObwEufQnItT84dmV+KmXap9PDLGVN4mMPkNJqWFRzIgK8skMpgGEdi6Bl
-         t5EOqlxWQxmQefM/6G6yh+nqUpL1lRLnhozRgD0DrWweAC2rWuu46InqwyXgB9HVC3x5
-         S/jEPjQOco9ufZ4SRSFcyHCr42jVwNEcB+aP3CrZRnRIdvkV0ycqq24pxFTuJSgC1Tv1
-         QevMSwynXQ+3LzRghzLhNCjthnES4/osSINuBOFiS1wMkwclhK4HQCYEWiRyUMalruGH
-         1zRyY09yTB9VL1Pm7bfuYKe83uf+rkUydP92GG24IGW08E9PS+JMQMZxit5VxITvIoTW
-         oq7g==
-X-Gm-Message-State: AGi0PuY0QtkLr0wFqzEnApDDs6lnCCM/zERA7a/kXoKhv80ZX3gJKQ9y
-        3sDEouUtTXRblRv/r6Tfp2QKOQ==
-X-Google-Smtp-Source: APiQypL1KtJ7HbuZvbKeF8aP8D0bfbqa1VkLxxaEGQkY9ikauUgMKVGA2xNu7WDGOFzoaXj9TSevCg==
-X-Received: by 2002:a17:902:40a:: with SMTP id 10mr11331781ple.183.1588829986874;
-        Wed, 06 May 2020 22:39:46 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id h17sm3640500pfk.13.2020.05.06.22.39.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 May 2020 22:39:46 -0700 (PDT)
-Date:   Wed, 6 May 2020 22:40:33 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: qcom: c630: Make i2c devices active high
-Message-ID: <20200507054033.GD3236072@builder.lan>
-References: <20200406052447.105513-1-bjorn.andersson@linaro.org>
+        id S1726616AbgEGFhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 01:37:21 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:3880 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725783AbgEGFhV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 01:37:21 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 226588F91EE7F719A0CA;
+        Thu,  7 May 2020 13:37:14 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 7 May 2020 13:37:05 +0800
+From:   Wei Yongjun <weiyongjun1@huawei.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Jyri Sarha <jsarha@ti.com>, "Roger Quadros" <rogerq@ti.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Wei Yongjun <weiyongjun1@huawei.com>
+CC:     <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
+        "Hulk Robot" <hulkci@huawei.com>
+Subject: [PATCH -next] phy: ti: j721e-wiz: Fix some error return code in wiz_probe()
+Date:   Thu, 7 May 2020 05:41:09 +0000
+Message-ID: <20200507054109.110849-1-weiyongjun1@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200406052447.105513-1-bjorn.andersson@linaro.org>
+Content-Type:   text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 05 Apr 22:24 PDT 2020, Bjorn Andersson wrote:
+Fix to return negative error code from some error handling
+cases instead of 0, as done elsewhere in this function.
 
-> The two i2c hid devices on i2c3 are supposed to have interrupts
-> triggered active high, update this.
-> 
+Fixes: 091876cc355d ("phy: ti: j721e-wiz: Add support for WIZ module present in TI J721E SoC")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+---
+ drivers/phy/ti/phy-j721e-wiz.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-While this is what the DSDT says, keeping it as RISING avoids occasional
-drops of keyboard entries. So let's ignore this for now.
+diff --git a/drivers/phy/ti/phy-j721e-wiz.c b/drivers/phy/ti/phy-j721e-wiz.c
+index 1d12d1b1b63a..30ea5b207285 100644
+--- a/drivers/phy/ti/phy-j721e-wiz.c
++++ b/drivers/phy/ti/phy-j721e-wiz.c
+@@ -841,8 +841,10 @@ static int wiz_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	base = devm_ioremap(dev, res.start, resource_size(&res));
+-	if (!base)
++	if (!base) {
++		ret = -ENOMEM;
+ 		goto err_addr_to_resource;
++	}
+ 
+ 	regmap = devm_regmap_init_mmio(dev, base, &wiz_regmap_config);
+ 	if (IS_ERR(regmap)) {
+@@ -859,6 +861,7 @@ static int wiz_probe(struct platform_device *pdev)
+ 
+ 	if (num_lanes > WIZ_MAX_LANES) {
+ 		dev_err(dev, "Cannot support %d lanes\n", num_lanes);
++		ret = -ENODEV;
+ 		goto err_addr_to_resource;
+ 	}
+ 
+@@ -948,6 +951,7 @@ static int wiz_probe(struct platform_device *pdev)
+ 	serdes_pdev = of_platform_device_create(child_node, NULL, dev);
+ 	if (!serdes_pdev) {
+ 		dev_WARN(dev, "Unable to create SERDES platform device\n");
++		ret = -ENOMEM;
+ 		goto err_pdev_create;
+ 	}
+ 	wiz->serdes_pdev = serdes_pdev;
 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->  arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-> index be6635068dc3..d4cdde496b74 100644
-> --- a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-> +++ b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-> @@ -338,7 +338,7 @@ hid@15 {
->  		reg = <0x15>;
->  		hid-descr-addr = <0x1>;
->  
-> -		interrupts-extended = <&tlmm 37 IRQ_TYPE_EDGE_RISING>;
-> +		interrupts-extended = <&tlmm 37 IRQ_TYPE_LEVEL_HIGH>;
->  	};
->  
->  	hid@2c {
-> @@ -346,7 +346,7 @@ hid@2c {
->  		reg = <0x2c>;
->  		hid-descr-addr = <0x20>;
->  
-> -		interrupts-extended = <&tlmm 37 IRQ_TYPE_EDGE_RISING>;
-> +		interrupts-extended = <&tlmm 37 IRQ_TYPE_LEVEL_HIGH>;
->  
->  		pinctrl-names = "default";
->  		pinctrl-0 = <&i2c2_hid_active>;
-> -- 
-> 2.26.0
-> 
+
+
