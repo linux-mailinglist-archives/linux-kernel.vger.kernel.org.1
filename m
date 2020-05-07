@@ -2,104 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C72281C8656
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 12:03:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B46161C8657
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 12:04:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726776AbgEGKDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 06:03:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725809AbgEGKDY (ORCPT
+        id S1726963AbgEGKDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 06:03:51 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:50016 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725809AbgEGKDu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 06:03:24 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71272C061A10
-        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 03:03:24 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id u11so5635200iow.4
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 03:03:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=ZiQL4q9txwNDc5ET1lq9Bsm+7np0KwM5NRGLvcWY+FU=;
-        b=pe7eYxNiULDUd6u8A/64IEoibjznfG9HMmnQyS4olGNnAjgf+BzPE6QKzzgyQDPkpc
-         /JViEu46yEm62oeWIwA1xEbqqup57NP5wHy8cyEdWrCYoRcfpKh5/aXPeIfdKxkfrzhR
-         UH6wf5apHgN0yfUCyBaVd0qxb1+zVVBKl0Kig3w8k2cj9vduey/yvLyfIJzCVV6xbFXE
-         JnUuEF+5P48C5R4ifHNpVuCGc+5xjIsse+IRFuosJmPrFdhJxDYg8MeE/1LQlQoh5l8l
-         hVFJgUnTUOEDry+Y9UQKSK97Y1JdoZ0XUjNRUVB3TM0tF0PDqFhn4wIWKJl3qgQIei8s
-         D8/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=ZiQL4q9txwNDc5ET1lq9Bsm+7np0KwM5NRGLvcWY+FU=;
-        b=KlvRtuMjBLi00idV+R4/zeOFcfFGfnrGLBqFItDOoKd+nWr8fQ8edWH8IairXuLdz8
-         oHYGngxNDglEoAigawtLlTxCLSwH5ggpJPri5fnemgmilQfUOQHVGbKa+giDQHCRIMGT
-         2z+fP8Xv2md7becx2Fe6cClGfgX6E4MBJ0UT+tpR+I8nsZhciKtSCa2N6zS4nx7+jWXo
-         HgbWAYKhJ7rrw+r8KsiBDVuMsJcsG+LHcMk12D5kJ5H6iKUivoMH026h4aFKR+HG0MHV
-         QVhjwStp6a/hLMwb2HICL3OSOsnMiBQqHfhxln7LrhLPTW7IckQWEC6O0ntfC24TdS/c
-         Gizw==
-X-Gm-Message-State: AGi0PuZelzQF6WcEUghc7lj2R2UR08hCECv/vs3VEe3h9qwVdoWA/SwF
-        UiDh0SC95vy7nE70sW9HDPV5rmZQcXGcVb7nRDE=
-X-Google-Smtp-Source: APiQypJPQSHQzLSMJCt+VKo+ADqxv+kDcuJrNGCI8iI05Vg4JAcBaqCaAobUGab3CGGbgLWgi0zqG8zSrBESd7YAsTM=
-X-Received: by 2002:a5e:c318:: with SMTP id a24mr12809294iok.166.1588845802840;
- Thu, 07 May 2020 03:03:22 -0700 (PDT)
+        Thu, 7 May 2020 06:03:50 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200507100348euoutp02bdbbf3999372c781585c1fd977390023~Mttz3MkGb2457124571euoutp02B
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 10:03:48 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200507100348euoutp02bdbbf3999372c781585c1fd977390023~Mttz3MkGb2457124571euoutp02B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1588845828;
+        bh=n1hyo1ZZivHMwjURuyCwQt/gyOD2+hA6O4SxbPqP0Ps=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=nL4O4Cj70JWGFZLxZdmIGRGJ/teTkq1VN/br6vwpa0k2yaNwU33m4HmSXvWGr/5a6
+         uDNmv6VOc7I8jI7PDtVoBoCTsvLRUB1ZXB2bxopwgPC3pjp0fertbOJGmQeV5svxls
+         b2pL/JS4cWMi6O5wROYVG3ppcZZipDcYfElNI+Qw=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200507100348eucas1p25e26193811e0d61a01e14aaaaaeffe18~MttzofAi12132621326eucas1p2N;
+        Thu,  7 May 2020 10:03:48 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id 9D.2E.61286.40DD3BE5; Thu,  7
+        May 2020 11:03:48 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200507100347eucas1p2bad4d58e4eb23e8abd22b43f872fc865~MttzJ7BSN2137321373eucas1p2F;
+        Thu,  7 May 2020 10:03:47 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200507100347eusmtrp2d7aae0ca429747cf812959bf1ae24c23~MttzJABXy0420904209eusmtrp2C;
+        Thu,  7 May 2020 10:03:47 +0000 (GMT)
+X-AuditID: cbfec7f2-f0bff7000001ef66-33-5eb3dd04bec0
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 60.26.08375.30DD3BE5; Thu,  7
+        May 2020 11:03:47 +0100 (BST)
+Received: from [106.210.88.143] (unknown [106.210.88.143]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200507100347eusmtip278840cc17e60b3a216025b769e33a67b~MttyqfPQb0642406424eusmtip2d;
+        Thu,  7 May 2020 10:03:47 +0000 (GMT)
+Subject: Re: [PATCH net v2] net: bcmgenet: Clear ID_MODE_DIS in
+ EXT_RGMII_OOB_CTRL when not needed
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Doug Berger <opendmb@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Stefan Wahren <wahrenst@gmx.net>
+Cc:     bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Message-ID: <a3df217d-f35c-9d74-4069-d47dee89173e@samsung.com>
+Date:   Thu, 7 May 2020 12:03:48 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        Thunderbird/68.7.0
 MIME-Version: 1.0
-Received: by 2002:a5d:9c05:0:0:0:0:0 with HTTP; Thu, 7 May 2020 03:03:22 -0700 (PDT)
-Reply-To: ebrimsegun@yandex.com
-From:   Olusegun Ebrima <usbanu15@gmail.com>
-Date:   Thu, 7 May 2020 04:03:22 -0600
-Message-ID: <CACudCif2bDBg9dLzCwUznLNMRG19baU=xNDifM9jot3oR-mSdg@mail.gmail.com>
-Subject: REPLY FOR MORE INFORMATION
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <cf07fae3-bd8f-a645-0007-a317832c51c1@samsung.com>
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrCKsWRmVeSWpSXmKPExsWy7djPc7osdzfHGbT8FLVY23uUxWLO+RYW
+        i1/vjrBbXN41h83i2AIxi22zlrNZfJ40hdHi+IlOZgcOj1n3z7J5bFl5k8lj56y77B6LN+1n
+        89h8utrj8ya5ALYoLpuU1JzMstQifbsEroydl2azFqzir5i9voexgXELTxcjJ4eEgInEsT1v
+        WLoYuTiEBFYwSly7sxPK+cIocXbJRGYI5zOjxNV9nUwwLW83XmCHSCxnlDj2dgmU855RYv7s
+        zawgVcICKRIz+j8yg9hsAoYSXW+72ECKRATOMErcPfyQHSTBLJAo8X/1H7AGXgE7idtTIJpZ
+        BFQkLp9fAWRzcIgKxEpMvxYCUSIocXLmExYQm1PAXuLTjj9MEGPkJZq3zmaGsMUlbj2ZzwSy
+        S0JgF7tEz+1NUGe7SGw9NYUVwhaWeHV8CzuELSPxfydMQzOjxMNza9khnB5GictNMxghqqwl
+        7pz7xQZyEbOApsT6XfoQYUeJ/kcr2UHCEgJ8EjfeCkIcwScxadt0Zogwr0RHmxBEtZrErOPr
+        4NYevHCJeQKj0iwkr81C8s4sJO/MQti7gJFlFaN4amlxbnpqsWFearlecWJucWleul5yfu4m
+        RmBaOv3v+KcdjF8vJR1iFOBgVOLhPbBsU5wQa2JZcWXuIUYJDmYlEV6eHxvjhHhTEiurUovy
+        44tKc1KLDzFKc7AoifMaL3oZKySQnliSmp2aWpBaBJNl4uCUamA04dDbFNZeetf/vOEJye3L
+        NY16GLy59tXY2FmZbJnI//64blTgXpuVdZxuJgYWXN8l8nUYcuZ6bbzb2FkYxjOf61quVGhT
+        Y9PlimWzdzxb3BP5hDmo7UlD4+qdTTNOsNg5SAS9vvNP0Dk8etLeTvVrQV9Ptzt1fd2U1PPy
+        W/lNPxfJe1KTFiixFGckGmoxFxUnAgBigBfgRwMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrKIsWRmVeSWpSXmKPExsVy+t/xe7rMdzfHGfy/a2qxtvcoi8Wc8y0s
+        Fr/eHWG3uLxrDpvFsQViFttmLWez+DxpCqPF8ROdzA4cHrPun2Xz2LLyJpPHzll32T0Wb9rP
+        5rH5dLXH501yAWxRejZF+aUlqQoZ+cUltkrRhhZGeoaWFnpGJpZ6hsbmsVZGpkr6djYpqTmZ
+        ZalF+nYJehk7L81mLVjFXzF7fQ9jA+MWni5GTg4JAROJtxsvsHcxcnEICSxllFh2/BYrREJG
+        4uS0BihbWOLPtS42iKK3jBK/554BSwgLpEjM6P/IDGKzCRhKdL2FKBIROMMo8fXjXCaQBLNA
+        osSSfTvBbCGBAol/85eCNfMK2EncnrIZzGYRUJG4fH4FkM3BISoQK9FyUROiRFDi5MwnLCA2
+        p4C9xKcdf6BGmknM2/yQGcKWl2jeOhvKFpe49WQ+0wRGoVlI2mchaZmFpGUWkpYFjCyrGEVS
+        S4tz03OLDfWKE3OLS/PS9ZLzczcxAqNw27Gfm3cwXtoYfIhRgINRiYf3wLJNcUKsiWXFlbmH
+        GCU4mJVEeHl+bIwT4k1JrKxKLcqPLyrNSS0+xGgK9NtEZinR5HxggsgriTc0NTS3sDQ0NzY3
+        NrNQEuftEDgYIySQnliSmp2aWpBaBNPHxMEp1cDoY/9y8bLnfRzdCfckL+7x3m7JZP3t8Ofq
+        LNVg89s9D1jXhXauF269tXez+c9XO1KeVXPuf2Kissih6XXWsZ/qmn/efXrOdv3OJ8Mdcn1n
+        J0kF/Ko8d4PxhqKm08INJmdv8VXMbXixvnzas1lam3MnMSUpmMSFTCuYfvGt+PoHMY2+T/a/
+        +798oRJLcUaioRZzUXEiAHf4TnzYAgAA
+X-CMS-MailID: 20200507100347eucas1p2bad4d58e4eb23e8abd22b43f872fc865
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200507100347eucas1p2bad4d58e4eb23e8abd22b43f872fc865
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200507100347eucas1p2bad4d58e4eb23e8abd22b43f872fc865
+References: <20200225131159.26602-1-nsaenzjulienne@suse.de>
+        <cf07fae3-bd8f-a645-0007-a317832c51c1@samsung.com>
+        <CGME20200507100347eucas1p2bad4d58e4eb23e8abd22b43f872fc865@eucas1p2.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings,
+Hi
 
-With due respect to your personality and much sincerity of this
-purpose, I make this contact with you believing that you can be of
-great assistance to me. I'm Mr. Olusegun Ebrima, from Burkina Faso,
-I'm the Chairman of FOREIGN PAYMENTS CONTRACT AWARD COMMITTEE and also
-I currently hold the post of Internal Audit Manager of our bank in
-Ouagadougou Branch, Please see this as a confidential message and do
-not reveal it to another person because it=E2=80=99s a top secret.
+On 07.05.2020 11:46, Marek Szyprowski wrote:
+> On 25.02.2020 14:11, Nicolas Saenz Julienne wrote:
+>> Outdated Raspberry Pi 4 firmware might configure the external PHY as
+>> rgmii although the kernel currently sets it as rgmii-rxid. This makes
+>> connections unreliable as ID_MODE_DIS is left enabled. To avoid this,
+>> explicitly clear that bit whenever we don't need it.
+>>
+>> Fixes: da38802211cc ("net: bcmgenet: Add RGMII_RXID support")
+>> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+>
+> I've finally bisected the network issue I have on my RPi4 used for 
+> testing mainline builds. The bisect pointed to this patch. Once it got 
+> applied in v5.7-rc1, the networking is broken on my RPi4 in ARM32bit 
+> mode and kernel compiled from bcm2835_defconfig. I'm using u-boot to 
+> tftp zImage/dtb/initrd there. After reverting this patch network is 
+> working fine again. The strange thing is that networking works fine if 
+> kernel is compiled from multi_v7_defconfig but I don't see any obvious 
+> difference there.
+>
+> I'm not sure if u-boot is responsible for this break, but kernel 
+> definitely should be able to properly reset the hardware to the valid 
+> state.
+>
+> I can provide more information, just let me know what is needed. Here 
+> is the log, I hope it helps:
+>
+> [   11.881784] bcmgenet fd580000.ethernet eth0: Link is Up - 
+> 1Gbps/Full - flow control off
+> [   11.889935] IPv6: ADDRCONF(NETDEV_CHANGE): eth0: link becomes ready
+>
+> root@target:~# ping host
+> PING host (192.168.100.1) 56(84) bytes of data.
+> From 192.168.100.53 icmp_seq=1 Destination Host Unreachable
+> ...
 
-We are imposition to reclaim and inherit the sum of US $(38,850,000
-Million ) without any trouble, from a dormant account which remains
-unclaimed since 7 years the owner died. This is a U.S Dollars account
-and the beneficiary died without trace of his family to claim the
-fund.
+Okay, I've played a bit more with this and found that enabling 
+CONFIG_BROADCOM_PHY fixes this network issue. I wonder if Genet driver 
+should simply select CONFIG_BROADCOM_PHY the same way as it selects 
+CONFIG_BCM7XXX_PHY.
 
-Upon my personal audit investigation into the details of the account,
-I find out that the deceased is a foreigner, which makes it possible
-for you as a foreigner no matter your country to lay claim on the
-balance as the Foreign Business Partner or Extended Relative to the
-deceased, provided you are not from here.
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
-Your integrity and trustworthiness will make us succeed without any
-risk. Please if you think that the amount is too much to be
-transferred into your account, you have the right to ask our bank
-transfer the fund into your account bit by bit after approval or you
-double the account. Once this fund is transferred into your account,
-we will share the fund accordingly. 45%, for you, 45%, for me, 5%, had
-been mapped out for the expense made in this transaction, 5% as a free
-will donation to charity and motherless babies homes in both our
-countries as sign of breakthrough and more blessings.
-
-
-If you are interested to help without disappointment or breach of
-trust, reply me, so that I will guide you on the proper banking
-guidelines to follow for the claim. After the transfer, I will fly to
-your country for sharing of funds according to our agreement.
-Assurance: Note that this transaction will never in any way harm or
-foiled your good post or reputation in your country, because
-everything will follow legal process.
-
-I am looking forward to hear from you soonest.
-Yours faithfully,
-Mr Olusegun Ebrima
