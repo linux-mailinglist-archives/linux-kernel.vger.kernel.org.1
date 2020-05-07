@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AC321C89F3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 14:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 994291C89F6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 14:02:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726770AbgEGMCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 08:02:10 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:59790 "EHLO huawei.com"
+        id S1727097AbgEGMCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 08:02:17 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:60556 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725879AbgEGMCH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 08:02:07 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 8C7057ECDD0B832C1529;
-        Thu,  7 May 2020 20:02:04 +0800 (CST)
+        id S1726860AbgEGMCL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 08:02:11 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id D9DDA437022CAFA99E64;
+        Thu,  7 May 2020 20:02:09 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.58) by
  DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 7 May 2020 20:01:58 +0800
+ 14.3.487.0; Thu, 7 May 2020 20:01:59 +0800
 From:   John Garry <john.garry@huawei.com>
 To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
         <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
@@ -27,9 +27,9 @@ CC:     <will@kernel.org>, <ak@linux.intel.com>, <linuxarm@huawei.com>,
         <zhangshaokun@hisilicon.com>,
         <linux-arm-kernel@lists.infradead.org>,
         John Garry <john.garry@huawei.com>
-Subject: [PATCH RFC v3 08/12] perf vendor events: Add JSON metrics for imx8mm DDR Perf
-Date:   Thu, 7 May 2020 19:57:47 +0800
-Message-ID: <1588852671-61996-9-git-send-email-john.garry@huawei.com>
+Subject: [PATCH RFC v3 09/12] perf metricgroup: Split up metricgroup__add_metric()
+Date:   Thu, 7 May 2020 19:57:48 +0800
+Message-ID: <1588852671-61996-10-git-send-email-john.garry@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1588852671-61996-1-git-send-email-john.garry@huawei.com>
 References: <1588852671-61996-1-git-send-email-john.garry@huawei.com>
@@ -42,101 +42,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
+To aid supporting system event metric groups, break up the function
+metricgroup__add_metric() into a part which iterates metrics and a part
+which actually "adds" the metric.
 
-Add JSON metrics for imx8mm DDR Perf.
+No functional change intended.
 
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
 Signed-off-by: John Garry <john.garry@huawei.com>
 ---
- .../arch/arm64/freescale/imx8mm/sys/ddrc.json      | 39 ++++++++++++++++++++++
- .../arch/arm64/freescale/imx8mm/sys/metrics.json   | 18 ++++++++++
- tools/perf/pmu-events/jevents.c                    |  1 +
- 3 files changed, 58 insertions(+)
- create mode 100644 tools/perf/pmu-events/arch/arm64/freescale/imx8mm/sys/ddrc.json
- create mode 100644 tools/perf/pmu-events/arch/arm64/freescale/imx8mm/sys/metrics.json
+ tools/perf/util/metricgroup.c | 75 ++++++++++++++++++++++++++-----------------
+ 1 file changed, 45 insertions(+), 30 deletions(-)
 
-diff --git a/tools/perf/pmu-events/arch/arm64/freescale/imx8mm/sys/ddrc.json b/tools/perf/pmu-events/arch/arm64/freescale/imx8mm/sys/ddrc.json
-new file mode 100644
-index 000000000000..8a3dae61a48f
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/arm64/freescale/imx8mm/sys/ddrc.json
-@@ -0,0 +1,39 @@
-+[
-+   {
-+           "BriefDescription": "ddr cycles event",
-+           "EventCode": "0x00",
-+           "EventName": "imx8mm_ddr.cycles",
-+           "Unit": "imx8_ddr",
-+           "Compat": "i.mx8mm"
-+   },
-+   {
-+           "BriefDescription": "ddr read-cycles event",
-+           "EventCode": "0x2a",
-+           "EventName": "imx8mm_ddr.read_cycles",
-+           "Unit": "imx8_ddr",
-+           "Compat": "i.mx8mm"
-+   },
-+   {
-+           "BriefDescription": "ddr write-cycles event",
-+           "EventCode": "0x2b",
-+           "EventName": "imx8mm_ddr.write_cycles",
-+           "Unit": "imx8_ddr",
-+           "Compat": "i.mx8mm"
-+   },
-+   {
-+           "BriefDescription": "ddr read event",
-+           "EventCode": "0x35",
-+           "EventName": "imx8mm_ddr.read",
-+           "Unit": "imx8_ddr",
-+           "Compat": "i.mx8mm"
-+   },
-+   {
-+           "BriefDescription": "ddr write event",
-+           "EventCode": "0x38",
-+           "EventName": "imx8mm_ddr.write",
-+           "Unit": "imx8_ddr",
-+           "Compat": "i.mx8mm"
-+   }
-+]
+diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+index 926449a7cdbf..d1033756a1bc 100644
+--- a/tools/perf/util/metricgroup.c
++++ b/tools/perf/util/metricgroup.c
+@@ -231,6 +231,12 @@ static bool match_metric(const char *n, const char *list)
+ 	return false;
+ }
+ 
++static bool match_pe_metric(struct pmu_event *pe, const char *metric)
++{
++	return match_metric(pe->metric_group, metric) ||
++	       match_metric(pe->metric_name, metric);
++}
 +
+ struct mep {
+ 	struct rb_node nd;
+ 	const char *name;
+@@ -485,6 +491,40 @@ static bool metricgroup__has_constraint(struct pmu_event *pe)
+ 	return false;
+ }
+ 
++static int metricgroup__add_metric_pmu_event(struct pmu_event *pe,
++					     struct strbuf *events,
++					     struct list_head *group_list)
++{
++	const char **ids;
++	int idnum;
++	struct egroup *eg;
 +
-diff --git a/tools/perf/pmu-events/arch/arm64/freescale/imx8mm/sys/metrics.json b/tools/perf/pmu-events/arch/arm64/freescale/imx8mm/sys/metrics.json
-new file mode 100644
-index 000000000000..eb891ac896ad
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/arm64/freescale/imx8mm/sys/metrics.json
-@@ -0,0 +1,18 @@
-+[
-+   {
-+	    "BriefDescription": "bytes all masters read from ddr based on read-cycles event",
-+	    "MetricName": "imx8mm_ddr_read.all",
-+	    "MetricExpr": "imx8mm_ddr.read_cycles * 4 * 4",
-+	    "ScaleUnit": "9.765625e-4KB",
-+	    "Unit": "imx8_ddr",
-+	    "Compat": "i.mx8mm"
-+    },
-+   {
-+	    "BriefDescription": "bytes all masters write to ddr based on write-cycles event",
-+	    "MetricName": "imx8mm_ddr_write.all",
-+	    "MetricExpr": "imx8mm_ddr.write_cycles * 4 * 4",
-+	    "ScaleUnit": "9.765625e-4KB",
-+	    "Unit": "imx8_ddr",
-+	    "Compat": "i.mx8mm"
-+    }
-+]
-diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
-index 76a84ec2ffc8..efdade0194af 100644
---- a/tools/perf/pmu-events/jevents.c
-+++ b/tools/perf/pmu-events/jevents.c
-@@ -257,6 +257,7 @@ static struct map {
- 	{ "hisi_sccl,hha", "hisi_sccl,hha" },
- 	{ "hisi_sccl,l3c", "hisi_sccl,l3c" },
- 	/* it's not realistic to keep adding these, we need something more scalable ... */
-+	{ "imx8_ddr", "imx8_ddr" },
- 	{ "smmuv3_pmcg", "smmuv3_pmcg" },
- 	{ "L3PMC", "amd_l3" },
- 	{}
++	pr_debug("metric expr %s for %s\n", pe->metric_expr, pe->metric_name);
++
++	if (expr__find_other(pe->metric_expr, NULL, &ids, &idnum) < 0)
++		return 0;
++
++	if (events->len > 0)
++		strbuf_addf(events, ",");
++
++	if (metricgroup__has_constraint(pe))
++		metricgroup__add_metric_non_group(events, ids, idnum);
++	else
++		metricgroup__add_metric_weak_group(events, ids, idnum);
++
++	eg = malloc(sizeof(*eg));
++	if (!eg)
++		return -ENOMEM;
++	eg->ids = ids;
++	eg->idnum = idnum;
++	eg->metric_name = pe->metric_name;
++	eg->metric_expr = pe->metric_expr;
++	eg->metric_unit = pe->unit;
++	list_add_tail(&eg->nd, group_list);
++
++	return 0;
++}
++
+ static int metricgroup__add_metric(const char *metric, struct strbuf *events,
+ 				   struct list_head *group_list)
+ {
+@@ -502,37 +542,12 @@ static int metricgroup__add_metric(const char *metric, struct strbuf *events,
+ 			break;
+ 		if (!pe->metric_expr)
+ 			continue;
+-		if (match_metric(pe->metric_group, metric) ||
+-		    match_metric(pe->metric_name, metric)) {
+-			const char **ids;
+-			int idnum;
+-			struct egroup *eg;
+-
+-			pr_debug("metric expr %s for %s\n", pe->metric_expr, pe->metric_name);
+ 
+-			if (expr__find_other(pe->metric_expr,
+-					     NULL, &ids, &idnum) < 0)
+-				continue;
+-			if (events->len > 0)
+-				strbuf_addf(events, ",");
+-
+-			if (metricgroup__has_constraint(pe))
+-				metricgroup__add_metric_non_group(events, ids, idnum);
+-			else
+-				metricgroup__add_metric_weak_group(events, ids, idnum);
+-
+-			eg = malloc(sizeof(struct egroup));
+-			if (!eg) {
+-				ret = -ENOMEM;
+-				break;
+-			}
+-			eg->ids = ids;
+-			eg->idnum = idnum;
+-			eg->metric_name = pe->metric_name;
+-			eg->metric_expr = pe->metric_expr;
+-			eg->metric_unit = pe->unit;
+-			list_add_tail(&eg->nd, group_list);
+-			ret = 0;
++		if (match_pe_metric(pe, metric)) {
++			ret = metricgroup__add_metric_pmu_event(pe, events,
++								group_list);
++			if (ret)
++				return ret;
+ 		}
+ 	}
+ 	return ret;
 -- 
 2.16.4
 
