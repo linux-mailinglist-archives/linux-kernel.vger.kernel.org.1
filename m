@@ -2,72 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B9781C9661
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 18:23:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 361401C9676
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 18:26:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728034AbgEGQXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 12:23:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726627AbgEGQXP (ORCPT
+        id S1727105AbgEGQ0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 12:26:37 -0400
+Received: from mout.kundenserver.de ([217.72.192.74]:40329 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726636AbgEGQ0g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 12:23:15 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C524C05BD43
-        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 09:23:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:MIME-Version:Date:Message-ID:Subject:From:To:Sender:Reply-To:Cc:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=HWcYFhwuKZBkcAlypnWomG6dn+SIe9TYlotFgzRCTJg=; b=fWwekOEKyltFs3du68d9ZNphza
-        oLlBD7294ZfcEiOENvK6tGCjvvhIWyUaDESHwoTHPU6/tgJGEz3i3LgseeEUER9jFcTC4OetLfs35
-        tx371+qnyiE+CrPMV9ptgA7quZgLqGIfhrBZi5XHmcYeKRhbz+cCUMoso9/YbdoBRv9RaFqKnpEiv
-        jp2utHCAAJhotGbQ6esIDg8npjaSdXQFWfg2l4odPJhV919bMwSEWdRBd/PHoi0YmFQNSJ1v8KtHw
-        8z9RYYp9/G1BA0y4XSdAhuYPBDjdA3aNVZZx8kpeh7rapIl1FZl6BW+9PPN/CIfuWLdQx9WGUjXI3
-        dkUGf+xA==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jWjIm-0008To-Fd; Thu, 07 May 2020 16:23:12 +0000
-To:     dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH -next] drm: panel: add MODULE_LICENSE to
- panel-visionox-rm69299.c
-Message-ID: <bbb7b3b3-9968-9a1f-8ef6-2e8e3be998f6@infradead.org>
-Date:   Thu, 7 May 2020 09:23:11 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Thu, 7 May 2020 12:26:36 -0400
+Received: from localhost.localdomain ([149.172.19.189]) by
+ mrelayeu.kundenserver.de (mreue108 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1MWRe1-1jeBD910tn-00Xufr; Thu, 07 May 2020 18:26:24 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Marco Elver <elver@google.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Dmitry Vyukov <dvyukov@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: [PATCH] [v2] ubsan, kcsan: don't combine sanitizer with kcov on clang
+Date:   Thu,  7 May 2020 18:25:31 +0200
+Message-Id: <20200507162617.2472578-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.0
+In-Reply-To: <CANpmjNPCZ2r9V7t50_yy+F_-roBWJdiQWgmvvcqTFxzdzOwKhg@mail.gmail.com>
+References: <CANpmjNPCZ2r9V7t50_yy+F_-roBWJdiQWgmvvcqTFxzdzOwKhg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:Wu355d2keiT+DomNoCv1+GG6rk5RbqLzx+vkGjzDKtS+V3yIyQG
+ 6ihXPPX397wJmWAjP409EOBm8Lb7F4b5kdcec4kIwwwPQ3FN9b+jjt07gItE5RG+npOFhnF
+ AtoA281a5IOmWhWqiiCkA8G/24I7wTZjfyMeqvC3+U5TxLO3coNrS27G7XjimIPp7D7H7O0
+ AYIUgrAAEr4H3ddktCgrA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:bhWFnq9NWHo=:5tJlgXF+2Bv3nOEYTE0p9j
+ NPqVpsQ/jxgKgi/vuEMU/q0I1znfnkbRj0TaJf7uMzprYNs6Z8WavH+Z0aIicQn7Qd1FAwuFA
+ Xu3bmkkHmAjseqOjycwICf00icuCxzQFsCLKadIjQnpkZHLArutNStKOOg/rD/m9Zj7WEdEVs
+ w1EWLd8ATnolfxyZfLfwGsaGV6zrpcSgy+wmQwCmKaa+7pQKxMzCvINVssmZxTaARcZJGb4kV
+ UzfQ0DYqOigKSL8pC1Xt+piE5vr0Iwu0xfZzgiuzHUMnhQ37ra6wWPVkX2rPjuAHG+K1mPzfW
+ aXC+84ux4k7hrjI5CmAQbb6VO8aTQE8k0fHTYoTTDMD+6Uo/XhkjQxe80wJWNBOomNtJ3nkD+
+ 3Z2MlGwgb892a/RLG/q9E3dDrsaAaRm0YarN0ljlJMhmeNA3oNMJDfK/1j2KI05P8Z6ynWsjr
+ FFGd4tEXMOQHYZyp658iTwKGTpNtUDIz+NPtj3gFUd+OaBAU8t03wupeM5cUzyCsKwU92jGvr
+ UEMvAhCl0mfH/Jh0wgfYydHKyJ6Gu2EV3cEjvf+J4TlKdE4sQvDDxcqoHXYvd3+lRPFNMOXBJ
+ 8Rxayg6e5/Upae+M7PwLfv89k1XL2VTeyz6Th/E30Dq71RUqt1rsPVmWg7nFnQ1Vyq1TTYauU
+ 6csJmqx1idVdulaXD70scaCmRvzLsI2pXDKhifXGNCEbJxeZGVpNRjdps2bdmpunI2PA57K5g
+ fZ90kS53ULz00soz5VfAUg4LcH85CoZwE8YJWrYr9o0M8BgD0emMo8PmqGMyQIICOAvs/dXKF
+ QJZfjlEvR8vhPJaFCyjkQX+mXRROG0zX7xkjfNm1qVeAM12amA=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+Clang does not allow -fsanitize-coverage=trace-{pc,cmp} together
+with -fsanitize=bounds or with ubsan:
 
-Add MODULE_LICENSE() to the panel-visionox-rm69299 driver
-to fix a build warning.
+clang: error: argument unused during compilation: '-fsanitize-coverage=trace-pc' [-Werror,-Wunused-command-line-argument]
+clang: error: argument unused during compilation: '-fsanitize-coverage=trace-cmp' [-Werror,-Wunused-command-line-argument]
 
-WARNING: modpost: missing MODULE_LICENSE() in drivers/gpu/drm/panel/panel-visionox-rm69299.o
+To avoid the warning, check whether clang can handle this correctly
+or disallow ubsan and kcsan when kcov is enabled.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Thierry Reding <thierry.reding@gmail.com>
-Cc: Sam Ravnborg <sam@ravnborg.org>
-Cc: dri-devel@lists.freedesktop.org
+Link: https://bugs.llvm.org/show_bug.cgi?id=45831
+Link: https://lore.kernel.org/lkml/20200505142341.1096942-1-arnd@arndb.de
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/gpu/drm/panel/panel-visionox-rm69299.c |    1 +
- 1 file changed, 1 insertion(+)
+v2: this implements Marco's suggestion to check what the compiler
+actually supports, and references the bug report I now opened.
 
---- linux-next-20200507.orig/drivers/gpu/drm/panel/panel-visionox-rm69299.c
-+++ linux-next-20200507/drivers/gpu/drm/panel/panel-visionox-rm69299.c
-@@ -300,3 +300,4 @@ static struct mipi_dsi_driver visionox_r
- module_mipi_dsi_driver(visionox_rm69299_driver);
+Let's wait for replies on that bug report before this gets applied,
+in case the feedback there changes the conclusion.
+---
+ lib/Kconfig.kcsan | 11 +++++++++++
+ lib/Kconfig.ubsan | 11 +++++++++++
+ 2 files changed, 22 insertions(+)
+
+diff --git a/lib/Kconfig.kcsan b/lib/Kconfig.kcsan
+index ea28245c6c1d..a7276035ca0d 100644
+--- a/lib/Kconfig.kcsan
++++ b/lib/Kconfig.kcsan
+@@ -3,9 +3,20 @@
+ config HAVE_ARCH_KCSAN
+ 	bool
  
- MODULE_DESCRIPTION("Visionox RM69299 DSI Panel Driver");
-+MODULE_LICENSE("GPL v2");
++config KCSAN_KCOV_BROKEN
++	def_bool KCOV && CC_HAS_SANCOV_TRACE_PC
++	depends on CC_IS_CLANG
++	depends on !$(cc-option,-Werror=unused-command-line-argument -fsanitize=thread -fsanitize-coverage=trace-pc)
++	help
++	  Some versions of clang support either KCSAN and KCOV but not the
++	  combination of the two.
++	  See https://bugs.llvm.org/show_bug.cgi?id=45831 for the status
++	  in newer releases.
++
+ menuconfig KCSAN
+ 	bool "KCSAN: dynamic data race detector"
+ 	depends on HAVE_ARCH_KCSAN && DEBUG_KERNEL && !KASAN
++	depends on !KCSAN_KCOV_BROKEN
+ 	select STACKTRACE
+ 	help
+ 	  The Kernel Concurrency Sanitizer (KCSAN) is a dynamic
+diff --git a/lib/Kconfig.ubsan b/lib/Kconfig.ubsan
+index 929211039bac..a5ba2fd51823 100644
+--- a/lib/Kconfig.ubsan
++++ b/lib/Kconfig.ubsan
+@@ -26,9 +26,20 @@ config UBSAN_TRAP
+ 	  the system. For some system builders this is an acceptable
+ 	  trade-off.
+ 
++config UBSAN_KCOV_BROKEN
++	def_bool KCOV && CC_HAS_SANCOV_TRACE_PC
++	depends on CC_IS_CLANG
++	depends on !$(cc-option,-Werror=unused-command-line-argument -fsanitize=bounds -fsanitize-coverage=trace-pc)
++	help
++	  Some versions of clang support either UBSAN or KCOV but not the
++	  combination of the two.
++	  See https://bugs.llvm.org/show_bug.cgi?id=45831 for the status
++	  in newer releases.
++
+ config UBSAN_BOUNDS
+ 	bool "Perform array index bounds checking"
+ 	default UBSAN
++	depends on !UBSAN_KCOV_BROKEN
+ 	help
+ 	  This option enables detection of directly indexed out of bounds
+ 	  array accesses, where the array size is known at compile time.
+-- 
+2.26.0
 
