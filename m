@@ -2,187 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BF241C9BDC
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 22:12:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BCBC1C9BE9
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 22:15:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728445AbgEGULz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 16:11:55 -0400
-Received: from mx0a-00154904.pphosted.com ([148.163.133.20]:53852 "EHLO
-        mx0a-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726367AbgEGULy (ORCPT
+        id S1728362AbgEGUPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 16:15:54 -0400
+Received: from rnd-relay.smtp.broadcom.com ([192.19.229.170]:47414 "EHLO
+        rnd-relay.smtp.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726320AbgEGUPx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 16:11:54 -0400
-Received: from pps.filterd (m0170391.ppops.net [127.0.0.1])
-        by mx0a-00154904.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 047KBZR2011245;
-        Thu, 7 May 2020 16:11:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : subject :
- date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=smtpout1;
- bh=FutY7/PocSDquuLkq9+a9lv+L2OmOyTDQDb74IqLEkw=;
- b=g7XBA4nlgzOnb+1OrOxdo/xAxeOcyzOolRUkn9sZJie4he8Amp4JIg/Nbh5GIuTR81KD
- 74m2/uzfuBaIN2ZXbcPAsN0YJz1NVnpTXMc4FQEEr4Fi/EkohyeAOo0ERsD96qirhGgM
- GWirN3EoUTUX2GZrFkLFPujyuoN3RtG08PVldnhBlUoUboRyLKWKPMUSwl8bn3E6exm4
- JFcXJ4+ZAjVKPecrJdlF2cMUdW0uU8VMI42jXi9e5TnatgmN1OCXqL/Gs8fb5tHHFfo8
- J1l/8VI9FIiDx903uONPIXpcOJKDP/qJZGkjySoMq0SBY2U2j5otxw+tUzzooG3Bc4qy 8A== 
-Received: from mx0a-00154901.pphosted.com (mx0a-00154901.pphosted.com [67.231.149.39])
-        by mx0a-00154904.pphosted.com with ESMTP id 30sxjmdyve-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 May 2020 16:11:54 -0400
-Received: from pps.filterd (m0134746.ppops.net [127.0.0.1])
-        by mx0a-00154901.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 047Jqs87161869;
-        Thu, 7 May 2020 16:11:53 -0400
-Received: from ausc60pc101.us.dell.com (ausc60pc101.us.dell.com [143.166.85.206])
-        by mx0a-00154901.pphosted.com with ESMTP id 30vq4ea7hh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 07 May 2020 16:11:53 -0400
-X-LoopCount0: from 10.166.132.130
-X-PREM-Routing: D-Outbound
-X-IronPort-AV: E=Sophos;i="5.60,349,1549951200"; 
-   d="scan'208";a="1553508669"
-From:   <Mario.Limonciello@dell.com>
-To:     <koba.ko@canonical.com>, <mjg59@srcf.ucam.org>,
-        <pali.rohar@gmail.com>, <dvhart@infradead.org>,
-        <andy@infradead.org>, <platform-driver-x86@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] platform/x86: dell-laptop: don't register
- platform::micmute if the related tokens don't exist.
-Thread-Topic: [PATCH] platform/x86: dell-laptop: don't register
- platform::micmute if the related tokens don't exist.
-Thread-Index: AQHWJGsTQDXbgVjQZ0WT0dgVnPhl9aidDRIA
-Date:   Thu, 7 May 2020 20:11:08 +0000
-Message-ID: <31e54254d233424f937ea767c5a26f57@AUSX13MPC101.AMER.DELL.COM>
-References: <20200507122703.14617-1-koba.ko@canonical.com>
-In-Reply-To: <20200507122703.14617-1-koba.ko@canonical.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Enabled=True;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SiteId=945c199a-83a2-4e80-9f8c-5a91be5752dd;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Owner=Mario_Limonciello@Dell.com;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SetDate=2020-05-07T20:11:05.4258848Z;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Name=External Public;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Application=Microsoft Azure
- Information Protection;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_ActionId=111805c0-2495-4ee0-882b-6de0026e11a1;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Extended_MSFT_Method=Manual
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [143.166.24.60]
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-07_13:2020-05-07,2020-05-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- lowpriorityscore=0 priorityscore=1501 phishscore=0 mlxscore=0
- suspectscore=0 mlxlogscore=999 impostorscore=0 malwarescore=0 bulkscore=0
- spamscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005070159
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0 mlxscore=0
- malwarescore=0 adultscore=0 clxscore=1015 spamscore=0 priorityscore=1501
- phishscore=0 suspectscore=0 lowpriorityscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2005070160
+        Thu, 7 May 2020 16:15:53 -0400
+Received: from mail-irv-17.broadcom.com (mail-irv-17.lvn.broadcom.net [10.75.242.48])
+        by rnd-relay.smtp.broadcom.com (Postfix) with ESMTP id 6E42630C02B;
+        Thu,  7 May 2020 13:15:17 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 rnd-relay.smtp.broadcom.com 6E42630C02B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+        s=dkimrelay; t=1588882517;
+        bh=TFgm1HP6J/q3gMqUn7S3GA3dics4xRiCfyXx7FSOh7w=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ka147P+U1Ln/MosxtJ9bxvNQLe8/NzuQU3513/ol9qMJnIKxuoFj2eu7oeZ0LoPf9
+         aaTGepYe5XOLtq1C3Z6XeGMhVvl/4ORa4Ly1WPE23eRdLYkysFNDWrdx8acQ3t02NR
+         yPPPqFRRyWEpELxA3N4VHXOjBhtVbCUap8lxajvI=
+Received: from stbsrv-and-01.and.broadcom.net (stbsrv-and-01.and.broadcom.net [10.28.16.211])
+        by mail-irv-17.broadcom.com (Postfix) with ESMTP id 7F4BD140069;
+        Thu,  7 May 2020 13:15:51 -0700 (PDT)
+From:   Jim Quinlan <james.quinlan@broadcom.com>
+To:     james.quinlan@broadcom.com
+Cc:     Andrew Murray <amurray@thegoodpenguin.co.uk>,
+        bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM
+        BCM2711/BCM2835 ARM ARCHITECTURE),
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS), Jeremy Linton <jeremy.linton@arm.com>,
+        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM
+        BCM2711/BCM2835 ARM ARCHITECTURE),
+        linux-kernel@vger.kernel.org (open list),
+        linux-pci@vger.kernel.org (open list:PCI NATIVE HOST BRIDGE AND
+        ENDPOINT DRIVERS),
+        linux-rpi-kernel@lists.infradead.org (moderated list:BROADCOM
+        BCM2711/BCM2835 ARM ARCHITECTURE),
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v3 0/4] PCI: brcmstb: Some minor fixes/features
+Date:   Thu,  7 May 2020 16:15:39 -0400
+Message-Id: <20200507201544.43432-1-james.quinlan@broadcom.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: koba.ko@canonical.com <koba.ko@canonical.com>
-> Sent: Thursday, May 7, 2020 7:27 AM
-> To: Matthew Garrett; Pali Roh=E1r; Darren Hart; Andy Shevchenko; platform=
--driver-
-> x86@vger.kernel.org; linux-kernel@vger.kernel.org; Limonciello, Mario
-> Subject: [PATCH] platform/x86: dell-laptop: don't register platform::micm=
-ute if
-> the related tokens don't exist.
->=20
->=20
-> [EXTERNAL EMAIL]
->=20
-> From: Koba Ko <koba.ko@canonical.com>
->=20
-> During boot up, Error messge is issued,
-> "platform::micmute: Setting an LED's brightness failed (-19)",
-> but the device isn't presented.
->=20
-> Get the related tokens of SMBIOS, GLOBAL_MIC_MUTE_DISABLE/ENABLE.
-> If one of two tokens doesn't exist,
-> don't call led_classdev_register() for platform::micmute.
-> After that, you wouldn't see the platform::micmute in /sys/class/leds/,
-> and the error message wouldn't see in dmesg.
->=20
+v3 -- A change was submitted to [1] to make 'aspm-no-l0s' a general
+      property for PCIe devices.  As such, the STB PCIe YAML  file
+      merely notes that it may be used.
 
-Unless it's a pre-release platform, I think it's worth mentioning in commit
-message what the hardware is.
+v2 -- Dropped commit concerning CRS.
+   -- Chanded new prop 'brcm,aspm-en-l0s' to 'aspm-no-l0s'.
+   -- Capitalize first letter in commit subject line; spelling.
 
-If it's pre-release, then perhaps mention "pre-release vostro platform" her=
-e.
-This is useful information in case in the future something in this driver m=
-ust
-change for a full class/line of systems.
+v1 -- original
 
-> Signed-off-by: Koba Ko <koba.ko@canonical.com>
-> ---
->  drivers/platform/x86/dell-laptop.c | 17 +++++++++++------
->  1 file changed, 11 insertions(+), 6 deletions(-)
->=20
-> diff --git a/drivers/platform/x86/dell-laptop.c b/drivers/platform/x86/de=
-ll-
-> laptop.c
-> index 74e988f839e8..e315185dbdd6 100644
-> --- a/drivers/platform/x86/dell-laptop.c
-> +++ b/drivers/platform/x86/dell-laptop.c
-> @@ -2164,7 +2164,7 @@ static struct led_classdev micmute_led_cdev =3D {
->  static int __init dell_init(void)
->  {
->  	struct calling_interface_token *token;
-> -	int max_intensity =3D 0;
-> +	int max_intensity =3D 0, is_micmute_exist =3D 0;
+[1] https://github.com/devicetree-org/dt-schema/blob/master/schemas/pci/pci-bus.yaml
 
-As a nit, please declare variables on their own line and I don't like is_mi=
-cmute_exist
-as this is bad grammar.
+Jim Quinlan (4):
+  PCI: brcmstb: Don't clk_put() a managed clock
+  PCI: brcmstb: Fix window register offset from 4 to 8
+  dt-bindings: PCI: brcmstb: New prop 'aspm-no-l0s'
+  PCI: brcmstb: Disable L0s component of ASPM if requested
 
-Perhaps "micmute_exists" instead.
+ .../bindings/pci/brcm,stb-pcie.yaml           |  2 ++
+ drivers/pci/controller/pcie-brcmstb.c         | 19 +++++++++++++++----
+ 2 files changed, 17 insertions(+), 4 deletions(-)
 
-Also this variable can be a boolean type instead with it's usage.
-
->  	int ret;
->=20
->  	if (!dmi_check_system(dell_device_table))
-> @@ -2204,10 +2204,14 @@ static int __init dell_init(void)
->=20
->  	dell_laptop_register_notifier(&dell_laptop_notifier);
->=20
-> -	micmute_led_cdev.brightness =3D ledtrig_audio_get(LED_AUDIO_MICMUTE);
-> -	ret =3D led_classdev_register(&platform_device->dev, &micmute_led_cdev)=
-;
-> -	if (ret < 0)
-> -		goto fail_led;
-> +	if (dell_smbios_find_token(GLOBAL_MIC_MUTE_DISABLE) &&
-> +	    dell_smbios_find_token(GLOBAL_MIC_MUTE_ENABLE)) {
-> +		micmute_led_cdev.brightness =3D ledtrig_audio_get(LED_AUDIO_MICMUTE);
-> +		ret =3D led_classdev_register(&platform_device->dev,
-> &micmute_led_cdev);
-> +		if (ret < 0)
-> +			goto fail_led;
-> +		is_micmute_exist =3D 1;
-> +	}
->=20
->  	if (acpi_video_get_backlight_type() !=3D acpi_backlight_vendor)
->  		return 0;
-> @@ -2254,7 +2258,8 @@ static int __init dell_init(void)
->  fail_get_brightness:
->  	backlight_device_unregister(dell_backlight_device);
->  fail_backlight:
-> -	led_classdev_unregister(&micmute_led_cdev);
-> +	if (is_micmute_exist)
-> +		led_classdev_unregister(&micmute_led_cdev);
->  fail_led:
->  	dell_cleanup_rfkill();
->  fail_rfkill:
-> --
-> 2.25.1
+-- 
+2.17.1
 
