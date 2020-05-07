@@ -2,68 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76E4C1C9988
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:45:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 541C41C999F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:47:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728244AbgEGSph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 14:45:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46490 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726367AbgEGSph (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 14:45:37 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728533AbgEGSrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 14:47:24 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:55045 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726467AbgEGSrW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 14:47:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588877240;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fA/ECm0zhQEdUp/fUbA73B0nJs5vbdkbZsQ0b4cogDo=;
+        b=TWz6Vqjj8SBvEKBx1vLPZ+I1DGcKCa4G+y4nV2bm5DF3FyqhBCXJtSDWthw1Bn4lfbPPND
+        GpvV8mPueQCWwaE0Mv/ySdiuNnJfV+w30W7IpzUQnv/vyglM7fOBwZboc8k5ivv1Aw0oVC
+        sjZ3yk1ojO3h0yFMM+x/KLU3jWGVXT0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-271-MgJVVsgDOfqwYGQcSYPLlA-1; Thu, 07 May 2020 14:47:16 -0400
+X-MC-Unique: MgJVVsgDOfqwYGQcSYPLlA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 92ED520870;
-        Thu,  7 May 2020 18:45:35 +0000 (UTC)
-Date:   Thu, 7 May 2020 14:45:34 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        Jason Yan <yanaijie@huawei.com>, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        bsegall@google.com, mgorman@suse.de, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched/fair: Return true,false in
- voluntary_active_balance()
-Message-ID: <20200507144534.09abd685@gandalf.local.home>
-In-Reply-To: <f0e6f50e910238366b1d8f398c91d3066baac7cf.camel@perches.com>
-References: <20200507110625.37254-1-yanaijie@huawei.com>
-        <jhjpnbg6lkf.mognet@arm.com>
-        <20200507132828.1af39b80@gandalf.local.home>
-        <20200507133024.18dbe349@gandalf.local.home>
-        <f0e6f50e910238366b1d8f398c91d3066baac7cf.camel@perches.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BAF3919200C0;
+        Thu,  7 May 2020 18:47:14 +0000 (UTC)
+Received: from optiplex-lnx (unknown [10.3.128.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id CCBBF70559;
+        Thu,  7 May 2020 18:47:08 +0000 (UTC)
+Date:   Thu, 7 May 2020 14:47:05 -0400
+From:   Rafael Aquini <aquini@redhat.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        dyoung@redhat.com, bhe@redhat.com, corbet@lwn.net,
+        keescook@chromium.org, akpm@linux-foundation.org, cai@lca.pw,
+        rdunlap@infradead.org
+Subject: Re: [PATCH v2] kernel: add panic_on_taint
+Message-ID: <20200507184705.GG205881@optiplex-lnx>
+References: <20200507180631.308441-1-aquini@redhat.com>
+ <20200507182257.GX11244@42.do-not-panic.com>
+ <20200507184307.GF205881@optiplex-lnx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200507184307.GF205881@optiplex-lnx>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 07 May 2020 10:55:33 -0700
-Joe Perches <joe@perches.com> wrote:
+On Thu, May 07, 2020 at 02:43:16PM -0400, Rafael Aquini wrote:
+> On Thu, May 07, 2020 at 06:22:57PM +0000, Luis Chamberlain wrote:
+> > On Thu, May 07, 2020 at 02:06:31PM -0400, Rafael Aquini wrote:
+> > > diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+> > > index 8a176d8727a3..b80ab660d727 100644
+> > > --- a/kernel/sysctl.c
+> > > +++ b/kernel/sysctl.c
+> > > @@ -1217,6 +1217,13 @@ static struct ctl_table kern_table[] = {
+> > >  		.extra1		= SYSCTL_ZERO,
+> > >  		.extra2		= SYSCTL_ONE,
+> > >  	},
+> > > +	{
+> > > +		.procname	= "panic_on_taint",
+> > > +		.data		= &panic_on_taint,
+> > > +		.maxlen		= sizeof(unsigned long),
+> > > +		.mode		= 0644,
+> > > +		.proc_handler	= proc_doulongvec_minmax,
+> > > +	},
+> > 
+> > You sent this out before I could reply to the other thread on v1.
+> > My thoughts on the min / max values, or lack here:
+> >                                                                                 
+> > Valid range doesn't mean "currently allowed defined" masks.                     
+> > 
+> > For example, if you expect to panic due to a taint, but a new taint type
+> > you want was not added on an older kernel you would be under a very
+> > *false* sense of security that your kernel may not have hit such a
+> > taint, but the reality of the situation was that the kernel didn't
+> > support that taint flag only added in future kernels.                           
+> > 
+> > You may need to define a new flag (MAX_TAINT) which should be the last
+> > value + 1, the allowed max values would be                                      
+> > 
+> > (2^MAX_TAINT)-1                                                                 
+> > 
+> > or                                                                              
+> > 
+> > (1<<MAX_TAINT)-1  
+> > 
+> > Since this is to *PANIC* I think we do want to test ranges and ensure
+> > only valid ones are allowed.
+> >
+> 
+> Ok. I'm thinking in:
+> 
+> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+> index 8a176d8727a3..ee492431e7b0 100644
+> --- a/kernel/sysctl.c
+> +++ b/kernel/sysctl.c
+> @@ -1217,6 +1217,15 @@ static struct ctl_table kern_table[] = {
+>                 .extra1         = SYSCTL_ZERO,
+>                 .extra2         = SYSCTL_ONE,
+>         },
+> +       {
+> +               .procname       = "panic_on_taint",
+> +               .data           = &panic_on_taint,
+> +               .maxlen         = sizeof(unsigned long),
+> +               .mode           = 0644,
+> +               .proc_handler   = proc_doulongvec_minmax,
+> +               .extra1         = SYSCTL_ZERO,
+> +               .extra2         = (1 << TAINT_FLAGS_COUNT << 1) - 1,
+							^^^^^^^^
+Without that crap, obviously. Sorry. That was a screw up on my side,
+when copyin' and pasting.
 
-> > If anything, we can teach people to try to understand their fixes, to see
-> > if something is really a fix or not. Blindly accepting changes like this,
-> > is no different than blindly submitting patches because some tool says its
-> > an issue.  
+-- Rafael
+	
+> +       },
 > 
-> <shrug>
 > 
-> Most people seem to prefer bool returns with apparent bool constants
-> even though true and false are enumerator constants (int) of 1 and 0
-> in the kernel.
+> Would that address your concerns wrt this one?
 > 
-> from include/linux/stddef.h:
-> 
-> enum {
-> 	false	= 0,
-> 	true	= 1
-> };
+> Cheers!
+> -- Rafael
 
-Sure, do that for new code, but we don't need these patches popping up for
-current code. That is, it's a preference not a bug.
-
--- Steve
