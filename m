@@ -2,93 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3FA51C9972
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:39:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8545D1C9984
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:44:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728261AbgEGSjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 14:39:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42188 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726320AbgEGSja (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 14:39:30 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 01F37208E4;
-        Thu,  7 May 2020 18:39:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588876770;
-        bh=VeEp+7ElE8l0tzoN6UVq725ChaSk6ssE/a/96+hHjLQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Oka4zgLyWhvs9qPh4nStDKAgEnONj2ECf/9F09hkV0Xao548k88iljJT1ngwc+hlE
-         U7s/tIitE60gxPtkPxWqqoqUhrkqocDbfN/yU9A7otmD7UtALJmydj1BohZ+Qnvi1D
-         rmj63SjbJBhNLxg0G5qBL1SKdI4ZBowWz+yc9siM=
-Date:   Thu, 7 May 2020 13:43:56 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     John Johansen <john.johansen@canonical.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] apparmor: Replace zero-length array with flexible-array
-Message-ID: <20200507184356.GA13448@embeddedor>
+        id S1728279AbgEGSoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 14:44:24 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:5956 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726515AbgEGSoY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 14:44:24 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5eb456c00000>; Thu, 07 May 2020 11:43:12 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 07 May 2020 11:44:23 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 07 May 2020 11:44:23 -0700
+Received: from [10.2.55.176] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 7 May
+ 2020 18:44:23 +0000
+Subject: Re: [RFC] mm/gup.c: Updated return value of
+ {get|pin}_user_pages_fast()
+To:     Souptick Joarder <jrdr.linux@gmail.com>, Jan Kara <jack@suse.cz>
+CC:     Tony Luck <tony.luck@intel.com>, <fenghua.yu@intel.com>,
+        Rob Springer <rspringer@google.com>,
+        Todd Poynor <toddpoynor@google.com>, <benchan@chromium.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <santosh.shilimkar@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>, <kuba@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        <inux-ia64@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "open list:ANDROID DRIVERS" <devel@driverdev.osuosl.org>,
+        <tee-dev@lists.linaro.org>, Linux-MM <linux-mm@kvack.org>,
+        <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <rds-devel@oss.oracle.com>
+References: <1588706059-4208-1-git-send-email-jrdr.linux@gmail.com>
+ <0bfe4a8a-0d91-ef9b-066f-2ea7c68571b3@nvidia.com>
+ <CAFqt6zZMsQkOdjAb2k1EjwX=DtZ8gKfbRzwvreHOX-0vJLngNg@mail.gmail.com>
+ <20200506100649.GI17863@quack2.suse.cz>
+ <CAFqt6zYaNkJ4AfVzutXS=JsN4fE41ZAvnw03vHWpdyiRHY1m_w@mail.gmail.com>
+ <20200506125930.GJ17863@quack2.suse.cz>
+ <CAFqt6zZztn_AiaGAhV+_uwrnVdKY-xLsxOwYBt-zGmLaat+OhQ@mail.gmail.com>
+ <20200507101322.GB30922@quack2.suse.cz>
+ <CAFqt6zZ2pj_6q=5kf9dxOsSkHc7vJEHgCjuRmSELQF9KnoKCxA@mail.gmail.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <03bbc0f3-8edc-6110-6391-e540f773954c@nvidia.com>
+Date:   Thu, 7 May 2020 11:44:23 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAFqt6zZ2pj_6q=5kf9dxOsSkHc7vJEHgCjuRmSELQF9KnoKCxA@mail.gmail.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1588876992; bh=s0GB/xjC+YXiEqpbpZ38ACIIfPDrfZoEl489zOuwW70=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=FkNbon+/lZBBjz9hvkzpf8XLqnxFhTzELzTdyEKvRurk0aqMSHwD85ZQ4E7KrBaQR
+         yvRSZEof1rMLcBARCOie6dDXHCRtJ6bX5o0M/30EtLT8wkidpsRgm1sAq5o8X1AYEf
+         ig/myAgWJBZambQrAm4QfpVWNRzk5lA/cuF17BMOs/H00NIHnt/EiCv2Mi0MJgUaW8
+         h/Tgfv4rUsuFQMKZC8/Z5izGkLhmkLb136CD93D+e6sy5bQZdnUnwN6nDSEOWnLbny
+         Lxw9pZdGOYtcDe5ymjtNUpKpBQUA87UMJMZ88DSlXVfnnIQYcIsGYSNMo4qeVJRrUS
+         szSLg14PEX/NQ==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current codebase makes use of the zero-length array language
-extension to the C90 standard, but the preferred mechanism to declare
-variable-length types such as these ones is a flexible array member[1][2],
-introduced in C99:
+On 2020-05-07 03:32, Souptick Joarder wrote:
+...
+>> OK, so no real problem with any of these callers. I still don't see a
+>> justification for the churn you suggest... Auditting all those code sites
+>> is going to be pretty tedious.
+> 
+> I try to audit all 42 callers of {get|pin}_user_pages_fast() and
+> figure out these 5 callers
+> which need to be updated and I think, other callers of
+> {get|pin}_user_pages_fast() will not be
+> effected.
+> 
+> But I didn't go through other variants of gup/pup except
+> {get|pin}_user_pages_fast().
 
-struct foo {
-        int stuff;
-        struct boo array[];
-};
 
-By making use of the mechanism above, we will get a compiler warning
-in case the flexible array does not occur last in the structure, which
-will help us prevent some kind of undefined behavior bugs from being
-inadvertently introduced[3] to the codebase from now on.
+I feel the need to apologize for suggesting that a change to -EINVAL
+would help. :)
 
-Also, notice that, dynamic memory allocations won't be affected by
-this change:
+If you change what the return value means, but only apply it the
+gup/pup _fast() variants of this API set, that would make
+the API significantly *worse*.
 
-"Flexible array members have incomplete type, and so the sizeof operator
-may not be applied. As a quirk of the original implementation of
-zero-length arrays, sizeof evaluates to zero."[1]
+Also, no one has been able to come up with a scenario in which the call
+sites actually have a problem handling return values of zero. In fact,
+on the contrary: there are call site where returning 0 after being
+requested to pin zero pages, helps simplify the code. For example, if
+they're just doing math such as "if(nr_expected != nr_pages_pinned) ...".
 
-sizeof(flexible-array-member) triggers a warning because flexible array
-members have incomplete type[1]. There are some instances of code in
-which the sizeof operator is being incorrectly/erroneously applied to
-zero-length arrays and the result is zero. Such instances may be hiding
-some bugs. So, this work (flexible-array member conversions) will also
-help to get completely rid of those sorts of issues.
 
-This issue was found with the help of Coccinelle.
+This looks like a complete dead end, sorry.
 
-[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-[2] https://github.com/KSPP/linux/issues/21
-[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- security/apparmor/apparmorfs.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/security/apparmor/apparmorfs.c b/security/apparmor/apparmorfs.c
-index 280741fc0f5f..299994ff9168 100644
---- a/security/apparmor/apparmorfs.c
-+++ b/security/apparmor/apparmorfs.c
-@@ -839,7 +839,7 @@ static ssize_t query_label(char *buf, size_t buf_len,
- struct multi_transaction {
- 	struct kref count;
- 	ssize_t size;
--	char data[0];
-+	char data[];
- };
- 
- #define MULTI_TRANSACTION_LIMIT (PAGE_SIZE - sizeof(struct multi_transaction))
-
+thanks,
+-- 
+John Hubbard
+NVIDIA
