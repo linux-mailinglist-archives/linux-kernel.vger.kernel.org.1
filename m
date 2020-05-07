@@ -2,109 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7C0E1C96AC
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 18:38:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 135521C96B5
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 18:41:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726538AbgEGQip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 12:38:45 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:29306 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726222AbgEGQip (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 12:38:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588869523;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0GJUSBwd6yajjE7Du/EDRG7BQr30DrFCiogxpggmT4Y=;
-        b=N59dd6p78IBw8jtprf9//xA2yIt38Yhy3cDFctLXoaEGOn73ZjEyFXEjakZKizpB8UEAgw
-        EXHZXrCQcNoWx7si+B8YCA7zOdp3TAyTX9dHN+1nMjzQLJe6NFmlAufUatI9QmJL79GbwV
-        L1+crcOGl8jIQ0FcUyMs6Gva5ek6AW0=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-356-AoOccD20PjGvcgKTKSvKGg-1; Thu, 07 May 2020 12:38:41 -0400
-X-MC-Unique: AoOccD20PjGvcgKTKSvKGg-1
-Received: by mail-qt1-f200.google.com with SMTP id y31so7386975qta.16
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 09:38:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0GJUSBwd6yajjE7Du/EDRG7BQr30DrFCiogxpggmT4Y=;
-        b=c+mj1+0RVp7zkTHyTwobwFYASTDmaTdeu96DK9agEl95iv3/M0WHWhoiMu1831wYOp
-         dR76WXJTatO31bl6FZOzTF2ZiQ+HZPWHzyKCvO10CpoTeg1nMHjNM4zXUIiYeCAC5ZfN
-         Bsb5QzvDN2b5veofDaVyQyUyufidJFJEiD++jqlwcX5Pmc+o3li1Eea/E2ehmO9FsdwR
-         Keh0Z8LnoknRxgJl6o3OG/yL0mbqJ5zW6/o0TbchX9UophIFr4Mjq6VX5l3Zt2tBP9h4
-         GJm1QIId4M4qtA3KlT72y9Ug68oKunL1rcf/jmOipp0OZTkT0secjD/oszS/j2ndIwDM
-         WHhA==
-X-Gm-Message-State: AGi0PuYuCEI82rpDWe5grQUVksRZsKhLwPP5NR7I21Uh8K6jlU7sXceZ
-        ja4Ezr8LEmBXjXmojWtpN+AMWOWjLVxk27tziuWG94VWGHNoqdW2spQPLFaD5szuj1CHh/ix6zo
-        5slgjuTdxeZbNapFudsEaPoOY
-X-Received: by 2002:a37:68c9:: with SMTP id d192mr15660757qkc.168.1588869521151;
-        Thu, 07 May 2020 09:38:41 -0700 (PDT)
-X-Google-Smtp-Source: APiQypIMOsald+8dpvEMLnkxwF+4OesJDv1LTD2qOjQwQClxhhNqfZeDggoBqidjPHz/P9Dh64NRpg==
-X-Received: by 2002:a37:68c9:: with SMTP id d192mr15660728qkc.168.1588869520871;
-        Thu, 07 May 2020 09:38:40 -0700 (PDT)
-Received: from xz-x1 ([2607:9880:19c0:32::2])
-        by smtp.gmail.com with ESMTPSA id a194sm4596136qkb.21.2020.05.07.09.38.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2020 09:38:40 -0700 (PDT)
-Date:   Thu, 7 May 2020 12:38:39 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH 9/9] KVM: VMX: pass correct DR6 for GD userspace exit
-Message-ID: <20200507163839.GG228260@xz-x1>
-References: <20200507115011.494562-1-pbonzini@redhat.com>
- <20200507115011.494562-10-pbonzini@redhat.com>
- <20200507161854.GF228260@xz-x1>
- <7abe5f7b-2b5a-4e32-34e2-f37d0afef00a@redhat.com>
+        id S1726877AbgEGQlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 12:41:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37382 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726308AbgEGQlY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 12:41:24 -0400
+Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D708020B1F;
+        Thu,  7 May 2020 16:41:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588869683;
+        bh=DSUTjCCxNm3sP/U59GvleaC+aqqLrMMiFJPUPPM3rNg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=rKqfVrO+PGON4u2l06umNYir1hgHA7wHRVwuBwBfI+d0VGPqQUAhEmABQ9jN/7jQP
+         60F28/aaTaB4x1Rpogvd60KSPhW8osb7/zIRmn5DnohVSeaaZ8ctYellWiYlCAAoeq
+         k6biTonvn/T1nILLNowzIeHnO+vq8CpRQ/LclJNc=
+Received: by mail-il1-f176.google.com with SMTP id c16so1848295ilr.3;
+        Thu, 07 May 2020 09:41:23 -0700 (PDT)
+X-Gm-Message-State: AGi0PuYbQkdm+OJXI+nnGKIkjw/1zMe1ofwDeeJDgUHOXfcj+ziUFErj
+        RtMbI0VMfjXDow6lPgg4lCIm/Z0/ujcEOvQlLG4=
+X-Google-Smtp-Source: APiQypIj0KSdZxFox1BHJ/6cE4G6Uxkcc+tq2R3E3HWKuTRfFFPT2U4mqxVz355oahAkQQdP9Rj6pDgE7UpnhtQCCnU=
+X-Received: by 2002:a92:3c55:: with SMTP id j82mr16149345ila.258.1588869683281;
+ Thu, 07 May 2020 09:41:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <7abe5f7b-2b5a-4e32-34e2-f37d0afef00a@redhat.com>
+References: <20200507133707.7123-1-lszubowi@redhat.com>
+In-Reply-To: <20200507133707.7123-1-lszubowi@redhat.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 7 May 2020 18:41:12 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXG69bsC-WCHhS1zturX0AuAJwMnfeNCEM5HXrRfkXjjPg@mail.gmail.com>
+Message-ID: <CAMj1kXG69bsC-WCHhS1zturX0AuAJwMnfeNCEM5HXrRfkXjjPg@mail.gmail.com>
+Subject: Re: [PATCH V2] efi/libstub/x86: Avoid EFI map buffer alloc in allocate_e820()
+To:     Lenny Szubowicz <lszubowi@redhat.com>
+Cc:     eric.snowberg@oracle.com, Ingo Molnar <mingo@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 07, 2020 at 06:21:18PM +0200, Paolo Bonzini wrote:
-> On 07/05/20 18:18, Peter Xu wrote:
-> >>  		if (vcpu->guest_debug & KVM_GUESTDBG_USE_HW_BP) {
-> >> -			vcpu->run->debug.arch.dr6 = vcpu->arch.dr6;
-> >> +			vcpu->run->debug.arch.dr6 = DR6_BD | DR6_RTM | DR6_FIXED_1;
-> > After a second thought I'm thinking whether it would be okay to have BS set in
-> > that test case.  I just remembered there's a test case in the kvm-unit-test
-> > that checks explicitly against BS leftover as long as dr6 is not cleared
-> > explicitly by the guest code, while the spec seems to have no explicit
-> > description on this case.
-> 
-> Yes, I noticed that test as well.  But I don't like having different
-> behavior for Intel and AMD, and the Intel behavior is more sensible.
-> Also...
+On Thu, 7 May 2020 at 15:37, Lenny Szubowicz <lszubowi@redhat.com> wrote:
+>
+> In allocate_e820(), call the EFI get_memory_map() service directly
+> instead of indirectly via efi_get_memory_map(). This avoids allocation
+> of a buffer and return of the full EFI memory map, which is not needed
+> here and would otherwise need to be freed.
+>
+> Routine allocate_e820() only needs to know how many EFI memory
+> descriptors there are in the map to allocate an adequately sized
+> e820ext buffer, if it's needed. Note that since efi_get_memory_map()
+> returns a memory map buffer sized with extra headroom, allocate_e820()
+> now needs to explicitly factor that into the e820ext size calculation.
+>
+> Signed-off-by: Lenny Szubowicz <lszubowi@redhat.com>
+> Suggested-by: Ard Biesheuvel <ardb@kernel.org>
+> --
+> v2:
+>   - Instead of freeing the EFI memory map buffer allocated by
+>     efi_get_memory_map(), avoid the allocation in the first place.
+>
+>   - Changed the title of the patch because the v1 title no longer
+>     applies. v1 ref:
+>     https://lore.kernel.org/lkml/20200505190016.4350-1-lszubowi@redhat.com/
+> --
+> ---
+>  drivers/firmware/efi/libstub/efistub.h  |  2 ++
+>  drivers/firmware/efi/libstub/mem.c      |  5 +++++
+>  drivers/firmware/efi/libstub/x86-stub.c | 22 ++++++++--------------
+>  3 files changed, 15 insertions(+), 14 deletions(-)
+>
+> diff --git a/drivers/firmware/efi/libstub/efistub.h b/drivers/firmware/efi/libstub/efistub.h
+> index 67d26949fd26..191468b771b6 100644
+> --- a/drivers/firmware/efi/libstub/efistub.h
+> +++ b/drivers/firmware/efi/libstub/efistub.h
+> @@ -616,6 +616,8 @@ void efi_printk(char *str);
+>
+>  void efi_free(unsigned long size, unsigned long addr);
+>
+> +unsigned int efi_get_mmap_nr_slack_slots(void);
+> +
+>  char *efi_convert_cmdline(efi_loaded_image_t *image, int *cmd_line_len,
+>                           unsigned long max_addr);
+>
+> diff --git a/drivers/firmware/efi/libstub/mem.c b/drivers/firmware/efi/libstub/mem.c
+> index 869a79c8946f..fc8b4fb08505 100644
+> --- a/drivers/firmware/efi/libstub/mem.c
+> +++ b/drivers/firmware/efi/libstub/mem.c
+> @@ -7,6 +7,11 @@
+>
+>  #define EFI_MMAP_NR_SLACK_SLOTS        8
+>
+> +unsigned int efi_get_mmap_nr_slack_slots(void)
+> +{
+> +       return EFI_MMAP_NR_SLACK_SLOTS;
+> +}
+> +
 
-Do you mean the AMD behavior is more sensible instead? :)
+Can we just move this #define to efistub.h and use it directly?
 
-> 
-> > Intead of above, I'm thinking whether we should allow the userspace to also
-> > change dr6 with the KVM_SET_GUEST_DEBUG ioctl when they wanted to (right now
-> > iiuc dr6 from userspace is completely ignored), instead of offering a fake dr6.
-> > Or to make it simple, maybe we can just check BD bit only?
-> 
-> ... I'm afraid that this would be a backwards-incompatible change, and
-> it would require changes in userspace.  If you look at v2, emulating the
-> Intel behavior in AMD turns out to be self-contained and relatively
-> elegant (will be better when we finish cleaning up nested SVM).
-
-I'm still trying to read the other patches (I need some more digest because I'm
-even less familiar with nested...).  I agree that it would be good to keep the
-same behavior across Intel/AMD.  Actually that also does not violate Intel spec
-because the AMD one is stricter.  However I guess then we might also want to
-fixup the kvm-unit-test too to aligh with the behaviors on leftover set bits.
-
-Thanks,
-
--- 
-Peter Xu
-
+>  static inline bool mmap_has_headroom(unsigned long buff_size,
+>                                      unsigned long map_size,
+>                                      unsigned long desc_size)
+> diff --git a/drivers/firmware/efi/libstub/x86-stub.c b/drivers/firmware/efi/libstub/x86-stub.c
+> index 05ccb229fb45..9a5ee0678434 100644
+> --- a/drivers/firmware/efi/libstub/x86-stub.c
+> +++ b/drivers/firmware/efi/libstub/x86-stub.c
+> @@ -606,24 +606,18 @@ static efi_status_t allocate_e820(struct boot_params *params,
+>                                   struct setup_data **e820ext,
+>                                   u32 *e820ext_size)
+>  {
+> -       unsigned long map_size, desc_size, buff_size;
+> -       struct efi_boot_memmap boot_map;
+> -       efi_memory_desc_t *map;
+> +       unsigned long map_size, desc_size;
+>         efi_status_t status;
+>         __u32 nr_desc;
+>
+> -       boot_map.map            = &map;
+> -       boot_map.map_size       = &map_size;
+> -       boot_map.desc_size      = &desc_size;
+> -       boot_map.desc_ver       = NULL;
+> -       boot_map.key_ptr        = NULL;
+> -       boot_map.buff_size      = &buff_size;
+> +       /* Only need the size of the mem map and size of each mem descriptor */
+> +       map_size = 0;
+> +       status = efi_bs_call(get_memory_map, &map_size, NULL, NULL,
+> +                            &desc_size, NULL);
+> +       if (status != EFI_BUFFER_TOO_SMALL)
+> +               return (status != EFI_SUCCESS) ? status : EFI_UNSUPPORTED;
+>
+> -       status = efi_get_memory_map(&boot_map);
+> -       if (status != EFI_SUCCESS)
+> -               return status;
+> -
+> -       nr_desc = buff_size / desc_size;
+> +       nr_desc = map_size / desc_size + efi_get_mmap_nr_slack_slots();
+>
+>         if (nr_desc > ARRAY_SIZE(params->e820_table)) {
+>                 u32 nr_e820ext = nr_desc - ARRAY_SIZE(params->e820_table);
+> --
+> 2.18.4
+>
