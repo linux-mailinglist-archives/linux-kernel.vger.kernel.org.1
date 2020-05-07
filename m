@@ -2,110 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD67D1C9E63
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 00:22:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8C011C9E68
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 00:25:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727786AbgEGWWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 18:22:30 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:21032 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726531AbgEGWW3 (ORCPT
+        id S1726776AbgEGWZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 18:25:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726437AbgEGWZ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 18:22:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588890148;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VrCaRnveWzqCUdGFPO9163Kj4SQtWQk9E23zb+Vye0g=;
-        b=PX02cvA9y1BTZbf4ZCvfLRfPrA/SQN0Q6ILbyJsfYfVo6p1nuHX33L4Zg3XSSgGbHFDbvf
-        D0FnfO1sa628grwcl4wgfOmrfPQouI5sfYxDt9MDenYLoH6YmfiQshQZcdKc6fczmGX7Nk
-        k/HWuNUXa/tnDMlyWGvIl8/wA1K1m8A=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-409-GBd5x9nBNaa94KljcKog-g-1; Thu, 07 May 2020 18:22:26 -0400
-X-MC-Unique: GBd5x9nBNaa94KljcKog-g-1
-Received: by mail-qk1-f197.google.com with SMTP id x8so7443543qkf.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 15:22:26 -0700 (PDT)
+        Thu, 7 May 2020 18:25:27 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2267CC05BD43
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 15:25:27 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id y25so3716032pfn.5
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 15:25:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ruvKB/r5U5U9Os2KZjBYBX9D7kyzSo+ZlwnM5cSiqeE=;
+        b=V2frT0bMO5pywn4rC4FlUiQXYp34MdhakawaLF6YQw0ARQpzs/i7vBjWovF58iUPlc
+         6gKPJ0MOxZ+9tPoGPIoZ89/c6USjmlRXXhNhKaksqZJzd0ZhTsmCsdlxA6ONX69SqdXo
+         a94AxC6sbrARI1xM2Xx49l3zwuYH4iNO1qeNP+kN2DPrZmW7YiV7rovgr0t830soWwYb
+         Jny2tsEvj/HJ4xj9QpAWE2RPds0m0kY/ityT+tPzYLDcrj6GqNXfj6Dh4zG5Gob/IVp1
+         JOr8RD7G4GkNEVlvl4TPt0YPQ+Z3xWVqu2t6RH3nRJE72Z8adlzcUQWopeREMXUe6KhM
+         4JpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VrCaRnveWzqCUdGFPO9163Kj4SQtWQk9E23zb+Vye0g=;
-        b=lEu80vdF9WYTU50mH6WwJrZO7UbVvHLDAkky4ICeoI9tIL2+S1jpBEbeRZn+wZnE3K
-         7pvJ3+stRdA5PfByK8fBNX3CWzsuhMKdzO+3KkMqxRj0w0Ux4Al+JD/cJMGJIxS6n+4i
-         6hQ1wY9PnSdQEsl6baaSto7ZLB49Isl4CF05uDrD57PVQDhX3ABk5hZsF4NYe/gsP0Zl
-         n8RYauI7yfXao7vLj0dHUqvKl5/dXWPqLsFRt5WnHBuHqYQawyl4vZQYWZ9sLwnXGeyY
-         i0+mfPUoPzvFIq9EGyRGW5n2+I3sRp1RrwPHlrO/BjOCVpuAY3IRt91stKo9Bvo20AEf
-         zXLw==
-X-Gm-Message-State: AGi0PuZo0mYrrR8WAnJyXYXiv9W0yhL8gWRajYhMzV2L/BlcHuOAEn7b
-        bPY4RM7AKuRDDUwIRJiEcys3pC7Ykm+6P+z1H9Kd6O1UOv0QC5Aa6yTaY+NMkFqbX61qhywt3Aw
-        6w6MuThzpoiPNjNiSk8GX1B4C
-X-Received: by 2002:a37:6506:: with SMTP id z6mr17528013qkb.246.1588890146291;
-        Thu, 07 May 2020 15:22:26 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJTQTsmMRai3gKYHqoSOSsZvO38PckI9bGxFINKOwTWsdXRocbOFie6ARImAo10Fpzu1f/nJQ==
-X-Received: by 2002:a37:6506:: with SMTP id z6mr17527990qkb.246.1588890145939;
-        Thu, 07 May 2020 15:22:25 -0700 (PDT)
-Received: from xz-x1 ([2607:9880:19c0:32::2])
-        by smtp.gmail.com with ESMTPSA id q130sm5202185qke.80.2020.05.07.15.22.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2020 15:22:25 -0700 (PDT)
-Date:   Thu, 7 May 2020 18:22:23 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cohuck@redhat.com, jgg@ziepe.ca
-Subject: Re: [PATCH v2 2/3] vfio-pci: Fault mmaps to enable vma tracking
-Message-ID: <20200507222223.GR228260@xz-x1>
-References: <158871401328.15589.17598154478222071285.stgit@gimli.home>
- <158871569380.15589.16950418949340311053.stgit@gimli.home>
- <20200507214744.GP228260@xz-x1>
- <20200507160334.4c029518@x1.home>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ruvKB/r5U5U9Os2KZjBYBX9D7kyzSo+ZlwnM5cSiqeE=;
+        b=c6FtuWB2aoEKgeNByGtzSojSUyTCytd80MRsm60MYfveyk0IrEmVqI8zn5vmBBn84i
+         zS8TwpC9yO8m1/ajQA49C+uF2cZh2pcixXbd9GqfFUaKPSQ0yhr8855qEj+eIspkRcX9
+         SCiO6fUpBe+ckmJu3Ixt0lbUsvLgICifgL6ozDfZJ9WFYPRtUBXOVoQTxKXpcRT7XXu8
+         2XJJGSvuQGkjJz1DXOUfiQP8WPdCMUsnua9O9bbb4xRjB/7YUB4j8sYXEVsj769p1bvy
+         aKZKF1BGkYzijjq6hTwYT4DETxzJRblkKqvUklC0R+a+Mk/R76emRFghwMoSZ45dU+7o
+         e+TQ==
+X-Gm-Message-State: AGi0PubdLq5F1mJbMnhxYC2/agU1zkcPsK8zUTNkNpypcoTBS10ATOQD
+        O28Tb1hoIh86dmgqYj5MqkCMJg==
+X-Google-Smtp-Source: APiQypLYzNsgbDLLy8ELztbg2CD02ndhzDj7VMaCU+d5sYFNRUYR7Utn5USUuf2n2PnN7mA0eVYbFg==
+X-Received: by 2002:a63:3385:: with SMTP id z127mr14134277pgz.168.1588890326314;
+        Thu, 07 May 2020 15:25:26 -0700 (PDT)
+Received: from [192.168.1.188] ([66.219.217.145])
+        by smtp.gmail.com with ESMTPSA id w125sm4397052pgw.22.2020.05.07.15.25.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 May 2020 15:25:25 -0700 (PDT)
+Subject: Re: [PATCH] fs/io_uring: fix O_PATH fds in openat, openat2, statx
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Max Kellermann <mk@cm4all.com>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20200507185725.15840-1-mk@cm4all.com>
+ <20200507190131.GF23230@ZenIV.linux.org.uk>
+ <4cac0e53-656c-50f0-3766-ae3cc6c0310a@kernel.dk>
+ <20200507192903.GG23230@ZenIV.linux.org.uk>
+ <8e3c88cc-027b-4f90-b4f8-a20d11d35c4b@kernel.dk>
+ <20200507220637.GH23230@ZenIV.linux.org.uk>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <283c8edb-fea2-5192-f1d6-3cc57815b1e2@kernel.dk>
+Date:   Thu, 7 May 2020 16:25:24 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
+In-Reply-To: <20200507220637.GH23230@ZenIV.linux.org.uk>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200507160334.4c029518@x1.home>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 07, 2020 at 04:03:34PM -0600, Alex Williamson wrote:
-> On Thu, 7 May 2020 17:47:44 -0400
-> Peter Xu <peterx@redhat.com> wrote:
+On 5/7/20 4:06 PM, Al Viro wrote:
+> On Thu, May 07, 2020 at 02:53:30PM -0600, Jens Axboe wrote:
 > 
-> > Hi, Alex,
-> > 
-> > On Tue, May 05, 2020 at 03:54:53PM -0600, Alex Williamson wrote:
-> > > +/*
-> > > + * Zap mmaps on open so that we can fault them in on access and therefore
-> > > + * our vma_list only tracks mappings accessed since last zap.
-> > > + */
-> > > +static void vfio_pci_mmap_open(struct vm_area_struct *vma)
-> > > +{
-> > > +	zap_vma_ptes(vma, vma->vm_start, vma->vm_end - vma->vm_start);  
-> > 
-> > A pure question: is this only a safety-belt or it is required in some known
-> > scenarios?
+>> I think the patch is correct as-is, I took a good look at how we're
+>> currently handling it. None of those three ops should fiddle with
+>> the fd at all, and all of them do forbid the use of fixed files (the
+>> descriptor table look-alikes), so that part is fine, too.
+>>
+>> There's some low hanging fruit around optimizing and improving it,
+>> I'm including an updated version below. Max, can you double check
+>> with your testing?
 > 
-> It's not required.  I originally did this so that I'm not allocating a
-> vma_list entry in a path where I can't return error, but as Jason
-> suggested I could zap here only in the case that I do encounter that
-> allocation fault.  However I still like consolidating the vma_list
-> handling to the vm_ops .fault and .close callbacks and potentially we
-> reduce the zap latency by keeping the vma_list to actual users, which
-> we'll get to eventually anyway in the VM case as memory BARs are sized
-> and assigned addresses.
+> <looks>
+> 
+> Could you explain WTF is io_issue_sqe() doing in case of IORING_OP_CLOSE?
+> Specifically, what is the value of
+>         req->close.fd = READ_ONCE(sqe->fd);
+>         if (req->file->f_op == &io_uring_fops ||
+>             req->close.fd == req->ctx->ring_fd)
+>                 return -EBADF;
+> in io_close_prep()?  And what does happen if some joker does dup2()
+> of something with io_uring_fops into our slot right after that check?
+> Before the subsequent
+>         ret = __close_fd_get_file(req->close.fd, &req->close.put_file);
+> that is.
 
-Yes, I don't see much problem either on doing the vma_list maintainance only in
-.fault() and .close().  My understandingg is that the worst case is the perf
-critical applications (e.g. DPDK) could pre-fault these MMIO region easily
-during setup if they want.  My question was majorly about whether the vma
-should be guaranteed to have no mapping at all when .open() is called.  But I
-agree with you that it's always good to have that as safety-belt anyways.
+I agree, there's a gap there. We should do the check in the op handler,
+and under the files_struct lock. How about something like the below?
 
-Thanks!
+
+diff --git a/fs/file.c b/fs/file.c
+index c8a4e4c86e55..50ee73b76d17 100644
+--- a/fs/file.c
++++ b/fs/file.c
+@@ -646,18 +646,13 @@ int __close_fd(struct files_struct *files, unsigned fd)
+ }
+ EXPORT_SYMBOL(__close_fd); /* for ksys_close() */
+ 
+-/*
+- * variant of __close_fd that gets a ref on the file for later fput.
+- * The caller must ensure that filp_close() called on the file, and then
+- * an fput().
+- */
+-int __close_fd_get_file(unsigned int fd, struct file **res)
++int __close_fd_get_file_locked(struct files_struct *files, unsigned int fd,
++			       struct file **res)
++	__releases(&files->file_lock)
+ {
+-	struct files_struct *files = current->files;
+ 	struct file *file;
+ 	struct fdtable *fdt;
+ 
+-	spin_lock(&files->file_lock);
+ 	fdt = files_fdtable(files);
+ 	if (fd >= fdt->max_fds)
+ 		goto out_unlock;
+@@ -677,6 +672,19 @@ int __close_fd_get_file(unsigned int fd, struct file **res)
+ 	return -ENOENT;
+ }
+ 
++/*
++ * variant of __close_fd that gets a ref on the file for later fput.
++ * The caller must ensure that filp_close() called on the file, and then
++ * an fput().
++ */
++int __close_fd_get_file(unsigned int fd, struct file **res)
++{
++	struct files_struct *files = current->files;
++
++	spin_lock(&files->file_lock);
++	return __close_fd_get_file_locked(files, fd, res);
++}
++
+ void do_close_on_exec(struct files_struct *files)
+ {
+ 	unsigned i;
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 979d9f977409..740547106717 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -3399,10 +3399,6 @@ static int io_close_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
+ 		return -EBADF;
+ 
+ 	req->close.fd = READ_ONCE(sqe->fd);
+-	if (req->file->f_op == &io_uring_fops ||
+-	    req->close.fd == req->ctx->ring_fd)
+-		return -EBADF;
+-
+ 	return 0;
+ }
+ 
+@@ -3430,10 +3426,19 @@ static void io_close_finish(struct io_wq_work **workptr)
+ 
+ static int io_close(struct io_kiocb *req, bool force_nonblock)
+ {
++	struct files_struct *files = current->files;
+ 	int ret;
+ 
+ 	req->close.put_file = NULL;
+-	ret = __close_fd_get_file(req->close.fd, &req->close.put_file);
++	spin_lock(&files->file_lock);
++	if (req->file->f_op == &io_uring_fops ||
++	    req->close.fd == req->ctx->ring_fd) {
++		spin_unlock(&files->file_lock);
++		return -EBADF;
++	}
++
++	ret = __close_fd_get_file_locked(files, req->close.fd,
++						&req->close.put_file);
+ 	if (ret < 0)
+ 		return ret;
+ 
+diff --git a/include/linux/fdtable.h b/include/linux/fdtable.h
+index f07c55ea0c22..11d19303af46 100644
+--- a/include/linux/fdtable.h
++++ b/include/linux/fdtable.h
+@@ -122,6 +122,8 @@ extern void __fd_install(struct files_struct *files,
+ extern int __close_fd(struct files_struct *files,
+ 		      unsigned int fd);
+ extern int __close_fd_get_file(unsigned int fd, struct file **res);
++extern int __close_fd_get_file_locked(struct files_struct *files,
++				      unsigned int fd, struct file **res);
+ 
+ extern struct kmem_cache *files_cachep;
+ 
 
 -- 
-Peter Xu
+Jens Axboe
 
