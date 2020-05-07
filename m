@@ -2,111 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF3C91C9AFF
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:25:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2C771C9ACF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:20:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728204AbgEGTZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 15:25:06 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:33630 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727837AbgEGTZE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 15:25:04 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1588879504; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=Ix9XkAMYCQsp/8JQnx4zfbI/X7x9n8NFh7hLnjbOM8Q=; b=oaHQJr7Fnhpn9axu6zzRngnCgmBwXIognsjP3JrVGDkv1ICOlS/BI0gmQXJcFfLql1KN8lQZ
- wHtW6LW+az3KLmPci+vh0cATQ+M7JX8ZDCk8xvfE1jZDvVhAo5D8SCU+4xmHxLtLeNeYviGo
- U0nUq0jDfVK/X6gWCEbGdJWuN98=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5eb4608e.7f318b7827d8-smtp-out-n04;
- Thu, 07 May 2020 19:25:02 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1F638C433D2; Thu,  7 May 2020 19:25:01 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [10.226.58.28] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1728466AbgEGTUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 15:20:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42214 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728391AbgEGTUf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 15:20:35 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 056A6C433BA;
-        Thu,  7 May 2020 19:24:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 056A6C433BA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jhugo@codeaurora.org
-Subject: Re: [PATCH] dmaengine: qcom: bam_dma: Replace zero-length array with
- flexible-array
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200507185016.GA13883@embeddedor>
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-Message-ID: <1b3cda25-5f3a-5359-4bf7-d16a8364f545@codeaurora.org>
-Date:   Thu, 7 May 2020 13:24:57 -0600
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        by mail.kernel.org (Postfix) with ESMTPSA id B785F208D6;
+        Thu,  7 May 2020 19:20:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588879235;
+        bh=uXi39PQvaKDfT68j1+BxFLuUBBa53fIwGeidQwFDQog=;
+        h=Date:From:To:Cc:Subject:From;
+        b=GnfrXSO3O3Uth1ANWH7AgHHNxrQE6cvAFWkKtM6gDk0xlsOGOGzMAE1kp+iDksEMn
+         +3l/CRAN2t0sGhoKkYSGCCS7kQrWA/6i9fsgmlNFEdvLaMTnF8XqK0fXXA7wQAmtS9
+         ihdBaO3F0X7VkPiVE4WRC9MJUaS/8hWtf6dJJQQI=
+Date:   Thu, 7 May 2020 14:25:01 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] stm class: Replace zero-length array with flexible-array
+Message-ID: <20200507192501.GA16491@embeddedor>
 MIME-Version: 1.0
-In-Reply-To: <20200507185016.GA13883@embeddedor>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/7/2020 12:50 PM, Gustavo A. R. Silva wrote:
-> The current codebase makes use of the zero-length array language
-> extension to the C90 standard, but the preferred mechanism to declare
-> variable-length types such as these ones is a flexible array member[1][2],
-> introduced in C99:
-> 
-> struct foo {
->          int stuff;
->          struct boo array[];
-> };
-> 
-> By making use of the mechanism above, we will get a compiler warning
-> in case the flexible array does not occur last in the structure, which
-> will help us prevent some kind of undefined behavior bugs from being
-> inadvertently introduced[3] to the codebase from now on.
-> 
-> Also, notice that, dynamic memory allocations won't be affected by
-> this change:
-> 
-> "Flexible array members have incomplete type, and so the sizeof operator
-> may not be applied. As a quirk of the original implementation of
-> zero-length arrays, sizeof evaluates to zero."[1]
-> 
-> sizeof(flexible-array-member) triggers a warning because flexible array
-> members have incomplete type[1]. There are some instances of code in
-> which the sizeof operator is being incorrectly/erroneously applied to
-> zero-length arrays and the result is zero. Such instances may be hiding
-> some bugs. So, this work (flexible-array member conversions) will also
-> help to get completely rid of those sorts of issues.
-> 
-> This issue was found with the help of Coccinelle.
-> 
-> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-> [2] https://github.com/KSPP/linux/issues/21
-> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->   drivers/dma/qcom/bam_dma.c         |    2 +-
->   drivers/firmware/qcom_scm-legacy.c |    2 +-
->   2 files changed, 2 insertions(+), 2 deletions(-)
-> 
+The current codebase makes use of the zero-length array language
+extension to the C90 standard, but the preferred mechanism to declare
+variable-length types such as these ones is a flexible array member[1][2],
+introduced in C99:
 
-Shouldn't these two files be two different patches?
+struct foo {
+        int stuff;
+        struct boo array[];
+};
 
--- 
-Jeffrey Hugo
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
+By making use of the mechanism above, we will get a compiler warning
+in case the flexible array does not occur last in the structure, which
+will help us prevent some kind of undefined behavior bugs from being
+inadvertently introduced[3] to the codebase from now on.
+
+Also, notice that, dynamic memory allocations won't be affected by
+this change:
+
+"Flexible array members have incomplete type, and so the sizeof operator
+may not be applied. As a quirk of the original implementation of
+zero-length arrays, sizeof evaluates to zero."[1]
+
+sizeof(flexible-array-member) triggers a warning because flexible array
+members have incomplete type[1]. There are some instances of code in
+which the sizeof operator is being incorrectly/erroneously applied to
+zero-length arrays and the result is zero. Such instances may be hiding
+some bugs. So, this work (flexible-array member conversions) will also
+help to get completely rid of those sorts of issues.
+
+This issue was found with the help of Coccinelle.
+
+[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+[2] https://github.com/KSPP/linux/issues/21
+[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/hwtracing/stm/policy.c |    2 +-
+ drivers/hwtracing/stm/stm.h    |    4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/hwtracing/stm/policy.c b/drivers/hwtracing/stm/policy.c
+index 4f932a419752..603b4a9969d3 100644
+--- a/drivers/hwtracing/stm/policy.c
++++ b/drivers/hwtracing/stm/policy.c
+@@ -34,7 +34,7 @@ struct stp_policy_node {
+ 	unsigned int		first_channel;
+ 	unsigned int		last_channel;
+ 	/* this is the one that's exposed to the attributes */
+-	unsigned char		priv[0];
++	unsigned char		priv[];
+ };
+ 
+ void *stp_policy_node_priv(struct stp_policy_node *pn)
+diff --git a/drivers/hwtracing/stm/stm.h b/drivers/hwtracing/stm/stm.h
+index 3569439d53bb..a9be49fc7a6b 100644
+--- a/drivers/hwtracing/stm/stm.h
++++ b/drivers/hwtracing/stm/stm.h
+@@ -23,7 +23,7 @@ void *stp_policy_node_priv(struct stp_policy_node *pn);
+ 
+ struct stp_master {
+ 	unsigned int	nr_free;
+-	unsigned long	chan_map[0];
++	unsigned long	chan_map[];
+ };
+ 
+ struct stm_device {
+@@ -42,7 +42,7 @@ struct stm_device {
+ 	const struct config_item_type		*pdrv_node_type;
+ 	/* master allocation */
+ 	spinlock_t		mc_lock;
+-	struct stp_master	*masters[0];
++	struct stp_master	*masters[];
+ };
+ 
+ #define to_stm_device(_d)				\
+
