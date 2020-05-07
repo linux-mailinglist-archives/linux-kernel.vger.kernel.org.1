@@ -2,92 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 141281C9C6F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 22:33:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 300761C9C7A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 22:33:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726771AbgEGUdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 16:33:04 -0400
-Received: from mga14.intel.com ([192.55.52.115]:44363 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726618AbgEGUdE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 16:33:04 -0400
-IronPort-SDR: VIVHXsFd5uqImcWOLkjQVHoOdpfYrLGRmbBZFpCD2H9N7A48JyXCJ1rtkBjdV5Pe4qmrMLvzDo
- kjldwaIqKFYg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2020 13:32:50 -0700
-IronPort-SDR: 2LFt945J76NOTSWp7WcmWtzjtsyY/Osp3JJ2Dzj+eZGSWEwQ/ykD5fyrpZq5nnMzO+NtjCLoQd
- Oerp+eOQH8Ig==
-X-IronPort-AV: E=Sophos;i="5.73,365,1583222400"; 
-   d="scan'208";a="260648194"
-Received: from tzanussi-mobl4.amr.corp.intel.com (HELO [10.252.140.107]) ([10.252.140.107])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2020 13:32:48 -0700
-Subject: Re: [PATCH 3/3] selftests/ftrace: Use /bin/echo instead of built-in
- echo
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Li Philip <philip.li@intel.com>,
-        Liu Yiding <yidingx.liu@intel.com>
-References: <158834025077.28357.15141584656220094821.stgit@devnote2>
- <158834028054.28357.398159034694277189.stgit@devnote2>
- <20200501101942.5c0da986@gandalf.local.home>
- <20200502120842.9d93352083fb854295150235@kernel.org>
- <20200507091207.5c3b1a92@gandalf.local.home>
- <20200508005028.a825d53373721a13d6cc80fc@kernel.org>
- <20200507132539.7e081980@gandalf.local.home>
-From:   "Zanussi, Tom" <tom.zanussi@linux.intel.com>
-Message-ID: <f575eead-c021-c830-b9d5-41437964db32@linux.intel.com>
-Date:   Thu, 7 May 2020 15:32:46 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726904AbgEGUdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 16:33:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726367AbgEGUdu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 16:33:50 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74723C05BD43
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 13:33:51 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id k81so7630401qke.5
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 13:33:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=baTteJqyH6isN/89zdtKchdhH2DBXV9A3IqICZz/QOE=;
+        b=ql9fwMagiN0bQ+ctBRPwFkrgKyHeVXx8Q80yLGh4UpVEp26yaQwCdGZ4qSDYv9RYRF
+         kO01i1USbkS3uBGPMelctZrrOhx3sQb9AEJtWDGkzVCZk4jcDJNco2YCusnjNLDTjfE2
+         aKQCh+/AmnCztjhFrv5RSn0VZG8l9092XS88Z5bBA+I8HnB/wKRqzg0bKZ/yyBuZEl1l
+         73ohXJZ4eIMeDQ5gx4lV4qfBWWOaaqrvOc/l1qGXpol6sWFi9FQS9kBgsNwLbfXDpWix
+         bcr/2KfsbPnwCRiI5qEbSa+EsuqImEZ3hMc2aHCmwj2Q0c3kuIxBUphC7AbLnITF0Xsw
+         kJLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=baTteJqyH6isN/89zdtKchdhH2DBXV9A3IqICZz/QOE=;
+        b=MHbGOScKwRFr1K6DEIbnydBMQQ1fEoV3PeDaTes4Y63icltMuZk6B4htbO0H6jVBQ2
+         uVdn4xosfPm7cFyNar71Ce7vlVVyfob14LPy55dymKrOkFIOiKCyhnuPx7HCUwJWiF+R
+         +w08x/zr65RxPVelEYLJIgFJ1fQXQVphL8KUu8hp7v7lROPF2y0yqgFKs9JRk1r/MNNo
+         x/cJVDl3HUzPlmEO0tPwfVBfAP2EIpGII8EA5dvqe02VE64JZ92rDz6gewrbUb3EMpUZ
+         7EfDW7h9Pm4J8h31551Eha8dzBu+HAwAsqlolYGZg5fjeE+ka55kEZ7EGzIxLPtB4sPM
+         OcgA==
+X-Gm-Message-State: AGi0PuZFMQCNJozhbiwf1N2qvW7MI5dCPmtPmuSb9GS8athwBO85Ovkr
+        69NbSgabj+3w8EaQl/pxdlM3eg==
+X-Google-Smtp-Source: APiQypJN7/JRV7OJ8s/kqjkaowwIPEF6+tYYtQrtoPjYW1yZ84PCDiVZqt0gcfZGOSXWQap6ET6GdQ==
+X-Received: by 2002:a37:bd47:: with SMTP id n68mr16454193qkf.379.1588883630463;
+        Thu, 07 May 2020 13:33:50 -0700 (PDT)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id a139sm5156158qkg.107.2020.05.07.13.33.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 May 2020 13:33:49 -0700 (PDT)
+Date:   Thu, 7 May 2020 16:33:34 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
+        kernel-team@fb.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 01/19] mm: memcg: factor out memcg- and lruvec-level
+ changes out of __mod_lruvec_state()
+Message-ID: <20200507203334.GA161043@cmpxchg.org>
+References: <20200422204708.2176080-1-guro@fb.com>
+ <20200422204708.2176080-2-guro@fb.com>
 MIME-Version: 1.0
-In-Reply-To: <20200507132539.7e081980@gandalf.local.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200422204708.2176080-2-guro@fb.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 5/7/2020 12:25 PM, Steven Rostedt wrote:
-> On Fri, 8 May 2020 00:50:28 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
+On Wed, Apr 22, 2020 at 01:46:50PM -0700, Roman Gushchin wrote:
+> To convert memcg and lruvec slab counters to bytes there must be
+> a way to change these counters without touching node counters.
+> Factor out __mod_memcg_lruvec_state() out of __mod_lruvec_state().
 > 
->>>> Yes, I need Tom's review for this change. As far as I can test, this
->>>> fixes the test failure. If this isn't acceptable, we can use "alias echo=echo"
->>>> for this test case.
->>>>    
->>>
->>> I still don't see how changing "keys=common_pid" to "keys=ip" has anything
->>> to do with the echo patch. If that is a problem, it should be a different
->>> patch with explanation to why "keys=common_pid" is broken.
->>
->> This test case uses a trace_marker event to make a histogram with
->> the common_pid key, and it expects the "echo" command is built-in command
->> so that the pid is same while writing several events to trace_marker.
->> I changed it to "ip" which is always same if trace_marker interface is
->> used.
-> 
-> Can you explicitly state that in your change log? It wasn't obvious from
-> what you meant with:
-> 
-> "This also fixes some test cases which expects built-in echo command."
-> 
+> Signed-off-by: Roman Gushchin <guro@fb.com>
 
-With that change,
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
-Reviewed-by: Tom Zanussi <tom.zanussi@linux.intel.com>
+Roman and I have talked a bunch about the function names here. They're
+not optimal, with mod_lruvec_state() doing the entire intersection -
+node, memcg, lruvec - and mod_memcg_lruvec_state() being a specific
+version that does not update the node.
 
-Thanks,
-
-Tom
-
-> Thanks!
-> 
-> -- Steve
-> 
+However, the usecases for mod_memcg_lruvec_state() are highly
+specific, so the function won't be widely used. As such, it received
+the longer name, and we get to keep the shorter mod_lruvec_state() for
+the much more widely used function.
