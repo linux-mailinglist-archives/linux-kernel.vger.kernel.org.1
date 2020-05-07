@@ -2,108 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 117921C94CD
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 17:19:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE7671C9499
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 17:15:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726776AbgEGPTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 11:19:33 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:59736 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725948AbgEGPTc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 11:19:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588864771;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cStW6qIKyhYd/UHlHbB5Zz+wLlj28FxKEQuFmjwQOS8=;
-        b=SQMyzljK4Uz0xQTNUmkoulc27aQTli0YHYiDXhYA+tqSVwbWmnzx9iZ+FRiNj2MES/QXut
-        WUOwlodXxcYJo2RJhmxLo35jv6yrNtHipbsYVVPT5eJeHWRGAu2rBcVceM8FxJ/eA+ZJu4
-        axCwHkTyEP/Now04XjqJg3qBQl4oZU8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-192-QNQvlEAyOz6hTrzlOTvZkA-1; Thu, 07 May 2020 11:19:25 -0400
-X-MC-Unique: QNQvlEAyOz6hTrzlOTvZkA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726825AbgEGPO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 11:14:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43302 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725914AbgEGPO4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 11:14:56 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0095F835B41;
-        Thu,  7 May 2020 15:19:24 +0000 (UTC)
-Received: from krava (unknown [10.40.194.212])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D08E41053B1C;
-        Thu,  7 May 2020 15:19:21 +0000 (UTC)
-Date:   Thu, 7 May 2020 17:19:19 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Jin Yao <yao.jin@linux.intel.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH v3 1/4] perf stat: Fix wrong per-thread runtime stat for
- interval mode
-Message-ID: <20200507151919.GE2804092@krava>
-References: <20200507065822.8255-1-yao.jin@linux.intel.com>
- <20200507065822.8255-2-yao.jin@linux.intel.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 6FEBE207DD;
+        Thu,  7 May 2020 15:14:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588864496;
+        bh=nH4zzLyFJaaR6EBGr6MwECFJ0OIX3tGLz6Ht3UbWkZM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=P/qI5XcxnpOU2JlzciA5QWZCZGmLZfddp8qb5bxXx45rDzjJdI2SqlGqYARDzuB84
+         TnO5gSmseGqu/btra6/WZaf7T3sS1E1uKVzKPJOzReH3MiUYqUUkXonvPEgfpQzHoh
+         1Zn0pmhSYAXfa6as0z/2b2XL/DF+K29mcfG4Pofo=
+Date:   Thu, 7 May 2020 10:19:21 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Christian Lamparter <chunkeey@googlemail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH] carl9170: Replace zero-length array with flexible-array
+Message-ID: <20200507151921.GA5083@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200507065822.8255-2-yao.jin@linux.intel.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 07, 2020 at 02:58:19PM +0800, Jin Yao wrote:
+The current codebase makes use of the zero-length array language
+extension to the C90 standard, but the preferred mechanism to declare
+variable-length types such as these ones is a flexible array member[1][2],
+introduced in C99:
 
-SNIP
+struct foo {
+        int stuff;
+        struct boo array[];
+};
 
-> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-> index e0c1ad23c768..97ee941649e6 100644
-> --- a/tools/perf/builtin-stat.c
-> +++ b/tools/perf/builtin-stat.c
-> @@ -351,6 +351,16 @@ static void read_counters(struct timespec *rs)
->  	}
->  }
->  
-> +static void thread_stats_reset(struct perf_stat_config *config)
-> +{
-> +	int i;
-> +
-> +	if (config->stats) {
-> +		for (i = 0; i < config->stats_num; i++)
-> +			perf_stat__reset_shadow_per_stat(&config->stats[i]);
-> +	}
-> +}
-> +
->  static void process_interval(void)
->  {
->  	struct timespec ts, rs;
-> @@ -359,6 +369,7 @@ static void process_interval(void)
->  	diff_timespec(&rs, &ts, &ref_time);
->  
->  	perf_stat__reset_shadow_per_stat(&rt_stat);
-> +	thread_stats_reset(&stat_config);
+By making use of the mechanism above, we will get a compiler warning
+in case the flexible array does not occur last in the structure, which
+will help us prevent some kind of undefined behavior bugs from being
+inadvertently introduced[3] to the codebase from now on.
 
-can't you call in here perf_stat__reset_stats?
+Also, notice that, dynamic memory allocations won't be affected by
+this change:
 
-and if not, I know it's threads related, but new
-and delete functions are:
+"Flexible array members have incomplete type, and so the sizeof operator
+may not be applied. As a quirk of the original implementation of
+zero-length arrays, sizeof evaluates to zero."[1]
 
-  runtime_stat_new, runtime_stat_delete
+sizeof(flexible-array-member) triggers a warning because flexible array
+members have incomplete type[1]. There are some instances of code in
+which the sizeof operator is being incorrectly/erroneously applied to
+zero-length arrays and the result is zero. Such instances may be hiding
+some bugs. So, this work (flexible-array member conversions) will also
+help to get completely rid of those sorts of issues.
 
-so let's call it runtime_stat_reset and place it next to
-the new/delete functions
+This issue was found with the help of Coccinelle.
 
-other than that it looks ok, thanks
+[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+[2] https://github.com/KSPP/linux/issues/21
+[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
 
-jirka
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/net/wireless/ath/carl9170/fwcmd.h | 2 +-
+ drivers/net/wireless/ath/carl9170/hw.h    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
->  	read_counters(&rs);
->  
->  	if (STAT_RECORD) {
-> -- 
-> 2.17.1
-> 
+diff --git a/drivers/net/wireless/ath/carl9170/fwcmd.h b/drivers/net/wireless/ath/carl9170/fwcmd.h
+index ea1d80f9a50e..56999a3b9d3b 100644
+--- a/drivers/net/wireless/ath/carl9170/fwcmd.h
++++ b/drivers/net/wireless/ath/carl9170/fwcmd.h
+@@ -127,7 +127,7 @@ struct carl9170_write_reg {
+ struct carl9170_write_reg_byte {
+ 	__le32	addr;
+ 	__le32  count;
+-	u8	val[0];
++	u8	val[];
+ } __packed;
+ 
+ #define	CARL9170FW_PHY_HT_ENABLE		0x4
+diff --git a/drivers/net/wireless/ath/carl9170/hw.h b/drivers/net/wireless/ath/carl9170/hw.h
+index 08e0ae9c5836..555ad4975970 100644
+--- a/drivers/net/wireless/ath/carl9170/hw.h
++++ b/drivers/net/wireless/ath/carl9170/hw.h
+@@ -851,7 +851,7 @@ struct ar9170_stream {
+ 	__le16 length;
+ 	__le16 tag;
+ 
+-	u8 payload[0];
++	u8 payload[];
+ } __packed __aligned(4);
+ #define AR9170_STREAM_LEN				4
+ 
+-- 
+2.26.2
 
