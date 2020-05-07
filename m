@@ -2,58 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65FA01C9F5B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 01:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FA6D1C9F5E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 01:57:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727029AbgEGX5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 19:57:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53032 "EHLO
+        id S1727108AbgEGX5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 19:57:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726480AbgEGX5O (ORCPT
+        by vger.kernel.org with ESMTP id S1727032AbgEGX5Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 19:57:14 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFB68C05BD43
-        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 16:57:14 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id e8so3800814ilm.7
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 16:57:14 -0700 (PDT)
+        Thu, 7 May 2020 19:57:16 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F824C05BD0A
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 16:57:16 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id w6so2656947ilg.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 16:57:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linuxfoundation.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=u9gJYJ3n1PrzT+nVQdUcEY+WLY9HYwAvNWuv9VcAD6k=;
-        b=iiPl+40u0RQVypHXIV4K4Yl6qfR28bqEuxAHmloqQhk0MSlpzXevMLAmCM4B6z1N9b
-         87knCEH46hb0HrDrwdHqbj7o73S0KioLHNwAo9sd/VBR58PAvOVCuIf0RayDDHIcnstm
-         zh33AoFq2C5Rx1SvngiB8CHjBFL4XvVSsR4LU=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=9TwK4u8Oz+hIVdTAgPTDuNePQX/j9l3iXT78dNtrMzA=;
+        b=GSWVCbnYftAggwrWtoofsSVg5KaUUx2c+wWZgyeyBk1u+bCb7nxD9dpZldsclYDu5C
+         nX1TB/LfcQ2XeDdI0qzxstB5mqAimi/zyMyP3HLAMdDhpbNd/70j/59+8IbGuIx9uN8x
+         mxnl8V6RelTgjF2xQzdPohrldstjbm0beUwI8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=u9gJYJ3n1PrzT+nVQdUcEY+WLY9HYwAvNWuv9VcAD6k=;
-        b=P7oQSEvHFxB+/c8Mae5YYIF4IHmo3ZzIqOYabh0oIhLYlTJ8UXwe1wPAyVk4UlMdOb
-         fcRW85CdcoCMjlm7Zx+kLwhIMkGjSCigxUGKdEK0zO92fxtjYEpoTGcQd+ZaasQCVlkN
-         fbtbcPkkmKhTKEfUBRsbAzw9xSFZ4ZFNDCsFFIyoACJjxMXVD+UYMBYocTX2HTbZoNQm
-         mvdTHNK364IKI50WuTOMjpqyALH9a5QpjAj5YpiJbHXE9VtOVSljn6qxbdXLizqPLjvy
-         mNuo0l6vFK2qFec8BY7i4sHlLJdw79HJAFWB/tRsGO6X7aSVibzWWTi3kFwuseDNCR2A
-         3RbQ==
-X-Gm-Message-State: AGi0Pua3GPME04MOCs8MpUC7St8syJ61Qw96biu8ghL9g9zMRE8SD1w4
-        lG35F/Zm+hBFL0+/v/Z4mSlreg==
-X-Google-Smtp-Source: APiQypJCB+O0RXyXnDGd+gJg6HKweApSFsEIoGzatAvFK5k9aENS5j4AucalIRSxvrc/d106AIHzIg==
-X-Received: by 2002:a92:84c1:: with SMTP id y62mr17356445ilk.116.1588895834251;
-        Thu, 07 May 2020 16:57:14 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=9TwK4u8Oz+hIVdTAgPTDuNePQX/j9l3iXT78dNtrMzA=;
+        b=s70z12XlR0225Tu+fMOfEoZjFOsBMsmrPTA2RJYKLM3surlSRmqSSAFvildsl5BJXM
+         prRiXpIQdgvr/rk6sfzTO0EZoAbQwlhTx4ozkVqWfwUko8eKb5ttdG7BQh0K9295sHgC
+         oKvglsqb8ALpGRColqJITzm8CqNQ9JUwDgLyLKNEN8yNzt32RPHt3u0kzJX7XP5n+slT
+         d0EABtTfCgtJ7Db9VgtQm30q7h4VZKxLrUoBIGmF14GL8BdYPKTa0nI1q8lIq5zdspMb
+         lJoYCm81NdENSIiYZ8motJk5n6O8zFuV3/Hm/JmZpD0wJ31ANAzS4SZokr+pQv6GHxC0
+         auYg==
+X-Gm-Message-State: AGi0PuaPXsJmojCBoilGR+eKnVc4X/k4/OUzbPQR4Tod3h+VmtAHuBP3
+        Q6o6W4/x91gGBe8b4a1QNpeXcW8ychw=
+X-Google-Smtp-Source: APiQypJBM1xuTwXEsrDaqEq1u3eTWKXejiZiCER3XjowknHOSmHpGwOENdMMt20RM9A8e6EAv2euKA==
+X-Received: by 2002:a92:607:: with SMTP id x7mr15916103ilg.218.1588895835927;
+        Thu, 07 May 2020 16:57:15 -0700 (PDT)
 Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id f19sm1369893ioc.9.2020.05.07.16.57.13
+        by smtp.gmail.com with ESMTPSA id f19sm1369893ioc.9.2020.05.07.16.57.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2020 16:57:13 -0700 (PDT)
+        Thu, 07 May 2020 16:57:15 -0700 (PDT)
 From:   Shuah Khan <skhan@linuxfoundation.org>
 To:     viro@zeniv.linux.org.uk, axboe@kernel.dk, zohar@linux.vnet.ibm.com,
         mcgrof@kernel.org, keescook@chromium.org
 Cc:     Shuah Khan <skhan@linuxfoundation.org>,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 0/2] fs: avoid fdput() after failed fdget()
-Date:   Thu,  7 May 2020 17:57:08 -0600
-Message-Id: <cover.1588894359.git.skhan@linuxfoundation.org>
+Subject: [PATCH 1/2] fs: avoid fdput() after failed fdget() in ksys_sync_file_range()
+Date:   Thu,  7 May 2020 17:57:09 -0600
+Message-Id: <31be6e0896eba59c06eb9d3d137b214f7220cc53.1588894359.git.skhan@linuxfoundation.org>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <cover.1588894359.git.skhan@linuxfoundation.org>
+References: <cover.1588894359.git.skhan@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -61,20 +63,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While debugging an unrelated problem that got me down the path of
-reviewing at all the fdget() and fdput() paths in the kernel.
+Fix ksys_sync_file_range() to avoid fdput() after a failed fdget().
+fdput() doesn't do fput() on this file since FDPUT_FPUT isn't set
+in fd.flags. Fix it anyway since failed fdget() doesn't require
+a fdput().
 
-While doing the review, I noticed these two places where fdput()
-is called after failed fdget(). Fixing them in these two patches.
-  
-Shuah Khan (2):
-  fs: avoid fdput() after failed fdget() in ksys_sync_file_range()
-  fs: avoid fdput() after failed fdget() in kernel_read_file_from_fd()
+This was introdcued in a commit to add sync_file_range() helper.
 
- fs/exec.c | 2 +-
+Fixes: 22f96b3808c1 ("fs: add sync_file_range() helper")
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+---
  fs/sync.c | 5 +++--
- 2 files changed, 4 insertions(+), 3 deletions(-)
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
+diff --git a/fs/sync.c b/fs/sync.c
+index 4d1ff010bc5a..faaff835ef12 100644
+--- a/fs/sync.c
++++ b/fs/sync.c
+@@ -369,10 +369,11 @@ int ksys_sync_file_range(int fd, loff_t offset, loff_t nbytes,
+ 
+ 	ret = -EBADF;
+ 	f = fdget(fd);
+-	if (f.file)
++	if (f.file) {
+ 		ret = sync_file_range(f.file, offset, nbytes, flags);
++		fdput(f);
++	}
+ 
+-	fdput(f);
+ 	return ret;
+ }
+ 
 -- 
 2.20.1
 
