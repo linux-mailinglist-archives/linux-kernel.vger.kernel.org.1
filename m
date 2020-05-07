@@ -2,93 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A617C1C9424
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 17:12:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B499E1C947D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 17:14:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727844AbgEGPMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 11:12:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726074AbgEGPMW (ORCPT
+        id S1727958AbgEGPNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 11:13:14 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:45950 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726495AbgEGPNN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 11:12:22 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 732A0C05BD43;
-        Thu,  7 May 2020 08:12:22 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id 207so2936060pgc.6;
-        Thu, 07 May 2020 08:12:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=96jnTCBD83Wv0PAJTE2BBo0VXx5TqKQi9pMzwgM4Bvo=;
-        b=qkcIoMnyddwZz6l2iGAXDhyexKTgNnQAW9lafUYWDMhTepNj8Sta9ZXm4w3wyB2AST
-         1AJTMdMBajSvLBhvM16D9KgIqtXbBuhudE+UHuISqWO+qY00UPgJD8yJPr8DZ8rCOMzJ
-         c2ItNvJ+ttYCUdfWTOe3xXVOp6Iplo5z9il0iU+Oml333s/6CXcW4Jgp77xvzRrLQgL+
-         /ncoVKcoluCYvfQGspde7NgrHxWuU1aOLIThVKDHkx9x8j/6bqj2QsmqLDnPEMdzRg9Z
-         Fznfhyk50qoESkluSuANZvefs7UgpLkAYOsCejb35HG+Jd3EE+CfYyOZaeuDWCVW5Z2i
-         9hqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=96jnTCBD83Wv0PAJTE2BBo0VXx5TqKQi9pMzwgM4Bvo=;
-        b=Ncheoe5nAQVwqD1DgdZWLslJtsE79c3Plbh2WlEskmNn2BaxZPULmLRfDWPEauoKm0
-         LP7C3lErfzFdhCgUgRo197xWg9Dm/myYg7Y8moEqWbvJx7c/QXFlM6hUT43an8mjwXDU
-         8ydgdSN5ccH5JBWHzUM5V63dTk5CHqremIF6y/1E3nu545z0EZYZn+yllYFm06JIdTRs
-         3zOGxTKmS0OlLVvqVDF1krLSx0get/IEdfZEGktVJnp2cElHroeWO5KOI62+1og3M+H+
-         Hp1UvkHyU6B0LOcq+XcE4K7qtsvVLrYAARhCkBhWWRWXaz3+ko/cyDTMPmv8p4J6taTf
-         CpZg==
-X-Gm-Message-State: AGi0PuYGEvVJ7HD9hAaWlm5SMN9Qj2J4osDL4fyBjBm0IuFm9fnHYChP
-        NB5uRAAjJzzg5FLJ5XRQOjM=
-X-Google-Smtp-Source: APiQypJdokPYKCL5kUn4xIRQIDNKHKOdREr5Pgq69HVLtf4k/OCqHfoHoqbZ9uKHEKRIlSnCEIMzsA==
-X-Received: by 2002:a63:6e81:: with SMTP id j123mr12541889pgc.333.1588864342098;
-        Thu, 07 May 2020 08:12:22 -0700 (PDT)
-Received: from suzukaze.ipads-lab.se.sjtu.edu.cn ([202.120.40.82])
-        by smtp.gmail.com with ESMTPSA id a196sm5276794pfd.184.2020.05.07.08.12.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2020 08:12:21 -0700 (PDT)
-From:   Chuhong Yuan <hslester96@gmail.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        linux-input@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Chuhong Yuan <hslester96@gmail.com>
-Subject: [PATCH] Input: stmpe-ts - add missed input_unregister_device
-Date:   Thu,  7 May 2020 23:12:13 +0800
-Message-Id: <20200507151213.792640-1-hslester96@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Thu, 7 May 2020 11:13:13 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 047FCqlM092059;
+        Thu, 7 May 2020 10:12:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1588864372;
+        bh=uHPwV69Dhv7IS63ZpxLzpMltxKOgBIIHLVDM5YZVhN0=;
+        h=From:To:CC:Subject:Date;
+        b=kT8IjwRgE2gl+b9P3zAs5HOYtpWHYrNjlZkW9khLiAPIX0ip7/GQgkmCrzv+GGDDe
+         NJ9ISUCTJeLtlxEW7oUSRY9ZZr7HNCvLBHiim8+UsBbVl5HrtMGsbCjn6f9yv/sh6Q
+         1BqAqX5VhKE1RsTRz9kLiX+GA3b6/4/PY+PNs/mI=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 047FCqD0043780;
+        Thu, 7 May 2020 10:12:52 -0500
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 7 May
+ 2020 10:12:51 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 7 May 2020 10:12:51 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 047FCosF070313;
+        Thu, 7 May 2020 10:12:51 -0500
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+To:     Tony Lindgren <tony@atomide.com>,
+        "David S. Miller" <davem@davemloft.net>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-omap@vger.kernel.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Philippe Schenker <philippe.schenker@toradex.com>
+Subject: [PATCH v2] ARM: dts: am437x: fix networking on boards with ksz9031 phy
+Date:   Thu, 7 May 2020 18:12:44 +0300
+Message-ID: <20200507151244.24218-1-grygorii.strashko@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver calls input_register_device() in probe, but misses
-input_unregister_device() in remove.
-Add the missed function call to fix it.
+Since commit bcf3440c6dd7 ("net: phy: micrel: add phy-mode support for the
+KSZ9031 PHY") the networking is broken on boards:
+ am437x-gp-evm
+ am437x-sk-evm
+ am437x-idk-evm
 
-Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+All above boards have phy-mode = "rgmii" and this is worked before, because
+KSZ9031 PHY started with default RGMII internal delays configuration (TX
+off, RX on 1.2 ns) and MAC provided TX delay. After above commit, the
+KSZ9031 PHY starts handling phy mode properly and disables RX delay, as
+result networking is become broken.
+
+Fix it by switching to phy-mode = "rgmii-rxid" to reflect previous
+behavior.
+
+Cc: Oleksij Rempel <o.rempel@pengutronix.de>
+Cc: Andrew Lunn <andrew@lunn.ch>
+Cc: Philippe Schenker <philippe.schenker@toradex.com>
+Fixes: commit bcf3440c6dd7 ("net: phy: micrel: add phy-mode support for the KSZ9031 PHY")
+Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
 ---
- drivers/input/touchscreen/stmpe-ts.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/boot/dts/am437x-gp-evm.dts  | 2 +-
+ arch/arm/boot/dts/am437x-idk-evm.dts | 2 +-
+ arch/arm/boot/dts/am437x-sk-evm.dts  | 4 ++--
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/input/touchscreen/stmpe-ts.c b/drivers/input/touchscreen/stmpe-ts.c
-index 7e16fcfe3b95..5e62b466629b 100644
---- a/drivers/input/touchscreen/stmpe-ts.c
-+++ b/drivers/input/touchscreen/stmpe-ts.c
-@@ -350,6 +350,7 @@ static int stmpe_ts_remove(struct platform_device *pdev)
- {
- 	struct stmpe_touch *ts = platform_get_drvdata(pdev);
+diff --git a/arch/arm/boot/dts/am437x-gp-evm.dts b/arch/arm/boot/dts/am437x-gp-evm.dts
+index 811c8cae315b..d692e3b2812a 100644
+--- a/arch/arm/boot/dts/am437x-gp-evm.dts
++++ b/arch/arm/boot/dts/am437x-gp-evm.dts
+@@ -943,7 +943,7 @@
  
-+	input_unregister_device(ts->idev);
- 	stmpe_disable(ts->stmpe, STMPE_BLOCK_TOUCHSCREEN);
+ &cpsw_emac0 {
+ 	phy-handle = <&ethphy0>;
+-	phy-mode = "rgmii";
++	phy-mode = "rgmii-rxid";
+ };
  
- 	return 0;
+ &elm {
+diff --git a/arch/arm/boot/dts/am437x-idk-evm.dts b/arch/arm/boot/dts/am437x-idk-evm.dts
+index 9f66f96d09c9..a958f9ee4a5a 100644
+--- a/arch/arm/boot/dts/am437x-idk-evm.dts
++++ b/arch/arm/boot/dts/am437x-idk-evm.dts
+@@ -504,7 +504,7 @@
+ 
+ &cpsw_emac0 {
+ 	phy-handle = <&ethphy0>;
+-	phy-mode = "rgmii";
++	phy-mode = "rgmii-rxid";
+ };
+ 
+ &rtc {
+diff --git a/arch/arm/boot/dts/am437x-sk-evm.dts b/arch/arm/boot/dts/am437x-sk-evm.dts
+index 25222497f828..4d5a7ca2e25d 100644
+--- a/arch/arm/boot/dts/am437x-sk-evm.dts
++++ b/arch/arm/boot/dts/am437x-sk-evm.dts
+@@ -833,13 +833,13 @@
+ 
+ &cpsw_emac0 {
+ 	phy-handle = <&ethphy0>;
+-	phy-mode = "rgmii";
++	phy-mode = "rgmii-rxid";
+ 	dual_emac_res_vlan = <1>;
+ };
+ 
+ &cpsw_emac1 {
+ 	phy-handle = <&ethphy1>;
+-	phy-mode = "rgmii";
++	phy-mode = "rgmii-rxid";
+ 	dual_emac_res_vlan = <2>;
+ };
+ 
 -- 
-2.26.2
+2.17.1
 
