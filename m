@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 631E51C9A0A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:55:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2E5E1C9A10
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728626AbgEGSzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 14:55:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57212 "EHLO mail.kernel.org"
+        id S1728198AbgEGS4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 14:56:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57590 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727904AbgEGSzQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 14:55:16 -0400
+        id S1726515AbgEGS4H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 14:56:07 -0400
 Received: from embeddedor (unknown [189.207.59.248])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 21677221F7;
-        Thu,  7 May 2020 18:55:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 59D6D20575;
+        Thu,  7 May 2020 18:56:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588877715;
-        bh=dd1tg8D5OHCVId8oTy4YDKOQkz34ytpBDxTe3n03A5w=;
+        s=default; t=1588877766;
+        bh=zfyJqFsl52hg8MspTQ7ZLvYaM+kZM5XIzKGPNp9tS0M=;
         h=Date:From:To:Cc:Subject:From;
-        b=E/S6rwWxvQ/dwNe8ctjaZopkyWPs7Lf5pBQRuFtUtqYB8CcatdbEFdzcrP9rV9Xik
-         LCbqmFUErBbx9X8mNniW1gobQ5gNTep8MybRDfJiG2yiDPGkvIssMq0Djj2MjRzEMq
-         m1IiqkQwIWXMZO7V29rv3X12QFFXwQQBLLgGJLpU=
-Date:   Thu, 7 May 2020 13:59:42 -0500
+        b=lUIjDc43mnN3s1tQ3rk7rBVGyC4MQITWAKNnSvlP9Os25A3B2tkhR7fBcPW0JBvHk
+         NRIC3bHkeU4TjjB/eGKYGj9P8FFvdPIyHfZUg03GQZIDfJGEAomxShu/5ZWSu5uPvf
+         0wXiAARkdO4CTdsE34effG0LjFiwQxu12v4CmONc=
+Date:   Thu, 7 May 2020 14:00:33 -0500
 From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mm: Replace zero-length array with flexible-array
-Message-ID: <20200507185942.GA15193@embeddedor>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: Replace zero-length array with flexible-array
+Message-ID: <20200507190033.GA15215@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -75,20 +77,52 @@ This issue was found with the help of Coccinelle.
 
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- include/linux/mm.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/mtd/cfi.h   |    6 +++---
+ include/linux/mtd/qinfo.h |    2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 5a323422d783..9831bb55caf3 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -1718,7 +1718,7 @@ struct frame_vector {
- 	unsigned int nr_frames;	/* Number of frames stored in ptrs array */
- 	bool got_ref;		/* Did we pin pages by getting page ref? */
- 	bool is_pfns;		/* Does array contain pages or pfns? */
--	void *ptrs[0];		/* Array of pinned pfns / pages. Use
-+	void *ptrs[];		/* Array of pinned pfns / pages. Use
- 				 * pfns_vector_pages() or pfns_vector_pfns()
- 				 * for access */
+diff --git a/include/linux/mtd/cfi.h b/include/linux/mtd/cfi.h
+index c98a21108688..fd1ecb821106 100644
+--- a/include/linux/mtd/cfi.h
++++ b/include/linux/mtd/cfi.h
+@@ -138,7 +138,7 @@ struct cfi_ident {
+ 	uint16_t InterfaceDesc;
+ 	uint16_t MaxBufWriteSize;
+ 	uint8_t  NumEraseRegions;
+-	uint32_t EraseRegionInfo[0]; /* Not host ordered */
++	uint32_t EraseRegionInfo[]; /* Not host ordered */
+ } __packed;
+ 
+ /* Extended Query Structure for both PRI and ALT */
+@@ -165,7 +165,7 @@ struct cfi_pri_intelext {
+ 	uint16_t ProtRegAddr;
+ 	uint8_t  FactProtRegSize;
+ 	uint8_t  UserProtRegSize;
+-	uint8_t  extra[0];
++	uint8_t  extra[];
+ } __packed;
+ 
+ struct cfi_intelext_otpinfo {
+@@ -286,7 +286,7 @@ struct cfi_private {
+ 	map_word sector_erase_cmd;
+ 	unsigned long chipshift; /* Because they're of the same type */
+ 	const char *im_name;	 /* inter_module name for cmdset_setup */
+-	struct flchip chips[0];  /* per-chip data structure for each chip */
++	struct flchip chips[];  /* per-chip data structure for each chip */
  };
+ 
+ uint32_t cfi_build_cmd_addr(uint32_t cmd_ofs,
+diff --git a/include/linux/mtd/qinfo.h b/include/linux/mtd/qinfo.h
+index df5b9fddea16..2e3f43788d48 100644
+--- a/include/linux/mtd/qinfo.h
++++ b/include/linux/mtd/qinfo.h
+@@ -24,7 +24,7 @@ struct lpddr_private {
+ 	struct qinfo_chip *qinfo;
+ 	int numchips;
+ 	unsigned long chipshift;
+-	struct flchip chips[0];
++	struct flchip chips[];
+ };
+ 
+ /* qinfo_query_info structure contains request information for
 
