@@ -2,135 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A67BE1C869D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 12:25:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 509421C8684
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 12:21:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726575AbgEGKZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 06:25:05 -0400
-Received: from relay10.mail.gandi.net ([217.70.178.230]:50055 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726218AbgEGKZF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 06:25:05 -0400
-Received: from xps13 (unknown [91.224.148.103])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 831E6240014;
-        Thu,  7 May 2020 10:21:11 +0000 (UTC)
-Date:   Thu, 7 May 2020 12:21:10 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Vincenzo Aliberti <vincenzo.aliberti@gmail.com>,
-        Brian Norris <computersforpeace@gmail.com>,
-        Richard Fontana <rfontana@redhat.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] mtd: lpddr: fix excessive stack usage with clang
-Message-ID: <20200507122110.50ccce48@xps13>
-In-Reply-To: <20200506023828.GA415100@ubuntu-s3-xlarge-x86>
-References: <20200505140136.263461-1-arnd@arndb.de>
-        <20200506023828.GA415100@ubuntu-s3-xlarge-x86>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726218AbgEGKVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 06:21:42 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2162 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725857AbgEGKVl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 06:21:41 -0400
+Received: from lhreml716-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id A05E31662E4C4547931E;
+        Thu,  7 May 2020 11:21:38 +0100 (IST)
+Received: from fraeml712-chm.china.huawei.com (10.206.15.61) by
+ lhreml716-chm.china.huawei.com (10.201.108.67) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Thu, 7 May 2020 11:21:38 +0100
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml712-chm.china.huawei.com (10.206.15.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Thu, 7 May 2020 12:21:38 +0200
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.1913.007;
+ Thu, 7 May 2020 12:21:37 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Roberto Sassu <roberto.sassu@huawei.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        "mjg59@google.com" <mjg59@google.com>
+CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>
+Subject: RE: [PATCH] ima: Allow imasig requirement to be satisfied by EVM
+ portable signatures
+Thread-Topic: [PATCH] ima: Allow imasig requirement to be satisfied by EVM
+ portable signatures
+Thread-Index: AQHWF772Ra31Za7Rnki0v4dh4iikmaiHEPYAgAEEbgCAFGpBIA==
+Date:   Thu, 7 May 2020 10:21:37 +0000
+Message-ID: <1e206d0da3dd485b90f88ba07dfdf140@huawei.com>
+References: <20200421092418.25151-1-roberto.sassu@huawei.com>
+ <1587675102.5610.66.camel@linux.ibm.com>
+ <735d0814399f430a8809af8c28b1a62d@huawei.com>
+In-Reply-To: <735d0814399f430a8809af8c28b1a62d@huawei.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.220.65.97]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Nathan Chancellor <natechancellor@gmail.com> wrote on Tue, 5 May 2020
-19:38:28 -0700:
-
-> On Tue, May 05, 2020 at 04:01:16PM +0200, Arnd Bergmann wrote:
-> > Building lpddr2_nvm with clang can result in a giant stack usage
-> > in one function:
-> > 
-> > drivers/mtd/lpddr/lpddr2_nvm.c:399:12: error: stack frame size of 1144 bytes in function 'lpddr2_nvm_probe' [-Werror,-Wframe-larger-than=]
-> > 
-> > The problem is that clang decides to build a copy of the mtd_info
-> > structure on the stack and then do a memcpy() into the actual version. It
-> > shouldn't really do it that way, but it's not strictly a bug either.
-> > 
-> > As a workaround, use a static const version of the structure to assign
-> > most of the members upfront and then only set the few members that
-> > require runtime knowledge at probe time.
-> > 
-> > Fixes: 96ba9dd65788 ("mtd: lpddr: add driver for LPDDR2-NVM PCM memories")
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>  
-> 
-> Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-
-Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
-
-> 
-> > ---
-> >  drivers/mtd/lpddr/lpddr2_nvm.c | 35 ++++++++++++++++++----------------
-> >  1 file changed, 19 insertions(+), 16 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/lpddr/lpddr2_nvm.c b/drivers/mtd/lpddr/lpddr2_nvm.c
-> > index 0f1547f09d08..72f5c7b30079 100644
-> > --- a/drivers/mtd/lpddr/lpddr2_nvm.c
-> > +++ b/drivers/mtd/lpddr/lpddr2_nvm.c
-> > @@ -393,6 +393,17 @@ static int lpddr2_nvm_lock(struct mtd_info *mtd, loff_t start_add,
-> >  	return lpddr2_nvm_do_block_op(mtd, start_add, len, LPDDR2_NVM_LOCK);
-> >  }
-> >  
-> > +static const struct mtd_info lpddr2_nvm_mtd_info = {
-> > +	.type		= MTD_RAM,
-> > +	.writesize	= 1,
-> > +	.flags		= (MTD_CAP_NVRAM | MTD_POWERUP_LOCK),
-> > +	._read		= lpddr2_nvm_read,
-> > +	._write		= lpddr2_nvm_write,
-> > +	._erase		= lpddr2_nvm_erase,
-> > +	._unlock	= lpddr2_nvm_unlock,
-> > +	._lock		= lpddr2_nvm_lock,
-> > +};
-> > +
-> >  /*
-> >   * lpddr2_nvm driver probe method
-> >   */
-> > @@ -433,6 +444,7 @@ static int lpddr2_nvm_probe(struct platform_device *pdev)
-> >  		.pfow_base	= OW_BASE_ADDRESS,
-> >  		.fldrv_priv	= pcm_data,
-> >  	};
-> > +
-> >  	if (IS_ERR(map->virt))
-> >  		return PTR_ERR(map->virt);
-> >  
-> > @@ -444,22 +456,13 @@ static int lpddr2_nvm_probe(struct platform_device *pdev)
-> >  		return PTR_ERR(pcm_data->ctl_regs);
-> >  
-> >  	/* Populate mtd_info data structure */
-> > -	*mtd = (struct mtd_info) {
-> > -		.dev		= { .parent = &pdev->dev },
-> > -		.name		= pdev->dev.init_name,
-> > -		.type		= MTD_RAM,
-> > -		.priv		= map,
-> > -		.size		= resource_size(add_range),
-> > -		.erasesize	= ERASE_BLOCKSIZE * pcm_data->bus_width,
-> > -		.writesize	= 1,
-> > -		.writebufsize	= WRITE_BUFFSIZE * pcm_data->bus_width,
-> > -		.flags		= (MTD_CAP_NVRAM | MTD_POWERUP_LOCK),
-> > -		._read		= lpddr2_nvm_read,
-> > -		._write		= lpddr2_nvm_write,
-> > -		._erase		= lpddr2_nvm_erase,
-> > -		._unlock	= lpddr2_nvm_unlock,
-> > -		._lock		= lpddr2_nvm_lock,
-> > -	};
-> > +	*mtd = lpddr2_nvm_mtd_info;
-> > +	mtd->dev.parent		= &pdev->dev;
-> > +	mtd->name		= pdev->dev.init_name;
-> > +	mtd->priv		= map;
-> > +	mtd->size		= resource_size(add_range);
-> > +	mtd->erasesize		= ERASE_BLOCKSIZE * pcm_data->bus_width;
-> > +	mtd->writebufsize	= WRITE_BUFFSIZE * pcm_data->bus_width;
-> >  
-> >  	/* Verify the presence of the device looking for PFOW string */
-> >  	if (!lpddr2_nvm_pfow_present(map)) {
-> > -- 
-> > 2.26.0
-> >   
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBsaW51eC1pbnRlZ3JpdHktb3du
+ZXJAdmdlci5rZXJuZWwub3JnIFttYWlsdG86bGludXgtaW50ZWdyaXR5LQ0KPiBvd25lckB2Z2Vy
+Lmtlcm5lbC5vcmddIE9uIEJlaGFsZiBPZiBSb2JlcnRvIFNhc3N1DQo+IFNlbnQ6IEZyaWRheSwg
+QXByaWwgMjQsIDIwMjAgMTI6NDAgUE0NCj4gVG86IE1pbWkgWm9oYXIgPHpvaGFyQGxpbnV4Lmli
+bS5jb20+OyBtamc1OUBnb29nbGUuY29tDQo+IENjOiBsaW51eC1pbnRlZ3JpdHlAdmdlci5rZXJu
+ZWwub3JnOyBsaW51eC1zZWN1cml0eS1tb2R1bGVAdmdlci5rZXJuZWwub3JnOw0KPiBsaW51eC1r
+ZXJuZWxAdmdlci5rZXJuZWwub3JnOyBTaWx2aXUgVmxhc2NlYW51DQo+IDxTaWx2aXUuVmxhc2Nl
+YW51QGh1YXdlaS5jb20+DQo+IFN1YmplY3Q6IFJFOiBbUEFUQ0hdIGltYTogQWxsb3cgaW1hc2ln
+IHJlcXVpcmVtZW50IHRvIGJlIHNhdGlzZmllZCBieSBFVk0NCj4gcG9ydGFibGUgc2lnbmF0dXJl
+cw0KPiANCj4gPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+IEZyb206IE1pbWkgWm9o
+YXIgW21haWx0bzp6b2hhckBsaW51eC5pYm0uY29tXQ0KPiA+IFNlbnQ6IFRodXJzZGF5LCBBcHJp
+bCAyMywgMjAyMCAxMDo1MiBQTQ0KPiA+IFRvOiBSb2JlcnRvIFNhc3N1IDxyb2JlcnRvLnNhc3N1
+QGh1YXdlaS5jb20+OyBtamc1OUBnb29nbGUuY29tDQo+ID4gQ2M6IGxpbnV4LWludGVncml0eUB2
+Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LXNlY3VyaXR5LQ0KPiBtb2R1bGVAdmdlci5rZXJuZWwub3Jn
+Ow0KPiA+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IFNpbHZpdSBWbGFzY2VhbnUNCj4g
+PiA8U2lsdml1LlZsYXNjZWFudUBodWF3ZWkuY29tPg0KPiA+IFN1YmplY3Q6IFJlOiBbUEFUQ0hd
+IGltYTogQWxsb3cgaW1hc2lnIHJlcXVpcmVtZW50IHRvIGJlIHNhdGlzZmllZCBieQ0KPiBFVk0N
+Cj4gPiBwb3J0YWJsZSBzaWduYXR1cmVzDQo+ID4NCj4gPiBPbiBUdWUsIDIwMjAtMDQtMjEgYXQg
+MTE6MjQgKzAyMDAsIFJvYmVydG8gU2Fzc3Ugd3JvdGU6DQo+ID4gPiBTeXN0ZW0gYWRtaW5pc3Ry
+YXRvcnMgY2FuIHJlcXVpcmUgdGhhdCBhbGwgYWNjZXNzZWQgZmlsZXMgaGF2ZSBhIHNpZ25hdHVy
+ZQ0KPiA+ID4gYnkgc3BlY2lmeWluZyBhcHByYWlzZV90eXBlPWltYXNpZyBpbiBhIHBvbGljeSBy
+dWxlLg0KPiA+ID4NCj4gPiA+IEN1cnJlbnRseSwgb25seSBJTUEgc2lnbmF0dXJlcyBzYXRpc2Z5
+IHRoaXMgcmVxdWlyZW1lbnQuIEhvd2V2ZXIsIGFsc28NCj4gPiBFVk0NCj4gPiA+IHBvcnRhYmxl
+IHNpZ25hdHVyZXMgY2FuIHNhdGlzZnkgaXQuIE1ldGFkYXRhLCBpbmNsdWRpbmcgc2VjdXJpdHku
+aW1hLCBhcmUNCj4gPiA+IHNpZ25lZCBhbmQgY2Fubm90IGNoYW5nZS4NCj4gPg0KPiA+IFBsZWFz
+ZSBleHBhbmQgdGhpcyBwYXJhZ3JhcGggd2l0aCBhIHNob3J0IGNvbXBhcmlzb24gb2YgdGhlIHNl
+Y3VyaXR5DQo+ID4gZ3VhcmFudGVlcyBwcm92aWRlZCBieSBFVk0gaW1tdXRhYmxlLCBwb3J0YWJs
+ZSBzaWduYXR1cmVzIHZlcnN1cyBpbWEtDQo+ID4gc2lnLg0KPiA+DQo+ID4gPg0KPiA+ID4gVGhp
+cyBwYXRjaCBoZWxwcyBpbiB0aGUgc2NlbmFyaW9zIHdoZXJlIHN5c3RlbSBhZG1pbmlzdHJhdG9y
+cyB3YW50IHRvDQo+ID4gPiBlbmZvcmNlIHRoaXMgcmVzdHJpY3Rpb24gYnV0IG9ubHkgRVZNIHBv
+cnRhYmxlIHNpZ25hdHVyZXMgYXJlIGF2YWlsYWJsZS4NCj4gPg0KPiA+IFllcywgSSBhZ3JlZSBp
+dCAiaGVscHMiLCBidXQgd2Ugc3RpbGwgbmVlZCB0byBhZGRyZXNzIHRoZSBhYmlsaXR5IG9mDQo+
+ID4gc2V0dGluZy9yZW1vdmluZyBzZWN1cml0eS5pbWEsIHdoaWNoIGlzbid0IHBvc3NpYmxlIHdp
+dGggYW4gSU1BDQo+ID4gc2lnbmF0dXJlLiDCoFRoaXMgc291bmRzIGxpa2Ugd2UgbmVlZCB0byBk
+ZWZpbmUgYW4gaW1tdXRhYmxlIGZpbGUgaGFzaC4NCj4gDQo+IEkgZGlkbid0IHVuZGVyc3RhbmQu
+IENhbiB5b3UgZXhwbGFpbiBiZXR0ZXI/DQoNCk9rLCBnb3QgaXQuDQoNCkkgd291bGRuJ3QgZ3Jh
+bnQgYWNjZXNzIHRvIG5ldyBmaWxlIGRlcGVuZGluZyBvbiB0aGUgc2VjdXJpdHkuaW1hIHR5cGUN
+CmJ1dCBkZXBlbmRpbmcgb24gdGhlIElNQV9ESUdTSUcgYml0LiBJbiBib3RoIGNhc2VzLCBJTUEg
+c2lnbmF0dXJlIGFuZA0KRVZNIHBvcnRhYmxlIHNpZ25hdHVyZSwgdGhlIGJpdCBpcyBzZXQuDQoN
+ClRoZXJlIGlzIG9uZSByZW1haW5pbmcgaXNzdWUuIE1heWJlIHRoZSBzaWduYXR1cmUgaXMgcG9y
+dGFibGUsIGJ1dCB5b3UNCmRvbid0IGdldCBpdCBmcm9tIGV2bV92ZXJpZnl4YXR0cigpIGlmIHZl
+cmlmaWNhdGlvbiBmYWlscy4gVGhlcmUgaXMgYSBsZWdpdGltYXRlDQpjYXNlIHdoZW4gaXQgaGFw
+cGVucywgd2hpY2ggaXMgd2hlbiB5b3UgZXh0cmFjdCBhIGZpbGUgd2l0aCBhIHBvcnRhYmxlDQpz
+aWduYXR1cmUgd2l0aCB0YXIsIGFuZCB0aGUgaW5vZGUgdWlkL2dpZCBhcmUgbm90IHlldCBjb3Jy
+ZWN0IChmY2hvd24oKSBpcw0KY2FsbGVkIGxhdGVyIGFmdGVyIHRoZSBvcGVuKCkpLiBJbiB0aGlz
+IGNhc2UsIElNQV9ESUdTSUcgaXMgbm90IHNldCBhbmQgdGhlDQpvcGVuKCkgZmFpbHMuDQoNClRv
+IGF2b2lkIHRoaXMgaXNzdWUgSSB3b3VsZCBpbnRyb2R1Y2UgdGhlIG5ldyBzdGF0dXMgSU5URUdS
+SVRZX0ZBSUxfSU1NVVRBQkxFLA0Kc28gdGhhdCBJTUFfRElHU0lHIGlzIHNldCBldmVuIGlmIHRo
+ZSB2ZXJpZmljYXRpb24gb2YgdGhlIHBvcnRhYmxlIHNpZ25hdHVyZQ0KZmFpbHMuDQoNClJvYmVy
+dG8NCg0KSFVBV0VJIFRFQ0hOT0xPR0lFUyBEdWVzc2VsZG9yZiBHbWJILCBIUkIgNTYwNjMNCk1h
+bmFnaW5nIERpcmVjdG9yOiBMaSBQZW5nLCBMaSBKaWFuLCBTaGkgWWFubGkNCg0KDQo+IFRoYW5r
+cw0KPiANCj4gUm9iZXJ0bw0KPiANCj4gSFVBV0VJIFRFQ0hOT0xPR0lFUyBEdWVzc2VsZG9yZiBH
+bWJILCBIUkIgNTYwNjMNCj4gTWFuYWdpbmcgRGlyZWN0b3I6IExpIFBlbmcsIExpIEppYW4sIFNo
+aSBZYW5saQ0KPiANCj4gDQo+ID4gwqBXaGF0IGRvIHlvdSB0aGluaz8NCj4gPg0KPiA+ID4gVGhl
+IHBhdGNoIG1ha2VzIHRoZSBmb2xsb3dpbmcgY2hhbmdlczoNCj4gPiA+DQo+ID4gPiBmaWxlIHhh
+dHRyIHR5cGVzOg0KPiA+ID4gc2VjdXJpdHkuaW1hOiBJTUFfWEFUVFJfRElHRVNUL0lNQV9YQVRU
+Ul9ESUdFU1RfTkcNCj4gPiA+IHNlY3VyaXR5LmV2bTogRVZNX1hBVFRSX1BPUlRBQkxFX0RJR1NJ
+Rw0KPiA+ID4NCj4gPiA+IGV4ZWN2ZSgpLCBtbWFwKCksIG9wZW4oKSBiZWhhdmlvciAod2l0aCBh
+cHByYWlzZV90eXBlPWltYXNpZyk6DQo+ID4gPiBiZWZvcmU6IGRlbmllZCAoZmlsZSB3aXRob3V0
+IElNQSBzaWduYXR1cmUsIGltYXNpZyByZXF1aXJlbWVudCBub3QgbWV0KQ0KPiA+ID4gYWZ0ZXI6
+IGFsbG93ZWQgKGZpbGUgd2l0aCBFVk0gcG9ydGFibGUgc2lnbmF0dXJlLCBpbWFzaWcgcmVxdWly
+ZW1lbnQNCj4gbWV0KQ0KPiA+ID4NCj4gPiA+IG9wZW4oT19XUk9OTFkpIGJlaGF2aW9yICh3aXRo
+b3V0IGFwcHJhaXNlX3R5cGU9aW1hc2lnKToNCj4gPiA+IGJlZm9yZTogYWxsb3dlZCAoZmlsZSB3
+aXRob3V0IElNQSBzaWduYXR1cmUsIG5vdCBpbW11dGFibGUpDQo+ID4gPiBhZnRlcjogZGVuaWVk
+IChmaWxlIHdpdGggRVZNIHBvcnRhYmxlIHNpZ25hdHVyZSwgaW1tdXRhYmxlKQ0KPiA+ID4NCj4g
+PiA+IFNpZ25lZC1vZmYtYnk6IFJvYmVydG8gU2Fzc3UgPHJvYmVydG8uc2Fzc3VAaHVhd2VpLmNv
+bT4NCj4gPiA+IC0tLQ0KPiA+ID4gIHNlY3VyaXR5L2ludGVncml0eS9pbWEvaW1hX2FwcHJhaXNl
+LmMgfCAxNCArKysrKysrKystLS0tLQ0KPiA+ID4gIDEgZmlsZSBjaGFuZ2VkLCA5IGluc2VydGlv
+bnMoKyksIDUgZGVsZXRpb25zKC0pDQo+ID4gPg0KPiA+ID4gZGlmZiAtLWdpdCBhL3NlY3VyaXR5
+L2ludGVncml0eS9pbWEvaW1hX2FwcHJhaXNlLmMNCj4gPiBiL3NlY3VyaXR5L2ludGVncml0eS9p
+bWEvaW1hX2FwcHJhaXNlLmMNCj4gPiA+IGluZGV4IGE5NjQ5YjA0YjlmMS4uNjlhNmE5NThmODEx
+IDEwMDY0NA0KPiA+ID4gLS0tIGEvc2VjdXJpdHkvaW50ZWdyaXR5L2ltYS9pbWFfYXBwcmFpc2Uu
+Yw0KPiA+ID4gKysrIGIvc2VjdXJpdHkvaW50ZWdyaXR5L2ltYS9pbWFfYXBwcmFpc2UuYw0KPiA+
+ID4gQEAgLTIxOSwxMiArMjE5LDE2IEBAIHN0YXRpYyBpbnQgeGF0dHJfdmVyaWZ5KGVudW0gaW1h
+X2hvb2tzIGZ1bmMsDQo+ID4gc3RydWN0IGludGVncml0eV9paW50X2NhY2hlICppaW50LA0KPiA+
+ID4gIAkJaGFzaF9zdGFydCA9IDE7DQo+ID4gPiAgCQkvKiBmYWxsIHRocm91Z2ggKi8NCj4gPiA+
+ICAJY2FzZSBJTUFfWEFUVFJfRElHRVNUOg0KPiA+ID4gLQkJaWYgKGlpbnQtPmZsYWdzICYgSU1B
+X0RJR1NJR19SRVFVSVJFRCkgew0KPiA+ID4gLQkJCSpjYXVzZSA9ICJJTUEtc2lnbmF0dXJlLXJl
+cXVpcmVkIjsNCj4gPiA+IC0JCQkqc3RhdHVzID0gSU5URUdSSVRZX0ZBSUw7DQo+ID4gPiAtCQkJ
+YnJlYWs7DQo+ID4gPiArCQlpZiAoKnN0YXR1cyAhPSBJTlRFR1JJVFlfUEFTU19JTU1VVEFCTEUp
+IHsNCj4gPiA+ICsJCQlpZiAoaWludC0+ZmxhZ3MgJiBJTUFfRElHU0lHX1JFUVVJUkVEKSB7DQo+
+ID4gPiArCQkJCSpjYXVzZSA9ICJJTUEtc2lnbmF0dXJlLXJlcXVpcmVkIjsNCj4gPiA+ICsJCQkJ
+KnN0YXR1cyA9IElOVEVHUklUWV9GQUlMOw0KPiA+ID4gKwkJCQlicmVhazsNCj4gPiA+ICsJCQl9
+DQo+ID4gPiArCQkJY2xlYXJfYml0KElNQV9ESUdTSUcsICZpaW50LT5hdG9taWNfZmxhZ3MpOw0K
+PiA+ID4gKwkJfSBlbHNlIHsNCj4gPiA+ICsJCQlzZXRfYml0KElNQV9ESUdTSUcsICZpaW50LT5h
+dG9taWNfZmxhZ3MpOw0KPiA+ID4gIAkJfQ0KPiA+ID4gLQkJY2xlYXJfYml0KElNQV9ESUdTSUcs
+ICZpaW50LT5hdG9taWNfZmxhZ3MpOw0KPiA+ID4gIAkJaWYgKHhhdHRyX2xlbiAtIHNpemVvZih4
+YXR0cl92YWx1ZS0+dHlwZSkgLSBoYXNoX3N0YXJ0ID49DQo+ID4gPiAgCQkJCWlpbnQtPmltYV9o
+YXNoLT5sZW5ndGgpDQo+ID4gPiAgCQkJLyoNCj4gPg0KPiA+IE5pY2UhDQo+ID4NCj4gPiBNaW1p
+DQoNCg==
