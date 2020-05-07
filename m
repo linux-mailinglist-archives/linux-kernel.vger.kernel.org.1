@@ -2,83 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C2CC1C99D0
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:51:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A7421C9993
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:46:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728487AbgEGSuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 14:50:55 -0400
-Received: from mga03.intel.com ([134.134.136.65]:46055 "EHLO mga03.intel.com"
+        id S1728413AbgEGSqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 14:46:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47102 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726491AbgEGSuy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 14:50:54 -0400
-IronPort-SDR: m3NdPX7ZhuJowXKNRc2tFiGhVMKd3WIAz8+kGtFVW02AU+/oaLnHYPLjfMr87tqB8rxrqyAdSU
- 3KH1MpmcHZeg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2020 11:50:53 -0700
-IronPort-SDR: UACRTPXn+b0AiDXLKLxCAcGmJZLWvGDpLJk/+lzMBmtQOodi3YbLbiEBDE4gY5kGbYwTIVgn6n
- UGnv/1ucefmA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,364,1583222400"; 
-   d="scan'208";a="251590916"
-Received: from fmsmsx106.amr.corp.intel.com ([10.18.124.204])
-  by fmsmga008.fm.intel.com with ESMTP; 07 May 2020 11:50:53 -0700
-Received: from lcsmsx602.ger.corp.intel.com (10.109.210.11) by
- FMSMSX106.amr.corp.intel.com (10.18.124.204) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Thu, 7 May 2020 11:50:52 -0700
-Received: from hasmsx602.ger.corp.intel.com (10.184.107.142) by
- LCSMSX602.ger.corp.intel.com (10.109.210.11) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 7 May 2020 21:50:50 +0300
-Received: from hasmsx602.ger.corp.intel.com ([10.184.107.142]) by
- HASMSX602.ger.corp.intel.com ([10.184.107.142]) with mapi id 15.01.1713.004;
- Thu, 7 May 2020 21:50:50 +0300
-From:   "Winkler, Tomas" <tomas.winkler@intel.com>
-To:     =?utf-8?B?5Lq/5LiA?= <teroincn@gmail.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [BUG]is there a refcount leak in function mei_me_cl_rm_by_uuid?
-Thread-Topic: [BUG]is there a refcount leak in function mei_me_cl_rm_by_uuid?
-Thread-Index: AQHWI7UxQx9KZrk2hEaieKucEHXx86ic9l4g
-Date:   Thu, 7 May 2020 18:50:50 +0000
-Message-ID: <06ef12d05af446e8bc8cc674c68cecf7@intel.com>
-References: <CANTwqXAwbiGwd3-6ShQw-kvnwNPk6Ev2Sc1yMTVH4+1=mxRQsA@mail.gmail.com>
-In-Reply-To: <CANTwqXAwbiGwd3-6ShQw-kvnwNPk6Ev2Sc1yMTVH4+1=mxRQsA@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.2.0.6
-x-originating-ip: [10.184.70.1]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726467AbgEGSqc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 14:46:32 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 159D8216FD;
+        Thu,  7 May 2020 18:46:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588877192;
+        bh=8VacPoTbGjqVXDTwPuYe3Mg/26pmSYjPzGz8cwswqJk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=DedEP2mq6qrgUzakngn8r7xcVr2pM0OAetbvOrCdCURunFj9j6oKw6liEDu3jaFMc
+         7Xi0YhSgFEwnnm2wNZpibhKLlRtWfnsmN9RgFbAaOfIB7lBjmh46w4XTWJGbyCuAMb
+         OS8MV6bw4czSSQxV0exZm1/fIuoApmNvHSn2tSlY=
+Date:   Thu, 7 May 2020 13:50:57 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] libbpf: Replace zero-length array with flexible-array
+Message-ID: <20200507185057.GA13981@embeddedor>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTog5Lq/5LiAIDx0ZXJvaW5j
-bkBnbWFpbC5jb20+DQo+IFNlbnQ6IFdlZG5lc2RheSwgTWF5IDA2LCAyMDIwIDE3OjQ3DQo+IFRv
-OiBXaW5rbGVyLCBUb21hcyA8dG9tYXMud2lua2xlckBpbnRlbC5jb20+DQo+IENjOiBsaW51eC1r
-ZXJuZWxAdmdlci5rZXJuZWwub3JnDQo+IFN1YmplY3Q6IFtCVUddaXMgdGhlcmUgYSByZWZjb3Vu
-dCBsZWFrIGluIGZ1bmN0aW9uIG1laV9tZV9jbF9ybV9ieV91dWlkPw0KDQpVbmZvcnR1bmF0ZWx5
-IHlvdSBhcmUgY29ycmVjdCwgIGJ1dCBjdXJyZW50bHkgaXQgaXMgdmVyeSBoYXJkIHRvIGhpdCB0
-aGUgaXNzdWUgaW4gcmVhbCBsaWZlLg0KVGhlIHBhdGNoIGlzIGNvbWluZy4gDQpUaGFua3MNClRv
-bWFzDQoNCg0KPiANCj4gSEksIGFsbA0KPiBXaGVuIHJldmlld2luZyBmdW5jdGlvbiBtZWlfbWVf
-Y2xfcm1fYnlfdXVpZO+8jCBJIG5vdGljZSB0aGF0IGZ1bmN0aW9uDQo+IF9fbWVpX21lX2NsX2J5
-X3V1aWQgaW5jcmVhc2VzIG1lX2NsIHJlZmNvdW50IGFuZCBmdW5jdGlvbiBfbWVpX21lX2NsX2Rl
-bA0KPiBkZWxldGUgYSBsaXN0IG5vZGUgd2l0aCBkZWNyZW1lbnQgbWVfY2wgcmVmY291bnQgLCBh
-Y3R1YWxseSBoZXJlIGNhdXNlIGENCj4gcmVmY291bnQgbGVhayBhcyB3ZSBoYXZlbid0IHJlbGVh
-c2UgdGhlIHJlZmNvdW50IGJ5IF9fbWVpX21lX2NsX2J5X3V1aWQgID8NCj4gc2ltaWxhciBpc3N1
-ZSBoYXBwZW5zIGluIG1laV9tZV9jbF9ybV9ieV91dWlkX2lkIHRvby4NCj4gDQo+IHZvaWQgbWVp
-X21lX2NsX3JtX2J5X3V1aWQoc3RydWN0IG1laV9kZXZpY2UgKmRldiwgY29uc3QgdXVpZF9sZSAq
-dXVpZCkgew0KPiAgICAgc3RydWN0IG1laV9tZV9jbGllbnQgKm1lX2NsOw0KPiANCj4gICAgIGRl
-dl9kYmcoZGV2LT5kZXYsICJyZW1vdmUgJXBVbFxuIiwgdXVpZCk7DQo+IA0KPiAgICAgZG93bl93
-cml0ZSgmZGV2LT5tZV9jbGllbnRzX3J3c2VtKTsNCj4gICAgIG1lX2NsID0gX19tZWlfbWVfY2xf
-YnlfdXVpZChkZXYsIHV1aWQpOyAvKiBpbmNyZWFzZSBhIHJlZmNvdW50ICovDQo+ICAgICBfX21l
-aV9tZV9jbF9kZWwoZGV2LCBtZV9jbCk7IC8qIHJlbGVhc2UgdGhlIHJlZmNvdW50IHdpdGggYSBs
-aXN0IG5vZGUgZGV0ZWxlZA0KPiAqLw0KPiAgICAgdXBfd3JpdGUoJmRldi0+bWVfY2xpZW50c19y
-d3NlbSk7DQo+IH0NCj4gDQo+IEJlc3QgcmVnYXJkcywNCj4gDQo+IExpbiBZaS4NCg==
+The current codebase makes use of the zero-length array language
+extension to the C90 standard, but the preferred mechanism to declare
+variable-length types such as these ones is a flexible array member[1][2],
+introduced in C99:
+
+struct foo {
+        int stuff;
+        struct boo array[];
+};
+
+By making use of the mechanism above, we will get a compiler warning
+in case the flexible array does not occur last in the structure, which
+will help us prevent some kind of undefined behavior bugs from being
+inadvertently introduced[3] to the codebase from now on.
+
+Also, notice that, dynamic memory allocations won't be affected by
+this change:
+
+"Flexible array members have incomplete type, and so the sizeof operator
+may not be applied. As a quirk of the original implementation of
+zero-length arrays, sizeof evaluates to zero."[1]
+
+sizeof(flexible-array-member) triggers a warning because flexible array
+members have incomplete type[1]. There are some instances of code in
+which the sizeof operator is being incorrectly/erroneously applied to
+zero-length arrays and the result is zero. Such instances may be hiding
+some bugs. So, this work (flexible-array member conversions) will also
+help to get completely rid of those sorts of issues.
+
+This issue was found with the help of Coccinelle.
+
+[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+[2] https://github.com/KSPP/linux/issues/21
+[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ kernel/bpf/queue_stack_maps.c                        |    2 +-
+ tools/lib/bpf/libbpf.c                               |    2 +-
+ tools/lib/bpf/libbpf_internal.h                      |    2 +-
+ tools/testing/selftests/bpf/progs/core_reloc_types.h |    2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/bpf/queue_stack_maps.c b/kernel/bpf/queue_stack_maps.c
+index f697647ceb54..30e1373fd437 100644
+--- a/kernel/bpf/queue_stack_maps.c
++++ b/kernel/bpf/queue_stack_maps.c
+@@ -19,7 +19,7 @@ struct bpf_queue_stack {
+ 	u32 head, tail;
+ 	u32 size; /* max_entries + 1 */
+ 
+-	char elements[0] __aligned(8);
++	char elements[] __aligned(8);
+ };
+ 
+ static struct bpf_queue_stack *bpf_queue_stack(struct bpf_map *map)
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 8f480e29a6b0..b9335c686353 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -8035,7 +8035,7 @@ static struct perf_buffer *__perf_buffer__new(int map_fd, size_t page_cnt,
+ struct perf_sample_raw {
+ 	struct perf_event_header header;
+ 	uint32_t size;
+-	char data[0];
++	char data[];
+ };
+ 
+ struct perf_sample_lost {
+diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
+index 8c3afbd97747..50d70e90d5f1 100644
+--- a/tools/lib/bpf/libbpf_internal.h
++++ b/tools/lib/bpf/libbpf_internal.h
+@@ -153,7 +153,7 @@ struct btf_ext_info_sec {
+ 	__u32	sec_name_off;
+ 	__u32	num_info;
+ 	/* Followed by num_info * record_size number of bytes */
+-	__u8	data[0];
++	__u8	data[];
+ };
+ 
+ /* The minimum bpf_func_info checked by the loader */
+diff --git a/tools/testing/selftests/bpf/progs/core_reloc_types.h b/tools/testing/selftests/bpf/progs/core_reloc_types.h
+index 6d598cfbdb3e..34d84717c946 100644
+--- a/tools/testing/selftests/bpf/progs/core_reloc_types.h
++++ b/tools/testing/selftests/bpf/progs/core_reloc_types.h
+@@ -379,7 +379,7 @@ struct core_reloc_arrays___equiv_zero_sz_arr {
+ 	struct core_reloc_arrays_substruct c[3];
+ 	struct core_reloc_arrays_substruct d[1][2];
+ 	/* equivalent to flexible array */
+-	struct core_reloc_arrays_substruct f[0][2];
++	struct core_reloc_arrays_substruct f[][2];
+ };
+ 
+ struct core_reloc_arrays___fixed_arr {
+
