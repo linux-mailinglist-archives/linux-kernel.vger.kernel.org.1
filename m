@@ -2,72 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4778A1C80A2
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 05:48:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A15E1C80AE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 05:58:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726618AbgEGDsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 23:48:18 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:33584 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725809AbgEGDsS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 23:48:18 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id E933DA39FC9FCBC8410B;
-        Thu,  7 May 2020 11:48:06 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 7 May 2020 11:47:58 +0800
-From:   Samuel Zou <zou_wei@huawei.com>
-To:     <perex@perex.cz>, <tiwai@suse.com>, <mpe@ellerman.id.au>,
-        <benh@kernel.crashing.org>, <paulus@samba.org>
-CC:     <alsa-devel@alsa-project.org>, <linuxppc-dev@lists.ozlabs.org>,
-        <linux-kernel@vger.kernel.org>, Samuel Zou <zou_wei@huawei.com>
-Subject: [PATCH -next] ALSA: sound/ppc: Use bitwise instead of arithmetic operator for flags
-Date:   Thu, 7 May 2020 11:54:07 +0800
-Message-ID: <1588823647-12480-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        id S1726320AbgEGD6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 23:58:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725857AbgEGD6n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 23:58:43 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DD95C061A0F;
+        Wed,  6 May 2020 20:58:43 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49Hfp62wDYz9sP7;
+        Thu,  7 May 2020 13:58:37 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1588823918;
+        bh=LOy2SlV/dD8DyFlu9uTpohWt2SZoFQNafEKHqBdmpaI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=G+TsXu8/WyJb2RM7ovF0p+vZlf/9AcnQArDxsxt7mVaodVQwatN2N7q4ow7tcN6j9
+         OCpqASNAXJZjZpuBEuEMBZ06p2FiSHlYuUMMq3Q5YNjZs9XEFbuwyHLO18aFDcO9K2
+         lmTYTmik0AK7Z7eI6G6gMZYYrgem1KqNa0xqsv59bWxHeh3NP5dvQiWbKa7Vxqnod6
+         p/VZ/RBj9R8cXnxTEPlyNjsVCQ1whYtBGyDL7iFv4vNYmRVIeN6JqqQtTwJkYKXB7B
+         9VUB6b2ZVwIm8b+ypvWCN4xjDY5pU4OeNxSRKlmppOLUoQu09Mo5ixElJcf0skcsJS
+         mH1/6eo3Sc7vA==
+Date:   Thu, 7 May 2020 13:58:35 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Joerg Roedel <joro@8bytes.org>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Pierre Morel <pmorel@linux.ibm.com>
+Subject: linux-next: manual merge of the iommu tree with the s390 tree
+Message-ID: <20200507135835.05e300b5@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; boundary="Sig_/7NA8SXrCRGGvYvaG9LEuxnh";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccinelle warnings:
+--Sig_/7NA8SXrCRGGvYvaG9LEuxnh
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-sound/ppc/pmac.c:729:57-58: WARNING: sum of probable bitmasks, consider |
-sound/ppc/pmac.c:229:37-38: WARNING: sum of probable bitmasks, consider |
+Hi all,
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Samuel Zou <zou_wei@huawei.com>
----
- sound/ppc/pmac.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Today's linux-next merge of the iommu tree got a conflict in:
 
-diff --git a/sound/ppc/pmac.c b/sound/ppc/pmac.c
-index 592532c..2e750b3 100644
---- a/sound/ppc/pmac.c
-+++ b/sound/ppc/pmac.c
-@@ -226,7 +226,7 @@ static int snd_pmac_pcm_prepare(struct snd_pmac *chip, struct pmac_stream *rec,
- 		offset += rec->period_size;
- 	}
- 	/* make loop */
--	cp->command = cpu_to_le16(DBDMA_NOP + BR_ALWAYS);
-+	cp->command = cpu_to_le16(DBDMA_NOP | BR_ALWAYS);
- 	cp->cmd_dep = cpu_to_le32(rec->cmd.addr);
- 
- 	snd_pmac_dma_stop(rec);
-@@ -726,7 +726,7 @@ void snd_pmac_beep_dma_start(struct snd_pmac *chip, int bytes, unsigned long add
- 	chip->extra_dma.cmds->xfer_status = cpu_to_le16(0);
- 	chip->extra_dma.cmds->cmd_dep = cpu_to_le32(chip->extra_dma.addr);
- 	chip->extra_dma.cmds->phy_addr = cpu_to_le32(addr);
--	chip->extra_dma.cmds->command = cpu_to_le16(OUTPUT_MORE + BR_ALWAYS);
-+	chip->extra_dma.cmds->command = cpu_to_le16(OUTPUT_MORE | BR_ALWAYS);
- 	out_le32(&chip->awacs->control,
- 		 (in_le32(&chip->awacs->control) & ~0x1f00)
- 		 | (speed << 8));
--- 
-2.6.2
+  drivers/iommu/s390-iommu.c
 
+between commit:
+
+  d08d6f5d7524 ("s390/pci: adaptation of iommu to multifunction")
+
+from the s390 tree and commit:
+
+  522af649e57b ("iommu/s390: Convert to probe/release_device() call-backs")
+
+from the iommu tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/iommu/s390-iommu.c
+index c60d5c776fc6,610f0828f22d..000000000000
+--- a/drivers/iommu/s390-iommu.c
++++ b/drivers/iommu/s390-iommu.c
+@@@ -166,23 -166,16 +166,16 @@@ static void s390_iommu_detach_device(st
+  	}
+  }
+ =20
+- static int s390_iommu_add_device(struct device *dev)
++ static struct iommu_device *s390_iommu_probe_device(struct device *dev)
+  {
+- 	struct iommu_group *group =3D iommu_group_get_for_dev(dev);
+ -	struct zpci_dev *zdev =3D to_pci_dev(dev)->sysdata;
+ +	struct zpci_dev *zdev =3D to_zpci_dev(dev);
+ =20
+- 	if (IS_ERR(group))
+- 		return PTR_ERR(group);
+-=20
+- 	iommu_group_put(group);
+- 	iommu_device_link(&zdev->iommu_dev, dev);
+-=20
+- 	return 0;
++ 	return &zdev->iommu_dev;
+  }
+ =20
+- static void s390_iommu_remove_device(struct device *dev)
++ static void s390_iommu_release_device(struct device *dev)
+  {
+ -	struct zpci_dev *zdev =3D to_pci_dev(dev)->sysdata;
+ +	struct zpci_dev *zdev =3D to_zpci_dev(dev);
+  	struct iommu_domain *domain;
+ =20
+  	/*
+
+--Sig_/7NA8SXrCRGGvYvaG9LEuxnh
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl6zh2sACgkQAVBC80lX
+0Gz7bwf9G9oc8hRb/nGw/zptGD5ymiGw7BS/+CD/mkrSY53cc0nddxhNaUKVm6p6
+4id49u0nfxy73/QhQhypMpg7Sg4LOwKoiquepPKhesvyCHAjIxMgSYYfGThvXv8V
+rJAXqyG2MarR8ibVpOWMDfzF5rgj/4WlxCcg0BYXc24FdGtezkDsmR4fZ4CbJ8q/
+GvGCr2tCwkcZrOGTRSlGYu6/8Pj6QFQQSsJxQSyqgP0vKi+s61lwQuY2vvglKC+b
+IdZqi145KOTNHqG9RM50W1pbitd3FJtrFdhv3TIlUdGP6EnxG0cNqDySghHT3Zaw
+j4LmnrT922VUkSyyXiaVZ+viUKS+2w==
+=wrdL
+-----END PGP SIGNATURE-----
+
+--Sig_/7NA8SXrCRGGvYvaG9LEuxnh--
