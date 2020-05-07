@@ -2,93 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B18C51C9A39
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:00:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 561161C9A78
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:05:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728098AbgEGTAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 15:00:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60524 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726320AbgEGTAc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 15:00:32 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B29A82083B;
-        Thu,  7 May 2020 19:00:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588878032;
-        bh=vqJy/QdKw35OLtNYsWencYwBw6xfJHLkvdoR1KZvG2Y=;
-        h=Date:From:To:Cc:Subject:From;
-        b=njVHXHugzubO28Cq9yVWXC+p3zNNWfcdhlqsxU7Kj7RN4RhwpOIzMoj0+F3acc6Wz
-         bvZ5oSljRbdqy/yQvoaOnmcrVD0qgAvHLrG4UX89b0u1NvCYAfimzyOXPeAWS3VRU4
-         Ja5/DwrnsboW5B9geywoVFa4H0dM9WFtAckEkAY0=
-Date:   Thu, 7 May 2020 14:04:58 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     James Smart <james.smart@broadcom.com>
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] nvme-fc: Replace zero-length array with flexible-array
-Message-ID: <20200507190458.GA15557@embeddedor>
+        id S1728130AbgEGTFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 15:05:05 -0400
+Received: from nibbler.cm4all.net ([82.165.145.151]:59720 "EHLO
+        nibbler.cm4all.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726320AbgEGTFF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 15:05:05 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by nibbler.cm4all.net (Postfix) with ESMTP id CC33DC023F
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 21:05:03 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at nibbler.cm4all.net
+Received: from nibbler.cm4all.net ([127.0.0.1])
+        by localhost (nibbler.cm4all.net [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id zecgH1h8mQWc for <linux-kernel@vger.kernel.org>;
+        Thu,  7 May 2020 21:05:03 +0200 (CEST)
+Received: from zero.intern.cm-ag (zero.intern.cm-ag [172.30.16.10])
+        by nibbler.cm4all.net (Postfix) with SMTP id AB18CC0215
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 21:05:03 +0200 (CEST)
+Received: (qmail 2978 invoked from network); 7 May 2020 22:21:20 +0200
+Received: from unknown (HELO rabbit.intern.cm-ag) (172.30.3.1)
+  by zero.intern.cm-ag with SMTP; 7 May 2020 22:21:20 +0200
+Received: by rabbit.intern.cm-ag (Postfix, from userid 1023)
+        id 752A4461450; Thu,  7 May 2020 21:05:03 +0200 (CEST)
+Date:   Thu, 7 May 2020 21:05:03 +0200
+From:   Max Kellermann <mk@cm4all.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Max Kellermann <mk@cm4all.com>, axboe@kernel.dk,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] fs/io_uring: fix O_PATH fds in openat, openat2, statx
+Message-ID: <20200507190503.GA15998@rabbit.intern.cm-ag>
+References: <20200507185725.15840-1-mk@cm4all.com>
+ <20200507190131.GF23230@ZenIV.linux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200507190131.GF23230@ZenIV.linux.org.uk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current codebase makes use of the zero-length array language
-extension to the C90 standard, but the preferred mechanism to declare
-variable-length types such as these ones is a flexible array member[1][2],
-introduced in C99:
+On 2020/05/07 21:01, Al Viro <viro@zeniv.linux.org.uk> wrote:
+> On Thu, May 07, 2020 at 08:57:25PM +0200, Max Kellermann wrote:
+> > If an operation's flag `needs_file` is set, the function
+> > io_req_set_file() calls io_file_get() to obtain a `struct file*`.
+> > 
+> > This fails for `O_PATH` file descriptors, because those have no
+> > `struct file*`
+> 
+> O_PATH descriptors most certainly *do* have that.  What the hell
+> are you talking about?
 
-struct foo {
-        int stuff;
-        struct boo array[];
-};
+Oh, then my patch description (and my understanding of the root
+problem) is wrong.  In my debugging session, io_file_get() on that fd
+returned NULL, so I assumed O_PATH doesn't have that, but maybe there
+are other reasons.
 
-By making use of the mechanism above, we will get a compiler warning
-in case the flexible array does not occur last in the structure, which
-will help us prevent some kind of undefined behavior bugs from being
-inadvertently introduced[3] to the codebase from now on.
+In any case, with a "real" fd, io_uring openat() succeeds, and my
+patch makes the problem with O_PATH go away.
 
-Also, notice that, dynamic memory allocations won't be affected by
-this change:
+I guess I need to learn more about what happens inside io_file_get().
 
-"Flexible array members have incomplete type, and so the sizeof operator
-may not be applied. As a quirk of the original implementation of
-zero-length arrays, sizeof evaluates to zero."[1]
-
-sizeof(flexible-array-member) triggers a warning because flexible array
-members have incomplete type[1]. There are some instances of code in
-which the sizeof operator is being incorrectly/erroneously applied to
-zero-length arrays and the result is zero. Such instances may be hiding
-some bugs. So, this work (flexible-array member conversions) will also
-help to get completely rid of those sorts of issues.
-
-This issue was found with the help of Coccinelle.
-
-[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-[2] https://github.com/KSPP/linux/issues/21
-[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/nvme/host/fc.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/nvme/host/fc.c b/drivers/nvme/host/fc.c
-index 7dfc4a2ecf1e..887537d1243f 100644
---- a/drivers/nvme/host/fc.c
-+++ b/drivers/nvme/host/fc.c
-@@ -96,7 +96,7 @@ struct nvme_fc_fcp_op {
- struct nvme_fcp_op_w_sgl {
- 	struct nvme_fc_fcp_op	op;
- 	struct scatterlist	sgl[NVME_INLINE_SG_CNT];
--	uint8_t			priv[0];
-+	uint8_t			priv[];
- };
- 
- struct nvme_fc_lport {
+Max
 
