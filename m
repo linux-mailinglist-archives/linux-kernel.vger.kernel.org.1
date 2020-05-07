@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5570B1C8DBB
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 16:11:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B742C1C8DBE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 16:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728174AbgEGOIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 10:08:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46020 "EHLO
+        id S1728208AbgEGOIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 10:08:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728152AbgEGOIi (ORCPT
+        with ESMTP id S1727937AbgEGOIl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 10:08:38 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46E51C05BD0B
-        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 07:08:38 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id g6so7011283ybc.13
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 07:08:38 -0700 (PDT)
+        Thu, 7 May 2020 10:08:41 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E8ADC05BD0A
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 07:08:40 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id ce16so5984119qvb.15
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 07:08:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=kaPuV4QeaPOgBS5KpMFoLQOvshqKxuzG67jCzUS9Y1Y=;
-        b=t2vdQIPvTuaw1GcoNMlIdPgAkxtEo+9rt91Cg8ynmpG7HRj0sNH+uXO+nsyQr302z1
-         /psxBlb4K9AhGUT8UfXLdXWjTrQYnxS3JgzmYGxCRti3kZubOn5DSU3gMHaFcCqiYnOW
-         Luhm0zXQcVY7M9bZlTgLDwOn1cKf85agkyjFmgT000/0HA8plWGcOmM2p4z1OvLO7UXM
-         zEq5/8CqGU7ImpXX9K1Jb4hCAl2X+hT5/5GE4dCXEBpGASUVhx83a/xO5ssuh3dLGDH4
-         yqBNUsWKsqN+auXqPJdXVAr6gCZWNybyTXIGzVaps33XJSyIt8qGR4kAzkUsj4D6FK/I
-         7N8g==
+        bh=Ew1Auf+JJ2L5arU3PyljE3NdvPut2GJPZ3Rkkz6XalQ=;
+        b=JJ5GJm9HqdYdzOugzSLtwI9AsSWBWZKzE0tdn+cUIqA3aCKIQZvuruHCGe3GCSg3TK
+         tZvjcBl21VXdjWAYumT34XIqMXm5v6nl2ZI+wwoAANrdsjDDO07rP7KzZXuqxVJJF0aG
+         /F8asZ5Q2yofy8kEROaHB1fRHDJ2QHdTDfFWrNQ01WMMEm7bH6p1PGxmq7UxTiC12V4b
+         dv14eZS1uWivH9QOUP30/IP+hxLeRi8ZpMi3bm90vWdkzzH3ABAws+Gsl7CNpOskAHv2
+         0MJnHPB52IfsWjUuEj4zi4PJKtT+Pvu360/5rZcrd8TvM4F9pOhUiFmNhhsvTuRnnv/d
+         l6dQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=kaPuV4QeaPOgBS5KpMFoLQOvshqKxuzG67jCzUS9Y1Y=;
-        b=pAJUQB2Q04cAl1E0ZiaO+2XPaXU1IrJEym3Lvko3dMhQclnjoOa+siOhmpGLHLWcqU
-         UT6FTbiQfazKajkqWs9Qtjw+RVpuHSoAGxC+KNeMtfPOyckbHIPRg94trOxVkxeXfQNx
-         zr9MDEHQbr11lMf8p6ekanLYecKj6/LR+I5o40Q41RJ4s7GtAOO5zsLiynXTx/egpMZz
-         MkpWASrNbjbcMTLxfdv+MbMEevxD268Q0oPkt330Hitag3nToo3QrA+1x80i+UCWex3u
-         Lj1XS1D9TwEk/NfM1W0XSKx6TJAAobA+REgpli7Fm0762WM78I59CpaeXnJ6Wa2HYffX
-         MlSg==
-X-Gm-Message-State: AGi0PuZZXsT//zCftpHOfgOX5szx5IxRDxc85ayDM3bs//pnvFAT3n9y
-        P4/obPu/jbe+72OLZDHQwhhZG+ZTa57x
-X-Google-Smtp-Source: APiQypIj0TNxD8t6MORWi035rqjdD5V07jI6QDPkaYQHb6E8+t4cGs+uY73czbk+WmzTznhG2kkioDjdNb17
-X-Received: by 2002:a25:848d:: with SMTP id v13mr16679607ybk.493.1588860517380;
- Thu, 07 May 2020 07:08:37 -0700 (PDT)
-Date:   Thu,  7 May 2020 07:08:03 -0700
+        bh=Ew1Auf+JJ2L5arU3PyljE3NdvPut2GJPZ3Rkkz6XalQ=;
+        b=btVrlyWNxVbk+mPofgJKzCUNNGWnM1Sae3P3JVctBDaERztG9aL0JHkAWPR/MjfAQq
+         U9sqyOhRi2Ruiw8pajT9Zduq6QTOA7rW9lKfd0kiyZz6Skf0mQ3wb8gnqvLA3Q1/nToX
+         rSG7dNDyE70dEWpHkH9jOGa+Pzj2UbrZf7TBoTZW0kwDDfh4mFeSFJW64HQPZUd8LRqB
+         oPtw/vTEVZa132aSNky15O6P6VQYI3MIIw7RYlfmpjEITgfDZQlHHfeg2RMbV3Zi1ulp
+         +HElw738EaS7x/SHKi13FrE66zktiwPrljvzhZ3Uae0RvDPeeOafmTj5CVU4g5gr28eA
+         SGZg==
+X-Gm-Message-State: AGi0PuZl2w3fLL0972bgmYj5298iq9H/ELPL3+Gfu+0HlPkmo8lb/aES
+        4NiZEeWXfn30oAS5BeQECYdVbdFHuP1Z
+X-Google-Smtp-Source: APiQypJvJKA9NnfhOBmsKSvoOjMdo+d1dPOHMI0HSSVAAH72zsNS1j+NeUQeK4QYwqrfA+9aozSBGliqUofk
+X-Received: by 2002:ad4:45ac:: with SMTP id y12mr13426252qvu.227.1588860519436;
+ Thu, 07 May 2020 07:08:39 -0700 (PDT)
+Date:   Thu,  7 May 2020 07:08:04 -0700
 In-Reply-To: <20200507140819.126960-1-irogers@google.com>
-Message-Id: <20200507140819.126960-8-irogers@google.com>
+Message-Id: <20200507140819.126960-9-irogers@google.com>
 Mime-Version: 1.0
 References: <20200507140819.126960-1-irogers@google.com>
 X-Mailer: git-send-email 2.26.2.526.g744177e7f7-goog
-Subject: [RFC PATCH v2 07/23] perf expr: debug lex if debugging yacc
+Subject: [RFC PATCH v2 08/23] perf metrics: fix parse errors in power8 metrics
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -77,33 +77,36 @@ To:     Peter Zijlstra <peterz@infradead.org>,
 Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         linux-perf-users@vger.kernel.org,
         Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
+        Ian Rogers <irogers@google.com>,
+        "Paul A . Clarke" <pc@us.ibm.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Only effects parser debugging (disabled by default). Enables displaying
-'--accepting rule at line .. ("...").
+Mismatched parentheses.
 
+Fixes: dd81eafacc52 (perf vendor events power8: Cpi_breakdown & estimated_dcache_miss_cpi metrics)
+Reviewed-by: Paul A. Clarke <pc@us.ibm.com>
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/expr.c | 1 +
- 1 file changed, 1 insertion(+)
+ tools/perf/pmu-events/arch/powerpc/power8/metrics.json | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/perf/util/expr.c b/tools/perf/util/expr.c
-index aa631e37ad1e..8b4ce704a68d 100644
---- a/tools/perf/util/expr.c
-+++ b/tools/perf/util/expr.c
-@@ -45,6 +45,7 @@ __expr__parse(double *val, struct expr_parse_ctx *ctx, const char *expr,
- 
- #ifdef PARSER_DEBUG
- 	expr_debug = 1;
-+	expr_set_debug(1, scanner);
- #endif
- 
- 	ret = expr_parse(val, ctx, scanner);
+diff --git a/tools/perf/pmu-events/arch/powerpc/power8/metrics.json b/tools/perf/pmu-events/arch/powerpc/power8/metrics.json
+index bffb2d4a6420..fc4aa6c2ddc9 100644
+--- a/tools/perf/pmu-events/arch/powerpc/power8/metrics.json
++++ b/tools/perf/pmu-events/arch/powerpc/power8/metrics.json
+@@ -169,7 +169,7 @@
+     },
+     {
+         "BriefDescription": "Cycles GCT empty where dispatch was held",
+-        "MetricExpr": "(PM_GCT_NOSLOT_DISP_HELD_MAP + PM_GCT_NOSLOT_DISP_HELD_SRQ + PM_GCT_NOSLOT_DISP_HELD_ISSQ + PM_GCT_NOSLOT_DISP_HELD_OTHER) / PM_RUN_INST_CMPL)",
++        "MetricExpr": "(PM_GCT_NOSLOT_DISP_HELD_MAP + PM_GCT_NOSLOT_DISP_HELD_SRQ + PM_GCT_NOSLOT_DISP_HELD_ISSQ + PM_GCT_NOSLOT_DISP_HELD_OTHER) / PM_RUN_INST_CMPL",
+         "MetricGroup": "cpi_breakdown",
+         "MetricName": "gct_empty_disp_held_cpi"
+     },
 -- 
 2.26.2.526.g744177e7f7-goog
 
