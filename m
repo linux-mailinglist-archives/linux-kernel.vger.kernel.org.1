@@ -2,88 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB3301C88A6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 13:43:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECBBE1C8767
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 12:57:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726937AbgEGLn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 07:43:29 -0400
-Received: from elvis.franken.de ([193.175.24.41]:43620 "EHLO elvis.franken.de"
+        id S1726464AbgEGK4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 06:56:32 -0400
+Received: from foss.arm.com ([217.140.110.172]:56348 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725914AbgEGLnX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 07:43:23 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jWevq-00081e-02; Thu, 07 May 2020 13:43:14 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 95D7EC0409; Thu,  7 May 2020 13:00:36 +0200 (CEST)
-Date:   Thu, 7 May 2020 13:00:36 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, clang-built-linux@googlegroups.com,
-        "Maciej W . Rozycki" <macro@linux-mips.org>,
-        Fangrui Song <maskray@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Paul Burton <paulburton@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Jouni Hogander <jouni.hogander@unikie.com>,
-        Kevin Darbyshire-Bryant <ldir@darbyshire-bryant.me.uk>,
-        Borislav Petkov <bp@suse.de>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        id S1725900AbgEGK4c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 06:56:32 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0C7ED1FB;
+        Thu,  7 May 2020 03:56:32 -0700 (PDT)
+Received: from [10.37.12.117] (unknown [10.37.12.117])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 93C723F68F;
+        Thu,  7 May 2020 03:56:26 -0700 (PDT)
+Subject: Re: [PATCH] KVM: arm/arm64: release kvm->mmu_lock in loop to prevent
+ starvation
+To:     giangyi@amazon.com, maz@kernel.org
+Cc:     james.morse@arm.com, julien.thierry.kdev@gmail.com,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
         linux-kernel@vger.kernel.org
-Subject: Re: your mail
-Message-ID: <20200507110036.GC11616@alpha.franken.de>
-References: <20200506055245.3013374-1-jiaxun.yang@flygoat.com>
+References: <20200415084229.29992-1-giangyi@amazon.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <0e448ae0-af4c-3f0a-2dd5-6ab86c0d60c0@arm.com>
+Date:   Thu, 7 May 2020 12:01:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200506055245.3013374-1-jiaxun.yang@flygoat.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20200415084229.29992-1-giangyi@amazon.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 06, 2020 at 01:52:45PM +0800, Jiaxun Yang wrote:
-> Subject: [PATCH v6] MIPS: Truncate link address into 32bit for 32bit kernel
-> In-Reply-To: <20200413062651.3992652-1-jiaxun.yang@flygoat.com>
+On 04/15/2020 09:42 AM, Jiang Yi wrote:
+> Do cond_resched_lock() in stage2_flush_memslot() like what is done in
+> unmap_stage2_range() and other places holding mmu_lock while processing
+> a possibly large range of memory.
 > 
-> LLD failed to link vmlinux with 64bit load address for 32bit ELF
-> while bfd will strip 64bit address into 32bit silently.
-> To fix LLD build, we should truncate load address provided by platform
-> into 32bit for 32bit kernel.
-> 
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> Link: https://github.com/ClangBuiltLinux/linux/issues/786
-> Link: https://sourceware.org/bugzilla/show_bug.cgi?id=25784
-> Reviewed-by: Fangrui Song <maskray@google.com>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Tested-by: Nathan Chancellor <natechancellor@gmail.com>
-> Cc: Maciej W. Rozycki <macro@linux-mips.org>
+> Signed-off-by: Jiang Yi <giangyi@amazon.com>
 > ---
-> V2: Take MaskRay's shell magic.
+>   virt/kvm/arm/mmu.c | 3 +++
+>   1 file changed, 3 insertions(+)
 > 
-> V3: After spent an hour on dealing with special character issue in
-> Makefile, I gave up to do shell hacks and write a util in C instead.
-> Thanks Maciej for pointing out Makefile variable problem.
-> 
-> v4: Finally we managed to find a Makefile method to do it properly
-> thanks to Kees. As it's too far from the initial version, I removed
-> Review & Test tag from Nick and Fangrui and Cc instead.
-> 
-> v5: Care vmlinuz as well.
-> 
-> v6: Rename to LIKER_LOAD_ADDRESS 
-> ---
->  arch/mips/Makefile                 | 13 ++++++++++++-
->  arch/mips/boot/compressed/Makefile |  2 +-
->  arch/mips/kernel/vmlinux.lds.S     |  2 +-
->  3 files changed, 14 insertions(+), 3 deletions(-)
+> diff --git a/virt/kvm/arm/mmu.c b/virt/kvm/arm/mmu.c
+> index e3b9ee268823..7315af2c52f8 100644
+> --- a/virt/kvm/arm/mmu.c
+> +++ b/virt/kvm/arm/mmu.c
+> @@ -417,16 +417,19 @@ static void stage2_flush_memslot(struct kvm *kvm,
+>   	phys_addr_t next;
+>   	pgd_t *pgd;
+>   
+>   	pgd = kvm->arch.pgd + stage2_pgd_index(kvm, addr);
+>   	do {
+>   		next = stage2_pgd_addr_end(kvm, addr, end);
+>   		if (!stage2_pgd_none(kvm, *pgd))
+>   			stage2_flush_puds(kvm, pgd, addr, next);
+> +
+> +		if (next != end)
+> +			cond_resched_lock(&kvm->mmu_lock);
+>   	} while (pgd++, addr = next, addr != end);
+>   }
 
-applied to mips-next.
+Given that this is called under the srcu_lock this looks
+good to me:
 
-Thomas.
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+>   
+>   /**
+>    * stage2_flush_vm - Invalidate cache for pages mapped in stage 2
+>    * @kvm: The struct kvm pointer
+>    *
+>    * Go through the stage 2 page tables and invalidate any cache lines
+> 
+
