@@ -2,17 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AF821C89F0
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 14:02:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A372D1C89F2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 14:02:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726235AbgEGMCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 08:02:06 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:60252 "EHLO huawei.com"
+        id S1726598AbgEGMCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 08:02:08 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:60292 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725910AbgEGMCG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 08:02:06 -0400
+        id S1725914AbgEGMCH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 08:02:07 -0400
 Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 9E3C1AA775AA1C6E44FB;
+        by Forcepoint Email with ESMTP id A63FE10C1DAEE116B8E2;
         Thu,  7 May 2020 20:02:04 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.58) by
  DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
@@ -27,9 +27,9 @@ CC:     <will@kernel.org>, <ak@linux.intel.com>, <linuxarm@huawei.com>,
         <zhangshaokun@hisilicon.com>,
         <linux-arm-kernel@lists.infradead.org>,
         John Garry <john.garry@huawei.com>
-Subject: [PATCH RFC v3 03/12] perf vendor events arm64: Relocate hip08 events
-Date:   Thu, 7 May 2020 19:57:42 +0800
-Message-ID: <1588852671-61996-4-git-send-email-john.garry@huawei.com>
+Subject: [PATCH RFC v3 04/12] perf vendor events arm64: Add Architected events smmuv3-pmcg.json
+Date:   Thu, 7 May 2020 19:57:43 +0800
+Message-ID: <1588852671-61996-5-git-send-email-john.garry@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1588852671-61996-1-git-send-email-john.garry@huawei.com>
 References: <1588852671-61996-1-git-send-email-john.garry@huawei.com>
@@ -42,49 +42,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Relocate the core events JSONs to match to future structure, which will
-have separate folders for CPU and system events.
+Add JSON for Architected events from [0], Section 10.3 .
+
+[0] https://static.docs.arm.com/ihi0070/a/IHI_0070A_SMMUv3.pdf
 
 Signed-off-by: John Garry <john.garry@huawei.com>
 ---
- .../pmu-events/arch/arm64/hisilicon/hip08/{ => cpu}/core-imp-def.json   | 0
- .../pmu-events/arch/arm64/hisilicon/hip08/{ => cpu}/uncore-ddrc.json    | 0
- .../pmu-events/arch/arm64/hisilicon/hip08/{ => cpu}/uncore-hha.json     | 0
- .../pmu-events/arch/arm64/hisilicon/hip08/{ => cpu}/uncore-l3c.json     | 0
- tools/perf/pmu-events/arch/arm64/mapfile.csv                            | 2 +-
- 5 files changed, 1 insertion(+), 1 deletion(-)
- rename tools/perf/pmu-events/arch/arm64/hisilicon/hip08/{ => cpu}/core-imp-def.json (100%)
- rename tools/perf/pmu-events/arch/arm64/hisilicon/hip08/{ => cpu}/uncore-ddrc.json (100%)
- rename tools/perf/pmu-events/arch/arm64/hisilicon/hip08/{ => cpu}/uncore-hha.json (100%)
- rename tools/perf/pmu-events/arch/arm64/hisilicon/hip08/{ => cpu}/uncore-l3c.json (100%)
+ tools/perf/pmu-events/arch/arm64/smmuv3-pmcg.json | 58 +++++++++++++++++++++++
+ tools/perf/pmu-events/jevents.c                   |  2 +
+ 2 files changed, 60 insertions(+)
+ create mode 100644 tools/perf/pmu-events/arch/arm64/smmuv3-pmcg.json
 
-diff --git a/tools/perf/pmu-events/arch/arm64/hisilicon/hip08/core-imp-def.json b/tools/perf/pmu-events/arch/arm64/hisilicon/hip08/cpu/core-imp-def.json
-similarity index 100%
-rename from tools/perf/pmu-events/arch/arm64/hisilicon/hip08/core-imp-def.json
-rename to tools/perf/pmu-events/arch/arm64/hisilicon/hip08/cpu/core-imp-def.json
-diff --git a/tools/perf/pmu-events/arch/arm64/hisilicon/hip08/uncore-ddrc.json b/tools/perf/pmu-events/arch/arm64/hisilicon/hip08/cpu/uncore-ddrc.json
-similarity index 100%
-rename from tools/perf/pmu-events/arch/arm64/hisilicon/hip08/uncore-ddrc.json
-rename to tools/perf/pmu-events/arch/arm64/hisilicon/hip08/cpu/uncore-ddrc.json
-diff --git a/tools/perf/pmu-events/arch/arm64/hisilicon/hip08/uncore-hha.json b/tools/perf/pmu-events/arch/arm64/hisilicon/hip08/cpu/uncore-hha.json
-similarity index 100%
-rename from tools/perf/pmu-events/arch/arm64/hisilicon/hip08/uncore-hha.json
-rename to tools/perf/pmu-events/arch/arm64/hisilicon/hip08/cpu/uncore-hha.json
-diff --git a/tools/perf/pmu-events/arch/arm64/hisilicon/hip08/uncore-l3c.json b/tools/perf/pmu-events/arch/arm64/hisilicon/hip08/cpu/uncore-l3c.json
-similarity index 100%
-rename from tools/perf/pmu-events/arch/arm64/hisilicon/hip08/uncore-l3c.json
-rename to tools/perf/pmu-events/arch/arm64/hisilicon/hip08/cpu/uncore-l3c.json
-diff --git a/tools/perf/pmu-events/arch/arm64/mapfile.csv b/tools/perf/pmu-events/arch/arm64/mapfile.csv
-index 0d609149b82a..c92cb3b519fc 100644
---- a/tools/perf/pmu-events/arch/arm64/mapfile.csv
-+++ b/tools/perf/pmu-events/arch/arm64/mapfile.csv
-@@ -20,5 +20,5 @@
- 0x00000000410fd0c0,v1,arm/cortex-a76-n1,core
- 0x00000000420f5160,v1,cavium/thunderx2,core
- 0x00000000430f0af0,v1,cavium/thunderx2,core
--0x00000000480fd010,v1,hisilicon/hip08,core
-+0x00000000480fd010,v1,hisilicon/hip08/cpu,core
- 0x00000000500f0000,v1,ampere/emag,core
+diff --git a/tools/perf/pmu-events/arch/arm64/smmuv3-pmcg.json b/tools/perf/pmu-events/arch/arm64/smmuv3-pmcg.json
+new file mode 100644
+index 000000000000..8a59ce48bf06
+--- /dev/null
++++ b/tools/perf/pmu-events/arch/arm64/smmuv3-pmcg.json
+@@ -0,0 +1,58 @@
++[
++    {
++        "PublicDescription": "Clock cycles",
++        "EventCode": "0x00",
++        "EventName": "smmuv3_pmcg.CYCLES",
++        "BriefDescription": "Clock cycles"
++        "Unit": "smmuv3_pmcg",
++    },
++    {
++        "PublicDescription": "Transaction",
++        "EventCode": "0x01",
++        "EventName": "smmuv3_pmcg.TRANSACTION",
++        "BriefDescription": "Transaction"
++        "Unit": "smmuv3_pmcg",
++    },
++    {
++        "PublicDescription": "TLB miss caused by incoming transaction or (ATS or non-ATS) translation request",
++        "EventCode": "0x02",
++        "EventName": "smmuv3_pmcg.TLB_MISS",
++        "BriefDescription": "TLB miss caused by incoming transaction or (ATS or non-ATS) translation request"
++        "Unit": "smmuv3_pmcg",
++    },
++    {
++        "PublicDescription": "Configuration cache miss caused by transaction or(ATS or non-ATS)translation request",
++        "EventCode": "0x03",
++        "EventName": "smmuv3_pmcg.CONFIG_CACHE_MISS",
++        "BriefDescription": "Configuration cache miss caused by transaction or(ATS or non-ATS)translation request"
++        "Unit": "smmuv3_pmcg",
++    },
++    {
++        "PublicDescription": "Translation table walk access",
++        "EventCode": "0x04",
++        "EventName": "smmuv3_pmcg.TRANS_TABLE_WALK_ACCESS",
++        "BriefDescription": "Translation table walk access"
++        "Unit": "smmuv3_pmcg",
++    },
++    {
++        "PublicDescription": "Configuration structure access",
++        "EventCode": "0x05",
++        "EventName": "smmuv3_pmcg.CONFIG_STRUCT_ACCESS",
++        "BriefDescription": "Configuration structure access"
++        "Unit": "smmuv3_pmcg",
++    },
++    {
++        "PublicDescription": "PCIe ATS Translation Request received",
++        "EventCode": "0x06",
++        "EventName": "smmuv3_pmcg.PCIE_ATS_TRANS_RQ",
++        "BriefDescription": "PCIe ATS Translation Request received"
++        "Unit": "smmuv3_pmcg",
++    },
++    {
++        "PublicDescription": "PCIe ATS Translated Transaction passed through SMMU",
++        "EventCode": "0x07",
++        "EventName": "smmuv3_pmcg.PCIE_ATS_TRANS_PASSED",
++        "BriefDescription": "PCIe ATS Translated Transaction passed through SMMU"
++        "Unit": "smmuv3_pmcg",
++    }
++]
+diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
+index acb6b77bddc0..76a84ec2ffc8 100644
+--- a/tools/perf/pmu-events/jevents.c
++++ b/tools/perf/pmu-events/jevents.c
+@@ -256,6 +256,8 @@ static struct map {
+ 	{ "hisi_sccl,ddrc", "hisi_sccl,ddrc" },
+ 	{ "hisi_sccl,hha", "hisi_sccl,hha" },
+ 	{ "hisi_sccl,l3c", "hisi_sccl,l3c" },
++	/* it's not realistic to keep adding these, we need something more scalable ... */
++	{ "smmuv3_pmcg", "smmuv3_pmcg" },
+ 	{ "L3PMC", "amd_l3" },
+ 	{}
+ };
 -- 
 2.16.4
 
