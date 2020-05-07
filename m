@@ -2,66 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A87E31C9C6A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 22:31:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 141281C9C6F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 22:33:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726612AbgEGUbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 16:31:33 -0400
-Received: from smtp04.smtpout.orange.fr ([80.12.242.126]:50577 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726509AbgEGUbc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 16:31:32 -0400
-Received: from localhost.localdomain ([93.23.14.230])
-        by mwinf5d39 with ME
-        id bwXV220044xouCl03wXVlj; Thu, 07 May 2020 22:31:31 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Thu, 07 May 2020 22:31:31 +0200
-X-ME-IP: 93.23.14.230
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     kishon@ti.com, vkoul@kernel.org, tony@atomide.com, pavel@ucw.cz,
-        sebastian.reichel@collabora.com
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] phy: cpcap-usb: Remove some useless code
-Date:   Thu,  7 May 2020 22:31:27 +0200
-Message-Id: <20200507203127.202197-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.25.1
+        id S1726771AbgEGUdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 16:33:04 -0400
+Received: from mga14.intel.com ([192.55.52.115]:44363 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726618AbgEGUdE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 16:33:04 -0400
+IronPort-SDR: VIVHXsFd5uqImcWOLkjQVHoOdpfYrLGRmbBZFpCD2H9N7A48JyXCJ1rtkBjdV5Pe4qmrMLvzDo
+ kjldwaIqKFYg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2020 13:32:50 -0700
+IronPort-SDR: 2LFt945J76NOTSWp7WcmWtzjtsyY/Osp3JJ2Dzj+eZGSWEwQ/ykD5fyrpZq5nnMzO+NtjCLoQd
+ Oerp+eOQH8Ig==
+X-IronPort-AV: E=Sophos;i="5.73,365,1583222400"; 
+   d="scan'208";a="260648194"
+Received: from tzanussi-mobl4.amr.corp.intel.com (HELO [10.252.140.107]) ([10.252.140.107])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2020 13:32:48 -0700
+Subject: Re: [PATCH 3/3] selftests/ftrace: Use /bin/echo instead of built-in
+ echo
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Li Philip <philip.li@intel.com>,
+        Liu Yiding <yidingx.liu@intel.com>
+References: <158834025077.28357.15141584656220094821.stgit@devnote2>
+ <158834028054.28357.398159034694277189.stgit@devnote2>
+ <20200501101942.5c0da986@gandalf.local.home>
+ <20200502120842.9d93352083fb854295150235@kernel.org>
+ <20200507091207.5c3b1a92@gandalf.local.home>
+ <20200508005028.a825d53373721a13d6cc80fc@kernel.org>
+ <20200507132539.7e081980@gandalf.local.home>
+From:   "Zanussi, Tom" <tom.zanussi@linux.intel.com>
+Message-ID: <f575eead-c021-c830-b9d5-41437964db32@linux.intel.com>
+Date:   Thu, 7 May 2020 15:32:46 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200507132539.7e081980@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Axe a clk that is unused in the driver.
+Hi,
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/phy/motorola/phy-cpcap-usb.c | 2 --
- 1 file changed, 2 deletions(-)
+On 5/7/2020 12:25 PM, Steven Rostedt wrote:
+> On Fri, 8 May 2020 00:50:28 +0900
+> Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> 
+>>>> Yes, I need Tom's review for this change. As far as I can test, this
+>>>> fixes the test failure. If this isn't acceptable, we can use "alias echo=echo"
+>>>> for this test case.
+>>>>    
+>>>
+>>> I still don't see how changing "keys=common_pid" to "keys=ip" has anything
+>>> to do with the echo patch. If that is a problem, it should be a different
+>>> patch with explanation to why "keys=common_pid" is broken.
+>>
+>> This test case uses a trace_marker event to make a histogram with
+>> the common_pid key, and it expects the "echo" command is built-in command
+>> so that the pid is same while writing several events to trace_marker.
+>> I changed it to "ip" which is always same if trace_marker interface is
+>> used.
+> 
+> Can you explicitly state that in your change log? It wasn't obvious from
+> what you meant with:
+> 
+> "This also fixes some test cases which expects built-in echo command."
+> 
 
-diff --git a/drivers/phy/motorola/phy-cpcap-usb.c b/drivers/phy/motorola/phy-cpcap-usb.c
-index 12e71a315a2c..089db0dea703 100644
---- a/drivers/phy/motorola/phy-cpcap-usb.c
-+++ b/drivers/phy/motorola/phy-cpcap-usb.c
-@@ -122,7 +122,6 @@ enum cpcap_gpio_mode {
- struct cpcap_phy_ddata {
- 	struct regmap *reg;
- 	struct device *dev;
--	struct clk *refclk;
- 	struct usb_phy phy;
- 	struct delayed_work detect_work;
- 	struct pinctrl *pins;
-@@ -707,7 +706,6 @@ static int cpcap_usb_phy_remove(struct platform_device *pdev)
- 
- 	usb_remove_phy(&ddata->phy);
- 	cancel_delayed_work_sync(&ddata->detect_work);
--	clk_unprepare(ddata->refclk);
- 	regulator_disable(ddata->vusb);
- 
- 	return 0;
--- 
-2.25.1
+With that change,
 
+Reviewed-by: Tom Zanussi <tom.zanussi@linux.intel.com>
+
+Thanks,
+
+Tom
+
+> Thanks!
+> 
+> -- Steve
+> 
