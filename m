@@ -2,95 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E676D1C9F62
+	by mail.lfdr.de (Postfix) with ESMTP id 6EB321C9F61
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 01:58:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727116AbgEGX5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 19:57:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727082AbgEGX5S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 19:57:18 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14546C05BD43
-        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 16:57:18 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id x2so2525668ilp.13
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 16:57:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=8YERqo/O0CpgSp6GICUF3/1ifgurCUdYJLrnvIdN1x8=;
-        b=SYWQJ+YCPO+1BQsW1dytD0nYU7twT//urz+z/iwpvLCo7DTZxbH8ItmxKrLc9qdYKg
-         vchJc/AR5zkgXz7tVhtJgTzpxm3klLYK11xHodMifgBsaH9S2RBP9RiaBDbJae5INVSy
-         GhkdUNocSR4HsxMBxvtyK/CQR/j60P9DzTuD4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=8YERqo/O0CpgSp6GICUF3/1ifgurCUdYJLrnvIdN1x8=;
-        b=R84HYYqlH1woAcZhFpVXsrRSf98uaSFeymzsjfHEnYVpk1l98/AWNQ9Xggp0TJ0iYg
-         2Sr1+2jWrG+pqH+OmG/wJrGt7AnJ69Fmk6P6sF0U4PnZXVQGiTGoWlAVSYwgjTV2T6i9
-         zhNc3iEViv62ep/DetsbeZl1LAmLo8WuouqTR1iwB16X1izdjDf6RO1XOxqkWKdi284z
-         wWS67s0C+uesA6Xhi1mMDwk9yrHMXiptF/c4oO/L/MI8P5iVZwIvaZJHV6WRmOLjCwP4
-         UEFprir4dMQy/EKtEjCKMp+AUxhiDc3QTo3iYB5/dpcV72qotqde/MXm/J2vVy3SlEoV
-         eWjw==
-X-Gm-Message-State: AGi0PuY5vw6DBaMua4Eec1Ck4+c07W5mFN/aXEfFLVJP1P3V8ccFgOGZ
-        3HrBExNzO/9Rk4B9st3JQfiLGQ==
-X-Google-Smtp-Source: APiQypKqHlNwMSQC9E2pjfwDU94VGlthfw04mg7vAiNxP1abahKSR5sOWkaEYm0byD44ICMxpXsFSw==
-X-Received: by 2002:a92:d801:: with SMTP id y1mr17212948ilm.308.1588895837458;
-        Thu, 07 May 2020 16:57:17 -0700 (PDT)
-Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id f19sm1369893ioc.9.2020.05.07.16.57.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2020 16:57:17 -0700 (PDT)
-From:   Shuah Khan <skhan@linuxfoundation.org>
-To:     viro@zeniv.linux.org.uk, axboe@kernel.dk, zohar@linux.vnet.ibm.com,
-        mcgrof@kernel.org, keescook@chromium.org
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] fs: avoid fdput() after failed fdget() in kernel_read_file_from_fd()
-Date:   Thu,  7 May 2020 17:57:10 -0600
-Message-Id: <8b2cec548ea7f3b156038873b37bc24084a689ad.1588894359.git.skhan@linuxfoundation.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <cover.1588894359.git.skhan@linuxfoundation.org>
-References: <cover.1588894359.git.skhan@linuxfoundation.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1727083AbgEGX5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 19:57:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54408 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726480AbgEGX5R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 19:57:17 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7315920720;
+        Thu,  7 May 2020 23:57:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588895836;
+        bh=2o+y8fxLqhtXg3APfBgUNDvTw0QO66MYP7OHCoVyRF4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=tvJM2f15l0kGd0TcPZ5vvEL9T0JafTX9h9hN27JKxQS0JWHerHbeDey3Mbw8YF0WA
+         sMGk9CHL7k6wiBe60ImJu1FPC/jngFFZiLfNHeIppfP0mK2SOLuawse2sjah5xl0ko
+         Pc0Fbkn52l14GZ3LdCA4Ouv+DsGC3gWSQlnAqXug=
+Date:   Fri, 8 May 2020 08:57:12 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Julia Lawall <Julia.Lawall@inria.fr>,
+        kernel-janitors@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Nic Volanschi <eugene.volanschi@inria.fr>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: [PATCH] tracing/probe: reverse arguments to list_add
+Message-Id: <20200508085712.dcb44a32d1fb50c0a7e3e2a9@kernel.org>
+In-Reply-To: <20200507165053.291ba5ea@gandalf.local.home>
+References: <1588879808-24488-1-git-send-email-Julia.Lawall@inria.fr>
+        <20200507165053.291ba5ea@gandalf.local.home>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix kernel_read_file_from_fd() to avoid fdput() after a failed fdget().
-fdput() doesn't do fput() on this file since FDPUT_FPUT isn't set
-in fd.flags. Fix it anyway since failed fdget() doesn't require
-a fdput().
+On Thu, 7 May 2020 16:50:53 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-This was introduced in a commit that added kernel_read_file_from_fd() as
-a wrapper for the VFS common kernel_read_file().
+> On Thu,  7 May 2020 21:30:08 +0200
+> Julia Lawall <Julia.Lawall@inria.fr> wrote:
+> 
+> > Elsewhere in the file, the function trace_kprobe_has_same_kprobe uses
+> > a trace_probe_event.probes object as the second argument of
+> > list_for_each_entry, ie as a list head, while the list_for_each_entry
+> > iterates over the list fields of the trace_probe structures, making
+> > them the list elements.  So, exchange the arguments on the list_add
+> > call to put the list head in the second argument.
+> > 
+> > Since both list_head structures were just initialized, this problem
+> > did not cause any loss of information.
+> > 
 
-Fixes: b844f0ecbc56 ("vfs: define kernel_copy_file_from_fd()")
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
----
- fs/exec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Oops, good catch!
 
-diff --git a/fs/exec.c b/fs/exec.c
-index 06b4c550af5d..ea24bdce939d 100644
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -1021,8 +1021,8 @@ int kernel_read_file_from_fd(int fd, void **buf, loff_t *size, loff_t max_size,
- 		goto out;
- 
- 	ret = kernel_read_file(f.file, buf, size, max_size, id);
--out:
- 	fdput(f);
-+out:
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(kernel_read_file_from_fd);
+> > Fixes: 60d53e2c3b75 ("tracing/probe: Split trace_event related data from trace_probe")
+> > Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+> 
+> Masami,
+> 
+> Can you give a Reviewed-by to this?
+
+Yes, thanks Julia!
+
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+Thank you,
+> 
+> -- Steve
+> 
+> > 
+> > ---
+> >  kernel/trace/trace_probe.c |    2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
+> > index ab8b6436d53f..b8a928e925c7 100644
+> > --- a/kernel/trace/trace_probe.c
+> > +++ b/kernel/trace/trace_probe.c
+> > @@ -1006,7 +1006,7 @@ int trace_probe_init(struct trace_probe *tp, const char *event,
+> >  	INIT_LIST_HEAD(&tp->event->class.fields);
+> >  	INIT_LIST_HEAD(&tp->event->probes);
+> >  	INIT_LIST_HEAD(&tp->list);
+> > -	list_add(&tp->event->probes, &tp->list);
+> > +	list_add(&tp->list, &tp->event->probes);
+> >  
+> >  	call = trace_probe_event_call(tp);
+> >  	call->class = &tp->event->class;
+> 
+
+
 -- 
-2.20.1
-
+Masami Hiramatsu <mhiramat@kernel.org>
