@@ -2,157 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F0DA1C8405
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 09:57:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BEE01C8417
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 10:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727099AbgEGH5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 03:57:16 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:27891 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725845AbgEGH5P (ORCPT
+        id S1725948AbgEGIA3 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 7 May 2020 04:00:29 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:41498 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725834AbgEGIA3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 03:57:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588838233;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=y9mwxyuCup0Q6hGGVaVop/Mcsx5sPEES6xR+JKy3xlE=;
-        b=hxVZJcBDiF9XWNz0ur4Dun5BEo26R1Mqd9OOf6LqmMDwvkOiQXSjIa7Scy5z9nom661t+P
-        ozshqaEWv1joaVwX3Z9X238YK3DAglLfRNTgLFpxz2T5r27C6wTpb9ymJFk0JiZ7j+wXvj
-        GWQQpTSS77H4JkK3bJDSNTSOVoKRpGw=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-179-YsvCxeH0NlScWpa0CkhEVg-1; Thu, 07 May 2020 03:57:10 -0400
-X-MC-Unique: YsvCxeH0NlScWpa0CkhEVg-1
-Received: by mail-wr1-f70.google.com with SMTP id a12so2940348wrv.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 00:57:10 -0700 (PDT)
+        Thu, 7 May 2020 04:00:29 -0400
+Received: from mail-pf1-f199.google.com ([209.85.210.199])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1jWbQW-0006UL-VF
+        for linux-kernel@vger.kernel.org; Thu, 07 May 2020 07:58:41 +0000
+Received: by mail-pf1-f199.google.com with SMTP id 84so4741686pfx.20
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 00:58:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=y9mwxyuCup0Q6hGGVaVop/Mcsx5sPEES6xR+JKy3xlE=;
-        b=JnwxzLjIQoQjf56D/bwF4P1tHP2B45vumieJzHuJXsV8deP/ayVEikckTs8/nZ8Ni5
-         EaYub18vytmDk99RcSVRIg2fzgSNNJ0dG3n9YSRRHT+3lMJQuWzACUiETNIOB9Qr4LGc
-         wkKJXKjCZYgI/lHxDgNBmcm/k8e7z77lJCUGZFcJRjSbKUUnWCFPAyCdN4xuOHwI/yBq
-         IrFRq7k1qtpMXhlSidGP5cfVCk1GZ6patZgL6iePCKgeY9v1sccWzMCXnt6lfQkKldBf
-         3EUIi0FSgfa97ETji4ESbz+fNset8eOEol7REfGDgyVdtZOWlJAnhsRMwSktTQW6mSOA
-         rVsg==
-X-Gm-Message-State: AGi0PuYxj3mePhbONPP2klHC0I/gfuWFrpA4/4JCgxmVHY0APmKogK12
-        Wz0qzdBebdy5843taQynqbF//2LHOS/yMT/wUWASW60bKCokIv+0XtBD8A7mm/E7y4cg51k0SeS
-        jUY6eOynJT0wUcSskW3aySbW2
-X-Received: by 2002:a1c:3206:: with SMTP id y6mr8660128wmy.111.1588838228718;
-        Thu, 07 May 2020 00:57:08 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJ1HGj369geDqMTet3EHW3ra3/6X7k36PjWNlzfDZu8OSHXRqpZOWKYn7h+nDpGIM9yv2dipw==
-X-Received: by 2002:a1c:3206:: with SMTP id y6mr8660098wmy.111.1588838228397;
-        Thu, 07 May 2020 00:57:08 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:8d3e:39e5:cd88:13cc? ([2001:b07:6468:f312:8d3e:39e5:cd88:13cc])
-        by smtp.gmail.com with ESMTPSA id m15sm6619827wmc.35.2020.05.07.00.57.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 May 2020 00:57:07 -0700 (PDT)
-Subject: Re: [PATCH v2] KVM: x86/pmu: Support full width counting
-To:     Like Xu <like.xu@linux.intel.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200507021452.174646-1-like.xu@linux.intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <3fb56700-7f0b-59e1-527a-f8eb601185b1@redhat.com>
-Date:   Thu, 7 May 2020 09:57:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <20200507021452.174646-1-like.xu@linux.intel.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=DNIHL4BvETSILFTzOQbZtGVTq1Rk6A0XJOGe7AjQ57M=;
+        b=a7J3j7Btxf1yDO4X3uWnbk09F5ax6efwGlsR/JffrWXURPClFLzyQxZa3vTSJo9+UY
+         4/8Sr3d+0YjmNE2gyKu3Tu6XYQt7iekrlcZERrLYYWmX82M9nTz+Ll/JnXhmHFWXDE5s
+         WVg8JEdefz6NDyZQ6e0BYwvi1xuD1qaGV1UKERRdhxYdYoO1jMcHIiLV2Hbik0LRUpdh
+         3S19P6vlfh67bOvoPiESn2Xgm1gBKtuXMhg3vB/RITDFBMbVyK+hft2aTD0NH9VpvIar
+         dhiFuNBbdBYzL+24LTmjd8/15Kss9zkssL/Ry3c17aT5AYBvS26FATpz3McKrMFuqYSF
+         EQ5g==
+X-Gm-Message-State: AGi0Pua3pXRqpBNhWocSJHENtKN1eM8pBneP7mMLKRfveaJrzG+K9MVD
+        QNikPIIZnvEvUrSfVFOfMxmYtBz3YyNxF0BfprPV7LN6/3iB6d06G6mYQVTtlB0zIPIf+Ncb9aj
+        3DgvtckgJQ7dyJkWHUa0MOd10XrkbF2o7NaYU1jKelg==
+X-Received: by 2002:a63:d00d:: with SMTP id z13mr462905pgf.54.1588838319574;
+        Thu, 07 May 2020 00:58:39 -0700 (PDT)
+X-Google-Smtp-Source: APiQypJiX/vdClqh7KHfzxsqQaqvVcdsag38+vTi65xZIooATc2zD7Ct6+78cewvAk4NT+k+WjtBuQ==
+X-Received: by 2002:a63:d00d:: with SMTP id z13mr462879pgf.54.1588838319157;
+        Thu, 07 May 2020 00:58:39 -0700 (PDT)
+Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
+        by smtp.gmail.com with ESMTPSA id p64sm6983683pjp.7.2020.05.07.00.58.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 07 May 2020 00:58:38 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: [PATCH] xhci: Make debug message consistent with bus and port
+ number
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+In-Reply-To: <20200507073119.GA876666@kroah.com>
+Date:   Thu, 7 May 2020 15:58:36 +0800
+Cc:     mathias.nyman@intel.com,
+        "open list:USB XHCI DRIVER" <linux-usb@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <90D5B23E-B037-49D2-BD44-7F9B0B2FC155@canonical.com>
+References: <20200507061755.13280-1-kai.heng.feng@canonical.com>
+ <20200507064510.GA787064@kroah.com>
+ <C4A734C8-D1C6-45BC-9C0A-92364EAEE3C0@canonical.com>
+ <20200507073119.GA876666@kroah.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/05/20 04:14, Like Xu wrote:
-> +static inline u64 vmx_get_perf_capabilities(void)
-> +{
-> +	u64 perf_cap = 0;
-> +
-> +	if (boot_cpu_has(X86_FEATURE_PDCM))
-> +		rdmsrl(MSR_IA32_PERF_CAPABILITIES, perf_cap);
-> +
-> +	/* Currently, KVM only supports Full-Width Writes. */
-> +	perf_cap &= PMU_CAP_FW_WRITES;
-> +
-> +	return perf_cap;
-> +}
-> +
-
-Since counters are virtualized, it seems to me that you can support
-PMU_CAP_FW_WRITES unconditionally, even if the host lacks it.  So just
-return PMU_CAP_FW_WRITES from this function.
-
-> +	case MSR_IA32_PERF_CAPABILITIES:
-> +		return 1; /* RO MSR */
->  	default:
-
-You need to allow writes from the host if (data &
-~vmx_get_perf_capabilities()) == 0.
-
-> -			if (!msr_info->host_initiated)
-> +		if ((pmc = get_gp_pmc(pmu, msr, MSR_IA32_PERFCTR0)) ||
-> +			(pmc = get_gp_pmc(pmu, msr, MSR_IA32_PMC0))) {
-> +			if (data & ~pmu->counter_bitmask[KVM_PMC_GP])
-> +				return 1;
-> +			if (!fw_writes_is_enabled(pmu))
->  				data = (s64)(s32)data;
 
 
-You are dropping the test on msr_info->host_initiated here, you should
-keep it otherwise you allow full-width write to MSR_IA32_PERFCTR0 as
-well.  So:
+> On May 7, 2020, at 15:31, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> 
+> On Thu, May 07, 2020 at 03:15:01PM +0800, Kai-Heng Feng wrote:
+>> 
+>> 
+>>> On May 7, 2020, at 14:45, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+>>> 
+>>> On Thu, May 07, 2020 at 02:17:55PM +0800, Kai-Heng Feng wrote:
+>>>> Current xhci debug message doesn't always output bus number, so it's
+>>>> hard to figure out it's from USB2 or USB3 root hub.
+>>>> 
+>>>> In addition to that, some port numbers are offset to 0 and others are
+>>>> offset to 1. Use the latter to match the USB core.
+>>>> 
+>>>> So use "bus number - port index + 1" to make debug message consistent.
+>>>> 
+>>>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+>>>> ---
+>>>> drivers/usb/host/xhci-hub.c | 41 +++++++++++++++++++++----------------
+>>>> 1 file changed, 23 insertions(+), 18 deletions(-)
+>>>> 
+>>>> diff --git a/drivers/usb/host/xhci-hub.c b/drivers/usb/host/xhci-hub.c
+>>>> index f37316d2c8fa..83088c262cc4 100644
+>>>> --- a/drivers/usb/host/xhci-hub.c
+>>>> +++ b/drivers/usb/host/xhci-hub.c
+>>>> @@ -1241,7 +1241,8 @@ int xhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
+>>>> 			temp = readl(ports[wIndex]->addr);
+>>>> 			/* Disable port */
+>>>> 			if (link_state == USB_SS_PORT_LS_SS_DISABLED) {
+>>>> -				xhci_dbg(xhci, "Disable port %d\n", wIndex);
+>>>> +				xhci_dbg(xhci, "Disable port %d-%d\n",
+>>>> +					 hcd->self.busnum, wIndex + 1);
+>>> 
+>>> Shouldn't xhci_dbg() show the bus number already?  
+>> 
+>> It's the PCI bus number, different to USB2/USB3 root hub bus number...
+> 
+> But if this is using dev_dbg(), and it is, then you know how to look
+> that up by seeing where that device is in sysfs at that point in time.
+> 
+> So why add this again?
 
-#define MSR_PMC_FULL_WIDTH_BIT      (MSR_IA32_PMC0 - MSR_IA32_PERFCTR0)
-
-	if (!msr_info->host_initiated && !(msr & MSR_PMC_FULL_WIDTH_BIT))
-		data = (s64)(s32)data;
-
-> +	case MSR_IA32_PERF_CAPABILITIES:
-> +		if (!nested)
-> +			return 1;
-> +		msr->data = vmx_get_perf_capabilities();
-> +		return 0;
-
-The !nested check is wrong.
+xHCI has two HCD, one for USB2 and one for USB3.
+If both of their port with same number are in use, for instance, port 1, then they are port 1-1 and port 2-1.
+Right now the debug message only show "Port 1", we still can't find the corresponding port via sysfs with insufficient info.
 
 > 
-> +++ b/arch/x86/kvm/x86.c
-> @@ -1220,6 +1220,13 @@ static const u32 msrs_to_save_all[] = {
->  	MSR_ARCH_PERFMON_EVENTSEL0 + 12, MSR_ARCH_PERFMON_EVENTSEL0 + 13,
->  	MSR_ARCH_PERFMON_EVENTSEL0 + 14, MSR_ARCH_PERFMON_EVENTSEL0 + 15,
->  	MSR_ARCH_PERFMON_EVENTSEL0 + 16, MSR_ARCH_PERFMON_EVENTSEL0 + 17,
-> +
-> +	MSR_IA32_PMC0, MSR_IA32_PMC0 + 1, MSR_IA32_PMC0 + 2,
-> +	MSR_IA32_PMC0 + 3, MSR_IA32_PMC0 + 4, MSR_IA32_PMC0 + 5,
-> +	MSR_IA32_PMC0 + 6, MSR_IA32_PMC0 + 7, MSR_IA32_PMC0 + 8,
-> +	MSR_IA32_PMC0 + 9, MSR_IA32_PMC0 + 10, MSR_IA32_PMC0 + 11,
-> +	MSR_IA32_PMC0 + 12, MSR_IA32_PMC0 + 13, MSR_IA32_PMC0 + 14,
-> +	MSR_IA32_PMC0 + 15, MSR_IA32_PMC0 + 16, MSR_IA32_PMC0 + 17,
->  };
+>>> If not, please fix
+>>> that up there instead of having to add it to all messages "by hand".
+>> 
+>> Not all xhci debug messages need roothub number in it.
+> 
+> Why pick these random ones?  What makes these different?
 
-This is not needed because the full-width content is already accessible
-from the host via MSR_IA32_PERFCTRn.
+It's not random. We do it when there's a port in message.
+Being able to know the exact port like "port 1-1" or "port 2-1", instead of just "port 1", can be really helpful.
 
-Given the bugs, it is clear that you should also modify the pmu.c
-testcase for kvm-unit-tests to cover full-width writes (and especially
-the non-full-width write behavior of MSR_IA32_PERFCTRn).  Even before
-the QEMU side is begin worked on, you can test it with "-cpu
-host,migratable=off".
+Kai-Heng
 
-Thanks,
-
-Paolo
+> 
+> Either all or none, be consistant please.
+> 
+> greg k-h
 
