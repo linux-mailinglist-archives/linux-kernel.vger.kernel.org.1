@@ -2,55 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F84D1C8CA8
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 15:40:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 551E51C8CB9
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 15:41:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727802AbgEGNk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 09:40:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57006 "EHLO mail.kernel.org"
+        id S1727790AbgEGNlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 09:41:32 -0400
+Received: from mga02.intel.com ([134.134.136.20]:57847 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726974AbgEGNk0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 09:40:26 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3E62F20838;
-        Thu,  7 May 2020 13:40:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588858826;
-        bh=UzgNBysLz9JDcczUZ51lWGSanKbRt1nx1DOdn7L8VLI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=B8+665/amOfqX+AZzAZpoNB1jVLERWcpZV1jfYbCdHkF+L2aGhzBxVvYSzuKHNeXq
-         CCgYJlftZECYx90082DWfC/gKtdtQWHFOYdkuA45fOeWj8NMzpNpvQJnd9+BFI6ZpS
-         Ty1hDWHYl/LnL7Px0At+ZxY5H/lmdRwonm7vzaeg=
-Date:   Thu, 7 May 2020 16:40:21 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Tang Bin <tangbin@cmss.chinamobile.com>
-Cc:     davem@davemloft.net, saeedm@mellanox.com, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Subject: Re: [PATCH] net/mlx5e: Use IS_ERR() to check and simplify code
-Message-ID: <20200507134021.GC104730@unreal>
-References: <20200507115010.10380-1-tangbin@cmss.chinamobile.com>
+        id S1726542AbgEGNlb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 09:41:31 -0400
+IronPort-SDR: KTBlUNEmoFuQYJPwzWYrnvxt5vvBk3+SKDAaniDm7aaysQaleKPL4nSJ1prlPYe2Jk57FPXSsM
+ +G2fBm67PGNA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2020 06:41:30 -0700
+IronPort-SDR: G7ce+OsY5MlHspOLUOm76PNjgGDXmJ4FDym/wEFtCeIGUxBxYbcB2EB0DDIi60NghlARqDS2Hn
+ 6Eau5r4ymXqg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,363,1583222400"; 
+   d="scan'208";a="263938934"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga006.jf.intel.com with ESMTP; 07 May 2020 06:41:27 -0700
+Received: from andy by smile with local (Exim 4.93)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1jWgmI-005Dmr-GN; Thu, 07 May 2020 16:41:30 +0300
+Date:   Thu, 7 May 2020 16:41:30 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Cc:     heikki.krogerus@linux.intel.com, robh+dt@kernel.org,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        nikolaus.voss@loewensteinmedical.de, garsilva@embeddedor.com,
+        keescook@chromium.org
+Subject: Re: [PATCH 0/1] Add USB role switch to tps6598x
+Message-ID: <20200507134130.GX185537@smile.fi.intel.com>
+References: <20200507124556.1774311-1-bryan.odonoghue@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200507115010.10380-1-tangbin@cmss.chinamobile.com>
+In-Reply-To: <20200507124556.1774311-1-bryan.odonoghue@linaro.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 07, 2020 at 07:50:10PM +0800, Tang Bin wrote:
-> Use IS_ERR() and PTR_ERR() instead of PTR_ZRR_OR_ZERO()
-> to simplify code, avoid redundant judgements.
->
-> Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
-> ---
->  drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
->
+On Thu, May 07, 2020 at 01:45:55PM +0100, Bryan O'Donoghue wrote:
+> This patch - adds USB role switching to the TI TPS6598x. It has been tested
+> out with a ChipIdea controller inside a Qualcomm MSM8939.
+> 
+> Right now you need to have configured the TPS firmware with the TI
+> configuration tool so that the chip knows if it should initiate or accept
+> data and power role swaps.
+> 
+> https://www.ti.com/lit/an/slva843a/slva843a.pdf
 
-Thanks,
-Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
+Can you include that in the patch under DocLink tag with some background info?
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
