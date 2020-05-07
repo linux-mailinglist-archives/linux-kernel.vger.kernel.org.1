@@ -2,66 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7B611C8009
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 04:34:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C45871C8017
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 04:43:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727980AbgEGCeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 22:34:07 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:3873 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725799AbgEGCeG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 22:34:06 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id C4A5C3702A39DD0C0203;
-        Thu,  7 May 2020 10:34:03 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 7 May 2020 10:33:56 +0800
-From:   Samuel Zou <zou_wei@huawei.com>
-To:     <airlied@redhat.com>, <airlied@linux.ie>, <daniel@ffwll.ch>
-CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        "Samuel Zou" <zou_wei@huawei.com>
-Subject: [PATCH -next] drm/ast: Make ast_primary_plane_helper_atomic_update static
-Date:   Thu, 7 May 2020 10:40:06 +0800
-Message-ID: <1588819206-11406-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        id S1728244AbgEGCnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 22:43:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726625AbgEGCnY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 22:43:24 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFCD8C061A0F;
+        Wed,  6 May 2020 19:43:23 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49Hd791Vtpz9sRf;
+        Thu,  7 May 2020 12:43:16 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1588819400;
+        bh=3cql5VsIEDZ9sh1yQV7laVUfWk6ZJHdw0wTQwojE088=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Ki7DJEmwamfoa/Ep0E/cK9nhK9D+Li1kKZb9dkJznsy8NWu6H9KYFbBHbBAscTqS1
+         QhtByVVNwwVFkv6+zjC7VqiCAKShxF2z5lNTEB3/JlD1mCGsuNXmC57q1HVDTMDsHJ
+         5VYnwSHdRH/o/BbwpJnMenT+mXCXI/7qr6F1D66Ts1/LhYEf4ZsmSxebRLN0RtFQDL
+         Plpmi+jO5vx3cX0Rsc1zJevOBvQ2kWdCqvuMKihTajjj+LgJGeJyUe8cr7pZ89mjgN
+         +IPntnmeP6gAAVsbvd89BOdk1dQ82ldil/6ZvWvNr9Zod5S8l+zHB0JbvfyGaNPcWZ
+         ynNU/lUbV7jRQ==
+Date:   Thu, 7 May 2020 12:43:11 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Jones <pjones@redhat.com>,
+        Wambui Karuga <wambui.karugax@gmail.com>
+Subject: linux-next: manual merge of the drm tree with the drm-intel-fixes
+ tree
+Message-ID: <20200507124311.3838e2a0@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; boundary="Sig_/avDbmjoaGsC/ysa+PA0FSf8";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following sparse warning:
+--Sig_/avDbmjoaGsC/ysa+PA0FSf8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-drivers/gpu/drm/ast/ast_mode.c:564:6: warning:
-symbol 'ast_primary_plane_helper_atomic_update'
-was not declared. Should it be static?
+Hi all,
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Samuel Zou <zou_wei@huawei.com>
----
- drivers/gpu/drm/ast/ast_mode.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Today's linux-next merge of the drm tree got a conflict in:
 
-diff --git a/drivers/gpu/drm/ast/ast_mode.c b/drivers/gpu/drm/ast/ast_mode.c
-index 7062bcd..4ddf770 100644
---- a/drivers/gpu/drm/ast/ast_mode.c
-+++ b/drivers/gpu/drm/ast/ast_mode.c
-@@ -561,8 +561,9 @@ static int ast_primary_plane_helper_atomic_check(struct drm_plane *plane,
- 	return 0;
- }
- 
--void ast_primary_plane_helper_atomic_update(struct drm_plane *plane,
--					    struct drm_plane_state *old_state)
-+static void
-+ast_primary_plane_helper_atomic_update(struct drm_plane *plane,
-+				       struct drm_plane_state *old_state)
- {
- 	struct ast_private *ast = plane->dev->dev_private;
- 	struct drm_plane_state *state = plane->state;
--- 
-2.6.2
+  drivers/gpu/drm/i915/display/intel_fbc.c
 
+between commit:
+
+  82152d424b6c ("Make the "Reducing compressed framebufer size" message be =
+DRM_INFO_ONCE()")
+
+from the drm-intel-fixes tree and commit:
+
+  97ed48b5c8b1 ("drm/i915/fbc: convert to drm_device based logging macros.")
+
+from the drm tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/gpu/drm/i915/display/intel_fbc.c
+index c125ca9ab9b3,56bcd6c52a02..000000000000
+--- a/drivers/gpu/drm/i915/display/intel_fbc.c
++++ b/drivers/gpu/drm/i915/display/intel_fbc.c
+@@@ -485,7 -485,9 +485,8 @@@ static int intel_fbc_alloc_cfb(struct d
+  	if (!ret)
+  		goto err_llb;
+  	else if (ret > 1) {
+- 		DRM_INFO_ONCE("Reducing the compressed framebuffer size. This may lead =
+to less power savings than a non-reduced-size. Try to increase stolen memor=
+y size if available in BIOS.\n");
+ -		drm_info(&dev_priv->drm,
+++		drm_info_once(&dev_priv->drm,
++ 			 "Reducing the compressed framebuffer size. This may lead to less powe=
+r savings than a non-reduced-size. Try to increase stolen memory size if av=
+ailable in BIOS.\n");
+ -
+  	}
+ =20
+  	fbc->threshold =3D ret;
+
+--Sig_/avDbmjoaGsC/ysa+PA0FSf8
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl6zdb8ACgkQAVBC80lX
+0GyuIgf+OkbDDmJb3xBZ3z4ltKh2Eq6GPhl9KgWPSF5jdRke+TGBjjiB66zZyGLL
+dDLb9Ff96UIASj6ArDPb3E2TlAzxJ9TvOzBL32ggHlkBnmJk4xmlQqf6yoL49OYR
+Iqzw5Ei+HSJCMP98oiCBKGKCSf3AhkT2dLoJfs503pflnfvSJ+AZCDWWkUDZYVGh
+EUlrkEozwqs01u4zK8GlhYf7A4zsg9W0RQOn56CzkLMvtH5kn4fnLGiXkVkdHH4l
+2XlC6v9UK/PSNs27mcZdI99vRgoLkkWimII7CM0s785UellFTSnsmhKm5czkZ1ZS
+N/sRtKMcGNYod1a1zSLgTPwiQLH62w==
+=fiYA
+-----END PGP SIGNATURE-----
+
+--Sig_/avDbmjoaGsC/ysa+PA0FSf8--
