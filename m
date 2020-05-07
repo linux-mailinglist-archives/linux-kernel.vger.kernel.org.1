@@ -2,85 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAD761C8BDF
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 15:17:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B9001C8BEA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 15:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726678AbgEGNQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 09:16:51 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:47176 "EHLO vps0.lunn.ch"
+        id S1727051AbgEGNSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 09:18:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57820 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725948AbgEGNQv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 09:16:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=Vk41FiGE7OzvR4Ex8ve/e7chOhsCEpaO414K5RXlxrY=; b=tTp2bzTIB3i1MnLPqrNbuPXcsY
-        WfQt9FVPRWRBztAkewuKACD/1WAg2q6auQUsYJkw/msyPR0OQHQUOfsrFWcF1lafu47rbBSjN6NPB
-        Qbfxri/uC9wv8/ac2eZpekCVKVOOnEnfoIX3VyRlq9uVhbKjNL/MKC3Cpp8aRITHl6Jo=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
-        (envelope-from <andrew@lunn.ch>)
-        id 1jWgOL-001E3q-DR; Thu, 07 May 2020 15:16:45 +0200
-Date:   Thu, 7 May 2020 15:16:45 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     "Mark-MC.Lee" <Mark-MC.Lee@mediatek.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        Felix Fietkau <nbd@openwrt.org>, Arnd Bergmann <arnd@arndb.de>,
-        netdev <netdev@vger.kernel.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Sean Wang <sean.wang@mediatek.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Fabien Parent <fparent@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-mediatek@lists.infradead.org,
-        John Crispin <john@phrozen.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 06/11] net: ethernet: mtk-eth-mac: new driver
-Message-ID: <20200507131645.GM208718@lunn.ch>
-References: <20200505140231.16600-1-brgl@bgdev.pl>
- <20200505140231.16600-7-brgl@bgdev.pl>
- <1588844771.5921.27.camel@mtksdccf07>
- <CAMpxmJW4qZ_Wnp_oRa=j=YnvTzVa3HZ13Hgwy71jS6L3Bd3oMQ@mail.gmail.com>
+        id S1726007AbgEGNSK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 09:18:10 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 29BA720708;
+        Thu,  7 May 2020 13:18:09 +0000 (UTC)
+Date:   Thu, 7 May 2020 09:18:07 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Changbin Du <changbin.du@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH v4] streamline_config.pl: add LMC_KEEP to preserve some
+ kconfigs
+Message-ID: <20200507091807.0a789fbd@gandalf.local.home>
+In-Reply-To: <CAK7LNATBt1NxRSWiv8Ab-pKBRemp43WUs96KWELTf+vFq_VPTA@mail.gmail.com>
+References: <20200503001141.9647-1-changbin.du@gmail.com>
+        <CAK7LNATBt1NxRSWiv8Ab-pKBRemp43WUs96KWELTf+vFq_VPTA@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMpxmJW4qZ_Wnp_oRa=j=YnvTzVa3HZ13Hgwy71jS6L3Bd3oMQ@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 07, 2020 at 12:50:15PM +0200, Bartosz Golaszewski wrote:
-> czw., 7 maj 2020 o 11:46 Mark-MC.Lee <Mark-MC.Lee@mediatek.com> napisał(a):
+On Thu, 7 May 2020 12:19:57 +0900
+Masahiro Yamada <masahiroy@kernel.org> wrote:
+
+> On Sun, May 3, 2020 at 9:11 AM Changbin Du <changbin.du@gmail.com> wrote:
 > >
-> > Hi Bartosz:
-> >  I think the naming of this driver and its Kconfig option is too generic
-> > that will confuse with current mediatek SoCs eth driver architecture(for
-> > all mt7xxx SoCs).
-> >   Since mtk_eth_mac.c is not a common MAC part for all mediatek SoC but
-> > only a specific eth driver for mt85xx, it will be more reasonable to
-> > name it as mt85xx_eth.c and change NET_MEDIATEK_MAC to
-> > NET_MEDIATEK_MT85XX. How do you think?
+> > Sometimes it is useful to preserve batches of configs when making
+> > localmodconfig. For example, I usually don't want any usb and fs
+> > modules to be disabled. Now we can do it by:
 > >
+> >  $ make LMC_KEEP="drivers/usb;fs" localmodconfig
+> >
+> > Signed-off-by: Changbin Du <changbin.du@gmail.com>
+> >
+> > ---
+> > v4: fix typo.
+> > v3: rename LOCALMODCONFIG_PRESERVE to shorter LMC_KEEP.
+> > v2: fix typo in documentation. (Randy Dunlap)
+> > ---  
 > 
-> Hi Mark,
 > 
-> I actually consulted this with MediaTek and the name is their idea.
-> Many drivers in drivers/net/ethernet have very vague names. I guess
-> this isn't a problem.
+> Personally, I do not mind the long LOCALMODCONFIG_PRESERVE,
 
-They have vague names, but they tend to be not confusing.
+Perhasp we allow both? ;-)
 
-NET_MEDIATEK_MAC vs NET_MEDIATEK_SOC is confusing.
+And just have one set to the other.
 
-I think the proposed name, mt85xx_eth.c and NET_MEDIATEK_MT85XX is
-good. Or some variant on this, mt8xxx?
+> but this tends to be bike-sheding.
+> I do not have a strong opinion.
+> 
+> 
+> >  Documentation/admin-guide/README.rst |  8 +++++++-
+> >  scripts/kconfig/Makefile             |  1 +
+> >  scripts/kconfig/streamline_config.pl | 23 +++++++++++++++++++++++
+> >  3 files changed, 31 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/Documentation/admin-guide/README.rst b/Documentation/admin-guide/README.rst
+> > index cc6151fc0845..1371deab8bc7 100644
+> > --- a/Documentation/admin-guide/README.rst
+> > +++ b/Documentation/admin-guide/README.rst
+> > @@ -209,10 +209,16 @@ Configuring the kernel
+> >                             store the lsmod of that machine into a file
+> >                             and pass it in as a LSMOD parameter.
+> >
+> > +                           Also, you can preserve modules in certain folders
+> > +                           or kconfig files by specifying their paths in
+> > +                           parameter LMC_KEEP.
+> > +
+> >                     target$ lsmod > /tmp/mylsmod
+> >                     target$ scp /tmp/mylsmod host:/tmp
+> >
+> > -                   host$ make LSMOD=/tmp/mylsmod localmodconfig
+> > +                   host$ make LSMOD=/tmp/mylsmod \
+> > +                           LMC_KEEP="drivers/usb;drivers/gpu;fs" \  
+> 
+> 
+> This might be another bike-sheding item, but
+> can you use a space for the delimiter?
+> 
+> 
+> LMC_KEEP="drivers/usb drivers/gpu fs"
+> 
+> If you pass multiple directories,
+> you will need to surround them with double-quotes.
 
-    Andrew
+I agree that spaces look better.
+
+> 
+> 
+> 
+> 
+> > +                           localmodconfig
+> >
+> >                             The above also works when cross compiling.
+> >
+> > diff --git a/scripts/kconfig/Makefile b/scripts/kconfig/Makefile
+> > index c9d0a4a8efb3..e0abbf5805f5 100644
+> > --- a/scripts/kconfig/Makefile
+> > +++ b/scripts/kconfig/Makefile
+> > @@ -123,6 +123,7 @@ help:
+> >         @echo  '  gconfig         - Update current config utilising a GTK+ based front-end'
+> >         @echo  '  oldconfig       - Update current config utilising a provided .config as base'
+> >         @echo  '  localmodconfig  - Update current config disabling modules not loaded'
+> > +       @echo  '                    except those preserved by LMC_KEEP environment variable'
+> >         @echo  '  localyesconfig  - Update current config converting local mods to core'
+> >         @echo  '  defconfig       - New config with default from ARCH supplied defconfig'
+> >         @echo  '  savedefconfig   - Save current config as ./defconfig (minimal config)'
+> > diff --git a/scripts/kconfig/streamline_config.pl b/scripts/kconfig/streamline_config.pl
+> > index e2f8504f5a2d..d26543a807c9 100755
+> > --- a/scripts/kconfig/streamline_config.pl
+> > +++ b/scripts/kconfig/streamline_config.pl
+> > @@ -143,6 +143,7 @@ my %depends;
+> >  my %selects;
+> >  my %prompts;
+> >  my %objects;
+> > +my %config2kfile;
+> >  my $var;
+> >  my $iflevel = 0;
+> >  my @ifdeps;
+> > @@ -201,6 +202,7 @@ sub read_kconfig {
+> >         if (/^\s*(menu)?config\s+(\S+)\s*$/) {
+> >             $state = "NEW";
+> >             $config = $2;
+> > +           $config2kfile{"CONFIG_$config"} = $kconfig;
+> >
+> >             # Add depends for 'if' nesting
+> >             for (my $i = 0; $i < $iflevel; $i++) {
+> > @@ -592,6 +594,22 @@ while ($repeat) {
+> >
+> >  my %setconfigs;
+> >
+> > +my @preserved_kconfigs;
+> > +@preserved_kconfigs = split(/;/,$ENV{LMC_KEEP}) if (defined($ENV{LMC_KEEP}));  
+> 
+> Maybe, you can do 'my' declaration and the assignment
+> in a single line?
+> 
+> Can you drop the 'if ...' conditional?
+> 
+> 
+> Does this work for you?
+> 
+> my @preserved_kconfigs = split(/;/,$ENV{LMC_KEEP});
+> 
+> 
+
+Will an undefined warning happen if LMC_KEEP isn't defined?
+
+-- Steve
