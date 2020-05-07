@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15CB21C9A9E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D760A1C9AA0
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:14:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728415AbgEGTOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 15:14:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37260 "EHLO
+        id S1728469AbgEGTOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 15:14:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726470AbgEGTOL (ORCPT
+        by vger.kernel.org with ESMTP id S1728389AbgEGTOO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 15:14:11 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77E0CC05BD43
-        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 12:14:11 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id t8so3247794qvw.5
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 12:14:11 -0700 (PDT)
+        Thu, 7 May 2020 15:14:14 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8A38C05BD09
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 12:14:12 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id c10so260839qka.4
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 12:14:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=dqXcMmi6x29UrthymMNNxQdDEOmsHbhH0Bj3IzL2aMs=;
-        b=THP9sZvJlWOLHisxxV/QpAkHjs0X+vaTKBV8lcHHGTJPibJEmCuYCVeQw7f6ticXBb
-         vecXfRkLxGDLpMrzfwAh+rbYW8hWks1GUIYRMVN2+cefaDKtx2+AteGZOq6kvWuRrM9O
-         yqNHGY9pD9KyQohiE6TtQ0KJjKHHHSgmbBya1YXF99ZFjfboW1Ikzjk28FTV6Q9sOo2T
-         5wDXgHedoEIQBm9db7XA4PmRqzdbFaSvESGhWGL75JaGJDqZ7BwENG2/tVhUT7bOViND
-         rGnNRJDPu5fXhzRtRQ0aMcysAY4Kz8+k9GBdrV4xUhymKsmKQp+N2TZgzk5VOHSICcA2
-         y/Gg==
+        bh=wX5XMHdz/M+4Ly0oHrP6bxAEiJLYb6cRVv2K95uxWwg=;
+        b=T5BWfYqNoQpnrJCv2Ie2wfQiVRMiIaKJyfhlfrVqofUztNcEQUPykFlaw/fEkXaftJ
+         IFMjTrwM5xiQ7gMyBdrIrSvMGzAmcAFrhWFM/G10PVdY/mT419WU3MP4OneVGI7Ha2kv
+         PDp8jTbBPD6hECoa40AYj2kN6YAFtJneX1VgtqJE2hn3pGhDADp2kJr9ydJucBT5ciHn
+         +a19RDzcDiGTOKZe6l7WmR2rOCE+yyKnfQzHt62nNUroJsZQNsWqAimJVxY/V7Me7Vuk
+         WLQTtkXUsMghQp00pN/Lh8VswyWGwvi+bP/8IOaVZc4ijatKaOeKM+SYvxUevZ46Iog7
+         jheA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=dqXcMmi6x29UrthymMNNxQdDEOmsHbhH0Bj3IzL2aMs=;
-        b=LyYOxksUF6HoHltIMgdcZGZcuq/m2S5b+33G/TjYBOA5N1ZqIIwX9v3UcEEILKp11B
-         S8E+dIUZl+np9PFxioICe+oVnJ18MvGphcRlXzTcvMrzwov/JwqUBmgPUUKMi2ClD0mv
-         2IkOubv2egPCaLKmBMZCJRU5qTv8rmPyaJyz0Z2HDFN3E7N2j7XT+elK65A4YGxcemLt
-         Gdzm4kFW4eGXSncYE+yEz+xh8KyH7P9E5Bs/c6+VtmQvG638BTyClarIRQAVUwZygJ3i
-         r/hyvKaoQMX7yPw8WRxuNg7L9Fr4D/E7nh4nWnwVztbiuwh+YvjzkneyIOp6fYS8ysP/
-         WsfQ==
-X-Gm-Message-State: AGi0Pub6X72bSM/QxvbLknt//5chyTDNZzrjFLnwnEZWzE47W4XiFOVF
-        mMpLQQukpYVMziN+pRDo3mVE7A==
-X-Google-Smtp-Source: APiQypKzE413WCsr8X3g6xZaR51/YNaRxGh6knaaWQShRkPKDilTFpTf259HoZj76ksWCskLjX4yqw==
-X-Received: by 2002:ad4:4c92:: with SMTP id bs18mr15061948qvb.67.1588878850567;
-        Thu, 07 May 2020 12:14:10 -0700 (PDT)
+        bh=wX5XMHdz/M+4Ly0oHrP6bxAEiJLYb6cRVv2K95uxWwg=;
+        b=oBkxHgvgU3d+kq6wf1JrPJRgdr27D8SdaXBtAi2IUsHTLEYIN9RpsVKUPy4pRm7NUr
+         GS5qfKJMcWaaExOukUR5yJkvKm40EPZ5FeQ9phN4824UFyT66ht2d6FYP7emz3Mp0uQB
+         v4FEXDZ4TnWlpjju4GSbge7zdNtYPVRt3y3FUv8H1wBqJNXEKsgvoBWYyuxVc6FR7xpT
+         MG4sqe/QTerYvef9YU0FeBVcfpgWSRkcwQ7BEXji4fqHBfIJY0DpZvh4ndBs2W3M64d/
+         5o8IzaHyChOCcRuYcb7/t2f79Tj3x3mpAEe7xBfOOXh2Y3+aCCx9U7uibV1M8rVMckIl
+         J6FQ==
+X-Gm-Message-State: AGi0PubruDRdQwlLvYEFT2Hprfcs0ZMKRQ0SdtNUl/xEaRbvhT8l/qOc
+        5sSEbgSEfF7x7g2u6ulKiv6YHeQee88=
+X-Google-Smtp-Source: APiQypJGLda9xBHWwenDCQAcn6P3cH5cZURCVuyFJBA8E3DVDslgKP5Y2647O3Sycr93BkqdJvg8wA==
+X-Received: by 2002:a05:620a:13b5:: with SMTP id m21mr15794630qki.208.1588878852049;
+        Thu, 07 May 2020 12:14:12 -0700 (PDT)
 Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id j8sm5094236qtk.85.2020.05.07.12.14.09
+        by smtp.gmail.com with ESMTPSA id j8sm5094236qtk.85.2020.05.07.12.14.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2020 12:14:10 -0700 (PDT)
+        Thu, 07 May 2020 12:14:11 -0700 (PDT)
 From:   Alex Elder <elder@linaro.org>
 To:     davem@davemloft.net
 Cc:     evgreen@chromium.org.net, subashab@codeaurora.org,
         cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net 1/2] net: ipa: set DMA length in gsi_trans_cmd_add()
-Date:   Thu,  7 May 2020 14:14:03 -0500
-Message-Id: <20200507191404.31626-2-elder@linaro.org>
+Subject: [PATCH net 2/2] net: ipa: use tag process on modem crash
+Date:   Thu,  7 May 2020 14:14:04 -0500
+Message-Id: <20200507191404.31626-3-elder@linaro.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200507191404.31626-1-elder@linaro.org>
 References: <20200507191404.31626-1-elder@linaro.org>
@@ -66,36 +66,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a command gets added to a transaction for the AP->command
-channel we set the DMA address of its scatterlist entry, but not
-its DMA length.  Fix this bug.
+One part of recovering from a modem crash is performing a "tag
+sequence" of several IPA immediate commands, to clear the hardware
+pipeline.  The sequence ends with a data transfer request on the
+command endpoint (which is not otherwise done).  Unfortunately,
+attempting to do the data transfer led to a hang, so that request
+plus two other commands were commented out.
+
+The previous commit fixes the bug that was causing that hang.  And
+with that bug fixed we can properly issue the tag sequence when the
+modem crashes, to return the hardware to a known state.
 
 Signed-off-by: Alex Elder <elder@linaro.org>
 ---
- drivers/net/ipa/gsi_trans.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/net/ipa/ipa_cmd.c | 14 +++-----------
+ 1 file changed, 3 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/net/ipa/gsi_trans.c b/drivers/net/ipa/gsi_trans.c
-index 2fd21d75367d..bdbfeed359db 100644
---- a/drivers/net/ipa/gsi_trans.c
-+++ b/drivers/net/ipa/gsi_trans.c
-@@ -399,13 +399,14 @@ void gsi_trans_cmd_add(struct gsi_trans *trans, void *buf, u32 size,
- 	/* assert(which < trans->tre_count); */
+diff --git a/drivers/net/ipa/ipa_cmd.c b/drivers/net/ipa/ipa_cmd.c
+index d226b858742d..cee417181f98 100644
+--- a/drivers/net/ipa/ipa_cmd.c
++++ b/drivers/net/ipa/ipa_cmd.c
+@@ -628,23 +628,15 @@ static void ipa_cmd_transfer_add(struct gsi_trans *trans, u16 size)
  
- 	/* Set the page information for the buffer.  We also need to fill in
--	 * the DMA address for the buffer (something dma_map_sg() normally
--	 * does).
-+	 * the DMA address and length for the buffer (something dma_map_sg()
-+	 * normally does).
- 	 */
- 	sg = &trans->sgl[which];
+ void ipa_cmd_tag_process_add(struct gsi_trans *trans)
+ {
+-	ipa_cmd_register_write_add(trans, 0, 0, 0, true);
+-#if 1
+-	/* Reference these functions to avoid a compile error */
+-	(void)ipa_cmd_ip_packet_init_add;
+-	(void)ipa_cmd_ip_tag_status_add;
+-	(void) ipa_cmd_transfer_add;
+-#else
+ 	struct ipa *ipa = container_of(trans->gsi, struct ipa, gsi);
+-	struct gsi_endpoint *endpoint;
++	struct ipa_endpoint *endpoint;
  
- 	sg_set_buf(sg, buf, size);
- 	sg_dma_address(sg) = addr;
-+	sg_dma_len(sg) = sg->length;
+ 	endpoint = ipa->name_map[IPA_ENDPOINT_AP_LAN_RX];
++
++	ipa_cmd_register_write_add(trans, 0, 0, 0, true);
+ 	ipa_cmd_ip_packet_init_add(trans, endpoint->endpoint_id);
+-
+ 	ipa_cmd_ip_tag_status_add(trans, 0xcba987654321);
+-
+ 	ipa_cmd_transfer_add(trans, 4);
+-#endif
+ }
  
- 	info = &trans->info[which];
- 	info->opcode = opcode;
+ /* Returns the number of commands required for the tag process */
 -- 
 2.20.1
 
