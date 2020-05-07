@@ -2,217 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E12A21C996D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:37:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A3561C9963
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728028AbgEGShF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 14:37:05 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:49232 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726320AbgEGShF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 14:37:05 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 047IMZIv032669;
-        Thu, 7 May 2020 18:37:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=jEL0Tl/TzlxZbwRuXIi5yCGHz7/aI7KOtsR7w/YVdFY=;
- b=UUCafa24ozcJZ0XsA13Jv6QhHXg6Pw8qsfPRt+JLuvNivFcVvJy0dZxFtK1BAvC5J/lg
- Q3kQO9/VmsnAIBRMgIkFRQegc6DMJqP0MCNdFXVdIDIsGFMQsPreCgmX4h8XMvfnq90a
- aUyLEeQcV9fTNXC4CMwxKap1JpTDnngsTeiALAiSkGTELcFD+fTMaKrEwA+JSv/oVdj9
- UgY3HbLkp9sUR9dbj7BrGnR0tkzifnvaRX0bcWe7v535KRvxgR4cqG3yKPR2dv9hTwX1
- LoQa/oixKtexzIZPrwS15jIft7BACckhgidLTrqncu+jhJW6cIGMwwk/msmIuzOsd3oN Bg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 30usgq8ysg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 07 May 2020 18:37:00 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 047IHZu6080226;
-        Thu, 7 May 2020 18:35:00 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 30sjnq8qus-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 07 May 2020 18:35:00 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 047IYx9b019749;
-        Thu, 7 May 2020 18:34:59 GMT
-Received: from ca-common-hq.us.oracle.com (/10.211.9.209)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 07 May 2020 11:34:59 -0700
-From:   Divya Indi <divya.indi@oracle.com>
-To:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Jason Gunthorpe <jgg@ziepe.ca>, Kaike Wan <kaike.wan@intel.com>
-Cc:     Gerd Rausch <gerd.rausch@oracle.com>,
-        =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>,
-        Srinivas Eeda <srinivas.eeda@oracle.com>,
-        Rama Nichanamatlu <rama.nichanamatlu@oracle.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Divya Indi <divya.indi@oracle.com>
-Subject: [PATCH 1/2] IB/sa: Resolving use-after-free in ib_nl_send_msg.
-Date:   Thu,  7 May 2020 11:34:47 -0700
-Message-Id: <1588876487-5781-2-git-send-email-divya.indi@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1588876487-5781-1-git-send-email-divya.indi@oracle.com>
-References: <1588876487-5781-1-git-send-email-divya.indi@oracle.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9614 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 adultscore=0 phishscore=0
- mlxlogscore=999 bulkscore=0 malwarescore=0 spamscore=0 suspectscore=2
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2005070150
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9614 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxscore=0
- priorityscore=1501 lowpriorityscore=0 malwarescore=0 clxscore=1015
- mlxlogscore=999 spamscore=0 adultscore=0 bulkscore=0 phishscore=0
- suspectscore=2 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005070150
+        id S1728289AbgEGSeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 14:34:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35126 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726320AbgEGSen (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 14:34:43 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A8435208E4;
+        Thu,  7 May 2020 18:34:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588876483;
+        bh=3SC5W/DS9xdMVSxaOxekzN7vcDdtHgz+8monE4FBn5k=;
+        h=Date:From:To:Cc:Subject:From;
+        b=TIux4fwoDb9uwopErmbP9RT5patBuiE/xSW5D8ARUAr0+g78M45DYZAgw0fu1W3JR
+         Dr0Z5qOJPFF0ZD79Z7wlP2FekczbVV8B8RK+ZqhzpkeEEvYDJs1nlzlR35bq4VlGOR
+         uVe0k8xwUp2JzNkJwheufKhcxMYn7nQXtjWD2EDA=
+Date:   Thu, 7 May 2020 13:39:09 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] cfg80211: Replace zero-length array with flexible-array
+Message-ID: <20200507183909.GA12993@embeddedor>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes commit -
-commit 3ebd2fd0d011 ("IB/sa: Put netlink request into the request list before sending")'
+The current codebase makes use of the zero-length array language
+extension to the C90 standard, but the preferred mechanism to declare
+variable-length types such as these ones is a flexible array member[1][2],
+introduced in C99:
 
-Above commit adds the query to the request list before ib_nl_snd_msg.
+struct foo {
+        int stuff;
+        struct boo array[];
+};
 
-However, if there is a delay in sending out the request (For
-eg: Delay due to low memory situation) the timer to handle request timeout
-might kick in before the request is sent out to ibacm via netlink.
-ib_nl_request_timeout may release the query if it fails to send it to SA
-as well causing a use after free situation.
+By making use of the mechanism above, we will get a compiler warning
+in case the flexible array does not occur last in the structure, which
+will help us prevent some kind of undefined behavior bugs from being
+inadvertently introduced[3] to the codebase from now on.
 
-Call Trace for the above race:
+Also, notice that, dynamic memory allocations won't be affected by
+this change:
 
-[<ffffffffa02f43cb>] ? ib_pack+0x17b/0x240 [ib_core]
-[<ffffffffa032aef1>] ib_sa_path_rec_get+0x181/0x200 [ib_sa]
-[<ffffffffa0379db0>] rdma_resolve_route+0x3c0/0x8d0 [rdma_cm]
-[<ffffffffa0374450>] ? cma_bind_port+0xa0/0xa0 [rdma_cm]
-[<ffffffffa040f850>] ? rds_rdma_cm_event_handler_cmn+0x850/0x850
-[rds_rdma]
-[<ffffffffa040f22c>] rds_rdma_cm_event_handler_cmn+0x22c/0x850
-[rds_rdma]
-[<ffffffffa040f860>] rds_rdma_cm_event_handler+0x10/0x20 [rds_rdma]
-[<ffffffffa037778e>] addr_handler+0x9e/0x140 [rdma_cm]
-[<ffffffffa026cdb4>] process_req+0x134/0x190 [ib_addr]
-[<ffffffff810a02f9>] process_one_work+0x169/0x4a0
-[<ffffffff810a0b2b>] worker_thread+0x5b/0x560
-[<ffffffff810a0ad0>] ? flush_delayed_work+0x50/0x50
-[<ffffffff810a68fb>] kthread+0xcb/0xf0
-[<ffffffff816ec49a>] ? __schedule+0x24a/0x810
-[<ffffffff816ec49a>] ? __schedule+0x24a/0x810
-[<ffffffff810a6830>] ? kthread_create_on_node+0x180/0x180
-[<ffffffff816f25a7>] ret_from_fork+0x47/0x90
-[<ffffffff810a6830>] ? kthread_create_on_node+0x180/0x180
-....
-RIP  [<ffffffffa03296cd>] send_mad+0x33d/0x5d0 [ib_sa]
+"Flexible array members have incomplete type, and so the sizeof operator
+may not be applied. As a quirk of the original implementation of
+zero-length arrays, sizeof evaluates to zero."[1]
 
-To resolve this issue, we introduce a new flag IB_SA_NL_QUERY_SENT.
-This flag Indicates if the request has been sent out to ibacm yet.
+sizeof(flexible-array-member) triggers a warning because flexible array
+members have incomplete type[1]. There are some instances of code in
+which the sizeof operator is being incorrectly/erroneously applied to
+zero-length arrays and the result is zero. Such instances may be hiding
+some bugs. So, this work (flexible-array member conversions) will also
+help to get completely rid of those sorts of issues.
 
-If this flag is not set for a query and the query times out, we add it
-back to the list with the original delay.
+This issue was found with the help of Coccinelle.
 
-To handle the case where a response is received before we could set this
-flag, the response handler waits for the flag to be
-set before proceeding with the query.
+[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+[2] https://github.com/KSPP/linux/issues/21
+[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
 
-Signed-off-by: Divya Indi <divya.indi@oracle.com>
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- drivers/infiniband/core/sa_query.c | 45 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
+ include/linux/ieee80211.h |    6 +++---
+ include/net/cfg80211.h    |    8 ++++----
+ net/wireless/core.h       |    2 +-
+ 3 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/infiniband/core/sa_query.c b/drivers/infiniband/core/sa_query.c
-index 30d4c12..ffbae2f 100644
---- a/drivers/infiniband/core/sa_query.c
-+++ b/drivers/infiniband/core/sa_query.c
-@@ -59,6 +59,9 @@
- #define IB_SA_LOCAL_SVC_TIMEOUT_MAX		200000
- #define IB_SA_CPI_MAX_RETRY_CNT			3
- #define IB_SA_CPI_RETRY_WAIT			1000 /*msecs */
-+
-+DECLARE_WAIT_QUEUE_HEAD(wait_queue);
-+
- static int sa_local_svc_timeout_ms = IB_SA_LOCAL_SVC_TIMEOUT_DEFAULT;
+diff --git a/include/linux/ieee80211.h b/include/linux/ieee80211.h
+index 16268ef1cbcc..e7d937871189 100644
+--- a/include/linux/ieee80211.h
++++ b/include/linux/ieee80211.h
+@@ -716,7 +716,7 @@ struct ieee80211_msrment_ie {
+ 	u8 token;
+ 	u8 mode;
+ 	u8 type;
+-	u8 request[0];
++	u8 request[];
+ } __packed;
  
- struct ib_sa_sm_ah {
-@@ -122,6 +125,7 @@ struct ib_sa_query {
- #define IB_SA_ENABLE_LOCAL_SERVICE	0x00000001
- #define IB_SA_CANCEL			0x00000002
- #define IB_SA_QUERY_OPA			0x00000004
-+#define IB_SA_NL_QUERY_SENT		0x00000008
+ /**
+@@ -1641,7 +1641,7 @@ struct ieee80211_he_operation {
+ 	__le32 he_oper_params;
+ 	__le16 he_mcs_nss_set;
+ 	/* Optional 0,1,3,4,5,7 or 8 bytes: depends on @he_oper_params */
+-	u8 optional[0];
++	u8 optional[];
+ } __packed;
  
- struct ib_sa_service_query {
- 	void (*callback)(int, struct ib_sa_service_rec *, void *);
-@@ -746,6 +750,11 @@ static inline int ib_sa_query_cancelled(struct ib_sa_query *query)
- 	return (query->flags & IB_SA_CANCEL);
- }
+ /**
+@@ -1653,7 +1653,7 @@ struct ieee80211_he_operation {
+ struct ieee80211_he_spr {
+ 	u8 he_sr_control;
+ 	/* Optional 0 to 19 bytes: depends on @he_sr_control */
+-	u8 optional[0];
++	u8 optional[];
+ } __packed;
  
-+static inline int ib_sa_nl_query_sent(struct ib_sa_query *query)
-+{
-+	return (query->flags & IB_SA_NL_QUERY_SENT);
-+}
-+
- static void ib_nl_set_path_rec_attrs(struct sk_buff *skb,
- 				     struct ib_sa_query *query)
- {
-@@ -889,6 +898,15 @@ static int ib_nl_make_request(struct ib_sa_query *query, gfp_t gfp_mask)
- 		spin_lock_irqsave(&ib_nl_request_lock, flags);
- 		list_del(&query->list);
- 		spin_unlock_irqrestore(&ib_nl_request_lock, flags);
-+	} else {
-+		query->flags |= IB_SA_NL_QUERY_SENT;
-+
-+		/*
-+		 * If response is received before this flag was set
-+		 * someone is waiting to process the response and release the
-+		 * query.
-+		 */
-+		wake_up(&wait_queue);
- 	}
+ /**
+diff --git a/include/net/cfg80211.h b/include/net/cfg80211.h
+index 70e48f66dac8..5eb776f0069d 100644
+--- a/include/net/cfg80211.h
++++ b/include/net/cfg80211.h
+@@ -2029,7 +2029,7 @@ struct cfg80211_scan_request {
+ 	bool no_cck;
  
- 	return ret;
-@@ -994,6 +1012,21 @@ static void ib_nl_request_timeout(struct work_struct *work)
- 		}
+ 	/* keep last */
+-	struct ieee80211_channel *channels[0];
++	struct ieee80211_channel *channels[];
+ };
  
- 		list_del(&query->list);
-+
-+		/*
-+		 * If IB_SA_NL_QUERY_SENT is not set, this query has not been
-+		 * sent to ibacm yet. Reset the timer.
-+		 */
-+		if (!ib_sa_nl_query_sent(query)) {
-+			delay = msecs_to_jiffies(sa_local_svc_timeout_ms);
-+			query->timeout = delay + jiffies;
-+			list_add_tail(&query->list, &ib_nl_request_list);
-+			/* Start the timeout if this is the only request */
-+			if (ib_nl_request_list.next == &query->list)
-+				queue_delayed_work(ib_nl_wq, &ib_nl_timed_work,
-+						delay);
-+			break;
-+		}
- 		ib_sa_disable_local_svc(query);
- 		/* Hold the lock to protect against query cancellation */
- 		if (ib_sa_query_cancelled(query))
-@@ -1123,6 +1156,18 @@ int ib_nl_handle_resolve_resp(struct sk_buff *skb,
+ static inline void get_random_mask_addr(u8 *buf, const u8 *addr, const u8 *mask)
+@@ -2175,7 +2175,7 @@ struct cfg80211_sched_scan_request {
+ 	struct list_head list;
  
- 	send_buf = query->mad_buf;
+ 	/* keep last */
+-	struct ieee80211_channel *channels[0];
++	struct ieee80211_channel *channels[];
+ };
  
-+	/*
-+	 * Make sure the IB_SA_NL_QUERY_SENT flag is set before
-+	 * processing this query. If flag is not set, query can be accessed in
-+	 * another context while setting the flag and processing the query will
-+	 * eventually release it causing a possible use-after-free.
-+	 */
-+	if (unlikely(!ib_sa_nl_query_sent(query))) {
-+		spin_unlock_irqrestore(&ib_nl_request_lock, flags);
-+		wait_event(wait_queue, ib_sa_nl_query_sent(query));
-+		spin_lock_irqsave(&ib_nl_request_lock, flags);
-+	}
-+
- 	if (!ib_nl_is_good_resolve_resp(nlh)) {
- 		/* if the result is a failure, send out the packet via IB */
- 		ib_sa_disable_local_svc(query);
--- 
-1.8.3.1
+ /**
+@@ -2297,7 +2297,7 @@ struct cfg80211_bss {
+ 	u8 bssid_index;
+ 	u8 max_bssid_indicator;
+ 
+-	u8 priv[0] __aligned(sizeof(void *));
++	u8 priv[] __aligned(sizeof(void *));
+ };
+ 
+ /**
+@@ -4829,7 +4829,7 @@ struct wiphy {
+ 
+ 	u8 max_data_retry_count;
+ 
+-	char priv[0] __aligned(NETDEV_ALIGN);
++	char priv[] __aligned(NETDEV_ALIGN);
+ };
+ 
+ static inline struct net *wiphy_net(struct wiphy *wiphy)
+diff --git a/net/wireless/core.h b/net/wireless/core.h
+index bb897a803ffe..151609b81096 100644
+--- a/net/wireless/core.h
++++ b/net/wireless/core.h
+@@ -290,7 +290,7 @@ struct cfg80211_cqm_config {
+ 	u32 rssi_hyst;
+ 	s32 last_rssi_event_value;
+ 	int n_rssi_thresholds;
+-	s32 rssi_thresholds[0];
++	s32 rssi_thresholds[];
+ };
+ 
+ void cfg80211_destroy_ifaces(struct cfg80211_registered_device *rdev);
 
