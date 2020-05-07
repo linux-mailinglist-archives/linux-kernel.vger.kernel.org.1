@@ -2,194 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 818301C85B1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 11:28:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AA1D1C85BC
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 11:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726367AbgEGJ2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 05:28:33 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:3840 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725857AbgEGJ2c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 05:28:32 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 4D9753340A18592668BD;
-        Thu,  7 May 2020 17:28:30 +0800 (CST)
-Received: from [127.0.0.1] (10.166.215.237) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Thu, 7 May 2020
- 17:28:20 +0800
-To:     <catalin.marinas@arm.com>, <will@kernel.org>,
-        <Dave.Martin@arm.com>, <mark.rutland@arm.com>,
-        <james.morse@arm.com>, <yeyunfeng@huawei.com>,
-        <0x7f454c46@gmail.com>, <tglx@linutronix.de>,
-        <lorenzo.pieralisi@arm.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <hushiyuan@huawei.com>, <hewenliang4@huawei.com>
-From:   Yunfeng Ye <yeyunfeng@huawei.com>
-Subject: [PATCH] arm64: stacktrace: Factor out some common code info
- on_stack()
-Message-ID: <10b188af-a03b-3acc-8a06-cf31a46f735a@huawei.com>
-Date:   Thu, 7 May 2020 17:28:19 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S1726625AbgEGJ3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 05:29:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726519AbgEGJ3m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 05:29:42 -0400
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9A19C061A41
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 02:29:41 -0700 (PDT)
+Received: by mail-vs1-xe42.google.com with SMTP id m24so2929228vsq.10
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 02:29:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=P7gjP86gEOHCqOgvr3jQoxyLiI0hrsx99tJ0douroQg=;
+        b=WB+y0kAOOkBKp4H9WutOLxzjhNAIQnOxbaDoD+RJVdTQ2Ef3w7Tzn2LRmG62PiPn9X
+         KbLdPqTI+gXu6XDwkCW0Jg6iyZBO8MOToYZOlqy1AhJ2DuEtUpFFNQu/MriFRP6uwIlY
+         cOHRJlMNA2kUKx0678PsForLueGs8Z6zDEsq98IzYHY9yNphdw3xilzpvvBuByakXAY/
+         8x3pNlU/wZwZlTXwUN0gc9IKQwlbF9qmkUzxBOo9L8fw17UZquZgi+MjgkOe+xRUTWX9
+         qLH5tDyUOdsS5nruz+iUuxC9ThPpeEvrUfWFMFD8/xT3FB9e04opPwpBsvbTJfNv0Cl7
+         g73A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=P7gjP86gEOHCqOgvr3jQoxyLiI0hrsx99tJ0douroQg=;
+        b=oMQmuX7p4QS0tUcMUKry7BxTdCihPzRT1oDHuAhSn2soEESH+DZ/VFO8FC4CW499dP
+         99MVuk8Ihg5cy+osxq3YwgZCQrg56ShoWB1QbwhnHE7U79s0RWWchHwbtCWwdlmASXAg
+         s5dsttVzIXhxvyfMr9CtI2A2eS9WztmJdP9DYAh2DQNx+Yv6C8orFR/Oq2LbseG7raT4
+         PbcO6y1YJEqy9/zvQf2ZlJvBFwLBW0RSby3fXXKoEuhSii9t8FkuoHJVPGFjGTylV6b9
+         CtPklPSfRRrw8+kez+5jVWjN3SH0Pbj06+gPYBzAn1lwE4X0jspjZ4rasTxJxouUNgTZ
+         Sw0w==
+X-Gm-Message-State: AGi0PubGzsR6089psVDoEOocqQ05KUBg+dWSBXoCqAxNrN8Q97XL4yXf
+        nDseVdH45poewriwjTYNH2CEqle9HGjeSagAeBpTog==
+X-Google-Smtp-Source: APiQypJ7sVqhNajKxuTwChMNd4iPBm5YCjNalnxf8SJxoK2e9t1IOKoWcUixHTnvBG+MZC1V5UX4KPalsKauRKEoOMI=
+X-Received: by 2002:a67:8b46:: with SMTP id n67mr11702212vsd.35.1588843780926;
+ Thu, 07 May 2020 02:29:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.166.215.237]
-X-CFilter-Loop: Reflected
+References: <1588341189-4371-1-git-send-email-vbadigan@codeaurora.org>
+In-Reply-To: <1588341189-4371-1-git-send-email-vbadigan@codeaurora.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 7 May 2020 11:29:04 +0200
+Message-ID: <CAPDyKFr5kMGyOhn7qtqM1oGbKU4Z26RxaTmHn5zK-Cb2AcuZuw@mail.gmail.com>
+Subject: Re: [PATCH V1] mmc: core: expose info about enhanced rpmb support
+To:     Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Krishna Konda <kkonda@codeaurora.org>,
+        Baolin Wang <baolin.wang@linaro.org>,
+        Ludovic Barre <ludovic.barre@st.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Bradley Bolen <bradleybolen@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are some common codes for stack checking, so factors it out into
-the function on_stack() and on_valid_stack().
+On Fri, 1 May 2020 at 15:54, Veerabhadrarao Badiganti
+<vbadigan@codeaurora.org> wrote:
+>
+> From: Krishna Konda <kkonda@codeaurora.org>
+>
+> Following eMMC JEDEC JESD84-B51 standard, an enhanced form of
+> rpmb is supported. What this enhanced mode supports is in addition
+> to be able to write one rpmb or two rpmb frames at a time,
+> 32 frames can be written at a time.
+>
+> Expose this information present in ext csd field so that the
+> user space application that wants to make use of this can do so.
+>
+> Signed-off-by: Krishna Konda <kkonda@codeaurora.org>
+> Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
 
-No functional change.
+Applied for next, thanks!
 
-Signed-off-by: Yunfeng Ye <yeyunfeng@huawei.com>
----
- arch/arm64/include/asm/stacktrace.h | 53 +++++++++++++++++--------------------
- arch/arm64/kernel/sdei.c            | 28 ++------------------
- 2 files changed, 26 insertions(+), 55 deletions(-)
+Kind regards
+Uffe
 
-diff --git a/arch/arm64/include/asm/stacktrace.h b/arch/arm64/include/asm/stacktrace.h
-index fdb913cc0bcb..b92bef2fb6cd 100644
---- a/arch/arm64/include/asm/stacktrace.h
-+++ b/arch/arm64/include/asm/stacktrace.h
-@@ -69,27 +69,40 @@ extern void dump_backtrace(struct pt_regs *regs, struct task_struct *tsk,
 
- DECLARE_PER_CPU(unsigned long *, irq_stack_ptr);
-
--static inline bool on_irq_stack(unsigned long sp,
-+static inline bool on_stack(unsigned long sp, unsigned long low,
-+				unsigned long high, enum stack_type type,
- 				struct stack_info *info)
- {
--	unsigned long low = (unsigned long)raw_cpu_read(irq_stack_ptr);
--	unsigned long high = low + IRQ_STACK_SIZE;
--
--	if (!low)
--		return false;
--
- 	if (sp < low || sp >= high)
- 		return false;
-
- 	if (info) {
- 		info->low = low;
- 		info->high = high;
--		info->type = STACK_TYPE_IRQ;
-+		info->type = type;
- 	}
--
- 	return true;
- }
-
-+static inline bool on_valid_stack(unsigned long sp, unsigned long low,
-+				unsigned long high, enum stack_type type,
-+				struct stack_info *info)
-+{
-+	if (!low)
-+		return false;
-+
-+	return on_stack(sp, low, high, type, info);
-+}
-+
-+static inline bool on_irq_stack(unsigned long sp,
-+				struct stack_info *info)
-+{
-+	unsigned long low = (unsigned long)raw_cpu_read(irq_stack_ptr);
-+	unsigned long high = low + IRQ_STACK_SIZE;
-+
-+	return on_valid_stack(sp, low, high, STACK_TYPE_IRQ, info);
-+}
-+
- static inline bool on_task_stack(const struct task_struct *tsk,
- 				 unsigned long sp,
- 				 struct stack_info *info)
-@@ -97,16 +110,7 @@ static inline bool on_task_stack(const struct task_struct *tsk,
- 	unsigned long low = (unsigned long)task_stack_page(tsk);
- 	unsigned long high = low + THREAD_SIZE;
-
--	if (sp < low || sp >= high)
--		return false;
--
--	if (info) {
--		info->low = low;
--		info->high = high;
--		info->type = STACK_TYPE_TASK;
--	}
--
--	return true;
-+	return on_stack(sp, low, high, STACK_TYPE_TASK, info);
- }
-
- #ifdef CONFIG_VMAP_STACK
-@@ -118,16 +122,7 @@ static inline bool on_overflow_stack(unsigned long sp,
- 	unsigned long low = (unsigned long)raw_cpu_ptr(overflow_stack);
- 	unsigned long high = low + OVERFLOW_STACK_SIZE;
-
--	if (sp < low || sp >= high)
--		return false;
--
--	if (info) {
--		info->low = low;
--		info->high = high;
--		info->type = STACK_TYPE_OVERFLOW;
--	}
--
--	return true;
-+	return on_stack(sp, low, high, STACK_TYPE_OVERFLOW, info);
- }
- #else
- static inline bool on_overflow_stack(unsigned long sp,
-diff --git a/arch/arm64/kernel/sdei.c b/arch/arm64/kernel/sdei.c
-index d6259dac62b6..1758fcaa45dd 100644
---- a/arch/arm64/kernel/sdei.c
-+++ b/arch/arm64/kernel/sdei.c
-@@ -95,19 +95,7 @@ static bool on_sdei_normal_stack(unsigned long sp, struct stack_info *info)
- 	unsigned long low = (unsigned long)raw_cpu_read(sdei_stack_normal_ptr);
- 	unsigned long high = low + SDEI_STACK_SIZE;
-
--	if (!low)
--		return false;
--
--	if (sp < low || sp >= high)
--		return false;
--
--	if (info) {
--		info->low = low;
--		info->high = high;
--		info->type = STACK_TYPE_SDEI_NORMAL;
--	}
--
--	return true;
-+	return on_valid_stack(sp, low, high, STACK_TYPE_SDEI_NORMAL, info);
- }
-
- static bool on_sdei_critical_stack(unsigned long sp, struct stack_info *info)
-@@ -115,19 +103,7 @@ static bool on_sdei_critical_stack(unsigned long sp, struct stack_info *info)
- 	unsigned long low = (unsigned long)raw_cpu_read(sdei_stack_critical_ptr);
- 	unsigned long high = low + SDEI_STACK_SIZE;
-
--	if (!low)
--		return false;
--
--	if (sp < low || sp >= high)
--		return false;
--
--	if (info) {
--		info->low = low;
--		info->high = high;
--		info->type = STACK_TYPE_SDEI_CRITICAL;
--	}
--
--	return true;
-+	return on_valid_stack(sp, low, high, STACK_TYPE_SDEI_CRITICAL, info);
- }
-
- bool _on_sdei_stack(unsigned long sp, struct stack_info *info)
--- 
-1.8.3.1
-
+> ---
+>  drivers/mmc/core/mmc.c   | 6 ++++++
+>  include/linux/mmc/card.h | 1 +
+>  include/linux/mmc/mmc.h  | 1 +
+>  3 files changed, 8 insertions(+)
+>
+> diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
+> index de94fbe..4203303 100644
+> --- a/drivers/mmc/core/mmc.c
+> +++ b/drivers/mmc/core/mmc.c
+> @@ -647,6 +647,9 @@ static int mmc_decode_ext_csd(struct mmc_card *card, u8 *ext_csd)
+>                                  mmc_hostname(card->host),
+>                                  card->ext_csd.cmdq_depth);
+>                 }
+> +               card->ext_csd.enhanced_rpmb_supported =
+> +                                       (card->ext_csd.rel_param &
+> +                                        EXT_CSD_WR_REL_PARAM_EN_RPMB_REL_WR);
+>         }
+>  out:
+>         return err;
+> @@ -786,6 +789,8 @@ static int mmc_compare_ext_csds(struct mmc_card *card, unsigned bus_width)
+>                 card->ext_csd.enhanced_area_offset);
+>  MMC_DEV_ATTR(enhanced_area_size, "%u\n", card->ext_csd.enhanced_area_size);
+>  MMC_DEV_ATTR(raw_rpmb_size_mult, "%#x\n", card->ext_csd.raw_rpmb_size_mult);
+> +MMC_DEV_ATTR(enhanced_rpmb_supported, "%#x\n",
+> +       card->ext_csd.enhanced_rpmb_supported);
+>  MMC_DEV_ATTR(rel_sectors, "%#x\n", card->ext_csd.rel_sectors);
+>  MMC_DEV_ATTR(ocr, "0x%08x\n", card->ocr);
+>  MMC_DEV_ATTR(rca, "0x%04x\n", card->rca);
+> @@ -843,6 +848,7 @@ static ssize_t mmc_dsr_show(struct device *dev,
+>         &dev_attr_enhanced_area_offset.attr,
+>         &dev_attr_enhanced_area_size.attr,
+>         &dev_attr_raw_rpmb_size_mult.attr,
+> +       &dev_attr_enhanced_rpmb_supported.attr,
+>         &dev_attr_rel_sectors.attr,
+>         &dev_attr_ocr.attr,
+>         &dev_attr_rca.attr,
+> diff --git a/include/linux/mmc/card.h b/include/linux/mmc/card.h
+> index cf3780a..7d46411 100644
+> --- a/include/linux/mmc/card.h
+> +++ b/include/linux/mmc/card.h
+> @@ -48,6 +48,7 @@ struct mmc_ext_csd {
+>         u8                      sec_feature_support;
+>         u8                      rel_sectors;
+>         u8                      rel_param;
+> +       bool                    enhanced_rpmb_supported;
+>         u8                      part_config;
+>         u8                      cache_ctrl;
+>         u8                      rst_n_function;
+> diff --git a/include/linux/mmc/mmc.h b/include/linux/mmc/mmc.h
+> index 4b85ef0..d9a65c6 100644
+> --- a/include/linux/mmc/mmc.h
+> +++ b/include/linux/mmc/mmc.h
+> @@ -325,6 +325,7 @@ static inline bool mmc_ready_for_data(u32 status)
+>   */
+>
+>  #define EXT_CSD_WR_REL_PARAM_EN                (1<<2)
+> +#define EXT_CSD_WR_REL_PARAM_EN_RPMB_REL_WR    (1<<4)
+>
+>  #define EXT_CSD_BOOT_WP_B_PWR_WP_DIS   (0x40)
+>  #define EXT_CSD_BOOT_WP_B_PERM_WP_DIS  (0x10)
+> --
+> Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc., is a member of Code Aurora Forum, a Linux Foundation Collaborative Project
