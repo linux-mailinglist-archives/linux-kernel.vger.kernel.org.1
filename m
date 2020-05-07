@@ -2,139 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4880C1C8B65
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 14:53:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D2B41C8B6D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 14:54:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726618AbgEGMxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 08:53:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34170 "EHLO
+        id S1726807AbgEGMxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 08:53:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725923AbgEGMxV (ORCPT
+        by vger.kernel.org with ESMTP id S1726797AbgEGMxd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 08:53:21 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD770C05BD43
-        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 05:53:19 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id g4so6192499ljl.2
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 05:53:19 -0700 (PDT)
+        Thu, 7 May 2020 08:53:33 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B791DC05BD43
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 05:53:33 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id t16so2019793plo.7
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 05:53:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=itoFpk0rOnDLM0PwGwQS9avTS4/3qHGUdIW12cSPKBA=;
-        b=YcEl2bDRJI3iJB/8XtTG3CXQif1X5eYquMR0qzjP5Mpjs7ln8lzeYiI/LVLAweTafJ
-         Z6wpNJ/eBMsw+9R5PB85KJN2qZgP51MVjKRbPAFlEnJXJ95LGd8ryQm2/5HCQEzaHunB
-         TgqoS0zsvzozAROKQxZwxk8eAyiSyBxwNs2Eu01aqneS3eyqfunRRwrOMvvAZAXfVWE8
-         KNt40gSMiiKSK//wsn2rBR+sb7Bep9eQV2WZTWlYH5zGfwLd9ClOnIBtqrH6jG6nTIbF
-         6rkfR+lqm08l3D0S3/QBvBN38WvifoXjKyFHpctGJ+nOAlumAB0/2umm0L+/tUygS46Z
-         tVAg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=FSudHAT4wzxoYvh1XMNs5f+xHdE9nw3XTPAzmG768CM=;
+        b=zChQe1n/nYoXG2eQ59wLEmilwuApvr+My7WLtpOewR9iHv45bxbDRms3EXufL6YTKH
+         OWT6btfmZBYj/3gY4jwWB06BhQHo19rgsuBU8TQ42IJOHTrUYeeJHmXJkk4WmQdQkno9
+         EtUhJWDvi1p98wOTB6cz0Mmk3s0uV9P2flRg7sm4+UwVpkT4lD4qkxlEHJFfkfsWFA73
+         BQfk7Sj0DicAZahZsbZ0fhd6uYDxOzDvyL90PHcNwewKQ+Pe6EwZn7x4Gx3v0WQYlvM3
+         uGLy8r+HwhFF2+IJToTexSLo1YvvMYp6eu0L6PG5m7E6v3hJqevRDrNcIeu//qBm9Y0S
+         mtfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=itoFpk0rOnDLM0PwGwQS9avTS4/3qHGUdIW12cSPKBA=;
-        b=aT8VbI96BlzpJKOLwcehUIikcWbuHqBByjhEf99iE8m891oXE0qx3eJ/VnOsRSxjMX
-         TeW6Cjm+lHBmAbdViGub0u60Q37DwXP2OsFn9zd/oDGE+qDSpveB3TwWmIS0EN7Za6eW
-         LvXpwESa/84DeuPht2q+Dc2tP8dfiNnjpWd0XxGsZgZzJyrjI7cjQXwot2PRW5zkaWpg
-         iSAWKKZHiPXi8zYvb5PBKp0e1IUupE+0GiwAmfr3CuLV6q6Syi09dP2qXfAy48ipD7tA
-         t+W5aODKlTNtJy5iuNir11nrsUKTrBSx1AT+P58dTP+Si/TYTP+zBTLyUUCSGBTn+YqF
-         Q4WA==
-X-Gm-Message-State: AGi0PuaPqe5EUlxZvH/RaEABjFVlJnLeV6CePg+VTvZ7YePX8VEHjkJl
-        qmA9Fx/y/L0ANDwG9zDLANM2Impm4T9TocM9HUqkCw==
-X-Google-Smtp-Source: APiQypKMTiMm1C88aomNGpTtnhL8b0bf92b/ZVFoKyedTSXsbaoCwM1dqo2Nb6dx413A1ukBmk/N3InDh6JI1bE/vRo=
-X-Received: by 2002:a2e:95d2:: with SMTP id y18mr8327928ljh.65.1588855997313;
- Thu, 07 May 2020 05:53:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200503083407.GA27766@iZj6chx1xj0e0buvshuecpZ>
- <CAKfTPtCNG9Y4xNA-iLd+JRRsUCA1+SkkFFRbbzk5n7q6v401tw@mail.gmail.com>
- <20200505134056.GA31680@iZj6chx1xj0e0buvshuecpZ> <20200505142711.GA12952@vingu-book>
- <jhjftcd1hmx.mognet@arm.com> <CAKfTPtCM7mE7a63rXB4cG5gHn03ArjTB1ZBje=qEWOGR9mj67g@mail.gmail.com>
- <jhjv9l9yrtb.mognet@arm.com> <20200507124104.GA2769@iZj6chx1xj0e0buvshuecpZ>
-In-Reply-To: <20200507124104.GA2769@iZj6chx1xj0e0buvshuecpZ>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 7 May 2020 14:53:05 +0200
-Message-ID: <CAKfTPtCjAd0k7482rjfznRFcWmxWWJzVMaSXu2yu4krttLqneQ@mail.gmail.com>
-Subject: Re: [PATCH] sched/fair: Fix nohz.next_balance update
-To:     Peng Liu <iwtbavbm@gmail.com>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=FSudHAT4wzxoYvh1XMNs5f+xHdE9nw3XTPAzmG768CM=;
+        b=nNxXQDI3wV2nHpvmi6mmH6rso5nLLUGMEPxJZcFoAStaSaDiTc8vBy0EawpAmnaag2
+         WxOWMwl+K1dLOPaO+snhBYrBZr833EBUbgjHYg2bnCxW/Q38zPGz0/YnwMlDgD12v0vy
+         bY8i2RJj/IAswjar6b2oqNYtxdMnoIqUuaHadCCvHfp/KBwsAVKCKiw24GYvfaGXcAw3
+         KY3jky8VZnWTHswgS8zFGLvkeB3EBOMaWi7qeCr28kuvyJUimOb4eZRPvVjkFBKLp/et
+         zzKDK6ZMHqNEfdrVqpZmuKVCYmeIjSptHy1T9GArb254ms8NFDReD56LdI/t1SmQSu6P
+         p5Fg==
+X-Gm-Message-State: AGi0PuZUJxvx0J5nypDpfZyDCn9ZSxzhbyDlw/W491OIv+GClFc+PWOB
+        sj8yJuZ5qMsaNFtZGtsiJ33Z
+X-Google-Smtp-Source: APiQypKDKJnGRlEts2i6LAyypooHfFRBkYmJIK2URw0VjzGQDoaEJsoASFZHaKeRs2QmQb3GKl6pzQ==
+X-Received: by 2002:a17:90a:284e:: with SMTP id p14mr15941533pjf.10.1588856013204;
+        Thu, 07 May 2020 05:53:33 -0700 (PDT)
+Received: from localhost.localdomain ([2409:4072:6093:7a3f:4ddc:efce:d298:c431])
+        by smtp.gmail.com with ESMTPSA id q21sm4926190pfg.131.2020.05.07.05.53.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 May 2020 05:53:32 -0700 (PDT)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     davem@davemloft.net
+Cc:     kvalo@codeaurora.org, bjorn.andersson@linaro.org,
+        hemantk@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clew@codeaurora.org,
+        gregkh@linuxfoundation.org, netdev@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v2 2/2] net: qrtr: Do not depend on ARCH_QCOM
+Date:   Thu,  7 May 2020 18:23:06 +0530
+Message-Id: <20200507125306.32157-3-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200507125306.32157-1-manivannan.sadhasivam@linaro.org>
+References: <20200507125306.32157-1-manivannan.sadhasivam@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 May 2020 at 14:41, Peng Liu <iwtbavbm@gmail.com> wrote:
->
-> On Wed, May 06, 2020 at 05:02:56PM +0100, Valentin Schneider wrote:
-> >
-> > On 06/05/20 14:45, Vincent Guittot wrote:
-> > >> But then we may skip an update if we goto abort, no? Imagine we have just
-> > >> NOHZ_STATS_KICK, so we don't call any rebalance_domains(), and then as we
-> > >> go through the last NOHZ CPU in the loop we hit need_resched(). We would
-> > >> end in the abort part without any update to nohz.next_balance, despite
-> > >> having accumulated relevant data in the local next_balance variable.
-> > >
-> > > Yes but on the other end, the last CPU has not been able to run the
-> > > rebalance_domain so we must not move  nohz.next_balance otherwise it
-> > > will have to wait for at least another full period
-> > > In fact, I think that we have a problem with current implementation
-> > > because if we abort because  local cpu because busy we might end up
-> > > skipping idle load balance for a lot of idle CPUs
-> > >
-> > > As an example, imagine that we have 10 idle CPUs with the same
-> > > rq->next_balance which equal nohz.next_balance.  _nohz_idle_balance
-> > > starts on CPU0, it processes idle lb for CPU1 but then has to abort
-> > > because of need_resched. If we update nohz.next_balance like
-> > > currently, the next idle load balance  will happen after a full
-> > > balance interval whereas we still have 8 CPUs waiting for running an
-> > > idle load balance.
-> > >
-> > > My proposal also fixes this problem
-> > >
-> >
-> > That's a very good point; so with NOHZ_BALANCE_KICK we can reduce
-> > nohz.next_balance via rebalance_domains(), and otherwise we would only
-> > increase it if we go through a complete for_each_cpu() loop in
-> > _nohz_idle_balance().
-> >
-> > That said, if for some reason we keep bailing out of the loop, we won't
-> > push nohz.next_balance forward and thus may repeatedly nohz-balance only
-> > the first few CPUs in the NOHZ mask. I think that can happen if we have
-> > say 2 tasks pinned to a single rq, in that case nohz_balancer_kick() will
-> > kick a NOHZ balance whenever now >= nohz.next_balance.
->
-> If we face the risk of "repeatly nohz-balance only the first few CPUs",
-> Maybe we could remember the interrupted CPU and start nohz-balance from
-> it next time. Just replace the loop in _nohz_idle_balance() like:
->
-> for_each_cpu_wrap(cpu, nohz.idle_cpus_mask, nohz.anchor) {
->         ...
->         if (need_resched()) {
->                 ...
->                 nohz.anchor = cpu;
->                 ...
->         }
->         ...
-> }
->
-> This can mitigate the problem, but this can't help the extreme situation
+IPC Router protocol is also used by external modems for exchanging the QMI
+messages. Hence, it doesn't always depend on Qualcomm platforms. One such
+instance is the QCA6390 WLAN device connected to x86 machine.
 
-If we rerun _nohz_idle_balance before the balance interval, the 1st
-idle CPUs that has already been balanced will be skipped because there
-rq->next_balance will be after jiffies and we will start calling
-rebalance_domains for idle CPUs which have not yet been balance.
-So I'm not sure that this will help a lot because we have to go
-through all idle CPU to set the nohz.next_balance at the end
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+ net/qrtr/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-> as @Vincent put, it always failed in the same CPU.
+diff --git a/net/qrtr/Kconfig b/net/qrtr/Kconfig
+index 8eb876471564..f362ca316015 100644
+--- a/net/qrtr/Kconfig
++++ b/net/qrtr/Kconfig
+@@ -4,7 +4,6 @@
+ 
+ config QRTR
+ 	tristate "Qualcomm IPC Router support"
+-	depends on ARCH_QCOM || COMPILE_TEST
+ 	---help---
+ 	  Say Y if you intend to use Qualcomm IPC router protocol.  The
+ 	  protocol is used to communicate with services provided by other
+-- 
+2.17.1
 
-In the case that i described above, the problem comes from the cpu
-that is selected to run the ilb but if we kick ilb again, it will not
-be selected again.
