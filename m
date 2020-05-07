@@ -2,123 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A1561C972F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 19:09:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FAE21C9734
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 19:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728058AbgEGRJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 13:09:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44260 "EHLO mail.kernel.org"
+        id S1727114AbgEGRLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 13:11:23 -0400
+Received: from mga07.intel.com ([134.134.136.100]:38339 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725949AbgEGRJE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 13:09:04 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A724D2083B;
-        Thu,  7 May 2020 17:09:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588871343;
-        bh=f1TwzsHifZwaBGqk5i+/qCs3tR+eDWVT3oSKd0rEp9w=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=RZRzDYTconGM8jrgie4pVwTtZQm/pSZMyS3fMg4QyX5maLm1mJ7n1J49L2YAfFH03
-         B8ynYLezlwL6eusMBdwRB4VO4VD4ziiYKIvee5GLmqX1SPebQBfTi/uvr/zfxpieQq
-         oOas80p2NL4ZikvqxD1Raqir+BJC9MYVdqstGkvg=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 9249A35231A1; Thu,  7 May 2020 10:09:03 -0700 (PDT)
-Date:   Thu, 7 May 2020 10:09:03 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, dipankar@in.ibm.com,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org, viro@zeniv.linux.org.uk,
-        Dave Chinner <david@fromorbit.com>
-Subject: Re: [PATCH RFC tip/core/rcu] Add shrinker to shift to
- fast/inefficient GP mode
-Message-ID: <20200507170903.GR2869@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200507004240.GA9156@paulmck-ThinkPad-P72>
- <20200506175535.d4986a4d497071a410b69765@linux-foundation.org>
- <20200507170006.GA155220@cmpxchg.org>
+        id S1726074AbgEGRLW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 13:11:22 -0400
+IronPort-SDR: vqewH9RqpvIF2HfBFBS/eeMHxGv+I0SE/DFpJmJ1Z4WVItWKRHhsBv1KX8IzpyGaWACAXyI6bJ
+ LoZY2gk4nG2g==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2020 10:11:21 -0700
+IronPort-SDR: xovuzeNxm5Eyvbfr5qAPChVR8MHb8RH+uPFI4/1jnxkDYJPXbmfmBWz5Y57uJGyoFfhoYnfPC6
+ D3xC5yGPYtsQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,364,1583222400"; 
+   d="scan'208";a="370177288"
+Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
+  by fmsmga001.fm.intel.com with ESMTP; 07 May 2020 10:11:21 -0700
+Message-ID: <a40f3834f953da91dee719c1a801761405dc4780.camel@intel.com>
+Subject: Re: [PATCH] x86/fpu/xstate: Clear uninitialized xstate areas in
+ core dump
+From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Rik van Riel <riel@surriel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        sam <sunhaoyl@outlook.com>, Kees Cook <keescook@chromium.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Jann Horn <jannh@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, stable@vger.kernel.org
+Date:   Thu, 07 May 2020 10:11:25 -0700
+In-Reply-To: <20200507165652.s2cuaxasa2t5wkhx@linutronix.de>
+References: <20200507164904.26927-1-yu-cheng.yu@intel.com>
+         <20200507165652.s2cuaxasa2t5wkhx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200507170006.GA155220@cmpxchg.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 07, 2020 at 01:00:06PM -0400, Johannes Weiner wrote:
-> On Wed, May 06, 2020 at 05:55:35PM -0700, Andrew Morton wrote:
-> > On Wed, 6 May 2020 17:42:40 -0700 "Paul E. McKenney" <paulmck@kernel.org> wrote:
+On Thu, 2020-05-07 at 18:56 +0200, Sebastian Andrzej Siewior wrote:
+> On 2020-05-07 09:49:04 [-0700], Yu-cheng Yu wrote:
+> > In a core dump, copy_xstate_to_kernel() copies only enabled user xfeatures
+> > to a kernel buffer without touching areas for disabled xfeatures.  However,
+> > those uninitialized areas may contain random data, which is then written to
+> > the core dump file and can be read by a non-privileged user.
 > > 
-> > > This commit adds a shrinker so as to inform RCU when memory is scarce.
-> > > RCU responds by shifting into the same fast and inefficient mode that is
-> > > used in the presence of excessive numbers of RCU callbacks.  RCU remains
-> > > in this state for one-tenth of a second, though this time window can be
-> > > extended by another call to the shrinker.
+> > Fix it by clearing uninitialized areas.
 > 
-> We may be able to use shrinkers here, but merely being invoked does
-> not carry a reliable distress signal.
-> 
-> Shrinkers get invoked whenever vmscan runs. It's a useful indicator
-> for when to age an auxiliary LRU list - test references, clear and
-> rotate or reclaim stale entries. The urgency, and what can and cannot
-> be considered "stale", is encoded in the callback frequency and scan
-> counts, and meant to be relative to the VM's own rate of aging: "I've
-> tested X percent of mine for recent use, now you go and test the same
-> share of your pool." It doesn't translate well to other
-> interpretations of the callbacks, although people have tried.
+> Is the problem that copy_xstate_to_kernel() gets `kbuf' passed which
+> isn't zeroed? If so, would it work clean that upfront?
 
-Would it make sense for RCU to interpret two invocations within (say)
-100ms of each other as indicating urgency?  (Hey, I had to ask!)
+Alexander Potapenko's patch (in the Link:) fixes the buffer in
+fill_thread_core_info().  My patch prevents the same issue if this function is
+called from somewhere else in the future.
 
-> > > If it proves feasible, a later commit might add a function call directly
-> > > indicating the end of the period of scarce memory.
-> > 
-> > (Cc David Chinner, who often has opinions on shrinkers ;))
-> > 
-> > It's a bit abusive of the intent of the slab shrinkers, but I don't
-> > immediately see a problem with it.  Always returning 0 from
-> > ->scan_objects might cause a problem in some situations(?).
-> > 
-> > Perhaps we should have a formal "system getting low on memory, please
-> > do something" notification API.
-> 
-> It's tricky to find a useful definition of what low on memory
-> means. In the past we've used sc->priority cutoffs, the vmpressure
-> interface (reclaimed/scanned - reclaim efficiency cutoffs), oom
-> notifiers (another reclaim efficiency cutoff). But none of these
-> reliably capture "distress", and they vary highly between different
-> hardware setups. It can be hard to trigger OOM itself on fast IO
-> devices, even when the machine is way past useful (where useful is
-> somewhat subjective to the user). Userspace OOM implementations that
-> consider userspace health (also subjective) are getting more common.
-> 
-> > How significant is this?  How much memory can RCU consume?
-> 
-> I think if rcu can end up consuming a significant share of memory, one
-> way that may work would be to do proper shrinker integration and track
-> the age of its objects relative to the age of other allocations in the
-> system. I.e. toss them all on a clock list with "new" bits and shrink
-> them at VM velocity. If the shrinker sees objects with new bit set,
-> clear and rotate. If it sees objects without them, we know rcu_heads
-> outlive cache pages etc. and should probably cycle faster too.
+Yu-cheng
 
-It would be easy for RCU to pass back (or otherwise use) the age of the
-current grace period, if that would help.
-
-Tracking the age of individual callbacks is out of the question due to
-memory overhead, but RCU could approximate this via statistical sampling.
-Comparing this to grace-period durations could give information as to
-whether making grace periods go faster would be helpful.
-
-But, yes, it would be better to have an elusive unambiguous indication
-of distress.  ;-)
-
-							Thanx, Paul
