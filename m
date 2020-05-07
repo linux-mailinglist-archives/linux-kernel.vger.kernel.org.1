@@ -2,68 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF791C8A98
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 14:21:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F8971C8ABE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 14:29:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727030AbgEGMVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 08:21:11 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:3892 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725900AbgEGMVK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 08:21:10 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 7BAAD1B3ABE06615F60E;
-        Thu,  7 May 2020 20:21:07 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 7 May 2020 20:20:57 +0800
-From:   Samuel Zou <zou_wei@huawei.com>
-To:     <agk@redhat.com>, <snitzer@redhat.com>, <dm-devel@redhat.com>
-CC:     <linux-kernel@vger.kernel.org>, Samuel Zou <zou_wei@huawei.com>
-Subject: [PATCH -next] dm mpath: Remove unused variable ret
-Date:   Thu, 7 May 2020 20:26:52 +0800
-Message-ID: <1588854412-19301-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+        id S1726809AbgEGM2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 08:28:54 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:51139 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725923AbgEGM2x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 08:28:53 -0400
+Received: from mail-pl1-f198.google.com ([209.85.214.198])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <koba.ko@canonical.com>)
+        id 1jWfcJ-0005IG-Nr
+        for linux-kernel@vger.kernel.org; Thu, 07 May 2020 12:27:07 +0000
+Received: by mail-pl1-f198.google.com with SMTP id q4so4993213pls.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 05:27:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id;
+        bh=sy9MiBndjg4GbOCvHlaVis5nDlxNmExV2BMm+rKhLA4=;
+        b=cfuwzhOQUobaEI9QWmVWBaLeqmCj54b5SXC4hq5YwC9wZBuKHFkwOsYPX6Rd4VTMhw
+         VWSXVFigcHZCBf4bk3nSWTPXBq9PdVc5hHoPkWEvleCVajwX+HdNx8OLP7t/sLlEumCz
+         fEMkqLXb9PUnJ3i49OZ8uA73f/inNe3vHmO1bdpSN9tFt15/eoLUeryJTvbSkGLE8OEx
+         TGnWdV4SrLTCSPCIqDjKiVYkcQI/tXp809+xDpYnB6VyJKLFBcfDhCdAgK1FDzU1Mu96
+         JUjyTVjgWYLWH43XTmR4FwsujRyjdx9ZmdXyNlO6qPBibMMU2K1p3vVXrQ36CWPEo0Ux
+         MqiA==
+X-Gm-Message-State: AGi0PuYYapXSpcCUJSyq0nqTBaMU2dfEsndKIKvwK+q68FGggBNCASVX
+        0iYC6fVtFxxBNPiPVr+NNnLPWlNkUSG9nhfAPi3vI4RixzdCLd//mMQmmhwXfhbjnsuYUdXoBJn
+        X9Za947pGb4Q7cmzGFGhKp5sCFueo3RONtE6X+3FE0A==
+X-Received: by 2002:a63:d74a:: with SMTP id w10mr4579335pgi.417.1588854426372;
+        Thu, 07 May 2020 05:27:06 -0700 (PDT)
+X-Google-Smtp-Source: APiQypLNRMSgD+3px9iOEsOl7gSFyS/RGaRGLdJoZnsUU8G4aN/YOyXpqtVeUrfUXr4TsbeOz0GyIA==
+X-Received: by 2002:a63:d74a:: with SMTP id w10mr4579303pgi.417.1588854425823;
+        Thu, 07 May 2020 05:27:05 -0700 (PDT)
+Received: from canonical.com (111-249-71-140.dynamic-ip.hinet.net. [111.249.71.140])
+        by smtp.gmail.com with ESMTPSA id c28sm4772120pfp.200.2020.05.07.05.27.04
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 07 May 2020 05:27:05 -0700 (PDT)
+From:   koba.ko@canonical.com
+To:     Matthew Garrett <mjg59@srcf.ucam.org>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali.rohar@gmail.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mario Limonciello <mario.limonciello@dell.com>
+Subject: [PATCH] platform/x86: dell-laptop: don't register platform::micmute if the related tokens don't exist.
+Date:   Thu,  7 May 2020 20:27:03 +0800
+Message-Id: <20200507122703.14617-1-koba.ko@canonical.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes below warning reported by coccicheck:
+From: Koba Ko <koba.ko@canonical.com>
 
-drivers/md/dm-historical-service-time.c:240:14-16: Unneeded variable: "sz". Return "0" on line 261
+During boot up, Error messge is issued,
+"platform::micmute: Setting an LED's brightness failed (-19)",
+but the device isn't presented.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Samuel Zou <zou_wei@huawei.com>
+Get the related tokens of SMBIOS, GLOBAL_MIC_MUTE_DISABLE/ENABLE.
+If one of two tokens doesn't exist,
+don't call led_classdev_register() for platform::micmute.
+After that, you wouldn't see the platform::micmute in /sys/class/leds/,
+and the error message wouldn't see in dmesg.
+
+Signed-off-by: Koba Ko <koba.ko@canonical.com>
 ---
- drivers/md/dm-historical-service-time.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/platform/x86/dell-laptop.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/md/dm-historical-service-time.c b/drivers/md/dm-historical-service-time.c
-index 186f91e..3c8acb9 100644
---- a/drivers/md/dm-historical-service-time.c
-+++ b/drivers/md/dm-historical-service-time.c
-@@ -237,7 +237,6 @@ static void hst_destroy(struct path_selector *ps)
- static int hst_status(struct path_selector *ps, struct dm_path *path,
- 		     status_type_t type, char *result, unsigned int maxlen)
+diff --git a/drivers/platform/x86/dell-laptop.c b/drivers/platform/x86/dell-laptop.c
+index 74e988f839e8..e315185dbdd6 100644
+--- a/drivers/platform/x86/dell-laptop.c
++++ b/drivers/platform/x86/dell-laptop.c
+@@ -2164,7 +2164,7 @@ static struct led_classdev micmute_led_cdev = {
+ static int __init dell_init(void)
  {
--	unsigned int sz = 0;
- 	struct path_info *pi;
+ 	struct calling_interface_token *token;
+-	int max_intensity = 0;
++	int max_intensity = 0, is_micmute_exist = 0;
+ 	int ret;
  
- 	if (!path) {
-@@ -258,7 +257,7 @@ static int hst_status(struct path_selector *ps, struct dm_path *path,
- 		}
- 	}
+ 	if (!dmi_check_system(dell_device_table))
+@@ -2204,10 +2204,14 @@ static int __init dell_init(void)
  
--	return sz;
-+	return 0;
- }
+ 	dell_laptop_register_notifier(&dell_laptop_notifier);
  
- static int hst_add_path(struct path_selector *ps, struct dm_path *path,
+-	micmute_led_cdev.brightness = ledtrig_audio_get(LED_AUDIO_MICMUTE);
+-	ret = led_classdev_register(&platform_device->dev, &micmute_led_cdev);
+-	if (ret < 0)
+-		goto fail_led;
++	if (dell_smbios_find_token(GLOBAL_MIC_MUTE_DISABLE) &&
++	    dell_smbios_find_token(GLOBAL_MIC_MUTE_ENABLE)) {
++		micmute_led_cdev.brightness = ledtrig_audio_get(LED_AUDIO_MICMUTE);
++		ret = led_classdev_register(&platform_device->dev, &micmute_led_cdev);
++		if (ret < 0)
++			goto fail_led;
++		is_micmute_exist = 1;
++	}
+ 
+ 	if (acpi_video_get_backlight_type() != acpi_backlight_vendor)
+ 		return 0;
+@@ -2254,7 +2258,8 @@ static int __init dell_init(void)
+ fail_get_brightness:
+ 	backlight_device_unregister(dell_backlight_device);
+ fail_backlight:
+-	led_classdev_unregister(&micmute_led_cdev);
++	if (is_micmute_exist)
++		led_classdev_unregister(&micmute_led_cdev);
+ fail_led:
+ 	dell_cleanup_rfkill();
+ fail_rfkill:
 -- 
-2.6.2
+2.25.1
 
