@@ -2,81 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 846E71C9E13
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 23:59:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E1211C9E04
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 23:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727787AbgEGV7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 17:59:46 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:22294 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727121AbgEGV7o (ORCPT
+        id S1726907AbgEGV7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 17:59:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726480AbgEGV7H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 17:59:44 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1588888784; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=QX9dMGZh3sTSI8f7klwDJ7QBJ+Rc6eu2SY3BfKNx4VY=; b=R26Zokr9oDHZD9OdNslbVGJuio9x5+wvlM0Dh+w68o9n++mZ58MhoB2RyLae3SVLJ4gFfxkL
- C9ftKTlWSLff60Io0/G7AMnq7VEoGS6sm7U3yEQTGiURUtkSPJIT4sgZiBNnEGXXCZwufwA8
- JcseG7w8Fmb0SmJBsZIPV0JJxOI=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5eb484c8.7f35305596f8-smtp-out-n01;
- Thu, 07 May 2020 21:59:36 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id F40EFC4478C; Thu,  7 May 2020 21:59:34 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 13D2FC433D2;
-        Thu,  7 May 2020 21:59:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 13D2FC433D2
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=wcheng@codeaurora.org
-From:   Wesley Cheng <wcheng@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        balbi@kernel.org, gregkh@linuxfoundation.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        jackp@codeaurora.org, Wesley Cheng <wcheng@codeaurora.org>
-Subject: [RFC 3/3] dt-bindings: usb: dwc3: Add entry for tx-fifo-resize
-Date:   Thu,  7 May 2020 14:59:28 -0700
-Message-Id: <1588888768-25315-4-git-send-email-wcheng@codeaurora.org>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1588888768-25315-1-git-send-email-wcheng@codeaurora.org>
-References: <1588888768-25315-1-git-send-email-wcheng@codeaurora.org>
+        Thu, 7 May 2020 17:59:07 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42EFAC05BD09
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 14:59:06 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id g13so8242321wrb.8
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 14:59:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=t3RcuTfATJPIk2PpFOWFeubdL2oxOOoFafQJ/eMWyS8=;
+        b=aGESkxJLEnPKhYPOXsknxCmACG2VOHSTPvA3IkN8bDuJ52fDGV+2/pJTF83FFTS/qm
+         KLxfwvfJFFOTMSVeX4JD/RnYfEWU1K1Q9c4yHMwYeamr866iU7vJSUQ7EYDxl0xRySYF
+         qeYoqhgtci9DihQZWS1Ln5i6gVQPq6DuLYkryznlEzVpu/Gw7ixsIvWhzEkBPDIQO5t/
+         F9HENQtUYfAXtd4KAJDj34UuAwguug4vl1Yj8Rxttq24GUO6EcxL5UqP9HU8hoKuMWY4
+         RzziAHu6pa8HjiuvyEeSTK/WE/YHO4pDUW9bvIkTy64L5QauFi1EZZsBG+QMEeAnGRr4
+         JkrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=t3RcuTfATJPIk2PpFOWFeubdL2oxOOoFafQJ/eMWyS8=;
+        b=JCvx4CptZc6mk2OHmCQ6mcC0413R/6Fl81iWq+P+zy0eessQxsKEvCAgaaVqqa9WbA
+         f8LEoS77cLgZuKN64YGVVf0XLDeW7XfmvtEU73AhPPJNY2ec/7C/61M2WFFtvV6CZ9Xl
+         VsYLr5CdcOKOl9DCGo7Wh2964IxjW9kBNHJ8tqVc6d9j/tR3ncblPkqKNdvrbKh2YUKY
+         +4wMgDvXyojXd6sIcVlQ9ecczbYEcU2fjo85arJlFOrOQRDaISJeoTd0bzUgi2tOijDU
+         syEWWW7/UxQ+QDKzCOdiLGsEy12mwJ1OLLgUrYo8CnO9sts67IUKFFAuej9mtj1s/XcL
+         PvBw==
+X-Gm-Message-State: AGi0Pubyzsl++CqCf4gtjyQewSmLG9D5vKqyw8UoS3svGSRJ0jh/34Rj
+        okgx4tgUaVgWxa7IS9DI9HS7AQ==
+X-Google-Smtp-Source: APiQypIw6C1LouSvwYnIQbTEFcF4XymG+MeqV9Vea7gsPVFW65Oc1KDuBjhZii2HuPxdNXC9lsGzXw==
+X-Received: by 2002:adf:f907:: with SMTP id b7mr17699159wrr.203.1588888744591;
+        Thu, 07 May 2020 14:59:04 -0700 (PDT)
+Received: from localhost.localdomain ([176.61.57.127])
+        by smtp.gmail.com with ESMTPSA id z18sm9814245wrw.41.2020.05.07.14.59.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 May 2020 14:59:03 -0700 (PDT)
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+To:     heikki.krogerus@linux.intel.com, linux-usb@vger.kernel.org
+Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        nikolaus.voss@loewensteinmedical.de,
+        andriy.shevchenko@linux.intel.com, garsilva@embeddedor.com,
+        keescook@chromium.org,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Subject: [PATCH v2 0/1] Add USB role switch to tps6598x
+Date:   Thu,  7 May 2020 22:59:37 +0100
+Message-Id: <20200507215938.1983363-1-bryan.odonoghue@linaro.org>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Re-introduce the comment for the tx-fifo-resize setting for the DWC3
-controller.
+V2:
+- Updates the git commit to include a link to the TI document which
+  describes firmware configuration - Andy
+- Pads out the description a bit to include information on baking the
+  data-role into the firmware with the referenced utility.
 
-Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
----
- Documentation/devicetree/bindings/usb/dwc3.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+V1:
+This patch - adds USB role switching to the TI TPS6598x. It has been tested
+out with a ChipIdea controller inside a Qualcomm MSM8939.
 
-diff --git a/Documentation/devicetree/bindings/usb/dwc3.txt b/Documentation/devicetree/bindings/usb/dwc3.txt
-index 9946ff9..489f5da 100644
---- a/Documentation/devicetree/bindings/usb/dwc3.txt
-+++ b/Documentation/devicetree/bindings/usb/dwc3.txt
-@@ -105,7 +105,7 @@ Optional properties:
- 			1-16 (DWC_usb31 programming guide section 1.2.3) to
- 			enable periodic ESS TX threshold.
- 
-- - <DEPRECATED> tx-fifo-resize: determines if the FIFO *has* to be reallocated.
-+ - tx-fifo-resize: determines if the FIFO *has* to be reallocated.
-  - snps,incr-burst-type-adjustment: Value for INCR burst type of GSBUSCFG0
- 			register, undefined length INCR burst type enable and INCRx type.
- 			When just one value, which means INCRX burst mode enabled. When
+Right now you need to have configured the TPS firmware with the TI
+configuration tool so that the chip knows if it should initiate or accept
+data and power role swaps.
+
+https://www.ti.com/lit/an/slva843a/slva843a.pdf
+
+Heikki mentioned that on the ACPI systems the firmware had been
+pre-configured to do data/power role swaps. On the hardware I have this is
+the case also, which is why I did't invest more time in adding DT bindings
+to control data/power roles that I don't need or necessarily support with
+the reference hardware.
+
+As-is this code will do role-swappping nicely for me, and I think should be
+safe on existing ACPI systems.
+
+Bryan O'Donoghue (1):
+  usb: typec: tps6598x: Add USB role switching logic
+
+ drivers/usb/typec/tps6598x.c | 56 +++++++++++++++++++++++++++++++-----
+ 1 file changed, 49 insertions(+), 7 deletions(-)
+
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.25.1
+
