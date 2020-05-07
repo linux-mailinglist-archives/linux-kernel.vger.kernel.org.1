@@ -2,113 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE7671C9499
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 17:15:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD49E1C94CF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 17:20:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726825AbgEGPO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 11:14:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43302 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725914AbgEGPO4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 11:14:56 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727124AbgEGPTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 11:19:44 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:45671 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725948AbgEGPTn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 11:19:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588864782;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sk4ffog3i8B4UB/8TKz4vMDBCAylhdqDtRPqM+XCXzw=;
+        b=isqa3qxf8w3yJOKr6zSTuPN4Lj4Zu7H187opBUP5kHI1J7aqDTrl7r9xqsC6EgJNCYPzUr
+        IwhSf12ZCd3p8RmmAtT2E22UoxgoTYjT8fbtoiNN4bvvMKpHBPffqipCt05omOJc8hSCGq
+        6qyS8s8XZgajGu6NOgWZ7l+LHrBF8LU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-347-sA-Rx1L_PwOpgfpvcCbuxA-1; Thu, 07 May 2020 11:19:39 -0400
+X-MC-Unique: sA-Rx1L_PwOpgfpvcCbuxA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6FEBE207DD;
-        Thu,  7 May 2020 15:14:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588864496;
-        bh=nH4zzLyFJaaR6EBGr6MwECFJ0OIX3tGLz6Ht3UbWkZM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=P/qI5XcxnpOU2JlzciA5QWZCZGmLZfddp8qb5bxXx45rDzjJdI2SqlGqYARDzuB84
-         TnO5gSmseGqu/btra6/WZaf7T3sS1E1uKVzKPJOzReH3MiUYqUUkXonvPEgfpQzHoh
-         1Zn0pmhSYAXfa6as0z/2b2XL/DF+K29mcfG4Pofo=
-Date:   Thu, 7 May 2020 10:19:21 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Christian Lamparter <chunkeey@googlemail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH] carl9170: Replace zero-length array with flexible-array
-Message-ID: <20200507151921.GA5083@embeddedor>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7BC10107B267;
+        Thu,  7 May 2020 15:19:37 +0000 (UTC)
+Received: from krava (unknown [10.40.194.212])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4CD1D60CCC;
+        Thu,  7 May 2020 15:19:35 +0000 (UTC)
+Date:   Thu, 7 May 2020 17:19:32 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Jin Yao <yao.jin@linux.intel.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH v3 2/4] perf counts: Reset prev_raw_counts counts
+Message-ID: <20200507151932.GF2804092@krava>
+References: <20200507065822.8255-1-yao.jin@linux.intel.com>
+ <20200507065822.8255-3-yao.jin@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200507065822.8255-3-yao.jin@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current codebase makes use of the zero-length array language
-extension to the C90 standard, but the preferred mechanism to declare
-variable-length types such as these ones is a flexible array member[1][2],
-introduced in C99:
+On Thu, May 07, 2020 at 02:58:20PM +0800, Jin Yao wrote:
+> The evsel->prev_raw_counts is updated in perf_evsel__compute_deltas:
+> 
+> perf_evsel__compute_deltas()
+> {
+> 	tmp = *perf_counts(evsel->prev_raw_counts, cpu, thread);
+> 	*perf_counts(evsel->prev_raw_counts, cpu, thread) = *count;
+> }
+> 
+> When we want to reset the evsel->prev_raw_counts in
+> perf_evsel__reset_prev_raw_counts, zeroing the aggr is not enough,
+> we need to reset the counts too.
+> 
+> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+> ---
+>  tools/perf/util/counts.c | 5 +++++
+>  tools/perf/util/counts.h | 2 ++
+>  tools/perf/util/stat.c   | 1 +
+>  3 files changed, 8 insertions(+)
+> 
+> diff --git a/tools/perf/util/counts.c b/tools/perf/util/counts.c
+> index f94e1a23dad6..af3bf36f7c63 100644
+> --- a/tools/perf/util/counts.c
+> +++ b/tools/perf/util/counts.c
+> @@ -64,3 +64,8 @@ void perf_evsel__free_counts(struct evsel *evsel)
+>  	perf_counts__delete(evsel->counts);
+>  	evsel->counts = NULL;
+>  }
+> +
+> +void perf_evsel__reset_raw_counts(struct evsel *evsel)
+> +{
+> +	perf_counts__reset(evsel->prev_raw_counts);
+> +}
+> diff --git a/tools/perf/util/counts.h b/tools/perf/util/counts.h
+> index 92196df4945f..15bb9acb7cb0 100644
+> --- a/tools/perf/util/counts.h
+> +++ b/tools/perf/util/counts.h
+> @@ -42,4 +42,6 @@ void perf_evsel__reset_counts(struct evsel *evsel);
+>  int perf_evsel__alloc_counts(struct evsel *evsel, int ncpus, int nthreads);
+>  void perf_evsel__free_counts(struct evsel *evsel);
+>  
+> +void perf_evsel__reset_raw_counts(struct evsel *evsel);
+> +
+>  #endif /* __PERF_COUNTS_H */
+> diff --git a/tools/perf/util/stat.c b/tools/perf/util/stat.c
+> index 774468341851..89e541564ed5 100644
+> --- a/tools/perf/util/stat.c
+> +++ b/tools/perf/util/stat.c
+> @@ -168,6 +168,7 @@ static void perf_evsel__reset_prev_raw_counts(struct evsel *evsel)
+>  		evsel->prev_raw_counts->aggr.val = 0;
+>  		evsel->prev_raw_counts->aggr.ena = 0;
+>  		evsel->prev_raw_counts->aggr.run = 0;
+> +		perf_evsel__reset_raw_counts(evsel);
 
-struct foo {
-        int stuff;
-        struct boo array[];
-};
+that seems needed, but we have it scathered all over the place,
+could you centralize the reset? the way I see it the perf_counts__reset
+should zero all the members of struct perf_counts.. so also
+the aggr values
 
-By making use of the mechanism above, we will get a compiler warning
-in case the flexible array does not occur last in the structure, which
-will help us prevent some kind of undefined behavior bugs from being
-inadvertently introduced[3] to the codebase from now on.
+it could also check for counts != NULL and we could call it
+instead of:
+  perf_evsel__reset_prev_raw_counts
+    perf_evsel__reset_raw_counts
+      perf_counts__reset
 
-Also, notice that, dynamic memory allocations won't be affected by
-this change:
-
-"Flexible array members have incomplete type, and so the sizeof operator
-may not be applied. As a quirk of the original implementation of
-zero-length arrays, sizeof evaluates to zero."[1]
-
-sizeof(flexible-array-member) triggers a warning because flexible array
-members have incomplete type[1]. There are some instances of code in
-which the sizeof operator is being incorrectly/erroneously applied to
-zero-length arrays and the result is zero. Such instances may be hiding
-some bugs. So, this work (flexible-array member conversions) will also
-help to get completely rid of those sorts of issues.
-
-This issue was found with the help of Coccinelle.
-
-[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-[2] https://github.com/KSPP/linux/issues/21
-[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/net/wireless/ath/carl9170/fwcmd.h | 2 +-
- drivers/net/wireless/ath/carl9170/hw.h    | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/carl9170/fwcmd.h b/drivers/net/wireless/ath/carl9170/fwcmd.h
-index ea1d80f9a50e..56999a3b9d3b 100644
---- a/drivers/net/wireless/ath/carl9170/fwcmd.h
-+++ b/drivers/net/wireless/ath/carl9170/fwcmd.h
-@@ -127,7 +127,7 @@ struct carl9170_write_reg {
- struct carl9170_write_reg_byte {
- 	__le32	addr;
- 	__le32  count;
--	u8	val[0];
-+	u8	val[];
- } __packed;
- 
- #define	CARL9170FW_PHY_HT_ENABLE		0x4
-diff --git a/drivers/net/wireless/ath/carl9170/hw.h b/drivers/net/wireless/ath/carl9170/hw.h
-index 08e0ae9c5836..555ad4975970 100644
---- a/drivers/net/wireless/ath/carl9170/hw.h
-+++ b/drivers/net/wireless/ath/carl9170/hw.h
-@@ -851,7 +851,7 @@ struct ar9170_stream {
- 	__le16 length;
- 	__le16 tag;
- 
--	u8 payload[0];
-+	u8 payload[];
- } __packed __aligned(4);
- #define AR9170_STREAM_LEN				4
- 
--- 
-2.26.2
+jirka
 
