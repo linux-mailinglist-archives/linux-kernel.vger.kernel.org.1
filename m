@@ -2,115 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37CDC1C96D8
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 18:49:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BDA81C96D1
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 18:48:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727086AbgEGQtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 12:49:21 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:55366 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726222AbgEGQtU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 12:49:20 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 047GltQV085445;
-        Thu, 7 May 2020 16:48:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=yIKBOEyYFtcnZSrQHZ63Llg0wM2ybFJLkN8J9aa02fQ=;
- b=wxkYhOFwU+tW8VDjRLAutcIyUVXGvkhE7c2+1dvCPlZN5RvJ4dlAqGidtOr0dN+qBuGn
- StTTM7ZcyEdyUYFOT7hCSQmJYi1o1yBa2saTm9yYPYtTgibk4F5We3PJOADucxPgfslk
- A2JpD6rTqaOnpcqniZJ62KWREzy4D3PYIZjSVwu3DJz6qt+u5ZC3SVSsZuhRIAQspsu/
- jEKa7GOOJMtOIOMumvWY547joeXxL3nOadls9KIouelXL9J8APCa0uunZF39vRQZzL5k
- lcY3Hew8V7PNZ8KzPjdaN00WCb+Vl9WNNy1E7Tr4RDM/9/tpoJ639BOhEQtNfOe4vmAw Rw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 30veckjphe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 07 May 2020 16:48:30 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 047GlWlQ044604;
-        Thu, 7 May 2020 16:48:29 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 30sjnpwf4y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 07 May 2020 16:48:29 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 047GmSiV031930;
-        Thu, 7 May 2020 16:48:28 GMT
-Received: from linux-1.home (/92.157.36.49)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 07 May 2020 09:48:27 -0700
-Subject: Re: [patch V4 part 3 29/29] x86/entry/32: Convert IRET exception to
- IDTENTRY_SW
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>
-References: <20200505134354.774943181@linutronix.de>
- <20200505134906.128769226@linutronix.de>
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-Message-ID: <e50333c6-386d-6b77-dd67-ea213782b1b7@oracle.com>
-Date:   Thu, 7 May 2020 18:47:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <20200505134906.128769226@linutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1727882AbgEGQsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 12:48:01 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2163 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726074AbgEGQsB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 12:48:01 -0400
+Received: from lhreml741-chm.china.huawei.com (unknown [172.18.7.108])
+        by Forcepoint Email with ESMTP id F1CB7F4FD0BDC45C14F0;
+        Thu,  7 May 2020 17:47:58 +0100 (IST)
+Received: from fraeml702-chm.china.huawei.com (10.206.15.51) by
+ lhreml741-chm.china.huawei.com (10.201.108.191) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.1913.5; Thu, 7 May 2020 17:47:58 +0100
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Thu, 7 May 2020 18:47:58 +0200
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.1913.007;
+ Thu, 7 May 2020 18:47:58 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        "david.safford@gmail.com" <david.safford@gmail.com>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "jmorris@namei.org" <jmorris@namei.org>,
+        "John Johansen" <john.johansen@canonical.com>
+CC:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>
+Subject: RE: [RFC][PATCH 1/3] evm: Move hooks outside LSM infrastructure
+Thread-Topic: [RFC][PATCH 1/3] evm: Move hooks outside LSM infrastructure
+Thread-Index: AQHWHfmwvisCdHYC6kmVk7fgFWuzYaibYCWAgAAX0QCAAMB1IIAAb0AAgAApg3A=
+Date:   Thu, 7 May 2020 16:47:58 +0000
+Message-ID: <750ab4e0990f47e4aea10d0e580b1074@huawei.com>
+References: <20200429073935.11913-1-roberto.sassu@huawei.com>
+         <1588794293.4624.21.camel@linux.ibm.com>
+         <1588799408.4624.28.camel@linux.ibm.com>
+         <ab879f9e66874736a40e9c566cadc272@huawei.com>
+ <1588864628.5685.78.camel@linux.ibm.com>
+In-Reply-To: <1588864628.5685.78.camel@linux.ibm.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9614 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 adultscore=0 phishscore=0
- mlxlogscore=999 bulkscore=0 malwarescore=0 spamscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2005070136
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9614 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 bulkscore=0
- spamscore=0 malwarescore=0 impostorscore=0 clxscore=1015
- lowpriorityscore=0 phishscore=0 mlxlogscore=999 suspectscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005070136
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.220.65.97]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 5/5/20 3:44 PM, Thomas Gleixner wrote:
-> From: Thomas Gleixner <tglx@linutronix.de>
-> 
-> Convert the IRET exception handler to IDTENTRY_SW. This is slightly
-> different than the conversions of hardware exceptions as the IRET exception
-> is invoked via an exception table when IRET faults. So it just uses the
-> IDTENTRY_SW mechanism for consistency. It does not emit ASM code as it does
-> not fit the other idtentry exceptions.
-> 
->    - Implement the C entry point with DEFINE_IDTENTRY_SW() which maps to
->      DEFINE_IDTENTRY()
->    - Fixup the XEN/PV code
->    - Remove the old prototyoes
->    - Remove the RCU warning as the new entry macro ensures correctness
-> 
-> No functional change.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> 
-
-For all patches of part 3:
-
-Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
-
-alex
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBNaW1pIFpvaGFyIFttYWlsdG86
+em9oYXJAbGludXguaWJtLmNvbV0NCj4gT24gVGh1LCAyMDIwLTA1LTA3IGF0IDA3OjUzICswMDAw
+LCBSb2JlcnRvIFNhc3N1IHdyb3RlOg0KPiA+ID4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0N
+Cj4gPiA+IEZyb206IE1pbWkgWm9oYXIgW21haWx0bzp6b2hhckBsaW51eC5pYm0uY29tXQ0KPiA+
+ID4gU2VudDogV2VkbmVzZGF5LCBNYXkgNiwgMjAyMCAxMToxMCBQTQ0KPiA+ID4gVG86IFJvYmVy
+dG8gU2Fzc3UgPHJvYmVydG8uc2Fzc3VAaHVhd2VpLmNvbT47DQo+IGRhdmlkLnNhZmZvcmRAZ21h
+aWwuY29tOw0KPiA+ID4gdmlyb0B6ZW5pdi5saW51eC5vcmcudWs7IGptb3JyaXNAbmFtZWkub3Jn
+OyBKb2huIEpvaGFuc2VuDQo+ID4gPiA8am9obi5qb2hhbnNlbkBjYW5vbmljYWwuY29tPg0KPiA+
+ID4gQ2M6IGxpbnV4LWZzZGV2ZWxAdmdlci5rZXJuZWwub3JnOyBsaW51eC1pbnRlZ3JpdHlAdmdl
+ci5rZXJuZWwub3JnOw0KPiBsaW51eC0NCj4gPiA+IHNlY3VyaXR5LW1vZHVsZUB2Z2VyLmtlcm5l
+bC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IFNpbHZpdQ0KPiA+ID4gVmxhc2Nl
+YW51IDxTaWx2aXUuVmxhc2NlYW51QGh1YXdlaS5jb20+DQo+ID4gPiBTdWJqZWN0OiBSZTogW1JG
+Q11bUEFUQ0ggMS8zXSBldm06IE1vdmUgaG9va3Mgb3V0c2lkZSBMU00NCj4gaW5mcmFzdHJ1Y3R1
+cmUNCj4gDQo+IFJvYmVydG8sIHBsZWFzZSBmaXggeW91ciBtYWlsZXIgb3IgYXQgbGVhc3QgbWFu
+dWFsbHkgcmVtb3ZlIHRoaXMgc29ydA0KPiBvZiBpbmZvIGZyb20gdGhlIGVtYWlsLg0KPiANCj4g
+PiA+DQo+ID4gPiBPbiBXZWQsIDIwMjAtMDUtMDYgYXQgMTU6NDQgLTA0MDAsIE1pbWkgWm9oYXIg
+d3JvdGU6DQo+ID4gPiA+IFNpbmNlIGNvcHlpbmcgdGhlIEVWTSBITUFDIG9yIG9yaWdpbmFsIHNp
+Z25hdHVyZSBpc24ndCBhcHBsaWNhYmxlLCBJDQo+ID4gPiA+IHdvdWxkIHByZWZlciBleHBsb3Jp
+bmcgYW4gRVZNIHBvcnRhYmxlIGFuZCBpbW11dGFibGUgc2lnbmF0dXJlIG9ubHkNCj4gPiA+ID4g
+c29sdXRpb24uDQo+ID4gPg0KPiA+ID4gVG8gcHJldmVudCBjb3B5aW5nIHRoZSBFVk0geGF0dHIs
+IHdlIGFkZGVkICJzZWN1cml0eS5ldm0iIHRvDQo+ID4gPiAvZXRjL3hhdHRyLmNvbmYuIMKgVG8g
+c3VwcG9ydCBjb3B5aW5nIGp1c3QgdGhlIEVWTSBwb3J0YWJsZSBhbmQNCj4gPiA+IGltbXV0YWJs
+ZSBzaWduYXR1cmVzIHdpbGwgcmVxdWlyZSBhIGRpZmZlcmVudCBzb2x1dGlvbi4NCj4gPg0KPiA+
+IFRoaXMgcGF0Y2ggc2V0IHJlbW92ZXMgdGhlIG5lZWQgZm9yIGlnbm9yaW5nIHNlY3VyaXR5LmV2
+bS4gSXQgY2FuIGJlDQo+IGFsd2F5cw0KPiA+IGNvcGllZCwgZXZlbiBpZiBpdCBpcyBhbiBITUFD
+LiBFVk0gd2lsbCB1cGRhdGUgaXQgb25seSB3aGVuIHZlcmlmaWNhdGlvbiBpbg0KPiA+IHRoZSBw
+cmUgaG9vayBpcyBzdWNjZXNzZnVsLiBDb21iaW5lZCB3aXRoIHRoZSBhYmlsaXR5IG9mIHByb3Rl
+Y3RpbmcgYQ0KPiBzdWJzZXQNCj4gPiBvZiBmaWxlcyB3aXRob3V0IGludHJvZHVjaW5nIGFuIEVW
+TSBwb2xpY3ksIHRoZXNlIGFkdmFudGFnZXMgc2VlbSB0bw0KPiA+IG91dHdlaWdoIHRoZSBlZmZv
+cnQgbmVjZXNzYXJ5IHRvIG1ha2UgdGhlIHN3aXRjaC4NCj4gDQo+IEFzIHRoZSBFVk0gZmlsZSBI
+TUFDIGFuZCBvcmlnaW5hbCBzaWduYXR1cmUgY29udGFpbiBpbm9kZSBzcGVjaWZpYw0KPiBpbmZv
+cm1hdGlvbiAoZWcuIGlfdmVyc2lvbiwgaV9nZW5lcmF0aW9uKSwgdGhlc2UgeGF0dHJzIGNhbm5v
+dCBldmVyIGJlDQo+IGNvcGllZC4gwqBUaGUgcHJvcG9zZWQgY2hhbmdlIGlzIGluIG9yZGVyIHRv
+IHN1cHBvcnQganVzdCB0aGUgbmV3IEVWTQ0KPiBzaWduYXR1cmVzLg0KDQpSaWdodCwgSSBkaWRu
+J3QgY29uc2lkZXIgaXQuDQoNCldvdWxkIGl0IG1ha2Ugc2Vuc2UgaW5zdGVhZCB0byBpbnRyb2R1
+Y2UgYW4gYWxpYXMgbGlrZSBzZWN1cml0eS5ldm1faW1tdXRhYmxlDQpzbyB0aGF0IHRoaXMgeGF0
+dHIgY2FuIGJlIGNvcGllZD8NCg0KPiBBdCBsZWFzdCBJTUEgZmlsZSBoYXNoZXMgc2hvdWxkIGFs
+d2F5cyBiZSB1c2VkIGluIGNvbmp1bmN0aW9uIHdpdGgNCj4gRVZNLiDCoEVWTSB4YXR0cnMgc2hv
+dWxkIGFsd2F5cyByZXF1aXJlIGEgc2VjdXJpdHkuaW1hIHhhdHRyIHRvIGJpbmQNCg0KSSBwcm9w
+b3NlZCB0byBlbmZvcmNlIHRoaXMgcmVzdHJpY3Rpb24gc29tZSB0aW1lIGFnbzoNCg0KaHR0cHM6
+Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wYXRjaC8xMDk3OTM1MS8NCg0KSXMgaXQgb2sgdG8gZW5m
+b3JjZSBpdCBnbG9iYWxseT8NCg0KPiB0aGUgZmlsZSBtZXRhZGF0YSB0byB0aGUgZmlsZSBkYXRh
+LiDCoFRoZSBJTUEgYW5kIEVWTSBwb2xpY2llcyByZWFsbHkNCj4gbmVlZCB0byBiZSBpbiBzeW5j
+Lg0KDQpJdCB3b3VsZCBiZSBuaWNlLCBidXQgYXQgdGhlIG1vbWVudCBFVk0gY29uc2lkZXJzIGFs
+c28gZmlsZXMgdGhhdCBhcmUNCm5vdCBzZWxlY3RlZCBieSB0aGUgSU1BIHBvbGljeS4gQW4gZXhh
+bXBsZSBvZiB3aHkgdGhpcyBpcyBhIHByb2JsZW0gaXMNCnRoZSBhdWRpdCBzZXJ2aWNlIHRoYXQg
+ZmFpbHMgdG8gc3RhcnQgd2hlbiBpdCB0cmllcyB0byBhZGp1c3QgdGhlIHBlcm1pc3Npb25zDQpv
+ZiB0aGUgbG9nIGZpbGVzLiBUaG9zZSBmaWxlcyBkb24ndCBoYXZlIHNlY3VyaXR5LmV2bSBiZWNh
+dXNlIHRoZXkgYXJlDQpub3QgYXBwcmFpc2VkIGJ5IElNQSwgYnV0IEVWTSBkZW5pZXMgdGhlIG9w
+ZXJhdGlvbi4NCg0KUm9iZXJ0bw0KDQpIVUFXRUkgVEVDSE5PTE9HSUVTIER1ZXNzZWxkb3JmIEdt
+YkgsIEhSQiA1NjA2Mw0KTWFuYWdpbmcgRGlyZWN0b3I6IExpIFBlbmcsIExpIEppYW4sIFNoaSBZ
+YW5saQ0K
