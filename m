@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EF0D1C99DD
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:51:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 745941C99E1
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:51:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728741AbgEGSvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 14:51:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52394 "EHLO mail.kernel.org"
+        id S1728616AbgEGSvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 14:51:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728237AbgEGSvm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 14:51:42 -0400
+        id S1728110AbgEGSvr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 14:51:47 -0400
 Received: from embeddedor (unknown [189.207.59.248])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 94C9D2495B;
-        Thu,  7 May 2020 18:51:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E9A0624957;
+        Thu,  7 May 2020 18:51:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588877502;
-        bh=g2B3WHP3TtTh6XPDE/6X/pw7R5qG55xrJfAjLiXMLog=;
+        s=default; t=1588877507;
+        bh=+83EaeRY/7OLMLTOiUPtLBN9CV5OHRJu2uYjreh/MG0=;
         h=Date:From:To:Cc:Subject:From;
-        b=M2kYlSroDA8yK19NxCXt3sWB0sdiIQlQWo1ZBS4p//O7WzVbRRE9snCfeymw212ic
-         iUO0vWvAt63WMmD2T9garVTMdfNfB7aHFdZ1oc0pyyk01RriSyVRPRkRDcQbkQlh1d
-         mAcicuXulY9ntyoUmsA+BwcUncRd4H6CjtRZWGMM=
-Date:   Thu, 7 May 2020 13:56:08 -0500
+        b=PJ9CpzulMqFvltlGIQj6v0A68/uG35qnUgsPfyAL/pyESRGYYy8Yvjecbm4OdF+mQ
+         2E7OIngP0zMiAMNU7IMfUW3f891p4uTzeWROnLP9rhleYm3gYfEKPKK+r35gjqTpfm
+         9BxPdRbQdLG3xoxDPiKXSq8Ay3jpaBIhZ/DHn5j4=
+Date:   Thu, 7 May 2020 13:56:13 -0500
 From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Shuah Khan <shuah@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] tools/testing: Replace zero-length array with flexible-array
-Message-ID: <20200507185608.GA14779@embeddedor>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] KVM: Replace zero-length array with flexible-array
+Message-ID: <20200507185613.GA14808@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -76,20 +75,20 @@ This issue was found with the help of Coccinelle.
 
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- tools/testing/selftests/nsfs/pidns.c |    2 +-
+ include/linux/kvm_host.h |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/nsfs/pidns.c b/tools/testing/selftests/nsfs/pidns.c
-index e0d86e1668c0..e3c772c6a7c7 100644
---- a/tools/testing/selftests/nsfs/pidns.c
-+++ b/tools/testing/selftests/nsfs/pidns.c
-@@ -27,7 +27,7 @@
- #define __stack_aligned__	__attribute__((aligned(16)))
- struct cr_clone_arg {
- 	char stack[128] __stack_aligned__;
--	char stack_ptr[0];
-+	char stack_ptr[];
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index 6d58beb65454..5873ac4b9aef 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -409,7 +409,7 @@ struct kvm_irq_routing_table {
+ 	 * Array indexed by gsi. Each entry contains list of irq chips
+ 	 * the gsi is connected to.
+ 	 */
+-	struct hlist_head map[0];
++	struct hlist_head map[];
  };
+ #endif
  
- static int child(void *args)
 
