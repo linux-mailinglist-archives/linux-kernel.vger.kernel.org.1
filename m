@@ -2,126 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C45871C8017
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 04:43:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A77131C801C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 04:45:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728244AbgEGCnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 22:43:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726625AbgEGCnY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 22:43:24 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFCD8C061A0F;
-        Wed,  6 May 2020 19:43:23 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1728314AbgEGCpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 22:45:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41348 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726529AbgEGCpB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 22:45:01 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49Hd791Vtpz9sRf;
-        Thu,  7 May 2020 12:43:16 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1588819400;
-        bh=3cql5VsIEDZ9sh1yQV7laVUfWk6ZJHdw0wTQwojE088=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Ki7DJEmwamfoa/Ep0E/cK9nhK9D+Li1kKZb9dkJznsy8NWu6H9KYFbBHbBAscTqS1
-         QhtByVVNwwVFkv6+zjC7VqiCAKShxF2z5lNTEB3/JlD1mCGsuNXmC57q1HVDTMDsHJ
-         5VYnwSHdRH/o/BbwpJnMenT+mXCXI/7qr6F1D66Ts1/LhYEf4ZsmSxebRLN0RtFQDL
-         Plpmi+jO5vx3cX0Rsc1zJevOBvQ2kWdCqvuMKihTajjj+LgJGeJyUe8cr7pZ89mjgN
-         +IPntnmeP6gAAVsbvd89BOdk1dQ82ldil/6ZvWvNr9Zod5S8l+zHB0JbvfyGaNPcWZ
-         ynNU/lUbV7jRQ==
-Date:   Thu, 7 May 2020 12:43:11 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Jones <pjones@redhat.com>,
-        Wambui Karuga <wambui.karugax@gmail.com>
-Subject: linux-next: manual merge of the drm tree with the drm-intel-fixes
- tree
-Message-ID: <20200507124311.3838e2a0@canb.auug.org.au>
+        by mail.kernel.org (Postfix) with ESMTPSA id 7DFB820736;
+        Thu,  7 May 2020 02:45:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588819500;
+        bh=c1DfSJoV1zqnWgtEai7LCjjyLAu7ymNcS3ojoas3BL0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=bYTvxmHhzmSfawjMSbJ3AJwdV7drwoTSbokpMzjdDaS8c8nE4HSflSte10O259yXC
+         s2FfjMf/CA2iBIiSJjH7tGkJ6iTUVBHWEqYX80JiTkDUSh+e7+rNHlzh+zyEY5KhtX
+         pA0TAll6gNBUo6MSN5PLLIGc4e0AlB33FOVnq3dE=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 64A98352268D; Wed,  6 May 2020 19:45:00 -0700 (PDT)
+Date:   Wed, 6 May 2020 19:45:00 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        dipankar@in.ibm.com, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        viro@zeniv.linux.org.uk, hannes@cmpxchg.org,
+        Dave Chinner <david@fromorbit.com>
+Subject: Re: [PATCH RFC tip/core/rcu] Add shrinker to shift to
+ fast/inefficient GP mode
+Message-ID: <20200507024500.GH2869@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200507004240.GA9156@paulmck-ThinkPad-P72>
+ <20200506175535.d4986a4d497071a410b69765@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/avDbmjoaGsC/ysa+PA0FSf8";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200506175535.d4986a4d497071a410b69765@linux-foundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/avDbmjoaGsC/ysa+PA0FSf8
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, May 06, 2020 at 05:55:35PM -0700, Andrew Morton wrote:
+> On Wed, 6 May 2020 17:42:40 -0700 "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> 
+> > This commit adds a shrinker so as to inform RCU when memory is scarce.
+> > RCU responds by shifting into the same fast and inefficient mode that is
+> > used in the presence of excessive numbers of RCU callbacks.  RCU remains
+> > in this state for one-tenth of a second, though this time window can be
+> > extended by another call to the shrinker.
+> > 
+> > If it proves feasible, a later commit might add a function call directly
+> > indicating the end of the period of scarce memory.
+> 
+> (Cc David Chinner, who often has opinions on shrinkers ;))
+> 
+> It's a bit abusive of the intent of the slab shrinkers, but I don't
+> immediately see a problem with it.  Always returning 0 from
+> ->scan_objects might cause a problem in some situations(?).
 
-Hi all,
+I could just divide the total number of callbacks by 16 or some such,
+if that would work better.
 
-Today's linux-next merge of the drm tree got a conflict in:
+> Perhaps we should have a formal "system getting low on memory, please
+> do something" notification API.
 
-  drivers/gpu/drm/i915/display/intel_fbc.c
+That would be a very good thing to have!  But from what I can see, the
+shrinker interface is currently the closest approximation to such an
+interface.
 
-between commit:
+> How significant is this?  How much memory can RCU consume?
 
-  82152d424b6c ("Make the "Reducing compressed framebufer size" message be =
-DRM_INFO_ONCE()")
+This depends on the configuration and workload.  By default, RCU starts
+getting concerned if any CPU exceeds 10,000 callbacks.  It is not all
+-that- hard to cause RCU to have tens of millions of callbacks queued,
+though some would argue that workloads doing this are rather abusive.
+But at 1K per, this maps to 10GB of storage.
 
-from the drm-intel-fixes tree and commit:
+But in more normal workloads, I would expect the amount of storage
+awaiting an RCU grace period to not even come close to a gigabyte.
 
-  97ed48b5c8b1 ("drm/i915/fbc: convert to drm_device based logging macros.")
+Thoughts?
 
-from the drm tree.
+							Thanx, Paul
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/gpu/drm/i915/display/intel_fbc.c
-index c125ca9ab9b3,56bcd6c52a02..000000000000
---- a/drivers/gpu/drm/i915/display/intel_fbc.c
-+++ b/drivers/gpu/drm/i915/display/intel_fbc.c
-@@@ -485,7 -485,9 +485,8 @@@ static int intel_fbc_alloc_cfb(struct d
-  	if (!ret)
-  		goto err_llb;
-  	else if (ret > 1) {
-- 		DRM_INFO_ONCE("Reducing the compressed framebuffer size. This may lead =
-to less power savings than a non-reduced-size. Try to increase stolen memor=
-y size if available in BIOS.\n");
- -		drm_info(&dev_priv->drm,
-++		drm_info_once(&dev_priv->drm,
-+ 			 "Reducing the compressed framebuffer size. This may lead to less powe=
-r savings than a non-reduced-size. Try to increase stolen memory size if av=
-ailable in BIOS.\n");
- -
-  	}
- =20
-  	fbc->threshold =3D ret;
-
---Sig_/avDbmjoaGsC/ysa+PA0FSf8
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl6zdb8ACgkQAVBC80lX
-0GyuIgf+OkbDDmJb3xBZ3z4ltKh2Eq6GPhl9KgWPSF5jdRke+TGBjjiB66zZyGLL
-dDLb9Ff96UIASj6ArDPb3E2TlAzxJ9TvOzBL32ggHlkBnmJk4xmlQqf6yoL49OYR
-Iqzw5Ei+HSJCMP98oiCBKGKCSf3AhkT2dLoJfs503pflnfvSJ+AZCDWWkUDZYVGh
-EUlrkEozwqs01u4zK8GlhYf7A4zsg9W0RQOn56CzkLMvtH5kn4fnLGiXkVkdHH4l
-2XlC6v9UK/PSNs27mcZdI99vRgoLkkWimII7CM0s785UellFTSnsmhKm5czkZ1ZS
-N/sRtKMcGNYod1a1zSLgTPwiQLH62w==
-=fiYA
------END PGP SIGNATURE-----
-
---Sig_/avDbmjoaGsC/ysa+PA0FSf8--
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -2368,8 +2368,15 @@ static void force_qs_rnp(int (*f)(struct rcu_data *rdp))
+> >  	struct rcu_data *rdp;
+> >  	struct rcu_node *rnp;
+> >  
+> > -	rcu_state.cbovld = rcu_state.cbovldnext;
+> > +	// Load .oomovld before .oomovldend, pairing with .oomovld set.
+> > +	rcu_state.cbovld = smp_load_acquire(&rcu_state.oomovld) || // ^^^
+> > +			   rcu_state.cbovldnext;
+> >  	rcu_state.cbovldnext = false;
+> > +	if (READ_ONCE(rcu_state.oomovld) &&
+> > +	    time_after(jiffies, READ_ONCE(rcu_state.oomovldend))) {
+> > +		WRITE_ONCE(rcu_state.oomovld, false);
+> > +		pr_info("%s: Ending OOM-mode grace periods.\n", __func__);
+> > +	}
+> >  	rcu_for_each_leaf_node(rnp) {
+> >  		cond_resched_tasks_rcu_qs();
+> >  		mask = 0;
+> > @@ -2697,6 +2704,35 @@ static void check_cb_ovld(struct rcu_data *rdp)
+> >  	raw_spin_unlock_rcu_node(rnp);
+> >  }
+> >  
+> > +/* Return a rough count of the RCU callbacks outstanding. */
+> > +static unsigned long rcu_oom_count(struct shrinker *unused1,
+> > +				   struct shrink_control *unused2)
+> > +{
+> > +	int cpu;
+> > +	unsigned long ncbs = 0;
+> > +
+> > +	for_each_possible_cpu(cpu)
+> > +		ncbs += rcu_get_n_cbs_cpu(cpu);
+> > +	return ncbs;
+> > +}
+> > +
+> > +/* Start up an interval of fast high-overhead grace periods. */
+> > +static unsigned long rcu_oom_scan(struct shrinker *unused1,
+> > +				  struct shrink_control *unused2)
+> > +{
+> > +	pr_info("%s: Starting OOM-mode grace periods.\n", __func__);
+> > +	WRITE_ONCE(rcu_state.oomovldend, jiffies + HZ / 10);
+> > +	smp_store_release(&rcu_state.oomovld, true); // After .oomovldend
+> > +	rcu_force_quiescent_state();  // Kick grace period
+> > +	return 0;  // We haven't actually reclaimed anything yet.
+> > +}
+> > +
+> > +static struct shrinker rcu_shrinker = {
+> > +	.count_objects = rcu_oom_count,
+> > +	.scan_objects = rcu_oom_scan,
+> > +	.seeks = DEFAULT_SEEKS,
+> > +};
+> > +
+> >  /* Helper function for call_rcu() and friends.  */
+> >  static void
+> >  __call_rcu(struct rcu_head *head, rcu_callback_t func)
+> > @@ -4146,6 +4182,7 @@ void __init rcu_init(void)
+> >  		qovld_calc = DEFAULT_RCU_QOVLD_MULT * qhimark;
+> >  	else
+> >  		qovld_calc = qovld;
+> > +	WARN_ON(register_shrinker(&rcu_shrinker));
+> >  }
+> >  
+> >  #include "tree_stall.h"
+> > diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+> > index 2d7fcb9..c4d8e96 100644
+> > --- a/kernel/rcu/tree.h
+> > +++ b/kernel/rcu/tree.h
+> > @@ -326,6 +326,8 @@ struct rcu_state {
+> >  	int ncpus_snap;				/* # CPUs seen last time. */
+> >  	u8 cbovld;				/* Callback overload now? */
+> >  	u8 cbovldnext;				/* ^        ^  next time? */
+> > +	u8 oomovld;				/* OOM overload? */
+> > +	unsigned long oomovldend;		/* OOM ovld end, jiffies. */
+> >  
+> >  	unsigned long jiffies_force_qs;		/* Time at which to invoke */
+> >  						/*  force_quiescent_state(). */
