@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FF2C1C9AD4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:20:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3193F1C9AD6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728502AbgEGTUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 15:20:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42412 "EHLO mail.kernel.org"
+        id S1728700AbgEGTU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 15:20:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42516 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727837AbgEGTUw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 15:20:52 -0400
+        id S1727837AbgEGTU6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 15:20:58 -0400
 Received: from embeddedor (unknown [189.207.59.248])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E0681208E4;
-        Thu,  7 May 2020 19:20:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 970BF208D6;
+        Thu,  7 May 2020 19:20:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588879251;
-        bh=gdUcbJXVtT6YHaa/pRQ/6RwwYOCYa19E7kHEwdNGrpU=;
+        s=default; t=1588879258;
+        bh=hzZ3BRJHxK/0iJNH5rKEuCwWUFrZiZMlsFx+KFOhD6E=;
         h=Date:From:To:Cc:Subject:From;
-        b=FsM5D+H1Q0D/Ggqx8+VPzcsDC6kmAQhmprvGzjUpT5FE+WeaS/lkzXHF1GmuW/m4v
-         JNmAF9UU71unvR3hIiR6a9sqwttWFIebrBMOqQDxQWevbmRCIDw+hRXHbPqs9c0Igk
-         HyQdDDdvJtkGVPtBS5rBsuFcbAyFLAhnowjqUfGk=
-Date:   Thu, 7 May 2020 14:25:17 -0500
+        b=Tq/MIkKsUFJuC5zOBIHBid/OytqD/3C8lK0sI37YnFdE9Amxy9nluQqghi/muFfKZ
+         BF4iKukLDB9U57ZGGH6UfZuoAFFZ5Hi4i1N6ORzbWoRO4BAO3+eQIZ2qZDT4SvJG7F
+         U+f3cF7Vh/2r/QiCpMT3QrufbXDQO5SvogLjygv0=
+Date:   Thu, 7 May 2020 14:25:24 -0500
 From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Amit Kucheria <amit.kucheria@verdurent.com>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] thermal: imx8mm: Replace zero-length array with
- flexible-array
-Message-ID: <20200507192517.GA16557@embeddedor>
+To:     Andreas Noever <andreas.noever@gmail.com>,
+        Michael Jamet <michael.jamet@intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] thunderbolt: Replace zero-length array with flexible-array
+Message-ID: <20200507192524.GA16580@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -78,20 +78,20 @@ This issue was found with the help of Coccinelle.
 
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- drivers/thermal/imx8mm_thermal.c |    2 +-
+ include/linux/thunderbolt.h |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/thermal/imx8mm_thermal.c b/drivers/thermal/imx8mm_thermal.c
-index 0d60f8d7894f..e6061e26d4ac 100644
---- a/drivers/thermal/imx8mm_thermal.c
-+++ b/drivers/thermal/imx8mm_thermal.c
-@@ -54,7 +54,7 @@ struct imx8mm_tmu {
- 	void __iomem *base;
- 	struct clk *clk;
- 	const struct thermal_soc_data *socdata;
--	struct tmu_sensor sensors[0];
-+	struct tmu_sensor sensors[];
+diff --git a/include/linux/thunderbolt.h b/include/linux/thunderbolt.h
+index ece782ef5466..ff397c0d5c07 100644
+--- a/include/linux/thunderbolt.h
++++ b/include/linux/thunderbolt.h
+@@ -80,7 +80,7 @@ struct tb {
+ 	int index;
+ 	enum tb_security_level security_level;
+ 	size_t nboot_acl;
+-	unsigned long privdata[0];
++	unsigned long privdata[];
  };
  
- static int imx8mm_tmu_get_temp(void *data, int *temp)
+ extern struct bus_type tb_bus_type;
 
