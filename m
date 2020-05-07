@@ -2,96 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F083C1C8743
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 12:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 100B91C88AC
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 13:44:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726807AbgEGKu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 06:50:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725914AbgEGKu1 (ORCPT
+        id S1727051AbgEGLno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 07:43:44 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:20490 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725947AbgEGLnl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 06:50:27 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56D30C061A41
-        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 03:50:27 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id t3so11939qkg.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 03:50:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=1TQDLXk4eka+0Oxp2Bn8b1wcydmS2119xNQQ8v9Of3A=;
-        b=1lm1uYG4FqWg47V6Y+gYDIshBO9zX4KSYru04NwBJPv6kFFVFfM5JuAxDs6tZvphbJ
-         oTJilxGIAeSQOYU0i6u9kVh9LY2c67xWbyrpnSBiPqECpZSiW2moygN7fZbQTfav8QK2
-         PVhyXc4CtEJIGCrd0bzJhiTefp0mzyZ+EbOyJMUDZqyQufbiHgLItmYN1hQD9wMB44pb
-         +U7sR5l34T2+ELpQdAtOqjowgdxN4GWWNkcVU6+j6hZhi4t6FdtitjmBcfH4EYiq0eXp
-         4P1xej1eG3C2yyeUwdIE9QTRIDhAZrZ/5hXNsRThBODI7DVg3bGoIKHJESig7V88bGr5
-         VM8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=1TQDLXk4eka+0Oxp2Bn8b1wcydmS2119xNQQ8v9Of3A=;
-        b=mQVvPqJmiB9WquFeHP+SAA7raH63XLr02DxZ5i8K8nXwitRNLmTpmf3fZkO5mXA6Sk
-         qo+Z43DXXxtrHZjkTUM6HGObzQH1f1AdSTRKw/uSWBXKF99tWY9e4lI3R9GdhxMmj4D8
-         T7jpFF+2zazWsWtM7g794vT5sH5lzgebxHftTX9Qv4vsQj6nOdbEpskmp42D7ORL2Aep
-         0apWqYqnr991sal8Imo1FGspkQPNJt3VvDg9X7KCHG/ljvBCm/wRYAv9nNQeOvvVHbIX
-         ElGyQqbC38mIOdYymRBkgoWGcAo60URt9K25tDUfUZ3d2R+bh6ncX72u2A+n2q+HHOsw
-         +G2g==
-X-Gm-Message-State: AGi0PubJumsb1SZDjpQVePpxIJeLkasQa8P+29VQqcB4HHjYEphJxa7T
-        mZ9vJ24O6p9+RNUVEvCXV9Y+Mu/d/lIJ6SLtsPem2g==
-X-Google-Smtp-Source: APiQypJYXCCd2c3pYbt+kfphPDDGvjl+YT7aIrmnou1JUBqsathcHJRlRjCQ8fMwJjvYV4gCZxU1KJCPXjpaGZcnQi0=
-X-Received: by 2002:a05:620a:1f1:: with SMTP id x17mr13989074qkn.330.1588848626441;
- Thu, 07 May 2020 03:50:26 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200505140231.16600-1-brgl@bgdev.pl> <20200505140231.16600-7-brgl@bgdev.pl>
- <1588844771.5921.27.camel@mtksdccf07>
-In-Reply-To: <1588844771.5921.27.camel@mtksdccf07>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Thu, 7 May 2020 12:50:15 +0200
-Message-ID: <CAMpxmJW4qZ_Wnp_oRa=j=YnvTzVa3HZ13Hgwy71jS6L3Bd3oMQ@mail.gmail.com>
-Subject: Re: [PATCH 06/11] net: ethernet: mtk-eth-mac: new driver
-To:     "Mark-MC.Lee" <Mark-MC.Lee@mediatek.com>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Rob Herring <robh+dt@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Felix Fietkau <nbd@openwrt.org>,
-        John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Fabien Parent <fparent@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 7 May 2020 07:43:41 -0400
+Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20200507114335epoutp022e1fc22575470aad9e654b14b913a0dd~MvE7qu1hu2135521355epoutp02M
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 11:43:35 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20200507114335epoutp022e1fc22575470aad9e654b14b913a0dd~MvE7qu1hu2135521355epoutp02M
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1588851815;
+        bh=5lZpe+aaCuvkrdtFkz5T1CPY41dsC1TFm3yTwD+erGk=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=Ag8rV3XRHzLB+pHwOlmkICWJryzfPFn7Vwo7jMOCLgndJKjJdPEJMMl/cyHM32iNE
+         l1sFcUQWvan2ugAu3dAhV0snfKoY+dvLaNWIcRh+nhClc3tADGtAvOWfsVaMf2zIp6
+         3ntLkxLXs2pm9CFew4qBlQ/SCaeKGVDnliP2PWrM=
+Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTP id
+        20200507114335epcas5p21b9093116416c57e642fa056772b8713~MvE7YOWDq1215912159epcas5p2w;
+        Thu,  7 May 2020 11:43:35 +0000 (GMT)
+X-AuditID: b6c32a4b-7dbff70000021b78-97-5eb3f46786c0
+Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
+        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        3C.26.07032.764F3BE5; Thu,  7 May 2020 20:43:35 +0900 (KST)
+Mime-Version: 1.0
+Subject: RE:[PATCH 4/4] scripts/checkstack.pl: fix arm sp regex
+Reply-To: maninder1.s@samsung.com
+From:   Maninder Singh <maninder1.s@samsung.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+CC:     "George G. Davis" <george_davis@mentor.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        AMIT SAHRAWAT <a.sahrawat@samsung.com>,
+        Vaneet Narang <v.narang@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <CAK7LNASf687MLf1oWqrUiOHtw=p9Ug02bi1r-KevsxnFtQni2g@mail.gmail.com>
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20200507105122epcms5p543853209caaec4c3b031d64f916f9ccc@epcms5p5>
+Date:   Thu, 07 May 2020 16:21:22 +0530
+X-CMS-MailID: 20200507105122epcms5p543853209caaec4c3b031d64f916f9ccc
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuplleLIzCtJLcpLzFFi42LZdlhTSzf9y+Y4g8c9YhYXd6daPPn/ndXi
+        8q45bBYPH9xgtTh0ci6jA6vHplWdbB67vzYxevRtWcXo8XmTXABLFJdNSmpOZllqkb5dAlfG
+        4qkH2Aues1Z07v7N3MB4iqWLkZNDQsBE4uTd1WxdjFwcQgK7GSVe/9jC3sXIwcErICjxd4cw
+        SI2wgL3E938gNZxANYoSF2asYQQpERYwkPi1VQMkzCagJ7Fq1x6wkSICWhJ3lnawgoxkBhn5
+        58UlqF28EjPan0LZ0hLbl29lBLE5BQIlPj2/xAoRF5W4ufotO4z9/th8RghbRKL13llmCFtQ
+        4sHP3VBxGYnVm3uhZjYzSnQuSQVZLCEwhVFi96suNoiEucTuDfPAingFfCV+H90FtoxFQFXi
+        +fb/UM0uEtve3wGLMwvIS2x/O4cZ5ElmAU2J9bv0IUpkJaaeWscEUcIn0fv7CRPMXzvmwdiq
+        Ei03N7DC/Pj540eo8R4S0xd1skPCeRKTxKv7rcwTGBVmIYJ6FpLNsxA2L2BkXsUomVpQnJue
+        WmxaYJyXWq5XnJhbXJqXrpecn7uJEZxItLx3MG4653OIUYCDUYmHd8LnzXFCrIllxZW5hxgl
+        OJiVRHh5fmyME+JNSaysSi3Kjy8qzUktPsQozcGiJM579h1QtUB6YklqdmpqQWoRTJaJg1Oq
+        gXHSjj2cW+6JOfXwJD2YqHNi990Ndi1P5onPvfQxbmGGx/mzB4zPzpt1oVY4QsGBRaeHQ53/
+        qLQap/Iksd5fZhPWvKoUf3z3HOeVQ7tYDBVMd3Oktmyfq/5Ja/eU3n3XXPy+budc0ONSkJn3
+        1l9Z7OvK67ObvdkPvShrOLV2kaG2f+8KxebztX5KLMUZiYZazEXFiQBlmEu7IAMAAA==
+X-CMS-RootMailID: 20200430125001epcas5p2a6f02e9888481cef96f32ba14450bc63
+References: <CAK7LNASf687MLf1oWqrUiOHtw=p9Ug02bi1r-KevsxnFtQni2g@mail.gmail.com>
+        <1588250972-8507-1-git-send-email-maninder1.s@samsung.com>
+        <1588250972-8507-4-git-send-email-maninder1.s@samsung.com>
+        <CGME20200430125001epcas5p2a6f02e9888481cef96f32ba14450bc63@epcms5p5>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-czw., 7 maj 2020 o 11:46 Mark-MC.Lee <Mark-MC.Lee@mediatek.com> napisa=C5=
-=82(a):
->
-> Hi Bartosz:
->  I think the naming of this driver and its Kconfig option is too generic
-> that will confuse with current mediatek SoCs eth driver architecture(for
-> all mt7xxx SoCs).
->   Since mtk_eth_mac.c is not a common MAC part for all mediatek SoC but
-> only a specific eth driver for mt85xx, it will be more reasonable to
-> name it as mt85xx_eth.c and change NET_MEDIATEK_MAC to
-> NET_MEDIATEK_MT85XX. How do you think?
->
+Hi Masahiro,
 
-Hi Mark,
+Thanks for review.
+We will integrate your review comements and send v2.
 
-I actually consulted this with MediaTek and the name is their idea.
-Many drivers in drivers/net/ethernet have very vague names. I guess
-this isn't a problem.
+>>
 
-Bart
+>> so making regex $re for ARM similar to aarch64
+>>
+>> Signed-off-by: Vaneet Narang <v.narang@samsung.com>
+>> Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+> 
+> 
+>This looks good to me, and it is a bug fix.
+> 
+>Just a question about the SOB.
+> 
+> 
+>Maninder Singh is the author and also the submitter, right?
+> 
+>What does "Signed-off-by: Vaneet Narang <v.narang@samsung.com>" mean?
+> 
+>Co-developed-by or something else?
+ 
+Yes All 4 patches are co-developed by Vaneet and me.
+we were checking stack usage for arm and AARCH64 and found
+some changes in scrips which can help others also.
+
+Thanks,
+Maninder Singh
