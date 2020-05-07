@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1814D1C9ABC
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:17:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90CFA1C9ABD
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:17:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728624AbgEGTRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 15:17:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40536 "EHLO mail.kernel.org"
+        id S1728630AbgEGTRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 15:17:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40636 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726367AbgEGTRd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 15:17:33 -0400
+        id S1726367AbgEGTRi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 15:17:38 -0400
 Received: from embeddedor (unknown [189.207.59.248])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2C32A21835;
-        Thu,  7 May 2020 19:17:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CA96F21835;
+        Thu,  7 May 2020 19:17:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588879052;
-        bh=TZeZW0+jfLlh4ZcEbv2LeoEqpPZMjTCgCitS0tjDun8=;
+        s=default; t=1588879058;
+        bh=2vhh4CWf1qAP4IS40XgtchAprraO0Zj46YURZXgZFxA=;
         h=Date:From:To:Cc:Subject:From;
-        b=BOuwfW0y3gjqHMtue8yu0YfM2wr9KuUYdQ3Ijgzdyg0YG0Bh4kArsZPf/Q0JfZTnz
-         j3qBjujXHQFDfHMYW9J1OghpLwKiwHEqdjhgBPEgWGP7xXMM09hKEkHO4ahQ5m8T01
-         CQmAzxBNFcoFdP5bbOLUAxk0NounFW1Qjqw3f4a4=
-Date:   Thu, 7 May 2020 14:21:59 -0500
+        b=qtcvF+cDY/ipaTvvUakxHaYOOOaLgEwR9HV2QmMIlhIR8wkeEVlREwC4/m9YLnpft
+         XUg3iDrYlcwaHkUM01QM7nxWmLwBhWKL3XSCKnQ7vLzN+RM4UHK7fkrd3MLhQu59Q5
+         6/yuMeKWhbTEuuN8BZs5eR0etQ7bh6DWI1umxTsY=
+Date:   Thu, 7 May 2020 14:22:04 -0500
 From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>
-Cc:     linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ima: Replace zero-length array with flexible-array
-Message-ID: <20200507192159.GA16250@embeddedor>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] slab: Replace zero-length array with flexible-array
+Message-ID: <20200507192204.GA16270@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -76,29 +79,20 @@ This issue was found with the help of Coccinelle.
 
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- security/integrity/integrity.h |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ mm/slab.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/security/integrity/integrity.h b/security/integrity/integrity.h
-index 298b73794d8b..16c1894c29bb 100644
---- a/security/integrity/integrity.h
-+++ b/security/integrity/integrity.h
-@@ -107,7 +107,7 @@ struct ima_digest_data {
- 		} ng;
- 		u8 data[2];
- 	} xattr;
--	u8 digest[0];
-+	u8 digest[];
- } __packed;
+diff --git a/mm/slab.h b/mm/slab.h
+index 207c83ef6e06..815e4e9a94cd 100644
+--- a/mm/slab.h
++++ b/mm/slab.h
+@@ -34,7 +34,7 @@ struct kmem_cache {
+ 
+ struct memcg_cache_array {
+ 	struct rcu_head rcu;
+-	struct kmem_cache *entries[0];
++	struct kmem_cache *entries[];
+ };
  
  /*
-@@ -119,7 +119,7 @@ struct signature_v2_hdr {
- 	uint8_t	hash_algo;	/* Digest algorithm [enum hash_algo] */
- 	__be32 keyid;		/* IMA key identifier - not X509/PGP specific */
- 	__be16 sig_size;	/* signature size */
--	uint8_t sig[0];		/* signature payload */
-+	uint8_t sig[];		/* signature payload */
- } __packed;
- 
- /* integrity data associated with an inode */
 
