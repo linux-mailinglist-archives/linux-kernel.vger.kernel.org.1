@@ -2,58 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D4E51C900E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 16:37:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEBE01C9010
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 16:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729016AbgEGOhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 10:37:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50608 "EHLO
+        id S1729056AbgEGOh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 10:37:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726900AbgEGOhJ (ORCPT
+        with ESMTP id S1727935AbgEGOhN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 10:37:09 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 061F2C05BD43
-        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 07:37:09 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id h9so6708211wrt.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 07:37:08 -0700 (PDT)
+        Thu, 7 May 2020 10:37:13 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E546C05BD43
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 07:37:12 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id y3so6719048wrt.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 07:37:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=0Zg3yJkE410ym7fzTS+fnsjrx2NHEjSUpxFyQgSXJx4=;
-        b=BLZbIxHL3oY5ggbftVSjVGA7QvZJ3vW7uLDP38Rm7J4B8rO84x1CUBWObHoHprgELm
-         bgSugjgtABViXIPdclx5HehU3/HoKOv2FmXMoKBCRefqtj/S68U45BR/j1Ax/V0jAuRS
-         2jJ+LCvSYT3HeRT/9F1xfc6Ocbzxcqf5UpLv28mXyA02kpsQfP9b7GuptZNveKsqEFgI
-         gtRQYwDCYKJmSZCdbSqOmyLaw2Dw+pyAgG0/AisZlQ2PIE135ZKeDCteLjUx72dWmy8/
-         z8a3u0eYQqM1W9/D/o8R1cadmjyHqQ01Z5UgX6YLxnn9wY8dWbIoRCFbV2c1sIRe43Mn
-         Uc9g==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=NtbLV99k7TcIhG9ot/elTDrTvZyxlbX0LhoeRI3dMJQ=;
+        b=ROGrRGuQbv1ezHkVZIx64NllWTBgL153FVe39Ip61c3DS2H58HlSW61e0cVlbqnGoR
+         wsx0oheAGkitiEY9de3wdfVdrkTAfOjgqJcaPaq5qSa2KOwmhcf/Gd8CLavoqHBSZXVj
+         5W+4/25YjkUIGcufTRFQxi3M6yX+BzoxXL52g9KcjZLkyb19GslPhTkIISF/X81jmi9v
+         36ICtNRwEGVTquSuIyZn5oZnjucJLK4wUmlbUt2xxNYqyRyVLRcg4aFAIWPX/xADOPwZ
+         3HSl9BBe2VeN/+rxN9a0HpSYYV3nudvx9r36QeA61BrWan2tKIaiSsSDVLWslNTDcc0v
+         ggMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=0Zg3yJkE410ym7fzTS+fnsjrx2NHEjSUpxFyQgSXJx4=;
-        b=rqhv4IvTE/TS8Y0SUW5c/dKrweXg/geyuxz9gN/F6lv5u70laPO9vNx9pm11Cza8cl
-         HiVPk/Aay0vtc/vhLNSAAQCUBVLN8XTa6+nhOBqsbK5OLGNbB9KMHPSK86Usk9/weyrn
-         4JJkn4fspvCO+PxOXF6YL3H9Sbt7h8hAb+PtYE4/Ase5byIF5MOsX23AbGIveiYD1PMH
-         vdn8pyoB1w26j1BbzYNdJdYpCphfu9wjb9mv4qjzYNj4pIMz0nvpXq1q5OcgOIzR47nX
-         fRPn5alc1R8aXicvfKlYEkhtR2gL0f7n7gQB9i/UG7ZzZfvEgWvuOu48qqBoqO1vDjZ6
-         fC9w==
-X-Gm-Message-State: AGi0PuZYSiGt04WnB15CWNcw4yldMZYBd01XxsW5MUXP0DBAxgu7lbLD
-        SuRzE+fcPRcHfsh/xo9CRJVHIXM/
-X-Google-Smtp-Source: APiQypI0DLEFOnhawyx4le1REuATyrPv9kEuNUIFyi9lN7dX+iJRbJWuBat1gdfkaSCiSZqJMCilAA==
-X-Received: by 2002:a5d:6108:: with SMTP id v8mr4525696wrt.286.1588862226585;
-        Thu, 07 May 2020 07:37:06 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=NtbLV99k7TcIhG9ot/elTDrTvZyxlbX0LhoeRI3dMJQ=;
+        b=VDI5tBWJVyAPr95dBIIffrxZGQuLWt6jZZs6Az8fwgaL0RRC06POrlryX2KDyG1aD9
+         T0E3gwqBl/ipCtIvl/wVYKhsmIWY5Cx6ZNnWMTHmUvXERxkqVVPuMs0rNOI4vTpt4fVM
+         P9ApRyFJSYdO5Xs/56sM1AFFDF6tdtKXIioey5D7m2b5o+SZid/6DdZYkPGJ0XUL52uE
+         X3zqD8QChZtcbsfrvYaVFGbT4ERu/JbxG70U1XU5nyZbpxZvzc0cMkvaS3uUEsT8vcyo
+         S96zQA34+UimnhYcTB4yORDfDAWq6mqt06No3CUfEth1ApHeRIU8i6/F3tojxUhxeSPw
+         W8Yg==
+X-Gm-Message-State: AGi0PuYfI3+ymMVk1IXOF2jiLdkjC7ODOtR4Kn0YJpoNl9KrOVcrkjGM
+        D0jiosC0yJnRbbXk8m4iTzqfTCMj
+X-Google-Smtp-Source: APiQypLvVynFDLP/3lRmrHqHdus/jAmNy9Zd3fOg/lsg+ZG1pWGxp2rc1ajQR0TvmCHb1dRZxka2yw==
+X-Received: by 2002:adf:ecc3:: with SMTP id s3mr17105593wro.116.1588862229858;
+        Thu, 07 May 2020 07:37:09 -0700 (PDT)
 Received: from ogabbay-VM.habana-labs.com ([31.154.190.6])
-        by smtp.gmail.com with ESMTPSA id o6sm8808095wrw.63.2020.05.07.07.37.04
+        by smtp.gmail.com with ESMTPSA id o6sm8808095wrw.63.2020.05.07.07.37.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2020 07:37:05 -0700 (PDT)
+        Thu, 07 May 2020 07:37:08 -0700 (PDT)
 From:   Oded Gabbay <oded.gabbay@gmail.com>
 To:     linux-kernel@vger.kernel.org, oshpigelman@habana.ai,
         ttayar@habana.ai
 Cc:     gregkh@linuxfoundation.org
-Subject: [PATCH 1/4] uapi: habanalabs: add signal/wait operations
-Date:   Thu,  7 May 2020 17:36:58 +0300
-Message-Id: <20200507143701.32456-1-oded.gabbay@gmail.com>
+Subject: [PATCH 2/4] habanalabs: define ASIC-dependent interface for signal/wait
+Date:   Thu,  7 May 2020 17:36:59 +0300
+Message-Id: <20200507143701.32456-2-oded.gabbay@gmail.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200507143701.32456-1-oded.gabbay@gmail.com>
+References: <20200507143701.32456-1-oded.gabbay@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -61,225 +64,116 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Omer Shpigelman <oshpigelman@habana.ai>
 
-This is a pre-requisite to upstreaming GAUDI support.
+This feature requires handling h/w resources which are a bit different from
+one ASIC to the other. Therefore, we need to define a set of interfaces the
+ASIC code provides to the common code to signal, wait, reset sync object
+and to reset and init a queue.
 
-Signal/wait operations are done by the user to perform sync between two
-Primary Queues (PQs). The sync is done using the sync manager and it is
-usually resolved inside the device, but sometimes it can be resolved in the
-host, i.e. the user should be able to wait in the host until a signal has
-been completed.
-
-The mechanism to define signal and wait operations is done by the driver
-because it needs atomicity and serialization, which is already done in the
-driver when submitting work to the different queues.
-
-To implement this feature, the driver "takes" a couple of h/w resources,
-and this is reflected by the defines added to the uapi file.
-
-The signal/wait operations are done via the existing CS IOCTL, and they use
-the same data structure. There is a difference in the meaning of some of
-the parameters, and for that we added unions to make the code more
-readable.
+As this feature is not supported in Goya, provide an empty implementation
+of those functions.
 
 Signed-off-by: Omer Shpigelman <oshpigelman@habana.ai>
 Reviewed-by: Oded Gabbay <oded.gabbay@gmail.com>
 Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
 ---
- drivers/misc/habanalabs/command_submission.c | 13 +++-
- drivers/misc/habanalabs/habanalabs.h         |  2 +
- include/uapi/misc/habanalabs.h               | 67 +++++++++++++++-----
- 3 files changed, 65 insertions(+), 17 deletions(-)
+ drivers/misc/habanalabs/goya/goya.c  | 43 ++++++++++++++++++++++++++++
+ drivers/misc/habanalabs/habanalabs.h | 15 ++++++++++
+ 2 files changed, 58 insertions(+)
 
-diff --git a/drivers/misc/habanalabs/command_submission.c b/drivers/misc/habanalabs/command_submission.c
-index 6680e183d881..f7d03a35e6a8 100644
---- a/drivers/misc/habanalabs/command_submission.c
-+++ b/drivers/misc/habanalabs/command_submission.c
-@@ -11,6 +11,8 @@
- #include <linux/uaccess.h>
- #include <linux/slab.h>
+diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
+index 70fe00264f4a..b3e2354aaca2 100644
+--- a/drivers/misc/habanalabs/goya/goya.c
++++ b/drivers/misc/habanalabs/goya/goya.c
+@@ -5137,6 +5137,42 @@ u32 goya_get_queue_id_for_cq(struct hl_device *hdev, u32 cq_idx)
+ 	return cq_idx;
+ }
  
-+#define HL_CS_FLAGS_SIG_WAIT	(HL_CS_FLAGS_SIGNAL | HL_CS_FLAGS_WAIT)
++static void goya_ext_queue_init(struct hl_device *hdev, u32 q_idx)
++{
 +
- static void job_wq_completion(struct work_struct *work);
- static long _hl_cs_wait_ioctl(struct hl_device *hdev,
- 		struct hl_ctx *ctx, u64 timeout_us, u64 seq);
-@@ -659,7 +661,7 @@ int hl_cs_ioctl(struct hl_fpriv *hpriv, void *data)
- 	union hl_cs_args *args = data;
- 	struct hl_ctx *ctx = hpriv->ctx;
- 	void __user *chunks_execute, *chunks_restore;
--	u32 num_chunks_execute, num_chunks_restore;
-+	u32 num_chunks_execute, num_chunks_restore, sig_wait_flags;
- 	u64 cs_seq = ULONG_MAX;
- 	int rc, do_ctx_switch;
- 	bool need_soft_reset = false;
-@@ -672,6 +674,15 @@ int hl_cs_ioctl(struct hl_fpriv *hpriv, void *data)
- 		goto out;
- 	}
- 
-+	sig_wait_flags = args->in.cs_flags & HL_CS_FLAGS_SIG_WAIT;
++}
 +
-+	if (unlikely((sig_wait_flags & HL_CS_FLAGS_SIG_WAIT) &&
-+			(!hdev->supports_sync_stream))) {
-+		dev_err(hdev->dev, "Sync stream CS is not supported\n");
-+		rc = -EINVAL;
-+		goto out;
-+	}
++static void goya_ext_queue_reset(struct hl_device *hdev, u32 q_idx)
++{
 +
- 	chunks_execute = (void __user *) (uintptr_t) args->in.chunks_execute;
- 	num_chunks_execute = args->in.num_chunks_execute;
- 
++}
++
++static u32 goya_get_signal_cb_size(struct hl_device *hdev)
++{
++	return 0;
++}
++
++static u32 goya_get_wait_cb_size(struct hl_device *hdev)
++{
++	return 0;
++}
++
++static void goya_gen_signal_cb(struct hl_device *hdev, void *data, u16 sob_id)
++{
++
++}
++
++static void goya_gen_wait_cb(struct hl_device *hdev, void *data, u16 sob_id,
++			u16 sob_val, u16 mon_id, u32 q_idx)
++{
++
++}
++
++static void goya_reset_sob(struct hl_device *hdev, void *data)
++{
++
++}
++
+ static void goya_set_dma_mask_from_fw(struct hl_device *hdev)
+ {
+ 	if (RREG32(mmPSOC_GLOBAL_CONF_NON_RST_FLOPS_0) ==
+@@ -5222,6 +5258,13 @@ static const struct hl_asic_funcs goya_funcs = {
+ 	.read_device_fw_version = goya_read_device_fw_version,
+ 	.load_firmware_to_device = goya_load_firmware_to_device,
+ 	.load_boot_fit_to_device = goya_load_boot_fit_to_device,
++	.ext_queue_init = goya_ext_queue_init,
++	.ext_queue_reset = goya_ext_queue_reset,
++	.get_signal_cb_size = goya_get_signal_cb_size,
++	.get_wait_cb_size = goya_get_wait_cb_size,
++	.gen_signal_cb = goya_gen_signal_cb,
++	.gen_wait_cb = goya_gen_wait_cb,
++	.reset_sob = goya_reset_sob,
+ 	.set_dma_mask_from_fw = goya_set_dma_mask_from_fw,
+ 	.get_device_time = goya_get_device_time
+ };
 diff --git a/drivers/misc/habanalabs/habanalabs.h b/drivers/misc/habanalabs/habanalabs.h
-index b1dc6a22ba0d..7cd9a8d72451 100644
+index 7cd9a8d72451..dd93cd903f91 100644
 --- a/drivers/misc/habanalabs/habanalabs.h
 +++ b/drivers/misc/habanalabs/habanalabs.h
-@@ -1347,6 +1347,7 @@ struct hl_device_idle_busy_ts {
-  *                           only to POWER9 machines.
-  * @cdev_sysfs_created: were char devices and sysfs nodes created.
-  * @stop_on_err: true if engines should stop on error.
-+ * @supports_sync_stream: is sync stream supported.
-  */
- struct hl_device {
- 	struct pci_dev			*pdev;
-@@ -1429,6 +1430,7 @@ struct hl_device {
- 	u8                              power9_64bit_dma_enable;
- 	u8				cdev_sysfs_created;
- 	u8				stop_on_err;
-+	u8				supports_sync_stream;
- 
- 	/* Parameters for bring-up */
- 	u8				mmu_enable;
-diff --git a/include/uapi/misc/habanalabs.h b/include/uapi/misc/habanalabs.h
-index 523e511e6cff..70dfccea7038 100644
---- a/include/uapi/misc/habanalabs.h
-+++ b/include/uapi/misc/habanalabs.h
-@@ -1,6 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note
-  *
-- * Copyright 2016-2019 HabanaLabs, Ltd.
-+ * Copyright 2016-2020 HabanaLabs, Ltd.
-  * All Rights Reserved.
-  *
-  */
-@@ -241,52 +241,87 @@ union hl_cb_args {
-  * compatibility
-  */
- struct hl_cs_chunk {
--	/*
--	 * For external queue, this represents a Handle of CB on the Host
--	 * For internal queue, this represents an SRAM or DRAM address of the
--	 * internal CB
--	 */
--	__u64 cb_handle;
-+	union {
-+		/* For external queue, this represents a Handle of CB on the
-+		 * Host.
-+		 * For internal queue in Goya, this represents an SRAM or
-+		 * a DRAM address of the internal CB. In Gaudi, this might also
-+		 * represent a mapped host address of the CB.
-+		 *
-+		 * A mapped host address is in the device address space, after
-+		 * a host address was mapped by the device MMU.
-+		 */
-+		__u64 cb_handle;
-+
-+		/* Relevant only when HL_CS_FLAGS_WAIT is set.
-+		 * This holds address of array of u64 values that contain
-+		 * signal CS sequence numbers. The wait described by this job
-+		 * will listen on all those signals (wait event per signal)
-+		 */
-+		__u64 signal_seq_arr;
-+	};
-+
- 	/* Index of queue to put the CB on */
- 	__u32 queue_index;
--	/*
--	 * Size of command buffer with valid packets
--	 * Can be smaller then actual CB size
--	 */
--	__u32 cb_size;
-+
-+	union {
-+		/*
-+		 * Size of command buffer with valid packets
-+		 * Can be smaller then actual CB size
-+		 */
-+		__u32 cb_size;
-+
-+		/* Relevant only when HL_CS_FLAGS_WAIT is set.
-+		 * Number of entries in signal_seq_arr
-+		 */
-+		__u32 num_signal_seq_arr;
-+	};
-+
- 	/* HL_CS_CHUNK_FLAGS_* */
- 	__u32 cs_chunk_flags;
-+
- 	/* Align structure to 64 bytes */
- 	__u32 pad[11];
+@@ -553,6 +553,13 @@ enum hl_pll_frequency {
+  *                          contained in registers
+  * @load_firmware_to_device: load the firmware to the device's memory
+  * @load_boot_fit_to_device: load boot fit to device's memory
++ * @ext_queue_init: Initialize the given external queue.
++ * @ext_queue_reset: Reset the given external queue.
++ * @get_signal_cb_size: Get signal CB size.
++ * @get_wait_cb_size: Get wait CB size.
++ * @gen_signal_cb: Generate a signal CB.
++ * @gen_wait_cb: Generate a wait CB.
++ * @reset_sob: Reset a SOB.
+  * @set_dma_mask_from_fw: set the DMA mask in the driver according to the
+  *                        firmware configuration
+  * @get_device_time: Get the device time.
+@@ -648,6 +655,14 @@ struct hl_asic_funcs {
+ 					enum hl_fw_component fwc);
+ 	int (*load_firmware_to_device)(struct hl_device *hdev);
+ 	int (*load_boot_fit_to_device)(struct hl_device *hdev);
++	void (*ext_queue_init)(struct hl_device *hdev, u32 hw_queue_id);
++	void (*ext_queue_reset)(struct hl_device *hdev, u32 hw_queue_id);
++	u32 (*get_signal_cb_size)(struct hl_device *hdev);
++	u32 (*get_wait_cb_size)(struct hl_device *hdev);
++	void (*gen_signal_cb)(struct hl_device *hdev, void *data, u16 sob_id);
++	void (*gen_wait_cb)(struct hl_device *hdev, void *data, u16 sob_id,
++				u16 sob_val, u16 mon_id, u32 q_idx);
++	void (*reset_sob)(struct hl_device *hdev, void *data);
+ 	void (*set_dma_mask_from_fw)(struct hl_device *hdev);
+ 	u64 (*get_device_time)(struct hl_device *hdev);
  };
- 
-+/* SIGNAL and WAIT flags are mutually exclusive */
- #define HL_CS_FLAGS_FORCE_RESTORE	0x1
-+#define HL_CS_FLAGS_SIGNAL		0x2
-+#define HL_CS_FLAGS_WAIT		0x4
- 
- #define HL_CS_STATUS_SUCCESS		0
- 
- #define HL_MAX_JOBS_PER_CS		512
- 
- struct hl_cs_in {
-+
- 	/* this holds address of array of hl_cs_chunk for restore phase */
- 	__u64 chunks_restore;
--	/* this holds address of array of hl_cs_chunk for execution phase */
-+
-+	/* holds address of array of hl_cs_chunk for execution phase */
- 	__u64 chunks_execute;
-+
- 	/* this holds address of array of hl_cs_chunk for store phase -
- 	 * Currently not in use
- 	 */
- 	__u64 chunks_store;
-+
- 	/* Number of chunks in restore phase array. Maximum number is
- 	 * HL_MAX_JOBS_PER_CS
- 	 */
- 	__u32 num_chunks_restore;
-+
- 	/* Number of chunks in execution array. Maximum number is
- 	 * HL_MAX_JOBS_PER_CS
- 	 */
- 	__u32 num_chunks_execute;
-+
- 	/* Number of chunks in restore phase array - Currently not in use */
- 	__u32 num_chunks_store;
-+
- 	/* HL_CS_FLAGS_* */
- 	__u32 cs_flags;
-+
- 	/* Context ID - Currently not in use */
- 	__u32 ctx_id;
- };
-@@ -597,8 +632,8 @@ struct hl_debug_args {
-  * For jobs on external queues, the user needs to create command buffers
-  * through the CB ioctl and give the CB's handle to the CS ioctl. For jobs on
-  * internal queues, the user needs to prepare a "command buffer" with packets
-- * on either the SRAM or DRAM, and give the device address of that buffer to
-- * the CS ioctl.
-+ * on either the device SRAM/DRAM or the host, and give the device address of
-+ * that buffer to the CS ioctl.
-  *
-  * This IOCTL is asynchronous in regard to the actual execution of the CS. This
-  * means it returns immediately after ALL the JOBS were enqueued on their
-@@ -610,7 +645,7 @@ struct hl_debug_args {
-  * external JOBS have been completed. Note that if the CS has internal JOBS
-  * which can execute AFTER the external JOBS have finished, the driver might
-  * report that the CS has finished executing BEFORE the internal JOBS have
-- * actually finish executing.
-+ * actually finished executing.
-  *
-  * Even though the sequence number increments per CS, the user can NOT
-  * automatically assume that if CS with sequence number N finished, then CS
 -- 
 2.17.1
 
