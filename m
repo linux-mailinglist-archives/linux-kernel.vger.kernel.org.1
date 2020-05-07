@@ -2,87 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A8721C80A1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 05:47:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C03531C80A7
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 05:49:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726531AbgEGDri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 23:47:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725809AbgEGDri (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 23:47:38 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 391CDC061A0F;
-        Wed,  6 May 2020 20:47:38 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id d184so2296620pfd.4;
-        Wed, 06 May 2020 20:47:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=k42B0v+KyyPwXu1TxJ3NGB+Mz8tcGMWNDg8BOG5X2is=;
-        b=fOAXfSmtHy7lzjwH9nWI5vGd1yHZZPStW3GW1bYOQqGke1WNtouCxNQsSz90iYTS6r
-         Hx8OfIYANa5Rwv5PlUgSvrQ/0VnwKC9cKL+MI/OzYsZAyY+dBDGjRJZtJh5Emr3Rusfy
-         OUqf6q+dKRXE7q4V2035TYzqDG92bHKGqhxvSUWx1ovSBCB+I7t7AmrnXSefkX7HI/oF
-         wRikRHkJJ3m/YhFgBU873E01jRxvqL7r1d8iD6ON46OPz5Y9Y/Emhf/Eh/0VZ+cSc2zw
-         tGL/BMEE+9X5to6tLunbS205C0vyefX/0fgHwVAAnL2Wh8haaB3kRtfE9YiyOWpmOs9F
-         IL4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=k42B0v+KyyPwXu1TxJ3NGB+Mz8tcGMWNDg8BOG5X2is=;
-        b=osA0sg1OcpFJVQmCSaJI1IUJgyCFW5rqV1mPUgyj4kRxZ+v3gWmBfKbahLzH0gUPU0
-         7vJPi9ozYPLsvVrkGdjRkay4cI9T2V79+m3GlsXMeSi6j6JUnycRbwPzshxu5cdg2lJU
-         E3hUYhDtMutu7WmSinhbeiGIQIqisktFHRGQ4+OTeqtAGFr8ialwvZItUyh0tNtMsleE
-         YpkwCqKLEiWkdXM1bPRoJHmeYTDOMWj5MT3YBih9tvwZ/vwpqNRRv5+pGsZTv/yS4i4D
-         2kiGcHyTooyR4MkEex3sCU2yRewK2R2xqSEVz/L9YBK6u+GLypgFXpNxVdtDlKaAYWfy
-         DRTA==
-X-Gm-Message-State: AGi0PuYtmY/a5bIiItSZuEeAravr+Yb6qoH0vqMRPYlr+NGSq237DE6E
-        FI1DbTe2E9SHbEZE9gyUBtw=
-X-Google-Smtp-Source: APiQypK4A84ZXMUNrHmbDEQoXCfj0mgTIbuCvHuFZnvKDZjmlLnwqTsib4w28kxI/hDuD805kIO41A==
-X-Received: by 2002:a63:e050:: with SMTP id n16mr9888597pgj.93.1588823257540;
-        Wed, 06 May 2020 20:47:37 -0700 (PDT)
-Received: from sh03840pcu.spreadtrum.com ([117.18.48.82])
-        by smtp.gmail.com with ESMTPSA id z5sm3130716pfn.142.2020.05.06.20.47.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 06 May 2020 20:47:36 -0700 (PDT)
-From:   Baolin Wang <baolin.wang7@gmail.com>
-To:     linus.walleij@linaro.org
-Cc:     orsonzhai@gmail.com, zhang.lyra@gmail.com, baolin.wang7@gmail.com,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] pinctrl: sprd: Fix the incorrect pull-up definition
-Date:   Thu,  7 May 2020 11:47:25 +0800
-Message-Id: <e973f8f194ce4cb2639121572e8621b5efa5bfbe.1588823152.git.baolin.wang7@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        id S1726678AbgEGDtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 23:49:23 -0400
+Received: from mail-co1nam11olkn2042.outbound.protection.outlook.com ([40.92.18.42]:60609
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725809AbgEGDtX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 23:49:23 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YMSaXUqIB4D8s/6a3KdOakYsLpOxLzmh8pcLLdH8+RKW4jE0GVQTTCdNor/J6RLvrADJlMPB5Oicts+Y1r1MnTNYXDimYdNElXizv7NBbKi1JQtm8Cct+FEJLzXtPvcatqkQDN5pL005EMNCA6/wTmo31usXwiZKnRXX5P4vqVYqkE+i7WC85eltGDnZkwEIMa03CfJ7UT8ZJbmuh97KMKsTWGSjkm3+WEBV4yRTdGOGdwDiqVR6I8TcYTSkba3mCBVDTAqXK0cFWUuVX+5yHJDRL5R9NRkKWk0FJptEapv5h9QNUcwJs5VWsUj1Dpt7zho2E6Khda1gsjyATiV5sg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=n7WS0ep6Pof67yFRn3nDZEba4oGZkhMCcHX7e4vT7vE=;
+ b=A4RCxDHP2vdqAQwTaV2UAmCW/RHDNTTFcrNcZYB49QG/BCDLHcw+TdsR/zxCTO4ZxKGb0waAnKTEPLedPHDXvd1r1p4ssbUtjIU152gf2JuW8HhAQFaSgfz3ZTh8Gwn6GjeeQ5yYKdZhYQzOC2LfFS6FzBjDA37UeE9+k/3TR9SZXJ1CoifGT6JNP/+vaMt7RQyCbhvKAe3ezdPYCJgQ7FFVIhUgt5u41LGbtuk7epkl4BODZjzaEMUJ4/aa2UFEDn7kTqpkZa9uzZAJBcZWEDIla+FiChnyIzZEk2ok+m16eqf6Sa1ChOHCRtvfUCyF8wYphM9Qk1upqdJ3CMgvcw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=live.ca; dmarc=pass action=none header.from=live.ca; dkim=pass
+ header.d=live.ca; arc=none
+Received: from DM6NAM11FT046.eop-nam11.prod.protection.outlook.com
+ (2a01:111:e400:fc4d::52) by
+ DM6NAM11HT211.eop-nam11.prod.protection.outlook.com (2a01:111:e400:fc4d::260)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.27; Thu, 7 May
+ 2020 03:49:21 +0000
+Received: from BN6PR04MB0660.namprd04.prod.outlook.com
+ (2a01:111:e400:fc4d::50) by DM6NAM11FT046.mail.protection.outlook.com
+ (2a01:111:e400:fc4d::121) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.27 via Frontend
+ Transport; Thu, 7 May 2020 03:49:21 +0000
+X-IncomingTopHeaderMarker: OriginalChecksum:D62C5FD99AA6B2C7BB5B5814B373DA82F85035C1579510770DE4DCDFC959F25C;UpperCasedChecksum:E72F6D97373CD4F15348698307B3CF6FE7D5D32898808A3C7BC0E0F56EC93F3D;SizeAsReceived:9609;Count:50
+Received: from BN6PR04MB0660.namprd04.prod.outlook.com
+ ([fe80::ad10:4127:4bc8:76fc]) by BN6PR04MB0660.namprd04.prod.outlook.com
+ ([fe80::ad10:4127:4bc8:76fc%6]) with mapi id 15.20.2979.028; Thu, 7 May 2020
+ 03:49:21 +0000
+Subject: Re: [PATCH 0/5] iio: accel: Add bma023 support to bma180
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald <pmeerw@pmeerw.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux Input <linux-input@vger.kernel.org>
+References: <BN6PR04MB0660046ABD79433EA94A85A9A3A90@BN6PR04MB0660.namprd04.prod.outlook.com>
+ <CACRpkdbb89q2FRJZ1=2QoQs8JFYcwWpNZwJUbnjsVvZYEE-LKw@mail.gmail.com>
+From:   Jonathan Bakker <xc-racer2@live.ca>
+Message-ID: <BN6PR04MB0660BD7ABF64EC0C19A65A03A3A50@BN6PR04MB0660.namprd04.prod.outlook.com>
+Date:   Wed, 6 May 2020 20:49:17 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
+In-Reply-To: <CACRpkdbb89q2FRJZ1=2QoQs8JFYcwWpNZwJUbnjsVvZYEE-LKw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MWHPR13CA0014.namprd13.prod.outlook.com
+ (2603:10b6:300:16::24) To BN6PR04MB0660.namprd04.prod.outlook.com
+ (2603:10b6:404:d9::21)
+X-Microsoft-Original-Message-ID: <1bb115be-fb1a-2024-d42f-4886f4cf207d@live.ca>
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2001:569:fb68:9c00:8067:f823:1e15:7520] (2001:569:fb68:9c00:8067:f823:1e15:7520) by MWHPR13CA0014.namprd13.prod.outlook.com (2603:10b6:300:16::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.11 via Frontend Transport; Thu, 7 May 2020 03:49:19 +0000
+X-Microsoft-Original-Message-ID: <1bb115be-fb1a-2024-d42f-4886f4cf207d@live.ca>
+X-TMN:  [guzGGOMzR893nySBwTW0D24rgCeYJMv37PiOHM3O8jvitFAJljdWPSVHhpCYxaG9]
+X-MS-PublicTrafficType: Email
+X-IncomingHeaderCount: 50
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-Correlation-Id: 76cc8ac4-9800-48a5-0dfe-08d7f239a006
+X-MS-TrafficTypeDiagnostic: DM6NAM11HT211:
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: H0SlhJ89kHbXu+2bL3mhpeRiKukjGmTJntsSk8GLGk32f7onWt3yOjIv5YWSIf0SGgmPP7NesMkPg2i2eQCJYRYuYlNeqCcymhiEwbxFJIlYGYUS/yk081BNEoA+PxF40SFSPysnz7dl+gSzIrMTQNBc10GRN8rhmzOULe/BEWOHxp3SSJz5WXTLmJO4K1t+FB3jS1j6E5D77A8yfnbWWg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:0;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR04MB0660.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:;DIR:OUT;SFP:1901;
+X-MS-Exchange-AntiSpam-MessageData: KdSp707CMaCaKb/T+6/RBiFX+R6hGsSF48youbVNqH7rSIqb2emCzhDCE4m40CgAf+OQPBGyLDzOdobsj6Oju4U91aTREh2mQDClzRjHVIOPlgi4Ii3ppEen+QJlDNGsplangyM7FUejLM8VdBH5DeAYJ7gBX4rGNna3yRL2LyEQ50tu5mTGd91ZcEOl5h1wLDrq2LBMsUo/1hKLzdahKA==
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 76cc8ac4-9800-48a5-0dfe-08d7f239a006
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 May 2020 03:49:21.1701
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6NAM11HT211
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The bits of pull up resistor selection were defined mistakenly,
-thus fix them.
+Hi Linus,
 
-Fixes: 41d32cfce1ae ("pinctrl: sprd: Add Spreadtrum pin control driver")
-Signed-off-by: Baolin Wang <baolin.wang7@gmail.com>
----
- drivers/pinctrl/sprd/pinctrl-sprd.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On 2020-05-06 5:47 a.m., Linus Walleij wrote:
+> On Sun, May 3, 2020 at 7:22 PM Jonathan Bakker <xc-racer2@live.ca> wrote:
+> 
+>> This patchset adds support for the bma023 three axis accelerometer
+>> to the bma180 IIO driver.  The bma023 is found on several ~2010
+>> phones, including the first-gen Galaxy S series.
+>>
+>> The bma023 differs from later chips (bma180, bma25x) in that it
+>> has no low power but still working mode and no temperature
+>> channel.
+>>
+>> The bma023 is already supported by a misc input driver (bma150), so
+>> when both are enabled, the iio driver is preferred.  The bma150
+>> is very similar to the bma023, but has a temperature channel.
+>> Support for the bma150 is not added in this patchset.
+> 
+> I'd say, if it's not too much trouble please also patch in
+> support for BMA150 and SMB380 to the IIO driver so
+> we can delete this old Input driver, we have done this
+> before and thes "input drivers" are just causing headaches
+> and wasting time for the Input maintainer.
+> 
 
-diff --git a/drivers/pinctrl/sprd/pinctrl-sprd.c b/drivers/pinctrl/sprd/pinctrl-sprd.c
-index 48cbf2a..08dc193 100644
---- a/drivers/pinctrl/sprd/pinctrl-sprd.c
-+++ b/drivers/pinctrl/sprd/pinctrl-sprd.c
-@@ -68,8 +68,8 @@
- #define SLEEP_PULL_UP_MASK		0x1
- #define SLEEP_PULL_UP_SHIFT		3
- 
--#define PULL_UP_20K			(BIT(12) | BIT(7))
--#define PULL_UP_4_7K			BIT(12)
-+#define PULL_UP_4_7K			(BIT(12) | BIT(7))
-+#define PULL_UP_20K			BIT(7)
- #define PULL_UP_MASK			0x21
- #define PULL_UP_SHIFT			7
- 
--- 
-1.9.1
+Looking at the bma150, it looks the same.  The temperature is implemented
+slightly differently than on the bma180+ (unsigned vs signed) but should
+be quite easy to add.  I'll add a new patch for it in v2.
 
+> It can be in a separate patch set from this one if you
+> don't want to get stuck on this.
+> 
+> Yours,
+> Linus Walleij
+> 
+
+Thanks,
+Jonathan
