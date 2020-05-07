@@ -2,152 +2,345 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 004321C8C8E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 15:39:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD5621C8CB6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 15:41:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727119AbgEGNi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 09:38:28 -0400
-Received: from smtp-bc0b.mail.infomaniak.ch ([45.157.188.11]:58861 "EHLO
-        smtp-bc0b.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727108AbgEGNi0 (ORCPT
+        id S1726776AbgEGNlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 09:41:31 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:49456 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726480AbgEGNla (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 09:38:26 -0400
-Received: from smtp-2-0000.mail.infomaniak.ch (unknown [10.5.36.107])
-        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 49Hvg31J1fzlhS6J;
-        Thu,  7 May 2020 15:38:23 +0200 (CEST)
-Received: from ns3096276.ip-94-23-54.eu (unknown [94.23.54.103])
-        by smtp-2-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 49Hvg01x5Gzlpmph;
-        Thu,  7 May 2020 15:38:20 +0200 (CEST)
-Subject: Re: [PATCH v5 0/6] Add support for O_MAYEXEC
-To:     David Laight <David.Laight@ACULAB.COM>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     Aleksa Sarai <cyphar@cyphar.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
+        Thu, 7 May 2020 09:41:30 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 047DXNLk106739;
+        Thu, 7 May 2020 13:40:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=8kGnhSn5hpXXUErw36JflRncT0TT+ZXqk1Ou29ZGQyk=;
+ b=nNzlVErF7jB6eLDdtCRI9/u8Uy2KrV5IJZCIveAWInr4AsKLlZdmdZTc5mtj8y186RS7
+ V5kMOlsgF/hQqfmz29y1dDM6qW+GEL3H5A6stvf8HyHabGQhfzwzt2PepAtxP4WTYiyY
+ HW9zs8Sz9Xa55fD6TgEMa6caCpSarK7TLH/Nj7p/+Z2RmabNhwXJFqEk0p2XGmK9YArQ
+ GTZqIdENonKqC667ml1E2F9HpledINWnGc3PpFu5EBd01QguKf9aLdhfrPp7nTq6o5vu
+ pQ+wBZZxjFoVk5vCyru7GLOXRch+2d3Z/woQs+OrtTUXu0WXVUQD+5DkbLQ5DfgZXfwz Xw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 30usgq78qq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 07 May 2020 13:40:36 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 047Da4WL130384;
+        Thu, 7 May 2020 13:40:35 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 30t1ranggg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 07 May 2020 13:40:35 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 047DeVYU029600;
+        Thu, 7 May 2020 13:40:31 GMT
+Received: from linux-1.home (/92.157.36.49)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 07 May 2020 06:40:31 -0700
+Subject: Re: [patch V4 part 2 04/18] x86/entry/common: Protect against
+ instrumentation
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Andy Lutomirski <luto@kernel.org>,
-        Christian Heimes <christian@python.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Deven Bowers <deven.desai@linux.microsoft.com>,
-        Eric Chiang <ericchiang@google.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mickael.salaun@ssi.gouv.fr>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        =?UTF-8?Q?Philippe_Tr=c3=a9buchet?= 
-        <philippe.trebuchet@ssi.gouv.fr>,
-        Scott Shell <scottsh@microsoft.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
         Sean Christopherson <sean.j.christopherson@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Steve Dower <steve.dower@python.org>,
-        Steve Grubb <sgrubb@redhat.com>,
-        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>,
-        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
-        "kernel-hardening@lists.openwall.com" 
-        <kernel-hardening@lists.openwall.com>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-References: <20200505153156.925111-1-mic@digikod.net>
- <20b24b9ca0a64afb9389722845738ec8@AcuMS.aculab.com>
- <907109c8-9b19-528a-726f-92c3f61c1563@digikod.net>
- <ad28ab5fe7854b41a575656e95b4da17@AcuMS.aculab.com>
- <64426377-7fc4-6f37-7371-2e2a584e3032@digikod.net>
- <635df0655b644408ac4822def8900383@AcuMS.aculab.com>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <1ced6f5f-7181-1dc5-2da7-abf4abd5ad23@digikod.net>
-Date:   Thu, 7 May 2020 15:38:19 +0200
-User-Agent: 
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>
+References: <20200505134112.272268764@linutronix.de>
+ <20200505134340.520277507@linutronix.de>
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+Message-ID: <87976f9b-2c36-b4f7-5382-4eba569cc687@oracle.com>
+Date:   Thu, 7 May 2020 15:39:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <635df0655b644408ac4822def8900383@AcuMS.aculab.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200505134340.520277507@linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Antivirus: Dr.Web (R) for Unix mail servers drweb plugin ver.6.0.2.8
-X-Antivirus-Code: 0x100000
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9613 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 suspectscore=0
+ spamscore=0 mlxlogscore=999 malwarescore=0 phishscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005070111
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9613 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxscore=0
+ priorityscore=1501 lowpriorityscore=0 malwarescore=0 clxscore=1015
+ mlxlogscore=999 spamscore=0 adultscore=0 bulkscore=0 phishscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005070111
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 07/05/2020 11:44, David Laight wrote:
-> From: Mickaël Salaün <mic@digikod.net>
->> Sent: 07 May 2020 10:30
->> On 07/05/2020 11:00, David Laight wrote:
->>> From: Mickaël Salaün
->>>> Sent: 07 May 2020 09:37
->>> ...
->>>>> None of that description actually says what the patch actually does.
->>>>
->>>> "Add support for O_MAYEXEC" "to enable to control script execution".
->>>> What is not clear here? This seems well understood by other commenters.
->>>> The documentation patch and the talks can also help.
->>>
->>> I'm guessing that passing O_MAYEXEC to open() requests the kernel
->>> check for execute 'x' permissions (as well as read).
->>
->> Yes, but only with openat2().
+On 5/5/20 3:41 PM, Thomas Gleixner wrote:
+> Mark the various syscall entries with noinstr to protect them against
+> instrumentation and add the noinstr_begin()/end() annotations to mark the
+> parts of the functions which are safe to call out into instrumentable code.
 > 
-> It can't matter if the flag is ignored.
-> It just means the kernel isn't enforcing the policy.
-> If openat2() fail because the flag is unsupported then
-> the application will need to retry without the flag.
-
-I don't get what you want to prove. Please read carefully the cover
-letter, the use case and the threat model.
-
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>   arch/x86/entry/common.c |  135 ++++++++++++++++++++++++++++++++----------------
+>   1 file changed, 90 insertions(+), 45 deletions(-)
 > 
-> So if the user has any ability create executable files this
-> is all pointless (from a security point of view).
-> The user can either copy the file or copy in an interpreter
-> that doesn't request O_MAYEXEC.>
-> It might stop accidental issues, but nothing malicious.
+> --- a/arch/x86/entry/common.c
+> +++ b/arch/x86/entry/common.c
+> @@ -41,15 +41,26 @@
+>   
+>   #ifdef CONFIG_CONTEXT_TRACKING
+>   /* Called on entry from user mode with IRQs off. */
+> -__visible inline noinstr void enter_from_user_mode(void)
+> +__visible noinstr void enter_from_user_mode(void)
+>   {
+> -	CT_WARN_ON(ct_state() != CONTEXT_USER);
+> +	enum ctx_state state = ct_state();
+> +
+>   	user_exit_irqoff();
+> +
+> +	instr_begin();
+> +	CT_WARN_ON(state != CONTEXT_USER);
+> +	instr_end();
+>   }
+>   #else
+>   static inline void enter_from_user_mode(void) {}
+>   #endif
+>   
+> +static noinstr void exit_to_user_mode(void)
+> +{
+> +	user_enter_irqoff();
+> +	mds_user_clear_cpu_buffers();
+> +}
+> +
+>   static void do_audit_syscall_entry(struct pt_regs *regs, u32 arch)
+>   {
+>   #ifdef CONFIG_X86_64
+> @@ -179,8 +190,7 @@ static void exit_to_usermode_loop(struct
+>   	}
+>   }
+>   
+> -/* Called with IRQs disabled. */
+> -__visible inline void prepare_exit_to_usermode(struct pt_regs *regs)
+> +static void __prepare_exit_to_usermode(struct pt_regs *regs)
+>   {
+>   	struct thread_info *ti = current_thread_info();
+>   	u32 cached_flags;
+> @@ -219,10 +229,14 @@ static void exit_to_usermode_loop(struct
+>   	 */
+>   	ti->status &= ~(TS_COMPAT|TS_I386_REGS_POKED);
+>   #endif
+> +}
+>   
+> -	user_enter_irqoff();
+> -
+> -	mds_user_clear_cpu_buffers();
+> +__visible noinstr void prepare_exit_to_usermode(struct pt_regs *regs)
+> +{
+> +	instr_begin();
+> +	__prepare_exit_to_usermode(regs);
+> +	instr_end();
+> +	exit_to_user_mode();
+>   }
+>   
+>   #define SYSCALL_EXIT_WORK_FLAGS				\
+> @@ -251,11 +265,7 @@ static void syscall_slow_exit_work(struc
+>   		tracehook_report_syscall_exit(regs, step);
+>   }
+>   
+> -/*
+> - * Called with IRQs on and fully valid regs.  Returns with IRQs off in a
+> - * state such that we can immediately switch to user mode.
+> - */
+> -__visible inline void syscall_return_slowpath(struct pt_regs *regs)
+> +static void __syscall_return_slowpath(struct pt_regs *regs)
+>   {
+>   	struct thread_info *ti = current_thread_info();
+>   	u32 cached_flags = READ_ONCE(ti->flags);
+> @@ -276,15 +286,29 @@ static void syscall_slow_exit_work(struc
+>   		syscall_slow_exit_work(regs, cached_flags);
+>   
+>   	local_irq_disable();
+> -	prepare_exit_to_usermode(regs);
+> +	__prepare_exit_to_usermode(regs);
+> +}
+> +
+> +/*
+> + * Called with IRQs on and fully valid regs.  Returns with IRQs off in a
+> + * state such that we can immediately switch to user mode.
+> + */
+> +__visible noinstr void syscall_return_slowpath(struct pt_regs *regs)
+> +{
+> +	instr_begin();
+> +	__syscall_return_slowpath(regs);
+> +	instr_end();
+> +	exit_to_user_mode();
+>   }
+>   
+>   #ifdef CONFIG_X86_64
+> -__visible void do_syscall_64(unsigned long nr, struct pt_regs *regs)
+> +__visible noinstr void do_syscall_64(unsigned long nr, struct pt_regs *regs)
+>   {
+>   	struct thread_info *ti;
+>   
+>   	enter_from_user_mode();
+> +	instr_begin();
+> +
+>   	local_irq_enable();
+>   	ti = current_thread_info();
+>   	if (READ_ONCE(ti->flags) & _TIF_WORK_SYSCALL_ENTRY)
+> @@ -301,8 +325,10 @@ static void syscall_slow_exit_work(struc
+>   		regs->ax = x32_sys_call_table[nr](regs);
+>   #endif
+>   	}
+> +	__syscall_return_slowpath(regs);
+>   
+> -	syscall_return_slowpath(regs);
+> +	instr_end();
+> +	exit_to_user_mode();
+>   }
+>   #endif
+>   
+> @@ -310,10 +336,10 @@ static void syscall_slow_exit_work(struc
+>   /*
+>    * Does a 32-bit syscall.  Called with IRQs on in CONTEXT_KERNEL.  Does
+>    * all entry and exit work and returns with IRQs off.  This function is
+> - * extremely hot in workloads that use it, and it's usually called from
+> + * ex2tremely hot in workloads that use it, and it's usually called from
 
-The execute permission (like the write permission) does not only depends
-on the permission set on files, but it also depends on the
-options/permission of their mount points, the MAC policy, etc. The
-initial use case to enforce O_MAYEXEC is to rely on the noexec mount option.
+typo: "ex2tremely"
 
-If you want a consistent policy, you need to make one. Only dealing with
-file properties may not be enough. This is explain in the cover letter
-and the patches. If you allow all users to write and execute their
-files, then there is no point in enforcing anything with O_MAYEXEC.
+alex.
 
+
+>    * do_fast_syscall_32, so forcibly inline it to improve performance.
+>    */
+> -static __always_inline void do_syscall_32_irqs_on(struct pt_regs *regs)
+> +static void do_syscall_32_irqs_on(struct pt_regs *regs)
+>   {
+>   	struct thread_info *ti = current_thread_info();
+>   	unsigned int nr = (unsigned int)regs->orig_ax;
+> @@ -337,27 +363,62 @@ static __always_inline void do_syscall_3
+>   		regs->ax = ia32_sys_call_table[nr](regs);
+>   	}
+>   
+> -	syscall_return_slowpath(regs);
+> +	__syscall_return_slowpath(regs);
+>   }
+>   
+>   /* Handles int $0x80 */
+> -__visible void do_int80_syscall_32(struct pt_regs *regs)
+> +__visible noinstr void do_int80_syscall_32(struct pt_regs *regs)
+>   {
+>   	enter_from_user_mode();
+> +	instr_begin();
+> +
+>   	local_irq_enable();
+>   	do_syscall_32_irqs_on(regs);
+> +
+> +	instr_end();
+> +	exit_to_user_mode();
+> +}
+> +
+> +static bool __do_fast_syscall_32(struct pt_regs *regs)
+> +{
+> +	int res;
+> +
+> +	/* Fetch EBP from where the vDSO stashed it. */
+> +	if (IS_ENABLED(CONFIG_X86_64)) {
+> +		/*
+> +		 * Micro-optimization: the pointer we're following is
+> +		 * explicitly 32 bits, so it can't be out of range.
+> +		 */
+> +		res = __get_user(*(u32 *)&regs->bp,
+> +			 (u32 __user __force *)(unsigned long)(u32)regs->sp);
+> +	} else {
+> +		res = get_user(*(u32 *)&regs->bp,
+> +		       (u32 __user __force *)(unsigned long)(u32)regs->sp);
+> +	}
+> +
+> +	if (res) {
+> +		/* User code screwed up. */
+> +		regs->ax = -EFAULT;
+> +		local_irq_disable();
+> +		__prepare_exit_to_usermode(regs);
+> +		return false;
+> +	}
+> +
+> +	/* Now this is just like a normal syscall. */
+> +	do_syscall_32_irqs_on(regs);
+> +	return true;
+>   }
+>   
+>   /* Returns 0 to return using IRET or 1 to return using SYSEXIT/SYSRETL. */
+> -__visible long do_fast_syscall_32(struct pt_regs *regs)
+> +__visible noinstr long do_fast_syscall_32(struct pt_regs *regs)
+>   {
+>   	/*
+>   	 * Called using the internal vDSO SYSENTER/SYSCALL32 calling
+>   	 * convention.  Adjust regs so it looks like we entered using int80.
+>   	 */
+> -
+>   	unsigned long landing_pad = (unsigned long)current->mm->context.vdso +
+> -		vdso_image_32.sym_int80_landing_pad;
+> +					vdso_image_32.sym_int80_landing_pad;
+> +	bool success;
+>   
+>   	/*
+>   	 * SYSENTER loses EIP, and even SYSCALL32 needs us to skip forward
+> @@ -367,33 +428,17 @@ static __always_inline void do_syscall_3
+>   	regs->ip = landing_pad;
+>   
+>   	enter_from_user_mode();
+> +	instr_begin();
+>   
+>   	local_irq_enable();
+> +	success = __do_fast_syscall_32(regs);
+>   
+> -	/* Fetch EBP from where the vDSO stashed it. */
+> -	if (
+> -#ifdef CONFIG_X86_64
+> -		/*
+> -		 * Micro-optimization: the pointer we're following is explicitly
+> -		 * 32 bits, so it can't be out of range.
+> -		 */
+> -		__get_user(*(u32 *)&regs->bp,
+> -			    (u32 __user __force *)(unsigned long)(u32)regs->sp)
+> -#else
+> -		get_user(*(u32 *)&regs->bp,
+> -			 (u32 __user __force *)(unsigned long)(u32)regs->sp)
+> -#endif
+> -		) {
+> -
+> -		/* User code screwed up. */
+> -		local_irq_disable();
+> -		regs->ax = -EFAULT;
+> -		prepare_exit_to_usermode(regs);
+> -		return 0;	/* Keep it simple: use IRET. */
+> -	}
+> +	instr_end();
+> +	exit_to_user_mode();
+>   
+> -	/* Now this is just like a normal syscall. */
+> -	do_syscall_32_irqs_on(regs);
+> +	/* If it failed, keep it simple: use IRET. */
+> +	if (!success)
+> +		return 0;
+>   
+>   #ifdef CONFIG_X86_64
+>   	/*
 > 
->>> Then kernel policy determines whether 'read' access is actually enough,
->>> or whether 'x' access (possibly masked by mount permissions) is needed.
->>>
->>> If that is true, two lines say what is does.
->>
->> The "A simple system-wide security policy" paragraph introduce that, but
->> I'll highlight it in the next cover letter.
-> 
-> No it doesn't.
-> It just says there is some kind of policy that some flags change.
-> It doesn't say what is being checked for.
-
-It said "the mount points or the file access rights". Please take a look
-at the documentation patch.
-
-> 
->> The most important point is
->> to understand why it is required, before getting to how it will be
->> implemented.
-> 
-> But you don't say what is required.
-
-A consistent policy. Please take a look at the documentation patch which
-explains the remaining prerequisites. You can also take a look at the
-talks for further details.
-
-> Just a load of buzzword ramblings.
-
-It is a summary. Can you please suggest something better?
