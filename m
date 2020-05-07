@@ -2,82 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FDC91C84FE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 10:39:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C5171C8508
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 10:42:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726767AbgEGIjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 04:39:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46292 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726736AbgEGIje (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 04:39:34 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1F3782080D;
-        Thu,  7 May 2020 08:39:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588840774;
-        bh=Ld4HmaMz+uu6ugfeoP8TBmKNgDCsNouPkgsc7oqJvJ4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ro9/oIOy26gDdLHjpEUoFtciNshEP2GerzmgbWkGIanFXpQygbI2/v8W6P3WCmgyy
-         7Kr7vpMASvV958hsQEWu3oTRmchj+Ts2GFYBk2xWWCVepWBbLyZKBdzQ0rQ2GEjw1n
-         ALYvEew8+AvUNXKIKXDXpWcgpWnYLJsD2/+bcOoc=
-Date:   Thu, 7 May 2020 09:39:30 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     Jason Wessel <jason.wessel@windriver.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        patches@linaro.org
-Subject: Re: [PATCH] kgdb: Fix spurious true from in_dbg_master()
-Message-ID: <20200507083929.GC28215@willie-the-truck>
-References: <20200506164223.2875760-1-daniel.thompson@linaro.org>
+        id S1725923AbgEGImz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 04:42:55 -0400
+Received: from mail-eopbgr60120.outbound.protection.outlook.com ([40.107.6.120]:25856
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725802AbgEGImz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 04:42:55 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Kt1DoQ85l8zYI5HkjGfzghagTffigmD2kK5/j8GoUcW462/IoWHIrHC2HhaL9jG3KkZ+NFeh5iqZ4WWPYu3TPpLg03LY74C8Ba6yIQPG8D7tqSwGI2ELDgLliqAOfotU8DcxrG7YSqMZ2R7QiyRfCD/zuZ6KDS/b+sycHr93zempEmXWMOnpBXkPELKLKKi9F+ZDgQslU6+DKiIMoz1J27fyxzgjqDZOor9Iouu4amgaNYrJN+AmPNau0nMANUVBLUQIKVQXpVO4tlJwMK3Kwh7MvPlhDjilgIHaM7NFBxRmciz7CbNmEvW8kDe/YeigHVgm24L67E/zGdhQlDZ/Pw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qEgZbanxMUshygYNftIUzVGryapzffBFNay4nbF97Yo=;
+ b=PpUW6vkJnDjHxwlzKLrU95HI2pevEskVJXih9pEbkb5Me8ROTimr5al+kCI0YfJUg8KOLUdL083iW+3c0Y1u8Dwo6ykANAVh2USj92JrEcQooYPU03Q3On0I+NIThl50AU1HHn4AOh2i+e8twODGGVzLSu/5PN9lLAgoyfkd0TtzpGKBIZjsAwPN0OnIw1kuVgvy3xkoy8WPAGEAVgLdwH9QgnbJ9pXJlCkZfzlQ91for87gwtJ9C5/C5jcbudHr1MnflU0Zm94sJiBMgq1msHCIZmlPB9AXd7s53xH3G0TNemyjiTjFkW4f256OXcLjS2zeoMX1kld00uXZcr9xvg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=toradex.com; dmarc=pass action=none header.from=toradex.com;
+ dkim=pass header.d=toradex.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=toradex.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qEgZbanxMUshygYNftIUzVGryapzffBFNay4nbF97Yo=;
+ b=c0lks69NT48dFCTWGefoN9CiChpqvEYcFPMjlLn/8hXEGM9Sb3zzwVv0LNbjRpLf3hFEyE84S9ba6IEE9p0S5Ba34sujrSJCI/nxfrYbrtXST1KQjA9Of20UTyo8oQGXqQ1B+I1NqoUnSXSLh+9+R/T1h8FLNByZWW64BHmVur4=
+Received: from AM6PR05MB6120.eurprd05.prod.outlook.com (2603:10a6:20b:a8::25)
+ by AM6PR05MB5846.eurprd05.prod.outlook.com (2603:10a6:20b:a0::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.27; Thu, 7 May
+ 2020 08:42:50 +0000
+Received: from AM6PR05MB6120.eurprd05.prod.outlook.com
+ ([fe80::d8d3:ead7:9f42:4289]) by AM6PR05MB6120.eurprd05.prod.outlook.com
+ ([fe80::d8d3:ead7:9f42:4289%6]) with mapi id 15.20.2979.030; Thu, 7 May 2020
+ 08:42:50 +0000
+From:   Philippe Schenker <philippe.schenker@toradex.com>
+To:     "tony@atomide.com" <tony@atomide.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "grygorii.strashko@ti.com" <grygorii.strashko@ti.com>
+CC:     "o.rempel@pengutronix.de" <o.rempel@pengutronix.de>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+        "andrew@lunn.ch" <andrew@lunn.ch>
+Subject: Re: [PATCH next] ARM: dts: am57xx: fix networking on boards with
+ ksz9031 phy
+Thread-Topic: [PATCH next] ARM: dts: am57xx: fix networking on boards with
+ ksz9031 phy
+Thread-Index: AQHWI9owvz86t4uWZk6jv5dSVMH06KicT0YA
+Date:   Thu, 7 May 2020 08:42:50 +0000
+Message-ID: <eab549aed345683a3ee79835369169c99e003488.camel@toradex.com>
+References: <20200506191124.31569-1-grygorii.strashko@ti.com>
+In-Reply-To: <20200506191124.31569-1-grygorii.strashko@ti.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.36.2 
+authentication-results: atomide.com; dkim=none (message not signed)
+ header.d=none;atomide.com; dmarc=none action=none header.from=toradex.com;
+x-originating-ip: [51.154.7.61]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d6cf6009-8b63-4dd7-0c4b-08d7f262a07e
+x-ms-traffictypediagnostic: AM6PR05MB5846:
+x-microsoft-antispam-prvs: <AM6PR05MB5846FBB0A1CFDA7D9DDD6FDFF4A50@AM6PR05MB5846.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1247;
+x-forefront-prvs: 03965EFC76
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: HY+ddRDvhNkyJ90jexKyLavnJkYy9BbzxauRzwl46vzN+G/CneQFo5qqI49YIjjLiroZZSXNXHc+4oWfpkzX3pttrie3MV9+U6fAxm9EfRtjyur2oROLQLsFMzli2f4H49qu4OcE6Xkyni+FotO4ZDd29NW75bVlXG9JI0BoFK87MsW+Cv3mR9rqblCPhjwzPdBFgBW9MmVA1utaMHsTgwMbNbP/jLtf4b0AwZry+B2xVBR0YHQ6S95jYwIOf7SwijWYuXpBuuSQhKu6FKjlhsjohJHCKG9X8L4Ql0xkFMXluM9oOk8vfEXpeoydKYJa8yzqH7BBX/ZHC6xk50eUfWL/blMOiME84wp2ZUFV4n9lsq6uAMSDYje2vrxwd/iGv7WRuq3KVeuubG66mSbnIskcmgN1VNo/V7bj0Y/kcNZoVlYkkreWU2m+PaRVH5q0LgeEHOitIyOWcnwA3nyHHQbNUCLk3qGcFbqh1NjMUsZI+VVgLCkDfzPIwO7qnW5wBhRq/tkf4Wa8LVCWsZhHrA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR05MB6120.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(346002)(136003)(376002)(366004)(39850400004)(33430700001)(91956017)(6512007)(316002)(76116006)(5660300002)(66476007)(66946007)(64756008)(66446008)(66556008)(71200400001)(83290400001)(83310400001)(83300400001)(478600001)(83320400001)(83280400001)(6486002)(4326008)(36756003)(44832011)(110136005)(2616005)(86362001)(8676002)(8936002)(2906002)(6506007)(26005)(186003)(54906003)(33440700001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: DXVPHYwJ/CL2rT7vY6wMtFWj46azVdPdTJL7pJfsC3qwryzo6yqLRK77NkJgHWHstZgmswUu2ppHlL8KSK0poT+aE06ha7gnkqXmgWjLVHLDaM4gU3p+yhIce3EX/sVLFgxUNF/iFwNnN9oMt9XC1LNJzDS1Cm2wOPuZaZmB4U9CoHZz8a7ra9IRyT5BqQGOyPSTa+mn/LVDKGeSnFEoq5g7SY6q3q8tlSeRh2+RKDl3PaExtaosH3K0TGw20gO4jS8c2BvOIOEetXkTByKAjgdpL/rG5xC1DNT3kB2hDahVeL8hsqbCPAo9moH0JrZ7+frCBBlr7uVqx63VH6vmFQwOI2gZMxE5G19+VlXMeaK4aAorYguJmGiLZ3JjZUSgmfePAmmsUlHLjPvukNhlSbEbIMvf5DgMwYsiHNsDMevtFnUcdMmpXswk1NDZsZvqsBMXFZRMEEorvKtFj+j616BupzK+f7WIMuSr72RF3b9ponZ79dfZNCUAiTbQqdfLRpKmV5OUywbcatLLAT6a5BJOuJTb/ighNf7bzDc6caONbs2weNv7Tc0v4jwgq+LA84T4DsUoVSPBHF4v7zmh5nzwpthhcooprMUVgFpVEarBHzWC+34if5/uWNFXnFwI3vlbZyaQfz1QujvXmGc8Rz0VAUCpI1DYi70iwNMJAtom0IsCKGBxBWMfxnWVIeF9xjicmZbAvPkjVyHiyAimew0VDPAuwLnZCMXj7tKcWbZrAfj2RlUHaB7y21WWESEkd8NRMfB2pMoWe+Wgi99UIzuYw2LdNEJoDqL7S+qLj78=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <789BF0A31A4DED409AE0E21EE46E32BE@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200506164223.2875760-1-daniel.thompson@linaro.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-OriginatorOrg: toradex.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d6cf6009-8b63-4dd7-0c4b-08d7f262a07e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 May 2020 08:42:50.8667
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: d9995866-0d9b-4251-8315-093f062abab4
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: egzv9rAiMXFWa7DLExYg2I+DKI2E7W2bgVNVjaRbtt8YRlCVKIVohzIlHLe5Pt3bq2QGrFwTrO8hTbmNI4Mf/HupHMU5XNnxenJnwmGgKAo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB5846
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 06, 2020 at 05:42:23PM +0100, Daniel Thompson wrote:
-> Currently there is a small window where a badly timed migration could
-> cause in_dbg_master() to spuriously return true. Specifically if we
-> migrate to a new core after reading the processor id and the previous
-> core takes a breakpoint then we will evaluate true if we read
-> kgdb_active before we get the IPI to bring us to halt.
-> 
-> Fix this by checking irqs_disabled() first. Interrupts are always
-> disabled when we are executing the kgdb trap so this is an acceptable
-> prerequisite. This also allows us to replace raw_smp_processor_id()
-> with smp_processor_id() since the short circuit logic will prevent
-> warnings from PREEMPT_DEBUG.
-> 
-> Fixes: dcc7871128e9 ("kgdb: core changes to support kdb")
-> Suggested-by: Will Deacon <will@kernel.org>
-> Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
-> ---
->  include/linux/kgdb.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/kgdb.h b/include/linux/kgdb.h
-> index b072aeb1fd78..4d6fe87fd38f 100644
-> --- a/include/linux/kgdb.h
-> +++ b/include/linux/kgdb.h
-> @@ -323,7 +323,7 @@ extern void gdbstub_exit(int status);
->  extern int			kgdb_single_step;
->  extern atomic_t			kgdb_active;
->  #define in_dbg_master() \
-> -	(raw_smp_processor_id() == atomic_read(&kgdb_active))
-> +	(irqs_disabled() && (smp_processor_id() == atomic_read(&kgdb_active)))
->  extern bool dbg_is_early;
->  extern void __init dbg_late_init(void);
->  extern void kgdb_panic(const char *msg);
-
-Cheers, Daniel. I assume you'll route this one via the kgdb tree? I can
-live with the "small window" in the arm64 for-next/core branch ;)
-
-Will
+T24gV2VkLCAyMDIwLTA1LTA2IGF0IDIyOjExICswMzAwLCBHcnlnb3JpaSBTdHJhc2hrbyB3cm90
+ZToNCj4gU2luY2UgY29tbWl0IGJjZjM0NDBjNmRkNyAoIm5ldDogcGh5OiBtaWNyZWw6IGFkZCBw
+aHktbW9kZSBzdXBwb3J0IGZvcg0KPiB0aGUNCj4gS1NaOTAzMSBQSFkiKSB0aGUgbmV0d29ya2lu
+ZyBpcyBicm9rZW4gb24gYm9hcmRzOg0KPiAgYW01NzF4LWlkaw0KPiAgYW01NzJ4LWlkaw0KPiAg
+YW01NzR4LWlkaw0KPiAgYW01N3h4LWJlYWdsZS14MTUNCj4gDQo+IEFsbCBhYm92ZSBib2FyZHMg
+aGF2ZSBwaHktbW9kZSA9ICJyZ21paSIgYW5kIHRoaXMgaXMgd29ya2VkIGJlZm9yZQ0KPiBiZWNh
+dXNlDQo+IEtTWjkwMzEgUEhZIHN0YXJ0ZWQgd2l0aCBkZWZhdWx0IFJHTUlJIGludGVybmFsIGRl
+bGF5cyBjb25maWd1cmF0aW9uDQo+IChUWA0KPiBvZmYsIFJYIG9uIDEuMiBucykgYW5kIE1BQyBw
+cm92aWRlZCBUWCBkZWxheS4gQWZ0ZXIgYWJvdmUgY29tbWl0LCB0aGUNCj4gS1NaOTAzMSBQSFkg
+c3RhcnRzIGhhbmRsaW5nIHBoeSBtb2RlIHByb3Blcmx5IGFuZCBkaXNhYmxlcyBSWCBkZWxheSwN
+Cj4gYXMNCj4gcmVzdWx0IG5ldHdvcmtpbmcgaXMgYmVjb21lIGJyb2tlbi4NCj4gDQo+IEZpeCBp
+dCBieSBzd2l0Y2hpbmcgdG8gcGh5LW1vZGUgPSAicmdtaWktcnhpZCIgdG8gcmVmbGVjdCBwcmV2
+aW91cw0KPiBiZWhhdmlvci4NCj4gDQo+IENjOiBPbGVrc2lqIFJlbXBlbCA8by5yZW1wZWxAcGVu
+Z3V0cm9uaXguZGU+DQo+IENjOiBBbmRyZXcgTHVubiA8YW5kcmV3QGx1bm4uY2g+DQo+IENjOiBQ
+aGlsaXBwZSBTY2hlbmtlciA8cGhpbGlwcGUuc2NoZW5rZXJAdG9yYWRleC5jb20+DQo+IEZpeGVz
+OiBjb21taXQgYmNmMzQ0MGM2ZGQ3ICgibmV0OiBwaHk6IG1pY3JlbDogYWRkIHBoeS1tb2RlIHN1
+cHBvcnQNCj4gZm9yIHRoZSBLU1o5MDMxIFBIWSIpDQo+IFNpZ25lZC1vZmYtYnk6IEdyeWdvcmlp
+IFN0cmFzaGtvIDxncnlnb3JpaS5zdHJhc2hrb0B0aS5jb20+DQoNClRoYW5rcyBHcnlnb3JpaSEN
+Cg0KUmV2aWV3ZWQtYnk6IFBoaWxpcHBlIFNjaGVua2VyIDwNCnBoaWxpcHBlLnNjaGVua2VyQHRv
+cmFkZXguY29tPg0KDQo+IC0tLQ0KPiAgYXJjaC9hcm0vYm9vdC9kdHMvYW01NzF4LWlkay5kdHMg
+ICAgICAgICAgICAgICAgfCA0ICsrLS0NCj4gIGFyY2gvYXJtL2Jvb3QvZHRzL2FtNTd4eC1iZWFn
+bGUteDE1LWNvbW1vbi5kdHNpIHwgNCArKy0tDQo+ICBhcmNoL2FybS9ib290L2R0cy9hbTU3eHgt
+aWRrLWNvbW1vbi5kdHNpICAgICAgICB8IDQgKystLQ0KPiAgMyBmaWxlcyBjaGFuZ2VkLCA2IGlu
+c2VydGlvbnMoKyksIDYgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvYXJjaC9hcm0v
+Ym9vdC9kdHMvYW01NzF4LWlkay5kdHMNCj4gYi9hcmNoL2FybS9ib290L2R0cy9hbTU3MXgtaWRr
+LmR0cw0KPiBpbmRleCA2Njk1NTljOWM5NWIuLmMxMzc1NmZhMGY1NSAxMDA2NDQNCj4gLS0tIGEv
+YXJjaC9hcm0vYm9vdC9kdHMvYW01NzF4LWlkay5kdHMNCj4gKysrIGIvYXJjaC9hcm0vYm9vdC9k
+dHMvYW01NzF4LWlkay5kdHMNCj4gQEAgLTE5MCwxMyArMTkwLDEzIEBADQo+ICANCj4gICZjcHN3
+X3BvcnQxIHsNCj4gIAlwaHktaGFuZGxlID0gPCZldGhwaHkwX3N3PjsNCj4gLQlwaHktbW9kZSA9
+ICJyZ21paSI7DQo+ICsJcGh5LW1vZGUgPSAicmdtaWktcnhpZCI7DQo+ICAJdGksZHVhbC1lbWFj
+LXB2aWQgPSA8MT47DQo+ICB9Ow0KPiAgDQo+ICAmY3Bzd19wb3J0MiB7DQo+ICAJcGh5LWhhbmRs
+ZSA9IDwmZXRocGh5MV9zdz47DQo+IC0JcGh5LW1vZGUgPSAicmdtaWkiOw0KPiArCXBoeS1tb2Rl
+ID0gInJnbWlpLXJ4aWQiOw0KPiAgCXRpLGR1YWwtZW1hYy1wdmlkID0gPDI+Ow0KPiAgfTsNCj4g
+IA0KPiBkaWZmIC0tZ2l0IGEvYXJjaC9hcm0vYm9vdC9kdHMvYW01N3h4LWJlYWdsZS14MTUtY29t
+bW9uLmR0c2kNCj4gYi9hcmNoL2FybS9ib290L2R0cy9hbTU3eHgtYmVhZ2xlLXgxNS1jb21tb24u
+ZHRzaQ0KPiBpbmRleCBhODEzYTBjZjNmZjMuLjU2NTY3NTM1NGRlNCAxMDA2NDQNCj4gLS0tIGEv
+YXJjaC9hcm0vYm9vdC9kdHMvYW01N3h4LWJlYWdsZS14MTUtY29tbW9uLmR0c2kNCj4gKysrIGIv
+YXJjaC9hcm0vYm9vdC9kdHMvYW01N3h4LWJlYWdsZS14MTUtY29tbW9uLmR0c2kNCj4gQEAgLTQz
+MywxMyArNDMzLDEzIEBADQo+ICANCj4gICZjcHN3X2VtYWMwIHsNCj4gIAlwaHktaGFuZGxlID0g
+PCZwaHkwPjsNCj4gLQlwaHktbW9kZSA9ICJyZ21paSI7DQo+ICsJcGh5LW1vZGUgPSAicmdtaWkt
+cnhpZCI7DQo+ICAJZHVhbF9lbWFjX3Jlc192bGFuID0gPDE+Ow0KPiAgfTsNCj4gIA0KPiAgJmNw
+c3dfZW1hYzEgew0KPiAgCXBoeS1oYW5kbGUgPSA8JnBoeTE+Ow0KPiAtCXBoeS1tb2RlID0gInJn
+bWlpIjsNCj4gKwlwaHktbW9kZSA9ICJyZ21paS1yeGlkIjsNCj4gIAlkdWFsX2VtYWNfcmVzX3Zs
+YW4gPSA8Mj47DQo+ICB9Ow0KPiAgDQo+IGRpZmYgLS1naXQgYS9hcmNoL2FybS9ib290L2R0cy9h
+bTU3eHgtaWRrLWNvbW1vbi5kdHNpDQo+IGIvYXJjaC9hcm0vYm9vdC9kdHMvYW01N3h4LWlkay1j
+b21tb24uZHRzaQ0KPiBpbmRleCBhYTVlNTVmOTgxNzkuLmEzZmYxMjM3ZDFmYSAxMDA2NDQNCj4g
+LS0tIGEvYXJjaC9hcm0vYm9vdC9kdHMvYW01N3h4LWlkay1jb21tb24uZHRzaQ0KPiArKysgYi9h
+cmNoL2FybS9ib290L2R0cy9hbTU3eHgtaWRrLWNvbW1vbi5kdHNpDQo+IEBAIC00MDgsMTMgKzQw
+OCwxMyBAQA0KPiAgDQo+ICAmY3Bzd19lbWFjMCB7DQo+ICAJcGh5LWhhbmRsZSA9IDwmZXRocGh5
+MD47DQo+IC0JcGh5LW1vZGUgPSAicmdtaWkiOw0KPiArCXBoeS1tb2RlID0gInJnbWlpLXJ4aWQi
+Ow0KPiAgCWR1YWxfZW1hY19yZXNfdmxhbiA9IDwxPjsNCj4gIH07DQo+ICANCj4gICZjcHN3X2Vt
+YWMxIHsNCj4gIAlwaHktaGFuZGxlID0gPCZldGhwaHkxPjsNCj4gLQlwaHktbW9kZSA9ICJyZ21p
+aSI7DQo+ICsJcGh5LW1vZGUgPSAicmdtaWktcnhpZCI7DQo+ICAJZHVhbF9lbWFjX3Jlc192bGFu
+ID0gPDI+Ow0KPiAgfTsNCj4gIA0K
