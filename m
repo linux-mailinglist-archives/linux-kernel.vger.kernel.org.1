@@ -2,85 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CDBB1C9D3C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 23:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D95F1C9D3D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 23:25:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726771AbgEGVY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 17:24:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726464AbgEGVY6 (ORCPT
+        id S1726843AbgEGVZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 17:25:14 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:43827 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726531AbgEGVZN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 17:24:58 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F639C05BD43
-        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 14:24:58 -0700 (PDT)
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jWo0g-0006ba-T3; Thu, 07 May 2020 23:24:51 +0200
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id D660E102652; Thu,  7 May 2020 23:24:49 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, luto@kernel.org
-Subject: Re: [RFC][PATCH 3/3] x86/entry, ORC: Teach objtool/unwind_orc about stack irq swizzles
-In-Reply-To: <20200507183048.rlf2bgj4cf2g4jy6@treble>
-References: <20200507161020.783541450@infradead.org> <20200507161828.801097834@infradead.org> <20200507173809.GK5298@hirez.programming.kicks-ass.net> <20200507183048.rlf2bgj4cf2g4jy6@treble>
-Date:   Thu, 07 May 2020 23:24:49 +0200
-Message-ID: <878si3e8v2.fsf@nanos.tec.linutronix.de>
+        Thu, 7 May 2020 17:25:13 -0400
+Received: by mail-oi1-f196.google.com with SMTP id j16so6541107oih.10;
+        Thu, 07 May 2020 14:25:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=DJ5irMJzwpgHAqiapmHTr23XyC1rqL9GiDlf1aWaR14=;
+        b=Dsz87cEyw8i5Qy59dGW5ap5/py+spueNDMp4EUVO23qrfPCrsX9g/q9Gl1fe3uLZNQ
+         1CCBJ+4TDClZkge1U9O01UcxzZQlLQitUtsW371zd+9758TbsXh63vCIeBbu4XM78fQU
+         +54M8sFpTINtOwP7SEnaeEG3O4txGnX+lJzV0/KuuIQwVVA9I1r5yIu5nuJT0OAMWRxV
+         1iR6ubKmUiWvwWeNT98GJleAnY5PqKPWkvuSMry3mKtTFcpb8dJYCm3w2FBe8YWuOUov
+         MZu9pdi/FLojwJwF64/NJcI9fzfTmOwwdieu5vThEDcOFxPd8LdxjWesW9pxPpmgH+YB
+         4czA==
+X-Gm-Message-State: AGi0PuY0p/0RLwC06uzTSGBhgNBVM2gngQ7T85lqIYLx6+lbx2ucsXvo
+        SjpcM5K4vV3uQ5vNqLxn3Q==
+X-Google-Smtp-Source: APiQypKak97u52rwxgIVHGAGYeOCHRT1KhU4tTs3bXDA93ePG3IM2v3ZiF4m5A4F8yUEOh2ffsNKWA==
+X-Received: by 2002:aca:3b07:: with SMTP id i7mr1750409oia.164.1588886713019;
+        Thu, 07 May 2020 14:25:13 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id n11sm1672004oij.21.2020.05.07.14.25.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 May 2020 14:25:12 -0700 (PDT)
+Received: (nullmailer pid 24945 invoked by uid 1000);
+        Thu, 07 May 2020 21:25:11 -0000
+Date:   Thu, 7 May 2020 16:25:11 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Andrew Murray <amurray@thegoodpenguin.co.uk>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Remi Pommarel <repk@triplefau.lt>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>,
+        Xogium <contact@xogium.me>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH v4 09/12] dt-bindings: PCI: aardvark: Describe new
+ properties
+Message-ID: <20200507212511.GA24873@bogus>
+References: <20200430080625.26070-1-pali@kernel.org>
+ <20200430080625.26070-10-pali@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200430080625.26070-10-pali@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Josh Poimboeuf <jpoimboe@redhat.com> writes:
-> On Thu, May 07, 2020 at 07:38:09PM +0200, Peter Zijlstra wrote:
->> On Thu, May 07, 2020 at 06:10:23PM +0200, Peter Zijlstra wrote:
->> Much simpler, also works.
->
-> Doing the stack switch in inline asm is just nasty.
+On Thu, 30 Apr 2020 10:06:22 +0200, =?UTF-8?q?Pali=20Roh=C3=A1r?= wrote:
+> From: Marek Behún <marek.behun@nic.cz>
+> 
+> Document the possibility to reference a PHY and reset-gpios and to set
+> max-link-speed property.
+> 
+> Signed-off-by: Marek Behún <marek.behun@nic.cz>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: devicetree@vger.kernel.org
+> ---
+>  Documentation/devicetree/bindings/pci/aardvark-pci.txt | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
 
-Matter of personal preference :)
-
-> Also, a frame pointer makes this SO much easier for ORC/objtool, no
-> funky hints needed.  In fact maybe we can get rid of the indirect hint
-> things altogether, which means even more deleted code.
->
-> This is much cleaner, and it boots:
-
-Well, yes. I thought about that and it clearly works fine. There is a
-downside because it adds the indirect call to all system vectors.
-
-The device interrupt part is fine, it has an indirect call already, but
-for system vectors and in particular the rescheduling IPI its bad. Not
-bad because of the indirect call per se, but bad because of the
-ratpoutine mitigation mess.
-
-My other alternative was to emit switcheroo into ASM for each system
-vector. Not pretty either
-
-But over our IRC conversation I came up with a 3rd variant:
-
-  For most of the vectors the indirect call overhead is just noise, so
-  we can run them through the ASM switcher, but for the resched IPI
-  we can just use a separate direct call stub in ASM.
-
-I can live with that. I might have to pay up for Peter's headaches to
-teach objtool, but that's a different story. Let me check how many beers
-he owes me first ...
-
-Thanks,
-
-        tglx
-
-
-
-
+Reviewed-by: Rob Herring <robh@kernel.org>
