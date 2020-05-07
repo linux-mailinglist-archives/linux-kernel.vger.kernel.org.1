@@ -2,118 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E01961C8087
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 05:33:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E37D01C808F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 05:38:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726476AbgEGDdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 23:33:08 -0400
-Received: from mga06.intel.com ([134.134.136.31]:39002 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725879AbgEGDdI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 23:33:08 -0400
-IronPort-SDR: u+O5SXq0D1d4fJWDlUkBF7LDa2FoDuSaWGjvk7otAcJE7dehVbK9m3DLCKKe2ovvtkQ4ppDVDN
- Z3mQRouwUD1w==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2020 20:33:07 -0700
-IronPort-SDR: LLROTNw6PCNmZ27qFr0GAJ7AKDnxWByT4e3Rr6GTwB3Wk51WQBWovidx+E4jbvLYFQvQt1OPOH
- EpiFc/4YKy+A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,361,1583222400"; 
-   d="scan'208";a="249967520"
-Received: from cchia2-mobl1.amr.corp.intel.com (HELO localhost.localdomain) ([10.255.230.47])
-  by fmsmga007.fm.intel.com with ESMTP; 06 May 2020 20:33:06 -0700
-From:   sathyanarayanan.kuppuswamy@linux.intel.com
-To:     bhelgaas@google.com
-Cc:     jay.vosburgh@canonical.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ashok.raj@intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: [PATCH v1 1/1] PCI/ERR: Handle fatal error recovery for non-hotplug capable devices
-Date:   Wed,  6 May 2020 20:32:59 -0700
-Message-Id: <f4bbacd3af453285271c8fc733652969e11b84f8.1588821160.git.sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <18609.1588812972@famine>
-References: <18609.1588812972@famine>
+        id S1726134AbgEGDiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 23:38:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725869AbgEGDiY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 23:38:24 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6145DC061A10
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 20:38:24 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id j16so3908485oih.10
+        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 20:38:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=endlessm-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=d0cQq4xYVzYPxzyVLbBLMpWehBwGYgPxNzAF85GiSfE=;
+        b=XeHQ3OiHkwJ8xT3Ya6XM1SJOsqPv23Pjveh468DQabZ5fp+bykhAi+ZmC9PoKgG9CR
+         Yl+3Xi4b7WQmgDPI9noIy777DxVwgGgP0oSxGHoi0woUcd8iXj2H5VI81C6dabWmD0P/
+         h+RagNwXqFR8VAmWPzqHmvaxrlpfClz72fKiuqpA0dtAiodikqRvbvzpKL94i/ZK9Hwu
+         nqvWexmvmy1bw8u7K7urw4H1igbO1rcqoPDZIBRJywqRqsj1ClwMPhjHcAUnNrhkTYTv
+         QCiwQQOzslL7v0wqJpLIihMWVNlKRrjyZMG6ASI8Cpd9AxqdHIQloHNHkXww8JL0OUeL
+         uBfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=d0cQq4xYVzYPxzyVLbBLMpWehBwGYgPxNzAF85GiSfE=;
+        b=Rrizx126+HLRyOFGnDxmiK7cIDTGCLCYlCswjAKDH6nMVijGeXDA6SJe2NQCXlQBXQ
+         YxyANLulDD5F3ll1jW99oxqI3MWeDMKy0WlBeaJDeSgl/+OuGmKdilFK9Hq06a8aTI3+
+         exT75OcDeXkpt4Q52qizd/C3glfmwEa66oS6RKPxGBEOK2NkYpj4znE0jg3arweKNq1e
+         01Phi7aItqBSpgFFFUU1Jet6Vfbl4+kMl9lCEOV/8Fo6q+uPFUk7gCO7pjz57P6QuXRY
+         ueetRwj9zCY0j6A4fV0Z7LAfZC0HPXHsLZCBVnZra+8PIjjmfw+SpRb+R6W2/1EQ27xE
+         Ek5w==
+X-Gm-Message-State: AGi0Pubf9D8OFkmXRwp3kxZkCh9haG43epmScctpRQuwXMtGqFWqYviK
+        Ba8DgV6ItuJCSxHRqb1hj8U6QullIURW1GzpAM6hZA==
+X-Google-Smtp-Source: APiQypKeoTq4Fn0g+OFMHCi+moiq/xR/F6cwta6TxxrGshqaggMLYBBmp/8fE4jGyVDn1L0+Qub8g2v2+ELApD1EDO0=
+X-Received: by 2002:aca:447:: with SMTP id 68mr4938547oie.94.1588822702710;
+ Wed, 06 May 2020 20:38:22 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAB4CAwdqo7=MvyG_PE+PGVfeA17AHF5i5JucgaKqqMX6mjArbQ@mail.gmail.com>
+ <CAJZ5v0gZH61ui04Howzif-_Xc3-X9GyAx7FgZ=ZS2X=4KotEng@mail.gmail.com> <CAJZ5v0gX1gx1_zTZg=M+xEOqxPEaq8ZU-N3hwk7OGcGdzrdBTg@mail.gmail.com>
+In-Reply-To: <CAJZ5v0gX1gx1_zTZg=M+xEOqxPEaq8ZU-N3hwk7OGcGdzrdBTg@mail.gmail.com>
+From:   Chris Chiu <chiu@endlessm.com>
+Date:   Thu, 7 May 2020 11:38:11 +0800
+Message-ID: <CAB4CAweZcN0SPe-a7jbthV=-ip9cCzJOM=NfP9YvtXw97ugKgQ@mail.gmail.com>
+Subject: Re: System fails to exit s2idle by a keystroke on my laptop
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Seth Forshee <seth.forshee@canonical.com>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        Linux Upstreaming Team <linux@endlessm.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+On Wed, May 6, 2020 at 6:19 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+>
+> On Wed, May 6, 2020 at 11:32 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> >
+> >
+> > Thanks for the report, the issue evidently is EC-related.
+> >
+> > > @@ -1024,7 +1024,7 @@ static bool acpi_s2idle_wake(void)
+> > >                  * regarded as a spurious one.
+> > >                  */
+> > >                 if (!acpi_ec_dispatch_gpe())
+> > > -                       return false;
+> > > +                       return true;
+> >
+> > Have you tried commenting out simply removing the if () check and the
+> > following return statement?
+>
+> Scratch that.
+>
+> Instead, please try doing
+>
+> acpi_ec_dispatch_gpe()
+>
+> instead of the if () and the following return statement.
 
-If there are non-hotplug capable devices connected to a given
-port, then during the fatal error recovery(triggered by DPC or
-AER), after calling reset_link() function, we cannot rely on
-hotplug handler to detach and re-enumerate the device drivers
-in the affected bus. Instead, we will have to let the error
-recovery handler call report_slot_reset() for all devices in
-the bus to notify about the reset operation. Although this is
-only required for non hot-plug capable devices, doing it for
-hotplug capable devices should not affect the functionality.
+Yes. I verified with the modification you suggested on my laptop. It's
+working OK.
+I can wake from a keystroke w/o problem.
 
-Along with above issue, this fix also applicable to following
-issue.
+@ -1024,8 +1024,7 @@ static bool acpi_s2idle_wake(void)
+                 * If the EC GPE status bit has not been set, the wakeup is
+                 * regarded as a spurious one.
+                 */
+-               if (!acpi_ec_dispatch_gpe())
+-                       return false;
++               acpi_ec_dispatch_gpe();
 
-Commit 6d2c89441571 ("PCI/ERR: Update error status after
-reset_link()") added support to store status of reset_link()
-call. Although this fixed the error recovery issue observed if
-the initial value of error status is PCI_ERS_RESULT_DISCONNECT
-or PCI_ERS_RESULT_NO_AER_DRIVER, it also discarded the status
-result from report_frozen_detected. This can cause a failure to
-recover if _NEED_RESET is returned by report_frozen_detected and
-report_slot_reset is not invoked.
-
-Such an event can be induced for testing purposes by reducing the
-Max_Payload_Size of a PCIe bridge to less than that of a device
-downstream from the bridge, and then initiating I/O through the
-device, resulting in oversize transactions.  In the presence of DPC,
-this results in a containment event and attempted reset and recovery
-via pcie_do_recovery.  After 6d2c89441571 report_slot_reset is not
-invoked, and the device does not recover.
-
-[original patch is from jay.vosburgh@canonical.com]
-[original patch link https://lore.kernel.org/linux-pci/18609.1588812972@famine/]
-Fixes: 6d2c89441571 ("PCI/ERR: Update error status after reset_link()")
-Signed-off-by: Jay Vosburgh <jay.vosburgh@canonical.com>
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
----
- drivers/pci/pcie/err.c | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-index 14bb8f54723e..db80e1ecb2dc 100644
---- a/drivers/pci/pcie/err.c
-+++ b/drivers/pci/pcie/err.c
-@@ -165,13 +165,24 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
- 	pci_dbg(dev, "broadcast error_detected message\n");
- 	if (state == pci_channel_io_frozen) {
- 		pci_walk_bus(bus, report_frozen_detected, &status);
--		status = reset_link(dev);
--		if (status != PCI_ERS_RESULT_RECOVERED) {
-+		status = PCI_ERS_RESULT_NEED_RESET;
-+	} else {
-+		pci_walk_bus(bus, report_normal_detected, &status);
-+	}
-+
-+	if (status == PCI_ERS_RESULT_NEED_RESET) {
-+		if (reset_link) {
-+			if (reset_link(dev) != PCI_ERS_RESULT_RECOVERED)
-+				status = PCI_ERS_RESULT_DISCONNECT;
-+		} else {
-+			if (pci_bus_error_reset(dev))
-+				status = PCI_ERS_RESULT_DISCONNECT;
-+		}
-+
-+		if (status == PCI_ERS_RESULT_DISCONNECT) {
- 			pci_warn(dev, "link reset failed\n");
- 			goto failed;
- 		}
--	} else {
--		pci_walk_bus(bus, report_normal_detected, &status);
- 	}
- 
- 	if (status == PCI_ERS_RESULT_CAN_RECOVER) {
--- 
-2.17.1
-
+                /*
+                 * Cancel the wakeup and process all pending events in case
