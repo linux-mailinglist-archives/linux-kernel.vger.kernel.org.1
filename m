@@ -2,819 +2,391 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13F891CA079
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 04:04:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20F4C1C9927
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:21:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726771AbgEHCEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 22:04:10 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:60022 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726533AbgEHCEK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 22:04:10 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 7422F8B516C56634EBCB;
-        Fri,  8 May 2020 10:04:06 +0800 (CST)
-Received: from localhost.localdomain (10.175.118.36) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 8 May 2020 10:03:56 +0800
-From:   Luo bin <luobin9@huawei.com>
-To:     <davem@davemloft.net>
-CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <luoxianjun@huawei.com>, <luobin9@huawei.com>,
-        <yin.yinshi@huawei.com>, <cloud.wangxiaoyun@huawei.com>
-Subject: [PATCH net-next v1] hinic: add three net_device_ops of vf
-Date:   Thu, 7 May 2020 18:21:19 +0000
-Message-ID: <20200507182119.20494-1-luobin9@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1727912AbgEGSVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 14:21:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726367AbgEGSVx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 14:21:53 -0400
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6CEFC05BD43
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 11:21:51 -0700 (PDT)
+Received: by mail-vs1-xe43.google.com with SMTP id m24so3966374vsq.10
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 11:21:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=INyWuTp+yam+hgXXcVZ9YVLTNFA/J6HgpHigw0HwofU=;
+        b=SXUamm/iCKG83pUoAW4ChYrI2qJYlRtrEHOL9tXYLhIvgJZLu5YBJ1491Mqc7ovGi0
+         wfvIVT7TAtVIcN1IlMN1YkjSfumGQ68bQtAp9g/B6ZIdeGR8MAKqtIVoL8GUCA8GfYTh
+         7txEqi2KC0ulnIIHTKctnsrPP/zYsa/Lrj+ukyTHc84gr2m3a8mIYAUfm1/ToR9jKBGG
+         o9512cmUvi8LeAsj95mGpOEeKZsi6FVm5LvaNZItYIrm18bvqMs8ywBlSPFCoRLdla/v
+         w+uDG0FvfuNpRXra4nPiin0JGU5KiL3NUtAv1e83f92kcV+ONlTK+JMl/kGueI2SsABg
+         PgzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=INyWuTp+yam+hgXXcVZ9YVLTNFA/J6HgpHigw0HwofU=;
+        b=QVmuXCYvDZkUArpjGLPevIPJpYNetGXJQ0An2t9wiK11d1dlLdYo96u2hm63WqJpWa
+         nYsnj+BToOKX8MPgLa9NC4aznSUbuPYLC9EuXLm7JPJzENtxVLSPd8xNjo3DBt5oaOK4
+         rNsdkWq/5xnVCsvKCsjapzMOZTe81ViKGVStSSvI9P8X8/gLzOSzEp3mDWafFR9QGjk+
+         CK0TDyMg9EDI2fLMwaoHFcv8RZSAEs/tNmXXdqajvUIE5hdHadlV6k035XB7TiaXb8Zs
+         MBwzVW+btMurUsocAll/x1R7U+uCL7Aa00WVzYHKc5Pwv4MuN0FQ3whInphSwOwIpzsd
+         v37w==
+X-Gm-Message-State: AGi0PuYjlSrgQjrB0eFS7QMf+nkjNl+RUJEgsgFSjPeillccX2EwV0g0
+        AxoyEysiFja6Vp1lRtIUNl5bCsXtgedyulqmJ3sMFQ==
+X-Google-Smtp-Source: APiQypIMV2ybpQCgdQp1JcrjDfC58sbE2q3S8foEE0i0Gcsiu92XwDprwnk6BD2LIwQtkzDKo6fwfqcdqqcBgUUbaY8=
+X-Received: by 2002:a67:80d1:: with SMTP id b200mr13434294vsd.76.1588875710564;
+ Thu, 07 May 2020 11:21:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.118.36]
-X-CFilter-Loop: Reflected
+References: <20200430085105.GF2496467@kroah.com> <1588839055-26677-1-git-send-email-Frankie.Chang@mediatek.com>
+ <1588839055-26677-4-git-send-email-Frankie.Chang@mediatek.com>
+In-Reply-To: <1588839055-26677-4-git-send-email-Frankie.Chang@mediatek.com>
+From:   Todd Kjos <tkjos@google.com>
+Date:   Thu, 7 May 2020 11:21:38 -0700
+Message-ID: <CAHRSSEwqxiJqbaMHVPMWPPpLiy_raa-Zncr3VBPpcwpRbTzThg@mail.gmail.com>
+Subject: Re: [PATCH v4 3/3] binder: add transaction latency tracer
+To:     Frankie Chang <Frankie.Chang@mediatek.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Martijn Coenen <maco@android.com>,
+        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
+        Christian Brauner <christian@brauner.io>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mediatek@lists.infradead.org,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        Jian-Min Liu <Jian-Min.Liu@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-adds ndo_set_vf_rate/ndo_set_vf_spoofchk/ndo_set_vf_link_state
-to configure netdev of virtual function
+On Thu, May 7, 2020 at 1:11 AM Frankie Chang <Frankie.Chang@mediatek.com> wrote:
+>
+> From: "Frankie.Chang" <Frankie.Chang@mediatek.com>
+>
+> Record start/end timestamp for binder transaction.
+> When transaction is completed or transaction is free,
+> it would be checked if transaction latency over threshold (2 sec),
 
-Signed-off-by: Luo bin <luobin9@huawei.com>
----
- .../net/ethernet/huawei/hinic/hinic_hw_cmdq.c |  31 ++
- .../net/ethernet/huawei/hinic/hinic_hw_dev.c  |  35 ++-
- .../net/ethernet/huawei/hinic/hinic_hw_dev.h  |  21 ++
- .../net/ethernet/huawei/hinic/hinic_hw_if.c   |  32 +-
- .../net/ethernet/huawei/hinic/hinic_hw_if.h   |   6 +-
- .../net/ethernet/huawei/hinic/hinic_hw_mbox.c |   4 +-
- .../net/ethernet/huawei/hinic/hinic_main.c    |  17 +-
- .../net/ethernet/huawei/hinic/hinic_port.c    |   8 +-
- .../net/ethernet/huawei/hinic/hinic_port.h    |  43 +++
- .../net/ethernet/huawei/hinic/hinic_sriov.c   | 275 ++++++++++++++++++
- .../net/ethernet/huawei/hinic/hinic_sriov.h   |   7 +
- 11 files changed, 455 insertions(+), 24 deletions(-)
+If this is a hard-coded threshold, provide rationale for why 2 sec is
+the right value and it doesn't need to be tunable
 
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_hw_cmdq.c b/drivers/net/ethernet/huawei/hinic/hinic_hw_cmdq.c
-index 33c5333657c1..c3bd74852c87 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_hw_cmdq.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_cmdq.c
-@@ -849,6 +849,27 @@ static int init_cmdqs_ctxt(struct hinic_hwdev *hwdev,
- 	return err;
- }
- 
-+static int hinic_set_cmdq_depth(struct hinic_hwdev *hwdev, u16 cmdq_depth)
-+{
-+	struct hinic_cmd_hw_ioctxt hw_ioctxt = { 0 };
-+	struct hinic_pfhwdev *pfhwdev;
-+
-+	pfhwdev = container_of(hwdev, struct hinic_pfhwdev, hwdev);
-+
-+	hw_ioctxt.func_idx = HINIC_HWIF_FUNC_IDX(hwdev->hwif);
-+	hw_ioctxt.ppf_idx = HINIC_HWIF_PPF_IDX(hwdev->hwif);
-+
-+	hw_ioctxt.set_cmdq_depth = HW_IOCTXT_SET_CMDQ_DEPTH_ENABLE;
-+	hw_ioctxt.cmdq_depth = (u8)ilog2(cmdq_depth);
-+
-+	return hinic_msg_to_mgmt(&pfhwdev->pf_to_mgmt, HINIC_MOD_COMM,
-+				 HINIC_COMM_CMD_HWCTXT_SET,
-+				 &hw_ioctxt, sizeof(hw_ioctxt), NULL,
-+				 NULL, HINIC_MGMT_MSG_SYNC);
-+
-+	return 0;
-+}
-+
- /**
-  * hinic_init_cmdqs - init all cmdqs
-  * @cmdqs: cmdqs to init
-@@ -899,8 +920,18 @@ int hinic_init_cmdqs(struct hinic_cmdqs *cmdqs, struct hinic_hwif *hwif,
- 
- 	hinic_ceq_register_cb(&func_to_io->ceqs, HINIC_CEQ_CMDQ, cmdqs,
- 			      cmdq_ceq_handler);
-+
-+	err = hinic_set_cmdq_depth(hwdev, CMDQ_DEPTH);
-+	if (err) {
-+		dev_err(&hwif->pdev->dev, "Failed to set cmdq depth\n");
-+		goto err_set_cmdq_depth;
-+	}
-+
- 	return 0;
- 
-+err_set_cmdq_depth:
-+	hinic_ceq_unregister_cb(&func_to_io->ceqs, HINIC_CEQ_CMDQ);
-+
- err_cmdq_ctxt:
- 	hinic_wqs_cmdq_free(&cmdqs->cmdq_pages, cmdqs->saved_wqs,
- 			    HINIC_MAX_CMDQ_TYPES);
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_hw_dev.c b/drivers/net/ethernet/huawei/hinic/hinic_hw_dev.c
-index e5cab58e4ddd..1ce8b8d572cf 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_hw_dev.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_dev.c
-@@ -44,10 +44,6 @@ enum io_status {
- 	IO_RUNNING = 1,
- };
- 
--enum hw_ioctxt_set_cmdq_depth {
--	HW_IOCTXT_SET_CMDQ_DEPTH_DEFAULT,
--};
--
- /**
-  * get_capability - convert device capabilities to NIC capabilities
-  * @hwdev: the HW device to set and convert device capabilities for
-@@ -667,6 +663,32 @@ static void free_pfhwdev(struct hinic_pfhwdev *pfhwdev)
- 	hinic_pf_to_mgmt_free(&pfhwdev->pf_to_mgmt);
- }
- 
-+static int hinic_l2nic_reset(struct hinic_hwdev *hwdev)
-+{
-+	struct hinic_cmd_l2nic_reset l2nic_reset = {0};
-+	u16 out_size = sizeof(l2nic_reset);
-+	struct hinic_pfhwdev *pfhwdev;
-+	int err;
-+
-+	pfhwdev = container_of(hwdev, struct hinic_pfhwdev, hwdev);
-+
-+	l2nic_reset.func_id = HINIC_HWIF_FUNC_IDX(hwdev->hwif);
-+	/* 0 represents standard l2nic reset flow */
-+	l2nic_reset.reset_flag = 0;
-+
-+	err = hinic_msg_to_mgmt(&pfhwdev->pf_to_mgmt, HINIC_MOD_COMM,
-+				HINIC_COMM_CMD_L2NIC_RESET, &l2nic_reset,
-+				sizeof(l2nic_reset), &l2nic_reset,
-+				&out_size, HINIC_MGMT_MSG_SYNC);
-+	if (err || !out_size || l2nic_reset.status) {
-+		dev_err(&hwdev->hwif->pdev->dev, "Failed to reset L2NIC resources, err: %d, status: 0x%x, out_size: 0x%x\n",
-+			err, l2nic_reset.status, out_size);
-+		return -EIO;
-+	}
-+
-+	return 0;
-+}
-+
- /**
-  * hinic_init_hwdev - Initialize the NIC HW
-  * @pdev: the NIC pci device
-@@ -729,6 +751,10 @@ struct hinic_hwdev *hinic_init_hwdev(struct pci_dev *pdev)
- 		goto err_init_pfhwdev;
- 	}
- 
-+	err = hinic_l2nic_reset(hwdev);
-+	if (err)
-+		goto err_l2nic_reset;
-+
- 	err = get_dev_cap(hwdev);
- 	if (err) {
- 		dev_err(&pdev->dev, "Failed to get device capabilities\n");
-@@ -759,6 +785,7 @@ struct hinic_hwdev *hinic_init_hwdev(struct pci_dev *pdev)
- err_init_fw_ctxt:
- 	hinic_vf_func_free(hwdev);
- err_vf_func_init:
-+err_l2nic_reset:
- err_dev_cap:
- 	free_pfhwdev(pfhwdev);
- 
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_hw_dev.h b/drivers/net/ethernet/huawei/hinic/hinic_hw_dev.h
-index 531d1072e0df..c8f62a024a58 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_hw_dev.h
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_dev.h
-@@ -25,6 +25,7 @@
- 
- #define HINIC_PF_SET_VF_ALREADY				0x4
- #define HINIC_MGMT_STATUS_EXIST				0x6
-+#define HINIC_MGMT_CMD_UNSUPPORTED			0xFF
- 
- struct hinic_cap {
- 	u16     max_qps;
-@@ -33,6 +34,11 @@ struct hinic_cap {
- 	u16     max_vf_qps;
- };
- 
-+enum hw_ioctxt_set_cmdq_depth {
-+	HW_IOCTXT_SET_CMDQ_DEPTH_DEFAULT,
-+	HW_IOCTXT_SET_CMDQ_DEPTH_ENABLE,
-+};
-+
- enum hinic_port_cmd {
- 	HINIC_PORT_CMD_VF_REGISTER = 0x0,
- 	HINIC_PORT_CMD_VF_UNREGISTER = 0x1,
-@@ -86,12 +92,16 @@ enum hinic_port_cmd {
- 
- 	HINIC_PORT_CMD_FWCTXT_INIT      = 69,
- 
-+	HINIC_PORT_CMD_ENABLE_SPOOFCHK = 78,
-+
- 	HINIC_PORT_CMD_GET_MGMT_VERSION = 88,
- 
- 	HINIC_PORT_CMD_SET_FUNC_STATE   = 93,
- 
- 	HINIC_PORT_CMD_GET_GLOBAL_QPN   = 102,
- 
-+	HINIC_PORT_CMD_SET_VF_RATE = 105,
-+
- 	HINIC_PORT_CMD_SET_VF_VLAN	= 106,
- 
- 	HINIC_PORT_CMD_CLR_VF_VLAN,
-@@ -107,6 +117,8 @@ enum hinic_port_cmd {
- 	HINIC_PORT_CMD_GET_CAP          = 170,
- 
- 	HINIC_PORT_CMD_SET_LRO_TIMER	= 244,
-+
-+	HINIC_PORT_CMD_SET_VF_MAX_MIN_RATE = 249,
- };
- 
- enum hinic_ucode_cmd {
-@@ -247,6 +259,15 @@ struct hinic_cmd_hw_ci {
- 	u64     ci_addr;
- };
- 
-+struct hinic_cmd_l2nic_reset {
-+	u8	status;
-+	u8	version;
-+	u8	rsvd0[6];
-+
-+	u16	func_id;
-+	u16	reset_flag;
-+};
-+
- struct hinic_hwdev {
- 	struct hinic_hwif               *hwif;
- 	struct msix_entry               *msix_entries;
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_hw_if.c b/drivers/net/ethernet/huawei/hinic/hinic_hw_if.c
-index 3fbd2eb80582..cf127d896ba6 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_hw_if.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_if.c
-@@ -10,6 +10,7 @@
- #include <linux/io.h>
- #include <linux/types.h>
- #include <linux/bitops.h>
-+#include <linux/delay.h>
- 
- #include "hinic_hw_csr.h"
- #include "hinic_hw_if.h"
-@@ -18,6 +19,8 @@
- 
- #define VALID_MSIX_IDX(attr, msix_index) ((msix_index) < (attr)->num_irqs)
- 
-+#define WAIT_HWIF_READY_TIMEOUT	10000
-+
- /**
-  * hinic_msix_attr_set - set message attribute for msix entry
-  * @hwif: the HW interface of a pci function device
-@@ -187,20 +190,39 @@ void hinic_set_msix_state(struct hinic_hwif *hwif, u16 msix_idx,
-  **/
- static int hwif_ready(struct hinic_hwif *hwif)
- {
--	struct pci_dev *pdev = hwif->pdev;
- 	u32 addr, attr1;
- 
- 	addr   = HINIC_CSR_FUNC_ATTR1_ADDR;
- 	attr1  = hinic_hwif_read_reg(hwif, addr);
- 
--	if (!HINIC_FA1_GET(attr1, INIT_STATUS)) {
--		dev_err(&pdev->dev, "hwif status is not ready\n");
--		return -EFAULT;
-+	if (!HINIC_FA1_GET(attr1, MGMT_INIT_STATUS))
-+		return -EBUSY;
-+
-+	if (HINIC_IS_VF(hwif)) {
-+		if (!HINIC_FA1_GET(attr1, PF_INIT_STATUS))
-+			return -EBUSY;
- 	}
- 
- 	return 0;
- }
- 
-+static int wait_hwif_ready(struct hinic_hwif *hwif)
-+{
-+	unsigned long timeout = 0;
-+
-+	do {
-+		if (!hwif_ready(hwif))
-+			return 0;
-+
-+		usleep_range(999, 1000);
-+		timeout++;
-+	} while (timeout <= WAIT_HWIF_READY_TIMEOUT);
-+
-+	dev_err(&hwif->pdev->dev, "Wait for hwif timeout\n");
-+
-+	return -EBUSY;
-+}
-+
- /**
-  * set_hwif_attr - set the attributes in the relevant members in hwif
-  * @hwif: the HW interface of a pci function device
-@@ -373,7 +395,7 @@ int hinic_init_hwif(struct hinic_hwif *hwif, struct pci_dev *pdev)
- 		goto err_map_intr_bar;
- 	}
- 
--	err = hwif_ready(hwif);
-+	err = wait_hwif_ready(hwif);
- 	if (err) {
- 		dev_err(&pdev->dev, "HW interface is not ready\n");
- 		goto err_hwif_ready;
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_hw_if.h b/drivers/net/ethernet/huawei/hinic/hinic_hw_if.h
-index 53bb89c1dd26..5bb6ec4dcb7c 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_hw_if.h
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_if.h
-@@ -55,13 +55,15 @@
- #define HINIC_FA1_IRQS_PER_FUNC_SHIFT                           20
- #define HINIC_FA1_DMA_ATTR_PER_FUNC_SHIFT                       24
- /* reserved members - off 27 */
--#define HINIC_FA1_INIT_STATUS_SHIFT                             30
-+#define HINIC_FA1_MGMT_INIT_STATUS_SHIFT			30
-+#define HINIC_FA1_PF_INIT_STATUS_SHIFT				31
- 
- #define HINIC_FA1_AEQS_PER_FUNC_MASK                            0x3
- #define HINIC_FA1_CEQS_PER_FUNC_MASK                            0x7
- #define HINIC_FA1_IRQS_PER_FUNC_MASK                            0xF
- #define HINIC_FA1_DMA_ATTR_PER_FUNC_MASK                        0x7
--#define HINIC_FA1_INIT_STATUS_MASK                              0x1
-+#define HINIC_FA1_MGMT_INIT_STATUS_MASK                         0x1
-+#define HINIC_FA1_PF_INIT_STATUS_MASK				0x1
- 
- #define HINIC_FA1_GET(val, member)                              \
- 	(((val) >> HINIC_FA1_##member##_SHIFT) & HINIC_FA1_##member##_MASK)
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c b/drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c
-index 564fb2294a29..bc2f87e6cb5d 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c
-@@ -627,7 +627,7 @@ wait_for_mbox_seg_completion(struct hinic_mbox_func_to_func *func_to_func,
- 	struct hinic_hwdev *hwdev = func_to_func->hwdev;
- 	struct completion *done = &send_mbox->send_done;
- 	u32 cnt = 0;
--	ulong jif;
-+	unsigned long jif;
- 
- 	if (poll) {
- 		while (cnt < MBOX_MSG_POLLING_TIMEOUT) {
-@@ -869,7 +869,7 @@ int hinic_mbox_to_func(struct hinic_mbox_func_to_func *func_to_func,
- {
- 	struct hinic_recv_mbox *mbox_for_resp;
- 	struct mbox_msg_info msg_info = {0};
--	ulong timeo;
-+	unsigned long timeo;
- 	int err;
- 
- 	mbox_for_resp = &func_to_func->mbox_resp[dst_func];
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_main.c b/drivers/net/ethernet/huawei/hinic/hinic_main.c
-index b66bb86cff96..3d6569d7bac8 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_main.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_main.c
-@@ -427,10 +427,6 @@ static int hinic_open(struct net_device *netdev)
- 		goto err_func_port_state;
- 	}
- 
--	if (!HINIC_IS_VF(nic_dev->hwdev->hwif))
--		/* Wait up to 3 sec between port enable to link state */
--		msleep(3000);
--
- 	down(&nic_dev->mgmt_lock);
- 
- 	err = hinic_port_link_state(nic_dev, &link_state);
-@@ -766,10 +762,12 @@ static void hinic_set_rx_mode(struct net_device *netdev)
- 		  HINIC_RX_MODE_MC |
- 		  HINIC_RX_MODE_BC;
- 
--	if (netdev->flags & IFF_PROMISC)
--		rx_mode |= HINIC_RX_MODE_PROMISC;
--	else if (netdev->flags & IFF_ALLMULTI)
-+	if (netdev->flags & IFF_PROMISC) {
-+		if (!HINIC_IS_VF(nic_dev->hwdev->hwif))
-+			rx_mode |= HINIC_RX_MODE_PROMISC;
-+	} else if (netdev->flags & IFF_ALLMULTI) {
- 		rx_mode |= HINIC_RX_MODE_MC_ALL;
-+	}
- 
- 	rx_mode_work->rx_mode = rx_mode;
- 
-@@ -868,6 +866,9 @@ static const struct net_device_ops hinic_netdev_ops = {
- 	.ndo_set_vf_vlan = hinic_ndo_set_vf_vlan,
- 	.ndo_get_vf_config = hinic_ndo_get_vf_config,
- 	.ndo_set_vf_trust = hinic_ndo_set_vf_trust,
-+	.ndo_set_vf_rate = hinic_ndo_set_vf_bw,
-+	.ndo_set_vf_spoofchk = hinic_ndo_set_vf_spoofchk,
-+	.ndo_set_vf_link_state = hinic_ndo_set_vf_link_state,
- };
- 
- static const struct net_device_ops hinicvf_netdev_ops = {
-@@ -1232,6 +1233,8 @@ static void hinic_remove(struct pci_dev *pdev)
- 
- 	unregister_netdev(netdev);
- 
-+	hinic_port_del_mac(nic_dev, netdev->dev_addr, 0);
-+
- 	hinic_hwdev_cb_unregister(nic_dev->hwdev,
- 				  HINIC_MGMT_MSG_CMD_LINK_STATUS);
- 
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_port.c b/drivers/net/ethernet/huawei/hinic/hinic_port.c
-index b7fe0adcc29a..714d8279c591 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_port.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_port.c
-@@ -66,15 +66,15 @@ static int change_mac(struct hinic_dev *nic_dev, const u8 *addr,
- 		return -EFAULT;
- 	}
- 
--	if (cmd == HINIC_PORT_CMD_SET_MAC && port_mac_cmd.status ==
--	    HINIC_PF_SET_VF_ALREADY) {
--		dev_warn(&pdev->dev, "PF has already set VF mac, Ignore set operation\n");
-+	if (port_mac_cmd.status == HINIC_PF_SET_VF_ALREADY) {
-+		dev_warn(&pdev->dev, "PF has already set VF mac, ignore %s operation\n",
-+			 (op == MAC_SET) ? "set" : "del");
- 		return HINIC_PF_SET_VF_ALREADY;
- 	}
- 
- 	if (cmd == HINIC_PORT_CMD_SET_MAC && port_mac_cmd.status ==
- 	    HINIC_MGMT_STATUS_EXIST)
--		dev_warn(&pdev->dev, "MAC is repeated. Ignore set operation\n");
-+		dev_warn(&pdev->dev, "MAC is repeated, ignore set operation\n");
- 
- 	return 0;
- }
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_port.h b/drivers/net/ethernet/huawei/hinic/hinic_port.h
-index 5ad04fb6722a..f2781521970e 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_port.h
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_port.h
-@@ -506,6 +506,49 @@ struct hinic_cmd_vport_stats {
- 	struct hinic_vport_stats stats;
- };
- 
-+struct hinic_tx_rate_cfg_max_min {
-+	u8	status;
-+	u8	version;
-+	u8	rsvd0[6];
-+
-+	u16	func_id;
-+	u16	rsvd1;
-+	u32	min_rate;
-+	u32	max_rate;
-+	u8	rsvd2[8];
-+};
-+
-+struct hinic_tx_rate_cfg {
-+	u8	status;
-+	u8	version;
-+	u8	rsvd0[6];
-+
-+	u16	func_id;
-+	u16	rsvd1;
-+	u32	tx_rate;
-+};
-+
-+enum nic_speed_level {
-+	LINK_SPEED_10MB = 0,
-+	LINK_SPEED_100MB,
-+	LINK_SPEED_1GB,
-+	LINK_SPEED_10GB,
-+	LINK_SPEED_25GB,
-+	LINK_SPEED_40GB,
-+	LINK_SPEED_100GB,
-+	LINK_SPEED_LEVELS,
-+};
-+
-+struct hinic_spoofchk_set {
-+	u8	status;
-+	u8	version;
-+	u8	rsvd0[6];
-+
-+	u8	state;
-+	u8	rsvd1;
-+	u16	func_id;
-+};
-+
- int hinic_port_add_mac(struct hinic_dev *nic_dev, const u8 *addr,
- 		       u16 vlan_id);
- 
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_sriov.c b/drivers/net/ethernet/huawei/hinic/hinic_sriov.c
-index fd4aaf43874a..efab2dd2c889 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_sriov.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_sriov.c
-@@ -22,6 +22,7 @@ MODULE_PARM_DESC(set_vf_link_state, "Set vf link state, 0 represents link auto,
- 
- #define HINIC_VLAN_PRIORITY_SHIFT 13
- #define HINIC_ADD_VLAN_IN_MAC 0x8000
-+#define HINIC_TX_RATE_TABLE_FULL 12
- 
- static int hinic_set_mac(struct hinic_hwdev *hwdev, const u8 *mac_addr,
- 			 u16 vlan_id, u16 func_id)
-@@ -129,6 +130,84 @@ static int hinic_set_vf_vlan(struct hinic_hwdev *hwdev, bool add, u16 vid,
- 	return 0;
- }
- 
-+static int hinic_set_vf_tx_rate_max_min(struct hinic_hwdev *hwdev, u16 vf_id,
-+					u32 max_rate, u32 min_rate)
-+{
-+	struct hinic_func_to_io *nic_io = &hwdev->func_to_io;
-+	struct hinic_tx_rate_cfg_max_min rate_cfg = {0};
-+	u16 out_size = sizeof(rate_cfg);
-+	int err;
-+
-+	rate_cfg.func_id = hinic_glb_pf_vf_offset(hwdev->hwif) + vf_id;
-+	rate_cfg.max_rate = max_rate;
-+	rate_cfg.min_rate = min_rate;
-+	err = hinic_port_msg_cmd(hwdev, HINIC_PORT_CMD_SET_VF_MAX_MIN_RATE,
-+				 &rate_cfg, sizeof(rate_cfg), &rate_cfg,
-+				 &out_size);
-+	if ((rate_cfg.status != HINIC_MGMT_CMD_UNSUPPORTED &&
-+	     rate_cfg.status) || err || !out_size) {
-+		dev_err(&hwdev->hwif->pdev->dev, "Failed to set VF(%d) max rate(%d), min rate(%d), err: %d, status: 0x%x, out size: 0x%x\n",
-+			HW_VF_ID_TO_OS(vf_id), max_rate, min_rate, err,
-+			rate_cfg.status, out_size);
-+		return -EIO;
-+	}
-+
-+	if (!rate_cfg.status) {
-+		nic_io->vf_infos[HW_VF_ID_TO_OS(vf_id)].max_rate = max_rate;
-+		nic_io->vf_infos[HW_VF_ID_TO_OS(vf_id)].min_rate = min_rate;
-+	}
-+
-+	return rate_cfg.status;
-+}
-+
-+static int hinic_set_vf_rate_limit(struct hinic_hwdev *hwdev, u16 vf_id,
-+				   u32 tx_rate)
-+{
-+	struct hinic_func_to_io *nic_io = &hwdev->func_to_io;
-+	struct hinic_tx_rate_cfg rate_cfg = {0};
-+	u16 out_size = sizeof(rate_cfg);
-+	int err;
-+
-+	rate_cfg.func_id = hinic_glb_pf_vf_offset(hwdev->hwif) + vf_id;
-+	rate_cfg.tx_rate = tx_rate;
-+	err = hinic_port_msg_cmd(hwdev, HINIC_PORT_CMD_SET_VF_RATE,
-+				 &rate_cfg, sizeof(rate_cfg), &rate_cfg,
-+				 &out_size);
-+	if (err || !out_size || rate_cfg.status) {
-+		dev_err(&hwdev->hwif->pdev->dev, "Failed to set VF(%d) rate(%d), err: %d, status: 0x%x, out size: 0x%x\n",
-+			HW_VF_ID_TO_OS(vf_id), tx_rate, err, rate_cfg.status,
-+			out_size);
-+		if (rate_cfg.status)
-+			return rate_cfg.status;
-+
-+		return -EIO;
-+	}
-+
-+	nic_io->vf_infos[HW_VF_ID_TO_OS(vf_id)].max_rate = tx_rate;
-+	nic_io->vf_infos[HW_VF_ID_TO_OS(vf_id)].min_rate = 0;
-+
-+	return 0;
-+}
-+
-+static int hinic_set_vf_tx_rate(struct hinic_hwdev *hwdev, u16 vf_id,
-+				u32 max_rate, u32 min_rate)
-+{
-+	int err;
-+
-+	err = hinic_set_vf_tx_rate_max_min(hwdev, vf_id, max_rate, min_rate);
-+	if (err != HINIC_MGMT_CMD_UNSUPPORTED)
-+		return err;
-+
-+	if (min_rate) {
-+		dev_err(&hwdev->hwif->pdev->dev, "Current firmware doesn't support to set min tx rate\n");
-+		return -EOPNOTSUPP;
-+	}
-+
-+	dev_info(&hwdev->hwif->pdev->dev, "Current firmware doesn't support to set min tx rate, force min_tx_rate = max_tx_rate\n");
-+
-+	return hinic_set_vf_rate_limit(hwdev, vf_id, max_rate);
-+}
-+
- static int hinic_init_vf_config(struct hinic_hwdev *hwdev, u16 vf_id)
- {
- 	struct vf_data_storage *vf_info;
-@@ -160,6 +239,17 @@ static int hinic_init_vf_config(struct hinic_hwdev *hwdev, u16 vf_id)
- 		}
- 	}
- 
-+	if (vf_info->max_rate) {
-+		err = hinic_set_vf_tx_rate(hwdev, vf_id, vf_info->max_rate,
-+					   vf_info->min_rate);
-+		if (err) {
-+			dev_err(&hwdev->hwif->pdev->dev, "Failed to set VF %d max rate: %d, min rate: %d\n",
-+				HW_VF_ID_TO_OS(vf_id), vf_info->max_rate,
-+				vf_info->min_rate);
-+			return err;
-+		}
-+	}
-+
- 	return 0;
- }
- 
-@@ -700,6 +790,185 @@ int hinic_ndo_set_vf_trust(struct net_device *netdev, int vf, bool setting)
- 	return err;
- }
- 
-+int hinic_ndo_set_vf_bw(struct net_device *netdev,
-+			int vf, int min_tx_rate, int max_tx_rate)
-+{
-+	u32 speeds[] = {SPEED_10, SPEED_100, SPEED_1000, SPEED_10000,
-+			SPEED_25000, SPEED_40000, SPEED_100000};
-+	struct hinic_dev *nic_dev = netdev_priv(netdev);
-+	struct hinic_port_cap port_cap = { 0 };
-+	enum hinic_port_link_state link_state;
-+	int err;
-+
-+	if (vf >= nic_dev->sriov_info.num_vfs) {
-+		netif_err(nic_dev, drv, netdev, "VF number must be less than %d\n",
-+			  nic_dev->sriov_info.num_vfs);
-+		return -EINVAL;
-+	}
-+
-+	if (max_tx_rate < min_tx_rate) {
-+		netif_err(nic_dev, drv, netdev, "Max rate %d must be greater than or equal to min rate %d\n",
-+			  max_tx_rate, min_tx_rate);
-+		return -EINVAL;
-+	}
-+
-+	err = hinic_port_link_state(nic_dev, &link_state);
-+	if (err) {
-+		netif_err(nic_dev, drv, netdev,
-+			  "Get link status failed when setting vf tx rate\n");
-+		return -EIO;
-+	}
-+
-+	if (link_state == HINIC_LINK_STATE_DOWN) {
-+		netif_err(nic_dev, drv, netdev,
-+			  "Link status must be up when setting vf tx rate\n");
-+		return -EPERM;
-+	}
-+
-+	err = hinic_port_get_cap(nic_dev, &port_cap);
-+	if (err || port_cap.speed > LINK_SPEED_100GB)
-+		return -EIO;
-+
-+	/* rate limit cannot be less than 0 and greater than link speed */
-+	if (max_tx_rate < 0 || max_tx_rate > speeds[port_cap.speed]) {
-+		netif_err(nic_dev, drv, netdev, "Max tx rate must be in [0 - %d]\n",
-+			  speeds[port_cap.speed]);
-+		return -EINVAL;
-+	}
-+
-+	err = hinic_set_vf_tx_rate(nic_dev->hwdev, OS_VF_ID_TO_HW(vf),
-+				   max_tx_rate, min_tx_rate);
-+	if (err) {
-+		netif_err(nic_dev, drv, netdev,
-+			  "Unable to set VF %d max rate %d min rate %d%s\n",
-+			  vf, max_tx_rate, min_tx_rate,
-+			  err == HINIC_TX_RATE_TABLE_FULL ?
-+			  ", tx rate profile is full" : "");
-+		return -EIO;
-+	}
-+
-+	netif_info(nic_dev, drv, netdev,
-+		   "Set VF %d max tx rate %d min tx rate %d successfully\n",
-+		   vf, max_tx_rate, min_tx_rate);
-+
-+	return 0;
-+}
-+
-+static int hinic_set_vf_spoofchk(struct hinic_hwdev *hwdev, u16 vf_id,
-+				 bool spoofchk)
-+{
-+	struct hinic_spoofchk_set spoofchk_cfg = {0};
-+	struct vf_data_storage *vf_infos = NULL;
-+	u16 out_size = sizeof(spoofchk_cfg);
-+	int err;
-+
-+	if (!hwdev)
-+		return -EINVAL;
-+
-+	vf_infos = hwdev->func_to_io.vf_infos;
-+
-+	spoofchk_cfg.func_id = hinic_glb_pf_vf_offset(hwdev->hwif) + vf_id;
-+	spoofchk_cfg.state = spoofchk ? 1 : 0;
-+	err = hinic_port_msg_cmd(hwdev, HINIC_PORT_CMD_ENABLE_SPOOFCHK,
-+				 &spoofchk_cfg, sizeof(spoofchk_cfg),
-+				 &spoofchk_cfg, &out_size);
-+	if (spoofchk_cfg.status == HINIC_MGMT_CMD_UNSUPPORTED) {
-+		err = HINIC_MGMT_CMD_UNSUPPORTED;
-+	} else if (err || !out_size || spoofchk_cfg.status) {
-+		dev_err(&hwdev->hwif->pdev->dev, "Failed to set VF(%d) spoofchk, err: %d, status: 0x%x, out size: 0x%x\n",
-+			HW_VF_ID_TO_OS(vf_id), err, spoofchk_cfg.status,
-+			out_size);
-+		err = -EIO;
-+	}
-+
-+	vf_infos[HW_VF_ID_TO_OS(vf_id)].spoofchk = spoofchk;
-+
-+	return err;
-+}
-+
-+int hinic_ndo_set_vf_spoofchk(struct net_device *netdev, int vf, bool setting)
-+{
-+	struct hinic_dev *nic_dev = netdev_priv(netdev);
-+	struct hinic_sriov_info *sriov_info;
-+	bool cur_spoofchk;
-+	int err;
-+
-+	sriov_info = &nic_dev->sriov_info;
-+	if (vf >= sriov_info->num_vfs)
-+		return -EINVAL;
-+
-+	cur_spoofchk = nic_dev->hwdev->func_to_io.vf_infos[vf].spoofchk;
-+
-+	/* same request, so just return success */
-+	if ((setting && cur_spoofchk) || (!setting && !cur_spoofchk))
-+		return 0;
-+
-+	err = hinic_set_vf_spoofchk(sriov_info->hwdev,
-+				    OS_VF_ID_TO_HW(vf), setting);
-+
-+	if (!err) {
-+		netif_info(nic_dev, drv, netdev, "Set VF %d spoofchk %s successfully\n",
-+			   vf, setting ? "on" : "off");
-+	} else if (err == HINIC_MGMT_CMD_UNSUPPORTED) {
-+		netif_err(nic_dev, drv, netdev,
-+			  "Current firmware doesn't support to set vf spoofchk, need to upgrade latest firmware version\n");
-+		err = -EOPNOTSUPP;
-+	}
-+
-+	return err;
-+}
-+
-+static int hinic_set_vf_link_state(struct hinic_hwdev *hwdev, u16 vf_id,
-+				   int link)
-+{
-+	struct hinic_func_to_io *nic_io = &hwdev->func_to_io;
-+	struct vf_data_storage *vf_infos = nic_io->vf_infos;
-+	u8 link_status = 0;
-+
-+	switch (link) {
-+	case HINIC_IFLA_VF_LINK_STATE_AUTO:
-+		vf_infos[HW_VF_ID_TO_OS(vf_id)].link_forced = false;
-+		vf_infos[HW_VF_ID_TO_OS(vf_id)].link_up = nic_io->link_status ?
-+			true : false;
-+		link_status = nic_io->link_status;
-+		break;
-+	case HINIC_IFLA_VF_LINK_STATE_ENABLE:
-+		vf_infos[HW_VF_ID_TO_OS(vf_id)].link_forced = true;
-+		vf_infos[HW_VF_ID_TO_OS(vf_id)].link_up = true;
-+		link_status = HINIC_LINK_UP;
-+		break;
-+	case HINIC_IFLA_VF_LINK_STATE_DISABLE:
-+		vf_infos[HW_VF_ID_TO_OS(vf_id)].link_forced = true;
-+		vf_infos[HW_VF_ID_TO_OS(vf_id)].link_up = false;
-+		link_status = HINIC_LINK_DOWN;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	/* Notify the VF of its new link state */
-+	hinic_notify_vf_link_status(hwdev, vf_id, link_status);
-+
-+	return 0;
-+}
-+
-+int hinic_ndo_set_vf_link_state(struct net_device *netdev, int vf_id, int link)
-+{
-+	struct hinic_dev *nic_dev = netdev_priv(netdev);
-+	struct hinic_sriov_info *sriov_info;
-+
-+	sriov_info = &nic_dev->sriov_info;
-+
-+	if (vf_id >= sriov_info->num_vfs) {
-+		netif_err(nic_dev, drv, netdev,
-+			  "Invalid VF Identifier %d\n", vf_id);
-+		return -EINVAL;
-+	}
-+
-+	return hinic_set_vf_link_state(sriov_info->hwdev,
-+				      OS_VF_ID_TO_HW(vf_id), link);
-+}
-+
- /* pf receive message from vf */
- static int nic_pf_mbox_handler(void *hwdev, u16 vf_id, u8 cmd, void *buf_in,
- 			       u16 in_size, void *buf_out, u16 *out_size)
-@@ -801,6 +1070,12 @@ static void hinic_clear_vf_infos(struct hinic_dev *nic_dev, u16 vf_id)
- 	if (hinic_vf_info_vlanprio(nic_dev->hwdev, vf_id))
- 		hinic_kill_vf_vlan(nic_dev->hwdev, vf_id);
- 
-+	if (vf_infos->max_rate)
-+		hinic_set_vf_tx_rate(nic_dev->hwdev, vf_id, 0, 0);
-+
-+	if (vf_infos->spoofchk)
-+		hinic_set_vf_spoofchk(nic_dev->hwdev, vf_id, false);
-+
- 	if (vf_infos->trust)
- 		hinic_set_vf_trust(nic_dev->hwdev, vf_id, false);
- 
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_sriov.h b/drivers/net/ethernet/huawei/hinic/hinic_sriov.h
-index 64affc7474b5..ba627a362f9a 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_sriov.h
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_sriov.h
-@@ -86,6 +86,13 @@ int hinic_ndo_get_vf_config(struct net_device *netdev,
- 
- int hinic_ndo_set_vf_trust(struct net_device *netdev, int vf, bool setting);
- 
-+int hinic_ndo_set_vf_bw(struct net_device *netdev,
-+			int vf, int min_tx_rate, int max_tx_rate);
-+
-+int hinic_ndo_set_vf_spoofchk(struct net_device *netdev, int vf, bool setting);
-+
-+int hinic_ndo_set_vf_link_state(struct net_device *netdev, int vf_id, int link);
-+
- void hinic_notify_all_vfs_link_changed(struct hinic_hwdev *hwdev,
- 				       u8 link_status);
- 
--- 
-2.17.1
+> if yes, printing related information for tracing.
+>
+> /* Implement details */
+> - Add latency tracer module to monitor slow transaction.
+>   The trace_binder_free_transaction would not be enabled
+>   by default. Monitoring which transaction is too slow to
+>   cause some of exceptions is important. So we hook the
+>   tracepoint to call the monitor function.
 
+Please add a more complete description. This patch adds a module to
+monitor transaction latency by attaching to new tracepoints introduced
+when transactions are allocated and freed. Describe this in the commit
+message.
+
+>
+> Signed-off-by: Frankie.Chang <Frankie.Chang@mediatek.com>
+> ---
+>  drivers/android/Kconfig                 |    8 +++
+>  drivers/android/Makefile                |    1 +
+>  drivers/android/binder.c                |    2 +
+>  drivers/android/binder_internal.h       |   13 ++++
+>  drivers/android/binder_latency_tracer.c |  105 +++++++++++++++++++++++++++++++
+>  drivers/android/binder_trace.h          |   26 +++++++-
+>  6 files changed, 152 insertions(+), 3 deletions(-)
+>  create mode 100644 drivers/android/binder_latency_tracer.c
+>
+>  Change from v4:
+>    split up into patch series.
+>
+>  Change from v3:
+>    use tracepoints for binder_update_info and print_binder_transaction_ext,
+>    instead of custom registration functions.
+>
+>  Change from v2:
+>    create transaction latency module to monitor slow transaction.
+>
+>  Change from v1:
+>    first patchset.
+>
+> diff --git a/drivers/android/Kconfig b/drivers/android/Kconfig
+> index 6fdf2ab..7ba80eb 100644
+> --- a/drivers/android/Kconfig
+> +++ b/drivers/android/Kconfig
+> @@ -54,6 +54,14 @@ config ANDROID_BINDER_IPC_SELFTEST
+>           exhaustively with combinations of various buffer sizes and
+>           alignments.
+>
+> +config BINDER_USER_TRACKING
+
+Why not "BINDER_TRANSACTION_LATENCY_TRACKING"?
+
+> +       bool "Android Binder transaction tracking"
+> +       help
+> +         Used for track abnormal binder transaction which is over 2 seconds,
+> +         when the transaction is done or be free, this transaction would be
+> +         checked whether it executed overtime.
+> +         If yes, printing out the detail info about it.
+
+"If yes, print out the detailed info"
+
+> +
+>  endif # if ANDROID
+>
+>  endmenu
+> diff --git a/drivers/android/Makefile b/drivers/android/Makefile
+> index c9d3d0c9..552e8ac 100644
+> --- a/drivers/android/Makefile
+> +++ b/drivers/android/Makefile
+> @@ -4,3 +4,4 @@ ccflags-y += -I$(src)                   # needed for trace events
+>  obj-$(CONFIG_ANDROID_BINDERFS)         += binderfs.o
+>  obj-$(CONFIG_ANDROID_BINDER_IPC)       += binder.o binder_alloc.o
+>  obj-$(CONFIG_ANDROID_BINDER_IPC_SELFTEST) += binder_alloc_selftest.o
+> +obj-$(CONFIG_BINDER_USER_TRACKING)     += binder_latency_tracer.o
+> diff --git a/drivers/android/binder.c b/drivers/android/binder.c
+> index 4c3dd98..b89d75a 100644
+> --- a/drivers/android/binder.c
+> +++ b/drivers/android/binder.c
+> @@ -2657,6 +2657,7 @@ static void binder_transaction(struct binder_proc *proc,
+>                 return_error_line = __LINE__;
+>                 goto err_alloc_t_failed;
+>         }
+> +       trace_binder_update_info(t, e);
+
+Can this be a more descriptive name? Perhaps "trace_binder_txn_create()"
+
+>         INIT_LIST_HEAD(&t->fd_fixups);
+>         binder_stats_created(BINDER_STAT_TRANSACTION);
+>         spin_lock_init(&t->lock);
+> @@ -5145,6 +5146,7 @@ static void print_binder_transaction_ilocked(struct seq_file *m,
+>                    t->to_thread ? t->to_thread->pid : 0,
+>                    t->code, t->flags, t->priority, t->need_reply);
+>         spin_unlock(&t->lock);
+> +       trace_print_binder_transaction_ext(m, t);
+
+Why do you need to trace when dumping out the transaction info?
+
+>
+>         if (proc != to_proc) {
+>                 /*
+> diff --git a/drivers/android/binder_internal.h b/drivers/android/binder_internal.h
+> index ed61b3e..24d7beb 100644
+> --- a/drivers/android/binder_internal.h
+> +++ b/drivers/android/binder_internal.h
+> @@ -12,6 +12,11 @@
+>  #include <linux/types.h>
+>  #include <linux/uidgid.h>
+>
+> +#ifdef CONFIG_BINDER_USER_TRACKING
+> +#include <linux/rtc.h>
+> +#include <linux/time.h>
+> +#endif
+> +
+>  struct binder_context {
+>         struct binder_node *binder_context_mgr_node;
+>         struct mutex context_mgr_node_lock;
+> @@ -131,6 +136,10 @@ struct binder_transaction_log_entry {
+>         uint32_t return_error;
+>         uint32_t return_error_param;
+>         char context_name[BINDERFS_MAX_NAME + 1];
+> +#ifdef CONFIG_BINDER_USER_TRACKING
+> +       struct timespec timestamp;
+> +       struct timeval tv;
+> +#endif
+>  };
+>
+>  struct binder_transaction_log {
+> @@ -520,6 +529,10 @@ struct binder_transaction {
+>          * during thread teardown
+>          */
+>         spinlock_t lock;
+> +#ifdef CONFIG_BINDER_USER_TRACKING
+> +       struct timespec timestamp;
+> +       struct timeval tv;
+> +#endif
+>  };
+>
+>  /**
+> diff --git a/drivers/android/binder_latency_tracer.c b/drivers/android/binder_latency_tracer.c
+> new file mode 100644
+> index 0000000..45c14fb
+> --- /dev/null
+> +++ b/drivers/android/binder_latency_tracer.c
+> @@ -0,0 +1,105 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2019 MediaTek Inc.
+> + */
+> +
+> +#include <linux/module.h>
+> +#include <uapi/linux/android/binder.h>
+> +#include "binder_alloc.h"
+> +#include "binder_internal.h"
+> +#include "binder_trace.h"
+> +
+> +/*
+> + * probe_binder_free_transaction - Output info of a delay transaction
+> + * @t:          pointer to the over-time transaction
+> + */
+> +void probe_binder_free_transaction(void *ignore, struct binder_transaction *t)
+> +{
+> +       struct rtc_time tm;
+> +       struct timespec *startime;
+> +       struct timespec cur, sub_t;
+> +
+> +       ktime_get_ts(&cur);
+> +       startime = &t->timestamp;
+> +       sub_t = timespec_sub(cur, *startime);
+> +
+> +       /* if transaction time is over than 2 sec,
+> +        * show timeout warning log.
+> +        */
+> +       if (sub_t.tv_sec < 2)
+> +               return;
+> +
+> +       rtc_time_to_tm(t->tv.tv_sec, &tm);
+> +
+> +       spin_lock(&t->lock);
+> +       pr_info_ratelimited("%d: from %d:%d to %d:%d",
+> +                       t->debug_id,
+> +                       t->from ? t->from->proc->pid : 0,
+> +                       t->from ? t->from->pid : 0,
+> +                       t->to_proc ? t->to_proc->pid : 0,
+> +                       t->to_thread ? t->to_thread->pid : 0);
+> +       spin_unlock(&t->lock);
+> +
+> +       pr_info_ratelimited(" total %u.%03ld s code %u start %lu.%03ld android %d-%02d-%02d %02d:%02d:%02d.%03lu\n",
+> +                       (unsigned int)sub_t.tv_sec,
+> +                       (sub_t.tv_nsec / NSEC_PER_MSEC),
+> +                       t->code,
+> +                       (unsigned long)startime->tv_sec,
+> +                       (startime->tv_nsec / NSEC_PER_MSEC),
+> +                       (tm.tm_year + 1900), (tm.tm_mon + 1), tm.tm_mday,
+> +                       tm.tm_hour, tm.tm_min, tm.tm_sec,
+> +                       (unsigned long)(t->tv.tv_usec / USEC_PER_MSEC));
+> +}
+> +
+> +static void probe_binder_update_info(void *ignore, struct binder_transaction *t,
+> +                          struct binder_transaction_log_entry *e)
+> +{
+> +       ktime_get_ts(&e->timestamp);
+> +       do_gettimeofday(&e->tv);
+> +       e->tv.tv_sec -= (sys_tz.tz_minuteswest * 60);
+> +       memcpy(&t->timestamp, &e->timestamp, sizeof(struct timespec));
+> +       memcpy(&t->tv, &e->tv, sizeof(struct timeval));
+> +}
+> +
+> +static void probe_print_binder_transaction_ext(void *ignore, struct seq_file *m,
+> +                                        struct binder_transaction *t)
+> +{
+> +       struct rtc_time tm;
+> +
+> +       rtc_time_to_tm(t->tv.tv_sec, &tm);
+> +       seq_printf(m,
+> +                  " start %lu.%06lu android %d-%02d-%02d %02d:%02d:%02d.%03lu",
+> +                  (unsigned long)t->timestamp.tv_sec,
+> +                  (t->timestamp.tv_nsec / NSEC_PER_USEC),
+> +                  (tm.tm_year + 1900), (tm.tm_mon + 1), tm.tm_mday,
+> +                  tm.tm_hour, tm.tm_min, tm.tm_sec,
+> +                  (unsigned long)(t->tv.tv_usec / USEC_PER_MSEC));
+> +
+> +}
+> +
+> +static int __init init_binder_latency_tracer(void)
+> +{
+> +       register_trace_binder_free_transaction(
+> +                       probe_binder_free_transaction, NULL);
+> +       register_trace_binder_update_info(
+> +                       probe_binder_update_info, NULL);
+> +       register_trace_print_binder_transaction_ext(
+> +                       probe_print_binder_transaction_ext, NULL);
+
+Ah, now the trace in the print path makes sense. Please add a more
+detailed description to the commit message. Also add a comment at the
+trace point that it is for modules to attach to so additional
+information can be printed. Also, make the names of the tracepoints
+more descriptive of what they really are ...something like
+trace_binder_txn_latency_(alloc|info|free)
+
+> +
+> +       return 0;
+> +}
+> +
+> +static void exit_binder_latency_tracer(void)
+> +{
+> +       unregister_trace_binder_free_transaction(
+> +                       probe_binder_free_transaction, NULL);
+> +       unregister_trace_binder_update_info(
+> +                       probe_binder_update_info, NULL);
+> +       unregister_trace_print_binder_transaction_ext(
+> +                       probe_print_binder_transaction_ext, NULL);
+> +}
+> +
+> +module_init(init_binder_latency_tracer);
+> +module_exit(exit_binder_latency_tracer);
+> +
+> +MODULE_LICENSE("GPL v2");
+> diff --git a/drivers/android/binder_trace.h b/drivers/android/binder_trace.h
+> index 7acc18d..466993e 100644
+> --- a/drivers/android/binder_trace.h
+> +++ b/drivers/android/binder_trace.h
+> @@ -18,6 +18,7 @@
+>  struct binder_ref_data;
+>  struct binder_thread;
+>  struct binder_transaction;
+> +struct binder_transaction_log_entry;
+>
+>  TRACE_EVENT(binder_ioctl,
+>         TP_PROTO(unsigned int cmd, unsigned long arg),
+> @@ -95,6 +96,18 @@
+>                   __entry->thread_todo)
+>  );
+>
+> +DECLARE_TRACE(binder_update_info,
+> +       TP_PROTO(struct binder_transaction *t,
+> +                struct binder_transaction_log_entry *e),
+> +       TP_ARGS(t, e)
+> +);
+> +
+> +DECLARE_TRACE(print_binder_transaction_ext,
+> +       TP_PROTO(struct seq_file *m,
+> +                struct binder_transaction *t),
+> +       TP_ARGS(m, t)
+> +);
+> +
+>  TRACE_EVENT(binder_free_transaction,
+>         TP_PROTO(struct binder_transaction *t),
+>         TP_ARGS(t),
+> @@ -115,11 +128,18 @@
+>                 __entry->to_thread = t->to_thread ? t->to_thread->pid : 0;
+>                 __entry->code = t->code;
+>                 __entry->flags = t->flags;
+> -       ),
+> -       TP_printk("transaction=%d from %d:%d to %d:%d flags=0x%x code=0x%x",
+> +#ifdef CONFIG_BINDER_USER_TRACKING
+> +               __entry->start_sec = t->timestamp.tv_sec;
+> +               __entry->start_nsec = t->timestamp.tv_nsec / NSEC_PER_MSEC;
+> +#else
+> +               __entry->start_sec = 0;
+> +               __entry->start_nsec = 0;
+> +#endif
+> +       ),
+> +       TP_printk("transaction=%d from %d:%d to %d:%d flags=0x%x code=0x%x start %lu.%03ld",
+>                   __entry->debug_id, __entry->from_proc, __entry->from_thread,
+>                   __entry->to_proc, __entry->to_thread, __entry->code,
+> -                 __entry->flags)
+> +                 __entry->flags, __entry->start_sec, __entry->start_nsec)
+>  );
+>
+>  TRACE_EVENT(binder_transaction,
+> --
+> 1.7.9.5
