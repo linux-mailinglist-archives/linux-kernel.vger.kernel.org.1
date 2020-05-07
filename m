@@ -2,86 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D55C1C93D3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 17:10:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF3931C93F4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 17:11:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727918AbgEGPJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 11:09:41 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:45021 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725985AbgEGPJk (ORCPT
+        id S1727095AbgEGPKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 11:10:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726267AbgEGPKu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 11:09:40 -0400
-X-Greylist: delayed 26691 seconds by postgrey-1.27 at vger.kernel.org; Thu, 07 May 2020 11:09:39 EDT
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-27-eCu94Q7JP0-k2Oee_LKtag-1; Thu, 07 May 2020 16:09:36 +0100
-X-MC-Unique: eCu94Q7JP0-k2Oee_LKtag-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Thu, 7 May 2020 16:09:35 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Thu, 7 May 2020 16:09:35 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Brian Gerst' <brgerst@gmail.com>, "H. Peter Anvin" <hpa@zytor.com>
-CC:     Nick Desaulniers <ndesaulniers@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        stable <stable@vger.kernel.org>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        "kernelci . org bot" <bot@kernelci.org>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Ilie Halip <ilie.halip@gmail.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Marco Elver <elver@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>
-Subject: RE: [PATCH] x86: bitops: fix build regression
-Thread-Topic: [PATCH] x86: bitops: fix build regression
-Thread-Index: AQHWJHPxnFcKS0TA9USbY8l3s67J1qicuE2A
-Date:   Thu, 7 May 2020 15:09:35 +0000
-Message-ID: <9c701ca55bc442c1899a70896f3ea73e@AcuMS.aculab.com>
-References: <20200505174423.199985-1-ndesaulniers@google.com>
- <CAMzpN2idWF2_4wtPebM2B2HVyksknr9hAqK8HJi_vjQ06bgu2g@mail.gmail.com>
- <6A99766A-59FB-42DF-9350-80EA671A42B0@zytor.com>
- <CAMzpN2iCgr0rb=MCYPGMx8tcfLq2qdzv0h7YnX5hkzBB+O7JJQ@mail.gmail.com>
-In-Reply-To: <CAMzpN2iCgr0rb=MCYPGMx8tcfLq2qdzv0h7YnX5hkzBB+O7JJQ@mail.gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 7 May 2020 11:10:50 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53B45C05BD43;
+        Thu,  7 May 2020 08:10:50 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id u10so2165654pls.8;
+        Thu, 07 May 2020 08:10:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mHPaRymVXT/RRtPGGSsDfbM2nTSXjaJgAumG3IDMRCs=;
+        b=i819Zid9bujthzQEqT/LQEVlN+VrPGpv/O1lFRDQcmSPJnVk+PNQJdkl6kC9YUWsFB
+         8IiLVRhxyVgP4kU9cg1pLitPVlvZ0VasazDMJ1npUrm+iarSgDznmIS/cj/sxGtjRKB0
+         jRYmOxajzM1LlfQGhrqrJ8814VmcyWwydN/24yfxSzA3LA1GWllZ5O/D8JM4i0gZqm5c
+         AaqSV7L72JzJBGNYpYglQMUDg5iHxnFXeF5Rv/oxP7gPopo1NUtpBKBtG54/P1CcFOTz
+         nD7E1xtk7yb0xjIdSQlL4bE8EnE9xMjCqk97xX57SCde7O2tAT3duMRG5pg3d24GiSA7
+         ie/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mHPaRymVXT/RRtPGGSsDfbM2nTSXjaJgAumG3IDMRCs=;
+        b=aLvqklacnBAXxuAtLG8hUUQmV1Ax//8w+IRFsibl/Ub0MwYiFY2SlemwXIjo+xsc3o
+         QMlc6O6sdYx0yL2tNasM21zZd6Ft4A0ik2IBCJJSTBz3loY1d3zkmowYdYU6ZmpO2giV
+         REiuczJHV3d5Kkl4FSALp5gzTIylnOIVHMidwXmnHrhtaNPkKonk8sS1fevo/vqaZwDK
+         0oo4XTJQhVIAE+hcz2KdyerXLryVsmor48uq0S38bJso82RMTuHmOoC31tjfebmxHwzL
+         VwvEqfZ04IzkmvvAQFWiHj3B71TRadwDy2BWS/rM99d9q7+veA7cRwfpzEy6FIlb5CUE
+         2GrQ==
+X-Gm-Message-State: AGi0PuY2TO7ILdBY++KuLWiIf7UxSMyNmkKHzanezBHzbdKT257AsrLp
+        9LU+VJN65UXRArOkIVd++aZzMDQHFUQ=
+X-Google-Smtp-Source: APiQypJKVymrKVR3UytW9PIKPTnQgkWe0I+V8k0XQZrX4F1WO/7TS8P594vlGgDu2lWvpgozekUlmw==
+X-Received: by 2002:a17:90a:2344:: with SMTP id f62mr538353pje.152.1588864249839;
+        Thu, 07 May 2020 08:10:49 -0700 (PDT)
+Received: from suzukaze.ipads-lab.se.sjtu.edu.cn ([202.120.40.82])
+        by smtp.gmail.com with ESMTPSA id d124sm5067944pfa.98.2020.05.07.08.10.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 May 2020 08:10:49 -0700 (PDT)
+From:   Chuhong Yuan <hslester96@gmail.com>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chuhong Yuan <hslester96@gmail.com>
+Subject: [PATCH] Input: applespi - add missed input_unregister_device
+Date:   Thu,  7 May 2020 23:10:41 +0800
+Message-Id: <20200507151041.792460-1-hslester96@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQnJpYW4gR2Vyc3QNCj4gU2VudDogMDcgTWF5IDIwMjAgMTQ6MzINCi4uLg0KPiBJIHRo
-aW5rIHRoZSBidWcgdGhpcyB3b3JrZWQgYXJvdW5kIHdhcyB0aGF0IHRoZSBjb21waWxlciBkaWRu
-J3QgZGV0ZWN0DQo+IHRoYXQgQ09OU1RfTUFTSyhucikgd2FzIGFsc28gY29uc3RhbnQgYW5kIGRv
-ZXNuJ3QgbmVlZCB0byBiZSBwdXQgaW50bw0KPiBhIHJlZ2lzdGVyLiAgVGhlIHF1ZXN0aW9uIGlz
-IGRvZXMgdGhhdCBidWcgc3RpbGwgZXhpc3Qgb24gY29tcGlsZXINCj4gdmVyc2lvbnMgd2UgY2Fy
-ZSBhYm91dD8NCg0KSG1tbS4uLg0KVGhhdCBvdWdodCB0byBoYXZlIGJlZW4gZml4ZWQgaW5zdGVh
-ZCBvZiB3b3JyeWluZyBhYm91dCB0aGUgZmFjdA0KdGhhdCBhbiBpbnZhbGlkIHJlZ2lzdGVyIHdh
-cyB1c2VkLg0KDQpBbHRlcm5hdGl2ZWx5IGlzIHRoZXJlIGFueSByZWFzb24gbm90IHRvIHVzZSB0
-aGUgYnRzL2J0YyBpbnN0cnVjdGlvbnM/DQpZZXMsIEkga25vdyB0aGV5J2xsIGRvIHdpZGVyIGFj
-Y2Vzc2VzLCBidXQgdmFyaWFibGUgYml0IG51bWJlcnMgZG8uDQpJdCBpcyBhbHNvIHBvc3NpYmxl
-IHRoYXQgdGhlIGFzc2VtYmxlciB3aWxsIHN1cHBvcnQgY29uc3RhbnQgYml0DQpudW1iZXJzID49
-IDMyIGJ5IGFkZGluZyB0byB0aGUgYWRkcmVzcyBvZmZzZXQuDQoNCglEYXZpZA0KDQotDQpSZWdp
-c3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9u
-IEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
+This driver calls input_register_device() in probe, but misses
+input_unregister_device() in probe failure and remove.
+Add the missed function calls to fix it.
+
+Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+---
+ drivers/input/keyboard/applespi.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/input/keyboard/applespi.c b/drivers/input/keyboard/applespi.c
+index d38398526965..8ee9fdb562a5 100644
+--- a/drivers/input/keyboard/applespi.c
++++ b/drivers/input/keyboard/applespi.c
+@@ -1745,7 +1745,7 @@ static int applespi_probe(struct spi_device *spi)
+ 		dev_err(&applespi->spi->dev,
+ 			"Failed to obtain GPE for SPI slave device: %s\n",
+ 			acpi_format_exception(acpi_sts));
+-		return -ENODEV;
++		goto err_unregister;
+ 	}
+ 	applespi->gpe = (int)gpe;
+ 
+@@ -1756,7 +1756,7 @@ static int applespi_probe(struct spi_device *spi)
+ 		dev_err(&applespi->spi->dev,
+ 			"Failed to install GPE handler for GPE %d: %s\n",
+ 			applespi->gpe, acpi_format_exception(acpi_sts));
+-		return -ENODEV;
++		goto err_unregister;
+ 	}
+ 
+ 	applespi->suspended = false;
+@@ -1767,7 +1767,7 @@ static int applespi_probe(struct spi_device *spi)
+ 			"Failed to enable GPE handler for GPE %d: %s\n",
+ 			applespi->gpe, acpi_format_exception(acpi_sts));
+ 		acpi_remove_gpe_handler(NULL, applespi->gpe, applespi_notify);
+-		return -ENODEV;
++		goto err_unregister;
+ 	}
+ 
+ 	/* trigger touchpad setup */
+@@ -1805,6 +1805,10 @@ static int applespi_probe(struct spi_device *spi)
+ 			    &applespi_tp_dim_fops);
+ 
+ 	return 0;
++
++err_unregister:
++	input_unregister_device(applespi->keyboard_input_dev);
++	return -ENODEV;
+ }
+ 
+ static void applespi_drain_writes(struct applespi_data *applespi)
+@@ -1847,6 +1851,7 @@ static int applespi_remove(struct spi_device *spi)
+ 	applespi_drain_reads(applespi);
+ 
+ 	debugfs_remove_recursive(applespi->debugfs_root);
++	input_unregister_device(applespi->keyboard_input_dev);
+ 
+ 	return 0;
+ }
+-- 
+2.26.2
 
