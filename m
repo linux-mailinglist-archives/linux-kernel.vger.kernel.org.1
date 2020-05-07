@@ -2,178 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2B811C86D9
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 12:35:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 001451C86F7
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 12:35:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726750AbgEGKc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 06:32:27 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:46313 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725939AbgEGKcW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 06:32:22 -0400
-Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein.fritz.box)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jWdpC-0007oF-Oi; Thu, 07 May 2020 10:32:18 +0000
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Christian Kellner <christian@kellner.me>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        "Dmitry V. Levin" <ldv@altlinux.org>,
-        Arnd Bergmann <arnd@arndb.de>, Serge Hallyn <serge@hallyn.com>,
-        Tejun Heo <tj@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jan Stancek <jstancek@redhat.com>,
-        Andreas Schwab <schwab@linux-m68k.org>,
-        Florian Weimer <fw@deneb.enyo.de>, libc-alpha@sourceware.org,
-        stable@vger.kernel.org
-Subject: [PATCH v2] fork: prevent accidental access to clone3 features
-Date:   Thu,  7 May 2020 12:32:14 +0200
-Message-Id: <20200507103214.77218-1-christian.brauner@ubuntu.com>
-X-Mailer: git-send-email 2.26.2
+        id S1727882AbgEGKdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 06:33:44 -0400
+Received: from foss.arm.com ([217.140.110.172]:56020 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727849AbgEGKdl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 06:33:41 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 98D8ED6E;
+        Thu,  7 May 2020 03:33:40 -0700 (PDT)
+Received: from [10.57.36.85] (unknown [10.57.36.85])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 58E6F3F71F;
+        Thu,  7 May 2020 03:33:39 -0700 (PDT)
+Subject: Re: [PATCHv2] iommu/arm-smmu: Make remove callback message more
+ informative
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Will Deacon <will@kernel.org>
+Cc:     Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>
+References: <20200423095531.9868-1-saiprakash.ranjan@codeaurora.org>
+ <CAD=FV=W=d=KrTwgMOO-ukFc7ZhkE92qGYumUEDrtjmhQOpdWbg@mail.gmail.com>
+ <CAD=FV=U0Hhae3D1-P8kbcZafHeuqng11BNAbOb2YWPx+M7X5Gw@mail.gmail.com>
+ <0b5098c28360d018f390a97155b9776c@codeaurora.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <2f3cd963-dffe-290b-02bf-819687713738@arm.com>
+Date:   Thu, 7 May 2020 11:33:38 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
+In-Reply-To: <0b5098c28360d018f390a97155b9776c@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jan reported an issue where an interaction between sign-extending clone's
-flag argument on ppc64le and the new CLONE_INTO_CGROUP feature causes
-clone() to consistently fail with EBADF.
+On 2020-05-07 11:04 am, Sai Prakash Ranjan wrote:
+> Hi,
+> 
+> On 2020-05-07 05:40, Doug Anderson wrote:
+>> Hi,
+>>
+>> On Thu, Apr 23, 2020 at 7:35 AM Doug Anderson <dianders@chromium.org> 
+>> wrote:
+>>>
+>>> Hi,
+>>>
+>>> On Thu, Apr 23, 2020 at 2:55 AM Sai Prakash Ranjan
+>>> <saiprakash.ranjan@codeaurora.org> wrote:
+>>> >
+>>> > Currently on reboot/shutdown, the following messages are
+>>> > displayed on the console as error messages before the
+>>> > system reboots/shutdown as part of remove callback.
+>>> >
+>>> > On SC7180:
+>>> >
+>>> >   arm-smmu 15000000.iommu: removing device with active domains!
+>>> >   arm-smmu 5040000.iommu: removing device with active domains!
+>>> >
+>>> > Make this error message more informative and less scary.
+>>> >
+>>> > Reported-by: Douglas Anderson <dianders@chromium.org>
+>>> > Suggested-by: Robin Murphy <robin.murphy@arm.com>
+>>> > Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+>>> > ---
+>>> >  drivers/iommu/arm-smmu.c | 2 +-
+>>> >  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+>>
+>> Is this patch waiting on anything in particular now?  Do we need
+>> reviews from Robin and/or Will?
+>>
+> 
+> Waiting for their reviews as they are the maintainers/reviewers :)
 
-The whole story is a little longer. The legacy clone() syscall is odd in a
-bunch of ways and here two things interact. First, legacy clone's flag
-argument is word-size dependent, i.e. it's an unsigned long whereas most
-system calls with flag arguments use int or unsigned int. Second, legacy
-clone() ignores unknown and deprecated flags. The two of them taken
-together means that users on 64bit systems can pass garbage for the upper
-32bit of the clone() syscall since forever and things would just work fine.
-Just try this on a 64bit kernel prior to v5.7-rc1 where this will succeed
-and on v5.7-rc1 where this will fail with EBADF:
+Sorry, this did register at the time, I just felt that it's a bit 
+redundant to give a review tag to say "yes, this is exactly what I 
+suggested" :)
 
-int main(int argc, char *argv[])
-{
-        pid_t pid;
+That said, I do wish I hadn't forgotten about the dev_notice message 
+level, but I think that lies over in the conceptual purity corner rather 
+than making any practical difference, so I'm still OK with the patch 
+as-is. Will?
 
-        /* Note that legacy clone() has different argument ordering on
-         * different architectures so this won't work everywhere.
-         *
-         * Only set the upper 32 bits.
-         */
-        pid = syscall(__NR_clone, 0xffffffff00000000 | SIGCHLD,
-                      NULL, NULL, NULL, NULL);
-        if (pid < 0)
-                exit(EXIT_FAILURE);
-        if (pid == 0)
-                exit(EXIT_SUCCESS);
-        if (wait(NULL) != pid)
-                exit(EXIT_FAILURE);
+Robin.
 
-        exit(EXIT_SUCCESS);
-}
 
-Since legacy clone() couldn't be extended this was not a problem so far and
-nobody really noticed or cared since nothing in the kernel ever bothered to
-look at the upper 32 bits.
+p.s. whoever has this entry in their address book for the IOMMU list 
+(Doug?):
 
-But once we introduced clone3() and expanded the flag argument in struct
-clone_args to 64 bit we opened this can of worms. With the first flag-based
-extension to clone3() making use of the upper 32 bits of the flag argument
-we've effectively made it possible for the legacy clone() syscall to reach
-clone3() only flags. The sign extension scenario is just the odd
-corner-case that we needed to figure this out.
+"list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg 
+Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>
 
-The reason we just realized this now and not already when we introduced
-CLONE_CLEAR_SIGHAND was that CLONE_INTO_CGROUP assumes that a valid cgroup
-file descriptor has been given. So the sign extension (or the user
-accidently passing garbage for the upper 32 bits) caused the
-CLONE_INTO_CGROUP bit to be raised and the kernel to error out when it
-didn't find a valid cgroup file descriptor.
-
-Let's fix this by always capping the upper 32 bits for all codepaths that
-are not aware of clone3() features. This ensures that we can't reach
-clone3() only features by accident via legacy clone as with the sign
-extension case and also that legacy clone() works exactly like before, i.e.
-ignoring any unknown flags.  This solution risks no regressions and is also
-pretty clean.
-
-Reported-by: Jan Stancek <jstancek@redhat.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Dmitry V. Levin <ldv@altlinux.org>
-Cc: Andreas Schwab <schwab@linux-m68k.org>
-Cc: Florian Weimer <fw@deneb.enyo.de>
-Cc: libc-alpha@sourceware.org
-Link: https://sourceware.org/pipermail/libc-alpha/2020-May/113596.html
-Fixes: 7f192e3cd316 ("fork: add clone3")
-Fixes: ef2c41cf38a7 ("clone3: allow spawning processes into cgroups")
-Cc: stable@vger.kernel.org # 5.3+
-Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
----
-/* v2 */
-- Joe Perches <joe@perches.com>:
-  - Use lower_32_bit() macro.
-- Christian Brauner <christian.brauner@ubuntu.com>:
-  - Cap flag argument to 32 bits in every place that is not clone3()
-    feature aware.
-  - Cc stable.
----
- kernel/fork.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
-
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 8c700f881d92..48ed22774efa 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -2486,11 +2486,11 @@ long do_fork(unsigned long clone_flags,
- 	      int __user *child_tidptr)
- {
- 	struct kernel_clone_args args = {
--		.flags		= (clone_flags & ~CSIGNAL),
-+		.flags		= (lower_32_bits(clone_flags) & ~CSIGNAL),
- 		.pidfd		= parent_tidptr,
- 		.child_tid	= child_tidptr,
- 		.parent_tid	= parent_tidptr,
--		.exit_signal	= (clone_flags & CSIGNAL),
-+		.exit_signal	= (lower_32_bits(clone_flags) & CSIGNAL),
- 		.stack		= stack_start,
- 		.stack_size	= stack_size,
- 	};
-@@ -2508,8 +2508,9 @@ long do_fork(unsigned long clone_flags,
- pid_t kernel_thread(int (*fn)(void *), void *arg, unsigned long flags)
- {
- 	struct kernel_clone_args args = {
--		.flags		= ((flags | CLONE_VM | CLONE_UNTRACED) & ~CSIGNAL),
--		.exit_signal	= (flags & CSIGNAL),
-+		.flags		= ((lower_32_bits(flags) | CLONE_VM |
-+				    CLONE_UNTRACED) & ~CSIGNAL),
-+		.exit_signal	= (lower_32_bits(flags) & CSIGNAL),
- 		.stack		= (unsigned long)fn,
- 		.stack_size	= (unsigned long)arg,
- 	};
-@@ -2570,11 +2571,11 @@ SYSCALL_DEFINE5(clone, unsigned long, clone_flags, unsigned long, newsp,
- #endif
- {
- 	struct kernel_clone_args args = {
--		.flags		= (clone_flags & ~CSIGNAL),
-+		.flags		= (lower_32_bits(clone_flags) & ~CSIGNAL),
- 		.pidfd		= parent_tidptr,
- 		.child_tid	= child_tidptr,
- 		.parent_tid	= parent_tidptr,
--		.exit_signal	= (clone_flags & CSIGNAL),
-+		.exit_signal	= (lower_32_bits(clone_flags) & CSIGNAL),
- 		.stack		= newsp,
- 		.tls		= tls,
- 	};
-
-base-commit: 0e698dfa282211e414076f9dc7e83c1c288314fd
--- 
-2.26.2
-
+it really messes up Thunderbird's ability to generate working headers 
+for a reply ;)
