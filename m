@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B8331C97EE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 19:35:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61C8C1C97E9
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 19:35:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728183AbgEGRfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 13:35:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33254 "EHLO mail.kernel.org"
+        id S1728163AbgEGRfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 13:35:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33248 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728103AbgEGRfF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728098AbgEGRfF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 7 May 2020 13:35:05 -0400
-Subject: Re: [GIT PULL] arm64 fixes for 5.7-rc5
+Subject: Re: [GIT PULL] configfs fix for 5.7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1588872905;
-        bh=pNvybinVXhnLApEYIsATDA6ow4V7vidIFGKxLR60T1I=;
+        bh=Pv3d2qKx52IYMLKIM0tx1srdOm44PkwL0xKPOAUW9Ho=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=0MRyfyijVYgrRS+zGknQwqukXy473QDY59v4keVrs/+VVlezEJ5kcldXNHl20w6mx
-         GRQxasinAZiWiWVi3Df+Ch1UTTsVwn9YV7/oYA+v9fIrvTh3F3HIcFt2d4zsSfsgNB
-         Q10fMjh5QkWqqSbfKlHQrmR3AiNwACamkN335zxk=
+        b=B2GvWSO7iNuBB8gcpHcT7i2PT92SsQit9VfoZGcZ4BmXayo9UDHFH2q3NHrH8yZXB
+         9aDa+imicH7egWzOVzwrs/zjX1SMagjZOgbfBOdsB1Si+BFktDJ20ynkJ1JT3fO0q4
+         LevFfw1uWb3E+GHUpv3tq9Ysy47jPhG3ILynTdJI=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200507163108.GA17399@gaia>
-References: <20200507163108.GA17399@gaia>
+In-Reply-To: <20200507161628.GA440967@infradead.org>
+References: <20200507161628.GA440967@infradead.org>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200507163108.GA17399@gaia>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-fixes
-X-PR-Tracked-Commit-Id: 027d0c7101f50cf03aeea9eebf484afd4920c8d3
+X-PR-Tracked-Message-Id: <20200507161628.GA440967@infradead.org>
+X-PR-Tracked-Remote: git://git.infradead.org/users/hch/configfs.git
+ tags/configfs-for-5.7
+X-PR-Tracked-Commit-Id: 8aebfffacfa379ba400da573a5bf9e49634e38cb
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 6e7f2eacf09811d092c1b41263108ac7fe0d089d
-Message-Id: <158887290554.22656.8225125558948373624.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: de268ccb42d6ec5475ec5a5e60723b665d6e0af2
+Message-Id: <158887290531.22656.8482767706592978299.pr-tracker-bot@kernel.org>
 Date:   Thu, 07 May 2020 17:35:05 +0000
-To:     Catalin Marinas <catalin.marinas@arm.com>
+To:     Christoph Hellwig <hch@infradead.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Joel Becker <jlbec@evilplan.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 7 May 2020 17:31:10 +0100:
+The pull request you sent on Thu, 7 May 2020 18:16:28 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-fixes
+> git://git.infradead.org/users/hch/configfs.git tags/configfs-for-5.7
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/6e7f2eacf09811d092c1b41263108ac7fe0d089d
+https://git.kernel.org/torvalds/c/de268ccb42d6ec5475ec5a5e60723b665d6e0af2
 
 Thank you!
 
