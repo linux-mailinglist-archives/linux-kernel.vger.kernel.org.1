@@ -2,87 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A60FF1C87D5
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 13:15:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEBB41C87DC
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 13:16:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726937AbgEGLP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 07:15:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45922 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725903AbgEGLP3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 07:15:29 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 839FD20870;
-        Thu,  7 May 2020 11:15:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588850129;
-        bh=m5j26vopqsarHASCUs41VneRgz6W4ivAN8SWIs8XUAo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=io0+5PU2Jeftf20wluUzmyi6annaxFgvMBpalV5HD+3n1J20l9FbtshQAzuO3We6G
-         WoUGLmhyX19mn3i2NhD5tGOlVldDjiTX0Iy1pXVWMgvHqvvYFc+I35BG5JPIcCsOYj
-         XIS5ok98Sh/Aiopp4KLuMTh3HNg0bPK7aW4zOP5M=
-Date:   Thu, 7 May 2020 13:15:26 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Jia-Ju Bai <baijiaju1990@gmail.com>
-Cc:     mchehab@kernel.org, allison@lohutok.net, tglx@linutronix.de,
-        rfontana@redhat.com, tomasbortoli@gmail.com, sean@mess.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: usb: ttusb-dec: reduce the number of memory reads
- in ttusb_dec_handle_irq()
-Message-ID: <20200507111526.GA1498671@kroah.com>
-References: <20200507102521.17602-1-baijiaju1990@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200507102521.17602-1-baijiaju1990@gmail.com>
+        id S1726948AbgEGLPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 07:15:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726069AbgEGLPy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 07:15:54 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6CCCC05BD43
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 04:15:54 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id w65so2844514pfc.12
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 04:15:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=q5Ur7h/8oNS0E2jiQqG3CicZ1bVNQn1Ydx7PFOHfa0s=;
+        b=vR5ulAiFzgiMVcgSPCb6i5yphLLVEtvHKU/b5abZlIFH43323JlPd5KMMStpRnXzBh
+         WaI6/rirsojCkduRRV/ISOPLZmdiIuEpB57Y1eFvwFAo8LqTyxDXcix6QMLHG7BFeobo
+         jgZi1O968NO0xyNItwoWpBW2XGhT4JWh3z8hpxUjrVpoDc3RGTxwtkEfTzM5pn8eGh4h
+         UQdlyay/n0BgUc6MZhoACDDKw6l24cg92w0h6UUWWg0eE2Prim1/PQhMkJcNBe6RLvi2
+         XmVGQw0ZN0XpQToieiNZ50lWcepk2YyOIh4UtDooZjjoniNj8hGu+QqrRLEqcvwUpPvn
+         uIQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=q5Ur7h/8oNS0E2jiQqG3CicZ1bVNQn1Ydx7PFOHfa0s=;
+        b=oHH5Byp1sRJhbVfysSyZ9y+eUZGiu12r5ufNdhRgi3ekSb547F8vs3mVUjA8L0IkLX
+         Wb6tp2PPhoagIdWSiS6v/pHlmG1VWXNUSd/UE0OZS1noOlf9SL0IOWeNb+q5vp0x0oy2
+         gUGV1sEHANaISiy53+fBvL01q2fcBRM92J/oJeqfQ9NsAl/bz5IDRtskke4GeR35VDBH
+         LVlsIPJw40L/tXimBWggXCKEi5yccgKRJZV95y64/doIJiwvD/0FS0ZI/4+lp7o2gxcm
+         BjLeCJS/LniSf6rVnBe1NnkQJBSSVpoIuYYFVppKNCAzrSUm5/OgvlCQVQLA+Vxad+oR
+         ENZQ==
+X-Gm-Message-State: AGi0PuZDbPCEdOXlWPpnhFRYaGDBgSuPht6U5K68/GY9PKjhVA8kR6Bx
+        alO3DPKzDCxLlvYEDcApd5I=
+X-Google-Smtp-Source: APiQypIkSq2sEnKfRxF2yLpUtwLsawR7IO0elGcrndZ1UHxIKE6n1f7LU+bM9YsoKY6q1jiE71yOWQ==
+X-Received: by 2002:a63:f70e:: with SMTP id x14mr10338566pgh.394.1588850154438;
+        Thu, 07 May 2020 04:15:54 -0700 (PDT)
+Received: from fmin-OptiPlex-7060.nreal.work ([103.206.190.146])
+        by smtp.gmail.com with ESMTPSA id d184sm4492752pfc.130.2020.05.07.04.15.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 07 May 2020 04:15:53 -0700 (PDT)
+From:   dillon.minfei@gmail.com
+To:     mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
+        philippe.schenker@toradex.com
+Cc:     linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        dillon min <dillon.minfei@gmail.com>
+Subject: [PATCH V2 4/4] i2c: stm32f4: Fix stmpe811 get xyz data timeout issue
+Date:   Thu,  7 May 2020 19:15:49 +0800
+Message-Id: <1588850149-24393-1-git-send-email-dillon.minfei@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 07, 2020 at 06:25:21PM +0800, Jia-Ju Bai wrote:
-> In ttusb_dec_handle_irq(), buffer[4] is continuously read from memory 
-> three times, without being modified.
-> To reduce the number of memory reads, buffer[4] is first assigned to a
-> local variable index, and then index is used to replace buffer[4].
-> 
-> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
-> ---
->  drivers/media/usb/ttusb-dec/ttusb_dec.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/media/usb/ttusb-dec/ttusb_dec.c b/drivers/media/usb/ttusb-dec/ttusb_dec.c
-> index 3198f9624b7c..8543c552515b 100644
-> --- a/drivers/media/usb/ttusb-dec/ttusb_dec.c
-> +++ b/drivers/media/usb/ttusb-dec/ttusb_dec.c
-> @@ -250,6 +250,7 @@ static void ttusb_dec_handle_irq( struct urb *urb)
->  	struct ttusb_dec *dec = urb->context;
->  	char *buffer = dec->irq_buffer;
->  	int retval;
-> +	int index = buffer[4];
->  
->  	switch(urb->status) {
->  		case 0: /*success*/
-> @@ -281,11 +282,11 @@ static void ttusb_dec_handle_irq( struct urb *urb)
->  		 * this should/could be added later ...
->  		 * for now lets report each signal as a key down and up
->  		 */
-> -		if (buffer[4] - 1 < ARRAY_SIZE(rc_keys)) {
-> -			dprintk("%s:rc signal:%d\n", __func__, buffer[4]);
-> -			input_report_key(dec->rc_input_dev, rc_keys[buffer[4] - 1], 1);
-> +		if (index - 1 < ARRAY_SIZE(rc_keys)) {
-> +			dprintk("%s:rc signal:%d\n", __func__, index);
-> +			input_report_key(dec->rc_input_dev, rc_keys[index - 1], 1);
->  			input_sync(dec->rc_input_dev);
-> -			input_report_key(dec->rc_input_dev, rc_keys[buffer[4] - 1], 0);
-> +			input_report_key(dec->rc_input_dev, rc_keys[index - 1], 0);
->  			input_sync(dec->rc_input_dev);
->  		}
->  	}
-> -- 
-> 2.17.1
-> 
+From: dillon min <dillon.minfei@gmail.com>
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+As stm32f429's internal flash is 2Mbytes and compiled kernel
+image bigger than 2Mbytes, so we have to load kernel image
+to sdram on stm32f429-disco board which has 8Mbytes sdram space.
+
+based on above context, as you knows kernel running on external
+sdram is more slower than internal flash. besides, we need read 4
+bytes to get touch screen xyz(x, y, pressure) coordinate data in
+stmpe811 interrupt.
+
+so, in stm32f4_i2c_handle_rx_done, as i2c read slower than running
+in xip mode, have to adjust 'STOP/START bit set time' from last two
+bytes to last one bytes. else, will get i2c timeout in reading
+touch screen coordinate.
+
+Signed-off-by: dillon min <dillon.minfei@gmail.com>
+---
+ drivers/i2c/busses/i2c-stm32f4.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/i2c/busses/i2c-stm32f4.c b/drivers/i2c/busses/i2c-stm32f4.c
+index d6a69df..83004f2 100644
+--- a/drivers/i2c/busses/i2c-stm32f4.c
++++ b/drivers/i2c/busses/i2c-stm32f4.c
+@@ -439,7 +439,7 @@ static void stm32f4_i2c_handle_rx_done(struct stm32f4_i2c_dev *i2c_dev)
+ 	int i;
+ 
+ 	switch (msg->count) {
+-	case 2:
++	case 1:
+ 		/*
+ 		 * In order to correctly send the Stop or Repeated Start
+ 		 * condition on the I2C bus, the STOP/START bit has to be set
+@@ -454,7 +454,7 @@ static void stm32f4_i2c_handle_rx_done(struct stm32f4_i2c_dev *i2c_dev)
+ 		else
+ 			stm32f4_i2c_set_bits(reg, STM32F4_I2C_CR1_START);
+ 
+-		for (i = 2; i > 0; i--)
++		for (i = 1; i > 0; i--)
+ 			stm32f4_i2c_read_msg(i2c_dev);
+ 
+ 		reg = i2c_dev->base + STM32F4_I2C_CR2;
+@@ -463,7 +463,7 @@ static void stm32f4_i2c_handle_rx_done(struct stm32f4_i2c_dev *i2c_dev)
+ 
+ 		complete(&i2c_dev->complete);
+ 		break;
+-	case 3:
++	case 2:
+ 		/*
+ 		 * In order to correctly generate the NACK pulse after the last
+ 		 * received data byte, we have to enable NACK before reading N-2
+-- 
+2.7.4
+
