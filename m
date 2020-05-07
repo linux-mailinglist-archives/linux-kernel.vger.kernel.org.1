@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2A0F1C99F6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:53:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 571801C99F9
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:53:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728686AbgEGSxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 14:53:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55126 "EHLO mail.kernel.org"
+        id S1728482AbgEGSxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 14:53:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55528 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728056AbgEGSx3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 14:53:29 -0400
+        id S1727826AbgEGSxi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 14:53:38 -0400
 Received: from embeddedor (unknown [189.207.59.248])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 679342495D;
-        Thu,  7 May 2020 18:53:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4040920870;
+        Thu,  7 May 2020 18:53:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588877609;
-        bh=kWpXTKUl5SLDwdL/OuCFJc8i4rRGOi1NqEX5H1qbazs=;
+        s=default; t=1588877617;
+        bh=a3q7EVtRZYdws6ttRdc7CqZlAg4XEZKPq6gzkh3v70E=;
         h=Date:From:To:Cc:Subject:From;
-        b=Xk4W14wM9ZxNeT3smEAGC+5SjWJOn6uUrsSZd77MFFQ0JkGXxQboJehLexrDxgU0X
-         gF7QVPpjs8O7MYeLs+0nPdA6bUaYAJAd3MAP5MBZOjBoT/oktNB26hpms+EmtHiUMd
-         C+fjEmsN04syZ/iEEdRVNXOYHARnQJS7I0taq/Cs=
-Date:   Thu, 7 May 2020 13:57:55 -0500
+        b=pZFh6Bvivm/9yt4HEz1VmtQOTA0kAk4gl8f++6RwXmbw3ebMigsp5bxH3Ktj2+m+S
+         Mvf9iMdh7xyfZHQETabnvLUgG2S1XKmjxuJ6XGf/tzEMTsghq7ggwvttufRps1M9G5
+         Qqplf8sBda1op/dTYkK57zl8YNq7/bDs6gTIGxxY=
+Date:   Thu, 7 May 2020 13:58:04 -0500
 From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] powerpc/mm: Replace zero-length array with flexible-array
-Message-ID: <20200507185755.GA15014@embeddedor>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] locking/lockdep: Replace zero-length array with
+ flexible-array
+Message-ID: <20200507185804.GA15036@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -77,46 +77,20 @@ This issue was found with the help of Coccinelle.
 
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- arch/powerpc/mm/hugetlbpage.c                   |    2 +-
- tools/testing/selftests/powerpc/pmu/ebb/trace.h |    4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ kernel/locking/lockdep.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/mm/hugetlbpage.c b/arch/powerpc/mm/hugetlbpage.c
-index 33b3461d91e8..d06efb946c7d 100644
---- a/arch/powerpc/mm/hugetlbpage.c
-+++ b/arch/powerpc/mm/hugetlbpage.c
-@@ -253,7 +253,7 @@ int __init alloc_bootmem_huge_page(struct hstate *h)
- struct hugepd_freelist {
- 	struct rcu_head	rcu;
- 	unsigned int index;
--	void *ptes[0];
-+	void *ptes[];
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index ac10db66cc63..cfdff122905b 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -489,7 +489,7 @@ struct lock_trace {
+ 	struct hlist_node	hash_entry;
+ 	u32			hash;
+ 	u32			nr_entries;
+-	unsigned long		entries[0] __aligned(sizeof(unsigned long));
++	unsigned long		entries[] __aligned(sizeof(unsigned long));
  };
- 
- static DEFINE_PER_CPU(struct hugepd_freelist *, hugepd_freelist_cur);
-diff --git a/tools/testing/selftests/powerpc/pmu/ebb/trace.h b/tools/testing/selftests/powerpc/pmu/ebb/trace.h
-index 7c0fb5d2bdb1..da2a3be5441f 100644
---- a/tools/testing/selftests/powerpc/pmu/ebb/trace.h
-+++ b/tools/testing/selftests/powerpc/pmu/ebb/trace.h
-@@ -18,7 +18,7 @@ struct trace_entry
- {
- 	u8 type;
- 	u8 length;
--	u8 data[0];
-+	u8 data[];
- };
- 
- struct trace_buffer
-@@ -26,7 +26,7 @@ struct trace_buffer
- 	u64  size;
- 	bool overflow;
- 	void *tail;
--	u8   data[0];
-+	u8   data[];
- };
- 
- struct trace_buffer *trace_buffer_allocate(u64 size);
--- 
-2.26.2
-
+ #define LOCK_TRACE_SIZE_IN_LONGS				\
+ 	(sizeof(struct lock_trace) / sizeof(unsigned long))
 
