@@ -2,132 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED9FE1C8652
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 12:03:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C72281C8656
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 12:03:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726683AbgEGKDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 06:03:13 -0400
-Received: from esa4.microchip.iphmx.com ([68.232.154.123]:64214 "EHLO
-        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725809AbgEGKDL (ORCPT
+        id S1726776AbgEGKDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 06:03:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725809AbgEGKDY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 06:03:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1588845791; x=1620381791;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=igCCKMJbhqYeOoGE+sQmu6rCvyg1z00o31S2SkbWHs4=;
-  b=C+z3V5HA5iScKDWWnhxLVdUG75hxp7AJKRwez785+AB+XvwZLrP5AdD+
-   lWXHEYwFAfvnP9QLQTWj1893cGp8PhPQY7bC9YeQi9jaW79CozXV/fcOH
-   5mooHB+jSL2ye6f2dHGcJUDwi2KNRn11+Q0p1zcOcrX8ZDAY/nA0pgRez
-   y+YS/k4sz5BhBarx6G+zT/6gYZM1vAkSnUbmWVznjHe8cu+8W1QPY4WSI
-   2FxCLbzG1boKnFBuzGeTGih9JDaPivVZdx9XnqsKrtSTKCiesWYHKGcu/
-   dTp73q37z3FRVU3DJHuzBpDun6UmOpFwgseVRhHNAGCNCPQpqPL4UOXAh
-   A==;
-IronPort-SDR: KiGC/Nbaj7CKs/uXQhNZzQ0gtCXZnf5CMmQNdcCvp6mTdIoPwsnOXx/5zJGR9eg65Lbu9v4wrs
- wisJ1JXL1nneY0JJDEeSQLWvo8hayE50Le8vhK1ntku/RGzBNhKBIukj0kICCBm2Z31AF/pDMc
- KcEC+sxSU3dRkSk8D7P9/4M6acSrRltj4IxfbDwYBCWWp6DmbU0M6CbRWHMJqlnHqkiB7A+r3V
- vP5bKgiY3JgncsHMmT2eNsVqlgWEgykswRAIk+6SRaXCu5/P5Ed3BMOFqBaDqJZHw8em1rk4Uj
- jeI=
-X-IronPort-AV: E=Sophos;i="5.73,363,1583218800"; 
-   d="scan'208";a="72706941"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 07 May 2020 03:03:10 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 7 May 2020 03:03:10 -0700
-Received: from [10.205.29.55] (10.10.115.15) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server id 15.1.1713.5 via Frontend
- Transport; Thu, 7 May 2020 03:03:06 -0700
-Subject: Re: [PATCH v4 1/5] net: macb: fix wakeup test in runtime
- suspend/resume routines
-To:     Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        <harini.katakam@xilinx.com>, <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        <antoine.tenart@bootlin.com>, <f.fainelli@gmail.com>
-References: <cover.1588763703.git.nicolas.ferre@microchip.com>
- <dc30ff1d17cb5a75ddd10966eab001f67ac744ef.1588763703.git.nicolas.ferre@microchip.com>
- <20200506131843.22cf1dab@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Nicolas Ferre <nicolas.ferre@microchip.com>
-Organization: microchip
-Message-ID: <347c9a4f-8a01-a931-c9d5-536339337f8a@microchip.com>
-Date:   Thu, 7 May 2020 12:03:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Thu, 7 May 2020 06:03:24 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71272C061A10
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 03:03:24 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id u11so5635200iow.4
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 03:03:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=ZiQL4q9txwNDc5ET1lq9Bsm+7np0KwM5NRGLvcWY+FU=;
+        b=pe7eYxNiULDUd6u8A/64IEoibjznfG9HMmnQyS4olGNnAjgf+BzPE6QKzzgyQDPkpc
+         /JViEu46yEm62oeWIwA1xEbqqup57NP5wHy8cyEdWrCYoRcfpKh5/aXPeIfdKxkfrzhR
+         UH6wf5apHgN0yfUCyBaVd0qxb1+zVVBKl0Kig3w8k2cj9vduey/yvLyfIJzCVV6xbFXE
+         JnUuEF+5P48C5R4ifHNpVuCGc+5xjIsse+IRFuosJmPrFdhJxDYg8MeE/1LQlQoh5l8l
+         hVFJgUnTUOEDry+Y9UQKSK97Y1JdoZ0XUjNRUVB3TM0tF0PDqFhn4wIWKJl3qgQIei8s
+         D8/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=ZiQL4q9txwNDc5ET1lq9Bsm+7np0KwM5NRGLvcWY+FU=;
+        b=KlvRtuMjBLi00idV+R4/zeOFcfFGfnrGLBqFItDOoKd+nWr8fQ8edWH8IairXuLdz8
+         oHYGngxNDglEoAigawtLlTxCLSwH5ggpJPri5fnemgmilQfUOQHVGbKa+giDQHCRIMGT
+         2z+fP8Xv2md7becx2Fe6cClGfgX6E4MBJ0UT+tpR+I8nsZhciKtSCa2N6zS4nx7+jWXo
+         HgbWAYKhJ7rrw+r8KsiBDVuMsJcsG+LHcMk12D5kJ5H6iKUivoMH026h4aFKR+HG0MHV
+         QVhjwStp6a/hLMwb2HICL3OSOsnMiBQqHfhxln7LrhLPTW7IckQWEC6O0ntfC24TdS/c
+         Gizw==
+X-Gm-Message-State: AGi0PuZelzQF6WcEUghc7lj2R2UR08hCECv/vs3VEe3h9qwVdoWA/SwF
+        UiDh0SC95vy7nE70sW9HDPV5rmZQcXGcVb7nRDE=
+X-Google-Smtp-Source: APiQypJPQSHQzLSMJCt+VKo+ADqxv+kDcuJrNGCI8iI05Vg4JAcBaqCaAobUGab3CGGbgLWgi0zqG8zSrBESd7YAsTM=
+X-Received: by 2002:a5e:c318:: with SMTP id a24mr12809294iok.166.1588845802840;
+ Thu, 07 May 2020 03:03:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200506131843.22cf1dab@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a5d:9c05:0:0:0:0:0 with HTTP; Thu, 7 May 2020 03:03:22 -0700 (PDT)
+Reply-To: ebrimsegun@yandex.com
+From:   Olusegun Ebrima <usbanu15@gmail.com>
+Date:   Thu, 7 May 2020 04:03:22 -0600
+Message-ID: <CACudCif2bDBg9dLzCwUznLNMRG19baU=xNDifM9jot3oR-mSdg@mail.gmail.com>
+Subject: REPLY FOR MORE INFORMATION
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/05/2020 at 22:18, Jakub Kicinski wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> 
-> On Wed, 6 May 2020 13:37:37 +0200 nicolas.ferre@microchip.com wrote:
->> From: Nicolas Ferre <nicolas.ferre@microchip.com>
->>
->> Use the proper struct device pointer to check if the wakeup flag
->> and wakeup source are positioned.
->> Use the one passed by function call which is equivalent to
->> &bp->dev->dev.parent.
->>
->> It's preventing the trigger of a spurious interrupt in case the
->> Wake-on-Lan feature is used.
->>
->> Fixes: bc1109d04c39 ("net: macb: Add pm runtime support")
-> 
->          Fixes tag: Fixes: bc1109d04c39 ("net: macb: Add pm runtime support")
->          Has these problem(s):
->                  - Target SHA1 does not exist
+Greetings,
 
-Indeed, it's:
-Fixes: d54f89af6cc4 ("net: macb: Add pm runtime support")
+With due respect to your personality and much sincerity of this
+purpose, I make this contact with you believing that you can be of
+great assistance to me. I'm Mr. Olusegun Ebrima, from Burkina Faso,
+I'm the Chairman of FOREIGN PAYMENTS CONTRACT AWARD COMMITTEE and also
+I currently hold the post of Internal Audit Manager of our bank in
+Ouagadougou Branch, Please see this as a confidential message and do
+not reveal it to another person because it=E2=80=99s a top secret.
 
-David: do I have to respin or you can modify it?
+We are imposition to reclaim and inherit the sum of US $(38,850,000
+Million ) without any trouble, from a dormant account which remains
+unclaimed since 7 years the owner died. This is a U.S Dollars account
+and the beneficiary died without trace of his family to claim the
+fund.
 
-Thanks. Regards,
-   Nicolas
->> Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
->> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
->> Cc: Claudiu Beznea <claudiu.beznea@microchip.com>
->> Cc: Harini Katakam <harini.katakam@xilinx.com>
->> ---
->>   drivers/net/ethernet/cadence/macb_main.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
->> index 36290a8e2a84..d11fae37d46b 100644
->> --- a/drivers/net/ethernet/cadence/macb_main.c
->> +++ b/drivers/net/ethernet/cadence/macb_main.c
->> @@ -4616,7 +4616,7 @@ static int __maybe_unused macb_runtime_suspend(struct device *dev)
->>        struct net_device *netdev = dev_get_drvdata(dev);
->>        struct macb *bp = netdev_priv(netdev);
->>
->> -     if (!(device_may_wakeup(&bp->dev->dev))) {
->> +     if (!(device_may_wakeup(dev))) {
->>                clk_disable_unprepare(bp->tx_clk);
->>                clk_disable_unprepare(bp->hclk);
->>                clk_disable_unprepare(bp->pclk);
->> @@ -4632,7 +4632,7 @@ static int __maybe_unused macb_runtime_resume(struct device *dev)
->>        struct net_device *netdev = dev_get_drvdata(dev);
->>        struct macb *bp = netdev_priv(netdev);
->>
->> -     if (!(device_may_wakeup(&bp->dev->dev))) {
->> +     if (!(device_may_wakeup(dev))) {
->>                clk_prepare_enable(bp->pclk);
->>                clk_prepare_enable(bp->hclk);
->>                clk_prepare_enable(bp->tx_clk);
-> 
+Upon my personal audit investigation into the details of the account,
+I find out that the deceased is a foreigner, which makes it possible
+for you as a foreigner no matter your country to lay claim on the
+balance as the Foreign Business Partner or Extended Relative to the
+deceased, provided you are not from here.
+
+Your integrity and trustworthiness will make us succeed without any
+risk. Please if you think that the amount is too much to be
+transferred into your account, you have the right to ask our bank
+transfer the fund into your account bit by bit after approval or you
+double the account. Once this fund is transferred into your account,
+we will share the fund accordingly. 45%, for you, 45%, for me, 5%, had
+been mapped out for the expense made in this transaction, 5% as a free
+will donation to charity and motherless babies homes in both our
+countries as sign of breakthrough and more blessings.
 
 
--- 
-Nicolas Ferre
+If you are interested to help without disappointment or breach of
+trust, reply me, so that I will guide you on the proper banking
+guidelines to follow for the claim. After the transfer, I will fly to
+your country for sharing of funds according to our agreement.
+Assurance: Note that this transaction will never in any way harm or
+foiled your good post or reputation in your country, because
+everything will follow legal process.
+
+I am looking forward to hear from you soonest.
+Yours faithfully,
+Mr Olusegun Ebrima
