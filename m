@@ -2,53 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2F961C97EA
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 19:35:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C1EB1C97F0
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 19:35:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728137AbgEGRfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 13:35:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33226 "EHLO mail.kernel.org"
+        id S1728193AbgEGRfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 13:35:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34000 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726761AbgEGRfF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 13:35:05 -0400
-Subject: Re: [GIT PULL] KVM changes for Linux 5.7-rc5
+        id S1726467AbgEGRfb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 13:35:31 -0400
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ABCB424962
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 17:35:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588872905;
-        bh=ASNy/2e1zfLpRcSs4NhltLEnFps/ycNPUpbuPsuzhbA=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=rUxP5+sES0IjTkkdI9Ou6Y0gCh5I1jx50D2LYCD6D4UtnqlMeEIkLYcuWtgSoGG7R
-         4YxxEaVvB103ushyOzBniANJw0skI4vPYWqWuGgMnQY34bMCGJlv6C/qvXZ4pxvHN7
-         6kYDZBdpvriYnCn3mIqg9Lj4Ginhl0Nxf2jNiM9M=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200507115332.495930-1-pbonzini@redhat.com>
-References: <20200507115332.495930-1-pbonzini@redhat.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200507115332.495930-1-pbonzini@redhat.com>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/virt/kvm/kvm.git
- tags/for-linus
-X-PR-Tracked-Commit-Id: 2673cb6849722a4ffd74c27a9200a9ec43f64be3
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 8c16ec94dc767a4d8c48149d646e8c835512cf8f
-Message-Id: <158887290507.22656.14504039152108528383.pr-tracker-bot@kernel.org>
-Date:   Thu, 07 May 2020 17:35:05 +0000
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
+        s=default; t=1588872930;
+        bh=lncvbRIJtEWrXr/nx1Zzug/elFtPcJ+w7jc6HUXkj5M=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=oabPy4HQ0E14YCEFK66CDg1iM98007TazU78IqhjmFtCRowrd8sUrWD3sQpVvWYGi
+         e+mjPEE9tODehrCSmCLHU6TVynWS7MeTtCDJ5Ok5i4OrN/aSyfyZJ+wBV34AmFhtXI
+         1QbvX4Rtax/aPPgTd4dlVDWq/1V7MyhL9ggkVf58=
+Received: by mail-wr1-f48.google.com with SMTP id h9so7408682wrt.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 10:35:30 -0700 (PDT)
+X-Gm-Message-State: AGi0PuaPKYEndEgiejsaWxDMmhw7WouTeQplHWn0vhiDHzAnAaHSIJGN
+        hcWMSGPzhroxh9YkHL1KeTdIZVM8VtkSYN5aBvVIDQ==
+X-Google-Smtp-Source: APiQypJ6FaG7+7wJQ0z/6pQSUnMeTmkxE4/lfOrdeRLUaQT1+0HBtDPEAslxw56ktq8vz0V6cHIzYbX4HxDclXmDZps=
+X-Received: by 2002:adf:fe45:: with SMTP id m5mr3383432wrs.257.1588872928961;
+ Thu, 07 May 2020 10:35:28 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200505131602.633487962@linutronix.de> <20200505134058.560059744@linutronix.de>
+In-Reply-To: <20200505134058.560059744@linutronix.de>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Thu, 7 May 2020 10:35:17 -0700
+X-Gmail-Original-Message-ID: <CALCETrVwq_qsvimNN2Bag+9P8jhd9fYpzYEc+iKobMsAFb1X4Q@mail.gmail.com>
+Message-ID: <CALCETrVwq_qsvimNN2Bag+9P8jhd9fYpzYEc+iKobMsAFb1X4Q@mail.gmail.com>
+Subject: Re: [patch V4 part 1 05/36] x86/entry: Flip _TIF_SIGPENDING and
+ _TIF_NOTIFY_RESUME handling
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu,  7 May 2020 07:53:32 -0400:
+On Tue, May 5, 2020 at 7:13 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> Make sure task_work runs before any kind of userspace -- very much
+> including signals -- is invoked.
 
-> https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/8c16ec94dc767a4d8c48149d646e8c835512cf8f
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+I certainly approve of the change, but anything that fundamentally
+relies on this makes me uneasy.  I'll keep an eye out for potential
+problems.
