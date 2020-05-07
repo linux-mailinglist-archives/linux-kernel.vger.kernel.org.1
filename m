@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03D191C9AC1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:17:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C65801C9AC2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:18:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728655AbgEGTRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 15:17:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40828 "EHLO mail.kernel.org"
+        id S1728669AbgEGTR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 15:17:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728110AbgEGTRw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 15:17:52 -0400
+        id S1726367AbgEGTR5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 15:17:57 -0400
 Received: from embeddedor (unknown [189.207.59.248])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 416F8208D6;
-        Thu,  7 May 2020 19:17:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 94100208D6;
+        Thu,  7 May 2020 19:17:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588879071;
-        bh=0/3czGbj+k5uPvCYm8OBIo+Z8QOj3dkRHRsWw+WWKIM=;
+        s=default; t=1588879077;
+        bh=b1/YLFC+l6epGRK0csxeBGfOSfYmlenINjpg49VDwYs=;
         h=Date:From:To:Cc:Subject:From;
-        b=vHJF+aq1utpEoV4h6yRFd8lbIxb270fu51bEDSro7iwkdcWn2K3Ww9ut5f9Mv9TUF
-         E0/G1+mdPDutRcsm0U6kYvpm9TRms0cHlz20eNl9k5XsZHfa7uhdW4lBIQl2EsF5KC
-         pD5ZBHzPB1I8Y25ciHCtJt8yo12g7TRGHBQfJujQ=
-Date:   Thu, 7 May 2020 14:22:18 -0500
+        b=F4e/oI0NaaKvrBApNt24/dZC1saXWd8uYNKxsmU5yUG+byaspmcBnOEtx5MGTrRTT
+         D+SWYBU9d7o55LtwkRevIdSjZlA3cqxe9Yn3Jhph1oHpckG7n8ViaUUFsKnsYQ48TJ
+         0cGOJmJEepFSp37TN2BJZaM0vAUxKx2e+gdet7rs=
+Date:   Thu, 7 May 2020 14:22:23 -0500
 From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Maxim Levitsky <maximlevitsky@gmail.com>,
-        Alex Dubov <oakad@yahoo.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] memstick: Replace zero-length array with flexible-array
-Message-ID: <20200507192218.GA16315@embeddedor>
+To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ALSA: Replace zero-length array with flexible-array
+Message-ID: <20200507192223.GA16335@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -77,20 +75,80 @@ This issue was found with the help of Coccinelle.
 
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- include/linux/memstick.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/sound/control.h     |    2 +-
+ include/sound/intel-nhlt.h  |    6 +++---
+ sound/core/oss/pcm_plugin.h |    2 +-
+ sound/usb/usx2y/usbusx2y.h  |    2 +-
+ 4 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/memstick.h b/include/linux/memstick.h
-index 216a713bef7f..da4c65f9435f 100644
---- a/include/linux/memstick.h
-+++ b/include/linux/memstick.h
-@@ -288,7 +288,7 @@ struct memstick_host {
- 	int                 (*set_param)(struct memstick_host *host,
- 					 enum memstick_param param,
- 					 int value);
--	unsigned long       private[0] ____cacheline_aligned;
-+	unsigned long       private[] ____cacheline_aligned;
+diff --git a/include/sound/control.h b/include/sound/control.h
+index 11feeee31e35..aeaed2a05bae 100644
+--- a/include/sound/control.h
++++ b/include/sound/control.h
+@@ -75,7 +75,7 @@ struct snd_kcontrol {
+ 	unsigned long private_value;
+ 	void *private_data;
+ 	void (*private_free)(struct snd_kcontrol *kcontrol);
+-	struct snd_kcontrol_volatile vd[0];	/* volatile data */
++	struct snd_kcontrol_volatile vd[];	/* volatile data */
  };
  
- struct memstick_driver {
+ #define snd_kcontrol(n) list_entry(n, struct snd_kcontrol, list)
+diff --git a/include/sound/intel-nhlt.h b/include/sound/intel-nhlt.h
+index f657fd8fc0ad..743c2f442280 100644
+--- a/include/sound/intel-nhlt.h
++++ b/include/sound/intel-nhlt.h
+@@ -50,7 +50,7 @@ enum nhlt_device_type {
+ 
+ struct nhlt_specific_cfg {
+ 	u32 size;
+-	u8 caps[0];
++	u8 caps[];
+ } __packed;
+ 
+ struct nhlt_fmt_cfg {
+@@ -60,7 +60,7 @@ struct nhlt_fmt_cfg {
+ 
+ struct nhlt_fmt {
+ 	u8 fmt_count;
+-	struct nhlt_fmt_cfg fmt_config[0];
++	struct nhlt_fmt_cfg fmt_config[];
+ } __packed;
+ 
+ struct nhlt_endpoint {
+@@ -80,7 +80,7 @@ struct nhlt_endpoint {
+ struct nhlt_acpi_table {
+ 	struct acpi_table_header header;
+ 	u8 endpoint_count;
+-	struct nhlt_endpoint desc[0];
++	struct nhlt_endpoint desc[];
+ } __packed;
+ 
+ struct nhlt_resource_desc  {
+diff --git a/sound/core/oss/pcm_plugin.h b/sound/core/oss/pcm_plugin.h
+index 8d2f7a4e3ab6..46e273bd4a78 100644
+--- a/sound/core/oss/pcm_plugin.h
++++ b/sound/core/oss/pcm_plugin.h
+@@ -64,7 +64,7 @@ struct snd_pcm_plugin {
+ 	char *buf;
+ 	snd_pcm_uframes_t buf_frames;
+ 	struct snd_pcm_plugin_channel *buf_channels;
+-	char extra_data[0];
++	char extra_data[];
+ };
+ 
+ int snd_pcm_plugin_build(struct snd_pcm_substream *handle,
+diff --git a/sound/usb/usx2y/usbusx2y.h b/sound/usb/usx2y/usbusx2y.h
+index e0f77172ce8f..144b85f57bd2 100644
+--- a/sound/usb/usx2y/usbusx2y.h
++++ b/sound/usb/usx2y/usbusx2y.h
+@@ -18,7 +18,7 @@ struct snd_usX2Y_AsyncSeq {
+ struct snd_usX2Y_urbSeq {
+ 	int	submitted;
+ 	int	len;
+-	struct urb	*urb[0];
++	struct urb	*urb[];
+ };
+ 
+ #include "usx2yhwdeppcm.h"
 
