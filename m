@@ -2,278 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC01C1C9DB9
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 23:45:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EED751C9DEA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 23:51:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727870AbgEGVpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 17:45:06 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:39721 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726891AbgEGVoV (ORCPT
+        id S1726519AbgEGVvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 17:51:47 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:43731 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726437AbgEGVvr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 17:44:21 -0400
-Received: by mail-ot1-f65.google.com with SMTP id m13so5857164otf.6;
-        Thu, 07 May 2020 14:44:20 -0700 (PDT)
+        Thu, 7 May 2020 17:51:47 -0400
+Received: from mail-qk1-f198.google.com ([209.85.222.198])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <gpiccoli@canonical.com>)
+        id 1jWoLe-0000Ea-4O
+        for linux-kernel@vger.kernel.org; Thu, 07 May 2020 21:46:30 +0000
+Received: by mail-qk1-f198.google.com with SMTP id a83so7289532qkc.11
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 14:46:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=N9AdjN2grTDKj0LC6+6n7CezqEC5sJdE8xDXYQF1i3s=;
-        b=lCnY1uExZeEzYZ5pv9G78d1PkSXsKddixvbrn48Oxuy1oxzIjCAyFuBzBVm1OvzjRh
-         G5P91h9l+Mkh/85EbzPgxn3qAjmGWFxR3FbOmLh60/t0p/n4boDbF90/bT3DeJQbm6LS
-         YcFLod5OUPp9c6f1MSo+2AgGdzCHqnWSDHJ5eqo8y2wqPXGIYn9i0vDT4bGkrSbwpNe2
-         fILb+Jrgp/oTpoUBMh2cVT0ORRo559M0y4/ro6SyO3xoooHFpTMEXrIHxZ+V4+PNIj0Z
-         qoJqMglYokdW6YMHgFoLzraiAsqFboejcv7QZGYsDPOKHDAnJaSjc+mmQ8iilswzhiY+
-         58fg==
-X-Gm-Message-State: AGi0PuZKXCHFx6E+99SlDp6S3lfEwuuOpy6sk8j8cah6epaSSQVmBsUh
-        6tmF4wNRoiBAKR0CV/PEGw==
-X-Google-Smtp-Source: APiQypLhRJk4LtAJP8Fc/YOnELVetovZB3qLkmaTtGMFxTfHBSM/5ti/Wip+PxXNkxCkyJss2ezbvg==
-X-Received: by 2002:a05:6830:154c:: with SMTP id l12mr12665391otp.120.1588887860161;
-        Thu, 07 May 2020 14:44:20 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id s13sm1705690oic.27.2020.05.07.14.44.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2020 14:44:19 -0700 (PDT)
-Received: (nullmailer pid 24797 invoked by uid 1000);
-        Thu, 07 May 2020 21:44:18 -0000
-Date:   Thu, 7 May 2020 16:44:18 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Alan Mikhak <alan.mikhak@sifive.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kishon@ti.com, lorenzo.pieralisi@arm.com, bhelgaas@google.com,
-        efremov@linux.com, b.zolnierkie@samsung.com, vidyas@nvidia.com,
-        paul.walmsley@sifive.com
-Subject: Re: [PATCH] PCI: endpoint: functions/pci-epf-test: Support slave DMA
- transfer
-Message-ID: <20200507214418.GA22159@bogus>
-References: <1588379352-22550-1-git-send-email-alan.mikhak@sifive.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wvPfmcdMdphP7PKHpPwwL797MmH4rqHB2sXxdxkGfdE=;
+        b=Tor6BtvZd/J/1OYTC+M4kQbRifNpux9TloXwaX9b7hzM6mgno1RkEoS/aTSTLd1awn
+         myrI80ZqufIzqcGXB2Z3uG4eLHZxz4aZ+ytqREo0AhflqikWt2W+GoviPyrG/OxA255Y
+         dx8SiYbiXO9qxFuIYrICban0QVZLp7TIfpXerwSh/HzP8Tm0RMNni+H992gILrO5BxRv
+         /vhoQRBpQaVbg+jZF7WstxKQmyVxu+iFhqFky2g7xKKOsMUsvKL+eNEymh4ys1N2IdiC
+         0xAqfdO7ldT32der2YDu17wLsEyIuku/qwknoRq/evS2ZadOuydD0G8HzaKyz1ihcF9V
+         HcnA==
+X-Gm-Message-State: AGi0PuaXBsm5nkodYmiXpjzEiI2qDyd2YzdBx5vwB3soo7TJO1zgMwcl
+        1eqf2bKTVyeQ59i439DDRF4/D/awqg5NywmMUm2SOl0wCcwZjdmIx7fPuA94iPApGB3J/eqMU69
+        ye0aAPoh3jI30pqP+8GsxQ4dRzT3x118mtXEYk1ETnA==
+X-Received: by 2002:aed:2467:: with SMTP id s36mr4968181qtc.292.1588887988936;
+        Thu, 07 May 2020 14:46:28 -0700 (PDT)
+X-Google-Smtp-Source: APiQypIYU4MHFu72sGxvnvZgRXzKhk08WjfxU8yTpSPMTDnzbVSTQ8dP3C8CfZL/vDirDutyf/BGqw==
+X-Received: by 2002:aed:2467:: with SMTP id s36mr4968163qtc.292.1588887988568;
+        Thu, 07 May 2020 14:46:28 -0700 (PDT)
+Received: from localhost ([187.56.73.116])
+        by smtp.gmail.com with ESMTPSA id s15sm5498340qtc.31.2020.05.07.14.46.27
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 07 May 2020 14:46:27 -0700 (PDT)
+From:   "Guilherme G. Piccoli" <gpiccoli@canonical.com>
+To:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Cc:     akpm@linux-foundation.org, keescook@chromium.org,
+        yzaikin@google.com, mcgrof@kernel.org, vbabka@suse.cz,
+        gpiccoli@canonical.com, kernel@gpiccoli.net
+Subject: [PATCH] kernel/watchdog.c: convert {soft/hard}lockup boot parameters to sysctl aliases
+Date:   Thu,  7 May 2020 18:46:24 -0300
+Message-Id: <20200507214624.21911-1-gpiccoli@canonical.com>
+X-Mailer: git-send-email 2.25.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1588379352-22550-1-git-send-email-alan.mikhak@sifive.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 01, 2020 at 05:29:12PM -0700, Alan Mikhak wrote:
-> From: Alan Mikhak <alan.mikhak@sifive.com>
-> 
-> Modify pci_epf_test_data_transfer() to also support slave DMA transfers.
-> Adds a direction parameter so caller can specify one of the supported DMA
-> transfer directions: DMA_MEM_TO_MEM, DMA_MEM_TO_DEV, and DMA_DEV_TO_MEM.
-> For DMA_MEM_TO_MEM, the function calls dmaengine_prep_dma_memcpy() as it
-> did before. For DMA_MEM_TO_DEV or DMA_DEV_TO_MEM direction, the function
-> calls dmaengine_slave_config() to configure the slave channel before it
-> calls dmaengine_prep_slave_single().
-> 
-> Modify existing callers to specify DMA_MEM_TO_MEM since that is the only
-> possible option so far. Rename the phys_addr local variable in some of the
-> callers for more readability. Tighten some of the timing function calls to
-> avoid counting error print time in case of error.
+After a recent change introduced by Vlastimil's series [0], kernel is
+able now to handle sysctl parameters on kernel command line; also, the
+series introduced a simple infrastructure to convert legacy boot
+parameters (that duplicate sysctls) into sysctl aliases.
 
-Looks fine, but also needs a user. The last sentence sounds like a 
-separate change.
+This patch converts the watchdog parameters softlockup_panic and
+{hard,soft}lockup_all_cpu_backtrace to use the new alias infrastructure.
+It fixes the documentation too, since the alias only accepts values 0
+or 1, not the full range of integers. We also took the opportunity here
+to improve the documentation of the previously converted hung_task_panic
+(see the patch series [0]) and put the alias table in alphabetical order.
 
-> 
-> Signed-off-by: Alan Mikhak <alan.mikhak@sifive.com>
-> ---
->  drivers/pci/endpoint/functions/pci-epf-test.c | 67 ++++++++++++++++++---------
->  1 file changed, 44 insertions(+), 23 deletions(-)
-> 
-> diff --git a/drivers/pci/endpoint/functions/pci-epf-test.c b/drivers/pci/endpoint/functions/pci-epf-test.c
-> index 60330f3e3751..1d026682febb 100644
-> --- a/drivers/pci/endpoint/functions/pci-epf-test.c
-> +++ b/drivers/pci/endpoint/functions/pci-epf-test.c
-> @@ -104,25 +104,41 @@ static void pci_epf_test_dma_callback(void *param)
->   * The function returns '0' on success and negative value on failure.
->   */
->  static int pci_epf_test_data_transfer(struct pci_epf_test *epf_test,
-> -				      dma_addr_t dma_dst, dma_addr_t dma_src,
-> -				      size_t len)
-> +				      dma_addr_t dma_dst,
-> +				      dma_addr_t dma_src,
-> +				      size_t len,
-> +				      enum dma_transfer_direction dir)
->  {
->  	enum dma_ctrl_flags flags = DMA_CTRL_ACK | DMA_PREP_INTERRUPT;
->  	struct dma_chan *chan = epf_test->dma_chan;
->  	struct pci_epf *epf = epf_test->epf;
-> +	struct dma_slave_config sconf;
->  	struct dma_async_tx_descriptor *tx;
->  	struct device *dev = &epf->dev;
->  	dma_cookie_t cookie;
-> +	dma_addr_t buf;
->  	int ret;
->  
->  	if (IS_ERR_OR_NULL(chan)) {
-> -		dev_err(dev, "Invalid DMA memcpy channel\n");
-> +		dev_err(dev, "Invalid DMA channel\n");
->  		return -EINVAL;
->  	}
->  
-> -	tx = dmaengine_prep_dma_memcpy(chan, dma_dst, dma_src, len, flags);
-> +	if (dir == DMA_MEM_TO_MEM) {
-> +		tx = dmaengine_prep_dma_memcpy(chan, dma_dst, dma_src,
-> +					       len, flags);
-> +	} else {
-> +		memset(&sconf, 0, sizeof(sconf));
-> +		sconf.direction = dir;
-> +		sconf.dst_addr = dma_dst;
-> +		sconf.src_addr = dma_src;
-> +		dmaengine_slave_config(chan, &sconf);
-> +
-> +		buf = (dir == DMA_MEM_TO_DEV) ? dma_dst : dma_src;
-> +		tx = dmaengine_prep_slave_single(chan, buf, len, dir, flags);
-> +	}
->  	if (!tx) {
-> -		dev_err(dev, "Failed to prepare DMA memcpy\n");
-> +		dev_err(dev, "Failed to prepare DMA transfer\n");
->  		return -EIO;
->  	}
->  
-> @@ -268,7 +284,6 @@ static int pci_epf_test_copy(struct pci_epf_test *epf_test)
->  		goto err_dst_addr;
->  	}
->  
-> -	ktime_get_ts64(&start);
->  	use_dma = !!(reg->flags & FLAG_USE_DMA);
->  	if (use_dma) {
->  		if (!epf_test->dma_supported) {
-> @@ -277,14 +292,18 @@ static int pci_epf_test_copy(struct pci_epf_test *epf_test)
->  			goto err_map_addr;
->  		}
->  
-> +		ktime_get_ts64(&start);
->  		ret = pci_epf_test_data_transfer(epf_test, dst_phys_addr,
-> -						 src_phys_addr, reg->size);
-> +						 src_phys_addr, reg->size,
-> +						 DMA_MEM_TO_MEM);
-> +		ktime_get_ts64(&end);
->  		if (ret)
->  			dev_err(dev, "Data transfer failed\n");
->  	} else {
-> +		ktime_get_ts64(&start);
->  		memcpy(dst_addr, src_addr, reg->size);
-> +		ktime_get_ts64(&end);
->  	}
-> -	ktime_get_ts64(&end);
->  	pci_epf_test_print_rate("COPY", reg->size, &start, &end, use_dma);
->  
->  err_map_addr:
-> @@ -310,7 +329,7 @@ static int pci_epf_test_read(struct pci_epf_test *epf_test)
->  	void *buf;
->  	u32 crc32;
->  	bool use_dma;
-> -	phys_addr_t phys_addr;
-> +	phys_addr_t src_phys_addr;
->  	phys_addr_t dst_phys_addr;
->  	struct timespec64 start, end;
->  	struct pci_epf *epf = epf_test->epf;
-> @@ -319,8 +338,9 @@ static int pci_epf_test_read(struct pci_epf_test *epf_test)
->  	struct device *dma_dev = epf->epc->dev.parent;
->  	enum pci_barno test_reg_bar = epf_test->test_reg_bar;
->  	struct pci_epf_test_reg *reg = epf_test->reg[test_reg_bar];
-> +	enum dma_transfer_direction dir = DMA_MEM_TO_MEM;
->  
-> -	src_addr = pci_epc_mem_alloc_addr(epc, &phys_addr, reg->size);
-> +	src_addr = pci_epc_mem_alloc_addr(epc, &src_phys_addr, reg->size);
->  	if (!src_addr) {
->  		dev_err(dev, "Failed to allocate address\n");
->  		reg->status = STATUS_SRC_ADDR_INVALID;
-> @@ -328,7 +348,7 @@ static int pci_epf_test_read(struct pci_epf_test *epf_test)
->  		goto err;
->  	}
->  
-> -	ret = pci_epc_map_addr(epc, epf->func_no, phys_addr, reg->src_addr,
-> +	ret = pci_epc_map_addr(epc, epf->func_no, src_phys_addr, reg->src_addr,
->  			       reg->size);
->  	if (ret) {
->  		dev_err(dev, "Failed to map address\n");
-> @@ -360,10 +380,10 @@ static int pci_epf_test_read(struct pci_epf_test *epf_test)
->  
->  		ktime_get_ts64(&start);
->  		ret = pci_epf_test_data_transfer(epf_test, dst_phys_addr,
-> -						 phys_addr, reg->size);
-> +						 src_phys_addr, reg->size, dir);
-> +		ktime_get_ts64(&end);
->  		if (ret)
->  			dev_err(dev, "Data transfer failed\n");
-> -		ktime_get_ts64(&end);
->  
->  		dma_unmap_single(dma_dev, dst_phys_addr, reg->size,
->  				 DMA_FROM_DEVICE);
-> @@ -383,10 +403,10 @@ static int pci_epf_test_read(struct pci_epf_test *epf_test)
->  	kfree(buf);
->  
->  err_map_addr:
-> -	pci_epc_unmap_addr(epc, epf->func_no, phys_addr);
-> +	pci_epc_unmap_addr(epc, epf->func_no, src_phys_addr);
->  
->  err_addr:
-> -	pci_epc_mem_free_addr(epc, phys_addr, src_addr, reg->size);
-> +	pci_epc_mem_free_addr(epc, src_phys_addr, src_addr, reg->size);
->  
->  err:
->  	return ret;
-> @@ -398,7 +418,7 @@ static int pci_epf_test_write(struct pci_epf_test *epf_test)
->  	void __iomem *dst_addr;
->  	void *buf;
->  	bool use_dma;
-> -	phys_addr_t phys_addr;
-> +	phys_addr_t dst_phys_addr;
->  	phys_addr_t src_phys_addr;
->  	struct timespec64 start, end;
->  	struct pci_epf *epf = epf_test->epf;
-> @@ -407,8 +427,9 @@ static int pci_epf_test_write(struct pci_epf_test *epf_test)
->  	struct device *dma_dev = epf->epc->dev.parent;
->  	enum pci_barno test_reg_bar = epf_test->test_reg_bar;
->  	struct pci_epf_test_reg *reg = epf_test->reg[test_reg_bar];
-> +	enum dma_transfer_direction dir = DMA_MEM_TO_MEM;
->  
-> -	dst_addr = pci_epc_mem_alloc_addr(epc, &phys_addr, reg->size);
-> +	dst_addr = pci_epc_mem_alloc_addr(epc, &dst_phys_addr, reg->size);
->  	if (!dst_addr) {
->  		dev_err(dev, "Failed to allocate address\n");
->  		reg->status = STATUS_DST_ADDR_INVALID;
-> @@ -416,7 +437,7 @@ static int pci_epf_test_write(struct pci_epf_test *epf_test)
->  		goto err;
->  	}
->  
-> -	ret = pci_epc_map_addr(epc, epf->func_no, phys_addr, reg->dst_addr,
-> +	ret = pci_epc_map_addr(epc, epf->func_no, dst_phys_addr, reg->dst_addr,
->  			       reg->size);
->  	if (ret) {
->  		dev_err(dev, "Failed to map address\n");
-> @@ -450,11 +471,11 @@ static int pci_epf_test_write(struct pci_epf_test *epf_test)
->  		}
->  
->  		ktime_get_ts64(&start);
-> -		ret = pci_epf_test_data_transfer(epf_test, phys_addr,
-> -						 src_phys_addr, reg->size);
-> +		ret = pci_epf_test_data_transfer(epf_test, dst_phys_addr,
-> +						 src_phys_addr,	reg->size, dir);
-> +		ktime_get_ts64(&end);
->  		if (ret)
->  			dev_err(dev, "Data transfer failed\n");
-> -		ktime_get_ts64(&end);
->  
->  		dma_unmap_single(dma_dev, src_phys_addr, reg->size,
->  				 DMA_TO_DEVICE);
-> @@ -476,10 +497,10 @@ static int pci_epf_test_write(struct pci_epf_test *epf_test)
->  	kfree(buf);
->  
->  err_map_addr:
-> -	pci_epc_unmap_addr(epc, epf->func_no, phys_addr);
-> +	pci_epc_unmap_addr(epc, epf->func_no, dst_phys_addr);
->  
->  err_addr:
-> -	pci_epc_mem_free_addr(epc, phys_addr, dst_addr, reg->size);
-> +	pci_epc_mem_free_addr(epc, dst_phys_addr, dst_addr, reg->size);
->  
->  err:
->  	return ret;
-> -- 
-> 2.7.4
-> 
+[0] lore.kernel.org/lkml/20200427180433.7029-1-vbabka@suse.cz
+
+Signed-off-by: Guilherme G. Piccoli <gpiccoli@canonical.com>
+---
+
+
+This patch is based on linux-next/akpm branch, at d0f3f6070c3a. Thanks
+in advance for reviews!
+Cheers,
+
+Guilherme
+
+
+ .../admin-guide/kernel-parameters.txt         | 10 ++---
+ fs/proc/proc_sysctl.c                         |  7 +++-
+ kernel/watchdog.c                             | 38 +++++--------------
+ 3 files changed, 19 insertions(+), 36 deletions(-)
+
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 5a44c1bf85e7..d9197499aad1 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -1435,7 +1435,7 @@
+ 	hardlockup_all_cpu_backtrace=
+ 			[KNL] Should the hard-lockup detector generate
+ 			backtraces on all cpus.
+-			Format: <integer>
++			Format: 0 | 1
+ 
+ 	hashdist=	[KNL,NUMA] Large hashes allocated during boot
+ 			are distributed across NUMA nodes.  Defaults on
+@@ -1503,7 +1503,7 @@
+ 
+ 	hung_task_panic=
+ 			[KNL] Should the hung task detector generate panics.
+-			Format: <integer>
++			Format: 0 | 1
+ 
+ 			A value of 1 instructs the kernel to panic when a
+ 			hung task is detected. The default value is controlled
+@@ -4643,9 +4643,9 @@
+ 
+ 	softlockup_panic=
+ 			[KNL] Should the soft-lockup detector generate panics.
+-			Format: <integer>
++			Format: 0 | 1
+ 
+-			A nonzero value instructs the soft-lockup detector
++			A value of 1 instructs the soft-lockup detector
+ 			to panic the machine when a soft-lockup occurs. It is
+ 			also controlled by the kernel.softlockup_panic sysctl
+ 			and CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC, which is the
+@@ -4654,7 +4654,7 @@
+ 	softlockup_all_cpu_backtrace=
+ 			[KNL] Should the soft-lockup detector generate
+ 			backtraces on all cpus.
+-			Format: <integer>
++			Format: 0 | 1
+ 
+ 	sonypi.*=	[HW] Sony Programmable I/O Control Device driver
+ 			See Documentation/admin-guide/laptops/sonypi.rst
+diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
+index 15030784566c..5b405f32971d 100644
+--- a/fs/proc/proc_sysctl.c
++++ b/fs/proc/proc_sysctl.c
+@@ -1720,8 +1720,11 @@ struct sysctl_alias {
+  * parameter.
+  */
+ static const struct sysctl_alias sysctl_aliases[] = {
+-	{"numa_zonelist_order",		"vm.numa_zonelist_order" },
+-	{"hung_task_panic",		"kernel.hung_task_panic" },
++	{"hardlockup_all_cpu_backtrace",	"kernel.hardlockup_all_cpu_backtrace" },
++	{"hung_task_panic",			"kernel.hung_task_panic" },
++	{"numa_zonelist_order",			"vm.numa_zonelist_order" },
++	{"softlockup_all_cpu_backtrace",	"kernel.softlockup_all_cpu_backtrace" },
++	{"softlockup_panic",			"kernel.softlockup_panic" },
+ 	{ }
+ };
+ 
+diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+index fa5aacbfd000..1b939532fcc1 100644
+--- a/kernel/watchdog.c
++++ b/kernel/watchdog.c
+@@ -50,6 +50,11 @@ struct cpumask watchdog_cpumask __read_mostly;
+ unsigned long *watchdog_cpumask_bits = cpumask_bits(&watchdog_cpumask);
+ 
+ #ifdef CONFIG_HARDLOCKUP_DETECTOR
++
++# ifdef CONFIG_SMP
++int __read_mostly sysctl_hardlockup_all_cpu_backtrace;
++# endif /* CONFIG_SMP */
++
+ /*
+  * Should we panic when a soft-lockup or hard-lockup occurs:
+  */
+@@ -82,17 +87,6 @@ static int __init hardlockup_panic_setup(char *str)
+ }
+ __setup("nmi_watchdog=", hardlockup_panic_setup);
+ 
+-# ifdef CONFIG_SMP
+-int __read_mostly sysctl_hardlockup_all_cpu_backtrace;
+-
+-static int __init hardlockup_all_cpu_backtrace_setup(char *str)
+-{
+-	sysctl_hardlockup_all_cpu_backtrace = !!simple_strtol(str, NULL, 0);
+-	return 1;
+-}
+-__setup("hardlockup_all_cpu_backtrace=", hardlockup_all_cpu_backtrace_setup);
+-# endif /* CONFIG_SMP */
+-
+ atomic_t hardlockup_detected = ATOMIC_INIT(0);
+ 
+ static inline void flush_hardlockup_messages(void)
+@@ -183,6 +177,10 @@ static void lockup_detector_update_enable(void)
+ 
+ #define SOFTLOCKUP_RESET	ULONG_MAX
+ 
++#ifdef CONFIG_SMP
++int __read_mostly sysctl_softlockup_all_cpu_backtrace;
++#endif
++
+ /* Global variables, exported for sysctl */
+ unsigned int __read_mostly softlockup_panic =
+ 			CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC_VALUE;
+@@ -198,13 +196,6 @@ static DEFINE_PER_CPU(unsigned long, hrtimer_interrupts);
+ static DEFINE_PER_CPU(unsigned long, hrtimer_interrupts_saved);
+ static unsigned long soft_lockup_nmi_warn;
+ 
+-static int __init softlockup_panic_setup(char *str)
+-{
+-	softlockup_panic = simple_strtoul(str, NULL, 0);
+-	return 1;
+-}
+-__setup("softlockup_panic=", softlockup_panic_setup);
+-
+ static int __init nowatchdog_setup(char *str)
+ {
+ 	watchdog_user_enabled = 0;
+@@ -226,17 +217,6 @@ static int __init watchdog_thresh_setup(char *str)
+ }
+ __setup("watchdog_thresh=", watchdog_thresh_setup);
+ 
+-#ifdef CONFIG_SMP
+-int __read_mostly sysctl_softlockup_all_cpu_backtrace;
+-
+-static int __init softlockup_all_cpu_backtrace_setup(char *str)
+-{
+-	sysctl_softlockup_all_cpu_backtrace = !!simple_strtol(str, NULL, 0);
+-	return 1;
+-}
+-__setup("softlockup_all_cpu_backtrace=", softlockup_all_cpu_backtrace_setup);
+-#endif
+-
+ static void __lockup_detector_cleanup(void);
+ 
+ /*
+-- 
+2.25.2
+
