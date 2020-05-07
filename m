@@ -2,257 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF8581C8530
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 10:55:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9548B1C87B6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 13:12:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726218AbgEGIzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 04:55:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53106 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725857AbgEGIzr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 04:55:47 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CE94E20747;
-        Thu,  7 May 2020 08:55:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588841746;
-        bh=BYFjIQ2FXPPjn16NFH9FGYAHNpd8UOP5Qgo14rF5m9Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hZJ1Rt9yAObBobdC0tleLtv7rWr/gieWrc4lAnIStR66D/dPXZ0rkgVA1Uo0Bp/95
-         Maxjg93InCPAtytBJS7rXbGw1Q+lLCaGKGA5eKPDwev8aZ+dJRYtUGCigu+yyoo/Cn
-         LHWwH8Ec5kgMS9iVoeUU682k/GV11wWyiu7Tea90=
-Date:   Thu, 7 May 2020 10:55:44 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Frankie Chang <Frankie.Chang@mediatek.com>
-Cc:     Todd Kjos <tkjos@google.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Martijn Coenen <maco@android.com>,
-        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-        Christian Brauner <christian@brauner.io>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mediatek@lists.infradead.org,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        Jian-Min Liu <Jian-Min.Liu@mediatek.com>
-Subject: Re: [PATCH v4 3/3] binder: add transaction latency tracer
-Message-ID: <20200507085544.GB1097552@kroah.com>
-References: <20200430085105.GF2496467@kroah.com>
- <1588839055-26677-1-git-send-email-Frankie.Chang@mediatek.com>
- <1588839055-26677-4-git-send-email-Frankie.Chang@mediatek.com>
+        id S1726690AbgEGLKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 07:10:43 -0400
+Received: from mail1480c50.megamailservers.eu ([91.136.14.80]:52920 "EHLO
+        mail118c50.megamailservers.eu" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725809AbgEGLKn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 07:10:43 -0400
+X-Greylist: delayed 5387 seconds by postgrey-1.27 at vger.kernel.org; Thu, 07 May 2020 07:10:40 EDT
+X-Authenticated-User: 017623705678@o2online.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megamailservers.eu;
+        s=maildub; t=1588841847;
+        bh=9AVDDx9V2gYEDXeTNlt74d5XCNEQnpqZSN3VPF09Hgo=;
+        h=To:From:Subject:Cc:Date:From;
+        b=DFiwmbOa3bgHNh4E9inRazcp5ciZtrCxazNafTMLDonUPgSCmOd9v9TPzF+s77SnE
+         y4i96EzAKd2AClwwSb+xMAfynZ1ywVT05uhToWTlr1vJsvRrWmH+A8C7gKtmJwUBgD
+         Vi1KqGd1mhmSi/2iIxmC2efbA2yxdzcQYrrDPmTo=
+Feedback-ID: 017623705678@o2
+Received: from [192.168.2.2] (ipservice-092-210-125-153.092.210.pools.vodafone-ip.de [92.210.125.153])
+        (authenticated bits=0)
+        by mail118c50.megamailservers.eu (8.14.9/8.13.1) with ESMTP id 0478vNmH019869;
+        Thu, 7 May 2020 08:57:25 +0000
+To:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
+        gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+From:   Tobias Baumann <017623705678@o2online.de>
+Subject: RTL8723BS driver doesn't work for,me but I can help testing
+Cc:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Message-ID: <bcefba5b-107c-716b-bb60-5b4b2476894b@o2online.de>
+Date:   Thu, 7 May 2020 10:57:22 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1588839055-26677-4-git-send-email-Frankie.Chang@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Language: de-DE
+X-Antivirus: AVG (VPS 200506-0, 06.05.2020), Outbound message
+X-Antivirus-Status: Clean
+X-CTCH-RefID: str=0001.0A782F27.5EB3CD45.009D,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0
+X-CTCH-VOD: Unknown
+X-CTCH-Spam: Unknown
+X-CTCH-Score: 0.000
+X-CTCH-Rules: 
+X-CTCH-Flags: 0
+X-CTCH-ScoreCust: 0.000
+X-CSC:  0
+X-CHA:  v=2.3 cv=KaGsTjQD c=1 sm=1 tr=0 a=hSNHuiTHMbSMD4yx1hjzQA==:117
+        a=hSNHuiTHMbSMD4yx1hjzQA==:17 a=IkcTkHD0fZMA:10 a=oCcaPWc0AAAA:8
+        a=xa8cPLTrDijPg6maogsA:9 a=QEXdDO2ut3YA:10 a=pHzHmUro8NiASowvMSCR:22
+        a=nt3jZW36AmriUCFCBwmW:22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 07, 2020 at 04:10:55PM +0800, Frankie Chang wrote:
-> From: "Frankie.Chang" <Frankie.Chang@mediatek.com>
-> 
-> Record start/end timestamp for binder transaction.
-> When transaction is completed or transaction is free,
-> it would be checked if transaction latency over threshold (2 sec),
-> if yes, printing related information for tracing.
+Hello Community
 
-Shouldn't that "printing" go to the trace buffer and not to the kernel
-information log?
-
-> 
-> /* Implement details */
-> - Add latency tracer module to monitor slow transaction.
->   The trace_binder_free_transaction would not be enabled
->   by default. Monitoring which transaction is too slow to
->   cause some of exceptions is important. So we hook the
->   tracepoint to call the monitor function.
-> 
-> Signed-off-by: Frankie.Chang <Frankie.Chang@mediatek.com>
-> ---
->  drivers/android/Kconfig                 |    8 +++
->  drivers/android/Makefile                |    1 +
->  drivers/android/binder.c                |    2 +
->  drivers/android/binder_internal.h       |   13 ++++
->  drivers/android/binder_latency_tracer.c |  105 +++++++++++++++++++++++++++++++
->  drivers/android/binder_trace.h          |   26 +++++++-
->  6 files changed, 152 insertions(+), 3 deletions(-)
->  create mode 100644 drivers/android/binder_latency_tracer.c
-> 
->  Change from v4:
->    split up into patch series.
-> 
->  Change from v3:
->    use tracepoints for binder_update_info and print_binder_transaction_ext,
->    instead of custom registration functions.
-> 
->  Change from v2:
->    create transaction latency module to monitor slow transaction.
-> 
->  Change from v1:
->    first patchset.
-> 
-> diff --git a/drivers/android/Kconfig b/drivers/android/Kconfig
-> index 6fdf2ab..7ba80eb 100644
-> --- a/drivers/android/Kconfig
-> +++ b/drivers/android/Kconfig
-> @@ -54,6 +54,14 @@ config ANDROID_BINDER_IPC_SELFTEST
->  	  exhaustively with combinations of various buffer sizes and
->  	  alignments.
->  
-> +config BINDER_USER_TRACKING
-> +	bool "Android Binder transaction tracking"
-> +	help
-> +	  Used for track abnormal binder transaction which is over 2 seconds,
-> +	  when the transaction is done or be free, this transaction would be
-> +	  checked whether it executed overtime.
-> +	  If yes, printing out the detail info about it.
-> +
->  endif # if ANDROID
->  
->  endmenu
-> diff --git a/drivers/android/Makefile b/drivers/android/Makefile
-> index c9d3d0c9..552e8ac 100644
-> --- a/drivers/android/Makefile
-> +++ b/drivers/android/Makefile
-> @@ -4,3 +4,4 @@ ccflags-y += -I$(src)			# needed for trace events
->  obj-$(CONFIG_ANDROID_BINDERFS)		+= binderfs.o
->  obj-$(CONFIG_ANDROID_BINDER_IPC)	+= binder.o binder_alloc.o
->  obj-$(CONFIG_ANDROID_BINDER_IPC_SELFTEST) += binder_alloc_selftest.o
-> +obj-$(CONFIG_BINDER_USER_TRACKING)	+= binder_latency_tracer.o
-> diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-> index 4c3dd98..b89d75a 100644
-> --- a/drivers/android/binder.c
-> +++ b/drivers/android/binder.c
-> @@ -2657,6 +2657,7 @@ static void binder_transaction(struct binder_proc *proc,
->  		return_error_line = __LINE__;
->  		goto err_alloc_t_failed;
->  	}
-> +	trace_binder_update_info(t, e);
->  	INIT_LIST_HEAD(&t->fd_fixups);
->  	binder_stats_created(BINDER_STAT_TRANSACTION);
->  	spin_lock_init(&t->lock);
-> @@ -5145,6 +5146,7 @@ static void print_binder_transaction_ilocked(struct seq_file *m,
->  		   t->to_thread ? t->to_thread->pid : 0,
->  		   t->code, t->flags, t->priority, t->need_reply);
->  	spin_unlock(&t->lock);
-> +	trace_print_binder_transaction_ext(m, t);
->  
->  	if (proc != to_proc) {
->  		/*
-> diff --git a/drivers/android/binder_internal.h b/drivers/android/binder_internal.h
-> index ed61b3e..24d7beb 100644
-> --- a/drivers/android/binder_internal.h
-> +++ b/drivers/android/binder_internal.h
-> @@ -12,6 +12,11 @@
->  #include <linux/types.h>
->  #include <linux/uidgid.h>
->  
-> +#ifdef CONFIG_BINDER_USER_TRACKING
-> +#include <linux/rtc.h>
-> +#include <linux/time.h>
-> +#endif
-> +
->  struct binder_context {
->  	struct binder_node *binder_context_mgr_node;
->  	struct mutex context_mgr_node_lock;
-> @@ -131,6 +136,10 @@ struct binder_transaction_log_entry {
->  	uint32_t return_error;
->  	uint32_t return_error_param;
->  	char context_name[BINDERFS_MAX_NAME + 1];
-> +#ifdef CONFIG_BINDER_USER_TRACKING
-> +	struct timespec timestamp;
-> +	struct timeval tv;
-> +#endif
->  };
->  
->  struct binder_transaction_log {
-> @@ -520,6 +529,10 @@ struct binder_transaction {
->  	 * during thread teardown
->  	 */
->  	spinlock_t lock;
-> +#ifdef CONFIG_BINDER_USER_TRACKING
-> +	struct timespec timestamp;
-> +	struct timeval tv;
-> +#endif
->  };
->  
->  /**
-> diff --git a/drivers/android/binder_latency_tracer.c b/drivers/android/binder_latency_tracer.c
-> new file mode 100644
-> index 0000000..45c14fb
-> --- /dev/null
-> +++ b/drivers/android/binder_latency_tracer.c
-> @@ -0,0 +1,105 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2019 MediaTek Inc.
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <uapi/linux/android/binder.h>
-> +#include "binder_alloc.h"
-> +#include "binder_internal.h"
-> +#include "binder_trace.h"
-> +
-> +/*
-> + * probe_binder_free_transaction - Output info of a delay transaction
-> + * @t:          pointer to the over-time transaction
-> + */
-> +void probe_binder_free_transaction(void *ignore, struct binder_transaction *t)
-> +{
-> +	struct rtc_time tm;
-> +	struct timespec *startime;
-> +	struct timespec cur, sub_t;
-> +
-> +	ktime_get_ts(&cur);
-> +	startime = &t->timestamp;
-> +	sub_t = timespec_sub(cur, *startime);
-> +
-> +	/* if transaction time is over than 2 sec,
-> +	 * show timeout warning log.
-> +	 */
-> +	if (sub_t.tv_sec < 2)
-> +		return;
-
-Why is 2 seconds somehow "magic" here?
+I was referred to you by Martin. I have an older Android TV box that 
+runs for over 3 years with Armbian Linux (Debian Jessie Headless Kernel 
+3.10.99). I'm looking forward to the new kernels and I'm glad that older 
+hardware is still supported.
+Together with Oleg(balbes150) and Martin(xdarklight) I am testing the 
+new kernel 5.x for ARM ( Amlogic S812 / Meson8m2 ) . Martin has written 
+a patch for the SDIO controller in the last days so that also Wifi 
+module and MMC are recognized. I could now successfully load the driver 
+module RTLWIFI from the kernel. But unfortunately the card is only 
+listed on the desktop as "not ready" or in the terminal (iwlist) as "no 
+scan result". In the dmesg/lsmod RTLWIFI->RTL8723bs is loaded and the 
+module is loaded with version v4.3.5.5_12290.20140916_BTCOEX20140507-4E40 .=
 
 
 
-> +
-> +	rtc_time_to_tm(t->tv.tv_sec, &tm);
-> +
-> +	spin_lock(&t->lock);
-> +	pr_info_ratelimited("%d: from %d:%d to %d:%d",
-> +			t->debug_id,
-> +			t->from ? t->from->proc->pid : 0,
-> +			t->from ? t->from->pid : 0,
-> +			t->to_proc ? t->to_proc->pid : 0,
-> +			t->to_thread ? t->to_thread->pid : 0);
-> +	spin_unlock(&t->lock);
+I would like to ask you to check the driver because even in kernel 
+3.10.99 a newer version (v4.3.16_13854.20150410_BTCOEX20150119-5844) is 
+loaded and also at github are hard kernels ( version 2017 Kernel 4.9>) 
+and ap17 and thirdyouth (v5.2.17.1_26955.20180307_COEX20180201-6f52). 
+More recent ones can also be found - these have already been 
+successfully tested with Debian 10. i hope that this may solve the 
+problem with my Linux box.
 
-Why is the lock ok to give up here and not after the next call?
+I would appreciate feedback on this request or information about 
+debugging . My Linux box is also available for testing purposes
 
-> +
-> +	pr_info_ratelimited(" total %u.%03ld s code %u start %lu.%03ld android %d-%02d-%02d %02d:%02d:%02d.%03lu\n",
-> +			(unsigned int)sub_t.tv_sec,
-> +			(sub_t.tv_nsec / NSEC_PER_MSEC),
-> +			t->code,
-> +			(unsigned long)startime->tv_sec,
-> +			(startime->tv_nsec / NSEC_PER_MSEC),
-> +			(tm.tm_year + 1900), (tm.tm_mon + 1), tm.tm_mday,
-> +			tm.tm_hour, tm.tm_min, tm.tm_sec,
-> +			(unsigned long)(t->tv.tv_usec / USEC_PER_MSEC));
-> +}
-> +
-> +static void probe_binder_update_info(void *ignore, struct binder_transaction *t,
-> +			   struct binder_transaction_log_entry *e)
-> +{
-> +	ktime_get_ts(&e->timestamp);
-> +	do_gettimeofday(&e->tv);
-> +	e->tv.tv_sec -= (sys_tz.tz_minuteswest * 60);
-> +	memcpy(&t->timestamp, &e->timestamp, sizeof(struct timespec));
-> +	memcpy(&t->tv, &e->tv, sizeof(struct timeval));
+Kindly
+Tobias Baumann (RaptorSDS)
 
-No locking needed?
+
+
+-- 
+Diese E-Mail wurde von AVG auf Viren gepr=C3=BCft.
+http://www.avg.com
 
