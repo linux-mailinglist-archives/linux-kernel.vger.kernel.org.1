@@ -2,149 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEE8E1C828A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 08:30:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 593771C828F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 08:33:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726218AbgEGGaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 02:30:23 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:3881 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725783AbgEGGaW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 02:30:22 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 3AD732D253226B4F4938;
-        Thu,  7 May 2020 14:30:18 +0800 (CST)
-Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
- (10.3.19.205) with Microsoft SMTP Server (TLS) id 14.3.487.0; Thu, 7 May 2020
- 14:30:16 +0800
-Subject: Re: [f2fs-dev] [PATCH] f2fs: get parent inode when recovering pino
-From:   Chao Yu <yuchao0@huawei.com>
-To:     Eric Biggers <ebiggers@kernel.org>, Gao Xiang <hsiangkao@gmx.com>
-CC:     Jaegeuk Kim <jaegeuk@kernel.org>, <kernel-team@android.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>
-References: <20200505153139.201697-1-jaegeuk@kernel.org>
- <20200505165847.GA98848@gmail.com> <20200505181323.GA55221@google.com>
- <20200505181941.GC98848@gmail.com>
- <20200506001403.GA2101@hsiangkao-HP-ZHAN-66-Pro-G1>
- <20200506012428.GG128280@sol.localdomain>
- <5641613f-48e0-171c-cfd0-e799e24d8d11@huawei.com>
-Message-ID: <cfba83e1-bae7-bd14-f41a-0d6e54366f37@huawei.com>
-Date:   Thu, 7 May 2020 14:30:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1725949AbgEGGdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 02:33:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45690 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725440AbgEGGdx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 02:33:53 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7DFCD2078C;
+        Thu,  7 May 2020 06:33:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588833233;
+        bh=vfeI8t4LWeVIIhBlmAndQdNRlFDKem4d8yBPociSWp0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=GkznQw4kCS90drFocWDoRpo3vDJxXKG+r09zg2xr+LrK5VydCNEFDql+1ytSQYpDO
+         5EJ2aShYyYBe5EHvGiG8Ov4hP4kf9YQ2bn908sZPqi4Ylv4AfWr8JyqMH+GFY67OY2
+         6u82ojNlzetrPNdCWKbI0w/3/If2S3+DXGMnBdfA=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Yishai Hadas <yishaih@mellanox.com>
+Subject: [PATCH rdma-rc 0/2] Fixes to IB_EVENT_DEVICE_FATAL logic
+Date:   Thu,  7 May 2020 09:33:46 +0300
+Message-Id: <20200507063348.98713-1-leon@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <5641613f-48e0-171c-cfd0-e799e24d8d11@huawei.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.134.22.195]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/5/6 14:55, Chao Yu wrote:
-> On 2020/5/6 9:24, Eric Biggers wrote:
->> On Wed, May 06, 2020 at 08:14:07AM +0800, Gao Xiang wrote:
->>>>
->>>> Actually, I think this is wrong because the fsync can be done via a file
->>>> descriptor that was opened to a now-deleted link to the file.
->>>
->>> I'm still confused about this...
->>>
->>> I don't know what's wrong with this version from my limited knowledge?
->>>  inode itself is locked when fsyncing, so
->>>
->>>    if the fsync inode->i_nlink == 1, this inode has only one hard link
->>>    (not deleted yet) and should belong to a single directory; and
->>>
->>>    the only one parent directory would not go away (not deleted as well)
->>>    since there are some dirents in it (not empty).
->>>
->>> Could kindly explain more so I would learn more about this scenario?
->>> Thanks a lot!
->>
->> i_nlink == 1 just means that there is one non-deleted link.  There can be links
->> that have since been deleted, and file descriptors can still be open to them.
->>
->>>
->>>>
->>>> We need to find the dentry whose parent directory is still exists, i.e. the
->>>> parent directory that is counting towards 'inode->i_nlink == 1'.
->>>
->>> directory counting towards 'inode->i_nlink == 1', what's happening?
->>
->> The non-deleted link is the one counted in i_nlink.
->>
->>>
->>>>
->>>> I think d_find_alias() is what we're looking for.
->>>
->>> It may be simply dentry->d_parent (stable/positive as you said before, and it's
->>> not empty). why need to d_find_alias()?
->>
->> Because we need to get the dentry that hasn't been deleted yet, which isn't
->> necessarily the one associated with the file descriptor being fsync()'ed.
->>
->>> And what is the original problem? I could not get some clue from the original
->>> patch description (I only saw some extra igrab/iput because of some unknown
->>> reasons), it there some backtrace related to the problem?
->>
->> The problem is that i_pino gets set incorrectly.  I just noticed this while
->> reviewing the code.  It's not hard to reproduce, e.g.:
->>
->> #include <unistd.h>
->> #include <fcntl.h>
->> #include <sys/stat.h>
->>
->> int main()
->> {
->>         int fd;
->>
->>         mkdir("dir1", 0700);
->>         mkdir("dir2", 0700);
->>         mknod("dir1/file", S_IFREG|0600, 0);
->>         link("dir1/file", "dir2/file");
->>         fd = open("dir2/file", O_WRONLY);
->>         unlink("dir2/file");
->>         write(fd, "X", 1);
->>         fsync(fd);
->> }
->>
->> Then:
->>
->> sync
->> echo N | dump.f2fs -i $(stat -c %i dir1/file) /dev/vdb | grep 'i_pino'
->> echo "dir1 (correct): $(stat -c %i dir1)"
->> echo "dir2 (wrong): $(stat -c %i dir2)"
->>
->> i_pino will point to dir2 rather than dir1 as expected.
-> 
-> Could you add above testcase into commit message of your patch? it will
-> be easier to understand the issue we solved with it.
-> 
-> In addition, how about adding this testcase in fstest as a generic one?
+From: Leon Romanovsky <leonro@mellanox.com>
 
-Oops, it's not a generic one... please ignore this.
+Hi,
 
-> 
->>
->> - Eric
->>
->>
->> _______________________________________________
->> Linux-f2fs-devel mailing list
->> Linux-f2fs-devel@lists.sourceforge.net
->> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
->> .
->>
-> 
-> 
-> _______________________________________________
-> Linux-f2fs-devel mailing list
-> Linux-f2fs-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
-> .
-> 
+Two changes, pretty straightforward.
+
+Thanks
+
+Jason Gunthorpe (2):
+  RDMA/uverbs: Do not discard the IB_EVENT_DEVICE_FATAL event
+  RDMA/uverbs: Move IB_EVENT_DEVICE_FATAL to destroy_uobj
+
+ drivers/infiniband/core/rdma_core.c           |  3 +-
+ drivers/infiniband/core/uverbs.h              |  4 +++
+ drivers/infiniband/core/uverbs_main.c         | 12 +++-----
+ .../core/uverbs_std_types_async_fd.c          | 30 ++++++++++++++++++-
+ 4 files changed, 39 insertions(+), 10 deletions(-)
+
+--
+2.26.2
+
