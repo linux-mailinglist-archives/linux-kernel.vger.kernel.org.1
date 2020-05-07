@@ -2,37 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90CFA1C9ABD
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:17:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D4E11C9ABE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:17:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728630AbgEGTRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 15:17:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40636 "EHLO mail.kernel.org"
+        id S1728642AbgEGTRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 15:17:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726367AbgEGTRi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 15:17:38 -0400
+        id S1726367AbgEGTRn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 15:17:43 -0400
 Received: from embeddedor (unknown [189.207.59.248])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CA96F21835;
-        Thu,  7 May 2020 19:17:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 10A04208D6;
+        Thu,  7 May 2020 19:17:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588879058;
-        bh=2vhh4CWf1qAP4IS40XgtchAprraO0Zj46YURZXgZFxA=;
+        s=default; t=1588879063;
+        bh=thByVMAAcBvR3AyjBBzl3EWLZRPLrKL2Gs1T44P2bM4=;
         h=Date:From:To:Cc:Subject:From;
-        b=qtcvF+cDY/ipaTvvUakxHaYOOOaLgEwR9HV2QmMIlhIR8wkeEVlREwC4/m9YLnpft
-         XUg3iDrYlcwaHkUM01QM7nxWmLwBhWKL3XSCKnQ7vLzN+RM4UHK7fkrd3MLhQu59Q5
-         6/yuMeKWhbTEuuN8BZs5eR0etQ7bh6DWI1umxTsY=
-Date:   Thu, 7 May 2020 14:22:04 -0500
+        b=jpkxgGGqSk+xvBMgPdt4yAzdgPMsUFB+Z+HYSVVW0y1Y6WKUIWDbPjKJbr61zCz35
+         CnvithaG8k5Tjp49vrUoa0VBeLgb51EH5I6Eteh1AZDClP35oT7+7HgeSVIeyUn/G+
+         BfaBXJv5DEPXC/Y+bh07VXu6bo6l9bT6F4VFR34I=
+Date:   Thu, 7 May 2020 14:22:10 -0500
 From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] slab: Replace zero-length array with flexible-array
-Message-ID: <20200507192204.GA16270@embeddedor>
+To:     Song Liu <song@kernel.org>
+Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] md/raid1: Replace zero-length array with flexible-array
+Message-ID: <20200507192209.GA16290@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -79,20 +75,47 @@ This issue was found with the help of Coccinelle.
 
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- mm/slab.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/md/md-linear.h |    2 +-
+ drivers/md/raid1.h     |    2 +-
+ drivers/md/raid10.h    |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/mm/slab.h b/mm/slab.h
-index 207c83ef6e06..815e4e9a94cd 100644
---- a/mm/slab.h
-+++ b/mm/slab.h
-@@ -34,7 +34,7 @@ struct kmem_cache {
- 
- struct memcg_cache_array {
- 	struct rcu_head rcu;
--	struct kmem_cache *entries[0];
-+	struct kmem_cache *entries[];
+diff --git a/drivers/md/md-linear.h b/drivers/md/md-linear.h
+index 8381d651d4ed..24e97db50ebb 100644
+--- a/drivers/md/md-linear.h
++++ b/drivers/md/md-linear.h
+@@ -12,6 +12,6 @@ struct linear_conf
+ 	struct rcu_head		rcu;
+ 	sector_t		array_sectors;
+ 	int			raid_disks; /* a copy of mddev->raid_disks */
+-	struct dev_info		disks[0];
++	struct dev_info		disks[];
+ };
+ #endif
+diff --git a/drivers/md/raid1.h b/drivers/md/raid1.h
+index e7ccad898736..b7eb09e8c025 100644
+--- a/drivers/md/raid1.h
++++ b/drivers/md/raid1.h
+@@ -180,7 +180,7 @@ struct r1bio {
+ 	 * if the IO is in WRITE direction, then multiple bios are used.
+ 	 * We choose the number when they are allocated.
+ 	 */
+-	struct bio		*bios[0];
++	struct bio		*bios[];
+ 	/* DO NOT PUT ANY NEW FIELDS HERE - bios array is contiguously alloced*/
  };
  
- /*
+diff --git a/drivers/md/raid10.h b/drivers/md/raid10.h
+index d3eaaf3eb1bc..79cd2b7d3128 100644
+--- a/drivers/md/raid10.h
++++ b/drivers/md/raid10.h
+@@ -153,7 +153,7 @@ struct r10bio {
+ 		};
+ 		sector_t	addr;
+ 		int		devnum;
+-	} devs[0];
++	} devs[];
+ };
+ 
+ /* bits for r10bio.state */
 
