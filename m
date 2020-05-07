@@ -2,181 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C321B1C9B0E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:29:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F36001C9B16
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:29:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728389AbgEGT3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 15:29:07 -0400
-Received: from esa1.microchip.iphmx.com ([68.232.147.91]:5100 "EHLO
-        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726320AbgEGT3G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 15:29:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1588879745; x=1620415745;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=kUD9Cq9Eg8ZUdHPqFwtCoPURI8ru60H4eEns1xViiDA=;
-  b=IPI0L4Ld8Isq9gzEcfU5EWq8hg0Z/x/OfVcwok82FWFiy8VBNKWURSn2
-   5POY55TcbRexO9tQLdlxlizWjY9qI6wfS3V9DktVANapLqr1c/EjpyLOp
-   YDbceQ845CeTo77g3SIeikLbiGtK6X/grbi8kZ8DDfBitb9RbxPEHWTii
-   YRhCaeFIUN8+cmcFqoI6OS/1i//PClbi0zEgljndY3iXOhOzvsVh1v6DF
-   lpcr8CyaUF1Ypsfrbl3gPS1Y/5xUMqFNCGuKog3UXVSN/AH7cidiXnJY/
-   K/Z0q5P8A7BGcXu4yw77HJG2U+lgFw63ckmat50R8a74IXHaVdrn6vpc7
-   A==;
-IronPort-SDR: ZCUPRRcnf/MRnKA9qCq6C0dwZ3PinEIW3bMjCNlH1zDuOMehmOXu2tGFZuLt7UU7W+m/kxgYPs
- K8FLFUKJnBP/OAEHjabKiovbWrr9NuMmG2aI77FjGAwF8MYV5q3TlYxdSPy7i6jqfM4wEPRQsn
- LwNZIpVKM4aUwgz3liRLtZrnOJ/RBTgA/TOaGgDz168j6F1/k4zCN6BBdqAh1JvDekJJg3WTph
- ftAcXQMyi7/N7pCLxiv2JqiZFLAYNjsW3O4Ae0m1+wZYU19WBpQ8O8vxU+Ms12QwZ/OxpYm9us
- fvg=
-X-IronPort-AV: E=Sophos;i="5.73,364,1583218800"; 
-   d="scan'208";a="78739973"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 07 May 2020 12:29:04 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 7 May 2020 12:29:04 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server id 15.1.1713.5 via Frontend
- Transport; Thu, 7 May 2020 12:29:04 -0700
-Date:   Thu, 7 May 2020 21:29:03 +0200
-From:   "Allan W. Nielsen" <allan.nielsen@microchip.com>
-To:     Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
-CC:     Vladimir Oltean <olteanv@gmail.com>, Po Liu <po.liu@nxp.com>,
-        "Claudiu Manoil" <claudiu.manoil@nxp.com>,
-        Alexandru Marginean <alexandru.marginean@nxp.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "Leo Li" <leoyang.li@nxp.com>, Mingkai Hu <mingkai.hu@nxp.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Jiri Pirko" <jiri@resnulli.us>, Ido Schimmel <idosch@idosch.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Joergen Andreasen <joergen.andreasen@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
-        Roopa Prabhu <roopa@cumulusnetworks.com>,
-        "linux-devel@linux.nxdi.nxp.com" <linux-devel@linux.nxdi.nxp.com>
-Subject: Re: [EXT] Re: [PATCH v1 net-next 4/6] net: mscc: ocelot: VCAP IS1
- support
-Message-ID: <20200507192903.whnx2j3f35ga7jzx@ws.localdomain>
-References: <20200506074900.28529-1-xiaoliang.yang_1@nxp.com>
- <20200506074900.28529-5-xiaoliang.yang_1@nxp.com>
- <20200506094345.n4zdgjvctwiz4pkh@ws.localdomain>
- <CA+h21hoqJC_CJB=Sg=-JanXw3S_WANgjsfYjU+ffqn6YCDMzrA@mail.gmail.com>
- <20200506211551.cf6mlad7ysmuqfvq@ws.localdomain>
- <DB8PR04MB5785BE9AC6FAC6F395C8A20DF0A50@DB8PR04MB5785.eurprd04.prod.outlook.com>
+        id S1728328AbgEGT3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 15:29:53 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:54263 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726531AbgEGT3x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 15:29:53 -0400
+Received: from [IPv6:2601:646:8600:3281:6547:66ee:1a90:d675] ([IPv6:2601:646:8600:3281:6547:66ee:1a90:d675])
+        (authenticated bits=0)
+        by mail.zytor.com (8.15.2/8.15.2) with ESMTPSA id 047JTFWT3526223
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Thu, 7 May 2020 12:29:17 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 047JTFWT3526223
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2020042201; t=1588879758;
+        bh=oMuTSM+aenjMY6wnxSPIpZxcMGTGHNcIWJGGr/PBUHg=;
+        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
+        b=a5Huglbyy7CI17USh/5x8pPgRMvYdF8VgvylNOPkeaEqEjZxeRc3FDKQlGoYMXn9C
+         9s1AeunyVpKe3Q+QoqzVMuqvMODjPqJrrCuGiSMJy1rQBbI5pCfQztxQw+8+h7JZEO
+         v3LzN2SIK+ZXyPvdbGA5LjH7d1+YDKfJXO8WklUF93YYB0EKJ6PGwlZIsgpVMA2HjF
+         7ZC8WrzfLEeNDsQs5wrLHBaNHGBVcf23bjB6Tk/CArhdYYMckb9aLV2mzqoOzeFPdE
+         1xS+KjxQf0K+BrduhEFb6MWNu1SaGfAChzL5+un/gv8NAIsJoQam+n8jMy8biEcVOS
+         EO+QCxH4V/RZQ==
+Date:   Thu, 07 May 2020 12:29:08 -0700
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20200507113422.GA3762@hirez.programming.kicks-ass.net>
+References: <20200505174423.199985-1-ndesaulniers@google.com> <8A776DBC-03AF-485B-9AA6-5920E3C4ACB2@zytor.com> <20200507113422.GA3762@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Disposition: inline
-In-Reply-To: <DB8PR04MB5785BE9AC6FAC6F395C8A20DF0A50@DB8PR04MB5785.eurprd04.prod.outlook.com>
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH] x86: bitops: fix build regression
+To:     Peter Zijlstra <peterz@infradead.org>
+CC:     Nick Desaulniers <ndesaulniers@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Sedat Dilek <sedat.dilek@gmail.com>, stable@vger.kernel.org,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        "kernelci . org bot" <bot@kernelci.org>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Ilie Halip <ilie.halip@gmail.com>, x86@kernel.org,
+        Marco Elver <elver@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+From:   hpa@zytor.com
+Message-ID: <C98D29AB-442F-4DF8-8B72-9F6483A7222A@zytor.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07.05.2020 11:23, Xiaoliang Yang wrote:
->EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+On May 7, 2020 4:34:22 AM PDT, Peter Zijlstra <peterz@infradead=2Eorg> wrot=
+e:
+>On Tue, May 05, 2020 at 11:07:24AM -0700, hpa@zytor=2Ecom wrote:
+>> On May 5, 2020 10:44:22 AM PDT, Nick Desaulniers
+><ndesaulniers@google=2Ecom> wrote:
 >
->Hi Allan,
+>> >@@ -54,7 +54,7 @@ arch_set_bit(long nr, volatile unsigned long
+>*addr)
+>> > 	if (__builtin_constant_p(nr)) {
+>> > 		asm volatile(LOCK_PREFIX "orb %1,%0"
+>> > 			: CONST_MASK_ADDR(nr, addr)
+>> >-			: "iq" (CONST_MASK(nr) & 0xff)
+>> >+			: "iq" ((u8)(CONST_MASK(nr) & 0xff))
+>> > 			: "memory");
+>> > 	} else {
+>> > 		asm volatile(LOCK_PREFIX __ASM_SIZE(bts) " %1,%0"
+>> >@@ -74,7 +74,7 @@ arch_clear_bit(long nr, volatile unsigned long
+>*addr)
+>> > 	if (__builtin_constant_p(nr)) {
+>> > 		asm volatile(LOCK_PREFIX "andb %1,%0"
+>> > 			: CONST_MASK_ADDR(nr, addr)
+>> >-			: "iq" (CONST_MASK(nr) ^ 0xff));
+>> >+			: "iq" ((u8)(CONST_MASK(nr) ^ 0xff)));
+>> > 	} else {
+>> > 		asm volatile(LOCK_PREFIX __ASM_SIZE(btr) " %1,%0"
+>> > 			: : RLONG_ADDR(addr), "Ir" (nr) : "memory");
+>>=20
+>> Drop & 0xff and change ^ 0xff to ~=2E
 >
->
->> Hi Vladimir,
->>
->> On 06.05.2020 13:53, Vladimir Oltean wrote:
->[snip]
->> >At the moment, the driver does not support more than 1 action. We might
->> >need to change that, but we can still install more filters with the
->> >same key and still be fine (see more below). When there is more than 1
->> >action, the IS1 stuff will be combined into a single rule programmed
->> >into IS1, and the IS2 stuff will be combined into a single new rule
->> >with the same keys installed into VCAP IS2. Would that not work?
->> >
->> >> The SW model have these two rules in the same table, and can stop
->> >> process at the first match. SW will do the action of the first frame
->> >> matching.
->> >>
->> >
->> >Actually I think this is an incorrect assumption - software stops at
->> >the first action only if told to do so. Let me copy-paste a text from a
->> >different email thread.
->>
->> I'm still not able to see how this proposal will give us the same behavioral in SW and in HW.
->>
->> A simple example:
->>
->> tc qdisc add dev enp0s3 ingress
->> tc filter add dev enp0s3 protocol 802.1Q parent ffff: \
->>      prio 10 flower vlan_id 5 action vlan modify id 10 tc filter add dev enp0s3 protocol 802.1Q parent ffff: \
->>      prio 20 flower src_mac 00:00:00:00:00:08 action drop
->>
->> We can then inject a frame with VID 5 and smac ::08:
->> $ ef tx tap0 eth smac 00:00:00:00:00:08 ctag vid 5
->>
->> We can then check the filter and see that it only hit the first rule:
->>
->> $ tc -s filter show dev enp0s3 ingress
->> filter protocol 802.1Q pref 10 flower chain 0 filter protocol 802.1Q pref 10 flower chain 0 handle 0x1
->>    vlan_id 5
->>    not_in_hw
->>          action order 1: vlan  modify id 10 protocol 802.1Q priority 0 pipe
->>           index 1 ref 1 bind 1 installed 19 sec used 6 sec
->>          Action statistics:
->>          Sent 42 bytes 1 pkt (dropped 0, overlimits 0 requeues 0)
->>          backlog 0b 0p requeues 0
->>
->> filter protocol 802.1Q pref 20 flower chain 0 filter protocol 802.1Q pref 20 flower chain 0 handle 0x1
->>   src_mac 00:00:00:00:00:08
->>   not_in_hw
->>         action order 1: gact action drop
->>          random type none pass val 0
->>          index 1 ref 1 bind 1 installed 11 sec used 11 sec
->>         Action statistics:
->>         Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0)
->>         backlog 0b 0p requeues 0
->>
->> If this was done with the proposed HW offload, then both rules would have been hit and we would have a different behavioral.
->>
->> This can be fixed by adding the "continue" action to the first rule:
->
->> tc filter add dev enp0s3 protocol 802.1Q parent ffff: \
->>      prio 10 flower vlan_id 5 action vlan modify id 10 continue tc filter add dev enp0s3 protocol 802.1Q parent ffff: \
->>      prio 20 flower src_mac 00:00:00:00:00:08 action drop
->>
->> But that would again break if we add 2 rules manipulating the VLAN (as the HW does not continue with in a single TCAM).
->>
->> My point is: I do not think we can hide the fact that this is done in independent TCAMs in the silicon.
->>
->> I think it is possible to do this with the chain feature (even though it is not a perfect match), but it would require more analysis.
->>
->> /Allan
->
->Do you mean it's better to set vlan modify filters in a different chain, and write the filter entries with a same chain in the same VCAP TCAM?
->For example:
->        tc filter add dev enp0s3 protocol 802.1Q chain 11 parent ffff: prio 10 flower skip_sw vlan_id 5 action vlan modify id 10
->        tc filter add dev enp0s3 protocol 802.1Q chain 22 parent ffff: prio 20 flower skip_sw src_mac 00:00:00:00:00:08 action drop
->for this usage, we only need to ensure a chain corresponding to a VCAP in ocelot ace driver. I'm not sure is my understanding right?
+>But then we're back to sparse being unhappy, no? The thing with ~ is
+>that it will set high bits which will be truncated, which makes sparse
+>sad=2E
 
-I still have not found a satisfying solution to this. As I understand
-the chains, they require the "goto" action to be used to tie them
-together.
-
-We could use that to represent a single lookup in is1 and link that to a
-lookup in is2. Not sure if we should, it will also require
-(non-backwards compatible) changes in how the existing IS2 support is
-working.
-
-Again, I do not have the answer (I'm also looking for it), but I think
-we need something where it is clear to the user that this end up in
-different lists.
-
-/Allan
-
-
+In that case, sparse is just broken=2E
+--=20
+Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
