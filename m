@@ -2,84 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40B781C9CA2
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 22:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F58C1C9C9B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 22:45:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726661AbgEGUrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 16:47:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726320AbgEGUrA (ORCPT
+        id S1726515AbgEGUp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 16:45:26 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:37794 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726093AbgEGUpZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 16:47:00 -0400
-Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C93C05BD43
-        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 13:47:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=BOPvhULF3Vi20Px15Vghj/sDxm5k9HzIyVTMiezd0g8=; b=fJZJ0A0UmxWMdezzeGRRELCqNp
-        mssH61P0EAUiest7OITWPVbrCnw1BdFHg0O9E3SyVnNbnRIq/SQ3bzSP+4mex0MdhmtiSJeqV5F3P
-        U1FJP/TgcpoaoqHdYsmFQEKuHJDQEH0Rcdc2bMsAPBgwTCbLDMdks/5wFtWZ8V+CDb/c=;
-Received: from p200300ccff2da2001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff2d:a200:1a3d:a2ff:febf:d33a] helo=aktux)
-        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <andreas@kemnade.info>)
-        id 1jWnPl-0001ss-O3; Thu, 07 May 2020 22:46:42 +0200
-Received: from andi by aktux with local (Exim 4.92)
-        (envelope-from <andreas@kemnade.info>)
-        id 1jWnPk-00089w-ML; Thu, 07 May 2020 22:46:40 +0200
-From:   Andreas Kemnade <andreas@kemnade.info>
-To:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, Anson.Huang@nxp.com,
-        aford173@gmail.com, oleksandr.suvorov@toradex.com,
-        u.kleine-koenig@pengutronix.de,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Andreas Kemnade <andreas@kemnade.info>
-Subject: [PATCH] ARM: imx_v6_v7_defconfig: extend RN5T618 PMIC family support
-Date:   Thu,  7 May 2020 22:43:39 +0200
-Message-Id: <20200507204339.31253-1-andreas@kemnade.info>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
+        Thu, 7 May 2020 16:45:25 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 047KXHcV055062;
+        Thu, 7 May 2020 16:45:19 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 30s2g5q56q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 May 2020 16:45:19 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 047KXRih055831;
+        Thu, 7 May 2020 16:45:19 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 30s2g5q566-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 May 2020 16:45:18 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 047KeALF017294;
+        Thu, 7 May 2020 20:45:17 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03ams.nl.ibm.com with ESMTP id 30s0g5v2q4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 May 2020 20:45:17 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 047KjEfJ5832932
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 7 May 2020 20:45:15 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D7D8C11C04A;
+        Thu,  7 May 2020 20:45:14 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AD8E711C052;
+        Thu,  7 May 2020 20:45:13 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.85.135.201])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu,  7 May 2020 20:45:13 +0000 (GMT)
+Message-ID: <1588884313.5685.110.camel@linux.ibm.com>
+Subject: Re: [RFC][PATCH 1/3] evm: Move hooks outside LSM infrastructure
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huawei.com>,
+        "david.safford@gmail.com" <david.safford@gmail.com>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "jmorris@namei.org" <jmorris@namei.org>,
+        John Johansen <john.johansen@canonical.com>
+Cc:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>
+Date:   Thu, 07 May 2020 16:45:13 -0400
+In-Reply-To: <750ab4e0990f47e4aea10d0e580b1074@huawei.com>
+References: <20200429073935.11913-1-roberto.sassu@huawei.com>
+         <1588794293.4624.21.camel@linux.ibm.com>
+         <1588799408.4624.28.camel@linux.ibm.com>
+         <ab879f9e66874736a40e9c566cadc272@huawei.com>
+         <1588864628.5685.78.camel@linux.ibm.com>
+         <750ab4e0990f47e4aea10d0e580b1074@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.20.5 (3.20.5-1.fc24) 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Score: -1.0 (-)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-07_13:2020-05-07,2020-05-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ suspectscore=0 bulkscore=0 priorityscore=1501 spamscore=0
+ lowpriorityscore=0 adultscore=0 phishscore=0 mlxlogscore=999 clxscore=1015
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005070159
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are new drivers for functionality of that family
-(RTC and ADC), so enable them, since they are used by
-various i.MX6 boards.
+On Thu, 2020-05-07 at 16:47 +0000, Roberto Sassu wrote:
+> > > > On Wed, 2020-05-06 at 15:44 -0400, Mimi Zohar wrote:
+> > > > > Since copying the EVM HMAC or original signature isn't applicable, I
+> > > > > would prefer exploring an EVM portable and immutable signature only
+> > > > > solution.
+> > > >
+> > > > To prevent copying the EVM xattr, we added "security.evm" to
+> > > > /etc/xattr.conf.  To support copying just the EVM portable and
+> > > > immutable signatures will require a different solution.
+> > >
+> > > This patch set removes the need for ignoring security.evm. It can be
+> > always
+> > > copied, even if it is an HMAC. EVM will update it only when verification in
+> > > the pre hook is successful. Combined with the ability of protecting a
+> > subset
+> > > of files without introducing an EVM policy, these advantages seem to
+> > > outweigh the effort necessary to make the switch.
+> > 
+> > As the EVM file HMAC and original signature contain inode specific
+> > information (eg. i_version, i_generation), these xattrs cannot ever be
+> > copied.  The proposed change is in order to support just the new EVM
+> > signatures.
+> 
+> Right, I didn't consider it.
+> 
+> Would it make sense instead to introduce an alias like security.evm_immutable
+> so that this xattr can be copied?
 
-Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
----
- arch/arm/configs/imx_v6_v7_defconfig | 2 ++
- 1 file changed, 2 insertions(+)
+Being portable, not the attribute of being immutable, allows copying
+the EVM xattr.  Your original problem - the order in which the xattrs
+are copied - might still be an issue.  We need to look at "cp" closer
+to understand what it is doing.  For example, are the xattrs written
+while the target file is tagged as a new file?
 
-diff --git a/arch/arm/configs/imx_v6_v7_defconfig b/arch/arm/configs/imx_v6_v7_defconfig
-index 5a20d12d62bd..87e6400c436b 100644
---- a/arch/arm/configs/imx_v6_v7_defconfig
-+++ b/arch/arm/configs/imx_v6_v7_defconfig
-@@ -395,6 +395,7 @@ CONFIG_RTC_DRV_DA9063=y
- CONFIG_RTC_DRV_MC13XXX=y
- CONFIG_RTC_DRV_MXC=y
- CONFIG_RTC_DRV_MXC_V2=y
-+CONFIG_RTC_DRV_RC5T619=y
- CONFIG_RTC_DRV_SNVS=y
- CONFIG_DMADEVICES=y
- CONFIG_FSL_EDMA=y
-@@ -408,6 +409,7 @@ CONFIG_COMMON_CLK_PWM=y
- CONFIG_IIO=y
- CONFIG_MMA8452=y
- CONFIG_IMX7D_ADC=y
-+CONFIG_RN5T618_ADC=y
- CONFIG_VF610_ADC=y
- CONFIG_SENSORS_ISL29018=y
- CONFIG_MAG3110=y
--- 
-2.20.1
+There have been similar problems in the past.  For example, tar calls
+mknodat to create the file, but doesn't write the file data.  The
+solution there was to tag the file as a new file.
 
+We need to understand the problem better, before deciding how to
+resolve it.
+
+> 
+> > At least IMA file hashes should always be used in conjunction with
+> > EVM.  EVM xattrs should always require a security.ima xattr to bind
+> 
+> I proposed to enforce this restriction some time ago:
+> 
+> https://patchwork.kernel.org/patch/10979351/
+> 
+> Is it ok to enforce it globally?
+
+Doing this would then be dependent on upstreaming the initramfs xattr
+patches first, wouldn't it?  :)
+
+> 
+> > the file metadata to the file data.  The IMA and EVM policies really
+> > need to be in sync.
+> 
+> It would be nice, but at the moment EVM considers also files that are
+> not selected by the IMA policy. An example of why this is a problem is
+> the audit service that fails to start when it tries to adjust the permissions
+> of the log files. Those files don't have security.evm because they are
+> not appraised by IMA, but EVM denies the operation.
+
+No, this is a timing issue as to whether or not the builtin policy or
+a custom policy has been loaded.  A custom policy could exclude the
+log files based on LSM labels, but they are included in the builtin
+policy.
+
+Mimi
