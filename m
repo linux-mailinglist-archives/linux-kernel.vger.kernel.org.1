@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED9371C846E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 10:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 093FA1C8473
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 10:14:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725905AbgEGINZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 04:13:25 -0400
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:22926 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725809AbgEGINY (ORCPT
+        id S1726531AbgEGION (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 04:14:13 -0400
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:34939 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725857AbgEGIOM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 04:13:24 -0400
+        Thu, 7 May 2020 04:14:12 -0400
 Received: from mail-vs1-f49.google.com (mail-vs1-f49.google.com [209.85.217.49]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 0478DAeu016703
-        for <linux-kernel@vger.kernel.org>; Thu, 7 May 2020 17:13:11 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 0478DAeu016703
+        by conssluserg-06.nifty.com with ESMTP id 0478Dc5P008707
+        for <linux-kernel@vger.kernel.org>; Thu, 7 May 2020 17:13:39 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 0478Dc5P008707
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1588839191;
-        bh=yqnhy/Loh7LKN1m1cEYiEkGwQiIvaHjvYq0yDYsuUQM=;
+        s=dec2015msa; t=1588839219;
+        bh=oO23HSsWhRBDhOTb98SBCWFO49siOAirG9x+sRE0UoY=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=mavmXqpGw8R7lJuk1GuibNupIMvz/hETcCJZM75fdgmvOVMDV9lXbFheD+WOgRBxw
-         E4K6whEgqlDL9YSM3WuNUA9kPWHJStbSFyXjhJE+a5ikkPqle1jivhRhwr98DGJtSj
-         FsguWWucHfp2zQLatV/XrSV4Y/yjP2tVr4XRJG3m/gQdAPSW7YAP7wD+6PHiIkQ0GR
-         pbi6GrEeo5NFI36chlWBvmKwfHd5GAXrai+EGs2VGm07Jv8PtVlg3GTO8FbwVZvP01
-         P+pSA4paEoNGPSjQcMA8JxAX+upxIk6pGU0+URrcphHyQ2MYGnC2r4cc/Ost08EHBJ
-         7DrV5n1l2FTAw==
+        b=BaWCx5RzNwzhamAV77FD4rs3gnmwdJ+Zaa7bSJn/GYFhICn6TmXOG5IrDP6D8N6HL
+         qI3VUS6MizO/GSE1vbgx4SeNnrR8SydfXto0y6Qpqh6coGUpx7fAMuqLfH/KT+42oj
+         ZdOqwUky5jZgMtMOlHU68zbmcUMNzFLuBHsSSlDb3DDQSj7pQGt/tPzEiYmQUaPJXY
+         udPvY4id8t86ZxdtTMg4hsefqh1EvsFpOMUlEPOl7/6+dX1oCN4q4AJNgb54/97X0Y
+         xe+G85Aewmzmk26Lw7npmqwDhl8NDdtdy/UuTWf9Q7+3SVtwuHrMX3RWCD8ep3sdTJ
+         tP6TX/5sv9Aow==
 X-Nifty-SrcIP: [209.85.217.49]
-Received: by mail-vs1-f49.google.com with SMTP id e10so2821285vsp.12
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 01:13:10 -0700 (PDT)
-X-Gm-Message-State: AGi0PuYqgWrlkZz1itof/rXLXB/UHhU4QrXfUq+QoWKAB0HPhWV3DSKC
-        QqmC73OQA0Ny8yQB7inNoux09Xo5413x98WtO7Y=
-X-Google-Smtp-Source: APiQypLFCNkcA++Yq32fn+1tRnbuNBqswthhAAMORjcPgW28CvggTAxPw6oxWG/vOVhQOWfDmHr4E0khGPt96S+oq9Q=
-X-Received: by 2002:a67:e94d:: with SMTP id p13mr10873449vso.215.1588839189847;
- Thu, 07 May 2020 01:13:09 -0700 (PDT)
+Received: by mail-vs1-f49.google.com with SMTP id s11so2826120vsm.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 01:13:39 -0700 (PDT)
+X-Gm-Message-State: AGi0PuazvZ5o0+z+M/SAc4U6bKX9gGbPpg5BIeImQw38mROEJ3JH997F
+        aTp5PNFx3gAcb4mtK18nwNlEKhGupVAXtherKzo=
+X-Google-Smtp-Source: APiQypLwM3BW7DMJPZFbKzpJjXsVIV8g3d+kRwYnRHMEncLQXUcHDXQGM178jYukr80/uu+tzH/cbAwxQL8aPJDRvlY=
+X-Received: by 2002:a67:6e07:: with SMTP id j7mr11040549vsc.181.1588839218008;
+ Thu, 07 May 2020 01:13:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <CGME20200430124952epcas5p28cd53b0aa452f43eed48ed9d58b4005b@epcas5p2.samsung.com>
- <1588250972-8507-1-git-send-email-maninder1.s@samsung.com>
-In-Reply-To: <1588250972-8507-1-git-send-email-maninder1.s@samsung.com>
+References: <CGME20200430124955epcas5p4b5c1dd7393a7b798d80206d071264df3@epcas5p4.samsung.com>
+ <1588250972-8507-1-git-send-email-maninder1.s@samsung.com> <1588250972-8507-2-git-send-email-maninder1.s@samsung.com>
+In-Reply-To: <1588250972-8507-2-git-send-email-maninder1.s@samsung.com>
 From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 7 May 2020 17:12:34 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQuT6-sRrdwT183RYEBgHNpiKAzN=RiubHrXZeb2ifqjw@mail.gmail.com>
-Message-ID: <CAK7LNAQuT6-sRrdwT183RYEBgHNpiKAzN=RiubHrXZeb2ifqjw@mail.gmail.com>
-Subject: Re: [PATCH 1/4] scripts/checkstack.pl: don't display $dre as
- different entity
+Date:   Thu, 7 May 2020 17:13:02 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARQNmrCYofk5yG6diwrZnaqgUs0ASBo23k25SnOKM3viQ@mail.gmail.com>
+Message-ID: <CAK7LNARQNmrCYofk5yG6diwrZnaqgUs0ASBo23k25SnOKM3viQ@mail.gmail.com>
+Subject: Re: [PATCH 2/4] scripts/checkstack.pl: Add argument to print stacks
+ greather than value.
 To:     Maninder Singh <maninder1.s@samsung.com>
 Cc:     "George G. Davis" <george_davis@mentor.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
@@ -56,154 +56,74 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Thu, Apr 30, 2020 at 9:50 PM Maninder Singh <maninder1.s@samsung.com> wrote:
 >
-> currnetly script prints stack usage for functions
-> in two ways:($re and $dre)
->
-> dre breaks sorting mechanism.
-> 0xffffa00011f26f88 sunxi_mux_clk_setup.isra.0 [vmlinux]:Dynamic (0x140)
-> ..
-> 0xffffa00011f27210 sunxi_divs_clk_setup [vmlinux]:      Dynamic (0x1d0)
->
-> so we can print it in decimal only.
->
-> Also address before function name is changed to function
-> start address rather than stack consumption address.
-> Because in next patch, arm has two ways to use stack
-> which can be clubbed and printed in one function only.
->
-> All symbols whose stack by adding(re and dre) is greater than
-> 100, will be printed.
->
-> 0xffffa00011f2720c0 sunxi_divs_clk_setup [vmlinux]:     464
-> ...
-> 0xffffa00011f26f840 sunxi_mux_clk_setup.isra.0 [vmlinux]:320
+> Add arguments support to print stacks which are greater than
+> argument value only.
 >
 > Signed-off-by: Vaneet Narang <v.narang@samsung.com>
 > Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
 > ---
->  scripts/checkstack.pl | 52 +++++++++++++++++++++++++--------------------------
->  1 file changed, 25 insertions(+), 27 deletions(-)
+>  scripts/checkstack.pl | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
 >
 > diff --git a/scripts/checkstack.pl b/scripts/checkstack.pl
-> index 371bd17..412c459 100755
+> index 412c459..8e5ef98 100755
 > --- a/scripts/checkstack.pl
 > +++ b/scripts/checkstack.pl
-> @@ -109,11 +109,28 @@ my (@stack, $re, $dre, $x, $xs, $funcre);
+> @@ -35,7 +35,7 @@ use strict;
+>  # $1 (first bracket) matches the dynamic amount of the stack growth
 >  #
->  # main()
->  #
-> -my ($func, $file, $lastslash);
-> +my ($func, $file, $lastslash, $total_size, $addr, $intro);
-
-
-$total_size is undefined for the first function.
-I think 0 is implied, but is it clearer to initialize it here?
-
-$total_size = 0;
-
-
-
+>  # use anything else and feel the pain ;)
+> -my (@stack, $re, $dre, $x, $xs, $funcre);
+> +my (@stack, $re, $dre, $x, $xs, $funcre, $min_stack);
+>  {
+>         my $arch = shift;
+>         if ($arch eq "") {
+> @@ -43,6 +43,11 @@ my (@stack, $re, $dre, $x, $xs, $funcre);
+>                 chomp($arch);
+>         }
+>
+> +       $min_stack = shift;
+> +       if ($min_stack eq "" || $min_stack !~ /^\d+$/) {
+> +               $min_stack = 100;
+> +       }
+> +
+>         $x      = "[0-9a-f]";   # hex character
+>         $xs     = "[0-9a-f ]";  # hex character or space
+>         $funcre = qr/^$x* <(.*)>:$/;
+> @@ -113,7 +118,7 @@ my ($func, $file, $lastslash, $total_size, $addr, $intro);
+>
 >  while (my $line = <STDIN>) {
 >         if ($line =~ m/$funcre/) {
-> +               if ($total_size > 100) {
-> +                       push @stack, "$intro$total_size\n";
-> +               }
-> +
->                 $func = $1;
-> +               next if $line !~ m/^($xs*)/;
-
-Hmm, I think this 'next' is unlikely to happen.
-But, it happened, the same line would be pushed twice.
-
-Maybe, is it better to move 'next it' above
-the 'if ($total_size > 100)' check?
-
-
-
-
-> +               $addr = $1;
-> +               $addr =~ s/ /0/g;
-> +               $addr = "0x$addr";
-> +
-> +               $intro = "$addr $func [$file]:";
-> +               my $padlen = 56 - length($intro);
-> +               while ($padlen > 0) {
-> +                       $intro .= '     ';
-> +                       $padlen -= 8;
-> +               }
-> +
-> +               $total_size = 0;
->         }
->         elsif ($line =~ m/(.*):\s*file format/) {
->                 $file = $1;
-> @@ -134,37 +151,18 @@ while (my $line = <STDIN>) {
+> -               if ($total_size > 100) {
+> +               if ($total_size > $min_stack) {
+>                         push @stack, "$intro$total_size\n";
+>                 }
+>
+> @@ -150,7 +155,6 @@ while (my $line = <STDIN>) {
+>                         $size += 0x80000000;
 >                 }
 >                 next if ($size > 0x10000000);
->
-> -               next if $line !~ m/^($xs*)/;
-> -               my $addr = $1;
-> -               $addr =~ s/ /0/g;
-> -               $addr = "0x$addr";
 > -
-> -               my $intro = "$addr $func [$file]:";
-> -               my $padlen = 56 - length($intro);
-> -               while ($padlen > 0) {
-> -                       $intro .= '     ';
-> -                       $padlen -= 8;
-> -               }
-> -               next if ($size < 100);
-> -               push @stack, "$intro$size\n";
-> +               $total_size = $total_size + $size
 
 
-For consistency, I personally prefer adding ';'
-to every statement even for the last one in the block...
+This is a noise change.
 
-
-Is this simpler ?
-
-                  $total_size += $size;
+You can do this in 1/4 if you want to.
 
 
 
-
-
-
+>                 $total_size = $total_size + $size
 >         }
 >         elsif (defined $dre && $line =~ m/$dre/) {
-> -               my $size = "Dynamic ($1)";
-> -
-> -               next if $line !~ m/^($xs*)/;
-> -               my $addr = $1;
-> -               $addr =~ s/ /0/g;
-> -               $addr = "0x$addr";
-> +               my $size = $1;
->
-> -               my $intro = "$addr $func [$file]:";
-> -               my $padlen = 56 - length($intro);
-> -               while ($padlen > 0) {
-> -                       $intro .= '     ';
-> -                       $padlen -= 8;
-> -               }
-> -               push @stack, "$intro$size\n";
-> +               $size = hex($size) if ($size =~ /^0x/);
-> +               $total_size = $total_size + $size
-
-
-
-Ditto. How about this?
-
-                  $total_size += $size;
-
-
+> @@ -160,7 +164,7 @@ while (my $line = <STDIN>) {
+>                 $total_size = $total_size + $size
 >         }
 >  }
-> +if ($total_size > 100) {
-> +       push @stack, "$intro$total_size\n";
-> +}
+> -if ($total_size > 100) {
+> +if ($total_size > $min_stack) {
+>         push @stack, "$intro$total_size\n";
+>  }
 >
->  # Sort output by size (last field)
->  print sort { ($b =~ /:\t*(\d+)$/)[0] <=> ($a =~ /:\t*(\d+)$/)[0] } @stack;
 > --
 > 1.9.1
 >
@@ -211,4 +131,5 @@ Ditto. How about this?
 
 --
 Best Regards
+
 Masahiro Yamada
