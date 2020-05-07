@@ -2,176 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 615211C9087
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 16:45:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 368211C908B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 16:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728201AbgEGOo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 10:44:29 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:43547 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726807AbgEGOo2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 10:44:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1588862668; x=1620398668;
-  h=subject:from:to:cc:references:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=EhmFSjy/EWu4Wg4+Zq15DUvDdCItcyPtF3MIASQ4kuU=;
-  b=UonDMcNzKwUN8PLDuLfw+7jCfnD55n/tq6mESHzX9GNcydjowmXjctkI
-   Fre9xYsAQUmh2NHKX551NDMtLcDjG4FJaoqR8fC7ouE9g4T9IHug7gdAm
-   q4nCAA+5Z/hT5Ts6bAN8vpUWqk8kfRHPPMQDbBGDWD1BLugToVv+rPucu
-   Q=;
-IronPort-SDR: h8XIeuXXSd7VrbxtHgs+y2tea6p9HPut02kYVn9M57ENgzd7XyGo9x6DVBr7qaCk6mjPAvgIaI
- W815RWpqBTjg==
-X-IronPort-AV: E=Sophos;i="5.73,364,1583193600"; 
-   d="scan'208";a="33576905"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-81e76b79.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 07 May 2020 14:44:26 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
-        by email-inbound-relay-2b-81e76b79.us-west-2.amazon.com (Postfix) with ESMTPS id 9C75FA21EF;
-        Thu,  7 May 2020 14:44:24 +0000 (UTC)
-Received: from EX13D01EUB001.ant.amazon.com (10.43.166.194) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 7 May 2020 14:44:24 +0000
-Received: from [10.85.103.159] (10.43.161.247) by EX13D01EUB001.ant.amazon.com
- (10.43.166.194) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 7 May
- 2020 14:44:14 +0000
-Subject: Re: [PATCH v6 1/2] dt-bindings: edac: al-mc-edac: Amazon's Annapurna
- Labs Memory Controller EDAC
-From:   "Shenhar, Talel" <talel@amazon.com>
-To:     Borislav Petkov <bp@alien8.de>, <robh+dt@kernel.org>
-CC:     <mchehab@kernel.org>, <james.morse@arm.com>, <davem@davemloft.net>,
-        <gregkh@linuxfoundation.org>, <nicolas.ferre@microchip.com>,
-        <mark.rutland@arm.com>, <catalin.marinas@arm.com>,
-        <will@kernel.org>, <linux-edac@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <dwmw@amazon.co.uk>,
-        <benh@kernel.crashing.org>, <hhhawa@amazon.com>,
-        <ronenk@amazon.com>, <jonnyc@amazon.com>, <hanochu@amazon.com>,
-        <eitan@amazon.com>, <talel@amazon.com>
-References: <20200224134132.23924-1-talel@amazon.com>
- <20200224134132.23924-2-talel@amazon.com> <20200428110659.GA11272@zn.tnic>
- <5e2c5119-52e9-2c3c-e205-e661ba218fcb@amazon.com>
-Message-ID: <07f3b407-fa91-f3b4-bc7c-9692a7b3c3c7@amazon.com>
-Date:   Thu, 7 May 2020 17:44:09 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        id S1728275AbgEGOor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 10:44:47 -0400
+Received: from mga14.intel.com ([192.55.52.115]:13074 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726069AbgEGOor (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 10:44:47 -0400
+IronPort-SDR: y4XDnlcFXx1rnW1BhOFtYUp2Vwbc59k8Eh4Y2HlqnwP0h5BUF7uuUC7cAgYifzQ2lZcmcnhhIN
+ wXF3SKIXLlCg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2020 07:44:45 -0700
+IronPort-SDR: 9i3xISujTRUf3ti8cieSFQSZ916JIV3ob91xq5STMWcgLzGqBILU2lddGBJB4zPBKrCadZ8weZ
+ sjKSe2RlgVNQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,364,1583222400"; 
+   d="scan'208";a="263956282"
+Received: from smericks-mobl.amr.corp.intel.com (HELO [10.252.140.100]) ([10.252.140.100])
+  by orsmga006.jf.intel.com with ESMTP; 07 May 2020 07:44:44 -0700
+Subject: Re: [PATCH 1/2] arch/x86: Rename config
+ X86_INTEL_MEMORY_PROTECTION_KEYS to generic x86
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Babu Moger <babu.moger@amd.com>, corbet@lwn.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        pbonzini@redhat.com, sean.j.christopherson@intel.com,
+        x86@kernel.org, vkuznets@redhat.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, dave.hansen@linux.intel.com,
+        luto@kernel.org, peterz@infradead.org, mchehab+samsung@kernel.org,
+        changbin.du@intel.com, namit@vmware.com,
+        yang.shi@linux.alibaba.com, asteinhauser@google.com,
+        anshuman.khandual@arm.com, jan.kiszka@siemens.com,
+        akpm@linux-foundation.org, steven.price@arm.com,
+        rppt@linux.vnet.ibm.com, peterx@redhat.com,
+        dan.j.williams@intel.com, arjunroy@google.com, logang@deltatee.com,
+        thellstrom@vmware.com, aarcange@redhat.com, justin.he@arm.com,
+        robin.murphy@arm.com, ira.weiny@intel.com, keescook@chromium.org,
+        jgross@suse.com, andrew.cooper3@citrix.com,
+        pawan.kumar.gupta@linux.intel.com, fenghua.yu@intel.com,
+        vineela.tummalapalli@intel.com, yamada.masahiro@socionext.com,
+        sam@ravnborg.org, acme@redhat.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+References: <158880240546.11615.2219410169137148044.stgit@naples-babu.amd.com>
+ <158880253347.11615.8499618616856685179.stgit@naples-babu.amd.com>
+ <4d86b207-77af-dc5d-88a4-f092be0043f6@intel.com>
+ <20200507072934.d5l6cpqyy54lrrla@linutronix.de>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <034cfb90-7f75-8e36-5b1e-ceaef0dfa50d@intel.com>
+Date:   Thu, 7 May 2020 07:44:44 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <5e2c5119-52e9-2c3c-e205-e661ba218fcb@amazon.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <20200507072934.d5l6cpqyy54lrrla@linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-Originating-IP: [10.43.161.247]
-X-ClientProxiedBy: EX13D10UWA001.ant.amazon.com (10.43.160.216) To
- EX13D01EUB001.ant.amazon.com (10.43.166.194)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 5/7/20 12:29 AM, Sebastian Andrzej Siewior wrote:
+>>> -config X86_INTEL_MEMORY_PROTECTION_KEYS
+>>> -	prompt "Intel Memory Protection Keys"
+>>> +config X86_MEMORY_PROTECTION_KEYS
+>>> +	prompt "Memory Protection Keys"
+>>>  	def_bool y
+>>>  	# Note: only available in 64-bit mode
+>>> -	depends on CPU_SUP_INTEL && X86_64
+>>> +	depends on X86_64 && (CPU_SUP_INTEL || CPU_SUP_AMD)
+>>>  	select ARCH_USES_HIGH_VMA_FLAGS
+>>>  	select ARCH_HAS_PKEYS
+>>>  	---help---
+>> It's a bit of a bummer that we're going to prompt everybody doing
+>> oldconfig's for this new option.  But, I don't know any way for Kconfig
+>> to suppress it if the name is changed.  Also, I guess the def_bool=y
+>> means that menuconfig and olddefconfig will tend to do the right thing.
+> You could add a new option (X86_MEMORY_PROTECTION_KEYS) which is
+> def_bool X86_INTEL_MEMORY_PROTECTION_KEYS and avoiding the prompt line.
+> Soo it is selected based on the old option and the user isn't bother. A
+> few cycles later you could remove intel option and add prompt to other.
+> But still little work for…
 
-On 5/5/2020 1:44 PM, Shenhar, Talel wrote:
->
-> On 4/28/2020 2:06 PM, Borislav Petkov wrote:
->> On Mon, Feb 24, 2020 at 03:41:31PM +0200, Talel Shenhar wrote:
->>> Document Amazon's Annapurna Labs Memory Controller EDAC SoC binding.
->>>
->>> Signed-off-by: Talel Shenhar <talel@amazon.com>
->>> Reviewed-by: Rob Herring <robh@kernel.org>
->>> ---
->>>   .../bindings/edac/amazon,al-mc-edac.yaml      | 52 
->>> +++++++++++++++++++
->>>   1 file changed, 52 insertions(+)
->>>   create mode 100644 
->>> Documentation/devicetree/bindings/edac/amazon,al-mc-edac.yaml
->>>
->>> diff --git 
->>> a/Documentation/devicetree/bindings/edac/amazon,al-mc-edac.yaml 
->>> b/Documentation/devicetree/bindings/edac/amazon,al-mc-edac.yaml
->>> new file mode 100644
->>> index 000000000000..20505f37c9f8
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/edac/amazon,al-mc-edac.yaml
->>> @@ -0,0 +1,52 @@
->>> +# SPDX-License-Identifier: GPL-2.0-only
->> WARNING: DT binding documents should be licensed (GPL-2.0-only OR 
->> BSD-2-Clause)
->> #36: FILE: 
->> Documentation/devicetree/bindings/edac/amazon,al-mc-edac.yaml:1:
->> +# SPDX-License-Identifier: GPL-2.0-only
->>
->> Hi Rob, should I listen to checkpatch or ignore it?
->
-> Rob and other dt folks,
->
-> In continue to disscussion with Boris below, Looking at the checkpatch 
-> check:
->
->    if ($realfile =~ m@^Documentation/devicetree/bindings/@ &&
->        not $spdx_license =~/GPL-2\.0.*BSD-2-Clause/) {
->
-> It wants the whole string "GPL-2.0-only OR BSD-2-Clause" and my oatch 
-> has only "GPL-2.0-only".
->
-> Now, looking at a bunch of .yaml DT files, there are all kinds of 
-> formatting:
->
-> $ git grep -h SPDX *.yaml | sort | uniq -c
->       3 1:# SPDX-License-Identifier: (GPL-2.0)
->     313 1:# SPDX-License-Identifier: GPL-2.0
->       9 1:# SPDX-License-Identifier: GPL-2.0+
->       1 1:# SPDX-License-Identifier: (GPL-2.0-only)
->      43 1:# SPDX-License-Identifier: GPL-2.0-only
->       4 1:# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
->       1 1:# SPDX-License-Identifier: GPL-2.0-only or BSD-2-Clause
->     148 1:# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->      25 1:# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
->     104 1:# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->       3 1:# SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
->       2 1:# SPDX-License-Identifier: (GPL-2.0+ OR BSD-2-Clause)
->       1 1:# SPDX-License-Identifier: (GPL-2.0-or-later)
->       5 1:# SPDX-License-Identifier: GPL-2.0-or-later
->       3 1:# SPDX-License-Identifier: (GPL-2.0-or-later OR BSD-2-Clause)
->       2 1:# SPDX-License-Identifier: GPL-2.0-or-later OR BSD-2-Clause
->       3 1:# SPDX-License-Identifier: (GPL-2.0 OR MIT)
->       3 1:# SPDX-License-Identifier: (GPL-2.0+ OR MIT)
->       3 1:# SPDX-License-Identifier: (GPL-2.0+ OR X11)
->
-> And the patch which did rule is:
->
-> commit 50c92900214dd9a55bcecc3c53e90d072aff6560
-> Author: Lubomir Rintel<lkundrak@v3.sk>
-> Date:   Mon Apr 6 20:11:13 2020 -0700
->
->     checkpatch: check proper licensing of Devicetree bindings
->
->     According to Devicetree maintainers (see Link: below), the Devicetree
->     binding documents are preferrably licensed (GPL-2.0-only OR 
-> BSD-2-Clause).
->
->     Let's check that.  The actual check is a bit more relaxed, to 
-> allow more
->     liberal but compatible licensing (e.g.  GPL-2.0-or-later OR 
-> BSD-2-Clause).
->
->
-> Will love your help.
-> This patch already have your (Rob) Reviewed-by so Boris and myself are 
-> unsure what is the right thing to do now.
+That does sound viable, if we decide it's all worth it.
 
-Borislav, after internal disscussion, we are good to go with the new 
-license.
-
-This shall be part of v7.
-
->
-> Thanks,
-> Talel.
->
->>
->> -- 
->> Regards/Gruss,
->>      Boris.
->>
->> https://people.kernel.org/tglx/notes-about-netiquette
+So, for now my preference would be to change the prompt, but leave the
+CONFIG_ naming in place.  If we decide that transitioning the config is
+the right thing (I don't feel super strongly either way), let's use
+Sebastian's trick to avoid the Kconfig prompts.
