@@ -2,107 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 190721C89FD
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 14:03:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36C641C8A12
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 14:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727794AbgEGMCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 08:02:36 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45016 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726807AbgEGMCe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 08:02:34 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 7FD70ADC8;
-        Thu,  7 May 2020 12:02:34 +0000 (UTC)
-From:   Vlastimil Babka <vbabka@suse.cz>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@kernel.org>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: [PATCH] Documentation: update numastat explanation
-Date:   Thu,  7 May 2020 14:02:17 +0200
-Message-Id: <20200507120217.12313-1-vbabka@suse.cz>
-X-Mailer: git-send-email 2.26.2
+        id S1726519AbgEGMFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 08:05:20 -0400
+Received: from relay9-d.mail.gandi.net ([217.70.183.199]:58121 "EHLO
+        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725848AbgEGMFU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 08:05:20 -0400
+X-Originating-IP: 86.202.105.35
+Received: from localhost (lfbn-lyo-1-9-35.w86-202.abo.wanadoo.fr [86.202.105.35])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 015A2FF814;
+        Thu,  7 May 2020 12:03:01 +0000 (UTC)
+Date:   Thu, 7 May 2020 14:03:01 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Rob Herring <robh+dt@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-mips@vger.kernel.org,
+        Rob Herring <robh@kernel.org>, linux-rtc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/7] dt-bindings: timer: Move snps,dw-apb-timer DT
+ schema from rtc
+Message-ID: <20200507120301.GF34497@piout.net>
+References: <20200324174325.14213-1-Sergey.Semin@baikalelectronics.ru>
+ <20200506214107.25956-1-Sergey.Semin@baikalelectronics.ru>
+ <20200506214107.25956-3-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200506214107.25956-3-Sergey.Semin@baikalelectronics.ru>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During recent patch discussion [1] it became apparent that the "other_node"
-definition in the numastat documentation has always been different from actual
-implementation. It was also noted that the stats can be innacurate on systems
-with memoryless nodes.
+On 07/05/2020 00:41:02+0300, Serge Semin wrote:
+> This binding file doesn't belong to the rtc seeing it's a pure timer
+> with no rtc facilities like days/months/years counting and alarms.
+> So move the YAML-file to the Documentation/devicetree/bindings/timer/
+> directory.
+> 
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: Paul Burton <paulburton@kernel.org>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: linux-mips@vger.kernel.org
+Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
-This patch corrects the other_node definition (with minor tweaks to two more
-definitions), adds a note about memoryless nodes and also two introductory
-paragraphs to the numastat documentation.
+> ---
+>  .../devicetree/bindings/{rtc => timer}/snps,dw-apb-timer.yaml   | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>  rename Documentation/devicetree/bindings/{rtc => timer}/snps,dw-apb-timer.yaml (96%)
+> 
+> diff --git a/Documentation/devicetree/bindings/rtc/snps,dw-apb-timer.yaml b/Documentation/devicetree/bindings/timer/snps,dw-apb-timer.yaml
+> similarity index 96%
+> rename from Documentation/devicetree/bindings/rtc/snps,dw-apb-timer.yaml
+> rename to Documentation/devicetree/bindings/timer/snps,dw-apb-timer.yaml
+> index 002fe1ee709b..5d300efdf0ca 100644
+> --- a/Documentation/devicetree/bindings/rtc/snps,dw-apb-timer.yaml
+> +++ b/Documentation/devicetree/bindings/timer/snps,dw-apb-timer.yaml
+> @@ -1,7 +1,7 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+>  %YAML 1.2
+>  ---
+> -$id: http://devicetree.org/schemas/rtc/snps,dw-apb-timer.yaml#
+> +$id: http://devicetree.org/schemas/timer/snps,dw-apb-timer.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  
+>  title: Synopsys DesignWare APB Timer
+> -- 
+> 2.25.1
+> 
 
-[1] https://lore.kernel.org/linux-mm/20200504070304.127361-1-sandipan@linux.ibm.com/T/#u
-
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
----
- Documentation/admin-guide/numastat.rst | 31 +++++++++++++++++++++++---
- 1 file changed, 28 insertions(+), 3 deletions(-)
-
-diff --git a/Documentation/admin-guide/numastat.rst b/Documentation/admin-guide/numastat.rst
-index aaf1667489f8..08ec2c2bdce3 100644
---- a/Documentation/admin-guide/numastat.rst
-+++ b/Documentation/admin-guide/numastat.rst
-@@ -6,6 +6,21 @@ Numa policy hit/miss statistics
- 
- All units are pages. Hugepages have separate counters.
- 
-+The numa_hit, numa_miss and numa_foreign counters reflect how well processes
-+are able to allocate memory from nodes they prefer. If they succeed, numa_hit
-+is incremented on the preferred node, otherwise numa_foreign is incremented on
-+the preferred node and numa_miss on the node where allocation succeeded.
-+
-+Usually preferred node is the one local to the CPU where the process executes,
-+but restrictions such as mempolicies can change that, so there are also two
-+counters based on CPU local node. local_node is similar to numa_hit and is
-+incremented on allocation from a node by CPU on the same node. other_node is
-+similar to numa_miss and is incremented on the node where allocation succeeds
-+from a CPU from a different node. Note there is no counter analogical to
-+numa_foreign.
-+
-+In more detail:
-+
- =============== ============================================================
- numa_hit	A process wanted to allocate memory from this node,
- 		and succeeded.
-@@ -14,11 +29,13 @@ numa_miss	A process wanted to allocate memory from another node,
- 		but ended up with memory from this node.
- 
- numa_foreign	A process wanted to allocate on this node,
--		but ended up with memory from another one.
-+		but ended up with memory from another node.
- 
--local_node	A process ran on this node and got memory from it.
-+local_node	A process ran on this node's CPU,
-+		and got memory from this node.
- 
--other_node	A process ran on this node and got memory from another node.
-+other_node	A process ran on a different node's CPU
-+		and got memory from this node.
- 
- interleave_hit 	Interleaving wanted to allocate from this node
- 		and succeeded.
-@@ -28,3 +45,11 @@ For easier reading you can use the numastat utility from the numactl package
- (http://oss.sgi.com/projects/libnuma/). Note that it only works
- well right now on machines with a small number of CPUs.
- 
-+Note that on systems with memoryless nodes (where a node has CPUs but no
-+memory) the numa_hit, numa_miss and numa_foreign statistics can be skewed
-+heavily. In the current kernel implementation, if a process prefers a
-+memoryless node (i.e.  because it is running on one of its local CPU), the
-+implementation actually treats one of the nearest nodes with memory as the
-+preferred node. As a result, such allocation will not increase the numa_foreign
-+counter on the memoryless node, and will skew the numa_hit, numa_miss and
-+numa_foreign statistics of the nearest node.
 -- 
-2.26.2
-
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
