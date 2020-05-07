@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEC821C9BB6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 22:09:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB1F41C9BBE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 22:09:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728658AbgEGUJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 16:09:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45846 "EHLO
+        id S1728699AbgEGUJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 16:09:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728605AbgEGUJL (ORCPT
+        by vger.kernel.org with ESMTP id S1728611AbgEGUJN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 16:09:11 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CFF3C05BD43
-        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 13:09:11 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id x2so3544010pfx.7
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 13:09:11 -0700 (PDT)
+        Thu, 7 May 2020 16:09:13 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5326C05BD0B
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 13:09:12 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id t16so2515155plo.7
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 13:09:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=0JDP38dpsk7KN8hEkRFGKZlhEIk/6C1p/e8k95JU/HI=;
-        b=Uz1I0/Qyr46MnWPBV0Pdl3MlddTJFfDNTtIwTIsnUcfrgFDeFyAYLWrlJN5MlYfhy9
-         Atnq7ijIibilELMzMIIu79dsXN1LhJeFFDY00qNOvh+yJ3n1gaHYiDqnTky6PMiYWUmp
-         l1YUhsqXrk/+1UPVy2mqSOvba/H7RCGvEvvqg=
+        bh=JZVfMDRlaZxQ6qpzAMsiTzN4YCAYznWKH75NGk0mLe0=;
+        b=m5ylYMv87Zesz+z8ZAznR4kWc9TIjqXmxiLRRY8QyOpCZOwt00FTXHCWaihQzLwGTB
+         /kjZ0p7FzdVuwoHXJtcPF3yVROz9sUTpYmZCbApuKUmPUpqHuEyGNlO3TyZwioK9zYWZ
+         M773j7obrswcIlQPjJ858TSOKYbtG52zYMVnA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=0JDP38dpsk7KN8hEkRFGKZlhEIk/6C1p/e8k95JU/HI=;
-        b=SMPbFczrsYMxqU8ZrFsbSWnDQv5C11j8LKMlbbE+xVTNwovVhg1CfcbHQz4DILmakl
-         0nvNLqevEaIKsrXLh2p/Y3EP+h1UVP9BoSayN/7PSQ8+9M3VLJiP9o9GBo/PP4PGnkcj
-         LFMBbIkXHIfwoQkRZINnEcaPEY5oEk690Fl6maWoqa/3DgL1b+c3JADd1jkNg6uJCFwy
-         QGbxUseVSZVPgKVXUyGepKIJMSKixlcu+cpRXzz/dn4TozclPV/DJwlkmCjzAebTDlGX
-         91vpup4eTP8xQcWgnlWez7qMwKK282TTajKBfAL86XD9UB9O4ptEvbag4YTv+qXinchz
-         GYDQ==
-X-Gm-Message-State: AGi0PubTxlg9y4lLl24HXiwRe48wJlGHQ1p1X2f+h111KNMQEpDGYgdC
-        vS3JX3nc90XfPvNAe95hn+VHhQ==
-X-Google-Smtp-Source: APiQypKC2QxYl//EFJYF9h7JAaIzKVftkZguEa/cNFd1sq9osVEi5yaiH9HyFLHdv04Uzjt/t1mRFA==
-X-Received: by 2002:a63:d501:: with SMTP id c1mr12398639pgg.186.1588882150477;
-        Thu, 07 May 2020 13:09:10 -0700 (PDT)
+        bh=JZVfMDRlaZxQ6qpzAMsiTzN4YCAYznWKH75NGk0mLe0=;
+        b=fjOMVjDx5BKVr+k62RYvwmCo78ywIbT1cD+gX/+PGdAn9Fb+ukafcy/vWyQRLMMbeL
+         7gHiZS6iXDL47xEYz6Vjk64v36/H9GeKYsWVyKTvrVGMZk1TsFZa6TeXV7ibhVGVk9Aw
+         VeO9m4tbsuiPoy5rOMqpKgs0hP7YrgNoI5jIbt2NiiCpPx3m0IJbXCSAyuBxqrqPckQJ
+         ojE9tnXXGU4KH7o1qF6vaDupH11EJEN4FIXiMVQK7vKaTLm9B0AGyVZuuTX8jqCcz4Fa
+         s5fOdsVQxBI5p82GlXAtxdXEm4GY2eXAi+W2ZEofJTX3O9nt33O92X6eBotOwf8OUNLX
+         nxSQ==
+X-Gm-Message-State: AGi0PuZyhc+lBW3ItvtwxkRJwUPdBoYewuqzZ/pC+1GaeIssSq3Obu3k
+        1vbHKZ8aheyAa3o2FRayVmXqBg==
+X-Google-Smtp-Source: APiQypJWVjHYI0dqkVdBU1DEnnSramGm6bwNGEmhZQc/6xZdlZXzI9QuauPG2Tcya5C3/lJNRD27RQ==
+X-Received: by 2002:a17:902:c193:: with SMTP id d19mr15373854pld.60.1588882152281;
+        Thu, 07 May 2020 13:09:12 -0700 (PDT)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:24fa:e766:52c9:e3b2])
-        by smtp.gmail.com with ESMTPSA id d203sm5547601pfd.79.2020.05.07.13.09.09
+        by smtp.gmail.com with ESMTPSA id d203sm5547601pfd.79.2020.05.07.13.09.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2020 13:09:09 -0700 (PDT)
+        Thu, 07 May 2020 13:09:11 -0700 (PDT)
 From:   Douglas Anderson <dianders@chromium.org>
 To:     jason.wessel@windriver.com, daniel.thompson@linaro.org,
         gregkh@linuxfoundation.org
@@ -54,10 +54,14 @@ Cc:     corbet@lwn.net, frowand.list@gmail.com, bjorn.andersson@linaro.org,
         sumit.garg@linaro.org, will@kernel.org, tglx@linutronix.de,
         agross@kernel.org, catalin.marinas@arm.com, bp@alien8.de,
         Douglas Anderson <dianders@chromium.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 08/12] kgdboc: Add kgdboc_earlycon to support early kgdb using boot consoles
-Date:   Thu,  7 May 2020 13:08:46 -0700
-Message-Id: <20200507130644.v4.8.I8fba5961bf452ab92350654aa61957f23ecf0100@changeid>
+        Andrew Morton <akpm@linux-foundation.org>,
+        Juergen Gross <jgross@suse.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 09/12] Documentation: kgdboc: Document new kgdboc_earlycon parameter
+Date:   Thu,  7 May 2020 13:08:47 -0700
+Message-Id: <20200507130644.v4.9.I7d5eb42c6180c831d47aef1af44d0b8be3fac559@changeid>
 X-Mailer: git-send-email 2.26.2.645.ge9eca65c58-goog
 In-Reply-To: <20200507200850.60646-1-dianders@chromium.org>
 References: <20200507200850.60646-1-dianders@chromium.org>
@@ -68,388 +72,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We want to enable kgdb to debug the early parts of the kernel.
-Unfortunately kgdb normally is a client of the tty API in the kernel
-and serial drivers don't register to the tty layer until fairly late
-in the boot process.
+The recent patch ("kgdboc: Add kgdboc_earlycon to support early kgdb
+using boot consoles") adds a new kernel command line parameter.
+Document it.
 
-Serial drivers do, however, commonly register a boot console.  Let's
-enable the kgdboc driver to work with boot consoles to provide early
-debugging.
-
-This change co-opts the existing read() function pointer that's part
-of "struct console".  It's assumed that if a boot console (with the
-flag CON_BOOT) has implemented read() that both the read() and write()
-function are polling functions.  That means they work without
-interrupts and read() will return immediately (with 0 bytes read) if
-there's nothing to read.  This should be a safe assumption since it
-appears that no current boot consoles implement read() right now and
-there seems no reason to do so unless they wanted to support
-"kgdboc_earlycon".
-
-The normal/expected way to make all this work is to use
-"kgdboc_earlycon" and "kgdboc" together.  You should point them both
-to the same physical serial connection.  At boot time, as the system
-transitions from the boot console to the normal console (and registers
-a tty), kgdb will switch over.
-
-One awkward part of all this, though, is that there can be a window
-where the boot console goes away and we can't quite transtion over to
-the main kgdboc that uses the tty layer.  There are two main problems:
-
-1. The act of registering the tty doesn't cause any call into kgdboc
-   so there is a window of time when the tty is there but kgdboc's
-   init code hasn't been called so we can't transition to it.
-
-2. On some serial drivers the normal console inits (and replaces the
-   boot console) quite early in the system.  Presumably these drivers
-   were coded up before earlycon worked as well as it does today and
-   probably they don't need to do this anymore, but it causes us
-   problems nontheless.
-
-Problem #1 is not too big of a deal somewhat due to the luck of probe
-ordering.  kgdboc is last in the tty/serial/Makefile so its probe gets
-right after all other tty devices.  It's not fun to rely on this, but
-it does work for the most part.
-
-Problem #2 is a big deal, but only for some serial drivers.  Other
-serial drivers end up registering the console (which gets rid of the
-boot console) and tty at nearly the same time.
-
-The way we'll deal with the window when the system has stopped using
-the boot console and the time when we're setup using the tty is to
-keep using the boot console.  This may sound surprising, but it has
-been found to work well in practice.  If it doesn't work, it shouldn't
-be too hard for a given serial driver to make it keep working.
-Specifically, it's expected that the read()/write() function provided
-in the boot console should be the same (or nearly the same) as the
-normal kgdb polling functions.  That means continuing to use them
-should work just fine.  To make things even more likely to work work
-we'll also trap the recently added exit() function in the boot console
-we're using and delay any calls to it until we're all done with the
-boot console.
-
-NOTE: there could be ways to use all this in weird / unexpected ways.
-If you do something like this, it's a bit of a buyer beware situation.
-Specifically:
-- If you specify only "kgdboc_earlycon" but not "kgdboc" then
-  (depending on your serial driver) things will probably work OK, but
-  you'll get a warning printed the first time you use kgdb after the
-  boot console is gone.  You'd only be able to do this, of course, if
-  the serial driver you're running atop provided an early boot console.
-- If your "kgdboc_earlycon" and "kgdboc" devices are not the same
-  device things should work OK, but it'll be your job to switch over
-  which device you're monitoring (including figuring out how to switch
-  over gdb in-flight if you're using it).
-
-When trying to enable "kgdboc_earlycon" it should be noted that the
-names that are registered through the boot console layer and the tty
-layer are not the same for the same port.  For example when debugging
-on one board I'd need to pass "kgdboc_earlycon=qcom_geni
-kgdboc=ttyMSM0" to enable things properly.  Since digging up the boot
-console name is a pain and there will rarely be more than one boot
-console enabled, you can provide the "kgdboc_earlycon" parameter
-without specifying the name of the boot console.  In this case we'll
-just pick the first boot that implements read() that we find.
-
-This new "kgdboc_earlycon" parameter should be contrasted to the
-existing "ekgdboc" parameter.  While both provide a way to debug very
-early, the usage and mechanisms are quite different.  Specifically
-"kgdboc_earlycon" is meant to be used in tandem with "kgdboc" and
-there is a transition from one to the other.  The "ekgdboc" parameter,
-on the other hand, replaces the "kgdboc" parameter.  It runs the same
-logic as the "kgdboc" parameter but just relies on your TTY driver
-being present super early.  The only known usage of the old "ekgdboc"
-parameter is documented as "ekgdboc=kbd earlyprintk=vga".  It should
-be noted that "kbd" has special treatment allowing it to init early as
-a tty device.
+Note that the patch adding the feature does some comparing/contrasting
+of "kgdboc_earlycon" vs. the existing "ekgdboc".  See that patch for
+more details, but briefly "ekgdboc" can be used _instead_ of "kgdboc"
+and just makes "kgdboc" do its normal initialization early (only works
+if your tty driver is already ready).  The new "kgdboc_earlycon" works
+in combination with "kgdboc" and is backed by boot consoles.
 
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
 Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Tested-by: Sumit Garg <sumit.garg@linaro.org>
+Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
 ---
-I have kept Greg's Reviewed-by and Sumit's Tested-by tags on this
-commit despite changes that aren't totally trivial.  Please yell if
-you disagree with this.  Reasons:
-- Greg's Reviewed-by seemed more an overall acknowledgment that the
-  series wasn't totally insane rather than a detailed review.  I don't
-  think the changes from v2 to v3 change that.  The changes from v3 to
-  v4 include a little extra craziness and I considered removing the
-  tag but I don't think it affects the overall concept so I kept it.
-- Sumit's Tested-by seemed useful as confirmation that someone else
-  made this work on a machine that wasn't mine.  I don't believe that
-  the changes from v2 to v4 should affect anything here.
-
-Also note that this incorporates ideas and a bit of code that Daniel
-posted on the list.  Daniel: I'll leave it up to you if you want to
-add a "Co-Developed-by" credit.
 
 Changes in v4:
-- Add comment about why we always return 0 in kgdboc_earlycon_init().
-- Major overhauls to commit message.
-- No more #ifdef CONFIG_KGDB_SERIAL_CONSOLE.
-- Now keep using bootcon even when the system stops.
-- Print "replacing" message before calling deinit().
-- earlycon should be static.
+- s/The the/The/
 
 Changes in v3:
-- Add deinit() to I/O ops to know a driver can be replaced.
-- Don't just neuter input, panic if earlycon vanishes.
-- No extra param to kgdb_register_io_module().
+- Added example in kgdb.rst
+- Removed unneeded sentence in kerenel-parameters doc.
 - Renamed earlycon_kgdboc to kgdboc_earlycon.
-- Simplify earlycon_kgdb deinit by using the deinit() function.
+- Suggest people use kgdboc_earlycon instead of ekgdboc.
 
-Changes in v2:
-- Assumes we have ("kgdb: Disable WARN_CONSOLE_UNLOCKED for all kgdb")
-- Fix kgdbts, tty/mips_ejtag_fdc, and usb/early/ehci-dbgp
+Changes in v2: None
 
- drivers/tty/serial/kgdboc.c | 136 ++++++++++++++++++++++++++++++++++++
- include/linux/kgdb.h        |   4 ++
- kernel/debug/debug_core.c   |  22 ++++--
- 3 files changed, 158 insertions(+), 4 deletions(-)
+ .../admin-guide/kernel-parameters.txt         | 20 ++++++++++++++++
+ Documentation/dev-tools/kgdb.rst              | 24 +++++++++++++++++++
+ 2 files changed, 44 insertions(+)
 
-diff --git a/drivers/tty/serial/kgdboc.c b/drivers/tty/serial/kgdboc.c
-index 2e9158fff976..047d3ef14e85 100644
---- a/drivers/tty/serial/kgdboc.c
-+++ b/drivers/tty/serial/kgdboc.c
-@@ -21,6 +21,7 @@
- #include <linux/input.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
-+#include <linux/serial_core.h>
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 7bc83f3d9bdf..2cbde9ea476d 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -1190,6 +1190,11 @@
+ 			This is designed to be used in conjunction with
+ 			the boot argument: earlyprintk=vga
  
- #define MAX_CONFIG_LEN		40
++			This parameter works in place of the kgdboc parameter
++			but can only be used if the backing tty is available
++			very early in the boot process. For early debugging
++			via a serial port see kgdboc_earlycon instead.
++
+ 	edd=		[EDD]
+ 			Format: {"off" | "on" | "skip[mbr]"}
  
-@@ -42,6 +43,10 @@ static int			kgdb_tty_line;
+@@ -2105,6 +2110,21 @@
+ 			 kms, kbd format: kms,kbd
+ 			 kms, kbd and serial format: kms,kbd,<ser_dev>[,baud]
  
- static struct platform_device *kgdboc_pdev;
++	kgdboc_earlycon=	[KGDB,HW]
++			If the boot console provides the ability to read
++			characters and can work in polling mode, you can use
++			this parameter to tell kgdb to use it as a backend
++			until the normal console is registered. Intended to
++			be used together with the kgdboc parameter which
++			specifies the normal console to transition to.
++
++			The name of the early console should be specified
++			as the value of this parameter. Note that the name of
++			the early console might be different than the tty
++			name passed to kgdboc. It's OK to leave the value
++			blank and the first boot console that implements
++			read() will be picked.
++
+ 	kgdbwait	[KGDB] Stop kernel execution and enter the
+ 			kernel debugger at the earliest opportunity.
  
-+static struct kgdb_io		kgdboc_earlycon_io_ops;
-+static struct console		*earlycon;
-+static int                      (*earlycon_orig_exit)(struct console *con);
-+
- #ifdef CONFIG_KDB_KEYBOARD
- static int kgdboc_reset_connect(struct input_handler *handler,
- 				struct input_dev *dev,
-@@ -137,6 +142,9 @@ static void kgdboc_unregister_kbd(void)
+diff --git a/Documentation/dev-tools/kgdb.rst b/Documentation/dev-tools/kgdb.rst
+index d38be58f872a..61293f40bc6e 100644
+--- a/Documentation/dev-tools/kgdb.rst
++++ b/Documentation/dev-tools/kgdb.rst
+@@ -274,6 +274,30 @@ don't like this are to hack gdb to send the :kbd:`SysRq-G` for you as well as
+ on the initial connect, or to use a debugger proxy that allows an
+ unmodified gdb to do the debugging.
  
- static void cleanup_kgdboc(void)
- {
-+	if (earlycon)
-+		kgdb_unregister_io_module(&kgdboc_earlycon_io_ops);
++Kernel parameter: ``kgdboc_earlycon``
++-------------------------------------
 +
- 	if (configured != 1)
- 		return;
++If you specify the kernel parameter ``kgdboc_earlycon`` and your serial
++driver registers a boot console that supports polling (doesn't need
++interrupts and implements a nonblocking read() function) kgdb will attempt
++to work using the boot console until it can transition to the regular
++tty driver specified by the ``kgdboc`` parameter.
++
++Normally there is only one boot console (especially that implements the
++read() function) so just adding ``kgdboc_earlycon`` on its own is
++sufficient to make this work. If you have more than one boot console you
++can add the boot console's name to differentiate. Note that names that
++are registered through the boot console layer and the tty layer are not
++the same for the same port.
++
++For instance, on one board to be explicit you might do::
++
++   kgdboc_earlycon=qcom_geni kgdboc=ttyMSM0
++
++If the only boot console on the device was "qcom_geni", you could simplify::
++
++   kgdboc_earlycon kgdboc=ttyMSM0
++
+ Kernel parameter: ``kgdbwait``
+ ------------------------------
  
-@@ -409,6 +417,134 @@ static int __init kgdboc_early_init(char *opt)
- 
- early_param("ekgdboc", kgdboc_early_init);
- 
-+static int kgdboc_earlycon_get_char(void)
-+{
-+	char c;
-+
-+	if (!earlycon->read(earlycon, &c, 1))
-+		return NO_POLL_CHAR;
-+
-+	return c;
-+}
-+
-+static void kgdboc_earlycon_put_char(u8 chr)
-+{
-+	earlycon->write(earlycon, &chr, 1);
-+}
-+
-+static void kgdboc_earlycon_pre_exp_handler(void)
-+{
-+	struct console *con;
-+	static bool already_warned;
-+
-+	if (already_warned)
-+		return;
-+
-+	/*
-+	 * When the first normal console comes up the kernel will take all
-+	 * the boot consoles out of the list.  Really, we should stop using
-+	 * the boot console when it does that but until a TTY is registered
-+	 * we have no other choice so we keep using it.  Since not all
-+	 * serial drivers might be OK with this, print a warning once per
-+	 * boot if we detect this case.
-+	 */
-+	for_each_console(con)
-+		if (con == earlycon)
-+			return;
-+
-+	already_warned = true;
-+	pr_warn("kgdboc_earlycon is still using bootconsole\n");
-+}
-+
-+static int kgdboc_earlycon_deferred_exit(struct console *con)
-+{
-+	/*
-+	 * If we get here it means the boot console is going away but we
-+	 * don't yet have a suitable replacement.  Don't pass through to
-+	 * the original exit routine.  We'll call it later in our deinit()
-+	 * function.  For now, restore the original exit() function pointer
-+	 * as a sentinal that we've hit this point.
-+	 */
-+	con->exit = earlycon_orig_exit;
-+
-+	return 0;
-+}
-+
-+static void kgdboc_earlycon_deinit(void)
-+{
-+	if (!earlycon)
-+		return;
-+
-+	if (earlycon->exit == kgdboc_earlycon_deferred_exit)
-+		/*
-+		 * kgdboc_earlycon is exiting but original boot console exit
-+		 * was never called (AKA kgdboc_earlycon_deferred_exit()
-+		 * didn't ever run).  Undo our trap.
-+		 */
-+		earlycon->exit = earlycon_orig_exit;
-+	else if (earlycon->exit)
-+		/*
-+		 * We skipped calling the exit() routine so we could try to
-+		 * keep using the boot console even after it went away.  We're
-+		 * finally done so call the function now.
-+		 */
-+		earlycon->exit(earlycon);
-+
-+	earlycon = NULL;
-+}
-+
-+static struct kgdb_io kgdboc_earlycon_io_ops = {
-+	.name			= "kgdboc_earlycon",
-+	.read_char		= kgdboc_earlycon_get_char,
-+	.write_char		= kgdboc_earlycon_put_char,
-+	.pre_exception		= kgdboc_earlycon_pre_exp_handler,
-+	.deinit			= kgdboc_earlycon_deinit,
-+	.is_console		= true,
-+};
-+
-+static int __init kgdboc_earlycon_init(char *opt)
-+{
-+	struct console *con;
-+
-+	kdb_init(KDB_INIT_EARLY);
-+
-+	/*
-+	 * Look for a matching console, or if the name was left blank just
-+	 * pick the first one we find.
-+	 */
-+	console_lock();
-+	for_each_console(con) {
-+		if (con->write && con->read &&
-+		    (con->flags & (CON_BOOT | CON_ENABLED)) &&
-+		    (!opt || !opt[0] || strcmp(con->name, opt) == 0))
-+			break;
-+	}
-+
-+	if (!con) {
-+		pr_info("Couldn't find kgdb earlycon\n");
-+		goto unlock;
-+	}
-+
-+	earlycon = con;
-+	pr_info("Going to register kgdb with earlycon '%s'\n", con->name);
-+	if (kgdb_register_io_module(&kgdboc_earlycon_io_ops) != 0) {
-+		earlycon = NULL;
-+		pr_info("Failed to register kgdb with earlycon\n");
-+	} else {
-+		/* Trap exit so we can keep earlycon longer if needed. */
-+		earlycon_orig_exit = con->exit;
-+		con->exit = kgdboc_earlycon_deferred_exit;
-+	}
-+
-+unlock:
-+	console_unlock();
-+
-+	/* Non-zero means malformed option so we always return zero */
-+	return 0;
-+}
-+
-+early_param("kgdboc_earlycon", kgdboc_earlycon_init);
-+
- module_init(init_kgdboc);
- module_exit(exit_kgdboc);
- module_param_call(kgdboc, param_set_kgdboc_var, param_get_string, &kps, 0644);
-diff --git a/include/linux/kgdb.h b/include/linux/kgdb.h
-index b072aeb1fd78..77a3c519478a 100644
---- a/include/linux/kgdb.h
-+++ b/include/linux/kgdb.h
-@@ -269,6 +269,9 @@ struct kgdb_arch {
-  * @write_char: Pointer to a function that will write one char.
-  * @flush: Pointer to a function that will flush any pending writes.
-  * @init: Pointer to a function that will initialize the device.
-+ * @deinit: Pointer to a function that will deinit the device. Implies that
-+ * this I/O driver is temporary and expects to be replaced. Called when
-+ * an I/O driver is replaced or explicitly unregistered.
-  * @pre_exception: Pointer to a function that will do any prep work for
-  * the I/O driver.
-  * @post_exception: Pointer to a function that will do any cleanup work
-@@ -282,6 +285,7 @@ struct kgdb_io {
- 	void			(*write_char) (u8);
- 	void			(*flush) (void);
- 	int			(*init) (void);
-+	void			(*deinit) (void);
- 	void			(*pre_exception) (void);
- 	void			(*post_exception) (void);
- 	int			is_console;
-diff --git a/kernel/debug/debug_core.c b/kernel/debug/debug_core.c
-index faf5bd4c34ee..3e7d96389525 100644
---- a/kernel/debug/debug_core.c
-+++ b/kernel/debug/debug_core.c
-@@ -1075,15 +1075,23 @@ EXPORT_SYMBOL_GPL(kgdb_schedule_breakpoint);
-  */
- int kgdb_register_io_module(struct kgdb_io *new_dbg_io_ops)
- {
-+	struct kgdb_io *old_dbg_io_ops;
- 	int err;
- 
- 	spin_lock(&kgdb_registration_lock);
- 
--	if (dbg_io_ops) {
--		spin_unlock(&kgdb_registration_lock);
-+	old_dbg_io_ops = dbg_io_ops;
-+	if (old_dbg_io_ops) {
-+		if (!old_dbg_io_ops->deinit) {
-+			spin_unlock(&kgdb_registration_lock);
- 
--		pr_err("Another I/O driver is already registered with KGDB\n");
--		return -EBUSY;
-+			pr_err("KGDB I/O driver %s can't replace %s.\n",
-+				new_dbg_io_ops->name, old_dbg_io_ops->name);
-+			return -EBUSY;
-+		}
-+		pr_info("Replacing I/O driver %s with %s\n",
-+			old_dbg_io_ops->name, new_dbg_io_ops->name);
-+		old_dbg_io_ops->deinit();
- 	}
- 
- 	if (new_dbg_io_ops->init) {
-@@ -1098,6 +1106,9 @@ int kgdb_register_io_module(struct kgdb_io *new_dbg_io_ops)
- 
- 	spin_unlock(&kgdb_registration_lock);
- 
-+	if (old_dbg_io_ops)
-+		return 0;
-+
- 	pr_info("Registered I/O driver %s\n", new_dbg_io_ops->name);
- 
- 	/* Arm KGDB now. */
-@@ -1134,6 +1145,9 @@ void kgdb_unregister_io_module(struct kgdb_io *old_dbg_io_ops)
- 
- 	spin_unlock(&kgdb_registration_lock);
- 
-+	if (old_dbg_io_ops->deinit)
-+		old_dbg_io_ops->deinit();
-+
- 	pr_info("Unregistered I/O driver %s, debugger disabled\n",
- 		old_dbg_io_ops->name);
- }
 -- 
 2.26.2.645.ge9eca65c58-goog
 
