@@ -2,148 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D12A1C9BC4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 22:09:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9DF61C9BDA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 22:11:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728742AbgEGUJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 16:09:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728685AbgEGUJR (ORCPT
+        id S1728383AbgEGULJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 16:11:09 -0400
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:49935 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726367AbgEGULI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 16:09:17 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2FD4C05BD09
-        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 13:09:16 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id e6so3123838pjt.4
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 13:09:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=bnBeK10KzsaeyDFO2398m9/Skswi+j6FYU/gKr10cks=;
-        b=GzcY94LdE0hSxHNb2Ie4O6ZGy7FUnmfrizHDOWnagUu/3DoRcnlASU4EtxJamQJf5n
-         YInSK43rqVxNgmqEJyLE1V8uoQuK711LrzZzl6Jy+DwiB3USC73zDvfsnly8sf5RE3MO
-         gJ0PUw1ZkSRig2z0wZbVSdLbZCRY0xEmG2+0A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=bnBeK10KzsaeyDFO2398m9/Skswi+j6FYU/gKr10cks=;
-        b=kIQ86yp9uJX/eSM40osqymwBNXjLFdwiHPpdHHKrynkwvDTdJ+9ibN/sQuu0ykonxV
-         qwEF5JjNaWKvKQ/Qqilwxu438PxQzX0rp0ppPlBLnFhKx+rsNkcZ1pa/W9ik1AgiYfmq
-         PrmMEoqAi+fm3IJ+td3pWXNqkxLUdLOGXoE48JqADSDyLalzDoLtBmErHpfhBSRri2Ts
-         o43GEMk436MDZJjVadIOb0rLv6uIbeEymXTO+woND5cuXs5QYSHKMIZo3NE3VSV5tW8D
-         rOo1XrWCe7F+1AhQsXNlWs88V8BAjbyACKTC4wv+WRMm1EI5yXF0oUZpd6WXj2jkZiSw
-         G/xg==
-X-Gm-Message-State: AGi0PuZVsTdBY4iMozKrV5ybrp9901/KrSCwRBuYxwoD1JdOQ7NSjf2u
-        Y23COxOLZbzVL5gv5r17BMsA2g==
-X-Google-Smtp-Source: APiQypKbwI7JzsjlGczS2mRvFdtUhbrL91Jdr9XjVjfScPm9ggnNRqUiKjXSnHdXQBa+ufgliHhpcg==
-X-Received: by 2002:a17:902:dc84:: with SMTP id n4mr14949596pld.281.1588882156436;
-        Thu, 07 May 2020 13:09:16 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:24fa:e766:52c9:e3b2])
-        by smtp.gmail.com with ESMTPSA id d203sm5547601pfd.79.2020.05.07.13.09.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2020 13:09:15 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     jason.wessel@windriver.com, daniel.thompson@linaro.org,
-        gregkh@linuxfoundation.org
-Cc:     corbet@lwn.net, frowand.list@gmail.com, bjorn.andersson@linaro.org,
-        linux-serial@vger.kernel.org, mingo@redhat.com, hpa@zytor.com,
-        jslaby@suse.com, kgdb-bugreport@lists.sourceforge.net,
-        sumit.garg@linaro.org, will@kernel.org, tglx@linutronix.de,
-        agross@kernel.org, catalin.marinas@arm.com, bp@alien8.de,
-        Douglas Anderson <dianders@chromium.org>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 12/12] serial: amba-pl011: Support kgdboc_earlycon
-Date:   Thu,  7 May 2020 13:08:50 -0700
-Message-Id: <20200507130644.v4.12.I8ee0811f0e0816dd8bfe7f2f5540b3dba074fae8@changeid>
-X-Mailer: git-send-email 2.26.2.645.ge9eca65c58-goog
-In-Reply-To: <20200507200850.60646-1-dianders@chromium.org>
-References: <20200507200850.60646-1-dianders@chromium.org>
+        Thu, 7 May 2020 16:11:08 -0400
+X-Originating-IP: 93.29.109.196
+Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
+        (Authenticated sender: paul.kocialkowski@bootlin.com)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 9AAF360002;
+        Thu,  7 May 2020 20:11:03 +0000 (UTC)
+Date:   Thu, 7 May 2020 22:11:03 +0200
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     Emil Velikov <emil.l.velikov@gmail.com>
+Cc:     ML dri-devel <dri-devel@lists.freedesktop.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: [PATCH v6 2/3] drm: Add support for the LogiCVC display
+ controller
+Message-ID: <20200507201103.GH2422122@aptenodytes>
+References: <20200430192746.1866325-1-paul.kocialkowski@bootlin.com>
+ <20200430192746.1866325-3-paul.kocialkowski@bootlin.com>
+ <CACvgo51mRse3su4exyTqXYJRPPc0VqaX9+tRyKUuBPtm5Q+6XQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="GBDnBH7+ZvLx8QD4"
+Content-Disposition: inline
+In-Reply-To: <CACvgo51mRse3su4exyTqXYJRPPc0VqaX9+tRyKUuBPtm5Q+6XQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sumit Garg <sumit.garg@linaro.org>
 
-Implement the read() function in the early console driver. With
-recently added kgdboc_earlycon feature, this allows you to use kgdb
-to debug fairly early into the system boot.
+--GBDnBH7+ZvLx8QD4
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-We only bother implementing this if polling is enabled since kgdb can't
-be enabled without that.
+Hi Emil,
 
-Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
+Thanks for the review!
 
-Changes in v4: None
-Changes in v3:
-- ("serial: amba-pl011: Support kgdboc_earlycon") pulled into my v3.
-- Renamed earlycon_kgdboc to kgdboc_earlycon.
+On Mon 04 May 20, 14:28, Emil Velikov wrote:
+> Just had a casual quick look for custom KMS properties, since new
+> drivers made that mistake in the past.
+> Thanks for not including any o/
 
-Changes in v2: None
+Yeah I made sure not to include any, I know it easily gets very problematic=
+ and
+creates disparity between drivers while needing to be kept alive even when a
+standard way arises due to the no API breakage policy.
 
- drivers/tty/serial/amba-pl011.c | 32 ++++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+The not-for-merge patch that I've sent does introduce some for the colorkey,
+and that's why they are marked as such :)
 
-diff --git a/drivers/tty/serial/amba-pl011.c b/drivers/tty/serial/amba-pl011.c
-index 2296bb0f9578..c010f639298d 100644
---- a/drivers/tty/serial/amba-pl011.c
-+++ b/drivers/tty/serial/amba-pl011.c
-@@ -2435,6 +2435,37 @@ static void pl011_early_write(struct console *con, const char *s, unsigned n)
- 	uart_console_write(&dev->port, s, n, pl011_putc);
- }
- 
-+#ifdef CONFIG_CONSOLE_POLL
-+static int pl011_getc(struct uart_port *port)
-+{
-+	if (readl(port->membase + UART01x_FR) & UART01x_FR_RXFE)
-+		return NO_POLL_CHAR;
-+
-+	if (port->iotype == UPIO_MEM32)
-+		return readl(port->membase + UART01x_DR);
-+	else
-+		return readb(port->membase + UART01x_DR);
-+}
-+
-+static int pl011_early_read(struct console *con, char *s, unsigned int n)
-+{
-+	struct earlycon_device *dev = con->data;
-+	int ch, num_read = 0;
-+
-+	while (num_read < n) {
-+		ch = pl011_getc(&dev->port);
-+		if (ch == NO_POLL_CHAR)
-+			break;
-+
-+		s[num_read++] = ch;
-+	}
-+
-+	return num_read;
-+}
-+#else
-+#define pl011_early_read NULL
-+#endif
-+
- /*
-  * On non-ACPI systems, earlycon is enabled by specifying
-  * "earlycon=pl011,<address>" on the kernel command line.
-@@ -2454,6 +2485,7 @@ static int __init pl011_early_console_setup(struct earlycon_device *device,
- 		return -ENODEV;
- 
- 	device->con->write = pl011_early_write;
-+	device->con->read = pl011_early_read;
- 
- 	return 0;
- }
--- 
-2.26.2.645.ge9eca65c58-goog
+> I made a couple of trivial suggestions - if you agree, feel free to
+> keep them as follow-up patches.
+>=20
+> On Thu, 30 Apr 2020 at 20:28, Paul Kocialkowski
+> <paul.kocialkowski@bootlin.com> wrote:
+>=20
+> > +int logicvc_of_property_parse_u32(struct device_node *of_node,
+> > +                                 const char *name, u32 *target)
+> > +{
+> > +       struct logicvc_of_property *property;
+> > +       const char *string;
+> > +       u32 value;
+> > +       int ret;
+> > +
+> > +       property =3D logicvc_of_property_lookup(name);
+> > +       if (!property)
+> > +               return -EINVAL;
+> > +
+> One could have the logicvc_of_properties[] entries indexed with the
+> logicvc_of_property_parse_{u32,bool} caller, using that instead of the
+> name string.
 
+Do I understand correctly that you're suggesting passing each entry's
+struct logicvc_of_property pointer to the function?
+
+I went for strings to make the code explicit and easy to read so I'd really
+like to keep it that way and avoid passing things like
+&logicvc_of_properties[4] or an index integer.
+
+> Aside: I suspect the array (as most other arrays in this patch) should
+> be annotated const, correct?
+
+Ah yes that's a good point, thanks!
+
+>=20
+> > +       if (property->range[0] || property->range[1])
+> > +               if (value < property->range[0] || value > property->ran=
+ge[1])
+> Combine the two ifs?
+
+Definitely :)
+
+Cheers,
+
+Paul
+
+--=20
+Paul Kocialkowski, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
+
+--GBDnBH7+ZvLx8QD4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl60a1cACgkQ3cLmz3+f
+v9E6Vgf8CXAsmdWf2+5+7oCdYtuBoURivQuOltkFzZfR1KVdwskBr3MzQylFa+BC
+BaWUbsS4uTtbg4FtS3cI90/tkzRtMSZ56a7qjKWYeXCDzLBtaLmC5AEIIwlvb/Wt
+sUvIZj6EWrVdQo5I3fy0d9vsBtpOjbxAvpxYH911fQYsuv7pHUl3wAOXtUHxpEi9
+jf8GpBYOe+D0kMmWPoCx4/39rhbj9o5pfDW4tQFhLRdo+I9KnvoF4m1C7ciYqkNd
+zP88gw8Deq4HpwnQsuLaYfUz9ep2aPoS6/GHhfIyfkhN0yCLeEoeuu7vMzBs5CV8
+SofL8WIK/ckDaOpdHqLj8wQeV89m3w==
+=ybwB
+-----END PGP SIGNATURE-----
+
+--GBDnBH7+ZvLx8QD4--
