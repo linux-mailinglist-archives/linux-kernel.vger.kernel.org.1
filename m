@@ -2,37 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B90A61C9AC6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:18:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72AA31C9AC8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:18:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728583AbgEGTSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 15:18:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41298 "EHLO mail.kernel.org"
+        id S1728690AbgEGTSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 15:18:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41400 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726367AbgEGTSb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 15:18:31 -0400
+        id S1726367AbgEGTSg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 15:18:36 -0400
 Received: from embeddedor (unknown [189.207.59.248])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 07EDE208E4;
-        Thu,  7 May 2020 19:18:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 409EA2063A;
+        Thu,  7 May 2020 19:18:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588879110;
-        bh=7P91oAr2DUrWWPTylD+XYbTnS9ORls0mGBJzML58PV4=;
+        s=default; t=1588879115;
+        bh=PmaRvWKL0WGLgfjQ1uvdyt1NSJQfqavoNxrgKWSaeQk=;
         h=Date:From:To:Cc:Subject:From;
-        b=c04KiV21Vc4SC/41DebL9qH4wDdGit2GFHfK1vpNiwY/OzMO+6nmPbo4lG4hx2EBH
-         9irmKFKonvNBXnd8b0YJaaNxcXMA67PjYTPEKMH1l/f83HIq4/sx1VNTWMB9ZS2Evi
-         6oVpN0NWaQ+6DtOV0dtQNOcRE1p01eeC3O5QZD+Y=
-Date:   Thu, 7 May 2020 14:22:56 -0500
+        b=C3Kelkzg4jGnKUJAti5PEFqSI042uFT80iLvvdSVCw3XhrJby/ZYUfBPVkFl5kZlj
+         ynKQnuPOAzSq7MPWh8KjZ6E8mjgM5nmLYoaVewBuUbUNNggTlkSJgbVx4HLzEUowUk
+         syh9hvRxFT7UkK8LnoTwCP6EFjf79wiDIAWi54Ao=
+Date:   Thu, 7 May 2020 14:23:02 -0500
 From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>
-Cc:     sound-open-firmware@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: SOF: Replace zero-length array with flexible-array
-Message-ID: <20200507192256.GA16375@embeddedor>
+To:     "David S. Miller" <davem@davemloft.net>
+Cc:     sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] sparc64: Replace zero-length array with flexible-array
+Message-ID: <20200507192302.GA16402@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -79,43 +75,58 @@ This issue was found with the help of Coccinelle.
 
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- sound/soc/sof/probe.h |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/sparc/kernel/cpumap.c |    2 +-
+ arch/sparc/kernel/ds.c     |    8 ++++----
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/sof/probe.h b/sound/soc/sof/probe.h
-index 45daa5552834..250c4817f637 100644
---- a/sound/soc/sof/probe.h
-+++ b/sound/soc/sof/probe.h
-@@ -36,7 +36,7 @@ struct sof_probe_point_desc {
- struct sof_ipc_probe_dma_add_params {
- 	struct sof_ipc_cmd_hdr hdr;
- 	unsigned int num_elems;
--	struct sof_probe_dma dma[0];
-+	struct sof_probe_dma dma[];
- } __packed;
+diff --git a/arch/sparc/kernel/cpumap.c b/arch/sparc/kernel/cpumap.c
+index 1cb62bfeaa1f..f07ea88a83af 100644
+--- a/arch/sparc/kernel/cpumap.c
++++ b/arch/sparc/kernel/cpumap.c
+@@ -50,7 +50,7 @@ struct cpuinfo_tree {
  
- struct sof_ipc_probe_info_params {
-@@ -51,19 +51,19 @@ struct sof_ipc_probe_info_params {
- struct sof_ipc_probe_dma_remove_params {
- 	struct sof_ipc_cmd_hdr hdr;
- 	unsigned int num_elems;
--	unsigned int stream_tag[0];
-+	unsigned int stream_tag[];
- } __packed;
+ 	/* Offsets into nodes[] for each level of the tree */
+ 	struct cpuinfo_level level[CPUINFO_LVL_MAX];
+-	struct cpuinfo_node  nodes[0];
++	struct cpuinfo_node  nodes[];
+ };
  
- struct sof_ipc_probe_point_add_params {
- 	struct sof_ipc_cmd_hdr hdr;
- 	unsigned int num_elems;
--	struct sof_probe_point_desc desc[0];
-+	struct sof_probe_point_desc desc[];
- } __packed;
  
- struct sof_ipc_probe_point_remove_params {
- 	struct sof_ipc_cmd_hdr hdr;
- 	unsigned int num_elems;
--	unsigned int buffer_id[0];
-+	unsigned int buffer_id[];
- } __packed;
+diff --git a/arch/sparc/kernel/ds.c b/arch/sparc/kernel/ds.c
+index 75232cbd58bf..522e5b51050c 100644
+--- a/arch/sparc/kernel/ds.c
++++ b/arch/sparc/kernel/ds.c
+@@ -87,7 +87,7 @@ struct ds_reg_req {
+ 	__u64			handle;
+ 	__u16			major;
+ 	__u16			minor;
+-	char			svc_id[0];
++	char			svc_id[];
+ };
  
- int sof_ipc_probe_init(struct snd_sof_dev *sdev,
+ struct ds_reg_ack {
+@@ -701,12 +701,12 @@ struct ds_var_hdr {
+ 
+ struct ds_var_set_msg {
+ 	struct ds_var_hdr		hdr;
+-	char				name_and_value[0];
++	char				name_and_value[];
+ };
+ 
+ struct ds_var_delete_msg {
+ 	struct ds_var_hdr		hdr;
+-	char				name[0];
++	char				name[];
+ };
+ 
+ struct ds_var_resp {
+@@ -989,7 +989,7 @@ struct ds_queue_entry {
+ 	struct ds_info			*dp;
+ 	int				req_len;
+ 	int				__pad;
+-	u64				req[0];
++	u64				req[];
+ };
+ 
+ static void process_ds_work(void)
 
