@@ -2,97 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9548B1C87B6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 13:12:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A345F1C8537
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 10:58:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726690AbgEGLKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 07:10:43 -0400
-Received: from mail1480c50.megamailservers.eu ([91.136.14.80]:52920 "EHLO
-        mail118c50.megamailservers.eu" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725809AbgEGLKn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 07:10:43 -0400
-X-Greylist: delayed 5387 seconds by postgrey-1.27 at vger.kernel.org; Thu, 07 May 2020 07:10:40 EDT
-X-Authenticated-User: 017623705678@o2online.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megamailservers.eu;
-        s=maildub; t=1588841847;
-        bh=9AVDDx9V2gYEDXeTNlt74d5XCNEQnpqZSN3VPF09Hgo=;
-        h=To:From:Subject:Cc:Date:From;
-        b=DFiwmbOa3bgHNh4E9inRazcp5ciZtrCxazNafTMLDonUPgSCmOd9v9TPzF+s77SnE
-         y4i96EzAKd2AClwwSb+xMAfynZ1ywVT05uhToWTlr1vJsvRrWmH+A8C7gKtmJwUBgD
-         Vi1KqGd1mhmSi/2iIxmC2efbA2yxdzcQYrrDPmTo=
-Feedback-ID: 017623705678@o2
-Received: from [192.168.2.2] (ipservice-092-210-125-153.092.210.pools.vodafone-ip.de [92.210.125.153])
-        (authenticated bits=0)
-        by mail118c50.megamailservers.eu (8.14.9/8.13.1) with ESMTP id 0478vNmH019869;
-        Thu, 7 May 2020 08:57:25 +0000
-To:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
-        gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-From:   Tobias Baumann <017623705678@o2online.de>
-Subject: RTL8723BS driver doesn't work for,me but I can help testing
-Cc:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Message-ID: <bcefba5b-107c-716b-bb60-5b4b2476894b@o2online.de>
-Date:   Thu, 7 May 2020 10:57:22 +0200
+        id S1726074AbgEGI60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 04:58:26 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:3883 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725809AbgEGI60 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 04:58:26 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id BF247D8A7D0CF12B64F2;
+        Thu,  7 May 2020 16:58:23 +0800 (CST)
+Received: from [127.0.0.1] (10.166.213.7) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Thu, 7 May 2020
+ 16:58:18 +0800
+Subject: Re: [PATCH] MIPS: Lasat: Remove dead code in lasat.h
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+CC:     <tglx@linutronix.de>, <linux-mips@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200506134258.32634-1-yanaijie@huawei.com>
+ <20200507083857.GD8924@alpha.franken.de>
+From:   Jason Yan <yanaijie@huawei.com>
+Message-ID: <9cd87ccb-64a1-bc5b-748f-fcd0f9ddb317@huawei.com>
+Date:   Thu, 7 May 2020 16:58:18 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ Thunderbird/68.4.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Content-Language: de-DE
-X-Antivirus: AVG (VPS 200506-0, 06.05.2020), Outbound message
-X-Antivirus-Status: Clean
-X-CTCH-RefID: str=0001.0A782F27.5EB3CD45.009D,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0
-X-CTCH-VOD: Unknown
-X-CTCH-Spam: Unknown
-X-CTCH-Score: 0.000
-X-CTCH-Rules: 
-X-CTCH-Flags: 0
-X-CTCH-ScoreCust: 0.000
-X-CSC:  0
-X-CHA:  v=2.3 cv=KaGsTjQD c=1 sm=1 tr=0 a=hSNHuiTHMbSMD4yx1hjzQA==:117
-        a=hSNHuiTHMbSMD4yx1hjzQA==:17 a=IkcTkHD0fZMA:10 a=oCcaPWc0AAAA:8
-        a=xa8cPLTrDijPg6maogsA:9 a=QEXdDO2ut3YA:10 a=pHzHmUro8NiASowvMSCR:22
-        a=nt3jZW36AmriUCFCBwmW:22
+In-Reply-To: <20200507083857.GD8924@alpha.franken.de>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.166.213.7]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Community
-
-I was referred to you by Martin. I have an older Android TV box that 
-runs for over 3 years with Armbian Linux (Debian Jessie Headless Kernel 
-3.10.99). I'm looking forward to the new kernels and I'm glad that older 
-hardware is still supported.
-Together with Oleg(balbes150) and Martin(xdarklight) I am testing the 
-new kernel 5.x for ARM ( Amlogic S812 / Meson8m2 ) . Martin has written 
-a patch for the SDIO controller in the last days so that also Wifi 
-module and MMC are recognized. I could now successfully load the driver 
-module RTLWIFI from the kernel. But unfortunately the card is only 
-listed on the desktop as "not ready" or in the terminal (iwlist) as "no 
-scan result". In the dmesg/lsmod RTLWIFI->RTL8723bs is loaded and the 
-module is loaded with version v4.3.5.5_12290.20140916_BTCOEX20140507-4E40 .=
 
 
+ÔÚ 2020/5/7 16:38, Thomas Bogendoerfer Ð´µÀ:
+> On Wed, May 06, 2020 at 09:42:58PM +0800, Jason Yan wrote:
+>> This code has been marked dead for more than 10 years. Seems no need to
+>> keep it now.
+>>
+>> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+>> ---
+>>   arch/mips/include/asm/lasat/lasat.h | 5 -----
+>>   1 file changed, 5 deletions(-)
+> 
+> I'll send a patch shortly to remove lasat completly. Therefore I'm
+> not going to apply this cleanup patch.
+> 
 
-I would like to ask you to check the driver because even in kernel 
-3.10.99 a newer version (v4.3.16_13854.20150410_BTCOEX20150119-5844) is 
-loaded and also at github are hard kernels ( version 2017 Kernel 4.9>) 
-and ap17 and thirdyouth (v5.2.17.1_26955.20180307_COEX20180201-6f52). 
-More recent ones can also be found - these have already been 
-successfully tested with Debian 10. i hope that this may solve the 
-problem with my Linux box.
+OK, thanks for letting me know this infomation.
 
-I would appreciate feedback on this request or information about 
-debugging . My Linux box is also available for testing purposes
+Jason
 
-Kindly
-Tobias Baumann (RaptorSDS)
-
-
-
--- 
-Diese E-Mail wurde von AVG auf Viren gepr=C3=BCft.
-http://www.avg.com
+> Thomas.
+> 
 
