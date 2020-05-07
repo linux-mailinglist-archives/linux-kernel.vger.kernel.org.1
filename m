@@ -2,125 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF44D1C9BE6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 22:15:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50D151C9BF6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 22:16:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727889AbgEGUPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 16:15:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54716 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726320AbgEGUPr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 16:15:47 -0400
-Received: from localhost (mobile-166-175-190-200.mycingular.net [166.175.190.200])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2F613216FD;
-        Thu,  7 May 2020 20:15:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588882546;
-        bh=Nn0Un6aRpakEtuYOCqVgYcTF+qUJFwkYBRemF7H3LDc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=HsihGvs9E1JHhScXJwwRqnIX05f4Gdr8v3nBGOynUPJrvFOAzHEhc1KMZokZz1hY/
-         4VrhsP5Yu/fkBU7y44yj8nwf5D+4WsA8KLiL4yP9EprqkrlAQZzsh2GQCU9lYe5Lkb
-         5hvvOlgjmqu9I9o4lT3nTIMjrjaZQoGGyAKguDqQ=
-Date:   Thu, 7 May 2020 15:15:44 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: Replace zero-length array with flexible-array
-Message-ID: <20200507201544.GA23633@bjorn-Precision-5520>
+        id S1728660AbgEGUQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 16:16:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728633AbgEGUQP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 16:16:15 -0400
+Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FC79C05BD09
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 13:16:15 -0700 (PDT)
+Received: by mail-ua1-x944.google.com with SMTP id 36so2349674uaf.9
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 13:16:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UQE2Pqn7s0Ks9OIhXkN/lBOad3DHjY4wcPRoAi0MgWs=;
+        b=WacTyQsgLEEU7u0AtpRsYbxT75pb0I+6Dw5GqlzMzlyoGiEgKCaIIHSxj1lTkPvQAU
+         O6b7zHfAh/vDRiIeL5bu2q6GRMeNCHryJ2/FsGV34iuplmWcYt9st/jc7aBEXeYucXcQ
+         R1GrTAIJ/ptWsJcgVQeQZS3xbP4uAwlr7D1MM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UQE2Pqn7s0Ks9OIhXkN/lBOad3DHjY4wcPRoAi0MgWs=;
+        b=j4Qazl3bbJRAKfheDCt5H1BHow903FEjCDbDG73CaJ99SaAYCUwM98jp+ynydcYWmt
+         Al3HMm1r+awCTh03Rxozf2PThoSbXP5p9CvcItCNmNxZMXB1nsgFZqSVNeo3aruoCx5d
+         2ra9Y1xJ03NEm95/NMsnV57lJswCHafimyBCO2DgHqb/gvkJF4gm/aGGzDQwMO3NejV2
+         XXLvzFjhqP8fO2ql8x+oG1A1U+bWC4mfVAaunAHBziulkgpdKnnY4e5lyqoIRpf+ikex
+         JQLbIV1tLaxUmhoS+KdlMWyMe5qXPn1BNbWjxmh1YLUL/x0RIYYR0PW67qMqXOe3ihU8
+         OvXQ==
+X-Gm-Message-State: AGi0Pub3GrUaHPVFP+6VTk/P118XadxOXSJqu0MJPSef17YpHdz6NZb1
+        XV+9E2UUE4rhf/s1UklnFNx4gx9uM+Y=
+X-Google-Smtp-Source: APiQypLT9ZFcLBRdYnQFDKe+L0QjlbRA1pbWU8OO9jr2ZcDNbSsgtjcGJ4HMVPNaxLEbyyyIGpLOCg==
+X-Received: by 2002:ab0:298f:: with SMTP id u15mr13584144uap.138.1588882573757;
+        Thu, 07 May 2020 13:16:13 -0700 (PDT)
+Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com. [209.85.217.53])
+        by smtp.gmail.com with ESMTPSA id x124sm3658130vkb.34.2020.05.07.13.16.12
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 May 2020 13:16:12 -0700 (PDT)
+Received: by mail-vs1-f53.google.com with SMTP id z1so4219776vsn.11
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 13:16:12 -0700 (PDT)
+X-Received: by 2002:a67:c40c:: with SMTP id c12mr14014022vsk.106.1588882572099;
+ Thu, 07 May 2020 13:16:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200507190544.GA15633@embeddedor>
+References: <20200430095819.1.Id37f71c69eb21747b9d9e2c7c242be130814b362@changeid>
+ <20200501114943.ioetuxe24gi27bll@holly.lan> <20200501133202.GA2402281@wychelm.lan>
+ <CAD=FV=WKKCkr1va9S+ygL7XuOvSm12-qw4dCSo=FBtyXx4JvhQ@mail.gmail.com> <20200504115339.ndi3n4evklzidvb5@holly.lan>
+In-Reply-To: <20200504115339.ndi3n4evklzidvb5@holly.lan>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 7 May 2020 13:16:00 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=VHUWs9X548=gmpn60-ywrM7OUOKdt-ngBdyyFgTfa3yw@mail.gmail.com>
+Message-ID: <CAD=FV=VHUWs9X548=gmpn60-ywrM7OUOKdt-ngBdyyFgTfa3yw@mail.gmail.com>
+Subject: Re: [PATCH] kgdboc: Be a bit more robust about handling earlycon leaving
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     Jason Wessel <jason.wessel@windriver.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>,
+        kgdb-bugreport@lists.sourceforge.net,
+        LKML <linux-kernel@vger.kernel.org>, linux-serial@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 07, 2020 at 02:05:44PM -0500, Gustavo A. R. Silva wrote:
-> The current codebase makes use of the zero-length array language
-> extension to the C90 standard, but the preferred mechanism to declare
-> variable-length types such as these ones is a flexible array member[1][2],
-> introduced in C99:
-> 
-> struct foo {
->         int stuff;
->         struct boo array[];
-> };
-> 
-> By making use of the mechanism above, we will get a compiler warning
-> in case the flexible array does not occur last in the structure, which
-> will help us prevent some kind of undefined behavior bugs from being
-> inadvertently introduced[3] to the codebase from now on.
-> 
-> Also, notice that, dynamic memory allocations won't be affected by
-> this change:
-> 
-> "Flexible array members have incomplete type, and so the sizeof operator
-> may not be applied. As a quirk of the original implementation of
-> zero-length arrays, sizeof evaluates to zero."[1]
-> 
-> sizeof(flexible-array-member) triggers a warning because flexible array
-> members have incomplete type[1]. There are some instances of code in
-> which the sizeof operator is being incorrectly/erroneously applied to
-> zero-length arrays and the result is zero. Such instances may be hiding
-> some bugs. So, this work (flexible-array member conversions) will also
-> help to get completely rid of those sorts of issues.
-> 
-> This issue was found with the help of Coccinelle.
-> 
-> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-> [2] https://github.com/KSPP/linux/issues/21
-> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Hi,
 
-Applied to pci/misc for v5.8, thanks!
+On Mon, May 4, 2020 at 4:53 AM Daniel Thompson
+<daniel.thompson@linaro.org> wrote:
+>
+> On Fri, May 01, 2020 at 10:36:14AM -0700, Doug Anderson wrote:
+> > Hi,
+> >
+> > On Fri, May 1, 2020 at 6:32 AM Daniel Thompson
+> > <daniel.thompson@linaro.org> wrote:
+> > >
+> > > On Fri, May 01, 2020 at 12:49:43PM +0100, Daniel Thompson wrote:
+> > > > On Thu, Apr 30, 2020 at 09:59:09AM -0700, Douglas Anderson wrote:
+> > > > > The original implementation of kgdboc_earlycon included a comment
+> > > > > about how it was impossible to get notified about the boot console
+> > > > > going away without making changes to the Linux core.  Since folks
+> > > > > often don't want to change the Linux core for kgdb's purposes, the
+> > > > > kgdboc_earlycon implementation did a bit of polling to figure out when
+> > > > > the boot console went away.
+> > > > >
+> > > > > It turns out, though, that it is possible to get notified about the
+> > > > > boot console going away.  The solution is either clever or a hack
+> > > > > depending on your viewpoint.  ...or, perhaps, a clever hack.  All we
+> > > > > need to do is head-patch the "exit" routine of the boot console.  We
+> > > > > know that "struct console" must be writable because it has a "next"
+> > > > > pointer in it, so we can just put our own exit routine in, do our
+> > > > > stuff, and then call back to the original.
+> > > >
+> > > > I think I'm in the hack camp on this one!
+> > > >
+> > > >
+> > > > > This works great to get notified about the boot console going away.
+> > > > > The (slight) problem is that in the context of the boot console's exit
+> > > > > routine we can't call tty_find_polling_driver().
+> > > >
+> > > > I presume this is something to do with the tty_mutex?
+> > > > > We solve this by
+> > > > > kicking off some work on the system_wq when we get notified and this
+> > > > > works pretty well.
+> > > >
+> > > > There are some problems with the workqueue approach.
+> > >
+> > > ... so did a couple of experiments to avoid the workqueue.
+> > >
+> > > It occured to me that, since we have interfered with deinit() then the
+> > > console hasn't actually been uninitialized meaning we could still use it.
+> > > This does exposes us to risks similar to keep_bootcon but in exchange
+> > > there is no window where kgdb is broken (and no need to panic).
+> > >
+> > > My prototype is minimal but I did wonder about ripping out all the
+> > > code to defend against removal of the earlycon and simply keep the
+> > > earlycon around until a new kgdbio handler is installed.
+> >
+> > It took me a little while, but I finally see what you're saying.
+> > You're saying that we keep calling into the boot console even though
+> > it's no longer in the list of consoles.  Then we temporarily disable
+> > the boot console's exit routine until kgdb_earlycon() is done.  (side
+> > note: the exit routine was recently added and probably most consoles
+> > don't use it).
+>
+> Certainly none of the devices with a read() method have an exit().
+>
+>
+> > OK, that doesn't seem totally insane.  It actually works OK for you?
+>
+> I tested on qemu/x86-64 (8250) and qemu/arm64 (pl011). In both cases it
+> works well.
+>
+>
+> > It's probably at least worth a warning in the log if we detect that
+> > we're using the boot console and it's not in the console list anymore.
+> > Then if kgdb starts misbehaving someone might have a clue.
+>
+> Yes, I'll add that.
+>
+>
+> > If your solution is OK we might also want to remove the call to
+> > cleanup_earlycon_if_invalid() in configure_kgdboc() too.
+>
+> That's what I thought, yes. Although it might be best to handle that
+> by ripping it out of the original patch set.
 
-I assume this takes care of everything in drivers/pci/, right?  I'd
-like to do them all at once, so if there are others, send another
-patch and I'll squash them.  I took a quick look but didn't see any.
+I've incorporated ideas from my patch and yours into a v4 patchset of
+the original series.  Note that I didn't include your earlycon
+deferral patchset [1] in my series which means it'll need to be
+rebased.  Hopefully this is OK since I think the rebase will be easy,
+but yell if you want an extra pair of eyes on it.
 
-> ---
->  drivers/pci/pci.c   |    2 +-
->  include/linux/pci.h |    4 ++--
->  2 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index 595fcf59843f..bb78f580814e 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -1578,7 +1578,7 @@ EXPORT_SYMBOL(pci_restore_state);
->  
->  struct pci_saved_state {
->  	u32 config_space[16];
-> -	struct pci_cap_saved_data cap[0];
-> +	struct pci_cap_saved_data cap[];
->  };
->  
->  /**
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index 83ce1cdf5676..0453ee458ab1 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -279,7 +279,7 @@ struct pci_cap_saved_data {
->  	u16		cap_nr;
->  	bool		cap_extended;
->  	unsigned int	size;
-> -	u32		data[0];
-> +	u32		data[];
->  };
->  
->  struct pci_cap_saved_state {
-> @@ -532,7 +532,7 @@ struct pci_host_bridge {
->  			resource_size_t start,
->  			resource_size_t size,
->  			resource_size_t align);
-> -	unsigned long	private[0] ____cacheline_aligned;
-> +	unsigned long	private[] ____cacheline_aligned;
->  };
->  
->  #define	to_pci_host_bridge(n) container_of(n, struct pci_host_bridge, dev)
-> 
+[1] https://lore.kernel.org/r/20200430161741.1832050-1-daniel.thompson@linaro.org
+
+
+-Doug
