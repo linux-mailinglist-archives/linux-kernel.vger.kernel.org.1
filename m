@@ -2,91 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E3901C9D50
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 23:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48D801C9D54
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 23:35:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726736AbgEGVe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 17:34:28 -0400
-Received: from foss.arm.com ([217.140.110.172]:39620 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726320AbgEGVe2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 17:34:28 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 78E1B1FB;
-        Thu,  7 May 2020 14:34:27 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 61AE93F68F;
-        Thu,  7 May 2020 14:34:19 -0700 (PDT)
-References: <20200507181012.29791-1-qperret@google.com>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Quentin Perret <qperret@google.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, sudeep.holla@arm.com, gregkh@linuxfoundation.org,
-        rafael@kernel.org, viresh.kumar@linaro.org, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, mcgrof@kernel.org, keescook@chromium.org,
-        yzaikin@google.com, fweisbec@gmail.com, tkjos@google.com,
-        kernel-team@android.com, Ionela Voinescu <ionela.voinescu@arm.com>
-Subject: Re: [PATCH 00/14] Modularize schedutil
-In-reply-to: <20200507181012.29791-1-qperret@google.com>
-Date:   Thu, 07 May 2020 22:34:17 +0100
-Message-ID: <jhjftcbtoo6.mognet@arm.com>
+        id S1726811AbgEGVfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 17:35:11 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:47851 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726320AbgEGVfL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 17:35:11 -0400
+Received: from localhost.localdomain ([149.172.19.189]) by
+ mrelayeu.kundenserver.de (mreue109 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1M2fDl-1jYidz2tHb-004D2T; Thu, 07 May 2020 23:34:40 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Christine Caulfield <ccaulfie@redhat.com>,
+        David Teigland <teigland@redhat.com>,
+        Steve Whitehouse <swhiteho@redhat.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        clang-built-linux@googlegroups.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Richard Fontana <rfontana@redhat.com>,
+        cluster-devel@redhat.com, linux-kernel@vger.kernel.org
+Subject: [PATCH] dlm: remove BUG() before panic()
+Date:   Thu,  7 May 2020 23:34:28 +0200
+Message-Id: <20200507213438.1886005-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:MWsD4C2gbHQCzPSYpVZ0sRh+EhEaHN4oMDZVkk1sis4OPLEClxS
+ 9xPRJqaQrjFl8IZ2Wv+Imy6LKHFafuWPi7xy8fl6ubV2+zFiAgJ6IxDiVxaK4716fxwdvqh
+ M5rEYTS93N64nWAN6gDJVXmzdZYNsNmMvQlR/FTzVXrvI8h/2iIzH/7IgDXLXgUGItn6TXu
+ GD9+FlIaYKZw9eXdw7bPg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:zlN+6/l7oGM=:Dtq4zd5iUWJg9Z78qsfioZ
+ 8RK3MHA0rTEYRPIyN7utMpOZAgFAhbZRr2wZmJ6rZD7wYBQeVP6lJjJYNP0Y4pA8ziyluG+OA
+ 0emP49TXl7VaRidDwOBf3AIz1rvtgUEUmlqDcx7VPKsC49CK2ZxZq9BQYMIN9lKnSIPCe72y6
+ LamOjF/74tCb2buLKP/rHpDHeatvFoo9xLhujqR7Nf2OyzkMsOdKLv/UfsDOTQGPuJJdVL+Bb
+ punQYzmOEevxUCFpxvXnGSnKpqP6L8Z4S5riXlgoNOPgH/EegygOfE2jwHXlT7K2Noa+evqJ/
+ TQn71PQJM5umwRSI+Df7ztizmEMrmNpbfSAQEjIxhNq42CeSWmWA1VI9uXMnguoveazaJ4aYT
+ qFonyxDdXAdZkeYS3j3WLQZbUjNf9Pr71lF4fRkTLUvBM/qisoljjIa5TCb6hYEp1zjy/93rZ
+ feBlVofAdNBshcUd3Z5/DLhZ0xJ8T3Pn+e2LBbv9xvv0aNTOx/7OVp/SFkosOQw12GOvCaN59
+ 8Lo6dSS+pK2H61RZulEtmOm6AItFAZKtPWi0OowNBIm13PffuCKmNhiD0aZt9Urdz7oPmRmAy
+ t2PubAtayKfOzzrQjMLDVkZ9PzcMX1CohkcyKWJYuZ81BL3ajX5rnaIjlXyOuYo0IU7MERGhl
+ dE+XXVaHj2cVQCMdASZIfIrWy7xM49XBBn4igMM96xL8ai9SJ0Rn1yS055OHKCBzc2AiP8nsG
+ krVjtRPYFE/MBMvZeMC+tBjymko3ZImGZv/Rrn8kGdIuJUFFzEe8UpdekyHRZpbgZURXtsNKm
+ fkZkKttRwrfOHBxEfx593W9WShzlz+bMYciYGVzrKlPqxjMlI8=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Building a kernel with clang sometimes fails with an objtool error in dlm:
 
-(+Ionela)
+fs/dlm/lock.o: warning: objtool: revert_lock_pc()+0xbd: can't find jump dest instruction at .text+0xd7fc
 
-Hi Quentin,
+The problem is that BUG() never returns and the compiler knows
+that anything after it is unreachable, however the panic still
+emits some code that does not get fully eliminated.
 
-Apologies for sidetracking this a bit.
+Having both BUG() and panic() is really pointless as the BUG()
+kills the current process and the subsequent panic() never hits.
+In most cases, we probably don't really want either and should
+replace the DLM_ASSERT() statements with WARN_ON(), as has
+been done for some of them.
 
-On 07/05/20 19:09, Quentin Perret wrote:
-> Android is trying very hard to use a single kernel image (commonly
-> called Generic Kernel Image, or GKI), closely aligned with mainline, to
-> run on all Android devices regardless of the vendor.
->
-> The GKI project intends to not only improve the status quo for Android
-> users directly (less fragmentation simplifies updatability), but also
-> to benefit upstream by forcing all vendors to agree on one common
-> kernel, that we push hard to be aligned with mainline.
->
-> One challenge to implement GKI is to avoid bloating the kernel by
-> compiling too many things in, especially given that different devices
-> need different things. As such, anything that can be turned into a
-> module helps GKI, by offering an alternative to having that component
-> built-in. This is true for pretty much anything that can be made
-> modular, including drivers as well as other kernel components, such as
-> CPUFreq governors.
->
-> Indeed, in practice, Android devices often ship with only one CPUFreq
-> governor enabled, and don't require any other that would simply waste
-> memory for no benefits. All CPUFreq governors can already be built as
-> modules with one notable exception: schedutil. Though popular in
-> Android, some devices do not use schedutil, which is why it would be
-> preferable to not have it unconditionally built in GKI. This series is
-> an attempt to solve this problem, by making schedutil tristate.
->
+Remove the BUG() here so the user at least sees the panic message
+and we can reliably build randconfig kernels.
 
-I'm curious; why would some Android device not want to roll with schedutil?
+Fixes: e7fd41792fc0 ("[DLM] The core of the DLM for GFS2/CLVM")
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+Cc: clang-built-linux@googlegroups.com
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ fs/dlm/dlm_internal.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-When it comes to dynamic policies (i.e. forget performance / powersave, and
-put userspace in a corner), I'd be willing to take a stand and say you
-should only really be using schedutil nowadays - alignment with the
-scheduler, uclamp, yadda yadda.
+diff --git a/fs/dlm/dlm_internal.h b/fs/dlm/dlm_internal.h
+index 416d9de35679..4311d01b02a8 100644
+--- a/fs/dlm/dlm_internal.h
++++ b/fs/dlm/dlm_internal.h
+@@ -97,7 +97,6 @@ do { \
+                __LINE__, __FILE__, #x, jiffies); \
+     {do} \
+     printk("\n"); \
+-    BUG(); \
+     panic("DLM:  Record message above and reboot.\n"); \
+   } \
+ }
+-- 
+2.26.0
 
-AFAIA the only schedutil-related quirk we oughta fix for arm/arm64 is that
-arch_scale_freq_invariant() thingie, and FWIW I'm hoping to get something
-regarding this out sometime soonish. After that, I'd actually want to make
-schedutil the default governor for arm/arm64.
-
-I'm not opiniated on the modularization, but if you can, could you please
-share some more details as to why schedutil cannot fulfill its role of holy
-messiah of governors for GKI?
