@@ -2,169 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E854E1C87E5
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 13:18:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 941C31C88AB
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 13:44:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726930AbgEGLRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 07:17:34 -0400
-Received: from foss.arm.com ([217.140.110.172]:56716 "EHLO foss.arm.com"
+        id S1726975AbgEGLnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 07:43:39 -0400
+Received: from elvis.franken.de ([193.175.24.41]:43600 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725893AbgEGLRd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 07:17:33 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 758961FB;
-        Thu,  7 May 2020 04:17:32 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.26.168])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 87C063F68F;
-        Thu,  7 May 2020 04:17:30 -0700 (PDT)
-Date:   Thu, 7 May 2020 12:17:27 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64/cpuinfo: Move HWCAP name arrays alongside their
- bit definitions
-Message-ID: <20200507111727.GB5726@C02TD0UTHF1T.local>
-References: <1588845390-2032-1-git-send-email-anshuman.khandual@arm.com>
+        id S1726579AbgEGLnW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 07:43:22 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jWevq-00081e-05; Thu, 07 May 2020 13:43:14 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 89780C0409; Thu,  7 May 2020 13:17:35 +0200 (CEST)
+Date:   Thu, 7 May 2020 13:17:35 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Sergey.Semin@baikalelectronics.ru
+Cc:     Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Alexander Lobakin <alobakin@dlink.ru>,
+        Huacai Chen <chenhc@lemote.com>,
+        Cedric Hombourger <Cedric_Hombourger@mentor.com>,
+        =?iso-8859-1?Q?Ren=E9?= van Dorst <opensource@vdorst.com>,
+        Ard Biesheuvel <ardb@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 07/20] mips: Add MIPS Warrior P5600 support
+Message-ID: <20200507111735.GF11616@alpha.franken.de>
+References: <20200306124807.3596F80307C2@mail.baikalelectronics.ru>
+ <20200506174238.15385-1-Sergey.Semin@baikalelectronics.ru>
+ <20200506174238.15385-8-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1588845390-2032-1-git-send-email-anshuman.khandual@arm.com>
+In-Reply-To: <20200506174238.15385-8-Sergey.Semin@baikalelectronics.ru>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 07, 2020 at 03:26:30PM +0530, Anshuman Khandual wrote:
-> All HWCAP name arrays (i.e hwcap_str, compat_hwcap_str, compat_hwcap2_str)
-> that are scanned for /proc/cpuinfo output are detached from their bit fild
-> definitions making it difficult to corelate. This is also bit problematic
-> because during /proc/cpuinfo dump these arrays get traversed sequentially
-> assuming that they reflect and match HWCAP bit sequence, to test various
-> features for a given CPU.
-
-Making this relationship explicit is certianly a good idea!
-
-> This moves all HWCAP name arrays near their bit definitions. But first it
-> defines all missing COMPAT_HWCAP_XXX that are present in the name string.
-> Also defines all COMPAT_KERNEL_HWCAP macros to be used for the HWCAP name
-> string indexing.
-
-I think we don't need all the indirection here, and can simplify things
-a bit. Comments on that below.
-
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Ard Biesheuvel <ardb@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> 
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
-> In longer term we might want to generate these HWCAP macros with scripting,
-> and this is a step in that direction. This applies on 5.7-rc4.
-
-Having attempted to build scripting for this in the past, it turns out
-to be a bigger job than it seems initially, and I agree it'd make sense
-to take a change like this without scripting as a first step.
-
->  arch/arm64/include/asm/hwcap.h | 132 +++++++++++++++++++++++++++++++++
->  arch/arm64/kernel/cpuinfo.c    |  90 ----------------------
->  2 files changed, 132 insertions(+), 90 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/hwcap.h b/arch/arm64/include/asm/hwcap.h
-> index 0f00265248b5..cb99b5f75e5d 100644
-> --- a/arch/arm64/include/asm/hwcap.h
-> +++ b/arch/arm64/include/asm/hwcap.h
-> @@ -8,18 +8,27 @@
->  #include <uapi/asm/hwcap.h>
->  #include <asm/cpufeature.h>
+On Wed, May 06, 2020 at 08:42:25PM +0300, Sergey.Semin@baikalelectronics.ru wrote:
 >  
-> +#define COMPAT_HWCAP_SWP	(1 << 0)
->  #define COMPAT_HWCAP_HALF	(1 << 1)
->  #define COMPAT_HWCAP_THUMB	(1 << 2)
-> +#define COMPAT_HWCAP_26BIT	(1 << 3)
->  #define COMPAT_HWCAP_FAST_MULT	(1 << 4)
-> +#define COMPAT_HWCAP_FPA	(1 << 5)
->  #define COMPAT_HWCAP_VFP	(1 << 6)
->  #define COMPAT_HWCAP_EDSP	(1 << 7)
-> +#define COMPAT_HWCAP_JAVA	(1 << 8)
-> +#define COMPAT_HWCAP_IWMMXT	(1 << 9)
-> +#define COMPAT_HWCAP_CRUNCH	(1 << 10)
-> +#define COMPAT_HWCAP_THUMBEE	(1 << 11)
->  #define COMPAT_HWCAP_NEON	(1 << 12)
->  #define COMPAT_HWCAP_VFPv3	(1 << 13)
-> +#define COMPAT_HWCAP_VFPV3D16	(1 << 14)
->  #define COMPAT_HWCAP_TLS	(1 << 15)
->  #define COMPAT_HWCAP_VFPv4	(1 << 16)
->  #define COMPAT_HWCAP_IDIVA	(1 << 17)
->  #define COMPAT_HWCAP_IDIVT	(1 << 18)
->  #define COMPAT_HWCAP_IDIV	(COMPAT_HWCAP_IDIVA|COMPAT_HWCAP_IDIVT)
-> +#define COMPAT_HWCAP_VFPD32	(1 << 19)
->  #define COMPAT_HWCAP_LPAE	(1 << 20)
->  #define COMPAT_HWCAP_EVTSTRM	(1 << 21)
+> +config CPU_P5600
+> +	bool "MIPS Warrior P5600"
+> +	depends on SYS_HAS_CPU_P5600
+> +	select CPU_HAS_PREFETCH
+> +	select CPU_SUPPORTS_32BIT_KERNEL
+> +	select CPU_SUPPORTS_HIGHMEM
+> +	select CPU_SUPPORTS_MSA
+> +	select CPU_SUPPORTS_UNCACHED_ACCELERATED
+> +	select CPU_SUPPORTS_CPUFREQ
+> +	select CPU_MIPSR2_IRQ_VI
+> +	select CPU_MIPSR2_IRQ_EI
+> +	select HAVE_KVM
+> +	select MIPS_O32_FP64_SUPPORT
+> +	help
+> +	  Choose this option to build a kernel for MIPS Warrior P5600 CPU.
+> +	  It's based on MIPS32r5 ISA with XPA, EVA, dual/quad issue exec pipes,
+> +	  MMU with two-levels TLB, UCA, MSA, MDU core level features and system
+> +	  level features like up to six P5600 calculation cores, CM2 with L2
+> +	  cache, IOCU/IOMMU (though might be unused depending on the system-
+> +	  specific IP core configuration), GIC, CPC, virtualisation module,
+> +	  eJTAG and PDtrace.
+> +
+>  config CPU_R3000
+>  	bool "R3000"
+>  	depends on SYS_HAS_CPU_R3000
+> @@ -1841,7 +1863,8 @@ endchoice
+>  config CPU_MIPS32_3_5_FEATURES
+>  	bool "MIPS32 Release 3.5 Features"
+>  	depends on SYS_HAS_CPU_MIPS32_R3_5
+> -	depends on CPU_MIPS32_R2 || CPU_MIPS32_R5 || CPU_MIPS32_R6
+> +	depends on CPU_MIPS32_R2 || CPU_MIPS32_R5 || CPU_MIPS32_R6 || \
+> +		   CPU_P5600
+>  	help
+>  	  Choose this option to build a kernel for release 2 or later of the
+>  	  MIPS32 architecture including features from the 3.5 release such as
+> @@ -1861,7 +1884,7 @@ config CPU_MIPS32_3_5_EVA
+>  config CPU_MIPS32_R5_FEATURES
+>  	bool "MIPS32 Release 5 Features"
+>  	depends on SYS_HAS_CPU_MIPS32_R5
+> -	depends on CPU_MIPS32_R2 || CPU_MIPS32_R5
+> +	depends on CPU_MIPS32_R2 || CPU_MIPS32_R5 || CPU_P5600
+>  	help
+>  	  Choose this option to build a kernel for release 2 or later of the
+>  	  MIPS32 architecture including features from release 5 such as
+> @@ -2016,6 +2039,10 @@ config SYS_HAS_CPU_MIPS64_R6
+>  	bool
+>  	select ARCH_HAS_SYNC_DMA_FOR_CPU if DMA_NONCOHERENT
 >  
-> @@ -95,6 +104,129 @@
->  #define KERNEL_HWCAP_DGH		__khwcap2_feature(DGH)
->  #define KERNEL_HWCAP_RNG		__khwcap2_feature(RNG)
->  
-> +#ifdef CONFIG_COMPAT
-> +#define __compat_khwcap_feature(x)	const_ilog2(COMPAT_HWCAP_ ## x)
+> +config SYS_HAS_CPU_P5600
+> +	bool
+> +	select ARCH_HAS_SYNC_DMA_FOR_CPU if DMA_NONCOHERENT
+> +
 
-For now I reckon this can be:
+P5600 is CPU_MIPS_R5 so can't you select it here and drop all the || CPU_5600
+above/below ?
 
-#define COMPAT_KERNEL_HWCAP(x)		const_ilog2(COMPAT_HWCAP_##x)
+Thomas.
 
-> +#define COMPAT_KERNEL_HWCAP_SWP		__compat_khwcap_feature(SWP)
-> +#define COMPAT_KERNEL_HWCAP_HALF	__compat_khwcap_feature(HALF)
-> +#define COMPAT_KERNEL_HWCAP_THUMB	__compat_khwcap_feature(THUMB)
-> +#define COMPAT_KERNEL_HWCAP_26BIT	__compat_khwcap_feature(26BIT)
-> +#define COMPAT_KERNEL_HWCAP_FAST_MULT	__compat_khwcap_feature(FAST_MULT)
-> +#define COMPAT_KERNEL_HWCAP_FPA		__compat_khwcap_feature(FPA)
-> +#define COMPAT_KERNEL_HWCAP_VFP		__compat_khwcap_feature(VFP)
-> +#define COMPAT_KERNEL_HWCAP_EDSP	__compat_khwcap_feature(EDSP)
-> +#define COMPAT_KERNEL_HWCAP_JAVA	__compat_khwcap_feature(JAVA)
-> +#define COMPAT_KERNEL_HWCAP_IWMMXT	__compat_khwcap_feature(IWMMXT)
-> +#define COMPAT_KERNEL_HWCAP_CRUNCH	__compat_khwcap_feature(CRUNCH)
-> +#define COMPAT_KERNEL_HWCAP_THUMBEE	__compat_khwcap_feature(THUMBEE)
-> +#define COMPAT_KERNEL_HWCAP_NEON	__compat_khwcap_feature(NEON)
-> +#define COMPAT_KERNEL_HWCAP_VFPv3	__compat_khwcap_feature(VFPv3)
-> +#define COMPAT_KERNEL_HWCAP_VFPV3D16	__compat_khwcap_feature(VFPV3D16)
-> +#define COMPAT_KERNEL_HWCAP_TLS		__compat_khwcap_feature(TLS)
-> +#define COMPAT_KERNEL_HWCAP_VFPv4	__compat_khwcap_feature(VFPv4)
-> +#define COMPAT_KERNEL_HWCAP_IDIVA	__compat_khwcap_feature(IDIVA)
-> +#define COMPAT_KERNEL_HWCAP_IDIVT	__compat_khwcap_feature(IDIVT)
-> +#define COMPAT_KERNEL_HWCAP_VFPD32	__compat_khwcap_feature(VFPD32)
-> +#define COMPAT_KERNEL_HWCAP_LPAE	__compat_khwcap_feature(LPAE)
-> +#define COMPAT_KERNEL_HWCAP_EVTSTRM	__compat_khwcap_feature(EVTSTRM)
-
-... so we don't need any of the above, as e.g. we can just do:
-
-	[COMPAT_KERNEL_HWCAP(SWP)] = "swp",
-
-... at the points of usage.
-
-> +#define __compat_khwcap2_feature(x)	const_ilog2(COMPAT_HWCAP2_ ## x)
-> +#define COMPAT_KERNEL_HWCAP_AES		__compat_khwcap2_feature(AES)
-> +#define COMPAT_KERNEL_HWCAP_PMULL	__compat_khwcap2_feature(PMULL)
-> +#define COMPAT_KERNEL_HWCAP_SHA1	__compat_khwcap2_feature(SHA1)
-> +#define COMPAT_KERNEL_HWCAP_SHA2	__compat_khwcap2_feature(SHA2)
-> +#define COMPAT_KERNEL_HWCAP_CRC32	__compat_khwcap2_feature(CRC32)
-
-Likewise here with:
-
-#define COMPAT_KERNEL_HWCAP2(x)		const_ilog2(COMPAT_HWCAP2_##x)
-
-With that, and the usage in the arrays changed to match:
-
-Acked-by: Mark Rutland <mark.rutland@arm.com>
-
-Thanks,
-Mark.
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
