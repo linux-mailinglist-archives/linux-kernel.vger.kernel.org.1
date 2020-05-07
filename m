@@ -2,255 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06C4E1C81EC
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 07:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDC321C8217
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 08:06:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726471AbgEGF4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 01:56:19 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:38802 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725763AbgEGF4S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 01:56:18 -0400
-Received: by mail-il1-f199.google.com with SMTP id u11so4876557ilg.5
-        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 22:56:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=wVHnZBdfyelp7ItkqjoOIAyBI5rLEJAUDuhp3+059VA=;
-        b=O3LONMDiaJb81j1GOFbZoUXoS4GkSgLGhlipx4d+CrxRw6W6H9bSxhoI1JaFUMiiUj
-         ut4kDQxA/VTdYB7nVF8u0kwNhIeRGCA3WD2CM2I5NYP/ksZheq+XPkkJpklXmCR68iDM
-         2nT+9IDdEphqZKEa02cfMYeaRP4yjr3isoYa1+TX1ueHxE808ZiBSprar4bmse2xDJue
-         E+MNZXP8ou4c+S1ExU6Bu3y9YHE0zJegfa+YuZWPeUMkgWgq5Qm3gPStlkyHeiw+EwZ4
-         NRuQ/x+a746JouknmPxp1ILlSBKYsU/y9GbxP+KmtAUEukEzMjEYpFpGIKTUbHZArgTs
-         aTjw==
-X-Gm-Message-State: AGi0PuZ/gRCb3Oy4b00pkwCkRgFHmM+4SLVsMXnUiEOlZ+E5cIyTEUFx
-        p11sOqABU7Kc6lzisP2vdDIOOpftaeV8PdAI/M1yTT0hYiM3
-X-Google-Smtp-Source: APiQypK1PKVWCXB8ym1KWjuZ5ba9lxFRPHatCEW8G1ugYFktrt07MRiR36gTTuHl5v7jOLypKjmqCBWPAGtMV+QXY/0ZdgA+aqpH
+        id S1726900AbgEGGGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 02:06:16 -0400
+Received: from mail-eopbgr70054.outbound.protection.outlook.com ([40.107.7.54]:22990
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726437AbgEGGGO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 02:06:14 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WDuOy+Hmyord/LFx2zYRP6o7faMTMlwNprPZuTA6idlbpY02RlL6BS8R4Pssc9pUvY1tpGZStgFb9TfxOXH/eCM+lLPc4hIB0dxBbFR2esTdIMPmVuYg2cEWKfL69O6hcvvidsoFz+UBCy4ZWEanr0L2ilPoaBlSWD5/eoF6LhG2x/POoZFoNHWk7zLDcbUMMKdLVn1tC9WHsQGuYVtyM9PVwGEnf6nwFj0nyyQX/Osx5ceG+jrGLtZLRKu+kjqgGeIIqhwYq6vQkH5EmcXvKR64jX242f7HxtAo82ML7sSFvhWUrj+9YKmnuWEAOsIFALRRxcoCNLpRWU3/D+61rg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1prrc16a94EzT4h1S/bMdetWsqziTsJTIbLo39etDw8=;
+ b=CqpMsWZ4VhbFaVvJXfv2XRqivnv16jcI8iB2skAIpTvQ/NiEDe6OwrPPryXPt8Dldq9Bm09yKv562gManO1LiD7S9M8kwo5cx1IIZwzFsSdUh+7dwtWWBsJdL6eJZgKFZYqD8zsrHVeBL/Kt+CqlQU1pdiN12LeQ5pz4t3034smDlCEnPG/CmwiOjmERbuqtPYmDs2GtWooQkqDeHZax92KgWECGcpo0j/mcP1zewdGHc8g/f4RpKYA/TMIjnyqG5vICkHVWdP2s3dp2zWwwc8Aws4w9M/sXIN0yuVKCeVAW8MdnX5dn8E92FP8pFGAko5kZz1gKbNfECdaP9s7DdA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1prrc16a94EzT4h1S/bMdetWsqziTsJTIbLo39etDw8=;
+ b=CgU3rcE/uTeV8AkN28sRL35lB70dBP548gUzQu3R8qDMit8EG0KoJSlAU8eYdLC+qbKj3qBnVWLm+GJ0D4A3RjA3FbauxmFV2+kw4Mu+5JR0iXY9vKnOZmJMDKPU8vFXfm7SZluQxdd3c2xVPK1If/Z3eGoyhyOcz1+8XCJrYHw=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB6PR0402MB2710.eurprd04.prod.outlook.com (2603:10a6:4:95::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.19; Thu, 7 May
+ 2020 06:06:06 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::d17b:d767:19c3:b871]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::d17b:d767:19c3:b871%6]) with mapi id 15.20.2979.028; Thu, 7 May 2020
+ 06:06:06 +0000
+From:   peng.fan@nxp.com
+To:     shawnguo@kernel.org, s.hauer@pengutronix.de,
+        leonard.crestez@nxp.com, abel.vesa@nxp.com, aisheng.dong@nxp.com
+Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        Anson.Huang@nxp.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH V3 07/10] clk: imx: add mux ops for i.MX8M composite clk
+Date:   Thu,  7 May 2020 13:56:16 +0800
+Message-Id: <1588830979-11586-8-git-send-email-peng.fan@nxp.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1588830979-11586-1-git-send-email-peng.fan@nxp.com>
+References: <1588830979-11586-1-git-send-email-peng.fan@nxp.com>
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR01CA0147.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:8f::27) To DB6PR0402MB2760.eurprd04.prod.outlook.com
+ (2603:10a6:4:a1::14)
 MIME-Version: 1.0
-X-Received: by 2002:a92:dd09:: with SMTP id n9mr13471871ilm.132.1588830976495;
- Wed, 06 May 2020 22:56:16 -0700 (PDT)
-Date:   Wed, 06 May 2020 22:56:16 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f6592a05a5088904@google.com>
-Subject: memory leak in inet6_create (2)
-From:   syzbot <syzbot+db84db800df5aa102826@syzkaller.appspotmail.com>
-To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
-        kuba@kernel.org, kuznet@ms2.inr.ac.ru,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com,
-        yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.66) by SG2PR01CA0147.apcprd01.prod.exchangelabs.com (2603:1096:4:8f::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.2979.28 via Frontend Transport; Thu, 7 May 2020 06:06:02 +0000
+X-Mailer: git-send-email 2.7.4
+X-Originating-IP: [119.31.174.66]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: af0f595e-8b5d-4e31-0d26-08d7f24cbaad
+X-MS-TrafficTypeDiagnostic: DB6PR0402MB2710:|DB6PR0402MB2710:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB6PR0402MB2710888B87D717D19152A8A388A50@DB6PR0402MB2710.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-Forefront-PRVS: 03965EFC76
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: El+GF6Nynnqdq9YKWnEzoh6UXyjTtlciaojVWPkqT0MFp4uH299Cs6BfFkfGv/DSQcVsZAhZSu1QbAI4wAtB0WcRHL08jwYt9xMG6pxvK4tYRxQdLMzgR4ahd262LFBbk49Zv5IN92khPLgprHnyJ4XsGpyBjvh0asO4u2tPNIApHox5t3Dv3lRyp92WhKkfDrxMLFAF/tQ+agw0qLXO9kRj1Jz1FjTltH8j5YYZtgiOxq9KpGLAVyAATihU6YeTAzgptWiVP4h3wVPRhxJzREbT76lhQr/ASf6MFrtE0LHEOqtvh9jN3qydQO2C+0AAWIDFqUBaH6d0c96k6h1LMgoToxRb4HEaQboiFPjWPzdGUVVlR4zktPw7dOHnJ0P/26vPJ90PNqNnhhnfGH8QIm0sbIhtLuxWNYUx4R2Mw1WQ2/+fWwlxLGJj9N++q7E8vHpXIPLGMFPnXifCEVAEmZCRx04jOSlHO60F9m5oCSP+rtwv7Dn10ZrNPoACUlVQ+dJdTIBU2LEIBfzcI2QGzkfJ0ATPcehSFwMPUUBtmz0nAf66HTwOeliOhWwcT527
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(376002)(346002)(136003)(39860400002)(396003)(33430700001)(316002)(33440700001)(478600001)(2616005)(16526019)(69590400007)(6666004)(4326008)(66476007)(66946007)(86362001)(2906002)(66556008)(956004)(6486002)(52116002)(36756003)(8676002)(26005)(6506007)(8936002)(5660300002)(186003)(6512007)(9686003)(83320400001)(83280400001)(83300400001)(83310400001)(83290400001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: YBhUH0Bwn7J/HUGRXa8x472yU+tSy51BbAhCibP4GKKIYksjzDMFJABccfgPwn3EM4rJATABZg8vS0VIeSgq0vOk75Yz+aPnpEQWQzEIdwbdC5f52YTkf88qSfXzgDsS9V13/aUbkndxpAIVaxeaqBJ10XaAHUjjJr5MqDUih7zzjWjAWVZhPvqgm8p0/EXZNvh9Yap7cQDLOymS/in5dfHAwEufABHLb/08Y8AlOSBPibwlic//kmw8hfaTaRugS9hkiDyhZi6pqo2DnWoqbkYgOwffv9n1TntElqn96vF5ZoecEjagGFbCHGZGb7j2YeEMZna35IWDBpPOKw2IRTmFkMnEC08lZSiIvftTKHtJ8VtQ94gZhFV34KcvH9D/t6NxdYOdrZv1dae0Wgk4V9fwGAg8E+nf6Ba9IGsHCL7W1rF5dqVFEWsnRkfZ05Vmr917KG24L0zmdw8SLoKwMRhG47WtiuY+/MaBTBtj+4ba9XnOymDl3JMaLwtF1RZfo8xoKKuMtNYpDGSPTVcIUFdNZbiFvKzO8SnQcnGNrdaVXBKG2RArQ6fzs8NnJyvF6/C3YlvxCNKK/KFy54mMCaDYIsSosLzUWMrExBdVApKuVbksZXpd37Y21s38LI1k1SV+9xXz1LFYvDGhGfXqrqStC9JJSChGw8tlXx/oUbTvvkWMJmj5ZmqP0jkvSw6RokB6GE2WUq+9yA6gJdhTZz5heOK5zKMLkwFR2/LJiko1cQw5/pMB2iizdMB7qEauP2JCEg5bZGfstZidWoTc68sf6InqKT9DJAH/TL216XM=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: af0f595e-8b5d-4e31-0d26-08d7f24cbaad
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 May 2020 06:06:06.2112
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: sgJyFu6H/7IfkUrpYUiy4gbA138dSjEE1NIfdtIZL/DtMxEzejDFOGKQFGCxtjwx9ttiB8q8v5KOsBcHigdUUQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0402MB2710
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: Peng Fan <peng.fan@nxp.com>
 
-syzbot found the following crash on:
+The CORE/BUS root slice has following design, simplied graph:
+The difference is core not have pre_div block.
+A composite core/bus clk has 8 inputs for mux to select, saying clk[0-7].
 
-HEAD commit:    f66ed1eb Merge tag 'iomap-5.7-fixes-1' of git://git.kernel..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12cf3c4c100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=36dc1e5ad3e26c41
-dashboard link: https://syzkaller.appspot.com/bug?extid=db84db800df5aa102826
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1269d24c100000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16d01c4c100000
+It support target(smart) interface and normal interface. Target interface
+is exported for programmer easy to configure ccm root. Normal interface
+is also exported, but we not use it in our driver, because it will
+introduce more complexity compared with target interface.
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+db84db800df5aa102826@syzkaller.appspotmail.com
+The normal interface simplified as below:
+            SEL_A  GA
+            +--+  +-+
+            |  +->+ +------+
+CLK[0-7]--->+  |  +-+      |
+       |    |  |      +----v---+    +----+
+       |    +--+      |pre_diva+---->    |  +---------+
+       |              +--------+    |mux +--+post_div |
+       |    +--+      |pre_divb+--->+    |  +---------+
+       |    |  |      +----^---+    +----+
+       +--->+  |  +-+      |
+            |  +->+ +------+
+            +--+  +-+
+            SEL_B  GB
 
-BUG: memory leak
-unreferenced object 0xffff888110ef1800 (size 1840):
-  comm "syz-executor783", pid 8417, jiffies 4294954395 (age 25.940s)
-  hex dump (first 32 bytes):
-    00 00 00 00 7f 00 00 06 15 14 f5 21 4e 20 22 dc  ...........!N ".
-    0a 00 0b 40 00 00 00 00 00 00 00 00 00 00 00 00  ...@............
-  backtrace:
-    [<000000007986323e>] sk_prot_alloc+0x3c/0x170 net/core/sock.c:1598
-    [<000000002fc61b2a>] sk_alloc+0x30/0x330 net/core/sock.c:1658
-    [<000000000d7242e5>] inet6_create net/ipv6/af_inet6.c:181 [inline]
-    [<000000000d7242e5>] inet6_create+0x112/0x4d0 net/ipv6/af_inet6.c:108
-    [<00000000ca79ca9d>] __sock_create+0x14a/0x220 net/socket.c:1433
-    [<000000007253d628>] sock_create net/socket.c:1484 [inline]
-    [<000000007253d628>] __sys_socket+0x60/0x110 net/socket.c:1526
-    [<00000000503be95b>] __do_sys_socket net/socket.c:1535 [inline]
-    [<00000000503be95b>] __se_sys_socket net/socket.c:1533 [inline]
-    [<00000000503be95b>] __x64_sys_socket+0x1a/0x20 net/socket.c:1533
-    [<0000000042ce79c0>] do_syscall_64+0x6e/0x220 arch/x86/entry/common.c:295
-    [<00000000b1aeae16>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+The mux in the upper pic is not the target interface MUX, target
+interface MUX is hiding SEL_A and SEL_B. When you choose clk[0-7],
+you are actually writing SEL_A or SEL_B depends on the internal
+counter which will also control the internal "mux".
 
-BUG: memory leak
-unreferenced object 0xffff888110eaf620 (size 32):
-  comm "syz-executor783", pid 8417, jiffies 4294954395 (age 25.940s)
-  hex dump (first 32 bytes):
-    02 00 00 00 00 00 00 00 c0 d8 f0 10 81 88 ff ff  ................
-    01 00 00 00 03 00 00 00 33 00 00 00 00 00 00 00  ........3.......
-  backtrace:
-    [<000000000d2c6b3e>] kmalloc include/linux/slab.h:555 [inline]
-    [<000000000d2c6b3e>] kzalloc include/linux/slab.h:669 [inline]
-    [<000000000d2c6b3e>] selinux_sk_alloc_security+0x43/0xa0 security/selinux/hooks.c:5126
-    [<00000000d4591378>] security_sk_alloc+0x42/0x70 security/security.c:2120
-    [<000000009002ddd9>] sk_prot_alloc+0x9c/0x170 net/core/sock.c:1607
-    [<000000002fc61b2a>] sk_alloc+0x30/0x330 net/core/sock.c:1658
-    [<000000000d7242e5>] inet6_create net/ipv6/af_inet6.c:181 [inline]
-    [<000000000d7242e5>] inet6_create+0x112/0x4d0 net/ipv6/af_inet6.c:108
-    [<00000000ca79ca9d>] __sock_create+0x14a/0x220 net/socket.c:1433
-    [<000000007253d628>] sock_create net/socket.c:1484 [inline]
-    [<000000007253d628>] __sys_socket+0x60/0x110 net/socket.c:1526
-    [<00000000503be95b>] __do_sys_socket net/socket.c:1535 [inline]
-    [<00000000503be95b>] __se_sys_socket net/socket.c:1533 [inline]
-    [<00000000503be95b>] __x64_sys_socket+0x1a/0x20 net/socket.c:1533
-    [<0000000042ce79c0>] do_syscall_64+0x6e/0x220 arch/x86/entry/common.c:295
-    [<00000000b1aeae16>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+The target interface simplified as below which is used by Linux Kernel:
+CLK[0-7]--->MUX-->Gate-->pre_div-->post_div
 
-BUG: memory leak
-unreferenced object 0xffff888110f0d8c0 (size 64):
-  comm "syz-executor783", pid 8417, jiffies 4294954395 (age 25.940s)
-  hex dump (first 32 bytes):
-    15 00 00 01 00 00 00 00 a0 39 dc 10 81 88 ff ff  .........9......
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<000000002bb571e8>] kmalloc include/linux/slab.h:555 [inline]
-    [<000000002bb571e8>] kzalloc include/linux/slab.h:669 [inline]
-    [<000000002bb571e8>] netlbl_secattr_alloc include/net/netlabel.h:382 [inline]
-    [<000000002bb571e8>] selinux_netlbl_sock_genattr+0x48/0x180 security/selinux/netlabel.c:76
-    [<00000000201274d5>] selinux_netlbl_socket_post_create+0x41/0xb0 security/selinux/netlabel.c:398
-    [<00000000189429bf>] selinux_socket_post_create+0x182/0x390 security/selinux/hooks.c:4541
-    [<0000000054916bb2>] security_socket_post_create+0x54/0x80 security/security.c:2032
-    [<0000000085ba4813>] __sock_create+0x1cc/0x220 net/socket.c:1449
-    [<000000007253d628>] sock_create net/socket.c:1484 [inline]
-    [<000000007253d628>] __sys_socket+0x60/0x110 net/socket.c:1526
-    [<00000000503be95b>] __do_sys_socket net/socket.c:1535 [inline]
-    [<00000000503be95b>] __se_sys_socket net/socket.c:1533 [inline]
-    [<00000000503be95b>] __x64_sys_socket+0x1a/0x20 net/socket.c:1533
-    [<0000000042ce79c0>] do_syscall_64+0x6e/0x220 arch/x86/entry/common.c:295
-    [<00000000b1aeae16>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+A requirement of the Target Interface's software is that the
+target clock source is active, it means when setting SEL_A, the
+current input clk to SEL_A must be active, same to SEL_B.
 
-BUG: memory leak
-unreferenced object 0xffff888110dc39a0 (size 32):
-  comm "syz-executor783", pid 8417, jiffies 4294954395 (age 25.940s)
-  hex dump (first 32 bytes):
-    6b 65 72 6e 65 6c 5f 74 00 73 79 73 74 65 6d 5f  kernel_t.system_
-    72 3a 6b 65 72 6e 65 6c 5f 74 3a 73 30 00 00 00  r:kernel_t:s0...
-  backtrace:
-    [<0000000090b931e1>] kstrdup+0x36/0x70 mm/util.c:60
-    [<0000000079ad8987>] security_netlbl_sid_to_secattr+0x97/0x100 security/selinux/ss/services.c:3739
-    [<000000006911d3c9>] selinux_netlbl_sock_genattr+0x67/0x180 security/selinux/netlabel.c:79
-    [<00000000201274d5>] selinux_netlbl_socket_post_create+0x41/0xb0 security/selinux/netlabel.c:398
-    [<00000000189429bf>] selinux_socket_post_create+0x182/0x390 security/selinux/hooks.c:4541
-    [<0000000054916bb2>] security_socket_post_create+0x54/0x80 security/security.c:2032
-    [<0000000085ba4813>] __sock_create+0x1cc/0x220 net/socket.c:1449
-    [<000000007253d628>] sock_create net/socket.c:1484 [inline]
-    [<000000007253d628>] __sys_socket+0x60/0x110 net/socket.c:1526
-    [<00000000503be95b>] __do_sys_socket net/socket.c:1535 [inline]
-    [<00000000503be95b>] __se_sys_socket net/socket.c:1533 [inline]
-    [<00000000503be95b>] __x64_sys_socket+0x1a/0x20 net/socket.c:1533
-    [<0000000042ce79c0>] do_syscall_64+0x6e/0x220 arch/x86/entry/common.c:295
-    [<00000000b1aeae16>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+We touch target interface, but hardware logic actually also need
+configure normal interface.
 
-BUG: memory leak
-unreferenced object 0xffff888110ef1800 (size 1840):
-  comm "syz-executor783", pid 8417, jiffies 4294954395 (age 30.410s)
-  hex dump (first 32 bytes):
-    00 00 00 00 7f 00 00 06 15 14 f5 21 4e 20 22 dc  ...........!N ".
-    0a 00 0b 40 00 00 00 00 00 00 00 00 00 00 00 00  ...@............
-  backtrace:
-    [<000000007986323e>] sk_prot_alloc+0x3c/0x170 net/core/sock.c:1598
-    [<000000002fc61b2a>] sk_alloc+0x30/0x330 net/core/sock.c:1658
-    [<000000000d7242e5>] inet6_create net/ipv6/af_inet6.c:181 [inline]
-    [<000000000d7242e5>] inet6_create+0x112/0x4d0 net/ipv6/af_inet6.c:108
-    [<00000000ca79ca9d>] __sock_create+0x14a/0x220 net/socket.c:1433
-    [<000000007253d628>] sock_create net/socket.c:1484 [inline]
-    [<000000007253d628>] __sys_socket+0x60/0x110 net/socket.c:1526
-    [<00000000503be95b>] __do_sys_socket net/socket.c:1535 [inline]
-    [<00000000503be95b>] __se_sys_socket net/socket.c:1533 [inline]
-    [<00000000503be95b>] __x64_sys_socket+0x1a/0x20 net/socket.c:1533
-    [<0000000042ce79c0>] do_syscall_64+0x6e/0x220 arch/x86/entry/common.c:295
-    [<00000000b1aeae16>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+There will be system hang, when doing the following steps:
+The initial state:
+  SEL_A/SEL_B are both sourcing from clk0, the internal counter
+  choose SEL_A.
+1. switch mux from clk0 to clk1
+   The hardware logic will choose SEL_B and configure SEL_B to clk1.
+   SEL_A no changed.
+2. gate off clk0
+   Disable clk0, then the input to SEL_A is off.
+3. swtich from clk1 to clk2
+   The hardware logic will choose SEL_A and configure SEL_A to clk2,
+   however the current SEL_A input clk0 is off, the system hang.
 
-BUG: memory leak
-unreferenced object 0xffff888110eaf620 (size 32):
-  comm "syz-executor783", pid 8417, jiffies 4294954395 (age 30.410s)
-  hex dump (first 32 bytes):
-    02 00 00 00 00 00 00 00 c0 d8 f0 10 81 88 ff ff  ................
-    01 00 00 00 03 00 00 00 33 00 00 00 00 00 00 00  ........3.......
-  backtrace:
-    [<000000000d2c6b3e>] kmalloc include/linux/slab.h:555 [inline]
-    [<000000000d2c6b3e>] kzalloc include/linux/slab.h:669 [inline]
-    [<000000000d2c6b3e>] selinux_sk_alloc_security+0x43/0xa0 security/selinux/hooks.c:5126
-    [<00000000d4591378>] security_sk_alloc+0x42/0x70 security/security.c:2120
-    [<000000009002ddd9>] sk_prot_alloc+0x9c/0x170 net/core/sock.c:1607
-    [<000000002fc61b2a>] sk_alloc+0x30/0x330 net/core/sock.c:1658
-    [<000000000d7242e5>] inet6_create net/ipv6/af_inet6.c:181 [inline]
-    [<000000000d7242e5>] inet6_create+0x112/0x4d0 net/ipv6/af_inet6.c:108
-    [<00000000ca79ca9d>] __sock_create+0x14a/0x220 net/socket.c:1433
-    [<000000007253d628>] sock_create net/socket.c:1484 [inline]
-    [<000000007253d628>] __sys_socket+0x60/0x110 net/socket.c:1526
-    [<00000000503be95b>] __do_sys_socket net/socket.c:1535 [inline]
-    [<00000000503be95b>] __se_sys_socket net/socket.c:1533 [inline]
-    [<00000000503be95b>] __x64_sys_socket+0x1a/0x20 net/socket.c:1533
-    [<0000000042ce79c0>] do_syscall_64+0x6e/0x220 arch/x86/entry/common.c:295
-    [<00000000b1aeae16>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+The solution to fix the issue is in step 1, write twice to
+target interface MUX, it will make SEL_A/SEL_B both sources
+from clk1, then no need to care about the state of clk0. And
+finally system performs well.
 
-BUG: memory leak
-unreferenced object 0xffff888110f0d8c0 (size 64):
-  comm "syz-executor783", pid 8417, jiffies 4294954395 (age 30.410s)
-  hex dump (first 32 bytes):
-    15 00 00 01 00 00 00 00 a0 39 dc 10 81 88 ff ff  .........9......
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<000000002bb571e8>] kmalloc include/linux/slab.h:555 [inline]
-    [<000000002bb571e8>] kzalloc include/linux/slab.h:669 [inline]
-    [<000000002bb571e8>] netlbl_secattr_alloc include/net/netlabel.h:382 [inline]
-    [<000000002bb571e8>] selinux_netlbl_sock_genattr+0x48/0x180 security/selinux/netlabel.c:76
-    [<00000000201274d5>] selinux_netlbl_socket_post_create+0x41/0xb0 security/selinux/netlabel.c:398
-    [<00000000189429bf>] selinux_socket_post_create+0x182/0x390 security/selinux/hooks.c:4541
-    [<0000000054916bb2>] security_socket_post_create+0x54/0x80 security/security.c:2032
-    [<0000000085ba4813>] __sock_create+0x1cc/0x220 net/socket.c:1449
-    [<000000007253d628>] sock_create net/socket.c:1484 [inline]
-    [<000000007253d628>] __sys_socket+0x60/0x110 net/socket.c:1526
-    [<00000000503be95b>] __do_sys_socket net/socket.c:1535 [inline]
-    [<00000000503be95b>] __se_sys_socket net/socket.c:1533 [inline]
-    [<00000000503be95b>] __x64_sys_socket+0x1a/0x20 net/socket.c:1533
-    [<0000000042ce79c0>] do_syscall_64+0x6e/0x220 arch/x86/entry/common.c:295
-    [<00000000b1aeae16>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888110dc39a0 (size 32):
-  comm "syz-executor783", pid 8417, jiffies 4294954395 (age 30.410s)
-  hex dump (first 32 bytes):
-    6b 65 72 6e 65 6c 5f 74 00 73 79 73 74 65 6d 5f  kernel_t.system_
-    72 3a 6b 65 72 6e 65 6c 5f 74 3a 73 30 00 00 00  r:kernel_t:s0...
-  backtrace:
-    [<0000000090b931e1>] kstrdup+0x36/0x70 mm/util.c:60
-    [<0000000079ad8987>] security_netlbl_sid_to_secattr+0x97/0x100 security/selinux/ss/services.c:3739
-    [<000000006911d3c9>] selinux_netlbl_sock_genattr+0x67/0x180 security/selinux/netlabel.c:79
-    [<00000000201274d5>] selinux_netlbl_socket_post_create+0x41/0xb0 security/selinux/netlabel.c:398
-    [<00000000189429bf>] selinux_socket_post_create+0x182/0x390 security/selinux/hooks.c:4541
-    [<0000000054916bb2>] security_socket_post_create+0x54/0x80 security/security.c:2032
-    [<0000000085ba4813>] __sock_create+0x1cc/0x220 net/socket.c:1449
-    [<000000007253d628>] sock_create net/socket.c:1484 [inline]
-    [<000000007253d628>] __sys_socket+0x60/0x110 net/socket.c:1526
-    [<00000000503be95b>] __do_sys_socket net/socket.c:1535 [inline]
-    [<00000000503be95b>] __se_sys_socket net/socket.c:1533 [inline]
-    [<00000000503be95b>] __x64_sys_socket+0x1a/0x20 net/socket.c:1533
-    [<0000000042ce79c0>] do_syscall_64+0x6e/0x220 arch/x86/entry/common.c:295
-    [<00000000b1aeae16>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-
-
+Signed-off-by: Peng Fan <peng.fan@nxp.com>
 ---
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/clk/imx/clk-composite-8m.c | 51 +++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 50 insertions(+), 1 deletion(-)
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/drivers/clk/imx/clk-composite-8m.c b/drivers/clk/imx/clk-composite-8m.c
+index 99773519b5a5..8fa60f22d377 100644
+--- a/drivers/clk/imx/clk-composite-8m.c
++++ b/drivers/clk/imx/clk-composite-8m.c
+@@ -124,6 +124,52 @@ static const struct clk_ops imx8m_clk_composite_divider_ops = {
+ 	.set_rate = imx8m_clk_composite_divider_set_rate,
+ };
+ 
++static u8 imx8m_clk_composite_mux_get_parent(struct clk_hw *hw)
++{
++	return clk_mux_ops.get_parent(hw);
++}
++
++static int imx8m_clk_composite_mux_set_parent(struct clk_hw *hw, u8 index)
++{
++	struct clk_mux *mux = to_clk_mux(hw);
++	u32 val = clk_mux_index_to_val(mux->table, mux->flags, index);
++	unsigned long flags = 0;
++	u32 reg;
++
++	if (mux->lock)
++		spin_lock_irqsave(mux->lock, flags);
++
++	reg = readl(mux->reg);
++	reg &= ~(mux->mask << mux->shift);
++	val = val << mux->shift;
++	reg |= val;
++	/*
++	 * write twice to make sure non-target interface
++	 * SEL_A/B point the same clk input.
++	 */
++	writel(reg, mux->reg);
++	writel(reg, mux->reg);
++
++	if (mux->lock)
++		spin_unlock_irqrestore(mux->lock, flags);
++
++	return 0;
++}
++
++static int
++imx8m_clk_composite_mux_determine_rate(struct clk_hw *hw,
++				       struct clk_rate_request *req)
++{
++	return clk_mux_ops.determine_rate(hw, req);
++}
++
++
++const struct clk_ops imx8m_clk_composite_mux_ops = {
++	.get_parent = imx8m_clk_composite_mux_get_parent,
++	.set_parent = imx8m_clk_composite_mux_set_parent,
++	.determine_rate = imx8m_clk_composite_mux_determine_rate,
++};
++
+ struct clk_hw *imx8m_clk_hw_composite_flags(const char *name,
+ 					const char * const *parent_names,
+ 					int num_parents, void __iomem *reg,
+@@ -136,6 +182,7 @@ struct clk_hw *imx8m_clk_hw_composite_flags(const char *name,
+ 	struct clk_gate *gate = NULL;
+ 	struct clk_mux *mux = NULL;
+ 	const struct clk_ops *divider_ops;
++	const struct clk_ops *mux_ops;
+ 
+ 	mux = kzalloc(sizeof(*mux), GFP_KERNEL);
+ 	if (!mux)
+@@ -157,10 +204,12 @@ struct clk_hw *imx8m_clk_hw_composite_flags(const char *name,
+ 		div->shift = PCG_DIV_SHIFT;
+ 		div->width = PCG_CORE_DIV_WIDTH;
+ 		divider_ops = &clk_divider_ops;
++		mux_ops = &imx8m_clk_composite_mux_ops;
+ 	} else {
+ 		div->shift = PCG_PREDIV_SHIFT;
+ 		div->width = PCG_PREDIV_WIDTH;
+ 		divider_ops = &imx8m_clk_composite_divider_ops;
++		mux_ops = &clk_mux_ops;
+ 	}
+ 
+ 	div->lock = &imx_ccm_lock;
+@@ -176,7 +225,7 @@ struct clk_hw *imx8m_clk_hw_composite_flags(const char *name,
+ 	gate->lock = &imx_ccm_lock;
+ 
+ 	hw = clk_hw_register_composite(NULL, name, parent_names, num_parents,
+-			mux_hw, &clk_mux_ops, div_hw,
++			mux_hw, mux_ops, div_hw,
+ 			divider_ops, gate_hw, &clk_gate_ops, flags);
+ 	if (IS_ERR(hw))
+ 		goto fail;
+-- 
+2.16.4
+
