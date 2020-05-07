@@ -2,204 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDDC11C9746
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 19:17:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA38F1C975C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 19:23:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726811AbgEGRRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 13:17:44 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:52755 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725949AbgEGRRo (ORCPT
+        id S1727854AbgEGRXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 13:23:01 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:57494 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726367AbgEGRXB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 13:17:44 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 8819E5C0097;
-        Thu,  7 May 2020 13:17:42 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Thu, 07 May 2020 13:17:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=yEsIB30Ejf9A/4N9N1Ex/jbueD0
-        rngjg+1SZuLpBXTo=; b=aZ6BMlLYTGQG6grA5WlTsxCBMT+o0jhJD3zhofaNaKz
-        92J1/qd+69LzDbI3os9x5EsGyqWCl0KGA6bO/5p6cS1/OmmdUVWnBHfnZuQuuFJV
-        wpJRoE1D5gEh6MWRNBzXHmdr5V3YkUXv4fzfqGg1gXAfB9HrTK6t0JSSlkfJ6a20
-        4jRw06yWgNgwQGPvG8hPluL3coQM0uP6UNir3AQBuqaJOzK0y1AtobYBFZY/zJT/
-        Ba+xKkbCSdlCQqnxo12Ij+vFh+JdzQNMLH5p17GrWBHyaKQAdckTOO29n/d6ur9b
-        JvzR86sYa+BJpEUGF2AeFB5IT/2h81DXT0cag7OXB0w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=yEsIB3
-        0Ejf9A/4N9N1Ex/jbueD0rngjg+1SZuLpBXTo=; b=2xpJKAgMTlMjdFW8q/zAhg
-        MC1WmBGPmIzhn9w8HIaukk2RiV0ALBEoefetBLDCPnaVe/5vsIuSxt4hjaAkWHHA
-        TZcDuBqxIicRVBZ0UTLWYwtsePlZZ/ZhFVsFOYTHM273iJ5NiyQhnx+/b1RRB3yn
-        qtZQNRW7aVQMmY1z0V3knFWRvZK5Cp6RKLg4LtfDwGHCmM25NFdj4nmPFSzd/6FV
-        OprtRERSVeqHWiPhELEZ2jAW0XS31oEpyyFk0JrsgsGJJSOuOyx79+fv9f7vlel2
-        DfJ8bW+WJpJshJsSPCV3L8po2MGuOahFWy4qYKvAiNc9Y8fgM422ruoH3eJVqBCQ
-        ==
-X-ME-Sender: <xms:tUK0Xtp18SyAqgSHGp86QawcMYsejfSrROwiUoAOFJK_RSEEPVgRJw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrkedtgddutdelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:tUK0XrXg9V5LEF00-qghTAreUeWpacAttfRw-Re-QPjkPtmwx1uHxQ>
-    <xmx:tUK0XhFD4T8la6yL6UeZirYfZi2KvdggCy3feRLL7lE65WoKQDcMdg>
-    <xmx:tUK0XtuUw3R5yMmEPx_FRW38p3KArS3pc_7gC-VFI42fILjOHI_cKQ>
-    <xmx:tkK0Xl8LVetx1yrdk87eKdGy5UB4orQV-35ZCF8pKdRdpzKyhe2oHw>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 9292C3280063;
-        Thu,  7 May 2020 13:17:41 -0400 (EDT)
-Date:   Thu, 7 May 2020 19:17:38 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Swapnil Kashinath Jakhade <sjakhade@cadence.com>
-Cc:     Yuti Suresh Amonkar <yamonkar@cadence.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kishon@ti.com" <kishon@ti.com>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "jsarha@ti.com" <jsarha@ti.com>,
-        "tomi.valkeinen@ti.com" <tomi.valkeinen@ti.com>,
-        "praneeth@ti.com" <praneeth@ti.com>,
-        Milind Parab <mparab@cadence.com>
-Subject: Re: [PATCH v1 2/2] phy: phy-cadence-torrent: Use PHY kernel APIs to
- set PHY attributes
-Message-ID: <20200507171738.atzyfpueo6bjbwpb@gilmour.lan>
-References: <1588057804-29161-1-git-send-email-yamonkar@cadence.com>
- <1588057804-29161-3-git-send-email-yamonkar@cadence.com>
- <20200429122750.hup7vbmz3xnpfwa5@gilmour.lan>
- <BY5PR07MB69827A1E2136455BFDD6090BC5AA0@BY5PR07MB6982.namprd07.prod.outlook.com>
+        Thu, 7 May 2020 13:23:01 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 047HI3hW138476;
+        Thu, 7 May 2020 17:20:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=vJrbkdZBUoaq1pXS4ignZ6pMF+uDpzQFiLZti+eZ70E=;
+ b=mRtaisKOzCs2MRCCaIfiEhopEwKHU51t6oyUc+jzzGDYYiZjMbgPgcQKHX+HixSM08t4
+ pzGl07bLdEfYU8K7ac0gXGoOdD1/OudYEpmUfJRzM8ncMydUJjQ4tpeZIaQXS3WIKB+4
+ 1r5Jqo55orYXSGwZWdtmFQcZWCX6KITiyJc2OrVRY4zUQ/clubqwPfCKmQ/c5cbml9a/
+ Yr+C8/haFNe9/NARngk0JwY7jXyLVbCZCY2Arcv6kCfrGENY25iIzSf5bs7hKSU87/px
+ 0hBbtlblkrR8WqxL4K8z5fnDUiFFVhadmCi15uhn1zIjxqRqnFz95vSIPhEACgg6MX4V Tw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 30veckjv68-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 07 May 2020 17:20:01 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 047HGew2045635;
+        Thu, 7 May 2020 17:20:00 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 30us7r23bw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 07 May 2020 17:20:00 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 047HJt4Q019013;
+        Thu, 7 May 2020 17:19:56 GMT
+Received: from linux-1.home (/10.175.40.145)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 07 May 2020 10:19:55 -0700
+Subject: Re: [patch V4 part 4 15/24] x86/db: Split out dr6/7 handling
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <20200505134926.578885807@linutronix.de>
+ <20200505135314.808628211@linutronix.de>
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+Message-ID: <16c57a7e-8d39-d77e-915d-41b7f5e042fd@oracle.com>
+Date:   Thu, 7 May 2020 19:18:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="fnwfzinzf67jig65"
-Content-Disposition: inline
-In-Reply-To: <BY5PR07MB69827A1E2136455BFDD6090BC5AA0@BY5PR07MB6982.namprd07.prod.outlook.com>
+In-Reply-To: <20200505135314.808628211@linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9614 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 suspectscore=0
+ mlxlogscore=999 malwarescore=0 phishscore=0 mlxscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005070141
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9614 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 bulkscore=0
+ spamscore=0 malwarescore=0 impostorscore=0 clxscore=1015
+ lowpriorityscore=0 phishscore=0 mlxlogscore=999 suspectscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005070140
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---fnwfzinzf67jig65
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 5/5/20 3:49 PM, Thomas Gleixner wrote:
+> From: Peter Zijlstra <peterz@infradead.org>
+> 
+> DR6/7 should be handled before nmi_enter() is invoked and restore after
+> nmi_exit() to minimize the exposure.
+> 
+> Split it out into helper inlines and bring it into the correct order.
+> 
+> Signed-off-by: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>   arch/x86/kernel/hw_breakpoint.c |    6 ---
+>   arch/x86/kernel/traps.c         |   62 +++++++++++++++++++++++++++-------------
+>   2 files changed, 44 insertions(+), 24 deletions(-)
+> 
+...
+> --- a/arch/x86/kernel/traps.c
+> +++ b/arch/x86/kernel/traps.c
+> @@ -691,6 +691,44 @@ static bool is_sysenter_singlestep(struc
+>   #endif
+>   }
+>   
+> +static __always_inline void debug_enter(unsigned long *dr6, unsigned long *dr7)
+> +{
+> +	/*
+> +	 * Disable breakpoints during exception handling; recursive exceptions
+> +	 * are exceedingly 'fun'.
+> +	 *
+> +	 * Since this function is NOKPROBE, and that also applies to
+> +	 * HW_BREAKPOINT_X, we can't hit a breakpoint before this (XXX except a
+> +	 * HW_BREAKPOINT_W on our stack)
+> +	 *
+> +	 * Entry text is excluded for HW_BP_X and cpu_entry_area, which
+> +	 * includes the entry stack is excluded for everything.
+> +	 */
+> +	get_debugreg(*dr7, 6);
 
-Hi!
+Do you mean  get_debugreg(*dr7, 7); ?
 
-On Thu, Apr 30, 2020 at 02:06:20PM +0000, Swapnil Kashinath Jakhade wrote:
-> Thank you so much for reviewing the patch. Please see inline reply below.
->=20
-> > -----Original Message-----
-> > From: Maxime Ripard <maxime@cerno.tech>
-> > Sent: Wednesday, April 29, 2020 5:58 PM
-> > To: Yuti Suresh Amonkar <yamonkar@cadence.com>
-> > Cc: linux-kernel@vger.kernel.org; kishon@ti.com; mark.rutland@arm.com;
-> > jsarha@ti.com; tomi.valkeinen@ti.com; praneeth@ti.com; Milind Parab
-> > <mparab@cadence.com>; Swapnil Kashinath Jakhade
-> > <sjakhade@cadence.com>
-> > Subject: Re: [PATCH v1 2/2] phy: phy-cadence-torrent: Use PHY kernel AP=
-Is to
-> > set PHY attributes
-> >=20
-> > EXTERNAL MAIL
-> >=20
-> >=20
-> > Hi,
-> >=20
-> > On Tue, Apr 28, 2020 at 09:10:04AM +0200, Yuti Amonkar wrote:
-> > > From: Swapnil Jakhade <sjakhade@cadence.com>
-> > >
-> > > Use generic PHY framework function phy_set_bus_width() to set number
-> > > of lanes and function phy_set_max_link_rate() to set maximum link rate
-> > > supported by PHY.
-> > >
-> > > Signed-off-by: Swapnil Jakhade <sjakhade@cadence.com>
-> >=20
-> > This should have your SoB.
-> >=20
-> > > ---
-> > >  drivers/phy/cadence/phy-cadence-torrent.c | 3 +++
-> > >  1 file changed, 3 insertions(+)
-> > >
-> > > diff --git a/drivers/phy/cadence/phy-cadence-torrent.c
-> > b/drivers/phy/cadence/phy-cadence-torrent.c
-> > > index 7116127358ee..b914e5ddf93c 100644
-> > > --- a/drivers/phy/cadence/phy-cadence-torrent.c
-> > > +++ b/drivers/phy/cadence/phy-cadence-torrent.c
-> > > @@ -1852,6 +1852,9 @@ static int cdns_torrent_phy_probe(struct
-> > platform_device *pdev)
-> > >  				 cdns_phy->phys[node].num_lanes,
-> > >  				 cdns_phy->max_bit_rate / 1000,
-> > >  				 cdns_phy->max_bit_rate % 1000);
-> > > +
-> > > +			phy_set_bus_width(gphy, cdns_phy-
-> > >phys[node].num_lanes);
-> > > +			phy_set_max_link_rate(gphy, cdns_phy-
-> > >max_bit_rate);
-> >=20
-> > I think what Kishon meant in his previous mail is that it's not really =
-clear (to
-> > me at least) how that function would be useful.
-> >=20
-> > In this particular case, what would the consumer make of that informati=
-on?
-> > Does
-> > the phy needs to be reconfigured based on the max rate being changed?
-> >=20
-> > Some phy_configure_opts structures also have a somewhat similar field t=
-hat
-> > can
-> > be negociated between the provider and the consumer using phy_validate,
-> > wouldn't
-> > that be redundant?
-> >=20
-> > Most of that discussion can only happen when you've provided a use-case
-> > for that
-> > series, so a consumer using it would help greatly there.
->=20
-> Actually, for this particular case, consumer driver will be the Cadence M=
-HDP
-> bridge driver for DisplayPort which is also under review process for
-> upstreaming [1]. So this DRM bridge driver will make use of the PHY APIs
-> phy_get_bus_width() and phy_get_max_link_rate() during execution of probe
-> function to get the number of lanes and maximum link rate supported by Ca=
-dence
-> Torrent PHY. This information is required to set the host capabilities in=
- the
-> DRM bridge driver, based on which initial values for DisplayPort link tra=
-ining
-> will be determined.
->
-> The changes in this PHY patch series are based on suggestions in the revi=
-ew
-> comments in [1] which asks to use kernel PHY APIs to read these properties
-> instead of directly accessing PHY device node. The complete driver and ac=
-tual
-> use of these APIs can be found in [2]. This is how we are planning to use
-> these APIs.
-
-I haven't really looked into the displayport spec, but I'd assume that ther=
-e's a
-lot more parameters that would need to be negociated between the phy and th=
-e DP
-block? If so, then it would make more sense to follow the path we did for
-MIPI-DSI where the parameters can be negociated through the phy_configure /
-phy_validate interface.
-
-Maxime
-
---fnwfzinzf67jig65
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXrRCsgAKCRDj7w1vZxhR
-xcxNAQCJzdDTI7XfDxwOQTyRA+A0KjWJ540bnKWNjxgcXBGkLAEA81jx2j6ogfZR
-BBWqGaYotEewPh3kQu0Uxc5JUJ/6hws=
-=HjJD
------END PGP SIGNATURE-----
-
---fnwfzinzf67jig65--
+alex.
