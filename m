@@ -2,124 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EF931C8AB7
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 14:28:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B43C1C8ABF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 14:29:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726683AbgEGM2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 08:28:00 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:7504 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725923AbgEGM17 (ORCPT
+        id S1726906AbgEGM3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 08:29:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725923AbgEGM3Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 08:27:59 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 047C422X113559;
-        Thu, 7 May 2020 08:27:51 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30s4vabmgu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 May 2020 08:27:50 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 047C6Vwx121760;
-        Thu, 7 May 2020 08:27:50 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30s4vabmfv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 May 2020 08:27:50 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 047CKEA1028886;
-        Thu, 7 May 2020 12:27:48 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma02fra.de.ibm.com with ESMTP id 30s0g5cmh7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 May 2020 12:27:48 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 047CRk9f56295540
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 7 May 2020 12:27:46 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 18626AE056;
-        Thu,  7 May 2020 12:27:46 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A3003AE051;
-        Thu,  7 May 2020 12:27:45 +0000 (GMT)
-Received: from thinkpad (unknown [9.145.63.153])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu,  7 May 2020 12:27:45 +0000 (GMT)
-Date:   Thu, 7 May 2020 14:27:44 +0200
-From:   Gerald Schaefer <gerald.schaefer@de.ibm.com>
-To:     Jiri Kosina <jikos@kernel.org>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Miroslav Benes <mbenes@suse.cz>, linux-s390@vger.kernel.org,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@de.ibm.com>
-Subject: Re: [PATCH v4 06/11] s390/module: Use s390_kernel_write() for late
- relocations
-Message-ID: <20200507142744.05271ac0@thinkpad>
-In-Reply-To: <nycvar.YFH.7.76.2005071159490.25812@cbobk.fhfr.pm>
-References: <cover.1588173720.git.jpoimboe@redhat.com>
-        <4710f82c960ff5f8b0dd7dba6aafde5bea275cfa.1588173720.git.jpoimboe@redhat.com>
-        <nycvar.YFH.7.76.2005071159490.25812@cbobk.fhfr.pm>
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Thu, 7 May 2020 08:29:16 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 561A4C05BD43
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 05:29:14 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id b188so5689221qkd.9
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 05:29:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:user-agent:in-reply-to:references:mime-version
+         :content-transfer-encoding:subject:to:cc:from:message-id;
+        bh=f+0YtocF0cAAetB1w+AFwOGpgW2A5+rcI7viqe5dsd0=;
+        b=OUiY28i8h2NHisORIRwwkwXw6BFhGMlRr1XHiLJyBOIuFZLoaFMUgQMirmJo3LjGBM
+         gnfwgWW20xI+wmTg1qrfeVNp1LmlOsdoqrWFJa40Fjoe27X7aeIIOOnPNQlJx7Ldh+QA
+         oGqTkpl9Zw3nm/sXtyaWB2Kogc3Op43F9lQ40=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:user-agent:in-reply-to:references
+         :mime-version:content-transfer-encoding:subject:to:cc:from
+         :message-id;
+        bh=f+0YtocF0cAAetB1w+AFwOGpgW2A5+rcI7viqe5dsd0=;
+        b=jrp4bI5QlXI/tIxI+fdRdwKStpz3IFtV9C9ZWFMhzK1NY04bPic5yHMJ+7Z/PMxQTn
+         KtEmOH1bk70eFCayA/uZkrQy8zsSNE2bbnBi5FSgR82BMm4c1EvPPBqQgqW7bxIWdm+I
+         xAvWwf3sFC9PLCq/d4HDBo4wKvmiItjwI+LcoafKKC0zmrIc3eOE2LtdSt5wY5HaYNLD
+         2Oaop8OWLR0k/rKP2gyO4uFKiPKEKHVWaFyx4vlC2UgzaL+O2wiou5la3kMTSFOkjP+6
+         PZqvEnPxLF2HGM18AKb+Ql5mch0GAfZnBOjWyY5YSN2zRKtPEftRoQ9OACTmKd/RX3YI
+         iEdQ==
+X-Gm-Message-State: AGi0PuawlvC+dn8lkjh3r0XzUu5BYhkntk+WpmrDyf+fYfA0TPBEAP4e
+        rQBDRwykxEdGW72V0DCv0em/dQ==
+X-Google-Smtp-Source: APiQypKVwLV1s9Dl+J0mz5ybMAJYjQ9i/3jkrdB6Qop9UW1v2AYCVBrz7QljzgPtRQYVvhgeTFfTqg==
+X-Received: by 2002:a37:5941:: with SMTP id n62mr13891342qkb.419.1588854553419;
+        Thu, 07 May 2020 05:29:13 -0700 (PDT)
+Received: from [192.168.1.8] (c-71-62-121-229.hsd1.va.comcast.net. [71.62.121.229])
+        by smtp.gmail.com with ESMTPSA id d9sm3746924qtj.77.2020.05.07.05.29.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 May 2020 05:29:12 -0700 (PDT)
+Date:   Thu, 07 May 2020 08:29:10 -0400
+User-Agent: K-9 Mail for Android
+In-Reply-To: <5EB3DD4E.7060000@cn.fujitsu.com>
+References: <20200424223630.224895-1-joel@joelfernandes.org> <5EA80319.7080005@cn.fujitsu.com> <20200428104409.0995ceb0@gandalf.local.home> <20200428104543.3926eaaf@gandalf.local.home> <5EA96AE8.6000707@cn.fujitsu.com> <20200429123141.580f89ce@gandalf.local.home> <20200429191224.GA75562@google.com> <20200506093805.1f86f3f0@gandalf.local.home> <20200506103017.72abd2cd@gandalf.local.home> <5EB3DD4E.7060000@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-07_06:2020-05-07,2020-05-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- suspectscore=0 adultscore=0 clxscore=1011 impostorscore=0
- lowpriorityscore=0 bulkscore=0 phishscore=0 mlxscore=0 mlxlogscore=999
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005070094
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH] tracing: Wait for preempt irq delay thread to finish
+To:     Xiao Yang <yangx.jy@cn.fujitsu.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+CC:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>
+From:   joel@joelfernandes.org
+Message-ID: <8C3E6BAF-255D-41C7-B652-7C68877BDBED@joelfernandes.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 May 2020 12:00:13 +0200 (CEST)
-Jiri Kosina <jikos@kernel.org> wrote:
 
-> On Wed, 29 Apr 2020, Josh Poimboeuf wrote:
-> 
-> > From: Peter Zijlstra <peterz@infradead.org>
-> > 
-> > Because of late module patching, a livepatch module needs to be able to
-> > apply some of its relocations well after it has been loaded.  Instead of
-> > playing games with module_{dis,en}able_ro(), use existing text poking
-> > mechanisms to apply relocations after module loading.
-> > 
-> > So far only x86, s390 and Power have HAVE_LIVEPATCH but only the first
-> > two also have STRICT_MODULE_RWX.
-> > 
-> > This will allow removal of the last module_disable_ro() usage in
-> > livepatch.  The ultimate goal is to completely disallow making
-> > executable mappings writable.
-> > 
-> > [ jpoimboe: Split up patches.  Use mod state to determine whether
-> > 	    memcpy() can be used.  Test and add fixes. ]
-> > 
-> > Cc: linux-s390@vger.kernel.org
-> > Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
-> > Cc: Gerald Schaefer <gerald.schaefer@de.ibm.com>
-> > Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-> > Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
-> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-> > Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > Acked-by: Joe Lawrence <joe.lawrence@redhat.com>
-> > Acked-by: Miroslav Benes <mbenes@suse.cz>
-> 
-> Could we please get an Ack / Reviewed-by: for this patch from s390 folks?
-> 
-> Thanks,
-> 
 
-Looks pretty straightforward, and using s390_kernel_write() is OK, so
+On May 7, 2020 6:05:02 AM EDT, Xiao Yang <yangx=2Ejy@cn=2Efujitsu=2Ecom> w=
+rote:
+>Hi Steven,
+>
+>Thanks for your further investigation=2E
+>
+>I used the following ways to test your fix patch on my slow vm and=20
+>didn't see any issue:
+>1) Insert and remove preemptirq_delay_test in loops=2E
+>2) Insert preemptirq_delay_test, write to=20
+>/sys/kernel/preemptirq_delay_test/trigger and remove=20
+>preemptirq_delay_test in loops=2E
+>3) Ran irqsoff_tracer=2Etc in loops=2E
+>
+>BTW: For irqsoff_tracer=2Etc, should we extend code to test the burst=20
+>feature and the sysfs trigger?
+>
+>Reviewed-by: Xiao Yang <yangx=2Ejy@cn=2Efujitsu=2Ecom>
+>
 
-Acked-by: Gerald Schaefer <gerald.schaefer@de.ibm.com> # s390
+Thanks!
+
+Reviewed-by: Joel Fernandes <joel@joelfernandes=2Eorg>
+
+- Joel
+
+
+>Thanks,
+>Xiao Yang
+>On 2020/5/6 22:30, Steven Rostedt wrote:
+>> From: "Steven Rostedt (VMware)"<rostedt@goodmis=2Eorg>
+>>
+>> Running on a slower machine, it is possible that the preempt delay
+>kernel
+>> thread may still be executing if the module was immediately removed
+>after
+>> added, and this can cause the kernel to crash as the kernel thread
+>might be
+>> executing after its code has been removed=2E
+>>
+>> There's no reason that the caller of the code shouldn't just wait for
+>the
+>> delay thread to finish, as the thread can also be created by a
+>trigger in
+>> the sysfs code, which also has the same issues=2E
+>>
+>> Link: http://lore=2Ekernel=2Eorg/r/5EA2B0C8=2E2080706@cn=2Efujitsu=2Eco=
+m
+>>
+>> Cc: stable@vger=2Ekernel=2Eorg
+>> Fixes: 793937236d1ee ("lib: Add module for testing preemptoff/irqsoff
+>latency tracers")
+>> Reported-by: Xiao Yang<yangx=2Ejy@cn=2Efujitsu=2Ecom>
+>> Signed-off-by: Steven Rostedt (VMware)<rostedt@goodmis=2Eorg>
+>> ---
+>>   kernel/trace/preemptirq_delay_test=2Ec | 30
+>++++++++++++++++++++++------
+>>   1 file changed, 24 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/kernel/trace/preemptirq_delay_test=2Ec
+>b/kernel/trace/preemptirq_delay_test=2Ec
+>> index 31c0fad4cb9e=2E=2Ec4c86de63cf9 100644
+>> --- a/kernel/trace/preemptirq_delay_test=2Ec
+>> +++ b/kernel/trace/preemptirq_delay_test=2Ec
+>> @@ -113,22 +113,42 @@ static int preemptirq_delay_run(void *data)
+>>
+>>   	for (i =3D 0; i<  s; i++)
+>>   		(testfuncs[i])(i);
+>> +
+>> +	set_current_state(TASK_INTERRUPTIBLE);
+>> +	while (!kthread_should_stop()) {
+>> +		schedule();
+>> +		set_current_state(TASK_INTERRUPTIBLE);
+>> +	}
+>> +
+>> +	__set_current_state(TASK_RUNNING);
+>> +
+>>   	return 0;
+>>   }
+>>
+>> -static struct task_struct *preemptirq_start_test(void)
+>> +static int preemptirq_run_test(void)
+>>   {
+>> +	struct task_struct *task;
+>> +
+>>   	char task_name[50];
+>>
+>>   	snprintf(task_name, sizeof(task_name), "%s_test", test_mode);
+>> -	return kthread_run(preemptirq_delay_run, NULL, task_name);
+>> +	task =3D  kthread_run(preemptirq_delay_run, NULL, task_name);
+>> +	if (IS_ERR(task))
+>> +		return PTR_ERR(task);
+>> +	if (task)
+>> +		kthread_stop(task);
+>> +	return 0;
+>>   }
+>>
+>>
+>>   static ssize_t trigger_store(struct kobject *kobj, struct
+>kobj_attribute *attr,
+>>   			 const char *buf, size_t count)
+>>   {
+>> -	preemptirq_start_test();
+>> +	ssize_t ret;
+>> +
+>> +	ret =3D preemptirq_run_test();
+>> +	if (ret)
+>> +		return ret;
+>>   	return count;
+>>   }
+>>
+>> @@ -148,11 +168,9 @@ static struct kobject *preemptirq_delay_kobj;
+>>
+>>   static int __init preemptirq_delay_init(void)
+>>   {
+>> -	struct task_struct *test_task;
+>>   	int retval;
+>>
+>> -	test_task =3D preemptirq_start_test();
+>> -	retval =3D PTR_ERR_OR_ZERO(test_task);
+>> +	retval =3D preemptirq_run_test();
+>>   	if (retval !=3D 0)
+>>   		return retval;
+>>
+
+--=20
+Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
