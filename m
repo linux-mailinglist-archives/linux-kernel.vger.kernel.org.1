@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 560531C98F9
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:11:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A64161C98F1
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:11:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728250AbgEGSLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 14:11:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55630 "EHLO
+        id S1728501AbgEGSKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 14:10:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728446AbgEGSKj (ORCPT
+        by vger.kernel.org with ESMTP id S1728469AbgEGSKm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 14:10:39 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE81BC05BD09
-        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 11:10:39 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id ev8so6693212qvb.7
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 11:10:39 -0700 (PDT)
+        Thu, 7 May 2020 14:10:42 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCD0DC05BD09
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 11:10:41 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id g17so8061086ybk.4
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 11:10:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=zZWvTUfx/wRuyyDcQxDeif3qbH8vMyyGM38ys5fdFsY=;
-        b=Hsq7csMm3aKxHXFy3vU5SjedQTdFGmje4EFFn7pUNQI+7Tt5gipsk3gojrKeqv0oZA
-         zKJmEc4qjOnoV2Poo1wux8oWp7druRmTRThDjQx0nXRmvka5WsF9eIK05U+G5BZ5kwA9
-         7QtfLulqPmZBLYbI0vKZu/6D5HO6i4g2a6I7enOxrKuX3hdzh9btnYC61l0lBlUK9g6G
-         nIOYbvEzOurFENmE7JQ0pSeNgQ5IUaGVHwya8NGk1H3C8O8Gh3pvyYFCxt45XHtnr/q4
-         xHM22KlaIb+SQa38QzZsQOlVjsp4CDU+E/SvPDegyt/YmQrsmOX/1Q6cfHLV37HoscxQ
-         DBqw==
+        bh=N7kuzoZFHLJw/s8kvulTGF06U3TOQxKeXMcbVwjE4XY=;
+        b=IlMzfBoiBzByCTT8SvOpeFbpTRaCvxNWjvMZljPGk5OoeTwjsb1wsaeDG4gxHKaVQZ
+         lzdyVKLAOhNQTDY9GjBd/yhOypV8xr6JkGrIdiIkOmuHYIEXWQlMLj/DbmLtNbgfFD9Q
+         SCG7OJOOpIk03XjGXpiKFMyfX8aoQ3Xrqx3iegD2s+PpWCE+7K6lsm/S9bpA6HqJbgaR
+         jMeJZirp1krHSjr5CW2MkZm66dBPji19T3oVp8Np6ywJUg8EpRdIfa2xNK2By97AoJkF
+         MC053TSntRx44lPdMaRbtpYv7DwCxcWdZbSZKNuXslPDRHTEvdqxBA1WsqkBobm/WIUG
+         gRLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=zZWvTUfx/wRuyyDcQxDeif3qbH8vMyyGM38ys5fdFsY=;
-        b=WQBYO1B8dvGALbw5wvoiS5m5DBGqtT02eLPgHWvHYppPIMlFML7u4jbjs0dphyoxBG
-         yGJV1GHMxupXNjA0FoPl1CghoJcgfrPMrs9qNh5XQmaWwYw3ffV46VPB5Uon1fZoZvMH
-         DI5Lxb1l80tvn+ndJisfAz7KU67eNIjrTcsWx2pShxQfLkC/FjNAo03QAXSPa+DQo2J6
-         VoSp5MZJRufHPByg5bBsPi4vys0n34VSuprc/SAkdeRIEy/lkZiZREH23Bo7HiIQYV6O
-         +OEeaHsz5emfPM7+/+gpk9P6eFcyNgPb/CfoM5cA1/ZarfxdfTkemSDSuZ03YtswXs2N
-         XSaQ==
-X-Gm-Message-State: AGi0PuYOBPQQiMMaIXIo4pL4vv9stOvf1DprLf80h+9hf1zcRsN6v4L9
-        HkZNjMWW2z2Jcz9EpzZ+arRc86wcQlYjXVO2jggyldusnVLiqe/sQkPV4R3lrZk3du7C7rl2orG
-        3kNT0egOGpkGLz6xyFCtlgkoSx54wapi99Y32+4byzrZlDrxQgalVI5ZBVsEb196t3GU0o2Y3
-X-Google-Smtp-Source: APiQypLtVxYcoBCGLT2opMHxryNuYGnQnZvm1aIxlatafdQirXZzAlFCc71e959iGzwoL9cFGjpKT/1CxlGY
-X-Received: by 2002:a0c:facb:: with SMTP id p11mr14758771qvo.17.1588875038848;
- Thu, 07 May 2020 11:10:38 -0700 (PDT)
-Date:   Thu,  7 May 2020 19:10:09 +0100
+        bh=N7kuzoZFHLJw/s8kvulTGF06U3TOQxKeXMcbVwjE4XY=;
+        b=ntXmeswxFCiDcCuyqEI9fQn9c5Ap89RbpUHNDDoF6QzeCUAKMhjpjjs2ibKicXEzfv
+         oscYZheaFjuTKV0UQYAztiSrK702XISNcCnebUYAjRHxBmfQlJ+E6Cv7rsUcpFYQz8X5
+         0EcWs1bIYQ82dsE5km7S+SI8Zcq8BGVBsk5xdLGgXFj3PE5dW07c6x9KvGqd35fnty4D
+         hMR6H3rZVTP1Q3Mr9W24VuCP0IMo5x1rvj8qXeHTGz63vnVr4herRrgL91TQBMbCChLt
+         YQObD3HXsfptTGzEvT4H8mUdLocdGqvJPR19GNddAtsLb8IsA1Ub/IbafcHoHwdz+7+d
+         4r6g==
+X-Gm-Message-State: AGi0PuZizvPzJoOsaWgyoQMmFYPhhSYCzNkufePgvmJyL452L3yOwqQm
+        sLULsD0TVh60B35vcVCvHHoUPHIZZV2WmRTAkBkz/HFIZTUe+3rjvMxnL0L5+4X0XzDkygHnvFl
+        h9d3wuTjze0xS7+zIPdoI/MkA4fGHNb5j6AZWpKavsW6XNVDj1biF/Z4FLpzWuqYWBVG73BxA
+X-Google-Smtp-Source: APiQypJcn3oiy3Y8e0vbxO3XAex1LsJMYs5+fQTWEg+rN6GSDT89BK+2wbCqxMf6Oy2xk1QtZGIOh5nUJOcy
+X-Received: by 2002:a25:d2d8:: with SMTP id j207mr16831345ybg.517.1588875040927;
+ Thu, 07 May 2020 11:10:40 -0700 (PDT)
+Date:   Thu,  7 May 2020 19:10:10 +0100
 In-Reply-To: <20200507181012.29791-1-qperret@google.com>
-Message-Id: <20200507181012.29791-12-qperret@google.com>
+Message-Id: <20200507181012.29791-13-qperret@google.com>
 Mime-Version: 1.0
 References: <20200507181012.29791-1-qperret@google.com>
 X-Mailer: git-send-email 2.26.2.526.g744177e7f7-goog
-Subject: [PATCH 11/14] tick/sched: Export tick_nohz_get_idle_calls_cpu
+Subject: [PATCH 12/14] x86: Export arch_scale_freq_key
 From:   Quentin Perret <qperret@google.com>
 To:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
 Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
@@ -72,21 +72,21 @@ It will be needed by schedutil once modularized, export it.
 
 Signed-off-by: Quentin Perret <qperret@google.com>
 ---
- kernel/time/tick-sched.c | 1 +
+ arch/x86/kernel/smpboot.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index 3e2dc9b8858c..3b1050cabb58 100644
---- a/kernel/time/tick-sched.c
-+++ b/kernel/time/tick-sched.c
-@@ -1122,6 +1122,7 @@ unsigned long tick_nohz_get_idle_calls_cpu(int cpu)
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index 8c89e4d9ad28..a8ccd69ba5ff 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -1804,6 +1804,7 @@ void native_play_dead(void)
+  */
  
- 	return ts->idle_calls;
- }
-+EXPORT_SYMBOL_GPL(tick_nohz_get_idle_calls_cpu);
+ DEFINE_STATIC_KEY_FALSE(arch_scale_freq_key);
++EXPORT_SYMBOL_GPL(arch_scale_freq_key);
  
- /**
-  * tick_nohz_get_idle_calls - return the current idle calls counter value
+ static DEFINE_PER_CPU(u64, arch_prev_aperf);
+ static DEFINE_PER_CPU(u64, arch_prev_mperf);
 -- 
 2.26.2.526.g744177e7f7-goog
 
