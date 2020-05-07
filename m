@@ -2,244 +2,362 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB77D1C85D8
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 11:30:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 745C01C85DF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 11:32:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726975AbgEGJan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 05:30:43 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:5008 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726825AbgEGJam (ORCPT
+        id S1726451AbgEGJcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 05:32:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725900AbgEGJcV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 05:30:42 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04793VJX146293;
-        Thu, 7 May 2020 05:30:41 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30s4gwwca9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 May 2020 05:30:41 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 04793XNX146363;
-        Thu, 7 May 2020 05:30:40 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30s4gwwc9g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 May 2020 05:30:40 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 0479Pfhg025142;
-        Thu, 7 May 2020 09:30:38 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma04ams.nl.ibm.com with ESMTP id 30s0g5u0n3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 May 2020 09:30:38 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0479TPSg55509356
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 7 May 2020 09:29:25 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 353FEA4057;
-        Thu,  7 May 2020 09:30:35 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 05F15A4051;
-        Thu,  7 May 2020 09:30:35 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu,  7 May 2020 09:30:34 +0000 (GMT)
-From:   Niklas Schnelle <schnelle@linux.ibm.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, Pierre Morel <pmorel@linux.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>
-Subject: [PATCH 2/2] s390/pci: create links between PFs and VFs
-Date:   Thu,  7 May 2020 11:30:34 +0200
-Message-Id: <20200507093034.56143-3-schnelle@linux.ibm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200507093034.56143-1-schnelle@linux.ibm.com>
-References: <20200507093034.56143-1-schnelle@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-07_04:2020-05-05,2020-05-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- lowpriorityscore=0 mlxlogscore=999 clxscore=1015 bulkscore=0 mlxscore=0
- priorityscore=1501 malwarescore=0 phishscore=0 spamscore=0 impostorscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005070075
+        Thu, 7 May 2020 05:32:21 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5D90C061A10
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 02:32:21 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id b6so5240891qkh.11
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 02:32:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aXYHDw4cvlFbRXqxisK7rfFissrcLXryPeAwvIZG9TU=;
+        b=qsXQRtaU4Z5D38+TzQ/wLEYrcE2s5SXIiji3LpnAe0USnL/7h/9z2bE9RrUQ1EI/Kp
+         k3mXLkLPV2piAJozHPhhgXpp2VMcz3METXLekwsMJQ1D4UFHRC7vY+T45P1wKVqoSu6a
+         yQzZk/N5heJ7773MC6qd44jgpw7Swz7+ivwZT5g4Hpt/MFeUDnRDl8r0zDvChqWDq2Mq
+         kqM+ZxZen/qOi2b3cgi7Al9wmrofL1NeOG5vYt6v2y3Y64tawf0AtUp5pgJWvakivOwf
+         kfyEPTIdaIS3ikZ1I+/AiwuVI79ixDrZbCarksqqSII77RMYdrmfqh795HPnsUjg3XxC
+         uZyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aXYHDw4cvlFbRXqxisK7rfFissrcLXryPeAwvIZG9TU=;
+        b=KGbjSN3splCv8bs5mDKs6YeJkTUglxYLcgYPePA9ofqwX92dnY7oq85Uj3BQFz7MOe
+         WOaNMUNX07+zJRLKmws4QepVr0Knr60JdZeDZ+psF2U3P4ginsuzynjrFCfQlbMbKjY7
+         LKl65jPY2ZCG2epCxUVylAYkCvII3zCbvvyFk4Ab2GKel5+5NAj+oW8s+HPJu6DZJVkk
+         GhSHUNlh6xdHxugnIlgBjrlDBCVirsQ8CqLON2oRjcD/EYpxDX9AcwAI9nOQv7Y8dz3m
+         tHZpv1ZF39y63wW8HIch/poBLbIVxeuLQ/L6Jk2cR4QXINchBBF9GS3IaH4gU71svGXR
+         dxNA==
+X-Gm-Message-State: AGi0PuZbjZkW6Bxub1fb4HV9O2FeCDXB0BPaE2/gT4GFZ+jYlIOKSwGR
+        v33Ktsow0XiODqA4pYCjyJXDo7cGiuFpLLDO/iPDUw==
+X-Google-Smtp-Source: APiQypKoFv0SJGU156cfq3NUci5/F+axzLsWzsebeOcAzB50ArPWsJAu3jxzNleiJxXpxA7C2s3cE72ZsUp6vyMvUdA=
+X-Received: by 2002:a05:620a:1362:: with SMTP id d2mr12915747qkl.256.1588843939308;
+ Thu, 07 May 2020 02:32:19 -0700 (PDT)
+MIME-Version: 1.0
+References: <00000000000003dc8f05a50b798e@google.com>
+In-Reply-To: <00000000000003dc8f05a50b798e@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 7 May 2020 11:32:08 +0200
+Message-ID: <CACT4Y+bzRtZdLSzHTp-kJZo4Qg7QctXNVEY9=kbAzfMck9XxAA@mail.gmail.com>
+Subject: Re: linux-next boot error: WARNING: suspicious RCU usage in ip6mr_get_table
+To:     syzbot <syzbot+761cff389b454aa387d2@syzkaller.appspotmail.com>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     David Miller <davem@davemloft.net>, kuba@kernel.org,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On s390 PCI Virtual Functions (VFs) are scanned by firmware and are made
-available to Linux via the hot-plug interface. As such the common code
-path of doing the scan directly using the parent Physical Function (PF)
-is not used and fenced off with the no_vf_scan attribute.
+On Thu, May 7, 2020 at 11:26 AM syzbot
+<syzbot+761cff389b454aa387d2@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following crash on:
+>
+> HEAD commit:    6b43f715 Add linux-next specific files for 20200507
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=16f64370100000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=ef9b7a80b923f328
+> dashboard link: https://syzkaller.appspot.com/bug?extid=761cff389b454aa387d2
+> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+>
+> Unfortunately, I don't have any reproducer for this crash yet.
+>
+> IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> Reported-by: syzbot+761cff389b454aa387d2@syzkaller.appspotmail.com
 
-Even if the partition created the VFs itself e.g. using the sriov_numvfs
-attribute of a PF, the PF/VF links thus need to be established after the
-fact. To do this when a VF is plugged we scan through all functions on
-the same zbus and test whether they are the parent PF in which case we
-establish the necessary links.
 
-With these links established there is now no more need to fence off
-pci_iov_remove_virtfn() for pdev->no_vf_scan as the common code now
-works fine.
++linux-next for linux-next boot breakage
 
-Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
----
- arch/s390/include/asm/pci.h     |  3 +-
- arch/s390/include/asm/pci_clp.h |  3 +-
- arch/s390/pci/pci_bus.c         | 69 ++++++++++++++++++++++++++++++++-
- arch/s390/pci/pci_clp.c         |  1 +
- drivers/pci/iov.c               |  3 --
- 5 files changed, 73 insertions(+), 6 deletions(-)
-
-diff --git a/arch/s390/include/asm/pci.h b/arch/s390/include/asm/pci.h
-index c1558cf071b8..99b92c3e46b0 100644
---- a/arch/s390/include/asm/pci.h
-+++ b/arch/s390/include/asm/pci.h
-@@ -131,7 +131,8 @@ struct zpci_dev {
- 	u8		port;
- 	u8		rid_available	: 1;
- 	u8		has_hp_slot	: 1;
--	u8		reserved	: 6;
-+	u8		is_physfn	: 1;
-+	u8		reserved	: 5;
- 	unsigned int	devfn;		/* DEVFN part of the RID*/
- 
- 	struct mutex lock;
-diff --git a/arch/s390/include/asm/pci_clp.h b/arch/s390/include/asm/pci_clp.h
-index 896ee41e23e3..eb51272dd2cc 100644
---- a/arch/s390/include/asm/pci_clp.h
-+++ b/arch/s390/include/asm/pci_clp.h
-@@ -95,7 +95,8 @@ struct clp_rsp_query_pci {
- 	u16 vfn;			/* virtual fn number */
- 	u16			:  3;
- 	u16 rid_avail		:  1;
--	u16			:  2;
-+	u16 is_physfn		:  1;
-+	u16 reserved1		:  1;
- 	u16 mio_addr_avail	:  1;
- 	u16 util_str_avail	:  1;	/* utility string available? */
- 	u16 pfgid		:  8;	/* pci function group id */
-diff --git a/arch/s390/pci/pci_bus.c b/arch/s390/pci/pci_bus.c
-index 542c6b8f56df..52d79a2f6722 100644
---- a/arch/s390/pci/pci_bus.c
-+++ b/arch/s390/pci/pci_bus.c
-@@ -126,6 +126,64 @@ static struct zpci_bus *zpci_bus_alloc(int pchid)
- 	return zbus;
- }
- 
-+#ifdef CONFIG_PCI_IOV
-+static int zpci_bus_link_virtfn(struct pci_dev *pdev,
-+		struct pci_dev *virtfn, int vfid)
-+{
-+	int rc;
-+
-+	virtfn->physfn = pci_dev_get(pdev);
-+	rc = pci_iov_sysfs_link(pdev, virtfn, vfid);
-+	if (rc) {
-+		pci_dev_put(pdev);
-+		virtfn->physfn = NULL;
-+		return rc;
-+	}
-+	return 0;
-+}
-+
-+static int zpci_bus_setup_virtfn(struct zpci_bus *zbus,
-+		struct pci_dev *virtfn, int vfn)
-+{
-+	int i, cand_devfn;
-+	struct zpci_dev *zdev;
-+	struct pci_dev *pdev;
-+	int vfid = vfn - 1; /* Linux' vfid's start at 0 vfn at 1*/
-+	int rc = 0;
-+
-+	virtfn->is_virtfn = 1;
-+	virtfn->multifunction = 0;
-+	WARN_ON(vfid < 0);
-+	/* If the parent PF for the given VF is also configured in the
-+	 * instance, it must be on the same zbus.
-+	 * We can then identify the parent PF by checking what
-+	 * devfn the VF would have if it belonged to that PF using the PF's
-+	 * stride and offset. Only if this candidate devfn matches the
-+	 * actual devfn will we link both functions.
-+	 */
-+	for (i = 0; i < ZPCI_FUNCTIONS_PER_BUS; i++) {
-+		zdev = zbus->function[i];
-+		if (zdev && zdev->is_physfn) {
-+			pdev = pci_get_slot(zbus->bus, zdev->devfn);
-+			cand_devfn = pci_iov_virtfn_devfn(pdev, vfid);
-+			if (cand_devfn == virtfn->devfn) {
-+				rc = zpci_bus_link_virtfn(pdev, virtfn, vfid);
-+				break;
-+			}
-+		}
-+	}
-+	return rc;
-+}
-+#else
-+static inline int zpci_bus_setup_virtfn(struct zpci_bus *zbus,
-+		struct pci_dev *virtfn, int vfn)
-+{
-+	virtfn->is_virtfn = 1;
-+	virtfn->multifunction = 0;
-+	return 0;
-+}
-+#endif
-+
- static int zpci_bus_add_device(struct zpci_bus *zbus, struct zpci_dev *zdev)
- {
- 	struct pci_bus *bus;
-@@ -157,11 +215,20 @@ static int zpci_bus_add_device(struct zpci_bus *zbus, struct zpci_dev *zdev)
- 
- 	pdev = pci_scan_single_device(bus, zdev->devfn);
- 	if (pdev) {
--		pdev->multifunction = 1;
-+		if (!zdev->is_physfn) {
-+			rc = zpci_bus_setup_virtfn(zbus, pdev, zdev->vfn);
-+			if (rc)
-+				goto failed_with_pdev;
-+		}
- 		pci_bus_add_device(pdev);
- 	}
- 
- 	return 0;
-+
-+failed_with_pdev:
-+	pci_stop_and_remove_bus_device(pdev);
-+	pci_dev_put(pdev);
-+	return rc;
- }
- 
- static void zpci_bus_add_devices(struct zpci_bus *zbus)
-diff --git a/arch/s390/pci/pci_clp.c b/arch/s390/pci/pci_clp.c
-index 9b318824a134..d7bd3c287cf7 100644
---- a/arch/s390/pci/pci_clp.c
-+++ b/arch/s390/pci/pci_clp.c
-@@ -159,6 +159,7 @@ static int clp_store_query_pci_fn(struct zpci_dev *zdev,
- 	zdev->uid = response->uid;
- 	zdev->fmb_length = sizeof(u32) * response->fmb_len;
- 	zdev->rid_available = response->rid_avail;
-+	zdev->is_physfn = response->is_physfn;
- 	if (!s390_pci_no_rid && zdev->rid_available)
- 		zdev->devfn = response->rid & ZPCI_RID_MASK_DEVFN;
- 
-diff --git a/drivers/pci/iov.c b/drivers/pci/iov.c
-index ee6fbe688498..b37e08c4f9d1 100644
---- a/drivers/pci/iov.c
-+++ b/drivers/pci/iov.c
-@@ -571,9 +571,6 @@ static void sriov_del_vfs(struct pci_dev *dev)
- 	struct pci_sriov *iov = dev->sriov;
- 	int i;
- 
--	if (dev->no_vf_scan)
--		return;
--
- 	for (i = 0; i < iov->num_VFs; i++)
- 		pci_iov_remove_virtfn(dev, i);
- }
--- 
-2.17.1
-
+> SoftiWARP attached
+> Driver 'framebuffer' was unable to register with bus_type 'coreboot' because the bus was not initialized.
+> Driver 'memconsole' was unable to register with bus_type 'coreboot' because the bus was not initialized.
+> Driver 'vpd' was unable to register with bus_type 'coreboot' because the bus was not initialized.
+> hid: raw HID events driver (C) Jiri Kosina
+> usbcore: registered new interface driver usbhid
+> usbhid: USB HID core driver
+> ashmem: initialized
+> usbcore: registered new interface driver snd-usb-audio
+> drop_monitor: Initializing network drop monitor service
+> NET: Registered protocol family 26
+> GACT probability on
+> Mirror/redirect action on
+> Simple TC action Loaded
+> netem: version 1.3
+> u32 classifier
+>     Performance counters on
+>     input device check on
+>     Actions configured
+> nf_conntrack_irc: failed to register helpers
+> nf_conntrack_sane: failed to register helpers
+> nf_conntrack_sip: failed to register helpers
+> xt_time: kernel timezone is -0000
+> IPVS: Registered protocols (TCP, UDP, SCTP, AH, ESP)
+> IPVS: Connection hash table configured (size=4096, memory=64Kbytes)
+> IPVS: ipvs loaded.
+> IPVS: [rr] scheduler registered.
+> IPVS: [wrr] scheduler registered.
+> IPVS: [lc] scheduler registered.
+> IPVS: [wlc] scheduler registered.
+> IPVS: [fo] scheduler registered.
+> IPVS: [ovf] scheduler registered.
+> IPVS: [lblc] scheduler registered.
+> IPVS: [lblcr] scheduler registered.
+> IPVS: [dh] scheduler registered.
+> IPVS: [sh] scheduler registered.
+> IPVS: [mh] scheduler registered.
+> IPVS: [sed] scheduler registered.
+> IPVS: [nq] scheduler registered.
+> IPVS: ftp: loaded support on port[0] = 21
+> IPVS: [sip] pe registered.
+> ipip: IPv4 and MPLS over IPv4 tunneling driver
+> gre: GRE over IPv4 demultiplexor driver
+> ip_gre: GRE over IPv4 tunneling driver
+> IPv4 over IPsec tunneling driver
+> ipt_CLUSTERIP: ClusterIP Version 0.8 loaded successfully
+> Initializing XFRM netlink socket
+> IPsec XFRM device driver
+> NET: Registered protocol family 10
+> =============================
+> WARNING: suspicious RCU usage
+> 5.7.0-rc4-next-20200507-syzkaller #0 Not tainted
+> -----------------------------
+> net/ipv6/ip6mr.c:124 RCU-list traversed in non-reader section!!
+>
+> other info that might help us debug this:
+>
+>
+> rcu_scheduler_active = 2, debug_locks = 1
+> 1 lock held by swapper/0/1:
+>  #0: ffffffff8a7aae30 (pernet_ops_rwsem){+.+.}-{3:3}, at: register_pernet_subsys+0x16/0x40 net/core/net_namespace.c:1257
+>
+> stack backtrace:
+> CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.7.0-rc4-next-20200507-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x18f/0x20d lib/dump_stack.c:118
+>  ip6mr_get_table+0x153/0x180 net/ipv6/ip6mr.c:124
+>  ip6mr_new_table+0x1b/0x70 net/ipv6/ip6mr.c:382
+>  ip6mr_rules_init net/ipv6/ip6mr.c:236 [inline]
+>  ip6mr_net_init+0x133/0x3f0 net/ipv6/ip6mr.c:1310
+>  ops_init+0xaf/0x420 net/core/net_namespace.c:151
+>  __register_pernet_operations net/core/net_namespace.c:1140 [inline]
+>  register_pernet_operations+0x346/0x840 net/core/net_namespace.c:1217
+>  register_pernet_subsys+0x25/0x40 net/core/net_namespace.c:1258
+>  ip6_mr_init+0x49/0x152 net/ipv6/ip6mr.c:1363
+>  inet6_init+0x1d7/0x6dc net/ipv6/af_inet6.c:1037
+>  do_one_initcall+0x10a/0x7d0 init/main.c:1159
+>  do_initcall_level init/main.c:1232 [inline]
+>  do_initcalls init/main.c:1248 [inline]
+>  do_basic_setup init/main.c:1268 [inline]
+>  kernel_init_freeable+0x501/0x5ae init/main.c:1454
+>  kernel_init+0xd/0x1bb init/main.c:1359
+>  ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:351
+> Segment Routing with IPv6
+> mip6: Mobile IPv6
+> sit: IPv6, IPv4 and MPLS over IPv4 tunneling driver
+> ip6_gre: GRE over IPv6 tunneling driver
+> NET: Registered protocol family 17
+> NET: Registered protocol family 15
+> Bridge firewalling registered
+> NET: Registered protocol family 9
+> X25: Linux Version 0.2
+> NET: Registered protocol family 6
+> NET: Registered protocol family 11
+> NET: Registered protocol family 3
+> can: controller area network core (rev 20170425 abi 9)
+> NET: Registered protocol family 29
+> can: raw protocol (rev 20170425)
+> can: broadcast manager protocol (rev 20170425 t)
+> can: netlink gateway (rev 20190810) max_hops=1
+> can: SAE J1939
+> Bluetooth: RFCOMM TTY layer initialized
+> Bluetooth: RFCOMM socket layer initialized
+> Bluetooth: RFCOMM ver 1.11
+> Bluetooth: BNEP (Ethernet Emulation) ver 1.3
+> Bluetooth: BNEP filters: protocol multicast
+> Bluetooth: BNEP socket layer initialized
+> Bluetooth: CMTP (CAPI Emulation) ver 1.0
+> Bluetooth: CMTP socket layer initialized
+> Bluetooth: HIDP (Human Interface Emulation) ver 1.2
+> Bluetooth: HIDP socket layer initialized
+> RPC: Registered rdma transport module.
+> RPC: Registered rdma backchannel transport module.
+> NET: Registered protocol family 33
+> Key type rxrpc registered
+> Key type rxrpc_s registered
+> NET: Registered protocol family 41
+> lec:lane_module_init: lec.c: initialized
+> mpoa:atm_mpoa_init: mpc.c: initialized
+> l2tp_core: L2TP core driver, V2.0
+> l2tp_ppp: PPPoL2TP kernel driver, V2.0
+> l2tp_ip: L2TP IP encapsulation support (L2TPv3)
+> l2tp_netlink: L2TP netlink interface
+> l2tp_eth: L2TP ethernet pseudowire support (L2TPv3)
+> l2tp_ip6: L2TP IP encapsulation support for IPv6 (L2TPv3)
+> NET: Registered protocol family 35
+> 8021q: 802.1Q VLAN Support v1.8
+> DCCP: Activated CCID 2 (TCP-like)
+> DCCP: Activated CCID 3 (TCP-Friendly Rate Control)
+> sctp: Hash tables configured (bind 32/56)
+> NET: Registered protocol family 21
+> Registered RDS/infiniband transport
+> Registered RDS/tcp transport
+> tipc: Activated (version 2.0.0)
+> NET: Registered protocol family 30
+> tipc: Started in single node mode
+> NET: Registered protocol family 43
+> 9pnet: Installing 9P2000 support
+> NET: Registered protocol family 37
+> NET: Registered protocol family 36
+> Key type dns_resolver registered
+> Key type ceph registered
+> libceph: loaded (mon/osd proto 15/24)
+> batman_adv: B.A.T.M.A.N. advanced 2020.2 (compatibility version 15) loaded
+> openvswitch: Open vSwitch switching datapath
+> NET: Registered protocol family 40
+> mpls_gso: MPLS GSO support
+> IPI shorthand broadcast: enabled
+> AVX2 version of gcm_enc/dec engaged.
+> AES CTR mode by8 optimization enabled
+> sched_clock: Marking stable (12995625706, 30506909)->(13027042353, -909738)
+> registered taskstats version 1
+> Loading compiled-in X.509 certificates
+> Loaded X.509 cert 'Build time autogenerated kernel key: 8b22f477d966bfa6cf9a482acbda6ca1892a4acc'
+> zswap: loaded using pool lzo/zbud
+> debug_vm_pgtable: debug_vm_pgtable: Validating architecture page table helpers
+> Key type ._fscrypt registered
+> Key type .fscrypt registered
+> Key type fscrypt-provisioning registered
+> kAFS: Red Hat AFS client v0.1 registering.
+> FS-Cache: Netfs 'afs' registered for caching
+> Btrfs loaded, crc32c=crc32c-intel
+> Key type big_key registered
+> Key type encrypted registered
+> AppArmor: AppArmor sha1 policy hashing enabled
+> ima: No TPM chip found, activating TPM-bypass!
+> ima: Allocated hash algorithm: sha256
+> ima: No architecture policies found
+> evm: Initialising EVM extended attributes:
+> evm: security.selinux
+> evm: security.SMACK64
+> evm: security.SMACK64EXEC
+> evm: security.SMACK64TRANSMUTE
+> evm: security.SMACK64MMAP
+> evm: security.apparmor
+> evm: security.ima
+> evm: security.capability
+> evm: HMAC attrs: 0x1
+> PM:   Magic number: 4:395:573
+> usbmon usbmon13: hash matches
+> tty ptyb5: hash matches
+> printk: console [netcon0] enabled
+> netconsole: network logging started
+> gtp: GTP module loaded (pdp ctx size 104 bytes)
+> rdma_rxe: loaded
+> cfg80211: Loading compiled-in X.509 certificates for regulatory database
+> cfg80211: Loaded X.509 cert 'sforshee: 00b28ddf47aef9cea7'
+> ALSA device list:
+>   #0: Dummy 1
+>   #1: Loopback 1
+>   #2: Virtual MIDI Card 1
+> md: Waiting for all devices to be available before autodetect
+> md: If you don't use raid, use raid=noautodetect
+> md: Autodetecting RAID arrays.
+> md: autorun ...
+> md: ... autorun DONE.
+> EXT4-fs (sda1): mounted filesystem without journal. Opts: (null)
+> VFS: Mounted root (ext4 filesystem) readonly on device 8:1.
+> devtmpfs: mounted
+> Freeing unused kernel image (initmem) memory: 2784K
+> Kernel memory protection disabled.
+> Run /sbin/init as init process
+> random: systemd: uninitialized urandom read (16 bytes read)
+> random: systemd: uninitialized urandom read (16 bytes read)
+> random: systemd: uninitialized urandom read (16 bytes read)
+> systemd[1]: systemd 232 running in system mode. (+PAM +AUDIT +SELINUX +IMA +APPARMOR +SMACK +SYSVINIT +UTMP +LIBCRYPTSETUP +GCRYPT +GNUTLS +ACL +XZ +LZ4 +SECCOMP +BLKID +ELFUTILS +KMOD +IDN)
+> systemd[1]: Detected virtualization kvm.
+> systemd[1]: Detected architecture x86-64.
+> systemd[1]: Set hostname to <syzkaller>.
+> systemd[1]: Listening on Journal Audit Socket.
+> systemd[1]: Listening on Journal Socket (/dev/log).
+> systemd[1]: Listening on Syslog Socket.
+> systemd[1]: Started Dispatch Password Requests to Console Directory Watch.
+> systemd[1]: Reached target Remote File Systems.
+>
+> =============================
+> WARNING: suspicious RCU usage
+> 5.7.0-rc4-next-20200507-syzkaller #0 Not tainted
+> -----------------------------
+> security/integrity/evm/evm_main.c:231 RCU-list traversed in non-reader section!!
+>
+> other info that might help us debug this:
+>
+>
+> rcu_scheduler_active = 2, debug_locks = 1
+> 2 locks held by systemd/1:
+>  #0: ffff88809867e450 (sb_writers#8){.+.+}-{0:0}, at: sb_start_write include/linux/fs.h:1663 [inline]
+>  #0: ffff88809867e450 (sb_writers#8){.+.+}-{0:0}, at: mnt_want_write+0x3a/0xb0 fs/namespace.c:354
+>  #1: ffff8880989712d0 (&type->i_mutex_dir_key#6){++++}-{3:3}, at: inode_lock include/linux/fs.h:799 [inline]
+>  #1: ffff8880989712d0 (&type->i_mutex_dir_key#6){++++}-{3:3}, at: vfs_setxattr+0x92/0xf0 fs/xattr.c:219
+>
+> stack backtrace:
+> CPU: 1 PID: 1 Comm: systemd Not tainted 5.7.0-rc4-next-20200507-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x18f/0x20d lib/dump_stack.c:118
+>  evm_protected_xattr+0x1c2/0x210 security/integrity/evm/evm_main.c:231
+>  evm_protect_xattr.isra.0+0xb6/0x3d0 security/integrity/evm/evm_main.c:318
+>  evm_inode_setxattr+0xc4/0xf0 security/integrity/evm/evm_main.c:387
+>  security_inode_setxattr+0x18f/0x200 security/security.c:1297
+>  vfs_setxattr+0xa7/0xf0 fs/xattr.c:220
+>  setxattr+0x23d/0x330 fs/xattr.c:451
+>  path_setxattr+0x170/0x190 fs/xattr.c:470
+>  __do_sys_setxattr fs/xattr.c:485 [inline]
+>  __se_sys_setxattr fs/xattr.c:481 [inline]
+>  __x64_sys_setxattr+0xc0/0x160 fs/xattr.c:481
+>  do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
+>  entry_SYSCALL_64_after_hwframe+0x49/0xb3
+> RIP: 0033:0x7ff804be467a
+> Code: 48 8b 0d 21 18 2b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 49 89 ca b8 bc 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d ee 17 2b 00 f7 d8 64 89 01 48
+> RSP: 002b:00007ffd6a5afa98 EFLAGS: 00000246 ORIG_RAX: 00000000000000bc
+> RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007ff804be467a
+> RDX: 00007ffd6a5afb10 RSI: 0000563851e78f9b RDI: 000056385393e6c0
+> RBP: 0000563851e78f9b R08: 0000000000000000 R09: 0000000000000030
+> R10: 0000000000000020 R11: 0000000000000246 R12: 00007ffd6a5afb10
+> R13: 0000000000000020 R14: 0000000000000000 R15: 00005638539151b0
+>
+>
+> ---
+> This bug is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this bug report. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/00000000000003dc8f05a50b798e%40google.com.
