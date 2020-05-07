@@ -2,66 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59AA81C9EA6
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 00:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35E031C9EA3
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 00:45:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727783AbgEGWqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 18:46:08 -0400
-Received: from mail.zx2c4.com ([192.95.5.64]:33597 "EHLO mail.zx2c4.com"
+        id S1726950AbgEGWpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 18:45:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41232 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726437AbgEGWqH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 18:46:07 -0400
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 50c3cd25;
-        Thu, 7 May 2020 22:33:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=from:to:cc
-        :subject:date:message-id:mime-version:content-transfer-encoding;
-         s=mail; bh=Y28RivJhmM6MWjyY0gj84oLdWLQ=; b=EMkPBPwaICbxaPVNifu4
-        q3vOcEPh1st206ZYU4wMRszU8E03NYrwDtsQag8ZV2cGoaI1itp016gf8EIAz5dZ
-        NhL9MlLsvFI2dnE8kV8ELBHIGxsFasECHkQGu9HukIhZR5NraqdArsCL5TknDdNK
-        0UMCxycoLDx9swoh2dlWxZ5uTeyYj3HC3XM0k0Ksb3Fnl3jqnozCYiUUF5tk4i62
-        9c3wqlhRH2i2F3FGF4BnIuXVO6RRpbaYQ7bnPl9gdRplAmcCs+cY2hk9JunyMV3W
-        88jSI5G9RLZXGZ00Mbq3SEw4S/iaeUr95vpSYPVtmFb+KW5TjilTe+kqtmhE7GLk
-        gA==
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id a66014fb (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Thu, 7 May 2020 22:33:14 +0000 (UTC)
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     linux-kernel@vger.kernel.org, x86@kernel.org
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: [PATCH] Kconfig: default to CC_OPTIMIZE_FOR_PERFORMANCE_O3 for gcc >= 10
-Date:   Thu,  7 May 2020 16:45:30 -0600
-Message-Id: <20200507224530.2993316-1-Jason@zx2c4.com>
+        id S1726770AbgEGWp3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 18:45:29 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C274220725;
+        Thu,  7 May 2020 22:45:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588891529;
+        bh=m6BQnVKIlUtyrdBpZe1PlvAZv15nUYwubFnQjyNpYOE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FqhYuwHu/gCZASVTcH8p9XI9PqStc01J6jRoOc4dpLZaEtCorgMNAlMkLyF+Z+5A/
+         toHFjg8LJxX05TsbJCUGlv3mrAJlsS9BLDA/RBSk+FAIWB8FMzYV7uaNiLDgT0W6vQ
+         geB1GancB2T8LkkZlAiiipAVdzAsTXo+MQWruYR0=
+Date:   Thu, 7 May 2020 17:49:55 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Richard Guy Briggs <rgb@redhat.com>
+Cc:     Paul Moore <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>,
+        linux-audit@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] audit: Replace zero-length array with flexible-array
+Message-ID: <20200507224955.GA22343@embeddedor>
+References: <20200507185041.GA13930@embeddedor>
+ <20200507215812.ksvwcykfged7ye2a@madcap2.tricolour.ca>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200507215812.ksvwcykfged7ye2a@madcap2.tricolour.ca>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-GCC 10 appears to have changed -O2 in order to make compilation time
-faster when using -flto, seemingly at the expense of performance, in
-particular with regards to how the inliner works. Since -O3 these days
-shouldn't have the same set of bugs as 10 years ago, this commit
-defaults new kernel compiles to -O3 when using gcc >= 10.
+On Thu, May 07, 2020 at 05:58:13PM -0400, Richard Guy Briggs wrote:
+> On 2020-05-07 13:50, Gustavo A. R. Silva wrote:
+> > The current codebase makes use of the zero-length array language
+> > extension to the C90 standard, but the preferred mechanism to declare
+> > variable-length types such as these ones is a flexible array member[1][2],
+> > introduced in C99:
+> > 
+> > struct foo {
+> >         int stuff;
+> >         struct boo array[];
+> > };
+> > 
+> > By making use of the mechanism above, we will get a compiler warning
+> > in case the flexible array does not occur last in the structure, which
+> > will help us prevent some kind of undefined behavior bugs from being
+> > inadvertently introduced[3] to the codebase from now on.
+> > 
+> > Also, notice that, dynamic memory allocations won't be affected by
+> > this change:
+> > 
+> > "Flexible array members have incomplete type, and so the sizeof operator
+> > may not be applied. As a quirk of the original implementation of
+> > zero-length arrays, sizeof evaluates to zero."[1]
+> > 
+> > sizeof(flexible-array-member) triggers a warning because flexible array
+> > members have incomplete type[1]. There are some instances of code in
+> > which the sizeof operator is being incorrectly/erroneously applied to
+> > zero-length arrays and the result is zero. Such instances may be hiding
+> > some bugs. So, this work (flexible-array member conversions) will also
+> > help to get completely rid of those sorts of issues.
+> > 
+> > This issue was found with the help of Coccinelle.
+> > 
+> > [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+> > [2] https://github.com/KSPP/linux/issues/21
+> > [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+> > 
+> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> 
+> Sounds reasonable to me.  There's another in include/uapi/linux/audit.h
 
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
----
- init/Kconfig | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Hi,
 
-diff --git a/init/Kconfig b/init/Kconfig
-index 9e22ee8fbd75..fab3f810a68d 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -1245,7 +1245,8 @@ config BOOT_CONFIG
- 
- choice
- 	prompt "Compiler optimization level"
--	default CC_OPTIMIZE_FOR_PERFORMANCE
-+	default CC_OPTIMIZE_FOR_PERFORMANCE_O3 if GCC_VERSION >= 100000
-+	default CC_OPTIMIZE_FOR_PERFORMANCE if (GCC_VERSION < 100000 || CC_IS_CLANG)
- 
- config CC_OPTIMIZE_FOR_PERFORMANCE
- 	bool "Optimize for performance (-O2)"
--- 
-2.26.2
+I wouldn't advise to make any of these conversions in include/uapi/
+[1][2].
 
+> in struct audit_rule_data buf[0].  This alert also helped me fix another
+> one in a patchset I'm about to post (and will probably cause a merge
+> conflict but we can figure that out).
+
+Awesome. :)
+
+> 
+> Reviewed-by: Richard Guy Briggs <rgb@redhat.com>
+>
+
+Thanks
+--
+Gustavo
+
+[1] https://lore.kernel.org/lkml/20200424121553.GE26002@ziepe.ca/
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1e6e9d0f4859ec698d55381ea26f4136eff3afe1
+
+> > ---
+> >  include/linux/audit.h |    2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/include/linux/audit.h b/include/linux/audit.h
+> > index f9ceae57ca8d..2b63aee6e9fa 100644
+> > --- a/include/linux/audit.h
+> > +++ b/include/linux/audit.h
+> > @@ -19,7 +19,7 @@
+> >  struct audit_sig_info {
+> >  	uid_t		uid;
+> >  	pid_t		pid;
+> > -	char		ctx[0];
+> > +	char		ctx[];
+> >  };
+> >  
+> >  struct audit_buffer;
+> > 
+> > 
+> > --
+> > Linux-audit mailing list
+> > Linux-audit@redhat.com
+> > https://www.redhat.com/mailman/listinfo/linux-audit
+> 
+> - RGB
+> 
+> --
+> Richard Guy Briggs <rgb@redhat.com>
+> Sr. S/W Engineer, Kernel Security, Base Operating Systems
+> Remote, Ottawa, Red Hat Canada
+> IRC: rgb, SunRaycer
+> Voice: +1.647.777.2635, Internal: (81) 32635
+> 
