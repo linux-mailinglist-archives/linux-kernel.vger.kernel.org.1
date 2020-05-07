@@ -2,63 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A3ED1C968E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 18:31:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6B571C9698
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 18:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727943AbgEGQbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 12:31:14 -0400
-Received: from foss.arm.com ([217.140.110.172]:35348 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726222AbgEGQbO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 12:31:14 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C07111FB;
-        Thu,  7 May 2020 09:31:13 -0700 (PDT)
-Received: from gaia (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E19BF3F71F;
-        Thu,  7 May 2020 09:31:12 -0700 (PDT)
-Date:   Thu, 7 May 2020 17:31:10 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] arm64 fixes for 5.7-rc5
-Message-ID: <20200507163108.GA17399@gaia>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1727971AbgEGQdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 12:33:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727071AbgEGQdH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 12:33:07 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A283C05BD43
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 09:33:06 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 186so7687253ybq.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 09:33:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=og154mHT7Z9uD6j2lwCYPmDrJ+/s5VY2aDAgiLM9b98=;
+        b=IJMyIUePnVZdYSUnoiGNaJBp9FENwv0hX7vYYnUYT9c3x9pjUNSefNv7zPpGkB1FGs
+         jtm5oQCFAXilKW/JLjhFJ9J6o6Ih+udUlq94zoxdyzFJzvJ+Y+UbEwtqhbqboeSnC7le
+         P1Ump5crq6Gh2lH86YAQmM3MW83uJ8t7ZVDJ9NFDI2OhqYo+vAlCL/5uBgejtqdApLbm
+         zWDhL6oJfOGt7HQjc0LVEI4I6rW+dOuvXZyTGxfQZPnGc8du64GCVs38fn0954HxEhl1
+         0Mzs5kzurd/aoze7EFOKg5UsEGNqqkZ0I9HbMpmQdNxrtu1q7M+rNNKPw7ajXFWF5xFm
+         H3hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=og154mHT7Z9uD6j2lwCYPmDrJ+/s5VY2aDAgiLM9b98=;
+        b=NLiJ6gygSHqtXk66uF+XqnakKqyFBa1MeYg8CT9fPaSEAeQGKm+Ro2tg2Zk3Sig2A6
+         Y6JavB/DWwApT69nkgSxYfY9liuPEP4iOxmKseOQXT5zDXX+lsPkYtXPP1TCd8uzDBNv
+         18TXeZkfnqvd2gPqUHPUtatsJm9QRJ9tqvZLJQnrskwXmpSDyZ+hZM+xiws3/EUTzlbd
+         2K8/0RHqMJ4SrIPscOLZETDsY3x1OfdS1vHOaV5mbEfXHPH4Me8fuDwQXQKtpDm6ORbz
+         2S/hjfMKEeACcpzuZOxssTVywSS7d96dEx0KWtg0qr4TqDX6aUvTAsgaHxEoyDk/VDzW
+         ywMw==
+X-Gm-Message-State: AGi0PuZ4Zl6kmldEusPiNd9e3d+YX1SO6fb5Ga9UcQUzExK2bszFPNs6
+        OHxj7B1gRU6EZZwclyuP+MGBG3uAHVpkNQ==
+X-Google-Smtp-Source: APiQypK06BpXu5zFNpBIZOjw1SyVUbCuz1lprj+aT7oBFGoFI4w3VvF2wjp0Qoon8PqGO/Ce9Xd2LKgv+fIEzw==
+X-Received: by 2002:a25:b10a:: with SMTP id g10mr23931305ybj.220.1588869185637;
+ Thu, 07 May 2020 09:33:05 -0700 (PDT)
+Date:   Thu,  7 May 2020 09:33:01 -0700
+Message-Id: <20200507163301.229070-1-shakeelb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.26.2.526.g744177e7f7-goog
+Subject: [PATCH] memcg: effective memory.high reclaim for remote charging
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
+        Michal Hocko <mhocko@kernel.org>
+Cc:     Greg Thelen <gthelen@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shakeel Butt <shakeelb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Currently the reclaim of excessive usage over memory.high is scheduled
+to run on returning to the userland. The main reason behind this
+approach was simplicity i.e. always reclaim with GFP_KERNEL context.
+However the underlying assumptions behind this approach are: the current
+task shares the memcg hierarchy with the given memcg and the memcg of
+the current task most probably will not change on return to userland.
 
-Please pull the arm64 fix below. Thanks.
+With the remote charging, the first assumption breaks and it allows the
+usage to grow way beyond the memory.high as the reclaim and the
+throttling becomes ineffective.
 
-The following changes since commit 1578e5d03112e3e9d37e1c4d95b6dfb734c73955:
+This patch forces the synchronous reclaim and potentially throttling for
+the callers with context that allows blocking. For unblockable callers
+or whose synch high reclaim is still not successful, a high reclaim is
+scheduled either to return-to-userland if current task shares the
+hierarchy with the given memcg or to system work queue.
 
-  arm64: vdso: Add -fasynchronous-unwind-tables to cflags (2020-04-30 18:35:32 +0100)
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
+---
+ mm/memcontrol.c | 63 +++++++++++++++++++++++++++++--------------------
+ 1 file changed, 37 insertions(+), 26 deletions(-)
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-fixes
-
-for you to fetch changes up to 027d0c7101f50cf03aeea9eebf484afd4920c8d3:
-
-  arm64: hugetlb: avoid potential NULL dereference (2020-05-07 09:24:15 +0100)
-
-----------------------------------------------------------------
-- Avoid potential NULL dereference in huge_pte_alloc() on pmd_alloc()
-  failure
-
-----------------------------------------------------------------
-Mark Rutland (1):
-      arm64: hugetlb: avoid potential NULL dereference
-
- arch/arm64/mm/hugetlbpage.c | 2 ++
- 1 file changed, 2 insertions(+)
-
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 317dbbaac603..7abb762f26cd 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2387,23 +2387,13 @@ static unsigned long calculate_high_delay(struct mem_cgroup *memcg,
+ 	return min(penalty_jiffies, MEMCG_MAX_HIGH_DELAY_JIFFIES);
+ }
+ 
+-/*
+- * Scheduled by try_charge() to be executed from the userland return path
+- * and reclaims memory over the high limit.
+- */
+-void mem_cgroup_handle_over_high(void)
++static void reclaim_over_high(struct mem_cgroup *memcg, gfp_t gfp_mask,
++			      unsigned long nr_pages)
+ {
+ 	unsigned long penalty_jiffies;
+ 	unsigned long pflags;
+-	unsigned int nr_pages = current->memcg_nr_pages_over_high;
+-	struct mem_cgroup *memcg;
+ 
+-	if (likely(!nr_pages))
+-		return;
+-
+-	memcg = get_mem_cgroup_from_mm(current->mm);
+-	reclaim_high(memcg, nr_pages, GFP_KERNEL);
+-	current->memcg_nr_pages_over_high = 0;
++	reclaim_high(memcg, nr_pages, gfp_mask);
+ 
+ 	/*
+ 	 * memory.high is breached and reclaim is unable to keep up. Throttle
+@@ -2418,7 +2408,7 @@ void mem_cgroup_handle_over_high(void)
+ 	 * been aggressively reclaimed enough yet.
+ 	 */
+ 	if (penalty_jiffies <= HZ / 100)
+-		goto out;
++		return;
+ 
+ 	/*
+ 	 * If we exit early, we're guaranteed to die (since
+@@ -2428,8 +2418,23 @@ void mem_cgroup_handle_over_high(void)
+ 	psi_memstall_enter(&pflags);
+ 	schedule_timeout_killable(penalty_jiffies);
+ 	psi_memstall_leave(&pflags);
++}
+ 
+-out:
++/*
++ * Scheduled by try_charge() to be executed from the userland return path
++ * and reclaims memory over the high limit.
++ */
++void mem_cgroup_handle_over_high(void)
++{
++	unsigned int nr_pages = current->memcg_nr_pages_over_high;
++	struct mem_cgroup *memcg;
++
++	if (likely(!nr_pages))
++		return;
++
++	memcg = get_mem_cgroup_from_mm(current->mm);
++	reclaim_over_high(memcg, GFP_KERNEL, nr_pages);
++	current->memcg_nr_pages_over_high = 0;
+ 	css_put(&memcg->css);
+ }
+ 
+@@ -2584,15 +2589,6 @@ static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	if (batch > nr_pages)
+ 		refill_stock(memcg, batch - nr_pages);
+ 
+-	/*
+-	 * If the hierarchy is above the normal consumption range, schedule
+-	 * reclaim on returning to userland.  We can perform reclaim here
+-	 * if __GFP_RECLAIM but let's always punt for simplicity and so that
+-	 * GFP_KERNEL can consistently be used during reclaim.  @memcg is
+-	 * not recorded as it most likely matches current's and won't
+-	 * change in the meantime.  As high limit is checked again before
+-	 * reclaim, the cost of mismatch is negligible.
+-	 */
+ 	do {
+ 		if (page_counter_read(&memcg->memory) > READ_ONCE(memcg->high)) {
+ 			/* Don't bother a random interrupted task */
+@@ -2600,8 +2596,23 @@ static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 				schedule_work(&memcg->high_work);
+ 				break;
+ 			}
+-			current->memcg_nr_pages_over_high += batch;
+-			set_notify_resume(current);
++
++			if (gfpflags_allow_blocking(gfp_mask))
++				reclaim_over_high(memcg, gfp_mask, batch);
++
++			if (page_counter_read(&memcg->memory) <=
++			    READ_ONCE(memcg->high))
++				break;
++			/*
++			 * The above reclaim might not be able to do much. Punt
++			 * the high reclaim to return to userland if the current
++			 * task shares the hierarchy.
++			 */
++			if (current->mm && mm_match_cgroup(current->mm, memcg)) {
++				current->memcg_nr_pages_over_high += batch;
++				set_notify_resume(current);
++			} else
++				schedule_work(&memcg->high_work);
+ 			break;
+ 		}
+ 	} while ((memcg = parent_mem_cgroup(memcg)));
 -- 
-Catalin
+2.26.2.526.g744177e7f7-goog
+
