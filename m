@@ -2,77 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 533D01C9526
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 17:34:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B89A61C9543
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 17:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726750AbgEGPen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 11:34:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55978 "EHLO mail.kernel.org"
+        id S1726519AbgEGPmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 11:42:52 -0400
+Received: from foss.arm.com ([217.140.110.172]:34304 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725985AbgEGPen (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 11:34:43 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 42CE6207DD;
-        Thu,  7 May 2020 15:34:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588865681;
-        bh=su42LeOpkqoZ9FpxsWpq/u+jVkw8iFswKLvseMb3xkM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MqGpj3R284gvc+wtAR2/E8G9RRNEz2VSI1EmoFaWXTzSSeWiZDJdSZcqH/orgGZNM
-         3pkvM6V9zWFMFBzg4693wAFXpMM2ctlEy2EsbY5B+vZJw8t6/fpY7TJ9244gxU6VEc
-         Fb+U+CjMoscYeEsuPnqsNI5TqcV6qAG9GVikqy+w=
-Date:   Thu, 7 May 2020 17:34:39 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Manivannan Sadhasivam <mani@kernel.org>
-Cc:     linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        fabrice.gasnier@st.com, andy.shevchenko@gmail.com,
-        robh+dt@kernel.org, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com
-Subject: Re: [PATCH v3 0/2] Add CTS/RTS gpio support to STM32 UART
-Message-ID: <20200507153439.GA1919950@kroah.com>
-References: <20200420170204.24541-1-mani@kernel.org>
- <20200507140750.GA2019@Mani-XPS-13-9360>
+        id S1725914AbgEGPmv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 11:42:51 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 08C801FB;
+        Thu,  7 May 2020 08:42:51 -0700 (PDT)
+Received: from [10.37.12.53] (unknown [10.37.12.53])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 292293F68F;
+        Thu,  7 May 2020 08:42:48 -0700 (PDT)
+Subject: Re: [PATCH] memory/samsung: Maybe wrong triming parameter
+To:     Bernard Zhao <bernard@vivo.com>, Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-pm@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com
+References: <20200507114514.11589-1-bernard@vivo.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <2eeb33f7-1acc-66bb-704a-b724fa0be0a8@arm.com>
+Date:   Thu, 7 May 2020 16:42:46 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200507140750.GA2019@Mani-XPS-13-9360>
+In-Reply-To: <20200507114514.11589-1-bernard@vivo.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 07, 2020 at 07:37:50PM +0530, Manivannan Sadhasivam wrote:
-> Hi Greg,
+Hi Bernard,
+
+
+On 5/7/20 12:45 PM, Bernard Zhao wrote:
+> In function create_timings_aligned, all the max is to use
+> dmc->min_tck->xxx, aligned with val dmc->timings->xxx.
+> But the dmc->timings->tFAW use dmc->min_tck->tXP?
+> Maybe this point is wrong parameter useing.
 > 
-> On Mon, Apr 20, 2020 at 10:32:02PM +0530, mani@kernel.org wrote:
-> > From: Manivannan Sadhasivam <mani@kernel.org>
-> > 
-> > Hello,
-> > 
-> > This patchset adds CTS/RTS gpio support to STM32 UART controller.
-> > Eventhough the UART controller supports using dedicated CTS/RTS gpios,
-> > sometimes we need to use different set of gpios for flow control.
-> > 
-> > This is necessary for the upcoming STM32MP1 based board called Stinger96
-> > IoT-Box. On that board, a bluetooth chip is connected to one of the UART
-> > controller but the CTS/RTS lines got swapped mistakenly. So this patchset
-> > serves as a workaround for that hardware bug and also supports the
-> > usecase of using any gpio for CTS/RTS functionality. As per the sugggestion
-> > provided by Andy for v1, I've now switched to mctrl_gpio driver.
-> > 
-> > This patchset has been validated with Stinger96 IoT-Box connected to Murata
-> > WiFi-BT combo chip.
-> > 
+> Signed-off-by: Bernard Zhao <bernard@vivo.com>
+> ---
+>   drivers/memory/samsung/exynos5422-dmc.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Are you planning to take this series for 5.8?
+> diff --git a/drivers/memory/samsung/exynos5422-dmc.c b/drivers/memory/samsung/exynos5422-dmc.c
+> index 81a1b1d01683..22a43d662833 100644
+> --- a/drivers/memory/samsung/exynos5422-dmc.c
+> +++ b/drivers/memory/samsung/exynos5422-dmc.c
+> @@ -1091,7 +1091,7 @@ static int create_timings_aligned(struct exynos5_dmc *dmc, u32 *reg_timing_row,
+>   	/* power related timings */
+>   	val = dmc->timings->tFAW / clk_period_ps;
+>   	val += dmc->timings->tFAW % clk_period_ps ? 1 : 0;
+> -	val = max(val, dmc->min_tck->tXP);
+> +	val = max(val, dmc->min_tck->tFAW);
+>   	reg = &timing_power[0];
+>   	*reg_timing_power |= TIMING_VAL2REG(reg, val);
+>   
+> 
 
-I had to wait for the DT protion to be reviewed before I could do
-anything.  Give me some time, if it looks ok, it will go into 5.8.
+Good catch! Indeed this should be a dmc->min_tck->tFAW used for
+clamping.
 
-thanks,
+It didn't show up in testing because the frequency values based on
+which the 'clk_period_ps' are calculated are sane.
+Check the dump below:
 
-greg k-h
+[    5.458227] DMC: mem tFAW=25000, clk_period_ps=6060
+[    5.461743] DMC: tFAW=5, tXP=2 val=5
+[    5.465273] DMC: mem tFAW=25000, clk_period_ps=4854
+[    5.470101] DMC: tFAW=5, tXP=2 val=6
+[    5.473668] DMC: mem tFAW=25000, clk_period_ps=3636
+[    5.478507] DMC: tFAW=5, tXP=2 val=7
+[    5.482072] DMC: mem tFAW=25000, clk_period_ps=2421
+[    5.486951] DMC: tFAW=5, tXP=2 val=11
+[    5.490531] DMC: mem tFAW=25000, clk_period_ps=1841
+[    5.495439] DMC: tFAW=5, tXP=2 val=14
+[    5.499113] DMC: mem tFAW=25000, clk_period_ps=1579
+[    5.503877] DMC: tFAW=5, tXP=2 val=16
+[    5.507476] DMC: mem tFAW=25000, clk_period_ps=1373
+[    5.512368] DMC: tFAW=5, tXP=2 val=19
+[    5.515968] DMC: mem tFAW=25000, clk_period_ps=1212
+[    5.520826] DMC: tFAW=5, tXP=2 val=21
+
+That's why in the existing configuration it does not harm
+(the calculated 'val' is always >= 5) the board.
+
+But I think this patch should be applied (after small changes in the
+commit message).
+
+@Krzysztof could you have a look on the commit message or take the
+patch with small adjustment in the description, please?
+
+I conditionally give (because of this description):
+
+Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+
+
+Thank you Bernard for reporting and fixing this.
+
+Regards,
+Lukasz
