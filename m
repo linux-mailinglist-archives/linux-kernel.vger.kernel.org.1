@@ -2,150 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93CF21C9576
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 17:51:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28DE61C957D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 17:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727788AbgEGPv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 11:51:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726451AbgEGPv4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 11:51:56 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E93FC05BD43;
-        Thu,  7 May 2020 08:51:56 -0700 (PDT)
-Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tip-bot2@linutronix.de>)
-        id 1jWioR-0005UP-4K; Thu, 07 May 2020 17:51:52 +0200
-Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 520B61C03AB;
-        Thu,  7 May 2020 17:51:50 +0200 (CEST)
-Date:   Thu, 07 May 2020 15:51:50 -0000
-From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cpu] x86/apic: Convert the TSC deadline timer matching to
- steppings macro
-Cc:     Borislav Petkov <bp@suse.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200506071516.25445-4-bp@alien8.de>
-References: <20200506071516.25445-4-bp@alien8.de>
-MIME-Version: 1.0
-Message-ID: <158886671029.8414.16424008517888325755.tip-bot2@tip-bot2>
-X-Mailer: tip-git-log-daemon
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+        id S1727892AbgEGPwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 11:52:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38956 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727794AbgEGPwH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 11:52:07 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8681420659;
+        Thu,  7 May 2020 15:52:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588866726;
+        bh=mlvS0oh7kj4TmZBTpYgoFJD7r3X4hwbv2okMwAawp8I=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=XkWD3pD6+MGrhYvmBVy2mHoVgjB6msb46prlZvstna19R2ybX869eo1ERqXuivXwd
+         zE5Qj+x3t5lDsUi7VxW9JIQsbm5T2nQcOS8aExAUo2V4ChD04HuX0TPksr+uZBVexx
+         7VKSFUhrDhoTldio0yZauOv2oKPki7TUI8bFsh2A=
+Date:   Fri, 8 May 2020 00:52:02 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Andreas Schwab <schwab@linux-m68k.org>
+Cc:     Shuah Khan <shuah@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tom Zanussi <tom.zanussi@linux.intel.com>,
+        Li Philip <philip.li@intel.com>,
+        Liu Yiding <yidingx.liu@intel.com>
+Subject: Re: [PATCH 3/3] selftests/ftrace: Use /bin/echo instead of built-in
+ echo
+Message-Id: <20200508005202.fb39efc3fae84924878f36f4@kernel.org>
+In-Reply-To: <87eerwkskr.fsf@igel.home>
+References: <158834025077.28357.15141584656220094821.stgit@devnote2>
+        <158834028054.28357.398159034694277189.stgit@devnote2>
+        <87eerwkskr.fsf@igel.home>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cpu branch of tip:
+On Thu, 07 May 2020 11:22:28 +0200
+Andreas Schwab <schwab@linux-m68k.org> wrote:
 
-Commit-ID:     66abf2388331b800f290e854cca3ae71de7977fe
-Gitweb:        https://git.kernel.org/tip/66abf2388331b800f290e854cca3ae71de7977fe
-Author:        Borislav Petkov <bp@suse.de>
-AuthorDate:    Tue, 05 May 2020 19:27:16 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Thu, 07 May 2020 13:50:32 +02:00
+> On Mai 01 2020, Masami Hiramatsu wrote:
+> 
+> > Since the built-in echo has different behavior in POSIX shell
+> > (dash) and bash, we forcibly use /bin/echo -E (not interpret
+> > backslash escapes) by default.
+> 
+> How about using printf instead (at least where it matters)?
 
-x86/apic: Convert the TSC deadline timer matching to steppings macro
+Hmm, I think replacing all echos with printf in the testcase might be
+much harder than this...
 
-... and get rid of the function pointers which would spit out the
-microcode revision based on the CPU stepping.
+Thank you,
 
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Mark Gross <mgross.linux.intel.com>
-Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200506071516.25445-4-bp@alien8.de
----
- arch/x86/kernel/apic/apic.c | 57 +++++++-----------------------------
- 1 file changed, 12 insertions(+), 45 deletions(-)
-
-diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
-index e53dda2..4b1d31b 100644
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -544,46 +544,20 @@ static struct clock_event_device lapic_clockevent = {
- };
- static DEFINE_PER_CPU(struct clock_event_device, lapic_events);
- 
--static __init u32 hsx_deadline_rev(void)
--{
--	switch (boot_cpu_data.x86_stepping) {
--	case 0x02: return 0x3a; /* EP */
--	case 0x04: return 0x0f; /* EX */
--	}
--
--	return ~0U;
--}
--
--static __init u32 bdx_deadline_rev(void)
--{
--	switch (boot_cpu_data.x86_stepping) {
--	case 0x02: return 0x00000011;
--	case 0x03: return 0x0700000e;
--	case 0x04: return 0x0f00000c;
--	case 0x05: return 0x0e000003;
--	}
--
--	return ~0U;
--}
--
--static __init u32 skx_deadline_rev(void)
--{
--	switch (boot_cpu_data.x86_stepping) {
--	case 0x03: return 0x01000136;
--	case 0x04: return 0x02000014;
--	}
-+static const struct x86_cpu_id deadline_match[] __initconst = {
-+	X86_MATCH_INTEL_FAM6_MODEL_STEPPINGS(HASWELL_X, X86_STEPPINGS(0x2, 0x2), 0x3a), /* EP */
-+	X86_MATCH_INTEL_FAM6_MODEL_STEPPINGS(HASWELL_X, X86_STEPPINGS(0x4, 0x4), 0x0f), /* EX */
- 
--	if (boot_cpu_data.x86_stepping > 4)
--		return 0;
-+	X86_MATCH_INTEL_FAM6_MODEL( BROADWELL_X,	0x0b000020),
- 
--	return ~0U;
--}
-+	X86_MATCH_INTEL_FAM6_MODEL_STEPPINGS(BROADWELL_D, X86_STEPPINGS(0x2, 0x2), 0x00000011),
-+	X86_MATCH_INTEL_FAM6_MODEL_STEPPINGS(BROADWELL_D, X86_STEPPINGS(0x3, 0x3), 0x0700000e),
-+	X86_MATCH_INTEL_FAM6_MODEL_STEPPINGS(BROADWELL_D, X86_STEPPINGS(0x4, 0x4), 0x0f00000c),
-+	X86_MATCH_INTEL_FAM6_MODEL_STEPPINGS(BROADWELL_D, X86_STEPPINGS(0x5, 0x5), 0x0e000003),
- 
--static const struct x86_cpu_id deadline_match[] __initconst = {
--	X86_MATCH_INTEL_FAM6_MODEL( HASWELL_X,		&hsx_deadline_rev),
--	X86_MATCH_INTEL_FAM6_MODEL( BROADWELL_X,	0x0b000020),
--	X86_MATCH_INTEL_FAM6_MODEL( BROADWELL_D,	&bdx_deadline_rev),
--	X86_MATCH_INTEL_FAM6_MODEL( SKYLAKE_X,		&skx_deadline_rev),
-+	X86_MATCH_INTEL_FAM6_MODEL_STEPPINGS(SKYLAKE_X, X86_STEPPINGS(0x3, 0x3), 0x01000136),
-+	X86_MATCH_INTEL_FAM6_MODEL_STEPPINGS(SKYLAKE_X, X86_STEPPINGS(0x4, 0x4), 0x02000014),
-+	X86_MATCH_INTEL_FAM6_MODEL_STEPPINGS(SKYLAKE_X, X86_STEPPINGS(0x5, 0xf), 0),
- 
- 	X86_MATCH_INTEL_FAM6_MODEL( HASWELL,		0x22),
- 	X86_MATCH_INTEL_FAM6_MODEL( HASWELL_L,		0x20),
-@@ -615,14 +589,7 @@ static __init bool apic_validate_deadline_timer(void)
- 	if (!m)
- 		return true;
- 
--	/*
--	 * Function pointers will have the MSB set due to address layout,
--	 * immediate revisions will not.
--	 */
--	if ((long)m->driver_data < 0)
--		rev = ((u32 (*)(void))(m->driver_data))();
--	else
--		rev = (u32)m->driver_data;
-+	rev = (u32)m->driver_data;
- 
- 	if (boot_cpu_data.microcode >= rev)
- 		return true;
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
