@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4B2C1C9ADF
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:21:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C8D01C9AE3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:22:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728756AbgEGTVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 15:21:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42994 "EHLO mail.kernel.org"
+        id S1728270AbgEGTWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 15:22:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728309AbgEGTVY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 15:21:24 -0400
+        id S1726320AbgEGTWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 15:22:21 -0400
 Received: from embeddedor (unknown [189.207.59.248])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CB1AA208D6;
-        Thu,  7 May 2020 19:21:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AC549208D6;
+        Thu,  7 May 2020 19:22:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588879284;
-        bh=LzS3WkLEkY5cS9HhYedg7dL8hIWbzOpus+g7yFKnoSg=;
+        s=default; t=1588879341;
+        bh=cpk19YX7Aez2b3mVwHp6mHxj7I9/DZSqMJ91G22Vfuw=;
         h=Date:From:To:Cc:Subject:From;
-        b=Kg8Ub230vZM5el8GxJinpdLe5+WYA+dyaY2jtwqzGtR5MG1v6hlsnhV4rsqkXE/Qi
-         EXp7+48CRJneGlH0ejE09Dful5Jy8MKRyZQju0qEsyrdbUVlP+gQtQ92VYZ13Ba43q
-         e01X+EEvPW+MnMfy44PfdsrXfxvlEod7W1fb1fcw=
-Date:   Thu, 7 May 2020 14:25:50 -0500
+        b=AIUqiOSqMD+IbcKBnyrPQHUA15R8Vwt80WMpmUWte5KgIG+EoDtDpGP8hpwpG7p75
+         ph5gkgWPo0Jf4iTdULngqZrg2xMhTx9PQq9CnclBl/j3K7H8Hk9db96tH0GEXl4E4F
+         FZZHnZDpyr0iFzrpuCxA62lxrSz5UwmVfY2nkoqs=
+Date:   Thu, 7 May 2020 14:26:47 -0500
 From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>, linux-scsi@vger.kernel.org
-Subject: [PATCH] scsi: ufs: Replace zero-length array with flexible-array
-Message-ID: <20200507192550.GA16683@embeddedor>
+To:     Jussi Kivilinna <jussi.kivilinna@iki.fi>
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] rndis_wlan: Replace zero-length array with flexible-array
+Message-ID: <20200507192647.GA16710@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -76,20 +75,44 @@ This issue was found with the help of Coccinelle.
 
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- drivers/scsi/ufs/ufshcd.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/rndis_wlan.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 698e8d20b4ba..cd34a7873623 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -3223,7 +3223,7 @@ static inline int ufshcd_read_desc(struct ufs_hba *hba,
- struct uc_string_id {
- 	u8 len;
- 	u8 type;
--	wchar_t uc[0];
-+	wchar_t uc[];
+diff --git a/drivers/net/wireless/rndis_wlan.c b/drivers/net/wireless/rndis_wlan.c
+index c8f8fe5497a8..52375f3e430a 100644
+--- a/drivers/net/wireless/rndis_wlan.c
++++ b/drivers/net/wireless/rndis_wlan.c
+@@ -201,7 +201,7 @@ struct ndis_80211_pmkid_candidate {
+ struct ndis_80211_pmkid_cand_list {
+ 	__le32 version;
+ 	__le32 num_candidates;
+-	struct ndis_80211_pmkid_candidate candidate_list[0];
++	struct ndis_80211_pmkid_candidate candidate_list[];
  } __packed;
  
- /* replace non-printable or non-ASCII characters with spaces */
+ struct ndis_80211_status_indication {
+@@ -246,12 +246,12 @@ struct ndis_80211_bssid_ex {
+ 	__le32 net_infra;
+ 	u8 rates[NDIS_802_11_LENGTH_RATES_EX];
+ 	__le32 ie_length;
+-	u8 ies[0];
++	u8 ies[];
+ } __packed;
+ 
+ struct ndis_80211_bssid_list_ex {
+ 	__le32 num_items;
+-	struct ndis_80211_bssid_ex bssid[0];
++	struct ndis_80211_bssid_ex bssid[];
+ } __packed;
+ 
+ struct ndis_80211_fixed_ies {
+@@ -333,7 +333,7 @@ struct ndis_80211_bssid_info {
+ struct ndis_80211_pmkid {
+ 	__le32 length;
+ 	__le32 bssid_info_count;
+-	struct ndis_80211_bssid_info bssid_info[0];
++	struct ndis_80211_bssid_info bssid_info[];
+ } __packed;
+ 
+ /*
 
