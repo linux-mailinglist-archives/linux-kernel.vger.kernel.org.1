@@ -2,104 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B4C51C8AD6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 14:34:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B10EA1C8B13
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 14:37:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727084AbgEGMdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 08:33:47 -0400
-Received: from mga17.intel.com ([192.55.52.151]:56628 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725947AbgEGMdq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 08:33:46 -0400
-IronPort-SDR: uwnerz3jw2413KLcLg/J9sq6l/V7UNPlIVehgghZVqjYOvnVfTVAonjOCHra4ipTc1YZt6fmPa
- R5Q/FjgD4a5Q==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2020 05:33:46 -0700
-IronPort-SDR: +1OWKyvZqXbaz4Hadljb0cNX8dJujF+OY7bq1KsEwpbMg/imZET7tyloAg7Ocl09zcF23uratp
- wABJANClkiTw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,363,1583222400"; 
-   d="scan'208";a="461831878"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga005.fm.intel.com with ESMTP; 07 May 2020 05:33:43 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jWfik-005DGk-O0; Thu, 07 May 2020 15:33:46 +0300
-Date:   Thu, 7 May 2020 15:33:46 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Cc:     heikki.krogerus@linux.intel.com, robh+dt@kernel.org,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        nikolaus.voss@loewensteinmedical.de, garsilva@embeddedor.com,
-        keescook@chromium.org
-Subject: Re: [PATCH 2/2] usb: typec: tps6598x: Add OF probe binding
-Message-ID: <20200507123346.GU185537@smile.fi.intel.com>
-References: <20200507122352.1773661-1-bryan.odonoghue@linaro.org>
- <20200507122352.1773661-3-bryan.odonoghue@linaro.org>
+        id S1727097AbgEGMgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 08:36:40 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:37856 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726235AbgEGMgi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 08:36:38 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id C0507E11C10FEA00DF20;
+        Thu,  7 May 2020 20:36:31 +0800 (CST)
+Received: from DESKTOP-8RFUVS3.china.huawei.com (10.173.222.27) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 7 May 2020 20:36:22 +0800
+From:   Zenghui Yu <yuzenghui@huawei.com>
+To:     <kvmarm@lists.cs.columbia.edu>, <suzuki.poulose@arm.com>
+CC:     <maz@kernel.org>, <christoffer.dall@arm.com>,
+        <james.morse@arm.com>, <julien.thierry.kdev@gmail.com>,
+        <kvm@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <wanghaibin.wang@huawei.com>,
+        <zhengxiang9@huawei.com>, <amurray@thegoodpenguin.co.uk>,
+        <eric.auger@redhat.com>, Zenghui Yu <yuzenghui@huawei.com>
+Subject: [PATCH resend 0/2] KVM: arm64: Unify stage2 mapping for THP backed memory
+Date:   Thu, 7 May 2020 20:35:44 +0800
+Message-ID: <20200507123546.1875-1-yuzenghui@huawei.com>
+X-Mailer: git-send-email 2.23.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200507122352.1773661-3-bryan.odonoghue@linaro.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.173.222.27]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 07, 2020 at 01:23:52PM +0100, Bryan O'Donoghue wrote:
-> Adds a MODULE_DEVICE_TABLE() to allow probing of this driver from a DTS
-> setting.
-> 
-> Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Nikolaus Voss <nikolaus.voss@loewensteinmedical.de>
-> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Cc: Gustavo A. R. Silva <garsilva@embeddedor.com>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: linux-usb@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> ---
->  drivers/usb/typec/tps6598x.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/drivers/usb/typec/tps6598x.c b/drivers/usb/typec/tps6598x.c
-> index 0698addd1185..61c6761072c9 100644
-> --- a/drivers/usb/typec/tps6598x.c
-> +++ b/drivers/usb/typec/tps6598x.c
-> @@ -563,6 +563,14 @@ static int tps6598x_remove(struct i2c_client *client)
->  	return 0;
->  }
->  
-> +#ifdef CONFIG_OF
+This series was originally posted by Suzuki K Poulose a year ago [*],
+with the aim of cleaning up the handling of the stage2 huge mapping for
+THP. I think this still helps to make the current code cleaner, so
+rebase it on top of kvmarm/master and repost it for acceptance.
 
-No need for this (and thus for of_match_ptr() macro below). Saving few dozens of bytes?
+Thanks!
 
-> +static const struct of_device_id tps6598x_of_match[] = {
-> +	{ .compatible = "ti,tps6598x", },
+[*] https://lore.kernel.org/kvm/1554909832-7169-1-git-send-email-suzuki.poulose@arm.com/
 
-> +	{},
+Suzuki K Poulose (2):
+  KVM: arm64: Clean up the checking for huge mapping
+  KVM: arm64: Unify handling THP backed host memory
 
-No comma for terminator line.
-
-> +};
-> +MODULE_DEVICE_TABLE(of, tps6598x_of_match);
-> +#endif
-> +
->  static const struct i2c_device_id tps6598x_id[] = {
->  	{ "tps6598x" },
->  	{ }
-> @@ -572,6 +580,7 @@ MODULE_DEVICE_TABLE(i2c, tps6598x_id);
->  static struct i2c_driver tps6598x_i2c_driver = {
->  	.driver = {
->  		.name = "tps6598x",
-> +		.of_match_table = of_match_ptr(tps6598x_of_match),
+ virt/kvm/arm/mmu.c | 121 ++++++++++++++++++++++++---------------------
+ 1 file changed, 65 insertions(+), 56 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.19.1
 
 
