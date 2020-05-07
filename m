@@ -2,38 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E31B41C99E2
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:51:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F090B1C99E5
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:52:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728767AbgEGSvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 14:51:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52626 "EHLO mail.kernel.org"
+        id S1728776AbgEGSv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 14:51:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52746 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726761AbgEGSvx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 14:51:53 -0400
+        id S1728110AbgEGSv6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 14:51:58 -0400
 Received: from embeddedor (unknown [189.207.59.248])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2806A24959;
-        Thu,  7 May 2020 18:51:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 949AC2495D;
+        Thu,  7 May 2020 18:51:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588877512;
-        bh=zzvNz1vCMUzUeBqErf8Y+hXv+ekNJ/H+9YqrTouDhq0=;
+        s=default; t=1588877517;
+        bh=tb88XbEj5l3Q8hlLvjSFDYyXEsoljocVtv2zF60ic9c=;
         h=Date:From:To:Cc:Subject:From;
-        b=RwFhaoWMFjAjpOVDoA285PYVW+aLxxIiFivqXm1pwGc9kXYPiKKDR5Yj5kYob+G00
-         asc5kpTlDem0K9m3ptWpLrfg2WiaUeRKL5lbvxQQiO6ZaxKv4muzu+7iF9CPCR4Nw8
-         4oBK1ojgP16NGqrHIgHKIZMPItRKOdzrUATnvAw4=
-Date:   Thu, 7 May 2020 13:56:18 -0500
+        b=YvnTNunoqaWZ81+jr/hN3xIN+LHMIOK4+Xrhzqz8vPKpFsOmeWNNFR2e7b4b5V1CC
+         RrlPTzEhNB9Uh4JhFQbbgyZSKY+m2+0wZOLcr46kneZ8yRBb5ZYb1Za5qhdDA6jXwX
+         MnVUTwGjzv3fAC5vKtvIYuiZ9v9gbEd363lYw1co=
+Date:   Thu, 7 May 2020 13:56:24 -0500
 From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] KVM: VMX: Replace zero-length array with flexible-array
-Message-ID: <20200507185618.GA14831@embeddedor>
+To:     Eric Biederman <ebiederm@xmission.com>
+Cc:     kexec@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] kexec: Replace zero-length array with flexible-array
+Message-ID: <20200507185624.GA14851@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -80,20 +75,20 @@ This issue was found with the help of Coccinelle.
 
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- arch/x86/kvm/vmx/vmcs.h |    2 +-
+ include/linux/kexec.h |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kvm/vmx/vmcs.h b/arch/x86/kvm/vmx/vmcs.h
-index 481ad879197b..5c0ff80b85c0 100644
---- a/arch/x86/kvm/vmx/vmcs.h
-+++ b/arch/x86/kvm/vmx/vmcs.h
-@@ -19,7 +19,7 @@ struct vmcs_hdr {
- struct vmcs {
- 	struct vmcs_hdr hdr;
- 	u32 abort;
--	char data[0];
-+	char data[];
+diff --git a/include/linux/kexec.h b/include/linux/kexec.h
+index 1776eb2e43a4..ea67910ae6b7 100644
+--- a/include/linux/kexec.h
++++ b/include/linux/kexec.h
+@@ -208,7 +208,7 @@ struct crash_mem_range {
+ struct crash_mem {
+ 	unsigned int max_nr_ranges;
+ 	unsigned int nr_ranges;
+-	struct crash_mem_range ranges[0];
++	struct crash_mem_range ranges[];
  };
  
- DECLARE_PER_CPU(struct vmcs *, current_vmcs);
+ extern int crash_exclude_mem_range(struct crash_mem *mem,
 
