@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0D241C99A8
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A5581C99AB
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:48:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728303AbgEGSr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 14:47:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48724 "EHLO mail.kernel.org"
+        id S1728552AbgEGSsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 14:48:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726467AbgEGSr6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 14:47:58 -0400
+        id S1728110AbgEGSsE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 14:48:04 -0400
 Received: from embeddedor (unknown [189.207.59.248])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AD72E21BE5;
-        Thu,  7 May 2020 18:47:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 36AE021BE5;
+        Thu,  7 May 2020 18:48:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588877277;
-        bh=wAlJrQIDJ7e2mzEYDUF5NXN7yX2bWpMPUEC0lL3Fmcs=;
+        s=default; t=1588877283;
+        bh=sW5Vb4R1TLxH7ZHfqOF0Hu7sdofrZ88FXfNyscrqSC0=;
         h=Date:From:To:Cc:Subject:From;
-        b=ayZgs1ZnTFfMcYNvwUdvhQBIX+lEBgrLSyfF4bDHQqBFWVCbvB61k7/TuOZWZCBpd
-         VGvDVMpR6rxAf/02bSg+zc/DXrZputzMne6SOlpaovvCGV0JrJWkOtUjBemNOkeXYq
-         sWVGtiobSqvtTogT5fetR1htKVBy1mimJNDbGsBY=
-Date:   Thu, 7 May 2020 13:52:24 -0500
+        b=zw79ADzTcp7RrLdmX8+6PtXWNjiM3U53K5PDIBkGA4VuXLd0/quaOsMusnSHolZ2Q
+         l2OiakZbfhv4qDgT0Hgod0L4uRLxVqlPCL8+4LbOf+xHQBvggk+sdmiJAjME6Bx4/j
+         qtZKdQIP4i1gpN3slSc7olImR7QBcLm33OcNidj0=
+Date:   Thu, 7 May 2020 13:52:30 -0500
 From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] cb710: Replace zero-length array with flexible-array
-Message-ID: <20200507185224.GA14209@embeddedor>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Amir Goldstein <amir73il@gmail.com>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] fanotify: Replace zero-length array with flexible-array
+Message-ID: <20200507185230.GA14229@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -75,20 +76,20 @@ This issue was found with the help of Coccinelle.
 
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- include/linux/cb710.h |    2 +-
+ fs/notify/fanotify/fanotify.h |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/cb710.h b/include/linux/cb710.h
-index 60de3fedd3a7..405657a9a0d5 100644
---- a/include/linux/cb710.h
-+++ b/include/linux/cb710.h
-@@ -36,7 +36,7 @@ struct cb710_chip {
- 	unsigned		slot_mask;
- 	unsigned		slots;
- 	spinlock_t		irq_lock;
--	struct cb710_slot	slot[0];
-+	struct cb710_slot	slot[];
+diff --git a/fs/notify/fanotify/fanotify.h b/fs/notify/fanotify/fanotify.h
+index 35bfbf4a7aac..8ce7ccfc4b0d 100644
+--- a/fs/notify/fanotify/fanotify.h
++++ b/fs/notify/fanotify/fanotify.h
+@@ -89,7 +89,7 @@ struct fanotify_name_event {
+ 	__kernel_fsid_t fsid;
+ 	struct fanotify_fh dir_fh;
+ 	u8 name_len;
+-	char name[0];
++	char name[];
  };
  
- /* NOTE: cb710_chip.slots is modified only during device init/exit and
+ static inline struct fanotify_name_event *
 
