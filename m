@@ -2,93 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F202A1C95B9
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 17:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D15241C95C8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 18:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727849AbgEGP6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 11:58:15 -0400
-Received: from mga12.intel.com ([192.55.52.136]:33248 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726029AbgEGP6P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 11:58:15 -0400
-IronPort-SDR: 8ZNZfHpNyQk9cxLl51mxR5d+FzwiJFETorbkOhr4ASUDM5L7pu5mx/sW2nq8yM4Menj8Gb5SxD
- 3jFixHdRnAiA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2020 08:58:14 -0700
-IronPort-SDR: DKvZ4Y0WgUj+jR3xUIP422g2bmkjshteb4SkyARNZKL0Quu5rjeQkDchpgfiS12QyN/4Nqsnat
- ELe7RVZCn1xA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,364,1583222400"; 
-   d="scan'208";a="249326305"
-Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
-  by orsmga007.jf.intel.com with ESMTP; 07 May 2020 08:58:14 -0700
-From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
-To:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Rik van Riel <riel@surriel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Subject: [PATCH v3 07/10] x86/fpu/xstate: Update copy_kernel_to_xregs_err() for XSAVES supervisor states
-Date:   Thu,  7 May 2020 08:58:16 -0700
-Message-Id: <20200507155816.26059-1-yu-cheng.yu@intel.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200328164307.17497-8-yu-cheng.yu@intel.com>
-References: <20200328164307.17497-8-yu-cheng.yu@intel.com>
+        id S1727852AbgEGQAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 12:00:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726464AbgEGQAO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 12:00:14 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38B27C05BD43;
+        Thu,  7 May 2020 09:00:11 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id a5so2820040pjh.2;
+        Thu, 07 May 2020 09:00:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hIkY+Uh5gMlLmSJBfh/URGTav8SCaaqStV4OKfiYn70=;
+        b=BFY7Bwwqf5SWIF5p9IgbjYkYbTskcnxuSNyvyMq4bZQ/+YlOeZQ5nxRLzz2cPiLZ1o
+         LV9Qc3q72SQkCvfvP1d4Dgf5NJPzFTkGUyKqnlROewCuS7d9QQE0w/mgvcDzmzSFjA3Z
+         WqbTiXsKXho//LKC/tEKgUSV/hMuodJiJ7AQWe+CqJFC7E1ASt3Bt/DHQ9EFYtG+ReL1
+         D9P4AQtPzhtcuy3vpCSCEzt1p6XHBnJ2oaZ0WSz8wnltKs7Dtieztl08cYTwwvhmL/1g
+         xSR9GynjhBjAcBJETUq1VgxF458Ui0UqQV5QzlCr3NyA4o/gFedbJnpxJKJbzgjc5Txy
+         IYdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hIkY+Uh5gMlLmSJBfh/URGTav8SCaaqStV4OKfiYn70=;
+        b=PzzZnNn+D73DycLPiOa77s+nRJRBbG01jOQxq9PRLYgJ+AASFOo/yVvEeFEB1SCT7m
+         G1dNEjKDlrfIu8wadjqO47rfHgSpFjzj83jb9IWB24FDaLQAGMh0PwsXrZFLVjWhQcfz
+         6MinVQV9d7zqdKmOU7IVkvNlajWNoEAdxbT8BVpZ/NOmPyDHOidbBwnwOJlcjmy3uMqx
+         EuERBB2gvj7/aaNogUx82Zr7L2DHxT/PgviR99x4m/9G6NESY19pCcfuEpFEnJnnfcwH
+         AA1WqPA3aXD1tqNHd1oJtv29tnkvEPpB+0CXJFuN5yulqJ6a7zUdIdyT89AWCDjJysWH
+         pgsg==
+X-Gm-Message-State: AGi0PubU4BS1OdLOVn4HySp5DTVgODGEqlTfoxb95JB6kp1w1xhODUcL
+        9ko2naUPoWXJ7f98J+dbCU8=
+X-Google-Smtp-Source: APiQypKNGu23Cw0TMP2hLlPw/m++QwuOUGrqiThsI0IWpXQvl6qKhiP0E8gr2yXB6saCvXX3mRpQdA==
+X-Received: by 2002:a17:90a:ce01:: with SMTP id f1mr829590pju.166.1588867209967;
+        Thu, 07 May 2020 09:00:09 -0700 (PDT)
+Received: from dtor-ws ([2620:15c:202:201:3c2a:73a9:c2cf:7f45])
+        by smtp.gmail.com with ESMTPSA id w75sm5194964pfc.156.2020.05.07.09.00.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 May 2020 09:00:09 -0700 (PDT)
+Date:   Thu, 7 May 2020 09:00:07 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Chuhong Yuan <hslester96@gmail.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Input: applespi - add missed input_unregister_device
+Message-ID: <20200507160007.GE89269@dtor-ws>
+References: <20200507151041.792460-1-hslester96@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200507151041.792460-1-hslester96@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function copy_kernel_to_xregs_err() uses XRSTOR, which can work with
-standard or compacted format without supervisor xstates.  However, when
-supervisor xstates are present, XRSTORS must be used.  Fix it by using
-XRSTORS when XSAVES is enabled.
+Hi Chuhong,
 
-I also considered if there were additional cases where XRSTOR might be
-mistakenly called instead of XRSTORS.  There are only three XRSTOR sites
-in kernel:
+On Thu, May 07, 2020 at 11:10:41PM +0800, Chuhong Yuan wrote:
+> This driver calls input_register_device() in probe, but misses
+> input_unregister_device() in probe failure and remove.
+> Add the missed function calls to fix it.
 
-1. copy_kernel_to_xregs_booting(), already switches between XRSTOR and
-   XRSTORS based on X86_FEATURE_XSAVES.
-2. copy_user_to_xregs(), which *needs* XRSTOR because it is copying from
-   userspace and must never copy supervisor state with XRSTORS.
-3. copy_kernel_to_xregs_err() mistakenly used XRSTOR only.  Fixed it.
+The input device in question is devm-managed and therefore does not need
+explicit unregistering.
 
-Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
-Reviewed-by: Dave Hansen <dave.hansen@linux.intel.com>
----
- arch/x86/include/asm/fpu/internal.h | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Thanks.
 
-diff --git a/arch/x86/include/asm/fpu/internal.h b/arch/x86/include/asm/fpu/internal.h
-index a42fcb4b690d..42159f45bf9c 100644
---- a/arch/x86/include/asm/fpu/internal.h
-+++ b/arch/x86/include/asm/fpu/internal.h
-@@ -400,7 +400,10 @@ static inline int copy_kernel_to_xregs_err(struct xregs_state *xstate, u64 mask)
- 	u32 hmask = mask >> 32;
- 	int err;
- 
--	XSTATE_OP(XRSTOR, xstate, lmask, hmask, err);
-+	if (static_cpu_has(X86_FEATURE_XSAVES))
-+		XSTATE_OP(XRSTORS, xstate, lmask, hmask, err);
-+	else
-+		XSTATE_OP(XRSTOR, xstate, lmask, hmask, err);
- 
- 	return err;
- }
 -- 
-2.21.0
-
+Dmitry
