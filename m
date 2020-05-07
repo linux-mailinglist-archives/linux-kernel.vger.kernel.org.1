@@ -2,60 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7F741C8CDD
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 15:46:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 173031C8D02
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 15:52:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727071AbgEGNqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 09:46:35 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:56394 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726218AbgEGNqf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 09:46:35 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 978D565548E3BE610F5E;
-        Thu,  7 May 2020 21:46:32 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 7 May 2020 21:46:26 +0800
-From:   Chen Zhou <chenzhou10@huawei.com>
-To:     <harry.wentland@amd.com>, <sunpeng.li@amd.com>,
-        <alexander.deucher@amd.com>, <christian.koenig@amd.com>,
-        <David1.Zhou@amd.com>, <airlied@linux.ie>, <daniel@ffwll.ch>
-CC:     <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>, <chenzhou10@huawei.com>
-Subject: [PATCH -next] drm/amd/display: remove duplicate headers
-Date:   Thu, 7 May 2020 21:50:23 +0800
-Message-ID: <20200507135023.33073-1-chenzhou10@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1726521AbgEGNwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 09:52:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57702 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725964AbgEGNwT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 09:52:19 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 681E52073A;
+        Thu,  7 May 2020 13:52:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588859539;
+        bh=IwsXYXmDs9aNaYPa4+QMKqQ65GYmJMLHHgZOQO0ito0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mnd4bYDWYAIZ4zCHfaiJgGW7gq/naBS9fqditzfIOrsnv40Et2ZRgwpNfZocNknka
+         Axg7s2N1KjHSV9RE7TilOJ7BeJnjKctTrwdNmwvVRrJhDfMgNkonFMoZ7eABSB+qyC
+         PuuBS2r0GmqVqCNKkbKQu7tNa+Iw0qnZXMIV3cCs=
+Date:   Thu, 7 May 2020 14:52:14 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Yunfeng Ye <yeyunfeng@huawei.com>
+Cc:     catalin.marinas@arm.com, Dave.Martin@arm.com, mark.rutland@arm.com,
+        james.morse@arm.com, 0x7f454c46@gmail.com, tglx@linutronix.de,
+        lorenzo.pieralisi@arm.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, hushiyuan@huawei.com,
+        hewenliang4@huawei.com
+Subject: Re: [PATCH] arm64: stacktrace: Factor out some common code info
+ on_stack()
+Message-ID: <20200507135213.GA32706@willie-the-truck>
+References: <10b188af-a03b-3acc-8a06-cf31a46f735a@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <10b188af-a03b-3acc-8a06-cf31a46f735a@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove duplicate headers which are included twice.
+On Thu, May 07, 2020 at 05:28:19PM +0800, Yunfeng Ye wrote:
+> diff --git a/arch/arm64/include/asm/stacktrace.h b/arch/arm64/include/asm/stacktrace.h
+> index fdb913cc0bcb..b92bef2fb6cd 100644
+> --- a/arch/arm64/include/asm/stacktrace.h
+> +++ b/arch/arm64/include/asm/stacktrace.h
+> @@ -69,27 +69,40 @@ extern void dump_backtrace(struct pt_regs *regs, struct task_struct *tsk,
+> 
+>  DECLARE_PER_CPU(unsigned long *, irq_stack_ptr);
+> 
+> -static inline bool on_irq_stack(unsigned long sp,
+> +static inline bool on_stack(unsigned long sp, unsigned long low,
+> +				unsigned long high, enum stack_type type,
+>  				struct stack_info *info)
+>  {
+> -	unsigned long low = (unsigned long)raw_cpu_read(irq_stack_ptr);
+> -	unsigned long high = low + IRQ_STACK_SIZE;
+> -
+> -	if (!low)
+> -		return false;
+> -
+>  	if (sp < low || sp >= high)
+>  		return false;
+> 
+>  	if (info) {
+>  		info->low = low;
+>  		info->high = high;
+> -		info->type = STACK_TYPE_IRQ;
+> +		info->type = type;
+>  	}
+> -
+>  	return true;
+>  }
+> 
+> +static inline bool on_valid_stack(unsigned long sp, unsigned long low,
+> +				unsigned long high, enum stack_type type,
+> +				struct stack_info *info)
+> +{
+> +	if (!low)
+> +		return false;
+> +
+> +	return on_stack(sp, low, high, type, info);
+> +}
 
-Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
----
- drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c | 1 -
- 1 file changed, 1 deletion(-)
+Do we need this as distinct from on_stack()? Afaict, 'low' is never
+going to be NULL for the on_stack() callers, so I suggest just having
+on_stack() check 'low' and getting everybody to call that instead.
 
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
-index 9ef9e50a34fa..1db592372435 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
-@@ -13,7 +13,6 @@
- #include "core_status.h"
- #include "dpcd_defs.h"
- 
--#include "resource.h"
- #define DC_LOGGER \
- 	link->ctx->logger
- 
--- 
-2.20.1
+Make sense?
 
+Will
