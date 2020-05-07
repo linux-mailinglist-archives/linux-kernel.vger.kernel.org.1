@@ -2,73 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B30D1C816E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 07:18:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB38B1C817F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 07:25:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726356AbgEGFSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 01:18:20 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:3831 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725601AbgEGFSU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 01:18:20 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 41BE2419C58FC7F755E5;
-        Thu,  7 May 2020 13:18:18 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 7 May 2020 13:18:08 +0800
-From:   Wei Yongjun <weiyongjun1@huawei.com>
-To:     David Kershner <david.kershner@unisys.com>
-CC:     Wei Yongjun <weiyongjun1@huawei.com>, <sparmaintainer@unisys.com>,
-        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
-Subject: [PATCH -next] visorbus: fix error return code in visorchipset_init()
-Date:   Thu, 7 May 2020 05:22:11 +0000
-Message-ID: <20200507052211.103018-1-weiyongjun1@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1725857AbgEGFZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 01:25:32 -0400
+Received: from forwardcorp1j.mail.yandex.net ([5.45.199.163]:35768 "EHLO
+        forwardcorp1j.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725802AbgEGFZc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 01:25:32 -0400
+Received: from mxbackcorp1g.mail.yandex.net (mxbackcorp1g.mail.yandex.net [IPv6:2a02:6b8:0:1402::301])
+        by forwardcorp1j.mail.yandex.net (Yandex) with ESMTP id 9B9E82E09D9;
+        Thu,  7 May 2020 08:25:29 +0300 (MSK)
+Received: from vla1-81430ab5870b.qloud-c.yandex.net (vla1-81430ab5870b.qloud-c.yandex.net [2a02:6b8:c0d:35a1:0:640:8143:ab5])
+        by mxbackcorp1g.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id DF4XlFMxI9-PRAib7aj;
+        Thu, 07 May 2020 08:25:29 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1588829129; bh=V6kBtjVKjFX6HYVR9qh/1K6i8VRT9wRgPeHFmSUFSc8=;
+        h=In-Reply-To:Message-ID:From:Date:References:To:Subject:Cc;
+        b=hn29/fUlwks21CBb1kVzj3Mm8I9elMMDYJuWIQkQRKFx+RF99fO28HAu9pshVuinj
+         CZSbqhWxO3LtP9KAou1MT6sQzTXNe4WPsvntGDbhNbalT9vKc+M/VzxvpKioAmDOqN
+         K2tBeyXdo1cNJvzCs+kSxMRU4Xq1oTMtGg1GTiR4=
+Authentication-Results: mxbackcorp1g.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from dynamic-vpn.dhcp.yndx.net (dynamic-vpn.dhcp.yndx.net [2a02:6b8:b080:7313::1:1])
+        by vla1-81430ab5870b.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id zgF2fO4rzy-PRXWG57F;
+        Thu, 07 May 2020 08:25:27 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+Subject: Re: [PATCH] slub: limit count of partial slabs scanned to gather
+ statistics
+To:     Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>
+Cc:     Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Roman Gushchin <guro@fb.com>,
+        Wen Yang <wenyang@linux.alibaba.com>
+References: <158860845968.33385.4165926113074799048.stgit@buzz>
+ <09e66344-4d30-9a67-24b8-14a910709157@suse.cz>
+From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Message-ID: <d6e6adc8-eb65-d04f-aace-03121586752a@yandex-team.ru>
+Date:   Thu, 7 May 2020 08:25:27 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type:   text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+In-Reply-To: <09e66344-4d30-9a67-24b8-14a910709157@suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix to return negative error code -ENODEV from the visor_check_channel()
-error handling case instead of 0. Also change the error code to -ENOMEM
-in kzalloc() error case.
+On 06/05/2020 14.56, Vlastimil Babka wrote:
+> On 5/4/20 6:07 PM, Konstantin Khlebnikov wrote:
+>> To get exact count of free and used objects slub have to scan list of
+>> partial slabs. This may take at long time. Scanning holds spinlock and
+>> blocks allocations which move partial slabs to per-cpu lists and back.
+>>
+>> Example found in the wild:
+>>
+>> # cat /sys/kernel/slab/dentry/partial
+>> 14478538 N0=7329569 N1=7148969
+>> # time cat /sys/kernel/slab/dentry/objects
+>> 286225471 N0=136967768 N1=149257703
+>>
+>> real	0m1.722s
+>> user	0m0.001s
+>> sys	0m1.721s
+>>
+>> The same problem in slab was addressed in commit f728b0a5d72a ("mm, slab:
+>> faster active and free stats") by adding more kmem cache statistics.
+>> For slub same approach requires atomic op on fast path when object frees.
+> 
+> In general yeah, but are you sure about this one? AFAICS this is about pages in
+> the n->partial list, where manipulations happen under n->list_lock and shouldn't
+> be fast path. It should be feasible to add a counter under the same lock, so it
+> wouldn't even need to be atomic?
 
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
----
- drivers/visorbus/visorchipset.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+SLUB allocates objects from prepared per-cpu slabs, they could be subtracted from
+count of free object under this lock in advance when slab moved out of this list.
 
-diff --git a/drivers/visorbus/visorchipset.c b/drivers/visorbus/visorchipset.c
-index cb1eb7e05f87..5668cad86e37 100644
---- a/drivers/visorbus/visorchipset.c
-+++ b/drivers/visorbus/visorchipset.c
-@@ -1561,7 +1561,7 @@ static void controlvm_periodic_work(struct work_struct *work)
- 
- static int visorchipset_init(struct acpi_device *acpi_device)
- {
--	int err = -ENODEV;
-+	int err = -ENOMEM;
- 	struct visorchannel *controlvm_channel;
- 
- 	chipset_dev = kzalloc(sizeof(*chipset_dev), GFP_KERNEL);
-@@ -1584,8 +1584,10 @@ static int visorchipset_init(struct acpi_device *acpi_device)
- 				 "controlvm",
- 				 sizeof(struct visor_controlvm_channel),
- 				 VISOR_CONTROLVM_CHANNEL_VERSIONID,
--				 VISOR_CHANNEL_SIGNATURE))
-+				 VISOR_CHANNEL_SIGNATURE)) {
-+		err = -ENODEV;
- 		goto error_delete_groups;
-+	}
- 	/* if booting in a crash kernel */
- 	if (is_kdump_kernel())
- 		INIT_DELAYED_WORK(&chipset_dev->periodic_controlvm_work,
+But at freeing path object might belong to any slab, including global partials.
 
-
-
+> 
+>> Let's simply limit count of scanned slabs and print warning.
+>> Limit set in /sys/module/slub/parameters/max_partial_to_count.
+>> Default is 10000 which should be enough for most sane cases.
+>>
+>> Return linear approximation if list of partials is longer than limit.
+>> Nobody should notice difference.
+>>
+>> Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+> 
+> BTW there was a different patch in that area proposed recently [1] for slabinfo.
+> Christopher argued that we can do that for slabinfo but leave /sys stats
+> precise. Guess not then?
+> 
+> [1]
+> https://lore.kernel.org/linux-mm/20200222092428.99488-1-wenyang@linux.alibaba.com/
+> 
+>> ---
+>>   mm/slub.c |   15 ++++++++++++++-
+>>   1 file changed, 14 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/mm/slub.c b/mm/slub.c
+>> index 9bf44955c4f1..86a366f7acb6 100644
+>> --- a/mm/slub.c
+>> +++ b/mm/slub.c
+>> @@ -2407,16 +2407,29 @@ static inline unsigned long node_nr_objs(struct kmem_cache_node *n)
+>>   #endif /* CONFIG_SLUB_DEBUG */
+>>   
+>>   #if defined(CONFIG_SLUB_DEBUG) || defined(CONFIG_SYSFS)
+>> +
+>> +static unsigned long max_partial_to_count __read_mostly = 10000;
+>> +module_param(max_partial_to_count, ulong, 0644);
+>> +
+>>   static unsigned long count_partial(struct kmem_cache_node *n,
+>>   					int (*get_count)(struct page *))
+>>   {
+>> +	unsigned long counted = 0;
+>>   	unsigned long flags;
+>>   	unsigned long x = 0;
+>>   	struct page *page;
+>>   
+>>   	spin_lock_irqsave(&n->list_lock, flags);
+>> -	list_for_each_entry(page, &n->partial, slab_list)
+>> +	list_for_each_entry(page, &n->partial, slab_list) {
+>>   		x += get_count(page);
+>> +
+>> +		if (++counted > max_partial_to_count) {
+>> +			pr_warn_once("SLUB: too much partial slabs to count all objects, increase max_partial_to_count.\n");
+>> +			/* Approximate total count of objects */
+>> +			x = mult_frac(x, n->nr_partial, counted);
+>> +			break;
+>> +		}
+>> +	}
+>>   	spin_unlock_irqrestore(&n->list_lock, flags);
+>>   	return x;
+>>   }
+>>
+>>
+> 
