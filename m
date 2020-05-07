@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 271E21C9AB4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA2E51C9AB5
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:17:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728056AbgEGTRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 15:17:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40108 "EHLO mail.kernel.org"
+        id S1728421AbgEGTRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 15:17:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40230 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726320AbgEGTRK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 15:17:10 -0400
+        id S1726950AbgEGTRQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 15:17:16 -0400
 Received: from embeddedor (unknown [189.207.59.248])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 65544208D6;
-        Thu,  7 May 2020 19:17:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E9650208D6;
+        Thu,  7 May 2020 19:17:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588879029;
-        bh=chhTLOyl25ctDlbPRads+DWFmUp4LKfmtYEwFIBFJ1U=;
+        s=default; t=1588879035;
+        bh=xbpMeseLUa1F5bWVlyVbWAi8ZUs0iZRWzX8jkygXfNc=;
         h=Date:From:To:Cc:Subject:From;
-        b=UV/QKZUXlWSXUPZsVCZFXRmrm0IUCq6foTPP3YJF+prjloWCpi49Df+kywteniVx3
-         riO5tDTA+vxzaRfZldzO4ZygD7+xMgAeUfmacuzO3sUji7WAQIIiN9KcmQGAzqByNw
-         uGggw0H1i5KZDxSigZUdzjCZ50XqOjg6lQ9FoieE=
-Date:   Thu, 7 May 2020 14:21:36 -0500
+        b=mvRSHASPfFqkfHkORLgo1m+YyYGb1LcF/gEQyoL8JEnEGt9A8YcnjI1F/AnSzEcUE
+         efHsTLZRvbaPWRuvXMWDt1j9xQiBoawncw9dBGpur8CV+APrgv97jta/YNYqUpfPB6
+         va5oMiyAqUQ8k11b/n/n9reMGpAg4VUqCUcsOJpI=
+Date:   Thu, 7 May 2020 14:21:41 -0500
 From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Kamil Debski <kamil@wypas.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] phy-samsung-usb2: Replace zero-length array with
- flexible-array
-Message-ID: <20200507192136.GA16139@embeddedor>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] sched/fair: Replace zero-length array with flexible-array
+Message-ID: <20200507192141.GA16183@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -77,20 +81,34 @@ This issue was found with the help of Coccinelle.
 
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- drivers/phy/samsung/phy-samsung-usb2.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/sched/fair.c  |    2 +-
+ kernel/sched/sched.h |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/phy/samsung/phy-samsung-usb2.h b/drivers/phy/samsung/phy-samsung-usb2.h
-index 2c1a7d71142b..77fb23bc218f 100644
---- a/drivers/phy/samsung/phy-samsung-usb2.h
-+++ b/drivers/phy/samsung/phy-samsung-usb2.h
-@@ -43,7 +43,7 @@ struct samsung_usb2_phy_driver {
- 	struct regmap *reg_pmu;
- 	struct regmap *reg_sys;
- 	spinlock_t lock;
--	struct samsung_usb2_phy_instance instances[0];
-+	struct samsung_usb2_phy_instance instances[];
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 02f323b85b6d..b34549708ef4 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -1094,7 +1094,7 @@ struct numa_group {
+ 	 * more by CPU use than by memory faults.
+ 	 */
+ 	unsigned long *faults_cpu;
+-	unsigned long faults[0];
++	unsigned long faults[];
  };
  
- struct samsung_usb2_common_phy {
+ /*
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index db3a57675ccf..f504f3ac3967 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -1461,7 +1461,7 @@ struct sched_group {
+ 	 * by attaching extra space to the end of the structure,
+ 	 * depending on how many CPUs the kernel has booted up with)
+ 	 */
+-	unsigned long		cpumask[0];
++	unsigned long		cpumask[];
+ };
+ 
+ static inline struct cpumask *sched_group_span(struct sched_group *sg)
 
