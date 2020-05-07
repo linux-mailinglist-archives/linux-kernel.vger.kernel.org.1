@@ -2,126 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49F601C7F36
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 02:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 802191C7EA1
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 02:42:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728947AbgEGAqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 20:46:15 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:38982 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728909AbgEGAqK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 20:46:10 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0470ep5K098400;
-        Thu, 7 May 2020 00:45:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=GHyTm1dF4tuIvRr/Sme8g0LfjNUADURL5kv1ja2d5gg=;
- b=B2ieybBw6yGUeCUHVlAsRBnlc2/4Xd/KOmp96lhPgAt8aY+OY0nx5m0HV49zY4rmmwNJ
- C2s+DocZP+0TkwaFub5pxJI6VLiZDTcntuJuwRiK6BhA4pqOyBsR5hSUgs8TBMEtVRwq
- OElN/qCU2uFHMkJBBKXftNAEdERNSddgfIfiOzBTs8P4ylt3KV1I3R+rr5nplsc4zmhK
- ndh51F39UD6VOjw/FzRcndPUY74810gTKBZWOztHuZiGWlEMz8N9DZFuEnfShhYFDYJm
- 6QwLRCsTOBx7pn2Mq4SU4ShEr7RZ2iKufkGsu48ZeUFaikGwL8cPgZL4TT7Ejf7MNy1O 3A== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 30usgq4h41-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 07 May 2020 00:45:12 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0470bUBT098659;
-        Thu, 7 May 2020 00:45:12 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 30sjnma71q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 07 May 2020 00:45:11 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0470j8I8025069;
-        Thu, 7 May 2020 00:45:08 GMT
-Received: from ayz-linux.localdomain (/68.7.158.207)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 06 May 2020 17:45:08 -0700
-From:   Anthony Yznaga <anthony.yznaga@oracle.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     willy@infradead.org, corbet@lwn.net, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        rppt@linux.ibm.com, akpm@linux-foundation.org, hughd@google.com,
-        ebiederm@xmission.com, masahiroy@kernel.org, ardb@kernel.org,
-        ndesaulniers@google.com, dima@golovin.in, daniel.kiper@oracle.com,
-        nivedita@alum.mit.edu, rafael.j.wysocki@intel.com,
-        dan.j.williams@intel.com, zhenzhong.duan@oracle.com,
-        jroedel@suse.de, bhe@redhat.com, guro@fb.com,
-        Thomas.Lendacky@amd.com, andriy.shevchenko@linux.intel.com,
-        keescook@chromium.org, hannes@cmpxchg.org, minchan@kernel.org,
-        mhocko@kernel.org, ying.huang@intel.com,
-        yang.shi@linux.alibaba.com, gustavo@embeddedor.com,
-        ziqian.lzq@antfin.com, vdavydov.dev@gmail.com,
-        jason.zeng@intel.com, kevin.tian@intel.com, zhiyuan.lv@intel.com,
-        lei.l.li@intel.com, paul.c.lai@intel.com, ashok.raj@intel.com,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        kexec@lists.infradead.org
-Subject: [RFC 43/43] PKRAM: improve index alignment of pkram_link entries
-Date:   Wed,  6 May 2020 17:42:09 -0700
-Message-Id: <1588812129-8596-44-git-send-email-anthony.yznaga@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1588812129-8596-1-git-send-email-anthony.yznaga@oracle.com>
-References: <1588812129-8596-1-git-send-email-anthony.yznaga@oracle.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9613 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 adultscore=0 phishscore=0
- mlxlogscore=999 bulkscore=0 malwarescore=0 spamscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2005070001
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9613 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxscore=0
- priorityscore=1501 lowpriorityscore=0 malwarescore=0 clxscore=1015
- mlxlogscore=999 spamscore=0 adultscore=0 bulkscore=0 phishscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005070001
+        id S1727982AbgEGAml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 20:42:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36684 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725966AbgEGAml (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 20:42:41 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0B2C120747;
+        Thu,  7 May 2020 00:42:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588812161;
+        bh=VEI854Q0jqWSBxoyqtP2NIfRzRKCknFu7oWHhakYfCE=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=tYHNI2NlbDC1XkagfD9+Knn9y1j41ZnMofxiQCeHm19Cv1MAxKvkmd/8K3h7GWWJl
+         8rxa2j3ZR3lgTPyQkNUqWD6LElOqZXxlLYURhfh0m60xBJa/Ja8gEVZLyhEfdhEDP4
+         vaQjiHdRm/g1yfmVkVhK+6OmrTMtlDUx+xsomsk8=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id E3335352269D; Wed,  6 May 2020 17:42:40 -0700 (PDT)
+Date:   Wed, 6 May 2020 17:42:40 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, dipankar@in.ibm.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        viro@zeniv.linux.org.uk, hannes@cmpxchg.org
+Subject: [PATCH RFC tip/core/rcu] Add shrinker to shift to fast/inefficient
+ GP mode
+Message-ID: <20200507004240.GA9156@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To take advantage of optimizations when adding pages to the page cache
-via shmem_insert_pages(), improve the likelihood that the pages array
-passed to shmem_insert_pages() starts on an aligned index.  Do this
-when preserving pages by starting a new pkram_link page when the current
-page is aligned and the next aligned page will not fit on the pkram_link
-page.
+This commit adds a shrinker so as to inform RCU when memory is scarce.
+RCU responds by shifting into the same fast and inefficient mode that is
+used in the presence of excessive numbers of RCU callbacks.  RCU remains
+in this state for one-tenth of a second, though this time window can be
+extended by another call to the shrinker.
 
-Signed-off-by: Anthony Yznaga <anthony.yznaga@oracle.com>
----
- mm/pkram.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+If it proves feasible, a later commit might add a function call directly
+indicating the end of the period of scarce memory.
 
-diff --git a/mm/pkram.c b/mm/pkram.c
-index ef092aa5ce7a..416c3ca4411b 100644
---- a/mm/pkram.c
-+++ b/mm/pkram.c
-@@ -913,11 +913,21 @@ static int __pkram_save_page(struct pkram_stream *ps,
- {
- 	struct pkram_link *link = ps->link;
- 	struct pkram_obj *obj = ps->obj;
-+	int order, align, align_cnt;
- 	pkram_entry_t p;
--	int order;
-+
-+	if (PageTransHuge(page)) {
-+		align = 1 << (HPAGE_PMD_ORDER + XA_CHUNK_SHIFT - (HPAGE_PMD_ORDER % XA_CHUNK_SHIFT));
-+		align_cnt = align >> HPAGE_PMD_ORDER;
-+	} else {
-+		align = XA_CHUNK_SIZE;
-+		align_cnt = XA_CHUNK_SIZE;
+Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index b0fe32f..76d148d 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2368,8 +2368,15 @@ static void force_qs_rnp(int (*f)(struct rcu_data *rdp))
+ 	struct rcu_data *rdp;
+ 	struct rcu_node *rnp;
+ 
+-	rcu_state.cbovld = rcu_state.cbovldnext;
++	// Load .oomovld before .oomovldend, pairing with .oomovld set.
++	rcu_state.cbovld = smp_load_acquire(&rcu_state.oomovld) || // ^^^
++			   rcu_state.cbovldnext;
+ 	rcu_state.cbovldnext = false;
++	if (READ_ONCE(rcu_state.oomovld) &&
++	    time_after(jiffies, READ_ONCE(rcu_state.oomovldend))) {
++		WRITE_ONCE(rcu_state.oomovld, false);
++		pr_info("%s: Ending OOM-mode grace periods.\n", __func__);
 +	}
+ 	rcu_for_each_leaf_node(rnp) {
+ 		cond_resched_tasks_rcu_qs();
+ 		mask = 0;
+@@ -2697,6 +2704,35 @@ static void check_cb_ovld(struct rcu_data *rdp)
+ 	raw_spin_unlock_rcu_node(rnp);
+ }
  
- 	if (!link || ps->entry_idx >= PKRAM_LINK_ENTRIES_MAX ||
--	    index != ps->next_index) {
-+	    index != ps->next_index ||
-+	    (IS_ALIGNED(index, align) &&
-+	    (ps->entry_idx + align_cnt > PKRAM_LINK_ENTRIES_MAX))) {
- 		struct page *link_page;
++/* Return a rough count of the RCU callbacks outstanding. */
++static unsigned long rcu_oom_count(struct shrinker *unused1,
++				   struct shrink_control *unused2)
++{
++	int cpu;
++	unsigned long ncbs = 0;
++
++	for_each_possible_cpu(cpu)
++		ncbs += rcu_get_n_cbs_cpu(cpu);
++	return ncbs;
++}
++
++/* Start up an interval of fast high-overhead grace periods. */
++static unsigned long rcu_oom_scan(struct shrinker *unused1,
++				  struct shrink_control *unused2)
++{
++	pr_info("%s: Starting OOM-mode grace periods.\n", __func__);
++	WRITE_ONCE(rcu_state.oomovldend, jiffies + HZ / 10);
++	smp_store_release(&rcu_state.oomovld, true); // After .oomovldend
++	rcu_force_quiescent_state();  // Kick grace period
++	return 0;  // We haven't actually reclaimed anything yet.
++}
++
++static struct shrinker rcu_shrinker = {
++	.count_objects = rcu_oom_count,
++	.scan_objects = rcu_oom_scan,
++	.seeks = DEFAULT_SEEKS,
++};
++
+ /* Helper function for call_rcu() and friends.  */
+ static void
+ __call_rcu(struct rcu_head *head, rcu_callback_t func)
+@@ -4146,6 +4182,7 @@ void __init rcu_init(void)
+ 		qovld_calc = DEFAULT_RCU_QOVLD_MULT * qhimark;
+ 	else
+ 		qovld_calc = qovld;
++	WARN_ON(register_shrinker(&rcu_shrinker));
+ }
  
- 		link_page = pkram_alloc_page((ps->gfp_mask & GFP_RECLAIM_MASK) |
--- 
-2.13.3
-
+ #include "tree_stall.h"
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index 2d7fcb9..c4d8e96 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -326,6 +326,8 @@ struct rcu_state {
+ 	int ncpus_snap;				/* # CPUs seen last time. */
+ 	u8 cbovld;				/* Callback overload now? */
+ 	u8 cbovldnext;				/* ^        ^  next time? */
++	u8 oomovld;				/* OOM overload? */
++	unsigned long oomovldend;		/* OOM ovld end, jiffies. */
+ 
+ 	unsigned long jiffies_force_qs;		/* Time at which to invoke */
+ 						/*  force_quiescent_state(). */
