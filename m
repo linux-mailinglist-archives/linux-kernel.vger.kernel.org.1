@@ -2,140 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AE251C825D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 08:18:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D255D1C8269
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 08:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725914AbgEGGSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 02:18:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725809AbgEGGSX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 02:18:23 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D17FFC061A0F;
-        Wed,  6 May 2020 23:18:21 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id d7so891457ioq.5;
-        Wed, 06 May 2020 23:18:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CbbcNQCWKC+HM8LWTSFFFe3Q9kOpsnt6b3jv45wzhig=;
-        b=jcft2yzLVpaFO6z6XNF5KwroeR36ACU5JQ26qN0H5i4Q9FcIDPcv1EfFH3PBcmUgT7
-         m/j3kgOhIGLTrFFSUUMqXipjturLnWfpJsO4DLf28KNdxM16joCqloZHmN4NkmflfCmM
-         s6C2fvo4emh3ufyR7moq4CDm6Ond/TPcPsWIF8SV4u/V60A5y38ivr+Y8SfiZLNtNEJI
-         Ghun2sA2AZoZdE6OEtPoHOiHP8xc6MsxEtrOrK1L1xfXtelvek6MlAxvVFofKwfmbRJ9
-         BJCE5dhjOypfl9xvZ2ZJm6le6rEOs8F1BdNNJ3rkR/PMHO6kjosymWGdQNdjIWEMp66M
-         M8DA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CbbcNQCWKC+HM8LWTSFFFe3Q9kOpsnt6b3jv45wzhig=;
-        b=Oka2CLQwtCVF+qryvIe9RVEgfXcO7a8//9THc2/crixFTjwtu5gwXe2gwNtNcmN8l0
-         4oiCpHoB5XmxyzSNE7w7K8yrE6rgCPw8BR3UtMEURgE49WQz6xPaUbcTZ+zUVr4cQslZ
-         /EUkP/mMgqr20WlJ5uguNo5NoOgaN3rsUlGJ22cw9X9p4G1x/D1WVJfxVfbIbSnwC+PG
-         Tw7C57zi8G+JrXbb5cYu4fqTvp9390UsF1ebCEviSXrOqOZBxb1DYctefkvOjVnNrKAe
-         jlKK8/7y55Q1hsQkaYnQ93d86XMmMcM8euh1vtMP/zPJHsQHIGHtW0z1aTfelAnMnYHN
-         qfxw==
-X-Gm-Message-State: AGi0PuYQUEeixZbda4d1KFgU902qnTxa/PY8w9PwLTdZnx0R3y+Dz/ma
-        YMEsxBzg719bO/YyY53n/g78UAHll5eabaMxXw==
-X-Google-Smtp-Source: APiQypJE2yHAgbnPd3Eiw9LdqaNucanJcNRSmWEcH9Piz1DslLyBAxVQ1GDKNh4kmsF3IFCVR0sEZ0gpS3FTE9Q9r2Q=
-X-Received: by 2002:a05:6602:1695:: with SMTP id s21mr12451651iow.40.1588832301009;
- Wed, 06 May 2020 23:18:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200505174423.199985-1-ndesaulniers@google.com>
-In-Reply-To: <20200505174423.199985-1-ndesaulniers@google.com>
-From:   Brian Gerst <brgerst@gmail.com>
-Date:   Thu, 7 May 2020 02:18:09 -0400
-Message-ID: <CAMzpN2idWF2_4wtPebM2B2HVyksknr9hAqK8HJi_vjQ06bgu2g@mail.gmail.com>
-Subject: Re: [PATCH] x86: bitops: fix build regression
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        stable <stable@vger.kernel.org>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        "kernelci . org bot" <bot@kernelci.org>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Ilie Halip <ilie.halip@gmail.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Marco Elver <elver@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        id S1726093AbgEGGUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 02:20:38 -0400
+Received: from foss.arm.com ([217.140.110.172]:52160 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725763AbgEGGUh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 02:20:37 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E224D1FB;
+        Wed,  6 May 2020 23:20:36 -0700 (PDT)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.73.155])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id E6D923F71F;
+        Wed,  6 May 2020 23:20:33 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64/cpufeature: Verify KVM capabilities during CPU hotplug
+Date:   Thu,  7 May 2020 11:49:47 +0530
+Message-Id: <1588832387-8489-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 5, 2020 at 1:47 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
->
-> From: Sedat Dilek <sedat.dilek@gmail.com>
->
-> It turns out that if your config tickles __builtin_constant_p via
-> differences in choices to inline or not, this now produces invalid
-> assembly:
->
-> $ cat foo.c
-> long a(long b, long c) {
->   asm("orb\t%1, %0" : "+q"(c): "r"(b));
->   return c;
-> }
-> $ gcc foo.c
-> foo.c: Assembler messages:
-> foo.c:2: Error: `%rax' not allowed with `orb'
->
-> The "q" constraint only has meanting on -m32 otherwise is treated as
-> "r".
->
-> This is easily reproducible via Clang+CONFIG_STAGING=y+CONFIG_VT6656=m,
-> or Clang+allyesconfig.
->
-> Keep the masking operation to appease sparse (`make C=1`), add back the
-> cast in order to properly select the proper 8b register alias.
->
->  [Nick: reworded]
->
-> Cc: stable@vger.kernel.org
-> Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>
-> Link: https://github.com/ClangBuiltLinux/linux/issues/961
-> Link: https://lore.kernel.org/lkml/20200504193524.GA221287@google.com/
-> Fixes: 1651e700664b4 ("x86: Fix bitops.h warning with a moved cast")
-> Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
-> Reported-by: kernelci.org bot <bot@kernelci.org>
-> Suggested-by: Andy Shevchenko <andriy.shevchenko@intel.com>
-> Suggested-by: Ilie Halip <ilie.halip@gmail.com>
-> Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
-> Signed-off-by: Sedat Dilek <sedat.dilek@gmail.com>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> ---
->  arch/x86/include/asm/bitops.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/x86/include/asm/bitops.h b/arch/x86/include/asm/bitops.h
-> index b392571c1f1d..139122e5b25b 100644
-> --- a/arch/x86/include/asm/bitops.h
-> +++ b/arch/x86/include/asm/bitops.h
-> @@ -54,7 +54,7 @@ arch_set_bit(long nr, volatile unsigned long *addr)
->         if (__builtin_constant_p(nr)) {
->                 asm volatile(LOCK_PREFIX "orb %1,%0"
->                         : CONST_MASK_ADDR(nr, addr)
-> -                       : "iq" (CONST_MASK(nr) & 0xff)
-> +                       : "iq" ((u8)(CONST_MASK(nr) & 0xff))
+This validates KVM capabilities like VMID width, IPA range for hotplug CPU
+against system finalized values. While here, it factors out get_vmid_bits()
+for general use and also defines ID_AA64MMFR0_PARANGE_MASK.
 
-I think a better fix would be to make CONST_MASK() return a u8 value
-rather than have to cast on every use.
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: James Morse <james.morse@arm.com>
+Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: kvmarm@lists.cs.columbia.edu
+Cc: linux-kernel@vger.kernel.org
 
-Also I question the need for the "q" constraint.  It was added in
-commit 437a0a54 as a workaround for GCC 3.4.4.  Now that the minimum
-GCC version is 4.6, is this still necessary?
+Suggested-by: Suzuki Poulose <suzuki.poulose@arm.com>
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+ arch/arm64/include/asm/cpufeature.h | 22 +++++++++++++++++++
+ arch/arm64/include/asm/kvm_mmu.h    |  2 +-
+ arch/arm64/include/asm/sysreg.h     |  1 +
+ arch/arm64/kernel/cpufeature.c      |  2 ++
+ arch/arm64/kvm/reset.c              | 33 +++++++++++++++++++++++++++--
+ 5 files changed, 57 insertions(+), 3 deletions(-)
 
---
-Brian Gerst
+diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
+index afe08251ff95..6808a2091de4 100644
+--- a/arch/arm64/include/asm/cpufeature.h
++++ b/arch/arm64/include/asm/cpufeature.h
+@@ -745,6 +745,28 @@ static inline bool cpu_has_hw_af(void)
+ extern bool cpu_has_amu_feat(int cpu);
+ #endif
+ 
++static inline unsigned int get_vmid_bits(u64 mmfr1)
++{
++	int vmid_bits;
++
++	vmid_bits = cpuid_feature_extract_unsigned_field(mmfr1,
++						ID_AA64MMFR1_VMIDBITS_SHIFT);
++	if (vmid_bits == ID_AA64MMFR1_VMIDBITS_16)
++		return 16;
++
++	/*
++	 * Return the default here even if any reserved
++	 * value is fetched from the system register.
++	 */
++	return 8;
++}
++
++#ifdef CONFIG_KVM_ARM_HOST
++void verify_kvm_capabilities(void);
++#else
++static inline void verify_kvm_capabilities(void) { }
++#endif
++
+ #endif /* __ASSEMBLY__ */
+ 
+ #endif
+diff --git a/arch/arm64/include/asm/kvm_mmu.h b/arch/arm64/include/asm/kvm_mmu.h
+index 30b0e8d6b895..a7137e144b97 100644
+--- a/arch/arm64/include/asm/kvm_mmu.h
++++ b/arch/arm64/include/asm/kvm_mmu.h
+@@ -416,7 +416,7 @@ static inline unsigned int kvm_get_vmid_bits(void)
+ {
+ 	int reg = read_sanitised_ftr_reg(SYS_ID_AA64MMFR1_EL1);
+ 
+-	return (cpuid_feature_extract_unsigned_field(reg, ID_AA64MMFR1_VMIDBITS_SHIFT) == 2) ? 16 : 8;
++	return get_vmid_bits(reg);
+ }
+ 
+ /*
+diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+index c4ac0ac25a00..3510a4668970 100644
+--- a/arch/arm64/include/asm/sysreg.h
++++ b/arch/arm64/include/asm/sysreg.h
+@@ -705,6 +705,7 @@
+ #define ID_AA64MMFR0_TGRAN16_SUPPORTED	0x1
+ #define ID_AA64MMFR0_PARANGE_48		0x5
+ #define ID_AA64MMFR0_PARANGE_52		0x6
++#define ID_AA64MMFR0_PARANGE_MASK	0x7
+ 
+ #ifdef CONFIG_ARM64_PA_BITS_52
+ #define ID_AA64MMFR0_PARANGE_MAX	ID_AA64MMFR0_PARANGE_52
+diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+index 9fac745aa7bb..041dd610b0f8 100644
+--- a/arch/arm64/kernel/cpufeature.c
++++ b/arch/arm64/kernel/cpufeature.c
+@@ -2206,6 +2206,8 @@ static void verify_local_cpu_capabilities(void)
+ 
+ 	if (system_supports_sve())
+ 		verify_sve_features();
++
++	verify_kvm_capabilities();
+ }
+ 
+ void check_local_cpu_capabilities(void)
+diff --git a/arch/arm64/kvm/reset.c b/arch/arm64/kvm/reset.c
+index 30b7ea680f66..1eebcc2a8396 100644
+--- a/arch/arm64/kvm/reset.c
++++ b/arch/arm64/kvm/reset.c
+@@ -340,11 +340,39 @@ int kvm_reset_vcpu(struct kvm_vcpu *vcpu)
+ 	return ret;
+ }
+ 
++void verify_kvm_capabilities(void)
++{
++	u64 safe_mmfr1, mmfr0, mmfr1;
++	int parange, ipa_max;
++	unsigned int safe_vmid_bits, vmid_bits;
++
++	safe_mmfr1 = read_sanitised_ftr_reg(SYS_ID_AA64MMFR1_EL1);
++	mmfr0 = read_cpuid(ID_AA64MMFR0_EL1);
++	mmfr1 = read_cpuid(ID_AA64MMFR1_EL1);
++
++	/* Verify VMID bits */
++	safe_vmid_bits = get_vmid_bits(safe_mmfr1);
++	vmid_bits = get_vmid_bits(mmfr1);
++	if (vmid_bits < safe_vmid_bits) {
++		pr_crit("CPU%d: VMID width mismatch\n", smp_processor_id());
++		cpu_die_early();
++	}
++
++	/* Verify IPA range */
++	parange = mmfr0 & ID_AA64MMFR0_PARANGE_MASK;
++	ipa_max = id_aa64mmfr0_parange_to_phys_shift(parange);
++	if (ipa_max < kvm_ipa_limit) {
++		pr_crit("CPU%d: IPA range mismatch\n", smp_processor_id());
++		cpu_die_early();
++	}
++}
++
+ void kvm_set_ipa_limit(void)
+ {
+ 	unsigned int ipa_max, pa_max, va_max, parange;
+ 
+-	parange = read_sanitised_ftr_reg(SYS_ID_AA64MMFR0_EL1) & 0x7;
++	parange = read_sanitised_ftr_reg(SYS_ID_AA64MMFR0_EL1) &
++						ID_AA64MMFR0_PARANGE_MASK;
+ 	pa_max = id_aa64mmfr0_parange_to_phys_shift(parange);
+ 
+ 	/* Clamp the IPA limit to the PA size supported by the kernel */
+@@ -406,7 +434,8 @@ int kvm_arm_setup_stage2(struct kvm *kvm, unsigned long type)
+ 		phys_shift = KVM_PHYS_SHIFT;
+ 	}
+ 
+-	parange = read_sanitised_ftr_reg(SYS_ID_AA64MMFR0_EL1) & 7;
++	parange = read_sanitised_ftr_reg(SYS_ID_AA64MMFR0_EL1) &
++						ID_AA64MMFR0_PARANGE_MASK;
+ 	if (parange > ID_AA64MMFR0_PARANGE_MAX)
+ 		parange = ID_AA64MMFR0_PARANGE_MAX;
+ 	vtcr |= parange << VTCR_EL2_PS_SHIFT;
+-- 
+2.20.1
+
