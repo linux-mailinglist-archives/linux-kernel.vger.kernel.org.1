@@ -2,67 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 244521C841E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 10:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 663BE1C842C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 10:02:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726029AbgEGIB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 04:01:56 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:49658 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725834AbgEGIB4 (ORCPT
+        id S1726218AbgEGIC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 04:02:56 -0400
+Received: from alexa-out-blr-01.qualcomm.com ([103.229.18.197]:9282 "EHLO
+        alexa-out-blr-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725783AbgEGIC4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 04:01:56 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-86-phOmLZBGMRWXoRhUhxSFxQ-1; Thu, 07 May 2020 09:01:52 +0100
-X-MC-Unique: phOmLZBGMRWXoRhUhxSFxQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Thu, 7 May 2020 09:01:51 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Thu, 7 May 2020 09:01:51 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Arnd Bergmann' <arnd@arndb.de>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-CC:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Jan Kara <jack@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        "Linux FS-devel Mailing List" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] fsnotify: avoid gcc-10 zero-length-bounds warning
-Thread-Topic: [PATCH] fsnotify: avoid gcc-10 zero-length-bounds warning
-Thread-Index: AQHWIu3yH4vXlI/Pe06688jiYmguf6icRU4w
-Date:   Thu, 7 May 2020 08:01:51 +0000
-Message-ID: <af2c5bdf0c4e4e00bef96b5c6b4e1da7@AcuMS.aculab.com>
-References: <20200505143028.1290686-1-arnd@arndb.de>
- <b287bb2f-28e2-7a41-e015-aa5a0cb3b5d7@embeddedor.com>
- <CAK8P3a0v-hK+Ury86-1D2_jfOFgR8ZTEFKVQZBWJq3dW=MuSzw@mail.gmail.com>
-In-Reply-To: <CAK8P3a0v-hK+Ury86-1D2_jfOFgR8ZTEFKVQZBWJq3dW=MuSzw@mail.gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
-MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+        Thu, 7 May 2020 04:02:56 -0400
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by alexa-out-blr-01.qualcomm.com with ESMTP/TLS/AES256-SHA; 07 May 2020 13:32:52 +0530
+Received: from minint-dvc2thc.qualcomm.com (HELO sartgarg-linux.qualcomm.com) ([10.206.24.245])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 07 May 2020 13:32:38 +0530
+Received: by sartgarg-linux.qualcomm.com (Postfix, from userid 2339771)
+        id 2D2C3261C; Thu,  7 May 2020 13:32:38 +0530 (IST)
+From:   Sarthak Garg <sartgarg@codeaurora.org>
+To:     adrian.hunter@intel.com, ulf.hansson@linaro.org
+Cc:     vbadigan@codeaurora.org, stummala@codeaurora.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Sarthak Garg <sartgarg@codeaurora.org>
+Subject: [PATCH V1 0/7] Target specific DLL configuration for qcom SDHC
+Date:   Thu,  7 May 2020 13:32:07 +0530
+Message-Id: <1588838535-6050-1-git-send-email-sartgarg@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQXJuZCBCZXJnbWFubg0KPiBTZW50OiAwNSBNYXkgMjAyMCAxNjowMA0KLi4uDQo+IFll
-cywgd2UgdXN1YWxseSBiYWNrcG9ydCB0cml2aWFsIHdhcm5pbmcgZml4ZXMgdG8gc3RhYmxlIGtl
-cm5lbHMgdG8gYWxsb3cNCj4gYnVpbGRpbmcgdGhvc2Ugd2l0aCBhbnkgbW9kZXJuIGNvbXBpbGVy
-IHZlcnNpb24uDQoNCkluIHRoaXMgY2FzZSB3b3VsZG4ndCBpdCBiZSBiZXR0ZXIgdG8gYmFja3Bv
-cnQgYSBjaGFuZ2UgdGhhdCBkaXNhYmxlcw0KdGhlIHNwZWNpZmljIGNvbXBpbGVyIHdhcm5pbmc/
-DQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9h
-ZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBO
-bzogMTM5NzM4NiAoV2FsZXMpDQo=
+Sarthak Garg (6):
+  dt-bindings: mmc: Add information for DLL register properties
+  mmc: sdhci-msm: Update dll_config_3 as per HSR
+  mmc: sdhci-msm: Update DDR_CONFIG as per device tree file
+  mmc: sdhci-msm: Read and use DLL Config property from device tree file
+  mmc: sdhci-msm: Introduce new ops to dump vendor specific registers
+  mmc: sdhci-msm: dump vendor specific registers during error
+
+Veerabhadrarao Badiganti (1):
+  mmc: host: sdhci-msm: Configure dll-user-control in dll init sequence
+
+ .../devicetree/bindings/mmc/sdhci-msm.txt          |  14 +++
+ drivers/mmc/host/sdhci-msm.c                       | 103 ++++++++++++++++++++-
+ drivers/mmc/host/sdhci.c                           |   3 +
+ drivers/mmc/host/sdhci.h                           |   1 +
+ 4 files changed, 118 insertions(+), 3 deletions(-)
+
+-- 
+2.7.4
 
