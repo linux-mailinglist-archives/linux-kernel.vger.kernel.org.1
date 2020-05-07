@@ -2,87 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E13A51C7F80
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 02:59:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F371B1C7F70
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 02:55:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728441AbgEGA7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 20:59:18 -0400
-Received: from mga11.intel.com ([192.55.52.93]:26590 "EHLO mga11.intel.com"
+        id S1727970AbgEGAzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 20:55:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47532 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728395AbgEGA7O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 20:59:14 -0400
-IronPort-SDR: KWcfvfqmMys53NHORA5+ECWNYkJXaD4TRHd5E4pGTQHWfXONZntSU2MsJRDmbtofKG+VTO9fD8
- D8VCiHLlBbWw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2020 17:59:13 -0700
-IronPort-SDR: qln4NkEEk5t6d6IbJjC7R3hJpvKDOQlxD3fjLCUjTSpO6qUNpvZULUMQqeyqSwoTo+qYdPdQD4
- unwsI80zcuuw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,361,1583222400"; 
-   d="scan'208";a="407461820"
-Received: from allen-box.sh.intel.com ([10.239.159.139])
-  by orsmga004.jf.intel.com with ESMTP; 06 May 2020 17:59:11 -0700
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     ashok.raj@intel.com, jacob.jun.pan@linux.intel.com,
-        Liu Yi L <yi.l.liu@intel.com>, kevin.tian@intel.com,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH v4 5/5] iommu/vt-d: Remove redundant IOTLB flush
-Date:   Thu,  7 May 2020 08:55:34 +0800
-Message-Id: <20200507005534.3080-6-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200507005534.3080-1-baolu.lu@linux.intel.com>
-References: <20200507005534.3080-1-baolu.lu@linux.intel.com>
+        id S1726690AbgEGAzh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 20:55:37 -0400
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 42CAC20708;
+        Thu,  7 May 2020 00:55:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588812936;
+        bh=uM6sr/bKulgUggqODetgoJpXNbXWgWEfpWFV4GW35ww=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=J7DIjsyLvHBZ5eSTEHsBWIEAhMZXO8kVMwLGiArFkneC72whGLjPeNYwS6NdaQBpi
+         KOZ7ng1w2EAvKLDd+tOAKE1S6SF5sSceRA+L0y5y8AVBFunPSNSOFu1NCGBrBQRfv6
+         5HoM2fkTFTG0/agaQl4J3b2D3DEnsTN1CTwjVGAk=
+Date:   Wed, 6 May 2020 17:55:35 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     paulmck@kernel.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        dipankar@in.ibm.com, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        viro@zeniv.linux.org.uk, hannes@cmpxchg.org,
+        Dave Chinner <david@fromorbit.com>
+Subject: Re: [PATCH RFC tip/core/rcu] Add shrinker to shift to
+ fast/inefficient GP mode
+Message-Id: <20200506175535.d4986a4d497071a410b69765@linux-foundation.org>
+In-Reply-To: <20200507004240.GA9156@paulmck-ThinkPad-P72>
+References: <20200507004240.GA9156@paulmck-ThinkPad-P72>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IOTLB flush already included in the PASID tear down and the page request
-drain process. There is no need to flush again.
+On Wed, 6 May 2020 17:42:40 -0700 "Paul E. McKenney" <paulmck@kernel.org> wrote:
 
-Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
----
- drivers/iommu/intel-svm.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+> This commit adds a shrinker so as to inform RCU when memory is scarce.
+> RCU responds by shifting into the same fast and inefficient mode that is
+> used in the presence of excessive numbers of RCU callbacks.  RCU remains
+> in this state for one-tenth of a second, though this time window can be
+> extended by another call to the shrinker.
+> 
+> If it proves feasible, a later commit might add a function call directly
+> indicating the end of the period of scarce memory.
 
-diff --git a/drivers/iommu/intel-svm.c b/drivers/iommu/intel-svm.c
-index 7256eb965cf6..5ff05adc96e9 100644
---- a/drivers/iommu/intel-svm.c
-+++ b/drivers/iommu/intel-svm.c
-@@ -209,11 +209,9 @@ static void intel_mm_release(struct mmu_notifier *mn, struct mm_struct *mm)
- 	 * *has* to handle gracefully without affecting other processes.
- 	 */
- 	rcu_read_lock();
--	list_for_each_entry_rcu(sdev, &svm->devs, list) {
-+	list_for_each_entry_rcu(sdev, &svm->devs, list)
- 		intel_pasid_tear_down_entry(svm->iommu, sdev->dev,
- 					    svm->pasid, true);
--		intel_flush_svm_range_dev(svm, sdev, 0, -1, 0);
--	}
- 	rcu_read_unlock();
- 
- }
-@@ -407,7 +405,6 @@ int intel_svm_unbind_gpasid(struct device *dev, int pasid)
- 			intel_pasid_tear_down_entry(iommu, dev,
- 						    svm->pasid, false);
- 			intel_svm_drain_prq(dev, svm->pasid);
--			intel_flush_svm_range_dev(svm, sdev, 0, -1, 0);
- 			kfree_rcu(sdev, rcu);
- 
- 			if (list_empty(&svm->devs)) {
-@@ -647,7 +644,6 @@ int intel_svm_unbind_mm(struct device *dev, int pasid)
- 			intel_pasid_tear_down_entry(iommu, dev,
- 						    svm->pasid, false);
- 			intel_svm_drain_prq(dev, svm->pasid);
--			intel_flush_svm_range_dev(svm, sdev, 0, -1, 0);
- 			kfree_rcu(sdev, rcu);
- 
- 			if (list_empty(&svm->devs)) {
--- 
-2.17.1
+(Cc David Chinner, who often has opinions on shrinkers ;))
 
+It's a bit abusive of the intent of the slab shrinkers, but I don't
+immediately see a problem with it.  Always returning 0 from
+->scan_objects might cause a problem in some situations(?).
+
+Perhaps we should have a formal "system getting low on memory, please
+do something" notification API.
+
+How significant is this?  How much memory can RCU consume?
+
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -2368,8 +2368,15 @@ static void force_qs_rnp(int (*f)(struct rcu_data *rdp))
+>  	struct rcu_data *rdp;
+>  	struct rcu_node *rnp;
+>  
+> -	rcu_state.cbovld = rcu_state.cbovldnext;
+> +	// Load .oomovld before .oomovldend, pairing with .oomovld set.
+> +	rcu_state.cbovld = smp_load_acquire(&rcu_state.oomovld) || // ^^^
+> +			   rcu_state.cbovldnext;
+>  	rcu_state.cbovldnext = false;
+> +	if (READ_ONCE(rcu_state.oomovld) &&
+> +	    time_after(jiffies, READ_ONCE(rcu_state.oomovldend))) {
+> +		WRITE_ONCE(rcu_state.oomovld, false);
+> +		pr_info("%s: Ending OOM-mode grace periods.\n", __func__);
+> +	}
+>  	rcu_for_each_leaf_node(rnp) {
+>  		cond_resched_tasks_rcu_qs();
+>  		mask = 0;
+> @@ -2697,6 +2704,35 @@ static void check_cb_ovld(struct rcu_data *rdp)
+>  	raw_spin_unlock_rcu_node(rnp);
+>  }
+>  
+> +/* Return a rough count of the RCU callbacks outstanding. */
+> +static unsigned long rcu_oom_count(struct shrinker *unused1,
+> +				   struct shrink_control *unused2)
+> +{
+> +	int cpu;
+> +	unsigned long ncbs = 0;
+> +
+> +	for_each_possible_cpu(cpu)
+> +		ncbs += rcu_get_n_cbs_cpu(cpu);
+> +	return ncbs;
+> +}
+> +
+> +/* Start up an interval of fast high-overhead grace periods. */
+> +static unsigned long rcu_oom_scan(struct shrinker *unused1,
+> +				  struct shrink_control *unused2)
+> +{
+> +	pr_info("%s: Starting OOM-mode grace periods.\n", __func__);
+> +	WRITE_ONCE(rcu_state.oomovldend, jiffies + HZ / 10);
+> +	smp_store_release(&rcu_state.oomovld, true); // After .oomovldend
+> +	rcu_force_quiescent_state();  // Kick grace period
+> +	return 0;  // We haven't actually reclaimed anything yet.
+> +}
+> +
+> +static struct shrinker rcu_shrinker = {
+> +	.count_objects = rcu_oom_count,
+> +	.scan_objects = rcu_oom_scan,
+> +	.seeks = DEFAULT_SEEKS,
+> +};
+> +
+>  /* Helper function for call_rcu() and friends.  */
+>  static void
+>  __call_rcu(struct rcu_head *head, rcu_callback_t func)
+> @@ -4146,6 +4182,7 @@ void __init rcu_init(void)
+>  		qovld_calc = DEFAULT_RCU_QOVLD_MULT * qhimark;
+>  	else
+>  		qovld_calc = qovld;
+> +	WARN_ON(register_shrinker(&rcu_shrinker));
+>  }
+>  
+>  #include "tree_stall.h"
+> diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+> index 2d7fcb9..c4d8e96 100644
+> --- a/kernel/rcu/tree.h
+> +++ b/kernel/rcu/tree.h
+> @@ -326,6 +326,8 @@ struct rcu_state {
+>  	int ncpus_snap;				/* # CPUs seen last time. */
+>  	u8 cbovld;				/* Callback overload now? */
+>  	u8 cbovldnext;				/* ^        ^  next time? */
+> +	u8 oomovld;				/* OOM overload? */
+> +	unsigned long oomovldend;		/* OOM ovld end, jiffies. */
+>  
+>  	unsigned long jiffies_force_qs;		/* Time at which to invoke */
+>  						/*  force_quiescent_state(). */
