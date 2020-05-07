@@ -2,206 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9A6C1C9929
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:22:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 497081C992E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:22:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728073AbgEGSWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 14:22:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57430 "EHLO
+        id S1728230AbgEGSWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 14:22:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726367AbgEGSWN (ORCPT
+        by vger.kernel.org with ESMTP id S1728198AbgEGSWb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 14:22:13 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1A80C05BD43
-        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 11:22:13 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id v9so3397663ybq.13
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 11:22:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc;
-        bh=Hio9A8K2n+RsdYoc8pl4frI4S8NgtDDOmOIDiCLHFEg=;
-        b=r83N9YXNHAuysfUCfvdi8Rl5DkYgLHkygL38sXx7PdanrqM5Lnz7xMFP85L4IbZCoi
-         vCyj3Pl++/OcRr0eTL0YpewVfULtTz5to5XRjmXnOAmKmcIPNGdxUdhWDEn2382KDGWo
-         f2uN10wq86ASCiOn1IVDTVnUvLF8VMzW3K0NrfRT2+nDaYUI+coSWuaLXUXRZdz5xcRU
-         dL+SMJaFxZjMNS6kr5Jytapxopu2rlnWRCIHTYbAWxUyuoX4ndxHD2pqvVAz9KDU5Ng+
-         zlcdQ7riCkAtGifkj4MT3XGpPUyT9YxVyZVOHL37IzTh0gQOsy9dd8Ti5XG+XlrKuzIJ
-         HxXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
-         :message-id:subject:to:cc;
-        bh=Hio9A8K2n+RsdYoc8pl4frI4S8NgtDDOmOIDiCLHFEg=;
-        b=NMiF5N1MJMWFXJ52SuArKF8SsAtcHWTyaiNn41EVk0RPVTHV97OlYyeuStXaR2/rwK
-         8ln/Sz+ueIRr7MX8erikdYWtibpRrKNyIdoVDNgLQycdLcCMiPJn4AVWdDVJV+mskUNx
-         BQmoq/Bqvk3kGjyRnb15W0je7nop6RDWxut43admzQwlU71jC6JXSi3Sr+zBg1LSj+Wz
-         6Z/UVs7sD6o2b9rfXk6eBwYOPfREhW/ONEtS/dDmMp+NteP2CNFtsAdBn9GZyr1lY1iX
-         DXN5qdJn61e6FOfWER7rtx2f97Nb2k8CaFT9Z9DciBPQY368ut5dwQv5DpKEYKrPW+B4
-         DIzA==
-X-Gm-Message-State: AGi0PuZ1ebkuvS/GqjVNJMZLxJwmrdqS0LEWSkQjfb98HL0EVXlAatO5
-        0IHjUi7kxWFSpdwszVbTVkwb1hTyfrDigQmwcKI=
-X-Google-Smtp-Source: APiQypIpqQ8vVP8B2JUA91YqyMOOXv9lkR2FYk7SR9OMY5dPNlw5NaEr/FYdVE0cOqUKpvZDkh2vyZCqwiGHpQ8RFXo=
-X-Received: by 2002:a25:5081:: with SMTP id e123mr24424676ybb.48.1588875732811;
- Thu, 07 May 2020 11:22:12 -0700 (PDT)
+        Thu, 7 May 2020 14:22:31 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D1F5C05BD43;
+        Thu,  7 May 2020 11:22:31 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jWl9z-0002qB-Ia; Thu, 07 May 2020 20:22:15 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id B9DAE102652; Thu,  7 May 2020 20:22:14 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>, linux-kernel@vger.kernel.org,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Rik van Riel <riel@surriel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>, sam <sunhaoyl@outlook.com>,
+        Kees Cook <keescook@chromium.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Jann Horn <jannh@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, stable@vger.kernel.org
+Subject: Re: [PATCH] x86/fpu/xstate: Clear uninitialized xstate areas in core dump
+In-Reply-To: <20200507164904.26927-1-yu-cheng.yu@intel.com>
+References: <20200507164904.26927-1-yu-cheng.yu@intel.com>
+Date:   Thu, 07 May 2020 20:22:14 +0200
+Message-ID: <87lfm3ehbd.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Received: by 2002:a05:6900:26b:0:0:0:0 with HTTP; Thu, 7 May 2020 11:22:12
- -0700 (PDT)
-In-Reply-To: <d9bfde9f-8f16-bf1b-311b-ea6c2b8ab93d@arm.com>
-References: <1588795317-20879-1-git-send-email-vjitta@codeaurora.org> <d9bfde9f-8f16-bf1b-311b-ea6c2b8ab93d@arm.com>
-From:   Ajay kumar <ajaynumb@gmail.com>
-Date:   Thu, 7 May 2020 23:52:12 +0530
-Message-ID: <CAEC9eQMKc0dK9jGqOjeOQ3LT0fkJtYjgScb+ZF6MNagLERC7Jw@mail.gmail.com>
-Subject: Re: [PATCH] iommu/iova: Retry from last rb tree node if iova search fails
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     vjitta@codeaurora.org, joro@8bytes.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        vinmenon@codeaurora.org, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/7/20, Robin Murphy <robin.murphy@arm.com> wrote:
-> On 2020-05-06 9:01 pm, vjitta@codeaurora.org wrote:
->> From: Vijayanand Jitta <vjitta@codeaurora.org>
->>
->> When ever a new iova alloc request comes iova is always searched
->> from the cached node and the nodes which are previous to cached
->> node. So, even if there is free iova space available in the nodes
->> which are next to the cached node iova allocation can still fail
->> because of this approach.
->>
->> Consider the following sequence of iova alloc and frees on
->> 1GB of iova space
->>
->> 1) alloc - 500MB
->> 2) alloc - 12MB
->> 3) alloc - 499MB
->> 4) free -  12MB which was allocated in step 2
->> 5) alloc - 13MB
->>
->> After the above sequence we will have 12MB of free iova space and
->> cached node will be pointing to the iova pfn of last alloc of 13MB
->> which will be the lowest iova pfn of that iova space. Now if we get an
->> alloc request of 2MB we just search from cached node and then look
->> for lower iova pfn's for free iova and as they aren't any, iova alloc
->> fails though there is 12MB of free iova space.
->
-> Yup, this could definitely do with improving. Unfortunately I think this
-> particular implementation is slightly flawed...
->
->> To avoid such iova search failures do a retry from the last rb tree node
->> when iova search fails, this will search the entire tree and get an iova
->> if its available
->>
->> Signed-off-by: Vijayanand Jitta <vjitta@codeaurora.org>
->> ---
->>   drivers/iommu/iova.c | 11 +++++++++++
->>   1 file changed, 11 insertions(+)
->>
->> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
->> index 0e6a953..2985222 100644
->> --- a/drivers/iommu/iova.c
->> +++ b/drivers/iommu/iova.c
->> @@ -186,6 +186,7 @@ static int __alloc_and_insert_iova_range(struct
->> iova_domain *iovad,
->>   	unsigned long flags;
->>   	unsigned long new_pfn;
->>   	unsigned long align_mask = ~0UL;
->> +	bool retry = false;
->>
->>   	if (size_aligned)
->>   		align_mask <<= fls_long(size - 1);
->> @@ -198,6 +199,8 @@ static int __alloc_and_insert_iova_range(struct
->> iova_domain *iovad,
->>
->>   	curr = __get_cached_rbnode(iovad, limit_pfn);
->>   	curr_iova = rb_entry(curr, struct iova, node);
->> +
->> +retry_search:
->>   	do {
->>   		limit_pfn = min(limit_pfn, curr_iova->pfn_lo);
->>   		new_pfn = (limit_pfn - size) & align_mask;
->> @@ -207,6 +210,14 @@ static int __alloc_and_insert_iova_range(struct
->> iova_domain *iovad,
->>   	} while (curr && new_pfn <= curr_iova->pfn_hi);
->>
->>   	if (limit_pfn < size || new_pfn < iovad->start_pfn) {
->> +		if (!retry) {
->> +			curr = rb_last(&iovad->rbroot);
->
-> Why walk when there's an anchor node there already? However...
-+1
->
->> +			curr_iova = rb_entry(curr, struct iova, node);
->> +			limit_pfn = curr_iova->pfn_lo;
->
-> ...this doesn't look right, as by now we've lost the original limit_pfn
-> supplied by the caller, so are highly likely to allocate beyond the
-> range our caller asked for. In fact AFAICS we'd start allocating from
-> directly directly below the anchor node, beyond the end of the entire
-> address space.
-+1
->
-> The logic I was imagining we want here was something like the rapidly
-> hacked up (and untested) diff below.
->
-> Thanks,
-> Robin.
->
-> ----->8-----
-> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
-> index 0e6a9536eca6..3574c19272d6 100644
-> --- a/drivers/iommu/iova.c
-> +++ b/drivers/iommu/iova.c
-> @@ -186,6 +186,7 @@ static int __alloc_and_insert_iova_range(struct
-> iova_domain *iovad,
->          unsigned long flags;
->          unsigned long new_pfn;
->          unsigned long align_mask = ~0UL;
-> +       unsigned long alloc_hi, alloc_lo;
->
->          if (size_aligned)
->                  align_mask <<= fls_long(size - 1);
-> @@ -196,17 +197,27 @@ static int __alloc_and_insert_iova_range(struct
-> iova_domain *iovad,
->                          size >= iovad->max32_alloc_size)
->                  goto iova32_full;
->
-> +       alloc_hi = IOVA_ANCHOR;
-> +       alloc_lo = iovad->start_pfn;
-> +retry:
->          curr = __get_cached_rbnode(iovad, limit_pfn);
->          curr_iova = rb_entry(curr, struct iova, node);
-> +       if (alloc_hi < curr_iova->pfn_hi) {
-> +               alloc_lo = curr_iova->pfn_hi;
-> +               alloc_hi = limit_pfn;
-> +       }
+Yu-cheng Yu <yu-cheng.yu@intel.com> writes:
+> @@ -983,6 +983,7 @@ int copy_xstate_to_kernel(void *kbuf, struct xregs_state *xsave, unsigned int of
+>  {
+>  	unsigned int offset, size;
+>  	struct xstate_header header;
+> +	int last_off;
+>  	int i;
+>  
+>  	/*
+> @@ -1006,7 +1007,17 @@ int copy_xstate_to_kernel(void *kbuf, struct xregs_state *xsave, unsigned int of
+>  
+>  	__copy_xstate_to_kernel(kbuf, &header, offset, size, size_total);
+>  
+> +	last_off = 0;
 > +
->          do {
-> -               limit_pfn = min(limit_pfn, curr_iova->pfn_lo);
-> -               new_pfn = (limit_pfn - size) & align_mask;
-> +               alloc_hi = min(alloc_hi, curr_iova->pfn_lo);
-During retry case, the curr and curr_iova is not updated. Kindly check it.
+>  	for (i = 0; i < XFEATURE_MAX; i++) {
+> +		/*
+> +		 * Clear uninitialized area before XSAVE header.
+> +		 */
+> +		if (i == FIRST_EXTENDED_XFEATURE) {
+> +			memset(kbuf + last_off, 0, XSAVE_HDR_OFFSET - last_off);
+> +			last_off = XSAVE_HDR_OFFSET + XSAVE_HDR_SIZE;
+> +		}
+> +
+>  		/*
+>  		 * Copy only in-use xstates:
+>  		 */
+> @@ -1020,11 +1031,16 @@ int copy_xstate_to_kernel(void *kbuf, struct xregs_state *xsave, unsigned int of
+>  			if (offset + size > size_total)
+>  				break;
+>  
+> +			memset(kbuf + last_off, 0, offset - last_off);
+> +			last_off = offset + size;
+> +
+>  			__copy_xstate_to_kernel(kbuf, src, offset, size, size_total);
+>  		}
+>  
+>  	}
+>  
+> +	memset(kbuf + last_off, 0, size_total - last_off);
 
-Ajay
-> +               new_pfn = (alloc_hi - size) & align_mask;
->                  prev = curr;
->                  curr = rb_prev(curr);
->                  curr_iova = rb_entry(curr, struct iova, node);
->          } while (curr && new_pfn <= curr_iova->pfn_hi);
->
-> -       if (limit_pfn < size || new_pfn < iovad->start_pfn) {
-> +       if (limit_pfn < size || new_pfn < alloc_lo) {
-> +               if (alloc_lo == iovad->start_pfn)
-> +                       goto retry;
->                  iovad->max32_alloc_size = size;
->                  goto iova32_full;
->          }
-> _______________________________________________
-> iommu mailing list
-> iommu@lists.linux-foundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/iommu
->
+Why doing all this partial zeroing? There is absolutely no point.
+
+Either the caller clears the buffer or this function clears it right at
+the beginning with:
+
+    memset(kbuf, 0, min(size_total, XSAVE_MAX_SIZE));
+
+Thanks,
+
+        tglx
