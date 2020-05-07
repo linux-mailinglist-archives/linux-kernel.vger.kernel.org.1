@@ -2,197 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15EBE1C86F5
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 12:35:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06B431C86B9
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 12:31:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727894AbgEGKdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 06:33:42 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:57176 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727878AbgEGKdj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 06:33:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588847617;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ETQ6uKGHMQumDeMEnt+lmo6qtl8Y1L8zkXdal0m3TTw=;
-        b=Xi83Jr/jloetrwDLBEruUm4uTUXniiwsL3YZRtmr+nBRK5MeFboQlLhqaoGfNOxpf43Lae
-        tVu1cAtuf/n9UR7H/Utueul25ReLVbrr8HPuDLYRrNwx345FLb1lKrqYbC9idwhzicxhFs
-        BFtvmB8OGP7E+z4ikP/mq4E33ElK8p0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-346-zu1RLbGwPVy20Z2PfAoPog-1; Thu, 07 May 2020 06:33:35 -0400
-X-MC-Unique: zu1RLbGwPVy20Z2PfAoPog-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726029AbgEGKbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 06:31:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55796 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725809AbgEGKbg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 06:31:36 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7B53F19200C1;
-        Thu,  7 May 2020 10:33:34 +0000 (UTC)
-Received: from t480s.redhat.com (ovpn-113-245.ams2.redhat.com [10.36.113.245])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7BF5D5D9C5;
-        Thu,  7 May 2020 10:33:32 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, virtio-dev@lists.oasis-open.org,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-Subject: [PATCH v3 15/15] virtio-mem: Try to unplug the complete online memory block first
-Date:   Thu,  7 May 2020 12:31:19 +0200
-Message-Id: <20200507103119.11219-16-david@redhat.com>
-In-Reply-To: <20200507103119.11219-1-david@redhat.com>
-References: <20200507103119.11219-1-david@redhat.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 3EE15207DD;
+        Thu,  7 May 2020 10:31:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588847495;
+        bh=RTSm4kdRgeWc+RyZlG1E78GC90cFNav4NdQnUzi52rQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=zrL54q9y/iG40sCchowlpbj1cSUFUrH4BmLWyfzvLXO5aO9nI4q/SkI51IEcOqNP3
+         REymdcG4+Skc3w+VdctU0Dns+1uaZrLY+de4e0oZemLRLd6awdttfqf2n8kml7QTan
+         ELNMyjNlcCI1CWldZ/TGq3q7px8vHbuEk/VTjnJA=
+Date:   Thu, 7 May 2020 11:31:29 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>, jroedel@suse.de,
+        Stephen Boyd <swboyd@chromium.org>,
+        iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Evan Green <evgreen@chromium.org>,
+        linux-arm-msm-owner@vger.kernel.org
+Subject: Re: [PATCHv4 0/6] iommu/arm-smmu: Allow client devices to select
+ identity mapping
+Message-ID: <20200507103129.GA29541@willie-the-truck>
+References: <cover.1587407458.git.saiprakash.ranjan@codeaurora.org>
+ <aa54fd00a6d353c72664e41b7a4a4e3d@codeaurora.org>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aa54fd00a6d353c72664e41b7a4a4e3d@codeaurora.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Right now, we always try to unplug single subblocks when processing an
-online memory block. Let's try to unplug the complete online memory block
-first, in case it is fully plugged and the unplug request is large
-enough. Fallback to single subblocks in case the memory block cannot get
-unplugged as a whole.
+On Thu, May 07, 2020 at 03:58:06PM +0530, Sai Prakash Ranjan wrote:
+> Hi Will, Joerg
+> 
+> On 2020-04-21 00:03, Sai Prakash Ranjan wrote:
+> > This series allows DRM, Modem devices to set a default
+> > identity mapping in qcom smmu implementation.
+> > 
+> > Patch 1 is cleanup to support other SoCs to call into
+> > QCOM specific  implementation.
+> > Patch 2 sets the default identity domain for DRM devices.
+> > Patch 3 implements def_domain_type callback for arm-smmu.
+> > Patch 4 sets the default identity domain for modem device.
+> > Patch 5-6 adds the iommus property for mss pil.
+> > 
+> > This is based on Joerg's tree:
+> >  -
+> > https://git.kernel.org/pub/scm/linux/kernel/git/joro/linux.git/log/?h=iommu-probe-device-v2
+> > 
+> > v4:
+> >  * Updated commit msg for mss pil requesting direct mapping
+> > 
+> > v3:
+> >  * Use arm_smmu_master_cfg to get impl instead of long way as per Robin.
+> >  * Use def_domain_type name for the callback in arm_smmu_imp as per
+> > Robin
+> > 
+> > Jordan Crouse (1):
+> >   iommu/arm-smmu: Allow client devices to select direct mapping
+> > 
+> > Sai Prakash Ranjan (2):
+> >   iommu: arm-smmu-impl: Convert to a generic reset implementation
+> >   iommu/arm-smmu: Implement iommu_ops->def_domain_type call-back
+> > 
+> > Sibi Sankar (3):
+> >   iommu/arm-smmu-qcom: Request direct mapping for modem device
+> >   dt-bindings: remoteproc: qcom: Add iommus property
+> >   arm64: dts: qcom: sdm845-cheza: Add iommus property
+> > 
+> >  .../bindings/remoteproc/qcom,q6v5.txt         |  3 ++
+> >  arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi    |  5 +++
+> >  drivers/iommu/arm-smmu-impl.c                 |  8 ++--
+> >  drivers/iommu/arm-smmu-qcom.c                 | 37 +++++++++++++++++--
+> >  drivers/iommu/arm-smmu.c                      | 12 ++++++
+> >  drivers/iommu/arm-smmu.h                      |  1 +
+> >  6 files changed, 60 insertions(+), 6 deletions(-)
+> 
+> This series is reviewed by Robin.
+> Any chance this series can make it to 5.8?
 
-Cc: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- drivers/virtio/virtio_mem.c | 88 ++++++++++++++++++++++++-------------
- 1 file changed, 57 insertions(+), 31 deletions(-)
+I'm planning to queue smmu stuff next week, been busy with arm64 stuff
+so far, sorry.
 
-diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
-index abd93b778a26..9e523db3bee1 100644
---- a/drivers/virtio/virtio_mem.c
-+++ b/drivers/virtio/virtio_mem.c
-@@ -1307,6 +1307,46 @@ static int virtio_mem_mb_unplug_any_sb_offline(str=
-uct virtio_mem *vm,
- 	return 0;
- }
-=20
-+/*
-+ * Unplug the given plugged subblocks of an online memory block.
-+ *
-+ * Will modify the state of the memory block.
-+ */
-+static int virtio_mem_mb_unplug_sb_online(struct virtio_mem *vm,
-+					  unsigned long mb_id, int sb_id,
-+					  int count)
-+{
-+	const unsigned long nr_pages =3D PFN_DOWN(vm->subblock_size) * count;
-+	unsigned long start_pfn;
-+	int rc;
-+
-+	start_pfn =3D PFN_DOWN(virtio_mem_mb_id_to_phys(mb_id) +
-+			     sb_id * vm->subblock_size);
-+	rc =3D alloc_contig_range(start_pfn, start_pfn + nr_pages,
-+				MIGRATE_MOVABLE, GFP_KERNEL);
-+	if (rc =3D=3D -ENOMEM)
-+		/* whoops, out of memory */
-+		return rc;
-+	if (rc)
-+		return -EBUSY;
-+
-+	/* Mark it as fake-offline before unplugging it */
-+	virtio_mem_set_fake_offline(start_pfn, nr_pages, true);
-+	adjust_managed_page_count(pfn_to_page(start_pfn), -nr_pages);
-+
-+	/* Try to unplug the allocated memory */
-+	rc =3D virtio_mem_mb_unplug_sb(vm, mb_id, sb_id, count);
-+	if (rc) {
-+		/* Return the memory to the buddy. */
-+		virtio_mem_fake_online(start_pfn, nr_pages);
-+		return rc;
-+	}
-+
-+	virtio_mem_mb_set_state(vm, mb_id,
-+				VIRTIO_MEM_MB_STATE_ONLINE_PARTIAL);
-+	return 0;
-+}
-+
- /*
-  * Unplug the desired number of plugged subblocks of an online memory bl=
-ock.
-  * Will skip subblock that are busy.
-@@ -1321,16 +1361,21 @@ static int virtio_mem_mb_unplug_any_sb_online(str=
-uct virtio_mem *vm,
- 					      unsigned long mb_id,
- 					      uint64_t *nb_sb)
- {
--	const unsigned long nr_pages =3D PFN_DOWN(vm->subblock_size);
--	unsigned long start_pfn;
- 	int rc, sb_id;
-=20
--	/*
--	 * TODO: To increase the performance we want to try bigger, consecutive
--	 * subblocks first before falling back to single subblocks. Also,
--	 * we should sense via something like is_mem_section_removable()
--	 * first if it makes sense to go ahead any try to allocate.
--	 */
-+	/* If possible, try to unplug the complete block in one shot. */
-+	if (*nb_sb >=3D vm->nb_sb_per_mb &&
-+	    virtio_mem_mb_test_sb_plugged(vm, mb_id, 0, vm->nb_sb_per_mb)) {
-+		rc =3D virtio_mem_mb_unplug_sb_online(vm, mb_id, 0,
-+						    vm->nb_sb_per_mb);
-+		if (!rc) {
-+			*nb_sb -=3D vm->nb_sb_per_mb;
-+			goto unplugged;
-+		} else if (rc !=3D -EBUSY)
-+			return rc;
-+	}
-+
-+	/* Fallback to single subblocks. */
- 	for (sb_id =3D vm->nb_sb_per_mb - 1; sb_id >=3D 0 && *nb_sb; sb_id--) {
- 		/* Find the next candidate subblock */
- 		while (sb_id >=3D 0 &&
-@@ -1339,34 +1384,15 @@ static int virtio_mem_mb_unplug_any_sb_online(str=
-uct virtio_mem *vm,
- 		if (sb_id < 0)
- 			break;
-=20
--		start_pfn =3D PFN_DOWN(virtio_mem_mb_id_to_phys(mb_id) +
--				     sb_id * vm->subblock_size);
--		rc =3D alloc_contig_range(start_pfn, start_pfn + nr_pages,
--					MIGRATE_MOVABLE, GFP_KERNEL);
--		if (rc =3D=3D -ENOMEM)
--			/* whoops, out of memory */
--			return rc;
--		if (rc)
--			/* memory busy, we can't unplug this chunk */
-+		rc =3D virtio_mem_mb_unplug_sb_online(vm, mb_id, sb_id, 1);
-+		if (rc =3D=3D -EBUSY)
- 			continue;
--
--		/* Mark it as fake-offline before unplugging it */
--		virtio_mem_set_fake_offline(start_pfn, nr_pages, true);
--		adjust_managed_page_count(pfn_to_page(start_pfn), -nr_pages);
--
--		/* Try to unplug the allocated memory */
--		rc =3D virtio_mem_mb_unplug_sb(vm, mb_id, sb_id, 1);
--		if (rc) {
--			/* Return the memory to the buddy. */
--			virtio_mem_fake_online(start_pfn, nr_pages);
-+		else if (rc)
- 			return rc;
--		}
--
--		virtio_mem_mb_set_state(vm, mb_id,
--					VIRTIO_MEM_MB_STATE_ONLINE_PARTIAL);
- 		*nb_sb -=3D 1;
- 	}
-=20
-+unplugged:
- 	/*
- 	 * Once all subblocks of a memory block were unplugged, offline and
- 	 * remove it. This will usually not fail, as no memory is in use
---=20
-2.25.3
-
+Will
