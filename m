@@ -2,87 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82D1D1C83D9
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 09:53:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A19811C83DF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 09:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725985AbgEGHxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 03:53:38 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2161 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725900AbgEGHxh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 03:53:37 -0400
-Received: from lhreml737-chm.china.huawei.com (unknown [172.18.7.106])
-        by Forcepoint Email with ESMTP id 7AAF388BEEFFBA9EA804;
-        Thu,  7 May 2020 08:53:35 +0100 (IST)
-Received: from fraeml705-chm.china.huawei.com (10.206.15.54) by
- lhreml737-chm.china.huawei.com (10.201.108.187) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.1913.5; Thu, 7 May 2020 08:53:35 +0100
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml705-chm.china.huawei.com (10.206.15.54) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Thu, 7 May 2020 09:53:34 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.1913.007;
- Thu, 7 May 2020 09:53:34 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Mimi Zohar <zohar@linux.ibm.com>,
-        "david.safford@gmail.com" <david.safford@gmail.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "jmorris@namei.org" <jmorris@namei.org>,
-        "John Johansen" <john.johansen@canonical.com>
-CC:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>
-Subject: RE: [RFC][PATCH 1/3] evm: Move hooks outside LSM infrastructure
-Thread-Topic: [RFC][PATCH 1/3] evm: Move hooks outside LSM infrastructure
-Thread-Index: AQHWHfmwvisCdHYC6kmVk7fgFWuzYaibYCWAgAAX0QCAAMB1IA==
-Date:   Thu, 7 May 2020 07:53:34 +0000
-Message-ID: <ab879f9e66874736a40e9c566cadc272@huawei.com>
-References: <20200429073935.11913-1-roberto.sassu@huawei.com>
-         <1588794293.4624.21.camel@linux.ibm.com>
- <1588799408.4624.28.camel@linux.ibm.com>
-In-Reply-To: <1588799408.4624.28.camel@linux.ibm.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.220.65.97]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+        id S1726356AbgEGHzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 03:55:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725862AbgEGHzG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 03:55:06 -0400
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D33AC061A41
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 00:55:06 -0700 (PDT)
+Received: from ramsan ([IPv6:2a02:1810:ac12:ed60:6572:4a1f:d283:9ae8])
+        by michel.telenet-ops.be with bizsmtp
+        id bjv42200a3ZRV0X06jv4l4; Thu, 07 May 2020 09:55:05 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan with esmtp (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1jWbN2-0001WQ-Jm; Thu, 07 May 2020 09:55:04 +0200
+Received: from geert by rox.of.borg with local (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1jWbN2-0008PY-Gd; Thu, 07 May 2020 09:55:04 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     Yoshihiro Kaneko <ykaneko0929@gmail.com>,
+        devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH v3] dt-bindings: irqchip: renesas-intc-irqpin: Convert to json-schema
+Date:   Thu,  7 May 2020 09:55:03 +0200
+Message-Id: <20200507075503.32291-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBNaW1pIFpvaGFyIFttYWlsdG86
-em9oYXJAbGludXguaWJtLmNvbV0NCj4gU2VudDogV2VkbmVzZGF5LCBNYXkgNiwgMjAyMCAxMTox
-MCBQTQ0KPiBUbzogUm9iZXJ0byBTYXNzdSA8cm9iZXJ0by5zYXNzdUBodWF3ZWkuY29tPjsgZGF2
-aWQuc2FmZm9yZEBnbWFpbC5jb207DQo+IHZpcm9AemVuaXYubGludXgub3JnLnVrOyBqbW9ycmlz
-QG5hbWVpLm9yZzsgSm9obiBKb2hhbnNlbg0KPiA8am9obi5qb2hhbnNlbkBjYW5vbmljYWwuY29t
-Pg0KPiBDYzogbGludXgtZnNkZXZlbEB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWludGVncml0eUB2
-Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LQ0KPiBzZWN1cml0eS1tb2R1bGVAdmdlci5rZXJuZWwub3Jn
-OyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBTaWx2aXUNCj4gVmxhc2NlYW51IDxTaWx2
-aXUuVmxhc2NlYW51QGh1YXdlaS5jb20+DQo+IFN1YmplY3Q6IFJlOiBbUkZDXVtQQVRDSCAxLzNd
-IGV2bTogTW92ZSBob29rcyBvdXRzaWRlIExTTSBpbmZyYXN0cnVjdHVyZQ0KPiANCj4gT24gV2Vk
-LCAyMDIwLTA1LTA2IGF0IDE1OjQ0IC0wNDAwLCBNaW1pIFpvaGFyIHdyb3RlOg0KPiA+IFNpbmNl
-IGNvcHlpbmcgdGhlIEVWTSBITUFDIG9yIG9yaWdpbmFsIHNpZ25hdHVyZSBpc24ndCBhcHBsaWNh
-YmxlLCBJDQo+ID4gd291bGQgcHJlZmVyIGV4cGxvcmluZyBhbiBFVk0gcG9ydGFibGUgYW5kIGlt
-bXV0YWJsZSBzaWduYXR1cmUgb25seQ0KPiA+IHNvbHV0aW9uLg0KPiANCj4gVG8gcHJldmVudCBj
-b3B5aW5nIHRoZSBFVk0geGF0dHIsIHdlIGFkZGVkICJzZWN1cml0eS5ldm0iIHRvDQo+IC9ldGMv
-eGF0dHIuY29uZi4gwqBUbyBzdXBwb3J0IGNvcHlpbmcganVzdCB0aGUgRVZNIHBvcnRhYmxlIGFu
-ZA0KPiBpbW11dGFibGUgc2lnbmF0dXJlcyB3aWxsIHJlcXVpcmUgYSBkaWZmZXJlbnQgc29sdXRp
-b24uDQoNClRoaXMgcGF0Y2ggc2V0IHJlbW92ZXMgdGhlIG5lZWQgZm9yIGlnbm9yaW5nIHNlY3Vy
-aXR5LmV2bS4gSXQgY2FuIGJlIGFsd2F5cw0KY29waWVkLCBldmVuIGlmIGl0IGlzIGFuIEhNQUMu
-IEVWTSB3aWxsIHVwZGF0ZSBpdCBvbmx5IHdoZW4gdmVyaWZpY2F0aW9uIGluDQp0aGUgcHJlIGhv
-b2sgaXMgc3VjY2Vzc2Z1bC4gQ29tYmluZWQgd2l0aCB0aGUgYWJpbGl0eSBvZiBwcm90ZWN0aW5n
-IGEgc3Vic2V0DQpvZiBmaWxlcyB3aXRob3V0IGludHJvZHVjaW5nIGFuIEVWTSBwb2xpY3ksIHRo
-ZXNlIGFkdmFudGFnZXMgc2VlbSB0bw0Kb3V0d2VpZ2ggdGhlIGVmZm9ydCBuZWNlc3NhcnkgdG8g
-bWFrZSB0aGUgc3dpdGNoLg0KDQpSb2JlcnRvDQoNCkhVQVdFSSBURUNITk9MT0dJRVMgRHVlc3Nl
-bGRvcmYgR21iSCwgSFJCIDU2MDYzDQpNYW5hZ2luZyBEaXJlY3RvcjogTGkgUGVuZywgTGkgSmlh
-biwgU2hpIFlhbmxpDQo=
+From: Yoshihiro Kaneko <ykaneko0929@gmail.com>
+
+Convert the Renesas Interrupt Controller (INTC) for external pins Device
+Tree binding documentation to json-schema.
+
+Signed-off-by: Yoshihiro Kaneko <ykaneko0929@gmail.com>
+Co-developed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+v3:
+  - Take over from Kaneko-san,
+  - Update license,
+  - Fix title,
+  - Remove standard descriptions,
+  - reg: fix minItems, add descriptions,
+  - interrupts: fix {min,max}Items,
+  - sense-bitfield-width: add enum and default, use description,
+  - control-parent: use description,
+  - Make clocks and power-domains required on SH/R-Mobile,
+  - Group interrupts in example,
+
+v2:
+  - Correct Geert-san's E-mail address,
+  - Delete Guennadi-san from the maintainer of this binding,
+  - Give 'sense-bitfield-width' the uint32 type,
+  - Describe 'control-parent' property as a boolean.
+---
+ .../renesas,intc-irqpin.txt                   |  62 ----------
+ .../renesas,intc-irqpin.yaml                  | 108 ++++++++++++++++++
+ 2 files changed, 108 insertions(+), 62 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/renesas,intc-irqpin.txt
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/renesas,intc-irqpin.yaml
+
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/renesas,intc-irqpin.txt b/Documentation/devicetree/bindings/interrupt-controller/renesas,intc-irqpin.txt
+deleted file mode 100644
+index 772c550d3b4bcfe2..0000000000000000
+--- a/Documentation/devicetree/bindings/interrupt-controller/renesas,intc-irqpin.txt
++++ /dev/null
+@@ -1,62 +0,0 @@
+-DT bindings for the R-/SH-Mobile irqpin controller
+-
+-Required properties:
+-
+-- compatible: has to be "renesas,intc-irqpin-<soctype>", "renesas,intc-irqpin"
+-  as fallback.
+-  Examples with soctypes are:
+-    - "renesas,intc-irqpin-r8a7740" (R-Mobile A1)
+-    - "renesas,intc-irqpin-r8a7778" (R-Car M1A)
+-    - "renesas,intc-irqpin-r8a7779" (R-Car H1)
+-    - "renesas,intc-irqpin-sh73a0" (SH-Mobile AG5)
+-
+-- reg: Base address and length of each register bank used by the external
+-  IRQ pins driven by the interrupt controller hardware module. The base
+-  addresses, length and number of required register banks varies with soctype.
+-- interrupt-controller: Identifies the node as an interrupt controller.
+-- #interrupt-cells: has to be <2>: an interrupt index and flags, as defined in
+-  interrupts.txt in this directory.
+-- interrupts: Must contain a list of interrupt specifiers. For each interrupt
+-  provided by this irqpin controller instance, there must be one entry,
+-  referring to the corresponding parent interrupt.
+-
+-Optional properties:
+-
+-- any properties, listed in interrupts.txt, and any standard resource allocation
+-  properties
+-- sense-bitfield-width: width of a single sense bitfield in the SENSE register,
+-  if different from the default 4 bits
+-- control-parent: disable and enable interrupts on the parent interrupt
+-  controller, needed for some broken implementations
+-- clocks: Must contain a reference to the functional clock.  This property is
+-  mandatory if the hardware implements a controllable functional clock for
+-  the irqpin controller instance.
+-- power-domains: Must contain a reference to the power domain. This property is
+-  mandatory if the irqpin controller instance is part of a controllable power
+-  domain.
+-
+-
+-Example
+--------
+-
+-	irqpin1: interrupt-controller@e6900004 {
+-		compatible = "renesas,intc-irqpin-r8a7740",
+-			     "renesas,intc-irqpin";
+-		#interrupt-cells = <2>;
+-		interrupt-controller;
+-		reg = <0xe6900004 4>,
+-			<0xe6900014 4>,
+-			<0xe6900024 1>,
+-			<0xe6900044 1>,
+-			<0xe6900064 1>;
+-		interrupts = <0 149 IRQ_TYPE_LEVEL_HIGH
+-			      0 149 IRQ_TYPE_LEVEL_HIGH
+-			      0 149 IRQ_TYPE_LEVEL_HIGH
+-			      0 149 IRQ_TYPE_LEVEL_HIGH
+-			      0 149 IRQ_TYPE_LEVEL_HIGH
+-			      0 149 IRQ_TYPE_LEVEL_HIGH
+-			      0 149 IRQ_TYPE_LEVEL_HIGH
+-			      0 149 IRQ_TYPE_LEVEL_HIGH>;
+-		clocks = <&mstp2_clks R8A7740_CLK_INTCA>;
+-		power-domains = <&pd_a4s>;
+-	};
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/renesas,intc-irqpin.yaml b/Documentation/devicetree/bindings/interrupt-controller/renesas,intc-irqpin.yaml
+new file mode 100644
+index 0000000000000000..800243d3ee8ef42f
+--- /dev/null
++++ b/Documentation/devicetree/bindings/interrupt-controller/renesas,intc-irqpin.yaml
+@@ -0,0 +1,108 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/interrupt-controller/renesas,intc-irqpin.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Renesas Interrupt Controller (INTC) for external pins
++
++maintainers:
++  - Geert Uytterhoeven <geert+renesas@glider.be>
++
++properties:
++  compatible:
++    items:
++      - enum:
++          - renesas,intc-irqpin-r8a7740  # R-Mobile A1
++          - renesas,intc-irqpin-r8a7778  # R-Car M1A
++          - renesas,intc-irqpin-r8a7779  # R-Car H1
++          - renesas,intc-irqpin-sh73a0   # SH-Mobile AG5
++      - const: renesas,intc-irqpin
++
++  reg:
++    minItems: 5
++    items:
++      - description: Interrupt control register
++      - description: Interrupt priority register
++      - description: Interrupt source register
++      - description: Interrupt mask register
++      - description: Interrupt mask clear register
++      - description: Interrupt control register for ICR0 with IRLM0 bit
++
++  interrupt-controller: true
++
++  '#interrupt-cells':
++    const: 2
++
++  interrupts:
++    minItems: 1
++    maxItems: 8
++
++  sense-bitfield-width:
++    allOf:
++      - $ref: /schemas/types.yaml#/definitions/uint32
++      - enum: [2, 4]
++        default: 4
++    description:
++      Width of a single sense bitfield in the SENSE register, if different from the
++      default.
++
++  control-parent:
++    type: boolean
++    description:
++      Disable and enable interrupts on the parent interrupt controller, needed for some
++      broken implementations.
++
++  clocks:
++    maxItems: 1
++
++  power-domains:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - interrupt-controller
++  - '#interrupt-cells'
++  - interrupts
++
++if:
++  properties:
++    compatible:
++      contains:
++        enum:
++          - renesas,intc-irqpin-r8a7740
++          - renesas,intc-irqpin-sh73a0
++then:
++  required:
++    - clocks
++    - power-domains
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/r8a7740-clock.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    irqpin1: interrupt-controller@e6900004 {
++        compatible = "renesas,intc-irqpin-r8a7740", "renesas,intc-irqpin";
++        reg = <0xe6900004 4>,
++              <0xe6900014 4>,
++              <0xe6900024 1>,
++              <0xe6900044 1>,
++              <0xe6900064 1>;
++        interrupt-controller;
++        #interrupt-cells = <2>;
++        interrupts = <GIC_SPI 149 IRQ_TYPE_LEVEL_HIGH>,
++                     <GIC_SPI 149 IRQ_TYPE_LEVEL_HIGH>,
++                     <GIC_SPI 149 IRQ_TYPE_LEVEL_HIGH>,
++                     <GIC_SPI 149 IRQ_TYPE_LEVEL_HIGH>,
++                     <GIC_SPI 149 IRQ_TYPE_LEVEL_HIGH>,
++                     <GIC_SPI 149 IRQ_TYPE_LEVEL_HIGH>,
++                     <GIC_SPI 149 IRQ_TYPE_LEVEL_HIGH>,
++                     <GIC_SPI 149 IRQ_TYPE_LEVEL_HIGH>;
++        clocks = <&mstp2_clks R8A7740_CLK_INTCA>;
++        power-domains = <&pd_a4s>;
++    };
+-- 
+2.17.1
+
