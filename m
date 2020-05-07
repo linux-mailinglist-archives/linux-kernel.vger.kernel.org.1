@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B6E1C9AB1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:15:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 271E21C9AB4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:17:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728618AbgEGTPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 15:15:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39298 "EHLO mail.kernel.org"
+        id S1728056AbgEGTRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 15:17:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40108 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726320AbgEGTPe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 15:15:34 -0400
+        id S1726320AbgEGTRK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 15:17:10 -0400
 Received: from embeddedor (unknown [189.207.59.248])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5EF12208E4;
-        Thu,  7 May 2020 19:15:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 65544208D6;
+        Thu,  7 May 2020 19:17:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588878933;
-        bh=ZPm1lXreSdVxT/TB7RrJsuJK7F5PayuZXbIMXSCMsAY=;
+        s=default; t=1588879029;
+        bh=chhTLOyl25ctDlbPRads+DWFmUp4LKfmtYEwFIBFJ1U=;
         h=Date:From:To:Cc:Subject:From;
-        b=vlko1ZXU6sxyMwVHztzLWGJbGIgUyvcKyr7zJGP09DVL7Q53ijWDz62osbXgQtpqB
-         m6+ktOxPTd8FWxurabY8spnYoPSq/8r1QDAPrYCIUwuHt+V27sKyMHKbZeYonoHLn9
-         +LBX/te2mO9bBc6Gi15U13IQoxBlukDWYHM+Zr+k=
-Date:   Thu, 7 May 2020 14:20:00 -0500
+        b=UV/QKZUXlWSXUPZsVCZFXRmrm0IUCq6foTPP3YJF+prjloWCpi49Df+kywteniVx3
+         riO5tDTA+vxzaRfZldzO4ZygD7+xMgAeUfmacuzO3sUji7WAQIIiN9KcmQGAzqByNw
+         uGggw0H1i5KZDxSigZUdzjCZ50XqOjg6lQ9FoieE=
+Date:   Thu, 7 May 2020 14:21:36 -0500
 From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Kyungmin Park <kyungmin.park@samsung.com>,
-        Andrzej Hajda <a.hajda@samsung.com>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] media: s5k5baf: Replace zero-length array with flexible-array
-Message-ID: <20200507192000.GA16098@embeddedor>
+To:     Kamil Debski <kamil@wypas.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] phy-samsung-usb2: Replace zero-length array with
+ flexible-array
+Message-ID: <20200507192136.GA16139@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -76,20 +77,20 @@ This issue was found with the help of Coccinelle.
 
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- drivers/media/i2c/s5k5baf.c |    2 +-
+ drivers/phy/samsung/phy-samsung-usb2.h |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/i2c/s5k5baf.c b/drivers/media/i2c/s5k5baf.c
-index cdfe008ba39f..42584a088273 100644
---- a/drivers/media/i2c/s5k5baf.c
-+++ b/drivers/media/i2c/s5k5baf.c
-@@ -281,7 +281,7 @@ struct s5k5baf_fw {
- 		u16 id;
- 		u16 offset;
- 	} seq[0];
--	u16 data[0];
-+	u16 data[];
+diff --git a/drivers/phy/samsung/phy-samsung-usb2.h b/drivers/phy/samsung/phy-samsung-usb2.h
+index 2c1a7d71142b..77fb23bc218f 100644
+--- a/drivers/phy/samsung/phy-samsung-usb2.h
++++ b/drivers/phy/samsung/phy-samsung-usb2.h
+@@ -43,7 +43,7 @@ struct samsung_usb2_phy_driver {
+ 	struct regmap *reg_pmu;
+ 	struct regmap *reg_sys;
+ 	spinlock_t lock;
+-	struct samsung_usb2_phy_instance instances[0];
++	struct samsung_usb2_phy_instance instances[];
  };
  
- struct s5k5baf {
+ struct samsung_usb2_common_phy {
 
