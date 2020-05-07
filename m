@@ -2,182 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6C091C9864
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 19:54:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 781601C986E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 19:54:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727834AbgEGRyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 13:54:11 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:35619 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726367AbgEGRyL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 13:54:11 -0400
-Received: by mail-oi1-f194.google.com with SMTP id o7so6022320oif.2;
-        Thu, 07 May 2020 10:54:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=g8REV0kLr+byzHuvO4ibHyw5i1CzypXIkPjjQmmKtfU=;
-        b=J8nxmyPzy/4gmrLgDtoh/l0QVEYmY7JAyOusSmf/eOMZIJkDjnD8UkPdoWeFBokjOF
-         lNzxXBbxk11hZKmPVHtwy2cZvqwBj1yd25lVTV6QWpnKIRfDXiSwq3i3QhA/mnSgGtGW
-         70kwvz+FoZXjyJQdp+eeEbCW1gERRhJcgHI8Y+cL8Kn+zik8BnT2dCzZuI5Rh8j5An4s
-         uGX12T47duLKsJ9f/4I8diDMhOsGNNtKg5n4E/AHwObGuEziOQ20uEIBtYfgiAVTbeUE
-         y1u/Y2GjfRof+Ct24b4Pa0IA79YCos5b2e5lypILK8ewqKDmIt069Dy6PwV/fFKQAoHw
-         zrsQ==
-X-Gm-Message-State: AGi0PuYSFYhHpUR8kGxSEt37vd3Kx4csTq8+By5kFfXHSo2lD1oVkAeY
-        oGt6AqTnMAcvrjFG9h9UTw==
-X-Google-Smtp-Source: APiQypICrRGa77xwpC1Feh+IttYD29SZ7QVuZ9F9xIn6Psb5EV7p01JImSfl45fb5o//MUBvzn7aqg==
-X-Received: by 2002:aca:57c4:: with SMTP id l187mr7744976oib.155.1588874050050;
-        Thu, 07 May 2020 10:54:10 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id q3sm1637241oom.12.2020.05.07.10.54.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2020 10:54:09 -0700 (PDT)
-Received: (nullmailer pid 18070 invoked by uid 1000);
-        Thu, 07 May 2020 17:54:08 -0000
-Date:   Thu, 7 May 2020 12:54:08 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sham Muthayyan <smuthayy@codeaurora.org>,
-        stable@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 01/11] PCI: qcom: add missing ipq806x clocks in PCIe
- driver
-Message-ID: <20200507175408.GA2029@bogus>
-References: <20200430220619.3169-1-ansuelsmth@gmail.com>
- <20200430220619.3169-2-ansuelsmth@gmail.com>
+        id S1728079AbgEGRy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 13:54:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44704 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726320AbgEGRy1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 13:54:27 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5B1D52145D;
+        Thu,  7 May 2020 17:54:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588874067;
+        bh=QJaiSjCjLbAWFDcmuf/Pneq2du1jY9r042RVJds1hO0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=pKD8QCZKdNeR4cgjo9ugXAKZQS8MIUuvWNTGi+44zq2pg862dujYCMPY35hu47AYD
+         O6+hmKJ8TYF7QejWc8yOJ8ND9UfRKhg0yxPYnkEFAzRiYc86ZGk0CbtsKRZqwxRTJR
+         +DLTSFziy5UChxjljtQe1VYZCq/s9RWAKawRIo20=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 4493C35231BF; Thu,  7 May 2020 10:54:27 -0700 (PDT)
+Date:   Thu, 7 May 2020 10:54:27 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Qian Cai <cai@lca.pw>, Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: Kmemleak infrastructure improvement for task_struct leaks and
+ call_rcu()
+Message-ID: <20200507175427.GT2869@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <45D2D811-C3B0-442B-9744-415B4AC5CCDB@lca.pw>
+ <20200506174019.GA2869@paulmck-ThinkPad-P72>
+ <20200507171418.GC3180@gaia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200430220619.3169-2-ansuelsmth@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200507171418.GC3180@gaia>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 01, 2020 at 12:06:08AM +0200, Ansuel Smith wrote:
-> Aux and Ref clk are missing in PCIe qcom driver.
-> Add support in the driver to fix PCIe initialization in ipq806x.
+On Thu, May 07, 2020 at 06:14:19PM +0100, Catalin Marinas wrote:
+> On Wed, May 06, 2020 at 10:40:19AM -0700, Paul E. McKenney wrote:
+> > On Wed, May 06, 2020 at 12:22:37PM -0400, Qian Cai wrote:
+> > > == call_rcu() leaks ==
+> > > Another issue that might be relevant is that it seems sometimes,
+> > > kmemleak will give a lot of false positives (hundreds) because the
+> > > memory was supposed to be freed by call_rcu()  (for example, in
+> > > dst_release()) but for some reasons, it takes a long time probably
+> > > waiting for grace periods or some kind of RCU self-stall, but the
+> > > memory had already became an orphan. I am not sure how we are going
+> > > to resolve this properly until we have to figure out why call_rcu()
+> > > is taking so long to finish?
+> > 
+> > I know nothing about kmemleak, but I won't let that stop me from making
+> > random suggestions...
+> > 
+> > One approach is to do an rcu_barrier() inside kmemleak just before
+> > printing leaked blocks, and check to see if any are still leaked after
+> > the rcu_barrier().
 > 
-> Fixes: 82a823833f4e PCI: qcom: Add Qualcomm PCIe controller driver
-> Signed-off-by: Sham Muthayyan <smuthayy@codeaurora.org>
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> Cc: stable@vger.kernel.org # v4.5+
-
-Doesn't strike me as stable material. Looks like new h/w enablement.
-
-> ---
->  drivers/pci/controller/dwc/pcie-qcom.c | 44 ++++++++++++++++++++++----
->  1 file changed, 38 insertions(+), 6 deletions(-)
+> The main issue is that kmemleak doesn't stop the world when scanning
+> (which can take over a minute, depending on your hardware), so we get
+> lots of transient pointer misses. There are some heuristics but
+> obviously they don't always work.
 > 
-> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> index 5ea527a6bd9f..2a39dfdccfc8 100644
-> --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> @@ -88,6 +88,8 @@ struct qcom_pcie_resources_2_1_0 {
->  	struct clk *iface_clk;
->  	struct clk *core_clk;
->  	struct clk *phy_clk;
-> +	struct clk *aux_clk;
-> +	struct clk *ref_clk;
->  	struct reset_control *pci_reset;
->  	struct reset_control *axi_reset;
->  	struct reset_control *ahb_reset;
-> @@ -246,6 +248,14 @@ static int qcom_pcie_get_resources_2_1_0(struct qcom_pcie *pcie)
->  	if (IS_ERR(res->phy_clk))
->  		return PTR_ERR(res->phy_clk);
->  
-> +	res->aux_clk = devm_clk_get_optional(dev, "aux");
-> +	if (IS_ERR(res->aux_clk))
-> +		return PTR_ERR(res->aux_clk);
-> +
-> +	res->ref_clk = devm_clk_get_optional(dev, "ref");
-> +	if (IS_ERR(res->ref_clk))
-> +		return PTR_ERR(res->ref_clk);
-
-Seems like you'd want to report an error for ipq608x? Based on the 
-commit msg, they aren't optional.
-
-> +
->  	res->pci_reset = devm_reset_control_get_exclusive(dev, "pci");
->  	if (IS_ERR(res->pci_reset))
->  		return PTR_ERR(res->pci_reset);
-> @@ -278,6 +288,8 @@ static void qcom_pcie_deinit_2_1_0(struct qcom_pcie *pcie)
->  	clk_disable_unprepare(res->iface_clk);
->  	clk_disable_unprepare(res->core_clk);
->  	clk_disable_unprepare(res->phy_clk);
-> +	clk_disable_unprepare(res->aux_clk);
-> +	clk_disable_unprepare(res->ref_clk);
->  	regulator_bulk_disable(ARRAY_SIZE(res->supplies), res->supplies);
->  }
->  
-> @@ -307,16 +319,32 @@ static int qcom_pcie_init_2_1_0(struct qcom_pcie *pcie)
->  		goto err_assert_ahb;
->  	}
->  
-> +	ret = clk_prepare_enable(res->core_clk);
-
-Perhaps use the bulk api.
-
-> +	if (ret) {
-> +		dev_err(dev, "cannot prepare/enable core clock\n");
-> +		goto err_clk_core;
-> +	}
-> +
->  	ret = clk_prepare_enable(res->phy_clk);
->  	if (ret) {
->  		dev_err(dev, "cannot prepare/enable phy clock\n");
->  		goto err_clk_phy;
->  	}
->  
-> -	ret = clk_prepare_enable(res->core_clk);
-> -	if (ret) {
-> -		dev_err(dev, "cannot prepare/enable core clock\n");
-> -		goto err_clk_core;
-> +	if (res->aux_clk) {
-> +		ret = clk_prepare_enable(res->aux_clk);
-> +		if (ret) {
-> +			dev_err(dev, "cannot prepare/enable aux clock\n");
-> +			goto err_clk_aux;
-> +		}
-> +	}
-> +
-> +	if (res->ref_clk) {
-> +		ret = clk_prepare_enable(res->ref_clk);
-> +		if (ret) {
-> +			dev_err(dev, "cannot prepare/enable ref clock\n");
-> +			goto err_clk_ref;
-> +		}
->  	}
->  
->  	ret = reset_control_deassert(res->ahb_reset);
-> @@ -372,10 +400,14 @@ static int qcom_pcie_init_2_1_0(struct qcom_pcie *pcie)
->  	return 0;
->  
->  err_deassert_ahb:
-> -	clk_disable_unprepare(res->core_clk);
-> -err_clk_core:
-> +	clk_disable_unprepare(res->ref_clk);
-> +err_clk_ref:
-> +	clk_disable_unprepare(res->aux_clk);
-> +err_clk_aux:
->  	clk_disable_unprepare(res->phy_clk);
->  err_clk_phy:
-> +	clk_disable_unprepare(res->core_clk);
-> +err_clk_core:
->  	clk_disable_unprepare(res->iface_clk);
->  err_assert_ahb:
->  	regulator_bulk_disable(ARRAY_SIZE(res->supplies), res->supplies);
-> -- 
-> 2.25.1
+> With RCU, objects are queued for RCU freeing later and chained via
+> rcu_head.next (IIUC). Under load, this list can be pretty volatile and
+> if this happen during kmemleak scanning, it's sufficient to lose track
+> of a next pointer and the rest of the list would be reported as a leak.
 > 
+> I think rcu_barrier() just before the starting the kmemleak scanning may
+> help if it reduces the number of objects queued.
+
+It might, especially if the call_rcu() rate is lower after the
+rcu_barrier() than it was beforehand.  Which might well be the case when
+a large cleanup activity ended just before rcu_barrier() was invoked.
+
+> Now, I wonder whether kmemleak itself can break this RCU chain. The
+> kmemleak metadata is allocated on a slab alloc callback. The freeing,
+> however, is done using call_rcu() because originally calling back into
+> the slab freeing from kmemleak_free() didn't go well. Since the
+> kmemleak_object structure is not tracked by kmemleak, I wonder whether
+> its rcu_head would break this directed pointer reference graph.
+
+It is true that kmemleak could decide that being passed to call_rcu()
+as being freed.  However, it would need to know the rcu_head offset.
+And there are (or were) a few places that pass linked structures to
+call_rcu(), and kmemleak would presumably need to mark them all free
+at that point.  Or maybe accept the much lower false-positive rate from
+not marking them.
+
+> Let's try the rcu_barrier() first and I'll think about the metadata case
+> over the weekend.
+
+Looking forward to hearing how it goes!
+
+							Thanx, Paul
