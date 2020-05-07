@@ -2,92 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D7051C828D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 08:33:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C28721C82A5
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 08:40:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725893AbgEGGdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 02:33:23 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:3832 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725783AbgEGGdW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 02:33:22 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 4C5D4A87EB3CBC1BFCE0;
-        Thu,  7 May 2020 14:33:21 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 7 May 2020 14:33:14 +0800
-From:   Samuel Zou <zou_wei@huawei.com>
-To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>
-CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        Samuel Zou <zou_wei@huawei.com>
-Subject: [PATCH -next] ASoC: amd: acp3x-pcm-dma: Use bitwise instead of arithmetic operator for flags
-Date:   Thu, 7 May 2020 14:39:22 +0800
-Message-ID: <1588833562-14417-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+        id S1726356AbgEGGkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 02:40:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725440AbgEGGkd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 02:40:33 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A58DC061A10
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 23:40:33 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id mq3so2215655pjb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 23:40:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=3+XwlbQLkvjIt2vgBE4Wd2CBAjsndkRVOMAlLledpyg=;
+        b=gx8vRf/a6jXgZSXu94oRh01T/B2L43CzfSwh+X5VHNboIi2WOTAtcQ/IISwABLYyUs
+         3r54CqmrTqGCWV2jqej2wm30UzSLmRl7yxfakTvC8ZXXemYHIRH3NdWqDQlHh0fKTAVW
+         7icmYSKoxJOmwoTvomX7qU+V/AByItooF6t4RPpTKQ5MQU0M8n0as4dvJkLH9gdXH7lA
+         auFIvvhx/3iojH+vrFCfRl/w7lnnVcY78/N/8Xq/fhfaeJKVbGaymIUlWnRUCZTV3M7U
+         b4sDHu80+pzWH8eC8GP268RJuvjc4z0XAKqZMcHEgEOsTprTDg5O7nEbBF8T5RD2d1cm
+         kiHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=3+XwlbQLkvjIt2vgBE4Wd2CBAjsndkRVOMAlLledpyg=;
+        b=ZjnAV4EpOF+SLIpMiuuPN1pMX2JqnFPOCjB+LYA/Ng9LSWZqomTht1csHMs5vXz656
+         3qxLbtsUaDl14ewySxitAbchqVd/Z2aaMeFCWUyOq4hR5ACNrv46qjoLmlkyI4OWpMvq
+         d0pjvjeyxBT1Ae0ffZgYruIyREKL65Et2JWSmpNIRjbObP0aGBjrydPeedI/SzHXxJ1b
+         zQUKiseGkZI4ovNyJE/09FP9K+ctgkBjUvwArsvK9mhvLx14O01z2/jEyb86QKCqAJjp
+         TzPbn0OVC5b1UfIcXHAhurirEu8J+YIWYKvj++R66LlMnTLfgfzHlxlmzLYXCz+NKNnC
+         nJiQ==
+X-Gm-Message-State: AGi0PuaYpwNURu7qnaO1k89T8jqzJvBZj5gJ5gThSbeK6n5K7JQiq/c1
+        kwr/P0eMz6ZORLuENQ8y2OilvTbttwo=
+X-Google-Smtp-Source: APiQypIHfBqavWcvLTbVW448j2qAmM0GsNf3ljSkKSWCS1VMVMFRCSak0vF8p/QiabaY6AzE+etGIg==
+X-Received: by 2002:a17:90a:3aef:: with SMTP id b102mr14449068pjc.177.1588833632686;
+        Wed, 06 May 2020 23:40:32 -0700 (PDT)
+Received: from sh03840pcu.spreadtrum.com ([117.18.48.82])
+        by smtp.gmail.com with ESMTPSA id q21sm3870693pfg.131.2020.05.06.23.40.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 06 May 2020 23:40:31 -0700 (PDT)
+From:   Baolin Wang <baolin.wang7@gmail.com>
+To:     lee.jones@linaro.org
+Cc:     orsonzhai@gmail.com, zhang.lyra@gmail.com, baolin.wang7@gmail.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mfd: sprd: Add wakeup capability for PMIC irq
+Date:   Thu,  7 May 2020 14:40:24 +0800
+Message-Id: <7361f34d712b027f0cd85dc36ee158f9b6076cef.1588833125.git.baolin.wang7@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccinelle warnings:
+When changing to use suspend-to-idle to save power, the PMIC irq can not
+wakeup the system due to lack of wakeup capability, which will cause
+the sub-irqs (such as power key) of the PMIC can not wake up the system.
+Thus we can add the wakeup capability for PMIC irq to solve this issue,
+as well as removing the IRQF_NO_SUSPEND flag to allow PMIC irq to be
+a wakeup source.
 
-sound/soc/amd/raven/acp3x-pcm-dma.c:161:39-40: WARNING: sum of probable bitmasks, consider |
-sound/soc/amd/raven/acp3x-pcm-dma.c:172:39-40: WARNING: sum of probable bitmasks, consider |
-sound/soc/amd/raven/acp3x-pcm-dma.c:183:39-40: WARNING: sum of probable bitmasks, consider |
-sound/soc/amd/raven/acp3x-pcm-dma.c:194:39-40: WARNING: sum of probable bitmasks, consider |
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Samuel Zou <zou_wei@huawei.com>
+Reported-by: Chunyan Zhang <zhang.lyra@gmail.com>
+Signed-off-by: Baolin Wang <baolin.wang7@gmail.com>
 ---
- sound/soc/amd/raven/acp3x-pcm-dma.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/mfd/sprd-sc27xx-spi.c | 30 +++++++++++++++++++++++++++++-
+ 1 file changed, 29 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/amd/raven/acp3x-pcm-dma.c b/sound/soc/amd/raven/acp3x-pcm-dma.c
-index e362f0b..b0cc0fe 100644
---- a/sound/soc/amd/raven/acp3x-pcm-dma.c
-+++ b/sound/soc/amd/raven/acp3x-pcm-dma.c
-@@ -158,7 +158,7 @@ static void config_acp3x_dma(struct i2s_stream_instance *rtd, int direction)
- 		switch (rtd->i2s_instance) {
- 		case I2S_BT_INSTANCE:
- 			reg_dma_size = mmACP_BT_TX_DMA_SIZE;
--			acp_fifo_addr = ACP_SRAM_PTE_OFFSET +
-+			acp_fifo_addr = ACP_SRAM_PTE_OFFSET |
- 						BT_PB_FIFO_ADDR_OFFSET;
- 			reg_fifo_addr = mmACP_BT_TX_FIFOADDR;
- 			reg_fifo_size = mmACP_BT_TX_FIFOSIZE;
-@@ -169,7 +169,7 @@ static void config_acp3x_dma(struct i2s_stream_instance *rtd, int direction)
- 		case I2S_SP_INSTANCE:
- 		default:
- 			reg_dma_size = mmACP_I2S_TX_DMA_SIZE;
--			acp_fifo_addr = ACP_SRAM_PTE_OFFSET +
-+			acp_fifo_addr = ACP_SRAM_PTE_OFFSET |
- 						SP_PB_FIFO_ADDR_OFFSET;
- 			reg_fifo_addr =	mmACP_I2S_TX_FIFOADDR;
- 			reg_fifo_size = mmACP_I2S_TX_FIFOSIZE;
-@@ -180,7 +180,7 @@ static void config_acp3x_dma(struct i2s_stream_instance *rtd, int direction)
- 		switch (rtd->i2s_instance) {
- 		case I2S_BT_INSTANCE:
- 			reg_dma_size = mmACP_BT_RX_DMA_SIZE;
--			acp_fifo_addr = ACP_SRAM_PTE_OFFSET +
-+			acp_fifo_addr = ACP_SRAM_PTE_OFFSET |
- 						BT_CAPT_FIFO_ADDR_OFFSET;
- 			reg_fifo_addr = mmACP_BT_RX_FIFOADDR;
- 			reg_fifo_size = mmACP_BT_RX_FIFOSIZE;
-@@ -191,7 +191,7 @@ static void config_acp3x_dma(struct i2s_stream_instance *rtd, int direction)
- 		case I2S_SP_INSTANCE:
- 		default:
- 			reg_dma_size = mmACP_I2S_RX_DMA_SIZE;
--			acp_fifo_addr = ACP_SRAM_PTE_OFFSET +
-+			acp_fifo_addr = ACP_SRAM_PTE_OFFSET |
- 						SP_CAPT_FIFO_ADDR_OFFSET;
- 			reg_fifo_addr = mmACP_I2S_RX_FIFOADDR;
- 			reg_fifo_size = mmACP_I2S_RX_FIFOSIZE;
+diff --git a/drivers/mfd/sprd-sc27xx-spi.c b/drivers/mfd/sprd-sc27xx-spi.c
+index ebdf2f1..3064a60 100644
+--- a/drivers/mfd/sprd-sc27xx-spi.c
++++ b/drivers/mfd/sprd-sc27xx-spi.c
+@@ -256,7 +256,7 @@ static int sprd_pmic_probe(struct spi_device *spi)
+ 	}
+ 
+ 	ret = devm_regmap_add_irq_chip(&spi->dev, ddata->regmap, ddata->irq,
+-				       IRQF_ONESHOT | IRQF_NO_SUSPEND, 0,
++				       IRQF_ONESHOT, 0,
+ 				       &ddata->irq_chip, &ddata->irq_data);
+ 	if (ret) {
+ 		dev_err(&spi->dev, "Failed to add PMIC irq chip %d\n", ret);
+@@ -272,9 +272,36 @@ static int sprd_pmic_probe(struct spi_device *spi)
+ 		return ret;
+ 	}
+ 
++	device_init_wakeup(&spi->dev, 1);
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_PM_SLEEP
++static int sprd_pmic_suspend(struct device *dev)
++{
++	struct spi_device *spi = to_spi_device(dev);
++	struct sprd_pmic *ddata = spi_get_drvdata(spi);
++
++	if (device_may_wakeup(dev))
++		enable_irq_wake(ddata->irq);
++
++	return 0;
++}
++
++static int sprd_pmic_resume(struct device *dev)
++{
++	struct spi_device *spi = to_spi_device(dev);
++	struct sprd_pmic *ddata = spi_get_drvdata(spi);
++
++	if (device_may_wakeup(dev))
++		disable_irq_wake(ddata->irq);
++
++	return 0;
++}
++#endif
++
++static SIMPLE_DEV_PM_OPS(sprd_pmic_pm_ops, sprd_pmic_suspend, sprd_pmic_resume);
++
+ static const struct of_device_id sprd_pmic_match[] = {
+ 	{ .compatible = "sprd,sc2731", .data = &sc2731_data },
+ 	{},
+@@ -286,6 +313,7 @@ static int sprd_pmic_probe(struct spi_device *spi)
+ 		.name = "sc27xx-pmic",
+ 		.bus = &spi_bus_type,
+ 		.of_match_table = sprd_pmic_match,
++		.pm = &sprd_pmic_pm_ops,
+ 	},
+ 	.probe = sprd_pmic_probe,
+ };
 -- 
-2.6.2
+1.9.1
 
