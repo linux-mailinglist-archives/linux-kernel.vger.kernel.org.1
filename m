@@ -2,100 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AFC01C843F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 10:04:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 060531C8410
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 09:59:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726744AbgEGIEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 04:04:10 -0400
-Received: from alexa-out-blr-01.qualcomm.com ([103.229.18.197]:9320 "EHLO
-        alexa-out-blr-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725849AbgEGIEG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 04:04:06 -0400
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by alexa-out-blr-01.qualcomm.com with ESMTP/TLS/AES256-SHA; 07 May 2020 13:34:04 +0530
-Received: from minint-dvc2thc.qualcomm.com (HELO sartgarg-linux.qualcomm.com) ([10.206.24.245])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 07 May 2020 13:34:03 +0530
-Received: by sartgarg-linux.qualcomm.com (Postfix, from userid 2339771)
-        id 8C678261C; Thu,  7 May 2020 13:34:02 +0530 (IST)
-From:   Sarthak Garg <sartgarg@codeaurora.org>
-To:     adrian.hunter@intel.com, ulf.hansson@linaro.org
-Cc:     vbadigan@codeaurora.org, stummala@codeaurora.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Sarthak Garg <sartgarg@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: [PATCH V1 7/7] mmc: sdhci-msm: dump vendor specific registers during error
-Date:   Thu,  7 May 2020 13:32:14 +0530
-Message-Id: <1588838535-6050-8-git-send-email-sartgarg@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1588838535-6050-1-git-send-email-sartgarg@codeaurora.org>
-References: <1588838535-6050-1-git-send-email-sartgarg@codeaurora.org>
+        id S1726612AbgEGH7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 03:59:33 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:46846 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725879AbgEGH7d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 03:59:33 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 56786EBB9CFDFC6BB918;
+        Thu,  7 May 2020 15:59:31 +0800 (CST)
+Received: from huawei.com (10.175.113.25) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Thu, 7 May 2020
+ 15:59:23 +0800
+From:   Zheng Zengkai <zhengzengkai@huawei.com>
+To:     <andrew@lunn.ch>, <davem@davemloft.net>, <rjui@broadcom.com>
+CC:     <f.fainelli@gmail.com>, <bcm-kernel-feedback-list@broadcom.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <zhengzengkai@huawei.com>
+Subject: [PATCH net-next] net: phy: Make iproc_mdio_resume static
+Date:   Thu, 7 May 2020 16:03:26 +0800
+Message-ID: <20200507080326.111896-1-zhengzengkai@huawei.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement dump_vendor_registers host operation to print the
-vendor specific registers in addition to standard SDHC
-register during error conditions.
+Fix sparse warnings:
 
-Signed-off-by: Sahitya Tummala <stummala@codeaurora.org>
-Signed-off-by: Sarthak Garg <sartgarg@codeaurora.org>
+drivers/net/phy/mdio-bcm-iproc.c:182:5: warning:
+ symbol 'iproc_mdio_resume' was not declared. Should it be static?
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zheng Zengkai <zhengzengkai@huawei.com>
 ---
- drivers/mmc/host/sdhci-msm.c | 31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+ drivers/net/phy/mdio-bcm-iproc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
-index 598880a..a9c2f9c 100644
---- a/drivers/mmc/host/sdhci-msm.c
-+++ b/drivers/mmc/host/sdhci-msm.c
-@@ -1874,6 +1874,36 @@ static void sdhci_msm_reset(struct sdhci_host *host, u8 mask)
- 	sdhci_reset(host, mask);
+diff --git a/drivers/net/phy/mdio-bcm-iproc.c b/drivers/net/phy/mdio-bcm-iproc.c
+index f1ded03f0229..89bdfcc0e506 100644
+--- a/drivers/net/phy/mdio-bcm-iproc.c
++++ b/drivers/net/phy/mdio-bcm-iproc.c
+@@ -179,7 +179,7 @@ static int iproc_mdio_remove(struct platform_device *pdev)
  }
  
-+#define DRIVER_NAME "sdhci_msm"
-+#define SDHCI_MSM_DUMP(f, x...) \
-+	pr_err("%s: " DRIVER_NAME ": " f, mmc_hostname(host->mmc), ## x)
-+
-+void sdhci_msm_dump_vendor_regs(struct sdhci_host *host)
-+{
-+	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
-+	struct sdhci_msm_host *msm_host = sdhci_pltfm_priv(pltfm_host);
-+	const struct sdhci_msm_offset *msm_offset = msm_host->offset;
-+
-+	SDHCI_MSM_DUMP("----------- VENDOR REGISTER DUMP -----------\n");
-+
-+	SDHCI_MSM_DUMP(
-+			"DLL sts: 0x%08x | DLL cfg:  0x%08x | DLL cfg2: 0x%08x\n",
-+		readl_relaxed(host->ioaddr + msm_offset->core_dll_status),
-+		readl_relaxed(host->ioaddr + msm_offset->core_dll_config),
-+		readl_relaxed(host->ioaddr + msm_offset->core_dll_config_2));
-+	SDHCI_MSM_DUMP(
-+			"DLL cfg3: 0x%08x | DLL usr ctl:  0x%08x | DDR cfg: 0x%08x\n",
-+		readl_relaxed(host->ioaddr + msm_offset->core_dll_config_3),
-+		readl_relaxed(host->ioaddr + msm_offset->core_dll_usr_ctl),
-+		readl_relaxed(host->ioaddr + msm_offset->core_ddr_config));
-+	SDHCI_MSM_DUMP(
-+			"Vndr func: 0x%08x | Vndr func2 : 0x%08x Vndr func3: 0x%08x\n",
-+		readl_relaxed(host->ioaddr + msm_offset->core_vendor_spec),
-+		readl_relaxed(host->ioaddr +
-+			msm_offset->core_vendor_spec_func2),
-+		readl_relaxed(host->ioaddr + msm_offset->core_vendor_spec3));
-+}
-+
- static const struct sdhci_msm_variant_ops mci_var_ops = {
- 	.msm_readl_relaxed = sdhci_msm_mci_variant_readl_relaxed,
- 	.msm_writel_relaxed = sdhci_msm_mci_variant_writel_relaxed,
-@@ -1929,6 +1959,7 @@ static const struct sdhci_ops sdhci_msm_ops = {
- 	.write_w = sdhci_msm_writew,
- 	.write_b = sdhci_msm_writeb,
- 	.irq	= sdhci_msm_cqe_irq,
-+	.dump_vendor_regs = sdhci_msm_dump_vendor_regs,
- };
- 
- static const struct sdhci_pltfm_data sdhci_msm_pdata = {
+ #ifdef CONFIG_PM_SLEEP
+-int iproc_mdio_resume(struct device *dev)
++static int iproc_mdio_resume(struct device *dev)
+ {
+ 	struct platform_device *pdev = to_platform_device(dev);
+ 	struct iproc_mdio_priv *priv = platform_get_drvdata(pdev);
 -- 
-2.7.4
+2.20.1
 
