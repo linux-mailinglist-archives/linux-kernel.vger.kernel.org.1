@@ -2,111 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC0D1C97C4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 19:29:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E86521C97B7
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 19:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727898AbgEGR2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 13:28:40 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:46044 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726222AbgEGR2j (ORCPT
+        id S1727803AbgEGR1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 13:27:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726222AbgEGR1w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 13:28:39 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 047HRhk9088401;
-        Thu, 7 May 2020 17:28:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=KEw0jB4mu0JbwkEdmOt9aiMeM3LJb3HoOgTnR5MijrI=;
- b=wiQ1w0Y6QiwmaWoz2lxTL09p6pVFMUiCX14mjp/3mO/q97r0ExDqmsilY8TUgrbnYgCm
- dCJvlGa5Ca5FFZr8fs/7SBQAtYotbPFmw46Bxdjewn2hWucJxFIwjbOOCZ29evDTyANA
- 7lsVsWLK9+jqNFZ0kp6VfTIKzF0ieuUPhGUjmXsvVZP8aJ93BGjNEan+ndATkxJ6x2ib
- C87gXIanoccW6CmJDXMofRV0FmVys4CzMpGIcdk4j8Kz/px6WQ7ipWs3koyrq1BJy3RV
- FXfuYg51UmoB4xFX99xSDcacFXZGE+0JtmBsiU6Sjt7TGWrK73sXMvDs6VhplyVMyo5e xQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 30vhvyhucu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 07 May 2020 17:28:36 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 047HHnfm193355;
-        Thu, 7 May 2020 17:26:36 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 30t1rb492u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 07 May 2020 17:26:35 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 047HQYYh014236;
-        Thu, 7 May 2020 17:26:34 GMT
-Received: from [192.168.1.33] (/70.114.128.235)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 07 May 2020 10:26:34 -0700
-Subject: Re: [PATCH] MAINTAINER: Update my email address
-To:     Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org
-References: <20200507161229.31448-1-himanshu.madhani@oracle.com>
- <f83a2eb7013d203eab4be27f27ca0d996bbc5b47.camel@perches.com>
- <0c9af33d-0101-119b-4512-7838a0e0e9a0@oracle.com>
- <acb0794c5ba71b4d6ddc0b6a71252a4dfbfd497d.camel@perches.com>
-From:   Himanshu Madhani <himanshu.madhani@oracle.com>
-Message-ID: <a6524759-ac3d-836b-0e81-02037c8b4f94@oracle.com>
-Date:   Thu, 7 May 2020 12:26:34 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Thu, 7 May 2020 13:27:52 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF6C4C05BD43;
+        Thu,  7 May 2020 10:27:51 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id v63so3307695pfb.10;
+        Thu, 07 May 2020 10:27:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sI6MW+ENUHkNJh2ieEfqb2bnhAZ3RCNTWxJcYdnJPQ0=;
+        b=fw6712JF9/XP6LQunEFLYb0L3Hu5ZvOjiwZaYjUOYARWSTU6cUpPwT1mREY73Q0lcz
+         Ux/KeXELOEUHJXhu+fQdD2m+PvZLEgLRXD9LHp5MtiJP9eimFksIXjI/cy3nfvc3vo6c
+         EnHUBiCI3w93ddm9j9zO6dnfk9CkchHGY/+2IAZNTQoXNwBPgeZyh71Spr8dvDJIyw/+
+         UbXKl1uzTrdWUsPYYMIzS4tnSCKePPqGcXUK7g5HcX9zheTZs6yjaODjo8LMj7+RYfuG
+         Z0ayJgokLlO3FWlitIERjSFHHzD510h8OGBamTktyIiycyrQAc/XdIxYy0AJQpUE4o6R
+         lJSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sI6MW+ENUHkNJh2ieEfqb2bnhAZ3RCNTWxJcYdnJPQ0=;
+        b=Fo3tyPYzLH09wk65N029Gl23MuTtFwe8juh7+QRzBV/XCGrV7fKqG5oS5JbAznQAMp
+         4XziOia+nCLZsOUOZYgPxpglTHhWpmalCuhCZXmMq1eMw+z4XMjUHcLokSk8YaOaZAGd
+         hqWp71FWc/2dA8bgEyBNNzGxvM1E+hvR08Q1+Xt6u67lNKt7c+HY7g8Q8EhVoPSa/Vze
+         Aqrov8i7lr9OsjYA0B51R1WVW9MrWHnwQU8MPwT2LJA4JZb/Q7/sh8U/r4iHCTwkkLJw
+         kUqYXzjOJ7PlvkV/vS1Pa1d1CLHo25RWIfCWSzhaxE4wMF2LKNcEVg4mkpE5d+jndaMD
+         kLWQ==
+X-Gm-Message-State: AGi0PubCWR604p4UBy0gWOgsAc6ZasAqwacVQbQg+lreVLPLWTx2XNdA
+        +n5IymJZKAU7qvFsz+GI8yGSlHxGJjgzsllOYG4=
+X-Google-Smtp-Source: APiQypI7YgiQ9vvHBaf8ZcHCNpabxiuE+6U2dZsbLwFTkafu86kfC64HTxUYw0xpEU0ELMf7TkAsxj3N30X42MNPPSc=
+X-Received: by 2002:aa7:8f26:: with SMTP id y6mr15059528pfr.36.1588872471304;
+ Thu, 07 May 2020 10:27:51 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <acb0794c5ba71b4d6ddc0b6a71252a4dfbfd497d.camel@perches.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9614 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 suspectscore=0
- spamscore=0 mlxlogscore=999 malwarescore=0 phishscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2005070141
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9614 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 mlxlogscore=999
- spamscore=0 phishscore=0 impostorscore=0 bulkscore=0 priorityscore=1501
- malwarescore=0 mlxscore=0 adultscore=0 suspectscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2005070142
+References: <20200505132905.10276-1-calvin.johnson@oss.nxp.com>
+ <20200505132905.10276-5-calvin.johnson@oss.nxp.com> <67e263cf-5cd7-98d1-56ff-ebd9ac2265b6@arm.com>
+In-Reply-To: <67e263cf-5cd7-98d1-56ff-ebd9ac2265b6@arm.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 7 May 2020 20:27:44 +0300
+Message-ID: <CAHp75Vew8Fh6HEoOACk+J9KCpw+AE2t2+oFnXteK1eShopfYAA@mail.gmail.com>
+Subject: Re: [net-next PATCH v3 4/5] net: phy: Introduce fwnode_get_phy_id()
+To:     Jeremy Linton <jeremy.linton@arm.com>
+Cc:     Calvin Johnson <calvin.johnson@oss.nxp.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        linux.cj@gmail.com, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Varun Sethi <V.Sethi@nxp.com>,
+        "Rajesh V . Bikkina" <rajesh.bikkina@nxp.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Diana Madalina Craciun <diana.craciun@nxp.com>,
+        netdev <netdev@vger.kernel.org>, Marcin Wojtas <mw@semihalf.com>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Makarand Pawagi <makarand.pawagi@nxp.com>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Pankaj Bansal <pankaj.bansal@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Heiner Kallweit <hkallweit1@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, May 7, 2020 at 4:26 PM Jeremy Linton <jeremy.linton@arm.com> wrote:
+> On 5/5/20 8:29 AM, Calvin Johnson wrote:
 
-On 5/7/20 12:23 PM, Joe Perches wrote:
-> On Thu, 2020-05-07 at 12:08 -0500, himanshu.madhani@oracle.com wrote:
->> On 5/7/20 11:57 AM, Joe Perches wrote:
->>> On Thu, 2020-05-07 at 11:12 -0500, Himanshu Madhani wrote:
->>>> I do not have access to my @marvell.com email ID anymore.
->>>> Lets map my new email address correctly in .mailmap
->>> Bad patch subject, this is a .mailmap patch.
->>>
->>> Maybe [PATCH] .mailmap: Update address of Himanshu Madhani
->>>
->> Okay. Thanks for pointing that out. I noticed that most of the patches
->> submitted for .mailmap had MAINTAINER in there so i used that. I will
->> repost with updated patch subject.
-> That's because those patches also generally update MAINTAINERS
-> entries and update .mailmap at the same time.
-Agree.  sent v2 with correct patch subject.
-> cheers, Joe
->
->>>> Signed-off-by: Himanshu Madhani <himanshu.madhani@oracle.com>
->>>> ---
->>>>    .mailmap | 2 ++
->>>>    1 file changed, 2 insertions(+)
->>>>
->>>> diff --git a/.mailmap b/.mailmap
->>>> index db3754a41018..30d8c3f10ca7 100644
->>>> --- a/.mailmap
->>>> +++ b/.mailmap
->>>> @@ -99,6 +99,8 @@ Henk Vergonet <Henk.Vergonet@gmail.com>
->>>>    Henrik Kretzschmar <henne@nachtwindheim.de>
->>>>    Henrik Rydberg <rydberg@bitmath.org>
->>>>    Herbert Xu <herbert@gondor.apana.org.au>
->>>> +Himanshu Madhani <himanshu.madhani@oracle.com>
->>>> +Himanshu Madhani <hmadhani2024@gmail.com>
->>>>    Jacob Shin <Jacob.Shin@amd.com>
->>>>    Jaegeuk Kim <jaegeuk@kernel.org> <jaegeuk@google.com>
->>>>    Jaegeuk Kim <jaegeuk@kernel.org> <jaegeuk@motorola.com>
+> > +             if (sscanf(cp, "ethernet-phy-id%4x.%4x",
+> > +                        &upper, &lower) == 2) {
+> > +                     *phy_id = ((upper & 0xFFFF) << 16) | (lower & 0xFFFF);
+> > +                     return 0;
+> > +             }
+
+> Isn't the ACPI _CID() conceptually similar to the DT compatible
+> property?
+
+Where?
+
+> It even appears to be getting used in a similar way to
+> identify particular phy drivers in this case.
+
+_CID() is a string. It can't be used as pure number.
+
+-- 
+With Best Regards,
+Andy Shevchenko
