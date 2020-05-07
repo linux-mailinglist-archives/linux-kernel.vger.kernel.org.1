@@ -2,106 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 001451C86F7
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 12:35:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 439051C86FE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 12:36:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727882AbgEGKdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 06:33:44 -0400
-Received: from foss.arm.com ([217.140.110.172]:56020 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727849AbgEGKdl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 06:33:41 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 98D8ED6E;
-        Thu,  7 May 2020 03:33:40 -0700 (PDT)
-Received: from [10.57.36.85] (unknown [10.57.36.85])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 58E6F3F71F;
-        Thu,  7 May 2020 03:33:39 -0700 (PDT)
-Subject: Re: [PATCHv2] iommu/arm-smmu: Make remove callback message more
- informative
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Will Deacon <will@kernel.org>
-Cc:     Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>
-References: <20200423095531.9868-1-saiprakash.ranjan@codeaurora.org>
- <CAD=FV=W=d=KrTwgMOO-ukFc7ZhkE92qGYumUEDrtjmhQOpdWbg@mail.gmail.com>
- <CAD=FV=U0Hhae3D1-P8kbcZafHeuqng11BNAbOb2YWPx+M7X5Gw@mail.gmail.com>
- <0b5098c28360d018f390a97155b9776c@codeaurora.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <2f3cd963-dffe-290b-02bf-819687713738@arm.com>
-Date:   Thu, 7 May 2020 11:33:38 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726451AbgEGKgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 06:36:44 -0400
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:47791 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725809AbgEGKgo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 06:36:44 -0400
+Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com [209.85.217.44]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 047Aa5qY014965
+        for <linux-kernel@vger.kernel.org>; Thu, 7 May 2020 19:36:06 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 047Aa5qY014965
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1588847767;
+        bh=B7EfioEe1RRKN3M74HtxQvobPG5NMUGMFYHo0+IEkRQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=qfhb4KAsmhFIhm+sylcShPBeUPhL1sjIWR97L7jZhN8YBOLtO1C8IC63cgwkMoicR
+         /lNiCDXIYi6qPJ/akRXz2WPYscWYLkmp3XQf1exth4lsB2iqJiFRgBy239WJWFXmpM
+         4QskmOcUNjevLXrzlwPrpTz+nxUp+GDMArkc1DXOuMSrfjIRof3ymfKI9/xN6gL6/T
+         gd/Ff9PfAv+Qyq3zzPk/x8gvPFocp1+WZMrqZYDjgMTsQDMnlnwGKzoj6pooydJ1zo
+         SaWvDsmfDqQvRJnuv29kTIHbQm8eIoJLdWSoM/EtgHkq84CqdIvdsVX7bpSSgbzt55
+         c5/BjQJVcTQdQ==
+X-Nifty-SrcIP: [209.85.217.44]
+Received: by mail-vs1-f44.google.com with SMTP id m24so3024641vsq.10
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 03:36:06 -0700 (PDT)
+X-Gm-Message-State: AGi0PuammPZDgLkIbxSrrRUQjyioseckbACKl9MESp5C7T8PrI2Wi+TM
+        jx2bNz7E0b9B8Br78yN6L2pNcKOIk7BZaDNhB4o=
+X-Google-Smtp-Source: APiQypIwgU3Ey8732cDkL7DoJbdMF7RKIUy0//fJu29fwQ1PVgNjOufpgKXz15BLMh+CeAAXNiLotUsTSDcyd33NRG8=
+X-Received: by 2002:a05:6102:3c7:: with SMTP id n7mr11095677vsq.179.1588847765172;
+ Thu, 07 May 2020 03:36:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <0b5098c28360d018f390a97155b9776c@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+References: <CGME20200430124958epcas5p15ecc8e744ed0f78837a6d58274a5baf0@epcas5p1.samsung.com>
+ <1588250972-8507-1-git-send-email-maninder1.s@samsung.com> <1588250972-8507-3-git-send-email-maninder1.s@samsung.com>
+In-Reply-To: <1588250972-8507-3-git-send-email-maninder1.s@samsung.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 7 May 2020 19:35:29 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQxOtjsrS6b8pF93=0yqnTJT6b7V2hDOWsYGH-njNcZdw@mail.gmail.com>
+Message-ID: <CAK7LNAQxOtjsrS6b8pF93=0yqnTJT6b7V2hDOWsYGH-njNcZdw@mail.gmail.com>
+Subject: Re: [PATCH 3/4] scripts/checkstack.pl: add arm push handling for
+ stack usage
+To:     Maninder Singh <maninder1.s@samsung.com>
+Cc:     "George G. Davis" <george_davis@mentor.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        a.sahrawat@samsung.com, Vaneet Narang <v.narang@samsung.com>,
+        Arnd Bergmann <arnd@arndb.de>, Andi Kleen <ak@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-05-07 11:04 am, Sai Prakash Ranjan wrote:
-> Hi,
-> 
-> On 2020-05-07 05:40, Doug Anderson wrote:
->> Hi,
->>
->> On Thu, Apr 23, 2020 at 7:35 AM Doug Anderson <dianders@chromium.org> 
->> wrote:
->>>
->>> Hi,
->>>
->>> On Thu, Apr 23, 2020 at 2:55 AM Sai Prakash Ranjan
->>> <saiprakash.ranjan@codeaurora.org> wrote:
->>> >
->>> > Currently on reboot/shutdown, the following messages are
->>> > displayed on the console as error messages before the
->>> > system reboots/shutdown as part of remove callback.
->>> >
->>> > On SC7180:
->>> >
->>> >   arm-smmu 15000000.iommu: removing device with active domains!
->>> >   arm-smmu 5040000.iommu: removing device with active domains!
->>> >
->>> > Make this error message more informative and less scary.
->>> >
->>> > Reported-by: Douglas Anderson <dianders@chromium.org>
->>> > Suggested-by: Robin Murphy <robin.murphy@arm.com>
->>> > Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
->>> > ---
->>> >  drivers/iommu/arm-smmu.c | 2 +-
->>> >  1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> Reviewed-by: Douglas Anderson <dianders@chromium.org>
->>
->> Is this patch waiting on anything in particular now?  Do we need
->> reviews from Robin and/or Will?
->>
-> 
-> Waiting for their reviews as they are the maintainers/reviewers :)
-
-Sorry, this did register at the time, I just felt that it's a bit 
-redundant to give a review tag to say "yes, this is exactly what I 
-suggested" :)
-
-That said, I do wish I hadn't forgotten about the dev_notice message 
-level, but I think that lies over in the conceptual purity corner rather 
-than making any practical difference, so I'm still OK with the patch 
-as-is. Will?
-
-Robin.
+(+CC Andi Kleen, and more mentor)
 
 
-p.s. whoever has this entry in their address book for the IOMMU list 
-(Doug?):
+On Thu, Apr 30, 2020 at 9:50 PM Maninder Singh <maninder1.s@samsung.com> wrote:
+>
+> To count stack usage of push {*, fp, ip, lr, pc} instruction in ARM,
+> if FRAME POINTER is enabled.
+> e.g. c01f0d48: e92ddff0 push {r4, r5, r6, r7, r8, r9, sl, fp, ip, lr, pc}
+>
+> c01f0d50 <Y>:
+> c01f0d44:       e1a0c00d        mov     ip, sp
+> c01f0d48:       e92ddff0        push    {r4, r5, r6, r7, r8, r9, sl, fp, ip, lr, pc}
+> c01f0d4c:       e24cb004        sub     fp, ip, #4
+> c01f0d50:       e24dd094        sub     sp, sp, #448    ; 0x1C0
+>
+> $ cat dump | scripts/checkstack.pl arm
+> 0xc01f0d50 Y []:                                        448
+>
+> added subroutine frame work for this.
+> After change:
+> 0xc01f0d500 Y []:                                       492
+>
+> Signed-off-by: Vaneet Narang <v.narang@samsung.com>
+> Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
 
-"list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg 
-Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>
 
-it really messes up Thunderbird's ability to generate working headers 
-for a reply ;)
+
+I do not mean to block this patch, but
+some people still invest efforts to improve this script.
+So, please let me ask this question.
+
+Do you know CONFIG_FRAME_WARN?
+
+Commit 35bb5b1e0e84cfa1a8906f7e6a77f391ff315791
+mentioned -Wframe-larger-than should obsolete
+make checkstack.
+
+Now, -Wframe-larger-than is supported by
+both minimal version of GCC and Clang.
+
+I know checkstack.pl dumps the stack size
+of functions, which is different from what
+-Wframe-larger-than does, but the goal is
+quite similar, I think.
+
+I just wondered if we need both.
+
+
+
+
+> ---
+>  scripts/checkstack.pl | 27 ++++++++++++++++++++++++++-
+>  1 file changed, 26 insertions(+), 1 deletion(-)
+>
+> diff --git a/scripts/checkstack.pl b/scripts/checkstack.pl
+> index 8e5ef98..b292ef4 100755
+> --- a/scripts/checkstack.pl
+> +++ b/scripts/checkstack.pl
+> @@ -34,8 +34,10 @@ use strict;
+>  # $& (whole re) matches the complete objdump line with the stack growth
+>  # $1 (first bracket) matches the dynamic amount of the stack growth
+>  #
+> +# $sub: subroutine for special handling to check stack usage.
+> +#
+>  # use anything else and feel the pain ;)
+> -my (@stack, $re, $dre, $x, $xs, $funcre, $min_stack);
+> +my (@stack, $re, $dre, $sub, $x, $xs, $funcre, $min_stack);
+>  {
+>         my $arch = shift;
+>         if ($arch eq "") {
+> @@ -59,6 +61,7 @@ my (@stack, $re, $dre, $x, $xs, $funcre, $min_stack);
+>         } elsif ($arch eq 'arm') {
+>                 #c0008ffc:      e24dd064        sub     sp, sp, #100    ; 0x64
+>                 $re = qr/.*sub.*sp, sp, #(([0-9]{2}|[3-9])[0-9]{2})/o;
+> +               $sub = \&arm_push_handling;
+>         } elsif ($arch =~ /^x86(_64)?$/ || $arch =~ /^i[3456]86$/) {
+>                 #c0105234:       81 ec ac 05 00 00       sub    $0x5ac,%esp
+>                 # or
+> @@ -112,6 +115,24 @@ my (@stack, $re, $dre, $x, $xs, $funcre, $min_stack);
+>  }
+>
+>  #
+> +# To count stack usage of push {*, fp, ip, lr, pc} instruction in ARM,
+> +# if FRAME POINTER is enabled.
+> +# e.g. c01f0d48: e92ddff0 push {r4, r5, r6, r7, r8, r9, sl, fp, ip, lr, pc}
+> +#
+> +sub arm_push_handling {
+> +       my $regex = qr/.*push.*fp, ip, lr, pc}/o;
+> +       my $size = 0;
+> +       my $line_arg = shift;
+> +
+> +       if ($line_arg =~ m/$regex/) {
+> +               $size = $line_arg =~ tr/,//;
+> +               $size = ($size + 1) * 4;
+> +       }
+> +
+> +       return $size;
+> +}
+> +
+> +#
+>  # main()
+>  #
+>  my ($func, $file, $lastslash, $total_size, $addr, $intro);
+> @@ -163,6 +184,10 @@ while (my $line = <STDIN>) {
+>                 $size = hex($size) if ($size =~ /^0x/);
+>                 $total_size = $total_size + $size
+>         }
+> +       elsif (defined $sub) {
+> +               my $size = &$sub($line);
+> +               $total_size = $total_size + $size;
+
+
+                  $total_size += $size;
+
+           Or
+
+                  $total_size += &$sub($line);
+
+                   then, delete $size.
+
+
+
+> +       }
+>  }
+>  if ($total_size > $min_stack) {
+>         push @stack, "$intro$total_size\n";
+> --
+> 1.9.1
+>
+
+
+-- 
+Best Regards
+Masahiro Yamada
