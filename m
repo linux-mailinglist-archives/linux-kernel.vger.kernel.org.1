@@ -2,89 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB7D41C9B56
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:45:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5BAB1C9B62
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:49:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728534AbgEGTpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 15:45:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726326AbgEGTpo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 15:45:44 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 780C2C05BD43
-        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 12:45:43 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id t7so2500149plr.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 12:45:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IbfxBGzYrCHzzfTqHU4rAuwYtieZW8IZ52DJWF9xsUo=;
-        b=Oe0PU5NZ2azBtHLJKpX3ha1q5sVBZ4ZHO+l13jT6Erh0ACOWTwKch462jXBcFXyD24
-         s/knbIwKHieGmlCElrOSj0hDSdIyuGY9V7VyJlbqfYR/GtTzoLQNjVaFkcRQYiSY3Hh+
-         93C47ECe6RAr7s+FMJPAHvDax6a3hMvgtnLag=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IbfxBGzYrCHzzfTqHU4rAuwYtieZW8IZ52DJWF9xsUo=;
-        b=ThnYoPMIazo/DS27Z65U4GnPZz+LFiiNUMVWrvUCjREAvrOV4mSRTR4fSiYcWaDVX5
-         kqlv/t0FVim4WZtmVYsA3vOT4UH0xS00QJ0Ju8KJCx5I15SDGLSBlJ1/hRt4547sFxiG
-         tbQRQrseE4KYqFCFOgRgjwruNS4Wrj5T1mcX3lbpnhlalVfsGMMRf4tVMmu9eRGUYrNb
-         W6ubUsHx9T3cjonf/6pYc7iEtQ8ojOX32v19MgGvR+hlzoJqUKD9zO0Rk+H/ADvDUS6Z
-         9rRPUSdsUya5e6KOqhX2RS2sjQTNUwV0D10Jd8gL40hKKqGdGiIuy/sCKeMfpZQqIEOO
-         o5zg==
-X-Gm-Message-State: AGi0Puaun2ST0VqmArmjL9UzR50qxuygZH8sC3TcDNDsaTN7s16LzT7/
-        OvmAKv6wcRT9zirC6ENMGE6krg==
-X-Google-Smtp-Source: APiQypLBhRh1xD+zBIxgBZHXiwlmz2uQ7tdEn6c4Ababtg8mWoyu4ca2B3WYR9T4i3qlo9eH8sYYZw==
-X-Received: by 2002:a17:902:eed1:: with SMTP id h17mr14686969plb.312.1588880743038;
-        Thu, 07 May 2020 12:45:43 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id l30sm536526pje.34.2020.05.07.12.45.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2020 12:45:42 -0700 (PDT)
-Date:   Thu, 7 May 2020 12:45:40 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     WeiXiong Liao <liaoweixiong@allwinnertech.com>
-Cc:     Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v3 00/11] pstore: mtd: support crash log to block and mtd
- device
-Message-ID: <202005071244.AAD82F41F@keescook>
-References: <1585126506-18635-1-git-send-email-liaoweixiong@allwinnertech.com>
+        id S1728015AbgEGTtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 15:49:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41676 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726326AbgEGTtl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 15:49:41 -0400
+Received: from localhost (mobile-166-175-190-200.mycingular.net [166.175.190.200])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 427EE208E4;
+        Thu,  7 May 2020 19:49:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588880981;
+        bh=3BFFez11ssEZqJXanr8tMIJWo0jrdd8+mi41ZiiNFeM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=JCOa7Rse7JB6N+5ceUwmomOh/fUwbhzciB1fjEKCZ4P9hwt7LCcA6xjlWVpbSfl0W
+         K9WobNpo7/gtNna+drJTplZg7iggn/2qcYb1lD+LoaGru6cNq26602ReVnO0yzoKXr
+         WM49CbDcNJ/6KUwWVxjXs4m35x7wmjHVje8Pe2H4=
+Date:   Thu, 7 May 2020 14:49:39 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lorenzo.pieralisi@arm.com, bhelgaas@google.com, robh@kernel.org,
+        rgummal@xilinx.com
+Subject: Re: [PATCH v7 2/2] PCI: xilinx-cpm: Add Versal CPM Root Port driver
+Message-ID: <20200507194939.GA21050@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1585126506-18635-1-git-send-email-liaoweixiong@allwinnertech.com>
+In-Reply-To: <1588852716-23132-3-git-send-email-bharat.kumar.gogada@xilinx.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 25, 2020 at 04:54:55PM +0800, WeiXiong Liao wrote:
-> [PATCH v3]:
-> 1. patch 1~10: a lot of improvements according to Kees Cook <keescook@chromium.org>
->                including rename module, typo, reorder, rewrite document, bugs
-> 			   and so on.
-> 2. patch 11: rename funtions of pstore/blk and update document.
+On Thu, May 07, 2020 at 05:28:36PM +0530, Bharat Kumar Gogada wrote:
+> - Add support for Versal CPM as Root Port.
+> - The Versal ACAP devices include CCIX-PCIe Module (CPM). The integrated
+>   block for CPM along with the integrated bridge can function
+>   as PCIe Root Port.
+> - Bridge error and legacy interrupts in Versal CPM are handled using
+>   Versal CPM specific interrupt line.
 
-This is looking good. I'm going to update it for the recent max_reason
-series, and make some tweaks here and there and send out a v4 tomorrow
-to see what you think. Thanks for your patience!
+> +static inline bool cpm_pcie_link_up(struct xilinx_cpm_pcie_port *port)
+> +{
+> +	return (pcie_read(port, XILINX_CPM_PCIE_REG_PSCR) &
+> +		XILINX_CPM_PCIE_REG_PSCR_LNKUP) ? 1 : 0;
 
--- 
-Kees Cook
+Almost all of the *_link_up() functions return "int".  I don't know if
+there's really any benefit to using "bool", but if you do, you should
+probably return "true" or "false" instead of 1/0.
+
+> +	port->irq_misc = platform_get_irq(pdev, 0);
+> +	if (port->irq_misc <= 0) {
+
+Use:
+
+  if (port->irq_misc < 0) {
+
+See https://lore.kernel.org/r/20200501224042.141366-3-helgaas@kernel.org
