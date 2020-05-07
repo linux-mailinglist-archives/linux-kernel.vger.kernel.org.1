@@ -2,118 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB7D1C7E63
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 02:13:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B1741C7E68
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 02:16:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728171AbgEGANm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 20:13:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728073AbgEGANl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 20:13:41 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D887C061A0F;
-        Wed,  6 May 2020 17:13:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=jIXCMyIbImO8rm+oSDaQ2NCQ0Osl596aq9/e8JwCpJ8=; b=R1v9bA5VIwE6ZoPd5DtaIU67FX
-        FqrIiDLQQ8dMAf8/BA9c6R5+asnL12HNe0AUUseNBpor9jJ42IYTpkrpcXKhfIF4mvfK9HeoJncnb
-        n25fF5aTQ7OWtl1/85tTQqY6XGfl26WHHO09KZPqw4wyOblOQKn63h6ip0j3QaapLfYpLEj6CZ4JT
-        V1cfXjjPrIY3G2lM/z7CM7yDQEDFEiN16oH2Icmb9czMh2cDaS/bTnd6tlKibeVXbJE2lr/cUGDuW
-        yyAPLYhnachD/h9GclpcjhpubwTiPDBoaVoaeqmAEhELJdl7tVOrRogQQlAfEwpXIXcH+BrMqTOtO
-        ewppQ04w==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jWUAX-0004mp-6l; Thu, 07 May 2020 00:13:41 +0000
-Subject: Re: linux-next: Tree for Apr 14 (objtool crazy)
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20200414123900.4f97a83f@canb.auug.org.au>
- <e01557a7-746a-6af0-d890-707e9dd86b86@infradead.org>
- <20200414221914.hbvp4dvh47at4nlg@treble>
- <20200507085011.6d2edf32@canb.auug.org.au>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <9c7ce0f6-b15d-5205-352f-f82bfbcf7f29@infradead.org>
-Date:   Wed, 6 May 2020 17:13:40 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <20200507085011.6d2edf32@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1728238AbgEGAQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 20:16:45 -0400
+Received: from mga11.intel.com ([192.55.52.93]:23998 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728194AbgEGAQo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 20:16:44 -0400
+IronPort-SDR: hHbXFzmjOjtpyJrIDfHkA7deIK2r2Pu9Foi57B6gXfM7CWH29QOObJ3CJ4w0j/VCnTH8ucupST
+ D5q2YpbU7Ung==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2020 17:16:44 -0700
+IronPort-SDR: Z5mRlfykAx9SKfwptjllGNm+Oow7fHVLQaKYWHOO7RoytXnYJrz4r3mO4IyYPeEDWtVbUUAqpO
+ hXYp6UpFK+QQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,361,1583222400"; 
+   d="scan'208";a="278417460"
+Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
+  by orsmga002.jf.intel.com with ESMTP; 06 May 2020 17:16:39 -0700
+From:   "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+To:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        devicetree@vger.kernel.org
+Cc:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        arnd@arndb.de, brendanhiggins@google.com, tglx@linutronix.de,
+        boris.brezillon@collabora.com, anders.roxell@linaro.org,
+        masonccyang@mxic.com.tw, robh+dt@kernel.org,
+        linux-mips@vger.kernel.org, hauke.mehrtens@intel.com,
+        andriy.shevchenko@intel.com, qi-ming.wu@intel.com,
+        cheol.yong.kim@intel.com,
+        "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Subject: [PATCH v5 0/2] mtd: rawnand: Add NAND controller support on Intel LGM SoC
+Date:   Thu,  7 May 2020 08:15:35 +0800
+Message-Id: <20200507001537.4034-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/6/20 3:50 PM, Stephen Rothwell wrote:
-> Hi all,
-> 
-> On Tue, 14 Apr 2020 17:19:14 -0500 Josh Poimboeuf <jpoimboe@redhat.com> wrote:
->>
->> On Tue, Apr 14, 2020 at 06:50:15AM -0700, Randy Dunlap wrote:
->>> On 4/13/20 7:39 PM, Stephen Rothwell wrote:  
->>>> Hi all,
->>>>
->>>> Changes since 20200413:
->>>>   
->>>
->>>
->>> I killed objtool after 49 minutes of CPU time:
->>>
->>>   PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND    
->>>  6159 rdunlap   30  10   42756   8028      0 R 100.0 0.099  49:19.02 objtool 
->>>
->>>
->>> /bin/sh: line 1:  6159 Terminated              ./tools/objtool/objtool orc generate --no-fp --no-unreachable --uaccess drivers/i2c/busses/i2c-parport.o  
->>
->> I took an initial look at this one.  I can dig more tomorrow unless
->> Peter beats me to it.
->>
->> (gdb) bt
->> #0  0x000000000040df55 in sec_offset_hash (sec=0xc30930, offset=4334561216) at elf.h:104
->> #1  0x000000000040e907 in find_rela_by_dest_range (elf=0x7ffff64a4010, sec=0xc30930, offset=18446744073709551608, len=1) at elf.c:227
->> #2  0x000000000040ea67 in find_rela_by_dest (elf=0x7ffff64a4010, sec=0xc30710, offset=18446744073709551608) at elf.c:246
->> #3  0x0000000000408038 in find_jump_table (file=0x427620 <file>, func=0xc32bf0, insn=0xc4f840) at check.c:1118
->> #4  0x0000000000408242 in mark_func_jump_tables (file=0x427620 <file>, func=0xc32bf0) at check.c:1170
->> #5  0x00000000004083b6 in add_jump_table_alts (file=0x427620 <file>) at check.c:1215
->> #6  0x0000000000408b95 in decode_sections (file=0x427620 <file>) at check.c:1413
->> #7  0x000000000040bf44 in check (_objname=0x7fffffffceff "drivers/i2c/busses/i2c-parport.o", orc=true) at check.c:2508
->> #8  0x0000000000405580 in cmd_orc (argc=1, argv=0x7fffffffc9d8) at builtin-orc.c:41
->> #9  0x0000000000411297 in handle_internal_command (argc=6, argv=0x7fffffffc9d0) at objtool.c:96
->> #10 0x0000000000411349 in main (argc=6, argv=0x7fffffffc9d0) at objtool.c:119
->>
->> It's an infinite loop in find_rela_by_dest_range() because offset is -8.
->> That comes from find_jump_table():
->>
->>   table_offset = text_rela->addend;
->>   table_sec = text_rela->sym->sec;
->>   ...
->>   table_rela = find_rela_by_dest(file->elf, table_sec, table_offset);
->>
->> which comes from this gem:
->>
->> 00000000000001fd <line_set>:
->>  1fd:	48 b8 00 00 00 00 00 	movabs $0x0,%rax
->>  204:	00 00 00 
->> 			1ff: R_X86_64_64	.rodata-0x8
->>
->> So objtool is getting confused by that -0x8 rela addend.
-> 
-> Did this get fixed?
-> 
+This patch adds the new IP of Nand Flash Controller(NFC) support
+on Intel's Lightning Mountain(LGM) SoC.
 
-Yes.  It's here:
-https://lore.kernel.org/lkml/02b719674b031800b61e33c30b2e823183627c19.1587842122.git.jpoimboe@redhat.com/
+DMA is used for burst data transfer operation, also DMA HW supports
+aligned 32bit memory address and aligned data access by default.
+DMA burst of 8 supported. Data register used to support the read/write
+operation from/to device.
 
+NAND controller also supports in-built HW ECC engine.
+
+NAND controller driver implements ->exec_op() to replace legacy hooks,
+these specific call-back method to execute NAND operations.
+
+Thank you very much Boris for the reviews, suggestions and valuable inputs.
+---
+v5:
+  - replace by 'HSNAND_CLE_OFFS | HSNAND_CS_OFFS' to NAND_WRITE_CMD and NAND_WRITE_ADDR
+  - remove the unused macros 
+  - update EBU_ADDR_MASK(x) macro
+  - update the EBU_ADDR_SELx register values to be written
+  - add the example in YAML file
+v4:
+  - add ebu_nand_cs structure for multiple-CS support
+  - mask/offset encoding for 0x51 value
+  - update macro HSNAND_CTL_ENABLE_ECC
+  - drop the op argument and un-used macros.
+  - updated the datatype and macros
+  - add function disable nand module
+  - remove ebu_host->dma_rx = NULL;
+  - rename MMIO address range variables to ebu and hsnand
+  - implement ->setup_data_interface()
+  - update label err_cleanup_nand and err_cleanup_dma
+  - add return value check in the nand_remove function
+  - add/remove tabs and spaces as per coding standard
+  - encoded CS ids by reg property
+v3:
+  - Add depends on MACRO in Kconfig
+  - file name update in Makefile
+  - file name update to intel-nand-controller
+  - modification of MACRO divided like EBU, HSNAND and NAND
+  - add NAND_ALE_OFFS, NAND_CLE_OFFS and NAND_CS_OFFS
+  - rename lgm_ to ebu_ and _va suffix is removed in the whole file
+  - rename structure and varaibles as per review comments.
+  - remove lgm_read_byte(), lgm_dev_ready() and cmd_ctrl() un-used function
+  - update in exec_op() as per review comments
+  - rename function lgm_dma_exit() by lgm_dma_cleanup()
+  - hardcoded magic value  for base and offset replaced by MACRO defined
+  - mtd_device_unregister() + nand_cleanup() instead of nand_release()
+v2:
+  - implement the ->exec_op() to replaces the legacy hook-up.
+  - update the commit message
+  - YAML compatible string update to intel, lgm-nand-controller
+  - add MIPS maintainers and xway_nand driver author in CC
+
+v1:
+ - initial version
+
+
+Ramuthevar Vadivel Murugan (2):
+  dt-bindings: mtd: Add YAML for Nand Flash Controller support
+  mtd: rawnand: Add NAND controller support on Intel LGM SoC
+
+ .../devicetree/bindings/mtd/intel,lgm-nand.yaml    |  85 +++
+ drivers/mtd/nand/raw/Kconfig                       |   8 +
+ drivers/mtd/nand/raw/Makefile                      |   1 +
+ drivers/mtd/nand/raw/intel-nand-controller.c       | 741 +++++++++++++++++++++
+ 4 files changed, 835 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
+ create mode 100644 drivers/mtd/nand/raw/intel-nand-controller.c
 
 -- 
-~Randy
+2.11.0
 
