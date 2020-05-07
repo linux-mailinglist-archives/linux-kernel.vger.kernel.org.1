@@ -2,122 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D14DB1C881B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 13:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C9611C8822
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 13:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726897AbgEGLZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 07:25:45 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:24252 "EHLO
+        id S1727088AbgEGLZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 07:25:53 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:25273 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725903AbgEGLZo (ORCPT
+        by vger.kernel.org with ESMTP id S1726908AbgEGLZr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 07:25:44 -0400
+        Thu, 7 May 2020 07:25:47 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588850742;
+        s=mimecast20190719; t=1588850745;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=wsilQ0lGM6y2+97iYso+FoAv2L6zBeAOdPWrDaICIRA=;
-        b=ZMChT8nTYbRPFwNRVyjUWiOuL5TN5EZa7yc4amDGmmvBPvDdiQOhCOQAp6ZLpkAt36a2tu
-        Eov4vv3dvbgoZe7C4WLoSfjR+d1l7SrVlcYeFRMzrAvjkSJh5GcFx9F2l3w9qd6OXpCEyV
-        CI4NlRjlNHCxv35qrZ/du84qncVGGvs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-426-RF1TzD3nM7mYeuU1Jux2Bw-1; Thu, 07 May 2020 07:25:39 -0400
-X-MC-Unique: RF1TzD3nM7mYeuU1Jux2Bw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D839218A0721;
-        Thu,  7 May 2020 11:25:37 +0000 (UTC)
-Received: from [10.36.113.245] (ovpn-113-245.ams2.redhat.com [10.36.113.245])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2E8052618B;
-        Thu,  7 May 2020 11:25:36 +0000 (UTC)
-Subject: Re: [PATCH v3 10/15] MAINTAINERS: Add myself as virtio-mem maintainer
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        virtio-dev@lists.oasis-open.org,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20200507103119.11219-1-david@redhat.com>
- <20200507103119.11219-11-david@redhat.com>
- <20200507064709-mutt-send-email-mst@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- mQINBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
- dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
- QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
- XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
- Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
- PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
- WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
- UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
- jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
- B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABtCREYXZpZCBIaWxk
- ZW5icmFuZCA8ZGF2aWRAcmVkaGF0LmNvbT6JAlgEEwEIAEICGwMFCQlmAYAGCwkIBwMCBhUI
- AgkKCwQWAgMBAh4BAheAFiEEG9nKrXNcTDpGDfzKTd4Q9wD/g1oFAl3pImkCGQEACgkQTd4Q
- 9wD/g1o+VA//SFvIHUAvul05u6wKv/pIR6aICPdpF9EIgEU448g+7FfDgQwcEny1pbEzAmiw
- zAXIQ9H0NZh96lcq+yDLtONnXk/bEYWHHUA014A1wqcYNRY8RvY1+eVHb0uu0KYQoXkzvu+s
- Dncuguk470XPnscL27hs8PgOP6QjG4jt75K2LfZ0eAqTOUCZTJxA8A7E9+XTYuU0hs7QVrWJ
- jQdFxQbRMrYz7uP8KmTK9/Cnvqehgl4EzyRaZppshruKMeyheBgvgJd5On1wWq4ZUV5PFM4x
- II3QbD3EJfWbaJMR55jI9dMFa+vK7MFz3rhWOkEx/QR959lfdRSTXdxs8V3zDvChcmRVGN8U
- Vo93d1YNtWnA9w6oCW1dnDZ4kgQZZSBIjp6iHcA08apzh7DPi08jL7M9UQByeYGr8KuR4i6e
- RZI6xhlZerUScVzn35ONwOC91VdYiQgjemiVLq1WDDZ3B7DIzUZ4RQTOaIWdtXBWb8zWakt/
- ztGhsx0e39Gvt3391O1PgcA7ilhvqrBPemJrlb9xSPPRbaNAW39P8ws/UJnzSJqnHMVxbRZC
- Am4add/SM+OCP0w3xYss1jy9T+XdZa0lhUvJfLy7tNcjVG/sxkBXOaSC24MFPuwnoC9WvCVQ
- ZBxouph3kqc4Dt5X1EeXVLeba+466P1fe1rC8MbcwDkoUo65Ag0EVcufkQEQAOfX3n0g0fZz
- Bgm/S2zF/kxQKCEKP8ID+Vz8sy2GpDvveBq4H2Y34XWsT1zLJdvqPI4af4ZSMxuerWjXbVWb
- T6d4odQIG0fKx4F8NccDqbgHeZRNajXeeJ3R7gAzvWvQNLz4piHrO/B4tf8svmRBL0ZB5P5A
- 2uhdwLU3NZuK22zpNn4is87BPWF8HhY0L5fafgDMOqnf4guJVJPYNPhUFzXUbPqOKOkL8ojk
- CXxkOFHAbjstSK5Ca3fKquY3rdX3DNo+EL7FvAiw1mUtS+5GeYE+RMnDCsVFm/C7kY8c2d0G
- NWkB9pJM5+mnIoFNxy7YBcldYATVeOHoY4LyaUWNnAvFYWp08dHWfZo9WCiJMuTfgtH9tc75
- 7QanMVdPt6fDK8UUXIBLQ2TWr/sQKE9xtFuEmoQGlE1l6bGaDnnMLcYu+Asp3kDT0w4zYGsx
- 5r6XQVRH4+5N6eHZiaeYtFOujp5n+pjBaQK7wUUjDilPQ5QMzIuCL4YjVoylWiBNknvQWBXS
- lQCWmavOT9sttGQXdPCC5ynI+1ymZC1ORZKANLnRAb0NH/UCzcsstw2TAkFnMEbo9Zu9w7Kv
- AxBQXWeXhJI9XQssfrf4Gusdqx8nPEpfOqCtbbwJMATbHyqLt7/oz/5deGuwxgb65pWIzufa
- N7eop7uh+6bezi+rugUI+w6DABEBAAGJAiUEGAECAA8FAlXLn5ECGwwFCQlmAYAACgkQTd4Q
- 9wD/g1qA6w/+M+ggFv+JdVsz5+ZIc6MSyGUozASX+bmIuPeIecc9UsFRatc91LuJCKMkD9Uv
- GOcWSeFpLrSGRQ1Z7EMzFVU//qVs6uzhsNk0RYMyS0B6oloW3FpyQ+zOVylFWQCzoyyf227y
- GW8HnXunJSC+4PtlL2AY4yZjAVAPLK2l6mhgClVXTQ/S7cBoTQKP+jvVJOoYkpnFxWE9pn4t
- H5QIFk7Ip8TKr5k3fXVWk4lnUi9MTF/5L/mWqdyIO1s7cjharQCstfWCzWrVeVctpVoDfJWp
- 4LwTuQ5yEM2KcPeElLg5fR7WB2zH97oI6/Ko2DlovmfQqXh9xWozQt0iGy5tWzh6I0JrlcxJ
- ileZWLccC4XKD1037Hy2FLAjzfoWgwBLA6ULu0exOOdIa58H4PsXtkFPrUF980EEibUp0zFz
- GotRVekFAceUaRvAj7dh76cToeZkfsjAvBVb4COXuhgX6N4pofgNkW2AtgYu1nUsPAo+NftU
- CxrhjHtLn4QEBpkbErnXQyMjHpIatlYGutVMS91XTQXYydCh5crMPs7hYVsvnmGHIaB9ZMfB
- njnuI31KBiLUks+paRkHQlFcgS2N3gkRBzH7xSZ+t7Re3jvXdXEzKBbQ+dC3lpJB0wPnyMcX
- FOTT3aZT7IgePkt5iC/BKBk3hqKteTnJFeVIT7EC+a6YUFg=
-Organization: Red Hat GmbH
-Message-ID: <fdb4315e-679c-d197-f558-7d0901c0fe87@redhat.com>
-Date:   Thu, 7 May 2020 13:25:35 +0200
+         in-reply-to:in-reply-to:references:references;
+        bh=okJLc56HxgwRQ3pAUVl+d+At6cmSRE2fHfdVLfqeU9E=;
+        b=MjMZ+p0S8dPw5ntZrZgV5n5Z0DfFwxmNEP4n4b7ktpnumulFBis0EAe93HEvWE2QFH/keo
+        mgCsQjn9vI2QQIMLYS6L9oBCxt3fwdPL12p7vlBqrLI1DjQerC+HXBGX65lsqDEtna8NlN
+        ZsNDHxVygtUWfSRwsZgWRjFHLD1kJ+E=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-304-cQZ-xpn5NyCgQm7T3-42kg-1; Thu, 07 May 2020 07:25:42 -0400
+X-MC-Unique: cQZ-xpn5NyCgQm7T3-42kg-1
+Received: by mail-wm1-f70.google.com with SMTP id o74so806561wme.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 04:25:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=okJLc56HxgwRQ3pAUVl+d+At6cmSRE2fHfdVLfqeU9E=;
+        b=pwx2osOtrDsFg3WZ1eD0JL1C0EX5HMYBppA0XLAvXEu1AlTPQTdUgiRRoR3rMywL7Y
+         4lDUT3/C9gfDOF3+zpMG4fpwCDTOIabRkU380QCbQpWJhlzbo8tURYfnI2aLF31b3DPh
+         YbSCiTdBy3aMAvRS1dFkVPpH2Ga+/mnx8bLxB7U4on1sXsocV+PiX2LlxQdbBITwLaRG
+         srzGoCLdn/3C45obCp9ZK4K5SvZrNjU+2tqglgKLFzQR5IDRAmnqx6Rrgxc8JUUeYGBK
+         PWZZFI2o9/5S0ic1NYWkobcOit0CyloVhsAEI8GmqiZnYDt1j4vxrMnt8PB/7NQSTcf8
+         HXcQ==
+X-Gm-Message-State: AGi0PuZLQeZdjeUlFRLbVAdofLxUpV9QXdiWjpeeIuNZ4WasXSRgmYCQ
+        Wq/LHyi+b5RvWGo7L/f5YpilGjUSaotrN113Vc5sax1Ve6V6mkf3tCheQvQU5MBqIR3AdF20diN
+        lYvEPX/hIELDkCZNi6eBhBeQI
+X-Received: by 2002:adf:dd8a:: with SMTP id x10mr15287566wrl.308.1588850740428;
+        Thu, 07 May 2020 04:25:40 -0700 (PDT)
+X-Google-Smtp-Source: APiQypJNANnxsVsnNOEDgu94fgMKk/XWfA1Fdjv1VV703EFoHeL4+phgQNEomnmqNuXDRae/SyMmxA==
+X-Received: by 2002:adf:dd8a:: with SMTP id x10mr15287547wrl.308.1588850740181;
+        Thu, 07 May 2020 04:25:40 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id n9sm7412749wrv.43.2020.05.07.04.25.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 May 2020 04:25:39 -0700 (PDT)
+Subject: Re: [PATCH 4/5] platform/x86: intel-vbtn: Also handle tablet-mode
+ switch on "Detachable" and "Portable" chassis-types
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Mario Limonciello <Mario.Limonciello@dell.com>
+Cc:     Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200502182951.114231-1-hdegoede@redhat.com>
+ <20200502182951.114231-5-hdegoede@redhat.com>
+ <7c3e5f844a224ff780cd8e3b3f5f7641@AUSX13MPC101.AMER.DELL.COM>
+ <13a8ec94-1eae-4d95-7238-85c612ebc896@redhat.com>
+ <afe7c366c97f4ab18d5a98a9695ceff6@AUSX13MPC101.AMER.DELL.COM>
+ <CAHp75VcNJFfgshhL_pYsHodF1pMNySw08Z_4jr-vVkE-Xpj_ng@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <ca5e5db1-eac5-358b-7d85-95d62e87b6f0@redhat.com>
+Date:   Thu, 7 May 2020 13:25:38 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <20200507064709-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CAHp75VcNJFfgshhL_pYsHodF1pMNySw08Z_4jr-vVkE-Xpj_ng@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07.05.20 12:47, Michael S. Tsirkin wrote:
-> On Thu, May 07, 2020 at 12:31:14PM +0200, David Hildenbrand wrote:
->> Let's make sure patches/bug reports find the right person.
+Hi,
+
+On 5/5/20 4:27 PM, Andy Shevchenko wrote:
+> On Tue, May 5, 2020 at 5:22 PM <Mario.Limonciello@dell.com> wrote:
 >>
->> Cc: "Michael S. Tsirkin" <mst@redhat.com>
->> Signed-off-by: David Hildenbrand <david@redhat.com>
+>>> -----Original Message-----
+>>> From: platform-driver-x86-owner@vger.kernel.org <platform-driver-x86-
+>>> owner@vger.kernel.org> On Behalf Of Hans de Goede
+>>> Sent: Tuesday, May 5, 2020 4:06 AM
+>>> To: Limonciello, Mario; dvhart@infradead.org; andy@infradead.org
+>>> Cc: linux-acpi@vger.kernel.org; platform-driver-x86@vger.kernel.org; linux-
+>>> kernel@vger.kernel.org
+>>> Subject: Re: [PATCH 4/5] platform/x86: intel-vbtn: Also handle tablet-mode
+>>> switch on "Detachable" and "Portable" chassis-types
+>>>
+>>>
+>>> [EXTERNAL EMAIL]
+>>>
+>>> Hi,
+>>>
+>>> On 5/4/20 5:37 PM, Mario.Limonciello@dell.com wrote:
+>>>>
+>>>>
+>>>>> -----Original Message-----
+>>>>> From: Hans de Goede <hdegoede@redhat.com>
+>>>>> Sent: Saturday, May 2, 2020 1:30 PM
+>>>>> To: Darren Hart; Andy Shevchenko; Limonciello, Mario
+>>>>> Cc: Hans de Goede; linux-acpi@vger.kernel.org; platform-driver-
+>>>>> x86@vger.kernel.org; linux-kernel@vger.kernel.org
+>>>>> Subject: [PATCH 4/5] platform/x86: intel-vbtn: Also handle tablet-mode
+>>> switch
+>>>>> on "Detachable" and "Portable" chassis-types
+>>>>>
+>>>>>
+>>>>> [EXTERNAL EMAIL]
+>>>>>
+>>>>> Commit de9647efeaa9 ("platform/x86: intel-vbtn: Only activate tablet mode
+>>>>> switch on 2-in-1's") added a DMI chassis-type check to avoid accidentally
+>>>>> reporting SW_TABLET_MODE = 1 to userspace on laptops.
+>>>>>
+>>>>> Some devices with a detachable keyboard and using the intel-vbnt (INT33D6)
+>>>>> interface to report if they are in tablet mode (keyboard detached) or not,
+>>>>> report 32 / "Detachable" as chassis-type, e.g. the HP Pavilion X2 series.
+>>>>>
+>>>>> Other devices with a detachable keyboard and using the intel-vbnt (INT33D6)
+>>>>> interface to report SW_TABLET_MODE, report 8 / "Portable" as chassis-type.
+>>>>> The Dell Venue 11 Pro 7130 is an example of this.
+>>>>>
+>>>>> Extend the DMI chassis-type check to also accept Portables and Detachables
+>>>>> so that the intel-vbtn driver will report SW_TABLET_MODE on these devices.
+>>>>>
+>>>>> Note the chassis-type check was originally added to avoid a false-positive
+>>>>> tablet-mode report on the Dell XPS 9360 laptop. To the best of my knowledge
+>>>>> that laptop is using a chassis-type of 9 / "Laptop", so after this commit
+>>>>> we still ignore the tablet-switch for that chassis-type.
+>>>>
+>>>> Yes that's correct.
+>>>>
+>>>>>
+>>>>> Fixes: de9647efeaa9 ("platform/x86: intel-vbtn: Only activate tablet mode
+>>>>> switch on 2-in-1's")
+>>>>> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+>>>>> ---
+>>>>> Looking at the Microsoft Windows documentation for tablet-mode reporting:
+>>>>> https://docs.microsoft.com/en-us/windows-hardware/drivers/gpiobtn/button-
+>>>>> implementation
+>>>>>
+>>>>> Then the presence of a tablet-mode switch is indicated by the presence
+>>>>> of a PNP0C60 compatible ACPI devices. There are 2 ways in which this device
+>>>>> can report the tablet-mode. 1. Directly providing a GpioInt resource inside
+>>>>> the PNP0C60 device, 2. Through injecting events from a Windows driver.
+>>>>>
+>>>>> It seems that the intel-vbtn / the INT33D6 ACPI device is the ACPI side
+>>>>> of Intel's generic solution for the case where the tablet-mode comes from
+>>>>> the embedded-controller and needs to be "injected".
+>>>>>
+>>>>> This all suggests that it might be better to replace the chassis-type
+>>>>> check with a acpi_dev_present("PNP0C60", NULL, -1) check.
+>>>>>
+>>>>> Mario, can you provide an acpidump and alsa-info.sh output for the
+>>>>> Dell XPS 9360, so that I can check if that might help with the issue
+>>>>> there, and thus is a potential candidate to replace the chassis-type
+>>>>> check?
+>>>>
+>>>> Unfortunately with WFH right now, I don't have access to a XPS 9630 to
+>>>> double check the patch series.
+>>>>
+>>>> However I do agree this should be a good approach.
+>>>
+>>> Ok, so lets stick with the chassis-type check (as amended by this patch)
+>>> for now then. Then once you are able to go to your office again, we
+>>> can examine the acpi_dev_present("PNP0C60", NULL, -1) alternative.
+>>
+>> I know XPS 13's are pretty popular, perhaps someone on the mailing list who has
+>> one can share ACPI dump in the interim.
 > 
-> Make this patch 2 in the series, or even squash into patch 1.
+> https://github.com/intel/dptfxtract/issues/13
 
-I'll move it to #2. If there are strong feelings, I can squash. Thanks!
+Good one.
 
+So this has:
 
--- 
-Thanks,
+         Device (CIND)
+         {
+             Name (_HID, "INT33D3" /* Intel GPIO Buttons */)  // _HID: Hardware I
+             Name (_CID, "PNP0C60" /* Display Sensor Device */)  // _CID: Compati
+             Method (_STA, 0, Serialized)  // _STA: Status
+             {
+                 If ((OSYS >= 0x07DC))
+                 {
+                     Return (0x0F)
+                 }
 
-David / dhildenb
+                 Return (Zero)
+             }
+         }
+
+And OSYS >= 0x07DC checks for "Windows 2012" which Linux does advertise,
+so despite not having a tablet-mode(switch) the XPS 9360 still has a
+PNP0C60 ACPI device and will report 0xf (present) as status for it,
+so a acpi_dev_present("PNP0C60", NULL, -1) check will succeed on it.
+
+Conclusion: such a check is not a valid alternative for checking DMI
+chassis-types (and from that pov this series thus is ready for merging).
+
+Regards,
+
+Hans
 
