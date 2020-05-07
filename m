@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AB9E1C8DA1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 16:08:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 092BD1C8DA2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 16:08:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728021AbgEGOH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 10:07:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45784 "EHLO
+        id S1728047AbgEGOIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 10:08:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726891AbgEGOH1 (ORCPT
+        with ESMTP id S1726884AbgEGOH1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 7 May 2020 10:07:27 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44220C05BD0A;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F1D6C05BD09;
         Thu,  7 May 2020 07:07:27 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jWhBL-00027e-3J; Thu, 07 May 2020 16:07:23 +0200
+        id 1jWhBL-00028f-PW; Thu, 07 May 2020 16:07:23 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id BE6381C03AB;
-        Thu,  7 May 2020 16:07:22 +0200 (CEST)
-Date:   Thu, 07 May 2020 14:07:22 -0000
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 6B9BA1C03AB;
+        Thu,  7 May 2020 16:07:23 +0200 (CEST)
+Date:   Thu, 07 May 2020 14:07:23 -0000
 From:   "tip-bot2 for Christoph Hellwig" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/platform] x86/platform/uv: Mark is_uv_hubless() static
+Subject: [tip: x86/platform] x86/platform/uv: Unexport symbols only used by
+ x2apic_uv_x.c
 Cc:     Christoph Hellwig <hch@lst.de>,
         Thomas Gleixner <tglx@linutronix.de>,
         Russ Anderson <rja@hpe.com>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200504171527.2845224-7-hch@lst.de>
-References: <20200504171527.2845224-7-hch@lst.de>
+In-Reply-To: <20200504171527.2845224-5-hch@lst.de>
+References: <20200504171527.2845224-5-hch@lst.de>
 MIME-Version: 1.0
-Message-ID: <158886044274.8414.7034570181169059963.tip-bot2@tip-bot2>
+Message-ID: <158886044339.8414.8479291364368978114.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -51,62 +52,65 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/platform branch of tip:
 
-Commit-ID:     e4dd8b8351264fb5bef30c0a77e4d171e0603d63
-Gitweb:        https://git.kernel.org/tip/e4dd8b8351264fb5bef30c0a77e4d171e0603d63
+Commit-ID:     2bd04b6fe4fc46f3a358b62deac4912e778f36a4
+Gitweb:        https://git.kernel.org/tip/2bd04b6fe4fc46f3a358b62deac4912e778f36a4
 Author:        Christoph Hellwig <hch@lst.de>
-AuthorDate:    Mon, 04 May 2020 19:15:22 +02:00
+AuthorDate:    Mon, 04 May 2020 19:15:20 +02:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Thu, 07 May 2020 15:32:21 +02:00
+CommitterDate: Thu, 07 May 2020 15:32:20 +02:00
 
-x86/platform/uv: Mark is_uv_hubless() static
+x86/platform/uv: Unexport symbols only used by x2apic_uv_x.c
 
-is_uv_hubless() is only used in x2apic_uv_x.c.
+uv_bios_set_legacy_vga_target, uv_bios_freq_base, uv_bios_get_sn_info,
+uv_type, system_serial_number and sn_region_size are only used in
+x2apic_uv_x.c, which can't be modular.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Not-acked-by:  Dimitri Sivanich <sivanich@hpe.com>
 Cc: Russ Anderson <rja@hpe.com>
-Link: https://lkml.kernel.org/r/20200504171527.2845224-7-hch@lst.de
+Link: https://lkml.kernel.org/r/20200504171527.2845224-5-hch@lst.de
 
 ---
- arch/x86/include/asm/uv/uv.h       | 2 --
- arch/x86/kernel/apic/x2apic_uv_x.c | 3 +--
- 2 files changed, 1 insertion(+), 4 deletions(-)
+ arch/x86/platform/uv/bios_uv.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/arch/x86/include/asm/uv/uv.h b/arch/x86/include/asm/uv/uv.h
-index 45ea95c..ae587ce 100644
---- a/arch/x86/include/asm/uv/uv.h
-+++ b/arch/x86/include/asm/uv/uv.h
-@@ -31,7 +31,6 @@ static inline bool is_early_uv_system(void)
- }
- extern int is_uv_system(void);
- extern int is_uv_hubbed(int uvtype);
--extern int is_uv_hubless(int uvtype);
- extern void uv_cpu_init(void);
- extern void uv_nmi_init(void);
- extern void uv_system_init(void);
-@@ -44,7 +43,6 @@ static inline enum uv_system_type get_uv_system_type(void) { return UV_NONE; }
- static inline bool is_early_uv_system(void)	{ return 0; }
- static inline int is_uv_system(void)	{ return 0; }
- static inline int is_uv_hubbed(int uv)	{ return 0; }
--static inline int is_uv_hubless(int uv) { return 0; }
- static inline void uv_cpu_init(void)	{ }
- static inline void uv_system_init(void)	{ }
- static inline const struct cpumask *
-diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
-index ad53b2a..cb07a98 100644
---- a/arch/x86/kernel/apic/x2apic_uv_x.c
-+++ b/arch/x86/kernel/apic/x2apic_uv_x.c
-@@ -385,11 +385,10 @@ int is_uv_hubbed(int uvtype)
- }
- EXPORT_SYMBOL_GPL(is_uv_hubbed);
+diff --git a/arch/x86/platform/uv/bios_uv.c b/arch/x86/platform/uv/bios_uv.c
+index 5d675c4..4494589 100644
+--- a/arch/x86/platform/uv/bios_uv.c
++++ b/arch/x86/platform/uv/bios_uv.c
+@@ -83,10 +83,7 @@ long sn_coherency_id;
+ long sn_region_size;
+ EXPORT_SYMBOL_GPL(sn_region_size);
+ long system_serial_number;
+-EXPORT_SYMBOL_GPL(system_serial_number);
+ int uv_type;
+-EXPORT_SYMBOL_GPL(uv_type);
+-
  
--int is_uv_hubless(int uvtype)
-+static int is_uv_hubless(int uvtype)
+ s64 uv_bios_get_sn_info(int fc, int *uvtype, long *partid, long *coher,
+ 		long *region, long *ssn)
+@@ -113,7 +110,6 @@ s64 uv_bios_get_sn_info(int fc, int *uvtype, long *partid, long *coher,
+ 		*ssn = v1;
+ 	return ret;
+ }
+-EXPORT_SYMBOL_GPL(uv_bios_get_sn_info);
+ 
+ int
+ uv_bios_mq_watchlist_alloc(unsigned long addr, unsigned int mq_size,
+@@ -164,7 +160,6 @@ s64 uv_bios_freq_base(u64 clock_type, u64 *ticks_per_second)
+ 	return uv_bios_call(UV_BIOS_FREQ_BASE, clock_type,
+ 			   (u64)ticks_per_second, 0, 0, 0);
+ }
+-EXPORT_SYMBOL_GPL(uv_bios_freq_base);
+ 
+ /*
+  * uv_bios_set_legacy_vga_target - Set Legacy VGA I/O Target
+@@ -183,7 +178,6 @@ int uv_bios_set_legacy_vga_target(bool decode, int domain, int bus)
+ 	return uv_bios_call(UV_BIOS_SET_LEGACY_VGA_TARGET,
+ 				(u64)decode, (u64)domain, (u64)bus, 0, 0);
+ }
+-EXPORT_SYMBOL_GPL(uv_bios_set_legacy_vga_target);
+ 
+ int uv_bios_init(void)
  {
- 	return (uv_hubless_system & uvtype);
- }
--EXPORT_SYMBOL_GPL(is_uv_hubless);
- 
- void **__uv_hub_info_list;
- EXPORT_SYMBOL_GPL(__uv_hub_info_list);
