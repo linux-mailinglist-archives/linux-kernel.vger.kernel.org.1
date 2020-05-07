@@ -2,159 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 522A51CA07B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 04:05:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A584F1C992F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:22:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726877AbgEHCFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 22:05:17 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:44498 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726509AbgEHCFQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 22:05:16 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 9DDEBC25F166B0051E54;
-        Fri,  8 May 2020 10:05:10 +0800 (CST)
-Received: from localhost.localdomain (10.175.118.36) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 8 May 2020 10:05:04 +0800
-From:   Luo bin <luobin9@huawei.com>
-To:     <davem@davemloft.net>
-CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <luoxianjun@huawei.com>, <luobin9@huawei.com>,
-        <yin.yinshi@huawei.com>, <cloud.wangxiaoyun@huawei.com>
-Subject: [PATCH net v1] hinic: fix a bug of ndo_stop
-Date:   Thu, 7 May 2020 18:22:27 +0000
-Message-ID: <20200507182227.20553-1-luobin9@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1728276AbgEGSWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 14:22:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39216 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728244AbgEGSWi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 14:22:38 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 437EF215A4;
+        Thu,  7 May 2020 18:22:37 +0000 (UTC)
+Date:   Thu, 7 May 2020 14:22:35 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Yunfeng Ye <yeyunfeng@huawei.com>
+Subject: [for-linus][PATCH 10/9] tools/bootconfig: Fix resource leak in
+ apply_xbc()
+Message-ID: <20200507142235.40db5e7c@gandalf.local.home>
+In-Reply-To: <20200507173904.729935165@goodmis.org>
+References: <20200507173904.729935165@goodmis.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.118.36]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-if some function in ndo_stop interface returns failure because of
-hardware fault, must go on excuting rest steps rather than return
-failure directly, otherwise will cause memory leak
+From: Yunfeng Ye <yeyunfeng@huawei.com>
 
-Signed-off-by: Luo bin <luobin9@huawei.com>
+Fix the @data and @fd allocations that are leaked in the error path of
+apply_xbc().
+
+Link: http://lkml.kernel.org/r/583a49c9-c27a-931d-e6c2-6f63a4b18bea@huawei.com
+
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Yunfeng Ye <yeyunfeng@huawei.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- .../net/ethernet/huawei/hinic/hinic_hw_mgmt.c | 28 ++++++++++++++-----
- .../net/ethernet/huawei/hinic/hinic_main.c    | 16 ++---------
- 2 files changed, 23 insertions(+), 21 deletions(-)
+ tools/bootconfig/main.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c b/drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c
-index eef855f11a01..e66659bab012 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c
-@@ -45,6 +45,10 @@
- 
- #define MGMT_MSG_TIMEOUT                5000
- 
-+#define SET_FUNC_PORT_MBOX_TIMEOUT	30000
-+
-+#define SET_FUNC_PORT_MGMT_TIMEOUT	25000
-+
- #define mgmt_to_pfhwdev(pf_mgmt)        \
- 		container_of(pf_mgmt, struct hinic_pfhwdev, pf_to_mgmt)
- 
-@@ -238,12 +242,13 @@ static int msg_to_mgmt_sync(struct hinic_pf_to_mgmt *pf_to_mgmt,
- 			    u8 *buf_in, u16 in_size,
- 			    u8 *buf_out, u16 *out_size,
- 			    enum mgmt_direction_type direction,
--			    u16 resp_msg_id)
-+			    u16 resp_msg_id, u32 timeout)
- {
- 	struct hinic_hwif *hwif = pf_to_mgmt->hwif;
- 	struct pci_dev *pdev = hwif->pdev;
- 	struct hinic_recv_msg *recv_msg;
- 	struct completion *recv_done;
-+	unsigned long timeo;
- 	u16 msg_id;
- 	int err;
- 
-@@ -267,8 +272,9 @@ static int msg_to_mgmt_sync(struct hinic_pf_to_mgmt *pf_to_mgmt,
- 		goto unlock_sync_msg;
+diff --git a/tools/bootconfig/main.c b/tools/bootconfig/main.c
+index 16b9a420e6fd..001076c51712 100644
+--- a/tools/bootconfig/main.c
++++ b/tools/bootconfig/main.c
+@@ -314,6 +314,7 @@ int apply_xbc(const char *path, const char *xbc_path)
+ 	ret = delete_xbc(path);
+ 	if (ret < 0) {
+ 		pr_err("Failed to delete previous boot config: %d\n", ret);
++		free(data);
+ 		return ret;
  	}
  
--	if (!wait_for_completion_timeout(recv_done,
--					 msecs_to_jiffies(MGMT_MSG_TIMEOUT))) {
-+	timeo = msecs_to_jiffies(timeout ? timeout : MGMT_MSG_TIMEOUT);
-+
-+	if (!wait_for_completion_timeout(recv_done, timeo)) {
- 		dev_err(&pdev->dev, "MGMT timeout, MSG id = %d\n", msg_id);
- 		err = -ETIMEDOUT;
- 		goto unlock_sync_msg;
-@@ -342,6 +348,7 @@ int hinic_msg_to_mgmt(struct hinic_pf_to_mgmt *pf_to_mgmt,
- {
- 	struct hinic_hwif *hwif = pf_to_mgmt->hwif;
- 	struct pci_dev *pdev = hwif->pdev;
-+	u32 timeout = 0;
- 
- 	if (sync != HINIC_MGMT_MSG_SYNC) {
- 		dev_err(&pdev->dev, "Invalid MGMT msg type\n");
-@@ -353,13 +360,20 @@ int hinic_msg_to_mgmt(struct hinic_pf_to_mgmt *pf_to_mgmt,
- 		return -EINVAL;
+@@ -321,24 +322,26 @@ int apply_xbc(const char *path, const char *xbc_path)
+ 	fd = open(path, O_RDWR | O_APPEND);
+ 	if (fd < 0) {
+ 		pr_err("Failed to open %s: %d\n", path, fd);
++		free(data);
+ 		return fd;
  	}
+ 	/* TODO: Ensure the @path is initramfs/initrd image */
+ 	ret = write(fd, data, size + 8);
+ 	if (ret < 0) {
+ 		pr_err("Failed to apply a boot config: %d\n", ret);
+-		return ret;
++		goto out;
+ 	}
+ 	/* Write a magic word of the bootconfig */
+ 	ret = write(fd, BOOTCONFIG_MAGIC, BOOTCONFIG_MAGIC_LEN);
+ 	if (ret < 0) {
+ 		pr_err("Failed to apply a boot config magic: %d\n", ret);
+-		return ret;
++		goto out;
+ 	}
++out:
+ 	close(fd);
+ 	free(data);
  
--	if (HINIC_IS_VF(hwif))
-+	if (HINIC_IS_VF(hwif)) {
-+		if (cmd == HINIC_PORT_CMD_SET_FUNC_STATE)
-+			timeout = SET_FUNC_PORT_MBOX_TIMEOUT;
-+
- 		return hinic_mbox_to_pf(pf_to_mgmt->hwdev, mod, cmd, buf_in,
--					in_size, buf_out, out_size, 0);
--	else
-+					in_size, buf_out, out_size, timeout);
-+	} else {
-+		if (cmd == HINIC_PORT_CMD_SET_FUNC_STATE)
-+			timeout = SET_FUNC_PORT_MGMT_TIMEOUT;
-+
- 		return msg_to_mgmt_sync(pf_to_mgmt, mod, cmd, buf_in, in_size,
- 				buf_out, out_size, MGMT_DIRECT_SEND,
--				MSG_NOT_RESP);
-+				MSG_NOT_RESP, timeout);
-+	}
+-	return 0;
++	return ret;
  }
  
- /**
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_main.c b/drivers/net/ethernet/huawei/hinic/hinic_main.c
-index 3d6569d7bac8..22ee868dd11e 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_main.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_main.c
-@@ -487,7 +487,6 @@ static int hinic_close(struct net_device *netdev)
- {
- 	struct hinic_dev *nic_dev = netdev_priv(netdev);
- 	unsigned int flags;
--	int err;
- 
- 	down(&nic_dev->mgmt_lock);
- 
-@@ -504,20 +503,9 @@ static int hinic_close(struct net_device *netdev)
- 	if (!HINIC_IS_VF(nic_dev->hwdev->hwif))
- 		hinic_notify_all_vfs_link_changed(nic_dev->hwdev, 0);
- 
--	err = hinic_port_set_func_state(nic_dev, HINIC_FUNC_PORT_DISABLE);
--	if (err) {
--		netif_err(nic_dev, drv, netdev,
--			  "Failed to set func port state\n");
--		nic_dev->flags |= (flags & HINIC_INTF_UP);
--		return err;
--	}
-+	hinic_port_set_state(nic_dev, HINIC_PORT_DISABLE);
- 
--	err = hinic_port_set_state(nic_dev, HINIC_PORT_DISABLE);
--	if (err) {
--		netif_err(nic_dev, drv, netdev, "Failed to set port state\n");
--		nic_dev->flags |= (flags & HINIC_INTF_UP);
--		return err;
--	}
-+	hinic_port_set_func_state(nic_dev, HINIC_FUNC_PORT_DISABLE);
- 
- 	if (nic_dev->flags & HINIC_RSS_ENABLE) {
- 		hinic_rss_deinit(nic_dev);
+ int usage(void)
 -- 
-2.17.1
+2.20.1
 
