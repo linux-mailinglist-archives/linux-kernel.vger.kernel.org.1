@@ -2,116 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A36831C83CD
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 09:48:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8F631C83E6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 09:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726093AbgEGHsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 03:48:39 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:6550 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725802AbgEGHsi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 03:48:38 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0477VU52004482;
-        Thu, 7 May 2020 03:48:36 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 30s2g5012j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 May 2020 03:48:36 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0477Vx5P006325;
-        Thu, 7 May 2020 03:48:35 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 30s2g50115-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 May 2020 03:48:35 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 0477jQ1T020750;
-        Thu, 7 May 2020 07:48:34 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma04fra.de.ibm.com with ESMTP id 30s0g64crh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 May 2020 07:48:33 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0477mVS58323580
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 7 May 2020 07:48:31 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 19C02AE051;
-        Thu,  7 May 2020 07:48:31 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BB142AE045;
-        Thu,  7 May 2020 07:48:30 +0000 (GMT)
-Received: from oc5500677777.ibm.com (unknown [9.145.155.163])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu,  7 May 2020 07:48:30 +0000 (GMT)
-Subject: Re: [RFC 1/2] PCI/IOV: Introduce pci_iov_sysfs_link() function
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Pierre Morel <pmorel@linux.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>
-References: <20200506211018.GA454697@bjorn-Precision-5520>
-From:   Niklas Schnelle <schnelle@linux.ibm.com>
-Message-ID: <e62d9d62-528f-ac1a-671f-4da2d2e88641@linux.ibm.com>
-Date:   Thu, 7 May 2020 09:48:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1726625AbgEGHz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 03:55:59 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:52492 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725841AbgEGHzz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 03:55:55 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 67FFC5C86ABFCE12BA9B;
+        Thu,  7 May 2020 15:55:53 +0800 (CST)
+Received: from DESKTOP-C3MD9UG.china.huawei.com (10.166.215.55) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 7 May 2020 15:55:44 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Minchan Kim <minchan@kernel.org>, Nitin Gupta <ngupta@vflare.org>,
+        "Sergey Senozhatsky" <sergey.senozhatsky.work@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>, Coly Li <colyli@suse.de>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        "Alasdair Kergon" <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        linux-block <linux-block@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>, dm-devel <dm-devel@redhat.com>,
+        Song Liu <song@kernel.org>,
+        linux-raid <linux-raid@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH v2 00/10] clean up SECTOR related macros and sectors/pages conversions
+Date:   Thu, 7 May 2020 15:50:50 +0800
+Message-ID: <20200507075100.1779-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-In-Reply-To: <20200506211018.GA454697@bjorn-Precision-5520>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-07_04:2020-05-05,2020-05-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- suspectscore=0 bulkscore=0 priorityscore=1501 spamscore=0
- lowpriorityscore=0 adultscore=0 phishscore=0 mlxlogscore=999 clxscore=1011
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005070055
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.166.215.55]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/6/20 11:10 PM, Bjorn Helgaas wrote:
-> On Wed, May 06, 2020 at 05:41:38PM +0200, Niklas Schnelle wrote:
->> currently pci_iov_add_virtfn() scans the SR-IOV bars, adds the VF to the
->> bus and also creates the sysfs links between the newly added VF and its
->> parent PF.
-> 
-> s/currently/Currently/
-> s/bars/BARs/
-> 
->> With pdev->no_vf_scan fencing off the entire pci_iov_add_virtfn() call
->> s390 as the sole pdev->no_vf_scan user thus ends up missing these sysfs
->> links which are required for example by QEMU/libvirt.
->> Instead of duplicating the code introduce a new pci_iov_sysfs_link()
->> function for establishing sysfs links.
-> 
-> This looks like two paragraphs missing the blank line between.
-> 
-> This whole thing is not "introducing" any new functionality; it's
-> "refactoring" to move existing functionality around and make it
-> callable separately.
-You're right I'll keep it in the subject for easier reference
-if that's okay with you.
-> 
->> Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
-> 
-> With the fixes above and a few below:
-> 
-> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-Thank you for the very quick and useful feedback.
-I've incorporated the changes and will resend with the PATCH prefix.
-If/when accepted what tree should the first patch go to?
+v1 --> v2:
+As Matthew Wilcox's suggestion, add sectors_to_npage()/npage_to_sectors()
+helpers to eliminate SECTORS_PER_PAGE_SHIFT, because it's quite hard to read.
+In further, I also eliminated PAGE_SECTORS_SHIFT.
 
-And yes I plan to let the second patch go via the s390 tree.
-> 
->> ---
->>  drivers/pci/iov.c   | 36 ++++++++++++++++++++++++------------
->>  include/linux/pci.h |  8 ++++++++
->>  2 files changed, 32 insertions(+), 12 deletions(-)
->>
-... snip ...
+I tried to eliminate all magic number "9" and "512", but it's too many, maybe
+no one want to review it, so I gave up. In the process of searching, I found
+the existing macro PAGE_SECTORS, it's equivalent to SECTORS_PER_PAGE. Because
+PAGE_SECTORS was defined in include/linux/device-mapper.h, and SECTORS_PER_PAGE
+was defined in drivers/block/zram/zram_drv.h, so I discarded SECTORS_PER_PAGE,
+althrough I prefer it so much.
+
+v1:
+When I studied the code of mm/swap, I found "1 << (PAGE_SHIFT - 9)" appears
+many times. So I try to clean up it.
+
+1. Replace "1 << (PAGE_SHIFT - 9)" or similar with SECTORS_PER_PAGE
+2. Replace "PAGE_SHIFT - 9" with SECTORS_PER_PAGE_SHIFT
+3. Replace "9" with SECTOR_SHIFT
+4. Replace "512" with SECTOR_SIZE
+
+Zhen Lei (10):
+  block: move PAGE_SECTORS definition into <linux/blkdev.h>
+  zram: abolish macro SECTORS_PER_PAGE
+  block: add sectors_to_npage()/npage_to_sectors() helpers
+  zram: abolish macro SECTORS_PER_PAGE_SHIFT
+  block: abolish macro PAGE_SECTORS_SHIFT
+  mm/swap: use npage_to_sectors() and PAGE_SECTORS to clean up code
+  block: use sectors_to_npage() and PAGE_SECTORS to clean up code
+  md: use sectors_to_npage() and npage_to_sectors() to clean up code
+  md: use existing definition RESYNC_SECTORS
+  md: use PAGE_SECTORS to clean up code
+
+ block/blk-settings.c          |  6 +++---
+ block/partitions/core.c       |  5 ++---
+ drivers/block/brd.c           |  7 ++-----
+ drivers/block/null_blk_main.c | 10 ++++------
+ drivers/block/zram/zram_drv.c |  8 ++++----
+ drivers/block/zram/zram_drv.h |  2 --
+ drivers/md/bcache/util.h      |  2 --
+ drivers/md/dm-kcopyd.c        |  2 +-
+ drivers/md/dm-table.c         |  2 +-
+ drivers/md/md-bitmap.c        | 16 ++++++++--------
+ drivers/md/md.c               |  6 +++---
+ drivers/md/raid1.c            | 10 +++++-----
+ drivers/md/raid10.c           | 28 ++++++++++++++--------------
+ drivers/md/raid5-cache.c      | 11 +++++------
+ drivers/md/raid5.c            |  4 ++--
+ include/linux/blkdev.h        |  7 +++++--
+ include/linux/device-mapper.h |  1 -
+ mm/page_io.c                  |  4 ++--
+ mm/swapfile.c                 | 12 ++++++------
+ 19 files changed, 67 insertions(+), 76 deletions(-)
+
+-- 
+2.26.0.106.g9fadedd
+
+
