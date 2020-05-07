@@ -2,97 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F501C9B14
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:29:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECBEC1C9B1C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 21:30:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728043AbgEGT3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 15:29:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726761AbgEGT3g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 15:29:36 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ADF1C05BD43
-        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 12:29:36 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id z1so3495380pfn.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 12:29:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UZiFmRSwooukbARffriwuLenCobEPu6OrZKDTN6rOMI=;
-        b=LQ9XyzPRFI4yJ75kyCibj4LbWvp1W1qDaHBodoOlAqLzN7au7G8hm16e2+9JReICIG
-         HULDgeVQc0SHrcMSw+3uLHKOiNyuWFeFWClQ2JnwoAZSdklVLqkEdXxBTHOfP+AR6Lg3
-         KfYvftw299yDV4A1/mY9eZgDVAWBJA7Q7okNoMOh1cj6HL/VHljbTn5tfUEvGj1U6PHv
-         0u8kj5AgcGAeDywS+5GYg/uty2M2S/NikwNnycxUImdEs3vKuPak9nm8mPB/c2aJKuqT
-         XEJ58pqwAcaRpTyb5Yn39/DmWn9Qmo4ljwhAU63AnfKQCI7TkvuyvK2GasHQHCaU71GZ
-         X5xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UZiFmRSwooukbARffriwuLenCobEPu6OrZKDTN6rOMI=;
-        b=hxs3jZG5scR/Luk37FWKeJUl9RKiyLXLFXz5C22YZzLP6anfHHbrawQMkDaE9IVcJ5
-         fqt+xrL6mmf/HjMZ+uTjSlYUJzVkgBEICKb+Z2RtVJZfwVNudAfNDV1rYljTXSp0SftE
-         5VM0uFXqvIs96uJ1EX7EJAFNM2vFUNL7CXh1x1Dsq6VoMLd3yMH5JlSFsHNrKDUdONe8
-         d/JVcpORf0mHg0DTKIy5CA5imUOcWdpzR9qsKT6OutldJ68YzARE5McLWAcC03OTPuHE
-         Bvo1V9PpNUJJIbZyyvJi4c2zDW2Vn4ba825eBx6wDDFdKVwY9Zjo8i8lvDa53+6Zdfdt
-         Kl7Q==
-X-Gm-Message-State: AGi0PubbqrnHmS1uxX4QsbeLF85vHgK5GiOFWsisgvrYGiKI1FITzFG+
-        r1H3TcGbvUv1+Qj2skRcxR4=
-X-Google-Smtp-Source: APiQypJwuGsxsy5gPrNHxW1kn/8GAvaP1KOCkZnHKUKOelU+lAHGNOFiwX/RRY94wLD3NjEngIqwEg==
-X-Received: by 2002:aa7:9535:: with SMTP id c21mr15115063pfp.39.1588879775893;
-        Thu, 07 May 2020 12:29:35 -0700 (PDT)
-Received: from dtor-ws ([2620:15c:202:201:3c2a:73a9:c2cf:7f45])
-        by smtp.gmail.com with ESMTPSA id d126sm5762076pfc.81.2020.05.07.12.29.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2020 12:29:35 -0700 (PDT)
-Date:   Thu, 7 May 2020 12:29:33 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     ChenTao <chentao107@huawei.com>
-Cc:     kstewart@linuxfoundation.org, tglx@linutronix.de,
-        gregkh@linuxfoundation.org, allison@lohutok.net,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] input/misc/drv260x: Remove a useless comparison
-Message-ID: <20200507192933.GK89269@dtor-ws>
-References: <20200507051617.212434-1-chentao107@huawei.com>
+        id S1728526AbgEGTa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 15:30:27 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:57983 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726515AbgEGTa1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 15:30:27 -0400
+Received: from [IPv6:2601:646:8600:3281:6547:66ee:1a90:d675] ([IPv6:2601:646:8600:3281:6547:66ee:1a90:d675])
+        (authenticated bits=0)
+        by mail.zytor.com (8.15.2/8.15.2) with ESMTPSA id 047JU6CB3526329
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Thu, 7 May 2020 12:30:06 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 047JU6CB3526329
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2020042201; t=1588879807;
+        bh=m0lAyOHoGx1k4YzTje4D7KhG9i4zH9a+UIO21JynQkA=;
+        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
+        b=Og3DqPf6l861xqxWuiyPyNuU4pi97NvvW9O0+D/WT2BoIFVMYVWnz+ksirKZqnx9g
+         1TXrnCYHc6OwJRSiHaXpY+AlkQvr7MlkCL/6LQrXhcYfLKiS88uvFgen5pF4/fTlIa
+         Oss3swZ5yMiS4OJCw7ALcqpzXrqnAUS8JUkvQgdR6qNFr1v0TxWhv32pUBZ8rNvnPe
+         xJiSNWqOhsEh53wdycUGZ2qghWGVWg8Qhh67MVnwsad0X93fcBscx5A50oR2Ckgl7b
+         68CAfCTJEufsK5zDjpF7/mT3S7+TMNvt9BFelv4+nACgez+19fb/cSanapAW7uHDr5
+         1x4WdJMkY/SNQ==
+Date:   Thu, 07 May 2020 12:29:59 -0700
+User-Agent: K-9 Mail for Android
+In-Reply-To: <CAMzpN2iCgr0rb=MCYPGMx8tcfLq2qdzv0h7YnX5hkzBB+O7JJQ@mail.gmail.com>
+References: <20200505174423.199985-1-ndesaulniers@google.com> <CAMzpN2idWF2_4wtPebM2B2HVyksknr9hAqK8HJi_vjQ06bgu2g@mail.gmail.com> <6A99766A-59FB-42DF-9350-80EA671A42B0@zytor.com> <CAMzpN2iCgr0rb=MCYPGMx8tcfLq2qdzv0h7YnX5hkzBB+O7JJQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200507051617.212434-1-chentao107@huawei.com>
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH] x86: bitops: fix build regression
+To:     Brian Gerst <brgerst@gmail.com>
+CC:     Nick Desaulniers <ndesaulniers@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        stable <stable@vger.kernel.org>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        "kernelci . org bot" <bot@kernelci.org>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Ilie Halip <ilie.halip@gmail.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Marco Elver <elver@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux@googlegroups.com
+From:   hpa@zytor.com
+Message-ID: <4AC5875F-4CCD-44D0-9DF6-76A975EC480B@zytor.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On May 7, 2020 6:32:24 AM PDT, Brian Gerst <brgerst@gmail=2Ecom> wrote:
+>On Thu, May 7, 2020 at 3:02 AM <hpa@zytor=2Ecom> wrote:
+>>
+>> On May 6, 2020 11:18:09 PM PDT, Brian Gerst <brgerst@gmail=2Ecom>
+>wrote:
+>> >On Tue, May 5, 2020 at 1:47 PM Nick Desaulniers
+>> ><ndesaulniers@google=2Ecom> wrote:
+>> >>
+>> >> From: Sedat Dilek <sedat=2Edilek@gmail=2Ecom>
+>> >>
+>> >> It turns out that if your config tickles __builtin_constant_p via
+>> >> differences in choices to inline or not, this now produces invalid
+>> >> assembly:
+>> >>
+>> >> $ cat foo=2Ec
+>> >> long a(long b, long c) {
+>> >>   asm("orb\t%1, %0" : "+q"(c): "r"(b));
+>> >>   return c;
+>> >> }
+>> >> $ gcc foo=2Ec
+>> >> foo=2Ec: Assembler messages:
+>> >> foo=2Ec:2: Error: `%rax' not allowed with `orb'
+>> >>
+>> >> The "q" constraint only has meanting on -m32 otherwise is treated
+>as
+>> >> "r"=2E
+>> >>
+>> >> This is easily reproducible via
+>> >Clang+CONFIG_STAGING=3Dy+CONFIG_VT6656=3Dm,
+>> >> or Clang+allyesconfig=2E
+>> >>
+>> >> Keep the masking operation to appease sparse (`make C=3D1`), add
+>back
+>> >the
+>> >> cast in order to properly select the proper 8b register alias=2E
+>> >>
+>> >>  [Nick: reworded]
+>> >>
+>> >> Cc: stable@vger=2Ekernel=2Eorg
+>> >> Cc: Jesse Brandeburg <jesse=2Ebrandeburg@intel=2Ecom>
+>> >> Link: https://github=2Ecom/ClangBuiltLinux/linux/issues/961
+>> >> Link:
+>> >https://lore=2Ekernel=2Eorg/lkml/20200504193524=2EGA221287@google=2Eco=
+m/
+>> >> Fixes: 1651e700664b4 ("x86: Fix bitops=2Eh warning with a moved
+>cast")
+>> >> Reported-by: Sedat Dilek <sedat=2Edilek@gmail=2Ecom>
+>> >> Reported-by: kernelci=2Eorg bot <bot@kernelci=2Eorg>
+>> >> Suggested-by: Andy Shevchenko <andriy=2Eshevchenko@intel=2Ecom>
+>> >> Suggested-by: Ilie Halip <ilie=2Ehalip@gmail=2Ecom>
+>> >> Tested-by: Sedat Dilek <sedat=2Edilek@gmail=2Ecom>
+>> >> Signed-off-by: Sedat Dilek <sedat=2Edilek@gmail=2Ecom>
+>> >> Signed-off-by: Nick Desaulniers <ndesaulniers@google=2Ecom>
+>> >> ---
+>> >>  arch/x86/include/asm/bitops=2Eh | 4 ++--
+>> >>  1 file changed, 2 insertions(+), 2 deletions(-)
+>> >>
+>> >> diff --git a/arch/x86/include/asm/bitops=2Eh
+>> >b/arch/x86/include/asm/bitops=2Eh
+>> >> index b392571c1f1d=2E=2E139122e5b25b 100644
+>> >> --- a/arch/x86/include/asm/bitops=2Eh
+>> >> +++ b/arch/x86/include/asm/bitops=2Eh
+>> >> @@ -54,7 +54,7 @@ arch_set_bit(long nr, volatile unsigned long
+>*addr)
+>> >>         if (__builtin_constant_p(nr)) {
+>> >>                 asm volatile(LOCK_PREFIX "orb %1,%0"
+>> >>                         : CONST_MASK_ADDR(nr, addr)
+>> >> -                       : "iq" (CONST_MASK(nr) & 0xff)
+>> >> +                       : "iq" ((u8)(CONST_MASK(nr) & 0xff))
+>> >
+>> >I think a better fix would be to make CONST_MASK() return a u8 value
+>> >rather than have to cast on every use=2E
+>> >
+>> >Also I question the need for the "q" constraint=2E  It was added in
+>> >commit 437a0a54 as a workaround for GCC 3=2E4=2E4=2E  Now that the min=
+imum
+>> >GCC version is 4=2E6, is this still necessary?
+>> >
+>> >--
+>> >Brian Gerst
+>>
+>> Yes, "q" is needed on i386=2E
+>
+>I think the bug this worked around was that the compiler didn't detect
+>that CONST_MASK(nr) was also constant and doesn't need to be put into
+>a register=2E  The question is does that bug still exist on compiler
+>versions we care about?
+>
+>--
+>Brian Gerst
 
-On Thu, May 07, 2020 at 01:16:17PM +0800, ChenTao wrote:
-> Fix the following warning:
-> 
-> 'mode' and 'library' are u32, they are never be negative,
-> DRV260X_LRA_MODE and DRV260X_LIB_EMPTY are 0x00, the comparison
-> is always false.
-
-
-The fact that the symbolic names resolve to 0 is just a happenstance. We
-should not be writing code based on concrete values in this case. I
-wish we could tell the compiler to ignore this kind of cases, where we
-want to test a range of values, and do not care about concrete numeric
-bounds of said range.
-
-> 
-> drivers/input/misc/drv260x.c:478:20: warning:
-> comparison of unsigned expression < 0 is always false [-Wtype-limits]
->   if (haptics->mode < DRV260X_LRA_MODE ||
-> drivers/input/misc/drv260x.c:490:23: warning:
-> comparison of unsigned expression < 0 is always false [-Wtype-limits]
->   if (haptics->library < DRV260X_LIB_EMPTY ||
-
-Are we planning on enabling this warning in kernel by default?
-
-Thanks.
-
--- 
-Dmitry
+The compiler is free to do that, including for legit reasons (common subex=
+pression elimination, especially=2E) So yes=2E
+--=20
+Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
