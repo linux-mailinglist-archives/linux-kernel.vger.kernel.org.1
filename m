@@ -2,113 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10C6D1C8832
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 13:29:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE8D11C8848
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 13:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726029AbgEGL3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 07:29:14 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:41454 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725809AbgEGL3O (ORCPT
+        id S1726531AbgEGLaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 07:30:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726437AbgEGLaO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 07:29:14 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 047AWYIf193042;
-        Thu, 7 May 2020 07:29:07 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 30vf3rcf5y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 May 2020 07:29:06 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 047BKRA7012583;
-        Thu, 7 May 2020 11:29:05 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 30s0g5u8pe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 May 2020 11:29:05 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 047BT29a8126808
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 7 May 2020 11:29:02 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 516134203F;
-        Thu,  7 May 2020 11:29:02 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EDCF24204B;
-        Thu,  7 May 2020 11:29:01 +0000 (GMT)
-Received: from oc3016276355.ibm.com (unknown [9.145.183.161])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu,  7 May 2020 11:29:01 +0000 (GMT)
-Subject: Re: linux-next: manual merge of the iommu tree with the s390 tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Joerg Roedel <joro@8bytes.org>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20200507135835.05e300b5@canb.auug.org.au>
-From:   Pierre Morel <pmorel@linux.ibm.com>
-Message-ID: <275a85c9-0552-9725-c2fa-129d244ca261@linux.ibm.com>
-Date:   Thu, 7 May 2020 13:29:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <20200507135835.05e300b5@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-07_06:2020-05-07,2020-05-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- mlxlogscore=999 priorityscore=1501 clxscore=1011 suspectscore=0 mlxscore=0
- phishscore=0 lowpriorityscore=0 adultscore=0 spamscore=0 bulkscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005070087
+        Thu, 7 May 2020 07:30:14 -0400
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE977C05BD10
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 04:30:13 -0700 (PDT)
+Received: from ramsan ([IPv6:2a02:1810:ac12:ed60:6572:4a1f:d283:9ae8])
+        by xavier.telenet-ops.be with bizsmtp
+        id bnW3220043ZRV0X01nW3Ki; Thu, 07 May 2020 13:30:11 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan with esmtp (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1jWej4-0006zG-Vp; Thu, 07 May 2020 13:30:02 +0200
+Received: from geert by rox.of.borg with local (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1jWej4-00068L-UG; Thu, 07 May 2020 13:30:02 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Amit Kucheria <amit.kucheria@verdurent.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-ide@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH 0/4] qoriq: Add platform dependencies
+Date:   Thu,  7 May 2020 13:29:51 +0200
+Message-Id: <20200507112955.23520-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+	Hi all,
 
+Several QorIQ blocks are only present on Freescale or NXP SoCs.
+This series adds platform dependencies to the corresponding config
+ymbols, to avoid asking the user about them when configuring a kernel
+without support for these SoCs.
 
-On 2020-05-07 05:58, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Today's linux-next merge of the iommu tree got a conflict in:
-> 
->    drivers/iommu/s390-iommu.c
-> 
-> between commit:
-> 
->    d08d6f5d7524 ("s390/pci: adaptation of iommu to multifunction")
-> 
-> from the s390 tree and commit:
-> 
->    522af649e57b ("iommu/s390: Convert to probe/release_device() call-backs")
-> 
-> from the iommu tree.
-> 
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
-> 
+Most patches in this series are independent, but the third patch may
+cause some Kconfig warnings when applied before the second patch, and
+enabling the QorIQ CPU frequency scaling driver in a non-Layerscape
+kernel.
 
+Thanks for your comments!
 
-Hi Stephen,
+Geert Uytterhoeven (4):
+  ahci: qoriq: Add platform dependencies
+  cpufreq: qoriq: Add platform dependencies
+  clk: qoriq: Add platform dependencies
+  thermal: qoriq: Add platform dependencies
 
-Your proposition is correct for me.
-I of course assume that the other parts of the
-("s390/pci: adaptation of iommu to multifunction")
-patch, not concerned by this merge problem, will be merged too at the end.
-
-Thanks,
-Pierre
+ drivers/ata/Kconfig     | 1 +
+ drivers/clk/Kconfig     | 3 ++-
+ drivers/cpufreq/Kconfig | 3 ++-
+ drivers/thermal/Kconfig | 4 ++--
+ 4 files changed, 7 insertions(+), 4 deletions(-)
 
 -- 
-Pierre Morel
-IBM Lab Boeblingen
+2.17.1
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
