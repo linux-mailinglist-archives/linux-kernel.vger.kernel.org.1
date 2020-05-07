@@ -2,96 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 255F41C9E61
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 00:22:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07AF41C9E7D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 00:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727768AbgEGWWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 18:22:05 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:41911 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727029AbgEGWWF (ORCPT
+        id S1726930AbgEGWaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 18:30:30 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:47722 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726437AbgEGWa3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 18:22:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588890124;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=H1fE5P6+fvPAXaUqAeYEo8nNr2ZmJz9U6Sff/jvrkLc=;
-        b=P0eiat9R3lzKpbyCjv7SppU5qAtFkFO7M6k+7MGNPid6ZNX231Nxyo5mBUXmD6hKJqTm2p
-        0gy7FUS0IzmtlK4KjUAR0EY6PSFqSfB7pMB2qo4+Jf3AyOj/uLaAnAtaKZb2sUz/IOI9DS
-        PyHrRZy+Uv5DChPIAMduB85MHz4Mwso=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-196-hlU1JeMCM2mh6kooH-rKBg-1; Thu, 07 May 2020 18:15:13 -0400
-X-MC-Unique: hlU1JeMCM2mh6kooH-rKBg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D6808107ACCA;
-        Thu,  7 May 2020 22:15:11 +0000 (UTC)
-Received: from optiplex-lnx (unknown [10.3.128.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 70153649B1;
-        Thu,  7 May 2020 22:15:06 +0000 (UTC)
-Date:   Thu, 7 May 2020 18:15:03 -0400
-From:   Rafael Aquini <aquini@redhat.com>
-To:     Qian Cai <cai@lca.pw>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org,
-        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        dyoung@redhat.com, Baoquan He <bhe@redhat.com>,
+        Thu, 7 May 2020 18:30:29 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 047M4FEK034892;
+        Thu, 7 May 2020 22:15:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=XQApXYA3T4kif5cGsekr95q1Lc6vxeCkbW+u6MJO0e4=;
+ b=mp6OwwTTQvURCkvxniCOY2GVCGC+2v4Oz+Hmn+/UzvE+Gvdd3DjjpNTFutiyMqD0QHMy
+ 3G795BTDFbnVYdLY4neNQJDCogb1P19Bx7cLHknVtniiW6z8Awg6NcMbIqkIz21XQ2st
+ x6qyrBNtQGBWEooLXllqlxVdFamj5FsqI0Kss+owRTIfDANJlV3cxQwkXfPRCKKe9YXA
+ 6SR/EtukSu2Hi1k5zf5Haq3MafcOme97OPvUo/zIoMYqhiDHr1oiASDdpOurdOOyZXnR
+ k/ovvmmJK2HXxDczzYJJKHPqNQDw4M5D7Yx/LEcU1ViyuRiE44fnp+tYGVnbhb8SA24w 5w== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 30vtexr3b3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 07 May 2020 22:15:17 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 047M6j8a087163;
+        Thu, 7 May 2020 22:15:17 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 30vtef9qtd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 07 May 2020 22:15:16 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 047MF70T011899;
+        Thu, 7 May 2020 22:15:07 GMT
+Received: from ca-dmjordan1.us.oracle.com (/10.211.9.48)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 07 May 2020 15:15:06 -0700
+Date:   Thu, 7 May 2020 18:15:24 -0400
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
         Jonathan Corbet <corbet@lwn.net>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH] kernel: add panic_on_taint
-Message-ID: <20200507221503.GL205881@optiplex-lnx>
-References: <20200506222815.274570-1-aquini@redhat.com>
- <C5E11731-5503-45CC-9F72-41E8863ACD27@lca.pw>
- <20200507204219.GJ205881@optiplex-lnx>
- <27AA744E-930A-492A-BE87-05A119FE1549@lca.pw>
+        Josh Triplett <josh@joshtriplett.org>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Michal Hocko <mhocko@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Shile Zhang <shile.zhang@linux.alibaba.com>,
+        Tejun Heo <tj@kernel.org>, Zi Yan <ziy@nvidia.com>,
+        linux-crypto@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 5/7] mm: move zone iterator outside of
+ deferred_init_maxorder()
+Message-ID: <20200507221524.xufi6rpw42fmdnuw@ca-dmjordan1.us.oracle.com>
+References: <20200430201125.532129-6-daniel.m.jordan@oracle.com>
+ <deadac9a-fbef-6c66-207c-83d251d2ef50@linux.intel.com>
+ <20200501024539.tnjuybydwe3r4u2x@ca-dmjordan1.us.oracle.com>
+ <CAKgT0Uctro3+PWeJTi=O3Yc2qUF8Oy+HrypzCUzkaCt=XH0Lkg@mail.gmail.com>
+ <20200505005432.bohmaa6zeffhdkgn@ca-dmjordan1.us.oracle.com>
+ <CAKgT0Uegw2vFSCOcsCMATfDu0Q8NP2ZVi-2Fgm8P2RwU_B2c3A@mail.gmail.com>
+ <20200506223923.z6cbixg2mhtjjlfo@ca-dmjordan1.us.oracle.com>
+ <CAKgT0UdDcq_PL1hbvkhBvo9tQN1YA9YDQ6hECHL3TnWA-ytPhw@mail.gmail.com>
+ <20200507202058.4mskqbt3vci3xy4k@ca-dmjordan1.us.oracle.com>
+ <CAKgT0UeELxfuzKes9FyYD_j1X72-xXjEgGdprNmy9so18zMJUQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <27AA744E-930A-492A-BE87-05A119FE1549@lca.pw>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <CAKgT0UeELxfuzKes9FyYD_j1X72-xXjEgGdprNmy9so18zMJUQ@mail.gmail.com>
+User-Agent: NeoMutt/20180716
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9614 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 adultscore=0
+ phishscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0 spamscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005070176
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9614 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 adultscore=0
+ spamscore=0 suspectscore=2 bulkscore=0 priorityscore=1501 malwarescore=0
+ phishscore=0 impostorscore=0 mlxscore=0 mlxlogscore=999 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005070176
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 07, 2020 at 06:05:27PM -0400, Qian Cai wrote:
-> 
-> 
-> > On May 7, 2020, at 4:42 PM, Rafael Aquini <aquini@redhat.com> wrote:
-> > 
-> > On Wed, May 06, 2020 at 10:50:19PM -0400, Qian Cai wrote:
-> >> 
-> >> 
-> >>> On May 6, 2020, at 6:28 PM, Rafael Aquini <aquini@redhat.com> wrote:
-> >>> 
-> >>> Analogously to the introduction of panic_on_warn, this patch
-> >>> introduces a kernel option named panic_on_taint in order to
-> >>> provide a simple and generic way to stop execution and catch
-> >>> a coredump when the kernel gets tainted by any given taint flag.
-> >>> 
-> >>> This is useful for debugging sessions as it avoids rebuilding
-> >>> the kernel to explicitly add calls to panic() or BUG() into
-> >>> code sites that introduce the taint flags of interest.
-> >>> Another, perhaps less frequent, use for this option would be
-> >>> as a mean for assuring a security policy (in paranoid mode)
-> >>> case where no single taint is allowed for the running system.
-> >> 
-> >> Andrew, you can drop the patch below from -mm now because that one is now obsolete,
-> >> 
-> >> mm-slub-add-panic_on_error-to-the-debug-facilities.patch
-> >> 
-> > Please, don't drop it yet. I'll send a patch to get rid of the bits,
-> > once this one gets accepted, if it gets accepted.
-> 
-> Why do you ever want that obsolete patch even show up in linux-next to potentailly waste other people/bots time to test it and develop things on top of it?
->
+On Thu, May 07, 2020 at 02:18:42PM -0700, Alexander Duyck wrote:
+> The idea behind merging ranges it to address possible cases where a
+> range is broken up such that there is a hole in a max order block as a
+> result.
 
-It's a reasonable and self-contained feature that we have a valid use for. 
-I honestly fail to see it causing that amount of annoyance as you are 
-suggesting here.
+Gah, yes, you're right, there could be multiple ranges in a max order block, so
+the threads have to use the zone iterators to skip the holes.
 
+> By combining the ranges if they both span the same section we
+> can guarantee that the entire section will be initialized as a block
+> and not potentially have partially initialized sections floating
+> around. Without that mo_pfn logic I had in there I was getting panics
+> every so often when booting up one of my systems as I recall.
+> 
+> Also the iterator itself is cheap. It is basically just walking a
+> read-only list so it scales efficiently as well. One of the reasons
+
+Agreed, it's not expensive, it's just gnarliness I was hoping to avoid, but
+obviously it's not gonna work.
+
+> why I arranged the code the way I did is that it also allowed me to
+> get rid of an extra check in the code as the previous code was having
+> to verify if the pfn belonged to the node. That is all handled
+> directly through the for_each_free_mem_pfn_range_in_zone[_from] call
+> now.
+> 
+> > With the series as it stands plus leaving in the section alignment check in
+> > deferred_grow_zone (which I think could be relaxed to a maxorder alignment
+> > check) so it doesn't stop mid-max-order-block, threads simply deal with a
+> > start/end range and deferred_init_maxorder becomes shorter and simpler too.
+> 
+> I still think we are better off initializing complete sections since
+> the pageblock_flags are fully initialized that way as well.
+
+Fair enough.
+
+> What
+> guarantee do you have that all of the memory ranges will be max order
+> aligned?
+
+Sure, it's a problem with multiple ranges in a maxorder block, the rest
+could've been handled.
+
+> The problem is we have to guarantee all pages are initialized
+> before we start freeing the pages in a max order page. If we just
+> process each block as-is I believe we can end up with some
+> architectures trying to access uninitialized memory in the buddy
+> allocator as a result. That is why the deferred_init_maxorder function
+> will walk through the iterator, using the _from version to avoid
+> unnecessary iteration, the first time initializing the pages it needs
+> to cross that max order boundary, and then again to free the max order
+> block of pages that have been initialized. The iterator itself is
+> farily cheap and only has to get you through the smaller ranges before
+> you end up at the one big range that it just kind of sits at while it
+> is working on getting it processed.
+
+Right.
+
+
+Ok, I think we're on the same page for the next version.  Thanks for the
+thorough review!
