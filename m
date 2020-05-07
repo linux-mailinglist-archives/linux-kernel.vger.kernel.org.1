@@ -2,107 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 991EF1C7E3F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 01:58:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 663471C7E30
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 01:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728746AbgEFX6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 19:58:52 -0400
-Received: from mga06.intel.com ([134.134.136.31]:27430 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728445AbgEFX6v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 19:58:51 -0400
-IronPort-SDR: HVlQB4KZRhGhh/S/jDIjfcQ8SutAkTUrnqRx77sKqB08hfVzlqJQuc2ppkZpo70kY8OmBflG0p
- ncw3GHm9UfPQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2020 16:58:51 -0700
-IronPort-SDR: 8nSc+RMIJMvcPTQETj0t5MsuXTF62MCTfopQuBcvBjCsA6OhOsrmofg5y184eAjOql0lUxE0kZ
- APhOHgWm+Owg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,361,1583222400"; 
-   d="scan'208";a="435086067"
-Received: from sjchrist-coffee.jf.intel.com ([10.54.74.152])
-  by orsmga005.jf.intel.com with ESMTP; 06 May 2020 16:58:51 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] KVM: nVMX: Skip IPBP when switching between vmcs01 and vmcs02, redux
-Date:   Wed,  6 May 2020 16:58:50 -0700
-Message-Id: <20200506235850.22600-3-sean.j.christopherson@intel.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200506235850.22600-1-sean.j.christopherson@intel.com>
-References: <20200506235850.22600-1-sean.j.christopherson@intel.com>
+        id S1728395AbgEFXxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 19:53:07 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:63099 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726908AbgEFXxG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 19:53:06 -0400
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200506235303epoutp01fccd2071735bbdccdf03dffbb5f5f46b~MlYjO-8us0586205862epoutp01Y
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 23:53:03 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200506235303epoutp01fccd2071735bbdccdf03dffbb5f5f46b~MlYjO-8us0586205862epoutp01Y
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1588809183;
+        bh=o2AlyizYfqY3ffmyHKBP6dMu177b2J0Zq9TqwShCWNw=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=muR0CUZvYNdnzlo0FfCI/QdIOEvMQyIhsxxDdhi3gsdazxCKhFI0fGsPEyjkPs2Nf
+         L4CDVV/5wNuUYAS/3Zk+5o8Yud6mJo1F0F1F2bKloMARx7FkgA/uwtBzuIAoDBA4i/
+         IKI+oz+3avKqIx13pL72uRZ8OybbvGohDDLulLHY=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
+        20200506235303epcas1p445c4c14013dbd47bb930fb707c34d41f~MlYi5KGLh0698406984epcas1p4u;
+        Wed,  6 May 2020 23:53:03 +0000 (GMT)
+Received: from epsmges1p4.samsung.com (unknown [182.195.40.152]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 49HYLj5Nb4zMqYkn; Wed,  6 May
+        2020 23:53:01 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        1D.D8.04744.BDD43BE5; Thu,  7 May 2020 08:52:59 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200506235259epcas1p180e571147fbbdb104fe8618c7555abe8~MlYfVPW2h1116411164epcas1p1o;
+        Wed,  6 May 2020 23:52:59 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200506235259epsmtrp13cc283328367adb6539eec52e4192124~MlYfUfuLu0130701307epsmtrp1V;
+        Wed,  6 May 2020 23:52:59 +0000 (GMT)
+X-AuditID: b6c32a38-26bff70000001288-d8-5eb34ddb4f54
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        CF.90.18461.BDD43BE5; Thu,  7 May 2020 08:52:59 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200506235258epsmtip229c843a171187266b232c0a9050cf010~MlYfJ6JYq0254602546epsmtip2U;
+        Wed,  6 May 2020 23:52:58 +0000 (GMT)
+Subject: Re: [PATCH RE-SEND v1] PM / devfreq: Replace strncpy with strscpy
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Organization: Samsung Electronics
+Message-ID: <41092ded-8bb6-726f-6986-fee62a8a1325@samsung.com>
+Date:   Thu, 7 May 2020 09:02:57 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
 MIME-Version: 1.0
+In-Reply-To: <09712864-01a5-e2f9-b55f-e822169d30fc@gmail.com>
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprIJsWRmVeSWpSXmKPExsWy7bCmvu5t381xBqc+S1is/viY0eJs0xt2
+        i8u75rBZfO49wmhxu3EFmwOrx85Zd9k9+rasYvT4vEkugDkq2yYjNTEltUghNS85PyUzL91W
+        yTs43jne1MzAUNfQ0sJcSSEvMTfVVsnFJ0DXLTMHaKWSQlliTilQKCCxuFhJ386mKL+0JFUh
+        I7+4xFYptSAlp8CyQK84Mbe4NC9dLzk/18rQwMDIFKgwITvj5KwbrAWvuSuOH9nI3sD4lbOL
+        kZNDQsBEor9tKhuILSSwg1Hi7nOjLkYuIPsTo8TVcx/YIZxvjBKbP25ngunY1N/FDJHYyyjR
+        +vQkE4TznlFi8benjCBVwgJeElcW97GA2CICNRJ7X08C28EsYCXx+mM3O4jNJqAlsf/FDbA4
+        v4CixNUfj8F6eQXsJKbu2ccMYrMIqEic7+kC2ywqECZxclsLVI2gxMmZT8DmcwrYSrTdus8I
+        MV9c4taT+UwQtrxE89bZYJdKCPxll5i7dTszxAsuEiv/7WWFsIUlXh3fwg5hS0m87G+Dsqsl
+        Vp48wgbR3MEosWX/BagGY4n9SycDbeAA2qApsX6XPkRYUWLn77lQR/BJvPvawwpSIiHAK9HR
+        JgRRoixx+cFdaChKSixu72SbwKg0C8k7s5C8MAvJC7MQli1gZFnFKJZaUJybnlpsWGCCHNub
+        GMHJUctiB+Oecz6HGAU4GJV4eA8s2xQnxJpYVlyZe4hRgoNZSYSX58fGOCHelMTKqtSi/Pii
+        0pzU4kOMpsDQnsgsJZqcD0zceSXxhqZGxsbGFiaGZqaGhkrivFOv58QJCaQnlqRmp6YWpBbB
+        9DFxcEo1MAaHFh959pDnxgRH4Zu3K0z+F7MmLb0dJNa2PnwWz469HtPi5A/1C63Qjl8w1bhR
+        yuuTj6GOktDF5SdW7c7p/W0wUf+00OL4zVNyqxhqi9rXbLC9wssmsDL/8myHGbd/xViYvXx+
+        08Pw65kTy6sUvj/lvf1ZYUPsya6vcxdP02iZ++qarXW8xiklluKMREMt5qLiRABUE8r0pAMA
+        AA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrHLMWRmVeSWpSXmKPExsWy7bCSvO5t381xBl8/slqs/viY0eJs0xt2
+        i8u75rBZfO49wmhxu3EFmwOrx85Zd9k9+rasYvT4vEkugDmKyyYlNSezLLVI3y6BK+PkrBus
+        Ba+5K44f2cjewPiVs4uRk0NCwERiU38XM4gtJLCbUaK9xxUiLikx7eJRoDgHkC0scfhwcRcj
+        F1DJW0aJX5v7WEFqhAW8JK4s7mMBsUUE6iSurZoAZjMLWEm8/tjNDtEANHN5cwM7SIJNQEti
+        /4sbbCA2v4CixNUfjxlBbF4BO4mpe/aBHcEioCJxvqeLCcQWFQiT2LnkMRNEjaDEyZlPwBZw
+        CthKtN26zwixTF3iz7xLzBC2uMStJ/OZIGx5ieats5knMArPQtI+C0nLLCQts5C0LGBkWcUo
+        mVpQnJueW2xYYJiXWq5XnJhbXJqXrpecn7uJERwlWpo7GLev+qB3iJGJg/EQowQHs5IIL8+P
+        jXFCvCmJlVWpRfnxRaU5qcWHGKU5WJTEeW8ULowTEkhPLEnNTk0tSC2CyTJxcEo1MIkELbuz
+        75GKX9DByrqOmG/RBWf7DxxVF7/zPig7WLLvQ+/LfNsVbBM2bdzl+nDxf/YEG945T3f5Z2w1
+        v7HodFqwi5jWJtOV1tVnVWcsCeC3sXZ9Hiu0bOM+Tbb7l3ZXXuTUfuOzjfXtiqKXgiEGAscs
+        q/Xun78a8mLHcq7eqG4G/ll7X5ebNrKZvl799lz0u5/JPt1zfzw/G/fs0K8Axp+9vcJ7j5jm
+        HbI9N/cFU/R/MauK4O6Jt9f1c++OX8W8b9MdTinR/tsul+L+/xCcZflNoujBsUY15oYpXQeu
+        BlcFfVzx/vz80/3elZOl9rbKs1eXJ1tN0Fqq9+GGVPm7xz5dfNMsL399eqK9bZdn7DolluKM
+        REMt5qLiRACHOvM6AQMAAA==
+X-CMS-MailID: 20200506235259epcas1p180e571147fbbdb104fe8618c7555abe8
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200417140545epcas1p38cdc6cc5e6059437e611cf7e771d0dbd
+References: <20200227170854.9949-1-digetx@gmail.com>
+        <CGME20200417140545epcas1p38cdc6cc5e6059437e611cf7e771d0dbd@epcas1p3.samsung.com>
+        <09712864-01a5-e2f9-b55f-e822169d30fc@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Skip the Indirect Branch Prediction Barrier that is triggered on a VMCS
-switch when temporarily loading vmcs02 to synchronize it to vmcs12, i.e.
-give copy_vmcs02_to_vmcs12_rare() the same treatment as
-vmx_switch_vmcs().
+Hi Dmitry,
 
-Make vmx_vcpu_load() static now that it's only referenced within vmx.c.
+On 4/17/20 11:04 PM, Dmitry Osipenko wrote:
+> 27.02.2020 20:08, Dmitry Osipenko пишет:
+>> GCC produces this warning when kernel compiled using `make W=1`:
+>>
+>>   warning: ‘strncpy’ specified bound 16 equals destination size [-Wstringop-truncation]
+>>   772 |  strncpy(devfreq->governor_name, governor_name, DEVFREQ_NAME_LEN);
+>>
+>> The strncpy doesn't take care of NULL-termination of the destination
+>> buffer, while the strscpy does.
+>>
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>> ---
+>>  drivers/devfreq/devfreq.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
+>> index 8494c5f05a73..2011f64bfa3a 100644
+>> --- a/drivers/devfreq/devfreq.c
+>> +++ b/drivers/devfreq/devfreq.c
+>> @@ -769,7 +769,7 @@ struct devfreq *devfreq_add_device(struct device *dev,
+>>  	devfreq->dev.release = devfreq_dev_release;
+>>  	INIT_LIST_HEAD(&devfreq->node);
+>>  	devfreq->profile = profile;
+>> -	strncpy(devfreq->governor_name, governor_name, DEVFREQ_NAME_LEN);
+>> +	strscpy(devfreq->governor_name, governor_name, DEVFREQ_NAME_LEN);
+>>  	devfreq->previous_freq = profile->initial_freq;
+>>  	devfreq->last_status.current_frequency = profile->initial_freq;
+>>  	devfreq->data = data;
+>>
+> 
+> Hello Chanwoo,
+> 
+> Do you have any objections to this patch?
+> 
 
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
----
- arch/x86/kvm/vmx/nested.c | 4 ++--
- arch/x86/kvm/vmx/vmx.c    | 2 +-
- arch/x86/kvm/vmx/vmx.h    | 1 -
- 3 files changed, 3 insertions(+), 4 deletions(-)
+I'm sorry for late reply. I applied it for v5.8-rc1.
+Thanks.
 
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index 7d1e19149ef46..4f770eed66cc9 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -3915,12 +3915,12 @@ static void copy_vmcs02_to_vmcs12_rare(struct kvm_vcpu *vcpu,
- 
- 	cpu = get_cpu();
- 	vmx->loaded_vmcs = &vmx->nested.vmcs02;
--	vmx_vcpu_load(&vmx->vcpu, cpu);
-+	vmx_vcpu_load_vmcs(vcpu, cpu, &vmx->vmcs01);
- 
- 	sync_vmcs02_to_vmcs12_rare(vcpu, vmcs12);
- 
- 	vmx->loaded_vmcs = &vmx->vmcs01;
--	vmx_vcpu_load(&vmx->vcpu, cpu);
-+	vmx_vcpu_load_vmcs(vcpu, cpu, &vmx->nested.vmcs02);
- 	put_cpu();
- }
- 
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index ddbd8fae24927..bc5e5cf1d4cc8 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -1383,7 +1383,7 @@ void vmx_vcpu_load_vmcs(struct kvm_vcpu *vcpu, int cpu,
-  * Switches to specified vcpu, until a matching vcpu_put(), but assumes
-  * vcpu mutex is already taken.
-  */
--void vmx_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
-+static void vmx_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
- {
- 	struct vcpu_vmx *vmx = to_vmx(vcpu);
- 
-diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-index 4a6f382b05b49..298ddef79d009 100644
---- a/arch/x86/kvm/vmx/vmx.h
-+++ b/arch/x86/kvm/vmx/vmx.h
-@@ -322,7 +322,6 @@ struct kvm_vmx {
- bool nested_vmx_allowed(struct kvm_vcpu *vcpu);
- void vmx_vcpu_load_vmcs(struct kvm_vcpu *vcpu, int cpu,
- 			struct loaded_vmcs *buddy);
--void vmx_vcpu_load(struct kvm_vcpu *vcpu, int cpu);
- int allocate_vpid(void);
- void free_vpid(int vpid);
- void vmx_set_constant_host_state(struct vcpu_vmx *vmx);
+
 -- 
-2.26.0
-
+Best Regards,
+Chanwoo Choi
+Samsung Electronics
