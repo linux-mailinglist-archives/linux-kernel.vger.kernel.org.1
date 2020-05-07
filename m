@@ -2,92 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C1BB1C87AF
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 13:12:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DB021C889B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 13:43:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727772AbgEGLKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 07:10:04 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:41222 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726467AbgEGLKD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 07:10:03 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id B08031ABE3B00C9375E2;
-        Thu,  7 May 2020 19:10:01 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Thu, 7 May 2020
- 19:09:54 +0800
-From:   Jason Yan <yanaijie@huawei.com>
-To:     <jeffrey.t.kirsher@intel.com>, <davem@davemloft.net>,
-        <yanaijie@huawei.com>, <intel-wired-lan@lists.osuosl.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH net-next] igb: make igb_set_fc_watermarks() return void
-Date:   Thu, 7 May 2020 19:09:15 +0800
-Message-ID: <20200507110915.38349-1-yanaijie@huawei.com>
-X-Mailer: git-send-email 2.21.1
+        id S1726750AbgEGLnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 07:43:22 -0400
+Received: from elvis.franken.de ([193.175.24.41]:43576 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725914AbgEGLnV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 07:43:21 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jWevq-00081e-03; Thu, 07 May 2020 13:43:14 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 93899C0409; Thu,  7 May 2020 13:09:51 +0200 (CEST)
+Date:   Thu, 7 May 2020 13:09:51 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Sergey.Semin@baikalelectronics.ru
+Cc:     Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, Zhou Yanjie <zhouyanjie@zoho.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 11/20] mips: MAAR: Use more precise address mask
+Message-ID: <20200507110951.GD11616@alpha.franken.de>
+References: <20200306124807.3596F80307C2@mail.baikalelectronics.ru>
+ <20200506174238.15385-1-Sergey.Semin@baikalelectronics.ru>
+ <20200506174238.15385-12-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.28]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200506174238.15385-12-Sergey.Semin@baikalelectronics.ru>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This function always return 0 now, we can make it return void to
-simplify the code. This fixes the following coccicheck warning:
+On Wed, May 06, 2020 at 08:42:29PM +0300, Sergey.Semin@baikalelectronics.ru wrote:
+> From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> 
+> Indeed according to the P5600/P6000 manual the MAAR pair register
+> address field either takes [12:31] bits for 32-bits non-XPA systems
+> and [12:35] otherwise. In any case the current address mask is just
+> wrong for 64-bit and 32-bits XPA chips. So lets extend it to 39-bits
+> value. This shall cover the 64-bits architecture and systems with XPA
+> enabled, and won't cause any problem for non-XPA 32-bit systems, since
+> the value will be just truncated when written to the 32-bits register.
 
-drivers/net/ethernet/intel/igb/e1000_mac.c:728:5-12: Unneeded variable:
-"ret_val". Return "0" on line 751
+according to MIPS32 Priveleged Resoure Architecture Rev. 6.02
+ADDR spans from bit 12 to bit 55. So your patch fits only for P5600.
+Does the wider mask cause any problems ?
 
-Signed-off-by: Jason Yan <yanaijie@huawei.com>
----
- drivers/net/ethernet/intel/igb/e1000_mac.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+Thomas.
 
-diff --git a/drivers/net/ethernet/intel/igb/e1000_mac.c b/drivers/net/ethernet/intel/igb/e1000_mac.c
-index 79ee0a747260..3254737c07a3 100644
---- a/drivers/net/ethernet/intel/igb/e1000_mac.c
-+++ b/drivers/net/ethernet/intel/igb/e1000_mac.c
-@@ -12,7 +12,7 @@
- #include "igb.h"
- 
- static s32 igb_set_default_fc(struct e1000_hw *hw);
--static s32 igb_set_fc_watermarks(struct e1000_hw *hw);
-+static void igb_set_fc_watermarks(struct e1000_hw *hw);
- 
- /**
-  *  igb_get_bus_info_pcie - Get PCIe bus information
-@@ -687,7 +687,7 @@ s32 igb_setup_link(struct e1000_hw *hw)
- 
- 	wr32(E1000_FCTTV, hw->fc.pause_time);
- 
--	ret_val = igb_set_fc_watermarks(hw);
-+	igb_set_fc_watermarks(hw);
- 
- out:
- 
-@@ -723,9 +723,8 @@ void igb_config_collision_dist(struct e1000_hw *hw)
-  *  flow control XON frame transmission is enabled, then set XON frame
-  *  tansmission as well.
-  **/
--static s32 igb_set_fc_watermarks(struct e1000_hw *hw)
-+static void igb_set_fc_watermarks(struct e1000_hw *hw)
- {
--	s32 ret_val = 0;
- 	u32 fcrtl = 0, fcrth = 0;
- 
- 	/* Set the flow control receive threshold registers.  Normally,
-@@ -747,8 +746,6 @@ static s32 igb_set_fc_watermarks(struct e1000_hw *hw)
- 	}
- 	wr32(E1000_FCRTL, fcrtl);
- 	wr32(E1000_FCRTH, fcrth);
--
--	return ret_val;
- }
- 
- /**
 -- 
-2.21.1
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
