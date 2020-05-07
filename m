@@ -2,60 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C2F21C8070
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 05:20:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B9B51C8078
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 05:22:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726906AbgEGDUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 23:20:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57872 "EHLO
+        id S1726638AbgEGDWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 23:22:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725900AbgEGDUu (ORCPT
+        by vger.kernel.org with ESMTP id S1726320AbgEGDWT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 23:20:50 -0400
+        Wed, 6 May 2020 23:22:19 -0400
 Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD8BEC061A10
-        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 20:20:49 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id 188so4696865wmc.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 20:20:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2144EC061A10
+        for <linux-kernel@vger.kernel.org>; Wed,  6 May 2020 20:22:19 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id v8so6397133wma.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 May 2020 20:22:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=pDjmi4nDijjLhAo3pAeGchPyMMB2jhrTWFoR5lY155Q=;
-        b=BmuVDhBX37IfMkagW6Mr7BRshXN5szVExBMJvr0sd6SgAWNlVN8ep350rhWuVUdqxF
-         6KMuA33HRh+Xv5D3eo3eNBbCuZidgijDiZI1MiVJ/kFftxDyoBh0+ocmtWldFNY5a7br
-         ltmhc1SNqt1egXBTFhenT4oQZCj0HtacdC9FqFfJPU5EdYGt4gMe1ttM/p25/ml5XuU2
-         FeJq4ijnny9A9G3mnuO9XHZfxNoaSAKFySBPG+W+8LO/C28S+BvQIfDUW/1FRsCyxTXE
-         iDT18wSeR0daXs/5ow9Zmai7If4Z05ohaJhuobVMhj95CHthc5Ily9sP1akGH9tlEbXx
-         pJ7Q==
+        bh=kk0ta8CJJvK0axV2H19B2ID8CRr84BT0Md+eQfI6e4I=;
+        b=lZEvqhDsVUxY8Nmk6q2BTqJ/Mt6WMu3RQjTMotZz/9xzTGG3LPuhtCYs6hOSnbgZI0
+         RVgpQo7Y4gTJK9Bztt3RTbbdz8565pTtzOUGubDfeXBrkqEsXX7b6VeZwFr5BF3XEDbE
+         JhV28t+iZyxO34zVhZPu0T8ZVYntytXi0ws4ozQXB+PfMU3gLvU4bPHzfd8GYvkVZonW
+         ShlB1q0h7Cpuj8JjCh9Do1LotWLqUgcLNHFc2gxKNBfK/8IuPIVYwndjwc29ApwMZ3hw
+         IjwrTXACc7i4gaol3bPpPkO2ezHZ0x5eqXoeGIwZ7CFwZQjTcEwYIllGeQbjqIRGHzxl
+         HelA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=pDjmi4nDijjLhAo3pAeGchPyMMB2jhrTWFoR5lY155Q=;
-        b=UA7JwYtrd6rAfNtoeRD7fv01syC436tNy7iKf6gO/c0hgHsb98kx4bNtNnrcTYYEIe
-         GgPmbLmaBmeTQnOVAjDjoK1HWKDcCsv3LQmlOLmic7HeGix26gFvgS6uNR3EW8zeI7yN
-         p5++CBChhFkjMYX80K6fm2OUQclgG1LOpbUJvDt8y4W5WZktUoMHn8XkioYBUBho3zqA
-         G640l0nYZ++VMC7n++dmUzomnaslt2zi66hdp6491cAtA/jqZZOLxo0fybH8aJZi5VuK
-         QiLx/hGujWvOLkxWTrhGGzZObx4GGClQZgsmESSidIBnK7eePsxrfq5vveEqoTLMWLNn
-         74IQ==
-X-Gm-Message-State: AGi0PubLwH2lbN8X+Re27KSY6uIzhjPTsq4HxitiCPjvwri8mVVscQ6A
-        O2poF5wkC3XT9HeegIwVmTqsDmW1L846PdKY+lyLJg==
-X-Google-Smtp-Source: APiQypIM1h5NUYYyuda9BBAdMggq86SAn/7iO72jWVoi8e4r6SmTF8rKOn9WxDNPoCQ7ZgoRCjgyytyOXdpxI5CAESw=
-X-Received: by 2002:a1c:1fcf:: with SMTP id f198mr7844299wmf.16.1588821648002;
- Wed, 06 May 2020 20:20:48 -0700 (PDT)
+        bh=kk0ta8CJJvK0axV2H19B2ID8CRr84BT0Md+eQfI6e4I=;
+        b=hFP/ylySlovzedFKzRQ5iFfdBtg88tw7fpFVBIcP/J96PMaaZ13KHI1/8X5JCNnu+3
+         JtEo+hFxsQOI8w7/JBxOrHMDM2/WUpvKwMLfgHhQyMTD7wtX3MtMnO/CdAzUQEQysZJD
+         RYFaBjnzBul9gxL/969hiEPV9EiNX/DQfA6xFKTXaJQzAHecHbOO2qWI9wSNwECSsxNE
+         JNX4gE5ZdQ2w3opuyQuEGlz0pAvGEkPl2VhL9JJGHlZEwDh5MxSkgLBMuU4tazVEie/r
+         VcvgpnDt9pdjS4QYfuzFk/YiAHiHibVP15CBX8Vxqq9onrP+JDKmJZXR+hJVYmTGNFw1
+         XX0g==
+X-Gm-Message-State: AGi0PuYLfEmvithj81G5jg1CRWIpDsfkeb7gU7/RIHj728t2iIV4dNEf
+        ORw+uXdZx2N1GccTUNPyQSvQ4/wcaW2i5RetAcvYXQ==
+X-Google-Smtp-Source: APiQypJ6aSj9BKwlVBZ0o9gg8R+aiyiIYoBAFgLJpU/RXRGlmuWTFs+zjhfrm/JzN3rUGsKBSDtJSh5OA5wP1QTyWAg=
+X-Received: by 2002:a1c:a512:: with SMTP id o18mr7610574wme.138.1588821737544;
+ Wed, 06 May 2020 20:22:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200505102719.8071-1-anders.roxell@linaro.org>
-In-Reply-To: <20200505102719.8071-1-anders.roxell@linaro.org>
+References: <20200505102723.8120-1-anders.roxell@linaro.org>
+In-Reply-To: <20200505102723.8120-1-anders.roxell@linaro.org>
 From:   David Gow <davidgow@google.com>
-Date:   Thu, 7 May 2020 11:20:36 +0800
-Message-ID: <CABVgOS=dPEM4HavGy6s=Y0AhVw0qekfmTR8V549zRR+cB9rA0A@mail.gmail.com>
-Subject: Re: [PATCH v2 4/6] drivers: base: default KUNIT_* fragments to KUNIT_RUN_ALL
+Date:   Thu, 7 May 2020 11:22:06 +0800
+Message-ID: <CABVgOS==HEaYybfRTy4a9-hxGbLa_upE3WycVZ5PueOOvUOQuQ@mail.gmail.com>
+Subject: Re: [PATCH v2 5/6] fs: ext4: default KUNIT_* fragments to KUNIT_RUN_ALL
 To:     Anders Roxell <anders.roxell@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, adilger.kernel@dilger.ca,
         John Johansen <john.johansen@canonical.com>, jmorris@namei.org,
-        serge@hallyn.com, "Theodore Ts'o" <tytso@mit.edu>,
-        adilger.kernel@dilger.ca,
+        serge@hallyn.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Brendan Higgins <brendanhiggins@google.com>,
         =linux-kselftest@vger.kernel.org,
@@ -76,44 +75,33 @@ On Tue, May 5, 2020 at 6:27 PM Anders Roxell <anders.roxell@linaro.org> wrote:
 > Adding 'if !KUNIT_RUN_ALL' so individual test can be turned of if
 > someone wants that even though KUNIT_RUN_ALL is enabled.
 
-As with patch 2, minor typos here.
+As with the others, "test"->"tests", and "of"->"off".
 
+>
 > Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
 
 Reviewed-by: David Gow <davidgow@google.com>
 
 > ---
->  drivers/base/Kconfig      | 3 ++-
->  drivers/base/test/Kconfig | 3 ++-
->  2 files changed, 4 insertions(+), 2 deletions(-)
+>  fs/ext4/Kconfig | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 >
-> diff --git a/drivers/base/Kconfig b/drivers/base/Kconfig
-> index 5f0bc74d2409..c48e6e4ef367 100644
-> --- a/drivers/base/Kconfig
-> +++ b/drivers/base/Kconfig
-> @@ -149,8 +149,9 @@ config DEBUG_TEST_DRIVER_REMOVE
->           test this functionality.
+> diff --git a/fs/ext4/Kconfig b/fs/ext4/Kconfig
+> index 2a592e38cdfe..76785143259d 100644
+> --- a/fs/ext4/Kconfig
+> +++ b/fs/ext4/Kconfig
+> @@ -103,9 +103,10 @@ config EXT4_DEBUG
+>                 echo 1 > /sys/module/ext4/parameters/mballoc_debug
 >
->  config PM_QOS_KUNIT_TEST
-> -       bool "KUnit Test for PM QoS features"
-> +       bool "KUnit Test for PM QoS features" if !KUNIT_RUN_ALL
->         depends on KUNIT=y
+>  config EXT4_KUNIT_TESTS
+> -       tristate "KUnit tests for ext4"
+> +       tristate "KUnit tests for ext4" if !KUNIT_RUN_ALL
+>         select EXT4_FS
+>         depends on KUNIT
 > +       default KUNIT_RUN_ALL
+>         help
+>           This builds the ext4 KUnit tests.
 >
->  config HMEM_REPORTING
->         bool
-> diff --git a/drivers/base/test/Kconfig b/drivers/base/test/Kconfig
-> index 305c7751184a..0d662d689f6b 100644
-> --- a/drivers/base/test/Kconfig
-> +++ b/drivers/base/test/Kconfig
-> @@ -9,5 +9,6 @@ config TEST_ASYNC_DRIVER_PROBE
->
->           If unsure say N.
->  config KUNIT_DRIVER_PE_TEST
-> -       bool "KUnit Tests for property entry API"
-> +       bool "KUnit Tests for property entry API" if !KUNIT_RUN_ALL
->         depends on KUNIT=y
-> +       default KUNIT_RUN_ALL
 > --
 > 2.20.1
 >
