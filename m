@@ -2,84 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CFED1C80D3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 06:23:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 418ED1C8076
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 05:21:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726235AbgEGEX3 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 7 May 2020 00:23:29 -0400
-Received: from smtp.h3c.com ([221.12.31.13]:35769 "EHLO h3cspam01-ex.h3c.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725802AbgEGEX2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 00:23:28 -0400
-X-Greylist: delayed 3576 seconds by postgrey-1.27 at vger.kernel.org; Thu, 07 May 2020 00:23:27 EDT
-Received: from h3cspam01-ex.h3c.com (localhost [127.0.0.2] (may be forged))
-        by h3cspam01-ex.h3c.com with ESMTP id 0473Nop1042756
-        for <linux-kernel@vger.kernel.org>; Thu, 7 May 2020 11:23:50 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
-        by h3cspam01-ex.h3c.com with ESMTPS id 0473NcBg042361
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 7 May 2020 11:23:38 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from localhost.localdomain (10.99.212.201) by
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 7 May 2020 11:23:39 +0800
-From:   Xianting Tian <tian.xianting@h3c.com>
-To:     <mingo@redhat.com>, <peterz@infradead.org>,
-        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>,
-        <dietmar.eggemann@arm.com>, <rostedt@goodmis.org>,
-        <bsegall@google.com>, <mgorman@suse.de>
-CC:     <linux-kernel@vger.kernel.org>, <yubin@h3c.com>,
-        <tian.xianting@h3c.com>
-Subject: [PATCH] sched/fair: Fix typo in comment
-Date:   Thu, 7 May 2020 11:18:53 +0800
-Message-ID: <20200507031853.35994-1-tian.xianting@h3c.com>
-X-Mailer: git-send-email 2.17.1
+        id S1727100AbgEGDVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 23:21:31 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:3874 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726542AbgEGDVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 23:21:31 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 5F3E26763DC8128E49C9;
+        Thu,  7 May 2020 11:19:54 +0800 (CST)
+Received: from localhost (10.166.215.154) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Thu, 7 May 2020
+ 11:19:40 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <pierre-louis.bossart@linux.intel.com>, <lgirdwood@gmail.com>,
+        <ranjani.sridharan@linux.intel.com>,
+        <kai.vehmanen@linux.intel.com>, <daniel.baluta@nxp.com>,
+        <broonie@kernel.org>, <perex@perex.cz>, <tiwai@suse.com>
+CC:     <sound-open-firmware@alsa-project.org>,
+        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] ASoC: SOF: Intel: Mark cht_debugfs as __maybe_unused
+Date:   Thu, 7 May 2020 11:19:11 +0800
+Message-ID: <20200507031911.38644-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.99.212.201]
-X-ClientProxiedBy: BJSMTP02-EX.srv.huawei-3com.com (10.63.20.133) To
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66)
-Content-Transfer-Encoding: 8BIT
-X-DNSRBL: 
-X-MAIL: h3cspam01-ex.h3c.com 0473NcBg042361
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.166.215.154]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-check_prempt_curr() -> check_preempt_curr()
+When CONFIG_SND_SOC_SOF_BAYTRAIL is not set, gcc warns:
 
-Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+sound/soc/sof/intel/byt.c:85:41: warning: â€˜cht_debugfsâ€™ defined but not used [-Wunused-const-variable=]
+ static const struct snd_sof_debugfs_map cht_debugfs[] = {
+                                         ^~~~~~~~~~~
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- kernel/sched/fair.c | 2 +-
+ sound/soc/sof/intel/byt.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 02f323b85..458ab5521 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6858,7 +6858,7 @@ static void check_preempt_wakeup(struct rq *rq, struct task_struct *p, int wake_
-
-        /*
-         * This is possible from callers such as attach_tasks(), in which we
--        * unconditionally check_prempt_curr() after an enqueue (which may have
-+        * unconditionally check_preempt_curr() after an enqueue (which may have
-         * lead to a throttle).  This both saves work and prevents false
-         * next-buddy nomination below.
-         */
---
+diff --git a/sound/soc/sof/intel/byt.c b/sound/soc/sof/intel/byt.c
+index f872bb1f2682..1c75e4220e9d 100644
+--- a/sound/soc/sof/intel/byt.c
++++ b/sound/soc/sof/intel/byt.c
+@@ -82,7 +82,7 @@ static const struct snd_sof_debugfs_map byt_debugfs[] = {
+ 	 SOF_DEBUGFS_ACCESS_ALWAYS},
+ };
+ 
+-static const struct snd_sof_debugfs_map cht_debugfs[] = {
++static const struct snd_sof_debugfs_map __maybe_unused cht_debugfs[] = {
+ 	{"dmac0", BYT_DSP_BAR, DMAC0_OFFSET, DMAC_SIZE,
+ 	 SOF_DEBUGFS_ACCESS_ALWAYS},
+ 	{"dmac1", BYT_DSP_BAR,  DMAC1_OFFSET, DMAC_SIZE,
+-- 
 2.17.1
 
--------------------------------------------------------------------------------------------------------------------------------------
-±¾ÓÊ¼þ¼°Æä¸½¼þº¬ÓÐÐÂ»ªÈý¼¯ÍÅµÄ±£ÃÜÐÅÏ¢£¬½öÏÞÓÚ·¢ËÍ¸øÉÏÃæµØÖ·ÖÐÁÐ³ö
-µÄ¸öÈË»òÈº×é¡£½ûÖ¹ÈÎºÎÆäËûÈËÒÔÈÎºÎÐÎÊ½Ê¹ÓÃ£¨°üÀ¨µ«²»ÏÞÓÚÈ«²¿»ò²¿·ÖµØÐ¹Â¶¡¢¸´ÖÆ¡¢
-»òÉ¢·¢£©±¾ÓÊ¼þÖÐµÄÐÅÏ¢¡£Èç¹ûÄú´íÊÕÁË±¾ÓÊ¼þ£¬ÇëÄúÁ¢¼´µç»°»òÓÊ¼þÍ¨Öª·¢¼þÈË²¢É¾³ý±¾
-ÓÊ¼þ£¡
-This e-mail and its attachments contain confidential information from New H3C, which is
-intended only for the person or entity whose address is listed above. Any use of the
-information contained herein in any way (including, but not limited to, total or partial
-disclosure, reproduction, or dissemination) by persons other than the intended
-recipient(s) is prohibited. If you receive this e-mail in error, please notify the sender
-by phone or email immediately and delete it!
+
