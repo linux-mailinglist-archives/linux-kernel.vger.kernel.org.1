@@ -2,172 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 497541C8BE5
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 15:17:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74DF61C8BDC
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 15:16:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725948AbgEGNRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 09:17:39 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:55744 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725879AbgEGNRi (ORCPT
+        id S1726531AbgEGNQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 09:16:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725948AbgEGNQn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 09:17:38 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 047D9FjA072838;
-        Thu, 7 May 2020 13:16:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=fUbGWLFS+jWKkk/BdI0Cv8l5aoGUDqGExKPATn7zLRM=;
- b=jmBKqgmlhAFGfYi4Z6xdQ35U3FsQGU0hPSeP5Rs5V5nPF9vY+1aa2quInKl7/+imF4w5
- zbKh/6bjg+JNvHZnRtp+GHy/oDoAkqbKoXSz1uL+bhivLkELVX2VW0RPCdY8rzZPIcwf
- joJ62mtbveiGA/aU5SMTmVuOgMnL1q7Uq6YT4QEKADKOQWhDRfr9aIo7Sr7fP44EibNc
- ny6I3HFkeSgMVRCGrq/YeXbBJ7meEgQ5CWJpf4MJX2tcCAVjCX0V0z/47GApjH1dRy7m
- WPEbN7ocxcKr9+wx8ORKQHlXGmTI2hTYdOolbVovbAyUkfW055ZWFNDpsKcK9E1bdzSp ow== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 30usgq74ra-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 07 May 2020 13:16:42 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 047D7ojp011987;
-        Thu, 7 May 2020 13:16:41 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 30t1rakxdx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 07 May 2020 13:16:41 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 047DGbEt028126;
-        Thu, 7 May 2020 13:16:37 GMT
-Received: from linux-1.home (/92.157.36.49)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 07 May 2020 06:16:37 -0700
-Subject: Re: [patch V4 part 2 02/18] x86/entry/32: Move non entry code into
- .text section
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>
-References: <20200505134112.272268764@linutronix.de>
- <20200505134340.320164650@linutronix.de>
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-Message-ID: <6e8a7549-9c0a-f863-fc7d-fcbfcb642bc4@oracle.com>
-Date:   Thu, 7 May 2020 15:15:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Thu, 7 May 2020 09:16:43 -0400
+Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E949C05BD43
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 06:16:41 -0700 (PDT)
+Received: by mail-vk1-xa43.google.com with SMTP id f7so1472059vkl.6
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 06:16:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aaEpYa065ypq35Huryl6ZF1r6VEE/Q7MGgbAu3JxSwc=;
+        b=ThIIrlsUJAwhILFtB9W6ItdrMa51xrL79/VcpF9V+fVwinQVuierFP9YGkui0E51AG
+         MNBHQbKmN8BblzRTnkoChsCjmAGWLXCniUBKIAiC08+XNh4ukMUOQ1VUz7NJ1nz8ULK6
+         0OuGzBWj1TUygr93F+Ts39jQIWDbwUCA0oigDafhNXTHG4xua/Jo4ajv/YJmQ9LkjFyM
+         vKrL/YLtz2Qeo1m3Zjj8B0lOkUHTVEdU5ysKAk31NZjrv3Fa60YrxPjDfivsG5OXII/p
+         CkJibs3Okh5v1+t8YP7PffYMi2hhnu/osVW8YoMQTbZEEsxTGqSFSBErV7tv7KRB7dIA
+         ml0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aaEpYa065ypq35Huryl6ZF1r6VEE/Q7MGgbAu3JxSwc=;
+        b=GiiUxiu6k829hDCjcuX8KL2UsWNf9/qJEc/UYzdTA68pkOsY8ofLCtI6FSYhNkH0g4
+         K5sD+2Wl1+85ItUGYFaneY2dEUV+d+cdoQUY0MiJvl8dsbm2mkG6G6l+KpLSTVDNfAa6
+         7TZ4CjrZH6ZJ44gY/mXEnscBUNUADJMsMVsBVFiKIxuYgkf7xKQrQSwHU3lx9DHssj8l
+         JU4t1Z+Cacr8l3nys/ir5kjIazWEjikIuMnmuUBUCx/CacxAcIvXH4+zNlFYfnDQRFrJ
+         PHzIlr8fyfbzDIE8n1dP1h2CAPopbvUgUiZcQ2cuoXKgkSW41iZ679H4hMxdOYYxL5cf
+         DBdQ==
+X-Gm-Message-State: AGi0PuZpk7oEpwZbBx47yBXrr6rdXFi0BZworJU0yY9yPv3OBqU0O1P8
+        j/0N1GrVGXO08jGxF7tHwijK+KzuCEKTRRFD4MNlMg==
+X-Google-Smtp-Source: APiQypJ4tIZJqJGnORdByIJMHksJoo4U9LRFZ7eBQfYTSIzwh1Y7Uf/Jj5ZiYmcJvB//fjCenraX3JJb7xbs7uWkt3k=
+X-Received: by 2002:a1f:4845:: with SMTP id v66mr1168633vka.43.1588857400648;
+ Thu, 07 May 2020 06:16:40 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200505134340.320164650@linutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9613 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 suspectscore=0
- spamscore=0 mlxlogscore=999 malwarescore=0 phishscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2005070107
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9613 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxscore=0
- priorityscore=1501 lowpriorityscore=0 malwarescore=0 clxscore=1015
- mlxlogscore=999 spamscore=0 adultscore=0 bulkscore=0 phishscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005070107
+References: <1588854050-19161-1-git-send-email-zou_wei@huawei.com>
+In-Reply-To: <1588854050-19161-1-git-send-email-zou_wei@huawei.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 7 May 2020 15:16:04 +0200
+Message-ID: <CAPDyKFosTSvhKWb51XmNy5R6ynnj2B+k2qrOJGU4Cdkxb7A3-A@mail.gmail.com>
+Subject: Re: [PATCH -next] mmc: sdhci-pci-gli: Make sdhci_pci_gli_resume static
+To:     Samuel Zou <zou_wei@huawei.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 7 May 2020 at 14:14, Samuel Zou <zou_wei@huawei.com> wrote:
+>
+> Fix the following sparse warning:
+>
+> drivers/mmc/host/sdhci-pci-gli.c:343:5: warning:
+> symbol 'sdhci_pci_gli_resume' was not declared. Should it be static?
+>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Samuel Zou <zou_wei@huawei.com>
 
-On 5/5/20 3:41 PM, Thomas Gleixner wrote:
-> All ASM code which is not part of the entry functionality can move out into
-> the .text section. No reason to keep it in the non-instrumentable entry
-> section.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+This actually fixes a commit that I on my fixes branch, which is also
+targeted for stable.
+
+Therefore, I decided to squash this into the offending commit and
+adding your sob tag, with a note about what you fixed.
+
+Kind regards
+Uffe
+
 > ---
->   arch/x86/entry/entry_32.S |   11 ++++++++++-
->   1 file changed, 10 insertions(+), 1 deletion(-)
-> 
-> --- a/arch/x86/entry/entry_32.S
-> +++ b/arch/x86/entry/entry_32.S
-> @@ -729,7 +729,8 @@
->   /*
->    * %eax: prev task
->    * %edx: next task
-> - */
-> +*/
-
-Misaligned comment end, this line shouldn't change.
-
-alex.
-
-> +.pushsection .text, "ax"
->   SYM_CODE_START(__switch_to_asm)
->   	/*
->   	 * Save callee-saved registers
-> @@ -776,6 +777,7 @@ SYM_CODE_START(__switch_to_asm)
->   
->   	jmp	__switch_to
->   SYM_CODE_END(__switch_to_asm)
-> +.popsection
->   
->   /*
->    * The unwinder expects the last frame on the stack to always be at the same
-> @@ -784,6 +786,7 @@ SYM_CODE_END(__switch_to_asm)
->    * asmlinkage function so its argument has to be pushed on the stack.  This
->    * wrapper creates a proper "end of stack" frame header before the call.
->    */
-> +.pushsection .text, "ax"
->   SYM_FUNC_START(schedule_tail_wrapper)
->   	FRAME_BEGIN
->   
-> @@ -794,6 +797,8 @@ SYM_FUNC_START(schedule_tail_wrapper)
->   	FRAME_END
->   	ret
->   SYM_FUNC_END(schedule_tail_wrapper)
-> +.popsection
-> +
->   /*
->    * A newly forked process directly context switches into this address.
->    *
-> @@ -801,6 +806,7 @@ SYM_FUNC_END(schedule_tail_wrapper)
->    * ebx: kernel thread func (NULL for user thread)
->    * edi: kernel thread arg
->    */
-> +.pushsection .text, "ax"
->   SYM_CODE_START(ret_from_fork)
->   	call	schedule_tail_wrapper
->   
-> @@ -825,6 +831,7 @@ SYM_CODE_START(ret_from_fork)
->   	movl	$0, PT_EAX(%esp)
->   	jmp	2b
->   SYM_CODE_END(ret_from_fork)
-> +.popsection
->   
->   /*
->    * Return to user mode is not as complex as all this looks,
-> @@ -1693,6 +1700,7 @@ SYM_CODE_START(general_protection)
->   	jmp	common_exception
->   SYM_CODE_END(general_protection)
->   
-> +.pushsection .text, "ax"
->   SYM_CODE_START(rewind_stack_do_exit)
->   	/* Prevent any naive code from trying to unwind to our caller. */
->   	xorl	%ebp, %ebp
-> @@ -1703,3 +1711,4 @@ SYM_CODE_START(rewind_stack_do_exit)
->   	call	do_exit
->   1:	jmp 1b
->   SYM_CODE_END(rewind_stack_do_exit)
-> +.popsection
-> 
+>  drivers/mmc/host/sdhci-pci-gli.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
+> index bdb6336..fd76aa6 100644
+> --- a/drivers/mmc/host/sdhci-pci-gli.c
+> +++ b/drivers/mmc/host/sdhci-pci-gli.c
+> @@ -340,7 +340,7 @@ static u32 sdhci_gl9750_readl(struct sdhci_host *host, int reg)
+>  }
+>
+>  #ifdef CONFIG_PM_SLEEP
+> -int sdhci_pci_gli_resume(struct sdhci_pci_chip *chip)
+> +static int sdhci_pci_gli_resume(struct sdhci_pci_chip *chip)
+>  {
+>         struct sdhci_pci_slot *slot = chip->slots[0];
+>
+> --
+> 2.6.2
+>
