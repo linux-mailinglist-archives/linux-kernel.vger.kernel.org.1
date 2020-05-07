@@ -2,211 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACD9A1C8075
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 05:20:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6E051C806F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 05:20:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727051AbgEGDU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 May 2020 23:20:56 -0400
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:63080 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726618AbgEGDUx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 May 2020 23:20:53 -0400
-Received: from mail-vk1-f180.google.com (mail-vk1-f180.google.com [209.85.221.180]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 0473KYvD014344;
-        Thu, 7 May 2020 12:20:34 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 0473KYvD014344
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1588821635;
-        bh=qQyluZ7mOy/m7UtR6KHo32hLJ8zj6s7Wbis5gOyL850=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=obwaIpbVfNHmlGM+/K3cut/ZFJ3DDIma/vMgc1y6FY+bfiZMsVJEcf+tqZ2K5bwnG
-         rESGRpG/mu+dg7LFTumeAGroNpVNEmWwkGlJav63kEO9T96Ujez237fqKZ46Dn94OJ
-         ZV1Pk9jw7MX6w03zdZ1wTNu5glOFh8aTx/qOvVrAidOQUdF+Dz1MHGPr0OtE/OEe4J
-         MjkNVx/DbdxiRTjeonFPIe7/dLdmovRUZkzN/iFbM3HAOM30gkZfiGWntXvtD0n4av
-         7LW+/ROtvoJiJu24P3NDA0YIrOVdt/vlyKWw3gUljrALc1RO7KQjn//25dBY0RzFCI
-         r3RgGDnSCxafA==
-X-Nifty-SrcIP: [209.85.221.180]
-Received: by mail-vk1-f180.google.com with SMTP id b14so1114435vkk.10;
-        Wed, 06 May 2020 20:20:34 -0700 (PDT)
-X-Gm-Message-State: AGi0PuZXmOK8vQhasFCgv14DCL1Q37rDazXTyFMwWXYh83joIyJ0fJNU
-        ++YixiQic2L7sEaAZxyR8URN3Ubke9TXIz0w0eQ=
-X-Google-Smtp-Source: APiQypKPWT1VyEpw8SXXLzadbs0W/IljladDXCbCPO4LoRyZSuErcwr4PH11Rt74yBLMD4rLrQL94ROkDgp9VchjKi8=
-X-Received: by 2002:a1f:2a13:: with SMTP id q19mr9970940vkq.73.1588821633138;
- Wed, 06 May 2020 20:20:33 -0700 (PDT)
+        id S1726809AbgEGDUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 May 2020 23:20:21 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:33291 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725966AbgEGDUU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 May 2020 23:20:20 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49Hdxr2VhBz9sRf;
+        Thu,  7 May 2020 13:20:16 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1588821618;
+        bh=E36HXKogWcq48J39JyUpLXPeuF3K69/Cf5yAaSXQREE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ta5CPKxGLLq4MNL6Y9KGaLm2SjYGXTbStvA4ukTzv4MiD2FEVpTX5T5ULI+bnjAwn
+         FcajaIWRIIhCxumvqfjsEjjTC19FpYyu9vTWtTNwtUNLKGD/ai6c151HwJTinTW77Q
+         uU7LQ8sY6myuVFOuXQgdF0//BInyZtHirQetRThDbJ50sd12om7WTAiJEwySnAt8RG
+         pIKpaVNwZ8IleuBArZfCa6oFQnWjo5kWSvpP8d/J1Tglu0aC4xiXkE+bMr3NIVsp4u
+         Fp7uuOylBi9Kjz7h4aMZ+6cgKz7FlISjurcyLUj0vF9KVVCOv8+PHR2WVOA3CmUBFp
+         NgAh5dj6mNaxA==
+Date:   Thu, 7 May 2020 13:20:14 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Qian Cai <cai@lca.pw>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Subject: Re: [PATCH] slub: limit count of partial slabs scanned to gather
+ statistics
+Message-ID: <20200507132014.1ac14bf5@canb.auug.org.au>
+In-Reply-To: <39E953F3-BBA4-43BF-AA0D-B1BED21F9A4D@lca.pw>
+References: <158860845968.33385.4165926113074799048.stgit@buzz>
+        <5BAA0D82-555E-4E72-966A-A147472271D0@lca.pw>
+        <39E953F3-BBA4-43BF-AA0D-B1BED21F9A4D@lca.pw>
 MIME-Version: 1.0
-References: <20200503001141.9647-1-changbin.du@gmail.com>
-In-Reply-To: <20200503001141.9647-1-changbin.du@gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 7 May 2020 12:19:57 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATBt1NxRSWiv8Ab-pKBRemp43WUs96KWELTf+vFq_VPTA@mail.gmail.com>
-Message-ID: <CAK7LNATBt1NxRSWiv8Ab-pKBRemp43WUs96KWELTf+vFq_VPTA@mail.gmail.com>
-Subject: Re: [PATCH v4] streamline_config.pl: add LMC_KEEP to preserve some kconfigs
-To:     Changbin Du <changbin.du@gmail.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/cLs680_ssQ0hh7TDv_eZLiW";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 3, 2020 at 9:11 AM Changbin Du <changbin.du@gmail.com> wrote:
+--Sig_/cLs680_ssQ0hh7TDv_eZLiW
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi Qian,
+
+On Wed, 6 May 2020 23:01:54 -0400 Qian Cai <cai@lca.pw> wrote:
 >
-> Sometimes it is useful to preserve batches of configs when making
-> localmodconfig. For example, I usually don't want any usb and fs
-> modules to be disabled. Now we can do it by:
->
->  $ make LMC_KEEP="drivers/usb;fs" localmodconfig
->
-> Signed-off-by: Changbin Du <changbin.du@gmail.com>
->
-> ---
-> v4: fix typo.
-> v3: rename LOCALMODCONFIG_PRESERVE to shorter LMC_KEEP.
-> v2: fix typo in documentation. (Randy Dunlap)
-> ---
+> Andrew, Stephen, can you remove this patch from linux-next?
 
+Removed from linux-next.
 
-Personally, I do not mind the long LOCALMODCONFIG_PRESERVE,
-but this tends to be bike-sheding.
-I do not have a strong opinion.
+--=20
+Cheers,
+Stephen Rothwell
 
+--Sig_/cLs680_ssQ0hh7TDv_eZLiW
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
->  Documentation/admin-guide/README.rst |  8 +++++++-
->  scripts/kconfig/Makefile             |  1 +
->  scripts/kconfig/streamline_config.pl | 23 +++++++++++++++++++++++
->  3 files changed, 31 insertions(+), 1 deletion(-)
->
-> diff --git a/Documentation/admin-guide/README.rst b/Documentation/admin-guide/README.rst
-> index cc6151fc0845..1371deab8bc7 100644
-> --- a/Documentation/admin-guide/README.rst
-> +++ b/Documentation/admin-guide/README.rst
-> @@ -209,10 +209,16 @@ Configuring the kernel
->                             store the lsmod of that machine into a file
->                             and pass it in as a LSMOD parameter.
->
-> +                           Also, you can preserve modules in certain folders
-> +                           or kconfig files by specifying their paths in
-> +                           parameter LMC_KEEP.
-> +
->                     target$ lsmod > /tmp/mylsmod
->                     target$ scp /tmp/mylsmod host:/tmp
->
-> -                   host$ make LSMOD=/tmp/mylsmod localmodconfig
-> +                   host$ make LSMOD=/tmp/mylsmod \
-> +                           LMC_KEEP="drivers/usb;drivers/gpu;fs" \
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl6zfm4ACgkQAVBC80lX
+0Gwrggf+JKjb9eq0UPd4rQ8eCnRiUPlXsaIKa6SR+FW3CxUPU6zXpb57aIyOb7yW
+j0S6aoOiSedibXajq7hFnyGwXCaUr/zoxSLDHd0uLvJKeW0WJRm3fnzPVImvaNov
+WoCHxdn0MSX8oV+PzEHaxleOZDocyTlaYwdN1F61swa3QZA1hGVji2l3qjepOs3U
+UnZSeAriGQp5/FKRQ5Qj1dEaIJHMdkKXdZRXRx2OdC0XWgD+rKdcRLhocGy+9/Rm
+EVTqW7ozQV6uIhwdaqY2W1HF+9BfSbehPOoLPfymkQpC1cHwIajNqIM9l2pFLUkW
+y7zvv7suNN+OPKBYbKXWU6nSW61K2w==
+=zFpw
+-----END PGP SIGNATURE-----
 
-This might be another bike-sheding item, but
-can you use a space for the delimiter?
-
-
-LMC_KEEP="drivers/usb drivers/gpu fs"
-
-If you pass multiple directories,
-you will need to surround them with double-quotes.
-
-
-
-
-> +                           localmodconfig
->
->                             The above also works when cross compiling.
->
-> diff --git a/scripts/kconfig/Makefile b/scripts/kconfig/Makefile
-> index c9d0a4a8efb3..e0abbf5805f5 100644
-> --- a/scripts/kconfig/Makefile
-> +++ b/scripts/kconfig/Makefile
-> @@ -123,6 +123,7 @@ help:
->         @echo  '  gconfig         - Update current config utilising a GTK+ based front-end'
->         @echo  '  oldconfig       - Update current config utilising a provided .config as base'
->         @echo  '  localmodconfig  - Update current config disabling modules not loaded'
-> +       @echo  '                    except those preserved by LMC_KEEP environment variable'
->         @echo  '  localyesconfig  - Update current config converting local mods to core'
->         @echo  '  defconfig       - New config with default from ARCH supplied defconfig'
->         @echo  '  savedefconfig   - Save current config as ./defconfig (minimal config)'
-> diff --git a/scripts/kconfig/streamline_config.pl b/scripts/kconfig/streamline_config.pl
-> index e2f8504f5a2d..d26543a807c9 100755
-> --- a/scripts/kconfig/streamline_config.pl
-> +++ b/scripts/kconfig/streamline_config.pl
-> @@ -143,6 +143,7 @@ my %depends;
->  my %selects;
->  my %prompts;
->  my %objects;
-> +my %config2kfile;
->  my $var;
->  my $iflevel = 0;
->  my @ifdeps;
-> @@ -201,6 +202,7 @@ sub read_kconfig {
->         if (/^\s*(menu)?config\s+(\S+)\s*$/) {
->             $state = "NEW";
->             $config = $2;
-> +           $config2kfile{"CONFIG_$config"} = $kconfig;
->
->             # Add depends for 'if' nesting
->             for (my $i = 0; $i < $iflevel; $i++) {
-> @@ -592,6 +594,22 @@ while ($repeat) {
->
->  my %setconfigs;
->
-> +my @preserved_kconfigs;
-> +@preserved_kconfigs = split(/;/,$ENV{LMC_KEEP}) if (defined($ENV{LMC_KEEP}));
-
-Maybe, you can do 'my' declaration and the assignment
-in a single line?
-
-Can you drop the 'if ...' conditional?
-
-
-Does this work for you?
-
-my @preserved_kconfigs = split(/;/,$ENV{LMC_KEEP});
-
-
-
-
-
-
-
-> +
-> +sub in_preserved_kconfigs {
-> +    my $kconfig = $config2kfile{$_[0]};
-> +    if (!defined($kconfig)) {
-> +        return 0;
-> +    }
-> +    foreach my $excl (@preserved_kconfigs) {
-> +        if($kconfig =~ /^$excl/) {
-> +            return 1;
-> +        }
-> +    }
-> +    return 0;
-> +}
-> +
->  # Finally, read the .config file and turn off any module enabled that
->  # we could not find a reason to keep enabled.
->  foreach my $line (@config_file) {
-> @@ -644,6 +662,11 @@ foreach my $line (@config_file) {
->      }
->
->      if (/^(CONFIG.*)=(m|y)/) {
-> +        if (in_preserved_kconfigs($1)) {
-> +            dprint "Preserve config $1";
-> +            print;
-> +            next;
-> +        }
->         if (defined($configs{$1})) {
->             if ($localyesconfig) {
->                 $setconfigs{$1} = 'y';
-> --
-> 2.25.1
->
-
-
--- 
-Best Regards
-Masahiro Yamada
+--Sig_/cLs680_ssQ0hh7TDv_eZLiW--
