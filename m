@@ -2,93 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 900301C9975
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:40:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76E4C1C9988
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 May 2020 20:45:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728304AbgEGSkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 14:40:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42622 "EHLO mail.kernel.org"
+        id S1728244AbgEGSph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 14:45:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46490 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726320AbgEGSkL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 14:40:11 -0400
-Received: from embeddedor (unknown [189.207.59.248])
+        id S1726367AbgEGSph (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 14:45:37 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9D1C2208E4;
-        Thu,  7 May 2020 18:40:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588876810;
-        bh=xnkqkpirpIiR0PHAXndz4NhIzmy+AhXuFOqyTl8CJrI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=2TLmU3Gw2ZuoH351KHU3IucM4SpM4h9mbDARicptjCTO/2Yd2oZYyBWLEfJpIzzQb
-         seVOB3NajwFIRo9ZTtu3s+fTxKeRR8duRO5jntyMxZipeoe7/qxdo3xNa667+trK6/
-         O1Y+Gc0GNVbh17S3kqmAtXZtDI6MG1bg4kLRrx3Y=
-Date:   Thu, 7 May 2020 13:44:37 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Russell King <linux@armlinux.org.uk>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: tegra: Replace zero-length array with flexible-array
-Message-ID: <20200507184437.GA13468@embeddedor>
+        by mail.kernel.org (Postfix) with ESMTPSA id 92ED520870;
+        Thu,  7 May 2020 18:45:35 +0000 (UTC)
+Date:   Thu, 7 May 2020 14:45:34 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        Jason Yan <yanaijie@huawei.com>, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        bsegall@google.com, mgorman@suse.de, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sched/fair: Return true,false in
+ voluntary_active_balance()
+Message-ID: <20200507144534.09abd685@gandalf.local.home>
+In-Reply-To: <f0e6f50e910238366b1d8f398c91d3066baac7cf.camel@perches.com>
+References: <20200507110625.37254-1-yanaijie@huawei.com>
+        <jhjpnbg6lkf.mognet@arm.com>
+        <20200507132828.1af39b80@gandalf.local.home>
+        <20200507133024.18dbe349@gandalf.local.home>
+        <f0e6f50e910238366b1d8f398c91d3066baac7cf.camel@perches.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current codebase makes use of the zero-length array language
-extension to the C90 standard, but the preferred mechanism to declare
-variable-length types such as these ones is a flexible array member[1][2],
-introduced in C99:
+On Thu, 07 May 2020 10:55:33 -0700
+Joe Perches <joe@perches.com> wrote:
 
-struct foo {
-        int stuff;
-        struct boo array[];
-};
+> > If anything, we can teach people to try to understand their fixes, to see
+> > if something is really a fix or not. Blindly accepting changes like this,
+> > is no different than blindly submitting patches because some tool says its
+> > an issue.  
+> 
+> <shrug>
+> 
+> Most people seem to prefer bool returns with apparent bool constants
+> even though true and false are enumerator constants (int) of 1 and 0
+> in the kernel.
+> 
+> from include/linux/stddef.h:
+> 
+> enum {
+> 	false	= 0,
+> 	true	= 1
+> };
 
-By making use of the mechanism above, we will get a compiler warning
-in case the flexible array does not occur last in the structure, which
-will help us prevent some kind of undefined behavior bugs from being
-inadvertently introduced[3] to the codebase from now on.
+Sure, do that for new code, but we don't need these patches popping up for
+current code. That is, it's a preference not a bug.
 
-Also, notice that, dynamic memory allocations won't be affected by
-this change:
-
-"Flexible array members have incomplete type, and so the sizeof operator
-may not be applied. As a quirk of the original implementation of
-zero-length arrays, sizeof evaluates to zero."[1]
-
-sizeof(flexible-array-member) triggers a warning because flexible array
-members have incomplete type[1]. There are some instances of code in
-which the sizeof operator is being incorrectly/erroneously applied to
-zero-length arrays and the result is zero. Such instances may be hiding
-some bugs. So, this work (flexible-array member conversions) will also
-help to get completely rid of those sorts of issues.
-
-This issue was found with the help of Coccinelle.
-
-[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-[2] https://github.com/KSPP/linux/issues/21
-[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/amba/tegra-ahb.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/amba/tegra-ahb.c b/drivers/amba/tegra-ahb.c
-index 57d3b2e2d007..0b2c20fddb7c 100644
---- a/drivers/amba/tegra-ahb.c
-+++ b/drivers/amba/tegra-ahb.c
-@@ -120,7 +120,7 @@ static const u32 tegra_ahb_gizmo[] = {
- struct tegra_ahb {
- 	void __iomem	*regs;
- 	struct device	*dev;
--	u32		ctx[0];
-+	u32		ctx[];
- };
- 
- static inline u32 gizmo_readl(struct tegra_ahb *ahb, u32 offset)
-
+-- Steve
