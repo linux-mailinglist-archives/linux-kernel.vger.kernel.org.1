@@ -2,89 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A3601C9E24
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 00:03:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F261E1C9E35
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 00:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726542AbgEGWDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 18:03:44 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:60275 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726464AbgEGWDo (ORCPT
+        id S1727100AbgEGWGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 18:06:35 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:44227 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726636AbgEGWGe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 18:03:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588889023;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aspV1wJ37EFxEstXvcVEniumgTmeoY91YcA15b/xS8E=;
-        b=LU7nxNbDItAGiU4CfK7K3bjKk9iTvV3dqSVhnYGOu8XIZi/F9jOjpGIsuLuDzJwEJTKzQA
-        N7/1TSrjcII7wRi0zoMCprOXozREsBM9l6ifR0jDmVz4impPV9FLKPiYwCVYs1/eeKqazF
-        gxIq7tcouwJZTszbPPkoTKYzxlh1r6g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-474-LL_F_fyvPrOgRP04awRMaA-1; Thu, 07 May 2020 18:03:39 -0400
-X-MC-Unique: LL_F_fyvPrOgRP04awRMaA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 63581180081D;
-        Thu,  7 May 2020 22:03:38 +0000 (UTC)
-Received: from x1.home (ovpn-113-95.phx2.redhat.com [10.3.113.95])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AED8B579AD;
-        Thu,  7 May 2020 22:03:34 +0000 (UTC)
-Date:   Thu, 7 May 2020 16:03:34 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cohuck@redhat.com, jgg@ziepe.ca
-Subject: Re: [PATCH v2 2/3] vfio-pci: Fault mmaps to enable vma tracking
-Message-ID: <20200507160334.4c029518@x1.home>
-In-Reply-To: <20200507214744.GP228260@xz-x1>
-References: <158871401328.15589.17598154478222071285.stgit@gimli.home>
-        <158871569380.15589.16950418949340311053.stgit@gimli.home>
-        <20200507214744.GP228260@xz-x1>
-Organization: Red Hat
+        Thu, 7 May 2020 18:06:34 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1jWodU-000300-A9; Thu, 07 May 2020 22:04:56 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Corentin Chary <corentin.chary@gmail.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        acpi4asus-user@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] platform/x86: asus_wmi: remove redundant initialization of variable status
+Date:   Thu,  7 May 2020 23:04:55 +0100
+Message-Id: <20200507220455.66681-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 May 2020 17:47:44 -0400
-Peter Xu <peterx@redhat.com> wrote:
+From: Colin Ian King <colin.king@canonical.com>
 
-> Hi, Alex,
-> 
-> On Tue, May 05, 2020 at 03:54:53PM -0600, Alex Williamson wrote:
-> > +/*
-> > + * Zap mmaps on open so that we can fault them in on access and therefore
-> > + * our vma_list only tracks mappings accessed since last zap.
-> > + */
-> > +static void vfio_pci_mmap_open(struct vm_area_struct *vma)
-> > +{
-> > +	zap_vma_ptes(vma, vma->vm_start, vma->vm_end - vma->vm_start);  
-> 
-> A pure question: is this only a safety-belt or it is required in some known
-> scenarios?
+The variable status is being initialized with a value that is never read
+and it is being updated later with a new value. The initialization is
+redundant and can be removed.
 
-It's not required.  I originally did this so that I'm not allocating a
-vma_list entry in a path where I can't return error, but as Jason
-suggested I could zap here only in the case that I do encounter that
-allocation fault.  However I still like consolidating the vma_list
-handling to the vm_ops .fault and .close callbacks and potentially we
-reduce the zap latency by keeping the vma_list to actual users, which
-we'll get to eventually anyway in the VM case as memory BARs are sized
-and assigned addresses.
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/platform/x86/asus-wmi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> In all cases:
-> 
-> Reviewed-by: Peter Xu <peterx@redhat.com>
-
-Thanks!
-Alex
+diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
+index bb7c529d7d16..1909d728a536 100644
+--- a/drivers/platform/x86/asus-wmi.c
++++ b/drivers/platform/x86/asus-wmi.c
+@@ -309,7 +309,7 @@ static int asus_wmi_evaluate_method_agfn(const struct acpi_buffer args)
+ 	struct acpi_buffer input;
+ 	u64 phys_addr;
+ 	u32 retval;
+-	u32 status = -1;
++	u32 status;
+ 
+ 	/*
+ 	 * Copy to dma capable address otherwise memory corruption occurs as
+-- 
+2.25.1
 
