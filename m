@@ -2,108 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A97281CA693
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 10:51:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBE9B1CA68D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 10:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727067AbgEHIvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 04:51:53 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:40282 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726616AbgEHIvw (ORCPT
+        id S1727786AbgEHIuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 04:50:09 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:41720 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726616AbgEHIuI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 04:51:52 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0488lwp9066596;
-        Fri, 8 May 2020 08:51:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=AWbUZitwGxqH5XK2qvZBSe3apYjT0vdFp0iz/vgH32U=;
- b=CfJCRY58BEkHUdPT/WP0qB2DDdtV9oL9tJgua2Nrve3zL7CeCCGIkB8bf6rgWPVJCMCK
- Bhremhku2blJuXF9HLzZiwMTDymIx2sdfVnv/3eWgQBt58FpfWaTo8IUhPbg6m6N+pLJ
- ySRUeCZ9+cmmB5XR2ffYj+6m0fnechdYXG4Q2M/33cYed0RRy6L9zmHzzz5AyXDGNJdV
- m4JBzXnEd6SarXecfCIbvoHbKPeUPdl2YHNEjlpeSDLQ/uxT9OoKY9ciD0mHtBb+eHAG
- uIUdqD6wxtmVInUp0YRTEoQat0UvK7lhMubaWdCEgRyTgTzR9b61hpwg/Nrp29v5QLBE iw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 30vtexsucp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 08 May 2020 08:51:49 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0488kgWO163200;
-        Fri, 8 May 2020 08:49:49 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 30vteg9pxh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 08 May 2020 08:49:49 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0488nmOY027677;
-        Fri, 8 May 2020 08:49:48 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 08 May 2020 01:49:47 -0700
-Date:   Fri, 8 May 2020 11:49:41 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] memory: tegra: Fix an error handling path in
- 'tegra186_emc_probe()'
-Message-ID: <20200508084941.GE9365@kadam>
-References: <20200506200907.195502-1-christophe.jaillet@wanadoo.fr>
+        Fri, 8 May 2020 04:50:08 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0488nxZa022814;
+        Fri, 8 May 2020 03:49:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1588927799;
+        bh=nFghFOfFxxTQ0U6s3YjWv+wmzQW14b3h6ZM7+7LguQ8=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=nRq9rVQvhSzEtW3DpM1hJjaVNLQNbQ66OBRQ76f/JyVisfgiGFsK3IOaZJ+kwVzro
+         62egDJ2whOl9LRDdPo0Eofem9QUXH2046gi9+1W7ZRQutIi0iZIg66A7iAVTRjDjLq
+         y211NVuc9bTuzJZCRzzkQyu/HOolPW8YpUGZx7vE=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0488nx3R088070
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 8 May 2020 03:49:59 -0500
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 8 May
+ 2020 03:49:59 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 8 May 2020 03:49:59 -0500
+Received: from [10.250.233.85] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0488nuw1112647;
+        Fri, 8 May 2020 03:49:57 -0500
+Subject: Re: [PATCH v2 2/4] PCI: cadence: Use "dma-ranges" instead of
+ "cdns,no-bar-match-nbits" property
+To:     Rob Herring <robh@kernel.org>
+CC:     Robin Murphy <robin.murphy@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Tom Joseph <tjoseph@cadence.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Andrew Murray <amurray@thegoodpenguin.co.uk>,
+        <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200417114322.31111-1-kishon@ti.com>
+ <20200417114322.31111-3-kishon@ti.com>
+ <20200501144645.GB7398@e121166-lin.cambridge.arm.com>
+ <dc581c5b-11de-f4b3-e928-208b9293e391@arm.com>
+ <2472c182-834c-d2c1-175e-4d73898aef35@ti.com>
+ <4f333ceb-2809-c4ae-4ae3-33a83c612cd3@arm.com>
+ <cf9c2dcc-57e8-cfa0-e3b4-55ff5113341f@ti.com>
+ <da933b0d-ee17-5bca-3763-1d73c7ed6bfc@ti.com> <20200507202658.GA29938@bogus>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <f22cca60-40a8-571d-d5fa-50d05281cc3f@ti.com>
+Date:   Fri, 8 May 2020 14:19:55 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200506200907.195502-1-christophe.jaillet@wanadoo.fr>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9614 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
- phishscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005080076
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9614 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 adultscore=0
- spamscore=0 suspectscore=0 bulkscore=0 priorityscore=1501 malwarescore=0
- phishscore=0 impostorscore=0 mlxscore=0 mlxlogscore=999 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2005080076
+In-Reply-To: <20200507202658.GA29938@bogus>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 06, 2020 at 10:09:07PM +0200, Christophe JAILLET wrote:
-> @@ -237,7 +239,7 @@ static int tegra186_emc_probe(struct platform_device *pdev)
->  			"failed to set rate range [%lu-%lu] for %pC\n",
->  			emc->debugfs.min_rate, emc->debugfs.max_rate,
->  			emc->clk);
-> -		return err;
-> +		goto err_put_bpmp;
->  	}
->  
->  	emc->debugfs.root = debugfs_create_dir("emc", NULL);
+Hi Rob,
 
-Not really related to this patch but the error handling on this
-debugfs_create_dir() call is wrong.  It never returns NULL.  The error
-should just be ignored.  It shouldn't try print a message when debugfs
-is deliberately disabled.
+On 5/8/2020 1:56 AM, Rob Herring wrote:
+> On Wed, May 06, 2020 at 08:52:13AM +0530, Kishon Vijay Abraham I wrote:
+>> Hi Robin,
+>>
+>> On 5/4/2020 6:23 PM, Kishon Vijay Abraham I wrote:
+>>> Hi Robin,
+>>>
+>>> On 5/4/2020 4:24 PM, Robin Murphy wrote:
+>>>> On 2020-05-04 9:44 am, Kishon Vijay Abraham I wrote:
+>>>>> Hi Robin,
+>>>>>
+>>>>> On 5/1/2020 9:24 PM, Robin Murphy wrote:
+>>>>>> On 2020-05-01 3:46 pm, Lorenzo Pieralisi wrote:
+>>>>>>> [+Robin - to check on dma-ranges intepretation]
+>>>>>>>
+>>>>>>> I would need RobH and Robin to review this.
+>>>>>>>
+>>>>>>> Also, An ACK from Tom is required - for the whole series.
+>>>>>>>
+>>>>>>> On Fri, Apr 17, 2020 at 05:13:20PM +0530, Kishon Vijay Abraham I wrote:
+>>>>>>>> Cadence PCIe core driver (host mode) uses "cdns,no-bar-match-nbits"
+>>>>>>>> property to configure the number of bits passed through from PCIe
+>>>>>>>> address to internal address in Inbound Address Translation register.
+>>>>>>>>
+>>>>>>>> However standard PCI dt-binding already defines "dma-ranges" to
+>>>>>>>> describe the address range accessible by PCIe controller. Parse
+>>>>>>>> "dma-ranges" property to configure the number of bits passed
+>>>>>>>> through from PCIe address to internal address in Inbound Address
+>>>>>>>> Translation register.
+>>>>>>>>
+>>>>>>>> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+>>>>>>>> ---
+>>>>>>>>    drivers/pci/controller/cadence/pcie-cadence-host.c | 13 +++++++++++--
+>>>>>>>>    1 file changed, 11 insertions(+), 2 deletions(-)
+>>>>>>>>
+>>>>>>>> diff --git a/drivers/pci/controller/cadence/pcie-cadence-host.c
+>>>>>>>> b/drivers/pci/controller/cadence/pcie-cadence-host.c
+>>>>>>>> index 9b1c3966414b..60f912a657b9 100644
+>>>>>>>> --- a/drivers/pci/controller/cadence/pcie-cadence-host.c
+>>>>>>>> +++ b/drivers/pci/controller/cadence/pcie-cadence-host.c
+>>>>>>>> @@ -206,8 +206,10 @@ int cdns_pcie_host_setup(struct cdns_pcie_rc *rc)
+>>>>>>>>        struct device *dev = rc->pcie.dev;
+>>>>>>>>        struct platform_device *pdev = to_platform_device(dev);
+>>>>>>>>        struct device_node *np = dev->of_node;
+>>>>>>>> +    struct of_pci_range_parser parser;
+>>>>>>>>        struct pci_host_bridge *bridge;
+>>>>>>>>        struct list_head resources;
+>>>>>>>> +    struct of_pci_range range;
+>>>>>>>>        struct cdns_pcie *pcie;
+>>>>>>>>        struct resource *res;
+>>>>>>>>        int ret;
+>>>>>>>> @@ -222,8 +224,15 @@ int cdns_pcie_host_setup(struct cdns_pcie_rc *rc)
+>>>>>>>>        rc->max_regions = 32;
+>>>>>>>>        of_property_read_u32(np, "cdns,max-outbound-regions",
+>>>>>>>> &rc->max_regions);
+>>>>>>>>    -    rc->no_bar_nbits = 32;
+>>>>>>>> -    of_property_read_u32(np, "cdns,no-bar-match-nbits", &rc->no_bar_nbits);
+>>>>>>>> +    if (!of_pci_dma_range_parser_init(&parser, np))
+>>>>>>>> +        if (of_pci_range_parser_one(&parser, &range))
+>>>>>>>> +            rc->no_bar_nbits = ilog2(range.size);
+>>>>>>
+>>>>>> You probably want "range.pci_addr + range.size" here just in case the bottom of
+>>>>>> the window is ever non-zero. Is there definitely only ever a single inbound
+>>>>>> window to consider?
+>>>>>
+>>>>> Cadence IP has 3 inbound address translation registers, however we use only 1
+>>>>> inbound address translation register to map the entire 32 bit or 64 bit address
+>>>>> region.
+>>>>
+>>>> OK, if anything that further strengthens the argument for deprecating a single
+>>>> "number of bits" property in favour of ranges that accurately describe the
+>>>> window(s). However it also suggests that other users in future might have some
+>>>> expectation that specifying "dma-ranges" with up to 3 entries should work to
+>>>> allow a more restrictive inbound configuration. Thus it would be desirable to
+>>>> make the code a little more robust here - even if we don't support multiple
+>>>> windows straight off, it would still be better to implement it in a way that
+>>>> can be cleanly extended later, and at least say something if more ranges are
+>>>> specified rather than just silently ignoring them.
+>>>
+>>> I looked at this further in the Cadence user doc. The three inbound ATU entries
+>>> are for BAR0, BAR1 in RC configuration space and the third one is for NO MATCH
+>>> BAR when there is no matching found in RC BARs. Right now we always configure
+>>> the NO MATCH BAR. Would it be possible describe at BAR granularity in dma-ranges?
+>>
+>> I was thinking if I could use something like
+>> dma-ranges = <0x02000000 0x0 0x0 0x0 0x0 0x00000 0x0>, //For BAR0 IB mapping
+>> 	     <0x02000000 0x0 0x0 0x0 0x0 0x00000 0x0>, //For BAR1 IB mapping
+>> 	     <0x02000000 0x0 0x0 0x0 0x0 0x10000 0x0>; //NO MATCH BAR
+>>
+>> This way the driver can tell the 1st tuple is for BAR0, 2nd is for BAR1 and
+>> last is for NO MATCH. In the above case both BAR0 and BAR1 is just empty and
+>> doesn't have valid values as we use only the NO MATCH BAR.
+>>
+>> However I'm not able to use for_each_of_pci_range() in Cadence driver to get
+>> the configuration for each BAR, since the for loop gets invoked only once since
+>> of_pci_range_parser_one() merges contiguous addresses.
+> 
+> NO_MATCH_BAR could just be the last entry no matter how many? Who cares 
+> if they get merged? Maybe each BAR has max size and dma-ranges could 
+> exceed that, but if so you have to handle that and split them again.
 
-As in the correct code looks like:
+Each of RP_BAR0, RP_BAR1 and RP_NO_BAR has separate register to be configured.
+If they get merged, we'll loose info on which of the registers to be
+configured. Cadence IP specifies maximum size of BAR0 as 256GB, maximum size of
+BAR1 as 2 GB. However when I specify dma-ranges like below and use
+for_each_of_pci_range(&parser, &range), the first range itself is 258.
 
- 
-        emc->debugfs.root = debugfs_create_dir("emc", NULL);
--       if (!emc->debugfs.root) {
--               dev_err(&pdev->dev, "failed to create debugfs directory\n");
--               return 0;
--       }
--
-        debugfs_create_file("available_rates", S_IRUGO, emc->debugfs.root,
-                            emc, &tegra186_emc_debug_available_rates_fops);
-        debugfs_create_file("min_rate", S_IRUGO | S_IWUSR, emc->debugfs.root,
+dma-ranges = <0x02000000 0x00 0x0 0x00 0x0 0x40 0x00000000>, /* BAR0 256 GB */
+	     <0x02000000 0x40 0x0 0x40 0x0 0x00 0x80000000>; /* BAR1 2 GB */
+> 
+>> Do you think I should extend the flags cell to differentiate between BAR0, BAR1
+>> and NO MATCH BAR? Can you suggest any other alternatives?
+> 
+> If you just have 1 region, then just 1 entry makes sense to me. Why 
+> can't you use BAR0 in that case?
 
-debugfs_create_file() will return an error pointer if debugfs_create_dir()
-fails or if debugfs is disabled.  (It is a no-op).
+Well, Cadence has specified a max size for each BAR. I think we could specify a
+single region (48 bits in my case) in dma-ranges and let the driver decide how
+to split it among BAR0, BAR1 and NO_MATCH_BAR?
 
-regards,
-dan carpenter
-
+Thanks
+Kishon
