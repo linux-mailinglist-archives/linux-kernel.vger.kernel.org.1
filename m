@@ -2,69 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D10961CB245
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 16:50:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F03C71CB233
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 16:46:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727933AbgEHOuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 10:50:18 -0400
-Received: from mga11.intel.com ([192.55.52.93]:54546 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726913AbgEHOuS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 10:50:18 -0400
-IronPort-SDR: qHXIFd5na43IW3Wt8mTzKyOpucPbM1rDWcYz0L/11DuoVT5o5iJBsP9k9HLlhgd+DONgrNq7I8
- EikTUwWZ20lg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2020 07:50:17 -0700
-IronPort-SDR: XN15M4RZFAHyjTWmo7AtUbiSDyZx81DyK5bKtQiRsCXpzx/sNnNOgIdU1OG0jfg4rvR24YVvk2
- JtBq1K2Ceo0g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,367,1583222400"; 
-   d="scan'208";a="462307831"
-Received: from cstrong-mobl6.amr.corp.intel.com (HELO [10.254.74.61]) ([10.254.74.61])
-  by fmsmga005.fm.intel.com with ESMTP; 08 May 2020 07:50:16 -0700
-Subject: Re: [PATCH] ASoC: Intel: Boards: Support headset button function for
- nau88l25max and nau88l25ssm
-To:     Radoslaw Biernacki <rad@semihalf.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     Chinyue Chen <chinyue@chromium.org>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, Ben Zhang <benzh@chromium.org>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Benson Leung <bleung@chromium.org>,
-        Alex Levin <levinale@google.com>
-References: <20200507220332.24686-1-rad@semihalf.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <39aed974-ee2c-a0e7-9228-304cce275289@linux.intel.com>
-Date:   Fri, 8 May 2020 09:45:41 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1727798AbgEHOqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 10:46:16 -0400
+Received: from mail-ed1-f68.google.com ([209.85.208.68]:42456 "EHLO
+        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726689AbgEHOqP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 10:46:15 -0400
+Received: by mail-ed1-f68.google.com with SMTP id s10so1407053edy.9;
+        Fri, 08 May 2020 07:46:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=XarHM7quPtL8Iwp9fTwswhgZUavH/ZpsvuGgVu5XAdQ=;
+        b=s/ZHhlAj71VgJ8NnezjZBWro4BmGv+kztSHzy9OaFeyxmgcg4yrKfs91ak7WS/rjF0
+         xq6ErTJk3IsxZP480DStFO9tOyhR38TvWShYjzdduYmpnf9kRbOjCNW6ehXLn6IdLex+
+         lBtONwzWDLu0Bw18ILlbuDoKvcL4t9BnN3mjLGvv6PADRb3IP8c+jNQaP8inW3HaQfTt
+         uSn7kGk0K37Tz9PW0jd82VNFOLI01l3hAt7R6jPZElr/PQqp1hqW8EIJBJDTa7a6+N4b
+         0ey3uHJFOh7tW3LO4Vr+mzwybi3GDTg1/k7RCEIoWQbAYCpwI8udTTyZgyUMc901yWP9
+         MK6w==
+X-Gm-Message-State: AGi0PuYEgz24/EQPsqpy32zYDKrXkaecLzIA9HmXl1iM+Lk4afrMFdGG
+        4esZFW1O41NnuZHbqtBLIkY=
+X-Google-Smtp-Source: APiQypJjIQQnYzAO+FSyQEz9WwVtWHbUUhLRrRKlBcmzLwDdJK0dXJ06g9EggDcxrDp7mWZKsB0M9g==
+X-Received: by 2002:a05:6402:1515:: with SMTP id f21mr2448831edw.370.1588949173380;
+        Fri, 08 May 2020 07:46:13 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.237])
+        by smtp.googlemail.com with ESMTPSA id a5sm289736edn.14.2020.05.08.07.46.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 08 May 2020 07:46:12 -0700 (PDT)
+Date:   Fri, 8 May 2020 16:46:10 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     Bernard Zhao <bernard@vivo.com>, Kukjin Kim <kgene@kernel.org>,
+        linux-pm@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        opensource.kernel@vivo.com
+Subject: Re: [PATCH] memory/samsung: Maybe wrong triming parameter
+Message-ID: <20200508144610.GA5983@kozik-lap>
+References: <20200507114514.11589-1-bernard@vivo.com>
+ <2eeb33f7-1acc-66bb-704a-b724fa0be0a8@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20200507220332.24686-1-rad@semihalf.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <2eeb33f7-1acc-66bb-704a-b724fa0be0a8@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 5/7/20 5:03 PM, Radoslaw Biernacki wrote:
-> Map the buttons from the Android reference headset to
-> KEY_PLAYPAUSE, KEY_VOICECOMMAND, KEY_VOLUMEUP, and KEY_VOLUMEDOWN.
-> KEY_PLAYPAUSE is used instead of KEY_MEDIA for BTN_0 as it is more
-> logical and have much broader userspace support. Like Chrome OS
-> use it to play/pause of video and audio. KEY_PLAYPAUSE is also
-> supported by Android (USB headset spec requires KEY_PLAYPAUSE
-> for BTN_0.)
-> https://source.android.com/devices/accessories/headset/usb-headset-spec
+On Thu, May 07, 2020 at 04:42:46PM +0100, Lukasz Luba wrote:
+> Hi Bernard,
 > 
-> Signed-off-by: Chinyue Chen <chinyue@chromium.org>
-> Signed-off-by: Benson Leung <bleung@chromium.org>
-> Signed-off-by: Radoslaw Biernacki <rad@semihalf.com>
+> 
+> On 5/7/20 12:45 PM, Bernard Zhao wrote:
+> > In function create_timings_aligned, all the max is to use
+> > dmc->min_tck->xxx, aligned with val dmc->timings->xxx.
+> > But the dmc->timings->tFAW use dmc->min_tck->tXP?
+> > Maybe this point is wrong parameter useing.
+> > 
+> > Signed-off-by: Bernard Zhao <bernard@vivo.com>
+> > ---
+> >   drivers/memory/samsung/exynos5422-dmc.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/memory/samsung/exynos5422-dmc.c b/drivers/memory/samsung/exynos5422-dmc.c
+> > index 81a1b1d01683..22a43d662833 100644
+> > --- a/drivers/memory/samsung/exynos5422-dmc.c
+> > +++ b/drivers/memory/samsung/exynos5422-dmc.c
+> > @@ -1091,7 +1091,7 @@ static int create_timings_aligned(struct exynos5_dmc *dmc, u32 *reg_timing_row,
+> >   	/* power related timings */
+> >   	val = dmc->timings->tFAW / clk_period_ps;
+> >   	val += dmc->timings->tFAW % clk_period_ps ? 1 : 0;
+> > -	val = max(val, dmc->min_tck->tXP);
+> > +	val = max(val, dmc->min_tck->tFAW);
+> >   	reg = &timing_power[0];
+> >   	*reg_timing_power |= TIMING_VAL2REG(reg, val);
+> > 
+> 
+> Good catch! Indeed this should be a dmc->min_tck->tFAW used for
+> clamping.
+> 
+> It didn't show up in testing because the frequency values based on
+> which the 'clk_period_ps' are calculated are sane.
+> Check the dump below:
+> 
+> [    5.458227] DMC: mem tFAW=25000, clk_period_ps=6060
+> [    5.461743] DMC: tFAW=5, tXP=2 val=5
+> [    5.465273] DMC: mem tFAW=25000, clk_period_ps=4854
+> [    5.470101] DMC: tFAW=5, tXP=2 val=6
+> [    5.473668] DMC: mem tFAW=25000, clk_period_ps=3636
+> [    5.478507] DMC: tFAW=5, tXP=2 val=7
+> [    5.482072] DMC: mem tFAW=25000, clk_period_ps=2421
+> [    5.486951] DMC: tFAW=5, tXP=2 val=11
+> [    5.490531] DMC: mem tFAW=25000, clk_period_ps=1841
+> [    5.495439] DMC: tFAW=5, tXP=2 val=14
+> [    5.499113] DMC: mem tFAW=25000, clk_period_ps=1579
+> [    5.503877] DMC: tFAW=5, tXP=2 val=16
+> [    5.507476] DMC: mem tFAW=25000, clk_period_ps=1373
+> [    5.512368] DMC: tFAW=5, tXP=2 val=19
+> [    5.515968] DMC: mem tFAW=25000, clk_period_ps=1212
+> [    5.520826] DMC: tFAW=5, tXP=2 val=21
+> 
+> That's why in the existing configuration it does not harm
+> (the calculated 'val' is always >= 5) the board.
+> 
+> But I think this patch should be applied (after small changes in the
+> commit message).
+> 
+> @Krzysztof could you have a look on the commit message or take the
+> patch with small adjustment in the description, please?
+> 
+> I conditionally give (because of this description):
+> 
+> Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
 
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Thanks for review.
+
+I applied patch with CC-stable and adjusred commit msg.
+
+Best regards,
+Krzysztof
+
