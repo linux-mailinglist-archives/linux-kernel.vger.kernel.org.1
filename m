@@ -2,114 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C2071CAFF0
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:24:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5763F1CB004
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730598AbgEHNV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:21:59 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:44832 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729669AbgEHNVz (ORCPT
+        id S1729030AbgEHNXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 09:23:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728988AbgEHNXJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 09:21:55 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 048D2DV0054976;
-        Fri, 8 May 2020 09:21:38 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30vtsemp3t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 May 2020 09:21:38 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 048DKffI028238;
-        Fri, 8 May 2020 13:21:35 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma04fra.de.ibm.com with ESMTP id 30s0g65exx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 May 2020 13:21:35 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 048DLXTK66716056
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 8 May 2020 13:21:33 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 64268A405B;
-        Fri,  8 May 2020 13:21:33 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5854CA4055;
-        Fri,  8 May 2020 13:21:31 +0000 (GMT)
-Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Fri,  8 May 2020 13:21:31 +0000 (GMT)
-Date:   Fri, 8 May 2020 18:51:30 +0530
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Christopher Lameter <cl@linux.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>,
-        Mel Gorman <mgorman@suse.de>, Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>
-Subject: Re: [PATCH v3 1/3] powerpc/numa: Set numa_node for all possible cpus
-Message-ID: <20200508132130.GC1961@linux.vnet.ibm.com>
-Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-References: <20200501031128.19584-1-srikar@linux.vnet.ibm.com>
- <20200501031128.19584-2-srikar@linux.vnet.ibm.com>
- <alpine.DEB.2.21.2005022254170.28355@www.lameter.com>
+        Fri, 8 May 2020 09:23:09 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FB04C05BD09
+        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 06:23:09 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id b26so1400048lfa.5
+        for <linux-kernel@vger.kernel.org>; Fri, 08 May 2020 06:23:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=VIU8yowc2+V8zkMLN+ep9zXZ58SIv77iw9jZ8rjfvrk=;
+        b=x3ecS+EQSfs1Ivb0Effx7BC2qW6VK0RgGMyWkN1KysgXKJJbbnrP6SCO676GhKEZXO
+         sQ2oKgxBAaIRXNXRQLhVMuIm29qEEWtreP+iEkGP2GeNXiUdIuvC+7uPZ85x30069/X2
+         RYMzh8SJswH6UReBKcCMznaKe+WTJOTW5301kpAXHJY7WRTVzyPaBSAZddYyxfmJxIoH
+         pXnDZnh/LYb6SI2Q58x2RR3wu/CW5o1owKOY90kIo0i1+pkidceCzyGJqy1XUGFFCm1I
+         SL1mc4h1Wq++a4PyfFFyJx5RsB9dngGKjb9OCOKoF3wOsOQUugj7/nWq25pzW73UWCZb
+         tfmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=VIU8yowc2+V8zkMLN+ep9zXZ58SIv77iw9jZ8rjfvrk=;
+        b=sALQdW3acTgtIJpzAKZ8/mWVabLyEcqqjXlTLs7vMZuIZMunu5WVgz2FIKKjgGcbCk
+         4KbkcioNUIx5B39Xx1LC/CUPA8kemNe/aGUzy+1TgKjR1PRImBwweAqDuRQvh/Sa2ZHV
+         ZBSoQB21USM5NiUACJVrrkl5h+UsFntarxd+TerBgCdXwLZP3N3+D+MixEOVd2kDU/rF
+         bx3fscZdzsy7xhAt2iMrF3gh2wPN9Da0YwbYMxht9rklkNcWroqjQJDfoz/M1qvXUcIs
+         oSiCR5gxShZJzVjQ1PKKXZfukEH/ta3p7qEC4V3rhtYQg06dvRop3TyUxxVhH0CUhf51
+         Rz+g==
+X-Gm-Message-State: AOAM532HCCoFbbd7pKX5Xa/21jqpSFYfWMP9eFDiMLdpkfTMzgFUfGwM
+        VVpgXmGDIWFMjCfE50BNAzodg7x82w/RAEa8z9cnKg==
+X-Google-Smtp-Source: ABdhPJzEJjpe16vQv80zYgMKsgsrfGZYRUbLuquVKFzrdtEbGoQTZmrtg7HMWaXV6M+SBfvOeIZlVvloc8btzEbocvY=
+X-Received: by 2002:a19:3817:: with SMTP id f23mr1863933lfa.6.1588944187717;
+ Fri, 08 May 2020 06:23:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.21.2005022254170.28355@www.lameter.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-08_12:2020-05-08,2020-05-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
- bulkscore=0 impostorscore=0 malwarescore=0 clxscore=1015 mlxscore=0
- lowpriorityscore=0 spamscore=0 mlxlogscore=999 priorityscore=1501
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005080111
+References: <20200508123043.085296641@linuxfoundation.org>
+In-Reply-To: <20200508123043.085296641@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 8 May 2020 18:52:56 +0530
+Message-ID: <CA+G9fYu6e9ytJejS=No4ytQT=U+YjqOPghVQXD=gAHB82L-WUw@mail.gmail.com>
+Subject: Re: [PATCH 5.4 00/50] 5.4.40-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        lkft-triage@lists.linaro.org,
+        linux- stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Christopher Lameter <cl@linux.com> [2020-05-02 22:55:16]:
+On Fri, 8 May 2020 at 18:23, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.40 release.
+> There are 50 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sun, 10 May 2020 12:29:44 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.40-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+<trim>
+> Christoph Hellwig <hch@lst.de>
+>     dma-direct: exclude dma_direct_map_resource from the min_low_pfn chec=
+k
+While building kernel Image for arm architecture the following error notice=
+d
+on stable-rc 5.4 kernel branch.
+ # make -sk KBUILD_BUILD_USER=3DTuxBuild -C/linux -j16 ARCH=3Darm
+CROSS_COMPILE=3Darm-linux-gnueabihf- HOSTCC=3Dgcc CC=3D"sccache
+arm-linux-gnueabihf-gcc" O=3Dbuild zImage
+ #
+ ../kernel/dma/direct.c: In function =E2=80=98dma_direct_possible=E2=80=99:
+ ../kernel/dma/direct.c:330:3: error: too many arguments to function
+=E2=80=98dma_capable=E2=80=99
+   330 |   dma_capable(dev, dma_addr, size, true);
+       |   ^~~~~~~~~~~
+ In file included from ../include/linux/dma-direct.h:12,
+                  from ../kernel/dma/direct.c:10:
+ ../arch/arm/include/asm/dma-direct.h:17:20: note: declared here
+    17 | static inline bool dma_capable(struct device *dev, dma_addr_t
+addr, size_t size)
+       |                    ^~~~~~~~~~~
+ In file included from ../include/linux/init.h:5,
+                  from ../include/linux/memblock.h:12,
+                  from ../kernel/dma/direct.c:7:
+ ../kernel/dma/direct.c: In function =E2=80=98dma_direct_map_resource=E2=80=
+=99:
+ ../kernel/dma/direct.c:379:16: error: too many arguments to function
+=E2=80=98dma_capable=E2=80=99
+   379 |  if (unlikely(!dma_capable(dev, dma_addr, size, false))) {
+       |                ^~~~~~~~~~~
+ ../include/linux/compiler.h:78:42: note: in definition of macro =E2=80=98u=
+nlikely=E2=80=99
+    78 | # define unlikely(x) __builtin_expect(!!(x), 0)
+       |                                          ^
+ In file included from ../include/linux/dma-direct.h:12,
+                  from ../kernel/dma/direct.c:10:
+ ../arch/arm/include/asm/dma-direct.h:17:20: note: declared here
+    17 | static inline bool dma_capable(struct device *dev, dma_addr_t
+addr, size_t size)
+       |                    ^~~~~~~~~~~
+ make[3]: *** [../scripts/Makefile.build:266: kernel/dma/direct.o] Error 1
+ In file included from ../include/linux/string.h:6,
+                  from ../include/linux/dma-mapping.h:6,
+                  from ../include/linux/dma-direct.h:5,
+                  from ../kernel/dma/swiotlb.c:24:
+ ../kernel/dma/swiotlb.c: In function =E2=80=98swiotlb_map=E2=80=99:
+ ../kernel/dma/swiotlb.c:681:16: error: too many arguments to function
+=E2=80=98dma_capable=E2=80=99
+   681 |  if (unlikely(!dma_capable(dev, *dma_addr, size, true))) {
+       |                ^~~~~~~~~~~
+ ../include/linux/compiler.h:78:42: note: in definition of macro =E2=80=98u=
+nlikely=E2=80=99
+    78 | # define unlikely(x) __builtin_expect(!!(x), 0)
+       |                                          ^
+ In file included from ../include/linux/dma-direct.h:12,
+                  from ../kernel/dma/swiotlb.c:24:
+ ../arch/arm/include/asm/dma-direct.h:17:20: note: declared here
+    17 | static inline bool dma_capable(struct device *dev, dma_addr_t
+addr, size_t size)
+       |                    ^~~~~~~~~~~
 
-> On Fri, 1 May 2020, Srikar Dronamraju wrote:
-> 
-> > -	for_each_present_cpu(cpu)
-> > -		numa_setup_cpu(cpu);
-> > +	for_each_possible_cpu(cpu) {
-> > +		/*
-> > +		 * Powerpc with CONFIG_NUMA always used to have a node 0,
-> > +		 * even if it was memoryless or cpuless. For all cpus that
-> > +		 * are possible but not present, cpu_to_node() would point
-> > +		 * to node 0. To remove a cpuless, memoryless dummy node,
-> > +		 * powerpc need to make sure all possible but not present
-> > +		 * cpu_to_node are set to a proper node.
-> > +		 */
-> > +		if (cpu_present(cpu))
-> > +			numa_setup_cpu(cpu);
-> > +		else
-> > +			set_cpu_numa_node(cpu, first_online_node);
-> > +	}
-> >  }
-> 
-> 
-> Can this be folded into numa_setup_cpu?
-> 
-> This looks more like numa_setup_cpu needs to change?
-> 
+Full build log,
+https://gitlab.com/Linaro/lkft/kernel-runs/-/jobs/544288767
 
-We can fold this into numa_setup_cpu().
-
-However till now we were sure that numa_setup_cpu() would be called only for
-a present cpu. That assumption will change.
-+ (non-consequential) an additional check everytime cpu is hotplugged in.
-
-If Michael Ellerman is okay with the change, I can fold it in.
-
--- 
-Thanks and Regards
-Srikar Dronamraju
+--=20
+Linaro LKFT
+https://lkft.linaro.org
