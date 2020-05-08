@@ -2,98 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1923A1CAA41
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:07:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B38A61CAA45
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:08:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726951AbgEHMHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 08:07:15 -0400
-Received: from mail.zx2c4.com ([192.95.5.64]:60091 "EHLO mail.zx2c4.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726616AbgEHMHP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 08:07:15 -0400
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 76154c00
-        for <linux-kernel@vger.kernel.org>;
-        Fri, 8 May 2020 11:54:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
-        :references:in-reply-to:from:date:message-id:subject:to:cc
-        :content-type; s=mail; bh=DRgmOZ/pXwQ/5lwVfB4YHbJj45o=; b=I6vmXT
-        bN5MOJ0Iiit/gr1I5M01cRzInKwgUcr2MpIOqYfNc3rjh/Wp2etLj/9MdEFcmku/
-        PPPCR8w+jzUzLaUMqvoYPjhnGSZogzAdUH8JPImWNju3YglhsTBSpkOVwW5krRkl
-        Ah4QCz6HoC6ykmihbgyaS1JXZAM8tkPJt7i7yUQ1q7LskWruczxeb8wP1FG3vhYQ
-        egQDWtsp+RibqBD7lyUk+O0/agdVIWZxsYm500cisMvcuc3tNbvOHdxnCdKYsXJ9
-        5yha71h54ZxQ275cQhjRzkDnVN/wrvjKoveaN/GaPkQFhEsYV53AVz/dBp1qFZHw
-        o8CGEBf4hPVSTsdQ==
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 9f0bd178 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO)
-        for <linux-kernel@vger.kernel.org>;
-        Fri, 8 May 2020 11:54:18 +0000 (UTC)
-Received: by mail-il1-f172.google.com with SMTP id m5so1147837ilj.10
-        for <linux-kernel@vger.kernel.org>; Fri, 08 May 2020 05:07:14 -0700 (PDT)
-X-Gm-Message-State: AGi0PuaLi//ItJBxzmHH+s0rezCa9W4rldWPZkU11JYu61WSuyxgDdVn
-        T+bCgmIQTRxtuwCpwYdAn4DLypL36FQV9L+H1ug=
-X-Google-Smtp-Source: APiQypIEXTa/LG7yKrFyK4yQ3doD2b7IYLYXUKP++h7OW0tY/Hch5VlrZsdwjRbzGSjKaE9gMgOh5VVvgjJoviZeMu8=
-X-Received: by 2002:a92:5c82:: with SMTP id d2mr2428758ilg.231.1588939633367;
- Fri, 08 May 2020 05:07:13 -0700 (PDT)
+        id S1726751AbgEHMIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 08:08:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726701AbgEHMID (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 08:08:03 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70780C05BD09
+        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 05:08:03 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id h26so979021qtu.8
+        for <linux-kernel@vger.kernel.org>; Fri, 08 May 2020 05:08:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=jNcOJdj0FMsiZ/cz6XctSErT2eXavWVo0wmEW9tkg9M=;
+        b=fOMZJstT2RX/AhoKfmsee3tP8RBwx6fgcky3Oxy2XCpR2wyYS1EN/nFjW0Tl68c4TD
+         nNIwZs4awDPpb4PDBSsopqtK3+4peg+9piOjTodwwsZdQVFEe6M2yK1bop1RQdHisLOg
+         JmENbj6q6f/y1kBXv9XnsnqCNgg0gI8itmOmk7PWYcbIOi/aJgH3qlf3btCcNLQOOZeB
+         OLeLiJiB6KzK0nmW82mL9ijXOtXT1i+RHQ9fn1hhR61LtwFSLKUasqzYwrQk0CaCyt5r
+         oWr9CozcTpX0YZzrmJkCD1X0r28l/mRCuXPzS555GQLfctnJfsZBRc0hl8chhDph7Kaj
+         z2vA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=jNcOJdj0FMsiZ/cz6XctSErT2eXavWVo0wmEW9tkg9M=;
+        b=iQbv6HNOLTfcDClXMwPdf/+5+smLOpkvHu+jKvhdQ0xtCez9BoCOW4Yi0H6Sys8Wf6
+         6SxeezLiuzioeql7Y836sWzY93poQVgDKmvYarhkrtL/LCVP0LfTujf/ld8JP9PeFuU4
+         tAxVpxS3Z9oYbVaoJlbWw6LLec5Gp7+IDjvOiaxIe5OPTaB5nL4EskfU8tEP81d3g5Vg
+         L3Y9+2GP+6Ak+fZtXDQiBr5HCqU0PY4vdzxdQcaMUtDK+GgSj2xeOZ041m7JCTZ0YBAP
+         L0EvU9U94Fg6J1+1cSvn5NCKk2r/Kr8KGjuDL1lHGGjc2Mfv+B/8Vtgu4Nw2PREdeXVK
+         GWpQ==
+X-Gm-Message-State: AGi0PuZWBqCZFYexFIJqS1rFjlyRx4yILQ2ljUABcxd7dsVT1NJQhN/q
+        1P0GCqN2r0lBasbZ6PTaiMOF4A==
+X-Google-Smtp-Source: APiQypImoGg3seh1MMi5XajuwTrRav+mB7403kAKyblW/aBj9ai6BW7rHo9BQVpeLS/fQ4quUO41YA==
+X-Received: by 2002:ac8:7942:: with SMTP id r2mr2764437qtt.288.1588939682425;
+        Fri, 08 May 2020 05:08:02 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id x19sm965232qkb.136.2020.05.08.05.08.01
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 08 May 2020 05:08:01 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jX1nN-0003Yl-5m; Fri, 08 May 2020 09:08:01 -0300
+Date:   Fri, 8 May 2020 09:08:01 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, cohuck@redhat.com
+Subject: Re: [PATCH v2 2/3] vfio-pci: Fault mmaps to enable vma tracking
+Message-ID: <20200508120801.GN26002@ziepe.ca>
+References: <158871401328.15589.17598154478222071285.stgit@gimli.home>
+ <158871569380.15589.16950418949340311053.stgit@gimli.home>
+ <20200507214744.GP228260@xz-x1>
+ <20200507160334.4c029518@x1.home>
+ <20200507222223.GR228260@xz-x1>
+ <20200507235633.GL26002@ziepe.ca>
+ <20200508021656.GS228260@xz-x1>
 MIME-Version: 1.0
-References: <20200507224530.2993316-1-Jason@zx2c4.com> <20200508090202.7s3kcqpvpxx32syu@butterfly.localdomain>
- <CAHmME9pTZTa9AEUL0-ojTr7P-F7NYe8OR9=-GBPaQNpnSDrEiw@mail.gmail.com>
- <20200508113336.2vdfdnc6tqyx4pu6@butterfly.localdomain> <CAK8P3a0dJ0vNnktcoWFiPKB4NJbeyf7nvwWf0YLyeUyxT5pvQg@mail.gmail.com>
-In-Reply-To: <CAK8P3a0dJ0vNnktcoWFiPKB4NJbeyf7nvwWf0YLyeUyxT5pvQg@mail.gmail.com>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Fri, 8 May 2020 06:07:02 -0600
-X-Gmail-Original-Message-ID: <CAHmME9p7Hri-vHfwR9GY1gPo91jVx4-hTqsZVRHiioUENRHibA@mail.gmail.com>
-Message-ID: <CAHmME9p7Hri-vHfwR9GY1gPo91jVx4-hTqsZVRHiioUENRHibA@mail.gmail.com>
-Subject: Re: [PATCH] Kconfig: default to CC_OPTIMIZE_FOR_PERFORMANCE_O3 for
- gcc >= 10
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Oleksandr Natalenko <oleksandr@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200508021656.GS228260@xz-x1>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 8, 2020 at 5:56 AM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Fri, May 8, 2020 at 1:33 PM Oleksandr Natalenko <oleksandr@redhat.com> wrote:
-> >
-> > On Fri, May 08, 2020 at 05:21:47AM -0600, Jason A. Donenfeld wrote:
-> > > > Should we untangle -O3 from depending on ARC first maybe?
-> > >
-> > > Oh, hah, good point. Yes, I'll do that for a v2, but will wait another
-> > > day for feedback first.
-> >
-> > Just keep in mind that my previous attempt [1] failed because of too
-> > many false positive warnings despite -O3 really uncovered a couple of
-> > bugs in the codebase.
->
-> I think my warning fixes were mostly picked up in the meantime, but
-> if there are any remaining, they would be mixed in with random other
-> fixes in my testing tree, so it's hard to know for sure.
->
-> I also want to hear the feedback from the gcc developers about what
-> the general recommendations are between O2 and O3, and how
-> they may have changed over time. According to the gcc-10 documentation,
-> the difference between -O2 and -O3 is exactly this set of options:
->
-> -fgcse-after-reload
-> -fipa-cp-clone
-> -floop-interchange
-> -floop-unroll-and-jam
-> -fpeel-loops
-> -fpredictive-commoning
-> -fsplit-loops
-> -fsplit-paths
-> -ftree-loop-distribution
-> -ftree-loop-vectorize
-> -ftree-partial-pre
-> -ftree-slp-vectorize
-> -funswitch-loops
-> -fvect-cost-model
-> -fvect-cost-model=dynamic
-> -fversion-loops-for-strides
+On Thu, May 07, 2020 at 10:16:56PM -0400, Peter Xu wrote:
+> On Thu, May 07, 2020 at 08:56:33PM -0300, Jason Gunthorpe wrote:
+> > On Thu, May 07, 2020 at 06:22:23PM -0400, Peter Xu wrote:
+> > > On Thu, May 07, 2020 at 04:03:34PM -0600, Alex Williamson wrote:
+> > > > On Thu, 7 May 2020 17:47:44 -0400
+> > > > Peter Xu <peterx@redhat.com> wrote:
+> > > > 
+> > > > > Hi, Alex,
+> > > > > 
+> > > > > On Tue, May 05, 2020 at 03:54:53PM -0600, Alex Williamson wrote:
+> > > > > > +/*
+> > > > > > + * Zap mmaps on open so that we can fault them in on access and therefore
+> > > > > > + * our vma_list only tracks mappings accessed since last zap.
+> > > > > > + */
+> > > > > > +static void vfio_pci_mmap_open(struct vm_area_struct *vma)
+> > > > > > +{
+> > > > > > +	zap_vma_ptes(vma, vma->vm_start, vma->vm_end - vma->vm_start);  
+> > > > > 
+> > > > > A pure question: is this only a safety-belt or it is required in some known
+> > > > > scenarios?
+> > > > 
+> > > > It's not required.  I originally did this so that I'm not allocating a
+> > > > vma_list entry in a path where I can't return error, but as Jason
+> > > > suggested I could zap here only in the case that I do encounter that
+> > > > allocation fault.  However I still like consolidating the vma_list
+> > > > handling to the vm_ops .fault and .close callbacks and potentially we
+> > > > reduce the zap latency by keeping the vma_list to actual users, which
+> > > > we'll get to eventually anyway in the VM case as memory BARs are sized
+> > > > and assigned addresses.
+> > > 
+> > > Yes, I don't see much problem either on doing the vma_list maintainance only in
+> > > .fault() and .close().  My understandingg is that the worst case is the perf
+> > > critical applications (e.g. DPDK) could pre-fault these MMIO region easily
+> > > during setup if they want.  My question was majorly about whether the vma
+> > > should be guaranteed to have no mapping at all when .open() is called.  But I
+> > > agree with you that it's always good to have that as safety-belt anyways.
+> > 
+> > If the VMA has a mapping then that specific VMA has to be in the
+> > linked list.
+> > 
+> > So if the zap is skipped then the you have to allocate something and
+> > add to the linked list to track the VMA with mapping.
+> > 
+> > It is not a 'safety belt'
+> 
+> But shouldn't open() only be called when the VMA is created for a memory range?
+> If so, does it also mean that the address range must have not been mapped yet?
 
-The other significant thing -- and what prompted this patchset -- is
-it looks like gcc 10 has lowered the inlining degree for -O2, and put
-gcc 9's inlining parameters from -O2 into gcc-10's -O3.
+open is called whenever a VMA is copied, I don't think it is called
+when the VMA is first created?
+
+Jason
