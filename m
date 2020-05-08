@@ -2,74 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E4C31CA4E2
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 09:12:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B29271CA4DA
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 09:12:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727083AbgEHHM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 03:12:29 -0400
-Received: from smtp01.smtpout.orange.fr ([80.12.242.123]:20021 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726049AbgEHHM3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 03:12:29 -0400
-Received: from localhost.localdomain ([93.23.14.114])
-        by mwinf5d01 with ME
-        id c7CQ2200A2Tev1p037CQVC; Fri, 08 May 2020 09:12:26 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Fri, 08 May 2020 09:12:26 +0200
-X-ME-IP: 93.23.14.114
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     milo.kim@ti.com, sre@kernel.org, anton.vorontsov@linaro.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] power: supply: lp8788: Fix an error handling path in 'lp8788_charger_probe()'
-Date:   Fri,  8 May 2020 09:11:50 +0200
-Message-Id: <20200508071150.204974-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726771AbgEHHL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 03:11:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40204 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726009AbgEHHL5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 03:11:57 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 141F7208CA;
+        Fri,  8 May 2020 07:11:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588921917;
+        bh=9u7QMul5gOL/AJOhTxAS3eOVQSRsWi7aj+x7KYa+78E=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=iCoMlMdFTC+hksEq/bKLRlv4rxfq6R9oxeIqx/9Ksb+5YEOK603n9N0isFEIQmp4t
+         g0X8oY2nTyMPnG/BOlJaIkmMjqhFhpC7HinXjSWBCf1UkeAhC+ti/KP1lZ02QIEEMc
+         CzGbj6Ir5zGKOeKx5eo4hkViqpY2lrPcaLr5sHIM=
+Date:   Fri, 8 May 2020 16:11:52 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     "Zanussi, Tom" <tom.zanussi@linux.intel.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Li Philip <philip.li@intel.com>,
+        Liu Yiding <yidingx.liu@intel.com>
+Subject: Re: [PATCH 3/3] selftests/ftrace: Use /bin/echo instead of built-in
+ echo
+Message-Id: <20200508161152.5815fd2fac26c300d836f0f1@kernel.org>
+In-Reply-To: <f575eead-c021-c830-b9d5-41437964db32@linux.intel.com>
+References: <158834025077.28357.15141584656220094821.stgit@devnote2>
+        <158834028054.28357.398159034694277189.stgit@devnote2>
+        <20200501101942.5c0da986@gandalf.local.home>
+        <20200502120842.9d93352083fb854295150235@kernel.org>
+        <20200507091207.5c3b1a92@gandalf.local.home>
+        <20200508005028.a825d53373721a13d6cc80fc@kernel.org>
+        <20200507132539.7e081980@gandalf.local.home>
+        <f575eead-c021-c830-b9d5-41437964db32@linux.intel.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In case of error, resources allocated in 'lp8788_setup_adc_channel()' must
-be released.
+On Thu, 7 May 2020 15:32:46 -0500
+"Zanussi, Tom" <tom.zanussi@linux.intel.com> wrote:
 
-Add a call to 'lp8788_release_adc_channel()' as already done in the remove
-function.
+> Hi,
+> 
+> On 5/7/2020 12:25 PM, Steven Rostedt wrote:
+> > On Fri, 8 May 2020 00:50:28 +0900
+> > Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> > 
+> >>>> Yes, I need Tom's review for this change. As far as I can test, this
+> >>>> fixes the test failure. If this isn't acceptable, we can use "alias echo=echo"
+> >>>> for this test case.
+> >>>>    
+> >>>
+> >>> I still don't see how changing "keys=common_pid" to "keys=ip" has anything
+> >>> to do with the echo patch. If that is a problem, it should be a different
+> >>> patch with explanation to why "keys=common_pid" is broken.
+> >>
+> >> This test case uses a trace_marker event to make a histogram with
+> >> the common_pid key, and it expects the "echo" command is built-in command
+> >> so that the pid is same while writing several events to trace_marker.
+> >> I changed it to "ip" which is always same if trace_marker interface is
+> >> used.
+> > 
+> > Can you explicitly state that in your change log? It wasn't obvious from
+> > what you meant with:
+> > 
+> > "This also fixes some test cases which expects built-in echo command."
 
-Fixes: 98a276649358 ("power_supply: Add new lp8788 charger driver")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/power/supply/lp8788-charger.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+OK, will add the description.
 
-diff --git a/drivers/power/supply/lp8788-charger.c b/drivers/power/supply/lp8788-charger.c
-index 84a206f42a8e..641815eb24bc 100644
---- a/drivers/power/supply/lp8788-charger.c
-+++ b/drivers/power/supply/lp8788-charger.c
-@@ -719,13 +719,17 @@ static int lp8788_charger_probe(struct platform_device *pdev)
- 
- 	ret = lp8788_psy_register(pdev, pchg);
- 	if (ret)
--		return ret;
-+		goto err_release_adc_channel;
- 
- 	ret = lp8788_irq_register(pdev, pchg);
- 	if (ret)
- 		dev_warn(dev, "failed to register charger irq: %d\n", ret);
- 
- 	return 0;
-+
-+err_release_adc_channel:
-+	lp8788_release_adc_channel(pchg);
-+	return ret;
- }
- 
- static int lp8788_charger_remove(struct platform_device *pdev)
+> > 
+> 
+> With that change,
+> 
+> Reviewed-by: Tom Zanussi <tom.zanussi@linux.intel.com>
+
+Thanks Tom!
+
+> 
+> Thanks,
+> 
+> Tom
+> 
+> > Thanks!
+> > 
+> > -- Steve
+> > 
+
+
 -- 
-2.25.1
-
+Masami Hiramatsu <mhiramat@kernel.org>
