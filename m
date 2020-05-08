@@ -2,148 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5146D1CA3B1
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 08:21:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C5E51CA3C5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 08:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727108AbgEHGV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 02:21:28 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:44702 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726815AbgEHGV1 (ORCPT
+        id S1727840AbgEHGWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 02:22:25 -0400
+Received: from alexa-out-blr-01.qualcomm.com ([103.229.18.197]:3643 "EHLO
+        alexa-out-blr-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725897AbgEHGWQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 02:21:27 -0400
-Received: by mail-lj1-f193.google.com with SMTP id a21so433224ljj.11;
-        Thu, 07 May 2020 23:21:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=l07sjg7wad11JybQiwBPplAsmA/VCV2GQr8sTEyBm88=;
-        b=C1Dt6HJA2i7OLmGNc9XeFfcM+njIJrh7SQ8MmMM0w10EYLGbB6nWl5tysAKbyh26NV
-         92Vr2fknGA27JOLMooDs/pi8KKnsaE4BJ8VLjEu3XWbuCgDKezm2PWVhZdNQT9VlF+Cr
-         e8xxoIPBQPiiPP32vzN0FV6FP2kMUjmQqt4kIXxuNJ/O1NMiyhRh68rZyxUfO85vMG3Y
-         7rEIjqd07d20ros4Bro7pnu6ce1GoDxeMYDUhLG8n1abhqKhxiK7h5EjO6DMHHYBcjqO
-         30Xp79qHVkpd6OIfZkp6oq6yP9TVUTqReasmmj5XZdnhXF6HGP8tdN1ONSzr+RMd1Gqe
-         uGtA==
-X-Gm-Message-State: AOAM532LnT/OWxDGsCuWXIkKI6J1NQMvV5HRcU++9B/lN68BdQtQcidF
-        /aD/BQBnht/6sdswbsr4/9I=
-X-Google-Smtp-Source: ABdhPJzQwccjomPZVXTofZDq7QNMtMm+acyePCPBUNykc5Wt6G9pf/ArU7L/ehrFMv9M6FmHt7FVvw==
-X-Received: by 2002:a05:651c:549:: with SMTP id q9mr624525ljp.236.1588918884533;
-        Thu, 07 May 2020 23:21:24 -0700 (PDT)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id z64sm428692lfa.50.2020.05.07.23.21.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2020 23:21:23 -0700 (PDT)
-Received: from johan by xi.terra with local (Exim 4.92.3)
-        (envelope-from <johan@kernel.org>)
-        id 1jWwNr-0001TQ-0H; Fri, 08 May 2020 08:21:19 +0200
-Date:   Fri, 8 May 2020 08:21:19 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Johan Hovold <johan@kernel.org>,
-        linux- stable <stable@vger.kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Fugang Duan <fugang.duan@nxp.com>,
-        Pantelis Antoniou <pantelis.antoniou@gmail.com>,
-        Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
-        Lars Persson <lars.persson@axis.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>, Netdev <netdev@vger.kernel.org>,
-        nios2-dev@lists.rocketboards.org,
-        open list <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-mediatek@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org, linux-omap@vger.kernel.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, lkft-triage@lists.linaro.org
-Subject: Re: [PATCH net 11/16] net: ethernet: marvell: mvneta: fix fixed-link
- phydev leaks
-Message-ID: <20200508062119.GE25962@localhost>
-References: <1480357509-28074-1-git-send-email-johan@kernel.org>
- <1480357509-28074-12-git-send-email-johan@kernel.org>
- <CA+G9fYvBjUVkVhtRHVm6xXcKe2+tZN4rGdB9FzmpcfpaLhY1+g@mail.gmail.com>
- <20200507064412.GL2042@localhost>
- <20200507064734.GA798308@kroah.com>
- <20200507111312.GA1497799@kroah.com>
- <CA+G9fYu2SrkEHyAzF57xJz5WjgHv361qdL2wPqON_pGS4Vtxmw@mail.gmail.com>
+        Fri, 8 May 2020 02:22:16 -0400
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by alexa-out-blr-01.qualcomm.com with ESMTP/TLS/AES256-SHA; 08 May 2020 11:52:06 +0530
+Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 08 May 2020 11:51:53 +0530
+Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
+        id 838473AD3; Fri,  8 May 2020 11:51:51 +0530 (IST)
+From:   Dikshita Agarwal <dikshita@codeaurora.org>
+To:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org, majja@codeaurora.org, jdas@codeaurora.org,
+        Dikshita Agarwal <dikshita@codeaurora.org>
+Subject: [RFC] METADATA design using V4l2 Request API
+Date:   Fri,  8 May 2020 11:51:27 +0530
+Message-Id: <1588918890-673-1-git-send-email-dikshita@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+G9fYu2SrkEHyAzF57xJz5WjgHv361qdL2wPqON_pGS4Vtxmw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 08, 2020 at 03:35:02AM +0530, Naresh Kamboju wrote:
-> On Thu, 7 May 2020 at 16:43, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> <trim>
-> > > >
-> > > > Greg, 3f65047c853a ("of_mdio: add helper to deregister fixed-link
-> > > > PHYs") needs to be backported as well for these.
-> > > >
-> > > > Original series can be found here:
-> > > >
-> > > >     https://lkml.kernel.org/r/1480357509-28074-1-git-send-email-johan@kernel.org
-> > >
-> > > Ah, thanks for that, I thought I dropped all of the ones that caused
-> > > build errors, but missed the above one.  I'll go take the whole series
-> > > instead.
-> >
-> > This should now all be fixed up, thanks.
-> 
-> While building kernel Image for arm architecture on stable-rc 4.4 branch
-> the following build error found.
-> 
-> of_mdio: add helper to deregister fixed-link PHYs
-> commit 3f65047c853a2a5abcd8ac1984af3452b5df4ada upstream.
-> 
-> Add helper to deregister fixed-link PHYs registered using
-> of_phy_register_fixed_link().
-> 
-> Convert the two drivers that care to deregister their fixed-link PHYs to
-> use the new helper, but note that most drivers currently fail to do so.
-> 
-> Signed-off-by: Johan Hovold <johan@kernel.org>
-> Signed-off-by: David S. Miller <davem@davemloft.net>
-> [only take helper function for 4.4.y - gregkh]
-> 
->  # make -sk KBUILD_BUILD_USER=TuxBuild -C/linux -j16 ARCH=arm
-> CROSS_COMPILE=arm-linux-gnueabihf- HOSTCC=gcc CC="sccache
-> arm-linux-gnueabihf-gcc" O=build zImage
-> 70 #
-> 71 ../drivers/of/of_mdio.c: In function ‘of_phy_deregister_fixed_link’:
-> 72 ../drivers/of/of_mdio.c:379:2: error: implicit declaration of
-> function ‘fixed_phy_unregister’; did you mean ‘fixed_phy_register’?
-> [-Werror=implicit-function-declaration]
-> 73  379 | fixed_phy_unregister(phydev);
-> 74  | ^~~~~~~~~~~~~~~~~~~~
-> 75  | fixed_phy_register
-> 76 ../drivers/of/of_mdio.c:381:22: error: ‘struct phy_device’ has no
-> member named ‘mdio’; did you mean ‘mdix’?
-> 77  381 | put_device(&phydev->mdio.dev); /* of_phy_find_device() */
-> 78  | ^~~~
-> 79  | mdix
+There are many commercialized video use cases which needs metadata info
+to be circulated between v4l2 client and v4l2 driver.
 
-Another dependency: 5bcbe0f35fb1 ("phy: fixed: Fix removal of phys.")
+METADATA has following requirements associated:
+•Metadata is an optional info available for a buffer. It is not mandatorily for every buffer.
+ For ex. consider metadata ROI (Region Of Interest). ROI is specified by clients to indicate
+ the region where enhanced quality is desired. This metadata is given as an input information
+ to encoder output plane. Client may or may not specify the ROI for a frame during encode as
+ an input metadata. Also if the client has not provided ROI metadata for a given frame,
+ it would be incorrect to take the metadata from previous frame. If the data and
+ metadata is asynchronous, it would be difficult for hardware to decide if it
+ needs to wait for metadata buffer or not before processing the input frame for encoding.
+•Synchronize the buffer requirement across both the video node/session
+ (incase metadata is being processed as a separate v4l2 video node/session).
+ This is to avoid buffer starvation.
+•Associate the metadata buffer with the data buffer without adding any pipeline delay
+ in waiting for each other. This is applicable both at the hardware side (the processing end)
+ and client side (the receiving end).
+•Low latency usecases like WFD/split rendering/game streaming/IMS have sub-50ms e2e latency
+ requirements, and it is not practical to stall the pipeline due to inherent framework latencies.
+ High performance usecase like high-frame rate playback/record can lead to frame loss during any pipeline latency.
+ 
+To address all above requirements, we used v4l2 Request API as interlace.
 
-Greg, these patches are from four years ago so can't really remember if
-there are other dependencies or reasons against backporting them (the
-missing stable tags are per Dave's preference), sorry.
+As an experiment, We have introduced new control V4L2_CID_MPEG_VIDEO_VENUS_METADATA
+to contain the METADATA info. Exact controls can be finalized once the interface is discussed.
 
-The cover letter also mentions another dependency, but that may just
-have been some context conflict.
+For setting metadata from userspace to kernel, let say on encode output plane,
+following code sequence was followed
+1. Video driver is registering for media device and creating a media node in /dev
+2. Request fd is allocated by calling MEDIA_IOC_REQUEST_ALLOC IOCTL on media fd.
+3. METADATA configuration is being applied on request fd using VIDIOC_S_EXT_CTRLS IOCTL
+   and the same request fd is added to buf structure structure before calling VIDIOC_QBUF on video fd.
+4. The same request is queued through MEDIA_REQUEST_IOC_QUEUE IOCTL to driver then, as a result
+   to which METADATA control will be applied to buffer through S_CTRL.
+5. Once control is applied and request is completed, MEDIA_REQUEST_IOC_REINIT IOCTL is called
+   to re-initialize the request.
 
-Perhaps you better drop these unless you want to review them closer.
+We could achieve the same on capture plane as well by removing few checks present currently
+in v4l2 core which restrict the implementation to only output plane.
 
-Johan
+We profiled below data with this implementation :
+1. Total time taken ( round trip ) for setting up control data on video driver
+   with VIDIOC_S_EXT_CTRLS, QBUF and Queue Request: 737us
+2. Time taken for first QBUF on Output plane to reach driver with REQUEST API enabled (One way): 723us
+3. Time taken for first QBUF on Output plane to reach driver without REQUEST API (One way) : 250us
+4. Time taken by each IOCTL to complete ( round trip ) with REQUEST API enabled :
+    a. VIDIOC_S_EXT_CTRLS : 201us
+    b. VIDIOC_QBUF : 92us
+    c. MEDIA_REQUEST_IOC_QUEUE: 386us
+
+Kindly share your feedback/comments on the design/call sequence.
+Also as we experimented and enabled the metadata on capture plane as well, please comment if any issue in
+allowing the metadata exchange on capture plane as well.
+
+Reference for client side implementation can be found at [1].
+
+Thanks,
+Dikshita
+
+[1] https://git.linaro.org/people/stanimir.varbanov/v4l2-encode.git/log/?h=dikshita/request-api
+
+Dikshita Agarwal (3):
+  Register for media device     
+    - Initialize and register for media device     
+    - define venus_m2m_media_ops     
+    - Implement APIs to register/unregister media controller.
+  Enable Request API for output buffers     
+    - Add dependency on MEDIA_CONTROLLER_REQUEST_API in Kconfig.     
+    - Initialize vb2 ops buf_out_validate and buf_request_complete.     
+    - Add support for custom Metadata control V4L2_CID_MPEG_VIDEO_VENUS_METADATA     
+    - Implemeted/Integrated APIs for Request setup/complete.
+  Enable Request API for Capture Buffers
+
+ drivers/media/common/videobuf2/videobuf2-v4l2.c |   4 +-
+ drivers/media/platform/Kconfig                  |   2 +-
+ drivers/media/platform/qcom/venus/core.h        |  36 ++++
+ drivers/media/platform/qcom/venus/helpers.c     | 247 +++++++++++++++++++++++-
+ drivers/media/platform/qcom/venus/helpers.h     |  15 ++
+ drivers/media/platform/qcom/venus/venc.c        |  63 +++++-
+ drivers/media/platform/qcom/venus/venc_ctrls.c  |  61 +++++-
+ drivers/media/v4l2-core/v4l2-ctrls.c            |  10 +
+ drivers/media/v4l2-core/v4l2-mem2mem.c          |  17 +-
+ include/media/v4l2-ctrls.h                      |   1 +
+ include/media/venus-ctrls.h                     |  22 +++
+ 11 files changed, 465 insertions(+), 13 deletions(-)
+ create mode 100644 include/media/venus-ctrls.h
+
+-- 
+1.9.1
+
