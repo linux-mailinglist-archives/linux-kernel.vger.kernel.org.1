@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B6F81CAC40
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:52:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0D151CAC69
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728210AbgEHMva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 08:51:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60408 "EHLO mail.kernel.org"
+        id S1730031AbgEHMxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 08:53:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34550 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729900AbgEHMvX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 08:51:23 -0400
+        id S1730022AbgEHMxF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 08:53:05 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4536F24953;
-        Fri,  8 May 2020 12:51:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0CD1424953;
+        Fri,  8 May 2020 12:53:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588942282;
-        bh=5UUaHL/T+MNhOlEAM9Bbtuz7oEuaCC3NVlwW6aTI8t4=;
+        s=default; t=1588942384;
+        bh=gwwltBoEbues8SEU545brQ4mqhSyAnYy0hmSd/ji+j8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vbzVeR19TGNBOup/y7cAJLCfh1To+yLZuF5qUC6c4SCYRdnKxQDen3EMeFiV2//gZ
-         ER3WlYoaVicltjeMRt+guBDgtoXpVgi9sd96lot5BMt2734vfiwihxeZSAPWxPyW5z
-         BNOE95xOw7lGhWP1h/TAX7dOwLCtSYuUd5Qknx5Y=
+        b=Ic6aVHO3xBdFELvvmx641J0IFtODHTrFqk0mEveDZ9Vjoa/29EvY7Ulv63a4F2ivt
+         cLOAXqLFVZ6GRje9PXr0RH8T0xqjOJ/esu921CQbxhXsnGqpApN/49k9OJnQIu8gHO
+         cJ3pZ+gT54bxwH6d/OAIspjX2j/Yb4+3ZQgJ5790=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ronnie Sahlberg <lsahlber@redhat.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Steve French <stfrench@microsoft.com>,
+        stable@vger.kernel.org,
+        "Jeremie Francois (on alpha)" <jeremie.francois@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 16/32] cifs: protect updating server->dstaddr with a spinlock
+Subject: [PATCH 5.4 23/50] scripts/config: allow colons in option strings for sed
 Date:   Fri,  8 May 2020 14:35:29 +0200
-Message-Id: <20200508123036.981881820@linuxfoundation.org>
+Message-Id: <20200508123046.630074353@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200508123034.886699170@linuxfoundation.org>
-References: <20200508123034.886699170@linuxfoundation.org>
+In-Reply-To: <20200508123043.085296641@linuxfoundation.org>
+References: <20200508123043.085296641@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,37 +45,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ronnie Sahlberg <lsahlber@redhat.com>
+From: Jeremie Francois (on alpha) <jeremie.francois@gmail.com>
 
-[ Upstream commit fada37f6f62995cc449b36ebba1220594bfe55fe ]
+[ Upstream commit e461bc9f9ab105637b86065d24b0b83f182d477c ]
 
-We use a spinlock while we are reading and accessing the destination address for a server.
-We need to also use this spinlock to protect when we are modifying this address from
-reconn_set_ipaddr().
+Sed broke on some strings as it used colon as a separator.
+I made it more robust by using \001, which is legit POSIX AFAIK.
 
-Signed-off-by: Ronnie Sahlberg <lsahlber@redhat.com>
-Reviewed-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+E.g. ./config --set-str CONFIG_USBNET_DEVADDR "de:ad:be:ef:00:01"
+failed with: sed: -e expression #1, char 55: unknown option to `s'
+
+Signed-off-by: Jeremie Francois (on alpha) <jeremie.francois@gmail.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/cifs/connect.c | 2 ++
- 1 file changed, 2 insertions(+)
+ scripts/config | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/fs/cifs/connect.c b/fs/cifs/connect.c
-index 975f800b9dd4d..9e569d60c636b 100644
---- a/fs/cifs/connect.c
-+++ b/fs/cifs/connect.c
-@@ -353,8 +353,10 @@ static int reconn_set_ipaddr(struct TCP_Server_Info *server)
- 		return rc;
- 	}
+diff --git a/scripts/config b/scripts/config
+index e0e39826dae90..eee5b7f3a092a 100755
+--- a/scripts/config
++++ b/scripts/config
+@@ -7,6 +7,9 @@ myname=${0##*/}
+ # If no prefix forced, use the default CONFIG_
+ CONFIG_="${CONFIG_-CONFIG_}"
  
-+	spin_lock(&cifs_tcp_ses_lock);
- 	rc = cifs_convert_address((struct sockaddr *)&server->dstaddr, ipaddr,
- 				  strlen(ipaddr));
-+	spin_unlock(&cifs_tcp_ses_lock);
- 	kfree(ipaddr);
++# We use an uncommon delimiter for sed substitutions
++SED_DELIM=$(echo -en "\001")
++
+ usage() {
+ 	cat >&2 <<EOL
+ Manipulate options in a .config file from the command line.
+@@ -83,7 +86,7 @@ txt_subst() {
+ 	local infile="$3"
+ 	local tmpfile="$infile.swp"
  
- 	return !rc ? -1 : 0;
+-	sed -e "s:$before:$after:" "$infile" >"$tmpfile"
++	sed -e "s$SED_DELIM$before$SED_DELIM$after$SED_DELIM" "$infile" >"$tmpfile"
+ 	# replace original file with the edited one
+ 	mv "$tmpfile" "$infile"
+ }
 -- 
 2.20.1
 
