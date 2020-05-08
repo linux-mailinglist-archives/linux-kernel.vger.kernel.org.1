@@ -2,87 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFC501CB44F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 18:05:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E35F1CB443
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 18:01:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727071AbgEHQFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 12:05:41 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:49977 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726906AbgEHQFk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 12:05:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588953939;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SzNGIg9wCojzQE1LmaJBjj2Riqjs4hcmRh8uNcepGBA=;
-        b=MgXqGQ3uPuCIgaKvqYfvhzNiRjI9LeWvaeMdPksBj58QFl+Elvu5ih+4Zl/vwMfv56p3dA
-        2fM1cVrrI2k1LwbyN/LH7nn7iSnYXvMjfd3llOHGdHQSJm6gz9hht0puV78vI49b8ehkUS
-        QYj/hnV2LjDMmciZI/kzxY9DNIFxycQ=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-487-cVBR9jyhOSaLgXYgcNzYXA-1; Fri, 08 May 2020 12:05:37 -0400
-X-MC-Unique: cVBR9jyhOSaLgXYgcNzYXA-1
-Received: by mail-qv1-f69.google.com with SMTP id cr5so2227174qvb.14
-        for <linux-kernel@vger.kernel.org>; Fri, 08 May 2020 09:05:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SzNGIg9wCojzQE1LmaJBjj2Riqjs4hcmRh8uNcepGBA=;
-        b=Y4GO/yQ2WhnNqHR1+oei0trCRcxdyI0wmCPbRPuESjg4W7UCCBXqWQOc4xy3+HV3l5
-         mjtOtQpwCXK3ezuCCWROk+xy0wJCrVLjwHVjEROLqbtWjIl10K5eDTJxdrFhytqSXvjF
-         8OuuX23shPoPHdpB0hHbKknK3wQUOhcfSBcKs2tdwpBH9rcsP6x5yH3WCSjSiwjCAdpR
-         Rz9OzRSiWCGO94Cpm+et0GK1RN1o32iekFRjU1vfXwYJsh5EY4p8K9a8YrBFVMtqnwGx
-         7eqmuOUqt9Lh9NvJ4+ISTahn+OFkUsX80ht88APyZyZfa51zilbpQ7yo/z8mTMHx+Y/9
-         qb9w==
-X-Gm-Message-State: AGi0PuYua6cMqzP4olR1+FVNJLrGuyexeSLqF5R+aUMc5HGdTVzOZaNC
-        o/aVjauiQueL/Y+z4TMVxD9tXBk+QW29dkc6LzciYRPwjtg+Bux//KsZFCWHzMGMDIPmLbBjm0x
-        HVtLg04fVzCp7LRf2RBZdP/5d
-X-Received: by 2002:a05:6214:42b:: with SMTP id a11mr3487475qvy.186.1588953934337;
-        Fri, 08 May 2020 09:05:34 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJEZbUB9JpX5nQ5mBjKk/50jvAujXFWp5fDu/JL2c2EKEzr4jVhJs06Er18X2ZJXYM9xvwVNA==
-X-Received: by 2002:a05:6214:42b:: with SMTP id a11mr3487445qvy.186.1588953934079;
-        Fri, 08 May 2020 09:05:34 -0700 (PDT)
-Received: from xz-x1 ([2607:9880:19c0:32::2])
-        by smtp.gmail.com with ESMTPSA id t7sm1700790qtr.93.2020.05.08.09.05.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 May 2020 09:05:33 -0700 (PDT)
-Date:   Fri, 8 May 2020 12:05:32 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, cohuck@redhat.com
-Subject: Re: [PATCH v2 1/3] vfio/type1: Support faulting PFNMAP vmas
-Message-ID: <20200508160532.GB228260@xz-x1>
-References: <158871401328.15589.17598154478222071285.stgit@gimli.home>
- <158871568480.15589.17339878308143043906.stgit@gimli.home>
- <20200507212443.GO228260@xz-x1>
- <20200507235421.GK26002@ziepe.ca>
- <20200508021939.GT228260@xz-x1>
- <20200508121013.GO26002@ziepe.ca>
- <20200508143042.GY228260@xz-x1>
- <20200508150540.GP26002@ziepe.ca>
- <20200508094213.0183c645@w520.home>
+        id S1728015AbgEHQBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 12:01:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59286 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727803AbgEHQBh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 12:01:37 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BF1F220725;
+        Fri,  8 May 2020 16:01:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588953697;
+        bh=e/q+X2llUESDXjknVyD37ZTb95TJ/m5mQMoLaK/Zq5s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Bu0EOWe3AR5ZE9lofciPSHX8kg17gXFgLXHZhP4cxL90fG3kmEzp+KGkypxpQoBTN
+         bzC20fYQBpgzPgI1cLZUbWrFU4R3x94Z/QlASK96dd66zk6hRxh6oiTi1gDVNRnH36
+         BSvVZlEPlc8DxFjnegGZxnsM/oOWQsPny7P98ZDc=
+Date:   Fri, 8 May 2020 11:06:04 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: Re: [PATCH RESEND] tpm: eventlog: Replace zero-length array with
+ flexible-array member
+Message-ID: <20200508160604.GA23375@embeddedor>
+References: <20200507040912.GA31382@embeddedor>
+ <202005071058.A2234694ED@keescook>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200508094213.0183c645@w520.home>
+In-Reply-To: <202005071058.A2234694ED@keescook>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 08, 2020 at 09:42:13AM -0600, Alex Williamson wrote:
-> Thanks for the discussion.  I gather then that this patch is correct as
-> written, which probably also mean the patch Peter linked for KVM should
-> not be applied since the logic is the same there.  Correct?  Thanks,
+On Thu, May 07, 2020 at 11:02:18AM -0700, Kees Cook wrote:
+> On Wed, May 06, 2020 at 11:09:12PM -0500, Gustavo A. R. Silva wrote:
+> > As mentioned above: "Flexible array members have incomplete type, and
+> > so the sizeof operator may not be applied. As a quirk of the original
+> > implementation of zero-length arrays, sizeof evaluates to zero."[1] So,
+> > the sizeof(flexible-array) can be safely removed to fix the error above.
+> 
+> As in "sizeof(event_header->event) always evaluated to 0, so removing it
+> has no effect".
+> 
 
-Right.  I've already replied yesterday in that thread so Paolo unqueue that
-patch too.  Thanks,
+Thanks for this.  I wanted to make a more general statement, but I'll
+update the changelog text. :)
 
--- 
-Peter Xu
+> > [...]
+> > diff --git a/drivers/char/tpm/eventlog/tpm2.c b/drivers/char/tpm/eventlog/tpm2.c
+> > index e741b1157525..351a2989b3c6 100644
+> > --- a/drivers/char/tpm/eventlog/tpm2.c
+> > +++ b/drivers/char/tpm/eventlog/tpm2.c
+> > @@ -51,8 +51,7 @@ static void *tpm2_bios_measurements_start(struct seq_file *m, loff_t *pos)
+> >  	int i;
+> >  
+> >  	event_header = addr;
+> > -	size = sizeof(struct tcg_pcr_event) - sizeof(event_header->event)
+> > -		+ event_header->event_size;
+> > +	size = sizeof(*event_header) + event_header->event_size;
+> 
+> That said, I think it would be better to stick to the struct_size()
+> idiom for dealing with flexible arrays here:
+> 
+> 	size = struct_size(event_header, event, event_size);
+> 
+
+Yep, I agree. I'll add this and send v2, shortly.
+
+Thanks
+--
+Gustavo
 
