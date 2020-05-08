@@ -2,84 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DC9D1CB958
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 22:56:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAC0C1CB95C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 22:59:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727119AbgEHU4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 16:56:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52162 "EHLO
+        id S1727860AbgEHU7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 16:59:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726811AbgEHU4y (ORCPT
+        with ESMTP id S1727828AbgEHU7P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 16:56:54 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C017C061A0C;
-        Fri,  8 May 2020 13:56:54 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id w65so1552079pfc.12;
-        Fri, 08 May 2020 13:56:54 -0700 (PDT)
+        Fri, 8 May 2020 16:59:15 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2689EC061A0C
+        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 13:59:15 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id b18so9632841oic.6
+        for <linux-kernel@vger.kernel.org>; Fri, 08 May 2020 13:59:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=ffwll.ch; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Zlm78NTnUQgNYB/Y967ROyt+Vq6Ourlp2uSc1BOpBws=;
-        b=M0Q9kTtNIZEe1jIjMA66/OIdnRkPBbQmv8ljANvcY0f8o5u0x2faUnJ6RuiDVnOogJ
-         AZMu4rNisN6N20x7HUsPvfqyLbVKklvH0F1W4pzLm1MKs8v8RQKA6pgoeIfwLoqeg718
-         UtUJ48rWMMZqrgWXdWcSZe3nY6vlDd94hg8uTaYXZc7beM9AdCXXmAOJ2GW30ETN65FD
-         TOZ4tAx8+5NoTgNeKEmbR7Wy47gjeN6qxrA6gbJYfGatNkusS/Itn799v4Y2hjZ93CNH
-         hlZ9LBEFqrN0W85cWQAGFgvfg7/W5nAXtacoeWpBEdbBrZBVQLvQmICPy2RbzX4/Sir5
-         lY8Q==
+         :cc:content-transfer-encoding;
+        bh=JvQWomvjxRLudQWRCaB9megG2fXdC0dsqrE9wIO6QIg=;
+        b=UzoCHcnW0VeddBNAXca5ePUWKDqO4F5IKcddt+7x2DPPr5wW20lpdInECrtT3H1iq4
+         KchnkNi2mevHqKxSjitcQY6w/pz2vX/CqsvJ0y4w1UezxkAI4Gy4SCZS2mGwDFDEL33p
+         9ej4GLctnLkeHfH7cseZZkPYJS/WcYjvU2k8c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Zlm78NTnUQgNYB/Y967ROyt+Vq6Ourlp2uSc1BOpBws=;
-        b=ltFIAZ1II/i2Dx32YZ83Wt/rv6XCQGZq0gQBwt6YQeLcVjoJxk82QLvCc8nefBm1rR
-         o9yBmXwWn4l3Kcevz3bTNM/8Pc28N7Z1Cgrd8ZP6vJuNyOSXfpTJ92OUg8dZvbNL6Y8X
-         TK1CiiYS1kcy6BhTxkOmpDmWIc09D/HY1AR2LVwqiDRBY/IUX0L9AcnAruPjIdisF6TK
-         gGV6D31G5EHifRr+nTtAsMfv9M4VlrMtEoxTxvf/ccHCNIarkxuczOZIQoyNIUWmL/Jn
-         SK/LVAeIEAYIv8Vh2mmlRGVZwCbLURVcfjg1bkuH+m0lQMGgp92hm9jscIlkftlN0Xm1
-         3QaQ==
-X-Gm-Message-State: AGi0PuYL8zgMkD6R5zRhLHdNdOlM+XiguFBDyvAFV8g7OT9kR4LWo4H5
-        NisZtUi3u6CxxO6o2bMZdA542+BzBKoY9wJrqdc=
-X-Google-Smtp-Source: APiQypJh5cAMBBfNusXJPVcVDn9Dbj0bYJKdrDRWrc0mlA/7CUTo/0H3snaYhe30TjSHF9rjzmoNpoLfAM2489rl8dk=
-X-Received: by 2002:a62:7f11:: with SMTP id a17mr3486614pfd.36.1588971413629;
- Fri, 08 May 2020 13:56:53 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=JvQWomvjxRLudQWRCaB9megG2fXdC0dsqrE9wIO6QIg=;
+        b=VWcpZFQNq/ZIXa5tB1cWXiS8qSctyUOFyfesMmoQkAFEZ/qjQCW6+n1rSD3PVvQRFW
+         FeEfE++S5aiJ4nan5RHVi+qzEgPy0aUMBe2jNfALKKQNYeMwDGSESOHzyLDQyvn4UxCc
+         iJjoof2VcbvvOHAOCy5TArHBEdCSiU7aDEdbp1bVBOLmOU+BmUtOik2sN6Ls14XKTwNX
+         5fh3qmbK8WZku4pHJdlIjvF09OWcFhhD7fffnMSeV7wxa5sXBJlFZK5m7LqSyv8XbvHM
+         31AI+fIMYX6ZytmPFugG3G6+uwNbYViYifOqKUxvNMfqRgw+uQh1suRUTmq8UhEs63yl
+         CsMw==
+X-Gm-Message-State: AGi0PuYYdWNaoYJ9LpzaM+hUWrxUEcw/boXslcjU0osDcFO1XLsurRrY
+        UnPmk4GZZGy5MFxyccuWzLDz7WROTQW1XITgA9vA+w==
+X-Google-Smtp-Source: APiQypLAu0p1Krm7EdSF7szPOyo3xTBi08s9nDniaTs/XUU/hUlKs8JR8+zGu/R5I2zr21JRDg9KubXRs4AnLxBrUgg=
+X-Received: by 2002:aca:2113:: with SMTP id 19mr3361674oiz.128.1588971554521;
+ Fri, 08 May 2020 13:59:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200422220559.99726-1-hdegoede@redhat.com> <bcb4d40a-8971-22d6-959b-14b2d329cfd4@redhat.com>
-In-Reply-To: <bcb4d40a-8971-22d6-959b-14b2d329cfd4@redhat.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 8 May 2020 23:56:42 +0300
-Message-ID: <CAHp75Vceqb4tpM_G7hcg2RWF6Cp+P61NiiYfQsf9tr8vtFJGHg@mail.gmail.com>
-Subject: Re: [PATCH] platform/x86: asus-nb-wmi: Do not load on Asus T100TA and T200TA
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Corentin Chary <corentin.chary@gmail.com>,
-        acpi4asus-user <acpi4asus-user@lists.sourceforge.net>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200508204751.155488-1-lyude@redhat.com> <20200508204751.155488-4-lyude@redhat.com>
+In-Reply-To: <20200508204751.155488-4-lyude@redhat.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Fri, 8 May 2020 22:59:03 +0200
+Message-ID: <CAKMK7uGEssowz-9jX1LP4=eRNTuxN_k4MLfrGqG3szjQE=Gonw@mail.gmail.com>
+Subject: Re: [RFC v4 03/12] drm/vblank: Register drmm cleanup action once per drm_vblank_crtc
+To:     Lyude Paul <lyude@redhat.com>
+Cc:     Nouveau Dev <nouveau@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 8, 2020 at 10:54 PM Hans de Goede <hdegoede@redhat.com> wrote:
-> On 4/23/20 12:05 AM, Hans de Goede wrote:
+On Fri, May 8, 2020 at 10:48 PM Lyude Paul <lyude@redhat.com> wrote:
+>
+> Since we'll be allocating resources for kthread_create_worker() in the
+> next commit (which could fail and require us to clean up the mess),
+> let's simplify the cleanup process a bit by registering a
+> drm_vblank_init_release() action for each drm_vblank_crtc so they're
+> still cleaned up if we fail to initialize one of them.
+>
+> Changes since v3:
+> * Use drmm_add_action_or_reset() - Daniel Vetter
+>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Ville Syrj=C3=A4l=C3=A4 <ville.syrjala@linux.intel.com>
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: nouveau@lists.freedesktop.org
+> Signed-off-by: Lyude Paul <lyude@redhat.com>
 
-> Andy, Darren, I see that you have already added this to the for-next
-> branch of linux-platform-drivers-x86. I'm not sure what your vision
-> on forced pushed there is. If forced pushes are ok, please drop this
-> patch. If not let me know and I will send out a revert.
+Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
 
-Forced pushes are not okay, but we have exceptions in some cases.
-It would be done here, but there are complications, i.e. we have
-already immutable branch merged from MFD. Of course, I would remerge
-it again, but I think we better not to do this right now, so, revert
-seems a less painful in this case. Or, if you have already done
-something better, than keep it as follow up improvement rather than
-pure revert.
+I think the other patches need a brain that's less in w/e mode :-)
 
--- 
-With Best Regards,
-Andy Shevchenko
+Cheers, Daniel
+
+> ---
+>  drivers/gpu/drm/drm_vblank.c | 23 ++++++++++-------------
+>  1 file changed, 10 insertions(+), 13 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/drm_vblank.c b/drivers/gpu/drm/drm_vblank.c
+> index 758bf74e1cab..a4a9013584e2 100644
+> --- a/drivers/gpu/drm/drm_vblank.c
+> +++ b/drivers/gpu/drm/drm_vblank.c
+> @@ -491,16 +491,12 @@ static void vblank_disable_fn(struct timer_list *t)
+>
+>  static void drm_vblank_init_release(struct drm_device *dev, void *ptr)
+>  {
+> -       unsigned int pipe;
+> -
+> -       for (pipe =3D 0; pipe < dev->num_crtcs; pipe++) {
+> -               struct drm_vblank_crtc *vblank =3D &dev->vblank[pipe];
+> +       struct drm_vblank_crtc *vblank =3D ptr;
+>
+> -               WARN_ON(READ_ONCE(vblank->enabled) &&
+> -                       drm_core_check_feature(dev, DRIVER_MODESET));
+> +       WARN_ON(READ_ONCE(vblank->enabled) &&
+> +               drm_core_check_feature(dev, DRIVER_MODESET));
+>
+> -               del_timer_sync(&vblank->disable_timer);
+> -       }
+> +       del_timer_sync(&vblank->disable_timer);
+>  }
+>
+>  /**
+> @@ -510,7 +506,7 @@ static void drm_vblank_init_release(struct drm_device=
+ *dev, void *ptr)
+>   *
+>   * This function initializes vblank support for @num_crtcs display pipel=
+ines.
+>   * Cleanup is handled automatically through a cleanup function added wit=
+h
+> - * drmm_add_action().
+> + * drmm_add_action_or_reset().
+>   *
+>   * Returns:
+>   * Zero on success or a negative error code on failure.
+> @@ -529,10 +525,6 @@ int drm_vblank_init(struct drm_device *dev, unsigned=
+ int num_crtcs)
+>
+>         dev->num_crtcs =3D num_crtcs;
+>
+> -       ret =3D drmm_add_action(dev, drm_vblank_init_release, NULL);
+> -       if (ret)
+> -               return ret;
+> -
+>         for (i =3D 0; i < num_crtcs; i++) {
+>                 struct drm_vblank_crtc *vblank =3D &dev->vblank[i];
+>
+> @@ -541,6 +533,11 @@ int drm_vblank_init(struct drm_device *dev, unsigned=
+ int num_crtcs)
+>                 init_waitqueue_head(&vblank->queue);
+>                 timer_setup(&vblank->disable_timer, vblank_disable_fn, 0)=
+;
+>                 seqlock_init(&vblank->seqlock);
+> +
+> +               ret =3D drmm_add_action_or_reset(dev, drm_vblank_init_rel=
+ease,
+> +                                              vblank);
+> +               if (ret)
+> +                       return ret;
+>         }
+>
+>         DRM_INFO("Supports vblank timestamp caching Rev 2 (21.10.2013).\n=
+");
+> --
+> 2.25.4
+>
+
+
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
++41 (0) 79 365 57 48 - http://blog.ffwll.ch
