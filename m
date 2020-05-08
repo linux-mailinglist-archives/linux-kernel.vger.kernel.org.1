@@ -2,89 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACA881CA492
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 08:53:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9E611CA49C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 08:56:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727032AbgEHGxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 02:53:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33448 "EHLO
+        id S1726612AbgEHG4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 02:56:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725971AbgEHGxs (ORCPT
+        by vger.kernel.org with ESMTP id S1725971AbgEHG4E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 02:53:48 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38809C05BD43;
-        Thu,  7 May 2020 23:53:48 -0700 (PDT)
-Received: by ozlabs.org (Postfix, from userid 1034)
-        id 49JLdh6JfQz9sSy; Fri,  8 May 2020 16:53:44 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1588920824;
-        bh=9Ynms6h27w3AbHNpPH8n4uEonv1y0P/FM3hzIpDmeh0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lBieyN440rRpPXdGKZOP/FUv65pTIR2LQbC4+L21Xu6LA4zmzWIQafdUr6+jxSeiW
-         l5m5McNHxwk5XIa9VtBvcx4dmDfD0zH0b8hNkXEp2ql0y+HcaISvLyNHR+lJb+8bRq
-         IJl+jgMjI2qVUVFUiQUTz/ouKLyiCeMr9O3bEiZBfKGsxKcKp3tQXfPqfFuPVZXsQj
-         MXK4NEVfsv/qDbYdI7o+J1iw2jpjgJUOrs4V0HcNJ6r6KCmmi85gVAiiJ6Aj/3R4EP
-         V9wtD8tWLW6JeC6uV8EAiRVXYJXdSmITh0po6xMm/O73AXtX3HWCXA2ayzGF7V8sLL
-         6dfxqUlxwidog==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     keescook@chromium.org, linux-kselftest@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] selftests/lkdtm: Use grep -E instead of egrep
-Date:   Fri,  8 May 2020 16:53:56 +1000
-Message-Id: <20200508065356.2493343-2-mpe@ellerman.id.au>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200508065356.2493343-1-mpe@ellerman.id.au>
-References: <20200508065356.2493343-1-mpe@ellerman.id.au>
+        Fri, 8 May 2020 02:56:04 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F0CAC05BD43
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 23:56:04 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1jWwvS-0007FL-Er; Fri, 08 May 2020 08:56:02 +0200
+Subject: Re: [PATCH v3 1/2] dt-bindings: nvmem: skip nodes with compatibles
+ other than "nvmem-cell"
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     kernel@pengutronix.de, ceggers@arri.de,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200428111829.2215-1-a.fatoum@pengutronix.de>
+ <20200428111829.2215-2-a.fatoum@pengutronix.de>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <50580c0f-1780-4d58-ebaa-8b03e3035464@pengutronix.de>
+Date:   Fri, 8 May 2020 08:56:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200428111829.2215-2-a.fatoum@pengutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-shellcheck complains that egrep is deprecated, and the grep man page
-agrees. Use grep -E instead.
+Hello Srini,
+Hello Rob,
 
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
----
- tools/testing/selftests/lkdtm/run.sh | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+On 4/28/20 1:18 PM, Ahmad Fatoum wrote:
+> To allow co-existence of nvmem-cells with other nodes, loosen the
+> binding to consult an optional compatible property for the cells:
 
-diff --git a/tools/testing/selftests/lkdtm/run.sh b/tools/testing/selftests/lkdtm/run.sh
-index 0b409e187c7b..ee64ff8df8f4 100755
---- a/tools/testing/selftests/lkdtm/run.sh
-+++ b/tools/testing/selftests/lkdtm/run.sh
-@@ -25,13 +25,13 @@ fi
- # Figure out which test to run from our script name.
- test=$(basename $0 .sh)
- # Look up details about the test from master list of LKDTM tests.
--line=$(egrep '^#?'"$test"'\b' tests.txt)
-+line=$(grep -E '^#?'"$test"'\b' tests.txt)
- if [ -z "$line" ]; then
- 	echo "Skipped: missing test '$test' in tests.txt"
- 	exit $KSELFTEST_SKIP_TEST
- fi
- # Check that the test is known to LKDTM.
--if ! egrep -q '^'"$test"'$' "$TRIGGER" ; then
-+if ! grep -E -q '^'"$test"'$' "$TRIGGER" ; then
- 	echo "Skipped: test '$test' missing in $TRIGGER!"
- 	exit $KSELFTEST_SKIP_TEST
- fi
-@@ -80,11 +80,11 @@ dmesg | diff --changed-group-format='%>' --unchanged-group-format='' "$DMESG" -
- 
- cat "$LOG"
- # Check for expected output
--if egrep -qi "$expect" "$LOG" ; then
-+if grep -E -qi "$expect" "$LOG" ; then
- 	echo "$test: saw '$expect': ok"
- 	exit 0
- else
--	if egrep -qi XFAIL: "$LOG" ; then
-+	if grep -E -qi XFAIL: "$LOG" ; then
- 		echo "$test: saw 'XFAIL': [SKIP]"
- 		exit $KSELFTEST_SKIP_TEST
- 	else
+Gentle ping.
+
+Cheers,
+Ahmad
+
 -- 
-2.25.1
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
