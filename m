@@ -2,40 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 477A41CADAE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:06:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DD481CACA5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729348AbgEHNDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:03:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57824 "EHLO mail.kernel.org"
+        id S1730315AbgEHMzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 08:55:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728507AbgEHMuS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 08:50:18 -0400
+        id S1728224AbgEHMzN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 08:55:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BED2221473;
-        Fri,  8 May 2020 12:50:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 528612054F;
+        Fri,  8 May 2020 12:55:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588942218;
-        bh=gwwltBoEbues8SEU545brQ4mqhSyAnYy0hmSd/ji+j8=;
+        s=default; t=1588942512;
+        bh=cI6v8CZuocD6h+XIZMxcmeIiHC1Q3wA6Tn75/oE61No=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EXoTijNvkrzENB0xm91WxbijP+fMI2x4fIULcRZpwyHCxxrrI5c4SUK9eA4MmopU/
-         fNUb9xzdS7D0r7MFl+dMJS6HDVxFDlWc+u8sxmZuR7tLVDI8tss9ZSkAIbbf5IMQok
-         lAtWNcIv9llStOlfSBLk2j+WdoED84MVTqdf+TYw=
+        b=mCrpR1TaEl0wENXtaIr0JQpEOaXBR1KXfWMZ2m4hDZsgmVKpIkyuTw55Bq+e9rRcP
+         kdQ5eZSVG+K7PBPIjPfonyYREnpdtnEYvZ44QllqrNJKy72mBMX6BGK1z9C6VBK8qy
+         oYybDQY/+XujH3M7gTOTcz+/DEmEt16l61LdUKUA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        "Jeremie Francois (on alpha)" <jeremie.francois@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
+        =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= 
+        <amadeuszx.slawinski@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 13/22] scripts/config: allow colons in option strings for sed
+Subject: [PATCH 5.6 08/49] ASoC: topology: Check return value of soc_tplg_dai_config
 Date:   Fri,  8 May 2020 14:35:25 +0200
-Message-Id: <20200508123035.508402529@linuxfoundation.org>
+Message-Id: <20200508123044.132239672@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200508123033.915895060@linuxfoundation.org>
-References: <20200508123033.915895060@linuxfoundation.org>
+In-Reply-To: <20200508123042.775047422@linuxfoundation.org>
+References: <20200508123042.775047422@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,46 +48,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeremie Francois (on alpha) <jeremie.francois@gmail.com>
+From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 
-[ Upstream commit e461bc9f9ab105637b86065d24b0b83f182d477c ]
+[ Upstream commit dd8e871d4e560eeb8d22af82dde91457ad835a63 ]
 
-Sed broke on some strings as it used colon as a separator.
-I made it more robust by using \001, which is legit POSIX AFAIK.
+Function soc_tplg_dai_config can fail, check for and handle possible
+failure.
 
-E.g. ./config --set-str CONFIG_USBNET_DEVADDR "de:ad:be:ef:00:01"
-failed with: sed: -e expression #1, char 55: unknown option to `s'
-
-Signed-off-by: Jeremie Francois (on alpha) <jeremie.francois@gmail.com>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20200327204729.397-7-amadeuszx.slawinski@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/config | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ sound/soc/soc-topology.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/scripts/config b/scripts/config
-index e0e39826dae90..eee5b7f3a092a 100755
---- a/scripts/config
-+++ b/scripts/config
-@@ -7,6 +7,9 @@ myname=${0##*/}
- # If no prefix forced, use the default CONFIG_
- CONFIG_="${CONFIG_-CONFIG_}"
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index ca0ac5372b293..e6a17ab433eea 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -2524,7 +2524,7 @@ static int soc_tplg_dai_elems_load(struct soc_tplg *tplg,
+ {
+ 	struct snd_soc_tplg_dai *dai;
+ 	int count;
+-	int i;
++	int i, ret;
  
-+# We use an uncommon delimiter for sed substitutions
-+SED_DELIM=$(echo -en "\001")
+ 	count = le32_to_cpu(hdr->count);
+ 
+@@ -2539,7 +2539,12 @@ static int soc_tplg_dai_elems_load(struct soc_tplg *tplg,
+ 			return -EINVAL;
+ 		}
+ 
+-		soc_tplg_dai_config(tplg, dai);
++		ret = soc_tplg_dai_config(tplg, dai);
++		if (ret < 0) {
++			dev_err(tplg->dev, "ASoC: failed to configure DAI\n");
++			return ret;
++		}
 +
- usage() {
- 	cat >&2 <<EOL
- Manipulate options in a .config file from the command line.
-@@ -83,7 +86,7 @@ txt_subst() {
- 	local infile="$3"
- 	local tmpfile="$infile.swp"
+ 		tplg->pos += (sizeof(*dai) + le32_to_cpu(dai->priv.size));
+ 	}
  
--	sed -e "s:$before:$after:" "$infile" >"$tmpfile"
-+	sed -e "s$SED_DELIM$before$SED_DELIM$after$SED_DELIM" "$infile" >"$tmpfile"
- 	# replace original file with the edited one
- 	mv "$tmpfile" "$infile"
- }
 -- 
 2.20.1
 
