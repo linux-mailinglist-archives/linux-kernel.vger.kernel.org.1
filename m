@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 952251CAEE2
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:16:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBD111CAEED
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:16:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730420AbgEHNL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:11:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34552 "EHLO
+        id S1729283AbgEHNMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 09:12:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729205AbgEHNEx (ORCPT
+        by vger.kernel.org with ESMTP id S1730001AbgEHNEt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 09:04:53 -0400
+        Fri, 8 May 2020 09:04:49 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C1A7C05BD09;
-        Fri,  8 May 2020 06:04:53 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1732C05BD0A;
+        Fri,  8 May 2020 06:04:48 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jX2gL-00079f-5m; Fri, 08 May 2020 15:04:49 +0200
+        id 1jX2gG-00079E-Qc; Fri, 08 May 2020 15:04:44 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id CFDD41C0475;
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 71B791C0493;
         Fri,  8 May 2020 15:04:43 +0200 (CEST)
 Date:   Fri, 08 May 2020 13:04:43 -0000
 From:   "tip-bot2 for Arnaldo Carvalho de Melo" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf kmem: Rename perf_evsel__*() operating on
+Subject: [tip: perf/core] perf lock: Rename perf_evsel__*() operating on
  'struct evsel *' to evsel__*()
 Cc:     Adrian Hunter <adrian.hunter@intel.com>,
         Jiri Olsa <jolsa@kernel.org>,
@@ -35,7 +35,7 @@ Cc:     Adrian Hunter <adrian.hunter@intel.com>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <158894308377.8414.10816844105228642452.tip-bot2@tip-bot2>
+Message-ID: <158894308339.8414.6045090185610418829.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -51,14 +51,14 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the perf/core branch of tip:
 
-Commit-ID:     8cf5d0e09df3176f9afd334b77b216cbc6daf239
-Gitweb:        https://git.kernel.org/tip/8cf5d0e09df3176f9afd334b77b216cbc6daf239
+Commit-ID:     3d655813017f62ca3dda1c921f2440cb3052d20d
+Gitweb:        https://git.kernel.org/tip/3d655813017f62ca3dda1c921f2440cb3052d20d
 Author:        Arnaldo Carvalho de Melo <acme@redhat.com>
-AuthorDate:    Mon, 04 May 2020 13:56:02 -03:00
+AuthorDate:    Mon, 04 May 2020 13:56:18 -03:00
 Committer:     Arnaldo Carvalho de Melo <acme@redhat.com>
 CommitterDate: Tue, 05 May 2020 16:35:31 -03:00
 
-perf kmem: Rename perf_evsel__*() operating on 'struct evsel *' to evsel__*()
+perf lock: Rename perf_evsel__*() operating on 'struct evsel *' to evsel__*()
 
 As those is a 'struct evsel' methods, not part of tools/lib/perf/, aka
 libperf, to whom the perf_ prefix belongs.
@@ -68,87 +68,62 @@ Cc: Jiri Olsa <jolsa@kernel.org>
 Cc: Namhyung Kim <namhyung@kernel.org>
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/perf/builtin-kmem.c | 33 ++++++++++++++-------------------
- 1 file changed, 14 insertions(+), 19 deletions(-)
+ tools/perf/builtin-lock.c | 20 ++++++++------------
+ 1 file changed, 8 insertions(+), 12 deletions(-)
 
-diff --git a/tools/perf/builtin-kmem.c b/tools/perf/builtin-kmem.c
-index 0a296fb..38a5ab6 100644
---- a/tools/perf/builtin-kmem.c
-+++ b/tools/perf/builtin-kmem.c
-@@ -169,8 +169,7 @@ static int insert_caller_stat(unsigned long call_site,
+diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
+index 5a19dc2..f0a1dba 100644
+--- a/tools/perf/builtin-lock.c
++++ b/tools/perf/builtin-lock.c
+@@ -657,32 +657,28 @@ static struct trace_lock_handler report_lock_ops  = {
+ 
+ static struct trace_lock_handler *trace_handler;
+ 
+-static int perf_evsel__process_lock_acquire(struct evsel *evsel,
+-					     struct perf_sample *sample)
++static int evsel__process_lock_acquire(struct evsel *evsel, struct perf_sample *sample)
+ {
+ 	if (trace_handler->acquire_event)
+ 		return trace_handler->acquire_event(evsel, sample);
  	return 0;
  }
  
--static int perf_evsel__process_alloc_event(struct evsel *evsel,
--					   struct perf_sample *sample)
-+static int evsel__process_alloc_event(struct evsel *evsel, struct perf_sample *sample)
+-static int perf_evsel__process_lock_acquired(struct evsel *evsel,
+-					      struct perf_sample *sample)
++static int evsel__process_lock_acquired(struct evsel *evsel, struct perf_sample *sample)
  {
- 	unsigned long ptr = evsel__intval(evsel, sample, "ptr"),
- 		      call_site = evsel__intval(evsel, sample, "call_site");
-@@ -188,10 +187,9 @@ static int perf_evsel__process_alloc_event(struct evsel *evsel,
+ 	if (trace_handler->acquired_event)
+ 		return trace_handler->acquired_event(evsel, sample);
  	return 0;
  }
  
--static int perf_evsel__process_alloc_node_event(struct evsel *evsel,
--						struct perf_sample *sample)
-+static int evsel__process_alloc_node_event(struct evsel *evsel, struct perf_sample *sample)
+-static int perf_evsel__process_lock_contended(struct evsel *evsel,
+-					      struct perf_sample *sample)
++static int evsel__process_lock_contended(struct evsel *evsel, struct perf_sample *sample)
  {
--	int ret = perf_evsel__process_alloc_event(evsel, sample);
-+	int ret = evsel__process_alloc_event(evsel, sample);
- 
- 	if (!ret) {
- 		int node1 = cpu__get_node(sample->cpu),
-@@ -232,8 +230,7 @@ static struct alloc_stat *search_alloc_stat(unsigned long ptr,
- 	return NULL;
- }
- 
--static int perf_evsel__process_free_event(struct evsel *evsel,
--					  struct perf_sample *sample)
-+static int evsel__process_free_event(struct evsel *evsel, struct perf_sample *sample)
- {
- 	unsigned long ptr = evsel__intval(evsel, sample, "ptr");
- 	struct alloc_stat *s_alloc, *s_caller;
-@@ -784,8 +781,7 @@ static int parse_gfp_flags(struct evsel *evsel, struct perf_sample *sample,
+ 	if (trace_handler->contended_event)
+ 		return trace_handler->contended_event(evsel, sample);
  	return 0;
  }
  
--static int perf_evsel__process_page_alloc_event(struct evsel *evsel,
--						struct perf_sample *sample)
-+static int evsel__process_page_alloc_event(struct evsel *evsel, struct perf_sample *sample)
+-static int perf_evsel__process_lock_release(struct evsel *evsel,
+-					    struct perf_sample *sample)
++static int evsel__process_lock_release(struct evsel *evsel, struct perf_sample *sample)
  {
- 	u64 page;
- 	unsigned int order = evsel__intval(evsel, sample, "order");
-@@ -857,8 +853,7 @@ static int perf_evsel__process_page_alloc_event(struct evsel *evsel,
- 	return 0;
+ 	if (trace_handler->release_event)
+ 		return trace_handler->release_event(evsel, sample);
+@@ -849,10 +845,10 @@ static void sort_result(void)
  }
  
--static int perf_evsel__process_page_free_event(struct evsel *evsel,
--						struct perf_sample *sample)
-+static int evsel__process_page_free_event(struct evsel *evsel, struct perf_sample *sample)
- {
- 	u64 page;
- 	unsigned int order = evsel__intval(evsel, sample, "order");
-@@ -1371,15 +1366,15 @@ static int __cmd_kmem(struct perf_session *session)
- 	struct evsel *evsel;
- 	const struct evsel_str_handler kmem_tracepoints[] = {
- 		/* slab allocator */
--		{ "kmem:kmalloc",		perf_evsel__process_alloc_event, },
--    		{ "kmem:kmem_cache_alloc",	perf_evsel__process_alloc_event, },
--		{ "kmem:kmalloc_node",		perf_evsel__process_alloc_node_event, },
--    		{ "kmem:kmem_cache_alloc_node", perf_evsel__process_alloc_node_event, },
--		{ "kmem:kfree",			perf_evsel__process_free_event, },
--    		{ "kmem:kmem_cache_free",	perf_evsel__process_free_event, },
-+		{ "kmem:kmalloc",		evsel__process_alloc_event, },
-+		{ "kmem:kmem_cache_alloc",	evsel__process_alloc_event, },
-+		{ "kmem:kmalloc_node",		evsel__process_alloc_node_event, },
-+		{ "kmem:kmem_cache_alloc_node", evsel__process_alloc_node_event, },
-+		{ "kmem:kfree",			evsel__process_free_event, },
-+		{ "kmem:kmem_cache_free",	evsel__process_free_event, },
- 		/* page allocator */
--		{ "kmem:mm_page_alloc",		perf_evsel__process_page_alloc_event, },
--		{ "kmem:mm_page_free",		perf_evsel__process_page_free_event, },
-+		{ "kmem:mm_page_alloc",		evsel__process_page_alloc_event, },
-+		{ "kmem:mm_page_free",		evsel__process_page_free_event, },
- 	};
+ static const struct evsel_str_handler lock_tracepoints[] = {
+-	{ "lock:lock_acquire",	 perf_evsel__process_lock_acquire,   }, /* CONFIG_LOCKDEP */
+-	{ "lock:lock_acquired",	 perf_evsel__process_lock_acquired,  }, /* CONFIG_LOCKDEP, CONFIG_LOCK_STAT */
+-	{ "lock:lock_contended", perf_evsel__process_lock_contended, }, /* CONFIG_LOCKDEP, CONFIG_LOCK_STAT */
+-	{ "lock:lock_release",	 perf_evsel__process_lock_release,   }, /* CONFIG_LOCKDEP */
++	{ "lock:lock_acquire",	 evsel__process_lock_acquire,   }, /* CONFIG_LOCKDEP */
++	{ "lock:lock_acquired",	 evsel__process_lock_acquired,  }, /* CONFIG_LOCKDEP, CONFIG_LOCK_STAT */
++	{ "lock:lock_contended", evsel__process_lock_contended, }, /* CONFIG_LOCKDEP, CONFIG_LOCK_STAT */
++	{ "lock:lock_release",	 evsel__process_lock_release,   }, /* CONFIG_LOCKDEP */
+ };
  
- 	if (!perf_session__has_traces(session, "kmem record"))
+ static bool force;
