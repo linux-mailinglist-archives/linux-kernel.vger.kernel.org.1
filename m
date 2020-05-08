@@ -2,39 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 485081CAD79
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:02:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 546781CACFA
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:58:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729826AbgEHNC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:02:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59528 "EHLO mail.kernel.org"
+        id S1730248AbgEHM6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 08:58:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37742 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729853AbgEHMuz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 08:50:55 -0400
+        id S1729303AbgEHMzD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 08:55:03 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B656C24964;
-        Fri,  8 May 2020 12:50:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6E61924969;
+        Fri,  8 May 2020 12:55:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588942255;
-        bh=MVj9UZhM0DjTLdw9ouaGd2g02wNy/NokxdpMwsfgbjY=;
+        s=default; t=1588942502;
+        bh=wKg3mdRc7QvO4DqaiEtjwc6EMIbVoFS3vQY/Sg+NFzU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jVII4CR6GlCEPip65jyCTROh6N6MwauJJozGDqEUV2aZMm4xNUWxu+G+kWnJKgBOf
-         xLqztfdDqfpGZMd31Ahv+wD6U1kC1/kZbOGaqdsUzWTKB7s8R0TT6Hn3w2voYK3kIG
-         837DF3RCV5j3iJQCVvslorXIq/ZOEiZ89DtgVt10=
+        b=F6WlXX/mxZugOoGUHl6O1mHjoakHKV3ER8+4bqeSI42NVADQxHtvRaY/lfCBU02a0
+         v04Qq5Xz1TcWC0osk65g9fdbkeM/gcyTGX8vsdXDf3JMYnuzqPcZYE0Yw9ukK7kFTQ
+         0Z7D1+NRBwLvctKXKP2PeeBd5rd15njdrvsEgABE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Julien Beraud <julien.beraud@orolia.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= 
+        <amadeuszx.slawinski@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 09/22] net: stmmac: fix enabling socfpgas ptp_ref_clock
+Subject: [PATCH 5.6 04/49] ASoC: topology: Check return value of soc_tplg_create_tlv
 Date:   Fri,  8 May 2020 14:35:21 +0200
-Message-Id: <20200508123035.066280486@linuxfoundation.org>
+Message-Id: <20200508123043.485099827@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200508123033.915895060@linuxfoundation.org>
-References: <20200508123033.915895060@linuxfoundation.org>
+In-Reply-To: <20200508123042.775047422@linuxfoundation.org>
+References: <20200508123042.775047422@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,55 +48,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julien Beraud <julien.beraud@orolia.com>
+From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 
-[ Upstream commit 15ce30609d1e88d42fb1cd948f453e6d5f188249 ]
+[ Upstream commit 482db55ae87f3749db05810a38b1d618dfd4407c ]
 
-There are 2 registers to write to enable a ptp ref clock coming from the
-fpga.
-One that enables the usage of the clock from the fpga for emac0 and emac1
-as a ptp ref clock, and the other to allow signals from the fpga to reach
-emac0 and emac1.
-Currently, if the dwmac-socfpga has phymode set to PHY_INTERFACE_MODE_MII,
-PHY_INTERFACE_MODE_GMII, or PHY_INTERFACE_MODE_SGMII, both registers will
-be written and the ptp ref clock will be set as coming from the fpga.
-Separate the 2 register writes to only enable signals from the fpga to
-reach emac0 or emac1 when ptp ref clock is not coming from the fpga.
+Function soc_tplg_create_tlv can fail, so we should check if it succeded
+or not and proceed appropriately.
 
-Signed-off-by: Julien Beraud <julien.beraud@orolia.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20200327204729.397-3-amadeuszx.slawinski@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ sound/soc/soc-topology.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c
-index 5b3b06a0a3bf5..33407df6bea69 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c
-@@ -274,16 +274,19 @@ static int socfpga_dwmac_set_phy_mode(struct socfpga_dwmac *dwmac)
- 	    phymode == PHY_INTERFACE_MODE_MII ||
- 	    phymode == PHY_INTERFACE_MODE_GMII ||
- 	    phymode == PHY_INTERFACE_MODE_SGMII) {
--		ctrl |= SYSMGR_EMACGRP_CTRL_PTP_REF_CLK_MASK << (reg_shift / 2);
- 		regmap_read(sys_mgr_base_addr, SYSMGR_FPGAGRP_MODULE_REG,
- 			    &module);
- 		module |= (SYSMGR_FPGAGRP_MODULE_EMAC << (reg_shift / 2));
- 		regmap_write(sys_mgr_base_addr, SYSMGR_FPGAGRP_MODULE_REG,
- 			     module);
--	} else {
--		ctrl &= ~(SYSMGR_EMACGRP_CTRL_PTP_REF_CLK_MASK << (reg_shift / 2));
- 	}
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 7a7c427de95d6..5d974a36cdc92 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -894,7 +894,13 @@ static int soc_tplg_dmixer_create(struct soc_tplg *tplg, unsigned int count,
+ 		}
  
-+	if (dwmac->f2h_ptp_ref_clk)
-+		ctrl |= SYSMGR_EMACGRP_CTRL_PTP_REF_CLK_MASK << (reg_shift / 2);
-+	else
-+		ctrl &= ~(SYSMGR_EMACGRP_CTRL_PTP_REF_CLK_MASK <<
-+			  (reg_shift / 2));
-+
- 	regmap_write(sys_mgr_base_addr, reg_offset, ctrl);
+ 		/* create any TLV data */
+-		soc_tplg_create_tlv(tplg, &kc, &mc->hdr);
++		err = soc_tplg_create_tlv(tplg, &kc, &mc->hdr);
++		if (err < 0) {
++			dev_err(tplg->dev, "ASoC: failed to create TLV %s\n",
++				mc->hdr.name);
++			kfree(sm);
++			continue;
++		}
  
- 	/* Deassert reset for the phy configuration to be sampled by
+ 		/* pass control to driver for optional further init */
+ 		err = soc_tplg_init_kcontrol(tplg, &kc,
+@@ -1355,7 +1361,13 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dmixer_create(
+ 		}
+ 
+ 		/* create any TLV data */
+-		soc_tplg_create_tlv(tplg, &kc[i], &mc->hdr);
++		err = soc_tplg_create_tlv(tplg, &kc[i], &mc->hdr);
++		if (err < 0) {
++			dev_err(tplg->dev, "ASoC: failed to create TLV %s\n",
++				mc->hdr.name);
++			kfree(sm);
++			continue;
++		}
+ 
+ 		/* pass control to driver for optional further init */
+ 		err = soc_tplg_init_kcontrol(tplg, &kc[i],
 -- 
 2.20.1
 
