@@ -2,82 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 620E41CAD4B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82A681CAD55
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730119AbgEHNA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:00:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44272 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727779AbgEHNAZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 09:00:25 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 55B722054F;
-        Fri,  8 May 2020 13:00:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588942824;
-        bh=3ugVuzvwFtqN4lGuBubM/XH50ivcbeAlmpyOW5SFS1o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cwOfJxS6p5AMxuoLBvf85YymZxEcLp5cUNT/O1vYkKjewm56/dLYzT/cb4ElHvd56
-         l9GjoGzaZYb0ABVYuIErbj03xGk1HHZc+N1XZzkyUFCER6L0L7MyTKt8qXWz4l8ZTD
-         fL0sN5LXjV8QzwmfGvi3raL84qYXCePEhQgJ+OMs=
-Date:   Fri, 8 May 2020 14:00:22 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     mazziesaccount@gmail.com, lgirdwood@gmail.com, sre@kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v11 02/11] lib/test_linear_ranges: add a test for the
- 'linear_ranges'
-Message-ID: <20200508130022.GI4820@sirena.org.uk>
-References: <cover.1588829892.git.matti.vaittinen@fi.rohmeurope.com>
- <7e91212b3990ce503508bc1c83e13dc793b73668.1588829892.git.matti.vaittinen@fi.rohmeurope.com>
+        id S1730279AbgEHNAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 09:00:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730200AbgEHNAo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 09:00:44 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 267F4C05BD43;
+        Fri,  8 May 2020 06:00:44 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id w2so1221447edx.4;
+        Fri, 08 May 2020 06:00:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=UNr+F8apfDkpAFTpO6sFiBGjB6K7z8TvBITdy9tuPt8=;
+        b=DKmcD7LfBgTggHbWeEZ2mMx9ocC4GWT2Jq2oInpgnjocOYyMKyO2Qe+a3N2wfcnyv/
+         VbrJM0dXV1B/XTG6MrWuiqlDafHsw0Sv24765TJ9Cf2qJO0/YNzvxwPHJdyXW0dW0G1c
+         djCucTwC0qPpQZgIHNiT3cnJy/uI0d9PvK5xPoR3kN4iAwieic5za5bG1Lj4uHOzq/Za
+         UAhDon2ZUqawnDP/AouY2DvVCnq2Qh4HIoUc9NK0D7h5c+je/Y5H5UZrRBZ0tZRtQf/x
+         DDQ0mGcuKcO/HRyDQ2Mudv3YUjAK++dXvYiCBtq/cTOoseLbZedG5T1Ue/D88z0cokeu
+         t9dQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=UNr+F8apfDkpAFTpO6sFiBGjB6K7z8TvBITdy9tuPt8=;
+        b=hLrLgWsa6J1+xutzoQAKN5/XFhMEUbx5AQAwZZdFAvjk0G2dKMvGFpM7BtsOTGzlTg
+         fYUe5V8T9gkAY7AOtraMizXzBl1oWmmM/VpKCQOirp+F1OSZcGdl/CvXHDcrksNgbcrE
+         D18Xbkp0n37c/Sq3+T0pfod5GUkAnquB5rjmbNFqVKFjPAlhA6Qoy+D6iunTVHRis2lS
+         QYmXBLMKXkn/S0IqiMHbwIm3C75qICJdtetWcqNLBaL2y00KaK+djPOosnIBg11m2ziQ
+         vwihOJ7YoGZbxNdmFlsqnosroVkHcKBIPDtv59nFik1hn7m4BHmh2o3qXArubwj/j++U
+         yQTw==
+X-Gm-Message-State: AGi0PuabkXspaTGdpUn8pYL/9vpFVMVuerSjMc+HnKV2uSBhiKZm3JB8
+        nZ/TEsSGBmyv9xbEw44x3WlhaKf/Y7fX1TVss+pvGfCo
+X-Google-Smtp-Source: APiQypKno/Iywb79VTpCN3AA0UaOSPNgwwHas3Fsn84KPhzEmB1NfTgm9AhfEUxZaKRrx0Jii6MldZ8JuVpF38uL6LY=
+X-Received: by 2002:a05:6402:6c4:: with SMTP id n4mr2101038edy.368.1588942842669;
+ Fri, 08 May 2020 06:00:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="9s922KAXlWjPfK/Q"
-Content-Disposition: inline
-In-Reply-To: <7e91212b3990ce503508bc1c83e13dc793b73668.1588829892.git.matti.vaittinen@fi.rohmeurope.com>
-X-Cookie: Give him an evasive answer.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <1588939255-58038-1-git-send-email-zou_wei@huawei.com>
+In-Reply-To: <1588939255-58038-1-git-send-email-zou_wei@huawei.com>
+From:   Vladimir Oltean <olteanv@gmail.com>
+Date:   Fri, 8 May 2020 16:00:31 +0300
+Message-ID: <CA+h21hryj+b3wm8JNGW8V9gpF11D6AjdEmhq0FAdunQkPQFFcw@mail.gmail.com>
+Subject: Re: [PATCH -next] net: dsa: sja1105: remove set but not used variable 'prev_time'
+To:     Samuel Zou <zou_wei@huawei.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        lkml <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Samuel,
 
---9s922KAXlWjPfK/Q
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Fri, 8 May 2020 at 14:55, Samuel Zou <zou_wei@huawei.com> wrote:
+>
+> Fixes gcc '-Wunused-but-set-variable' warning:
+>
+> drivers/net/dsa/sja1105/sja1105_vl.c:468:6: warning: variable =E2=80=98pr=
+ev_time=E2=80=99 set but not used [-Wunused-but-set-variable]
+>   u32 prev_time =3D 0;
+>       ^~~~~~~~~
+>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Samuel Zou <zou_wei@huawei.com>
+> ---
 
-On Thu, May 07, 2020 at 09:06:08AM +0300, Matti Vaittinen wrote:
->     Add a KUnit test for the linear_ranges helper.
+Thank you for the patch!
 
-This fails to build an x86 allmodconfig:
+Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Tested-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-ERROR: modpost: "linear_range_values_in_range_array" [lib/test_linear_ranges.ko] undefined!
-ERROR: modpost: "linear_range_get_selector_high" [lib/test_linear_ranges.ko] undefined!
-ERROR: modpost: "linear_range_get_selector_low_array" [lib/test_linear_ranges.ko] undefined!
-ERROR: modpost: "linear_range_get_value_array" [lib/test_linear_ranges.ko] undefined!
-make[2]: *** [/mnt/kernel/scripts/Makefile.modpost:94: __modpost] Error 1
-make[1]: *** [/mnt/kernel/Makefile:1319: modules] Error 2
-make: *** [Makefile:180: sub-make] Error 2
-
-The test code needs to select the library.
-
---9s922KAXlWjPfK/Q
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl61V+UACgkQJNaLcl1U
-h9D+Iwf9GfagiDxyLur1Rf4F30//I9/4ueaSGe3kM7uIASZwPlxmL+uk8zfwgstc
-BdBocDIS/rEaXq+n7rtNKLTy8zXmydK7PEXJFz9wC4TQqiDGxeEAykOmw3alyCh/
-unQtZ3tlOyQJsOTFvAiyuS2GXN1oP8/Kw7mtsSyhFGiYcmlHijjAyvtgWx/RYHay
-Kg+UyFUCBpEBvOoG+bOWBiJhnY1yf1pMNmgCEqzD5dwDLJwYraA/r40/AUWTq8xj
-hn6/fCceYAOAQSa6njAMthZLXTC45ztVUFLKDf8CCh4h6sTjP5oaoDHuJ06EUYa0
-CjPFz0VFuJGFQI8wTBIruaZxhR9nvQ==
-=SeuK
------END PGP SIGNATURE-----
-
---9s922KAXlWjPfK/Q--
+>  drivers/net/dsa/sja1105/sja1105_vl.c | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/drivers/net/dsa/sja1105/sja1105_vl.c b/drivers/net/dsa/sja11=
+05/sja1105_vl.c
+> index b52f1af..aa9b0b9 100644
+> --- a/drivers/net/dsa/sja1105/sja1105_vl.c
+> +++ b/drivers/net/dsa/sja1105/sja1105_vl.c
+> @@ -465,7 +465,6 @@ sja1105_gating_cfg_time_to_interval(struct sja1105_ga=
+ting_config *gating_cfg,
+>         struct sja1105_gate_entry *last_e;
+>         struct sja1105_gate_entry *e;
+>         struct list_head *prev;
+> -       u32 prev_time =3D 0;
+>
+>         list_for_each_entry(e, &gating_cfg->entries, list) {
+>                 struct sja1105_gate_entry *p;
+> @@ -476,7 +475,6 @@ sja1105_gating_cfg_time_to_interval(struct sja1105_ga=
+ting_config *gating_cfg,
+>                         continue;
+>
+>                 p =3D list_entry(prev, struct sja1105_gate_entry, list);
+> -               prev_time =3D e->interval;
+>                 p->interval =3D e->interval - p->interval;
+>         }
+>         last_e =3D list_last_entry(&gating_cfg->entries,
+> --
+> 2.6.2
+>
