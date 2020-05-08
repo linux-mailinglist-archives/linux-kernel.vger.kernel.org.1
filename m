@@ -2,43 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A76321CB3D9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 17:47:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 350F71CB3E0
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 17:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728018AbgEHPrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 11:47:01 -0400
-Received: from verein.lst.de ([213.95.11.211]:53307 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727097AbgEHPrB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 11:47:01 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id A988C68C7B; Fri,  8 May 2020 17:46:58 +0200 (CEST)
-Date:   Fri, 8 May 2020 17:46:58 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: Re: [PATCH 10/11] fs: remove __vfs_read
-Message-ID: <20200508154658.GA4200@lst.de>
-References: <20200508092222.2097-1-hch@lst.de> <20200508092222.2097-11-hch@lst.de> <20200508154552.GB1431382@iweiny-DESK2.sc.intel.com>
+        id S1728313AbgEHPrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 11:47:18 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:41223 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727051AbgEHPrR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 11:47:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588952836;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/Mrqq8bocBIcn8N6pk0yrIvKuTZiVjG74AykFdJPm0U=;
+        b=QwAYtLtXYnLfYLGXdnOTZJkPvlLciAJdKX1tYfmg9LlU8Y6OI4QOy7P4rE2uHGT7INXkrL
+        n3Ty5TSEZh1qP0k2cxdilxXn0Ct/p+Amdu457vB+hWe24u7OUoHkKSGcJ817nsq5ZDZ0o3
+        uJcgyd4wb5TK08rcpATLTzI40Ylqrgo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-252-mC4Qyy3fPDSzUiaZr6VNew-1; Fri, 08 May 2020 11:47:14 -0400
+X-MC-Unique: mC4Qyy3fPDSzUiaZr6VNew-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 189F418FE861;
+        Fri,  8 May 2020 15:47:12 +0000 (UTC)
+Received: from treble (ovpn-115-96.rdu2.redhat.com [10.10.115.96])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E9B43691F9;
+        Fri,  8 May 2020 15:47:06 +0000 (UTC)
+Date:   Fri, 8 May 2020 10:47:04 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org,
+        mhiramat@kernel.org, bristot@redhat.com, jbaron@akamai.com,
+        torvalds@linux-foundation.org, tglx@linutronix.de,
+        mingo@kernel.org, namit@vmware.com, hpa@zytor.com, luto@kernel.org,
+        ard.biesheuvel@linaro.org, pbonzini@redhat.com,
+        mathieu.desnoyers@efficios.com
+Subject: Re: [PATCH v4 14/18] static_call: Add static_cond_call()
+Message-ID: <20200508154704.6njw5wfsain7p3ev@treble>
+References: <20200501202849.647891881@infradead.org>
+ <20200501202944.593400184@infradead.org>
+ <20200506172455.ho5em2mtzn7qqfjl@treble>
+ <20200508152730.GB3344@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200508154552.GB1431382@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20200508152730.GB3344@hirez.programming.kicks-ass.net>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 08, 2020 at 08:45:53AM -0700, Ira Weiny wrote:
-> On Fri, May 08, 2020 at 11:22:21AM +0200, Christoph Hellwig wrote:
-> > Fold it into the two callers.
+On Fri, May 08, 2020 at 05:27:30PM +0200, Peter Zijlstra wrote:
+> On Wed, May 06, 2020 at 12:24:55PM -0500, Josh Poimboeuf wrote:
 > 
-> In 5.7-rc4, it looks like __vfs_read() is called from
-> security/integrity/iint.c
+> > On that note, what do you think about tweaking the naming from
+> > 
+> >   DEFINE_STATIC_COND_CALL(name, typename);
+> >   static_cond_call(name)(args...);
+> > 
+> > to
+> > 
+> >   DEFINE_STATIC_CALL_NO_FUNC(name, typename);
+> >   static_call_if_func(name)(args...);
+> > 
+> > ?
+> > 
+> > Seems clearer to me.  They're still STATIC_CALLs, so it seems logical to
+> > keep those two words together.  And NO_FUNC clarifies the initialized
+> > value.
+> > 
+> > Similarly RETTRAMP could be ARCH_DEFINE_STATIC_CALL_NO_FUNC.
 > 
-> Was that removed somewhere prior to this patch?
+> So I dislike static_call_if_func(), that's so much typing. Also, I
+> prefer ARCH_*_RETTRAMP as it clearly describes what the thing is.
+> 
+> How is something like this? 
 
-[PATCH 08/11] integrity/ima: switch to using __kernel_read
+I like DEFINE_STATIC_CALL_NULL.  I also like the new comment.
+
+And if you're calling it
+
+  DEFINE_STATIC_CALL_NULL
+
+then it seems like
+
+  ARCH_DEFINE_STATIC_CALL_NULL
+
+would be the logical name rather than RETTRAMP?
+
+Still not crazy about static_cond_call(), though I think at least
+changing it to static_call_cond() would be better for namespacing
+reasons.
+
+-- 
+Josh
+
