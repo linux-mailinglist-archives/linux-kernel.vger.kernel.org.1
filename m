@@ -2,85 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76FEE1CB142
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 16:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8ECD1CB152
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 16:04:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728117AbgEHOBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 10:01:40 -0400
-Received: from mga09.intel.com ([134.134.136.24]:21312 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727845AbgEHOBk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 10:01:40 -0400
-IronPort-SDR: uzSvTKMEUVJMbzS4wGjf5EcyMp5i5ejLkOD9Z6qI6qtfYtelYxjtqwP+73Uci8PwRsGaevyrui
- 1H5kf/ppO/Tg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2020 07:01:39 -0700
-IronPort-SDR: tyLSI9pNoX+sLzweinsTc8kCksLLnDn7G53YEFJasLjS/iKAb/GKJhocYPyIJt0XH8Fc8BDKqF
- y9O2NhzHgJnQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,367,1583222400"; 
-   d="scan'208";a="370495411"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 08 May 2020 07:01:35 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 08 May 2020 17:01:32 +0300
-Date:   Fri, 8 May 2020 17:01:32 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Angus Ainslie <angus@akkea.ca>
-Cc:     robh+dt@kernel.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, nikolaus.voss@loewensteinmedical.de,
-        andriy.shevchenko@linux.intel.com, garsilva@embeddedor.com,
-        keescook@chromium.org
-Subject: Re: [PATCH v2 0/2] Add TI tps6598x DT binding and probe
-Message-ID: <20200508140132.GA1264047@kuha.fi.intel.com>
-References: <20200507214733.1982696-1-bryan.odonoghue@linaro.org>
+        id S1727779AbgEHOEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 10:04:38 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:50887 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726636AbgEHOEi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 10:04:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588946676;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/ZJXTQJvptAV9cLZgw4Ng81VkyhSWVuCrfvyn+V+OyE=;
+        b=bXheKxFkavUxxz3Sacsx5moPTcgdcvlLqGTffRanl0A+dcx9xfjFxpEDFBMQuudC/0qLAg
+        +W2zqscjtZK9uCF3ZbGNp/eTXPlZQy8ALjuWjBcW36u0uRjOrH2+TEAYhiL/ukR8Ivgw4p
+        2N2OHjZgMWWbSzeoTP76N5Uq17JODHo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-312-oPMRAtl2NHqgHOWnUpQb_w-1; Fri, 08 May 2020 10:04:32 -0400
+X-MC-Unique: oPMRAtl2NHqgHOWnUpQb_w-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5D53780058A;
+        Fri,  8 May 2020 14:04:27 +0000 (UTC)
+Received: from optiplex-lnx (unknown [10.3.128.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1D6FC70933;
+        Fri,  8 May 2020 14:04:18 +0000 (UTC)
+Date:   Fri, 8 May 2020 10:04:15 -0400
+From:   Rafael Aquini <aquini@redhat.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     jeyu@kernel.org, akpm@linux-foundation.org, arnd@arndb.de,
+        rostedt@goodmis.org, mingo@redhat.com, cai@lca.pw,
+        dyoung@redhat.com, bhe@redhat.com, peterz@infradead.org,
+        tglx@linutronix.de, gpiccoli@canonical.com, pmladek@suse.com,
+        tiwai@suse.de, schlad@suse.de, andriy.shevchenko@linux.intel.com,
+        keescook@chromium.org, daniel.vetter@ffwll.ch, will@kernel.org,
+        mchehab+samsung@kernel.org, kvalo@codeaurora.org,
+        davem@davemloft.net, linux-kernel@vger.kernel.org
+Subject: Re: [RFC] taint: add module firmware crash taint support
+Message-ID: <20200508140415.GC367616@optiplex-lnx>
+References: <20200508021438.4373-1-mcgrof@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200507214733.1982696-1-bryan.odonoghue@linaro.org>
+In-Reply-To: <20200508021438.4373-1-mcgrof@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Thu, May 07, 2020 at 10:47:31PM +0100, Bryan O'Donoghue wrote:
-> V2:
-> - Put myself down as sole schema maintainer as suggested - Andy
-> - Fixed whitespace typo - Andy
-> - Removed ifdef and of_match_ptr() - Andy
+On Fri, May 08, 2020 at 02:14:38AM +0000, Luis Chamberlain wrote:
+> Device driver firmware can crash, and sometimes, this can leave your
+> system in a state which makes the device or subsystem completely
+> useless. Detecting this by inspecting /proc/sys/kernel/tainted instead
+> of scraping some magical words from the kernel log, which is driver
+> specific, is much easier. So instead provide a helper which lets drivers
+> annotate this.
 > 
-> V1:
-> This simple series adds DT binding yaml and a DT lookup table for the
-> tps6598x.
+> Once this happens, scrapers can easily scrape modules taint flags.
+> This will taint both the kernel and respective calling module.
 > 
-> Its possible to use i2c id_table to match the 'compatible = "ti,tps6598x"
-> and probe that way, however I think it is worthwhile adding a specific OF
-> way of doing it and having an accompanying yaml as an example.
+> The new helper module_firmware_crashed() uses LOCKDEP_STILL_OK as
+> this fact should in no way shape or form affect lockdep. This taint
+> is device driver specific.
 > 
-> Bryan O'Donoghue (2):
->   dt-bindings: usb: Add TI tps6598x device tree binding documentation
->   usb: typec: tps6598x: Add OF probe binding
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> ---
 > 
->  .../devicetree/bindings/usb/ti,tps6598x.yaml  | 64 +++++++++++++++++++
->  drivers/usb/typec/tps6598x.c                  |  7 ++
->  2 files changed, 71 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/usb/ti,tps6598x.yaml
+> Below is the full diff stat of manual inspection throughout the kernel
+> when this happens. My methodology is to just scrape for "crash" and
+> then study the driver a bit to see if indeed it seems like that the
+> firmware crashes there. In *many* cases there is even infrastructure
+> for this, so this is sometimes clearly obvious. Some other times it
+> required a bit of deciphering.
+> 
+> The diff stat below is what I have so far, however the patch below
+> only includes the drivers that start with Q, as they were a source of
+> inspiration for this, and to make this RFC easier to read.
+> 
+> If this seems sensible, I can follow up with the kernel helper first,
+> and then tackle each subsystem independently.
+> 
+> I purposely skipped review of remoteproc and virtualization. That should
+> require its own separate careful review and considerations.
+> 
+...
+> diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+> index 04a5885cec1b..19e1541c82c7 100644
+> --- a/include/linux/kernel.h
+> +++ b/include/linux/kernel.h
+> @@ -601,7 +601,8 @@ extern enum system_states {
+>  #define TAINT_LIVEPATCH			15
+>  #define TAINT_AUX			16
+>  #define TAINT_RANDSTRUCT		17
+> -#define TAINT_FLAGS_COUNT		18
+> +#define TAINT_FIRMWARE_CRASH		18
+> +#define TAINT_FLAGS_COUNT		19
+>  
 
-There was already a series from Angus [1] for this. The bindings
-looked a bit different, but I think we should use these, because in
-the DT bindings from Angus there appeared to be definitions for OF
-graph that was not used. Or maybe I got it wrong?
+As others have already mentioned (and I guess it was your idea too)
+it would be nicer to split the changes into a set.
 
-Angus, is it OK if we use these patches instead the ones from you?
+We also will need to update Documentation/admin-guide/tainted-kernels.rst
+to reflect the inclusion of this new flag.
 
-[1] https://lore.kernel.org/linux-usb/20200506191718.2144752-1-angus@akkea.ca/
+-- Rafael
 
-thanks,
-
--- 
-heikki
