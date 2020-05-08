@@ -2,171 +2,350 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDDD31CB388
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 17:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AADF91CB393
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 17:41:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728227AbgEHPkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 11:40:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728015AbgEHPkZ (ORCPT
+        id S1727933AbgEHPle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 11:41:34 -0400
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:40314 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726815AbgEHPle (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 11:40:25 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00B1EC061A0C;
-        Fri,  8 May 2020 08:40:24 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id l3so1545121edq.13;
-        Fri, 08 May 2020 08:40:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vTGeP2mp0atDffBVvlfE/CUFeNMcpq4/+i7t1uiSUiI=;
-        b=IKFEz8+THuTorI7NlDH5c3C3yFpz7Wp3L7N5cVUbojS9576edfURlOf6OM+yy+QuQT
-         mVA5Vdgba14Ry91YmN6JwLM1gn0w1pu0rrfpbR4qP21ndJ/XNa+8ena97TLS2i0vfqsX
-         Kd2ROKOcq5rpb7QacY25zzFb3hxAFnk4jBVDL0Mkv8+qk7v46TMWCvLSKbbV98ir/UYf
-         nbF/U88u4HhwzDS5rwVtpY1oxN5e2R/XuMx9R75jFea2kN2B4aeU2PpmsNoeMsF//vRD
-         /KMJCk7J++sWzHapIKMCgt6oR06Nn7Axr+7q6sDY5vNlTSo7+iXaGc+fy0Jt4lNEEhnj
-         B2Ug==
+        Fri, 8 May 2020 11:41:34 -0400
+Received: by mail-lf1-f66.google.com with SMTP id u4so1769168lfm.7;
+        Fri, 08 May 2020 08:41:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vTGeP2mp0atDffBVvlfE/CUFeNMcpq4/+i7t1uiSUiI=;
-        b=dvn7NrdhxnjAORujMXXH/vlO87vmqo4g2wRjRjr5DWuL4c7cFiugoKEwclsgQ5N3Ld
-         xkdciO2yTag16ypJZE9n5+z8x77ynhkWi0Y+/Xc0dk2r1FAa+2C9fGnaspwlMhvWE/A9
-         RZfMGK9iucB5M8oIP4lu2p4C4DzwdS0ep03cQkBodQCiMRH5uxSYnf3whxSYq0u0IFd6
-         oQ3FF1cBZ9li4aY6hONDxGCxzllBRZoe77RJOuykLsckZRuhLMZOespyHCkTta2yW/3o
-         YjmfiLyZPtOoXg2bqVV9fgb+0JbknbnMNOfEL4+GlpJuuWaHENhG8hT3knt9Esy1+zG6
-         I1tg==
-X-Gm-Message-State: AGi0Pua5LqV3gmfPRgls4semBSYkfs5E9bMpvjYFJ9JOm5KshGDlcrXZ
-        ioZXi2+rjNj4eka8KryRYE/pdH0CXMbfLvTzOhY=
-X-Google-Smtp-Source: APiQypJgh+CSGsfjzbXUm6WLw6LglrPUjAcB8Mgfr8b/68JEMJuXWKPusr9zT3nPNaofdDHN9sNzFo+HI6KN9O5ICtk=
-X-Received: by 2002:a50:ef18:: with SMTP id m24mr2577526eds.281.1588952423627;
- Fri, 08 May 2020 08:40:23 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=kMRstuQ4C+0ueulo9c/PMnnUy//TC/HKKnVfQiSa3p4=;
+        b=hTsfCaYz/kfYHZOe+93LKl8Td9TIropE5njHT1WC5+k9H7whqfEAIvWgUJcxFvs8km
+         33rsqsQo43JnaVSKxvQM8gdKvCavooCtPPEfdar/R7eSy6IQ3sWw5lN+fiULuT9Sa3xB
+         pDA9McK2+cRBd15r7bEltiBe3L5AhR0yQGanksxPAliy3xryMPEbScJ48PqZ1n73PHlD
+         hES1foExJxF5GN8m/0F0eZKXZdPofH/4GqlwTTdw79ouESHekDNjKQdVSBJmuu+lMRV/
+         RbVCwnRqDYCjlPIC2JczWPiXRlhuBREyQDYZgmZcBi0AE8zrshwoddWOnoCzTyCiZill
+         tWlg==
+X-Gm-Message-State: AOAM530aeFue/2wI5Ur1MhgpzCVYP0Nwm75uizISOPvkCRl354zF+RdH
+        Hp3uXlh1GIMt6PTmBjyv2ao=
+X-Google-Smtp-Source: ABdhPJwOQ3UjhGF3Sk/gcmrjirWcblQfl4zumcpIyDW9vS5/2QS0QU51jfSpS/nGaPjp5UntBEw1HA==
+X-Received: by 2002:ac2:58c8:: with SMTP id u8mr2382355lfo.142.1588952490703;
+        Fri, 08 May 2020 08:41:30 -0700 (PDT)
+Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
+        by smtp.gmail.com with ESMTPSA id j29sm1679056lfp.90.2020.05.08.08.41.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 May 2020 08:41:30 -0700 (PDT)
+Date:   Fri, 8 May 2020 18:40:43 +0300
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
+Cc:     lgirdwood@gmail.com, broonie@kernel.org, sre@kernel.org,
+        brendanhiggins@google.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v12 02/11] lib/test_linear_ranges: add a test for the
+ 'linear_ranges'
+Message-ID: <311fea741bafdcd33804d3187c1642e24275e3e5.1588944082.git.matti.vaittinen@fi.rohmeurope.com>
+References: <cover.1588944082.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-References: <20200421202004.11686-1-saiprakash.ranjan@codeaurora.org>
- <b491e02ad790a437115fdeab6b21bc48@codeaurora.org> <1ced023b-157c-21a0-ac75-1adef7f029f0@arm.com>
- <20200507125357.GA31783@willie-the-truck> <CAF6AEGuLU+_qP8HNO1s9PTPHqJnCMHzehmcT8NiJhiAwrfSH6w@mail.gmail.com>
-In-Reply-To: <CAF6AEGuLU+_qP8HNO1s9PTPHqJnCMHzehmcT8NiJhiAwrfSH6w@mail.gmail.com>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Fri, 8 May 2020 08:40:40 -0700
-Message-ID: <CAF6AEGvuHKObTR97XdSXjmjKB+qjQ8N1_wxM=ZU8bEkF=cXp-A@mail.gmail.com>
-Subject: Re: [PATCH] iomm/arm-smmu: Add stall implementation hook
-To:     Will Deacon <will@kernel.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1588944082.git.matti.vaittinen@fi.rohmeurope.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 8, 2020 at 8:32 AM Rob Clark <robdclark@gmail.com> wrote:
->
-> On Thu, May 7, 2020 at 5:54 AM Will Deacon <will@kernel.org> wrote:
-> >
-> > On Thu, May 07, 2020 at 11:55:54AM +0100, Robin Murphy wrote:
-> > > On 2020-05-07 11:14 am, Sai Prakash Ranjan wrote:
-> > > > On 2020-04-22 01:50, Sai Prakash Ranjan wrote:
-> > > > > Add stall implementation hook to enable stalling
-> > > > > faults on QCOM platforms which supports it without
-> > > > > causing any kind of hardware mishaps. Without this
-> > > > > on QCOM platforms, GPU faults can cause unrelated
-> > > > > GPU memory accesses to return zeroes. This has the
-> > > > > unfortunate result of command-stream reads from CP
-> > > > > getting invalid data, causing a cascade of fail.
-> > >
-> > > I think this came up before, but something about this rationale doesn't add
-> > > up - we're not *using* stalls at all, we're still terminating faulting
-> > > transactions unconditionally; we're just using CFCFG to terminate them with
-> > > a slight delay, rather than immediately. It's really not clear how or why
-> > > that makes a difference. Is it a GPU bug? Or an SMMU bug? Is this reliable
-> > > (or even a documented workaround for something), or might things start
-> > > blowing up again if any other behaviour subtly changes? I'm not dead set
-> > > against adding this, but I'd *really* like to have a lot more confidence in
-> > > it.
-> >
-> > Rob mentioned something about the "bus returning zeroes" before, but I agree
-> > that we need more information so that we can reason about this and maintain
-> > the code as the driver continues to change. That needs to be a comment in
-> > the driver, and I don't think "but android seems to work" is a good enough
-> > justification. There was some interaction with HUPCF as well.
->
-> The issue is that there are multiple parallel memory accesses
-> happening at the same time, for example CP (the cmdstream processor)
-> will be reading ahead and setting things up for the next draw or
-> compute grid, in parallel with some memory accesses from the shader
-> which could trigger a fault.  (And with faults triggered by something
-> in the shader, there are *many* shader threads running in parallel so
-> those tend to generate a big number of faults at the same time.)
->
-> We need either CFCFG or HUPCF, otherwise what I have observed is that
-> while the fault happens, CP's memory access will start returning
-> zero's instead of valid cmdstream data, which triggers a GPU hang.  I
-> can't say whether this is something unique to qcom's implementation of
-> the smmu spec or not.
->
-> *Often* a fault is the result of the usermode gl/vk/cl driver bug,
-> although I don't think that is an argument against fixing this in the
-> smmu driver.. I've been carrying around a local patch to set HUPCF for
-> *years* because debugging usermode driver issues is so much harder
-> without.  But there are some APIs where faults can be caused by the
-> user's app on top of the usermode driver.
->
+    Add a KUnit test for the linear_ranges helper.
 
-Also, I'll add to that, a big wish of mine is to have stall with the
-ability to resume later from a wq context.  That would enable me to
-hook in the gpu crash dump handling for faults, which would make
-debugging these sorts of issues much easier.  I think I posted a
-prototype of this quite some time back, which would schedule a worker
-on the first fault (since there are cases where you see 1000's of
-faults at once), which grabbed some information about the currently
-executing submit and some gpu registers to indicate *where* in the
-submit (a single submit could have 100's or 1000's of draws), and then
-resumed the iommu cb.
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+---
 
-(This would ofc eventually be useful for svm type things.. I expect
-we'll eventually care about that too.)
+Changes since v11: Added missing dependency to LINEAR_RANGES lib.
 
-BR,
--R
+ lib/Kconfig.debug        |  12 +++
+ lib/Makefile             |   1 +
+ lib/test_linear_ranges.c | 228 +++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 241 insertions(+)
+ create mode 100644 lib/test_linear_ranges.c
 
->
-> BR,
-> -R
->
-> >
-> > As a template, I'd suggest:
-> >
-> > > > > diff --git a/drivers/iommu/arm-smmu.h b/drivers/iommu/arm-smmu.h
-> > > > > index 8d1cd54d82a6..d5134e0d5cce 100644
-> > > > > --- a/drivers/iommu/arm-smmu.h
-> > > > > +++ b/drivers/iommu/arm-smmu.h
-> > > > > @@ -386,6 +386,7 @@ struct arm_smmu_impl {
-> > > > >      int (*init_context)(struct arm_smmu_domain *smmu_domain);
-> > > > >      void (*tlb_sync)(struct arm_smmu_device *smmu, int page, int sync,
-> > > > >               int status);
-> >
-> > /*
-> >  * Stall transactions on a context fault, where they will be terminated
-> >  * in response to the resulting IRQ rather than immediately. This should
-> >  * pretty much always be set to "false" as stalling can introduce the
-> >  * potential for deadlock in most SoCs, however it is needed on Qualcomm
-> >  * XXXX because YYYY.
-> >  */
-> >
-> > > > > +    bool stall;
-> >
-> > Hmm, the more I think about this, the more I think this is an erratum
-> > workaround in disguise, in which case this could be better named...
-> >
-> > Will
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 21d9c5f6e7ec..f3322a620674 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -2092,6 +2092,18 @@ config LIST_KUNIT_TEST
+ 
+ 	  If unsure, say N.
+ 
++config LINEAR_RANGES_TEST
++	tristate "KUnit test for linear_ranges"
++	depends on KUNIT
++	select LINEAR_RANGES
++	help
++	  This builds the linear_ranges unit test, which runs on boot.
++	  Tests the linear_ranges logic correctness.
++	  For more information on KUnit and unit tests in general please refer
++	  to the KUnit documentation in Documentation/dev-tools/kunit/.
++
++	  If unsure, say N.
++
+ config TEST_UDELAY
+ 	tristate "udelay test driver"
+ 	help
+diff --git a/lib/Makefile b/lib/Makefile
+index 20b9cfdcad69..cd548bfa8df9 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -310,3 +310,4 @@ obj-$(CONFIG_OBJAGG) += objagg.o
+ 
+ # KUnit tests
+ obj-$(CONFIG_LIST_KUNIT_TEST) += list-test.o
++obj-$(CONFIG_LINEAR_RANGES_TEST) += test_linear_ranges.o
+diff --git a/lib/test_linear_ranges.c b/lib/test_linear_ranges.c
+new file mode 100644
+index 000000000000..676e0b8abcdd
+--- /dev/null
++++ b/lib/test_linear_ranges.c
+@@ -0,0 +1,228 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * KUnit test for the linear_ranges helper.
++ *
++ * Copyright (C) 2020, ROHM Semiconductors.
++ * Author: Matti Vaittinen <matti.vaittien@fi.rohmeurope.com>
++ */
++#include <kunit/test.h>
++
++#include <linux/linear_range.h>
++
++/* First things first. I deeply dislike unit-tests. I have seen all the hell
++ * breaking loose when people who think the unit tests are "the silver bullet"
++ * to kill bugs get to decide how a company should implement testing strategy...
++ *
++ * Believe me, it may get _really_ ridiculous. It is tempting to think that
++ * walking through all the possible execution branches will nail down 100% of
++ * bugs. This may lead to ideas about demands to get certain % of "test
++ * coverage" - measured as line coverage. And that is one of the worst things
++ * you can do.
++ *
++ * Ask people to provide line coverage and they do. I've seen clever tools
++ * which generate test cases to test the existing functions - and by default
++ * these tools expect code to be correct and just generate checks which are
++ * passing when ran against current code-base. Run this generator and you'll get
++ * tests that do not test code is correct but just verify nothing changes.
++ * Problem is that testing working code is pointless. And if it is not
++ * working, your test must not assume it is working. You won't catch any bugs
++ * by such tests. What you can do is to generate a huge amount of tests.
++ * Especially if you were are asked to proivde 100% line-coverage x_x. So what
++ * does these tests - which are not finding any bugs now - do?
++ *
++ * They add inertia to every future development. I think it was Terry Pratchet
++ * who wrote someone having same impact as thick syrup has to chronometre.
++ * Excessive amount of unit-tests have this effect to development. If you do
++ * actually find _any_ bug from code in such environment and try fixing it...
++ * ...chances are you also need to fix the test cases. In sunny day you fix one
++ * test. But I've done refactoring which resulted 500+ broken tests (which had
++ * really zero value other than proving to managers that we do do "quality")...
++ *
++ * After this being said - there are situations where UTs can be handy. If you
++ * have algorithms which take some input and should produce output - then you
++ * can implement few, carefully selected simple UT-cases which test this. I've
++ * previously used this for example for netlink and device-tree data parsing
++ * functions. Feed some data examples to functions and verify the output is as
++ * expected. I am not covering all the cases but I will see the logic should be
++ * working.
++ *
++ * Here we also do some minor testing. I don't want to go through all branches
++ * or test more or less obvious things - but I want to see the main logic is
++ * working. And I definitely don't want to add 500+ test cases that break when
++ * some simple fix is done x_x. So - let's only add few, well selected tests
++ * which ensure as much logic is good as possible.
++ */
++
++/*
++ * Test Range 1:
++ * selectors:	2	3	4	5	6
++ * values (5):	10	20	30	40	50
++ *
++ * Test Range 2:
++ * selectors:	7	8	9	10
++ * values (4):	100	150	200	250
++ */
++
++#define RANGE1_MIN 10
++#define RANGE1_MIN_SEL 2
++#define RANGE1_STEP 10
++
++/* 2, 3, 4, 5, 6 */
++static const unsigned int range1_sels[] = { RANGE1_MIN_SEL, RANGE1_MIN_SEL + 1,
++					    RANGE1_MIN_SEL + 2,
++					    RANGE1_MIN_SEL + 3,
++					    RANGE1_MIN_SEL + 4 };
++/* 10, 20, 30, 40, 50 */
++static const unsigned int range1_vals[] = { RANGE1_MIN, RANGE1_MIN +
++					    RANGE1_STEP,
++					    RANGE1_MIN + RANGE1_STEP * 2,
++					    RANGE1_MIN + RANGE1_STEP * 3,
++					    RANGE1_MIN + RANGE1_STEP * 4 };
++
++#define RANGE2_MIN 100
++#define RANGE2_MIN_SEL 7
++#define RANGE2_STEP 50
++
++/*  7, 8, 9, 10 */
++static const unsigned int range2_sels[] = { RANGE2_MIN_SEL, RANGE2_MIN_SEL + 1,
++					    RANGE2_MIN_SEL + 2,
++					    RANGE2_MIN_SEL + 3 };
++/* 100, 150, 200, 250 */
++static const unsigned int range2_vals[] = { RANGE2_MIN, RANGE2_MIN +
++					    RANGE2_STEP,
++					    RANGE2_MIN + RANGE2_STEP * 2,
++					    RANGE2_MIN + RANGE2_STEP * 3 };
++
++#define RANGE1_NUM_VALS (ARRAY_SIZE(range1_vals))
++#define RANGE2_NUM_VALS (ARRAY_SIZE(range2_vals))
++#define RANGE_NUM_VALS (RANGE1_NUM_VALS + RANGE2_NUM_VALS)
++
++#define RANGE1_MAX_SEL (RANGE1_MIN_SEL + RANGE1_NUM_VALS - 1)
++#define RANGE1_MAX_VAL (range1_vals[RANGE1_NUM_VALS - 1])
++
++#define RANGE2_MAX_SEL (RANGE2_MIN_SEL + RANGE2_NUM_VALS - 1)
++#define RANGE2_MAX_VAL (range2_vals[RANGE2_NUM_VALS - 1])
++
++#define SMALLEST_SEL RANGE1_MIN_SEL
++#define SMALLEST_VAL RANGE1_MIN
++
++static struct linear_range testr[] = {
++	{
++		.min = RANGE1_MIN,
++		.min_sel = RANGE1_MIN_SEL,
++		.max_sel = RANGE1_MAX_SEL,
++		.step = RANGE1_STEP,
++	}, {
++		.min = RANGE2_MIN,
++		.min_sel = RANGE2_MIN_SEL,
++		.max_sel = RANGE2_MAX_SEL,
++		.step = RANGE2_STEP
++	},
++};
++
++static void range_test_get_value(struct kunit *test)
++{
++	int ret, i;
++	unsigned int sel, val;
++
++	for (i = 0; i < RANGE1_NUM_VALS; i++) {
++		sel = range1_sels[i];
++		ret = linear_range_get_value_array(&testr[0], 2, sel, &val);
++		KUNIT_EXPECT_EQ(test, 0, ret);
++		KUNIT_EXPECT_EQ(test, val, range1_vals[i]);
++	}
++	for (i = 0; i < RANGE2_NUM_VALS; i++) {
++		sel = range2_sels[i];
++		ret = linear_range_get_value_array(&testr[0], 2, sel, &val);
++		KUNIT_EXPECT_EQ(test, 0, ret);
++		KUNIT_EXPECT_EQ(test, val, range2_vals[i]);
++	}
++	ret = linear_range_get_value_array(&testr[0], 2, sel + 1, &val);
++	KUNIT_EXPECT_NE(test, 0, ret);
++}
++
++static void range_test_get_selector_high(struct kunit *test)
++{
++	int ret, i;
++	unsigned int sel;
++	bool found;
++
++	for (i = 0; i < RANGE1_NUM_VALS; i++) {
++		ret = linear_range_get_selector_high(&testr[0], range1_vals[i],
++						     &sel, &found);
++		KUNIT_EXPECT_EQ(test, 0, ret);
++		KUNIT_EXPECT_EQ(test, sel, range1_sels[i]);
++		KUNIT_EXPECT_TRUE(test, found);
++	}
++
++	ret = linear_range_get_selector_high(&testr[0], RANGE1_MAX_VAL + 1,
++					     &sel, &found);
++	KUNIT_EXPECT_LE(test, ret, 0);
++
++	ret = linear_range_get_selector_high(&testr[0], RANGE1_MIN - 1,
++					     &sel, &found);
++	KUNIT_EXPECT_EQ(test, 0, ret);
++	KUNIT_EXPECT_FALSE(test, found);
++	KUNIT_EXPECT_EQ(test, sel, range1_sels[0]);
++}
++
++static void range_test_get_value_amount(struct kunit *test)
++{
++	int ret;
++
++	ret = linear_range_values_in_range_array(&testr[0], 2);
++	KUNIT_EXPECT_EQ(test, (int)RANGE_NUM_VALS, ret);
++}
++
++static void range_test_get_selector_low(struct kunit *test)
++{
++	int i, ret;
++	unsigned int sel;
++	bool found;
++
++	for (i = 0; i < RANGE1_NUM_VALS; i++) {
++		ret = linear_range_get_selector_low_array(&testr[0], 2,
++							  range1_vals[i], &sel,
++							  &found);
++		KUNIT_EXPECT_EQ(test, 0, ret);
++		KUNIT_EXPECT_EQ(test, sel, range1_sels[i]);
++		KUNIT_EXPECT_TRUE(test, found);
++	}
++	for (i = 0; i < RANGE2_NUM_VALS; i++) {
++		ret = linear_range_get_selector_low_array(&testr[0], 2,
++							  range2_vals[i], &sel,
++							  &found);
++		KUNIT_EXPECT_EQ(test, 0, ret);
++		KUNIT_EXPECT_EQ(test, sel, range2_sels[i]);
++		KUNIT_EXPECT_TRUE(test, found);
++	}
++
++	/*
++	 * Seek value greater than range max => get_selector_*_low should
++	 * return Ok - but set found to false as value is not in range
++	 */
++	ret = linear_range_get_selector_low_array(&testr[0], 2,
++					range2_vals[RANGE2_NUM_VALS - 1] + 1,
++					&sel, &found);
++
++	KUNIT_EXPECT_EQ(test, 0, ret);
++	KUNIT_EXPECT_EQ(test, sel, range2_sels[RANGE2_NUM_VALS - 1]);
++	KUNIT_EXPECT_FALSE(test, found);
++}
++
++static struct kunit_case range_test_cases[] = {
++	KUNIT_CASE(range_test_get_value_amount),
++	KUNIT_CASE(range_test_get_selector_high),
++	KUNIT_CASE(range_test_get_selector_low),
++	KUNIT_CASE(range_test_get_value),
++	{},
++};
++
++static struct kunit_suite range_test_module = {
++	.name = "linear-ranges-test",
++	.test_cases = range_test_cases,
++};
++
++kunit_test_suites(&range_test_module);
++
++MODULE_LICENSE("GPL");
+-- 
+2.21.0
+
+
+-- 
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
