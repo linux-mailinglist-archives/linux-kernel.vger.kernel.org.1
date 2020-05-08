@@ -2,123 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5C6A1CA68B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 10:50:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2B971CA68F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 10:50:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727093AbgEHIuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 04:50:06 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:57810 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726616AbgEHIuF (ORCPT
+        id S1727816AbgEHIuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 04:50:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726616AbgEHIuW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 04:50:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588927803;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=JAOKurlqd37X6RvQzB1ivRuFqXG6Rleb5TgqNjVb1mw=;
-        b=PIsXD85VYHDc187Na09F0itJa5e1iGWZe8fu+ZfpeAdJc942Z8M2TLVog2IJaKrFCPPEEH
-        hZfR/iz2yC+vM1Lh4l8ZH6JMpgu8NhUBrJN7pPbzuuO+ryUBs03LwHcVsu5O6XZnZrfKlz
-        bDz9e8RSVEF56LqDRByG9RdRWJacG/Y=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-358-nWjKur8UMgS2i9B9dwcA_g-1; Fri, 08 May 2020 04:50:01 -0400
-X-MC-Unique: nWjKur8UMgS2i9B9dwcA_g-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7B869461;
-        Fri,  8 May 2020 08:50:00 +0000 (UTC)
-Received: from [10.36.113.181] (ovpn-113-181.ams2.redhat.com [10.36.113.181])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6CB9F2B5B9;
-        Fri,  8 May 2020 08:49:59 +0000 (UTC)
-Subject: Re: [PATCH 1/1] mm: remove an unnecessary goto jump
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20200505115858.1718-1-thunder.leizhen@huawei.com>
- <6d06207c-5b1c-d526-ef01-e437c7696dd3@redhat.com>
- <dc38f5a5-e318-de61-89ff-27aa35528fed@huawei.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- mQINBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
- dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
- QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
- XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
- Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
- PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
- WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
- UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
- jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
- B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABtCREYXZpZCBIaWxk
- ZW5icmFuZCA8ZGF2aWRAcmVkaGF0LmNvbT6JAlgEEwEIAEICGwMFCQlmAYAGCwkIBwMCBhUI
- AgkKCwQWAgMBAh4BAheAFiEEG9nKrXNcTDpGDfzKTd4Q9wD/g1oFAl3pImkCGQEACgkQTd4Q
- 9wD/g1o+VA//SFvIHUAvul05u6wKv/pIR6aICPdpF9EIgEU448g+7FfDgQwcEny1pbEzAmiw
- zAXIQ9H0NZh96lcq+yDLtONnXk/bEYWHHUA014A1wqcYNRY8RvY1+eVHb0uu0KYQoXkzvu+s
- Dncuguk470XPnscL27hs8PgOP6QjG4jt75K2LfZ0eAqTOUCZTJxA8A7E9+XTYuU0hs7QVrWJ
- jQdFxQbRMrYz7uP8KmTK9/Cnvqehgl4EzyRaZppshruKMeyheBgvgJd5On1wWq4ZUV5PFM4x
- II3QbD3EJfWbaJMR55jI9dMFa+vK7MFz3rhWOkEx/QR959lfdRSTXdxs8V3zDvChcmRVGN8U
- Vo93d1YNtWnA9w6oCW1dnDZ4kgQZZSBIjp6iHcA08apzh7DPi08jL7M9UQByeYGr8KuR4i6e
- RZI6xhlZerUScVzn35ONwOC91VdYiQgjemiVLq1WDDZ3B7DIzUZ4RQTOaIWdtXBWb8zWakt/
- ztGhsx0e39Gvt3391O1PgcA7ilhvqrBPemJrlb9xSPPRbaNAW39P8ws/UJnzSJqnHMVxbRZC
- Am4add/SM+OCP0w3xYss1jy9T+XdZa0lhUvJfLy7tNcjVG/sxkBXOaSC24MFPuwnoC9WvCVQ
- ZBxouph3kqc4Dt5X1EeXVLeba+466P1fe1rC8MbcwDkoUo65Ag0EVcufkQEQAOfX3n0g0fZz
- Bgm/S2zF/kxQKCEKP8ID+Vz8sy2GpDvveBq4H2Y34XWsT1zLJdvqPI4af4ZSMxuerWjXbVWb
- T6d4odQIG0fKx4F8NccDqbgHeZRNajXeeJ3R7gAzvWvQNLz4piHrO/B4tf8svmRBL0ZB5P5A
- 2uhdwLU3NZuK22zpNn4is87BPWF8HhY0L5fafgDMOqnf4guJVJPYNPhUFzXUbPqOKOkL8ojk
- CXxkOFHAbjstSK5Ca3fKquY3rdX3DNo+EL7FvAiw1mUtS+5GeYE+RMnDCsVFm/C7kY8c2d0G
- NWkB9pJM5+mnIoFNxy7YBcldYATVeOHoY4LyaUWNnAvFYWp08dHWfZo9WCiJMuTfgtH9tc75
- 7QanMVdPt6fDK8UUXIBLQ2TWr/sQKE9xtFuEmoQGlE1l6bGaDnnMLcYu+Asp3kDT0w4zYGsx
- 5r6XQVRH4+5N6eHZiaeYtFOujp5n+pjBaQK7wUUjDilPQ5QMzIuCL4YjVoylWiBNknvQWBXS
- lQCWmavOT9sttGQXdPCC5ynI+1ymZC1ORZKANLnRAb0NH/UCzcsstw2TAkFnMEbo9Zu9w7Kv
- AxBQXWeXhJI9XQssfrf4Gusdqx8nPEpfOqCtbbwJMATbHyqLt7/oz/5deGuwxgb65pWIzufa
- N7eop7uh+6bezi+rugUI+w6DABEBAAGJAiUEGAECAA8FAlXLn5ECGwwFCQlmAYAACgkQTd4Q
- 9wD/g1qA6w/+M+ggFv+JdVsz5+ZIc6MSyGUozASX+bmIuPeIecc9UsFRatc91LuJCKMkD9Uv
- GOcWSeFpLrSGRQ1Z7EMzFVU//qVs6uzhsNk0RYMyS0B6oloW3FpyQ+zOVylFWQCzoyyf227y
- GW8HnXunJSC+4PtlL2AY4yZjAVAPLK2l6mhgClVXTQ/S7cBoTQKP+jvVJOoYkpnFxWE9pn4t
- H5QIFk7Ip8TKr5k3fXVWk4lnUi9MTF/5L/mWqdyIO1s7cjharQCstfWCzWrVeVctpVoDfJWp
- 4LwTuQ5yEM2KcPeElLg5fR7WB2zH97oI6/Ko2DlovmfQqXh9xWozQt0iGy5tWzh6I0JrlcxJ
- ileZWLccC4XKD1037Hy2FLAjzfoWgwBLA6ULu0exOOdIa58H4PsXtkFPrUF980EEibUp0zFz
- GotRVekFAceUaRvAj7dh76cToeZkfsjAvBVb4COXuhgX6N4pofgNkW2AtgYu1nUsPAo+NftU
- CxrhjHtLn4QEBpkbErnXQyMjHpIatlYGutVMS91XTQXYydCh5crMPs7hYVsvnmGHIaB9ZMfB
- njnuI31KBiLUks+paRkHQlFcgS2N3gkRBzH7xSZ+t7Re3jvXdXEzKBbQ+dC3lpJB0wPnyMcX
- FOTT3aZT7IgePkt5iC/BKBk3hqKteTnJFeVIT7EC+a6YUFg=
-Organization: Red Hat GmbH
-Message-ID: <4e652ee4-11e1-1cef-ab03-59c4010c6c94@redhat.com>
-Date:   Fri, 8 May 2020 10:49:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Fri, 8 May 2020 04:50:22 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E261C05BD43
+        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 01:50:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=I+1tEAOhXwR/61ofjbRaYkL5ORf3axWauPvShyvvL4s=; b=KaviCZs96c2geYi33EX+zLup5l
+        8YwsL37kMAZWZy7ebN0+E2jiaNT2lJRQ4zqIAlityiyxLRJ3iZxrS4kvSvHpe6moi2mfkN9DJ8W1d
+        36qPkzYWfmEuzlZIKmgEUtdSSqLVS2efb0p1fcktfXE8v4u2CX6mvkoGp0hwlApLwJp6uv3T1vrrv
+        cacMElbAEKZfKugeExS+HyUtXIwpL9A7QONIMDi2j5WO0zNA7R22cgbbKSHM0bcZepYq0q0ckc4Vj
+        8vtzie7x13ZPGBoRbbAfW1l+jgRkcOBLpoXWqHIFOJHYjb4ucozLVQbVtA4Y8DlVmTSpGyM6jd3g1
+        9r0tco8A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jWyho-0002b8-F2; Fri, 08 May 2020 08:50:04 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AC9B83012DC;
+        Fri,  8 May 2020 10:50:02 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 987BD2B93BDC1; Fri,  8 May 2020 10:50:02 +0200 (CEST)
+Date:   Fri, 8 May 2020 10:50:02 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        x86 <x86@kernel.org>, paulmck <paulmck@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>, rostedt <rostedt@goodmis.org>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [patch V4 part 1 35/36] x86: Replace ist_enter() with nmi_enter()
+Message-ID: <20200508085002.GT5298@hirez.programming.kicks-ass.net>
+References: <20200505131602.633487962@linutronix.de>
+ <20200505134101.525508608@linutronix.de>
+ <CALCETrXfemPJrVx+Nfp7k_PvKGezSK46_+dL5oNNV3o5i1qWVw@mail.gmail.com>
+ <1603808584.1778.1588875478687.JavaMail.zimbra@efficios.com>
 MIME-Version: 1.0
-In-Reply-To: <dc38f5a5-e318-de61-89ff-27aa35528fed@huawei.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1603808584.1778.1588875478687.JavaMail.zimbra@efficios.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08.05.20 10:47, Leizhen (ThunderTown) wrote:
+On Thu, May 07, 2020 at 02:17:58PM -0400, Mathieu Desnoyers wrote:
+> ----- On May 7, 2020, at 2:04 PM, Andy Lutomirski luto@kernel.org wrote:
 > 
+> > On Tue, May 5, 2020 at 7:14 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+> >>
+> >> From: Peter Zijlstra <peterz@infradead.org>
+> >>
+> >> A few exceptions (like #DB and #BP) can happen at any location in the code,
+> >> this then means that tracers should treat events from these exceptions as
+> >> NMI-like. The interrupted context could be holding locks with interrupts
+> >> disabled for instance.
+> >>
+> >> Similarly, #MC is an actual NMI-like exception.
+> > 
+> > Is it permissible to send a signal from inside nmi_enter()?  I imagine
+> > so, but I just want to make sure.
 > 
-> On 2020/5/8 16:06, David Hildenbrand wrote:
->> On 05.05.20 13:58, Zhen Lei wrote:
->>> This "goto" doesn't reduce any code, but bother the readers.
->>
->> "mm/page_io.c: mm: remove an unnecessary goto in generic_swapfile_activate"
+> If you mean sending a proper signal, I would guess not.
 > 
-> Do you mean change the subject? So is it:
-> "mm/page_io.c: remove an unnecessary goto in generic_swapfile_activate()" ?
+> I suspect you'll rather want to use "irq_work()" from NMI context to ensure
+> the rest of the work (e.g. sending a signal or a wakeup) is performed from
+> IRQ context very soon after the NMI, rather than from NMI context.
 > 
+> AFAIK this is how this is done today by perf, ftrace, ebpf, and lttng.
 
-Yeah, would have been my suggestion.
-
--- 
-Thanks,
-
-David / dhildenb
-
+What Mathieu says. But I suspect you want to keep reading until
+part4-18. That should get you what you really want.
