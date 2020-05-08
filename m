@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B91DB1CAD18
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:02:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BF991CACA6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729701AbgEHMvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 08:51:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60174 "EHLO mail.kernel.org"
+        id S1730325AbgEHMzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 08:55:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727802AbgEHMvQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 08:51:16 -0400
+        id S1730304AbgEHMzP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 08:55:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9591A24958;
-        Fri,  8 May 2020 12:51:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BFD3E24967;
+        Fri,  8 May 2020 12:55:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588942275;
-        bh=N5kQtHnfbZR6ujyLKKZvN4ndgmsr8nvsHRD5vWXj018=;
+        s=default; t=1588942515;
+        bh=X+8B5r+3ozNjTtxJhR0LgbtW2wp7VlQ+Pb0lz57jQmY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YY417y/qbrOKVCAgtNxVSm2UNh9GCFPWCSGliCLSiEcEMZ3CL3IvI0yMMV0KpmrHR
-         YM10IhT6kNHU9ChcMuxN9R3eDOMGnQb2EM22JxBSV9gzEJabcW8L3Cy1gkh7tyY1yi
-         qXxiZ8J2elHNxF1ejhF+3EGChhpmYJzyBaT5AfqM=
+        b=2EJuMTw7j22QFN5qlMWmfPwB810aTk+EBK4u9XBQ1PUVIZE2/yaZs2OWxNXp6aqU1
+         GFrPgGgLek/Z6PBPYpFIQ2/DoP8WZpzXs26+a6P9iqis2zj1+Va8XjQOV84Q8ebEcV
+         AsChDFtShoaSy3D6VaFhs5GG2I+vu7uHB02IgA6Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Julien Beraud <julien.beraud@orolia.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, NeilBrown <neilb@suse.de>,
+        Yihao Wu <wuyihao@linux.alibaba.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 13/32] net: stmmac: Fix sub-second increment
+Subject: [PATCH 5.6 09/49] SUNRPC/cache: Fix unsafe traverse caused double-free in cache_purge
 Date:   Fri,  8 May 2020 14:35:26 +0200
-Message-Id: <20200508123036.534210963@linuxfoundation.org>
+Message-Id: <20200508123044.289470166@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200508123034.886699170@linuxfoundation.org>
-References: <20200508123034.886699170@linuxfoundation.org>
+In-Reply-To: <20200508123042.775047422@linuxfoundation.org>
+References: <20200508123042.775047422@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,76 +45,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julien Beraud <julien.beraud@orolia.com>
+From: Yihao Wu <wuyihao@linux.alibaba.com>
 
-[ Upstream commit 91a2559c1dc5b0f7e1256d42b1508935e8eabfbf ]
+[ Upstream commit 43e33924c38e8faeb0c12035481cb150e602e39d ]
 
-In fine adjustement mode, which is the current default, the sub-second
-    increment register is the number of nanoseconds that will be added to
-    the clock when the accumulator overflows. At each clock cycle, the
-    value of the addend register is added to the accumulator.
-    Currently, we use 20ns = 1e09ns / 50MHz as this value whatever the
-    frequency of the ptp clock actually is.
-    The adjustment is then done on the addend register, only incrementing
-    every X clock cycles X being the ratio between 50MHz and ptp_clock_rate
-    (addend = 2^32 * 50MHz/ptp_clock_rate).
-    This causes the following issues :
-    - In case the frequency of the ptp clock is inferior or equal to 50MHz,
-      the addend value calculation will overflow and the default
-      addend value will be set to 0, causing the clock to not work at
-      all. (For instance, for ptp_clock_rate = 50MHz, addend = 2^32).
-    - The resolution of the timestamping clock is limited to 20ns while it
-      is not needed, thus limiting the accuracy of the timestamping to
-      20ns.
+Deleting list entry within hlist_for_each_entry_safe is not safe unless
+next pointer (tmp) is protected too. It's not, because once hash_lock
+is released, cache_clean may delete the entry that tmp points to. Then
+cache_purge can walk to a deleted entry and tries to double free it.
 
-    Fix this by setting sub-second increment to 2e09ns / ptp_clock_rate.
-    It will allow to reach the minimum possible frequency for
-    ptp_clk_ref, which is 5MHz for GMII 1000Mps Full-Duplex by setting the
-    sub-second-increment to a higher value. For instance, for 25MHz, it
-    gives ssinc = 80ns and default_addend = 2^31.
-    It will also allow to use a lower value for sub-second-increment, thus
-    improving the timestamping accuracy with frequencies higher than
-    100MHz, for instance, for 200MHz, ssinc = 10ns and default_addend =
-    2^31.
+Fix this bug by holding only the deleted entry's reference.
 
-v1->v2:
- - Remove modifications to the calculation of default addend, which broke
- compatibility with clock frequencies for which 2000000000 / ptp_clk_freq
- is not an integer.
- - Modify description according to discussions.
-
-Signed-off-by: Julien Beraud <julien.beraud@orolia.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Suggested-by: NeilBrown <neilb@suse.de>
+Signed-off-by: Yihao Wu <wuyihao@linux.alibaba.com>
+Reviewed-by: NeilBrown <neilb@suse.de>
+[ cel: removed unused variable ]
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c    | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ net/sunrpc/cache.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c
-index 7423262ce5907..e1fbd7c81bfa9 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c
-@@ -36,12 +36,16 @@ static void config_sub_second_increment(void __iomem *ioaddr,
- 	unsigned long data;
- 	u32 reg_value;
+diff --git a/net/sunrpc/cache.c b/net/sunrpc/cache.c
+index bd843a81afa0b..d36cea4e270de 100644
+--- a/net/sunrpc/cache.c
++++ b/net/sunrpc/cache.c
+@@ -521,7 +521,6 @@ void cache_purge(struct cache_detail *detail)
+ {
+ 	struct cache_head *ch = NULL;
+ 	struct hlist_head *head = NULL;
+-	struct hlist_node *tmp = NULL;
+ 	int i = 0;
  
--	/* For GMAC3.x, 4.x versions, convert the ptp_clock to nano second
--	 *	formula = (1/ptp_clock) * 1000000000
--	 * where ptp_clock is 50MHz if fine method is used to update system
-+	/* For GMAC3.x, 4.x versions, in "fine adjustement mode" set sub-second
-+	 * increment to twice the number of nanoseconds of a clock cycle.
-+	 * The calculation of the default_addend value by the caller will set it
-+	 * to mid-range = 2^31 when the remainder of this division is zero,
-+	 * which will make the accumulator overflow once every 2 ptp_clock
-+	 * cycles, adding twice the number of nanoseconds of a clock cycle :
-+	 * 2000000000ULL / ptp_clock.
- 	 */
- 	if (value & PTP_TCR_TSCFUPDT)
--		data = (1000000000ULL / 50000000);
-+		data = (2000000000ULL / ptp_clock);
- 	else
- 		data = (1000000000ULL / ptp_clock);
- 
+ 	spin_lock(&detail->hash_lock);
+@@ -533,7 +532,9 @@ void cache_purge(struct cache_detail *detail)
+ 	dprintk("RPC: %d entries in %s cache\n", detail->entries, detail->name);
+ 	for (i = 0; i < detail->hash_size; i++) {
+ 		head = &detail->hash_table[i];
+-		hlist_for_each_entry_safe(ch, tmp, head, cache_list) {
++		while (!hlist_empty(head)) {
++			ch = hlist_entry(head->first, struct cache_head,
++					 cache_list);
+ 			sunrpc_begin_cache_remove_entry(ch, detail);
+ 			spin_unlock(&detail->hash_lock);
+ 			sunrpc_end_cache_remove_entry(ch, detail);
 -- 
 2.20.1
 
