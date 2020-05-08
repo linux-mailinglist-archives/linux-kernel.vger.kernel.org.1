@@ -2,114 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E97391CB1F4
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 16:40:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A94D11CB1F7
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 16:40:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728040AbgEHOkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 10:40:15 -0400
-Received: from cmccmta2.chinamobile.com ([221.176.66.80]:50002 "EHLO
-        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727907AbgEHOkP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 10:40:15 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.5]) by rmmx-syy-dmz-app06-12006 (RichMail) with SMTP id 2ee65eb56f398a3-5ab21; Fri, 08 May 2020 22:39:57 +0800 (CST)
-X-RM-TRANSID: 2ee65eb56f398a3-5ab21
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain (unknown[223.104.148.118])
-        by rmsmtp-syy-appsvr03-12003 (RichMail) with SMTP id 2ee35eb56f39bf1-33a14;
-        Fri, 08 May 2020 22:39:56 +0800 (CST)
-X-RM-TRANSID: 2ee35eb56f39bf1-33a14
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-To:     stern@rowland.harvard.edu, gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>,
-        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Subject: [PATCH v2] USB: host: ehci-mxc: Use the defined variable to simplify code
-Date:   Fri,  8 May 2020 22:40:24 +0800
-Message-Id: <20200508144024.7836-1-tangbin@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.20.1.windows.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1728128AbgEHOkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 10:40:52 -0400
+Received: from 8bytes.org ([81.169.241.247]:41590 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727828AbgEHOkw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 10:40:52 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 404DF423; Fri,  8 May 2020 16:40:50 +0200 (CEST)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     x86@kernel.org
+Cc:     hpa@zytor.com, Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, rjw@rjwysocki.net,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@kernel.org>,
+        Joerg Roedel <jroedel@suse.de>, joro@8bytes.org,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org
+Subject: [RFC PATCH 0/7] mm: Get rid of vmalloc_sync_(un)mappings()
+Date:   Fri,  8 May 2020 16:40:36 +0200
+Message-Id: <20200508144043.13893-1-joro@8bytes.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the defined variable "dev" to make the code cleaner. And
-delete an extra blank line.
+Hi,
 
-Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
----
-Changes from v1:
- - fix the subject and the code.
----
- drivers/usb/host/ehci-mxc.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+after the recent issue with vmalloc and tracing code[1] on x86 and a
+long history of previous issues related to the vmalloc_sync_mappings()
+interface, I thought the time has come to remove it. Please
+see [2], [3], and [4] for some other issues in the past.
 
-diff --git a/drivers/usb/host/ehci-mxc.c b/drivers/usb/host/ehci-mxc.c
-index c9f91e6c7..09e01397f 100644
---- a/drivers/usb/host/ehci-mxc.c
-+++ b/drivers/usb/host/ehci-mxc.c
-@@ -36,12 +36,12 @@ static const struct ehci_driver_overrides ehci_mxc_overrides __initconst = {
- 
- static int ehci_mxc_drv_probe(struct platform_device *pdev)
- {
--	struct mxc_usbh_platform_data *pdata = dev_get_platdata(&pdev->dev);
-+	struct device *dev = &pdev->dev;
-+	struct mxc_usbh_platform_data *pdata = dev_get_platdata(dev);
- 	struct usb_hcd *hcd;
- 	struct resource *res;
- 	int irq, ret;
- 	struct ehci_mxc_priv *priv;
--	struct device *dev = &pdev->dev;
- 	struct ehci_hcd *ehci;
- 
- 	if (!pdata) {
-@@ -56,7 +56,7 @@ static int ehci_mxc_drv_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	hcd->regs = devm_ioremap_resource(&pdev->dev, res);
-+	hcd->regs = devm_ioremap_resource(dev, res);
- 	if (IS_ERR(hcd->regs)) {
- 		ret = PTR_ERR(hcd->regs);
- 		goto err_alloc;
-@@ -69,14 +69,14 @@ static int ehci_mxc_drv_probe(struct platform_device *pdev)
- 	priv = (struct ehci_mxc_priv *) ehci->priv;
- 
- 	/* enable clocks */
--	priv->usbclk = devm_clk_get(&pdev->dev, "ipg");
-+	priv->usbclk = devm_clk_get(dev, "ipg");
- 	if (IS_ERR(priv->usbclk)) {
- 		ret = PTR_ERR(priv->usbclk);
- 		goto err_alloc;
- 	}
- 	clk_prepare_enable(priv->usbclk);
- 
--	priv->ahbclk = devm_clk_get(&pdev->dev, "ahb");
-+	priv->ahbclk = devm_clk_get(dev, "ahb");
- 	if (IS_ERR(priv->ahbclk)) {
- 		ret = PTR_ERR(priv->ahbclk);
- 		goto err_clk_ahb;
-@@ -84,13 +84,12 @@ static int ehci_mxc_drv_probe(struct platform_device *pdev)
- 	clk_prepare_enable(priv->ahbclk);
- 
- 	/* "dr" device has its own clock on i.MX51 */
--	priv->phyclk = devm_clk_get(&pdev->dev, "phy");
-+	priv->phyclk = devm_clk_get(dev, "phy");
- 	if (IS_ERR(priv->phyclk))
- 		priv->phyclk = NULL;
- 	if (priv->phyclk)
- 		clk_prepare_enable(priv->phyclk);
- 
--
- 	/* call platform specific init function */
- 	if (pdata->init) {
- 		ret = pdata->init(pdev);
+The patches are based on v5.7-rc4 and add tracking of page-table
+directory changes to the vmalloc and ioremap code. Depending on which
+page-table levels changes have been made, a new per-arch function is
+called: arch_sync_kernel_mappings().
+
+On x86-64 with 4-level paging, this function will not be called more
+than 64 times in a systems runtime (because vmalloc-space takes 64 PGD
+entries which are only populated, but never cleared).
+
+As a side effect this also allows to get rid of vmalloc faults on x86,
+making it safe to touch vmalloc'ed memory in the page-fault handler.
+Note that this potentially includes per-cpu memory.
+
+The code is tested on x86-64, x86-32 with and without PAE. It also fixes
+the issue described in [1]. Additionally this code has been
+compile-tested on almost all architectures supported by Linux. I
+couldn't find working compilers for hexagon and unicore32, so these are
+not tested.
+
+Please review.
+
+Regards,
+
+	Joerg
+
+[1] https://lore.kernel.org/lkml/20200430141120.GA8135@suse.de/
+[2] https://lore.kernel.org/lkml/20191009124418.8286-1-joro@8bytes.org/
+[3] https://lore.kernel.org/lkml/20190719184652.11391-1-joro@8bytes.org/
+[4] https://lore.kernel.org/lkml/20191126111119.GA110513@gmail.com/
+
+Joerg Roedel (7):
+  mm: Add functions to track page directory modifications
+  mm/vmalloc: Track which page-table levels were modified
+  mm/ioremap: Track which page-table levels were modified
+  x86/mm/64: Implement arch_sync_kernel_mappings()
+  x86/mm/32: Implement arch_sync_kernel_mappings()
+  mm: Remove vmalloc_sync_(un)mappings()
+  x86/mm: Remove vmalloc faulting
+
+ arch/x86/include/asm/pgtable-2level_types.h |   2 +
+ arch/x86/include/asm/pgtable-3level_types.h |   2 +
+ arch/x86/include/asm/pgtable_64_types.h     |   2 +
+ arch/x86/include/asm/switch_to.h            |  23 ---
+ arch/x86/kernel/setup_percpu.c              |   6 +-
+ arch/x86/mm/fault.c                         | 176 +-------------------
+ arch/x86/mm/init_64.c                       |   5 +
+ arch/x86/mm/pti.c                           |   8 +-
+ drivers/acpi/apei/ghes.c                    |   6 -
+ include/asm-generic/5level-fixup.h          |   5 +-
+ include/asm-generic/pgtable.h               |  23 +++
+ include/linux/mm.h                          |  46 +++++
+ include/linux/vmalloc.h                     |  13 +-
+ kernel/notifier.c                           |   1 -
+ lib/ioremap.c                               |  46 +++--
+ mm/nommu.c                                  |  12 --
+ mm/vmalloc.c                                | 109 +++++++-----
+ 17 files changed, 199 insertions(+), 286 deletions(-)
+
 -- 
-2.20.1.windows.1
-
-
+2.17.1
 
