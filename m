@@ -2,167 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CD7B1CB2C9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 17:28:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87E601CB2C7
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 17:28:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727770AbgEHP2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 11:28:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57036 "EHLO
+        id S1726942AbgEHP16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 11:27:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726948AbgEHP2O (ORCPT
+        with ESMTP id S1726689AbgEHP16 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 11:28:14 -0400
-Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F110FC061A0C
-        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 08:28:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ijaFvPasWKUsbhA2kdV/wZu4/wcIgDcX0/4aV7FEpOw=; b=F0LIwmWPAQRoQkL1B1fUf81p9A
-        hgaeHxDtDWrclHPEJfJT81bgNKVDvPOjGOvIPCcj7ICL9wlu+VKeSDDn4X0u3j5+edgEiGj0zsQgL
-        vlxphxIm3dOzu/8Uy7tGi2W+IyDdon1ML2ArhLVDi0PrHfDhs3/TP8ApM6ybHKAhxy5Non+6qY0Lj
-        Kkd9rV3vnF85kaXFx7oZYaUJ54J0M4hZzM7Ngj/ZetnPCo5kyq4tYbhQuZcQ2uSpWH+aLPJJhbQ2k
-        7rnL76QqiLnnt0V4kyHOYNIuop+hRJpXzhJqE9jxcadMShtMzdJ2MG14xE1inBt8b74HsDSAYK858
-        6kxJ4U+w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jX4uU-000786-HI; Fri, 08 May 2020 15:27:34 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 112CE3010C8;
-        Fri,  8 May 2020 17:27:31 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E48F1286E8FF5; Fri,  8 May 2020 17:27:30 +0200 (CEST)
-Date:   Fri, 8 May 2020 17:27:30 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org,
-        mhiramat@kernel.org, bristot@redhat.com, jbaron@akamai.com,
-        torvalds@linux-foundation.org, tglx@linutronix.de,
-        mingo@kernel.org, namit@vmware.com, hpa@zytor.com, luto@kernel.org,
-        ard.biesheuvel@linaro.org, pbonzini@redhat.com,
-        mathieu.desnoyers@efficios.com
-Subject: Re: [PATCH v4 14/18] static_call: Add static_cond_call()
-Message-ID: <20200508152730.GB3344@hirez.programming.kicks-ass.net>
-References: <20200501202849.647891881@infradead.org>
- <20200501202944.593400184@infradead.org>
- <20200506172455.ho5em2mtzn7qqfjl@treble>
+        Fri, 8 May 2020 11:27:58 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED6AEC061A0C
+        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 08:27:57 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id h26so1735030lfg.6
+        for <linux-kernel@vger.kernel.org>; Fri, 08 May 2020 08:27:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uFn8omqpPyP6yYWvRZAtzgNfdrHcBeFpZiqovJJI8PU=;
+        b=CV42aVcRM8sgQyI+q9OkPrEsf4LJZVctUXQJK16eTt5EpHphq8vf1WA1AElg7OQc7h
+         CP/H3kIw7ZT+sUhU4hKu1r/oUv+OGszR9YyNfdkx11IynL3/Zmz0V06yLyv+w3hTz5cv
+         nbMWMzAWaN/K2Cs7QAGS2pP0E2TM3i4+d7QWDo2ggvSzVIZUtdn+BQc6U5bYLAGL7f9z
+         hUYVw3qzESoPTFVTiOHKhH81SxwXXi4itbOXN+E8oMTsEcL8MRaUB5sNlF9RzCnuRPcW
+         J8daQsgXRg+rXrkmxEn0KNwJxGD1pKNyvykx4+qc9NL+f2Jlw9sXkieWOeYloAZa1G4m
+         vSGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uFn8omqpPyP6yYWvRZAtzgNfdrHcBeFpZiqovJJI8PU=;
+        b=Icoipzg+ymN8Loe53LDqOQCEogVjJrF5gAtQDaI5iI8PgCY/xsPol3GIQ/3EVDmtb+
+         PDd4B9O6ujoBxWdYO6V6o48FR2gB43q+G9el0disGjyZ3dsU86jLozs/4CMw0+blgfxJ
+         4ErIdSJB9dWLhmRN0G2EGHaZYCLjWd92nLyH8xmTOfo8cjDTmQG3y4l3w2owXMX8V1vQ
+         8EE46WMAJPoDrxFuSXLOlVmOfJa1a78iV1MF3ZNas4ChL7xuDOO1SN8BzRsMJehmW+51
+         wyl3jjKrNAwxp5MULLe5qPvuPzi8GTYcn1XadKD9wGgHcodvnmXIZzP4tEHhJ0L4Y3iB
+         qg/w==
+X-Gm-Message-State: AOAM531OlKAV7Gw76OVGl0wBuhBP5Pj3N9lbn9Gc6MDjEf9H0GNeDxHV
+        dIezvUz1puxBjI677DnVIeXuWCD0OutYctomeLjrRQ==
+X-Google-Smtp-Source: ABdhPJwAvkEA+rVtDMXTbHoOcF4U8FdzXy3ETMayuUmcRg2UOX5TteY+yEWE/Or3RngmDI2LXblL2pOtLNV3c0XzhJw=
+X-Received: by 2002:a05:6512:104a:: with SMTP id c10mr2358008lfb.184.1588951676023;
+ Fri, 08 May 2020 08:27:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200506172455.ho5em2mtzn7qqfjl@treble>
+References: <20200506141821.GA9773@lorien.usersys.redhat.com>
+ <20200507203612.GF19331@lorien.usersys.redhat.com> <20200508151515.GA25974@geo.homenetwork>
+In-Reply-To: <20200508151515.GA25974@geo.homenetwork>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Fri, 8 May 2020 17:27:44 +0200
+Message-ID: <CAKfTPtCeA1VcEierR5iyQJApU5JMFQqkMSR+2JGU4o5cG76opQ@mail.gmail.com>
+Subject: Re: [PATCH v2] sched/fair: Fix enqueue_task_fair warning some more
+To:     Tao Zhou <zohooouoto@zoho.com.cn>
+Cc:     Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Tao Zhou <ouwen210@hotmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 06, 2020 at 12:24:55PM -0500, Josh Poimboeuf wrote:
+On Fri, 8 May 2020 at 17:12, Tao Zhou <zohooouoto@zoho.com.cn> wrote:
+>
+> Hi Phil,
+>
+> On Thu, May 07, 2020 at 04:36:12PM -0400, Phil Auld wrote:
+> > sched/fair: Fix enqueue_task_fair warning some more
+> >
+> > The recent patch, fe61468b2cb (sched/fair: Fix enqueue_task_fair warning)
+> > did not fully resolve the issues with the rq->tmp_alone_branch !=
+> > &rq->leaf_cfs_rq_list warning in enqueue_task_fair. There is a case where
+> > the first for_each_sched_entity loop exits due to on_rq, having incompletely
+> > updated the list.  In this case the second for_each_sched_entity loop can
+> > further modify se. The later code to fix up the list management fails to do
+> > what is needed because se no longer points to the sched_entity which broke
+> > out of the first loop.
+> >
+>
+> > Address this by calling leaf_add_rq_list if there are throttled parents while
+> > doing the second for_each_sched_entity loop.
+>
+> Thanks for your trace imformation and explanation. I
+> truely have learned from this and that.
+>
+> s/leaf_add_rq_list/list_add_leaf_cfs_rq/
+>
+> >
+> > Suggested-by: Vincent Guittot <vincent.guittot@linaro.org>
+> > Signed-off-by: Phil Auld <pauld@redhat.com>
+> > Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > Cc: Vincent Guittot <vincent.guittot@linaro.org>
+> > Cc: Ingo Molnar <mingo@kernel.org>
+> > Cc: Juri Lelli <juri.lelli@redhat.com>
+> > ---
+> >  kernel/sched/fair.c | 7 +++++++
+> >  1 file changed, 7 insertions(+)
+> >
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index 02f323b85b6d..c6d57c334d51 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -5479,6 +5479,13 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
+> >               /* end evaluation on encountering a throttled cfs_rq */
+> >               if (cfs_rq_throttled(cfs_rq))
+> >                       goto enqueue_throttle;
+> > +
+> > +               /*
+> > +                * One parent has been throttled and cfs_rq removed from the
+> > +                * list. Add it back to not break the leaf list.
+> > +                */
+> > +               if (throttled_hierarchy(cfs_rq))
+> > +                       list_add_leaf_cfs_rq(cfs_rq);
+> >       }
+>
+> I was confused by why the throttled cfs rq can be on list.
+> It is possible when enqueue a task and thanks to the 'threads'.
+> But I think the above comment does not truely put the right
+> intention, right ?
+> If throttled parent is onlist, the child cfs_rq is ignored
+> to be added to the leaf cfs_rq list me think.
+>
+> unthrottle_cfs_rq() follows the same logic if i am not wrong.
+> Is it necessary to add the above to it ?
 
-> On that note, what do you think about tweaking the naming from
-> 
->   DEFINE_STATIC_COND_CALL(name, typename);
->   static_cond_call(name)(args...);
-> 
-> to
-> 
->   DEFINE_STATIC_CALL_NO_FUNC(name, typename);
->   static_call_if_func(name)(args...);
-> 
-> ?
-> 
-> Seems clearer to me.  They're still STATIC_CALLs, so it seems logical to
-> keep those two words together.  And NO_FUNC clarifies the initialized
-> value.
-> 
-> Similarly RETTRAMP could be ARCH_DEFINE_STATIC_CALL_NO_FUNC.
+When a cfs_rq is throttled, its sched group is dequeued and all child
+cfs_rq are removed from  leaf_cfs_rq list. But the sched group of the
+child cfs_rq stay enqueued in the throttled cfs_rq so child sched
+group->on_rq might be still set.
 
-So I dislike static_call_if_func(), that's so much typing. Also, I
-prefer ARCH_*_RETTRAMP as it clearly describes what the thing is.
-
-How is something like this? 
-
----
---- a/include/linux/static_call.h
-+++ b/include/linux/static_call.h
-@@ -16,7 +16,7 @@
-  *
-  *   DECLARE_STATIC_CALL(name, func);
-  *   DEFINE_STATIC_CALL(name, func);
-- *   DEFINE_STATIC_COND_CALL(name, typename);
-+ *   DEFINE_STATIC_CALL_NULL(name, typename);
-  *   static_call(name)(args...);
-  *   static_cond_call(name)(args...);
-  *   static_call_update(name, func);
-@@ -54,6 +54,43 @@
-  *   rather than calling through the trampoline.  This requires objtool or a
-  *   compiler plugin to detect all the static_call() sites and annotate them
-  *   in the .static_call_sites section.
-+ *
-+ *
-+ * Notes on NULL function pointers:
-+ *
-+ *   Static_call()s support NULL functions, with many of the caveats that
-+ *   regular function pointers have.
-+ *
-+ *   Clearly calling a NULL function pointer is 'BAD', so too for
-+ *   static_call()s (although when HAVE_STATIC_CALL it might not be immediately
-+ *   fatal). A NULL static_call can be the result of:
-+ *
-+ *     DECLARE_STATIC_CALL_NULL(my_static_call, void (*)(int));
-+ *
-+ *   which is equivalent to declaring a NULL function pointer with just a
-+ *   typename:
-+ *
-+ *     void (*my_func_ptr)(int arg1) = NULL;
-+ *
-+ *   or using static_call_update() with a NULL function. In both cases the
-+ *   HAVE_STATIC_CALL implementation will patch the trampoline with a RET
-+ *   instruction, instead of an immediate tail-call JMP. HAVE_STATIC_CALL_INLINE
-+ *   architectures can patch the trampoline call to a NOP.
-+ *
-+ *   In all cases, any argument evaluation is unconditional. Unlike a regular
-+ *   conditional function pointer call:
-+ *
-+ *     if (my_func_ptr)
-+ *         my_func_ptr(arg1)
-+ *
-+ *   where the argument evaludation also depends on the pointer value.
-+ *
-+ *   When calling a static_call that can be NULL, use:
-+ *
-+ *     static_cond_call(name)(arg1);
-+ *
-+ *   which will include the required value tests to avoid NULL-pointer
-+ *   dereferences.
-  */
- 
- #include <linux/types.h>
-@@ -122,7 +159,7 @@ extern int static_call_text_reserved(voi
- 	};								\
- 	ARCH_DEFINE_STATIC_CALL_TRAMP(name, _func)
- 
--#define DEFINE_STATIC_COND_CALL(name, _func)				\
-+#define DEFINE_STATIC_CALL_NULL(name, _func)				\
- 	DECLARE_STATIC_CALL(name, _func);				\
- 	struct static_call_key STATIC_CALL_KEY(name) = {		\
- 		.func = NULL,						\
-@@ -154,7 +191,7 @@ struct static_call_key {
- 	};								\
- 	ARCH_DEFINE_STATIC_CALL_TRAMP(name, _func)
- 
--#define DEFINE_STATIC_COND_CALL(name, _func)				\
-+#define DEFINE_STATIC_CALL_NULL(name, _func)				\
- 	DECLARE_STATIC_CALL(name, _func);				\
- 	struct static_call_key STATIC_CALL_KEY(name) = {		\
- 		.func = NULL,						\
-@@ -198,7 +235,7 @@ struct static_call_key {
- 		.func = _func,						\
- 	}
- 
--#define DEFINE_STATIC_COND_CALL(name, _func)				\
-+#define DEFINE_STATIC_CALL_NULL(name, _func)				\
- 	DECLARE_STATIC_CALL(name, _func);				\
- 	struct static_call_key STATIC_CALL_KEY(name) = {		\
- 		.func = NULL,						\
+>
+> Thanks,
+> Tau
+>
+> >
+> >  enqueue_throttle:
+> > --
+> > 2.18.0
+> >
+> > V2 rework the fix based on Vincent's suggestion. Thanks Vincent.
+> >
+> >
+> > Cheers,
+> > Phil
+> >
+> > --
+> >
