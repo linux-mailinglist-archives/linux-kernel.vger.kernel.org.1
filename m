@@ -2,190 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 557EE1CA4E0
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 09:12:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE3F11CA4E6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 09:13:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726951AbgEHHMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 03:12:21 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:38914 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726009AbgEHHMU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 03:12:20 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200508071212euoutp016db841c6e7d8e0e92c049b17c25ed80c~M-BRfpuYV2616026160euoutp01D
-        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 07:12:12 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200508071212euoutp016db841c6e7d8e0e92c049b17c25ed80c~M-BRfpuYV2616026160euoutp01D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1588921933;
-        bh=MNq8IaWUA6Un4kt7IMAiklPWVR3gf64K43Fn6O07vqs=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=Vb8aluHNEw2JqOy80I0E6I6Y8ywULeo5y2fJruM/YjEqktoHKqHrnSgLkcX3ZM422
-         hpdrckhVsKQQwiMlZOpS+xX2P8OSoQKM8KJZYhOQPPi13GsmPGLQQIhEuIc5nCCTH5
-         7kpq//KUDt40Ys1jXlI0DUiDRUPooFwT17sxiUYA=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200508071212eucas1p2f160f406bc38d49c40a526e2f90073cd~M-BRGg3qQ0835408354eucas1p2O;
-        Fri,  8 May 2020 07:12:12 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id 03.30.60679.C4605BE5; Fri,  8
-        May 2020 08:12:12 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200508071211eucas1p2c0d71295772b61cd59ea323234374fca~M-BQi3KsU0800008000eucas1p2K;
-        Fri,  8 May 2020 07:12:11 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200508071211eusmtrp1807089cd64cf7c196d7a64f6e784733b~M-BQiFdOl0512605126eusmtrp1M;
-        Fri,  8 May 2020 07:12:11 +0000 (GMT)
-X-AuditID: cbfec7f4-0cbff7000001ed07-24-5eb5064cdf42
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id BC.FD.08375.B4605BE5; Fri,  8
-        May 2020 08:12:11 +0100 (BST)
-Received: from [106.210.88.143] (unknown [106.210.88.143]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200508071211eusmtip2934bd81bad65ddd62f2c0e1050abb486~M-BPtk_EY1877618776eusmtip2B;
-        Fri,  8 May 2020 07:12:11 +0000 (GMT)
-Subject: Re: [PATCH v3 02/25] drm: core: fix common struct sg_table related
- issues
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     dri-devel@lists.freedesktop.org, iommu@lists.linux-foundation.org,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
-        Robin Murphy <robin.murphy@arm.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        linux-arm-kernel@lists.infradead.org,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <b887c355-14db-ad37-0e93-733ff2249967@samsung.com>
-Date:   Fri, 8 May 2020 09:12:13 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
-        Thunderbird/68.8.0
+        id S1726797AbgEHHN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 03:13:26 -0400
+Received: from mga17.intel.com ([192.55.52.151]:23845 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725991AbgEHHNZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 03:13:25 -0400
+IronPort-SDR: Xju6Eq9ewAE/XcztQ70vBf6CX0wsd9OCtlf4kEmEPv1rRqRcwouBwV0A6CjQ2J77LUsawZoU/i
+ QotsN6M83jtA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2020 00:13:25 -0700
+IronPort-SDR: J9t310eHLmB3Du0D1IUsXpj+qkKcZupddzfiylr2llsJzqFydQmQDZ568ZhNcpN9C76iy0yBET
+ heda81K1xsOw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,366,1583222400"; 
+   d="scan'208";a="295988789"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 08 May 2020 00:13:24 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jWxCF-0006cv-Ia; Fri, 08 May 2020 15:13:23 +0800
+Date:   Fri, 08 May 2020 15:12:59 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:rcu/next] BUILD SUCCESS
+ d13fee049fa8e94649aa9914fd1ab5d07da51da4
+Message-ID: <5eb5067b.d5MUalfbbwtMa77D%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20200505110950.GA19067@lst.de>
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Se0hTcRjlt/vwOr1xnco+rQzWA4zStIgLhhkU3D8iKvpDhGyrbirqlN20
-        llT2QG1O8YFlS8o0MtdjtelKS8yVDbGWqZTrZaVJWqalDiqz3K6W/51zvvPxnQMfhcm+EsFU
-        kno/r1GrUhSkFLc++uFYuZmsj19VXruQLXC0Sdhb5SaC/WMtxtjuiRGSrb3aKmErm6PY8e73
-        Etbc95xguxorSPbit3qczTl1mWBbRvsJtu5LMRFDc9fOX0Nck6sS58zGUyR32/WO4M63beN6
-        8+0SznLpKPdqqg/jSntqEHfXmU1yhXVGxFnas7gxc8hWOk66bi+fkpTJa8KjldLEp84JIj03
-        6OD1gWNkNioK1CFvCpg1MFmYi+uQlJIxVxDc+/2ZFMk4gvFei5dIxhA0teYRsyv5v5ol4qAG
-        galzdIaMILg41IC7Xf7MDqjvtEvcOIBRwMehJ8htwpjnGFgH7R4TyUSAblhHujHNRENtaZmX
-        G+PMEtDn6T16ILMT2qstSPT4QdvZ/uldivJmVoDjwRa3jDGL4ET9OUzEcnjZf8ETCJgyClx3
-        K2ZibwTD2/wZ7A9D9jovES+A9lI9Li6cQPDecd1LJHoEXcfLkeiKgteOn6T7MsaEgqkxXJQ3
-        wJT+i0cGZh70DPuJIeZBifUMJso05OXIRPcyMNhv/Dvb0tGJFSGFYU4zw5w6hjl1DP/vViLc
-        iOR8hpCawAuRav5AmKBKFTLUCWF70lLNaPoL26fs43dQ4+RuG2IopPCl2W+WeBmhyhS0qTYE
-        FKYIoIsP1sXL6L0q7SFek7ZLk5HCCzY0n8IVcnp11eBOGZOg2s8n83w6r5mdSijv4Gxkit2W
-        pFRlbapufDbQlD3WrYvxvRn3wq4xFcTyIRlEQOYFPrljwsdAFJwMehhWdfRD4Jte463Y49IK
-        I2/6xFdFhn62pssrHy9uKFnqZM8duTfqdK0RDhu024tCt0+sXzZVczuGPukTpRS+r40+fX/f
-        VWXQggBSm9g6/DpOaXtrVOBCoipiOaYRVH8BbttRxYEDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpgleLIzCtJLcpLzFFi42I5/e/4PV1vtq1xBq0nzSx6z51kstg4Yz2r
-        xf9tE5ktrnx9z2axcvVRJosF+60tvlx5yGSx6fE1VovLu+awWSz8uJXFoq1zGavFwQ9PWC22
-        vJnI6sDrsWbeGkaPvd8WsHhsWtXJ5rH92wNWj3knAz3udx9n8ti8pN7j9r/HzB6Tbyxn9Nh9
-        s4HNo2/LKkaPzaerPT5vkgvgjdKzKcovLUlVyMgvLrFVija0MNIztLTQMzKx1DM0No+1MjJV
-        0rezSUnNySxLLdK3S9DLOH/zK2tBu2TF2meNbA2ME0S7GDk5JARMJLp/72fqYuTiEBJYyijx
-        8uQiNoiEjMTJaQ2sELawxJ9rXWwQRW8ZJW61XgJLCAuESGy9dJwJxBYRUJJ4+uosI0gRs8AN
-        Zolvm3vZITo+MUm8uLWaHaSKTcBQouttF9gKXgE7iZWTp4LFWQRUJHo6esDiogKxEquvtTJC
-        1AhKnJz5hKWLkYODU0BH4txhP5Aws4CZxLzND5khbHmJ5q2zoWxxiVtP5jNNYBSahaR7FpKW
-        WUhaZiFpWcDIsopRJLW0ODc9t9hQrzgxt7g0L10vOT93EyMw9rcd+7l5B+OljcGHGAU4GJV4
-        eC0+bo4TYk0sK67MPcQowcGsJMI7sWJLnBBvSmJlVWpRfnxRaU5q8SFGU6DfJjJLiSbnA9NS
-        Xkm8oamhuYWlobmxubGZhZI4b4fAwRghgfTEktTs1NSC1CKYPiYOTqkGRvHpq6P2dSa8OVjH
-        Vnnx/YGs1ZcMdwq/K7n9/U7He6XK9JWHT8tsYp7h8JBf8sbi5spdx4KuXOOyr5Xa2tR+VPzt
-        87f72QXfNKjcbvS+wG+wXdhJXto6fGJ81+6q3St3/X+9d+1X1Z0qoo/t8vKMnYqbt3IrLJCK
-        i961PECs8mq0SuPMHqmKuUosxRmJhlrMRcWJAMJUTm8TAwAA
-X-CMS-MailID: 20200508071211eucas1p2c0d71295772b61cd59ea323234374fca
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200505084625eucas1p1a3c25fd171f360e0aab2f76700699454
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200505084625eucas1p1a3c25fd171f360e0aab2f76700699454
-References: <20200505083926.28503-1-m.szyprowski@samsung.com>
-        <20200505084614.30424-1-m.szyprowski@samsung.com>
-        <CGME20200505084625eucas1p1a3c25fd171f360e0aab2f76700699454@eucas1p1.samsung.com>
-        <20200505084614.30424-2-m.szyprowski@samsung.com>
-        <20200505101508.GA14860@lst.de>
-        <5dd1cb55-accb-0dc6-4ca5-90c57cd19527@samsung.com>
-        <20200505110950.GA19067@lst.de>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  rcu/next
+branch HEAD: d13fee049fa8e94649aa9914fd1ab5d07da51da4  Default enable RCU list lockdep debugging with PROVE_RCU
 
-On 05.05.2020 13:09, Christoph Hellwig wrote:
-> On Tue, May 05, 2020 at 12:51:58PM +0200, Marek Szyprowski wrote:
->> On 05.05.2020 12:15, Christoph Hellwig wrote:
->>>> -		for_each_sg_page(st->sgl, &sg_iter, st->nents, 0)
->>>> +		for_each_sg_page(st->sgl, &sg_iter, st->orig_nents, 0)
->>> Would it make sense to also add a for_each_sgtable_page helper that
->>> hides the use of orig_nents?  To be used like:
->>>
->>> 		for_each_sgtable_page(st, &sg_iter, 0) {
->> We would need two helpers:
->>
->> for_each_sgtable_cpu_page() and for_each_sgtable_dma_page().
->>
->> I considered them, but then I found that there are already
->> for_each_sg_page(), for_each_sg_dma_page() and various special iterators
->> like sg_page_iter, sg_dma_page_iter and sg_mapping_iter. Too bad that
->> they are almost not used, at least in the DRM subsystem. I wonder if it
->> make sense to apply them or simply provide the two above mentioned
->> wrappers?
-> None of the helpers helps with passing the right parameters from the
-> sg_table.  So in doube we'd need wrappers for all of the above, or
-> none..
+elapsed time: 507m
 
-I've played a bit with the code and the existing scatterlist iterators - 
-for_each_sg_page() and for_each_sg_dma_page(). I've found them quite handy!
+configs tested: 98
+configs skipped: 1
 
-The biggest advantage of them is that they always iterate over 
-scatterlist in PAGE_SIZE units, what should make the code much easier to 
-understand. Here is example of their application to the function that 
-started this thread:
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-int drm_prime_sg_to_page_addr_arrays(struct sg_table *sgt, struct page 
-**pages,
-                                      dma_addr_t *addrs, int max_entries)
-{
-         struct sg_dma_page_iter dma_iter;
-         struct sg_page_iter page_iter;
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm64                            allyesconfig
+sparc                            allyesconfig
+m68k                             allyesconfig
+sh                                allnoconfig
+sparc64                             defconfig
+c6x                              allyesconfig
+nds32                             allnoconfig
+microblaze                        allnoconfig
+sparc                               defconfig
+mips                             allmodconfig
+um                                  defconfig
+m68k                                defconfig
+parisc                           allyesconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+sh                               allmodconfig
+arc                                 defconfig
+arc                              allyesconfig
+microblaze                       allyesconfig
+mips                             allyesconfig
+mips                              allnoconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20200507
+i386                 randconfig-a004-20200507
+i386                 randconfig-a001-20200507
+i386                 randconfig-a002-20200507
+i386                 randconfig-a003-20200507
+i386                 randconfig-a006-20200507
+x86_64               randconfig-a015-20200507
+x86_64               randconfig-a014-20200507
+x86_64               randconfig-a012-20200507
+x86_64               randconfig-a013-20200507
+x86_64               randconfig-a011-20200507
+x86_64               randconfig-a016-20200507
+i386                 randconfig-a012-20200507
+i386                 randconfig-a016-20200507
+i386                 randconfig-a014-20200507
+i386                 randconfig-a011-20200507
+i386                 randconfig-a015-20200507
+i386                 randconfig-a013-20200507
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
 
-         if (addrs)
-                 for_each_sgtable_dma_page(sgt, &dma_iter, 0)
-                         *addrs++ = sg_page_iter_dma_address(&dma_iter);
-         if (pages)
-                 for_each_sgtable_page(sgt, &page_iter, 0)
-                         *pages++ = sg_page_iter_page(&page_iter);
-         return 0;
-}
-
-After applying those iterators where possible (they can be used only for 
-reading the scatterlist), we would just need to add 2 trivial wrappers 
-to use them with sg_table objects:
-
-#define for_each_sgtable_page(sgt, piter, pgoffset)    \
-        for_each_sg_page(sgt->sgl, piter, sgt->orig_nents, pgoffset)
-
-#define for_each_sgtable_dma_page(sgt, dma_iter, pgoffset)     \
-        for_each_sg_dma_page(sgt->sgl, dma_iter, sgt->nents, pgoffset)
-
-Then we would just need one more helper to construct scatterlist, as the 
-above two are read-only don't allow to modify scatterlist:
-
-#define for_each_sgtable_sg(sgt, sg, i)                \
-        for_each_sg(sgt->sgl, sg, sgt->orig_nents, i)
-
-With the above 3 helpers we can probably get rid of all instances of 
-sg_table->{nents,orig_nents} from the DRM code. I will prepare patches soon.
-
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
