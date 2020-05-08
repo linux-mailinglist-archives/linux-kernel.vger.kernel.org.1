@@ -2,144 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 501B41CB99F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 23:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D69661CB9B2
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 23:22:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727123AbgEHVUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 17:20:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55740 "EHLO
+        id S1727907AbgEHVW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 17:22:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726950AbgEHVUB (ORCPT
+        with ESMTP id S1727787AbgEHVW0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 17:20:01 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6678AC05BD43
-        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 14:20:01 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id j5so3563683wrq.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 May 2020 14:20:01 -0700 (PDT)
+        Fri, 8 May 2020 17:22:26 -0400
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA49BC05BD43
+        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 14:22:26 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id r5so3020557pfh.12
+        for <linux-kernel@vger.kernel.org>; Fri, 08 May 2020 14:22:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=MfGO3pjQpz1FBRiqCb0+KptNcnlzs41SYOqSqBBspK8=;
-        b=oosTixpZ3ZazMDUIgl65wMlu5Yu9BNLoLL9U6epBBWcKc/5DCtc9hxB84eEYGju6IR
-         KUzI1CaESJWKx9QPhjL+L0sMKs2Z0qCfBVL0foEbAKx9gxcU8DdZ7dtoeljayPAlA/AI
-         loye5aZqDYIor3pIL8TMWJU/2gqphzvv4s1oBem51L1WEQqlKN7YREis4K5k1s33twMc
-         GTA1EtoNFXCjSCCbCCyHgRE6j04kOvf7s427dNTdcPyEbvX+899yvSY3mXKp1BhkfX0z
-         y7kFdyBMSLY3AjWshZYSiUjzTB/yI4Rzs3vbY7OsJovZpJOePjZnk0yJ3XdLq0TpLzES
-         SFDQ==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=H7ED1E6iU6GJrL2T+LX5Bj/uEQY3JnE8s7k3T/+egkg=;
+        b=XY5On+GozPMjP6G7zkPxPhW0eE2rp4+jjdvdyV+TE6avG+bX2A6pptdCo2RW+Rn3no
+         KQU1jyKtWYfy9dkYUy4EImZ9+uEOAdDNPH0YwlyphH5/olIWRcFiT8PHrG0uYO6VgAgO
+         E/dVasAEh4SuLPL7R9m2RQCh6iAMAIo8SZvlMpxpYiJTLphr4eSjp2MuwGrDq5yyaNzx
+         4N+w8pQqM2elRyzuI36Dqha8UAGJbBpiCNZBetFNyysG+bhxK79vAv6P6/dmFhDWQ0cZ
+         53BuMgiu5tPKdTehsHF+yErNAw9OFP+cGYZN4uCLlChZJodaZgBljzVYxcpHxpU3zoun
+         Gm9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=MfGO3pjQpz1FBRiqCb0+KptNcnlzs41SYOqSqBBspK8=;
-        b=MdL/UbFgVyk6RaI2QNGgo7mtsrRnO3rF/F9k0h+/7d+JIvYJo5SUYcveixBi20/fp2
-         GhewJBaE8hIGSecJgnBaIvZdSPFEt0BU1ZykXWMOlhBhTVATvWqqSuvW7smptMIhbr6Z
-         nPfbGvwfIeudioJTgLccTC4fDVXlmvdFJg4ia0n3PBXKWTjkNzezuoNLqMrzD1fN9no2
-         F9CX9hP5i1B5j8a9ipE+Uiz2pi+PpbOoO3tGvtR0EoNUv14/OHrRWPUAZgmS64fgOrA4
-         GHnMM3mwBZUWT7MAQKk/pX7zW5gN/0mNk80w73WOct2FUFxy7RlEg2zIiAR2oTZza6Pj
-         EZBQ==
-X-Gm-Message-State: AGi0PuboscXmhTWkS4jaYi6uPsO5G/I9VY+dybmBAO2NMXC78XCIM3JV
-        aNiGUwAq9tgfioRERE5Cxck=
-X-Google-Smtp-Source: APiQypIf0RzejCInE82KNZmNq2Oj6brtFqFFCn3Muhdad42KKIOt1o7sFgUdgn1DTL+KgGOw7A9Owg==
-X-Received: by 2002:a5d:6108:: with SMTP id v8mr4776133wrt.286.1588972798797;
-        Fri, 08 May 2020 14:19:58 -0700 (PDT)
-Received: from localhost ([185.92.221.13])
-        by smtp.gmail.com with ESMTPSA id j16sm4646416wru.13.2020.05.08.14.19.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 08 May 2020 14:19:57 -0700 (PDT)
-Date:   Fri, 8 May 2020 21:19:57 +0000
-From:   Wei Yang <richard.weiyang@gmail.com>
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Wei Yang <richard.weiyang@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        willy@infradead.org
-Subject: Re: [PATCH 3/3] mm/swapfile.c: count won't be bigger than
- SWAP_MAP_MAX
-Message-ID: <20200508211957.haw4m2ityh6z5zzh@master>
-Reply-To: Wei Yang <richard.weiyang@gmail.com>
-References: <20200501015259.32237-1-richard.weiyang@gmail.com>
- <20200501015259.32237-3-richard.weiyang@gmail.com>
- <20200501154853.bca4cfb7b2558bd43a4942f3@linux-foundation.org>
- <20200502132911.u6y6hkh56ik4ojne@master>
- <87k11pv5ep.fsf@yhuang-dev.intel.com>
- <20200507222014.6s5szrt6zy2b6ybo@master>
- <87ftcbtiha.fsf@yhuang-dev.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87ftcbtiha.fsf@yhuang-dev.intel.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=H7ED1E6iU6GJrL2T+LX5Bj/uEQY3JnE8s7k3T/+egkg=;
+        b=SiTgpESgsFuSGfGunnk9edXQ6fvNo9OgtcO+741Bh3W7WKK+Qv7SGcIqJR1MUSO6fP
+         GfEhdqQymO7kvgSAQ6eA39/PnGky01JKrpNH06I31K14Adf2seseTI590Ozbe9kLqRvr
+         e94uuly5MAmZcYCV4kCnUHKOxJnGUsqJCxhpXpesIVBBg/TX2xhFwUZfxkw0U4Vk/15D
+         rPj9WDACeIt/15kClNPYSjNtonyyz/krjbju7ICwrs55if5YpeZ79Sq7YMkFIwRjzTWk
+         nDRO9TwrIBSJRHmlvxRaNCLdErVCH7WEmQQiIi3ivV68K6r3wyIjilcoFUab1j8JoYeK
+         FE4Q==
+X-Gm-Message-State: AGi0PuZTu8ZXU8Dd3Oe1Smwsrr+J5OxWiI9slqzvlrjwRP6umI0p1C8H
+        /uy2BDG3T+111SWiTU9LMgKj1AScWLi8KQ==
+X-Google-Smtp-Source: APiQypLfungZ5Nzv+f2ielEC+coRuoHMgMXQgXBUaRp75fbEnt3diNF+/f9OMq68YEUmbJsRsjKINr5ubL8GLQ==
+X-Received: by 2002:a17:90a:cb0b:: with SMTP id z11mr7520557pjt.62.1588972946092;
+ Fri, 08 May 2020 14:22:26 -0700 (PDT)
+Date:   Fri,  8 May 2020 14:22:13 -0700
+Message-Id: <20200508212215.181307-1-shakeelb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.26.2.645.ge9eca65c58-goog
+Subject: [PATCH 1/3] mm: swap: fix vmstats for huge pages
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Mel Gorman <mgorman@suse.de>, Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Yafang Shao <laoar.shao@gmail.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shakeel Butt <shakeelb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 08, 2020 at 07:48:01AM +0800, Huang, Ying wrote:
->Wei Yang <richard.weiyang@gmail.com> writes:
->
->> On Wed, May 06, 2020 at 04:22:54PM +0800, Huang, Ying wrote:
->>>Wei Yang <richard.weiyang@gmail.com> writes:
->>>
->>>> On Fri, May 01, 2020 at 03:48:53PM -0700, Andrew Morton wrote:
->>>>>On Fri,  1 May 2020 01:52:59 +0000 Wei Yang <richard.weiyang@gmail.com> wrote:
->>>>>
->>>>>> When the condition is true, there are two possibilities:
->>>>>
->>>>>I'm struggling with this one.
->>>>>
->>>>>>    1. count == SWAP_MAP_BAD
->>>>>>    2. count == (SWAP_MAP_MAX & COUNT_CONTINUED) == SWAP_MAP_SHMEM
->>>>>
->>>>>I'm not sure what 2. is trying to say.  For a start, (SWAP_MAP_MAX &
->>>>>COUNT_CONTINUED) is zero.  I guess it meant "|"?
->>>>
->>>> Oops, you are right. It should be (SWAP_MAP_MAX | COUNT_CONTINUED).
->>>>
->>>> Sorry for the confusion.
->>>>
->>>>>
->>>>>Also, the return value documentation says we return EINVAL for migration
->>>>>entries.  Where's that happening, or is the comment out of date?
->>>>>
->>>>
->>>> Not paid attention to this.
->>>>
->>>> Take look into the code, I don't find a relationship between the swap count
->>>> and migration. Seems we just make a migration entry but not duplicate it.  
->>>> If my understanding is correct.
->>>
->>>Per my understanding, one functionality of the error path is to catch
->>>the behavior that shouldn't happen at all.  For example, if
->>>__swap_duplicate() is called for the migration entry because of some
->>>race condition.
->>>
->>
->> If __swap_duplicate() run for a migration entry, it returns since
->> get_swap_entry() couldn't find a swap_info_struct. So the return value is
->> -EINVAL.
->>
->> While when this situation would happen? And the race condition you mean is?
->
->Sorry for confusing.  I don't mean there are some known race conditions
->in current kernel that will trigger the error code path.  I mean we may
->use the error path to identify some race conditions in the future.
->
+Many of the callbacks called by pagevec_lru_move_fn() do not correctly
+update the vmstats for huge pages. Fix that. Also __pagevec_lru_add_fn()
+use the irq-unsafe alternative to update the stat as the irqs are
+already disabled.
 
-Yep, NP.
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
+---
+ mm/swap.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-For the code itself, do you have some comment?
-
->I remember that Matthew thought that the swap code should work
->reasonably even for garbage PTE.
->
->Best Regards,
->Huang, Ying
->
->>>Best Regards,
->>>Huang, Ying
-
+diff --git a/mm/swap.c b/mm/swap.c
+index a37bd7b202ac..3dbef6517cac 100644
+--- a/mm/swap.c
++++ b/mm/swap.c
+@@ -225,7 +225,7 @@ static void pagevec_move_tail_fn(struct page *page, struct lruvec *lruvec,
+ 		del_page_from_lru_list(page, lruvec, page_lru(page));
+ 		ClearPageActive(page);
+ 		add_page_to_lru_list_tail(page, lruvec, page_lru(page));
+-		(*pgmoved)++;
++		(*pgmoved) += hpage_nr_pages(page);
+ 	}
+ }
+ 
+@@ -285,7 +285,7 @@ static void __activate_page(struct page *page, struct lruvec *lruvec,
+ 		add_page_to_lru_list(page, lruvec, lru);
+ 		trace_mm_lru_activate(page);
+ 
+-		__count_vm_event(PGACTIVATE);
++		__count_vm_events(PGACTIVATE, hpage_nr_pages(page));
+ 		update_page_reclaim_stat(lruvec, file, 1);
+ 	}
+ }
+@@ -503,6 +503,7 @@ static void lru_deactivate_file_fn(struct page *page, struct lruvec *lruvec,
+ {
+ 	int lru, file;
+ 	bool active;
++	int nr_pages = hpage_nr_pages(page);
+ 
+ 	if (!PageLRU(page))
+ 		return;
+@@ -536,11 +537,11 @@ static void lru_deactivate_file_fn(struct page *page, struct lruvec *lruvec,
+ 		 * We moves tha page into tail of inactive.
+ 		 */
+ 		add_page_to_lru_list_tail(page, lruvec, lru);
+-		__count_vm_event(PGROTATED);
++		__count_vm_events(PGROTATED, nr_pages);
+ 	}
+ 
+ 	if (active)
+-		__count_vm_event(PGDEACTIVATE);
++		__count_vm_events(PGDEACTIVATE, nr_pages);
+ 	update_page_reclaim_stat(lruvec, file, 0);
+ }
+ 
+@@ -929,6 +930,7 @@ static void __pagevec_lru_add_fn(struct page *page, struct lruvec *lruvec,
+ {
+ 	enum lru_list lru;
+ 	int was_unevictable = TestClearPageUnevictable(page);
++	int nr_pages = hpage_nr_pages(page);
+ 
+ 	VM_BUG_ON_PAGE(PageLRU(page), page);
+ 
+@@ -966,13 +968,13 @@ static void __pagevec_lru_add_fn(struct page *page, struct lruvec *lruvec,
+ 		update_page_reclaim_stat(lruvec, page_is_file_lru(page),
+ 					 PageActive(page));
+ 		if (was_unevictable)
+-			count_vm_event(UNEVICTABLE_PGRESCUED);
++			__count_vm_events(UNEVICTABLE_PGRESCUED, nr_pages);
+ 	} else {
+ 		lru = LRU_UNEVICTABLE;
+ 		ClearPageActive(page);
+ 		SetPageUnevictable(page);
+ 		if (!was_unevictable)
+-			count_vm_event(UNEVICTABLE_PGCULLED);
++			__count_vm_events(UNEVICTABLE_PGCULLED, nr_pages);
+ 	}
+ 
+ 	add_page_to_lru_list(page, lruvec, lru);
 -- 
-Wei Yang
-Help you, Help me
+2.26.2.645.ge9eca65c58-goog
+
