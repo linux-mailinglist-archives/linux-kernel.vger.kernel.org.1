@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 962301CAE75
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED6E61CAE78
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:11:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729529AbgEHNJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:09:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34676 "EHLO
+        id S1729778AbgEHNKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 09:10:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730477AbgEHNFR (ORCPT
+        by vger.kernel.org with ESMTP id S1729942AbgEHNFP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 09:05:17 -0400
+        Fri, 8 May 2020 09:05:15 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 684A1C05BD43;
-        Fri,  8 May 2020 06:05:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B31C05BD0D;
+        Fri,  8 May 2020 06:05:14 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jX2gc-0007Ul-C1; Fri, 08 May 2020 15:05:06 +0200
+        id 1jX2gf-0007XH-A2; Fri, 08 May 2020 15:05:09 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id A88671C04CF;
-        Fri,  8 May 2020 15:04:56 +0200 (CEST)
-Date:   Fri, 08 May 2020 13:04:56 -0000
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 766211C084B;
+        Fri,  8 May 2020 15:04:57 +0200 (CEST)
+Date:   Fri, 08 May 2020 13:04:57 -0000
 From:   "tip-bot2 for Adrian Hunter" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf intel-pt: Update documentation about using /proc/kcore
+Subject: [tip: perf/core] perf intel-pt: Add support for synthesizing branch
+ stacks for regular events
 Cc:     Adrian Hunter <adrian.hunter@intel.com>,
         Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200429150751.12570-10-adrian.hunter@intel.com>
-References: <20200429150751.12570-10-adrian.hunter@intel.com>
+In-Reply-To: <20200429150751.12570-8-adrian.hunter@intel.com>
+References: <20200429150751.12570-8-adrian.hunter@intel.com>
 MIME-Version: 1.0
-Message-ID: <158894309660.8414.744004103071020836.tip-bot2@tip-bot2>
+Message-ID: <158894309739.8414.13833146962520220204.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -51,60 +52,181 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the perf/core branch of tip:
 
-Commit-ID:     6dd912cbadb9f9746a525c74f09c0e36cee13ee2
-Gitweb:        https://git.kernel.org/tip/6dd912cbadb9f9746a525c74f09c0e36cee13ee2
+Commit-ID:     f0a0251cee800bf90cff92ecfaf4a4d4c9c493b2
+Gitweb:        https://git.kernel.org/tip/f0a0251cee800bf90cff92ecfaf4a4d4c9c493b2
 Author:        Adrian Hunter <adrian.hunter@intel.com>
-AuthorDate:    Wed, 29 Apr 2020 18:07:51 +03:00
+AuthorDate:    Wed, 29 Apr 2020 18:07:49 +03:00
 Committer:     Arnaldo Carvalho de Melo <acme@redhat.com>
 CommitterDate: Tue, 05 May 2020 16:35:30 -03:00
 
-perf intel-pt: Update documentation about using /proc/kcore
+perf intel-pt: Add support for synthesizing branch stacks for regular events
 
-Update documentation to reflect the advent of the --kcore option for
-'perf record'.
+Use the new thread_stack__br_sample_late() function to create a thread
+stack for regular events.
+
+Example:
+
+ # perf record --kcore --aux-sample -e '{intel_pt//,cycles:ppp}' -c 10000 uname
+ Linux
+ [ perf record: Woken up 2 times to write data ]
+ [ perf record: Captured and wrote 0.743 MB perf.data ]
+ # perf report --itrace=Le --stdio | head -30 | tail -18
+
+ # Samples: 11K of event 'cycles:ppp'
+ # Event count (approx.): 11648
+ #
+ # Overhead  Command  Source Shared Object  Source Symbol                 Target Symbol                 Basic Block Cycles
+ # ........  .......  ....................  ............................  ............................  ..................
+ #
+      5.49%  uname    libc-2.30.so          [.] _dl_addr                  [.] _dl_addr                  -
+      2.41%  uname    ld-2.30.so            [.] _dl_relocate_object       [.] _dl_relocate_object       -
+      2.31%  uname    ld-2.30.so            [.] do_lookup_x               [.] do_lookup_x               -
+      2.17%  uname    [kernel.kallsyms]     [k] unmap_page_range          [k] unmap_page_range          -
+      2.05%  uname    ld-2.30.so            [k] _dl_start                 [k] _dl_start                 -
+      1.97%  uname    ld-2.30.so            [.] _dl_lookup_symbol_x       [.] _dl_lookup_symbol_x       -
+      1.94%  uname    [kernel.kallsyms]     [k] filemap_map_pages         [k] filemap_map_pages         -
+      1.60%  uname    [kernel.kallsyms]     [k] __handle_mm_fault         [k] __handle_mm_fault         -
+      1.44%  uname    [kernel.kallsyms]     [k] page_add_file_rmap        [k] page_add_file_rmap        -
+      1.12%  uname    [kernel.kallsyms]     [k] vma_interval_tree_insert  [k] vma_interval_tree_insert  -
+      0.94%  uname    [kernel.kallsyms]     [k] perf_iterate_ctx          [k] perf_iterate_ctx          -
 
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 Cc: Andi Kleen <ak@linux.intel.com>
 Cc: Jiri Olsa <jolsa@redhat.com>
-Link: http://lore.kernel.org/lkml/20200429150751.12570-10-adrian.hunter@intel.com
+Link: http://lore.kernel.org/lkml/20200429150751.12570-8-adrian.hunter@intel.com
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/perf/Documentation/perf-intel-pt.txt | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ tools/perf/util/intel-pt.c | 73 +++++++++++++++++++++++++++++++++----
+ 1 file changed, 66 insertions(+), 7 deletions(-)
 
-diff --git a/tools/perf/Documentation/perf-intel-pt.txt b/tools/perf/Documentation/perf-intel-pt.txt
-index 782eb8a..eb8b7d4 100644
---- a/tools/perf/Documentation/perf-intel-pt.txt
-+++ b/tools/perf/Documentation/perf-intel-pt.txt
-@@ -69,22 +69,22 @@ And profiled with 'perf report' e.g.
- To also trace kernel space presents a problem, namely kernel self-modifying
- code.  A fairly good kernel image is available in /proc/kcore but to get an
- accurate image a copy of /proc/kcore needs to be made under the same conditions
--as the data capture.  A script perf-with-kcore can do that, but beware that the
--script makes use of 'sudo' to copy /proc/kcore.  If you have perf installed
--locally from the source tree you can do:
-+as the data capture. 'perf record' can make a copy of /proc/kcore if the option
-+--kcore is used, but access to /proc/kcore is restricted e.g.
+diff --git a/tools/perf/util/intel-pt.c b/tools/perf/util/intel-pt.c
+index 03b7690..59811b3 100644
+--- a/tools/perf/util/intel-pt.c
++++ b/tools/perf/util/intel-pt.c
+@@ -72,6 +72,7 @@ struct intel_pt {
+ 	bool use_thread_stack;
+ 	bool callstack;
+ 	unsigned int br_stack_sz;
++	unsigned int br_stack_sz_plus;
+ 	int have_sched_switch;
+ 	u32 pmu_type;
+ 	u64 kernel_start;
+@@ -130,6 +131,7 @@ struct intel_pt {
+ 	unsigned int range_cnt;
  
--	~/libexec/perf-core/perf-with-kcore record pt_ls -e intel_pt// -- ls
-+	sudo perf record -o pt_ls --kcore -e intel_pt// -- ls
+ 	struct ip_callchain *chain;
++	struct branch_stack *br_stack;
+ };
  
--which will create a directory named 'pt_ls' and put the perf.data file and
--copies of /proc/kcore, /proc/kallsyms and /proc/modules into it.  Then to use
--'perf report' becomes:
-+which will create a directory named 'pt_ls' and put the perf.data file (named
-+simply 'data') and copies of /proc/kcore, /proc/kallsyms and /proc/modules into
-+it.  The other tools understand the directory format, so to use 'perf report'
-+becomes:
+ enum switch_state {
+@@ -911,6 +913,44 @@ static void intel_pt_add_callchain(struct intel_pt *pt,
+ 	sample->callchain = pt->chain;
+ }
  
--	~/libexec/perf-core/perf-with-kcore report pt_ls
-+	sudo perf report -i pt_ls
++static struct branch_stack *intel_pt_alloc_br_stack(struct intel_pt *pt)
++{
++	size_t sz = sizeof(struct branch_stack);
++
++	sz += pt->br_stack_sz * sizeof(struct branch_entry);
++	return zalloc(sz);
++}
++
++static int intel_pt_br_stack_init(struct intel_pt *pt)
++{
++	struct evsel *evsel;
++
++	evlist__for_each_entry(pt->session->evlist, evsel) {
++		if (!(evsel->core.attr.sample_type & PERF_SAMPLE_BRANCH_STACK))
++			evsel->synth_sample_type |= PERF_SAMPLE_BRANCH_STACK;
++	}
++
++	pt->br_stack = intel_pt_alloc_br_stack(pt);
++	if (!pt->br_stack)
++		return -ENOMEM;
++
++	return 0;
++}
++
++static void intel_pt_add_br_stack(struct intel_pt *pt,
++				  struct perf_sample *sample)
++{
++	struct thread *thread = machine__findnew_thread(pt->machine,
++							sample->pid,
++							sample->tid);
++
++	thread_stack__br_sample_late(thread, sample->cpu, pt->br_stack,
++				     pt->br_stack_sz, sample->ip,
++				     pt->kernel_start);
++
++	sample->branch_stack = pt->br_stack;
++}
++
+ static struct intel_pt_queue *intel_pt_alloc_queue(struct intel_pt *pt,
+ 						   unsigned int queue_nr)
+ {
+@@ -929,10 +969,7 @@ static struct intel_pt_queue *intel_pt_alloc_queue(struct intel_pt *pt,
+ 	}
  
- Because samples are synthesized after-the-fact, the sampling period can be
- selected for reporting. e.g. sample every microsecond
+ 	if (pt->synth_opts.last_branch) {
+-		size_t sz = sizeof(struct branch_stack);
+-
+-		sz += pt->br_stack_sz * sizeof(struct branch_entry);
+-		ptq->last_branch = zalloc(sz);
++		ptq->last_branch = intel_pt_alloc_br_stack(pt);
+ 		if (!ptq->last_branch)
+ 			goto out_free;
+ 	}
+@@ -1963,7 +2000,7 @@ static int intel_pt_sample(struct intel_pt_queue *ptq)
+ 		thread_stack__event(ptq->thread, ptq->cpu, ptq->flags,
+ 				    state->from_ip, state->to_ip, ptq->insn_len,
+ 				    state->trace_nr, pt->callstack,
+-				    pt->br_stack_sz,
++				    pt->br_stack_sz_plus,
+ 				    pt->mispred_all);
+ 	} else {
+ 		thread_stack__set_trace_nr(ptq->thread, ptq->cpu, state->trace_nr);
+@@ -2609,6 +2646,8 @@ static int intel_pt_process_event(struct perf_session *session,
+ 	if (event->header.type == PERF_RECORD_SAMPLE) {
+ 		if (pt->synth_opts.add_callchain && !sample->callchain)
+ 			intel_pt_add_callchain(pt, sample);
++		if (pt->synth_opts.add_last_branch && !sample->branch_stack)
++			intel_pt_add_br_stack(pt, sample);
+ 	}
  
--	~/libexec/perf-core/perf-with-kcore report pt_ls --itrace=i1usge
-+	sudo perf report pt_ls --itrace=i1usge
+ 	if (event->header.type == PERF_RECORD_AUX &&
+@@ -3370,13 +3409,33 @@ int intel_pt_process_auxtrace_info(union perf_event *event,
+ 			goto err_delete_thread;
+ 	}
  
- See the sections below for more information about the --itrace option.
+-	if (pt->synth_opts.last_branch)
++	if (pt->synth_opts.last_branch || pt->synth_opts.add_last_branch) {
+ 		pt->br_stack_sz = pt->synth_opts.last_branch_sz;
++		pt->br_stack_sz_plus = pt->br_stack_sz;
++	}
++
++	if (pt->synth_opts.add_last_branch) {
++		err = intel_pt_br_stack_init(pt);
++		if (err)
++			goto err_delete_thread;
++		/*
++		 * Additional branch stack size to cater for tracing from the
++		 * actual sample ip to where the sample time is recorded.
++		 * Measured at about 200 branches, but generously set to 1024.
++		 * If kernel space is not being traced, then add just 1 for the
++		 * branch to kernel space.
++		 */
++		if (intel_pt_tracing_kernel(pt))
++			pt->br_stack_sz_plus += 1024;
++		else
++			pt->br_stack_sz_plus += 1;
++	}
  
+ 	pt->use_thread_stack = pt->synth_opts.callchain ||
+ 			       pt->synth_opts.add_callchain ||
+ 			       pt->synth_opts.thread_stack ||
+-			       pt->synth_opts.last_branch;
++			       pt->synth_opts.last_branch ||
++			       pt->synth_opts.add_last_branch;
+ 
+ 	pt->callstack = pt->synth_opts.callchain ||
+ 			pt->synth_opts.add_callchain ||
