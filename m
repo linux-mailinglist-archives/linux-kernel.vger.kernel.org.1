@@ -2,113 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 603891CA515
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 09:21:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FC3C1CA527
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 09:25:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727896AbgEHHVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 03:21:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727861AbgEHHV2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 03:21:28 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6428CC05BD0A
-        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 00:21:28 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id c2so445112ybi.7
-        for <linux-kernel@vger.kernel.org>; Fri, 08 May 2020 00:21:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ghSLWmPTjJa1N7MEynHoO3xq1duNAQVUBZp+ZfGFuUE=;
-        b=PvpvLe2fjNxojvQSID9SqgyPUOOpkTHnRBJ4bKWtgUvCTb1sqFaHRGvTkaAOfucQjA
-         ybn2zA/+aGvjSF4YEBRK4zlBdZgfmQkmyM4ZU3TyWAaRapPBD0eDc56ti633wmr/mj9K
-         MuJ8LzN2rwCYRWSQKAMPomnzvvD7JgBZXstlRUzd8Vzszd7okoFqLSk8KypFJqtizd88
-         dG9jgLNAVqgfGbfG+eUDUgSJWFovkUxrMBRo9lw9N7zehkqs0JGQ6XZzqlwx5oEVT1VG
-         YxfnyfGAt/Rv+yVKMWjChUJJrrJtJzv9ZNfbjBdMrTI0JuN5jnfKCG7M4Hx84OXWOG60
-         m1qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ghSLWmPTjJa1N7MEynHoO3xq1duNAQVUBZp+ZfGFuUE=;
-        b=gGeu5k8i6DGS1QB8O0PRYQ8qgiAznJKnanI365nLu+GjTOz0QANXyLyoe18xdF8mRU
-         R4eSJZiM+w3HIYNJJZ8hhG+HCrYG8JzD0+rdhpD2k87AMgxaiBe4d6vl3ofKz+xcW/EP
-         R3M58OKueuzhjJwvMusvJR2LuP6zrRQatnMMvWEzjSAL+G6ZiA0WpL2D1zkWFx7qVu9n
-         OAfZyd6OR+i800ebh/arzbBB2OcjFsGZMgv9JRgUeR2uEjudahbFckWO2ITfB6Qlqk2D
-         +VPByxsGwEuDwS2/U2jX9m8x5gt/9YNwe6ibdKW6+AHpPzlPogWrC52h8Ge1Iwl6uKSX
-         2LXw==
-X-Gm-Message-State: AGi0PuZzHFQY4SEV2SEVpsFxGJmBXct2+c6/PPBayw0u2lMas6s+bmBf
-        +PxZqrND5z8lQykiCFERYZcpxFgipWDcsasdHuqBDg==
-X-Google-Smtp-Source: APiQypJ4LfbqVmL56J7m3SlKiNGelvh5pQdV/+Uielt+V3/tJezOCmC5ry3w7km1U2msTfPMA+0Jm8HumNdz8jGZrS4=
-X-Received: by 2002:a05:6902:4ee:: with SMTP id w14mr1110079ybs.383.1588922487266;
- Fri, 08 May 2020 00:21:27 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200508063954.256593-1-irogers@google.com> <CAEf4BzYT5FfDt2oqctHC6dXNmwg5gaaNcFu1StObuYk-jKocLQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzYT5FfDt2oqctHC6dXNmwg5gaaNcFu1StObuYk-jKocLQ@mail.gmail.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Fri, 8 May 2020 00:21:16 -0700
-Message-ID: <CAP-5=fU-QxfdkQoHP=Ksqeb9gPTE4xYcgEcp9Ej6trZpkCDvPA@mail.gmail.com>
-Subject: Re: [PATCH] libbpf hashmap: fix undefined behavior in hash_bits
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1727104AbgEHHZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 03:25:23 -0400
+Received: from mga18.intel.com ([134.134.136.126]:27650 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726036AbgEHHZW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 03:25:22 -0400
+IronPort-SDR: OJYSn+/+lIb7j86ASAD0ZRVs8yfORZvdfzS9XbrvUbWOY6lAl+JkTFop7QBBo/EK9O5z1S2d3D
+ EHsKM6ndFnCg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2020 00:25:22 -0700
+IronPort-SDR: 1UP0CFtipWjgq6gQJZBzzZajBTmR3A4NjdCKdgyxGhXkDCpDK7ixJn3UVKURlKus5kQgvXntPF
+ hyx/BhGficZw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,366,1583222400"; 
+   d="scan'208";a="264210525"
+Received: from shbuild999.sh.intel.com ([10.239.147.136])
+  by orsmga006.jf.intel.com with ESMTP; 08 May 2020 00:25:18 -0700
+From:   Feng Tang <feng.tang@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Kees Cook <keescook@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>, andi.kleen@intel.com,
+        tim.c.chen@intel.com, dave.hansen@intel.com, ying.huang@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     Feng Tang <feng.tang@intel.com>
+Subject: [PATCH 0/3] make vm_committed_as_batch aware of vm overcommit policy  
+Date:   Fri,  8 May 2020 15:25:14 +0800
+Message-Id: <1588922717-63697-1-git-send-email-feng.tang@intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 8, 2020 at 12:12 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Thu, May 7, 2020 at 11:40 PM Ian Rogers <irogers@google.com> wrote:
-> >
-> > If bits is 0, the case when the map is empty, then the >> is the size of
-> > the register which is undefined behavior - on x86 it is the same as a
-> > shift by 0. Fix by handling the 0 case explicitly.
-> >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
->
-> No need. The only case when bits can be 0 is when hashmap is
-> completely empty (no elements have ever been added yet). In that case,
-> it doesn't matter what value hash_bits() returns,
-> hashmap__for_each_key_entry/hashmap__for_each_key_entry_safe will
-> behave correctly, because map->buckets will be NULL.
+When checking a performance change for will-it-scale scalability
+mmap test [1], we found very high lock contention for spinlock of
+percpu counter 'vm_committed_as':
 
-Agreed. Unfortunately the LLVM undefined behavior sanitizer (I've not
-tested with GCC to the same extent) will cause an exit when it sees >>
-64 regardless of whether the value is used or not. It'd be possible to
-#ifdef this code on whether a sanitizer was present.
+    94.14%     0.35%  [kernel.kallsyms]         [k] _raw_spin_lock_irqsave
+    48.21% _raw_spin_lock_irqsave;percpu_counter_add_batch;__vm_enough_memory;mmap_region;do_mmap;
+    45.91% _raw_spin_lock_irqsave;percpu_counter_add_batch;__do_munmap;
 
-Thanks,
-Ian
+Actually this heavy lock contention is not always necessary. The
+'vm_committed_as' needs to be very precise when the strict
+OVERCOMMIT_NEVER policy is set, which requires a rather small batch
+number for the percpu counter.
 
-> >  tools/lib/bpf/hashmap.h | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/tools/lib/bpf/hashmap.h b/tools/lib/bpf/hashmap.h
-> > index d5ef212a55ba..781db653d16c 100644
-> > --- a/tools/lib/bpf/hashmap.h
-> > +++ b/tools/lib/bpf/hashmap.h
-> > @@ -19,6 +19,8 @@
-> >  static inline size_t hash_bits(size_t h, int bits)
-> >  {
-> >         /* shuffle bits and return requested number of upper bits */
-> > +       if (bits == 0)
-> > +               return 0;
-> >         return (h * 11400714819323198485llu) >> (__WORDSIZE - bits);
-> >  }
-> >
-> > --
-> > 2.26.2.645.ge9eca65c58-goog
-> >
+So lift the batch number to 16X for OVERCOMMIT_ALWAYS and
+OVERCOMMIT_GUESS policies, and add a sysctl handler to adjust it
+when the policy is reconfigured.
+
+Benchmark with the same testcase in [1] shows 53% improvement on a
+8C/16T desktop, and 2097%(20X) on a 4S/72C/144T server. And no change
+for some platforms, due to the test mmap size of the case is bigger
+than the batch number computed, though the patch will help mmap/munmap
+generally.
+
+[1] https://lkml.org/lkml/2020/3/5/57
+
+There are some style complain from checkpatch for patch 3, as it
+follows the similar format of sibling functions
+
+patch1: a cleanup for /proc/meminfo
+patch2: a preparation patch which also improve the accuracy of
+        vm_memory_committed
+patch3: the main change
+
+Please help to review, thanks!
+
+- Feng
+
+----------------------------------------------------------------
+Changelog:
+  v2:
+     * add the sysctl handler to cover runtime overcommit policy
+       change, as suggested by Andres Morton 
+     * address the accuracy concern of vm_memory_committed()
+       from Andi Kleen 
+
+Feng Tang (3):
+  proc/meminfo: avoid open coded reading of vm_committed_as
+  mm/util.c: make vm_memory_committed() more accurate
+  mm: adjust vm_committed_as_batch according to vm overcommit policy
+
+ fs/proc/meminfo.c    |  2 +-
+ include/linux/mm.h   |  2 ++
+ include/linux/mman.h |  4 ++++
+ kernel/sysctl.c      |  2 +-
+ mm/mm_init.c         | 19 +++++++++++++++----
+ mm/util.c            | 15 ++++++++++++++-
+ 6 files changed, 37 insertions(+), 7 deletions(-)
+
+-- 
+2.7.4
+
