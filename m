@@ -2,105 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F7F1CB407
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 17:53:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A0821CB405
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 17:53:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727942AbgEHPxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 11:53:34 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:34027 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726767AbgEHPxe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 11:53:34 -0400
-Received: by mail-lj1-f195.google.com with SMTP id f11so2201725ljp.1;
-        Fri, 08 May 2020 08:53:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=8nkzaJ/iCAYbYLaQ1Jp7RPwOzPpYlnqGXh5SHsicXIw=;
-        b=LUkcLwWidk6sCHwjSNN4smSJQ5VDtsgdIg0XQkbWD5jqPQmG0AN4jemuXzM1tscwAB
-         YxaCVyjG1jvCwDRBwgPD3kSzi1XjWxZVcEFMaxod1SHbT2Hy67o7rSk5KSwICA1Vjx4T
-         cOWAm67rNBEerlTVKv5KIDAjXRldY5LcxN8bh6EvdY6u3uYcC+DOyaU47QCq1Wd12zT0
-         8NG/1YzxeU50nMD76vIrunxPqA+X5Q+d9E/T45Gy3JjjqJKLc9bgCFf2ARFChsc1XKjK
-         Kd4XRA1bssxAsOQTrV337xCrcb34vNSVBdihgTyQ3mGM8nc6UtY3T3/YpYtxHnLSlUNF
-         wWrQ==
-X-Gm-Message-State: AOAM531I2Fr0A/4lU6zvBb1QNjxCyLtFSxIre4EA3hI0aD7YdV0pDXs6
-        rWmc9wRLJegkvTMJ3TIKVrc=
-X-Google-Smtp-Source: ABdhPJykawVthKA++HuKwY93ddj1Vp0zwGwnkvtvioVOTa8ECsfDKqpcDtlk0+UxUMHl794x+DEWzw==
-X-Received: by 2002:a2e:992:: with SMTP id 140mr2177645ljj.188.1588953211899;
-        Fri, 08 May 2020 08:53:31 -0700 (PDT)
-Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
-        by smtp.gmail.com with ESMTPSA id g11sm1480975ljg.24.2020.05.08.08.53.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 May 2020 08:53:31 -0700 (PDT)
-Date:   Fri, 8 May 2020 18:52:45 +0300
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
-Cc:     lgirdwood@gmail.com, broonie@kernel.org, sre@kernel.org,
-        brendanhiggins@google.com, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v12 11/11] power: supply: KConfig cleanup default n
-Message-ID: <499fc4aaac216c92fb43e51f688d072e937faf8c.1588944082.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1588944082.git.matti.vaittinen@fi.rohmeurope.com>
+        id S1727929AbgEHPxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 11:53:09 -0400
+Received: from verein.lst.de ([213.95.11.211]:53335 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727051AbgEHPxJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 11:53:09 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 804DA68C7B; Fri,  8 May 2020 17:53:06 +0200 (CEST)
+Date:   Fri, 8 May 2020 17:53:06 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Stefan Haberland <sth@linux.ibm.com>
+Cc:     hch@lst.de, axboe@kernel.dk, hoeppner@linux.ibm.com,
+        linux-s390@vger.kernel.org, heiko.carstens@de.ibm.com,
+        gor@linux.ibm.com, linux-kernel@vger.kernel.org,
+        borntraeger@de.ibm.com
+Subject: Re: [PATCH v3 2/3] block: add a s390-only biodasdinfo method
+Message-ID: <20200508155306.GB4200@lst.de>
+References: <20200508131455.55407-1-sth@linux.ibm.com> <20200508131455.55407-3-sth@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1588944082.git.matti.vaittinen@fi.rohmeurope.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <20200508131455.55407-3-sth@linux.ibm.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "default n" is not needed as it is, well, default. Clean
-the KConfig by removing "default n".
+On Fri, May 08, 2020 at 03:14:54PM +0200, Stefan Haberland wrote:
+> From: Christoph Hellwig <hch@lst.de>
+> 
+> The IBM partition parser needs to query the DASD driver for details that
+> are very s390 specific.  Instead of using ioctl_by_bdev with a fake user
+> space pointer just add a s390-specific method to get the information
+> directly.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> [sth@linux.ibm.com: remove fop, add gendisk check, export funcion]
+> Signed-off-by: Stefan Haberland <sth@linux.ibm.com>
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+The subject and changelog need updates for your changes.  I think you
+should also claim authorship, even if a few bits are originally from me.
+Probaby it would make sense to even just merge this into the next patch.
 
----
+> index fa552f9f1666..6eac7b11c75b 100644
+> --- a/drivers/s390/block/dasd_int.h
+> +++ b/drivers/s390/block/dasd_int.h
+> @@ -845,6 +845,7 @@ void dasd_destroy_partitions(struct dasd_block *);
+>  
+>  /* externals in dasd_ioctl.c */
+>  int  dasd_ioctl(struct block_device *, fmode_t, unsigned int, unsigned long);
+> +int dasd_biodasdinfo(struct gendisk *disk, struct dasd_information2_t *info);
 
-This was pointed to me first by Randy Dunlap during v4 review.
-Also Andy Shevchenko mentioned this to me. So as I was
-changing the file anyways... Please just drop this patch out
-of the series if you're not Ok with this.
----
- drivers/power/supply/Kconfig | 2 --
- 1 file changed, 2 deletions(-)
+I think this needs to go to a public include/linux/ header for the
+partitioning code to share the prototype.
 
-diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
-index ec028e47c3c2..04821d8c9e43 100644
---- a/drivers/power/supply/Kconfig
-+++ b/drivers/power/supply/Kconfig
-@@ -660,7 +660,6 @@ config CHARGER_RT9455
- config CHARGER_CROS_USBPD
- 	tristate "ChromeOS EC based USBPD charger"
- 	depends on CROS_USBPD_NOTIFY
--	default n
- 	help
- 	  Say Y here to enable ChromeOS EC based USBPD charger
- 	  driver. This driver gets various bits of information about
-@@ -696,7 +695,6 @@ config CHARGER_BD70528
- 	tristate "ROHM bd70528 charger driver"
- 	depends on MFD_ROHM_BD70528
- 	select LINEAR_RANGES
--	default n
- 	help
- 	  Say Y here to enable support for getting battery status
- 	  information and altering charger configurations from charger
--- 
-2.21.0
+> +int dasd_biodasdinfo(struct gendisk *disk, struct dasd_information2_t *info)
+> +{
+> +	struct dasd_device *base;
+> +	int error;
+> +
+> +	/*
+> +	 * we might get called externaly, so check if the gendisk belongs
+> +	 * to a DASD by checking the fops pointer
+> +	 */
+> +	if (disk->fops != &dasd_device_operations)
+> +		return -EINVAL;
 
-
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
+I think a function comment (e.g. kernel doc) explaining the use case and
+this detail might be useful.
