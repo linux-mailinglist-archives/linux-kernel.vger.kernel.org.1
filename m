@@ -2,192 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51EA71CB08E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3347E1CB097
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:38:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727768AbgEHNeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:34:31 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:12594 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726736AbgEHNeb (ORCPT
+        id S1727837AbgEHNh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 09:37:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726908AbgEHNh7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 09:34:31 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1588944869; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=zldbtLGr0BJ69sJbTiXCrk8J2RBL3Yf71sJjBg59lXw=; b=Knwjqwy8Vx3GB2dt++fhOKRICo+5WJXKdz85eEfTnFpbQHhA/lMVtIIng16y2gcV4fcEXmCI
- XiO/W6+4XBjj+8SWXoCB6FHwkQoJjhdv658DRKt1nZzc4lUkK29vU0ywB+XAFL/MDRC+WGQS
- l4CH69e3mnnfSC5faJ0ikfMEh6w=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5eb55fd7.7fb1f65b1570-smtp-out-n04;
- Fri, 08 May 2020 13:34:15 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 0CEA8C433D2; Fri,  8 May 2020 13:34:15 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.0.103] (unknown [49.204.184.20])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: neeraju)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2AB42C433F2;
-        Fri,  8 May 2020 13:34:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2AB42C433F2
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=neeraju@codeaurora.org
-Subject: Re: Query regarding pseudo nmi support on GIC V3 and request_nmi()
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     julien.thierry.kdev@gmail.com, linux-kernel@vger.kernel.org
-References: <2a0d5719-b2c7-1287-e0b5-2dd8b1072e49@codeaurora.org>
- <87ftca1z9k.wl-maz@kernel.org>
- <2f41b2e8-925e-3869-da39-fd4ab28ca1b1@codeaurora.org>
- <20200508132740.2d645ea2@why>
- <27ecf3b0-4bb4-e89d-2ca9-3828cdcb2834@codeaurora.org>
- <20200508135306.1936b09b@why>
-From:   Neeraj Upadhyay <neeraju@codeaurora.org>
-Message-ID: <2f98a5e2-ac5a-1b22-18b8-d8a2261fc42e@codeaurora.org>
-Date:   Fri, 8 May 2020 19:04:10 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        Fri, 8 May 2020 09:37:59 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BDD0C05BD43;
+        Fri,  8 May 2020 06:37:59 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id fu13so4259378pjb.5;
+        Fri, 08 May 2020 06:37:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jdc9/k11XUPnfhWRzrOWqGusj7mnR3enQhknhB48UxQ=;
+        b=kQ3S7NHH7ESfUdjRwmH9OJAmQMZXn/7xVK22hRB2VHtpB1XmS+8PIFIaLtxdnrPsHf
+         MybINjKbC3/hXWMZtZ2hf4l7k8jIwmYLQ11HdtXqvqePk8fxFr70+W+30HImXGrFZS0s
+         LltC4/62oFoXLxPzDCGbaRkEv4rsktxrG12UTQWNZN7DBPGZ9NrYZ7oMeWokwgYXrh8W
+         jteqC/zVYFcUYPoyt0bJLJPimDOviiLSa6NKpRqcfu72Rfx1uU0ui1jcnPUIFc48CPnK
+         UyDcTwBkBt7m4CVEnb299hPaQmDO8Io+J2oyTO9o3PFVd9Fo9r2E/OTQ/C2YzsFoGqKR
+         0v/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=jdc9/k11XUPnfhWRzrOWqGusj7mnR3enQhknhB48UxQ=;
+        b=tfd5cvbOYahijaqfaoxAkWVufOIc2lkiAHuU6+C8WuOyfyGfqhePHmf7hkeF+tPDyJ
+         JAK1ZeDcyxdCbWlArgEdimTeQ/wftEoqG2+I8qXfTHFW8maPdX2n3+36nGtPIujtL1At
+         V4YiEFI0xpldIVzl3TsFzYpCNe7aN2VVH5eHzireIW266UMmmFtDKsy5NY/o5LZKj9J4
+         wlkj++e+GF3IBm/zbMjTEs0X1nQK5fKGC32d0AsLkzThTO1vAv0ViaunI8W1/BuQjSK5
+         0AEIwyLYBW6gRfMC80x3d7QJdyvhXBXiE7FjRMZqiNYscU77E/5zEdT/F/tJ8bYN7GjI
+         d83Q==
+X-Gm-Message-State: AGi0PuaJwcsTkpD3lz85fy6rpjnG4rS/2BmkQ1UIIUba2idp0E9AnXK3
+        rw8bWKkqLqdtgggs66HOH8ulDYXu
+X-Google-Smtp-Source: APiQypKhb3SYJ1XlBj+ag7gxBrsa2I4C9LFyfb49IaNm++tsN3ShknAW/SVUDNwDRPwo3G2758SaQw==
+X-Received: by 2002:a17:902:740a:: with SMTP id g10mr2481549pll.137.1588945078113;
+        Fri, 08 May 2020 06:37:58 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id b15sm1863317pfd.139.2020.05.08.06.37.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 May 2020 06:37:57 -0700 (PDT)
+Subject: Re: [PATCH 4.4 000/312] 4.4.223-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        stable@vger.kernel.org
+References: <20200508123124.574959822@linuxfoundation.org>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <fe060262-1712-9205-b1cd-cd209d0ed395@roeck-us.net>
+Date:   Fri, 8 May 2020 06:37:56 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200508135306.1936b09b@why>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20200508123124.574959822@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
-
-On 5/8/2020 6:23 PM, Marc Zyngier wrote:
-> On Fri, 8 May 2020 18:09:00 +0530
-> Neeraj Upadhyay <neeraju@codeaurora.org> wrote:
+On 5/8/20 5:29 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.4.223 release.
+> There are 312 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
->> Hi Marc,
->>
->> On 5/8/2020 5:57 PM, Marc Zyngier wrote:
->>> On Fri, 8 May 2020 16:36:42 +0530
->>> Neeraj Upadhyay <neeraju@codeaurora.org> wrote:
->>>    
->>>> Hi Marc,
->>>>
->>>> On 5/8/2020 4:15 PM, Marc Zyngier wrote:
->>>>> On Thu, 07 May 2020 17:06:19 +0100,
->>>>> Neeraj Upadhyay <neeraju@codeaurora.org> wrote:
->>>>>>
->>>>>> Hi,
->>>>>>
->>>>>> I have one query regarding pseudo NMI support on GIC v3; from what I
->>>>>> could understand, GIC v3 supports pseudo NMI setup for SPIs and PPIs.
->>>>>> However the request_nmi() in irq framework requires NMI to be per cpu
->>>>>> interrupt source (it checks for IRQF_PERCPU). Can you please help
->>>>>> understand this part, how SPIs can be configured as NMIs, if there is
->>>>>> a per cpu interrupt source restriction?
->>>>>
->>>>> Let me answer your question by another question: what is the semantic
->>>>> of a NMI if you can't associate it with a particular CPU?
->>>>>    >>
->>>> I was actually thinking of a use case, where, we have a watchdog
->>>> interrupt (which is a SPI), which is used for detecting software
->>>> hangs and cause device reset; If that interrupt's current cpu
->>>> affinity is on a core, where interrupts are disabled, we won't be
->>>> able to serve it; so, we need to group that interrupt as an fiq;
->>>
->>> Linux doesn't use Group-0 interrupts, as they are strictly secure
->>> (unless your SoC doesn't have EL3, which I doubt).
->>
->> Yes, we handle that watchdog interrupt as a Group-0 interrupt, which
->> is handled as fiq in EL3.
->>
->>>    
->>>> I was thinking, if its feasible to mark that interrupt as pseudo
->>>> NMI and route it to EL1 as irq. However, looks like that is not the
->>>> semantic of a NMI and we would need something like pseudo NMI ipi
->>>> for this.
->>>
->>> Sending a NMI IPI from another NMI handler? Even once I've added
->>> these, there is no way this will work for that particular scenario.
->>> Just look at the restrictions we impose on NMIs.
->>>    
->>
->> Sending a pseudo NMI IPI (to EL1) from fiq handler (which runs in
->> EL3); I will check, but do you think, that might not work?
-> 
-> How do you know, from EL3, what to write in memory so that the NMI
-> handler knows what you want to do? Are you going to parse the S1 page
-> tables? Hard-code the behaviour of some random Linux version in your
-> legendary non-updatable firmware? This isn't an acceptable behaviour.
+> Responses should be made by Sun, 10 May 2020 12:29:44 +0000.
+> Anything received after that time might be too late.
 > 
 
-Ok, I understand;
+This is not a complete list of errors.
 
-Initial thought was to use watchdog SPI as pseudo NMI; however, as 
-pseudo NMIs are only per CPU sources, we were exploring the possibility 
-of using an unused ipi (using the work which is done in [1] and [2]  for 
-SGIs) as pseudo NMI, which EL3 sends to EL1, on receiving watchdog fiq. 
-The pseudo NMI handler would collect required debug information, to help 
-indentify the lockup cause. We weren't thinking of communicating any 
-information from EL3 fiq handler to EL1.
+arm64:allmodconfig
 
-However, from this discussion, I realize that calling irq handler from
-fiq handler, would not be possible. So, the approach looks flawed.
+drivers/spi/spi-rockchip.c: In function 'rockchip_spi_prepare_dma':
+drivers/spi/spi-rockchip.c:461:19: error: 'struct dma_slave_caps' has no member named 'max_burst'
 
-I believe, allowing a non-percpu pseudo NMI is not acceptable to community?
+arm:allmodconfig
 
+drivers/mtd/nand/pxa3xx_nand.c: In function 'alloc_nand_resource':
+drivers/mtd/nand/pxa3xx_nand.c:1753:7: error: 'np' undeclared
 
+mips:defconfig
 
-[1] 
-https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/log/?h=irq/gic-sgi
+Lots of
 
-[2] https://lkml.org/lkml/2020/4/25/135
+In file included from ./arch/mips/include/asm/fpu.h:24,
+                 from arch/mips/kernel/branch.c:16:
+./arch/mips/include/asm/msa.h: In function 'read_msa_ir':
+./arch/mips/include/asm/msa.h:204:2: error: expected ':' or ')' before '_ASM_INSN_IF_MIPS'
 
-> An IPI is between two CPUs used by the same SW entitiy. What runs at
-> EL3 is completely alien to Linux, and so is Linux to EL3. If you want
-> to IPI, send Group-0 IPIs that are private to the firmware.
-> 
+and similar errors.
 
-Ok got it; however, I wonder what's the use case of sending
-SGI to EL1, from secure world, using ICC_ASGI1R. I thought it
-allowed communication between EL1 and EL3; but, looks like I understood 
-in wrong.
+arch/mips/mm/tlbex.c: In function 'config_htw_params':
+arch/mips/mm/tlbex.c:2334:13: error: 'MIPS_PWSIZE_PS_MASK' undeclared
 
-> If you want to inject NMI-type exceptions into EL1, you can always try
-> SDEI (did I actually write this? Help!). But given your use case below,
-> that wouldn't work either.
-> 
+All mips builds are badly broken.
 
-Ok.
-
->>> Frankly, if all you need to do is to reset the SoC, use EL3
->>> firmware. That is what it is for.
->>>    
->>
->> Before triggering SoC reset, we want to collect certain  EL1 debug
->> information like stack trace for CPUs and other debug information.
-> 
-> Frankly, if you are going to reset the SoC because EL1/EL2 has gone
-> bust, how can you trust it to do anything sensible when injecting an
-> interrupt?. Once you take a SPI at EL3, gather whatever state you want
-> from EL3. Do not involve EL1 at all.
-> 
-> 	M.
-> 
-
-Agree that it might not work for all cases. But, for the cases like, 
-some kernel code is stuck after disabling local irqs; pseudo NMI might 
-still be able to run and capture stack and other debug info, to help 
-detect the cause of lockups.
-
-
-Thanks
-Neeraj
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member of the Code Aurora Forum, hosted by The Linux Foundation
+Guenter
