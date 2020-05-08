@@ -2,94 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46C1D1CA9CB
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 13:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1C561CA9D3
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 13:43:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726770AbgEHLlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 07:41:55 -0400
-Received: from mga09.intel.com ([134.134.136.24]:13975 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726616AbgEHLlz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 07:41:55 -0400
-IronPort-SDR: GWIdDZpYotfAyhLXAZ/vF4xmmW7kpozpBVAbes897bMNR67Nrzw4HVjdyabgGCLoQCeaouNuap
- uWS5ATtAyOIg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2020 04:41:54 -0700
-IronPort-SDR: pqg9ea5sq3gBLSKmJxZ9towtF/mCW6bdxqTrsGht2U1AuNh9Tf7N59C7x/gjEhg9hQJQqbAM46
- C59FwBIt5bNQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,367,1583222400"; 
-   d="scan'208";a="339694730"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga001.jf.intel.com with ESMTP; 08 May 2020 04:41:50 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jX1O5-005POV-Nl; Fri, 08 May 2020 14:41:53 +0300
-Date:   Fri, 8 May 2020 14:41:53 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Vinod Koul <vkoul@kernel.org>, Viresh Kumar <vireshk@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/6] dmaengine: dw: Introduce max burst length hw
- config
-Message-ID: <20200508114153.GK185537@smile.fi.intel.com>
-References: <20200306131048.ADBE18030797@mail.baikalelectronics.ru>
- <20200508105304.14065-1-Sergey.Semin@baikalelectronics.ru>
- <20200508105304.14065-6-Sergey.Semin@baikalelectronics.ru>
+        id S1727030AbgEHLnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 07:43:20 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:47552 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726616AbgEHLnT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 07:43:19 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 0DBA5A7C8E54374FEAA2;
+        Fri,  8 May 2020 19:43:18 +0800 (CST)
+Received: from [127.0.0.1] (10.166.215.237) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Fri, 8 May 2020
+ 19:43:08 +0800
+Subject: Re: [v3] tools/bootconfig: fix resource leak in apply_xbc()
+To:     Markus Elfring <Markus.Elfring@web.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
+        "Shiyuan Hu" <hushiyuan@huawei.com>,
+        Hewenliang <hewenliang4@huawei.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+References: <3569aa33-8963-966d-9247-ec79b3b3d56d@huawei.com>
+ <5e2c3348-f346-e3f2-9c7c-5c4135f9b38c@web.de>
+ <559edb00-a03b-747e-8ba7-1f16285deefb@huawei.com>
+ <65057e82-8002-4ec4-b714-25ac8d05cb68@web.de>
+From:   Yunfeng Ye <yeyunfeng@huawei.com>
+Message-ID: <938cd0e9-d96b-766c-cfbc-4f0b73d97cd4@huawei.com>
+Date:   Fri, 8 May 2020 19:42:56 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200508105304.14065-6-Sergey.Semin@baikalelectronics.ru>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <65057e82-8002-4ec4-b714-25ac8d05cb68@web.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.166.215.237]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 08, 2020 at 01:53:03PM +0300, Serge Semin wrote:
-> IP core of the DW DMA controller may be synthesized with different
-> max burst length of the transfers per each channel. According to Synopsis
-> having the fixed maximum burst transactions length may provide some
-> performance gain. At the same time setting up the source and destination
-> multi size exceeding the max burst length limitation may cause a serious
-> problems. In our case the system just hangs up. In order to fix this
-> lets introduce the max burst length platform config of the DW DMA
-> controller device and don't let the DMA channels configuration code
-> exceed the burst length hardware limitation. Depending on the IP core
-> configuration the maximum value can vary from channel to channel.
-> It can be detected either in runtime from the DWC parameter registers
-> or from the dedicated dts property.
 
-I'm wondering what can be the scenario when your peripheral will ask something
-which is not supported by DMA controller?
 
-Peripheral needs to supply a lot of configuration parameters specific to the
-DMA controller in use (that's why we have struct dw_dma_slave).
-So, seems to me the feasible approach is supply correct data in the first place.
+On 2020/5/8 19:30, Markus Elfring wrote:
+>> this change can fix the warning of tools.
+> 
+> Would you like to point any specific source code analysis tools out
+> for this issue?
+> (Can a corresponding attribution become relevant for a clearer
+> change description?)
+> 
+The tools we used is not for open source. it point out some error description like
+"Memory leak: data" and "Resource leak: fd" in tools/bootconfig/main.c.
 
-If you have specific channels to acquire then you probably need to provide a
-custom xlate / filter functions. Because above seems a bit hackish workaround
-of dynamic channel allocation mechanism.
+Can I only description:
+  "Memory and resource leak is found by a static code analysis tools" ? thanks.
 
-But let's see what we can do better. Since maximum is defined on the slave side
-device, it probably needs to define minimum as well, otherwise it's possible
-that some hardware can't cope underrun bursts.
 
-Vinod, what do you think?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+> Regards,
+> Markus
+> 
+> 
 
