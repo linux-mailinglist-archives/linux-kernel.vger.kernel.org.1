@@ -2,77 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6063F1CA05C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 03:56:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 712EF1CA05A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 03:56:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726942AbgEHB4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 21:56:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43314 "EHLO
+        id S1726877AbgEHB4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 21:56:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726509AbgEHB4B (ORCPT
+        by vger.kernel.org with ESMTP id S1726538AbgEHB4B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 7 May 2020 21:56:01 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB9DFC05BD43
-        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 18:55:58 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id y4so17179wrm.11
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 18:55:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=lESK9DheFCmb/fgjBkJ1NKHb5ynlC/9iRaPrEEcOxI4=;
-        b=J2OcnGw/5MKfYLgyDmgUgC1IkKF1yPsxKCJPskBcTpPo+harkYr4PHxntb7Udk9j6w
-         01hzE4wZVw4/SvbAqp+nWb7mcCAyeE8w1IDVpjWJSknZatZyV7DT/J2HIwRWvGboUDu4
-         VjPfsRLsm0dK8nF6d+mcESq5icBH1nsuRLAmyVUUOJD3fkIMFm34p6yTcHTATp3/F5Pk
-         x4c6R8pNzadHDHgHJXzgJ1VGEcY23ikDiSrhXh78LxiB72oknGJKaxHc682Zaj6maKEI
-         sveEVPR+J5A8WCOdhXjLXd2QzeaYANjacOXFEgaQzXyHTeuCgFqmExMkSUiVm55/s0Sn
-         ULqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=lESK9DheFCmb/fgjBkJ1NKHb5ynlC/9iRaPrEEcOxI4=;
-        b=tDltyMCsjV8F5/P+4muX9Ok7i9dUIARaeoiKoJT9kI6U2kALRjfQKGEdKcb/tiuBGz
-         +FkoLzVSGaUReE2jVKgUtrnCfiplEUUStBiiRClwdwbZwt9shytFBMOFnxz8nUcr+aZt
-         Fx3iiZmyRdRqUu+evVM3jtJ4qLXTt9po+G0V66oSp4LsF6DvJPlHtAHYxMvh/XL8BKaU
-         4Qn7+svXywBUng+UDjpWRFBI9AGrf5qY4tng0UT3YGFemZ5uCW9uxprnkjL86wl8UiPU
-         8OKcQYN0erHlSIDowMvKT+MLss8jk4ndYeNnbg4nXVpIHkqWSFu4eeb31YJLX8r9eLiC
-         CUvA==
-X-Gm-Message-State: AGi0Pubz387oLY2x2roWfNkjLAJw8Z/7AJwlbjTNXEbfHQjV3qqb4FgX
-        66yArABQkflKzxnhJ4gkLnxR6N3HXWOALyufaVQ=
-X-Google-Smtp-Source: APiQypIxeqFNPN2HB7vn6XN+s9O9k5R6tzRlNqFRK3NIFw69wF4m0oB8o1DMcpEb/23TTuAxBW5kXhEnZMSkBPGS52w=
-X-Received: by 2002:a5d:6691:: with SMTP id l17mr23275wru.127.1588902957494;
- Thu, 07 May 2020 18:55:57 -0700 (PDT)
-MIME-Version: 1.0
-Reply-To: mrsolomonoma263@gmail.com
-Received: by 2002:adf:9bce:0:0:0:0:0 with HTTP; Thu, 7 May 2020 18:55:57 -0700 (PDT)
-From:   "Mr. Solomon Omar" <mr.solomonomar776@gmail.com>
-Date:   Thu, 7 May 2020 18:55:57 -0700
-X-Google-Sender-Auth: Or-oU67wdod2fwqgC1vKF4q5YmU
-Message-ID: <CAAV+ANRbJL2NHEnagD1Wjw=WTaTGCdGTV_Q7pVcR0nQh0NOTyg@mail.gmail.com>
-Subject: Good day and God bless you as you read this massage,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BEDDC05BD09;
+        Thu,  7 May 2020 18:55:59 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::d71])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 898BA1192EEC4;
+        Thu,  7 May 2020 18:55:58 -0700 (PDT)
+Date:   Thu, 07 May 2020 18:55:57 -0700 (PDT)
+Message-Id: <20200507.185557.1362004700682658898.davem@davemloft.net>
+To:     gustavoars@kernel.org
+Cc:     jiri@resnulli.us, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] team: Replace zero-length array with flexible-array
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200507192507.GA16516@embeddedor>
+References: <20200507192507.GA16516@embeddedor>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Thu, 07 May 2020 18:55:58 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=20
-Hello dear,
+From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Date: Thu, 7 May 2020 14:25:07 -0500
 
- I'm working with Bank International in Ouagadougou the capital city
-of Burkina Faso.
+> The current codebase makes use of the zero-length array language
+> extension to the C90 standard, but the preferred mechanism to declare
+> variable-length types such as these ones is a flexible array member[1][2],
+> introduced in C99:
+> 
+> struct foo {
+>         int stuff;
+>         struct boo array[];
+> };
+> 
+> By making use of the mechanism above, we will get a compiler warning
+> in case the flexible array does not occur last in the structure, which
+> will help us prevent some kind of undefined behavior bugs from being
+> inadvertently introduced[3] to the codebase from now on.
+> 
+> Also, notice that, dynamic memory allocations won't be affected by
+> this change:
+> 
+> "Flexible array members have incomplete type, and so the sizeof operator
+> may not be applied. As a quirk of the original implementation of
+> zero-length arrays, sizeof evaluates to zero."[1]
+> 
+> sizeof(flexible-array-member) triggers a warning because flexible array
+> members have incomplete type[1]. There are some instances of code in
+> which the sizeof operator is being incorrectly/erroneously applied to
+> zero-length arrays and the result is zero. Such instances may be hiding
+> some bugs. So, this work (flexible-array member conversions) will also
+> help to get completely rid of those sorts of issues.
+> 
+> This issue was found with the help of Coccinelle.
+> 
+> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+> [2] https://github.com/KSPP/linux/issues/21
+> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-I'm one of the senior director of the bank, I=E2=80=99m writing you this me=
-mo
-because I have this urgent deal/business proposal that will benefit me
-and you. Please write me on my personal email for more detail
-information concerning the issue at hand
-
-Mr.solomonomar434@gmail.com
-=09
-Thanks,
- Mr. Solomon Omar
+Applied to net-next, thanks.
