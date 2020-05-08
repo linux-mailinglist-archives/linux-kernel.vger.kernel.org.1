@@ -2,311 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B49F61CAE2D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:10:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1099C1CAE52
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:11:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730672AbgEHNHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:07:17 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:48474 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730636AbgEHNHN (ORCPT
+        id S1729897AbgEHNIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 09:08:46 -0400
+Received: from mailgate1.rohmeurope.com ([87.129.152.131]:45122 "EHLO
+        mailgate1.rohmeurope.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729400AbgEHNIi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 09:07:13 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 048D74PE088083;
-        Fri, 8 May 2020 08:07:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1588943224;
-        bh=tDC1pjicYjkUm+KPLaJb1qehvPKazM9rDiMFSqZ4yQ4=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=EjKbh+Z7iN1NOlO7sVNZ6eCv51YzOA6gDOeBA0ovesAObpj9mYYT4XZ3fa//2ycl2
-         6zt4rC4jpkhVEhrsXR4chSnwJkkMos5iptoaxXk4C2Z6U89qxhk5sZ0zNoZBm6iPDL
-         CzG/qda4Hr2PSJ5uTzXcW6gKhmAE2V+W8i/EahH0=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 048D73nH105107
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 8 May 2020 08:07:03 -0500
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 8 May
- 2020 08:07:03 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 8 May 2020 08:07:03 -0500
-Received: from a0393678ub.india.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 048D6kYo018673;
-        Fri, 8 May 2020 08:07:00 -0500
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Tom Joseph <tjoseph@cadence.com>
-CC:     <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <kishon@ti.com>
-Subject: [PATCH v3 4/4] PCI: cadence: Use "dma-ranges" instead of "cdns,no-bar-match-nbits" property
-Date:   Fri, 8 May 2020 18:36:46 +0530
-Message-ID: <20200508130646.23939-5-kishon@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200508130646.23939-1-kishon@ti.com>
-References: <20200508130646.23939-1-kishon@ti.com>
+        Fri, 8 May 2020 09:08:38 -0400
+X-AuditID: c0a8fbf4-473ff70000004419-83-5eb559d3a558
+Received: from smtp.reu.rohmeu.com (will-cas001.reu.rohmeu.com [192.168.251.177])
+        by mailgate1.rohmeurope.com (Symantec Messaging Gateway) with SMTP id 6F.E4.17433.3D955BE5; Fri,  8 May 2020 15:08:35 +0200 (CEST)
+Received: from WILL-MAIL001.REu.RohmEu.com ([fe80::2915:304f:d22c:c6ba]) by
+ WILL-CAS001.REu.RohmEu.com ([fe80::d57e:33d0:7a5d:f0a6%16]) with mapi id
+ 14.03.0487.000; Fri, 8 May 2020 15:08:29 +0200
+From:   "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+To:     "broonie@kernel.org" <broonie@kernel.org>
+CC:     "mazziesaccount@gmail.com" <mazziesaccount@gmail.com>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "sre@kernel.org" <sre@kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v11 02/11] lib/test_linear_ranges: add a test for the
+ 'linear_ranges'
+Thread-Topic: [PATCH v11 02/11] lib/test_linear_ranges: add a test for the
+ 'linear_ranges'
+Thread-Index: AQHWJDWzYnC7ORyc4E2ZSac9GcVX7qieB1EAgAACQQA=
+Date:   Fri, 8 May 2020 13:08:28 +0000
+Message-ID: <c24d5f4c9d07ea9b54692a968020147d8cfe8bcb.camel@fi.rohmeurope.com>
+References: <cover.1588829892.git.matti.vaittinen@fi.rohmeurope.com>
+         <7e91212b3990ce503508bc1c83e13dc793b73668.1588829892.git.matti.vaittinen@fi.rohmeurope.com>
+         <20200508130022.GI4820@sirena.org.uk>
+In-Reply-To: <20200508130022.GI4820@sirena.org.uk>
+Accept-Language: en-US, de-DE
+Content-Language: de-DE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [62.78.225.252]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <F435822C72521A4CBEB0B115C32A2757@de.rohmeurope.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Brightmail-Tracker: H4sIAAAAAAAAA01SbUgTYRz3uTtvt+nJOWd7mmVtFKb5kmWxSkToi0JIIFFZaaeem6U3ud1E
+        +2B+qXQhzMoPDs2wBFGYubR8CVqiVhpKGVKRpLQEJTNdaORbd54v+/T8n+f3Cs+fQJUeXw2R
+        y/IMx9J5OlyBuRqXWqNGLrSnHxqvO6avmnDj+oWPZYh+pKsG13sqeoG+puENph/s5hPxpE77
+        mCzJ2VSOJ3mcoWfQNL/4TJovTM01sDEJV/yMt8uPFjxQFHVVx5SCZbkVyAlIxcFnsw2IFSgI
+        JTUK4JOVtY3LawDHxl7iVkAQOBUPrZ9lokBFRcGqf49wkYNSNxFYXzaMiEAQdRH2fxpAJNIl
+        2Lw8tCE4ASsm533FGaP2wfYfrUCcSSoFzt19KpPC3gHo6HuFioCcOgwdU8vrJEDthuWlv9ZN
+        UUoNnZOLvlJtCj5+MYxKczCc+r668a6FzxcdmFgapcJhS1eMJE2EMy6XTJq18P6dCZnUIRC+
+        rXZjNrDD7pVg31bbvdR2L7XdS/0Q+DYBmE/n5hlonomN5hhLNGcy5gtHlinfCaRP/NMB1nqS
+        ewBCgB6wk0B0weTec+3pyoBMU3axkTYbMzhLHmPuAZBAdSqysqgtXUlm08XXGc60CYUQmE5N
+        hk1UXlZSYtY1hilguE10F0HoIOlzXjAN5BgDU5STm8dvwwghF80VGpWZYbMZjrbwxgxxPTLM
+        wn6IkL+Q2yZ2Is0FdL7wKkkHwEHCNlVbjxK9tQ31qBJjTSyjUZOnAwQqJVKNFnYraBqoCaAL
+        IkfFHv7CJm/5TAsRiBDhmXeKETy9DWlKQUXR6kxYVZ2/4YiVybjn4KP45mA256zL052W1Tb4
+        O3TNFKWdHW8Kd8Qdt40Xumv+frkR1BhyUnPL3V5oc2FLjp8HDF9dq3PZPvundTlDgf5ZESv6
+        vm+dka0JWjquOlJFdX+wJNO1ltQ9/SUlq+5T8o7arsaWzhTFwvurQ3aNDjMb6dgIlDPT/wFx
+        c6QThgMAAA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cadence PCIe core driver (host mode) uses "cdns,no-bar-match-nbits"
-property to configure the number of bits passed through from PCIe
-address to internal address in Inbound Address Translation register.
-This only used the NO MATCH BAR.
-
-However standard PCI dt-binding already defines "dma-ranges" to
-describe the address ranges accessible by PCIe controller. Add support
-in Cadence PCIe host driver to parse dma-ranges and configure the
-inbound regions for BAR0, BAR1 and NO MATCH BAR. Cadence IP specifies
-maximum size for BAR0 as 256GB, maximum size for BAR1 as 2 GB, so if
-the dma-ranges specifies a size larger than the maximum allowed, the
-driver will split and configure the BARs.
-
-Legacy device tree binding compatibility is maintained by retaining
-support for "cdns,no-bar-match-nbits".
-
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
----
- .../controller/cadence/pcie-cadence-host.c    | 141 ++++++++++++++++--
- drivers/pci/controller/cadence/pcie-cadence.h |  17 ++-
- 2 files changed, 141 insertions(+), 17 deletions(-)
-
-diff --git a/drivers/pci/controller/cadence/pcie-cadence-host.c b/drivers/pci/controller/cadence/pcie-cadence-host.c
-index 6ecebb79057a..2485ecd8434d 100644
---- a/drivers/pci/controller/cadence/pcie-cadence-host.c
-+++ b/drivers/pci/controller/cadence/pcie-cadence-host.c
-@@ -11,6 +11,12 @@
- 
- #include "pcie-cadence.h"
- 
-+static u64 cdns_rp_bar_max_size[] = {
-+	[RP_BAR0] = _ULL(128 * SZ_2G),
-+	[RP_BAR1] = SZ_2G,
-+	[RP_NO_BAR] = SZ_64T,
-+};
-+
- void __iomem *cdns_pci_map_bus(struct pci_bus *bus, unsigned int devfn,
- 			       int where)
- {
-@@ -106,6 +112,117 @@ static int cdns_pcie_host_init_root_port(struct cdns_pcie_rc *rc)
- 	return 0;
- }
- 
-+static void cdns_pcie_host_bar_ib_config(struct cdns_pcie_rc *rc,
-+					 enum cdns_pcie_rp_bar bar,
-+					 u64 cpu_addr, u32 aperture)
-+{
-+	struct cdns_pcie *pcie = &rc->pcie;
-+	u32 addr0, addr1;
-+
-+	addr0 = CDNS_PCIE_AT_IB_RP_BAR_ADDR0_NBITS(aperture) |
-+		(lower_32_bits(cpu_addr) & GENMASK(31, 8));
-+	addr1 = upper_32_bits(cpu_addr);
-+	cdns_pcie_writel(pcie, CDNS_PCIE_AT_IB_RP_BAR_ADDR0(bar), addr0);
-+	cdns_pcie_writel(pcie, CDNS_PCIE_AT_IB_RP_BAR_ADDR1(bar), addr1);
-+}
-+
-+static int cdns_pcie_host_bar_config(struct cdns_pcie_rc *rc,
-+				     struct resource_entry *entry,
-+				     enum cdns_pcie_rp_bar *index)
-+{
-+	u64 cpu_addr, pci_addr, size, winsize;
-+	struct cdns_pcie *pcie = &rc->pcie;
-+	struct device *dev = pcie->dev;
-+	enum cdns_pcie_rp_bar bar;
-+	unsigned long flags;
-+	u32 aperture;
-+	u32 value;
-+
-+	cpu_addr = entry->res->start;
-+	flags = entry->res->flags;
-+	pci_addr = entry->res->start - entry->offset;
-+	size = resource_size(entry->res);
-+	bar = *index;
-+
-+	if (entry->offset) {
-+		dev_err(dev, "Cannot map PCI addr: %llx to CPU addr: %llx\n",
-+			pci_addr, cpu_addr);
-+		return -EINVAL;
-+	}
-+
-+	value = cdns_pcie_readl(pcie, CDNS_PCIE_LM_RC_BAR_CFG);
-+	while (size > 0) {
-+		if (bar > RP_NO_BAR) {
-+			dev_err(dev, "Failed to map inbound regions!\n");
-+			return -EINVAL;
-+		}
-+
-+		winsize = size;
-+		if (size > cdns_rp_bar_max_size[bar])
-+			winsize = cdns_rp_bar_max_size[bar];
-+
-+		aperture = ilog2(winsize);
-+
-+		cdns_pcie_host_bar_ib_config(rc, bar, cpu_addr, aperture);
-+
-+		if (bar == RP_NO_BAR)
-+			break;
-+
-+		if (winsize + cpu_addr >= SZ_4G) {
-+			if (!(flags & IORESOURCE_PREFETCH))
-+				value |= LM_RC_BAR_CFG_CTRL_MEM_64BITS(bar);
-+			value |= LM_RC_BAR_CFG_CTRL_PREF_MEM_64BITS(bar);
-+		} else {
-+			if (!(flags & IORESOURCE_PREFETCH))
-+				value |= LM_RC_BAR_CFG_CTRL_MEM_32BITS(bar);
-+			value |= LM_RC_BAR_CFG_CTRL_PREF_MEM_32BITS(bar);
-+		}
-+
-+		value |= LM_RC_BAR_CFG_APERTURE(bar, aperture);
-+
-+		size -= winsize;
-+		cpu_addr += winsize;
-+		bar++;
-+	}
-+	cdns_pcie_writel(pcie, CDNS_PCIE_LM_RC_BAR_CFG, value);
-+	*index = bar;
-+
-+	return 0;
-+}
-+
-+static int cdns_pcie_host_map_dma_ranges(struct cdns_pcie_rc *rc)
-+{
-+	enum cdns_pcie_rp_bar bar = RP_BAR0;
-+	struct cdns_pcie *pcie = &rc->pcie;
-+	struct device *dev = pcie->dev;
-+	struct device_node *np = dev->of_node;
-+	struct pci_host_bridge *bridge;
-+	struct resource_entry *entry;
-+	u32 no_bar_nbits = 32;
-+	int err;
-+
-+	bridge = pci_host_bridge_from_priv(rc);
-+	if (!bridge)
-+		return -ENOMEM;
-+
-+	if (list_empty(&bridge->dma_ranges)) {
-+		of_property_read_u32(np, "cdns,no-bar-match-nbits",
-+				     &no_bar_nbits);
-+		cdns_pcie_host_bar_ib_config(rc, RP_NO_BAR, 0x0, no_bar_nbits);
-+		return 0;
-+	}
-+
-+	resource_list_for_each_entry(entry, &bridge->dma_ranges) {
-+		err = cdns_pcie_host_bar_config(rc, entry, &bar);
-+		if (err) {
-+			dev_err(dev, "Fail to configure IB using dma-ranges\n");
-+			return err;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- static int cdns_pcie_host_init_address_translation(struct cdns_pcie_rc *rc)
- {
- 	struct cdns_pcie *pcie = &rc->pcie;
-@@ -160,16 +277,9 @@ static int cdns_pcie_host_init_address_translation(struct cdns_pcie_rc *rc)
- 		r++;
- 	}
- 
--	/*
--	 * Set Root Port no BAR match Inbound Translation registers:
--	 * needed for MSI and DMA.
--	 * Root Port BAR0 and BAR1 are disabled, hence no need to set their
--	 * inbound translation registers.
--	 */
--	addr0 = CDNS_PCIE_AT_IB_RP_BAR_ADDR0_NBITS(rc->no_bar_nbits);
--	addr1 = 0;
--	cdns_pcie_writel(pcie, CDNS_PCIE_AT_IB_RP_BAR_ADDR0(RP_NO_BAR), addr0);
--	cdns_pcie_writel(pcie, CDNS_PCIE_AT_IB_RP_BAR_ADDR1(RP_NO_BAR), addr1);
-+	err = cdns_pcie_host_map_dma_ranges(rc);
-+	if (err)
-+		return err;
- 
- 	return 0;
- }
-@@ -179,10 +289,16 @@ static int cdns_pcie_host_init(struct device *dev,
- 			       struct cdns_pcie_rc *rc)
- {
- 	struct resource *bus_range = NULL;
-+	struct pci_host_bridge *bridge;
- 	int err;
- 
-+	bridge = pci_host_bridge_from_priv(rc);
-+	if (!bridge)
-+		return -ENOMEM;
-+
- 	/* Parse our PCI ranges and request their resources */
--	err = pci_parse_request_of_pci_ranges(dev, resources, NULL, &bus_range);
-+	err = pci_parse_request_of_pci_ranges(dev, resources,
-+					      &bridge->dma_ranges, &bus_range);
- 	if (err)
- 		return err;
- 
-@@ -239,9 +355,6 @@ int cdns_pcie_host_setup(struct cdns_pcie_rc *rc)
- 	pcie = &rc->pcie;
- 	pcie->is_rc = true;
- 
--	rc->no_bar_nbits = 32;
--	of_property_read_u32(np, "cdns,no-bar-match-nbits", &rc->no_bar_nbits);
--
- 	rc->vendor_id = 0xffff;
- 	of_property_read_u32(np, "vendor-id", &rc->vendor_id);
- 
-diff --git a/drivers/pci/controller/cadence/pcie-cadence.h b/drivers/pci/controller/cadence/pcie-cadence.h
-index f349f5828a58..336237a7025c 100644
---- a/drivers/pci/controller/cadence/pcie-cadence.h
-+++ b/drivers/pci/controller/cadence/pcie-cadence.h
-@@ -92,6 +92,20 @@
- #define  CDNS_PCIE_LM_BAR_CFG_CTRL_MEM_64BITS		0x6
- #define  CDNS_PCIE_LM_BAR_CFG_CTRL_PREFETCH_MEM_64BITS	0x7
- 
-+#define LM_RC_BAR_CFG_CTRL_DISABLED(bar)		\
-+		(CDNS_PCIE_LM_BAR_CFG_CTRL_DISABLED << (((bar) * 8) + 6))
-+#define LM_RC_BAR_CFG_CTRL_IO_32BITS(bar)		\
-+		(CDNS_PCIE_LM_BAR_CFG_CTRL_IO_32BITS << (((bar) * 8) + 6))
-+#define LM_RC_BAR_CFG_CTRL_MEM_32BITS(bar)		\
-+		(CDNS_PCIE_LM_BAR_CFG_CTRL_MEM_32BITS << (((bar) * 8) + 6))
-+#define LM_RC_BAR_CFG_CTRL_PREF_MEM_32BITS(bar)	\
-+	(CDNS_PCIE_LM_BAR_CFG_CTRL_PREFETCH_MEM_32BITS << (((bar) * 8) + 6))
-+#define LM_RC_BAR_CFG_CTRL_MEM_64BITS(bar)		\
-+		(CDNS_PCIE_LM_BAR_CFG_CTRL_MEM_64BITS << (((bar) * 8) + 6))
-+#define LM_RC_BAR_CFG_CTRL_PREF_MEM_64BITS(bar)	\
-+	(CDNS_PCIE_LM_BAR_CFG_CTRL_PREFETCH_MEM_64BITS << (((bar) * 8) + 6))
-+#define LM_RC_BAR_CFG_APERTURE(bar, aperture)		\
-+					(((aperture) - 2) << ((bar) * 8))
- 
- /*
-  * Endpoint Function Registers (PCI configuration space for endpoint functions)
-@@ -266,8 +280,6 @@ struct cdns_pcie {
-  * @bus_range: first/last buses behind the PCIe host controller
-  * @cfg_base: IO mapped window to access the PCI configuration space of a
-  *            single function at a time
-- * @no_bar_nbits: Number of bits to keep for inbound (PCIe -> CPU) address
-- *                translation (nbits sets into the "no BAR match" register)
-  * @vendor_id: PCI vendor ID
-  * @device_id: PCI device ID
-  */
-@@ -276,7 +288,6 @@ struct cdns_pcie_rc {
- 	struct resource		*cfg_res;
- 	struct resource		*bus_range;
- 	void __iomem		*cfg_base;
--	u32			no_bar_nbits;
- 	u32			vendor_id;
- 	u32			device_id;
- };
--- 
-2.17.1
-
+VGhhbmtzIGEgdG9uIGZvciBoZWFkJ3MgdXAgTWFyayENCg0KT24gRnJpLCAyMDIwLTA1LTA4IGF0
+IDE0OjAwICswMTAwLCBNYXJrIEJyb3duIHdyb3RlOg0KPiBPbiBUaHUsIE1heSAwNywgMjAyMCBh
+dCAwOTowNjowOEFNICswMzAwLCBNYXR0aSBWYWl0dGluZW4gd3JvdGU6DQo+ID4gICAgIEFkZCBh
+IEtVbml0IHRlc3QgZm9yIHRoZSBsaW5lYXJfcmFuZ2VzIGhlbHBlci4NCj4gDQo+IFRoaXMgZmFp
+bHMgdG8gYnVpbGQgYW4geDg2IGFsbG1vZGNvbmZpZzoNCj4gDQo+IEVSUk9SOiBtb2Rwb3N0OiAi
+bGluZWFyX3JhbmdlX3ZhbHVlc19pbl9yYW5nZV9hcnJheSINCj4gW2xpYi90ZXN0X2xpbmVhcl9y
+YW5nZXMua29dIHVuZGVmaW5lZCENCj4gRVJST1I6IG1vZHBvc3Q6ICJsaW5lYXJfcmFuZ2VfZ2V0
+X3NlbGVjdG9yX2hpZ2giDQo+IFtsaWIvdGVzdF9saW5lYXJfcmFuZ2VzLmtvXSB1bmRlZmluZWQh
+DQo+IEVSUk9SOiBtb2Rwb3N0OiAibGluZWFyX3JhbmdlX2dldF9zZWxlY3Rvcl9sb3dfYXJyYXki
+DQo+IFtsaWIvdGVzdF9saW5lYXJfcmFuZ2VzLmtvXSB1bmRlZmluZWQhDQo+IEVSUk9SOiBtb2Rw
+b3N0OiAibGluZWFyX3JhbmdlX2dldF92YWx1ZV9hcnJheSINCj4gW2xpYi90ZXN0X2xpbmVhcl9y
+YW5nZXMua29dIHVuZGVmaW5lZCENCj4gbWFrZVsyXTogKioqIFsvbW50L2tlcm5lbC9zY3JpcHRz
+L01ha2VmaWxlLm1vZHBvc3Q6OTQ6IF9fbW9kcG9zdF0NCj4gRXJyb3IgMQ0KPiBtYWtlWzFdOiAq
+KiogWy9tbnQva2VybmVsL01ha2VmaWxlOjEzMTk6IG1vZHVsZXNdIEVycm9yIDINCj4gbWFrZTog
+KioqIFtNYWtlZmlsZToxODA6IHN1Yi1tYWtlXSBFcnJvciAyDQo+IA0KPiBUaGUgdGVzdCBjb2Rl
+IG5lZWRzIHRvIHNlbGVjdCB0aGUgbGlicmFyeS4NCg0KSSdsbCBhZGQgdGhlIHNlbGVjdCBMSU5F
+QVJfUkFOR0VTIHRvIEtDb25maWcgYW5kIHJlc2VuZC4NCg0KLS1NYXR0aQ0K
