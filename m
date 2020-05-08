@@ -2,133 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F4551CA10F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 04:48:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BB261CA116
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 04:53:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726904AbgEHCsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 22:48:47 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:41820 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726509AbgEHCsr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 22:48:47 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id BB8E9EE6DD3E7ED40AE4;
-        Fri,  8 May 2020 10:48:45 +0800 (CST)
-Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
- (10.3.19.214) with Microsoft SMTP Server (TLS) id 14.3.487.0; Fri, 8 May 2020
- 10:48:40 +0800
-Subject: Re: [f2fs-dev] [PATCH] f2fs: compress: fix zstd data corruption
-To:     Daeho Jeong <daeho43@gmail.com>
-CC:     <jaegeuk@kernel.org>, Daeho Jeong <daehojeong@google.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>
-References: <20200508011603.54553-1-yuchao0@huawei.com>
- <CACOAw_xxS_Wf==KnD31f9AOMu+QUs3WacowsfcD6w4A9n2AkTg@mail.gmail.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <0d41e29e-c601-e016-e471-aed184ca4a6a@huawei.com>
-Date:   Fri, 8 May 2020 10:48:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1726792AbgEHCw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 22:52:59 -0400
+Received: from mga01.intel.com ([192.55.52.88]:13492 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726598AbgEHCw7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 22:52:59 -0400
+IronPort-SDR: ZbPzxaWpKGTyUtH3BTslaPPTGKhJcso3YcSLKGQdUpynB/FNuiuRxJbAuJ++VHUlYfrblFISfw
+ peni1BOqeChQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2020 19:52:58 -0700
+IronPort-SDR: M7sXF2aO+FqEQP+nsw3eBRSADkcmd68D/SvPwdvPP3U98L3L9M6UxdT9TtzXrQaxL1SpN1VKgP
+ RC3Dun7vQCxA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,366,1583222400"; 
+   d="scan'208";a="278809288"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
+  by orsmga002.jf.intel.com with ESMTP; 07 May 2020 19:52:55 -0700
+Cc:     baolu.lu@linux.intel.com, "Raj, Ashok" <ashok.raj@intel.com>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 3/5] iommu/vt-d: Disable non-recoverable fault
+ processing before unbind
+To:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Joerg Roedel <joro@8bytes.org>
+References: <20200507005534.3080-1-baolu.lu@linux.intel.com>
+ <20200507005534.3080-4-baolu.lu@linux.intel.com>
+ <MWHPR11MB1645CE4337BEDBC4598318A88CA50@MWHPR11MB1645.namprd11.prod.outlook.com>
+ <3c41a395-95b6-f80c-d3fd-bcd1ec166b24@linux.intel.com>
+ <MWHPR11MB16450F77A9A450AFE51D8F7A8CA20@MWHPR11MB1645.namprd11.prod.outlook.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <a6b5018a-4231-23ba-cf21-374a91563e43@linux.intel.com>
+Date:   Fri, 8 May 2020 10:49:36 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <CACOAw_xxS_Wf==KnD31f9AOMu+QUs3WacowsfcD6w4A9n2AkTg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <MWHPR11MB16450F77A9A450AFE51D8F7A8CA20@MWHPR11MB1645.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.134.22.195]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daeho,
-
-On 2020/5/8 9:28, Daeho Jeong wrote:
-> Hi Chao,
+On 5/8/20 10:12 AM, Tian, Kevin wrote:
+>> From: Lu Baolu <baolu.lu@linux.intel.com>
+>> Sent: Thursday, May 7, 2020 9:23 PM
+>>
+>> Hi Kevin,
+>>
+>> On 2020/5/7 13:45, Tian, Kevin wrote:
+>>>> From: Lu Baolu<baolu.lu@linux.intel.com>
+>>>> Sent: Thursday, May 7, 2020 8:56 AM
+>>>>
+>>>> When a PASID is used for SVA by the device, it's possible that the PASID
+>>>> entry is cleared before the device flushes all ongoing DMA requests. The
+>>>> IOMMU should ignore the non-recoverable faults caused by these
+>> requests.
+>>>> Intel VT-d provides such function through the FPD bit of the PASID entry.
+>>>> This sets FPD bit when PASID entry is cleared in the mm notifier and
+>>>> clear it when the pasid is unbound.
+>>>>
+>>>> Signed-off-by: Lu Baolu<baolu.lu@linux.intel.com>
+>>>> ---
+>>>>    drivers/iommu/intel-iommu.c |  4 ++--
+>>>>    drivers/iommu/intel-pasid.c | 26 +++++++++++++++++++++-----
+>>>>    drivers/iommu/intel-pasid.h |  3 ++-
+>>>>    drivers/iommu/intel-svm.c   |  9 ++++++---
+>>>>    4 files changed, 31 insertions(+), 11 deletions(-)
+>>>>
+>>>> diff --git a/drivers/iommu/intel-iommu.c b/drivers/iommu/intel-iommu.c
+>>>> index d1866c0905b1..7811422b5a68 100644
+>>>> --- a/drivers/iommu/intel-iommu.c
+>>>> +++ b/drivers/iommu/intel-iommu.c
+>>>> @@ -5352,7 +5352,7 @@ static void
+>> __dmar_remove_one_dev_info(struct
+>>>> device_domain_info *info)
+>>>>    	if (info->dev) {
+>>>>    		if (dev_is_pci(info->dev) && sm_supported(iommu))
+>>>>    			intel_pasid_tear_down_entry(iommu, info->dev,
+>>>> -					PASID_RID2PASID);
+>>>> +					PASID_RID2PASID, false);
+>>>>
+>>>>    		iommu_disable_dev_iotlb(info);
+>>>>    		domain_context_clear(iommu, info->dev);
+>>>> @@ -5587,7 +5587,7 @@ static void aux_domain_remove_dev(struct
+>>>> dmar_domain *domain,
+>>>>    	auxiliary_unlink_device(domain, dev);
+>>>>
+>>>>    	spin_lock(&iommu->lock);
+>>>> -	intel_pasid_tear_down_entry(iommu, dev, domain->default_pasid);
+>>>> +	intel_pasid_tear_down_entry(iommu, dev, domain->default_pasid,
+>>>> false);
+>>>>    	domain_detach_iommu(domain, iommu);
+>>>>    	spin_unlock(&iommu->lock);
+>>>>
+>>>> diff --git a/drivers/iommu/intel-pasid.c b/drivers/iommu/intel-pasid.c
+>>>> index 7969e3dac2ad..11aef6c12972 100644
+>>>> --- a/drivers/iommu/intel-pasid.c
+>>>> +++ b/drivers/iommu/intel-pasid.c
+>>>> @@ -292,7 +292,20 @@ static inline void pasid_clear_entry(struct
+>>>> pasid_entry *pe)
+>>>>    	WRITE_ONCE(pe->val[7], 0);
+>>>>    }
+>>>>
+>>>> -static void intel_pasid_clear_entry(struct device *dev, int pasid)
+>>>> +static inline void pasid_clear_entry_with_fpd(struct pasid_entry *pe)
+>>>> +{
+>>>> +	WRITE_ONCE(pe->val[0], PASID_PTE_FPD);
+>>>> +	WRITE_ONCE(pe->val[1], 0);
+>>>> +	WRITE_ONCE(pe->val[2], 0);
+>>>> +	WRITE_ONCE(pe->val[3], 0);
+>>>> +	WRITE_ONCE(pe->val[4], 0);
+>>>> +	WRITE_ONCE(pe->val[5], 0);
+>>>> +	WRITE_ONCE(pe->val[6], 0);
+>>>> +	WRITE_ONCE(pe->val[7], 0);
+>>>> +}
+>>>> +
+>>>> +static void
+>>>> +intel_pasid_clear_entry(struct device *dev, int pasid, bool pf_ignore)
+>>> Hi, Baolu,
+>>>
+>>> Just curious whether it makes sense to always set FPD here. Yes, SVA is
+>>> one known example that non-recoverable fault associated with a PASID
+>>> entry might be caused after the entry is cleared and those are considered
+>>> benign.  But even in a general context (w/o SVA) why do we care about
+>>> such faults after a PASID entry is torn down?
+>>
+>> First level page tables are also used for DMA protection. For example,
+>> thunderbolt peripherals are always untrusted and should be protected
+>> with IOMMU. IOMMU should always report unrecoverable faults generated
+>> by those device to detect possible DMA attacks.
 > 
-> IIUC, you are trying not to use ZSTD_compressBound() to save the memory
-> space. Am I right?
+> when untrusted devices are protected by IOMMU, I don't think PASID
+> entry (of RID2PASID) will have present bit cleared.
+
+I mean, protect the system from malicious devices. In any case, IOMMU
+should report and log the unrecoverable faults caused by the untrusted
+devices.
+
+Best regards,
+baolu
+
 > 
-> Then, how about LZ4_compressBound() for LZ4 and lzo1x_worst_compress() for
-> LZO?
-
-Oops, it looks those limits were wrongly used...
-
-#define LZ4_COMPRESSBOUND(isize)	(\
-	(unsigned int)(isize) > (unsigned int)LZ4_MAX_INPUT_SIZE \
-	? 0 \
-	: (isize) + ((isize)/255) + 16)
-
-#define lzo1x_worst_compress(x) ((x) + ((x) / 16) + 64 + 3 + 2)
-
-Newly calculated boundary size is larger than target buffer size.
-
-However comments on LZ4_compress_default() said:
-
-...
- * @maxOutputSize: full or partial size of buffer 'dest'
- *	which must be already allocated
-...
-int LZ4_compress_default(const char *source, char *dest, int inputSize,
-	int maxOutputSize, void *wrkmem);
-
-And @out_len in lzo1x_1_compress() was passed as an output parameter to
-pass length of data that compressor compressed into @out buffer.
-
-Let me know if I missed sth.
-
-Thannks,
-
-> Could we save more memory space for these two cases like ZSTD?
-> As you know, we are using 5 pages compression buffer for LZ4 and LZO in
-> compress_log_size=2,
-> and if the compressed data doesn't fit in 3 pages, it returns -EAGAIN to
-> give up compressing that one.
-> 
-> Thanks,
-> 
-> 2020년 5월 8일 (금) 오전 10:17, Chao Yu <yuchao0@huawei.com>님이 작성:
-> 
->> During zstd compression, ZSTD_endStream() may return non-zero value
->> because distination buffer is full, but there is still compressed data
->> remained in intermediate buffer, it means that zstd algorithm can not
->> save at last one block space, let's just writeback raw data instead of
->> compressed one, this can fix data corruption when decompressing
->> incomplete stored compression data.
 >>
->> Signed-off-by: Daeho Jeong <daehojeong@google.com>
->> Signed-off-by: Chao Yu <yuchao0@huawei.com>
->> ---
->>  fs/f2fs/compress.c | 7 +++++++
->>  1 file changed, 7 insertions(+)
+>> ATS/PRI devices are always trusted devices, hence we could tolerate
+>> setting FPD bit in the time window between mm_release notifier and
+>> unbind().
 >>
->> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
->> index c22cc0d37369..5e4947250262 100644
->> --- a/fs/f2fs/compress.c
->> +++ b/fs/f2fs/compress.c
->> @@ -358,6 +358,13 @@ static int zstd_compress_pages(struct compress_ctx
->> *cc)
->>                 return -EIO;
->>         }
->>
->> +       /*
->> +        * there is compressed data remained in intermediate buffer due to
->> +        * no more space in cbuf.cdata
->> +        */
->> +       if (ret)
->> +               return -EAGAIN;
->> +
->>         cc->clen = outbuf.pos;
->>         return 0;
->>  }
->> --
->> 2.18.0.rc1
->>
->>
->>
->> _______________________________________________
->> Linux-f2fs-devel mailing list
->> Linux-f2fs-devel@lists.sourceforge.net
->> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
->>
-> 
+>> Best regards,
+>> baolu
