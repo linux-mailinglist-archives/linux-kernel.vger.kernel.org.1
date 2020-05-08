@@ -2,116 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC3C01CA73D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 11:33:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBF3F1CA746
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 11:36:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727072AbgEHJd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 05:33:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725774AbgEHJdZ (ORCPT
+        id S1726767AbgEHJgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 05:36:16 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:51681 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725379AbgEHJgP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 05:33:25 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CB7CC05BD43
-        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 02:33:25 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id w29so285613qtv.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 May 2020 02:33:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GqXEjDaG+YGx0nXjgZ4W5HNVqJo925K86iqD302veHY=;
-        b=GtAP3h/Z3PPH676mNtyFuDUd4QaE5wVZcq8hFWKATjr8OQA3NHM4mBIm5tr/e/Wfle
-         tZKpzU4KBXvnm6U0NS6/6xvZh7Fgx0c6DwIGy5767Jz/8WsGfIW5qkCS1hyfJ1ZbadCw
-         GersB2jGOkAqejndKmS66DV6IbmaK92JxrTFROGWp2iqaQkag9RKnVcmL59NzCQV92sO
-         WAM893lT9sOa5/5sMWDdkHv8gY9ior9kh9wFL1hUBe8Sgn6Oni3wAdkBHHOHBXV5q9aR
-         qd8OGJHs/s7fPbDOwxw6lZAh4fSrlSA3Q9+8rK5BMSjvJIX5l55A/Q/+oe8st5oXQFY5
-         frBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GqXEjDaG+YGx0nXjgZ4W5HNVqJo925K86iqD302veHY=;
-        b=NrSYsBFhDtd2snLeXsrhD+i6tku1STd8Sf0geOGtHdoC8R/arW12NuTVe0t4NldmF+
-         vd7PKiuiLvXkGq/VTNWx+VO0v+OzLRTObUjUEw14JrstB72fxB364TTj8dMQc+aGeBhz
-         NGWHL8qLZCWgeqeaMmyAB+pu1K/JOGpiN2OZr/NqgBFWl70jfH1m0jXqrkVuNMr2FT4i
-         uku164myv3LC/T6UXj+0hUdrjXPq+FTRR+zGlN/XjmdpZjcDA3KycCnqHA8KIcqDJZx1
-         xc3Lh6Gvzf7xjPEOenHzSRDReDUF326lZu4Di/JEepVRoBYiDw3ZSHShlNvhZLUHDRt/
-         9Cgw==
-X-Gm-Message-State: AGi0Pub1Z6ygHA6xZJ6nRdkG39WLJmSSddnu5DWw5P+DrfQCnTbV75K9
-        SL4BoyZVHEeJTrzqvYKUFb0iQTUNlbB6DRe9wrEoTw==
-X-Google-Smtp-Source: APiQypJBReLlNI1lkKoH4ewz6Q2tA9L1d0ig5UwPjkpDV+PBKuDen+TP7tDZu/7zCfjlmMaE4Q+aq6NmYCbIFlSp4NM=
-X-Received: by 2002:aed:3668:: with SMTP id e95mr2108070qtb.50.1588930403993;
- Fri, 08 May 2020 02:33:23 -0700 (PDT)
+        Fri, 8 May 2020 05:36:15 -0400
+Received: from localhost.localdomain ([149.172.19.189]) by
+ mrelayeu.kundenserver.de (mreue108 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1M593i-1jVsxU00vs-00197T; Fri, 08 May 2020 11:35:56 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>
+Cc:     Arnd Bergmann <arnd@arndb.de>, kbuild test robot <lkp@intel.com>,
+        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] parisc: use -fno-strict-aliasing for decompressor
+Date:   Fri,  8 May 2020 11:35:43 +0200
+Message-Id: <20200508093553.2742898-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-References: <00000000000039420505a14e4951@google.com> <1588755226.13662.17.camel@suse.com>
- <CAAeHK+zOdghTAu647iKBEU+0LqkYYOk0f7gPk_4T6BjNi=2sAQ@mail.gmail.com> <CAAeHK+xu_0BrnM5SKo5zNFvwunMDQWa+foD-y7MpnqjkP8tcbg@mail.gmail.com>
-In-Reply-To: <CAAeHK+xu_0BrnM5SKo5zNFvwunMDQWa+foD-y7MpnqjkP8tcbg@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 8 May 2020 11:33:12 +0200
-Message-ID: <CACT4Y+b3q4C-1+L6Sa3fgOYEa3+XGuzfrfauaH_v9KXS7xH9Yw@mail.gmail.com>
-Subject: Re: KASAN: slab-out-of-bounds Read in hfa384x_usbin_callback
-To:     Andrey Konovalov <andreyknvl@google.com>,
-        syzkaller <syzkaller@googlegroups.com>
-Cc:     Oliver Neukum <oneukum@suse.com>,
-        syzbot <syzbot+7d42d68643a35f71ac8a@syzkaller.appspotmail.com>,
-        "open list:ANDROID DRIVERS" <devel@driverdev.osuosl.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>, nishkadg.linux@gmail.com,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:7tDpWFlk5uE8Zir9SrJMuuF0lDc+G5XvFh0IJYTt1zb9FMbuj2J
+ SvQ76u9u7CLw2g6LsA3FdoiteKYk1/NG8ht+HeRL0I+6XdM4Y0YfI5by5GXmxtrkPVxZMWw
+ 6rAG3VCOAftkDcWL+Sst/+2eBsjF13GnUUmOuNMCp7DDqrOSjf/OGdh1QK3B4n2GQAsS2e2
+ rODk1B46J0aXokZsatwQw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:zkseO91Qx9s=:f6TijkTq/87j1JoL9LHGz7
+ zStj/Xd3A5Fb6dbgE34zkJy1caUuRhZ7uo0wXEOWwMeJNLUdZ9GS9Hxayn6+iA67fUX1l8hcu
+ QEoAI3rcm1UeVJE0uLf9pn0qVz2aLq+zD2kujtAzBL5K89zbTDjILvDOLma81gSj/ViV/VpGO
+ pDei9qYhnyN6tA10wq12E5aKv8+w+ql55LqXuPO84Bn/PwPPJZb90LXM1CL7eIXWq1HQyjTSk
+ 3zAM66bbLutfb5dC8a8lgubmFl2bIrhm61F0XsNb09RxvoKBjXX8H6Uao2cgf8jTi5I4kRBlR
+ RYrsf9db0Pi0J7OusVYl3velY8lBg4jJyQIFN7huEyIhg+hAnHWMFJhy3rksa5TOecGUDjPiq
+ 6KtRIlRndZdAPRlCJZAX9JyCe0jDtuMxAaw4Ue6oz3c1g3J5h7N2NOlj7vPZJYFbqwMaSjDPo
+ lk6vCMYG61CJv+uJHFT/23jhE9MjN6gWQrCwhaaHk0Q/8U7kTgx7zvpAyPjQOv7Kc+e4YwtsB
+ q+Gjs6xmQeFAc5Kyx7Sip/+2uNjtdopCDe/f6P0e0tx0FRPPLmuGo293eyaMkrizH7d3Vl+Lj
+ ISIM+Dgymyk7FsbOtDv3WR+njdTpM/cgAaEzgbICyfeAQNLiNuiOcvIb2VC7UuSD/pXaIr350
+ QgOaZSRZtrUjyQFO2AkRHUN4gF62L6k+z0Xr08BYTMXpZzfPxGx8bbPOiLR9me3zRqz1eAoPp
+ 6qqp3N3UuxDbdaSeZ/x35dMYkM/IEXfB8Js9FFTfAGLNdlt/GTxzbEdTRKqIOWsQ+Q2iz/vAC
+ Dj7nFtDJtkwR/h8OSCvZ3+9flJH2h3cKzWV4zSp/CIsbiwNCEs=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 7, 2020 at 5:56 PM 'Andrey Konovalov' via syzkaller-bugs
-<syzkaller-bugs@googlegroups.com> wrote:
->
-> On Wed, May 6, 2020 at 1:50 PM Andrey Konovalov <andreyknvl@google.com> wrote:
-> >
-> > On Wed, May 6, 2020 at 10:54 AM Oliver Neukum <oneukum@suse.com> wrote:
-> > >
-> > > Am Freitag, den 20.03.2020, 12:28 -0700 schrieb syzbot:
-> > > > Hello,
-> > > >
-> > > > syzbot found the following crash on:
-> > > >
-> > > > HEAD commit:    e17994d1 usb: core: kcov: collect coverage from usb comple..
-> > > > git tree:       https://github.com/google/kasan.git usb-fuzzer
-> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=11d74573e00000
-> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=5d64370c438bc60
-> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=7d42d68643a35f71ac8a
-> > > > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15fa561de00000
-> > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15d74573e00000
-> > > >
-> > > > IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> > > > Reported-by: syzbot+7d42d68643a35f71ac8a@syzkaller.appspotmail.com
-> > > >
-> > >
-> > > Hi,
-> > >
-> > > is this bug still active and can a test be run on it? I requested one
-> > > yesterday. If my analysis is correct this bug has security
-> > > implications, so it is kind of important.
-> >
-> > I see your request in the queue and it's been registered and
-> > completed, but for some reason syzbot didn't send an email with a
-> > response.
-> >
-> > Let me try this once again:
-> >
-> > #syz test: https://github.com/google/kasan.git e17994d1
->
-> Still no response. Dmitry, any idea what could be wrong here?
+An experimental patch series of mine reworks how warnings are processed
+in Kbuild. A side effect is a new warning about a harmless aliasing
+rule violation in an inline function:
 
-I suspect it has something to do with the fact that the bug is already
-fixed (has a fixing commit).
+In file included from
+include/linux/rhashtable-types.h:15:0,
+                 from include/linux/ipc.h:7,
+                 from include/uapi/linux/sem.h:5,
+                 from include/linux/sem.h:5,
+                 from include/linux/sched.h:15,
+                 from include/linux/uaccess.h:6,
+                 from arch/parisc/boot/compressed/misc.c:7:
+include/linux/workqueue.h: In function 'work_static':
+include/linux/workqueue.h:212:2: warning: dereferencing
+type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+  return *work_data_bits(work) & WORK_STRUCT_STATIC;
 
-...right, it was broken by:
-https://github.com/google/syzkaller/commit/f8368f999a1964df6d39a225cd3f5ab3942dd755
-and we lack a test for this scenario. It was supposed to only disable
-mailing of bisection jobs.
+Make the decompressor use -fno-strict-aliasing like the rest of
+the kernel for consistency, and to ensure this warning never makes
+it into a release.
+
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/parisc/boot/compressed/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/parisc/boot/compressed/Makefile b/arch/parisc/boot/compressed/Makefile
+index 1e5879c6a752..dff453687530 100644
+--- a/arch/parisc/boot/compressed/Makefile
++++ b/arch/parisc/boot/compressed/Makefile
+@@ -16,6 +16,7 @@ targets += real2.S firmware.c
+ 
+ KBUILD_CFLAGS := -D__KERNEL__ -O2 -DBOOTLOADER
+ KBUILD_CFLAGS += -DDISABLE_BRANCH_PROFILING
++KBUILD_CFLAGS += -fno-strict-aliasing
+ KBUILD_CFLAGS += $(cflags-y) -fno-delete-null-pointer-checks -fno-builtin-printf
+ KBUILD_CFLAGS += -fno-PIE -mno-space-regs -mdisable-fpregs -Os
+ ifndef CONFIG_64BIT
+-- 
+2.26.0
+
