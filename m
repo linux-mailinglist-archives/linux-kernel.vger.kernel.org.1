@@ -2,42 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DCAF1CAD49
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:02:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 509D01CACEB
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729930AbgEHNAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:00:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33568 "EHLO mail.kernel.org"
+        id S1729379AbgEHM5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 08:57:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729951AbgEHMwZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 08:52:25 -0400
+        id S1730095AbgEHMzr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 08:55:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 48D6F218AC;
-        Fri,  8 May 2020 12:52:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 045DA24969;
+        Fri,  8 May 2020 12:55:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588942344;
-        bh=nVcYsa2JnQlt53ghbuwwTdE45CPzc9/yUgMq+3xxz3I=;
+        s=default; t=1588942547;
+        bh=KwvOtP+4R0a2cE5+I9etc0/2e14g3dLBY2UduyDPhZo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sUWktnc/UyzDeDM3Z1lyWRQ2FRLzNzpAF1ZLKnPmvlBn9tGghvdH81Z2TmGPYWao7
-         6IS/fvioFJ2lt84o2q428eZR6+Z1oZOPuw+BidEYBj/m3AiOYscwgbEsZdDYqnW1HL
-         tLXZ7rTEAGfWFC4QQ1XTje1bOPzkH5640yatoHnA=
+        b=kmtkjEOPl0qlWx1Dq83PG2QJ/EOJrm22CbspYI1Q9Gr4ALL0uC8+jTvvqJCogWXgI
+         POtk9sO06kJDeyRD9+VOWlUwbbcmcr5ponKRDi24CLNygIcupq+EUM9XrB0tmlGjnQ
+         e7hiQYHe9IrgC8yCqUzoVEO46Nhbr4vQ5paB0cGA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, AceLan Kao <acelan.kao@canonical.com>,
-        Tuowen Zhao <ztuowen@gmail.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Roman Gilg <subdiff@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 4.19 25/32] mfd: intel-lpss: Use devm_ioremap_uc for MMIO
+        stable@vger.kernel.org,
+        =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= 
+        <amadeuszx.slawinski@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 21/49] ASoC: codecs: hdac_hdmi: Fix incorrect use of list_for_each_entry
 Date:   Fri,  8 May 2020 14:35:38 +0200
-Message-Id: <20200508123038.544813235@linuxfoundation.org>
+Message-Id: <20200508123045.963551128@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200508123034.886699170@linuxfoundation.org>
-References: <20200508123034.886699170@linuxfoundation.org>
+In-Reply-To: <20200508123042.775047422@linuxfoundation.org>
+References: <20200508123042.775047422@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,49 +46,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tuowen Zhao <ztuowen@gmail.com>
+From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 
-commit a8ff78f7f773142eb8a8befe5a95dd6858ebd635 upstream.
+[ Upstream commit 326b509238171d37402dbe308e154cc234ed1960 ]
 
-Some BIOS erroneously specifies write-combining BAR for intel-lpss-pci
-in MTRR. This will cause the system to hang during boot. If possible,
-this bug could be corrected with a firmware update.
+If we don't find any pcm, pcm will point at address at an offset from
+the the list head and not a meaningful structure. Fix this by returning
+correct pcm if found and NULL if not. Found with coccinelle.
 
-This patch use devm_ioremap_uc to overwrite/ignore the MTRR settings
-by forcing the use of strongly uncachable pages for intel-lpss.
-
-The BIOS bug is present on Dell XPS 13 7390 2-in-1:
-
-[    0.001734]   5 base 4000000000 mask 6000000000 write-combining
-
-4000000000-7fffffffff : PCI Bus 0000:00
-  4000000000-400fffffff : 0000:00:02.0 (i915)
-  4010000000-4010000fff : 0000:00:15.0 (intel-lpss-pci)
-
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=203485
-Cc: <stable@vger.kernel.org> # v4.19+
-Tested-by: AceLan Kao <acelan.kao@canonical.com>
-Signed-off-by: Tuowen Zhao <ztuowen@gmail.com>
-Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Tested-by: Roman Gilg <subdiff@gmail.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+Link: https://lore.kernel.org/r/20200415162849.308-1-amadeuszx.slawinski@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mfd/intel-lpss.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/hdac_hdmi.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/mfd/intel-lpss.c
-+++ b/drivers/mfd/intel-lpss.c
-@@ -397,7 +397,7 @@ int intel_lpss_probe(struct device *dev,
- 	if (!lpss)
- 		return -ENOMEM;
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index e6558475e006d..f0f689ddbefe8 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -142,14 +142,14 @@ static struct hdac_hdmi_pcm *
+ hdac_hdmi_get_pcm_from_cvt(struct hdac_hdmi_priv *hdmi,
+ 			   struct hdac_hdmi_cvt *cvt)
+ {
+-	struct hdac_hdmi_pcm *pcm = NULL;
++	struct hdac_hdmi_pcm *pcm;
  
--	lpss->priv = devm_ioremap(dev, info->mem->start + LPSS_PRIV_OFFSET,
-+	lpss->priv = devm_ioremap_uc(dev, info->mem->start + LPSS_PRIV_OFFSET,
- 				  LPSS_PRIV_SIZE);
- 	if (!lpss->priv)
- 		return -ENOMEM;
+ 	list_for_each_entry(pcm, &hdmi->pcm_list, head) {
+ 		if (pcm->cvt == cvt)
+-			break;
++			return pcm;
+ 	}
+ 
+-	return pcm;
++	return NULL;
+ }
+ 
+ static void hdac_hdmi_jack_report(struct hdac_hdmi_pcm *pcm,
+-- 
+2.20.1
+
 
 
