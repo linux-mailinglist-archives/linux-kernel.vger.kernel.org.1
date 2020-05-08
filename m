@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE201CADA8
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:06:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A7E31CAC8F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730117AbgEHNDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:03:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58474 "EHLO mail.kernel.org"
+        id S1729899AbgEHMye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 08:54:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36868 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729525AbgEHMua (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 08:50:30 -0400
+        id S1730198AbgEHMyb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 08:54:31 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DF62924958;
-        Fri,  8 May 2020 12:50:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4A04B2495A;
+        Fri,  8 May 2020 12:54:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588942230;
-        bh=AsdhOWSmGpAo9X9fraQLcchhnvazowDqGOabd/fCwm0=;
+        s=default; t=1588942470;
+        bh=uYDz60v5LTGoxlNQT418XjQi9htRM1lYd0mtAyncrJg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ugQCPYfi8jbkblI1QgTc89W4SlsfZevwrB1+AaFkLWHgPltLBSqRThRfGbiYYw5Xl
-         yjOADwR8lldEUXmeBh5cBAdeWS4oTGXgMRagcv4pj7wPfXfnN+DBQTRc6/BcOxoTIz
-         VNj2cL2hnTEMHEuh+ZKW0mffyMznn9g8E9RxOkbQ=
+        b=Xqlr6AbxdESXLF7RcCCtYlHzeu2cgQsQU1RSUysk2TUq7vccZL/zXeFDyTyPv7ZNS
+         1VISFjV3BwQs6EY3vyBf3gDz4QseYN5hMoADod3tfEztx9t1cDVMg+9Dm81k5FxXJd
+         gBMJw0qwzRW6rMde/7mkyr5rCUKvABswLklZE2Q8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Jere=20Lepp=C3=A4nen?= <jere.leppanen@nokia.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 18/22] sctp: Fix SHUTDOWN CTSN Ack in the peer restart case
-Date:   Fri,  8 May 2020 14:35:30 +0200
-Message-Id: <20200508123036.195643301@linuxfoundation.org>
+        Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 25/50] tracing: Fix memory leaks in trace_events_hist.c
+Date:   Fri,  8 May 2020 14:35:31 +0200
+Message-Id: <20200508123046.898308901@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200508123033.915895060@linuxfoundation.org>
-References: <20200508123033.915895060@linuxfoundation.org>
+In-Reply-To: <20200508123043.085296641@linuxfoundation.org>
+References: <20200508123043.085296641@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,42 +45,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jere Leppänen <jere.leppanen@nokia.com>
+From: Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
 
-commit 12dfd78e3a74825e6f0bc8df7ef9f938fbc6bfe3 upstream.
+[ Upstream commit 9da73974eb9c965dd9989befb593b8c8da9e4bdc ]
 
-When starting shutdown in sctp_sf_do_dupcook_a(), get the value for
-SHUTDOWN Cumulative TSN Ack from the new association, which is
-reconstructed from the cookie, instead of the old association, which
-the peer doesn't have anymore.
+kmemleak report 1:
+    [<9092c50b>] kmem_cache_alloc_trace+0x138/0x270
+    [<05a2c9ed>] create_field_var+0xcf/0x180
+    [<528a2d68>] action_create+0xe2/0xc80
+    [<63f50b61>] event_hist_trigger_func+0x15b5/0x1920
+    [<28ea5d3d>] trigger_process_regex+0x7b/0xc0
+    [<3138e86f>] event_trigger_write+0x4d/0xb0
+    [<ffd66c19>] __vfs_write+0x30/0x200
+    [<4f424a0d>] vfs_write+0x96/0x1b0
+    [<da59a290>] ksys_write+0x53/0xc0
+    [<3717101a>] __ia32_sys_write+0x15/0x20
+    [<c5f23497>] do_fast_syscall_32+0x70/0x250
+    [<46e2629c>] entry_SYSENTER_32+0xaf/0x102
 
-Otherwise the SHUTDOWN is either ignored or replied to with an ABORT
-by the peer because CTSN Ack doesn't match the peer's Initial TSN.
+This is because save_vars[] of struct hist_trigger_data are
+not destroyed
 
-Fixes: bdf6fa52f01b ("sctp: handle association restarts when the socket is closed.")
-Signed-off-by: Jere Leppänen <jere.leppanen@nokia.com>
-Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+kmemleak report 2:
+    [<9092c50b>] kmem_cache_alloc_trace+0x138/0x270
+    [<6e5e97c5>] create_var+0x3c/0x110
+    [<de82f1b9>] create_field_var+0xaf/0x180
+    [<528a2d68>] action_create+0xe2/0xc80
+    [<63f50b61>] event_hist_trigger_func+0x15b5/0x1920
+    [<28ea5d3d>] trigger_process_regex+0x7b/0xc0
+    [<3138e86f>] event_trigger_write+0x4d/0xb0
+    [<ffd66c19>] __vfs_write+0x30/0x200
+    [<4f424a0d>] vfs_write+0x96/0x1b0
+    [<da59a290>] ksys_write+0x53/0xc0
+    [<3717101a>] __ia32_sys_write+0x15/0x20
+    [<c5f23497>] do_fast_syscall_32+0x70/0x250
+    [<46e2629c>] entry_SYSENTER_32+0xaf/0x102
 
+struct hist_field allocated through create_var() do not initialize
+"ref" field to 1. The code in __destroy_hist_field() does not destroy
+object if "ref" is initialized to zero, the condition
+if (--hist_field->ref > 1) always passes since unsigned int wraps.
+
+kmemleak report 3:
+    [<f8666fcc>] __kmalloc_track_caller+0x139/0x2b0
+    [<bb7f80a5>] kstrdup+0x27/0x50
+    [<39d70006>] init_var_ref+0x58/0xd0
+    [<8ca76370>] create_var_ref+0x89/0xe0
+    [<f045fc39>] action_create+0x38f/0xc80
+    [<7c146821>] event_hist_trigger_func+0x15b5/0x1920
+    [<07de3f61>] trigger_process_regex+0x7b/0xc0
+    [<e87daf8f>] event_trigger_write+0x4d/0xb0
+    [<19bf1512>] __vfs_write+0x30/0x200
+    [<64ce4d27>] vfs_write+0x96/0x1b0
+    [<a6f34170>] ksys_write+0x53/0xc0
+    [<7d4230cd>] __ia32_sys_write+0x15/0x20
+    [<8eadca00>] do_fast_syscall_32+0x70/0x250
+    [<235cf985>] entry_SYSENTER_32+0xaf/0x102
+
+hist_fields (system & event_name) are not freed
+
+Link: http://lkml.kernel.org/r/20200422061503.GA5151@cosmos
+
+Signed-off-by: Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sctp/sm_make_chunk.c |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ kernel/trace/trace_events_hist.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/net/sctp/sm_make_chunk.c
-+++ b/net/sctp/sm_make_chunk.c
-@@ -858,7 +858,11 @@ struct sctp_chunk *sctp_make_shutdown(co
- 	struct sctp_chunk *retval;
- 	__u32 ctsn;
+diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+index 6495800fb92a1..8107574e8af9d 100644
+--- a/kernel/trace/trace_events_hist.c
++++ b/kernel/trace/trace_events_hist.c
+@@ -2466,6 +2466,9 @@ static void __destroy_hist_field(struct hist_field *hist_field)
+ 	kfree(hist_field->name);
+ 	kfree(hist_field->type);
  
--	ctsn = sctp_tsnmap_get_ctsn(&asoc->peer.tsn_map);
-+	if (chunk && chunk->asoc)
-+		ctsn = sctp_tsnmap_get_ctsn(&chunk->asoc->peer.tsn_map);
-+	else
-+		ctsn = sctp_tsnmap_get_ctsn(&asoc->peer.tsn_map);
++	kfree(hist_field->system);
++	kfree(hist_field->event_name);
 +
- 	shut.cum_tsn_ack = htonl(ctsn);
+ 	kfree(hist_field);
+ }
  
- 	retval = sctp_make_control(asoc, SCTP_CID_SHUTDOWN, 0,
+@@ -3528,6 +3531,7 @@ static struct hist_field *create_var(struct hist_trigger_data *hist_data,
+ 		goto out;
+ 	}
+ 
++	var->ref = 1;
+ 	var->flags = HIST_FIELD_FL_VAR;
+ 	var->var.idx = idx;
+ 	var->var.hist_data = var->hist_data = hist_data;
+@@ -4157,6 +4161,9 @@ static void destroy_field_vars(struct hist_trigger_data *hist_data)
+ 
+ 	for (i = 0; i < hist_data->n_field_vars; i++)
+ 		destroy_field_var(hist_data->field_vars[i]);
++
++	for (i = 0; i < hist_data->n_save_vars; i++)
++		destroy_field_var(hist_data->save_vars[i]);
+ }
+ 
+ static void save_field_var(struct hist_trigger_data *hist_data,
+-- 
+2.20.1
+
 
 
