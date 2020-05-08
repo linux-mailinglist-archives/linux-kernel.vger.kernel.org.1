@@ -2,177 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 775511CA65E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 10:44:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 132661CA664
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 10:45:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726809AbgEHIob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 04:44:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726618AbgEHIoa (ORCPT
+        id S1727798AbgEHIpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 04:45:02 -0400
+Received: from m176150.mail.qiye.163.com ([59.111.176.150]:33163 "EHLO
+        m176150.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726951AbgEHIo4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 04:44:30 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32CDAC05BD43
-        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 01:44:30 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id x10so441967plr.4
-        for <linux-kernel@vger.kernel.org>; Fri, 08 May 2020 01:44:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=915+QmVjKADgTrNjynlNsZzwO0kN0qHio8Yi40UhdHs=;
-        b=q3cc34Wk/hxCKxn3te8R8oTruWN9zYDe/NsB7qnilJBZ7vqfgzHHk7BedwhkqGvtXm
-         IbQ4r51kwoSpT9RD5c+5DtgY7wBd4MdjHbOBKsGntjv6DTAK/9U3Q2pzHSA1WmtEA8o2
-         wNX3FldEKlrgP3lwQY5iJ32w3/oMIWoA0a845hf8Cija+cqPgpaB2+okkcTzCZ4rW/IT
-         Lru8u09N6B/NL8/2afDpu0NnAbolB3uMAsHcXUe11D3yzl0WmevZyxiiL4CDYyb3OH8J
-         uVMbUt3WFyr3M/4Vm5ZSTWKSG2VcH+ABUW5+XJQyoyTMYQx2ZLAjgOSh8h9hsBvJ08s+
-         ccWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=915+QmVjKADgTrNjynlNsZzwO0kN0qHio8Yi40UhdHs=;
-        b=RSflOtsqnfbWvqodg52xIEO1L1Cd4ijsH9dcOybnZe+kZsfCErAmVzpPWk+jRdUuaK
-         YOvO7NCcO+MjfGU8Mnev9dpYowTVyic9zlNNx9vZb9a6iM4b+ngVINoOSh0FYj3JDnvZ
-         o9Le53WZSm1dITRY9DRu1/wZ2IvmVPZgKPMBfXsqlgE4KQ503+aG88RbD2cnHdsqJ8RH
-         GsLwykGvglhruoklCQ8xr9bs3gePAhGFiVz9u5qwvxuDz6gMreaJwNBUWYcSFhCGn/KI
-         F6Z8XAiDcETKSBuklufkiNNNvkw+jqptiBm1lYecJ81sLzf8G4hp95xvmn0SeRR05yL2
-         nPuQ==
-X-Gm-Message-State: AGi0PuazpFleS2Q4nbeZFg4cydJS3ByhEvCEoD/rVIokmb5V0giRo4GM
-        4DXViYejg2RoA4xZfdhH2wgru3JNbkw=
-X-Google-Smtp-Source: APiQypJm9P9hFI8hvKD9ynUPuoFrla7HCRuJFon7talvwRqDVolnoih7cvsiDbASXydoyO5s4xExVw==
-X-Received: by 2002:a17:90a:fb4e:: with SMTP id iq14mr5094842pjb.146.1588927469485;
-        Fri, 08 May 2020 01:44:29 -0700 (PDT)
-Received: from aaronlu-desktop ([47.89.83.64])
-        by smtp.gmail.com with ESMTPSA id j26sm875560pgm.20.2020.05.08.01.44.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 May 2020 01:44:28 -0700 (PDT)
-Date:   Fri, 8 May 2020 16:44:19 +0800
-From:   Aaron Lu <aaron.lwe@gmail.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Vineeth Remanan Pillai <vpillai@digitalocean.com>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paul Turner <pjt@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Aaron Lu <aaron.lu@linux.alibaba.com>,
-        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
-        =?iso-8859-1?Q?Fr=E9d=E9ric?= Weisbecker <fweisbec@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        "Li, Aubrey" <aubrey.li@linux.intel.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH updated v2] sched/fair: core wide cfs task priority
- comparison
-Message-ID: <20200508084419.GA120223@aaronlu-desktop>
-References: <20200414135624.GU20730@hirez.programming.kicks-ass.net>
- <20200415033408.GA168322@ziqianlu-desktop.localdomain>
- <20200415040741.GA169001@ziqianlu-desktop.localdomain>
- <CANaguZAXsjD=X-bB7dvQZ3FSqLioiZU=YREHH_7JqiFsZCTxHA@mail.gmail.com>
- <20200417094045.GA197704@ziqianlu-desktop.localdomain>
- <20200420080759.GA224731@ziqianlu-desktop.localdomain>
- <CANaguZDP3nyBdjLeeCZGoUoYk6Lf0HUv19N2Qxo4CpZfrjPZHA@mail.gmail.com>
- <20200421025131.GA227300@aaronlu-desktop>
- <20200424142443.GA263207@aaronlu-desktop>
- <20200506143506.GH5298@hirez.programming.kicks-ass.net>
+        Fri, 8 May 2020 04:44:56 -0400
+Received: from vivo.com (wm-10.qy.internal [127.0.0.1])
+        by m176150.mail.qiye.163.com (Hmail) with ESMTP id 4293E1A3189;
+        Fri,  8 May 2020 16:44:20 +0800 (CST)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <AEMAEgD6CFDEXGkP4OWX94rO.3.1588927460255.Hmail.bernard@vivo.com>
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     Inki Dae <inki.dae@samsung.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        opensource.kernel@vivo.com
+Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSF0gZHJtL2V4eW5vczogcmVtb3ZlIG5vIG5lZWQgZGV2bV9rZnJlZSBpbiBwcm9iZSBbcmUtc2VuZCwgd2VsY29tZSBhbnkgY29tbWVudHNd?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 157.0.31.122
+In-Reply-To: <20200508075210.GA8789@ravnborg.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200506143506.GH5298@hirez.programming.kicks-ass.net>
+Received: from bernard@vivo.com( [157.0.31.122) ] by ajax-webmail ( [127.0.0.1] ) ; Fri, 8 May 2020 16:44:20 +0800 (GMT+08:00)
+From:   Bernard <bernard@vivo.com>
+Date:   Fri, 8 May 2020 16:44:20 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSFVNQk1LS0tLQkJKQ0lKSFlXWShZQU
+        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
+X-HM-Sender-Digest: e1kJHlYWEh9ZQUhMTU5ITkNJTUJKN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
+        WUc6PjY6Phw*TTg9Pz4jPBArTzQsI0JPCTRVSFVKTkNDQklMT01OSE1JVTMWGhIXVRkeCRUaCR87
+        DRINFFUYFBZFWVdZEgtZQVlKTkxVS1VISlVKSUlZV1kIAVlBTUlPSjcG
+X-HM-Tid: 0a71f374f3bc93b4kuws4293e1a3189
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 06, 2020 at 04:35:06PM +0200, Peter Zijlstra wrote:
-> 
-> Sorry for being verbose; I've been procrastinating replying, and in
-> doing so the things I wanted to say kept growing.
-> 
-> On Fri, Apr 24, 2020 at 10:24:43PM +0800, Aaron Lu wrote:
-> 
-> > To make this work, the root level sched entities' vruntime of the two
-> > threads must be directly comparable. So one of the hyperthread's root
-> > cfs_rq's min_vruntime is chosen as the core wide one and all root level
-> > sched entities' vruntime is normalized against it.
-> 
-> > +/*
-> > + * This is called in stop machine context so no need to take the rq lock.
-> > + *
-> > + * Core scheduling is going to be enabled and the root level sched entities
-> > + * of both siblings will use cfs_rq->min_vruntime as the common cfs_rq
-> > + * min_vruntime, so it's necessary to normalize vruntime of existing root
-> > + * level sched entities in sibling_cfs_rq.
-> > + *
-> > + * Update of sibling_cfs_rq's min_vruntime isn't necessary as we will be
-> > + * only using cfs_rq->min_vruntime during the entire run of core scheduling.
-> > + */
-> > +void sched_core_normalize_se_vruntime(int cpu)
-> > +{
-> > +	struct cfs_rq *cfs_rq = &cpu_rq(cpu)->cfs;
-> > +	int i;
-> > +
-> > +	for_each_cpu(i, cpu_smt_mask(cpu)) {
-> > +		struct sched_entity *se, *next;
-> > +		struct cfs_rq *sibling_cfs_rq;
-> > +		s64 delta;
-> > +
-> > +		if (i == cpu)
-> > +			continue;
-> > +
-> > +		sibling_cfs_rq = &cpu_rq(i)->cfs;
-> > +		if (!sibling_cfs_rq->nr_running)
-> > +			continue;
-> > +
-> > +		delta = cfs_rq->min_vruntime - sibling_cfs_rq->min_vruntime;
-> > +		rbtree_postorder_for_each_entry_safe(se, next,
-> > +				&sibling_cfs_rq->tasks_timeline.rb_root,
-> > +				run_node) {
-> > +			se->vruntime += delta;
-> > +		}
-> > +	}
-> > +}
-> 
-> Aside from this being way to complicated for what it does -- you
-> could've saved the min_vruntime for each rq and compared them with
-> subtraction -- it is also terminally broken afaict.
->
-> Consider any infeasible weight scenario. Take for instance two tasks,
-> each bound to their respective sibling, one with weight 1 and one with
-> weight 2. Then the lower weight task will run ahead of the higher weight
-> task without bound.
-
-I don't follow how this could happen. Even the lower weight task runs
-first, after some time, the higher weight task will get its turn and
-from then on, the higher weight task will get more chance to run(due to
-its higher weight and thus, slower accumulation of vruntime).
-
-We used to have the following patch as a standalone one in v4:
-sched/fair : Wake up forced idle siblings if needed
-https://lore.kernel.org/lkml/cover.1572437285.git.vpillai@digitalocean.com/T/#md22d25d0e2932d059013e9b56600d8a847b02a13
-Which originates from:
-https://lore.kernel.org/lkml/20190725143344.GD992@aaronlu/
-
-And in this series, it seems to be merged in:
-[RFC PATCH 07/13] sched: Add core wide task selection and scheduling
-https://lore.kernel.org/lkml/e942da7fd881977923463f19648085c1bfaa37f8.1583332765.git.vpillai@digitalocean.com/
-
-My local test shows that when two cgroup's share are both set to 1024
-and each bound to one sibling of a core, start a cpu intensive task in
-each cgroup, then the cpu intensive task will each consume 50% cpu. When
-one cgroup's share set to 512, it will consume about 33% while the other
-consumes 67%, as expected.
-
-I think the current patch works fine when 2 differently tagged tasks are
-competing CPU, but when there are 3 tasks or more, things can get less
-fair.
+CgpGcm9tOiBTYW0gUmF2bmJvcmcgPHNhbUByYXZuYm9yZy5vcmc+CkRhdGU6IDIwMjAtMDUtMDgg
+MTU6NTI6MTAKVG86ICBCZXJuYXJkIDxiZXJuYXJkQHZpdm8uY29tPgpDYzogIElua2kgRGFlIDxp
+bmtpLmRhZUBzYW1zdW5nLmNvbT4sSm9vbnlvdW5nIFNoaW0gPGp5MDkyMi5zaGltQHNhbXN1bmcu
+Y29tPixTZXVuZy1Xb28gS2ltIDxzdzAzMTIua2ltQHNhbXN1bmcuY29tPixLeXVuZ21pbiBQYXJr
+IDxreXVuZ21pbi5wYXJrQHNhbXN1bmcuY29tPixEYXZpZCBBaXJsaWUgPGFpcmxpZWRAbGludXgu
+aWU+LERhbmllbCBWZXR0ZXIgPGRhbmllbEBmZndsbC5jaD4sS3VramluIEtpbSA8a2dlbmVAa2Vy
+bmVsLm9yZz4sS3J6eXN6dG9mIEtvemxvd3NraSA8a3J6a0BrZXJuZWwub3JnPixkcmktZGV2ZWxA
+bGlzdHMuZnJlZWRlc2t0b3Aub3JnLGxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9y
+ZyxsaW51eC1zYW1zdW5nLXNvY0B2Z2VyLmtlcm5lbC5vcmcsbGludXgta2VybmVsQHZnZXIua2Vy
+bmVsLm9yZyxvcGVuc291cmNlLmtlcm5lbEB2aXZvLmNvbQpTdWJqZWN0OiBSZTogW1BBVENIXSBk
+cm0vZXh5bm9zOiByZW1vdmUgbm8gbmVlZCBkZXZtX2tmcmVlIGluIHByb2JlIFtyZS1zZW5kLCB3
+ZWxjb21lIGFueSBjb21tZW50c10+SGkgQmVybmFyZC4KPgo+T24gV2VkLCBNYXkgMDYsIDIwMjAg
+YXQgMDg6NDk6MDNQTSArMDgwMCwgQmVybmFyZCB3cm90ZToKPj4gUmVtb3ZlIG5vIG5lZWQgZGV2
+bV9rZnJlZSBpbiBwcm9iZS4KPj4gVGhlIGNoYW5nZSBpcyB0byBtYWtlIHRoZSBjb2RlIGEgYml0
+IG1vcmUgcmVhZGFibGUKPj4gCj4+IFNpZ25lZC1vZmYtYnk6IEJlcm5hcmQgWmhhbyA8YmVybmFy
+ZEB2aXZvLmNvbT4KPgo+Q291bGQgeW91IHRha2UgYSBjbG9zZXIgbG9vayBhbmQgZml4IHNpbWls
+YXIgcGF0dGVybnMKPmluIHRoZSByZXN0IG9mIHRoZSBkcml2ZXI/Cj5Gb3IgZXhhbXBsZSBpbiBl
+eHlub3NfZHBpX3Byb2JlKCkKPgo+SXMgd291bGQgYmUgbmljZSB0byBvbmx5IGhhdmUgdG8gcmV2
+aWV3IGZvciB0aGlzCj50eXBlIG9mIGNoYW5nZXMgb25jZSwgc28gb25lIHBhdGNoLXNldCBpcyBw
+cmVmZXJyZWQKPm92ZXIgc2luZ2xlIHBhdGNoZXMgb3ZlciB0aW1lLgo+Cj5Zb3UgY2FuIGFkZDoK
+PlJldmlld2VkLWJ5OiBTYW0gUmF2bmJvcmcgPHNhbUByYXZuYm9yZy5vcmc+Cj4KPnRvIHRoaXMg
+cGF0Y2ggd2hlbiB5b3UgcmUtc2VuZCBhIG5ldyBzZXJpZXMuCj4KPlRoYW5rcywKPglTYW0KCkhp
+ClN1cmUsIHRoaXMgaXMgYWxzbyBhIGdvb2QgY2hhbmNlIGZvciBtZSB0byBsZWFybiB0aGlzIGNv
+ZGUuCkkgd2lsbCByZS1jaGVjayB0aGlzIHBhcnQgb2YgdGhlIGV4eW5vcyBkcml2ZXIgY29kZSB0
+byBzZWUgCmlmIHRoZXJlIGFyZSBzaW1pbGFyIHBhdHRlcm5zLCBhbmQgdGhlbiByZS1zZW5kIGEg
+cGF0Y2ggc2VyaWVzLgoKUmVnYXJkcywKQmVybmFyZAoKPj4gLS0tCj4+ICBkcml2ZXJzL2dwdS9k
+cm0vZXh5bm9zL2V4eW5vc19kcm1fZHBpLmMgfCAxMCArKystLS0tLS0tCj4+ICAxIGZpbGUgY2hh
+bmdlZCwgMyBpbnNlcnRpb25zKCspLCA3IGRlbGV0aW9ucygtKQo+PiAKPj4gZGlmZiAtLWdpdCBh
+L2RyaXZlcnMvZ3B1L2RybS9leHlub3MvZXh5bm9zX2RybV9kcGkuYyBiL2RyaXZlcnMvZ3B1L2Ry
+bS9leHlub3MvZXh5bm9zX2RybV9kcGkuYwo+PiBpbmRleCA0M2ZhMGYyNmMwNTIuLmUwNmY3ZDdh
+NjY5NSAxMDA2NDQKPj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL2V4eW5vcy9leHlub3NfZHJtX2Rw
+aS5jCj4+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9leHlub3MvZXh5bm9zX2RybV9kcGkuYwo+PiBA
+QCAtMTgxLDEwICsxODEsOCBAQCBzdGF0aWMgaW50IGV4eW5vc19kcGlfcGFyc2VfZHQoc3RydWN0
+IGV4eW5vc19kcGkgKmN0eCkKPj4gIAkJCXJldHVybiAtRU5PTUVNOwo+PiAgCj4+ICAJCXJldCA9
+IG9mX2dldF92aWRlb21vZGUoZG4sIHZtLCAwKTsKPj4gLQkJaWYgKHJldCA8IDApIHsKPj4gLQkJ
+CWRldm1fa2ZyZWUoZGV2LCB2bSk7Cj4+ICsJCWlmIChyZXQgPCAwKQo+PiAgCQkJcmV0dXJuIHJl
+dDsKPj4gLQkJfQo+PiAgCj4+ICAJCWN0eC0+dm0gPSB2bTsKPj4gIAo+PiBAQCAtMjMzLDEwICsy
+MzEsOCBAQCBzdHJ1Y3QgZHJtX2VuY29kZXIgKmV4eW5vc19kcGlfcHJvYmUoc3RydWN0IGRldmlj
+ZSAqZGV2KQo+PiAgCWN0eC0+ZGV2ID0gZGV2Owo+PiAgCj4+ICAJcmV0ID0gZXh5bm9zX2RwaV9w
+YXJzZV9kdChjdHgpOwo+PiAtCWlmIChyZXQgPCAwKSB7Cj4+IC0JCWRldm1fa2ZyZWUoZGV2LCBj
+dHgpOwo+PiAtCQlyZXR1cm4gTlVMTDsKPj4gLQl9Cj4+ICsJaWYgKHJldCA8IDApCj4+ICsJCXJl
+dHVybiBFUlJfUFRSKHJldCk7Cj4+ICAKPj4gIAlpZiAoY3R4LT5wYW5lbF9ub2RlKSB7Cj4+ICAJ
+CWN0eC0+cGFuZWwgPSBvZl9kcm1fZmluZF9wYW5lbChjdHgtPnBhbmVsX25vZGUpOwo+PiAtLSAK
+Pj4gMi4yNi4yCj4+IAo+PiAKPj4gW3JlLXNlbmQsIHdlbGNvbWUgYW55IGNvbW1lbnRzXQo+PiBS
+ZWdhcmRzLAo+PiBCZXJuYXJkCj4+IAo+PiAKPj4gCj4+IAo+PiBfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+PiBkcmktZGV2ZWwgbWFpbGluZyBsaXN0Cj4+
+IGRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKPj4gaHR0cHM6Ly9saXN0cy5mcmVlZGVz
+a3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwKDQoNCg==
