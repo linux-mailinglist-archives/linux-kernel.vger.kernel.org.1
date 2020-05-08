@@ -2,104 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03FFA1CA709
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 11:23:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF2821CA73B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 11:33:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727853AbgEHJWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 05:22:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727812AbgEHJWx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 05:22:53 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F17C9C05BD43;
-        Fri,  8 May 2020 02:22:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=8pX7i8uPtHU7HN4LiIFYJSz1zLla2TEkp0jZ2qu15RI=; b=GOOO9v2QplkrXMye0xGfmThwzE
-        LGK1+j6gYEzDAXuvhQpa/icS2f9t6+y/sGTeDAbK4JB48nRHYec3N3jCxQMp5ZASxOwKtypYCiIRK
-        Vbgj1OUJEBE6WBmO0V8r7rFvcZ50o52awLIsNYLtHAnGRVPckLfIaFQnGqI3v26xkvkXZ4VxVOgz4
-        PfFZFXHAysCwvDXLM3+BcgTb8Ee2RmT/K3MJbXwSauYE4wznfb6Z5k2dShehfOa0xlZgWaOPGrDMu
-        lWQxBdehatdCSXws7x/KS3vTZ9W61+y8P1jRcDPrSjhQzfW715yqccPAFizZ4Ufa7eTJEtfnjoFgh
-        DDr9S7Pg==;
-Received: from [2001:4bb8:180:9d3f:90d7:9df8:7cd:3504] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jWzDY-0000AI-Ek; Fri, 08 May 2020 09:22:52 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: [PATCH 11/11] fs: don't change the address limit for ->read_iter in __kernel_read
-Date:   Fri,  8 May 2020 11:22:22 +0200
-Message-Id: <20200508092222.2097-12-hch@lst.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200508092222.2097-1-hch@lst.de>
-References: <20200508092222.2097-1-hch@lst.de>
+        id S1726897AbgEHJdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 05:33:15 -0400
+Received: from elvis.franken.de ([193.175.24.41]:44677 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725775AbgEHJdN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 05:33:13 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jWzNV-0001bD-00; Fri, 08 May 2020 11:33:09 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id A9DC3C040C; Fri,  8 May 2020 11:22:36 +0200 (CEST)
+Date:   Fri, 8 May 2020 11:22:36 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, Zhou Yanjie <zhouyanjie@zoho.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 11/20] mips: MAAR: Use more precise address mask
+Message-ID: <20200508092236.GA9085@alpha.franken.de>
+References: <20200306124807.3596F80307C2@mail.baikalelectronics.ru>
+ <20200506174238.15385-1-Sergey.Semin@baikalelectronics.ru>
+ <20200506174238.15385-12-Sergey.Semin@baikalelectronics.ru>
+ <20200507110951.GD11616@alpha.franken.de>
+ <20200507191337.la6z476myszqethj@mobilestation>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200507191337.la6z476myszqethj@mobilestation>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If we read to a file that implements ->read_iter there is no need
-to change the address limit if we send a kvec down.  Implement that
-case, and prefer it over using plain ->read with a changed address
-limit if available.
+On Thu, May 07, 2020 at 10:13:37PM +0300, Serge Semin wrote:
+> On Thu, May 07, 2020 at 01:09:51PM +0200, Thomas Bogendoerfer wrote:
+> > On Wed, May 06, 2020 at 08:42:29PM +0300, Sergey.Semin@baikalelectronics.ru wrote:
+> > > From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> > > 
+> > > Indeed according to the P5600/P6000 manual the MAAR pair register
+> > > address field either takes [12:31] bits for 32-bits non-XPA systems
+> > > and [12:35] otherwise. In any case the current address mask is just
+> > > wrong for 64-bit and 32-bits XPA chips. So lets extend it to 39-bits
+> > > value. This shall cover the 64-bits architecture and systems with XPA
+> > > enabled, and won't cause any problem for non-XPA 32-bit systems, since
+> > > the value will be just truncated when written to the 32-bits register.
+> > 
+> > according to MIPS32 Priveleged Resoure Architecture Rev. 6.02
+> > ADDR spans from bit 12 to bit 55. So your patch fits only for P5600.
+> 
+> > Does the wider mask cause any problems ?
+> 
+> No, it won't. Bits written to the [40:62] range will be just ignored,
+> while reading from there should return zeros. Setting GENMASK_ULL(55, 12)
+> would also work. Though this solution is a bit workarounding because
+> MIPS_MAAR_ADDR wouldn't reflect the real mask of the ADDR field. Something
+> like the next macro would work better:
+> 
+> +#define MIPS_MAAR_ADDR							\
+> +({									\
+> +	u64 __mask;							\
+> +									\
+> +	if (cpu_has_lpa && read_c0_pagegrain() & PG_ELPA) {		\
+> +		__mask = GENMASK_ULL(55, 12);				\
+> +	else								\
+> +		__mask = GENMASK_ULL(31, 12);				\
+> +									\
+> +	__mask;								\
+> +})
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/read_write.c | 24 +++++++++++++++++-------
- 1 file changed, 17 insertions(+), 7 deletions(-)
+that looks horrible.
 
-diff --git a/fs/read_write.c b/fs/read_write.c
-index f0009b506014c..70715a0e2375d 100644
---- a/fs/read_write.c
-+++ b/fs/read_write.c
-@@ -421,7 +421,6 @@ static ssize_t new_sync_read(struct file *filp, char __user *buf, size_t len, lo
- 
- ssize_t __kernel_read(struct file *file, void *buf, size_t count, loff_t *pos)
- {
--	mm_segment_t old_fs = get_fs();
- 	ssize_t ret;
- 
- 	if (!(file->f_mode & FMODE_CAN_READ))
-@@ -429,14 +428,25 @@ ssize_t __kernel_read(struct file *file, void *buf, size_t count, loff_t *pos)
- 
- 	if (count > MAX_RW_COUNT)
- 		count =  MAX_RW_COUNT;
--	set_fs(KERNEL_DS);
--	if (file->f_op->read)
-+	if (file->f_op->read_iter) {
-+		struct kvec iov = { .iov_base = buf, .iov_len = count };
-+		struct kiocb kiocb;
-+		struct iov_iter iter;
-+
-+		init_sync_kiocb(&kiocb, file);
-+		kiocb.ki_pos = *pos;
-+		iov_iter_kvec(&iter, READ, &iov, 1, count);
-+		ret = file->f_op->read_iter(&kiocb, &iter);
-+		*pos = kiocb.ki_pos;
-+	} else if (file->f_op->read) {
-+		mm_segment_t old_fs = get_fs();
-+
-+		set_fs(KERNEL_DS);
- 		ret = file->f_op->read(file, (void __user *)buf, count, pos);
--	else if (file->f_op->read_iter)
--		ret = new_sync_read(file, (void __user *)buf, count, pos);
--	else
-+		set_fs(old_fs);
-+	} else {
- 		ret = -EINVAL;
--	set_fs(old_fs);
-+	}
- 	if (ret > 0) {
- 		fsnotify_access(file);
- 		add_rchar(current, ret);
+> What do you think? What is better: the macro above or setting
+> GENMASK_ULL(55, 12)?
+
+just that one ;-)
+
+Thomas.
+
 -- 
-2.26.2
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
