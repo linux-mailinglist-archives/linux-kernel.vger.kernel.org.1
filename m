@@ -2,97 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B85C1CA967
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 13:18:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 898571CA96C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 13:19:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726797AbgEHLSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 07:18:44 -0400
-Received: from mga11.intel.com ([192.55.52.93]:42674 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726616AbgEHLSo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 07:18:44 -0400
-IronPort-SDR: stimH1Oq1Vwo/tGPtBr9NJJTTbJNJ/X6d7DHw5RY94xHEtjN8y9hx+t9On7+zwnUpdrPiUSCy/
- 2A0p6wm1mfiw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2020 04:18:43 -0700
-IronPort-SDR: BiZcFTMRaL46E4gjmyLn2L68RKXVMFLXr374xd+Cwni8pAAnp7pSvXyUlIsX7gCspUL+cW0eU7
- tehvFA8kf1Ag==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,367,1583222400"; 
-   d="scan'208";a="370428589"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 08 May 2020 04:18:41 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 08 May 2020 14:18:40 +0300
-Date:   Fri, 8 May 2020 14:18:40 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Prashant Malani <pmalani@chromium.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Benson Leung <bleung@chromium.org>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org
-Subject: Re: [PATCH 2/4] usb: typec: mux: intel_pmc_mux: Support for static
- SBU/HSL orientation
-Message-ID: <20200508111840.GG645261@kuha.fi.intel.com>
-References: <20200507150900.12102-1-heikki.krogerus@linux.intel.com>
- <20200507150900.12102-3-heikki.krogerus@linux.intel.com>
- <20200507224041.GA247416@google.com>
+        id S1727086AbgEHLTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 07:19:23 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:17190 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726616AbgEHLTX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 07:19:23 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 048B2u2I022139;
+        Fri, 8 May 2020 07:19:13 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 30vtxq117q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 08 May 2020 07:19:13 -0400
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 048B3GoK023430;
+        Fri, 8 May 2020 07:19:12 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 30vtxq116v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 08 May 2020 07:19:12 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 048BFeIT009146;
+        Fri, 8 May 2020 11:19:10 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma03ams.nl.ibm.com with ESMTP id 30s0g5wa1x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 08 May 2020 11:19:10 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 048BJ8nI46792730
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 8 May 2020 11:19:08 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6C5B84204D;
+        Fri,  8 May 2020 11:19:08 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E19CB42047;
+        Fri,  8 May 2020 11:19:05 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.102.16.192])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri,  8 May 2020 11:19:05 +0000 (GMT)
+Subject: Re: [RFC 3/4] sched/idle: Disable idle call on least latency
+ requirements
+To:     Pavan Kondeti <pkondeti@codeaurora.org>
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
+        mingo@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, qais.yousef@arm.com,
+        chris.hyser@oracle.com, valentin.schneider@arm.com,
+        rjw@rjwysocki.net
+References: <20200507133723.18325-1-parth@linux.ibm.com>
+ <20200507133723.18325-4-parth@linux.ibm.com>
+ <20200508083601.GJ19464@codeaurora.org>
+From:   Parth Shah <parth@linux.ibm.com>
+Message-ID: <328de1bf-57d1-023d-29aa-11a540212015@linux.ibm.com>
+Date:   Fri, 8 May 2020 16:49:04 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200507224041.GA247416@google.com>
+In-Reply-To: <20200508083601.GJ19464@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-08_08:2020-05-07,2020-05-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 mlxlogscore=999 clxscore=1015
+ impostorscore=0 lowpriorityscore=0 mlxscore=0 adultscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005080097
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prashant,
+Hi Pavan,
 
-On Thu, May 07, 2020 at 03:40:41PM -0700, Prashant Malani wrote:
-> > +static int sbu_orientation(struct pmc_usb_port *port)
-> > +{
-> > +	if (port->sbu_orientation)
-> > +		return port->sbu_orientation - 1;
-> > +
-> > +	return port->orientation - 1;
-> > +}
-> > +
-> > +static int hsl_orientation(struct pmc_usb_port *port)
-> > +{
-> > +	if (port->hsl_orientation)
-> > +		return port->hsl_orientation - 1;
-> > +
-> > +	return port->orientation - 1;
-> > +}
-> > +
-> >  static int pmc_usb_command(struct pmc_usb_port *port, u8 *msg, u32 len)
-> >  {
-> >  	u8 response[4];
-> > @@ -151,8 +170,9 @@ pmc_usb_mux_dp(struct pmc_usb_port *port, struct typec_mux_state *state)
-> >  
-> >  	req.mode_data = (port->orientation - 1) << PMC_USB_ALTMODE_ORI_SHIFT;
-> >  	req.mode_data |= (port->role - 1) << PMC_USB_ALTMODE_UFP_SHIFT;
-> > -	req.mode_data |= (port->orientation - 1) << PMC_USB_ALTMODE_ORI_AUX_SHIFT;
-> > -	req.mode_data |= (port->orientation - 1) << PMC_USB_ALTMODE_ORI_HSL_SHIFT;
-> > +
-> > +	req.mode_data |= sbu_orientation(port) << PMC_USB_ALTMODE_ORI_AUX_SHIFT;
+On 5/8/20 2:06 PM, Pavan Kondeti wrote:
+> On Thu, May 07, 2020 at 07:07:22PM +0530, Parth Shah wrote:
+>> Restrict the call to deeper idle states when the given CPU has been set for
+>> the least latency requirements
+>>
+>> Signed-off-by: Parth Shah <parth@linux.ibm.com>
+>> ---
+>>  kernel/sched/idle.c | 3 ++-
+>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
+>> index b743bf38f08f..85d72a6e2521 100644
+>> --- a/kernel/sched/idle.c
+>> +++ b/kernel/sched/idle.c
+>> @@ -262,7 +262,8 @@ static void do_idle(void)
+>>  		 * broadcast device expired for us, we don't want to go deep
+>>  		 * idle as we know that the IPI is going to arrive right away.
+>>  		 */
+>> -		if (cpu_idle_force_poll || tick_check_broadcast_expired()) {
+>> +		if (cpu_idle_force_poll || tick_check_broadcast_expired() ||
+>> +		    per_cpu(nr_lat_sensitive, cpu)) {
+>>  			tick_nohz_idle_restart_tick();
+>>  			cpu_idle_poll();
+>>  		} else {
+>> -- 
+>> 2.17.2
+>>
 > 
-> I'm curious to know what would happen when sbu-orientation == "normal".
-> That means |port->sbu_orientation| == 1.
+> Since nr_lat_sensitive updates can happen remotely (when a latency sensitive
+> task becomes non-latency sensitive task), we may need to add this condition
+> in cpu_idle_poll() as well.
 > 
-> It sounds like what should happen is the AUX_SHIFT orientation
-> setting should follow what |port->orientation| is, but here it
-> looks like it will always be set to |port->sbu_orientation - 1|, i.e 0,
-> even if port->orientation == TYPEC_ORIENTATION_REVERSE, i.e 2, meaning
-> it should be set to 1 ?
 
-I'll double check this, and get back to you..
+Right. but if the CPU is running idle_task then it will again come back to
+do_idle and read the refcount. Its a penalty in power-saving for 1
+do_idle() loop but it is difficult to put up checks for any change in
+latency_nice value.
 
-Thanks a lot for reviewing this. If you guys have time, then please
-check also that the documentation I'm proposing in patch 3/4 for this
-driver has everything explained clearly enough, and nothing is missing.
-
-Br,
-
--- 
-heikki
+Thanks,
+Parth
