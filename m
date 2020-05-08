@@ -2,83 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38B2F1CB9EB
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 23:36:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BDE81CB9EE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 23:36:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728031AbgEHVfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 17:35:55 -0400
-Received: from gentwo.org ([3.19.106.255]:33674 "EHLO gentwo.org"
+        id S1728143AbgEHVgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 17:36:15 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36998 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726811AbgEHVfz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 17:35:55 -0400
-Received: by gentwo.org (Postfix, from userid 1002)
-        id 98CBA3FED9; Fri,  8 May 2020 21:35:54 +0000 (UTC)
-Received: from localhost (localhost [127.0.0.1])
-        by gentwo.org (Postfix) with ESMTP id 9788F3ED24;
-        Fri,  8 May 2020 21:35:54 +0000 (UTC)
-Date:   Fri, 8 May 2020 21:35:54 +0000 (UTC)
-From:   Christopher Lameter <cl@linux.com>
-X-X-Sender: cl@www.lameter.com
-To:     Roman Gushchin <guro@fb.com>
-cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
-        kernel-team@fb.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 04/19] mm: slub: implement SLUB version of
- obj_to_index()
-In-Reply-To: <20200504182922.GA20009@carbon.dhcp.thefacebook.com>
-Message-ID: <alpine.DEB.2.22.394.2005082130570.65713@www.lameter.com>
-References: <20200422204708.2176080-5-guro@fb.com> <alpine.DEB.2.21.2004222349280.20021@www.lameter.com> <20200423000530.GA63356@carbon.lan> <alpine.DEB.2.21.2004250208500.7624@www.lameter.com> <20200425024625.GA107755@carbon.lan>
- <alpine.DEB.2.21.2004271618340.27701@www.lameter.com> <20200427164638.GC114719@carbon.DHCP.thefacebook.com> <alpine.DEB.2.21.2004301625490.1693@www.lameter.com> <20200430171558.GA339283@carbon.dhcp.thefacebook.com> <alpine.DEB.2.22.394.2005022353330.1987@www.lameter.com>
- <20200504182922.GA20009@carbon.dhcp.thefacebook.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S1726811AbgEHVgN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 17:36:13 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 96C9FAD60;
+        Fri,  8 May 2020 21:36:14 +0000 (UTC)
+Date:   Fri, 8 May 2020 23:36:09 +0200
+From:   Joerg Roedel <jroedel@suse.de>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Joerg Roedel <joro@8bytes.org>, X86 ML <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Subject: Re: [RFC PATCH 0/7] mm: Get rid of vmalloc_sync_(un)mappings()
+Message-ID: <20200508213609.GU8135@suse.de>
+References: <20200508144043.13893-1-joro@8bytes.org>
+ <CALCETrX0ubjc0Gf4hCY9RWH6cVEKF1hv3RzqToKMt9_bEXXBvw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALCETrX0ubjc0Gf4hCY9RWH6cVEKF1hv3RzqToKMt9_bEXXBvw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 4 May 2020, Roman Gushchin wrote:
+On Fri, May 08, 2020 at 02:33:19PM -0700, Andy Lutomirski wrote:
+> On Fri, May 8, 2020 at 7:40 AM Joerg Roedel <joro@8bytes.org> wrote:
 
-> On Sat, May 02, 2020 at 11:54:09PM +0000, Christoph Lameter wrote:
-> > On Thu, 30 Apr 2020, Roman Gushchin wrote:
-> >
-> > > Sorry, but what exactly do you mean?
-> >
-> > I think the right approach is to add a pointer to each slab object for
-> > memcg support.
-> >
->
-> As I understand, embedding the memcg pointer will hopefully make allocations
-> cheaper in terms of CPU, but will require more memory. And you think that
-> it's worth it. Is it a correct understanding?
+> What's the maximum on other system types?  It might make more sense to
+> take the memory hit and pre-populate all the tables at boot so we
+> never have to sync them.
 
-It definitely makes the code less complex. The additional memory is
-minimal. In many cases you have already some space wasted at the end of
-the object that could be used for the pointer.
+Need to look it up for 5-level paging, with 4-level paging its 64 pages
+to pre-populate the vmalloc area.
 
-> Can you, please, describe a bit more detailed how it should be done
-> from your point of view?
-
-Add it to the metadata at the end of the object. Like the debugging
-information or the pointer for RCU freeing.
-
-> I mean where to store the pointer, should it be SLAB/SLUB-specific code
-> or a generic code, what do to with kmallocs alignments, should we
-> merge slabs which had a different size before and now have the same
-> because of the memcg pointer and aligment, etc.
-
-Both SLAB and SLUB have the same capabilities there. Slabs that had
-different sizes before will now have different sizes as well. So the
-merging does not change.
-
-> I'm happy to follow your advice and perform some tests to get an idea of
-> how significant the memory overhead is and how big are CPU savings.
-> I guess with these numbers it will be easy to make a decision.
-
-Sure. The main issue are the power of two kmalloc caches and how to add
-the pointer to these caches in order not to waste memory. SLAB has done
-this in the past by creating additional structues in a page frame.
+But that would not solve the problem on x86-32, which needs to
+synchronize unmappings on the PMD level.
 
 
+	Joerg
