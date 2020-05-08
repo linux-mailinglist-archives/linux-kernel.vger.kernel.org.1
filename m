@@ -2,74 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4FFB1CB092
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:36:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D2B11CB0A5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:42:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727798AbgEHNgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:36:50 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:34852 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726885AbgEHNgu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 09:36:50 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id EEA78221682FAA1CE929;
-        Fri,  8 May 2020 21:36:46 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 8 May 2020 21:36:37 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     Joerg Roedel <joro@8bytes.org>
-CC:     YueHaibing <yuehaibing@huawei.com>,
-        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        <kernel-janitors@vger.kernel.org>
-Subject: [PATCH -next] iommu/amd: Remove set but not used variable 'iommu'
-Date:   Fri, 8 May 2020 13:40:36 +0000
-Message-ID: <20200508134036.116569-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1727119AbgEHNmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 09:42:23 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:58592 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726736AbgEHNmX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 09:42:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588945341;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=GXwyjE1kOZ6yaowxqjZnLNynqRUG01KIvBi0xIiRORw=;
+        b=ExNWgHr8TkkImBFPRDIT7qtnBQd2DV3mOToajijNQbv5Zx46v9GZalTvZ+HKSQEX3Ml9zu
+        2UmLHI9QolxZZzBEO75Ehw25+49G8qSfgqoT+Su/JCGeK/5TRRpEPoxyrFjG0abE+cg6bu
+        Lps6gp1ryT1KgXbJPvsX+ZSzVJ9oeJs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-278-c2H87mxnOeiaH8xynwQPIQ-1; Fri, 08 May 2020 09:42:17 -0400
+X-MC-Unique: c2H87mxnOeiaH8xynwQPIQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 720BD8014D9;
+        Fri,  8 May 2020 13:42:15 +0000 (UTC)
+Received: from [10.36.113.181] (ovpn-113-181.ams2.redhat.com [10.36.113.181])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 05A7D2E05C;
+        Fri,  8 May 2020 13:42:12 +0000 (UTC)
+Subject: Re: [PATCH v2 3/3] mm/page_alloc: Keep memoryless cpuless node 0
+ offline
+From:   David Hildenbrand <david@redhat.com>
+To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Michal Hocko <mhocko@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Mel Gorman <mgorman@suse.de>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Christopher Lameter <cl@linux.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20200428093836.27190-1-srikar@linux.vnet.ibm.com>
+ <20200428093836.27190-4-srikar@linux.vnet.ibm.com>
+ <20200428165912.ca1eadefbac56d740e6e8fd1@linux-foundation.org>
+ <20200429014145.GD19958@linux.vnet.ibm.com>
+ <20200429122211.GD28637@dhcp22.suse.cz>
+ <20200430071820.GF19958@linux.vnet.ibm.com>
+ <20200504093712.GL22838@dhcp22.suse.cz>
+ <20200508130304.GA1961@linux.vnet.ibm.com>
+ <3bfe7469-1d8c-baa4-6d9d-f4786492eaa8@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+Organization: Red Hat GmbH
+Message-ID: <ce9d47bc-f92c-dd22-0d59-e8d59c913526@redhat.com>
+Date:   Fri, 8 May 2020 15:42:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type:   text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+In-Reply-To: <3bfe7469-1d8c-baa4-6d9d-f4786492eaa8@redhat.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes gcc '-Wunused-but-set-variable' warning:
+On 08.05.20 15:39, David Hildenbrand wrote:
+> On 08.05.20 15:03, Srikar Dronamraju wrote:
+>> * Michal Hocko <mhocko@kernel.org> [2020-05-04 11:37:12]:
+>>
+>>>>>
+>>>>> Have you tested on something else than ppc? Each arch does the NUMA
+>>>>> setup separately and this is a big mess. E.g. x86 marks even memory less
+>>>>> nodes (see init_memory_less_node) as online.
+>>>>>
+>>>>
+>>>> while I have predominantly tested on ppc, I did test on X86 with CONFIG_NUMA
+>>>> enabled/disabled on both single node and multi node machines.
+>>>> However, I dont have a cpuless/memoryless x86 system.
+>>>
+>>> This should be able to emulate inside kvm, I believe.
+>>>
+>>
+>> I did try but somehow not able to get cpuless / memoryless node in a x86 kvm
+>> guest.
+> 
+> I use the following
+> 
+> #! /bin/bash
+> sudo x86_64-softmmu/qemu-system-x86_64 \
+>     --enable-kvm \
+>     -m 4G,maxmem=20G,slots=2 \
+>     -smp sockets=2,cores=2 \
+>     -numa node,nodeid=0,cpus=0-1,mem=4G -numa node,nodeid=1,cpus=2-3,mem=0G \
 
-drivers/iommu/amd_iommu.c: In function 'amd_iommu_uninit_device':
-drivers/iommu/amd_iommu.c:422:20: warning:
- variable 'iommu' set but not used [-Wunused-but-set-variable]
+Sorry, this line has to be
 
-commit dce8d6964ebd ("iommu/amd: Convert to probe/release_device() call-backs")
-involved this, remove it.
+-numa node,nodeid=0,cpus=0-3,mem=4G -numa node,nodeid=1,mem=0G \
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/iommu/amd_iommu.c | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/drivers/iommu/amd_iommu.c b/drivers/iommu/amd_iommu.c
-index fef3689ee535..2b8eb58d2bea 100644
---- a/drivers/iommu/amd_iommu.c
-+++ b/drivers/iommu/amd_iommu.c
-@@ -419,15 +419,12 @@ static void iommu_ignore_device(struct device *dev)
- static void amd_iommu_uninit_device(struct device *dev)
- {
- 	struct iommu_dev_data *dev_data;
--	struct amd_iommu *iommu;
- 	int devid;
- 
- 	devid = get_device_id(dev);
- 	if (devid < 0)
- 		return;
- 
--	iommu = amd_iommu_rlookup_table[devid];
--
- 	dev_data = search_dev_data(devid);
- 	if (!dev_data)
- 		return;
+>     -kernel /home/dhildenb/git/linux/arch/x86_64/boot/bzImage \
+>     -append "console=ttyS0 rd.shell rd.luks=0 rd.lvm=0 rd.md=0 rd.dm=0" \
+>     -initrd /boot/initramfs-5.2.8-200.fc30.x86_64.img \
+>     -machine pc,nvdimm \
+>     -nographic \
+>     -nodefaults \
+>     -chardev stdio,id=serial \
+>     -device isa-serial,chardev=serial \
+>     -chardev socket,id=monitor,path=/var/tmp/monitor,server,nowait \
+>     -mon chardev=monitor,mode=readline
+> 
+> to get a cpu-less and memory-less node 1. Never tried with node 0.
+> 
 
 
+-- 
+Thanks,
+
+David / dhildenb
 
