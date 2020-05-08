@@ -2,70 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C5B41CA040
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 03:47:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D0601CA053
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 03:53:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726924AbgEHBqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 21:46:11 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:50896 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726509AbgEHBqK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 21:46:10 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 9AC1CDE8277282167DC2;
-        Fri,  8 May 2020 09:46:09 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 8 May 2020 09:46:00 +0800
-From:   Chen Zhou <chenzhou10@huawei.com>
-To:     <will@kernel.org>, <robin.murphy@arm.com>, <joro@8bytes.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        <chenzhou10@huawei.com>
-Subject: [PATCH -next] iommu/arm-smmu-v3: remove set but not used variable 'smmu'
-Date:   Fri, 8 May 2020 09:49:55 +0800
-Message-ID: <20200508014955.87630-1-chenzhou10@huawei.com>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
+        id S1726618AbgEHBxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 21:53:43 -0400
+Received: from m176150.mail.qiye.163.com ([59.111.176.150]:16490 "EHLO
+        m176150.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726509AbgEHBxn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 21:53:43 -0400
+Received: from vivo.com (wm-10.qy.internal [127.0.0.1])
+        by m176150.mail.qiye.163.com (Hmail) with ESMTP id B95D91A2142;
+        Fri,  8 May 2020 09:53:07 +0800 (CST)
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: base64
+Message-ID: <AKEA*wCFCDjDmtJ1Hlm3L4pz.3.1588902787737.Hmail.bernard@vivo.com>
+To:     Bernard Zhao <bernard@vivo.com>
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Uma Shankar <uma.shankar@intel.com>,
+        =?UTF-8?Q?Ville_Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>,
+        Shashank Sharma <shashank.sharma@intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, opensource.kernel@vivo.com
+Subject: =?UTF-8?B?UmU6W1BBVENIXSBkcml2ZXJzL3ZpZGVvOiBjbGVhbnVwIGNvZGluZyBzdHlsZSBpbiB2aWRlbyBhIGJpdA==?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 157.0.31.122
+In-Reply-To: <20200427080530.3234-1-bernard@vivo.com>
+MIME-Version: 1.0
+Received: from bernard@vivo.com( [157.0.31.122) ] by ajax-webmail ( [127.0.0.1] ) ; Fri, 8 May 2020 09:53:07 +0800 (GMT+08:00)
+From:   Bernard <bernard@vivo.com>
+Date:   Fri, 8 May 2020 09:53:07 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZT1VKTU9LS0tLSE9ISElJQ1lXWShZQU
+        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
+X-HM-Sender-Digest: e1kJHlYWEh9ZQUhMT0xJSk5OSElIN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
+        WUc6MD46UQw4PTg*ET8WDzFKMxcWSDdPCwFVSFVKTkNDQktJTENMQktDVTMWGhIXVRkeCRUaCR87
+        DRINFFUYFBZFWVdZEgtZQVlKTkxVS1VISlVKSUlZV1kIAVlBT0xLSDcG
+X-HM-Tid: 0a71f1fc7b0993b4kuwsb95d91a2142
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes gcc '-Wunused-but-set-variable' warning:
-
-drivers/iommu/arm-smmu-v3.c:2989:26:
-warning: variable ‘smmu’ set but not used [-Wunused-but-set-variable]
-  struct arm_smmu_device *smmu;
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
----
- drivers/iommu/arm-smmu-v3.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/drivers/iommu/arm-smmu-v3.c b/drivers/iommu/arm-smmu-v3.c
-index 42e1ee7e5197..89ee9c5d8b88 100644
---- a/drivers/iommu/arm-smmu-v3.c
-+++ b/drivers/iommu/arm-smmu-v3.c
-@@ -2986,13 +2986,11 @@ static void arm_smmu_release_device(struct device *dev)
- {
- 	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
- 	struct arm_smmu_master *master;
--	struct arm_smmu_device *smmu;
- 
- 	if (!fwspec || fwspec->ops != &arm_smmu_ops)
- 		return;
- 
- 	master = dev_iommu_priv_get(dev);
--	smmu = master->smmu;
- 	arm_smmu_detach_dev(master);
- 	arm_smmu_disable_pasid(master);
- 	kfree(master);
--- 
-2.20.1
-
+CkZyb206IEJlcm5hcmQgWmhhbyA8YmVybmFyZEB2aXZvLmNvbT4KRGF0ZTogMjAyMC0wNC0yNyAx
+NjowNToyMwpUbzogIEJhcnRsb21pZWogWm9sbmllcmtpZXdpY3ogPGIuem9sbmllcmtpZUBzYW1z
+dW5nLmNvbT4sVW1hIFNoYW5rYXIgPHVtYS5zaGFua2FyQGludGVsLmNvbT4sIlZpbGxlIFN5cmrD
+pGzDpCIgPHZpbGxlLnN5cmphbGFAbGludXguaW50ZWwuY29tPixTaGFzaGFuayBTaGFybWEgPHNo
+YXNoYW5rLnNoYXJtYUBpbnRlbC5jb20+LExhdXJlbnQgUGluY2hhcnQgPGxhdXJlbnQucGluY2hh
+cnRAaWRlYXNvbmJvYXJkLmNvbT4sRGFuaWVsIFZldHRlciA8ZGFuaWVsLnZldHRlckBmZndsbC5j
+aD4sQmVybmFyZCBaaGFvIDxiZXJuYXJkQHZpdm8uY29tPixkcmktZGV2ZWxAbGlzdHMuZnJlZWRl
+c2t0b3Aub3JnLGxpbnV4LWZiZGV2QHZnZXIua2VybmVsLm9yZyxsaW51eC1rZXJuZWxAdmdlci5r
+ZXJuZWwub3JnCkNjOiAgb3BlbnNvdXJjZS5rZXJuZWxAdml2by5jb20KU3ViamVjdDogW1BBVENI
+XSBkcml2ZXJzL3ZpZGVvOiBjbGVhbnVwIGNvZGluZyBzdHlsZSBpbiB2aWRlbyBhIGJpdD5FbGlt
+aW5hdGUgdGhlIG1hZ2ljIG51bWJlcnMsIGFkZCB2ZW5kZXIgaW5mb2ZyYW1lIHNpemUgbWFjcm8K
+Pmxpa2Ugb3RoZXIgaGRtaSBtb2R1bGVzLgo+Cj5TaWduZWQtb2ZmLWJ5OiBCZXJuYXJkIFpoYW8g
+PGJlcm5hcmRAdml2by5jb20+Cj4tLS0KPiBkcml2ZXJzL3ZpZGVvL2hkbWkuYyB8IDIgKy0KPiBp
+bmNsdWRlL2xpbnV4L2hkbWkuaCB8IDEgKwo+IDIgZmlsZXMgY2hhbmdlZCwgMiBpbnNlcnRpb25z
+KCspLCAxIGRlbGV0aW9uKC0pCj4KPmRpZmYgLS1naXQgYS9kcml2ZXJzL3ZpZGVvL2hkbWkuYyBi
+L2RyaXZlcnMvdmlkZW8vaGRtaS5jCj5pbmRleCA4NTZhOGM0ZTg0YTIuLmY2OTMwNzZmMmU1ZiAx
+MDA2NDQKPi0tLSBhL2RyaXZlcnMvdmlkZW8vaGRtaS5jCj4rKysgYi9kcml2ZXJzL3ZpZGVvL2hk
+bWkuYwo+QEAgLTQ5NSw3ICs0OTUsNyBAQCBpbnQgaGRtaV92ZW5kb3JfaW5mb2ZyYW1lX2luaXQo
+c3RydWN0IGhkbWlfdmVuZG9yX2luZm9mcmFtZSAqZnJhbWUpCj4gCSAqIHZhbHVlCj4gCSAqLwo+
+IAlmcmFtZS0+czNkX3N0cnVjdCA9IEhETUlfM0RfU1RSVUNUVVJFX0lOVkFMSUQ7Cj4tCWZyYW1l
+LT5sZW5ndGggPSA0Owo+KwlmcmFtZS0+bGVuZ3RoID0gSERNSV9WRU5ET1JfSU5GT0ZSQU1FX1NJ
+WkU7Cj4gCj4gCXJldHVybiAwOwo+IH0KPmRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L2hkbWku
+aCBiL2luY2x1ZGUvbGludXgvaGRtaS5oCj5pbmRleCA5NjEzZDc5NmNmYjEuLmZmMjVhZWI5NWVl
+NCAxMDA2NDQKPi0tLSBhL2luY2x1ZGUvbGludXgvaGRtaS5oCj4rKysgYi9pbmNsdWRlL2xpbnV4
+L2hkbWkuaAo+QEAgLTU3LDYgKzU3LDcgQEAgZW51bSBoZG1pX2luZm9mcmFtZV90eXBlIHsKPiAj
+ZGVmaW5lIEhETUlfU1BEX0lORk9GUkFNRV9TSVpFICAgIDI1Cj4gI2RlZmluZSBIRE1JX0FVRElP
+X0lORk9GUkFNRV9TSVpFICAxMAo+ICNkZWZpbmUgSERNSV9EUk1fSU5GT0ZSQU1FX1NJWkUgICAg
+MjYKPisjZGVmaW5lIEhETUlfVkVORE9SX0lORk9GUkFNRV9TSVpFICA0Cj4gCj4gI2RlZmluZSBI
+RE1JX0lORk9GUkFNRV9TSVpFKHR5cGUpCVwKPiAJKEhETUlfSU5GT0ZSQU1FX0hFQURFUl9TSVpF
+ICsgSERNSV8gIyMgdHlwZSAjIyBfSU5GT0ZSQU1FX1NJWkUpCj4tLSAKPjIuMjYuMgo+Cg0KDQo=
