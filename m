@@ -2,251 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29AE91CA832
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 12:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F23411CA837
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 12:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726864AbgEHKTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 06:19:52 -0400
-Received: from foss.arm.com ([217.140.110.172]:46210 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725825AbgEHKTt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 06:19:49 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 56DD130E;
-        Fri,  8 May 2020 03:19:47 -0700 (PDT)
-Received: from [192.168.0.7] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 591CC3F71F;
-        Fri,  8 May 2020 03:19:44 -0700 (PDT)
-Subject: Re: [RFC PATCH v3 2/3] docs: scheduler: Add scheduler overview
- documentation
-To:     John Mathew <john.mathew@unikie.com>, linux-doc@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, corbet@lwn.net, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, rostedt@goodmis.org,
-        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
-        tsbogend@alpha.franken.de, lukas.bulwahn@gmail.com, x86@kernel.org,
-        linux-mips@vger.kernel.org, tglx@linutronix.de,
-        mostafa.chamanara@basemark.com, rdunlap@infradead.org,
-        Oleg Tsymbal <oleg.tsymbal@unikie.com>
-References: <20200507180553.9993-1-john.mathew@unikie.com>
- <20200507180553.9993-3-john.mathew@unikie.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <9a41369c-8617-e80e-61e5-c659c51d631b@arm.com>
-Date:   Fri, 8 May 2020 12:19:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <20200507180553.9993-3-john.mathew@unikie.com>
-Content-Type: text/plain; charset=utf-8
+        id S1727032AbgEHKVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 06:21:06 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2164 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725815AbgEHKVA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 06:21:00 -0400
+Received: from lhreml713-chm.china.huawei.com (unknown [172.18.7.108])
+        by Forcepoint Email with ESMTP id D62581547A5CF681429B;
+        Fri,  8 May 2020 11:20:54 +0100 (IST)
+Received: from fraeml705-chm.china.huawei.com (10.206.15.54) by
+ lhreml713-chm.china.huawei.com (10.201.108.64) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.1913.5; Fri, 8 May 2020 11:20:54 +0100
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml705-chm.china.huawei.com (10.206.15.54) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Fri, 8 May 2020 12:20:53 +0200
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.1913.007;
+ Fri, 8 May 2020 12:20:53 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        "david.safford@gmail.com" <david.safford@gmail.com>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "jmorris@namei.org" <jmorris@namei.org>,
+        "John Johansen" <john.johansen@canonical.com>
+CC:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>
+Subject: RE: [RFC][PATCH 1/3] evm: Move hooks outside LSM infrastructure
+Thread-Topic: [RFC][PATCH 1/3] evm: Move hooks outside LSM infrastructure
+Thread-Index: AQHWHfmwvisCdHYC6kmVk7fgFWuzYaibYCWAgAAX0QCAAMB1IIAAb0AAgAApg3CAADIngIAAzgGA
+Date:   Fri, 8 May 2020 10:20:53 +0000
+Message-ID: <84e6acad739a415aa3e2457b5c37979f@huawei.com>
+References: <20200429073935.11913-1-roberto.sassu@huawei.com>
+         <1588794293.4624.21.camel@linux.ibm.com>
+         <1588799408.4624.28.camel@linux.ibm.com>
+         <ab879f9e66874736a40e9c566cadc272@huawei.com>
+         <1588864628.5685.78.camel@linux.ibm.com>
+         <750ab4e0990f47e4aea10d0e580b1074@huawei.com>
+ <1588884313.5685.110.camel@linux.ibm.com>
+In-Reply-To: <1588884313.5685.110.camel@linux.ibm.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.220.69.67]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/05/2020 20:05, John Mathew wrote:
-
-[...]
-
-> diff --git a/Documentation/scheduler/cfs-overview.rst b/Documentation/scheduler/cfs-overview.rst
-> new file mode 100644
-> index 000000000000..b717f2d3e340
-> --- /dev/null
-> +++ b/Documentation/scheduler/cfs-overview.rst
-> @@ -0,0 +1,113 @@
-> +.. SPDX-License-Identifier: GPL-2.0+
-> +
-> +=============
-> +CFS Overview
-> +=============
-> +
-> +Linux 2.6.23 introduced a modular scheduler core and a Completely Fair
-> +Scheduler (CFS) implemented as a scheduling module. A brief overview of the
-> +CFS design is provided in :doc:`sched-design-CFS`
-> +
-> +In addition there have been many improvements to the CFS, a few of which are
-> +
-> +**Thermal Pressure**:
-> +cpu_capacity initially reflects the maximum possible capacity of a CPU.
-> +Thermal pressure on a CPU means this maximum possible capacity is
-> +unavailable due to thermal events. Average thermal pressure for a CPU
-> +is now subtracted from its maximum possible capacity so that cpu_capacity
-> +reflects the remaining maximum capacity.
-> +
-
-I agree with what Valentin mentioned already. Instead of describing
-recent patch-sets, the functionality which was added (or enhanced) by
-them) should be depicted instead.
-
-E.g. in case of 'Thermal Pressure' this would be the "scale CPU
-capacity" mechanism for CFS so it knows how much CPU capacity is left
-for its use after higher priority sched classes (RT, DL), IRQs and
-'Thermal Pressure' have reduced the 'original' CPU capacity.
-
-[...]
-
-> +**Load balancing algorithm Reworked**:
-> +The load balancing algorithm contained some heuristics which became
-> +meaningless since the rework of the scheduler's metrics like the
-> +introduction of PELT. The new load balancing algorithm fixes several
-> +pending wrong tasks placement
-> +
-> + * the 1 task per CPU case with asymmetric system
-> + * the case of CFS task preempted by other class
-> + * the case of tasks not evenly spread on groups with spare capacity
-> +
-> +Also the load balance decisions have been consolidated in the 3 separate
-> +functions.
-
-What are those 3 separate functions? I guess you refer to the 3
-(actually 4) migration types (migrate_task, migrate_util, migrate_load,
-(migrate_misfit)).
-
-[...]
-
-> diff --git a/Documentation/scheduler/overview.rst b/Documentation/scheduler/overview.rst
-> index aee16feefc61..f2cb0c901208 100644
-> --- a/Documentation/scheduler/overview.rst
-> +++ b/Documentation/scheduler/overview.rst
-> @@ -3,3 +3,269 @@
->  ====================
->  Scheduler overview
->  ====================
-> +
-> +Linux kernel implements priority-based scheduling. More than one process are
-> +allowed to run at any given time and each process is allowed to run as if it
-> +were the only process on the system. The process scheduler coordinates which
-> +process runs when. In that context, it has the following tasks:
-> +
-> +* share CPU cores equally among all currently running processes.
-> +* pick appropriate process to run next if required, considering scheduling
-> +  class/policy and process priorities.
-> +* balance processes between multiple cores in SMP systems.
-> +
-> +The scheduler attempts to be responsive for I/O bound processes and efficient
-> +for CPU bound processes. The scheduler also applies different scheduling
-> +policies for real time and normal processes based on their respective
-> +priorities. Higher priorities in the kernel have a numerical smaller
-> +value. Real time priorities range from 1 (highest) – 99 whereas normal
-> +priorities range from 100 – 139 (lowest). SCHED_DEADLINE tasks have negative
-> +priorities, reflecting the fact that any of them has higher priority than
-> +RT and NORMAL/BATCH tasks.
-
-s/RT/SCHED_FIFO, SCHED_RR
-s/NORMAL/SCHED_NORMAL
-s/BATCH/SCHED_BATCH
-
-SCHED_IDLE tasks can be set in the 100 – 139 range too but IMHO are
-treated as 139 (nice 20). Their priority doesn't matter since they get
-minimal weight WEIGHT_IDLEPRI=3 anyway.
-
-And then there are the maintenance sched classes, idle sched class and
-its idle tasks 'swapper/X' with priority 120 (was MAX_PRIO) as well as
-the stop sched class and its stopper tasks 'migration/X' who disguise as
-SCHED_FIFO with priority 139.
-Might be that people might find this too detailed though but it helps
-when you try to understand how it all works.
-
-[...]
-
-> diff --git a/Documentation/scheduler/index.rst b/Documentation/scheduler/index.rst
-> index ede1a30a6894..f311abe5b711 100644
-> --- a/Documentation/scheduler/index.rst
-> +++ b/Documentation/scheduler/index.rst
-> @@ -17,10 +17,13 @@ specific implementation differences.
->      :maxdepth: 2
->  
->      overview
-> +    sched-data-structs
-> +    cfs-overview
->      sched-design-CFS
->      sched-features
-> -    arch-specific.rst
-> -    sched-debugging.rst
-> +    arch-specific
-> +    sched-debugging
-> +    scheduler-api
->  
->  .. only::  subproject and html
->  
-> +                     +------------------------------------+
-> +                     |            TASK_RUNNING            |
-> +   +---------------> |           (Ready to run)           | <--+
-> +   |                 +------------------------------------+    |
-> +   |                   |                                       |
-> +   |                   | schedule() calls context_switch()     | task is preempted
-> +   |                   v                                       |
-> +   |                 +------------------------------------+    |
-> +   |                 |            TASK_RUNNING            |    |
-> +   |                 |             (Running)              | ---+
-> +   | event occurred  +------------------------------------+
-> +   |                   |
-> +   |                   | task needs to wait for event
-> +   |                   v
-> +   |                 +------------------------------------+
-> +   |                 |         TASK_INTERRUPTIBLE         |
-> +   |                 |        TASK_UNINTERRUPTIBLE        |
-> +   +-----------------|           TASK_WAKEKILL            |
-> +                     +------------------------------------+
-> +                                       |
-> +                                       | task exits via do_exit()
-> +                                       v
-> +                        +------------------------------+
-> +                        |          TASK_DEAD           |
-> +                        |         EXIT_ZOMBIE          |
-> +                        +------------------------------+
-> +
-> +
-> +Scheduler provides tracepoints tracing all major events of the scheduler.
-> +The tracepoints are defined in ::
-> +
-> +  include/trace/events/sched.h
-> +
-> +Using these tracepoints it is possible to model the scheduler state transition
-
-I would refer to them as trace events.
-
-The scheduler started to export (bare) trace points for PELT and
-overutilization (e.g. pelt_cfs_tp) (commit ba19f51fcb54 "sched/debug:
-Add new tracepoints to track PELT at rq level"). They are not bound to a
-trace event and so they don't expose any internal data structures.
-
-[...]
-
-> +Virtual Runtime
-> +~~~~~~~~~~~~~~~~~
-> +Virtual Run Time or vruntime is the amount of time a task has spent running
-> +on the CPU. It is updated periodically by scheduler_tick(). Tasks are stored
-> +in the CFS scheduling class rbtree sorted by vruntime. scheduler_tick() calls
-> +corresponding hook of CFS which first updates the runtime statistics of the
-> +currently running task and checks if the current task needs to be preempted.
-> +vruntime of the task based on the formula ::
-> +
-> +    vruntime += delta_exec * (NICE_0_LOAD/curr->load.weight);
-> +
-> +where:
-> +
-> +* delta_exec is the time in nanoseconds spent by the task since the last time
-> +  vruntime was updated.
-> +* NICE_0_LOAD is the load of a task with normal priority.
-> +* curr is the shed_entity instance of the cfs_rq struct of the currently
-> +  running task.
-> +* load.weight: sched_entity load_weight. load_weight is the encoding of
-> +  the tasks priority and vruntime. The load of a task is the metric
-> +  indicating the number of CPUs needed to make satisfactory progress on its
-> +  job. Load of a task influences the time a task spends on the CPU and also
-> +  helps to estimate the overall CPU load which is needed for load balancing.
-
-load.weight is replaced by PELT in load balancing.
-
-> +  Priority of the task is not enough for the scheduler to estimate the
-> +  vruntime of a process. So priority value must be mapped to the capacity of
-> +  the standard CPU which is done in the array :c:type:`sched_prio_to_weight[]`.
-> +  The array contains mappings for the nice values from -20 to 19. Nice value
-> +  0 is mapped to 1024. Each entry advances by approximately 1.25 which means
-> +  for every increment in nice value the task gets 10% less CPU and vice versa.
-
-SCHED_IDLE get minimal weight (WEIGHT_IDLEPRIO=3)
-
-[...]
+PiBGcm9tOiBNaW1pIFpvaGFyIFttYWlsdG86em9oYXJAbGludXguaWJtLmNvbV0NCj4gT24gVGh1
+LCAyMDIwLTA1LTA3IGF0IDE2OjQ3ICswMDAwLCBSb2JlcnRvIFNhc3N1IHdyb3RlOg0KPiA+ID4g
+PiA+IE9uIFdlZCwgMjAyMC0wNS0wNiBhdCAxNTo0NCAtMDQwMCwgTWltaSBab2hhciB3cm90ZToN
+Cj4gPiA+ID4gPiA+IFNpbmNlIGNvcHlpbmcgdGhlIEVWTSBITUFDIG9yIG9yaWdpbmFsIHNpZ25h
+dHVyZSBpc24ndCBhcHBsaWNhYmxlLCBJDQo+ID4gPiA+ID4gPiB3b3VsZCBwcmVmZXIgZXhwbG9y
+aW5nIGFuIEVWTSBwb3J0YWJsZSBhbmQgaW1tdXRhYmxlIHNpZ25hdHVyZQ0KPiBvbmx5DQo+ID4g
+PiA+ID4gPiBzb2x1dGlvbi4NCj4gPiA+ID4gPg0KPiA+ID4gPiA+IFRvIHByZXZlbnQgY29weWlu
+ZyB0aGUgRVZNIHhhdHRyLCB3ZSBhZGRlZCAic2VjdXJpdHkuZXZtIiB0bw0KPiA+ID4gPiA+IC9l
+dGMveGF0dHIuY29uZi4gwqBUbyBzdXBwb3J0IGNvcHlpbmcganVzdCB0aGUgRVZNIHBvcnRhYmxl
+IGFuZA0KPiA+ID4gPiA+IGltbXV0YWJsZSBzaWduYXR1cmVzIHdpbGwgcmVxdWlyZSBhIGRpZmZl
+cmVudCBzb2x1dGlvbi4NCj4gPiA+ID4NCj4gPiA+ID4gVGhpcyBwYXRjaCBzZXQgcmVtb3ZlcyB0
+aGUgbmVlZCBmb3IgaWdub3Jpbmcgc2VjdXJpdHkuZXZtLiBJdCBjYW4gYmUNCj4gPiA+IGFsd2F5
+cw0KPiA+ID4gPiBjb3BpZWQsIGV2ZW4gaWYgaXQgaXMgYW4gSE1BQy4gRVZNIHdpbGwgdXBkYXRl
+IGl0IG9ubHkgd2hlbiB2ZXJpZmljYXRpb24NCj4gaW4NCj4gPiA+ID4gdGhlIHByZSBob29rIGlz
+IHN1Y2Nlc3NmdWwuIENvbWJpbmVkIHdpdGggdGhlIGFiaWxpdHkgb2YgcHJvdGVjdGluZyBhDQo+
+ID4gPiBzdWJzZXQNCj4gPiA+ID4gb2YgZmlsZXMgd2l0aG91dCBpbnRyb2R1Y2luZyBhbiBFVk0g
+cG9saWN5LCB0aGVzZSBhZHZhbnRhZ2VzIHNlZW0gdG8NCj4gPiA+ID4gb3V0d2VpZ2ggdGhlIGVm
+Zm9ydCBuZWNlc3NhcnkgdG8gbWFrZSB0aGUgc3dpdGNoLg0KPiA+ID4NCj4gPiA+IEFzIHRoZSBF
+Vk0gZmlsZSBITUFDIGFuZCBvcmlnaW5hbCBzaWduYXR1cmUgY29udGFpbiBpbm9kZSBzcGVjaWZp
+Yw0KPiA+ID4gaW5mb3JtYXRpb24gKGVnLiBpX3ZlcnNpb24sIGlfZ2VuZXJhdGlvbiksIHRoZXNl
+IHhhdHRycyBjYW5ub3QgZXZlciBiZQ0KPiA+ID4gY29waWVkLiDCoFRoZSBwcm9wb3NlZCBjaGFu
+Z2UgaXMgaW4gb3JkZXIgdG8gc3VwcG9ydCBqdXN0IHRoZSBuZXcgRVZNDQo+ID4gPiBzaWduYXR1
+cmVzLg0KPiA+DQo+ID4gUmlnaHQsIEkgZGlkbid0IGNvbnNpZGVyIGl0Lg0KPiA+DQo+ID4gV291
+bGQgaXQgbWFrZSBzZW5zZSBpbnN0ZWFkIHRvIGludHJvZHVjZSBhbiBhbGlhcyBsaWtlDQo+IHNl
+Y3VyaXR5LmV2bV9pbW11dGFibGUNCj4gPiBzbyB0aGF0IHRoaXMgeGF0dHIgY2FuIGJlIGNvcGll
+ZD8NCj4gDQo+IEJlaW5nIHBvcnRhYmxlLCBub3QgdGhlIGF0dHJpYnV0ZSBvZiBiZWluZyBpbW11
+dGFibGUsIGFsbG93cyBjb3B5aW5nDQo+IHRoZSBFVk0geGF0dHIuIMKgWW91ciBvcmlnaW5hbCBw
+cm9ibGVtIC0gdGhlIG9yZGVyIGluIHdoaWNoIHRoZSB4YXR0cnMNCj4gYXJlIGNvcGllZCAtIG1p
+Z2h0IHN0aWxsIGJlIGFuIGlzc3VlLiDCoFdlIG5lZWQgdG8gbG9vayBhdCAiY3AiIGNsb3Nlcg0K
+PiB0byB1bmRlcnN0YW5kIHdoYXQgaXQgaXMgZG9pbmcuIMKgRm9yIGV4YW1wbGUsIGFyZSB0aGUg
+eGF0dHJzIHdyaXR0ZW4NCj4gd2hpbGUgdGhlIHRhcmdldCBmaWxlIGlzIHRhZ2dlZCBhcyBhIG5l
+dyBmaWxlPw0KDQpZZXM6DQoNCm9wZW5hdChBVF9GRENXRCwgIi9iaW4vY2F0IiwgT19SRE9OTFl8
+T19OT0ZPTExPVykgPSAzDQpvcGVuYXQoQVRfRkRDV0QsICJjYXQiLCBPX1dST05MWXxPX0NSRUFU
+fE9fRVhDTCwgMDcwMCkgPSA0DQpyZWFkKDMsICJcMTc3RUxGXDJcMVwxXDBcMFwwXDBcMFwwXDBc
+MFwwXDNcMD5cMFwxXDBcMFwwXDM2MDFcMFwwXDBcMFwwXDAiLi4uLCAxMzEwNzIpID0gODU1MjAN
+CndyaXRlKDQsICJcMTc3RUxGXDJcMVwxXDBcMFwwXDBcMFwwXDBcMFwwXDNcMD5cMFwxXDBcMFww
+XDM2MDFcMFwwXDBcMFwwXDAiLi4uLCA4NTUyMCkgPSA4NTUyMA0KcmVhZCgzLCAiIiwgMTMxMDcy
+KSAgICAgICAgICAgICAgICAgICAgID0gMA0KZmxpc3R4YXR0cigzLCBOVUxMLCAwKSAgICAgICAg
+ICAgICAgICAgID0gNDMNCmZsaXN0eGF0dHIoMywgInNlY3VyaXR5LnNlbGludXhcMHNlY3VyaXR5
+LmV2bVwwc2UiLi4uLCA0MykgPSA0Mw0KZmdldHhhdHRyKDMsICJzZWN1cml0eS5ldm0iLCBOVUxM
+LCAwKSAgID0gNTIxDQpmZ2V0eGF0dHIoMywgInNlY3VyaXR5LmV2bSIsICJcNVwyXDRcMjU2XDMx
+NlwzMDJcMjA2XDJcMDlcMjI2TDUyPVwyMzNeblwzNzY6XDM2MytcMjMxXDI3MlwyMTNcdFwyNDdc
+MzEyXDMyNFwyNjNcMjIyTiIuLi4sIDUyMSkgPSA1MjENCmZzZXR4YXR0cig0LCAic2VjdXJpdHku
+ZXZtIiwgIlw1XDJcNFwyNTZcMzE2XDMwMlwyMDZcMlwwOVwyMjZMNTI9XDIzM15uXDM3NjpcMzYz
+K1wyMzFcMjcyXDIxM1x0XDI0N1wzMTJcMzI0XDI2M1wyMjJOIi4uLiwgNTIxLCAwKSA9IDANCmZn
+ZXR4YXR0cigzLCAic2VjdXJpdHkuaW1hIiwgTlVMTCwgMCkgICA9IDM0DQpmZ2V0eGF0dHIoMywg
+InNlY3VyaXR5LmltYSIsICJcNFw0XDMyM1wzMjdcMjE1XDIwMkkxflwzMjVcMFZcMzU0fVw0XDMz
+MjgkXDIxMFwzNjNqYSdcMzY0XDM1MVwyNlwyN1wyMjJcMzMxXDE3N1wyM1wzNDEiLi4uLCAzNCkg
+PSAzNA0KZnNldHhhdHRyKDQsICJzZWN1cml0eS5pbWEiLCAiXDRcNFwzMjNcMzI3XDIxNVwyMDJJ
+MX5cMzI1XDBWXDM1NH1cNFwzMzI4JFwyMTBcMzYzamEnXDM2NFwzNTFcMjZcMjdcMjIyXDMzMVwx
+NzdcMjNcMzQxIi4uLiwgMzQsIDApID0gMA0KZmdldHhhdHRyKDMsICJzeXN0ZW0ucG9zaXhfYWNs
+X2FjY2VzcyIsIDB4N2ZmZGY2OTI5MzEwLCAxMzIpID0gLTEgRU5PREFUQSAoTm8gZGF0YSBhdmFp
+bGFibGUpDQpmc3RhdCgzLCB7c3RfbW9kZT1TX0lGUkVHfDA3NTUsIHN0X3NpemU9ODU1MjAsIC4u
+Ln0pID0gMA0KZnNldHhhdHRyKDQsICJzeXN0ZW0ucG9zaXhfYWNsX2FjY2VzcyIsICJcMlwwXDBc
+MFwxXDBcN1wwXDM3N1wzNzdcMzc3XDM3N1w0XDBcNVwwXDM3N1wzNzdcMzc3XDM3NyBcMFw1XDBc
+Mzc3XDM3N1wzNzdcMzc3IiwgMjgsIDApID0gMA0KY2xvc2UoNCkgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgID0gMA0KY2xvc2UoMykgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ID0gMA0KDQpUaGlzIHdpbGwgZmFpbC4gQWZ0ZXIgc2VjdXJpdHkuZXZtIGlzIGFkZGVkIHRvIHRo
+ZSB0YXJnZXQsIHRoZSBzdGF0dXMgd2hlbg0Kc2VjdXJpdHkuaW1hIGlzIGFkZGVkIGlzIElOVEVH
+UklUWV9GQUlMLg0KDQpvcGVuYXQoQVRfRkRDV0QsICJ0ZXN0LWFyY2hpdmUudGFyIiwgT19SRE9O
+TFkpID0gMw0KbWtub2RhdChBVF9GRENXRCwgImNhdCIsIDA3NTUpICAgICAgICAgID0gMA0Kc2V0
+eGF0dHIoImNhdCIsICJzZWN1cml0eS5zZWxpbnV4IiwgInN5c3RlbV91Om9iamVjdF9yOmJpbl90
+OnMwIiwgMjcsIDApID0gMA0Kc2V0eGF0dHIoImNhdCIsICJzZWN1cml0eS5ldm0iLCAiXDVcMlw0
+XDI1NlwzMTZcMzAyXDIwNlwyXDA5XDIyNkw1Mj1cMjMzXm5cMzc2OlwzNjMrXDIzMVwyNzJcMjEz
+XHRcMjQ3XDMxMlwzMjRcMjYzXDIyMk4iLi4uLCA1MjEsIDApID0gMA0Kc2V0eGF0dHIoImNhdCIs
+ICJzZWN1cml0eS5pbWEiLCAiXDRcNFwzMjNcMzI3XDIxNVwyMDJJMX5cMzI1XDBWXDM1NH1cNFwz
+MzI4JFwyMTBcMzYzamEnXDM2NFwzNTFcMjZcMjdcMjIyXDMzMVwxNzdcMjNcMzQxIi4uLiwgMzQs
+IDApID0gMA0Kb3BlbmF0KEFUX0ZEQ1dELCAiY2F0IiwgT19XUk9OTFl8T19DUkVBVHxPX05PQ1RU
+WXxPX05PTkJMT0NLfE9fQ0xPRVhFQywgMDcwMCkgPSA0DQp3cml0ZSg0LCAiXDE3N0VMRlwyXDFc
+MVwwXDBcMFwwXDBcMFwwXDBcMFwzXDA+XDBcMVwwXDBcMFwzNjAxXDBcMFwwXDBcMFwwIi4uLiwg
+ODE5MikgPSA4MTkyDQpyZWFkKDMsICJcMzYzXDE3XDM2XDM3MkhcMjAzXDM1NFwxMEhcMjEzXDVc
+MzAxXDIxN1wwXDBIXDIwNVwzMDB0XDJcMzc3XDMyMEhcMjAzXDMwNFwxMFwzMDNcMFwwXDBcMFww
+Ii4uLiwgMTAyNDApID0gMTAyNDANCndyaXRlKDQsICJcMzYzXDE3XDM2XDM3MkhcMjAzXDM1NFwx
+MEhcMjEzXDVcMzAxXDIxN1wwXDBIXDIwNVwzMDB0XDJcMzc3XDMyMEhcMjAzXDMwNFwxMFwzMDNc
+MFwwXDBcMFwwIi4uLiwgMTAyNDApID0gMTAyNDANCnJlYWQoMywgIlwzMDBFXDIwNFwzMTF0XDE2
+TTlcMzQ2dlw1Q1wzMDZcNCdcXElcMjAzXDMwNFwxSFwyMDNcMzAzXDFIOVwzMTNcMTdcMjAzTVwx
+XDAiLi4uLCAxMDI0MCkgPSAxMDI0MA0Kd3JpdGUoNCwgIlwzMDBFXDIwNFwzMTF0XDE2TTlcMzQ2
+dlw1Q1wzMDZcNCdcXElcMjAzXDMwNFwxSFwyMDNcMzAzXDFIOVwzMTNcMTdcMjAzTVwxXDAiLi4u
+LCAxMDI0MCkgPSAxMDI0MA0KcmVhZCgzLCAiXDFcMFwyXDB3cml0ZSBlcnJvclwwY2F0XDBbXDB0
+ZXN0IGludm9jIi4uLiwgMTAyNDApID0gMTAyNDANCndyaXRlKDQsICJcMVwwXDJcMHdyaXRlIGVy
+cm9yXDBjYXRcMFtcMHRlc3QgaW52b2MiLi4uLCAxMDI0MCkgPSAxMDI0MA0KcmVhZCgzLCAiXDBc
+MFwwXDBcMFwwXDBcMFwwXDBcMFwwXDBcMFwwXDBcMFwwXDBcMFwwXDBcMFwwXDBcMFwwXDBcMFww
+XDBcMCIuLi4sIDEwMjQwKSA9IDEwMjQwDQp3cml0ZSg0LCAiXDBcMFwwXDBcMFwwXDBcMFwwXDBc
+MFwwXDBcMFwwXDBcMFwwXDBcMFwwXDBcMFwwXDBcMFwwXDBcMFwwXDBcMCIuLi4sIDEwMjQwKSA9
+IDEwMjQwDQpyZWFkKDMsICJcMFwwXDBcMFwwXDFcMFwwR0EqXDZcMjJcMFwwXDBcMjFcMFxmXDBc
+MjFcMFwwXDBcMFwwXDBcMFwwXDFcMFwwIi4uLiwgMTAyNDApID0gMTAyNDANCndyaXRlKDQsICJc
+MFwwXDBcMFwwXDFcMFwwR0EqXDZcMjJcMFwwXDBcMjFcMFxmXDBcMjFcMFwwXDBcMFwwXDBcMFww
+XDFcMFwwIi4uLiwgMTAyNDApID0gMTAyNDANCnJlYWQoMywgIlwwXDBcMFwwXDI3XDBcMFwwXDBc
+MFwwXDBcMFwxXDBcMEdBJFw1Z2NjIDkuMC4xIDIwIi4uLiwgMTAyNDApID0gMTAyNDANCndyaXRl
+KDQsICJcMFwwXDBcMFwyN1wwXDBcMFwwXDBcMFwwXDBcMVwwXDBHQSRcNWdjYyA5LjAuMSAyMCIu
+Li4sIDEwMjQwKSA9IDEwMjQwDQpyZWFkKDMsICJcMFwwXDBcMFwwXDFcMFwwR0Erc3RhY2tfY2xh
+c2hcMFwwXDIzXDBcMFwwXDBcMFwwXDAiLi4uLCAxMDI0MCkgPSAxMDI0MA0Kd3JpdGUoNCwgIlww
+XDBcMFwwXDBcMVwwXDBHQStzdGFja19jbGFzaFwwXDBcMjNcMFwwXDBcMFwwXDBcMCIuLi4sIDEw
+MjQwKSA9IDEwMjQwDQpyZWFkKDMsICJcMFwwXDBcMFwwXDFcMFwwR0ErR0xJQkNYWF9BU1NFUlRJ
+T05TXDBcMFwwIi4uLiwgMTAyNDApID0gMTAyNDANCndyaXRlKDQsICJcMFwwXDBcMFwwXDFcMFww
+R0ErR0xJQkNYWF9BU1NFUlRJT05TXDBcMFwwIi4uLiwgNTY0OCkgPSA1NjQ4DQpmY2hvd24oNCwg
+MCwgMCkgICAgICAgICAgICAgICAgICAgICAgICAgPSAwDQpmY2htb2QoNCwgMDc1NSkgICAgICAg
+ICAgICAgICAgICAgICAgICAgPSAwDQpjbG9zZSg0KSAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgPSAwDQpjbG9zZSgzKSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPSAwDQoN
+CkFsc28gdGhpcyB3aWxsIGZhaWwsIGJ1dCBmb3IgYSBkaWZmZXJlbnQgcmVhc29uLiBBZnRlciBz
+ZWN1cml0eS5zZWxpbnV4IGlzDQp3cml0dGVuLCB0aGUgc3RhdHVzIHdoZW4gc2VjdXJpdHkuZXZt
+IGlzIGFkZGVkIGlzIElOVEVHUklUWV9OT0xBQkVMDQoodW5sZXNzIHRoZSBITUFDIGtleSBpcyBs
+b2FkZWQsIG90aGVyd2lzZSBpdCB3aWxsIGZhaWwgd2hlbiB0YXIgc2V0cw0Kc2VjdXJpdHkuaW1h
+KS4NCg0KRXZlbiB3aXRoIG15IHBhdGNoZXMgdG8gaWdub3JlIHZlcmlmaWNhdGlvbiBlcnJvcnMs
+IHRoZXJlIGlzIHN0aWxsIGFub3RoZXINCnByb2JsZW0uIFRoZSBzaWduYXR1cmUgYmVjb21lcyB2
+YWxpZCB3aGVuIGFsbCB4YXR0cnMgYXJlIHNldCwgYnV0IHRhcg0KdHJpZXMgYW55d2F5IHRvIGFk
+anVzdCB0aGUgb3duZXIgZXZlbiBpZiBpdCBpcyBhbHJlYWR5IGNvcnJlY3QuIFNpbmNlDQptZXRh
+ZGF0YSBhcmUgaW1tdXRhYmxlLCBmY2hvd24oKSBmYWlscyAodGhpcyBzdGF0dXMgaXMgbm90IGln
+bm9yZWQpLg0KDQpBZnRlciB3ZSBzb2x2ZSB0aGUgcHJvYmxlbSBvZiBjb3B5aW5nIHhhdHRycywg
+SSB3aWxsIHNlbmQgYSBwYXRjaCB0bw0KZGV0ZXJtaW5lIHdoZXRoZXIgc2V0eGF0dHIoKS9zZXRh
+dHRyKCkgY2hhbmdlIG1ldGFkYXRhLiBJZiBub3QsIHRoZQ0Kb3BlcmF0aW9uIGlzIGFsbG93ZWQg
+ZXZlbiBpZiBtZXRhZGF0YSBhcmUgaW1tdXRhYmxlLg0KDQo+IFRoZXJlIGhhdmUgYmVlbiBzaW1p
+bGFyIHByb2JsZW1zIGluIHRoZSBwYXN0LiDCoEZvciBleGFtcGxlLCB0YXIgY2FsbHMNCj4gbWtu
+b2RhdCB0byBjcmVhdGUgdGhlIGZpbGUsIGJ1dCBkb2Vzbid0IHdyaXRlIHRoZSBmaWxlIGRhdGEu
+IMKgVGhlDQo+IHNvbHV0aW9uIHRoZXJlIHdhcyB0byB0YWcgdGhlIGZpbGUgYXMgYSBuZXcgZmls
+ZS4NCj4gDQo+IFdlIG5lZWQgdG8gdW5kZXJzdGFuZCB0aGUgcHJvYmxlbSBiZXR0ZXIsIGJlZm9y
+ZSBkZWNpZGluZyBob3cgdG8NCj4gcmVzb2x2ZSBpdC4NCj4gDQo+ID4NCj4gPiA+IEF0IGxlYXN0
+IElNQSBmaWxlIGhhc2hlcyBzaG91bGQgYWx3YXlzIGJlIHVzZWQgaW4gY29uanVuY3Rpb24gd2l0
+aA0KPiA+ID4gRVZNLiDCoEVWTSB4YXR0cnMgc2hvdWxkIGFsd2F5cyByZXF1aXJlIGEgc2VjdXJp
+dHkuaW1hIHhhdHRyIHRvIGJpbmQNCj4gPg0KPiA+IEkgcHJvcG9zZWQgdG8gZW5mb3JjZSB0aGlz
+IHJlc3RyaWN0aW9uIHNvbWUgdGltZSBhZ286DQo+ID4NCj4gPiBodHRwczovL3BhdGNod29yay5r
+ZXJuZWwub3JnL3BhdGNoLzEwOTc5MzUxLw0KPiA+DQo+ID4gSXMgaXQgb2sgdG8gZW5mb3JjZSBp
+dCBnbG9iYWxseT8NCj4gDQo+IERvaW5nIHRoaXMgd291bGQgdGhlbiBiZSBkZXBlbmRlbnQgb24g
+dXBzdHJlYW1pbmcgdGhlIGluaXRyYW1mcyB4YXR0cg0KPiBwYXRjaGVzIGZpcnN0LCB3b3VsZG4n
+dCBpdD8gwqA6KQ0KDQpXZWxsLCB0aGlzIHBhdGNoIHNldCBhbmQgdGhlIG1ldGFkYXRhIGNoYW5n
+ZSBkZXRlY3Rpb24gYXJlIGEgZGVwZW5kZW5jeQ0Kb2YgdGhlIGluaXRyYW1mcyB4YXR0ciBwYXRj
+aCBzZXQuIFdpdGhvdXQgdGhlbSwgd2UgY2Fubm90IGNyZWF0ZSBhIHJhbSBkaXNrDQp3aXRoIGZp
+bGVzIHdpdGggcG9ydGFibGUgc2lnbmF0dXJlcywgaWYgZW5mb3JjZW1lbnQgaXMgZW5hYmxlZC4N
+Cg0KVGhlIG5ldyBhcHByYWlzYWwgbW9kZXMgc29sdmUgYSBnZW5lcmFsIHNlY3VyaXR5IGlzc3Vl
+IHRoYXQgd291bGQgb2NjdXINCmFsc28gd2hlbiBhcHByYWlzYWwgaXMgZG9uZSBpbiB0aGUgcm9v
+dCBmaWxlc3lzdGVtIChpdCBpcyBwb3NzaWJsZSB0byBnYWluDQphY2Nlc3MgdG8gYWxsIGZpbGVz
+IGZvciB3aGljaCB0aGUgSU1BIHBvbGljeSBkb2VzIG5vdCByZXF1aXJlIGEgc2lnbmF0dXJlDQpi
+eSByZW1vdmluZyB0aGUgRVZNIGtleXMgYW5kIGFkZGluZyB0byB0aG9zZSBmaWxlcyBhIHZhbGlk
+IHNlY3VyaXR5LmltYQ0Kd2l0aCB0aGUgZmlsZSBkaWdlc3QpLg0KDQo+ID4gPiB0aGUgZmlsZSBt
+ZXRhZGF0YSB0byB0aGUgZmlsZSBkYXRhLiDCoFRoZSBJTUEgYW5kIEVWTSBwb2xpY2llcyByZWFs
+bHkNCj4gPiA+IG5lZWQgdG8gYmUgaW4gc3luYy4NCj4gPg0KPiA+IEl0IHdvdWxkIGJlIG5pY2Us
+IGJ1dCBhdCB0aGUgbW9tZW50IEVWTSBjb25zaWRlcnMgYWxzbyBmaWxlcyB0aGF0IGFyZQ0KPiA+
+IG5vdCBzZWxlY3RlZCBieSB0aGUgSU1BIHBvbGljeS4gQW4gZXhhbXBsZSBvZiB3aHkgdGhpcyBp
+cyBhIHByb2JsZW0gaXMNCj4gPiB0aGUgYXVkaXQgc2VydmljZSB0aGF0IGZhaWxzIHRvIHN0YXJ0
+IHdoZW4gaXQgdHJpZXMgdG8gYWRqdXN0IHRoZSBwZXJtaXNzaW9ucw0KPiA+IG9mIHRoZSBsb2cg
+ZmlsZXMuIFRob3NlIGZpbGVzIGRvbid0IGhhdmUgc2VjdXJpdHkuZXZtIGJlY2F1c2UgdGhleSBh
+cmUNCj4gPiBub3QgYXBwcmFpc2VkIGJ5IElNQSwgYnV0IEVWTSBkZW5pZXMgdGhlIG9wZXJhdGlv
+bi4NCj4gDQo+IE5vLCB0aGlzIGlzIGEgdGltaW5nIGlzc3VlIGFzIHRvIHdoZXRoZXIgb3Igbm90
+IHRoZSBidWlsdGluIHBvbGljeSBvcg0KPiBhIGN1c3RvbSBwb2xpY3kgaGFzIGJlZW4gbG9hZGVk
+LiDCoEEgY3VzdG9tIHBvbGljeSBjb3VsZCBleGNsdWRlIHRoZQ0KPiBsb2cgZmlsZXMgYmFzZWQg
+b24gTFNNIGxhYmVscywgYnV0IHRoZXkgYXJlIGluY2x1ZGVkIGluIHRoZSBidWlsdGluDQo+IHBv
+bGljeS4NCg0KWWVzLCBJIHdhcyByZWZlcnJpbmcgdG8gYSBjdXN0b20gcG9saWN5LiBJbiB0aGlz
+IGNhc2UsIEVWTSB3aWxsIG5vdCBhZGFwdA0KdG8gdGhlIGN1c3RvbSBwb2xpY3kgYnV0IHN0aWxs
+IHZlcmlmaWVzIGFsbCBmaWxlcy4gSWYgYWNjZXNzIGNvbnRyb2wgaXMgZG9uZQ0KZXhjbHVzaXZl
+bHkgYnkgSU1BIGF0IHRoZSB0aW1lIGV2bV92ZXJpZnl4YXR0cigpIGlzIGNhbGxlZCwgd2Ugd291
+bGRuJ3QNCm5lZWQgdG8gYWRkIHNlY3VyaXR5LmV2bSB0byBhbGwgZmlsZXMuDQoNClJvYmVydG8N
+Cg0KSFVBV0VJIFRFQ0hOT0xPR0lFUyBEdWVzc2VsZG9yZiBHbWJILCBIUkIgNTYwNjMNCk1hbmFn
+aW5nIERpcmVjdG9yOiBMaSBQZW5nLCBMaSBKaWFuLCBTaGkgWWFubGkNCg==
