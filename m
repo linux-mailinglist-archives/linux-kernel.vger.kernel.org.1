@@ -2,87 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 217281CAA5B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E34BF1CAA38
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:02:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726897AbgEHMLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 08:11:50 -0400
-Received: from 5.mo69.mail-out.ovh.net ([46.105.43.105]:54914 "EHLO
-        5.mo69.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726636AbgEHMLu (ORCPT
+        id S1727110AbgEHMCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 08:02:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726618AbgEHMCh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 08:11:50 -0400
-X-Greylist: delayed 566 seconds by postgrey-1.27 at vger.kernel.org; Fri, 08 May 2020 08:11:49 EDT
-Received: from player759.ha.ovh.net (unknown [10.108.54.172])
-        by mo69.mail-out.ovh.net (Postfix) with ESMTP id B19B48B983
-        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 14:02:21 +0200 (CEST)
-Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
-        (Authenticated sender: steve@sk2.org)
-        by player759.ha.ovh.net (Postfix) with ESMTPSA id 67DAC122E88D1;
-        Fri,  8 May 2020 12:02:15 +0000 (UTC)
-Date:   Fri, 8 May 2020 14:02:09 +0200
-From:   Stephen Kitt <steve@sk2.org>
-To:     David Miller <davem@davemloft.net>
-Cc:     joe@perches.com, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: Protect INET_ADDR_COOKIE on 32-bit architectures
-Message-ID: <20200508140209.1715118b@heffalump.sk2.org>
-In-Reply-To: <20200428.140746.1017253285576997409.davem@davemloft.net>
-References: <20200428075231.29687-1-steve@sk2.org>
-        <20200428.140746.1017253285576997409.davem@davemloft.net>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Fri, 8 May 2020 08:02:37 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CDFFC05BD43
+        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 05:02:37 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id b26so1209473lfa.5
+        for <linux-kernel@vger.kernel.org>; Fri, 08 May 2020 05:02:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lNKVrkJdHzfMbK2WFg5Y7tu/Zp5ibf2iNC5EM1tQRJo=;
+        b=ubfbVMHFvkGFqi6/lMGAmUyGcg20V5yh8C00LQp7ohCZxq2z4EmwwX3B73H8EZ7Y6+
+         aJCVbMOvPuRCut0Bnl8ET5c2XfZXweuNYjo3brQ6CEYILBG8HhEgVuhFWVWA1BmL+7wr
+         PaMOGT8qiPBOFsYR+vprL3K/7EVvJ8oJXMBygdJ6uGjhciK55QG7biHSQuFnHCtyvZe5
+         srhzCTXCfW52nQOZMKMQqUcLd8x7Ffk6Kk/ZsU0oOHDAWkNAqGX1e8h1hy8E4RAfCjEQ
+         6gCD/cXPSscJnlWgSBvvUILe/g9S3+oDCA5v+IgSinV7FqAm/oZSQvwlhvdPaLD8bWMp
+         QpoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lNKVrkJdHzfMbK2WFg5Y7tu/Zp5ibf2iNC5EM1tQRJo=;
+        b=jt5T2pwbkIemVv8rKA16OwkyDfrU/+p9bDtLKvVdzImOJToB0yhWFtxxx9dwaZ71mi
+         ckX/3hQ/mthYGnmD5Rre0Wd2uHEghx05tPTUQMWlWu0vc6TP9RyzSM8oecDSyuGYBklQ
+         9nLKLFWIMH3QOpFrrfLqp9nrZz570AUTFDlKeU8sUdhltvmaD2Segc52nUGN2IpfYbuv
+         TxeHeaDgtJ7CDSKQKIK/TR0+L2WCGpGX1ZItTev2ogjH0lT94EAyKsR6vdZa+exe545g
+         Bgu60HnRtZlDq9+xJkckPtcV2EG7bilwk2vgInYK+2j2lx7STMkSQrtdgF/BAylcFN7b
+         cOOA==
+X-Gm-Message-State: AOAM530LdvhDd9OANJ6/3F1QmPj0GorCULNZZ1A3aBsTYY6Ujdntc9a9
+        arW5qHlnhkQDNY1fJ9TJZnD8+FiuSP/STfJnV/dw2Q==
+X-Google-Smtp-Source: ABdhPJwC7HcQZBmnzQTCK4sgJwvhh1shXjGpCyyI6P2ffCkh7V87ZwnoziPmO0iHtAk8wnYX7eQKeQNhe8U2VKMv2Qo=
+X-Received: by 2002:a19:ccce:: with SMTP id c197mr1688763lfg.59.1588939355636;
+ Fri, 08 May 2020 05:02:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- boundary="Sig_/xHlR1d_w3iJ7g1yK24Z3KUu"; protocol="application/pgp-signature"
-X-Ovh-Tracer-Id: 5353935535833173284
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduhedrkedvgdegjecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeffhffvuffkjghfofggtgesghdtreerredtjeenucfhrhhomhepufhtvghphhgvnhcumfhithhtuceoshhtvghvvgesshhkvddrohhrgheqnecuggftrfgrthhtvghrnhepveelvdeufedvieevffdtueegkeevteehffdtffetleehjeekjeejudffieduteeknecukfhppedtrddtrddtrddtpdekvddrieehrddvhedrvddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejheelrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepshhtvghvvgesshhkvddrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+References: <20200507161125.1.I2cce9ac66e141230c3644b8174b6c15d4e769232@changeid>
+In-Reply-To: <20200507161125.1.I2cce9ac66e141230c3644b8174b6c15d4e769232@changeid>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Fri, 8 May 2020 17:32:24 +0530
+Message-ID: <CAFA6WYNbrhiagmqLGOGq+-WRdmbA0Y8FP9PYYsOoerqHeQcmoQ@mail.gmail.com>
+Subject: Re: [PATCH] kdb: Cleanup math with KDB_CMD_HISTORY_COUNT
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Chuhong Yuan <hslester96@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        kgdb-bugreport@lists.sourceforge.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/xHlR1d_w3iJ7g1yK24Z3KUu
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Fri, 8 May 2020 at 04:42, Douglas Anderson <dianders@chromium.org> wrote:
+>
+> From code inspection the math in handle_ctrl_cmd() looks super sketchy
+> because it subjects -1 from cmdptr and then does a "%
+> KDB_CMD_HISTORY_COUNT".  It turns out that this code works because
+> "cmdptr" is unsigned and KDB_CMD_HISTORY_COUNT is a nice power of 2.
+> Let's make this a little less sketchy.
+>
+> This patch should be a no-op.
+>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+>
 
-On Tue, 28 Apr 2020 14:07:46 -0700 (PDT), David Miller <davem@davemloft.net>
-wrote:
-> From: Stephen Kitt <steve@sk2.org>
-> Date: Tue, 28 Apr 2020 09:52:31 +0200
->=20
-> > This patch changes INET_ADDR_COOKIE to declare a dummy typedef (so it
-> > makes checkpatch.pl complain, sorry...) =20
->=20
-> This is trading one problem for another, so in the end doesn't really
-> move us forward.
+Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
 
-Right, a dummy struct is probably better, I=E2=80=99ll send a v2.
-
-Regards,
-
-Stephen
-
---Sig_/xHlR1d_w3iJ7g1yK24Z3KUu
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEEnPVX/hPLkMoq7x0ggNMC9Yhtg5wFAl61SkEACgkQgNMC9Yht
-g5yl5w/7BpAaC5GwH0nuOn9v2IpC5+KFuvHWeXxyxEoa3VQxUkYVWlf8UvK8mBqw
-XXglO4/qf95b0HVTeXVHDw8gl0JcwsGwd4cGxO2PubUQM/M1GHUBDqiLMVdlXW6Z
-x41Vx2KWe6dPxwnUj4UpfiB/a3a9ti+R+ykz8IjSRHc/ge3lvx34bC9Bn9pBsBLw
-bE6zcbrxCAndyI4G0hOo+5vDGbCziXSN8fnLt93KnFlWnRvFGAjb/uwNrESUgRC+
-2rulU3Ne16tvXfwRPvs/hWi2eeAKlPvxr6/tkBtkle+OwWCZSO5IR9R+EDVZi4Uz
-pnQlEbTynOfBtC+j529C/JXeVLoEjrXewAPbTx0AUV7kGEF3er9X0vega6c4jJpp
-WQ2MeV2JNcFqtCNbi8ThXZt8uEQG/F70dOvvCym3FwdhHCMIYoAxz1QGDlhCKq0M
-rWs35DPU1tBA88vuFK1e7N9rVrXWkXEJ7embgFyBXLcHkmBU0xCfD2/QjeiV89kc
-uR+ssqiGtwZoCY/Nh4sgt05S0PsVhgW7B+GLPbJpStPtkeHXCNKd3DbEXQf83yuA
-JmiY5PsICo4NCDgiyN1FbX1X0JVhonxjHpm11AexA51SQfwu12DdlFvc5xvF89+0
-SvEyLDOpANYJsamkkTcCez1WOcpVcK7geUK9grjgmDDc7YnwfHw=
-=eQ/h
------END PGP SIGNATURE-----
-
---Sig_/xHlR1d_w3iJ7g1yK24Z3KUu--
+>  kernel/debug/kdb/kdb_main.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/kernel/debug/kdb/kdb_main.c b/kernel/debug/kdb/kdb_main.c
+> index 515379cbf209..6865a0f58d38 100644
+> --- a/kernel/debug/kdb/kdb_main.c
+> +++ b/kernel/debug/kdb/kdb_main.c
+> @@ -1108,7 +1108,8 @@ static int handle_ctrl_cmd(char *cmd)
+>         switch (*cmd) {
+>         case CTRL_P:
+>                 if (cmdptr != cmd_tail)
+> -                       cmdptr = (cmdptr-1) % KDB_CMD_HISTORY_COUNT;
+> +                       cmdptr = (cmdptr + KDB_CMD_HISTORY_COUNT - 1) %
+> +                                KDB_CMD_HISTORY_COUNT;
+>                 strscpy(cmd_cur, cmd_hist[cmdptr], CMD_BUFLEN);
+>                 return 1;
+>         case CTRL_N:
+> --
+> 2.26.2.645.ge9eca65c58-goog
+>
