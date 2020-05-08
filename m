@@ -2,121 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A5641CBAB6
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 00:27:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D09C1CBA6F
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 00:09:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728114AbgEHW1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 18:27:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727849AbgEHW1O (ORCPT
+        id S1728052AbgEHWJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 18:09:23 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:43194 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726811AbgEHWJX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 18:27:14 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E8CBC05BD43
-        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 15:27:14 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id k18so3418271ion.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 May 2020 15:27:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Vle6I6fdCR+MgLWGv8JrPtPNfXU53mZx6L1pAHaqj1g=;
-        b=V843ea6ESg1x21Y6+gTjFBY0MV989R+qKt+LdVEmhVpIz91aJMmiflg2BAp0S88GUV
-         1INgZt1g72jgtvnQvVSRKwpED9U1EFNWGHCFzWeQ3JaW+FAzuzDK9QhRMu8QMeXz7V95
-         wLeJmHkHf7c2u683yKlTCnJtRG01hbD3tYDO48cc6xXEawWUHduJXTmQ52nX2gx0z6xk
-         eJcv5XPytWPVGLE8VbxpzCwkSQ/CjiSZIkN3jqobql1mBAUPZ6HCYPOzU7wymQcGVt8W
-         4jcWsF+ZAtHJS49l1bmrg/yTkgNDrapQltT0g8NwpSz55x7nvYwPdvssUjq1AOSbMjYA
-         Lwgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Vle6I6fdCR+MgLWGv8JrPtPNfXU53mZx6L1pAHaqj1g=;
-        b=PVdKk/oMptSgZyMAejYWv9VwmqdZkqXEVXZZ2O8Q1jod0I7OnUTpyYN1HyuDoJYmw+
-         Wl5opvLQMWm3ClJAwCAZOPF64IsBNOfuE69y0tWEdftsgutfYmMtTPpZOpEh3UwQdTU1
-         SYckVXghea4VVjWIjW9YaYq3Az/ndFV98H6r1wzgUTCANSj5zvLe0yZqvS4fsvxu7IZ5
-         Lnj0ATcRKbwqCJ5JitnALGHqLukMgaG+CPXEW/cqPijJyFSk+zwveqx9B6a3UOC8Jggf
-         VGO/pL1t7qo+VIULrvSR4aggW5dFrparE/xEsHQamugjW/hPS4h405QXgUMCyUBIPbXB
-         B9dw==
-X-Gm-Message-State: AGi0PuaCYJSZprNkkxTPf5j8cYOfNi9mQSAWr71PHuNGNcSaBwoVSRLR
-        BsWV1sh84YpkmY7vHyfp2aIlkYLun8iTkmXEaO0Z7A==
-X-Google-Smtp-Source: APiQypK80T14lZ+yTq0Yv7MsY9Tajr69Yl/r5H646/JxI/XctxB/azG3DHLQDj81TzoJNJvsCSSa+UKmKnxxaL1LRmg=
-X-Received: by 2002:a02:2708:: with SMTP id g8mr4935476jaa.52.1588976833756;
- Fri, 08 May 2020 15:27:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200420160600.10467-1-s-anna@ti.com> <20200420160600.10467-2-s-anna@ti.com>
-In-Reply-To: <20200420160600.10467-2-s-anna@ti.com>
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-Date:   Fri, 8 May 2020 16:27:02 -0600
-Message-ID: <CANLsYkwirm2SJoZM9T=VTZAG8iV77PC3ag0AkLbRwf1O84ai_A@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] remoteproc: Fall back to using parent memory pool
- if no dedicated available
-To:     Suman Anna <s-anna@ti.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
-        Loic Pallardy <loic.pallardy@st.com>,
-        Tero Kristo <t-kristo@ti.com>,
-        linux-remoteproc <linux-remoteproc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 8 May 2020 18:09:23 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 048M3qiu161659;
+        Fri, 8 May 2020 22:09:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2020-01-29;
+ bh=kRJKGgXEcBvkOnkZ00J/8oVZj7ZZskCjtSJZuvcjbbk=;
+ b=EkLLPV6+6vDj7ywobWZNfkVpk42vo4sS6Wavr2iWASmCYK+NZexIWqJKpxtkhn63wQtc
+ wg7wFDZVVRob2exoB5k+88R3KfzYN92b2An084ssEc7X+glnExqPHU36Czrwp6ErPhnG
+ 1kBnoJxXMoujtsoNJJGWGf89MgM8QihpfoSBJGWtZ+MzxfZTjRgn2yhP9/4EpbbAGfEV
+ hGmeHbj5qaDkwFUH35qkoJD5I9IAz1FzgOrSmuK+4BnrT+y3blK7GcPryYxbQ72tTY8X
+ +Q0qMMUAM5J5B7lWZs9C3YOfWClf705gbobq0U85IyCEy8JrbkDDr0PSS9lD+Tq59lv/ 7A== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 30vtewwe50-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 08 May 2020 22:09:17 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 048M5xSe011008;
+        Fri, 8 May 2020 22:07:16 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 30vte193h4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 08 May 2020 22:07:16 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 048M76d6019813;
+        Fri, 8 May 2020 22:07:06 GMT
+Received: from ovs104.us.oracle.com (/10.149.224.204)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 08 May 2020 15:07:06 -0700
+From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
+To:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
+Cc:     jgross@suse.com, sstabellini@kernel.org,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Subject: [PATCH] xen/cpuhotplug: Fix initial CPU offlining for PV(H) guests
+Date:   Fri,  8 May 2020 18:28:43 -0400
+Message-Id: <1588976923-3667-1-git-send-email-boris.ostrovsky@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9615 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
+ bulkscore=0 malwarescore=0 suspectscore=0 adultscore=0 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005080187
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9615 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0 mlxlogscore=999
+ malwarescore=0 spamscore=0 priorityscore=1501 lowpriorityscore=0
+ impostorscore=0 suspectscore=0 adultscore=0 clxscore=1015 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005080187
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Apr 2020 at 10:07, Suman Anna <s-anna@ti.com> wrote:
->
-> From: Tero Kristo <t-kristo@ti.com>
->
-> In some cases, like with OMAP remoteproc, we are not creating dedicated
-> memory pool for the virtio device. Instead, we use the same memory pool
-> for all shared memories. The current virtio memory pool handling forces
-> a split between these two, as a separate device is created for it,
-> causing memory to be allocated from bad location if the dedicated pool
-> is not available. Fix this by falling back to using the parent device
-> memory pool if dedicated is not available.
->
-> Fixes: 086d08725d34 ("remoteproc: create vdev subdevice with specific dma memory pool")
-> Signed-off-by: Tero Kristo <t-kristo@ti.com>
-> Signed-off-by: Suman Anna <s-anna@ti.com>
+Commit a926f81d2f6c ("xen/cpuhotplug: Replace cpu_up/down() with
+device_online/offline()") replaced cpu_down() with device_offline()
+call which requires that the CPU has been registered before. This
+registration, however, happens later from topology_init() which
+is called as subsys_initcall(). setup_vcpu_hotplug_event(), on the
+other hand, is invoked earlier, during arch_initcall().
 
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+As result, booting a PV(H) guest with vcpus < maxvcpus causes a crash.
 
->
-> ---
-> v3:
->  - Go back to v1 logic (removed the vdevbuf_mem_id variable added in v2)
->  - Revised the comment to remove references to vdevbuf_mem_id
->  - Capitalize the patch header
-> v2: https://patchwork.kernel.org/patch/11447651/
->
->  drivers/remoteproc/remoteproc_virtio.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
->
-> diff --git a/drivers/remoteproc/remoteproc_virtio.c b/drivers/remoteproc/remoteproc_virtio.c
-> index e61d738d9b47..44187fe43677 100644
-> --- a/drivers/remoteproc/remoteproc_virtio.c
-> +++ b/drivers/remoteproc/remoteproc_virtio.c
-> @@ -376,6 +376,18 @@ int rproc_add_virtio_dev(struct rproc_vdev *rvdev, int id)
->                                 goto out;
->                         }
->                 }
-> +       } else {
-> +               struct device_node *np = rproc->dev.parent->of_node;
-> +
-> +               /*
-> +                * If we don't have dedicated buffer, just attempt to re-assign
-> +                * the reserved memory from our parent. A default memory-region
-> +                * at index 0 from the parent's memory-regions is assigned for
-> +                * the rvdev dev to allocate from. Failure is non-critical and
-> +                * the allocations will fall back to global pools, so don't
-> +                * check return value either.
-> +                */
-> +               of_reserved_mem_device_init_by_idx(dev, np, 0);
->         }
->
->         /* Allocate virtio device */
-> --
-> 2.26.0
->
+Move setup_vcpu_hotplug_event() (and therefore setup_cpu_watcher()) to
+late_initcall(). In addition, instead of performing all offlining steps
+in setup_cpu_watcher() simply call disable_hotplug_cpu().
+
+Fixes: a926f81d2f6c (xen/cpuhotplug: Replace cpu_up/down() with device_online/offline()"
+Signed-off-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+---
+ drivers/xen/cpu_hotplug.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/xen/cpu_hotplug.c b/drivers/xen/cpu_hotplug.c
+index ec975de..b96b11e 100644
+--- a/drivers/xen/cpu_hotplug.c
++++ b/drivers/xen/cpu_hotplug.c
+@@ -93,10 +93,8 @@ static int setup_cpu_watcher(struct notifier_block *notifier,
+ 	(void)register_xenbus_watch(&cpu_watch);
+ 
+ 	for_each_possible_cpu(cpu) {
+-		if (vcpu_online(cpu) == 0) {
+-			device_offline(get_cpu_device(cpu));
+-			set_cpu_present(cpu, false);
+-		}
++		if (vcpu_online(cpu) == 0)
++			disable_hotplug_cpu(cpu);
+ 	}
+ 
+ 	return NOTIFY_DONE;
+@@ -119,5 +117,5 @@ static int __init setup_vcpu_hotplug_event(void)
+ 	return 0;
+ }
+ 
+-arch_initcall(setup_vcpu_hotplug_event);
++late_initcall(setup_vcpu_hotplug_event);
+ 
+-- 
+1.8.3.1
+
