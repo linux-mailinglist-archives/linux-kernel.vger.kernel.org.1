@@ -2,62 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D633B1CA42D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 08:39:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD8501CA43B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 08:41:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727794AbgEHGjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 02:39:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59328 "EHLO
+        id S1727832AbgEHGkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 02:40:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727071AbgEHGjR (ORCPT
+        by vger.kernel.org with ESMTP id S1726897AbgEHGkO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 02:39:17 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2111FC05BD43;
-        Thu,  7 May 2020 23:39:17 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id y25so442677pfn.5;
-        Thu, 07 May 2020 23:39:17 -0700 (PDT)
+        Fri, 8 May 2020 02:40:14 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BB3FC05BD09
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 23:40:14 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id z1so446471pfn.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 23:40:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=4aQlSgO0Elh0LQFz4EdrUrM6btXVzv3njgKIJHFMY3A=;
-        b=fqH4kh2pc7Zm5xI9ma42CYbrngTvtTiiEy7mkfbS9jsJuLN24ngPBYnA4FxKtssdUW
-         04aV6fyqzFV3FCS2lKkaiSxuSbqNDH5L/LWkWrN74qgPVOoyZHs1YDDKuz1SPr6E9J4m
-         JK/uuJauH90bvJ/8hSHIo72eOfy08MIe8WRALTsnYCBipNK+wPGgByJ/j0sSGDF7lvMz
-         59klzb/Uuc2JPl0wMIoCLnWaH9goX3g1MYsq3jWA+2h3CY5MuMIVhhNC3ohL5M9uGsRm
-         NB5al4LOsWgZolzFGhfKzqeN/OMYKun0J3ByMF/hAfIEsD0QCwI5sSHWFruWlngdRIWd
-         snKw==
+        bh=qiQcUnaOsTuYIdMr9pQhA9E0vZ/bgcYyUJ6NKwIoiA8=;
+        b=AGitAEjAmIYuKXy+lG43wJaRD8vsDY21A7oS+DPw/WXhdya0M2b77Hp2SjGy4IDeA7
+         0mXKCAbk5gyUBklW+6pHdkHCR05KcSgPpdfyhoVoNan7SFIeqEK/VVjckLgwFwrYPTDZ
+         OpOCzvcEaiQZBjlPAHAPh8sFU5hMWxw/60ScM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=4aQlSgO0Elh0LQFz4EdrUrM6btXVzv3njgKIJHFMY3A=;
-        b=RyLbrveKnK2QLOYMFAqwJrqXV4fKgWAHNcPw/M/dxLMY0ll5sKhvggv+nHjnOzX5uG
-         et0hkq1Z+gbDkjRmTOjGafQ/A0MsQ/QjFuOPJJwAv3H4KhxY5xyMBgpjd9Iu0hu9UP49
-         WWO901tRQrzc3ZG78mmEB0hotkD94fqNXWdrIZazlLrJw8tWHVW82vzg5tMZIYBRm3Aq
-         hraUjU6m2PIuOk15SAgfMhlct0ZkRKBYFTdtZtNjSbWxikVE4WdNzh+O2PEMquxOQ2uD
-         sFALzD3+vy1z4fq9+0DYqjps7sGb3jAGYv/wElwgNw++DhFo2o9HSfggmnw0+1k2uSzR
-         bzyQ==
-X-Gm-Message-State: AGi0PubqRQ5gwUD9zuPFiHxzA+V5Qjtmh08cpj4kKF349zKhB5wh9ygR
-        FeaNQhJCft0ueyey+sBZ/wCnft5G
-X-Google-Smtp-Source: APiQypLQfREFkfCiTZTKfTnNytxjyVvXbyfxeaa0IMd44kGxgxvh/rgY7LDEjnXYez0t65A8tLeNjw==
-X-Received: by 2002:a63:a505:: with SMTP id n5mr897719pgf.173.1588919956500;
-        Thu, 07 May 2020 23:39:16 -0700 (PDT)
-Received: from localhost.localdomain ([45.124.203.15])
-        by smtp.gmail.com with ESMTPSA id k24sm712913pfk.134.2020.05.07.23.39.12
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qiQcUnaOsTuYIdMr9pQhA9E0vZ/bgcYyUJ6NKwIoiA8=;
+        b=A6b9cXEcPUP9UF88XfwTQsAoKgryqwhN4a27XT5GoHEen0mR8WIR9FKC0urffCzBM9
+         kSBLlUxiTgPzkn6PgfwNmF/yApKiveuRCCoIFQ4bl8bGWKBPNETuvvUybsvkhYnLjBHD
+         uDXk1ii6dRpa+okhTYk181sn14mKgJcsNlMO1TAJCwHa96TBFHsoeOAp5GgQJg0jiiuB
+         vsVO30kfVKmrOesb19vYz6fkpUX28uXZgoQUQxRaoIIAyje95nZU3i/CgKxDw+oHgrEc
+         SB+SIU4GhgupUm0DXn4hnprvbMuX2waPsYksP0jd0FSAA8kdqp1bEo1TnAjzZRKzyeu8
+         xsIA==
+X-Gm-Message-State: AGi0PuZ2JF9udLHQ7bDoG3qqQMAfqUZtLOtMA7pEnOSBru87+hRcFbFB
+        wQuBuifSpWdFhMwq+e4G5D9kWA==
+X-Google-Smtp-Source: APiQypLhC9jPG3VyD0chnEVvbTzcUfM6EnXrvWXuM3nZ1Jmch+lbDR8507FGYLZRkZnFAwwsLzJRtg==
+X-Received: by 2002:a63:b649:: with SMTP id v9mr832219pgt.402.1588920013880;
+        Thu, 07 May 2020 23:40:13 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 140sm757265pfw.96.2020.05.07.23.40.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2020 23:39:15 -0700 (PDT)
-From:   Joel Stanley <joel@jms.id.au>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Jeffery <andrew@aj.id.au>
-Subject: [PATCH] dtc: Remove warning for I2C_OWN_SLAVE_ADDRESS
-Date:   Fri,  8 May 2020 16:09:04 +0930
-Message-Id: <20200508063904.60162-1-joel@jms.id.au>
-X-Mailer: git-send-email 2.26.2
+        Thu, 07 May 2020 23:40:12 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     WeiXiong Liao <liaoweixiong@allwinnertech.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-doc@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4 00/12] pstore: mtd: support crash log to block and mtd device
+Date:   Thu,  7 May 2020 23:39:52 -0700
+Message-Id: <20200508064004.57898-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -65,57 +67,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dtc does a sanity check on reg properties that they are within the 10
-bit address range for i2c slave addresses. In the case of multi-master
-buses the binding may describe an address that the bus will listen on as
-a device. Do not warn when this flag is set.
+Hi!
 
-This fixes the following build warnings reported by Stephen:
+This is a v4 of WeiXiong Liao's series. I spent time porting this on top
+of the latest pstore (mainly to support max_reason), and I started making
+various other changes, mostly just bikeshed stuff.
 
-arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev2.dts:126.11-130.4:
-  Warning (i2c_bus_reg): /ahb/apb/bus@1e78a000/i2c-bus@80/ipmb1@10:
-    I2C bus unit address format error, expected "40000010"
-arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev2.dts:128.3-30:
-  Warning (i2c_bus_reg): /ahb/apb/bus@1e78a000/i2c-bus@80/ipmb1@10:reg:
-    I2C address must be less than 10-bits, got "0x40000010"
+Changes since v3:
+	fixing up various typos, alternate phrases, and language. For
+	example:
+	        recorder -> frontend
+	        Pstore -> pstore
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Joel Stanley <joel@jms.id.au>
----
- scripts/dtc/checks.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+	filenames:
+	        rename pstore_*.c -> *.c and adjust Makefile
+		(I decided fs/pstore/pstore_zone.c repeated "pstore" one too many time. ;)
+		pstore-block.rst -> pstore_blk.rst
 
-diff --git a/scripts/dtc/checks.c b/scripts/dtc/checks.c
-index 4b3c486f1399..986754f858cf 100644
---- a/scripts/dtc/checks.c
-+++ b/scripts/dtc/checks.c
-@@ -1022,6 +1022,8 @@ static void check_i2c_bus_bridge(struct check *c, struct dt_info *dti, struct no
- }
- WARNING(i2c_bus_bridge, check_i2c_bus_bridge, NULL, &addr_size_cells);
- 
-+#define I2C_OWN_SLAVE_ADDRESS	(1 << 30)
-+
- static void check_i2c_bus_reg(struct check *c, struct dt_info *dti, struct node *node)
- {
- 	struct property *prop;
-@@ -1044,6 +1046,8 @@ static void check_i2c_bus_reg(struct check *c, struct dt_info *dti, struct node
- 	}
- 
- 	reg = fdt32_to_cpu(*cells);
-+	/* Ingore I2C_OWN_SLAVE_ADDRESS */
-+	reg &= ~I2C_OWN_SLAVE_ADDRESS;
- 	snprintf(unit_addr, sizeof(unit_addr), "%x", reg);
- 	if (!streq(unitname, unit_addr))
- 		FAIL(c, dti, node, "I2C bus unit address format error, expected \"%s\"",
-@@ -1051,6 +1055,8 @@ static void check_i2c_bus_reg(struct check *c, struct dt_info *dti, struct node
- 
- 	for (len = prop->val.len; len > 0; len -= 4) {
- 		reg = fdt32_to_cpu(*(cells++));
-+		/* Ingore I2C_OWN_SLAVE_ADDRESS */
-+		reg &= ~I2C_OWN_SLAVE_ADDRESS;
- 		if (reg > 0x3ff)
- 			FAIL_PROP(c, dti, node, prop, "I2C address must be less than 10-bits, got \"0x%x\"",
- 				  reg);
+	conversion of dump_oops -> max_reason
+
+	refactor/rename get_reason_str() and move to kernel/printk/printk.c
+
+	psz* -> pstore_zone* renamings:
+	        psblk_usr_info() ->... pstore_blk_usr_info()
+	        psz_zone -> pstore_zone
+	        pszinfo -> pstore_zone_info
+
+	register_pstore_zone():
+	        registration reporting via pr_cont(), with max_reason
+	        remove needless get/put_module()
+
+	public API renamings: VERB_NOUN()
+	        psz_*register() -> *register_pstore_zone()
+
+v3: https://lore.kernel.org/lkml/1585126506-18635-1-git-send-email-liaoweixiong@allwinnertech.com/
+v2: https://lore.kernel.org/lkml/1581078355-19647-1-git-send-email-liaoweixiong@allwinnertech.com/
+v1: https://lore.kernel.org/lkml/1579482233-2672-1-git-send-email-liaoweixiong@allwinnertech.com/
+
+So far, I've identified the following stuff left to do:
+        - settle on various function/struct renamings
+        - review locking
+        - implement ramoops-like probe feature for pstore/blk
+	- spend time seeing how ramoops might use pstore/zone
+
+But I wanted to get this update published just to show what I've done
+so far in my bikeshed review. :)
+
+Thanks!
+
+-Kees
+
+
+Kees Cook (1):
+  printk: Introduce kmsg_dump_reason_str()
+
+WeiXiong Liao (11):
+  pstore/zone: Introduce common layer to manage storage zones
+  pstore/blk: Introduce backend for block devices
+  pstore/blk: Provide way to choose pstore frontend support
+  pstore/blk: Add support for pmsg frontend
+  pstore/blk: Add console frontend support
+  pstore/blk: Add ftrace frontend support
+  Documentation: Add details for pstore/blk
+  pstore/zone: Provide way to skip "broken" zone for MTD devices
+  pstore/blk: Provide way to query pstore configuration
+  pstore/blk: Support non-block storage devices
+  mtd: Support kmsg dumper based on pstore/blk
+
+ Documentation/admin-guide/pstore-blk.rst |  243 ++++
+ MAINTAINERS                              |    1 +
+ drivers/mtd/Kconfig                      |   10 +
+ drivers/mtd/Makefile                     |    1 +
+ drivers/mtd/mtdpstore.c                  |  564 ++++++++
+ fs/pstore/Kconfig                        |  109 ++
+ fs/pstore/Makefile                       |    6 +
+ fs/pstore/blk.c                          |  481 +++++++
+ fs/pstore/platform.c                     |   22 +-
+ fs/pstore/zone.c                         | 1498 ++++++++++++++++++++++
+ include/linux/kmsg_dump.h                |    7 +
+ include/linux/pstore_blk.h               |   77 ++
+ include/linux/pstore_zone.h              |   60 +
+ kernel/printk/printk.c                   |   21 +
+ 14 files changed, 3079 insertions(+), 21 deletions(-)
+ create mode 100644 Documentation/admin-guide/pstore-blk.rst
+ create mode 100644 drivers/mtd/mtdpstore.c
+ create mode 100644 fs/pstore/blk.c
+ create mode 100644 fs/pstore/zone.c
+ create mode 100644 include/linux/pstore_blk.h
+ create mode 100644 include/linux/pstore_zone.h
+
 -- 
-2.26.2
+2.20.1
 
