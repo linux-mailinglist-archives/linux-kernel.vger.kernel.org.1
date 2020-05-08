@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 257A11CAC39
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 477A41CADAE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:06:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729886AbgEHMvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 08:51:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60012 "EHLO mail.kernel.org"
+        id S1729348AbgEHNDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 09:03:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729877AbgEHMvK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 08:51:10 -0400
+        id S1728507AbgEHMuS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 08:50:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7774D24954;
-        Fri,  8 May 2020 12:51:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BED2221473;
+        Fri,  8 May 2020 12:50:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588942269;
-        bh=POwLX1SmMFcQfjvzYyCJqlQaSBoWeieD5GSTE2vxqa0=;
+        s=default; t=1588942218;
+        bh=gwwltBoEbues8SEU545brQ4mqhSyAnYy0hmSd/ji+j8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NLnYKjzJqFwRqQj1A8HxVnH8cqozV2Ts7DrhDvaTZ4ZWAWVasanYraDKEDSNRnetL
-         bGgNa/M6nnLUh1x1JbJ383DSCfKyWN2n8gLpycn4f8yYKEDwSQZEN5eUar/KQA16nZ
-         T6hA0fR2+kvg25eItCIOjIf5lQ7OuO6BUYriz6RI=
+        b=EXoTijNvkrzENB0xm91WxbijP+fMI2x4fIULcRZpwyHCxxrrI5c4SUK9eA4MmopU/
+         fNUb9xzdS7D0r7MFl+dMJS6HDVxFDlWc+u8sxmZuR7tLVDI8tss9ZSkAIbbf5IMQok
+         lAtWNcIv9llStOlfSBLk2j+WdoED84MVTqdf+TYw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        "Jeremie Francois (on alpha)" <jeremie.francois@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 11/32] wimax/i2400m: Fix potential urb refcnt leak
-Date:   Fri,  8 May 2020 14:35:24 +0200
-Message-Id: <20200508123036.302330740@linuxfoundation.org>
+Subject: [PATCH 4.14 13/22] scripts/config: allow colons in option strings for sed
+Date:   Fri,  8 May 2020 14:35:25 +0200
+Message-Id: <20200508123035.508402529@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200508123034.886699170@linuxfoundation.org>
-References: <20200508123034.886699170@linuxfoundation.org>
+In-Reply-To: <20200508123033.915895060@linuxfoundation.org>
+References: <20200508123033.915895060@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,44 +45,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+From: Jeremie Francois (on alpha) <jeremie.francois@gmail.com>
 
-[ Upstream commit 7717cbec172c3554d470023b4020d5781961187e ]
+[ Upstream commit e461bc9f9ab105637b86065d24b0b83f182d477c ]
 
-i2400mu_bus_bm_wait_for_ack() invokes usb_get_urb(), which increases the
-refcount of the "notif_urb".
+Sed broke on some strings as it used colon as a separator.
+I made it more robust by using \001, which is legit POSIX AFAIK.
 
-When i2400mu_bus_bm_wait_for_ack() returns, local variable "notif_urb"
-becomes invalid, so the refcount should be decreased to keep refcount
-balanced.
+E.g. ./config --set-str CONFIG_USBNET_DEVADDR "de:ad:be:ef:00:01"
+failed with: sed: -e expression #1, char 55: unknown option to `s'
 
-The issue happens in all paths of i2400mu_bus_bm_wait_for_ack(), which
-forget to decrease the refcnt increased by usb_get_urb(), causing a
-refcnt leak.
-
-Fix this issue by calling usb_put_urb() before the
-i2400mu_bus_bm_wait_for_ack() returns.
-
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Jeremie Francois (on alpha) <jeremie.francois@gmail.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wimax/i2400m/usb-fw.c | 1 +
- 1 file changed, 1 insertion(+)
+ scripts/config | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wimax/i2400m/usb-fw.c b/drivers/net/wimax/i2400m/usb-fw.c
-index 529ebca1e9e13..1f7709d24f352 100644
---- a/drivers/net/wimax/i2400m/usb-fw.c
-+++ b/drivers/net/wimax/i2400m/usb-fw.c
-@@ -354,6 +354,7 @@ ssize_t i2400mu_bus_bm_wait_for_ack(struct i2400m *i2400m,
- 		usb_autopm_put_interface(i2400mu->usb_iface);
- 	d_fnend(8, dev, "(i2400m %p ack %p size %zu) = %ld\n",
- 		i2400m, ack, ack_size, (long) result);
-+	usb_put_urb(&notif_urb);
- 	return result;
+diff --git a/scripts/config b/scripts/config
+index e0e39826dae90..eee5b7f3a092a 100755
+--- a/scripts/config
++++ b/scripts/config
+@@ -7,6 +7,9 @@ myname=${0##*/}
+ # If no prefix forced, use the default CONFIG_
+ CONFIG_="${CONFIG_-CONFIG_}"
  
- error_exceeded:
++# We use an uncommon delimiter for sed substitutions
++SED_DELIM=$(echo -en "\001")
++
+ usage() {
+ 	cat >&2 <<EOL
+ Manipulate options in a .config file from the command line.
+@@ -83,7 +86,7 @@ txt_subst() {
+ 	local infile="$3"
+ 	local tmpfile="$infile.swp"
+ 
+-	sed -e "s:$before:$after:" "$infile" >"$tmpfile"
++	sed -e "s$SED_DELIM$before$SED_DELIM$after$SED_DELIM" "$infile" >"$tmpfile"
+ 	# replace original file with the edited one
+ 	mv "$tmpfile" "$infile"
+ }
 -- 
 2.20.1
 
