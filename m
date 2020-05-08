@@ -2,93 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC0831CB602
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 19:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D469F1CB60A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 19:32:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727093AbgEHRbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 13:31:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32964 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726746AbgEHRbh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 13:31:37 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 24F0E2184D;
-        Fri,  8 May 2020 17:31:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588959096;
-        bh=WRzoALlV7ZN2GHdbZQhsE+HYWowuvtNz9dMDDXuhI88=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=N5naS5m/e40q+uLMWZT2ttFDa7TnLxzUiR71erzt4j7XYt5I6AOb2wMcM6kEGONTP
-         hw8OrJzgPzqmGwSbg9tIvYEwaV4mFe55M5HRNvvpzJrdEEnnbI7Smr1TNaGoHC8m6a
-         YH64UJVl1r2J0MtcG5ZYmGVX5V3q/ct1aI5IAh1I=
-Date:   Fri, 8 May 2020 18:31:34 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Allison Randal <allison@lohutok.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Gareth Williams <gareth.williams.jx@renesas.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        id S1727790AbgEHRcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 13:32:22 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:59021 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726746AbgEHRcW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 13:32:22 -0400
+Received: from carbon-x1.hos.anvin.org ([IPv6:2601:646:8600:3281:e7ea:4585:74bd:2ff0])
+        (authenticated bits=0)
+        by mail.zytor.com (8.15.2/8.15.2) with ESMTPSA id 048HVftM3921978
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Fri, 8 May 2020 10:31:41 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 048HVftM3921978
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2020042201; t=1588959104;
+        bh=j4Wt5+zHny+jNVeWIommm01rPqJoQDpyDmv65ZQS5Sw=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=qyX9hwhasKyR0D6xlFQuduuCpCaongWidyAWUxb/fhwYDsxx7V0Mfg1EIX1k21YmX
+         nBAyONHj/k8sjGGcKRrDex9b0FjXOWMx2KBZtVizuPQo9zSjzCoSCWNPi1CB2myIIK
+         6mlS7GT+BqZCcU0iQ+6qqC5m1o1K9ORGf+h4UFQkrIrlGChUGrklB9GYUKAiW6moF3
+         DQyMt39w1+13n709biF1A6K8nz94ih9AeZVZ0Y1otScfo1PwknvYrUyGA64Vi2JJuy
+         wkXgU+ZJpjnZCca+JM4BjvvlTmKII+Y763LfO/WBIap8QVGV2k4ADuL988yQ4De3C5
+         HXAHTXjBpuM5Q==
+Subject: Re: [PATCH] x86: bitops: fix build regression
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Brian Gerst <brgerst@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 08/17] spi: dw: Clear DMAC register when done or stopped
-Message-ID: <20200508173134.GP4820@sirena.org.uk>
-References: <20200508132943.9826-1-Sergey.Semin@baikalelectronics.ru>
- <20200508132943.9826-9-Sergey.Semin@baikalelectronics.ru>
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        stable <stable@vger.kernel.org>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        "kernelci . org bot" <bot@kernelci.org>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Ilie Halip <ilie.halip@gmail.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Marco Elver <elver@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+References: <20200505174423.199985-1-ndesaulniers@google.com>
+ <8A776DBC-03AF-485B-9AA6-5920E3C4ACB2@zytor.com>
+ <20200507113422.GA3762@hirez.programming.kicks-ass.net>
+ <CAMzpN2hXUYvLuTA63N56ef4DEzyWXt_uVVq6PV0r8YQT-YN42g@mail.gmail.com>
+ <CAKwvOd=a3MR7osKBpbq=d41ieo7G9FtOp5Kok5por1P5ZS9s4g@mail.gmail.com>
+ <CAKwvOd=Ogbp0oVgmF2B9cePjyWnvLLFRSp2EnaonA-ZFN3K7Dg@mail.gmail.com>
+ <CAMzpN2gu4stkRKTsMTVxyzckO3SMhfA+dmCnSu6-aMg5QAA_JQ@mail.gmail.com>
+ <CAKwvOd=hVKrFU+imSGeX+MEKMpW97gE7bzn1C637qdns9KSnUA@mail.gmail.com>
+From:   "H. Peter Anvin" <hpa@zytor.com>
+Message-ID: <8f53b69e-86cc-7ff9-671e-5e0a67ff75a2@zytor.com>
+Date:   Fri, 8 May 2020 10:31:36 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="BnCwdHgQ2ZomtW9r"
-Content-Disposition: inline
-In-Reply-To: <20200508132943.9826-9-Sergey.Semin@baikalelectronics.ru>
-X-Cookie: Give him an evasive answer.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAKwvOd=hVKrFU+imSGeX+MEKMpW97gE7bzn1C637qdns9KSnUA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020-05-08 10:21, Nick Desaulniers wrote:
+>>
+>> One last suggestion.  Add the "b" modifier to the mask operand: "orb
+>> %b1, %0".  That forces the compiler to use the 8-bit register name
+>> instead of trying to deduce the width from the input.
+> 
+> Ah right: https://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html#x86Operandmodifiers
+> 
+> Looks like that works for both compilers.  In that case, we can likely
+> drop the `& 0xff`, too.  Let me play with that, then I'll hopefully
+> send a v3 today.
+> 
 
---BnCwdHgQ2ZomtW9r
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Good idea. I requested a while ago that they document these modifiers; they
+chose not to document them all which in some ways is good; it shows what they
+are willing to commit to indefinitely.
 
-On Fri, May 08, 2020 at 04:29:33PM +0300, Serge Semin wrote:
-> If DMAC register is left uncleared any further DMAless transfers
-> may cause the DMAC hardware handshaking interface getting activated.
-> So the next DMA-based Rx/Tx transaction will be started right
-> after the dma_async_issue_pending() method is invoked even if no
-> DMATDLR/DMARDLR conditions are met. This at the same time may cause
-> the Tx/Rx FIFO buffers underrun/overrun. In order to fix this we
-> must clear DMAC register after a current DMA-based transaction is
-> finished.
-
-This also looks like a bugfix so should be pulled forwards to the start
-of the series if possible.
-
---BnCwdHgQ2ZomtW9r
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl61l3UACgkQJNaLcl1U
-h9BYHgf9Fl+KkM9DAYgx9AGChw/IYpN7v0C5DO9u46ti7pzCXkna45nllKWyJ+W6
-/IBw7tAETN0X3Oeg7yrgik/DAKX58MapNxW3Iq3iYa/RBX/2Lkxqb441hmmNFgOp
-g8lI/G8gh9WkKF1E7lVqqBScEwiRbGDWTHWM2WuYSr8mAnK5FL+HLvF5YQKvAcHm
-1TD3/v8ckN2iTXWH8IWjBdqJI7Y+2TXXz1Xr13/laIDvDq51xtJk0YXUstdLcSnq
-sPwjaTA+RTDZKCa2NsFKx04M3JYrJMIq8YjAoCjhKOKBJf3EaJ/EalmfaTucfs0O
-NwU9G+7xV1+6hlkILdXn+sStvR7LTQ==
-=TR5g
------END PGP SIGNATURE-----
-
---BnCwdHgQ2ZomtW9r--
+	-hpa
