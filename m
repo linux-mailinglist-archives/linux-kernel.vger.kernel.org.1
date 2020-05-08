@@ -2,80 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68C471CB20A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 16:41:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FF2D1CB213
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 16:41:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728289AbgEHOlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 10:41:06 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:40152 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728174AbgEHOk4 (ORCPT
+        id S1728362AbgEHOl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 10:41:29 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:38571 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728216AbgEHOlN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 10:40:56 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 048Ebnqo151224;
-        Fri, 8 May 2020 14:40:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=9Pd6sdzTLPNAE5lKGbzkZBJdj4O3PQMJ6IPM7eKBgG0=;
- b=zbWum2G0ONLEDe7HujZ8RBdWshb1C66Kikq4kBZLWK8MnHDZeaeAWVUKi69rxnM2H5fF
- Pp2l5cdPtT+ceGsDz8gE/TLnApl3ov1kZekOJwZETwF3KnIHUBj8ry8oS5/KOiyO7qKb
- JcZchFi6mTiicfnWuz5J27g+0+geKdvynDn/UJ+w9YDOahr1KYecK+2x95ElNdueXBHM
- uhSxQbaP90ziupWiHQjPj3nrg4lr3gKPBbe3ariNHs/42VAQ/4MZyczzF7dVDy3BLKHl
- IUu+XWX3qOYHbspSdU78fuF3wj1oTOjUnMcENgblh0Hxm4FUDPXD8uUZ6h1v5+xomvpr ag== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 30vtewub88-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 08 May 2020 14:40:20 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 048Eap0a190858;
-        Fri, 8 May 2020 14:40:19 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 30vtegvcrh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 08 May 2020 14:40:19 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 048EeHOB002292;
-        Fri, 8 May 2020 14:40:17 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 08 May 2020 07:40:16 -0700
-Date:   Fri, 8 May 2020 17:40:09 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Yunfeng Ye <yeyunfeng@huawei.com>
-Cc:     mhiramat@kernel.org, linux-kernel@vger.kernel.org,
-        Markus.Elfring@web.de, rostedt@goodmis.org,
-        kernel-janitors@vger.kernel.org, Shiyuan Hu <hushiyuan@huawei.com>,
-        Hewenliang <hewenliang4@huawei.com>
-Subject: Re: [PATCH v4] tools/bootconfig: fix resource leak in apply_xbc()
-Message-ID: <20200508144009.GQ1992@kadam>
-References: <bdda096b-9f8a-dacb-9f89-9077d1288ad7@huawei.com>
+        Fri, 8 May 2020 10:41:13 -0400
+Received: from localhost.localdomain ([149.172.19.189]) by
+ mrelayeu.kundenserver.de (mreue009 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1Mr9OA-1ikEYX0EAI-00oG15; Fri, 08 May 2020 16:40:51 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Ben Skeggs <bskeggs@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Christoph Hellwig <hch@lst.de>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 2/2] nouveau: fix dependencies for DEVICE_PRIVATE
+Date:   Fri,  8 May 2020 16:40:09 +0200
+Message-Id: <20200508144017.3501418-2-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.0
+In-Reply-To: <20200508144017.3501418-1-arnd@arndb.de>
+References: <20200508144017.3501418-1-arnd@arndb.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bdda096b-9f8a-dacb-9f89-9077d1288ad7@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9614 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
- phishscore=0 mlxlogscore=899 bulkscore=0 malwarescore=0 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005080130
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9614 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0 mlxlogscore=946
- malwarescore=0 spamscore=0 priorityscore=1501 lowpriorityscore=0
- impostorscore=0 suspectscore=0 adultscore=0 clxscore=1015 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2005080130
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:JWVQOgOnHysetYBnSk3CKrV5svFn5O5bRyqndsTcxkwhAVFX33K
+ 8QbP8gDLWPxaMFNAgd7F0Cl5FkzbK7UMEJIFy0zMaVqeRYEiRnApjKD442XntX1liV7tU8u
+ +v58YzETQ9SV2Hp+cHqKt2yBzRbfWwCIKA6DW0+yHZ5CaJ628eVpggV+QV31QJGmJnChH1i
+ vbw4Va8hrFgS/CW9ROAkg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:VzDQJ1Yexdc=:rlZgpEK/dFkEh64B04UQUI
+ g+x10OM+ECzQzdguOSFhigUHOMdlbZFiI08PVo16y3npp77DmEsUma/AvaHcceM2m5b3I2o7L
+ TNCu82db3goJxFTWsXeuL1ZexwTp0gb5JWPrscj83fsTSOZ/18VLYpONC2FctsWw9C/ZTKzgS
+ K0HbBohnOvCR3/SHRUv1n1sX17ZLm6sZ7onWo54A55647knTetrzKq+aimZ3A3fEN/f1JRi2q
+ Fz7PefVUE5BFdLOZfKP5PVlfwCyFKD6ePO31sczeohRvfZrfip4z6j5azwY53UD8A2la9VDMl
+ yQ+zJZVhiTIEPExvx2yHPt8Gb4vD9nklM6omlVYpu0t7d4EINmaSrURvpa8jZGeYVMzuniupd
+ GCC0Ui4hsMVN4O+BGGp4mzzSTdHxZNuUpUfZalKuY98GENhMiAjkN8T1/WrzIzIlYLjdGtodz
+ i4ar0/wiV5tIOczUPF0P9sKJGaDYgVsNGNmzm403LzNNJzt1oxw6UMUJE4iRQ1Akef7DSocGP
+ TPO/xZ/dimwT8pDNNP6hqgqxRCEPgk43rCb1CWF2rYxdcoPcQLVLwDgWV1VH9AhMabNUbojSm
+ G8HmBR+fcLs6jSPX8Ls6tidrpGP6nsyMSNMLDV8lfryssOazCoAdn2ZG4RZJ1/o5BEegZ8I9B
+ 80CzFDRI32YAgnT9uC1xB8szTuFOrz1fc+/kgtYCqSk3qr4O9buMmeCmRGHuM+5J8UOGznTD8
+ 0YZ3ZZkh/Y2ymPOhW2NNuVL+0rXAFSSaH49WsYDVcyPjUerW4YuaddC4lv6dBUSeTDyQY4nLK
+ NV8OCikn7NeFF6Uk7/uPXIkQYE5CSkZ9+DUpSoA+hw2rOqe68k=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks good thanks!
+CONFIG_DEVICE_PRIVATE cannot be selected in configurations
+without ZONE_DEVICE:
 
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+WARNING: unmet direct dependencies detected for DEVICE_PRIVATE
+  Depends on [n]: ZONE_DEVICE [=n]
+  Selected by [y]:
+  - DRM_NOUVEAU_SVM [=y] && HAS_IOMEM [=y] && DRM_NOUVEAU [=y] && MMU [=y] && STAGING [=y]
+kernel/resource.c:1653:28: error: use of undeclared identifier 'PA_SECTION_SHIFT'
+        size = ALIGN(size, 1UL << PA_SECTION_SHIFT);
+                                  ^
+kernel/resource.c:1654:48: error: use of undeclared identifier 'MAX_PHYSMEM_BITS'
 
-regards,
-dan carpenter
+Add a dependency for Nouveau to avoid broken randconfig builds.
+
+Fixes: d2c63df2242e ("mm/hmm: make CONFIG_DEVICE_PRIVATE into a select")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/gpu/drm/nouveau/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/gpu/drm/nouveau/Kconfig b/drivers/gpu/drm/nouveau/Kconfig
+index af5793f3e7c2..996ec5475908 100644
+--- a/drivers/gpu/drm/nouveau/Kconfig
++++ b/drivers/gpu/drm/nouveau/Kconfig
+@@ -87,6 +87,7 @@ config DRM_NOUVEAU_BACKLIGHT
+ config DRM_NOUVEAU_SVM
+ 	bool "(EXPERIMENTAL) Enable SVM (Shared Virtual Memory) support"
+ 	depends on DRM_NOUVEAU
++	depends on ZONE_DEVICE
+ 	depends on MMU
+ 	depends on STAGING
+ 	select DEVICE_PRIVATE
+-- 
+2.26.0
 
