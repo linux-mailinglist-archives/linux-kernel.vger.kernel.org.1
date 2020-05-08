@@ -2,85 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94CBC1CB99A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 23:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCA181CB9A0
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 23:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727827AbgEHVRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 17:17:23 -0400
-Received: from mout.kundenserver.de ([212.227.126.133]:43117 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726811AbgEHVRX (ORCPT
+        id S1727918AbgEHVUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 17:20:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727082AbgEHVUC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 17:17:23 -0400
-Received: from mail-qt1-f171.google.com ([209.85.160.171]) by
- mrelayeu.kundenserver.de (mreue010 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1N7zW7-1j2UZ13jt5-014zR7; Fri, 08 May 2020 23:17:21 +0200
-Received: by mail-qt1-f171.google.com with SMTP id i68so2666803qtb.5;
-        Fri, 08 May 2020 14:17:20 -0700 (PDT)
-X-Gm-Message-State: AGi0PuaeFJIU8XIdfoAHtwvhX2yMwpgymFmBKL0RcoglYQK2Ote8IZYc
-        nxaFxZgUyERiJvpR7ipOwrK9Tsi0xXc387ehLjM=
-X-Google-Smtp-Source: APiQypIvad7aLitn+xmQk8X/JPRvw7lw5m5ERGWfXFfVhFVyjM1R3g6aMc8Zoq+xZMsllg7Bcor/yZaVVRwxCxHOGHU=
-X-Received: by 2002:ac8:4c8d:: with SMTP id j13mr5033840qtv.142.1588972639703;
- Fri, 08 May 2020 14:17:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200508194132.3412384-1-natechancellor@gmail.com>
-In-Reply-To: <20200508194132.3412384-1-natechancellor@gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 8 May 2020 23:17:03 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2YqJojpS7eDgVzqRPLibXBzWDp5JWSf=U81EbvA81Y6Q@mail.gmail.com>
-Message-ID: <CAK8P3a2YqJojpS7eDgVzqRPLibXBzWDp5JWSf=U81EbvA81Y6Q@mail.gmail.com>
-Subject: Re: [PATCH net-next] net: ipa: Remove ipa_endpoint_stop{,_rx_dma} again
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Alex Elder <elder@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:yVmCAf9a3z5zbArULHCkeKcnA54A/0bIGRvyKkIfMaKwvlO8NIq
- EqKUDQR4d68LrxzjMvI3mrQJ3Kr3Gh3k12t+xFD5yDawloLNziYvepIuWb/rsrl0HydHyBl
- HJuwUmmzvXjUEFsbPNGqhb6zsboaHzU4wpfBOHb65eyzLTnarA0xCWV3K76zsDstnMsr/iM
- QJYkuZ/18TCmuYcBv4Azg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:nIxqF1si7OA=:rLD/U0qximF00Y5RH89lG8
- YzNEP1y7PtiPYe3zlxjSzSQZ/tvmucqppqG83V8CP06E3EcGw0psGhcrgKBQuafj5qdPB9STj
- e7Ag6DIa5gWV7jqjIqfdYTX3c/vxSj/iIHLGGf3BVlIpBuaJzEGa9bcNRaOGpRebtC3yOOcQS
- nzJeQUgDGkq5PvYhKMVbeGJz5XzrJCooEb9rGW7fbt3zF3cScWy+po1cVW/YWtRNgxSnj7rxB
- UtoTrDl3EHjcE8dKmQfJjxvluWsRcQuOaOt+9THRGuA5H6Xg0/wAgYsXbNx0BMbqGEdG9qoh3
- UOjneAOyHtjsDoODngx5eDzPw3UGPjPeDG6C7BNpGt3Qrr0imXUPgaOx2POYmmVwlEPlFl+Bx
- Gy+jyMcHjwqdbt4d1wXJOxyJ/HBW1l0k6JwbA7IVquI1uf8H3qBmG1c7d7w7pKbWo1QjfQd4F
- GaxhZqfwh7LpdZ3oyZu3jhb20wx7vyvacbmRTPqm9Hjf0fMaU0m1jvsJ4nNcPSS9eWW4kmhbm
- HOw+McR/dJxRFJ/h8lgW4X8ABzdmNkjcFpkCLXTGGSFFil3plUn+hwxf0/7qPkSLXDP0oWhZB
- OMWw3nhC+01cXVwT65AE+FR83i4FK44vn4nlDQqqVyBICMfobmHofsI0EaD+0VohREjDo/bO9
- HWEqLumDGMIGDqxTDBUGu/0OeERx6Sxw1saLURwOJiTz+YEWrgUrkFgBVR8VZSuM6ujL43Z5z
- 0zxnXvS6j24KexLYzvQc5Jk0i/hZ+57eNYDscYZfkxlnQ6Rc4AuBFZ4UmtqPHYmizky2oEjXh
- 4bimjTuum4CUf6cfF5ZlRBh9Q8rt5IS7OEYgvhfUWISo57uaB8=
+        Fri, 8 May 2020 17:20:02 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0540C05BD09;
+        Fri,  8 May 2020 14:20:01 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id h4so11661599wmb.4;
+        Fri, 08 May 2020 14:20:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=1btuJlFJxyKxOm8nyjE+wqJZo7pVEMFPvRsdfbxA2FU=;
+        b=Zn7GIjVLdWCwL/jXvAMa3GwSXGqrFFL9JoYYX4tVdEI5JOkf6JzheIJTG25sdDZszO
+         Sy2itywQnMQ4PxWTTOe+sXLHNP1eDAbcNBOQrW5py3pLoudTivzQ9/1oQI3V+XG+hO8H
+         Nzzf8HZ+4Nz9Yw6y9q0BT5mQzWDOvhzzNs4CLDmJtSCiNKVTexAe6JWAqN3apybkYGW4
+         WUBosHkhZYwNEziaHuIQpsXYhv4cLOSvqrNYlca77BQsqVMMJnhw1MRQfXeetjDRNiy+
+         3ROGq8lp93Zj5L/Y3mCEyalMZvxXW05Y3sHpP/KzbXcQlY4q6VKUAQlXMf0y7vvwMPhe
+         Bzsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=1btuJlFJxyKxOm8nyjE+wqJZo7pVEMFPvRsdfbxA2FU=;
+        b=My+d6MVuDf3Woog1TU4M3V3f4gzAV+xzJq5ce+8q6cYrvJwU3Xtaa6BdlVbCuIGPBu
+         7gevWB8coFml7z6as8tkePpU451Bz5DneqmUtEd8/mF9I4AiT7RRAUo0gfEPCxYSakDj
+         spDfyHjjGNmLO9i1GmL4kKAE4SQ8iiE7831ToALc1TEAyKuW9b3eQJd72yvonqZng5ko
+         JV1fYRTW/JdFwzUtrmmDjQT/rkJpXxwux7moIz35u06Mh8dF8t++jtLpsM8CdUETZjCj
+         JNvLMWManHkgVdpu8HN7vJTEvooxxtKDYT5T4pTvmdKyo/Hh7LTkUAYnkRAcIjNW5Xv5
+         IsVQ==
+X-Gm-Message-State: AGi0PuYREM3LFiBZi99K85R+0tJySHRRvkpU4m8tx3Lyr2+/+ztB7W43
+        JiaZwRAaX9HdEU5PDwYumhk7P2LYGoA=
+X-Google-Smtp-Source: APiQypLZbSNIunJ1uK/bvkg5d94s+VdgVmnvtMEE2sDtJ37Elm2ZYojQ1kuOSk7qkyxxZJSKtPf6HA==
+X-Received: by 2002:a1c:3581:: with SMTP id c123mr6985480wma.150.1588972796890;
+        Fri, 08 May 2020 14:19:56 -0700 (PDT)
+Received: from stbsrv-and-01.and.broadcom.net ([192.19.231.250])
+        by smtp.gmail.com with ESMTPSA id n9sm4669705wrv.43.2020.05.08.14.19.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 May 2020 14:19:56 -0700 (PDT)
+From:   Al Cooper <alcooperx@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Al Cooper <alcooperx@gmail.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com, devicetree@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-usb@vger.kernel.org, Mathias Nyman <mathias.nyman@intel.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v8 0/5] Add XHCI, EHCI and OHCI support for Broadcom STB SoS's
+Date:   Fri,  8 May 2020 17:19:24 -0400
+Message-Id: <20200508211929.39020-1-alcooperx@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 8, 2020 at 9:44 PM Nathan Chancellor
-<natechancellor@gmail.com> wrote:
->
-> When building arm64 allyesconfig:
->
-> drivers/net/ipa/ipa_endpoint.c: In function 'ipa_endpoint_stop_rx_dma':
-> drivers/net/ipa/ipa_endpoint.c:1274:13: error: 'IPA_ENDPOINT_STOP_RX_SIZE' undeclared (first use in this function)
-> drivers/net/ipa/ipa_endpoint.c:1274:13: note: each undeclared identifier is reported only once for each function it appears in
-> drivers/net/ipa/ipa_endpoint.c:1289:2: error: implicit declaration of function 'ipa_cmd_dma_task_32b_addr_add' [-Werror=implicit-function-declaration]
-> drivers/net/ipa/ipa_endpoint.c:1291:45: error: 'ENDPOINT_STOP_DMA_TIMEOUT' undeclared (first use in this function)
-> drivers/net/ipa/ipa_endpoint.c: In function 'ipa_endpoint_stop':
-> drivers/net/ipa/ipa_endpoint.c:1309:16: error: 'IPA_ENDPOINT_STOP_RX_RETRIES' undeclared (first use in this function)
->
-> These functions were removed in a series, merged in as
-> commit 33395f4a5c1b ("Merge branch 'net-ipa-kill-endpoint-stop-workaround'").
->
-> Remove them again so that the build works properly.
->
-> Fixes: 3793faad7b5b ("Merge git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net")
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+v8 - The previous v7 had the wrong version of ehci-brcm.c. This time
+     really, really add the changes Greg requested.
 
-I ran into the same issue but didn't see the solution right away. Your patch
-looks good to me.
+v7 - Cleanup ehci-brcm.c as requested by Greg Kroah-Hartman.
+   - Split out Makefile re-order change into a separate commit.
 
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+v6 - Remove "contains:" from compatible section of
+     brcm,bcm7445-ehci.yaml as requested by Rob Herring.
+
+v5 - Use devm_platform_get_and_ioremap_resource() in ehci-brcm.c
+     as requested by Andy Shevchenko.
+   - Add pm_runtime_set_active() to ehci_resume() in ehci-brcm.c
+     as requested by Alan Stern.
+
+v4 - A few more fixes to the brcm,bcm7445-ehci.yaml dt-bindings
+     document requested by Rob Herring.
+   - Fixed ordering issue in MAINTAINERS as requested by
+     Andy Shevchenko.
+
+v3 - Addressed all of Andy Shevchenko's review comments for
+     ehci-brcm.c.
+   - Fixed the brcm,bcm7445-ehci.yaml dt-bindings document,
+     dt_binding_check now passes.
+   - Added the XHCI functionality to xhci-plat.c instead of creating
+     new brcmstb files, as suggested by Mathias Nyman.
+
+v2 - Addressed Andy Shevchenko's review comments.
+   - Fixed dt_binding_check error pointed out by Rob Herring.
+   - Removed pr_info message in ehci_brcm_init as suggested by
+     Greg Kroah-Hartman.
+
+This adds support for the XHCI, EHCI and OHCI host controllers found
+in Broadcom STB SoC's. These drivers depend on getting access to the
+new Broadcom STB USB PHY driver through a device-tree phandle and
+will fail if the driver is not available.
+
+Al Cooper (5):
+  usb: xhci: Change the XHCI link order in the Makefile
+  dt-bindings: Add Broadcom STB USB support
+  usb: xhci: xhci-plat: Add support for Broadcom STB SoC's
+  usb: ehci: Add new EHCI driver for Broadcom STB SoC's
+  usb: host: Add ability to build new Broadcom STB USB drivers
+
+ .../bindings/usb/brcm,bcm7445-ehci.yaml       |  59 ++++
+ .../devicetree/bindings/usb/usb-xhci.txt      |   1 +
+ MAINTAINERS                                   |   8 +
+ drivers/usb/host/Kconfig                      |  20 ++
+ drivers/usb/host/Makefile                     |  17 +-
+ drivers/usb/host/ehci-brcm.c                  | 281 ++++++++++++++++++
+ drivers/usb/host/xhci-plat.c                  |  10 +
+ 7 files changed, 390 insertions(+), 6 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/usb/brcm,bcm7445-ehci.yaml
+ create mode 100644 drivers/usb/host/ehci-brcm.c
+
+-- 
+2.17.1
+
