@@ -2,147 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12FE41CAEE3
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:16:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6198D1CAF0A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:17:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729861AbgEHNMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:12:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35788 "EHLO
+        id S1730534AbgEHNNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 09:13:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730192AbgEHNLx (ORCPT
+        by vger.kernel.org with ESMTP id S1729951AbgEHNNr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 09:11:53 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C16E8C05BD43;
-        Fri,  8 May 2020 06:11:52 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id w7so1761245wre.13;
-        Fri, 08 May 2020 06:11:52 -0700 (PDT)
+        Fri, 8 May 2020 09:13:47 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58A6CC05BD43;
+        Fri,  8 May 2020 06:13:47 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id a8so910782ybs.3;
+        Fri, 08 May 2020 06:13:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=m6PwKC0GGKuK1AQCcfQJuTFB4k9S8lgpVMeQgt9tC7M=;
-        b=sqIriFNWfo+C01cQSiy2PlZsONvClgfMh/XyGoUm/jLV/eavxNsd/+2a5uGsdcB44r
-         08CaTwxdgLKC2JffT68IPYyTue5HyS9eH7ikLBpla/57s3BTJ+4xsSdXN4lB3na5eevA
-         CU52bAJODnMyBLF4UKg3SNbnLnbTZ5SKthIznITkqTJXinHtcLkbRNX8JReg1QaupdQV
-         cDrc6R8rX2Vhblj5n5irkd+lIEr+EzDpTuCZr0XiosydNi7WpW6h0IwUd6FVtjb21Pio
-         4DCv5Y4bL+ZpYojiw9dEDJSTyH/Fp/ehE9FQ9AlEMv3hxGbM+I53QvUWJ1w+FrKvEuyX
-         0eaQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UZUHxL6dK/8dzR9N6s6AZeq1aeEEpSlSvFIxKEKChKA=;
+        b=qsJmNv2lvscxfX2ik0Ne+2iMwpcudN+70KShliyZwbkS/OPcZyB7kvwP1E/2REaPx6
+         vIIXtcCXFGQFsefJ6NXp52NUdX+iYVI994JXF3SOoU0CcOysrhSZkh6uhNiCAFsEwHm/
+         /F3brgRGedJU0VA7Dv2/Ct9sMb1BFWV2dPvQbFw3FUd7V3XE0sA6bC+kGALoByCa6jbx
+         TcfwKTILVttfKtCEQhGhqp9j8yKEBxu0lmi8too2ZodJPlffxHN0SMzN3FMX34qqGQTp
+         aAMAv5t5uX6VYYLM1dnCH6mC3iN8RoBt64oMM8PT+vP+upfVdyMgp9Zs7qO0ESXtXEBL
+         2jLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=m6PwKC0GGKuK1AQCcfQJuTFB4k9S8lgpVMeQgt9tC7M=;
-        b=mb/gXF7O61HCOv4YtEn3mhuGnkbDvQOs7KaPX0JineUjtEeer+ZLz6ejbAgVcSX8D6
-         teDefBB4Hu1r7tAWxU4oXTjzsYIMYkTioOeA/S5RT7CD7I+89yssEblEW0X5lqi1mJhv
-         FJlT7k7Z2c1yZQXl0JMCSu17fAtQ+fwsfvRm8DdiUNNuqh9LCrU8KS2DMmYAYLCxzJ+U
-         nICeNwndIX9HK0/Kc/4dstNYTYioTZJb7c+5d6kxqUVol9VwJz/DW8xkGUYkly9w739Q
-         TblMDIA5QnjAvhoVWAkAmjLyKHkS6Jx3Lg4qJHS3gakkgvA8ZOTcle4DHMmVwSWo84xS
-         KZZQ==
-X-Gm-Message-State: AGi0PuYebcIvlEKFcb082/srDUGTRoxTHokwnjUmvuD9Mdt8Rf0dGHR7
-        BQ0aDVrL0WX86h7qjuMj1hE2dQ8OVMNUu0sM
-X-Google-Smtp-Source: APiQypIDsTyVBV8sQuS/K/6cCNcKKifc+7wFf6IB98XX1bm8I0BIRm6w640Gs6sWGa5I5em0HqkaiA==
-X-Received: by 2002:adf:efcc:: with SMTP id i12mr2830699wrp.325.1588943511317;
-        Fri, 08 May 2020 06:11:51 -0700 (PDT)
-Received: from [10.8.0.6] ([5.2.67.190])
-        by smtp.gmail.com with ESMTPSA id 88sm3139115wrq.77.2020.05.08.06.11.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 May 2020 06:11:50 -0700 (PDT)
-Subject: Re: [PATCH v4 00/12] PCI: aardvark: Fix support for Turris MOX and
- Compex wifi cards
-To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Remi Pommarel <repk@triplefau.lt>,
-        =?UTF-8?Q?Marek_Beh=c3=ban?= <marek.behun@nic.cz>,
-        Xogium <contact@xogium.me>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org
-References: <20200430080625.26070-1-pali@kernel.org>
-From:   Tomasz Maciej Nowak <tmn505@gmail.com>
-Message-ID: <6ff6d161-adba-9e5c-5a4a-1bfa49de0fc4@gmail.com>
-Date:   Fri, 8 May 2020 15:11:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UZUHxL6dK/8dzR9N6s6AZeq1aeEEpSlSvFIxKEKChKA=;
+        b=qcsk72mq6r2ml5fdqZQZtWq8Yfbrgf/naRkL3RbkjUBSrDXSGUx+nAAivNoC02tCv2
+         /YChUMCu3UlcU+cmsA63rbCXR0B27jG1TgbsWarimOh9hM34ZyvEw1+rWH4cAF+KOJ/L
+         pqylee/ICDJgVjoM1o2OdTs1gWlpmxbDDjNkKsyH3d1sLehIT4/jjxSOZmeOmbB6knCI
+         ct8qRymKclgB92orfZAIYmLOarEtuJZZTxspUuqzK/ThDape8/4ahiXraxueSMVHgzZ1
+         d61kUDTA+615nhZT0Q206yPshNUg9gUja6RzyIlrNvIJeTXWVAZhahJAcsbSUvic+Rtd
+         Vlsg==
+X-Gm-Message-State: AGi0PuZdITTi7Kiajq8SmDHmHeYPw6vfygz+XeL+kXdc9tALZK1hDc//
+        K3UUZ1NcXuBbRTSFDykb86EnAqznLGFJrDXC6gjREg==
+X-Google-Smtp-Source: APiQypJcJJf4FWxZRHAgRmZI60uj695OdBwj45e7L8i9yMDpq9iE5MmqC6vak2XFQW19zVXsnyrmwa3h7nYYR8d3rZs=
+X-Received: by 2002:a25:e082:: with SMTP id x124mr4441633ybg.509.1588943626311;
+ Fri, 08 May 2020 06:13:46 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200430080625.26070-1-pali@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200508083729.5560-1-chris.ruehl@gtsys.com.hk> <20200508083729.5560-2-chris.ruehl@gtsys.com.hk>
+In-Reply-To: <20200508083729.5560-2-chris.ruehl@gtsys.com.hk>
+From:   Emil Renner Berthing <emil.renner.berthing@gmail.com>
+Date:   Fri, 8 May 2020 15:13:35 +0200
+Message-ID: <CANBLGcwA+=OB-_nOYUijWrDBSkLYhR7_PNG1ewO7LZ-zRVGoxg@mail.gmail.com>
+Subject: Re: [PATCH v0 1/1] spi: spi-rockchip: add support for spi slave_mode
+To:     Chris Ruehl <chris.ruehl@gtsys.com.hk>
+Cc:     Jack Lo <jack.lo@gtsys.com.hk>, Heiko Stuebner <heiko@sntech.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-spi@vger.kernel.org,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Mark Brown <broonie@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-W dniu 30.04.2020 o 10:06, Pali Rohár pisze:
-> Hello,
-> 
-> this is the fourth version of the patch series for Armada 3720 PCIe
-> controller (aardvark). It's main purpose is to fix some bugs regarding
-> buggy ath10k cards, but we also found out some suspicious stuff about
-> the driver and the SOC itself, which we try to address.
-> 
-> Patches are available also in my git branch pci-aardvark:
-> https://git.kernel.org/pub/scm/linux/kernel/git/pali/linux.git/log/?h=pci-aardvark
-> 
-> Changes since v3:
-> - do not change return value of of_pci_get_max_link_speed() function
-> - mark zero 'max-link-speed' as invalid
-> - silently use gen3 speed when 'max-link-speed' as invalid
-> 
-> Changes since v2:
-> - move PCIe max-link-speed property to armada-37xx.dtsi
-> - replace custom macros by standard linux/pci_regs.h macros
-> - increase PERST delay to 10ms (needed for initialized Compex WLE900VX)
-> - disable link training before PERST (needed for Compex WLE900VX)
-> - change of_pci_get_max_link_speed() function to signal -ENOENT
-> - handle errors from of_pci_get_max_link_speed() function
-> - updated comments, commit titles and messages
-> 
-> Changes since v1:
-> - commit titles and messages were reviewed and some of them were rewritten
-> - patches 1 and 5 from v1 which touch PCIe speed configuration were
->   reworked into one patch
-> - patch 2 from v1 was removed, it is not needed anymore
-> - patch 7 from v1 now touches the device tree of armada-3720-db
-> - a patch was added that tries to enable PCIe PHY via generic-phy API
->   (if a phandle to the PHY is found in the device tree)
-> - a patch describing the new PCIe node DT properties was added
-> - a patch was added that moves the PHY phandle from board device trees
->   to armada-37xx.dtsi
-> 
-> Marek and Pali
-> 
-> Marek Behún (5):
->   PCI: aardvark: Improve link training
->   PCI: aardvark: Add PHY support
->   dt-bindings: PCI: aardvark: Describe new properties
->   arm64: dts: marvell: armada-37xx: Set pcie_reset_pin to gpio function
->   arm64: dts: marvell: armada-37xx: Move PCIe comphy handle property
-> 
-> Pali Rohár (7):
->   PCI: aardvark: Train link immediately after enabling training
->   PCI: aardvark: Don't blindly enable ASPM L0s and don't write to
->     read-only register
->   PCI: of: Zero max-link-speed value is invalid
->   PCI: aardvark: Issue PERST via GPIO
->   PCI: aardvark: Add FIXME comment for PCIE_CORE_CMD_STATUS_REG access
->   PCI: aardvark: Replace custom macros by standard linux/pci_regs.h
->     macros
->   arm64: dts: marvell: armada-37xx: Move PCIe max-link-speed property
+Hi Chris,
 
-Hi.
-The PCI interface seems to work fine as in the first series, so
+On Fri, 8 May 2020 at 10:47, Chris Ruehl <chris.ruehl@gtsys.com.hk> wrote:
+>
+> This patch aim to add spi slave mode support to the rockchip driver.
+> Fix the wrong usage of num_cs set fix to ROCKCHIP_SPI_MAX_CS_NUM,
+> instead use max_native_cs flag to set the limit of native chip-select.
+> Enable use_gpio_descriptors to have cs_gpiod for gpio based chip-selects.
+>
+> Signed-off-by: Chris Ruehl <chris.ruehl@gtsys.com.hk>
+> ---
+>  drivers/spi/spi-rockchip.c | 46 +++++++++++++++++++++++++++++++++-----
+>  1 file changed, 41 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/spi/spi-rockchip.c b/drivers/spi/spi-rockchip.c
+> index 70ef63e0b6b8..9c1ff52c0f85 100644
+> --- a/drivers/spi/spi-rockchip.c
+> +++ b/drivers/spi/spi-rockchip.c
+> @@ -183,6 +183,9 @@ struct rockchip_spi {
+>         u8 rsd;
+>
+>         bool cs_asserted[ROCKCHIP_SPI_MAX_CS_NUM];
+> +
+> +       bool slave_mode;
+> +       bool slave_abort;
+>  };
+>
+>  static inline void spi_enable_chip(struct rockchip_spi *rs, bool enable)
+> @@ -359,7 +362,7 @@ static void rockchip_spi_dma_rxcb(void *data)
+>         struct rockchip_spi *rs = spi_master_get_devdata(master);
+>         int state = atomic_fetch_andnot(RXDMA, &rs->state);
+>
+> -       if (state & TXDMA)
+> +       if (state & TXDMA && !rs->slave_abort)
+>                 return;
+>
+>         spi_enable_chip(rs, false);
+> @@ -372,7 +375,7 @@ static void rockchip_spi_dma_txcb(void *data)
+>         struct rockchip_spi *rs = spi_master_get_devdata(master);
+>         int state = atomic_fetch_andnot(TXDMA, &rs->state);
+>
+> -       if (state & RXDMA)
+> +       if (state & RXDMA && !rs->slave_abort)
+>                 return;
+>
+>         /* Wait until the FIFO data completely. */
+> @@ -466,6 +469,10 @@ static void rockchip_spi_config(struct rockchip_spi *rs,
+>         u32 cr1;
+>         u32 dmacr = 0;
+>
+> +       if (rs->slavemode)
+> +               cr0 |= CR0_OPM_SLAVE << CR0_OPM_OFFSET;
+> +       rs->slave_abort = false;
+> +
+>         cr0 |= rs->rsd << CR0_RSD_OFFSET;
+>         cr0 |= (spi->mode & 0x3U) << CR0_SCPH_OFFSET;
+>         if (spi->mode & SPI_LSB_FIRST)
+> @@ -535,6 +542,16 @@ static size_t rockchip_spi_max_transfer_size(struct spi_device *spi)
+>         return ROCKCHIP_SPI_MAX_TRANLEN;
+>  }
+>
+> +static int rockchip_spi_slave_abort(struct spi_master *master)
+> +{
+> +       struct rockchip_spi *rs = spi_master_get_devdata(master);
+> +
+> +       rs->slave_abort = true;
+> +       complete(master);
+> +
+> +       return 0;
+> +}
+> +
+>  static int rockchip_spi_transfer_one(
+>                 struct spi_master *master,
+>                 struct spi_device *spi,
+> @@ -589,14 +606,25 @@ static int rockchip_spi_probe(struct platform_device *pdev)
+>         struct spi_master *master;
+>         struct resource *mem;
+>         u32 rsd_nsecs;
+> +       bool slave_mode;
+> +       u32 num_cs = 1;
+> +
+> +       slave_mode = of_property_read_bool(np, "spi-slave");
+> +
+> +       if (slave_mode)
+> +               master = spi_alloc_slave(&pdev->dev,
+> +                               sizeof(struct rockchip_spi));
+> +       else
+> +               master = spi_alloc_master(&pdev->dev,
+> +                               sizeof(struct rockchip_spi));
+>
+> -       master = spi_alloc_master(&pdev->dev, sizeof(struct rockchip_spi));
+>         if (!master)
+>                 return -ENOMEM;
+>
+>         platform_set_drvdata(pdev, master);
+>
+>         rs = spi_master_get_devdata(master);
+> +       rs->slave_mode = slave_mode;
 
-Tested-by: Tomasz Maciej Nowak <tmn505@gmail.com>
+This entry doesn't seem to be read from any of your code, and even it
+it was, the same information is available in master->slave, so I don't
+see why you need it in the rockchip_spi struct.
 
--- 
-TMN
+Also spi_master is just #defined to spi_controller in spi.h, so maybe
+consider changing all 'struct spi_master *master' to 'struct
+spi_controller *ctrl' now that the driver supports both modes.
+
+>
+>         /* Get basic io resource and map it */
+>         mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> @@ -676,7 +704,16 @@ static int rockchip_spi_probe(struct platform_device *pdev)
+>         master->auto_runtime_pm = true;
+>         master->bus_num = pdev->id;
+>         master->mode_bits = SPI_CPOL | SPI_CPHA | SPI_LOOP | SPI_LSB_FIRST;
+> -       master->num_chipselect = ROCKCHIP_SPI_MAX_CS_NUM;
+> +       if (slave_mode) {
+> +               master->mode_bits |= SPI_NO_CS;
+> +               master->slave_abort = rockchip_spi_slave_abort;
+> +       } else {
+> +               of_property_read_u32(np, "num-cs", &num_cs);
+> +               master->num_chipselect = num_cs;
+
+If you do something like this you won't need the temporary num_cs variable:
+
+if (of_property_read_u32(np, "num-cs", &master->num_chipselect))
+    master->num_chipselect = 1;
+
+Also it seems like you're changing the default from
+ROCKCHIP_SPI_MAX_CS_NUM to 1 if there is no num-cs property. Did you
+check that all boards either have the num-cs property defined or only
+needs num_chipselect = 1?
+
+> +               master->use_gpio_descriptors = true;
+> +               master->max_native_cs = ROCKCHIP_SPI_MAX_CS_NUM;
+> +               master->flags = SPI_MASTER_GPIO_SS;
+> +       }
+>         master->dev.of_node = pdev->dev.of_node;
+>         master->bits_per_word_mask = SPI_BPW_MASK(16) | SPI_BPW_MASK(8) | SPI_BPW_MASK(4);
+>         master->min_speed_hz = rs->freq / BAUDR_SCKDV_MAX;
+> @@ -686,7 +723,6 @@ static int rockchip_spi_probe(struct platform_device *pdev)
+>         master->transfer_one = rockchip_spi_transfer_one;
+>         master->max_transfer_size = rockchip_spi_max_transfer_size;
+>         master->handle_err = rockchip_spi_handle_err;
+> -       master->flags = SPI_MASTER_GPIO_SS;
+>
+>         master->dma_tx = dma_request_chan(rs->dev, "tx");
+>         if (IS_ERR(master->dma_tx)) {
+> --
+> 2.20.1
+>
+>
+> _______________________________________________
+> Linux-rockchip mailing list
+> Linux-rockchip@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-rockchip
