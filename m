@@ -2,103 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F93B1CA038
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 03:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC1FA1CA041
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 03:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726942AbgEHBnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 21:43:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41418 "EHLO
+        id S1726891AbgEHBqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 21:46:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726509AbgEHBnn (ORCPT
+        by vger.kernel.org with ESMTP id S1726509AbgEHBqe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 21:43:43 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A290C05BD43;
-        Thu,  7 May 2020 18:43:43 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49JClw4J0pz9sRY;
-        Fri,  8 May 2020 11:43:40 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1588902221;
-        bh=1wLoxkkY9YL7HHfDN3xPSDGcQoGfNr7wJukvvyf1oa4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=qJ72SvLFl47rBhtq2X7x6/EFJScJP9TYDPssBU0kNDfkDo4gPKG0uoCPcdnH9aqdo
-         tG0XHLX/R5WfymPB8DOnaH72919jMUlRElJqK8gNBfdy3VBMH18XQ059AuN0+5ovnp
-         em+dC5DoIhB0fHJoUotMPkwU8zK1SlWWz9cxRpx/NDHygrUcfn01BjG2RAfZS+ztQc
-         mUKn8BI5hwmk3PwiACQSszKhChn/jX6cmYYdBx5wef/4avUsZmEvjLAkrnz2i69Ab7
-         29if27k0DE5R0I/gqKinvuYaoL47d4P6L7XnRRsKnws7/Kfm0xSxGYzRnYKPP09d0P
-         z5IE3iPvyVnsA==
-Date:   Fri, 8 May 2020 11:43:38 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>
-Subject: Re: linux-next: build failure after merge of the akpm-current tree
-Message-ID: <20200508114338.02d2b843@canb.auug.org.au>
-In-Reply-To: <20200507221721.0330271c@canb.auug.org.au>
-References: <20200507221721.0330271c@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/gWV6hIMcFCsa=dV2OB6P/I.";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        Thu, 7 May 2020 21:46:34 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5635BC05BD43
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 18:46:34 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id 18so94579pfx.6
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 18:46:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=alS8Kr7RIS62zN20gJA22RVwlZfBznZKCMd7Fh+rxNs=;
+        b=GeSWVtCymiM2pRkZiRajPWrIg9Phe4A4Dum5/RXbulyy2pTFx37DkoJ3vgJQPbq9MW
+         mf3uvUdLVFUtj9TWWhRT4xsy8nPUrV4+kNmUbV+M7J5x3KDLwvZrEpcORIanmdZcqaot
+         xVrXu8dWMeOmcaGLN/uQNUT78TTuflDHZl2mgS0hD4Fv30ARH5wq6EYUkk7d2cVLE3o1
+         VVGDDhKvyXHaYrqSX8RUuNe7an0f+NXBxeHDBAvAekTxjoSMyhjFrFuWV5ms0PxgUn++
+         DCWmhcZ0pwc2yf9xKUCbHIMTNVAujIBZ8dFVTgSZ+bE6FWjuSyjf9XidcD1luwSLW9Z4
+         hiNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=alS8Kr7RIS62zN20gJA22RVwlZfBznZKCMd7Fh+rxNs=;
+        b=Qd9E5SBrXd9oArEDpiCTS7fsGhE51TK+f8Tqe1IDnNb/+TFWV7VVRdqx22kZ1lfL8x
+         3arUeBLGq/VkpyRKX3YyPs9FD76eW0K208sXKYuGwNM7v8Afw35EJmkepbUrhEx6D41K
+         mSCe+qrFmqNfNUuG99oJQjKXWv6fDLEtoiTBk3A6SsMJczoyHfd7JAX/I8VhUJFO9GKM
+         iRT100Dd51SFi0hZBuv8mDacOXMzGRJJ1VRDAVBs+DVna1hCKnCgVRIosupThrRMuFRc
+         uW8qTnnOp4A7QtJklhlF/n163d78K2im1xBcdFl32dDL0yyit/gTuQyk65vJXA0yjNU6
+         JM+A==
+X-Gm-Message-State: AGi0PuZ5kVGs7QeLfQCULmCqGQj7fkDkeBRrwWaxigW+PkLb/LM4q6Lz
+        b5Jqe2kx0SD4QCDaZniQzxQ=
+X-Google-Smtp-Source: APiQypJnSQcMaolrg+UI+/NNrYXp5sdhjMIzzc+8xWsfA0ZYycN3cwtOCSb4v/IJVPkWRFUHNgwBkg==
+X-Received: by 2002:a05:6a00:c8:: with SMTP id e8mr275081pfj.206.1588902393523;
+        Thu, 07 May 2020 18:46:33 -0700 (PDT)
+Received: from fmin-OptiPlex-7060.nreal.work ([103.206.190.146])
+        by smtp.gmail.com with ESMTPSA id f74sm9270816pje.3.2020.05.07.18.46.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 07 May 2020 18:46:33 -0700 (PDT)
+From:   dillon.minfei@gmail.com
+To:     mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
+        philippe.schenker@toradex.com
+Cc:     linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        dillon min <dillon.minfei@gmail.com>
+Subject: [PATCH v3 0/4] Enable stmpe811 touch screen on stm32f429-disco board
+Date:   Fri,  8 May 2020 09:46:24 +0800
+Message-Id: <1588902388-4596-1-git-send-email-dillon.minfei@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/gWV6hIMcFCsa=dV2OB6P/I.
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: dillon min <dillon.minfei@gmail.com>
 
-Hi all,
+This patchset is intend to enable stmpe811 touch screen on stm32f429-disco
+board with three dts and one i2c driver changes.
 
-On Thu, 7 May 2020 22:17:21 +1000 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
->
-> After merging the akpm-current tree, today's linux-next build (arm
-> collie_defconfig and many others) failed like this:
->=20
-> arch/arm/mm/dma-mapping.c: In function 'dma_cache_maint_page':
-> arch/arm/mm/dma-mapping.c:892:6: error: implicit declaration of function =
-'kunmap_high' [-Werror=3Dimplicit-function-declaration]
->       kunmap_high(page);
->       ^
-> arch/arm/mm/flush.c: In function '__flush_dcache_page':
-> arch/arm/mm/flush.c:221:6: error: implicit declaration of function 'kunma=
-p_high' [-Werror=3Dimplicit-function-declaration]
->       kunmap_high(page + i);
->       ^
->=20
-> Caused by commit
->=20
->   6b66ab470b4d ("arch/kunmap: remove duplicate kunmap implementations")
->=20
-> kunmap_high() is now only declared when CONFIG_HIGHMEM is defined.
+has been validated by ts_print tool
 
-Is there anything that can be done quickly about this as it broke a
-large number of builds ...
+Changes log:
 
---=20
-Cheers,
-Stephen Rothwell
+V3: just add change log in [PATCH V3 3/4] below ---
 
---Sig_/gWV6hIMcFCsa=dV2OB6P/I.
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+V2: remove id, blocks, irq-trigger from stmpe811 dts
 
------BEGIN PGP SIGNATURE-----
+V1:
+    ARM: dts: stm32: add I2C3 support on STM32F429 SoC
+    ARM: dts: stm32: Add pin map for I2C3 controller on stm32f4
+    ARM: dts: stm32: enable stmpe811 on stm32429-disco board
+    i2c: stm32f4: Fix stmpe811 get xyz data timeout issue
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl60uUoACgkQAVBC80lX
-0GyOuAgAkfoqA2UzIk5jra5cPLhHMe8/Ug0E3/DxEX/uFHLBQ9wRytAT8SM1Ty0O
-ssm13c5YtZOHfOeWFvyh746gw9QcXB8ORUdeeW1/bbtoFRwq/kptP0RRP9mHz+RA
-rAHaT/DDYsHB+JRKkjyJYk4Y4uy4L+9B0wBA6wRlIqs+c6PPPom9gbayk+kD0nLd
-I3bVjDPCYbov5w1y1K0pzXCalg2XNsaKEHT8Zqtf7QA4eoNTGQX/2unOdTMAFWrJ
-bfjnnIoNzzReNB+w0dYD5XOE0Tf1CiwUsjZ8kVR0Jla9cwmBst/liRylTkV1QtV+
-dDMn35nM00Tz09aVVCWKnTNxbiPEvA==
-=P9ww
------END PGP SIGNATURE-----
+dillon min (4):
+  ARM: dts: stm32: add I2C3 support on STM32F429 SoC
+  ARM: dts: stm32: Add pin map for I2C3 controller on stm32f4
+  ARM: dts: stm32: enable stmpe811 on stm32429-disco board
+  i2c: stm32f4: Fix stmpe811 get xyz data timeout issue
 
---Sig_/gWV6hIMcFCsa=dV2OB6P/I.--
+ arch/arm/boot/dts/stm32f4-pinctrl.dtsi | 12 +++++++++
+ arch/arm/boot/dts/stm32f429-disco.dts  | 47 ++++++++++++++++++++++++++++++++++
+ arch/arm/boot/dts/stm32f429.dtsi       | 12 +++++++++
+ drivers/i2c/busses/i2c-stm32f4.c       |  6 ++---
+ 4 files changed, 74 insertions(+), 3 deletions(-)
+
+-- 
+2.7.4
+
