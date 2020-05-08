@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 030611CA8A9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 12:54:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6E7B1CA8C2
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 12:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727831AbgEHKxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 06:53:23 -0400
-Received: from mga01.intel.com ([192.55.52.88]:39631 "EHLO mga01.intel.com"
+        id S1727925AbgEHKyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 06:54:13 -0400
+Received: from mga04.intel.com ([192.55.52.120]:14356 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727121AbgEHKxW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 06:53:22 -0400
-IronPort-SDR: pZ4a/3DS3OJRyv61tBJoRRgfd7cAxnIoQ59p+kTOtP9YmQimsMWsk1cRo1ZTMoMylzLLofy4Bt
- soxMuyiUxjvQ==
+        id S1726091AbgEHKyN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 06:54:13 -0400
+IronPort-SDR: O6QlClkhZYPFBw9s7YfYOOVPYbRMOcTYAoPt8m3gcws6ZbYT7b5aSU0vdcEAu93Q4K1a641n+E
+ GfDszH6jZJYA==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2020 03:53:22 -0700
-IronPort-SDR: 8McVCCELIja3m7yiNksP4+DOph/HgK89isJSHPrBAM9Jg0r9nDfcx6gtr0KH5h80TRGvQI29CF
- vuUvTK4aOd8Q==
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2020 03:54:11 -0700
+IronPort-SDR: CA7gJTH3lUJ69SSEFGjJQa+cCHIHDvI87CRz4eqyRq1T34fYKozBur+E58VMr/Yf3cC8j3qeIj
+ v15opxaLgGrg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.73,367,1583222400"; 
-   d="scan'208";a="250365776"
+   d="scan'208";a="407992467"
 Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga007.fm.intel.com with ESMTP; 08 May 2020 03:53:22 -0700
+  by orsmga004.jf.intel.com with ESMTP; 08 May 2020 03:54:11 -0700
 Received: from [10.249.224.104] (abudanko-mobl.ccr.corp.intel.com [10.249.224.104])
-        by linux.intel.com (Postfix) with ESMTP id 3E0815805B4;
-        Fri,  8 May 2020 03:53:20 -0700 (PDT)
-Subject: [PATCH v3 8/9] perf record: implement control commands handling
+        by linux.intel.com (Postfix) with ESMTP id A9E9A5805B4;
+        Fri,  8 May 2020 03:54:09 -0700 (PDT)
+Subject: [PATCH v3 9/9] perf record: introduce --ctl-fd[-ack] options
 From:   Alexey Budankov <alexey.budankov@linux.intel.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Jiri Olsa <jolsa@redhat.com>
@@ -39,8 +39,8 @@ Cc:     Namhyung Kim <namhyung@kernel.org>,
         linux-kernel <linux-kernel@vger.kernel.org>
 References: <0b63e751-5c45-3311-d930-15f1ebe72601@linux.intel.com>
 Organization: Intel Corp.
-Message-ID: <26304bd6-33b1-2104-51e3-f9f75c577058@linux.intel.com>
-Date:   Fri, 8 May 2020 13:53:18 +0300
+Message-ID: <fae71acb-350f-be18-3e35-a2c66ff38430@linux.intel.com>
+Date:   Fri, 8 May 2020 13:54:07 +0300
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
@@ -54,52 +54,122 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Implement handling of 'enable' and 'disable' control commands
-coming from control file descriptor.
+Introduce --ctl-fd[-ack] options to pass open file descriptors numbers
+from command line. Extend perf-record.txt file with --ctl-fd[-ack]
+options description. Document possible usage model introduced by
+--ctl-fd[-ack] options by providing example bash shell script.
 
 Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
 ---
- tools/perf/builtin-record.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+ tools/perf/Documentation/perf-record.txt | 39 ++++++++++++++++++++++++
+ tools/perf/builtin-record.c              |  9 ++++++
+ tools/perf/util/record.h                 |  2 ++
+ 3 files changed, 50 insertions(+)
 
+diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
+index c2c4ce7ccee2..5c012cfe68a4 100644
+--- a/tools/perf/Documentation/perf-record.txt
++++ b/tools/perf/Documentation/perf-record.txt
+@@ -614,6 +614,45 @@ appended unit character - B/K/M/G
+ 	The number of threads to run when synthesizing events for existing processes.
+ 	By default, the number of threads equals 1.
+ 
++--ctl-fd::
++--ctl-fd-ack::
++Listen on ctl-fd descriptor for command to control measurement ('enable': enable events,
++'disable': disable events. Optionally send control command completion ('ack') to fd-ack
++descriptor to synchronize with the controlling process. Example of bash shell script
++to enable and disable events during measurements:
++
++#!/bin/bash
++
++ctl_dir=/tmp/
++
++ctl_fifo=${ctl_dir}perf_ctl.fifo
++test -p ${ctl_fifo} && unlink ${ctl_fifo}
++mkfifo ${ctl_fifo}
++exec {ctl_fd}<>${ctl_fifo}
++
++ctl_ack_fifo=${ctl_dir}perf_ctl_ack.fifo
++test -p ${ctl_ack_fifo} && unlink ${ctl_ack_fifo}
++mkfifo ${ctl_ack_fifo}
++exec {ctl_fd_ack}<>${ctl_ack_fifo}
++
++perf record -D -1 -e cpu-cycles -a                        \
++            --ctl-fd ${ctl_fd} --ctl-fd-ack ${ctl_fd_ack} \
++            -- sleep 30 &
++perf_pid=$!
++
++sleep 5  && echo 'enable' >&${ctl_fd} && read -u ${ctl_fd_ack} e1 && echo "enabled(${e1})"
++sleep 10 && echo 'disable' >&${ctl_fd} && read -u ${ctl_fd_ack} d1 && echo "disabled(${d1})"
++
++exec {ctl_fd_ack}>&-
++unlink ${ctl_ack_fifo}
++
++exec {ctl_fd}>&-
++unlink ${ctl_fifo}
++
++wait -n ${perf_pid}
++exit $?
++
++
+ SEE ALSO
+ --------
+ linkperf:perf-stat[1], linkperf:perf-list[1], linkperf:perf-intel-pt[1]
 diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index 44fba34bc5aa..3ed352508b83 100644
+index 3ed352508b83..252d86b34e0e 100644
 --- a/tools/perf/builtin-record.c
 +++ b/tools/perf/builtin-record.c
-@@ -1496,6 +1496,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
- 	bool disabled = false, draining = false;
- 	int fd;
- 	float ratio = 0;
-+	enum evlist_ctl_cmd cmd = EVLIST_CTL_CMD_UNSUPPORTED;
+@@ -1704,6 +1704,8 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ 		perf_evlist__start_workload(rec->evlist);
+ 	}
  
- 	atexit(record__sig_exit);
- 	signal(SIGCHLD, sig_handler);
-@@ -1793,8 +1794,23 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
- 			 * Propagate error, only if there's any. Ignore positive
- 			 * number of returned events and interrupt error.
- 			 */
--			if (err > 0 || (err < 0 && errno == EINTR))
-+			if (err > 0 || (err < 0 && errno == EINTR)) {
- 				err = 0;
-+				if (evlist__ctlfd_process(rec->evlist, &cmd) > 0) {
-+					switch (cmd) {
-+					case EVLIST_CTL_CMD_ENABLE:
-+						pr_info(EVLIST_ENABLED_MSG);
-+						break;
-+					case EVLIST_CTL_CMD_DISABLE:
-+						pr_info(EVLIST_DISABLED_MSG);
-+						break;
-+					case EVLIST_CTL_CMD_ACK:
-+					case EVLIST_CTL_CMD_UNSUPPORTED:
-+					default:
-+						break;
-+					}
-+				}
-+			}
- 			waking++;
++	evlist__initialize_ctlfd(rec->evlist, opts->ctl_fd, opts->ctl_fd_ack);
++
+ 	if (opts->initial_delay) {
+ 		pr_info(EVLIST_DISABLED_MSG);
+ 		if (opts->initial_delay > 0) {
+@@ -1850,6 +1852,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ 		record__synthesize_workload(rec, true);
  
- 			if (evlist__filter_pollfd(rec->evlist, POLLERR | POLLHUP) == 0)
+ out_child:
++	evlist__finalize_ctlfd(rec->evlist);
+ 	record__mmap_read_all(rec, true);
+ 	record__aio_mmap_read_sync(rec);
+ 
+@@ -2331,6 +2334,8 @@ static struct record record = {
+ 		},
+ 		.mmap_flush          = MMAP_FLUSH_DEFAULT,
+ 		.nr_threads_synthesize = 1,
++		.ctl_fd              = -1,
++		.ctl_fd_ack          = -1,
+ 	},
+ 	.tool = {
+ 		.sample		= process_sample_event,
+@@ -2526,6 +2531,10 @@ static struct option __record_options[] = {
+ 	OPT_UINTEGER(0, "num-thread-synthesize",
+ 		     &record.opts.nr_threads_synthesize,
+ 		     "number of threads to run for event synthesis"),
++	OPT_INTEGER(0, "ctl-fd", &record.opts.ctl_fd,
++		    "Listen on fd descriptor for command to control measurement ('enable': enable events, 'disable': disable events)"),
++	OPT_INTEGER(0, "ctl-fd-ack", &record.opts.ctl_fd_ack,
++		    "Send control command completion ('ack') to fd ack descriptor"),
+ 	OPT_END()
+ };
+ 
+diff --git a/tools/perf/util/record.h b/tools/perf/util/record.h
+index 96a73bbd8cd4..da18aeca3623 100644
+--- a/tools/perf/util/record.h
++++ b/tools/perf/util/record.h
+@@ -69,6 +69,8 @@ struct record_opts {
+ 	int	      mmap_flush;
+ 	unsigned int  comp_level;
+ 	unsigned int  nr_threads_synthesize;
++	int	      ctl_fd;
++	int	      ctl_fd_ack;
+ };
+ 
+ extern const char * const *record_usage;
 -- 
 2.24.1
-
 
