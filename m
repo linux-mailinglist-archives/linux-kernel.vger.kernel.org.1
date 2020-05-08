@@ -2,81 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0D3B1CADC6
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:06:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 473311CAEEC
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:16:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729912AbgEHNEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:04:45 -0400
-Received: from mout.kundenserver.de ([212.227.17.24]:43063 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729403AbgEHNEo (ORCPT
+        id S1729841AbgEHNM2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 May 2020 09:12:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730022AbgEHNEt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 09:04:44 -0400
-Received: from mail-qt1-f172.google.com ([209.85.160.172]) by
- mrelayeu.kundenserver.de (mreue108 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MWiUg-1jda6M41pw-00X5Sl for <linux-kernel@vger.kernel.org>; Fri, 08 May
- 2020 15:04:43 +0200
-Received: by mail-qt1-f172.google.com with SMTP id p12so1098308qtn.13
-        for <linux-kernel@vger.kernel.org>; Fri, 08 May 2020 06:04:42 -0700 (PDT)
-X-Gm-Message-State: AGi0PuY5Ti0+VgcYk494vqasUJQwfTeM231S0FinofdigCBuyAqeRtz3
-        iDDwAcjX8/V8HzQ2UGq4a8709cBC1FkMvP1EBOU=
-X-Google-Smtp-Source: APiQypIZ9fdqzV8K0kDUREFLcJsaykAVZ2bsF1OGHTkx0WBZDXdS7/8/nju+VojGbtFyqXxRP7MUeq1/6F/8sVfJ8cs=
-X-Received: by 2002:ac8:4c8d:: with SMTP id j13mr2841736qtv.142.1588943081780;
- Fri, 08 May 2020 06:04:41 -0700 (PDT)
+        Fri, 8 May 2020 09:04:49 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06C52C05BD0B;
+        Fri,  8 May 2020 06:04:49 -0700 (PDT)
+Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tip-bot2@linutronix.de>)
+        id 1jX2gB-00073n-Cl; Fri, 08 May 2020 15:04:39 +0200
+Received: from [127.0.1.1] (localhost [IPv6:::1])
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id EF32D1C0080;
+        Fri,  8 May 2020 15:04:38 +0200 (CEST)
+Date:   Fri, 08 May 2020 13:04:38 -0000
+From:   "tip-bot2 for Arnaldo Carvalho de Melo" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/core] perf flamegraph: Use /bin/bash for report and record scripts
+Cc:     daniel.diaz@linaro.org, Andreas Gerstmayr <agerstmayr@redhat.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Olsa <jolsa@kernel.org>, lkft-triage@lists.linaro.org,
+        Namhyung Kim <namhyung@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <CAEUSe7_wmKS361mKLTB1eYbzYXcKkXdU26BX5BojdKRz8MfPCw@mail.gmail.com>
+References: <CAEUSe7_wmKS361mKLTB1eYbzYXcKkXdU26BX5BojdKRz8MfPCw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200507224530.2993316-1-Jason@zx2c4.com> <20200508090202.7s3kcqpvpxx32syu@butterfly.localdomain>
- <CAHmME9pTZTa9AEUL0-ojTr7P-F7NYe8OR9=-GBPaQNpnSDrEiw@mail.gmail.com>
- <20200508113336.2vdfdnc6tqyx4pu6@butterfly.localdomain> <CAK8P3a0dJ0vNnktcoWFiPKB4NJbeyf7nvwWf0YLyeUyxT5pvQg@mail.gmail.com>
- <CAHmME9p7Hri-vHfwR9GY1gPo91jVx4-hTqsZVRHiioUENRHibA@mail.gmail.com>
-In-Reply-To: <CAHmME9p7Hri-vHfwR9GY1gPo91jVx4-hTqsZVRHiioUENRHibA@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 8 May 2020 15:04:25 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a06DmZr4cJt=v+1uT4sT-E3yWkeg-YioyjK3GZR5Twunw@mail.gmail.com>
-Message-ID: <CAK8P3a06DmZr4cJt=v+1uT4sT-E3yWkeg-YioyjK3GZR5Twunw@mail.gmail.com>
-Subject: Re: [PATCH] Kconfig: default to CC_OPTIMIZE_FOR_PERFORMANCE_O3 for
- gcc >= 10
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     Oleksandr Natalenko <oleksandr@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:WtDCZNNOTxD3Xnxd13MZ0sZLkIez7V9W7kTAVGAzwjW02gEwKEb
- CzwwYOceaBhhylEk8GJDq6Wu/TXgpHM1qPbVJNszenKlYXCA+kAoKGyI3q0V1nIdf512iMk
- cRI8koOOa1tUi44QHIamukp1np1WgICPtYsgIiX+f+jXx3liQtbNO106Gx6Ub5KIeti2hNa
- DFDZ7g9gYtjZ8tvsvtAHQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ep5r8y5ZDnE=:wbxWA3LoH1dAhmPCmfc+kH
- iRg2MnuPVTcv6Z0u8juC/zvS9FNaN2upKEiZwNsFd1OnZykQNhlA06Apjs+zm0tKGGj7ZM4Qw
- a03mcFCSmZtMlGwKTAxieYpMgIZm1Oy9Im3uOR2Mmws3ayix7kB/py/GyFOWVsazFN1Ep7HE2
- 8higksKovRTCHnrYjReiDr7WlHu2QuUdDja1xMHtvCIn40MiFY13gzVI004QuArGAN6MQQ0Kg
- dJ9lZA9s8AKKYYoQSOYhMd3kCHnSmKF/rdovPNLPvt6YAtIaQaojUrQTx0mSfRL7Mx9F5ScY2
- Bnvv2zS+0vwtgLWPeW5lPrrdrK371ynh5/ksmjzK0RkLDBwufKoW8cm8VBKS+KPH/K3iZHs5b
- zWlLP0raSnmr/k6z9W2oLVsUdtqBjii6jk5f+bnqFjWoNuWctRBEhsOoSjyv2EodJXl9hMwNq
- JauphDDIWSkSY0qSO0ztE8CIwESexwpOcR9veall4WzDZ04sf60i5Q5AdnpTi3qUTV06d8NbN
- vHlAfHPx9/jn4Y58cZEsbWUKe0JSnMU1g6tlQVGynHk1OWf0SvKPzRvd8a/Zub8mG5Owd5+6W
- xnfzKyNxlUrBbndbDwpxv1u3ZM9N+zTZdxglZOhg4Qekps0WxdAfcJJSLEKxFxKt0J6MRW3FQ
- 2l3rRwBBGoFALaXbbIK4rE7Iwqc8qCkXOI3kbOxpG430YtHawwRiWiEbAcpV8WgecXeaNbjP/
- tTyQlGhofLM7V00rAYYV1Naj8kSTo/abuXLlepXye8St8oJZMN3j4DYT4NerwpmTAgq77qxHf
- 4U8vlmGWzrNWGHLyAPb04nA4Sp4eVSWaH9djEsEUxotUbUnM3s=
+Message-ID: <158894307885.8414.8667037968260608820.tip-bot2@tip-bot2>
+X-Mailer: tip-git-log-daemon
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8BIT
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 8, 2020 at 2:07 PM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
-> On Fri, May 8, 2020 at 5:56 AM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> The other significant thing -- and what prompted this patchset -- is
-> it looks like gcc 10 has lowered the inlining degree for -O2, and put
-> gcc 9's inlining parameters from -O2 into gcc-10's -O3.
+The following commit has been merged into the perf/core branch of tip:
 
-I suspect it is more complicated than that, as there are a number of
-parameters that determine inlining decisions. It's also not clear whether
-the ones for -O3 are generally better than the ones with -O2, or if it's
-just that whatever changed caused a few surprises but is otherwise
-preferable.
+Commit-ID:     19ce2321739da5fc27f6a5ed1e1cb15e384ad030
+Gitweb:        https://git.kernel.org/tip/19ce2321739da5fc27f6a5ed1e1cb15e384ad030
+Author:        Arnaldo Carvalho de Melo <acme@redhat.com>
+AuthorDate:    Tue, 05 May 2020 13:33:12 -03:00
+Committer:     Arnaldo Carvalho de Melo <acme@redhat.com>
+CommitterDate: Tue, 05 May 2020 16:35:32 -03:00
 
-Did you see regressions in specific modules, or just a general slowdown
-or growth in object size as the result?
+perf flamegraph: Use /bin/bash for report and record scripts
 
-      Arnd
+As all the other tools/perf/scripts/python/bin/*-{report,record}
+scripts, fixing the this problem reported by Daniel Diaz:
+
+  Our OpenEmbedded builds detected an issue with 5287f9269206 ("perf
+  script: Add flamegraph.py script"):
+    ERROR: perf-1.0-r9 do_package_qa: QA Issue:
+  /usr/libexec/perf-core/scripts/python/bin/flamegraph-report contained
+  in package perf-python requires /usr/bin/sh, but no providers found in
+  RDEPENDS_perf-python? [file-rdeps]
+
+  This means that there is a new binary pulled in in the shebang line
+  which was unaccounted for: `/usr/bin/sh`. I don't see any other usage
+  of /usr/bin/sh in the kernel tree (does not even exist on my Ubuntu
+  dev machine) but plenty of /bin/sh. This patch is needed:
+  -----8<----------8<----------8<-----
+  diff --git a/tools/perf/scripts/python/bin/flamegraph-record
+  b/tools/perf/scripts/python/bin/flamegraph-record
+  index 725d66e71570..a2f3fa25ef81 100755
+  --- a/tools/perf/scripts/python/bin/flamegraph-record
+  +++ b/tools/perf/scripts/python/bin/flamegraph-record
+  @@ -1,2 +1,2 @@
+  -#!/usr/bin/sh
+  +#!/bin/sh
+   perf record -g "$@"
+  diff --git a/tools/perf/scripts/python/bin/flamegraph-report
+  b/tools/perf/scripts/python/bin/flamegraph-report
+  index b1a79afd903b..b0177355619b 100755
+  --- a/tools/perf/scripts/python/bin/flamegraph-report
+  +++ b/tools/perf/scripts/python/bin/flamegraph-report
+  @@ -1,3 +1,3 @@
+  -#!/usr/bin/sh
+  +#!/bin/sh
+   # description: create flame graphs
+   perf script -s "$PERF_EXEC_PATH"/scripts/python/flamegraph.py -- "$@"
+  ----->8---------->8---------->8-----
+
+Fixes: 5287f9269206 ("perf script: Add flamegraph.py script")
+Reported-by: Daniel Díaz <daniel.diaz@linaro.org>
+Acked-by: Andreas Gerstmayr <agerstmayr@redhat.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: lkft-triage@lists.linaro.org
+Cc: Namhyung Kim <namhyung@kernel.org>
+Link: http://lore.kernel.org/lkml/CAEUSe7_wmKS361mKLTB1eYbzYXcKkXdU26BX5BojdKRz8MfPCw@mail.gmail.com
+Link: http://lore.kernel.org/lkml/20200505170320.GZ30487@kernel.org
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/perf/scripts/python/bin/flamegraph-record | 2 +-
+ tools/perf/scripts/python/bin/flamegraph-report | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tools/perf/scripts/python/bin/flamegraph-record b/tools/perf/scripts/python/bin/flamegraph-record
+index 725d66e..7df5a19 100755
+--- a/tools/perf/scripts/python/bin/flamegraph-record
++++ b/tools/perf/scripts/python/bin/flamegraph-record
+@@ -1,2 +1,2 @@
+-#!/usr/bin/sh
++#!/bin/bash
+ perf record -g "$@"
+diff --git a/tools/perf/scripts/python/bin/flamegraph-report b/tools/perf/scripts/python/bin/flamegraph-report
+index b1a79af..53c5dc9 100755
+--- a/tools/perf/scripts/python/bin/flamegraph-report
++++ b/tools/perf/scripts/python/bin/flamegraph-report
+@@ -1,3 +1,3 @@
+-#!/usr/bin/sh
++#!/bin/bash
+ # description: create flame graphs
+ perf script -s "$PERF_EXEC_PATH"/scripts/python/flamegraph.py -- "$@"
