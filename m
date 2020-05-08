@@ -2,121 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1EA91CAAE4
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:38:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DB1B1CAB19
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:40:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728243AbgEHMhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 08:37:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728206AbgEHMhl (ORCPT
+        id S1727944AbgEHMjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 08:39:53 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:48918 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727892AbgEHMj0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 08:37:41 -0400
-Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EABDEC05BD43
-        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 05:37:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=y7eo/kthFv+jU492am4UV1p0pzBvF+1Aydepv2pZArg=; b=ybDSzZt0JqS21b80ZdF+fQayMF
-        MdEpxnC5rcyb8ygtTOOX5nC8bKZqGNLuGqx2Hho/BTMiS9TzOC2dMHjy96VUN2telvLIA0Ye80Cu8
-        kesotaHeogF/CZUctpujx2hAUt48ZUMEjHlkVT6Ix/dBXOJH/XACsp88Cw1XpiDjrEDhzRDgEq3Ql
-        PuJhWRe9ve4+T4UrdlB3CBNiJ23/0ftZguTIRjRG/lsAYRJTPrzKGOyBNhGYXQ93uxoHJNVRmQffn
-        BxeKbE6lAr6ipMSrBwYb01Ntu9Y0rCS7kluUh78j2n5eM73aliUgTyZy9+XkTtkje3R29SaPdT3mQ
-        tP1/HwTg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jX2Fi-0001Pv-IF; Fri, 08 May 2020 12:37:18 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 03AE4306DC5;
-        Fri,  8 May 2020 14:37:15 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id BCC432B8D3817; Fri,  8 May 2020 14:37:15 +0200 (CEST)
-Date:   Fri, 8 May 2020 14:37:15 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf script: Replace zero-length array with
- flexible-array
-Message-ID: <20200508123715.GG5281@hirez.programming.kicks-ass.net>
-References: <20200507190615.GA15677@embeddedor>
+        Fri, 8 May 2020 08:39:26 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1588941565; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=u9iyFqCAnEb5sRsmgCcPsnxpILU9p4HopBIb8TR6T9U=; b=Q8bW54E6vQvwRAlG1bSTW/aRIjiK7lJIiK99LxBerZE2GUAR3uwgzpjBTWi4seBd/kv9hAd1
+ a63RnGB2iwJLdaFfoqXBEweqQD4d9QidWSlPYcYp2xkH6g01cLrE2/bcer1LZYeX4Tu4CUyS
+ jTL8RYpBT8JpjsE02BQbN8apyaI=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5eb552ea.7fbc5ef3b8f0-smtp-out-n05;
+ Fri, 08 May 2020 12:39:06 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 964EEC44795; Fri,  8 May 2020 12:39:05 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.0.103] (unknown [49.204.184.20])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: neeraju)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9CBD6C433BA;
+        Fri,  8 May 2020 12:39:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9CBD6C433BA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=neeraju@codeaurora.org
+Subject: Re: Query regarding pseudo nmi support on GIC V3 and request_nmi()
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     julien.thierry.kdev@gmail.com, linux-kernel@vger.kernel.org
+References: <2a0d5719-b2c7-1287-e0b5-2dd8b1072e49@codeaurora.org>
+ <87ftca1z9k.wl-maz@kernel.org>
+ <2f41b2e8-925e-3869-da39-fd4ab28ca1b1@codeaurora.org>
+ <20200508132740.2d645ea2@why>
+From:   Neeraj Upadhyay <neeraju@codeaurora.org>
+Message-ID: <27ecf3b0-4bb4-e89d-2ca9-3828cdcb2834@codeaurora.org>
+Date:   Fri, 8 May 2020 18:09:00 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200507190615.GA15677@embeddedor>
+In-Reply-To: <20200508132740.2d645ea2@why>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 07, 2020 at 02:06:15PM -0500, Gustavo A. R. Silva wrote:
-> The current codebase makes use of the zero-length array language
-> extension to the C90 standard, but the preferred mechanism to declare
-> variable-length types such as these ones is a flexible array member[1][2],
-> introduced in C99:
+Hi Marc,
+
+On 5/8/2020 5:57 PM, Marc Zyngier wrote:
+> On Fri, 8 May 2020 16:36:42 +0530
+> Neeraj Upadhyay <neeraju@codeaurora.org> wrote:
 > 
-> struct foo {
->         int stuff;
->         struct boo array[];
-> };
+>> Hi Marc,
+>>
+>> On 5/8/2020 4:15 PM, Marc Zyngier wrote:
+>>> On Thu, 07 May 2020 17:06:19 +0100,
+>>> Neeraj Upadhyay <neeraju@codeaurora.org> wrote:
+>>>>
+>>>> Hi,
+>>>>
+>>>> I have one query regarding pseudo NMI support on GIC v3; from what I
+>>>> could understand, GIC v3 supports pseudo NMI setup for SPIs and PPIs.
+>>>> However the request_nmi() in irq framework requires NMI to be per cpu
+>>>> interrupt source (it checks for IRQF_PERCPU). Can you please help
+>>>> understand this part, how SPIs can be configured as NMIs, if there is
+>>>> a per cpu interrupt source restriction?
+>>>
+>>> Let me answer your question by another question: what is the semantic
+>>> of a NMI if you can't associate it with a particular CPU?
+>>>   
+>>
+>> I was actually thinking of a use case, where, we have a watchdog
+>> interrupt (which is a SPI), which is used for detecting software
+>> hangs and cause device reset; If that interrupt's current cpu
+>> affinity is on a core, where interrupts are disabled, we won't be
+>> able to serve it; so, we need to group that interrupt as an fiq;
 > 
-> By making use of the mechanism above, we will get a compiler warning
-> in case the flexible array does not occur last in the structure, which
-> will help us prevent some kind of undefined behavior bugs from being
-> inadvertently introduced[3] to the codebase from now on.
+> Linux doesn't use Group-0 interrupts, as they are strictly secure
+> (unless your SoC doesn't have EL3, which I doubt).
+
+Yes, we handle that watchdog interrupt as a Group-0 interrupt, which is 
+handled as fiq in EL3.
+
 > 
-> Also, notice that, dynamic memory allocations won't be affected by
-> this change:
+>> I was thinking, if its feasible to mark that interrupt as pseudo NMI
+>> and route it to EL1 as irq. However, looks like that is not the
+>> semantic of a NMI and we would need something like pseudo NMI ipi for
+>> this.
 > 
-> "Flexible array members have incomplete type, and so the sizeof operator
-> may not be applied. As a quirk of the original implementation of
-> zero-length arrays, sizeof evaluates to zero."[1]
-> 
-> sizeof(flexible-array-member) triggers a warning because flexible array
-> members have incomplete type[1]. There are some instances of code in
-> which the sizeof operator is being incorrectly/erroneously applied to
-> zero-length arrays and the result is zero. Such instances may be hiding
-> some bugs. So, this work (flexible-array member conversions) will also
-> help to get completely rid of those sorts of issues.
-> 
-> This issue was found with the help of Coccinelle.
-> 
-> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-> [2] https://github.com/KSPP/linux/issues/21
-> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->  arch/x86/events/intel/bts.c              |    2 +-
->  arch/x86/events/intel/uncore.h           |    2 +-
->  include/linux/perf_event.h               |    4 ++--
->  kernel/events/callchain.c                |    2 +-
->  kernel/events/internal.h                 |    2 +-
->  tools/perf/bench/sched-messaging.c       |    2 +-
->  tools/perf/builtin-inject.c              |    2 +-
->  tools/perf/builtin-script.c              |    2 +-
->  tools/perf/builtin-timechart.c           |    2 +-
->  tools/perf/util/annotate.h               |    4 ++--
->  tools/perf/util/branch.h                 |    2 +-
->  tools/perf/util/cputopo.h                |    2 +-
->  tools/perf/util/dso.h                    |    4 ++--
->  tools/perf/util/event.h                  |    2 +-
->  tools/perf/util/jitdump.c                |    2 +-
->  tools/perf/util/jitdump.h                |    6 +++---
->  tools/perf/util/ordered-events.h         |    2 +-
->  tools/perf/util/pstack.c                 |    2 +-
->  tools/perf/util/symbol.h                 |    2 +-
->  tools/perf/util/unwind-libunwind-local.c |    2 +-
->  20 files changed, 25 insertions(+), 25 deletions(-)
+> Sending a NMI IPI from another NMI handler? Even once I've added these,
+> there is no way this will work for that particular scenario. Just look
+> at the restrictions we impose on NMIs.
 > 
 
-Arnaldo, do you want this, or should I take it?
+Sending a pseudo NMI IPI (to EL1) from fiq handler (which runs in EL3); 
+I will check, but do you think, that might not work?
+
+> Frankly, if all you need to do is to reset the SoC, use EL3 firmware.
+> That is what it is for.
+> 
+
+Before triggering SoC reset, we want to collect certain  EL1 debug 
+information like stack trace for CPUs and other debug information.
+
+> Thanks,
+> 
+> 	M.
+> 
+
+Thanks
+Neeraj
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member of the Code Aurora Forum, hosted by The Linux Foundation
