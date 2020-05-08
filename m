@@ -2,109 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 432B61CBA03
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 23:44:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDF9A1CBA0E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 23:47:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728056AbgEHVoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 17:44:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728032AbgEHVoe (ORCPT
+        id S1728078AbgEHVrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 17:47:05 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:26107 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726811AbgEHVrB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 17:44:34 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5AC4C061A0C;
-        Fri,  8 May 2020 14:44:33 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id u6so3223139ljl.6;
-        Fri, 08 May 2020 14:44:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9STgKXxF3MEqSS/+ei2u4BjGAAZhqufG8MU2LAh7EQg=;
-        b=kJLIbnrg6MmybxYNLRvCXzrBwTiRUK/PQBatG+wYug1rf68UKki38ZcZuT1lRoWbsD
-         k9BuCcn9eiq3d1lG1nH/FtUe/+B243ZvqiwmLqz3MqCB+5QF7CC76BXfqsPHZ/7mJpse
-         Uv+Qx520d+eGS18fNhIiuKscNeFnLrY5tFZWC4gUtEf5w5tK6rvv/AH4FaFLKJucWrM4
-         qYNsq2Q1dWx8oDvBsErx9COd8mUy31p2DxMkHm9/YOHwnoE/A4pzksst7ekzgtMt439C
-         VTGT14vcFyK+nzFOxG96bwVxG0EUMorq1Xbu33eseUwCzBAdOZckzKQy2nu0cGPKXy2x
-         A61g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9STgKXxF3MEqSS/+ei2u4BjGAAZhqufG8MU2LAh7EQg=;
-        b=rFSNTcjQsGBn68St5uDSh/FrNzRZwlroMCsJCSWjc/Mq89kzB409LIiYY3Ml5+wdSV
-         //fQiD0x8SEJNwLJvwMvMpVLKj4nhdTEFyyBb8s/bMPh1Dy1gMh+Jdl207oWAEnTJfLO
-         RWp4n6AMHFHypChX6dssvqRC2x1hyXVxOLS0CzM9fMyZWyeaW+L0CCN/eTVOS40cJg7/
-         XO71oeNBXvK3lck2/oVPDrxPKwoT/V2TVxr60VuEcz3RFiLktZRmgITjpDOM35W+J+NA
-         FNt5/I/H3K5g0t2f6RvTTRvN274MaCadnZAqxlIiKyXyB/Qh4s72cNZTTgjliOTm1+iO
-         ozrg==
-X-Gm-Message-State: AOAM530QaUzWf6EIzcNH+XC8xTjA1swMviXLHSTZV4xxBODMoRfx1PA6
-        Sj/nqATp+OWu8cyqVBzKeAg=
-X-Google-Smtp-Source: ABdhPJwOERlMcC9Nci0ag57cuaBOQkLsyrFQOZWAIlonkVNH0qg8oU10/kTQbLoBvsCGYzJamq/Sng==
-X-Received: by 2002:a05:651c:32e:: with SMTP id b14mr2993745ljp.277.1588974272109;
-        Fri, 08 May 2020 14:44:32 -0700 (PDT)
-Received: from localhost.localdomain (h-158-174-22-22.NA.cust.bahnhof.se. [158.174.22.22])
-        by smtp.gmail.com with ESMTPSA id v17sm2174863lfi.49.2020.05.08.14.44.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 May 2020 14:44:31 -0700 (PDT)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     chunfeng.yun@mediatek.com
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH] usb: mtu3: constify struct debugfs_reg32
-Date:   Fri,  8 May 2020 23:44:21 +0200
-Message-Id: <20200508214421.3943-1-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Fri, 8 May 2020 17:47:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588974420;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=D2IduH1CF5NRPIpQWbLKTdLk97fqdqm/1QiS9bCgssc=;
+        b=BYaACNZhYUh99iR3p7ZXCfVknBiOQ/bs57BD/qT+kyCa8xAAGjgzt9HNWwS2g5hCZvSG3c
+        comQdY3QAX63R/H2MIMBZNCOBVpeylULumdbj2Egf32liKuXUhg1coJs3gQrIy1n3ui0ni
+        CY1yyezSsyRXL2WZ+kFOrpDWKVvHuVA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-371-4mcOx4jwMjuckTDZW4qamQ-1; Fri, 08 May 2020 17:46:56 -0400
+X-MC-Unique: 4mcOx4jwMjuckTDZW4qamQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6534E80183C;
+        Fri,  8 May 2020 21:46:54 +0000 (UTC)
+Received: from T590 (ovpn-8-16.pek2.redhat.com [10.72.8.16])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9E36C70467;
+        Fri,  8 May 2020 21:46:44 +0000 (UTC)
+Date:   Sat, 9 May 2020 05:46:39 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Sagi Grimberg <sagi@grimberg.me>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Baolin Wang <baolin.wang7@gmail.com>, axboe@kernel.dk,
+        ulf.hansson@linaro.org, adrian.hunter@intel.com, arnd@arndb.de,
+        linus.walleij@linaro.org, paolo.valente@linaro.org,
+        orsonzhai@gmail.com, zhang.lyra@gmail.com,
+        linux-mmc@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2 1/7] block: Extand commit_rqs() to do batch
+ processing
+Message-ID: <20200508214639.GA1389136@T590>
+References: <cover.1587888520.git.baolin.wang7@gmail.com>
+ <c8bd9e5ba815a3f1bc9dac0a4bc2fbadadbc0a43.1587888520.git.baolin.wang7@gmail.com>
+ <20200427154645.GA1201@infradead.org>
+ <e4d47000-f89c-a135-ae58-011f0e9cc39e@grimberg.me>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e4d47000-f89c-a135-ae58-011f0e9cc39e@grimberg.me>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mtu3_prb_regs is never changed and can therefore be made const.
+On Fri, May 08, 2020 at 02:35:35PM -0700, Sagi Grimberg wrote:
+> 
+> > > diff --git a/include/linux/blk-mq.h b/include/linux/blk-mq.h
+> > > index f389d7c724bd..6a20f8e8eb85 100644
+> > > --- a/include/linux/blk-mq.h
+> > > +++ b/include/linux/blk-mq.h
+> > > @@ -391,6 +391,7 @@ struct blk_mq_ops {
+> > >   enum {
+> > >   	BLK_MQ_F_SHOULD_MERGE	= 1 << 0,
+> > >   	BLK_MQ_F_TAG_SHARED	= 1 << 1,
+> > > +	BLK_MQ_F_FORCE_COMMIT_RQS = 1 << 3,
+> > 
+> > Maybe BLK_MQ_F_ALWAYS_COMMIT might be a better name?  Also this
+> > flag (just like the existing ones..) could really use a comment
+> > explaining it.
+> 
+> Would it make sense to elevate this flag to a request_queue flag
+> (QUEUE_FLAG_ALWAYS_COMMIT)?
 
-This allows the compiler to put it in the text section instead of the
-data section.
+request queue flag usually is writable, however this case just needs
+one read-only flag, so I think it may be better to make it as
+tagset/hctx flag.
 
-Before:
-   text    data     bss     dec     hex filename
-  19966    7120       0   27086    69ce drivers/usb/mtu3/mtu3_debugfs.o
+> 
+> I'm thinking of a possibility that an I/O scheduler may be used
+> to activate this functionality rather than having the driver set
+> it necessarily...
 
-After:
-   text    data     bss     dec     hex filename
-  20142    6992       0   27134    69fe drivers/usb/mtu3/mtu3_debugfs.o
+Could you explain a bit why I/O scheduler should activate this
+functionality?
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
- drivers/usb/mtu3/mtu3_debugfs.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+batching submission may be good for some drivers, and currently
+we only do it in limited way. One reason is that there is extra
+cost for full batching submission, such as this patch requires
+one extra .commit_rqs() for each dispatch, and lock is often needed
+in this callback.
 
-diff --git a/drivers/usb/mtu3/mtu3_debugfs.c b/drivers/usb/mtu3/mtu3_debugfs.c
-index c96e5dab0a48..fdeade6254ae 100644
---- a/drivers/usb/mtu3/mtu3_debugfs.c
-+++ b/drivers/usb/mtu3/mtu3_debugfs.c
-@@ -276,7 +276,7 @@ static const struct file_operations mtu3_ep_fops = {
- 	.release = single_release,
- };
- 
--static struct debugfs_reg32 mtu3_prb_regs[] = {
-+static const struct debugfs_reg32 mtu3_prb_regs[] = {
- 	dump_prb_reg("enable", U3D_SSUSB_PRB_CTRL0),
- 	dump_prb_reg("byte-sell", U3D_SSUSB_PRB_CTRL1),
- 	dump_prb_reg("byte-selh", U3D_SSUSB_PRB_CTRL2),
-@@ -349,7 +349,7 @@ static const struct file_operations mtu3_probe_fops = {
- static void mtu3_debugfs_create_prb_files(struct mtu3 *mtu)
- {
- 	struct ssusb_mtk *ssusb = mtu->ssusb;
--	struct debugfs_reg32 *regs;
-+	const struct debugfs_reg32 *regs;
- 	struct dentry *dir_prb;
- 	int i;
- 
--- 
-2.26.2
+IMO it can be a win for some slow driver or device, but may cause
+a little performance drop for fast driver/device especially in workload
+of not-batching submission.
+
+
+Thanks, 
+Ming
 
