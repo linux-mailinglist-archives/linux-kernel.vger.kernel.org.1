@@ -2,104 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 761131C9FB8
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 02:40:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3CED1C9FCD
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 02:47:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726701AbgEHAk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 20:40:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52612 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726470AbgEHAk0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 20:40:26 -0400
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726638AbgEHArZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 20:47:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726470AbgEHArZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 20:47:25 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAB20C05BD43;
+        Thu,  7 May 2020 17:47:24 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C664B21841
-        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 00:40:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588898426;
-        bh=6DvqviWnsP5o86+PhIomjPeqp2M6x7IJfqoZNaxxcDg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=CmJN7cvkpT6h2/Ygm8zn3kkmnMlgnIgznuN13Yeyn989fiekb7Ss6tvUF5j7N6jVd
-         LbFZwA4Hh2PJoy09qNNCbIknr9pZjgzWvmSW9w1nDFxqBhbBr6ckKpPbrAHFLEvoUe
-         XyjhCjnRU4ZfX3u6MzPPKDIxPbevbWERiv4D+qas=
-Received: by mail-wm1-f44.google.com with SMTP id u127so8848751wmg.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 17:40:25 -0700 (PDT)
-X-Gm-Message-State: AGi0PuY8qr3anib6yQ+uE/syTP9qki6Z2rBzuv0nJr7NyWpO0DHDP+Lr
-        dHKkvkn9tlJjVuQGs7bCWVeL8WwEpkPuPzuLbc/yyQ==
-X-Google-Smtp-Source: APiQypIiNdEVngEJqufHhpfzHhTA6Ke6tWhuGIVec6lorOQ3VlVHnGPVwiFmqm+URaG+oH5Zn1AX8OpBQzK+85IIG64=
-X-Received: by 2002:a7b:c5d3:: with SMTP id n19mr6049575wmk.21.1588898424128;
- Thu, 07 May 2020 17:40:24 -0700 (PDT)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49JBVz0N4lz9sPF;
+        Fri,  8 May 2020 10:47:22 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1588898843;
+        bh=Sru0SU7UziI8B/5HJP5reha3IJ1qcfyy07IpBlawwvI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=p77wP1IT79SXzozt69RTp8dNAiU008XViZuFgeF5IPEkncTmwxhVc2u/Lv/WAqwow
+         lSpDrVVj2vo+5UFUhK9ANnLLemMMnrBZ+qhgcbCQGG6E7O3PgtMMZTz1+ARGKyDmg9
+         FyIbBmkwn4+r4o6TTTUQq+z2WxwanSGziOkJ2T7HaZTzU9lvcUi5rNWop1Nkx92+hy
+         9Qz45P03q9HdYfUgojWja0dXaf2qSxJMEwelu1jM/JY1KajnBfluKm01fwm/dKu/N3
+         K+/0gW995Xd8qyyPhEKxpqBBcFkHBjAnkwMV/tPhfh6Xqn+WHqQjjS8K+BYZulThLQ
+         ii40WZa/S2eTg==
+Date:   Fri, 8 May 2020 10:47:20 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "J. Bruce Fields" <bfields@fieldses.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: build failure after merge of the nfsd tree
+Message-ID: <20200508104720.5c7f72a5@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20200421215316.56503-1-jarkko.sakkinen@linux.intel.com>
- <20200426165753.GA11046@wind.enjellic.com> <20200429153004.GD15992@linux.intel.com>
-In-Reply-To: <20200429153004.GD15992@linux.intel.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Thu, 7 May 2020 17:40:11 -0700
-X-Gmail-Original-Message-ID: <CALCETrX9w3anusPhNWkv-hs554N6MF9GfChazrG+Br16oFfCaw@mail.gmail.com>
-Message-ID: <CALCETrX9w3anusPhNWkv-hs554N6MF9GfChazrG+Br16oFfCaw@mail.gmail.com>
-Subject: Re: [PATCH v29 00/20] Intel SGX foundations
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     "Dr. Greg" <greg@enjellic.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        linux-sgx@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Neil Horman <nhorman@redhat.com>, npmccallum@redhat.com,
-        "Huang, Haitao" <haitao.huang@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Svahn, Kai" <kai.svahn@intel.com>, Borislav Petkov <bp@alien8.de>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Andrew Lutomirski <luto@kernel.org>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        David Rientjes <rientjes@google.com>,
-        "Xing, Cedric" <cedric.xing@intel.com>, puiterwijk@redhat.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/47Xwc3.kga22M=IgcKZ_CGU";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 8:30 AM Sean Christopherson
-<sean.j.christopherson@intel.com> wrote:
->
-> On Sun, Apr 26, 2020 at 11:57:53AM -0500, Dr. Greg wrote:
-> > In closing, it is important to note that the proposed SGX driver is
-> > not available as a module.  This effectively excludes any alternative
-> > implementations of the driver without replacement of the kernel at
-> > large.
->
-> No it doesn't.  The SGX subsytem won't allocate EPC pages unless userspace
-> creates an enclave, i.e. preventing unprivileged userspace from accessing
-> /dev/sgx/enclave will allow loading an alternative out-of-tree SGX module.
-> Yes, SGX sanitizes the EPC on boot, but that's arguably a good thing for
-> out-of-tree modules.
->
-> And if you want to get crafty and squash in-kernel SGX altogether, boot
-> with "clearcpuid=<SGX_LC>" and/or "clearcpuid=<SGX>" to disable in-kernel
-> support entirely.  SGX won't be correctly enumerated in /proc/cpuinfo
-> relative to the existence of an out-of-tree module, but that seems like a
-> very minor issue if you're running with a completely different SGX driver.
->
-> > It also means that any platform, with SGX hardware support,
-> > running a kernel with this driver, has the potential for the
-> > security/privacy issues noted above.
->
-> Unless I'm mistaken, /dev/sgx is root-only by default.  There are far
-> scarier mechanisms available to root for hosing the system.
->
-> > If key based policy management is not allowed, then the driver needs
-> > to be re-architected to have modular support so that alternative
-> > implementations or the absence of any driver support are at least
-> > tenable.
->
-> As above, using an alternative implementation is teneble, albeit a bit
-> kludgy.
+--Sig_/47Xwc3.kga22M=IgcKZ_CGU
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-It is worth noting that, if someone actualy does this, and a future
-kernel patch breaks it, the upstream developers are unlikely to
-apologize or even feel particularly bad.  See, for example, the
-current situation with VirtualBox.
+Hi all,
+
+After merging the nfsd tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
+
+kernel/trace/trace_hwlat.c:329:12: error: conflicting types for 'kthread_fn'
+  329 | static int kthread_fn(void *data)
+      |            ^~~~~~~~~~
+In file included from kernel/trace/trace_hwlat.c:40:
+include/linux/kthread.h:60:7: note: previous declaration of 'kthread_fn' wa=
+s here
+   60 | void *kthread_fn(struct task_struct *k);
+      |       ^~~~~~~~~~
+
+Caused by commit
+
+  7df082e85764 ("kthread: save thread function")
+
+I have used the nfsd tree from next-20200507 for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/47Xwc3.kga22M=IgcKZ_CGU
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl60rBgACgkQAVBC80lX
+0GxZvQf/d5tNT2G+QHIRnp0WtQqMaMA6jY9pkvVDdcr3sPHplddTnzvwmAJc5jN7
+f1zugUsifO445Esb243fZaukl7hNsWbGjs24pFqRcsLLs26NLL1RswDF7Qgis6qV
+8Uo6VjIzYed7hIySjjnWzCblIdBCKK6Pqh0gWq/cQz2gMq0o2hqa3ekFsDoZ/rzQ
+r4Pe+aT3E8Wxm+h3cU3p2axorqlhqe0PvU0lQvGEvtXOR1PaRAENsfqntJ1B50GJ
+cbNzfCBTexKvQfvHm5X29yy8RxctvItm1rmiNhhzRB0utsXU0MhMmqUZwPdXDieo
+zzdhd+m1ZtpYaVufkKhpinFVxsWwSQ==
+=6At+
+-----END PGP SIGNATURE-----
+
+--Sig_/47Xwc3.kga22M=IgcKZ_CGU--
