@@ -2,110 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FD1A1CB1EE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 16:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCE301CB1F5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 16:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727975AbgEHOkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 10:40:00 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:30611 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727915AbgEHOj7 (ORCPT
+        id S1728078AbgEHOkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 10:40:46 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:57927 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726776AbgEHOkp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 10:39:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588948798;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hEKOJFeBe0XhjAsTACvee48OxZfeBzXxgNIQnHiBGQA=;
-        b=Gl4lNuj7Ki9pavwxpT7H1K3PsTz9f9XvJI3PAsJqmdFwhxlzQJrrVkeWprMV/N67y4bQ8j
-        Mt/W21+61NlFx5L5A01EcezdhZ2E+zJ2DzWuBm8tzlAeJx0aawbnTxdzJccdHHT+QhZrJE
-        1DXe4LFBr1KhzSPKr06oPKYBS4DYP84=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-204-uSDcl7BqPWCt8KdWQCXcuA-1; Fri, 08 May 2020 10:39:54 -0400
-X-MC-Unique: uSDcl7BqPWCt8KdWQCXcuA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2D86B464;
-        Fri,  8 May 2020 14:39:52 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-118-225.rdu2.redhat.com [10.10.118.225])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 42DCE707A6;
-        Fri,  8 May 2020 14:39:49 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <713141.1588775072@warthog.procyon.org.uk>
-References: <713141.1588775072@warthog.procyon.org.uk> <20200506110942.GL16070@bombadil.infradead.org> <20200505115946.GF16070@bombadil.infradead.org> <158861203563.340223.7585359869938129395.stgit@warthog.procyon.org.uk> <158861253957.340223.7465334678444521655.stgit@warthog.procyon.org.uk> <683739.1588751878@warthog.procyon.org.uk>
-Cc:     dhowells@redhat.com, Matthew Wilcox <willy@infradead.org>,
-        Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Jeff Layton <jlayton@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 54/61] afs: Wait on PG_fscache before modifying/releasing a page
+        Fri, 8 May 2020 10:40:45 -0400
+Received: from localhost.localdomain ([149.172.19.189]) by
+ mrelayeu.kundenserver.de (mreue009 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1MXp1Q-1jcT0s3K16-00Y70j; Fri, 08 May 2020 16:40:23 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jason Gunthorpe <jgg@mellanox.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Changbin Du <changbin.du@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] HMM: test: fix CONFIG_DEVICE_PRIVATE dependencies
+Date:   Fri,  8 May 2020 16:40:08 +0200
+Message-Id: <20200508144017.3501418-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1040570.1588948788.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Fri, 08 May 2020 15:39:48 +0100
-Message-ID: <1040571.1588948788@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:oEjOcKIyUKknp3ml6pCR7GOzJlBrlenpFz/gnnhel3lRHA1e6hl
+ DS2ASRlD9j2N1iHIgIV3asc2AeDB6GzjcLfCCqiWUAsOQGn4YuDInwq4yzAeh4m99A6+hb8
+ FZfz26uHWWWQS7p8MAyqtMNyxzsEXOIECntwGk8eACceGfVr2eLNt4ElvcNlPzWqdxbP+Yd
+ 9NkaaAbgBMRTGiuBJ6ZYQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:21X1C9y4tcM=:aDIGpK/Rrrc4jg1qAbf3ws
+ l/fmznTHhXzMCLTLidJ9yTYgm3WEXKNzdMQGA1rnNB/9NqxFfqP/Xv6hTDeGJ/VDUKMD8p38h
+ b/e9NjmgYuXQ9WLtDv7JGIBsskQYBg3u9Hp5K5aCu1mS24Ly2MZ7mzosL27uGRn/njo4P4b+M
+ GxAhzvTKeVp6KdbVvZbXGu3sRJ3+6TabGFaf422XOE/rxa/EvKLGvRQMHJee/yZ0uWKpIC85T
+ cOTgiAMnrq8z44O1ORrfMVefYjvWc+ZvX1zJMUTBZfiZOP0M/Bi6iNm2KdC7Sof9jAoXH2f7W
+ vrjSP5qiWxSeQ0CEPwzPRuz2UXjGj2OgOPHogqiLdBowO4z3UeXPlb0i7MQtbDNWMRQC9gF7l
+ zJhSo9chC57l7UEMsNyG7WF1JZWvdcACQwk9eHNis0CPW7/EzG2zN9nDrgI62YqYPz6l3j/up
+ nPscjodRSYN+g/vti4H7i1l9MJZxE/gHw124lLFxNn1aP/kKFWDk0uneoGYiRyCc9PEwe0IHW
+ RqCCxzOoXq4/gR+/lTPNMYSUlT8gMP66edquKyPO5bfVbDpTwnK0lL/7tckiED14yJYXtKY3N
+ XWDRCvlMpEWy1Wr07GJ6LC4uv1akdR88oUU/pex8ad7rK0oL0qZjjdHuTjfUF6+IBXvSbt2bN
+ GPu9mLnl/nlGgEcH8I4280tg/a2ixcsckoPmPenXYib1zRLuhdmieoKZdWACZEvFcBFnS8eOf
+ F/HUijyjD1XcKnifLVgOdq7jGA/QtinS0GdKTUDKS9zagf8CoZaK7swBMsHCZiXtKz89rJLy0
+ SE4Yms+h3Mu9fgbGIrt3DdrhBRcpE8LAbRoNLz/EOtvXsqZLU0=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David Howells <dhowells@redhat.com> wrote:
+One cannot select DEVICE_PRIVATE when its dependencies are disabled:
 
-> ITER_MAPPING relies on the mapping to maintain the pointers to the pages=
- so
-> that it can find them rather than being like ITER_BVEC where there's a
-> separate list.
-> =
+WARNING: unmet direct dependencies detected for DEVICE_PRIVATE
+  Depends on [n]: ZONE_DEVICE [=n]
+  Selected by [m]:
+  - TEST_HMM [=m] && RUNTIME_TESTING_MENU [=y] && TRANSPARENT_HUGEPAGE [=y]
+lib/test_hmm.c:480:8: error: implicit declaration of function 'memremap_pages' [-Werror,-Wimplicit-function-declaration]
+        ptr = memremap_pages(&devmem->pagemap, numa_node_id());
+              ^
+lib/test_hmm.c:480:8: note: did you mean 'memcmp_pages'?
+include/linux/mm.h:3082:12: note: 'memcmp_pages' declared here
+extern int memcmp_pages(struct page *page1, struct page *page2);
+           ^
+lib/test_hmm.c:480:6: error: incompatible integer to pointer conversion assigning to 'void *' from 'int' [-Werror,-Wint-conversion]
+        ptr = memremap_pages(&devmem->pagemap, numa_node_id());
+            ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+lib/test_hmm.c:1089:4: error: implicit declaration of function 'memunmap_pages' [-Werror,-Wimplicit-function-declaration]
+                        memunmap_pages(&devmem->pagemap);
 
-> Truncate removes the pages from the mapping - at which point ITER_MAPPIN=
-G can
-> no longer find them.
+Add a dependency from CONFIG_TEST_HMM to ZONE_DEVICE, to disallow
+those broken configurations.
 
-It looks like ITER_MAPPING is fine with truncate, provided the invalidatio=
-n
-waits for the iterator to complete first:
+Fixes: 5d5e54be8a1e ("mm/hmm/test: add selftest driver for HMM")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ lib/Kconfig.debug | 1 +
+ 1 file changed, 1 insertion(+)
 
-	int truncate_inode_page(struct address_space *mapping, struct page *page)
-	{
-		VM_BUG_ON_PAGE(PageTail(page), page);
-
-		if (page->mapping !=3D mapping)
-			return -EIO;
-
-		truncate_cleanup_page(mapping, page);
-		delete_from_page_cache(page);
-		return 0;
-	}
-
-In which case, ->invalidatepage() needs to wait for PG_fscache.
-
-Similarly, it looks like ->releasepage() is fine, provided it waits for
-PG_fscache also.
-
-If I have to use ITER_BVEC, what's the advisability of using vmalloc() to
-allocate the bio_vec array for a transient op?  Such an array can referenc=
-e up
-to 1MiB on a 64-bit machine with 4KiB non-compound pages if it only alloca=
-tes
-up to a single page.  I'm wondering what the teardown cost is, though, if =
-all
-the corresponding PTEs have to be erased from all CPUs.
-
-David
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index d9885fa37cc0..63667d62c9d8 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -2262,6 +2262,7 @@ config TEST_MEMINIT
+ config TEST_HMM
+ 	tristate "Test HMM (Heterogeneous Memory Management)"
+ 	depends on TRANSPARENT_HUGEPAGE
++	depends on ZONE_DEVICE
+ 	select DEVICE_PRIVATE
+ 	select HMM_MIRROR
+ 	select MMU_NOTIFIER
+-- 
+2.26.0
 
