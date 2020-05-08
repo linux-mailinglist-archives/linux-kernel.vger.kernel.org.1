@@ -2,40 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FBC61CADA3
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:06:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8C531CAD76
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:02:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730155AbgEHNCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:02:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58686 "EHLO mail.kernel.org"
+        id S1729862AbgEHNCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 09:02:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59868 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728032AbgEHMug (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 08:50:36 -0400
+        id S1729014AbgEHMvF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 08:51:05 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A9DFE2495C;
-        Fri,  8 May 2020 12:50:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ABC6024964;
+        Fri,  8 May 2020 12:51:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588942235;
-        bh=dH39vX1jFQ/TFkb+BTCWZyIAmD9Vcg+f2I8YszPGVZc=;
+        s=default; t=1588942265;
+        bh=tS8yISY2FPSoFA2Xz5HcnvqcY9twKKqKe7VbtyvOpsU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XkYRF2hi27enzkp8d26mRWdCveNvNmRlaWgcCJufIpiq4Dalk48QJtU5m1B1OgPjs
-         2Z/V3R5n3sImhQqpwGxkvNKQRGDGhHNw9dd5VyqbPThauEIyKaj0kOD/ojPoo1R1En
-         vNVD3cfhb4g8skpVO5+5o54Vq+Aiu4bX3rz1Jyq8=
+        b=Rfwt70VbamXErIoLiAdGG8XN1zJ3YuJQ4PXzQ2l7HIUiTpHpO0uDigad6+ESdoOZA
+         9D4KYeFMxQlENddr7+hRXK2N5YZDfNIq0M4vZQgL+kdFeGivFixig8i9iSov9BsGPA
+         VpBTpwdbRq+inyQyCmFby8u7sJXOJcKYkvYXwujE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 4.14 02/22] powerpc/pci/of: Parse unassigned resources
+        stable@vger.kernel.org, Ning Bo <n.b@live.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Jia He <justin.he@arm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Subject: [PATCH 4.19 01/32] vhost: vsock: kick send_pkt worker once device is started
 Date:   Fri,  8 May 2020 14:35:14 +0200
-Message-Id: <20200508123034.179234373@linuxfoundation.org>
+Message-Id: <20200508123035.056580682@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200508123033.915895060@linuxfoundation.org>
-References: <20200508123033.915895060@linuxfoundation.org>
+In-Reply-To: <20200508123034.886699170@linuxfoundation.org>
+References: <20200508123034.886699170@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -44,64 +47,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexey Kardashevskiy <aik@ozlabs.ru>
+From: Jia He <justin.he@arm.com>
 
-commit dead1c845dbe97e0061dae2017eaf3bd8f8f06ee upstream.
+commit 0b841030625cde5f784dd62aec72d6a766faae70 upstream.
 
-The pseries platform uses the PCI_PROBE_DEVTREE method of PCI probing
-which reads "assigned-addresses" of every PCI device and initializes
-the device resources. However if the property is missing or zero sized,
-then there is no fallback of any kind and the PCI resources remain
-undiscovered, i.e. pdev->resource[] array remains empty.
+Ning Bo reported an abnormal 2-second gap when booting Kata container [1].
+The unconditional timeout was caused by VSOCK_DEFAULT_CONNECT_TIMEOUT of
+connecting from the client side. The vhost vsock client tries to connect
+an initializing virtio vsock server.
 
-This adds a fallback which parses the "reg" property in pretty much same
-way except it marks resources as "unset" which later make Linux assign
-those resources proper addresses.
+The abnormal flow looks like:
+host-userspace           vhost vsock                       guest vsock
+==============           ===========                       ============
+connect()     -------->  vhost_transport_send_pkt_work()   initializing
+   |                     vq->private_data==NULL
+   |                     will not be queued
+   V
+schedule_timeout(2s)
+                         vhost_vsock_start()  <---------   device ready
+                         set vq->private_data
 
-This has an effect when:
-1. a hypervisor failed to assign any resource for a device;
-2. /chosen/linux,pci-probe-only=0 is in the DT so the system may try
-assigning a resource.
-Neither is likely to happen under PowerVM.
+wait for 2s and failed
+connect() again          vq->private_data!=NULL         recv connecting pkt
 
-Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Guenter Roeck <linux@roeck-us.net>
+Details:
+1. Host userspace sends a connect pkt, at that time, guest vsock is under
+   initializing, hence the vhost_vsock_start has not been called. So
+   vq->private_data==NULL, and the pkt is not been queued to send to guest
+2. Then it sleeps for 2s
+3. After guest vsock finishes initializing, vq->private_data is set
+4. When host userspace wakes up after 2s, send connecting pkt again,
+   everything is fine.
+
+As suggested by Stefano Garzarella, this fixes it by additional kicking the
+send_pkt worker in vhost_vsock_start once the virtio device is started. This
+makes the pending pkt sent again.
+
+After this patch, kata-runtime (with vsock enabled) boot time is reduced
+from 3s to 1s on a ThunderX2 arm64 server.
+
+[1] https://github.com/kata-containers/runtime/issues/1917
+
+Reported-by: Ning Bo <n.b@live.com>
+Suggested-by: Stefano Garzarella <sgarzare@redhat.com>
+Signed-off-by: Jia He <justin.he@arm.com>
+Link: https://lore.kernel.org/r/20200501043840.186557-1-justin.he@arm.com
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/kernel/pci_of_scan.c |   12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ drivers/vhost/vsock.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/arch/powerpc/kernel/pci_of_scan.c
-+++ b/arch/powerpc/kernel/pci_of_scan.c
-@@ -82,10 +82,16 @@ static void of_pci_parse_addrs(struct de
- 	const __be32 *addrs;
- 	u32 i;
- 	int proplen;
-+	bool mark_unset = false;
+--- a/drivers/vhost/vsock.c
++++ b/drivers/vhost/vsock.c
+@@ -499,6 +499,11 @@ static int vhost_vsock_start(struct vhos
+ 		mutex_unlock(&vq->mutex);
+ 	}
  
- 	addrs = of_get_property(node, "assigned-addresses", &proplen);
--	if (!addrs)
--		return;
-+	if (!addrs || !proplen) {
-+		addrs = of_get_property(node, "reg", &proplen);
-+		if (!addrs || !proplen)
-+			return;
-+		mark_unset = true;
-+	}
++	/* Some packets may have been queued before the device was started,
++	 * let's kick the send worker to send them.
++	 */
++	vhost_work_queue(&vsock->dev, &vsock->send_pkt_work);
 +
- 	pr_debug("    parse addresses (%d bytes) @ %p\n", proplen, addrs);
- 	for (; proplen >= 20; proplen -= 20, addrs += 5) {
- 		flags = pci_parse_of_flags(of_read_number(addrs, 1), 0);
-@@ -110,6 +116,8 @@ static void of_pci_parse_addrs(struct de
- 			continue;
- 		}
- 		res->flags = flags;
-+		if (mark_unset)
-+			res->flags |= IORESOURCE_UNSET;
- 		res->name = pci_name(dev);
- 		region.start = base;
- 		region.end = base + size - 1;
+ 	mutex_unlock(&vsock->dev.mutex);
+ 	return 0;
+ 
 
 
