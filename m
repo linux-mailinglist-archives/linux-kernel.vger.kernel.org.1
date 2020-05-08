@@ -2,83 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 993261CB786
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 20:42:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A82EC1CB78E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 20:47:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726913AbgEHSm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 14:42:29 -0400
-Received: from mailgate1.rohmeurope.com ([87.129.152.131]:50642 "EHLO
-        mailgate1.rohmeurope.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726767AbgEHSm2 (ORCPT
+        id S1727104AbgEHSrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 14:47:05 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:37948 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727051AbgEHSrE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 14:42:28 -0400
-X-AuditID: c0a8fbf4-473ff70000004419-47-5eb5a8139f75
-Received: from smtp.reu.rohmeu.com (will-cas002.reu.rohmeu.com [192.168.251.178])
-        by mailgate1.rohmeurope.com (Symantec Messaging Gateway) with SMTP id F6.55.17433.318A5BE5; Fri,  8 May 2020 20:42:27 +0200 (CEST)
-Received: from WILL-MAIL001.REu.RohmEu.com ([fe80::2915:304f:d22c:c6ba]) by
- WILL-CAS002.REu.RohmEu.com ([fe80::fc24:4cbc:e287:8659%12]) with mapi id
- 14.03.0487.000; Fri, 8 May 2020 20:42:26 +0200
-From:   "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-To:     "broonie@kernel.org" <broonie@kernel.org>
-CC:     "mazziesaccount@gmail.com" <mazziesaccount@gmail.com>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "sre@kernel.org" <sre@kernel.org>,
-        "brendanhiggins@google.com" <brendanhiggins@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>
-Subject: Re: [PATCH v12 02/11] lib/test_linear_ranges: add a test for the
- 'linear_ranges'
-Thread-Topic: [PATCH v12 02/11] lib/test_linear_ranges: add a test for the
- 'linear_ranges'
-Thread-Index: AQHWJU8mRcNXc963mUOdUoB6SvCrNaieTQ+AgAAXoIA=
-Date:   Fri, 8 May 2020 18:42:25 +0000
-Message-ID: <a34578a06c991119519e53b0cf87f438fffcc808.camel@fi.rohmeurope.com>
-References: <cover.1588944082.git.matti.vaittinen@fi.rohmeurope.com>
-         <311fea741bafdcd33804d3187c1642e24275e3e5.1588944082.git.matti.vaittinen@fi.rohmeurope.com>
-         <20200508171751.GM4820@sirena.org.uk>
-In-Reply-To: <20200508171751.GM4820@sirena.org.uk>
-Accept-Language: en-US, de-DE
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [62.78.225.252]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <1958FFA8F02F1042A080BADFA512F3E6@de.rohmeurope.com>
-Content-Transfer-Encoding: base64
+        Fri, 8 May 2020 14:47:04 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out02.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jX81T-0003wn-Rx; Fri, 08 May 2020 12:47:00 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jX81S-0002jx-TS; Fri, 08 May 2020 12:46:59 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     <linux-kernel@vger.kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Rob Landley <rob@landley.net>,
+        Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        <linux-fsdevel@vger.kernel.org>, Al Viro <viro@ZenIV.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <87h7wujhmz.fsf@x220.int.ebiederm.org>
+Date:   Fri, 08 May 2020 13:43:31 -0500
+In-Reply-To: <87h7wujhmz.fsf@x220.int.ebiederm.org> (Eric W. Biederman's
+        message of "Tue, 05 May 2020 14:39:32 -0500")
+Message-ID: <87sgga6ze4.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrDKsWRmVeSWpSXmKPExsVyYMXvTbrCK7bGGayfLWRx8cZkZoupD5+w
-        WXy70sFkcXnXHDaLz71HGC3mLD3BYnF6d4kDu8fOWXfZPRZsKvXYtKqTzePzJrkAlihum6TE
-        krLgzPQ8fbsE7oynh36yFRzgrLhxvYOtgXEBZxcjJ4eEgInE8Q2b2LsYuTiEBK4xSiy59pEN
-        wjnOKDHz9VmWLkYODjYBG4mum+wgDSICuhJTfy0Gq2EWOMAk0bx1KRtIQlggWmLK4QuMEEUx
-        EqunNjKC9IoIWEmcemEEEmYRUJF4/PUoM4jNK+An8WnmXhYQW0jgDKNE894SEJtTwEhizvfF
-        rCA2o4CsRGfDOyYQm1lAXGLTs++sEEcLSCzZc54ZwhaVePn4H1RcUWL793VgJzMLaEqs36UP
-        0eogcXfSQUYIW1FiSvdDdogTBCVOznzCMoFRbBaSDbMQumch6Z6FpHsWku4FjKyrGCVyEzNz
-        0hNLUg31ilJL9YryM3KBVHJ+7iZGSGx+2cH4/5DnIUYmDsZDjJIcTEqivEGTt8YJ8SXlp1Rm
-        JBZnxBeV5qQWH2KU4GBWEuGdWLElTog3JbGyKrUoHyYlzcGiJM6r/nBirJAAyK7s1NSC1CKY
-        rAwHh5IE79FlQEMFi1LTUyvSMnNKENJMHJwgw7mkRIpT81JSixJLSzLiQckjvhiYPkBSPEB7
-        VUHaeYsLEnOBohCtpxi1OSa8nLuImePI3KWLmIVY8vLzUqXEeWWWA5UKgJRmlObBLXrFKM7B
-        qCTMywCS5QEmabg5r4BWMAGt+PxpE8iKkkSElFQDo3Ody+o6/6sn1Y5cNRBavmX6Jt6iq+Hy
-        SdH3TRgagzsiHTb3Tr0QKdWeGxep3mPrfafTs/HKpNA/7YdnP+tPuvnjV+XEy5OLrn/a+dSE
-        h3fpyQJd5Y1zq/ON+M5aGu66EZbRuFXUr04pMeOXVkpc1Tuf92zyNzNelUesfOaUezXF8drT
-        Ln45JZbijERDLeai4kQAuefDho8DAAA=
+Content-Type: text/plain
+X-XM-SPF: eid=1jX81S-0002jx-TS;;;mid=<87sgga6ze4.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19zP/RKyneohwPABJrj/EMwOUTBmYaO2o8=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: *
+X-Spam-Status: No, score=1.3 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,XMNoVowels autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4993]
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 0; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: ; sa06 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;<linux-kernel@vger.kernel.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 562 ms - load_scoreonly_sql: 0.19 (0.0%),
+        signal_user_changed: 13 (2.2%), b_tie_ro: 10 (1.8%), parse: 1.39
+        (0.2%), extract_message_metadata: 3.9 (0.7%), get_uri_detail_list:
+        0.67 (0.1%), tests_pri_-1000: 5 (0.9%), tests_pri_-950: 1.47 (0.3%),
+        tests_pri_-900: 1.14 (0.2%), tests_pri_-90: 123 (21.8%), check_bayes:
+        121 (21.5%), b_tokenize: 6 (1.0%), b_tok_get_all: 6 (1.0%),
+        b_comp_prob: 2.2 (0.4%), b_tok_touch_all: 104 (18.4%), b_finish: 0.94
+        (0.2%), tests_pri_0: 391 (69.6%), check_dkim_signature: 0.95 (0.2%),
+        check_dkim_adsp: 2.5 (0.4%), poll_dns_idle: 0.25 (0.0%), tests_pri_10:
+        2.2 (0.4%), tests_pri_500: 11 (2.0%), rewrite_mail: 0.00 (0.0%)
+Subject: [PATCH 0/6] exec: Trivial cleanups for exec
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhhbmtzIE1hcmshDQoNCk9uIEZyaSwgMjAyMC0wNS0wOCBhdCAxODoxNyArMDEwMCwgTWFyayBC
-cm93biB3cm90ZToNCj4gT24gRnJpLCBNYXkgMDgsIDIwMjAgYXQgMDY6NDA6NDNQTSArMDMwMCwg
-TWF0dGkgVmFpdHRpbmVuIHdyb3RlOg0KPiA+ICAgICBBZGQgYSBLVW5pdCB0ZXN0IGZvciB0aGUg
-bGluZWFyX3JhbmdlcyBoZWxwZXIuDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogTWF0dGkgVmFp
-dHRpbmVuIDxtYXR0aS52YWl0dGluZW5AZmkucm9obWV1cm9wZS5jb20+DQo+ID4gUmV2aWV3ZWQt
-Ynk6IEJyZW5kYW4gSGlnZ2lucyA8YnJlbmRhbmhpZ2dpbnNAZ29vZ2xlLmNvbT4NCj4gDQo+IFRo
-aXMgbm93IGdlbmVyYXRlczoNCj4gDQo+IFdBUk5JTkc6IG1vZHBvc3Q6IG1pc3NpbmcgTU9EVUxF
-X0xJQ0VOU0UoKSBpbiBsaWIvbGluZWFyX3Jhbmdlcy5vDQo+IHNlZSBpbmNsdWRlL2xpbnV4L21v
-ZHVsZS5oIGZvciBtb3JlIGluZm9ybWF0aW9uDQo+IA0KPiB3aGVuIHRoZSB0ZXN0cyBhcmUgYnVp
-bHQgYXMgYSBtb2R1bGUgYW5kIHNlbGVjdCB0aGUgbGlicmFyeS4NCg0KSSdtIHNvcnJ5LiBJIGRp
-ZCBidWlsZCBhbGxtb2Rjb25maWcgYnVpbGQgYnV0IG1pc3NlZCB0aGUgd2FybmluZyA6LyBJDQpz
-YXcgeW91IGFwcGxpZWQgMS01LiBEbyB5b3Ugd2FudCBhIHNpbmdsZSBpbmNyZW1lbnRhbCBwYXRj
-aCB3aXRoDQpNT0RVTEVfTElDRU5TRSgpIG9yIHNob3VsZCBJIHJlc3VibWl0IG9mIHdob2xlIHNl
-cmllcz8gR1BMIGlzIHRoZQ0KbGljZW5zZSBJIHdvdWxkIGxpa2UgdG8gdXNlIGZvciBsaW5raW5n
-IGFuZCBTUERYIHNob3VsZCBjb3ZlciBtb3JlDQphY2N1cmF0ZSB2ZXJzaW9uIGluZm9ybWF0aW9u
-Lg0KDQoNCkJlc3QgUmVnYXJkcw0KCS0tTWF0dGkNCg0K
+
+This is a continuation of my work to clean up exec so it's more
+difficult problems are approachable.
+
+The changes correct some comments, stop open coding mutex_lock_killable,
+and move the point_of_no_return variable up to when the
+point_of_no_return actually occurs.
+
+I don't think there is anything controversial in there but if you see
+something please let me know.
+
+Eric W. Biederman (6):
+      exec: Move the comment from above de_thread to above unshare_sighand
+      exec: Fix spelling of search_binary_handler in a comment
+      exec: Stop open coding mutex_lock_killable of cred_guard_mutex
+      exec: Run sync_mm_rss before taking exec_update_mutex
+      exec: Move handling of the point of no return to the top level
+      exec: Set the point of no return sooner
+
+ fs/exec.c       | 51 +++++++++++++++++++++++++++------------------------
+ kernel/ptrace.c |  4 ++--
+ 2 files changed, 29 insertions(+), 26 deletions(-)
