@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 627251CAC4B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:52:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 485081CAD79
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:02:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728944AbgEHMwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 08:52:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33106 "EHLO mail.kernel.org"
+        id S1729826AbgEHNC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 09:02:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59528 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729767AbgEHMwC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 08:52:02 -0400
+        id S1729853AbgEHMuz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 08:50:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D78702495C;
-        Fri,  8 May 2020 12:51:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B656C24964;
+        Fri,  8 May 2020 12:50:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588942320;
-        bh=Sx41FBhcBsKfKIEdv8SMAjV1JZRwxuUoFx2o7Y1WM7k=;
+        s=default; t=1588942255;
+        bh=MVj9UZhM0DjTLdw9ouaGd2g02wNy/NokxdpMwsfgbjY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lodIFDXvdmpehgyvseUbfBIbhCe/K3xORtXY37P4n29SopEHngT/2wUFuXbMaFr92
-         7xwfAJyiFoCNEnmGZmjGxbTg06cUv0feCrfCW+sITupHVXYsvPAULgHSQjChtbqLIg
-         hTLj4StW37sz6HvtdIZ5l2WjnhsKK82irUOwY4IA=
+        b=jVII4CR6GlCEPip65jyCTROh6N6MwauJJozGDqEUV2aZMm4xNUWxu+G+kWnJKgBOf
+         xLqztfdDqfpGZMd31Ahv+wD6U1kC1/kZbOGaqdsUzWTKB7s8R0TT6Hn3w2voYK3kIG
+         837DF3RCV5j3iJQCVvslorXIq/ZOEiZ89DtgVt10=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Matthias Blankertz <matthias.blankertz@cetitec.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Julien Beraud <julien.beraud@orolia.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 08/32] ASoC: rsnd: Fix HDMI channel mapping for multi-SSI mode
+Subject: [PATCH 4.14 09/22] net: stmmac: fix enabling socfpgas ptp_ref_clock
 Date:   Fri,  8 May 2020 14:35:21 +0200
-Message-Id: <20200508123035.905556314@linuxfoundation.org>
+Message-Id: <20200508123035.066280486@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200508123034.886699170@linuxfoundation.org>
-References: <20200508123034.886699170@linuxfoundation.org>
+In-Reply-To: <20200508123033.915895060@linuxfoundation.org>
+References: <20200508123033.915895060@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,47 +44,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthias Blankertz <matthias.blankertz@cetitec.com>
+From: Julien Beraud <julien.beraud@orolia.com>
 
-[ Upstream commit b94e164759b82d0c1c80d4b1c8f12c9bee83f11d ]
+[ Upstream commit 15ce30609d1e88d42fb1cd948f453e6d5f188249 ]
 
-The HDMI?_SEL register maps up to four stereo SSI data lanes onto the
-sdata[0..3] inputs of the HDMI output block. The upper half of the
-register contains four blocks of 4 bits, with the most significant
-controlling the sdata3 line and the least significant the sdata0 line.
+There are 2 registers to write to enable a ptp ref clock coming from the
+fpga.
+One that enables the usage of the clock from the fpga for emac0 and emac1
+as a ptp ref clock, and the other to allow signals from the fpga to reach
+emac0 and emac1.
+Currently, if the dwmac-socfpga has phymode set to PHY_INTERFACE_MODE_MII,
+PHY_INTERFACE_MODE_GMII, or PHY_INTERFACE_MODE_SGMII, both registers will
+be written and the ptp ref clock will be set as coming from the fpga.
+Separate the 2 register writes to only enable signals from the fpga to
+reach emac0 or emac1 when ptp ref clock is not coming from the fpga.
 
-The shift calculation has an off-by-one error, causing the parent SSI to
-be mapped to sdata3, the first multi-SSI child to sdata0 and so forth.
-As the parent SSI transmits the stereo L/R channels, and the HDMI core
-expects it on the sdata0 line, this causes no audio to be output when
-playing stereo audio on a multichannel capable HDMI out, and
-multichannel audio has permutated channels.
-
-Fix the shift calculation to map the parent SSI to sdata0, the first
-child to sdata1 etc.
-
-Signed-off-by: Matthias Blankertz <matthias.blankertz@cetitec.com>
-Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/20200415141017.384017-3-matthias.blankertz@cetitec.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Julien Beraud <julien.beraud@orolia.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sh/rcar/ssiu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
-index 016fbf5ac242c..7b5eb316c3665 100644
---- a/sound/soc/sh/rcar/ssiu.c
-+++ b/sound/soc/sh/rcar/ssiu.c
-@@ -172,7 +172,7 @@ static int rsnd_ssiu_init_gen2(struct rsnd_mod *mod,
- 			i;
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c
+index 5b3b06a0a3bf5..33407df6bea69 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c
+@@ -274,16 +274,19 @@ static int socfpga_dwmac_set_phy_mode(struct socfpga_dwmac *dwmac)
+ 	    phymode == PHY_INTERFACE_MODE_MII ||
+ 	    phymode == PHY_INTERFACE_MODE_GMII ||
+ 	    phymode == PHY_INTERFACE_MODE_SGMII) {
+-		ctrl |= SYSMGR_EMACGRP_CTRL_PTP_REF_CLK_MASK << (reg_shift / 2);
+ 		regmap_read(sys_mgr_base_addr, SYSMGR_FPGAGRP_MODULE_REG,
+ 			    &module);
+ 		module |= (SYSMGR_FPGAGRP_MODULE_EMAC << (reg_shift / 2));
+ 		regmap_write(sys_mgr_base_addr, SYSMGR_FPGAGRP_MODULE_REG,
+ 			     module);
+-	} else {
+-		ctrl &= ~(SYSMGR_EMACGRP_CTRL_PTP_REF_CLK_MASK << (reg_shift / 2));
+ 	}
  
- 		for_each_rsnd_mod_array(i, pos, io, rsnd_ssi_array) {
--			shift	= (i * 4) + 16;
-+			shift	= (i * 4) + 20;
- 			val	= (val & ~(0xF << shift)) |
- 				rsnd_mod_id(pos) << shift;
- 		}
++	if (dwmac->f2h_ptp_ref_clk)
++		ctrl |= SYSMGR_EMACGRP_CTRL_PTP_REF_CLK_MASK << (reg_shift / 2);
++	else
++		ctrl &= ~(SYSMGR_EMACGRP_CTRL_PTP_REF_CLK_MASK <<
++			  (reg_shift / 2));
++
+ 	regmap_write(sys_mgr_base_addr, reg_offset, ctrl);
+ 
+ 	/* Deassert reset for the phy configuration to be sampled by
 -- 
 2.20.1
 
