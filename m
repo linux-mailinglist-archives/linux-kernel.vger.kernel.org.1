@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29AE61CAD52
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:02:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76B531CACE5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:58:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730207AbgEHNAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:00:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33284 "EHLO mail.kernel.org"
+        id S1730222AbgEHM4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 08:56:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39850 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729942AbgEHMwN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 08:52:13 -0400
+        id S1729826AbgEHM4W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 08:56:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EABF024963;
-        Fri,  8 May 2020 12:52:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ABB80218AC;
+        Fri,  8 May 2020 12:56:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588942332;
-        bh=ecwnxAIpDp2gYLaZOYa/8bW7oSyzWdgnsCQup0zBE6Y=;
+        s=default; t=1588942582;
+        bh=Cqr8eghnHCwYfy32Xoq0YNy2OmKR9+KhkhznVTmFUrU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T/+G5qDBVYevPa3rZuQYrpWl/vpEat39dbO6pNFI5Zh7C8SnJ/yyGBkn2IhEl7LQu
-         em5SZOFfQ1UvBPH6hTy9AZlhCoCVhQ1PIQEgfqeiN5Ww8+z0cXwbxSpPwL2D/WX0uD
-         jhU1CbpPPiQucRTDz88StNy/Cs5YNv7LhReHxGLU=
+        b=j+wzxpbbibs5fHLgYck6ap1v0BmzbbLDzO3Z5vYw7eaJWQdu1z51MBITihZmNG3bb
+         HwB6Xx3ijzJ2HqwJieat0uXie9wZuPhorJJkyU0ifBQKriQfOI9N2Emo3kr8KySJsl
+         YuYRL00+PMt5FQfpZOETBjuL2t7k3y6g+cP8868k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.19 28/32] ALSA: hda: Match both PCI ID and SSID for driver blacklist
+        stable@vger.kernel.org, Sandeep Raghuraman <sandy.8925@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 24/49] drm/amdgpu: Correctly initialize thermal controller for GPUs with Powerplay table v0 (e.g Hawaii)
 Date:   Fri,  8 May 2020 14:35:41 +0200
-Message-Id: <20200508123039.019764517@linuxfoundation.org>
+Message-Id: <20200508123046.472976640@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200508123034.886699170@linuxfoundation.org>
-References: <20200508123034.886699170@linuxfoundation.org>
+In-Reply-To: <20200508123042.775047422@linuxfoundation.org>
+References: <20200508123042.775047422@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,54 +44,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Sandeep Raghuraman <sandy.8925@gmail.com>
 
-commit 977dfef40c8996b69afe23a9094d184049efb7bb upstream.
+[ Upstream commit bbc25dadc7ed19f9d6b2e30980f0eb4c741bb8bf ]
 
-The commit 3c6fd1f07ed0 ("ALSA: hda: Add driver blacklist") added a
-new blacklist for the devices that are known to have empty codecs, and
-one of the entries was ASUS ROG Zenith II (PCI SSID 1043:874f).
-However, it turned out that the very same PCI SSID is used for the
-previous model that does have the valid HD-audio codecs and the change
-broke the sound on it.
+Initialize thermal controller fields in the PowerPlay table for Hawaii
+GPUs, so that fan speeds are reported.
 
-Since the empty codec problem appear on the certain AMD platform (PCI
-ID 1022:1487), this patch changes the blacklist matching to both PCI
-ID and SSID using pci_match_id().  Also, the entry that was removed by
-the previous fix for ASUS ROG Zenigh II is re-added.
-
-Link: https://lore.kernel.org/r/20200424061222.19792-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Sandeep Raghuraman <sandy.8925@gmail.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/hda_intel.c |    9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ .../drm/amd/powerplay/hwmgr/processpptables.c | 26 +++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2214,9 +2214,10 @@ static const struct hdac_io_ops pci_hda_
-  * some HD-audio PCI entries are exposed without any codecs, and such devices
-  * should be ignored from the beginning.
-  */
--static const struct snd_pci_quirk driver_blacklist[] = {
--	SND_PCI_QUIRK(0x1462, 0xcb59, "MSI TRX40 Creator", 0),
--	SND_PCI_QUIRK(0x1462, 0xcb60, "MSI TRX40", 0),
-+static const struct pci_device_id driver_blacklist[] = {
-+	{ PCI_DEVICE_SUB(0x1022, 0x1487, 0x1043, 0x874f) }, /* ASUS ROG Zenith II / Strix */
-+	{ PCI_DEVICE_SUB(0x1022, 0x1487, 0x1462, 0xcb59) }, /* MSI TRX40 Creator */
-+	{ PCI_DEVICE_SUB(0x1022, 0x1487, 0x1462, 0xcb60) }, /* MSI TRX40 */
- 	{}
- };
+diff --git a/drivers/gpu/drm/amd/powerplay/hwmgr/processpptables.c b/drivers/gpu/drm/amd/powerplay/hwmgr/processpptables.c
+index 77c14671866c0..719597c5d27d9 100644
+--- a/drivers/gpu/drm/amd/powerplay/hwmgr/processpptables.c
++++ b/drivers/gpu/drm/amd/powerplay/hwmgr/processpptables.c
+@@ -984,6 +984,32 @@ static int init_thermal_controller(
+ 			struct pp_hwmgr *hwmgr,
+ 			const ATOM_PPLIB_POWERPLAYTABLE *powerplay_table)
+ {
++	hwmgr->thermal_controller.ucType =
++			powerplay_table->sThermalController.ucType;
++	hwmgr->thermal_controller.ucI2cLine =
++			powerplay_table->sThermalController.ucI2cLine;
++	hwmgr->thermal_controller.ucI2cAddress =
++			powerplay_table->sThermalController.ucI2cAddress;
++
++	hwmgr->thermal_controller.fanInfo.bNoFan =
++		(0 != (powerplay_table->sThermalController.ucFanParameters &
++			ATOM_PP_FANPARAMETERS_NOFAN));
++
++	hwmgr->thermal_controller.fanInfo.ucTachometerPulsesPerRevolution =
++		powerplay_table->sThermalController.ucFanParameters &
++		ATOM_PP_FANPARAMETERS_TACHOMETER_PULSES_PER_REVOLUTION_MASK;
++
++	hwmgr->thermal_controller.fanInfo.ulMinRPM
++		= powerplay_table->sThermalController.ucFanMinRPM * 100UL;
++	hwmgr->thermal_controller.fanInfo.ulMaxRPM
++		= powerplay_table->sThermalController.ucFanMaxRPM * 100UL;
++
++	set_hw_cap(hwmgr,
++		   ATOM_PP_THERMALCONTROLLER_NONE != hwmgr->thermal_controller.ucType,
++		   PHM_PlatformCaps_ThermalController);
++
++	hwmgr->thermal_controller.use_hw_fan_control = 1;
++
+ 	return 0;
+ }
  
-@@ -2239,7 +2240,7 @@ static int azx_probe(struct pci_dev *pci
- 	bool schedule_probe;
- 	int err;
- 
--	if (snd_pci_quirk_lookup(pci, driver_blacklist)) {
-+	if (pci_match_id(driver_blacklist, pci)) {
- 		dev_info(&pci->dev, "Skipping the blacklisted device\n");
- 		return -ENODEV;
- 	}
+-- 
+2.20.1
+
 
 
