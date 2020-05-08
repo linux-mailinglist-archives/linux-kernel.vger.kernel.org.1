@@ -2,184 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E28141CB63A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 19:44:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9172F1CB62C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 19:42:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727789AbgEHRoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 13:44:15 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:47428 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726797AbgEHRoN (ORCPT
+        id S1727104AbgEHRms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 13:42:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726746AbgEHRms (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 13:44:13 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 048HZWAC120545;
-        Fri, 8 May 2020 13:42:43 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 30vtveutta-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 May 2020 13:42:43 -0400
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 048HaDP7122403;
-        Fri, 8 May 2020 13:42:42 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 30vtveutsc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 May 2020 13:42:42 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 048HeoYq020104;
-        Fri, 8 May 2020 17:42:40 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma03ams.nl.ibm.com with ESMTP id 30s0g5wvbw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 May 2020 17:42:40 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 048HgbZm43712600
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 8 May 2020 17:42:37 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BBCB542041;
-        Fri,  8 May 2020 17:42:37 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6EED54203F;
-        Fri,  8 May 2020 17:42:34 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.148.202.219])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Fri,  8 May 2020 17:42:34 +0000 (GMT)
-Date:   Fri, 8 May 2020 20:42:32 +0300
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Rich Felker <dalias@libc.org>, linux-ia64@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-sh@vger.kernel.org,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        linux-mm@kvack.org, Paul Mackerras <paulus@samba.org>,
-        linux-hexagon@vger.kernel.org, Will Deacon <will@kernel.org>,
-        kvmarm@lists.cs.columbia.edu, Jonas Bonn <jonas@southpole.se>,
-        linux-arch@vger.kernel.org, Brian Cain <bcain@codeaurora.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        uclinux-h8-devel@lists.sourceforge.jp,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>, kvm-ppc@vger.kernel.org,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        openrisc@lists.librecores.org, Stafford Horne <shorne@gmail.com>,
-        Guan Xuetao <gxt@pku.edu.cn>,
-        linux-arm-kernel@lists.infradead.org,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Tony Luck <tony.luck@intel.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        nios2-dev@lists.rocketboards.org, linuxppc-dev@lists.ozlabs.org,
-        =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: Re: [PATCH v4 02/14] arm: add support for folded p4d page tables
-Message-ID: <20200508174232.GA759899@linux.ibm.com>
-References: <20200414153455.21744-1-rppt@kernel.org>
- <20200414153455.21744-3-rppt@kernel.org>
- <CGME20200507121658eucas1p240cf4a3e0fe5c22dda5ec4f72734149f@eucas1p2.samsung.com>
- <39ba8a04-d6b5-649d-c289-0c8b27cb66c5@samsung.com>
- <20200507161155.GE683243@linux.ibm.com>
- <98229ab1-fbf8-0a89-c5d6-270c828799e7@samsung.com>
+        Fri, 8 May 2020 13:42:48 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7889EC061A0C;
+        Fri,  8 May 2020 10:42:47 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id 145so1300372pfw.13;
+        Fri, 08 May 2020 10:42:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=A5et1zZ9ENnf4f4ExVYxu4DsWfEOIYFmzS6JlsqdSxQ=;
+        b=l/C4GNJ3nNPV4iPlRSBjrRjkLIjMInNHVIvFMuosEmJQL8ArDg3Xy+Wf/tM9NudJMM
+         WMn5YWxTvEWsc4YFtbQhNc4w/elFLk3OLRoNsCAkFXaZ6k8Snpv0I6b1ImelpM6iNbGH
+         wP6xKd9+twYQfKkyigZEobng1qTEBEaVi9eEXuHfPP9DXCr6yo/WjVhQRu/DmyoYjWlM
+         ZzxUJfoy+z+/lStg1XKfWTYdTDZWNhYTE/H1jFs+1BlgkJoWfdYe+rm0869/RNgoRH6U
+         qmQKU69BfHtX5gVThGx/mfZCc8Fi3vjMPBBDj0/fJ22n/ERk3lf4g+UcDI0InwlmoJZ7
+         bOdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=A5et1zZ9ENnf4f4ExVYxu4DsWfEOIYFmzS6JlsqdSxQ=;
+        b=IOXoQmBUaMvgoeOGS9tMfIxKRt17f5xgaiQ1k9KJ4n9E3jINqzcQQtRsGoBrNN7RJ/
+         kNHfnanQh5i2OQ4K9ihiqNS/wg4UjibjurXJV14gnyj4PWAPg3PGMrGfeAsvZqlFBPDa
+         gHv36HSdGsHwWHcMgUiol1PLvEM9PTQrF1ln8xgPujcazFxHxqQojZZwuPL59DSdPjlv
+         D8stM9cSnVY5rDkkW52QltEePS8F4EonjqlQZHsyTF6P2Dp7DpnFLCSg6HIXry+RHaHm
+         7XGajl5vQgl6c4Pz07TgecpvhfwnNnFmPf5L3dNat9Z1pZie2l2CeL8qaHq+s6vxPRvi
+         z8HA==
+X-Gm-Message-State: AGi0PubZv4/EbFDmBvuVlssEcztJu0p1ZZZ6aRdK/R1+QVC/sddSLZlI
+        E6VGqFdE/TGBscNew0Uk+lWVyzNN
+X-Google-Smtp-Source: APiQypL+WvgRAksIUXHpgaPkLk6pu44dhlSk1kZJviYXqVOsaWKakNitDPrszlfF0QG6Lx4DeP5d6w==
+X-Received: by 2002:a63:6f07:: with SMTP id k7mr3222068pgc.274.1588959766367;
+        Fri, 08 May 2020 10:42:46 -0700 (PDT)
+Received: from [10.230.188.43] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id a19sm2476134pfd.91.2020.05.08.10.42.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 May 2020 10:42:45 -0700 (PDT)
+Subject: Re: [PATCH net v2] net: bcmgenet: Clear ID_MODE_DIS in
+ EXT_RGMII_OOB_CTRL when not needed
+To:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Doug Berger <opendmb@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Stefan Wahren <wahrenst@gmx.net>
+Cc:     bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200225131159.26602-1-nsaenzjulienne@suse.de>
+ <cf07fae3-bd8f-a645-0007-a317832c51c1@samsung.com>
+ <CGME20200507100347eucas1p2bad4d58e4eb23e8abd22b43f872fc865@eucas1p2.samsung.com>
+ <a3df217d-f35c-9d74-4069-d47dee89173e@samsung.com>
+ <09f9fdff-867f-687f-e5af-a4f82a75e105@gmail.com>
+ <bff2b7b6-22c8-7624-d31b-5b2a9425b11c@samsung.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <5f3d64c8-5b02-d697-c214-fb14bcff99ac@gmail.com>
+Date:   Fri, 8 May 2020 10:42:43 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Firefox/68.0 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <98229ab1-fbf8-0a89-c5d6-270c828799e7@samsung.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-08_15:2020-05-08,2020-05-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 mlxscore=0
- suspectscore=1 spamscore=0 adultscore=0 bulkscore=0 priorityscore=1501
- lowpriorityscore=0 phishscore=0 malwarescore=0 clxscore=1015
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005080144
+In-Reply-To: <bff2b7b6-22c8-7624-d31b-5b2a9425b11c@samsung.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 08, 2020 at 08:53:27AM +0200, Marek Szyprowski wrote:
-> Hi Mike,
-> 
-> On 07.05.2020 18:11, Mike Rapoport wrote:
-> > On Thu, May 07, 2020 at 02:16:56PM +0200, Marek Szyprowski wrote:
-> >> On 14.04.2020 17:34, Mike Rapoport wrote:
-> >>> From: Mike Rapoport <rppt@linux.ibm.com>
-> >>>
-> >>> Implement primitives necessary for the 4th level folding, add walks of p4d
-> >>> level where appropriate, and remove __ARCH_USE_5LEVEL_HACK.
-> >>>
-> >>> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> >> Today I've noticed that kexec is broken on ARM 32bit. Bisecting between
-> >> current linux-next and v5.7-rc1 pointed to this commit. I've tested this
-> >> on Odroid XU4 and Raspberry Pi4 boards. Here is the relevant log:
-> >>
-> >> # kexec --kexec-syscall -l zImage --append "$(cat /proc/cmdline)"
-> >> memory_range[0]:0x40000000..0xbe9fffff
-> >> memory_range[0]:0x40000000..0xbe9fffff
-> >> # kexec -e
-> >> kexec_core: Starting new kernel
-> >> 8<--- cut here ---
-> >> Unable to handle kernel paging request at virtual address c010f1f4
-> >> pgd = c6817793
-> >> [c010f1f4] *pgd=4000041e(bad)
-> >> Internal error: Oops: 80d [#1] PREEMPT ARM
-> >> Modules linked in:
-> >> CPU: 0 PID: 1329 Comm: kexec Tainted: G        W
-> >> 5.7.0-rc3-00127-g6cba81ed0f62 #611
-> >> Hardware name: Samsung Exynos (Flattened Device Tree)
-> >> PC is at machine_kexec+0x40/0xfc
-> > Any chance you have the debug info in this kernel?
-> > scripts/faddr2line would come handy here.
-> 
-> # ./scripts/faddr2line --list vmlinux machine_kexec+0x40
-> machine_kexec+0x40/0xf8:
-> 
-> machine_kexec at arch/arm/kernel/machine_kexec.c:182
->   177            reboot_code_buffer = 
-> page_address(image->control_code_page);
->   178
->   179            /* Prepare parameters for reboot_code_buffer*/
->   180            set_kernel_text_rw();
->   181            kexec_start_address = image->start;
->  >182<           kexec_indirection_page = page_list;
->   183            kexec_mach_type = machine_arch_type;
->   184            kexec_boot_atags = image->arch.kernel_r2;
->   185
->   186            /* copy our kernel relocation code to the control code 
-> page */
->   187            reboot_entry = fncpy(reboot_code_buffer,
 
-Can you please try the patch below:
 
-diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
-index 963b5284d284..f86b3d17928e 100644
---- a/arch/arm/mm/init.c
-+++ b/arch/arm/mm/init.c
-@@ -571,7 +571,7 @@ static inline void section_update(unsigned long addr, pmdval_t mask,
- {
- 	pmd_t *pmd;
- 
--	pmd = pmd_off_k(addr);
-+	pmd = pmd_offset(pud_offset(p4d_offset(pgd_offset(mm, addr), addr), addr), addr);
- 
- #ifdef CONFIG_ARM_LPAE
- 	pmd[0] = __pmd((pmd_val(pmd[0]) & mask) | prot);
+On 5/7/2020 11:38 PM, Marek Szyprowski wrote:
+> Hi Florian,
+> 
+> On 07.05.2020 17:54, Florian Fainelli wrote:
+>> On 5/7/2020 3:03 AM, Marek Szyprowski wrote:
+>>> On 07.05.2020 11:46, Marek Szyprowski wrote:
+>>>> On 25.02.2020 14:11, Nicolas Saenz Julienne wrote:
+>>>>> Outdated Raspberry Pi 4 firmware might configure the external PHY as
+>>>>> rgmii although the kernel currently sets it as rgmii-rxid. This makes
+>>>>> connections unreliable as ID_MODE_DIS is left enabled. To avoid this,
+>>>>> explicitly clear that bit whenever we don't need it.
+>>>>>
+>>>>> Fixes: da38802211cc ("net: bcmgenet: Add RGMII_RXID support")
+>>>>> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+>>>> I've finally bisected the network issue I have on my RPi4 used for
+>>>> testing mainline builds. The bisect pointed to this patch. Once it got
+>>>> applied in v5.7-rc1, the networking is broken on my RPi4 in ARM32bit
+>>>> mode and kernel compiled from bcm2835_defconfig. I'm using u-boot to
+>>>> tftp zImage/dtb/initrd there. After reverting this patch network is
+>>>> working fine again. The strange thing is that networking works fine if
+>>>> kernel is compiled from multi_v7_defconfig but I don't see any obvious
+>>>> difference there.
+>>>>
+>>>> I'm not sure if u-boot is responsible for this break, but kernel
+>>>> definitely should be able to properly reset the hardware to the valid
+>>>> state.
+>>>>
+>>>> ...
+>>> Okay, I've played a bit more with this and found that enabling
+>>> CONFIG_BROADCOM_PHY fixes this network issue. I wonder if Genet driver
+>>> should simply select CONFIG_BROADCOM_PHY the same way as it selects
+>>> CONFIG_BCM7XXX_PHY.
+>> Historically GENET has been deployed with an internal PHY and this is
+>> still 90% of the GENET users out there on classic Broadcom STB
+>> platforms, not counting the 2711. For external PHYs, there is a variety
+>> of options here, so selecting CONFIG_BROADCOM_PHY would be just one of
+>> the possibilities, I would rather fix this with the bcm2835_defconfig
+>> and multi_v7_defconfig update. Would that work for you?
+> 
+> Frankly I was surprised that the Genet driver successfully probed and 
+> registered eth0 even when no proper PHY driver was available in the 
+> system. It even reported the link status change, but then didn't 
+> transfer any packets. I expected at least a runtime check and error or 
+> warning if proper PHY is not available.
 
->  > ...
+
+> If this is really not possible, I would still advise to select proper potential PHY drivers, so users 
+> won't be confused.
+
+It is possible to issue a warning if we find ourselves running on a
+BCM2711 SoC and we end-up using the Generic PHY driver, much like what
+r8169 does (for similar reasons):
+
+https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=f32593773549
+https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=0c2006b29e5f62784c70209e71da7876267e0e2d
+
 > 
-> Best regards
-> -- 
-> Marek Szyprowski, PhD
-> Samsung R&D Institute Poland
-> 
+> The Genet driver already selects CONFIG_BCM7XXX_PHY. How common is it? 
+
+GENET is a roughly 15 years old Ethernet controller that has evolved and
+is still being integrated into new chips, so we have probably hundreds
+of millions of devices out there.
+
+> Would it really hurt do the same for CONFIG_BROADCOM_PHY? I expect that 
+> 2711 will be quite popular SoC with it soon.
+
+My problem with a select BROADCOM_PHY is that it will make it impossible
+for me to deselect the Broadcom PHY driver. We have probably about a
+hundred or so reference boards with a variety of external PHYs some
+Broadcom and we have managed to get them all working out of the box with
+the Generic PHY driver. If I cannot deselect the Broadcom PHY driver
+there will be RGMII regressions (much like the one you reported) which I
+really have no interest in solving when it can be avoided.
+
+Does the following work for you:
+
+diff --git a/drivers/net/ethernet/broadcom/Kconfig
+b/drivers/net/ethernet/broadcom/Kconfig
+index 53055ce5dfd6..8a70b9152f7c 100644
+--- a/drivers/net/ethernet/broadcom/Kconfig
++++ b/drivers/net/ethernet/broadcom/Kconfig
+@@ -69,6 +69,7 @@ config BCMGENET
+        select BCM7XXX_PHY
+        select MDIO_BCM_UNIMAC
+        select DIMLIB
++       imply BROADCOM_PHY if ARCH_BCM2835
+        help
+          This driver supports the built-in Ethernet MACs found in the
+          Broadcom BCM7xxx Set Top Box family chipset.
 
 -- 
-Sincerely yours,
-Mike.
+Florian
