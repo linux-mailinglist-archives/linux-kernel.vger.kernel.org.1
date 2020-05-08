@@ -2,139 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28FAA1CAAAF
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:35:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 863B71CAD90
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:06:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726825AbgEHMfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 08:35:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726616AbgEHMfI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 08:35:08 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 181BCC05BD43
-        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 05:35:08 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id fu13so4197834pjb.5
-        for <linux-kernel@vger.kernel.org>; Fri, 08 May 2020 05:35:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kreOYKVsIzAvkcbQdsTFY9ySc69oBnN2FD6hCydX61g=;
-        b=Y4rGUFQcqxXiIDwR/XcZi4P4JsTupK4Q2qDAhNaWB+CtPyDJIIb+BB8PastI322cqi
-         84+OQFdxHLvjq6CHPm3O5/UrTrKcOpUsNEl3Md18SVjUIMJ8+Q0tOO7vLsQ2oDKWLyzL
-         HXxlbCliHLNAdnLXsLueMxjEvQjeKEGACqCg4YH5A0jtJ863WVr16sTgntez0q2aykR2
-         AldsHUmv2dEMosy2UGBMyGdIyzq8O1oDXR30c7BIv6BRcJUXbQAR93rPafj/Lh7pU8rj
-         cvSwfD9H1vAjGcKmkXy4HKyAGehNvgw44OnIzmSE8JY7isatMgGH9QfxUA7G95Kom7DH
-         r0Yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kreOYKVsIzAvkcbQdsTFY9ySc69oBnN2FD6hCydX61g=;
-        b=c0jBjctcGaws1SnU2RVf8EFOqwyC4I7Az4xZJbwSJ9MAhSv7pNrhUTa+Mxg+OZ5k6I
-         PBLvH5xc3QQNWtSUHrXEDxOXZhhnZXAZ3WDreXL3eKw7RWDMy6fn/BTFl8ujFTUTjquo
-         ziDqedUEbqdejsbpnCE95ZaGWn00uWmWuo5zBFMSwLljIrKGe+Y5kfI6isa/GFcJ8J9g
-         mtCt0qjCJzeSm4D1sVSkdyuJ1VCwNPGIqRsKq2z2Xy/+jLoG3zDN4KsciJss2QU7ov2r
-         tk4y1mjeMd3gQ5zZVHaw1WpxS/JE7NFfSazBc/DCS+9TmFH45155/7NCpz7FJW1PkKtf
-         it5Q==
-X-Gm-Message-State: AGi0PuaKfhyPDUWmamhC2MTvImp+Adcpj5XcYe+dylwTZYQkY+m/Jg9N
-        VI52yyYskVD/7D6Dgg5EgNlQlXsPhoY=
-X-Google-Smtp-Source: APiQypKqV3dq+hdRND1CsU/0vGtZOsRMqvCxNumbMDakeQHU39yq6+23AG3x9vDPebuovIU4kSj0oQ==
-X-Received: by 2002:a17:90a:2709:: with SMTP id o9mr5499773pje.168.1588941307612;
-        Fri, 08 May 2020 05:35:07 -0700 (PDT)
-Received: from aaronlu-desktop ([47.89.83.64])
-        by smtp.gmail.com with ESMTPSA id m3sm2329490pjs.17.2020.05.08.05.35.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 May 2020 05:35:06 -0700 (PDT)
-Date:   Fri, 8 May 2020 20:34:57 +0800
-From:   Aaron Lu <aaron.lwe@gmail.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Vineeth Remanan Pillai <vpillai@digitalocean.com>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paul Turner <pjt@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Aaron Lu <aaron.lu@linux.alibaba.com>,
-        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
-        =?iso-8859-1?Q?Fr=E9d=E9ric?= Weisbecker <fweisbec@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        "Li, Aubrey" <aubrey.li@linux.intel.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH updated v2] sched/fair: core wide cfs task priority
- comparison
-Message-ID: <20200508123457.GA122180@aaronlu-desktop>
-References: <20200415040741.GA169001@ziqianlu-desktop.localdomain>
- <CANaguZAXsjD=X-bB7dvQZ3FSqLioiZU=YREHH_7JqiFsZCTxHA@mail.gmail.com>
- <20200417094045.GA197704@ziqianlu-desktop.localdomain>
- <20200420080759.GA224731@ziqianlu-desktop.localdomain>
- <CANaguZDP3nyBdjLeeCZGoUoYk6Lf0HUv19N2Qxo4CpZfrjPZHA@mail.gmail.com>
- <20200421025131.GA227300@aaronlu-desktop>
- <20200424142443.GA263207@aaronlu-desktop>
- <20200506143506.GH5298@hirez.programming.kicks-ass.net>
- <20200508084419.GA120223@aaronlu-desktop>
- <20200508090925.GV5298@hirez.programming.kicks-ass.net>
+        id S1729694AbgEHMs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 08:48:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53260 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729692AbgEHMst (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 08:48:49 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D09C821473;
+        Fri,  8 May 2020 12:48:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588942128;
+        bh=gI8pMIvh5jN8BWPY6uAaQ6DrV5F1LYg7eIi5Fw+94Pk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=F5/LECh5Vlxx9uqDnllvOW04/bJ/esz4JSHlS6xB9HbckMJdGPTH8SqP1kKW2jybk
+         77Yc5avwbzq9XlG/+gjOCNjg9TjMN8sqUs/Tj/m2K6dhzwbeannuwPTjj36BLapeAu
+         l72EoGslCJVZ3BaG8B4EcAQOkWHLqxaqTMZeIfTY=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org,
+        Shmulik Ladkani <shmulik.ladkani@gmail.com>,
+        Pravin Shelar <pshelar@ovn.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.4 307/312] net: skbuff: Remove errornous length validation in skb_vlan_pop()
+Date:   Fri,  8 May 2020 14:34:58 +0200
+Message-Id: <20200508123146.094231743@linuxfoundation.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200508123124.574959822@linuxfoundation.org>
+References: <20200508123124.574959822@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200508090925.GV5298@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 08, 2020 at 11:09:25AM +0200, Peter Zijlstra wrote:
-> On Fri, May 08, 2020 at 04:44:19PM +0800, Aaron Lu wrote:
-> > On Wed, May 06, 2020 at 04:35:06PM +0200, Peter Zijlstra wrote:
-> 
-> > > Aside from this being way to complicated for what it does -- you
-> > > could've saved the min_vruntime for each rq and compared them with
-> > > subtraction -- it is also terminally broken afaict.
-> > >
-> > > Consider any infeasible weight scenario. Take for instance two tasks,
-> > > each bound to their respective sibling, one with weight 1 and one with
-> > > weight 2. Then the lower weight task will run ahead of the higher weight
-> > > task without bound.
-> > 
-> > I don't follow how this could happen. Even the lower weight task runs
-> > first, after some time, the higher weight task will get its turn and
-> > from then on, the higher weight task will get more chance to run(due to
-> > its higher weight and thus, slower accumulation of vruntime).
-> 
-> That seems to assume they're mutually exclusive. In that case, as I
-> argued, we only have a single runqueue and then yes it works. But if
-> they're not exclusive, and can run concurrently, it comes apart.
+From: Shmulik Ladkani <shmulik.ladkani@ravellosystems.com>
 
-Ah right, now I see what you mean. Sorry for misunderstanding.
+commit 636c2628086e40c86dac7ddc84a1c4b4fcccc6e3 upstream.
 
-And yes, that 'utterly destroys the concept of a shared time base' and
-then bad things can happen:
-1) two same tagged tasks(t1 and t2) running on two siblings, with t1's
-   weight lower than t2's;
-2) both tasks are cpu intensive;
-3) over time, the lower weight task(t1)'s vruntime becomes bigger and
-   bigger than t2's vruntime and the core wide min_vruntime is the
-   same as t1's vruntime per this patch;
-4) a new task enqueued on the same sibling as t1, if the new task has
-   an incompatible tag, it will be starved by t2 because t2's vruntime
-   is way smaller than the core wide min_vruntime.
+In 93515d53b1
+  "net: move vlan pop/push functions into common code"
+skb_vlan_pop was moved from its private location in openvswitch to
+skbuff common code.
 
-With this said, I realized a workaround for the issue described above:
-when the core went from 'compatible mode'(step 1-3) to 'incompatible
-mode'(step 4), reset all root level sched entities' vruntime to be the
-same as the core wide min_vruntime. After all, the core is transforming
-from two runqueue mode to single runqueue mode... I think this can solve
-the issue to some extent but I may miss other scenarios.
+In case skb has non hw-accel vlan tag, the original 'pop_vlan()' assured
+that skb->len is sufficient (if skb->len < VLAN_ETH_HLEN then pop was
+considered a no-op).
 
-I'll also re-read your last email about the 'lag' idea.
+This validation was moved as is into the new common 'skb_vlan_pop'.
+
+Alas, in its original location (openvswitch), there was a guarantee that
+'data' points to the mac_header, therefore the 'skb->len < VLAN_ETH_HLEN'
+condition made sense.
+However there's no such guarantee in the generic 'skb_vlan_pop'.
+
+For short packets received in rx path going through 'skb_vlan_pop',
+this causes 'skb_vlan_pop' to fail pop-ing a valid vlan hdr (in the non
+hw-accel case) or to fail moving next tag into hw-accel tag.
+
+Remove the 'skb->len < VLAN_ETH_HLEN' condition entirely:
+It is superfluous since inner '__skb_vlan_pop' already verifies there
+are VLAN_ETH_HLEN writable bytes at the mac_header.
+
+Note this presents a slight change to skb_vlan_pop() users:
+In case total length is smaller than VLAN_ETH_HLEN, skb_vlan_pop() now
+returns an error, as opposed to previous "no-op" behavior.
+Existing callers (e.g. tc act vlan, ovs) usually drop the packet if
+'skb_vlan_pop' fails.
+
+Fixes: 93515d53b1 ("net: move vlan pop/push functions into common code")
+Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Cc: Pravin Shelar <pshelar@ovn.org>
+Reviewed-by: Pravin B Shelar <pshelar@ovn.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+---
+ net/core/skbuff.c |   10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
+
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -4451,9 +4451,8 @@ int skb_vlan_pop(struct sk_buff *skb)
+ 	if (likely(skb_vlan_tag_present(skb))) {
+ 		skb->vlan_tci = 0;
+ 	} else {
+-		if (unlikely((skb->protocol != htons(ETH_P_8021Q) &&
+-			      skb->protocol != htons(ETH_P_8021AD)) ||
+-			     skb->len < VLAN_ETH_HLEN))
++		if (unlikely(skb->protocol != htons(ETH_P_8021Q) &&
++			     skb->protocol != htons(ETH_P_8021AD)))
+ 			return 0;
+ 
+ 		err = __skb_vlan_pop(skb, &vlan_tci);
+@@ -4461,9 +4460,8 @@ int skb_vlan_pop(struct sk_buff *skb)
+ 			return err;
+ 	}
+ 	/* move next vlan tag to hw accel tag */
+-	if (likely((skb->protocol != htons(ETH_P_8021Q) &&
+-		    skb->protocol != htons(ETH_P_8021AD)) ||
+-		   skb->len < VLAN_ETH_HLEN))
++	if (likely(skb->protocol != htons(ETH_P_8021Q) &&
++		   skb->protocol != htons(ETH_P_8021AD)))
+ 		return 0;
+ 
+ 	vlan_proto = skb->protocol;
+
+
