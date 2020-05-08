@@ -2,110 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52B651CB045
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E3251CB07D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:33:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727909AbgEHN16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:27:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50096 "EHLO mail.kernel.org"
+        id S1728698AbgEHNbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 09:31:45 -0400
+Received: from elvis.franken.de ([193.175.24.41]:44851 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726736AbgEHN15 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 09:27:57 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DC57024953;
-        Fri,  8 May 2020 13:27:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588944477;
-        bh=XmKr+actPKIyBSF7+MJNsc70eQDYMdbsWtd71MQ4z8o=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=OYg5EcUy5J7fNhWiDvM5ZKpmTJRL9DKvTrTcXTEdc6xz2hCkG0mdPoNVFHZ7r1uRH
-         fNBfP+EGrEG7ysIj/kfXDidRX6YkYZNZPo4XQyFVdOmysrCJxjyuYPzNCClroTi/+w
-         0mjbsYbVE85F3wPCuxZTkDZ8XFCRP8952LksoUO8=
-Date:   Fri, 8 May 2020 22:27:50 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: Re: [patch V4 part 4 02/24] x86/int3: Avoid atomic instrumentation
-Message-Id: <20200508222750.a7aca9f898b7637d402e8726@kernel.org>
-In-Reply-To: <20200505135313.517429268@linutronix.de>
-References: <20200505134926.578885807@linutronix.de>
-        <20200505135313.517429268@linutronix.de>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1727975AbgEHNbo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 09:31:44 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jX36M-0003ty-03; Fri, 08 May 2020 15:31:42 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 9EAF3C041B; Fri,  8 May 2020 15:28:09 +0200 (CEST)
+Date:   Fri, 8 May 2020 15:28:09 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Sergey.Semin@baikalelectronics.ru
+Cc:     Paul Burton <paulburton@kernel.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Philippe =?iso-8859-1?Q?Mathieu-Daud=E9?= <f4bug@amsat.org>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 08/20] mips: Fix cpu_has_mips64r1/2 activation for
+ MIPS32 CPUs
+Message-ID: <20200508132809.GA15641@alpha.franken.de>
+References: <20200306124807.3596F80307C2@mail.baikalelectronics.ru>
+ <20200506174238.15385-1-Sergey.Semin@baikalelectronics.ru>
+ <20200506174238.15385-9-Sergey.Semin@baikalelectronics.ru>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200506174238.15385-9-Sergey.Semin@baikalelectronics.ru>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 05 May 2020 15:49:28 +0200
-Thomas Gleixner <tglx@linutronix.de> wrote:
-
-> From: Peter Zijlstra <peterz@infradead.org>
-> 
-> Use arch_atomic_*() and READ_ONCE_NOCHECK() to ensure nothing untoward
-> creeps in and ruins things.
-> 
-> That is; this is the INT3 text poke handler, strictly limit the code
-> that runs in it, lest it inadvertenly hits yet another INT3.
-> 
-> Reported-by: Thomas Gleixner <tglx@linutronix.de>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-
-Looks good to me.
-
-Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
-
-> ---
->  arch/x86/kernel/alternative.c |    6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> --- a/arch/x86/kernel/alternative.c
-> +++ b/arch/x86/kernel/alternative.c
-> @@ -960,9 +960,9 @@ static struct bp_patching_desc *bp_desc;
->  static __always_inline
->  struct bp_patching_desc *try_get_desc(struct bp_patching_desc **descp)
->  {
-> -	struct bp_patching_desc *desc = READ_ONCE(*descp); /* rcu_dereference */
-> +	struct bp_patching_desc *desc = READ_ONCE_NOCHECK(*descp); /* rcu_dereference */
+On Wed, May 06, 2020 at 08:42:26PM +0300, Sergey.Semin@baikalelectronics.ru wrote:
+> From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> diff --git a/arch/mips/include/asm/cpu-features.h b/arch/mips/include/asm/cpu-features.h
+> index e2f31bd6363b..7e22b9c1e279 100644
+> --- a/arch/mips/include/asm/cpu-features.h
+> +++ b/arch/mips/include/asm/cpu-features.h
+> @@ -64,6 +64,8 @@
+>  	((MIPS_ISA_REV >= (ge)) && (MIPS_ISA_REV < (lt)))
+>  #define __isa_range_or_flag(ge, lt, flag) \
+>  	(__isa_range(ge, lt) || ((MIPS_ISA_REV < (lt)) && __isa(flag)))
+> +#define __isa_range_and_flag(ge, lt, flag) \
+> +	(__isa_range(ge, lt) && __isa(flag))
 >  
-> -	if (!desc || !atomic_inc_not_zero(&desc->refs))
-> +	if (!desc || !arch_atomic_inc_not_zero(&desc->refs))
->  		return NULL;
->  
->  	return desc;
-> @@ -971,7 +971,7 @@ struct bp_patching_desc *try_get_desc(st
->  static __always_inline void put_desc(struct bp_patching_desc *desc)
->  {
->  	smp_mb__before_atomic();
-> -	atomic_dec(&desc->refs);
-> +	arch_atomic_dec(&desc->refs);
->  }
->  
->  static __always_inline void *text_poke_addr(struct text_poke_loc *tp)
-> 
+>  /*
+>   * SMP assumption: Options of CPU 0 are a superset of all processors.
+> @@ -291,10 +293,10 @@
+>  # define cpu_has_mips32r6	__isa_ge_or_flag(6, MIPS_CPU_ISA_M32R6)
+>  #endif
+>  #ifndef cpu_has_mips64r1
+> -# define cpu_has_mips64r1	__isa_range_or_flag(1, 6, MIPS_CPU_ISA_M64R1)
+> +# define cpu_has_mips64r1	__isa_range_and_flag(1, 6, MIPS_CPU_ISA_M64R1)
 
+that's not the correct fix. You want to check for cpu_has_64bits here.
+Something like 
+
+# define cpu_has_mips64r1    (cpu_has_64bits && __isa_range_or_flag(1, 6, MIPS_CPU_ISA_M64R1))
+
+should do the trick.
+
+Thomas.
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
