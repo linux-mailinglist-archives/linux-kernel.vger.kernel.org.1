@@ -2,101 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5931CBACD
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 00:35:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFEF41CBAD4
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 00:40:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728230AbgEHWfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 18:35:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726843AbgEHWfT (ORCPT
+        id S1727986AbgEHWk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 18:40:29 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:53839 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727110AbgEHWk2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 18:35:19 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14ADDC05BD43;
-        Fri,  8 May 2020 15:35:19 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id y4so3325520ljn.7;
-        Fri, 08 May 2020 15:35:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=vNe+ECH+KI0KXYB/C0t3dikvQ9vGDkFhqEvtseTrJKE=;
-        b=a6m+W2qicvjohyLDg4yrn+aFqEvR5GuBblUd4qw7xMZe5y8aHLMoYuZr6TwdMwpuEL
-         LPAQv57wWv5/tfbmYwZjKVBGb6jbqjYqVp+zR7WtUtiK5tUThkYwa/MJddekkWLI8EY4
-         fmp/BGqkyafNOocUquP1BttEm+SY7Lh3qU3OB3DE8t47HGvpeLb7okaImFUwA4/qh3QN
-         cn7k0AjUa8l0hu0UDmNMbX/JV4DzkYsa5skC7NiLh5NkFrVJf7MRPOgPwjFgisLFIvgZ
-         pKCHFjYec3t32AcRxwn7aK3O8w2+JG6tYseSEF1gtsK98JIc+hQvtFv/4hk9MK6zC8oS
-         5oNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=vNe+ECH+KI0KXYB/C0t3dikvQ9vGDkFhqEvtseTrJKE=;
-        b=RDUAjz0UUcxuLHRKur1gDQSTKlkcHp7US1EXNKX//uNjcZ/OFfE5dvL5dvvzxKQNk8
-         gpsvJ/ius9hReKTfwPX2cjB4Y7YYNXiK6hSQG6uIOH5kpFaUtS9UBt+AjoznJq8KAlVX
-         G8wA6d4JlCYrJ6UGgZWmExqqtGYfn6o1X/jxJwvp2uW2OQ/ZH91Y/q6oKRiONjq7d3Ev
-         OY3JIqrRwpvezt35X7TA6xd0OALe4sKSKe9NTFyi803bgejvkFuIGTyNbQCQ8JBDiLBG
-         IYLwmxrcbbRNMv8tBZV8pMYPaNENbyHLltzjfTlPPrEwQmE0tTl5TKYY8yH98jkincHg
-         iEnw==
-X-Gm-Message-State: AOAM530Ctjn0n3lMEMUtgT+d8rByR/PrMs9SQTjwqNCVQIjSFicYegG5
-        xusgLpRgOfIge5DFv7kOsx8=
-X-Google-Smtp-Source: ABdhPJy9MbVNIXefpIUqxyYCkjcCwKzx6XB/qWbzjPyNrRHY4uBf7aymrgleAmkATmbX8wEPP0RwVg==
-X-Received: by 2002:a05:651c:326:: with SMTP id b6mr3028310ljp.259.1588977317588;
-        Fri, 08 May 2020 15:35:17 -0700 (PDT)
-Received: from localhost.localdomain (h-158-174-22-22.NA.cust.bahnhof.se. [158.174.22.22])
-        by smtp.gmail.com with ESMTPSA id s11sm2316501lfo.86.2020.05.08.15.35.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 May 2020 15:35:17 -0700 (PDT)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     Zaibo Xu <xuzaibo@huawei.com>
-Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH 4/4] crypto: hisilicon/sec2 - constify sec_dfx_regs
-Date:   Sat,  9 May 2020 00:35:02 +0200
-Message-Id: <20200508223502.7258-5-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200508223502.7258-1-rikard.falkeborn@gmail.com>
-References: <20200508223502.7258-1-rikard.falkeborn@gmail.com>
+        Fri, 8 May 2020 18:40:28 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1jXBfO-0000aA-Sy; Fri, 08 May 2020 22:40:27 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] cnic: remove redundant assignment to variable ret
+Date:   Fri,  8 May 2020 23:40:26 +0100
+Message-Id: <20200508224026.483746-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sec_dfx_regs is never changed and can therefore be made const.
+From: Colin Ian King <colin.king@canonical.com>
 
-This allows the compiler to put it in the text section instead of the
-data section.
+The variable ret is being assigned with a value that is never read,
+the assignment is redundant and can be removed.
 
-Before:
-   text    data     bss     dec     hex filename
-  17982    7312     480   25774    64ae drivers/crypto/hisilicon/sec2/sec_main.o
-
-After:
-   text    data     bss     dec     hex filename
-  18366    6928     480   25774    64ae drivers/crypto/hisilicon/sec2/sec_main.o
-
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- drivers/crypto/hisilicon/sec2/sec_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/broadcom/cnic.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
-index 07a5f4eb96ff..6f577b34098f 100644
---- a/drivers/crypto/hisilicon/sec2/sec_main.c
-+++ b/drivers/crypto/hisilicon/sec2/sec_main.c
-@@ -110,7 +110,7 @@ static const char * const sec_dbg_file_name[] = {
- 	[SEC_CLEAR_ENABLE] = "clear_enable",
- };
- 
--static struct debugfs_reg32 sec_dfx_regs[] = {
-+static const struct debugfs_reg32 sec_dfx_regs[] = {
- 	{"SEC_PF_ABNORMAL_INT_SOURCE    ",  0x301010},
- 	{"SEC_SAA_EN                    ",  0x301270},
- 	{"SEC_BD_LATENCY_MIN            ",  0x301600},
+diff --git a/drivers/net/ethernet/broadcom/cnic.c b/drivers/net/ethernet/broadcom/cnic.c
+index 61ab7d21f6bd..c5cca63b8571 100644
+--- a/drivers/net/ethernet/broadcom/cnic.c
++++ b/drivers/net/ethernet/broadcom/cnic.c
+@@ -1918,7 +1918,6 @@ static int cnic_bnx2x_iscsi_ofld1(struct cnic_dev *dev, struct kwqe *wqes[],
+ 	ret = cnic_alloc_bnx2x_conn_resc(dev, l5_cid);
+ 	if (ret) {
+ 		atomic_dec(&cp->iscsi_conn);
+-		ret = 0;
+ 		goto done;
+ 	}
+ 	ret = cnic_setup_bnx2x_ctx(dev, wqes, num);
 -- 
-2.26.2
+2.25.1
 
