@@ -2,137 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B5461CAE83
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:11:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12FE41CAEE3
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728181AbgEHNKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:10:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35590 "EHLO
+        id S1729861AbgEHNMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 09:12:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729949AbgEHNKh (ORCPT
+        by vger.kernel.org with ESMTP id S1730192AbgEHNLx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 09:10:37 -0400
-Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A6F3C05BD43;
-        Fri,  8 May 2020 06:10:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=9fPfGBUeWH76iSErjKUiHDxoBdDt6EY4XksU520aETo=; b=s7KP3XCxpCx+K/Slw5SeghBHSX
-        TwDFHErvrjxjAo0LAa20vuJ5CUoqLVW2GxY6UAsl/HND70HEQnUtYP9rnoF0yCY36kJVyRG59c/mE
-        vTxDEZqi1rcZdyalffvFZVNlI3+6mQX2hNklBwG1Q46qE+VMjpG6ca9Zh4JOkAnXBGtw3hOmUceji
-        EcriRSBQmV/kbrXCWHGZ8gQjmGa8imgUaQ+Xt7ZVjUOujiO5EfWLQCo5shW8djvF0CNj54jO/NR4p
-        DNmAvxLY3gZIyOSdDO2qmu4gb4Ed/9jBxVN2yPyqJ49OdZWnisW17pdzAOdMebTsQAHOUt+mkorgl
-        N8AILqaQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jX2kw-0003No-Ks; Fri, 08 May 2020 13:09:34 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4404F30797E;
-        Fri,  8 May 2020 15:09:31 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 282C82B8D7782; Fri,  8 May 2020 15:09:31 +0200 (CEST)
-Date:   Fri, 8 May 2020 15:09:31 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Like Xu <like.xu@linux.intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, wei.w.wang@intel.com,
-        ak@linux.intel.com
-Subject: Re: [PATCH v10 08/11] KVM: x86/pmu: Add LBR feature emulation via
- guest LBR event
-Message-ID: <20200508130931.GE5298@hirez.programming.kicks-ass.net>
-References: <20200423081412.164863-1-like.xu@linux.intel.com>
- <20200423081412.164863-9-like.xu@linux.intel.com>
- <20200424121626.GB20730@hirez.programming.kicks-ass.net>
- <87abf620-d292-d997-c9be-9a5d2544f3fa@linux.intel.com>
+        Fri, 8 May 2020 09:11:53 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C16E8C05BD43;
+        Fri,  8 May 2020 06:11:52 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id w7so1761245wre.13;
+        Fri, 08 May 2020 06:11:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=m6PwKC0GGKuK1AQCcfQJuTFB4k9S8lgpVMeQgt9tC7M=;
+        b=sqIriFNWfo+C01cQSiy2PlZsONvClgfMh/XyGoUm/jLV/eavxNsd/+2a5uGsdcB44r
+         08CaTwxdgLKC2JffT68IPYyTue5HyS9eH7ikLBpla/57s3BTJ+4xsSdXN4lB3na5eevA
+         CU52bAJODnMyBLF4UKg3SNbnLnbTZ5SKthIznITkqTJXinHtcLkbRNX8JReg1QaupdQV
+         cDrc6R8rX2Vhblj5n5irkd+lIEr+EzDpTuCZr0XiosydNi7WpW6h0IwUd6FVtjb21Pio
+         4DCv5Y4bL+ZpYojiw9dEDJSTyH/Fp/ehE9FQ9AlEMv3hxGbM+I53QvUWJ1w+FrKvEuyX
+         0eaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=m6PwKC0GGKuK1AQCcfQJuTFB4k9S8lgpVMeQgt9tC7M=;
+        b=mb/gXF7O61HCOv4YtEn3mhuGnkbDvQOs7KaPX0JineUjtEeer+ZLz6ejbAgVcSX8D6
+         teDefBB4Hu1r7tAWxU4oXTjzsYIMYkTioOeA/S5RT7CD7I+89yssEblEW0X5lqi1mJhv
+         FJlT7k7Z2c1yZQXl0JMCSu17fAtQ+fwsfvRm8DdiUNNuqh9LCrU8KS2DMmYAYLCxzJ+U
+         nICeNwndIX9HK0/Kc/4dstNYTYioTZJb7c+5d6kxqUVol9VwJz/DW8xkGUYkly9w739Q
+         TblMDIA5QnjAvhoVWAkAmjLyKHkS6Jx3Lg4qJHS3gakkgvA8ZOTcle4DHMmVwSWo84xS
+         KZZQ==
+X-Gm-Message-State: AGi0PuYebcIvlEKFcb082/srDUGTRoxTHokwnjUmvuD9Mdt8Rf0dGHR7
+        BQ0aDVrL0WX86h7qjuMj1hE2dQ8OVMNUu0sM
+X-Google-Smtp-Source: APiQypIDsTyVBV8sQuS/K/6cCNcKKifc+7wFf6IB98XX1bm8I0BIRm6w640Gs6sWGa5I5em0HqkaiA==
+X-Received: by 2002:adf:efcc:: with SMTP id i12mr2830699wrp.325.1588943511317;
+        Fri, 08 May 2020 06:11:51 -0700 (PDT)
+Received: from [10.8.0.6] ([5.2.67.190])
+        by smtp.gmail.com with ESMTPSA id 88sm3139115wrq.77.2020.05.08.06.11.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 May 2020 06:11:50 -0700 (PDT)
+Subject: Re: [PATCH v4 00/12] PCI: aardvark: Fix support for Turris MOX and
+ Compex wifi cards
+To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Andrew Murray <amurray@thegoodpenguin.co.uk>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Remi Pommarel <repk@triplefau.lt>,
+        =?UTF-8?Q?Marek_Beh=c3=ban?= <marek.behun@nic.cz>,
+        Xogium <contact@xogium.me>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+References: <20200430080625.26070-1-pali@kernel.org>
+From:   Tomasz Maciej Nowak <tmn505@gmail.com>
+Message-ID: <6ff6d161-adba-9e5c-5a4a-1bfa49de0fc4@gmail.com>
+Date:   Fri, 8 May 2020 15:11:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
+In-Reply-To: <20200430080625.26070-1-pali@kernel.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <87abf620-d292-d997-c9be-9a5d2544f3fa@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 11:16:40AM +0800, Like Xu wrote:
-> On 2020/4/24 20:16, Peter Zijlstra wrote:
+W dniu 30.04.2020 o 10:06, Pali Rohár pisze:
+> Hello,
+> 
+> this is the fourth version of the patch series for Armada 3720 PCIe
+> controller (aardvark). It's main purpose is to fix some bugs regarding
+> buggy ath10k cards, but we also found out some suspicious stuff about
+> the driver and the SOC itself, which we try to address.
+> 
+> Patches are available also in my git branch pci-aardvark:
+> https://git.kernel.org/pub/scm/linux/kernel/git/pali/linux.git/log/?h=pci-aardvark
+> 
+> Changes since v3:
+> - do not change return value of of_pci_get_max_link_speed() function
+> - mark zero 'max-link-speed' as invalid
+> - silently use gen3 speed when 'max-link-speed' as invalid
+> 
+> Changes since v2:
+> - move PCIe max-link-speed property to armada-37xx.dtsi
+> - replace custom macros by standard linux/pci_regs.h macros
+> - increase PERST delay to 10ms (needed for initialized Compex WLE900VX)
+> - disable link training before PERST (needed for Compex WLE900VX)
+> - change of_pci_get_max_link_speed() function to signal -ENOENT
+> - handle errors from of_pci_get_max_link_speed() function
+> - updated comments, commit titles and messages
+> 
+> Changes since v1:
+> - commit titles and messages were reviewed and some of them were rewritten
+> - patches 1 and 5 from v1 which touch PCIe speed configuration were
+>   reworked into one patch
+> - patch 2 from v1 was removed, it is not needed anymore
+> - patch 7 from v1 now touches the device tree of armada-3720-db
+> - a patch was added that tries to enable PCIe PHY via generic-phy API
+>   (if a phandle to the PHY is found in the device tree)
+> - a patch describing the new PCIe node DT properties was added
+> - a patch was added that moves the PHY phandle from board device trees
+>   to armada-37xx.dtsi
+> 
+> Marek and Pali
+> 
+> Marek Behún (5):
+>   PCI: aardvark: Improve link training
+>   PCI: aardvark: Add PHY support
+>   dt-bindings: PCI: aardvark: Describe new properties
+>   arm64: dts: marvell: armada-37xx: Set pcie_reset_pin to gpio function
+>   arm64: dts: marvell: armada-37xx: Move PCIe comphy handle property
+> 
+> Pali Rohár (7):
+>   PCI: aardvark: Train link immediately after enabling training
+>   PCI: aardvark: Don't blindly enable ASPM L0s and don't write to
+>     read-only register
+>   PCI: of: Zero max-link-speed value is invalid
+>   PCI: aardvark: Issue PERST via GPIO
+>   PCI: aardvark: Add FIXME comment for PCIE_CORE_CMD_STATUS_REG access
+>   PCI: aardvark: Replace custom macros by standard linux/pci_regs.h
+>     macros
+>   arm64: dts: marvell: armada-37xx: Move PCIe max-link-speed property
 
-> > And I suppose that is why you need that horrible:
-> > needs_guest_lbr_without_counter() thing to begin with.
-> 
-> Do you suggest to use event->attr.config check to replace
-> "needs_branch_stack(event) && is_kernel_event(event) &&
-> event->attr.exclude_host" check for guest LBR event ?
+Hi.
+The PCI interface seems to work fine as in the first series, so
 
-That's what the BTS thing does.
+Tested-by: Tomasz Maciej Nowak <tmn505@gmail.com>
 
-> > Please allocate yourself an event from the pseudo event range:
-> > event==0x00. Currently we only have umask==3 for Fixed2 and umask==4
-> > for Fixed3, given you claim 58, which is effectively Fixed25,
-> > umask==0x1a might be appropriate.
-> 
-> OK, I assume that adding one more field ".config = 0x1a00" is
-> efficient enough for perf_event_attr to allocate guest LBR events.
-
-Uh what? The code is already setting .config. You just have to change it
-do another value.
-
-> > Also, I suppose we need to claim 0x0000 as an error, so that other
-> > people won't try this again.
-> 
-> Does the following fix address your concern on this ?
-> 
-> diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-> index 2405926e2dba..32d2a3f8c51f 100644
-> --- a/arch/x86/events/core.c
-> +++ b/arch/x86/events/core.c
-> @@ -498,6 +498,9 @@ int x86_pmu_max_precise(void)
-> 
->  int x86_pmu_hw_config(struct perf_event *event)
->  {
-> +       if (!unlikely(event->attr.config & X86_ARCH_EVENT_MASK))
-> +               return -EINVAL;
-> +
->         if (event->attr.precise_ip) {
->                 int precise = x86_pmu_max_precise();
-
-That wouldn't work right for AMD. But yes, something like that.
-
-> > Also, what happens if you fail programming due to a conflicting cpu
-> > event? That pinned doesn't guarantee you'll get the event, it just means
-> > you'll error instead of getting RR.
-> > 
-> > I didn't find any code checking the event state.
-> > 
-> 
-> Error instead of RR is expected.
-> 
-> If the KVM fails programming due to a conflicting cpu event
-> the LBR registers will not be passthrough to the guest,
-> and KVM would return zero for any guest LBR records accesses
-> until the next attempt to program the guest LBR event.
-> 
-> Every time before cpu enters the non-root mode where irq is
-> disabled, the "event-> oncpu! =-1" check will be applied.
-> (more details in the comment around intel_pmu_availability_check())
-> 
-> The guests administer is supposed to know the result of guest
-> LBR records is inaccurate if someone is using LBR to record
-> guest or hypervisor on the host side.
-> 
-> Is this acceptable to you？
-> 
-> If there is anything needs to be improved, please let me know.
-
-It might be nice to emit a pr_warn() or something on the host when this
-happens. Then at least the host admin can know he wrecked things for
-which guest.
+-- 
+TMN
