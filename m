@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA06D1CACB9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:58:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 392221CAC82
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730340AbgEHMzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 08:55:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38520 "EHLO mail.kernel.org"
+        id S1730144AbgEHMx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 08:53:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35952 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730027AbgEHMza (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 08:55:30 -0400
+        id S1730129AbgEHMxx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 08:53:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C3B97218AC;
-        Fri,  8 May 2020 12:55:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 29AC524953;
+        Fri,  8 May 2020 12:53:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588942530;
-        bh=b2QdKOeAuXxVphJVniePs7dMgcY5GW7kcKW3nlDsHuM=;
+        s=default; t=1588942433;
+        bh=Afv2FaG5DQaHqoUBgBp0RuCQ3U8KX62WJDiJFCsqfJs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KfdBPA/dvoYkcqTRvqU1fJikcbFaIO774aAE1ul2eZQPSQV3cpVqkdAHXVcCtyl1G
-         zwRgOdJKIRDLRALhKT7A+nuqWY7aliULH3nAxDU7dTo1rS8STCmztAMSr/smiIkNMd
-         kLa1JxH5MPfNtvKmWFdzXtUrNifgE1Bjj4QZP2oE=
+        b=LFDwC2+Lm6Ee/nn5ghgUYXADnJp1vHlJaGWdX1YrNQfd2/WADXELeGiKnq8qLR4hS
+         UOZjB75u0CE76szv/zLeqFE1ecDQ6Pl33EwHwrlRzCT8KHwZ33pgFiXy7ejkGlVZBq
+         u5iCG0JbZe39Oze0si2/5LqOjIES2vH9tuV1CSvg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Paulo Alcantara (SUSE)" <pc@cjr.nz>,
-        Aurelien Aptel <aaptel@suse.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Steve French <stfrench@microsoft.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 32/49] cifs: do not share tcons with DFS
-Date:   Fri,  8 May 2020 14:35:49 +0200
-Message-Id: <20200508123047.448817393@linuxfoundation.org>
+        stable@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>,
+        Dmitry Yakunin <zeil@yandex-team.ru>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 44/50] cgroup, netclassid: remove double cond_resched
+Date:   Fri,  8 May 2020 14:35:50 +0200
+Message-Id: <20200508123049.158807378@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200508123042.775047422@linuxfoundation.org>
-References: <20200508123042.775047422@linuxfoundation.org>
+In-Reply-To: <20200508123043.085296641@linuxfoundation.org>
+References: <20200508123043.085296641@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,65 +45,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paulo Alcantara <pc@cjr.nz>
+From: Jiri Slaby <jslaby@suse.cz>
 
-[ Upstream commit 65303de829dd6d291a4947c1a31de31896f8a060 ]
+commit 526f3d96b8f83b1b13d73bd0b5c79cc2c487ec8e upstream.
 
-This disables tcon re-use for DFS shares.
+Commit 018d26fcd12a ("cgroup, netclassid: periodically release file_lock
+on classid") added a second cond_resched to write_classid indirectly by
+update_classid_task. Remove the one in write_classid.
 
-tcon->dfs_path stores the path that the tcon should connect to when
-doing failing over.
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Cc: Dmitry Yakunin <zeil@yandex-team.ru>
+Cc: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Cc: David S. Miller <davem@davemloft.net>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-If that tcon is used multiple times e.g. 2 mounts using it with
-different prefixpath, each will need a different dfs_path but there is
-only one tcon. The other solution would be to split the tcon in 2
-tcons during failover but that is much harder.
-
-tcons could not be shared with DFS in cifs.ko because in a
-DFS namespace like:
-
-          //domain/dfsroot -> /serverA/dfsroot, /serverB/dfsroot
-
-          //serverA/dfsroot/link -> /serverA/target1/aa/bb
-
-          //serverA/dfsroot/link2 -> /serverA/target1/cc/dd
-
-you can see that link and link2 are two DFS links that both resolve to
-the same target share (/serverA/target1), so cifs.ko will only contain a
-single tcon for both link and link2.
-
-The problem with that is, if we (auto)mount "link" and "link2", cifs.ko
-will only contain a single tcon for both DFS links so we couldn't
-perform failover or refresh the DFS cache for both links because
-tcon->dfs_path was set to either "link" or "link2", but not both --
-which is wrong.
-
-Signed-off-by: Paulo Alcantara (SUSE) <pc@cjr.nz>
-Reviewed-by: Aurelien Aptel <aaptel@suse.com>
-Reviewed-by: Ronnie Sahlberg <lsahlber@redhat.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/cifs/connect.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ net/core/netclassid_cgroup.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/fs/cifs/connect.c b/fs/cifs/connect.c
-index d4a23b48e24d8..9c614d6916c2d 100644
---- a/fs/cifs/connect.c
-+++ b/fs/cifs/connect.c
-@@ -3419,6 +3419,10 @@ cifs_find_tcon(struct cifs_ses *ses, struct smb_vol *volume_info)
- 	spin_lock(&cifs_tcp_ses_lock);
- 	list_for_each(tmp, &ses->tcon_list) {
- 		tcon = list_entry(tmp, struct cifs_tcon, tcon_list);
-+#ifdef CONFIG_CIFS_DFS_UPCALL
-+		if (tcon->dfs_path)
-+			continue;
-+#endif
- 		if (!match_tcon(tcon, volume_info))
- 			continue;
- 		++tcon->tc_count;
--- 
-2.20.1
-
+--- a/net/core/netclassid_cgroup.c
++++ b/net/core/netclassid_cgroup.c
+@@ -127,10 +127,8 @@ static int write_classid(struct cgroup_s
+ 	cs->classid = (u32)value;
+ 
+ 	css_task_iter_start(css, 0, &it);
+-	while ((p = css_task_iter_next(&it))) {
++	while ((p = css_task_iter_next(&it)))
+ 		update_classid_task(p, cs->classid);
+-		cond_resched();
+-	}
+ 	css_task_iter_end(&it);
+ 
+ 	return 0;
 
 
