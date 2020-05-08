@@ -2,34 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D64B61CAD5A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:02:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFBD61CAC4E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:52:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730298AbgEHNBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:01:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33106 "EHLO mail.kernel.org"
+        id S1729960AbgEHMw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 08:52:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33232 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729924AbgEHMwI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 08:52:08 -0400
+        id S1729939AbgEHMwK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 08:52:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4467524959;
-        Fri,  8 May 2020 12:52:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8CF9A2495C;
+        Fri,  8 May 2020 12:52:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588942327;
-        bh=6MhnXnbtNfLJ0jlaUPyyoCpxL8tqSH1IEalC6dOkG0Y=;
+        s=default; t=1588942330;
+        bh=99e2e49jVyP6KgaTxONJgD6vclc1pSQXLVl2yYtOBrE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J73+g/+JmFmgqxlLUbJUjTUkVovbjr9u3h3Nn+Y9YUZijysZxeMY/cAG7FYOJ2KB4
-         sAQ2BjXvvMNirGjISheZWW+cUY6hFcE7rkHs4EtIFP9LFTnPASzV/7htxJ+p1q1tvj
-         2zqLE2paHdSNn4i2vAxCOHmWbftXNePzxgiRd7AM=
+        b=Sejnadb/0bygnd/QPW78hwt+aFa2cj6/b7ORqbf8FL7Q4CMRyXLHt5QVI51M3paBk
+         InigjfAL4PqzTlysPuXZrYibAbAN2Zp2jfEHhMyuyxWoW7OYNqaCIc1msHupWcipMD
+         mfCLuOhT3jk+PUavF9Cjdq3p5vFOHjUUC7sLbQtI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 4.19 26/32] hexagon: clean up ioremap
-Date:   Fri,  8 May 2020 14:35:39 +0200
-Message-Id: <20200508123038.724700825@linuxfoundation.org>
+        stable@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Brian Cain <bcain@codeaurora.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Tuowen Zhao <ztuowen@gmail.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        Allison Randal <allison@lohutok.net>,
+        Will Deacon <will@kernel.org>,
+        Richard Fontana <rfontana@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.19 27/32] hexagon: define ioremap_uc
+Date:   Fri,  8 May 2020 14:35:40 +0200
+Message-Id: <20200508123038.844529381@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200508123034.886699170@linuxfoundation.org>
 References: <20200508123034.886699170@linuxfoundation.org>
@@ -42,64 +61,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Nick Desaulniers <ndesaulniers@google.com>
 
-commit ac32292c8552f7e8517be184e65dd09786e991f9 upstream.
+commit 7312b70699252074d753c5005fc67266c547bbe3 upstream.
 
-Use ioremap as the main implemented function, and defined
-ioremap_nocache to it as a deprecated alias.
+Similar to commit 38e45d81d14e ("sparc64: implement ioremap_uc") define
+ioremap_uc for hexagon to avoid errors from
+-Wimplicit-function-definition.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Link: http://lkml.kernel.org/r/20191209222956.239798-2-ndesaulniers@google.com
+Link: https://github.com/ClangBuiltLinux/linux/issues/797
+Fixes: e537654b7039 ("lib: devres: add a helper function for ioremap_uc")
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Suggested-by: Nathan Chancellor <natechancellor@gmail.com>
+Acked-by: Brian Cain <bcain@codeaurora.org>
+Cc: Lee Jones <lee.jones@linaro.org>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Tuowen Zhao <ztuowen@gmail.com>
+Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Alexios Zavras <alexios.zavras@intel.com>
+Cc: Allison Randal <allison@lohutok.net>
+Cc: Will Deacon <will@kernel.org>
+Cc: Richard Fontana <rfontana@redhat.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/hexagon/include/asm/io.h       |   11 ++---------
- arch/hexagon/kernel/hexagon_ksyms.c |    2 +-
- arch/hexagon/mm/ioremap.c           |    2 +-
- 3 files changed, 4 insertions(+), 11 deletions(-)
+ arch/hexagon/include/asm/io.h |    1 +
+ 1 file changed, 1 insertion(+)
 
 --- a/arch/hexagon/include/asm/io.h
 +++ b/arch/hexagon/include/asm/io.h
-@@ -186,16 +186,9 @@ static inline void writel(u32 data, vola
+@@ -188,6 +188,7 @@ static inline void writel(u32 data, vola
  
- #define mmiowb()
+ void __iomem *ioremap(unsigned long phys_addr, unsigned long size);
+ #define ioremap_nocache ioremap
++#define ioremap_uc(X, Y) ioremap((X), (Y))
  
--/*
-- * Need an mtype somewhere in here, for cache type deals?
-- * This is probably too long for an inline.
-- */
--void __iomem *ioremap_nocache(unsigned long phys_addr, unsigned long size);
-+void __iomem *ioremap(unsigned long phys_addr, unsigned long size);
-+#define ioremap_nocache ioremap
- 
--static inline void __iomem *ioremap(unsigned long phys_addr, unsigned long size)
--{
--	return ioremap_nocache(phys_addr, size);
--}
  
  static inline void iounmap(volatile void __iomem *addr)
- {
---- a/arch/hexagon/kernel/hexagon_ksyms.c
-+++ b/arch/hexagon/kernel/hexagon_ksyms.c
-@@ -33,7 +33,7 @@ EXPORT_SYMBOL(__vmgetie);
- EXPORT_SYMBOL(__vmsetie);
- EXPORT_SYMBOL(__vmyield);
- EXPORT_SYMBOL(empty_zero_page);
--EXPORT_SYMBOL(ioremap_nocache);
-+EXPORT_SYMBOL(ioremap);
- EXPORT_SYMBOL(memcpy);
- EXPORT_SYMBOL(memset);
- 
---- a/arch/hexagon/mm/ioremap.c
-+++ b/arch/hexagon/mm/ioremap.c
-@@ -22,7 +22,7 @@
- #include <linux/vmalloc.h>
- #include <linux/mm.h>
- 
--void __iomem *ioremap_nocache(unsigned long phys_addr, unsigned long size)
-+void __iomem *ioremap(unsigned long phys_addr, unsigned long size)
- {
- 	unsigned long last_addr, addr;
- 	unsigned long offset = phys_addr & ~PAGE_MASK;
 
 
