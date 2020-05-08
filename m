@@ -2,159 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1377B1CAE45
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 432A91CAE7A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730352AbgEHNIS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 May 2020 09:08:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34796 "EHLO
+        id S1729942AbgEHNKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 09:10:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730220AbgEHNFk (ORCPT
+        by vger.kernel.org with ESMTP id S1730448AbgEHNFN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 09:05:40 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B35A9C05BD43;
-        Fri,  8 May 2020 06:05:40 -0700 (PDT)
-Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tip-bot2@linutronix.de>)
-        id 1jX2gw-0007kZ-7D; Fri, 08 May 2020 15:05:26 +0200
-Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 878B01C04CF;
-        Fri,  8 May 2020 15:05:07 +0200 (CEST)
-Date:   Fri, 08 May 2020 13:05:07 -0000
-From:   "tip-bot2 for Kajol Jain" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf vendor events power9: Add hv_24x7 socket/chip
- level metric events
-Cc:     Kajol Jain <kjain@linux.ibm.com>, Jiri Olsa <jolsa@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Anju T Sudhakar <anju@linux.vnet.ibm.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Joe Mario <jmario@redhat.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Madhavan Srinivasan <maddy@linux.vnet.ibm.com>,
-        Mamatha Inamdar <mamatha4@linux.vnet.ibm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linuxppc-dev@lists.ozlabs.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200401203340.31402-8-kjain@linux.ibm.com>
-References: <20200401203340.31402-8-kjain@linux.ibm.com>
+        Fri, 8 May 2020 09:05:13 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B32AC05BD43
+        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 06:05:13 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id j5so1771125wrq.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 May 2020 06:05:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Mgb+elpG5rRocO3HltFPkQjaBpOGyLvzRk4WBy8PAxU=;
+        b=avte0GreY98ChYX60EQHioHbWYFoHxkPBqNThycjj0bAXSB8OZZbe271eytzU9dx79
+         C8FaQBxFUZ3GDTVvIT89VXFjpubyrMz3G19/1aOKdIXTn4vnb1ZfFmqw5fFPbuWq5W+7
+         fcqkvekv1UgguYkRl/vJLoL7GHe8GeRdGahmEA1D5q7haPK3hPw/NTJTjop/8FgUb9Cu
+         ZtUs2h0s5e6tX8bBwvwftZG29B6macEhAZBHu+SOo+SdXLM7r+Cf5OlIPqdOC42o/5EK
+         r0nS1aOIpVSZdaGQKY9XMlRh19ORG1QdNiZPlngH8pXwdxZZtxNaGuyB1CbCDumVomaw
+         UyTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Mgb+elpG5rRocO3HltFPkQjaBpOGyLvzRk4WBy8PAxU=;
+        b=SjuJZiFkGBo5jI/K70QCVx5dn53cQkFBlS34Z+Pkr9UuZ5/76xbRCXPIpEl6bu2pYB
+         LOhSkh+bYgC9iFt+nrgwmFXFVWIMKjLA288ozztc75zekuvD2FcHBkuoc8A0dLmUKHZL
+         oWtfOl/SWQk7kQXIEcH4iQDOu2tZkNNQ4m/4uGLR2UzQeBdfq0FF5bSYQA5S7mH9nUZH
+         nuQnUtborJ27HWPPeDK+OEoPQb5S5H4CqYU4Ow9qKGgm4YfgtCGKS+CXcbcAFDh4MCFc
+         BcY+XP49uMRXjFHQuF8HS3q0I1eeKBaZ0p04bLTbaEG/7s8Emg67keHZeCEhRFJ49wDt
+         v61g==
+X-Gm-Message-State: AGi0PuZixTUuEfeL1h1YGl4VswKOZB72yVGvLvWwY/q7IjD7b0rQvhsx
+        FxDKsg1bG3H90so54PUQtelRSg==
+X-Google-Smtp-Source: APiQypLn2oiSKc2Okos29+vdEZOfH45zqdXlnILGJEI5IUubFXr251HgTQaCtZRYtPilMrWZhB6Vyw==
+X-Received: by 2002:adf:d841:: with SMTP id k1mr2812214wrl.129.1588943111589;
+        Fri, 08 May 2020 06:05:11 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:110:d6cc:2030:37c1:9964])
+        by smtp.gmail.com with ESMTPSA id 5sm11892425wmg.34.2020.05.08.06.05.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 May 2020 06:05:10 -0700 (PDT)
+Date:   Fri, 8 May 2020 14:05:07 +0100
+From:   Quentin Perret <qperret@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com, sudeep.holla@arm.com,
+        rafael@kernel.org, viresh.kumar@linaro.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com,
+        fweisbec@gmail.com, tkjos@google.com, kernel-team@android.com
+Subject: Re: [PATCH 00/14] Modularize schedutil
+Message-ID: <20200508130507.GA10541@google.com>
+References: <20200507181012.29791-1-qperret@google.com>
+ <20200508081128.GM5298@hirez.programming.kicks-ass.net>
+ <20200508103721.GA3860390@kroah.com>
+ <20200508111612.GA252673@google.com>
+ <20200508113141.GB5298@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Message-ID: <158894310749.8414.11283761812599365513.tip-bot2@tip-bot2>
-X-Mailer: tip-git-log-daemon
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200508113141.GB5298@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/core branch of tip:
+On Friday 08 May 2020 at 13:31:41 (+0200), Peter Zijlstra wrote:
+> On Fri, May 08, 2020 at 12:16:12PM +0100, Quentin Perret wrote:
+> > However, the point I tried to make here is orthogonal to that. As of
+> > today using another governor than schedutil is fully supported upstream,
+> > and in fact it isn't even enabled by default for most archs. If vendors
+> > feel like using something else makes their product better, then I don't
+> > see why I need to argue with them about that. And frankly I don't see
+> > that support being removed from upstream any time soon.
+> 
+> Right, it'll take a while to get there. But that doesn't mean we
+> shouldn't encourage schedutil usage wherever and whenever possible. That
+> includes not making it easier to not use it.
+> 
+> In that respect making it modular goes against our ultimate goal (world
+> domination, <mad giggles here>).
 
-Commit-ID:     354575c00d61c174e0ff070f56cf3cdbe6d23f9e
-Gitweb:        https://git.kernel.org/tip/354575c00d61c174e0ff070f56cf3cdbe6d23f9e
-Author:        Kajol Jain <kjain@linux.ibm.com>
-AuthorDate:    Thu, 02 Apr 2020 02:03:40 +05:30
-Committer:     Arnaldo Carvalho de Melo <acme@redhat.com>
-CommitterDate: Thu, 30 Apr 2020 10:48:33 -03:00
+Right, I definitely understand the sentiment. OTOH, things like that
+give vendors weapons against GKI ('you-force-us-to-build-in-things-we-dont't-want'
+etc etc). That _is_ true to some extent, but it's important we make sure
+to keep this to an absolute minimum, otherwise GKI just won't happen
+(and I really think that'd be a shame, GKI _is_ a good thing for
+upstream).
 
-perf vendor events power9: Add hv_24x7 socket/chip level metric events
+And sure, schedutil isn't that big, and we can make an exception. But
+I'm sure you know what happens when you starting making exceptions ;)
 
-The hv_24×7 feature in IBM® POWER9™ processor-based servers provide the
-facility to continuously collect large numbers of hardware performance
-metrics efficiently and accurately.
+So, all in all, I don't think the series actively makes schedutil worse
+by adding out-of-line calls in the hot path or anything like that, and
+having it as a module helps with GKI which I'm arguing is a good thing
+in the grand scheme of things. That of course is only true if we can
+agree on a reasonable set of exported symbols, so I'll give others some
+time to complain and see if I can post a v2 addressing these issues!
 
-This patch adds hv_24x7  metric file for different Socket/chip
-resources.
-
-Result:
-
-power9 platform:
-
-  command:# ./perf stat --metric-only -M Memory_RD_BW_Chip -C 0 -I 1000
-
-     1.000096188          0.9           0.3
-     2.000285720          0.5           0.1
-     3.000424990          0.4           0.1
-
-  command:# ./perf stat --metric-only -M PowerBUS_Frequency -C 0 -I 1000
-
-     1.000097981          2.3           2.3
-     2.000291713          2.3           2.3
-     3.000421719          2.3           2.3
-     4.000550912          2.3           2.3
-
-Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Anju T Sudhakar <anju@linux.vnet.ibm.com>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Jin Yao <yao.jin@linux.intel.com>
-Cc: Joe Mario <jmario@redhat.com>
-Cc: Kan Liang <kan.liang@linux.intel.com>
-Cc: Madhavan Srinivasan <maddy@linux.vnet.ibm.com>
-Cc: Mamatha Inamdar <mamatha4@linux.vnet.ibm.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Michael Petlan <mpetlan@redhat.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Paul Mackerras <paulus@ozlabs.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Cc: Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: linuxppc-dev@lists.ozlabs.org
-Link: http://lore.kernel.org/lkml/20200401203340.31402-8-kjain@linux.ibm.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
----
- tools/perf/pmu-events/arch/powerpc/power9/nest_metrics.json | 19 +++++++-
- 1 file changed, 19 insertions(+)
- create mode 100644 tools/perf/pmu-events/arch/powerpc/power9/nest_metrics.json
-
-diff --git a/tools/perf/pmu-events/arch/powerpc/power9/nest_metrics.json b/tools/perf/pmu-events/arch/powerpc/power9/nest_metrics.json
-new file mode 100644
-index 0000000..c121e52
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/powerpc/power9/nest_metrics.json
-@@ -0,0 +1,19 @@
-+[
-+    {
-+        "MetricExpr": "(hv_24x7@PM_MCS01_128B_RD_DISP_PORT01\\,chip\\=?@ + hv_24x7@PM_MCS01_128B_RD_DISP_PORT23\\,chip\\=?@ + hv_24x7@PM_MCS23_128B_RD_DISP_PORT01\\,chip\\=?@ + hv_24x7@PM_MCS23_128B_RD_DISP_PORT23\\,chip\\=?@)",
-+        "MetricName": "Memory_RD_BW_Chip",
-+        "MetricGroup": "Memory_BW",
-+        "ScaleUnit": "1.6e-2MB"
-+    },
-+    {
-+	"MetricExpr": "(hv_24x7@PM_MCS01_128B_WR_DISP_PORT01\\,chip\\=?@ + hv_24x7@PM_MCS01_128B_WR_DISP_PORT23\\,chip\\=?@ + hv_24x7@PM_MCS23_128B_WR_DISP_PORT01\\,chip\\=?@ + hv_24x7@PM_MCS23_128B_WR_DISP_PORT23\\,chip\\=?@ )",
-+        "MetricName": "Memory_WR_BW_Chip",
-+        "MetricGroup": "Memory_BW",
-+        "ScaleUnit": "1.6e-2MB"
-+    },
-+    {
-+	"MetricExpr": "(hv_24x7@PM_PB_CYC\\,chip\\=?@ )",
-+        "MetricName": "PowerBUS_Frequency",
-+        "ScaleUnit": "2.5e-7GHz"
-+    }
-+]
+Cheers,
+Quentin
