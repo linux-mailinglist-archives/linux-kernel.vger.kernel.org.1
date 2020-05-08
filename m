@@ -2,83 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1099C1CAE52
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:11:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B5461CAE83
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729897AbgEHNIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:08:46 -0400
-Received: from mailgate1.rohmeurope.com ([87.129.152.131]:45122 "EHLO
-        mailgate1.rohmeurope.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729400AbgEHNIi (ORCPT
+        id S1728181AbgEHNKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 09:10:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729949AbgEHNKh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 09:08:38 -0400
-X-AuditID: c0a8fbf4-473ff70000004419-83-5eb559d3a558
-Received: from smtp.reu.rohmeu.com (will-cas001.reu.rohmeu.com [192.168.251.177])
-        by mailgate1.rohmeurope.com (Symantec Messaging Gateway) with SMTP id 6F.E4.17433.3D955BE5; Fri,  8 May 2020 15:08:35 +0200 (CEST)
-Received: from WILL-MAIL001.REu.RohmEu.com ([fe80::2915:304f:d22c:c6ba]) by
- WILL-CAS001.REu.RohmEu.com ([fe80::d57e:33d0:7a5d:f0a6%16]) with mapi id
- 14.03.0487.000; Fri, 8 May 2020 15:08:29 +0200
-From:   "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-To:     "broonie@kernel.org" <broonie@kernel.org>
-CC:     "mazziesaccount@gmail.com" <mazziesaccount@gmail.com>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "sre@kernel.org" <sre@kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v11 02/11] lib/test_linear_ranges: add a test for the
- 'linear_ranges'
-Thread-Topic: [PATCH v11 02/11] lib/test_linear_ranges: add a test for the
- 'linear_ranges'
-Thread-Index: AQHWJDWzYnC7ORyc4E2ZSac9GcVX7qieB1EAgAACQQA=
-Date:   Fri, 8 May 2020 13:08:28 +0000
-Message-ID: <c24d5f4c9d07ea9b54692a968020147d8cfe8bcb.camel@fi.rohmeurope.com>
-References: <cover.1588829892.git.matti.vaittinen@fi.rohmeurope.com>
-         <7e91212b3990ce503508bc1c83e13dc793b73668.1588829892.git.matti.vaittinen@fi.rohmeurope.com>
-         <20200508130022.GI4820@sirena.org.uk>
-In-Reply-To: <20200508130022.GI4820@sirena.org.uk>
-Accept-Language: en-US, de-DE
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [62.78.225.252]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <F435822C72521A4CBEB0B115C32A2757@de.rohmeurope.com>
-Content-Transfer-Encoding: base64
+        Fri, 8 May 2020 09:10:37 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A6F3C05BD43;
+        Fri,  8 May 2020 06:10:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=9fPfGBUeWH76iSErjKUiHDxoBdDt6EY4XksU520aETo=; b=s7KP3XCxpCx+K/Slw5SeghBHSX
+        TwDFHErvrjxjAo0LAa20vuJ5CUoqLVW2GxY6UAsl/HND70HEQnUtYP9rnoF0yCY36kJVyRG59c/mE
+        vTxDEZqi1rcZdyalffvFZVNlI3+6mQX2hNklBwG1Q46qE+VMjpG6ca9Zh4JOkAnXBGtw3hOmUceji
+        EcriRSBQmV/kbrXCWHGZ8gQjmGa8imgUaQ+Xt7ZVjUOujiO5EfWLQCo5shW8djvF0CNj54jO/NR4p
+        DNmAvxLY3gZIyOSdDO2qmu4gb4Ed/9jBxVN2yPyqJ49OdZWnisW17pdzAOdMebTsQAHOUt+mkorgl
+        N8AILqaQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jX2kw-0003No-Ks; Fri, 08 May 2020 13:09:34 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4404F30797E;
+        Fri,  8 May 2020 15:09:31 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 282C82B8D7782; Fri,  8 May 2020 15:09:31 +0200 (CEST)
+Date:   Fri, 8 May 2020 15:09:31 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Like Xu <like.xu@linux.intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, wei.w.wang@intel.com,
+        ak@linux.intel.com
+Subject: Re: [PATCH v10 08/11] KVM: x86/pmu: Add LBR feature emulation via
+ guest LBR event
+Message-ID: <20200508130931.GE5298@hirez.programming.kicks-ass.net>
+References: <20200423081412.164863-1-like.xu@linux.intel.com>
+ <20200423081412.164863-9-like.xu@linux.intel.com>
+ <20200424121626.GB20730@hirez.programming.kicks-ass.net>
+ <87abf620-d292-d997-c9be-9a5d2544f3fa@linux.intel.com>
 MIME-Version: 1.0
-X-Brightmail-Tracker: H4sIAAAAAAAAA01SbUgTYRz3uTtvt+nJOWd7mmVtFKb5kmWxSkToi0JIIFFZaaeem6U3ud1E
-        +2B+qXQhzMoPDs2wBFGYubR8CVqiVhpKGVKRpLQEJTNdaORbd54v+/T8n+f3Cs+fQJUeXw2R
-        y/IMx9J5OlyBuRqXWqNGLrSnHxqvO6avmnDj+oWPZYh+pKsG13sqeoG+puENph/s5hPxpE77
-        mCzJ2VSOJ3mcoWfQNL/4TJovTM01sDEJV/yMt8uPFjxQFHVVx5SCZbkVyAlIxcFnsw2IFSgI
-        JTUK4JOVtY3LawDHxl7iVkAQOBUPrZ9lokBFRcGqf49wkYNSNxFYXzaMiEAQdRH2fxpAJNIl
-        2Lw8tCE4ASsm533FGaP2wfYfrUCcSSoFzt19KpPC3gHo6HuFioCcOgwdU8vrJEDthuWlv9ZN
-        UUoNnZOLvlJtCj5+MYxKczCc+r668a6FzxcdmFgapcJhS1eMJE2EMy6XTJq18P6dCZnUIRC+
-        rXZjNrDD7pVg31bbvdR2L7XdS/0Q+DYBmE/n5hlonomN5hhLNGcy5gtHlinfCaRP/NMB1nqS
-        ewBCgB6wk0B0weTec+3pyoBMU3axkTYbMzhLHmPuAZBAdSqysqgtXUlm08XXGc60CYUQmE5N
-        hk1UXlZSYtY1hilguE10F0HoIOlzXjAN5BgDU5STm8dvwwghF80VGpWZYbMZjrbwxgxxPTLM
-        wn6IkL+Q2yZ2Is0FdL7wKkkHwEHCNlVbjxK9tQ31qBJjTSyjUZOnAwQqJVKNFnYraBqoCaAL
-        IkfFHv7CJm/5TAsRiBDhmXeKETy9DWlKQUXR6kxYVZ2/4YiVybjn4KP45mA256zL052W1Tb4
-        O3TNFKWdHW8Kd8Qdt40Xumv+frkR1BhyUnPL3V5oc2FLjp8HDF9dq3PZPvundTlDgf5ZESv6
-        vm+dka0JWjquOlJFdX+wJNO1ltQ9/SUlq+5T8o7arsaWzhTFwvurQ3aNDjMb6dgIlDPT/wFx
-        c6QThgMAAA==
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87abf620-d292-d997-c9be-9a5d2544f3fa@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhhbmtzIGEgdG9uIGZvciBoZWFkJ3MgdXAgTWFyayENCg0KT24gRnJpLCAyMDIwLTA1LTA4IGF0
-IDE0OjAwICswMTAwLCBNYXJrIEJyb3duIHdyb3RlOg0KPiBPbiBUaHUsIE1heSAwNywgMjAyMCBh
-dCAwOTowNjowOEFNICswMzAwLCBNYXR0aSBWYWl0dGluZW4gd3JvdGU6DQo+ID4gICAgIEFkZCBh
-IEtVbml0IHRlc3QgZm9yIHRoZSBsaW5lYXJfcmFuZ2VzIGhlbHBlci4NCj4gDQo+IFRoaXMgZmFp
-bHMgdG8gYnVpbGQgYW4geDg2IGFsbG1vZGNvbmZpZzoNCj4gDQo+IEVSUk9SOiBtb2Rwb3N0OiAi
-bGluZWFyX3JhbmdlX3ZhbHVlc19pbl9yYW5nZV9hcnJheSINCj4gW2xpYi90ZXN0X2xpbmVhcl9y
-YW5nZXMua29dIHVuZGVmaW5lZCENCj4gRVJST1I6IG1vZHBvc3Q6ICJsaW5lYXJfcmFuZ2VfZ2V0
-X3NlbGVjdG9yX2hpZ2giDQo+IFtsaWIvdGVzdF9saW5lYXJfcmFuZ2VzLmtvXSB1bmRlZmluZWQh
-DQo+IEVSUk9SOiBtb2Rwb3N0OiAibGluZWFyX3JhbmdlX2dldF9zZWxlY3Rvcl9sb3dfYXJyYXki
-DQo+IFtsaWIvdGVzdF9saW5lYXJfcmFuZ2VzLmtvXSB1bmRlZmluZWQhDQo+IEVSUk9SOiBtb2Rw
-b3N0OiAibGluZWFyX3JhbmdlX2dldF92YWx1ZV9hcnJheSINCj4gW2xpYi90ZXN0X2xpbmVhcl9y
-YW5nZXMua29dIHVuZGVmaW5lZCENCj4gbWFrZVsyXTogKioqIFsvbW50L2tlcm5lbC9zY3JpcHRz
-L01ha2VmaWxlLm1vZHBvc3Q6OTQ6IF9fbW9kcG9zdF0NCj4gRXJyb3IgMQ0KPiBtYWtlWzFdOiAq
-KiogWy9tbnQva2VybmVsL01ha2VmaWxlOjEzMTk6IG1vZHVsZXNdIEVycm9yIDINCj4gbWFrZTog
-KioqIFtNYWtlZmlsZToxODA6IHN1Yi1tYWtlXSBFcnJvciAyDQo+IA0KPiBUaGUgdGVzdCBjb2Rl
-IG5lZWRzIHRvIHNlbGVjdCB0aGUgbGlicmFyeS4NCg0KSSdsbCBhZGQgdGhlIHNlbGVjdCBMSU5F
-QVJfUkFOR0VTIHRvIEtDb25maWcgYW5kIHJlc2VuZC4NCg0KLS1NYXR0aQ0K
+On Mon, Apr 27, 2020 at 11:16:40AM +0800, Like Xu wrote:
+> On 2020/4/24 20:16, Peter Zijlstra wrote:
+
+> > And I suppose that is why you need that horrible:
+> > needs_guest_lbr_without_counter() thing to begin with.
+> 
+> Do you suggest to use event->attr.config check to replace
+> "needs_branch_stack(event) && is_kernel_event(event) &&
+> event->attr.exclude_host" check for guest LBR event ?
+
+That's what the BTS thing does.
+
+> > Please allocate yourself an event from the pseudo event range:
+> > event==0x00. Currently we only have umask==3 for Fixed2 and umask==4
+> > for Fixed3, given you claim 58, which is effectively Fixed25,
+> > umask==0x1a might be appropriate.
+> 
+> OK, I assume that adding one more field ".config = 0x1a00" is
+> efficient enough for perf_event_attr to allocate guest LBR events.
+
+Uh what? The code is already setting .config. You just have to change it
+do another value.
+
+> > Also, I suppose we need to claim 0x0000 as an error, so that other
+> > people won't try this again.
+> 
+> Does the following fix address your concern on this ?
+> 
+> diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+> index 2405926e2dba..32d2a3f8c51f 100644
+> --- a/arch/x86/events/core.c
+> +++ b/arch/x86/events/core.c
+> @@ -498,6 +498,9 @@ int x86_pmu_max_precise(void)
+> 
+>  int x86_pmu_hw_config(struct perf_event *event)
+>  {
+> +       if (!unlikely(event->attr.config & X86_ARCH_EVENT_MASK))
+> +               return -EINVAL;
+> +
+>         if (event->attr.precise_ip) {
+>                 int precise = x86_pmu_max_precise();
+
+That wouldn't work right for AMD. But yes, something like that.
+
+> > Also, what happens if you fail programming due to a conflicting cpu
+> > event? That pinned doesn't guarantee you'll get the event, it just means
+> > you'll error instead of getting RR.
+> > 
+> > I didn't find any code checking the event state.
+> > 
+> 
+> Error instead of RR is expected.
+> 
+> If the KVM fails programming due to a conflicting cpu event
+> the LBR registers will not be passthrough to the guest,
+> and KVM would return zero for any guest LBR records accesses
+> until the next attempt to program the guest LBR event.
+> 
+> Every time before cpu enters the non-root mode where irq is
+> disabled, the "event-> oncpu! =-1" check will be applied.
+> (more details in the comment around intel_pmu_availability_check())
+> 
+> The guests administer is supposed to know the result of guest
+> LBR records is inaccurate if someone is using LBR to record
+> guest or hypervisor on the host side.
+> 
+> Is this acceptable to you？
+> 
+> If there is anything needs to be improved, please let me know.
+
+It might be nice to emit a pr_warn() or something on the host when this
+happens. Then at least the host admin can know he wrecked things for
+which guest.
