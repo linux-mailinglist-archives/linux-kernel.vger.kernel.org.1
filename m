@@ -2,151 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87E601CB2C7
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 17:28:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D31E81CB2CF
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 17:29:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726942AbgEHP16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 11:27:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56992 "EHLO
+        id S1727778AbgEHP3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 11:29:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726689AbgEHP16 (ORCPT
+        with ESMTP id S1726636AbgEHP3z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 11:27:58 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED6AEC061A0C
-        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 08:27:57 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id h26so1735030lfg.6
-        for <linux-kernel@vger.kernel.org>; Fri, 08 May 2020 08:27:57 -0700 (PDT)
+        Fri, 8 May 2020 11:29:55 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 206C2C061A0C
+        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 08:29:55 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id j8so2141900iog.13
+        for <linux-kernel@vger.kernel.org>; Fri, 08 May 2020 08:29:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uFn8omqpPyP6yYWvRZAtzgNfdrHcBeFpZiqovJJI8PU=;
-        b=CV42aVcRM8sgQyI+q9OkPrEsf4LJZVctUXQJK16eTt5EpHphq8vf1WA1AElg7OQc7h
-         CP/H3kIw7ZT+sUhU4hKu1r/oUv+OGszR9YyNfdkx11IynL3/Zmz0V06yLyv+w3hTz5cv
-         nbMWMzAWaN/K2Cs7QAGS2pP0E2TM3i4+d7QWDo2ggvSzVIZUtdn+BQc6U5bYLAGL7f9z
-         hUYVw3qzESoPTFVTiOHKhH81SxwXXi4itbOXN+E8oMTsEcL8MRaUB5sNlF9RzCnuRPcW
-         J8daQsgXRg+rXrkmxEn0KNwJxGD1pKNyvykx4+qc9NL+f2Jlw9sXkieWOeYloAZa1G4m
-         vSGw==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=nk6RHcExY0LgqkERTzLyOugz5IoSHIMF3+L+W3k3sTM=;
+        b=aYPt015R3MZqJU6zTu0YTrS7KdSMum8HJnR6RQ6e24WQOjI4Ur9QVeRJSY7NnRIFZd
+         IZsmJq0UDIY5bHgFrmoNzkk8HH+8BGvKWk8akxsxOkOpB630b9BQiCvT4zMi+qY8JgCD
+         3+8cGBW551YKMlefQVS+yAHfyVzzPbtmkMqbTh5P+veODcnjHamwHJKPaPuLICvIO5AP
+         MfWRVMizT+trP06HQvKiby2brIKZcTfW/o9uMrcVEc/jvBfnIZzrAf/lLkZRspTAXUQ0
+         3LrM7X0RSt0briJXai/4T912sG84ytx04Yl5ggGd6jN2UzCykfXlpWfub1e6Chvie+Xp
+         9z7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uFn8omqpPyP6yYWvRZAtzgNfdrHcBeFpZiqovJJI8PU=;
-        b=Icoipzg+ymN8Loe53LDqOQCEogVjJrF5gAtQDaI5iI8PgCY/xsPol3GIQ/3EVDmtb+
-         PDd4B9O6ujoBxWdYO6V6o48FR2gB43q+G9el0disGjyZ3dsU86jLozs/4CMw0+blgfxJ
-         4ErIdSJB9dWLhmRN0G2EGHaZYCLjWd92nLyH8xmTOfo8cjDTmQG3y4l3w2owXMX8V1vQ
-         8EE46WMAJPoDrxFuSXLOlVmOfJa1a78iV1MF3ZNas4ChL7xuDOO1SN8BzRsMJehmW+51
-         wyl3jjKrNAwxp5MULLe5qPvuPzi8GTYcn1XadKD9wGgHcodvnmXIZzP4tEHhJ0L4Y3iB
-         qg/w==
-X-Gm-Message-State: AOAM531OlKAV7Gw76OVGl0wBuhBP5Pj3N9lbn9Gc6MDjEf9H0GNeDxHV
-        dIezvUz1puxBjI677DnVIeXuWCD0OutYctomeLjrRQ==
-X-Google-Smtp-Source: ABdhPJwAvkEA+rVtDMXTbHoOcF4U8FdzXy3ETMayuUmcRg2UOX5TteY+yEWE/Or3RngmDI2LXblL2pOtLNV3c0XzhJw=
-X-Received: by 2002:a05:6512:104a:: with SMTP id c10mr2358008lfb.184.1588951676023;
- Fri, 08 May 2020 08:27:56 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nk6RHcExY0LgqkERTzLyOugz5IoSHIMF3+L+W3k3sTM=;
+        b=ID8mEiIFb1QJU2xvmo6tXWC0kPwGfLjZ60goFp2HPF+8qvDuxK0yU8zloMWGs+In7v
+         NkMHtfOeplX/0sj3b6eI0jFfbCxD8IElRoBp434/4SrINsrwYMliVfHhT5FfA3zAV4b2
+         bF2NWLuDl94LNmKOyHwwY63LikhNKl4uAzuMblruh9l5cr4yyr+K7KJtiIhpDlLOXV9K
+         zF+yJqwSGd6BuUvSOYLxFYC/8IL5yoBTQWDOCTycvxgfsAuj9J1zQrvOmUYm9yIPKVs7
+         xS3J2C7mcDRkGtP0ex2jsH68OPzR508UKxcYkuzpYpMGrE5mQScFD6HBYMvMdnQBlcxr
+         ngiQ==
+X-Gm-Message-State: AGi0PuaF1WvFMDMYdbfuqIYElj3nAQyMZ9gLGI+9PinfEl2ELZX40jaY
+        DXBRBcILbuvYUimyn/+/OZv1fZFZccQ=
+X-Google-Smtp-Source: APiQypIXgmex+zsOFZGr9ugAJltkk+meCOXpP254DY7Slv+ItHa08HS3rmtyOi/opsj8ElzkdXFEVg==
+X-Received: by 2002:a02:c9cb:: with SMTP id c11mr2911600jap.93.1588951793971;
+        Fri, 08 May 2020 08:29:53 -0700 (PDT)
+Received: from [192.168.1.159] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id t62sm915931ill.87.2020.05.08.08.29.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 May 2020 08:29:53 -0700 (PDT)
+Subject: Re: [PATCH v2 1/2] fs/io_uring: fix O_PATH fds in openat, openat2,
+ statx
+To:     Max Kellermann <mk@cm4all.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200508063846.21067-1-mk@cm4all.com>
+ <20200508064056.GA21129@rabbit.intern.cm-ag>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <f1f9d108-7f31-c586-330a-ce5a2f1e5bc2@kernel.dk>
+Date:   Fri, 8 May 2020 09:29:52 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20200506141821.GA9773@lorien.usersys.redhat.com>
- <20200507203612.GF19331@lorien.usersys.redhat.com> <20200508151515.GA25974@geo.homenetwork>
-In-Reply-To: <20200508151515.GA25974@geo.homenetwork>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Fri, 8 May 2020 17:27:44 +0200
-Message-ID: <CAKfTPtCeA1VcEierR5iyQJApU5JMFQqkMSR+2JGU4o5cG76opQ@mail.gmail.com>
-Subject: Re: [PATCH v2] sched/fair: Fix enqueue_task_fair warning some more
-To:     Tao Zhou <zohooouoto@zoho.com.cn>
-Cc:     Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Tao Zhou <ouwen210@hotmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200508064056.GA21129@rabbit.intern.cm-ag>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 May 2020 at 17:12, Tao Zhou <zohooouoto@zoho.com.cn> wrote:
->
-> Hi Phil,
->
-> On Thu, May 07, 2020 at 04:36:12PM -0400, Phil Auld wrote:
-> > sched/fair: Fix enqueue_task_fair warning some more
-> >
-> > The recent patch, fe61468b2cb (sched/fair: Fix enqueue_task_fair warning)
-> > did not fully resolve the issues with the rq->tmp_alone_branch !=
-> > &rq->leaf_cfs_rq_list warning in enqueue_task_fair. There is a case where
-> > the first for_each_sched_entity loop exits due to on_rq, having incompletely
-> > updated the list.  In this case the second for_each_sched_entity loop can
-> > further modify se. The later code to fix up the list management fails to do
-> > what is needed because se no longer points to the sched_entity which broke
-> > out of the first loop.
-> >
->
-> > Address this by calling leaf_add_rq_list if there are throttled parents while
-> > doing the second for_each_sched_entity loop.
->
-> Thanks for your trace imformation and explanation. I
-> truely have learned from this and that.
->
-> s/leaf_add_rq_list/list_add_leaf_cfs_rq/
->
-> >
-> > Suggested-by: Vincent Guittot <vincent.guittot@linaro.org>
-> > Signed-off-by: Phil Auld <pauld@redhat.com>
-> > Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > Cc: Vincent Guittot <vincent.guittot@linaro.org>
-> > Cc: Ingo Molnar <mingo@kernel.org>
-> > Cc: Juri Lelli <juri.lelli@redhat.com>
-> > ---
-> >  kernel/sched/fair.c | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> >
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index 02f323b85b6d..c6d57c334d51 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -5479,6 +5479,13 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
-> >               /* end evaluation on encountering a throttled cfs_rq */
-> >               if (cfs_rq_throttled(cfs_rq))
-> >                       goto enqueue_throttle;
-> > +
-> > +               /*
-> > +                * One parent has been throttled and cfs_rq removed from the
-> > +                * list. Add it back to not break the leaf list.
-> > +                */
-> > +               if (throttled_hierarchy(cfs_rq))
-> > +                       list_add_leaf_cfs_rq(cfs_rq);
-> >       }
->
-> I was confused by why the throttled cfs rq can be on list.
-> It is possible when enqueue a task and thanks to the 'threads'.
-> But I think the above comment does not truely put the right
-> intention, right ?
-> If throttled parent is onlist, the child cfs_rq is ignored
-> to be added to the leaf cfs_rq list me think.
->
-> unthrottle_cfs_rq() follows the same logic if i am not wrong.
-> Is it necessary to add the above to it ?
+On 5/8/20 12:40 AM, Max Kellermann wrote:
+> On 2020/05/08 08:38, Max Kellermann <mk@cm4all.com> wrote:
+>> This fails for `O_PATH` file descriptors, because io_file_get() calls
+>> fget(), which rejects `O_PATH` file descriptors.  To support `O_PATH`,
+>> fdget_raw() must be used (like path_init() in `fs/namei.c` does).
+>> This rejection causes io_req_set_file() to throw `-EBADF`.  This
+>> breaks the operations `openat`, `openat2` and `statx`, where `O_PATH`
+>> file descriptors are commonly used.
+> 
+> Code is the same as in v1, but I investigated the root cause of the
+> problem and updated the patch description.
+> 
+> Jens, I believe this should be a separate trivial commit just removing
+> those flags, to allow Greg to backport this to stable easily.
 
-When a cfs_rq is throttled, its sched group is dequeued and all child
-cfs_rq are removed from  leaf_cfs_rq list. But the sched group of the
-child cfs_rq stay enqueued in the throttled cfs_rq so child sched
-group->on_rq might be still set.
+I'd prefer just to keep the single patch, the stable backports tend to
+throw rejects anyway, and it's quick enough for me to just provide a
+tested backport. The single version I posted also gets rid of the
+extra sqe read, where we really should be doing just one, for example.
 
->
-> Thanks,
-> Tau
->
-> >
-> >  enqueue_throttle:
-> > --
-> > 2.18.0
-> >
-> > V2 rework the fix based on Vincent's suggestion. Thanks Vincent.
-> >
-> >
-> > Cheers,
-> > Phil
-> >
-> > --
-> >
+-- 
+Jens Axboe
+
