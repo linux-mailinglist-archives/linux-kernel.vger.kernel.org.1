@@ -2,156 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EF611CB606
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 19:31:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC0331CB616
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 19:33:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727832AbgEHRbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 13:31:41 -0400
-Received: from bedivere.hansenpartnership.com ([66.63.167.143]:42800 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726746AbgEHRbi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 13:31:38 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 5FFF58EE269;
-        Fri,  8 May 2020 10:31:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1588959098;
-        bh=ccfPUMPOZrwzfliVDDgWfLincd4TIFff8Vt2wm+HZWI=;
-        h=Subject:From:To:Cc:Date:From;
-        b=taRppZsMBhJyjIpGxGtMyRmZk/Cy6my59uQ0VNQGBN/tPuM1/0+dSSL6xg9UaaSzU
-         +2Xn9w8uWYP0lXZn5WP9rplrQAt19vv0Oq8XpG2VS8B3aQ5PHz4L9xnHmsXiLNPDqN
-         ivbPPmJ2U44N/Gql0vyNIYY4Rmw3MAy0jVl5uXY8=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 98BeorSCoWdG; Fri,  8 May 2020 10:31:38 -0700 (PDT)
-Received: from [153.66.254.194] (unknown [50.35.76.230])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id A1F918EE0F8;
-        Fri,  8 May 2020 10:31:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1588959097;
-        bh=ccfPUMPOZrwzfliVDDgWfLincd4TIFff8Vt2wm+HZWI=;
-        h=Subject:From:To:Cc:Date:From;
-        b=IXmO1A7ebfLJ64cSREZLl5ap6rP85YReGhnMDZYGahMHFE68uBSgmTKK4OQfX6g8c
-         DFCjhABQKgVJqr4Utplx6NLWWOHFQj4oTxg2lin2hU7UIiIeJbOeOu10u4uPeaKGQ8
-         RDCkQ/x7g2EUXOISVFIhF8WvwZKeURb1jJN3mgaE=
-Message-ID: <1588959096.3837.12.camel@HansenPartnership.com>
-Subject: [GIT PULL] SCSI fixes for 5.7-rc4
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Fri, 08 May 2020 10:31:36 -0700
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.26.6 
-Mime-Version: 1.0
+        id S1727942AbgEHRc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 13:32:56 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:60601 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727111AbgEHRcy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 13:32:54 -0400
+Received: from carbon-x1.hos.anvin.org ([IPv6:2601:646:8600:3281:e7ea:4585:74bd:2ff0])
+        (authenticated bits=0)
+        by mail.zytor.com (8.15.2/8.15.2) with ESMTPSA id 048HWjZ53922207
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Fri, 8 May 2020 10:32:46 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 048HWjZ53922207
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2020042201; t=1588959166;
+        bh=h7A5cg0DMlgygdlKSmaWPgKUTraZaMgxwhuDEQt441A=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=kLPsQu+Duq12mPPzuMs4vVQvm98FOW4+eK2So3t5EdbQALVaGKvfThPUG8hReyI93
+         cfRUohHny9yUmOT+ZAvKFnsGnuUygbVEvUeWTZbE3+G36vBEePb/nB9qZmiawjCfQH
+         c1ttYxmSE3mSDyuU+sBSfpYR/2NV2Lv4B1YIT+meF9p+apudxF6bEPq1IZ7ew2wzWN
+         oBoImUmOGNJBe19+nPRZzvbEpDLiAaMed/rlr2QYh0Pj6+jDRp8iOI6C3FteW+AVrR
+         tGOJrbJ/JWgTw1VYMqTj5Wq5Bm+HLP80m2ynIl9WBJQq/ZiX/Br7Ojo5B/4F5NsDJ6
+         hzvdXZ6FbIxIQ==
+Subject: Re: [PATCH] x86: Use INVPCID mnemonic in invpcid.h
+To:     Uros Bizjak <ubizjak@gmail.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+References: <20200508092247.132147-1-ubizjak@gmail.com>
+From:   "H. Peter Anvin" <hpa@zytor.com>
+Message-ID: <8f88a2e9-fe01-3bb8-bc84-17f1b7e2dfeb@zytor.com>
+Date:   Fri, 8 May 2020 10:32:40 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20200508092247.132147-1-ubizjak@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Four minor fixes, all in drivers (qla2xxx, ibmvfc, ibmvscsi)
+Reviewed-by: H. Peter Anvin (Intel) <hpa@zytor.com>
 
-The patch is available here:
+On 2020-05-08 02:22, Uros Bizjak wrote:
+> Current minimum required version of binutils is 2.23,
+> which supports INVPCID instruction mnemonic.
+> 
+> Replace the byte-wise specification of INVPCID with
+> this proper mnemonic.
+> 
+> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+> CC: "H. Peter Anvin" <hpa@zytor.com>
+> CC: Ingo Molnar <mingo@redhat.com>
+> CC: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  arch/x86/include/asm/invpcid.h | 7 ++-----
+>  1 file changed, 2 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/invpcid.h b/arch/x86/include/asm/invpcid.h
+> index 989cfa86de85..23749bbca0ad 100644
+> --- a/arch/x86/include/asm/invpcid.h
+> +++ b/arch/x86/include/asm/invpcid.h
+> @@ -12,12 +12,9 @@ static inline void __invpcid(unsigned long pcid, unsigned long addr,
+>  	 * stale TLB entries and, especially if we're flushing global
+>  	 * mappings, we don't want the compiler to reorder any subsequent
+>  	 * memory accesses before the TLB flush.
+> -	 *
+> -	 * The hex opcode is invpcid (%ecx), %eax in 32-bit mode and
+> -	 * invpcid (%rcx), %rax in long mode.
+>  	 */
+> -	asm volatile (".byte 0x66, 0x0f, 0x38, 0x82, 0x01"
+> -		      : : "m" (desc), "a" (type), "c" (&desc) : "memory");
+> +	asm volatile ("invpcid %1, %0"
+> +		      : : "r" (type), "m" (desc) : "memory");
+>  }
+>  
+>  #define INVPCID_TYPE_INDIV_ADDR		0
+> 
 
-git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
-
-The short changelog is:
-
-Arun Easi (1):
-      scsi: qla2xxx: Fix hang when issuing nvme disconnect-all in NPIV
-
-Brian King (1):
-      scsi: ibmvfc: Don't send implicit logouts prior to NPIV login
-
-Quinn Tran (1):
-      scsi: qla2xxx: Delete all sessions before unregister local nvme port
-
-Tyrel Datwyler (1):
-      scsi: ibmvscsi: Fix WARN_ON during event pool release
-
-And the diffstat:
-
- drivers/scsi/ibmvscsi/ibmvfc.c   | 5 +++++
- drivers/scsi/ibmvscsi/ibmvscsi.c | 4 ----
- drivers/scsi/qla2xxx/qla_attr.c  | 2 +-
- drivers/scsi/qla2xxx/qla_mbx.c   | 2 +-
- 4 files changed, 7 insertions(+), 6 deletions(-)
-
-With full diff below
-
-James
-
----
-
-diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
-index 7da9e060b270..635f6f9cffc4 100644
---- a/drivers/scsi/ibmvscsi/ibmvfc.c
-+++ b/drivers/scsi/ibmvscsi/ibmvfc.c
-@@ -3640,6 +3640,11 @@ static void ibmvfc_tgt_implicit_logout_and_del(struct ibmvfc_target *tgt)
- 	struct ibmvfc_host *vhost = tgt->vhost;
- 	struct ibmvfc_event *evt;
- 
-+	if (!vhost->logged_in) {
-+		ibmvfc_set_tgt_action(tgt, IBMVFC_TGT_ACTION_DEL_RPORT);
-+		return;
-+	}
-+
- 	if (vhost->discovery_threads >= disc_threads)
- 		return;
- 
-diff --git a/drivers/scsi/ibmvscsi/ibmvscsi.c b/drivers/scsi/ibmvscsi/ibmvscsi.c
-index 7f66a7783209..59f0f1030c54 100644
---- a/drivers/scsi/ibmvscsi/ibmvscsi.c
-+++ b/drivers/scsi/ibmvscsi/ibmvscsi.c
-@@ -2320,16 +2320,12 @@ static int ibmvscsi_probe(struct vio_dev *vdev, const struct vio_device_id *id)
- static int ibmvscsi_remove(struct vio_dev *vdev)
- {
- 	struct ibmvscsi_host_data *hostdata = dev_get_drvdata(&vdev->dev);
--	unsigned long flags;
- 
- 	srp_remove_host(hostdata->host);
- 	scsi_remove_host(hostdata->host);
- 
- 	purge_requests(hostdata, DID_ERROR);
--
--	spin_lock_irqsave(hostdata->host->host_lock, flags);
- 	release_event_pool(&hostdata->pool, hostdata);
--	spin_unlock_irqrestore(hostdata->host->host_lock, flags);
- 
- 	ibmvscsi_release_crq_queue(&hostdata->queue, hostdata,
- 					max_events);
-diff --git a/drivers/scsi/qla2xxx/qla_attr.c b/drivers/scsi/qla2xxx/qla_attr.c
-index 97cabd7e0014..33255968f03a 100644
---- a/drivers/scsi/qla2xxx/qla_attr.c
-+++ b/drivers/scsi/qla2xxx/qla_attr.c
-@@ -3031,11 +3031,11 @@ qla24xx_vport_delete(struct fc_vport *fc_vport)
- 	    test_bit(FCPORT_UPDATE_NEEDED, &vha->dpc_flags))
- 		msleep(1000);
- 
--	qla_nvme_delete(vha);
- 
- 	qla24xx_disable_vp(vha);
- 	qla2x00_wait_for_sess_deletion(vha);
- 
-+	qla_nvme_delete(vha);
- 	vha->flags.delete_progress = 1;
- 
- 	qlt_remove_target(ha, vha);
-diff --git a/drivers/scsi/qla2xxx/qla_mbx.c b/drivers/scsi/qla2xxx/qla_mbx.c
-index 4ed90437e8c4..d6c991bd1bde 100644
---- a/drivers/scsi/qla2xxx/qla_mbx.c
-+++ b/drivers/scsi/qla2xxx/qla_mbx.c
-@@ -3153,7 +3153,7 @@ qla24xx_abort_command(srb_t *sp)
- 	ql_dbg(ql_dbg_mbx + ql_dbg_verbose, vha, 0x108c,
- 	    "Entered %s.\n", __func__);
- 
--	if (vha->flags.qpairs_available && sp->qpair)
-+	if (sp->qpair)
- 		req = sp->qpair->req;
- 	else
- 		return QLA_FUNCTION_FAILED;
