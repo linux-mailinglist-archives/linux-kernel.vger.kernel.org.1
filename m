@@ -2,125 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9034A1CA056
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 03:54:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6063F1CA05C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 03:56:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726771AbgEHByX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 21:54:23 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:53971 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726636AbgEHByW (ORCPT
+        id S1726942AbgEHB4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 21:56:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726509AbgEHB4B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 21:54:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588902859;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8is+as/IWe32hsvVt9oXkFSeTwtP1mvlBgfZZAeexYQ=;
-        b=YNF8tkfS9yOxP3EwvaD52eCcZ1SwVQruGY5+HSbXtjAXfX3VeKRGIVICPn/wF6QQLStN4X
-        +haheQYEhckquG+qggGwYjoPXZ0OqranK90HblAjDZ0OQq33nU8ivXYvegnJU/r6Zf3GNY
-        JQpr2Gl7F9kdDAAO6yUEIdtSCk8Gslw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-435-hkaK7xe3NF6q51s7VNlBWg-1; Thu, 07 May 2020 21:54:15 -0400
-X-MC-Unique: hkaK7xe3NF6q51s7VNlBWg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9DDF6835BC5;
-        Fri,  8 May 2020 01:54:14 +0000 (UTC)
-Received: from [10.72.13.98] (ovpn-13-98.pek2.redhat.com [10.72.13.98])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BCD765D9C5;
-        Fri,  8 May 2020 01:54:06 +0000 (UTC)
-Subject: Re: [PATCH net-next 2/2] virtio-net: fix the XDP truesize calculation
- for mergeable buffers
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-References: <20200506061633.16327-1-jasowang@redhat.com>
- <20200506061633.16327-2-jasowang@redhat.com>
- <20200506033259-mutt-send-email-mst@kernel.org>
- <789fc6e6-9667-a609-c777-a9b1fed72f41@redhat.com>
- <20200506075807-mutt-send-email-mst@kernel.org>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <0e59287f-8333-c715-da03-91306cef9878@redhat.com>
-Date:   Fri, 8 May 2020 09:54:05 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Thu, 7 May 2020 21:56:01 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB9DFC05BD43
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 18:55:58 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id y4so17179wrm.11
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 18:55:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=lESK9DheFCmb/fgjBkJ1NKHb5ynlC/9iRaPrEEcOxI4=;
+        b=J2OcnGw/5MKfYLgyDmgUgC1IkKF1yPsxKCJPskBcTpPo+harkYr4PHxntb7Udk9j6w
+         01hzE4wZVw4/SvbAqp+nWb7mcCAyeE8w1IDVpjWJSknZatZyV7DT/J2HIwRWvGboUDu4
+         VjPfsRLsm0dK8nF6d+mcESq5icBH1nsuRLAmyVUUOJD3fkIMFm34p6yTcHTATp3/F5Pk
+         x4c6R8pNzadHDHgHJXzgJ1VGEcY23ikDiSrhXh78LxiB72oknGJKaxHc682Zaj6maKEI
+         sveEVPR+J5A8WCOdhXjLXd2QzeaYANjacOXFEgaQzXyHTeuCgFqmExMkSUiVm55/s0Sn
+         ULqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=lESK9DheFCmb/fgjBkJ1NKHb5ynlC/9iRaPrEEcOxI4=;
+        b=tDltyMCsjV8F5/P+4muX9Ok7i9dUIARaeoiKoJT9kI6U2kALRjfQKGEdKcb/tiuBGz
+         +FkoLzVSGaUReE2jVKgUtrnCfiplEUUStBiiRClwdwbZwt9shytFBMOFnxz8nUcr+aZt
+         Fx3iiZmyRdRqUu+evVM3jtJ4qLXTt9po+G0V66oSp4LsF6DvJPlHtAHYxMvh/XL8BKaU
+         4Qn7+svXywBUng+UDjpWRFBI9AGrf5qY4tng0UT3YGFemZ5uCW9uxprnkjL86wl8UiPU
+         8OKcQYN0erHlSIDowMvKT+MLss8jk4ndYeNnbg4nXVpIHkqWSFu4eeb31YJLX8r9eLiC
+         CUvA==
+X-Gm-Message-State: AGi0Pubz387oLY2x2roWfNkjLAJw8Z/7AJwlbjTNXEbfHQjV3qqb4FgX
+        66yArABQkflKzxnhJ4gkLnxR6N3HXWOALyufaVQ=
+X-Google-Smtp-Source: APiQypIxeqFNPN2HB7vn6XN+s9O9k5R6tzRlNqFRK3NIFw69wF4m0oB8o1DMcpEb/23TTuAxBW5kXhEnZMSkBPGS52w=
+X-Received: by 2002:a5d:6691:: with SMTP id l17mr23275wru.127.1588902957494;
+ Thu, 07 May 2020 18:55:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200506075807-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Reply-To: mrsolomonoma263@gmail.com
+Received: by 2002:adf:9bce:0:0:0:0:0 with HTTP; Thu, 7 May 2020 18:55:57 -0700 (PDT)
+From:   "Mr. Solomon Omar" <mr.solomonomar776@gmail.com>
+Date:   Thu, 7 May 2020 18:55:57 -0700
+X-Google-Sender-Auth: Or-oU67wdod2fwqgC1vKF4q5YmU
+Message-ID: <CAAV+ANRbJL2NHEnagD1Wjw=WTaTGCdGTV_Q7pVcR0nQh0NOTyg@mail.gmail.com>
+Subject: Good day and God bless you as you read this massage,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--=20
+Hello dear,
 
-On 2020/5/6 下午8:08, Michael S. Tsirkin wrote:
-> On Wed, May 06, 2020 at 04:21:15PM +0800, Jason Wang wrote:
->> On 2020/5/6 下午3:37, Michael S. Tsirkin wrote:
->>> On Wed, May 06, 2020 at 02:16:33PM +0800, Jason Wang wrote:
->>>> We should not exclude headroom and tailroom when XDP is set. So this
->>>> patch fixes this by initializing the truesize from PAGE_SIZE when XDP
->>>> is set.
->>>>
->>>> Cc: Jesper Dangaard Brouer<brouer@redhat.com>
->>>> Signed-off-by: Jason Wang<jasowang@redhat.com>
->>> Seems too aggressive, we do not use up the whole page for the size.
->>>
->>>
->>>
->> For XDP yes, we do:
->>
->> static unsigned int get_mergeable_buf_len(struct receive_queue *rq,
->>                        struct ewma_pkt_len *avg_pkt_len,
->>                        unsigned int room)
->> {
->>      const size_t hdr_len = sizeof(struct virtio_net_hdr_mrg_rxbuf);
->>      unsigned int len;
->>
->>      if (room)
->>          return PAGE_SIZE - room;
->>
->> ...
->>
->> Thanks
-> Hmm. But that's only for new buffers. Buffers that were outstanding
-> before xdp was attached don't use the whole page, do they?
+ I'm working with Bank International in Ouagadougou the capital city
+of Burkina Faso.
 
+I'm one of the senior director of the bank, I=E2=80=99m writing you this me=
+mo
+because I have this urgent deal/business proposal that will benefit me
+and you. Please write me on my personal email for more detail
+information concerning the issue at hand
 
-They don't and in either case, we've encoded truesize in the ctx. Any 
-issue you saw?
-
-
->
->
->
->
-> Also, with TCP smallqueues blocking the queue like that might be a problem.
-> Could you try and check performance impact of this?
-
-
-I'm not sure I get you, TCP small queue is more about TX I guess. And 
-since we've invalidated the vnet header, the performance of XDP_PASS 
-won't be good.
-
-
-> I looked at what other drivers do and I see they tend to copy the skb
-> in XDP_PASS case. ATM we don't normally - but should we?
-
-
-My understanding is XDP runs before skb, so I don't get here. Or maybe 
-you can point me the driver you mentioned here? I've checked i40e and 
-mlx5e, both of them build skb after XDP.
-
-Thanks
-
->
-
+Mr.solomonomar434@gmail.com
+=09
+Thanks,
+ Mr. Solomon Omar
