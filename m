@@ -2,41 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E96161CACB7
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DCAF1CAD49
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:02:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729804AbgEHMz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 08:55:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38242 "EHLO mail.kernel.org"
+        id S1729930AbgEHNAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 09:00:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33568 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730320AbgEHMzU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 08:55:20 -0400
+        id S1729951AbgEHMwZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 08:52:25 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A677A24963;
-        Fri,  8 May 2020 12:55:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 48D6F218AC;
+        Fri,  8 May 2020 12:52:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588942520;
-        bh=nsssbZy682qJB1nLB7JZpO040fXKDc94Bx3ipos/8Ik=;
+        s=default; t=1588942344;
+        bh=nVcYsa2JnQlt53ghbuwwTdE45CPzc9/yUgMq+3xxz3I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lGxQWn0yM1d1snw46SF2yx3gNJuoC8JfhANYsgHpq+7FKskY5wR3Z3QU+C9caEL29
-         cz2l/lPKFzekL3ZpYvvOi/55f2+599S/J6/Nu7OhwUdcd/9PUS96sDvzgQiiDmf8j2
-         AukuYEVx30cc4GtpCQcXXL10KGsk+2C2utxqfG5Q=
+        b=sUWktnc/UyzDeDM3Z1lyWRQ2FRLzNzpAF1ZLKnPmvlBn9tGghvdH81Z2TmGPYWao7
+         6IS/fvioFJ2lt84o2q428eZR6+Z1oZOPuw+BidEYBj/m3AiOYscwgbEsZdDYqnW1HL
+         tLXZ7rTEAGfWFC4QQ1XTje1bOPzkH5640yatoHnA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Matthias Blankertz <matthias.blankertz@cetitec.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 20/49] ASoC: rsnd: Fix HDMI channel mapping for multi-SSI mode
-Date:   Fri,  8 May 2020 14:35:37 +0200
-Message-Id: <20200508123045.833953087@linuxfoundation.org>
+        stable@vger.kernel.org, AceLan Kao <acelan.kao@canonical.com>,
+        Tuowen Zhao <ztuowen@gmail.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Roman Gilg <subdiff@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH 4.19 25/32] mfd: intel-lpss: Use devm_ioremap_uc for MMIO
+Date:   Fri,  8 May 2020 14:35:38 +0200
+Message-Id: <20200508123038.544813235@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200508123042.775047422@linuxfoundation.org>
-References: <20200508123042.775047422@linuxfoundation.org>
+In-Reply-To: <20200508123034.886699170@linuxfoundation.org>
+References: <20200508123034.886699170@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,49 +47,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthias Blankertz <matthias.blankertz@cetitec.com>
+From: Tuowen Zhao <ztuowen@gmail.com>
 
-[ Upstream commit b94e164759b82d0c1c80d4b1c8f12c9bee83f11d ]
+commit a8ff78f7f773142eb8a8befe5a95dd6858ebd635 upstream.
 
-The HDMI?_SEL register maps up to four stereo SSI data lanes onto the
-sdata[0..3] inputs of the HDMI output block. The upper half of the
-register contains four blocks of 4 bits, with the most significant
-controlling the sdata3 line and the least significant the sdata0 line.
+Some BIOS erroneously specifies write-combining BAR for intel-lpss-pci
+in MTRR. This will cause the system to hang during boot. If possible,
+this bug could be corrected with a firmware update.
 
-The shift calculation has an off-by-one error, causing the parent SSI to
-be mapped to sdata3, the first multi-SSI child to sdata0 and so forth.
-As the parent SSI transmits the stereo L/R channels, and the HDMI core
-expects it on the sdata0 line, this causes no audio to be output when
-playing stereo audio on a multichannel capable HDMI out, and
-multichannel audio has permutated channels.
+This patch use devm_ioremap_uc to overwrite/ignore the MTRR settings
+by forcing the use of strongly uncachable pages for intel-lpss.
 
-Fix the shift calculation to map the parent SSI to sdata0, the first
-child to sdata1 etc.
+The BIOS bug is present on Dell XPS 13 7390 2-in-1:
 
-Signed-off-by: Matthias Blankertz <matthias.blankertz@cetitec.com>
-Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/20200415141017.384017-3-matthias.blankertz@cetitec.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+[    0.001734]   5 base 4000000000 mask 6000000000 write-combining
+
+4000000000-7fffffffff : PCI Bus 0000:00
+  4000000000-400fffffff : 0000:00:02.0 (i915)
+  4010000000-4010000fff : 0000:00:15.0 (intel-lpss-pci)
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=203485
+Cc: <stable@vger.kernel.org> # v4.19+
+Tested-by: AceLan Kao <acelan.kao@canonical.com>
+Signed-off-by: Tuowen Zhao <ztuowen@gmail.com>
+Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Tested-by: Roman Gilg <subdiff@gmail.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- sound/soc/sh/rcar/ssiu.c | 2 +-
+ drivers/mfd/intel-lpss.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
-index f35d882118874..9c7c3e7539c93 100644
---- a/sound/soc/sh/rcar/ssiu.c
-+++ b/sound/soc/sh/rcar/ssiu.c
-@@ -221,7 +221,7 @@ static int rsnd_ssiu_init_gen2(struct rsnd_mod *mod,
- 			i;
+--- a/drivers/mfd/intel-lpss.c
++++ b/drivers/mfd/intel-lpss.c
+@@ -397,7 +397,7 @@ int intel_lpss_probe(struct device *dev,
+ 	if (!lpss)
+ 		return -ENOMEM;
  
- 		for_each_rsnd_mod_array(i, pos, io, rsnd_ssi_array) {
--			shift	= (i * 4) + 16;
-+			shift	= (i * 4) + 20;
- 			val	= (val & ~(0xF << shift)) |
- 				rsnd_mod_id(pos) << shift;
- 		}
--- 
-2.20.1
-
+-	lpss->priv = devm_ioremap(dev, info->mem->start + LPSS_PRIV_OFFSET,
++	lpss->priv = devm_ioremap_uc(dev, info->mem->start + LPSS_PRIV_OFFSET,
+ 				  LPSS_PRIV_SIZE);
+ 	if (!lpss->priv)
+ 		return -ENOMEM;
 
 
