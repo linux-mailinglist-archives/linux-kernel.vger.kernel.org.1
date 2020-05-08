@@ -2,70 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C3541CB86C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 21:39:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A21171CB88A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 21:44:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727780AbgEHTi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 15:38:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37476 "EHLO mail.kernel.org"
+        id S1727122AbgEHToo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 15:44:44 -0400
+Received: from mga17.intel.com ([192.55.52.151]:5925 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726767AbgEHTi6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 15:38:58 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7A4DC20725;
-        Fri,  8 May 2020 19:38:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588966737;
-        bh=TVF1tf6NxsU/ettA9htZ19+xz7qF2EXHonAMXoKKwVE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fEUa2hpQEVZ/5oNp1fr5qsCBw8GHgtMEJvhk+5/bCZYLMkOiF7tcXsTfELHccv7bK
-         gaBqJ8v8aRf2VzYARtx9NSsWuSkEQtr52uc4DiUh/tLlhaQaM4jx9XCFmRcC867Uvh
-         P8onb0BGagZbzRt//WbMxOJknZofArfkbeEQOkaw=
-Date:   Fri, 8 May 2020 14:43:25 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH] PCI: Replace zero-length array with flexible-array
-Message-ID: <20200508194325.GD23375@embeddedor>
-References: <20200507190544.GA15633@embeddedor>
- <20200507201544.GA23633@bjorn-Precision-5520>
+        id S1726797AbgEHTon (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 15:44:43 -0400
+IronPort-SDR: +JCo43J6zYH5NryhOTS7QVMhh4w8fT2akZh88a8vJM5e7/k+28gFZFVBBT/KvJZPpfH34Tff3y
+ dbP0XAPH+U9g==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2020 12:44:43 -0700
+IronPort-SDR: 3IRkX/kfHWSVSG1JAB9t0SfwNgiwPppn8pnGu8iPEOQRlmtSxKPMUEjU0kDUIcQxF4QYcefZ1K
+ NkL3gpkFdMCw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,368,1583222400"; 
+   d="scan'208";a="370611050"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001.fm.intel.com with ESMTP; 08 May 2020 12:44:39 -0700
+Received: from andy by smile with local (Exim 4.93)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1jX8vJ-005TGv-Ov; Fri, 08 May 2020 22:44:41 +0300
+Date:   Fri, 8 May 2020 22:44:41 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Allison Randal <allison@lohutok.net>,
+        Gareth Williams <gareth.williams.jx@renesas.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        "wuxu.wu" <wuxu.wu@huawei.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 05/17] spi: dw: Discard static DW DMA slave structures
+Message-ID: <20200508194441.GB185537@smile.fi.intel.com>
+References: <20200508132943.9826-1-Sergey.Semin@baikalelectronics.ru>
+ <20200508132943.9826-6-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200507201544.GA23633@bjorn-Precision-5520>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200508132943.9826-6-Sergey.Semin@baikalelectronics.ru>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 07, 2020 at 03:15:44PM -0500, Bjorn Helgaas wrote:
-> On Thu, May 07, 2020 at 02:05:44PM -0500, Gustavo A. R. Silva wrote:
-> > The current codebase makes use of the zero-length array language
-> > extension to the C90 standard, but the preferred mechanism to declare
-> > variable-length types such as these ones is a flexible array member[1][2],
-> > introduced in C99:
-> > 
-> > struct foo {
-> >         int stuff;
-> >         struct boo array[];
-> > };
-> > 
-> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> 
-> Applied to pci/misc for v5.8, thanks!
-> 
-> I assume this takes care of everything in drivers/pci/, right?  I'd
-> like to do them all at once, so if there are others, send another
-> patch and I'll squash them.  I took a quick look but didn't see any.
-> 
+On Fri, May 08, 2020 at 04:29:30PM +0300, Serge Semin wrote:
+> Having them declared is redundant since each struct dw_dma_chan has
+> the same structure embedded and the structure from the passed dma_chan
+> private pointer will be copied there as a result of the next calls
+> chain:
+> dma_request_channel() -> find_candidate() -> dma_chan_get() ->
+> device_alloc_chan_resources() = dwc_alloc_chan_resources() ->
+> dw_dma_filter().
+> So just remove the static dw_dma_chan structures and use a locally
+> declared data instance with dst_id/src_id set to the same values as
+> the static copies used to have.
 
-Yep. I can confirm that these are the last zero-length arrays in
-drivers/pci/ :)
+I'm not against it, but you may leave if for the future (see spi/for-next).
 
-Thanks
---
-Gustavo
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
