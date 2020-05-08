@@ -2,106 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2D401CA013
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 03:30:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 289101CA018
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 03:31:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726877AbgEHBaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 21:30:25 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:3905 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726518AbgEHBaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 21:30:24 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 4002391465909247DBE8;
-        Fri,  8 May 2020 09:29:33 +0800 (CST)
-Received: from [127.0.0.1] (10.166.215.237) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Fri, 8 May 2020
- 09:29:25 +0800
-Subject: Re: [PATCH] arm64: stacktrace: Factor out some common code info
- on_stack()
-To:     Will Deacon <will@kernel.org>
-CC:     <catalin.marinas@arm.com>, <Dave.Martin@arm.com>,
-        <mark.rutland@arm.com>, <james.morse@arm.com>,
-        <0x7f454c46@gmail.com>, <tglx@linutronix.de>,
-        <lorenzo.pieralisi@arm.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <hushiyuan@huawei.com>,
-        <hewenliang4@huawei.com>
-References: <10b188af-a03b-3acc-8a06-cf31a46f735a@huawei.com>
- <20200507135213.GA32706@willie-the-truck>
-From:   Yunfeng Ye <yeyunfeng@huawei.com>
-Message-ID: <15e31e59-3429-53f8-bb61-5f60c90fa856@huawei.com>
-Date:   Fri, 8 May 2020 09:29:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S1726904AbgEHBbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 21:31:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56648 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726518AbgEHBbF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 21:31:05 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 296EF208CA;
+        Fri,  8 May 2020 01:31:03 +0000 (UTC)
+Date:   Thu, 7 May 2020 21:31:00 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [patch V4 part 2 01/18] x86/entry/64: Move non entry code into
+ .text section
+Message-ID: <20200507213100.034f877f@oasis.local.home>
+In-Reply-To: <20200505134340.227579223@linutronix.de>
+References: <20200505134112.272268764@linutronix.de>
+        <20200505134340.227579223@linutronix.de>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20200507135213.GA32706@willie-the-truck>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.166.215.237]
-X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 05 May 2020 15:41:13 +0200
+Thomas Gleixner <tglx@linutronix.de> wrote:
 
+> --- a/arch/x86/kernel/ftrace_64.S
+> +++ b/arch/x86/kernel/ftrace_64.S
+> @@ -12,7 +12,7 @@
+>  #include <asm/frame.h>
+>  
+>  	.code64
+> -	.section .entry.text, "ax"
+> +	.section .text, "ax"
+>  
+>  #ifdef CONFIG_FRAME_POINTER
+>  /* Save parent and function stack frames (rip and rbp) */
 
-On 2020/5/7 21:52, Will Deacon wrote:
-> On Thu, May 07, 2020 at 05:28:19PM +0800, Yunfeng Ye wrote:
->> diff --git a/arch/arm64/include/asm/stacktrace.h b/arch/arm64/include/asm/stacktrace.h
->> index fdb913cc0bcb..b92bef2fb6cd 100644
->> --- a/arch/arm64/include/asm/stacktrace.h
->> +++ b/arch/arm64/include/asm/stacktrace.h
->> @@ -69,27 +69,40 @@ extern void dump_backtrace(struct pt_regs *regs, struct task_struct *tsk,
->>
->>  DECLARE_PER_CPU(unsigned long *, irq_stack_ptr);
->>
->> -static inline bool on_irq_stack(unsigned long sp,
->> +static inline bool on_stack(unsigned long sp, unsigned long low,
->> +				unsigned long high, enum stack_type type,
->>  				struct stack_info *info)
->>  {
->> -	unsigned long low = (unsigned long)raw_cpu_read(irq_stack_ptr);
->> -	unsigned long high = low + IRQ_STACK_SIZE;
->> -
->> -	if (!low)
->> -		return false;
->> -
->>  	if (sp < low || sp >= high)
->>  		return false;
->>
->>  	if (info) {
->>  		info->low = low;
->>  		info->high = high;
->> -		info->type = STACK_TYPE_IRQ;
->> +		info->type = type;
->>  	}
->> -
->>  	return true;
->>  }
->>
->> +static inline bool on_valid_stack(unsigned long sp, unsigned long low,
->> +				unsigned long high, enum stack_type type,
->> +				struct stack_info *info)
->> +{
->> +	if (!low)
->> +		return false;
->> +
->> +	return on_stack(sp, low, high, type, info);
->> +}
-> 
-> Do we need this as distinct from on_stack()? Afaict, 'low' is never
-> going to be NULL for the on_stack() callers, so I suggest just having
-> on_stack() check 'low' and getting everybody to call that instead.
-> 
-> Make sense?
-> 
-ok, I will modify and send the patch v2, thanks.
+Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-> Will
-> 
-> .
-> 
-
+-- Steve
