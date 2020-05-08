@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD03F1CB0D0
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:48:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 782131CB0E9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:48:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728264AbgEHNqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:46:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41160 "EHLO
+        id S1728652AbgEHNrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 09:47:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728111AbgEHNqf (ORCPT
+        by vger.kernel.org with ESMTP id S1728140AbgEHNqg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 09:46:35 -0400
+        Fri, 8 May 2020 09:46:36 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AC75C05BD09;
-        Fri,  8 May 2020 06:46:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39FABC05BD09;
+        Fri,  8 May 2020 06:46:36 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jX3Ki-0001lO-MA; Fri, 08 May 2020 15:46:32 +0200
+        id 1jX3Kj-0001mS-Qx; Fri, 08 May 2020 15:46:33 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 558E61C0080;
-        Fri,  8 May 2020 15:46:32 +0200 (CEST)
-Date:   Fri, 08 May 2020 13:46:32 -0000
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 869F21C03AB;
+        Fri,  8 May 2020 15:46:33 +0200 (CEST)
+Date:   Fri, 08 May 2020 13:46:33 -0000
 From:   "tip-bot2 for Marco Elver" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/kcsan] kcsan: Make reporting aware of KCSAN tests
-Cc:     Marco Elver <elver@google.com>,
+Subject: [tip: locking/kcsan] kcsan: Move kcsan_{disable,enable}_current() to
+ kcsan-checks.h
+Cc:     Will Deacon <will@kernel.org>, Marco Elver <elver@google.com>,
         "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <158894559229.8414.5641397103785083859.tip-bot2@tip-bot2>
+Message-ID: <158894559346.8414.7806319279054539139.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -48,70 +49,87 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the locking/kcsan branch of tip:
 
-Commit-ID:     cdb9b07d8c78be63d72aba9a2686ff161ddd2099
-Gitweb:        https://git.kernel.org/tip/cdb9b07d8c78be63d72aba9a2686ff161ddd2099
+Commit-ID:     01b4ff58f72dbee926077d9afa0650f6e685e866
+Gitweb:        https://git.kernel.org/tip/01b4ff58f72dbee926077d9afa0650f6e685e866
 Author:        Marco Elver <elver@google.com>
-AuthorDate:    Fri, 10 Apr 2020 18:44:18 +02:00
+AuthorDate:    Tue, 31 Mar 2020 21:32:32 +02:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Mon, 13 Apr 2020 17:18:16 -07:00
+CommitterDate: Mon, 13 Apr 2020 17:18:14 -07:00
 
-kcsan: Make reporting aware of KCSAN tests
+kcsan: Move kcsan_{disable,enable}_current() to kcsan-checks.h
 
-Reporting hides KCSAN runtime functions in the stack trace, with
-filtering done based on function names. Currently this included all
-functions (or modules) that would match "kcsan_". Make the filter aware
-of KCSAN tests, which contain "kcsan_test", and are no longer skipped in
-the report.
+Both affect access checks, and should therefore be in kcsan-checks.h.
+This is in preparation to use these in compiler.h.
 
-This is in preparation for adding a KCSAN test module.
-
+Acked-by: Will Deacon <will@kernel.org>
 Signed-off-by: Marco Elver <elver@google.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/kcsan/report.c | 30 +++++++++++++++++++++++-------
- 1 file changed, 23 insertions(+), 7 deletions(-)
+ include/linux/kcsan-checks.h | 16 ++++++++++++++++
+ include/linux/kcsan.h        | 16 ----------------
+ 2 files changed, 16 insertions(+), 16 deletions(-)
 
-diff --git a/kernel/kcsan/report.c b/kernel/kcsan/report.c
-index cf41d63..ac5f834 100644
---- a/kernel/kcsan/report.c
-+++ b/kernel/kcsan/report.c
-@@ -262,16 +262,32 @@ static const char *get_thread_desc(int task_id)
- static int get_stack_skipnr(const unsigned long stack_entries[], int num_entries)
- {
- 	char buf[64];
--	int len;
--	int skip = 0;
-+	char *cur;
-+	int len, skip;
+diff --git a/include/linux/kcsan-checks.h b/include/linux/kcsan-checks.h
+index 101df7f..ef95ddc 100644
+--- a/include/linux/kcsan-checks.h
++++ b/include/linux/kcsan-checks.h
+@@ -37,6 +37,20 @@
+ void __kcsan_check_access(const volatile void *ptr, size_t size, int type);
  
--	for (; skip < num_entries; ++skip) {
-+	for (skip = 0; skip < num_entries; ++skip) {
- 		len = scnprintf(buf, sizeof(buf), "%ps", (void *)stack_entries[skip]);
--		if (!strnstr(buf, "csan_", len) &&
--		    !strnstr(buf, "tsan_", len) &&
--		    !strnstr(buf, "_once_size", len))
--			break;
+ /**
++ * kcsan_disable_current - disable KCSAN for the current context
++ *
++ * Supports nesting.
++ */
++void kcsan_disable_current(void);
 +
-+		/* Never show tsan_* or {read,write}_once_size. */
-+		if (strnstr(buf, "tsan_", len) ||
-+		    strnstr(buf, "_once_size", len))
-+			continue;
++/**
++ * kcsan_enable_current - re-enable KCSAN for the current context
++ *
++ * Supports nesting.
++ */
++void kcsan_enable_current(void);
 +
-+		cur = strnstr(buf, "kcsan_", len);
-+		if (cur) {
-+			cur += sizeof("kcsan_") - 1;
-+			if (strncmp(cur, "test", sizeof("test") - 1))
-+				continue; /* KCSAN runtime function. */
-+			/* KCSAN related test. */
-+		}
-+
-+		/*
-+		 * No match for runtime functions -- @skip entries to skip to
-+		 * get to first frame of interest.
-+		 */
-+		break;
- 	}
-+
- 	return skip;
- }
++/**
+  * kcsan_nestable_atomic_begin - begin nestable atomic region
+  *
+  * Accesses within the atomic region may appear to race with other accesses but
+@@ -133,6 +147,8 @@ void kcsan_end_scoped_access(struct kcsan_scoped_access *sa);
+ static inline void __kcsan_check_access(const volatile void *ptr, size_t size,
+ 					int type) { }
+ 
++static inline void kcsan_disable_current(void)		{ }
++static inline void kcsan_enable_current(void)		{ }
+ static inline void kcsan_nestable_atomic_begin(void)	{ }
+ static inline void kcsan_nestable_atomic_end(void)	{ }
+ static inline void kcsan_flat_atomic_begin(void)	{ }
+diff --git a/include/linux/kcsan.h b/include/linux/kcsan.h
+index 17ae59e..53340d8 100644
+--- a/include/linux/kcsan.h
++++ b/include/linux/kcsan.h
+@@ -50,25 +50,9 @@ struct kcsan_ctx {
+  */
+ void kcsan_init(void);
+ 
+-/**
+- * kcsan_disable_current - disable KCSAN for the current context
+- *
+- * Supports nesting.
+- */
+-void kcsan_disable_current(void);
+-
+-/**
+- * kcsan_enable_current - re-enable KCSAN for the current context
+- *
+- * Supports nesting.
+- */
+-void kcsan_enable_current(void);
+-
+ #else /* CONFIG_KCSAN */
+ 
+ static inline void kcsan_init(void)			{ }
+-static inline void kcsan_disable_current(void)		{ }
+-static inline void kcsan_enable_current(void)		{ }
+ 
+ #endif /* CONFIG_KCSAN */
  
