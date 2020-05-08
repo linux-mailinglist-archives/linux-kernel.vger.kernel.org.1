@@ -2,125 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB3E71CA0B1
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 04:20:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B92E81CA0C5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 04:22:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726906AbgEHCTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 22:19:46 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:20827 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726509AbgEHCTp (ORCPT
+        id S1727780AbgEHCVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 22:21:50 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:13439 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727029AbgEHCVs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 22:19:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588904384;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JLgSaSiv4yYvs1EPOLMzvQOEIO76IkdBvqeIXiY7JGM=;
-        b=KOUWFlT9xjBwouWRnTx01ihtTMyn43q5Yyb6WeFfFQFgswZdM2510KQuTBmQJzxrfZApHw
-        NrJLeaqCm5vbxcX7GuKHE20dLhECt5rqP+h/TFZZD1CSYBm0WuyCHtEcfTHiBn2YrCVA43
-        kjYMNq78aS3T485ZTc2I6Y4VaEa9i5U=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-476-iYG7U1iIMxian9LI29XpNQ-1; Thu, 07 May 2020 22:19:42 -0400
-X-MC-Unique: iYG7U1iIMxian9LI29XpNQ-1
-Received: by mail-qk1-f198.google.com with SMTP id h1so403182qkl.6
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 19:19:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JLgSaSiv4yYvs1EPOLMzvQOEIO76IkdBvqeIXiY7JGM=;
-        b=MS6k/6K31VfeY2VXSk2ESI0dGMGNp0qL2XdKIZDVLzYYWmcsm+fVapoI4a371MOFKK
-         +WsIIXg2U1H5gyGJuQRS1h70P/MAGk1SRN03jbuFZQJm28gad68JQ4HTPZt+DJl5Wigp
-         f9Ghl+YLh3jaVEQxmVAfpKzLDEFMKH2dXSTZTUqC3hhVL2l33EWdxJvPucUbAOg+chM4
-         cpOihJ1ysQvkWpUXKhi3WYWf8AtOx4LfIRylNbGjI/F0CsRYYE7eiBVnbijeD1CPQDsy
-         25L2ucE09Tc8CtX1fFaJqfbdo9mXgx+gu/6/ij+cKL7w7rHGU0wcyScTStHu2RV05ja/
-         qvGA==
-X-Gm-Message-State: AGi0Pua/dkzqJZpkf4KdZc7JDGMfP3nNgspcpRbNm04+b/VMCap5KXH8
-        pDDJZqBbrXy3JttTcNGeA93PjXCnbVIYeypu1S/mgAbXet//9AD4TAw4bbY2drDrttTC6AyObDc
-        s6Ogp+USbrhzCYPi7oA56QFEC
-X-Received: by 2002:a37:b244:: with SMTP id b65mr495695qkf.329.1588904381905;
-        Thu, 07 May 2020 19:19:41 -0700 (PDT)
-X-Google-Smtp-Source: APiQypK5WVcJu8AxnvxH75BqYI7fquWzH90Irnz0KNnKxL7u7e3h154rbjbL3aetQuw1D3Oexo6GEQ==
-X-Received: by 2002:a37:b244:: with SMTP id b65mr495685qkf.329.1588904381668;
-        Thu, 07 May 2020 19:19:41 -0700 (PDT)
-Received: from xz-x1 ([2607:9880:19c0:32::2])
-        by smtp.gmail.com with ESMTPSA id i59sm333207qtb.58.2020.05.07.19.19.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2020 19:19:41 -0700 (PDT)
-Date:   Thu, 7 May 2020 22:19:39 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Alex Williamson <alex.williamson@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, cohuck@redhat.com
-Subject: Re: [PATCH v2 1/3] vfio/type1: Support faulting PFNMAP vmas
-Message-ID: <20200508021939.GT228260@xz-x1>
-References: <158871401328.15589.17598154478222071285.stgit@gimli.home>
- <158871568480.15589.17339878308143043906.stgit@gimli.home>
- <20200507212443.GO228260@xz-x1>
- <20200507235421.GK26002@ziepe.ca>
+        Thu, 7 May 2020 22:21:48 -0400
+X-UUID: a506af475e3845449dabb6eb9572eee1-20200508
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=TR6ze+l1mfObKm1SdxCDQckW//z6/tKC6CTs29QI2bQ=;
+        b=pEp8gPDuKul6gWPyLDCRhgeNlq+HDWKcuQwDOuA1JyxssOYEIzAcG4EFQCQ1Wi8iZ9SUNoPjc1e8OnKAJ75BSDsOWAC6emexRgmmpUG0O7ruTKgETaGLjBWvR0Zn3Qwhu27/8uh7s6R78AzgjgXR61oDt1n+v/GES+UzgcUQgj8=;
+X-UUID: a506af475e3845449dabb6eb9572eee1-20200508
+Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw01.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1038069575; Fri, 08 May 2020 10:21:43 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 8 May 2020 10:21:41 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 8 May 2020 10:21:41 +0800
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
+        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
+        <jejb@linux.ibm.com>, <asutoshd@codeaurora.org>
+CC:     <beanhuo@micron.com>, <cang@codeaurora.org>,
+        <matthias.bgg@gmail.com>, <bvanassche@acm.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
+        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
+        <andy.teng@mediatek.com>, Stanley Chu <stanley.chu@mediatek.com>
+Subject: [PATCH v7 0/8] scsi: ufs: support LU Dedicated buffer mode for WriteBooster
+Date:   Fri, 8 May 2020 10:21:33 +0800
+Message-ID: <20200508022141.10783-1-stanley.chu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200507235421.GK26002@ziepe.ca>
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 07, 2020 at 08:54:21PM -0300, Jason Gunthorpe wrote:
-> On Thu, May 07, 2020 at 05:24:43PM -0400, Peter Xu wrote:
-> > On Tue, May 05, 2020 at 03:54:44PM -0600, Alex Williamson wrote:
-> > > With conversion to follow_pfn(), DMA mapping a PFNMAP range depends on
-> > > the range being faulted into the vma.  Add support to manually provide
-> > > that, in the same way as done on KVM with hva_to_pfn_remapped().
-> > > 
-> > > Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
-> > >  drivers/vfio/vfio_iommu_type1.c |   36 +++++++++++++++++++++++++++++++++---
-> > >  1 file changed, 33 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-> > > index cc1d64765ce7..4a4cb7cd86b2 100644
-> > > +++ b/drivers/vfio/vfio_iommu_type1.c
-> > > @@ -317,6 +317,32 @@ static int put_pfn(unsigned long pfn, int prot)
-> > >  	return 0;
-> > >  }
-> > >  
-> > > +static int follow_fault_pfn(struct vm_area_struct *vma, struct mm_struct *mm,
-> > > +			    unsigned long vaddr, unsigned long *pfn,
-> > > +			    bool write_fault)
-> > > +{
-> > > +	int ret;
-> > > +
-> > > +	ret = follow_pfn(vma, vaddr, pfn);
-> > > +	if (ret) {
-> > > +		bool unlocked = false;
-> > > +
-> > > +		ret = fixup_user_fault(NULL, mm, vaddr,
-> > > +				       FAULT_FLAG_REMOTE |
-> > > +				       (write_fault ?  FAULT_FLAG_WRITE : 0),
-> > > +				       &unlocked);
-> > > +		if (unlocked)
-> > > +			return -EAGAIN;
-> > 
-> > Hi, Alex,
-> > 
-> > IIUC this retry is not needed too because fixup_user_fault() will guarantee the
-> > fault-in is done correctly with the valid PTE as long as ret==0, even if
-> > unlocked==true.
-> 
-> It is true, and today it is fine, but be careful when reworking this
-> to use notifiers as unlocked also means things like the vma pointer
-> are invalidated.
-
-Oh right, thanks for noticing that.  Then we should probably still keep the
-retry logic... because otherwise the latter follow_pfn() could be referencing
-an invalid vma already...
-
-Thanks,
-
--- 
-Peter Xu
+SGksDQpUaGlzIHBhdGNoc2V0IGFkZHMgTFUgZGVkaWNhdGVkIGJ1ZmZlciBtb2RlIHN1cHBvcnQg
+Zm9yIFdyaXRlQm9vc3Rlci4NCkluIHRoZSBtZWFud2hpbGUsIGVuYWJsZSBXcml0ZUJvb3N0ZXIg
+Y2FwYWJpbGl0eSBvbiBNZWRpYVRlayBVRlMgcGxhdGZvcm1zLg0KDQp2NiAtPiB2NzoNCiAgLSBB
+ZGQgZGV2aWNlIGRlc2NyaXB0b3IgbGVuZ3RoIGNoZWNrIGluIHVmc2hjZF93Yl9wcm9iZSgpIGJh
+Y2sgdG8gcHJldmVudCBvdXQtb2YtYm91bmRhcnkgYWNjZXNzIGluIHVmc2hjZF93Yl9wcm9iZSgp
+DQogIC0gRml4IHRoZSBjaGVjayBvZiBkZXZpY2UgZGVzY3JpcHRvciBsZW5ndGggKEF2cmkgQWx0
+bWFuKQ0KICAtIFByb3ZpZGUgYSBuZXcgdWZzX2ZpeHVwX2RldmljZV9zZXR1cCgpIGZ1bmN0aW9u
+IHRvIHBhY2sgYm90aCBkZXZpY2UgZml4dXAgbWV0aG9kcyBieSBnZW5lcmFsIHF1aXJrIHRhYmxl
+IGFuZCB2ZW5kb3Itc3BlY2lmaWMgd2F5IChBdnJpIEFsdG1hbikNCg0KdjUgLT4gdjY6DQogIC0g
+UmVtb3ZlIGRldmljZSBkZXNjcmlwdG9yIGxlbmd0aCBjaGVjayBpbiB1ZnNoY2Rfd2JfcHJvYmUo
+KQ0KDQp2NCAtPiB2NToNCiAgLSBDaGVjayBMVU4gSUQgZm9yIGF2YWlsYWJsZSBXcml0ZUJvb3N0
+ZXIgYnVmZmVyIG9ubHkgZnJvbSAwIHRvIDcgYWNjb3JkaW5nIHRvIHNwZWMgKEF2cmkgQWx0bWFu
+KQ0KICAtIFNraXAgY2hlY2tpbmcgYW55IHBvc3NpYmxlIGVycm9ycyBmcm9tIHVmc2hjZF9yZWFk
+X3VuaXRfZGVzY19wYXJhbShoYmEsIGx1biwgVU5JVF9ERVNDX1BBUkFNX1dCX0JVRl9BTExPQ19V
+TklUUykgaW4gdWZzaGNkX3diX3Byb2JlKCkgYW5kIGNoZWNrIHJldHVybmVkIGRfbHVfd2JfYnVm
+X2FsbG9jIChzaGFsbCBiZSB6ZXJvIGlmIGVycm9yIGhhcHBlbnMpIChBdnJpIEFsdG1hbikNCg0K
+djMgLT4gdjQ6DQogIC0gSW50cm9kdWNlICJmaXh1cF9kZXZfcXVpcmtzIiB2b3BzIHRvIGFsbG93
+IHZlbmRvcnMgdG8gZml4IGFuZCBtb2RpZnkgZGV2aWNlIHF1aXJrcywgYW5kIHByb3ZpZGUgYW4g
+aW5pdGlhbCB2ZW5kb3Itc3BlY2lmaWMgZGV2aWNlIHF1aXJrIHRhYmxlIG9uIE1lZGlhVGVrIFVG
+UyBwbGF0Zm9ybXMNCiAgLSBBdm9pZCByZWx5aW5nIG9uIGNvbW1vbiBkZXZpY2UgcXVpcmsgdGFi
+bGUgZm9yIHByZS0zLjEgVUZTIGRldmljZSB3aXRoIG5vbi1zdGFuZGFyZCBXcml0ZUJvb3N0ZXIg
+c3VwcG9ydCAoQ2FuIEd1bykNCiAgLSBGaXggY29tbWVudHMgZm9yIHVmc2hjZF93Yl9wcm9iZSgp
+IChDYW4gR3VvKQ0KICAtIE1ha2UgdWZzaGNkX3diX2dldF9mbGFnX2luZGV4KCkgaW5saW5lIGFu
+ZCBmaXggdWZzaGNkX2lzX3diX2ZsYWdzKCkgKEF2cmkgQWx0bWFuKQ0KDQp2MiAtPiB2MzoNCiAg
+LSBJbnRyb2R1Y2UgYSBkZXZpY2UgcXVpcmsgdG8gc3VwcG9ydCBXcml0ZUJvb3N0ZXIgaW4gcHJl
+LTMuMSBVRlMgZGV2aWNlcyAoQXZyaSBBbHRtYW4pDQogIC0gRml4IFdyaXRlQm9vc3RlciByZWxh
+dGVkIHN5c2ZzIG5vZGVzLiBOb3cgYWxsIFdyaXRlQm9vc3RlciByZWxhdGVkIHN5c2ZzIG5vZGVz
+IGFyZSBzcGVjaWZpY2FsbHkgbWFwcGVkIHRvIHRoZSBMVU4gd2l0aCBXcml0ZUJvb3N0ZXIgZW5h
+YmxlZCBpbiBMVSBEZWRpY2F0ZWQgYnVmZmVyIG1vZGUgKEF2cmkgQWx0bWFuKQ0KDQp2MSAtPiB2
+MjoNCiAgLSBDaGFuZ2UgdGhlIGRlZmluaXRpb24gbmFtZSBvZiBXcml0ZUJvb3N0ZXIgYnVmZmVy
+IG1vZGUgdG8gY29ycmVzcG9uZCB0byBzcGVjaWZpY2F0aW9uIChCZWFuIEh1bykNCiAgLSBBZGQg
+cGF0Y2ggIzU6ICJzY3NpOiB1ZnM6IGNsZWFudXAgV3JpdGVCb29zdGVyIGZlYXR1cmUiDQoNClN0
+YW5sZXkgQ2h1ICg4KToNCiAgc2NzaTogdWZzOiBlbmFibGUgV3JpdGVCb29zdGVyIG9uIHNvbWUg
+cHJlLTMuMSBVRlMgZGV2aWNlcw0KICBzY3NpOiB1ZnM6IGludHJvZHVjZSBmaXh1cF9kZXZfcXVp
+cmtzIHZvcHMNCiAgc2NzaTogdWZzOiBleHBvcnQgdWZzX2ZpeHVwX2RldmljZV9zZXR1cCgpIGZ1
+bmN0aW9uDQogIHNjc2k6IHVmcy1tZWRpYXRlazogYWRkIGZpeHVwX2Rldl9xdWlya3Mgdm9wcw0K
+ICBzY3NpOiB1ZnM6IGFkZCAiaW5kZXgiIGluIHBhcmFtZXRlciBsaXN0IG9mIHVmc2hjZF9xdWVy
+eV9mbGFnKCkNCiAgc2NzaTogdWZzOiBhZGQgTFUgRGVkaWNhdGVkIGJ1ZmZlciBtb2RlIHN1cHBv
+cnQgZm9yIFdyaXRlQm9vc3Rlcg0KICBzY3NpOiB1ZnMtbWVkaWF0ZWs6IGVuYWJsZSBXcml0ZUJv
+b3N0ZXIgY2FwYWJpbGl0eQ0KICBzY3NpOiB1ZnM6IGNsZWFudXAgV3JpdGVCb29zdGVyIGZlYXR1
+cmUNCg0KIGRyaXZlcnMvc2NzaS91ZnMvdWZzLW1lZGlhdGVrLmMgfCAgMjUgKysrKy0NCiBkcml2
+ZXJzL3Njc2kvdWZzL3Vmcy1zeXNmcy5jICAgIHwgIDExICsrLQ0KIGRyaXZlcnMvc2NzaS91ZnMv
+dWZzLmggICAgICAgICAgfCAgMTAgKysNCiBkcml2ZXJzL3Njc2kvdWZzL3Vmc19xdWlya3MuaCAg
+IHwgICA3ICsrDQogZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2QuYyAgICAgICB8IDE2MyArKysrKysr
+KysrKysrKysrKysrKystLS0tLS0tLS0tLQ0KIGRyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmggICAg
+ICAgfCAgMTkgKysrLQ0KIDYgZmlsZXMgY2hhbmdlZCwgMTczIGluc2VydGlvbnMoKyksIDYyIGRl
+bGV0aW9ucygtKQ0KDQotLSANCjIuMTguMA0K
 
