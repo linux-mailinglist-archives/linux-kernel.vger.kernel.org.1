@@ -2,62 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9598F1CAA40
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6FF91CAA62
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:16:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726883AbgEHMGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 08:06:46 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:4303 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726616AbgEHMGq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 08:06:46 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 71793139C267C3A8E53A;
-        Fri,  8 May 2020 20:06:44 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 8 May 2020 20:06:36 +0800
-From:   Chen Zhou <chenzhou10@huawei.com>
-To:     <kishon@ti.com>, <lorenzo.pieralisi@arm.com>, <bhelgaas@google.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <chenzhou10@huawei.com>
-Subject: [PATCH -next] PCI: endpoint: use kmemdup_nul() in pci_epf_create()
-Date:   Fri, 8 May 2020 20:10:29 +0800
-Message-ID: <20200508121029.167018-1-chenzhou10@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1726792AbgEHMP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 08:15:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726627AbgEHMP4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 08:15:56 -0400
+Received: from vultr.net.flygoat.com (vultr.net.flygoat.com [IPv6:2001:19f0:6001:3633:5400:2ff:fe8c:553])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4373C05BD43;
+        Fri,  8 May 2020 05:15:56 -0700 (PDT)
+Received: from flygoat-x1e (unknown [IPv6:240e:e0:f181:b238:7275:17ea:845e:bb31])
+        by vultr.net.flygoat.com (Postfix) with ESMTPSA id 5189A2049E;
+        Fri,  8 May 2020 12:15:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com; s=vultr;
+        t=1588940156; bh=UlB/LTQO9GDoNBWvUvxhRQdqtyIVKakesW0HTOXtYEY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=HmpjRH8UIJe/LGtE/KC4xshp8rXQyfTRgfTtU/ZHHyOip/0iU/qXM8YZ7BfFEZyFZ
+         6TyU+Pv5kC/pms8VXZMRefwS8Q62sa1VRbuJ6GpguxtnMeTQn/q90m7GW7Ch640bnG
+         TZxQie1uUxnJ6m8hjCffzP5geBSOmcHc7nycjdtAxZ4Fd1ejSm/tV+sPY+QMO8zPBL
+         N5NK6i1RD9qrGTZYE+4NxDWvjxtb1f4+yuv6iwXsXcEAbssbkKFOJMHPyPhc5kbAf3
+         RR4bmSjeSHIH+H8110o8qAhgZraRnYjjPjSXeDZF4fPU5h0AN8MIPrLsxmoHZ9r4ja
+         2Lw1Daucvo8bw==
+Date:   Fri, 8 May 2020 20:15:34 +0800
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     <Sergey.Semin@baikalelectronics.ru>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>, <linux-pm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Allison Randal <allison@lohutok.net>,
+        <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 17/20] mips: Add udelay lpj numbers adjustment
+Message-ID: <20200508201534.2a54da17@flygoat-x1e>
+In-Reply-To: <20200506174238.15385-18-Sergey.Semin@baikalelectronics.ru>
+References: <20200306124807.3596F80307C2@mail.baikalelectronics.ru>
+        <20200506174238.15385-1-Sergey.Semin@baikalelectronics.ru>
+        <20200506174238.15385-18-Sergey.Semin@baikalelectronics.ru>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is more efficient to use kmemdup_nul() if the size is known exactly.
+On Wed, 6 May 2020 20:42:35 +0300
+<Sergey.Semin@baikalelectronics.ru> wrote:
 
-The doc in kernel:
-"Note: Use kmemdup_nul() instead if the size is known exactly."
+> From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> 
+> Loops-per-jiffies is a special number which represents a number of
+> noop-loop cycles per CPU-scheduler quantum - jiffies. As you
+> understand aside from CPU-specific implementation it depends on
+> the CPU frequency. So when a platform has the CPU frequency fixed,
+> we have no problem and the current udelay interface will work
+> just fine. But as soon as CPU-freq driver is enabled and the cores
+> frequency changes, we'll end up with distorted udelay's. In order
+> to fix this we have to accordinly adjust the per-CPU udelay_val
+> (the same as the global loops_per_jiffy) number. This can be done
+> in the CPU-freq transition event handler. We subscribe to that event
+> in the MIPS arch time-inititalization method.
+> 
+> Co-developed-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> Signed-off-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: Paul Burton <paulburton@kernel.org>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: linux-pm@vger.kernel.org
+> Cc: devicetree@vger.kernel.org
 
-Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
+Reviewed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+
+That have been absent in MIPS kernel so long!
+
+Thanks.
+> ---
+[...]
 ---
- drivers/pci/endpoint/pci-epf-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/pci/endpoint/pci-epf-core.c b/drivers/pci/endpoint/pci-epf-core.c
-index 244e00f48c5c..f035d2ebcae5 100644
---- a/drivers/pci/endpoint/pci-epf-core.c
-+++ b/drivers/pci/endpoint/pci-epf-core.c
-@@ -252,7 +252,7 @@ struct pci_epf *pci_epf_create(const char *name)
- 		return ERR_PTR(-ENOMEM);
- 
- 	len = strchrnul(name, '.') - name;
--	epf->name = kstrndup(name, len, GFP_KERNEL);
-+	epf->name = kmemdup_nul(name, len, GFP_KERNEL);
- 	if (!epf->name) {
- 		kfree(epf);
- 		return ERR_PTR(-ENOMEM);
--- 
-2.20.1
-
+Jiaxun Yang
