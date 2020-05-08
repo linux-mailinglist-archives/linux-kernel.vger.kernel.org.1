@@ -2,103 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A4261CB634
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 19:44:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F25111CB63F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 19:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726811AbgEHRoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 13:44:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40388 "EHLO mail.kernel.org"
+        id S1727083AbgEHRpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 13:45:36 -0400
+Received: from mga12.intel.com ([192.55.52.136]:19487 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726807AbgEHRoJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 13:44:09 -0400
-Received: from earth.universe (dyndsl-037-138-187-059.ewe-ip-backbone.de [37.138.187.59])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C1FDB208CA;
-        Fri,  8 May 2020 17:44:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588959848;
-        bh=4UYeO0qyEtD4knQ5iIGMA1jOB8Onqgq8lqWUo7oBasw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=O0OG+NGYN1jtt6d0KABKC2oxJnu/6Z0z/iodf/dOBShz9MCQ/DkhN51CBDecEx8/t
-         imK0yeelRD/3vED8wnlEo2bZ1e+ozX9QfmOOf6hydokt9ZQgsOZ9eITIlh4ywemrJH
-         h3ZRg5sa1cvw07kxjEBOX2mtKPv+9NVhz8cvOayI=
-Received: by earth.universe (Postfix, from userid 1000)
-        id 639E23C08C6; Fri,  8 May 2020 19:44:06 +0200 (CEST)
-Date:   Fri, 8 May 2020 19:44:06 +0200
-From:   "sre@kernel.org" <sre@kernel.org>
-To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-Cc:     "mazziesaccount@gmail.com" <mazziesaccount@gmail.com>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "brendanhiggins@google.com" <brendanhiggins@google.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>
-Subject: Re: [PATCH v12 09/11] power: supply: Support ROHM bd99954 charger
-Message-ID: <20200508174406.s7ijef67roaoutkx@earth.universe>
-References: <cover.1588944082.git.matti.vaittinen@fi.rohmeurope.com>
- <6d2f82459c5331fa7d27f41e6645a55cc1e44837.1588944082.git.matti.vaittinen@fi.rohmeurope.com>
- <7a6c4afc9caf5437567c520d5f50ecf540d1c303.camel@fi.rohmeurope.com>
+        id S1726756AbgEHRpg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 13:45:36 -0400
+IronPort-SDR: rlgJAHm+FaLCVsQsSdPCdSDyiTBH08LJxCp6CRNjS1/EVeeYWRtEQ4hoUgTtNrwsdkGniwtHqq
+ 4+n/krnFkwuA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2020 10:45:36 -0700
+IronPort-SDR: wTcfihD0NNV2804+JxRH1laZQ/a3bO5O6W0XP4NxLz4tu9mpvF5YuzQ8klSFvGV3HOjicqzJtV
+ ZotstwOdI+qA==
+X-IronPort-AV: E=Sophos;i="5.73,368,1583222400"; 
+   d="scan'208";a="285548624"
+Received: from spandruv-mobl.amr.corp.intel.com ([10.212.66.17])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2020 10:45:34 -0700
+Message-ID: <dd8033a053be145fd178a89dc362a25a22e17a42.camel@linux.intel.com>
+Subject: Re: [PATCH] HID: intel-ish-hid: Replace PCI_DEV_FLAGS_NO_D3 with
+ pci_save_state
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     rafael.j.wysocki@intel.com, Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Zhang Lixu <lixu.zhang@intel.com>, Even Xu <even.xu@intel.com>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Song Hongyan <hongyan.song@intel.com>,
+        "open list:INTEL INTEGRATED SENSOR HUB DRIVER" 
+        <linux-input@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Fri, 08 May 2020 10:45:32 -0700
+In-Reply-To: <20200505131730.22118-1-kai.heng.feng@canonical.com>
+References: <20200505131730.22118-1-kai.heng.feng@canonical.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="n2n64qp3gm6ara7d"
-Content-Disposition: inline
-In-Reply-To: <7a6c4afc9caf5437567c520d5f50ecf540d1c303.camel@fi.rohmeurope.com>
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 2020-05-05 at 21:17 +0800, Kai-Heng Feng wrote:
+> PCI_DEV_FLAGS_NO_D3 should not be used outside of PCI core.
+> 
+> Instead, we can use pci_save_state() to hint PCI core that the device
+> should stay at D0 during suspend.
 
---n2n64qp3gm6ara7d
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Your changes are doing more than just changing the flag. Can you
+explain more about the other changes?
+Also make sure that you test on both platforms which has regular S3 and
+S0ix (modern standby system).
 
-Hi,
+Thanks,
+Srinivas
 
-On Fri, May 08, 2020 at 03:59:18PM +0000, Vaittinen, Matti wrote:
-> On Fri, 2020-05-08 at 18:50 +0300, Matti Vaittinen wrote:
-> > The ROHM BD99954 is a Battery Management LSI for 1-4 cell Lithium-Ion
-> > secondary battery intended to be used in space-constraint equipment
-> > such
-> > as Low profile Notebook PC, Tablets and other applications. BD99954
-> > provides a Dual-source Battery Charger, two port BC1.2 detection and
-> > a
-> > Battery Monitor.
-> >=20
-> > Support ROHM BD99954 Charger IC.
-> >=20
-> > Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-> > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->=20
-> Huh. I shouldn't do work at the Friday evenings... It seems I did
-> accidentally send this patch twice. Hopefully it does not mess up the
-> series for you - I'd rather not resend this anymore... Please let me
-> know if I should do some corrective actions.
 
-My mail system automatically drops mails with same Message-IDs :)
+> 
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> ---
+>  drivers/hid/intel-ish-hid/ipc/pci-ish.c | 15 ++++++++++-----
+>  1 file changed, 10 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/hid/intel-ish-hid/ipc/pci-ish.c
+> b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
+> index f491d8b4e24c..ab588b9c8d09 100644
+> --- a/drivers/hid/intel-ish-hid/ipc/pci-ish.c
+> +++ b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
+> @@ -106,6 +106,11 @@ static inline bool ish_should_enter_d0i3(struct
+> pci_dev *pdev)
+>  	return !pm_suspend_via_firmware() || pdev->device ==
+> CHV_DEVICE_ID;
+>  }
+>  
+> +static inline bool ish_should_leave_d0i3(struct pci_dev *pdev)
+> +{
+> +	return !pm_resume_via_firmware() || pdev->device ==
+> CHV_DEVICE_ID;
+> +}
+> +
+>  /**
+>   * ish_probe() - PCI driver probe callback
+>   * @pdev:	pci device
+> @@ -215,9 +220,7 @@ static void __maybe_unused
+> ish_resume_handler(struct work_struct *work)
+>  	struct ishtp_device *dev = pci_get_drvdata(pdev);
+>  	int ret;
+>  
+> -	/* Check the NO_D3 flag to distinguish the resume paths */
+> -	if (pdev->dev_flags & PCI_DEV_FLAGS_NO_D3) {
+> -		pdev->dev_flags &= ~PCI_DEV_FLAGS_NO_D3;
+> +	if (ish_should_leave_d0i3(pdev) && !dev->suspend_flag) {
+>  		disable_irq_wake(pdev->irq);
+>  
+>  		ishtp_send_resume(dev);
+> @@ -281,8 +284,10 @@ static int __maybe_unused ish_suspend(struct
+> device *device)
+>  			 */
+>  			ish_disable_dma(dev);
+>  		} else {
+> -			/* Set the NO_D3 flag, the ISH would enter D0i3
+> */
+> -			pdev->dev_flags |= PCI_DEV_FLAGS_NO_D3;
+> +			/* Save state so PCI core will keep the device
+> at D0,
+> +			 * the ISH would enter D0i3
+> +			 */
+> +			pci_save_state(pdev);
+>  
+Did you test on some C
 
--- Sebastian
 
---n2n64qp3gm6ara7d
-Content-Type: application/pgp-signature; name="signature.asc"
+>  			enable_irq_wake(pdev->irq);
+>  		}
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl61mlMACgkQ2O7X88g7
-+pqhvg//WO/Jg8dJ5AymeVFgGWRbClG2POO3n0bcU9wHFcA3nz/oMjprXvB+AKmx
-+gQ8Ilr8a6TOaRSfiQbTmY5M4ylRicrTv5+0yNTT9t4Uw4W2xror4pmlhhxTyc9F
-MK/2RBQkLoGo8uOs9eLp2DMA8z6YVMdhT9Q1y5Me5jQloOHtA8Hn7pcxgVwGj2uT
-SEmwKpBP0uoMhhxVer8hoTG8Xv27elpx0mC/vmxfOSRbaWIs60xrk1f4X8N4P+nn
-7O2p+PT4W7LMOcEAcnSFD/SJe2Adtb46V6F646DhZFCG2w6+sllBt7yN1uVD9TtU
-z0D8Y846dBtAcJ+XczzFwInssYrTr98QxEXBFRtW36IcmoSdjaANs3KMfyqupG90
-wijpueDSN7TlQ4G4aO0z9f24p5fv08TkzrY1EyHG3w9M4o4ncQV0OjWN50TpRrRY
-hNSa4e0/6kUCM2ium62IYqd7MQmeBmkFJnh0Y3XEB6kSlk/YVyRdsms9QupE3Pdn
-MOpEQJvwhFnFuUzUPiRR/IpOb1vqLUN31ankZNDza5AeK/g78iMQ9jEoVxNzAQIK
-F+0bm0dTrab6kU/8DA0X5RwPnjF730SsK2puRSgeP4oy0bk8k2Egnsq7m37ZHQY/
-jr08qOAdb1XgtpeCPKok5HpFHKjoWbK3vv7gtXP5hjTOzQPkVIA=
-=qAKx
------END PGP SIGNATURE-----
-
---n2n64qp3gm6ara7d--
