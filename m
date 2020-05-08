@@ -2,154 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 899771CBA28
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 23:51:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC0E61CBA2D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 23:52:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728188AbgEHVvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 17:51:36 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:34955 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728065AbgEHVvf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 17:51:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588974693;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7mj04HZ7mvvO2/7hjzPs2ixKAeuvpGcyRfUqAELX/Bo=;
-        b=MyGvCQjfOVJyL5BAib8d872h8OJ3yQzFIYPIh5VBYQLnYJAqqaKtvxTs9wrlzxfWozjffW
-        cER6l2e4MrFkS5NMzszVQg5ZQrLYYNaLjYdRT3x6hNNVPpHF+4ikOMCaU6K1Ro5O4aZHdz
-        Q06H20Xej4BUBxg6jJdGUUuq9W3RP/c=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-218--enK5OAGNmq5-Li6e_6R8Q-1; Fri, 08 May 2020 17:51:31 -0400
-X-MC-Unique: -enK5OAGNmq5-Li6e_6R8Q-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 05EDD1895A39;
-        Fri,  8 May 2020 21:51:30 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-118-225.rdu2.redhat.com [10.10.118.225])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 26F1D1E6;
-        Fri,  8 May 2020 21:51:27 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH 4/4] NFSv4: Fix fscache cookie aux_data to ensure change_attr
- is included
-From:   David Howells <dhowells@redhat.com>
-To:     torvalds@linux-foundation.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>
-Cc:     Dave Wysochanski <dwysocha@redhat.com>, dhowells@redhat.com,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        linux-nfs@vger.kernel.org, linux-cachefs@redhat.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Fri, 08 May 2020 22:51:27 +0100
-Message-ID: <158897468722.1116213.9964942101141957205.stgit@warthog.procyon.org.uk>
-In-Reply-To: <158897464246.1116213.8184341356151224705.stgit@warthog.procyon.org.uk>
-References: <158897464246.1116213.8184341356151224705.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.21
+        id S1728219AbgEHVwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 17:52:01 -0400
+Received: from mga01.intel.com ([192.55.52.88]:19352 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727774AbgEHVwB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 17:52:01 -0400
+IronPort-SDR: wxipjFw2QxfqKPbKeCtSQol/54zE1ziNTkAPwjfaRssbD5Dvd3W0y8Dk6VkW7fWmHjuMVuABL8
+ lKz3IW3frkqA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2020 14:52:00 -0700
+IronPort-SDR: n2fIN6eh3pLT3EC5YV8RQn2oC1mPC8k8uBoLfIxfyq0yjLL7TpkambL8/yD6CmLd1UhJuMJc28
+ Wp3w9w92/IJg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,369,1583222400"; 
+   d="scan'208";a="252071083"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 08 May 2020 14:51:59 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jXAuV-000GAv-60; Sat, 09 May 2020 05:51:59 +0800
+Date:   Sat, 09 May 2020 05:51:33 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:locking/kcsan] BUILD SUCCESS
+ 97a9474aeb789183a1d0712e66a4283860279ac9
+Message-ID: <5eb5d465.8Jaq3t5RVuXh4YwG%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dave Wysochanski <dwysocha@redhat.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  locking/kcsan
+branch HEAD: 97a9474aeb789183a1d0712e66a4283860279ac9  Merge branch 'kcsan-for-tip' of git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu into locking/kcsan
 
-Commit 402cb8dda949 ("fscache: Attach the index key and aux data to
-the cookie") added the aux_data and aux_data_len to parameters to
-fscache_acquire_cookie(), and updated the callers in the NFS client.
-In the process it modified the aux_data to include the change_attr,
-but missed adding change_attr to a couple places where aux_data was
-used.  Specifically, when opening a file and the change_attr is not
-added, the following attempt to lookup an object will fail inside
-cachefiles_check_object_xattr() = -116 due to
-nfs_fscache_inode_check_aux() failing memcmp on auxdata and returning
-FSCACHE_CHECKAUX_OBSOLETE.
+elapsed time: 487m
 
-Fix this by adding nfs_fscache_update_auxdata() to set the auxdata
-from all relevant fields in the inode, including the change_attr.
+configs tested: 101
+configs skipped: 1
 
-Fixes: 402cb8dda949 ("fscache: Attach the index key and aux data to the cookie")
-Signed-off-by: Dave Wysochanski <dwysocha@redhat.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+sparc                            allyesconfig
+m68k                             allyesconfig
+parisc                              defconfig
+parisc                            allnoconfig
+s390                                defconfig
+c6x                              allyesconfig
+alpha                            allyesconfig
+nds32                               defconfig
+powerpc                             defconfig
+sparc64                             defconfig
+alpha                               defconfig
+arc                              allyesconfig
+ia64                                defconfig
+riscv                             allnoconfig
+microblaze                        allnoconfig
+c6x                               allnoconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+openrisc                         allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+microblaze                       allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20200508
+i386                 randconfig-a004-20200508
+i386                 randconfig-a003-20200508
+i386                 randconfig-a002-20200508
+i386                 randconfig-a001-20200508
+i386                 randconfig-a006-20200508
+x86_64               randconfig-a014-20200508
+x86_64               randconfig-a012-20200508
+x86_64               randconfig-a016-20200508
+i386                 randconfig-a012-20200508
+i386                 randconfig-a014-20200508
+i386                 randconfig-a016-20200508
+i386                 randconfig-a011-20200508
+i386                 randconfig-a013-20200508
+i386                 randconfig-a015-20200508
+i386                 randconfig-a012-20200509
+i386                 randconfig-a014-20200509
+i386                 randconfig-a016-20200509
+i386                 randconfig-a011-20200509
+i386                 randconfig-a013-20200509
+i386                 randconfig-a015-20200509
+riscv                            allyesconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+sparc                               defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
+
 ---
-
- fs/nfs/fscache.c |   34 ++++++++++++++++------------------
- 1 file changed, 16 insertions(+), 18 deletions(-)
-
-diff --git a/fs/nfs/fscache.c b/fs/nfs/fscache.c
-index f51718415606..a60df88efc40 100644
---- a/fs/nfs/fscache.c
-+++ b/fs/nfs/fscache.c
-@@ -225,6 +225,19 @@ void nfs_fscache_release_super_cookie(struct super_block *sb)
- 	}
- }
- 
-+static void nfs_fscache_update_auxdata(struct nfs_fscache_inode_auxdata *auxdata,
-+				  struct nfs_inode *nfsi)
-+{
-+	memset(auxdata, 0, sizeof(*auxdata));
-+	auxdata->mtime_sec  = nfsi->vfs_inode.i_mtime.tv_sec;
-+	auxdata->mtime_nsec = nfsi->vfs_inode.i_mtime.tv_nsec;
-+	auxdata->ctime_sec  = nfsi->vfs_inode.i_ctime.tv_sec;
-+	auxdata->ctime_nsec = nfsi->vfs_inode.i_ctime.tv_nsec;
-+
-+	if (NFS_SERVER(&nfsi->vfs_inode)->nfs_client->rpc_ops->version == 4)
-+		auxdata->change_attr = inode_peek_iversion_raw(&nfsi->vfs_inode);
-+}
-+
- /*
-  * Initialise the per-inode cache cookie pointer for an NFS inode.
-  */
-@@ -238,14 +251,7 @@ void nfs_fscache_init_inode(struct inode *inode)
- 	if (!(nfss->fscache && S_ISREG(inode->i_mode)))
- 		return;
- 
--	memset(&auxdata, 0, sizeof(auxdata));
--	auxdata.mtime_sec  = nfsi->vfs_inode.i_mtime.tv_sec;
--	auxdata.mtime_nsec = nfsi->vfs_inode.i_mtime.tv_nsec;
--	auxdata.ctime_sec  = nfsi->vfs_inode.i_ctime.tv_sec;
--	auxdata.ctime_nsec = nfsi->vfs_inode.i_ctime.tv_nsec;
--
--	if (NFS_SERVER(&nfsi->vfs_inode)->nfs_client->rpc_ops->version == 4)
--		auxdata.change_attr = inode_peek_iversion_raw(&nfsi->vfs_inode);
-+	nfs_fscache_update_auxdata(&auxdata, nfsi);
- 
- 	nfsi->fscache = fscache_acquire_cookie(NFS_SB(inode->i_sb)->fscache,
- 					       &nfs_fscache_inode_object_def,
-@@ -265,11 +271,7 @@ void nfs_fscache_clear_inode(struct inode *inode)
- 
- 	dfprintk(FSCACHE, "NFS: clear cookie (0x%p/0x%p)\n", nfsi, cookie);
- 
--	memset(&auxdata, 0, sizeof(auxdata));
--	auxdata.mtime_sec  = nfsi->vfs_inode.i_mtime.tv_sec;
--	auxdata.mtime_nsec = nfsi->vfs_inode.i_mtime.tv_nsec;
--	auxdata.ctime_sec  = nfsi->vfs_inode.i_ctime.tv_sec;
--	auxdata.ctime_nsec = nfsi->vfs_inode.i_ctime.tv_nsec;
-+	nfs_fscache_update_auxdata(&auxdata, nfsi);
- 	fscache_relinquish_cookie(cookie, &auxdata, false);
- 	nfsi->fscache = NULL;
- }
-@@ -309,11 +311,7 @@ void nfs_fscache_open_file(struct inode *inode, struct file *filp)
- 	if (!fscache_cookie_valid(cookie))
- 		return;
- 
--	memset(&auxdata, 0, sizeof(auxdata));
--	auxdata.mtime_sec  = nfsi->vfs_inode.i_mtime.tv_sec;
--	auxdata.mtime_nsec = nfsi->vfs_inode.i_mtime.tv_nsec;
--	auxdata.ctime_sec  = nfsi->vfs_inode.i_ctime.tv_sec;
--	auxdata.ctime_nsec = nfsi->vfs_inode.i_ctime.tv_nsec;
-+	nfs_fscache_update_auxdata(&auxdata, nfsi);
- 
- 	if (inode_is_open_for_write(inode)) {
- 		dfprintk(FSCACHE, "NFS: nfsi 0x%p disabling cache\n", nfsi);
-
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
