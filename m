@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EF5B1CAD73
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:02:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C0F81CAC66
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:55:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730060AbgEHNCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:02:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60098 "EHLO mail.kernel.org"
+        id S1730036AbgEHMxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 08:53:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34316 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729418AbgEHMvN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 08:51:13 -0400
+        id S1730021AbgEHMw5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 08:52:57 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E344E24969;
-        Fri,  8 May 2020 12:51:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9DCB5218AC;
+        Fri,  8 May 2020 12:52:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588942272;
-        bh=MVj9UZhM0DjTLdw9ouaGd2g02wNy/NokxdpMwsfgbjY=;
+        s=default; t=1588942377;
+        bh=MPyBt+js+ZFj7/UkvTMgEb63O/0/GYa3hNOG0libZHE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xEfC66F+62BTOi1LSOOxxDas6r25RxISPnW7KYTnitkqFxCzR2Fq1avSHcvESxVng
-         SW9NRvnq2znAIGpntsdGZOdtNrpq058XR/b7NHC24JnvOLU7adcAEYXtLhBc9f2XAf
-         5PaWRjMkNqkvauB42fT1Iw9wYAeoSLSt6lTSoSEc=
+        b=1zPILyYtYFcEtk53DtyKPhvf8i6DNwDg+UmsC2ci81XWYW/QUhrA3G5DsUEaxecVB
+         9fNauaawvh+Tjvg/7iV8LM+vP4PBzS7bMsyrzKzM9UFQn0Xkts1seqhtizW4SxqTEQ
+         L9GdtH3Rx8MCTRdirjaZGs7KQ3tNKxmlpWAFxbvc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Julien Beraud <julien.beraud@orolia.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Matthias Blankertz <matthias.blankertz@cetitec.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 12/32] net: stmmac: fix enabling socfpgas ptp_ref_clock
-Date:   Fri,  8 May 2020 14:35:25 +0200
-Message-Id: <20200508123036.422506887@linuxfoundation.org>
+Subject: [PATCH 5.4 20/50] ASoC: rsnd: Dont treat master SSI in multi SSI setup as parent
+Date:   Fri,  8 May 2020 14:35:26 +0200
+Message-Id: <20200508123046.204397661@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200508123034.886699170@linuxfoundation.org>
-References: <20200508123034.886699170@linuxfoundation.org>
+In-Reply-To: <20200508123043.085296641@linuxfoundation.org>
+References: <20200508123043.085296641@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,55 +46,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julien Beraud <julien.beraud@orolia.com>
+From: Matthias Blankertz <matthias.blankertz@cetitec.com>
 
-[ Upstream commit 15ce30609d1e88d42fb1cd948f453e6d5f188249 ]
+[ Upstream commit 0c258657ddfe81b4fc0183378d800c97ba0b7cdd ]
 
-There are 2 registers to write to enable a ptp ref clock coming from the
-fpga.
-One that enables the usage of the clock from the fpga for emac0 and emac1
-as a ptp ref clock, and the other to allow signals from the fpga to reach
-emac0 and emac1.
-Currently, if the dwmac-socfpga has phymode set to PHY_INTERFACE_MODE_MII,
-PHY_INTERFACE_MODE_GMII, or PHY_INTERFACE_MODE_SGMII, both registers will
-be written and the ptp ref clock will be set as coming from the fpga.
-Separate the 2 register writes to only enable signals from the fpga to
-reach emac0 or emac1 when ptp ref clock is not coming from the fpga.
+The master SSI of a multi-SSI setup was attached both to the
+RSND_MOD_SSI slot and the RSND_MOD_SSIP slot of the rsnd_dai_stream.
+This is not correct wrt. the meaning of being "parent" in the rest of
+the SSI code, where it seems to indicate an SSI that provides clock and
+word sync but is not transmitting/receiving audio data.
 
-Signed-off-by: Julien Beraud <julien.beraud@orolia.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Not treating the multi-SSI master as parent allows removal of various
+special cases to the rsnd_ssi_is_parent conditions introduced in commit
+a09fb3f28a60 ("ASoC: rsnd: Fix parent SSI start/stop in multi-SSI mode").
+It also fixes the issue that operations performed via rsnd_dai_call()
+were performed twice for the master SSI. This caused some "status check
+failed" spam when stopping a multi-SSI stream as the driver attempted to
+stop the master SSI twice.
+
+Signed-off-by: Matthias Blankertz <matthias.blankertz@cetitec.com>
+Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/20200417153017.1744454-2-matthias.blankertz@cetitec.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ sound/soc/sh/rcar/ssi.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c
-index 5b3b06a0a3bf5..33407df6bea69 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c
-@@ -274,16 +274,19 @@ static int socfpga_dwmac_set_phy_mode(struct socfpga_dwmac *dwmac)
- 	    phymode == PHY_INTERFACE_MODE_MII ||
- 	    phymode == PHY_INTERFACE_MODE_GMII ||
- 	    phymode == PHY_INTERFACE_MODE_SGMII) {
--		ctrl |= SYSMGR_EMACGRP_CTRL_PTP_REF_CLK_MASK << (reg_shift / 2);
- 		regmap_read(sys_mgr_base_addr, SYSMGR_FPGAGRP_MODULE_REG,
- 			    &module);
- 		module |= (SYSMGR_FPGAGRP_MODULE_EMAC << (reg_shift / 2));
- 		regmap_write(sys_mgr_base_addr, SYSMGR_FPGAGRP_MODULE_REG,
- 			     module);
--	} else {
--		ctrl &= ~(SYSMGR_EMACGRP_CTRL_PTP_REF_CLK_MASK << (reg_shift / 2));
- 	}
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index d51fb3a394486..9900a4f6f4e53 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -407,7 +407,7 @@ static void rsnd_ssi_config_init(struct rsnd_mod *mod,
+ 	 * We shouldn't exchange SWSP after running.
+ 	 * This means, parent needs to care it.
+ 	 */
+-	if (rsnd_ssi_is_parent(mod, io) && !rsnd_ssi_multi_slaves(io))
++	if (rsnd_ssi_is_parent(mod, io))
+ 		goto init_end;
  
-+	if (dwmac->f2h_ptp_ref_clk)
-+		ctrl |= SYSMGR_EMACGRP_CTRL_PTP_REF_CLK_MASK << (reg_shift / 2);
-+	else
-+		ctrl &= ~(SYSMGR_EMACGRP_CTRL_PTP_REF_CLK_MASK <<
-+			  (reg_shift / 2));
+ 	if (rsnd_io_is_play(io))
+@@ -559,7 +559,7 @@ static int rsnd_ssi_start(struct rsnd_mod *mod,
+ 	 * EN is for data output.
+ 	 * SSI parent EN is not needed.
+ 	 */
+-	if (rsnd_ssi_is_parent(mod, io) && !rsnd_ssi_multi_slaves(io))
++	if (rsnd_ssi_is_parent(mod, io))
+ 		return 0;
+ 
+ 	ssi->cr_en = EN;
+@@ -582,7 +582,7 @@ static int rsnd_ssi_stop(struct rsnd_mod *mod,
+ 	if (!rsnd_ssi_is_run_mods(mod, io))
+ 		return 0;
+ 
+-	if (rsnd_ssi_is_parent(mod, io) && !rsnd_ssi_multi_slaves(io))
++	if (rsnd_ssi_is_parent(mod, io))
+ 		return 0;
+ 
+ 	cr  =	ssi->cr_own	|
+@@ -620,7 +620,7 @@ static int rsnd_ssi_irq(struct rsnd_mod *mod,
+ 	if (rsnd_is_gen1(priv))
+ 		return 0;
+ 
+-	if (rsnd_ssi_is_parent(mod, io) && !rsnd_ssi_multi_slaves(io))
++	if (rsnd_ssi_is_parent(mod, io))
+ 		return 0;
+ 
+ 	if (!rsnd_ssi_is_run_mods(mod, io))
+@@ -737,6 +737,9 @@ static void rsnd_ssi_parent_attach(struct rsnd_mod *mod,
+ 	if (!rsnd_rdai_is_clk_master(rdai))
+ 		return;
+ 
++	if (rsnd_ssi_is_multi_slave(mod, io))
++		return;
 +
- 	regmap_write(sys_mgr_base_addr, reg_offset, ctrl);
- 
- 	/* Deassert reset for the phy configuration to be sampled by
+ 	switch (rsnd_mod_id(mod)) {
+ 	case 1:
+ 	case 2:
 -- 
 2.20.1
 
