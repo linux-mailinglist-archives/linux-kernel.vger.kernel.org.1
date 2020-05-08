@@ -2,104 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB0E31CB288
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 17:07:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1B371CB28D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 17:09:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726948AbgEHPHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 11:07:55 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:47948 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726913AbgEHPHy (ORCPT
+        id S1728005AbgEHPJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 11:09:32 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:54513 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726767AbgEHPJc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 11:07:54 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 048F7oj4126568;
-        Fri, 8 May 2020 15:07:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=ygriZszAK7uOqyWhz842ZZT0KgYajtrTrd4tzNFIj/0=;
- b=Gwz1VLQALtvp35MtFeGpQufTqn1dft1N2tri/H7KDUgJpn+hO0jTDG0JBpAEIfEScZRR
- xsuqcFHBfV8Z4F6aJELnyplEfgY6BTM/I58RHGPiI4PBM6vd4+UmDv1/sGZzjzPYT2Mu
- JzO5W4gqfsJIyPbY52IWIWDa01L99Uwr0ph3IrvO5i1gEQPHnV0d60hrce3ZmOc7rkDS
- O5zKK7NxAQfItqJv6VJ43Avm/kK95h8rBNUp5FEbqUKGfs0EhSVF4unu/VWhynfSwkD0
- jwt5gdNBuNqQ3ToQsPqolj3qYOMlSTzWaOv89rQWjQE1l/5W2FueCWKUBYWe8GP3sBpR hQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 30vtexug38-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 08 May 2020 15:07:50 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 048F6wb0129074;
-        Fri, 8 May 2020 15:07:48 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 30vtdnrwck-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 08 May 2020 15:07:47 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 048F7lxK016233;
-        Fri, 8 May 2020 15:07:47 GMT
-Received: from mwanda (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 08 May 2020 08:07:46 -0700
-Date:   Fri, 8 May 2020 18:07:40 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Tejun Heo <tj@kernel.org>, Sean Fu <fxinrong@gmail.com>
-Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] workqueue: Fix an use after free in init_rescuer()
-Message-ID: <20200508150740.GA415175@mwanda>
+        Fri, 8 May 2020 11:09:32 -0400
+Received: from mail-lf1-f51.google.com ([209.85.167.51]) by
+ mrelayeu.kundenserver.de (mreue012 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MjgfT-1irf7o0M5T-00lFas for <linux-kernel@vger.kernel.org>; Fri, 08 May
+ 2020 17:09:31 +0200
+Received: by mail-lf1-f51.google.com with SMTP id t11so1689249lfe.4
+        for <linux-kernel@vger.kernel.org>; Fri, 08 May 2020 08:09:31 -0700 (PDT)
+X-Gm-Message-State: AOAM530Pn9BR8qzcjL+GFfP5nMDesNa74cvbtC3j94y3mk/dGx54LD+z
+        MSklkJbGyKE8ctKg5X6OCzu+t5PwaA1YvX0SUa4=
+X-Google-Smtp-Source: ABdhPJxQTJvBxDHCeBcrIroxz7DIxKTCpk9OLakfO/rC7s9A/0Q8QNVbgj27+JUd8Lwb0GZl3fLDJInQ7S1gIX7Ciss=
+X-Received: by 2002:a19:8293:: with SMTP id e141mr2254449lfd.173.1588950570609;
+ Fri, 08 May 2020 08:09:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9614 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 spamscore=0
- mlxscore=0 mlxlogscore=999 bulkscore=0 phishscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2005080135
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9614 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 adultscore=0
- spamscore=0 suspectscore=0 bulkscore=0 priorityscore=1501 malwarescore=0
- phishscore=0 impostorscore=0 mlxscore=0 mlxlogscore=999 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2005080135
+References: <20200507224530.2993316-1-Jason@zx2c4.com> <20200508090202.7s3kcqpvpxx32syu@butterfly.localdomain>
+ <CAHmME9pTZTa9AEUL0-ojTr7P-F7NYe8OR9=-GBPaQNpnSDrEiw@mail.gmail.com>
+ <20200508113336.2vdfdnc6tqyx4pu6@butterfly.localdomain> <CAK8P3a0dJ0vNnktcoWFiPKB4NJbeyf7nvwWf0YLyeUyxT5pvQg@mail.gmail.com>
+ <c774d7371a9599526090e63e85f61e69bddf4795.camel@perches.com>
+In-Reply-To: <c774d7371a9599526090e63e85f61e69bddf4795.camel@perches.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 8 May 2020 17:09:14 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2KU_4FVCYt73mmpodV3Q7ipS579BDMnai-m9HgaiFYiA@mail.gmail.com>
+Message-ID: <CAK8P3a2KU_4FVCYt73mmpodV3Q7ipS579BDMnai-m9HgaiFYiA@mail.gmail.com>
+Subject: Re: [PATCH] Kconfig: default to CC_OPTIMIZE_FOR_PERFORMANCE_O3 for
+ gcc >= 10
+To:     Joe Perches <joe@perches.com>
+Cc:     Oleksandr Natalenko <oleksandr@redhat.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:jnlZ2mGuY9zBu6M0Wkn2F+YDgiUNrmvpkl4ziRh1qf4DPugCa88
+ Sx5cINnzOYTgrwCWtPGrBFi/DY6LbD3qr8HOCEcfFP2BOC2ILLM5DgwpVnInj3nyTHdYQTk
+ KQOCYCv1QgS0gSUbh/f56SnJ86d2yxA7HlKMdjMRGZFrnEFriQRX4g/WFcyd83uF+oNKjr0
+ fldGTySofrAtEE24+/zlA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ghYUkd9M7S0=:EUM+U6Y69xk/OWRvE4Gn2g
+ zXK2/chy4z0ZCxK6CNXuTCI6C2pquo/wUJB6fdfpli/WFmvSWH4z7vFlKxGI0eiqzxym/sJ2y
+ +1MrwmN/db3TgDv0Eu1VtXIhDo5PRfMhBoUoF6gclX2oovHJdXMG3zeOej/srAZCQcT17LSug
+ pf2f93NZsIG2KhJHi4HtpyjdzZd7PgOaHw1JVlvtrXouLjmu2YwaUfP6qmFq1LFmiyYB/MusG
+ +UU+UNr4ax/JpGVhtJgaBXjc6zwkIT9nQSWKn78jPIETOgZbLj1mLO3ycf5cnjhAu8AFC6KjQ
+ xbF0GB5b6Tjsk7Kle0twWpqrq4b2hJ4nMJ/YIP6MrS7fiL7Ph7YPjm4Yi7DOZpcWu/NfnMnxD
+ ng2iFMU/64PAsuWTI05NdeRrJekXgxaQ6lpFuUMguPb+vdb/Jj2omk58LiN3HK0TvjIOzbmuw
+ z4PIhwTYtYHea9mnlOck+McvZ3MNnXPIP3rtwtdjckpgcuq9Ha/IIf5zs3CrdSM4uHgLJjtdG
+ 6x6xdLNZv2BpE0jlHc8p+JCGjgI1ur6DjDhHW9xC7l8KQ2lBXAzZ2ZgC75L4iKlZuUQ+ghyau
+ Gw7vw0s9faAQaUy4Nmcs4m9+8XVbG454QRzN2JDZ2rgdd+8BxQ65OcRerXbJlWJQS50HsiFAL
+ K4KCdUK+0vvYtv5nq/GBz9Ve2VP1TjRp68BEYPjrXvok0K61x4LKqOrfw3TGt7HHVKIo3X5Cn
+ wJACiGfJKqqT6sl/MofbtrFLo4RlCliR4OmBAJBM50Q741loJ54M8Eq7ZpAkWuYoYdp7YW+Yt
+ uAdWz5dfAqskXeUr2vPH5rkcQ4BOgexLRlNuAHO9xs3/m+h07g=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We need to preserve error code before freeing "rescuer".
+On Fri, May 8, 2020 at 5:06 PM Joe Perches <joe@perches.com> wrote:
+>
+> On Fri, 2020-05-08 at 13:49 +0200, Arnd Bergmann wrote:
+> > Personally, I'm more interested in improving compile speed of the kernel
+>
+> Any opinion on precompiled header support?
 
-Fixes: f187b6974f6df ("workqueue: Use IS_ERR and PTR_ERR instead of PTR_ERR_OR_ZERO.")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
-Another option would be to just revert the original commit.
+I have not tried it. IIRC precompiled headers usually work best for projects
+that have a large header with all the global declarations that gets included
+everywhere, while Linux has always tried (with different amounts of success)
+to minimize the number of headers that get included per file.
 
- kernel/workqueue.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index ddf0537dce140..10ed8d761e0b7 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -4197,6 +4197,7 @@ static int wq_clamp_max_active(int max_active, unsigned int flags,
- static int init_rescuer(struct workqueue_struct *wq)
- {
- 	struct worker *rescuer;
-+	int ret;
- 
- 	if (!(wq->flags & WQ_MEM_RECLAIM))
- 		return 0;
-@@ -4208,8 +4209,9 @@ static int init_rescuer(struct workqueue_struct *wq)
- 	rescuer->rescue_wq = wq;
- 	rescuer->task = kthread_create(rescuer_thread, rescuer, "%s", wq->name);
- 	if (IS_ERR(rescuer->task)) {
-+		ret = PTR_ERR(rescuer->task);
- 		kfree(rescuer);
--		return PTR_ERR(rescuer->task);
-+		return ret;
- 	}
- 
- 	wq->rescuer = rescuer;
--- 
-2.26.2
-
+       Arnd
