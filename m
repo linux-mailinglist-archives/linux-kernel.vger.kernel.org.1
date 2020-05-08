@@ -2,116 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E93611CAFE9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:24:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE3351CAB71
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:43:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730577AbgEHNVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:21:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58966 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728662AbgEHMkN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 08:40:13 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE779C05BD43
-        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 05:40:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Af8YZ1WR9/bYbM4de2zvJhVmmyLFQbJLVbWrHU3CFbk=; b=PizcOla2stsgKNJdoQRZ34f9Z6
-        OVuBslDAktey2Swlehkpx5IzXJ/IGIQXGWFrkvC/ANGqKsXgSVZkzwWMPfmAaU8RaBxb6ADCR7LAY
-        2f+Y+G3IAXyoeGyGE3lC+jNO/Fys8OPrmTrVhN+kU4MyIGp/Xo0IBNIGbdNhr76slNtDC+G4o5HfT
-        Z68mHB6K7UhLiwPqIEHKCfNJYlyQk1iaNv0cYlhvsDJ4b4aEj+Zh0jWmmb8OKC6mc6G/fbnN61KlD
-        Y3xOzoih+1BmtJlCiUpqIWKw0RlimtLstrzXoPQyHz0HRJStlE75qPR8tB5k/4Vd/XnVAgV9xL/aw
-        6cY1m0lA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jX2IQ-0005x3-RB; Fri, 08 May 2020 12:40:07 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id F2AAC307986;
-        Fri,  8 May 2020 14:40:04 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D936E2B843CC9; Fri,  8 May 2020 14:40:04 +0200 (CEST)
-Date:   Fri, 8 May 2020 14:40:04 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, luto@kernel.org
-Subject: Re: [RFC][PATCH 3/3] x86/entry, ORC: Teach objtool/unwind_orc about
- stack irq swizzles
-Message-ID: <20200508124004.GH5281@hirez.programming.kicks-ass.net>
-References: <20200507161020.783541450@infradead.org>
- <20200507161828.801097834@infradead.org>
- <20200507173809.GK5298@hirez.programming.kicks-ass.net>
- <20200507183048.rlf2bgj4cf2g4jy6@treble>
- <878si3e8v2.fsf@nanos.tec.linutronix.de>
- <20200508101209.GY5298@hirez.programming.kicks-ass.net>
- <87sggak3yf.fsf@nanos.tec.linutronix.de>
+        id S1729099AbgEHMnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 08:43:39 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2166 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727105AbgEHMnb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 08:43:31 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.108])
+        by Forcepoint Email with ESMTP id 6032C5A5AE26CA40D204;
+        Fri,  8 May 2020 13:43:30 +0100 (IST)
+Received: from localhost (10.47.95.97) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 8 May 2020
+ 13:43:29 +0100
+Date:   Fri, 8 May 2020 13:43:07 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+CC:     Jonathan Cameron <jic23@kernel.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        <linux-iio@vger.kernel.org>, <devel@driverdev.osuosl.org>,
+        <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] staging: iio: ad5933: rework probe to use devm_
+ function variants
+Message-ID: <20200508134307.0000233a@Huawei.com>
+In-Reply-To: <20200507095016.GC9365@kadam>
+References: <20200428093128.60747-1-alexandru.ardelean@analog.com>
+        <20200502192542.63cc25a2@archlinux>
+        <20200507095016.GC9365@kadam>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87sggak3yf.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.95.97]
+X-ClientProxiedBy: lhreml743-chm.china.huawei.com (10.201.108.193) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 08, 2020 at 02:26:32PM +0200, Thomas Gleixner wrote:
-> Peter Zijlstra <peterz@infradead.org> writes:
-> 
-> > On Thu, May 07, 2020 at 11:24:49PM +0200, Thomas Gleixner wrote:
-> >> But over our IRC conversation I came up with a 3rd variant:
-> >> 
-> >>   For most of the vectors the indirect call overhead is just noise, so
-> >>   we can run them through the ASM switcher, but for the resched IPI
-> >>   we can just use a separate direct call stub in ASM.
-> >
-> > Are we sure the rat-poison crap is noise for all the other system
-> > vectors? I suppose it is for most since they'll do indirect calls
-> > themselves anyway, right?
-> 
-> We have different categories:
-> 
->  1) Uninteresting
-> 
->     SPURIOUS_APIC_VECTOR, ERROR_APIC_VECTOR, THERMAL_APIC_VECTOR,
->     THRESHOLD_APIC_VECTOR, REBOOT_VECTOR, DEFERRED_ERROR_VECTOR
-> 
->  2) Indirect call poisoned
-> 
->     LOCAL_TIMER_VECTOR
->     X86_PLATFORM_IPI_VECTOR
->     IRQ_WORK_VECTOR
->     HYPERV_STIMER0_VECTOR
->     HYPERVISOR_CALLBACK_VECTOR
->     POSTED_INTERRUPT_WAKEUP_VECTOR.
->     CALL_FUNCTION_VECTOR
->     CALL_FUNCTION_SINGLE_VECTOR
->     
->  3) Quick
-> 
->     RESCHEDULE_VECTOR
-> 
->     POSTED_INTR_VECTOR
->     POSTED_INTR_NESTED_VECTOR
-> 
->         These two postit ones are weird because they are both empty and
->         just increment different irq counts.
-> 
->     HYPERV_REENLIGHTENMENT_VECTOR
-> 
->         schedules delayed work, i,e. arms a timer which should be
->         straight forward, but does it matter?
-> 
->  4) Others
-> 
->     UV_BAU_MESSAGE - The TLB flushes are probably more expensive than
->                      ratpoutine
-> 
-> Hmm?
+On Thu, 7 May 2020 12:50:16 +0300
+Dan Carpenter <dan.carpenter@oracle.com> wrote:
 
-As we just agreed on IRC, 3) can run without changing stack, and then
-the rest can use the indirect thing.
+> On Sat, May 02, 2020 at 07:25:42PM +0100, Jonathan Cameron wrote:
+> > On Tue, 28 Apr 2020 12:31:28 +0300
+> > Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:  
+> > > +static void ad5933_cleanup(void *data)
+> > > +{
+> > > +	struct ad5933_state *st = data;
+> > > +
+> > > +	clk_disable_unprepare(st->mclk);
+> > > +	regulator_disable(st->reg);  
+> > 
+> > Please do two separate callbacks so that these can be handled
+> > in the correct places.  I.e. you do something then immediately
+> > register the handler to undo it.
+> > 
+> > Currently you can end up disabling a clock you haven't enabled
+> > (which I am fairly sure will give you an error message).  
+> 
+> Yeah.  It does.
+> 
+> It feels like we should just make a devm_ version of regulator_enable().
+> Or potentially this is more complicated than it seems, but in that case
+> probably adding devm_add_action_or_reset() is more complicated than it
+> seems as well.
+> 
+> regards,
+> dan carpenter
+
+It has been a while since that was last proposed.   At the time the
+counter argument was that you should almost always be doing some form
+of PM and hence the regulator shouldn't have the same lifetime as the
+driver.   Reality is that a lot of simple drivers either don't do
+PM or have elected to not turn the regulator off so as to retain state
+etc.
+
+Mark what do you think?
+
+Jonathan
+
