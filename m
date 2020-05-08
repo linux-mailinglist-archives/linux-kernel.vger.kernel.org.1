@@ -2,103 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46F321CB26A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 17:00:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DFC11CB28B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 17:09:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727956AbgEHPAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 11:00:49 -0400
-Received: from mail-eopbgr20071.outbound.protection.outlook.com ([40.107.2.71]:19938
-        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726690AbgEHPAt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 11:00:49 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CzO04pnsBir+nkWCKTeXKJpiXUvaeJ5KJhMv3YpmzZ2GtXihnp2qaZgl2C6Xxnb16k20U6MpQWU/xgKE7d4Xrj5L+lAPbSL0WtXhWmx4mzRxJK9rc4shL2x3peVnQ4vwmJdv7oMLr7tb9e9ZwMpcLXl7BmSImVyk1EzRR63JZPK+nOtd1hHtKItxlm6ITTElZ8hizQQ6zwacbq7V2Q/MQrx/dTvmq7pFCzpcuFKatH43Y09xseGHlGqa73jkSB5hXsvs7jeavg8Z9Lzcp6Us71ZRFxqpUHI9jn+UsnFaqkgdJA6QMgakj/nKL+cNJQLEMNFfTvZZbPcmHxVJ6kPlGw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8V7ASgBS5PqV98Cmy3Z8v4zNMw4FzKVwyVNKHCdwFHg=;
- b=fLGoIZwXn+OFZjlGFW1MiFqBevknTkD+cOLpe5ngnd4t/L5tDceb8ejYNpgpbRI9Fle1EJIDm1hfdAWxMTijkSLxQ+S4997IN/YCo0RBechSanYXdaTassADCx7ucx62aEA+ySoQvFwV4SByQYIm52NkGur5y+gcFsQ5dHxSHzdZ/jsXr6MMF6lUr3ZbJiJ05lQ84Dc2DHfdYZm7NhWlAbQuwhpyMwV/6WIvW+xOLlCcRN+xxnNaFrqsAs15wJMyHtC4A16OSnfQYaPKr/OyhM9ZLqfNteB6lJ9mohAnPnsipD0KP2oCaKOrQ5KR9qs+tXgmzYoCZ0/BvIG44R4t/A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8V7ASgBS5PqV98Cmy3Z8v4zNMw4FzKVwyVNKHCdwFHg=;
- b=LNKjAwB7A4hx6kdEmnqEQr+JI/Z2AvjA4iT7JcyEktGzZXx/3P/YDX9XnjN3tSc55Hd5leFMEMCYf7GZMynzR9xpbqBZmzmOANVtxB6lDDAsAR8Rojf5Ve0cKzQ5hXMYL7h1AKsyvXK0nArz0Y3EVsw5PS57ViQUrHFqGd0M5Bc=
-Authentication-Results: arndb.de; dkim=none (message not signed)
- header.d=none;arndb.de; dmarc=none action=none header.from=mellanox.com;
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (2603:10a6:803:44::15)
- by VI1PR05MB5231.eurprd05.prod.outlook.com (2603:10a6:803:b2::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.21; Fri, 8 May
- 2020 15:00:45 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::a47b:e3cd:7d6d:5d4e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::a47b:e3cd:7d6d:5d4e%6]) with mapi id 15.20.2979.030; Fri, 8 May 2020
- 15:00:45 +0000
-Date:   Fri, 8 May 2020 12:00:41 -0300
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Ben Skeggs <bskeggs@redhat.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Christoph Hellwig <hch@lst.de>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] nouveau: fix dependencies for DEVICE_PRIVATE
-Message-ID: <20200508150041.GI19158@mellanox.com>
-References: <20200508144017.3501418-1-arnd@arndb.de>
- <20200508144017.3501418-2-arnd@arndb.de>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200508144017.3501418-2-arnd@arndb.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: BL0PR05CA0017.namprd05.prod.outlook.com
- (2603:10b6:208:91::27) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:44::15)
+        id S1727882AbgEHPJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 11:09:10 -0400
+Received: from cmccmta3.chinamobile.com ([221.176.66.81]:10924 "EHLO
+        cmccmta3.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726627AbgEHPJK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 11:09:10 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.13]) by rmmx-syy-dmz-app09-12009 (RichMail) with SMTP id 2ee95eb5748fa8f-5ad2c; Fri, 08 May 2020 23:02:41 +0800 (CST)
+X-RM-TRANSID: 2ee95eb5748fa8f-5ad2c
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from [192.168.43.52] (unknown[223.104.148.118])
+        by rmsmtp-syy-appsvr07-12007 (RichMail) with SMTP id 2ee75eb574902e0-a19d8;
+        Fri, 08 May 2020 23:02:41 +0800 (CST)
+X-RM-TRANSID: 2ee75eb574902e0-a19d8
+Subject: Re: [PATCH] USB: host: ehci: Add error handlinginehci_mxc_drv_probe()
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     stern@rowland.harvard.edu, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+References: <20200508114453.15436-1-tangbin@cmss.chinamobile.com>
+ <20200508114858.GA4085349@kroah.com>
+ <fb147bdf-faaa-8919-407e-89b4fe1337a6@cmss.chinamobile.com>
+ <20200508143110.GA447591@kroah.com>
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+Message-ID: <107353c0-09f2-858d-2a87-498e2d8584c6@cmss.chinamobile.com>
+Date:   Fri, 8 May 2020 23:03:27 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.68.57.212) by BL0PR05CA0017.namprd05.prod.outlook.com (2603:10b6:208:91::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.12 via Frontend Transport; Fri, 8 May 2020 15:00:45 +0000
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)     (envelope-from <jgg@mellanox.com>)      id 1jX4UT-0006Tx-1D; Fri, 08 May 2020 12:00:41 -0300
-X-Originating-IP: [142.68.57.212]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: e16ac852-5a19-4c22-6372-08d7f36095bd
-X-MS-TrafficTypeDiagnostic: VI1PR05MB5231:
-X-Microsoft-Antispam-PRVS: <VI1PR05MB5231B3A04D48419600D6480BCFA20@VI1PR05MB5231.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-Forefront-PRVS: 039735BC4E
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ojWfEiXVqN8qK903SX4vXCpNEUgJ3E9BOl81pW79Fp5j/h1olNTbg6QG9QYRkW1mjQbu/hc0i2xGtK9D8caC41KowowY1oXx5f6mS/bFKN8hPMumqYHTArqlny9riPmN8sAlMu7S8kYqZ+idNwyrbCpCoDAFbr6OOjtVe5uWvFymKJWsQfa4UTFb3sAyw1lnrWvH2k1rEmsYf+wn+OL31e774dcJyxqDhKvZeIOO/7+AUz6b0hQzdSJ/nysgFmq1oLuOixUmvwkQ8wotsLCpqzqXAee9N2eRB2iE/rFx8SBEOvr4sL+Cwz8agAGGKbyBG5pF3Rth9SFeqmhfrILKL+t/sPExvzADE1WWRO5Gz6B2dL/JY3dxORA4/zTOHYv5JLXWPuXRnRItQyVb8cMUidY/BxkLEXm4ZdhQA4gG06/ePTo/M2P9Is0gIZvV8CK0nORQdqF1kVK3Amy0tp/Ny6dB5mwBvnFruwnfEwNcmsjSH35a1aICTkgyi7zkOjfgPiOhar6WwPxmJBYesfsgWCaYuEVcwm59KRhiGN2siP8z9yACeQoQKZ7zNod/f4Aw
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB4141.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(346002)(376002)(136003)(39860400002)(396003)(33430700001)(52116002)(66556008)(26005)(36756003)(33440700001)(8676002)(5660300002)(9786002)(9746002)(83290400001)(83300400001)(4744005)(8936002)(1076003)(83280400001)(83310400001)(83320400001)(86362001)(4326008)(186003)(7416002)(66476007)(66946007)(478600001)(6916009)(33656002)(54906003)(316002)(2616005)(2906002)(24400500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: QhqeP9xDLq8FRJQE/YQ1PYroDXY3FJ0UzoqV3YxGuB1C5rjoWZTQQW/qVfDyPzTZehBYtoejbMMAgRjPnUEtg8z/uROqlw2u/XpTfT6Xf48tN5fEEqnhj3Njq2qIAse+RtzcFdUqLMlZsfIwZRYwLZ0vQ4wZjPth4tPfOB5fEH4S58n2yZ6dFe5ZhvR4yP+baNMGTUwv/nqdTOjJ6KWDYoqDEWZmbn5IZisDzf7ddErnpvreO0KDZ00DmMVAihRCcu7cck2mptMMKgYRzN3W3uceGBnCYtTlKTFHfChzaMCp8NMlPKqy3BqOerada12JVoxQnckmYa4ac/WPGZJQkqN4dEi2t1shE+i7QD0VPhY/L9+a9LlxlEqeT3Xgr9ul3AzwPN6yDkUPRA4NKjwnU1Whbkh1YXKYi9yr2GSd2vBEmKqjNFPSRNpEkwrfcnT4vgGIYhyjhPQg2NBxDPALE28M+fRfuzW83APauKNrx9km9On10BHuKz87Q1SX8NuQ
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e16ac852-5a19-4c22-6372-08d7f36095bd
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 May 2020 15:00:45.3220
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lHUZNrY9tbacLK0JliFLoz48G0VU/VsGTeHW7tsxu4n126F51y5Fd0BWjxfiwoHSVQUuGh9m1vUe6Rav5zB0Og==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5231
+In-Reply-To: <20200508143110.GA447591@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 08, 2020 at 04:40:09PM +0200, Arnd Bergmann wrote:
-> CONFIG_DEVICE_PRIVATE cannot be selected in configurations
-> without ZONE_DEVICE:
 
-It is kind of unfortunate to lift dependencies from DEVICE_PRIVATE
-into the users, is this really how kconfig is supposed to work or is
-something else wrong here?
+On 2020/5/8 22:31, Greg KH wrote:
+> On Fri, May 08, 2020 at 09:55:53PM +0800, Tang Bin wrote:
+>> Hi, Greg:
+>>
+>> On 2020/5/8 19:48, Greg KH wrote:
+>>> On Fri, May 08, 2020 at 07:44:53PM +0800, Tang Bin wrote:
+>>>> The function ehci_mxc_drv_probe() does not perform sufficient error
+>>>> checking after executing platform_get_irq(), thus fix it.
+>>>>
+>>>> Fixes: 7e8d5cd93fa ("USB: Add EHCI support for MX27 and MX31 based boards")
+>>>> Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+>>>> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+>>>> ---
+>>>>    drivers/usb/host/ehci-mxc.c | 2 ++
+>>>>    1 file changed, 2 insertions(+)
+>>>>
+>>>> diff --git a/drivers/usb/host/ehci-mxc.c b/drivers/usb/host/ehci-mxc.c
+>>>> index a1eb5ee77..a0b42ba59 100644
+>>>> --- a/drivers/usb/host/ehci-mxc.c
+>>>> +++ b/drivers/usb/host/ehci-mxc.c
+>>>> @@ -50,6 +50,8 @@ static int ehci_mxc_drv_probe(struct platform_device *pdev)
+>>>>    	}
+>>>>    	irq = platform_get_irq(pdev, 0);
+>>>> +	if (irq < 0)
+>>>> +		return irq;
+>>> <= ?
+>> In the file 'drivers/base/platform.c'， the function platform_get_irq() is
+>> explained and used as follows:
+>>
+>>       * Gets an IRQ for a platform device and prints an error message if
+>> finding the
+>>       * IRQ fails. Device drivers should check the return value for errors so
+>> as to
+>>       * not pass a negative integer value to the request_irq() APIs.
+>>       *
+>>       * Example:
+>>       *        int irq = platform_get_irq(pdev, 0);
+>>       *        if (irq < 0)
+>>       *            return irq;
+>>       *
+>>       * Return: IRQ number on success, negative error number on failure.
+>>
+>> And in my hardware experiment, even if I set the irq failed deliberately in
+>> the DTS, the returned value is negative instead of zero.
+> Please read the thread at
+> 	https://lore.kernel.org/r/20200501224042.141366-1-helgaas%40kernel.org
+> for more details about this.
+>
+Great, It looks beautiful, finally someone took a knife to the file 
+'platform.c'.
 
-Jason
+I have been studied this place for a long time, and don't know what 
+platform can return 0, which made me curious.
+
+So the example should be:
+
+      *        int irq = platform_get_irq(pdev, 0);
+      *        if (irq <= 0)
+      *            return irq;
+
+Thanks,
+
+Tang Bin
+
+
+
