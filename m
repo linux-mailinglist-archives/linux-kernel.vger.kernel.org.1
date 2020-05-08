@@ -2,77 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20CD01CB490
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 18:16:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C0C41CB470
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 18:15:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728357AbgEHQPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 12:15:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727096AbgEHQPj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 12:15:39 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B4FC061A0C;
-        Fri,  8 May 2020 09:15:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=JJDsTQG2WuX2Hfjn7XLSnlrlNtlau+gOH2Oma/tnLmg=; b=D3QjHEC4QJz4rkREwbiLAaUYFw
-        6DTHKw4J1ct6q1i+SlnGr1Toj6g6jVpVNOjnmLPj0MkWzavfgntJOJbl4jEh9H12NJTT3Snf9hAC7
-        12WxL2XlMs0viOn+Bc6uOChJ8EKgZVRZzrnATqxfwnKW3NRter37n8zs85SYQrd15nHboM80VT+OE
-        UsQw5x5qgqT6lNUFzQElkLspTSizqyVq9MnEthzp8w3miwhhpOu9U85IFAYW/C/dRSBTAZ7q/2X1f
-        PRUs9FVyRvt39ZuANXMVUgSfFX5eVZEW3/+1dmIEjAGDBO8Pu1HHKU8j3xy8Q4Gr1ayfbPa3VHlQz
-        2iHjjsGw==;
-Received: from [2001:4bb8:180:9d3f:90d7:9df8:7cd:3504] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jX5eu-0004bZ-JJ; Fri, 08 May 2020 16:15:33 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Jim Paris <jim@jtan.com>, Geoff Levand <geoff@infradead.org>,
-        Joshua Morris <josh.h.morris@us.ibm.com>,
-        Philip Kelleher <pjk1939@linux.ibm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Nitin Gupta <ngupta@vflare.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, drbd-dev@lists.linbit.com,
-        linux-block@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-nvdimm@lists.01.org
-Subject: [PATCH 04/15] null_blk: stop using ->queuedata for bio mode
-Date:   Fri,  8 May 2020 18:15:06 +0200
-Message-Id: <20200508161517.252308-5-hch@lst.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200508161517.252308-1-hch@lst.de>
-References: <20200508161517.252308-1-hch@lst.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+        id S1728285AbgEHQPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 12:15:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39022 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728256AbgEHQPG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 12:15:06 -0400
+Subject: Re: [GIT PULL] Char/Misc driver fixes for 5.7-rc5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588954506;
+        bh=W/uDl22rAephmj1W1RzbAiC6vyZKBBkx+XoGmVuOhm4=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=yriSWMp1QV4U6zLRV/U5hIHeIxwICfPxZqgxHidyHRb9CCoaH3YUeUqwUL8ZfUxlf
+         BUa6azCqlydbtQLaEJG2zCydjeod5bRUZyZrprhbwGXjTW8ak208Fw7hfvtwF0c0jd
+         tpq1Tu7S5b9JQrjogimaDuLz5Bpcc0kahU6qFg0s=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20200508141902.GA360776@kroah.com>
+References: <20200508141902.GA360776@kroah.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200508141902.GA360776@kroah.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git
+ tags/char-misc-5.7-rc5
+X-PR-Tracked-Commit-Id: f0e1d3ac2d7c16a5d2c9d67f5a61133db7681af8
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 4334f30ebf395b204c6cbeabf371a5a998d6ba7c
+Message-Id: <158895450602.20886.16493366076911476168.pr-tracker-bot@kernel.org>
+Date:   Fri, 08 May 2020 16:15:06 +0000
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- drivers/block/null_blk_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The pull request you sent on Fri, 8 May 2020 16:19:02 +0200:
 
-diff --git a/drivers/block/null_blk_main.c b/drivers/block/null_blk_main.c
-index 8efd8778e2095..d14df79feca89 100644
---- a/drivers/block/null_blk_main.c
-+++ b/drivers/block/null_blk_main.c
-@@ -1365,7 +1365,7 @@ static blk_qc_t null_queue_bio(struct request_queue *q, struct bio *bio)
- {
- 	sector_t sector = bio->bi_iter.bi_sector;
- 	sector_t nr_sectors = bio_sectors(bio);
--	struct nullb *nullb = q->queuedata;
-+	struct nullb *nullb = bio->bi_disk->private_data;
- 	struct nullb_queue *nq = nullb_to_queue(nullb);
- 	struct nullb_cmd *cmd;
- 
+> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git tags/char-misc-5.7-rc5
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/4334f30ebf395b204c6cbeabf371a5a998d6ba7c
+
+Thank you!
+
 -- 
-2.26.2
-
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
