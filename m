@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AC691CAD00
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:58:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0999E1CAD3F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:02:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730134AbgEHM6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 08:58:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37058 "EHLO mail.kernel.org"
+        id S1729975AbgEHM7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 08:59:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34492 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730218AbgEHMyi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 08:54:38 -0400
+        id S1729857AbgEHMxC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 08:53:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9B95E24958;
-        Fri,  8 May 2020 12:54:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9AD4E218AC;
+        Fri,  8 May 2020 12:53:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588942478;
-        bh=osGwwFtM7e5rMfw3M0DmRZxNr6qfcTUhOtTET+KOvqk=;
+        s=default; t=1588942382;
+        bh=g24Uum1M4THSrqGNhm5O12w3DsdOF//UBnZNn3J0WaY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RwKVz43R4PPAq9ja+04ELMgPuFCMzFtIYAkjgmdEDH3Y9IRV0YRyUKpJvntgTG3N+
-         w2a5VSrQ8rrbh3nsjt33Nj4BntTYIJdS2laIaZYhBj17upG4VOGqtvPQaYZ6aPn4y+
-         qY+EDp5n8WtSAflIb2Bs1Pi+yB/Qq19eklGI1+t8=
+        b=TwScqjMEEMM1CA1R6x1FfZ7wX3dVMFZN0rCfHam4NIjKZy/sQqRo8pn3dnJ9+VXTk
+         YH4RyBAXo6LkMeL0DzS9YL4n8IDD+X3bnwNGz9ZYl7eoX9bMOh/iRb/sS+ELmHbTAk
+         YlkMhOcJxA0hvC9Ah+brhq5SoSga4ehucZiJhzdU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Shuah Khan <skhan@linuxfoundation.org>,
+        stable@vger.kernel.org, Ronnie Sahlberg <lsahlber@redhat.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Steve French <stfrench@microsoft.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 11/49] selftests: vm: Fix 64-bit test builds for powerpc64le
+Subject: [PATCH 5.4 22/50] cifs: protect updating server->dstaddr with a spinlock
 Date:   Fri,  8 May 2020 14:35:28 +0200
-Message-Id: <20200508123044.571041956@linuxfoundation.org>
+Message-Id: <20200508123046.493519573@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200508123042.775047422@linuxfoundation.org>
-References: <20200508123042.775047422@linuxfoundation.org>
+In-Reply-To: <20200508123043.085296641@linuxfoundation.org>
+References: <20200508123043.085296641@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,51 +45,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sandipan Das <sandipan@linux.ibm.com>
+From: Ronnie Sahlberg <lsahlber@redhat.com>
 
-[ Upstream commit 963e3e9c9a127013eb4d3c82eb997068b1adbb89 ]
+[ Upstream commit fada37f6f62995cc449b36ebba1220594bfe55fe ]
 
-Some tests are built only for 64-bit systems. This makes
-sure that these tests are built for both big and little
-endian variants of powerpc64.
+We use a spinlock while we are reading and accessing the destination address for a server.
+We need to also use this spinlock to protect when we are modifying this address from
+reconn_set_ipaddr().
 
-Fixes: 7549b3364201 ("selftests: vm: Build/Run 64bit tests only on 64bit arch")
-Reviewed-by: Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
-Signed-off-by: Sandipan Das <sandipan@linux.ibm.com>
-Tested-by: Michael Ellerman <mpe@ellerman.id.au>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Signed-off-by: Ronnie Sahlberg <lsahlber@redhat.com>
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/vm/Makefile    | 2 +-
- tools/testing/selftests/vm/run_vmtests | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ fs/cifs/connect.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/tools/testing/selftests/vm/Makefile b/tools/testing/selftests/vm/Makefile
-index 3f2e2f0ccbc9a..8074340c6b3ab 100644
---- a/tools/testing/selftests/vm/Makefile
-+++ b/tools/testing/selftests/vm/Makefile
-@@ -19,7 +19,7 @@ TEST_GEN_FILES += thuge-gen
- TEST_GEN_FILES += transhuge-stress
- TEST_GEN_FILES += userfaultfd
+diff --git a/fs/cifs/connect.c b/fs/cifs/connect.c
+index bcda48c038821..52589ea4e3c05 100644
+--- a/fs/cifs/connect.c
++++ b/fs/cifs/connect.c
+@@ -371,8 +371,10 @@ static int reconn_set_ipaddr(struct TCP_Server_Info *server)
+ 		return rc;
+ 	}
  
--ifneq (,$(filter $(MACHINE),arm64 ia64 mips64 parisc64 ppc64 riscv64 s390x sh64 sparc64 x86_64))
-+ifneq (,$(filter $(MACHINE),arm64 ia64 mips64 parisc64 ppc64 ppc64le riscv64 s390x sh64 sparc64 x86_64))
- TEST_GEN_FILES += va_128TBswitch
- TEST_GEN_FILES += virtual_address_range
- endif
-diff --git a/tools/testing/selftests/vm/run_vmtests b/tools/testing/selftests/vm/run_vmtests
-index f337148431980..6e137c9baa1e0 100755
---- a/tools/testing/selftests/vm/run_vmtests
-+++ b/tools/testing/selftests/vm/run_vmtests
-@@ -59,7 +59,7 @@ else
- fi
++	spin_lock(&cifs_tcp_ses_lock);
+ 	rc = cifs_convert_address((struct sockaddr *)&server->dstaddr, ipaddr,
+ 				  strlen(ipaddr));
++	spin_unlock(&cifs_tcp_ses_lock);
+ 	kfree(ipaddr);
  
- #filter 64bit architectures
--ARCH64STR="arm64 ia64 mips64 parisc64 ppc64 riscv64 s390x sh64 sparc64 x86_64"
-+ARCH64STR="arm64 ia64 mips64 parisc64 ppc64 ppc64le riscv64 s390x sh64 sparc64 x86_64"
- if [ -z $ARCH ]; then
-   ARCH=`uname -m 2>/dev/null | sed -e 's/aarch64.*/arm64/'`
- fi
+ 	return !rc ? -1 : 0;
 -- 
 2.20.1
 
