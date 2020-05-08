@@ -2,66 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BAF71CA9A9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 13:34:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B3411CA9BD
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 13:37:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727113AbgEHLeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 07:34:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48830 "EHLO
+        id S1726891AbgEHLg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 07:36:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727029AbgEHLen (ORCPT
+        by vger.kernel.org with ESMTP id S1726690AbgEHLgz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 07:34:43 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DAD4C05BD43
-        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 04:34:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=zmT/9HhrK4nvh4JtdKN0+HN2mb+fKCeU0dPRJaqTdWU=; b=R2Z1iM0AMAYz6h8BFNxy4mK7Uq
-        Nze/KtgV9jYKq2lfhk1VhalsciUS3MhU0MXdKnSZolSc3zU+9asFuTV9Or+DwN9nnA9jNsggtPYsU
-        nkrPejgfjzV4PjQB/u6keTM/26AUOA8gK4BznngTK8UhhlGBejAeIqkYVrI6ps0bQdt88V0zPih7Q
-        VUxKYnWkc0wNzUaZu4OsXySCVo9YgWNpYyMtNFkIdsQecYPbFbZ6YY8kLK9KPJWhskc4ER8z3rK68
-        OE52fKPkDohG4qPdDK/m9DHyZ1x0U95ohHU/8r7E8+G76xDafIGArTOlRnIhor/3fAPD8L4CHjEeI
-        ARwuLU/g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jX1H5-0003xB-NZ; Fri, 08 May 2020 11:34:39 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 403CB30018B;
-        Fri,  8 May 2020 13:34:38 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 27A962B8CAD9A; Fri,  8 May 2020 13:34:38 +0200 (CEST)
-Date:   Fri, 8 May 2020 13:34:38 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Uros Bizjak <ubizjak@gmail.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH] x86: Use INVPCID mnemonic in invpcid.h
-Message-ID: <20200508113438.GC5298@hirez.programming.kicks-ass.net>
-References: <20200508092247.132147-1-ubizjak@gmail.com>
+        Fri, 8 May 2020 07:36:55 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB07BC05BD09
+        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 04:36:54 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id r14so820430pfg.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 May 2020 04:36:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xG/oTmVNvsSrVAKyKn0GG7fP0wz/voKoWWtsagHKWks=;
+        b=W1zZ1SHmI2Ggfi1Ayr4ozVYtK2iuT8r+74rAm5ZyvFqZalCMq2gcmRIvtkUzqyS+mj
+         PaNmE2v+/aR1B8wUfixjzKlek1GOHGl+mvLQsQpJR1WpwH+9lzdA9IO/BJHK0qYLH9q6
+         QxOQmJYFsuiIyR/FrfTlGrZANhUfvzr3R4QSU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xG/oTmVNvsSrVAKyKn0GG7fP0wz/voKoWWtsagHKWks=;
+        b=Yy1S7SWxA5czjhNBiHFC8tjDTPIOU109DBBzk8DtzlDAgh/GvwfOjAtd2AR4tnORhm
+         OVDp2QWnNdd+nm/uNPTk/gjptyeYrMC1FeH7yYC/0cjBgs8LgTqq8HDjdDaH3xir4otF
+         NgcBH5nCgDMxPzYJ7c9TMQuPhHAQfxPt+jOnNFCMy+ue3HPz1X4Lg392iPTv9iGKZoKA
+         pre19WMFgPLZCfitOUXWlxHh9QaC1qn07o1FjOuXNAiwq6J/rnmqpj8ADHY4inI0ZCxq
+         j4AvYGCX01gU62TIJLl2re5Euu5prbDGneZXM/ltdyguYMm1SCzenzXv2NC87NoRG3nB
+         2sUA==
+X-Gm-Message-State: AGi0PuZrjebrZKxXXVvDzwrMIkibCBoY78YJHERv4sYzT3/6OidA0hRD
+        HJAt6euwXHTyHVlpJQDNvNJBHQ==
+X-Google-Smtp-Source: APiQypKT5Nd6sPhxivcyI6fARenFffjc+L0JYcg8jsLniC9BOmw17JjLzozG6egmA6aCO4DoBH6IVg==
+X-Received: by 2002:a62:76c3:: with SMTP id r186mr2454835pfc.190.1588937814083;
+        Fri, 08 May 2020 04:36:54 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:476b:691:abc3:38db])
+        by smtp.gmail.com with ESMTPSA id a12sm1615001pfr.28.2020.05.08.04.36.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 May 2020 04:36:53 -0700 (PDT)
+Date:   Fri, 8 May 2020 04:36:52 -0700
+From:   Prashant Malani <pmalani@chromium.org>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Benson Leung <bleung@chromium.org>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org
+Subject: Re: [PATCH 2/4] usb: typec: mux: intel_pmc_mux: Support for static
+ SBU/HSL orientation
+Message-ID: <20200508113652.GA34001@google.com>
+References: <20200507150900.12102-1-heikki.krogerus@linux.intel.com>
+ <20200507150900.12102-3-heikki.krogerus@linux.intel.com>
+ <20200507224041.GA247416@google.com>
+ <20200508111840.GG645261@kuha.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200508092247.132147-1-ubizjak@gmail.com>
+In-Reply-To: <20200508111840.GG645261@kuha.fi.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 08, 2020 at 11:22:47AM +0200, Uros Bizjak wrote:
-> Current minimum required version of binutils is 2.23,
-> which supports INVPCID instruction mnemonic.
+On Fri, May 08, 2020 at 02:18:40PM +0300, Heikki Krogerus wrote:
+> Hi Prashant,
 > 
-> Replace the byte-wise specification of INVPCID with
-> this proper mnemonic.
+> On Thu, May 07, 2020 at 03:40:41PM -0700, Prashant Malani wrote:
+> > > +static int sbu_orientation(struct pmc_usb_port *port)
+> > > +{
+> > > +	if (port->sbu_orientation)
+> > > +		return port->sbu_orientation - 1;
+> > > +
+> > > +	return port->orientation - 1;
+> > > +}
+> > > +
+> > > +static int hsl_orientation(struct pmc_usb_port *port)
+> > > +{
+> > > +	if (port->hsl_orientation)
+> > > +		return port->hsl_orientation - 1;
+> > > +
+> > > +	return port->orientation - 1;
+> > > +}
+> > > +
+> > >  static int pmc_usb_command(struct pmc_usb_port *port, u8 *msg, u32 len)
+> > >  {
+> > >  	u8 response[4];
+> > > @@ -151,8 +170,9 @@ pmc_usb_mux_dp(struct pmc_usb_port *port, struct typec_mux_state *state)
+> > >  
+> > >  	req.mode_data = (port->orientation - 1) << PMC_USB_ALTMODE_ORI_SHIFT;
+> > >  	req.mode_data |= (port->role - 1) << PMC_USB_ALTMODE_UFP_SHIFT;
+> > > -	req.mode_data |= (port->orientation - 1) << PMC_USB_ALTMODE_ORI_AUX_SHIFT;
+> > > -	req.mode_data |= (port->orientation - 1) << PMC_USB_ALTMODE_ORI_HSL_SHIFT;
+> > > +
+> > > +	req.mode_data |= sbu_orientation(port) << PMC_USB_ALTMODE_ORI_AUX_SHIFT;
+> > 
+> > I'm curious to know what would happen when sbu-orientation == "normal".
+> > That means |port->sbu_orientation| == 1.
+> > 
+> > It sounds like what should happen is the AUX_SHIFT orientation
+> > setting should follow what |port->orientation| is, but here it
+> > looks like it will always be set to |port->sbu_orientation - 1|, i.e 0,
+> > even if port->orientation == TYPEC_ORIENTATION_REVERSE, i.e 2, meaning
+> > it should be set to 1 ?
+> 
+> I'll double check this, and get back to you..
+> 
+> Thanks a lot for reviewing this. If you guys have time, then please
+> check also that the documentation I'm proposing in patch 3/4 for this
+> driver has everything explained clearly enough, and nothing is missing.
+> 
+Sure thing, we'll take a look.
 
-Excellent, thanks for doing these cleanups.
+Best,
 
-(also for the rand one):
-
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+-Prashant
+> Br,
+> 
+> -- 
+> heikki
