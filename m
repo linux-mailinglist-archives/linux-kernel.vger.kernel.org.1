@@ -2,139 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48F4F1CBA57
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 00:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 482831CBA62
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 00:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728008AbgEHWAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 18:00:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727882AbgEHWAe (ORCPT
+        id S1728130AbgEHWDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 18:03:09 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:42367 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727095AbgEHWDI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 18:00:34 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0313AC061A0C;
-        Fri,  8 May 2020 15:00:34 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id g13so3632579wrb.8;
-        Fri, 08 May 2020 15:00:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:references:in-reply-to:subject:date:message-id
-         :mime-version:content-transfer-encoding:content-language
-         :thread-index;
-        bh=xOmnLWYGmk7Cao6x1GQJnELOggocIQqrtI1UISSIhY4=;
-        b=OG6y8Q3CTyvuqWZwebHQsVYGxzT1iEbIw7ZjLiavNWd6O1qC5eT9mYaa5IXA2e6OuD
-         UIWP8uhnVLbtyTZYxhg25tXLfX3ZA05OUeuEGgHLaNCMSqYTaPfRQ2R52EE1mkPVHp+E
-         CaQ7pt4ZSamjkDc1B5hdb3Mzq05xKzyQKN/njw6lTrmM6h3hLV2qOpTGCEMbHoYJYkaZ
-         9vTdSYzHCokzC756OXOveAOFrBOJHn0biiNV56d4BAmHyhG/MKEk5gUkrOBb55IAHbR5
-         snbB3hkG2JCbJ17Ih2L6dymj1XE3e5+FPxOV65uPNgS27sXk/cgcNcfpE4aVsioKoyV5
-         HBrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:references:in-reply-to:subject:date
-         :message-id:mime-version:content-transfer-encoding:content-language
-         :thread-index;
-        bh=xOmnLWYGmk7Cao6x1GQJnELOggocIQqrtI1UISSIhY4=;
-        b=M2e0ZkQFJPJKRYDln4vGaVGePsE3KsfIdIVwp3DMwny/8xcFqd/GBanPobX9XhiVTZ
-         /psov2w1ODD5mUUp30LifKlYNgB2XhuvbasTK6dlWRKWDDWdh9RcgqNDRDuuxh8ZCjYE
-         r0dkkEZmR3BuUcYS9A7IkZCt1ZNjUijuGnklLhTgh4bdzNaytpD1aSfXvkwlUXTStPU4
-         9i5971OXr9Wxm4dmfRBzz6em/xxpQ7ChIY1RrGgnFbRTBJqq0w+O0U+NKQpvEPj6KaEo
-         EHotnIvUnvigav++vJ1Vrhuc9yCTSOvKyTZOCGBsbc6z4LeKNVtACKD91x+1N4eBWuCB
-         4SnQ==
-X-Gm-Message-State: AGi0Pub7aWROfepxskfyLzjWGXRAaOjdoRXUJ1LUwd1vBY16FVtEXdJ7
-        H2kCGZQzhs3DWndtdqtiECs=
-X-Google-Smtp-Source: APiQypLFC+sCfhEPJQKEKeZiSHIpA2zKXjg8olq2UWaEJD0i4oV9iZ7WIyEaXgleFcD72u8wfu9FfA==
-X-Received: by 2002:adf:e9d0:: with SMTP id l16mr4945242wrn.69.1588975232479;
-        Fri, 08 May 2020 15:00:32 -0700 (PDT)
-Received: from AnsuelXPS (host186-254-dynamic.3-87-r.retail.telecomitalia.it. [87.3.254.186])
-        by smtp.gmail.com with ESMTPSA id q2sm3419042wrx.60.2020.05.08.15.00.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 08 May 2020 15:00:31 -0700 (PDT)
-From:   <ansuelsmth@gmail.com>
-To:     "'Rob Herring'" <robh@kernel.org>
-Cc:     "'Bjorn Andersson'" <bjorn.andersson@linaro.org>,
-        "'Sham Muthayyan'" <smuthayy@codeaurora.org>,
-        "'Andy Gross'" <agross@kernel.org>,
-        "'Bjorn Helgaas'" <bhelgaas@google.com>,
-        "'Mark Rutland'" <mark.rutland@arm.com>,
-        "'Stanimir Varbanov'" <svarbanov@mm-sol.com>,
-        "'Lorenzo Pieralisi'" <lorenzo.pieralisi@arm.com>,
-        "'Andrew Murray'" <amurray@thegoodpenguin.co.uk>,
-        "'Philipp Zabel'" <p.zabel@pengutronix.de>,
-        <linux-arm-msm@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20200430220619.3169-1-ansuelsmth@gmail.com> <20200430220619.3169-10-ansuelsmth@gmail.com> <20200507181314.GA21663@bogus>
-In-Reply-To: <20200507181314.GA21663@bogus>
-Subject: R: [PATCH v3 09/11] PCI: qcom: add ipq8064 rev2 variant and set tx term offset
-Date:   Sat, 9 May 2020 00:00:29 +0200
-Message-ID: <012d01d62584$17658bd0$4630a370$@gmail.com>
+        Fri, 8 May 2020 18:03:08 -0400
+Received: from localhost.localdomain ([149.172.19.189]) by
+ mrelayeu.kundenserver.de (mreue010 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1MCsgS-1jOPdr2RNo-008sQA; Sat, 09 May 2020 00:02:03 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     VMware Graphics <linux-graphics-maintainer@vmware.com>,
+        Thomas Hellstrom <thellstrom@vmware.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Ira Weiny <ira.weiny@intel.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Andy Lutomirski <luto@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Chris Zankel <chris@zankel.net>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Helge Deller <deller@gmx.de>, "H. Peter Anvin" <hpa@zytor.com>,
+        Huang Rui <ray.huang@amd.com>, Ingo Molnar <mingo@redhat.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm: vmwgfx: include linux/highmem.h
+Date:   Sat,  9 May 2020 00:01:31 +0200
+Message-Id: <20200508220150.649044-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Content-Language: it
-Thread-Index: AQH0plL6ngkayUAAEEU7BifA9vEwhgKDdr3rAmN2QquoOn3wEA==
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:TAKq1R05pzqZudtB3/eJjJKa8Xbr2qqNSVjJes2lRdzfJo28ior
+ jpG2oBKBCIM9I0meRg4Do/dfII5ARO/ZpAAObB5iNU3iCCuxDZGC9ur9gy/e8/N5KH40xtl
+ zubxBxUZ2TAxp6I2EEFhblKzvIbDSX2HvY1w7/WTEtxBhmU5S1+U1tGYNScR9bWvVvA9Lwt
+ SUVJX3OpN5y1qagavtf6A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:pQ7ZCJSaxLY=:CvneInVbDCF7wVcYheL91B
+ bulOWg0njJ2uR9LvROcwWe/vwyNzxp5K6WfdXMFHBwEkfhTNw0bVcxvD8IrSFpD0KC8TviK3o
+ 2mf/G8Dp7vGxGjScYm3LYde4pML/2dOUn9jiACrP7euRObZ2ijeOmEhl7jDEy27owpQao6o2f
+ /SO03TB54PKwjk02/NXDsKOt4s7Vlel69d5geccRqk/dbPKsFx8eNeNQ70KZvuXUCYo+4gVNq
+ AyrJYxx33AFDDBvjdTHUp8WSM6BvmQY8xW8tmCKPFZ/OY3h4XDKYApKCqQcok9vc/Qo/vaGhs
+ Cy4G1g/dwFG7OyX+Lzq0K7xNNA1ZNy7YHIwqeqk0Kux4fHCq1lYpEGJqCsjRZ8zv5LJpjF4S2
+ 7p3LKoai6c/b8gZZJsch7W0e69UvHCI8bPdzFlRuGC7rm0ykWB4NZuqLTBuIC/HlzC9Z+kAId
+ aBhvtAWagKCUIX31Q2v8+S47zcy1i2Z7zC+nzpqp3TUXriMCajRt6Kg+rQkJdIQhxFj4HX+jd
+ rcSxAvUskYewdmUfBkJAQ2hiaX28j3DARTaEFxcJRbZdL2FCMy19Ug0uF0zjogz2OxmG2Uqkr
+ 4diBlDY9L7RHRrP3Hfb1MvdUSmkkFobkFN3S/ePNCydC65ZSo35zuFVrC7nvJguXY4+X0LBBM
+ 0Kr81poPPMNRnAsqTGRyZTs6vUqrzVL99DXoxms9mSGpDdIlNAzAvd3gqYwC/y7Ucy7HAA+YU
+ 3LyKV0Rosfc327PpqLHUs9jXHfSB+As31A6g12Nkokh9AIYp17vU1b8xjoLwZtQf1wF1C7YSD
+ 0MBAFq4u699ZjeZp0+NmUAQBJjY3JBFW0XlU185Wm7IMJzeY7w=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Fri, May 01, 2020 at 12:06:16AM +0200, Ansuel Smith wrote:
-> > From: Sham Muthayyan <smuthayy@codeaurora.org>
-> >
-> > Add tx term offset support to pcie qcom driver need in some revision of
-> > the ipq806x SoC.
-> > Ipq8064 have tx term offset set to 7.
-> > Ipq8064-v2 revision and ipq8065 have the tx term offset set to 0.
-> >
-> > Signed-off-by: Sham Muthayyan <smuthayy@codeaurora.org>
-> > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> > ---
-> >  drivers/pci/controller/dwc/pcie-qcom.c | 15 +++++++++++++++
-> >  1 file changed, 15 insertions(+)
-> >
-> > diff --git a/drivers/pci/controller/dwc/pcie-qcom.c
-> b/drivers/pci/controller/dwc/pcie-qcom.c
-> > index da8058fd1925..372d2c8508b5 100644
-> > --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> > +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> > @@ -45,6 +45,9 @@
-> >  #define PCIE_CAP_CPL_TIMEOUT_DISABLE		0x10
-> >
-> >  #define PCIE20_PARF_PHY_CTRL			0x40
-> > +#define PHY_CTRL_PHY_TX0_TERM_OFFSET_MASK	GENMASK(12,
-> 16)
-> > +#define PHY_CTRL_PHY_TX0_TERM_OFFSET(x)		((x) << 16)
-> > +
-> >  #define PCIE20_PARF_PHY_REFCLK			0x4C
-> >  #define PHY_REFCLK_SSP_EN			BIT(16)
-> >  #define PHY_REFCLK_USE_PAD			BIT(12)
-> > @@ -118,6 +121,7 @@ struct qcom_pcie_resources_2_1_0 {
-> >  	u32 tx_swing_full;
-> >  	u32 tx_swing_low;
-> >  	u32 rx0_eq;
-> > +	u8 phy_tx0_term_offset;
-> >  };
-> >
-> >  struct qcom_pcie_resources_1_0_0 {
-> > @@ -318,6 +322,11 @@ static int
-> qcom_pcie_get_resources_2_1_0(struct qcom_pcie *pcie)
-> >  	if (IS_ERR(res->ext_reset))
-> >  		return PTR_ERR(res->ext_reset);
-> >
-> > +	if (of_device_is_compatible(dev->of_node, "qcom,pcie-ipq8064"))
-> > +		res->phy_tx0_term_offset = 7;
-> 
-> Based on my other comments, you'll want to turn this into match data.
-> 
+In order to call kmap_atomic() etc, we need to include linux/highmem.h:
 
-I don't understand what you mean here. I really can't think of another way
-to set this only for qcom,pci-ipq8064 as ipq8064-v2 and apq8064 use the
-same get resource function. Should I create a different get_resources for
-the other 2 device?
+drivers/gpu/drm/vmwgfx/vmwgfx_blit.c: In function 'vmw_bo_cpu_blit_line':
+drivers/gpu/drm/vmwgfx/vmwgfx_blit.c:377:4: error: implicit declaration of function 'kunmap_atomic'; did you mean 'in_atomic'? [-Werror=implicit-function-declaration]
+  377 |    kunmap_atomic(d->src_addr);
+      |    ^~~~~~~~~~~~~
+      |    in_atomic
+drivers/gpu/drm/vmwgfx/vmwgfx_blit.c:391:5: error: implicit declaration of function 'kmap_atomic_prot' [-Werror=implicit-function-declaration]
+  391 |     kmap_atomic_prot(d->dst_pages[dst_page],
+      |     ^~~~~~~~~~~~~~~~
+drivers/gpu/drm/vmwgfx/vmwgfx_blit.c:390:16: warning: assignment to 'u8 *' {aka 'unsigned char *'} from 'int' makes pointer from integer without a cast [-Wint-conversion]
+  390 |    d->dst_addr =
+      |                ^
+drivers/gpu/drm/vmwgfx/vmwgfx_blit.c:403:16: warning: assignment to 'u8 *' {aka 'unsigned char *'} from 'int' makes pointer from integer without a cast [-Wint-conversion]
+  403 |    d->src_addr =
+      |                ^
+
+Fixes: 46385a895322 ("drm: remove drm specific kmap_atomic code")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/gpu/drm/vmwgfx/vmwgfx_blit.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_blit.c b/drivers/gpu/drm/vmwgfx/vmwgfx_blit.c
+index 94d456a1d1a9..1629427d5734 100644
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_blit.c
++++ b/drivers/gpu/drm/vmwgfx/vmwgfx_blit.c
+@@ -27,6 +27,7 @@
+  **************************************************************************/
  
-> > +	else
-> > +		res->phy_tx0_term_offset = 0;
-> > +
+ #include "vmwgfx_drv.h"
++#include <linux/highmem.h>
+ 
+ /*
+  * Template that implements find_first_diff() for a generic
+-- 
+2.26.0
 
