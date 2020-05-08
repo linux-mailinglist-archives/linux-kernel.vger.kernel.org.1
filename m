@@ -2,43 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 958CB1CAD81
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:02:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C90F31CADB8
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729153AbgEHNCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:02:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58904 "EHLO mail.kernel.org"
+        id S1728540AbgEHNED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 09:04:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55150 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728171AbgEHMuk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 08:50:40 -0400
+        id S1727933AbgEHMt2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 08:49:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B61B424954;
-        Fri,  8 May 2020 12:50:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CC44D21473;
+        Fri,  8 May 2020 12:49:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588942240;
-        bh=/n8bR6qEQEFiWRHggcyYjAzLLFE0mHLo93NI3PBUp94=;
+        s=default; t=1588942168;
+        bh=6PQThudiOADLiowU8hPRGHfSO63STL1z7Wa+F73g4G0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VKPb+wWUOu+Qd6TDON/KUtOZhdzc7DGoIxoaat+Vw4FDRzfHgN+HuFQg+9BnWrXs8
-         MuxZUtPCCe9wbl6RgspDYDsTX6zPeQKNnS0tOJWcpWMcpXIJl/9vBHrXIFsnX6X/pk
-         HNsWAeAa7YlyLl9guARRUx/CLoSoLH/wiywDXjnM=
+        b=eUeYS/sZ3WV9nSdGiYk8fT2coV8gOenWwyL9EBtsbyy7fUicLZqCGqHywWQDZxGGr
+         cA3Q51dVFyIzlkBYijlSpKNmMBXhA5Ogk9oCMeBZgJ6TuBjew+No3x6Tny3ug4hAy0
+         unzgr+LtfYv75nTlEhvecjAnVc6muS8WfgPGh5S0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= 
-        <amadeuszx.slawinski@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Doug Berger <opendmb@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 03/22] ASoC: topology: Check return value of pcm_new_ver
+Subject: [PATCH 4.9 12/18] net: bcmgenet: suppress warnings on failed Rx SKB allocations
 Date:   Fri,  8 May 2020 14:35:15 +0200
-Message-Id: <20200508123034.315432739@linuxfoundation.org>
+Message-Id: <20200508123033.424749203@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200508123033.915895060@linuxfoundation.org>
-References: <20200508123033.915895060@linuxfoundation.org>
+In-Reply-To: <20200508123030.497793118@linuxfoundation.org>
+References: <20200508123030.497793118@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,38 +45,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+From: Doug Berger <opendmb@gmail.com>
 
-[ Upstream commit b3677fc3d68dd942c92de52f0bd9dd8b472a40e6 ]
+[ Upstream commit ecaeceb8a8a145d93c7e136f170238229165348f ]
 
-Function pcm_new_ver can fail, so we should check it's return value and
-handle possible error.
+The driver is designed to drop Rx packets and reclaim the buffers
+when an allocation fails, and the network interface needs to safely
+handle this packet loss. Therefore, an allocation failure of Rx
+SKBs is relatively benign.
 
-Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200327204729.397-6-amadeuszx.slawinski@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+However, the output of the warning message occurs with a high
+scheduling priority that can cause excessive jitter/latency for
+other high priority processing.
+
+This commit suppresses the warning messages to prevent scheduling
+problems while retaining the failure count in the statistics of
+the network interface.
+
+Signed-off-by: Doug Berger <opendmb@gmail.com>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/soc-topology.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/broadcom/genet/bcmgenet.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index a215b9ad148c4..50aa45525be5a 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -1954,7 +1954,9 @@ static int soc_tplg_pcm_elems_load(struct soc_tplg *tplg,
- 			_pcm = pcm;
- 		} else {
- 			abi_match = false;
--			pcm_new_ver(tplg, pcm, &_pcm);
-+			ret = pcm_new_ver(tplg, pcm, &_pcm);
-+			if (ret < 0)
-+				return ret;
- 		}
+diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.c b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+index a234044805977..5d4189c94718c 100644
+--- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
++++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+@@ -1596,7 +1596,8 @@ static struct sk_buff *bcmgenet_rx_refill(struct bcmgenet_priv *priv,
+ 	dma_addr_t mapping;
  
- 		/* create the FE DAIs and DAI links */
+ 	/* Allocate a new Rx skb */
+-	skb = netdev_alloc_skb(priv->dev, priv->rx_buf_len + SKB_ALIGNMENT);
++	skb = __netdev_alloc_skb(priv->dev, priv->rx_buf_len + SKB_ALIGNMENT,
++				 GFP_ATOMIC | __GFP_NOWARN);
+ 	if (!skb) {
+ 		priv->mib.alloc_rx_buff_failed++;
+ 		netif_err(priv, rx_err, priv->dev,
 -- 
 2.20.1
 
