@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB9961CAD51
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:02:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3FF41CACDB
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:58:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730160AbgEHNAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:00:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33312 "EHLO mail.kernel.org"
+        id S1730441AbgEHM41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 08:56:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39918 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729943AbgEHMwP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 08:52:15 -0400
+        id S1728270AbgEHM4Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 08:56:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 64D2624966;
-        Fri,  8 May 2020 12:52:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 28B8024963;
+        Fri,  8 May 2020 12:56:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588942334;
-        bh=W3z8GpEqUg7Gwz4mNu6eXk9h4W8cmjS7GxG53neu7o8=;
+        s=default; t=1588942584;
+        bh=POwLX1SmMFcQfjvzYyCJqlQaSBoWeieD5GSTE2vxqa0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1+AOw3Xjl34z/0z5+m6UmnhHXmlBWWGoVf7PgSQ/Sae2odwNLvJzl/2wWtf3uVLE7
-         sbgoDiivF+walwIyks3v4oG8Q+6AYfsJFyWHSNZNxgT4VoQ4b+w2aI+19Tw1/egiDL
-         gW0d4OJicSkDLaAmfHfzEnXgkF1dXSOhAhB00c7A=
+        b=GRgUdIDfT4JfuTeFLyTvx9uSxCYM5PUQBsiigR5FLmVgwbrTmlw9ZcytRWSvE4UP0
+         Huwbinl2sFV1bcT7eGxo8csvoJ9Nrgx2K2nMq1YsXS1N41StZSSCYovR3lg4yDphMy
+         XNQD7YXKBpV3VR6NkDJxPrlphhjPjPycZWWlEN48=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Machek <pavel@denx.de>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH 4.19 29/32] platform/x86: GPD pocket fan: Fix error message when temp-limits are out of range
+        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 25/49] wimax/i2400m: Fix potential urb refcnt leak
 Date:   Fri,  8 May 2020 14:35:42 +0200
-Message-Id: <20200508123039.219831478@linuxfoundation.org>
+Message-Id: <20200508123046.609841073@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200508123034.886699170@linuxfoundation.org>
-References: <20200508123034.886699170@linuxfoundation.org>
+In-Reply-To: <20200508123042.775047422@linuxfoundation.org>
+References: <20200508123042.775047422@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,38 +45,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
 
-commit 1d6f8c5bac93cceb2d4ac8e6331050652004d802 upstream.
+[ Upstream commit 7717cbec172c3554d470023b4020d5781961187e ]
 
-Commit 1f27dbd8265d ("platform/x86: GPD pocket fan: Allow somewhat
-lower/higher temperature limits") changed the module-param sanity check
-to accept temperature limits between 20 and 90 degrees celcius.
+i2400mu_bus_bm_wait_for_ack() invokes usb_get_urb(), which increases the
+refcount of the "notif_urb".
 
-But the error message printed when the module params are outside this
-range was not updated. This commit updates the error message to match
-the new min and max value for the temp-limits.
+When i2400mu_bus_bm_wait_for_ack() returns, local variable "notif_urb"
+becomes invalid, so the refcount should be decreased to keep refcount
+balanced.
 
-Reported-by: Pavel Machek <pavel@denx.de>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Pavel Machek <pavel@denx.de>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+The issue happens in all paths of i2400mu_bus_bm_wait_for_ack(), which
+forget to decrease the refcnt increased by usb_get_urb(), causing a
+refcnt leak.
 
+Fix this issue by calling usb_put_urb() before the
+i2400mu_bus_bm_wait_for_ack() returns.
+
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/gpd-pocket-fan.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wimax/i2400m/usb-fw.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/platform/x86/gpd-pocket-fan.c
-+++ b/drivers/platform/x86/gpd-pocket-fan.c
-@@ -128,7 +128,7 @@ static int gpd_pocket_fan_probe(struct p
+diff --git a/drivers/net/wimax/i2400m/usb-fw.c b/drivers/net/wimax/i2400m/usb-fw.c
+index 529ebca1e9e13..1f7709d24f352 100644
+--- a/drivers/net/wimax/i2400m/usb-fw.c
++++ b/drivers/net/wimax/i2400m/usb-fw.c
+@@ -354,6 +354,7 @@ ssize_t i2400mu_bus_bm_wait_for_ack(struct i2400m *i2400m,
+ 		usb_autopm_put_interface(i2400mu->usb_iface);
+ 	d_fnend(8, dev, "(i2400m %p ack %p size %zu) = %ld\n",
+ 		i2400m, ack, ack_size, (long) result);
++	usb_put_urb(&notif_urb);
+ 	return result;
  
- 	for (i = 0; i < ARRAY_SIZE(temp_limits); i++) {
- 		if (temp_limits[i] < 20000 || temp_limits[i] > 90000) {
--			dev_err(&pdev->dev, "Invalid temp-limit %d (must be between 40000 and 70000)\n",
-+			dev_err(&pdev->dev, "Invalid temp-limit %d (must be between 20000 and 90000)\n",
- 				temp_limits[i]);
- 			temp_limits[0] = TEMP_LIMIT0_DEFAULT;
- 			temp_limits[1] = TEMP_LIMIT1_DEFAULT;
+ error_exceeded:
+-- 
+2.20.1
+
 
 
