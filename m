@@ -2,76 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57F661CB4CD
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 18:17:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CF7A1CB4D2
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 18:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728647AbgEHQQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 12:16:50 -0400
-Received: from forwardcorp1p.mail.yandex.net ([77.88.29.217]:50852 "EHLO
-        forwardcorp1p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728174AbgEHQQq (ORCPT
+        id S1727803AbgEHQRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 12:17:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726797AbgEHQRe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 12:16:46 -0400
-Received: from mxbackcorp1g.mail.yandex.net (mxbackcorp1g.mail.yandex.net [IPv6:2a02:6b8:0:1402::301])
-        by forwardcorp1p.mail.yandex.net (Yandex) with ESMTP id 1DA522E14C4;
-        Fri,  8 May 2020 19:16:43 +0300 (MSK)
-Received: from myt4-18a966dbd9be.qloud-c.yandex.net (myt4-18a966dbd9be.qloud-c.yandex.net [2a02:6b8:c00:12ad:0:640:18a9:66db])
-        by mxbackcorp1g.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id FUmgX13TVC-GeAWkgPx;
-        Fri, 08 May 2020 19:16:43 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
-        t=1588954603; bh=fBUtwXBek4NM+L2c+v6a5Q30Xgg4O7DzdNaSB/H01/M=;
-        h=In-Reply-To:References:Date:Message-ID:From:To:Subject;
-        b=dAECvcdKmUWk2CVnMXeTHO8Vk04t0GhdKk6GVVazxHMmEd4vqdRBdWvIWqkI271c7
-         CSAWWDV/ZA13LhBGUZXu96IhmqX7dtLDQOdPEN9crnTRzNnC73pXVD2TgYv1vXjxGT
-         5ykQhY615zHDuCC3cU53VoEyWgY+W+NlFyLvCwzM=
-Authentication-Results: mxbackcorp1g.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
-Received: from dynamic-vpn.dhcp.yndx.net (dynamic-vpn.dhcp.yndx.net [2a02:6b8:b080:7008::1:4])
-        by myt4-18a966dbd9be.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id qhpQEsyI8M-GeWCH2g5;
-        Fri, 08 May 2020 19:16:40 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-Subject: Re: [PATCH RFC 1/8] dcache: show count of hash buckets in sysctl
- fs.dentry-state
-To:     Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-References: <158893941613.200862.4094521350329937435.stgit@buzz>
- <158894059427.200862.341530589978120554.stgit@buzz>
- <7c1cef87-2940-eb17-51d4-cbc40218b770@redhat.com>
-From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-Message-ID: <ac1ece33-46ea-175a-98ef-c79fcd1ced90@yandex-team.ru>
-Date:   Fri, 8 May 2020 19:16:40 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Fri, 8 May 2020 12:17:34 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FA97C061A0C
+        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 09:17:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5y/BvaMmbxGJRPJfxDgGRJxiwkrlSQ5491HGTO/jgms=; b=Kr6LBu9iTpvHpDPUjDXKaZFFkv
+        UCgSqF42hXyZiTPU0P0GnOGrcO7Ts+I9xg1ZYi/t2TF9MGEVIC0IGzUEhQ43Mcazm2a66A/hgL7V3
+        VQhpc6KaN/VnnctbYujd6ygEmmBTLyzQeEx8ue4rMjY19A3TqpszLg6dLkiK027WFKlvI1Tw1wPI0
+        CF57sNH0cLDRdEBRXB4MCMhkrRQQdcn8R0pRefSpgYZ5vD0ITinv2H2qR0aKVbvH7o/7EoPzQaH7H
+        nOQCWJqvweVejsTdMDhXiOLFU+etlLu7NtCRkUvfmyJ6TP6ZgsLR3VkrSN9Wvdyfq1MBWP/5EHIr6
+        FtvQLVSA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jX5gP-0000ES-Um; Fri, 08 May 2020 16:17:06 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EF605306108;
+        Fri,  8 May 2020 18:17:01 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D5BE8236D7E53; Fri,  8 May 2020 18:17:01 +0200 (CEST)
+Date:   Fri, 8 May 2020 18:17:01 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org,
+        mhiramat@kernel.org, bristot@redhat.com, jbaron@akamai.com,
+        torvalds@linux-foundation.org, tglx@linutronix.de,
+        mingo@kernel.org, namit@vmware.com, hpa@zytor.com, luto@kernel.org,
+        ard.biesheuvel@linaro.org, pbonzini@redhat.com,
+        mathieu.desnoyers@efficios.com
+Subject: Re: [PATCH v4 14/18] static_call: Add static_cond_call()
+Message-ID: <20200508161701.GD3344@hirez.programming.kicks-ass.net>
+References: <20200501202849.647891881@infradead.org>
+ <20200501202944.593400184@infradead.org>
+ <20200506172455.ho5em2mtzn7qqfjl@treble>
+ <20200508152730.GB3344@hirez.programming.kicks-ass.net>
+ <20200508154704.6njw5wfsain7p3ev@treble>
 MIME-Version: 1.0
-In-Reply-To: <7c1cef87-2940-eb17-51d4-cbc40218b770@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-CA
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200508154704.6njw5wfsain7p3ev@treble>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/05/2020 17.49, Waiman Long wrote:
-> On 5/8/20 8:23 AM, Konstantin Khlebnikov wrote:
->> Count of buckets is required for estimating average length of hash chains.
->> Size of hash table depends on memory size and printed once at boot.
->>
->> Let's expose nr_buckets as sixth number in sysctl fs.dentry-state
-> 
-> The hash bucket count is a constant determined at boot time. Is there a need to use up one dentry_stat entry for that? Besides one can get 
-> it by looking up the kernel dmesg log like:
-> 
-> [    0.055212] Dentry cache hash table entries: 8388608 (order: 14, 67108864 bytes)
+On Fri, May 08, 2020 at 10:47:04AM -0500, Josh Poimboeuf wrote:
 
-Grepping logs since boot time is a worst API ever.
-
-dentry-state shows count of dentries in various states.
-It's very convenient to show count of buckets next to it,
-because this number defines overall scale.
-
+> And if you're calling it
 > 
-> Cheers,
-> Longman
+>   DEFINE_STATIC_CALL_NULL
 > 
+> then it seems like
+> 
+>   ARCH_DEFINE_STATIC_CALL_NULL
+> 
+> would be the logical name rather than RETTRAMP?
+
+But that looses the TRAMP, and ARCH_DEFINE_STATIC_CALL_NULL_TRAMP so
+damn long, then again, it's only 2 chars more than what I have now,
+sure, lets do it.
+
+> Still not crazy about static_cond_call(), though I think at least
+> changing it to static_call_cond() would be better for namespacing
+> reasons.
+
+Done.
