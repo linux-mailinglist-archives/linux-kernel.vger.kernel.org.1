@@ -2,100 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CB041CAEA9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:16:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB0181CAAAD
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:33:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729293AbgEHMpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 08:45:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44510 "EHLO mail.kernel.org"
+        id S1727029AbgEHMdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 08:33:38 -0400
+Received: from mga01.intel.com ([192.55.52.88]:44678 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728559AbgEHMpN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 08:45:13 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1DE26208D6;
-        Fri,  8 May 2020 12:45:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588941912;
-        bh=3Gv960WOUHXTssVcGdsk3y/VLn7wVu7uSqVU1Wsl9Jo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D6ZshCZkqviC1G33C6EEoVuxb3tN+Rwmf22YmBazagbXjqZK4EXHSzV3Rsm2Vb5xp
-         ggcYCYTruMPKmokWADXprx1xY1KY4IA9iXZ+N6pY8RosrzA6uHeR2Q7YqpGFxh4wku
-         S5dVuxR4I6RuYXTGcn7MiDLyp9tCImZBHIqW0aXU=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Moshe Shemesh <moshe@mellanox.com>,
-        Tariq Toukan <tariqt@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.4 221/312] net/mlx4_core: Fix QUERY FUNC CAP flags
-Date:   Fri,  8 May 2020 14:33:32 +0200
-Message-Id: <20200508123140.002267257@linuxfoundation.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200508123124.574959822@linuxfoundation.org>
-References: <20200508123124.574959822@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1726616AbgEHMdh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 08:33:37 -0400
+IronPort-SDR: muK1Qm0u59jqnJNHMPrbiZmvb/7U6kNwj8pNjIe2dOmjTpVyLWX8R8Cv5ksEUr8pFHHSLuRhHX
+ zSrcFpmAw12A==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2020 05:33:37 -0700
+IronPort-SDR: z1RhVsduoIrC2tnsuUc5AAdakEHy2sRC+v8gIKe6U0+K7S9yDPUiPWBcbhWdOjh7lZ9t9I0SvX
+ fsdLGtbTvWjA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,367,1583222400"; 
+   d="scan'208";a="285391433"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.136])
+  by fmsmga004.fm.intel.com with ESMTP; 08 May 2020 05:33:34 -0700
+Date:   Fri, 8 May 2020 20:33:33 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Kees Cook <keescook@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        "Kleen, Andi" <andi.kleen@intel.com>,
+        "Chen, Tim C" <tim.c.chen@intel.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/3] mm: adjust vm_committed_as_batch according to vm
+ overcommit policy
+Message-ID: <20200508123333.GA69441@shbuild999.sh.intel.com>
+References: <1588922717-63697-1-git-send-email-feng.tang@intel.com>
+ <1588922717-63697-4-git-send-email-feng.tang@intel.com>
+ <20200508112448.GP16070@bombadil.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200508112448.GP16070@bombadil.infradead.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Moshe Shemesh <moshe@mellanox.com>
+On Fri, May 08, 2020 at 07:24:48PM +0800, Matthew Wilcox wrote:
+> On Fri, May 08, 2020 at 03:25:17PM +0800, Feng Tang wrote:
+> > +void mm_compute_batch(void)
+> >  {
+> >  	u64 memsized_batch;
+> >  	s32 nr = num_present_cpus();
+> >  	s32 batch = max_t(s32, nr*2, 32);
+> > -
+> > -	/* batch size set to 0.4% of (total memory/#cpus), or max int32 */
+> > -	memsized_batch = min_t(u64, (totalram_pages()/nr)/256, 0x7fffffff);
+> > +	unsigned long ram_pages = totalram_pages();
+> > +
+> > +	/*
+> > +	 * For policy of OVERCOMMIT_NEVER, set batch size to 0.4%
+> > +	 * of (total memory/#cpus), and lift it to 6.25% for other
+> > +	 * policies to easy the possible lock contention for percpu_counter
+> > +	 * vm_committed_as, while the max limit is INT_MAX
+> > +	 */
+> > +	if (sysctl_overcommit_memory == OVERCOMMIT_NEVER)
+> > +		memsized_batch = min_t(u64, ram_pages/nr/256, INT_MAX);
+> > +	else
+> > +		memsized_batch = min_t(u64, ram_pages/nr/16, INT_MAX);
+> >  
+> >  	vm_committed_as_batch = max_t(s32, memsized_batch, batch);
+> > +	printk("vm_committed_as_batch = %d\n", vm_committed_as_batch);
+> >  }
+> 
+> You left a debugging printk in ...
 
-commit c9cc599a96a6822c52cd72ed31dd7f813d792b4f upstream.
+Yep, my bad, thanks for the catching, will remove it.
 
-Separate QUERY_FUNC_CAP flags0 from QUERY_FUNC_CAP flags, as 'flags' is
-already used for another set of flags in FUNC CAP, while phv bit should be
-part of a different set of flags.
-Remove QUERY_FUNC_CAP port_flags field, as it is not in use.
-
-Fixes: 77fc29c4bbbb ('net/mlx4_core: Preparations for 802.1ad VLAN support')
-Fixes: 5cc914f10851 ('mlx4_core: Added FW commands and their wrappers for supporting SRIOV')
-Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
-Signed-off-by: Tariq Toukan <tariqt@mellanox.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- drivers/net/ethernet/mellanox/mlx4/fw.c |    5 ++---
- drivers/net/ethernet/mellanox/mlx4/fw.h |    2 +-
- 2 files changed, 3 insertions(+), 4 deletions(-)
-
---- a/drivers/net/ethernet/mellanox/mlx4/fw.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/fw.c
-@@ -610,8 +610,7 @@ int mlx4_QUERY_FUNC_CAP(struct mlx4_dev
- 		MLX4_GET(func_cap->phys_port_id, outbox,
- 			 QUERY_FUNC_CAP_PHYS_PORT_ID);
- 
--	MLX4_GET(field, outbox, QUERY_FUNC_CAP_FLAGS0_OFFSET);
--	func_cap->flags |= (field & QUERY_FUNC_CAP_PHV_BIT);
-+	MLX4_GET(func_cap->flags0, outbox, QUERY_FUNC_CAP_FLAGS0_OFFSET);
- 
- 	/* All other resources are allocated by the master, but we still report
- 	 * 'num' and 'reserved' capabilities as follows:
-@@ -2840,7 +2839,7 @@ int get_phv_bit(struct mlx4_dev *dev, u8
- 	memset(&func_cap, 0, sizeof(func_cap));
- 	err = mlx4_QUERY_FUNC_CAP(dev, port, &func_cap);
- 	if (!err)
--		*phv = func_cap.flags & QUERY_FUNC_CAP_PHV_BIT;
-+		*phv = func_cap.flags0 & QUERY_FUNC_CAP_PHV_BIT;
- 	return err;
- }
- EXPORT_SYMBOL(get_phv_bit);
---- a/drivers/net/ethernet/mellanox/mlx4/fw.h
-+++ b/drivers/net/ethernet/mellanox/mlx4/fw.h
-@@ -150,7 +150,7 @@ struct mlx4_func_cap {
- 	u32	qp1_proxy_qpn;
- 	u32	reserved_lkey;
- 	u8	physical_port;
--	u8	port_flags;
-+	u8	flags0;
- 	u8	flags1;
- 	u64	phys_port_id;
- 	u32	extra_flags;
-
-
+- Feng
