@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C8CC1CADEA
+	by mail.lfdr.de (Postfix) with ESMTP id 8B7D81CADEB
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:06:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730601AbgEHNFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:05:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34732 "EHLO
+        id S1730265AbgEHNF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 09:05:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730510AbgEHNF0 (ORCPT
+        by vger.kernel.org with ESMTP id S1730526AbgEHNF3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 09:05:26 -0400
+        Fri, 8 May 2020 09:05:29 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 575F8C05BD09;
-        Fri,  8 May 2020 06:05:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6278DC05BD43;
+        Fri,  8 May 2020 06:05:29 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jX2go-0007gF-SR; Fri, 08 May 2020 15:05:18 +0200
+        id 1jX2gu-0007hX-LP; Fri, 08 May 2020 15:05:24 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id B0D2B1C0845;
-        Fri,  8 May 2020 15:05:04 +0200 (CEST)
-Date:   Fri, 08 May 2020 13:05:04 -0000
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 856661C0475;
+        Fri,  8 May 2020 15:05:05 +0200 (CEST)
+Date:   Fri, 08 May 2020 13:05:05 -0000
 From:   "tip-bot2 for Arnaldo Carvalho de Melo" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf evlist: Allow reusing the side band thread for
- more purposes
+Subject: [tip: perf/core] perf parse-events: Add parse_events_option() variant
+ that creates evlist
 Cc:     Jiri Olsa <jolsa@redhat.com>,
         Adrian Hunter <adrian.hunter@intel.com>,
         Namhyung Kim <namhyung@kernel.org>,
         Song Liu <songliubraving@fb.com>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200429131106.27974-6-acme@kernel.org>
-References: <20200429131106.27974-6-acme@kernel.org>
+In-Reply-To: <20200429131106.27974-5-acme@kernel.org>
+References: <20200429131106.27974-5-acme@kernel.org>
 MIME-Version: 1.0
-Message-ID: <158894310460.8414.16136724605045953143.tip-bot2@tip-bot2>
+Message-ID: <158894310549.8414.1190785508623717399.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -54,90 +54,75 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the perf/core branch of tip:
 
-Commit-ID:     976be84504b8285d43dc890b02ceff432cd0dd4b
-Gitweb:        https://git.kernel.org/tip/976be84504b8285d43dc890b02ceff432cd0dd4b
+Commit-ID:     d0abbc3ce695437fe83446aef44b2f5ef65a80b9
+Gitweb:        https://git.kernel.org/tip/d0abbc3ce695437fe83446aef44b2f5ef65a80b9
 Author:        Arnaldo Carvalho de Melo <acme@redhat.com>
-AuthorDate:    Mon, 27 Apr 2020 17:54:27 -03:00
+AuthorDate:    Mon, 27 Apr 2020 13:58:11 -03:00
 Committer:     Arnaldo Carvalho de Melo <acme@redhat.com>
 CommitterDate: Tue, 05 May 2020 16:35:29 -03:00
 
-perf evlist: Allow reusing the side band thread for more purposes
+perf parse-events: Add parse_events_option() variant that creates evlist
 
-I.e. so far we had just one event in that side band thread, a dummy one
-with attr.bpf_event set, so that 'perf record' can go ahead and ask the
-kernel for further information about BPF programs being loaded.
-
-Allow for more than one event to be there, so that we can use it as
-well for the upcoming --switch-output-event feature.
+For the upcoming --switch-output-event option we want to create the side
+band event, populate it with the specified events and then, if it is
+present multiple times, go on adding to it, then, if the BPF tracking is
+required, use the first event to set its attr.bpf_event to get those
+PERF_RECORD_BPF_EVENT metadata events too.
 
 Acked-by: Jiri Olsa <jolsa@redhat.com>
 Cc: Adrian Hunter <adrian.hunter@intel.com>
 Cc: Namhyung Kim <namhyung@kernel.org>
 Cc: Song Liu <songliubraving@fb.com>
-Link: http://lore.kernel.org/lkml/20200429131106.27974-6-acme@kernel.org
+Link: http://lore.kernel.org/lkml/20200429131106.27974-5-acme@kernel.org
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/perf/util/evlist.h          |  1 +
- tools/perf/util/sideband_evlist.c | 23 +++++++++++++++++++++++
+ tools/perf/util/parse-events.c | 23 +++++++++++++++++++++++
+ tools/perf/util/parse-events.h |  1 +
  2 files changed, 24 insertions(+)
 
-diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
-index a9d01a1..93de63e 100644
---- a/tools/perf/util/evlist.h
-+++ b/tools/perf/util/evlist.h
-@@ -111,6 +111,7 @@ int perf_evlist__add_sb_event(struct evlist *evlist,
- 			      struct perf_event_attr *attr,
- 			      perf_evsel__sb_cb_t cb,
- 			      void *data);
-+void evlist__set_cb(struct evlist *evlist, perf_evsel__sb_cb_t cb, void *data);
- int perf_evlist__start_sb_thread(struct evlist *evlist,
- 				 struct target *target);
- void perf_evlist__stop_sb_thread(struct evlist *evlist);
-diff --git a/tools/perf/util/sideband_evlist.c b/tools/perf/util/sideband_evlist.c
-index 073d201..1d6f470 100644
---- a/tools/perf/util/sideband_evlist.c
-+++ b/tools/perf/util/sideband_evlist.c
-@@ -4,6 +4,7 @@
- #include "util/evlist.h"
- #include "util/evsel.h"
- #include "util/mmap.h"
-+#include "util/perf_api_probe.h"
- #include <perf/mmap.h>
- #include <linux/perf_event.h>
- #include <limits.h>
-@@ -80,6 +81,19 @@ static void *perf_evlist__poll_thread(void *arg)
- 	return NULL;
+diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+index 1010774..5795f3a 100644
+--- a/tools/perf/util/parse-events.c
++++ b/tools/perf/util/parse-events.c
+@@ -2190,6 +2190,29 @@ int parse_events_option(const struct option *opt, const char *str,
+ 	return ret;
  }
  
-+void evlist__set_cb(struct evlist *evlist, perf_evsel__sb_cb_t cb, void *data)
++int parse_events_option_new_evlist(const struct option *opt, const char *str, int unset)
 +{
-+	struct evsel *evsel;
++	struct evlist **evlistp = opt->value;
++	int ret;
 +
-+	evlist__for_each_entry(evlist, evsel) {
-+		evsel->core.attr.sample_id_all    = 1;
-+		evsel->core.attr.watermark        = 1;
-+		evsel->core.attr.wakeup_watermark = 1;
-+		evsel->side_band.cb   = cb;
-+		evsel->side_band.data = data;
-+      }
-+}
++	if (*evlistp == NULL) {
++		*evlistp = evlist__new();
 +
- int perf_evlist__start_sb_thread(struct evlist *evlist, struct target *target)
- {
- 	struct evsel *counter;
-@@ -90,6 +104,15 @@ int perf_evlist__start_sb_thread(struct evlist *evlist, struct target *target)
- 	if (perf_evlist__create_maps(evlist, target))
- 		goto out_delete_evlist;
- 
-+	if (evlist->core.nr_entries > 1) {
-+		bool can_sample_identifier = perf_can_sample_identifier();
-+
-+		evlist__for_each_entry(evlist, counter)
-+			perf_evsel__set_sample_id(counter, can_sample_identifier);
-+
-+		perf_evlist__set_id_pos(evlist);
++		if (*evlistp == NULL) {
++			fprintf(stderr, "Not enough memory to create evlist\n");
++			return -1;
++		}
 +	}
 +
- 	evlist__for_each_entry(evlist, counter) {
- 		if (evsel__open(counter, evlist->core.cpus, evlist->core.threads) < 0)
- 			goto out_delete_evlist;
++	ret = parse_events_option(opt, str, unset);
++	if (ret) {
++		evlist__delete(*evlistp);
++		*evlistp = NULL;
++	}
++
++	return ret;
++}
++
+ static int
+ foreach_evsel_in_last_glob(struct evlist *evlist,
+ 			   int (*func)(struct evsel *evsel,
+diff --git a/tools/perf/util/parse-events.h b/tools/perf/util/parse-events.h
+index 27596cb..6ead966 100644
+--- a/tools/perf/util/parse-events.h
++++ b/tools/perf/util/parse-events.h
+@@ -31,6 +31,7 @@ bool have_tracepoints(struct list_head *evlist);
+ const char *event_type(int type);
+ 
+ int parse_events_option(const struct option *opt, const char *str, int unset);
++int parse_events_option_new_evlist(const struct option *opt, const char *str, int unset);
+ int parse_events(struct evlist *evlist, const char *str,
+ 		 struct parse_events_error *error);
+ int parse_events_terms(struct list_head *terms, const char *str);
