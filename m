@@ -2,74 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65C871CBB60
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 01:47:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D8521CBB63
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 01:49:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728341AbgEHXrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 19:47:05 -0400
-Received: from mga17.intel.com ([192.55.52.151]:21510 "EHLO mga17.intel.com"
+        id S1728295AbgEHXtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 19:49:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50442 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727774AbgEHXrF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 19:47:05 -0400
-IronPort-SDR: qQAqKWwTDYPRUoHQD8UvVll2IubdOOpf2jXRhXwl5mbcivkMqCEyDrDy5VszM79VR9qwdEi4Rn
- Rc81C4UzM+sA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2020 16:47:04 -0700
-IronPort-SDR: IgmrIChEafSOPxXY/UYw1Y2kWVyxeCtNJby66alTB8gI1u7A6peCARaxk9T6+QycGiiMk5J9/a
- peFREwyRD8Lg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,369,1583222400"; 
-   d="scan'208";a="279186642"
-Received: from jbrandeb-mobl2.amr.corp.intel.com (HELO localhost) ([10.212.217.221])
-  by orsmga002.jf.intel.com with SMTP; 08 May 2020 16:47:03 -0700
-Date:   Fri, 8 May 2020 16:47:03 -0700
-From:   Jesse Brandeburg <jesse.brandeburg@intel.com>
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        "kernelci . org bot" <bot@kernelci.org>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        "Ilie Halip" <ilie.halip@gmail.com>, <x86@kernel.org>,
-        Marco Elver <elver@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Daniel Axtens <dja@axtens.net>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH v5] x86: bitops: fix build regression
-Message-ID: <20200508164703.0000481d@intel.com>
-In-Reply-To: <20200508202835.GA550540@ubuntu-s3-xlarge-x86>
-References: <20200508182835.228107-1-ndesaulniers@google.com>
-        <20200508183230.229464-1-ndesaulniers@google.com>
-        <20200508202835.GA550540@ubuntu-s3-xlarge-x86>
-X-Mailer: Claws Mail 3.12.0 (GTK+ 2.24.28; i686-w64-mingw32)
+        id S1727959AbgEHXtb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 19:49:31 -0400
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1B68B2496C
+        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 23:49:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588981771;
+        bh=mIKkm78zlsFmzyNyUggpg/nLJ1Pv+yfyI9aRpBMvboY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Qgrr/ZVrtyMMSjMvGdjIv+FxJZuAng9m7yuTdoCTyOB79iIyIxJif4vCLsbkFNCoK
+         qXIxL+QBwozjrrBbZe3ADXJGrf4sPvGFA4/sHOtcGrKlf1HKamC+RT5s3LctwL8pAQ
+         ysSq0F9r3y6BM21/Dmx5hSBkWO5ZF2Tjj3znNxI0=
+Received: by mail-wm1-f42.google.com with SMTP id h4so11949277wmb.4
+        for <linux-kernel@vger.kernel.org>; Fri, 08 May 2020 16:49:31 -0700 (PDT)
+X-Gm-Message-State: AGi0PuYoQhQU+HJ5KNhujtFYAt/mZRdtCiE0VhMqOHfYQod9ZuE/WtE+
+        KksVdLaeHKBUnu7RmO8LoZBOHwM4/FEKtdszSI1/Sw==
+X-Google-Smtp-Source: APiQypK0d4AuGP8O5iSc/+LZKwChQkendzKhSNJ9rrZnhtoC2RLyao6v06bE42N0zruNedhXQebsB28r6/WvMhKE28c=
+X-Received: by 2002:a1c:9989:: with SMTP id b131mr18252758wme.176.1588981769476;
+ Fri, 08 May 2020 16:49:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20200508144043.13893-1-joro@8bytes.org> <CALCETrX0ubjc0Gf4hCY9RWH6cVEKF1hv3RzqToKMt9_bEXXBvw@mail.gmail.com>
+ <20200508213609.GU8135@suse.de>
+In-Reply-To: <20200508213609.GU8135@suse.de>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Fri, 8 May 2020 16:49:17 -0700
+X-Gmail-Original-Message-ID: <CALCETrVxP87o2+aaf=RLW--DSpMrs=BXSQphN6bG5Y4X+OY8GQ@mail.gmail.com>
+Message-ID: <CALCETrVxP87o2+aaf=RLW--DSpMrs=BXSQphN6bG5Y4X+OY8GQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/7] mm: Get rid of vmalloc_sync_(un)mappings()
+To:     Joerg Roedel <jroedel@suse.de>
+Cc:     Andy Lutomirski <luto@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 May 2020 13:28:35 -0700
-Nathan Chancellor <natechancellor@gmail.com> wrote:
+On Fri, May 8, 2020 at 2:36 PM Joerg Roedel <jroedel@suse.de> wrote:
+>
+> On Fri, May 08, 2020 at 02:33:19PM -0700, Andy Lutomirski wrote:
+> > On Fri, May 8, 2020 at 7:40 AM Joerg Roedel <joro@8bytes.org> wrote:
+>
+> > What's the maximum on other system types?  It might make more sense to
+> > take the memory hit and pre-populate all the tables at boot so we
+> > never have to sync them.
+>
+> Need to look it up for 5-level paging, with 4-level paging its 64 pages
+> to pre-populate the vmalloc area.
+>
+> But that would not solve the problem on x86-32, which needs to
+> synchronize unmappings on the PMD level.
 
-> On Fri, May 08, 2020 at 11:32:29AM -0700, Nick Desaulniers wrote:
-> > Use the `%b` "x86 Operand Modifier" to instead force register allocation
-> > to select a lower-8-bit GPR operand.
+What changes in this series with x86-32?  We already do that
+synchronization, right?  IOW, in the cases where the vmalloc *fault*
+code does anything at all, we should have a small bound for how much
+memory to preallocate and, if we preallocate it, then there is nothing
+to sync and nothing to fault.  And we have the benefit that we never
+need to sync anything on 64-bit, which is kind of nice.
 
-This looks OK to me, I appreciate the work done to find the right
-fix and clean up the code while not breaking sparse! I had a look at
-the assembly from gcc 9.3.1 and it looks good. Thanks!
+Do we actually need PMD-level things for 32-bit?  What if we just
+outlawed huge pages in the vmalloc space on 32-bit non-PAE?
 
-Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+Or maybe the net result isn't much of a cleanup after all given the
+need to support 32-bit.
+
+>
+>
+>         Joerg
