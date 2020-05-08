@@ -2,68 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A9F1CB597
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 19:16:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 341821CB5A3
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 19:16:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728101AbgEHRPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 13:15:20 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:60942 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726767AbgEHRPT (ORCPT
+        id S1727820AbgEHRQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 13:16:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726756AbgEHRQW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 13:15:19 -0400
-X-UUID: 6da898a83a1e415ea90f873b44e098ff-20200509
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=+7J/Ls/qZVPDQuRiUUjEeGW9nmJ58u2HwRnHyuO/vGQ=;
-        b=I/j5hLj9mNdY0ka1ODGwW/30hk89NdVQTy7ivuyit6YXb0IHlAUa2jexrkZs1S6UhKgyuTnqX1FSlUWXxXCBey/gkU7EChPYMR9Vz2M0bKbY17gAPN25OeIgHsPLBGt6ltcXTj9Ush21LwW+vTi7d9zBg43RcLgOLcgNhZd/YVQ=;
-X-UUID: 6da898a83a1e415ea90f873b44e098ff-20200509
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 815445995; Sat, 09 May 2020 01:15:16 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Sat, 9 May 2020 01:15:12 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sat, 9 May 2020 01:15:12 +0800
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
-        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
-        <jejb@linux.ibm.com>, <asutoshd@codeaurora.org>
-CC:     <beanhuo@micron.com>, <cang@codeaurora.org>,
-        <matthias.bgg@gmail.com>, <bvanassche@acm.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
-        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
-        <andy.teng@mediatek.com>, Stanley Chu <stanley.chu@mediatek.com>
-Subject: [PATCH v1 5/5] scsi: ufs-mediatek: customize WriteBooster flush policy
-Date:   Sat, 9 May 2020 01:15:13 +0800
-Message-ID: <20200508171513.14665-6-stanley.chu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20200508171513.14665-1-stanley.chu@mediatek.com>
-References: <20200508171513.14665-1-stanley.chu@mediatek.com>
+        Fri, 8 May 2020 13:16:22 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EABA8C061A0C;
+        Fri,  8 May 2020 10:16:21 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id h9so2772971wrt.0;
+        Fri, 08 May 2020 10:16:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nEx7VWUEE5CS/7MRII1BtXnU4gjE+aVUwjHid+Nm0Kc=;
+        b=MiGzKwDSoc9PlgUPs6sZC1firZIaNgaQQNEf7spMf50dnlhJeYzZ59BSprQj3laLfH
+         uvYRTTgUhfIab+eUXvBTEkvb8I7o5xPXvSknJE9PjOAPqesk0s2LlA/siQHjQIoLbTM7
+         Dzr8feJ8u4Ifo3rli4/JNvxXgVtSX96Ml0cn3M4m7hBqOK4UNtIQI50WaArpdL4I13ot
+         k8Yc+LTcBKbMypfACeTNXlk4FP4iCcsOMZ3ZYtRGyI4vvBNsGyZcD20JDT6mHuqclbr4
+         gl9S3sHMkdq5oWHi89tBqLKYzBIv6RjckI3mcxjN0PnNFabSy/Z24VC2JT+KFoo6OUQg
+         3c3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nEx7VWUEE5CS/7MRII1BtXnU4gjE+aVUwjHid+Nm0Kc=;
+        b=nF06th7R1HxfeEwi9goDCIYcMM6n3c/VJQUyfilXneX3D4TfRB9PdNaJ0lAp48GaSc
+         fiOvAxFywnDNN+yjg6/97paez0CFcJp90JpwUaqmsnuNFLba7tyOFkNNvT8NpyzPPOwA
+         kbU0MehchMcQM5xXdtwPOqY90bFObzgDDEYRk1e1uaWzik21PwbMt5pxuLaFpQdIu1/e
+         oMWD53fRSTJ83G6W+mj2gXd/ljNEMYS0pBRgM4IWokXqQ4d9+KrAz9Wvzn5uPgQSnW26
+         5XAfw3/7+dpNc15fJpKaYVqOYEJFgaXu4eivahdazaBaDelPmOpyGjArnxPgIq9qEu+e
+         wTgQ==
+X-Gm-Message-State: AGi0PuawREVx1oTfEhfna0QX7DqacVeTX+3SDUZcJS9CAnb9WaRAHap4
+        ysUQkDdjfMZbuyQOnXG/tLSZa/KJ
+X-Google-Smtp-Source: APiQypI3RKIhnbHTS3W+/EeF1X2blbLwhwFUzrh91OmXRN/tq/LSpfxNgB1Vd4OZ+uSpNeVnPGE9jA==
+X-Received: by 2002:a5d:6a85:: with SMTP id s5mr4001053wru.122.1588958180684;
+        Fri, 08 May 2020 10:16:20 -0700 (PDT)
+Received: from kwango.redhat.com (ip-94-112-129-237.net.upcbroadband.cz. [94.112.129.237])
+        by smtp.gmail.com with ESMTPSA id s18sm4392616wra.94.2020.05.08.10.16.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 May 2020 10:16:20 -0700 (PDT)
+From:   Ilya Dryomov <idryomov@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Ceph fixes for 5.7-rc5
+Date:   Fri,  8 May 2020 19:16:13 +0200
+Message-Id: <20200508171613.27097-1-idryomov@gmail.com>
+X-Mailer: git-send-email 2.19.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Q2hhbmdlIHRoZSBXcml0ZUJvb3N0ZXIgcG9saWN5IHRvIGtlZXAgVkNDIG9uIGR1cmluZw0KcnVu
-dGltZSBzdXNwZW5kIGlmIGF2YWlsYWJsZSBXcml0ZUJvb3N0ZXIgYnVmZmVyIGlzIGxlc3MNCnRo
-YW4gODAlLg0KDQpTaWduZWQtb2ZmLWJ5OiBTdGFubGV5IENodSA8c3RhbmxleS5jaHVAbWVkaWF0
-ZWsuY29tPg0KLS0tDQogZHJpdmVycy9zY3NpL3Vmcy91ZnMtbWVkaWF0ZWsuYyB8IDEgKw0KIDEg
-ZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9zY3Np
-L3Vmcy91ZnMtbWVkaWF0ZWsuYyBiL2RyaXZlcnMvc2NzaS91ZnMvdWZzLW1lZGlhdGVrLmMNCmlu
-ZGV4IDU2NjIwZjdkODhjZS4uOTRlOTc3MDFmNDU2IDEwMDY0NA0KLS0tIGEvZHJpdmVycy9zY3Np
-L3Vmcy91ZnMtbWVkaWF0ZWsuYw0KKysrIGIvZHJpdmVycy9zY3NpL3Vmcy91ZnMtbWVkaWF0ZWsu
-Yw0KQEAgLTI3MSw2ICsyNzEsNyBAQCBzdGF0aWMgaW50IHVmc19tdGtfaW5pdChzdHJ1Y3QgdWZz
-X2hiYSAqaGJhKQ0KIA0KIAkvKiBFbmFibGUgV3JpdGVCb29zdGVyICovDQogCWhiYS0+Y2FwcyB8
-PSBVRlNIQ0RfQ0FQX1dCX0VOOw0KKwloYmEtPnZwcy0+d2JfZmx1c2hfdGhyZXNob2xkID0gVUZT
-X1dCX0JVRl9SRU1BSU5fUEVSQ0VOVCg4MCk7DQogDQogCS8qDQogCSAqIHVmc2hjZF92b3BzX2lu
-aXQoKSBpcyBpbnZva2VkIGFmdGVyDQotLSANCjIuMTguMA0K
+Hi Linus,
 
+The following changes since commit 0e698dfa282211e414076f9dc7e83c1c288314fd:
+
+  Linux 5.7-rc4 (2020-05-03 14:56:04 -0700)
+
+are available in the Git repository at:
+
+  https://github.com/ceph/ceph-client.git tags/ceph-for-5.7-rc5
+
+for you to fetch changes up to 12ae44a40a1be891bdc6463f8c7072b4ede746ef:
+
+  ceph: demote quotarealm lookup warning to a debug message (2020-05-08 18:44:40 +0200)
+
+----------------------------------------------------------------
+Fixes for an endianness handling bug that prevented mounts on
+big-endian arches, a spammy log message and a couple error paths.
+Also included a MAINTAINERS update.
+
+----------------------------------------------------------------
+Jeff Layton (1):
+      ceph: fix endianness bug when handling MDS session feature bits
+
+Luis Henriques (1):
+      ceph: demote quotarealm lookup warning to a debug message
+
+Sage Weil (1):
+      MAINTAINERS: remove myself as ceph co-maintainer
+
+Wu Bo (2):
+      ceph: fix special error code in ceph_try_get_caps()
+      ceph: fix double unlock in handle_cap_export()
+
+ MAINTAINERS          | 6 ------
+ fs/ceph/caps.c       | 3 ++-
+ fs/ceph/mds_client.c | 8 +++-----
+ fs/ceph/quota.c      | 4 ++--
+ 4 files changed, 7 insertions(+), 14 deletions(-)
