@@ -2,66 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E6541CA9F0
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 13:49:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44DFA1CA9D9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 13:43:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726937AbgEHLtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 07:49:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42836 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726689AbgEHLtB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 07:49:01 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AAF2D206D5;
-        Fri,  8 May 2020 11:49:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588938541;
-        bh=3XIhhm1Au/xGkfcAr3Z9Yi2x3ynKKFKgs0eZV/NQRgw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nvsvQSGYKzYmyT1GogXbnmyne0OVwyEJLMmFQZoxw8cqsVmaiMwZ18Fv/ZovqttVX
-         j0NvV2MUYhdZ+6GNLpdvDNoKHYFINt4Va8mIkvXzdL8ayp5zLkcKcIuMWyXMDDgKCS
-         EnLtw9BgnueLU3C+JSD/ZF9KHLqAdNlAOOMgvLuo=
-Date:   Fri, 8 May 2020 13:48:58 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Tang Bin <tangbin@cmss.chinamobile.com>
-Cc:     stern@rowland.harvard.edu, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Subject: Re: [PATCH] USB: host: ehci: Add error handling in
- ehci_mxc_drv_probe()
-Message-ID: <20200508114858.GA4085349@kroah.com>
-References: <20200508114453.15436-1-tangbin@cmss.chinamobile.com>
+        id S1727114AbgEHLnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 07:43:41 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:39370 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726792AbgEHLnl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 07:43:41 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 258A3EEF90EE3F204B53;
+        Fri,  8 May 2020 19:43:39 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 8 May 2020 19:43:30 +0800
+From:   Samuel Zou <zou_wei@huawei.com>
+To:     <sathya.prakash@broadcom.com>,
+        <suganath-prabu.subramani@broadcom.com>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>
+CC:     <MPT-FusionLinux.pdl@broadcom.com>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Samuel Zou <zou_wei@huawei.com>
+Subject: [PATCH -next] scsi: mpt3sas: Remove unused including <linux/version.h>
+Date:   Fri, 8 May 2020 19:49:33 +0800
+Message-ID: <1588938573-57847-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200508114453.15436-1-tangbin@cmss.chinamobile.com>
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 08, 2020 at 07:44:53PM +0800, Tang Bin wrote:
-> The function ehci_mxc_drv_probe() does not perform sufficient error
-> checking after executing platform_get_irq(), thus fix it.
-> 
-> Fixes: 7e8d5cd93fa ("USB: Add EHCI support for MX27 and MX31 based boards")
-> Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
-> ---
->  drivers/usb/host/ehci-mxc.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/usb/host/ehci-mxc.c b/drivers/usb/host/ehci-mxc.c
-> index a1eb5ee77..a0b42ba59 100644
-> --- a/drivers/usb/host/ehci-mxc.c
-> +++ b/drivers/usb/host/ehci-mxc.c
-> @@ -50,6 +50,8 @@ static int ehci_mxc_drv_probe(struct platform_device *pdev)
->  	}
->  
->  	irq = platform_get_irq(pdev, 0);
-> +	if (irq < 0)
-> +		return irq;
+Fix the following versioncheck warning:
 
-<= ?
+drivers/scsi/mpt3sas/mpt3sas_debugfs.c:16:1: unused including <linux/version.h>
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Samuel Zou <zou_wei@huawei.com>
+---
+ drivers/scsi/mpt3sas/mpt3sas_debugfs.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/scsi/mpt3sas/mpt3sas_debugfs.c b/drivers/scsi/mpt3sas/mpt3sas_debugfs.c
+index 48095d8..a6ab1db 100644
+--- a/drivers/scsi/mpt3sas/mpt3sas_debugfs.c
++++ b/drivers/scsi/mpt3sas/mpt3sas_debugfs.c
+@@ -13,7 +13,6 @@
+  *
+  **/
+ 
+-#include <linux/version.h>
+ #include <linux/kernel.h>
+ #include <linux/types.h>
+ #include <linux/pci.h>
+-- 
+2.6.2
+
