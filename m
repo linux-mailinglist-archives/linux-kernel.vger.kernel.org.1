@@ -2,93 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1A631CB43F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 18:01:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFC501CB44F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 18:05:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726817AbgEHQBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 12:01:33 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:33170 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726906AbgEHQBd (ORCPT
+        id S1727071AbgEHQFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 12:05:41 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:49977 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726906AbgEHQFk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 12:01:33 -0400
+        Fri, 8 May 2020 12:05:40 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588953691;
+        s=mimecast20190719; t=1588953939;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=5LkMQAQyCyRsGiygZwM0QwLTkw6iqVkAYQ2dn3WWLSk=;
-        b=KQ6SSAW5l89NPzkjnsm842JDFKd0Vxm9oz35fFhZeF8AjAh4DVBVxha8doNbZRLrfuc/+R
-        +ONcWSUUDeJm2KJ45JKcHOAuZ5EkUK9xgOaPTmfpG/5F9iuIddbmpb8SvPdUCSJ68umAPp
-        4/g2FpP0GYaYqOkygkLnkzDCqqx9IKA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-352-WIhy7G_8NaWGf6v478Z7tg-1; Fri, 08 May 2020 12:01:28 -0400
-X-MC-Unique: WIhy7G_8NaWGf6v478Z7tg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 39E8684B8A4;
-        Fri,  8 May 2020 16:01:26 +0000 (UTC)
-Received: from treble (ovpn-115-96.rdu2.redhat.com [10.10.115.96])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 544516AD13;
-        Fri,  8 May 2020 16:01:24 +0000 (UTC)
-Date:   Fri, 8 May 2020 11:01:22 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, akpm@linux-foundation.org,
-        broonie@kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-next@vger.kernel.org, mhocko@suse.cz,
-        mm-commits@vger.kernel.org, sfr@canb.auug.org.au
-Subject: Re: mmotm 2020-05-05-15-28 uploaded (objtool warning)
-Message-ID: <20200508160122.hsqb25lzhd2xkisv@treble>
-References: <20200505222922.jajHT3b4j%akpm@linux-foundation.org>
- <36dc367a-f647-4ee8-a327-d1c3457a7940@infradead.org>
- <20200508103830.GZ5298@hirez.programming.kicks-ass.net>
+        bh=SzNGIg9wCojzQE1LmaJBjj2Riqjs4hcmRh8uNcepGBA=;
+        b=MgXqGQ3uPuCIgaKvqYfvhzNiRjI9LeWvaeMdPksBj58QFl+Elvu5ih+4Zl/vwMfv56p3dA
+        2fM1cVrrI2k1LwbyN/LH7nn7iSnYXvMjfd3llOHGdHQSJm6gz9hht0puV78vI49b8ehkUS
+        QYj/hnV2LjDMmciZI/kzxY9DNIFxycQ=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-487-cVBR9jyhOSaLgXYgcNzYXA-1; Fri, 08 May 2020 12:05:37 -0400
+X-MC-Unique: cVBR9jyhOSaLgXYgcNzYXA-1
+Received: by mail-qv1-f69.google.com with SMTP id cr5so2227174qvb.14
+        for <linux-kernel@vger.kernel.org>; Fri, 08 May 2020 09:05:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SzNGIg9wCojzQE1LmaJBjj2Riqjs4hcmRh8uNcepGBA=;
+        b=Y4GO/yQ2WhnNqHR1+oei0trCRcxdyI0wmCPbRPuESjg4W7UCCBXqWQOc4xy3+HV3l5
+         mjtOtQpwCXK3ezuCCWROk+xy0wJCrVLjwHVjEROLqbtWjIl10K5eDTJxdrFhytqSXvjF
+         8OuuX23shPoPHdpB0hHbKknK3wQUOhcfSBcKs2tdwpBH9rcsP6x5yH3WCSjSiwjCAdpR
+         Rz9OzRSiWCGO94Cpm+et0GK1RN1o32iekFRjU1vfXwYJsh5EY4p8K9a8YrBFVMtqnwGx
+         7eqmuOUqt9Lh9NvJ4+ISTahn+OFkUsX80ht88APyZyZfa51zilbpQ7yo/z8mTMHx+Y/9
+         qb9w==
+X-Gm-Message-State: AGi0PuYua6cMqzP4olR1+FVNJLrGuyexeSLqF5R+aUMc5HGdTVzOZaNC
+        o/aVjauiQueL/Y+z4TMVxD9tXBk+QW29dkc6LzciYRPwjtg+Bux//KsZFCWHzMGMDIPmLbBjm0x
+        HVtLg04fVzCp7LRf2RBZdP/5d
+X-Received: by 2002:a05:6214:42b:: with SMTP id a11mr3487475qvy.186.1588953934337;
+        Fri, 08 May 2020 09:05:34 -0700 (PDT)
+X-Google-Smtp-Source: APiQypJEZbUB9JpX5nQ5mBjKk/50jvAujXFWp5fDu/JL2c2EKEzr4jVhJs06Er18X2ZJXYM9xvwVNA==
+X-Received: by 2002:a05:6214:42b:: with SMTP id a11mr3487445qvy.186.1588953934079;
+        Fri, 08 May 2020 09:05:34 -0700 (PDT)
+Received: from xz-x1 ([2607:9880:19c0:32::2])
+        by smtp.gmail.com with ESMTPSA id t7sm1700790qtr.93.2020.05.08.09.05.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 May 2020 09:05:33 -0700 (PDT)
+Date:   Fri, 8 May 2020 12:05:32 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, cohuck@redhat.com
+Subject: Re: [PATCH v2 1/3] vfio/type1: Support faulting PFNMAP vmas
+Message-ID: <20200508160532.GB228260@xz-x1>
+References: <158871401328.15589.17598154478222071285.stgit@gimli.home>
+ <158871568480.15589.17339878308143043906.stgit@gimli.home>
+ <20200507212443.GO228260@xz-x1>
+ <20200507235421.GK26002@ziepe.ca>
+ <20200508021939.GT228260@xz-x1>
+ <20200508121013.GO26002@ziepe.ca>
+ <20200508143042.GY228260@xz-x1>
+ <20200508150540.GP26002@ziepe.ca>
+ <20200508094213.0183c645@w520.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200508103830.GZ5298@hirez.programming.kicks-ass.net>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20200508094213.0183c645@w520.home>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 08, 2020 at 12:38:30PM +0200, Peter Zijlstra wrote:
-> Subject: objtool: Allow no-op CFI ops in alternatives
-> From: Peter Zijlstra <peterz@infradead.org>
-> Date: Fri May 8 12:34:33 CEST 2020
-> 
-> Randy reported a false-positive: "alternative modifies stack".
-> 
-> What happens is that:
-> 
-> 	alternative_io("movl %0, %P1", "xchgl %0, %P1", X86_BUG_11AP,
->  13d:   89 9d 00 d0 7f ff       mov    %ebx,-0x803000(%rbp)
-> 
-> decodes to an instruction with CFI-ops because it modifies RBP.
-> However, due to this being a !frame-pointer build, that should not in
-> fact change the CFI state.
-> 
-> So instead of dis-allowing any CFI-op, verify the op would've actually
-> changed the CFI state.
-> 
-> Fixes: 7117f16bf460 ("objtool: Fix ORC vs alternatives")
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+On Fri, May 08, 2020 at 09:42:13AM -0600, Alex Williamson wrote:
+> Thanks for the discussion.  I gather then that this patch is correct as
+> written, which probably also mean the patch Peter linked for KVM should
+> not be applied since the logic is the same there.  Correct?  Thanks,
 
-It helps to put an example of the fixed warning in the commit log, like:
-
-This fixes the following warning:
-
-  arch/x86/hyperv/hv_apic.o: warning: objtool: hv_apic_write()+0x25: alternative modifies stack
-
-Otherwise it looks good.
-
-Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Right.  I've already replied yesterday in that thread so Paolo unqueue that
+patch too.  Thanks,
 
 -- 
-Josh
+Peter Xu
 
