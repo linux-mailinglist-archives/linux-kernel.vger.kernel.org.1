@@ -2,81 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 220E41CA97B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 13:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 917F91CA981
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 13:25:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726815AbgEHLY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 07:24:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726616AbgEHLY6 (ORCPT
+        id S1727097AbgEHLZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 07:25:32 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:53715 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726616AbgEHLZb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 07:24:58 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D0C5C05BD43
-        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 04:24:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=NxQcpIelyEQesB4Sm1aLDUu9bMqSHC3VF1eV1UfASUg=; b=qWtc8D7+0/9xVqdUbP7k/6JIm1
-        RDfSxGbjCusifjScBAtY+UU5VWoPHynFdOxj/MsCdD5rnKX1Irb6qQJf7hiS2eeS/9R/Ihz5A3Lmz
-        /13vLvj4Q5IMF/T+/Wsg1Lnd4bK7pB9BG7Om74roMn9fwuqLy496RA3Dp2PBFaCWBAZ2kUoO9KMd6
-        Ih22+gY1uwLRktvcICmPI9Rt4D+MdaJY6Z4Y3DYnYtsdMc1d83bWq8eqXda8eGKZNrcsMym/hdjgg
-        URCcDV+sJnTVaNeSYzvbBlB1uhsi+gXtV99DneCrhZtavmpUM7IwaFA25iYsm/oHfxEgrf3i2JLyf
-        6o7hlM8A==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jX17Y-0006Gg-8m; Fri, 08 May 2020 11:24:48 +0000
-Date:   Fri, 8 May 2020 04:24:48 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Kees Cook <keescook@chromium.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>, andi.kleen@intel.com,
-        tim.c.chen@intel.com, dave.hansen@intel.com, ying.huang@intel.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] mm: adjust vm_committed_as_batch according to vm
- overcommit policy
-Message-ID: <20200508112448.GP16070@bombadil.infradead.org>
-References: <1588922717-63697-1-git-send-email-feng.tang@intel.com>
- <1588922717-63697-4-git-send-email-feng.tang@intel.com>
+        Fri, 8 May 2020 07:25:31 -0400
+Received: from mail-qv1-f51.google.com ([209.85.219.51]) by
+ mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1MLQl3-1jop8E0tIB-00IQOB; Fri, 08 May 2020 13:25:29 +0200
+Received: by mail-qv1-f51.google.com with SMTP id h6so530757qvz.8;
+        Fri, 08 May 2020 04:25:28 -0700 (PDT)
+X-Gm-Message-State: AGi0PualJxPnxEKPSgGwLsW/QiwEv3yAoSye8KoQz66n2fv0mYwpEjpf
+        an56zmcaw6DmuMbPL+1ZP9mWwUcoahSu3pyR/+0=
+X-Google-Smtp-Source: APiQypKP7zSjz563Q47ftI8vSMTS44GtpXWK8IqV4snmbCtzxnXEyx+F4Gu3Bvc4WC6wp9pjrwFUD39xIhs1aUhY1bc=
+X-Received: by 2002:a0c:e781:: with SMTP id x1mr2425587qvn.4.1588937127849;
+ Fri, 08 May 2020 04:25:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1588922717-63697-4-git-send-email-feng.tang@intel.com>
+References: <20200508095914.20509-1-grygorii.strashko@ti.com>
+ <CAK8P3a0qfFzJGya-Ydst8dwC8d7wydfNG-4Ef9zkycEd8WLOCA@mail.gmail.com> <7df7a64c-f564-b0cc-9100-93c9e417c2fc@ti.com>
+In-Reply-To: <7df7a64c-f564-b0cc-9100-93c9e417c2fc@ti.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 8 May 2020 13:25:11 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0-6vRpHJugnUFhNNAALmqx4CUW9ffTOojxu5a80tAQTw@mail.gmail.com>
+Message-ID: <CAK8P3a0-6vRpHJugnUFhNNAALmqx4CUW9ffTOojxu5a80tAQTw@mail.gmail.com>
+Subject: Re: [PATCH net v3] net: ethernet: ti: fix build and remove
+ TI_CPTS_MOD workaround
+To:     Grygorii Strashko <grygorii.strashko@ti.com>
+Cc:     Networking <netdev@vger.kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Russell King <linux@armlinux.org.uk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Clay McClure <clay@daemons.net>, Dan Murphy <dmurphy@ti.com>,
+        Murali Karicheri <m-karicheri2@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:XZd2NI9K9woe7pS7VYePjL3/1sBMIWIWN3C1EZIKq2jfpUZOG/a
+ mUqNE2/PA/CLCnjefd/KgSZNVQuzbUX9tLZb5OaphUVB+xs+NCaSTbRCcnAG4CSSIuBtd2N
+ S/+2DI3mr4FH0huzMz0uyJsQa3eBS0jnBxsoZ1KXwcxWpeL4FzcMBtSI7ZiOYBrTU9D9Cwa
+ uPazwMgzWzZIMlc7X1iNA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:77m6WKCYY70=:G7Ex5rkPFtdKiHJHnpDwH0
+ jbbAkDxOou9b3jh0zqHpCdFmrYFlIo73nJWSJmWc/dsfZa8EOPAaYjzJ6vS7K0wBD3TDRMTGl
+ 6DbBhj7d1/9bBStJ6SMr6dvRco9BbUnMozr3oSWmN54GYYsd0Kd2zH44FmGjw69QlEkiH3jPy
+ t71uXHPVfdEtocmRy7vhtJZi8PFWcTHKNWUYCqKWfzCad4hO5jtTyfgdKIbMW//V+f0qQN1Mh
+ W08tpjxp/9qWTp+8wmdbvWAcKDpvDpmvYXHEhj2//6rEDkCMJHs6Vm/nxurvT6qySUnUHBNLO
+ bQIEDktrq3CrIgv2HMkn3/tOlypPTneNGUDhkeDynA5BMH71CDb7TEbsZIKsXJdGP+uGj5Qnj
+ Lc76Z68U+DYKD09Pb3T1Xeh/qiKrY2lEnN80c/MjrZouEX10RNmtYuex07qDFMpETLR1jTX/b
+ acAfwzdqLmIlTTCScCXwBp9pDBV2im8cXL3VZNHUQ1zp9oj8NNUjv5HPwsz2uUtVEs2M1+9hd
+ 7YaGeiU7ZUKbER5azRIqFJRicDMDlj0s7EpwRhj66s9d2f7vn+/1xPkVWxgu7kBZNEkk7TBlN
+ fQFPQt8ZA+fRQhzBY4g3IL4aDrpje5tQovkUY0MH2OkhZQu0YGr/Whp/JLvFEa5zGrEp4svCT
+ 4ts3QxGBjAxOFkO+s6FA1vVkCm8xzr/FPCVZ5NcEFf3d2eyyf6p1LFCOqDshF+dS/USjmYT29
+ KtV/LN3rYqC0DKaMZD+o3ltbX3VvGFWRqQbvd1ijgHpi5TJ9eXwjOBHHtcYzBHZfu+bpILQgH
+ xeP6AoLdaBzenh4DSwgjr+Ppd3kPevRfSCxuS4S+CusKE4Zd50=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 08, 2020 at 03:25:17PM +0800, Feng Tang wrote:
-> +void mm_compute_batch(void)
->  {
->  	u64 memsized_batch;
->  	s32 nr = num_present_cpus();
->  	s32 batch = max_t(s32, nr*2, 32);
-> -
-> -	/* batch size set to 0.4% of (total memory/#cpus), or max int32 */
-> -	memsized_batch = min_t(u64, (totalram_pages()/nr)/256, 0x7fffffff);
-> +	unsigned long ram_pages = totalram_pages();
-> +
-> +	/*
-> +	 * For policy of OVERCOMMIT_NEVER, set batch size to 0.4%
-> +	 * of (total memory/#cpus), and lift it to 6.25% for other
-> +	 * policies to easy the possible lock contention for percpu_counter
-> +	 * vm_committed_as, while the max limit is INT_MAX
-> +	 */
-> +	if (sysctl_overcommit_memory == OVERCOMMIT_NEVER)
-> +		memsized_batch = min_t(u64, ram_pages/nr/256, INT_MAX);
-> +	else
-> +		memsized_batch = min_t(u64, ram_pages/nr/16, INT_MAX);
->  
->  	vm_committed_as_batch = max_t(s32, memsized_batch, batch);
-> +	printk("vm_committed_as_batch = %d\n", vm_committed_as_batch);
->  }
+On Fri, May 8, 2020 at 1:14 PM Grygorii Strashko
+<grygorii.strashko@ti.com> wrote:
+> On 08/05/2020 13:10, Arnd Bergmann wrote:
+> > On Fri, May 8, 2020 at 11:59 AM Grygorii Strashko
 
-You left a debugging printk in ...
+> >> That's because TI_CPTS_MOD (which is the symbol gating the _compilation_ of
+> >> cpts.c) now depends on PTP_1588_CLOCK, and so is not enabled in these
+> >> configurations, but TI_CPTS (which is the symbol gating _calls_ to the cpts
+> >> functions) _is_ enabled. So we end up compiling calls to functions that
+> >> don't exist, resulting in the linker errors.
+> >>
+> >> This patch fixes build errors and restores previous behavior by:
+> >>   - ensure PTP_1588_CLOCK=y in TI specific configs and CPTS will be built
+> >>   - use IS_REACHABLE(CONFIG_TI_CPTS) in code instead of IS_ENABLED()
+> >
+> > I don't understand what IS_REACHABLE() is needed for once all the other
+> > changes are in place. I'd hope we can avoid that. Do you still see
+> > failures without
+> > that or is it just a precaution. I can do some randconfig testing on your patch
+> > to see what else might be needed to avoid IS_REACHABLE().
+>
+> I've not changed this part of original patch, but seems you're right.
+>
+> I can drop it and resend, but, unfortunately, i do not have time today for full build testing.
+
+I have applied to patch locally to my randconfig tree, with the IS_REACHABLE()
+changes taken out.
+
+> By the way in ptp_clock_kernel.h
+> #if IS_REACHABLE(CONFIG_PTP_1588_CLOCK)
+
+This should also be changed I think, but it can wait for another day.
+
+      Arnd
