@@ -2,74 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2DC41C9FB9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 02:40:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8E6C1C9FB2
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 02:34:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726797AbgEHAke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 20:40:34 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:54122 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726470AbgEHAkd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 20:40:33 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0480eTnb053648;
-        Thu, 7 May 2020 19:40:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1588898429;
-        bh=sZLqc6bcUyrr7YvApm7EgW/hqpn5lokyznG7/dwl9Q4=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=Shlav7+D1aY0m3636dTmu/xp9CH0EpC2xAasUq9An7zHGalx6giqVV4UWT171oQw1
-         Lil3Psl+Q0XLgmA94qPA/Q0l26whowWdJHsAnAtWnUoavoPrDPUmU/9vGsj6yhQR32
-         Lee5TYqKGkn+mR7hBTxL0KXeCi+fA3715en3nXEg=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0480eTGM072433
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 7 May 2020 19:40:29 -0500
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 7 May
- 2020 19:40:28 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 7 May 2020 19:40:28 -0500
-Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0480eLZN024416;
-        Thu, 7 May 2020 19:40:24 -0500
-Subject: Re: [PATCH net/master] net: ethernet: ti: cpts: Fix linker issue when
- TI_CPTS is defined
-To:     <davem@davemloft.net>, <richardcochran@gmail.com>,
-        <ivan.khoronzhuk@linaro.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-References: <20200507214740.14693-1-dmurphy@ti.com>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <ab0a9a19-c96b-f90f-827d-aa10bf49a4b7@ti.com>
-Date:   Thu, 7 May 2020 19:31:33 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726750AbgEHAeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 20:34:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40030 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726509AbgEHAeF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 20:34:05 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ACE8120661;
+        Fri,  8 May 2020 00:34:02 +0000 (UTC)
+Date:   Thu, 7 May 2020 20:34:00 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Rich Felker <dalias@libc.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Subject: Re: [patch V4 part 1 32/36] sh/ftrace: Move
+ arch_ftrace_nmi_{enter,exit} into nmi exception
+Message-ID: <20200507203400.58fbdf1e@oasis.local.home>
+In-Reply-To: <20200505134101.248881738@linutronix.de>
+References: <20200505131602.633487962@linutronix.de>
+        <20200505134101.248881738@linutronix.de>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20200507214740.14693-1-dmurphy@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All
+On Tue, 05 May 2020 15:16:34 +0200
+Thomas Gleixner <tglx@linutronix.de> wrote:
 
-On 5/7/20 4:47 PM, Dan Murphy wrote:
-> Fix build issue when CONFIG_TI_CPTS is defined in the defconfig but
-> CONFIG_TI_CPTS_MOD is not set.
+> From: Peter Zijlstra <peterz@infradead.org>
+> 
+> SuperH is the last remaining user of arch_ftrace_nmi_{enter,exit}(),
+> remove it from the generic code and into the SuperH code.
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Rich Felker <dalias@libc.org>
+> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
 
-I see this already has a pending patch to fix this so unless this 
-solution is better I will drop the patch
+Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-https://lore.kernel.org/patchwork/patch/1235642/
+-- Steve
 
-Dan
-
+> ---
+>  Documentation/trace/ftrace-design.rst |    8 --------
+>  arch/sh/Kconfig                       |    1 -
+>  arch/sh/kernel/traps.c                |   12 ++++++++++++
+>  include/linux/ftrace_irq.h            |   11 -----------
+>  kernel/trace/Kconfig                  |   10 ----------
+>  5 files changed, 12 insertions(+), 30 deletions(-)
+> 
+>
