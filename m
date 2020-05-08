@@ -2,86 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C978B1CA986
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 13:26:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 852701CA98D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 13:26:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727109AbgEHL0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 07:26:06 -0400
-Received: from mga07.intel.com ([134.134.136.100]:48123 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726616AbgEHL0G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 07:26:06 -0400
-IronPort-SDR: Z7Woj9NpJedFYMWO2l2Q9pv+ijHM5MzBE53xGs6YC+JDrhqERuqo1xpomLznzMEAQSYqqQ/Xw9
- 4RnLjBVpXaRw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2020 04:26:05 -0700
-IronPort-SDR: EJZ25u9TwWmhpMu7/TpuqpIjDfqgRYL2yc1H4yD9ePqQNKbeHjWIx7T1RrS+YZTp/H774yoX3l
- 1zXHlDGocy/Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,367,1583222400"; 
-   d="scan'208";a="462497652"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga006.fm.intel.com with ESMTP; 08 May 2020 04:26:02 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jX18m-005PHB-R0; Fri, 08 May 2020 14:26:04 +0300
-Date:   Fri, 8 May 2020 14:26:04 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Vinod Koul <vkoul@kernel.org>, Viresh Kumar <vireshk@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/6] dmaengine: dw: Print warning if multi-block is
- unsupported
-Message-ID: <20200508112604.GJ185537@smile.fi.intel.com>
-References: <20200306131048.ADBE18030797@mail.baikalelectronics.ru>
- <20200508105304.14065-1-Sergey.Semin@baikalelectronics.ru>
- <20200508105304.14065-5-Sergey.Semin@baikalelectronics.ru>
+        id S1727777AbgEHL0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 07:26:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726618AbgEHL0a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 07:26:30 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B97AC05BD43;
+        Fri,  8 May 2020 04:26:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=i605eDMDNY8KyszY5v6QIxThK3xpDXQtG6gdo/y+ktg=; b=KLlSvJ6JY5ihQrVCCnT+wbVZgJ
+        z3wpGMlGDZpsLvpDv7HIafxPs1yngTfy6fULgy9QRhhHGASaQ06FQm2v8cmhOBEmkoK4/J7vVN8tp
+        aTZxlpudeb6U0tOfvdFCMTTE9KlxrTCbSnzfra1Mw059R2wKbxchrqwJkdQ7mtOG2M8prxNOqV8uJ
+        nM2eLo5j/vASGAmjQtDWqNyWzZvhepI6Htw9ExmaxYnAl8wIeAen3lA4X9GR1/W+OiWUkYHjkO2PN
+        Tp1j5aA81izfL94vE1bB4a6BMP6saHjBzm3isSsjsgyM/7dkfOKCas9GvS+LcA3VuauD1cpRS2xiB
+        SJaonrUQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jX18t-0000MQ-Ly; Fri, 08 May 2020 11:26:11 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2D6B8301EFB;
+        Fri,  8 May 2020 13:26:09 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1877B203ECDC2; Fri,  8 May 2020 13:26:09 +0200 (CEST)
+Date:   Fri, 8 May 2020 13:26:09 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Quentin Perret <qperret@google.com>, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com, sudeep.holla@arm.com,
+        rafael@kernel.org, viresh.kumar@linaro.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com,
+        fweisbec@gmail.com, tkjos@google.com, kernel-team@android.com
+Subject: Re: [PATCH 00/14] Modularize schedutil
+Message-ID: <20200508112609.GA5298@hirez.programming.kicks-ass.net>
+References: <20200507181012.29791-1-qperret@google.com>
+ <20200508081128.GM5298@hirez.programming.kicks-ass.net>
+ <20200508103721.GA3860390@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200508105304.14065-5-Sergey.Semin@baikalelectronics.ru>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20200508103721.GA3860390@kroah.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Cc: Mark (question about SPI + DMA workflow)
+On Fri, May 08, 2020 at 12:37:21PM +0200, Greg KH wrote:
+> On Fri, May 08, 2020 at 10:11:28AM +0200, Peter Zijlstra wrote:
+> > On Thu, May 07, 2020 at 07:09:58PM +0100, Quentin Perret wrote:
+> > > One challenge to implement GKI is to avoid bloating the kernel by
+> > > compiling too many things in, especially given that different devices
+> > > need different things. As such, anything that can be turned into a
+> > > module helps GKI, by offering an alternative to having that component
+> > > built-in. This is true for pretty much anything that can be made
+> > > modular, including drivers as well as other kernel components, such as
+> > > CPUFreq governors.
+> > 
+> > The idea is to move to 1 governor, schedutil. Also, I abhor all the
+> > exports this thing does. Modules have no business touching most of that.
+> > 
+> > Look at every EXPORT you do and wonder ask yourself how you can abuse
+> > it. Modules are not a good thing, they're horrible pieces of crap.
+> 
+> Quentin, what is missing from schedutil that warrants the need for a
+> totally different governor?  Is there specific problems with the
+> existing ones or is this just an instance of "we wrote our own a long
+> time ago and never pushed it upstream" from various SoC companies?
 
-On Fri, May 08, 2020 at 01:53:02PM +0300, Serge Semin wrote:
-> Multi-block support provides a way to map the kernel-specific SG-table so
-> the DW DMA device would handle it as a whole instead of handling the
-> SG-list items or so called LLP block items one by one. So if true LLP
-> list isn't supported by the DW DMA engine, then soft-LLP mode will be
-> utilized to load and execute each LLP-block one by one. A problem may
-> happen for multi-block DMA slave transfers, when the slave device buffers
-> (for example Tx and Rx FIFOs) depend on each other and have size smaller
-> than the block size. In this case writing data to the DMA slave Tx buffer
-> may cause the Rx buffer overflow if Rx DMA channel is paused to
-> reinitialize the DW DMA controller with a next Rx LLP item. In particular
-> We've discovered this problem in the framework of the DW APB SPI device
+At the very least there's that interactive governor that's really
+popular with Android. But IIRC there's a whole scala of home-brew
+governors and tweaks out there.
 
-Mark, do we have any adjustment knobs in SPI core to cope with this?
-
-> working in conjunction with DW DMA. Since there is no comprehensive way to
-> fix it right now lets at least print a warning for the first found
-> multi-blockless DW DMAC channel. This shall point a developer to the
-> possible cause of the problem if one would experience a sudden data loss.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+And instead of enabling that crap, we should be discouraging it.
+Consolidate and kill the governor interface.
