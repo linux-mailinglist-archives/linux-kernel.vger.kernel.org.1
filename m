@@ -2,37 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71E091CADB5
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:06:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45F0A1CAC5C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:55:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729944AbgEHNDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:03:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55732 "EHLO mail.kernel.org"
+        id S1729192AbgEHMwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 08:52:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33922 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729755AbgEHMtl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 08:49:41 -0400
+        id S1729984AbgEHMwj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 08:52:39 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4675B24963;
-        Fri,  8 May 2020 12:49:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E4F4F24959;
+        Fri,  8 May 2020 12:52:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588942180;
-        bh=qsJ/53XCgYqaSo+VENcud1k+gasMiL9UTTpBJtkC0Q4=;
+        s=default; t=1588942359;
+        bh=jlkHXoihReddzPOAJ1lmAMz3Qsw9jgoxpyqzH4jRIE4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C/jwwPvpDWsPBSmnj4QD8krSoem4NhZPTR+eiOH9sUQhS0/dEvbwhT/d6klm+oaYr
-         vTEe0T//5pJkA0K+K8P5EDhEoVq4vC0WXFvifTutBT8OKobmRMdDoUkO/37q0eAfFr
-         CUZ4q8xrdMD+GHtK2AE2U6BAq71ti1NorIPjKs9w=
+        b=AFizlUb+jU6OttLY+hfbajjPpdvQU+ByqRjTkkm7ZwH6VSPxFBBtner7dUKFBuv64
+         ewr3LAMGqsRgbDkyPcIiYg0W1HrekBJuEJF7TrKoK4Q5CPQWTQE2UBmlJdi9xoy0oN
+         /bGG3lJ9Pm7aKJWIPx/svbysXCBOY+VJHfuPW02c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.9 17/18] ALSA: hda: Match both PCI ID and SSID for driver blacklist
+        stable@vger.kernel.org,
+        =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= 
+        <amadeuszx.slawinski@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 14/50] ASoC: codecs: hdac_hdmi: Fix incorrect use of list_for_each_entry
 Date:   Fri,  8 May 2020 14:35:20 +0200
-Message-Id: <20200508123034.322337323@linuxfoundation.org>
+Message-Id: <20200508123045.416824145@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200508123030.497793118@linuxfoundation.org>
-References: <20200508123030.497793118@linuxfoundation.org>
+In-Reply-To: <20200508123043.085296641@linuxfoundation.org>
+References: <20200508123043.085296641@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,54 +46,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 
-commit 977dfef40c8996b69afe23a9094d184049efb7bb upstream.
+[ Upstream commit 326b509238171d37402dbe308e154cc234ed1960 ]
 
-The commit 3c6fd1f07ed0 ("ALSA: hda: Add driver blacklist") added a
-new blacklist for the devices that are known to have empty codecs, and
-one of the entries was ASUS ROG Zenith II (PCI SSID 1043:874f).
-However, it turned out that the very same PCI SSID is used for the
-previous model that does have the valid HD-audio codecs and the change
-broke the sound on it.
+If we don't find any pcm, pcm will point at address at an offset from
+the the list head and not a meaningful structure. Fix this by returning
+correct pcm if found and NULL if not. Found with coccinelle.
 
-Since the empty codec problem appear on the certain AMD platform (PCI
-ID 1022:1487), this patch changes the blacklist matching to both PCI
-ID and SSID using pci_match_id().  Also, the entry that was removed by
-the previous fix for ASUS ROG Zenigh II is re-added.
-
-Link: https://lore.kernel.org/r/20200424061222.19792-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+Link: https://lore.kernel.org/r/20200415162849.308-1-amadeuszx.slawinski@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/hda_intel.c |    9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ sound/soc/codecs/hdac_hdmi.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -1966,9 +1966,10 @@ static const struct hdac_io_ops pci_hda_
-  * some HD-audio PCI entries are exposed without any codecs, and such devices
-  * should be ignored from the beginning.
-  */
--static const struct snd_pci_quirk driver_blacklist[] = {
--	SND_PCI_QUIRK(0x1462, 0xcb59, "MSI TRX40 Creator", 0),
--	SND_PCI_QUIRK(0x1462, 0xcb60, "MSI TRX40", 0),
-+static const struct pci_device_id driver_blacklist[] = {
-+	{ PCI_DEVICE_SUB(0x1022, 0x1487, 0x1043, 0x874f) }, /* ASUS ROG Zenith II / Strix */
-+	{ PCI_DEVICE_SUB(0x1022, 0x1487, 0x1462, 0xcb59) }, /* MSI TRX40 Creator */
-+	{ PCI_DEVICE_SUB(0x1022, 0x1487, 0x1462, 0xcb60) }, /* MSI TRX40 */
- 	{}
- };
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index 18c173e6a13b2..78d5b4d31bb69 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -150,14 +150,14 @@ static struct hdac_hdmi_pcm *
+ hdac_hdmi_get_pcm_from_cvt(struct hdac_hdmi_priv *hdmi,
+ 			   struct hdac_hdmi_cvt *cvt)
+ {
+-	struct hdac_hdmi_pcm *pcm = NULL;
++	struct hdac_hdmi_pcm *pcm;
  
-@@ -1991,7 +1992,7 @@ static int azx_probe(struct pci_dev *pci
- 	bool schedule_probe;
- 	int err;
- 
--	if (snd_pci_quirk_lookup(pci, driver_blacklist)) {
-+	if (pci_match_id(driver_blacklist, pci)) {
- 		dev_info(&pci->dev, "Skipping the blacklisted device\n");
- 		return -ENODEV;
+ 	list_for_each_entry(pcm, &hdmi->pcm_list, head) {
+ 		if (pcm->cvt == cvt)
+-			break;
++			return pcm;
  	}
+ 
+-	return pcm;
++	return NULL;
+ }
+ 
+ static void hdac_hdmi_jack_report(struct hdac_hdmi_pcm *pcm,
+-- 
+2.20.1
+
 
 
