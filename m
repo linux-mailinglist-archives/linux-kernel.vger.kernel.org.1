@@ -2,154 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 401571CAFCB
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:23:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D07261CAFEB
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:24:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730385AbgEHNUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:20:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37090 "EHLO
+        id S1730451AbgEHNVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 09:21:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728785AbgEHNUS (ORCPT
+        by vger.kernel.org with ESMTP id S1728633AbgEHNVe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 09:20:18 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51FA9C05BD43
-        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 06:20:17 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id z22so1403239lfd.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 May 2020 06:20:17 -0700 (PDT)
+        Fri, 8 May 2020 09:21:34 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81118C05BD09
+        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 06:21:34 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id s8so1814350wrt.9
+        for <linux-kernel@vger.kernel.org>; Fri, 08 May 2020 06:21:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=u8FtxFi4ImqEzH02SMGCC236F+wFyRG7A3MxBfNg3s0=;
-        b=TDv0SpIue2QxC7unchMyXqFEK8r7oapDU9UBp2j4+t89IjjwDhQ9qDfD/biu9wffz/
-         X/1a3inPWoDwY1clp/1T+oBVdWqJZ0vdETgFdpn9yzLujGSd/hFaxmxywBtPJaIC1v5h
-         Etft4Tv4neM1WItafES7bps9WHiT650OzbBU7j4H3+TCbyj4IjYoS8y5JLI/BhQf/XuO
-         XkvAYhEJevE1urfEdGghqrPEdsH5GkJfAWoQtq8WMY2XlM7opp/qOK6oJz/+HL8PIF/P
-         jpXppeorxhB7qC1MUhdO0lhhW8e/V7oVkzwI2ZnOpQQeRdN3hrBtzxSfBGhL9aNpV+sR
-         H79Q==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EdCijOczIQMLs1X4cAiihh7qwIxfmO/FmCoXMHIAt4I=;
+        b=QF9qhyvg3Qeb+YdknO2fao+XlPzsK19K/rtqFb+isyApE2gUA67kAJtCEbpFlaMbpL
+         dcijhFnjRYwsGrSpYFEdti57I43KZ8UJ0e+M60tBa2Gbm3/cm8H7yiqCqG6EY0EgxY1C
+         BeU3J+n0cXh29+FgY+fqG/ymytpuJWNTQHSnllJBQmDNb7rHv3lAlxjwr0etXAa2ptFB
+         7g7oPs/+taioniIBI29hoil0gYL0DZVP0rgSC2ri1qjfbIcpf1DDmjD0eszCHTKT00WF
+         k43oRpf8CYrDjieni9DUKpnnVMOxSLg06KLLhPJKXzpr0eyaH1TlvS1MwzQJLpAvAysn
+         YYTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=u8FtxFi4ImqEzH02SMGCC236F+wFyRG7A3MxBfNg3s0=;
-        b=o4DsFE22DgxMFRdVYgx1XmmR2DQFTUIQ7Xvw9yhSB7WePOmnU0/V90j8ncfw230SDV
-         4KXIkBUQ55Df73oV/zXmU/qrEEmNv4ZO96rLzgipKLVTrC7cpkDdqSO9bxZYagOShOBG
-         HT9oPeyD3lWfgJjznw8XT+iqGoWq8jbtB3RTu1EtjdGe9ig9r1Z1iVKCwYRIrVZRFEBJ
-         RPj3QoflajBt9olO8VYYvi2jQO7wbdmna4z0WGl5iC+ewvPr70Ra6FtGYUWVjt3dsW9b
-         drjgACnUT219SrIoTQ0rrC6EHAKHIIVPzLqQ9zP7yDW12mutDXcmXJLPGYsxg7DgNtjD
-         UYHA==
-X-Gm-Message-State: AOAM530q7yK4Z9uGhAyIF4ZH/C1sspducVSe6hnJiXTEfRfUEgUFspyX
-        MOL7MUygwT/Rw7KtELAVVIBfrnw8qfave6GY9uv2VvdjrXwdjQ==
-X-Google-Smtp-Source: ABdhPJxVBwaJ7zK9WTEeKLTQ0XSgK/4I/baCCn4iGk3YjLC+G05WM2jnBd/mLDOXbcka8Elh8IXAtcRZnSPrfdy7ARI=
-X-Received: by 2002:ac2:4436:: with SMTP id w22mr1844442lfl.55.1588944015621;
- Fri, 08 May 2020 06:20:15 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EdCijOczIQMLs1X4cAiihh7qwIxfmO/FmCoXMHIAt4I=;
+        b=fj+Z97ncHc466zoD5jhK6qoDDc7pBpA0jCmBfqdaC7OlPWPg8WFXNwYT5r1v9lyfGF
+         1khaX12ECigGMOx7flC9SJdRtW1cPkmTrsIChvT5K+9WfCsXLtXRFdL4pL9WIn1lqdLk
+         wUBMEq9Gl7Y9A/r/QJ251c+KY25PRIgVUTDYsAK/tAyR5oSlqlwijbXJlnPXnoU6kvcj
+         IswUQFitkmy5DoQepXRa7M4OMcR+w4o7xmcyOfnv33JAc+JHMW5pJmr+U4p6WIiHxSx/
+         qHM0LjLNu8viiwSHfTlVBVHUkaSio/zbF/QIaUfJDGRn+sJtU5WE/trsD0TBhM05N4Rx
+         5BMg==
+X-Gm-Message-State: AGi0PuZaiz6FAVLStuFq8T1T3NtzAOyrROfMAwaHFCgBFnMwNA7xEyHc
+        huXgbl7e0Y06ELF4/HFSOyNXXA==
+X-Google-Smtp-Source: APiQypI1o0GT8qsdRugAQfihzVy7cdudanFaAiRDCAYBqFxUeH6OF3tVH8JjYsz1IbNVzkpokawI1w==
+X-Received: by 2002:a5d:5490:: with SMTP id h16mr2920378wrv.250.1588944093030;
+        Fri, 08 May 2020 06:21:33 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:110:d6cc:2030:37c1:9964])
+        by smtp.gmail.com with ESMTPSA id h6sm12871912wmf.31.2020.05.08.06.21.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 May 2020 06:21:32 -0700 (PDT)
+Date:   Fri, 8 May 2020 14:21:29 +0100
+From:   Quentin Perret <qperret@google.com>
+To:     Pavan Kondeti <pkondeti@codeaurora.org>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, sudeep.holla@arm.com, gregkh@linuxfoundation.org,
+        rafael@kernel.org, viresh.kumar@linaro.org, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, mcgrof@kernel.org, keescook@chromium.org,
+        yzaikin@google.com, fweisbec@gmail.com, tkjos@google.com,
+        kernel-team@android.com
+Subject: Re: [PATCH 13/14] sched: cpufreq: Use IS_ENABLED() for schedutil
+Message-ID: <20200508132129.GE10541@google.com>
+References: <20200507181012.29791-1-qperret@google.com>
+ <20200507181012.29791-14-qperret@google.com>
+ <20200508053053.GG19464@codeaurora.org>
 MIME-Version: 1.0
-References: <20200508123043.085296641@linuxfoundation.org> <20200508123048.730720753@linuxfoundation.org>
-In-Reply-To: <20200508123048.730720753@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 8 May 2020 18:50:02 +0530
-Message-ID: <CA+G9fYvdD3dhMhGL5=nfT+7xTEdD36zUtceF2fROPF4OQQZbLQ@mail.gmail.com>
-Subject: Re: [PATCH 5.4 40/50] dma-direct: exclude dma_direct_map_resource
- from the min_low_pfn check
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christoph Hellwig <hch@lst.de>, m.szyprowski@samsung.com
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        linux- stable <stable@vger.kernel.org>,
-        lkft-triage@lists.linaro.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200508053053.GG19464@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 May 2020 at 18:23, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> From: Christoph Hellwig <hch@lst.de>
->
-> commit 68a33b1794665ba8a1d1ef1d3bfcc7c587d380a6 upstream.
->
-> The valid memory address check in dma_capable only makes sense when mappi=
-ng
-> normal memory, not when using dma_map_resource to map a device resource.
-> Add a new boolean argument to dma_capable to exclude that check for the
-> dma_map_resource case.
->
-> Fixes: b12d66278dd6 ("dma-direct: check for overflows on 32 bit DMA addre=
-sses")
-> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Acked-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-<trim>
->
-> --- a/kernel/dma/direct.c
-> +++ b/kernel/dma/direct.c
-> @@ -327,7 +327,7 @@ static inline bool dma_direct_possible(s
->                 size_t size)
->  {
->         return swiotlb_force !=3D SWIOTLB_FORCE &&
-> -               dma_capable(dev, dma_addr, size);
-> +               dma_capable(dev, dma_addr, size, true);
+On Friday 08 May 2020 at 11:00:53 (+0530), Pavan Kondeti wrote:
+> > -#if defined(CONFIG_ENERGY_MODEL) && defined(CONFIG_CPU_FREQ_GOV_SCHEDUTIL)
+> > +#if defined(CONFIG_ENERGY_MODEL) && IS_ENABLED(CONFIG_CPU_FREQ_GOV_SCHEDUTIL)
+> >  	/* Build perf. domains: */
+> >  	for (i = 0; i < ndoms_new; i++) {
+> >  		for (j = 0; j < n && !sched_energy_update; j++) {
+> 
+> Now that scheduler does not have any references to schedutil_gov and cpufreq
+> has want_eas flag, do we need this CONFIG_CPU_FREQ_GOV_SCHEDUTIL checks here?
 
-While building kernel Image for arm architecture the following error notice=
-d
-on stale-rc 5.4 kernel branch.
+Right, they're not absolutely required, but given that sugov is the only
+one to have 'want_eas' set I guess there is no need to compile that in
+without it, no?
 
- # make -sk KBUILD_BUILD_USER=3DTuxBuild -C/linux -j16 ARCH=3Darm
-CROSS_COMPILE=3Darm-linux-gnueabihf- HOSTCC=3Dgcc CC=3D"sccache
-arm-linux-gnueabihf-gcc" O=3Dbuild zImage
- #
- ../kernel/dma/direct.c: In function =E2=80=98dma_direct_possible=E2=80=99:
- ../kernel/dma/direct.c:330:3: error: too many arguments to function
-=E2=80=98dma_capable=E2=80=99
-   330 |   dma_capable(dev, dma_addr, size, true);
-       |   ^~~~~~~~~~~
- In file included from ../include/linux/dma-direct.h:12,
-                  from ../kernel/dma/direct.c:10:
- ../arch/arm/include/asm/dma-direct.h:17:20: note: declared here
-    17 | static inline bool dma_capable(struct device *dev, dma_addr_t
-addr, size_t size)
-       |                    ^~~~~~~~~~~
- In file included from ../include/linux/init.h:5,
-                  from ../include/linux/memblock.h:12,
-                  from ../kernel/dma/direct.c:7:
- ../kernel/dma/direct.c: In function =E2=80=98dma_direct_map_resource=E2=80=
-=99:
- ../kernel/dma/direct.c:379:16: error: too many arguments to function
-=E2=80=98dma_capable=E2=80=99
-   379 |  if (unlikely(!dma_capable(dev, dma_addr, size, false))) {
-       |                ^~~~~~~~~~~
- ../include/linux/compiler.h:78:42: note: in definition of macro =E2=80=98u=
-nlikely=E2=80=99
-    78 | # define unlikely(x) __builtin_expect(!!(x), 0)
-       |                                          ^
- In file included from ../include/linux/dma-direct.h:12,
-                  from ../kernel/dma/direct.c:10:
- ../arch/arm/include/asm/dma-direct.h:17:20: note: declared here
-    17 | static inline bool dma_capable(struct device *dev, dma_addr_t
-addr, size_t size)
-       |                    ^~~~~~~~~~~
- make[3]: *** [../scripts/Makefile.build:266: kernel/dma/direct.o] Error 1
- In file included from ../include/linux/string.h:6,
-                  from ../include/linux/dma-mapping.h:6,
-                  from ../include/linux/dma-direct.h:5,
-                  from ../kernel/dma/swiotlb.c:24:
- ../kernel/dma/swiotlb.c: In function =E2=80=98swiotlb_map=E2=80=99:
- ../kernel/dma/swiotlb.c:681:16: error: too many arguments to function
-=E2=80=98dma_capable=E2=80=99
-   681 |  if (unlikely(!dma_capable(dev, *dma_addr, size, true))) {
-       |                ^~~~~~~~~~~
- ../include/linux/compiler.h:78:42: note: in definition of macro =E2=80=98u=
-nlikely=E2=80=99
-    78 | # define unlikely(x) __builtin_expect(!!(x), 0)
-       |                                          ^
- In file included from ../include/linux/dma-direct.h:12,
-                  from ../kernel/dma/swiotlb.c:24:
- ../arch/arm/include/asm/dma-direct.h:17:20: note: declared here
-    17 | static inline bool dma_capable(struct device *dev, dma_addr_t
-addr, size_t size)
-       |                    ^~~~~~~~~~~
+Cheers,
+Quentin
