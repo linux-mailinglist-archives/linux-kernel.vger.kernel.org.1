@@ -2,103 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F1091CA6D6
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 11:09:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D6AD1CA6E8
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 11:17:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726807AbgEHJJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 05:09:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725710AbgEHJJp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 05:09:45 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90DC9C05BD43
-        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 02:09:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Xb+C9x4SIhmpbdhdXWMSHO37biGDOHtvQ/W2i8m4dTo=; b=PpEFd8FQp6vNcOZNu0Da+9bMtN
-        ni4z8WEXHbTgTA/hc+iJOW5x9YzTaZGBxvGXE0nAMoMgl1bv7rVhPRZICHOpI+3E1SmxpOo4lsXp5
-        tgWZ9jwG5edPLnkQDPx+jzc1rFXgKXYxM+3O5svw0NqHXy52TeQCEQkxwAc9J4u82MgPzx/AfKRvN
-        omg53m7OHKaJ9Sgdn1MesdG0HiOKnERmt2/T44n2nYYhP5w+3IZ8QrtNtowI7LaTG7TmkEAOrSnjx
-        X/rVrEv3u3zPcMCnhkVODO25lHbaM+cecIk2taXFGHLWOasfNHX/paoS+/OCP7eje7t6u4EobX3zC
-        WYEtHesQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jWz0b-0007QA-9s; Fri, 08 May 2020 09:09:29 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A776A301DFC;
-        Fri,  8 May 2020 11:09:25 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6C9942B93BDCE; Fri,  8 May 2020 11:09:25 +0200 (CEST)
-Date:   Fri, 8 May 2020 11:09:25 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Aaron Lu <aaron.lwe@gmail.com>
-Cc:     Vineeth Remanan Pillai <vpillai@digitalocean.com>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paul Turner <pjt@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Aaron Lu <aaron.lu@linux.alibaba.com>,
-        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
-        =?iso-8859-1?Q?Fr=E9d=E9ric?= Weisbecker <fweisbec@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        "Li, Aubrey" <aubrey.li@linux.intel.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH updated v2] sched/fair: core wide cfs task priority
- comparison
-Message-ID: <20200508090925.GV5298@hirez.programming.kicks-ass.net>
-References: <20200415033408.GA168322@ziqianlu-desktop.localdomain>
- <20200415040741.GA169001@ziqianlu-desktop.localdomain>
- <CANaguZAXsjD=X-bB7dvQZ3FSqLioiZU=YREHH_7JqiFsZCTxHA@mail.gmail.com>
- <20200417094045.GA197704@ziqianlu-desktop.localdomain>
- <20200420080759.GA224731@ziqianlu-desktop.localdomain>
- <CANaguZDP3nyBdjLeeCZGoUoYk6Lf0HUv19N2Qxo4CpZfrjPZHA@mail.gmail.com>
- <20200421025131.GA227300@aaronlu-desktop>
- <20200424142443.GA263207@aaronlu-desktop>
- <20200506143506.GH5298@hirez.programming.kicks-ass.net>
- <20200508084419.GA120223@aaronlu-desktop>
+        id S1726942AbgEHJRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 05:17:31 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:4299 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725774AbgEHJR3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 05:17:29 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id AC3ACFE3BEB4DBA9C525;
+        Fri,  8 May 2020 17:17:26 +0800 (CST)
+Received: from linux-ibm.site (10.175.102.37) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 8 May 2020 17:17:17 +0800
+From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
+To:     <rjw@rjwysocki.net>, <viresh.kumar@linaro.org>,
+        <Souvik.Chakravarty@arm.com>, <Thanu.Rangarajan@arm.com>
+CC:     <Sudeep.Holla@arm.com>, <guohanjun@huawei.com>,
+        <john.garry@huawei.com>, <jonathan.cameron@huawei.com>,
+        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <wangxiongfeng2@huawei.com>
+Subject: [RFC PATCH 0/3] add SW BOOST support for CPPC
+Date:   Fri, 8 May 2020 17:11:01 +0800
+Message-ID: <1588929064-30270-1-git-send-email-wangxiongfeng2@huawei.com>
+X-Mailer: git-send-email 1.7.12.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200508084419.GA120223@aaronlu-desktop>
+Content-Type: text/plain
+X-Originating-IP: [10.175.102.37]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 08, 2020 at 04:44:19PM +0800, Aaron Lu wrote:
-> On Wed, May 06, 2020 at 04:35:06PM +0200, Peter Zijlstra wrote:
+ACPI spec 6.2 section 8.4.7.1 provide the following two CPC registers.
 
-> > Aside from this being way to complicated for what it does -- you
-> > could've saved the min_vruntime for each rq and compared them with
-> > subtraction -- it is also terminally broken afaict.
-> >
-> > Consider any infeasible weight scenario. Take for instance two tasks,
-> > each bound to their respective sibling, one with weight 1 and one with
-> > weight 2. Then the lower weight task will run ahead of the higher weight
-> > task without bound.
-> 
-> I don't follow how this could happen. Even the lower weight task runs
-> first, after some time, the higher weight task will get its turn and
-> from then on, the higher weight task will get more chance to run(due to
-> its higher weight and thus, slower accumulation of vruntime).
+"Highest performance is the absolute maximum performance an individual
+processor may reach, assuming ideal conditions. This performance level
+may not be sustainable for long durations, and may only be achievable if
+other platform components are in a specific state; for example, it may
+require other processors be in an idle state.
 
-That seems to assume they're mutually exclusive. In that case, as I
-argued, we only have a single runqueue and then yes it works. But if
-they're not exclusive, and can run concurrently, it comes apart.
+Nominal Performance is the maximum sustained performance level of the
+processor, assuming ideal operating conditions. In absence of an
+external constraint (power, thermal, etc.) this is the performance level
+the platform is expected to be able to maintain continuously. All
+processors are expected to be able to sustain their nominal performance
+state simultaneously."
+
+We can use Highest Performance as the max performance in boost mode and
+Nomial Performance as the max performance in non-boost mode. If the
+Highest Performance is greater than the Nominal Performance, we assume
+SW BOOST is supported.
+
+Xiongfeng Wang (3):
+  cpufreq: fix the return value in 'cpufreq_boost_set_sw()'
+  cpufreq: Add SW BOOST support for drivers without frequency table
+  CPPC: add support for SW BOOST
+
+ drivers/cpufreq/cppc_cpufreq.c | 17 +++++++++++++++--
+ drivers/cpufreq/cpufreq.c      | 25 +++++++++++++++++--------
+ include/linux/cpufreq.h        |  2 ++
+ 3 files changed, 34 insertions(+), 10 deletions(-)
+
+-- 
+1.7.12.4
 
