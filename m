@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EB321C9F61
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 01:58:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE3821C9F66
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 02:02:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727083AbgEGX5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 19:57:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54408 "EHLO mail.kernel.org"
+        id S1726612AbgEHACo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 20:02:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726480AbgEGX5R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 19:57:17 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        id S1726464AbgEHACn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 20:02:43 -0400
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7315920720;
-        Thu,  7 May 2020 23:57:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E4F4B2082E;
+        Fri,  8 May 2020 00:02:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588895836;
-        bh=2o+y8fxLqhtXg3APfBgUNDvTw0QO66MYP7OHCoVyRF4=;
+        s=default; t=1588896163;
+        bh=RABDbBls9l0rquFOQ6ZOjxQs3c2PLTi1b71bICyJ9LY=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tvJM2f15l0kGd0TcPZ5vvEL9T0JafTX9h9hN27JKxQS0JWHerHbeDey3Mbw8YF0WA
-         sMGk9CHL7k6wiBe60ImJu1FPC/jngFFZiLfNHeIppfP0mK2SOLuawse2sjah5xl0ko
-         Pc0Fbkn52l14GZ3LdCA4Ouv+DsGC3gWSQlnAqXug=
-Date:   Fri, 8 May 2020 08:57:12 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Julia Lawall <Julia.Lawall@inria.fr>,
-        kernel-janitors@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Nic Volanschi <eugene.volanschi@inria.fr>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [PATCH] tracing/probe: reverse arguments to list_add
-Message-Id: <20200508085712.dcb44a32d1fb50c0a7e3e2a9@kernel.org>
-In-Reply-To: <20200507165053.291ba5ea@gandalf.local.home>
-References: <1588879808-24488-1-git-send-email-Julia.Lawall@inria.fr>
-        <20200507165053.291ba5ea@gandalf.local.home>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        b=0MFQAWy486qPwRfsFfPZP/Ol8J7LIIJNa0Sdix9A/QkaXqiBndS/dnAOkDzv4KLff
+         KGEMLEkJqZ4OxRgB20i2VL+At0WSFKX5o21m8dPBD5HHhiG18dHlZonMQf0MiEFAp6
+         rkj74qkGEu4pT3hjd/RdJk51LbH72np8MrGqoM+g=
+Date:   Thu, 7 May 2020 17:02:42 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     linux-kernel@vger.kernel.org, Waiman Long <longman@redhat.com>,
+        Andreas Schwab <schwab@suse.de>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH] ipc/util.c: sysvipc_find_ipc() incorrectly updates
+ position index
+Message-Id: <20200507170242.6cbb88ae672deed67152e221@linux-foundation.org>
+In-Reply-To: <4921fe9b-9385-a2b4-1dc4-1099be6d2e39@virtuozzo.com>
+References: <ad24ee52-21a8-3ff0-e968-63d315472b91@virtuozzo.com>
+        <4921fe9b-9385-a2b4-1dc4-1099be6d2e39@virtuozzo.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -45,60 +44,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 May 2020 16:50:53 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Wed, 6 May 2020 09:25:54 +0300 Vasily Averin <vvs@virtuozzo.com> wrote:
 
-> On Thu,  7 May 2020 21:30:08 +0200
-> Julia Lawall <Julia.Lawall@inria.fr> wrote:
+> new_pos should jump through hole of unused ids,
+> pos can be updated inside "for" cycle.
 > 
-> > Elsewhere in the file, the function trace_kprobe_has_same_kprobe uses
-> > a trace_probe_event.probes object as the second argument of
-> > list_for_each_entry, ie as a list head, while the list_for_each_entry
-> > iterates over the list fields of the trace_probe structures, making
-> > them the list elements.  So, exchange the arguments on the list_add
-> > call to put the list head in the second argument.
-> > 
-> > Since both list_head structures were just initialized, this problem
-> > did not cause any loss of information.
-> > 
+> Cc: stable@vger.kernel.org
+> Fixes: 89163f93c6f9 ("ipc/util.c: sysvipc_find_ipc() should increase position index")
 
-Oops, good catch!
+This:
 
-> > Fixes: 60d53e2c3b75 ("tracing/probe: Split trace_event related data from trace_probe")
-> > Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
-> 
-> Masami,
-> 
-> Can you give a Reviewed-by to this?
+> --- a/ipc/util.c
+> +++ b/ipc/util.c
+> @@ -764,21 +764,21 @@ static struct kern_ipc_perm *sysvipc_find_ipc(struct ipc_ids *ids, loff_t pos,
+>  			total++;
+>  	}
+>  
+> -	*new_pos = pos + 1;
+> +	ipc = NULL;
+>  	if (total >= ids->in_use)
+> -		return NULL;
+> +		goto out;
+>  
+>  	for (; pos < ipc_mni; pos++) {
+>  		ipc = idr_find(&ids->ipcs_idr, pos);
+>  		if (ipc != NULL) {
+>  			rcu_read_lock();
+>  			ipc_lock_object(ipc);
+> -			return ipc;
+> +			break;
+>  		}
+>  	}
+> -
+> -	/* Out of range - return NULL to terminate iteration */
+> -	return NULL;
+> +out:
+> +	*new_pos = pos + 1;
+> +	return ipc;
+>  }
+>  
+>  static void *sysvipc_proc_next(struct seq_file *s, void *it, loff_t *pos)
 
-Yes, thanks Julia!
+Messes up Matthew's "ipc: convert ipcs_idr to XArray"
+(http://lkml.kernel.org/r/20200326151418.27545-1-willy@infradead.org).
 
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Here's how I resolved things.  Please check?
 
-Thank you,
-> 
-> -- Steve
-> 
-> > 
-> > ---
-> >  kernel/trace/trace_probe.c |    2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
-> > index ab8b6436d53f..b8a928e925c7 100644
-> > --- a/kernel/trace/trace_probe.c
-> > +++ b/kernel/trace/trace_probe.c
-> > @@ -1006,7 +1006,7 @@ int trace_probe_init(struct trace_probe *tp, const char *event,
-> >  	INIT_LIST_HEAD(&tp->event->class.fields);
-> >  	INIT_LIST_HEAD(&tp->event->probes);
-> >  	INIT_LIST_HEAD(&tp->list);
-> > -	list_add(&tp->event->probes, &tp->list);
-> > +	list_add(&tp->list, &tp->event->probes);
-> >  
-> >  	call = trace_probe_event_call(tp);
-> >  	call->class = &tp->event->class;
-> 
+static struct kern_ipc_perm *sysvipc_find_ipc(struct ipc_ids *ids, loff_t pos,
+					      loff_t *new_pos)
+{
+	unsigned long index = pos;
+	struct kern_ipc_perm *ipc;
 
+	rcu_read_lock();
+	ipc = xa_find(&ids->ipcs, &index, ULONG_MAX, XA_PRESENT);
+	if (ipc)
+		ipc_lock_object(ipc);
+	else
+		rcu_read_unlock();
+	*new_pos = pos + 1;
+	return ipc;
+}
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
