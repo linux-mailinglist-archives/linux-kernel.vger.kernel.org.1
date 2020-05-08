@@ -2,98 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E4431CAE33
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:10:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83D0D1CADFA
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:07:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728593AbgEHNHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:07:33 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:39136 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728303AbgEHNHG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 09:07:06 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 048D6oHY082815;
-        Fri, 8 May 2020 08:06:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1588943210;
-        bh=7TFi8DenwabYdupg92PMqRYeyZT1ttnchvOUlGfcwpc=;
-        h=From:To:CC:Subject:Date;
-        b=TqL3Pzp733fAQrOCIkHz80JSjfKlDiEM2UFYAzUyw3GGabhU9P2Gm4C7KS/giVKuo
-         u29bGztq86zQOohltHNcW/FbJr2dKt7knj3L8yg5owuuj2URSasgEVXdu2eSSX52YS
-         SlACno9Jma6W7hZhBnfHcspidkek4id/gYuveUMM=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 048D6oGH000444;
-        Fri, 8 May 2020 08:06:50 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 8 May
- 2020 08:06:50 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 8 May 2020 08:06:50 -0500
-Received: from a0393678ub.india.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 048D6kYk018673;
-        Fri, 8 May 2020 08:06:47 -0500
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Tom Joseph <tjoseph@cadence.com>
-CC:     <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <kishon@ti.com>
-Subject: [PATCH v3 0/4] PCI: cadence: Deprecate inbound/outbound specific bindings
-Date:   Fri, 8 May 2020 18:36:42 +0530
-Message-ID: <20200508130646.23939-1-kishon@ti.com>
-X-Mailer: git-send-email 2.17.1
+        id S1729797AbgEHNGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 09:06:51 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:19785 "EHLO rere.qmqm.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728303AbgEHNGt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 09:06:49 -0400
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 49JVw708X9z5r;
+        Fri,  8 May 2020 15:06:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1588943207; bh=uppDoyhwlbwoyrRyepfixLOhrOgshs3uGHxuVJsNsE4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ipvEwuKk28Ab/CTNLUDVA6Vz6zgEN5GKDk6xoLAUtz3jtRh8yvdWBqsHpesbqCbsp
+         n1GVnZ+jRZstbrJJP+hnqPbsmKCTO+fqSgGHeyMvGxd3UBQxYOca1YhOodHadvLQaQ
+         4ZZqkOMUneH6YYbLrilKwQRNpw7wm+hJmryvwn5sGHIT/MExBe5s2Utxze0kqSxGkM
+         eZJxlESvUO/912pO/5vsYPebYFd4/jal15oTZ4rgtbb62TM9H0Jdxn/uzRFraDHNG3
+         Jf+Ie7ilo4znZGEZTPx/t9MYXXb555a51vIWIeVmgUSrLVK1HJgqufr+NPXMiF4xVb
+         vrYOGo8zXNjsQ==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+Date:   Fri, 8 May 2020 15:06:43 +0200
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cb710: Replace zero-length array with flexible-array
+Message-ID: <20200508130643.GA9591@qmqm.qmqm.pl>
+References: <20200507185224.GA14209@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200507185224.GA14209@embeddedor>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series is a result of comments given by Rob Herring @ [1].
-Patch series changes the DT bindings and makes the corresponding driver
-changes.
+On Thu, May 07, 2020 at 01:52:24PM -0500, Gustavo A. R. Silva wrote:
+> The current codebase makes use of the zero-length array language
+> extension to the C90 standard, but the preferred mechanism to declare
+> variable-length types such as these ones is a flexible array member[1][2],
+> introduced in C99:
+> 
+> struct foo {
+>         int stuff;
+>         struct boo array[];
+> };
+> 
+> By making use of the mechanism above, we will get a compiler warning
+> in case the flexible array does not occur last in the structure, which
+> will help us prevent some kind of undefined behavior bugs from being
+> inadvertently introduced[3] to the codebase from now on.
+> 
+> Also, notice that, dynamic memory allocations won't be affected by
+> this change:
+> 
+> "Flexible array members have incomplete type, and so the sizeof operator
+> may not be applied. As a quirk of the original implementation of
+> zero-length arrays, sizeof evaluates to zero."[1]
+> 
+> sizeof(flexible-array-member) triggers a warning because flexible array
+> members have incomplete type[1]. There are some instances of code in
+> which the sizeof operator is being incorrectly/erroneously applied to
+> zero-length arrays and the result is zero. Such instances may be hiding
+> some bugs. So, this work (flexible-array member conversions) will also
+> help to get completely rid of those sorts of issues.
+> 
+> This issue was found with the help of Coccinelle.
+> 
+> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+> [2] https://github.com/KSPP/linux/issues/21
+> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>  include/linux/cb710.h |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/cb710.h b/include/linux/cb710.h
+> index 60de3fedd3a7..405657a9a0d5 100644
+> --- a/include/linux/cb710.h
+> +++ b/include/linux/cb710.h
+> @@ -36,7 +36,7 @@ struct cb710_chip {
+>  	unsigned		slot_mask;
+>  	unsigned		slots;
+>  	spinlock_t		irq_lock;
+> -	struct cb710_slot	slot[0];
+> +	struct cb710_slot	slot[];
+>  };
+>  
+>  /* NOTE: cb710_chip.slots is modified only during device init/exit and
+> 
 
-Changes from v2:
-1) Changed the order of patches (no solid reason. Just save some
-rebasing effort for me)
-2) Added Acked-by Tom and Rob except for the dma-ranges patch
-3) Re-worked dma-ranges patch for it do decode multiple dma-ranges
-   and configure BAR0, BAR1 and NO_BAR instead of just NO_BAR [2].
-
-Changes from v1:
-1) Added Reviewed-by: Rob Herring <robh@kernel.org> for dt-binding patch
-2) Fixed nitpick comments from Bjorn Helgaas
-3) Added a patch to read 32-bit Vendor ID/Device ID property from DT
-
-[1] -> http://lore.kernel.org/r/20200219202700.GA21908@bogus
-[2] -> http://lore.kernel.org/r/eb1ffcb3-264f-5174-1f25-b5b2d3269840@ti.com
-
-Kishon Vijay Abraham I (4):
-  dt-bindings: PCI: cadence: Deprecate inbound/outbound specific
-    bindings
-  PCI: cadence: Remove "cdns,max-outbound-regions" DT property
-  PCI: cadence: Fix to read 32-bit Vendor ID/Device ID property from DT
-  PCI: cadence: Use "dma-ranges" instead of "cdns,no-bar-match-nbits"
-    property
-
- .../bindings/pci/cdns,cdns-pcie-ep.yaml       |   2 +-
- .../bindings/pci/cdns,cdns-pcie-host.yaml     |   3 +-
- .../devicetree/bindings/pci/cdns-pcie-ep.yaml |  25 +++
- .../bindings/pci/cdns-pcie-host.yaml          |  10 ++
- .../devicetree/bindings/pci/cdns-pcie.yaml    |   8 -
- .../controller/cadence/pcie-cadence-host.c    | 151 +++++++++++++++---
- drivers/pci/controller/cadence/pcie-cadence.h |  23 ++-
- 7 files changed, 182 insertions(+), 40 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/pci/cdns-pcie-ep.yaml
-
--- 
-2.17.1
-
+Acked-by: Micha³ Miros³aw <mirq-linux@rere.qmqm.pl>
