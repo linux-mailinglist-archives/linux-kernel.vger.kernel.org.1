@@ -2,123 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E20E1CB2C8
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 17:28:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90FA01CB2A8
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 17:17:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727095AbgEHP2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 11:28:13 -0400
-Received: from sender3-pp-o92.zoho.com.cn ([124.251.121.251]:25712 "EHLO
-        sender3-pp-o92.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726948AbgEHP2N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 11:28:13 -0400
-X-Greylist: delayed 904 seconds by postgrey-1.27 at vger.kernel.org; Fri, 08 May 2020 11:28:12 EDT
-ARC-Seal: i=1; a=rsa-sha256; t=1588950703; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=MxW5v52xcq0A5kULWBjxUxVLX5f1DdhVGOUmuPzPYagup1eWLNpgfdhEX+6ufwp8hzcswpfhLh/1S2PhYX88hNL2MNf8L956Ge16BwnD5k+6vaWoZlfM6Vzymr9rmdwVLX/gItokhryfeOz3lgmi5ltjAwKNAVjZzfi0Hzskk+s=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1588950703; h=Content-Type:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=LXiJi/pjLi+NErqUytW+W7VHUMkYIAAPd+1qtwXS4BQ=; 
-        b=dQyn4nH/bmv3E61yA33TIPq3Xeu50yxLuB17LXJ1TFuId3KdwvgyZkDMO6eW/cwT4nB/BHseKXoNMKaQBoi9eE4VIfDHh1Eu6z8GhzKjqfgtFo4cPLSWnWY6by1ygXbIsvyA9cmXZ/hVuf4gM0THGEZrs6Clv1GNaAxDKgxDztk=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        spf=pass  smtp.mailfrom=zohooouoto@zoho.com.cn;
-        dmarc=pass header.from=<zohooouoto@zoho.com.cn> header.from=<zohooouoto@zoho.com.cn>
-Received: from localhost (122.194.88.39 [122.194.88.39]) by mx.zoho.com.cn
-        with SMTPS id 1588950698707564.4527268969009; Fri, 8 May 2020 23:11:38 +0800 (CST)
-Date:   Fri, 8 May 2020 23:15:15 +0800
-From:   Tao Zhou <zohooouoto@zoho.com.cn>
-To:     Phil Auld <pauld@redhat.com>
-Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org,
-        mingo@kernel.org, vincent.guittot@linaro.org,
-        juri.lelli@redhat.com, ouwen210@hotmail.com
-Subject: Re: [PATCH v2] sched/fair: Fix enqueue_task_fair warning some more
-Message-ID: <20200508151515.GA25974@geo.homenetwork>
-References: <20200506141821.GA9773@lorien.usersys.redhat.com>
- <20200507203612.GF19331@lorien.usersys.redhat.com>
+        id S1727097AbgEHPRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 11:17:00 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2177 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726627AbgEHPQ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 11:16:59 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id 16153BD9B3A15415493E;
+        Fri,  8 May 2020 16:16:58 +0100 (IST)
+Received: from localhost (10.47.95.97) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 8 May 2020
+ 16:16:57 +0100
+Date:   Fri, 8 May 2020 16:16:35 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Gwendal Grignou <gwendal@chromium.org>
+CC:     <enric.balletbo@collabora.com>, <jic23@kernel.org>,
+        <bleung@chromium.org>, <groeck@chromium.org>,
+        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] iio: Add in_illumincance vectors in different
+ color spaces
+Message-ID: <20200508161635.00006cd2@Huawei.com>
+In-Reply-To: <20200506230324.139241-2-gwendal@chromium.org>
+References: <20200506230324.139241-1-gwendal@chromium.org>
+        <20200506230324.139241-2-gwendal@chromium.org>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200507203612.GF19331@lorien.usersys.redhat.com>
-X-ZohoCNMailClient: External
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.95.97]
+X-ClientProxiedBy: lhreml743-chm.china.huawei.com (10.201.108.193) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Phil,
+On Wed, 6 May 2020 16:03:22 -0700
+Gwendal Grignou <gwendal@chromium.org> wrote:
 
-On Thu, May 07, 2020 at 04:36:12PM -0400, Phil Auld wrote:
-> sched/fair: Fix enqueue_task_fair warning some more
+Illuminance in the title.  Plus I'm still arguing these
+aren't illuminance values.  
+
+The Y value is illuminance but X and Z definitely aren't.
+RGB needs to stick to intensity - like the other existing
+RGB sensors.
+
+Gah.  XYZ and IIO is a mess. 
+
+I suppose we could introduce a new type and have
+in_illumiance_raw
+in_chromacity_x_raw
+in_chromacity_z_raw but chances of anyone understanding what we
+are on about without reading wikipedia is low...
+
+Sigh.  Unless someone else chips in, I'm inclined to be lazy and rely
+on documentation to let in_illuminance_x,y,z be defined as being
+cie xyz color space measurements.
+
+It seems slighlty preferable to defining another type for these,
+though I suspect I'll regret this comment when some adds
+cie lab which was always my favourite colour space :)
+
+
+
+> Define 2 spaces for defining color coming from color sensors:
+> RGB and XYZ: Both are in lux.
+> RGB is the raw output from sensors (Red, Green and Blue channels), in
+> addition to the existing clear channel (C).
+
+> The RGBC vector goes through a matrix transformation to produce the XYZ
+> vector. Y is illumincance, and XY caries the chromaticity information.
+> The matrix is model specific, as the color sensor can be behing a glass
+> that can filter some wavelengths.
 > 
-> The recent patch, fe61468b2cb (sched/fair: Fix enqueue_task_fair warning)
-> did not fully resolve the issues with the rq->tmp_alone_branch !=
-> &rq->leaf_cfs_rq_list warning in enqueue_task_fair. There is a case where
-> the first for_each_sched_entity loop exits due to on_rq, having incompletely
-> updated the list.  In this case the second for_each_sched_entity loop can
-> further modify se. The later code to fix up the list management fails to do
-> what is needed because se no longer points to the sched_entity which broke
-> out of the first loop.
-> 
-
-> Address this by calling leaf_add_rq_list if there are throttled parents while
-> doing the second for_each_sched_entity loop.
-
-Thanks for your trace imformation and explanation. I
-truely have learned from this and that.
-
-s/leaf_add_rq_list/list_add_leaf_cfs_rq/
-
-> 
-> Suggested-by: Vincent Guittot <vincent.guittot@linaro.org>
-> Signed-off-by: Phil Auld <pauld@redhat.com>
-> Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Cc: Vincent Guittot <vincent.guittot@linaro.org>
-> Cc: Ingo Molnar <mingo@kernel.org>
-> Cc: Juri Lelli <juri.lelli@redhat.com>
+> Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
 > ---
->  kernel/sched/fair.c | 7 +++++++
->  1 file changed, 7 insertions(+)
+> New in v2.
 > 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 02f323b85b6d..c6d57c334d51 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -5479,6 +5479,13 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
->  		/* end evaluation on encountering a throttled cfs_rq */
->  		if (cfs_rq_throttled(cfs_rq))
->  			goto enqueue_throttle;
-> +
-> +               /*
-> +                * One parent has been throttled and cfs_rq removed from the
-> +                * list. Add it back to not break the leaf list.
-> +                */
-> +               if (throttled_hierarchy(cfs_rq))
-> +                       list_add_leaf_cfs_rq(cfs_rq);
->  	}
-
-I was confused by why the throttled cfs rq can be on list.
-It is possible when enqueue a task and thanks to the 'threads'.
-But I think the above comment does not truely put the right
-intention, right ?
-If throttled parent is onlist, the child cfs_rq is ignored
-to be added to the leaf cfs_rq list me think.
-
-unthrottle_cfs_rq() follows the same logic if i am not wrong.
-Is it necessary to add the above to it ?
-
-Thanks,
-Tau
-
+>  Documentation/ABI/testing/sysfs-bus-iio | 27 +++++++++++++++++++++++++
+>  1 file changed, 27 insertions(+)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-bus-iio b/Documentation/ABI/testing/sysfs-bus-iio
+> index d3e53a6d8331b..256db6e63a25e 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-iio
+> +++ b/Documentation/ABI/testing/sysfs-bus-iio
+> @@ -1309,6 +1309,33 @@ Description:
+>  		Illuminance measurement, units after application of scale
+>  		and offset are lux.
 >  
->  enqueue_throttle:
-> -- 
-> 2.18.0
-> 
-> V2 rework the fix based on Vincent's suggestion. Thanks Vincent.
-> 
-> 
-> Cheers,
-> Phil
-> 
-> -- 
-> 
+> +What:		/sys/.../iio:deviceX/in_illuminance_red_raw
+> +What:		/sys/.../iio:deviceX/in_illuminance_green_raw
+> +What:		/sys/.../iio:deviceX/in_illuminance_blue_raw
+> +KernelVersion:	5.7
+> +Contact:	linux-iio@vger.kernel.org
+> +Description:
+> +		Illuminance measuremed in red, green or blue channels, units
+> +		after application of scale and offset are lux.
+
+No they aren't.  Units are some magic intensity at some magic wavelength.
+
+> +
+> +What:		/sys/.../iio:deviceX/in_illuminance_x_raw
+> +What:		/sys/.../iio:deviceX/in_illuminance_y_raw
+> +What:		/sys/.../iio:deviceX/in_illuminance_z_raw
+> +KernelVersion:	5.7
+> +Contact:	linux-iio@vger.kernel.org
+> +Description:
+> +		lluminance measured in the CIE 1931 color space (XYZ).
+> +		in_illuminance_y_raw is a measure of the brightness, and is
+> +		identical in_illuminance_raw.
+
+That is fair enough.
+
+> +		in_illuminance_x_raw and in_illuminance_z_raw carry chromacity
+> +		information.
+> +		in_illuminance_x,y,z_raw are be obtained from the sensor color
+> +		channels using color matching functions that may be device
+> +		specific.
+> +		Units after application of scale and offset are lux.
+
+True for Y, not for X and Z which don't have 'units' as such.
+
+> +		The measurments can be used to represent colors in the CIE
+> +		xyY color space
+
+XYZ
+
+> +
+>  What:		/sys/.../iio:deviceX/in_intensityY_raw
+>  What:		/sys/.../iio:deviceX/in_intensityY_ir_raw
+>  What:		/sys/.../iio:deviceX/in_intensityY_both_raw
+
+
