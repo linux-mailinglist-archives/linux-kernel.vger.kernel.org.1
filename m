@@ -2,269 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A67401CB500
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 18:30:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75D631CB505
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 18:34:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728039AbgEHQ3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 12:29:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726825AbgEHQ3s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 12:29:48 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2971FC061A0C;
-        Fri,  8 May 2020 09:29:48 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id j2so1445058qtr.12;
-        Fri, 08 May 2020 09:29:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=e+FbGte5bWwzVrU69fkb2DJo9HTGmvulg/GoLmibMfo=;
-        b=Z+kY3rjW5kPTjbC49sGBHdyTAKh7MUqEsryTr4Yk4CWuNcGiCoKbTBF99DqWN0wO8t
-         hX/TwhYCK6EEAAb4bFMNvBxDMmu5gh6yl6WaiV3xJbUs25pHAyDDzJt8LYZWmDR31YKx
-         KtD5fFNkmubok7u0GSIwDLo/0lJj9of296QH+DqraMTRBbLX7LGT44GAmzJR1/R+UkUO
-         WtnkT9CzZ+qMFLVZ5tw83N/opxz8JM47t439kn1r2yDX/og//pKhl2nLhkqQMOLVuU86
-         odZw4H1nbhZKZ2rtCkTQmYmsIPycASitIS8qurSLXYNTkk7ewsJovIhzXm6SP/qCKhh1
-         4H6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=e+FbGte5bWwzVrU69fkb2DJo9HTGmvulg/GoLmibMfo=;
-        b=dg97CmpBigSB9+FO3uzd1m42u8j79UC0GIbuTbZIgsaavl30V1QzAK/auw8DHhB0+U
-         F2u7j0r6de7vT3FunVyHJ70ANms+FIPy5ayd/M8AMl3zDnz0gDxrorUTwY7qdeZdwZq8
-         bBgJ0KRxheatyH1+jtQIHr2wvdcBhYAJoqC5UNn8aV9lLflhhW7h2k84Z0ocYZ9cLVYS
-         Wmuh2grV5vUJynchYL/p/7vKrcixEYnmdGakdzf7kZDqvpqYB+vGGELLfeQ0p0O/TdHh
-         q8uhSF8H4a0auVXt1E8PdSt7rmYg0pwKwDaVXxU+LNTfVAlxP0yXnHkII9fTeVMq1rz/
-         YqJw==
-X-Gm-Message-State: AGi0PuaD7jvB95YYgI/KwI0DaoTluOePTCasfemuyO85TNA/PAlZw6LX
-        BjZoHZd7Um4OzRbguvWyg/4=
-X-Google-Smtp-Source: APiQypKdQNBCPNY3xbXnaZdUSrjKy+TY1aNwdddfSExSKJoQ6CyXhCQ7tCFVCYLKRgIN7sot8oTu/w==
-X-Received: by 2002:aed:34c6:: with SMTP id x64mr4080661qtd.66.1588955387280;
-        Fri, 08 May 2020 09:29:47 -0700 (PDT)
-Received: from quaco.ghostprotocols.net ([179.97.37.151])
-        by smtp.gmail.com with ESMTPSA id a16sm1481830qko.92.2020.05.08.09.29.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 May 2020 09:29:46 -0700 (PDT)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 4370E40AFD; Fri,  8 May 2020 13:29:44 -0300 (-03)
-Date:   Fri, 8 May 2020 13:29:44 -0300
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v3] perf record: add dummy event during system wide
- synthesis
-Message-ID: <20200508162944.GA20581@kernel.org>
-References: <20200422173615.59436-1-irogers@google.com>
+        id S1727113AbgEHQeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 12:34:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35328 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726797AbgEHQeA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 12:34:00 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1E72C20CC7;
+        Fri,  8 May 2020 16:33:59 +0000 (UTC)
+Date:   Fri, 8 May 2020 11:38:26 -0500
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To:     Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: [PATCH v2] tpm: eventlog: Replace zero-length array with
+ flexible-array member
+Message-ID: <20200508163826.GA768@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200422173615.59436-1-irogers@google.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Apr 22, 2020 at 10:36:15AM -0700, Ian Rogers escreveu:
-> During the processing of /proc during event synthesis new processes may
-> start. Add a dummy event if /proc is to be processed, to capture mmaps
-> for starting processes. This reuses the existing logic for
-> initial-delay.
-> 
-> v3 fixes the attr test of test-record-C0
-> v2 fixes the dummy event configuration and a branch stack issue.
+The current codebase makes use of the zero-length array language
+extension to the C90 standard, but the preferred mechanism to declare
+variable-length types such as these ones is a flexible array member[1][2],
+introduced in C99:
 
-Thanks, applied after splitting it up into two patches, one for this
-part:
+struct foo {
+        int stuff;
+        struct boo array[];
+};
 
-> +++ b/tools/perf/util/evsel.c
-> @@ -1163,11 +1163,14 @@ void perf_evsel__config(struct evsel *evsel, struct record_opts *opts,
->       }
->
->       /*
-> +      * A dummy event never triggers any actual counter and therefore
-> +      * cannot be used with branch_stack.
-> +      *
->        * For initial_delay, a dummy event is added implicitly.
->        * The software event will trigger -EOPNOTSUPP error out,
->        * if BRANCH_STACK bit is set.
->        */
-> -     if (opts->initial_delay && is_dummy_event(evsel))
-> +     if (is_dummy_event(evsel))
->               perf_evsel__reset_sample_bit(evsel, BRANCH_STACK);
->  }
+By making use of the mechanism above, we will get a compiler warning
+in case the flexible array does not occur last in the structure, which
+will help us prevent some kind of undefined behavior bugs from being
+inadvertently introduced[3] to the codebase from now on.
 
-Which isn't related to what is in the subject line for this patch, ok?
+Also, notice that, dynamic memory allocations won't be affected by
+this change:
 
-We don't need to get more patches, but we need to have patches that do
-one thing and just that, to ease with bisecting, reverting things
-sometimes, etc.
+"Flexible array members have incomplete type, and so the sizeof operator
+may not be applied. As a quirk of the original implementation of
+zero-length arrays, sizeof evaluates to zero."[1]
 
-And thanks for the extra comments :-)
+sizeof(flexible-array-member) triggers a warning because flexible array
+members have incomplete type[1]. There are some instances of code in
+which the sizeof operator is being incorrectly/erroneously applied to
+zero-length arrays and the result is zero. Such instances may be hiding
+some bugs. So, this work (flexible-array member conversions) will also
+help to get completely rid of those sorts of issues.
 
-- Arnaldo
+Also, the following issue shows up due to the flexible-array member
+having incomplete type[4]:
+
+drivers/char/tpm/eventlog/tpm2.c: In function ‘tpm2_bios_measurements_start’:
+drivers/char/tpm/eventlog/tpm2.c:54:46: error: invalid application of ‘sizeof’ to incomplete type ‘u8[]’ {aka ‘unsigned char[]’}
+   54 |  size = sizeof(struct tcg_pcr_event) - sizeof(event_header->event)
+      |                                              ^
+drivers/char/tpm/eventlog/tpm2.c: In function ‘tpm2_bios_measurements_next’:
+drivers/char/tpm/eventlog/tpm2.c:102:10: error: invalid application of ‘sizeof’ to incomplete type ‘u8[]’ {aka ‘unsigned char[]’}
+  102 |    sizeof(event_header->event) + event_header->event_size;
+      |          ^
+drivers/char/tpm/eventlog/tpm2.c: In function ‘tpm2_binary_bios_measurements_show’:
+drivers/char/tpm/eventlog/tpm2.c:140:10: error: invalid application of ‘sizeof’ to incomplete type ‘u8[]’ {aka ‘unsigned char[]’}
+  140 |    sizeof(event_header->event) + event_header->event_size;
+      |          ^
+scripts/Makefile.build:266: recipe for target 'drivers/char/tpm/eventlog/tpm2.o' failed
+make[3]: *** [drivers/char/tpm/eventlog/tpm2.o] Error 1
+
+As mentioned above: "Flexible array members have incomplete type, and
+so the sizeof operator may not be applied. As a quirk of the original
+implementation of zero-length arrays, sizeof evaluates to zero."[1] As
+in "sizeof(event_header->event) always evaluated to 0, so removing it
+has no effect".
+
+Lastly, make use of the struct_size() helper to deal with the
+flexible array member and its host structure.
+
+This issue was found with the help of Coccinelle.
+
+[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+[2] https://github.com/KSPP/linux/issues/21
+[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+[4] https://github.com/KSPP/linux/issues/43
+
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+---
+Changes in v2:
+ - Update changelog text.
+ - Make use of the struct_size() helper.
+
+ drivers/char/tpm/eventlog/tpm2.c | 12 +++++-------
+ include/linux/tpm_eventlog.h     |  2 +-
+ 2 files changed, 6 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/char/tpm/eventlog/tpm2.c b/drivers/char/tpm/eventlog/tpm2.c
+index e741b1157525..37a05800980c 100644
+--- a/drivers/char/tpm/eventlog/tpm2.c
++++ b/drivers/char/tpm/eventlog/tpm2.c
+@@ -51,8 +51,7 @@ static void *tpm2_bios_measurements_start(struct seq_file *m, loff_t *pos)
+ 	int i;
  
-> Suggested-by: Stephane Eranian <eranian@google.com>
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/builtin-record.c             | 19 +++++++---
->  tools/perf/tests/attr/system-wide-dummy | 50 +++++++++++++++++++++++++
->  tools/perf/tests/attr/test-record-C0    | 12 +++++-
->  tools/perf/util/evsel.c                 |  5 ++-
->  4 files changed, 78 insertions(+), 8 deletions(-)
->  create mode 100644 tools/perf/tests/attr/system-wide-dummy
-> 
-> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-> index 1ab349abe904..8d1e93351298 100644
-> --- a/tools/perf/builtin-record.c
-> +++ b/tools/perf/builtin-record.c
-> @@ -805,19 +805,28 @@ static int record__open(struct record *rec)
->  	int rc = 0;
->  
->  	/*
-> -	 * For initial_delay we need to add a dummy event so that we can track
-> -	 * PERF_RECORD_MMAP while we wait for the initial delay to enable the
-> -	 * real events, the ones asked by the user.
-> +	 * For initial_delay or system wide, we need to add a dummy event so
-> +	 * that we can track PERF_RECORD_MMAP to cover the delay of waiting or
-> +	 * event synthesis.
->  	 */
-> -	if (opts->initial_delay) {
-> +	if (opts->initial_delay || target__has_cpu(&opts->target)) {
->  		if (perf_evlist__add_dummy(evlist))
->  			return -ENOMEM;
->  
-> +		/* Disable tracking of mmaps on lead event. */
->  		pos = evlist__first(evlist);
->  		pos->tracking = 0;
-> +		/* Set up dummy event. */
->  		pos = evlist__last(evlist);
->  		pos->tracking = 1;
-> -		pos->core.attr.enable_on_exec = 1;
-> +		/*
-> +		 * Enable the dummy event when the process is forked for
-> +		 * initial_delay, immediately for system wide.
-> +		 */
-> +		if (opts->initial_delay)
-> +			pos->core.attr.enable_on_exec = 1;
-> +		else
-> +			pos->immediate = 1;
->  	}
->  
->  	perf_evlist__config(evlist, opts, &callchain_param);
-> diff --git a/tools/perf/tests/attr/system-wide-dummy b/tools/perf/tests/attr/system-wide-dummy
-> new file mode 100644
-> index 000000000000..eba723cc0d38
-> --- /dev/null
-> +++ b/tools/perf/tests/attr/system-wide-dummy
-> @@ -0,0 +1,50 @@
-> +# Event added by system-wide or CPU perf-record to handle the race of
-> +# processes starting while /proc is processed.
-> +[event]
-> +fd=1
-> +group_fd=-1
-> +cpu=*
-> +pid=-1
-> +flags=8
-> +type=1
-> +size=120
-> +config=9
-> +sample_period=4000
-> +sample_type=455
-> +read_format=4
-> +# Event will be enabled right away.
-> +disabled=0
-> +inherit=1
-> +pinned=0
-> +exclusive=0
-> +exclude_user=0
-> +exclude_kernel=0
-> +exclude_hv=0
-> +exclude_idle=0
-> +mmap=1
-> +comm=1
-> +freq=1
-> +inherit_stat=0
-> +enable_on_exec=0
-> +task=1
-> +watermark=0
-> +precise_ip=0
-> +mmap_data=0
-> +sample_id_all=1
-> +exclude_host=0
-> +exclude_guest=0
-> +exclude_callchain_kernel=0
-> +exclude_callchain_user=0
-> +mmap2=1
-> +comm_exec=1
-> +context_switch=0
-> +write_backward=0
-> +namespaces=0
-> +use_clockid=0
-> +wakeup_events=0
-> +bp_type=0
-> +config1=0
-> +config2=0
-> +branch_sample_type=0
-> +sample_regs_user=0
-> +sample_stack_user=0
-> diff --git a/tools/perf/tests/attr/test-record-C0 b/tools/perf/tests/attr/test-record-C0
-> index 93818054ae20..317730b906dd 100644
-> --- a/tools/perf/tests/attr/test-record-C0
-> +++ b/tools/perf/tests/attr/test-record-C0
-> @@ -9,6 +9,14 @@ cpu=0
->  # no enable on exec for CPU attached
->  enable_on_exec=0
->  
-> -# PERF_SAMPLE_IP | PERF_SAMPLE_TID PERF_SAMPLE_TIME | # PERF_SAMPLE_PERIOD
-> +# PERF_SAMPLE_IP | PERF_SAMPLE_TID | PERF_SAMPLE_TIME |
-> +# PERF_SAMPLE_ID | PERF_SAMPLE_PERIOD
->  # + PERF_SAMPLE_CPU added by -C 0
-> -sample_type=391
-> +sample_type=455
-> +
-> +# Dummy event handles mmaps, comm and task.
-> +mmap=0
-> +comm=0
-> +task=0
-> +
-> +[event:system-wide-dummy]
-> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> index 6a571d322bb2..ca8f9533d8f9 100644
-> --- a/tools/perf/util/evsel.c
-> +++ b/tools/perf/util/evsel.c
-> @@ -1163,11 +1163,14 @@ void perf_evsel__config(struct evsel *evsel, struct record_opts *opts,
->  	}
->  
->  	/*
-> +	 * A dummy event never triggers any actual counter and therefore
-> +	 * cannot be used with branch_stack.
-> +	 *
->  	 * For initial_delay, a dummy event is added implicitly.
->  	 * The software event will trigger -EOPNOTSUPP error out,
->  	 * if BRANCH_STACK bit is set.
->  	 */
-> -	if (opts->initial_delay && is_dummy_event(evsel))
-> +	if (is_dummy_event(evsel))
->  		perf_evsel__reset_sample_bit(evsel, BRANCH_STACK);
->  }
->  
-> -- 
-> 2.26.2.303.gf8c07b1a785-goog
-> 
-
+ 	event_header = addr;
+-	size = sizeof(struct tcg_pcr_event) - sizeof(event_header->event)
+-		+ event_header->event_size;
++	size = struct_size(event_header, event, event_header->event_size);
+ 
+ 	if (*pos == 0) {
+ 		if (addr + size < limit) {
+@@ -98,8 +97,8 @@ static void *tpm2_bios_measurements_next(struct seq_file *m, void *v,
+ 	event_header = log->bios_event_log;
+ 
+ 	if (v == SEQ_START_TOKEN) {
+-		event_size = sizeof(struct tcg_pcr_event) -
+-			sizeof(event_header->event) + event_header->event_size;
++		event_size = struct_size(event_header, event,
++					 event_header->event_size);
+ 		marker = event_header;
+ 	} else {
+ 		event = v;
+@@ -136,9 +135,8 @@ static int tpm2_binary_bios_measurements_show(struct seq_file *m, void *v)
+ 	size_t size;
+ 
+ 	if (v == SEQ_START_TOKEN) {
+-		size = sizeof(struct tcg_pcr_event) -
+-			sizeof(event_header->event) + event_header->event_size;
+-
++		size = struct_size(event_header, event,
++				   event_header->event_size);
+ 		temp_ptr = event_header;
+ 
+ 		if (size > 0)
+diff --git a/include/linux/tpm_eventlog.h b/include/linux/tpm_eventlog.h
+index c253461b1c4e..4f8c90c93c29 100644
+--- a/include/linux/tpm_eventlog.h
++++ b/include/linux/tpm_eventlog.h
+@@ -97,7 +97,7 @@ struct tcg_pcr_event {
+ 	u32 event_type;
+ 	u8 digest[20];
+ 	u32 event_size;
+-	u8 event[0];
++	u8 event[];
+ } __packed;
+ 
+ struct tcg_event_field {
 -- 
+2.26.2
 
-- Arnaldo
