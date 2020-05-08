@@ -2,75 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59C0B1CA085
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 04:09:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B03151CA06A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 03:59:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726768AbgEHCJ0 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 7 May 2020 22:09:26 -0400
-Received: from smtp.h3c.com ([221.12.31.13]:39621 "EHLO h3cspam01-ex.h3c.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726509AbgEHCJZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 22:09:25 -0400
-Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
-        by h3cspam01-ex.h3c.com with ESMTPS id 048279kP052811
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 8 May 2020 10:07:09 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from localhost.localdomain (10.99.212.201) by
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Fri, 8 May 2020 10:07:10 +0800
-From:   Xianting Tian <tian.xianting@h3c.com>
-To:     <john.stultz@linaro.org>, <tglx@linutronix.de>, <sboyd@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <tian.xianting@h3c.com>
-Subject: [PATCH] timers: use set_current_state macro
-Date:   Fri, 8 May 2020 10:02:22 +0800
-Message-ID: <20200508020222.15791-1-tian.xianting@h3c.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726908AbgEHB6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 21:58:50 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:36146 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726518AbgEHB6u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 21:58:50 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 060F5FEA8977781F3749;
+        Fri,  8 May 2020 09:58:47 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 8 May 2020 09:58:38 +0800
+From:   Chen Zhou <chenzhou10@huawei.com>
+To:     <joro@8bytes.org>, <matthias.bgg@gmail.com>
+CC:     <iommu@lists.linux-foundation.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <chenzhou10@huawei.com>
+Subject: [PATCH -next] iommu: remove set but not used variable 'data'
+Date:   Fri, 8 May 2020 10:02:31 +0800
+Message-ID: <20200508020231.143664-1-chenzhou10@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.99.212.201]
-X-ClientProxiedBy: BJSMTP01-EX.srv.huawei-3com.com (10.63.20.132) To
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66)
-Content-Transfer-Encoding: 8BIT
-X-DNSRBL: 
-X-MAIL: h3cspam01-ex.h3c.com 048279kP052811
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use set_current_state macro instead of current->state = TASK_RUNNING.
+Fixes gcc '-Wunused-but-set-variable' warning:
 
-Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+drivers/iommu/mtk_iommu_v1.c:467:25:
+warning: variable â€˜dataâ€™ set but not used [-Wunused-but-set-variable]
+  struct mtk_iommu_data *data;
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
 ---
- kernel/time/timer.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iommu/mtk_iommu_v1.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-index a5221abb4..7c6d42755 100644
---- a/kernel/time/timer.c
-+++ b/kernel/time/timer.c
-@@ -1885,7 +1885,7 @@ signed long __sched schedule_timeout(signed long timeout)
-                        printk(KERN_ERR "schedule_timeout: wrong timeout "
-                                "value %lx\n", timeout);
-                        dump_stack();
--                       current->state = TASK_RUNNING;
-+                       set_current_state(TASK_RUNNING);
-                        goto out;
-                }
-        }
---
-2.17.1
+diff --git a/drivers/iommu/mtk_iommu_v1.c b/drivers/iommu/mtk_iommu_v1.c
+index 7bdd74c7cb9f..36cc1d9667a2 100644
+--- a/drivers/iommu/mtk_iommu_v1.c
++++ b/drivers/iommu/mtk_iommu_v1.c
+@@ -464,12 +464,11 @@ static void mtk_iommu_probe_finalize(struct device *dev)
+ static void mtk_iommu_release_device(struct device *dev)
+ {
+ 	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
+-	struct mtk_iommu_data *data;
+ 
+ 	if (!fwspec || fwspec->ops != &mtk_iommu_ops)
+ 		return;
+ 
+-	data = dev_iommu_priv_get(dev);
++	dev_iommu_priv_get(dev);
+ 	iommu_fwspec_free(dev);
+ }
+ 
+-- 
+2.20.1
 
--------------------------------------------------------------------------------------------------------------------------------------
-±¾ÓÊ¼þ¼°Æä¸½¼þº¬ÓÐÐÂ»ªÈý¼¯ÍÅµÄ±£ÃÜÐÅÏ¢£¬½öÏÞÓÚ·¢ËÍ¸øÉÏÃæµØÖ·ÖÐÁÐ³ö
-µÄ¸öÈË»òÈº×é¡£½ûÖ¹ÈÎºÎÆäËûÈËÒÔÈÎºÎÐÎÊ½Ê¹ÓÃ£¨°üÀ¨µ«²»ÏÞÓÚÈ«²¿»ò²¿·ÖµØÐ¹Â¶¡¢¸´ÖÆ¡¢
-»òÉ¢·¢£©±¾ÓÊ¼þÖÐµÄÐÅÏ¢¡£Èç¹ûÄú´íÊÕÁË±¾ÓÊ¼þ£¬ÇëÄúÁ¢¼´µç»°»òÓÊ¼þÍ¨Öª·¢¼þÈË²¢É¾³ý±¾
-ÓÊ¼þ£¡
-This e-mail and its attachments contain confidential information from New H3C, which is
-intended only for the person or entity whose address is listed above. Any use of the
-information contained herein in any way (including, but not limited to, total or partial
-disclosure, reproduction, or dissemination) by persons other than the intended
-recipient(s) is prohibited. If you receive this e-mail in error, please notify the sender
-by phone or email immediately and delete it!
