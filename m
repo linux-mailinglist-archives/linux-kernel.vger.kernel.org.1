@@ -2,71 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B03151CA06A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 03:59:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 178781CA078
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 04:03:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726908AbgEHB6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 21:58:50 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:36146 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726518AbgEHB6u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 21:58:50 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 060F5FEA8977781F3749;
-        Fri,  8 May 2020 09:58:47 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 8 May 2020 09:58:38 +0800
-From:   Chen Zhou <chenzhou10@huawei.com>
-To:     <joro@8bytes.org>, <matthias.bgg@gmail.com>
-CC:     <iommu@lists.linux-foundation.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <chenzhou10@huawei.com>
-Subject: [PATCH -next] iommu: remove set but not used variable 'data'
-Date:   Fri, 8 May 2020 10:02:31 +0800
-Message-ID: <20200508020231.143664-1-chenzhou10@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1726661AbgEHCDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 22:03:36 -0400
+Received: from mga09.intel.com ([134.134.136.24]:49304 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726533AbgEHCDg (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 22:03:36 -0400
+IronPort-SDR: XrnOrlsuBSK0hfcOuD9+g7QLjCE2jILqOZF8WQvc18ajYQ7rL5S9I8VjdRWfITfYSrIjT5QLNv
+ 0qbg9av5FdfQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2020 19:03:34 -0700
+IronPort-SDR: bWkDiNSVm8GbpzdQBrJkQ64jnnFB/+2Mwvzm271SGgiyGhZUoEpLbz7+gLbzVZjXrkuvv8d8+e
+ fTxkoNi2pjVA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,366,1583222400"; 
+   d="scan'208";a="370303981"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.5.239]) ([10.238.5.239])
+  by fmsmga001.fm.intel.com with ESMTP; 07 May 2020 19:03:32 -0700
+Subject: Re: [PATCH v3 1/4] perf stat: Fix wrong per-thread runtime stat for
+ interval mode
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+References: <20200507065822.8255-1-yao.jin@linux.intel.com>
+ <20200507065822.8255-2-yao.jin@linux.intel.com>
+ <20200507151919.GE2804092@krava>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <baf21213-0fd5-9973-b8bf-2566bab50580@linux.intel.com>
+Date:   Fri, 8 May 2020 10:03:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200507151919.GE2804092@krava>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes gcc '-Wunused-but-set-variable' warning:
+Hi Jiri,
 
-drivers/iommu/mtk_iommu_v1.c:467:25:
-warning: variable ‘data’ set but not used [-Wunused-but-set-variable]
-  struct mtk_iommu_data *data;
+On 5/7/2020 11:19 PM, Jiri Olsa wrote:
+> On Thu, May 07, 2020 at 02:58:19PM +0800, Jin Yao wrote:
+> 
+> SNIP
+> 
+>> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+>> index e0c1ad23c768..97ee941649e6 100644
+>> --- a/tools/perf/builtin-stat.c
+>> +++ b/tools/perf/builtin-stat.c
+>> @@ -351,6 +351,16 @@ static void read_counters(struct timespec *rs)
+>>   	}
+>>   }
+>>   
+>> +static void thread_stats_reset(struct perf_stat_config *config)
+>> +{
+>> +	int i;
+>> +
+>> +	if (config->stats) {
+>> +		for (i = 0; i < config->stats_num; i++)
+>> +			perf_stat__reset_shadow_per_stat(&config->stats[i]);
+>> +	}
+>> +}
+>> +
+>>   static void process_interval(void)
+>>   {
+>>   	struct timespec ts, rs;
+>> @@ -359,6 +369,7 @@ static void process_interval(void)
+>>   	diff_timespec(&rs, &ts, &ref_time);
+>>   
+>>   	perf_stat__reset_shadow_per_stat(&rt_stat);
+>> +	thread_stats_reset(&stat_config);
+> 
+> can't you call in here perf_stat__reset_stats?
+> 
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
----
- drivers/iommu/mtk_iommu_v1.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+If we call perf_stat__reset_stat here, it will reset the evsel->counts, but I 
+don't think it's necessary. The counts will be updated in read_counts() soon.
 
-diff --git a/drivers/iommu/mtk_iommu_v1.c b/drivers/iommu/mtk_iommu_v1.c
-index 7bdd74c7cb9f..36cc1d9667a2 100644
---- a/drivers/iommu/mtk_iommu_v1.c
-+++ b/drivers/iommu/mtk_iommu_v1.c
-@@ -464,12 +464,11 @@ static void mtk_iommu_probe_finalize(struct device *dev)
- static void mtk_iommu_release_device(struct device *dev)
- {
- 	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
--	struct mtk_iommu_data *data;
- 
- 	if (!fwspec || fwspec->ops != &mtk_iommu_ops)
- 		return;
- 
--	data = dev_iommu_priv_get(dev);
-+	dev_iommu_priv_get(dev);
- 	iommu_fwspec_free(dev);
- }
- 
--- 
-2.20.1
+> and if not, I know it's threads related, but new
+> and delete functions are:
+> 
+>    runtime_stat_new, runtime_stat_delete
+> 
+> so let's call it runtime_stat_reset and place it next to
+> the new/delete functions
+>
 
+Yes, that's good idea. I will create runtime_stat_reset and place it next to
+untime_stat_new/runtime_stat_delete.
+
+> other than that it looks ok, thanks
+> 
+> jirka
+> 
+
+Thanks!
+
+Thanks
+Jin Yao
+
+>>   	read_counters(&rs);
+>>   
+>>   	if (STAT_RECORD) {
+>> -- 
+>> 2.17.1
+>>
+> 
