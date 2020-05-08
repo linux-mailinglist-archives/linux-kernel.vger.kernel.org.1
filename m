@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BCAB1CAE8A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 822341CADDE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:06:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730431AbgEHNKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:10:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34622 "EHLO
+        id S1730525AbgEHNF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 09:05:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730427AbgEHNFH (ORCPT
+        by vger.kernel.org with ESMTP id S1730437AbgEHNFJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 09:05:07 -0400
+        Fri, 8 May 2020 09:05:09 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73375C05BD09;
-        Fri,  8 May 2020 06:05:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20728C05BD0C;
+        Fri,  8 May 2020 06:05:09 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jX2gZ-0007S3-8C; Fri, 08 May 2020 15:05:03 +0200
+        id 1jX2ga-0007TA-RQ; Fri, 08 May 2020 15:05:05 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id B1C111C04DF;
-        Fri,  8 May 2020 15:04:54 +0200 (CEST)
-Date:   Fri, 08 May 2020 13:04:54 -0000
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 7B3011C0475;
+        Fri,  8 May 2020 15:04:55 +0200 (CEST)
+Date:   Fri, 08 May 2020 13:04:55 -0000
 From:   "tip-bot2 for Arnaldo Carvalho de Melo" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf evsel: Rename perf_evsel__is_aux_event() to
- evsel__is_aux_event()
+Subject: [tip: perf/core] perf evsel: Rename perf_evsel__compute_deltas() to
+ evsel__compute_deltas()
 Cc:     Adrian Hunter <adrian.hunter@intel.com>,
         Jiri Olsa <jolsa@kernel.org>,
         Namhyung Kim <namhyung@kernel.org>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <158894309461.8414.5220166258016908195.tip-bot2@tip-bot2>
+Message-ID: <158894309545.8414.13143986984883922116.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -51,14 +51,14 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the perf/core branch of tip:
 
-Commit-ID:     39453ed55973cb386ff58bf8a5eca3a65403da74
-Gitweb:        https://git.kernel.org/tip/39453ed55973cb386ff58bf8a5eca3a65403da74
+Commit-ID:     12f5261dac90aea0fd5287b01d50397334cf303e
+Gitweb:        https://git.kernel.org/tip/12f5261dac90aea0fd5287b01d50397334cf303e
 Author:        Arnaldo Carvalho de Melo <acme@redhat.com>
-AuthorDate:    Wed, 29 Apr 2020 15:51:38 -03:00
+AuthorDate:    Wed, 29 Apr 2020 15:47:38 -03:00
 Committer:     Arnaldo Carvalho de Melo <acme@redhat.com>
 CommitterDate: Tue, 05 May 2020 16:35:30 -03:00
 
-perf evsel: Rename perf_evsel__is_aux_event() to evsel__is_aux_event()
+perf evsel: Rename perf_evsel__compute_deltas() to evsel__compute_deltas()
 
 As it is a 'struct evsel' method, not part of tools/lib/perf/, aka
 libperf, to whom the perf_ prefix belongs.
@@ -68,79 +68,69 @@ Cc: Jiri Olsa <jolsa@kernel.org>
 Cc: Namhyung Kim <namhyung@kernel.org>
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/perf/util/auxtrace.c | 6 +++---
- tools/perf/util/evsel.h    | 2 +-
- tools/perf/util/pmu.c      | 2 +-
- tools/perf/util/record.c   | 2 +-
- 4 files changed, 6 insertions(+), 6 deletions(-)
+ tools/perf/util/evsel.c | 6 +++---
+ tools/perf/util/evsel.h | 4 ++--
+ tools/perf/util/stat.c  | 4 ++--
+ 3 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/tools/perf/util/auxtrace.c b/tools/perf/util/auxtrace.c
-index cddd1d3..bd27f73 100644
---- a/tools/perf/util/auxtrace.c
-+++ b/tools/perf/util/auxtrace.c
-@@ -686,7 +686,7 @@ static int auxtrace_validate_aux_sample_size(struct evlist *evlist,
- 	evlist__for_each_entry(evlist, evsel) {
- 		sz = evsel->core.attr.aux_sample_size;
- 		if (perf_evsel__is_group_leader(evsel)) {
--			has_aux_leader = perf_evsel__is_aux_event(evsel);
-+			has_aux_leader = evsel__is_aux_event(evsel);
- 			if (sz) {
- 				if (has_aux_leader)
- 					pr_err("Cannot add AUX area sampling to an AUX area event\n");
-@@ -760,7 +760,7 @@ int auxtrace_parse_sample_options(struct auxtrace_record *itr,
- 	/* Set aux_sample_size based on --aux-sample option */
- 	evlist__for_each_entry(evlist, evsel) {
- 		if (perf_evsel__is_group_leader(evsel)) {
--			has_aux_leader = perf_evsel__is_aux_event(evsel);
-+			has_aux_leader = evsel__is_aux_event(evsel);
- 		} else if (has_aux_leader) {
- 			evsel->core.attr.aux_sample_size = sz;
- 		}
-@@ -769,7 +769,7 @@ no_opt:
- 	aux_evsel = NULL;
- 	/* Override with aux_sample_size from config term */
- 	evlist__for_each_entry(evlist, evsel) {
--		if (perf_evsel__is_aux_event(evsel))
-+		if (evsel__is_aux_event(evsel))
- 			aux_evsel = evsel;
- 		term = perf_evsel__get_config_term(evsel, AUX_SAMPLE_SIZE);
- 		if (term) {
-diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-index 868e2be..6187dba 100644
---- a/tools/perf/util/evsel.h
-+++ b/tools/perf/util/evsel.h
-@@ -159,7 +159,7 @@ int perf_evsel__object_config(size_t object_size,
- 			      void (*fini)(struct evsel *evsel));
- 
- struct perf_pmu *evsel__find_pmu(struct evsel *evsel);
--bool perf_evsel__is_aux_event(struct evsel *evsel);
-+bool evsel__is_aux_event(struct evsel *evsel);
- 
- struct evsel *perf_evsel__new_idx(struct perf_event_attr *attr, int idx);
- 
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index 2dd3d6b..5642de7 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -898,7 +898,7 @@ struct perf_pmu *evsel__find_pmu(struct evsel *evsel)
- 	return pmu;
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index 6a571d3..db6d2a5 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -1283,8 +1283,8 @@ void evsel__delete(struct evsel *evsel)
+ 	free(evsel);
  }
  
--bool perf_evsel__is_aux_event(struct evsel *evsel)
-+bool evsel__is_aux_event(struct evsel *evsel)
+-void perf_evsel__compute_deltas(struct evsel *evsel, int cpu, int thread,
+-				struct perf_counts_values *count)
++void evsel__compute_deltas(struct evsel *evsel, int cpu, int thread,
++			   struct perf_counts_values *count)
  {
- 	struct perf_pmu *pmu = evsel__find_pmu(evsel);
+ 	struct perf_counts_values tmp;
  
-diff --git a/tools/perf/util/record.c b/tools/perf/util/record.c
-index c2c8cce..97e2c0c 100644
---- a/tools/perf/util/record.c
-+++ b/tools/perf/util/record.c
-@@ -24,7 +24,7 @@ static struct evsel *perf_evsel__read_sampler(struct evsel *evsel,
- {
- 	struct evsel *leader = evsel->leader;
+@@ -1440,7 +1440,7 @@ int __perf_evsel__read_on_cpu(struct evsel *evsel,
+ 	if (readn(FD(evsel, cpu, thread), &count, nv * sizeof(u64)) <= 0)
+ 		return -errno;
  
--	if (perf_evsel__is_aux_event(leader)) {
-+	if (evsel__is_aux_event(leader)) {
- 		evlist__for_each_entry(evlist, evsel) {
- 			if (evsel->leader == leader && evsel != evsel->leader)
- 				return evsel;
+-	perf_evsel__compute_deltas(evsel, cpu, thread, &count);
++	evsel__compute_deltas(evsel, cpu, thread, &count);
+ 	perf_counts_values__scale(&count, scale, NULL);
+ 	*perf_counts(evsel->counts, cpu, thread) = count;
+ 	return 0;
+diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
+index e2a0ebe..3201505 100644
+--- a/tools/perf/util/evsel.h
++++ b/tools/perf/util/evsel.h
+@@ -151,8 +151,8 @@ static inline int evsel__nr_cpus(struct evsel *evsel)
+ void perf_counts_values__scale(struct perf_counts_values *count,
+ 			       bool scale, s8 *pscaled);
+ 
+-void perf_evsel__compute_deltas(struct evsel *evsel, int cpu, int thread,
+-				struct perf_counts_values *count);
++void evsel__compute_deltas(struct evsel *evsel, int cpu, int thread,
++			   struct perf_counts_values *count);
+ 
+ int perf_evsel__object_config(size_t object_size,
+ 			      int (*init)(struct evsel *evsel),
+diff --git a/tools/perf/util/stat.c b/tools/perf/util/stat.c
+index da3a206..4e6e770 100644
+--- a/tools/perf/util/stat.c
++++ b/tools/perf/util/stat.c
+@@ -302,7 +302,7 @@ process_counter_values(struct perf_stat_config *config, struct evsel *evsel,
+ 	case AGGR_NODE:
+ 	case AGGR_NONE:
+ 		if (!evsel->snapshot)
+-			perf_evsel__compute_deltas(evsel, cpu, thread, count);
++			evsel__compute_deltas(evsel, cpu, thread, count);
+ 		perf_counts_values__scale(count, config->scale, NULL);
+ 		if ((config->aggr_mode == AGGR_NONE) && (!evsel->percore)) {
+ 			perf_stat__update_shadow_stats(evsel, count->val,
+@@ -384,7 +384,7 @@ int perf_stat_process_counter(struct perf_stat_config *config,
+ 		return 0;
+ 
+ 	if (!counter->snapshot)
+-		perf_evsel__compute_deltas(counter, -1, -1, aggr);
++		evsel__compute_deltas(counter, -1, -1, aggr);
+ 	perf_counts_values__scale(aggr, config->scale, &counter->counts->scaled);
+ 
+ 	for (i = 0; i < 3; i++)
