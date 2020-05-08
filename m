@@ -2,106 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDDF81CA64C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 10:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 247F01CA651
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 10:42:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727768AbgEHImN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 04:42:13 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:40720 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727072AbgEHImM (ORCPT
+        id S1727778AbgEHImg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 04:42:36 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:29089 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726690AbgEHImg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 04:42:12 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0488gBvN020971;
-        Fri, 8 May 2020 03:42:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1588927331;
-        bh=j0RPwytwTGu6DXnBXsaicV6+R0ACC0J3LuDsBmxAjQ4=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=hXER7gFzPsBdW1U2+5FyzdOorrvEDdsp/UzYYcmXg92H1um39+yV547pRu/ZsOq6C
-         OYwIWlU1UyWh3ivKj8Dk2V+Q865+Vk1w6V1KjkU+md8ZqUNqY3MvZPXB8ZROSiN6vm
-         /6pXM8XDZI6Z4LOSYIHnSNyzRWko1VRK18QR1Ioo=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0488gA2I115472;
-        Fri, 8 May 2020 03:42:10 -0500
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 8 May
- 2020 03:42:10 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 8 May 2020 03:42:10 -0500
-Received: from [192.168.2.14] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0488g8hm050354;
-        Fri, 8 May 2020 03:42:09 -0500
-Subject: Re: [PATCH v3 1/7] dt-bindings: syscon: Add TI's J721E specific
- compatible string
-To:     Kishon Vijay Abraham I <kishon@ti.com>, <t-kristo@ti.com>
-CC:     <robh@kernel.org>, <nm@ti.com>, <nsekhar@ti.com>,
-        <vigneshr@ti.com>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200508082937.14171-1-rogerq@ti.com>
- <20200508082937.14171-2-rogerq@ti.com>
- <6efa9374-e8f2-4054-3f35-6cacead783b8@ti.com>
-From:   Roger Quadros <rogerq@ti.com>
-Message-ID: <e833753a-20dd-e57d-2aa4-49e96f31df4d@ti.com>
-Date:   Fri, 8 May 2020 11:42:07 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Fri, 8 May 2020 04:42:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588927354;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ouBt4BfusFaa/lv0LTRbmOSgoxSr9cZTrvcQPivP5Jg=;
+        b=WsuS/KY5MMKBiOajQSSbkj9bRrxJbryD/IUVamXAAM1FW9GRjkt6zwdHytSI6393QsmMZ7
+        dOvROlUlWGq/6vhN6K82AKq+i2rMUd7RUQsZd0093B8Au+4j2pkEb5Shs4f9RteYqqxNAF
+        pICuz/HQ3oaSnfgn+rOhRR02eNpR7z0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-340-l6nWo52fN4uNSj25Te985g-1; Fri, 08 May 2020 04:42:30 -0400
+X-MC-Unique: l6nWo52fN4uNSj25Te985g-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B3D84461;
+        Fri,  8 May 2020 08:42:28 +0000 (UTC)
+Received: from t480s.redhat.com (ovpn-113-181.ams2.redhat.com [10.36.113.181])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C8F425C1B0;
+        Fri,  8 May 2020 08:42:22 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, linux-nvdimm@lists.01.org,
+        kexec@lists.infradead.org, Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Baoquan He <bhe@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Wei Yang <richard.weiyang@gmail.com>
+Subject: [PATCH v4 0/4] mm/memory_hotplug: Interface to add driver-managed system ram
+Date:   Fri,  8 May 2020 10:42:13 +0200
+Message-Id: <20200508084217.9160-1-david@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <6efa9374-e8f2-4054-3f35-6cacead783b8@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kishon,
+I did some more testing to v3 and found issues with unloading the kmem
+module, followed by reconfiguring the namespace.
 
-On 08/05/2020 11:40, Kishon Vijay Abraham I wrote:
-> Hi,
-> 
-> On 5/8/2020 1:59 PM, Roger Quadros wrote:
->> From: Kishon Vijay Abraham I <kishon@ti.com>
->>
->> Add TI's J721E SoC specific compatible string.
->>
->> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-> 
-> This patch should be dropped given that patch 2 adds a new binding for the
-> compatible added here.
+kexec (via kexec_load()) can currently not properly handle memory added via
+dax/kmem, and will have similar issues with virtio-mem. kexec-tools will
+currently add all memory to the fixed-up initial firmware memmap. In case
+of dax/kmem, this means that - in contrast to a proper reboot - how that
+persistent memory will be used can no longer be configured by the kexec'd
+kernel. In case of virtio-mem it will be harmful, because that memory
+might contain inaccessible pieces that require coordination with hypervisor
+first.
 
-Indeed, my bad.
+In both cases, we want to let the driver in the kexec'd kernel handle
+detecting and adding the memory, like during an ordinary reboot.
+Introduce add_memory_driver_managed(). More on the samentics are in patch
+#1.
 
-> 
-> Thanks
-> Kishon
-> 
->> ---
->>   Documentation/devicetree/bindings/mfd/syscon.yaml | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/Documentation/devicetree/bindings/mfd/syscon.yaml b/Documentation/devicetree/bindings/mfd/syscon.yaml
->> index 39375e4313d2..f9aac75d423a 100644
->> --- a/Documentation/devicetree/bindings/mfd/syscon.yaml
->> +++ b/Documentation/devicetree/bindings/mfd/syscon.yaml
->> @@ -38,6 +38,7 @@ properties:
->>             - allwinner,sun8i-h3-system-controller
->>             - allwinner,sun8i-v3s-system-controller
->>             - allwinner,sun50i-a64-system-controller
->> +          - ti,j721e-system-controller
->>   
->>           - const: syscon
->>   
->>
+In the future, we might want to make this behavior configurable for
+dax/kmem- either by configuring it in the kernel (which would then also
+allow to configure kexec_file_load()) or in kexec-tools by also adding
+"System RAM (kmem)" memory from /proc/iomem to the fixed-up initial
+firmware memmap.
 
-cheers,
--roger
+More on the motivation can be found in [1] and [2].
+
+v3 -> v4:
+- "device-dax: Don't leak kernel memory to user space after unloading kmem"
+-- Added
+- "device-dax: Add memory via add_memory_driver_managed()"
+-- kstrdup_const() the resource name to be used for added memory
+-- Remember if any hotremove failed / we still have memory added to the
+   system and conditionally kfree_const().
+
+v2 -> v3:
+- Don't use flags for add_memory() and friends, provide
+  add_memory_driver_managed() instead.
+- Flag memory resources via IORESOURCE_MEM_DRIVER_MANAGED and handle them
+  in kexec.
+- Name memory resources "System RAM ($DRIVER)", visible via /proc/iomem
+- Added more details to the patch descriptions, especially regarding the
+  history of /sys/firmware/memmap
+- Add a comment to the device-dax change. Dropped Dave's Ack as the
+
+v1 -> v2:
+- Don't change the resource name
+- Rename the flag to MHP_NO_FIRMWARE_MEMMAP to reflect what it is doing
+- Rephrase subjects/descriptions
+- Use the flag for dax/kmem
+
+[1] https://lkml.kernel.org/r/20200429160803.109056-1-david@redhat.com
+[2] https://lkml.kernel.org/r/20200430102908.10107-1-david@redhat.com
+
+
+David Hildenbrand (4):
+  device-dax: Don't leak kernel memory to user space after unloading
+    kmem
+  mm/memory_hotplug: Introduce add_memory_driver_managed()
+  kexec_file: Don't place kexec images on IORESOURCE_MEM_DRIVER_MANAGED
+  device-dax: Add memory via add_memory_driver_managed()
+
+ drivers/dax/dax-private.h      |  1 +
+ drivers/dax/kmem.c             | 42 ++++++++++++++++++++---
+ include/linux/ioport.h         |  1 +
+ include/linux/memory_hotplug.h |  2 ++
+ kernel/kexec_file.c            |  5 +++
+ mm/memory_hotplug.c            | 62 +++++++++++++++++++++++++++++++---
+ 6 files changed, 104 insertions(+), 9 deletions(-)
+
 -- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+2.25.4
+
