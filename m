@@ -2,76 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D54181CAF0B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:17:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52DEF1CAF28
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:17:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730542AbgEHNNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:13:51 -0400
-Received: from mail-m17613.qiye.163.com ([59.111.176.13]:24509 "EHLO
-        mail-m17613.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728599AbgEHNNr (ORCPT
+        id S1730533AbgEHNPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 09:15:15 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:65142 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728557AbgEHNPJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 09:13:47 -0400
-Received: from ubuntu.localdomain (unknown [157.0.31.122])
-        by mail-m17613.qiye.163.com (Hmail) with ESMTPA id EC4A1482C00;
-        Fri,  8 May 2020 21:13:44 +0800 (CST)
-From:   Bernard Zhao <bernard@vivo.com>
-To:     Lukasz Luba <lukasz.luba@arm.com>, Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-pm@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com, Bernard Zhao <bernard@vivo.com>
-Subject: [PATCH] memory/samsung: reduce unnecessary mutex lock area
-Date:   Fri,  8 May 2020 06:13:38 -0700
-Message-Id: <20200508131338.32956-1-bernard@vivo.com>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSFVMSU5CQkJDSElKTkhISVlXWShZQU
-        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OhQ6Dgw*TTgrMz4*Txc0TDE5
-        TFEaCj1VSlVKTkNDQk9ITUlOSkxCVTMWGhIXVRkeCRUaCR87DRINFFUYFBZFWVdZEgtZQVlKTkxV
-        S1VISlVKSUlZV1kIAVlBSUpNTjcG
-X-HM-Tid: 0a71f46b9b9093bakuwsec4a1482c00
+        Fri, 8 May 2020 09:15:09 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 048D3oZl007616;
+        Fri, 8 May 2020 09:15:01 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30vts7kde4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 08 May 2020 09:15:01 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 048DCh9P006189;
+        Fri, 8 May 2020 13:14:59 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma05fra.de.ibm.com with ESMTP id 30s0g5newr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 08 May 2020 13:14:59 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 048DEuan56754200
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 8 May 2020 13:14:56 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 52E3EA405F;
+        Fri,  8 May 2020 13:14:56 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 41563A4054;
+        Fri,  8 May 2020 13:14:56 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Fri,  8 May 2020 13:14:56 +0000 (GMT)
+Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 20191)
+        id D2C43E026B; Fri,  8 May 2020 15:14:55 +0200 (CEST)
+From:   Stefan Haberland <sth@linux.ibm.com>
+To:     hch@lst.de
+Cc:     axboe@kernel.dk, hoeppner@linux.ibm.com,
+        linux-s390@vger.kernel.org, heiko.carstens@de.ibm.com,
+        gor@linux.ibm.com, linux-kernel@vger.kernel.org,
+        borntraeger@de.ibm.com
+Subject: [PATCH v3 0/3] s390/dasd: remove ioctl_by_bdev from DASD driver
+Date:   Fri,  8 May 2020 15:14:52 +0200
+Message-Id: <20200508131455.55407-1-sth@linux.ibm.com>
+X-Mailer: git-send-email 2.17.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-08_12:2020-05-08,2020-05-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
+ clxscore=1015 mlxscore=0 mlxlogscore=336 lowpriorityscore=0 malwarescore=0
+ suspectscore=1 phishscore=0 adultscore=0 priorityscore=1501 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005080111
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Maybe dmc->df->lock is unnecessary to protect function
-exynos5_dmc_perf_events_check(dmc). If we have to protect,
-dmc->lock is more better and more effective.
-Also, it seems not needed to protect "if (ret) & dev_warn"
-branch.
+Hi Christoph,
 
-Signed-off-by: Bernard Zhao <bernard@vivo.com>
----
- drivers/memory/samsung/exynos5422-dmc.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+as discussed yesterday I have picked your first patch, adopted the second
+one and created a new third patch to remove the ioctl_by_bdev calls.
+I export the symbol for the dasd_biodasdinfo function and obtain the
+pointer with a kallsyms_lookup_name.
+The checking if the gendisk is owned by a DASD is done by comparing the
+fops pointer as you suggested. Looks like the most suitable method here.
 
-diff --git a/drivers/memory/samsung/exynos5422-dmc.c b/drivers/memory/samsung/exynos5422-dmc.c
-index 22a43d662833..88e8ac8b5327 100644
---- a/drivers/memory/samsung/exynos5422-dmc.c
-+++ b/drivers/memory/samsung/exynos5422-dmc.c
-@@ -1345,16 +1345,14 @@ static irqreturn_t dmc_irq_thread(int irq, void *priv)
- 	int res;
- 	struct exynos5_dmc *dmc = priv;
- 
--	mutex_lock(&dmc->df->lock);
--
- 	exynos5_dmc_perf_events_check(dmc);
- 
-+	mutex_lock(&dmc->df->lock);
- 	res = update_devfreq(dmc->df);
-+	mutex_unlock(&dmc->df->lock);
- 	if (res)
- 		dev_warn(dmc->dev, "devfreq failed with %d\n", res);
- 
--	mutex_unlock(&dmc->df->lock);
--
- 	return IRQ_HANDLED;
- }
- 
+Please note that this patch is not ready for inclusion and only basic
+function tested. It is just for discussion.
+
+Christoph Hellwig (2):
+  dasd: refactor dasd_ioctl_information
+  block: add a s390-only biodasdinfo method
+
+Stefan Haberland (1):
+  s390/dasd: remove ioctl_by_bdev calls
+
+ block/partitions/ibm.c          | 15 +++++++--
+ drivers/s390/block/dasd_int.h   |  1 +
+ drivers/s390/block/dasd_ioctl.c | 59 ++++++++++++++++++++++++---------
+ include/linux/blkdev.h          |  1 +
+ 4 files changed, 57 insertions(+), 19 deletions(-)
+
 -- 
-2.26.2
+2.17.1
 
