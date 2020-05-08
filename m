@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 382141CAC0F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:49:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77A011CAC49
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:52:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729763AbgEHMtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 08:49:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55466 "EHLO mail.kernel.org"
+        id S1729921AbgEHMwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 08:52:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32904 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729471AbgEHMtf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 08:49:35 -0400
+        id S1729502AbgEHMvx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 08:51:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1BC0F21473;
-        Fri,  8 May 2020 12:49:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3939A218AC;
+        Fri,  8 May 2020 12:51:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588942175;
-        bh=xktOPO+lo9iGrhSYFcTcjnuNNkEKYIfj+EE6VDjCbb8=;
+        s=default; t=1588942312;
+        bh=hdhau5x237LBx7BVJYuRDozB3xA1U7LTwu5kqngl8TY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DqIhpqpAaGZ6UT/c0f12uddud0HPJVAxqDeeNHX50nckouRKCTWByy5XzIqAemhU8
-         MJAj50i1/WfB5cslXRNHYpNEJg7hsI9skKn+C/d9JVkQ8IpCcss7R6ypqHT1vGy9sE
-         Ahaa/iWp036LHF85CoutSg27olqXFbqh+Vh/Vn0M=
+        b=d37ZXudMAtG7cbwrQji6niJhmVDV2GxDpUalgpVjNdNbRzk2k7pD0qeqD3BS/4ZZL
+         1fYBc/wjiHdQgXwWRStzyQ4gAi5B5z0pJyRhzZv0OyyB9B5LU8YbwY1DZufJQU70V8
+         bVCGbyZ2wHTMQBOVQnSPfFqWOKeWJquGBcl96edc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Marcin Nowakowski <marcin.nowakowski@imgtec.com>,
-        linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Subject: [PATCH 4.9 15/18] MIPS: perf: Remove incorrect odd/even counter handling for I6400
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Fabio Estevam <festivem@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 05/32] ASoC: sgtl5000: Fix VAG power-on handling
 Date:   Fri,  8 May 2020 14:35:18 +0200
-Message-Id: <20200508123033.980681215@linuxfoundation.org>
+Message-Id: <20200508123035.505300470@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200508123030.497793118@linuxfoundation.org>
-References: <20200508123030.497793118@linuxfoundation.org>
+In-Reply-To: <20200508123034.886699170@linuxfoundation.org>
+References: <20200508123034.886699170@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,47 +46,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
+From: Sebastian Reichel <sebastian.reichel@collabora.com>
 
-commit f7a31b5e7874f77464a4eae0a8ba84b9ae0b3a54 upstream.
+[ Upstream commit aa7812737f2877e192d57626cbe8825cc7cf6de9 ]
 
-All performance counters on I6400 (odd and even) are capable of counting
-any of the available events, so drop current logic of using the extra
-bit to determine which counter to use.
+As mentioned slightly out of patch context in the code, there
+is no reset routine for the chip. On boards where the chip is
+supplied by a fixed regulator, it might not even be resetted
+during (e.g. watchdog) reboot and can be in any state.
 
-Signed-off-by: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
-Fixes: 4e88a8621301 ("MIPS: Add cases for CPU_I6400")
-Fixes: fd716fca10fc ("MIPS: perf: Fix I6400 event numbers")
-Cc: linux-mips@linux-mips.org
-Patchwork: https://patchwork.linux-mips.org/patch/15991/
-Signed-off-by: Ralf Baechle <ralf@linux-mips.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+If the device is probed with VAG enabled, the driver's probe
+routine will generate a loud pop sound when ANA_POWER is
+being programmed. Avoid this by properly disabling just the
+VAG bit and waiting the required power down time.
 
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Reviewed-by: Fabio Estevam <festivem@gmail.com>
+Link: https://lore.kernel.org/r/20200414181140.145825-1-sebastian.reichel@collabora.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/kernel/perf_event_mipsxx.c |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ sound/soc/codecs/sgtl5000.c | 34 ++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/sgtl5000.h |  1 +
+ 2 files changed, 35 insertions(+)
 
---- a/arch/mips/kernel/perf_event_mipsxx.c
-+++ b/arch/mips/kernel/perf_event_mipsxx.c
-@@ -1605,7 +1605,6 @@ static const struct mips_perf_event *mip
- 		break;
- 	case CPU_P5600:
- 	case CPU_P6600:
--	case CPU_I6400:
- 		/* 8-bit event numbers */
- 		raw_id = config & 0x1ff;
- 		base_id = raw_id & 0xff;
-@@ -1618,6 +1617,11 @@ static const struct mips_perf_event *mip
- 		raw_event.range = P;
- #endif
- 		break;
-+	case CPU_I6400:
-+		/* 8-bit event numbers */
-+		base_id = config & 0xff;
-+		raw_event.cntr_mask = CNTR_EVEN | CNTR_ODD;
-+		break;
- 	case CPU_1004K:
- 		if (IS_BOTH_COUNTERS_1004K_EVENT(base_id))
- 			raw_event.cntr_mask = CNTR_EVEN | CNTR_ODD;
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index 896412d11a31c..7c0a06b487f74 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -1633,6 +1633,40 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
+ 		dev_err(&client->dev,
+ 			"Error %d initializing CHIP_CLK_CTRL\n", ret);
+ 
++	/* Mute everything to avoid pop from the following power-up */
++	ret = regmap_write(sgtl5000->regmap, SGTL5000_CHIP_ANA_CTRL,
++			   SGTL5000_CHIP_ANA_CTRL_DEFAULT);
++	if (ret) {
++		dev_err(&client->dev,
++			"Error %d muting outputs via CHIP_ANA_CTRL\n", ret);
++		goto disable_clk;
++	}
++
++	/*
++	 * If VAG is powered-on (e.g. from previous boot), it would be disabled
++	 * by the write to ANA_POWER in later steps of the probe code. This
++	 * may create a loud pop even with all outputs muted. The proper way
++	 * to circumvent this is disabling the bit first and waiting the proper
++	 * cool-down time.
++	 */
++	ret = regmap_read(sgtl5000->regmap, SGTL5000_CHIP_ANA_POWER, &value);
++	if (ret) {
++		dev_err(&client->dev, "Failed to read ANA_POWER: %d\n", ret);
++		goto disable_clk;
++	}
++	if (value & SGTL5000_VAG_POWERUP) {
++		ret = regmap_update_bits(sgtl5000->regmap,
++					 SGTL5000_CHIP_ANA_POWER,
++					 SGTL5000_VAG_POWERUP,
++					 0);
++		if (ret) {
++			dev_err(&client->dev, "Error %d disabling VAG\n", ret);
++			goto disable_clk;
++		}
++
++		msleep(SGTL5000_VAG_POWERDOWN_DELAY);
++	}
++
+ 	/* Follow section 2.2.1.1 of AN3663 */
+ 	ana_pwr = SGTL5000_ANA_POWER_DEFAULT;
+ 	if (sgtl5000->num_supplies <= VDDD) {
+diff --git a/sound/soc/codecs/sgtl5000.h b/sound/soc/codecs/sgtl5000.h
+index 18cae08bbd3a6..066517e352a70 100644
+--- a/sound/soc/codecs/sgtl5000.h
++++ b/sound/soc/codecs/sgtl5000.h
+@@ -233,6 +233,7 @@
+ /*
+  * SGTL5000_CHIP_ANA_CTRL
+  */
++#define SGTL5000_CHIP_ANA_CTRL_DEFAULT		0x0133
+ #define SGTL5000_LINE_OUT_MUTE			0x0100
+ #define SGTL5000_HP_SEL_MASK			0x0040
+ #define SGTL5000_HP_SEL_SHIFT			6
+-- 
+2.20.1
+
 
 
