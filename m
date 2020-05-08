@@ -2,76 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDFA91CA09F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 04:18:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83F581CA0A8
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 04:19:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726598AbgEHCR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 22:17:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727124AbgEHCR5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 22:17:57 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EEE1C05BD09
-        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 19:17:57 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id x12so115503qts.9
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 19:17:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gpiccoli-net.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=q181yzRPrb4b19Hrbwu/9thGmuUl9/8sqVdS721JtdI=;
-        b=bf4W7j1XqRzdw6xkGA8tp0VlOVCxMWbB+5gcI5x0cv6vhpfQlQbsx1lWrFsQFbOAET
-         OiCBzQCpFH38gyWtn9ZHRhJPrcacz9KPTXhelGMveATMxSQHTAC6+frJ1nQFJwsQE+9R
-         qzkfmp9k92ODps/zzm2KJEf+JTuPlokJ/NxFobH60O+RWfNcMFGBvjUnRzoNRViTa7Dv
-         WuDLScVZzW6k3Fn2UBEMKGqc1H0vSMcx0/1rn+5ilFO8E1Cq4eYFGwlzigbuWXygvnNi
-         R/Qs8RtfpEHLxY2L8N3uZ0nOhRNVab9CYgZBapTZ90S+sDyqqej5Saz4pYzCwGjd57gx
-         1zXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=q181yzRPrb4b19Hrbwu/9thGmuUl9/8sqVdS721JtdI=;
-        b=WD9BX4Jh8WalDxaOlXvf6fKeduPZsBBp5l4dvKp+s5yq1/C+dVaLmODcOnzbDPnZQA
-         0pDZlbtM/3CKLPLuGN/qEFJoGdxibqt11jRG5kxkdYvcspHt8woLj60JtjlapJegoWMD
-         NtWSiGVr75+c2vUpIEDzU6/oJItSODlrz5GoHKqDXypoqyhE6lmVgids3qUTHDjJveVC
-         97Z5ABhtomKP+/PRXQKBImBtwF9WfNfqZxVbqzbSqcZLRmMgTilT22zdLBuF8454smqT
-         ZE6BOYTbOQQZ/SzkqsvbZuYv0Ju1uSBaVgJGi1CkMelY7YgdgJshzTNhM6AUoVA+NCIj
-         c5Nw==
-X-Gm-Message-State: AGi0PubxbCUlIFapC9cX/LYOD/HSxfqOnPq/sz2+I31GwM+GWnTcPx4x
-        R+cLRQlxeXr0yrCp5P6EUiqdfgPGPv/snEz6R8dMbg==
-X-Google-Smtp-Source: APiQypJA/nTNKSOcz66mO4EnbxIFuBZdFfzznNIpAqzztxpk2iMe7jNp61vYGF5COXtBAeI8Y1COIQPYkQTSay/NioY=
-X-Received: by 2002:aed:2ea2:: with SMTP id k31mr547064qtd.136.1588904276303;
- Thu, 07 May 2020 19:17:56 -0700 (PDT)
+        id S1727794AbgEHCSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 22:18:54 -0400
+Received: from mga09.intel.com ([134.134.136.24]:50259 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727122AbgEHCSu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 May 2020 22:18:50 -0400
+IronPort-SDR: 8uERcg6LfnivA3pYdn4FZmOwlggl5H3Zn4PjNMfIZNdV036UVnDHQCquyeruqppBpROJxwGLdO
+ AMVVQUUb3uaw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2020 19:18:49 -0700
+IronPort-SDR: Cy7+22S/SEF2dF3qJxa+cWo2vPpPwemgW6iUxbNiPXmrlJaQT8kYgLCqj6rJB1xm4FCwdKDYMU
+ MgUENEfMu7uQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,366,1583222400"; 
+   d="scan'208";a="462361497"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga006.fm.intel.com with ESMTP; 07 May 2020 19:18:49 -0700
+Received: from debox1-hc.jf.intel.com (debox1-hc.jf.intel.com [10.54.75.159])
+        by linux.intel.com (Postfix) with ESMTP id 07097580378;
+        Thu,  7 May 2020 19:18:49 -0700 (PDT)
+From:   "David E. Box" <david.e.box@linux.intel.com>
+To:     bhelgaas@google.com, andy@infradead.org, lee.jones@linaro.org,
+        alexander.h.duyck@linux.intel.com
+Cc:     "David E. Box" <david.e.box@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: [PATCH v2 0/3] Intel Platform Monitoring Technology
+Date:   Thu,  7 May 2020 19:18:41 -0700
+Message-Id: <20200508021844.6911-1-david.e.box@linux.intel.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200505013206.11223-1-david.e.box@linux.intel.com>
+References: <20200505013206.11223-1-david.e.box@linux.intel.com>
 MIME-Version: 1.0
-References: <20200507214624.21911-1-gpiccoli@canonical.com> <20200507160618.43c2825e49dec1df8db30429@linux-foundation.org>
-In-Reply-To: <20200507160618.43c2825e49dec1df8db30429@linux-foundation.org>
-From:   "Guilherme G. Piccoli" <kernel@gpiccoli.net>
-Date:   Thu, 7 May 2020 23:17:19 -0300
-Message-ID: <CALJn8nMwQfHdXAQHHqnWA7GxeAN43wG2W42uF6uaHQ--Z40xOw@mail.gmail.com>
-Subject: Re: [PATCH] kernel/watchdog.c: convert {soft/hard}lockup boot
- parameters to sysctl aliases
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        linux-kernel@vger.kernel.org,
-        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
-        keescook@chromium.org, yzaikin@google.com, mcgrof@kernel.org,
-        vbabka@suse.cz
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 7, 2020 at 8:06 PM Andrew Morton <akpm@linux-foundation.org> wrote:
-> We have a lot of sysctls.  What is the motivation for converting these
-> particular ones?
+Intel Platform Monitoring Technology (PMT) is an architecture for
+enumerating and accessing hardware monitoring capabilities on a device.
+With customers increasingly asking for hardware telemetry, engineers not
+only have to figure out how to measure and collect data, but also how to
+deliver it and make it discoverable. The latter may be through some device
+specific method requiring device specific tools to collect the data. This
+in turn requires customers to manage a suite of different tools in order to
+collect the differing assortment of monitoring data on their systems.  Even
+when such information can be provided in kernel drivers, they may require
+constant maintenance to update register mappings as they change with
+firmware updates and new versions of hardware. PMT provides a solution for
+discovering and reading telemetry from a device through a hardware agnostic
+framework that allows for updates to systems without requiring patches to
+the kernel or software tools.
 
-No stronger motivation than a regular clean-up - I just liked the
-infrastructure provided by Vlastmil and thought in using it. I know we
-have plenty of sysctls, but not all of them have identical/duplicate
-boot params, so I went with the obvious ones, that I use more.
-Cheers,
+PMT defines several capabilities to support collecting monitoring data from
+hardware. All are discoverable as separate instances of the PCIE Designated
+Vendor extended capability (DVSEC) with the Intel vendor code. The DVSEC ID
+field uniquely identifies the capability. Each DVSEC also provides a BAR
+offset to a header that defines capability-specific attributes, including
+GUID, feature type, offset and length, as well as configuration settings
+where applicable. The GUID uniquely identifies the register space of any
+monitor data exposed by the capability. The GUID is associated with an XML
+file from the vendor that describes the mapping of the register space along
+with properties of the monitor data. This allows vendors to perform
+firmware updates that can change the mapping (e.g. add new metrics) without
+requiring any changes to drivers or software tools. The new mapping is
+confirmed by an updated GUID, read from the hardware, which software uses
+with a new XML.
 
-Guilherme
+The current capabilities defined by PMT are Telemetry, Watcher, and
+Crashlog.  The Telemetry capability provides access to a continuous block
+of read only data. The Watcher capability provides access to hardware
+sampling and tracing features. Crashlog provides access to device crash
+dumps.  While there is some relationship between capabilities (Watcher can
+be configured to sample from the Telemetry data set) each exists as stand
+alone features with no dependency on any other. The design therefore splits
+them into individual, capability specific drivers. MFD is used to create
+platform devices for each capability so that they may be managed by their
+own driver. The PMT architecture is (for the most part) agnostic to the
+type of device it can collect from. Devices nodes are consequently generic
+in naming, e.g. /dev/telem<n> and /dev/smplr<n>. Each capability driver
+creates a class to manage the list of devices supporting it.  Software can
+determine which devices support a PMT feature by searching through each
+device node entry in the sysfs class folder. It can additionally determine
+if a particular device supports a PMT feature by checking for a PMT class
+folder in the device folder.
+
+This patch set provides support for the PMT framework, along with support
+for Telemetry on Tiger Lake.
+
+Changes from V1:
+
+	- In the telemetry driver, set the device in device_create() to
+	  the parent pci device (the monitoring device) for clear
+	  association in sysfs. Was set before to the platform device
+	  created by the pci parent.
+	- Move telem struct into driver and delete unneeded header file.
+	- Start telem device numbering from 0 instead of 1. 1 was used
+	  due to anticipated changes, no longer needed.
+	- Use helper macros suggested by Andy S.
+	- Rename class to pmt_telemetry, spelling out full name
+	- Move monitor device name defines to common header
+	- Coding style, spelling, and Makefile/MAINTAINERS ordering fixes
+
+David E. Box (3):
+  PCI: Add #defines for Designated Vendor-Specific Capability
+  mfd: Intel Platform Monitoring Technology support
+  platform/x86: Intel PMT Telemetry capability driver
+
+ MAINTAINERS                            |   6 +
+ drivers/mfd/Kconfig                    |  10 +
+ drivers/mfd/Makefile                   |   1 +
+ drivers/mfd/intel_pmt.c                | 170 ++++++++++++
+ drivers/platform/x86/Kconfig           |  10 +
+ drivers/platform/x86/Makefile          |   1 +
+ drivers/platform/x86/intel_pmt_telem.c | 362 +++++++++++++++++++++++++
+ include/linux/intel-dvsec.h            |  48 ++++
+ include/uapi/linux/pci_regs.h          |   5 +
+ 9 files changed, 613 insertions(+)
+ create mode 100644 drivers/mfd/intel_pmt.c
+ create mode 100644 drivers/platform/x86/intel_pmt_telem.c
+ create mode 100644 include/linux/intel-dvsec.h
+
+-- 
+2.20.1
+
