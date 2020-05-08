@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFCC91CAD27
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:02:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78E5F1CAC23
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729996AbgEHMwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 08:52:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34018 "EHLO mail.kernel.org"
+        id S1728408AbgEHMuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 08:50:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729337AbgEHMwo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 08:52:44 -0400
+        id S1729825AbgEHMuK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 08:50:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B883A24953;
-        Fri,  8 May 2020 12:52:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 17EE7218AC;
+        Fri,  8 May 2020 12:50:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588942364;
-        bh=Cqr8eghnHCwYfy32Xoq0YNy2OmKR9+KhkhznVTmFUrU=;
+        s=default; t=1588942210;
+        bh=FoaQyXCTpiF64dTsxTeMg1cZZGMD44nMvDekcFHo3/c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ThteyYYTDf8ib7lp7qIPnJP/Aa45j426h8/b+wQ94XTY9bOcmXU31FUTCaxNu5NFf
-         FbNZYXabc0O2gQm+6Tz4PtgbmliRXv63MUfwkQuldtVegdbuNvXe/XMmfODFgY7Nt5
-         RjNG66r6hBvwM0m+cPWrmL6NLKzn/xbOzT0dKXKI=
+        b=qTGkCnKU39smYNmKlZfCZXS8RRzr9oiLFYMQVrZCqLyCb5RR5kPp9k2byqfeVuw5L
+         t9sET6xWT7s3fbDoM8a6ejHY8QZ3PwAEyo0U3hc/K6tnH34vEugbabwgpLlvgUbSyV
+         QpTxA9DoisSyD8KhHo3Y2bYkZRxZA1nsOLEdfQhM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sandeep Raghuraman <sandy.8925@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Julien Beraud <julien.beraud@orolia.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 16/50] drm/amdgpu: Correctly initialize thermal controller for GPUs with Powerplay table v0 (e.g Hawaii)
+Subject: [PATCH 4.14 10/22] net: stmmac: Fix sub-second increment
 Date:   Fri,  8 May 2020 14:35:22 +0200
-Message-Id: <20200508123045.667422556@linuxfoundation.org>
+Message-Id: <20200508123035.160984554@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200508123043.085296641@linuxfoundation.org>
-References: <20200508123043.085296641@linuxfoundation.org>
+In-Reply-To: <20200508123033.915895060@linuxfoundation.org>
+References: <20200508123033.915895060@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,56 +44,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sandeep Raghuraman <sandy.8925@gmail.com>
+From: Julien Beraud <julien.beraud@orolia.com>
 
-[ Upstream commit bbc25dadc7ed19f9d6b2e30980f0eb4c741bb8bf ]
+[ Upstream commit 91a2559c1dc5b0f7e1256d42b1508935e8eabfbf ]
 
-Initialize thermal controller fields in the PowerPlay table for Hawaii
-GPUs, so that fan speeds are reported.
+In fine adjustement mode, which is the current default, the sub-second
+    increment register is the number of nanoseconds that will be added to
+    the clock when the accumulator overflows. At each clock cycle, the
+    value of the addend register is added to the accumulator.
+    Currently, we use 20ns = 1e09ns / 50MHz as this value whatever the
+    frequency of the ptp clock actually is.
+    The adjustment is then done on the addend register, only incrementing
+    every X clock cycles X being the ratio between 50MHz and ptp_clock_rate
+    (addend = 2^32 * 50MHz/ptp_clock_rate).
+    This causes the following issues :
+    - In case the frequency of the ptp clock is inferior or equal to 50MHz,
+      the addend value calculation will overflow and the default
+      addend value will be set to 0, causing the clock to not work at
+      all. (For instance, for ptp_clock_rate = 50MHz, addend = 2^32).
+    - The resolution of the timestamping clock is limited to 20ns while it
+      is not needed, thus limiting the accuracy of the timestamping to
+      20ns.
 
-Signed-off-by: Sandeep Raghuraman <sandy.8925@gmail.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+    Fix this by setting sub-second increment to 2e09ns / ptp_clock_rate.
+    It will allow to reach the minimum possible frequency for
+    ptp_clk_ref, which is 5MHz for GMII 1000Mps Full-Duplex by setting the
+    sub-second-increment to a higher value. For instance, for 25MHz, it
+    gives ssinc = 80ns and default_addend = 2^31.
+    It will also allow to use a lower value for sub-second-increment, thus
+    improving the timestamping accuracy with frequencies higher than
+    100MHz, for instance, for 200MHz, ssinc = 10ns and default_addend =
+    2^31.
+
+v1->v2:
+ - Remove modifications to the calculation of default addend, which broke
+ compatibility with clock frequencies for which 2000000000 / ptp_clk_freq
+ is not an integer.
+ - Modify description according to discussions.
+
+Signed-off-by: Julien Beraud <julien.beraud@orolia.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../drm/amd/powerplay/hwmgr/processpptables.c | 26 +++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ .../net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c    | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/powerplay/hwmgr/processpptables.c b/drivers/gpu/drm/amd/powerplay/hwmgr/processpptables.c
-index 77c14671866c0..719597c5d27d9 100644
---- a/drivers/gpu/drm/amd/powerplay/hwmgr/processpptables.c
-+++ b/drivers/gpu/drm/amd/powerplay/hwmgr/processpptables.c
-@@ -984,6 +984,32 @@ static int init_thermal_controller(
- 			struct pp_hwmgr *hwmgr,
- 			const ATOM_PPLIB_POWERPLAYTABLE *powerplay_table)
- {
-+	hwmgr->thermal_controller.ucType =
-+			powerplay_table->sThermalController.ucType;
-+	hwmgr->thermal_controller.ucI2cLine =
-+			powerplay_table->sThermalController.ucI2cLine;
-+	hwmgr->thermal_controller.ucI2cAddress =
-+			powerplay_table->sThermalController.ucI2cAddress;
-+
-+	hwmgr->thermal_controller.fanInfo.bNoFan =
-+		(0 != (powerplay_table->sThermalController.ucFanParameters &
-+			ATOM_PP_FANPARAMETERS_NOFAN));
-+
-+	hwmgr->thermal_controller.fanInfo.ucTachometerPulsesPerRevolution =
-+		powerplay_table->sThermalController.ucFanParameters &
-+		ATOM_PP_FANPARAMETERS_TACHOMETER_PULSES_PER_REVOLUTION_MASK;
-+
-+	hwmgr->thermal_controller.fanInfo.ulMinRPM
-+		= powerplay_table->sThermalController.ucFanMinRPM * 100UL;
-+	hwmgr->thermal_controller.fanInfo.ulMaxRPM
-+		= powerplay_table->sThermalController.ucFanMaxRPM * 100UL;
-+
-+	set_hw_cap(hwmgr,
-+		   ATOM_PP_THERMALCONTROLLER_NONE != hwmgr->thermal_controller.ucType,
-+		   PHM_PlatformCaps_ThermalController);
-+
-+	hwmgr->thermal_controller.use_hw_fan_control = 1;
-+
- 	return 0;
- }
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c
+index 41d528fbebb41..ccf7381c8baec 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c
+@@ -36,12 +36,16 @@ static u32 stmmac_config_sub_second_increment(void __iomem *ioaddr,
+ 	unsigned long data;
+ 	u32 reg_value;
+ 
+-	/* For GMAC3.x, 4.x versions, convert the ptp_clock to nano second
+-	 *	formula = (1/ptp_clock) * 1000000000
+-	 * where ptp_clock is 50MHz if fine method is used to update system
++	/* For GMAC3.x, 4.x versions, in "fine adjustement mode" set sub-second
++	 * increment to twice the number of nanoseconds of a clock cycle.
++	 * The calculation of the default_addend value by the caller will set it
++	 * to mid-range = 2^31 when the remainder of this division is zero,
++	 * which will make the accumulator overflow once every 2 ptp_clock
++	 * cycles, adding twice the number of nanoseconds of a clock cycle :
++	 * 2000000000ULL / ptp_clock.
+ 	 */
+ 	if (value & PTP_TCR_TSCFUPDT)
+-		data = (1000000000ULL / 50000000);
++		data = (2000000000ULL / ptp_clock);
+ 	else
+ 		data = (1000000000ULL / ptp_clock);
  
 -- 
 2.20.1
