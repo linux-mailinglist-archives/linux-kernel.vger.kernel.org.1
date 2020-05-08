@@ -2,109 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A8DE1CB235
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 16:46:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D10961CB245
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 16:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727945AbgEHOqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 10:46:20 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:46982 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727851AbgEHOqT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 10:46:19 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 048EhgYt060805;
-        Fri, 8 May 2020 14:45:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=mBsJBO8AIHjfSjv3iPsT+zmmyIaT3vU/FP/YdVrrvSA=;
- b=E7YUpOfGLEDqJ0uMKlRI9FGlL2K/xojah3OPtoBtuE5lRvLgjSGAAzkyvzYmyUSmsy/p
- 7xr2ERQyS70wY+kWe4PeG34MWzfey0lWEXEezE9Q2iu870nl+mrVb1E003fDA5gGRVKh
- AqvJKRXsdZNbwrLIppkX1ksaESCMtutsJBZ9zrnjjrhuxGnVeTXlTVfhEC1ubhFLInYe
- 6DV1bTW25YJJxLDsadsDTeZ77TVgtgky0N/UJxJt9qZgSdiykIsTKeSF/C84YuCjzQVW
- F8UCQZ+sroMqDc1px8PXsiFQWEFMQnLGgZLBkEQMfTpCJjnpe074sPZ8PJCWW3tzzbQE LQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 30vtepkbsh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 08 May 2020 14:45:38 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 048EgvNo040482;
-        Fri, 8 May 2020 14:45:38 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 30vtdnqmvw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 08 May 2020 14:45:38 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 048EjZKg032026;
-        Fri, 8 May 2020 14:45:35 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 08 May 2020 07:45:34 -0700
-Date:   Fri, 8 May 2020 17:45:27 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Yunfeng Ye <yeyunfeng@huawei.com>,
-        Markus Elfring <Markus.Elfring@web.de>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Shiyuan Hu <hushiyuan@huawei.com>,
-        Hewenliang <hewenliang4@huawei.com>
-Subject: Re: [v3] tools/bootconfig: fix resource leak in apply_xbc()
-Message-ID: <20200508144527.GR1992@kadam>
-References: <3569aa33-8963-966d-9247-ec79b3b3d56d@huawei.com>
- <5e2c3348-f346-e3f2-9c7c-5c4135f9b38c@web.de>
- <559edb00-a03b-747e-8ba7-1f16285deefb@huawei.com>
- <65057e82-8002-4ec4-b714-25ac8d05cb68@web.de>
- <938cd0e9-d96b-766c-cfbc-4f0b73d97cd4@huawei.com>
- <20200508090053.430d28d7@gandalf.local.home>
+        id S1727933AbgEHOuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 10:50:18 -0400
+Received: from mga11.intel.com ([192.55.52.93]:54546 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726913AbgEHOuS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 10:50:18 -0400
+IronPort-SDR: qHXIFd5na43IW3Wt8mTzKyOpucPbM1rDWcYz0L/11DuoVT5o5iJBsP9k9HLlhgd+DONgrNq7I8
+ EikTUwWZ20lg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2020 07:50:17 -0700
+IronPort-SDR: XN15M4RZFAHyjTWmo7AtUbiSDyZx81DyK5bKtQiRsCXpzx/sNnNOgIdU1OG0jfg4rvR24YVvk2
+ JtBq1K2Ceo0g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,367,1583222400"; 
+   d="scan'208";a="462307831"
+Received: from cstrong-mobl6.amr.corp.intel.com (HELO [10.254.74.61]) ([10.254.74.61])
+  by fmsmga005.fm.intel.com with ESMTP; 08 May 2020 07:50:16 -0700
+Subject: Re: [PATCH] ASoC: Intel: Boards: Support headset button function for
+ nau88l25max and nau88l25ssm
+To:     Radoslaw Biernacki <rad@semihalf.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     Chinyue Chen <chinyue@chromium.org>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, Ben Zhang <benzh@chromium.org>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Benson Leung <bleung@chromium.org>,
+        Alex Levin <levinale@google.com>
+References: <20200507220332.24686-1-rad@semihalf.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <39aed974-ee2c-a0e7-9228-304cce275289@linux.intel.com>
+Date:   Fri, 8 May 2020 09:45:41 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200508090053.430d28d7@gandalf.local.home>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9614 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 spamscore=0
- mlxscore=0 mlxlogscore=999 bulkscore=0 phishscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2005080131
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9614 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0
- impostorscore=0 phishscore=0 clxscore=1015 priorityscore=1501
- lowpriorityscore=0 malwarescore=0 suspectscore=0 mlxscore=0
- mlxlogscore=999 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2003020000 definitions=main-2005080131
+In-Reply-To: <20200507220332.24686-1-rad@semihalf.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 08, 2020 at 09:00:53AM -0400, Steven Rostedt wrote:
-> On Fri, 8 May 2020 19:42:56 +0800
-> Yunfeng Ye <yeyunfeng@huawei.com> wrote:
-> 
-> > On 2020/5/8 19:30, Markus Elfring wrote:
-> > >> this change can fix the warning of tools.  
-> > > 
-> > > Would you like to point any specific source code analysis tools out
-> > > for this issue?
-> > > (Can a corresponding attribution become relevant for a clearer
-> > > change description?)
-> > >   
-> > The tools we used is not for open source. it point out some error description like
-> > "Memory leak: data" and "Resource leak: fd" in tools/bootconfig/main.c.
-> > 
-> > Can I only description:
-> >   "Memory and resource leak is found by a static code analysis tools" ? thanks.
-> 
-> Markus please stop! Your suggestions are just your preferences that are not
-> required for the kernel.
-> 
-> Yunfeng, your v2 was fine and has already landed in Linus's tree. Feel free
-> to ignore Markus's suggestions in the future.
 
-There was actually a bug in v2.  It exits with a non-zero instead of
-zero on success so it will mess up people's scripts.
 
-regards,
-dan carpenter
+On 5/7/20 5:03 PM, Radoslaw Biernacki wrote:
+> Map the buttons from the Android reference headset to
+> KEY_PLAYPAUSE, KEY_VOICECOMMAND, KEY_VOLUMEUP, and KEY_VOLUMEDOWN.
+> KEY_PLAYPAUSE is used instead of KEY_MEDIA for BTN_0 as it is more
+> logical and have much broader userspace support. Like Chrome OS
+> use it to play/pause of video and audio. KEY_PLAYPAUSE is also
+> supported by Android (USB headset spec requires KEY_PLAYPAUSE
+> for BTN_0.)
+> https://source.android.com/devices/accessories/headset/usb-headset-spec
+> 
+> Signed-off-by: Chinyue Chen <chinyue@chromium.org>
+> Signed-off-by: Benson Leung <bleung@chromium.org>
+> Signed-off-by: Radoslaw Biernacki <rad@semihalf.com>
+
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
