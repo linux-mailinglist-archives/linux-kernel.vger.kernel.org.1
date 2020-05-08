@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 045D51CB0D6
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:48:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45A1E1CB0D1
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:48:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728433AbgEHNqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:46:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41200 "EHLO
+        id S1728295AbgEHNql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 09:46:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728334AbgEHNqn (ORCPT
+        by vger.kernel.org with ESMTP id S1728229AbgEHNqi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 09:46:43 -0400
+        Fri, 8 May 2020 09:46:38 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31EFCC05BD0A;
-        Fri,  8 May 2020 06:46:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 674A2C05BD43;
+        Fri,  8 May 2020 06:46:38 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jX3Kq-0001nF-6R; Fri, 08 May 2020 15:46:40 +0200
+        id 1jX3Km-0001nX-31; Fri, 08 May 2020 15:46:36 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id CA8651C0475;
-        Fri,  8 May 2020 15:46:34 +0200 (CEST)
-Date:   Fri, 08 May 2020 13:46:34 -0000
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id B60521C0493;
+        Fri,  8 May 2020 15:46:35 +0200 (CEST)
+Date:   Fri, 08 May 2020 13:46:35 -0000
 From:   "tip-bot2 for Marco Elver" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/kcsan] kcsan: Add support for scoped accesses
-Cc:     Boqun Feng <boqun.feng@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Marco Elver <elver@google.com>, x86 <x86@kernel.org>,
+Subject: [tip: locking/kcsan] kcsan: Introduce report access_info and other_info
+Cc:     Marco Elver <elver@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <158894559473.8414.17746901978367132710.tip-bot2@tip-bot2>
+Message-ID: <158894559564.8414.746368725737301152.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -49,364 +48,413 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the locking/kcsan branch of tip:
 
-Commit-ID:     757a4cefde76697af2b2c284c8a320912b77e7e6
-Gitweb:        https://git.kernel.org/tip/757a4cefde76697af2b2c284c8a320912b77e7e6
+Commit-ID:     135c0872d86948046d11d7083e36c930cc43ac93
+Gitweb:        https://git.kernel.org/tip/135c0872d86948046d11d7083e36c930cc43ac93
 Author:        Marco Elver <elver@google.com>
-AuthorDate:    Wed, 25 Mar 2020 17:41:56 +01:00
+AuthorDate:    Wed, 18 Mar 2020 18:38:44 +01:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Mon, 13 Apr 2020 17:18:11 -07:00
+CommitterDate: Mon, 13 Apr 2020 17:18:10 -07:00
 
-kcsan: Add support for scoped accesses
+kcsan: Introduce report access_info and other_info
 
-This adds support for scoped accesses, where the memory range is checked
-for the duration of the scope. The feature is implemented by inserting
-the relevant access information into a list of scoped accesses for
-the current execution context, which are then checked (until removed)
-on every call (through instrumentation) into the KCSAN runtime.
+Improve readability by introducing access_info and other_info structs,
+and in preparation of the following commit in this series replaces the
+single instance of other_info with an array of size 1.
 
-An alternative, more complex, implementation could set up a watchpoint for
-the scoped access, and keep the watchpoint set up. This, however, would
-require first exposing a handle to the watchpoint, as well as dealing
-with cases such as accesses by the same thread while the watchpoint is
-still set up (and several more cases). It is also doubtful if this would
-provide any benefit, since the majority of delay where the watchpoint
-is set up is likely due to the injected delays by KCSAN.  Therefore,
-the implementation in this patch is simpler and avoids hurting KCSAN's
-main use-case (normal data race detection); it also implicitly increases
-scoped-access race-detection-ability due to increased probability of
-setting up watchpoints by repeatedly calling __kcsan_check_access()
-throughout the scope of the access.
+No functional change intended.
 
-The implementation required adding an additional conditional branch to
-the fast-path. However, the microbenchmark showed a *speedup* of ~5%
-on the fast-path. This appears to be due to subtly improved codegen by
-GCC from moving get_ctx() and associated load of preempt_count earlier.
-
-Suggested-by: Boqun Feng <boqun.feng@gmail.com>
-Suggested-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Marco Elver <elver@google.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/kcsan-checks.h | 57 ++++++++++++++++++++++++-
- include/linux/kcsan.h        |  3 +-
- init/init_task.c             |  1 +-
- kernel/kcsan/core.c          | 83 +++++++++++++++++++++++++++++++----
- kernel/kcsan/report.c        | 33 +++++++++-----
- 5 files changed, 158 insertions(+), 19 deletions(-)
+ kernel/kcsan/core.c   |   6 +--
+ kernel/kcsan/kcsan.h  |   2 +-
+ kernel/kcsan/report.c | 147 ++++++++++++++++++++---------------------
+ 3 files changed, 77 insertions(+), 78 deletions(-)
 
-diff --git a/include/linux/kcsan-checks.h b/include/linux/kcsan-checks.h
-index 3cd8bb0..b24253d 100644
---- a/include/linux/kcsan-checks.h
-+++ b/include/linux/kcsan-checks.h
-@@ -3,6 +3,8 @@
- #ifndef _LINUX_KCSAN_CHECKS_H
- #define _LINUX_KCSAN_CHECKS_H
- 
-+/* Note: Only include what is already included by compiler.h. */
-+#include <linux/compiler_attributes.h>
- #include <linux/types.h>
- 
- /*
-@@ -12,10 +14,12 @@
-  *   WRITE : write access;
-  *   ATOMIC: access is atomic;
-  *   ASSERT: access is not a regular access, but an assertion;
-+ *   SCOPED: access is a scoped access;
-  */
- #define KCSAN_ACCESS_WRITE  0x1
- #define KCSAN_ACCESS_ATOMIC 0x2
- #define KCSAN_ACCESS_ASSERT 0x4
-+#define KCSAN_ACCESS_SCOPED 0x8
- 
- /*
-  * __kcsan_*: Always calls into the runtime when KCSAN is enabled. This may be used
-@@ -78,6 +82,52 @@ void kcsan_atomic_next(int n);
-  */
- void kcsan_set_access_mask(unsigned long mask);
- 
-+/* Scoped access information. */
-+struct kcsan_scoped_access {
-+	struct list_head list;
-+	const volatile void *ptr;
-+	size_t size;
-+	int type;
-+};
-+/*
-+ * Automatically call kcsan_end_scoped_access() when kcsan_scoped_access goes
-+ * out of scope; relies on attribute "cleanup", which is supported by all
-+ * compilers that support KCSAN.
-+ */
-+#define __kcsan_cleanup_scoped                                                 \
-+	__maybe_unused __attribute__((__cleanup__(kcsan_end_scoped_access)))
-+
-+/**
-+ * kcsan_begin_scoped_access - begin scoped access
-+ *
-+ * Begin scoped access and initialize @sa, which will cause KCSAN to
-+ * continuously check the memory range in the current thread until
-+ * kcsan_end_scoped_access() is called for @sa.
-+ *
-+ * Scoped accesses are implemented by appending @sa to an internal list for the
-+ * current execution context, and then checked on every call into the KCSAN
-+ * runtime.
-+ *
-+ * @ptr: address of access
-+ * @size: size of access
-+ * @type: access type modifier
-+ * @sa: struct kcsan_scoped_access to use for the scope of the access
-+ */
-+struct kcsan_scoped_access *
-+kcsan_begin_scoped_access(const volatile void *ptr, size_t size, int type,
-+			  struct kcsan_scoped_access *sa);
-+
-+/**
-+ * kcsan_end_scoped_access - end scoped access
-+ *
-+ * End a scoped access, which will stop KCSAN checking the memory range.
-+ * Requires that kcsan_begin_scoped_access() was previously called once for @sa.
-+ *
-+ * @sa: a previously initialized struct kcsan_scoped_access
-+ */
-+void kcsan_end_scoped_access(struct kcsan_scoped_access *sa);
-+
-+
- #else /* CONFIG_KCSAN */
- 
- static inline void __kcsan_check_access(const volatile void *ptr, size_t size,
-@@ -90,6 +140,13 @@ static inline void kcsan_flat_atomic_end(void)		{ }
- static inline void kcsan_atomic_next(int n)		{ }
- static inline void kcsan_set_access_mask(unsigned long mask) { }
- 
-+struct kcsan_scoped_access { };
-+#define __kcsan_cleanup_scoped __maybe_unused
-+static inline struct kcsan_scoped_access *
-+kcsan_begin_scoped_access(const volatile void *ptr, size_t size, int type,
-+			  struct kcsan_scoped_access *sa) { return sa; }
-+static inline void kcsan_end_scoped_access(struct kcsan_scoped_access *sa) { }
-+
- #endif /* CONFIG_KCSAN */
- 
- /*
-diff --git a/include/linux/kcsan.h b/include/linux/kcsan.h
-index 3b84606..17ae59e 100644
---- a/include/linux/kcsan.h
-+++ b/include/linux/kcsan.h
-@@ -40,6 +40,9 @@ struct kcsan_ctx {
- 	 * Access mask for all accesses if non-zero.
- 	 */
- 	unsigned long access_mask;
-+
-+	/* List of scoped accesses. */
-+	struct list_head scoped_accesses;
- };
- 
- /**
-diff --git a/init/init_task.c b/init/init_task.c
-index 096191d..1989438 100644
---- a/init/init_task.c
-+++ b/init/init_task.c
-@@ -168,6 +168,7 @@ struct task_struct init_task
- 		.atomic_nest_count	= 0,
- 		.in_flat_atomic		= false,
- 		.access_mask		= 0,
-+		.scoped_accesses	= {LIST_POISON1, NULL},
- 	},
- #endif
- #ifdef CONFIG_TRACE_IRQFLAGS
 diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
-index 4d8ea0f..a572aae 100644
+index ee82008..f1c3862 100644
 --- a/kernel/kcsan/core.c
 +++ b/kernel/kcsan/core.c
-@@ -6,6 +6,7 @@
- #include <linux/export.h>
- #include <linux/init.h>
- #include <linux/kernel.h>
-+#include <linux/list.h>
- #include <linux/moduleparam.h>
- #include <linux/percpu.h>
- #include <linux/preempt.h>
-@@ -42,6 +43,7 @@ static DEFINE_PER_CPU(struct kcsan_ctx, kcsan_cpu_ctx) = {
- 	.atomic_nest_count	= 0,
- 	.in_flat_atomic		= false,
- 	.access_mask		= 0,
-+	.scoped_accesses	= {LIST_POISON1, NULL},
- };
+@@ -321,7 +321,7 @@ static noinline void kcsan_found_watchpoint(const volatile void *ptr,
+ 	flags = user_access_save();
  
- /*
-@@ -191,12 +193,23 @@ static __always_inline struct kcsan_ctx *get_ctx(void)
- 	return in_task() ? &current->kcsan_ctx : raw_cpu_ptr(&kcsan_cpu_ctx);
- }
- 
-+/* Check scoped accesses; never inline because this is a slow-path! */
-+static noinline void kcsan_check_scoped_accesses(void)
-+{
-+	struct kcsan_ctx *ctx = get_ctx();
-+	struct list_head *prev_save = ctx->scoped_accesses.prev;
-+	struct kcsan_scoped_access *scoped_access;
-+
-+	ctx->scoped_accesses.prev = NULL;  /* Avoid recursion. */
-+	list_for_each_entry(scoped_access, &ctx->scoped_accesses, list)
-+		__kcsan_check_access(scoped_access->ptr, scoped_access->size, scoped_access->type);
-+	ctx->scoped_accesses.prev = prev_save;
-+}
-+
- /* Rules for generic atomic accesses. Called from fast-path. */
- static __always_inline bool
--is_atomic(const volatile void *ptr, size_t size, int type)
-+is_atomic(const volatile void *ptr, size_t size, int type, struct kcsan_ctx *ctx)
- {
--	struct kcsan_ctx *ctx;
--
- 	if (type & KCSAN_ACCESS_ATOMIC)
- 		return true;
- 
-@@ -213,7 +226,6 @@ is_atomic(const volatile void *ptr, size_t size, int type)
- 	    IS_ALIGNED((unsigned long)ptr, size))
- 		return true; /* Assume aligned writes up to word size are atomic. */
- 
--	ctx = get_ctx();
- 	if (ctx->atomic_next > 0) {
+ 	if (consumed) {
+-		kcsan_report(ptr, size, type, true, raw_smp_processor_id(),
++		kcsan_report(ptr, size, type, KCSAN_VALUE_CHANGE_MAYBE,
+ 			     KCSAN_REPORT_CONSUMED_WATCHPOINT);
+ 	} else {
  		/*
- 		 * Because we do not have separate contexts for nested
-@@ -233,7 +245,7 @@ is_atomic(const volatile void *ptr, size_t size, int type)
- }
+@@ -500,8 +500,7 @@ kcsan_setup_watchpoint(const volatile void *ptr, size_t size, int type)
+ 		if (is_assert && value_change == KCSAN_VALUE_CHANGE_TRUE)
+ 			kcsan_counter_inc(KCSAN_COUNTER_ASSERT_FAILURES);
  
- static __always_inline bool
--should_watch(const volatile void *ptr, size_t size, int type)
-+should_watch(const volatile void *ptr, size_t size, int type, struct kcsan_ctx *ctx)
- {
- 	/*
- 	 * Never set up watchpoints when memory operations are atomic.
-@@ -242,7 +254,7 @@ should_watch(const volatile void *ptr, size_t size, int type)
- 	 * should not count towards skipped instructions, and (2) to actually
- 	 * decrement kcsan_atomic_next for consecutive instruction stream.
- 	 */
--	if (is_atomic(ptr, size, type))
-+	if (is_atomic(ptr, size, type, ctx))
- 		return false;
+-		kcsan_report(ptr, size, type, value_change, raw_smp_processor_id(),
+-			     KCSAN_REPORT_RACE_SIGNAL);
++		kcsan_report(ptr, size, type, value_change, KCSAN_REPORT_RACE_SIGNAL);
+ 	} else if (value_change == KCSAN_VALUE_CHANGE_TRUE) {
+ 		/* Inferring a race, since the value should not have changed. */
  
- 	if (this_cpu_dec_return(kcsan_skip) >= 0)
-@@ -563,8 +575,14 @@ static __always_inline void check_access(const volatile void *ptr, size_t size,
- 	if (unlikely(watchpoint != NULL))
- 		kcsan_found_watchpoint(ptr, size, type, watchpoint,
- 				       encoded_watchpoint);
--	else if (unlikely(should_watch(ptr, size, type)))
--		kcsan_setup_watchpoint(ptr, size, type);
-+	else {
-+		struct kcsan_ctx *ctx = get_ctx(); /* Call only once in fast-path. */
-+
-+		if (unlikely(should_watch(ptr, size, type, ctx)))
-+			kcsan_setup_watchpoint(ptr, size, type);
-+		else if (unlikely(ctx->scoped_accesses.prev))
-+			kcsan_check_scoped_accesses();
-+	}
- }
+@@ -511,7 +510,6 @@ kcsan_setup_watchpoint(const volatile void *ptr, size_t size, int type)
  
- /* === Public interface ===================================================== */
-@@ -660,6 +678,55 @@ void kcsan_set_access_mask(unsigned long mask)
- }
- EXPORT_SYMBOL(kcsan_set_access_mask);
+ 		if (IS_ENABLED(CONFIG_KCSAN_REPORT_RACE_UNKNOWN_ORIGIN) || is_assert)
+ 			kcsan_report(ptr, size, type, KCSAN_VALUE_CHANGE_TRUE,
+-				     raw_smp_processor_id(),
+ 				     KCSAN_REPORT_RACE_UNKNOWN_ORIGIN);
+ 	}
  
-+struct kcsan_scoped_access *
-+kcsan_begin_scoped_access(const volatile void *ptr, size_t size, int type,
-+			  struct kcsan_scoped_access *sa)
-+{
-+	struct kcsan_ctx *ctx = get_ctx();
-+
-+	__kcsan_check_access(ptr, size, type);
-+
-+	ctx->disable_count++; /* Disable KCSAN, in case list debugging is on. */
-+
-+	INIT_LIST_HEAD(&sa->list);
-+	sa->ptr = ptr;
-+	sa->size = size;
-+	sa->type = type;
-+
-+	if (!ctx->scoped_accesses.prev) /* Lazy initialize list head. */
-+		INIT_LIST_HEAD(&ctx->scoped_accesses);
-+	list_add(&sa->list, &ctx->scoped_accesses);
-+
-+	ctx->disable_count--;
-+	return sa;
-+}
-+EXPORT_SYMBOL(kcsan_begin_scoped_access);
-+
-+void kcsan_end_scoped_access(struct kcsan_scoped_access *sa)
-+{
-+	struct kcsan_ctx *ctx = get_ctx();
-+
-+	if (WARN(!ctx->scoped_accesses.prev, "Unbalanced %s()?", __func__))
-+		return;
-+
-+	ctx->disable_count++; /* Disable KCSAN, in case list debugging is on. */
-+
-+	list_del(&sa->list);
-+	if (list_empty(&ctx->scoped_accesses))
-+		/*
-+		 * Ensure we do not enter kcsan_check_scoped_accesses()
-+		 * slow-path if unnecessary, and avoids requiring list_empty()
-+		 * in the fast-path (to avoid a READ_ONCE() and potential
-+		 * uaccess warning).
-+		 */
-+		ctx->scoped_accesses.prev = NULL;
-+
-+	ctx->disable_count--;
-+
-+	__kcsan_check_access(sa->ptr, sa->size, sa->type);
-+}
-+EXPORT_SYMBOL(kcsan_end_scoped_access);
-+
- void __kcsan_check_access(const volatile void *ptr, size_t size, int type)
- {
- 	check_access(ptr, size, type);
+diff --git a/kernel/kcsan/kcsan.h b/kernel/kcsan/kcsan.h
+index e282f8b..6630dfe 100644
+--- a/kernel/kcsan/kcsan.h
++++ b/kernel/kcsan/kcsan.h
+@@ -135,7 +135,7 @@ enum kcsan_report_type {
+  * Print a race report from thread that encountered the race.
+  */
+ extern void kcsan_report(const volatile void *ptr, size_t size, int access_type,
+-			 enum kcsan_value_change value_change, int cpu_id,
++			 enum kcsan_value_change value_change,
+ 			 enum kcsan_report_type type);
+ 
+ #endif /* _KERNEL_KCSAN_KCSAN_H */
 diff --git a/kernel/kcsan/report.c b/kernel/kcsan/report.c
-index ae0a383..ddc18f1 100644
+index 18f9d3b..de234d1 100644
 --- a/kernel/kcsan/report.c
 +++ b/kernel/kcsan/report.c
-@@ -205,6 +205,20 @@ skip_report(enum kcsan_value_change value_change, unsigned long top_frame)
+@@ -19,18 +19,23 @@
+  */
+ #define NUM_STACK_ENTRIES 64
  
- static const char *get_access_type(int type)
- {
-+	if (type & KCSAN_ACCESS_ASSERT) {
-+		if (type & KCSAN_ACCESS_SCOPED) {
-+			if (type & KCSAN_ACCESS_WRITE)
-+				return "assert no accesses (scoped)";
-+			else
-+				return "assert no writes (scoped)";
-+		} else {
-+			if (type & KCSAN_ACCESS_WRITE)
-+				return "assert no accesses";
-+			else
-+				return "assert no writes";
-+		}
-+	}
++/* Common access info. */
++struct access_info {
++	const volatile void	*ptr;
++	size_t			size;
++	int			access_type;
++	int			task_pid;
++	int			cpu_id;
++};
 +
+ /*
+  * Other thread info: communicated from other racing thread to thread that set
+  * up the watchpoint, which then prints the complete report atomically. Only
+  * need one struct, as all threads should to be serialized regardless to print
+  * the reports, with reporting being in the slow-path.
+  */
+-static struct {
+-	const volatile void	*ptr;
+-	size_t			size;
+-	int			access_type;
+-	int			task_pid;
+-	int			cpu_id;
++struct other_info {
++	struct access_info	ai;
+ 	unsigned long		stack_entries[NUM_STACK_ENTRIES];
+ 	int			num_stack_entries;
+ 
+@@ -52,7 +57,9 @@ static struct {
+ 	 * that populated @other_info until it has been consumed.
+ 	 */
+ 	struct task_struct	*task;
+-} other_info;
++};
++
++static struct other_info other_infos[1];
+ 
+ /*
+  * Information about reported races; used to rate limit reporting.
+@@ -238,7 +245,7 @@ static const char *get_thread_desc(int task_id)
+ }
+ 
+ /* Helper to skip KCSAN-related functions in stack-trace. */
+-static int get_stack_skipnr(unsigned long stack_entries[], int num_entries)
++static int get_stack_skipnr(const unsigned long stack_entries[], int num_entries)
+ {
+ 	char buf[64];
+ 	int skip = 0;
+@@ -279,9 +286,10 @@ static void print_verbose_info(struct task_struct *task)
+ /*
+  * Returns true if a report was generated, false otherwise.
+  */
+-static bool print_report(const volatile void *ptr, size_t size, int access_type,
+-			 enum kcsan_value_change value_change, int cpu_id,
+-			 enum kcsan_report_type type)
++static bool print_report(enum kcsan_value_change value_change,
++			 enum kcsan_report_type type,
++			 const struct access_info *ai,
++			 const struct other_info *other_info)
+ {
+ 	unsigned long stack_entries[NUM_STACK_ENTRIES] = { 0 };
+ 	int num_stack_entries = stack_trace_save(stack_entries, NUM_STACK_ENTRIES, 1);
+@@ -297,9 +305,9 @@ static bool print_report(const volatile void *ptr, size_t size, int access_type,
+ 		return false;
+ 
+ 	if (type == KCSAN_REPORT_RACE_SIGNAL) {
+-		other_skipnr = get_stack_skipnr(other_info.stack_entries,
+-						other_info.num_stack_entries);
+-		other_frame = other_info.stack_entries[other_skipnr];
++		other_skipnr = get_stack_skipnr(other_info->stack_entries,
++						other_info->num_stack_entries);
++		other_frame = other_info->stack_entries[other_skipnr];
+ 
+ 		/* @value_change is only known for the other thread */
+ 		if (skip_report(value_change, other_frame))
+@@ -321,13 +329,13 @@ static bool print_report(const volatile void *ptr, size_t size, int access_type,
+ 		 */
+ 		cmp = sym_strcmp((void *)other_frame, (void *)this_frame);
+ 		pr_err("BUG: KCSAN: %s in %ps / %ps\n",
+-		       get_bug_type(access_type | other_info.access_type),
++		       get_bug_type(ai->access_type | other_info->ai.access_type),
+ 		       (void *)(cmp < 0 ? other_frame : this_frame),
+ 		       (void *)(cmp < 0 ? this_frame : other_frame));
+ 	} break;
+ 
+ 	case KCSAN_REPORT_RACE_UNKNOWN_ORIGIN:
+-		pr_err("BUG: KCSAN: %s in %pS\n", get_bug_type(access_type),
++		pr_err("BUG: KCSAN: %s in %pS\n", get_bug_type(ai->access_type),
+ 		       (void *)this_frame);
+ 		break;
+ 
+@@ -341,30 +349,28 @@ static bool print_report(const volatile void *ptr, size_t size, int access_type,
  	switch (type) {
- 	case 0:
- 		return "read";
-@@ -214,17 +228,14 @@ static const char *get_access_type(int type)
- 		return "write";
- 	case KCSAN_ACCESS_WRITE | KCSAN_ACCESS_ATOMIC:
- 		return "write (marked)";
--
--	/*
--	 * ASSERT variants:
--	 */
--	case KCSAN_ACCESS_ASSERT:
--	case KCSAN_ACCESS_ASSERT | KCSAN_ACCESS_ATOMIC:
--		return "assert no writes";
--	case KCSAN_ACCESS_ASSERT | KCSAN_ACCESS_WRITE:
--	case KCSAN_ACCESS_ASSERT | KCSAN_ACCESS_WRITE | KCSAN_ACCESS_ATOMIC:
--		return "assert no accesses";
--
-+	case KCSAN_ACCESS_SCOPED:
-+		return "read (scoped)";
-+	case KCSAN_ACCESS_SCOPED | KCSAN_ACCESS_ATOMIC:
-+		return "read (marked, scoped)";
-+	case KCSAN_ACCESS_SCOPED | KCSAN_ACCESS_WRITE:
-+		return "write (scoped)";
-+	case KCSAN_ACCESS_SCOPED | KCSAN_ACCESS_WRITE | KCSAN_ACCESS_ATOMIC:
-+		return "write (marked, scoped)";
+ 	case KCSAN_REPORT_RACE_SIGNAL:
+ 		pr_err("%s to 0x%px of %zu bytes by %s on cpu %i:\n",
+-		       get_access_type(other_info.access_type), other_info.ptr,
+-		       other_info.size, get_thread_desc(other_info.task_pid),
+-		       other_info.cpu_id);
++		       get_access_type(other_info->ai.access_type), other_info->ai.ptr,
++		       other_info->ai.size, get_thread_desc(other_info->ai.task_pid),
++		       other_info->ai.cpu_id);
+ 
+ 		/* Print the other thread's stack trace. */
+-		stack_trace_print(other_info.stack_entries + other_skipnr,
+-				  other_info.num_stack_entries - other_skipnr,
++		stack_trace_print(other_info->stack_entries + other_skipnr,
++				  other_info->num_stack_entries - other_skipnr,
+ 				  0);
+ 
+ 		if (IS_ENABLED(CONFIG_KCSAN_VERBOSE))
+-			print_verbose_info(other_info.task);
++			print_verbose_info(other_info->task);
+ 
+ 		pr_err("\n");
+ 		pr_err("%s to 0x%px of %zu bytes by %s on cpu %i:\n",
+-		       get_access_type(access_type), ptr, size,
+-		       get_thread_desc(in_task() ? task_pid_nr(current) : -1),
+-		       cpu_id);
++		       get_access_type(ai->access_type), ai->ptr, ai->size,
++		       get_thread_desc(ai->task_pid), ai->cpu_id);
+ 		break;
+ 
+ 	case KCSAN_REPORT_RACE_UNKNOWN_ORIGIN:
+ 		pr_err("race at unknown origin, with %s to 0x%px of %zu bytes by %s on cpu %i:\n",
+-		       get_access_type(access_type), ptr, size,
+-		       get_thread_desc(in_task() ? task_pid_nr(current) : -1),
+-		       cpu_id);
++		       get_access_type(ai->access_type), ai->ptr, ai->size,
++		       get_thread_desc(ai->task_pid), ai->cpu_id);
+ 		break;
+ 
  	default:
- 		BUG();
+@@ -386,22 +392,23 @@ static bool print_report(const volatile void *ptr, size_t size, int access_type,
+ 	return true;
+ }
+ 
+-static void release_report(unsigned long *flags, enum kcsan_report_type type)
++static void release_report(unsigned long *flags, struct other_info *other_info)
+ {
+-	if (type == KCSAN_REPORT_RACE_SIGNAL)
+-		other_info.ptr = NULL; /* mark for reuse */
++	if (other_info)
++		other_info->ai.ptr = NULL; /* Mark for reuse. */
+ 
+ 	spin_unlock_irqrestore(&report_lock, *flags);
+ }
+ 
+ /*
+- * Sets @other_info.task and awaits consumption of @other_info.
++ * Sets @other_info->task and awaits consumption of @other_info.
+  *
+  * Precondition: report_lock is held.
+  * Postcondition: report_lock is held.
+  */
+-static void
+-set_other_info_task_blocking(unsigned long *flags, const volatile void *ptr)
++static void set_other_info_task_blocking(unsigned long *flags,
++					 const struct access_info *ai,
++					 struct other_info *other_info)
+ {
+ 	/*
+ 	 * We may be instrumenting a code-path where current->state is already
+@@ -418,7 +425,7 @@ set_other_info_task_blocking(unsigned long *flags, const volatile void *ptr)
+ 	 */
+ 	int timeout = max(kcsan_udelay_task, kcsan_udelay_interrupt);
+ 
+-	other_info.task = current;
++	other_info->task = current;
+ 	do {
+ 		if (is_running) {
+ 			/*
+@@ -438,19 +445,19 @@ set_other_info_task_blocking(unsigned long *flags, const volatile void *ptr)
+ 		spin_lock_irqsave(&report_lock, *flags);
+ 		if (timeout-- < 0) {
+ 			/*
+-			 * Abort. Reset other_info.task to NULL, since it
++			 * Abort. Reset @other_info->task to NULL, since it
+ 			 * appears the other thread is still going to consume
+ 			 * it. It will result in no verbose info printed for
+ 			 * this task.
+ 			 */
+-			other_info.task = NULL;
++			other_info->task = NULL;
+ 			break;
+ 		}
+ 		/*
+ 		 * If @ptr nor @current matches, then our information has been
+ 		 * consumed and we may continue. If not, retry.
+ 		 */
+-	} while (other_info.ptr == ptr && other_info.task == current);
++	} while (other_info->ai.ptr == ai->ptr && other_info->task == current);
+ 	if (is_running)
+ 		set_current_state(TASK_RUNNING);
+ }
+@@ -460,9 +467,8 @@ set_other_info_task_blocking(unsigned long *flags, const volatile void *ptr)
+  * acquires the matching other_info and returns true. If other_info is not
+  * required for the report type, simply acquires report_lock and returns true.
+  */
+-static bool prepare_report(unsigned long *flags, const volatile void *ptr,
+-			   size_t size, int access_type, int cpu_id,
+-			   enum kcsan_report_type type)
++static bool prepare_report(unsigned long *flags, enum kcsan_report_type type,
++			   const struct access_info *ai, struct other_info *other_info)
+ {
+ 	if (type != KCSAN_REPORT_CONSUMED_WATCHPOINT &&
+ 	    type != KCSAN_REPORT_RACE_SIGNAL) {
+@@ -476,18 +482,14 @@ retry:
+ 
+ 	switch (type) {
+ 	case KCSAN_REPORT_CONSUMED_WATCHPOINT:
+-		if (other_info.ptr != NULL)
++		if (other_info->ai.ptr)
+ 			break; /* still in use, retry */
+ 
+-		other_info.ptr			= ptr;
+-		other_info.size			= size;
+-		other_info.access_type		= access_type;
+-		other_info.task_pid		= in_task() ? task_pid_nr(current) : -1;
+-		other_info.cpu_id		= cpu_id;
+-		other_info.num_stack_entries	= stack_trace_save(other_info.stack_entries, NUM_STACK_ENTRIES, 1);
++		other_info->ai = *ai;
++		other_info->num_stack_entries = stack_trace_save(other_info->stack_entries, NUM_STACK_ENTRIES, 1);
+ 
+ 		if (IS_ENABLED(CONFIG_KCSAN_VERBOSE))
+-			set_other_info_task_blocking(flags, ptr);
++			set_other_info_task_blocking(flags, ai, other_info);
+ 
+ 		spin_unlock_irqrestore(&report_lock, *flags);
+ 
+@@ -498,37 +500,31 @@ retry:
+ 		return false;
+ 
+ 	case KCSAN_REPORT_RACE_SIGNAL:
+-		if (other_info.ptr == NULL)
++		if (!other_info->ai.ptr)
+ 			break; /* no data available yet, retry */
+ 
+ 		/*
+ 		 * First check if this is the other_info we are expecting, i.e.
+ 		 * matches based on how watchpoint was encoded.
+ 		 */
+-		if (!matching_access((unsigned long)other_info.ptr &
+-					     WATCHPOINT_ADDR_MASK,
+-				     other_info.size,
+-				     (unsigned long)ptr & WATCHPOINT_ADDR_MASK,
+-				     size))
++		if (!matching_access((unsigned long)other_info->ai.ptr & WATCHPOINT_ADDR_MASK, other_info->ai.size,
++				     (unsigned long)ai->ptr & WATCHPOINT_ADDR_MASK, ai->size))
+ 			break; /* mismatching watchpoint, retry */
+ 
+-		if (!matching_access((unsigned long)other_info.ptr,
+-				     other_info.size, (unsigned long)ptr,
+-				     size)) {
++		if (!matching_access((unsigned long)other_info->ai.ptr, other_info->ai.size,
++				     (unsigned long)ai->ptr, ai->size)) {
+ 			/*
+ 			 * If the actual accesses to not match, this was a false
+ 			 * positive due to watchpoint encoding.
+ 			 */
+-			kcsan_counter_inc(
+-				KCSAN_COUNTER_ENCODING_FALSE_POSITIVES);
++			kcsan_counter_inc(KCSAN_COUNTER_ENCODING_FALSE_POSITIVES);
+ 
+ 			/* discard this other_info */
+-			release_report(flags, KCSAN_REPORT_RACE_SIGNAL);
++			release_report(flags, other_info);
+ 			return false;
+ 		}
+ 
+-		access_type |= other_info.access_type;
+-		if ((access_type & KCSAN_ACCESS_WRITE) == 0) {
++		if (!((ai->access_type | other_info->ai.access_type) & KCSAN_ACCESS_WRITE)) {
+ 			/*
+ 			 * While the address matches, this is not the other_info
+ 			 * from the thread that consumed our watchpoint, since
+@@ -561,15 +557,11 @@ retry:
+ 			 * data, and at this point the likelihood that we
+ 			 * re-report the same race again is high.
+ 			 */
+-			release_report(flags, KCSAN_REPORT_RACE_SIGNAL);
++			release_report(flags, other_info);
+ 			return false;
+ 		}
+ 
+-		/*
+-		 * Matching & usable access in other_info: keep other_info_lock
+-		 * locked, as this thread consumes it to print the full report;
+-		 * unlocked in release_report.
+-		 */
++		/* Matching access in other_info. */
+ 		return true;
+ 
+ 	default:
+@@ -582,10 +574,19 @@ retry:
+ }
+ 
+ void kcsan_report(const volatile void *ptr, size_t size, int access_type,
+-		  enum kcsan_value_change value_change, int cpu_id,
++		  enum kcsan_value_change value_change,
+ 		  enum kcsan_report_type type)
+ {
+ 	unsigned long flags = 0;
++	const struct access_info ai = {
++		.ptr		= ptr,
++		.size		= size,
++		.access_type	= access_type,
++		.task_pid	= in_task() ? task_pid_nr(current) : -1,
++		.cpu_id		= raw_smp_processor_id()
++	};
++	struct other_info *other_info = type == KCSAN_REPORT_RACE_UNKNOWN_ORIGIN
++					? NULL : &other_infos[0];
+ 
+ 	/*
+ 	 * With TRACE_IRQFLAGS, lockdep's IRQ trace state becomes corrupted if
+@@ -596,19 +597,19 @@ void kcsan_report(const volatile void *ptr, size_t size, int access_type,
+ 	lockdep_off();
+ 
+ 	kcsan_disable_current();
+-	if (prepare_report(&flags, ptr, size, access_type, cpu_id, type)) {
++	if (prepare_report(&flags, type, &ai, other_info)) {
+ 		/*
+ 		 * Never report if value_change is FALSE, only if we it is
+ 		 * either TRUE or MAYBE. In case of MAYBE, further filtering may
+ 		 * be done once we know the full stack trace in print_report().
+ 		 */
+ 		bool reported = value_change != KCSAN_VALUE_CHANGE_FALSE &&
+-				print_report(ptr, size, access_type, value_change, cpu_id, type);
++				print_report(value_change, type, &ai, other_info);
+ 
+ 		if (reported && panic_on_warn)
+ 			panic("panic_on_warn set ...\n");
+ 
+-		release_report(&flags, type);
++		release_report(&flags, other_info);
  	}
+ 	kcsan_enable_current();
+ 
