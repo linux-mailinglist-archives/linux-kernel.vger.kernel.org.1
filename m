@@ -2,120 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 922D11CA24E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 06:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0DDB1CA293
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 07:23:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725958AbgEHEfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 00:35:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39776 "EHLO
+        id S1726036AbgEHFWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 01:22:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725550AbgEHEfF (ORCPT
+        with ESMTP id S1725875AbgEHFWl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 00:35:05 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEEA9C05BD43;
-        Thu,  7 May 2020 21:35:04 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49JHYb2wD7z9sRf;
-        Fri,  8 May 2020 14:34:59 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1588912500;
-        bh=tIayYZxVueV+PR3VYq1LmKUkTO9OK0vuZy2l55/pReI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=NqxOz9zXfs6XrkfaBiIkkJUVvji+AJ3EWeOZGv3z1vo6D1eCEYYCLrk+ff/8A+r23
-         Iu8/rYjHkmnjwZoZ4XcwFpDOctEqB1/rjwWz5iSDVIOF52IPHW9lL04jFH8LVlKbrz
-         YgaNaHBEFd6yRzXr6REvd4MWvGphiFrkOaPWxqXEXalAdumPmvZUGSP1qJWO6Qish3
-         3gllKYZ4g4Xuvaj5SGyUKk8mZS9zXXQ3DghSdDCNBBm/3m+xYfZCo66efJPphrdKHW
-         n7ikEfghdPetED3khTChQtiEat5YRlLD/Tjlh0FrF51Rkufj5+Q7ozt0or/W0KAU6h
-         RYZri5aiMgp/w==
-Date:   Fri, 8 May 2020 14:34:57 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alex Deucher <alexdeucher@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>
-Subject: linux-next: manual merge of the amdgpu tree with the pm tree
-Message-ID: <20200508143457.14acfc46@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/IC6dXXmr.J0j.0CdRqEFiwh";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        Fri, 8 May 2020 01:22:41 -0400
+X-Greylist: delayed 2594 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 07 May 2020 22:22:41 PDT
+Received: from omr2.cc.vt.edu (omr2.cc.ipv6.vt.edu [IPv6:2607:b400:92:8400:0:33:fb76:806e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 734F2C05BD09
+        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 22:22:41 -0700 (PDT)
+Received: from mr3.cc.vt.edu (mr3.cc.vt.edu [IPv6:2607:b400:92:8500:0:7f:b804:6b0a])
+        by omr2.cc.vt.edu (8.14.4/8.14.4) with ESMTP id 0484dPDB003164
+        for <linux-kernel@vger.kernel.org>; Fri, 8 May 2020 00:39:25 -0400
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com [209.85.160.197])
+        by mr3.cc.vt.edu (8.14.7/8.14.7) with ESMTP id 0484dKKV005387
+        for <linux-kernel@vger.kernel.org>; Fri, 8 May 2020 00:39:25 -0400
+Received: by mail-qt1-f197.google.com with SMTP id w12so476251qto.19
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 21:39:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:mime-version
+         :content-transfer-encoding:date:message-id;
+        bh=Dm06ZAKZYIX7YP7mgGyJ/rXR8epdEB9fSQnJcSEERv0=;
+        b=ldmWnJIp/sVwDUIixbnC2XEp5a5MHtzQaLF4s/yPRG74QpjTfY9emz+v3+aTWbKvha
+         IbBp2AE+uJqi/J3mSPpxKu9wmYH3Z0luNxfdjsg+fYvgq5TGKb1bz2uvWEQ5j6wdgAXf
+         LpG7tM7RgnHkCN/lj8ba/Kx9p8irG+y02NQYgW9C7eAwCTGU2/m9fe5Zo1jxhn2H4kE2
+         JBtyBoaGPEcYnC0rDhxU4Pmh+Zd9gz0/QAIEXFDADk3VPAqLLyYmCmIEfmtwKt+mLijz
+         yXY+b0YZfVcEb95GmATGHfHbVrNh2ciFi6IpML2gplVmBOBYkfQvxOPvPtVtk8LfdZ7t
+         RvZQ==
+X-Gm-Message-State: AGi0PuYeQzarDiLOhCX+JnlpLX16JenyWAiv8Zrxfa/q2G/T/+0/4oMA
+        Vvm++HD70y4PF89xqW9EfMR1HnHpNnyPl9hKLtQl+WvKWrnetCCk5QSHtU0Q/qZqfd6YcGSl1Z/
+        ExdNSkOq0y9Pn6DlC8w8nQbNndG/GTUJUvVo=
+X-Received: by 2002:ac8:4ccc:: with SMTP id l12mr971196qtv.129.1588912760479;
+        Thu, 07 May 2020 21:39:20 -0700 (PDT)
+X-Google-Smtp-Source: APiQypJZvgYBYOZoJzUErxWw9UD6lNr0XHDTIdHvnfdB1sZ9pIcck8dCVstQ+Px8izYngtQhOv/vLQ==
+X-Received: by 2002:ac8:4ccc:: with SMTP id l12mr971144qtv.129.1588912759384;
+        Thu, 07 May 2020 21:39:19 -0700 (PDT)
+Received: from turing-police ([2601:5c0:c001:c9e1::359])
+        by smtp.gmail.com with ESMTPSA id h2sm358428qkh.91.2020.05.07.21.39.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 May 2020 21:39:17 -0700 (PDT)
+From:   "Valdis =?utf-8?Q?Kl=c4=93tnieks?=" <valdis.kletnieks@vt.edu>
+X-Google-Original-From: "Valdis =?utf-8?Q?Kl=c4=93tnieks?=" <Valdis.Kletnieks@vt.edu>
+X-Mailer: exmh version 2.9.0 11/07/2018 with nmh-1.7+dev
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: linux-next 20200506 - build failure with net/bpfilter/bpfilter_umh
+Mime-Version: 1.0
+Content-Type: multipart/signed; boundary="==_Exmh_1588912756_228720P";
+         micalg=pgp-sha1; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 08 May 2020 00:39:16 -0400
+Message-ID: <251580.1588912756@turing-police>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/IC6dXXmr.J0j.0CdRqEFiwh
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+--==_Exmh_1588912756_228720P
+Content-Type: text/plain; charset=us-ascii
 
-Hi all,
+My kernel build came to a screeching halt with:
 
-Today's linux-next merge of the amdgpu tree got a conflict in:
+  CHECK   net/bpfilter/bpfilter_kern.c
+  CC [M]  net/bpfilter/bpfilter_kern.o
+  CC [U]  net/bpfilter/main.o
+  LD [U]  net/bpfilter/bpfilter_umh
+/usr/bin/ld: cannot find -lc
+collect2: error: ld returned 1 exit status
+make[2]: *** [scripts/Makefile.userprogs:36: net/bpfilter/bpfilter_umh] Error 1
+make[1]: *** [scripts/Makefile.build:494: net/bpfilter] Error 2
+make: *** [Makefile:1726: net] Error 2
 
-  drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
+The culprit is this commit:
 
-between commit:
+commit 0592c3c367c4c823f2a939968e72d39360fce1f4
+Author: Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed Apr 29 12:45:15 2020 +0900
 
-  e07515563d01 ("PM: sleep: core: Rename DPM_FLAG_NEVER_SKIP")
+    bpfilter: use 'userprogs' syntax to build bpfilter_umh
 
-from the pm tree and commit:
+and specifically, this line:
 
-  500bd19a7e5d ("drm/amdgpu: only set DPM_FLAG_NEVER_SKIP for legacy ATPX B=
-OCO")
++userldflags += -static
 
-from the amdgpu tree.
+At least on Fedora, this dies an ugly death unless you have the glibc-static RPM
+installed (which is *not* part of the glibc-devel RPM).  Not sure how to fix this, or
+give a heads-up that there's a new requirement that might break the build.
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
 
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
-index c201bc827389,4e4c9550dcf8..000000000000
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
-@@@ -189,10 -188,12 +188,12 @@@ int amdgpu_driver_load_kms(struct drm_d
-  		dev_dbg(&dev->pdev->dev, "Error during ACPI methods call\n");
- =20
-  	if (adev->runpm) {
-- 		dev_pm_set_driver_flags(dev->dev, DPM_FLAG_NO_DIRECT_COMPLETE);
-+ 		/* only need to skip on ATPX */
-+ 		if (amdgpu_device_supports_boco(dev) &&
-+ 		    !amdgpu_is_atpx_hybrid())
- -			dev_pm_set_driver_flags(dev->dev, DPM_FLAG_NEVER_SKIP);
-++			dev_pm_set_driver_flags(dev->dev, DPM_FLAG_NO_DIRECT_COMPLETE);
-  		pm_runtime_use_autosuspend(dev->dev);
-  		pm_runtime_set_autosuspend_delay(dev->dev, 5000);
-- 		pm_runtime_set_active(dev->dev);
-  		pm_runtime_allow(dev->dev);
-  		pm_runtime_mark_last_busy(dev->dev);
-  		pm_runtime_put_autosuspend(dev->dev);
-
---Sig_/IC6dXXmr.J0j.0CdRqEFiwh
+--==_Exmh_1588912756_228720P
 Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
+Comment: Exmh version 2.9.0 11/07/2018
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl604XEACgkQAVBC80lX
-0GxkRgf+P9we/5HxF6t1TApXGo0ooTk5FGWPYEpRZPAgF4BRJqOteGp+iQkDGUjL
-sgEjUnz9EryYLCy1OXtLuf9eOQL/HuvJvL2V36g7VzO3CW+pUm9lMwGpjujm7DQZ
-ZpjegyvDwQb0ouwV+5R8CKW2dSWDmiZ291FgTOmBy9G1bsn4XZPr9c9nlTZQW5si
-Gyc5M78YgEaFh4F/5iR8BNJ8/Z52H9cQ3JkTE/sHYA1AJTUmbBGNOmzfbw6rRxQz
-w1mbkRo38L8/ysrmipx8zdwjQwgm81JZKlvyy4CPJAcoETABeK1ki1usWAw0/eIz
-pvFYwCB3XAFi2dt8oFf/JLnmHzeNMQ==
-=U9dg
+iQIVAwUBXrTicwdmEQWDXROgAQLCSA//UqzDH6Xrc8pTpaZYj6PQFrnX7JxNxPEw
+7XF4cADkh8YyVLIya15u3roNmb993e8UtqpJK2E4/kjDP5MB81NN/9qA/5r3Cb1g
+OaiYFTXl5wtwIyhc8vegiLqNrzs5ZV8VsHEt4o2QbY1tm/ubErebDSXbrdu1bQx9
+qPIBzhk6FDBik1NnyT4ouUbkL2L5xxK/+SIxkqKF56rWpjFyg1IvOCuJgq0zziN9
+RpDMjUzXqjty9AudhwTK/o/pNoJJ4VBBDpcA73+UWoiU0Rcxa8WTjf0qiLVhsF2j
+y6lT49uCsfG+mfzeGPZMxxziS4Mbaglq+LqZtsD6ni3+IaUckz4FY6nRdQys1Fy6
+wz7e97Yxem3qzWKuOum10cU6sF4WXbyp0mTK9STQZMN6o7lVO95GDhEZDYf6X4x3
+9z6K7CgqHceQNoXAPKm32hz3Zcwnz1XajB9zda+F103mXgldccmYba+uyk8YDCct
+B10n104eo3316gUz5k1/LMQtCjIOFBvj+2UQTaN6x1U514rJu2ddrQVrD+lVShvV
+M3jLq73GWXU07x4xO7CgQMwwbHKf3zD28i7wAOy4FY0LxIIDwtrsx9jGQsHaX4nm
+JuiPSWAGY8u7aikcoWVM5K0vk0Ea8Bjj9LlLzTHK0ZmDunKsAjTIE4/O3aQR3h6W
+6PQ9qiuQN7E=
+=SYBk
 -----END PGP SIGNATURE-----
 
---Sig_/IC6dXXmr.J0j.0CdRqEFiwh--
+--==_Exmh_1588912756_228720P--
