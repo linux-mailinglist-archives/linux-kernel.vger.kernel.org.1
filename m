@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A7D11CAD64
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:02:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63FB41CAD43
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729554AbgEHNBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:01:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32980 "EHLO mail.kernel.org"
+        id S1730021AbgEHNAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 09:00:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33852 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729753AbgEHMv4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 08:51:56 -0400
+        id S1729977AbgEHMwh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 08:52:37 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BF82C24959;
-        Fri,  8 May 2020 12:51:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7409A24958;
+        Fri,  8 May 2020 12:52:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588942315;
-        bh=/4RtdcU31kYJ941Dw97QJiAIdVCujAV7FIqCmS3ayak=;
+        s=default; t=1588942356;
+        bh=nsssbZy682qJB1nLB7JZpO040fXKDc94Bx3ipos/8Ik=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NsCyGKj6j/2ouRj+PapBkHwB5vD4nXIRllfpLZo+rn4BWJvAIX6INGqUPUTPDxNjo
-         Lt9zY/Mj3GWflEwydppr+htMbcQIaHEcRtYJIRiv0ogJVharRI1iwDBvqsFWllPLZ4
-         zoyDGqOhp1P/gOHEje3PPTKjd4Ze2IYs+q7FWMXQ=
+        b=qGqMxVwtOxYARGbNyhHy0Qnd8v1e6zkwZqBulCm90cAVTS1N6Iw7E5L8+Hq+2TDkp
+         7QOsHSMsz9BtSOp89mLDAvI8g5MGjd6c5JGvUpLen5wVGt2xc163DNFvZphKE1xLjC
+         UvCc0GolqdRuRDOsHxblx9P1oJBkFKpiMpBvThX0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thinh Nguyen <thinhn@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>,
+        stable@vger.kernel.org,
+        Matthias Blankertz <matthias.blankertz@cetitec.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 06/32] usb: dwc3: gadget: Properly set maxpacket limit
+Subject: [PATCH 5.4 13/50] ASoC: rsnd: Fix HDMI channel mapping for multi-SSI mode
 Date:   Fri,  8 May 2020 14:35:19 +0200
-Message-Id: <20200508123035.621451847@linuxfoundation.org>
+Message-Id: <20200508123045.281825712@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200508123034.886699170@linuxfoundation.org>
-References: <20200508123034.886699170@linuxfoundation.org>
+In-Reply-To: <20200508123043.085296641@linuxfoundation.org>
+References: <20200508123043.085296641@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,133 +46,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+From: Matthias Blankertz <matthias.blankertz@cetitec.com>
 
-[ Upstream commit d94ea5319813658ad5861d161ae16a194c2abf88 ]
+[ Upstream commit b94e164759b82d0c1c80d4b1c8f12c9bee83f11d ]
 
-Currently the calculation of max packet size limit for IN endpoints is
-too restrictive. This prevents a matching of a capable hardware endpoint
-during configuration. Below is the minimum recommended HW configuration
-to support a particular endpoint setup from the databook:
+The HDMI?_SEL register maps up to four stereo SSI data lanes onto the
+sdata[0..3] inputs of the HDMI output block. The upper half of the
+register contains four blocks of 4 bits, with the most significant
+controlling the sdata3 line and the least significant the sdata0 line.
 
-For OUT endpoints, the databook recommended the minimum RxFIFO size to
-be at least 3x MaxPacketSize + 3x setup packets size (8 bytes each) +
-clock crossing margin (16 bytes).
+The shift calculation has an off-by-one error, causing the parent SSI to
+be mapped to sdata3, the first multi-SSI child to sdata0 and so forth.
+As the parent SSI transmits the stereo L/R channels, and the HDMI core
+expects it on the sdata0 line, this causes no audio to be output when
+playing stereo audio on a multichannel capable HDMI out, and
+multichannel audio has permutated channels.
 
-For IN endpoints, the databook recommended the minimum TxFIFO size to be
-at least 3x MaxPacketSize for endpoints that support burst. If the
-endpoint doesn't support burst or when the device is operating in USB
-2.0 mode, a minimum TxFIFO size of 2x MaxPacketSize is recommended.
+Fix the shift calculation to map the parent SSI to sdata0, the first
+child to sdata1 etc.
 
-Base on these recommendations, we can calculate the MaxPacketSize limit
-of each endpoint. This patch revises the IN endpoint MaxPacketSize limit
-and also sets the MaxPacketSize limit for OUT endpoints.
-
-Reference: Databook 3.30a section 3.2.2 and 3.2.3
-
-Signed-off-by: Thinh Nguyen <thinhn@synopsys.com>
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Matthias Blankertz <matthias.blankertz@cetitec.com>
+Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/20200415141017.384017-3-matthias.blankertz@cetitec.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/dwc3/core.h   |  4 +++
- drivers/usb/dwc3/gadget.c | 52 ++++++++++++++++++++++++++++++---------
- 2 files changed, 45 insertions(+), 11 deletions(-)
+ sound/soc/sh/rcar/ssiu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
-index e34308d64619e..d6968b90ee6bb 100644
---- a/drivers/usb/dwc3/core.h
-+++ b/drivers/usb/dwc3/core.h
-@@ -300,6 +300,10 @@
- #define DWC3_GTXFIFOSIZ_TXFDEF(n)	((n) & 0xffff)
- #define DWC3_GTXFIFOSIZ_TXFSTADDR(n)	((n) & 0xffff0000)
+diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
+index f35d882118874..9c7c3e7539c93 100644
+--- a/sound/soc/sh/rcar/ssiu.c
++++ b/sound/soc/sh/rcar/ssiu.c
+@@ -221,7 +221,7 @@ static int rsnd_ssiu_init_gen2(struct rsnd_mod *mod,
+ 			i;
  
-+/* Global RX Fifo Size Register */
-+#define DWC31_GRXFIFOSIZ_RXFDEP(n)	((n) & 0x7fff)	/* DWC_usb31 only */
-+#define DWC3_GRXFIFOSIZ_RXFDEP(n)	((n) & 0xffff)
-+
- /* Global Event Size Registers */
- #define DWC3_GEVNTSIZ_INTMASK		BIT(31)
- #define DWC3_GEVNTSIZ_SIZE(n)		((n) & 0xffff)
-diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-index 1a6c973da4879..99f6a5aa01095 100644
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -2032,7 +2032,6 @@ static int dwc3_gadget_init_in_endpoint(struct dwc3_ep *dep)
- {
- 	struct dwc3 *dwc = dep->dwc;
- 	int mdwidth;
--	int kbytes;
- 	int size;
- 
- 	mdwidth = DWC3_MDWIDTH(dwc->hwparams.hwparams0);
-@@ -2048,17 +2047,17 @@ static int dwc3_gadget_init_in_endpoint(struct dwc3_ep *dep)
- 	/* FIFO Depth is in MDWDITH bytes. Multiply */
- 	size *= mdwidth;
- 
--	kbytes = size / 1024;
--	if (kbytes == 0)
--		kbytes = 1;
--
- 	/*
--	 * FIFO sizes account an extra MDWIDTH * (kbytes + 1) bytes for
--	 * internal overhead. We don't really know how these are used,
--	 * but documentation say it exists.
-+	 * To meet performance requirement, a minimum TxFIFO size of 3x
-+	 * MaxPacketSize is recommended for endpoints that support burst and a
-+	 * minimum TxFIFO size of 2x MaxPacketSize for endpoints that don't
-+	 * support burst. Use those numbers and we can calculate the max packet
-+	 * limit as below.
- 	 */
--	size -= mdwidth * (kbytes + 1);
--	size /= kbytes;
-+	if (dwc->maximum_speed >= USB_SPEED_SUPER)
-+		size /= 3;
-+	else
-+		size /= 2;
- 
- 	usb_ep_set_maxpacket_limit(&dep->endpoint, size);
- 
-@@ -2076,8 +2075,39 @@ static int dwc3_gadget_init_in_endpoint(struct dwc3_ep *dep)
- static int dwc3_gadget_init_out_endpoint(struct dwc3_ep *dep)
- {
- 	struct dwc3 *dwc = dep->dwc;
-+	int mdwidth;
-+	int size;
-+
-+	mdwidth = DWC3_MDWIDTH(dwc->hwparams.hwparams0);
-+
-+	/* MDWIDTH is represented in bits, convert to bytes */
-+	mdwidth /= 8;
- 
--	usb_ep_set_maxpacket_limit(&dep->endpoint, 1024);
-+	/* All OUT endpoints share a single RxFIFO space */
-+	size = dwc3_readl(dwc->regs, DWC3_GRXFIFOSIZ(0));
-+	if (dwc3_is_usb31(dwc))
-+		size = DWC31_GRXFIFOSIZ_RXFDEP(size);
-+	else
-+		size = DWC3_GRXFIFOSIZ_RXFDEP(size);
-+
-+	/* FIFO depth is in MDWDITH bytes */
-+	size *= mdwidth;
-+
-+	/*
-+	 * To meet performance requirement, a minimum recommended RxFIFO size
-+	 * is defined as follow:
-+	 * RxFIFO size >= (3 x MaxPacketSize) +
-+	 * (3 x 8 bytes setup packets size) + (16 bytes clock crossing margin)
-+	 *
-+	 * Then calculate the max packet limit as below.
-+	 */
-+	size -= (3 * 8) + 16;
-+	if (size < 0)
-+		size = 0;
-+	else
-+		size /= 3;
-+
-+	usb_ep_set_maxpacket_limit(&dep->endpoint, size);
- 	dep->endpoint.max_streams = 15;
- 	dep->endpoint.ops = &dwc3_gadget_ep_ops;
- 	list_add_tail(&dep->endpoint.ep_list,
+ 		for_each_rsnd_mod_array(i, pos, io, rsnd_ssi_array) {
+-			shift	= (i * 4) + 16;
++			shift	= (i * 4) + 20;
+ 			val	= (val & ~(0xF << shift)) |
+ 				rsnd_mod_id(pos) << shift;
+ 		}
 -- 
 2.20.1
 
