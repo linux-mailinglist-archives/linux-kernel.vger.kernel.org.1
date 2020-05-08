@@ -2,122 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D1D51CA6EE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 11:17:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 143A71CA78F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 11:52:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727032AbgEHJRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 05:17:32 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:4296 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725784AbgEHJRa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 05:17:30 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id B83CBBFAB580C12AB99B;
-        Fri,  8 May 2020 17:17:26 +0800 (CST)
-Received: from linux-ibm.site (10.175.102.37) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 8 May 2020 17:17:20 +0800
-From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
-To:     <rjw@rjwysocki.net>, <viresh.kumar@linaro.org>,
-        <Souvik.Chakravarty@arm.com>, <Thanu.Rangarajan@arm.com>
-CC:     <Sudeep.Holla@arm.com>, <guohanjun@huawei.com>,
-        <john.garry@huawei.com>, <jonathan.cameron@huawei.com>,
-        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wangxiongfeng2@huawei.com>
-Subject: [RFC PATCH 3/3] CPPC: add support for SW BOOST
-Date:   Fri, 8 May 2020 17:11:04 +0800
-Message-ID: <1588929064-30270-4-git-send-email-wangxiongfeng2@huawei.com>
-X-Mailer: git-send-email 1.7.12.4
-In-Reply-To: <1588929064-30270-1-git-send-email-wangxiongfeng2@huawei.com>
-References: <1588929064-30270-1-git-send-email-wangxiongfeng2@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.102.37]
-X-CFilter-Loop: Reflected
+        id S1726864AbgEHJwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 05:52:24 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:59216
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725825AbgEHJwX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 05:52:23 -0400
+X-IronPort-AV: E=Sophos;i="5.73,367,1583190000"; 
+   d="scan'208";a="348097894"
+Received: from palace.rsr.lip6.fr (HELO palace.lip6.fr) ([132.227.105.202])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/AES256-SHA256; 08 May 2020 11:52:21 +0200
+From:   Julia Lawall <Julia.Lawall@inria.fr>
+To:     Jeremy Kerr <jk@ozlabs.org>
+Cc:     kernel-janitors@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Nic Volanschi <eugene.volanschi@inria.fr>
+Subject: [PATCH] powerpc/spufs: adjust list element pointer type
+Date:   Fri,  8 May 2020 11:12:56 +0200
+Message-Id: <1588929176-28527-1-git-send-email-Julia.Lawall@inria.fr>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To add SW BOOST support for CPPC, we need to get the max frequency of
-boost mode and non-boost mode. ACPI spec 6.2 section 8.4.7.1 describe
-the following two CPC registers.
+Other uses of &gang->aff_list_head, eg in spufs_assert_affinity, indicate
+that the list elements have type spu_context, not spu as used here.  Change
+the type of tmp accordingly.
 
-"Highest performance is the absolute maximum performance an individual
-processor may reach, assuming ideal conditions. This performance level
-may not be sustainable for long durations, and may only be achievable if
-other platform components are in a specific state; for example, it may
-require other processors be in an idle state.
+This has no impact on the execution, because tmp is not used in the body of
+the loop.
 
-Nominal Performance is the maximum sustained performance level of the
-processor, assuming ideal operating conditions. In absence of an
-external constraint (power, thermal, etc.) this is the performance level
-the platform is expected to be able to maintain continuously. All
-processors are expected to be able to sustain their nominal performance
-state simultaneously."
+Fixes: c5fc8d2a92461 ("[CELL] cell: add placement computation for scheduling of affinity contexts")
+Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
 
-To add SW BOOST support for CPPC, we can use Highest Performance as the
-max performance in boost mode and Nominal Performance as the max
-performance in non-boost mode. If the Highest Performance is greater
-than the Nominal Performance, we assume SW BOOST is supported.
-
-The current CPPC driver does not support SW BOOST and use 'Highest
-Performance' as the max performance the CPU can achieve. 'Nominal
-Performance' is used to convert 'performance' to 'frequency'. That
-means, if firmware enable boost and provide a value for Highest
-Performance which is greater than Nominal Performance, boost feature is
-enabled by default.
-
-Because SW BOOST is disabled by default, so, after this patch, boost
-feature is disabled by default even if boost is enabled by firmware.
-
-Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
 ---
- drivers/cpufreq/cppc_cpufreq.c | 17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
+ arch/powerpc/platforms/cell/spufs/sched.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-index bda0b24..6ae070f 100644
---- a/drivers/cpufreq/cppc_cpufreq.c
-+++ b/drivers/cpufreq/cppc_cpufreq.c
-@@ -310,7 +310,7 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
- 	 * Section 8.4.7.1.1.5 of ACPI 6.1 spec)
- 	 */
- 	policy->min = cppc_cpufreq_perf_to_khz(cpu, cpu->perf_caps.lowest_nonlinear_perf);
--	policy->max = cppc_cpufreq_perf_to_khz(cpu, cpu->perf_caps.highest_perf);
-+	policy->max = cppc_cpufreq_perf_to_khz(cpu, cpu->perf_caps.nominal_perf);
+diff --git a/arch/powerpc/platforms/cell/spufs/sched.c b/arch/powerpc/platforms/cell/spufs/sched.c
+index f18d5067cd0f..487fcb47f10d 100644
+--- a/arch/powerpc/platforms/cell/spufs/sched.c
++++ b/arch/powerpc/platforms/cell/spufs/sched.c
+@@ -344,8 +344,7 @@ static struct spu *aff_ref_location(struct spu_context *ctx, int mem_aff,
+ static void aff_set_ref_point_location(struct spu_gang *gang)
+ {
+ 	int mem_aff, gs, lowest_offset;
+-	struct spu_context *ctx;
+-	struct spu *tmp;
++	struct spu_context *tmp, *ctx;
  
- 	/*
- 	 * Set cpuinfo.min_freq to Lowest to make the full range of performance
-@@ -318,7 +318,7 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
- 	 * nonlinear perf
- 	 */
- 	policy->cpuinfo.min_freq = cppc_cpufreq_perf_to_khz(cpu, cpu->perf_caps.lowest_perf);
--	policy->cpuinfo.max_freq = cppc_cpufreq_perf_to_khz(cpu, cpu->perf_caps.highest_perf);
-+	policy->cpuinfo.max_freq = cppc_cpufreq_perf_to_khz(cpu, cpu->perf_caps.nominal_perf);
- 
- 	policy->transition_delay_us = cppc_cpufreq_get_transition_delay_us(cpu_num);
- 	policy->shared_type = cpu->shared_type;
-@@ -343,6 +343,19 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
- 
- 	cpu->cur_policy = policy;
- 
-+	/*
-+	 * If 'highest_perf' is greater than 'nominal_perf', we assume CPU Boost
-+	 * is supported.
-+	 */
-+	if (cpu->perf_caps.highest_perf > cpu->perf_caps.nominal_perf) {
-+		policy->cpuinfo.boost_max_freq = cppc_cpufreq_perf_to_khz(cpu,
-+						cpu->perf_caps.highest_perf);
-+		policy->cpuinfo.nonboost_max_freq = cppc_cpufreq_perf_to_khz(cpu,
-+						cpu->perf_caps.nominal_perf);
-+
-+		cpufreq_enable_boost_support();
-+	}
-+
- 	/* Set policy->cur to max now. The governors will adjust later. */
- 	policy->cur = cppc_cpufreq_perf_to_khz(cpu,
- 					cpu->perf_caps.highest_perf);
--- 
-1.7.12.4
+ 	mem_aff = gang->aff_ref_ctx->flags & SPU_CREATE_AFFINITY_MEM;
+ 	lowest_offset = 0;
 
