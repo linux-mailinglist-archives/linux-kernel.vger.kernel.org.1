@@ -2,95 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 927211CA494
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 08:53:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 257AF1CA48F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 08:53:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727093AbgEHGxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 02:53:55 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:58485 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725971AbgEHGxy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 02:53:54 -0400
-Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1jWwtL-0004ZC-VT; Fri, 08 May 2020 06:53:52 +0000
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     bhelgaas@google.com
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        linux-pci@vger.kernel.org (open list:PCI SUBSYSTEM),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 2/2] PCI: Prevent Pericom USB controller OHCI/EHCI PME# defect
-Date:   Fri,  8 May 2020 14:53:41 +0800
-Message-Id: <20200508065343.32751-2-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200508065343.32751-1-kai.heng.feng@canonical.com>
-References: <20200508065343.32751-1-kai.heng.feng@canonical.com>
+        id S1726922AbgEHGxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 02:53:46 -0400
+Received: from ozlabs.org ([203.11.71.1]:33791 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725971AbgEHGxp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 02:53:45 -0400
+Received: by ozlabs.org (Postfix, from userid 1034)
+        id 49JLdg623nz9sSs; Fri,  8 May 2020 16:53:43 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1588920823;
+        bh=acAgab8g6yhDEvTaya+ecKBQqSHAhREHhSbZFn0j3sY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=pRFFc4jh4HLz9bwkFCuTkCFdIwklxYYg6WoWqUvG2tbuebKPlO+q2Eyc45+pcGlRh
+         JFhRjsVFi7AflB108Hman1pd3K3r2vV1pDrn7HepYny22964LV6ireFqjx/gzBCEMj
+         Xje5vDl2YuXJuBObStk4wFk3cnQdOtJmqNQK/HTRFSGn1/tkfqzsvC01wtVAPgR41u
+         JlyELZ20QPqTfwMT+yGNgNx6f/SkQrkuN+Uh8ZvcnV5h2HQC8EB/zY6XiXwEq/KOba
+         Mgw5VMIHMwRgAVqYH4QQpMVI2Sq+X5O7cHzkJpF7RwDtW5OxOUCJyTviT+3dO2Y5nW
+         lnyS5wm+xTvwQ==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     keescook@chromium.org, linux-kselftest@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] selftests/lkdtm: Don't clear dmesg when running tests
+Date:   Fri,  8 May 2020 16:53:55 +1000
+Message-Id: <20200508065356.2493343-1-mpe@ellerman.id.au>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Both Pericom OHCI and EHCI devices support PME# from all power states:
-06:00.0 USB controller [0c03]: Pericom Semiconductor PI7C9X442SL USB OHCI Controller [12d8:400e] (rev 01) (prog-if 10 [OHCI])
-	Subsystem: Pericom Semiconductor PI7C9X442SL USB OHCI Controller [12d8:400e]
-	Control: I/O+ Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR+ FastB2B- DisINTx-
-	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-	Interrupt: pin A routed to IRQ 17
-	Region 0: Memory at a5502000 (32-bit, non-prefetchable) [size=4K]
-	Capabilities: [80] Power Management version 3
-		Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=375mA PME(D0+,D1+,D2+,D3hot+,D3cold+)
-		Status: D3 NoSoftRst+ PME-Enable+ DSel=0 DScale=0 PME-
+It is Very Rude to clear dmesg in test scripts. That's because the
+script may be part of a larger test run, and clearing dmesg
+potentially destroys the output of other tests.
 
-06:00.2 USB controller [0c03]: Pericom Semiconductor PI7C9X442SL USB EHCI Controller [12d8:400f] (rev 01) (prog-if 20 [EHCI])
-	Subsystem: Pericom Semiconductor PI7C9X442SL USB EHCI Controller [12d8:400f]
-	Control: I/O+ Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR+ FastB2B- DisINTx-
-	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-	Interrupt: pin C routed to IRQ 19
-	Region 0: Memory at a5500000 (32-bit, non-prefetchable) [size=256]
-	Capabilities: [80] Power Management version 3
-		Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=375mA PME(D0+,D1+,D2+,D3hot+,D3cold+)
-		Status: D3 NoSoftRst+ PME-Enable+ DSel=0 DScale=0 PME-
+We can avoid using dmesg -c by saving the content of dmesg before the
+test, and then using diff to compare that to the dmesg afterward,
+producing a log with just the added lines.
 
-Though my original approach [1] appears to work, further testing shows
-that there is a 20% chance PME# won't be asserted when USB device is
-plugged.
-
-So remove the PME support for both devices to make USB plugging works.
-
-[1] https://lore.kernel.org/lkml/20191227092405.29588-1-kai.heng.feng@canonical.com/
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=205981
-
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
 ---
- drivers/pci/quirks.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ tools/testing/selftests/lkdtm/run.sh | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index ca9ed5774eb1..db2590243f0d 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -5568,6 +5568,18 @@ static void pci_fixup_no_d0_pme(struct pci_dev *dev)
- }
- DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_ASMEDIA, 0x2142, pci_fixup_no_d0_pme);
+diff --git a/tools/testing/selftests/lkdtm/run.sh b/tools/testing/selftests/lkdtm/run.sh
+index dadf819148a4..0b409e187c7b 100755
+--- a/tools/testing/selftests/lkdtm/run.sh
++++ b/tools/testing/selftests/lkdtm/run.sh
+@@ -59,23 +59,25 @@ if [ -z "$expect" ]; then
+ 	expect="call trace:"
+ fi
  
-+/*
-+ * Device [12d8:0x400e] and [12d8:0x400f]
-+ * PME# doesn't always get asserted on all power states claim to support PME#
-+ */
-+static void pci_fixup_no_pme(struct pci_dev *dev)
-+{
-+	pci_info(dev, "PME# isn't reliable, disabling it\n");
-+	dev->pme_support = 0;
-+}
-+DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_PERICOM, 0x400e, pci_fixup_no_pme);
-+DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_PERICOM, 0x400f, pci_fixup_no_pme);
+-# Clear out dmesg for output reporting
+-dmesg -c >/dev/null
+-
+ # Prepare log for report checking
+-LOG=$(mktemp --tmpdir -t lkdtm-XXXXXX)
++LOG=$(mktemp --tmpdir -t lkdtm-log-XXXXXX)
++DMESG=$(mktemp --tmpdir -t lkdtm-dmesg-XXXXXX)
+ cleanup() {
+-	rm -f "$LOG"
++	rm -f "$LOG" "$DMESG"
+ }
+ trap cleanup EXIT
+ 
++# Save existing dmesg so we can detect new content below
++dmesg > "$DMESG"
 +
- static void apex_pci_fixup_class(struct pci_dev *pdev)
- {
- 	pdev->class = (PCI_CLASS_SYSTEM_OTHER << 8) | pdev->class;
+ # Most shells yell about signals and we're expecting the "cat" process
+ # to usually be killed by the kernel. So we have to run it in a sub-shell
+ # and silence errors.
+ ($SHELL -c 'cat <(echo '"$test"') >'"$TRIGGER" 2>/dev/null) || true
+ 
+ # Record and dump the results
+-dmesg -c >"$LOG"
++dmesg | diff --changed-group-format='%>' --unchanged-group-format='' "$DMESG" - > "$LOG" || true
++
+ cat "$LOG"
+ # Check for expected output
+ if egrep -qi "$expect" "$LOG" ; then
+
+base-commit: 192ffb7515839b1cc8457e0a8c1e09783de019d3
 -- 
-2.17.1
+2.25.1
 
