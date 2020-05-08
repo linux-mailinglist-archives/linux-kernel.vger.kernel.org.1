@@ -2,40 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 535B61CACDA
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:58:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EADE1CAD39
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:02:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728421AbgEHM4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 08:56:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39802 "EHLO mail.kernel.org"
+        id S1730046AbgEHM7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 08:59:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730431AbgEHM4U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 08:56:20 -0400
+        id S1729914AbgEHMxc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 08:53:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3F5CF2496A;
-        Fri,  8 May 2020 12:56:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5F3EA24963;
+        Fri,  8 May 2020 12:53:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588942579;
-        bh=1LZPEe39UMnjvcdUsIgtXXcaZV3h47Euw7lnX/jEmRk=;
+        s=default; t=1588942411;
+        bh=tYCmFYG1c80BdMRSWHjwTjudD6VVh+EKEYME+PVr0eU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Bpc+iqwBXEZSmiZUFeyInUAFJ2ZogFx9YmxeMtJUJJ9XxwHxia1dfX506JyBJ+nzr
-         lpwBY2ONIzL+NILQ7YN1V1oatlishoixa2M9uwhao4cH34YRcQI17ZoZgVWEJNx6Ly
-         D4CHCn5UkTTqvJIxl3a20KsOcZOfqrRlCYQQ5/NI=
+        b=m14aK9JD+w6cN8dInbuJGDX/bfAIRjCT0yMUUBvQAQ5xk4wnaMaI2wJgbgi+Z0A50
+         rt9p4GSulmIJfMtGZxzJbdQOf9WYVW7CxZqBcJw+658jUdii4LxMpTBndzAA3IGe0p
+         Z8wVzPglusCAUJA35xq56CS3PKxJ6IQ0dhgrd6c4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Prike Liang <Prike.Liang@amd.com>,
-        Mengbing Wang <Mengbing.Wang@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Huang Rui <ray.huang@amd.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 23/49] drm/amd/powerplay: fix resume failed as smu table initialize early exit
-Date:   Fri,  8 May 2020 14:35:40 +0200
-Message-Id: <20200508123046.228896380@linuxfoundation.org>
+        stable@vger.kernel.org, AceLan Kao <acelan.kao@canonical.com>,
+        Tuowen Zhao <ztuowen@gmail.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Roman Gilg <subdiff@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH 5.4 35/50] mfd: intel-lpss: Use devm_ioremap_uc for MMIO
+Date:   Fri,  8 May 2020 14:35:41 +0200
+Message-Id: <20200508123048.223733664@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200508123042.775047422@linuxfoundation.org>
-References: <20200508123042.775047422@linuxfoundation.org>
+In-Reply-To: <20200508123043.085296641@linuxfoundation.org>
+References: <20200508123043.085296641@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,48 +47,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Prike Liang <Prike.Liang@amd.com>
+From: Tuowen Zhao <ztuowen@gmail.com>
 
-[ Upstream commit 45a5e639548c459a5accebad340078e4e6e0e512 ]
+commit a8ff78f7f773142eb8a8befe5a95dd6858ebd635 upstream.
 
-When the amdgpu in the suspend/resume loop need notify the dpm disabled,
-otherwise the smu table will be uninitialize and result in resume failed.
+Some BIOS erroneously specifies write-combining BAR for intel-lpss-pci
+in MTRR. This will cause the system to hang during boot. If possible,
+this bug could be corrected with a firmware update.
 
-Signed-off-by: Prike Liang <Prike.Liang@amd.com>
-Tested-by: Mengbing Wang <Mengbing.Wang@amd.com>
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
-Reviewed-by: Huang Rui <ray.huang@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This patch use devm_ioremap_uc to overwrite/ignore the MTRR settings
+by forcing the use of strongly uncachable pages for intel-lpss.
+
+The BIOS bug is present on Dell XPS 13 7390 2-in-1:
+
+[    0.001734]   5 base 4000000000 mask 6000000000 write-combining
+
+4000000000-7fffffffff : PCI Bus 0000:00
+  4000000000-400fffffff : 0000:00:02.0 (i915)
+  4010000000-4010000fff : 0000:00:15.0 (intel-lpss-pci)
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=203485
+Cc: <stable@vger.kernel.org> # v4.19+
+Tested-by: AceLan Kao <acelan.kao@canonical.com>
+Signed-off-by: Tuowen Zhao <ztuowen@gmail.com>
+Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Tested-by: Roman Gilg <subdiff@gmail.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/gpu/drm/amd/powerplay/renoir_ppt.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/mfd/intel-lpss.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/powerplay/renoir_ppt.c b/drivers/gpu/drm/amd/powerplay/renoir_ppt.c
-index f7a1ce37227cd..4a52c310058d1 100644
---- a/drivers/gpu/drm/amd/powerplay/renoir_ppt.c
-+++ b/drivers/gpu/drm/amd/powerplay/renoir_ppt.c
-@@ -889,12 +889,17 @@ static int renoir_read_sensor(struct smu_context *smu,
+--- a/drivers/mfd/intel-lpss.c
++++ b/drivers/mfd/intel-lpss.c
+@@ -384,7 +384,7 @@ int intel_lpss_probe(struct device *dev,
+ 	if (!lpss)
+ 		return -ENOMEM;
  
- static bool renoir_is_dpm_running(struct smu_context *smu)
- {
-+	struct amdgpu_device *adev = smu->adev;
-+
- 	/*
- 	 * Util now, the pmfw hasn't exported the interface of SMU
- 	 * feature mask to APU SKU so just force on all the feature
- 	 * at early initial stage.
- 	 */
--	return true;
-+	if (adev->in_suspend)
-+		return false;
-+	else
-+		return true;
- 
- }
- 
--- 
-2.20.1
-
+-	lpss->priv = devm_ioremap(dev, info->mem->start + LPSS_PRIV_OFFSET,
++	lpss->priv = devm_ioremap_uc(dev, info->mem->start + LPSS_PRIV_OFFSET,
+ 				  LPSS_PRIV_SIZE);
+ 	if (!lpss->priv)
+ 		return -ENOMEM;
 
 
