@@ -2,84 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00CDC1CA6F2
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 11:20:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4A981CA713
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 11:23:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726638AbgEHJUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 05:20:06 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34438 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725379AbgEHJUF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 05:20:05 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 4FDBFB020;
-        Fri,  8 May 2020 09:20:07 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 70DEF1E12A6; Fri,  8 May 2020 11:20:03 +0200 (CEST)
-Date:   Fri, 8 May 2020 11:20:03 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Tan Hu <tan.hu@zte.com.cn>, linux-kernel@vger.kernel.org,
-        xue.zhihong@zte.com.cn, wang.yi59@zte.com.cn,
-        wang.liang82@zte.com.cn, Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH] lib/flex_proportions.c: aging counts when fraction
- smaller than max_frac/FPROP_FRAC_BASE
-Message-ID: <20200508092003.GC20446@quack2.suse.cz>
-References: <1588746088-38605-1-git-send-email-tan.hu@zte.com.cn>
- <20200507164614.4a816d2aa1b341be937b128a@linux-foundation.org>
+        id S1726807AbgEHJW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 05:22:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726746AbgEHJWZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 05:22:25 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E0C8C05BD43;
+        Fri,  8 May 2020 02:22:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=AKGiii+IEqZ9gOggsApEG4tziI6/WJ3l0tT79BlKIwg=; b=RmPbrrz6Kk0e6owaqjS+q2eHbU
+        G5BKQrZTgzS+1A3FFzmk3b7wy4DTLWkQd8a7NAuzT8d8t14rR1vTvys767YOwnPVrGwqgrtuE+vyX
+        YaxjCyrnZtyyrQ1/6nJ8rhvBdFhERzYQjcrxS0L0bx8HWNmofhBq5k6fjzMIL78fTlIAejMv8n9vW
+        HNWb1r/s9cojIFQwCUsY6eONwjWH0xupnhlBHcOdOzRL4cvHlagNARHeQ2qr+9IYpnKc8kgThYFXO
+        1u4Mym4f3mrlfPIReyhTB4vp3yD8s4Tj3iC8R84YnlaKZFTivOFjQbyPOH6doWYfEp/V7qE3w8GNu
+        YpFgMDdA==;
+Received: from [2001:4bb8:180:9d3f:90d7:9df8:7cd:3504] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jWzD6-0008IN-P0; Fri, 08 May 2020 09:22:25 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: clean up kernel_{read,write} & friends
+Date:   Fri,  8 May 2020 11:22:11 +0200
+Message-Id: <20200508092222.2097-1-hch@lst.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200507164614.4a816d2aa1b341be937b128a@linux-foundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for CC Andrew.
+Hi Al,
 
-On Thu 07-05-20 16:46:14, Andrew Morton wrote:
-> On Wed, 6 May 2020 14:21:28 +0800 Tan Hu <tan.hu@zte.com.cn> wrote:
-> 
-> > If the given type has fraction smaller than max_frac/FPROP_FRAC_BASE,
-> > __fprop_inc_percpu_max should follow the design formula and aging
-> > fraction too.
-> > 
-> > Signed-off-by: Tan Hu <tan.hu@zte.com.cn>
-> > ---
-> >  lib/flex_proportions.c | 7 +++----
-> >  1 file changed, 3 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/lib/flex_proportions.c b/lib/flex_proportions.c
-> > index 7852bfff5..451543937 100644
-> > --- a/lib/flex_proportions.c
-> > +++ b/lib/flex_proportions.c
-> > @@ -266,8 +266,7 @@ void __fprop_inc_percpu_max(struct fprop_global *p,
-> >  		if (numerator >
-> >  		    (((u64)denominator) * max_frac) >> FPROP_FRAC_SHIFT)
-> >  			return;
-> > -	} else
-> > -		fprop_reflect_period_percpu(p, pl);
-> > -	percpu_counter_add_batch(&pl->events, 1, PROP_BATCH);
-> > -	percpu_counter_add(&p->events, 1);
-> > +	}
-> > +
-> > +	__fprop_inc_percpu(p, pl);
-
-So the code is actually correct as is because if max_frac <
-FPROP_FRAC_BASE, we call fprop_fraction_percpu() which calls
-fprop_reflect_period_percpu(). So the 'else' is there to avoid calling the
-function twice. That being said calling fprop_reflect_period_percpu() twice
-as we would with your patch does no big harm as we'd just quickly bail on
-pl->period == p->period test. So I think the code is easier to understand
-the way you suggest without significant downside. But please update the
-changelog to explain that this is just code cleanup (with the above
-reasoning) and not a functional fix.
-
-								Honza
-
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+this series fixes a few issues and cleans up the helpers that read from
+or write to kernel space buffers, and ensures that we don't change the
+address limit if we are using the ->read_iter and ->write_iter methods
+that don't need the changed address limit.
