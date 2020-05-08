@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 548071CAD4E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:02:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 311241CACDE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730157AbgEHNAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:00:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33344 "EHLO mail.kernel.org"
+        id S1730450AbgEHM4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 08:56:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39988 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728311AbgEHMwR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 08:52:17 -0400
+        id S1729593AbgEHM42 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 08:56:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CC77524959;
-        Fri,  8 May 2020 12:52:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DFE75218AC;
+        Fri,  8 May 2020 12:56:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588942337;
-        bh=JHAyR1rXewyMOi4+Su+aR4P3GSO/D2yYLZmakxJMl5Y=;
+        s=default; t=1588942587;
+        bh=SD7T60NTWAwj0y0ioejAXYqLHyACuAREGqmS+ToUxjE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Fu/qfTUTLs54uI9fbvMlr+LVZj4myJLhQqbqDSomrs/FhtjWvnFs/FCVQtFs2YiOG
-         EiBFtbMOGfx+/Khf3BHuNH0smceIHsd3muM066wseklHh3WXl9H46NZFMCMGTrMHgO
-         9jlVz+XUSXiyb+Z10JpsU/qsuEU9s7NG2tyyQWVw=
+        b=zBsi8w7ca60Z6nW9ITB1tfSLgrTSVSxai2xaIdMkttjly4lsJb8fsB3P8lJJbzMkw
+         Q9N4NIuljcU8s2KG8xnX0OIR1QsunaJq+MTlT+zAzl/mfLIyPKT6GLVqm9ElWkz84h
+         kyNSGIdHmHxZSd2gfL5fW7+GMfNygGgb7NJAcgiU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Pedersen <thomas@adapt-ip.com>,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 4.19 30/32] mac80211: add ieee80211_is_any_nullfunc()
+        stable@vger.kernel.org, Julien Beraud <julien.beraud@orolia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 26/49] net: stmmac: fix enabling socfpgas ptp_ref_clock
 Date:   Fri,  8 May 2020 14:35:43 +0200
-Message-Id: <20200508123039.379703489@linuxfoundation.org>
+Message-Id: <20200508123046.754664307@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200508123034.886699170@linuxfoundation.org>
-References: <20200508123034.886699170@linuxfoundation.org>
+In-Reply-To: <20200508123042.775047422@linuxfoundation.org>
+References: <20200508123042.775047422@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,128 +44,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Pedersen <thomas@adapt-ip.com>
+From: Julien Beraud <julien.beraud@orolia.com>
 
-commit 30b2f0be23fb40e58d0ad2caf8702c2a44cda2e1 upstream.
+[ Upstream commit 15ce30609d1e88d42fb1cd948f453e6d5f188249 ]
 
-commit 08a5bdde3812 ("mac80211: consider QoS Null frames for STA_NULLFUNC_ACKED")
-Fixed a bug where we failed to take into account a
-nullfunc frame can be either non-QoS or QoS. It turns out
-there is at least one more bug in
-ieee80211_sta_tx_notify(), introduced in
-commit 7b6ddeaf27ec ("mac80211: use QoS NDP for AP probing"),
-where we forgot to check for the QoS variant and so
-assumed the QoS nullfunc frame never went out
+There are 2 registers to write to enable a ptp ref clock coming from the
+fpga.
+One that enables the usage of the clock from the fpga for emac0 and emac1
+as a ptp ref clock, and the other to allow signals from the fpga to reach
+emac0 and emac1.
+Currently, if the dwmac-socfpga has phymode set to PHY_INTERFACE_MODE_MII,
+PHY_INTERFACE_MODE_GMII, or PHY_INTERFACE_MODE_SGMII, both registers will
+be written and the ptp ref clock will be set as coming from the fpga.
+Separate the 2 register writes to only enable signals from the fpga to
+reach emac0 or emac1 when ptp ref clock is not coming from the fpga.
 
-Fix this by adding a helper ieee80211_is_any_nullfunc()
-which consolidates the check for non-QoS and QoS nullfunc
-frames. Replace existing compound conditionals and add a
-couple more missing checks for QoS variant.
-
-Signed-off-by: Thomas Pedersen <thomas@adapt-ip.com>
-Link: https://lore.kernel.org/r/20200114055940.18502-3-thomas@adapt-ip.com
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Julien Beraud <julien.beraud@orolia.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/ieee80211.h |    9 +++++++++
- net/mac80211/mlme.c       |    2 +-
- net/mac80211/rx.c         |    8 +++-----
- net/mac80211/status.c     |    5 ++---
- net/mac80211/tx.c         |    2 +-
- 5 files changed, 16 insertions(+), 10 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
---- a/include/linux/ieee80211.h
-+++ b/include/linux/ieee80211.h
-@@ -623,6 +623,15 @@ static inline bool ieee80211_is_qos_null
- }
- 
- /**
-+ * ieee80211_is_any_nullfunc - check if frame is regular or QoS nullfunc frame
-+ * @fc: frame control bytes in little-endian byteorder
-+ */
-+static inline bool ieee80211_is_any_nullfunc(__le16 fc)
-+{
-+	return (ieee80211_is_nullfunc(fc) || ieee80211_is_qos_nullfunc(fc));
-+}
-+
-+/**
-  * ieee80211_is_bufferable_mmpdu - check if frame is bufferable MMPDU
-  * @fc: frame control field in little-endian byteorder
-  */
---- a/net/mac80211/mlme.c
-+++ b/net/mac80211/mlme.c
-@@ -2384,7 +2384,7 @@ void ieee80211_sta_tx_notify(struct ieee
- 	if (!ieee80211_is_data(hdr->frame_control))
- 	    return;
- 
--	if (ieee80211_is_nullfunc(hdr->frame_control) &&
-+	if (ieee80211_is_any_nullfunc(hdr->frame_control) &&
- 	    sdata->u.mgd.probe_send_count > 0) {
- 		if (ack)
- 			ieee80211_sta_reset_conn_monitor(sdata);
---- a/net/mac80211/rx.c
-+++ b/net/mac80211/rx.c
-@@ -1373,8 +1373,7 @@ ieee80211_rx_h_check_dup(struct ieee8021
- 		return RX_CONTINUE;
- 
- 	if (ieee80211_is_ctl(hdr->frame_control) ||
--	    ieee80211_is_nullfunc(hdr->frame_control) ||
--	    ieee80211_is_qos_nullfunc(hdr->frame_control) ||
-+	    ieee80211_is_any_nullfunc(hdr->frame_control) ||
- 	    is_multicast_ether_addr(hdr->addr1))
- 		return RX_CONTINUE;
- 
-@@ -1753,8 +1752,7 @@ ieee80211_rx_h_sta_process(struct ieee80
- 	 * Drop (qos-)data::nullfunc frames silently, since they
- 	 * are used only to control station power saving mode.
- 	 */
--	if (ieee80211_is_nullfunc(hdr->frame_control) ||
--	    ieee80211_is_qos_nullfunc(hdr->frame_control)) {
-+	if (ieee80211_is_any_nullfunc(hdr->frame_control)) {
- 		I802_DEBUG_INC(rx->local->rx_handlers_drop_nullfunc);
- 
- 		/*
-@@ -2244,7 +2242,7 @@ static int ieee80211_drop_unencrypted(st
- 
- 	/* Drop unencrypted frames if key is set. */
- 	if (unlikely(!ieee80211_has_protected(fc) &&
--		     !ieee80211_is_nullfunc(fc) &&
-+		     !ieee80211_is_any_nullfunc(fc) &&
- 		     ieee80211_is_data(fc) && rx->key))
- 		return -EACCES;
- 
---- a/net/mac80211/status.c
-+++ b/net/mac80211/status.c
-@@ -487,8 +487,7 @@ static void ieee80211_report_ack_skb(str
- 		rcu_read_lock();
- 		sdata = ieee80211_sdata_from_skb(local, skb);
- 		if (sdata) {
--			if (ieee80211_is_nullfunc(hdr->frame_control) ||
--			    ieee80211_is_qos_nullfunc(hdr->frame_control))
-+			if (ieee80211_is_any_nullfunc(hdr->frame_control))
- 				cfg80211_probe_status(sdata->dev, hdr->addr1,
- 						      cookie, acked,
- 						      info->status.ack_signal,
-@@ -867,7 +866,7 @@ static void __ieee80211_tx_status(struct
- 			I802_DEBUG_INC(local->dot11FailedCount);
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c
+index fa32cd5b418ef..70d41783329dd 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c
+@@ -291,16 +291,19 @@ static int socfpga_gen5_set_phy_mode(struct socfpga_dwmac *dwmac)
+ 	    phymode == PHY_INTERFACE_MODE_MII ||
+ 	    phymode == PHY_INTERFACE_MODE_GMII ||
+ 	    phymode == PHY_INTERFACE_MODE_SGMII) {
+-		ctrl |= SYSMGR_EMACGRP_CTRL_PTP_REF_CLK_MASK << (reg_shift / 2);
+ 		regmap_read(sys_mgr_base_addr, SYSMGR_FPGAGRP_MODULE_REG,
+ 			    &module);
+ 		module |= (SYSMGR_FPGAGRP_MODULE_EMAC << (reg_shift / 2));
+ 		regmap_write(sys_mgr_base_addr, SYSMGR_FPGAGRP_MODULE_REG,
+ 			     module);
+-	} else {
+-		ctrl &= ~(SYSMGR_EMACGRP_CTRL_PTP_REF_CLK_MASK << (reg_shift / 2));
  	}
  
--	if ((ieee80211_is_nullfunc(fc) || ieee80211_is_qos_nullfunc(fc)) &&
-+	if (ieee80211_is_any_nullfunc(fc) &&
- 	    ieee80211_has_pm(fc) &&
- 	    ieee80211_hw_check(&local->hw, REPORTS_TX_ACK_STATUS) &&
- 	    !(info->flags & IEEE80211_TX_CTL_INJECTED) &&
---- a/net/mac80211/tx.c
-+++ b/net/mac80211/tx.c
-@@ -300,7 +300,7 @@ ieee80211_tx_h_check_assoc(struct ieee80
- 	if (unlikely(test_bit(SCAN_SW_SCANNING, &tx->local->scanning)) &&
- 	    test_bit(SDATA_STATE_OFFCHANNEL, &tx->sdata->state) &&
- 	    !ieee80211_is_probe_req(hdr->frame_control) &&
--	    !ieee80211_is_nullfunc(hdr->frame_control))
-+	    !ieee80211_is_any_nullfunc(hdr->frame_control))
- 		/*
- 		 * When software scanning only nullfunc frames (to notify
- 		 * the sleep state to the AP) and probe requests (for the
++	if (dwmac->f2h_ptp_ref_clk)
++		ctrl |= SYSMGR_EMACGRP_CTRL_PTP_REF_CLK_MASK << (reg_shift / 2);
++	else
++		ctrl &= ~(SYSMGR_EMACGRP_CTRL_PTP_REF_CLK_MASK <<
++			  (reg_shift / 2));
++
+ 	regmap_write(sys_mgr_base_addr, reg_offset, ctrl);
+ 
+ 	/* Deassert reset for the phy configuration to be sampled by
+-- 
+2.20.1
+
 
 
