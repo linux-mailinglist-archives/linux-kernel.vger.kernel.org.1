@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 263001CB0CB
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:48:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 584CF1CB0BD
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:46:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728114AbgEHNqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:46:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41150 "EHLO
+        id S1728223AbgEHNqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 09:46:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726736AbgEHNqe (ORCPT
+        by vger.kernel.org with ESMTP id S1727882AbgEHNqe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 8 May 2020 09:46:34 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33397C05BD43;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99653C05BD0B;
         Fri,  8 May 2020 06:46:34 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jX3Kg-0001kT-TG; Fri, 08 May 2020 15:46:31 +0200
+        id 1jX3Kh-0001kY-Fp; Fri, 08 May 2020 15:46:31 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 4B8B91C0080;
-        Fri,  8 May 2020 15:46:30 +0200 (CEST)
-Date:   Fri, 08 May 2020 13:46:30 -0000
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 21E331C0475;
+        Fri,  8 May 2020 15:46:31 +0200 (CEST)
+Date:   Fri, 08 May 2020 13:46:31 -0000
 From:   "tip-bot2 for Marco Elver" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/kcsan] objtool, kcsan: Add kcsan_disable_current() and
- kcsan_enable_current_nowarn()
-Cc:     Marco Elver <elver@google.com>,
+Subject: [tip: locking/kcsan] checkpatch: Warn about data_race() without comment
+Cc:     Will Deacon <will@kernel.org>, Marco Elver <elver@google.com>,
         "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <158894559016.8414.6140936071049006343.tip-bot2@tip-bot2>
+Message-ID: <158894559107.8414.10179815229224016471.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -49,33 +48,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the locking/kcsan branch of tip:
 
-Commit-ID:     50a19ad4b1ec531eb550183cb5d4ab9f25a56bf8
-Gitweb:        https://git.kernel.org/tip/50a19ad4b1ec531eb550183cb5d4ab9f25a56bf8
+Commit-ID:     5099a722e9727fe9a93fac51e961735f40e5b6c8
+Gitweb:        https://git.kernel.org/tip/5099a722e9727fe9a93fac51e961735f40e5b6c8
 Author:        Marco Elver <elver@google.com>
-AuthorDate:    Fri, 24 Apr 2020 17:47:30 +02:00
+AuthorDate:    Wed, 01 Apr 2020 12:17:14 +02:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Wed, 06 May 2020 13:47:06 -07:00
+CommitterDate: Wed, 06 May 2020 10:54:58 -07:00
 
-objtool, kcsan: Add kcsan_disable_current() and kcsan_enable_current_nowarn()
+checkpatch: Warn about data_race() without comment
 
-Both are safe to be called from uaccess contexts.
+Warn about applications of data_race() without a comment, to encourage
+documenting the reasoning behind why it was deemed safe.
 
+Suggested-by: Will Deacon <will@kernel.org>
 Signed-off-by: Marco Elver <elver@google.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/objtool/check.c | 2 ++
- 1 file changed, 2 insertions(+)
+ scripts/checkpatch.pl | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index b6a573d..9122c20 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -472,6 +472,8 @@ static const char *uaccess_safe_builtin[] = {
- 	"kcsan_found_watchpoint",
- 	"kcsan_setup_watchpoint",
- 	"kcsan_check_scoped_accesses",
-+	"kcsan_disable_current",
-+	"kcsan_enable_current_nowarn",
- 	/* KCSAN/TSAN */
- 	"__tsan_func_entry",
- 	"__tsan_func_exit",
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index a63380c..48bb950 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -5833,6 +5833,14 @@ sub process {
+ 			}
+ 		}
+ 
++# check for data_race without a comment.
++		if ($line =~ /\bdata_race\s*\(/) {
++			if (!ctx_has_comment($first_line, $linenr)) {
++				WARN("DATA_RACE",
++				     "data_race without comment\n" . $herecurr);
++			}
++		}
++
+ # check for smp_read_barrier_depends and read_barrier_depends
+ 		if (!$file && $line =~ /\b(smp_|)read_barrier_depends\s*\(/) {
+ 			WARN("READ_BARRIER_DEPENDS",
