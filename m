@@ -2,84 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 694B11CB4F9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 18:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 391191CB4FF
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 18:30:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727107AbgEHQ3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 12:29:24 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:33997 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726756AbgEHQ3X (ORCPT
+        id S1727893AbgEHQ3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 12:29:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726797AbgEHQ3q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 12:29:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588955362;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jsrbKd/D5PQo50yPbbpGTTA6lWR9/mOtKMgX8GS2HPY=;
-        b=Ku9z/HmtMbJNAPhgHd85PIJeeP71uHPNpS6tjw7bokSefDfyW3Tk0c5UH4lSu+uA+65pmx
-        k27+6Dbk8TcXE7UQbpS+YJH7lcbAW56w/2bLQ9sb9HQ+6WDtkB4Y5QcFXReoQKaTVoKrDf
-        G9Okh8kzk56i/oETy4z2QQaIU4nxf9A=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-502-S3ISUO5_NEWFqhyY4XJGeg-1; Fri, 08 May 2020 12:29:21 -0400
-X-MC-Unique: S3ISUO5_NEWFqhyY4XJGeg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CBDBD461;
-        Fri,  8 May 2020 16:29:19 +0000 (UTC)
-Received: from treble (ovpn-115-96.rdu2.redhat.com [10.10.115.96])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5378F61988;
-        Fri,  8 May 2020 16:29:19 +0000 (UTC)
-Date:   Fri, 8 May 2020 11:29:17 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: objtool warning breaks build for fs/dlm/lock.o
-Message-ID: <20200508162917.nieghzwlzpkv676l@treble>
-References: <CAK8P3a0QkqyA2wq_EbA+oWrLGgVdQwpBvb+G0aKyz60BOLs6fg@mail.gmail.com>
- <20200507232941.jccuywl56bppxfyp@treble>
- <CAK8P3a0pY+tu=3hvWTZVwD7nbA7UhaaCGWbBVba0eDuNcpt2Sg@mail.gmail.com>
- <20200508095509.GX5298@hirez.programming.kicks-ass.net>
- <20200508161750.bl5c7wh36gh6gcvp@treble>
- <20200508162604.GE3344@hirez.programming.kicks-ass.net>
+        Fri, 8 May 2020 12:29:46 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3DC8C05BD09
+        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 09:29:45 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id k1so2600106wrx.4
+        for <linux-kernel@vger.kernel.org>; Fri, 08 May 2020 09:29:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+iuOH/WKVgDwlOpqLtEZz1Xk/okLvZZF5WbQRpij0D4=;
+        b=AQt+ZF9/H2qk/OzomabTHPI7WvMlnn1Z6hG6gqNJIe5EizYLqFoDrDWpINidOLAgaq
+         qkxTNC5J00AzTlAZQvnF/dbaHsDAfE/fqpCtkW3hlE9kjdjAD2q5eUUncCpBNBKPnrdk
+         2wk+lL8bnj8EForOpu5KW38XHvLpS//BMB7EkbmGLPrMNq3FjPdICxV0v9XVmU+jc4kp
+         1fEPrrVGBkose3eZ3JXKQscdx2Fq7231IQxf8FdX6I8EeAomwFNy7dhjmQ01wP6ryr5h
+         eH5eNWJrEHOenSXHxlSlCIxzCFu3/8/Fr8Nu6qAxo7p87nmqcfk0mWMEd+JSCV8IHaUm
+         FvRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+iuOH/WKVgDwlOpqLtEZz1Xk/okLvZZF5WbQRpij0D4=;
+        b=qZkIYPdLVKVyf6NGNgcDYG5DEj1ARxc6ENPjbuAtcD1YtthDFHNqyCmoMRmqIVpCq5
+         bSyP0VFSHqw4dBfvK3OgKHfH+LHqgmIBHwW7KTuLXUYd3m+sd3R4w4Xatgyy71cm/F4X
+         /DNKhtlw424UKJ789wa4rZLBOYkN2vPapXwZ1fodov3IMYt9NcsNYGVSP5Af6pGDBfOr
+         /B0vfXuHyq2G3O+KJYJHYb1Ywjsy3FU2iroMfabLiBvZ1AVtqk3IiiTpJFpMCY4LMoAZ
+         Db6dEDKH5Sko9bK9d4nZZC3aesg5aPkr8uKQlVCA6wlSVamkgUraPhOePr0rqD8F1rQF
+         hpVg==
+X-Gm-Message-State: AGi0PuY1r7ioY1/3UWWEnwSLYrpBDXYb1gz41m6/Z03YrxBBdHUDGeuY
+        PiYTSDmTA6bGKnfcysTItotZ0w==
+X-Google-Smtp-Source: APiQypIvwEN8ANKN3qCA5nhSd3XIXtCZSkyca1PpubPK0GASNJT8ODNwqlF/DEWhTVLbHg8aa6qFlA==
+X-Received: by 2002:a5d:61c5:: with SMTP id q5mr3933822wrv.398.1588955384626;
+        Fri, 08 May 2020 09:29:44 -0700 (PDT)
+Received: from localhost.localdomain ([176.61.57.127])
+        by smtp.gmail.com with ESMTPSA id w15sm3602749wrl.73.2020.05.08.09.29.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 May 2020 09:29:43 -0700 (PDT)
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+To:     heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org,
+        linux-usb@vger.kernel.org, bryan.odonoghue@linaro.org
+Cc:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Wen Yang <wenyang@linux.alibaba.com>,
+        chenqiwu <chenqiwu@xiaomi.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] usb: roles: Switch on role-switch uevent reporting
+Date:   Fri,  8 May 2020 17:29:37 +0100
+Message-Id: <20200508162937.2566818-1-bryan.odonoghue@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200508162604.GE3344@hirez.programming.kicks-ass.net>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 08, 2020 at 06:26:04PM +0200, Peter Zijlstra wrote:
-> On Fri, May 08, 2020 at 11:17:50AM -0500, Josh Poimboeuf wrote:
-> > On Fri, May 08, 2020 at 11:55:09AM +0200, Peter Zijlstra wrote:
-> > > On Fri, May 08, 2020 at 11:27:39AM +0200, Arnd Bergmann wrote:
-> > > 
-> > > > Right, makes sense. It would be nice though to have a way of intentionally
-> > > > turning all objtool warnings into errors. I do my randconfig tests
-> > > > with '-Werror'
-> > > > at the moment in order to catch all new warnings, but this does not catch
-> > > > objtool errors at the moment. For now, this is probably the right thing to do,
-> > > > as there are a couple of warnings that I have no patches for, but at some point
-> > > > I would prefer to trap immediately when a new warning pops up.
-> > > 
-> > > Completely untested, and I'm 100% unsure of the Makefile change, but
-> > > something like so, then?
-> > 
-> > Mostly looks good, but it only errors out on fatal errors, right?  For
-> > -Werror (and what Arnd is asking about) should it also return error on
-> > "warnings > 0"?
-> 
-> Oh, good point. Extra knob or just: if (error && ret) return -1 ?
+Right now we don't report to user-space a role switch when doing a
+usb_role_switch_set_role() despite having registered the uevent callbacks.
 
-I think a single knob (hooked up to -Werror) is good enough for now.
+This patch switches on the notifications allowing user-space to see
+role-switch change notifications and subsequently determine the current
+controller data-role.
 
+example:
+PFX=/devices/platform/soc/78d9000.usb/ci_hdrc.0
+
+root@somebox# udevadm monitor -p
+
+KERNEL[49.894994] change $PFX/usb_role/ci_hdrc.0-role-switch (usb_role)
+ACTION=change
+DEVPATH=$PFX/usb_role/ci_hdrc.0-role-switch
+SUBSYSTEM=usb_role
+DEVTYPE=usb_role_switch
+USB_ROLE_SWITCH=ci_hdrc.0-role-switch
+SEQNUM=2432
+
+Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc: Wen Yang <wenyang@linux.alibaba.com>
+Cc: chenqiwu <chenqiwu@xiaomi.com>
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+---
+ drivers/usb/roles/class.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/usb/roles/class.c b/drivers/usb/roles/class.c
+index 5b17709821df..27d92af29635 100644
+--- a/drivers/usb/roles/class.c
++++ b/drivers/usb/roles/class.c
+@@ -49,8 +49,10 @@ int usb_role_switch_set_role(struct usb_role_switch *sw, enum usb_role role)
+ 	mutex_lock(&sw->lock);
+ 
+ 	ret = sw->set(sw, role);
+-	if (!ret)
++	if (!ret) {
+ 		sw->role = role;
++		kobject_uevent(&sw->dev.kobj, KOBJ_CHANGE);
++	}
+ 
+ 	mutex_unlock(&sw->lock);
+ 
 -- 
-Josh
+2.25.1
 
