@@ -2,99 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B6901CA62D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 10:38:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 279B21CA636
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 10:39:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727032AbgEHIii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 04:38:38 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38632 "EHLO mx2.suse.de"
+        id S1727097AbgEHIjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 04:39:46 -0400
+Received: from mx.socionext.com ([202.248.49.38]:6264 "EHLO mx.socionext.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726616AbgEHIih (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 04:38:37 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 7C0EDAFAA;
-        Fri,  8 May 2020 08:38:38 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 2B8AA1E12A6; Fri,  8 May 2020 10:38:32 +0200 (CEST)
-Date:   Fri, 8 May 2020 10:38:32 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fanotify: Replace zero-length array with flexible-array
-Message-ID: <20200508083832.GA20446@quack2.suse.cz>
-References: <20200507185230.GA14229@embeddedor>
+        id S1726638AbgEHIjq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 04:39:46 -0400
+Received: from unknown (HELO iyokan-ex.css.socionext.com) ([172.31.9.54])
+  by mx.socionext.com with ESMTP; 08 May 2020 17:39:44 +0900
+Received: from mail.mfilter.local (m-filter-1 [10.213.24.61])
+        by iyokan-ex.css.socionext.com (Postfix) with ESMTP id 6E0DB60057;
+        Fri,  8 May 2020 17:39:44 +0900 (JST)
+Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Fri, 8 May 2020 17:39:44 +0900
+Received: from yuzu.css.socionext.com (yuzu [172.31.8.45])
+        by kinkan.css.socionext.com (Postfix) with ESMTP id E913F1A12B9;
+        Fri,  8 May 2020 17:39:43 +0900 (JST)
+Received: from [10.213.29.153] (unknown [10.213.29.153])
+        by yuzu.css.socionext.com (Postfix) with ESMTP id 1AB5F120136;
+        Fri,  8 May 2020 17:39:43 +0900 (JST)
+Subject: Re: [PATCH v3 1/2] dt-bindings: PCI: Add UniPhier PCIe endpoint
+ controller description
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Andrew Murray <andrew.murray@arm.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
+        Jassi Brar <jaswinder.singh@linaro.org>
+References: <1584956454-8829-1-git-send-email-hayashi.kunihiko@socionext.com>
+ <1584956454-8829-2-git-send-email-hayashi.kunihiko@socionext.com>
+From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Message-ID: <9af851d6-03a2-1c4f-1749-4ebd2ce0465c@socionext.com>
+Date:   Fri, 8 May 2020 17:39:42 +0900
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200507185230.GA14229@embeddedor>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1584956454-8829-2-git-send-email-hayashi.kunihiko@socionext.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 07-05-20 13:52:30, Gustavo A. R. Silva wrote:
-> The current codebase makes use of the zero-length array language
-> extension to the C90 standard, but the preferred mechanism to declare
-> variable-length types such as these ones is a flexible array member[1][2],
-> introduced in C99:
+On 2020/03/23 18:40, Kunihiko Hayashi wrote:
+> Add DT bindings for PCIe controller implemented in UniPhier SoCs
+> when configured in endpoint mode. This controller is based on
+> the DesignWare PCIe core.
 > 
-> struct foo {
->         int stuff;
->         struct boo array[];
-> };
-> 
-> By making use of the mechanism above, we will get a compiler warning
-> in case the flexible array does not occur last in the structure, which
-> will help us prevent some kind of undefined behavior bugs from being
-> inadvertently introduced[3] to the codebase from now on.
-> 
-> Also, notice that, dynamic memory allocations won't be affected by
-> this change:
-> 
-> "Flexible array members have incomplete type, and so the sizeof operator
-> may not be applied. As a quirk of the original implementation of
-> zero-length arrays, sizeof evaluates to zero."[1]
-> 
-> sizeof(flexible-array-member) triggers a warning because flexible array
-> members have incomplete type[1]. There are some instances of code in
-> which the sizeof operator is being incorrectly/erroneously applied to
-> zero-length arrays and the result is zero. Such instances may be hiding
-> some bugs. So, this work (flexible-array member conversions) will also
-> help to get completely rid of those sorts of issues.
-> 
-> This issue was found with the help of Coccinelle.
-> 
-> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-> [2] https://github.com/KSPP/linux/issues/21
-> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-
-Thanks. I've added the patch to my tree.
-
-								Honza
-
+> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
 > ---
->  fs/notify/fanotify/fanotify.h |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>   .../devicetree/bindings/pci/uniphier-pcie-ep.txt   | 53 ++++++++++++++++++++++
+>   MAINTAINERS                                        |  2 +-
+>   2 files changed, 54 insertions(+), 1 deletion(-)
+>   create mode 100644 Documentation/devicetree/bindings/pci/uniphier-pcie-ep.txt
 > 
-> diff --git a/fs/notify/fanotify/fanotify.h b/fs/notify/fanotify/fanotify.h
-> index 35bfbf4a7aac..8ce7ccfc4b0d 100644
-> --- a/fs/notify/fanotify/fanotify.h
-> +++ b/fs/notify/fanotify/fanotify.h
-> @@ -89,7 +89,7 @@ struct fanotify_name_event {
->  	__kernel_fsid_t fsid;
->  	struct fanotify_fh dir_fh;
->  	u8 name_len;
-> -	char name[0];
-> +	char name[];
->  };
->  
->  static inline struct fanotify_name_event *
+> diff --git a/Documentation/devicetree/bindings/pci/uniphier-pcie-ep.txt b/Documentation/devicetree/bindings/pci/uniphier-pcie-ep.txt
+> new file mode 100644
+> index 0000000..072dc78
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pci/uniphier-pcie-ep.txt
+> @@ -0,0 +1,53 @@
+> +Socionext UniPhier PCIe endpoint controller bindings
+> +
+> +This describes the devicetree bindings for PCIe endpoint controller
+> +implemented on Socionext UniPhier SoCs.
+> +
+> +UniPhier PCIe endpoint controller is based on the Synopsys DesignWare
+> +PCI core. It shares common functions with the PCIe DesignWare core driver
+> +and inherits common properties defined in
+> +Documentation/devicetree/bindings/pci/designware-pcie.txt.
+> +
+> +Required properties:
+> +- compatible: Should be
+> +	"socionext,uniphier-pro5-pcie-ep" for Pro5 SoC
+> +- reg: Specifies offset and length of the register set for the device.
+> +	According to the reg-names, appropriate register sets are required.
+> +- reg-names: Must include the following entries:
+> +	"dbi"        - controller configuration registers
+> +	"dbi2"       - controller configuration registers for shadow
+> +	"link"       - SoC-specific glue layer registers
+> +	"addr_space" - PCIe configuration space
+> +- clocks: A phandle to the clock gate for PCIe glue layer including
+> +	the endpoint controller.
+> +- clock-names: Should contain the following:
+> +	"gio", "link" - for Pro5 SoC
+> +- resets: A phandle to the reset line for PCIe glue layer including
+> +	the endpoint controller.
+> +- reset-names: Should contain the following:
+> +	"gio", "link" - for Pro5 SoC
+> +
+> +Optional properties:
+> +- phys: A phandle to generic PCIe PHY. According to the phy-names, appropriate
+> +	phys are required.
+> +- phy-names: Must be "pcie-phy".
+> +
+> +Example:
+> +
+> +	pcie_ep: pcie-ep@66000000 {
+> +		compatible = "socionext,uniphier-pro5-pcie-ep",
+> +			     "snps,dw-pcie-ep";
+> +		status = "disabled";
+> +		reg-names = "dbi", "dbi2", "link", "addr_space";
+> +		reg = <0x66000000 0x1000>, <0x66001000 0x1000>,
+> +		      <0x66010000 0x10000>, <0x67000000 0x400000>;
+> +		clock-names = "gio", "link";
+> +		clocks = <&sys_clk 12>, <&sys_clk 24>;
+> +		reset-names = "gio", "link";
+> +		clocks = <&sys_rst 12>, <&sys_rst 24>;
+
+This example contains a mistake. I'll fix it.
+
+> +		num-ib-windows = <16>;
+> +		num-ob-windows = <16>;
+> +		num-lanes = <4>;
+> +		phy-names = "pcie-phy";
+> +		phys = <&pcie_phy>;
+> +	};
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 50e8b90..01a4631 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -13151,7 +13151,7 @@ PCIE DRIVER FOR SOCIONEXT UNIPHIER
+>   M:	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+>   L:	linux-pci@vger.kernel.org
+>   S:	Maintained
+> -F:	Documentation/devicetree/bindings/pci/uniphier-pcie.txt
+> +F:	Documentation/devicetree/bindings/pci/uniphier-pcie*.txt
+>   F:	drivers/pci/controller/dwc/pcie-uniphier.c
+>   
+>   PCIE DRIVER FOR ST SPEAR13XX
 > 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+
+It is my chance to convert this to dt-schema.
+I'll fix above and send dt-schema version in next.
+
+Thank you,
+  
+---
+Best Regards
+Kunihiko Hayashi
