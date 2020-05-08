@@ -2,129 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F03C71CB233
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 16:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 958D51CB23A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 16:46:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727798AbgEHOqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 10:46:16 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:42456 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726689AbgEHOqP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 10:46:15 -0400
-Received: by mail-ed1-f68.google.com with SMTP id s10so1407053edy.9;
-        Fri, 08 May 2020 07:46:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=XarHM7quPtL8Iwp9fTwswhgZUavH/ZpsvuGgVu5XAdQ=;
-        b=s/ZHhlAj71VgJ8NnezjZBWro4BmGv+kztSHzy9OaFeyxmgcg4yrKfs91ak7WS/rjF0
-         xq6ErTJk3IsxZP480DStFO9tOyhR38TvWShYjzdduYmpnf9kRbOjCNW6ehXLn6IdLex+
-         lBtONwzWDLu0Bw18ILlbuDoKvcL4t9BnN3mjLGvv6PADRb3IP8c+jNQaP8inW3HaQfTt
-         uSn7kGk0K37Tz9PW0jd82VNFOLI01l3hAt7R6jPZElr/PQqp1hqW8EIJBJDTa7a6+N4b
-         0ey3uHJFOh7tW3LO4Vr+mzwybi3GDTg1/k7RCEIoWQbAYCpwI8udTTyZgyUMc901yWP9
-         MK6w==
-X-Gm-Message-State: AGi0PuYEgz24/EQPsqpy32zYDKrXkaecLzIA9HmXl1iM+Lk4afrMFdGG
-        4esZFW1O41NnuZHbqtBLIkY=
-X-Google-Smtp-Source: APiQypJjIQQnYzAO+FSyQEz9WwVtWHbUUhLRrRKlBcmzLwDdJK0dXJ06g9EggDcxrDp7mWZKsB0M9g==
-X-Received: by 2002:a05:6402:1515:: with SMTP id f21mr2448831edw.370.1588949173380;
-        Fri, 08 May 2020 07:46:13 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.237])
-        by smtp.googlemail.com with ESMTPSA id a5sm289736edn.14.2020.05.08.07.46.12
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 08 May 2020 07:46:12 -0700 (PDT)
-Date:   Fri, 8 May 2020 16:46:10 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     Bernard Zhao <bernard@vivo.com>, Kukjin Kim <kgene@kernel.org>,
-        linux-pm@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        opensource.kernel@vivo.com
-Subject: Re: [PATCH] memory/samsung: Maybe wrong triming parameter
-Message-ID: <20200508144610.GA5983@kozik-lap>
-References: <20200507114514.11589-1-bernard@vivo.com>
- <2eeb33f7-1acc-66bb-704a-b724fa0be0a8@arm.com>
+        id S1728034AbgEHOqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 10:46:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43722 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726689AbgEHOqj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 10:46:39 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BF695216FD;
+        Fri,  8 May 2020 14:46:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588949198;
+        bh=2sJ/3yDz2mDmjR8ffxdDFq5JitVXlv2S2l/8CgRo+rM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=cfTDms3OZBMtmPJkbjka686bD2X0sZEBN1p1vV2fAKxQJlkHEnVjM4nadK09wkrVv
+         PgX/tNFkVeCXOJx988f044QrDkHRNxMRV7Qujlo1vihwC8lgBKqRh48hCGjiydlhLK
+         yl3CC30zm/trgcxtTX+7eoDrrTAa86h2VlE+DLaI=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id A32593522B1D; Fri,  8 May 2020 07:46:38 -0700 (PDT)
+Date:   Fri, 8 May 2020 07:46:38 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, dipankar@in.ibm.com,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org, viro@zeniv.linux.org.uk,
+        Dave Chinner <david@fromorbit.com>
+Subject: Re: [PATCH RFC tip/core/rcu] Add shrinker to shift to
+ fast/inefficient GP mode
+Message-ID: <20200508144638.GF2869@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200507004240.GA9156@paulmck-ThinkPad-P72>
+ <20200506175535.d4986a4d497071a410b69765@linux-foundation.org>
+ <20200507170006.GA155220@cmpxchg.org>
+ <20200507170903.GR2869@paulmck-ThinkPad-P72>
+ <20200507183102.GB155220@cmpxchg.org>
+ <20200507190905.GX2869@paulmck-ThinkPad-P72>
+ <6d93affb-6505-1bf3-58a0-c67c34a18a9e@yandex-team.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2eeb33f7-1acc-66bb-704a-b724fa0be0a8@arm.com>
+In-Reply-To: <6d93affb-6505-1bf3-58a0-c67c34a18a9e@yandex-team.ru>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 07, 2020 at 04:42:46PM +0100, Lukasz Luba wrote:
-> Hi Bernard,
-> 
-> 
-> On 5/7/20 12:45 PM, Bernard Zhao wrote:
-> > In function create_timings_aligned, all the max is to use
-> > dmc->min_tck->xxx, aligned with val dmc->timings->xxx.
-> > But the dmc->timings->tFAW use dmc->min_tck->tXP?
-> > Maybe this point is wrong parameter useing.
+On Fri, May 08, 2020 at 12:00:28PM +0300, Konstantin Khlebnikov wrote:
+> On 07/05/2020 22.09, Paul E. McKenney wrote:
+> > On Thu, May 07, 2020 at 02:31:02PM -0400, Johannes Weiner wrote:
+> > > On Thu, May 07, 2020 at 10:09:03AM -0700, Paul E. McKenney wrote:
+> > > > On Thu, May 07, 2020 at 01:00:06PM -0400, Johannes Weiner wrote:
+> > > > > On Wed, May 06, 2020 at 05:55:35PM -0700, Andrew Morton wrote:
+> > > > > > On Wed, 6 May 2020 17:42:40 -0700 "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> > > > > > 
+> > > > > > > This commit adds a shrinker so as to inform RCU when memory is scarce.
+> > > > > > > RCU responds by shifting into the same fast and inefficient mode that is
+> > > > > > > used in the presence of excessive numbers of RCU callbacks.  RCU remains
+> > > > > > > in this state for one-tenth of a second, though this time window can be
+> > > > > > > extended by another call to the shrinker.
+> > > > > 
+> > > > > We may be able to use shrinkers here, but merely being invoked does
+> > > > > not carry a reliable distress signal.
+> > > > > 
+> > > > > Shrinkers get invoked whenever vmscan runs. It's a useful indicator
+> > > > > for when to age an auxiliary LRU list - test references, clear and
+> > > > > rotate or reclaim stale entries. The urgency, and what can and cannot
+> > > > > be considered "stale", is encoded in the callback frequency and scan
+> > > > > counts, and meant to be relative to the VM's own rate of aging: "I've
+> > > > > tested X percent of mine for recent use, now you go and test the same
+> > > > > share of your pool." It doesn't translate well to other
+> > > > > interpretations of the callbacks, although people have tried.
+> > > > 
+> > > > Would it make sense for RCU to interpret two invocations within (say)
+> > > > 100ms of each other as indicating urgency?  (Hey, I had to ask!)
+> > > 
+> > > It's the perfect number for one combination of CPU, storage device,
+> > > and shrinker implementation :-)
 > > 
-> > Signed-off-by: Bernard Zhao <bernard@vivo.com>
-> > ---
-> >   drivers/memory/samsung/exynos5422-dmc.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > Woo-hoo!!!
 > > 
-> > diff --git a/drivers/memory/samsung/exynos5422-dmc.c b/drivers/memory/samsung/exynos5422-dmc.c
-> > index 81a1b1d01683..22a43d662833 100644
-> > --- a/drivers/memory/samsung/exynos5422-dmc.c
-> > +++ b/drivers/memory/samsung/exynos5422-dmc.c
-> > @@ -1091,7 +1091,7 @@ static int create_timings_aligned(struct exynos5_dmc *dmc, u32 *reg_timing_row,
-> >   	/* power related timings */
-> >   	val = dmc->timings->tFAW / clk_period_ps;
-> >   	val += dmc->timings->tFAW % clk_period_ps ? 1 : 0;
-> > -	val = max(val, dmc->min_tck->tXP);
-> > +	val = max(val, dmc->min_tck->tFAW);
-> >   	reg = &timing_power[0];
-> >   	*reg_timing_power |= TIMING_VAL2REG(reg, val);
+> > But is that one combination actually in use anywhere?  ;-)
 > > 
+> > > > > > > If it proves feasible, a later commit might add a function call directly
+> > > > > > > indicating the end of the period of scarce memory.
+> > > > > > 
+> > > > > > (Cc David Chinner, who often has opinions on shrinkers ;))
+> > > > > > 
+> > > > > > It's a bit abusive of the intent of the slab shrinkers, but I don't
+> > > > > > immediately see a problem with it.  Always returning 0 from
+> > > > > > ->scan_objects might cause a problem in some situations(?).
+> > > > > > 
+> > > > > > Perhaps we should have a formal "system getting low on memory, please
+> > > > > > do something" notification API.
+> > > > > 
+> > > > > It's tricky to find a useful definition of what low on memory
+> > > > > means. In the past we've used sc->priority cutoffs, the vmpressure
+> > > > > interface (reclaimed/scanned - reclaim efficiency cutoffs), oom
+> > > > > notifiers (another reclaim efficiency cutoff). But none of these
+> > > > > reliably capture "distress", and they vary highly between different
+> > > > > hardware setups. It can be hard to trigger OOM itself on fast IO
+> > > > > devices, even when the machine is way past useful (where useful is
+> > > > > somewhat subjective to the user). Userspace OOM implementations that
+> > > > > consider userspace health (also subjective) are getting more common.
+> > > > > 
+> > > > > > How significant is this?  How much memory can RCU consume?
+> > > > > 
+> > > > > I think if rcu can end up consuming a significant share of memory, one
+> > > > > way that may work would be to do proper shrinker integration and track
+> > > > > the age of its objects relative to the age of other allocations in the
+> > > > > system. I.e. toss them all on a clock list with "new" bits and shrink
+> > > > > them at VM velocity. If the shrinker sees objects with new bit set,
+> > > > > clear and rotate. If it sees objects without them, we know rcu_heads
+> > > > > outlive cache pages etc. and should probably cycle faster too.
+> > > > 
+> > > > It would be easy for RCU to pass back (or otherwise use) the age of the
+> > > > current grace period, if that would help.
+> > > > 
+> > > > Tracking the age of individual callbacks is out of the question due to
+> > > > memory overhead, but RCU could approximate this via statistical sampling.
+> > > > Comparing this to grace-period durations could give information as to
+> > > > whether making grace periods go faster would be helpful.
+> > > 
+> > > That makes sense.
+> > > 
+> > > So RCU knows the time and the VM knows the amount of memory. Either
+> > > RCU needs to figure out its memory component to be able to translate
+> > > shrinker input to age, or the VM needs to learn about time to be able
+> > > to say: I'm currently scanning memory older than timestamp X.
+> > > 
+> > > The latter would also require sampling in the VM. Nose goes. :-)
+> > 
+> > Sounds about right.  ;-)
+> > 
+> > Does reclaim have any notion of having continuously scanned for
+> > longer than some amount of time?  Or could RCU reasonably deduce this?
+> > For example, if RCU noticed that reclaim had been scanning for longer than
+> > (say) five grace periods, RCU might decide to speed things up.
+> > 
+> > But on the other hand, with slow disks, reclaim might go on for tens of
+> > seconds even without much in the way of memory pressure, mightn't it?
+> > 
+> > I suppose that another indicator would be recent NULL returns from
+> > allocators.  But that indicator flashes a bit later than one would like,
+> > doesn't it?  And has false positives when allocators are invoked from
+> > atomic contexts, no doubt.  And no doubt similar for sleeping more than
+> > a certain length of time in an allocator.
+> > 
+> > > There actually is prior art for teaching reclaim about time:
+> > > https://lore.kernel.org/linux-mm/20130430110214.22179.26139.stgit@zurg/
+> > > 
+> > > CCing Konstantin. I'm curious how widely this ended up being used and
+> > > how reliably it worked.
+> > 
+> > Looking forward to hearing of any results!
 > 
-> Good catch! Indeed this should be a dmc->min_tck->tFAW used for
-> clamping.
+> Well, that was some experiment about automatic steering memory pressure
+> between containers. LRU timings from milestones itself worked pretty well.
+> Remaining engine were more robust than mainline cgroups these days.
+> Memory becomes much cheaper - I hope nobody want's overcommit it that badly anymore.
 > 
-> It didn't show up in testing because the frequency values based on
-> which the 'clk_period_ps' are calculated are sane.
-> Check the dump below:
-> 
-> [    5.458227] DMC: mem tFAW=25000, clk_period_ps=6060
-> [    5.461743] DMC: tFAW=5, tXP=2 val=5
-> [    5.465273] DMC: mem tFAW=25000, clk_period_ps=4854
-> [    5.470101] DMC: tFAW=5, tXP=2 val=6
-> [    5.473668] DMC: mem tFAW=25000, clk_period_ps=3636
-> [    5.478507] DMC: tFAW=5, tXP=2 val=7
-> [    5.482072] DMC: mem tFAW=25000, clk_period_ps=2421
-> [    5.486951] DMC: tFAW=5, tXP=2 val=11
-> [    5.490531] DMC: mem tFAW=25000, clk_period_ps=1841
-> [    5.495439] DMC: tFAW=5, tXP=2 val=14
-> [    5.499113] DMC: mem tFAW=25000, clk_period_ps=1579
-> [    5.503877] DMC: tFAW=5, tXP=2 val=16
-> [    5.507476] DMC: mem tFAW=25000, clk_period_ps=1373
-> [    5.512368] DMC: tFAW=5, tXP=2 val=19
-> [    5.515968] DMC: mem tFAW=25000, clk_period_ps=1212
-> [    5.520826] DMC: tFAW=5, tXP=2 val=21
-> 
-> That's why in the existing configuration it does not harm
-> (the calculated 'val' is always >= 5) the board.
-> 
-> But I think this patch should be applied (after small changes in the
-> commit message).
-> 
-> @Krzysztof could you have a look on the commit message or take the
-> patch with small adjustment in the description, please?
-> 
-> I conditionally give (because of this description):
-> 
-> Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+> It seems modern MM has plenty signals about memory pressure.
+> Kswapsd should have enough knowledge to switch gears in RCU.
 
-Thanks for review.
+Easy for me to provide "start fast and inefficient mode" and "stop fast
+and inefficient mode" APIs for MM to call!
 
-I applied patch with CC-stable and adjusred commit msg.
+How about rcu_mempressure_start() and rcu_mempressure_end()?  I would
+expect them not to nest (as in if you need them to nest, please let
+me know).  I would not expect these to be invoked all that often (as in
+if you do need them to be fast and scalable, please let me know).
 
-Best regards,
-Krzysztof
+RCU would then be in fast/inefficient mode if either MM told it to be
+or if RCU had detected callback overload on at least one CPU.
 
+Seem reasonable?
+
+							Thanx, Paul
+
+> > > > But, yes, it would be better to have an elusive unambiguous indication
+> > > > of distress.  ;-)
+> > > 
+> > > I agree. Preferably something more practical than a dialogue box
+> > > asking the user on how well things are going for them :-)
+> > 
+> > Indeed, that dialog box should be especially useful for things like
+> > light bulbs running Linux.  ;-)
+> > 
+> > 							Thanx, Paul
+> > 
