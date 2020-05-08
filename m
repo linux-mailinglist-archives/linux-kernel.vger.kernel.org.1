@@ -2,76 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A821CB8E1
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 22:19:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8061C1CBD1D
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 06:02:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727825AbgEHUTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 16:19:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34246 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726811AbgEHUTC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 16:19:02 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A1BCA206D3;
-        Fri,  8 May 2020 20:19:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588969141;
-        bh=rtlkxCw6OP75lsWf55o9FNytUMK3linnTNSPigtZ3HI=;
-        h=Date:From:To:Subject:From;
-        b=AcY0gOYDM85+4XD72AjMoyytiWvIzYmECA1mU4+IFdM2NkTZmBh81nNYiue1gWStf
-         UqbtipNy6Nu9fQ87R+29mFlmmUzgjPrU3/u0olxymbuH3ifOydh+NRwsvmbXLlOmgF
-         E1YKjtZ5E1YWhO5X7VZ58cC1AzBspxq3w/0HDW7Y=
-Received: by pali.im (Postfix)
-        id 708A07F5; Fri,  8 May 2020 22:18:59 +0200 (CEST)
-Date:   Fri, 8 May 2020 22:18:59 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
-Subject: Missing CLOCK_BOOTTIME_RAW?
-Message-ID: <20200508201859.vlffp4fomw2fr4qc@pali>
+        id S1726055AbgEIECW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 00:02:22 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:4362 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725385AbgEIECV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 May 2020 00:02:21 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 7D87A24E1450EB37C86D;
+        Sat,  9 May 2020 12:02:19 +0800 (CST)
+Received: from localhost.localdomain (10.175.118.36) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 9 May 2020 12:02:10 +0800
+From:   Luo bin <luobin9@huawei.com>
+To:     <davem@davemloft.net>
+CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <luoxianjun@huawei.com>, <luobin9@huawei.com>,
+        <yin.yinshi@huawei.com>, <cloud.wangxiaoyun@huawei.com>
+Subject: [PATCH net v2] hinic: fix a bug of ndo_stop
+Date:   Fri, 8 May 2020 20:19:33 +0000
+Message-ID: <20200508201933.5054-1-luobin9@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain
+X-Originating-IP: [10.175.118.36]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Thomas!
+if some function in ndo_stop interface returns failure because of
+hardware fault, must go on excuting rest steps rather than return
+failure directly, otherwise will cause memory leak.And bump the
+timeout for SET_FUNC_STATE to ensure that cmd won't return failure
+when hw is busy. Otherwise hw may stomp host memory if we free
+memory regardless of the return value of SET_FUNC_STATE.
 
-I'm looking at clocks which are provided by kernel for userspace
-applications via clock_gettime() syscall and I think that there is
-missing clock variant CLOCK_BOOTTIME_RAW.
+Signed-off-by: Luo bin <luobin9@huawei.com>
+---
+ .../net/ethernet/huawei/hinic/hinic_hw_mgmt.c | 28 ++++++++++++++-----
+ .../net/ethernet/huawei/hinic/hinic_main.c    | 16 ++---------
+ 2 files changed, 23 insertions(+), 21 deletions(-)
 
-If userspace application wants to measure time difference between two
-events then I think all of available clocks CLOCK_REALTIME,
-CLOCK_MONOTONIC, CLOCK_MONOTONIC_RAW and CLOCK_BOOTTIME have some issues
-for such task.
+diff --git a/drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c b/drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c
+index eef855f11a01..e66659bab012 100644
+--- a/drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c
++++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c
+@@ -45,6 +45,10 @@
+ 
+ #define MGMT_MSG_TIMEOUT                5000
+ 
++#define SET_FUNC_PORT_MBOX_TIMEOUT	30000
++
++#define SET_FUNC_PORT_MGMT_TIMEOUT	25000
++
+ #define mgmt_to_pfhwdev(pf_mgmt)        \
+ 		container_of(pf_mgmt, struct hinic_pfhwdev, pf_to_mgmt)
+ 
+@@ -238,12 +242,13 @@ static int msg_to_mgmt_sync(struct hinic_pf_to_mgmt *pf_to_mgmt,
+ 			    u8 *buf_in, u16 in_size,
+ 			    u8 *buf_out, u16 *out_size,
+ 			    enum mgmt_direction_type direction,
+-			    u16 resp_msg_id)
++			    u16 resp_msg_id, u32 timeout)
+ {
+ 	struct hinic_hwif *hwif = pf_to_mgmt->hwif;
+ 	struct pci_dev *pdev = hwif->pdev;
+ 	struct hinic_recv_msg *recv_msg;
+ 	struct completion *recv_done;
++	unsigned long timeo;
+ 	u16 msg_id;
+ 	int err;
+ 
+@@ -267,8 +272,9 @@ static int msg_to_mgmt_sync(struct hinic_pf_to_mgmt *pf_to_mgmt,
+ 		goto unlock_sync_msg;
+ 	}
+ 
+-	if (!wait_for_completion_timeout(recv_done,
+-					 msecs_to_jiffies(MGMT_MSG_TIMEOUT))) {
++	timeo = msecs_to_jiffies(timeout ? timeout : MGMT_MSG_TIMEOUT);
++
++	if (!wait_for_completion_timeout(recv_done, timeo)) {
+ 		dev_err(&pdev->dev, "MGMT timeout, MSG id = %d\n", msg_id);
+ 		err = -ETIMEDOUT;
+ 		goto unlock_sync_msg;
+@@ -342,6 +348,7 @@ int hinic_msg_to_mgmt(struct hinic_pf_to_mgmt *pf_to_mgmt,
+ {
+ 	struct hinic_hwif *hwif = pf_to_mgmt->hwif;
+ 	struct pci_dev *pdev = hwif->pdev;
++	u32 timeout = 0;
+ 
+ 	if (sync != HINIC_MGMT_MSG_SYNC) {
+ 		dev_err(&pdev->dev, "Invalid MGMT msg type\n");
+@@ -353,13 +360,20 @@ int hinic_msg_to_mgmt(struct hinic_pf_to_mgmt *pf_to_mgmt,
+ 		return -EINVAL;
+ 	}
+ 
+-	if (HINIC_IS_VF(hwif))
++	if (HINIC_IS_VF(hwif)) {
++		if (cmd == HINIC_PORT_CMD_SET_FUNC_STATE)
++			timeout = SET_FUNC_PORT_MBOX_TIMEOUT;
++
+ 		return hinic_mbox_to_pf(pf_to_mgmt->hwdev, mod, cmd, buf_in,
+-					in_size, buf_out, out_size, 0);
+-	else
++					in_size, buf_out, out_size, timeout);
++	} else {
++		if (cmd == HINIC_PORT_CMD_SET_FUNC_STATE)
++			timeout = SET_FUNC_PORT_MGMT_TIMEOUT;
++
+ 		return msg_to_mgmt_sync(pf_to_mgmt, mod, cmd, buf_in, in_size,
+ 				buf_out, out_size, MGMT_DIRECT_SEND,
+-				MSG_NOT_RESP);
++				MSG_NOT_RESP, timeout);
++	}
+ }
+ 
+ /**
+diff --git a/drivers/net/ethernet/huawei/hinic/hinic_main.c b/drivers/net/ethernet/huawei/hinic/hinic_main.c
+index 3d6569d7bac8..22ee868dd11e 100644
+--- a/drivers/net/ethernet/huawei/hinic/hinic_main.c
++++ b/drivers/net/ethernet/huawei/hinic/hinic_main.c
+@@ -487,7 +487,6 @@ static int hinic_close(struct net_device *netdev)
+ {
+ 	struct hinic_dev *nic_dev = netdev_priv(netdev);
+ 	unsigned int flags;
+-	int err;
+ 
+ 	down(&nic_dev->mgmt_lock);
+ 
+@@ -504,20 +503,9 @@ static int hinic_close(struct net_device *netdev)
+ 	if (!HINIC_IS_VF(nic_dev->hwdev->hwif))
+ 		hinic_notify_all_vfs_link_changed(nic_dev->hwdev, 0);
+ 
+-	err = hinic_port_set_func_state(nic_dev, HINIC_FUNC_PORT_DISABLE);
+-	if (err) {
+-		netif_err(nic_dev, drv, netdev,
+-			  "Failed to set func port state\n");
+-		nic_dev->flags |= (flags & HINIC_INTF_UP);
+-		return err;
+-	}
++	hinic_port_set_state(nic_dev, HINIC_PORT_DISABLE);
+ 
+-	err = hinic_port_set_state(nic_dev, HINIC_PORT_DISABLE);
+-	if (err) {
+-		netif_err(nic_dev, drv, netdev, "Failed to set port state\n");
+-		nic_dev->flags |= (flags & HINIC_INTF_UP);
+-		return err;
+-	}
++	hinic_port_set_func_state(nic_dev, HINIC_FUNC_PORT_DISABLE);
+ 
+ 	if (nic_dev->flags & HINIC_RSS_ENABLE) {
+ 		hinic_rss_deinit(nic_dev);
+-- 
+2.17.1
 
-CLOCK_REALTIME may be changed but userspace and therefore time
-difference between two events may be also negative.
-
-CLOCK_MONOTONIC does not have to precise as there may be incremental
-jumps caused by NTP or measured time difference may be smaller as
-elapsed when system is suspended. During system suspend is clock
-CLOCK_MONOTONIC stopped.
-
-CLOCK_MONOTONIC_RAW is not affected by NTP jumps but still is not
-suitable for measuring time differences when system is suspended.
-
-CLOCK_BOOTTIME is affected by NTP jumps but provides correct time
-difference when system was suspended during measurement.
-
-So for me it looks like that there is missing CLOCK_BOOTTIME_RAW clock
-which would not be affected by NTP jumps (like CLOCK_MONOTONIC_RAW) and
-also would not be affected by system suspend (like CLOCK_BOOTTIME).
-
-Please correct me if I'm wrong in some of my above assumptions. It is
-how I understood documentation for clock_gettime() function from Linux
-manpage.
-
-Is there any reason why kernel does not provide such CLOCK_BOOTTIME_RAW
-clock for userspace applications which would be interested in measuring
-time difference which occurred between two events?
