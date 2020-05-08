@@ -2,88 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE3351CAB71
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:43:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00E951CAB94
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729099AbgEHMnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 08:43:39 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2166 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727105AbgEHMnb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 08:43:31 -0400
-Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.108])
-        by Forcepoint Email with ESMTP id 6032C5A5AE26CA40D204;
-        Fri,  8 May 2020 13:43:30 +0100 (IST)
-Received: from localhost (10.47.95.97) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 8 May 2020
- 13:43:29 +0100
-Date:   Fri, 8 May 2020 13:43:07 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-CC:     Jonathan Cameron <jic23@kernel.org>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        <linux-iio@vger.kernel.org>, <devel@driverdev.osuosl.org>,
-        <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] staging: iio: ad5933: rework probe to use devm_
- function variants
-Message-ID: <20200508134307.0000233a@Huawei.com>
-In-Reply-To: <20200507095016.GC9365@kadam>
-References: <20200428093128.60747-1-alexandru.ardelean@analog.com>
-        <20200502192542.63cc25a2@archlinux>
-        <20200507095016.GC9365@kadam>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1729242AbgEHMo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 08:44:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727119AbgEHMot (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 08:44:49 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A06DC05BD43
+        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 05:44:49 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jX2Mr-0005c9-E8; Fri, 08 May 2020 14:44:41 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id DDF83101175; Fri,  8 May 2020 14:44:39 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, luto@kernel.org,
+        Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>
+Subject: Re: [RFC][PATCH 3/3] x86/entry, ORC: Teach objtool/unwind_orc about stack irq swizzles
+In-Reply-To: <87sggak3yf.fsf@nanos.tec.linutronix.de>
+References: <20200507161020.783541450@infradead.org> <20200507161828.801097834@infradead.org> <20200507173809.GK5298@hirez.programming.kicks-ass.net> <20200507183048.rlf2bgj4cf2g4jy6@treble> <878si3e8v2.fsf@nanos.tec.linutronix.de> <20200508101209.GY5298@hirez.programming.kicks-ass.net> <87sggak3yf.fsf@nanos.tec.linutronix.de>
+Date:   Fri, 08 May 2020 14:44:39 +0200
+Message-ID: <87pnbek348.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.95.97]
-X-ClientProxiedBy: lhreml743-chm.china.huawei.com (10.201.108.193) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 May 2020 12:50:16 +0300
-Dan Carpenter <dan.carpenter@oracle.com> wrote:
+Thomas Gleixner <tglx@linutronix.de> writes:
+> Peter Zijlstra <peterz@infradead.org> writes:
+>> Are we sure the rat-poison crap is noise for all the other system
+>> vectors? I suppose it is for most since they'll do indirect calls
+>> themselves anyway, right?
+>
+>  3) Quick
+>
+>     RESCHEDULE_VECTOR
+>
+>     POSTED_INTR_VECTOR
+>     POSTED_INTR_NESTED_VECTOR
+>
+>         These two postit ones are weird because they are both empty and
+>         just increment different irq counts.
 
-> On Sat, May 02, 2020 at 07:25:42PM +0100, Jonathan Cameron wrote:
-> > On Tue, 28 Apr 2020 12:31:28 +0300
-> > Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:  
-> > > +static void ad5933_cleanup(void *data)
-> > > +{
-> > > +	struct ad5933_state *st = data;
-> > > +
-> > > +	clk_disable_unprepare(st->mclk);
-> > > +	regulator_disable(st->reg);  
-> > 
-> > Please do two separate callbacks so that these can be handled
-> > in the correct places.  I.e. you do something then immediately
-> > register the handler to undo it.
-> > 
-> > Currently you can end up disabling a clock you haven't enabled
-> > (which I am fairly sure will give you an error message).  
-> 
-> Yeah.  It does.
-> 
-> It feels like we should just make a devm_ version of regulator_enable().
-> Or potentially this is more complicated than it seems, but in that case
-> probably adding devm_add_action_or_reset() is more complicated than it
-> seems as well.
-> 
-> regards,
-> dan carpenter
+For those 3 it's also pointless to run them on IST stack at all.
 
-It has been a while since that was last proposed.   At the time the
-counter argument was that you should almost always be doing some form
-of PM and hence the regulator shouldn't have the same lifetime as the
-driver.   Reality is that a lot of simple drivers either don't do
-PM or have elected to not turn the regulator off so as to retain state
-etc.
+>     HYPERV_REENLIGHTENMENT_VECTOR
+>
+>         schedules delayed work, i,e. arms a timer which should be
+>         straight forward, but does it matter?
 
-Mark what do you think?
+This one shouldn't have an issue when running on task stack either, but
+we can run it through the regular indirect path for now and switch it
+over when it matters performance wise.
 
-Jonathan
+Thanks,
 
+        tglx
