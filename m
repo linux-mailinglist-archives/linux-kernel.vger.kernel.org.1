@@ -2,119 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE9BA1C9FA8
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 02:28:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2DC41C9FB9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 02:40:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727801AbgEHA2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 May 2020 20:28:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726638AbgEHA2p (ORCPT
+        id S1726797AbgEHAke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 May 2020 20:40:34 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:54122 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726470AbgEHAkd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 May 2020 20:28:45 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73B44C05BD09
-        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 17:28:43 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id f83so619568qke.13
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 17:28:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=On99XfF55m8LFqRcIrWhYWPWVDnoOhQd+qVw8VWh93k=;
-        b=Bm0Ppbjf22QhOZtzauYqSHzmXAQRBARh868f/Yxl/bO4oft1SEVgTov77GepKoI9Q0
-         hI5LUBZCfC4hSVvSKpZWsxqC7kVl4MJ1ESI8nQwWfy0CuKRi/zkSIiGMJf0edNdbDa9G
-         G2cYo88LBODiFBzpIGq2Q+4Yf4Hi4EwbGhF0y86zj5cIr7j/VuT2F2cqU0pOzrXSNxUP
-         pqYp7PQnKC/4kXXPSoSz3m3xIACA3nfruXTtgCMFGGefAvOUuLGHNJDGnbWpMie0BJ2s
-         v2vKU2Ej20Bixshu6ciOiVNaMA0QiCBTCPMrP6NyF6wbxCHVRcs2jMfo8ERIMODr4R3w
-         DTLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=On99XfF55m8LFqRcIrWhYWPWVDnoOhQd+qVw8VWh93k=;
-        b=n81Inbzbyd1zqTTD1RzDvT65ndw5+eZLZCkIp9hTNN9Zro6S1xY6Cv492UvWPbMQx0
-         yueD0blnvuf6aAqhCdTvT+jfEM1F2UaGqIgBtLcKs2XUi435XkHJjegqOh3cjGddOfrh
-         IbMmwlrdWx9voDrqilpXBMYcY1SmLfasdNzAdXLnponZvlghnkAq1a4gufa/goJk8C3M
-         l1EH8atLvKWF2V2hM+q7IX5qAKmEk7SLtNJLRjn9bm436Q5AFvTWAMMqzHpQu8Yn/AO0
-         nhl0BTC/IKTLqSONICBtjHFQajFGH9lOSBqI2tRQppTu7vuK+m0gsEaIiZ1YYKd6Vcst
-         LT0A==
-X-Gm-Message-State: AGi0PuZbvoI/RKiRvJIiDy6MbQogBp7F6MbY7kO3IaVUxaVjQrakG2ya
-        IjW3w//GC11H7unOl16dzMBLXA==
-X-Google-Smtp-Source: APiQypKARSVBhYuC49c7dbY6Cziu6XEVjzZa76KBnegyK8EGy1U5ojsUPtOggQDBfm9nDFuhGB1SPw==
-X-Received: by 2002:a37:a603:: with SMTP id p3mr124023qke.133.1588897722617;
-        Thu, 07 May 2020 17:28:42 -0700 (PDT)
-Received: from [192.168.1.153] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id p10sm123350qtu.14.2020.05.07.17.28.41
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 07 May 2020 17:28:41 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [PATCH] kernel: add panic_on_taint
-From:   Qian Cai <cai@lca.pw>
-In-Reply-To: <20200507233634.GA367616@optiplex-lnx>
-Date:   Thu, 7 May 2020 20:28:40 -0400
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org,
-        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        dyoung@redhat.com, Baoquan He <bhe@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <438575BA-00CA-44BF-8C4C-693DCC00FDD1@lca.pw>
-References: <20200507221503.GL205881@optiplex-lnx>
- <6B423101-ACF4-49A3-AD53-ACBF87F1ABE0@lca.pw>
- <20200507233634.GA367616@optiplex-lnx>
-To:     Rafael Aquini <aquini@redhat.com>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+        Thu, 7 May 2020 20:40:33 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0480eTnb053648;
+        Thu, 7 May 2020 19:40:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1588898429;
+        bh=sZLqc6bcUyrr7YvApm7EgW/hqpn5lokyznG7/dwl9Q4=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=Shlav7+D1aY0m3636dTmu/xp9CH0EpC2xAasUq9An7zHGalx6giqVV4UWT171oQw1
+         Lil3Psl+Q0XLgmA94qPA/Q0l26whowWdJHsAnAtWnUoavoPrDPUmU/9vGsj6yhQR32
+         Lee5TYqKGkn+mR7hBTxL0KXeCi+fA3715en3nXEg=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0480eTGM072433
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 7 May 2020 19:40:29 -0500
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 7 May
+ 2020 19:40:28 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 7 May 2020 19:40:28 -0500
+Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0480eLZN024416;
+        Thu, 7 May 2020 19:40:24 -0500
+Subject: Re: [PATCH net/master] net: ethernet: ti: cpts: Fix linker issue when
+ TI_CPTS is defined
+To:     <davem@davemloft.net>, <richardcochran@gmail.com>,
+        <ivan.khoronzhuk@linaro.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+References: <20200507214740.14693-1-dmurphy@ti.com>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <ab0a9a19-c96b-f90f-827d-aa10bf49a4b7@ti.com>
+Date:   Thu, 7 May 2020 19:31:33 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20200507214740.14693-1-dmurphy@ti.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+All
 
+On 5/7/20 4:47 PM, Dan Murphy wrote:
+> Fix build issue when CONFIG_TI_CPTS is defined in the defconfig but
+> CONFIG_TI_CPTS_MOD is not set.
 
-> On May 7, 2020, at 7:36 PM, Rafael Aquini <aquini@redhat.com> wrote:
->=20
-> On Thu, May 07, 2020 at 07:07:20PM -0400, Qian Cai wrote:
->>=20
->>=20
->>> On May 7, 2020, at 6:15 PM, Rafael Aquini <aquini@redhat.com> wrote:
->>>=20
->>> It's a reasonable and self-contained feature that we have a valid =
-use for.=20
->>> I honestly fail to see it causing that amount of annoyance as you =
-are=20
->>> suggesting here.
->>=20
->> It is not a big trouble yet, but keeping an obsolete patch that not =
-very straightforward to figure out that it will be superseded by the =
-panic_on_taint patch will only cause more confusion the longer it has =
-stayed in linux-next.
->>=20
->> The thing is that even if you can=E2=80=99t get this panic_on_taint =
-(the superior solution) patch accepted for some reasons, someone else =
-could still work on it until it get merged.
->>=20
->> Thus, I failed to see any possibility we will go back to the inferior =
-solution (mm-slub-add-panic_on_error-to-the-debug-facilities.patch) by =
-all means.
->>=20
->=20
-> There are plenty of examples of things being added, changed, and
-> removed in -next. IOW, living in a transient state. I think it's=20
-> a reasonable compromise to keep it while the other one is beind=20
-> ironed out.
->=20
-> The fact that you prefer one solution to another doesn't
-> invalidate the one you dislike.=20
+I see this already has a pending patch to fix this so unless this 
+solution is better I will drop the patch
 
-As far I can tell, the bar of the other core subsystems are quite high =
-even for linux-next. People have been voiced over and over again to urge =
-Andrew not picking up patches so eagerly, but I will save that =
-discussion for the next time.
+https://lore.kernel.org/patchwork/patch/1235642/
 
-Anyway, thanks for working for the panic_on_taint patch. I believe it =
-could be useful for all testing agents to catch those bad pages earlier.=
+Dan
+
