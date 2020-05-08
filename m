@@ -2,46 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DDAC1CAC58
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:55:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87D271CACF4
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:58:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729973AbgEHMwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 08:52:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33486 "EHLO mail.kernel.org"
+        id S1728637AbgEHM5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 08:57:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729946AbgEHMwX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 08:52:23 -0400
+        id S1730040AbgEHMzX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 08:55:23 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 906B724953;
-        Fri,  8 May 2020 12:52:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2F03C2496C;
+        Fri,  8 May 2020 12:55:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588942342;
-        bh=HtJtrn7JwVuOd7YJhv7kbzpt4F0amW7hxGYen/hosUA=;
+        s=default; t=1588942522;
+        bh=Kl08CSxK9cTZLizw5W56/tm53VbSYubwztTv1wcNJCs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kB10gsvVCIrxZTM3k6DDcOEGpAJTfU+4Nrz4yHTGTVAq5m1mMhsHLX8jYruKnhQCe
-         5vJden20T2fOLG847htPi/z9flfqGSs9CJYNi8fO3Glez/PEwoOaxW0EcX7H0PelI0
-         NfMmxF3IpcSJE3lfZjXh/TKTpMeZvV35vrUaw81U=
+        b=HLD6R1J7ECLpAHJ0a6igpYs8zqeD0WmEPmh1+KOLPpbm9D7iiUo02+XXih1m9/2Lr
+         /Xc4ae2aaKDOIzT0Riuskw4MdZltMntg4Mg+jSPIWMtGbEDeAcy4pVN0Eg2DDveLVd
+         AX3ZkWsWnRS0NUvoEEY5Oz3w9kvqRgalJ4c+c+jU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ilia Mirkin <imirkin@alum.mit.edu>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        =?UTF-8?q?Michel=20D=C3=A4nzer?= <michel@daenzer.net>,
-        Alex Deucher <alexdeucher@gmail.com>,
-        Adam Jackson <ajax@redhat.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Rob Clark <robdclark@gmail.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Yves-Alexis Perez <corsac@debian.org>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
-Subject: [PATCH 4.19 32/32] drm/atomic: Take the atomic toys away from X
-Date:   Fri,  8 May 2020 14:35:45 +0200
-Message-Id: <20200508123039.718403889@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Matthias Blankertz <matthias.blankertz@cetitec.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 29/49] ASoC: rsnd: Fix "status check failed" spam for multi-SSI
+Date:   Fri,  8 May 2020 14:35:46 +0200
+Message-Id: <20200508123047.128233809@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200508123034.886699170@linuxfoundation.org>
-References: <20200508123034.886699170@linuxfoundation.org>
+In-Reply-To: <20200508123042.775047422@linuxfoundation.org>
+References: <20200508123042.775047422@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -51,74 +46,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Vetter <daniel.vetter@ffwll.ch>
+From: Matthias Blankertz <matthias.blankertz@cetitec.com>
 
-commit 26b1d3b527e7bf3e24b814d617866ac5199ce68d upstream.
+[ Upstream commit 54cb6221688660670a2e430892d7f4e6370263b8 ]
 
-The -modesetting ddx has a totally broken idea of how atomic works:
-- doesn't disable old connectors, assuming they get auto-disable like
-  with the legacy setcrtc
-- assumes ASYNC_FLIP is wired through for the atomic ioctl
-- not a single call to TEST_ONLY
+Fix the rsnd_ssi_stop function to skip disabling the individual SSIs of
+a multi-SSI setup, as the actual stop is performed by rsnd_ssiu_stop_gen2
+- the same logic as in rsnd_ssi_start. The attempt to disable these SSIs
+was harmless, but caused a "status check failed" message to be printed
+for every SSI in the multi-SSI setup.
+The disabling of interrupts is still performed, as they are enabled for
+all SSIs in rsnd_ssi_init, but care is taken to not accidentally set the
+EN bit for an SSI where it was not set by rsnd_ssi_start.
 
-Iow the implementation is a 1:1 translation of legacy ioctls to
-atomic, which is a) broken b) pointless.
-
-We already have bugs in both i915 and amdgpu-DC where this prevents us
-from enabling neat features.
-
-If anyone ever cares about atomic in X we can easily add a new atomic
-level (req->value == 2) for X to get back the shiny toys.
-
-Since these broken versions of -modesetting have been shipping,
-there's really no other way to get out of this bind.
-
-v2:
-- add an informational dmesg output (Rob, Ajax)
-- reorder after the DRIVER_ATOMIC check to avoid useless noise (Ilia)
-- allow req->value > 2 so that X can do another attempt at atomic in
-  the future
-
-v3: Go with paranoid, insist that the X should be first (suggested by
-Rob)
-
-Cc: Ilia Mirkin <imirkin@alum.mit.edu>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Reviewed-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com> (v1)
-Reviewed-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com> (v1)
-Cc: Michel Dänzer <michel@daenzer.net>
-Cc: Alex Deucher <alexdeucher@gmail.com>
-Cc: Adam Jackson <ajax@redhat.com>
-Acked-by: Adam Jackson <ajax@redhat.com>
-Cc: Sean Paul <sean@poorly.run>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Rob Clark <robdclark@gmail.com>
-Acked-by: Rob Clark <robdclark@gmail.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20190905185318.31363-1-daniel.vetter@ffwll.ch
-Cc: Yves-Alexis Perez <corsac@debian.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Matthias Blankertz <matthias.blankertz@cetitec.com>
+Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/20200417153017.1744454-3-matthias.blankertz@cetitec.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/drm_ioctl.c |    7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ sound/soc/sh/rcar/ssi.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/drm_ioctl.c
-+++ b/drivers/gpu/drm/drm_ioctl.c
-@@ -321,7 +321,12 @@ drm_setclientcap(struct drm_device *dev,
- 	case DRM_CLIENT_CAP_ATOMIC:
- 		if (!drm_core_check_feature(dev, DRIVER_ATOMIC))
- 			return -EINVAL;
--		if (req->value > 1)
-+		/* The modesetting DDX has a totally broken idea of atomic. */
-+		if (current->comm[0] == 'X' && req->value == 1) {
-+			pr_info("broken atomic modeset userspace detected, disabling atomic\n");
-+			return -EOPNOTSUPP;
-+		}
-+		if (req->value > 2)
- 			return -EINVAL;
- 		file_priv->atomic = req->value;
- 		file_priv->universal_planes = req->value;
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index 9900a4f6f4e53..4a7d3413917fc 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -594,10 +594,16 @@ static int rsnd_ssi_stop(struct rsnd_mod *mod,
+ 	 * Capture:  It might not receave data. Do nothing
+ 	 */
+ 	if (rsnd_io_is_play(io)) {
+-		rsnd_mod_write(mod, SSICR, cr | EN);
++		rsnd_mod_write(mod, SSICR, cr | ssi->cr_en);
+ 		rsnd_ssi_status_check(mod, DIRQ);
+ 	}
+ 
++	/* In multi-SSI mode, stop is performed by setting ssi0129 in
++	 * SSI_CONTROL to 0 (in rsnd_ssio_stop_gen2). Do nothing here.
++	 */
++	if (rsnd_ssi_multi_slaves_runtime(io))
++		return 0;
++
+ 	/*
+ 	 * disable SSI,
+ 	 * and, wait idle state
+-- 
+2.20.1
+
 
 
