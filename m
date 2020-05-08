@@ -2,39 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78F8D1CAC19
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:50:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 914631CAC6F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:55:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729785AbgEHMuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 08:50:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56648 "EHLO mail.kernel.org"
+        id S1730066AbgEHMxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 08:53:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34876 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729797AbgEHMt6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 08:49:58 -0400
+        id S1729882AbgEHMxP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 08:53:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B1CB62495C;
-        Fri,  8 May 2020 12:49:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DADDD24959;
+        Fri,  8 May 2020 12:53:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588942198;
-        bh=UzReRgLYrOCz4QY5J47Nyd/72nCte4Uo27PFRBxICmI=;
+        s=default; t=1588942394;
+        bh=wIKXzFqMTAINVGKW6QkWm/9DSbQ3VQX2Ny4HMXoVPb4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ws86IIdjT+00inhnr59rC+cIca7itrqHNYjFHqXQvFzzJNOFe5JTnkF1IxFOwfITA
-         hpcxpV63Cx2R2nifXhMsoAYfNfCDLYvzNdfc3HOQarAJFF0aMffH0L3ixjVGUkU1XN
-         1UznCipjBGTezIMFc9q4y8o87cqdGAtVd5/EgogI=
+        b=ZKMAEXwTLsBSrm2CwaUh9/bxH6mQxydHwVA1X58pV4Q/EjHsjsitU5jgHzz9QneCX
+         lqW4TmyyLu2HciDcM1uOzWM+LEYF983bPdV9iAsCWB5L6G6blbHIKwbGqZs1B2m+sU
+         3aYrM5uW9LXjRBlPE8leQv5oD4y9EZqPjFdrrtig=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Julien Beraud <julien.beraud@orolia.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= 
+        <amadeuszx.slawinski@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 07/18] net: stmmac: Fix sub-second increment
-Date:   Fri,  8 May 2020 14:35:10 +0200
-Message-Id: <20200508123032.596241386@linuxfoundation.org>
+Subject: [PATCH 5.4 05/50] ASoC: topology: Check soc_tplg_add_route return value
+Date:   Fri,  8 May 2020 14:35:11 +0200
+Message-Id: <20200508123044.024830545@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200508123030.497793118@linuxfoundation.org>
-References: <20200508123030.497793118@linuxfoundation.org>
+In-Reply-To: <20200508123043.085296641@linuxfoundation.org>
+References: <20200508123043.085296641@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,76 +48,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julien Beraud <julien.beraud@orolia.com>
+From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 
-[ Upstream commit 91a2559c1dc5b0f7e1256d42b1508935e8eabfbf ]
+[ Upstream commit 6856e887eae3efc0fe56899cb3f969fe063171c5 ]
 
-In fine adjustement mode, which is the current default, the sub-second
-    increment register is the number of nanoseconds that will be added to
-    the clock when the accumulator overflows. At each clock cycle, the
-    value of the addend register is added to the accumulator.
-    Currently, we use 20ns = 1e09ns / 50MHz as this value whatever the
-    frequency of the ptp clock actually is.
-    The adjustment is then done on the addend register, only incrementing
-    every X clock cycles X being the ratio between 50MHz and ptp_clock_rate
-    (addend = 2^32 * 50MHz/ptp_clock_rate).
-    This causes the following issues :
-    - In case the frequency of the ptp clock is inferior or equal to 50MHz,
-      the addend value calculation will overflow and the default
-      addend value will be set to 0, causing the clock to not work at
-      all. (For instance, for ptp_clock_rate = 50MHz, addend = 2^32).
-    - The resolution of the timestamping clock is limited to 20ns while it
-      is not needed, thus limiting the accuracy of the timestamping to
-      20ns.
+Function soc_tplg_add_route can propagate error code from callback, we
+should check its return value and handle fail in correct way.
 
-    Fix this by setting sub-second increment to 2e09ns / ptp_clock_rate.
-    It will allow to reach the minimum possible frequency for
-    ptp_clk_ref, which is 5MHz for GMII 1000Mps Full-Duplex by setting the
-    sub-second-increment to a higher value. For instance, for 25MHz, it
-    gives ssinc = 80ns and default_addend = 2^31.
-    It will also allow to use a lower value for sub-second-increment, thus
-    improving the timestamping accuracy with frequencies higher than
-    100MHz, for instance, for 200MHz, ssinc = 10ns and default_addend =
-    2^31.
-
-v1->v2:
- - Remove modifications to the calculation of default addend, which broke
- compatibility with clock frequencies for which 2000000000 / ptp_clk_freq
- is not an integer.
- - Modify description according to discussions.
-
-Signed-off-by: Julien Beraud <julien.beraud@orolia.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20200327204729.397-5-amadeuszx.slawinski@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c    | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ sound/soc/soc-topology.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c
-index 25136941a9648..5b91a95476de2 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c
-@@ -40,12 +40,16 @@ static u32 stmmac_config_sub_second_increment(void __iomem *ioaddr,
- 	unsigned long data;
- 	u32 reg_value;
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index efe6ad3bfcd9b..e0b40d4d8784c 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -1283,7 +1283,9 @@ static int soc_tplg_dapm_graph_elems_load(struct soc_tplg *tplg,
+ 		routes[i]->dobj.index = tplg->index;
+ 		list_add(&routes[i]->dobj.list, &tplg->comp->dobj_list);
  
--	/* For GMAC3.x, 4.x versions, convert the ptp_clock to nano second
--	 *	formula = (1/ptp_clock) * 1000000000
--	 * where ptp_clock is 50MHz if fine method is used to update system
-+	/* For GMAC3.x, 4.x versions, in "fine adjustement mode" set sub-second
-+	 * increment to twice the number of nanoseconds of a clock cycle.
-+	 * The calculation of the default_addend value by the caller will set it
-+	 * to mid-range = 2^31 when the remainder of this division is zero,
-+	 * which will make the accumulator overflow once every 2 ptp_clock
-+	 * cycles, adding twice the number of nanoseconds of a clock cycle :
-+	 * 2000000000ULL / ptp_clock.
- 	 */
- 	if (value & PTP_TCR_TSCFUPDT)
--		data = (1000000000ULL / 50000000);
-+		data = (2000000000ULL / ptp_clock);
- 	else
- 		data = (1000000000ULL / ptp_clock);
+-		soc_tplg_add_route(tplg, routes[i]);
++		ret = soc_tplg_add_route(tplg, routes[i]);
++		if (ret < 0)
++			break;
  
+ 		/* add route, but keep going if some fail */
+ 		snd_soc_dapm_add_routes(dapm, routes[i], 1);
 -- 
 2.20.1
 
