@@ -2,113 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E191E1CAA66
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:16:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28D0E1CAAA2
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:30:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726937AbgEHMQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 08:16:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726627AbgEHMQD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 08:16:03 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8EDAC05BD43;
-        Fri,  8 May 2020 05:16:01 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id j5so1604839wrq.2;
-        Fri, 08 May 2020 05:16:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=p022wi7eOZ/mGn1ToBo+V56FcvhDPdcFh/MpymQ6w34=;
-        b=vdy5gWLvmv4WW60B+MSjZYY0aEofZ1J9SFJ2Zl3QjbUu0gGnVQyJ31nDFWiM9PPRtQ
-         MlSTkL2AZ0qfIZEolIG6QsQwfKPm2k5CnCs+WvwzBmI+3W4NE2PKX0NtZw15J7rB5bjo
-         dXmUh7EW1n7vTefA/bv+SKmac0NXb96aZ3fu0jD8ciE+xUuyFGZdnkOyoxX59evb6Eax
-         boX9OhA/WzJ0UuJsPdAegkG4JzL6nBmxmlRK2D99p32UpZNUzbE+E3Xp+9PmN4p//agV
-         lTUuTrcvTAFeemOZtQ4FkuTZ4iDSCoNJs3EcOkkGc+Umd24P6LfPz0CRFkYhR/Cmbc5Y
-         Nj8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=p022wi7eOZ/mGn1ToBo+V56FcvhDPdcFh/MpymQ6w34=;
-        b=Lg6Gpbpq8krDdP5FRJWJGY1DH3JJMrSCGA79epMfEb/VHGBdbvbdGKiYRUa0bNfFle
-         lqZkiFTBonJTaQVi83qmAFl/sW077VeMclcdXtngcRaHn0Jqg9qoG9/Z54lSQiSvJHap
-         8uZXUKg/KF+UVGhjc0dcmeeoksqzan8ycxzPoVWaHVuuORrhxtwzkZaUP1pZ90V2hUaP
-         zfH5EdsmYTQ1deKAPspc3EOruPSPZKJeL9buw8+ytRgklNWl1OjIwK/QK9/afWgJYAJ+
-         Ncl+qobwxd8gdvDFZgAlWj/aGmpAWpJb62DbzMDpeWyKN8OfsXB/KZuxBuFvai+0fHME
-         44QQ==
-X-Gm-Message-State: AGi0PuanU6IE1dr3ZZdPOtEs63pICSfXmo/aUNqvX9ZbQvY4njm5TYl7
-        Fj50hjVDU0CJroJyZIoF7loPWLxXhZ8=
-X-Google-Smtp-Source: APiQypKQU3XDMt2+QtR6u6sPyGZk8FmmD0FXgCIHUio+Q83GS6nn6Uuz7ZrQwJsUcKFtfiGStoCvIA==
-X-Received: by 2002:adf:fe90:: with SMTP id l16mr2647798wrr.222.1588940160456;
-        Fri, 08 May 2020 05:16:00 -0700 (PDT)
-Received: from ubuntu-G3 (ip5f5bfcc8.dynamic.kabel-deutschland.de. [95.91.252.200])
-        by smtp.googlemail.com with ESMTPSA id r20sm12168431wmh.26.2020.05.08.05.15.59
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 08 May 2020 05:16:00 -0700 (PDT)
-Message-ID: <12cf335dc86f6eafa1f090dc0b150796532da3e1.camel@gmail.com>
-Subject: Re: [RESENT PATCH RFC v3 5/5] scsi: ufs: UFS Host Performance
- Booster(HPB) driver
-From:   Bean Huo <huobean@gmail.com>
-To:     Avri Altman <Avri.Altman@wdc.com>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>
-Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "hch@infradead.org" <hch@infradead.org>
-Date:   Fri, 08 May 2020 14:15:58 +0200
-In-Reply-To: <BYAPR04MB462904DA704A8FD42436BA9FFCA20@BYAPR04MB4629.namprd04.prod.outlook.com>
-References: <20200504142032.16619-1-beanhuo@micron.com>
-         <20200504142032.16619-6-beanhuo@micron.com>
-         <BYAPR04MB462904DA704A8FD42436BA9FFCA20@BYAPR04MB4629.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1726825AbgEHMan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 08:30:43 -0400
+Received: from elvis.franken.de ([193.175.24.41]:44801 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726616AbgEHMan (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 08:30:43 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jX29G-00031U-00; Fri, 08 May 2020 14:30:38 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id E727DC0418; Fri,  8 May 2020 14:21:37 +0200 (CEST)
+Date:   Fri, 8 May 2020 14:21:37 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Alexander Lobakin <alobakin@dlink.ru>,
+        Huacai Chen <chenhc@lemote.com>,
+        Cedric Hombourger <Cedric_Hombourger@mentor.com>,
+        =?iso-8859-1?Q?Ren=E9?= van Dorst <opensource@vdorst.com>,
+        Ard Biesheuvel <ardb@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 07/20] mips: Add MIPS Warrior P5600 support
+Message-ID: <20200508122137.GA13177@alpha.franken.de>
+References: <20200306124807.3596F80307C2@mail.baikalelectronics.ru>
+ <20200506174238.15385-1-Sergey.Semin@baikalelectronics.ru>
+ <20200506174238.15385-8-Sergey.Semin@baikalelectronics.ru>
+ <20200507111735.GF11616@alpha.franken.de>
+ <20200507211923.kfu2ly3ncqms4c2u@mobilestation>
+ <20200508093259.GB9085@alpha.franken.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200508093259.GB9085@alpha.franken.de>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-05-08 at 11:38 +0000, Avri Altman wrote:
-> Hi Bean,
-> This patch is ~3,000 lines long.
-> Is it possible to divide it into a series of a smaller, more
-> reviewable patches?
-> E.g. it can be something like:
-> 1) Init part I - Read HPB config
-> 2) Init part II - prepare for L2P cache management (introduce here
-> all the new data structures, memory allocation, etc.)
-> 3) L2P cache management - activation / inactivation / eviction
-> handlers
-> 4) Add response API
-> 5) Add prep_fn handler - the flows that contruct HPB-READ command.
-> Or any other division that makes sense to you.
+On Fri, May 08, 2020 at 11:32:59AM +0200, Thomas Bogendoerfer wrote:
+> On Fri, May 08, 2020 at 12:19:23AM +0300, Serge Semin wrote:
+> > On Thu, May 07, 2020 at 01:17:35PM +0200, Thomas Bogendoerfer wrote:
+> > > P5600 is CPU_MIPS_R5 so can't you select it here and drop all the || CPU_5600
+> > > above/below ?
+> > 
+> > Alas, We can't do this so easy. CONFIG_CPU_MIPS32_{R2,R5,R6} and any other
+> > CONFIG_CPU_* configs is something that kernel config-file is supposed to select.
+> > Their availability is enabled by the CONFIG_SYS_HAS_CPU_* configs. CONFIG_CPU_*
+> > is supposed to activate CPU-specific features and there is only one
+> > CONFIG_CPU_x can be enabled at a time seeing it's a part of the "CPU type"
+> > choice kconfig menu. In addition the CPU config also tunes a compiler to activate
+> > the arch-specific ISA and optimizations in the arch/mips/Makefile by setting
+> > -march=cpu-name (where cpu-name can be p5600, mips32r5, etc).
+> > 
+> > Yes, P5600 is based on the MIPS32r5, but it also has got some specific features
+> > (see config CPU_P5600 and config MIPS32_R5), which makes it to be different from
+> > the ancestor. So In addition to the difficulties described above IMHO converting
+> > CPU_P5600 to a set of features activated on top of the CPU_MIPS32_R5 config
+> > would contradict the design of the CPU-support configs implemented in the MIPS
+> > arch subsystem.
 > 
-> Also, Is there a way to avoid all those #ifdefs everywhere?
+> maybe I wasn't clear enough, my suggestion is
 > 
-> Thanks,
-> Avri
+> use 
 > 
+> config CPU_P5600
+> 	bool "MIPS Warrior P5600"
+> 	depends on SYS_HAS_CPU_P5600
+> 	select CPU_MIPS32_R5
+> 	select CPU_SUPPORTS_UNCACHED_ACCELERATED
+> 	select CPU_SUPPORTS_CPUFREQ
+> 	select CPU_MIPSR2_IRQ_VI
+> 	select CPU_MIPSR2_IRQ_EI
+> 
+> That way you don't need to any "|| CPU_P5600" where CPU_MIPS32_R5 is
+> already there. Or are there cases, where this would be wrong ?
 
-Hi, Avri
+nevermind, this would also need a select SYS_HAS_CPU_MIPS32_R5, which
+isn't wanted here. So patch is fine as is.
 
-Thanks. I will split it in the next version based on each different
-funcitonality.
+Thomas.
 
-thanks,
-
-Bean
-
-
-
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
