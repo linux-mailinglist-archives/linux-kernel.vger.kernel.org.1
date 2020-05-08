@@ -2,107 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02CC21CAD6E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:02:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C4F01CAD83
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730039AbgEHNCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:02:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729028AbgEHNB4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 09:01:56 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94053C05BD09
-        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 06:01:55 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id t9so4269092pjw.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 May 2020 06:01:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=kGzbyp4Kjfdk0C7XAI34MTmYL3nwyLfAJVV51p0QRQQ=;
-        b=CF4q0AcAWs+gNm/BRV8XXJuYXEshbcdx4waTzNsl6f8XC/ObC2lT3BNSbf4XFQWfud
-         sNOMw1dGhOaqC+moTrFmh9zxj0WCOCKaorsb0MjAj/aZ91SS2dMG8+bGbjl/8fHRZGT2
-         koylbEyxvqVHw9jfcb6Tl1TpEsCt3tI3XnEonL9EYb4cxA7x9GWXPOvc5hwfNqEuSDV8
-         eiiDAshP3JjOtvVVubQGeexp4BZurXK9fxJyucj+7GbiApJ6VrDDQT13jL/LHx0AGSSK
-         jlRAGzq8r68eegSuYMe4GiQHnnKsMrxupn0X7lR/I8B5nthY+r0eIkQscYNdOXroQAkl
-         Krsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=kGzbyp4Kjfdk0C7XAI34MTmYL3nwyLfAJVV51p0QRQQ=;
-        b=CwcmgCn/rr6jBcLIqxJW7GNEka5h/bydlnZGPRSkFPld1qWMYEvc3G4gakoL3/TMYB
-         F/cm5E/hGR5tUeyqCtQXG4G9EwvE07HXcUm7fTZWLAUJmHfOYJdhv62HYnVkHOy1iUJa
-         +8LvU24uGVz+zB20PsEJaeIG/S3yJiSzYPA1yKZCOElAt+Vr4kzuHEpXzRr13X6afjf4
-         sGCUb8OMV4HG4+Dz3pZDVG3lGhit07kiuYjciMkLKEP1YXLkCVvCiXD+5IR8vycgIDLc
-         IkB+iunr+FWNC9BoqzVeV4jjSWO6fYLcsXDS2QnRsz7bacXxrCK9+QGXy61cgtTKR4fy
-         v7uw==
-X-Gm-Message-State: AGi0PuZuigWo2Q7mwLyMNwvrlNJREnqX32iiYbGVr7FbIYjHMV/mepgo
-        VNNJpJL0Sk5geShhfg9dAJxB5g==
-X-Google-Smtp-Source: APiQypLRMfczMLb83FfQL3CpbR7x4VwRtVYZWrJBkdljoWqkQTCekuduvqRRETs6ReWunf8OBAmmuw==
-X-Received: by 2002:a17:90b:34c:: with SMTP id fh12mr5492480pjb.134.1588942914984;
-        Fri, 08 May 2020 06:01:54 -0700 (PDT)
-Received: from dragon ([80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id 141sm1828359pfz.171.2020.05.08.06.01.52
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 08 May 2020 06:01:54 -0700 (PDT)
-Date:   Fri, 8 May 2020 21:01:44 +0800
-From:   Shawn Guo <shawn.guo@linaro.org>
-To:     Konrad Dybcio <konradybcio@gmail.com>
-Cc:     skrzynka@konradybcio.pl,
-        Vincent Knecht <vincent.knecht@mailoo.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] soc: qcom: socinfo: add msm8936/39 and apq8036/39 soc ids
-Message-ID: <20200508130143.GC30486@dragon>
-References: <20200501205546.151575-1-konradybcio@gmail.com>
+        id S1730101AbgEHNCu convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 May 2020 09:02:50 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2168 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728171AbgEHNCq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 09:02:46 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id 543BE160904952BFEA35;
+        Fri,  8 May 2020 14:02:44 +0100 (IST)
+Received: from localhost (10.47.95.97) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 8 May 2020
+ 14:02:43 +0100
+Date:   Fri, 8 May 2020 14:02:21 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Marion & Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+CC:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald <pmeerw@pmeerw.net>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        <kernel-janitors@vger.kernel.org>
+Subject: Re: [PATCH] iio: sca3000: Remove an erroneous 'get_device()'
+Message-ID: <20200508140221.0000018d@Huawei.com>
+In-Reply-To: <0a8cd600-2b21-2076-1355-8c97d7ceb709@wanadoo.fr>
+References: <20200506035206.192173-1-christophe.jaillet@wanadoo.fr>
+        <CAHp75Vdi+ZYpQPHgoREQ6LTaUHTPmNkR7ULZaVNTJr7Bvh-q9Q@mail.gmail.com>
+        <0a8cd600-2b21-2076-1355-8c97d7ceb709@wanadoo.fr>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200501205546.151575-1-konradybcio@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [10.47.95.97]
+X-ClientProxiedBy: lhreml743-chm.china.huawei.com (10.201.108.193) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Konrad,
+On Wed, 6 May 2020 19:31:38 +0200
+Marion & Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
 
-On Fri, May 01, 2020 at 10:55:46PM +0200, Konrad Dybcio wrote:
-> From: Vincent Knecht <vincent.knecht@mailoo.org>
+> Le 06/05/2020 à 12:38, Andy Shevchenko a écrit :
+> > On Wed, May 6, 2020 at 6:55 AM Christophe JAILLET
+> > <christophe.jaillet@wanadoo.fr> wrote:  
+> >> This looks really unusual to have a 'get_device()' hidden in a 'dev_err()'
+> >> call.
+> >> Remove it.
+> >>
+> >> While at it add a missing \n at the end of the message.
+> >>  
+> > It should have Fixes tag because it is a quite an issue (get_device()
+> > breaks reference counting with all problems we may expect).  
 > 
-
-Please write up some commit log.
-
-> Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
-
-When you forward a patch from someone else, you need to add your
-Signed-off-by.
-
-Shawn
-
-> ---
->  drivers/soc/qcom/socinfo.c | 4 ++++
->  1 file changed, 4 insertions(+)
+> Agreed and I usually do, but here, I've lost track when this driver has 
+> gone out of staging.
 > 
-> diff --git a/drivers/soc/qcom/socinfo.c b/drivers/soc/qcom/socinfo.c
-> index ebb49aee179bb..14831ed392e28 100644
-> --- a/drivers/soc/qcom/socinfo.c
-> +++ b/drivers/soc/qcom/socinfo.c
-> @@ -188,6 +188,10 @@ static const struct soc_id soc_id[] = {
->  	{ 216, "MSM8674PRO" },
->  	{ 217, "MSM8974-AA" },
->  	{ 218, "MSM8974-AB" },
-> +	{ 233, "MSM8936" },
-> +	{ 239, "MSM8939" },
-> +	{ 240, "APQ8036" },
-> +	{ 241, "APQ8039" },
->  	{ 246, "MSM8996" },
->  	{ 247, "APQ8016" },
->  	{ 248, "MSM8216" },
-> -- 
-> 2.26.1
+> Based on:
+> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/log/drivers/iio/accel/sca3000.c
+> The issue was already there on 2016/10/23, but when I try to go one step 
+> further:
 > 
+> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/drivers/staging/iio/accel/sca3000.c?id=2ccf61442ff142d2dde7c47471c2798a4d78b0ad
+> ^^^^         ^^^^^^^
+> works but if I try to see the log for that:
+> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/log/drivers/staging/iio/accel/sca3000.c
+> ^^^         ^^^^^^^
+> is empty.
+> 
+> Most of the time, when I do it like that it works just fine, but not on 
+> this file.
+
+Oddity of the web interface. Edit the url to get a log form a commit
+
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/log/drivers/staging/iio/accel/sca3000.c?id=2ccf61442ff142d2dde7c47471c2798a4d78b0ad
+                                                                    ^^^
+Then for more fun you have to deal with another rename
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/drivers/staging/iio/accel/?id=ced5c03d360aeebaac6faa7dd8d6d0a77733ab16
+
+Next bit of log...
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/log/drivers/staging/iio/accel/sca3000_ring.c?id=ced5c03d360aeebaac6faa7dd8d6d0a77733ab16 
+
+It goes all the way..
+
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/drivers/staging/iio/accel/sca3000_core.c?id=574fb258d63658e4564c32c1940068a3bad666a0
+
+Fixes: 574fb258d636 ("Staging: IIO: VTI sca3000 series accelerometer driver (spi)")
+
+Which was in the initial IIO patch set nearly 11 years ago in the merge window for 2.6.32.
+
+What can I say - I was young and just as capable of writing dumb bugs as I am today :)
+
+I'll get this queued up when I'm on the right computer...
+
+Thanks,
+
+Jonathan
+
+
+> 
+> Any other way to navigate in history of moved file would be appreciated.
+> 
+> CJ
+> 
+> >  
+> >> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> >> ---
+> >> This patch is purely speculative.
+> >> I've looked a bit arround and see no point for this get_device() but other
+> >> eyes are welcomed :)
+> >> ---
+> >>   drivers/iio/accel/sca3000.c | 2 +-
+> >>   1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/iio/accel/sca3000.c b/drivers/iio/accel/sca3000.c
+> >> index 66d768d971e1..6e429072e44a 100644
+> >> --- a/drivers/iio/accel/sca3000.c
+> >> +++ b/drivers/iio/accel/sca3000.c
+> >> @@ -980,7 +980,7 @@ static int sca3000_read_data(struct sca3000_state *st,
+> >>          st->tx[0] = SCA3000_READ_REG(reg_address_high);
+> >>          ret = spi_sync_transfer(st->us, xfer, ARRAY_SIZE(xfer));
+> >>          if (ret) {
+> >> -               dev_err(get_device(&st->us->dev), "problem reading register");
+> >> +               dev_err(&st->us->dev, "problem reading register\n");
+> >>                  return ret;
+> >>          }
+> >>
+> >> --
+> >> 2.25.1
+> >>  
+> >  
+
+
