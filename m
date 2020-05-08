@@ -2,131 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C6241CA8EB
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 13:04:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 798BF1CA91B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 13:10:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726883AbgEHLEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 07:04:11 -0400
-Received: from mout.web.de ([212.227.15.14]:44795 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726638AbgEHLEI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 07:04:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1588935793;
-        bh=c9S9YQqI67Ut1hb9mGfmb0uXO8OHJpACeLw+sXmMQH4=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Cc:Date:In-Reply-To;
-        b=qT/3ml4Q28KaqNcMgUPKa6qR7AFbI5sxDtqzEfFr0aBld0oi+qbIqCkzbBynOpSZy
-         8rYIKwD55ylYNoYZ4pb15fo2xlb2ArPsOP5GzwSZ+QTyAdfAEw+FyTqhPFByPOTEPU
-         fedGLuRHWGxZAuRa9Kj6YiU3WseFWphEy3SXi25A=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([93.132.146.138]) by smtp.web.de (mrweb004
- [213.165.67.108]) with ESMTPSA (Nemesis) id 0Lv7eE-1j7Kz50Wp8-010Okc; Fri, 08
- May 2020 13:03:13 +0200
-Subject: Re: [PATCH v3] tools/bootconfig: fix resource leak in apply_xbc()
-To:     Yunfeng Ye <yeyunfeng@huawei.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-References: <3569aa33-8963-966d-9247-ec79b3b3d56d@huawei.com>
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Shiyuan Hu <hushiyuan@huawei.com>,
-        Hewenliang <hewenliang4@huawei.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Message-ID: <5e2c3348-f346-e3f2-9c7c-5c4135f9b38c@web.de>
-Date:   Fri, 8 May 2020 13:03:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <3569aa33-8963-966d-9247-ec79b3b3d56d@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:FQdNLKBV7s/N7eSryvWj9UO2O2wbostJB794cgIyhdQXN8ptV85
- AWIsuoAbra/H8zZ0ihf8mqN/AqiCNIAK89k5rj7vmexqicbcxHG1EADs8QP5RIUKg68LgHO
- zfeK/lC1ODbh8vzrAF1y7ZuQ8cRROPLkPr7eRDdaW5Gl5gtq0EsH45t3Xp/X99kckatjkzd
- EmC/9YuiRbqxvy5tBcrKA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:aDhgPo9rUjE=:7gHk1urOAQE4Ij5TVK006n
- /Sei2G+hJ7O7vbkb9b/GanK/ed5etVM5qETJi5QsVuEHglleLrpRyLhezoEDUYOMAAn/pz/9p
- 2oc9D3G15/hJ3mPlV3gKcWIqtCvP+BVyfRqjoD7PGdmPkN6CIp99Q44Z5jLe95YUFrK1/Y5Fn
- b1ve+KRn8MQNgTE8YZla+c1QAc+X5aw6BQ+EEiWcDhmSoWiaaeu7wmCGwMuyhJR2VJJF3DXcE
- kfGT/KPTlCyjCEbcrFosEjy5nMnLOkvCbFwEAvVpxI+LAV2qynsekWPUw/0gRspwoZu/6T7/v
- XgAq6qRHYBR74vTGbjemKBv6yFsV107cAo7j8o2z3rERCGPby24SyF5cjkK4aUOKnRwxuSoX1
- ML5HeO6uW2kM0Wr4mV2rBEUfd7mZeSfnJ2S+yfBk9r9l8jys3oe/IRQ5535FgCTcye4+sN9nj
- B6B93WB6JvrFZ7hVC0IG5H3O7FfIoohCEhMLtaWSOzK3vx0r8Cjd8LPx+BnaR+bX5IFUIFZ44
- dxUdB0NCtvkTBykI4elb2DnU1AHtaqd7LgutR99ZvgqHCVX55KCUMctkclQDnHFdDf4KKrYL8
- q4/l5hjlkWtzZYsJ6213+aXldVDCK6J8vMsaU82U8mimsP9Q0kUTXQFMO/ZS0uOAPurwBDJHP
- VyLBSlcVCZDjVkKr0PxjvaxwzRsJ19D9Op0z7U+wmQvwfZi6azaMZ2L6ED8Plj3+7N+oEj3+k
- ymWxq6QTGfk0IfTqHPhlNqNgUmEC2/GzBLzPWPcNbOAV69sT3nPnSaiimLZk/WncRRn3hZizl
- LKnePmX9ZC3Q66TxAp57qX3iUQCaMI5Vs1XlJ00T6nzddSZaR31dT3iRlHdIxBuQy2/XKk3C0
- PzqUIweQ6uRcDxZV4fJ7i3/7KwKbLUeDZeI3THrdsNJ1jvSc/ooFQxf/b5L3JJy1PypohJ9YH
- 4RhXIZBpABf/X9hoXxx+4eVrZJ5aNJFmD3SJrE4KGVJ6xSyd4thUrv7Bn4ZTZcfQWorno4GO4
- dKXg4iumqlAO7u9dciA2GEeEve5o1H8nizqD2DADR/wo8TqQgV13sIlnIRNt41mLnZ1caJIOQ
- NjSW44yHL+iFiMp99FbBlo0Azv9ePm3aqnkovdSkKK24blX3Vu/lteQbfyIYMrn2xCFqycvrp
- Ttnn4kusJlKG71Uoy0wLnlceTy4pb12JNVLF7EXZ6fOJuiPLJkE27AUTk2cv/CRNm2ExILYyp
- azLxCTGs7nOl7Q+nu
+        id S1727828AbgEHLKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 07:10:18 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:34791 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726618AbgEHLKO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 07:10:14 -0400
+Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20200508111012epoutp02294b809476abb99151de9c1d24f15ea7~NCREFp0U72624426244epoutp02t
+        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 11:10:12 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20200508111012epoutp02294b809476abb99151de9c1d24f15ea7~NCREFp0U72624426244epoutp02t
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1588936212;
+        bh=gq9JiUyzyhiuoC74sreI4SkfqDkQ6n9DAdjln8txF00=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=XvgwCaMdjjhShk/cN1M1Lhze7I+mZlr1XqH1Pr2NAFpEo/A9AAr2UF+jfWvv3wLrb
+         rR3EUJYOgKm67AVl35dV2b4TZR7/Smsl76YHAL+pzPF9BSyNQ78MrLdBlFLSM3XpMt
+         AHFT2EI6KfpTgv5jZZiVIxv4V14PwafoI59jZhew=
+Received: from epsmges5p1new.samsung.com (unknown [182.195.42.73]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTP id
+        20200508111011epcas5p2ec88c03b455c01d7f223937e114accf4~NCRDel_H32578125781epcas5p2C;
+        Fri,  8 May 2020 11:10:11 +0000 (GMT)
+Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
+        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        85.35.10010.31E35BE5; Fri,  8 May 2020 20:10:11 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200508110343epcas5p1ae3398e56ee895572487d05b730bd466~NCLZyW91x0864608646epcas5p1d;
+        Fri,  8 May 2020 11:03:43 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200508110343epsmtrp2dcedc2adf27eb34e3b37aae4b30b7153~NCLZxY4NZ3202332023epsmtrp2x;
+        Fri,  8 May 2020 11:03:43 +0000 (GMT)
+X-AuditID: b6c32a49-71fff7000000271a-82-5eb53e137bbc
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        28.FA.25866.F8C35BE5; Fri,  8 May 2020 20:03:43 +0900 (KST)
+Received: from localhost.localdomain (unknown [107.109.224.135]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200508110341epsmtip2130acd8c0a3ded2f927c629bcc113d97~NCLYNTrvP3194731947epsmtip2X;
+        Fri,  8 May 2020 11:03:41 +0000 (GMT)
+From:   Maninder Singh <maninder1.s@samsung.com>
+To:     yamada.masahiro@socionext.com, george_davis@mentor.com
+Cc:     linux-kernel@vger.kernel.org, a.sahrawat@samsung.com,
+        arnd@arndb.de, ak@linux.intel.com,
+        Maninder Singh <maninder1.s@samsung.com>,
+        Vaneet Narang <v.narang@samsung.com>
+Subject: [PATCH v2 1/4] scripts/checkstack.pl: don't display $dre as
+ different entity
+Date:   Fri,  8 May 2020 16:33:14 +0530
+Message-Id: <1588935797-7283-1-git-send-email-maninder1.s@samsung.com>
+X-Mailer: git-send-email 2.7.4
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrEIsWRmVeSWpSXmKPExsWy7bCmpq6w3dY4gy1P5C0u7k61OD7B0uLv
+        pGPsFk/+f2e1uLxrDpvF4fltLBaHTs5ltNh77zOjA4fH71+TGD3mnQz02P21idGjb8sqRo8T
+        07+zeHzeJBfAFsVlk5Kak1mWWqRvl8CV8fzJTqaCXomKr+uOsTcw3hXqYuTkkBAwkVh0oIGx
+        i5GLQ0hgN6PEyr/zmSCcT4wSrZc/skA4nxklLvR+ZIZpWfboPStEYhejREPLA3YI5yujxMcP
+        b8Cq2AT0JFbt2sMCYosIWEk829bBBmIzC6xnlFizmQnEFhYIl7hx8CMjiM0ioCqxtKEFzOYV
+        cJO4vPcgI8Q2OYmb5zqZQRZICOxil3h/9DYTRMJFYt3OHWwQtrDEq+Nb2CFsKYnP7/ayQTQ0
+        M0p82reWEcKZwiix9OJHVogqe4nXzQ1AkziATtKUWL9LHyIsKzH11DomiEv5JHp/P4Faxiux
+        Yx6MrSrRcnMD1Bhpic8fP7JA2B4SfyacA/teSCBWYv3iu4wTGGVnIWxYwMi4ilEytaA4Nz21
+        2LTAMC+1XK84Mbe4NC9dLzk/dxMjOBloee5gvPvgg94hRiYOxkOMEhzMSiK8Eyu2xAnxpiRW
+        VqUW5ccXleakFh9ilOZgURLnPZ0GlBJITyxJzU5NLUgtgskycXBKNTCVVxddi46yXcK08UXI
+        cdaSrwEXtSdLSjjGh9vtqRIKXeMfUNx0u2jrfvO3bby3mI4ovJ9nEP584cXi+J1Cj8zCzfVr
+        Sx+ITOv2tl7474Fnm8aRwjcGvL8vefbOY/55ZOlRlTz9/XObtxecuqC0+sSurrWtawpmBjkl
+        8h3im+trNXFZmqRLmnwvW0PK/tLUh273fskoODoyPhDNPjh97qpN/BXM/95MWrN8w+f70nVZ
+        F/MtdC9xNUlWs2e6Bp2/y64Rnda98ETgRdWoxR1+VtqXVvx8fcflnW/8Gf2GrW0TMxe0RVpn
+        qkU8nbsji2W5YWdjb6S0jsVbA6WVe0XPrhL9JVe2VXTzRY4Fepwe4UosxRmJhlrMRcWJAEy7
+        A1l1AwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmplluLIzCtJLcpLzFFi42LZdlhJXrffZmucwZ4+TouLu1Mtjk+wtPg7
+        6Ri7xZP/31ktLu+aw2ZxeH4bi8Whk3MZLfbe+8zowOHx+9ckRo95JwM9dn9tYvTo27KK0ePE
+        9O8sHp83yQWwRXHZpKTmZJalFunbJXBlPH+yk6mgV6Li67pj7A2Md4W6GDk5JARMJJY9es/a
+        xcjFISSwg1Hi0/SbjBAJaYmf/96zQNjCEiv/PWcHsYUEPjNKzHmTAGKzCehJrNq1B6xGRMBG
+        4sSJCewgg5gFtjJKzNrXAjSVg0NYIFTi5r4KkBoWAVWJpQ0tYPN5BdwkLu89CLVLTuLmuU7m
+        CYw8CxgZVjFKphYU56bnFhsWGOWllusVJ+YWl+al6yXn525iBIeUltYOxj2rPugdYmTiYDzE
+        KMHBrCTCO7FiS5wQb0piZVVqUX58UWlOavEhRmkOFiVx3q+zFsYJCaQnlqRmp6YWpBbBZJk4
+        OKUamDakf5tiv6r58zKvKBnVxKtVR5M9X4kFN159vvhW6ZQSkxPJx0rb3+20L+tZsDa54MSp
+        picyYTv2uTfdLLyzydD5VabUOj7HHx1T/DStjri5iZn07Dm9QmjaD47zEduVJMRPneBeO5N9
+        K4+YWG5SZ91v0dlNCze+1Jp/SiYvNvzTzObudREVq+wPJsydtaovYG9p8N233iFaZ+2D8yao
+        avo9cFBItZ3K7u9SVZa1yIpD5c+dzPmTj26csWqHYLL0cxFjhnehucVXv0u2SAVn/tkZe9/d
+        XKp6jkmf4cPoYhYd5Qu33NTy9c5bd5aWSBhsP8v/o/DHU36rKebvv3YHPH8XsvYs21ShYze4
+        ufJ5lViKMxINtZiLihMBvDLjeJgCAAA=
+X-CMS-MailID: 20200508110343epcas5p1ae3398e56ee895572487d05b730bd466
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20200508110343epcas5p1ae3398e56ee895572487d05b730bd466
+References: <CGME20200508110343epcas5p1ae3398e56ee895572487d05b730bd466@epcas5p1.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-=E2=80=A6
-> +++ b/tools/bootconfig/main.c
-> @@ -314,31 +314,35 @@ int apply_xbc(const char *path, const char *xbc_pa=
-th)
-=E2=80=A6
-> +free_data:
->  	free(data);
-=E2=80=A6
+currently script prints stack usage for functions
+in two ways:($re and $dre)
 
-Would any software users prefer to omit the memory release for
-a quicker program termination?
+dre breaks sorting mechanism.
+0xffffa00011f26f88 sunxi_mux_clk_setup.isra.0 [vmlinux]:Dynamic (0x140)
+..
+0xffffa00011f27210 sunxi_divs_clk_setup [vmlinux]:      Dynamic (0x1d0)
 
-Can the commit message become clearer about the explanation for
-the importance of the proposed change?
+so we can print it in decimal only.
 
-Regards,
-Markus
+Also address before function name is changed to function
+start address rather than stack consumption address.
+Because in next patch, arm has two ways to use stack
+which can be clubbed and printed in one function only.
+
+All symbols whose stack by adding(re and dre) is greater than
+100, will be printed.
+
+0xffffa00011f2720c0 sunxi_divs_clk_setup [vmlinux]:     464
+...
+0xffffa00011f26f840 sunxi_mux_clk_setup.isra.0 [vmlinux]:320
+
+Co-developed-by: Vaneet Narang <v.narang@samsung.com>
+Signed-off-by: Vaneet Narang <v.narang@samsung.com>
+Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+---
+v1: https://lkml.org/lkml/2020/4/30/530
+v2: review comments by Masahiro Yamada incorporated
+
+ scripts/checkstack.pl | 54 +++++++++++++++++++++++++--------------------------
+ 1 file changed, 27 insertions(+), 27 deletions(-)
+
+diff --git a/scripts/checkstack.pl b/scripts/checkstack.pl
+index 371bd17..6957108 100755
+--- a/scripts/checkstack.pl
++++ b/scripts/checkstack.pl
+@@ -109,11 +109,30 @@ my (@stack, $re, $dre, $x, $xs, $funcre);
+ #
+ # main()
+ #
+-my ($func, $file, $lastslash);
++my ($func, $file, $lastslash, $total_size, $addr, $intro);
++
++$total_size = 0;
+ 
+ while (my $line = <STDIN>) {
+ 	if ($line =~ m/$funcre/) {
+ 		$func = $1;
++		next if $line !~ m/^($xs*)/;
++		if ($total_size > 100) {
++			push @stack, "$intro$total_size\n";
++		}
++
++		$addr = $1;
++		$addr =~ s/ /0/g;
++		$addr = "0x$addr";
++
++		$intro = "$addr $func [$file]:";
++		my $padlen = 56 - length($intro);
++		while ($padlen > 0) {
++			$intro .= '	';
++			$padlen -= 8;
++		}
++
++		$total_size = 0;
+ 	}
+ 	elsif ($line =~ m/(.*):\s*file format/) {
+ 		$file = $1;
+@@ -134,37 +153,18 @@ while (my $line = <STDIN>) {
+ 		}
+ 		next if ($size > 0x10000000);
+ 
+-		next if $line !~ m/^($xs*)/;
+-		my $addr = $1;
+-		$addr =~ s/ /0/g;
+-		$addr = "0x$addr";
+-
+-		my $intro = "$addr $func [$file]:";
+-		my $padlen = 56 - length($intro);
+-		while ($padlen > 0) {
+-			$intro .= '	';
+-			$padlen -= 8;
+-		}
+-		next if ($size < 100);
+-		push @stack, "$intro$size\n";
++		$total_size += $size;
+ 	}
+ 	elsif (defined $dre && $line =~ m/$dre/) {
+-		my $size = "Dynamic ($1)";
+-
+-		next if $line !~ m/^($xs*)/;
+-		my $addr = $1;
+-		$addr =~ s/ /0/g;
+-		$addr = "0x$addr";
++		my $size = $1;
+ 
+-		my $intro = "$addr $func [$file]:";
+-		my $padlen = 56 - length($intro);
+-		while ($padlen > 0) {
+-			$intro .= '	';
+-			$padlen -= 8;
+-		}
+-		push @stack, "$intro$size\n";
++		$size = hex($size) if ($size =~ /^0x/);
++		$total_size += $size;
+ 	}
+ }
++if ($total_size > 100) {
++	push @stack, "$intro$total_size\n";
++}
+ 
+ # Sort output by size (last field)
+ print sort { ($b =~ /:\t*(\d+)$/)[0] <=> ($a =~ /:\t*(\d+)$/)[0] } @stack;
+-- 
+1.9.1
+
