@@ -2,99 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F34881CB82B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 21:21:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7128F1CB810
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 21:20:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727917AbgEHTUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 15:20:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727826AbgEHTUf (ORCPT
+        id S1727114AbgEHTUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 15:20:22 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:17039 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726767AbgEHTUW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 15:20:35 -0400
-Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D795AC061A0C;
-        Fri,  8 May 2020 12:20:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=upXo7mgkwAOf/eUIM3KQuITq3Q/9aprUu48rF1lVzVs=; b=tVM+IhN1wAQ8C2HlyZ6b8bWI6I
-        luoSvNyk/9q0V4U6VY/sscaPpXXhK6qOgSOj7PiKzV+M9Yc9B0kTsTfoBbn/MmNgMeClPwTqjCYd0
-        uCST2t9d60e85oDEN8Ds8Y+fBnKuOC5qFrrxKD0U9oKh28fsXltE3YYVI8bY2CsKrX7dkuSDoHaX2
-        LxNlvYPJfaY/3Kf/6WplEdnKedqcqmNkCwj+PUHEZU9qtSMxO2Sk7NoCJtY9CBxLpHcXjaFvNl0kN
-        r+mIM4zfAoWMSKtbapiGL9nF0GGUf+DCtF5hPPLr1PPCp6epaCyEmvy8wlMfO+lU7jlZqrkK/8Nms
-        YWmDJksQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jX8XT-000615-6B; Fri, 08 May 2020 19:20:03 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2B7233012DC;
-        Fri,  8 May 2020 21:20:00 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 15AFA203CB697; Fri,  8 May 2020 21:20:00 +0200 (CEST)
-Date:   Fri, 8 May 2020 21:20:00 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     x86@kernel.org, hpa@zytor.com,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>, rjw@rjwysocki.net,
-        Arnd Bergmann <arnd@arndb.de>,
+        Fri, 8 May 2020 15:20:22 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5eb5b0e90000>; Fri, 08 May 2020 12:20:09 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Fri, 08 May 2020 12:20:22 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Fri, 08 May 2020 12:20:22 -0700
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 8 May
+ 2020 19:20:20 +0000
+Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Fri, 8 May 2020 19:20:20 +0000
+Received: from rcampbell-dev.nvidia.com (Not Verified[10.110.48.66]) by rnnvemgw01.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5eb5b0f3000a>; Fri, 08 May 2020 12:20:20 -0700
+From:   Ralph Campbell <rcampbell@nvidia.com>
+To:     <nouveau@lists.freedesktop.org>, <linux-rdma@vger.kernel.org>,
+        <linux-mm@kvack.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        "Ben Skeggs" <bskeggs@redhat.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@kernel.org>,
-        Joerg Roedel <jroedel@suse.de>, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [RFC PATCH 0/7] mm: Get rid of vmalloc_sync_(un)mappings()
-Message-ID: <20200508192000.GB2957@hirez.programming.kicks-ass.net>
-References: <20200508144043.13893-1-joro@8bytes.org>
+        Shuah Khan <shuah@linuxfoundation.org>,
+        Ralph Campbell <rcampbell@nvidia.com>
+Subject: [PATCH 0/6] nouveau/hmm: add support for mapping large pages
+Date:   Fri, 8 May 2020 12:20:03 -0700
+Message-ID: <20200508192009.15302-1-rcampbell@nvidia.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200508144043.13893-1-joro@8bytes.org>
+X-NVConfidentiality: public
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1588965609; bh=jFq2mixtkzI32ozqz5hLHkzp0Ygs10xUW1B28WBNaLs=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         MIME-Version:X-NVConfidentiality:Content-Type:
+         Content-Transfer-Encoding;
+        b=f1uSc3ROHwcanB7L/tnLl4h20hmLEQD3keM9GdJxSJn+hErrBRjoEQ9pNFoFKAS3y
+         KXQ272lLCVcvsmn3Xh+CZ8PGvmLztkdvTO9AW7DTZ8K26htGWFfd4Z3lL/AsL0Gqmk
+         a2fyv9afMBkOOvcCPRVcP6FGdddhhrTMTn57sAbBgvBbXHlMkrCpzSzLoZNADRGtOO
+         T2pwhT2QsojXnT8v9nFgKvI91dK5M0SVdfBW0Oflirjs3is2qdNCUgrI1BH++cbcyW
+         YRWzjzSYUGCu/H/jdIfvhJ/DeCELi/J6Udl7WwSWZelaLryvmfp4l417C4xxGZ98PL
+         aKtDXj0RDipAw==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 08, 2020 at 04:40:36PM +0200, Joerg Roedel wrote:
+hmm_range_fault() returns an array of page frame numbers and flags for
+how the pages are mapped in the requested process' page tables. The PFN
+can be used to get the struct page with hmm_pfn_to_page() and the page size
+order can be determined with compound_order(page) but if the page is larger
+than order 0 (PAGE_SIZE), there is no indication that the page is mapped
+using a larger page size. To be fully general, hmm_range_fault() would need
+to return the mapping size to handle cases like a 1GB compound page being
+mapped with 2MB PMD entries. However, the most common case is the mapping
+size the same as the underlying compound page size.
+This series adds a new output flag to indicate this so that callers know it
+is safe to use a large device page table mapping if one is available.
+Nouveau and the HMM tests are updated to use the new flag.
 
-> Joerg Roedel (7):
->   mm: Add functions to track page directory modifications
->   mm/vmalloc: Track which page-table levels were modified
->   mm/ioremap: Track which page-table levels were modified
->   x86/mm/64: Implement arch_sync_kernel_mappings()
->   x86/mm/32: Implement arch_sync_kernel_mappings()
->   mm: Remove vmalloc_sync_(un)mappings()
->   x86/mm: Remove vmalloc faulting
-> 
->  arch/x86/include/asm/pgtable-2level_types.h |   2 +
->  arch/x86/include/asm/pgtable-3level_types.h |   2 +
->  arch/x86/include/asm/pgtable_64_types.h     |   2 +
->  arch/x86/include/asm/switch_to.h            |  23 ---
->  arch/x86/kernel/setup_percpu.c              |   6 +-
->  arch/x86/mm/fault.c                         | 176 +-------------------
->  arch/x86/mm/init_64.c                       |   5 +
->  arch/x86/mm/pti.c                           |   8 +-
->  drivers/acpi/apei/ghes.c                    |   6 -
->  include/asm-generic/5level-fixup.h          |   5 +-
->  include/asm-generic/pgtable.h               |  23 +++
->  include/linux/mm.h                          |  46 +++++
->  include/linux/vmalloc.h                     |  13 +-
->  kernel/notifier.c                           |   1 -
->  lib/ioremap.c                               |  46 +++--
->  mm/nommu.c                                  |  12 --
->  mm/vmalloc.c                                | 109 +++++++-----
->  17 files changed, 199 insertions(+), 286 deletions(-)
+Note that this series depends on a patch queued in Ben Skeggs' nouveau
+tree ("nouveau/hmm: map pages after migration") and the patches queued
+in Jason's HMM tree.
+There is also a patch outstanding ("nouveau/hmm: fix nouveau_dmem_chunk
+allocations") that is independent of the above and could be applied
+before or after.
 
-The only concern I have is the pgd_lock lock hold times.
 
-By not doing on-demand faults anymore, and consistently calling
-sync_global_*(), we iterate that pgd_list thing much more often than
-before if I'm not mistaken.
+Ralph Campbell (6):
+  nouveau/hmm: map pages after migration
+  nouveau: make nvkm_vmm_ctor() and nvkm_mmu_ptp_get() static
+  nouveau/hmm: fault one page at a time
+  mm/hmm: add output flag for compound page mapping
+  nouveau/hmm: support mapping large sysmem pages
+  hmm: add tests for HMM_PFN_COMPOUND flag
 
+ drivers/gpu/drm/nouveau/nouveau_dmem.c        |  46 ++-
+ drivers/gpu/drm/nouveau/nouveau_dmem.h        |   2 +
+ drivers/gpu/drm/nouveau/nouveau_svm.c         | 288 +++++++++---------
+ drivers/gpu/drm/nouveau/nouveau_svm.h         |   5 +
+ .../gpu/drm/nouveau/nvkm/subdev/mmu/base.c    |   6 +-
+ .../gpu/drm/nouveau/nvkm/subdev/mmu/priv.h    |   2 +
+ drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmm.c |  12 +-
+ drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmm.h |   3 -
+ .../drm/nouveau/nvkm/subdev/mmu/vmmgp100.c    |  29 +-
+ include/linux/hmm.h                           |   4 +-
+ lib/test_hmm.c                                |   2 +
+ lib/test_hmm_uapi.h                           |   2 +
+ mm/hmm.c                                      |  10 +-
+ tools/testing/selftests/vm/hmm-tests.c        |  76 +++++
+ 14 files changed, 311 insertions(+), 176 deletions(-)
+
+--=20
+2.20.1
 
