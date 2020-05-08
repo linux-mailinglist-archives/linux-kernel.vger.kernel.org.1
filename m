@@ -2,71 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 829991CA998
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 13:31:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7E5B1CA99E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 13:32:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726864AbgEHLbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 07:31:06 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:44328 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726616AbgEHLbF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 07:31:05 -0400
-Received: from zn.tnic (p200300EC2F0C9800329C23FFFEA6A903.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:9800:329c:23ff:fea6:a903])
+        id S1727096AbgEHLc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 07:32:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726636AbgEHLcZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 07:32:25 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81001C05BD43;
+        Fri,  8 May 2020 04:32:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=NWlroRPhjKXWBXk+E3h0bugl1afjnkqbnRZaxRthnJY=; b=djTopVknrfMScTGAEreoTA7YRZ
+        oVxe/HCGGD8pXVy77wrHCrzjMNhEpHJ+Uu0Koet8yKnyHMTysGpWyls3CM5HDO+hviqfsUM53Q2lJ
+        O2C550g2AAOVcuDETBXlbuu5gWfCxm2Y6ro9uA5UtjpR/S1ak4/GSCefURk4HMcrF8USwjR/9/Fmy
+        UKYLe5Nx1pRBhj/SjdCmQDwTrUDpNiioc1yq9tH4s3S7C2X58DGtKnGZvJkbs76AabQFdP11IctOd
+        M52V2sDLzMwQ965nKGlufMhZaFy0pZuSN+3HmcIeLYV1nu8z/6M3P4JkgYIzNpj2r6vGypoe+VB1Y
+        S/H/Oc8Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jX1EG-0008Dt-28; Fri, 08 May 2020 11:31:44 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 66CAE1EC01E3;
-        Fri,  8 May 2020 13:31:04 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1588937464;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=1eqM0KO/acjhJgPqNx4KEjCLmfTHlkhC1fqE3NZnZhA=;
-        b=ajKU+NyT9keoUt6VtrKMZVtvSJnvzuys44mYcAxyAE6kH9yzR/PrzP3uFRBt+pp8A8FVyU
-        E78wCnGj0NbBySbEgAeq3zHanzqf4Zyq+QHBw2qGNAXgpycgeZvEP3xnORYihiuQwo7xgg
-        dbJ72zHeXEVGMH005McwoEY0lgLmS+g=
-Date:   Fri, 8 May 2020 13:31:00 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Vaibhav Jain <vaibhav@linux.ibm.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-nvdimm@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Santosh Sivaraj <santosh@fossix.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Piotr Maziarz <piotrx.maziarz@linux.intel.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [PATCH v7 2/5] seq_buf: Export seq_buf_printf() to external
- modules
-Message-ID: <20200508113100.GA19436@zn.tnic>
-References: <20200508104922.72565-1-vaibhav@linux.ibm.com>
- <20200508104922.72565-3-vaibhav@linux.ibm.com>
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 305CB301DFC;
+        Fri,  8 May 2020 13:31:41 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 14DE82B8CAD85; Fri,  8 May 2020 13:31:41 +0200 (CEST)
+Date:   Fri, 8 May 2020 13:31:41 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com, sudeep.holla@arm.com,
+        rafael@kernel.org, viresh.kumar@linaro.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com,
+        fweisbec@gmail.com, tkjos@google.com, kernel-team@android.com
+Subject: Re: [PATCH 00/14] Modularize schedutil
+Message-ID: <20200508113141.GB5298@hirez.programming.kicks-ass.net>
+References: <20200507181012.29791-1-qperret@google.com>
+ <20200508081128.GM5298@hirez.programming.kicks-ass.net>
+ <20200508103721.GA3860390@kroah.com>
+ <20200508111612.GA252673@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200508104922.72565-3-vaibhav@linux.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200508111612.GA252673@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 08, 2020 at 04:19:19PM +0530, Vaibhav Jain wrote:
-> 'seq_buf' provides a very useful abstraction for writing to a string
-> buffer without needing to worry about it over-flowing. However even
-> though the API has been stable for couple of years now its stills not
-> exported to external modules limiting its usage.
-> 
-> Hence this patch proposes update to 'seq_buf.c' to mark
-> seq_buf_printf() which is part of the seq_buf API to be exported to
-> external GPL modules. This symbol will be used in later parts of this
+On Fri, May 08, 2020 at 12:16:12PM +0100, Quentin Perret wrote:
+> However, the point I tried to make here is orthogonal to that. As of
+> today using another governor than schedutil is fully supported upstream,
+> and in fact it isn't even enabled by default for most archs. If vendors
+> feel like using something else makes their product better, then I don't
+> see why I need to argue with them about that. And frankly I don't see
+> that support being removed from upstream any time soon.
 
-What is "external GPL modules"?
+Right, it'll take a while to get there. But that doesn't mean we
+shouldn't encourage schedutil usage wherever and whenever possible. That
+includes not making it easier to not use it.
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+In that respect making it modular goes against our ultimate goal (world
+domination, <mad giggles here>).
