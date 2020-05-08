@@ -2,71 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6408F1CA377
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 08:00:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA4961CA380
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 08:04:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727852AbgEHGAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 02:00:37 -0400
-Received: from esa1.mentor.iphmx.com ([68.232.129.153]:38783 "EHLO
-        esa1.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728380AbgEHGAe (ORCPT
+        id S1726750AbgEHGEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 02:04:20 -0400
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:41070 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725865AbgEHGET (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 02:00:34 -0400
-IronPort-SDR: wx5lcPgAIvKthU+o1pnkDxnkR3ZWqDIuviQJOkGLHpSnvbAX59sn8+I686wpJZF6aVdFIPbu5D
- WhzV2pwj99lqHacrAjWSxnwHnBWCXPbHYpcrTg9eMJhWsNT74+Brm4PSrBMbt+9WOXF2WNZFlJ
- Gk+tgJhSr+0i+IiJXX5jfETO3sQiY4IljDSiBHEJP0QpGbdjma7gkSv1ZDgiZ4azV/GqfWGKD2
- B2SqVZTHKpe4L4pHj3eeFP1YFlHUPTtUC8FeFe+TVF9H5KKMOYaMry8uDw8SMM0bFO1ml2LxuO
- gQg=
-X-IronPort-AV: E=Sophos;i="5.73,366,1583222400"; 
-   d="scan'208";a="50670194"
-Received: from orw-gwy-02-in.mentorg.com ([192.94.38.167])
-  by esa1.mentor.iphmx.com with ESMTP; 07 May 2020 22:00:31 -0800
-IronPort-SDR: QAo7m3QQYupEXooelzHaYh1lYz5veRgq+ucjfc7EFQfJ/esQyhQ/pUx+4UdQieaL+3Oifd98Al
- PdEG8uW3XnojBoIdZMni4Onw6pN496QWwYtsu/k4AN3D41+mOEH5Kck1zYvrXISiHE/R8ErdTg
- WMa+q9hndqZ5YkQTkzxkXliQgrVzchjjOkNyyl/DjquRmqMaZ5hfNdIBX1vmWCPdbA4+PQ4qWQ
- QPFnwvDCyPhWIujD2zGgDC8VL+zK3wBsxFH4cADie2iRbbpBqfLzrAayKRqrT8diiaDsq37Pwk
- L2s=
-From:   Jiada Wang <jiada_wang@mentor.com>
-To:     <nick@shmanahar.org>, <dmitry.torokhov@gmail.com>,
-        <jikos@kernel.org>, <benjamin.tissoires@redhat.com>,
-        <bsz@semihalf.com>
-CC:     <linux-input@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <erosca@de.adit-jv.com>, <Andrew_Gabbasov@mentor.com>,
-        <jiada_wang@mentor.com>
-Subject: [PATCH v11 56/56] Input: atmel_mxt_ts - Fix compilation warning
-Date:   Thu, 7 May 2020 22:56:56 -0700
-Message-ID: <20200508055656.96389-57-jiada_wang@mentor.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200508055656.96389-1-jiada_wang@mentor.com>
-References: <20200508055656.96389-1-jiada_wang@mentor.com>
+        Fri, 8 May 2020 02:04:19 -0400
+Received: by mail-pl1-f193.google.com with SMTP id u10so263759pls.8
+        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 23:04:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Bhh8Hh8RF4UmT7ZujEDKC5a04db0JAVysUUltBxyiuc=;
+        b=QfLfERn6y81T1/rns3p0EvYPTZq82PTb7/f156pX+D85MNf/ml6E0FQEyPKPuGokfF
+         XePKhuQYo3pH9p7EvMxb2i0pjOHMBUL7jLIwstlNk1MFx8Anj7OSivgTrV8EaVPYBzya
+         Fe13toNIakgPONgrrCaXeUmNqMWQDYB+2/KYXjNqRPZy+jy/2otVZTyZ6k9yTDgkWcZV
+         meu9HMyOQRibZTg0jzkJISnHC82XCea8lj/blvaCdyBGiyTzaq09I9OxLQ1aAFdI3nla
+         Vro0rvknD6zlGIrdz40hWWr4NvVVHvhhGGjlnbyTgmfDiltvc1hRU4WZzCNoyZEfQAyb
+         IKCg==
+X-Gm-Message-State: AGi0PuZvrWj2SrQFm/3R1F3v1AbSeAXe9mB2t/BCuO5HDd5Opa+UyMHk
+        aUlVDKLY2dbPt+L/28GKSHs=
+X-Google-Smtp-Source: APiQypLL/0NgJzJ9C6A/AWa+BcOb2rxReqycHPYHl3403j+fYrWnyGK3SAQ7xTo/uSgdux6NmFla0Q==
+X-Received: by 2002:a17:90b:3843:: with SMTP id nl3mr4377936pjb.72.1588917858973;
+        Thu, 07 May 2020 23:04:18 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id m63sm629925pfb.101.2020.05.07.23.04.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 May 2020 23:04:17 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id 1B19A403EA; Fri,  8 May 2020 06:04:17 +0000 (UTC)
+Date:   Fri, 8 May 2020 06:04:17 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     jeyu@kernel.org, akpm@linux-foundation.org, arnd@arndb.de,
+        rostedt@goodmis.org, mingo@redhat.com, aquini@redhat.com,
+        cai@lca.pw, dyoung@redhat.com, bhe@redhat.com,
+        peterz@infradead.org, tglx@linutronix.de, gpiccoli@canonical.com,
+        pmladek@suse.com, tiwai@suse.de, schlad@suse.de,
+        andriy.shevchenko@linux.intel.com, daniel.vetter@ffwll.ch,
+        will@kernel.org, mchehab+samsung@kernel.org, kvalo@codeaurora.org,
+        davem@davemloft.net, linux-kernel@vger.kernel.org
+Subject: Re: [RFC] taint: add module firmware crash taint support
+Message-ID: <20200508060417.GE11244@42.do-not-panic.com>
+References: <20200508021438.4373-1-mcgrof@kernel.org>
+ <202005072244.F2E0286@keescook>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202005072244.F2E0286@keescook>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix "make W=1" compilation warnings from Atmel driver
-as per the compilation logs.
+On Thu, May 07, 2020 at 10:47:08PM -0700, Kees Cook wrote:
+> On Fri, May 08, 2020 at 02:14:38AM +0000, Luis Chamberlain wrote:
+> > Device driver firmware can crash, and sometimes, this can leave your
+> > system in a state which makes the device or subsystem completely
+> > useless. Detecting this by inspecting /proc/sys/kernel/tainted instead
+> > of scraping some magical words from the kernel log, which is driver
+> > specific, is much easier. So instead provide a helper which lets drivers
+> > annotate this.
+> > 
+> > Once this happens, scrapers can easily scrape modules taint flags.
+> > This will taint both the kernel and respective calling module.
+> > 
+> > The new helper module_firmware_crashed() uses LOCKDEP_STILL_OK as
+> > this fact should in no way shape or form affect lockdep. This taint
+> > is device driver specific.
+> > 
+> > Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> > ---
+> > 
+> > Below is the full diff stat of manual inspection throughout the kernel
+> > when this happens. My methodology is to just scrape for "crash" and
+> > then study the driver a bit to see if indeed it seems like that the
+> > firmware crashes there. In *many* cases there is even infrastructure
+> > for this, so this is sometimes clearly obvious. Some other times it
+> > required a bit of deciphering.
+> > 
+> > The diff stat below is what I have so far, however the patch below
+> > only includes the drivers that start with Q, as they were a source of
+> > inspiration for this, and to make this RFC easier to read.
+> > 
+> > If this seems sensible, I can follow up with the kernel helper first,
+> > and then tackle each subsystem independently.
+> > 
+> > I purposely skipped review of remoteproc and virtualization. That should
+> > require its own separate careful review and considerations.
+> 
+> This all seems reasonable to me. You might need to break these up into
+> per-maintainer patches to get appropriate review. Perhaps land the
+> infrastructure and some initial patches via netdev and in the next
+> release send patches for DRM, media, etc?
 
-Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
----
- drivers/input/touchscreen/atmel_mxt_ts.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Works for me.
 
-diff --git a/drivers/input/touchscreen/atmel_mxt_ts.c b/drivers/input/touchscreen/atmel_mxt_ts.c
-index b518c316757d..8d3941e5d2ce 100644
---- a/drivers/input/touchscreen/atmel_mxt_ts.c
-+++ b/drivers/input/touchscreen/atmel_mxt_ts.c
-@@ -1990,7 +1990,7 @@ static int mxt_prepare_cfg_mem(struct mxt_data *data, struct mxt_cfg *cfg)
- 
- 			byte_offset = reg + i - cfg->start_ofs;
- 
--			if (byte_offset >= 0 && byte_offset < cfg->mem_size) {
-+			if (byte_offset < cfg->mem_size) {
- 				*(cfg->mem + byte_offset) = val;
- 			} else {
- 				dev_err(dev, "Bad object: reg:%d, T%d, ofs=%d\n",
--- 
-2.17.1
+I'll give it a few more days for review on the RFC before I shoot out a
+series for netdev.
 
+  Luis
