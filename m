@@ -2,105 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 883621CA7E3
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 12:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CC861CA809
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 12:15:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726815AbgEHKEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 06:04:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725815AbgEHKEb (ORCPT
+        id S1727030AbgEHKPB convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 May 2020 06:15:01 -0400
+Received: from relay-2.mailobj.net ([213.182.54.5]:57668 "EHLO
+        relay-2.mailobj.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725815AbgEHKPA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 06:04:31 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D61BC05BD09
-        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 03:04:31 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id e16so1168605wra.7
-        for <linux-kernel@vger.kernel.org>; Fri, 08 May 2020 03:04:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3ahmjo7zWj9jAF2hUJ67B2bDxaSBhv7Y9eLaU0WOfHs=;
-        b=Ow1M+5cpGoKhWIgArtKKdDwzijj4tPOSBLNMT4uEWbCCdOY+v3p+h51Tuyq/2uxqdO
-         qwYA6XIh2oBLvDb5IYdxEienwVhPwBQ6WPyyHW4iy3BTjThXhZRLOqg7rcb2dc3Q4qSM
-         zd+XliY65XMylQmL3UkGsQqEYt+rNjKCcDT8WOPaCNtA/+WxGOHgUy7Q+MZeXre3FEJB
-         Uvz1guxee4h+GfdY5rM5IDKy/68yXPskbFLb7PpMUEwOZTcxRB7nODkAkJGSRhyn/KwL
-         Qu+AxulP295egIYe3FFgQDt+ZxGhz/S4aGq68urvQbL3qqNCvDcYy0Mnqb2ld+Wx+6ei
-         a01g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3ahmjo7zWj9jAF2hUJ67B2bDxaSBhv7Y9eLaU0WOfHs=;
-        b=kAn9IT7kJldFz0TqXbzMJ+CViZmOPlxJNNtevX88DRkYJRjF1T+87CM/YERnMyIgqe
-         t+88UTm7X6cLl6dWPs/1oggrS2k1JugGiDkOMNhmBvRO4i8whxmG503IyyhftBFFdZV7
-         zh/R7mkDEduvlqzltfsYEh6nH9aFYbaHUKI/cl14yh1Pj+9q/FTuDeUXRd7/Hsg1XhpV
-         gvnB6ekWCfPVuFkdmjOQ+hu0gW9gTg4LKgt5tX7crMae0Tl8r7eihcofXSwgNhSFjYlM
-         SUTzMIzbLDJuU4E0U4EMebfRQLZdbnyWYAzQTGGtE/JWlYwEZ9JKj0kWfGwVk1QqRXLd
-         d4HA==
-X-Gm-Message-State: AGi0PubR2lGaa7gZUmp0N7QGYYE1gsZiVzA2VxF/8bTut0vMLPimgbv1
-        /balpoownsqKmmLjoOi6wNA9DQd9XhY=
-X-Google-Smtp-Source: APiQypLKry7qhaWWoWsKrrbZvd9kXc6HTKRQxi4oXWoq/OWFOW1Rb0C+lIlByPLfibQJKGURGtJt7w==
-X-Received: by 2002:adf:fa92:: with SMTP id h18mr2098339wrr.260.1588932269512;
-        Fri, 08 May 2020 03:04:29 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:110:d6cc:2030:37c1:9964])
-        by smtp.gmail.com with ESMTPSA id c25sm12210763wmb.44.2020.05.08.03.04.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 May 2020 03:04:28 -0700 (PDT)
-Date:   Fri, 8 May 2020 11:04:25 +0100
-From:   Quentin Perret <qperret@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, sudeep.holla@arm.com, gregkh@linuxfoundation.org,
-        rafael@kernel.org, viresh.kumar@linaro.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com,
-        fweisbec@gmail.com, tkjos@google.com, kernel-team@android.com
-Subject: Re: [PATCH 08/14] sched/core: Export runqueues per-cpu array
-Message-ID: <20200508100425.GA239353@google.com>
-References: <20200507181012.29791-1-qperret@google.com>
- <20200507181012.29791-9-qperret@google.com>
- <20200508080759.GL5298@hirez.programming.kicks-ass.net>
+        Fri, 8 May 2020 06:15:00 -0400
+X-Greylist: delayed 513 seconds by postgrey-1.27 at vger.kernel.org; Fri, 08 May 2020 06:14:59 EDT
+Received: from v-1.localdomain (v-1.in.mailobj.net [192.168.90.191])
+        by relay-2.mailobj.net (Postfix) with SMTP id 9444E1260;
+        Fri,  8 May 2020 12:06:24 +0200 (CEST)
+Received: by ip-25.net-c.com [213.182.54.25] with ESMTP
+        Fri,  8 May 2020 12:06:54 +0200 (CEST)
+X-EA-Auth: JUxpYiSKTpkM9V+rU9V0BU8epqnXhebRD8yjIF7jR1pZKnJA2GA5WdqvQBqCGcWMtdmrVddBC9U8ArbU/gIAaADoMi9lxTmxhCg4+3N3sF0=
+Message-ID: <f9413ee5ca2fb0d85015f8b5988cbc61418e50f0.camel@mailoo.org>
+Subject: Re: [PATCH v3 0/2] Add Qualcomm MSM8939 GCC binding and driver
+From:   Vincent Knecht <vincent.knecht@mailoo.org>
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Bryan O'Donoghue <pure.logic@nexus-software.ie>,
+        agross@kernel.org, bjorn.andersson@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        shawn.guo@linaro.org, p.zabel@pengutronix.de,
+        Konrad Dybcio <konradybcio@gmail.com>
+Date:   Fri, 08 May 2020 12:06:23 +0200
+In-Reply-To: <90cda746-2caa-cb79-9304-17a97886f1fc@linaro.org>
+References: <20200423103406.481289-1-bryan.odonoghue@linaro.org>
+         <e9d181a9-938c-a69b-8325-2aabeefd0934@nexus-software.ie>
+         <90cda746-2caa-cb79-9304-17a97886f1fc@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200508080759.GL5298@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 08 May 2020 at 10:07:59 (+0200), Peter Zijlstra wrote:
-> On Thu, May 07, 2020 at 07:10:06PM +0100, Quentin Perret wrote:
-> > It will be needed by schedutil once modularized, export it.
+Le jeudi 07 mai 2020 à 17:06 +0100, Bryan O'Donoghue a écrit :
+> On 07/05/2020 16:57, Bryan O'Donoghue wrote:
+> > On 23/04/2020 11:34, Bryan O'Donoghue wrote:
+> > > V3:
+> > > This update removes the old clock name arrays which I forgot to prune in
+> > > the previous V2.
+> > > 
+> > > git diff bod/clk-next+msm8939 bod/clk-next+msm8939-v2.1
 > > 
-> > Signed-off-by: Quentin Perret <qperret@google.com>
-> > ---
-> > This is only needed for cpu_rq() -> cpu_bw_dl() in schedutil, so there is
-> > probably an alternative if exporting this isn't desirable.
-> > ---
-> >  kernel/sched/core.c | 1 +
-> >  1 file changed, 1 insertion(+)
+> > I should have mentioned.
 > > 
-> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > index dbaf3f63df22..537eb45b4274 100644
-> > --- a/kernel/sched/core.c
-> > +++ b/kernel/sched/core.c
-> > @@ -36,6 +36,7 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_se_tp);
-> >  EXPORT_TRACEPOINT_SYMBOL_GPL(sched_overutilized_tp);
-> >  
-> >  DEFINE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues);
-> > +EXPORT_SYMBOL_GPL(runqueues);
+> > If you want to test this you'll need to do the following to your 
+> > msm8939.dtsi
+> > 
+> > diff --git a/arch/arm64/boot/dts/qcom/msm8939.dtsi 
+> > b/arch/arm64/boot/dts/qcom/msm8939.dtsi
+> > index 996425a70014..2d54ad7f99b6 100644
+> > --- a/arch/arm64/boot/dts/qcom/msm8939.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/msm8939.dtsi
+> > @@ -673,6 +673,10 @@ gcc: clock-controller@1800000 {
+> >                          reg = <0x1800000 0x80000>;
+> > +                       clock-names = "xo",
+> > +                                     "sleep_clk";
+> > +                       clocks = <&xo_board>,
+> > +                                <&sleep_clk>;
+> >                  };
+> > 
+> > "xo" and "sleep_clk" names can be resolved.
+> > 
+> > ---
+> > bod
 > 
-> NAK, never going to happen.
+> and this...
+> 
+> clocks {
+>      xo_board: xo_board {
+>          compatible = "fixed-clock";
+>          #clock-cells = <0>;
+>          clock-frequency = <19200000>;
+>      };
+> 
+>      sleep_clk: sleep_clk {
+>          compatible = "fixed-clock";
+>          #clock-cells = <0>;
+>          clock-frequency = <32768>;
+>      };
+> };
+> 
 
-Well, I should have seen that one coming :-)
+Thank you, works for me over v5.7-rc2 with an Alcatel Idol 3 (5.5").
 
-As mentioned in the commit message, we might be able to work around.
-I'll cook something for v2.
+Tested-by: Vincent Knecht <vincent.knecht@mailoo.org>
 
-Thanks,
-Quentin
+
+
