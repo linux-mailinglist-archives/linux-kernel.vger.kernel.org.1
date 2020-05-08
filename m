@@ -2,111 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 482831CBA62
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 00:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51CDA1CBA5B
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 00:02:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728130AbgEHWDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 18:03:09 -0400
-Received: from mout.kundenserver.de ([212.227.126.134]:42367 "EHLO
+        id S1728065AbgEHWCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 18:02:52 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:34557 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727095AbgEHWDI (ORCPT
+        with ESMTP id S1728032AbgEHWCw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 18:03:08 -0400
+        Fri, 8 May 2020 18:02:52 -0400
 Received: from localhost.localdomain ([149.172.19.189]) by
- mrelayeu.kundenserver.de (mreue010 [212.227.15.129]) with ESMTPA (Nemesis) id
- 1MCsgS-1jOPdr2RNo-008sQA; Sat, 09 May 2020 00:02:03 +0200
+ mrelayeu.kundenserver.de (mreue011 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1Ma1oK-1jaQAZ0hW8-00W11D; Sat, 09 May 2020 00:02:27 +0200
 From:   Arnd Bergmann <arnd@arndb.de>
-To:     VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Thomas Hellstrom <thellstrom@vmware.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Ira Weiny <ira.weiny@intel.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Andy Lutomirski <luto@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Chris Zankel <chris@zankel.net>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Helge Deller <deller@gmx.de>, "H. Peter Anvin" <hpa@zytor.com>,
-        Huang Rui <ray.huang@amd.com>, Ingo Molnar <mingo@redhat.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm: vmwgfx: include linux/highmem.h
-Date:   Sat,  9 May 2020 00:01:31 +0200
-Message-Id: <20200508220150.649044-1-arnd@arndb.de>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Joerg Roedel <jroedel@suse.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Will Deacon <will@kernel.org>,
+        Simon Horman <horms+renesas@verge.net.au>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Hai Nguyen Pham <hai.pham.ud@renesas.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] iommu/renesas: fix unused-function warning
+Date:   Sat,  9 May 2020 00:02:16 +0200
+Message-Id: <20200508220224.688985-1-arnd@arndb.de>
 X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:TAKq1R05pzqZudtB3/eJjJKa8Xbr2qqNSVjJes2lRdzfJo28ior
- jpG2oBKBCIM9I0meRg4Do/dfII5ARO/ZpAAObB5iNU3iCCuxDZGC9ur9gy/e8/N5KH40xtl
- zubxBxUZ2TAxp6I2EEFhblKzvIbDSX2HvY1w7/WTEtxBhmU5S1+U1tGYNScR9bWvVvA9Lwt
- SUVJX3OpN5y1qagavtf6A==
+X-Provags-ID: V03:K1:nguKpoyDbwtn9OPppaa1Wkm4f1dh24v77iIkSuLPsDpqTEETLOi
+ 8fGI9X9HbB6Af8+GtEuUXekkCnA0zjffrQYJhHl/OPgS7W0gkuT+/ZASHGVNNBmD3SfMcH1
+ AAGLAMgVzsl7553S0p0+gRRp9X/+7V2PRZdlyEWbVSJ2rM1gHU0VKGWC/NrJKqt0rHiFIR0
+ 9FR0/q2tCmYqKwfxA3KEQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:pQ7ZCJSaxLY=:CvneInVbDCF7wVcYheL91B
- bulOWg0njJ2uR9LvROcwWe/vwyNzxp5K6WfdXMFHBwEkfhTNw0bVcxvD8IrSFpD0KC8TviK3o
- 2mf/G8Dp7vGxGjScYm3LYde4pML/2dOUn9jiACrP7euRObZ2ijeOmEhl7jDEy27owpQao6o2f
- /SO03TB54PKwjk02/NXDsKOt4s7Vlel69d5geccRqk/dbPKsFx8eNeNQ70KZvuXUCYo+4gVNq
- AyrJYxx33AFDDBvjdTHUp8WSM6BvmQY8xW8tmCKPFZ/OY3h4XDKYApKCqQcok9vc/Qo/vaGhs
- Cy4G1g/dwFG7OyX+Lzq0K7xNNA1ZNy7YHIwqeqk0Kux4fHCq1lYpEGJqCsjRZ8zv5LJpjF4S2
- 7p3LKoai6c/b8gZZJsch7W0e69UvHCI8bPdzFlRuGC7rm0ykWB4NZuqLTBuIC/HlzC9Z+kAId
- aBhvtAWagKCUIX31Q2v8+S47zcy1i2Z7zC+nzpqp3TUXriMCajRt6Kg+rQkJdIQhxFj4HX+jd
- rcSxAvUskYewdmUfBkJAQ2hiaX28j3DARTaEFxcJRbZdL2FCMy19Ug0uF0zjogz2OxmG2Uqkr
- 4diBlDY9L7RHRrP3Hfb1MvdUSmkkFobkFN3S/ePNCydC65ZSo35zuFVrC7nvJguXY4+X0LBBM
- 0Kr81poPPMNRnAsqTGRyZTs6vUqrzVL99DXoxms9mSGpDdIlNAzAvd3gqYwC/y7Ucy7HAA+YU
- 3LyKV0Rosfc327PpqLHUs9jXHfSB+As31A6g12Nkokh9AIYp17vU1b8xjoLwZtQf1wF1C7YSD
- 0MBAFq4u699ZjeZp0+NmUAQBJjY3JBFW0XlU185Wm7IMJzeY7w=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:WGPHeoCJUXo=:PqfGjNxO7ONTBOkQt/zAOC
+ QlMKZK0qcyOf3cdLRylgomWSUGUDNkcqfUM36WbBmvEoCzkvl4tr+BDAKe3jP7p18JxptopLs
+ UFBYh+LgN7pY9RduTraN7x5nTpgkQf9C7A1MgDARF1JLR5f5N3SgY0v+EQqfHws6zHKvJMelL
+ DwMo4oSCL+3M16cmQbmdraaCkOrVkJQ5gF34CO2ZzhRL7MHYHR1Iy1XIanAzGqyMbMKKuoDVR
+ PlEKq1suHKxI/ATEie3dGznx1dEKJXxaPyvxEMf0Db5oldNDTMEX/WA6BYJ8dgUaw+b9j+aA7
+ rEzTVjUnU6TDC9nmS+fWwabEaSuHLjMKWXeb5+emVhbQUyXXqv9d9L+r03km42Z7gsjfmPk6L
+ kfESyxiLlnzSg8v9otXEYCsilsULpMPkbDGzmd5qkOdKt791iMo4VfYkuh7wqVsnjWEC+f3u+
+ ow2BEzyCLe7JJvjuYy5ZbcP536WJ5f+sdjqgC7N9V0tk7nLCUcz9nbRuvx+Pt/AIJYOVwARoE
+ Q249S44z3FYo0mCcrc2KtbBUqyNfidv0Vs0+maeykj9XySk/50QkEMeBbnyxkMgZr6efRHcLM
+ mw/jeVZ9Lb3SJTfUszsp3y5+gzynRf1eQ2K2G5/d0qpVqiBudB/es/RMEY70VkyogwNIiohyJ
+ P+icQj54FV47lv1EYva3zM/poh54vDXE31mCyN9HZRCujg9TnNtQrNGJoNV6OBQpX9LL4tARj
+ sMMZ+qrS+jXKNKjD+eKroIiBhuCr74S0ycznjIn0tx/hAHkIKysvkzgqBZQorv2Gqgslt+Pis
+ s2dgqRHg8mK402ZMbvmx3vt0xB3AStgNO3joc6teXckSiZ8M0o=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to call kmap_atomic() etc, we need to include linux/highmem.h:
+gcc warns because the only reference to ipmmu_find_group
+is inside of an #ifdef:
 
-drivers/gpu/drm/vmwgfx/vmwgfx_blit.c: In function 'vmw_bo_cpu_blit_line':
-drivers/gpu/drm/vmwgfx/vmwgfx_blit.c:377:4: error: implicit declaration of function 'kunmap_atomic'; did you mean 'in_atomic'? [-Werror=implicit-function-declaration]
-  377 |    kunmap_atomic(d->src_addr);
-      |    ^~~~~~~~~~~~~
-      |    in_atomic
-drivers/gpu/drm/vmwgfx/vmwgfx_blit.c:391:5: error: implicit declaration of function 'kmap_atomic_prot' [-Werror=implicit-function-declaration]
-  391 |     kmap_atomic_prot(d->dst_pages[dst_page],
-      |     ^~~~~~~~~~~~~~~~
-drivers/gpu/drm/vmwgfx/vmwgfx_blit.c:390:16: warning: assignment to 'u8 *' {aka 'unsigned char *'} from 'int' makes pointer from integer without a cast [-Wint-conversion]
-  390 |    d->dst_addr =
-      |                ^
-drivers/gpu/drm/vmwgfx/vmwgfx_blit.c:403:16: warning: assignment to 'u8 *' {aka 'unsigned char *'} from 'int' makes pointer from integer without a cast [-Wint-conversion]
-  403 |    d->src_addr =
-      |                ^
+drivers/iommu/ipmmu-vmsa.c:878:28: error: 'ipmmu_find_group' defined but not used [-Werror=unused-function]
 
-Fixes: 46385a895322 ("drm: remove drm specific kmap_atomic code")
+Change the #ifdef to an equivalent IS_ENABLED().
+
+Fixes: 6580c8a78424 ("iommu/renesas: Convert to probe/release_device() call-backs")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/gpu/drm/vmwgfx/vmwgfx_blit.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/iommu/ipmmu-vmsa.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_blit.c b/drivers/gpu/drm/vmwgfx/vmwgfx_blit.c
-index 94d456a1d1a9..1629427d5734 100644
---- a/drivers/gpu/drm/vmwgfx/vmwgfx_blit.c
-+++ b/drivers/gpu/drm/vmwgfx/vmwgfx_blit.c
-@@ -27,6 +27,7 @@
-  **************************************************************************/
- 
- #include "vmwgfx_drv.h"
-+#include <linux/highmem.h>
- 
- /*
-  * Template that implements find_first_diff() for a generic
+diff --git a/drivers/iommu/ipmmu-vmsa.c b/drivers/iommu/ipmmu-vmsa.c
+index fb7e702dee23..4c2972f3153b 100644
+--- a/drivers/iommu/ipmmu-vmsa.c
++++ b/drivers/iommu/ipmmu-vmsa.c
+@@ -903,11 +903,8 @@ static const struct iommu_ops ipmmu_ops = {
+ 	.probe_device = ipmmu_probe_device,
+ 	.release_device = ipmmu_release_device,
+ 	.probe_finalize = ipmmu_probe_finalize,
+-#if defined(CONFIG_ARM) && !defined(CONFIG_IOMMU_DMA)
+-	.device_group = generic_device_group,
+-#else
+-	.device_group = ipmmu_find_group,
+-#endif
++	.device_group = IS_ENABLED(CONFIG_ARM) && !IS_ENABLED(CONFIG_IOMMU_DMA)
++			? generic_device_group : ipmmu_find_group,
+ 	.pgsize_bitmap = SZ_1G | SZ_2M | SZ_4K,
+ 	.of_xlate = ipmmu_of_xlate,
+ };
 -- 
 2.26.0
 
