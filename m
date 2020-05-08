@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB58F1CACC0
+	by mail.lfdr.de (Postfix) with ESMTP id 4D4891CACBF
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:58:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730363AbgEHMzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 08:55:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38672 "EHLO mail.kernel.org"
+        id S1730088AbgEHMzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 08:55:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38732 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728347AbgEHMzg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 08:55:36 -0400
+        id S1730086AbgEHMzh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 08:55:37 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A40D124963;
-        Fri,  8 May 2020 12:55:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1C51D2495A;
+        Fri,  8 May 2020 12:55:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588942535;
-        bh=wNcfpUZNdC8GZXWSQLabHe2MZTpS/tgVvFvWTu9TVew=;
+        s=default; t=1588942537;
+        bh=tIxpfOA4unSyFcuBwL1ysoSVx3S9UkoYppubKOKbt1c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DlcwY52SnLHta4xKayzJVPPWL4mkp5B0EwYVSFCNWPMeYmQ3z1kHEyvpNGJU5HCra
-         6TldMCOFZ4phyzvMc8WB/jS6FhDE7ZXJoSnM+0ckGUh5px1NZaJPnEsANsRtuoQKHX
-         B46MqjADZK9+voCYMaEXHOk1EFPxXCdF+V5ZJ/XI=
+        b=b946f0SwPwdIfehegOUcZP30BCseo/uxenRMH9LiW+p3c6msY++ycP2leTeJoMbfy
+         +V1MlS2b0AOo4tRf5BXpFmLDl+LdcG/DwRSqnNdzxgKBQDBK/YyHqu+/kdkCis2dOH
+         X4etUSNWfhDnfed6ZTbYtubLzvDv+ENlpFKE6tW0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        stable@vger.kernel.org, Russell King <rmk+kernel@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 34/49] ftrace: Fix memory leak caused by not freeing entry in unregister_ftrace_direct()
-Date:   Fri,  8 May 2020 14:35:51 +0200
-Message-Id: <20200508123047.916721099@linuxfoundation.org>
+Subject: [PATCH 5.6 35/49] net: phy: bcm84881: clear settings on link down
+Date:   Fri,  8 May 2020 14:35:52 +0200
+Message-Id: <20200508123048.022211521@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200508123042.775047422@linuxfoundation.org>
 References: <20200508123042.775047422@linuxfoundation.org>
@@ -44,47 +44,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+From: Russell King <rmk+kernel@armlinux.org.uk>
 
-[ Upstream commit 353da87921a5ec654e7e9024e083f099f1b33c97 ]
+[ Upstream commit 796a8fa28980050bf1995617f0876484f3dc1026 ]
 
-kmemleak reported the following:
+Clear the link partner advertisement, speed, duplex and pause when
+the link goes down, as other phylib drivers do.  This avoids the
+stale link partner, speed and duplex settings being reported via
+ethtool.
 
-unreferenced object 0xffff90d47127a920 (size 32):
-  comm "modprobe", pid 1766, jiffies 4294792031 (age 162.568s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 22 01 00 00 00 00 ad de  ........".......
-    00 78 12 a7 ff ff ff ff 00 00 b6 c0 ff ff ff ff  .x..............
-  backtrace:
-    [<00000000bb79e72e>] register_ftrace_direct+0xcb/0x3a0
-    [<00000000295e4f79>] do_one_initcall+0x72/0x340
-    [<00000000873ead18>] do_init_module+0x5a/0x220
-    [<00000000974d9de5>] load_module+0x2235/0x2550
-    [<0000000059c3d6ce>] __do_sys_finit_module+0xc0/0x120
-    [<000000005a8611b4>] do_syscall_64+0x60/0x230
-    [<00000000a0cdc49e>] entry_SYSCALL_64_after_hwframe+0x49/0xb3
-
-The entry used to save the direct descriptor needs to be freed
-when unregistering.
-
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/ftrace.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/phy/bcm84881.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index fd81c7de77a70..63089c70adbb6 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -5155,6 +5155,7 @@ int unregister_ftrace_direct(unsigned long ip, unsigned long addr)
- 			list_del_rcu(&direct->next);
- 			synchronize_rcu_tasks();
- 			kfree(direct);
-+			kfree(entry);
- 			ftrace_direct_func_count--;
- 		}
- 	}
+diff --git a/drivers/net/phy/bcm84881.c b/drivers/net/phy/bcm84881.c
+index 14d55a77eb28a..1260115829283 100644
+--- a/drivers/net/phy/bcm84881.c
++++ b/drivers/net/phy/bcm84881.c
+@@ -174,9 +174,6 @@ static int bcm84881_read_status(struct phy_device *phydev)
+ 	if (phydev->autoneg == AUTONEG_ENABLE && !phydev->autoneg_complete)
+ 		phydev->link = false;
+ 
+-	if (!phydev->link)
+-		return 0;
+-
+ 	linkmode_zero(phydev->lp_advertising);
+ 	phydev->speed = SPEED_UNKNOWN;
+ 	phydev->duplex = DUPLEX_UNKNOWN;
+@@ -184,6 +181,9 @@ static int bcm84881_read_status(struct phy_device *phydev)
+ 	phydev->asym_pause = 0;
+ 	phydev->mdix = 0;
+ 
++	if (!phydev->link)
++		return 0;
++
+ 	if (phydev->autoneg_complete) {
+ 		val = genphy_c45_read_lpa(phydev);
+ 		if (val < 0)
 -- 
 2.20.1
 
