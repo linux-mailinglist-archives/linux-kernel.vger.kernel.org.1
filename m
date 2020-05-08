@@ -2,77 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D4CC1CAA3D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:05:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21F1E1CAA2C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726776AbgEHMFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 08:05:22 -0400
-Received: from 4.mo2.mail-out.ovh.net ([87.98.172.75]:49657 "EHLO
-        4.mo2.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726616AbgEHMFW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 08:05:22 -0400
-Received: from player773.ha.ovh.net (unknown [10.110.103.132])
-        by mo2.mail-out.ovh.net (Postfix) with ESMTP id A695C1D602B
-        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 14:05:19 +0200 (CEST)
-Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
-        (Authenticated sender: steve@sk2.org)
-        by player773.ha.ovh.net (Postfix) with ESMTPSA id C44C5123D2ECB;
-        Fri,  8 May 2020 12:05:13 +0000 (UTC)
-From:   Stephen Kitt <steve@sk2.org>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Joe Perches <joe@perches.com>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Stephen Kitt <steve@sk2.org>
-Subject: [PATCH v2] net: Protect INET_ADDR_COOKIE on 32-bit architectures
-Date:   Fri,  8 May 2020 14:04:57 +0200
-Message-Id: <20200508120457.29422-1-steve@sk2.org>
-X-Mailer: git-send-email 2.20.1
+        id S1726817AbgEHMAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 08:00:36 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:54328 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726618AbgEHMAf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 08:00:35 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 8FC135C97C5EACF10202;
+        Fri,  8 May 2020 20:00:32 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 8 May 2020 20:00:25 +0800
+From:   Samuel Zou <zou_wei@huawei.com>
+To:     <jpoimboe@redhat.com>, <jikos@kernel.org>, <mbenes@suse.cz>,
+        <pmladek@suse.com>, <joe.lawrence@redhat.com>
+CC:     <live-patching@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Samuel Zou" <zou_wei@huawei.com>
+Subject: [PATCH -next] livepatch: Make klp_apply_object_relocs static
+Date:   Fri, 8 May 2020 20:06:34 +0800
+Message-ID: <1588939594-58255-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 5404038079545232676
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduhedrkedvgdegjecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufhtvghphhgvnhcumfhithhtuceoshhtvghvvgesshhkvddrohhrgheqnecuggftrfgrthhtvghrnhepteegudfgleekieekteeggeetveefueefteeugfduieeitdfhhedtfeefkedvfeefnecukfhppedtrddtrddtrddtpdekvddrieehrddvhedrvddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejjeefrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepshhtvghvvgesshhkvddrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit c7228317441f ("net: Use a more standard macro for
-INET_ADDR_COOKIE") added a __deprecated marker to the cookie name on
-32-bit architectures, with the intent that the compiler would flag
-uses of the name. However since commit 771c035372a0 ("deprecate the
-'__deprecated' attribute warnings entirely and for good"),
-__deprecated doesn't do anything and should be avoided.
+Fix the following sparse warning:
 
-This patch changes INET_ADDR_COOKIE to declare a dummy struct so that
-any subsequent use of the cookie's name will in all likelihood break
-the build. It also removes the __deprecated marker.
+kernel/livepatch/core.c:748:5: warning: symbol 'klp_apply_object_relocs'
+was not declared. Should it be static?
 
-Signed-off-by: Stephen Kitt <steve@sk2.org>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Samuel Zou <zou_wei@huawei.com>
 ---
-Changes since v1:
-  - use a dummy struct rather than a typedef
-
- include/net/inet_hashtables.h | 3 ++-
+ kernel/livepatch/core.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/include/net/inet_hashtables.h b/include/net/inet_hashtables.h
-index ad64ba6a057f..889d9b00c905 100644
---- a/include/net/inet_hashtables.h
-+++ b/include/net/inet_hashtables.h
-@@ -301,8 +301,9 @@ static inline struct sock *inet_lookup_listener(struct net *net,
- 	  ((__sk)->sk_bound_dev_if == (__sdif)))		&&	\
- 	 net_eq(sock_net(__sk), (__net)))
- #else /* 32-bit arch */
-+/* Break the build if anything tries to use the cookie's name. */
- #define INET_ADDR_COOKIE(__name, __saddr, __daddr) \
--	const int __name __deprecated __attribute__((unused))
-+	struct {} __name __attribute__((unused))
+diff --git a/kernel/livepatch/core.c b/kernel/livepatch/core.c
+index 96d2da1..f76fdb9 100644
+--- a/kernel/livepatch/core.c
++++ b/kernel/livepatch/core.c
+@@ -745,7 +745,8 @@ static int klp_init_func(struct klp_object *obj, struct klp_func *func)
+ 			   func->old_sympos ? func->old_sympos : 1);
+ }
  
- #define INET_MATCH(__sk, __net, __cookie, __saddr, __daddr, __ports, __dif, __sdif) \
- 	(((__sk)->sk_portpair == (__ports))		&&		\
+-int klp_apply_object_relocs(struct klp_patch *patch, struct klp_object *obj)
++static int klp_apply_object_relocs(struct klp_patch *patch,
++				   struct klp_object *obj)
+ {
+ 	int i, ret;
+ 	struct klp_modinfo *info = patch->mod->klp_info;
 -- 
-2.20.1
+2.6.2
 
