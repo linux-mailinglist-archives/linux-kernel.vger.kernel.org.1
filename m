@@ -2,113 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9F631CB0DC
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:48:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70DD61CB0CD
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:48:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728494AbgEHNrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:47:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41262 "EHLO
+        id S1728190AbgEHNqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 09:46:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728389AbgEHNrC (ORCPT
+        by vger.kernel.org with ESMTP id S1727852AbgEHNqe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 09:47:02 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D02A3C05BD09
-        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 06:47:01 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id k1so1929542wrx.4
-        for <linux-kernel@vger.kernel.org>; Fri, 08 May 2020 06:47:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=Ie6+UuDf+byXPXqX2PqIi5x7CCl0W8NA5IcDm5qQXXA=;
-        b=m6+WB7dkD5OY5SUi5lv4lAQ0mBcKHk146e1QwqFyiJLMV7m2seti2PPWrL7Mtg7jPO
-         fXjmH/Vnwq/PvdNM4rnRQR2Tdqjfrj3LFUvE//ja5RmUll82j+lwt5OjJNUex+3tSuvB
-         vdD4nx5w3ghYDD5wcoyKT9xS1a8iGCzZbYjXujuK8CbZnH5rGkqLhUfHhQC2/gQThxjY
-         noNtQ/LLD6fvKiZkWu0yqgqC2AfhxNQmPFSnGMZNEjjDAEFNrPpG9xyYEcjTe4HXV4OU
-         iv5bKD2VV9yDVTDx2E3g6Hze2Njrn0R7oUPj520tNshk0RmsY+buEld6wKdQOZL7oXfA
-         vJbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Ie6+UuDf+byXPXqX2PqIi5x7CCl0W8NA5IcDm5qQXXA=;
-        b=dcz5gsAk9qNPJbNCnNIIeXpYRthX2POUzs/kb4WVYfMhiPTQPbZWBmLXLQg5BlpgVN
-         UdRM3mnvbCzLQRC/CbfndQE6Suuwqxt+9mKUe1DHot5X8nBBf01JBWQz0hEZtZHnxFoq
-         uxv2cg8jYzuw+i/jJsQhu8EGjvZcA9TU9haqMbxEeXL5/p4YQg35P7CUt4kIhzFyGh90
-         /RXIqwFMmEtLTQkvx9ytBxsjkImpbg1RhCFU9re59/xHPVHo748virAXNlUsmPzJCrp3
-         69REFeVTBlla7FA9pUxv/9d6N27JhbYVkdg/3XupQq2AD4W7XYLB7d8F2vILfm2L7YP3
-         toPQ==
-X-Gm-Message-State: AGi0Pua9L1syEKnDqBtvhXKqlXpANqL/b3psQ2+uYrX3s8JzzrWV6J5f
-        IIHqZTxdG+ZW0V9uK7VdwsOmkoLeJQCti2zR
-X-Google-Smtp-Source: APiQypIPzHLCqcPpkTXMRiOcVbMkzFJd/j8pltNsJ1oUqIBWiQl4ZEevMtSVlfhwuPrcT/Rvkqk3Xg==
-X-Received: by 2002:a5d:6b86:: with SMTP id n6mr3018508wrx.113.1588945620266;
-        Fri, 08 May 2020 06:47:00 -0700 (PDT)
-Received: from lmecxl0524.home (2a01cb058702ff00bc4b798f4f30d41e.ipv6.abo.wanadoo.fr. [2a01:cb05:8702:ff00:bc4b:798f:4f30:d41e])
-        by smtp.gmail.com with ESMTPSA id p7sm3189464wrf.31.2020.05.08.06.46.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 May 2020 06:46:59 -0700 (PDT)
-From:   Etienne Carriere <etienne.carriere@linaro.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        devicetree@vger.kernel.org, fabrice.gasnier@st.com,
-        alexandre.torgue@st.com, mcoquelin.stm32@gmail.com,
-        robh+dt@kernel.org, srinivas.kandagatla@linaro.org,
-        Etienne Carriere <etienne.carriere@st.com>
-Subject: [PATCH] dt-bindings: nvmem: stm32: new property for data access
-Date:   Fri,  8 May 2020 15:45:27 +0200
-Message-Id: <20200508134527.26555-1-etienne.carriere@linaro.org>
-X-Mailer: git-send-email 2.17.1
+        Fri, 8 May 2020 09:46:34 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A480C05BD0A;
+        Fri,  8 May 2020 06:46:34 -0700 (PDT)
+Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tip-bot2@linutronix.de>)
+        id 1jX3Kh-0001kV-AB; Fri, 08 May 2020 15:46:31 +0200
+Received: from [127.0.1.1] (localhost [IPv6:::1])
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id B60111C03AB;
+        Fri,  8 May 2020 15:46:30 +0200 (CEST)
+Date:   Fri, 08 May 2020 13:46:30 -0000
+From:   "tip-bot2 for Marco Elver" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/kcsan] kcsan: Add __kcsan_{enable,disable}_current() variants
+Cc:     Marco Elver <elver@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+MIME-Version: 1.0
+Message-ID: <158894559066.8414.13269261025969395346.tip-bot2@tip-bot2>
+X-Mailer: tip-git-log-daemon
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Etienne Carriere <etienne.carriere@st.com>
+The following commit has been merged into the locking/kcsan branch of tip:
 
-Introduce boolean property st,non-secure-otp for OTP data located
-in a factory programmed area that only secure firmware can access
-by default and that shall be reachable from the non-secure world.
+Commit-ID:     19acd03d95dad1f50d06f28179a1866fca431fed
+Gitweb:        https://git.kernel.org/tip/19acd03d95dad1f50d06f28179a1866fca431fed
+Author:        Marco Elver <elver@google.com>
+AuthorDate:    Fri, 24 Apr 2020 17:47:29 +02:00
+Committer:     Paul E. McKenney <paulmck@kernel.org>
+CommitterDate: Wed, 06 May 2020 10:58:46 -07:00
 
-Signed-off-by: Etienne Carriere <etienne.carriere@st.com>
+kcsan: Add __kcsan_{enable,disable}_current() variants
+
+The __kcsan_{enable,disable}_current() variants only call into KCSAN if
+KCSAN is enabled for the current compilation unit. Note: This is
+typically not what we want, as we usually want to ensure that even calls
+into other functions still have KCSAN disabled.
+
+These variants may safely be used in header files that are shared
+between regular kernel code and code that does not link the KCSAN
+runtime.
+
+Signed-off-by: Marco Elver <elver@google.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../bindings/nvmem/st,stm32-romem.yaml          | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ include/linux/kcsan-checks.h | 17 ++++++++++++++---
+ kernel/kcsan/core.c          |  7 +++++++
+ 2 files changed, 21 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/nvmem/st,stm32-romem.yaml b/Documentation/devicetree/bindings/nvmem/st,stm32-romem.yaml
-index d84deb4774a4..c11c99f085d7 100644
---- a/Documentation/devicetree/bindings/nvmem/st,stm32-romem.yaml
-+++ b/Documentation/devicetree/bindings/nvmem/st,stm32-romem.yaml
-@@ -24,6 +24,18 @@ properties:
-       - st,stm32f4-otp
-       - st,stm32mp15-bsec
+diff --git a/include/linux/kcsan-checks.h b/include/linux/kcsan-checks.h
+index ef95ddc..7b0b9c4 100644
+--- a/include/linux/kcsan-checks.h
++++ b/include/linux/kcsan-checks.h
+@@ -49,6 +49,7 @@ void kcsan_disable_current(void);
+  * Supports nesting.
+  */
+ void kcsan_enable_current(void);
++void kcsan_enable_current_nowarn(void); /* Safe in uaccess regions. */
  
-+patternProperties:
-+  "^.*@[0-9a-f]+$":
-+    type: object
-+
-+    properties:
-+      st,non-secure-otp:
-+        description: |
-+          This property explicits a factory programmed area that both secure
-+          and non-secure worlds can access. It is needed when, by default, the
-+          related area can only be reached by the secure world.
-+        type: boolean
-+
- required:
-   - "#address-cells"
-   - "#size-cells"
-@@ -41,6 +53,11 @@ examples:
-       calib@22c {
-         reg = <0x22c 0x2>;
-       };
-+
-+      mac_addr@e4 {
-+        reg = <0xe4 0x8>;
-+        st,non-secure-otp;
-+      };
-     };
+ /**
+  * kcsan_nestable_atomic_begin - begin nestable atomic region
+@@ -149,6 +150,7 @@ static inline void __kcsan_check_access(const volatile void *ptr, size_t size,
  
- ...
--- 
-2.17.1
-
+ static inline void kcsan_disable_current(void)		{ }
+ static inline void kcsan_enable_current(void)		{ }
++static inline void kcsan_enable_current_nowarn(void)	{ }
+ static inline void kcsan_nestable_atomic_begin(void)	{ }
+ static inline void kcsan_nestable_atomic_end(void)	{ }
+ static inline void kcsan_flat_atomic_begin(void)	{ }
+@@ -165,15 +167,24 @@ static inline void kcsan_end_scoped_access(struct kcsan_scoped_access *sa) { }
+ 
+ #endif /* CONFIG_KCSAN */
+ 
++#ifdef __SANITIZE_THREAD__
+ /*
+- * kcsan_*: Only calls into the runtime when the particular compilation unit has
+- * KCSAN instrumentation enabled. May be used in header files.
++ * Only calls into the runtime when the particular compilation unit has KCSAN
++ * instrumentation enabled. May be used in header files.
+  */
+-#ifdef __SANITIZE_THREAD__
+ #define kcsan_check_access __kcsan_check_access
++
++/*
++ * Only use these to disable KCSAN for accesses in the current compilation unit;
++ * calls into libraries may still perform KCSAN checks.
++ */
++#define __kcsan_disable_current kcsan_disable_current
++#define __kcsan_enable_current kcsan_enable_current_nowarn
+ #else
+ static inline void kcsan_check_access(const volatile void *ptr, size_t size,
+ 				      int type) { }
++static inline void __kcsan_enable_current(void)  { }
++static inline void __kcsan_disable_current(void) { }
+ #endif
+ 
+ /**
+diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
+index a572aae..a73a66c 100644
+--- a/kernel/kcsan/core.c
++++ b/kernel/kcsan/core.c
+@@ -625,6 +625,13 @@ void kcsan_enable_current(void)
+ }
+ EXPORT_SYMBOL(kcsan_enable_current);
+ 
++void kcsan_enable_current_nowarn(void)
++{
++	if (get_ctx()->disable_count-- == 0)
++		kcsan_disable_current();
++}
++EXPORT_SYMBOL(kcsan_enable_current_nowarn);
++
+ void kcsan_nestable_atomic_begin(void)
+ {
+ 	/*
