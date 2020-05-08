@@ -2,68 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8436E1CB0AD
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:43:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 170581CB0B3
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727942AbgEHNnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:43:47 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:40931 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726736AbgEHNnq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 09:43:46 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49JWkk2BXVz9sT2;
-        Fri,  8 May 2020 23:43:42 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1588945424;
-        bh=p+YBkyP2GHp01pThlHZu2zNE3/neu24osdVU16EmOus=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=myzmSBT/czcoOa5b0uNfJvnSn0EcensBRxDGTXSXsFZHz7Ctw4cmolttivclZzczn
-         TlU4xQX1sFeEGOftI9Vt/Yg7n9poabHDRrJD9dFFlDt9HOZEqTv21AH+l6TCSACJ+G
-         LzS3HI2pTjb4HspWPolQxP9uBnlTFgDZQ6ylB+dBKG4qPpkcOlxszBgodBCGGUmAFz
-         Q93GiXrPMyhMZQGgNOXOYLEcRd+vvVE96ReVfh9QW0MP4ysX2iPOSugJKl/xbhnJGC
-         +t49vCyjdXj2x+CfQrmiPjxrxBDghm8z3dEzePmFlSG9Pl3oO4Ea39uGSlgu+ZudGZ
-         ayiGjaAF21wwA==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Borislav Petkov <bp@alien8.de>,
-        Vaibhav Jain <vaibhav@linux.ibm.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-nvdimm@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Santosh Sivaraj <santosh@fossix.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Piotr Maziarz <piotrx.maziarz@linux.intel.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [PATCH v7 2/5] seq_buf: Export seq_buf_printf() to external modules
-In-Reply-To: <20200508113100.GA19436@zn.tnic>
-References: <20200508104922.72565-1-vaibhav@linux.ibm.com> <20200508104922.72565-3-vaibhav@linux.ibm.com> <20200508113100.GA19436@zn.tnic>
-Date:   Fri, 08 May 2020 23:44:00 +1000
-Message-ID: <875zd6czj3.fsf@mpe.ellerman.id.au>
+        id S1728063AbgEHNob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 09:44:31 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2170 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727088AbgEHNob (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 09:44:31 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id 384B7706140CDC0BEBAF;
+        Fri,  8 May 2020 14:44:29 +0100 (IST)
+Received: from localhost (10.47.95.97) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 8 May 2020
+ 14:44:28 +0100
+Date:   Fri, 8 May 2020 14:44:06 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>
+CC:     <jic23@kernel.org>, <robh+dt@kernel.org>, <robh@kernel.org>,
+        <mchehab+huawei@kernel.org>, <davem@davemloft.net>,
+        <gregkh@linuxfoundation.org>, <linux-iio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 02/12] iio: imu: inv_icm42600: add I2C driver for
+ inv_icm42600 driver
+Message-ID: <20200508144406.00006b8c@Huawei.com>
+In-Reply-To: <20200507144222.20989-3-jmaneyrol@invensense.com>
+References: <20200507144222.20989-1-jmaneyrol@invensense.com>
+        <20200507144222.20989-3-jmaneyrol@invensense.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.95.97]
+X-ClientProxiedBy: lhreml743-chm.china.huawei.com (10.201.108.193) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Borislav Petkov <bp@alien8.de> writes:
-> On Fri, May 08, 2020 at 04:19:19PM +0530, Vaibhav Jain wrote:
->> 'seq_buf' provides a very useful abstraction for writing to a string
->> buffer without needing to worry about it over-flowing. However even
->> though the API has been stable for couple of years now its stills not
->> exported to external modules limiting its usage.
->> 
->> Hence this patch proposes update to 'seq_buf.c' to mark
->> seq_buf_printf() which is part of the seq_buf API to be exported to
->> external GPL modules. This symbol will be used in later parts of this
->
-> What is "external GPL modules"?
+On Thu, 7 May 2020 16:42:12 +0200
+Jean-Baptiste Maneyrol <jmaneyrol@invensense.com> wrote:
 
-A module that has MODULE_LICENSE("GPL") ?
+> Add I2C driver for InvenSense ICM-426xxx devices.
+> 
+> Configure bus signal slew rates as indicated in the datasheet.
+> 
+> Signed-off-by: Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>
+Some incoherent rambling inline. + a few comments
 
-cheers
+Jonathan
+
+> ---
+>  .../iio/imu/inv_icm42600/inv_icm42600_i2c.c   | 117 ++++++++++++++++++
+>  1 file changed, 117 insertions(+)
+>  create mode 100644 drivers/iio/imu/inv_icm42600/inv_icm42600_i2c.c
+> 
+> diff --git a/drivers/iio/imu/inv_icm42600/inv_icm42600_i2c.c b/drivers/iio/imu/inv_icm42600/inv_icm42600_i2c.c
+> new file mode 100644
+> index 000000000000..b61f993beacf
+> --- /dev/null
+> +++ b/drivers/iio/imu/inv_icm42600/inv_icm42600_i2c.c
+> @@ -0,0 +1,117 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (C) 2020 InvenSense, Inc.
+> + */
+> +
+> +#include <linux/device.h>
+> +#include <linux/module.h>
+> +#include <linux/i2c.h>
+> +#include <linux/regmap.h>
+> +#include <linux/of_device.h>
+
+Why?  Looks like you need the table and the device property stuff neither
+of which are in that file.
+
+linux/mod_devicetable.h
+linux/property.h
+
+
+> +
+> +#include "inv_icm42600.h"
+> +
+> +static int inv_icm42600_i2c_bus_setup(struct inv_icm42600_state *st)
+> +{
+> +	unsigned int mask, val;
+> +	int ret;
+> +
+> +	/* setup interface registers */
+> +	mask = INV_ICM42600_INTF_CONFIG6_MASK;
+> +	val = INV_ICM42600_INTF_CONFIG6_I3C_EN;
+> +	ret = regmap_update_bits(st->map, INV_ICM42600_REG_INTF_CONFIG6,
+> +				 mask, val);
+
+I'd put the values inline where they are simple like these rather than
+using local variables.
+
+> +	if (ret)
+> +		return ret;
+> +
+> +	mask = INV_ICM42600_INTF_CONFIG4_I3C_BUS_ONLY;
+> +	val = 0;
+> +	ret = regmap_update_bits(st->map, INV_ICM42600_REG_INTF_CONFIG4,
+> +				 mask, val);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* set slew rates for I2C and SPI */
+> +	mask = INV_ICM42600_DRIVE_CONFIG_I2C_MASK |
+> +	       INV_ICM42600_DRIVE_CONFIG_SPI_MASK;
+> +	val = INV_ICM42600_DRIVE_CONFIG_I2C(INV_ICM42600_SLEW_RATE_12_36NS) |
+> +	      INV_ICM42600_DRIVE_CONFIG_SPI(INV_ICM42600_SLEW_RATE_12_36NS);
+> +	ret = regmap_update_bits(st->map, INV_ICM42600_REG_DRIVE_CONFIG,
+> +				 mask, val);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* disable SPI bus */
+> +	mask = INV_ICM42600_INTF_CONFIG0_UI_SIFS_CFG_MASK;
+> +	val = INV_ICM42600_INTF_CONFIG0_UI_SIFS_CFG_SPI_DIS;
+> +	return regmap_update_bits(st->map, INV_ICM42600_REG_INTF_CONFIG0,
+> +				  mask, val);
+> +}
+> +
+> +static int inv_icm42600_probe(struct i2c_client *client,
+> +			      const struct i2c_device_id *id)
+> +{
+> +	const void *match;
+> +	enum inv_icm42600_chip chip;
+> +	struct regmap *regmap;
+> +
+> +	if (!i2c_check_functionality(client->adapter, I2C_FUNC_SMBUS_I2C_BLOCK))
+> +		return -ENOTSUPP;
+> +
+> +	match = device_get_match_data(&client->dev);
+
+Hmm. Annoyingly if one were to call the of specific option
+of i2c_of_match_device it would handle the old style i2c match just fine without
+needing special handling.  However, it would fail to handle PRP0001 ACPI.
+
+Rather feels like there should be something similar for
+device_get_match_data so we could use the probe_new version of i2c device
+probing.
+
+Oh well. I guess thats a separate question for another day ;)
+
+Mind you can we actually probe this driver via the sysfs route?
+If not why do we need to handle the non firmware case at all?
+ 
+> +	if (match)
+> +		chip = (enum inv_icm42600_chip)match;
+> +	else if (id)
+> +		chip = (enum inv_icm42600_chip)id->driver_data;
+> +	else
+> +		return -EINVAL;
+> +
+> +	regmap = devm_regmap_init_i2c(client, &inv_icm42600_regmap_config);
+> +	if (IS_ERR(regmap))
+> +		return PTR_ERR(regmap);
+> +
+> +	return inv_icm42600_core_probe(regmap, chip,
+> +				       inv_icm42600_i2c_bus_setup);
+> +}
+> +
+> +static const struct of_device_id inv_icm42600_of_matches[] = {
+> +	{
+> +		.compatible = "invensense,icm42600",
+> +		.data = (void *)INV_CHIP_ICM42600,
+> +	}, {
+> +		.compatible = "invensense,icm42602",
+> +		.data = (void *)INV_CHIP_ICM42602,
+> +	}, {
+> +		.compatible = "invensense,icm42605",
+> +		.data = (void *)INV_CHIP_ICM42605,
+> +	}, {
+> +		.compatible = "invensense,icm42622",
+> +		.data = (void *)INV_CHIP_ICM42622,
+> +	},
+> +	{}
+> +};
+> +MODULE_DEVICE_TABLE(of, inv_icm42600_of_matches);
+> +
+> +static const struct i2c_device_id inv_icm42600_ids[] = {
+> +	{"icm42600", INV_CHIP_ICM42600},
+> +	{"icm42602", INV_CHIP_ICM42602},
+> +	{"icm42605", INV_CHIP_ICM42605},
+> +	{"icm42622", INV_CHIP_ICM42622},
+> +	{}
+> +};
+> +MODULE_DEVICE_TABLE(i2c, inv_icm42600_ids);
+> +
+> +static struct i2c_driver inv_icm42600_driver = {
+> +	.probe = inv_icm42600_probe,
+> +	.id_table = inv_icm42600_ids,
+> +	.driver = {
+> +		.of_match_table = inv_icm42600_of_matches,
+> +		.name = "inv-icm42600-i2c",
+> +		.pm = &inv_icm42600_pm_ops,
+> +	},
+> +};
+> +module_i2c_driver(inv_icm42600_driver);
+> +
+> +MODULE_AUTHOR("InvenSense, Inc.");
+> +MODULE_DESCRIPTION("InvenSense ICM-426xx I2C driver");
+> +MODULE_LICENSE("GPL");
+
+
