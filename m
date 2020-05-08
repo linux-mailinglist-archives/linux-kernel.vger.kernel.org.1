@@ -2,113 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFA6F1CBB06
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 00:59:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9A0E1CBB0D
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 01:04:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728323AbgEHW72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 18:59:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727816AbgEHW70 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 18:59:26 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BF6FC05BD43
-        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 15:59:25 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id d22so1550867pgk.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 May 2020 15:59:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=gy8mRnKGCdAlapJUNLKgnq4stIzTWpMgvZsJaIARMf4=;
-        b=K5ld8pUSdKEuNRDrb6rIvsCRyHYpaDMubCYD4sukObf0hIGmT4kVqWfF36QvqNYGpr
-         NxoCH0TZi5eD9+cXXa8WS93UxuRODo8rjVOUshlEwZQABiMryGUnwTLF35PqcIcpj4ku
-         bF32L3llPP+k2g9M6lBkn9AY84SaUi3yZ34Ac=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=gy8mRnKGCdAlapJUNLKgnq4stIzTWpMgvZsJaIARMf4=;
-        b=sTwDaFPXjiHDwPdXXo47soJrQRAE8K1Td9wVNchKEaQ8nzV6TSdsKuaN9JI0jy88dq
-         Fy5ClSUUbbZki/Vl6wM+HK8FkdXqSqJPx0mLeVUQZEuGVnwsqf0jKjRxfUH6DsDbz6Zu
-         ru2m+8EcJFcL3HcY3euCU90UNC5YfvkR7BKVQWLgY9tsRZaZII5agePRkAg1tjTM+4yE
-         BHdc6jIMyS4gCG90RAiizPPcn+DV39NzjxprSCK94MLtVuNeu2IxqHRQJ5nYMACVnQZt
-         1UBAWzPS3s6nXEmTfb1x5UwD7jilipNHKLV0bNATdPXjY9jqqOCJ1SqZ3fZY+7C/ROO/
-         jzFw==
-X-Gm-Message-State: AGi0PuZ1ygKrfmdsu9vvF6oymqvuFGMEfapRPG/MPFlf769hdn6qYrCh
-        4tHon8iQojjcnMSGjDzvaXEGog==
-X-Google-Smtp-Source: APiQypIh2ee0YZT2wE0RprXGN5jO2Gbnro485v/sWkDaPIfiCHYp61N2iTZmNPK4/xQdSaGusoO57A==
-X-Received: by 2002:aa7:9251:: with SMTP id 17mr4911760pfp.315.1588978764710;
-        Fri, 08 May 2020 15:59:24 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:24fa:e766:52c9:e3b2])
-        by smtp.gmail.com with ESMTPSA id i72sm3062874pfe.104.2020.05.08.15.59.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 May 2020 15:59:24 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>
-Cc:     robdclark@chromium.org, linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] panel: simple: Add BOE NV133FHM-N62
-Date:   Fri,  8 May 2020 15:59:02 -0700
-Message-Id: <20200508155859.3.I525ebd471f5340a6a369af7bde06ef04174d2f41@changeid>
-X-Mailer: git-send-email 2.26.2.645.ge9eca65c58-goog
-In-Reply-To: <20200508155859.1.I4d29651c0837b4095fb4951253f44036a371732f@changeid>
-References: <20200508155859.1.I4d29651c0837b4095fb4951253f44036a371732f@changeid>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1728137AbgEHXER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 19:04:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47376 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726843AbgEHXER (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 19:04:17 -0400
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9C190208DB;
+        Fri,  8 May 2020 23:04:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588979056;
+        bh=AqLynUwQ51zN07t3YqDgkNGcT5K3FLB+CukBeZhLq98=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=iuutN3iviKQPxE9c89Nx6lLRcAGHl5P6ObTVn+J4JMJKLVBT+frvae/ZauOSfLDe4
+         Xh5umy4EUykz8LoU4D/7eRyPZgBcLFVERkU/Lo/IzzDsuzMwAm/NKpFgJjwE33S18V
+         eROfy6Ro5YQbqyaL9xkp8q+yyf+qIqyEvnn6MC2o=
+Date:   Fri, 8 May 2020 16:04:15 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, linux-api@vger.kernel.org,
+        oleksandr@redhat.com, Suren Baghdasaryan <surenb@google.com>,
+        Tim Murray <timmurray@google.com>,
+        Daniel Colascione <dancol@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        Sonny Rao <sonnyrao@google.com>,
+        Brian Geffon <bgeffon@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        John Dias <joaodias@google.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Jann Horn <jannh@google.com>,
+        alexander.h.duyck@linux.intel.com, sj38.park@gmail.com,
+        Christian Brauner <christian@brauner.io>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>
+Subject: Re: [PATCH v7 5/7] mm: support both pid and pidfd for
+ process_madvise
+Message-Id: <20200508160415.65ff359a9e312c613336587b@linux-foundation.org>
+In-Reply-To: <20200508183653.GB125527@google.com>
+References: <20200302193630.68771-1-minchan@kernel.org>
+        <20200302193630.68771-6-minchan@kernel.org>
+        <14089609-5fb1-b082-716f-c2e129d27c48@suse.cz>
+        <20200311004251.GB87930@google.com>
+        <20200508183653.GB125527@google.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All info I could find about this panel show that it behaves the same
-as the BOE NV133FHM-N61.  However, it definitely appears to be a
-unique panel because reading the EDID shows "NV133FHM-N62".  We'll add
-a string match for the new panel but until we find something unique
-about it we'll just point at the N61's structures.
+On Fri, 8 May 2020 11:36:53 -0700 Minchan Kim <minchan@kernel.org> wrote:
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
+> 
+> ...
+>
+> Per Vlastimil's request, I changed "which and advise" with "idtype and
+> advice" in function prototype of description.
+> Could you replace the part in the description? Code is never changed.
+> 
 
- drivers/gpu/drm/panel/panel-simple.c | 5 +++++
- 1 file changed, 5 insertions(+)
+Done, but...
 
-diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-index 7219436499f1..7fb7b257f968 100644
---- a/drivers/gpu/drm/panel/panel-simple.c
-+++ b/drivers/gpu/drm/panel/panel-simple.c
-@@ -1173,6 +1173,7 @@ static const struct panel_desc boe_nv101wxmn51 = {
- 	},
- };
- 
-+/* Also used for boe_nv133fhm_n62 */
- static const struct drm_display_mode boe_nv133fhm_n61_modes = {
- 	.clock = 147840,
- 	.hdisplay = 1920,
-@@ -1186,6 +1187,7 @@ static const struct drm_display_mode boe_nv133fhm_n61_modes = {
- 	.vrefresh = 60,
- };
- 
-+/* Also used for boe_nv133fhm_n62 */
- static const struct panel_desc boe_nv133fhm_n61 = {
- 	.modes = &boe_nv133fhm_n61_modes,
- 	.num_modes = 1,
-@@ -3659,6 +3661,9 @@ static const struct of_device_id platform_of_match[] = {
- 	}, {
- 		.compatible = "boe,nv133fhm-n61",
- 		.data = &boe_nv133fhm_n61,
-+	}, {
-+		.compatible = "boe,nv133fhm-n62",
-+		.data = &boe_nv133fhm_n61,
- 	}, {
- 		.compatible = "boe,nv140fhmn49",
- 		.data = &boe_nv140fhmn49,
--- 
-2.26.2.645.ge9eca65c58-goog
+>
+> ...
+>
+> There is a demand[1] to support pid as well pidfd for process_madvise to
+> reduce unnecessary syscall to get pidfd if the user has control of the
+> target process(ie, they could guarantee the process is not gone or pid is
+> not reused).
+> 
+> This patch aims for supporting both options like waitid(2).  So, the
+> syscall is currently,
+> 
+>         int process_madvise(idtype_t idtype, id_t id, void *addr,
+>                 size_t length, int advice, unsigned long flags);
+> 
+> @which is actually idtype_t for userspace libray and currently, it
+> supports P_PID and P_PIDFD.
 
+What does "@which is actually idtype_t for userspace libray" mean?  Can
+you clarify and expand?
+
+Also, does this userspace library exist?  If so, where is it?
+
+>
+> ...
+>
