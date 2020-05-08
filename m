@@ -2,73 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AEDD1CBB4D
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 01:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 951721CBB54
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 01:43:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728318AbgEHXhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 19:37:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59310 "EHLO mail.kernel.org"
+        id S1728374AbgEHXmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 19:42:52 -0400
+Received: from mga06.intel.com ([134.134.136.31]:17091 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727878AbgEHXhO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 19:37:14 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3242621974;
-        Fri,  8 May 2020 23:37:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588981034;
-        bh=TTmQy61+zMJ0ALWgDCPYoVDJHD0JlRbB+Qz6kqRgTT8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J7LKO1YUXULcfyT7oCMVxpJm4O43hQ5MepZs+5JNDLT0UoYdHOJO/0YBOi0ajI8F8
-         kzSFFvVY6WVPPt9hvhYBYL6tJXPEImQaIdTxPqFzrofjdAEic9WB3Slxj6TRrXCBcm
-         THk1XoB/eUnT1lnJb/Tz24SWWPKq37jGCdPq6J3A=
-Date:   Fri, 8 May 2020 18:41:42 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH] efi: Replace zero-length array with flexible-array
-Message-ID: <20200508234142.GA27139@embeddedor>
-References: <20200507192712.GA16805@embeddedor>
- <CAHk-=wh-Ym=onfkMyMmOZUr6cFGQUD8kMowX6OcE-A-H2efkMg@mail.gmail.com>
+        id S1727778AbgEHXmw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 19:42:52 -0400
+IronPort-SDR: N1qLSIEcX3pL1QrST5JWXhgBLnX3W9KTfL4VG3+2gXGh8rZLs/S+Z/XJLKuuz1Xx4tVgLHL+Xl
+ Cso0znK7GDIw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2020 16:42:51 -0700
+IronPort-SDR: l2dLsW7OKFIG0wnBNsYWcdCMmMV0Gd5AbYxu+G0Ad8jqt0UCCXuPkFvAZDF7kYR3n9bA4pmczL
+ 7Y/wf+sMLRHA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,369,1583222400"; 
+   d="scan'208";a="285636172"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 08 May 2020 16:42:50 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jXCdm-000AcC-2j; Sat, 09 May 2020 07:42:50 +0800
+Date:   Sat, 09 May 2020 07:42:38 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:rcu/next] BUILD SUCCESS
+ 825613e73129f5806f10f67674af21ad0218a5f3
+Message-ID: <5eb5ee6e.7gUWB0mUswHrVK9n%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wh-Ym=onfkMyMmOZUr6cFGQUD8kMowX6OcE-A-H2efkMg@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 08, 2020 at 10:26:40AM -0700, Linus Torvalds wrote:
-> On Thu, May 7, 2020 at 12:22 PM Gustavo A. R. Silva
-> <gustavoars@kernel.org> wrote:
-> >
-> > The current codebase makes use of the zero-length array language
-> > extension to the C90 standard, but the preferred mechanism to declare
-> > variable-length types such as these ones is a flexible array member[1][2],
-> > introduced in C99 [...]
-> 
-> Why is this called an "efi" patch, when it doesn't appear to be so at all:
-> 
-> >  include/linux/dma/ti-cppi5.h                   |    4 ++--
-> >  include/linux/efi.h                            |    2 +-
-> >  include/linux/mailbox/zynqmp-ipi-message.h     |    2 +-
-> >  include/linux/platform_data/cros_ec_commands.h |    4 ++--
-> >  include/linux/platform_data/cros_ec_proto.h    |    2 +-
-> >  kernel/params.c                                |    2 +-
-> >  kernel/tracepoint.c                            |    2 +-
-> >  scripts/kallsyms.c                             |    2 +-
-> >  8 files changed, 10 insertions(+), 10 deletions(-)
-> 
-> Yes, one line of the patch is EFI code. The rest are not.
-> 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  rcu/next
+branch HEAD: 825613e73129f5806f10f67674af21ad0218a5f3  rcu-tasks: Convert sleeps to idle priority
 
-Yeah. It seems the script needs some improvement. I'll split this
-patch up into multiple patches.
+elapsed time: 480m
 
-Thanks
---
-Gustavo
+configs tested: 95
+configs skipped: 1
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+sparc                            allyesconfig
+m68k                             allyesconfig
+parisc                              defconfig
+parisc                            allnoconfig
+s390                                defconfig
+nds32                               defconfig
+powerpc                             defconfig
+ia64                             allmodconfig
+alpha                               defconfig
+arc                              allyesconfig
+ia64                                defconfig
+riscv                             allnoconfig
+um                                allnoconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                            allyesconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+microblaze                       allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20200508
+i386                 randconfig-a004-20200508
+i386                 randconfig-a003-20200508
+i386                 randconfig-a002-20200508
+i386                 randconfig-a001-20200508
+i386                 randconfig-a006-20200508
+x86_64               randconfig-a014-20200508
+x86_64               randconfig-a012-20200508
+x86_64               randconfig-a016-20200508
+i386                 randconfig-a012-20200508
+i386                 randconfig-a014-20200508
+i386                 randconfig-a016-20200508
+i386                 randconfig-a011-20200508
+i386                 randconfig-a013-20200508
+i386                 randconfig-a015-20200508
+riscv                            allyesconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                               allmodconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
