@@ -2,128 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 515A71CAD66
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:02:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02CC21CAD6E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:02:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730172AbgEHNB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:01:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33982 "EHLO
+        id S1730039AbgEHNCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 09:02:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728299AbgEHNBX (ORCPT
+        by vger.kernel.org with ESMTP id S1729028AbgEHNB4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 09:01:23 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 513E6C05BD43
-        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 06:01:23 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id u10so702234pls.8
-        for <linux-kernel@vger.kernel.org>; Fri, 08 May 2020 06:01:23 -0700 (PDT)
+        Fri, 8 May 2020 09:01:56 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94053C05BD09
+        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 06:01:55 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id t9so4269092pjw.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 May 2020 06:01:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=o3OgWVB0a6CAcOGM+6MfNaCF+/D3bde7qUFErGIacxg=;
-        b=XgvGGxCbe4IdrexJsZdsTskyMr8050LIqTOKyIR6i+tdm6rYZBi70IraVzAT1tpJJP
-         yED/sxa2KMV1Rq+l2OkvcS79m4FSlV3dSIwvfR3ZnqtbF9T3dBwjyF68oHInNpQ8PIu9
-         DpbOGI+A14IRcqiAOK1DQGBngcBYhVJaBbrZGT/CdEFH6axLir7fcH5qtNWfqH6Dknwg
-         IgT4oF7R0SUGUroXCQEu+1MoRJg9c2wN1JLdEw1WgnenEF+ysvdNMNFCnnKH4KiEUiu8
-         S3gZysDFRAIwpvXGUc6svR5dekWYCyv/tl0RujwceeP4xLZGbyGA3Q0PeDICNtIPO1/a
-         OOHA==
+         :content-disposition:in-reply-to:user-agent;
+        bh=kGzbyp4Kjfdk0C7XAI34MTmYL3nwyLfAJVV51p0QRQQ=;
+        b=CF4q0AcAWs+gNm/BRV8XXJuYXEshbcdx4waTzNsl6f8XC/ObC2lT3BNSbf4XFQWfud
+         sNOMw1dGhOaqC+moTrFmh9zxj0WCOCKaorsb0MjAj/aZ91SS2dMG8+bGbjl/8fHRZGT2
+         koylbEyxvqVHw9jfcb6Tl1TpEsCt3tI3XnEonL9EYb4cxA7x9GWXPOvc5hwfNqEuSDV8
+         eiiDAshP3JjOtvVVubQGeexp4BZurXK9fxJyucj+7GbiApJ6VrDDQT13jL/LHx0AGSSK
+         jlRAGzq8r68eegSuYMe4GiQHnnKsMrxupn0X7lR/I8B5nthY+r0eIkQscYNdOXroQAkl
+         Krsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=o3OgWVB0a6CAcOGM+6MfNaCF+/D3bde7qUFErGIacxg=;
-        b=QG2ZVaTtQqTLb2LmTpOKiElwXuQDxGFknmT05RMMEvR1UBILCskw+gHZsqRGrRaYxh
-         5hSnb2j1KhmPISPTsVF7TrjYRL370pAToOUIYQDLMyoIU54Qj7wgsLkKUoshPOR28fZg
-         f0rIee0n1pT4VR0BZ+3D1E0s/bHvHbxc36qIIZ2s7CDrN3CILHlCi1oW+NV7yYQlWkbA
-         MktLxv1AvQsBGuNJJRtayyRaaN09lsumbd5iWDoEC46D3WbWMAiT6FUbLB8IecpGRP+p
-         XwShNXH90ChFoW4UaI1a7PKnSODvWtSnPXyEzMSTArjVXhQ+Xd2sf5odp8MxndQBdnme
-         3Eeg==
-X-Gm-Message-State: AGi0Pub/iDRVFuuafG0MFfKOPsWCYLyvX7HDy63dZFhKa+AardZvVAmT
-        2GdZ51OywQ7G52KxVWxFdzCevUAx
-X-Google-Smtp-Source: APiQypI20UAgOtvckviNiNXHkBIdFDDvOKZsxIDH+f60ongVJQYaFnkgcPrifWAmJpGatrs0SF3afw==
-X-Received: by 2002:a17:90a:252b:: with SMTP id j40mr5756317pje.60.1588942882724;
-        Fri, 08 May 2020 06:01:22 -0700 (PDT)
-Received: from iZj6chx1xj0e0buvshuecpZ ([47.75.1.235])
-        by smtp.gmail.com with ESMTPSA id e10sm1730528pfl.195.2020.05.08.06.01.20
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=kGzbyp4Kjfdk0C7XAI34MTmYL3nwyLfAJVV51p0QRQQ=;
+        b=CwcmgCn/rr6jBcLIqxJW7GNEka5h/bydlnZGPRSkFPld1qWMYEvc3G4gakoL3/TMYB
+         F/cm5E/hGR5tUeyqCtQXG4G9EwvE07HXcUm7fTZWLAUJmHfOYJdhv62HYnVkHOy1iUJa
+         +8LvU24uGVz+zB20PsEJaeIG/S3yJiSzYPA1yKZCOElAt+Vr4kzuHEpXzRr13X6afjf4
+         sGCUb8OMV4HG4+Dz3pZDVG3lGhit07kiuYjciMkLKEP1YXLkCVvCiXD+5IR8vycgIDLc
+         IkB+iunr+FWNC9BoqzVeV4jjSWO6fYLcsXDS2QnRsz7bacXxrCK9+QGXy61cgtTKR4fy
+         v7uw==
+X-Gm-Message-State: AGi0PuZuigWo2Q7mwLyMNwvrlNJREnqX32iiYbGVr7FbIYjHMV/mepgo
+        VNNJpJL0Sk5geShhfg9dAJxB5g==
+X-Google-Smtp-Source: APiQypLRMfczMLb83FfQL3CpbR7x4VwRtVYZWrJBkdljoWqkQTCekuduvqRRETs6ReWunf8OBAmmuw==
+X-Received: by 2002:a17:90b:34c:: with SMTP id fh12mr5492480pjb.134.1588942914984;
+        Fri, 08 May 2020 06:01:54 -0700 (PDT)
+Received: from dragon ([80.251.214.228])
+        by smtp.gmail.com with ESMTPSA id 141sm1828359pfz.171.2020.05.08.06.01.52
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 08 May 2020 06:01:21 -0700 (PDT)
-Date:   Fri, 8 May 2020 21:01:18 +0800
-From:   Peng Liu <iwtbavbm@gmail.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched/fair: Fix nohz.next_balance update
-Message-ID: <20200508130118.GA4514@iZj6chx1xj0e0buvshuecpZ>
-References: <20200503083407.GA27766@iZj6chx1xj0e0buvshuecpZ>
- <CAKfTPtCNG9Y4xNA-iLd+JRRsUCA1+SkkFFRbbzk5n7q6v401tw@mail.gmail.com>
- <20200505134056.GA31680@iZj6chx1xj0e0buvshuecpZ>
- <20200505142711.GA12952@vingu-book>
+        Fri, 08 May 2020 06:01:54 -0700 (PDT)
+Date:   Fri, 8 May 2020 21:01:44 +0800
+From:   Shawn Guo <shawn.guo@linaro.org>
+To:     Konrad Dybcio <konradybcio@gmail.com>
+Cc:     skrzynka@konradybcio.pl,
+        Vincent Knecht <vincent.knecht@mailoo.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] soc: qcom: socinfo: add msm8936/39 and apq8036/39 soc ids
+Message-ID: <20200508130143.GC30486@dragon>
+References: <20200501205546.151575-1-konradybcio@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200505142711.GA12952@vingu-book>
+In-Reply-To: <20200501205546.151575-1-konradybcio@gmail.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 05, 2020 at 04:27:11PM +0200, Vincent Guittot wrote:
-> Le mardi 05 mai 2020 à 21:40:56 (+0800), Peng Liu a écrit :
+Hi Konrad,
+
+On Fri, May 01, 2020 at 10:55:46PM +0200, Konrad Dybcio wrote:
+> From: Vincent Knecht <vincent.knecht@mailoo.org>
 > 
 
-[...]
+Please write up some commit log.
 
-> 
-> Your proposal below looks quite complex. IMO, one solution would be to move the
-> update of nohz.next_balance before calling rebalance_domains(this_rq, CPU_IDLE)
-> so you are back to the previous behavior.
-> 
-> The only difference is that in case of an break because of need_resched, it
-> doesn't update nohz.next_balance. But on the other hand, we haven't yet
-> finished run rebalance_domains for all CPUs and some load_balance are still
-> pending. In fact, this will be done during next tick by an idle CPU.
-> 
-> So I would be in favor of something as simple as :
-> 
+> Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
 
-Vincent, could you refine this patch with some changelog?
-And have my reported-by if possible.
+When you forward a patch from someone else, you need to add your
+Signed-off-by.
 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 04098d678f3b..e028bc1c4744 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -10457,6 +10457,14 @@ static bool _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
->                 }
->         }
+Shawn
+
+> ---
+>  drivers/soc/qcom/socinfo.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
-> +       /*
-> +        * next_balance will be updated only when there is a need.
-> +        * When the CPU is attached to null domain for ex, it will not be
-> +        * updated.
-> +        */
-> +       if (likely(update_next_balance))
-> +               nohz.next_balance = next_balance;
-> +
->         /* Newly idle CPU doesn't need an update */
->         if (idle != CPU_NEWLY_IDLE) {
->                 update_blocked_averages(this_cpu);
-> @@ -10477,14 +10485,6 @@ static bool _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
->         if (has_blocked_load)
->                 WRITE_ONCE(nohz.has_blocked, 1);
-> 
-> -       /*
-> -        * next_balance will be updated only when there is a need.
-> -        * When the CPU is attached to null domain for ex, it will not be
-> -        * updated.
-> -        */
-> -       if (likely(update_next_balance))
-> -               nohz.next_balance = next_balance;
-> -
->         return ret;
->  }
+> diff --git a/drivers/soc/qcom/socinfo.c b/drivers/soc/qcom/socinfo.c
+> index ebb49aee179bb..14831ed392e28 100644
+> --- a/drivers/soc/qcom/socinfo.c
+> +++ b/drivers/soc/qcom/socinfo.c
+> @@ -188,6 +188,10 @@ static const struct soc_id soc_id[] = {
+>  	{ 216, "MSM8674PRO" },
+>  	{ 217, "MSM8974-AA" },
+>  	{ 218, "MSM8974-AB" },
+> +	{ 233, "MSM8936" },
+> +	{ 239, "MSM8939" },
+> +	{ 240, "APQ8036" },
+> +	{ 241, "APQ8039" },
+>  	{ 246, "MSM8996" },
+>  	{ 247, "APQ8016" },
+>  	{ 248, "MSM8216" },
+> -- 
+> 2.26.1
 > 
