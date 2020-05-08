@@ -2,81 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1EC31CAD6B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:02:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96E3F1CAD53
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 15:02:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730020AbgEHNBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 09:01:50 -0400
-Received: from [115.28.160.31] ([115.28.160.31]:37932 "EHLO
-        mailbox.box.xen0n.name" rhost-flags-FAIL-FAIL-OK-OK)
-        by vger.kernel.org with ESMTP id S1729210AbgEHNBp (ORCPT
+        id S1730257AbgEHNAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 09:00:47 -0400
+Received: from sonic317-28.consmr.mail.bf2.yahoo.com ([74.6.129.83]:45290 "EHLO
+        sonic317-28.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728734AbgEHMwM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 09:01:45 -0400
-X-Greylist: delayed 584 seconds by postgrey-1.27 at vger.kernel.org; Fri, 08 May 2020 09:01:44 EDT
-Received: from hanazono.local (unknown [116.236.177.50])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 332BC600B4;
-        Fri,  8 May 2020 20:51:56 +0800 (CST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=xen0n.name; s=mail;
-        t=1588942316; bh=HDjHMr6Wm9wSc694o01E98JEM0XZjMXpbv98vll1dXs=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=RKZgcroPWCAm49IrZ9c+3R18tnP6iedDoJVXpGk4K0jbg9X9S1K1OtlrZtloC6CyB
-         QUeuh0EYGIio+qc3f/g0WNT43E8PVrWA6wJV5wAZhSKNnQB4C4yIAyBdV4ejeM+rmu
-         T+eSOIID5kTd5kAAmykDuKmLyqDhkNkc1ZXdz4sc=
-Subject: Re: [PATCH 2/3] MIPS: Loongson: Add hwmon support for generic CPU
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-References: <1588938904-924-1-git-send-email-yangtiezhu@loongson.cn>
- <1588938904-924-3-git-send-email-yangtiezhu@loongson.cn>
-From:   WANG Xuerui <kernel@xen0n.name>
-Message-ID: <f7184121-c044-6e79-78ab-dcc9103b27c2@xen0n.name>
-Date:   Fri, 8 May 2020 20:51:55 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
- Gecko/20100101 Thunderbird/78.0a1
+        Fri, 8 May 2020 08:52:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1588942331; bh=89EXGloTSE7qg19c2KdooPMjKT4q6ONR66TAwXPeW2w=; h=Date:From:Reply-To:Subject:References:From:Subject; b=Eff+x6s9ZXCEXjIuecez/p5SRbZ1bz0j2Sxp4+qTKHLC0lm0pfFINY831fTKLr3aJar3xX4NLPrDEtqWiLrqxH0IyG8+X46wFx41D5UsjcWzGmQrkBEAawmgaHzm4YesPjtXRoecojNKXFrEgIx+QdNQWoZ7nnkkUmIFg0vIuwCLVaPjPSbZfhdLf4DuCbER2pRXRogI076L8saY6C+xMq10pm1tXym2KlV7a3TqbNPtmBUqW9s0hvZQ9WNBXTtnX4DJhcDe9Y1N7srJS1d/YuYs9W103nIgdH7KCxULLOHfw6ostanu9+poE26Au8d0PDVOWaPTUA9ZLUeXwuMFLA==
+X-YMail-OSG: UrlEaTsVM1k2hmyYuP1_L7IcFZm7GXTubDZ55Xo46cCdWAhrje5O8VITQ77nPlC
+ FPTf0n0Zonxba9uIg0aGp7Ln6wfuDRYUehHroqdAIuNNveJdqHcY5zWSF4RDPAWQ46h0BadNnVFM
+ RcJN1TWMAx9cRmeKErFVXaS9G8BB2cR9Jpn744MWQMLWvgUWOKIYEO_nn4AXXxDAiLNHL8UKJSPK
+ R2sdcyt99PABK.bcKsk5JhfneUsAWYruyDlywTuLNcZrrWA1hLStYU9reeICjXGwpzcS2TRKiviI
+ nIqS91FBZ9hZn6YHtjZXkcCLkBUrAnYBRW5f0.J17YEvUxB8PSERbBbmWj9J61gkII68BfMgo37r
+ Oe83mXw2fRlTlAvKZc17Ooz1clc6_AFa_p_BXtPi4paSv3mLoWarAILb8xfHo7G4FUZ8ipdnRCk3
+ 6XayRzluT4bVFlH.QPo0u_vNoQUgHBwcpdFXPhQkdr.8yrGXlc.CDTjJd0EdvAgPJWyUJmBPzYLb
+ ZGQiy4KwpS2dUZw5bxpRnYYJM4fL27UqQn1xq8qvr6VpASReLSz8gHyN_qQsF5VCldN3IOjzbk80
+ DH6A50Edwqm1eJDZA9QKt0iHnn.kG2GfHVTSSLu8MkEPF2XZfRmRXLIUX3BCR0QtpYR1KwyECuBI
+ Q6TTSlSr7iwLXmQN6y_XQrYkVZUp0qPYnB8nf1p7q83sfrTDxRNYm0EBp2oHWpxk27k8GMJh6X0I
+ HMoz3nNxQUGrhtYyxvTkvxSZOANF6yP3cOFycx0dhdJIapojP.ThywsDMwb5bCEpq0DZFG7P1cBg
+ lxOyixqiCLFSlvANFQKtFxqp1yWu6fgr76ypZFJu39SotoqhVFZrP_gWdLD3t3.0hxOZaBNVWTDc
+ y6O8fu6PyMbDkgxED1DPj0ER5qSkOlID7SQNKygV0ADhmziYBHAVoDgLdfndVTDI.S5oPu9OAC1R
+ deYt2gb2jG.zZFgEB0KSoox9sjnh83FT5Q2Jfoow4BUuXS.pQru6HE4aUD5Auwm725kKqMZ4889T
+ cDhJq5vwRnjBdN9hSj7G30RXDXBjGXj0kRVWKH0Wh3dtRe4QURdfSVdfiKFgFTwUeVjZeJzcQUWC
+ L3pbk1tJEfcdxgM_3BLP0Pk8qE11oqiqUPvE6LgFHx0ugJjzr8WEXxcNUGSIX_P3ONnS6NqLBfer
+ SZMwtxAtGfp2NFGt2zmgM5RZmVVZgQp_JPeCeXysVW81hQo5CfHoUDykTZrQS.jpGvMjW6C_Nwtk
+ 0h3glHOHGmnpn5VZwyD3E_pKdcXy1wKDtbjibK6_mWFt12_dh9osXukycl.B8RY3dSg0xPw--
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic317.consmr.mail.bf2.yahoo.com with HTTP; Fri, 8 May 2020 12:52:11 +0000
+Date:   Fri, 8 May 2020 12:52:07 +0000 (UTC)
+From:   Christopher Bernard <carpetplus@frontiernet.net>
+Reply-To: christopherbernard589@gmail.com
+Message-ID: <438682369.78425.1588942327986@mail.yahoo.com>
+Subject: hi
 MIME-Version: 1.0
-In-Reply-To: <1588938904-924-3-git-send-email-yangtiezhu@loongson.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <438682369.78425.1588942327986.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.15902 YMailNodin Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/5/8 19:55, Tiezhu Yang wrote:
 
-> Add PRID_IMP_LOONGSON_64G case to enable hwmon support for Loongson
-> generic CPU such as 3A4000 and newer CPU.
->
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->   drivers/platform/mips/cpu_hwmon.c | 1 +
->   1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/platform/mips/cpu_hwmon.c b/drivers/platform/mips/cpu_hwmon.c
-> index add5f52..7b4bde1 100644
-> --- a/drivers/platform/mips/cpu_hwmon.c
-> +++ b/drivers/platform/mips/cpu_hwmon.c
-> @@ -43,6 +43,7 @@ int loongson3_cpu_temp(int cpu)
->   		break;
->   	case PRID_REV_LOONGSON3A_R3_0:
->   	case PRID_REV_LOONGSON3A_R3_1:
-> +	case PRID_IMP_LOONGSON_64G:
->   	default:
->   		reg = (reg & 0xffff)*731/0x4000 - 273;
->   		break;
 
-Hi,
-
-This is obviously wrong, as the value being matched is a PRID_REV. You 
-can tell from the neighboring match arms.
-
-Also, the LOONGSON_64G cores are 3A4000 and newer, that have CSR 
-support. The csr_temp_enable flag is probed in loongson_hwmon_init, then 
-the switch is simply never entered for these.
-
+Greetings
+I sent a letter to your mail, but did not receive a response from you
+Regards,
+Christopher Bernard
