@@ -2,76 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AFEC1CB626
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 19:38:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A4261CB634
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 19:44:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726864AbgEHRit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 13:38:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38154 "EHLO mail.kernel.org"
+        id S1726811AbgEHRoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 13:44:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726746AbgEHRit (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 13:38:49 -0400
-Received: from embeddedor (unknown [189.207.59.248])
+        id S1726807AbgEHRoJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 13:44:09 -0400
+Received: from earth.universe (dyndsl-037-138-187-059.ewe-ip-backbone.de [37.138.187.59])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4661D20731;
-        Fri,  8 May 2020 17:38:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C1FDB208CA;
+        Fri,  8 May 2020 17:44:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588959528;
-        bh=LcXhc6cMcXbwsVbwFfMjNO5c3oOcytqTO2+5PJMjDy4=;
+        s=default; t=1588959848;
+        bh=4UYeO0qyEtD4knQ5iIGMA1jOB8Onqgq8lqWUo7oBasw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zk2H+BDOKKror3XONma5AU4Qvh50cl0TMVdYJF4BClLA2hsYgpnU2UJ9jUUHdgYmf
-         wMKQlePwRsk+Gl200iJcrCtpVCa61VZgMfWPUf/ic6tNGVr4boMaQ0NcT5PWDW2QI6
-         OrL9WHxg9I3TJT7tj9u3UrV7B9jAb1NIqiILy/ww=
-Date:   Fri, 8 May 2020 12:43:16 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Jeffrey Hugo <jhugo@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH] dmaengine: qcom: bam_dma: Replace zero-length array with
- flexible-array
-Message-ID: <20200508174315.GC23375@embeddedor>
-References: <20200507185016.GA13883@embeddedor>
- <1b3cda25-5f3a-5359-4bf7-d16a8364f545@codeaurora.org>
- <20200508170233.GB23375@embeddedor>
- <c4f4fc47-6add-1ba1-9f06-978003e47c4f@codeaurora.org>
+        b=O0OG+NGYN1jtt6d0KABKC2oxJnu/6Z0z/iodf/dOBShz9MCQ/DkhN51CBDecEx8/t
+         imK0yeelRD/3vED8wnlEo2bZ1e+ozX9QfmOOf6hydokt9ZQgsOZ9eITIlh4ywemrJH
+         h3ZRg5sa1cvw07kxjEBOX2mtKPv+9NVhz8cvOayI=
+Received: by earth.universe (Postfix, from userid 1000)
+        id 639E23C08C6; Fri,  8 May 2020 19:44:06 +0200 (CEST)
+Date:   Fri, 8 May 2020 19:44:06 +0200
+From:   "sre@kernel.org" <sre@kernel.org>
+To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+Cc:     "mazziesaccount@gmail.com" <mazziesaccount@gmail.com>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "brendanhiggins@google.com" <brendanhiggins@google.com>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>
+Subject: Re: [PATCH v12 09/11] power: supply: Support ROHM bd99954 charger
+Message-ID: <20200508174406.s7ijef67roaoutkx@earth.universe>
+References: <cover.1588944082.git.matti.vaittinen@fi.rohmeurope.com>
+ <6d2f82459c5331fa7d27f41e6645a55cc1e44837.1588944082.git.matti.vaittinen@fi.rohmeurope.com>
+ <7a6c4afc9caf5437567c520d5f50ecf540d1c303.camel@fi.rohmeurope.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="n2n64qp3gm6ara7d"
 Content-Disposition: inline
-In-Reply-To: <c4f4fc47-6add-1ba1-9f06-978003e47c4f@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <7a6c4afc9caf5437567c520d5f50ecf540d1c303.camel@fi.rohmeurope.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 08, 2020 at 11:20:16AM -0600, Jeffrey Hugo wrote:
-> On 5/8/2020 11:02 AM, Gustavo A. R. Silva wrote:
-> > On Thu, May 07, 2020 at 01:24:57PM -0600, Jeffrey Hugo wrote:
-> > > >    drivers/dma/qcom/bam_dma.c         |    2 +-
-> > > >    drivers/firmware/qcom_scm-legacy.c |    2 +-
-> > > >    2 files changed, 2 insertions(+), 2 deletions(-)
-> > > > 
-> > > 
-> > > Shouldn't these two files be two different patches?
-> > > 
-> > 
-> > I believe so... I'll split this patch up into two patches.
-> > 
-> > Thanks
-> > --
-> > Gustavo
-> > 
-> 
-> Sounds good to me.  When you do, you can add the following if you like
-> 
-> Reviewed-by: Jeffrey Hugo <jhugo@codeaurora.org>
-> 
 
-Awesome. :)
+--n2n64qp3gm6ara7d
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks
---
-Gustavo
+Hi,
+
+On Fri, May 08, 2020 at 03:59:18PM +0000, Vaittinen, Matti wrote:
+> On Fri, 2020-05-08 at 18:50 +0300, Matti Vaittinen wrote:
+> > The ROHM BD99954 is a Battery Management LSI for 1-4 cell Lithium-Ion
+> > secondary battery intended to be used in space-constraint equipment
+> > such
+> > as Low profile Notebook PC, Tablets and other applications. BD99954
+> > provides a Dual-source Battery Charger, two port BC1.2 detection and
+> > a
+> > Battery Monitor.
+> >=20
+> > Support ROHM BD99954 Charger IC.
+> >=20
+> > Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+> > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>=20
+> Huh. I shouldn't do work at the Friday evenings... It seems I did
+> accidentally send this patch twice. Hopefully it does not mess up the
+> series for you - I'd rather not resend this anymore... Please let me
+> know if I should do some corrective actions.
+
+My mail system automatically drops mails with same Message-IDs :)
+
+-- Sebastian
+
+--n2n64qp3gm6ara7d
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl61mlMACgkQ2O7X88g7
++pqhvg//WO/Jg8dJ5AymeVFgGWRbClG2POO3n0bcU9wHFcA3nz/oMjprXvB+AKmx
++gQ8Ilr8a6TOaRSfiQbTmY5M4ylRicrTv5+0yNTT9t4Uw4W2xror4pmlhhxTyc9F
+MK/2RBQkLoGo8uOs9eLp2DMA8z6YVMdhT9Q1y5Me5jQloOHtA8Hn7pcxgVwGj2uT
+SEmwKpBP0uoMhhxVer8hoTG8Xv27elpx0mC/vmxfOSRbaWIs60xrk1f4X8N4P+nn
+7O2p+PT4W7LMOcEAcnSFD/SJe2Adtb46V6F646DhZFCG2w6+sllBt7yN1uVD9TtU
+z0D8Y846dBtAcJ+XczzFwInssYrTr98QxEXBFRtW36IcmoSdjaANs3KMfyqupG90
+wijpueDSN7TlQ4G4aO0z9f24p5fv08TkzrY1EyHG3w9M4o4ncQV0OjWN50TpRrRY
+hNSa4e0/6kUCM2ium62IYqd7MQmeBmkFJnh0Y3XEB6kSlk/YVyRdsms9QupE3Pdn
+MOpEQJvwhFnFuUzUPiRR/IpOb1vqLUN31ankZNDza5AeK/g78iMQ9jEoVxNzAQIK
+F+0bm0dTrab6kU/8DA0X5RwPnjF730SsK2puRSgeP4oy0bk8k2Egnsq7m37ZHQY/
+jr08qOAdb1XgtpeCPKok5HpFHKjoWbK3vv7gtXP5hjTOzQPkVIA=
+=qAKx
+-----END PGP SIGNATURE-----
+
+--n2n64qp3gm6ara7d--
