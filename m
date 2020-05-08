@@ -2,72 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35BE01CB173
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 16:10:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC11F1CB177
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 16:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728007AbgEHOKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 10:10:41 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:4357 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726792AbgEHOKl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 10:10:41 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 680696BBFC80DAEA3967;
-        Fri,  8 May 2020 22:10:39 +0800 (CST)
-Received: from localhost (10.166.215.154) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Fri, 8 May 2020
- 22:10:32 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <Roy.Pledge@nxp.com>, <leoyang.li@nxp.com>,
-        <youri.querry_1@nxp.com>
-CC:     <linux-kernel@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] soc: fsl: dpio: remove set but not used variable 'addr_cena'
-Date:   Fri, 8 May 2020 22:10:28 +0800
-Message-ID: <20200508141028.38124-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        id S1728045AbgEHOLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 10:11:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726792AbgEHOLD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 10:11:03 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EE9CC05BD43
+        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 07:11:03 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id k19so770039pll.9
+        for <linux-kernel@vger.kernel.org>; Fri, 08 May 2020 07:11:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=4dPbagZoCiHojddqOZ/7fl32rlCBxFjtQH5nqALmmec=;
+        b=ugEuhr43hQF2GIorw5TdwsSiNrrCDmCEwr9HOVf3Gm6Fu5d6kibiOM4ZQhYdzijepA
+         mf1pb1DqCG0k+0vfBYZcznr5tqSWFT6oHePJ5LI4re+dICkzwtDfhJxZSvFJmcAudegy
+         qbber8mb04fzd8lPG/H7WmmlR3VBSSuc7uc5vHnekMgXMKFqReqEW1QgSDA5ktF7BGHB
+         aXfHB5tP0HUZzVzOYggweDdWWihgrGwmxQzygcgPdd9o8Vs/aTsF1m2Y3HnGgWvlVDV6
+         UwW8pTaBHfDB60q0dekS69OPeND3hAUFTnprOT6gsx6pR4TELHMsqE42+LUxiuGEoT7u
+         JX+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=4dPbagZoCiHojddqOZ/7fl32rlCBxFjtQH5nqALmmec=;
+        b=qylENTUdXY7oSQ+Ts/WraIjpAQAD32LQJco0CbiyPv2mudjhWuigHy2hJIn9b5m5w7
+         oBS7nY+g7SgUwJ00cNC0gYF5NNw9bmUjYNCRfH4yU1t1/Z+HbvDjU4yEu7DrGTvn/tz/
+         brLDY3za/82rxjbkVCZS3Y+xJ4/wpqJZmDZNZ+mneh1Q+boS8p23QfSlE61ffRVtC84B
+         4PwRJ13xNDy409mTiKSakXWl2WqUxnurm5s1dOm71joSUuh9VxaOBFhvaUI9dcIUIeu/
+         r5hNVDN81m2VUpDy5g5x972b47CF9qZ17C8fZpZVoz9LoMRdpKA/nqHa9R2/NH/kbVJf
+         jeXw==
+X-Gm-Message-State: AGi0PuYjDm02D70JP+jJmHmTeXG06As0619R4nGRbQFaXWUVWPa97yVW
+        moVHUKqiJvXFKnI4jx1eM+xBzf5u9OZhLUOBr74=
+X-Google-Smtp-Source: APiQypJOHcvxo4A1toZDorcWO8cKjNc6YOm//OfdOnzC+jF/UtQJo/BfmwzHuT++5/a2Fp1Ev5U8BPp4y0noPJR46i4=
+X-Received: by 2002:a17:90a:4e5:: with SMTP id g92mr6381538pjg.148.1588947062895;
+ Fri, 08 May 2020 07:11:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.166.215.154]
-X-CFilter-Loop: Reflected
+Reply-To: oliviaeorge@hotmail.com
+Received: by 2002:a17:90b:128d:0:0:0:0 with HTTP; Fri, 8 May 2020 07:11:02
+ -0700 (PDT)
+From:   George Olivia <oliviaeorge@gmail.com>
+Date:   Fri, 8 May 2020 08:11:02 -0600
+X-Google-Sender-Auth: xq3PucRk5NmrlJqGnSzOxWM-y5I
+Message-ID: <CAO6m5yQa1PgwhuE_8B5H=+wydvVKOu_KUNkqjtBvP9ywo+cYbw@mail.gmail.com>
+Subject: I remain in the meantime with friendly greetings
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-drivers/soc/fsl/dpio//qbman-portal.c:650:11: warning: variable 'addr_cena' set but not used [-Wunused-but-set-variable]
-  uint64_t addr_cena;
-           ^~~~~~~~~
+With due respect, I am Mrs. George Olivia; I have decided to donate
+what I have to you / Motherless babies/Less privileged/Widows' because
+I am dying and diagnosed for cancer for about 2 years ago. I have been
+touched by God Almighty to donate from what I have inherited from my
+late husband to you for good work of God Almighty. I have asked
+Almighty God to forgive me and believe he has, because he is a
+Merciful God I will be going in for an operation surgery soon. I
+decided to will/donate the sum of ($ 8.1 million DOLLARS) to you for
+the good work of God Almighty, and also to help the motherless and
+less privilege and also forth assistance of the widows. At the moment
+I cannot take any telephone calls right now due to the fact that my
+relatives (that have squandered the funds gave them for this purpose
+before) are around me and my health status also. I have adjusted my
+will and my lawyer is aware.
 
-It is never used, so remove it.
+I wish you all the best and May the good Lord bless you abundantly,
+and please use the funds judiciously and always extend the good work
+to others. As soon as you get back to me, I shall give you info on
+what I need from you, then you will contact the bank and tell them I
+have willed those properties to you by quoting my personal file
+routing and account information. And I have also notified the bank
+that I am willing that properties to you for a good, effective and
+prudent work. I know I don't know you but I have been directed to do
+this by God Almighty.
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/soc/fsl/dpio/qbman-portal.c | 2 --
- 1 file changed, 2 deletions(-)
+I Have all my Hospital document which i can send to you as prove to
+what am tell you and my seriousness to this. If you are interested in
+carrying out this task, get back to me for more details on this noble
+project of mine.
 
-diff --git a/drivers/soc/fsl/dpio/qbman-portal.c b/drivers/soc/fsl/dpio/qbman-portal.c
-index e2e9fbb58a72..0ce859b60888 100644
---- a/drivers/soc/fsl/dpio/qbman-portal.c
-+++ b/drivers/soc/fsl/dpio/qbman-portal.c
-@@ -647,7 +647,6 @@ int qbman_swp_enqueue_multiple_direct(struct qbman_swp *s,
- 	const uint32_t *cl = (uint32_t *)d;
- 	uint32_t eqcr_ci, eqcr_pi, half_mask, full_mask;
- 	int i, num_enqueued = 0;
--	uint64_t addr_cena;
- 
- 	spin_lock(&s->access_spinlock);
- 	half_mask = (s->eqcr.pi_ci_mask>>1);
-@@ -700,7 +699,6 @@ int qbman_swp_enqueue_multiple_direct(struct qbman_swp *s,
- 
- 	/* Flush all the cacheline without load/store in between */
- 	eqcr_pi = s->eqcr.pi;
--	addr_cena = (size_t)s->addr_cena;
- 	for (i = 0; i < num_enqueued; i++)
- 		eqcr_pi++;
- 	s->eqcr.pi = eqcr_pi & full_mask;
--- 
-2.17.1
-
-
+Yours Faithfully,
+Mrs. George Olivia
