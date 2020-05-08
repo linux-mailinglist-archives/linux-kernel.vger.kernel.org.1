@@ -2,366 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E8021CA2C7
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 07:37:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09CF91CA2E4
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 07:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727882AbgEHFhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 01:37:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727840AbgEHFhA (ORCPT
+        id S1726907AbgEHFjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 01:39:07 -0400
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:44662 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725681AbgEHFjG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 01:37:00 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63ED1C05BD0A
-        for <linux-kernel@vger.kernel.org>; Thu,  7 May 2020 22:37:00 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id x13so728753ybg.23
-        for <linux-kernel@vger.kernel.org>; Thu, 07 May 2020 22:37:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=BFD8nhK0dX4YEMcU7Smo5skF8Dz1bnzKF6C4HDOa3XU=;
-        b=amAC53lTojvSFOzIEVFCPud5/TY80InT8t3QroEVY5B34gH6N1rhThO0UVL2JPxYEL
-         QiVIPI1FXhBC1fxvj+Eh3rDLdunhzIUHhasVJ5j16iurrsgiPHb7bbjK4sKWuqCHzwTg
-         G/UZFjWXP4RtcNWAOOtbyzJ7BCEWHF9vCKLsQG6NKdTVwhuWmU+LYxGOhIf3Jau0uRFT
-         1Axv8WGK59Ekmww0tN8XQSKTLPt5i+kTAVqpQwSvJ8MSoLaF91+wfH+B9rWk811uOyP6
-         R5CttBZBebfucPE8gAu2z+llIVP/KW2icvgx7FPnSX9qr2M6oBtY8nNCfPUAoYErsYD2
-         mOQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=BFD8nhK0dX4YEMcU7Smo5skF8Dz1bnzKF6C4HDOa3XU=;
-        b=sBWJNaA1we3MQKqRpk/YSOG/+d8Aq4srHDDm+0/dR519joYenLpl6EWs3GOEAoRje/
-         rjWvUKs4O1l4MCf8NYkKIKz+L7wf+LakZjUpAlcux3Bfo/aUDQTR79pg5yfZXFimz8xq
-         AlLMtuTE4i71Rm25E4wlZW9h7t53Oi7kRO13xFD3jWIPLWxzFQqCV2aI+nx6Ko7eb2au
-         /A1WTh7rFHDl1Gg5DDfxqfve7dFlkAm4qkBs+v+8UEZHaZIZ2IrVZKfrBeR6RqlT0AF3
-         EXlKYFKlBgJzvdmQqVhtrSFf6oB7TeM7EZR1jJ5igazmx3FmoVajfYgDUJIBrg8vMmne
-         RauQ==
-X-Gm-Message-State: AGi0Pub78OT3HrWCPpXoDD8eNZnb3rLFvoZDDj+svOY2Hj0EiRnHCISN
-        pm6Fwy9z7x7llTkx0xL1o4zgwAqBQVOx
-X-Google-Smtp-Source: APiQypLI1EouoScO7AugzcUOZ8Mm57xGeyDEO2XSDF2z5dKyErjZBDYydoJ5zpOUedCXjCuufjKeH4smh1iz
-X-Received: by 2002:a25:73c8:: with SMTP id o191mr1999844ybc.194.1588916219593;
- Thu, 07 May 2020 22:36:59 -0700 (PDT)
-Date:   Thu,  7 May 2020 22:36:29 -0700
-In-Reply-To: <20200508053629.210324-1-irogers@google.com>
-Message-Id: <20200508053629.210324-15-irogers@google.com>
-Mime-Version: 1.0
-References: <20200508053629.210324-1-irogers@google.com>
-X-Mailer: git-send-email 2.26.2.645.ge9eca65c58-goog
-Subject: [RFC PATCH v3 14/14] perf metricgroup: add options to not group or merge
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        linux-kernel@vger.kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        Vince Weaver <vincent.weaver@maine.edu>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
+        Fri, 8 May 2020 01:39:06 -0400
+Received: from mail-vk1-f178.google.com (mail-vk1-f178.google.com [209.85.221.178]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 0485cZxi031330;
+        Fri, 8 May 2020 14:38:35 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 0485cZxi031330
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1588916316;
+        bh=6uORqD6LGkuneE9UyXFpz3pdT+rI/NDAz27a1vvxrh8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=NUwDqeXXELLcOkjKZCwue1/kEnY37m9GUWM+cTPyPaxnBZRcDu1hLVRvCZLOS0RmJ
+         4L3slMUg4i1PWM7d7E+6wbDQVaS3Bg/lCQD9LysZ0wKJb5Zd4kSOzXLu4ZYnYpJzM3
+         lflOZ3cEBWv+HOZbG1/ZFu15JWSVnFl9VoxHPFkwP8AnVuo/bhpGIeXPmHp4qk2KCl
+         /4Tg0eVk6SG69UUrWxm1TAWHWTv1je/zmmezvxpkmH8fZTodwBmHbrBhEqvwAkx89m
+         +uB6RM4J748frMWQ5+egYqcIq6FjEVStRJDgblvsoKPoZakL7iGYQ45x40+vs8F8T8
+         YvOj+anNx+WRg==
+X-Nifty-SrcIP: [209.85.221.178]
+Received: by mail-vk1-f178.google.com with SMTP id b14so121371vkk.10;
+        Thu, 07 May 2020 22:38:35 -0700 (PDT)
+X-Gm-Message-State: AGi0PuYpnA4OQtpyRealflGhbPL/Wzo56CydWQuMd+9thdOtGE6pkuID
+        2+9JiAu4X8u+ef8SzCqTV9Qu7VnwTC+srUGBnrQ=
+X-Google-Smtp-Source: APiQypK2KtQbOWcXkPz3bng6woQqwWOOLWMJV6Iwtcl08hNJrkuCDHARFryG0giTq8cybfg6KE2ohPiN1TCNuzkRumM=
+X-Received: by 2002:a1f:8fc1:: with SMTP id r184mr496087vkd.12.1588916314505;
+ Thu, 07 May 2020 22:38:34 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200507185601.GA14759@embeddedor>
+In-Reply-To: <20200507185601.GA14759@embeddedor>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 8 May 2020 14:37:58 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAS1bjKcczLADzP8JQ=CVe4VOFb1L3C4bb+0eS5zfBHubg@mail.gmail.com>
+Message-ID: <CAK7LNAS1bjKcczLADzP8JQ=CVe4VOFb1L3C4bb+0eS5zfBHubg@mail.gmail.com>
+Subject: Re: [PATCH] modpost: Replace zero-length array with flexible-array
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add --metric-no-group that causes all events within metrics to not be
-grouped. This can allow the event to get more time when multiplexed, but
-may also lower accuracy.
-Add --metric-no-merge option. By default events in different metrics may
-be shared if the group of events for one metric is the same or larger
-than that of the second. Sharing may increase or lower accuracy and so
-is now configurable.
+On Fri, May 8, 2020 at 3:51 AM Gustavo A. R. Silva
+<gustavoars@kernel.org> wrote:
+>
+> The current codebase makes use of the zero-length array language
+> extension to the C90 standard, but the preferred mechanism to declare
+> variable-length types such as these ones is a flexible array member[1][2],
+> introduced in C99:
+>
+> struct foo {
+>         int stuff;
+>         struct boo array[];
+> };
+>
+> By making use of the mechanism above, we will get a compiler warning
+> in case the flexible array does not occur last in the structure, which
+> will help us prevent some kind of undefined behavior bugs from being
+> inadvertently introduced[3] to the codebase from now on.
+>
+> Also, notice that, dynamic memory allocations won't be affected by
+> this change:
+>
+> "Flexible array members have incomplete type, and so the sizeof operator
+> may not be applied. As a quirk of the original implementation of
+> zero-length arrays, sizeof evaluates to zero."[1]
+>
+> sizeof(flexible-array-member) triggers a warning because flexible array
+> members have incomplete type[1]. There are some instances of code in
+> which the sizeof operator is being incorrectly/erroneously applied to
+> zero-length arrays and the result is zero. Such instances may be hiding
+> some bugs. So, this work (flexible-array member conversions) will also
+> help to get completely rid of those sorts of issues.
+>
+> This issue was found with the help of Coccinelle.
+>
+> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+> [2] https://github.com/KSPP/linux/issues/21
+> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+>
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/Documentation/perf-stat.txt | 19 ++++++++++
- tools/perf/builtin-stat.c              | 11 +++++-
- tools/perf/util/metricgroup.c          | 51 ++++++++++++++++++--------
- tools/perf/util/metricgroup.h          |  6 ++-
- tools/perf/util/stat.h                 |  2 +
- 5 files changed, 71 insertions(+), 18 deletions(-)
 
-diff --git a/tools/perf/Documentation/perf-stat.txt b/tools/perf/Documentation/perf-stat.txt
-index 3fb5028aef08..cc1e4c62bc91 100644
---- a/tools/perf/Documentation/perf-stat.txt
-+++ b/tools/perf/Documentation/perf-stat.txt
-@@ -234,6 +234,25 @@ filter out the startup phase of the program, which is often very different.
- 
- Print statistics of transactional execution if supported.
- 
-+--metric-no-group::
-+By default, events to compute a metric are placed in weak groups. The
-+group tries to enforce scheduling all or none of the events. The
-+--metric-no-group option places events outside of groups and may
-+increase the chance of the event being scheduled - leading to more
-+accuracy. However, as events may not be scheduled together accuracy
-+for metrics like instructions per cycle can be lower - as both metrics
-+may no longer be being measured at the same time.
-+
-+--metric-no-merge::
-+By default metric events in different weak groups can be shared if one
-+group contains all the events needed by another. In such cases one
-+group will be eliminated reducing event multiplexing and making it so
-+that certain groups of metrics sum to 100%. A downside to sharing a
-+group is that the group may require multiplexing and so accuracy for a
-+small group that need not have multiplexing is lowered. This option
-+forbids the event merging logic from sharing events between groups and
-+may be used to increase accuracy in this case.
-+
- STAT RECORD
- -----------
- Stores stat data into perf data file.
-diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index e0c1ad23c768..5d444b1d82fb 100644
---- a/tools/perf/builtin-stat.c
-+++ b/tools/perf/builtin-stat.c
-@@ -840,7 +840,10 @@ static int parse_metric_groups(const struct option *opt,
- 			       const char *str,
- 			       int unset __maybe_unused)
- {
--	return metricgroup__parse_groups(opt, str, &stat_config.metric_events);
-+	return metricgroup__parse_groups(opt, str,
-+					 stat_config.metric_no_group,
-+					 stat_config.metric_no_merge,
-+					 &stat_config.metric_events);
- }
- 
- static struct option stat_options[] = {
-@@ -918,6 +921,10 @@ static struct option stat_options[] = {
- 		     "ms to wait before starting measurement after program start"),
- 	OPT_CALLBACK_NOOPT(0, "metric-only", &stat_config.metric_only, NULL,
- 			"Only print computed metrics. No raw values", enable_metric_only),
-+	OPT_BOOLEAN(0, "metric-no-group", &stat_config.metric_no_group,
-+		       "don't group metric events, impacts multiplexing"),
-+	OPT_BOOLEAN(0, "metric-no-merge", &stat_config.metric_no_merge,
-+		       "don't try to share events between metrics in a group"),
- 	OPT_BOOLEAN(0, "topdown", &topdown_run,
- 			"measure topdown level 1 statistics"),
- 	OPT_BOOLEAN(0, "smi-cost", &smi_cost,
-@@ -1442,6 +1449,8 @@ static int add_default_attributes(void)
- 			struct option opt = { .value = &evsel_list };
- 
- 			return metricgroup__parse_groups(&opt, "transaction",
-+							 stat_config.metric_no_group,
-+							stat_config.metric_no_merge,
- 							 &stat_config.metric_events);
- 		}
- 
-diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-index c97dc87c2a31..9dcaac4fdebd 100644
---- a/tools/perf/util/metricgroup.c
-+++ b/tools/perf/util/metricgroup.c
-@@ -95,11 +95,15 @@ struct egroup {
- 
- /**
-  * Find a group of events in perf_evlist that correpond to those from a parsed
-- * metric expression.
-+ * metric expression. Note, as find_evsel_group is called in the same order as
-+ * perf_evlist was constructed, metric_no_merge doesn't need to test for
-+ * underfilling a group.
-  * @perf_evlist: a list of events something like: {metric1 leader, metric1
-  * sibling, metric1 sibling}:W,duration_time,{metric2 leader, metric2 sibling,
-  * metric2 sibling}:W,duration_time
-  * @pctx: the parse context for the metric expression.
-+ * @metric_no_merge: don't attempt to share events for the metric with other
-+ * metrics.
-  * @has_constraint: is there a contraint on the group of events? In which case
-  * the events won't be grouped.
-  * @metric_events: out argument, null terminated array of evsel's associated
-@@ -109,6 +113,7 @@ struct egroup {
-  */
- static struct evsel *find_evsel_group(struct evlist *perf_evlist,
- 				      struct expr_parse_ctx *pctx,
-+				      bool metric_no_merge,
- 				      bool has_constraint,
- 				      struct evsel **metric_events,
- 				      unsigned long *evlist_used)
-@@ -132,6 +137,9 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
- 		 */
- 		if (has_constraint && ev->weak_group)
- 			continue;
-+		/* Ignore event if already used and merging is disabled. */
-+		if (metric_no_merge && test_bit(ev->idx, evlist_used))
-+			continue;
- 		if (!has_constraint && ev->leader != current_leader) {
- 			/*
- 			 * Start of a new group, discard the whole match and
-@@ -175,6 +183,7 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
- }
- 
- static int metricgroup__setup_events(struct list_head *groups,
-+				     bool metric_no_merge,
- 				     struct evlist *perf_evlist,
- 				     struct rblist *metric_events_list)
- {
-@@ -200,8 +209,9 @@ static int metricgroup__setup_events(struct list_head *groups,
- 			break;
- 		}
- 		evsel = find_evsel_group(perf_evlist, &eg->pctx,
--					eg->has_constraint, metric_events,
--					evlist_used);
-+					 metric_no_merge,
-+					 eg->has_constraint, metric_events,
-+					 evlist_used);
- 		if (!evsel) {
- 			pr_debug("Cannot resolve %s: %s\n",
- 					eg->metric_name, eg->metric_expr);
-@@ -523,7 +533,9 @@ int __weak arch_get_runtimeparam(void)
- }
- 
- static int __metricgroup__add_metric(struct list_head *group_list,
--				     struct pmu_event *pe, int runtime)
-+				     struct pmu_event *pe,
-+				     bool metric_no_group,
-+				     int runtime)
- {
- 	struct egroup *eg;
- 
-@@ -536,7 +548,7 @@ static int __metricgroup__add_metric(struct list_head *group_list,
- 	eg->metric_expr = pe->metric_expr;
- 	eg->metric_unit = pe->unit;
- 	eg->runtime = runtime;
--	eg->has_constraint = metricgroup__has_constraint(pe);
-+	eg->has_constraint = metric_no_group || metricgroup__has_constraint(pe);
- 
- 	if (expr__find_other(pe->metric_expr, NULL, &eg->pctx, runtime) < 0) {
- 		expr__ctx_clear(&eg->pctx);
-@@ -563,7 +575,8 @@ static int __metricgroup__add_metric(struct list_head *group_list,
- 	return 0;
- }
- 
--static int metricgroup__add_metric(const char *metric, struct strbuf *events,
-+static int metricgroup__add_metric(const char *metric, bool metric_no_group,
-+				   struct strbuf *events,
- 				   struct list_head *group_list)
- {
- 	struct pmu_events_map *map = perf_pmu__find_map(NULL);
-@@ -588,7 +601,9 @@ static int metricgroup__add_metric(const char *metric, struct strbuf *events,
- 
- 			if (!strstr(pe->metric_expr, "?")) {
- 				ret = __metricgroup__add_metric(group_list,
--								pe, 1);
-+								pe,
-+								metric_no_group,
-+								1);
- 			} else {
- 				int j, count;
- 
-@@ -601,7 +616,8 @@ static int metricgroup__add_metric(const char *metric, struct strbuf *events,
- 
- 				for (j = 0; j < count; j++) {
- 					ret = __metricgroup__add_metric(
--						group_list, pe, j);
-+						group_list, pe,
-+						metric_no_group, j);
- 				}
- 			}
- 			if (ret == -ENOMEM)
-@@ -625,7 +641,8 @@ static int metricgroup__add_metric(const char *metric, struct strbuf *events,
- 	return ret;
- }
- 
--static int metricgroup__add_metric_list(const char *list, struct strbuf *events,
-+static int metricgroup__add_metric_list(const char *list, bool metric_no_group,
-+					struct strbuf *events,
- 				        struct list_head *group_list)
- {
- 	char *llist, *nlist, *p;
-@@ -640,7 +657,8 @@ static int metricgroup__add_metric_list(const char *list, struct strbuf *events,
- 	strbuf_addf(events, "%s", "");
- 
- 	while ((p = strsep(&llist, ",")) != NULL) {
--		ret = metricgroup__add_metric(p, events, group_list);
-+		ret = metricgroup__add_metric(p, metric_no_group, events,
-+					      group_list);
- 		if (ret == -EINVAL) {
- 			fprintf(stderr, "Cannot find metric or group `%s'\n",
- 					p);
-@@ -667,8 +685,10 @@ static void metricgroup__free_egroups(struct list_head *group_list)
- }
- 
- int metricgroup__parse_groups(const struct option *opt,
--			   const char *str,
--			   struct rblist *metric_events)
-+			      const char *str,
-+			      bool metric_no_group,
-+			      bool metric_no_merge,
-+			      struct rblist *metric_events)
- {
- 	struct parse_events_error parse_error;
- 	struct evlist *perf_evlist = *(struct evlist **)opt->value;
-@@ -678,7 +698,8 @@ int metricgroup__parse_groups(const struct option *opt,
- 
- 	if (metric_events->nr_entries == 0)
- 		metricgroup__rblist_init(metric_events);
--	ret = metricgroup__add_metric_list(str, &extra_events, &group_list);
-+	ret = metricgroup__add_metric_list(str, metric_no_group,
-+					   &extra_events, &group_list);
- 	if (ret)
- 		return ret;
- 	pr_debug("adding %s\n", extra_events.buf);
-@@ -689,8 +710,8 @@ int metricgroup__parse_groups(const struct option *opt,
- 		goto out;
- 	}
- 	strbuf_release(&extra_events);
--	ret = metricgroup__setup_events(&group_list, perf_evlist,
--					metric_events);
-+	ret = metricgroup__setup_events(&group_list, metric_no_merge,
-+					perf_evlist, metric_events);
- out:
- 	metricgroup__free_egroups(&group_list);
- 	return ret;
-diff --git a/tools/perf/util/metricgroup.h b/tools/perf/util/metricgroup.h
-index 6b09eb30b4ec..287850bcdeca 100644
---- a/tools/perf/util/metricgroup.h
-+++ b/tools/perf/util/metricgroup.h
-@@ -29,8 +29,10 @@ struct metric_event *metricgroup__lookup(struct rblist *metric_events,
- 					 struct evsel *evsel,
- 					 bool create);
- int metricgroup__parse_groups(const struct option *opt,
--			const char *str,
--			struct rblist *metric_events);
-+			      const char *str,
-+			      bool metric_no_group,
-+			      bool metric_no_merge,
-+			      struct rblist *metric_events);
- 
- void metricgroup__print(bool metrics, bool groups, char *filter,
- 			bool raw, bool details);
-diff --git a/tools/perf/util/stat.h b/tools/perf/util/stat.h
-index b4fdfaa7f2c0..ea054d27ce1d 100644
---- a/tools/perf/util/stat.h
-+++ b/tools/perf/util/stat.h
-@@ -110,6 +110,8 @@ struct perf_stat_config {
- 	bool			 all_kernel;
- 	bool			 all_user;
- 	bool			 percore_show_thread;
-+	bool			 metric_no_group;
-+	bool			 metric_no_merge;
- 	FILE			*output;
- 	unsigned int		 interval;
- 	unsigned int		 timeout;
+Applied to linux-kbuild. Thanks.
+
+
+
 -- 
-2.26.2.645.ge9eca65c58-goog
-
+Best Regards
+Masahiro Yamada
