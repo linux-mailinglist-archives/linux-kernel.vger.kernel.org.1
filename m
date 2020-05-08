@@ -2,88 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A6FD1CB4C6
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 18:17:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57F661CB4CD
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 18:17:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728618AbgEHQQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 12:16:29 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:53532 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728568AbgEHQQX (ORCPT
+        id S1728647AbgEHQQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 12:16:50 -0400
+Received: from forwardcorp1p.mail.yandex.net ([77.88.29.217]:50852 "EHLO
+        forwardcorp1p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728174AbgEHQQq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 12:16:23 -0400
-Received: from [192.168.1.17] (unknown [76.104.235.235])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 44FBD20B717B;
-        Fri,  8 May 2020 09:16:21 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 44FBD20B717B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1588954582;
-        bh=zN67uqgpQYPNIbXXPTElpBVedXzm8/J7FKeWL5LhcC0=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=a2oF2gMsa+ICuVc/fFX8c0bRG5sTFQV0lrP2W7qsArF55ZaVGn5XMr/pThueCNHbj
-         uT96kdEZc0eh2ics2DZm0dXWKu6UGV1F9ivnSvk398WUneD5yx+7ke+Ft7d7l59NSm
-         u6bTcahIJckCuKo27xWXNu3LbEvuRzzP3VxXsz5o=
-Subject: Re: [PATCH v29 00/20] Intel SGX foundations
-To:     "Dr. Greg" <greg@enjellic.com>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-sgx@vger.kernel.org, akpm@linux-foundation.org,
-        dave.hansen@intel.com, sean.j.christopherson@intel.com,
-        nhorman@redhat.com, npmccallum@redhat.com, haitao.huang@intel.com,
-        andriy.shevchenko@linux.intel.com, tglx@linutronix.de,
-        kai.svahn@intel.com, bp@alien8.de, josh@joshtriplett.org,
-        luto@kernel.org, kai.huang@intel.com, rientjes@google.com,
-        cedric.xing@intel.com, puiterwijk@redhat.com
-References: <20200421215316.56503-1-jarkko.sakkinen@linux.intel.com>
- <e50f4c00-12e6-19e6-ead3-f180074bceea@linux.microsoft.com>
- <20200507180654.GA17632@wind.enjellic.com>
-From:   Jordan Hand <jorhand@linux.microsoft.com>
-Message-ID: <97a7a73b-53ea-d4f8-5323-f9f109150480@linux.microsoft.com>
-Date:   Fri, 8 May 2020 09:16:20 -0700
+        Fri, 8 May 2020 12:16:46 -0400
+Received: from mxbackcorp1g.mail.yandex.net (mxbackcorp1g.mail.yandex.net [IPv6:2a02:6b8:0:1402::301])
+        by forwardcorp1p.mail.yandex.net (Yandex) with ESMTP id 1DA522E14C4;
+        Fri,  8 May 2020 19:16:43 +0300 (MSK)
+Received: from myt4-18a966dbd9be.qloud-c.yandex.net (myt4-18a966dbd9be.qloud-c.yandex.net [2a02:6b8:c00:12ad:0:640:18a9:66db])
+        by mxbackcorp1g.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id FUmgX13TVC-GeAWkgPx;
+        Fri, 08 May 2020 19:16:43 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1588954603; bh=fBUtwXBek4NM+L2c+v6a5Q30Xgg4O7DzdNaSB/H01/M=;
+        h=In-Reply-To:References:Date:Message-ID:From:To:Subject;
+        b=dAECvcdKmUWk2CVnMXeTHO8Vk04t0GhdKk6GVVazxHMmEd4vqdRBdWvIWqkI271c7
+         CSAWWDV/ZA13LhBGUZXu96IhmqX7dtLDQOdPEN9crnTRzNnC73pXVD2TgYv1vXjxGT
+         5ykQhY615zHDuCC3cU53VoEyWgY+W+NlFyLvCwzM=
+Authentication-Results: mxbackcorp1g.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from dynamic-vpn.dhcp.yndx.net (dynamic-vpn.dhcp.yndx.net [2a02:6b8:b080:7008::1:4])
+        by myt4-18a966dbd9be.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id qhpQEsyI8M-GeWCH2g5;
+        Fri, 08 May 2020 19:16:40 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+Subject: Re: [PATCH RFC 1/8] dcache: show count of hash buckets in sysctl
+ fs.dentry-state
+To:     Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+References: <158893941613.200862.4094521350329937435.stgit@buzz>
+ <158894059427.200862.341530589978120554.stgit@buzz>
+ <7c1cef87-2940-eb17-51d4-cbc40218b770@redhat.com>
+From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Message-ID: <ac1ece33-46ea-175a-98ef-c79fcd1ced90@yandex-team.ru>
+Date:   Fri, 8 May 2020 19:16:40 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200507180654.GA17632@wind.enjellic.com>
+In-Reply-To: <7c1cef87-2940-eb17-51d4-cbc40218b770@redhat.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Language: en-CA
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/7/20 11:06 AM, Dr. Greg wrote:
-> On Wed, May 06, 2020 at 09:39:55AM -0700, Jordan Hand wrote:
-> 
-> Good afternoon, I hope the week is going well for everyone.
-> 
->> On 4/21/20 2:52 PM, Jarkko Sakkinen wrote:
->>> Make the vDSO callable directly from C by preserving RBX and taking leaf
->>>    from RCX.
-> 
->> Tested with the Open Enclave SDK on top of Intel PSW. Specifically built
->> the Intel PSW with changes to support /dev/sgx mapping[1] new in v29.
+On 08/05/2020 17.49, Waiman Long wrote:
+> On 5/8/20 8:23 AM, Konstantin Khlebnikov wrote:
+>> Count of buckets is required for estimating average length of hash chains.
+>> Size of hash table depends on memory size and printed once at boot.
 >>
->> Tested-by: Jordan Hand <jorhand@linux.microsoft.com>
->>
->> [1] https://github.com/intel/linux-sgx/pull/530
+>> Let's expose nr_buckets as sixth number in sysctl fs.dentry-state
 > 
-> Did you re-wire your SDK to convert all your ECALL and exception
-> handling to the new VDSO architecture?
- >
+> The hash bucket count is a constant determined at boot time. Is there a need to use up one dentry_stat entry for that? Besides one can get 
+> it by looking up the kernel dmesg log like:
+> 
+> [    0.055212] Dentry cache hash table entries: 8388608 (order: 14, 67108864 bytes)
 
-No. We have many users of our SDK who rely on the out-of-tree driver and 
-will for the foreseeable future. I aim to support both in-tree and 
-out-of-tree with minimal code diff.
+Grepping logs since boot time is a worst API ever.
 
->
-> Failures in enclave loading and initialization demonstrate themselves
-> pretty clearly and are in the domain of the PSW being used.  If there
-> are going to be subtle SGX application operability issues that need to
-> be found they will be in the new ECALL and exception handling
-> mechanisms.
+dentry-state shows count of dentries in various states.
+It's very convenient to show count of buckets next to it,
+because this number defines overall scale.
 
-Fair enough, no I have not tested those mechanisms. Apologies, I should 
-have removed that line from the quoted text.
-
--Jordan
+> 
+> Cheers,
+> Longman
+> 
