@@ -2,209 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF8381CA686
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 10:48:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A97281CA693
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 10:51:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727082AbgEHIsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 04:48:36 -0400
-Received: from mga18.intel.com ([134.134.136.126]:31689 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726616AbgEHIsf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 04:48:35 -0400
-IronPort-SDR: uiWwEpsLk3KC1hqlUobUmzl70VNTqTo4jqVpFJ0/EBpugrHbHLrShh0giCaM19vtt+IayYd0YO
- ZjpkGG4oMUrA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2020 01:48:35 -0700
-IronPort-SDR: o/UFJtcmQaq+kZTdWiOUM5OwBW/Hlzau4txwZwl9ISo4XMuA7AhP6r/AMSy4kFa9nSeEQU1cPr
- plKUyFVeSD+g==
-X-IronPort-AV: E=Sophos;i="5.73,367,1583222400"; 
-   d="scan'208";a="407953065"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.141]) ([10.238.4.141])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2020 01:48:32 -0700
-Subject: Re: [PATCH v10 08/11] KVM: x86/pmu: Add LBR feature emulation via
- guest LBR event
-From:   Like Xu <like.xu@linux.intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, wei.w.wang@intel.com,
-        ak@linux.intel.com
-References: <20200423081412.164863-1-like.xu@linux.intel.com>
- <20200423081412.164863-9-like.xu@linux.intel.com>
- <20200424121626.GB20730@hirez.programming.kicks-ass.net>
- <87abf620-d292-d997-c9be-9a5d2544f3fa@linux.intel.com>
-Organization: Intel OTC
-Message-ID: <c9b4df65-ca2d-083a-883d-415e6be52ac2@linux.intel.com>
-Date:   Fri, 8 May 2020 16:48:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1727067AbgEHIvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 04:51:53 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:40282 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726616AbgEHIvw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 04:51:52 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0488lwp9066596;
+        Fri, 8 May 2020 08:51:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=AWbUZitwGxqH5XK2qvZBSe3apYjT0vdFp0iz/vgH32U=;
+ b=CfJCRY58BEkHUdPT/WP0qB2DDdtV9oL9tJgua2Nrve3zL7CeCCGIkB8bf6rgWPVJCMCK
+ Bhremhku2blJuXF9HLzZiwMTDymIx2sdfVnv/3eWgQBt58FpfWaTo8IUhPbg6m6N+pLJ
+ ySRUeCZ9+cmmB5XR2ffYj+6m0fnechdYXG4Q2M/33cYed0RRy6L9zmHzzz5AyXDGNJdV
+ m4JBzXnEd6SarXecfCIbvoHbKPeUPdl2YHNEjlpeSDLQ/uxT9OoKY9ciD0mHtBb+eHAG
+ uIUdqD6wxtmVInUp0YRTEoQat0UvK7lhMubaWdCEgRyTgTzR9b61hpwg/Nrp29v5QLBE iw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 30vtexsucp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 08 May 2020 08:51:49 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0488kgWO163200;
+        Fri, 8 May 2020 08:49:49 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 30vteg9pxh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 08 May 2020 08:49:49 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0488nmOY027677;
+        Fri, 8 May 2020 08:49:48 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 08 May 2020 01:49:47 -0700
+Date:   Fri, 8 May 2020 11:49:41 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] memory: tegra: Fix an error handling path in
+ 'tegra186_emc_probe()'
+Message-ID: <20200508084941.GE9365@kadam>
+References: <20200506200907.195502-1-christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-In-Reply-To: <87abf620-d292-d997-c9be-9a5d2544f3fa@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200506200907.195502-1-christophe.jaillet@wanadoo.fr>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9614 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
+ phishscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0 spamscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005080076
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9614 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 adultscore=0
+ spamscore=0 suspectscore=0 bulkscore=0 priorityscore=1501 malwarescore=0
+ phishscore=0 impostorscore=0 mlxscore=0 mlxlogscore=999 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005080076
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+On Wed, May 06, 2020 at 10:09:07PM +0200, Christophe JAILLET wrote:
+> @@ -237,7 +239,7 @@ static int tegra186_emc_probe(struct platform_device *pdev)
+>  			"failed to set rate range [%lu-%lu] for %pC\n",
+>  			emc->debugfs.min_rate, emc->debugfs.max_rate,
+>  			emc->clk);
+> -		return err;
+> +		goto err_put_bpmp;
+>  	}
+>  
+>  	emc->debugfs.root = debugfs_create_dir("emc", NULL);
 
-On 2020/4/27 11:16, Like Xu wrote:
-> Hi Peter,
-> 
-> On 2020/4/24 20:16, Peter Zijlstra wrote:
->> On Thu, Apr 23, 2020 at 04:14:09PM +0800, Like Xu wrote:
->>> +static int intel_pmu_create_lbr_event(struct kvm_vcpu *vcpu)
->>> +{
->>> +    struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
->>> +    struct perf_event *event;
->>> +
->>> +    /*
->>> +     * The perf_event_attr is constructed in the minimum efficient way:
->>> +     * - set 'pinned = true' to make it task pinned so that if another
->>> +     *   cpu pinned event reclaims LBR, the event->oncpu will be set to 
->>> -1;
->>> +     *
->>> +     * - set 'sample_type = PERF_SAMPLE_BRANCH_STACK' and
->>> +     *   'exclude_host = true' to mark it as a guest LBR event which
->>> +     *   indicates host perf to schedule it without but a fake counter,
->>> +     *   check is_guest_lbr_event() and intel_guest_event_constraints();
->>> +     *
->>> +     * - set 'branch_sample_type = PERF_SAMPLE_BRANCH_CALL_STACK |
->>> +     *   PERF_SAMPLE_BRANCH_USER' to configure it to use callstack mode,
->>> +     *   which allocs 'ctx->task_ctx_data' and request host perf subsystem
->>> +     *   to save/restore guest LBR records during host context switches,
->>> +     *   check branch_user_callstack() and intel_pmu_lbr_sched_task();
->>> +     */
->>> +    struct perf_event_attr attr = {
->>> +        .type = PERF_TYPE_RAW,
->>
->> This is not right; this needs a .config
-> 
-> Now we know the default value .config = 0 for attr is not acceptable.
-> 
->>
->> And I suppose that is why you need that horrible:
->> needs_guest_lbr_without_counter() thing to begin with.
-> 
-> Do you suggest to use event->attr.config check to replace
-> "needs_branch_stack(event) && is_kernel_event(event) &&
-> event->attr.exclude_host" check for guest LBR event ?
-> 
->>
->> Please allocate yourself an event from the pseudo event range:
->> event==0x00. Currently we only have umask==3 for Fixed2 and umask==4
->> for Fixed3, given you claim 58, which is effectively Fixed25,
->> umask==0x1a might be appropriate.
-> 
-> OK, I assume that adding one more field ".config = 0x1a00" is
-> efficient enough for perf_event_attr to allocate guest LBR events.
+Not really related to this patch but the error handling on this
+debugfs_create_dir() call is wrong.  It never returns NULL.  The error
+should just be ignored.  It shouldn't try print a message when debugfs
+is deliberately disabled.
 
-Do you have any comment for this ?
+As in the correct code looks like:
 
-> 
->>
->> Also, I suppose we need to claim 0x0000 as an error, so that other
->> people won't try this again.
-> 
-> Does the following fix address your concern on this ?
+ 
+        emc->debugfs.root = debugfs_create_dir("emc", NULL);
+-       if (!emc->debugfs.root) {
+-               dev_err(&pdev->dev, "failed to create debugfs directory\n");
+-               return 0;
+-       }
+-
+        debugfs_create_file("available_rates", S_IRUGO, emc->debugfs.root,
+                            emc, &tegra186_emc_debug_available_rates_fops);
+        debugfs_create_file("min_rate", S_IRUGO | S_IWUSR, emc->debugfs.root,
 
-Does the following fix address your concern on this ?
+debugfs_create_file() will return an error pointer if debugfs_create_dir()
+fails or if debugfs is disabled.  (It is a no-op).
 
-> 
-> diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-> index 2405926e2dba..32d2a3f8c51f 100644
-> --- a/arch/x86/events/core.c
-> +++ b/arch/x86/events/core.c
-> @@ -498,6 +498,9 @@ int x86_pmu_max_precise(void)
-> 
->   int x86_pmu_hw_config(struct perf_event *event)
->   {
-> +       if (!unlikely(event->attr.config & X86_ARCH_EVENT_MASK))
-> +               return -EINVAL;
-> +
->          if (event->attr.precise_ip) {
->                  int precise = x86_pmu_max_precise();
-> 
-> diff --git a/arch/x86/include/asm/perf_event.h 
-> b/arch/x86/include/asm/perf_event.h
-> index 2e6c59308344..bdba87a6f0af 100644
-> --- a/arch/x86/include/asm/perf_event.h
-> +++ b/arch/x86/include/asm/perf_event.h
-> @@ -47,6 +47,8 @@
->          (ARCH_PERFMON_EVENTSEL_EVENT | (0x0FULL << 32))
->   #define INTEL_ARCH_EVENT_MASK  \
->          (ARCH_PERFMON_EVENTSEL_UMASK | ARCH_PERFMON_EVENTSEL_EVENT)
-> +#define X86_ARCH_EVENT_MASK    \
-> +       (ARCH_PERFMON_EVENTSEL_UMASK | ARCH_PERFMON_EVENTSEL_EVENT)
-> 
->   #define AMD64_L3_SLICE_SHIFT                           48
->   #define AMD64_L3_SLICE_MASK
-> 
-
->>
->>> +        .size = sizeof(attr),
->>> +        .pinned = true,
->>> +        .exclude_host = true,
->>> +        .sample_type = PERF_SAMPLE_BRANCH_STACK,
->>> +        .branch_sample_type = PERF_SAMPLE_BRANCH_CALL_STACK |
->>> +                    PERF_SAMPLE_BRANCH_USER,
->>> +    };
->>> +
->>> +    if (unlikely(pmu->lbr_event))
->>> +        return 0;
->>> +
->>> +    event = perf_event_create_kernel_counter(&attr, -1,
->>> +                        current, NULL, NULL);
->>> +    if (IS_ERR(event)) {
->>> +        pr_debug_ratelimited("%s: failed %ld\n",
->>> +                    __func__, PTR_ERR(event));
->>> +        return -ENOENT;
->>> +    }
->>> +    pmu->lbr_event = event;
->>> +    pmu->event_count++;
->>> +    return 0;
->>> +}
->>
->> Also, what happens if you fail programming due to a conflicting cpu
->> event? That pinned doesn't guarantee you'll get the event, it just means
->> you'll error instead of getting RR.
->>
->> I didn't find any code checking the event state.
->>
-> 
-> Error instead of RR is expected.
-> 
-> If the KVM fails programming due to a conflicting cpu event
-> the LBR registers will not be passthrough to the guest,
-> and KVM would return zero for any guest LBR records accesses
-> until the next attempt to program the guest LBR event.
-> 
-> Every time before cpu enters the non-root mode where irq is
-> disabled, the "event-> oncpu! =-1" check will be applied.
-> (more details in the comment around intel_pmu_availability_check())
-> 
-> The guests administer is supposed to know the result of guest
-> LBR records is inaccurate if someone is using LBR to record
-> guest or hypervisor on the host side.
-> 
-> Is this acceptable to you？
-> 
-> If there is anything needs to be improved, please let me know.
-
-Is this acceptable to you？
-
-If there is anything needs to be improved, please let me know.
-
-> 
-> Thanks,
-> Like Xu
-> 
+regards,
+dan carpenter
 
