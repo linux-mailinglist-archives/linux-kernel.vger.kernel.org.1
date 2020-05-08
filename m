@@ -2,97 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28D0E1CAAA2
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:30:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99ABA1CAA73
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 14:22:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726825AbgEHMan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 08:30:43 -0400
-Received: from elvis.franken.de ([193.175.24.41]:44801 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726616AbgEHMan (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 08:30:43 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jX29G-00031U-00; Fri, 08 May 2020 14:30:38 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id E727DC0418; Fri,  8 May 2020 14:21:37 +0200 (CEST)
-Date:   Fri, 8 May 2020 14:21:37 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Alexander Lobakin <alobakin@dlink.ru>,
-        Huacai Chen <chenhc@lemote.com>,
-        Cedric Hombourger <Cedric_Hombourger@mentor.com>,
-        =?iso-8859-1?Q?Ren=E9?= van Dorst <opensource@vdorst.com>,
-        Ard Biesheuvel <ardb@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 07/20] mips: Add MIPS Warrior P5600 support
-Message-ID: <20200508122137.GA13177@alpha.franken.de>
-References: <20200306124807.3596F80307C2@mail.baikalelectronics.ru>
- <20200506174238.15385-1-Sergey.Semin@baikalelectronics.ru>
- <20200506174238.15385-8-Sergey.Semin@baikalelectronics.ru>
- <20200507111735.GF11616@alpha.franken.de>
- <20200507211923.kfu2ly3ncqms4c2u@mobilestation>
- <20200508093259.GB9085@alpha.franken.de>
+        id S1726904AbgEHMWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 08:22:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726636AbgEHMWd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 08:22:33 -0400
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40206C05BD43;
+        Fri,  8 May 2020 05:22:33 -0700 (PDT)
+Received: by mail-ua1-x942.google.com with SMTP id r2so560591uam.7;
+        Fri, 08 May 2020 05:22:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=uwlBuQarJbYZ/qmwGK7ulcoXx0nS8JnSLQMkgBqaCH8=;
+        b=XH/h/4bAvi1PWfBXOzFpXnpPqp4LEEkkxcTxr6CwbrQPu9CHnCKbjSJvJBdsg1huPu
+         3oHmenQiME2OHRUxEwuzR5v3nLy57HfFUV0yvgPHNWvE5MdaQbQcVPlaK2owzsguiQkj
+         f21T/pA/dPQhFeAw3PiM9nLUpQroIhxpW8fDfq02A97Zy/43TbYwf1n7GazqbLXjwwtB
+         4kNcvvRoZ7Wd13dh5I0pFhYINDCgT9GrMjHo++3vUG4gRhnC/p49/7x7C8gzi0tTYWTy
+         62ygzhbeg3q2keo7/vxbOBsau/k9sOzOmFE1vOSMGEhhk0ThjdzjeBam5NYdyuu+Td0S
+         bhWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=uwlBuQarJbYZ/qmwGK7ulcoXx0nS8JnSLQMkgBqaCH8=;
+        b=iYn1hjHcL9D/sxPmM4Dum1WO1rrMafnMT44zRuZZTHgqzHO8V2dW1/6zvhnleHKPCl
+         Z3HpFpireNpQpMdVYwThorpTG3uWyGHsKxKgPh0ZXykktuLTVs1xtFi53PZuB1Q3qSkJ
+         UKXhtzMGOfThC8yRiv3paVQMzO4c+DlJShWzXoeR7CzwzO4lxZt7+jZ9OTS6dzkH+c4Q
+         tNI/iiul+rG9RxAI+2UeSZcghoDU1njAdIIxfJsh3iZD16TRba2YFweGLkCvyQjvAQqP
+         QQqWVutSa8B8AxwYz5qfk1IqGDHRgusNg6lfiYeVClMaRzj0o46V427NU/w/ta6oeyVm
+         EUrA==
+X-Gm-Message-State: AGi0PubCryEO9Al8+jZmTXUhwd0xLmrmZ7EXIgM9IlUriRWI/CZS8DXY
+        DhVdvhp9ydR9+Iukd6Uy6p8ALpMHdwCMbO6X7eU=
+X-Google-Smtp-Source: APiQypKkcSG00WEW/WhYXQkGL27aoCg+1IIUp523fedR+EywlAJiZjAymMzn0PNCJzxFrGqMqleOXshYPafBAay3poY=
+X-Received: by 2002:ab0:375a:: with SMTP id i26mr1586599uat.120.1588940552470;
+ Fri, 08 May 2020 05:22:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200508093259.GB9085@alpha.franken.de>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+References: <20191028215919.83697-1-john.stultz@linaro.org>
+ <20191028215919.83697-4-john.stultz@linaro.org> <87mudjj4rc.fsf@gmail.com>
+ <CALAqxLU+9uEcdRVaLfh+eQrDtZbDGod9pRXhBX=prAhg9MXagw@mail.gmail.com>
+ <CAKgpwJVaKpsgMjKcnYyJsfNj0ibkPt=mdn-NxfOkeX1jfL=9iQ@mail.gmail.com>
+ <CALAqxLVXauXP0r4Hv2Axa4PNf_F9wp644peYV06bdsPtMKGmLA@mail.gmail.com> <CAKgpwJU7VDx90STE7bhx9VZ5p1jtqCyyLavmhXfpaicyDAYt_g@mail.gmail.com>
+In-Reply-To: <CAKgpwJU7VDx90STE7bhx9VZ5p1jtqCyyLavmhXfpaicyDAYt_g@mail.gmail.com>
+From:   Jun Li <lijun.kernel@gmail.com>
+Date:   Fri, 8 May 2020 20:22:21 +0800
+Message-ID: <CAKgpwJVU9m6G8PRdray2fGCp_peOU9C-ZAVKTk7pmSdq6z4NiA@mail.gmail.com>
+Subject: Re: [PATCH v4 3/9] usb: dwc3: Increase timeout for CmdAct cleared by
+ device controller
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Yu Chen <chenyu56@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        ShuFan Lee <shufan_lee@richtek.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Jack Pham <jackp@codeaurora.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 08, 2020 at 11:32:59AM +0200, Thomas Bogendoerfer wrote:
-> On Fri, May 08, 2020 at 12:19:23AM +0300, Serge Semin wrote:
-> > On Thu, May 07, 2020 at 01:17:35PM +0200, Thomas Bogendoerfer wrote:
-> > > P5600 is CPU_MIPS_R5 so can't you select it here and drop all the || CPU_5600
-> > > above/below ?
-> > 
-> > Alas, We can't do this so easy. CONFIG_CPU_MIPS32_{R2,R5,R6} and any other
-> > CONFIG_CPU_* configs is something that kernel config-file is supposed to select.
-> > Their availability is enabled by the CONFIG_SYS_HAS_CPU_* configs. CONFIG_CPU_*
-> > is supposed to activate CPU-specific features and there is only one
-> > CONFIG_CPU_x can be enabled at a time seeing it's a part of the "CPU type"
-> > choice kconfig menu. In addition the CPU config also tunes a compiler to activate
-> > the arch-specific ISA and optimizations in the arch/mips/Makefile by setting
-> > -march=cpu-name (where cpu-name can be p5600, mips32r5, etc).
-> > 
-> > Yes, P5600 is based on the MIPS32r5, but it also has got some specific features
-> > (see config CPU_P5600 and config MIPS32_R5), which makes it to be different from
-> > the ancestor. So In addition to the difficulties described above IMHO converting
-> > CPU_P5600 to a set of features activated on top of the CPU_MIPS32_R5 config
-> > would contradict the design of the CPU-support configs implemented in the MIPS
-> > arch subsystem.
-> 
-> maybe I wasn't clear enough, my suggestion is
-> 
-> use 
-> 
-> config CPU_P5600
-> 	bool "MIPS Warrior P5600"
-> 	depends on SYS_HAS_CPU_P5600
-> 	select CPU_MIPS32_R5
-> 	select CPU_SUPPORTS_UNCACHED_ACCELERATED
-> 	select CPU_SUPPORTS_CPUFREQ
-> 	select CPU_MIPSR2_IRQ_VI
-> 	select CPU_MIPSR2_IRQ_EI
-> 
-> That way you don't need to any "|| CPU_P5600" where CPU_MIPS32_R5 is
-> already there. Or are there cases, where this would be wrong ?
+Jun Li <lijun.kernel@gmail.com> =E4=BA=8E2020=E5=B9=B45=E6=9C=887=E6=97=A5=
+=E5=91=A8=E5=9B=9B =E4=B8=8A=E5=8D=8811:08=E5=86=99=E9=81=93=EF=BC=9A
+>
+> John Stultz <john.stultz@linaro.org> =E4=BA=8E2020=E5=B9=B45=E6=9C=887=E6=
+=97=A5=E5=91=A8=E5=9B=9B =E4=B8=8A=E5=8D=886:27=E5=86=99=E9=81=93=EF=BC=9A
+> >
+> > On Wed, May 6, 2020 at 2:00 AM Jun Li <lijun.kernel@gmail.com> wrote:
+> > > John Stultz <john.stultz@linaro.org> =E4=BA=8E2019=E5=B9=B410=E6=9C=
+=8830=E6=97=A5=E5=91=A8=E4=B8=89 =E4=B8=8A=E5=8D=885:18=E5=86=99=E9=81=93=
+=EF=BC=9A
+> > > > On Tue, Oct 29, 2019 at 2:11 AM Felipe Balbi <balbi@kernel.org> wro=
+te:
+> > > > > John Stultz <john.stultz@linaro.org> writes:
+> > > > > > From: Yu Chen <chenyu56@huawei.com>
+> > > > > >
+> > > > > > It needs more time for the device controller to clear the CmdAc=
+t of
+> > > > > > DEPCMD on Hisilicon Kirin Soc.
+> > > > >
+> > > > > Why does it need more time? Why is it so that no other platform n=
+eeds
+> > > > > more time, only this one? And which command, specifically, causes
+> > > > > problem?
+> > >
+> > > Sorry for my back to this so late.
+> > >
+> > > This change is required on my dwc3 based HW too, I gave a check
+> > > and the reason is suspend_clk is used in case the PIPE phy is at P3,
+> > > this slow clock makes my EP command below timeout.
+> > >
+> > > dwc3_gadget_ep_cmd: ep0out: cmd 'Set Endpoint Configuration' [401]
+> > > params 00001000 00000500 00000000 --> status: Timed Out
+> > >
+> > > Success case takes about 400us to complete, see below trace(44.286278
+> > > - 44.285897 =3D 0.000381):
+> > >
+> > > configfs_acm.sh-822   [000] d..1    44.285896: dwc3_writel: addr
+> > > 000000006d59aae1 value 00000401
+> > > configfs_acm.sh-822   [000] d..1    44.285897: dwc3_readl: addr
+> > > 000000006d59aae1 value 00000401
+> > > ... ...
+> > > configfs_acm.sh-822   [000] d..1    44.286278: dwc3_readl: addr
+> > > 000000006d59aae1 value 00000001
+> > > configfs_acm.sh-822   [000] d..1    44.286279: dwc3_gadget_ep_cmd:
+> > > ep0out: cmd 'Set Endpoint Configuration' [401] params 00001000
+> > > 00000500 00000000 --> status: Successful
+> > >
+> > > Hi John,
+> > >
+> > > Do you still have this problem? if yes, What's the value of
+> > > USBLNKST[21:18] when the timeout happens?
+> >
+> > Sorry. As I mentioned, I was working to upstream a patchset that I
+> > hadn't created, so the context I had was limited. As I couldn't
+> > reproduce an issue without the change on the device I had, I figured
+> > it would be best to drop it.
+>
+> That was fine.
+> >
+> > However, as you have some analysis and rational for why such a change
+> > would be needed, I don't have an objection to it. Do you want to
+> > resubmit the patch with your explanation and detailed log above in the
+> > commit message?
+>
+> Sure, I will resubmit the patch with my explanation added in commit messa=
+ge.
 
-nevermind, this would also need a select SYS_HAS_CPU_MIPS32_R5, which
-isn't wanted here. So patch is fine as is.
+Hi John
 
-Thomas.
+A second think of this, I feel use readl_poll_timeout_atomic() to wait by t=
+ime
+is more proper here, so I create a new patch to address this also other
+registers polling, see below patch with you CCed:
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+https://patchwork.kernel.org/patch/11536081/
+
+thanks
+Li Jun
+>
+> thanks
+> Li Jun
+> >
+> > thanks
+> > -john
