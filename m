@@ -2,140 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB6931CBB6A
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 01:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EAB41CBB70
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 01:53:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728326AbgEHXxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 19:53:01 -0400
-Received: from mga04.intel.com ([192.55.52.120]:64968 "EHLO mga04.intel.com"
+        id S1728377AbgEHXxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 19:53:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727778AbgEHXxA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 19:53:00 -0400
-IronPort-SDR: 7W/WTduQHh4K85ty3T1PLNfWOgf2BLuBED5nvJdgQNBYKcBO9G8s6i+NsBhOZfMxRTm9vquzR0
- SAhNCqSfhiwA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2020 16:53:00 -0700
-IronPort-SDR: 5FbVbZSaevR+FLoYoAPBrA3ZoAmxaPh6wXWd08J2J9xWoH8Ncth6EK5vtLiKzZ6SJmrFoCzEkv
- NaihJWadQAzA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,369,1583222400"; 
-   d="scan'208";a="296299524"
-Received: from djiang5-mobl1.amr.corp.intel.com (HELO [10.209.47.49]) ([10.209.47.49])
-  by fmsmga002.fm.intel.com with ESMTP; 08 May 2020 16:52:58 -0700
-Subject: Re: [PATCH RFC 00/15] Add VFIO mediated device support and IMS
- support for the idxd driver.
-To:     Jason Gunthorpe <jgg@mellanox.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "megha.dey@linux.intel.com" <megha.dey@linux.intel.com>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
-        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "Lin, Jing" <jing.lin@intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-References: <AADFC41AFE54684AB9EE6CBC0274A5D19D8A808B@SHSMSX104.ccr.corp.intel.com>
- <20200424181203.GU13640@mellanox.com>
- <AADFC41AFE54684AB9EE6CBC0274A5D19D8C5486@SHSMSX104.ccr.corp.intel.com>
- <20200426191357.GB13640@mellanox.com> <20200426214355.29e19d33@x1.home>
- <20200427115818.GE13640@mellanox.com> <20200427071939.06aa300e@x1.home>
- <20200427132218.GG13640@mellanox.com>
- <AADFC41AFE54684AB9EE6CBC0274A5D19D8E34AA@SHSMSX104.ccr.corp.intel.com>
- <20200508204710.GA78778@otc-nc-03> <20200508231610.GO19158@mellanox.com>
-From:   Dave Jiang <dave.jiang@intel.com>
-Message-ID: <57296ad1-20fe-caf2-b83f-46d823ca0b5f@intel.com>
-Date:   Fri, 8 May 2020 16:52:57 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1727878AbgEHXxS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 19:53:18 -0400
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1C6042173E
+        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 23:53:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588981998;
+        bh=ShlmSSYoZM/4KVSCon78C6OJGXgAfXrm+T81mzLuWPw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=n9D//HxEgwGYRXgRcsG3JRKq4w6a8alFjKJwQTMSBxIosataRm+U04vlHtZ3QiDPy
+         hc4pTv3LfB/awZ0phNvSPvbYP3FdBnamj604NaDyGvMkSCIyjNChgWtyiKoWwork7u
+         EcpSeIbFLNLB5hOPy+TTj8OUbvjTUDIT+69Q6izo=
+Received: by mail-wr1-f52.google.com with SMTP id e16so3854931wra.7
+        for <linux-kernel@vger.kernel.org>; Fri, 08 May 2020 16:53:18 -0700 (PDT)
+X-Gm-Message-State: AGi0PuZOYH4Q6qe6tTys09DsDUI3W7ylolKS0w6oplq3kXFTSMLtBtG8
+        o+Rtg4XBkD/r3/AljEet9T4Q3kl2/o+50GQ/eypElA==
+X-Google-Smtp-Source: APiQypLiN19kbzcdasktac/S2PjgXFAT+6IXCH3zMVMKE/A51GS2xk4EfodmyQvY7BtBRgu0KkORc7ULRJXdf0XOz1k=
+X-Received: by 2002:a5d:62cc:: with SMTP id o12mr5447139wrv.75.1588981996655;
+ Fri, 08 May 2020 16:53:16 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200508231610.GO19158@mellanox.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20200505134112.272268764@linutronix.de> <20200505134340.227579223@linutronix.de>
+In-Reply-To: <20200505134340.227579223@linutronix.de>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Fri, 8 May 2020 16:53:05 -0700
+X-Gmail-Original-Message-ID: <CALCETrWJDdxnP5pJQinMkyL+mb3th1tWGY7psYqod8nDnrV2YQ@mail.gmail.com>
+Message-ID: <CALCETrWJDdxnP5pJQinMkyL+mb3th1tWGY7psYqod8nDnrV2YQ@mail.gmail.com>
+Subject: Re: [patch V4 part 2 01/18] x86/entry/64: Move non entry code into
+ .text section
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, May 5, 2020 at 7:14 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> All ASM code which is not part of the entry functionality can move out into
+> the .text section. No reason to keep it in the non-instrumentable entry
+> section.
 
+Ick.  How about just moving that code into another file altogether?
 
-On 5/8/2020 4:16 PM, Jason Gunthorpe wrote:
-> On Fri, May 08, 2020 at 01:47:10PM -0700, Raj, Ashok wrote:
-> 
->> Even when uaccel was under development, one of the options
->> was to use VFIO as the transport, goal was the same i.e to keep
->> the user space have one interface.
-> 
-> I feel a bit out of the loop here, uaccel isn't in today's kernel is
-> it? I've heard about it for a while, it sounds very similar to RDMA,
-> so I hope they took some of my advice...
+> +.pushsection .text, "ax"
+>  SYM_FUNC_START(native_load_gs_index)
+>         FRAME_BEGIN
+>         pushfq
+> @@ -1058,6 +1063,7 @@ SYM_FUNC_START(native_load_gs_index)
+>         ret
+>  SYM_FUNC_END(native_load_gs_index)
+>  EXPORT_SYMBOL(native_load_gs_index)
+> +.popsection
 
-It went into 5.7 kernel. drivers/misc/uacce. It looks char device exported with 
-SVM support.
-
-> 
->> But the needs of generic user space application is significantly
->> different from exporting a more functional device model to guest,
->> which isn't full emulated device. which is why VFIO didn't make
->> sense for native use.
-> 
-> I'm not sure this is true. We've done these kinds of emulated SIOV
-> like things already and there is a huge overlap between what a generic
-> user application needs and what the VMM neds. Actually almost a
-> perfect subset except for interrupt remapping (which is quite
-> trivial).
-> 
-> The things vfio focuses on, like groups and managing a real config
-> space just don't apply here.
-> 
->> And when we move things from VFIO which is already established
->> as a general device model and accepted by multiple VMM's it gives
->> instant footing without a whole redesign.
-> 
-> Yes, I understand, but I think you need to get more people to support
-> this idea. From my standpoint this is taking secure lean VMMs and
-> putting emulation code back into them, except in a more dangerous
-> kernel location. This does not seem like a net win to me.
-> 
-> You'd be much better to have some userspace library scheme instead of
-> being completely tied to a kernel interface for modularity.
-> 
->> When we move things from VFIO to uaccel to bolt on the functionality
->> like VFIO, I suspect we would be moving code/functionality from VFIO
->> to Uaccel. I don't know what the net gain would be.
-> 
-> Most of VFIO functionality is already decomposed inside the kernel,
-> and you need most of it to do secure user access anyhow.
-> 
->> For mdev, would you agree we can keep the current architecture,
->> and investigate moving some emulation code to user space (say even for
->> standard vfio_pci) and then expand scope later.
-> 
-> I won't hard NAK this, but I think you need more people to support
-> this general idea of more emulation code in the kernel to go ahead -
-> particularly since this is one of many future drivers along this
-> design.
-> 
-> It would be good to hear from the VMM teams that this is what they
-> want (and why), for instance.
-> 
-> Jason
-> 
+native_load_gs_index is toast if it gets instrumented in the wrong way.
