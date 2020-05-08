@@ -2,54 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3BEA1CBB4B
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 01:36:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 088291CBB4F
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 01:38:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728281AbgEHXgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 19:36:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58104 "EHLO mail.kernel.org"
+        id S1728359AbgEHXh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 19:37:56 -0400
+Received: from mga18.intel.com ([134.134.136.126]:18506 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727878AbgEHXgo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 19:36:44 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A1E8021974;
-        Fri,  8 May 2020 23:36:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588981003;
-        bh=y2uMkUrjYNx1AQkK9Ti095ohWKHAeRgfxh0qp2vEiGw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=MiP2WKM85nKozLbjRSfJLvBbuWTvCLBWnT26m9F+GqEK/NIJEjEae2EMdh25A08GO
-         mLvEaSdPWAihl3rHKbPhybeRdJgScG/54kFyTg4xeNLGtsnuUKn8Swr4R3GO9rkqxi
-         2VWTWbhhrS1ipP+vX4gHDooW4fXY9yHjJmtkcnDU=
-Date:   Fri, 8 May 2020 16:36:42 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Saeed Mahameed <saeedm@mellanox.com>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Leon Romanovsky <leonro@mellanox.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net/mlx5: Replace zero-length array with flexible-array
-Message-ID: <20200508163642.273bda4f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20200507185935.GA15169@embeddedor>
-References: <20200507185935.GA15169@embeddedor>
+        id S1727934AbgEHXh4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 19:37:56 -0400
+IronPort-SDR: G5QTfzukAK/xxcAVOFUpuQODtBlWQmp+H4pyWS/9qRXKNpgvjz555j4Y/ATYLHZmVKCKhuPgkB
+ arynb8vK8VuQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2020 16:37:55 -0700
+IronPort-SDR: nskYbpXcg3aL2xjCO5ZbZPqNER0UOODRipa26VvaWqS/3iYCRsu89UzDueaSj+1jFAmhzvCK+c
+ T3Mkc/R1YfDg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,369,1583222400"; 
+   d="scan'208";a="279184846"
+Received: from sjchrist-coffee.jf.intel.com ([10.54.74.152])
+  by orsmga002.jf.intel.com with ESMTP; 08 May 2020 16:37:54 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>
+Subject: [PATCH] KVM: x86: Restore update of required xstate size in guest's CPUID
+Date:   Fri,  8 May 2020 16:37:49 -0700
+Message-Id: <20200508233749.3417-1-sean.j.christopherson@intel.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 May 2020 13:59:35 -0500 Gustavo A. R. Silva wrote:
-> The current codebase makes use of the zero-length array language
-> extension to the C90 standard, but the preferred mechanism to declare
-> variable-length types such as these ones is a flexible array member[1][2],
-> introduced in C99:
-> 
-> struct foo {
->         int stuff;
->         struct boo array[];
-> };
+Restore a guest CPUID update that was unintentional collateral damage
+when the per-vCPU guest_xstate_size field was removed.
 
-Saeed, I'm expecting you to take this and the mlx4 patch via your trees.
+Cc: Xiaoyao Li <xiaoyao.li@intel.com>
+Fixes: d87277414b851 ("kvm: x86: Cleanup vcpu->arch.guest_xstate_size")
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+---
+
+There's nothing more thrilling than watching bisect home in on your own
+commits, only to land on someone else's on the very last step.
+
+ arch/x86/kvm/cpuid.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+index 35845704cf57a..cd708b0b460a0 100644
+--- a/arch/x86/kvm/cpuid.c
++++ b/arch/x86/kvm/cpuid.c
+@@ -84,11 +84,13 @@ int kvm_update_cpuid(struct kvm_vcpu *vcpu)
+ 				   kvm_read_cr4_bits(vcpu, X86_CR4_PKE));
+ 
+ 	best = kvm_find_cpuid_entry(vcpu, 0xD, 0);
+-	if (!best)
++	if (!best) {
+ 		vcpu->arch.guest_supported_xcr0 = 0;
+-	else
++	} else {
+ 		vcpu->arch.guest_supported_xcr0 =
+ 			(best->eax | ((u64)best->edx << 32)) & supported_xcr0;
++		best->ebx = xstate_required_size(vcpu->arch.xcr0, false);
++	}
+ 
+ 	best = kvm_find_cpuid_entry(vcpu, 0xD, 1);
+ 	if (best && (cpuid_entry_has(best, X86_FEATURE_XSAVES) ||
+-- 
+2.26.0
+
