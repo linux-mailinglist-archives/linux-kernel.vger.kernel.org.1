@@ -2,206 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C06FF1CB3CF
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 17:45:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ACC21CB3D6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 17:46:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728176AbgEHPpL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 May 2020 11:45:11 -0400
-Received: from mga11.intel.com ([192.55.52.93]:59832 "EHLO mga11.intel.com"
+        id S1728338AbgEHPpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 11:45:55 -0400
+Received: from mga14.intel.com ([192.55.52.115]:62555 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727082AbgEHPpJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 11:45:09 -0400
-IronPort-SDR: rzY9RnjQ0KQwEinW4jAxw1l8ZvCujQkFDUUM0m0o+c6vDRkKmSIJme+gvQ9KPHwMus1xCXsJV9
- dUiCTzlS+vTw==
+        id S1727116AbgEHPpy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 11:45:54 -0400
+IronPort-SDR: +yd/cQ4CtZ7SsM3ZCY+iu3EDEnr2cL1l+EeenYgwat+T4izcUC5cNHBKXm9rvzOqZWCLO+pD90
+ giXRzZeVzjlw==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2020 08:45:08 -0700
-IronPort-SDR: zuLAiuchje8B0YyQv0S/mbUVBsaBhKQ3aT39CD4wudUZg6RsHy7KKcVB23qKFBK/RFueqW6QIA
- q31289LMt4LQ==
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2020 08:45:53 -0700
+IronPort-SDR: kML9TWEw7QXFXDMKy14JPIY8Gk7mkGgTQgp+h9sR24hccB5Fq44lwLMHP5E/u0FvVNWCez+pxd
+ ErBoROaXN98A==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.73,368,1583222400"; 
-   d="scan'208";a="285505776"
-Received: from fmsmsx107.amr.corp.intel.com ([10.18.124.205])
-  by fmsmga004.fm.intel.com with ESMTP; 08 May 2020 08:45:08 -0700
-Received: from fmsmsx121.amr.corp.intel.com (10.18.125.36) by
- fmsmsx107.amr.corp.intel.com (10.18.124.205) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Fri, 8 May 2020 08:45:08 -0700
-Received: from fmsmsx108.amr.corp.intel.com ([169.254.9.60]) by
- fmsmsx121.amr.corp.intel.com ([169.254.6.5]) with mapi id 14.03.0439.000;
- Fri, 8 May 2020 08:45:08 -0700
-From:   "Ruhl, Michael J" <michael.j.ruhl@intel.com>
-To:     Bernard Zhao <bernard@vivo.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?iso-8859-1?Q?Christian_K=F6nig?= <christian.koenig@amd.com>,
-        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Tom St Denis <tom.stdenis@amd.com>,
-        "Sam Ravnborg" <sam@ravnborg.org>,
-        Ori Messinger <Ori.Messinger@amd.com>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "opensource.kernel@vivo.com" <opensource.kernel@vivo.com>
-Subject: RE: [PATCH v2] drm/amd/amdgpu: cleanup coding style a bit
-Thread-Topic: [PATCH v2] drm/amd/amdgpu: cleanup coding style a bit
-Thread-Index: AQHWJE+3bau47Y1nb0Gh/jTCob7xpaieVcIg
-Date:   Fri, 8 May 2020 15:45:07 +0000
-Message-ID: <14063C7AD467DE4B82DEDB5C278E8663010E20C5BD@FMSMSX108.amr.corp.intel.com>
-References: <20200507091311.10898-1-bernard@vivo.com>
-In-Reply-To: <20200507091311.10898-1-bernard@vivo.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [10.1.200.106]
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
+   d="scan'208";a="285506118"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
+  by fmsmga004.fm.intel.com with ESMTP; 08 May 2020 08:45:53 -0700
+Date:   Fri, 8 May 2020 08:45:53 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: Re: [PATCH 10/11] fs: remove __vfs_read
+Message-ID: <20200508154552.GB1431382@iweiny-DESK2.sc.intel.com>
+References: <20200508092222.2097-1-hch@lst.de>
+ <20200508092222.2097-11-hch@lst.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200508092222.2097-11-hch@lst.de>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->-----Original Message-----
->From: dri-devel <dri-devel-bounces@lists.freedesktop.org> On Behalf Of
->Bernard Zhao
->Sent: Thursday, May 7, 2020 5:13 AM
->To: Alex Deucher <alexander.deucher@amd.com>; Christian König
-><christian.koenig@amd.com>; David (ChunMing) Zhou
-><David1.Zhou@amd.com>; David Airlie <airlied@linux.ie>; Daniel Vetter
-><daniel@ffwll.ch>; Tom St Denis <tom.stdenis@amd.com>; Sam Ravnborg
-><sam@ravnborg.org>; Ori Messinger <Ori.Messinger@amd.com>; Bernard
->Zhao <bernard@vivo.com>; amd-gfx@lists.freedesktop.org; dri-
->devel@lists.freedesktop.org; linux-kernel@vger.kernel.org
->Cc: opensource.kernel@vivo.com
->Subject: [PATCH v2] drm/amd/amdgpu: cleanup coding style a bit
->
->There is DEVICE_ATTR mechanism in separate attribute define.
->So this change is to use attr array, also use
->sysfs_create_files in init function & sysfs_remove_files in
->fini function.
->This maybe make the code a bit readable.
->
->Signed-off-by: Bernard Zhao <bernard@vivo.com>
->
->Changes since V1:
->*Use DEVICE_ATTR mechanism
->
->Link for V1:
->*https://lore.kernel.org/patchwork/patch/1228076/
->---
-> drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c | 43 ++++++-------------
->-
-> 1 file changed, 13 insertions(+), 30 deletions(-)
->
->diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
->b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
->index 82a3299e53c0..57bbc70662ff 100644
->--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
->+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
->@@ -148,6 +148,15 @@ static DEVICE_ATTR(mem_info_vis_vram_used,
->S_IRUGO,
-> static DEVICE_ATTR(mem_info_vram_vendor, S_IRUGO,
-> 		   amdgpu_mem_info_vram_vendor, NULL);
->
->+static struct attribute *amdgpu_vram_mgr_attributes[] = {
->+	&dev_attr_mem_info_vram_total.attr,
->+	&dev_attr_mem_info_vis_vram_total.attr,
->+	&dev_attr_mem_info_vram_used.attr,
->+	&dev_attr_mem_info_vis_vram_used.attr,
->+	&dev_attr_mem_info_vram_vendor.attr,
->+	NULL
->+};
->+
-> /**
->  * amdgpu_vram_mgr_init - init VRAM manager and DRM MM
->  *
->@@ -172,31 +181,9 @@ static int amdgpu_vram_mgr_init(struct
->ttm_mem_type_manager *man,
-> 	man->priv = mgr;
->
-> 	/* Add the two VRAM-related sysfs files */
->-	ret = device_create_file(adev->dev,
->&dev_attr_mem_info_vram_total);
->-	if (ret) {
->-		DRM_ERROR("Failed to create device file
->mem_info_vram_total\n");
->-		return ret;
->-	}
->-	ret = device_create_file(adev->dev,
->&dev_attr_mem_info_vis_vram_total);
->-	if (ret) {
->-		DRM_ERROR("Failed to create device file
->mem_info_vis_vram_total\n");
->-		return ret;
->-	}
->-	ret = device_create_file(adev->dev,
->&dev_attr_mem_info_vram_used);
->-	if (ret) {
->-		DRM_ERROR("Failed to create device file
->mem_info_vram_used\n");
->-		return ret;
->-	}
->-	ret = device_create_file(adev->dev,
->&dev_attr_mem_info_vis_vram_used);
->-	if (ret) {
->-		DRM_ERROR("Failed to create device file
->mem_info_vis_vram_used\n");
->-		return ret;
->-	}
->-	ret = device_create_file(adev->dev,
->&dev_attr_mem_info_vram_vendor);
->-	if (ret) {
->-		DRM_ERROR("Failed to create device file
->mem_info_vram_vendor\n");
->-		return ret;
->-	}
->+	ret = sysfs_create_files(&adev->dev->kobj,
->amdgpu_vram_mgr_attributes);
->+	if (ret)
->+		DRM_ERROR("Failed to register sysfs\n");
+On Fri, May 08, 2020 at 11:22:21AM +0200, Christoph Hellwig wrote:
+> Fold it into the two callers.
 
-This looks good to me.
+In 5.7-rc4, it looks like __vfs_read() is called from
+security/integrity/iint.c
 
-I think that there is a new error macro (drm_err?) that you might
-want to use instead of DRM_ERROR().
+Was that removed somewhere prior to this patch?
 
-Otherwise:
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  fs/read_write.c    | 43 +++++++++++++++++++++----------------------
+>  include/linux/fs.h |  1 -
+>  2 files changed, 21 insertions(+), 23 deletions(-)
+> 
+> diff --git a/fs/read_write.c b/fs/read_write.c
+> index 0ffbed5fd8136..f0009b506014c 100644
+> --- a/fs/read_write.c
+> +++ b/fs/read_write.c
+> @@ -419,17 +419,6 @@ static ssize_t new_sync_read(struct file *filp, char __user *buf, size_t len, lo
+>  	return ret;
+>  }
+>  
+> -ssize_t __vfs_read(struct file *file, char __user *buf, size_t count,
+> -		   loff_t *pos)
+> -{
+> -	if (file->f_op->read)
+> -		return file->f_op->read(file, buf, count, pos);
+> -	else if (file->f_op->read_iter)
+> -		return new_sync_read(file, buf, count, pos);
+> -	else
+> -		return -EINVAL;
+> -}
+> -
+>  ssize_t __kernel_read(struct file *file, void *buf, size_t count, loff_t *pos)
+>  {
+>  	mm_segment_t old_fs = get_fs();
+> @@ -441,7 +430,12 @@ ssize_t __kernel_read(struct file *file, void *buf, size_t count, loff_t *pos)
+>  	if (count > MAX_RW_COUNT)
+>  		count =  MAX_RW_COUNT;
+>  	set_fs(KERNEL_DS);
+> -	ret = __vfs_read(file, (void __user *)buf, count, pos);
+> +	if (file->f_op->read)
+> +		ret = file->f_op->read(file, (void __user *)buf, count, pos);
+> +	else if (file->f_op->read_iter)
+> +		ret = new_sync_read(file, (void __user *)buf, count, pos);
+> +	else
+> +		ret = -EINVAL;
+>  	set_fs(old_fs);
+>  	if (ret > 0) {
+>  		fsnotify_access(file);
+> @@ -474,17 +468,22 @@ ssize_t vfs_read(struct file *file, char __user *buf, size_t count, loff_t *pos)
+>  		return -EFAULT;
+>  
+>  	ret = rw_verify_area(READ, file, pos, count);
+> -	if (!ret) {
+> -		if (count > MAX_RW_COUNT)
+> -			count =  MAX_RW_COUNT;
+> -		ret = __vfs_read(file, buf, count, pos);
+> -		if (ret > 0) {
+> -			fsnotify_access(file);
+> -			add_rchar(current, ret);
+> -		}
+> -		inc_syscr(current);
+> -	}
+> +	if (ret)
+> +		return ret;
+> +	if (count > MAX_RW_COUNT)
+> +		count =  MAX_RW_COUNT;
 
-Acked-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
+Couldn't this clean up still happen while keeping __vfs_read()?
 
-m
+Ira
 
->
-> 	return 0;
-> }
->@@ -219,11 +206,7 @@ static int amdgpu_vram_mgr_fini(struct
->ttm_mem_type_manager *man)
-> 	spin_unlock(&mgr->lock);
-> 	kfree(mgr);
-> 	man->priv = NULL;
->-	device_remove_file(adev->dev, &dev_attr_mem_info_vram_total);
->-	device_remove_file(adev->dev,
->&dev_attr_mem_info_vis_vram_total);
->-	device_remove_file(adev->dev, &dev_attr_mem_info_vram_used);
->-	device_remove_file(adev->dev,
->&dev_attr_mem_info_vis_vram_used);
->-	device_remove_file(adev->dev,
->&dev_attr_mem_info_vram_vendor);
->+	sysfs_remove_files(&adev->dev->kobj,
->amdgpu_vram_mgr_attributes);
-> 	return 0;
-> }
->
->--
->2.26.2
->
->_______________________________________________
->dri-devel mailing list
->dri-devel@lists.freedesktop.org
->https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> +	if (file->f_op->read)
+> +		ret = file->f_op->read(file, buf, count, pos);
+> +	else if (file->f_op->read_iter)
+> +		ret = new_sync_read(file, buf, count, pos);
+> +	else
+> +		ret = -EINVAL;
+> +	if (ret > 0) {
+> +		fsnotify_access(file);
+> +		add_rchar(current, ret);
+> +	}
+> +	inc_syscr(current);
+>  	return ret;
+>  }
+>  
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index 6441aaa25f8f2..4c10a07a36178 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -1905,7 +1905,6 @@ ssize_t rw_copy_check_uvector(int type, const struct iovec __user * uvector,
+>  			      struct iovec *fast_pointer,
+>  			      struct iovec **ret_pointer);
+>  
+> -extern ssize_t __vfs_read(struct file *, char __user *, size_t, loff_t *);
+>  extern ssize_t vfs_read(struct file *, char __user *, size_t, loff_t *);
+>  extern ssize_t vfs_write(struct file *, const char __user *, size_t, loff_t *);
+>  extern ssize_t vfs_readv(struct file *, const struct iovec __user *,
+> -- 
+> 2.26.2
+> 
