@@ -2,65 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E4511CBA6B
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 00:08:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF3AC1CBA70
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 00:09:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727950AbgEHWIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 18:08:24 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:37175 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726811AbgEHWIY (ORCPT
+        id S1728097AbgEHWJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 18:09:54 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:45946 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726811AbgEHWJx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 18:08:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588975703;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Peg2YF2ND29ekNS6MGkynfv7ACrX9QEyGb3a4hyznQ0=;
-        b=P48PSq3dv3W9+44dAxbs2ofUEVRP78yJvMbB5br5Epqv7C5vx9+l0PTbBK3/59AcZ9BDzF
-        W4123traLCKoYlgt2UaI3Z+BmhdxUmFF5WAE5D2BEj36XLIFNZeHnbpecHi68ErGkM07jM
-        CWJ/qM1dPnqUEkP2SaSUqC8LXHuJpTU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-241-b6UCqDmWNjSy4M4G7KOTOQ-1; Fri, 08 May 2020 18:08:22 -0400
-X-MC-Unique: b6UCqDmWNjSy4M4G7KOTOQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9B53880058A;
-        Fri,  8 May 2020 22:08:20 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-118-225.rdu2.redhat.com [10.10.118.225])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7C0AF2E183;
-        Fri,  8 May 2020 22:08:13 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <158897464246.1116213.8184341356151224705.stgit@warthog.procyon.org.uk>
-References: <158897464246.1116213.8184341356151224705.stgit@warthog.procyon.org.uk>
-Cc:     dhowells@redhat.com, torvalds@linux-foundation.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Carlos Maiolino <cmaiolino@redhat.com>,
-        Dave Wysochanski <dwysocha@redhat.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        linux-nfs@vger.kernel.org, linux-cachefs@redhat.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] cachefiles, nfs: Fixes
+        Fri, 8 May 2020 18:09:53 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 048M3pT7098830;
+        Fri, 8 May 2020 22:09:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=e9WYgBCMI0KkS01+P+GDEHtd1NK7qTQIe6h+j1aFO7I=;
+ b=TgFaCClTZHf+stqcvIDP2Bl7jaksNxPDQr/w7CfLJoVEUXZKyCTP2NEcQFg77e9AybrD
+ Vf3+/kQREb4a5vA306kuIVOO5vtgIE6GV5q+50/4zyNOo7C2bP53T8T+oBbTx0Ap5ofn
+ OLkEIVLferlceZkGLq4GYWDgX+ZQWuM6nC37AcdBVOodFt1Zk/pSXB4OtYMO70kTKnd0
+ jKYbUxZvFKXvZ37VCrIwmcEWl/YqsZeZtfOaOUcdLlTd8fy/TKudRInZ/zgUQ3ymKxs+
+ rUqg2uj68Trkzvsxn9tnGBIqjAXsJifHxtdzQ1c8oU/nEoUFgn+IqOUHxd4HjqSmjJ5r jQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 30vtexwdn4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 08 May 2020 22:09:40 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 048M6tFL128051;
+        Fri, 8 May 2020 22:09:39 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 30vtehmy9e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 08 May 2020 22:09:39 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 048M9c41015658;
+        Fri, 8 May 2020 22:09:38 GMT
+Received: from [192.168.2.157] (/71.63.128.209)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 08 May 2020 15:09:37 -0700
+Subject: Re: [PATCH V3 1/3] arm64/mm: Drop __HAVE_ARCH_HUGE_PTEP_GET
+To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
+        akpm@linux-foundation.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <1588907271-11920-1-git-send-email-anshuman.khandual@arm.com>
+ <1588907271-11920-2-git-send-email-anshuman.khandual@arm.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <7db44202-0d21-d8fb-6998-0210508a488a@oracle.com>
+Date:   Fri, 8 May 2020 15:09:34 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1118495.1588975692.1@warthog.procyon.org.uk>
-Date:   Fri, 08 May 2020 23:08:12 +0100
-Message-ID: <1118496.1588975692@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <1588907271-11920-2-git-send-email-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9615 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
+ phishscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0 spamscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005080187
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9615 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 adultscore=0
+ spamscore=0 suspectscore=0 bulkscore=0 priorityscore=1501 malwarescore=0
+ phishscore=0 impostorscore=0 mlxscore=0 mlxlogscore=999 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005080187
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Oops - I forgot to include a patch.  I'll resend.
+On 5/7/20 8:07 PM, Anshuman Khandual wrote:
+> Platform specific huge_ptep_get() is required only when fetching the huge
+> PTE involves more than just dereferencing the page table pointer. This is
+> not the case on arm64 platform. Hence huge_ptep_pte() can be dropped along
+> with it's __HAVE_ARCH_HUGE_PTEP_GET subscription. Before that, it updates
+> the generic huge_ptep_get() with READ_ONCE() which will prevent known page
+> table issues with THP on arm64.
+> 
+> https://lore.kernel.org/r/1506527369-19535-1-git-send-email-will.deacon@arm.com/
+> 
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+>  arch/arm64/include/asm/hugetlb.h | 6 ------
+>  include/asm-generic/hugetlb.h    | 2 +-
+>  2 files changed, 1 insertion(+), 7 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/hugetlb.h b/arch/arm64/include/asm/hugetlb.h
+> index 2eb6c234d594..b88878ddc88b 100644
+> --- a/arch/arm64/include/asm/hugetlb.h
+> +++ b/arch/arm64/include/asm/hugetlb.h
+> @@ -17,12 +17,6 @@
+>  extern bool arch_hugetlb_migration_supported(struct hstate *h);
+>  #endif
+>  
+> -#define __HAVE_ARCH_HUGE_PTEP_GET
+> -static inline pte_t huge_ptep_get(pte_t *ptep)
+> -{
+> -	return READ_ONCE(*ptep);
+> -}
+> -
+>  static inline int is_hugepage_only_range(struct mm_struct *mm,
+>  					 unsigned long addr, unsigned long len)
+>  {
+> diff --git a/include/asm-generic/hugetlb.h b/include/asm-generic/hugetlb.h
+> index 822f433ac95c..40f85decc2ee 100644
+> --- a/include/asm-generic/hugetlb.h
+> +++ b/include/asm-generic/hugetlb.h
+> @@ -122,7 +122,7 @@ static inline int huge_ptep_set_access_flags(struct vm_area_struct *vma,
+>  #ifndef __HAVE_ARCH_HUGE_PTEP_GET
+>  static inline pte_t huge_ptep_get(pte_t *ptep)
+>  {
+> -	return *ptep;
+> +	return READ_ONCE(*ptep);
+>  }
+>  #endif
 
-David
+I know you made this change in response to Will's comment.  And, since
+changes were made to consistently use READ_ONCE in arm64 code, it makes
+sense for that architecture.
 
+However, with this change to generic code, you introduce READ_ONCE to
+other architectures where it was not used before.  Could this possibly
+introduce inconsistencies in their use of READ_ONCE?  To be honest, I
+am not very good at identifying any possible issues this could cause.
+However, it does seem possible.
+
+Will was nervous about dropping this from arm64.  I'm just a little nervous
+about adding it to other architectures.
+-- 
+Mike Kravetz
