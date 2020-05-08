@@ -2,257 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A5971CB926
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 22:43:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34F0F1CB92E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 22:48:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727933AbgEHUm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 16:42:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727912AbgEHUm5 (ORCPT
+        id S1727851AbgEHUsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 16:48:32 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:45712 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726883AbgEHUsc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 16:42:57 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8DBDC05BD09
-        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 13:42:55 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id b6so1236133plz.13
-        for <linux-kernel@vger.kernel.org>; Fri, 08 May 2020 13:42:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=DBvISRtpj6ZqDP4JNGI7EM2+JDDMjKa0Ql2Nl6B4K8c=;
-        b=jvPyzxVGco9HTkHQkxsTY3p+qIGeyEvgudaaAcCJFYldGgN96fd6jlMbM+k3MIO6sP
-         GTDlp98gYKOoOkFPYRyoOPG+cZduT4/VcGbvP6/oRRnh78tssG8N0uqPdhOCF0a0TBMq
-         xLs9F1CqmUh15ju+uyC4griAqlcVk6bns23fk/6Hr15MYzdNJpLtmz6kz2t95lEXU4d/
-         lwKjN7pMYujqMl/hg0Wsn4+ZtfeaHvc8Qz4AXckC6sT+TOAJILMg6ATBWr+4T/VtDiud
-         gYu0yx8sSQqlMrITsgpKoeJyQ8l4BBIUS7A8e+4VwDOlytZQ7ZTETNNZlb9nAWEH7z/w
-         Vm8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=DBvISRtpj6ZqDP4JNGI7EM2+JDDMjKa0Ql2Nl6B4K8c=;
-        b=Iq8RrjiaiUV70JYR9wAEy2DBSugSlp8A7WnK5VCw0vIcYmbIn/TkYkCJcNmhTAvfzO
-         FRMGND92AT3h1VZAatlmEymU9+4I0UKDD6xVqWi6cvLCxvRLBZGm/XCIfejBMsSiuKms
-         J4zHPaHeePPTqn2buQUOEhCrvkCy9vbnk4z/VI20HFov9gCA9XG32rLu7MmHp0Te/nIM
-         po2qCD7k2XZukhN9ASg4mH1XrhF+uhj0K5TAobcdRphAP/j6c9ymjcW6W/QcbFHu5oYm
-         1Btc0/07Fjk/7vHbzCm6pj59r2IHfgb447nTtuD6bmbTrJbzxEWeicuXmfTusvBvvNyD
-         uhHg==
-X-Gm-Message-State: AGi0Pua78sOUtYmyX82nZF+ee4IC0/Pw8Kcy9j6zVpprKfwJc2XeyhqG
-        3Vvv8gdccui8D67xuV/gAbgpWw==
-X-Google-Smtp-Source: APiQypLV5wFjcNDBDTnRo4F/SCWSkSNmFNrTDkI8vtbYEwihD8GVHkCxIzqXEOFp/ECNQVc0NaxUnA==
-X-Received: by 2002:a17:90a:d703:: with SMTP id y3mr7955493pju.75.1588970575321;
-        Fri, 08 May 2020 13:42:55 -0700 (PDT)
-Received: from nagraj.local ([49.206.21.239])
-        by smtp.gmail.com with ESMTPSA id h191sm2670720pfe.44.2020.05.08.13.42.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 May 2020 13:42:54 -0700 (PDT)
-From:   Sumit Semwal <sumit.semwal@linaro.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org
-Cc:     nishakumari@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        kgunda@codeaurora.org, rnayak@codeaurora.org,
-        Sumit Semwal <sumit.semwal@linaro.org>
-Subject: [v2 4/4] regulator: qcom: labibb: Add SC interrupt handling
-Date:   Sat,  9 May 2020 02:12:00 +0530
-Message-Id: <20200508204200.13481-5-sumit.semwal@linaro.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200508204200.13481-1-sumit.semwal@linaro.org>
-References: <20200508204200.13481-1-sumit.semwal@linaro.org>
+        Fri, 8 May 2020 16:48:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588970911;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=PABbYX5l1s1Q7QOkyDr67VfhHwZx5DccKVnVnS2WJ7Q=;
+        b=A7fUtC8hkDfHM+LbvdcB4mOP6Q7psRZqatWsS4Ni5YaXKjAKhcEun7wT7qywzFhtASd+jD
+        F0ZaaBUenMZyHveRFQ7zDBCY/5pqPlDaj3P5JGZrvgVRwyxzGcSO9xIgRTBsqW7h7MUyIb
+        ONkD0+ptBNm63GNdqtGP3/Hjlk7KBXY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-238-unhX4jLNPO2o-MomrFUNfQ-1; Fri, 08 May 2020 16:48:29 -0400
+X-MC-Unique: unhX4jLNPO2o-MomrFUNfQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 664A48018A6;
+        Fri,  8 May 2020 20:48:25 +0000 (UTC)
+Received: from Ruby.redhat.com (ovpn-118-29.rdu2.redhat.com [10.10.118.29])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8EE5B5D9CA;
+        Fri,  8 May 2020 20:48:17 +0000 (UTC)
+From:   Lyude Paul <lyude@redhat.com>
+To:     nouveau@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     "Liang Chen" <cl@rock-chips.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Ben Dooks" <ben.dooks@codethink.co.uk>,
+        "Tejun Heo" <tj@kernel.org>, "Petr Mladek" <pmladek@suse.com>,
+        "Suren Baghdasaryan" <surenb@google.com>,
+        "Lyude Paul" <lyude@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "Johannes Weiner" <hannes@cmpxchg.org>,
+        "Daniel Vetter" <daniel@ffwll.ch>,
+        "David Airlie" <airlied@linux.ie>,
+        "Maarten Lankhorst" <maarten.lankhorst@linux.intel.com>,
+        "Thomas Zimmermann" <tzimmermann@suse.de>,
+        "Maxime Ripard" <mripard@kernel.org>,
+        "Ben Skeggs" <bskeggs@redhat.com>,
+        "Ilia Mirkin" <imirkin@alum.mit.edu>,
+        "Peteris Rudzusiks" <peteris.rudzusiks@gmail.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Gerd Hoffmann" <kraxel@redhat.com>,
+        "Sam Ravnborg" <sam@ravnborg.org>,
+        "Chris Wilson" <chris@chris-wilson.co.uk>,
+        "Pankaj Bharadiya" <pankaj.laxminarayan.bharadiya@intel.com>,
+        "Alex Deucher" <alexander.deucher@amd.com>,
+        "Takashi Iwai" <tiwai@suse.de>,
+        "Sean Paul" <seanpaul@chromium.org>,
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>,
+        "Jani Nikula" <jani.nikula@intel.com>,
+        "Kate Stewart" <kstewart@linuxfoundation.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
+Subject: [RFC v4 00/12] drm/nouveau: Introduce CRC support for gf119+
+Date:   Fri,  8 May 2020 16:46:50 -0400
+Message-Id: <20200508204751.155488-1-lyude@redhat.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nisha Kumari <nishakumari@codeaurora.org>
+Nvidia released some documentation on how CRC support works on their
+GPUs, hooray!
 
-Add Short circuit interrupt handling and recovery for the lab and
-ibb regulators on qcom platforms.
+So: this patch series implements said CRC support in nouveau, along with
+adding some special debugfs interfaces for some relevant igt-gpu-tools
+tests (already on the ML).
 
-The client panel drivers need to register for REGULATOR_EVENT_OVER_CURRENT
-notification which will be triggered on short circuit. They should
-try to enable the regulator once, and if it doesn't get enabled,
-handle shutting down the panel accordingly.
+First - we add some new functionality to kthread_work in the kernel, and
+then use this to add a new feature to DRM that Ville Syrjälä came up
+with: vblank workers. Basically, this is just a generic DRM interface
+that allows for scheduling high-priority workers that start on a given
+vblank interrupt. Note that while we're currently only using this in
+nouveau, Intel has plans to use this for i915 as well (hence why they
+came up with it!).
 
-Signed-off-by: Nisha Kumari <nishakumari@codeaurora.org>
-Signed-off-by: Sumit Semwal <sumit.semwal@linaro.org>
+And finally: in order to implement the last feature, we expose some new
+functions in the kernel's kthread_worker infrastructure so that we can
+de-complicate our implementation of this.
 
---
-v2: sumits: reworked handling to user regmap_read_poll_timeout, and handle it
-    per-regulator instead of clearing both lab and ibb errors on either irq
-    triggering. Also added REGULATOR_EVENT_OVER_CURRENT handling and
-    notification to clients.
----
- drivers/regulator/qcom-labibb-regulator.c | 103 +++++++++++++++++++++-
- 1 file changed, 100 insertions(+), 3 deletions(-)
+Anyway-welcome to the future! :)
 
-diff --git a/drivers/regulator/qcom-labibb-regulator.c b/drivers/regulator/qcom-labibb-regulator.c
-index a9dc7c060375..3539631c9f96 100644
---- a/drivers/regulator/qcom-labibb-regulator.c
-+++ b/drivers/regulator/qcom-labibb-regulator.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- // Copyright (c) 2019, The Linux Foundation. All rights reserved.
- 
-+#include <linux/interrupt.h>
- #include <linux/module.h>
- #include <linux/of_irq.h>
- #include <linux/of.h>
-@@ -18,11 +19,15 @@
- #define REG_LABIBB_ENABLE_CTL		0x46
- #define LABIBB_STATUS1_VREG_OK_BIT	BIT(7)
- #define LABIBB_CONTROL_ENABLE		BIT(7)
-+#define LABIBB_STATUS1_SC_DETECT_BIT	BIT(6)
- 
- #define LAB_ENABLE_CTL_MASK		BIT(7)
- #define IBB_ENABLE_CTL_MASK		(BIT(7) | BIT(6))
- 
- #define POWER_DELAY			8000
-+#define POLLING_SCP_DONE_INTERVAL_US	5000
-+#define POLLING_SCP_TIMEOUT		16000
-+
- 
- struct labibb_regulator {
- 	struct regulator_desc		desc;
-@@ -30,6 +35,8 @@ struct labibb_regulator {
- 	struct regmap			*regmap;
- 	struct regulator_dev		*rdev;
- 	u16				base;
-+	int				sc_irq;
-+	int				vreg_enabled;
- 	u8				type;
- };
- 
-@@ -112,9 +119,10 @@ static int qcom_labibb_regulator_enable(struct regulator_dev *rdev)
- 		return ret;
- 	}
- 
--	if (ret)
-+	if (ret) {
-+		reg->vreg_enabled = 1;
- 		return 0;
--
-+	}
- 
- 	dev_err(reg->dev, "Can't enable %s\n", reg->desc.name);
- 	return -EINVAL;
-@@ -140,8 +148,10 @@ static int qcom_labibb_regulator_disable(struct regulator_dev *rdev)
- 		return ret;
- 	}
- 
--	if (!ret)
-+	if (!ret) {
-+		reg->vreg_enabled = 0;
- 		return 0;
-+	}
- 
- 	dev_err(reg->dev, "Can't disable %s\n", reg->desc.name);
- 	return -EINVAL;
-@@ -153,6 +163,70 @@ static struct regulator_ops qcom_labibb_ops = {
- 	.is_enabled		= qcom_labibb_regulator_is_enabled,
- };
- 
-+
-+static irqreturn_t labibb_sc_err_handler(int irq, void *_reg)
-+{
-+	int ret, count;
-+	u16 reg;
-+	u8 sc_err_mask;
-+	unsigned int val;
-+	struct labibb_regulator *labibb_reg = (struct labibb_regulator *)_reg;
-+	bool in_sc_err, reg_en, scp_done = false;
-+
-+	if (irq == labibb_reg->sc_irq)
-+		reg = labibb_reg->base + REG_LABIBB_STATUS1;
-+	else
-+		return IRQ_HANDLED;
-+
-+	sc_err_mask = LABIBB_STATUS1_SC_DETECT_BIT;
-+
-+	ret = regmap_bulk_read(labibb_reg->regmap, reg, &val, 1);
-+	if (ret < 0) {
-+		dev_err(labibb_reg->dev, "Read failed, ret=%d\n", ret);
-+		return IRQ_HANDLED;
-+	}
-+	dev_dbg(labibb_reg->dev, "%s SC error triggered! STATUS1 = %d\n",
-+		labibb_reg->desc.name, val);
-+
-+	in_sc_err = !!(val & sc_err_mask);
-+
-+	/*
-+	 * The SC(short circuit) fault would trigger PBS(Portable Batch
-+	 * System) to disable regulators for protection. This would
-+	 * cause the SC_DETECT status being cleared so that it's not
-+	 * able to get the SC fault status.
-+	 * Check if the regulator is enabled in the driver but
-+	 * disabled in hardware, this means a SC fault had happened
-+	 * and SCP handling is completed by PBS.
-+	 */
-+	if (!in_sc_err) {
-+
-+		reg = labibb_reg->base + REG_LABIBB_ENABLE_CTL;
-+
-+		ret = regmap_read_poll_timeout(labibb_reg->regmap,
-+					reg, val,
-+					!(val & LABIBB_CONTROL_ENABLE),
-+					POLLING_SCP_DONE_INTERVAL_US,
-+					POLLING_SCP_TIMEOUT);
-+
-+		if (!ret && labibb_reg->vreg_enabled) {
-+			dev_dbg(labibb_reg->dev,
-+				"%s has been disabled by SCP\n",
-+				labibb_reg->desc.name);
-+			scp_done = true;
-+		}
-+	}
-+
-+	if (in_sc_err || scp_done) {
-+		regulator_lock(labibb_reg->rdev);
-+		regulator_notifier_call_chain(labibb_reg->rdev,
-+						REGULATOR_EVENT_OVER_CURRENT,
-+						NULL);
-+		regulator_unlock(labibb_reg->rdev);
-+	}
-+	return IRQ_HANDLED;
-+}
-+
- static int register_labibb_regulator(struct qcom_labibb *labibb,
- 				const struct labibb_regulator_data *reg_data,
- 				struct device_node *of_node)
-@@ -181,6 +255,29 @@ static int register_labibb_regulator(struct qcom_labibb *labibb,
- 	reg->desc.type = REGULATOR_VOLTAGE;
- 	reg->desc.ops = &qcom_labibb_ops;
- 
-+	reg->sc_irq = -EINVAL;
-+	ret = of_irq_get_byname(of_node, reg_data->irq_name);
-+	if (ret < 0)
-+		dev_dbg(labibb->dev,
-+			"Unable to get %s, ret = %d\n",
-+			reg_data->irq_name, ret);
-+	else
-+		reg->sc_irq = ret;
-+
-+	if (reg->sc_irq > 0) {
-+		ret = devm_request_threaded_irq(labibb->dev,
-+						reg->sc_irq,
-+						NULL, labibb_sc_err_handler,
-+						IRQF_ONESHOT |
-+						IRQF_TRIGGER_RISING,
-+						reg_data->irq_name, labibb);
-+		if (ret) {
-+			dev_err(labibb->dev, "Failed to register '%s' irq ret=%d\n",
-+				reg_data->irq_name, ret);
-+			return ret;
-+		}
-+	}
-+
- 	cfg.dev = labibb->dev;
- 	cfg.driver_data = reg;
- 	cfg.regmap = labibb->regmap;
+Major changes since v3:
+* Style fixes on nouveau patches from checkpatch, no functional changes
+* Don't integrate so tightly with kthread_work (and use our own lock),
+  instead introduce some new functions for doing simple async flushing
+  and cancelling. I think this interface looks a lot more acceptable
+  then what I was previously trying.
+* Apply some changes requested by danvet
+Major changes since v2:
+* Use kthread_worker instead of kthreadd for vblank workers
+* Don't check debugfs return values
+
+Lyude Paul (12):
+  kthread: Add kthread_queue_flush_work()
+  kthread: Add kthread_(un)block_work_queuing() and
+    kthread_work_queuable()
+  drm/vblank: Register drmm cleanup action once per drm_vblank_crtc
+  drm/vblank: Add vblank works
+  drm/nouveau/kms/nv50-: Unroll error cleanup in nv50_head_create()
+  drm/nouveau/kms/nv140-: Don't modify depth in state during atomic
+    commit
+  drm/nouveau/kms/nv50-: Fix disabling dithering
+  drm/nouveau/kms/nv50-: s/harm/armh/g
+  drm/nouveau/kms/nv140-: Track wndw mappings in nv50_head_atom
+  drm/nouveau/kms/nv50-: Expose nv50_outp_atom in disp.h
+  drm/nouveau/kms/nv50-: Move hard-coded object handles into header
+  drm/nouveau/kms/nvd9-: Add CRC support
+
+ drivers/gpu/drm/drm_vblank.c                | 280 +++++++-
+ drivers/gpu/drm/nouveau/dispnv04/crtc.c     |  25 +-
+ drivers/gpu/drm/nouveau/dispnv50/Kbuild     |   4 +
+ drivers/gpu/drm/nouveau/dispnv50/atom.h     |  21 +
+ drivers/gpu/drm/nouveau/dispnv50/core.h     |   4 +
+ drivers/gpu/drm/nouveau/dispnv50/core907d.c |   3 +
+ drivers/gpu/drm/nouveau/dispnv50/core917d.c |   3 +
+ drivers/gpu/drm/nouveau/dispnv50/corec37d.c |   3 +
+ drivers/gpu/drm/nouveau/dispnv50/corec57d.c |   3 +
+ drivers/gpu/drm/nouveau/dispnv50/crc.c      | 715 ++++++++++++++++++++
+ drivers/gpu/drm/nouveau/dispnv50/crc.h      | 125 ++++
+ drivers/gpu/drm/nouveau/dispnv50/crc907d.c  | 139 ++++
+ drivers/gpu/drm/nouveau/dispnv50/crcc37d.c  | 153 +++++
+ drivers/gpu/drm/nouveau/dispnv50/disp.c     |  65 +-
+ drivers/gpu/drm/nouveau/dispnv50/disp.h     |  24 +
+ drivers/gpu/drm/nouveau/dispnv50/handles.h  |  16 +
+ drivers/gpu/drm/nouveau/dispnv50/head.c     | 142 +++-
+ drivers/gpu/drm/nouveau/dispnv50/head.h     |  13 +-
+ drivers/gpu/drm/nouveau/dispnv50/head907d.c |  14 +-
+ drivers/gpu/drm/nouveau/dispnv50/headc37d.c |  27 +-
+ drivers/gpu/drm/nouveau/dispnv50/headc57d.c |  20 +-
+ drivers/gpu/drm/nouveau/dispnv50/wndw.c     |  15 +-
+ drivers/gpu/drm/nouveau/nouveau_display.c   |  60 +-
+ include/drm/drm_vblank.h                    |  35 +
+ include/linux/kthread.h                     |  35 +
+ kernel/kthread.c                            | 133 +++-
+ 26 files changed, 1903 insertions(+), 174 deletions(-)
+ create mode 100644 drivers/gpu/drm/nouveau/dispnv50/crc.c
+ create mode 100644 drivers/gpu/drm/nouveau/dispnv50/crc.h
+ create mode 100644 drivers/gpu/drm/nouveau/dispnv50/crc907d.c
+ create mode 100644 drivers/gpu/drm/nouveau/dispnv50/crcc37d.c
+ create mode 100644 drivers/gpu/drm/nouveau/dispnv50/handles.h
+
 -- 
-2.26.2
+2.25.4
 
