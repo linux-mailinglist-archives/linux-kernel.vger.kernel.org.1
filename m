@@ -2,135 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41E761CB9D0
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 23:31:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0EE41CB9DE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 23:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727976AbgEHVbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 17:31:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57824 "EHLO mail.kernel.org"
+        id S1728090AbgEHVdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 17:33:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726950AbgEHVbZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 17:31:25 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726811AbgEHVdd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 17:33:33 -0400
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8209621582;
-        Fri,  8 May 2020 21:31:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9D2A0218AC
+        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 21:33:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588973484;
-        bh=1RunAbg9yPDYcIM2xk1zX+QnL3l50+9M4joa5kazxcQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=r9Vj0PpLCl4w8rRHSw6AblX5YPetgOMvn5t6JQ5/rEm7JUBJrmpi1CyYoP5xoRqba
-         3Q4zQfJRZSRhDwhiY9MiZ5bpO2u/uhKq8OpBRiXIyFowLSlXFdmtiUUTg5OVqC0tmq
-         aORagheluEp71miwtnayZtAR6zHS/gEUfFz6rSZc=
-Received: by pali.im (Postfix)
-        id 73C0A7F5; Fri,  8 May 2020 23:31:22 +0200 (CEST)
-Date:   Fri, 8 May 2020 23:31:22 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: Missing CLOCK_BOOTTIME_RAW?
-Message-ID: <20200508213122.f7srcd2gnduamtvs@pali>
-References: <20200508201859.vlffp4fomw2fr4qc@pali>
- <878si2jg6q.fsf@nanos.tec.linutronix.de>
+        s=default; t=1588973612;
+        bh=ls4wVLtCuwHy+Ipjb7HA8vnN9MIN6Wmha+TzdYWtvKc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=gBVpLpwXRca7BENelAhzKtHTP/0ltdA9cJoheMTx1P4GyW0YBcsAYsIu5/ptrBmE/
+         5ZYCqjdqz9W1h6SF0WHOpZ51JTE8WS5DAWl1OLoHkkSP4X4Q2k49GHJFDuzASlXEU1
+         dxGoIwGC35mqkkAFmxmQekt9VysyPL8x4IUAaMek=
+Received: by mail-wr1-f48.google.com with SMTP id z8so3589456wrw.3
+        for <linux-kernel@vger.kernel.org>; Fri, 08 May 2020 14:33:32 -0700 (PDT)
+X-Gm-Message-State: AGi0PubB/dZfVri1VwirwQkVaVg6TuaYGXqs45NehphvwH5x0JWlVW/y
+        Gop1hC9mQUXQ6QdyulOYrt9mwMqNP0SDU7M5peb3Qw==
+X-Google-Smtp-Source: APiQypKkfKc8nwfTQ52CA43jPndN8sjJe/HJmtfTKVOm8iPpMCUmgdfl9U9gxXEGBQZwhTi1KHad8bdjblEo8vujjkg=
+X-Received: by 2002:adf:e586:: with SMTP id l6mr5031852wrm.184.1588973611034;
+ Fri, 08 May 2020 14:33:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <878si2jg6q.fsf@nanos.tec.linutronix.de>
-User-Agent: NeoMutt/20180716
+References: <20200508144043.13893-1-joro@8bytes.org>
+In-Reply-To: <20200508144043.13893-1-joro@8bytes.org>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Fri, 8 May 2020 14:33:19 -0700
+X-Gmail-Original-Message-ID: <CALCETrX0ubjc0Gf4hCY9RWH6cVEKF1hv3RzqToKMt9_bEXXBvw@mail.gmail.com>
+Message-ID: <CALCETrX0ubjc0Gf4hCY9RWH6cVEKF1hv3RzqToKMt9_bEXXBvw@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/7] mm: Get rid of vmalloc_sync_(un)mappings()
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@kernel.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 08 May 2020 22:59:57 Thomas Gleixner wrote:
-> Pali,
-> 
-> Pali Rohár <pali@kernel.org> writes:
-> 
-> > I'm looking at clocks which are provided by kernel for userspace
-> > applications via clock_gettime() syscall and I think that there is
-> > missing clock variant CLOCK_BOOTTIME_RAW.
-> >
-> > If userspace application wants to measure time difference between two
-> > events then I think all of available clocks CLOCK_REALTIME,
-> > CLOCK_MONOTONIC, CLOCK_MONOTONIC_RAW and CLOCK_BOOTTIME have some issues
-> > for such task.
-> ...
-> > CLOCK_BOOTTIME is affected by NTP jumps but provides correct time
-> > difference when system was suspended during measurement.
-> 
-> What do you mean with NTP jumps?
-> 
-> Neither CLOCK_BOOTTIME nor CLOCK_MONOTONIC jump. They are frequency
-> corrected when NTP, PTP or PPS are in use. The frequency correction is
-> incremental an smothed. They really don't jump and they give you proper
-> time in nanoseconds which is as close to the real nanoseconds as it
-> gets.
+On Fri, May 8, 2020 at 7:40 AM Joerg Roedel <joro@8bytes.org> wrote:
+>
+> Hi,
+>
+> after the recent issue with vmalloc and tracing code[1] on x86 and a
+> long history of previous issues related to the vmalloc_sync_mappings()
+> interface, I thought the time has come to remove it. Please
+> see [2], [3], and [4] for some other issues in the past.
+>
+> The patches are based on v5.7-rc4 and add tracking of page-table
+> directory changes to the vmalloc and ioremap code. Depending on which
+> page-table levels changes have been made, a new per-arch function is
+> called: arch_sync_kernel_mappings().
+>
+> On x86-64 with 4-level paging, this function will not be called more
+> than 64 times in a systems runtime (because vmalloc-space takes 64 PGD
+> entries which are only populated, but never cleared).
 
-Hello! I should have been more precise about it. CLOCK_BOOTTIME and
-CLOCK_MONOTONIC do not jump but I understood that they are affected by
-adjtime(). So these clocks may tick faster or slower than real time. NTP
-daemon when see that CLOCK_REALTIME is incorrect, it may speed up or
-slow down its ticking. And this is affected also by CLOCK_BOOTTIME and
-CLOCK_MONOTONIC, right?
-
-> CLOCK_MONOTONIC_RAW converts some assumed clock frequency into something
-> which looks like time. But it's raw and subject to drift. The only
-> reason why it's exposed is because NTP/PTP need it to calculate the
-> frequency difference between the hardware counter and the master clock.
-
-  CLOCK_MONOTONIC_RAW
-      Similar to CLOCK_MONOTONIC, but provides access to a raw
-      hardware-based time that is not subject to NTP adjustments or the
-      incremental adjustments performed by adjtime(3).
-
-I understood it that it is like CLOCK_MONOTONIC but is not affected by
-adjtime() which is used by NTP daemon to slow down or speed up system
-clock to synchronize it (when system clock is incorrect).
-
-So I thought that this clock is better for time differences as measured
-time would not be affected when NTP daemon speeded up system clock via
-adjtime().
-
-You wrote that this clock is subject to drifts. What exactly may happen
-with CLOCK_MONOTONIC_RAW?
-
-> > So for me it looks like that there is missing CLOCK_BOOTTIME_RAW clock
-> > which would not be affected by NTP jumps (like CLOCK_MONOTONIC_RAW) and
-> > also would not be affected by system suspend (like CLOCK_BOOTTIME).
-> >
-> > Please correct me if I'm wrong in some of my above assumptions. It is
-> > how I understood documentation for clock_gettime() function from Linux
-> > manpage.
-> 
-> I don't know how you read jumps into this:
-> 
->   CLOCK_MONOTONIC
-> 
->    Clock that cannot be set and represents monotonic time since some
->    unspecified starting point.  This clock is not affected by
->    discontinuous jumps in the system time (e.g., if the system
->    administrator manually changes the clock), but is affected by the
->    incremental adjustments performed by adjtime(3) and NTP.
-
-Sorry, by jump I mean that clock may be adjusted (even smoothed
-adjustment).
-
-> And CLOCK_BOOTTIME is the same except that it accounts time in suspend
-> while MONOTONIC stops in suspend.
-> 
-> > Is there any reason why kernel does not provide such CLOCK_BOOTTIME_RAW
-> > clock for userspace applications which would be interested in measuring
-> > time difference which occurred between two events?
-> 
-> Nobody needs it and there is even no guarantee that it can be
-> reconstructed on resume.
-> 
-> If you want accurate time deltas then use either CLOCK_MONOTONIC or
-> CLOCK_BOOTTIME depending on your interest in suspend time.
-> 
-> Thanks,
-> 
->         tglx
+What's the maximum on other system types?  It might make more sense to
+take the memory hit and pre-populate all the tables at boot so we
+never have to sync them.
