@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2AA81CA893
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 12:50:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A53331CA89D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 May 2020 12:51:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727100AbgEHKuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 06:50:15 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:25020 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726616AbgEHKuP (ORCPT
+        id S1727821AbgEHKut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 06:50:49 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:43112 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727787AbgEHKul (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 06:50:15 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 048AWsZl137433;
-        Fri, 8 May 2020 06:49:39 -0400
+        Fri, 8 May 2020 06:50:41 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 048AWIPt069054;
+        Fri, 8 May 2020 06:49:44 -0400
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30vtsxgptt-1
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30vtvfrayn-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 May 2020 06:49:39 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 048AncFL176732;
-        Fri, 8 May 2020 06:49:38 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30vtsxgpt3-1
+        Fri, 08 May 2020 06:49:44 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 048AXnuR072960;
+        Fri, 8 May 2020 06:49:43 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30vtvfray2-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 May 2020 06:49:38 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 048Ajbsb020608;
-        Fri, 8 May 2020 10:49:36 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 30s0g5w8nx-1
+        Fri, 08 May 2020 06:49:43 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 048AjiDw008709;
+        Fri, 8 May 2020 10:49:41 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma05fra.de.ibm.com with ESMTP id 30s0g5nc19-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 May 2020 10:49:35 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 048AnXc711796930
+        Fri, 08 May 2020 10:49:41 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 048Anc6a56754414
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 8 May 2020 10:49:33 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 491F542049;
-        Fri,  8 May 2020 10:49:33 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E67FA42045;
-        Fri,  8 May 2020 10:49:29 +0000 (GMT)
+        Fri, 8 May 2020 10:49:38 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B1058A404D;
+        Fri,  8 May 2020 10:49:38 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B6ED7A4053;
+        Fri,  8 May 2020 10:49:34 +0000 (GMT)
 Received: from vajain21-in-ibm-com (unknown [9.85.93.12])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Fri,  8 May 2020 10:49:29 +0000 (GMT)
-Received: by vajain21-in-ibm-com (sSMTP sendmail emulation); Fri, 08 May 2020 16:19:28 +0530
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Fri,  8 May 2020 10:49:34 +0000 (GMT)
+Received: by vajain21-in-ibm-com (sSMTP sendmail emulation); Fri, 08 May 2020 16:19:33 +0530
 From:   Vaibhav Jain <vaibhav@linux.ibm.com>
 To:     linuxppc-dev@lists.ozlabs.org, linux-nvdimm@lists.01.org,
         linux-kernel@vger.kernel.org
@@ -56,10 +56,13 @@ Cc:     Vaibhav Jain <vaibhav@linux.ibm.com>,
         Michael Ellerman <mpe@ellerman.id.au>,
         "Oliver O'Halloran" <oohall@gmail.com>,
         Santosh Sivaraj <santosh@fossix.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCH v7 1/5] powerpc: Document details on H_SCM_HEALTH hcall
-Date:   Fri,  8 May 2020 16:19:18 +0530
-Message-Id: <20200508104922.72565-2-vaibhav@linux.ibm.com>
+        Steven Rostedt <rostedt@goodmis.org>,
+        Piotr Maziarz <piotrx.maziarz@linux.intel.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Borislav Petkov <bp@alien8.de>
+Subject: [PATCH v7 2/5] seq_buf: Export seq_buf_printf() to external modules
+Date:   Fri,  8 May 2020 16:19:19 +0530
+Message-Id: <20200508104922.72565-3-vaibhav@linux.ibm.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200508104922.72565-1-vaibhav@linux.ibm.com>
 References: <20200508104922.72565-1-vaibhav@linux.ibm.com>
@@ -68,93 +71,52 @@ Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
  definitions=2020-05-08_08:2020-05-07,2020-05-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- lowpriorityscore=0 malwarescore=0 clxscore=1015 suspectscore=0
- phishscore=0 impostorscore=0 adultscore=0 mlxscore=0 priorityscore=1501
- spamscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005080091
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
+ lowpriorityscore=0 suspectscore=0 mlxlogscore=999 adultscore=0
+ malwarescore=0 spamscore=0 priorityscore=1501 phishscore=0 impostorscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005080087
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add documentation to 'papr_hcalls.rst' describing the bitmap flags
-that are returned from H_SCM_HEALTH hcall as per the PAPR-SCM
-specification.
+'seq_buf' provides a very useful abstraction for writing to a string
+buffer without needing to worry about it over-flowing. However even
+though the API has been stable for couple of years now its stills not
+exported to external modules limiting its usage.
 
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
+Hence this patch proposes update to 'seq_buf.c' to mark
+seq_buf_printf() which is part of the seq_buf API to be exported to
+external GPL modules. This symbol will be used in later parts of this
+patchset to simplify content creation for a sysfs attribute.
+
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Piotr Maziarz <piotrx.maziarz@linux.intel.com>
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>
+Cc: Borislav Petkov <bp@alien8.de>
 Signed-off-by: Vaibhav Jain <vaibhav@linux.ibm.com>
 ---
 Changelog:
 
 v6..v7:
-* None
-
-v5..v6
 * New patch in the series
 ---
- Documentation/powerpc/papr_hcalls.rst | 43 ++++++++++++++++++++++++---
- 1 file changed, 39 insertions(+), 4 deletions(-)
+ lib/seq_buf.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/powerpc/papr_hcalls.rst b/Documentation/powerpc/papr_hcalls.rst
-index 3493631a60f8..9a5ba5eaf323 100644
---- a/Documentation/powerpc/papr_hcalls.rst
-+++ b/Documentation/powerpc/papr_hcalls.rst
-@@ -220,13 +220,48 @@ from the LPAR memory.
- **H_SCM_HEALTH**
+diff --git a/lib/seq_buf.c b/lib/seq_buf.c
+index 4e865d42ab03..707453f5d58e 100644
+--- a/lib/seq_buf.c
++++ b/lib/seq_buf.c
+@@ -91,6 +91,7 @@ int seq_buf_printf(struct seq_buf *s, const char *fmt, ...)
  
- | Input: drcIndex
--| Out: *health-bitmap, health-bit-valid-bitmap*
-+| Out: *health-bitmap (r4), health-bit-valid-bitmap (r5)*
- | Return Value: *H_Success, H_Parameter, H_Hardware*
+ 	return ret;
+ }
++EXPORT_SYMBOL_GPL(seq_buf_printf);
  
- Given a DRC Index return the info on predictive failure and overall health of
--the NVDIMM. The asserted bits in the health-bitmap indicate a single predictive
--failure and health-bit-valid-bitmap indicate which bits in health-bitmap are
--valid.
-+the NVDIMM. The asserted bits in the health-bitmap indicate one or more states
-+(described in table below) of the NVDIMM and health-bit-valid-bitmap indicate
-+which bits in health-bitmap are valid.
-+
-+Health Bitmap Flags:
-+
-++------+-----------------------------------------------------------------------+
-+|  Bit |               Definition                                              |
-++======+=======================================================================+
-+|  00  | SCM device is unable to persist memory contents.                      |
-+|      | If the system is powered down, nothing will be saved.                 |
-++------+-----------------------------------------------------------------------+
-+|  01  | SCM device failed to persist memory contents. Either contents were not|
-+|      | saved successfully on power down or were not restored properly on     |
-+|      | power up.                                                             |
-++------+-----------------------------------------------------------------------+
-+|  02  | SCM device contents are persisted from previous IPL. The data from    |
-+|      | the last boot were successfully restored.                             |
-++------+-----------------------------------------------------------------------+
-+|  03  | SCM device contents are not persisted from previous IPL. There was no |
-+|      | data to restore from the last boot.                                   |
-++------+-----------------------------------------------------------------------+
-+|  04  | SCM device memory life remaining is critically low                    |
-++------+-----------------------------------------------------------------------+
-+|  05  | SCM device will be garded off next IPL due to failure                 |
-++------+-----------------------------------------------------------------------+
-+|  06  | SCM contents cannot persist due to current platform health status. A  |
-+|      | hardware failure may prevent data from being saved or restored.       |
-++------+-----------------------------------------------------------------------+
-+|  07  | SCM device is unable to persist memory contents in certain conditions |
-++------+-----------------------------------------------------------------------+
-+|  08  | SCM device is encrypted                                               |
-++------+-----------------------------------------------------------------------+
-+|  09  | SCM device has successfully completed a requested erase or secure     |
-+|      | erase procedure.                                                      |
-++------+-----------------------------------------------------------------------+
-+|10:63 | Reserved / Unused                                                     |
-++------+-----------------------------------------------------------------------+
- 
- **H_SCM_PERFORMANCE_STATS**
- 
+ #ifdef CONFIG_BINARY_PRINTF
+ /**
 -- 
 2.26.2
 
