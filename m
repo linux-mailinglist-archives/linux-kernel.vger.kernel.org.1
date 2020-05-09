@@ -2,168 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09B251CC22C
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 16:21:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4CC71CBE10
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 08:31:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727978AbgEIOVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 10:21:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727092AbgEIOVG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 10:21:06 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23789C061A0C
-        for <linux-kernel@vger.kernel.org>; Sat,  9 May 2020 07:21:05 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id bm3so4870181qvb.0
-        for <linux-kernel@vger.kernel.org>; Sat, 09 May 2020 07:21:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=Ho7QmA8ZMfJz5ce1k/QRjeTlDkjueHSq5xTJ1WkUGPU=;
-        b=euBpYkLZT5GCedcber4H9h9dWGQVNueJcKLCWbi6PjcjCRaXvEO3FSv6oxRwwUAcRX
-         7GMUSbDU/RRorSdHyDULaGTDy/Isb9HnWNv7uSFLIfnAXzEpjWDDZ9ecaAwCn38NKEax
-         0gxXcwOHQME06+ZLRp6AKJRAprFG+BeMW0AMuJwFn4hm7d/fC18Mq2e2iKDvK5mUx0ky
-         cX8PZeU1z8XhY6WWAroJsXpMPBuCNM/A3kiB8uNk78xyddWkFlb8dY2JcUKeYDVVxcxU
-         03HIujUpyoUQNXPgcwuBD82gGKi09HB9Dvm1DNqlyDFFcRnk9xuzcpKm6feAtg5c87Eu
-         SAHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=Ho7QmA8ZMfJz5ce1k/QRjeTlDkjueHSq5xTJ1WkUGPU=;
-        b=XPrgJaibEcDfdLRLEE/KjeYQhpMbpLjC5s1IX5L2Jk+iDn6cROM4q+2XtsgNeyLneC
-         FckFVEUNbWZTLcS7hbBRqV7gMgxr0PiBFlx6cxshb5n5sYEMOIWyR3R7zDYLYC8KvXmj
-         oUEhBOfsCoLK+jnW5zMVDpjmD2E99szxd2DxTFctLTDqGS68TzRYreQpm5wWzafH4c7r
-         KcWggMyqz+w4XuuzojRiGBl/Z9goyBCCx1wRVSYgFwJNLmc3YEqMoeNlQi9uIBdAW5vA
-         bEuYWj2jAUT4eMzJITVgMZahQO52sB5hLfvPPBFNC7BwvZuI2q7UB/QgfX8Wo3Dw9mti
-         uNAQ==
-X-Gm-Message-State: AGi0Pubh7IRtnDs3dJYAoSySNuoYxHr4WEid3qz+KB/HwDbAJvvL2Vel
-        9XkCizDvJAsgJNAnkGKmlzC2iKACXmiKZA==
-X-Google-Smtp-Source: APiQypKGo21usv+r+RSAulbzUM6zBXWr78hmsLPYbUwiyIoIbcg45yG57O7MJ//V4xvZCqSUvL0pXA7osc0+UQ==
-X-Received: by 2002:a0c:f2d3:: with SMTP id c19mr7486154qvm.109.1589034063386;
- Sat, 09 May 2020 07:21:03 -0700 (PDT)
-Date:   Sat,  9 May 2020 07:19:46 -0700
-Message-Id: <20200509141946.158892-1-shakeelb@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.26.2.645.ge9eca65c58-goog
-Subject: [PATCH] mm: fix LRU balancing effect of new transparent huge pages
-From:   Shakeel Butt <shakeelb@google.com>
-To:     Mel Gorman <mgorman@suse.de>, Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Rik van Riel <riel@surriel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Shakeel Butt <shakeelb@google.com>
+        id S1728914AbgEIGbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 02:31:13 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:44698 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726115AbgEIGbN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 May 2020 02:31:13 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 93F6381CBEAC0A11A6BE;
+        Sat,  9 May 2020 14:31:09 +0800 (CST)
+Received: from euler.huawei.com (10.175.101.6) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 9 May 2020 14:30:58 +0800
+From:   Hongbo Yao <yaohongbo@huawei.com>
+To:     <jansimon.moeller@gmx.de>, <jacek.anaszewski@gmail.com>,
+        <pavel@ucw.cz>
+CC:     <yaohongbo@huawei.com>, <chenzhou10@huawei.com>,
+        <linux-kernel@vger.kernel.org>, <linux-leds@vger.kernel.org>
+Subject: [PATCH -next] leds: blinkm: remove set but not used variable
+Date:   Sat, 9 May 2020 22:23:57 +0800
+Message-ID: <20200509142357.33702-1-yaohongbo@huawei.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.101.6]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Weiner <hannes@cmpxchg.org>
+Fixes gcc '-Wunused-but-set-variable' warning:
+drivers/leds/leds-blinkm.c:483:6: warning: variable ‘ret’ set
+but not used [-Wunused-but-set-variable]
+  int ret;
 
-Currently, THP are counted as single pages until they are split right
-before being swapped out. However, at that point the VM is already in
-the middle of reclaim, and adjusting the LRU balance then is useless.
-
-Always account THP by the number of basepages, and remove the fixup
-from the splitting path.
-
-Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-Signed-off-by: Shakeel Butt <shakeelb@google.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Hongbo Yao <yaohongbo@huawei.com>
 ---
-Revived the patch from https://lore.kernel.org/patchwork/patch/685703/
+ drivers/leds/leds-blinkm.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
- mm/swap.c | 23 +++++++++--------------
- 1 file changed, 9 insertions(+), 14 deletions(-)
-
-diff --git a/mm/swap.c b/mm/swap.c
-index 4eb179ee0b72..b75c0ce90418 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -262,14 +262,14 @@ void rotate_reclaimable_page(struct page *page)
- 	}
- }
+diff --git a/drivers/leds/leds-blinkm.c b/drivers/leds/leds-blinkm.c
+index e11fe1788242..a493ee0e0fc7 100644
+--- a/drivers/leds/leds-blinkm.c
++++ b/drivers/leds/leds-blinkm.c
+@@ -480,9 +480,8 @@ static int blinkm_led_blue_set(struct led_classdev *led_cdev,
  
--static void update_page_reclaim_stat(struct lruvec *lruvec,
--				     int file, int rotated)
-+static void update_page_reclaim_stat(struct lruvec *lruvec, int file,
-+				     int rotated, int nr_pages)
+ static void blinkm_init_hw(struct i2c_client *client)
  {
- 	struct zone_reclaim_stat *reclaim_stat = &lruvec->reclaim_stat;
- 
--	reclaim_stat->recent_scanned[file]++;
-+	reclaim_stat->recent_scanned[file] += nr_pages;
- 	if (rotated)
--		reclaim_stat->recent_rotated[file]++;
-+		reclaim_stat->recent_rotated[file] += nr_pages;
+-	int ret;
+-	ret = blinkm_transfer_hw(client, BLM_STOP_SCRIPT);
+-	ret = blinkm_transfer_hw(client, BLM_GO_RGB);
++	blinkm_transfer_hw(client, BLM_STOP_SCRIPT);
++	blinkm_transfer_hw(client, BLM_GO_RGB);
  }
  
- static void __activate_page(struct page *page, struct lruvec *lruvec,
-@@ -288,7 +288,7 @@ static void __activate_page(struct page *page, struct lruvec *lruvec,
- 
- 		__count_vm_events(PGACTIVATE, nr_pages);
- 		__count_memcg_events(lruvec_memcg(lruvec), PGACTIVATE, nr_pages);
--		update_page_reclaim_stat(lruvec, file, 1);
-+		update_page_reclaim_stat(lruvec, file, 1, nr_pages);
- 	}
- }
- 
-@@ -546,7 +546,7 @@ static void lru_deactivate_file_fn(struct page *page, struct lruvec *lruvec,
- 		__count_vm_events(PGDEACTIVATE, nr_pages);
- 		__count_memcg_events(lruvec_memcg(lruvec), PGDEACTIVATE, nr_pages);
- 	}
--	update_page_reclaim_stat(lruvec, file, 0);
-+	update_page_reclaim_stat(lruvec, file, 0, nr_pages);
- }
- 
- static void lru_deactivate_fn(struct page *page, struct lruvec *lruvec,
-@@ -564,7 +564,7 @@ static void lru_deactivate_fn(struct page *page, struct lruvec *lruvec,
- 
- 		__count_vm_events(PGDEACTIVATE, nr_pages);
- 		__count_memcg_events(lruvec_memcg(lruvec), PGDEACTIVATE, nr_pages);
--		update_page_reclaim_stat(lruvec, file, 0);
-+		update_page_reclaim_stat(lruvec, file, 0, nr_pages);
- 	}
- }
- 
-@@ -590,7 +590,7 @@ static void lru_lazyfree_fn(struct page *page, struct lruvec *lruvec,
- 
- 		__count_vm_events(PGLAZYFREE, nr_pages);
- 		__count_memcg_events(lruvec_memcg(lruvec), PGLAZYFREE, nr_pages);
--		update_page_reclaim_stat(lruvec, 1, 0);
-+		update_page_reclaim_stat(lruvec, 1, 0, nr_pages);
- 	}
- }
- 
-@@ -899,8 +899,6 @@ EXPORT_SYMBOL(__pagevec_release);
- void lru_add_page_tail(struct page *page, struct page *page_tail,
- 		       struct lruvec *lruvec, struct list_head *list)
- {
--	const int file = 0;
--
- 	VM_BUG_ON_PAGE(!PageHead(page), page);
- 	VM_BUG_ON_PAGE(PageCompound(page_tail), page);
- 	VM_BUG_ON_PAGE(PageLRU(page_tail), page);
-@@ -926,9 +924,6 @@ void lru_add_page_tail(struct page *page, struct page *page_tail,
- 		add_page_to_lru_list_tail(page_tail, lruvec,
- 					  page_lru(page_tail));
- 	}
--
--	if (!PageUnevictable(page))
--		update_page_reclaim_stat(lruvec, file, PageActive(page_tail));
- }
- #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
- 
-@@ -973,7 +968,7 @@ static void __pagevec_lru_add_fn(struct page *page, struct lruvec *lruvec,
- 	if (page_evictable(page)) {
- 		lru = page_lru(page);
- 		update_page_reclaim_stat(lruvec, page_is_file_lru(page),
--					 PageActive(page));
-+					 PageActive(page), nr_pages);
- 		if (was_unevictable)
- 			__count_vm_events(UNEVICTABLE_PGRESCUED, nr_pages);
- 	} else {
+ static int blinkm_test_run(struct i2c_client *client)
 -- 
-2.26.2.645.ge9eca65c58-goog
+2.17.1
 
