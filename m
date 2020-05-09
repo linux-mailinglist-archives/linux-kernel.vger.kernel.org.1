@@ -2,162 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 374051CC18F
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 15:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59E091CC192
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 15:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727810AbgEINB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 09:01:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726370AbgEINB4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 09:01:56 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1102DC061A0C
-        for <linux-kernel@vger.kernel.org>; Sat,  9 May 2020 06:01:56 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id t3so4426524qkg.1
-        for <linux-kernel@vger.kernel.org>; Sat, 09 May 2020 06:01:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=jTuvTs2BUGfgevsdxkTl5Pz0n3BVDsnYhNL9VJKSs9o=;
-        b=JomB970amfbS7tlmVt6Zk1DINDaC0AXdo6I2BycPXku8wEExjHK8J+LlTQPExHIrvs
-         6vxm4SsS8vQsChgochARhojcSgstz0+4p4VQfm8SJRUawUXPc4UkmKDl4w0MsrlzdNG2
-         w3Sd1qIktLEary+Oi7JpzA+VqnRI7N8G9sjpjgJ7kCZ6IMFvXKMICL/igec9kgRGLwFY
-         FxwSAr0PJusFCUILo+7PEpfk1cwrRl9Vd1j/unXRc3t0RDM4u73eaZ+rZud2AXASZagY
-         c+BoatdL4ncmyL1n1voA85i4RUo01v6tAIo0+JNJmrUiPjay51hWuM4feexL7PNuWCmu
-         5U0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=jTuvTs2BUGfgevsdxkTl5Pz0n3BVDsnYhNL9VJKSs9o=;
-        b=JiI9xjylJIX71mAtoL74DZg21aglEjQ6Vz8RHngQLgnnAno2iUXxzqRWXORXdiTMUt
-         tpOkTMZiXY9Ms0yXz4eTY1OUr8qFh7QBkVWY/eQZ1NAZuLdEnf1s7zjf8HMbPDj5Ao+s
-         Av7bEP20WopZyrsYs3EiZWKT3Q6yTNxdJvhf0sSXC9kl2QmXOfi479iMso/GqwX/w86F
-         Zs1PiZISFVspLMkBbJTet5h9K4jTZ8ZGkElPY+EwZiaJ8TFo1fbb7i3K75pBHqOVL/Sy
-         W4HCXL7BFUKZpgoDxYPsdJiDbKBba4UNaZs0EKRXAU+oLT06APup9PkxHOT7h1jeFSvI
-         FJjA==
-X-Gm-Message-State: AGi0PuZ9vaJvRXUkeiMLhoEP5MYu5mMMMordjGcUHvOPfOjGxDDhEqG3
-        HC5glc5k4YqbhO/FBaY2FgmqzYvnP8jT4w==
-X-Google-Smtp-Source: APiQypIcDF4OVCmqBgPzFnueYXtvvdTzIF3VhS651bB8xJUYGq/I/Mm6ypwpzUKLgQZDRTM/8VpKSw==
-X-Received: by 2002:ae9:dfc6:: with SMTP id t189mr6651875qkf.15.1589029315093;
-        Sat, 09 May 2020 06:01:55 -0700 (PDT)
-Received: from qians-mbp.fios-router.home (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id c197sm3555474qkg.133.2020.05.09.06.01.54
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 09 May 2020 06:01:54 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [PATCH -next v2] locking/osq_lock: annotate a data race in
- osq_lock
-From:   Qian Cai <cai@lca.pw>
-In-Reply-To: <20200509043308.GL2869@paulmck-ThinkPad-P72>
-Date:   Sat, 9 May 2020 09:01:53 -0400
-Cc:     Will Deacon <will@kernel.org>, Elver Marco <elver@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <9FBC2A17-2821-49F7-9A0F-5E41116BBC70@lca.pw>
-References: <1581429255-12542-1-git-send-email-cai@lca.pw>
- <2C8BF141-5384-475F-B713-6D473557C65C@lca.pw>
- <20200509043308.GL2869@paulmck-ThinkPad-P72>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+        id S1727823AbgEINHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 09:07:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42702 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726370AbgEINHL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 May 2020 09:07:11 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 55828214D8;
+        Sat,  9 May 2020 13:07:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589029630;
+        bh=LDChgAezC2cELQgFUK931l+lj9IS98Sqd6nkTxmMfyo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=pE6AviOjbhLTmMGlBQ4CUAwnftlLGIRNd5p189eKB/VlJ0Xl+5O9E/w0AUXSZE1Xx
+         82qB+Bnc+ZB37q3Tk4Yg2QtGG9mc8XKAN9y1eVNmZbuPBA9PH8ZVAupS9mnLixL5BB
+         qwXw4IZwdYf9XoNqdwuiXeRgbFVllybkCT4my1N0=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1jXPC8-00Aroh-Ia; Sat, 09 May 2020 14:07:08 +0100
+Date:   Sat, 09 May 2020 14:07:07 +0100
+Message-ID: <874ksp1clg.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     "yue.wang@amlogic.com" <yue.wang@amlogic.com>
+Cc:     linux-pci <linux-pci@vger.kernel.org>,
+        linux-amlogic <linux-amlogic@lists.infradead.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Subject: Re: [PATCH] PCI: amlogic: meson: Don't use FAST_LINK_MODE to set up link
+In-Reply-To: <2020050709433087691414@amlogic.com>
+References: <20200429164230.309922-1-maz@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 EasyPG/1.0.0 Emacs/26
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: yue.wang@amlogic.com, linux-pci@vger.kernel.org, linux-amlogic@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, khilman@baylibre.com, bhelgaas@google.com, robh@kernel.org, lorenzo.pieralisi@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Yue,
 
+On Thu, 07 May 2020 02:43:31 +0100,
+"yue.wang@amlogic.com" <yue.wang@amlogic.com> wrote:
+> 
+> [1  <text/plain; utf-8 (base64)>]
+> Marc,
+> 
+> This patch looks all right. I tested in my meson board and pcie
+> EP(QCA9888) worked well.
+> 
+> Fast link mode is enabled for simulation purposes, it should be
+> disabled in the real hardware.
 
-> On May 9, 2020, at 12:33 AM, Paul E. McKenney <paulmck@kernel.org> =
-wrote:
->=20
-> On Fri, May 08, 2020 at 04:59:05PM -0400, Qian Cai wrote:
->>=20
->>=20
->>> On Feb 11, 2020, at 8:54 AM, Qian Cai <cai@lca.pw> wrote:
->>>=20
->>> prev->next could be accessed concurrently as noticed by KCSAN,
->>>=20
->>> write (marked) to 0xffff9d3370dbbe40 of 8 bytes by task 3294 on cpu =
-107:
->>> osq_lock+0x25f/0x350
->>> osq_wait_next at kernel/locking/osq_lock.c:79
->>> (inlined by) osq_lock at kernel/locking/osq_lock.c:185
->>> rwsem_optimistic_spin
->>> <snip>
->>>=20
->>> read to 0xffff9d3370dbbe40 of 8 bytes by task 3398 on cpu 100:
->>> osq_lock+0x196/0x350
->>> osq_lock at kernel/locking/osq_lock.c:157
->>> rwsem_optimistic_spin
->>> <snip>
->>>=20
->>> Since the write only stores NULL to prev->next and the read tests if
->>> prev->next equals to this_cpu_ptr(&osq_node). Even if the value is
->>> shattered, the code is still working correctly. Thus, mark it as an
->>> intentional data race using the data_race() macro.
->>>=20
->>> Signed-off-by: Qian Cai <cai@lca.pw>
->>=20
->> Hmm, this patch has been dropped from linux-next from some reasons.
->>=20
->> Paul, can you pick this up along with KCSAN fixes?
->>=20
->> =
-https://lore.kernel.org/lkml/1581429255-12542-1-git-send-email-cai@lca.pw/=
+Thanks for confirming my reading of the manual and having tested it.
+Can I take this as an "Acked-by:" and a "Tested-by:"?
 
->=20
-> I have queued it on -rcu, but it is too late for v5.8 via the -rcu =
-tree,
-> so this is v5.9 at the earliest.  Plus I would need an ack from one of
-> the locking folks.
+Cheers,
 
-Peter, Will, can you give an ACK? This v2 should incorporate all the =
-feedback from Peter,
+	M.
 
-=
-https://lore.kernel.org/lkml/20200211124753.GP14914@hirez.programming.kick=
-s-ass.net/
+>
+> yue.wang@amlogic.com
+>  
+> From: Marc Zyngier
+> Date: 2020-05-06 18:43
+> To: linux-pci; linux-amlogic; linux-arm-kernel; linux-kernel; Kevin Hilman; Yue Wang
+> CC: Bjorn Helgaas; Rob Herring; Lorenzo Pieralisi
+> Subject: Re: [PATCH] PCI: amlogic: meson: Don't use FAST_LINK_MODE to set up link
+> On Wed, 29 Apr 2020 17:42:30 +0100
+> Marc Zyngier <maz@kernel.org> wrote:
+>  
+> > My vim3l board stubbornly refuses to play ball with a bog
+> > standard PCIe switch (ASM1184e), spitting all kind of errors
+> > ranging from link never coming up to crazy things like downstream
+> > ports falling off the face of the planet.
+> > 
+> > Upon investigating how the PCIe RC is configured, I found the
+> > following nugget: the Sysnopsys DWC PCIe Reference Manual, in the
+> > section dedicated to the PLCR register, describes bit 7 (FAST_LINK_MODE)
+> > as:
+> > 
+> > "Sets all internal timers to fast mode for simulation purposes."
+> > 
+> > I completely understand the need for setting this bit from a simulation
+> > perspective, but what I have on my desk is actual silicon, which
+> > expects timers to have a nominal value (and I expect this is the
+> > case for most people).
+> > 
+> > Making sure the FAST_LINK_MODE bit is cleared when configuring the RC
+> > solves this problem.
+> > 
+> > Fixes: 9c0ef6d34fdb ("PCI: amlogic: Add the Amlogic Meson PCIe controller driver")
+> > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> > ---
+> >  drivers/pci/controller/dwc/pci-meson.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/pci/controller/dwc/pci-meson.c b/drivers/pci/controller/dwc/pci-meson.c
+> > index 3715dceca1bf..ca59ba9e0ecd 100644
+> > --- a/drivers/pci/controller/dwc/pci-meson.c
+> > +++ b/drivers/pci/controller/dwc/pci-meson.c
+> > @@ -289,11 +289,11 @@ static void meson_pcie_init_dw(struct meson_pcie *mp)
+> >  meson_cfg_writel(mp, val, PCIE_CFG0);
+> >  
+> >  val = meson_elb_readl(mp, PCIE_PORT_LINK_CTRL_OFF);
+> > - val &= ~LINK_CAPABLE_MASK;
+> > + val &= ~(LINK_CAPABLE_MASK | FAST_LINK_MODE);
+> >  meson_elb_writel(mp, val, PCIE_PORT_LINK_CTRL_OFF);
+> >  
+> >  val = meson_elb_readl(mp, PCIE_PORT_LINK_CTRL_OFF);
+> > - val |= LINK_CAPABLE_X1 | FAST_LINK_MODE;
+> > + val |= LINK_CAPABLE_X1;
+> >  meson_elb_writel(mp, val, PCIE_PORT_LINK_CTRL_OFF);
+> >  
+> >  val = meson_elb_readl(mp, PCIE_GEN2_CTRL_OFF);
+>  
+> Yue, Kevin: any comment on this?
+>  
+> I found that the issue is reproducible even without a PCIe switch,
+> depending on the single device I plug in this machine (an Intel SSD
+> works fine, while a Marvell Ethernet adapter never shows up) as the
+> LTSSM times out much earlier than it really should (HW timers running
+> too quickly). Applying this patch makes every single device I have
+> lying around work fine.
+>  
+> Thanks,
+>  
+> M.
+> -- 
+> Jazz is not dead. It just smells funny...
+>  
+> [2  <text/html; utf-8 (quoted-printable)>]
 
-V5.9 is fine. All I care about is it is always in linux-next (so the =
-testing bots won=E2=80=99t trigger this over and over again) and to be =
-in mainline at some point in the future.
-
->=20
-> 							Thanx, Paul
->=20
->>> ---
->>>=20
->>> v2: insert some code comments.
->>>=20
->>> kernel/locking/osq_lock.c | 6 +++++-
->>> 1 file changed, 5 insertions(+), 1 deletion(-)
->>>=20
->>> diff --git a/kernel/locking/osq_lock.c b/kernel/locking/osq_lock.c
->>> index 1f7734949ac8..f733bcd99e8a 100644
->>> --- a/kernel/locking/osq_lock.c
->>> +++ b/kernel/locking/osq_lock.c
->>> @@ -154,7 +154,11 @@ bool osq_lock(struct optimistic_spin_queue =
-*lock)
->>> 	 */
->>>=20
->>> 	for (;;) {
->>> -		if (prev->next =3D=3D node &&
->>> +		/*
->>> +		 * cpu_relax() below implies a compiler barrier which =
-would
->>> +		 * prevent this comparison being optimized away.
->>> +		 */
->>> +		if (data_race(prev->next =3D=3D node) &&
->>> 		    cmpxchg(&prev->next, node, NULL) =3D=3D node)
->>> 			break;
->>>=20
->>> --=20
->>> 1.8.3.1
-
+-- 
+Without deviation from the norm, progress is not possible.
