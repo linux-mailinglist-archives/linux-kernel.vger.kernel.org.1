@@ -2,178 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2973C1CC3E7
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 21:05:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D63A1CC3F3
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 21:13:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728309AbgEITFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 15:05:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49556 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727938AbgEITFn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 15:05:43 -0400
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 69427214D8
-        for <linux-kernel@vger.kernel.org>; Sat,  9 May 2020 19:05:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589051142;
-        bh=FJqt+joC1S4dk3WKw1lf1NUGd5hPWz0tRXbmftk/Hqk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=h57cjbWT99eEJDd2NqihaM1VMl/CabhJPqmHMgBBpaAtYQP9hAFOj8dcDEsVxcA7S
-         twDbZsiY/kZTxawUphk+iPtyx8L6jiJSsroopSiC7ekvJ/OkCL5LmRQXHxQ90L1jh3
-         tyWFrxnmE8iYXRy298dtRj74/Hv/6K9pK+2mOCO0=
-Received: by mail-wr1-f46.google.com with SMTP id j5so5864578wrq.2
-        for <linux-kernel@vger.kernel.org>; Sat, 09 May 2020 12:05:42 -0700 (PDT)
-X-Gm-Message-State: AGi0PubbouCdnZCu8pwKNI1mQSNBCfXuKuubSnWzcuBR9E2N1E5+qKM6
-        ProY4CxVAJECBv/bkjw8e8cCjv4MbpV1++PPdOL42w==
-X-Google-Smtp-Source: APiQypKo+N9nOe1pea23phVBcD9zIB6R4jO/fMYP4p09htgTDQfAoywcbcN8MwgE60i0o58ACaRTA736h38q6VDu9bQ=
-X-Received: by 2002:adf:a389:: with SMTP id l9mr5001943wrb.18.1589051140875;
- Sat, 09 May 2020 12:05:40 -0700 (PDT)
+        id S1728065AbgEITNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 15:13:05 -0400
+Received: from 2.mo3.mail-out.ovh.net ([46.105.75.36]:37149 "EHLO
+        2.mo3.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727938AbgEITNF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 May 2020 15:13:05 -0400
+Received: from player738.ha.ovh.net (unknown [10.110.208.147])
+        by mo3.mail-out.ovh.net (Postfix) with ESMTP id 9809224DADE
+        for <linux-kernel@vger.kernel.org>; Sat,  9 May 2020 21:06:09 +0200 (CEST)
+Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
+        (Authenticated sender: steve@sk2.org)
+        by player738.ha.ovh.net (Postfix) with ESMTPSA id 0A9B5124BEB04;
+        Sat,  9 May 2020 19:06:01 +0000 (UTC)
+Date:   Sat, 9 May 2020 21:05:48 +0200
+From:   Stephen Kitt <steve@sk2.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Joe Perches <joe@perches.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] net: Protect INET_ADDR_COOKIE on 32-bit
+ architectures
+Message-ID: <20200509210548.116c7385@heffalump.sk2.org>
+In-Reply-To: <20200509105914.04fd19c8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <20200508120457.29422-1-steve@sk2.org>
+        <20200508205025.3207a54e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20200509101322.12651ba0@heffalump.sk2.org>
+        <20200509105914.04fd19c8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20200508144043.13893-1-joro@8bytes.org> <CALCETrX0ubjc0Gf4hCY9RWH6cVEKF1hv3RzqToKMt9_bEXXBvw@mail.gmail.com>
- <20200508213609.GU8135@suse.de> <CALCETrVxP87o2+aaf=RLW--DSpMrs=BXSQphN6bG5Y4X+OY8GQ@mail.gmail.com>
- <20200509175217.GV8135@suse.de>
-In-Reply-To: <20200509175217.GV8135@suse.de>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Sat, 9 May 2020 12:05:29 -0700
-X-Gmail-Original-Message-ID: <CALCETrVU-+G3K5ABBRSEMiwnskL4mZsVcoTESZXnu34J7TaOqw@mail.gmail.com>
-Message-ID: <CALCETrVU-+G3K5ABBRSEMiwnskL4mZsVcoTESZXnu34J7TaOqw@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/7] mm: Get rid of vmalloc_sync_(un)mappings()
-To:     Joerg Roedel <jroedel@suse.de>
-Cc:     Andy Lutomirski <luto@kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ boundary="Sig_/s1s_w35=OAg5_w9IeCHOaaW"; protocol="application/pgp-signature"
+X-Ovh-Tracer-Id: 18383975156205243802
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduhedrkeehgddufeduucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvffukfgjfhfogggtsehgtderreertdejnecuhfhrohhmpefuthgvphhhvghnucfmihhtthcuoehsthgvvhgvsehskhdvrdhorhhgqeenucggtffrrghtthgvrhhnpeevledvueefvdeivefftdeugeekveethefftdffteelheejkeejjeduffeiudetkeenucfkpheptddrtddrtddrtddpkedvrdeihedrvdehrddvtddunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrjeefkedrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehsthgvvhgvsehskhdvrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 9, 2020 at 10:52 AM Joerg Roedel <jroedel@suse.de> wrote:
->
-> On Fri, May 08, 2020 at 04:49:17PM -0700, Andy Lutomirski wrote:
-> > On Fri, May 8, 2020 at 2:36 PM Joerg Roedel <jroedel@suse.de> wrote:
-> > >
-> > > On Fri, May 08, 2020 at 02:33:19PM -0700, Andy Lutomirski wrote:
-> > > > On Fri, May 8, 2020 at 7:40 AM Joerg Roedel <joro@8bytes.org> wrote:
-> > >
-> > > > What's the maximum on other system types?  It might make more sense to
-> > > > take the memory hit and pre-populate all the tables at boot so we
-> > > > never have to sync them.
-> > >
-> > > Need to look it up for 5-level paging, with 4-level paging its 64 pages
-> > > to pre-populate the vmalloc area.
-> > >
-> > > But that would not solve the problem on x86-32, which needs to
-> > > synchronize unmappings on the PMD level.
-> >
-> > What changes in this series with x86-32?
->
-> This series sets ARCH_PAGE_TABLE_SYNC_MASK to PGTBL_PMD_MODIFIED, so
-> that the synchronization happens every time PMD(s) in the vmalloc areas
-> are changed. Before this series this synchronization only happened at
-> arbitrary places calling vmalloc_sync_(un)mappings().
->
-> > We already do that synchronization, right?  IOW, in the cases where
-> > the vmalloc *fault* code does anything at all, we should have a small
-> > bound for how much memory to preallocate and, if we preallocate it,
-> > then there is nothing to sync and nothing to fault.  And we have the
-> > benefit that we never need to sync anything on 64-bit, which is kind
-> > of nice.
->
-> Don't really get you here, what is pre-allocated and why is there no
-> need to sync and fault then?
->
-> > Do we actually need PMD-level things for 32-bit?  What if we just
-> > outlawed huge pages in the vmalloc space on 32-bit non-PAE?
->
-> Disallowing huge-pages would at least remove the need to sync
-> unmappings, but we still need to sync new PMD entries. Remember that the
-> size of the vmalloc area on 32 bit is dynamic and depends on the VM-split
-> and the actual amount of RAM on the system.
->
-> A machine wit 512MB of RAM and a 1G/3G split will have around 2.5G of
-> VMALLOC address space. And if we want to avoid vmalloc-faults there, we
-> need to pre-allocate all PTE pages for that area (and the amount of PTE
-> pages needed increases when RAM decreases).
->
-> On a machine with 512M of RAM we would need ca. 1270+ PTE pages, which
-> is around 5M (or 1% of total system memory).
+--Sig_/s1s_w35=OAg5_w9IeCHOaaW
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-I can never remember which P?D name goes with which level and which
-machine type, but I don't think I agree with your math regardless.  On
-x86, there are two fundamental situations that can occur:
+On Sat, 9 May 2020 10:59:14 -0700, Jakub Kicinski <kuba@kernel.org> wrote:
+> On Sat, 9 May 2020 10:13:22 +0200 Stephen Kitt wrote:
+> > On Fri, 8 May 2020 20:50:25 -0700, Jakub Kicinski <kuba@kernel.org>
+> > wrote: =20
+> > > On Fri,  8 May 2020 14:04:57 +0200 Stephen Kitt wrote:   =20
+> > > > Commit c7228317441f ("net: Use a more standard macro for
+> > > > INET_ADDR_COOKIE") added a __deprecated marker to the cookie name on
+> > > > 32-bit architectures, with the intent that the compiler would flag
+> > > > uses of the name. However since commit 771c035372a0 ("deprecate the
+> > > > '__deprecated' attribute warnings entirely and for good"),
+> > > > __deprecated doesn't do anything and should be avoided.
+> > > >=20
+> > > > This patch changes INET_ADDR_COOKIE to declare a dummy struct so th=
+at
+> > > > any subsequent use of the cookie's name will in all likelihood break
+> > > > the build. It also removes the __deprecated marker.   =20
+> > >=20
+> > > I think the macro is supposed to cause a warning when the variable
+> > > itself is accessed. And I don't think that happens with your patch
+> > > applied.   =20
+> >=20
+> > Yes, the warning is what was lost when __deprecated lost its meaning. I
+> > was trying to preserve that, or rather extend it so that the build would
+> > break if the cookie was used on 32-bit architectures, and my patch
+> > ensures it does if the cookie is used in a comparison or assignment,
+> > but ...=20
+> > > +       kfree(&acookie);   =20
+> >=20
+> > I hadn=E2=80=99t thought of taking a pointer to it.
+> >=20
+> > If we want to preserve the use of the macro with a semi-colon, which is
+> > what Joe=E2=80=99s patch introduced (along with the deprecation warning=
+), we
+> > still need some sort of declaration which can=E2=80=99t be used. Perhaps
+> >=20
+> > #define INET_ADDR_COOKIE(__name, __saddr, __daddr) \
+> > 	struct __name {} __attribute__((unused))
+> >=20
+> > would be better =E2=80=94 it declares the cookie as a struct, not a var=
+iable, so
+> > then the build fails if the cookie is used as anything other than a
+> > struct. If anyone does try to use it as a struct, the build will fail on
+> > 64-bit architectures...
+> >=20
+> >   CC      net/ipv4/inet_hashtables.o
+> > net/ipv4/inet_hashtables.c: In function =E2=80=98__inet_lookup_establis=
+hed=E2=80=99:
+> > net/ipv4/inet_hashtables.c:362:9: error: =E2=80=98acookie=E2=80=99 unde=
+clared (first use
+> > in this function) kfree(&acookie);
+> >          ^~~~~~~
+> > net/ipv4/inet_hashtables.c:362:9: note: each undeclared identifier is
+> > reported only once for each function it appears in make[2]: ***
+> > [scripts/Makefile.build:267: net/ipv4/inet_hashtables.o] Error 1 make[1=
+]:
+> > *** [scripts/Makefile.build:488: net/ipv4] Error 2 make: ***
+> > Makefile:1722: net] Error 2 =20
+>=20
+> Hm. That does seem better. Although thinking about it - we will not get
+> a warning when someone declares a variable with the same name..
 
-1. Non-PAE.  There is a single 4k top-level page table per mm, and
-this table contains either 512 or 1024 entries total. Of those
-entries, some fraction (half or less) control the kernel address
-space, and some fraction of *that* is for vmalloc space.  Those
-entries are the *only* thing that needs syncing -- all mms will either
-have null (not present) in those slots or will have pointers to the
-*same* next-level-down directories.
+Good point!
 
-2. PAE.  Depending on your perspective, there could be a grand total
-of four top-level paging pointers, of which one (IIRC) is for the
-kernel.  That points to the same place for all mms.  Or, if you look
-at it the other way, PAE is just like #1 except that the top-level
-table has only four entries and only one points to VMALLOC space.
+> What if we went back to your original proposal of an empty struct but
+> added in an extern in front? That way we should get linker error on
+> pointer references.
 
-So, unless I'm missing something here, there is an absolute maximum of
-512 top-level entries that ever need to be synchronized.
+That silently fails to fail if any other link object provides a definition
+for the symbol, even if the type doesn=E2=80=99t match...
 
-Now, there's an additional complication.  On x86_64, we have a rule:
-those entries that need to be synced start out null and may, during
-the lifetime of the system, change *once*.  They are never unmapped or
-modified after being allocated.  This means that those entries can
-only ever point to a page *table* and not to a ginormous page.  So,
-even if the hardware were to support ginormous pages (which, IIRC, it
-doesn't), we would be limited to merely immense and not ginormous
-pages in the vmalloc range.  On x86_32, I don't think we have this
-rule right now.  And this means that it's possible for one of these
-pages to be unmapped or modified.
+I thought of
 
-So my suggestion is that just apply the x86_64 rule to x86_32 as well.
-The practical effect will be that 2-level-paging systems will not be
-able to use huge pages in the vmalloc range, since the rule will be
-that the vmalloc-relevant entries in the top-level table must point to
-page *tables* instead of huge pages.
+	register struct {} __name __attribute__((unused))
 
-On top of this, if we preallocate these entries, then the maximum
-amount of memory we can possibly waste is 4k * (entries pointing to
-vmalloc space - entries actually used for vmalloc space).  I don't
-know what this number typically is, but I don't think it's very large.
-Preallocating means that vmalloc faults *and* synchronization go away
-entirely.  All of the page tables used for vmalloc will be entirely
-shared by all mms, so all that's needed to modify vmalloc mappings is
-to update init_mm and, if needed, flush TLBs.  No other page tables
-will need modification at all.
+but that really feels like tacking on more stuff to handle cases as we think
+of them, which makes me wonder what cases I=E2=80=99m not thinking of.
 
-On x86_64, the only real advantage is that the handful of corner cases
-that make vmalloc faults unpleasant (mostly relating to vmap stacks)
-go away.  On x86_32, a bunch of mind-bending stuff (everything your
-series deletes but also almost everything your series *adds*) goes
-away.  There may be a genuine tiny performance hit on 2-level systems
-due to the loss of huge pages in vmalloc space, but I'm not sure I
-care or that we use them anyway on these systems.  And PeterZ can stop
-even thinking about RCU.
+Regards,
 
-Am I making sense?
+Stephen
 
+--Sig_/s1s_w35=OAg5_w9IeCHOaaW
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-(Aside: I *hate* the PMD, etc terminology.  Even the kernel's C types
-can't keep track of whether pmd_t* points to an entire paging
-directory or to a single entry.  Similarly, everyone knows that a
-pte_t is a "page table entry", except that pte_t* might instead be a
-pointer to an array of 512 or 1024 page table entries.)
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEnPVX/hPLkMoq7x0ggNMC9Yhtg5wFAl62/wwACgkQgNMC9Yht
+g5wo4BAAjQOE/+/mkcahMWlo0f2dTATJ71MA7sUP0D6bvFV/y663ziTtzHxxCUqm
+0TEZCcmIPcABuqm8BjkfET2R8Q+3dSYOwGQ4oq4ud3s2w/e9vCouDtMPkoXljOhf
+BQK52Pk4cuGDolV8QNKXi1cX3HfXbUXbg1jJ270DwQEs/y7+ENFUTaEE21GRA85d
+66a1mbDKbw08Vls8NlRYIQUa3l3xL6RxtCb/6zlqAB0OY856HBFYbB7ZSR3NQGPl
+WKvNjdB72nkIf4rdWtyd4nyMYn0+IPiUC6JdYKoZhAuunOZLWtL3v4NmA2wPh9vf
+/QPqOHuw3/+z8G/7PjAGnxDslgtFUll+2vJG55qRvl65Ke4zEvws/gJX6ucARltP
+cXPoOEdJZ0YBmUaPzVylafmobveV6Czf5UuHSeF/5eiNaYMHf45ASdpdifJkstu7
+42oYf5VyXObBrkTPJ8BllexkrOVDcvJl545p6ukjYp68RduD7IByvsCHYSt64Tmi
+Hg3nWY1fWysJYAr4GBaMjgpdnWtoKBmBwDQbLKSGuBCytHwuk6wLsWMOI5sPt/y5
+ewRoSV09NCjsCnlkgoD4xGMPqn3ofM46KRh0fr3HYDsKHDm4Recaexq//kgC33dD
+fZPxiykFtaUAT2Erl3yzjJrzY5nwKTbpZu4L+ONmEjTNNS8uKGM=
+=kb27
+-----END PGP SIGNATURE-----
+
+--Sig_/s1s_w35=OAg5_w9IeCHOaaW--
