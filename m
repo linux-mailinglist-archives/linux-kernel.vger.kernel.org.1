@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F79F1CC341
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 19:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 946FA1CC33D
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 19:38:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728736AbgEIRhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 13:37:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54680 "EHLO mail.kernel.org"
+        id S1728667AbgEIRhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 13:37:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728618AbgEIRhU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 13:37:20 -0400
+        id S1728626AbgEIRhV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 May 2020 13:37:21 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 60A5424954;
-        Sat,  9 May 2020 17:37:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C06262495E;
+        Sat,  9 May 2020 17:37:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589045839;
-        bh=284oPI9GIPHpEC5gNFA9Sv4pwU6P4+U98zOmf/LPL2M=;
+        s=default; t=1589045840;
+        bh=yGsErY4lfF05kcjCufjLjwlqkaM13VlRZt3xQ4e1M44=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=quXByJtSl5IETEoFeurCPYJOKwWaZO0CXyKFtkszbr6FOGaSgjTxR5ueRrZRtPZiX
-         eRtwR9wPTOVnTgOggWleDfnHQT4wZT7/Jk5hoqKDtuMLxjKXXF+lwGcnPD9kzPF62V
-         NvMPFDx08d8lQuJkClzfDVNdE63bCOyPOm7frlL4=
+        b=UC41KBExq7q+iBJDE8pxwPd04nzGgcnwKeHTiHsN9WkFxXQa59SZg37icY1MRhy7p
+         /mB8+EMJYyGc0AOoJqIKr8jRstb2KbtB5IKQBvzQEQQD9Mc9K/7F9FdpC34u4BFNDA
+         i2TU6XJ4Z9YVOSHFYtg4B4qxDUT4lXHdCGwpGj0M=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, tglx@linutronix.de, bp@alien8.de,
         luto@kernel.org
 Cc:     hpa@zytor.com, dave.hansen@intel.com, tony.luck@intel.com,
         ak@linux.intel.com, ravi.v.shankar@intel.com,
         chang.seok.bae@intel.com, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH v11 14/18] x86/speculation/swapgs: Check FSGSBASE in enabling SWAPGS mitigation
-Date:   Sat,  9 May 2020 13:36:51 -0400
-Message-Id: <20200509173655.13977-15-sashal@kernel.org>
+Subject: [PATCH v11 15/18] selftests/x86/fsgsbase: Test ptracer-induced GS base write with FSGSBASE
+Date:   Sat,  9 May 2020 13:36:52 -0400
+Message-Id: <20200509173655.13977-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200509173655.13977-1-sashal@kernel.org>
 References: <20200509173655.13977-1-sashal@kernel.org>
@@ -42,24 +42,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Luck <tony.luck@intel.com>
+From: "Chang S. Bae" <chang.seok.bae@intel.com>
 
-Before enabling FSGSBASE the kernel could safely assume that the content
-of GS base was a user address. Thus any speculative access as the result
-of a mispredicted branch controlling the execution of SWAPGS would be to
-a user address. So systems with speculation-proof SMAP did not need to
-add additional LFENCE instructions to mitigate.
+This validates that GS selector and base are independently preserved in
+ptrace commands.
 
-With FSGSBASE enabled a hostile user can set GS base to a kernel address.
-So they can make the kernel speculatively access data they wish to leak
-via a side channel. This means that SMAP provides no protection.
-
-Add FSGSBASE as an additional condition to enable the fence-based SWAPGS
-mitigation.
-
-Signed-off-by: Tony Luck <tony.luck@intel.com>
+Suggested-by: Andy Lutomirski <luto@kernel.org>
 Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Borislav Petkov <bp@alien8.de>
 Cc: Andy Lutomirski <luto@kernel.org>
@@ -68,30 +59,46 @@ Cc: Dave Hansen <dave.hansen@intel.com>
 Cc: Tony Luck <tony.luck@intel.com>
 Cc: Andi Kleen <ak@linux.intel.com>
 ---
- arch/x86/kernel/cpu/bugs.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ tools/testing/selftests/x86/fsgsbase.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index ed54b3b21c396..487603ea51cd1 100644
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -450,14 +450,12 @@ static void __init spectre_v1_select_mitigation(void)
- 		 * If FSGSBASE is enabled, the user can put a kernel address in
- 		 * GS, in which case SMAP provides no protection.
- 		 *
--		 * [ NOTE: Don't check for X86_FEATURE_FSGSBASE until the
--		 *	   FSGSBASE enablement patches have been merged. ]
--		 *
- 		 * If FSGSBASE is disabled, the user can only put a user space
- 		 * address in GS.  That makes an attack harder, but still
- 		 * possible if there's no SMAP protection.
- 		 */
--		if (!smap_works_speculatively()) {
-+		if (boot_cpu_has(X86_FEATURE_FSGSBASE) ||
-+		    !smap_works_speculatively()) {
- 			/*
- 			 * Mitigation can be provided from SWAPGS itself or
- 			 * PTI as the CR3 write in the Meltdown mitigation
+diff --git a/tools/testing/selftests/x86/fsgsbase.c b/tools/testing/selftests/x86/fsgsbase.c
+index 950a48b2e3662..9a4349813a30a 100644
+--- a/tools/testing/selftests/x86/fsgsbase.c
++++ b/tools/testing/selftests/x86/fsgsbase.c
+@@ -465,7 +465,7 @@ static void test_ptrace_write_gsbase(void)
+ 	wait(&status);
+ 
+ 	if (WSTOPSIG(status) == SIGTRAP) {
+-		unsigned long gs;
++		unsigned long gs, base;
+ 		unsigned long gs_offset = USER_REGS_OFFSET(gs);
+ 		unsigned long base_offset = USER_REGS_OFFSET(gs_base);
+ 
+@@ -481,6 +481,7 @@ static void test_ptrace_write_gsbase(void)
+ 			err(1, "PTRACE_POKEUSER");
+ 
+ 		gs = ptrace(PTRACE_PEEKUSER, child, gs_offset, NULL);
++		base = ptrace(PTRACE_PEEKUSER, child, base_offset, NULL);
+ 
+ 		/*
+ 		 * In a non-FSGSBASE system, the nonzero selector will load
+@@ -501,8 +502,14 @@ static void test_ptrace_write_gsbase(void)
+ 			 */
+ 			if (gs == 0)
+ 				printf("\tNote: this is expected behavior on older kernels.\n");
++		} else if (have_fsgsbase && (base != 0xFF)) {
++			nerrs++;
++			printf("[FAIL]\tGSBASE changed to %lx\n", base);
+ 		} else {
+-			printf("[OK]\tGS remained 0x%hx\n", *shared_scratch);
++			printf("[OK]\tGS remained 0x%hx", *shared_scratch);
++			if (have_fsgsbase)
++				printf(" and GSBASE changed to 0xFF");
++			printf("\n");
+ 		}
+ 	}
+ 
 -- 
 2.20.1
 
