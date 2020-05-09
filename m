@@ -2,87 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B72A41CBBB5
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 02:15:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14A871CBBC0
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 02:19:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728495AbgEIAPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 20:15:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55172 "EHLO
+        id S1728314AbgEIAT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 20:19:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727983AbgEIAPI (ORCPT
+        by vger.kernel.org with ESMTP id S1727878AbgEIAT3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 20:15:08 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39310C061A0C;
-        Fri,  8 May 2020 17:15:08 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 2DDE32A2ECF
-Received: by earth.universe (Postfix, from userid 1000)
-        id C00913C08C6; Sat,  9 May 2020 02:15:04 +0200 (CEST)
-Date:   Sat, 9 May 2020 02:15:04 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Tobias Schramm <t.schramm@manjaro.org>
-Cc:     ChenTao <chentao107@huawei.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] power/supply/cw2015: Make some symbols static
-Message-ID: <20200509001504.7snfnuesoxjagxl2@earth.universe>
-References: <20200506114519.238186-1-chentao107@huawei.com>
- <0a9613a6-5557-21cb-af16-bd57d7b2a696@manjaro.org>
+        Fri, 8 May 2020 20:19:29 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B94D2C061A0C;
+        Fri,  8 May 2020 17:19:28 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49JnrC50Gdz9sRf;
+        Sat,  9 May 2020 10:19:23 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1588983565;
+        bh=4ltaBj8up08ni1Gj1qR5Eh1Aj9N+2Ghk5iD5CJLi9Lo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=kljGBKCX2Xc9bYfsMPxYZeZaqppuoNbzdElQgQgfaceLDS7n6E2ADCYzGM0FmqNdi
+         EalsE/L6NUIp5jsWlep5WY2RY2Z6asDoq/N2IYjYTy8uvl5n4AsmPKQzzKq7sziKgS
+         CcRnhRJsS9ZbiXOKJZm/rZif33LSgnvW+HYaoGfkaog/OGdzXlWScgw+O6bem7NZIb
+         hL+cKc+MvY7vNgBs5amBnMZjlu/wN6qMTrliB1XtLqRSHDPM7uHQUFcoyaeAhqXLGK
+         vRY7vlqgAM2ITEPRyQ79pTfQ79vCLd1X6+Jcu6CbbVcmYL9NAKaO/0n7jMf+epO+CM
+         pWuTZwyxWpx7A==
+Date:   Sat, 9 May 2020 10:19:19 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Joe Perches <joe@perches.com>,
+        Miles Chen <miles.chen@mediatek.com>,
+        Mike Rapoport <rppt@kernel.org>
+Subject: linux-next: Signed-off-bys missing for commits in the akpm-current
+ tree
+Message-ID: <20200509101919.36231cf9@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="mhxy3ryrlei3espq"
-Content-Disposition: inline
-In-Reply-To: <0a9613a6-5557-21cb-af16-bd57d7b2a696@manjaro.org>
+Content-Type: multipart/signed; boundary="Sig_/dzDGQRzlgx.yz6yk50vTN0x";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---mhxy3ryrlei3espq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--Sig_/dzDGQRzlgx.yz6yk50vTN0x
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+Hi all,
 
-On Wed, May 06, 2020 at 09:49:26PM +0200, Tobias Schramm wrote:
-> > Fix the following warning:
-> >=20
-> > drivers/power/supply/cw2015_battery.c:96:5: warning:
-> > 'cw_update_profile' was not declared. Should it be static?
-> > drivers/power/supply/cw2015_battery.c:712:1: warning:
-> > 'cw_bat_pm_ops' was not declared. Should it be static?
-> >=20
->=20
-> LGTM.
->=20
-> Acked-by: Tobias Schramm <t.schramm@manjaro.org>
-> Tested-by: Tobias Schramm <t.schramm@manjaro.org>
+Commits
 
-Thanks, queued.
+  a41ffad2df78 ("mm: free_area_init: allow defining max_zone_pfn in descend=
+ing order")
+  ed1e07587fb4 ("mm/gup.c: further document vma_permits_fault()")
+  da5d272cd01a ("checkpatch: test $GIT_DIR changes")
 
--- Sebastian
+are missing a Signed-off-by from their authors (I haven't reported the
+-fix patches).
 
---mhxy3ryrlei3espq
-Content-Type: application/pgp-signature; name="signature.asc"
+I guess the first one is actually a fix patch and will be rolled into
+its parent.
+
+Also, the Link tag in this last one is invalid :-(
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/dzDGQRzlgx.yz6yk50vTN0x
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl619ggACgkQ2O7X88g7
-+ppjmw//V9xDnxeiMZnhcflE6PESFzdcAuuEJSllnrM5AkJnMM+ECYzineENjZjT
-As23fAr8sWDQTvEZB3+YB1EAe1rzn1/sdRQU3CoSPB4OOqk8kKulXs40WF+Uwj0q
-IIU36ozq94FgUBJzeM6p/F1mvm3LLmP8ydctlKdfcR9xMkaw4fy985GXZeQYk10N
-JMEx+pJ/h1DudgcYbG2Js3CQtTNcAdVSSo7LanOdIlgucaDbCLXxFXUDpiQytwyE
-f5HCFWUzC0P7X1v+2Jyv/Lk26tUhiRxJ+SfFXq19nJKSakNg4So4PqKGenl3BUb0
-4ra3VBMh9V2dSNPJLYQMo0xR1m+SWujbodyjtNSxdGIbL8uc4M6YRpmqLn5UoRVb
-FCIHy7ZCw6YDoFLh+WCzAoXvXdekcAa8lBBDSyw//pkVgL65QPy/mMiHpva/wpx1
-HF1BZmJpLc1rl4ozCiZRhvKgbvon9C3VUh4Jq8S1Kw2XLt5qkCpOCQt2CxsFEsWc
-PnfFuiSHQI6Q/PEyvqZov7cSDXJCZJOkWp6huYKw0Dv1Se3pi046jcVCyzboc5sB
-UZoiVcLxZbKXSi09NzCbXxfqBYd67tGXjAA69ngvMv8UFsv79g2xsPsSkLTPBYLm
-mF2RBqwmzims9BoyhFyjtQEY6+/eksSC6ZTZ66WJP/BkwoK+LkU=
-=ObJf
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl619wcACgkQAVBC80lX
+0GxoyAf7BC1NsVPvyosai4EjA/IuQISKb124WOTOGRXw+n9ajnt72nToEc1VRJz7
+wJkLlO4jYuRdnptpEHv8D+dVWemRzf83M62OqH70b2qQTPDmyVWeAT4174kKsycU
+Kg3KztbM2jh1TtK06zaFtxQ2hLDhQSyQyMk21Do26Apyw4pdqsxO6CcZV0Vn/vvk
+0yjmqpzJJlq5fFklV+N8unC8sEM/dFTk3dnJ5KGirFX7DIalfLXSoLm2F9dsKIRQ
+PjJYa+7sdRxzgkhdDJcTDwPZhKA1SQYD+mQ9Dh1kuzs7SOB1Iy2udDTvOFzxyYSm
+tI67azH3pbg9hpQS5uhkP0/4EykqPA==
+=CmW8
 -----END PGP SIGNATURE-----
 
---mhxy3ryrlei3espq--
+--Sig_/dzDGQRzlgx.yz6yk50vTN0x--
