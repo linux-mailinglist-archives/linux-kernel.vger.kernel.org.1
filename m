@@ -2,47 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 733451CC350
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 19:46:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFAE31CC348
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 19:40:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728477AbgEIRqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 13:46:03 -0400
-Received: from omta03.suddenlink.net ([208.180.40.73]:38055 "EHLO
-        omta03.suddenlink.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726214AbgEIRqC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 13:46:02 -0400
-X-Greylist: delayed 408 seconds by postgrey-1.27 at vger.kernel.org; Sat, 09 May 2020 13:45:52 EDT
-Received: from dalofep03 ([10.130.7.43]) by dalofep01.suddenlink.net
-          (InterMail vM.8.04.03.22.02 201-2389-100-169-20190213) with ESMTP
-          id <20200509173848.CXYU4162.dalofep01.suddenlink.net@dalofep03>;
-          Sat, 9 May 2020 12:38:48 -0500
-Message-ID: <20200509123848.LEL9Z.1156082.root@dalofep03>
-Date:   Sat, 9 May 2020 12:38:10 -0500
-From:   <reginadan1@suddenlink.net>
-Subject: Mutual business proposal
+        id S1728301AbgEIRjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 13:39:41 -0400
+Received: from mout.gmx.net ([212.227.15.18]:55435 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726214AbgEIRjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 May 2020 13:39:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1589045967;
+        bh=5Na8YxJhPBBVFX7/f9ixlEVkKOYhJWLOj2uO2rcfXaM=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=MEfS6hr+BLhvGyv6eKPdXolY1UMlZVpRUU2ew5PCjCXBFRcmlwPIVVPj3C5XQ4DwH
+         Nzstf3iKsZ0BOPbfRchXuR80mRLU/Pjs1edaz/WXo/VKancWfTdyrO3xZw9Jc/l58V
+         ofvpzQsXW/diNy/ChUUL9Vzir5LyShgusI/gqTsI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ls3530.fritz.box ([92.116.180.101]) by mail.gmx.com (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MUXpK-1jgAbn2AcK-00QVD4; Sat, 09
+ May 2020 19:39:27 +0200
+Date:   Sat, 9 May 2020 19:39:25 +0200
+From:   Helge Deller <deller@gmx.de>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Helge Deller <deller@gmx.de>,
+        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+        linux-parisc@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] parisc: suppress error messages for 'make clean'
+Message-ID: <20200509173925.GA30635@ls3530.fritz.box>
+References: <20200425054659.814774-1-masahiroy@kernel.org>
+ <CAK7LNAQk_fLFCWuFCC0NK3nxVE0bs-n7E+T-dbn14aCZVg_pgQ@mail.gmail.com>
+ <20200508214650.GA3482@ls3530.fritz.box>
+ <CAK7LNAS0PVA7stUE9nmOuiP=MfPGDp1u-QDzfpk7Juq-JFehVw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3 (Normal)
-Sensitivity: Normal
-X-Authentication-Info: Submitted using SMTP AUTH LOGIN at dalofep01.suddenlink.net from [10.130.7.43] using ID reginadan1@suddenlink.net at Sat, 9 May 2020 12:38:10 -0500
-X-CM-Analysis: v=2.3 cv=JvWPU/wC c=1 sm=1 tr=0 cx=a_idp_d a=9ms3GpuNEvV6Mnm/MMPbyw==:117 a=9cW_t1CCXrUA:10 a=IkcTkHD0fZMA:10 a=sTwFKg_x9MkA:10 a=DMsuKN41PGsAfHhzYnMA:9 a=QEXdDO2ut3YA:10
-X-CM-Envelope: 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 9WCfQnwhBhe0B95OZafu6OI8xDlCwdTO
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK7LNAS0PVA7stUE9nmOuiP=MfPGDp1u-QDzfpk7Juq-JFehVw@mail.gmail.com>
+X-Provags-ID: V03:K1:tGaT+acMXMXyn+KuOYDABqomMWlLft370X1ncEndOP1JFXu86Wk
+ PH3OEs0PuRcCRPF5U+zz5/fzbnoAvKbj880QmenyImeDvcz1h9sRTRi5wiVXh6oBhOrpXGZ
+ ws5LjJksw7mFkJt4SF8jtX/ZZHIPJeJ2Vz1hO02d26oZqqEnl6UkJR373q7KkXPhTnHKBKv
+ 6Uwsy71W0ojEwMswKC/6g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:B84dymr/0Fo=:C+HdP9OqoUNac0GfuV3FTD
+ /0aib+vEZMQ/+Wja7cqH7jYIZ4o3cOSwTkWPX0X+RuCy+RA8LvqWpdK9wor4w4MUBy1XsKw7O
+ q3k7edDrDDH4NXdFTF/vkROIrhKz/mVwuMlpe5Aod67xW9OfEEDi2hSEav6VUo991jnfd5ZR4
+ 8NRc6m7djBD9xjlrlGprU6RBoRm8BwhJ9wXXueqWil+PWN8S07IpMnY4XaKALp4eB0BCRZfRW
+ fXqnXZ7/PArXgkh6cENpW/TITIKEoZFqfggfX75CpF21nllPsxNZFkXEaE+OiebujPrKCEQjV
+ noZhdHkOZqIPmpolvjik5vMFx7RWi3P7cG07p214b6KRpJWtIE1nIdvSskT5GsVfiy0ilv/oG
+ YqBUB5UpGdI/K5V15YdEvvDMuKfYBTn8+f8PuRXxsuNmCuCz3nHEXXZpvfcptEA7BSPTzBMZl
+ gJnL66asI9jqAMOtYKQbCmk2NljKHVNb5kNb4yPJTQkBMISycnMVWKQ/N3SJNxnIznSH2+PeB
+ DZSupbKDPYUXVv8DvOKe0GbVa6ZIz5pCsxUcWrPhdwn+hGTrLhiiJGvGHhJ1AchgFJE62FDUN
+ w3PC9JjwmXGZwHB7EWx2btwcMnb4J6l2RLx7uyoOXvOlGdoyLpzN3ngyzG7p1PbIW8qrnNj9W
+ zhiWzUtndxD6yN+6b7Irpfjf2+6dtJ4gfpLkAFIdLZp5GsYYZl/zQAjAZ0dTKYG0aaGDErehx
+ VuEhDIExi3nA/UeOhx2JnMGV+AGD3/+P6fIhikXU6V6+VVbGmh2yFUVv+CcSmFwN5BRXWCkae
+ CTMsLNVlLGw0tMqrkFomXLtFp/rCDdoqCCmhzae7wN5KVK6EZ3K1woTEK5L47uTNfGSkq/Ema
+ QnXiMF7xdDxviEg/b/HRBWGyd1O9J46iG5JiLhOMlMrgq9GzdrtRpMCixcI5Ce5rF4mL6z/m6
+ Qxcr/yEM6loyEWbcUyUF1KYH7Jg26Zgc1uOH3m5Gzl0YeDa7Ncim+KORDO3BC3iwyzBQZvS4q
+ FF1OK/l/MYmBULco7vlirj/W2irAj4zSWYal8RPtJnrG8xg2XDw60pffH6YMqiE4i2q+JKK7W
+ VlHKxNrq3uzhG5lIudVHESTNH3oS4bk4LlsrFNE6ZJYu4yVNPQkPq+AASSusGLJZpFDWBECYu
+ LFuYNeKq6RR1IfzLhVVoGAaBr4LhKokJKRZ6rj8K1Udz+Qq6WXCDZdtsUdIl8TckSp13SvZOO
+ ZuQtCadka9hPGL+E/
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+* Masahiro Yamada <masahiroy@kernel.org>:
+> Hi Helge,
+>
+> On Sat, May 9, 2020 at 6:46 AM Helge Deller <deller@gmx.de> wrote:
+> >
+> > * Masahiro Yamada <masahiroy@kernel.org>:
+> > > On Sat, Apr 25, 2020 at 2:47 PM Masahiro Yamada <masahiroy@kernel.or=
+g> wrote:
+> > > >
+> > > > 'make ARCH=3Dparisc clean' emits a tons of error messages as follo=
+ws:
+> > > >
+> > > >   $ make ARCH=3Dparisc clean
+> > > >   gcc: error: unrecognized command line option '-mno-space-regs'
+> > > >   gcc: error: unrecognized command line option '-mfast-indirect-ca=
+lls'; did you mean '-mforce-indirect-call'?
+> > > >   gcc: error: unrecognized command line option '-mdisable-fpregs'
+> > > >   gcc: error: missing argument to '-Wframe-larger-than=3D'
+> > > >   gcc: error: unrecognized command line option '-mno-space-regs'
+> > > >   gcc: error: unrecognized command line option '-mfast-indirect-ca=
+lls'; did you mean '-mforce-indirect-call'?
+> > > >   gcc: error: unrecognized command line option '-mdisable-fpregs'
+> > > >   gcc: error: missing argument to '-Wframe-larger-than=3D'
+> > > >     ...
+> > > >
+> > > > You can supporess them except '-Wframe-larger-than' by setting cor=
+rect
+> > > > CROSS_COMPILE=3D, but we should not require any compiler for clean=
+ing.
+> > > >
+> > > > This $(shell ...) is evaluated so many times because LIBGCC is exp=
+orted.
+> > > > Use the ':=3D' operator to evaluate it just once, and sink the std=
+err.
+> > > >
+> > >
+> > > Applied to linux-kbuild.
+> >
+> > That patch breaks then building the boot loader/compressor:
+> > ...
+> >   hppa-linux-gnu-ld    -X -e startup --as-needed -T arch/parisc/boot/c=
+ompressed/vmlinux.lds arch/parisc/boot/compressed/head.o arch/parisc/boot/=
+compressed/real2.o arch/parisc/boot/compressed/firmware.o arch/parisc/boot=
+/compressed/misc.o arch/parisc/boot/compressed/piggy.o -o arch/parisc/boot=
+/compressed/vmlinux
+> > hppa-linux-gnu-ld: arch/parisc/boot/compressed/misc.o: in function `de=
+c_vli':
+> > (.text+0x104): undefined reference to `__ashldi3'
+> > hppa-linux-gnu-ld: arch/parisc/boot/compressed/misc.o: in function `lz=
+ma_len':
+> > (.text+0x2b0): undefined reference to `$$mulI'
+> > hppa-linux-gnu-ld: (.text+0x344): undefined reference to `$$mulI'
+> > hppa-linux-gnu-ld: (.text+0x3f8): undefined reference to `$$mulI'
+> >
+> >
+> > The patch below works, but I wonder if it's possible to avoid
+> > to examine LIBGCC twice....?
+> >
+> > Helge
+>
+>
+> Sorry for the breakage.
+>
+> How about moving LIBGCC below ?
 
-Greeting,
-My Name is Regina Daniel am a Business Consultant and I represent a group of company based in Gulf Region that wish to invest between US$10,000,000.00 TO  US$550,000,000. 00 in foreign investment depending on your investment capacity based on the amount you can invest and manage. We are currently seeking means of expanding and relocating our business interest abroad in the following sectors: oil/Gas, real estate, construction stock, mining, transportation, health sector, tobacco or Communication Services.
+Good idea.
+The patch below does work for me.
+We do not need $KBUILD_CFLAGS to get the libgcc.a filename,
+so we do not need to pipe the output to /dev/null either.
+Can you try if that works, and if yes, can you apply it?
 
-Also in Agriculture or any other viable sector.  If you think you have a solid background and idea of making good profit in any of the mentioned business sectors or any other business  in your country, please write me for possible business co-operation and the investment amount you can handle.
+Helge
 
-Let me hear from you.
-Yours sincerely,
-Mr Regina Daniel
 
+diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
+index 628cd8bb7ad8..fadbbd010337 100644
+=2D-- a/arch/parisc/Makefile
++++ b/arch/parisc/Makefile
+@@ -21,8 +21,6 @@ KBUILD_IMAGE :=3D vmlinuz
+
+ NM		=3D sh $(srctree)/arch/parisc/nm
+ CHECKFLAGS	+=3D -D__hppa__=3D1
+-LIBGCC		=3D $(shell $(CC) $(KBUILD_CFLAGS) -print-libgcc-file-name)
+-export LIBGCC
+
+ ifdef CONFIG_64BIT
+ UTS_MACHINE	:=3D parisc64
+@@ -110,6 +108,8 @@ cflags-$(CONFIG_PA8X00)		+=3D -march=3D2.0 -mschedule=
+=3D8000
+ head-y			:=3D arch/parisc/kernel/head.o
+
+ KBUILD_CFLAGS	+=3D $(cflags-y)
++LIBGCC		:=3D $(shell $(CC) -print-libgcc-file-name)
++export LIBGCC
+
+ kernel-y			:=3D mm/ kernel/ math-emu/
 
