@@ -2,66 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A68E01CC034
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 12:08:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECEE11CC01F
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 11:49:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727918AbgEIKIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 06:08:39 -0400
-Received: from foss.arm.com ([217.140.110.172]:58258 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726017AbgEIKIj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 06:08:39 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5C5C41FB;
-        Sat,  9 May 2020 03:08:38 -0700 (PDT)
-Received: from gaia (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 85CAD3F71F;
-        Sat,  9 May 2020 03:08:37 -0700 (PDT)
-Date:   Sat, 9 May 2020 10:44:56 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Qian Cai <cai@lca.pw>
-Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: Re: Kmemleak infrastructure improvement for task_struct leaks and
- call_rcu()
-Message-ID: <20200509094455.GA4351@gaia>
-References: <20200507171607.GD3180@gaia>
- <40B2408F-05DD-4A82-BF97-372EA09FA873@lca.pw>
+        id S1726877AbgEIJtc convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 9 May 2020 05:49:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726012AbgEIJtb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 May 2020 05:49:31 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F39C061A0C
+        for <linux-kernel@vger.kernel.org>; Sat,  9 May 2020 02:49:31 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jXM6p-00059X-S6; Sat, 09 May 2020 11:49:28 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id 48117100C8A; Sat,  9 May 2020 11:49:27 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Pali =?utf-8?Q?Roh=C3=A1r?= <pali@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: Missing CLOCK_BOOTTIME_RAW?
+In-Reply-To: <20200508213122.f7srcd2gnduamtvs@pali>
+Date:   Sat, 09 May 2020 11:49:27 +0200
+Message-ID: <87zhah4evs.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <40B2408F-05DD-4A82-BF97-372EA09FA873@lca.pw>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 07, 2020 at 01:29:04PM -0400, Qian Cai wrote:
-> On May 7, 2020, at 1:16 PM, Catalin Marinas <catalin.marinas@arm.com> wrote:
-> > I don't mind adding additional tracking info if it helps with debugging.
-> > But if it's for improving false positives, I'd prefer to look deeper
-> > into figure out why the pointer reference graph tracking failed.
-> 
-> No, the task struct leaks are real leaks. It is just painful to figure
-> out the missing or misplaced put_task_struct() from the kmemleak
-> reports at the moment.
+Pali,
 
-We could log the callers to get_task_struct() and put_task_struct(),
-something like __builtin_return_address(0) (how does this work if the
-function is inlined?). If it's not the full backtrace, it shouldn't slow
-down kmemleak considerably. I don't think it's worth logging only the
-first/last calls to get/put. You'd hope that put is called in reverse
-order to get.
+Pali Rohár <pali@kernel.org> writes:
+> On Friday 08 May 2020 22:59:57 Thomas Gleixner wrote:
+>> Pali Rohár <pali@kernel.org> writes:
+>> Neither CLOCK_BOOTTIME nor CLOCK_MONOTONIC jump. They are frequency
+>> corrected when NTP, PTP or PPS are in use. The frequency correction is
+>> incremental an smothed. They really don't jump and they give you proper
+>> time in nanoseconds which is as close to the real nanoseconds as it
+>> gets.
+>
+> Hello! I should have been more precise about it. CLOCK_BOOTTIME and
+> CLOCK_MONOTONIC do not jump but I understood that they are affected by
+> adjtime(). So these clocks may tick faster or slower than real time. NTP
+> daemon when see that CLOCK_REALTIME is incorrect, it may speed up or
+> slow down its ticking. And this is affected also by CLOCK_BOOTTIME and
+> CLOCK_MONOTONIC, right?
 
-I think it may be better if this is added as a new allocation pointed to
-from kmemleak_object rather than increasing this structure since it will
-be added on a case by case basis. When dumping the leak information, it
-would also dump the get/put calls, in the order they were called. We
-could add some simple refcount tracking (++ for get, -- for put) to
-easily notice any imbalance.
+Sure, but what's the problem? The adjustemt is done to make the observed
+time as correct as possible.
 
-I'm pretty busy next week but happy to review if you have a patch ;).
+> You wrote that this clock is subject to drifts. What exactly may happen
+> with CLOCK_MONOTONIC_RAW?
 
--- 
-Catalin
+  1) As the frequency of the raw clock is an estimate, resulting time
+     is drifting apart vs. the correct frequency.
+
+  2) Depending on the crystal/oszillator there can be temperatur drift as
+     well.
+
+Just for clarification. Even with NTP/PTP adjustment the resulting time
+stamps are never going to be precise vs. an atomic clock, but good
+enough for 99.9999% of the problems.
+
+TBH, I have no idea what real world problem you are trying to solve.
+
+Thanks,
+
+        tglx
