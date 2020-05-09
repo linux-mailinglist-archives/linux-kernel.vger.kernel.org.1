@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2104C1CC54F
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 01:42:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC9231CC526
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 01:41:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728942AbgEIXmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 19:42:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46592 "EHLO
+        id S1728163AbgEIXlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 19:41:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728279AbgEIXlL (ORCPT
+        by vger.kernel.org with ESMTP id S1727124AbgEIXlJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 19:41:11 -0400
+        Sat, 9 May 2020 19:41:09 -0400
 Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E2C5C05BD09
-        for <linux-kernel@vger.kernel.org>; Sat,  9 May 2020 16:41:10 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id a7so5932953pju.2
-        for <linux-kernel@vger.kernel.org>; Sat, 09 May 2020 16:41:10 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6430EC05BD09
+        for <linux-kernel@vger.kernel.org>; Sat,  9 May 2020 16:41:08 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id ms17so5929557pjb.0
+        for <linux-kernel@vger.kernel.org>; Sat, 09 May 2020 16:41:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=a6bXV7bt3FJwO+6h7hS9wdbWbj+cKT2R8klgQdvy5V4=;
-        b=PA3J3jqxZhR7QLeqwjId3MPNynQJYjylfFHuFHDO93eKIYh0iQYwhqZLfhDgt0tNPx
-         NxHMmZui4QlIyuKxLjsRMXG4PNIvSBqEGu3OoFLfiibivil4eA41JBZI/UtGxAjYryLj
-         xFanC6zXk4byjitJUGh5BrMI4F3rjAjk6STjc=
+        bh=vvhNGN1Tx7s0Ij5sTylqbBedyOwoifzYhuoj8ucg/Ng=;
+        b=H0ooAmPdOnapSGPHZq/JoxyQ1BBnzIg6/APNOlEOdF53LNG2ryW77WrExYmk/+cJbL
+         ocPPOf/KndgfNJG6+JAci2tYH4tC2bOJci/5Lfh9vV42LoV7ItrQzyvO/egv602h4IYR
+         44pWuSf0/6C1Ip/2mi66naX+2bIyxcoqS3O2Y=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=a6bXV7bt3FJwO+6h7hS9wdbWbj+cKT2R8klgQdvy5V4=;
-        b=FnYQtL8Q7sFFyXYp/tQYINLyBQztA7PJr6JRj6QnZiNgm5KXmg0mnVlKQ7q5bBQ4B0
-         nS4m+4OiRerQ1MVb9dQ33xgUP/diw7PQgYhi6yoSYTnsWzYllbE4h7AS40ZaiNtC9AT+
-         /EAS7nnBvMXeYQyuJw++cz1PU1jlIxdUmnh69GXknBsdeBVozJyJJJkCgvcbw6i6y5am
-         UTSht/KnBnd0st7YzCym5i1y2bKgU+QV7Yn0CVJNlxGCk+ODrMI0LxBLm28k0Ai9GqlR
-         3TV7KwYZs8TUUttm84eQh7oF0vihoISoW5+SG71nUwB11arsiXbdUBthLJV4VYVmhZIa
-         c3SQ==
-X-Gm-Message-State: AGi0PuZ/jfgTK6CWGbePUk0WtXCRILGntJf6D8smMzE/VkAHNIZFD14Z
-        nt+cQO8g7gZyAl52Y7mWH7GRZw==
-X-Google-Smtp-Source: APiQypIYGFFNE4CP/IEMoDRh7mGwo0o4z+2NMypaNjHCF3aRnPBRNu9ocJUCntHiguWss1r6vpDHyg==
-X-Received: by 2002:a17:90a:8b82:: with SMTP id z2mr14034741pjn.124.1589067669999;
-        Sat, 09 May 2020 16:41:09 -0700 (PDT)
+        bh=vvhNGN1Tx7s0Ij5sTylqbBedyOwoifzYhuoj8ucg/Ng=;
+        b=BEtcOIxuIUx+zzxdE0RQ2mX16F+f5sYoS1OAkLWCqptsFLCZMNx9zKbqPXzE2QBbsH
+         pKRyCLgZpRzehFWpuj5n4p31RNrw9OSIh9iGnT6sdrwC70c+JFn/JVdtk4EPCNULiiVm
+         jiVcVfzKIvncq80s5PbuK4rgcGmYZW+qZdZWHshwXylVTE9lOcQocrsws9jJLojDrDYH
+         O0WweO7IGZODNSVwJDnlYdEqjKFsLUOMh0jwcPV5AxF7pVyOWdBBDhRkDfbi0wDDqs3N
+         4t7QGlFioHqWQZoIqCcpjb+geBtQccMFOazReHpyBIeWWxXG+mMFCfa0zR1Oj4GwW70p
+         rjtQ==
+X-Gm-Message-State: AGi0PuYwwV9i14MkqxsFY/rp9HhJq9j/0OI8kLlrJgaIlkv4RZlYaXzR
+        w2ElyRNzaRvxgZ7d2i7ie0gZaA==
+X-Google-Smtp-Source: APiQypKUo7xwJzfdA6JNrqY2anP42ipln3vKspwjI3YKTI0dVWxv2sJ8STuGNonpxRA/NpDIUAjXyQ==
+X-Received: by 2002:a17:902:32b:: with SMTP id 40mr8608904pld.73.1589067667755;
+        Sat, 09 May 2020 16:41:07 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id n23sm5722167pjq.18.2020.05.09.16.41.06
+        by smtp.gmail.com with ESMTPSA id l1sm5722419pjr.17.2020.05.09.16.41.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Sat, 09 May 2020 16:41:06 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
@@ -62,9 +62,9 @@ Cc:     Kees Cook <keescook@chromium.org>,
         Pavel Tatashin <pasha.tatashin@soleen.com>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mtd@lists.infradead.org
-Subject: [PATCH v6 02/18] pstore/platform: Switch pstore_info::name to const
-Date:   Sat,  9 May 2020 16:40:47 -0700
-Message-Id: <20200509234103.46544-3-keescook@chromium.org>
+Subject: [PATCH v6 03/18] pstore/platform: Move module params after declarations
+Date:   Sat,  9 May 2020 16:40:48 -0700
+Message-Id: <20200509234103.46544-4-keescook@chromium.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200509234103.46544-1-keescook@chromium.org>
 References: <20200509234103.46544-1-keescook@chromium.org>
@@ -75,51 +75,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to more cleanly pass around backend names, make the "name" member
-const. This means the module param needs to be dynamic (technically, it
-was before, so this actually cleans up a minor memory leak if a backend
-was specified and then gets unloaded.)
+It is easier to see how module params are used if they're near the
+variables they use.
 
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- fs/pstore/platform.c   | 3 ++-
- include/linux/pstore.h | 2 +-
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ fs/pstore/platform.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
 diff --git a/fs/pstore/platform.c b/fs/pstore/platform.c
-index b882919b8784..e7bf22f01928 100644
+index e7bf22f01928..bf7fa7b278bd 100644
 --- a/fs/pstore/platform.c
 +++ b/fs/pstore/platform.c
-@@ -626,7 +626,7 @@ int pstore_register(struct pstore_info *psi)
- 	 * Update the module parameter backend, so it is visible
- 	 * through /sys/module/pstore/parameters/backend
- 	 */
--	backend = psi->name;
-+	backend = kstrdup(psi->name, GFP_KERNEL);
+@@ -77,12 +77,17 @@ static DEFINE_MUTEX(psinfo_lock);
+ struct pstore_info *psinfo;
  
- 	pr_info("Registered %s as persistent store backend\n", psi->name);
+ static char *backend;
++module_param(backend, charp, 0444);
++MODULE_PARM_DESC(backend, "specific backend to use");
++
+ static char *compress =
+ #ifdef CONFIG_PSTORE_COMPRESS_DEFAULT
+ 		CONFIG_PSTORE_COMPRESS_DEFAULT;
+ #else
+ 		NULL;
+ #endif
++module_param(compress, charp, 0444);
++MODULE_PARM_DESC(compress, "compression to use");
  
-@@ -669,6 +669,7 @@ void pstore_unregister(struct pstore_info *psi)
- 	free_buf_for_compression();
- 
- 	psinfo = NULL;
-+	kfree(backend);
- 	backend = NULL;
- 	mutex_unlock(&psinfo_lock);
+ /* Compression parameters */
+ static struct crypto_comp *tfm;
+@@ -853,11 +858,5 @@ static void __exit pstore_exit(void)
  }
-diff --git a/include/linux/pstore.h b/include/linux/pstore.h
-index 16a1fdafc167..eb93a54cff31 100644
---- a/include/linux/pstore.h
-+++ b/include/linux/pstore.h
-@@ -176,7 +176,7 @@ struct pstore_record {
-  */
- struct pstore_info {
- 	struct module	*owner;
--	char		*name;
-+	const char	*name;
+ module_exit(pstore_exit)
  
- 	struct semaphore buf_lock;
- 	char		*buf;
+-module_param(compress, charp, 0444);
+-MODULE_PARM_DESC(compress, "Pstore compression to use");
+-
+-module_param(backend, charp, 0444);
+-MODULE_PARM_DESC(backend, "Pstore backend to use");
+-
+ MODULE_AUTHOR("Tony Luck <tony.luck@intel.com>");
+ MODULE_LICENSE("GPL");
 -- 
 2.20.1
 
