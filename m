@@ -2,144 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 863F01CBE11
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 08:34:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E02C91CBE1A
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 08:37:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728933AbgEIGee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 02:34:34 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:49772 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726115AbgEIGee (ORCPT
+        id S1729008AbgEIGhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 02:37:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726106AbgEIGhH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 02:34:34 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0496VNPO013928;
-        Fri, 8 May 2020 23:33:34 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pfpt0818;
- bh=r3/icDCoeCmjAYD8L9yr4pNwgvgXAZPIbBZGcN9ONZk=;
- b=k+rPI3tKtvXk4oJeZLJJiFo/0oGrocGPIxBTTZbOWZRcZpHXfo/f7/gkIC01+F7p7CeN
- dBpzrfi5bIN6/c2D51u43axCfCVR+kqEZcUlQwwAFmNPvJmPzP3cniAZ7aC7qEPlqirG
- osoMunv9PP/jsnO6YW0/QLtNSAUQ2jSw/G2uGyB3SRvLW/ywhnFF2edmURAhrySG7U1H
- gHo+z0uGs+AUfu1cVYfpdxE0tQmXSXPUkNMVQAa8x1xeKLVLXd1el7tIYYVF5h30EYWm
- NJOnXsg54rpdfMiQyM+F71LxhQIodvjd4a/XCvIipfyn+vydr8TovPZSbJjUHJLOCgWA VQ== 
-Received: from sc-exch03.marvell.com ([199.233.58.183])
-        by mx0b-0016f401.pphosted.com with ESMTP id 30wjj7gubg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Fri, 08 May 2020 23:33:34 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH03.marvell.com
- (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 8 May
- 2020 23:33:32 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 8 May 2020 23:33:32 -0700
-Received: from [10.193.46.2] (unknown [10.193.46.2])
-        by maili.marvell.com (Postfix) with ESMTP id DE8483F703F;
-        Fri,  8 May 2020 23:32:56 -0700 (PDT)
-Subject: Re: [EXT] [PATCH 09/15] qed: use new module_firmware_crashed()
-To:     Luis Chamberlain <mcgrof@kernel.org>, <jeyu@kernel.org>
-CC:     <akpm@linux-foundation.org>, <arnd@arndb.de>,
-        <rostedt@goodmis.org>, <mingo@redhat.com>, <aquini@redhat.com>,
-        <cai@lca.pw>, <dyoung@redhat.com>, <bhe@redhat.com>,
-        <peterz@infradead.org>, <tglx@linutronix.de>,
-        <gpiccoli@canonical.com>, <pmladek@suse.com>, <tiwai@suse.de>,
-        <schlad@suse.de>, <andriy.shevchenko@linux.intel.com>,
-        <keescook@chromium.org>, <daniel.vetter@ffwll.ch>,
-        <will@kernel.org>, <mchehab+samsung@kernel.org>,
-        <kvalo@codeaurora.org>, <davem@davemloft.net>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Ariel Elior <aelior@marvell.com>,
-        GR-everest-linux-l2 <GR-everest-linux-l2@marvell.com>
-References: <20200509043552.8745-1-mcgrof@kernel.org>
- <20200509043552.8745-10-mcgrof@kernel.org>
-From:   Igor Russkikh <irusskikh@marvell.com>
-Message-ID: <2aaddb69-2292-ff3f-94c7-0ab9dbc8e53c@marvell.com>
-Date:   Sat, 9 May 2020 09:32:51 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:76.0) Gecko/20100101
- Thunderbird/76.0
+        Sat, 9 May 2020 02:37:07 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9870EC061A0C
+        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 23:37:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:
+        Subject:Sender:Reply-To:Cc:Content-ID:Content-Description;
+        bh=mcO8+1EDxZvAX8ZD4A53xevhvEfo/u+dOx6XCDnH4Do=; b=tQrFS6W8yF0rzk4LRpqpeK8Xt9
+        VUn8R+0YHMMYINrzX9E//hI5rJV1rTmbkoyq+L+KZvguwZOatxNJ8Q4vzFyM8IIavIqBCnZEPj86f
+        3uEujsbtM2S902GBpY7lfcd4rkBpA0CQ3J5iWwsnHsElWnEyr762pT4s5mJbhXuRy7S7bA3SBp8Nl
+        PcQZhTxz/BhF1OL45Y+9clGzRy8/848PKGM8LoU2Sj5LuzcxWoOd14famKG9+ZiPuEx3b+EZ713z4
+        jXLDEebJrQ1WDuzERid/GfpC1+J8nSX8Xb87h0OsEedjNiRIan4vVCVnXGkRpnR5aEPH8WlJ0Um87
+        sJ6SeQkw==;
+Received: from [2601:1c0:6280:3f0:897c:6038:c71d:ecac]
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jXJ6Z-0005sH-CZ; Sat, 09 May 2020 06:36:59 +0000
+Subject: Re: [PATCH] drm/panel: visionox-rm69299: Add module license
+To:     Jason Yan <yanaijie@huawei.com>, thierry.reding@gmail.com,
+        sam@ravnborg.org, airlied@linux.ie, daniel@ffwll.ch,
+        harigovi@codeaurora.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20200509063017.2000-1-yanaijie@huawei.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <5d692435-1d55-ade9-fe22-00ffc1cdca64@infradead.org>
+Date:   Fri, 8 May 2020 23:36:57 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200509043552.8745-10-mcgrof@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20200509063017.2000-1-yanaijie@huawei.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-09_01:2020-05-08,2020-05-09 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-> This makes use of the new module_firmware_crashed() to help
-> annotate when firmware for device drivers crash. When firmware
-> crashes devices can sometimes become unresponsive, and recovery
-> sometimes requires a driver unload / reload and in the worst cases
-> a reboot.
+On 5/8/20 11:30 PM, Jason Yan wrote:
+> Fix the following build warning:
 > 
-> Using a taint flag allows us to annotate when this happens clearly.
+> WARNING: modpost: missing MODULE_LICENSE() in drivers/gpu/drm/panel/panel-visionox-rm69299.o
+> see include/linux/module.h for more information
 > 
-> Cc: Ariel Elior <aelior@marvell.com>
-> Cc: GR-everest-linux-l2@marvell.com
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> Signed-off-by: Jason Yan <yanaijie@huawei.com>
 > ---
->  drivers/net/ethernet/qlogic/qed/qed_debug.c | 3 +++
->  1 file changed, 3 insertions(+)
+>  drivers/gpu/drm/panel/panel-visionox-rm69299.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/drivers/net/ethernet/qlogic/qed/qed_debug.c
-> b/drivers/net/ethernet/qlogic/qed/qed_debug.c
-> index f4eebaabb6d0..9cc6287b889b 100644
-> --- a/drivers/net/ethernet/qlogic/qed/qed_debug.c
-> +++ b/drivers/net/ethernet/qlogic/qed/qed_debug.c
-> @@ -7854,6 +7854,7 @@ int qed_dbg_all_data(struct qed_dev *cdev, void
-> *buffer)
->  						 REGDUMP_HEADER_SIZE,
->  						 &feature_size);
->  		if (!rc) {
-> +			module_firmware_crashed();
->  			*(u32 *)((u8 *)buffer + offset) =
->  			    qed_calc_regdump_header(cdev,
-> PROTECTION_OVERRIDE,
->  						    cur_engine,
-> @@ -7869,6 +7870,7 @@ int qed_dbg_all_data(struct qed_dev *cdev, void
-> *buffer)
->  		rc = qed_dbg_fw_asserts(cdev, (u8 *)buffer + offset +
->  					REGDUMP_HEADER_SIZE,
-> &feature_size);
->  		if (!rc) {
-> +			module_firmware_crashed();
->  			*(u32 *)((u8 *)buffer + offset) =
->  			    qed_calc_regdump_header(cdev, FW_ASSERTS,
->  						    cur_engine,
-> feature_size,
-> @@ -7906,6 +7908,7 @@ int qed_dbg_all_data(struct qed_dev *cdev, void
-> *buffer)
->  		rc = qed_dbg_grc(cdev, (u8 *)buffer + offset +
->  				 REGDUMP_HEADER_SIZE, &feature_size);
->  		if (!rc) {
-> +			module_firmware_crashed();
->  			*(u32 *)((u8 *)buffer + offset) =
->  			    qed_calc_regdump_header(cdev, GRC_DUMP,
->  						    cur_engine,
+> diff --git a/drivers/gpu/drm/panel/panel-visionox-rm69299.c b/drivers/gpu/drm/panel/panel-visionox-rm69299.c
+> index 25fe8b0bb040..ec279ffdbd94 100644
+> --- a/drivers/gpu/drm/panel/panel-visionox-rm69299.c
+> +++ b/drivers/gpu/drm/panel/panel-visionox-rm69299.c
+> @@ -300,3 +300,4 @@ static struct mipi_dsi_driver visionox_rm69299_driver = {
+>  module_mipi_dsi_driver(visionox_rm69299_driver);
+>  
+>  MODULE_DESCRIPTION("Visionox RM69299 DSI Panel Driver");
+> +MODULE_LICENSE("GPL");
+> 
+
+I sent a patch for this yesterday.
 
 
-Hi Luis,
-
-qed_dbg_all_data is being used to gather debug dump from device. Failures
-inside it may happen due to various reasons, but they normally do not indicate
-FW failure.
-
-So I think its not a good place to insert this call.
-
-Its hard to find exact good place to insert it in qed.
-
-One more thing is that AFAIU taint flag gets permanent on kernel, but for
-example our device can recover itself from some FW crashes, thus it'd be
-transparent for user.
-
-Whats the logical purpose of module_firmware_crashed? Does it mean fatal
-unrecoverable error on device?
-
-Thanks,
-  Igor
+-- 
+~Randy
 
