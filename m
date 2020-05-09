@@ -2,66 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFE571CC538
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 01:42:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45DE21CC547
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 01:42:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728878AbgEIXli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 19:41:38 -0400
-Received: from smtprelay0250.hostedemail.com ([216.40.44.250]:51344 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728842AbgEIXle (ORCPT
+        id S1728932AbgEIXmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 19:42:08 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:34152 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726955AbgEIXmG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 19:41:34 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 47A3518029120;
-        Sat,  9 May 2020 23:41:33 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1714:1730:1747:1777:1792:2393:2540:2553:2559:2562:2828:3138:3139:3140:3141:3142:3351:3622:3865:3866:3867:3868:3870:3871:3872:3873:4321:5007:7576:10004:10400:10848:10967:11232:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:21080:21451:21627:21740:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: magic98_64b48ef0ebc31
-X-Filterd-Recvd-Size: 1718
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf17.hostedemail.com (Postfix) with ESMTPA;
-        Sat,  9 May 2020 23:41:31 +0000 (UTC)
-Message-ID: <1870db200ffa03e3fce935b5e35e4562989d2dcf.camel@perches.com>
-Subject: Re: [PATCH] net/sonic: Fix some resource leaks in error handling
- paths
-From:   Joe Perches <joe@perches.com>
-To:     David Miller <davem@davemloft.net>
-Cc:     kuba@kernel.org, christophe.jaillet@wanadoo.fr,
-        fthain@telegraphics.com.au, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Date:   Sat, 09 May 2020 16:41:30 -0700
-In-Reply-To: <20200509.163217.1372289149714306397.davem@davemloft.net>
-References: <50ef36cd-d095-9abe-26ea-d363d11ce521@wanadoo.fr>
-         <20200509111321.51419b19@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-         <fc5cf8da8e70ebb981a9fc3aec6834c74197f0ed.camel@perches.com>
-         <20200509.163217.1372289149714306397.davem@davemloft.net>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.1-2 
+        Sat, 9 May 2020 19:42:06 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id AF6FE2A01A7
+Received: by earth.universe (Postfix, from userid 1000)
+        id A76D43C08C7; Sun, 10 May 2020 01:42:01 +0200 (CEST)
+Date:   Sun, 10 May 2020 01:42:01 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Hongbo Yao <yaohongbo@huawei.com>
+Cc:     chenzhou10@huawei.com, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH -next] power: reset: ltc2952: remove set but used variable
+Message-ID: <20200509234201.md2veh4cxkdwoj2h@earth.universe>
+References: <20200509103611.29551-1-yaohongbo@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ocomalmwbouxc3aq"
+Content-Disposition: inline
+In-Reply-To: <20200509103611.29551-1-yaohongbo@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-05-09 at 16:32 -0700, David Miller wrote:
-> From: Joe Perches <joe@perches.com>
-> Date: Sat, 09 May 2020 15:42:36 -0700
-> 
-> > David, maybe I missed some notification about Jakub's role.
-> > 
-> > What is Jakub's role in relation to the networking tree?
-> 
-> He is the co-maintainer of the networking tree and you should respect
-> his actions and feedback as if it were coming from me.
 
-If he's committing drivers then presumably then
-he should be added to this section as well.
+--ocomalmwbouxc3aq
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-NETWORKING DRIVERS
-M:	"David S. Miller" <davem@davemloft.net>
-L:	netdev@vger.kernel.org
-S:	Odd Fixes
+Hi,
 
+On Sat, May 09, 2020 at 06:36:11PM +0800, Hongbo Yao wrote:
+> Fixes gcc '-Wunused-but-set-variable' warning:
+> drivers/power/reset/ltc2952-poweroff.c:97:16: warning: variable
+> =E2=80=98overruns=E2=80=99 set but not used [-Wunused-but-set-variable]
+>   unsigned long overruns;
+>=20
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Hongbo Yao <yaohongbo@huawei.com>
+> ---
+
+Thanks, queued.
+
+-- Sebastian
+
+>  drivers/power/reset/ltc2952-poweroff.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/power/reset/ltc2952-poweroff.c b/drivers/power/reset=
+/ltc2952-poweroff.c
+> index e4a0cc45b3d1..318927938b05 100644
+> --- a/drivers/power/reset/ltc2952-poweroff.c
+> +++ b/drivers/power/reset/ltc2952-poweroff.c
+> @@ -94,7 +94,6 @@ static enum hrtimer_restart ltc2952_poweroff_timer_wde(=
+struct hrtimer *timer)
+>  {
+>  	ktime_t now;
+>  	int state;
+> -	unsigned long overruns;
+>  	struct ltc2952_poweroff *data =3D to_ltc2952(timer, timer_wde);
+> =20
+>  	if (data->kernel_panic)
+> @@ -104,7 +103,7 @@ static enum hrtimer_restart ltc2952_poweroff_timer_wd=
+e(struct hrtimer *timer)
+>  	gpiod_set_value(data->gpio_watchdog, !state);
+> =20
+>  	now =3D hrtimer_cb_get_time(timer);
+> -	overruns =3D hrtimer_forward(timer, now, data->wde_interval);
+> +	hrtimer_forward(timer, now, data->wde_interval);
+> =20
+>  	return HRTIMER_RESTART;
+>  }
+> --=20
+> 2.20.1
+>=20
+
+--ocomalmwbouxc3aq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl63P8AACgkQ2O7X88g7
++ppUHhAAlOhSJZFvAj8R7L0WLTSsWZmZ5QflRas0lCV7jYwESpyhyDxaHSxelnF8
+l/DDBHSS90Vn9qSzFQw7uTrso6jAXUHYnLc0zLYWaXbmO07OoENeE5pfkh56j5FU
+x7f+NSnC/u5bDJIXy/0v77DUmhy6S2OduZUrxH3C0EvT3cuHbphGMPKa/Rcdny+o
+dfZH77x4WjQsFZZr8gdkaDWybgrFBrZZ1BH7WO8+SBVxJp8C/7RJqDyPT1ut8EnZ
+9d0M4Ii3ZJ7xpcDsLIaEJmGtvB6u3ZXTiYZXkUyTSB57uyPcQf6Gsva1CZKb26nO
+gYAJmZW1VkZrdT7tOeySzLGBND+HWtYEbhgPTfWuojT5Ye0yydDs4gjzClCl7jfX
+BHz2G0sh3rG4fcB9CoiZymN8tbf+L+wiiwLUBTXw/7913ENCoROiy3lU5fY+vEwM
+rCKsXrMXrCeuEkmRwXsr4WTRm13gBwzX6DQ6LzwCWx2RoV9RhAaASldtKw1tx2mR
+5SUA23GJx/iluisRYSrM1kSLy9FFw0NIG25ZulfUWCIoQEqJF2CdyA02ITyNO7JO
+4rbbAPhBiBBAWwRl8c7KBIKCvtNkLWPufzG1vTiOJ2y5V96AFgzgCKmkR/HBiwPK
+P9zz7sSP7PNugxmgrgHrf3yOgRbKOZi2+S5MiJgmPTWJjvq8XQA=
+=07TS
+-----END PGP SIGNATURE-----
+
+--ocomalmwbouxc3aq--
