@@ -2,157 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 008F31CC061
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 12:37:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DC9A1CC078
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 12:44:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728058AbgEIKhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 06:37:53 -0400
-Received: from mta-02.yadro.com ([89.207.88.252]:35020 "EHLO mta-01.yadro.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726877AbgEIKhx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 06:37:53 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mta-01.yadro.com (Postfix) with ESMTP id 6DBC847CF8;
-        Sat,  9 May 2020 10:37:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
-        content-transfer-encoding:mime-version:user-agent:content-type
-        :content-type:organization:references:in-reply-to:date:date:from
-        :from:subject:subject:message-id:received:received:received; s=
-        mta-01; t=1589020667; x=1590835068; bh=NjhSBdUtDpt27vc8z49oMLxZ6
-        nUA0857EPFame8QyLY=; b=BytHNatf8D2MlXUX0ul4BsFW63pzDKhHPFn0ipZy5
-        AxboSGEY6an84cMvWfbykJfvNX3h6kLNgBTb7ojUKwCnOew6YwpLxwNWIRhOGJ4G
-        KIxjicj25TeZZ33PqAOXyi92V7oG2JjjVlJjdSqHJtZodFVplpS9RJfXnk/ay0lc
-        6E=
-X-Virus-Scanned: amavisd-new at yadro.com
-Received: from mta-01.yadro.com ([127.0.0.1])
-        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id E1ied5mhQ_dK; Sat,  9 May 2020 13:37:47 +0300 (MSK)
-Received: from T-EXCH-02.corp.yadro.com (t-exch-02.corp.yadro.com [172.17.10.102])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mta-01.yadro.com (Postfix) with ESMTPS id 1E96F412CE;
-        Sat,  9 May 2020 13:37:47 +0300 (MSK)
-Received: from localhost.localdomain (10.199.3.114) by
- T-EXCH-02.corp.yadro.com (172.17.10.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
- 15.1.669.32; Sat, 9 May 2020 13:37:48 +0300
-Message-ID: <61e9c83b910b3df44291a49b5587b772d4145036.camel@yadro.com>
-Subject: Re: [PATCH v13 1/2] dt-bindings: proximity: provide vcnl3020 device
- tree binding document
-From:   Ivan Mikhaylov <i.mikhaylov@yadro.com>
-To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-CC:     Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sat, 9 May 2020 13:38:46 +0300
-In-Reply-To: <20200508155050.0000008e@Huawei.com>
-References: <20200507132600.8801-1-i.mikhaylov@yadro.com>
-         <20200507132600.8801-2-i.mikhaylov@yadro.com>
-         <20200508155050.0000008e@Huawei.com>
-Organization: YADRO
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.32.5 (3.32.5-1.fc30) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.199.3.114]
-X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
- T-EXCH-02.corp.yadro.com (172.17.10.102)
+        id S1728209AbgEIKoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 06:44:39 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:56036 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726877AbgEIKoi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 May 2020 06:44:38 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 5A8601A02B7;
+        Sat,  9 May 2020 12:44:36 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 0FE891A02D9;
+        Sat,  9 May 2020 12:44:33 +0200 (CEST)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id D8EC6402E6;
+        Sat,  9 May 2020 18:44:28 +0800 (SGT)
+From:   Hui Song <hui.song_1@nxp.com>
+To:     u-boot@linux.nxdi.nxp.com, jiafei.pan@nxp.com
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        "hui.song" <hui.song_1@nxp.com>
+Subject: [PATCH v1 1/3] gpio: mpc8xxx: support fsl-layerscape platform.
+Date:   Sat,  9 May 2020 18:39:54 +0800
+Message-Id: <20200509103956.26038-1-hui.song_1@nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-05-08 at 15:51 +0100, Jonathan Cameron wrote:
-> On Thu, 7 May 2020 16:25:59 +0300
-> Ivan Mikhaylov <i.mikhaylov@yadro.com> wrote:
-> 
-> > Mostly standard i2c driver with some additional led-current option
-> > for vcnl3020.
-> > 
-> > Signed-off-by: Ivan Mikhaylov <i.mikhaylov@yadro.com>
-> > ---
-> >  .../iio/proximity/vishay,vcnl3020.yaml        | 65 +++++++++++++++++++
-> >  1 file changed, 65 insertions(+)
-> >  create mode 100644
-> > Documentation/devicetree/bindings/iio/proximity/vishay,vcnl3020.yaml
-> > 
-> > diff --git
-> > a/Documentation/devicetree/bindings/iio/proximity/vishay,vcnl3020.yaml
-> > b/Documentation/devicetree/bindings/iio/proximity/vishay,vcnl3020.yaml
-> > new file mode 100644
-> > index 000000000000..408dee17cdf5
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/iio/proximity/vishay,vcnl3020.yaml
-> > @@ -0,0 +1,65 @@
-> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/iio/proximity/vishay,vcnl3020.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Integrated Proximity Sensor With Infrared Emitter
-> > +
-> > +maintainers:
-> > +  - Ivan Mikhaylov <i.mikhaylov@yadro.com>
-> > +
-> > +description: |
-> > +  The VCNL3020 is a fully integrated proximity sensor. Fully integrated
-> > means
-> > +  that the infrared emitter is included in the package. It has 16-bit
-> > +  resolution. It includes a signal processing IC and features standard I2C
-> > +  communication interface. It features an interrupt function.
-> > +
-> > +  Specifications about the devices can be found at:
-> > +  https://www.vishay.com/docs/84150/vcnl3020.pdf
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - vishay,vcnl3020
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  interrupts:
-> > +    maxItems: 1
-> > +
-> > +  vdd-supply:
-> > +    description: Regulator that provides power to the sensor
-> > +
-> > +  vddio-supply:
-> > +    description: Regulator that provides power to the bus
-> > +
-> > +  vishay,led-current-microamp:
-> > +    description:
-> > +      IR LED current value with valid Range = 0 to 20d. e.g. 0 = 0 mA,
-> > +      1 = 10 mA, 20 = 200 mA. LED Current is limited to 200 mA for values
-> > +      higher than decimal 20. The drive current for the LED used in
-> > proximity
-> > +      sensing.
-> 
-> This text is really confusing. Just let the enum speak for itself and leave
-> text as
-> something short like
-> 
-> "The driver current for the LED used in proximity sensing. "
-> 
-> Units and values are clear already.
-> 
+From: "hui.song" <hui.song_1@nxp.com>
 
-Jonathan, just to double check, for preventing further problems with
-misunderstanding, is that what you want?
+Make the MPC8XXX gpio driver to support the fsl-layerscape.
 
-  vishay,led-current-microamp:
-    description:
-        The driver current for the LED used in proximity sensing.
+Signed-off-by: hui.song <hui.song_1@nxp.com>
+---
+ drivers/gpio/mpc8xxx_gpio.c | 59 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 59 insertions(+)
 
-    enum: [0..200000] <- just for shortening
-    default: 20000
-
-Thanks.
+diff --git a/drivers/gpio/mpc8xxx_gpio.c b/drivers/gpio/mpc8xxx_gpio.c
+index 1dfd22522c..466f5f50cf 100644
+--- a/drivers/gpio/mpc8xxx_gpio.c
++++ b/drivers/gpio/mpc8xxx_gpio.c
+@@ -12,6 +12,8 @@
+ #include <dm.h>
+ #include <mapmem.h>
+ #include <asm/gpio.h>
++#include <asm/io.h>
++#include <dm/of_access.h>
+ 
+ struct ccsr_gpio {
+ 	u32	gpdir;
+@@ -20,6 +22,7 @@ struct ccsr_gpio {
+ 	u32	gpier;
+ 	u32	gpimr;
+ 	u32	gpicr;
++	u32	gpibe;
+ };
+ 
+ struct mpc8xxx_gpio_data {
+@@ -49,31 +52,51 @@ inline u32 gpio_mask(uint gpio)
+ 
+ static inline u32 mpc8xxx_gpio_get_val(struct ccsr_gpio *base, u32 mask)
+ {
++#if CONFIG_ARM
++	return in_le32(&base->gpdat) & mask;
++#else
+ 	return in_be32(&base->gpdat) & mask;
++#endif
+ }
+ 
+ static inline u32 mpc8xxx_gpio_get_dir(struct ccsr_gpio *base, u32 mask)
+ {
++#if CONFIG_ARM
++	return in_le32(&base->gpdir) & mask;
++#else
+ 	return in_be32(&base->gpdir) & mask;
++#endif
+ }
+ 
+ static inline int mpc8xxx_gpio_open_drain_val(struct ccsr_gpio *base, u32 mask)
+ {
++#if CONFIG_ARM
++	return in_le32(&base->gpodr) & mask;
++#else
+ 	return in_be32(&base->gpodr) & mask;
++#endif
+ }
+ 
+ static inline void mpc8xxx_gpio_open_drain_on(struct ccsr_gpio *base, u32
+ 					      gpios)
+ {
++#if CONFIG_ARM
++	setbits_le32(&base->gpodr, gpios);
++#else
+ 	/* GPODR register 1 -> open drain on */
+ 	setbits_be32(&base->gpodr, gpios);
++#endif
+ }
+ 
+ static inline void mpc8xxx_gpio_open_drain_off(struct ccsr_gpio *base,
+ 					       u32 gpios)
+ {
++#if CONFIG_ARM
++	clrbits_le32(&base->gpodr, gpios);
++#else
+ 	/* GPODR register 0 -> open drain off (actively driven) */
+ 	clrbits_be32(&base->gpodr, gpios);
++#endif
+ }
+ 
+ static int mpc8xxx_gpio_direction_input(struct udevice *dev, uint gpio)
+@@ -81,9 +104,13 @@ static int mpc8xxx_gpio_direction_input(struct udevice *dev, uint gpio)
+ 	struct mpc8xxx_gpio_data *data = dev_get_priv(dev);
+ 	u32 mask = gpio_mask(gpio);
+ 
++#if CONFIG_ARM
++	clrbits_le32(&data->base->gpdir, mask);
++#else
+ 	/* GPDIR register 0 -> input */
+ 	clrbits_be32(&data->base->gpdir, mask);
+ 
++#endif
+ 	return 0;
+ }
+ 
+@@ -100,10 +127,19 @@ static int mpc8xxx_gpio_set_value(struct udevice *dev, uint gpio, int value)
+ 		data->dat_shadow &= ~mask;
+ 	}
+ 
++#if CONFIG_ARM
++	gpdir = in_le32(&base->gpdir);
++#else
+ 	gpdir = in_be32(&base->gpdir);
++#endif
+ 	gpdir |= gpio_mask(gpio);
++#if CONFIG_ARM
++	out_le32(&base->gpdat, gpdir & data->dat_shadow);
++	out_le32(&base->gpdir, gpdir);
++#else
+ 	out_be32(&base->gpdat, gpdir & data->dat_shadow);
+ 	out_be32(&base->gpdir, gpdir);
++#endif
+ 
+ 	return 0;
+ }
+@@ -147,13 +183,29 @@ static int mpc8xxx_gpio_ofdata_to_platdata(struct udevice *dev)
+ {
+ 	struct mpc8xxx_gpio_plat *plat = dev_get_platdata(dev);
+ 	fdt_addr_t addr;
++	u32 i;
++#if CONFIG_ARM
++	u32 reg[4];
++
++	dev_read_u32_array(dev, "reg", reg, 4);
++#else
+ 	u32 reg[2];
+ 
+ 	dev_read_u32_array(dev, "reg", reg, 2);
++#endif
++
++#if CONFIG_ARM
++	for (i = 0; i < 2; i++)
++		reg[i] = be32_to_cpu(reg[i]);
++#endif
+ 	addr = dev_translate_address(dev, reg);
+ 
+ 	plat->addr = addr;
++#if CONFIG_ARM
++	plat->size = reg[3];
++#else
+ 	plat->size = reg[1];
++#endif
+ 	plat->ngpios = dev_read_u32_default(dev, "ngpios", 32);
+ 
+ 	return 0;
+@@ -187,6 +239,7 @@ static int mpc8xxx_gpio_platdata_to_priv(struct udevice *dev)
+ static int mpc8xxx_gpio_probe(struct udevice *dev)
+ {
+ 	struct gpio_dev_priv *uc_priv = dev_get_uclass_priv(dev);
++	struct device_node const  *np = dev->node.np;
+ 	struct mpc8xxx_gpio_data *data = dev_get_priv(dev);
+ 	char name[32], *str;
+ 
+@@ -198,6 +251,12 @@ static int mpc8xxx_gpio_probe(struct udevice *dev)
+ 	if (!str)
+ 		return -ENOMEM;
+ 
++	if (of_device_is_compatible(np, "fsl,qoriq-gpio", NULL, NULL)) {
++		unsigned long gpibe = data->addr + sizeof(struct ccsr_gpio);
++
++		out_be32(gpibe, 0xffffffff);
++	}
++
+ 	uc_priv->bank_name = str;
+ 	uc_priv->gpio_count = data->gpio_count;
+ 
+-- 
+2.17.1
 
