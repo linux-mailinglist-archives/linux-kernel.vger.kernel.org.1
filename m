@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E92D01CBF69
+	by mail.lfdr.de (Postfix) with ESMTP id 70A8A1CBF68
 	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 10:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727945AbgEIIwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 04:52:35 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:56016 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727833AbgEIIwe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727903AbgEIIwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sat, 9 May 2020 04:52:34 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:56030 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727835AbgEIIwd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 May 2020 04:52:33 -0400
 Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 1C42ED414EE3D2EB59B8;
+        by Forcepoint Email with ESMTP id 21A63F014332F74A895D;
         Sat,  9 May 2020 16:52:32 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
  DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 9 May 2020 16:52:23 +0800
+ 14.3.487.0; Sat, 9 May 2020 16:52:25 +0800
 From:   Chen Zhou <chenzhou10@huawei.com>
 To:     <heiko.carstens@de.ibm.com>, <gor@linux.ibm.com>,
         <borntraeger@de.ibm.com>
 CC:     <linux-s390@vger.kernel.or>, <linux-kernel@vger.kernel.org>,
         <chenzhou10@huawei.com>
-Subject: [PATCH -next 2/3] s390: use scnprintf() in sys_##_prefix##_##_name##_show
-Date:   Sat, 9 May 2020 16:56:07 +0800
-Message-ID: <20200509085608.41061-3-chenzhou10@huawei.com>
+Subject: [PATCH -next 3/3] s390/protvirt: use scnprintf() instead of snprintf()
+Date:   Sat, 9 May 2020 16:56:08 +0800
+Message-ID: <20200509085608.41061-4-chenzhou10@huawei.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200509085608.41061-1-chenzhou10@huawei.com>
 References: <20200509085608.41061-1-chenzhou10@huawei.com>
@@ -41,27 +41,55 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 snprintf() returns the number of bytes that would be written,
 which may be greater than the the actual length to be written.
 
-show() methods should return the number of bytes printed into the
-buffer. This is the return value of scnprintf().
+uv_query_facilities() should return the number of bytes printed
+into the buffer. This is the return value of scnprintf().
+The other functions are the same.
 
 Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
 ---
- arch/s390/kernel/ipl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/s390/kernel/uv.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/s390/kernel/ipl.c b/arch/s390/kernel/ipl.c
-index ccea9a245867..90a2a17239b0 100644
---- a/arch/s390/kernel/ipl.c
-+++ b/arch/s390/kernel/ipl.c
-@@ -181,7 +181,7 @@ static ssize_t sys_##_prefix##_##_name##_show(struct kobject *kobj,	\
- 		struct kobj_attribute *attr,				\
- 		char *page)						\
- {									\
--	return snprintf(page, PAGE_SIZE, _format, ##args);		\
-+	return scnprintf(page, PAGE_SIZE, _format, ##args);		\
+diff --git a/arch/s390/kernel/uv.c b/arch/s390/kernel/uv.c
+index 4c0677fc8904..e7ea82a2bf63 100644
+--- a/arch/s390/kernel/uv.c
++++ b/arch/s390/kernel/uv.c
+@@ -331,7 +331,7 @@ EXPORT_SYMBOL_GPL(arch_make_page_accessible);
+ static ssize_t uv_query_facilities(struct kobject *kobj,
+ 				   struct kobj_attribute *attr, char *page)
+ {
+-	return snprintf(page, PAGE_SIZE, "%lx\n%lx\n%lx\n%lx\n",
++	return scnprintf(page, PAGE_SIZE, "%lx\n%lx\n%lx\n%lx\n",
+ 			uv_info.inst_calls_list[0],
+ 			uv_info.inst_calls_list[1],
+ 			uv_info.inst_calls_list[2],
+@@ -344,7 +344,7 @@ static struct kobj_attribute uv_query_facilities_attr =
+ static ssize_t uv_query_max_guest_cpus(struct kobject *kobj,
+ 				       struct kobj_attribute *attr, char *page)
+ {
+-	return snprintf(page, PAGE_SIZE, "%d\n",
++	return scnprintf(page, PAGE_SIZE, "%d\n",
+ 			uv_info.max_guest_cpus);
  }
  
- #define IPL_ATTR_CCW_STORE_FN(_prefix, _name, _ipl_blk)			\
+@@ -354,7 +354,7 @@ static struct kobj_attribute uv_query_max_guest_cpus_attr =
+ static ssize_t uv_query_max_guest_vms(struct kobject *kobj,
+ 				      struct kobj_attribute *attr, char *page)
+ {
+-	return snprintf(page, PAGE_SIZE, "%d\n",
++	return scnprintf(page, PAGE_SIZE, "%d\n",
+ 			uv_info.max_num_sec_conf);
+ }
+ 
+@@ -364,7 +364,7 @@ static struct kobj_attribute uv_query_max_guest_vms_attr =
+ static ssize_t uv_query_max_guest_addr(struct kobject *kobj,
+ 				       struct kobj_attribute *attr, char *page)
+ {
+-	return snprintf(page, PAGE_SIZE, "%lx\n",
++	return scnprintf(page, PAGE_SIZE, "%lx\n",
+ 			uv_info.max_sec_stor_addr);
+ }
+ 
 -- 
 2.20.1
 
