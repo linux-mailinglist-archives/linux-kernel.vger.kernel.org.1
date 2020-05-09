@@ -2,115 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C4E51CC277
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 17:44:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04B811CC981
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 10:37:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727940AbgEIPnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 11:43:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726782AbgEIPnm (ORCPT
+        id S1729006AbgEJIhk convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 10 May 2020 04:37:40 -0400
+Received: from tarvos.retrosnub.co.uk ([93.93.130.7]:48340 "EHLO
+        tarvos.retrosnub.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726630AbgEJIhk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 11:43:42 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3FB3C061A0C
-        for <linux-kernel@vger.kernel.org>; Sat,  9 May 2020 08:43:40 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id c18so4298489ile.5
-        for <linux-kernel@vger.kernel.org>; Sat, 09 May 2020 08:43:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lEIOZtiJn4C44cp9H/kzfk5fMu6jd8Gvk2kf7XAUT3o=;
-        b=UGwdlqQA3m+b9Wg6a49Hwx3fQgTFQhq1p4ImuMAB3MkbEBgWLZCNgiIRyWo0tpu6b/
-         I58M7mVzZghIs2YX1R+4zzdlAbwX1PY+EgyhRod8ZGZ3WPjOIi2/4/z3wOeJX/Sknh2m
-         BNoLrk7wkAJSPf7V12qgSlPYMnhUPsKE8VaZRLUwcfe82imr57du6Bo5OrYtCvZ0/mij
-         tIdI29U2pXmU9YpO2syHa9NVu6Qoi0lBJ5x9kokdAm8A0RiZGt1mvkNsEdRTGNoOri2I
-         2GHJyN4e3utPl2fYrJz5KgkXXYUd959OZ6c1imW2tC4ko5cJ3+mFDlhQ6CpMOn/TYR0X
-         H0BA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lEIOZtiJn4C44cp9H/kzfk5fMu6jd8Gvk2kf7XAUT3o=;
-        b=MVEAyFyAwa8fQIMJdtguS6hYGyojJU4YGAm+S00xBFAfgREIJ+HX1oJ3WrIRjHgdBz
-         Dyy8Vqf1QnGvsgNG070zU8XXBOnV+gW/hROXC9UCZl/Ik2pddBKf4Erqo634CDubOtr3
-         FCG2fjzr+t0tuOhFz+edo5sTJfOgAa6ojq0Eu6E8AgZ+Vw7BNPsSQQzncRBY4z+bOsHI
-         HuTmIrvGtfGIFTY5D9TpL8Bpcr4x5PfFozC4rzZGcaSOvg4tDLbjieBaoX0pFma2lg9K
-         OZqd/qzcUBeQJ1Cv6HuOhl+CLrN/Wh3X22tQsXL/jIOClUQfUOAaHAYFA/458D7fTg2r
-         c+QA==
-X-Gm-Message-State: AGi0PuYiHLRTdVxRb0sOANJZKA0lamCZDNTaaXF4nz+JlUHx/xBq1Hxy
-        qXSfUpg2YOqi8RiH9JyqwtuPPQzMo3o8/FZ2Sw==
-X-Google-Smtp-Source: APiQypJOeOZEVWNePluYSilGtyJDJSN71OUtRPQkxSTG1FY8gDB/Q7oH+anSCMBIX0BhsMhliqxYV2twrYxAs9S+POg=
-X-Received: by 2002:a05:6e02:d0c:: with SMTP id g12mr7913391ilj.27.1589039019986;
- Sat, 09 May 2020 08:43:39 -0700 (PDT)
+        Sun, 10 May 2020 04:37:40 -0400
+X-Greylist: delayed 589 seconds by postgrey-1.27 at vger.kernel.org; Sun, 10 May 2020 04:37:38 EDT
+Received: from [192.168.0.10] (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        by tarvos.retrosnub.co.uk (Postfix; Retrosnub mail submission) with ESMTPSA id DD222C03DA;
+        Sun, 10 May 2020 09:27:47 +0100 (BST)
+Date:   Sat, 09 May 2020 16:44:04 +0100
+User-Agent: K-9 Mail for Android
+In-Reply-To: <61e9c83b910b3df44291a49b5587b772d4145036.camel@yadro.com>
+References: <20200507132600.8801-1-i.mikhaylov@yadro.com> <20200507132600.8801-2-i.mikhaylov@yadro.com> <20200508155050.0000008e@Huawei.com> <61e9c83b910b3df44291a49b5587b772d4145036.camel@yadro.com>
 MIME-Version: 1.0
-References: <20200508182835.228107-1-ndesaulniers@google.com>
- <20200508183230.229464-1-ndesaulniers@google.com> <CAHp75Vcsi9o2eUbyozhmPEz6Tfd_6ZFk2q-vcdrm9QxcVPQwMA@mail.gmail.com>
-In-Reply-To: <CAHp75Vcsi9o2eUbyozhmPEz6Tfd_6ZFk2q-vcdrm9QxcVPQwMA@mail.gmail.com>
-From:   Brian Gerst <brgerst@gmail.com>
-Date:   Sat, 9 May 2020 11:43:27 -0400
-Message-ID: <CAMzpN2j4PhMMxZ6SOGxV9SfdbEZyuTNM-qNSTCZ8dv+irzi+4A@mail.gmail.com>
-Subject: Re: [PATCH v5] x86: bitops: fix build regression
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        "kernelci . org bot" <bot@kernelci.org>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Ilie Halip <ilie.halip@gmail.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Marco Elver <elver@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Daniel Axtens <dja@axtens.net>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 8BIT
+Subject: Re: [PATCH v13 1/2] dt-bindings: proximity: provide vcnl3020 device tree binding document
+To:     Ivan Mikhaylov <i.mikhaylov@yadro.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+CC:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+From:   Jonathan Cameron <jic23@jic23.retrosnub.co.uk>
+Message-ID: <DC81C6F6-5510-4477-B9D2-29CB3DBCA9F3@jic23.retrosnub.co.uk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 9, 2020 at 8:20 AM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Fri, May 8, 2020 at 9:35 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
-> >
-> > This is easily reproducible via CC=clang+CONFIG_STAGING=y+CONFIG_VT6656=m.
-> >
-> > It turns out that if your config tickles __builtin_constant_p via
-> > differences in choices to inline or not, these statements produce
-> > invalid assembly:
-> >
-> > $ cat foo.c
-> > long a(long b, long c) {
-> >   asm("orb\t%1, %0" : "+q"(c): "r"(b));
-> >   return c;
-> > }
-> > $ gcc foo.c
-> > foo.c: Assembler messages:
-> > foo.c:2: Error: `%rax' not allowed with `orb'
-> >
-> > Use the `%b` "x86 Operand Modifier" to instead force register allocation
-> > to select a lower-8-bit GPR operand.
-> >
-> > The "q" constraint only has meaning on -m32 otherwise is treated as
-> > "r". Not all GPRs have low-8-bit aliases for -m32.
-> >
->
-> Looks very good!
-> One question though, does it work with minimum supported version of gcc?
 
-Yes.  The operand width modifiers have been around a long time but not
-well documented until more recently.
 
---
-Brian Gerst
+On 9 May 2020 11:38:46 BST, Ivan Mikhaylov <i.mikhaylov@yadro.com> wrote:
+>On Fri, 2020-05-08 at 15:51 +0100, Jonathan Cameron wrote:
+>> On Thu, 7 May 2020 16:25:59 +0300
+>> Ivan Mikhaylov <i.mikhaylov@yadro.com> wrote:
+>> 
+>> > Mostly standard i2c driver with some additional led-current option
+>> > for vcnl3020.
+>> > 
+>> > Signed-off-by: Ivan Mikhaylov <i.mikhaylov@yadro.com>
+>> > ---
+>> >  .../iio/proximity/vishay,vcnl3020.yaml        | 65
+>+++++++++++++++++++
+>> >  1 file changed, 65 insertions(+)
+>> >  create mode 100644
+>> >
+>Documentation/devicetree/bindings/iio/proximity/vishay,vcnl3020.yaml
+>> > 
+>> > diff --git
+>> >
+>a/Documentation/devicetree/bindings/iio/proximity/vishay,vcnl3020.yaml
+>> >
+>b/Documentation/devicetree/bindings/iio/proximity/vishay,vcnl3020.yaml
+>> > new file mode 100644
+>> > index 000000000000..408dee17cdf5
+>> > --- /dev/null
+>> > +++
+>b/Documentation/devicetree/bindings/iio/proximity/vishay,vcnl3020.yaml
+>> > @@ -0,0 +1,65 @@
+>> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+>> > +%YAML 1.2
+>> > +---
+>> > +$id:
+>http://devicetree.org/schemas/iio/proximity/vishay,vcnl3020.yaml#
+>> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> > +
+>> > +title: Integrated Proximity Sensor With Infrared Emitter
+>> > +
+>> > +maintainers:
+>> > +  - Ivan Mikhaylov <i.mikhaylov@yadro.com>
+>> > +
+>> > +description: |
+>> > +  The VCNL3020 is a fully integrated proximity sensor. Fully
+>integrated
+>> > means
+>> > +  that the infrared emitter is included in the package. It has
+>16-bit
+>> > +  resolution. It includes a signal processing IC and features
+>standard I2C
+>> > +  communication interface. It features an interrupt function.
+>> > +
+>> > +  Specifications about the devices can be found at:
+>> > +  https://www.vishay.com/docs/84150/vcnl3020.pdf
+>> > +
+>> > +properties:
+>> > +  compatible:
+>> > +    enum:
+>> > +      - vishay,vcnl3020
+>> > +
+>> > +  reg:
+>> > +    maxItems: 1
+>> > +
+>> > +  interrupts:
+>> > +    maxItems: 1
+>> > +
+>> > +  vdd-supply:
+>> > +    description: Regulator that provides power to the sensor
+>> > +
+>> > +  vddio-supply:
+>> > +    description: Regulator that provides power to the bus
+>> > +
+>> > +  vishay,led-current-microamp:
+>> > +    description:
+>> > +      IR LED current value with valid Range = 0 to 20d. e.g. 0 = 0
+>mA,
+>> > +      1 = 10 mA, 20 = 200 mA. LED Current is limited to 200 mA for
+>values
+>> > +      higher than decimal 20. The drive current for the LED used
+>in
+>> > proximity
+>> > +      sensing.
+>> 
+>> This text is really confusing. Just let the enum speak for itself and
+>leave
+>> text as
+>> something short like
+>> 
+>> "The driver current for the LED used in proximity sensing. "
+>> 
+>> Units and values are clear already.
+>> 
+>
+>Jonathan, just to double check, for preventing further problems with
+>misunderstanding, is that what you want?
+>
+>  vishay,led-current-microamp:
+>    description:
+>        The driver current for the LED used in proximity sensing.
+>
+>    enum: [0..200000] <- just for shortening
+>    default: 20000
+>
+>Thanks.
+
+Yes
+
+J
+
+-- 
+Sent from my Android device with K-9 Mail. Please excuse my brevity.
