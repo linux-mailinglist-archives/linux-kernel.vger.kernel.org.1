@@ -2,90 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B0241CBC4F
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 04:09:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 635921CBC57
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 04:11:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728546AbgEICJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 22:09:06 -0400
-Received: from mga07.intel.com ([134.134.136.100]:33908 "EHLO mga07.intel.com"
+        id S1728624AbgEICLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 22:11:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727828AbgEICJF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 22:09:05 -0400
-IronPort-SDR: NKl/ZAJt6k7ReUlFGvO0G1vNZgiYXSX6vVOlnEaVkLLKZyIQ5UDSy0xcRGN6LHO7ayaRIME+/f
- K55U0N2KfBOw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2020 19:09:04 -0700
-IronPort-SDR: vZwu+/4YRX+uiHbp3aN/4S1dVUxQozEGbco1o2G1Igj89F1KGrw0cQfKn6vGCXqa29I4AUra1i
- M8/fcm72cdYA==
-X-IronPort-AV: E=Sophos;i="5.73,369,1583222400"; 
-   d="scan'208";a="435987332"
-Received: from unknown (HELO [10.239.13.122]) ([10.239.13.122])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2020 19:09:02 -0700
-Subject: Re: [PATCH] KVM: x86: Restore update of required xstate size in
- guest's CPUID
-To:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200508233749.3417-1-sean.j.christopherson@intel.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-Message-ID: <dd7bfdb9-dcad-8a4b-29bb-c48d4c98b515@intel.com>
-Date:   Sat, 9 May 2020 10:09:00 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1728502AbgEICLB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 22:11:01 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 89597218AC;
+        Sat,  9 May 2020 02:11:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588990260;
+        bh=7WATmBkFHhqVG5vcqGbREpgQfsEQnlS8vAP20J17ipM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kjkKP+XSBvc3mr2oqj4XZUg2Yo9omuIKs/OVxXygH3nvEgoqKyPfRwqIBnq//m508
+         NCRQYSSX9FESN/myPWSeDf76ABB33Ms0P1mYgYpoqgwRvtLDn9rSbN2E8YJmolBRle
+         VqBFqU8WzeIid3weJEad+VOfErOOiqCcSxANGkHE=
+Date:   Fri, 8 May 2020 19:10:58 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Vincent Minet <v.minet@criteo.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH] umh: fix memory leak on execve failure
+Message-ID: <20200508191058.24158f7a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20200507221422.19338-1-v.minet@criteo.com>
+References: <20200507221422.19338-1-v.minet@criteo.com>
 MIME-Version: 1.0
-In-Reply-To: <20200508233749.3417-1-sean.j.christopherson@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/9/2020 7:37 AM, Sean Christopherson wrote:
-> Restore a guest CPUID update that was unintentional collateral damage
-> when the per-vCPU guest_xstate_size field was removed.
-
-It's really unintentional. None of us noticed it. :(
-
-It's good that you catch it!
-
-> Cc: Xiaoyao Li <xiaoyao.li@intel.com>
-> Fixes: d87277414b851 ("kvm: x86: Cleanup vcpu->arch.guest_xstate_size")
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> ---
+On Fri,  8 May 2020 00:14:22 +0200 Vincent Minet wrote:
+> If a UMH process created by fork_usermode_blob() fails to execute,
+> a pair of struct file allocated by umh_pipe_setup() will leak.
 > 
-> There's nothing more thrilling than watching bisect home in on your own
-> commits, only to land on someone else's on the very last step.
+> Under normal conditions, the caller (like bpfilter) needs to manage the
+> lifetime of the UMH and its two pipes. But when fork_usermode_blob()
+> fails, the caller doesn't really have a way to know what needs to be
+> done. It seems better to do the cleanup ourselves in this case.
 > 
->   arch/x86/kvm/cpuid.c | 6 ++++--
->   1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> index 35845704cf57a..cd708b0b460a0 100644
-> --- a/arch/x86/kvm/cpuid.c
-> +++ b/arch/x86/kvm/cpuid.c
-> @@ -84,11 +84,13 @@ int kvm_update_cpuid(struct kvm_vcpu *vcpu)
->   				   kvm_read_cr4_bits(vcpu, X86_CR4_PKE));
->   
->   	best = kvm_find_cpuid_entry(vcpu, 0xD, 0);
-> -	if (!best)
-> +	if (!best) {
->   		vcpu->arch.guest_supported_xcr0 = 0;
-> -	else
-> +	} else {
->   		vcpu->arch.guest_supported_xcr0 =
->   			(best->eax | ((u64)best->edx << 32)) & supported_xcr0;
-> +		best->ebx = xstate_required_size(vcpu->arch.xcr0, false);
-> +	}
->   
->   	best = kvm_find_cpuid_entry(vcpu, 0xD, 1);
->   	if (best && (cpuid_entry_has(best, X86_FEATURE_XSAVES) ||
-> 
+> Fixes: 449325b52b7a ("umh: introduce fork_usermode_blob() helper")
+> Signed-off-by: Vincent Minet <v.minet@criteo.com>
 
+Applied to net, thank you!
