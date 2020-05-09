@@ -2,130 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 084F71CBE17
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 08:37:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04EE91CBE1E
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 08:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728968AbgEIGhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 02:37:01 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:4368 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728821AbgEIGhA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 02:37:00 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 2CBD2EC15A0DB5255038;
-        Sat,  9 May 2020 14:36:58 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 9 May 2020 14:36:49 +0800
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [PATCH 3/3] kernel: kprobes: Convert to use DEFINE_SEQ_ATTRIBUTE macro
-Date:   Sat, 9 May 2020 14:40:31 +0800
-Message-ID: <20200509064031.181091-4-wangkefeng.wang@huawei.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200509064031.181091-1-wangkefeng.wang@huawei.com>
-References: <20200509064031.181091-1-wangkefeng.wang@huawei.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+        id S1728849AbgEIGlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 02:41:19 -0400
+Received: from mga12.intel.com ([192.55.52.136]:2357 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725940AbgEIGlT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 May 2020 02:41:19 -0400
+IronPort-SDR: drC1Oz23I3VZH7ne6h0fhKttGaZR8VhWCuVXCZsfjo2uCvUXFKAr3RP6TI/X1Jvt0+RFObMzFY
+ 8sXaLp445Q7w==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2020 23:41:19 -0700
+IronPort-SDR: v55QBOIkmvL1Db2Nho/wV13nBwQanrTrSTJ/OK3yJLMtkTmZdoPZVCFIi94RzuVPVjIGtWKBWC
+ rKYwZjCSEEUg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,370,1583222400"; 
+   d="scan'208";a="370722447"
+Received: from sgsxdev001.isng.intel.com (HELO localhost) ([10.226.88.11])
+  by fmsmga001.fm.intel.com with ESMTP; 08 May 2020 23:41:17 -0700
+From:   Rahul Tanwar <rahul.tanwar@linux.intel.com>
+To:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, andriy.shevchenko@intel.com,
+        Rahul Tanwar <rahul.tanwar@linux.intel.com>
+Subject: [PATCH v2 1/2] serial: lantiq: Make UART's use as console selectable
+Date:   Sat,  9 May 2020 14:41:14 +0800
+Message-Id: <35f2d002ba1cb26192fe4d9b8cdab275300705bc.1589006353.git.rahul.tanwar@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use DEFINE_SEQ_ATTRIBUTE macro to simplify the code.
+Lantiq UART driver can be used for system console. Add changes to
+make this driver's use as console selectable/configurable.
 
-Cc: Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+Signed-off-by: Rahul Tanwar <rahul.tanwar@linux.intel.com>
 ---
- kernel/kprobes.c | 33 ++++++---------------------------
- 1 file changed, 6 insertions(+), 27 deletions(-)
+ drivers/tty/serial/Kconfig  |  9 ++++++++-
+ drivers/tty/serial/lantiq.c | 11 ++++++++++-
+ 2 files changed, 18 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index ffbe03a45c16..f961f5b13f43 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -2398,24 +2398,14 @@ static int show_kprobe_addr(struct seq_file *pi, void *v)
- 	return 0;
- }
+diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
+index 4b0a7b98f8c7..bb4009a1135f 100644
+--- a/drivers/tty/serial/Kconfig
++++ b/drivers/tty/serial/Kconfig
+@@ -1037,10 +1037,17 @@ config SERIAL_LANTIQ
+ 	bool "Lantiq serial driver"
+ 	depends on (LANTIQ || X86) || COMPILE_TEST
+ 	select SERIAL_CORE
++	help
++	  Support for UART on Lantiq and Intel SoCs.
++
++config SERIAL_LANTIQ_CONSOLE
++	bool "Console on Lantiq UART"
++	depends on SERIAL_LANTIQ=y
+ 	select SERIAL_CORE_CONSOLE
+ 	select SERIAL_EARLYCON
+ 	help
+-	  Support for console and UART on Lantiq SoCs.
++	  Select this option if you would like to use a Lantiq UART as the
++	  system console.
  
--static const struct seq_operations kprobes_seq_ops = {
-+static const struct seq_operations kprobes_sops = {
- 	.start = kprobe_seq_start,
- 	.next  = kprobe_seq_next,
- 	.stop  = kprobe_seq_stop,
- 	.show  = show_kprobe_addr
+ config SERIAL_QE
+ 	tristate "Freescale QUICC Engine serial port support"
+diff --git a/drivers/tty/serial/lantiq.c b/drivers/tty/serial/lantiq.c
+index c5e46ff972e4..d3b62a1be6ad 100644
+--- a/drivers/tty/serial/lantiq.c
++++ b/drivers/tty/serial/lantiq.c
+@@ -597,6 +597,7 @@ static const struct uart_ops lqasc_pops = {
+ 	.verify_port =	lqasc_verify_port,
  };
  
--static int kprobes_open(struct inode *inode, struct file *filp)
--{
--	return seq_open(filp, &kprobes_seq_ops);
--}
--
--static const struct file_operations debugfs_kprobes_operations = {
--	.open           = kprobes_open,
--	.read           = seq_read,
--	.llseek         = seq_lseek,
--	.release        = seq_release,
--};
-+DEFINE_SEQ_ATTRIBUTE(kprobes);
- 
- /* kprobes/blacklist -- shows which functions can not be probed */
- static void *kprobe_blacklist_seq_start(struct seq_file *m, loff_t *pos)
-@@ -2446,24 +2436,14 @@ static int kprobe_blacklist_seq_show(struct seq_file *m, void *v)
- 	return 0;
- }
- 
--static const struct seq_operations kprobe_blacklist_seq_ops = {
-+static const struct seq_operations kprobe_blacklist_sops = {
- 	.start = kprobe_blacklist_seq_start,
- 	.next  = kprobe_blacklist_seq_next,
- 	.stop  = kprobe_seq_stop,	/* Reuse void function */
- 	.show  = kprobe_blacklist_seq_show,
- };
- 
--static int kprobe_blacklist_open(struct inode *inode, struct file *filp)
--{
--	return seq_open(filp, &kprobe_blacklist_seq_ops);
--}
--
--static const struct file_operations debugfs_kprobe_blacklist_ops = {
--	.open           = kprobe_blacklist_open,
--	.read           = seq_read,
--	.llseek         = seq_lseek,
--	.release        = seq_release,
--};
-+DEFINE_SEQ_ATTRIBUTE(kprobe_blacklist);
- 
- static int arm_all_kprobes(void)
++#ifdef CONFIG_SERIAL_LANTIQ_CONSOLE
+ static void
+ lqasc_console_putchar(struct uart_port *port, int ch)
  {
-@@ -2622,13 +2602,12 @@ static int __init debugfs_kprobe_init(void)
+@@ -705,6 +706,14 @@ lqasc_serial_early_console_setup(struct earlycon_device *device,
+ OF_EARLYCON_DECLARE(lantiq, "lantiq,asc", lqasc_serial_early_console_setup);
+ OF_EARLYCON_DECLARE(lantiq, "intel,lgm-asc", lqasc_serial_early_console_setup);
  
- 	dir = debugfs_create_dir("kprobes", NULL);
++#define LANTIQ_SERIAL_CONSOLE	(&lqasc_console)
++
++#else
++
++#define LANTIQ_SERIAL_CONSOLE	NULL
++
++#endif /* CONFIG_SERIAL_LANTIQ_CONSOLE */
++
+ static struct uart_driver lqasc_reg = {
+ 	.owner =	THIS_MODULE,
+ 	.driver_name =	DRVNAME,
+@@ -712,7 +721,7 @@ static struct uart_driver lqasc_reg = {
+ 	.major =	0,
+ 	.minor =	0,
+ 	.nr =		MAXPORTS,
+-	.cons =		&lqasc_console,
++	.cons =		LANTIQ_SERIAL_CONSOLE,
+ };
  
--	debugfs_create_file("list", 0400, dir, NULL,
--			    &debugfs_kprobes_operations);
-+	debugfs_create_file("list", 0400, dir, NULL, &kprobes_fops);
- 
- 	debugfs_create_file("enabled", 0600, dir, &value, &fops_kp);
- 
- 	debugfs_create_file("blacklist", 0400, dir, NULL,
--			    &debugfs_kprobe_blacklist_ops);
-+			    &kprobe_blacklist_fops);
- 
- 	return 0;
- }
+ static int fetch_irq_lantiq(struct device *dev, struct ltq_uart_port *ltq_port)
 -- 
-2.26.2
+2.11.0
 
