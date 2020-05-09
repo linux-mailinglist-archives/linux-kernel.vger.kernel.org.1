@@ -2,161 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 386571CC455
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 22:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A73D1CC470
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 22:12:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728611AbgEIUEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 16:04:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727938AbgEIUEX (ORCPT
+        id S1728672AbgEIUMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 16:12:18 -0400
+Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:58015 "EHLO
+        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728445AbgEIUMR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 16:04:23 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61B56C061A0C
-        for <linux-kernel@vger.kernel.org>; Sat,  9 May 2020 13:04:23 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id f18so5253065lja.13
-        for <linux-kernel@vger.kernel.org>; Sat, 09 May 2020 13:04:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wWejqRu9NOZoWVx2r5ZhYYkg3on/D2ic/z20ZX+wyUE=;
-        b=H93dwpRMxxEpejouhAhGa7npVZCP7wAT6FtICQgrremLWQQRtm5D50jO1ZcAf4w+V6
-         720SNM4lfLRzTqLb19Nngf3P1lsMgAq0CEBagaPG5WURf/G4uS7fW9uD79CV1SbBTZGB
-         aHbSY7BTO76NKGZ5X3tsRZYbXQ5w4H2rT+sFg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wWejqRu9NOZoWVx2r5ZhYYkg3on/D2ic/z20ZX+wyUE=;
-        b=tcKQPqFnGZ8ToaLW7zYjajKHJ7ea9Mu3m1KTr6qhAaxZ3uFFLY0SCc6WbEGDZ/t3ga
-         MdHIv2Rk9dTT5Us/VOG72BAt2jUMR+GzTrMXHSz/KAroPuJuRWoS3mohdEcqIMFr0HfK
-         A+c89cVJ6LkhTW3vRdZV8+HuPNtj8/IhAt8+f6p1G0aA6nY250OEPK8PZOFFKIvf/ReY
-         g4QxQB4LzYt1JnG1K/DvmCB8TyOYvc3hUnzZSryYSTnmEoN35AzJQMhkcOk91sAShiwO
-         Yi03BzKjBnHo/juxueG+kw/TyIrOZIwqzOGjWqoRa7iFoDRtwgWl+4V2wsGw0K8JdEeB
-         5rNA==
-X-Gm-Message-State: AOAM532GNE1XVB4ikqhkWh2eP+el7M9/ts1c9pUsJuy/S/LeKddmFap0
-        syIyal0CWAy1E4FhzEjRgKFu60X59go=
-X-Google-Smtp-Source: ABdhPJyuqTkJOl8STXwDsGLlOUbmoc+MS+Liq7DpMbPueTnvs4wDBnvk5u0/pEY4r2NOR0LaQPYBDg==
-X-Received: by 2002:a2e:9d87:: with SMTP id c7mr5633457ljj.181.1589054661794;
-        Sat, 09 May 2020 13:04:21 -0700 (PDT)
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com. [209.85.208.177])
-        by smtp.gmail.com with ESMTPSA id a25sm4852095lfb.87.2020.05.09.13.04.21
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 May 2020 13:04:21 -0700 (PDT)
-Received: by mail-lj1-f177.google.com with SMTP id o14so4209594ljp.4
-        for <linux-kernel@vger.kernel.org>; Sat, 09 May 2020 13:04:21 -0700 (PDT)
-X-Received: by 2002:a2e:814e:: with SMTP id t14mr5448255ljg.204.1589054661055;
- Sat, 09 May 2020 13:04:21 -0700 (PDT)
+        Sat, 9 May 2020 16:12:17 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.west.internal (Postfix) with ESMTP id 687935A2;
+        Sat,  9 May 2020 16:05:46 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Sat, 09 May 2020 16:05:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm2; bh=Ew42L4+sGtXg1rthBvoivnjXlL
+        0sKSK0vrB5L8HvPIw=; b=irwi4PiEEnm3yS5ojpXizK80wCkAe9CqI4cpobElyE
+        TMstGge/F2IG24p9/WnXexsl1FXvy9Xeyuq2JWClBtd9e36yR8NQGuX8Z1cNKamf
+        ks3++I88EDJyOqSof+lojfivo7aqbBNuq4NwZJhERmCD6HOEi/Tpq3oC+ain7J1B
+        Ut1iSkoT7TdY/9teezX6f/OAEg9UX00RHIQO4TQ3aXU6Rmqml/3xWCW3IsCyU2tV
+        Ln1h/f4YPBX5hN4yGy+PIe07oFUVIt7SX37xM1ZgXTPUsBf7XqlxytSKqciVuvoK
+        T1qoLIPjs+sjpg5wnrDAA6Tjos6mTaXIoTm+VhUfFJoA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=Ew42L4+sGtXg1rthB
+        voivnjXlL0sKSK0vrB5L8HvPIw=; b=wWniHsJMia5XslNF4Fk+sJqHm5PB/aMPb
+        gfg9SpVgMf9ZcKRUxNXuf5AUfC9BrRlLMbg7rl+ZdFoQRNLDZIDxuDlC+jrQFEAg
+        FDBveEJCxarX0xxF/FJbFH//UOj14cAi08YrtwaJtbXP5XfRjhzV+zq6ZV1Knc8k
+        IKi2YWtZgxB2MJzHReUW9DzZVAT90glgc+6kWz2ocza6w++le3p7pgagXGbOXloH
+        cN10WK51o3S9S7xUTFg2vemlP/YNYLE/JfPBpMuVYyoigoWSERnyrsuYRCpP8+uZ
+        35+KIGKEGZaQYRhyNNmlf7DHF/QraaM+Sxh0nkGJfxmtGEIuEu0pQ==
+X-ME-Sender: <xms:Fw23XmtOCK3AFqkx9u8SK_NmO06cgXyWfJY3QwX0nGq5LZuuP81S1Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrkeehgddugeegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgvlhcu
+    jfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtffrrg
+    htthgvrhhnpeeiteekhfehuddugfeltddufeejjeefgeevheekueffhffhjeekheeiffdt
+    vedtveenucfkphepjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghnugdr
+    ohhrgh
+X-ME-Proxy: <xmx:Fw23Xp9wBgF6l1tux0T5LNtaq17_ACd09z7ePsLbCRceQqfTrFgBug>
+    <xmx:Fw23XoFS9-EkLd1c1PhvNt-NDga-LRqTdc1dsm4Wz1E0Z-YxV2oUbw>
+    <xmx:Fw23XnxC25xuzT2AWRDxXxE4MVhUl72sb7HcK6BJnF6V3vugeEjNRw>
+    <xmx:Gg23Xu1pwmeq2-Kij57xRjyI5jCSc_krsWXtEQkQMlErMMkxxhh4qjfHdh0>
+Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 21E8D3066240;
+        Sat,  9 May 2020 16:05:43 -0400 (EDT)
+From:   Samuel Holland <samuel@sholland.org>
+To:     Maxime Ripard <mripard@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-sunxi@googlegroups.com,
+        Samuel Holland <samuel@sholland.org>, stable@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Ezequiel Garcia <ezequiel@collabora.com>
+Subject: [PATCH v3 1/2] media: cedrus: Program output format during each run
+Date:   Sat,  9 May 2020 15:06:42 -0500
+Message-Id: <20200509200643.30597-1-samuel@sholland.org>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <87h7wujhmz.fsf@x220.int.ebiederm.org> <87sgga6ze4.fsf@x220.int.ebiederm.org>
- <87v9l4zyla.fsf_-_@x220.int.ebiederm.org> <87pnbczyka.fsf_-_@x220.int.ebiederm.org>
-In-Reply-To: <87pnbczyka.fsf_-_@x220.int.ebiederm.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 9 May 2020 13:04:05 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjfesjgqNmWY5zNxaADcQ04ZNfBq7KMkx20Xq-sDB5A7A@mail.gmail.com>
-Message-ID: <CAHk-=wjfesjgqNmWY5zNxaADcQ04ZNfBq7KMkx20Xq-sDB5A7A@mail.gmail.com>
-Subject: Re: [PATCH 1/5] exec: Call cap_bprm_set_creds directly from prepare_binprm
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Rob Landley <rob@landley.net>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Andy Lutomirski <luto@amacapital.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 9, 2020 at 12:44 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
->
-> The function cap_bprm_set_creds is the only instance of
-> security_bprm_set_creds that does something for the primary executable
-> file and for every interpreter the rest of the implementations of
-> security_bprm_set_creds do something only for the primary executable
-> file even if that file is a shell script.
+Previously, the output format was programmed as part of the ioctl()
+handler. However, this has two problems:
 
-Eric, can you please re-write that sentence as something that can be
-parsed and understood?
+  1) If there are multiple active streams with different output
+     formats, the hardware will use whichever format was set last
+     for both streams. Similarly, an ioctl() done in an inactive
+     context will wrongly affect other active contexts.
+  2) The registers are written while the device is not actively
+     streaming. To enable runtime PM tied to the streaming state,
+     all hardware access needs to be moved inside cedrus_device_run().
 
-I'm pretty sure that what you are talking about is the whole
-"called_set_creds" flag logic, where the logic is that some security
-layers only react to the first one, while the capability checks are
-done for every one.
+The call to cedrus_dst_format_set() is now placed just before the
+codec-specific callback that programs the hardware.
 
-But there is no way to realize that from your description above. In
-fact, the description above is actively incorrect and misleading,
-since you say that "cap_bprm_set_creds is the only instance [..] that
-does something for the primary executable"
+Cc: <stable@vger.kernel.org>
+Fixes: 50e761516f2b ("media: platform: Add Cedrus VPU decoder driver")
+Suggested-by: Jernej Skrabec <jernej.skrabec@siol.net>
+Suggested-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Signed-off-by: Samuel Holland <samuel@sholland.org>
+Tested-by: Jernej Skrabec <jernej.skrabec@siol.net>
+Reviewed-by: Jernej Skrabec <jernej.skrabec@siol.net>
+Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
+---
 
-I think that you mean to say that it does something for *every*
-instance of the executable, not just the primary one.
+v2: added patch
+v3: collected tags
 
-> The function cap_bprm_set_creds is also special in that it is called
-> even when CONFIG_SECURITY is unset.
->
-> So calling cap_bprm_set_creds separately to make these two cases explicit,
-> and allow future changes to take advantages of these differences
-> to simplify the code.
+---
+ drivers/staging/media/sunxi/cedrus/cedrus_dec.c   | 2 ++
+ drivers/staging/media/sunxi/cedrus/cedrus_video.c | 3 ---
+ 2 files changed, 2 insertions(+), 3 deletions(-)
 
-I think you need to rename "security_bprm_set_creds()" too, to show
-what it does. Since it clearly no longer does that "bprm_set_creds()"
-from the common capabilities.
+diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_dec.c b/drivers/staging/media/sunxi/cedrus/cedrus_dec.c
+index 4a2fc33a1d79..58c48e4fdfe9 100644
+--- a/drivers/staging/media/sunxi/cedrus/cedrus_dec.c
++++ b/drivers/staging/media/sunxi/cedrus/cedrus_dec.c
+@@ -74,6 +74,8 @@ void cedrus_device_run(void *priv)
+ 
+ 	v4l2_m2m_buf_copy_metadata(run.src, run.dst, true);
+ 
++	cedrus_dst_format_set(dev, &ctx->dst_fmt);
++
+ 	dev->dec_ops[ctx->current_codec]->setup(ctx, &run);
+ 
+ 	/* Complete request(s) controls if needed. */
+diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_video.c b/drivers/staging/media/sunxi/cedrus/cedrus_video.c
+index 15cf1f10221b..ed3f511f066f 100644
+--- a/drivers/staging/media/sunxi/cedrus/cedrus_video.c
++++ b/drivers/staging/media/sunxi/cedrus/cedrus_video.c
+@@ -273,7 +273,6 @@ static int cedrus_s_fmt_vid_cap(struct file *file, void *priv,
+ 				struct v4l2_format *f)
+ {
+ 	struct cedrus_ctx *ctx = cedrus_file2ctx(file);
+-	struct cedrus_dev *dev = ctx->dev;
+ 	struct vb2_queue *vq;
+ 	int ret;
+ 
+@@ -287,8 +286,6 @@ static int cedrus_s_fmt_vid_cap(struct file *file, void *priv,
+ 
+ 	ctx->dst_fmt = f->fmt.pix;
+ 
+-	cedrus_dst_format_set(dev, &ctx->dst_fmt);
+-
+ 	return 0;
+ }
+ 
+-- 
+2.24.1
 
-In fact, I think it would probably be good to change the patch too, so
-that it is actually understandable what the heck the logic is.
-
-Instead of
-
-        retval = security_bprm_set_creds(bprm);
-        if (retval)
-                return retval;
-        bprm->called_set_creds = 1;
-        retval = cap_bprm_set_creds(bprm);
-        if (retval)
-                return retval;
-
-which makes no sense at all when you read it, do this:
-
-        /* Every instance of the executable gets called for capabilities */
-        retval = cap_bprm_set_creds(bprm);
-        if (retval)
-                return retval;
-
-        /* Other security layers only want the primary executable */
-        if (!bprm->called_set_creds) {
-                retval = security_primary_bprm_set_creds(bprm);
-                if (retval)
-                         return retval;
-                bprm->called_set_creds = 1;
-        }
-
-which now actually describes what is going on.
-
-Then remove the 'called_set_creds' logic from the security layers, and
-rename those 'xyz_bprm_set_creds()' to be
-'xyz_primary_bprm_set_creds()'.
-
-After that, and with a proper commit message that actually explains
-this _properly_, this looks like a cleanup.
-
-Because right now that patch description makes zero sense at all, and
-the patch itself results in this insane situation where
-"security_bprm_set_creds()" expressly doesn't call the basic
-"cap_bprm_set_creds()" at all, which just makes things very very
-confusing and the naming actively misleading.
-
-               Linus
