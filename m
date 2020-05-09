@@ -2,60 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BED491CC3BD
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 20:48:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ED041CC3C2
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 20:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728238AbgEISsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 14:48:51 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:36435 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728162AbgEISsv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 14:48:51 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 49KGSG1DQfz9v0bb;
-        Sat,  9 May 2020 20:48:46 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id PslmPuTS_Qi2; Sat,  9 May 2020 20:48:45 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 49KGSF5mGvz9v0bX;
-        Sat,  9 May 2020 20:48:45 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3B4E88B775;
-        Sat,  9 May 2020 20:48:48 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id vZm-xPGAfqgM; Sat,  9 May 2020 20:48:48 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 06C8C8B75F;
-        Sat,  9 May 2020 20:48:46 +0200 (CEST)
-Subject: Re: [PATCH v8 8/8] powerpc/vdso: Provide __kernel_clock_gettime64()
- on vdso32
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Nathan Lynch <nathanl@linux.ibm.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-References: <cover.1588079622.git.christophe.leroy@c-s.fr>
- <e78344d3fcc1d33bfb1782e430b7f0529f6c612f.1588079622.git.christophe.leroy@c-s.fr>
- <CAK8P3a2aXJRWjxWO8oMRX2AJkfeVeeoYbOPbpd9-UTgjqM4B7g@mail.gmail.com>
- <d3f303f1-8b2c-0c54-5380-0b9a370a4eb3@csgroup.eu>
-Message-ID: <35e09925-b475-237c-57f2-3f10cf5ad9b2@csgroup.eu>
-Date:   Sat, 9 May 2020 20:48:42 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1728371AbgEISu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 14:50:29 -0400
+Received: from sonic309-25.consmr.mail.ir2.yahoo.com ([77.238.179.83]:37171
+        "EHLO sonic309-25.consmr.mail.ir2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728005AbgEISu2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 May 2020 14:50:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1589050226; bh=q1Er/SdqxATomBDx27mJAnsQxxrJWpCL+Y8MaW3053A=; h=Date:From:Reply-To:Subject:References:From:Subject; b=KYrB3iuud7SRX9nsj+vszLgDEE9AmJyQ/AouucQHZZZFr4HYF3g1q2Ug6F0owmJ+uNUyx8E0sWUgULYi7zyJtQ07W3MQqJMzC/4i0FjFEQ9YJlTXvVqQcA8WFC3mem1CcuClNE2+Ip/LvH7htQbGYWEtEi+4tJ2Vg/eV+UT1ucwuOfD9x1g73c1miFJx11/uC7CCTz8pgwlkbIh+ZNL1k7ZBTo9FXoC2RsZl+fLs8R3Ls34WlSnN8OTfKb5zOn+yQFhUoMmIhYmuBdLf4bEJ+pDEqeXoViN4ng3Ly4abb/oNJmukRmvar1avoBU54Mxj+FMu8YXo1Z53HaZwsXQTdQ==
+X-YMail-OSG: oKo66FwVM1m.GxpzYW3llSaXdWlLuDiciI2AcfUOU0fGX0o2GMotIrabhmxT2tB
+ XwXmEbX3J8WGgdLpb5JQKVG8i_gFj19Hqoq.P5GmgVndPpVogU_A2zNn2YtgytYWyyrzrysB22b2
+ 9rmctuIg4E06dXyrMm.Dbur5Mh7vaqTkqHlC51Zmo5ja_xFyUdNQtdrr50WMxLDS2iRDRH3QoEwm
+ 379I1gpE1_ln81YqMW3YTkB1.T5qEK0WpUkGiK.cZaQgJVaghf6o1v2cELEI_SIBcfuviOXmt_tj
+ fUfYEHZbzbzvzg_G0p.CmvVBZOfS0mRRqDvjKq_J42_Zn7B.VMcxV7O46IW_Shkyo.U0JORu3GyF
+ kIBBjERFsN5NEBIug.IHLdmvwV8qrgwe61xHQRlSY69lf5vmVGedJ8mBh5IXXDE0MyrScoBy4dlw
+ RVd0g2W7Vq2j6vrfi1pt2DEfZH2j7rgHgJl9DNUor.fOEifslfQRKHotPR1NGXW8qd7fIDrwP28c
+ pgWz0imyH4eirKLXgU.36Elk6cQYGN8LmNMuATK1UDTLFayOHqOFQdOK7Z.s9JyRwGN_dfxszmzY
+ P6pmspX_f.YF1IBBHj0bpEjzocpFIzER0I6sVLyCg5AfT.BlZxJMlQUYg50c14jg5KwkUIU2or3Q
+ jH22QZSja0pXLzvu6XdiCW_3ir0Kedto3b6IgdXEH7PHfmnwcdI6AZc6lwnc.1kN9uXnPduBEunK
+ uGT.Nc5DaqO2ng_Uejx4wtgF60OjwxJPLaWHuRlemEVyMuQMCK7.sYmXD7MgIxeK1BdL_gIt2wtS
+ Gu1Y19eTD3.MxPE5pXzps_Rn6sH5YesooauDHB4hN.eJGPWf0DiG04JdSb2fCiWYkBydg7IqFL22
+ 7FfgRt2u7_DZqzMmRTLHFNoL8tej.4qanJvkeJb4cJxvS84AqawOuM5BoipGsyZ9xcc1qxAKZLPK
+ PosFkLj7LDHBBcF_4.0WrEynMv4hPzNBRZ2CLoLAqG.AxxRstycmdkxZoeA2ZQS9Y2_uZzSXstY1
+ J1Y5JB9GGNz4UQvDf5.TJXCY5uFjoKYFlmZji9_1xVGA2t02Y_owyaoJNiuehICtIUtazZ7REjhB
+ wGQjKTAF8NcvGfEUV69LBbJwtLfLTDU9aUUYKOgEDh9JsxhIo6ogDJ_mNVHNxByXJZhTBFkw_wHj
+ Goped0V_PfQBWzZVEHXGgOjWTmEmD3QjZuL2MZToDgd17z0xRHUaej9Mb9tT0sx7BgiBI32SrznC
+ gtWWdhhZlyvoTQG2UCicGS2E1v1YjXmjVNqfbBSv97W6mCugw.YuLHPXQ0hLnR6oVbOi6SjWO
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic309.consmr.mail.ir2.yahoo.com with HTTP; Sat, 9 May 2020 18:50:26 +0000
+Date:   Sat, 9 May 2020 18:50:21 +0000 (UTC)
+From:   "Mrs. Mina A. Brunel" <mrsminaabrunelm@gmail.com>
+Reply-To: mrs.minaabrunel2021@aol.com
+Message-ID: <1477954482.1290917.1589050221564@mail.yahoo.com>
+Subject: My Dear in the lord
 MIME-Version: 1.0
-In-Reply-To: <d3f303f1-8b2c-0c54-5380-0b9a370a4eb3@csgroup.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <1477954482.1290917.1589050221564.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.15902 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:76.0) Gecko/20100101 Firefox/76.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -63,108 +50,47 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-Le 09/05/2020 à 17:54, Christophe Leroy a écrit :
-> 
-> 
-> Le 28/04/2020 à 18:05, Arnd Bergmann a écrit :
->> On Tue, Apr 28, 2020 at 3:16 PM Christophe Leroy
->> <christophe.leroy@c-s.fr> wrote:
->>>
->>> Provides __kernel_clock_gettime64() on vdso32. This is the
->>> 64 bits version of __kernel_clock_gettime() which is
->>> y2038 compliant.
->>>
->>> Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
->>
->> Looks good to me
->>
->> Reviewed-by: Arnd Bergmann <arnd@arndb.de>
->>
->> There was a bug on ARM for the corresponding function, so far it is 
->> unclear
->> if this was a problem related to particular hardware, the 32-bit 
->> kernel code,
->> or the common implementation of clock_gettime64 in the vdso library,
->> see https://github.com/richfelker/musl-cross-make/issues/96
->>
->> Just to be sure that powerpc is not affected by the same issue, can you
->> confirm that repeatedly calling clock_gettime64 on powerpc32, alternating
->> between vdso and syscall, results in monotically increasing times?
->>
-> 
-> I think that's one of the things vdsotest checks, so yes that's ok I think.
-> 
+My Dear in the lord
 
-Here is the full result with vdsotest:
 
-gettimeofday: syscall: 3715 nsec/call
-gettimeofday:    libc: 794 nsec/call
-gettimeofday:    vdso: 947 nsec/call
-getcpu: syscall: 1614 nsec/call
-getcpu:    libc: 484 nsec/call
-getcpu:    vdso: 184 nsec/call
-clock-gettime64-realtime-coarse: syscall: 3152 nsec/call
-clock-gettime64-realtime-coarse:    libc: not tested
-clock-gettime64-realtime-coarse:    vdso: 653 nsec/call
-clock-getres-realtime-coarse: syscall: 2963 nsec/call
-clock-getres-realtime-coarse:    libc: 745 nsec/call
-clock-getres-realtime-coarse:    vdso: 553 nsec/call
-clock-gettime-realtime-coarse: syscall: 5120 nsec/call
-clock-gettime-realtime-coarse:    libc: 731 nsec/call
-clock-gettime-realtime-coarse:    vdso: 577 nsec/call
-clock-gettime64-realtime: syscall: 3719 nsec/call
-clock-gettime64-realtime:    libc: not tested
-clock-gettime64-realtime:    vdso: 976 nsec/call
-clock-getres-realtime: syscall: 2496 nsec/call
-clock-getres-realtime:    libc: 745 nsec/call
-clock-getres-realtime:    vdso: 546 nsec/call
-clock-gettime-realtime: syscall: 4800 nsec/call
-clock-gettime-realtime:    libc: 1080 nsec/call
-clock-gettime-realtime:    vdso: 1798 nsec/call
-clock-gettime64-boottime: syscall: 4132 nsec/call
-clock-gettime64-boottime:    libc: not tested
-clock-gettime64-boottime:    vdso: 975 nsec/call
-clock-getres-boottime: syscall: 2497 nsec/call
-clock-getres-boottime:    libc: 730 nsec/call
-clock-getres-boottime:    vdso: 546 nsec/call
-clock-gettime-boottime: syscall: 3728 nsec/call
-clock-gettime-boottime:    libc: 1079 nsec/call
-clock-gettime-boottime:    vdso: 941 nsec/call
-clock-gettime64-tai: syscall: 4148 nsec/call
-clock-gettime64-tai:    libc: not tested
-clock-gettime64-tai:    vdso: 955 nsec/call
-clock-getres-tai: syscall: 2494 nsec/call
-clock-getres-tai:    libc: 730 nsec/call
-clock-getres-tai:    vdso: 545 nsec/call
-clock-gettime-tai: syscall: 3729 nsec/call
-clock-gettime-tai:    libc: 1079 nsec/call
-clock-gettime-tai:    vdso: 927 nsec/call
-clock-gettime64-monotonic-raw: syscall: 3677 nsec/call
-clock-gettime64-monotonic-raw:    libc: not tested
-clock-gettime64-monotonic-raw:    vdso: 1032 nsec/call
-clock-getres-monotonic-raw: syscall: 2494 nsec/call
-clock-getres-monotonic-raw:    libc: 745 nsec/call
-clock-getres-monotonic-raw:    vdso: 545 nsec/call
-clock-gettime-monotonic-raw: syscall: 3276 nsec/call
-clock-gettime-monotonic-raw:    libc: 1140 nsec/call
-clock-gettime-monotonic-raw:    vdso: 1002 nsec/call
-clock-gettime64-monotonic-coarse: syscall: 4099 nsec/call
-clock-gettime64-monotonic-coarse:    libc: not tested
-clock-gettime64-monotonic-coarse:    vdso: 653 nsec/call
-clock-getres-monotonic-coarse: syscall: 2962 nsec/call
-clock-getres-monotonic-coarse:    libc: 745 nsec/call
-clock-getres-monotonic-coarse:    vdso: 545 nsec/call
-clock-gettime-monotonic-coarse: syscall: 4297 nsec/call
-clock-gettime-monotonic-coarse:    libc: 730 nsec/call
-clock-gettime-monotonic-coarse:    vdso: 592 nsec/call
-clock-gettime64-monotonic: syscall: 3863 nsec/call
-clock-gettime64-monotonic:    libc: not tested
-clock-gettime64-monotonic:    vdso: 975 nsec/call
-clock-getres-monotonic: syscall: 2494 nsec/call
-clock-getres-monotonic:    libc: 745 nsec/call
-clock-getres-monotonic:    vdso: 545 nsec/call
-clock-gettime-monotonic: syscall: 3465 nsec/call
-clock-gettime-monotonic:    libc: 1079 nsec/call
-clock-gettime-monotonic:    vdso: 927 nsec/call
+My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
+na Faso, I am married to Mr. Brunel Patrice, a politician who owns a small =
+gold company in Burkina Faso; He died of Leprosy and Radesyge, in the year =
+February 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Mi=
+llion Euro) Eight million, Five hundred thousand Euros in a bank in Rome th=
+e capital city of Italy in Southern Europe. The money was from the sale of =
+his company and death benefits payment and entitlements of my deceased husb=
+and by his company.
 
-Christophe
+I am sending you this message with heavy tears in my eyes and great sorrow =
+in my heart, and also praying that it will reach you in good health because=
+ I am not in good health, I sleep every night without knowing if I may be a=
+live to see the next day. I am suffering from long time cancer and presentl=
+y I am partially suffering from Leprosy, which has become difficult for me =
+to move around. I was married to my late husband for more than 6 years with=
+out having a child and my doctor confided that I have less chance to live, =
+having to know when the cup of death will come, I decided to contact you to=
+ claim the fund since I don't have any relation I grew up from an orphanage=
+ home.
+
+I have decided to donate this money for the support of helping Motherless b=
+abies/Less privileged/Widows and churches also to build the house of God be=
+cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
+cided to donate from what I have inherited from my late husband to you for =
+the good work of Almighty God; I will be going in for an operation surgery =
+soon.
+
+Now I want you to stand as my next of kin to claim the funds for charity pu=
+rposes. Because of this money remains unclaimed after my death, the bank ex=
+ecutives or the government will take the money as unclaimed fund and maybe =
+use it for selfishness and worthless ventures, I need a very honest person =
+who can claim this money and use it for Charity works, for orphanages, wido=
+ws and also build schools and churches for less privilege that will be name=
+d after my late husband and my name.
+
+I need your urgent answer to know if you will be able to execute this proje=
+ct, and I will give you more information on how the fund will be transferre=
+d to your bank account or online banking.
+
+Thanks
+Mrs. Mina A. Brunel
