@@ -2,177 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E69661CC008
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 11:43:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A68E01CC034
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 12:08:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728143AbgEIJn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 05:43:26 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:60593 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726885AbgEIJn0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 05:43:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589017404;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=l8D8Ae345rAYDqawjkcSExOxW2YprJe5XqaST1kNQ6s=;
-        b=blAbgB6LYoumV5wXSHp6j+mMGsHOFMYCLHYR1SKUb0oVrpjtb3sjxnjSeHwM20DBLlt4ru
-        GfZMUNq4rcMXLfqyBy9FZAJ5i5q+QjmwHGnK2UE0UwnxVuxCOQUySVpB8hosvaOD2SkTdJ
-        rPtg5XirLtJXwZOTt3ku0hE2HuS03ro=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-386-rAyD8qh5NLyXbbJ-2MeO7Q-1; Sat, 09 May 2020 05:43:22 -0400
-X-MC-Unique: rAyD8qh5NLyXbbJ-2MeO7Q-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3763C107ACCA;
-        Sat,  9 May 2020 09:43:20 +0000 (UTC)
-Received: from T590 (ovpn-12-90.pek2.redhat.com [10.72.12.90])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 15F1D5D9CD;
-        Sat,  9 May 2020 09:43:10 +0000 (UTC)
-Date:   Sat, 9 May 2020 17:43:06 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Baolin Wang <baolin.wang7@gmail.com>
-Cc:     Sagi Grimberg <sagi@grimberg.me>,
-        Christoph Hellwig <hch@infradead.org>, axboe@kernel.dk,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Paolo Valente <paolo.valente@linaro.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v2 1/7] block: Extand commit_rqs() to do batch
- processing
-Message-ID: <20200509094306.GA1414369@T590>
-References: <cover.1587888520.git.baolin.wang7@gmail.com>
- <c8bd9e5ba815a3f1bc9dac0a4bc2fbadadbc0a43.1587888520.git.baolin.wang7@gmail.com>
- <20200427154645.GA1201@infradead.org>
- <e4d47000-f89c-a135-ae58-011f0e9cc39e@grimberg.me>
- <20200508214639.GA1389136@T590>
- <fe6bd8b9-6ed9-b225-f80c-314746133722@grimberg.me>
- <20200508232222.GA1391368@T590>
- <CADBw62ooysT7TJ5CjpPBC6zs7pvpUQysg8QqP9oW5jN7BSYS7g@mail.gmail.com>
+        id S1727918AbgEIKIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 06:08:39 -0400
+Received: from foss.arm.com ([217.140.110.172]:58258 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726017AbgEIKIj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 May 2020 06:08:39 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5C5C41FB;
+        Sat,  9 May 2020 03:08:38 -0700 (PDT)
+Received: from gaia (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 85CAD3F71F;
+        Sat,  9 May 2020 03:08:37 -0700 (PDT)
+Date:   Sat, 9 May 2020 10:44:56 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Qian Cai <cai@lca.pw>
+Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: Re: Kmemleak infrastructure improvement for task_struct leaks and
+ call_rcu()
+Message-ID: <20200509094455.GA4351@gaia>
+References: <20200507171607.GD3180@gaia>
+ <40B2408F-05DD-4A82-BF97-372EA09FA873@lca.pw>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CADBw62ooysT7TJ5CjpPBC6zs7pvpUQysg8QqP9oW5jN7BSYS7g@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <40B2408F-05DD-4A82-BF97-372EA09FA873@lca.pw>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 09, 2020 at 04:57:48PM +0800, Baolin Wang wrote:
-> On Sat, May 9, 2020 at 7:22 AM Ming Lei <ming.lei@redhat.com> wrote:
-> >
-> > Hi Sagi,
-> >
-> > On Fri, May 08, 2020 at 03:19:45PM -0700, Sagi Grimberg wrote:
-> > > Hey Ming,
-> > >
-> > > > > Would it make sense to elevate this flag to a request_queue flag
-> > > > > (QUEUE_FLAG_ALWAYS_COMMIT)?
-> > > >
-> > > > request queue flag usually is writable, however this case just needs
-> > > > one read-only flag, so I think it may be better to make it as
-> > > > tagset/hctx flag.
-> > >
-> > > I actually intended it to be writable.
-> > >
-> > > > > I'm thinking of a possibility that an I/O scheduler may be used
-> > > > > to activate this functionality rather than having the driver set
-> > > > > it necessarily...
-> > > >
-> > > > Could you explain a bit why I/O scheduler should activate this
-> > > > functionality?
-> > >
-> > > Sure, I've recently seen some academic work showing the benefits
-> > > of batching in tcp/ip based block drivers. The problem with the
-> > > approaches taken is that I/O scheduling is exercised deep down in the
-> > > driver, which is not the direction I'd like to go if we are want
-> > > to adopt some of the batching concepts.
-> > >
-> > > I spent some (limited) time thinking about this, and it seems to
-> > > me that there is an opportunity to implement this as a dedicated
-> > > I/O scheduler, and tie it to driver specific LLD stack optimizations
-> > > (net-stack for example) relying on the commit_rq/bd->last hints.
-> > >
-> > > When scanning the scheduler code, I noticed exactly the phenomenon that
-> > > this patchset is attempting to solve and Christoph referred me to it.
-> > > Now I'm thinking if we can extend this batching optimization for both
-> > > use-cases.
-> >
-> > Got it, thanks for the sharing.
-> >
-> > >
-> > > > batching submission may be good for some drivers, and currently
-> > > > we only do it in limited way. One reason is that there is extra
-> > > > cost for full batching submission, such as this patch requires
-> > > > one extra .commit_rqs() for each dispatch, and lock is often needed
-> > > > in this callback.
-> > >
-> > > That is not necessarily the case at all.
-> >
-> > So far, all in-tree .commit_rqs() implementation requires lock.
-> >
-> > >
-> > > > IMO it can be a win for some slow driver or device, but may cause
-> > > > a little performance drop for fast driver/device especially in workload
-> > > > of not-batching submission.
-> > >
-> > > You're mostly correct. This is exactly why an I/O scheduler may be
-> > > applicable here IMO. Mostly because I/O schedulers tend to optimize for
-> > > something specific and always present tradeoffs. Users need to
-> > > understand what they are optimizing for.
-> > >
-> > > Hence I'd say this functionality can definitely be available to an I/O
-> > > scheduler should one exist.
-> > >
-> >
-> > I guess it is just that there can be multiple requests available from
-> > scheduler queue. Actually it can be so for other non-nvme drivers in
-> > case of none, such as SCSI.
-> >
-> > Another way is to use one per-task list(such as plug list) to hold the
-> > requests for dispatch, then every drivers may see real .last flag, so they
-> > may get chance for optimizing batch queuing. I will think about the
-> > idea further and see if it is really doable.
+On Thu, May 07, 2020 at 01:29:04PM -0400, Qian Cai wrote:
+> On May 7, 2020, at 1:16 PM, Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > I don't mind adding additional tracking info if it helps with debugging.
+> > But if it's for improving false positives, I'd prefer to look deeper
+> > into figure out why the pointer reference graph tracking failed.
 > 
-> How about my RFC v1 patch set[1], which allows dispatching more than
-> one request from the scheduler to support batch requests?
-> 
-> [1]
-> https://lore.kernel.org/patchwork/patch/1210034/
-> https://lore.kernel.org/patchwork/patch/1210035/
+> No, the task struct leaks are real leaks. It is just painful to figure
+> out the missing or misplaced put_task_struct() from the kmemleak
+> reports at the moment.
 
-Basically, my idea is to dequeue request one by one, and for each
-dequeued request:
+We could log the callers to get_task_struct() and put_task_struct(),
+something like __builtin_return_address(0) (how does this work if the
+function is inlined?). If it's not the full backtrace, it shouldn't slow
+down kmemleak considerably. I don't think it's worth logging only the
+first/last calls to get/put. You'd hope that put is called in reverse
+order to get.
 
-- we try to get a budget and driver tag, if both succeed, add the
-request to one per-task list which can be stored in stack variable,
-then continue to dequeue more request
+I think it may be better if this is added as a new allocation pointed to
+from kmemleak_object rather than increasing this structure since it will
+be added on a case by case basis. When dumping the leak information, it
+would also dump the get/put calls, in the order they were called. We
+could add some simple refcount tracking (++ for get, -- for put) to
+easily notice any imbalance.
 
-- if either budget or driver tag can't be allocated for this request,
-marks the last request in the per-task list as .last, and send the
-batching requests stored in the list to LLD
+I'm pretty busy next week but happy to review if you have a patch ;).
 
-- when queueing batching requests to LLD, if one request isn't queued
-to driver successfully, calling .commit_rqs() like before, meantime
-adding the remained requests in the per-task list back to scheduler
-queue or hctx->dispatch.
-
-One issue is that this way might degrade sequential IO performance if
-the LLD just tells queue busy to blk-mq via return value of .queue_rq(),
-so I guess we still may need one flag, such as BLK_MQ_F_BATCHING_SUBMISSION.
-
-
-thanks, 
-Ming
-
+-- 
+Catalin
