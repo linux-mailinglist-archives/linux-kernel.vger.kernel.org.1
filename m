@@ -2,82 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E83F71CBC4C
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 04:04:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE7D31CBC52
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 04:09:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728605AbgEICEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 22:04:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59228 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727828AbgEICEE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 22:04:04 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 00BC3218AC;
-        Sat,  9 May 2020 02:04:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588989844;
-        bh=lW4Von6DNZWwTFaN/A6L+lg+zzWvz95nYwHXT4Yr9Qc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=RcyysLvHtEZmwWe/PEMeFE5nx4el5G39hmmioqZ3Cpx97HXCushV+5mGooROYyDEc
-         nc1Z+Cyy9RP0vXW0wKM07F8Fv0o6CFHUg6+c0CQsHjvHW5Hz8Dc27deRmgnOpyibgO
-         Q/wGuz2m4C7ycXOB2C9RCM5oVNQVkR7USv+Xg/hE=
-Date:   Fri, 8 May 2020 19:04:02 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Finn Thain <fthain@telegraphics.com.au>
-Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] net/sonic: Fix some resource leaks in error handling
- paths
-Message-ID: <20200508190402.76018e90@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <alpine.LNX.2.22.394.2005091143590.8@nippy.intranet>
-References: <20200508172557.218132-1-christophe.jaillet@wanadoo.fr>
-        <20200508175701.4eee970d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <alpine.LNX.2.22.394.2005091143590.8@nippy.intranet>
+        id S1728611AbgEICJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 22:09:27 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:58238 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727828AbgEICJ0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 22:09:26 -0400
+X-UUID: c2515d0332a7409a8cc84976834fb513-20200509
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=1B+choKMEWf5xgsDH1Xvz4r98si4Toef2xxzNstIEMc=;
+        b=WVPofjpp0VLBguQpJu5sO7PG4xp585zhHL5kaY5GN4ax6yZyup7ckNf1CfzJCQp/XLQthBFtWydoIccdvERs23acVXpSpUglCYB8UH7mrTzk761XMMrKpPJbKs76zGETv/kNtGgEyB5KaCYcKNJXhpsh9zjT5mi3gzPS7/aqn4o=;
+X-UUID: c2515d0332a7409a8cc84976834fb513-20200509
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <fengping.yu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1759369874; Sat, 09 May 2020 10:09:24 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Sat, 9 May 2020 10:09:23 +0800
+Received: from localhost.localdomain (10.15.20.246) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sat, 9 May 2020 10:09:17 +0800
+From:   Fengping Yu <fengping.yu@mediatek.com>
+To:     Marco Felsch <m.felsch@pengutronix.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Yingjoe Chen <yingjoe.chen@mediatek.com>
+CC:     <linux-input@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v6] Add mtk matrix keypad driver for keypad on MTK SoC
+Date:   Sat, 9 May 2020 10:04:56 +0800
+Message-ID: <20200509020458.8359-1-fengping.yu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 9 May 2020 11:57:44 +1000 (AEST) Finn Thain wrote:
-> On Fri, 8 May 2020, Jakub Kicinski wrote:
-> > On Fri,  8 May 2020 19:25:57 +0200 Christophe JAILLET wrote:  
-> > > Only macsonic has been compile tested. I don't have the needed setup to
-> > > compile xtsonic  
-> > 
-> > Well, we gotta do that before we apply the patch :S
-> >   
-> 
-> I've compiled xtsonic.c with this patch.
-> 
-> > Does the driver actually depend on some platform stuff,  
-> 
-> xtsonic.c looks portable enough but it has some asm includes that I 
-> haven't looked at. It is really a question for the arch maintainers.
+Q2hhbmdlIHNpbmNlIHY1Og0KLSByZW1vdmUgdW5uZWNlc3NhcnkgaW5jbHVkZSBmaWxlcw0KLSBy
+ZW1vdmUgcmVkdW5kYW50IGNvbW1lbnRzIGFuZCBuZXdsaW5lcw0KLSB1c2UgbG9jYWwgaXJxbnIg
+dmFyaWFibGUgaW5zdGVhZCBvZiBtZW1iZXIgdmFyaWFibGUgb2YgbXRrX2tleXBhZCBzdHJ1Y3QN
+Ci0gdXNlIHJlZ21hcCB0byByZWFkIGFuZCB3cml0ZSByZWdpc3RlcnMNCi0gZHJvcCBrcGRfZ2V0
+X2R0c19pbmZvIGRpcmVjdGx5IGludG8gcHJvYmUgZnVuY3Rpb24NCi0gdXNlIGRldm1fYWRkX2Fj
+dGlvbl9vcl9yZXNldCB0byBhdm9pZCBnb3RvIGVycm9yIGhhbmRsaW5nIHdoZW4gZG8gY2xrIHNl
+dHRpbmcNCi0gdXNlIGRldm1fcmVxdWVzdF90aHJlYWRlZF9pcnEgYXBpIHRvIHJlcXVlc3QgaXJx
+DQotIHJlbW92ZSBwbGF0Zm9ybV9zZXRfZHJ2ZGF0YQ0KDQpmZW5ncGluZy55dSAoMyk6DQogIGR0
+LWJpbmRpbmdzOiBDaGFuZ2Uga2V5cGFkIGRvY3VtZW50YXRpb24gc2NoZW1hDQogIGRyaXZlcnM6
+IGlucHV0OiBrZXlib2FyZDogQWRkIG10ayBrZXlwYWQgZHJpdmVyDQogIGNvbmZpZ3M6IGRlZmNv
+bmZpZzogQWRkIENPTkZJR19LRVlCT0FSRF9NVEtfS1BEPXkNCg0KIC4uLi9kZXZpY2V0cmVlL2Jp
+bmRpbmdzL2lucHV0L210ay1rcGQudHh0ICAgICB8ICA2MSAtLS0tLS0tDQogLi4uL2RldmljZXRy
+ZWUvYmluZGluZ3MvaW5wdXQvbXRrLWtwZC55YW1sICAgIHwgIDkzICsrKysrKysrKysrDQogYXJj
+aC9hcm02NC9jb25maWdzL2RlZmNvbmZpZyAgICAgICAgICAgICAgICAgIHwgICAxICsNCiBkcml2
+ZXJzL2lucHV0L2tleWJvYXJkL0tjb25maWcgICAgICAgICAgICAgICAgfCAgIDUgKy0NCiBkcml2
+ZXJzL2lucHV0L2tleWJvYXJkL210ay1rcGQuYyAgICAgICAgICAgICAgfCAxNTEgKysrKysrKyst
+LS0tLS0tLS0tDQogNSBmaWxlcyBjaGFuZ2VkLCAxNjMgaW5zZXJ0aW9ucygrKSwgMTQ4IGRlbGV0
+aW9ucygtKQ0KIGRlbGV0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
+ZGluZ3MvaW5wdXQvbXRrLWtwZC50eHQNCiBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlv
+bi9kZXZpY2V0cmVlL2JpbmRpbmdzL2lucHV0L210ay1rcGQueWFtbA0KDQotLQ0KMi4xOC4wDQoN
+Cg0K
 
-I see.
-
-> >  or can we do this:
-> > 
-> > diff --git a/drivers/net/ethernet/natsemi/Kconfig b/drivers/net/ethernet/natsemi/Kconfig
-> > @@ -58,7 +58,7 @@ config NS83820
-> >  
-> >  config XTENSA_XT2000_SONIC
-> >         tristate "Xtensa XT2000 onboard SONIC Ethernet support"
-> > -       depends on XTENSA_PLATFORM_XT2000
-> > +       depends on XTENSA_PLATFORM_XT2000 || COMPILE_TEST
-> >         ---help---
-> >           This is the driver for the onboard card of the Xtensa XT2000 board.
-> >  
-> > ?
-> >   
-> 
-> That's effectively what I did to compile test xtsonic.c (I removed the 
-> line to get the same effect).
-
-Thank you, that should do!
