@@ -2,67 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4CC71CBE10
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 08:31:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58A9F1CC22F
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 16:31:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728914AbgEIGbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 02:31:13 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:44698 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726115AbgEIGbN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 02:31:13 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 93F6381CBEAC0A11A6BE;
-        Sat,  9 May 2020 14:31:09 +0800 (CST)
-Received: from euler.huawei.com (10.175.101.6) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 9 May 2020 14:30:58 +0800
-From:   Hongbo Yao <yaohongbo@huawei.com>
-To:     <jansimon.moeller@gmx.de>, <jacek.anaszewski@gmail.com>,
-        <pavel@ucw.cz>
-CC:     <yaohongbo@huawei.com>, <chenzhou10@huawei.com>,
-        <linux-kernel@vger.kernel.org>, <linux-leds@vger.kernel.org>
-Subject: [PATCH -next] leds: blinkm: remove set but not used variable
-Date:   Sat, 9 May 2020 22:23:57 +0800
-Message-ID: <20200509142357.33702-1-yaohongbo@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1727993AbgEIObO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 10:31:14 -0400
+Received: from muru.com ([72.249.23.125]:53706 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727105AbgEIObO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 May 2020 10:31:14 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 45F28809C;
+        Sat,  9 May 2020 14:32:03 +0000 (UTC)
+Date:   Sat, 9 May 2020 07:31:11 -0700
+From:   Tony Lindgren <tony@atomide.com>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     kernel list <linux-kernel@vger.kernel.org>,
+        linux-omap@vger.kernel.org, sre@kernel.org, nekit1000@gmail.com,
+        mpartap@gmx.net, merlijn@wizzup.org, martin_rysavy@centrum.cz
+Subject: Re: ofono for d4: less hcked and more working version was Re: USB
+ networking news, ofono for d4: less hacked version
+Message-ID: <20200509143111.GC37466@atomide.com>
+References: <20200506101125.GA7490@amd>
+ <20200506144338.GT37466@atomide.com>
+ <20200506230525.GA22354@amd>
+ <20200507140732.GU37466@atomide.com>
+ <20200508100211.GA19646@amd>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.101.6]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200508100211.GA19646@amd>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes gcc '-Wunused-but-set-variable' warning:
-drivers/leds/leds-blinkm.c:483:6: warning: variable ‘ret’ set
-but not used [-Wunused-but-set-variable]
-  int ret;
+* Pavel Machek <pavel@ucw.cz> [200508 10:03]:
+> I pushed new version of ofono: I'm still not sure about those incoming
+> sms (but _some_ sms are received). Rest should be better.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Hongbo Yao <yaohongbo@huawei.com>
----
- drivers/leds/leds-blinkm.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Please check that you have applied commit 738b150ecefb ("ARM: dts:
+omap4-droid4: Fix occasional lost wakeirq for uart1"), otherwise incoming
+SMS may not always show up, and GPS can stop producing data.
 
-diff --git a/drivers/leds/leds-blinkm.c b/drivers/leds/leds-blinkm.c
-index e11fe1788242..a493ee0e0fc7 100644
---- a/drivers/leds/leds-blinkm.c
-+++ b/drivers/leds/leds-blinkm.c
-@@ -480,9 +480,8 @@ static int blinkm_led_blue_set(struct led_classdev *led_cdev,
- 
- static void blinkm_init_hw(struct i2c_client *client)
- {
--	int ret;
--	ret = blinkm_transfer_hw(client, BLM_STOP_SCRIPT);
--	ret = blinkm_transfer_hw(client, BLM_GO_RGB);
-+	blinkm_transfer_hw(client, BLM_STOP_SCRIPT);
-+	blinkm_transfer_hw(client, BLM_GO_RGB);
- }
- 
- static int blinkm_test_run(struct i2c_client *client)
--- 
-2.17.1
+Hmm for ofono motchat, why not handle the U0000 part directly in motchat
+and use just a timestamp based ID there?
 
+Regards,
+
+Tony
