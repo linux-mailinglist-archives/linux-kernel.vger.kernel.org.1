@@ -2,63 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A7B11CBEDA
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 10:19:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58E2B1CBEE1
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 10:23:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727122AbgEIITu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 04:19:50 -0400
-Received: from verein.lst.de ([213.95.11.211]:56087 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725901AbgEIITu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 04:19:50 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 36D5968C7B; Sat,  9 May 2020 10:19:47 +0200 (CEST)
-Date:   Sat, 9 May 2020 10:19:46 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Alexey Kardashevskiy <aik@ozlabs.ru>
-Cc:     Christoph Hellwig <hch@lst.de>, iommu@lists.linux-foundation.org,
-        linuxppc-dev@lists.ozlabs.org, Lu Baolu <baolu.lu@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        linux-kernel@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>
-Subject: Re: [PATCH 1/4] dma-mapping: move the remaining DMA API calls out
- of line
-Message-ID: <20200509081946.GA21834@lst.de>
-References: <20200414122506.438134-1-hch@lst.de> <20200414122506.438134-2-hch@lst.de> <c2572d30-f03c-450d-e257-3a8673b42d44@ozlabs.ru> <20200415061859.GA32392@lst.de> <5139e8e1-6389-3387-dc39-6983b08ff28d@ozlabs.ru> <20200417075852.GA20049@lst.de> <70296d53-3504-2645-4b16-0eb73b0cd0d9@ozlabs.ru>
+        id S1727834AbgEIIXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 04:23:34 -0400
+Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:30483 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727812AbgEIIXd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 May 2020 04:23:33 -0400
+Received: from localhost.localdomain ([93.22.149.123])
+        by mwinf5d73 with ME
+        id cYPT2200N2fyvbx03YPU05; Sat, 09 May 2020 10:23:29 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 09 May 2020 10:23:29 +0200
+X-ME-IP: 93.22.149.123
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     milo.kim@ti.com, sre@kernel.org, anton.vorontsov@linaro.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH V2] power: supply: lp8788: Fix an error handling path in 'lp8788_charger_probe()'
+Date:   Sat,  9 May 2020 10:23:23 +0200
+Message-Id: <20200509082323.223884-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <70296d53-3504-2645-4b16-0eb73b0cd0d9@ozlabs.ru>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 05, 2020 at 02:18:37PM +1000, Alexey Kardashevskiy wrote:
-> 
-> 
-> On 17/04/2020 17:58, Christoph Hellwig wrote:
-> > On Wed, Apr 15, 2020 at 09:21:37PM +1000, Alexey Kardashevskiy wrote:
-> >> And the fact they were exported leaves possibility that there is a
-> >> driver somewhere relying on these symbols or distro kernel won't build
-> >> because the symbol disappeared from exports (I do not know what KABI
-> >> guarantees or if mainline kernel cares).
-> > 
-> > We absolutely do not care.  In fact for abuses of APIs that drivers
-> > should not use we almost care to make them private and break people
-> > abusing them.
-> 
-> ok :)
-> 
-> >> I do not care in particular but
-> >> some might, a line separated with empty lines in the commit log would do.
-> > 
-> > I'll add a blurb for the next version.
-> 
-> 
-> Has it gone anywhere? Thanks,
+In the probe function, in case of error, resources allocated in
+'lp8788_setup_adc_channel()' must be released.
 
-I've been hoping for the sg_buf helpers to land first, as they need
-backporting and would conflict.  Do you urgently need the series?
+This can be achieved easily by using the devm_ variant of
+'iio_channel_get()'.
+This has the extra benefit to simplify the remove function and to axe the
+'lp8788_release_adc_channel()' function which is now useless.
+
+Fixes: 98a276649358 ("power_supply: Add new lp8788 charger driver")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+V2: use devm_iio_channel_get instead of iio_channel_get and simplify code
+---
+ drivers/power/supply/lp8788-charger.c | 18 ++----------------
+ 1 file changed, 2 insertions(+), 16 deletions(-)
+
+diff --git a/drivers/power/supply/lp8788-charger.c b/drivers/power/supply/lp8788-charger.c
+index 84a206f42a8e..e7931ffb7151 100644
+--- a/drivers/power/supply/lp8788-charger.c
++++ b/drivers/power/supply/lp8788-charger.c
+@@ -572,27 +572,14 @@ static void lp8788_setup_adc_channel(struct device *dev,
+ 		return;
+ 
+ 	/* ADC channel for battery voltage */
+-	chan = iio_channel_get(dev, pdata->adc_vbatt);
++	chan = devm_iio_channel_get(dev, pdata->adc_vbatt);
+ 	pchg->chan[LP8788_VBATT] = IS_ERR(chan) ? NULL : chan;
+ 
+ 	/* ADC channel for battery temperature */
+-	chan = iio_channel_get(dev, pdata->adc_batt_temp);
++	chan = devm_iio_channel_get(dev, pdata->adc_batt_temp);
+ 	pchg->chan[LP8788_BATT_TEMP] = IS_ERR(chan) ? NULL : chan;
+ }
+ 
+-static void lp8788_release_adc_channel(struct lp8788_charger *pchg)
+-{
+-	int i;
+-
+-	for (i = 0; i < LP8788_NUM_CHG_ADC; i++) {
+-		if (!pchg->chan[i])
+-			continue;
+-
+-		iio_channel_release(pchg->chan[i]);
+-		pchg->chan[i] = NULL;
+-	}
+-}
+-
+ static ssize_t lp8788_show_charger_status(struct device *dev,
+ 				struct device_attribute *attr, char *buf)
+ {
+@@ -735,7 +722,6 @@ static int lp8788_charger_remove(struct platform_device *pdev)
+ 	flush_work(&pchg->charger_work);
+ 	lp8788_irq_unregister(pdev, pchg);
+ 	lp8788_psy_unregister(pchg);
+-	lp8788_release_adc_channel(pchg);
+ 
+ 	return 0;
+ }
+-- 
+2.25.1
+
