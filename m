@@ -2,191 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6261CBD18
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 05:57:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C11591CBD5D
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 06:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728620AbgEID5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 23:57:49 -0400
-Received: from mga03.intel.com ([134.134.136.65]:46391 "EHLO mga03.intel.com"
+        id S1726012AbgEIEdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 00:33:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39070 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726415AbgEID5o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 23:57:44 -0400
-IronPort-SDR: fjDwF5BDh5an/VHqolNunjHYAHcg81ecG94OknKzy+70zVMqE/el0jUqOsjj1IbZPco1OTeBtT
- VltF0snRdDqw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2020 20:57:44 -0700
-IronPort-SDR: bLgap+pn6yxVSwQtzjk/hOiYIFIwM51nK0VrF9QcQYeZEF82k2Q9ialYzxjmKEFSxEaYgGfFCf
- jQo3uzubCdjA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,370,1583222400"; 
-   d="scan'208";a="370702336"
-Received: from fmsmsx108.amr.corp.intel.com ([10.18.124.206])
-  by fmsmga001.fm.intel.com with ESMTP; 08 May 2020 20:57:43 -0700
-Received: from fmsmsx155.amr.corp.intel.com (10.18.116.71) by
- FMSMSX108.amr.corp.intel.com (10.18.124.206) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Fri, 8 May 2020 20:57:43 -0700
-Received: from FMSEDG001.ED.cps.intel.com (10.1.192.133) by
- FMSMSX155.amr.corp.intel.com (10.18.116.71) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Fri, 8 May 2020 20:57:43 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.106)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server (TLS) id
- 14.3.439.0; Fri, 8 May 2020 20:57:03 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TjaiNCe5StQlszWpScsKDELUVc0Lc03rPxPtEeoCOmYF9aRH5SrFmWx/bXC5+ZdEUsZuyQ/irT6yHNaR0GiYEv5NDnnvora0IZuWW4Vx4fLyapR+lJGdqAw589OU8jmPuEV7grNPGoVvCIgPEbCmiiaxJvH9yBF4NTywnUieaW4zIW5YV1zbTY2t5vkpz2emje0HxjwWTQDL3H1IxyeQJJO1GlfHrnlPJMZGcZM5YAzniU2mJh0/HrwYHGVOzm8VpZYE6TwdNV3jUyxHUBe9ExbH3yC38/iX9y68yaNg/v599ybugbutoqxiXVAyp1G7b8+VutXFPIFRy5NeMebxVg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SVKTCClnDVX6tYu5RGjuxmNG52kB7T8fo6cNx9P+Olk=;
- b=LvwLr49D+1zLDgtB6VCokTWmVcXmFIT+EXUiP0qc8pRMIwpdh5nW2BEDJpL7LK2l7sMXFJP2dJzxr/nndRL00SAYFMxW2+WdoT/1GfuNdApCvoB4HSwK3EMoBH0KIGkn8mpikNZ84p2bUswSHw/L+cRiQTAmod8GTYjGhC3DgXMNdtH7GKtxhFAPc/wUzijQbdGJ965plZP2Ilf+Q3qyL82p80UUwpKzYX6xY1AS87h7HbdIeYSaQNiRVoJrGuPGJnAHCDGCQbpzAkBbR5L734mwh6NNtaFBoclTrQVuEZIPZRB88ktd/guItd9I0ZdfpNbLnh0L9QX5rqugbpFauA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SVKTCClnDVX6tYu5RGjuxmNG52kB7T8fo6cNx9P+Olk=;
- b=uEx8xt8Iw/fdS+88hfEAMNQ0y4G/L0BGAScaoBKj69iGpRxWk9Ld5nP5orRMXByFH9CfcL0baw4TwqmL2c+cYkVSJU/K/sc3C/tbggPHARnpaTtexY1MPbqPoqilCuou4bns2HJzCD8De3VnYvjjX3HuYHsEUi0wmWu/OTdS+n4=
-Received: from DM6PR11MB3819.namprd11.prod.outlook.com (2603:10b6:5:13f::31)
- by DM6PR11MB2956.namprd11.prod.outlook.com (2603:10b6:5:64::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.20; Sat, 9 May
- 2020 03:57:02 +0000
-Received: from DM6PR11MB3819.namprd11.prod.outlook.com
- ([fe80::98a:bb06:5551:e5a3]) by DM6PR11MB3819.namprd11.prod.outlook.com
- ([fe80::98a:bb06:5551:e5a3%3]) with mapi id 15.20.2958.033; Sat, 9 May 2020
- 03:57:01 +0000
-From:   "Wu, Hao" <hao.wu@intel.com>
-To:     "matthew.gerlach@linux.intel.com" <matthew.gerlach@linux.intel.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-CC:     "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mdf@kernel.org" <mdf@kernel.org>
-Subject: RE: [PATCH] fpga: dfl: Replace zero-length array with flexible-array
-Thread-Topic: [PATCH] fpga: dfl: Replace zero-length array with flexible-array
-Thread-Index: AQHWJKA9988Q5CgyQUSojIGlxNZjDaiegY0AgACfuwA=
-Date:   Sat, 9 May 2020 03:57:01 +0000
-Message-ID: <DM6PR11MB3819D8BD585D5A568F62D2A485A30@DM6PR11MB3819.namprd11.prod.outlook.com>
-References: <20200507185256.GA14313@embeddedor>
- <alpine.DEB.2.21.2005081119420.7209@rhweight-WRK1>
-In-Reply-To: <alpine.DEB.2.21.2005081119420.7209@rhweight-WRK1>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.2.0.6
-authentication-results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [192.55.52.212]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 65ca9454-aae2-4459-9aac-08d7f3cd07ac
-x-ms-traffictypediagnostic: DM6PR11MB2956:
-x-microsoft-antispam-prvs: <DM6PR11MB2956890E0A208018CF8E792C85A30@DM6PR11MB2956.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2201;
-x-forefront-prvs: 03982FDC1D
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: TSwpoSs3ND2M4l6m55pdzurgNVTZj5THY31ybNcM973DSGk5ej31oH+voj/KuDAGlgqY1cUTlOYE2MCyv7Oki+sfjOTDWyMq2rKcMCt6SVwLFz9dohLSmFbIWLYXlANAMLIi5igRyQpD7zfl8iJvdHw5Toxfi3CGQiNL+CRs7XoHWbyjUZraPyvp8RASpq/2T0rOMPc8LjCWj4vUTPFaFXmCObgJ9sw9aprLYua6dxnKQsyJyOt4JHxpl0RIsbwYXoduxhqVoYrsYOEe64Yon8guarJfcyK7B6S1N9z63hR0tiX26WTcHlU6pa8ob07f1lpa5R30Bay+K1dqqJf9g9vPnJ/9yyERzJ1DpZINxZ05X+1xlVPeyrqO8sZbhiVp3AfnQ/qGebmpEM7rM9DvJzi/lu9HkoT+/ofwqZrk36VE7CD/yD7a6X/MG3ixjRlr2G1jB/dLym0e0QiBDFrqnXEW4OZ5z3gEBcA8Xt47ChZXdZXz/dHELAnhJ4+5AmK/oY+nJu79eBoe6TD6Xo7OAhq8fgksJBY8nxf5TnNz1a46rejWWJ2dMRZRxb6J4pNJKukSHRIpLRJYSQ8kBuCWk3neD00JtuizseCvfl13R1c=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3819.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(396003)(366004)(136003)(346002)(376002)(39860400002)(33430700001)(26005)(53546011)(54906003)(5660300002)(7696005)(52536014)(66476007)(64756008)(86362001)(966005)(66446008)(478600001)(9686003)(66556008)(186003)(316002)(33656002)(2906002)(6506007)(8676002)(33440700001)(55016002)(66946007)(71200400001)(8936002)(110136005)(4326008)(76116006);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: X6Y47DLweD51tym8XhLT0Vetj3POpGgdpMFmePNMsC5jJcPOYGnQsmtgJzkdU5GZBtglt5QWpHcPYrPsekdsSOA3TpWFa+I1bTqXkdKT0QQQbJ/5ncZmvq8b5f0CKk1f+q8+/9wW8UHiH5kB2VV6EymIchHJXab+FDTRDqf7FC+CU5/PFq2LWOc2PPVVy58ltJVE7+8xNcT+meKVNDtuhZnDzeG55AII52ARvrraZk1M6UFOnA/1fQvgRj/5glsfinEPRY4rVj/DVsCdbmO/UAhFro23kjYhAa/N0LUizuqhKreMOMXFlRYZHJ5AiOeOqVe/GbieadsT4jzHfRz+PSMyMug7xNhBxfkvBG67GgOh5oDkKHEhei6Xth33oulWVmS1mUZm0VonbE5tq/nvnWoIH6PFAyN0tM1P6YZmbiFKZ9Ijgo6AYcifKCECLoEnlvjcXiDt+07JYWEUrEgDBto//Pmhr5zrfXS62ypsq8Y=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1725795AbgEIEdI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 May 2020 00:33:08 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5291020735;
+        Sat,  9 May 2020 04:33:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588998788;
+        bh=O04g/ed99TB3Q1nZ1fxfTeIntZZXj5bXO9bE+5e5nn0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=F5+NMPaGYzuEyMVkGH22M/WOTFbi8m7oVsGmcdRL8rq9bixg1EYlEUOHuAWVMBws1
+         6vSdb+hshPWWKUh+T6nIF9o8KrmFZ1PvZicYk/HjLK/wIZjbSpf6QfImT8ALngqfEF
+         gymPJLZBSF0gMYH/2bKmLy3O6SBTkcY6zp1Xkb6g=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 34A773523058; Fri,  8 May 2020 21:33:08 -0700 (PDT)
+Date:   Fri, 8 May 2020 21:33:08 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Qian Cai <cai@lca.pw>
+Cc:     Will Deacon <will@kernel.org>, Elver Marco <elver@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: Re: [PATCH -next v2] locking/osq_lock: annotate a data race in
+ osq_lock
+Message-ID: <20200509043308.GL2869@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <1581429255-12542-1-git-send-email-cai@lca.pw>
+ <2C8BF141-5384-475F-B713-6D473557C65C@lca.pw>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 65ca9454-aae2-4459-9aac-08d7f3cd07ac
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 May 2020 03:57:01.7572
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: NiwBzYQTbQJM1ApIEt+7Xp0UcA+OPerZ5RCyqgjKUF1HTC8e15u/DqL6V0+ORjJOGByBiFf2f22YLdza/bjVUg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB2956
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2C8BF141-5384-475F-B713-6D473557C65C@lca.pw>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I think Moritz had already applied it to his tree per last submission.
-https://lkml.org/lkml/2020/3/21/373
+On Fri, May 08, 2020 at 04:59:05PM -0400, Qian Cai wrote:
+> 
+> 
+> > On Feb 11, 2020, at 8:54 AM, Qian Cai <cai@lca.pw> wrote:
+> > 
+> > prev->next could be accessed concurrently as noticed by KCSAN,
+> > 
+> > write (marked) to 0xffff9d3370dbbe40 of 8 bytes by task 3294 on cpu 107:
+> >  osq_lock+0x25f/0x350
+> >  osq_wait_next at kernel/locking/osq_lock.c:79
+> >  (inlined by) osq_lock at kernel/locking/osq_lock.c:185
+> >  rwsem_optimistic_spin
+> >  <snip>
+> > 
+> > read to 0xffff9d3370dbbe40 of 8 bytes by task 3398 on cpu 100:
+> >  osq_lock+0x196/0x350
+> >  osq_lock at kernel/locking/osq_lock.c:157
+> >  rwsem_optimistic_spin
+> >  <snip>
+> > 
+> > Since the write only stores NULL to prev->next and the read tests if
+> > prev->next equals to this_cpu_ptr(&osq_node). Even if the value is
+> > shattered, the code is still working correctly. Thus, mark it as an
+> > intentional data race using the data_race() macro.
+> > 
+> > Signed-off-by: Qian Cai <cai@lca.pw>
+> 
+> Hmm, this patch has been dropped from linux-next from some reasons.
+> 
+> Paul, can you pick this up along with KCSAN fixes?
+> 
+> https://lore.kernel.org/lkml/1581429255-12542-1-git-send-email-cai@lca.pw/
 
-Thanks
-Hao
+I have queued it on -rcu, but it is too late for v5.8 via the -rcu tree,
+so this is v5.9 at the earliest.  Plus I would need an ack from one of
+the locking folks.
 
-> -----Original Message-----
-> From: matthew.gerlach@linux.intel.com <matthew.gerlach@linux.intel.com>
-> Sent: Saturday, May 9, 2020 2:21 AM
-> To: Gustavo A. R. Silva <gustavoars@kernel.org>
-> Cc: Wu, Hao <hao.wu@intel.com>; linux-fpga@vger.kernel.org; linux-
-> kernel@vger.kernel.org
-> Subject: Re: [PATCH] fpga: dfl: Replace zero-length array with flexible-a=
-rray
->=20
->=20
->=20
-> This looks like a a good change to me.
->=20
-> Tested-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
->=20
-> On Thu, 7 May 2020, Gustavo A. R. Silva wrote:
->=20
-> > The current codebase makes use of the zero-length array language
-> > extension to the C90 standard, but the preferred mechanism to declare
-> > variable-length types such as these ones is a flexible array member[1][=
-2],
-> > introduced in C99:
-> >
-> > struct foo {
-> >        int stuff;
-> >        struct boo array[];
-> > };
-> >
-> > By making use of the mechanism above, we will get a compiler warning
-> > in case the flexible array does not occur last in the structure, which
-> > will help us prevent some kind of undefined behavior bugs from being
-> > inadvertently introduced[3] to the codebase from now on.
-> >
-> > Also, notice that, dynamic memory allocations won't be affected by
-> > this change:
-> >
-> > "Flexible array members have incomplete type, and so the sizeof operato=
-r
-> > may not be applied. As a quirk of the original implementation of
-> > zero-length arrays, sizeof evaluates to zero."[1]
-> >
-> > sizeof(flexible-array-member) triggers a warning because flexible array
-> > members have incomplete type[1]. There are some instances of code in
-> > which the sizeof operator is being incorrectly/erroneously applied to
-> > zero-length arrays and the result is zero. Such instances may be hiding
-> > some bugs. So, this work (flexible-array member conversions) will also
-> > help to get completely rid of those sorts of issues.
-> >
-> > This issue was found with the help of Coccinelle.
-> >
-> > [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-> > [2] https://github.com/KSPP/linux/issues/21
-> > [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-> >
-> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+							Thanx, Paul
+
 > > ---
-> > drivers/fpga/dfl.h |    2 +-
-> > 1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/fpga/dfl.h b/drivers/fpga/dfl.h
-> > index 9f0e656de720..1cd51ea52ce1 100644
-> > --- a/drivers/fpga/dfl.h
-> > +++ b/drivers/fpga/dfl.h
-> > @@ -235,7 +235,7 @@ struct dfl_feature_platform_data {
-> > 	unsigned long dev_status;
-> > 	void *private;
-> > 	int num;
-> > -	struct dfl_feature features[0];
-> > +	struct dfl_feature features[];
-> > };
-> >
-> > static inline
-> >
-> >
+> > 
+> > v2: insert some code comments.
+> > 
+> > kernel/locking/osq_lock.c | 6 +++++-
+> > 1 file changed, 5 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/kernel/locking/osq_lock.c b/kernel/locking/osq_lock.c
+> > index 1f7734949ac8..f733bcd99e8a 100644
+> > --- a/kernel/locking/osq_lock.c
+> > +++ b/kernel/locking/osq_lock.c
+> > @@ -154,7 +154,11 @@ bool osq_lock(struct optimistic_spin_queue *lock)
+> > 	 */
+> > 
+> > 	for (;;) {
+> > -		if (prev->next == node &&
+> > +		/*
+> > +		 * cpu_relax() below implies a compiler barrier which would
+> > +		 * prevent this comparison being optimized away.
+> > +		 */
+> > +		if (data_race(prev->next == node) &&
+> > 		    cmpxchg(&prev->next, node, NULL) == node)
+> > 			break;
+> > 
+> > -- 
+> > 1.8.3.1
+> > 
+> 
