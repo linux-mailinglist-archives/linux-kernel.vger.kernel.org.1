@@ -2,108 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EB791CC125
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 14:07:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 944971CC12B
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 14:09:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728500AbgEIMHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 08:07:42 -0400
-Received: from mout.kundenserver.de ([217.72.192.73]:40871 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727093AbgEIMHl (ORCPT
+        id S1728433AbgEIMJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 08:09:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727093AbgEIMJB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 08:07:41 -0400
-Received: from localhost.localdomain ([149.172.19.189]) by
- mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPA (Nemesis) id
- 1N7RDn-1j3u291OAv-017q80; Sat, 09 May 2020 14:07:28 +0200
-From:   Arnd Bergmann <arnd@arndb.de>
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Maharaja Kennadyrajan <mkenna@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 2/2] ath10k: fix ath10k_pci struct layout
-Date:   Sat,  9 May 2020 14:06:33 +0200
-Message-Id: <20200509120707.188595-2-arnd@arndb.de>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200509120707.188595-1-arnd@arndb.de>
-References: <20200509120707.188595-1-arnd@arndb.de>
+        Sat, 9 May 2020 08:09:01 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05B01C061A0C
+        for <linux-kernel@vger.kernel.org>; Sat,  9 May 2020 05:09:00 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id u15so4478221ljd.3
+        for <linux-kernel@vger.kernel.org>; Sat, 09 May 2020 05:09:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=ujiHBwaaGNuMhzojZ2C69RM25MjRj77aVtoAsKFcXTM=;
+        b=pBuiF+nnR8u60zjdxQ3CsY+Az4ZeDimNJ5A7jWEc7urIB1s+cLGVjhJpz3G0+i0Lkd
+         SKUcv6MIotot9J6nG+i12CYGtbfTFhmvxxbANvK/izehUDhw2mvmAE3k5hjN7ClbFTUg
+         ue6XKR7KZ9Uk/g/oFKrmgi99S6ya56Nph8dgB3nxjXg24GBuJxCDNElnjR/eGPb/iayN
+         FGma+2EJr/4aiDHR1jItS8uVsqJ1GBzWrMw+9SznuBrc2QaDtVqg0/gjPOpTD3oI5M4W
+         gqC8s5rqcx1iWV/a80ohZkXugF+39cpDF1je2w8UyaEUAir2/sIXJFVVJPsx3ht3BYSi
+         nVlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=ujiHBwaaGNuMhzojZ2C69RM25MjRj77aVtoAsKFcXTM=;
+        b=DJWZ7tATsN1EwWG3ExRqwi+s9ki4TFdlHBS7k8v9JrzY0KrhRO49bfJGwFOArz2Aby
+         iodr/AcESQgwb4A+k52o4UKNOKnVl2aTKON5aumO0El2AiCzPmfUuRCpaaUxlxxNuMUm
+         Wzvh7D1ngxki/TN6IrhfowgD0GgJ0WWirHHyKSmq4F2Td5z6jk8nqQbITYWdrB7KXhq+
+         rEF0pKJBZwfRGooTH8+z+HRmxjWlIIpZcGpSoV/IS4lgTQMrbFia0VEGVsc3Gx2jZvE4
+         4sLZvmt6L8juy4GrGTTvwI40N4/GDRFIs2Letti/AgMY5yrWQS4j+8YpfAmpaw75JW91
+         kY4A==
+X-Gm-Message-State: AOAM532WlgsgL8CokLLc+wSC8Ig7crx/YfATES9fXeVwFb6bzC/APzsa
+        BGLw+VD9v8uoERxCsm/l5X/dwhkYQ6ekV9BxzSU=
+X-Google-Smtp-Source: ABdhPJzhQUYcOaABd29EH8TYz6Boq4nGJ8/8kipMBhA5LoTgUg252Gxf1awoVLtMSzFU8sUMvnxdrggzhj027Sg3NYc=
+X-Received: by 2002:a2e:3813:: with SMTP id f19mr4583353lja.216.1589026139292;
+ Sat, 09 May 2020 05:08:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:PwCZxgyuJPTotwKY546enVLNSjcEZwvUHNxW+ZeWlIbFQWRywio
- zufRY0iO7HkMQ8lpmHRn7fJ7AYqhTdmqsbL4v/355PdA91ANvQzywOGv32/DXJRqAzoINys
- YI1hF8rtOMGIYhcGlOLQvSRJB+NxU1YCGGTFGdB1h3UOqf1PfcOw8D2VVKjSHwdNXuWUWqx
- wS8L4ildOaTnVsG7hvJ4g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:pQykyiEsgvc=:5PhDczXHDy7IquzkJB7qTx
- /TzHKhDP4SwR+IAaOr6xcVgCWBKtTo4cZXwMyTyZSPvlnPeIDkbsJWDsJnhBuEHtt9e+HzHF4
- eRR3/J1QXBWDNRKTUKdxDCOkvg4bbkDqABbaMM0agEkDoLrnGj/f3NepIcaKGW228mgtbtu8C
- s4Kc8sFNIu4AdyYrfEStC7jccU2QsSyq2lQDMhf1wJaKrYxtwaeyfYYgbFY9OaOxBKxcUGV1w
- EkrQgy+lkZrZY8WJ0kWCZDlGYIUJB9HrAhwxVyW6dO92OemvzlrOjRAu4ZImR8V69bCoWGJJ0
- 4I+wcFjVecW2davHhm4mN3QQmmCgx30e1gTSUlRTAu93V6+2vudc5QgwBUedYCI86kN+x9Beo
- r+okGwG/0QqR0UyHnC+xJ6NdK71oo4zSghPiHYtLOTPsRqNRCttYs6s7ZAndqMJfxG+uJa7uD
- NESEzJTIYhpBW+d9wbt+QRl9m0vXj8lrAHf9vExbOSGyl6br9wuyfoPpDWUhgz1zlAv7q+PcO
- /9cpPmMeDMYjKNnKDLmfAWPsUM2g5kG7B6Wl682HScUYZDjmwts9cTvjD6Wp/DiRJ2Z8plHaD
- Q7/+e5gfUd7VDBrSw4XQvm6tQFxxrkIAtoFCzZCJoyEcAZbfJ2Z5kByMuT37zVb7lzNg5EOnU
- rs2QXjHQh6HSbSnEYrSNaAAcWVYx8XStXWaz9gyzr5Rx4cJLEavX0SJPLK+nd/wCq95+XWAvi
- rUl2iiomWXVzH3yr75qsmE5QZjWp1mMkgUMPGBDDgJyh9wIi4oK/+WWnIbuMmLoUE+GSK722i
- +mzFCSq72AE9Nwq49GRlcizgTFDuZhr+DSP8QmUvBVXYM77A8Q=
+Received: by 2002:a2e:b5c2:0:0:0:0:0 with HTTP; Sat, 9 May 2020 05:08:58 -0700 (PDT)
+Reply-To: jessicavail020@gmail.com
+From:   Jessica Vail <harryhans2019@gmail.com>
+Date:   Sat, 9 May 2020 13:08:58 +0100
+Message-ID: <CADO4-6hojvAFQvUYuETuEcOnfWAHntwV1AEXyGnVNU8rNHbRew@mail.gmail.com>
+Subject: Hi
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-gcc-10 correctly points out a bug with a zero-length array in
-struct ath10k_pci:
+Hi dear,
 
-drivers/net/wireless/ath/ath10k/ahb.c: In function 'ath10k_ahb_remove':
-drivers/net/wireless/ath/ath10k/ahb.c:30:9: error: array subscript 0 is outside the bounds of an interior zero-length array 'struct ath10k_ahb[0]' [-Werror=zero-length-bounds]
-   30 |  return &((struct ath10k_pci *)ar->drv_priv)->ahb[0];
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-In file included from drivers/net/wireless/ath/ath10k/ahb.c:13:
-drivers/net/wireless/ath/ath10k/pci.h:185:20: note: while referencing 'ahb'
-  185 |  struct ath10k_ahb ahb[0];
-      |                    ^~~
+I'm Jessica Vail, from the United States,please i wish to have a
+communication with you.
 
-The last addition to the struct ignored the comments and added
-new members behind the array that must remain last.
+I wait for your answer.
 
-Change it to a flexible-array member and move it last again to
-make it work correctly, prevent the same thing from happening
-again (all compilers warn about flexible-array members in the
-middle of a struct) and get it to build without warnings.
-
-Fixes: 521fc37be3d8 ("ath10k: Avoid override CE5 configuration for QCA99X0 chipsets")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/net/wireless/ath/ath10k/pci.h | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/pci.h b/drivers/net/wireless/ath/ath10k/pci.h
-index e3cbd259a2dc..862d0901c5b8 100644
---- a/drivers/net/wireless/ath/ath10k/pci.h
-+++ b/drivers/net/wireless/ath/ath10k/pci.h
-@@ -178,15 +178,16 @@ struct ath10k_pci {
- 	 */
- 	u32 (*targ_cpu_to_ce_addr)(struct ath10k *ar, u32 addr);
- 
-+	struct ce_attr *attr;
-+	struct ce_pipe_config *pipe_config;
-+	struct ce_service_to_pipe *serv_to_pipe;
-+
- 	/* Keep this entry in the last, memory for struct ath10k_ahb is
- 	 * allocated (ahb support enabled case) in the continuation of
- 	 * this struct.
- 	 */
--	struct ath10k_ahb ahb[0];
-+	struct ath10k_ahb ahb[];
- 
--	struct ce_attr *attr;
--	struct ce_pipe_config *pipe_config;
--	struct ce_service_to_pipe *serv_to_pipe;
- };
- 
- static inline struct ath10k_pci *ath10k_pci_priv(struct ath10k *ar)
--- 
-2.26.0
-
+Jessica Vail.
