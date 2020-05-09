@@ -2,119 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10F1A1CBBF8
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 02:47:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FC5E1CBC00
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 02:57:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728488AbgEIArx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 20:47:53 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:38497 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1728426AbgEIArx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 20:47:53 -0400
-Received: (qmail 3733 invoked by uid 500); 8 May 2020 20:47:52 -0400
-Received: from localhost (sendmail-bs@127.0.0.1)
-  by localhost with SMTP; 8 May 2020 20:47:52 -0400
-Date:   Fri, 8 May 2020 20:47:52 -0400 (EDT)
-From:   Alan Stern <stern@rowland.harvard.edu>
-X-X-Sender: stern@netrider.rowland.org
-To:     Al Cooper <alcooperx@gmail.com>
-cc:     linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        <bcm-kernel-feedback-list@broadcom.com>,
-        <devicetree@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        <linux-usb@vger.kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v8 4/5] usb: ehci: Add new EHCI driver for Broadcom STB
- SoC's
-In-Reply-To: <20200508211929.39020-5-alcooperx@gmail.com>
-Message-ID: <Pine.LNX.4.44L0.2005082035460.2445-100000@netrider.rowland.org>
+        id S1728494AbgEIA5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 20:57:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42100 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726842AbgEIA5D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 20:57:03 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BAAFB216FD;
+        Sat,  9 May 2020 00:57:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588985823;
+        bh=4yUVtrpxoQBIJBTheEsMFv5lta2YpekhvrR7qBnK398=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Ko9Oe0HO0up7Glh3WC/NxoguOR31RW5qkjDhgnToBwtnBNdRv31Q9uJ+9xosFNedZ
+         D4zoiR6/1Lt6deZevPX6A/903dGfcn0h3OleUbPuQHugTHeDacN2gxAHASVGXcNZZ/
+         KQNA8eYcWRYzQGTmxHDTHFZqcDSti+dskRHuKTW8=
+Date:   Fri, 8 May 2020 17:57:01 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     davem@davemloft.net, fthain@telegraphics.com.au,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] net/sonic: Fix some resource leaks in error handling
+ paths
+Message-ID: <20200508175701.4eee970d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20200508172557.218132-1-christophe.jaillet@wanadoo.fr>
+References: <20200508172557.218132-1-christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 May 2020, Al Cooper wrote:
+On Fri,  8 May 2020 19:25:57 +0200 Christophe JAILLET wrote:
+> Only macsonic has been compile tested. I don't have the needed setup to
+> compile xtsonic
 
-A few minor typos in the patch description:
+Well, we gotta do that before we apply the patch :S
 
-> Add a new EHCI driver for Broadcom STB SoC's. A new EHCI driver
-> was created instead of adding support to the existing ehci platform
-> driver because of the code required to workaround bugs in the EHCI
------------------------------------------^
+Does the driver actually depend on some platform stuff, or can we 
+do this:
 
-"workaround" is a noun; the verb form is "work around".
-
-> controller. The primary workround is for a bug where the Core
------------------------------^
-
-Missing "a".
-
-> violates the SOF interval between the first two SOFs transmitted after
-> resume. This only happens if the resume occurs near the end of a
-> microframe. The fix is to intercept the echi-hcd request to complete
--------------------------------------------^
-
-ehci, not echi.
-
-> RESUME and align it to the start of the next microframe.
-> 
-> Signed-off-by: Al Cooper <alcooperx@gmail.com>
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> ---
-
-Basically this new driver is fine.  However...
-
-> +static inline void ehci_brcm_wait_for_sof(struct ehci_hcd *ehci, u32 delay)
-> +{
-> +	u32 frame_idx = ehci_readl(ehci, &ehci->regs->frame_index);
-> +	u32 val;
-> +	int res;
-> +
-> +	/* Wait for next microframe (every 125 usecs) */
-> +	res = readl_relaxed_poll_timeout(&ehci->regs->frame_index, val,
-> +					 val != frame_idx, 1, 130);
-> +	if (res)
-> +		dev_err(ehci_to_hcd(ehci)->self.controller,
-> +			"Error waiting for SOF\n");
-
-If this patch is going to be redone anyway, you might as well change
-dev_err() to ehci_err() -- that's what it's for.  I should have noticed
-this earlier, sorry.
-
-> +static int ehci_brcm_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct resource *res_mem;
-> +	struct brcm_priv *priv;
-> +	struct usb_hcd *hcd;
-> +	int irq;
-> +	int err;
-> +
-> +	err = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(32));
-> +	if (err)
-> +		return err;
-> +
-> +	irq = platform_get_irq(pdev, 0);
-> +	if (irq <= 0)
-> +		return irq;
-
-I don't want to get involved in the question of whether or not 0 is a 
-valid IRQ number.  The consensus has gone back and forth over the 
-years, and it just doesn't seem important.
-
-However, as Sergei points out, if 0 is going to be regarded as an 
-invalid value then we shouldn't return 0 from the probe function here.
-
-I'll leave the decision on how to handle this matter up to Greg.  :-)
-
-Alan Stern
-
-
+diff --git a/drivers/net/ethernet/natsemi/Kconfig b/drivers/net/ethernet/natsemi/Kconfig
+@@ -58,7 +58,7 @@ config NS83820
+ 
+ config XTENSA_XT2000_SONIC
+        tristate "Xtensa XT2000 onboard SONIC Ethernet support"
+-       depends on XTENSA_PLATFORM_XT2000
++       depends on XTENSA_PLATFORM_XT2000 || COMPILE_TEST
+        ---help---
+          This is the driver for the onboard card of the Xtensa XT2000 board.
+ 
+?
