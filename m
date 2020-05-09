@@ -2,120 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B36281CBE72
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 09:40:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E5091CBE7C
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 09:43:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729039AbgEIHkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 03:40:39 -0400
-Received: from mail-eopbgr80089.outbound.protection.outlook.com ([40.107.8.89]:19683
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726120AbgEIHki (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 03:40:38 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PLiQvmxt3sEX8ne/KOIwj0kmZjrjKx4FtZx34bFYqmmV6JoQ1eult65zgxndVNob6FcSWKWSc+P4FDYkLBhmYcHMsVNlYBxWDxXQNwQr6IadflGRrGxYYKdFqH85p+KqaJaMXcM1GnVzM+buSkw/Bx9Gd5jZasmpN9jCmMEo5GB4GUk9plTNNUwHQpUZuw57rMcMLOhiVr5ZNrhhUCqbfjXDIMTPsnhy3AcpSZO75Sux7g16VjWTH1cbtz7+xohTbnPhOkPaygQobIEdGnYI8b9n6UExXvYVr07sdhdnAPy7d/YjcClB9vwbzEbcJyfDh19GFSf3yAaavx/b6Xh/qQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=npbLoiRmQDOKeFbXPZz01SuahXe3S56M+aQ+7fQVSag=;
- b=Dk2uKSbF1xIXvQ6JpH0GeEoP24+VC9fxu4qQ27hUeElE8bVj0DK66WUBH8F5md9UXl7rJUuNMmB8P8GjqO4ZYiUkgGyed+fVfrgsuYBG7J1Zsetn7t5vIiHuE3QzbmvETM2aneHyDtnYIGciGM5tcTtbhTqjm99PtM1AdPdRrvJnh0m2qBUW/pBYgB+PIWPDMYiUJwGHswVWd2uB8K/PSAzLEQ1nrnhhjIzCPUwvftb9PiucYLJsDxwGG4O6jxu2oQr9Icrl/FRFVxyNRk0og5YnDacumCnJ8aJXHQ05qm26v33PcYfdAFvyAkDGODN1E36rpaUb++nRubJIx4kLUA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=npbLoiRmQDOKeFbXPZz01SuahXe3S56M+aQ+7fQVSag=;
- b=bL03iyjI7t3aoL9kbSEn/iCB7nPvLEqu5j8X7ku+pyHPrLvs+2S1Uq8bV9hhuRtnN5PmalSfBt8T3Ik8BazjNka4UnB7rklY72Lm/RNeUZLbPFNrCgGZkyUBcRAQqvFuTSakApNl3Wo5flkDDu0va6dLOOg9uof4gNh+sXBzXbI=
-Received: from VI1PR05MB5102.eurprd05.prod.outlook.com (2603:10a6:803:5e::23)
- by VI1PR05MB5038.eurprd05.prod.outlook.com (2603:10a6:803:61::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.29; Sat, 9 May
- 2020 07:40:33 +0000
-Received: from VI1PR05MB5102.eurprd05.prod.outlook.com
- ([fe80::9d19:a564:b84e:7c19]) by VI1PR05MB5102.eurprd05.prod.outlook.com
- ([fe80::9d19:a564:b84e:7c19%7]) with mapi id 15.20.2979.033; Sat, 9 May 2020
- 07:40:33 +0000
-From:   Saeed Mahameed <saeedm@mellanox.com>
-To:     "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "leon@kernel.org" <leon@kernel.org>
-CC:     "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>,
-        Maor Gottlieb <maorg@mellanox.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the net-next tree with the rdma tree
-Thread-Topic: linux-next: manual merge of the net-next tree with the rdma tree
-Thread-Index: AQHWJOdqvf+wE0yjPU+ZM+uXTwctcaifYFoA
-Date:   Sat, 9 May 2020 07:40:32 +0000
-Message-ID: <e24d65c568803c48fa15524d6395655c98010979.camel@mellanox.com>
-References: <20200508131851.5818d84d@canb.auug.org.au>
-In-Reply-To: <20200508131851.5818d84d@canb.auug.org.au>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-authentication-results: canb.auug.org.au; dkim=none (message not signed)
- header.d=none;canb.auug.org.au; dmarc=none action=none
- header.from=mellanox.com;
-x-originating-ip: [73.15.39.150]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 9417aa0e-9958-49fd-f91b-08d7f3ec417c
-x-ms-traffictypediagnostic: VI1PR05MB5038:|VI1PR05MB5038:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR05MB5038517B47AD7D3B85F27B47BEA30@VI1PR05MB5038.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-forefront-prvs: 03982FDC1D
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Qsac5T0tFco1c1fR/eka5NYlp+G0UGXbAXcqkZTEOtFdOO9hAzPdeWu1oZpy8UlqBJssTLHr4pYA/xASrv+xTWtIl2oR6MlaDRBKoMJQ/6PVyze1pUQ+dhd9WTxUhZ/sxxXSYb2121/CTnEdY7uF5TD0MH8YjnkTLEkf0b3+8mVwx3MJ4u4geii2kU7FZeneViUCVxzWHTL8DOw/BkrREffa/oSNpFqlSUs478/G0XQfSSEpisoQ/FfNTtH38lpC0GzE9JR37MQfxsdHY8Wqxk3cHmk62NRxP31qLsghtHB0jtSrYCA65T53QUBX8dDw/ChJvqzjJ4Y/lTJGiQ7Fe3YjaTHHpa9jFE1CcT81oOpOJhvGjSyb9MBPm41H4LgOvwLfKWDrMII7vQmMIsm4WlWkaWC1H0I3E36UXzMlzvQhrP7Oa/BJaxQz79ab42R1fMuabfEE6loctaHJPCqihNbWo59rTpIZuhDBlDnHUbTSwsN6ng3C3vICMqfexFBGWNs1Cbi3KHPNvSljmvQVRQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB5102.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(136003)(346002)(366004)(396003)(376002)(33430700001)(110136005)(66446008)(6512007)(2616005)(33440700001)(8936002)(186003)(4326008)(26005)(76116006)(91956017)(71200400001)(54906003)(5660300002)(2906002)(6486002)(36756003)(64756008)(86362001)(66476007)(8676002)(6506007)(66946007)(66556008)(316002)(478600001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: U2dDqMKDQwxCWOR3wAQFEIDm6qLc1P17wa9FxbxJf0FQuz+Fau+g2of94aHmBs/+kJCrZGCvdp4nh+3786YQ0hIu8eIwdjXEcT10ZdoDv6y8eUKIZlfgk0dLQycNu8RHhk+dSAOXz3SALWrxX1KbP9F5ycUEqgpTblSliWGZ9qwBqYZ9lG7td8cZ5Fpcyd/SacIFv31I///R+ZQyJr6CjrdJVOFez2eWT61VCxv58lswOwe7BtmiJ05J81lta0OG4IskPOAlQg5C4QNwNqw4hOKBNBHy199qrT1kjTeKHHTY7KWHyHVmL5segHO2Sn8WATi0PIkr4GZg4x/dOYg6Xp4qaM41qKpRXc9HQAt7P8Ke9t989xNjspS9rSXe/4pNE+0nSFPqGwMUbDDdlSRRUBGXhY18HHv0R3R6ifKTALV6eQPYSxh+2/l9dxFCbGRcxzAFNvkDzrBKXJ0APGDpV/BVBYf8jn2gZlPxRap7Wdg=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <99A37935A22DAC46961A78453C04F1D1@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1726874AbgEIHnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 03:43:09 -0400
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:30489 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725730AbgEIHnI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 May 2020 03:43:08 -0400
+Received: from mail-vs1-f50.google.com (mail-vs1-f50.google.com [209.85.217.50]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 0497glKL009568
+        for <linux-kernel@vger.kernel.org>; Sat, 9 May 2020 16:42:48 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 0497glKL009568
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1589010168;
+        bh=cvyOd1WsEVjCH2wf8G/bwMzDjemoQm3XWekZsG7OlCg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=tCNhpZxMyGb9KyIL5m5vkSNe+bvedTRJeX/PrYaljbF1zN5Ha95fDOko+86gbTIOk
+         OeC8hxe1Tg4Tl17Z4Ym9vAvu1TtUHP74Df1G5/AyY98X8/Jzoc1xXpH7/omPcLziOE
+         0BJV1fW7newWr0lRHQfLfX80XRtJAhrSHtcV3/XCHEpRDfnftccJCGN8RHM0aGpt91
+         wrtRgfNruSX7c8myupqXi22JbcR62tHBps+7umRLzfwWVUnpmBUJ27RCLPOapOmX7G
+         0w7l1BdAlOKetzcjrVcIWNHdXnkaR37auRAhRL0R7uwERsXa2UE0TMElecY4Iz1ViR
+         XT0r+Yq5T8Oug==
+X-Nifty-SrcIP: [209.85.217.50]
+Received: by mail-vs1-f50.google.com with SMTP id s11so2505913vsq.13
+        for <linux-kernel@vger.kernel.org>; Sat, 09 May 2020 00:42:47 -0700 (PDT)
+X-Gm-Message-State: AGi0PuZElUxy1If/0bNdHbDV8pi2FN/K9RxiglDEh6GN3jq1kilPnwCV
+        oA3dg+WFS2qHfMZNOZ4TT40CvXihq5l+fAimEbw=
+X-Google-Smtp-Source: APiQypL+sQgafYA4uCgxdY2isPdePEHuXbpy5uiMT5L3bO5owsgJlfUGftxvVUHhablF8VZ4RSiv7l1dv0Zp3A8Wrj8=
+X-Received: by 2002:a05:6102:3c7:: with SMTP id n7mr4732676vsq.179.1589010166640;
+ Sat, 09 May 2020 00:42:46 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9417aa0e-9958-49fd-f91b-08d7f3ec417c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 May 2020 07:40:33.1116
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: kgYNfE/zRVtLZGN9FP1VZ9YLP4ukaD85BfL5EX2dL1fcz3fmt7IR4GZedItECym9cb+LnmDnVK7Cgd/bWnnY7w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5038
+References: <CGME20200508110343epcas5p1ae3398e56ee895572487d05b730bd466@epcas5p1.samsung.com>
+ <1588935797-7283-1-git-send-email-maninder1.s@samsung.com>
+In-Reply-To: <1588935797-7283-1-git-send-email-maninder1.s@samsung.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 9 May 2020 16:42:10 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAS2wJeC_cMy9_3fs4XuoyovQbsfgXD6BP2RCo=MQx=RzQ@mail.gmail.com>
+Message-ID: <CAK7LNAS2wJeC_cMy9_3fs4XuoyovQbsfgXD6BP2RCo=MQx=RzQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] scripts/checkstack.pl: don't display $dre as
+ different entity
+To:     Maninder Singh <maninder1.s@samsung.com>
+Cc:     "George G. Davis" <george_davis@mentor.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        AMIT SAHRAWAT <a.sahrawat@samsung.com>,
+        Arnd Bergmann <arnd@arndb.de>, Andi Kleen <ak@linux.intel.com>,
+        Vaneet Narang <v.narang@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIwLTA1LTA4IGF0IDEzOjE4ICsxMDAwLCBTdGVwaGVuIFJvdGh3ZWxsIHdyb3Rl
-Og0KPiBIaSBhbGwsDQo+IA0KPiBUb2RheSdzIGxpbnV4LW5leHQgbWVyZ2Ugb2YgdGhlIG5ldC1u
-ZXh0IHRyZWUgZ290IGEgY29uZmxpY3QgaW46DQo+IA0KPiAgIGRyaXZlcnMvbmV0L2JvbmRpbmcv
-Ym9uZF9tYWluLmMNCj4gDQo+IGJldHdlZW4gY29tbWl0czoNCj4gDQo+ICAgZWQ3ZDRmMDIzYjFh
-ICgiYm9uZGluZzogUmVuYW1lIHNsYXZlX2FyciB0byB1c2FibGVfc2xhdmVzIikNCj4gICBjMDcx
-ZDkxZDJhODkgKCJib25kaW5nOiBBZGQgaGVscGVyIGZ1bmN0aW9uIHRvIGdldCB0aGUgeG1pdCBz
-bGF2ZQ0KPiBiYXNlZCBvbiBoYXNoIikNCj4gICAyOWQ1YmJjY2IzYTEgKCJib25kaW5nOiBBZGQg
-aGVscGVyIGZ1bmN0aW9uIHRvIGdldCB0aGUgeG1pdCBzbGF2ZQ0KPiBpbiByciBtb2RlIikNCj4g
-DQo+IGZyb20gdGhlIHJkbWEgYW5kIG1seDUtbmV4dCB0cmVlcyBhbmQgY29tbWl0Og0KPiANCj4g
-ICBhZTQ2ZjE4NGJjMWYgKCJib25kaW5nOiBwcm9wYWdhdGUgdHJhbnNtaXQgc3RhdHVzIikNCj4g
-DQo+IGZyb20gdGhlIG5ldC1uZXh0IHRyZWUuDQo+IA0KPiBJIGZpeGVkIGl0IHVwIChJIHRoaW5r
-IC0gc2VlIGJlbG93KSBhbmQgY2FuIGNhcnJ5IHRoZSBmaXggYXMNCj4gbmVjZXNzYXJ5LiBUaGlz
-IGlzIG5vdyBmaXhlZCBhcyBmYXIgYXMgbGludXgtbmV4dCBpcyBjb25jZXJuZWQsIGJ1dA0KPiBh
-bnkNCj4gbm9uIHRyaXZpYWwgY29uZmxpY3RzIHNob3VsZCBiZSBtZW50aW9uZWQgdG8geW91ciB1
-cHN0cmVhbSBtYWludGFpbmVyDQo+IHdoZW4geW91ciB0cmVlIGlzIHN1Ym1pdHRlZCBmb3IgbWVy
-Z2luZy4gIFlvdSBtYXkgYWxzbyB3YW50IHRvDQo+IGNvbnNpZGVyDQo+IGNvb3BlcmF0aW5nIHdp
-dGggdGhlIG1haW50YWluZXIgb2YgdGhlIGNvbmZsaWN0aW5nIHRyZWUgdG8gbWluaW1pc2UNCj4g
-YW55DQo+IHBhcnRpY3VsYXJseSBjb21wbGV4IGNvbmZsaWN0cy4NCj4gDQoNCkhpIFN0ZXBoZW4g
-YW5kIHRoYW5rcyBmb3IgdGhlIHJlcG9ydC4gDQoNCllvdXIgZml4IHNlZW1zIHRvIGJlIG9rLCBp
-IHRoaW5rIGl0IGlzIG1pc3Npbmcgc29tZSBodW5rcyBmb3INCmJvbmRfZ2V0X3NsYXZlX2J5X2lk
-IGZ1bmN0aW9uIGFuZCBzb21lICJsaWtlbHkiIGRpcmVjdGl2ZXMgYXJlIG1pc3NpbmcsDQp3aGlj
-aCB3ZXJlIGFkZGVkIGJ5IE1hb3IncyBvciBFcmljJ3MgcGF0Y2hlcy4NCg0KQW55d2F5IHRoaXMg
-aXMgYWxyZWFkeSBmaXhlZCB1cCBpbiBteSBuZXQtbmV4dC1tbHg1IHRyZWUgYW5kIHdpbGwgYmUN
-CnN1Ym1pdHRlZCB2ZXJ5IHNvb24gdG8gbmV0LW5leHQgd2l0aCB0aGUgY29uZmxpY3QgZml4dXAg
-Li4gDQoNClRoYW5rcywNClNhZWVkLg0K
+On Fri, May 8, 2020 at 8:10 PM Maninder Singh <maninder1.s@samsung.com> wrote:
+>
+> currently script prints stack usage for functions
+> in two ways:($re and $dre)
+>
+> dre breaks sorting mechanism.
+> 0xffffa00011f26f88 sunxi_mux_clk_setup.isra.0 [vmlinux]:Dynamic (0x140)
+> ..
+> 0xffffa00011f27210 sunxi_divs_clk_setup [vmlinux]:      Dynamic (0x1d0)
+>
+> so we can print it in decimal only.
+>
+> Also address before function name is changed to function
+> start address rather than stack consumption address.
+> Because in next patch, arm has two ways to use stack
+> which can be clubbed and printed in one function only.
+>
+> All symbols whose stack by adding(re and dre) is greater than
+> 100, will be printed.
+>
+> 0xffffa00011f2720c0 sunxi_divs_clk_setup [vmlinux]:     464
+> ...
+> 0xffffa00011f26f840 sunxi_mux_clk_setup.isra.0 [vmlinux]:320
+>
+> Co-developed-by: Vaneet Narang <v.narang@samsung.com>
+> Signed-off-by: Vaneet Narang <v.narang@samsung.com>
+> Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+> ---
+
+
+All applied to linux-kbuild. Thanks.
+
+
+
+> v1: https://lkml.org/lkml/2020/4/30/530
+> v2: review comments by Masahiro Yamada incorporated
+>
+>  scripts/checkstack.pl | 54 +++++++++++++++++++++++++--------------------------
+>  1 file changed, 27 insertions(+), 27 deletions(-)
+>
+> diff --git a/scripts/checkstack.pl b/scripts/checkstack.pl
+> index 371bd17..6957108 100755
+> --- a/scripts/checkstack.pl
+> +++ b/scripts/checkstack.pl
+> @@ -109,11 +109,30 @@ my (@stack, $re, $dre, $x, $xs, $funcre);
+>  #
+>  # main()
+>  #
+> -my ($func, $file, $lastslash);
+> +my ($func, $file, $lastslash, $total_size, $addr, $intro);
+> +
+> +$total_size = 0;
+>
+>  while (my $line = <STDIN>) {
+>         if ($line =~ m/$funcre/) {
+>                 $func = $1;
+> +               next if $line !~ m/^($xs*)/;
+> +               if ($total_size > 100) {
+> +                       push @stack, "$intro$total_size\n";
+> +               }
+> +
+> +               $addr = $1;
+> +               $addr =~ s/ /0/g;
+> +               $addr = "0x$addr";
+> +
+> +               $intro = "$addr $func [$file]:";
+> +               my $padlen = 56 - length($intro);
+> +               while ($padlen > 0) {
+> +                       $intro .= '     ';
+> +                       $padlen -= 8;
+> +               }
+> +
+> +               $total_size = 0;
+>         }
+>         elsif ($line =~ m/(.*):\s*file format/) {
+>                 $file = $1;
+> @@ -134,37 +153,18 @@ while (my $line = <STDIN>) {
+>                 }
+>                 next if ($size > 0x10000000);
+>
+> -               next if $line !~ m/^($xs*)/;
+> -               my $addr = $1;
+> -               $addr =~ s/ /0/g;
+> -               $addr = "0x$addr";
+> -
+> -               my $intro = "$addr $func [$file]:";
+> -               my $padlen = 56 - length($intro);
+> -               while ($padlen > 0) {
+> -                       $intro .= '     ';
+> -                       $padlen -= 8;
+> -               }
+> -               next if ($size < 100);
+> -               push @stack, "$intro$size\n";
+> +               $total_size += $size;
+>         }
+>         elsif (defined $dre && $line =~ m/$dre/) {
+> -               my $size = "Dynamic ($1)";
+> -
+> -               next if $line !~ m/^($xs*)/;
+> -               my $addr = $1;
+> -               $addr =~ s/ /0/g;
+> -               $addr = "0x$addr";
+> +               my $size = $1;
+>
+> -               my $intro = "$addr $func [$file]:";
+> -               my $padlen = 56 - length($intro);
+> -               while ($padlen > 0) {
+> -                       $intro .= '     ';
+> -                       $padlen -= 8;
+> -               }
+> -               push @stack, "$intro$size\n";
+> +               $size = hex($size) if ($size =~ /^0x/);
+> +               $total_size += $size;
+>         }
+>  }
+> +if ($total_size > 100) {
+> +       push @stack, "$intro$total_size\n";
+> +}
+>
+>  # Sort output by size (last field)
+>  print sort { ($b =~ /:\t*(\d+)$/)[0] <=> ($a =~ /:\t*(\d+)$/)[0] } @stack;
+> --
+> 1.9.1
+>
+
+
+-- 
+Best Regards
+Masahiro Yamada
