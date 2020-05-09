@@ -2,95 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ED041CC3C2
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 20:50:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 681921CC3D4
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 20:58:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728371AbgEISu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 14:50:29 -0400
-Received: from sonic309-25.consmr.mail.ir2.yahoo.com ([77.238.179.83]:37171
-        "EHLO sonic309-25.consmr.mail.ir2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728005AbgEISu2 (ORCPT
+        id S1728182AbgEIS5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 14:57:53 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:43766 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728011AbgEIS5x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 14:50:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1589050226; bh=q1Er/SdqxATomBDx27mJAnsQxxrJWpCL+Y8MaW3053A=; h=Date:From:Reply-To:Subject:References:From:Subject; b=KYrB3iuud7SRX9nsj+vszLgDEE9AmJyQ/AouucQHZZZFr4HYF3g1q2Ug6F0owmJ+uNUyx8E0sWUgULYi7zyJtQ07W3MQqJMzC/4i0FjFEQ9YJlTXvVqQcA8WFC3mem1CcuClNE2+Ip/LvH7htQbGYWEtEi+4tJ2Vg/eV+UT1ucwuOfD9x1g73c1miFJx11/uC7CCTz8pgwlkbIh+ZNL1k7ZBTo9FXoC2RsZl+fLs8R3Ls34WlSnN8OTfKb5zOn+yQFhUoMmIhYmuBdLf4bEJ+pDEqeXoViN4ng3Ly4abb/oNJmukRmvar1avoBU54Mxj+FMu8YXo1Z53HaZwsXQTdQ==
-X-YMail-OSG: oKo66FwVM1m.GxpzYW3llSaXdWlLuDiciI2AcfUOU0fGX0o2GMotIrabhmxT2tB
- XwXmEbX3J8WGgdLpb5JQKVG8i_gFj19Hqoq.P5GmgVndPpVogU_A2zNn2YtgytYWyyrzrysB22b2
- 9rmctuIg4E06dXyrMm.Dbur5Mh7vaqTkqHlC51Zmo5ja_xFyUdNQtdrr50WMxLDS2iRDRH3QoEwm
- 379I1gpE1_ln81YqMW3YTkB1.T5qEK0WpUkGiK.cZaQgJVaghf6o1v2cELEI_SIBcfuviOXmt_tj
- fUfYEHZbzbzvzg_G0p.CmvVBZOfS0mRRqDvjKq_J42_Zn7B.VMcxV7O46IW_Shkyo.U0JORu3GyF
- kIBBjERFsN5NEBIug.IHLdmvwV8qrgwe61xHQRlSY69lf5vmVGedJ8mBh5IXXDE0MyrScoBy4dlw
- RVd0g2W7Vq2j6vrfi1pt2DEfZH2j7rgHgJl9DNUor.fOEifslfQRKHotPR1NGXW8qd7fIDrwP28c
- pgWz0imyH4eirKLXgU.36Elk6cQYGN8LmNMuATK1UDTLFayOHqOFQdOK7Z.s9JyRwGN_dfxszmzY
- P6pmspX_f.YF1IBBHj0bpEjzocpFIzER0I6sVLyCg5AfT.BlZxJMlQUYg50c14jg5KwkUIU2or3Q
- jH22QZSja0pXLzvu6XdiCW_3ir0Kedto3b6IgdXEH7PHfmnwcdI6AZc6lwnc.1kN9uXnPduBEunK
- uGT.Nc5DaqO2ng_Uejx4wtgF60OjwxJPLaWHuRlemEVyMuQMCK7.sYmXD7MgIxeK1BdL_gIt2wtS
- Gu1Y19eTD3.MxPE5pXzps_Rn6sH5YesooauDHB4hN.eJGPWf0DiG04JdSb2fCiWYkBydg7IqFL22
- 7FfgRt2u7_DZqzMmRTLHFNoL8tej.4qanJvkeJb4cJxvS84AqawOuM5BoipGsyZ9xcc1qxAKZLPK
- PosFkLj7LDHBBcF_4.0WrEynMv4hPzNBRZ2CLoLAqG.AxxRstycmdkxZoeA2ZQS9Y2_uZzSXstY1
- J1Y5JB9GGNz4UQvDf5.TJXCY5uFjoKYFlmZji9_1xVGA2t02Y_owyaoJNiuehICtIUtazZ7REjhB
- wGQjKTAF8NcvGfEUV69LBbJwtLfLTDU9aUUYKOgEDh9JsxhIo6ogDJ_mNVHNxByXJZhTBFkw_wHj
- Goped0V_PfQBWzZVEHXGgOjWTmEmD3QjZuL2MZToDgd17z0xRHUaej9Mb9tT0sx7BgiBI32SrznC
- gtWWdhhZlyvoTQG2UCicGS2E1v1YjXmjVNqfbBSv97W6mCugw.YuLHPXQ0hLnR6oVbOi6SjWO
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic309.consmr.mail.ir2.yahoo.com with HTTP; Sat, 9 May 2020 18:50:26 +0000
-Date:   Sat, 9 May 2020 18:50:21 +0000 (UTC)
-From:   "Mrs. Mina A. Brunel" <mrsminaabrunelm@gmail.com>
-Reply-To: mrs.minaabrunel2021@aol.com
-Message-ID: <1477954482.1290917.1589050221564@mail.yahoo.com>
-Subject: My Dear in the lord
+        Sat, 9 May 2020 14:57:53 -0400
+Received: by mail-pg1-f193.google.com with SMTP id l12so2472409pgr.10;
+        Sat, 09 May 2020 11:57:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zttBbKYVFPa2BZUCkTkRSn2zjIPdo5XhSTTLcAliYr8=;
+        b=fDgzplDwWLQQnxTV4/Qsn/JAswsgDQA/F/3ngC3sJhOnaNl9dy1GVZoAL/xFRkAoBv
+         n2cUw6tlXytHj7W82sZ+dokw5xpKpQ7c2GVsCAx7L5HkQEIMKmkvBjtO91GH6gf/ee/B
+         oESTjXxWZDJAz+ofSiX63nXUntJA2/jclolXK5NgP99v7edyvPKRcfcbpPRg5NT7jUf7
+         6Ptobj60E4G+PFmMh+nY8wCuQXxIz4WzVbrhdvcXk/k3r0k29aoPiDi1SvwhP+frSUdm
+         3M6Uzaf+WKtMkCvTL0BzmZHzgz6Q4kd+cleZsndjE3Q3AaAV4hehw1ZHStattOeVMIVd
+         Vcog==
+X-Gm-Message-State: AGi0PubARbPJwx3zKKBzXyfXqOVttMtUfpPu0DiXfT44YJCPlj3VvWuD
+        wL6/uO6S/ScYhmv5mZsK0ZI=
+X-Google-Smtp-Source: APiQypJx3+0uZ1IpoYh4IC9se3roW9MvXg0k4n7h7/YW0Z1BmiIRawK/Yh/RGSY0146BWzhWH34lcw==
+X-Received: by 2002:aa7:8dc1:: with SMTP id j1mr9059840pfr.285.1589050672360;
+        Sat, 09 May 2020 11:57:52 -0700 (PDT)
+Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
+        by smtp.gmail.com with ESMTPSA id c10sm4995523pfm.50.2020.05.09.11.57.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 09 May 2020 11:57:51 -0700 (PDT)
+Date:   Sat, 9 May 2020 11:57:50 -0700
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Moritz Fischer <mdf@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rajan Vaja <rajan.vaja@xilinx.com>,
+        Jolly Shah <jolly.shah@xilinx.com>, Wu Hao <hao.wu@intel.com>,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fpga: zynqmp: fix modular build
+Message-ID: <20200509185750.GA6715@epycbox.lan>
+References: <20200505140041.231844-1-arnd@arndb.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <1477954482.1290917.1589050221564.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.15902 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:76.0) Gecko/20100101 Firefox/76.0
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200505140041.231844-1-arnd@arndb.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-My Dear in the lord
-
-
-My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
-na Faso, I am married to Mr. Brunel Patrice, a politician who owns a small =
-gold company in Burkina Faso; He died of Leprosy and Radesyge, in the year =
-February 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Mi=
-llion Euro) Eight million, Five hundred thousand Euros in a bank in Rome th=
-e capital city of Italy in Southern Europe. The money was from the sale of =
-his company and death benefits payment and entitlements of my deceased husb=
-and by his company.
-
-I am sending you this message with heavy tears in my eyes and great sorrow =
-in my heart, and also praying that it will reach you in good health because=
- I am not in good health, I sleep every night without knowing if I may be a=
-live to see the next day. I am suffering from long time cancer and presentl=
-y I am partially suffering from Leprosy, which has become difficult for me =
-to move around. I was married to my late husband for more than 6 years with=
-out having a child and my doctor confided that I have less chance to live, =
-having to know when the cup of death will come, I decided to contact you to=
- claim the fund since I don't have any relation I grew up from an orphanage=
- home.
-
-I have decided to donate this money for the support of helping Motherless b=
-abies/Less privileged/Widows and churches also to build the house of God be=
-cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
-cided to donate from what I have inherited from my late husband to you for =
-the good work of Almighty God; I will be going in for an operation surgery =
-soon.
-
-Now I want you to stand as my next of kin to claim the funds for charity pu=
-rposes. Because of this money remains unclaimed after my death, the bank ex=
-ecutives or the government will take the money as unclaimed fund and maybe =
-use it for selfishness and worthless ventures, I need a very honest person =
-who can claim this money and use it for Charity works, for orphanages, wido=
-ws and also build schools and churches for less privilege that will be name=
-d after my late husband and my name.
-
-I need your urgent answer to know if you will be able to execute this proje=
-ct, and I will give you more information on how the fund will be transferre=
-d to your bank account or online banking.
+On Tue, May 05, 2020 at 04:00:11PM +0200, Arnd Bergmann wrote:
+> Two symbols need to be exported to allow the zynqmp-fpga module
+> to get loaded dynamically:
+> 
+> ERROR: modpost: "zynqmp_pm_fpga_load" [drivers/fpga/zynqmp-fpga.ko] undefined!
+> ERROR: modpost: "zynqmp_pm_fpga_get_status" [drivers/fpga/zynqmp-fpga.ko] undefined!
+> 
+> To ensure this is done correctly, also fix the Kconfig dependency
+> to only allow building the fpga driver when the firmware driver is
+> either disabled, or when it is reachable. With that, the dependency
+> on the SoC itself can be removed, and there are no surprises when
+> the fpga driver is built-in but the firmware a module.
+> 
+> Fixes: 4db8180ffe7c ("firmware: xilinx: Remove eemi ops for fpga related APIs")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/fpga/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
+> index b2408a710662..7cd5a29fc437 100644
+> --- a/drivers/fpga/Kconfig
+> +++ b/drivers/fpga/Kconfig
+> @@ -208,7 +208,7 @@ config FPGA_DFL_PCI
+>  
+>  config FPGA_MGR_ZYNQMP_FPGA
+>  	tristate "Xilinx ZynqMP FPGA"
+> -	depends on ARCH_ZYNQMP || COMPILE_TEST
+> +	depends on ZYNQMP_FIRMWARE || (!ZYNQMP_FIRMWARE && COMPILE_TEST)
+>  	help
+>  	  FPGA manager driver support for Xilinx ZynqMP FPGAs.
+>  	  This driver uses the processor configuration port(PCAP)
+> -- 
+> 2.26.0
+> 
+Applied to fixes,
 
 Thanks
-Mrs. Mina A. Brunel
