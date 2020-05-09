@@ -2,94 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 505411CBC98
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 04:43:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9EBC1CBCA1
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 04:58:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728621AbgEICnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 22:43:16 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:57012 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728158AbgEICnP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 22:43:15 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1588992195; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=BbVz6HqHAyRslwozCCsKDEZmBFDN7DsxKLsJrjVuGuQ=; b=hAZQnQaSGkZQJqqTzKPeIfB1Txe0oI8sA03YsDi6TzSYOajMRUGDeDTYIGqS4CZEoiaBgynq
- mFJDCMNjFAVI53lV9kOO/pcsg2TINNEBiz0Xhju+5FdTz5nAU9FcXmhxMLapdg6nkFbdAx+d
- W9rH61shMVyK+js6ZbTAH8DedYc=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5eb618bf.7fa3de2345a8-smtp-out-n05;
- Sat, 09 May 2020 02:43:11 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 66861C433BA; Sat,  9 May 2020 02:43:11 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from codeaurora.org (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pkondeti)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6DB18C433F2;
-        Sat,  9 May 2020 02:43:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6DB18C433F2
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=pkondeti@codeaurora.org
-Date:   Sat, 9 May 2020 08:13:00 +0530
-From:   Pavan Kondeti <pkondeti@codeaurora.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, sudeep.holla@arm.com, gregkh@linuxfoundation.org,
-        rafael@kernel.org, viresh.kumar@linaro.org, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, mcgrof@kernel.org, keescook@chromium.org,
-        yzaikin@google.com, fweisbec@gmail.com, tkjos@google.com,
-        kernel-team@android.com
-Subject: Re: [PATCH 13/14] sched: cpufreq: Use IS_ENABLED() for schedutil
-Message-ID: <20200509024300.GO19464@codeaurora.org>
-References: <20200507181012.29791-1-qperret@google.com>
- <20200507181012.29791-14-qperret@google.com>
- <20200508053053.GG19464@codeaurora.org>
- <20200508132129.GE10541@google.com>
+        id S1728657AbgEIC6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 22:58:40 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:55166 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728353AbgEIC6j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 22:58:39 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id A13122A3C9F461F677E0;
+        Sat,  9 May 2020 10:58:34 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 9 May 2020 10:58:28 +0800
+From:   Wei Yongjun <weiyongjun1@huawei.com>
+To:     <jglisse@redhat.com>, Ralph Campbell <rcampbell@nvidia.com>
+CC:     Wei Yongjun <weiyongjun1@huawei.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
+        Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH -next] mm/hmm/test: fix missing unlock on error in dmirror_migrate_finalize_and_map()
+Date:   Sat, 9 May 2020 03:02:25 +0000
+Message-ID: <20200509030225.14592-1-weiyongjun1@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200508132129.GE10541@google.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type:   text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 08, 2020 at 02:21:29PM +0100, Quentin Perret wrote:
-> On Friday 08 May 2020 at 11:00:53 (+0530), Pavan Kondeti wrote:
-> > > -#if defined(CONFIG_ENERGY_MODEL) && defined(CONFIG_CPU_FREQ_GOV_SCHEDUTIL)
-> > > +#if defined(CONFIG_ENERGY_MODEL) && IS_ENABLED(CONFIG_CPU_FREQ_GOV_SCHEDUTIL)
-> > >  	/* Build perf. domains: */
-> > >  	for (i = 0; i < ndoms_new; i++) {
-> > >  		for (j = 0; j < n && !sched_energy_update; j++) {
-> > 
-> > Now that scheduler does not have any references to schedutil_gov and cpufreq
-> > has want_eas flag, do we need this CONFIG_CPU_FREQ_GOV_SCHEDUTIL checks here?
-> 
-> Right, they're not absolutely required, but given that sugov is the only
-> one to have 'want_eas' set I guess there is no need to compile that in
-> without it, no?
-> 
-Right.
+Add the missing unlock before return from function
+dmirror_migrate_finalize_and_map() in the error
+handling case.
 
-Since you removed all compile time dependencies on schedutil, I thought the
-#ifdef check around schedutil can be removed too. 
+Fixes: 5d5e54be8a1e ("mm/hmm/test: add selftest driver for HMM")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+---
+ lib/test_hmm.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Thanks,
-Pavan
+diff --git a/lib/test_hmm.c b/lib/test_hmm.c
+index 00bca6116f93..30462193c4ff 100644
+--- a/lib/test_hmm.c
++++ b/lib/test_hmm.c
+@@ -647,8 +647,10 @@ static int dmirror_migrate_finalize_and_map(struct migrate_vma *args,
+ 		if (*dst & MIGRATE_PFN_WRITE)
+ 			entry = xa_tag_pointer(entry, DPT_XA_TAG_WRITE);
+ 		entry = xa_store(&dmirror->pt, pfn, entry, GFP_ATOMIC);
+-		if (xa_is_err(entry))
++		if (xa_is_err(entry)) {
++			mutex_unlock(&dmirror->mutex);
+ 			return xa_err(entry);
++		}
+ 	}
+ 
+ 	mutex_unlock(&dmirror->mutex);
 
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+
+
