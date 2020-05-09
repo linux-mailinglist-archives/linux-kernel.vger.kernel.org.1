@@ -2,164 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 687EC1CC412
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 21:20:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5794A1CC416
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 21:21:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728162AbgEITU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 15:20:29 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46314 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727938AbgEITU3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 15:20:29 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id C5D12AB99;
-        Sat,  9 May 2020 19:20:29 +0000 (UTC)
-Message-ID: <cae7a4e19281fa3a7a0f89bd7812212c8e2e829f.camel@suse.de>
-Subject: Re: [PATCH v8 2/4] firmware: raspberrypi: Introduce vl805 init
- routine
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Stefan Wahren <wahrenst@gmx.net>
-Cc:     Rob Herring <robh@kernel.org>, f.fainelli@gmail.com,
-        Scott Branden <sbranden@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>, linux-usb@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tim.gover@raspberrypi.org, helgaas@kernel.org,
-        linux-rpi-kernel@lists.infradead.org, gregkh@linuxfoundation.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org
-Date:   Sat, 09 May 2020 21:20:24 +0200
-In-Reply-To: <c9449111-f646-3925-36e6-f4492ad5f90a@gmx.net>
-References: <20200505161318.26200-1-nsaenzjulienne@suse.de>
-         <20200505161318.26200-3-nsaenzjulienne@suse.de>
-         <20200507214859.GA562@bogus> <c9449111-f646-3925-36e6-f4492ad5f90a@gmx.net>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-NYv+jnSD7ETBXidQR5XT"
-User-Agent: Evolution 3.36.2 
+        id S1728301AbgEITV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 15:21:29 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:51526 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727938AbgEITV3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 May 2020 15:21:29 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 1EEA61C0257; Sat,  9 May 2020 21:21:27 +0200 (CEST)
+Date:   Sat, 9 May 2020 21:21:25 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     "Paraschiv, Andra-Irina" <andraprs@amazon.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+        Anthony Liguori <aliguori@amazon.com>,
+        Benjamin Herrenschmidt <benh@amazon.com>,
+        Colm MacCarthaigh <colmmacc@amazon.com>,
+        Bjoern Doebel <doebel@amazon.de>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Frank van der Linden <fllinden@amazon.com>,
+        Alexander Graf <graf@amazon.de>,
+        Martin Pohlack <mpohlack@amazon.de>,
+        Matt Wilson <msw@amazon.com>, Balbir Singh <sblbir@amazon.com>,
+        Stewart Smith <trawets@amazon.com>,
+        Uwe Dannowski <uwed@amazon.de>, kvm@vger.kernel.org,
+        ne-devel-upstream@amazon.com
+Subject: Re: [PATCH v1 00/15] Add support for Nitro Enclaves
+Message-ID: <20200509192125.GA1597@bug>
+References: <20200421184150.68011-1-andraprs@amazon.com>
+ <18406322-dc58-9b59-3f94-88e6b638fe65@redhat.com>
+ <ff65b1ed-a980-9ddc-ebae-996869e87308@amazon.com>
+ <2a4a15c5-7adb-c574-d558-7540b95e2139@redhat.com>
+ <20200507174438.GB1216@bug>
+ <620bf5ae-eade-37da-670d-a8704d9b4397@amazon.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <620bf5ae-eade-37da-670d-a8704d9b4397@amazon.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri 2020-05-08 10:00:27, Paraschiv, Andra-Irina wrote:
+> 
+> 
+> On 07/05/2020 20:44, Pavel Machek wrote:
+> >
+> >Hi!
+> >
+> >>>it uses its own memory and CPUs + its virtio-vsock emulated device for
+> >>>communication with the primary VM.
+> >>>
+> >>>The memory and CPUs are carved out of the primary VM, they are dedicated
+> >>>for the enclave. The Nitro hypervisor running on the host ensures memory
+> >>>and CPU isolation between the primary VM and the enclave VM.
+> >>>
+> >>>These two components need to reflect the same state e.g. when the
+> >>>enclave abstraction process (1) is terminated, the enclave VM (2) is
+> >>>terminated as well.
+> >>>
+> >>>With regard to the communication channel, the primary VM has its own
+> >>>emulated virtio-vsock PCI device. The enclave VM has its own emulated
+> >>>virtio-vsock device as well. This channel is used, for example, to fetch
+> >>>data in the enclave and then process it. An application that sets up the
+> >>>vsock socket and connects or listens, depending on the use case, is then
+> >>>developed to use this channel; this happens on both ends - primary VM
+> >>>and enclave VM.
+> >>>
+> >>>Let me know if further clarifications are needed.
+> >>Thanks, this is all useful.  However can you please clarify the
+> >>low-level details here?
+> >Is the virtual machine manager open-source? If so, I guess pointer for sources
+> >would be useful.
+> 
+> Hi Pavel,
+> 
+> Thanks for reaching out.
+> 
+> The VMM that is used for the primary / parent VM is not open source.
 
---=-NYv+jnSD7ETBXidQR5XT
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Do we want to merge code that opensource community can not test?
 
-On Sat, 2020-05-09 at 12:02 +0200, Stefan Wahren wrote:
-> Hi Nicolas,
->=20
-> Am 07.05.20 um 23:48 schrieb Rob Herring:
-> > On Tue,  5 May 2020 18:13:15 +0200, Nicolas Saenz Julienne wrote:
-> > > The Raspberry Pi 4 gets its USB functionality from VL805, a PCIe chip
-> > > that implements xHCI. After a PCI reset, VL805's firmware may either =
-be
-> > > loaded directly from an EEPROM or, if not present, by the SoC's
-> > > co-processor, VideoCore. RPi4's VideoCore OS contains both the non pu=
-blic
-> > > firmware load logic and the VL805 firmware blob. The function this pa=
-tch
-> > > introduces triggers the aforementioned process.
-> > >=20
-> > > Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> > >=20
-> > > ---
-> > >=20
-> > > Change since v7:
-> > > - Use usleep_delay()
-> > > - Add comment about PCI errors
-> > > - Don't wait on error
-> > > - Typos
-> > >=20
-> > > Change since v6:
-> > > - Add test to avoid loading the firmware when not needed
-> > > - Since we have it around, print VL805's firmware version, it'll make
-> > > debugging easier in the future
-> > > - Correct typos
-> > > - Add a clearer view of HW topology in patch description
-> > >=20
-> > > Changes since v4:
-> > > - Inline function definition when RASPBERRYPI_FIRMWARE is not defined
-> > >=20
-> > > Changes since v1:
-> > > - Move include into .c file and add forward declaration to .h
-> > >=20
-> > >  drivers/firmware/raspberrypi.c             | 61 ++++++++++++++++++++=
-++
-> > >  include/soc/bcm2835/raspberrypi-firmware.h |  7 +++
-> > >  2 files changed, 68 insertions(+)
-> > >=20
-> > Reviewed-by: Rob Herring <robh@kernel.org>
->=20
-> i modified the code a little bit for testing, but also successfully
-> tested it without my modifications:
->=20
-> diff --git a/drivers/firmware/raspberrypi.c b/drivers/firmware/raspberryp=
-i.c
-> index 0d1422b..f3f4c2d 100644
-> --- a/drivers/firmware/raspberrypi.c
-> +++ b/drivers/firmware/raspberrypi.c
-> @@ -337,8 +337,10 @@ int rpi_firmware_init_vl805(struct pci_dev *pdev)
->          * further down the line.
->          */
->         pci_read_config_dword(pdev, VL805_PCI_CONFIG_VERSION_OFFSET,
-> &version);
-> -       if (version)
-> -               goto exit;
-> +       if (version) {
-> +               pci_info(pdev, "VL805 EEPROM firmware version %08x\n",
-> version);
-> +               return 0;
-> +       }
-> =20
->         dev_addr =3D pdev->bus->number << 20 | PCI_SLOT(pdev->devfn) << 1=
-5 |
->                    PCI_FUNC(pdev->devfn) << 12;
-> @@ -353,9 +355,8 @@ int rpi_firmware_init_vl805(struct pci_dev *pdev)
-> =20
->         pci_read_config_dword(pdev, VL805_PCI_CONFIG_VERSION_OFFSET,
->                               &version);
-> -exit:
-> -       pci_info(pdev, "VL805 firmware version %08x\n", version);
-> =20
-> +       pci_info(pdev, "VL805 RAM firmware version %08x\n", version);
->         return 0;
->  }
->  EXPORT_SYMBOL_GPL(rpi_firmware_init_vl805);
->=20
-> Here are the my results with 3x Raspberry Pi 4:
->=20
-> VL805 EEPROM firmware version 000137ad
-> VL805 EEPROM firmware version 00013701
-> VL805 RAM firmware version 000137ad
->=20
-> So the whole patch series is:
->=20
-> Tested-by: Stefan Wahren <stefan.wahren@i2se.com>
+								Pavel
 
-Thanks for taking the time!
-
-Regards,
-Nicolas
-
-
---=-NYv+jnSD7ETBXidQR5XT
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl63AngACgkQlfZmHno8
-x/5TSAf7BczpOl3QIubfrvp77qkSKnOA+Vb+zg5XlulurMIug2l+pqDVUw0G/+Gp
-uwxEH4O0JxRg83lzCVFnP3Occ7dH5q5GA2yzBpcgVYvRLmlXw7NECJ1CqfAuB56S
-YDSBEQk1Pm4fcAIufJCJ8hH25TxuMXoK+2qEq2WYY7x9RY3FiarvCFw+XV4ayX4n
-s4rf/5spkVR3L1t6fMxmD6TQaGBwc6Ww2VFDTwJSTMjqxgU7iNHmjypv7XxaLuYl
-MkvpDgAyxuxI0R/MblN/rdNO2Fd2LCAQi5rU3VvEfcrrq6fm5YIt5sxnHzAOMfvK
-aIuwkpFCcR+EWHlJ7pQ4+dYrITgvPg==
-=iV4L
------END PGP SIGNATURE-----
-
---=-NYv+jnSD7ETBXidQR5XT--
-
+-- (english) http://www.livejournal.com/~pavelmachek (cesky, pictures) 
+http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
