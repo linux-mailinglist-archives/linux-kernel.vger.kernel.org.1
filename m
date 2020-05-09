@@ -2,117 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 178691CBD9B
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 06:55:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 405C91CBD8A
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 06:45:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728575AbgEIEzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 00:55:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41912 "EHLO
+        id S1725989AbgEIEoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 00:44:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725795AbgEIEzn (ORCPT
+        with ESMTP id S1725820AbgEIEox (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 00:55:43 -0400
-Received: from omr1.cc.vt.edu (omr1.cc.ipv6.vt.edu [IPv6:2607:b400:92:8300:0:c6:2117:b0e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D24BDC061A0C
-        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 21:55:42 -0700 (PDT)
-Received: from mr1.cc.vt.edu (junk.cc.ipv6.vt.edu [IPv6:2607:b400:92:9:0:9d:8fcb:4116])
-        by omr1.cc.vt.edu (8.14.4/8.14.4) with ESMTP id 0494dm6t018222
-        for <linux-kernel@vger.kernel.org>; Sat, 9 May 2020 00:39:48 -0400
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com [209.85.219.69])
-        by mr1.cc.vt.edu (8.14.7/8.14.7) with ESMTP id 0494dhiK005221
-        for <linux-kernel@vger.kernel.org>; Sat, 9 May 2020 00:39:48 -0400
-Received: by mail-qv1-f69.google.com with SMTP id w9so3900890qvs.22
-        for <linux-kernel@vger.kernel.org>; Fri, 08 May 2020 21:39:48 -0700 (PDT)
+        Sat, 9 May 2020 00:44:53 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82036C061A0C
+        for <linux-kernel@vger.kernel.org>; Fri,  8 May 2020 21:44:53 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id j3so3826578ljg.8
+        for <linux-kernel@vger.kernel.org>; Fri, 08 May 2020 21:44:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=MRnH5k9ZI9zg5bBwtUec2EUFq39SVuIpRRMAftUUCeQ=;
+        b=pouY5t34NrhTXy1cRVhZTkVj0Vz+TvTPUeb9CGHBENQ+rOH3CjUzxpDI7qNzs3oAFx
+         2Ibs87NF4nNXWQnQl0OA0WXbhwv6dxcTaoeXEu1obOwGFq34Dm/wiGu5nVHSwdKyJ/iP
+         QkcUgIAej5ariJQrMB1GSbpj9j9SF6DszX/r13uVYj/UsgGe0hHhvXHtLdEtOMmCJG5X
+         3STqswNY7tn0AzJNgPiLI1MzqQdqNkvz+40nZOC9gqll8ujByvqvQvgIfhD0WfiVJumq
+         SPiXXd9OuQirzrv4czEVNSo7f+dn0+W3moAcCufDO+Amroftvt96fAPAXdhRjxz2o3xE
+         OSdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
-         :mime-version:content-transfer-encoding:date:message-id;
-        bh=4HlAZy+x5Vyp9f/R1vrNhputccwbqWK0vLECWfqcbjA=;
-        b=WpIMCzJxN6LHP1pidLHOYwbW49W5qqbYEj+rRAHj++r6DA/YcSDXud3AMU/jt1kmYl
-         8BlTFSehAZQmkjfZCTzDUO0ucvMXW1jg+PDzX2ZSOuqxRAr6FILisJGBZoicO/mSNBAY
-         Gnw+gabXqWix9+WJLKnvxn4gNPuF+STfmVniW21HpaMgnq+Awy7F+2wkw5f5KXkP2HX5
-         JuWoHV9rhwwo1wBv42VxOJS9qdzQF66YcSeFiZYrH3iqngkVOjRFcF3uMd+OAuXCoU7D
-         /A1hauCWcERKxZfAxzWIJ0yupIvN1U0WNjCEnmoHT4AMMIE0rb374PP6UTd3cS/teRHt
-         2JSg==
-X-Gm-Message-State: AGi0PuayJn+jxoYKTSftTNVRbZM+JqKVBOkuiIpLcz6xFp3aClo7mLL9
-        /Dp0WD+gOVcJVqXe7ch6rGWJ5NkOJOW7by9meslp6XtuMCzznjibSHleJjP/j6Z13SL4IfL6dHV
-        xKjIhmD8bpRKHV7YTZzeSsOUGFuRIXoTmg+U=
-X-Received: by 2002:ac8:60d2:: with SMTP id i18mr6351339qtm.244.1588999183105;
-        Fri, 08 May 2020 21:39:43 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJUKMRJwsuig4tOPD4UhjqCfhYBTzYXe/zcaSRYFPbaDlHVfzA30uj3uvwa+YZFmsCDPZupaw==
-X-Received: by 2002:ac8:60d2:: with SMTP id i18mr6351323qtm.244.1588999182813;
-        Fri, 08 May 2020 21:39:42 -0700 (PDT)
-Received: from turing-police ([2601:5c0:c001:c9e1::359])
-        by smtp.gmail.com with ESMTPSA id b42sm3466211qta.29.2020.05.08.21.39.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 May 2020 21:39:41 -0700 (PDT)
-From:   "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <valdis.kletnieks@vt.edu>
-X-Google-Original-From: "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <Valdis.Kletnieks@vt.edu>
-X-Mailer: exmh version 2.9.0 11/07/2018 with nmh-1.7+dev
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Sam Ravnborg <sam@ravnborg.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next 20200506 - build failure with net/bpfilter/bpfilter_umh
-In-Reply-To: <CAK7LNARbKdfGiozX+WrF7fTSf6tpXPUQ8Hr=jC_phUwZa_FONg@mail.gmail.com>
-References: <251580.1588912756@turing-police>
- <CAK7LNARbKdfGiozX+WrF7fTSf6tpXPUQ8Hr=jC_phUwZa_FONg@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="==_Exmh_1588999179_6159P";
-         micalg=pgp-sha1; protocol="application/pgp-signature"
-Content-Transfer-Encoding: 7bit
-Date:   Sat, 09 May 2020 00:39:39 -0400
-Message-ID: <126705.1588999179@turing-police>
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=MRnH5k9ZI9zg5bBwtUec2EUFq39SVuIpRRMAftUUCeQ=;
+        b=cG7IbNRA+1CbjXlVaRVScMFYXUBNTcvIJyIFmQQkHa5tXaHwRr1n3NUMIGAPsRBH2A
+         Tn4wNJRuEVdO07Nd1WafgHdMLwoXNUs0PtHGmqdWcqHB189z1PsUbuXiXuyC0hz7tZt/
+         883JRiLItDaYYcbXA2EnSowg1V3pR+bfafgB0MX0fIdIHKeh7AcKTkt1w9Cq4GMLyzJN
+         Ks/ymLKRzW+R6++Cio2zy1YVKyIn+Mh53aY45yA2GjNRlbH7Z55qEVDDMi5lZANi3DLm
+         twQzDkddo5wSH8RweB9UYlyUCdHRHV6pQ/euniSofrJbfn/m0XmPdn7Dopv+awtpMGBj
+         bqYA==
+X-Gm-Message-State: AOAM533cW/yuOCoVOf/t9Giv1nM4yZqupbtrWHIvwYzrc06cawkiWnUz
+        8ZjgqPBJmhOKsGACqIvHpxDkygyLtS+gnccOAYk=
+X-Google-Smtp-Source: ABdhPJxanvVrcq7FG18owQu9bSMjR4aEQukN7BE4V1vAgTP5CPWWftYEBozZZPIykC3o8oWCEnWi/KcodkE+Khl6/3Q=
+X-Received: by 2002:a05:651c:385:: with SMTP id e5mr3709241ljp.208.1588999491978;
+ Fri, 08 May 2020 21:44:51 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200508182835.228107-1-ndesaulniers@google.com>
+ <20200508183230.229464-1-ndesaulniers@google.com> <20200508202835.GA550540@ubuntu-s3-xlarge-x86>
+ <20200508164703.0000481d@intel.com>
+In-Reply-To: <20200508164703.0000481d@intel.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Sat, 9 May 2020 06:44:40 +0200
+Message-ID: <CA+icZUXcaZKjA=khdzy2DyXtwA4YkN=XBqNvTQSQqSz7tdipfA@mail.gmail.com>
+Subject: Re: [PATCH v5] x86: bitops: fix build regression
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "kernelci . org bot" <bot@kernelci.org>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Ilie Halip <ilie.halip@gmail.com>, x86@kernel.org,
+        Marco Elver <elver@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Daniel Axtens <dja@axtens.net>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---==_Exmh_1588999179_6159P
-Content-Type: text/plain; charset=us-ascii
-
-On Sat, 09 May 2020 12:45:22 +0900, Masahiro Yamada said:
-
-> >   LD [U]  net/bpfilter/bpfilter_umh
-> > /usr/bin/ld: cannot find -lc
-> > collect2: error: ld returned 1 exit status
-> > make[2]: *** [scripts/Makefile.userprogs:36: net/bpfilter/bpfilter_umh] Error 1
-> > make[1]: *** [scripts/Makefile.build:494: net/bpfilter] Error 2
-> > make: *** [Makefile:1726: net] Error 2
-> >
-> > The culprit is this commit:
+On Sat, May 9, 2020 at 1:47 AM Jesse Brandeburg
+<jesse.brandeburg@intel.com> wrote:
 >
-> Thanks. I will try to fix it,
-> but my commit is innocent because
-> it is just textual cleanups.
-> No functional change is intended.
+> On Fri, 8 May 2020 13:28:35 -0700
+> Nathan Chancellor <natechancellor@gmail.com> wrote:
+>
+> > On Fri, May 08, 2020 at 11:32:29AM -0700, Nick Desaulniers wrote:
+> > > Use the `%b` "x86 Operand Modifier" to instead force register allocation
+> > > to select a lower-8-bit GPR operand.
+>
+> This looks OK to me, I appreciate the work done to find the right
+> fix and clean up the code while not breaking sparse! I had a look at
+> the assembly from gcc 9.3.1 and it looks good. Thanks!
+>
+> Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+>
 
-Hmm... 'git show' made it look like a totally new line...
+Tested v5 on Debian/testing AMD64 with a selfmade llvm-toolchain
+(LLVM/Clang/LLD) v10.0.1+git92d5c1be9ee9
 
-Proposed patch following in separate email...
+Please add:
 
+     Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
 
+For details see
+<https://github.com/ClangBuiltLinux/linux/issues/961#issuecomment-626104287>
 
---==_Exmh_1588999179_6159P
-Content-Type: application/pgp-signature
+Thanks to all involved people.
 
------BEGIN PGP SIGNATURE-----
-Comment: Exmh version 2.9.0 11/07/2018
-
-iQIVAwUBXrY0CwdmEQWDXROgAQK7zBAAoJIkHQxqxrSHh8Xj26EcJbDRX+pxD8oO
-7VHd42t5dEVS3+lr3FSfYfVwmIH3E/du6MlogZs9IvfBbahpZOtxBFrenL4Nbp86
-xgHXbfD+dG70HKdi8n0e85dWOUxhOFSTtoBRdEYFPHIMKhvrXf+704OVC2ugB2bL
-eqVKa0/7TzLBT2NZSy/2rZQmlc6S90fOCSy73TJsvKc/1yFOfQC1TW9sjzp+8kCl
-evfrSHjEqpwmto8Bdl3nbcDyk64nvLlGtHf7vVzgnrwh2+llKO2cjzoBkuGPp2zp
-BuL901PbPg9vMaZ6TvxApC2YZnsT1piaIR797/F8KzPuy44KV05FZw9HRL6/9kND
-hV7su+7nwQcUsX0hbZlpi6LybKlYFe2Ly9a7q+HNgsj5MjBK8sHOc8mA3mOm042l
-LYC/phYGLhgNVAy2ih9GaGOyw6MmQEABe4e8VNiavdfWaz2Z/W89pioa2v+DzwIx
-U8SUdqD4vDIZ+Xwkfzss1sY72DEztwzL+Vkh/5h4wdm1qCic6o7zvOUGSSqqPDmL
-NpqEEVkZQPTtifs4Od3/TgRdTJz/Vn8RsCuB3bF5x4DJ+7HRWXm9ROXrsXqZfZ5V
-5jDlftMD70YV42WyihkcVAWAhqRLyzmRWcF9cmsllqVGupq2f+MWJowiacsNB0dG
-EQ9pnXquFtw=
-=x8/o
------END PGP SIGNATURE-----
-
---==_Exmh_1588999179_6159P--
+- Sedat -
