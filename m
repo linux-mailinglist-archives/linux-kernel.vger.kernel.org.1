@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35CAA1CC33A
+	by mail.lfdr.de (Postfix) with ESMTP id A3A4C1CC33B
 	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 19:37:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728606AbgEIRhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 13:37:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54540 "EHLO mail.kernel.org"
+        id S1728625AbgEIRhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 13:37:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54586 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728556AbgEIRhO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 13:37:14 -0400
+        id S1728579AbgEIRhQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 May 2020 13:37:16 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CC28524956;
-        Sat,  9 May 2020 17:37:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4749420A8B;
+        Sat,  9 May 2020 17:37:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589045834;
-        bh=XB2DMbcdtt9RoxOfGiwesKsJ7IyXYEi8LfJOoe/YsnY=;
+        s=default; t=1589045835;
+        bh=/Y6JDEC90w0GBqbdeWrZTksp0NgWDLpS8ypWQddiY5s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ij9bufEn7aeXjnEjYwvjndLQOf2Z2gYbt4queQSVYREcDPF/5rfsDMIN1uyEg1IxA
-         gO4xQSE4/OLUrYDpqhv3C0MRRM0V8Fe4NtWZ8jlQQKdDzjxdzabygf5SGt+pHQ84eZ
-         +Dq9nzrWnGye4VGYocL+WecUljpaYaqtNK1/pLwo=
+        b=hxzhRnhXhtQM6aIIKoTpf3aoCQ6MsdQvBTCvJKlppbU3SoSYsKh/EUeg0F2RnHl8p
+         df7jC2YJaZjYrEkvQvcIyyXI+M/Ue4xTB1WeoKli7/ANYUQ4HGNGUaVohQysRtg2jn
+         fwCjwZCKyz1e+1xIdXFVj7kmjXsLC0Yb+wdiNGfY=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, tglx@linutronix.de, bp@alien8.de,
         luto@kernel.org
 Cc:     hpa@zytor.com, dave.hansen@intel.com, tony.luck@intel.com,
         ak@linux.intel.com, ravi.v.shankar@intel.com,
-        chang.seok.bae@intel.com, Sasha Levin <sashal@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>
-Subject: [PATCH v11 10/18] x86/fsgsbase/64: Enable FSGSBASE instructions in helper functions
-Date:   Sat,  9 May 2020 13:36:47 -0400
-Message-Id: <20200509173655.13977-11-sashal@kernel.org>
+        chang.seok.bae@intel.com, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH v11 11/18] x86/fsgsbase/64: Use FSGSBASE in switch_to() if available
+Date:   Sat,  9 May 2020 13:36:48 -0400
+Message-Id: <20200509173655.13977-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200509173655.13977-1-sashal@kernel.org>
 References: <20200509173655.13977-1-sashal@kernel.org>
@@ -43,20 +42,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Chang S. Bae" <chang.seok.bae@intel.com>
+From: Andy Lutomirski <luto@kernel.org>
 
-Add CPU feature conditional FS/GS base access to the relevant helper
-functions. That allows accelerating certain FS/GS base operations in
-subsequent changes.
+With the new FSGSBASE instructions, FS/GS base can be efficiently read
+and written in __switch_to(). Use that capability to preserve the full
+state.
 
-Note, that while possible, the user space entry/exit GS base operations are
-not going to use the new FSGSBASE instructions. The reason is that it would
-require additional storage for the user space value which adds more
-complexity to the low level code and experiments have shown marginal
-benefit. This may be revisited later but for now the SWAPGS based handling
-in the entry code is preserved except for the paranoid entry/exit code.
+This will enable user code to do whatever it wants with the new
+instructions without any kernel-induced gotchas.  (There can still be
+architectural gotchas: movl %gs,%eax; movl %eax,%gs may change GS base
+if WRGSBASE was used, but users are expected to read the CPU manual
+before doing things like that.)
 
-Suggested-by: Tony Luck <tony.luck@intel.com>
+This is a considerable speedup. It seems to save about 100 cycles per
+context switch compared to the baseline 4.6-rc1 behavior on a Skylake
+laptop.
+
+[ chang: 5~10% performance improvements were seen by a context switch
+  benchmark that ran threads with different FS/GS base values (to the
+  baseline 4.16). ]
+
+Signed-off-by: Andy Lutomirski <luto@kernel.org>
 Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 Reviewed-by: Tony Luck <tony.luck@intel.com>
@@ -67,133 +73,62 @@ Cc: H. Peter Anvin <hpa@zytor.com>
 Cc: Dave Hansen <dave.hansen@intel.com>
 Cc: Tony Luck <tony.luck@intel.com>
 Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Andrew Cooper <andrew.cooper3@citrix.com>
 ---
- arch/x86/include/asm/fsgsbase.h | 27 +++++++--------
- arch/x86/kernel/process_64.c    | 58 +++++++++++++++++++++++++++++++++
- 2 files changed, 70 insertions(+), 15 deletions(-)
+ arch/x86/kernel/process_64.c | 34 ++++++++++++++++++++++++++++------
+ 1 file changed, 28 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/include/asm/fsgsbase.h b/arch/x86/include/asm/fsgsbase.h
-index fdd1177499b40..aefd53767a5d4 100644
---- a/arch/x86/include/asm/fsgsbase.h
-+++ b/arch/x86/include/asm/fsgsbase.h
-@@ -49,35 +49,32 @@ static __always_inline void wrgsbase(unsigned long gsbase)
- 	asm volatile("wrgsbase %0" :: "r" (gsbase) : "memory");
- }
- 
-+#include <asm/cpufeature.h>
-+
- /* Helper functions for reading/writing FS/GS base */
- 
- static inline unsigned long x86_fsbase_read_cpu(void)
- {
- 	unsigned long fsbase;
- 
--	rdmsrl(MSR_FS_BASE, fsbase);
-+	if (static_cpu_has(X86_FEATURE_FSGSBASE))
-+		fsbase = rdfsbase();
-+	else
-+		rdmsrl(MSR_FS_BASE, fsbase);
- 
- 	return fsbase;
- }
- 
--static inline unsigned long x86_gsbase_read_cpu_inactive(void)
--{
--	unsigned long gsbase;
--
--	rdmsrl(MSR_KERNEL_GS_BASE, gsbase);
--
--	return gsbase;
--}
--
- static inline void x86_fsbase_write_cpu(unsigned long fsbase)
- {
--	wrmsrl(MSR_FS_BASE, fsbase);
-+	if (static_cpu_has(X86_FEATURE_FSGSBASE))
-+		wrfsbase(fsbase);
-+	else
-+		wrmsrl(MSR_FS_BASE, fsbase);
- }
- 
--static inline void x86_gsbase_write_cpu_inactive(unsigned long gsbase)
--{
--	wrmsrl(MSR_KERNEL_GS_BASE, gsbase);
--}
-+extern unsigned long x86_gsbase_read_cpu_inactive(void);
-+extern void x86_gsbase_write_cpu_inactive(unsigned long gsbase);
- 
- #endif /* CONFIG_X86_64 */
- 
 diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
-index 5ef9d8f25b0e8..aaa65f284b9b9 100644
+index aaa65f284b9b9..e066750be89a0 100644
 --- a/arch/x86/kernel/process_64.c
 +++ b/arch/x86/kernel/process_64.c
-@@ -328,6 +328,64 @@ static unsigned long x86_fsgsbase_read_task(struct task_struct *task,
- 	return base;
+@@ -199,8 +199,18 @@ static __always_inline void save_fsgs(struct task_struct *task)
+ {
+ 	savesegment(fs, task->thread.fsindex);
+ 	savesegment(gs, task->thread.gsindex);
+-	save_base_legacy(task, task->thread.fsindex, FS);
+-	save_base_legacy(task, task->thread.gsindex, GS);
++	if (static_cpu_has(X86_FEATURE_FSGSBASE)) {
++		/*
++		 * If FSGSBASE is enabled, we can't make any useful guesses
++		 * about the base, and user code expects us to save the current
++		 * value.  Fortunately, reading the base directly is efficient.
++		 */
++		task->thread.fsbase = rdfsbase();
++		task->thread.gsbase = x86_gsbase_read_cpu_inactive();
++	} else {
++		save_base_legacy(task, task->thread.fsindex, FS);
++		save_base_legacy(task, task->thread.gsindex, GS);
++	}
  }
  
-+unsigned long x86_gsbase_read_cpu_inactive(void)
-+{
-+	unsigned long gsbase;
-+
-+	if (static_cpu_has(X86_FEATURE_FSGSBASE)) {
-+		bool need_restore = false;
-+		unsigned long flags;
-+
-+		/*
-+		 * We read the inactive GS base value by swapping
-+		 * to make it the active one. But we cannot allow
-+		 * an interrupt while we switch to and from.
-+		 */
-+		if (!irqs_disabled()) {
-+			local_irq_save(flags);
-+			need_restore = true;
-+		}
-+
-+		native_swapgs();
-+		gsbase = rdgsbase();
-+		native_swapgs();
-+
-+		if (need_restore)
-+			local_irq_restore(flags);
-+	} else {
-+		rdmsrl(MSR_KERNEL_GS_BASE, gsbase);
-+	}
-+
-+	return gsbase;
-+}
-+
-+void x86_gsbase_write_cpu_inactive(unsigned long gsbase)
-+{
-+	if (static_cpu_has(X86_FEATURE_FSGSBASE)) {
-+		bool need_restore = false;
-+		unsigned long flags;
-+
-+		/*
-+		 * We write the inactive GS base value by swapping
-+		 * to make it the active one. But we cannot allow
-+		 * an interrupt while we switch to and from.
-+		 */
-+		if (!irqs_disabled()) {
-+			local_irq_save(flags);
-+			need_restore = true;
-+		}
-+
-+		native_swapgs();
-+		wrgsbase(gsbase);
-+		native_swapgs();
-+
-+		if (need_restore)
-+			local_irq_restore(flags);
-+	} else {
-+		wrmsrl(MSR_KERNEL_GS_BASE, gsbase);
-+	}
-+}
-+
- unsigned long x86_fsbase_read_task(struct task_struct *task)
+ #if IS_ENABLED(CONFIG_KVM)
+@@ -279,10 +289,22 @@ static __always_inline void load_seg_legacy(unsigned short prev_index,
+ static __always_inline void x86_fsgsbase_load(struct thread_struct *prev,
+ 					      struct thread_struct *next)
  {
- 	unsigned long fsbase;
+-	load_seg_legacy(prev->fsindex, prev->fsbase,
+-			next->fsindex, next->fsbase, FS);
+-	load_seg_legacy(prev->gsindex, prev->gsbase,
+-			next->gsindex, next->gsbase, GS);
++	if (static_cpu_has(X86_FEATURE_FSGSBASE)) {
++		/* Update the FS and GS selectors if they could have changed. */
++		if (unlikely(prev->fsindex || next->fsindex))
++			loadseg(FS, next->fsindex);
++		if (unlikely(prev->gsindex || next->gsindex))
++			loadseg(GS, next->gsindex);
++
++		/* Update the bases. */
++		wrfsbase(next->fsbase);
++		x86_gsbase_write_cpu_inactive(next->gsbase);
++	} else {
++		load_seg_legacy(prev->fsindex, prev->fsbase,
++				next->fsindex, next->fsbase, FS);
++		load_seg_legacy(prev->gsindex, prev->gsbase,
++				next->gsindex, next->gsbase, GS);
++	}
+ }
+ 
+ static unsigned long x86_fsgsbase_read_task(struct task_struct *task,
 -- 
 2.20.1
 
