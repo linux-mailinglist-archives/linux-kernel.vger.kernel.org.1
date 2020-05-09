@@ -2,136 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63AAD1CBEA1
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 10:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 881C91CBEA9
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 10:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727111AbgEIIAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 04:00:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725850AbgEIIAL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 04:00:11 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B9FAC061A0C;
-        Sat,  9 May 2020 01:00:11 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id r17so198900lff.9;
-        Sat, 09 May 2020 01:00:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=1O47PkHhPqgCaPnb1U8RuAAVju8TXrJE2/w3v9RDbug=;
-        b=uREhs3pYWcR0fUxz9iyr7QagA9NylxN3dLzNLCrOkywdxmuF8NGbY/bZ5Hb74A8uQ8
-         kM78bD3VFlp9o1qq3xAKEitVWtT3lSDrk1FfSTNpHMk5Om6n0EfZ83Po3zMj8nDVFSDg
-         fta+m2dQ5muFyBgC7vEzG4j76DNJSPdREfwIFg+GV9CYzg5h8nTtO4mWp5OCfdIKAw+v
-         679hdIi8nlEsSGCR3D5pYPjr/UnCCWfxGmLVqlXtNgnRpcyTjzlTDBSVLV7EfG3SzoK+
-         u+XV0pFLp6EHpaTiXf7KhyCcv/YJW7aEslPWGa0niXrtXueu0qOPBidxy8d3/DGqvur2
-         nV3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
-         :date:message-id:mime-version;
-        bh=1O47PkHhPqgCaPnb1U8RuAAVju8TXrJE2/w3v9RDbug=;
-        b=cY9vvybdHA5LAZ0G+f85MIDUGJnsf5Qx+iKTNTAaI0dzp339+vZ3yKqM7Y60CQBehS
-         22KGOnWSA4OWECsWY+9oqLIYKqYHWZ7xsTPu/A8rC86kJ1kfsWc9/zFpPIdmm/gGVqC0
-         QynM0r18Gg6cx5p0moVZJzZpdZU+W2BxZ8K+c1VdqrEt2AYPeZ61hmcd4bkDBERM+Gwp
-         8yYJVmkdF3qi5uJDoD2ht4i1q3z2J+hmhNt/khHTGGGThI8HbXkZfaYe1WhcgTwMxC/z
-         Wy6xX9n+8tsJhhh0apv+E5tVjZUx9hITYNqQPeTANSpe1d/YN7egEzRqa3iWZ9qhXslB
-         zo3g==
-X-Gm-Message-State: AOAM530jLs6bgrAP3NCpVoWRVaOtCipdqHZ0dCZKEjvJ1R4j6EFtG5TF
-        jLS4YkeRJSP2NYJfgTr5bws=
-X-Google-Smtp-Source: ABdhPJzXIr+L+cqMht2BVYAGEPXftyPaqzeiq57Iq7hB4B+ztVcm83B0Xz/SLjIvsjYJJAlQeD/bJQ==
-X-Received: by 2002:ac2:50c7:: with SMTP id h7mr4331340lfm.171.1589011209653;
-        Sat, 09 May 2020 01:00:09 -0700 (PDT)
-Received: from saruman (91-155-214-58.elisa-laajakaista.fi. [91.155.214.58])
-        by smtp.gmail.com with ESMTPSA id j29sm3691207lfp.90.2020.05.09.01.00.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 09 May 2020 01:00:09 -0700 (PDT)
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-Subject: Re: [PATCH USB v3 3/5] usb: raw-gadget: fix gadget endpoint selection
-In-Reply-To: <459d02069dedefcc30095748f49ef4a426e15b74.1588870822.git.andreyknvl@google.com>
-References: <cover.1588870822.git.andreyknvl@google.com> <459d02069dedefcc30095748f49ef4a426e15b74.1588870822.git.andreyknvl@google.com>
-Date:   Sat, 09 May 2020 11:00:04 +0300
-Message-ID: <873689mtbv.fsf@kernel.org>
+        id S1727799AbgEIIAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 04:00:30 -0400
+Received: from mout.web.de ([212.227.17.11]:47711 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725850AbgEIIA1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 May 2020 04:00:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1589011215;
+        bh=zrxLDBTMmEIP/qqOFO2evz9mc4UXaGDRoyYKqIZKBmU=;
+        h=X-UI-Sender-Class:Cc:Subject:To:From:Date;
+        b=B/IQVjRmP8sfSP8/V7MLjEWLx3rrOsrPd/mZhydg5iYFJuL0KyQW6coUTsgv9vi1s
+         ddg9OURnBiPErO5xxn6YVHG0tblrf/c5QXr53RTH+EXppUxWukD0zT3g5KFijpoPov
+         k507Q0b+Z1hoH/S74/4UT3LXGlAkLlL/jvW4tqsM=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([78.48.147.78]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MJWsc-1jr4D91cmO-00K2Tf; Sat, 09
+ May 2020 10:00:15 +0200
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [PATCH 1/4] fs: btrfs: fix a data race in
+ btrfs_block_group_done()
+To:     Jia-Ju Bai <baijiaju1990@gmail.com>, linux-btrfs@vger.kernel.org
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <ce41cc75-ee89-61fe-ef7d-6d527ea56e5a@web.de>
+Date:   Sat, 9 May 2020 10:00:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:1tlwqMc8g4Mnq+exu4JXQPVrlV0T/nQuXVTVoAlwogzWnURg+6g
+ mdQsGd9ebWDdIhQU8D6WNFBEOHXk5JDl7e4kfisY9NgmMyBfWNY9fgEpjDXgyp/bvYdRGLA
+ VW279zWxVmO4EK3VBgdgxd+MRyXJmORTKGojJ9qg1LvkpiG8v+c5C4lWwSXjELtBTad+Lph
+ 1GiYp9Y3vHFZmB6D3ntWw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:IL4ulCApXVA=:axd6i3FmjB7fPueRGR+Ixe
+ /KEwzjIySvIJjwRQ8UW1xkrbjxlzzjnqw+HpQYIgVRXA896uX5uSnf4c9Sr7PggjUr6NJI41J
+ QiqkyCEM71ouok+FCGXhcFrGHRBzZv+2hkrcxC4vMYjJbHl5LTTmidg0fvsS5nKWcfCApSLvw
+ NMJG9cO+JGkagXefquWAlC/5Dc1APhBr5hsFYcfc1/TVA6ud41UiS5r4y1z3LZ0MYvtbW42bF
+ 7U9HeRGOVOWvy9cAYdWMXlv9DkHLndqq6JXTqgX0DGKrZbSpPmxRPJJ7tD6AAQH9W4Y5rY9/U
+ ylg6UVQIMmPtdLBxOBkJqeMgqG4MgRH9K7jVIcf1GV797xJ8DokuMH0d+VLTd7M1uWpuCU5Kg
+ Wrc+Z5ASLm9KTk4wu/kH3En84wjCxKX6+OuYY1ycTTwYg3rDm/Pk48l8v62qnXb/dN4yyN/1F
+ ZRUMRiilYKLkhk3LfmtueZw1XKXnptWtmlNFFjsq5W0SG6agNuU7kkB7Z/u9946IkSVJly3IK
+ ptzj3SCIzT8DtiHyU7g3xv+HWa+epkSntSIXrnoCtBvoqAeXT56YhsqGYhrs+fQIgnPNZGdv/
+ ifu657/S053UxPZQLUN9OfemvAQHyyMUaQtdJdL3s/sufl4j2SkqWy059LCxT3mP/LgAQgm/h
+ otEwViu1hURGkDMDEmFvJVInzbT2TQSHoL0dE6A90P7zA0v/FtVrEMMYjl9mfbpvo2wKkUk/p
+ zZRo85lkjXVtVfC5MxUAXjPJ4XAAoGej70WNF3PIu44XKqeavde4JIAirZioF+MLKPYWG4xg+
+ tYA+0f4jljsn6aXooIedsOmGymr2tMHmaTXM/KZ8wXIEaOMYt+5LpsNAsF0NzDKfdwtNux3F/
+ gr9+AhATIiPrkQtlY3Hth8yhwZxgOkqyLrq1fh24c1XQvOxRNxRMfX+ijPbYM5QEjh9S9z/Z5
+ aWewm+nmPmXKr1J1d0GpDcTlFvvYeM5YOyiYVLLJR1A2o0CijA3C8FgrVdyh5vi4m51NrNrE3
+ FzC1FvYI+EYjfOjA/55mvWjRnWtPSrdPPRWHtDwi4k6v9xP19TFxuO5A4FQUnJtcaYz/qX5oS
+ oxAiHgSoQULxHkUbMXId6QRZGnMQPqNNq7o6MVRcwGvJSIYwaRWSCBg+tX6PK8asFutcfwhoD
+ G8fLw8KdV0XEoOY4htPDTMKkJ4F4dJwj5xRflpw5GdjEabT/LDKXl+3CxQASIWaxjMQS+kFpF
+ FYo5hlNEGjaoWwN3q
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+> To fix this race, the spinlock cache->lock is used to protect the
+> access to cache->cached in btrfs_block_group_done().
 
-Andrey Konovalov <andreyknvl@google.com> writes:
+How do you think about to replace this wording by a variant like the follo=
+wing?
 
-> Currently automatic gadget endpoint selection based on required features
-> doesn't work. Raw Gadget tries iterating over the list of available
-> endpoints and finding one that has the right direction and transfer type.
-> Unfortunately selecting arbitrary gadget endpoints (even if they satisfy
-> feature requirements) doesn't work, as (depending on the UDC driver) they
-> might have fixed addresses, and one also needs to provide matching
-> endpoint addresses in the descriptors sent to the host.
->
-> The composite framework deals with this by assigning endpoint addresses
-> in usb_ep_autoconfig() before enumeration starts. This approach won't work
-> with Raw Gadget as the endpoints are supposed to be enabled after a
-> set_configuration/set_interface request from the host, so it's too late to
-> patch the endpoint descriptors that had already been sent to the host.
->
-> For Raw Gadget we take another approach. Similarly to GadgetFS, we allow
-> the user to make the decision as to which gadget endpoints to use.
->
-> This patch adds another Raw Gadget ioctl USB_RAW_IOCTL_EPS_INFO that
-> exposes information about all non-control endpoints that a currently
-> connected UDC has. This information includes endpoints addresses, as well
-> as their capabilities and limits to allow the user to choose the most
-> fitting gadget endpoint.
->
-> The USB_RAW_IOCTL_EP_ENABLE ioctl is updated to use the proper endpoint
-> validation routine usb_gadget_ep_match_desc().
->
-> These changes affect the portability of the gadgets that use Raw Gadget
-> when running on different UDCs. Nevertheless, as long as the user relies
-> on the information provided by USB_RAW_IOCTL_EPS_INFO to dynamically
-> choose endpoint addresses, UDC-agnostic gadgets can still be written with
-> Raw Gadget.
->
-> Fixes: f2c2e717642c ("usb: gadget: add raw-gadget interface")
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> ---
+   Thus use the spin lock =E2=80=9Ccache->lock=E2=80=9D to protect the acc=
+ess to
+   the data structure member =E2=80=9Ccached=E2=80=9D in the implementatio=
+n of
+   the function =E2=80=9Cbtrfs_block_group_done=E2=80=9D.
 
-you're adding a new IOCTL, how is this a fix?
 
-=2D-=20
-balbi
+Would you like to add the tag =E2=80=9CFixes=E2=80=9D to the change descri=
+ption?
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEElLzh7wn96CXwjh2IzL64meEamQYFAl62YwQACgkQzL64meEa
-mQbYsRAA0XJbcBgnby2EBTMYktlDmcMrOfmOE7NSASjGlft/AAZO/0yJVSEy9rE8
-iPMyiw6wQ81VuMfpWzeFC9G+HTkTsqpQQ2ULWZWpJtDBFhzUL/5VWF/ZLeHg3VXT
-fMuI2Cgmbj0Gy/V2pWH5MFGJtyxWKJQ0Q9QHFqSfimfcPT4dLbBbQ+HHvO+tJ8zV
-3KN39YxJ5We1agxM2E2nzrCvTY8eiOl4/8a8s4N9l//8WlHc2BwWmuGq6QRPdvRE
-aBElv9l4WplqDe+TXG+5Wx/vD+ezshKiAFhjlq3JdwgU4F8BsqO0BJFaLZXtUJnz
-VTNqbkPmPOqEw5+QHhQQJ8N0ThJPHI4+gIXYZnQUyWHwW3G+CSYey5sFnjm0DA5M
-rbmTIsSCk1VpTQjZvV9PWuF3vMO8aKLZy7UWC3DVvc82Uj1WfjI6ewn6e1M1v0wC
-SquNQ1iKw5s6erCWmbYjOn+h9lEAnZgoDJpHHZzXcTpQidRAu1fRpYOdqxLEDV2y
-AVQOYLV07Zvo4nDnACMUhvXxGLyeJs3gNZxIBMQQu0d+XWlRnAZAZABdUI43q/hs
-1FLYj8j/PoYOqEnE2RfcMLE7jmtWnlt5v2llz4+1DF1gvY/CPL5ncRtmWNAPC9SX
-dBZqt/Efo19jrHKsHXPPFqSdsm2Zc24EudCjgjyw6JujDnXVDCA=
-=sI+L
------END PGP SIGNATURE-----
---=-=-=--
+Regards,
+Markus
