@@ -2,83 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D70D91CBF66
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 10:52:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 329851CBF6B
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 10:53:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727105AbgEIIwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 04:52:20 -0400
-Received: from www381.your-server.de ([78.46.137.84]:56354 "EHLO
-        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725930AbgEIIwS (ORCPT
+        id S1728008AbgEIIxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 04:53:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725989AbgEIIxQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 04:52:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
-         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=UX4id79YvnLmpwLxSRzdIBRSmF4fESpagRYbUVxzdds=; b=k4Hx7HSWchDhaD3UM7WhRDZFA4
-        /E1yaBZNGr67a2zrz/z27HEbSOBpyBa/eSTjHNPV0WUmk7UkuGwfFzqA+c9MJLldEk4k9Quhr/zsY
-        6C4f+pb/41QuLwSh/RYvOXuNhEMm2Wxp+nh0S5cwtXvsY6JgVeufXOkGttz1qci3B+LVU2K4nC5N4
-        x2ufxZYtLg1HuH8lUDQCDXKuK6ZBBOn0BiYPWYrTgmEbz3O4XrbR5vW6R8ZZyNBh+GPflWecTaYwh
-        FFeJQb0cui89jf9cFFNch8XXmWnMikD4qJ5EAxtATY2xWSm68S8Ir5Zsr+6mYjCAeNnGZzJ9v8NFO
-        Zvn9WYOA==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www381.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <lars@metafoo.de>)
-        id 1jXLDT-0000KF-5C; Sat, 09 May 2020 10:52:15 +0200
-Received: from [82.135.71.55] (helo=[192.168.178.20])
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <lars@metafoo.de>)
-        id 1jXLDS-0000wq-Tj; Sat, 09 May 2020 10:52:15 +0200
-Subject: Re: [RFC PATCH 00/14] iio: buffer: add support for multiple buffers
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     jic23@kernel.org
-References: <20200508135348.15229-1-alexandru.ardelean@analog.com>
-From:   Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <a9a47e84-b933-cca6-dcfb-d97a51c8bdd4@metafoo.de>
-Date:   Sat, 9 May 2020 10:52:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Sat, 9 May 2020 04:53:16 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7C8DC061A0C
+        for <linux-kernel@vger.kernel.org>; Sat,  9 May 2020 01:53:16 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id w18so2063028qvs.3
+        for <linux-kernel@vger.kernel.org>; Sat, 09 May 2020 01:53:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=15pRIylywvMGvtrJCDOTg+VPNTtiBCmmaIlSjw1OTgk=;
+        b=F3SZOHs/MLjLOdABudtczf+cVq5/nnOsBn9xKheOO5jY4wdbWkVx6Rcnc+k4/NgHqh
+         xcpISRpgEkbItfNtVBZ+I3iqh7Oz4ICvtwC+QBHXvDh1HZlne6a4Pm4xrCVekE/aDoeb
+         dvi/llKcAzPOEB8ZcvEbq5VMg44fLP7WmlWVlqLuYAnaL1OLOggCWpT/TzowJsi9SWmg
+         0SxRL23SdwUqkQh5svi9edWOArLnu23/1XhUaJQR6yfRtFE1YuZiQ0vDhQPhv2M+Qj2q
+         4MuQwVvaeIEhEOBq8BYLh1gbGSEZoL4ZK/QKGxisAsOtqek0KiDIvV+eGvc6Vqvqv8A0
+         Pu3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=15pRIylywvMGvtrJCDOTg+VPNTtiBCmmaIlSjw1OTgk=;
+        b=hZS0NzpF/WpPdyRwOVd1fOjW0XZvleJOZQLIZL3Fvgf0/u4ZQbNHmgQY45qmRNlYdw
+         SlgwJ55ym5uoib6H8WIVx/AfJquBWoB4vL37tii3gHcMFZ8FZCguf7z3g4Tzrcar86Y3
+         4NBAOTi4RYF1tY//AcsSBq4HHeZ7q+NifzgMJET/Af+Y1moNfuIaALplZ7Z5R9hA1J38
+         SQKcJlpraMcnA/wKwGgsAU4aexpFQ6xq8oXn3Pj/HGw74foA7BlFIYCeQZGDpb9FymY0
+         XrzrqeJmh5x2Ftn4JlhvcZ2dI4OvPVDnBlgpVj71vck50/PaL5HrAbnOclWb1LTJo+bY
+         Zjqw==
+X-Gm-Message-State: AGi0PuZCDCJgHyzxZ7hdcjE4YeTrgmCzt8Txn3vKJdW3CQfRoCPC/5p3
+        rWGlNR2/ycAHEghZOxZFLotkts3eBEmjgYWCn1Q=
+X-Google-Smtp-Source: APiQypI6AaK+EGj2SZAr6mAgwX6sx4vBk3+Gc+VBmzcHtDTOZzQFUzpdVZNxiP1qGe2u73SIaicHe8WJmSpcxNMP4vc=
+X-Received: by 2002:a05:6214:54a:: with SMTP id ci10mr6794414qvb.178.1589014395777;
+ Sat, 09 May 2020 01:53:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200508135348.15229-1-alexandru.ardelean@analog.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25806/Fri May  8 14:16:19 2020)
+Received: by 2002:ac8:6f44:0:0:0:0:0 with HTTP; Sat, 9 May 2020 01:53:12 -0700 (PDT)
+Reply-To: gi625900@gmail.com
+From:   "Mr. Scott Donald" <mrsell69@gmail.com>
+Date:   Sat, 9 May 2020 01:53:12 -0700
+Message-ID: <CANv_9p8fGMfT8CBCUPtUCdm8iL+mPo8pSZPFvMWmZpK818t=4g@mail.gmail.com>
+Subject: Very Urgent,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/8/20 3:53 PM, Alexandru Ardelean wrote:
-> [...]
-> What I don't like, is that iio:device3 has iio:buffer3:0 (to 3).
-> This is because the 'buffer->dev.parent = &indio_dev->dev'.
-> But I do feel this is correct.
-> So, now I don't know whether to leave it like that or symlink to shorter
-> versions like 'iio:buffer3:Y' -> 'iio:device3/bufferY'.
-> The reason for naming the IIO buffer devices to 'iio:bufferX:Y' is
-> mostly to make the names unique. It would have looked weird to do
-> '/dev/buffer1' if I would have named the buffer devices 'bufferX'.
->
-> So, now I'm thinking of whether all this is acceptable.
-> Or what is acceptable?
-> Should I symlink 'iio:device3/iio:buffer3:0' -> 'iio:device3/buffer0'?
-> What else should I consider moving forward?
-> What means forward?
-> Where did I leave my beer?
+Dear Friend,
+I'm Mr. Scott Donald a Successful business Man. dealing=C2=A0with
+Exportation, I got your email contact through search=C2=A0to let you know
+my Ugly Situation Am a dying Man here in=C2=A0California Los Angeles
+Hospital Bed in (USA), I Lost my=C2=A0Wife and my only Daughter for Corona
+virus and my Doctor said to me that i don't have enough time to live
+any=C2=A0more, i have a project that am about to handover to you.=C2=A0i ha=
+ve
+already instructed the Barclay Bank of London to=C2=A0transfer my fund sum
+of =C2=A33,7M GBP to you as to enable you=C2=A0give 50% to Charitable Home =
+and
+take 50% and i have=C2=A0already given all i have here in America to
+Charitable=C2=A0home I also ask my Doctor to help me get to you in case=C2=
+=A0you
+did not hear from me again, i want to you see on video very urgent
+here is my Doctor Whatsapp Number for urgent notice +13019692737
 
-Looking at how the /dev/ devices are named I think we can provide a name 
-that is different from the dev_name() of the device. Have a look at 
-device_get_devnode() in drivers/base/core.c. We should be able to 
-provide the name for the chardev through the devnode() callback.
+Hope To Hear From You. i really want to see you on Video call very
+urgent please.
 
-While we are at this, do we want to move the new devices into an iio 
-subfolder? So iio/buffer0:0 instead of iio:buffer0:0?
+you can reach me through this gmail id: globalinvestmentinvestment61@
 
+Regards
+
+Mr. Scott Donald
