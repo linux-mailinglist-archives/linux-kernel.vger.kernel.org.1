@@ -2,71 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBB311CBC99
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 04:43:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 119231CC063
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 12:38:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728689AbgEICnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 22:43:18 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:38056 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728575AbgEICnR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 22:43:17 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id EF549E9B17E7738F01BD;
-        Sat,  9 May 2020 10:43:14 +0800 (CST)
-Received: from euler.huawei.com (10.175.101.6) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 9 May 2020 10:43:06 +0800
-From:   Hongbo Yao <yaohongbo@huawei.com>
-To:     <sre@kernel.org>
-CC:     <yaohongbo@huawei.com>, <chenzhou10@huawei.com>,
-        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>
-Subject: [PATCH -next] power: reset: ltc2952: remove set but used variable
-Date:   Sat, 9 May 2020 18:36:11 +0800
-Message-ID: <20200509103611.29551-1-yaohongbo@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1728179AbgEIKiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 06:38:16 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:33997 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726877AbgEIKiQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 May 2020 06:38:16 -0400
+Received: by mail-oi1-f193.google.com with SMTP id c12so9819670oic.1;
+        Sat, 09 May 2020 03:38:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nBe+65cgrmufPqKgCO/WJS9rGOrSoS9DaeQpyO6VPQY=;
+        b=HUXFfZqyQiXplVrHeI/ZPD7fgTu/OyQS1uWandQ6GfholZUozpDA92RXqRtP3552+4
+         QU3UraKKkKBepmI4MM8VVIPVwoKSVc58fm+nR18vHiQTUD114S+ZJ7Z1yqclKOvDyfDw
+         /LAg8vYGyAmWIpSXcfPoxA14/QbxzjQIGrNCcLfV+j4vNoubQ5Lw6Kej6XiDjnDtr/Sm
+         mSjL8ioibecpSpdditmliAoTdksLU0kI/e8QDnJL6gNrAGiDVY9bhRs8tKRKoMOM/4yM
+         fBklMHZ/F0j1KhJwDEC/SGcPxpWd4DK81p+RBhisjz5CIqhRrrNXgUi0x5GI2ktEKXzZ
+         IZ3w==
+X-Gm-Message-State: AGi0Pua8mblCFI4UeA4h/Ojs+ZTIWSRPGsnxdFCxXlARacpXuuCfjEAj
+        oYctl3NkzFVkGH2Q6GDOKkrfZ7dULzyemEM0/O0=
+X-Google-Smtp-Source: APiQypJViR7zf1BxfE4fSiEMumUvdAfdspNngdk/6s5fr4R3Q+whgmTLapvbuOPEuAwW4U0ZD7JgMnKsLrBjVv9lPKw=
+X-Received: by 2002:aca:d50f:: with SMTP id m15mr13605566oig.54.1589020691722;
+ Sat, 09 May 2020 03:38:11 -0700 (PDT)
 MIME-Version: 1.0
+References: <20200508161517.252308-1-hch@lst.de> <20200508161517.252308-2-hch@lst.de>
+In-Reply-To: <20200508161517.252308-2-hch@lst.de>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Sat, 9 May 2020 12:38:00 +0200
+Message-ID: <CAMuHMdUBRsZQ1BOD9jW99NTm_8NZDootGrqzz3nPeeJ+mUAoTw@mail.gmail.com>
+Subject: Re: [PATCH 01/15] nfblock: use gendisk private_data
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Jim Paris <jim@jtan.com>,
+        Geoff Levand <geoff@infradead.org>,
+        Joshua Morris <josh.h.morris@us.ibm.com>,
+        Philip Kelleher <pjk1939@linux.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Nitin Gupta <ngupta@vflare.org>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>,
+        Lars Ellenberg <drbd-dev@lists.linbit.com>,
+        linux-block@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
+        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.101.6]
-X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes gcc '-Wunused-but-set-variable' warning:
-drivers/power/reset/ltc2952-poweroff.c:97:16: warning: variable
-‘overruns’ set but not used [-Wunused-but-set-variable]
-  unsigned long overruns;
+Hi Christoph,
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Hongbo Yao <yaohongbo@huawei.com>
----
- drivers/power/reset/ltc2952-poweroff.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+On Fri, May 8, 2020 at 6:16 PM Christoph Hellwig <hch@lst.de> wrote:
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-diff --git a/drivers/power/reset/ltc2952-poweroff.c b/drivers/power/reset/ltc2952-poweroff.c
-index e4a0cc45b3d1..318927938b05 100644
---- a/drivers/power/reset/ltc2952-poweroff.c
-+++ b/drivers/power/reset/ltc2952-poweroff.c
-@@ -94,7 +94,6 @@ static enum hrtimer_restart ltc2952_poweroff_timer_wde(struct hrtimer *timer)
- {
- 	ktime_t now;
- 	int state;
--	unsigned long overruns;
- 	struct ltc2952_poweroff *data = to_ltc2952(timer, timer_wde);
- 
- 	if (data->kernel_panic)
-@@ -104,7 +103,7 @@ static enum hrtimer_restart ltc2952_poweroff_timer_wde(struct hrtimer *timer)
- 	gpiod_set_value(data->gpio_watchdog, !state);
- 
- 	now = hrtimer_cb_get_time(timer);
--	overruns = hrtimer_forward(timer, now, data->wde_interval);
-+	hrtimer_forward(timer, now, data->wde_interval);
- 
- 	return HRTIMER_RESTART;
- }
+Thanks for your patch!
+
+> --- a/arch/m68k/emu/nfblock.c
+> +++ b/arch/m68k/emu/nfblock.c
+> @@ -61,7 +61,7 @@ struct nfhd_device {
+>
+>  static blk_qc_t nfhd_make_request(struct request_queue *queue, struct bio *bio)
+>  {
+> -       struct nfhd_device *dev = queue->queuedata;
+> +       struct nfhd_device *dev = bio->bi_disk->private_data;
+>         struct bio_vec bvec;
+>         struct bvec_iter iter;
+>         int dir, len, shift;
+> @@ -122,7 +122,6 @@ static int __init nfhd_init_one(int id, u32 blocks, u32 bsize)
+>         if (dev->queue == NULL)
+>                 goto free_dev;
+>
+> -       dev->queue->queuedata = dev;
+>         blk_queue_logical_block_size(dev->queue, bsize);
+>
+>         dev->disk = alloc_disk(16);
+> @@ -136,6 +135,7 @@ static int __init nfhd_init_one(int id, u32 blocks, u32 bsize)
+>         sprintf(dev->disk->disk_name, "nfhd%u", dev_id);
+>         set_capacity(dev->disk, (sector_t)blocks * (bsize / 512));
+>         dev->disk->queue = dev->queue;
+> +       dev->disk->private_data = dev;
+
+This is already set above, just before the quoted sprintf() call.
+
+>
+>         add_disk(dev->disk);
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.20.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
