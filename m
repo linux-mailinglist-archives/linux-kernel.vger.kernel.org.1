@@ -2,132 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3769F1CC581
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 01:47:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1A1F1CC53C
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 01:42:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729111AbgEIXq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 19:46:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47572 "EHLO
+        id S1728886AbgEIXlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 19:41:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729070AbgEIXqu (ORCPT
+        by vger.kernel.org with ESMTP id S1728817AbgEIXl3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 19:46:50 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E5F3C061A0C
-        for <linux-kernel@vger.kernel.org>; Sat,  9 May 2020 16:46:50 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id 7so6256039pjo.0
-        for <linux-kernel@vger.kernel.org>; Sat, 09 May 2020 16:46:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=W/OyM5xWMsCxGKhpd57n8B6pYDT/bbNCXahzUEHyQHM=;
-        b=hEl6rWsgGI5gElw0aUE/odwxzL2ZvqGO33b/PnrzxDJf5pz8m4nE6cMvPg9O3eZw4v
-         kWwXWbwTpba7DXwtb3X8PVyVu/ms5Pc5MB7DdYKfPzYZ+cqI4rSynBUUaRpok34yeHug
-         /OTMMd3FIF38Pv/p/ZggrIcEarV7883a3JO38=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=W/OyM5xWMsCxGKhpd57n8B6pYDT/bbNCXahzUEHyQHM=;
-        b=aLGhwcgCdgSklSSfHhIR8sRGpfs5oxRBQlJFp85IFeVDqEONhOJVTTEAV765SV6jWk
-         RvVD149uqxXMBChqNOeuTcaHbmbhli/FDg0meJuYq1FveqUKCY8/BYjND1SYjF4NzCLh
-         2siZYmbk7PtuulhlunDJokEJ02JXvjBYmr8J0rnIQ3HMwMewfwZCtxHJghW7uVHa4i1p
-         1KYpKajuB4TX0tZEwRHYXlG2M3LrI1qSll9MdzAGD1/Gf3jp+Pci2UBH8MDS00x5TmuX
-         sGkorKLWXmAf+Y6t2yGle+jOEFPzqlV/n9aUek4+MEaYym+ts+p4IIy9EUr0D7kDPq9k
-         vwgw==
-X-Gm-Message-State: AGi0Puajg96MAS7VTH81848rEC/oHsoqIJfZvGCeGCJzOOLp0t5zS4zq
-        CbxDeTXMXCx+lUs38NWJbgR4Mg==
-X-Google-Smtp-Source: APiQypKMTk+Db8R/TljPB2LFy2Oe3CFdrjNzI1wijISitcrWhwLAUAgNunD98TF1maMmXEhKS0COGw==
-X-Received: by 2002:a17:90b:246:: with SMTP id fz6mr14475254pjb.138.1589068009793;
-        Sat, 09 May 2020 16:46:49 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 13sm5534768pfv.95.2020.05.09.16.46.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 May 2020 16:46:49 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     WeiXiong Liao <liaoweixiong@allwinnertech.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Rob Herring <robh@kernel.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org
-Subject: [PATCH v6 18/18] pstore/blk: Introduce "best_effort" mode
-Date:   Sat,  9 May 2020 16:41:03 -0700
-Message-Id: <20200509234103.46544-19-keescook@chromium.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200509234103.46544-1-keescook@chromium.org>
-References: <20200509234103.46544-1-keescook@chromium.org>
+        Sat, 9 May 2020 19:41:29 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D2F3C061A0C;
+        Sat,  9 May 2020 16:41:29 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jXZ5w-004iAv-Sd; Sat, 09 May 2020 23:41:24 +0000
+Date:   Sun, 10 May 2020 00:41:24 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     linux-kernel@vger.kernel.org
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCHES] uaccess simple access_ok() removals
+Message-ID: <20200509234124.GM23230@ZenIV.linux.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to use arbitrary block devices as a pstore backend, provide a
-new module param named "best_effort", which will allow using any block
-device, even if it has not provided a panic_write callback.
+	One of the uaccess-related branches; this one is just the
+cases when access_ok() calls are trivially pointless - the address
+in question gets fed only to primitives that do access_ok() checks
+themselves.  This stuff sits in
+git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git #uaccess.access_ok
+and it's on top of #fixes (which is already merged into mainline on
+Apr 28).
+	Individual patches in followups; if nobody screams - into #for-next
+it goes...
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- fs/pstore/blk.c | 19 ++++++++++++++++++-
- 1 file changed, 18 insertions(+), 1 deletion(-)
+	There are other uaccess-related branches; I'll be posting them
+for review over the next few days.  My apologies if this one comes with
+a buggered Cc - this is the first time I have to deal with a series with
+Cc lists varying that much; I hope I manage to get git-send-email do
+the right thing, but...
 
-diff --git a/fs/pstore/blk.c b/fs/pstore/blk.c
-index 3e67bd4557ea..b7c33ef4c646 100644
---- a/fs/pstore/blk.c
-+++ b/fs/pstore/blk.c
-@@ -51,6 +51,10 @@ static long ftrace_size = -1;
- module_param(ftrace_size, long, 0400);
- MODULE_PARM_DESC(ftrace_size, "ftrace size in kbytes");
- 
-+static bool best_effort;
-+module_param(best_effort, bool, 0400);
-+MODULE_PARM_DESC(best_effort, "use best effort to write (i.e. do not require storage driver pstore support, default: off)");
-+
- /*
-  * blkdev - the block device to use for pstore storage
-  *
-@@ -388,7 +392,7 @@ static int __register_pstore_blk(unsigned int major, unsigned int flags,
- 		return PTR_ERR(binfo);
- 
- 	/* only allow driver matching the @blkdev */
--	if (!binfo->devt || MAJOR(binfo->devt) != major) {
-+	if (!binfo->devt || (!best_effort && MAJOR(binfo->devt) != major)) {
- 		pr_debug("invalid major %u (expect %u)\n",
- 				major, MAJOR(binfo->devt));
- 		return -ENODEV;
-@@ -532,6 +536,19 @@ int pstore_blk_usr_info(struct pstore_blk_info *info)
- }
- EXPORT_SYMBOL_GPL(pstore_blk_usr_info);
- 
-+static int __init pstore_blk_init(void)
-+{
-+	int ret = 0;
-+
-+	mutex_lock(&pstore_blk_lock);
-+	if (!pstore_zone_info && best_effort && blkdev[0])
-+		ret = __register_pstore_blk(0, 0, NULL);
-+	mutex_unlock(&pstore_blk_lock);
-+
-+	return ret;
-+}
-+late_initcall(pstore_blk_init);
-+
- static void __exit pstore_blk_exit(void)
- {
- 	mutex_lock(&pstore_blk_lock);
--- 
-2.20.1
+Shortlog:
+Al Viro (20):
+      dlmfs_file_write(): get rid of pointless access_ok()
+      fat_dir_ioctl(): hadn't needed that access_ok() for more than a decade...
+      btrfs_ioctl_send(): don't bother with access_ok()
+      FIEMAP: don't bother with access_ok()
+      tomoyo_write_control(): get rid of pointless access_ok()
+      n_hdlc_tty_read(): remove pointless access_ok()
+      nvram: drop useless access_ok()
+      cm4000_cs.c cmm_ioctl(): get rid of pointless access_ok()
+      drivers/fpga/dfl-fme-pr.c: get rid of pointless access_ok()
+      drivers/fpga/dfl-afu-dma-region.c: get rid of pointless access_ok()
+      amifb: get rid of pointless access_ok() calls
+      omapfb: get rid of pointless access_ok() calls
+      drivers/crypto/ccp/sev-dev.c: get rid of pointless access_ok()
+      via-pmu: don't bother with access_ok()
+      drm_read(): get rid of pointless access_ok()
+      efi_test: get rid of pointless access_ok()
+      lpfc_debugfs: get rid of pointless access_ok()
+      usb: get rid of pointless access_ok() calls
+      hfi1: get rid of pointless access_ok()
+      vmci_host: get rid of pointless access_ok()
+Diffstat:
+ drivers/char/nvram.c                            |  4 ----
+ drivers/char/pcmcia/cm4000_cs.c                 | 14 --------------
+ drivers/crypto/ccp/sev-dev.c                    | 15 +++------------
+ drivers/firmware/efi/test/efi_test.c            | 12 ------------
+ drivers/fpga/dfl-afu-dma-region.c               |  4 ----
+ drivers/fpga/dfl-fme-pr.c                       |  4 ----
+ drivers/gpu/drm/drm_file.c                      |  3 ---
+ drivers/infiniband/hw/hfi1/user_exp_rcv.c       |  7 -------
+ drivers/macintosh/via-pmu.c                     |  2 --
+ drivers/misc/vmw_vmci/vmci_host.c               |  2 --
+ drivers/scsi/lpfc/lpfc_debugfs.c                | 12 ------------
+ drivers/tty/n_hdlc.c                            |  7 -------
+ drivers/usb/core/devices.c                      |  2 --
+ drivers/usb/core/devio.c                        |  9 ---------
+ drivers/usb/gadget/function/f_hid.c             |  6 ------
+ drivers/video/fbdev/amifb.c                     |  4 ----
+ drivers/video/fbdev/omap2/omapfb/omapfb-ioctl.c |  3 ---
+ fs/btrfs/send.c                                 |  7 -------
+ fs/ext4/ioctl.c                                 |  5 -----
+ fs/fat/dir.c                                    |  4 ----
+ fs/ioctl.c                                      |  5 -----
+ fs/ocfs2/dlmfs/dlmfs.c                          |  3 ---
+ security/tomoyo/common.c                        |  2 --
+ 23 files changed, 3 insertions(+), 133 deletions(-)
 
