@@ -2,29 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 826D01CBFAF
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 11:15:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F2951CBFB5
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 11:15:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727944AbgEIJPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 05:15:08 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:4373 "EHLO huawei.com"
+        id S1728098AbgEIJPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 05:15:19 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:4315 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725930AbgEIJPH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 05:15:07 -0400
+        id S1727951AbgEIJPO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 May 2020 05:15:14 -0400
 Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 37D554A99A968E9739DD;
-        Sat,  9 May 2020 17:15:06 +0800 (CST)
+        by Forcepoint Email with ESMTP id 5FE4CD6C5CCEE7F7E696;
+        Sat,  9 May 2020 17:15:11 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
  DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 9 May 2020 17:14:59 +0800
+ 14.3.487.0; Sat, 9 May 2020 17:15:02 +0800
 From:   Chen Zhou <chenzhou10@huawei.com>
 To:     <davem@davemloft.net>
 CC:     <sparclinux@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <chenzhou10@huawei.com>
-Subject: [PATCH -next 0/2] sparc: use snprintf() in show() methods
-Date:   Sat, 9 May 2020 17:18:47 +0800
-Message-ID: <20200509091849.116954-1-chenzhou10@huawei.com>
+Subject: [PATCH -next 1/2] sparc: use snprintf() in show_pciobppath_attr() in pci.c
+Date:   Sat, 9 May 2020 17:18:48 +0800
+Message-ID: <20200509091849.116954-2-chenzhou10@huawei.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200509091849.116954-1-chenzhou10@huawei.com>
+References: <20200509091849.116954-1-chenzhou10@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -37,18 +39,28 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 snprintf() returns the number of bytes that would be written,
 which may be greater than the the actual length to be written.
-	    
-show() methods should return the number of bytes printed into the
-buffer. This is the return value of scnprintf().
 
-Chen Zhou (2):
-  sparc: use snprintf() in show_pciobppath_attr() in pci.c
-  sparc: use snprintf() in show_pciobppath_attr() in vio.c
+show_pciobppath_attr() should return the number of bytes printed
+into the buffer. This is the return value of scnprintf().
 
+Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
+---
  arch/sparc/kernel/pci.c | 2 +-
- arch/sparc/kernel/vio.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/arch/sparc/kernel/pci.c b/arch/sparc/kernel/pci.c
+index 5ed43828e078..a41ad562ed4e 100644
+--- a/arch/sparc/kernel/pci.c
++++ b/arch/sparc/kernel/pci.c
+@@ -593,7 +593,7 @@ show_pciobppath_attr(struct device * dev, struct device_attribute * attr, char *
+ 	pdev = to_pci_dev(dev);
+ 	dp = pdev->dev.of_node;
+ 
+-	return snprintf (buf, PAGE_SIZE, "%pOF\n", dp);
++	return scnprintf(buf, PAGE_SIZE, "%pOF\n", dp);
+ }
+ 
+ static DEVICE_ATTR(obppath, S_IRUSR | S_IRGRP | S_IROTH, show_pciobppath_attr, NULL);
 -- 
 2.20.1
 
