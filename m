@@ -2,85 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 329851CBF6B
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 10:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C62E71CBF6D
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 10:54:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728008AbgEIIxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 04:53:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50382 "EHLO
+        id S1726951AbgEIIyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 04:54:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725989AbgEIIxQ (ORCPT
+        by vger.kernel.org with ESMTP id S1725930AbgEIIyu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 04:53:16 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7C8DC061A0C
-        for <linux-kernel@vger.kernel.org>; Sat,  9 May 2020 01:53:16 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id w18so2063028qvs.3
-        for <linux-kernel@vger.kernel.org>; Sat, 09 May 2020 01:53:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=15pRIylywvMGvtrJCDOTg+VPNTtiBCmmaIlSjw1OTgk=;
-        b=F3SZOHs/MLjLOdABudtczf+cVq5/nnOsBn9xKheOO5jY4wdbWkVx6Rcnc+k4/NgHqh
-         xcpISRpgEkbItfNtVBZ+I3iqh7Oz4ICvtwC+QBHXvDh1HZlne6a4Pm4xrCVekE/aDoeb
-         dvi/llKcAzPOEB8ZcvEbq5VMg44fLP7WmlWVlqLuYAnaL1OLOggCWpT/TzowJsi9SWmg
-         0SxRL23SdwUqkQh5svi9edWOArLnu23/1XhUaJQR6yfRtFE1YuZiQ0vDhQPhv2M+Qj2q
-         4MuQwVvaeIEhEOBq8BYLh1gbGSEZoL4ZK/QKGxisAsOtqek0KiDIvV+eGvc6Vqvqv8A0
-         Pu3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=15pRIylywvMGvtrJCDOTg+VPNTtiBCmmaIlSjw1OTgk=;
-        b=hZS0NzpF/WpPdyRwOVd1fOjW0XZvleJOZQLIZL3Fvgf0/u4ZQbNHmgQY45qmRNlYdw
-         SlgwJ55ym5uoib6H8WIVx/AfJquBWoB4vL37tii3gHcMFZ8FZCguf7z3g4Tzrcar86Y3
-         4NBAOTi4RYF1tY//AcsSBq4HHeZ7q+NifzgMJET/Af+Y1moNfuIaALplZ7Z5R9hA1J38
-         SQKcJlpraMcnA/wKwGgsAU4aexpFQ6xq8oXn3Pj/HGw74foA7BlFIYCeQZGDpb9FymY0
-         XrzrqeJmh5x2Ftn4JlhvcZ2dI4OvPVDnBlgpVj71vck50/PaL5HrAbnOclWb1LTJo+bY
-         Zjqw==
-X-Gm-Message-State: AGi0PuZCDCJgHyzxZ7hdcjE4YeTrgmCzt8Txn3vKJdW3CQfRoCPC/5p3
-        rWGlNR2/ycAHEghZOxZFLotkts3eBEmjgYWCn1Q=
-X-Google-Smtp-Source: APiQypI6AaK+EGj2SZAr6mAgwX6sx4vBk3+Gc+VBmzcHtDTOZzQFUzpdVZNxiP1qGe2u73SIaicHe8WJmSpcxNMP4vc=
-X-Received: by 2002:a05:6214:54a:: with SMTP id ci10mr6794414qvb.178.1589014395777;
- Sat, 09 May 2020 01:53:15 -0700 (PDT)
+        Sat, 9 May 2020 04:54:50 -0400
+Received: from forwardcorp1p.mail.yandex.net (forwardcorp1p.mail.yandex.net [IPv6:2a02:6b8:0:1472:2741:0:8b6:217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 457D3C061A0C
+        for <linux-kernel@vger.kernel.org>; Sat,  9 May 2020 01:54:49 -0700 (PDT)
+Received: from mxbackcorp2j.mail.yandex.net (mxbackcorp2j.mail.yandex.net [IPv6:2a02:6b8:0:1619::119])
+        by forwardcorp1p.mail.yandex.net (Yandex) with ESMTP id 9AE142E12E7;
+        Sat,  9 May 2020 11:54:45 +0300 (MSK)
+Received: from sas1-9998cec34266.qloud-c.yandex.net (sas1-9998cec34266.qloud-c.yandex.net [2a02:6b8:c14:3a0e:0:640:9998:cec3])
+        by mxbackcorp2j.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id DRfZSkNAPa-sfXScfoP;
+        Sat, 09 May 2020 11:54:45 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1589014485; bh=j5yt9IbslNfllYMGw1hHKx4MZ9XKOjo0SaNQnANY+nk=;
+        h=In-Reply-To:Message-ID:From:Date:References:To:Subject:Cc;
+        b=qzFnnjALGi13sfYBiI6Uz+RN3NEMrq0ei+8y1mlpF8sjGAev7rP7crPVOUNqZObyj
+         s33njrdZ05aUH8Dl2zQdYYE0XSBxJGQ1MdNWLjOlN35KC5O+ho0QT0LvSucx5jlHB0
+         K+K01mVJUeeetc7ZA74K0JShRSoaLfues33Y56bI=
+Authentication-Results: mxbackcorp2j.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from dynamic-vpn.dhcp.yndx.net (dynamic-vpn.dhcp.yndx.net [2a02:6b8:b080:7214::1:5])
+        by sas1-9998cec34266.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id 0AVjzYkcx6-seW4U4Ta;
+        Sat, 09 May 2020 11:54:41 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+Subject: Re: [PATCH RFC tip/core/rcu] Add shrinker to shift to
+ fast/inefficient GP mode
+To:     paulmck@kernel.org
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, dipankar@in.ibm.com,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org, viro@zeniv.linux.org.uk,
+        Dave Chinner <david@fromorbit.com>
+References: <20200507004240.GA9156@paulmck-ThinkPad-P72>
+ <20200506175535.d4986a4d497071a410b69765@linux-foundation.org>
+ <20200507170006.GA155220@cmpxchg.org>
+ <20200507170903.GR2869@paulmck-ThinkPad-P72>
+ <20200507183102.GB155220@cmpxchg.org>
+ <20200507190905.GX2869@paulmck-ThinkPad-P72>
+ <6d93affb-6505-1bf3-58a0-c67c34a18a9e@yandex-team.ru>
+ <20200508144638.GF2869@paulmck-ThinkPad-P72>
+From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Message-ID: <8671cc58-11e0-b9f0-74b1-264fea58b23c@yandex-team.ru>
+Date:   Sat, 9 May 2020 11:54:40 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Received: by 2002:ac8:6f44:0:0:0:0:0 with HTTP; Sat, 9 May 2020 01:53:12 -0700 (PDT)
-Reply-To: gi625900@gmail.com
-From:   "Mr. Scott Donald" <mrsell69@gmail.com>
-Date:   Sat, 9 May 2020 01:53:12 -0700
-Message-ID: <CANv_9p8fGMfT8CBCUPtUCdm8iL+mPo8pSZPFvMWmZpK818t=4g@mail.gmail.com>
-Subject: Very Urgent,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200508144638.GF2869@paulmck-ThinkPad-P72>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
-I'm Mr. Scott Donald a Successful business Man. dealing=C2=A0with
-Exportation, I got your email contact through search=C2=A0to let you know
-my Ugly Situation Am a dying Man here in=C2=A0California Los Angeles
-Hospital Bed in (USA), I Lost my=C2=A0Wife and my only Daughter for Corona
-virus and my Doctor said to me that i don't have enough time to live
-any=C2=A0more, i have a project that am about to handover to you.=C2=A0i ha=
-ve
-already instructed the Barclay Bank of London to=C2=A0transfer my fund sum
-of =C2=A33,7M GBP to you as to enable you=C2=A0give 50% to Charitable Home =
-and
-take 50% and i have=C2=A0already given all i have here in America to
-Charitable=C2=A0home I also ask my Doctor to help me get to you in case=C2=
-=A0you
-did not hear from me again, i want to you see on video very urgent
-here is my Doctor Whatsapp Number for urgent notice +13019692737
+On 08/05/2020 17.46, Paul E. McKenney wrote:
+> On Fri, May 08, 2020 at 12:00:28PM +0300, Konstantin Khlebnikov wrote:
+>> On 07/05/2020 22.09, Paul E. McKenney wrote:
+>>> On Thu, May 07, 2020 at 02:31:02PM -0400, Johannes Weiner wrote:
+>>>> On Thu, May 07, 2020 at 10:09:03AM -0700, Paul E. McKenney wrote:
+>>>>> On Thu, May 07, 2020 at 01:00:06PM -0400, Johannes Weiner wrote:
+>>>>>> On Wed, May 06, 2020 at 05:55:35PM -0700, Andrew Morton wrote:
+>>>>>>> On Wed, 6 May 2020 17:42:40 -0700 "Paul E. McKenney" <paulmck@kernel.org> wrote:
+>>>>>>>
+>>>>>>>> This commit adds a shrinker so as to inform RCU when memory is scarce.
+>>>>>>>> RCU responds by shifting into the same fast and inefficient mode that is
+>>>>>>>> used in the presence of excessive numbers of RCU callbacks.  RCU remains
+>>>>>>>> in this state for one-tenth of a second, though this time window can be
+>>>>>>>> extended by another call to the shrinker.
+>>>>>>
+>>>>>> We may be able to use shrinkers here, but merely being invoked does
+>>>>>> not carry a reliable distress signal.
+>>>>>>
+>>>>>> Shrinkers get invoked whenever vmscan runs. It's a useful indicator
+>>>>>> for when to age an auxiliary LRU list - test references, clear and
+>>>>>> rotate or reclaim stale entries. The urgency, and what can and cannot
+>>>>>> be considered "stale", is encoded in the callback frequency and scan
+>>>>>> counts, and meant to be relative to the VM's own rate of aging: "I've
+>>>>>> tested X percent of mine for recent use, now you go and test the same
+>>>>>> share of your pool." It doesn't translate well to other
+>>>>>> interpretations of the callbacks, although people have tried.
+>>>>>
+>>>>> Would it make sense for RCU to interpret two invocations within (say)
+>>>>> 100ms of each other as indicating urgency?  (Hey, I had to ask!)
+>>>>
+>>>> It's the perfect number for one combination of CPU, storage device,
+>>>> and shrinker implementation :-)
+>>>
+>>> Woo-hoo!!!
+>>>
+>>> But is that one combination actually in use anywhere?  ;-)
+>>>
+>>>>>>>> If it proves feasible, a later commit might add a function call directly
+>>>>>>>> indicating the end of the period of scarce memory.
+>>>>>>>
+>>>>>>> (Cc David Chinner, who often has opinions on shrinkers ;))
+>>>>>>>
+>>>>>>> It's a bit abusive of the intent of the slab shrinkers, but I don't
+>>>>>>> immediately see a problem with it.  Always returning 0 from
+>>>>>>> ->scan_objects might cause a problem in some situations(?).
+>>>>>>>
+>>>>>>> Perhaps we should have a formal "system getting low on memory, please
+>>>>>>> do something" notification API.
+>>>>>>
+>>>>>> It's tricky to find a useful definition of what low on memory
+>>>>>> means. In the past we've used sc->priority cutoffs, the vmpressure
+>>>>>> interface (reclaimed/scanned - reclaim efficiency cutoffs), oom
+>>>>>> notifiers (another reclaim efficiency cutoff). But none of these
+>>>>>> reliably capture "distress", and they vary highly between different
+>>>>>> hardware setups. It can be hard to trigger OOM itself on fast IO
+>>>>>> devices, even when the machine is way past useful (where useful is
+>>>>>> somewhat subjective to the user). Userspace OOM implementations that
+>>>>>> consider userspace health (also subjective) are getting more common.
+>>>>>>
+>>>>>>> How significant is this?  How much memory can RCU consume?
+>>>>>>
+>>>>>> I think if rcu can end up consuming a significant share of memory, one
+>>>>>> way that may work would be to do proper shrinker integration and track
+>>>>>> the age of its objects relative to the age of other allocations in the
+>>>>>> system. I.e. toss them all on a clock list with "new" bits and shrink
+>>>>>> them at VM velocity. If the shrinker sees objects with new bit set,
+>>>>>> clear and rotate. If it sees objects without them, we know rcu_heads
+>>>>>> outlive cache pages etc. and should probably cycle faster too.
+>>>>>
+>>>>> It would be easy for RCU to pass back (or otherwise use) the age of the
+>>>>> current grace period, if that would help.
+>>>>>
+>>>>> Tracking the age of individual callbacks is out of the question due to
+>>>>> memory overhead, but RCU could approximate this via statistical sampling.
+>>>>> Comparing this to grace-period durations could give information as to
+>>>>> whether making grace periods go faster would be helpful.
+>>>>
+>>>> That makes sense.
+>>>>
+>>>> So RCU knows the time and the VM knows the amount of memory. Either
+>>>> RCU needs to figure out its memory component to be able to translate
+>>>> shrinker input to age, or the VM needs to learn about time to be able
+>>>> to say: I'm currently scanning memory older than timestamp X.
+>>>>
+>>>> The latter would also require sampling in the VM. Nose goes. :-)
+>>>
+>>> Sounds about right.  ;-)
+>>>
+>>> Does reclaim have any notion of having continuously scanned for
+>>> longer than some amount of time?  Or could RCU reasonably deduce this?
+>>> For example, if RCU noticed that reclaim had been scanning for longer than
+>>> (say) five grace periods, RCU might decide to speed things up.
+>>>
+>>> But on the other hand, with slow disks, reclaim might go on for tens of
+>>> seconds even without much in the way of memory pressure, mightn't it?
+>>>
+>>> I suppose that another indicator would be recent NULL returns from
+>>> allocators.  But that indicator flashes a bit later than one would like,
+>>> doesn't it?  And has false positives when allocators are invoked from
+>>> atomic contexts, no doubt.  And no doubt similar for sleeping more than
+>>> a certain length of time in an allocator.
+>>>
+>>>> There actually is prior art for teaching reclaim about time:
+>>>> https://lore.kernel.org/linux-mm/20130430110214.22179.26139.stgit@zurg/
+>>>>
+>>>> CCing Konstantin. I'm curious how widely this ended up being used and
+>>>> how reliably it worked.
+>>>
+>>> Looking forward to hearing of any results!
+>>
+>> Well, that was some experiment about automatic steering memory pressure
+>> between containers. LRU timings from milestones itself worked pretty well.
+>> Remaining engine were more robust than mainline cgroups these days.
+>> Memory becomes much cheaper - I hope nobody want's overcommit it that badly anymore.
+>>
+>> It seems modern MM has plenty signals about memory pressure.
+>> Kswapsd should have enough knowledge to switch gears in RCU.
+> 
+> Easy for me to provide "start fast and inefficient mode" and "stop fast
+> and inefficient mode" APIs for MM to call!
+> 
+> How about rcu_mempressure_start() and rcu_mempressure_end()?  I would
+> expect them not to nest (as in if you need them to nest, please let
+> me know).  I would not expect these to be invoked all that often (as in
+> if you do need them to be fast and scalable, please let me know). >
+> RCU would then be in fast/inefficient mode if either MM told it to be
+> or if RCU had detected callback overload on at least one CPU.
+> 
+> Seem reasonable?
 
-Hope To Hear From You. i really want to see you on Video call very
-urgent please.
+Not exactly nested calls, but kswapd threads are per numa node.
+So, at some level nodes under pressure must be counted.
 
-you can reach me through this gmail id: globalinvestmentinvestment61@
+Also forcing rcu calls only for cpus in one numa node might be useful.
 
-Regards
 
-Mr. Scott Donald
+I wonder if direct-reclaim should at some stage simply wait for RCU QS.
+I.e. call rcu_barrier() or similar somewhere before invoking OOM.
+
+All GFP_NOFAIL users should allow direct-reclaim, thus this loop
+in page_alloc shouldn't block RCU and doesn't need special care.
+
+> 
+> 							Thanx, Paul
+> 
+>>>>> But, yes, it would be better to have an elusive unambiguous indication
+>>>>> of distress.  ;-)
+>>>>
+>>>> I agree. Preferably something more practical than a dialogue box
+>>>> asking the user on how well things are going for them :-)
+>>>
+>>> Indeed, that dialog box should be especially useful for things like
+>>> light bulbs running Linux.  ;-)
+>>>
+>>> 							Thanx, Paul
+>>>
