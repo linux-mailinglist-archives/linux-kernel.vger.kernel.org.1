@@ -2,63 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35AC01CC4C1
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 23:41:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F14291CC1E2
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 15:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728420AbgEIVlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 17:41:16 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:50014 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726120AbgEIVlQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 17:41:16 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1jXXDb-00049o-8Z; Sat, 09 May 2020 21:41:11 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] net: usb: ax88179_178a: remove redundant assignment to variable ret
-Date:   Sat,  9 May 2020 22:41:11 +0100
-Message-Id: <20200509214111.505920-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.25.1
+        id S1727952AbgEINtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 09:49:13 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:4384 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727863AbgEINtN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 May 2020 09:49:13 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 156EF275F844D64B3B40;
+        Sat,  9 May 2020 21:49:09 +0800 (CST)
+Received: from euler.huawei.com (10.175.101.6) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 9 May 2020 21:49:07 +0800
+From:   Wei Li <liwei391@huawei.com>
+To:     <daniel.thompson@linaro.org>, <jason.wessel@windriver.com>,
+        <dianders@chromium.org>, <maz@kernel.org>, <mark.rutland@arm.com>,
+        <mhiramat@kernel.org>, <davem@davemloft.net>, <will@kernel.org>,
+        <catalin.marinas@arm.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <liwei1412@163.com>
+Subject: [PATCH 0/4] arm64: kgdb/kdb: Fix single-step debugging issues
+Date:   Sun, 10 May 2020 05:41:55 +0800
+Message-ID: <20200509214159.19680-1-liwei391@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.175.101.6]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+This patch set is to fix several issues of single-step debugging
+in kgdb/kdb on arm64.
 
-The variable ret is being initializeed with a value that is never read
-and it is being updated later with a new value. The initialization
-is redundant and can be removed.
+It seems that these issues have been shelved a very long time,
+but i still hope to solve them, as the single-step debugging
+is an useful feature.
 
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/net/usb/ax88179_178a.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Note:
+Based on patch "arm64: cacheflush: Fix KGDB trap detection",
+https://www.spinics.net/lists/arm-kernel/msg803741.html
 
-diff --git a/drivers/net/usb/ax88179_178a.c b/drivers/net/usb/ax88179_178a.c
-index b05bb11a02cb..950711448f39 100644
---- a/drivers/net/usb/ax88179_178a.c
-+++ b/drivers/net/usb/ax88179_178a.c
-@@ -860,7 +860,7 @@ static int ax88179_set_eee(struct net_device *net, struct ethtool_eee *edata)
- {
- 	struct usbnet *dev = netdev_priv(net);
- 	struct ax88179_data *priv = (struct ax88179_data *)dev->data;
--	int ret = -EOPNOTSUPP;
-+	int ret;
- 
- 	priv->eee_enabled = edata->eee_enabled;
- 	if (!priv->eee_enabled) {
+Wei Li (4):
+  arm64: kgdb: Fix single-step exception handling oops
+  arm64: Extract kprobes_save_local_irqflag() and
+    kprobes_restore_local_irqflag()
+  arm64: kgdb: Fix single-stepping into the irq handler wrongly
+  arm64: kgdb: Set PSTATE.SS to 1 to reenable single-step
+
+ arch/arm64/include/asm/debug-monitors.h |  6 ++++++
+ arch/arm64/kernel/debug-monitors.c      | 28 ++++++++++++++++++++++++-
+ arch/arm64/kernel/kgdb.c                | 16 +++++++++++---
+ arch/arm64/kernel/probes/kprobes.c      | 28 ++-----------------------
+ 4 files changed, 48 insertions(+), 30 deletions(-)
+
 -- 
-2.25.1
+2.17.1
 
