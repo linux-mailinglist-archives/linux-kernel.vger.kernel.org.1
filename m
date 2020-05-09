@@ -2,70 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7D751CC48A
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 22:24:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8461CC48F
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 22:25:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728285AbgEIUYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 16:24:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35786 "EHLO mail.kernel.org"
+        id S1728487AbgEIUZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 16:25:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36040 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726019AbgEIUYa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 16:24:30 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7255720A8B;
-        Sat,  9 May 2020 20:24:29 +0000 (UTC)
+        id S1725960AbgEIUZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 May 2020 16:25:05 -0400
+Subject: Re: [GIT PULL] io_uring fixes for 5.7-rc5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589055869;
-        bh=hJUWP29cYuX3Xi3cAjjlLU0uoC2+SMXGfHqNZqHVaxI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=dkXfCj+Wefxi4yE0M84fSKGXdQalIEyHmG5bZ8+PmJ5RNaDzlD1UVcUDvCoTyZnPE
-         iIaUncrfotfIAcegEz/jo+1kIS7MxQarsagOHWKqcTQSG7RmQuFay8djD1iQtqwT2q
-         Ap5ngFEaehcYX8mBOSniUSsBImsko+R16W8wWmnM=
-Date:   Sat, 9 May 2020 13:24:27 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Madalin Bucur <madalin.bucur@nxp.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Timur Tabi <timur@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>
-Subject: Re: [PATCH] net: freescale: select CONFIG_FIXED_PHY where needed
-Message-ID: <20200509132427.3d2979d8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20200509120505.109218-1-arnd@arndb.de>
-References: <20200509120505.109218-1-arnd@arndb.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        s=default; t=1589055904;
+        bh=d40vE5YHjV8cq2Tbu7iN4MRiNJoI6JVnXkhtzcw0dX8=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=RV3fKHchS3VVDRIKu48eMKiHDwgsNlh/8nDedmIektBH1HSwL/uOUoRkwzpXOv3rf
+         YxMXnfwja1Dx1Jg65Zgt6MV3AjuiJwi6pqzs3v4uKFXC4rYbD0sNZscwy1Idx6pGXg
+         AK9hLtaEcarxY7CYpAeVWiBKsmdSNO6f72JzIRXk=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <cf931801-dc26-e86b-57aa-d7730baccdc1@kernel.dk>
+References: <cf931801-dc26-e86b-57aa-d7730baccdc1@kernel.dk>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <cf931801-dc26-e86b-57aa-d7730baccdc1@kernel.dk>
+X-PR-Tracked-Remote: git://git.kernel.dk/linux-block.git
+ tags/io_uring-5.7-2020-05-08
+X-PR-Tracked-Commit-Id: 63ff822358b276137059520cf16e587e8073e80f
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 1d3962ae3b3d3a945f7fd5c651cf170a27521a35
+Message-Id: <158905590492.29076.1791242764984106931.pr-tracker-bot@kernel.org>
+Date:   Sat, 09 May 2020 20:25:04 +0000
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        io-uring <io-uring@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat,  9 May 2020 14:04:52 +0200 Arnd Bergmann wrote:
-> I ran into a randconfig build failure with CONFIG_FIXED_PHY=m
-> and CONFIG_GIANFAR=y:
-> 
-> x86_64-linux-ld: drivers/net/ethernet/freescale/gianfar.o:(.rodata+0x418): undefined reference to `fixed_phy_change_carrier'
-> 
-> It seems the same thing can happen with dpaa and ucc_geth, so change
-> all three to do an explicit 'select FIXED_PHY'.
-> 
-> The fixed-phy driver actually has an alternative stub function that
-> theoretically allows building network drivers when fixed-phy is
-> disabled, but I don't see how that would help here, as the drivers
-> presumably would not work then.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+The pull request you sent on Fri, 8 May 2020 21:12:49 -0600:
 
-> +	select FIXED_PHY
+> git://git.kernel.dk/linux-block.git tags/io_uring-5.7-2020-05-08
 
-I think FIXED_PHY needs to be optional, depends on what the board has
-connected to the MAC it may not be needed, right PHY folks? We probably
-need the
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/1d3962ae3b3d3a945f7fd5c651cf170a27521a35
 
-    depends on FIXED_PHY || !FIXED_PHY
+Thank you!
 
-dance.
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
