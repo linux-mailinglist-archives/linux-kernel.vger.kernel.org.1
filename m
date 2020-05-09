@@ -2,156 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7F501CC1ED
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 15:51:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECCBF1CC1F3
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 15:58:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727918AbgEINvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 09:51:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726904AbgEINvU (ORCPT
+        id S1727918AbgEIN63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 09:58:29 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:48185 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726782AbgEIN62 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 09:51:20 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E42E9C061A0C;
-        Sat,  9 May 2020 06:51:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=2uygEucO5eCGyC1Yl+l/qEGrNAjV1cjP3RBl/px8ykw=; b=LYvqtNTkAfpe2zWTtXqs0AlVr
-        JSY/8pWu8EKEKUpiD3KHRAIrqtN/gZWHmvDAyeY6MYSSAmSw+HjwcOoURlbOlMtkwKx/eYWaE8NAe
-        estJ6I3KznNOQ+XT5SNmMxkySCAiYeQP46EeJpLbeso6Y8i7JQkzn6aN7sAwovHwQVrnnSLUoWnMD
-        ilbvI8F/q0AhjOMwccK28a53kaB6tg7R3G2bnyHC/TP5TqmVJrbWwsESPcr/dVb8e4e1p590UHxg/
-        o8aW5eD5kKR+Vb8IK/zowKmzjpCn3Fzib3PAmwVQNiVk4K6VhAboF9Et6ayykFoPahOH1R55nlk/S
-        tFwQiXG3w==;
-Received: from shell.armlinux.org.uk ([2001:4d48:ad52:3201:5054:ff:fe00:4ec]:38036)
-        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.90_1)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1jXPsk-00044H-Uh; Sat, 09 May 2020 14:51:11 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1jXPsf-0002u4-W2; Sat, 09 May 2020 14:51:06 +0100
-Date:   Sat, 9 May 2020 14:51:05 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Matteo Croce <mcroce@redhat.com>
-Cc:     Antoine Tenart <antoine.tenart@bootlin.com>,
-        netdev <netdev@vger.kernel.org>,
-        "gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        Nadav Haklai <nadavh@marvell.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
-        Stefan Chulski <stefanc@marvell.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [EXT] Re: [PATCH net-next 3/5] net: mvpp2: cls: Use RSS contexts
- to handle RSS tables
-Message-ID: <20200509135105.GE1551@shell.armlinux.org.uk>
-References: <20190524100554.8606-1-maxime.chevallier@bootlin.com>
- <20190524100554.8606-4-maxime.chevallier@bootlin.com>
- <CAGnkfhzsx_uEPkZQC-_-_NamTigD8J0WgcDioqMLSHVFa3V6GQ@mail.gmail.com>
- <20200423170003.GT25745@shell.armlinux.org.uk>
- <CAGnkfhwOavaeUjcm4_+TG-xLxQA519o+fR8hxBCCfSy3qpcYhQ@mail.gmail.com>
- <DM5PR18MB1146686527DE66495F75D0DAB0A30@DM5PR18MB1146.namprd18.prod.outlook.com>
- <20200509114518.GB1551@shell.armlinux.org.uk>
- <CAGnkfhx8fEZCoLPzGxSzQnj1ZWcQtBMn+g_jO1Jxc4zF7pQwjQ@mail.gmail.com>
+        Sat, 9 May 2020 09:58:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589032706;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=nLUA8W5j+MyNDn2SryzaQKTx2p2PalluAUK/eJiFTvA=;
+        b=ZmZL3ms2WupMsGIQCqNuDwsWqSqwFLMqS3hzc813xao5/61bkIIHqMuHe4QcjmeakqIZd9
+        p+E5T4EkeNR+ticYDIt1/BVTd4JAMQfR/8dknBpgnYB5EG4o4mGHYgas8G+MjYn68pmXhJ
+        XblTMgeBk6mu3+PIXb+hFxkbsfvfZIY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-311-CZHajXDuMram0ED9XXXl7g-1; Sat, 09 May 2020 09:58:24 -0400
+X-MC-Unique: CZHajXDuMram0ED9XXXl7g-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DE53D39341;
+        Sat,  9 May 2020 13:58:17 +0000 (UTC)
+Received: from optiplex-lnx.redhat.com (unknown [10.3.128.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 403855D97B;
+        Sat,  9 May 2020 13:57:40 +0000 (UTC)
+From:   Rafael Aquini <aquini@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-doc@vger.kernel.org, kexec@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, dyoung@redhat.com, bhe@redhat.com,
+        corbet@lwn.net, mcgrof@kernel.org, keescook@chromium.org,
+        akpm@linux-foundation.org, cai@lca.pw, rdunlap@infradead.org,
+        tytso@mit.edu, bunk@kernel.org, torvalds@linux-foundation.org,
+        gregkh@linuxfoundation.org, labbott@redhat.com, jeffm@suse.com,
+        jikos@kernel.org, jeyu@suse.de, tiwai@suse.de, AnDavis@suse.com,
+        rpalethorpe@suse.de
+Subject: [PATCH v3] kernel: add panic_on_taint
+Date:   Sat,  9 May 2020 09:57:37 -0400
+Message-Id: <20200509135737.622299-1-aquini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGnkfhx8fEZCoLPzGxSzQnj1ZWcQtBMn+g_jO1Jxc4zF7pQwjQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 09, 2020 at 03:14:05PM +0200, Matteo Croce wrote:
-> On Sat, May 9, 2020 at 1:45 PM Russell King - ARM Linux admin
-> <linux@armlinux.org.uk> wrote:
-> >
-> > On Sat, May 09, 2020 at 11:15:58AM +0000, Stefan Chulski wrote:
-> > >
-> > >
-> > > > -----Original Message-----
-> > > > From: Matteo Croce <mcroce@redhat.com>
-> > > > Sent: Saturday, May 9, 2020 3:13 AM
-> > > > To: David S . Miller <davem@davemloft.net>
-> > > > Cc: Maxime Chevallier <maxime.chevallier@bootlin.com>; netdev
-> > > > <netdev@vger.kernel.org>; LKML <linux-kernel@vger.kernel.org>; Antoine
-> > > > Tenart <antoine.tenart@bootlin.com>; Thomas Petazzoni
-> > > > <thomas.petazzoni@bootlin.com>; gregory.clement@bootlin.com;
-> > > > miquel.raynal@bootlin.com; Nadav Haklai <nadavh@marvell.com>; Stefan
-> > > > Chulski <stefanc@marvell.com>; Marcin Wojtas <mw@semihalf.com>; Linux
-> > > > ARM <linux-arm-kernel@lists.infradead.org>; Russell King - ARM Linux admin
-> > > > <linux@armlinux.org.uk>
-> > > > Subject: [EXT] Re: [PATCH net-next 3/5] net: mvpp2: cls: Use RSS contexts to
-> > > > handle RSS tables
-> > > >
-> > > > Hi,
-> > > >
-> > > > What do you think about temporarily disabling it like this?
-> > > >
-> > > > --- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> > > > +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> > > > @@ -5775,7 +5775,8 @@ static int mvpp2_port_probe(struct platform_device
-> > > > *pdev,
-> > > >                             NETIF_F_HW_VLAN_CTAG_FILTER;
-> > > >
-> > > >         if (mvpp22_rss_is_supported()) {
-> > > > -               dev->hw_features |= NETIF_F_RXHASH;
-> > > > +               if (port->phy_interface != PHY_INTERFACE_MODE_SGMII)
-> > > > +                       dev->hw_features |= NETIF_F_RXHASH;
-> > > >                 dev->features |= NETIF_F_NTUPLE;
-> > > >         }
-> > > >
-> > > >
-> > > > David, is this "workaround" too bad to get accepted?
-> > >
-> > > Not sure that RSS related to physical interface(SGMII), better just remove NETIF_F_RXHASH as "workaround".
-> >
-> > Hmm, I'm not sure this is the right way forward.  This patch has the
-> > effect of disabling:
-> >
-> > d33ec4525007 ("net: mvpp2: add an RSS classification step for each flow")
-> >
-> > but the commit you're pointing at which caused the regression is:
-> >
-> > 895586d5dc32 ("net: mvpp2: cls: Use RSS contexts to handle RSS tables")
-> >
-> >
-> 
-> Hi,
-> 
-> When git bisect pointed to 895586d5dc32 ("net: mvpp2: cls: Use RSS
-> contexts to handle RSS tables"), which was merged
-> almost an year after d33ec4525007 ("net: mvpp2: add an RSS
-> classification step for each flow"), so I assume that between these
-> two commits either the feature was working or it was disable and we
-> didn't notice
-> 
-> Without knowing what was happening, which commit should my Fixes tag point to?
+Analogously to the introduction of panic_on_warn, this patch
+introduces a kernel option named panic_on_taint in order to
+provide a simple and generic way to stop execution and catch
+a coredump when the kernel gets tainted by any given taint flag.
 
-Let me make sure that I get this clear:
+This is useful for debugging sessions as it avoids rebuilding
+the kernel to explicitly add calls to panic() or BUG() into
+code sites that introduce the taint flags of interest.
+Another, perhaps less frequent, use for this option would be
+as a mean for assuring a security policy (in paranoid mode)
+case where no single taint is allowed for the running system.
 
-- Prior to 895586d5dc32, you can turn on and off rxhash without issue
-  on any port.
-- After 895586d5dc32, turning rxhash on eth2 prevents reception.
+Suggested-by: Qian Cai <cai@lca.pw>
+Signed-off-by: Rafael Aquini <aquini@redhat.com>
+---
+Changelog:
+* v2: get rid of unnecessary/misguided compiler hints		(Luis)
+* v2: enhance documentation text for the new kernel parameter	(Randy)
+* v3: drop sysctl interface, keep it only as a kernel parameter (Luis)
 
-Prior to 895586d5dc32, with rxhash on, it looks like hashing using
-CRC32 is supported but only one context.  So, if it's possible to
-enable rxhash on any port on the mcbin without 895586d5dc32, and the
-port continues to work, I'd say the bug was introduced by
-895586d5dc32.
+ Documentation/admin-guide/kdump/kdump.rst     | 10 +++++
+ .../admin-guide/kernel-parameters.txt         | 15 +++++++
+ include/linux/kernel.h                        |  2 +
+ kernel/panic.c                                | 40 +++++++++++++++++++
+ kernel/sysctl.c                               |  9 ++++-
+ 5 files changed, 75 insertions(+), 1 deletion(-)
 
-Of course, that would be reinforced if there was a measurable
-difference in performance due to rxhash on each port.
-
+diff --git a/Documentation/admin-guide/kdump/kdump.rst b/Documentation/admin-guide/kdump/kdump.rst
+index ac7e131d2935..de3cf6d377cc 100644
+--- a/Documentation/admin-guide/kdump/kdump.rst
++++ b/Documentation/admin-guide/kdump/kdump.rst
+@@ -521,6 +521,16 @@ will cause a kdump to occur at the panic() call.  In cases where a user wants
+ to specify this during runtime, /proc/sys/kernel/panic_on_warn can be set to 1
+ to achieve the same behaviour.
+ 
++Trigger Kdump on add_taint()
++============================
++
++The kernel parameter, panic_on_taint, calls panic() from within add_taint(),
++whenever the value set in this bitmask matches with the bit flag being set
++by add_taint(). This will cause a kdump to occur at the panic() call.
++In cases where a user wants to specify this during runtime,
++/proc/sys/kernel/panic_on_taint can be set to a respective bitmask value
++to achieve the same behaviour.
++
+ Contact
+ =======
+ 
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 7bc83f3d9bdf..4a69fe49a70d 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -3404,6 +3404,21 @@
+ 	panic_on_warn	panic() instead of WARN().  Useful to cause kdump
+ 			on a WARN().
+ 
++	panic_on_taint=	[KNL] conditionally panic() in add_taint()
++			Format: <str>
++			Specifies, as a string, the TAINT flag set that will
++			compose a bitmask for calling panic() when the kernel
++			gets tainted.
++			See Documentation/admin-guide/tainted-kernels.rst for
++			details on the taint flags that users can pick to
++			compose the bitmask to assign to panic_on_taint.
++			When the string is prefixed with a '-' the bitmask
++			set in panic_on_taint will be mutually exclusive
++			with the sysctl knob kernel.tainted, and any attempt
++			to write to that sysctl will fail with -EINVAL for
++			any taint value that masks with the flags set for
++			this option.
++
+ 	crash_kexec_post_notifiers
+ 			Run kdump after running panic-notifiers and dumping
+ 			kmsg. This only for the users who doubt kdump always
+diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+index 9b7a8d74a9d6..66bc102cb59a 100644
+--- a/include/linux/kernel.h
++++ b/include/linux/kernel.h
+@@ -528,6 +528,8 @@ extern int panic_on_oops;
+ extern int panic_on_unrecovered_nmi;
+ extern int panic_on_io_nmi;
+ extern int panic_on_warn;
++extern unsigned long panic_on_taint;
++extern bool panic_on_taint_exclusive;
+ extern int sysctl_panic_on_rcu_stall;
+ extern int sysctl_panic_on_stackoverflow;
+ 
+diff --git a/kernel/panic.c b/kernel/panic.c
+index b69ee9e76cb2..65c62f8a1de8 100644
+--- a/kernel/panic.c
++++ b/kernel/panic.c
+@@ -25,6 +25,7 @@
+ #include <linux/kexec.h>
+ #include <linux/sched.h>
+ #include <linux/sysrq.h>
++#include <linux/ctype.h>
+ #include <linux/init.h>
+ #include <linux/nmi.h>
+ #include <linux/console.h>
+@@ -44,6 +45,8 @@ static int pause_on_oops_flag;
+ static DEFINE_SPINLOCK(pause_on_oops_lock);
+ bool crash_kexec_post_notifiers;
+ int panic_on_warn __read_mostly;
++unsigned long panic_on_taint;
++bool panic_on_taint_exclusive = false;
+ 
+ int panic_timeout = CONFIG_PANIC_TIMEOUT;
+ EXPORT_SYMBOL_GPL(panic_timeout);
+@@ -434,6 +437,11 @@ void add_taint(unsigned flag, enum lockdep_ok lockdep_ok)
+ 		pr_warn("Disabling lock debugging due to kernel taint\n");
+ 
+ 	set_bit(flag, &tainted_mask);
++
++	if (tainted_mask & panic_on_taint) {
++		panic_on_taint = 0;
++		panic("panic_on_taint set ...");
++	}
+ }
+ EXPORT_SYMBOL(add_taint);
+ 
+@@ -686,3 +694,35 @@ static int __init oops_setup(char *s)
+ 	return 0;
+ }
+ early_param("oops", oops_setup);
++
++static int __init panic_on_taint_setup(char *s)
++{
++	/* we just ignore panic_on_taint if passed without flags */
++	if (!s)
++		goto out;
++
++	for (; *s; s++) {
++		int i;
++
++		if (*s == '-') {
++			panic_on_taint_exclusive = true;
++			continue;
++		}
++
++		for (i = 0; i < TAINT_FLAGS_COUNT; i++) {
++			if (toupper(*s) == taint_flags[i].c_true) {
++				set_bit(i, &panic_on_taint);
++				break;
++			}
++		}
++	}
++
++	/* unset exclusive mode if no taint flags were passed on */
++	if (panic_on_taint_exclusive &&
++	    !(panic_on_taint & ((1UL << TAINT_FLAGS_COUNT) - 1)))
++		panic_on_taint_exclusive = false;
++
++out:
++	return 0;
++}
++early_param("panic_on_taint", panic_on_taint_setup);
+diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+index 8a176d8727a3..d361ec0420f6 100644
+--- a/kernel/sysctl.c
++++ b/kernel/sysctl.c
+@@ -2623,11 +2623,18 @@ static int proc_taint(struct ctl_table *table, int write,
+ 		return err;
+ 
+ 	if (write) {
++		int i;
++		/*
++		 * If we are relying on panic_on_taint not producing
++		 * false positives due to userland input, bail out
++		 * before setting the requested taint flags.
++		 */
++		if (panic_on_taint_exclusive && (tmptaint & panic_on_taint))
++			return -EINVAL;
+ 		/*
+ 		 * Poor man's atomic or. Not worth adding a primitive
+ 		 * to everyone's atomic.h for this
+ 		 */
+-		int i;
+ 		for (i = 0; i < BITS_PER_LONG && tmptaint >> i; i++) {
+ 			if ((tmptaint >> i) & 1)
+ 				add_taint(i, LOCKDEP_STILL_OK);
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTC broadband for 0.8mile line in suburbia: sync at 10.2Mbps down 587kbps up
+2.25.4
+
