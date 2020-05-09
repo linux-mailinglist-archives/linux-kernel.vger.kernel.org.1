@@ -2,91 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF6E1CC0A3
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 13:11:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BECF1CC0B0
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 13:15:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728224AbgEILLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 07:11:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725920AbgEILLn (ORCPT
+        id S1728418AbgEILPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 07:15:08 -0400
+Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:59372 "EHLO
+        smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726951AbgEILPE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 07:11:43 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74903C061A0C
-        for <linux-kernel@vger.kernel.org>; Sat,  9 May 2020 04:11:43 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id m12so7888783wmc.0
-        for <linux-kernel@vger.kernel.org>; Sat, 09 May 2020 04:11:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=rgJrLSjHlAQWw14xkbMllSGSwhG0VM0yS2HV2OmYzlg=;
-        b=S0TmtAu0TiFgHaZPxbd8arbZ49KP9evFXFQyDTUuQGsFitk6YyUwcwlpAD8i+w7ZiM
-         oEuJj9xTU+HEKCHQzRGNZvOpIeGzJsiTr87qFJ2nb9JeYHnVfv9Ktwqwh6b7mOCf/mJi
-         Ah5PfJG+QkDwdnCWYNMyrQo0KnCiwfKAawIQN7ZclNoRCzLhSpfV2ehdDUQZt7FCmtVp
-         3ienEgXONmdKdyk/C1T55eoipeLbZCWTYqX1KrAsusxwVn2/QbM5i4pwHYT2WybuL5th
-         lUg9r+oCitKuspc+PTXygii/q8e2dfWGwj7rXNj0wfmW0fIadoptlpbq941KzovPLagk
-         Eozg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=rgJrLSjHlAQWw14xkbMllSGSwhG0VM0yS2HV2OmYzlg=;
-        b=jK+OfAtcgFTi2u1698LwIyVl5W7fVDZeuWIExM0RBoTE0cTLH4y+RrR3SRxr5w8u7c
-         +OS8XqlvlWKTFG6ea4+wWD+0dwlqizunMd4Fobie6YJpZkp62oazcNskPDDIhjpWE7Ii
-         DAmJLbpBJQxWQD1uyvjQLXBFsW3V7Mtl3Vl//7K9nMzz/CbNHjOyllq5IykvxD5aQtpa
-         q2NXKHvafzZQft/0hk1jVmY0e9szOEO22biTfllfGZVsKZVIVP4c2YO+G+mBpVYpg1hT
-         vjwjHie2WK3BjD/iidzXvW90BswUQaWJdN17WoHgwoTY5BxtV41oT/HDw9r2EJJ3zaHY
-         5mtQ==
-X-Gm-Message-State: AGi0Pua6dCgDq4QUEJLREPZyEah2necs5EHQfpH9FkUMEeNotg9Mr+6E
-        h9Mh9PUygUZGvyRUKOPreD58MVNRxldEK/LY4ZwM8QBT
-X-Google-Smtp-Source: APiQypJ3bEsI1jrAVqs2gXeRjY6U2Nd+jvo9MoTEw51MBCXA+5Zzqu/49y23C1W+1kx3iuARuW8L9HU49Tngkw5SvIk=
-X-Received: by 2002:a1c:c287:: with SMTP id s129mr13657428wmf.39.1589022701053;
- Sat, 09 May 2020 04:11:41 -0700 (PDT)
-MIME-Version: 1.0
-From:   Chunyan Wang <yanrrr@gmail.com>
-Date:   Sat, 9 May 2020 12:11:30 +0100
-Message-ID: <CAM0T-t16KMFHZ15wtDLTgtv8yiiP5_8Zu-a643AeBiX5NctCfw@mail.gmail.com>
-Subject: tsc_khz vs cpu_khz clarification
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Sat, 9 May 2020 07:15:04 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436625|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0365396-0.00253994-0.96092;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03297;MF=liaoweixiong@allwinnertech.com;NM=1;PH=DS;RN=20;RT=20;SR=0;TI=SMTPD_---.HVopGr-_1589022874;
+Received: from PC-liaoweixiong.allwinnertech.com(mailfrom:liaoweixiong@allwinnertech.com fp:SMTPD_---.HVopGr-_1589022874)
+          by smtp.aliyun-inc.com(10.147.44.129);
+          Sat, 09 May 2020 19:14:39 +0800
+From:   WeiXiong Liao <liaoweixiong@allwinnertech.com>
+To:     Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org,
+        WeiXiong Liao <liaoweixiong@allwinnertech.com>
+Subject: [PATCH v5 00/12] pstore: mtd: support crash log to block and mtd device
+Date:   Sat,  9 May 2020 19:14:02 +0800
+Message-Id: <1589022854-19821-1-git-send-email-liaoweixiong@allwinnertech.com>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+This is a series to support crash log to block and mtd device,
+base on v4 of Kees Cook's.
 
-I'm trying to understand exactly what the two variables tsc_khz and
-cpu_khz represent. Information online seems to suggest:
+Changes since v4:
+	patch 1: adapt pstore to kmsg_dump_reason_str().
+	patch 2: fix bugs that decompress failed and rmmod failed.
+			 use atomic_xchg() on psz_flush_dirty_zone() in case of reload.
+	patch 3: fix build error
+	patch 5: flush pmsg zone if it's dirty.
+	patch 6: use delayed work to cache more data and reduce calling
+			 dirty-flusher times
+	patch 12: change dev_err() to pr_err() when initialize because it get
+			  no pointer to mtd at that time.
 
-tsc_khz - Is the frequency of the tsc
+v4: https://lore.kernel.org/lkml/20200508064004.57898-1-keescook@chromium.org/
+v3: https://lore.kernel.org/lkml/1585126506-18635-1-git-send-email-liaoweixiong@allwinnertech.com/
+v2: https://lore.kernel.org/lkml/1581078355-19647-1-git-send-email-liaoweixiong@allwinnertech.com/
+v1: https://lore.kernel.org/lkml/1579482233-2672-1-git-send-email-liaoweixiong@allwinnertech.com/
 
-cpu_khz - Outputs in /proc/cpuinfo in the processor description, best
-I can tell this is the P0 frequency. Some code examples also seem to
-translate tsc values to real time with this, implying it is also the
-frequency of the tsc.
+Kees Cook (1):
+  printk: pstore: Introduce kmsg_dump_reason_str()
 
-For AMD the only information I've found states the tsc frequency will
-be the P0 frequency. The system under test is an SMP one with 2x "AMD
-EPYC 7542 32-Core Processor", which sees the following between 3
-successive boots for these values:
+WeiXiong Liao (11):
+  pstore/zone: Introduce common layer to manage storage zones
+  pstore/blk: Introduce backend for block devices
+  pstore/blk: Provide way to choose pstore frontend support
+  pstore/blk: Add support for pmsg frontend
+  pstore/blk: Add console frontend support
+  pstore/blk: Add ftrace frontend support
+  Documentation: Add details for pstore/blk
+  pstore/zone: Provide way to skip "broken" zone for MTD devices
+  pstore/blk: Provide way to query pstore configuration
+  pstore/blk: Support non-block storage devices
+  mtd: Support kmsg dumper based on pstore/blk
 
-boot 1:
-tsc_khz 2894561
-cpu_khz 2894496
+ Documentation/admin-guide/pstore-blk.rst |  243 +++++
+ MAINTAINERS                              |    1 +
+ drivers/mtd/Kconfig                      |   10 +
+ drivers/mtd/Makefile                     |    1 +
+ drivers/mtd/mtdpstore.c                  |  563 +++++++++++
+ fs/pstore/Kconfig                        |  109 +++
+ fs/pstore/Makefile                       |    6 +
+ fs/pstore/blk.c                          |  481 ++++++++++
+ fs/pstore/platform.c                     |   22 +-
+ fs/pstore/zone.c                         | 1508 ++++++++++++++++++++++++++++++
+ include/linux/kmsg_dump.h                |    7 +
+ include/linux/pstore_blk.h               |   77 ++
+ include/linux/pstore_zone.h              |   60 ++
+ kernel/printk/printk.c                   |   21 +
+ 14 files changed, 3088 insertions(+), 21 deletions(-)
+ create mode 100644 Documentation/admin-guide/pstore-blk.rst
+ create mode 100644 drivers/mtd/mtdpstore.c
+ create mode 100644 fs/pstore/blk.c
+ create mode 100644 fs/pstore/zone.c
+ create mode 100644 include/linux/pstore_blk.h
+ create mode 100644 include/linux/pstore_zone.h
 
-boot 2:
-tsc_khz 2894562
-cpu_khz 2894578
+-- 
+1.9.1
 
-boot 3:
-tsc_khz 2894561
-cpu_khz 2894458
-
-I'd like to understand what these values represent given the reported
-values above.
-
-Please could you keep me cc'd in responses.
-
-Regards,
-Simon
