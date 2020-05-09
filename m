@@ -2,154 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04B811CC981
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 10:37:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6FC41CC279
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 17:44:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729006AbgEJIhk convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 10 May 2020 04:37:40 -0400
-Received: from tarvos.retrosnub.co.uk ([93.93.130.7]:48340 "EHLO
-        tarvos.retrosnub.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726630AbgEJIhk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 May 2020 04:37:40 -0400
-X-Greylist: delayed 589 seconds by postgrey-1.27 at vger.kernel.org; Sun, 10 May 2020 04:37:38 EDT
-Received: from [192.168.0.10] (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        by tarvos.retrosnub.co.uk (Postfix; Retrosnub mail submission) with ESMTPSA id DD222C03DA;
-        Sun, 10 May 2020 09:27:47 +0100 (BST)
-Date:   Sat, 09 May 2020 16:44:04 +0100
-User-Agent: K-9 Mail for Android
-In-Reply-To: <61e9c83b910b3df44291a49b5587b772d4145036.camel@yadro.com>
-References: <20200507132600.8801-1-i.mikhaylov@yadro.com> <20200507132600.8801-2-i.mikhaylov@yadro.com> <20200508155050.0000008e@Huawei.com> <61e9c83b910b3df44291a49b5587b772d4145036.camel@yadro.com>
+        id S1728143AbgEIPnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 11:43:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39672 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726782AbgEIPnt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 May 2020 11:43:49 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F2CEF2063A;
+        Sat,  9 May 2020 15:43:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589039029;
+        bh=o1bX8Zql/kQ5+2VP0PxQWxTrOXX0zwKggYwZhmcqNrs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DAXEZFtgE82+8ztfFy+75+0SXtIGD9rjTnRytb7gq+fU+tGx4hbaaWmS2NcxsN+Pt
+         jSeaNmSSiVN2iqylQqSMRdrnQ//OygB2q713StgEDppDnCYpiSQumAGbLQaolzFh+k
+         PJ9TtJmxAEV+9tAf+Z7IF89wjHUFlaKH1C2BrKBQ=
+Date:   Sat, 9 May 2020 10:48:18 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Kalle Valo <kvalo@codeaurora.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Michal Kazior <michal.kazior@tieto.com>,
+        Kalle Valo <kvalo@qca.qualcomm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Wen Gong <wgong@codeaurora.org>,
+        Erik Stromdahl <erik.stromdahl@gmail.com>,
+        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 1/2] ath10k: fix gcc-10 zero-length-bounds
+ warnings
+Message-ID: <20200509154818.GB27779@embeddedor>
+References: <20200509120707.188595-1-arnd@arndb.de>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 8BIT
-Subject: Re: [PATCH v13 1/2] dt-bindings: proximity: provide vcnl3020 device tree binding document
-To:     Ivan Mikhaylov <i.mikhaylov@yadro.com>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-CC:     Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-From:   Jonathan Cameron <jic23@jic23.retrosnub.co.uk>
-Message-ID: <DC81C6F6-5510-4477-B9D2-29CB3DBCA9F3@jic23.retrosnub.co.uk>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200509120707.188595-1-arnd@arndb.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Arnd,
 
+On Sat, May 09, 2020 at 02:06:32PM +0200, Arnd Bergmann wrote:
+> gcc-10 started warning about out-of-bounds access for zero-length
+> arrays:
+> 
+> In file included from drivers/net/wireless/ath/ath10k/core.h:18,
+>                  from drivers/net/wireless/ath/ath10k/htt_rx.c:8:
+> drivers/net/wireless/ath/ath10k/htt_rx.c: In function 'ath10k_htt_rx_tx_fetch_ind':
+> drivers/net/wireless/ath/ath10k/htt.h:1683:17: warning: array subscript 65535 is outside the bounds of an interior zero-length array 'struct htt_tx_fetch_record[0]' [-Wzero-length-bounds]
+>  1683 |  return (void *)&ind->records[le16_to_cpu(ind->num_records)];
+>       |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/net/wireless/ath/ath10k/htt.h:1676:29: note: while referencing 'records'
+>  1676 |  struct htt_tx_fetch_record records[0];
+>       |                             ^~~~~~~
+> 
+> Make records[] a flexible array member to allow this, moving it behind
+> the other zero-length member that is not accessed in a way that gcc
+> warns about.
+> 
+> Fixes: 3ba225b506a2 ("treewide: Replace zero-length array with flexible-array member")
 
-On 9 May 2020 11:38:46 BST, Ivan Mikhaylov <i.mikhaylov@yadro.com> wrote:
->On Fri, 2020-05-08 at 15:51 +0100, Jonathan Cameron wrote:
->> On Thu, 7 May 2020 16:25:59 +0300
->> Ivan Mikhaylov <i.mikhaylov@yadro.com> wrote:
->> 
->> > Mostly standard i2c driver with some additional led-current option
->> > for vcnl3020.
->> > 
->> > Signed-off-by: Ivan Mikhaylov <i.mikhaylov@yadro.com>
->> > ---
->> >  .../iio/proximity/vishay,vcnl3020.yaml        | 65
->+++++++++++++++++++
->> >  1 file changed, 65 insertions(+)
->> >  create mode 100644
->> >
->Documentation/devicetree/bindings/iio/proximity/vishay,vcnl3020.yaml
->> > 
->> > diff --git
->> >
->a/Documentation/devicetree/bindings/iio/proximity/vishay,vcnl3020.yaml
->> >
->b/Documentation/devicetree/bindings/iio/proximity/vishay,vcnl3020.yaml
->> > new file mode 100644
->> > index 000000000000..408dee17cdf5
->> > --- /dev/null
->> > +++
->b/Documentation/devicetree/bindings/iio/proximity/vishay,vcnl3020.yaml
->> > @@ -0,0 +1,65 @@
->> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->> > +%YAML 1.2
->> > +---
->> > +$id:
->http://devicetree.org/schemas/iio/proximity/vishay,vcnl3020.yaml#
->> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> > +
->> > +title: Integrated Proximity Sensor With Infrared Emitter
->> > +
->> > +maintainers:
->> > +  - Ivan Mikhaylov <i.mikhaylov@yadro.com>
->> > +
->> > +description: |
->> > +  The VCNL3020 is a fully integrated proximity sensor. Fully
->integrated
->> > means
->> > +  that the infrared emitter is included in the package. It has
->16-bit
->> > +  resolution. It includes a signal processing IC and features
->standard I2C
->> > +  communication interface. It features an interrupt function.
->> > +
->> > +  Specifications about the devices can be found at:
->> > +  https://www.vishay.com/docs/84150/vcnl3020.pdf
->> > +
->> > +properties:
->> > +  compatible:
->> > +    enum:
->> > +      - vishay,vcnl3020
->> > +
->> > +  reg:
->> > +    maxItems: 1
->> > +
->> > +  interrupts:
->> > +    maxItems: 1
->> > +
->> > +  vdd-supply:
->> > +    description: Regulator that provides power to the sensor
->> > +
->> > +  vddio-supply:
->> > +    description: Regulator that provides power to the bus
->> > +
->> > +  vishay,led-current-microamp:
->> > +    description:
->> > +      IR LED current value with valid Range = 0 to 20d. e.g. 0 = 0
->mA,
->> > +      1 = 10 mA, 20 = 200 mA. LED Current is limited to 200 mA for
->values
->> > +      higher than decimal 20. The drive current for the LED used
->in
->> > proximity
->> > +      sensing.
->> 
->> This text is really confusing. Just let the enum speak for itself and
->leave
->> text as
->> something short like
->> 
->> "The driver current for the LED used in proximity sensing. "
->> 
->> Units and values are clear already.
->> 
->
->Jonathan, just to double check, for preventing further problems with
->misunderstanding, is that what you want?
->
->  vishay,led-current-microamp:
->    description:
->        The driver current for the LED used in proximity sensing.
->
->    enum: [0..200000] <- just for shortening
->    default: 20000
->
->Thanks.
+This treewide patch no longer contains changes for ath10k. I removed them
+since Monday (05/04/2020). So, this "Fixes" tag does not apply.
 
-Yes
+Thanks
+--
+Gustavo
 
-J
-
--- 
-Sent from my Android device with K-9 Mail. Please excuse my brevity.
+> Fixes: 22e6b3bc5d96 ("ath10k: add new htt definitions")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/net/wireless/ath/ath10k/htt.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+> index 8f3710cf28f4..aa056a186402 100644
+> --- a/drivers/net/wireless/ath/ath10k/htt.h
+> +++ b/drivers/net/wireless/ath/ath10k/htt.h
+> @@ -1673,8 +1673,8 @@ struct htt_tx_fetch_ind {
+>  	__le32 token;
+>  	__le16 num_resp_ids;
+>  	__le16 num_records;
+> -	struct htt_tx_fetch_record records[0];
+>  	__le32 resp_ids[0]; /* ath10k_htt_get_tx_fetch_ind_resp_ids() */
+> +	struct htt_tx_fetch_record records[];
+>  } __packed;
+>  
+>  static inline void *
+> -- 
+> 2.26.0
+> 
