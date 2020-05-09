@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BECF1CC0B0
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 13:15:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E91501CC0A6
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 13:14:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728418AbgEILPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 07:15:08 -0400
-Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:59372 "EHLO
+        id S1728186AbgEILOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 07:14:48 -0400
+Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:34579 "EHLO
         smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726951AbgEILPE (ORCPT
+        by vger.kernel.org with ESMTP id S1725920AbgEILOr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 07:15:04 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436625|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0365396-0.00253994-0.96092;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03297;MF=liaoweixiong@allwinnertech.com;NM=1;PH=DS;RN=20;RT=20;SR=0;TI=SMTPD_---.HVopGr-_1589022874;
+        Sat, 9 May 2020 07:14:47 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436316|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0620642-0.00271633-0.935219;FP=0|0|0|0|0|-1|-1|-1;HT=e01a16367;MF=liaoweixiong@allwinnertech.com;NM=1;PH=DS;RN=19;RT=19;SR=0;TI=SMTPD_---.HVopGr-_1589022874;
 Received: from PC-liaoweixiong.allwinnertech.com(mailfrom:liaoweixiong@allwinnertech.com fp:SMTPD_---.HVopGr-_1589022874)
           by smtp.aliyun-inc.com(10.147.44.129);
-          Sat, 09 May 2020 19:14:39 +0800
+          Sat, 09 May 2020 19:14:40 +0800
 From:   WeiXiong Liao <liaoweixiong@allwinnertech.com>
 To:     Kees Cook <keescook@chromium.org>,
         Anton Vorontsov <anton@enomsg.org>,
@@ -34,74 +34,128 @@ To:     Kees Cook <keescook@chromium.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Pavel Tatashin <pasha.tatashin@soleen.com>
 Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org,
-        WeiXiong Liao <liaoweixiong@allwinnertech.com>
-Subject: [PATCH v5 00/12] pstore: mtd: support crash log to block and mtd device
-Date:   Sat,  9 May 2020 19:14:02 +0800
-Message-Id: <1589022854-19821-1-git-send-email-liaoweixiong@allwinnertech.com>
+        linux-mtd@lists.infradead.org
+Subject: [PATCH v5 01/12] printk: pstore: Introduce kmsg_dump_reason_str()
+Date:   Sat,  9 May 2020 19:14:03 +0800
+Message-Id: <1589022854-19821-2-git-send-email-liaoweixiong@allwinnertech.com>
 X-Mailer: git-send-email 1.9.1
+In-Reply-To: <1589022854-19821-1-git-send-email-liaoweixiong@allwinnertech.com>
+References: <1589022854-19821-1-git-send-email-liaoweixiong@allwinnertech.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a series to support crash log to block and mtd device,
-base on v4 of Kees Cook's.
+From: Kees Cook <keescook@chromium.org>
 
-Changes since v4:
-	patch 1: adapt pstore to kmsg_dump_reason_str().
-	patch 2: fix bugs that decompress failed and rmmod failed.
-			 use atomic_xchg() on psz_flush_dirty_zone() in case of reload.
-	patch 3: fix build error
-	patch 5: flush pmsg zone if it's dirty.
-	patch 6: use delayed work to cache more data and reduce calling
-			 dirty-flusher times
-	patch 12: change dev_err() to pr_err() when initialize because it get
-			  no pointer to mtd at that time.
+The pstore subsystem already had a private version of this function.
+With the coming addition of the pstore/zone driver, this needs to be
+shared. As it really should live with printk, move it there instead.
 
-v4: https://lore.kernel.org/lkml/20200508064004.57898-1-keescook@chromium.org/
-v3: https://lore.kernel.org/lkml/1585126506-18635-1-git-send-email-liaoweixiong@allwinnertech.com/
-v2: https://lore.kernel.org/lkml/1581078355-19647-1-git-send-email-liaoweixiong@allwinnertech.com/
-v1: https://lore.kernel.org/lkml/1579482233-2672-1-git-send-email-liaoweixiong@allwinnertech.com/
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ fs/pstore/platform.c      | 22 +---------------------
+ include/linux/kmsg_dump.h |  7 +++++++
+ kernel/printk/printk.c    | 21 +++++++++++++++++++++
+ 3 files changed, 29 insertions(+), 21 deletions(-)
 
-Kees Cook (1):
-  printk: pstore: Introduce kmsg_dump_reason_str()
-
-WeiXiong Liao (11):
-  pstore/zone: Introduce common layer to manage storage zones
-  pstore/blk: Introduce backend for block devices
-  pstore/blk: Provide way to choose pstore frontend support
-  pstore/blk: Add support for pmsg frontend
-  pstore/blk: Add console frontend support
-  pstore/blk: Add ftrace frontend support
-  Documentation: Add details for pstore/blk
-  pstore/zone: Provide way to skip "broken" zone for MTD devices
-  pstore/blk: Provide way to query pstore configuration
-  pstore/blk: Support non-block storage devices
-  mtd: Support kmsg dumper based on pstore/blk
-
- Documentation/admin-guide/pstore-blk.rst |  243 +++++
- MAINTAINERS                              |    1 +
- drivers/mtd/Kconfig                      |   10 +
- drivers/mtd/Makefile                     |    1 +
- drivers/mtd/mtdpstore.c                  |  563 +++++++++++
- fs/pstore/Kconfig                        |  109 +++
- fs/pstore/Makefile                       |    6 +
- fs/pstore/blk.c                          |  481 ++++++++++
- fs/pstore/platform.c                     |   22 +-
- fs/pstore/zone.c                         | 1508 ++++++++++++++++++++++++++++++
- include/linux/kmsg_dump.h                |    7 +
- include/linux/pstore_blk.h               |   77 ++
- include/linux/pstore_zone.h              |   60 ++
- kernel/printk/printk.c                   |   21 +
- 14 files changed, 3088 insertions(+), 21 deletions(-)
- create mode 100644 Documentation/admin-guide/pstore-blk.rst
- create mode 100644 drivers/mtd/mtdpstore.c
- create mode 100644 fs/pstore/blk.c
- create mode 100644 fs/pstore/zone.c
- create mode 100644 include/linux/pstore_blk.h
- create mode 100644 include/linux/pstore_zone.h
-
+diff --git a/fs/pstore/platform.c b/fs/pstore/platform.c
+index b882919b8784..4fb8ec9f3a1c 100644
+--- a/fs/pstore/platform.c
++++ b/fs/pstore/platform.c
+@@ -130,26 +130,6 @@ enum pstore_type_id pstore_name_to_type(const char *name)
+ }
+ EXPORT_SYMBOL_GPL(pstore_name_to_type);
+ 
+-static const char *get_reason_str(enum kmsg_dump_reason reason)
+-{
+-	switch (reason) {
+-	case KMSG_DUMP_PANIC:
+-		return "Panic";
+-	case KMSG_DUMP_OOPS:
+-		return "Oops";
+-	case KMSG_DUMP_EMERG:
+-		return "Emergency";
+-	case KMSG_DUMP_RESTART:
+-		return "Restart";
+-	case KMSG_DUMP_HALT:
+-		return "Halt";
+-	case KMSG_DUMP_POWEROFF:
+-		return "Poweroff";
+-	default:
+-		return "Unknown";
+-	}
+-}
+-
+ static void pstore_timer_kick(void)
+ {
+ 	if (pstore_update_ms < 0)
+@@ -402,7 +382,7 @@ static void pstore_dump(struct kmsg_dumper *dumper,
+ 	unsigned int	part = 1;
+ 	int		ret;
+ 
+-	why = get_reason_str(reason);
++	why = kmsg_dump_reason_str(reason);
+ 
+ 	if (down_trylock(&psinfo->buf_lock)) {
+ 		/* Failed to acquire lock: give up if we cannot wait. */
+diff --git a/include/linux/kmsg_dump.h b/include/linux/kmsg_dump.h
+index cfc042066be7..b3ddb0b2ee40 100644
+--- a/include/linux/kmsg_dump.h
++++ b/include/linux/kmsg_dump.h
+@@ -72,6 +72,8 @@ bool kmsg_dump_get_buffer(struct kmsg_dumper *dumper, bool syslog,
+ int kmsg_dump_register(struct kmsg_dumper *dumper);
+ 
+ int kmsg_dump_unregister(struct kmsg_dumper *dumper);
++
++const char *kmsg_dump_reason_str(enum kmsg_dump_reason reason);
+ #else
+ static inline void kmsg_dump(enum kmsg_dump_reason reason)
+ {
+@@ -113,6 +115,11 @@ static inline int kmsg_dump_unregister(struct kmsg_dumper *dumper)
+ {
+ 	return -EINVAL;
+ }
++
++static inline const char *kmsg_dump_reason_str(enum kmsg_dump_reason reason)
++{
++	return "Disabled";
++}
+ #endif
+ 
+ #endif /* _LINUX_KMSG_DUMP_H */
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index 1aab69a8a2bf..67a284830d74 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -3144,6 +3144,27 @@ int kmsg_dump_unregister(struct kmsg_dumper *dumper)
+ static bool always_kmsg_dump;
+ module_param_named(always_kmsg_dump, always_kmsg_dump, bool, S_IRUGO | S_IWUSR);
+ 
++const char *kmsg_dump_reason_str(enum kmsg_dump_reason reason)
++{
++	switch (reason) {
++	case KMSG_DUMP_PANIC:
++		return "Panic";
++	case KMSG_DUMP_OOPS:
++		return "Oops";
++	case KMSG_DUMP_EMERG:
++		return "Emergency";
++	case KMSG_DUMP_RESTART:
++		return "Restart";
++	case KMSG_DUMP_HALT:
++		return "Halt";
++	case KMSG_DUMP_POWEROFF:
++		return "Poweroff";
++	default:
++		return "Unknown";
++	}
++}
++EXPORT_SYMBOL_GPL(kmsg_dump_reason_str);
++
+ /**
+  * kmsg_dump - dump kernel log to kernel message dumpers.
+  * @reason: the reason (oops, panic etc) for dumping
 -- 
 1.9.1
 
