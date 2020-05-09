@@ -2,96 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D8F1CBE54
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 09:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDF441CBE5B
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 09:20:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729010AbgEIHNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 03:13:04 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:44596 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728471AbgEIHNE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 03:13:04 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxf93sV7ZeMnUyAA--.1S4;
-        Sat, 09 May 2020 15:12:47 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH v2 2/2] MIPS: Loongson: Reduce possible loop times and add log in do_thermal_timer()
-Date:   Sat,  9 May 2020 15:12:44 +0800
-Message-Id: <1589008364-2294-3-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1589008364-2294-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1589008364-2294-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9Dxf93sV7ZeMnUyAA--.1S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7KF4UGr1UuF15Kr43JFWUArb_yoW8GF4kpr
-        WfG34YyF48Ww4qq3WUta1j9FW5Gw1DKry7uFy7CwnYyFs8XryaqFyUtFyFyr9rGr4kX3WU
-        Zr1SvFnxWa17uF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBq14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
-        x26xkF7I0E14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-        Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UM2
-        8EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1l
-        e2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI
-        8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwAC
-        jcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4xMxAIw2
-        8IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4l
-        x2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrw
-        CI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI
-        42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z2
-        80aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUU1rW3UUUUU==
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S1728856AbgEIHUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 03:20:16 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:34988 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725822AbgEIHUP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 May 2020 03:20:15 -0400
+Received: by mail-io1-f72.google.com with SMTP id q17so285976iod.2
+        for <linux-kernel@vger.kernel.org>; Sat, 09 May 2020 00:20:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=XPb17h6Lu5JCDa/kbKAyJHc3YBO21hhYoLyI4I10k/w=;
+        b=taFOCmaBW65H4yVXrX0WNCRANuIgTdDEcWlFUmmmCZgvKlGm9KeSvd1KG4ItpCoeo4
+         hapgDpCzYLMN5Z+EgFMRspyBSg/4NdEjUBb1yWRAq9MIgwoiYcrU4j8+VxH/pCDvAZPV
+         qooXEvD1Srl4nmnVRgVffFle1/BRM+kchtnL58cIKcB8v6WmEtzufNigaEoZhcTqZ3qS
+         sqE1idns3pObsBdrzbiHJwkvZusXwGMEu325E8U4wmS65Bd04v/iyTay8s53FncXI9d6
+         hfO6YLD1Xze2SiAeuALDvFV3NhPUptcxJaV19WgQF+l8VzTm/qVX5ddj6UpuhvoDm8hz
+         0YsA==
+X-Gm-Message-State: AGi0PuZ4F3HUenkzl4BuYx171PhEAgf9UZGyz6VE+Khbn2NchknYjO5q
+        Z/zI6mZHeUxEfqksRFIJZn/4mAkZoMQ1j0/xWm3VyP6cR1wz
+X-Google-Smtp-Source: APiQypJyIrWtaEFTvm7xfC+n2FGz3IIgcG4sfMWZhTlQJs5YJysR7EUi3pqD19Mkpw6Rlgh0GwzGySMdbtI3H0Ryr+7EGMT6nqNm
+MIME-Version: 1.0
+X-Received: by 2002:a05:6602:26d5:: with SMTP id g21mr6024956ioo.91.1589008814623;
+ Sat, 09 May 2020 00:20:14 -0700 (PDT)
+Date:   Sat, 09 May 2020 00:20:14 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f0d8d205a531f1a3@google.com>
+Subject: WARNING in memtype_reserve
+From:   syzbot <syzbot+353be47c9ce21b68b7ed@syzkaller.appspotmail.com>
+To:     bp@alien8.de, dave.hansen@linux.intel.com,
+        dmitry.torokhov@gmail.com, ebiederm@xmission.com,
+        gregkh@linuxfoundation.org, hpa@zytor.com, jeremy.linton@arm.com,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        luto@kernel.org, mingo@redhat.com, peterz@infradead.org,
+        stern@rowland.harvard.edu, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Once the temperature of any CPUs is too high, it can power off immediately,
-no need to check the rest of CPUs, and it is better to print a log before
-power off, this is useful when analysis the abnormal issues.
+Hello,
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+syzbot found the following crash on:
+
+HEAD commit:    d5eeab8d Merge tag 'scsi-fixes' of git://git.kernel.org/pu..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15093632100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b0212dbee046bc1f
+dashboard link: https://syzkaller.appspot.com/bug?extid=353be47c9ce21b68b7ed
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+userspace arch: i386
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=168ee02c100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=119f3788100000
+
+The bug was bisected to:
+
+commit 2bef9aed6f0e22391c8d4570749b1acc9bc3981e
+Author: Jeremy Linton <jeremy.linton@arm.com>
+Date:   Mon May 4 20:13:48 2020 +0000
+
+    usb: usbfs: correct kernel->user page attribute mismatch
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1701f168100000
+final crash:    https://syzkaller.appspot.com/x/report.txt?x=1481f168100000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1081f168100000
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+353be47c9ce21b68b7ed@syzkaller.appspotmail.com
+Fixes: 2bef9aed6f0e ("usb: usbfs: correct kernel->user page attribute mismatch")
+
+------------[ cut here ]------------
+memtype_reserve failed: [mem 0xffffffffff000-0x00008fff], req write-back
+WARNING: CPU: 1 PID: 7025 at arch/x86/mm/pat/memtype.c:589 memtype_reserve+0x69f/0x820 arch/x86/mm/pat/memtype.c:589
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 1 PID: 7025 Comm: syz-executor254 Not tainted 5.7.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x188/0x20d lib/dump_stack.c:118
+ panic+0x2e3/0x75c kernel/panic.c:221
+ __warn.cold+0x2f/0x35 kernel/panic.c:582
+ report_bug+0x27b/0x2f0 lib/bug.c:195
+ fixup_bug arch/x86/kernel/traps.c:175 [inline]
+ fixup_bug arch/x86/kernel/traps.c:170 [inline]
+ do_error_trap+0x12b/0x220 arch/x86/kernel/traps.c:267
+ do_invalid_op+0x32/0x40 arch/x86/kernel/traps.c:286
+ invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
+RIP: 0010:memtype_reserve+0x69f/0x820 arch/x86/mm/pat/memtype.c:589
+Code: 48 8b 2c ed c0 00 29 88 e8 ae ad 3e 00 48 8d 4b ff 49 89 e8 4c 89 e2 48 c7 c6 20 01 29 88 48 c7 c7 80 f9 28 88 e8 79 e8 0f 00 <0f> 0b 41 bf ea ff ff ff e9 03 fc ff ff 41 bf ea ff ff ff e9 f8 fb
+RSP: 0018:ffffc900015e7790 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: 0000000000009000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffffff815ce181 RDI: fffff520002bcee4
+RBP: ffffffff8828ff40 R08: ffff888097ce85c0 R09: ffffed1015ce45f1
+R10: ffff8880ae722f83 R11: ffffed1015ce45f0 R12: 000ffffffffff000
+R13: 1ffff920002bcef8 R14: dffffc0000000000 R15: 0000000000000000
+ reserve_pfn_range+0x173/0x470 arch/x86/mm/pat/memtype.c:941
+ track_pfn_remap+0x18b/0x280 arch/x86/mm/pat/memtype.c:1033
+ remap_pfn_range+0x202/0xbf0 mm/memory.c:2130
+ dma_direct_mmap+0x197/0x260 kernel/dma/direct.c:453
+ dma_mmap_attrs+0xfe/0x150 kernel/dma/mapping.c:237
+ usbdev_mmap+0x3ae/0x730 drivers/usb/core/devio.c:254
+ call_mmap include/linux/fs.h:1912 [inline]
+ mmap_region+0xafb/0x1540 mm/mmap.c:1772
+ do_mmap+0x849/0x1160 mm/mmap.c:1545
+ do_mmap_pgoff include/linux/mm.h:2553 [inline]
+ vm_mmap_pgoff+0x197/0x200 mm/util.c:506
+ ksys_mmap_pgoff+0x457/0x5b0 mm/mmap.c:1595
+ do_syscall_32_irqs_on arch/x86/entry/common.c:337 [inline]
+ do_fast_syscall_32+0x270/0xe90 arch/x86/entry/common.c:396
+ entry_SYSENTER_compat+0x70/0x7f arch/x86/entry/entry_64_compat.S:139
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
+
+
 ---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-v2:
-  - Reduce possible loop times in do_thermal_timer()
-  - Modify the patch subject and update the commit message
-
- drivers/platform/mips/cpu_hwmon.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/platform/mips/cpu_hwmon.c b/drivers/platform/mips/cpu_hwmon.c
-index fa42b13..c9f35e5 100644
---- a/drivers/platform/mips/cpu_hwmon.c
-+++ b/drivers/platform/mips/cpu_hwmon.c
-@@ -153,18 +153,17 @@ static struct delayed_work thermal_work;
- 
- static void do_thermal_timer(struct work_struct *work)
- {
--	int i, value, temp_max = 0;
-+	int i, value;
- 
- 	for (i = 0; i < nr_packages; i++) {
- 		value = loongson3_cpu_temp(i);
--		if (value > temp_max)
--			temp_max = value;
-+		if (value > CPU_THERMAL_THRESHOLD) {
-+			pr_emerg("Power off due to high temp: %d\n", value);
-+			orderly_poweroff(true);
-+		}
- 	}
- 
--	if (temp_max <= CPU_THERMAL_THRESHOLD)
--		schedule_delayed_work(&thermal_work, msecs_to_jiffies(5000));
--	else
--		orderly_poweroff(true);
-+	schedule_delayed_work(&thermal_work, msecs_to_jiffies(5000));
- }
- 
- static int __init loongson_hwmon_init(void)
--- 
-2.1.0
-
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
