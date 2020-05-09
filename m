@@ -2,289 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00F621CC340
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 19:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 733451CC350
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 19:46:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728717AbgEIRhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 13:37:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54798 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728663AbgEIRh0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 13:37:26 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CFD5424956;
-        Sat,  9 May 2020 17:37:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589045845;
-        bh=42vi448p+mrkPGZCOyniyT8x08SXAABtZ5W56U5+AFk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XBtLanETlYMDRPlL7zhKBrz0GeHuiJwWcAnZrQdKwNZ+ZUyoIIYVXly+vonhJ175E
-         /uWgxaQjzi8hCYPeLNUgY/CgtF8dp07QNTvT1mxHPAEQFJZvU+rbBu9sW5LlWAcZrM
-         1FA6YulvMYZJWVAEtIbLkHkkgUE+qVIGoQAHpHAg=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, tglx@linutronix.de, bp@alien8.de,
-        luto@kernel.org
-Cc:     hpa@zytor.com, dave.hansen@intel.com, tony.luck@intel.com,
-        ak@linux.intel.com, ravi.v.shankar@intel.com,
-        chang.seok.bae@intel.com, Sasha Levin <sashal@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH v11 18/18] Documentation/x86/64: Add documentation for GS/FS addressing mode
-Date:   Sat,  9 May 2020 13:36:55 -0400
-Message-Id: <20200509173655.13977-19-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200509173655.13977-1-sashal@kernel.org>
-References: <20200509173655.13977-1-sashal@kernel.org>
+        id S1728477AbgEIRqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 13:46:03 -0400
+Received: from omta03.suddenlink.net ([208.180.40.73]:38055 "EHLO
+        omta03.suddenlink.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726214AbgEIRqC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 May 2020 13:46:02 -0400
+X-Greylist: delayed 408 seconds by postgrey-1.27 at vger.kernel.org; Sat, 09 May 2020 13:45:52 EDT
+Received: from dalofep03 ([10.130.7.43]) by dalofep01.suddenlink.net
+          (InterMail vM.8.04.03.22.02 201-2389-100-169-20190213) with ESMTP
+          id <20200509173848.CXYU4162.dalofep01.suddenlink.net@dalofep03>;
+          Sat, 9 May 2020 12:38:48 -0500
+Message-ID: <20200509123848.LEL9Z.1156082.root@dalofep03>
+Date:   Sat, 9 May 2020 12:38:10 -0500
+From:   <reginadan1@suddenlink.net>
+Subject: Mutual business proposal
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Priority: 3 (Normal)
+Sensitivity: Normal
+X-Authentication-Info: Submitted using SMTP AUTH LOGIN at dalofep01.suddenlink.net from [10.130.7.43] using ID reginadan1@suddenlink.net at Sat, 9 May 2020 12:38:10 -0500
+X-CM-Analysis: v=2.3 cv=JvWPU/wC c=1 sm=1 tr=0 cx=a_idp_d a=9ms3GpuNEvV6Mnm/MMPbyw==:117 a=9cW_t1CCXrUA:10 a=IkcTkHD0fZMA:10 a=sTwFKg_x9MkA:10 a=DMsuKN41PGsAfHhzYnMA:9 a=QEXdDO2ut3YA:10
+X-CM-Envelope: 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 9WCfQnwhBhe0B95OZafu6OI8xDlCwdTO
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
 
-Explain how the GS/FS based addressing can be utilized in user space
-applications along with the differences between the generic prctl() based
-GS/FS base control and the FSGSBASE version available on newer CPUs.
+Greeting,
+My Name is Regina Daniel am a Business Consultant and I represent a group of company based in Gulf Region that wish to invest between US$10,000,000.00 TO  US$550,000,000. 00 in foreign investment depending on your investment capacity based on the amount you can invest and manage. We are currently seeking means of expanding and relocating our business interest abroad in the following sectors: oil/Gas, real estate, construction stock, mining, transportation, health sector, tobacco or Communication Services.
 
-Originally-by: Andi Kleen <ak@linux.intel.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: H. Peter Anvin <hpa@zytor.com>
-Cc: Dave Hansen <dave.hansen@intel.com>
-Cc: Tony Luck <tony.luck@intel.com>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Randy Dunlap <rdunlap@infradead.org>
-Cc: Jonathan Corbet <corbet@lwn.net>
----
- Documentation/x86/x86_64/fsgs.rst  | 199 +++++++++++++++++++++++++++++
- Documentation/x86/x86_64/index.rst |   1 +
- 2 files changed, 200 insertions(+)
- create mode 100644 Documentation/x86/x86_64/fsgs.rst
+Also in Agriculture or any other viable sector.  If you think you have a solid background and idea of making good profit in any of the mentioned business sectors or any other business  in your country, please write me for possible business co-operation and the investment amount you can handle.
 
-diff --git a/Documentation/x86/x86_64/fsgs.rst b/Documentation/x86/x86_64/fsgs.rst
-new file mode 100644
-index 0000000000000..50960e09e1f66
---- /dev/null
-+++ b/Documentation/x86/x86_64/fsgs.rst
-@@ -0,0 +1,199 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+Using FS and GS segments in user space applications
-+===================================================
-+
-+The x86 architecture supports segmentation. Instructions which access
-+memory can use segment register based addressing mode. The following
-+notation is used to address a byte within a segment:
-+
-+  Segment-register:Byte-address
-+
-+The segment base address is added to the Byte-address to compute the
-+resulting virtual address which is accessed. This allows to access multiple
-+instances of data with the identical Byte-address, i.e. the same code. The
-+selection of a particular instance is purely based on the base-address in
-+the segment register.
-+
-+In 32-bit mode the CPU provides 6 segments, which also support segment
-+limits. The limits can be used to enforce address space protections.
-+
-+In 64-bit mode the CS/SS/DS/ES segments are ignored and the base address is
-+always 0 to provide a full 64bit address space. The FS and GS segments are
-+still functional in 64-bit mode.
-+
-+Common FS and GS usage
-+------------------------------
-+
-+The FS segment is commonly used to address Thread Local Storage (TLS). FS
-+is usually managed by runtime code or a threading library. Variables
-+declared with the '__thread' storage class specifier are instantiated per
-+thread and the compiler emits the FS: address prefix for accesses to these
-+variables. Each thread has its own FS base address so common code can be
-+used without complex address offset calculations to access the per thread
-+instances. Applications should not use FS for other purposes when they use
-+runtimes or threading libraries which manage the per thread FS.
-+
-+The GS segment has no common use and can be used freely by
-+applications. GCC and Clang support GS based addressing via address space
-+identifiers.
-+
-+Reading and writing the FS/GS base address
-+------------------------------------------
-+
-+There exist two mechanisms to read and write the FS/GS base address:
-+
-+ - the arch_prctl() system call
-+
-+ - the FSGSBASE instruction family
-+
-+Accessing FS/GS base with arch_prctl()
-+--------------------------------------
-+
-+ The arch_prctl(2) based mechanism is available on all 64-bit CPUs and all
-+ kernel versions.
-+
-+ Reading the base:
-+
-+   arch_prctl(ARCH_GET_FS, &fsbase);
-+   arch_prctl(ARCH_GET_GS, &gsbase);
-+
-+ Writing the base:
-+
-+   arch_prctl(ARCH_SET_FS, fsbase);
-+   arch_prctl(ARCH_SET_GS, gsbase);
-+
-+ The ARCH_SET_GS prctl may be disabled depending on kernel configuration
-+ and security settings.
-+
-+Accessing FS/GS base with the FSGSBASE instructions
-+---------------------------------------------------
-+
-+ With the Ivy Bridge CPU generation Intel introduced a new set of
-+ instructions to access the FS and GS base registers directly from user
-+ space. These instructions are also supported on AMD Family 17H CPUs. The
-+ following instructions are available:
-+
-+  =============== ===========================
-+  RDFSBASE %reg   Read the FS base register
-+  RDGSBASE %reg   Read the GS base register
-+  WRFSBASE %reg   Write the FS base register
-+  WRGSBASE %reg   Write the GS base register
-+  =============== ===========================
-+
-+ The instructions avoid the overhead of the arch_prctl() syscall and allow
-+ more flexible usage of the FS/GS addressing modes in user space
-+ applications. This does not prevent conflicts between threading libraries
-+ and runtimes which utilize FS and applications which want to use it for
-+ their own purpose.
-+
-+FSGSBASE instructions enablement
-+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-+ The instructions are enumerated in CPUID leaf 7, bit 0 of EBX. If
-+ available /proc/cpuinfo shows 'fsgsbase' in the flag entry of the CPUs.
-+
-+ The availability of the instructions does not enable them
-+ automatically. The kernel has to enable them explicitly in CR4. The
-+ reason for this is that older kernels make assumptions about the values in
-+ the GS register and enforce them when GS base is set via
-+ arch_prctl(). Allowing user space to write arbitrary values to GS base
-+ would violate these assumptions and cause malfunction.
-+
-+ On kernels which do not enable FSGSBASE the execution of the FSGSBASE
-+ instructions will fault with a #UD exception.
-+
-+ The kernel provides reliable information about the enabled state in the
-+ ELF AUX vector. If the HWCAP2_FSGSBASE bit is set in the AUX vector, the
-+ kernel has FSGSBASE instructions enabled and applications can use them.
-+ The following code example shows how this detection works::
-+
-+   #include <sys/auxv.h>
-+   #include <elf.h>
-+
-+   /* Will be eventually in asm/hwcap.h */
-+   #ifndef HWCAP2_FSGSBASE
-+   #define HWCAP2_FSGSBASE        (1 << 1)
-+   #endif
-+
-+   ....
-+
-+   unsigned val = getauxval(AT_HWCAP2);
-+
-+   if (val & HWCAP2_FSGSBASE)
-+        printf("FSGSBASE enabled\n");
-+
-+FSGSBASE instructions compiler support
-+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-+
-+GCC version 4.6.4 and newer provide instrinsics for the FSGSBASE
-+instructions. Clang 5 supports them as well.
-+
-+  =================== ===========================
-+  _readfsbase_u64()   Read the FS base register
-+  _readfsbase_u64()   Read the GS base register
-+  _writefsbase_u64()  Write the FS base register
-+  _writegsbase_u64()  Write the GS base register
-+  =================== ===========================
-+
-+To utilize these instrinsics <immintrin.h> must be included in the source
-+code and the compiler option -mfsgsbase has to be added.
-+
-+Compiler support for FS/GS based addressing
-+-------------------------------------------
-+
-+GCC version 6 and newer provide support for FS/GS based addressing via
-+Named Address Spaces. GCC implements the following address space
-+identifiers for x86:
-+
-+  ========= ====================================
-+  __seg_fs  Variable is addressed relative to FS
-+  __seg_gs  Variable is addressed relative to GS
-+  ========= ====================================
-+
-+The preprocessor symbols __SEG_FS and __SEG_GS are defined when these
-+address spaces are supported. Code which implements fallback modes should
-+check whether these symbols are defined. Usage example::
-+
-+  #ifdef __SEG_GS
-+
-+  long data0 = 0;
-+  long data1 = 1;
-+
-+  long __seg_gs *ptr;
-+
-+  /* Check whether FSGSBASE is enabled by the kernel (HWCAP2_FSGSBASE) */
-+  ....
-+
-+  /* Set GS base to point to data0 */
-+  _writegsbase_u64(&data0);
-+
-+  /* Access offset 0 of GS */
-+  ptr = 0;
-+  printf("data0 = %ld\n", *ptr);
-+
-+  /* Set GS base to point to data1 */
-+  _writegsbase_u64(&data1);
-+  /* ptr still addresses offset 0! */
-+  printf("data1 = %ld\n", *ptr);
-+
-+
-+Clang does not provide the GCC address space identifiers, but it provides
-+address spaces via an attribute based mechanism in Clang 2.6 and newer
-+versions:
-+
-+ ==================================== =====================================
-+  __attribute__((address_space(256))  Variable is addressed relative to GS
-+  __attribute__((address_space(257))  Variable is addressed relative to FS
-+ ==================================== =====================================
-+
-+FS/GS based addressing with inline assembly
-+-------------------------------------------
-+
-+In case the compiler does not support address spaces, inline assembly can
-+be used for FS/GS based addressing mode::
-+
-+	mov %fs:offset, %reg
-+	mov %gs:offset, %reg
-+
-+	mov %reg, %fs:offset
-+	mov %reg, %gs:offset
-diff --git a/Documentation/x86/x86_64/index.rst b/Documentation/x86/x86_64/index.rst
-index d6eaaa5a35fcd..a56070fc8e77a 100644
---- a/Documentation/x86/x86_64/index.rst
-+++ b/Documentation/x86/x86_64/index.rst
-@@ -14,3 +14,4 @@ x86_64 Support
-    fake-numa-for-cpusets
-    cpu-hotplug-spec
-    machinecheck
-+   fsgs
--- 
-2.20.1
+Let me hear from you.
+Yours sincerely,
+Mr Regina Daniel
+
 
