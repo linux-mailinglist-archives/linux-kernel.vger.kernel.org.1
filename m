@@ -2,77 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E6651CC560
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 01:46:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35A361CC588
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 01:48:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728588AbgEIXpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 19:45:13 -0400
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:36424 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726209AbgEIXpM (ORCPT
+        id S1728689AbgEIXqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 19:46:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726209AbgEIXp7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 19:45:12 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 38C3F2996C;
-        Sat,  9 May 2020 19:45:09 -0400 (EDT)
-Date:   Sun, 10 May 2020 09:45:04 +1000 (AEST)
-From:   Finn Thain <fthain@telegraphics.com.au>
-To:     Markus Elfring <Markus.Elfring@web.de>
-cc:     Christophe Jaillet <christophe.jaillet@wanadoo.fr>,
-        netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH] net/sonic: Fix some resource leaks in error handling
- paths
-In-Reply-To: <b7651b26-ac1e-6281-efb2-7eff0018b158@web.de>
-Message-ID: <alpine.LNX.2.22.394.2005100922240.11@nippy.intranet>
-References: <b7651b26-ac1e-6281-efb2-7eff0018b158@web.de>
+        Sat, 9 May 2020 19:45:59 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F160C061A0C;
+        Sat,  9 May 2020 16:45:59 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jXZAL-004iR5-VJ; Sat, 09 May 2020 23:45:58 +0000
+From:   Al Viro <viro@ZenIV.linux.org.uk>
+To:     linux-kernel@vger.kernel.org
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH 01/20] dlmfs_file_write(): get rid of pointless access_ok()
+Date:   Sun, 10 May 2020 00:45:38 +0100
+Message-Id: <20200509234557.1124086-1-viro@ZenIV.linux.org.uk>
+X-Mailer: git-send-email 2.25.4
+In-Reply-To: <20200509234124.GM23230@ZenIV.linux.org.uk>
+References: <20200509234124.GM23230@ZenIV.linux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 9 May 2020, Markus Elfring wrote:
+From: Al Viro <viro@zeniv.linux.org.uk>
 
-> > While at it, rename a label in order to be slightly more informative and
-> > split some too long lines.
-> 
-> Would you like to add the tag 'Fixes' to the change description?
-> 
+address passed only to copy_from_user()
 
-Sorry but I don't follow your reasoning here. Are you saying that this 
-needs to be pushed out to -stable branches? If so, stable-kernel-rules.rst 
-would seem to disagree as the bug is theoretical and isn't bothering 
-people.
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+---
+ fs/ocfs2/dlmfs/dlmfs.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-Is there a way to add a Fixes tag that would not invoke the -stable 
-process? And was that what you had in mind?
+diff --git a/fs/ocfs2/dlmfs/dlmfs.c b/fs/ocfs2/dlmfs/dlmfs.c
+index 1de77f1a600b..a06f19b67d3b 100644
+--- a/fs/ocfs2/dlmfs/dlmfs.c
++++ b/fs/ocfs2/dlmfs/dlmfs.c
+@@ -291,9 +291,6 @@ static ssize_t dlmfs_file_write(struct file *filp,
+ 	if (!count)
+ 		return 0;
+ 
+-	if (!access_ok(buf, count))
+-		return -EFAULT;
+-
+ 	lvb_buf = kmalloc(count, GFP_NOFS);
+ 	if (!lvb_buf)
+ 		return -ENOMEM;
+-- 
+2.11.0
 
-> 
-> > +++ b/drivers/net/ethernet/natsemi/macsonic.c
-> > @@ -506,10 +506,14 @@ static int mac_sonic_platform_probe(struct platform_device *pdev)
-> >
-> >  	err = register_netdev(dev);
-> >  	if (err)
-> > -		goto out;
-> > +		goto undo_probe1;
-> >
-> >  	return 0;
-> >
-> > +undo_probe1:
-> > +	dma_free_coherent(lp->device,
-> > +			  SIZEOF_SONIC_DESC * SONIC_BUS_SCALE(lp->dma_bitmode),
-> > +			  lp->descriptors, lp->descriptors_laddr);
-> >  out:
-> How do you think about the possibility to use the label 'free_dma'?
-
-I think 'undo_probe1' is both descriptive and consistent with commit 
-10e3cc180e64 ("net/sonic: Fix a resource leak in an error handling path in 
-'jazz_sonic_probe()'").
-
-Your suggestion, 'free_dma' is also good. But coming up with good 
-alternatives is easy. If every good alternative would be considered there 
-would be no obvious way to get a patch merged.
