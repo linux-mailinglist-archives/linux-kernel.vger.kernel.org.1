@@ -2,86 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E56031CBEC5
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 10:11:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B59A31CBEDD
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 10:22:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727794AbgEIILv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 04:11:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725850AbgEIILu (ORCPT
+        id S1727810AbgEIIV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 04:21:59 -0400
+Received: from 8.mo69.mail-out.ovh.net ([46.105.56.233]:51010 "EHLO
+        8.mo69.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725901AbgEIIV6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 04:11:50 -0400
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 725C6C061A0C
-        for <linux-kernel@vger.kernel.org>; Sat,  9 May 2020 01:11:49 -0700 (PDT)
-Received: by mail-il1-x133.google.com with SMTP id m5so3626328ilj.10
-        for <linux-kernel@vger.kernel.org>; Sat, 09 May 2020 01:11:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=trcL6JL/P6z4vCS3d8TLuc4KmkB3M51YoritqIkziPk=;
-        b=Y4PmmSPdrqGZ9O/9z6M1BAClnjDC+wdjebUzwpC5fqMXzZYsNdW+jA1kUHbxbimLGc
-         /mmI2EA72uT5ihkSTK2kuTqHj2x1+e1v/a4TpW12wq022tFZEyVJOJOn+45xFoyZvGwB
-         YxJG4EZ5l7m5NEQyA6gu8GjgtWPhpi6dUm0V8JIuLM4mfs8vHdoqVr27OTCiinlxu2kC
-         HIZXznUP4vbfD1HXnVh4/XkWFHjrO1UFdc0yBC7U2UEIIx8yk+99ve4PhVtDG2qRyX41
-         ZZqSJzBY37qlaSMcLkKy1g2xS1xSIjqErA0/BU92BelEHTjchkhQwastD5fZK5bhcYmz
-         n5Uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=trcL6JL/P6z4vCS3d8TLuc4KmkB3M51YoritqIkziPk=;
-        b=bmZE2ocwfzdVzZRBx3E95Ug8UAbSuFDqyljuwSLfBy8EhfO4ZUM3hCpURVW2BqVydJ
-         xYwFYsBZGeGVhIO/VItPBQAowZKFbUnpfd5SHYt0YO8dA0/fS1w49jpzzjo5nd31wt2b
-         7DooiV2Xm34LG0RJWi594EAodeVn4Fb6/KA9ItvreN/stfbFu5YxeisF0GFUN9zgpA7f
-         MhMlAqoDKBbYhmom7zqGNjtaWfkeBm8g6mWGfcQVdl+fndkb0BbrWJZepYE+K9u1PaPg
-         cYNdIDppSlnZNE+G9zU7lkc2Iscg1Y/4gIdvlXnDie/MjdTW97M+kh2zmyBjIJM3rCHN
-         hTLg==
-X-Gm-Message-State: AGi0PubjRzoVMS1becRDhVV0rO95z3/hbgUnTn/cyCR/MMXCbdddP/wi
-        GpspYPstAxeVh/qX3SeiujOzRJ0QZNTsGawiYxg=
-X-Google-Smtp-Source: APiQypJEGGvidYhz7vaJLXabTC/HGWu94b/4ibiIxw1/gsZvZ2NKsP9SXVH45+MFpy+V6NB4mvbM7/gSZjyNNEJO5mQ=
-X-Received: by 2002:a92:7c01:: with SMTP id x1mr6540061ilc.122.1589011908683;
- Sat, 09 May 2020 01:11:48 -0700 (PDT)
+        Sat, 9 May 2020 04:21:58 -0400
+Received: from player795.ha.ovh.net (unknown [10.110.171.5])
+        by mo69.mail-out.ovh.net (Postfix) with ESMTP id E05468C124
+        for <linux-kernel@vger.kernel.org>; Sat,  9 May 2020 10:13:36 +0200 (CEST)
+Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
+        (Authenticated sender: steve@sk2.org)
+        by player795.ha.ovh.net (Postfix) with ESMTPSA id B27E6120BE947;
+        Sat,  9 May 2020 08:13:30 +0000 (UTC)
+Date:   Sat, 9 May 2020 10:13:22 +0200
+From:   Stephen Kitt <steve@sk2.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Joe Perches <joe@perches.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] net: Protect INET_ADDR_COOKIE on 32-bit
+ architectures
+Message-ID: <20200509101322.12651ba0@heffalump.sk2.org>
+In-Reply-To: <20200508205025.3207a54e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <20200508120457.29422-1-steve@sk2.org>
+        <20200508205025.3207a54e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <B183CDAA-DA88-4760-9C1B-F73A8F7840E7@lca.pw>
-In-Reply-To: <B183CDAA-DA88-4760-9C1B-F73A8F7840E7@lca.pw>
-From:   "Oliver O'Halloran" <oohall@gmail.com>
-Date:   Sat, 9 May 2020 18:11:37 +1000
-Message-ID: <CAOSf1CFNp6+k_y_87r7p2e8cKfX0rK-9wBxeR+K0e0y8R0_TNg@mail.gmail.com>
-Subject: Re: ioremap() called early from pnv_pci_init_ioda_phb()
-To:     Qian Cai <cai@lca.pw>
-Cc:     Christophe Leroy <christophe.leroy@c-s.fr>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ boundary="Sig_/9mvdhOCxYpkif46yAk3haxY"; protocol="application/pgp-signature"
+X-Ovh-Tracer-Id: 7363385392269053338
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduhedrkeehgddtudcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeffhffvuffkjghfofggtgesghdtreerredtjeenucfhrhhomhepufhtvghphhgvnhcumfhithhtuceoshhtvghvvgesshhkvddrohhrgheqnecuggftrfgrthhtvghrnhepveelvdeufedvieevffdtueegkeevteehffdtffetleehjeekjeejudffieduteeknecukfhppedtrddtrddtrddtpdekvddrieehrddvhedrvddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejleehrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepshhtvghvvgesshhkvddrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 9, 2020 at 12:41 AM Qian Cai <cai@lca.pw> wrote:
->
->  Booting POWER9 PowerNV has this message,
->
-> "ioremap() called early from pnv_pci_init_ioda_phb+0x420/0xdfc. Use early=
-_ioremap() instead=E2=80=9D
->
-> but use the patch below will result in leaks because it will never call e=
-arly_iounmap() anywhere. However, it looks me it was by design that phb->re=
-gs mapping would be there forever where it would be used in pnv_ioda_get_in=
-val_reg(), so is just that check_early_ioremap_leak() initcall too strong?
+--Sig_/9mvdhOCxYpkif46yAk3haxY
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-The warning there is junk. The PHBs are setup at boot and never torn
-down so we're not "leaking" the mapping. It's supposed to be there for
-the lifetime of the kernel.
+Hi,
 
-That said, we could probably move the PCI setup to a point later in
-boot where the normal ioremap can be be used. We would have to check
-for initcalls which depend on the PHBs being setup and delay those too
-though.
+Thanks for taking the time to review my patch.
 
-Oliver
+On Fri, 8 May 2020 20:50:25 -0700, Jakub Kicinski <kuba@kernel.org> wrote:
+> On Fri,  8 May 2020 14:04:57 +0200 Stephen Kitt wrote:
+> > Commit c7228317441f ("net: Use a more standard macro for
+> > INET_ADDR_COOKIE") added a __deprecated marker to the cookie name on
+> > 32-bit architectures, with the intent that the compiler would flag
+> > uses of the name. However since commit 771c035372a0 ("deprecate the
+> > '__deprecated' attribute warnings entirely and for good"),
+> > __deprecated doesn't do anything and should be avoided.
+> >=20
+> > This patch changes INET_ADDR_COOKIE to declare a dummy struct so that
+> > any subsequent use of the cookie's name will in all likelihood break
+> > the build. It also removes the __deprecated marker.
+>=20
+> I think the macro is supposed to cause a warning when the variable
+> itself is accessed. And I don't think that happens with your patch
+> applied.
+
+Yes, the warning is what was lost when __deprecated lost its meaning. I was
+trying to preserve that, or rather extend it so that the build would break =
+if
+the cookie was used on 32-bit architectures, and my patch ensures it does if
+the cookie is used in a comparison or assignment, but ...
+
+> +       kfree(&acookie);
+
+I hadn=E2=80=99t thought of taking a pointer to it.
+
+If we want to preserve the use of the macro with a semi-colon, which is what
+Joe=E2=80=99s patch introduced (along with the deprecation warning), we sti=
+ll need
+some sort of declaration which can=E2=80=99t be used. Perhaps
+
+#define INET_ADDR_COOKIE(__name, __saddr, __daddr) \
+	struct __name {} __attribute__((unused))
+
+would be better =E2=80=94 it declares the cookie as a struct, not a variabl=
+e, so then
+the build fails if the cookie is used as anything other than a struct. If
+anyone does try to use it as a struct, the build will fail on 64-bit
+architectures...
+
+  CC      net/ipv4/inet_hashtables.o
+net/ipv4/inet_hashtables.c: In function =E2=80=98__inet_lookup_established=
+=E2=80=99:
+net/ipv4/inet_hashtables.c:362:9: error: =E2=80=98acookie=E2=80=99 undeclar=
+ed (first use in this function)
+  kfree(&acookie);
+         ^~~~~~~
+net/ipv4/inet_hashtables.c:362:9: note: each undeclared identifier is repor=
+ted only once for each function it appears in
+make[2]: *** [scripts/Makefile.build:267: net/ipv4/inet_hashtables.o] Error=
+ 1
+make[1]: *** [scripts/Makefile.build:488: net/ipv4] Error 2
+make: *** Makefile:1722: net] Error 2
+
+Regards,
+
+Stephen
+
+--Sig_/9mvdhOCxYpkif46yAk3haxY
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEnPVX/hPLkMoq7x0ggNMC9Yhtg5wFAl62ZiIACgkQgNMC9Yht
+g5zjJg/+KlAVGvSNFVCsuRBtGULhWAy7mQpPubb0UBbKPLW7F9yOlXtV/WZyaudp
+ncRtq62brLrsIWvozJLtP4sW8r8A3sL4qLKIy+6xrKCcovr33PRrssPRz2j7iFQF
+P+95CYHoFRygzYgodQVPRZh3Oyqzoff21tW8bgJYj8vORKiYo0KqJ512i6q28CoU
+FSQ6Yf8aPnhYfnDns2Vce7Yh2seghF28sI4+a8H1gf1RE386RYhnq4GMbFlwhIS/
+kqAV1UOspX6RfkbtQrdl/oaHJ0F3GOBPPhJLIP9yZmsdQjYwyaoVE8Nq0Dlw97Y1
+vH06953MaU8YuXuUlvACU2pYi4kUh66qEZnw7oTViv+uYE3sd2JMFr5RU3XqlOFk
+Lzp7hRBEL6KWWtrL7/0woKBTDH3S95zUbWifPDQo5ZKjXo84pZO8nbtJBnhIgdO6
+7yqEDR3hwL4ZEQlQUVlU4LAkVw/iZawCfCeTNM8hxj8ufFvtQs8Pb8P+yFC3SFLT
+2QtfAomXNiuGDqIp2YFa6HnVUTal7c/U/HjglmNaaqmDza9U5Awd/1vpwYN8ZvSM
+C3cz+FVo9bZSyLd9mDn7wnzVSxlKA3E6c9WRu0bLxBY6emMZu13YyRdsVhkizMvQ
+oAKcUpohy5uhhOPCYpjR7S0/4m+R00nypojvaN50Aevtk1CPcwI=
+=YPeA
+-----END PGP SIGNATURE-----
+
+--Sig_/9mvdhOCxYpkif46yAk3haxY--
