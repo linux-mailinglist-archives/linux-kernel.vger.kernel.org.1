@@ -2,75 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DE5F1CC26E
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 17:33:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 888911CC273
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 17:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728110AbgEIPdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 11:33:19 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:50868 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727092AbgEIPdT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 11:33:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:Message-ID:Subject:Cc:To:
-        From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=JgmA1XKh2hvtQmy33sPmh16aTHMDwUxJXCit/7l1/68=; b=Y1MBgsdLckmFXnnOd2KWaSLqct
-        LeKw5X/AfbnevefC7rR3qIDml7EQDBp09/kaBW1OWVfDP1gUGUMkPKPmPyebhQdqMrujHBkNvj5sA
-        jZ0p8yz+rIC1tIPu8+9LduuLqtDDwsokuurXwnoSwI+jVfTi4JH+H5Ak2P7oS94U0dZ0=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
-        (envelope-from <andrew@lunn.ch>)
-        id 1jXRTX-001W1U-DD; Sat, 09 May 2020 17:33:15 +0200
-Date:   Sat, 9 May 2020 17:33:15 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Hui Song <hui.song_1@nxp.com>
-Cc:     u-boot@linux.nxdi.nxp.com, jiafei.pan@nxp.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org
-Subject: Re: [PATCH v1 2/3] armv8: gpio: add gpio feature
-Message-ID: <20200509153315.GR208718@lunn.ch>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200509103956.26038-3-hui.song_1@nxp.com>
- <20200509103956.26038-2-hui.song_1@nxp.com>
+        id S1727986AbgEIPhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 11:37:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726782AbgEIPhT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 May 2020 11:37:19 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3A70C061A0C
+        for <linux-kernel@vger.kernel.org>; Sat,  9 May 2020 08:37:18 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id g16so3409519qtp.11
+        for <linux-kernel@vger.kernel.org>; Sat, 09 May 2020 08:37:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lca.pw; s=google;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=rcivY61FjI8KZB+d1rBbrvH7RkDa2Uc4j8UGF0eae0Y=;
+        b=JG+grHefh6HgG+HoX1rFmDt90/y3Ikvg28kVGgdyTr9sorkJyr5DUZaGAqskqMhVL3
+         5NIq0QuQj+Du4dphPJH64v4hZL2u92XPhqb3UJnCwAp5L97OqduMn0g1mrEk3xD/DjxS
+         N0iMYNPsx73zlAv6mfTV+YbVVC0yRw1IdEYanWV1TggD6vX3b6/y0X0KtUgTbQr4RX6y
+         kKDa0L/o+4Wg0w6y33aN1PUOaCcbjDGMDsR0jkQfZwfWl+i/O9BKuEY4Hiqnuv1Ld17l
+         7cC3UI1upj540CwbqQZEnOE0d6xsVWttI7A7LwzgMcFOn0OyAd5CEG6yMpEf67KzHFn8
+         AWPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=rcivY61FjI8KZB+d1rBbrvH7RkDa2Uc4j8UGF0eae0Y=;
+        b=N9yuqhUIHwA+C36OTgM1cs7BJJhtfYF0abyzrAfiglCYWSNGJbzd7veQfAfZgBljO+
+         hQjpZ8/KiIs7sNzTbU+WicQmEnPtDvb+VWaaQmjLoN2QGeQ7F17sdK2HPjfs5F6J+R27
+         u+HuwCbzvOxzmwiarXVqRAxtWHG5emxREawKILmNM95YqOJPmY0PpZYAEGUobTuJ5qk1
+         eT7v5yyUYbTm4+Ekf9aJGPMd9OjkFCIl+a0Cz7lEJfP+yR5ojKnU1pItOATXru2XK0Ww
+         MJdjA+FZI+dR/ejs7dEWnHRIhTOuhnmwjm1xhhIywyBzG7dfP2HJ3xEnKS4HUZjP7DL2
+         StBA==
+X-Gm-Message-State: AGi0PubEXNqiqvPqNVrJu71ZaGQgJOmZowZYabaI5ltoYs650omOpSZj
+        CrO/MotkafMHW/lXDHbkgZ32fwG6dXInpA==
+X-Google-Smtp-Source: APiQypKQZtoOjdL6x8igHPSiWIXN0mgbo3DURqVymEKgCj3FYRUlu1Xh10DYyIYSpBYuw8EWrB3Q4w==
+X-Received: by 2002:ac8:3733:: with SMTP id o48mr8387465qtb.149.1589038636813;
+        Sat, 09 May 2020 08:37:16 -0700 (PDT)
+Received: from [192.168.1.183] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id k127sm3766709qkb.35.2020.05.09.08.37.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 09 May 2020 08:37:16 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Qian Cai <cai@lca.pw>
+Mime-Version: 1.0 (1.0)
+Subject: Re: ioremap() called early from pnv_pci_init_ioda_phb()
+Date:   Sat, 9 May 2020 11:37:15 -0400
+Message-Id: <ABC2D7EE-2C59-4A96-A105-406F424A93AD@lca.pw>
+References: <1589013450.02gfmpktnp.astroid@bobo.none>
+Cc:     Christophe Leroy <christophe.leroy@c-s.fr>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+In-Reply-To: <1589013450.02gfmpktnp.astroid@bobo.none>
+To:     Nicholas Piggin <npiggin@gmail.com>
+X-Mailer: iPhone Mail (17D50)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 09, 2020 at 06:39:55PM +0800, Hui Song wrote:
-> From: "hui.song" <hui.song_1@nxp.com>
-> 
-> add one struct mpc8xxx_gpio_plat to enable gpio feature.
-> 
-> Signed-off-by: hui.song <hui.song_1@nxp.com>
-> ---
->  .../include/asm/arch-fsl-layerscape/gpio.h    | 22 +++++++++++++++++++
->  1 file changed, 22 insertions(+)
->  create mode 100644 arch/arm/include/asm/arch-fsl-layerscape/gpio.h
-> 
-> diff --git a/arch/arm/include/asm/arch-fsl-layerscape/gpio.h b/arch/arm/include/asm/arch-fsl-layerscape/gpio.h
-> new file mode 100644
-> index 0000000000..d8dd750a72
-> --- /dev/null
-> +++ b/arch/arm/include/asm/arch-fsl-layerscape/gpio.h
-> @@ -0,0 +1,22 @@
-> +/* SPDX-License-Identifier: GPL-2.0+ */
-> +/*
-> + * Copyright 2014 Freescale Semiconductor, Inc.
-> + */
-> +
-> +/*
-> + * Dummy header file to enable CONFIG_OF_CONTROL.
-> + * If CONFIG_OF_CONTROL is enabled, lib/fdtdec.c is compiled.
-> + * It includes <asm/arch/gpio.h> via <asm/gpio.h>, so those SoCs that enable
-> + * OF_CONTROL must have arch/gpio.h.
-> + */
 
-This does not seem right. You would expect each sub arch to have a
-subdirectory in arch/arm/include/asm/ when in fact none do.
 
-	     Andrew
+> On May 9, 2020, at 4:38 AM, Nicholas Piggin <npiggin@gmail.com> wrote:
+>=20
+> Your patch to use early_ioremap is faulting? I wonder why?
+
+Yes, I don=E2=80=99t know the reasons either. I suppose not many places in o=
+ther parts of the kernel which keep using those addresses from early_ioremap=
+() after system booted. Otherwise, we would see those leak warnings elsewher=
+e.
+
+Thus, we probably have to audit the code, and if still necessary, call early=
+_ioremap() and then early_iounmap() followed by a ioremap() once slab alloca=
+tor is available?=
