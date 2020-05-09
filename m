@@ -2,126 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 749CE1CC27F
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 17:53:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D13B1CC281
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 17:54:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728053AbgEIPxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 11:53:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727105AbgEIPxC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 11:53:02 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08D3AC061A0C
-        for <linux-kernel@vger.kernel.org>; Sat,  9 May 2020 08:53:02 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id w6so4316197ilg.1
-        for <linux-kernel@vger.kernel.org>; Sat, 09 May 2020 08:53:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=URH2hU6uprwGf4S3oGmjgCOER5OD9Hi2L/iMp1rSRCs=;
-        b=leiWSnajd/lLggbpeJd774IWqyQMkKDgZIPIUM3xMK6T9Ty4Kc8iqrU5aS5ciUCQIx
-         s+xWsed0dyXzMZNjaZiTVBS1BwylsvY6TdMfriamyhFsThWNPQbO7ROvqlWMT5tjdxb6
-         /ButpkvgSmEYJEvTrqju3q2JhPOzu7enm/EI74hRNltIACzF4Fzgg4Cp5e+TPrcE0C2u
-         me7D6NKLhIfWgaUe1ZMXIQMleF3CbMEV+IS4kjphw57/VVu/JbtTAoDHAk+uE9yWfgD9
-         mNrhzwbNbVl4IW7keiVQmItIXlxTxHyUQ2DcUz5rB3VjOzC4VyD+7wgg3cChLXETHiX4
-         gEwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=URH2hU6uprwGf4S3oGmjgCOER5OD9Hi2L/iMp1rSRCs=;
-        b=GiOcoacYv0QtUvTiCtqtbbjONCfUN27TBaRnstvgvHtsw/ph3EmUvdp41a2kXaZ7Ma
-         CNW7a672Hk0/k5vj7CwTIwuawAB7RmYBQ2/L15j3iGOrEJjOId5L8f8Pet3+sI4Ezj8L
-         eeSlSQH/flYIkkmS3HkSK7BN4LWZ44ZLWBlIuMoe+jgp9/iIZ9LyNlbEVoNktiPxgp8b
-         h0TnI9xsZdOTKNojZ3Od6jLT8GJfwQihHO024ZBrm727yq+Y5GlEtUqXnj2jfD5DRdGo
-         hJUqxN+rx3yGLPfVaxhLoDtd+kSC7CzD99MUx6rAigZHkVXNSsvZREBXRjA79MxU3QWv
-         Mtyg==
-X-Gm-Message-State: AGi0PubY2nNDKNmi12BvAYGVhwTjm8Qvk3AHSwwPvdtiJyCCj/EHUGF2
-        jacIlw9YMgGlnZVNCB0atXPJug4yhHZRrH9Z6Cw=
-X-Google-Smtp-Source: APiQypKCO5HbKmfOl1vX+MVz+c5LgKMpj6L0lE5hTUu0tChQzrq79k+msUQDFtACBEkjBA3aWAwNX/IUBaUasTC9oPE=
-X-Received: by 2002:a05:6e02:60f:: with SMTP id t15mr8748702ils.241.1589039580437;
- Sat, 09 May 2020 08:53:00 -0700 (PDT)
+        id S1728162AbgEIPyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 11:54:31 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:38197 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727105AbgEIPyb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 May 2020 11:54:31 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 49KBb73l86z9v0Zm;
+        Sat,  9 May 2020 17:54:27 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id hhT93JtYMSPR; Sat,  9 May 2020 17:54:27 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 49KBb72sdxz9v2CW;
+        Sat,  9 May 2020 17:54:27 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 91C698B775;
+        Sat,  9 May 2020 17:54:29 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id QdzKxSQXGUVx; Sat,  9 May 2020 17:54:29 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6232E8B75F;
+        Sat,  9 May 2020 17:54:28 +0200 (CEST)
+Subject: Re: [PATCH v8 8/8] powerpc/vdso: Provide __kernel_clock_gettime64()
+ on vdso32
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>
+References: <cover.1588079622.git.christophe.leroy@c-s.fr>
+ <e78344d3fcc1d33bfb1782e430b7f0529f6c612f.1588079622.git.christophe.leroy@c-s.fr>
+ <CAK8P3a2aXJRWjxWO8oMRX2AJkfeVeeoYbOPbpd9-UTgjqM4B7g@mail.gmail.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <d3f303f1-8b2c-0c54-5380-0b9a370a4eb3@csgroup.eu>
+Date:   Sat, 9 May 2020 17:54:25 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Reply-To: sebastient766@gmail.com
-Received: by 2002:a5d:8d94:0:0:0:0:0 with HTTP; Sat, 9 May 2020 08:52:59 -0700 (PDT)
-From:   =?UTF-8?B?TXIuU8OpYmFzdGllbiBUb25p?= <sebastient766@gmail.com>
-Date:   Sat, 9 May 2020 08:52:59 -0700
-X-Google-Sender-Auth: tcEDKknvlHzffKj2vUf586UamZ4
-Message-ID: <CAPr7tDRVNRRPU=EuqCEb9ztC51mXf_rJbf8ixvpNBXd52vaBQw@mail.gmail.com>
-Subject: VERY URGENT
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAK8P3a2aXJRWjxWO8oMRX2AJkfeVeeoYbOPbpd9-UTgjqM4B7g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-FROM MR.S=C3=89BASTIEN TONI
-AUDIT& ACCOUNT MANAGER
-BANK OF AFRICA (B.O.A)
-OUAGADOUGOU BURKINA FASO
-WEST AFRICA.
 
-Dear Friend,
 
-With due respect, I have decided to contact you on
-abusinesstransaction  that will be beneficial to both of us. At the
-bank last account and  auditing evaluation, my staffs came across an
-old account which was being maintained by a foreign client who we
-learn was among the deceased passengers of motor accident on
-November.2003, the deceased was unable to run this account since his
-death. Theaccount has  remained dormant without the knowledge of his
-family since it was put in a  safe deposit account in the bank for
-future investment by the client.
+Le 28/04/2020 à 18:05, Arnd Bergmann a écrit :
+> On Tue, Apr 28, 2020 at 3:16 PM Christophe Leroy
+> <christophe.leroy@c-s.fr> wrote:
+>>
+>> Provides __kernel_clock_gettime64() on vdso32. This is the
+>> 64 bits version of __kernel_clock_gettime() which is
+>> y2038 compliant.
+>>
+>> Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+> 
+> Looks good to me
+> 
+> Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+> 
+> There was a bug on ARM for the corresponding function, so far it is unclear
+> if this was a problem related to particular hardware, the 32-bit kernel code,
+> or the common implementation of clock_gettime64 in the vdso library,
+> see https://github.com/richfelker/musl-cross-make/issues/96
+> 
+> Just to be sure that powerpc is not affected by the same issue, can you
+> confirm that repeatedly calling clock_gettime64 on powerpc32, alternating
+> between vdso and syscall, results in monotically increasing times?
+> 
 
-Since his demise, even the members of his family haven't applied for
-claims  over this fund and it has been in the safe deposit account
-until I  discovered that it cannot be claimed since our client
-isaforeign national and we are sure that he has no next of kin here to
-file claims over the money. As the director of the department, this
-discovery was brought to my office so as to decide what is to bedone.I
-decided to seek ways through which to transfer this money out of the
-bank  and out of the country too.
+I think that's one of the things vdsotest checks, so yes that's ok I think.
 
-The total amount in the account is 18.6 million with my positions as
-staffs  of the bank, I am handicapped because I cannot operate foreign
-accounts and  cannot lay bonafide claim over this money. The client
-was a foreign  national and you will only be asked to act as his next
-of kin and I will  supply you with all the necessary information and
-bank data to assist you in being able to transfer this money to any
-bank of your  choice where this money could be transferred into.The
-total sum will be shared as follows: 50% for me, 50% for you and
-expenses incidental occur  during the transfer will be incur by both
-of us. The transfer is risk free on both sides hence you are going to
-follow my instruction till the fund  transfer to your account. Since I
-work in this bank that is why you should  be confident in the success
-of this transaction because you will be updated with information as at
-when desired.
-
-I will wish you to keep this transaction secret and confidential as I
-am  hoping to retire with my share of this money at the end of
-transaction  which will be when this money is safety in your account.
-I will then come over to your country for sharing according to the
-previously agreed percentages. You might even have to advise me on
-possibilities of investment in your country or elsewhere of our
-choice. May  God help you to help me to a restive retirement,Amen,And
-You have to  contact me through my private e-mail
-at(sebastient766@gmail.com)Please for further information and inquires
-feel free to contact me back immediately for more explanation and
-better  understanding I want you to assure me your capability of
-handling this  project with trust by providing me your following
-information details such as:
-
-(1)NAME..............
-(2)AGE:................
-(3)SEX:.....................
-(4)PHONE NUMBER:.................
-(5)OCCUPATION:.....................
-(6)YOUR COUNTRY:.....................
-
-Yours sincerely,
-Mr.S=C3=A9bastien Toni
+Christophe
