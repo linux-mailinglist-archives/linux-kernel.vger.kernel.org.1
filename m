@@ -2,72 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE7D31CBC52
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 04:09:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C0CD1CBC48
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 04:03:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728611AbgEICJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 May 2020 22:09:27 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:58238 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727828AbgEICJ0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 May 2020 22:09:26 -0400
-X-UUID: c2515d0332a7409a8cc84976834fb513-20200509
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=1B+choKMEWf5xgsDH1Xvz4r98si4Toef2xxzNstIEMc=;
-        b=WVPofjpp0VLBguQpJu5sO7PG4xp585zhHL5kaY5GN4ax6yZyup7ckNf1CfzJCQp/XLQthBFtWydoIccdvERs23acVXpSpUglCYB8UH7mrTzk761XMMrKpPJbKs76zGETv/kNtGgEyB5KaCYcKNJXhpsh9zjT5mi3gzPS7/aqn4o=;
-X-UUID: c2515d0332a7409a8cc84976834fb513-20200509
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <fengping.yu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1759369874; Sat, 09 May 2020 10:09:24 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Sat, 9 May 2020 10:09:23 +0800
-Received: from localhost.localdomain (10.15.20.246) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sat, 9 May 2020 10:09:17 +0800
-From:   Fengping Yu <fengping.yu@mediatek.com>
-To:     Marco Felsch <m.felsch@pengutronix.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Yingjoe Chen <yingjoe.chen@mediatek.com>
-CC:     <linux-input@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v6] Add mtk matrix keypad driver for keypad on MTK SoC
-Date:   Sat, 9 May 2020 10:04:56 +0800
-Message-ID: <20200509020458.8359-1-fengping.yu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        id S1728566AbgEICDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 May 2020 22:03:32 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:49136 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727828AbgEICDc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 May 2020 22:03:32 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 570131F995E743E6315E;
+        Sat,  9 May 2020 10:03:28 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 9 May 2020 10:03:20 +0800
+From:   Chen Zhou <chenzhou10@huawei.com>
+To:     <p.zabel@pengutronix.de>, <mchehab@kernel.org>
+CC:     <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <chenzhou10@huawei.com>
+Subject: [PATCH -next] media: coda: jpeg: add NULL check after kmalloc
+Date:   Sat, 9 May 2020 10:07:11 +0800
+Message-ID: <20200509020711.120975-1-chenzhou10@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Q2hhbmdlIHNpbmNlIHY1Og0KLSByZW1vdmUgdW5uZWNlc3NhcnkgaW5jbHVkZSBmaWxlcw0KLSBy
-ZW1vdmUgcmVkdW5kYW50IGNvbW1lbnRzIGFuZCBuZXdsaW5lcw0KLSB1c2UgbG9jYWwgaXJxbnIg
-dmFyaWFibGUgaW5zdGVhZCBvZiBtZW1iZXIgdmFyaWFibGUgb2YgbXRrX2tleXBhZCBzdHJ1Y3QN
-Ci0gdXNlIHJlZ21hcCB0byByZWFkIGFuZCB3cml0ZSByZWdpc3RlcnMNCi0gZHJvcCBrcGRfZ2V0
-X2R0c19pbmZvIGRpcmVjdGx5IGludG8gcHJvYmUgZnVuY3Rpb24NCi0gdXNlIGRldm1fYWRkX2Fj
-dGlvbl9vcl9yZXNldCB0byBhdm9pZCBnb3RvIGVycm9yIGhhbmRsaW5nIHdoZW4gZG8gY2xrIHNl
-dHRpbmcNCi0gdXNlIGRldm1fcmVxdWVzdF90aHJlYWRlZF9pcnEgYXBpIHRvIHJlcXVlc3QgaXJx
-DQotIHJlbW92ZSBwbGF0Zm9ybV9zZXRfZHJ2ZGF0YQ0KDQpmZW5ncGluZy55dSAoMyk6DQogIGR0
-LWJpbmRpbmdzOiBDaGFuZ2Uga2V5cGFkIGRvY3VtZW50YXRpb24gc2NoZW1hDQogIGRyaXZlcnM6
-IGlucHV0OiBrZXlib2FyZDogQWRkIG10ayBrZXlwYWQgZHJpdmVyDQogIGNvbmZpZ3M6IGRlZmNv
-bmZpZzogQWRkIENPTkZJR19LRVlCT0FSRF9NVEtfS1BEPXkNCg0KIC4uLi9kZXZpY2V0cmVlL2Jp
-bmRpbmdzL2lucHV0L210ay1rcGQudHh0ICAgICB8ICA2MSAtLS0tLS0tDQogLi4uL2RldmljZXRy
-ZWUvYmluZGluZ3MvaW5wdXQvbXRrLWtwZC55YW1sICAgIHwgIDkzICsrKysrKysrKysrDQogYXJj
-aC9hcm02NC9jb25maWdzL2RlZmNvbmZpZyAgICAgICAgICAgICAgICAgIHwgICAxICsNCiBkcml2
-ZXJzL2lucHV0L2tleWJvYXJkL0tjb25maWcgICAgICAgICAgICAgICAgfCAgIDUgKy0NCiBkcml2
-ZXJzL2lucHV0L2tleWJvYXJkL210ay1rcGQuYyAgICAgICAgICAgICAgfCAxNTEgKysrKysrKyst
-LS0tLS0tLS0tDQogNSBmaWxlcyBjaGFuZ2VkLCAxNjMgaW5zZXJ0aW9ucygrKSwgMTQ4IGRlbGV0
-aW9ucygtKQ0KIGRlbGV0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
-ZGluZ3MvaW5wdXQvbXRrLWtwZC50eHQNCiBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlv
-bi9kZXZpY2V0cmVlL2JpbmRpbmdzL2lucHV0L210ay1rcGQueWFtbA0KDQotLQ0KMi4xOC4wDQoN
-Cg0K
+Fixes coccicheck warning:
+
+./drivers/media/platform/coda/coda-jpeg.c:331:3-31:
+	alloc with no test, possible model on line 354
+
+Add NULL check after kmalloc.
+
+Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
+---
+ drivers/media/platform/coda/coda-jpeg.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/media/platform/coda/coda-jpeg.c b/drivers/media/platform/coda/coda-jpeg.c
+index 00d19859db50..b11cfbe166dd 100644
+--- a/drivers/media/platform/coda/coda-jpeg.c
++++ b/drivers/media/platform/coda/coda-jpeg.c
+@@ -327,8 +327,11 @@ int coda_jpeg_decode_header(struct coda_ctx *ctx, struct vb2_buffer *vb)
+ 				 "only 8-bit quantization tables supported\n");
+ 			continue;
+ 		}
+-		if (!ctx->params.jpeg_qmat_tab[i])
++		if (!ctx->params.jpeg_qmat_tab[i]) {
+ 			ctx->params.jpeg_qmat_tab[i] = kmalloc(64, GFP_KERNEL);
++			if (!ctx->params.jpeg_qmat_tab[i])
++				return -ENOMEM;
++		}
+ 		memcpy(ctx->params.jpeg_qmat_tab[i],
+ 		       quantization_tables[i].start, 64);
+ 	}
+-- 
+2.20.1
 
