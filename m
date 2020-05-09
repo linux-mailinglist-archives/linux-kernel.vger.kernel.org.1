@@ -2,94 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70A8A1CBF68
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 10:52:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E2031CBF6F
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 May 2020 10:58:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727903AbgEIIwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 04:52:34 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:56030 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727835AbgEIIwd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 04:52:33 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 21A63F014332F74A895D;
-        Sat,  9 May 2020 16:52:32 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 9 May 2020 16:52:25 +0800
-From:   Chen Zhou <chenzhou10@huawei.com>
-To:     <heiko.carstens@de.ibm.com>, <gor@linux.ibm.com>,
-        <borntraeger@de.ibm.com>
-CC:     <linux-s390@vger.kernel.or>, <linux-kernel@vger.kernel.org>,
-        <chenzhou10@huawei.com>
-Subject: [PATCH -next 3/3] s390/protvirt: use scnprintf() instead of snprintf()
-Date:   Sat, 9 May 2020 16:56:08 +0800
-Message-ID: <20200509085608.41061-4-chenzhou10@huawei.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200509085608.41061-1-chenzhou10@huawei.com>
-References: <20200509085608.41061-1-chenzhou10@huawei.com>
+        id S1727803AbgEII6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 04:58:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725989AbgEII6D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 May 2020 04:58:03 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C65AC061A0C;
+        Sat,  9 May 2020 01:58:01 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id a21so4157685ljb.9;
+        Sat, 09 May 2020 01:58:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6sBoYn3WeTZFCcqj57bcpCNR9WzBcjBDg78zlrXn2Bo=;
+        b=IvJi5OqftthYrAXQhCGJSEsNr2Ugk0p4lQGhUpMXBi99TyDjBaGPGU98kHtcygIgoM
+         dl7DoUhZYDjjoo87SDHBuPdevJlXBve6Oha7wQhCl6jYtbCM9UE4PSu5hV31mzRsSahr
+         wZLitRfkJMNIvWhTpo4PgkNHNQlioQYMslFX9wyHmSQJOAGx14vlZt3mu0MN/rl9nKqB
+         LtllpntMrN72NK9ou1yLBxOk7PovAncUkEPgztLCKA72CRBehtj6TjqznyxZ1s4vKPlo
+         VYrRD4vlhkowpqWcqeQ2wvZWrnBjVbZvy153zB4K8b+b+cYWX9DQzaiooNv3jWd+5ApN
+         a4pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6sBoYn3WeTZFCcqj57bcpCNR9WzBcjBDg78zlrXn2Bo=;
+        b=Z2HdyHLUexIeF46kIOIvH8nSiNWx6u1bznKgjg7v4Qb1r+iCnGMaeG3Qs39PB/cAsN
+         wgv8yHW2X+s/vd8C50QfHc5APz6nYPFzyWPDu9mUu0CVGK2NgN4anfP80+j0+hT/pxAh
+         MD5riivrw60279ShzSnqVET6Mgzi2BIHTvrJvZ2j02IxdiJdoDoI08SEzBK4F9BIBWnI
+         LZNq4E+EOJKZW///KMfgeEol5tzVWPA53dDeVx6hkJSQu0WFkBmun1Zaj/8kNCR+6kKU
+         ZX/dWNIjsqKB62NL59TPNe8fZaV8qXSOKrbEz+vNHJ/iNtAUbEva0W3SZZiRpvZKp7DC
+         29zA==
+X-Gm-Message-State: AOAM533XrzV8Nu4NUp+SKO2xsRiIC6+/oESGso3yeZGtJmuLwS41Z7pw
+        we9TuYNhI6aHUuM8myf395RYJyxx8o+m6coTfdg=
+X-Google-Smtp-Source: ABdhPJyRTtqcpC3jRUEkt6dyiDw0ymbF4WnirRlZbb3xJW+dnVzaS2G2GlylUAI5l/EqveHhvpmoQIn3N+E4jEcdptg=
+X-Received: by 2002:a2e:6c08:: with SMTP id h8mr4048684ljc.48.1589014679642;
+ Sat, 09 May 2020 01:57:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+References: <cover.1587888520.git.baolin.wang7@gmail.com> <c8bd9e5ba815a3f1bc9dac0a4bc2fbadadbc0a43.1587888520.git.baolin.wang7@gmail.com>
+ <20200427154645.GA1201@infradead.org> <e4d47000-f89c-a135-ae58-011f0e9cc39e@grimberg.me>
+ <20200508214639.GA1389136@T590> <fe6bd8b9-6ed9-b225-f80c-314746133722@grimberg.me>
+ <20200508232222.GA1391368@T590>
+In-Reply-To: <20200508232222.GA1391368@T590>
+From:   Baolin Wang <baolin.wang7@gmail.com>
+Date:   Sat, 9 May 2020 16:57:48 +0800
+Message-ID: <CADBw62ooysT7TJ5CjpPBC6zs7pvpUQysg8QqP9oW5jN7BSYS7g@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 1/7] block: Extand commit_rqs() to do batch processing
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@infradead.org>, axboe@kernel.dk,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Paolo Valente <paolo.valente@linaro.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-snprintf() returns the number of bytes that would be written,
-which may be greater than the the actual length to be written.
+On Sat, May 9, 2020 at 7:22 AM Ming Lei <ming.lei@redhat.com> wrote:
+>
+> Hi Sagi,
+>
+> On Fri, May 08, 2020 at 03:19:45PM -0700, Sagi Grimberg wrote:
+> > Hey Ming,
+> >
+> > > > Would it make sense to elevate this flag to a request_queue flag
+> > > > (QUEUE_FLAG_ALWAYS_COMMIT)?
+> > >
+> > > request queue flag usually is writable, however this case just needs
+> > > one read-only flag, so I think it may be better to make it as
+> > > tagset/hctx flag.
+> >
+> > I actually intended it to be writable.
+> >
+> > > > I'm thinking of a possibility that an I/O scheduler may be used
+> > > > to activate this functionality rather than having the driver set
+> > > > it necessarily...
+> > >
+> > > Could you explain a bit why I/O scheduler should activate this
+> > > functionality?
+> >
+> > Sure, I've recently seen some academic work showing the benefits
+> > of batching in tcp/ip based block drivers. The problem with the
+> > approaches taken is that I/O scheduling is exercised deep down in the
+> > driver, which is not the direction I'd like to go if we are want
+> > to adopt some of the batching concepts.
+> >
+> > I spent some (limited) time thinking about this, and it seems to
+> > me that there is an opportunity to implement this as a dedicated
+> > I/O scheduler, and tie it to driver specific LLD stack optimizations
+> > (net-stack for example) relying on the commit_rq/bd->last hints.
+> >
+> > When scanning the scheduler code, I noticed exactly the phenomenon that
+> > this patchset is attempting to solve and Christoph referred me to it.
+> > Now I'm thinking if we can extend this batching optimization for both
+> > use-cases.
+>
+> Got it, thanks for the sharing.
+>
+> >
+> > > batching submission may be good for some drivers, and currently
+> > > we only do it in limited way. One reason is that there is extra
+> > > cost for full batching submission, such as this patch requires
+> > > one extra .commit_rqs() for each dispatch, and lock is often needed
+> > > in this callback.
+> >
+> > That is not necessarily the case at all.
+>
+> So far, all in-tree .commit_rqs() implementation requires lock.
+>
+> >
+> > > IMO it can be a win for some slow driver or device, but may cause
+> > > a little performance drop for fast driver/device especially in workload
+> > > of not-batching submission.
+> >
+> > You're mostly correct. This is exactly why an I/O scheduler may be
+> > applicable here IMO. Mostly because I/O schedulers tend to optimize for
+> > something specific and always present tradeoffs. Users need to
+> > understand what they are optimizing for.
+> >
+> > Hence I'd say this functionality can definitely be available to an I/O
+> > scheduler should one exist.
+> >
+>
+> I guess it is just that there can be multiple requests available from
+> scheduler queue. Actually it can be so for other non-nvme drivers in
+> case of none, such as SCSI.
+>
+> Another way is to use one per-task list(such as plug list) to hold the
+> requests for dispatch, then every drivers may see real .last flag, so they
+> may get chance for optimizing batch queuing. I will think about the
+> idea further and see if it is really doable.
 
-uv_query_facilities() should return the number of bytes printed
-into the buffer. This is the return value of scnprintf().
-The other functions are the same.
+How about my RFC v1 patch set[1], which allows dispatching more than
+one request from the scheduler to support batch requests?
 
-Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
----
- arch/s390/kernel/uv.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+[1]
+https://lore.kernel.org/patchwork/patch/1210034/
+https://lore.kernel.org/patchwork/patch/1210035/
 
-diff --git a/arch/s390/kernel/uv.c b/arch/s390/kernel/uv.c
-index 4c0677fc8904..e7ea82a2bf63 100644
---- a/arch/s390/kernel/uv.c
-+++ b/arch/s390/kernel/uv.c
-@@ -331,7 +331,7 @@ EXPORT_SYMBOL_GPL(arch_make_page_accessible);
- static ssize_t uv_query_facilities(struct kobject *kobj,
- 				   struct kobj_attribute *attr, char *page)
- {
--	return snprintf(page, PAGE_SIZE, "%lx\n%lx\n%lx\n%lx\n",
-+	return scnprintf(page, PAGE_SIZE, "%lx\n%lx\n%lx\n%lx\n",
- 			uv_info.inst_calls_list[0],
- 			uv_info.inst_calls_list[1],
- 			uv_info.inst_calls_list[2],
-@@ -344,7 +344,7 @@ static struct kobj_attribute uv_query_facilities_attr =
- static ssize_t uv_query_max_guest_cpus(struct kobject *kobj,
- 				       struct kobj_attribute *attr, char *page)
- {
--	return snprintf(page, PAGE_SIZE, "%d\n",
-+	return scnprintf(page, PAGE_SIZE, "%d\n",
- 			uv_info.max_guest_cpus);
- }
- 
-@@ -354,7 +354,7 @@ static struct kobj_attribute uv_query_max_guest_cpus_attr =
- static ssize_t uv_query_max_guest_vms(struct kobject *kobj,
- 				      struct kobj_attribute *attr, char *page)
- {
--	return snprintf(page, PAGE_SIZE, "%d\n",
-+	return scnprintf(page, PAGE_SIZE, "%d\n",
- 			uv_info.max_num_sec_conf);
- }
- 
-@@ -364,7 +364,7 @@ static struct kobj_attribute uv_query_max_guest_vms_attr =
- static ssize_t uv_query_max_guest_addr(struct kobject *kobj,
- 				       struct kobj_attribute *attr, char *page)
- {
--	return snprintf(page, PAGE_SIZE, "%lx\n",
-+	return scnprintf(page, PAGE_SIZE, "%lx\n",
- 			uv_info.max_sec_stor_addr);
- }
- 
 -- 
-2.20.1
-
+Baolin Wang
