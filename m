@@ -2,129 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B7321CC617
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 03:49:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 660671CC618
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 03:59:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729047AbgEJBst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 21:48:49 -0400
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:59387 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728990AbgEJBsr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 21:48:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1589075327; x=1620611327;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=f42SAWEpwqudHXonrKA4kH+lQCUO1YP3xrO+LV4WQhs=;
-  b=N9t5Vnk7cta4Vd6w8tDAi3smLvgetsCjbwcvuH3FAs1O1C5M/Oi4SeGk
-   Y4riS+wkM6+lr3RNbqUwaf+qGGBHJ8up6Bpi8hX3kl4gDZvJhqm1N+MR0
-   tzA6uZKTE9zIAN0HML57YlbIGR39eQ56zDmqVYm22noDMSPNkSHWNoVKj
-   w=;
-IronPort-SDR: lA0ZfCYa/1xFI06L8kwsY3tB3770Wc644mw9Fi2afp1+tnsidULe3zGW8MXZjse7OPrQ8oQAvf
- aOAeV0yZmLeA==
-X-IronPort-AV: E=Sophos;i="5.73,373,1583193600"; 
-   d="scan'208";a="29400617"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1a-af6a10df.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 10 May 2020 01:48:44 +0000
-Received: from EX13MTAUWA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1a-af6a10df.us-east-1.amazon.com (Postfix) with ESMTPS id C1544A1E67;
-        Sun, 10 May 2020 01:48:40 +0000 (UTC)
-Received: from EX13D01UWA003.ant.amazon.com (10.43.160.107) by
- EX13MTAUWA001.ant.amazon.com (10.43.160.118) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Sun, 10 May 2020 01:48:24 +0000
-Received: from EX13MTAUEE002.ant.amazon.com (10.43.62.24) by
- EX13d01UWA003.ant.amazon.com (10.43.160.107) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Sun, 10 May 2020 01:48:23 +0000
-Received: from localhost (10.85.6.121) by mail-relay.amazon.com (10.43.62.224)
- with Microsoft SMTP Server id 15.0.1497.2 via Frontend Transport; Sun, 10 May
- 2020 01:48:22 +0000
-From:   Balbir Singh <sblbir@amazon.com>
-To:     <tglx@linutronix.de>, <linux-kernel@vger.kernel.org>
-CC:     <jpoimboe@redhat.com>, <tony.luck@intel.com>,
-        <keescook@chromium.org>, <benh@kernel.crashing.org>,
-        <x86@kernel.org>, <dave.hansen@intel.com>,
-        <thomas.lendacky@amd.com>, Balbir Singh <sblbir@amazon.com>
-Subject: [PATCH v6 6/6] Documentation: Add L1D flushing Documentation
-Date:   Sun, 10 May 2020 11:48:03 +1000
-Message-ID: <20200510014803.12190-7-sblbir@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200510014803.12190-1-sblbir@amazon.com>
-References: <20200510014803.12190-1-sblbir@amazon.com>
+        id S1728117AbgEJB7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 21:59:17 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:51592 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726320AbgEJB7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 May 2020 21:59:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=KYzPxGASe4Z0zeXFbNOdd6hDwlKRo9S7QXx2n38ToH8=; b=07eBrn+uX16ClMVxs7RG+7moEE
+        cu86G4PVFlq45Z+OgIp3xqwvA4H85kE1Us2fP7Tcg1TgjDXU+kDXscLzOVjrIa56C3UCF+nRFdGYt
+        WqI2QBN14ENsKfSDgKTV63xM8LgXHB5XLCbnvYz4C5IO4kkxZBgtgovle0hnskPAB31s=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
+        (envelope-from <andrew@lunn.ch>)
+        id 1jXbEM-001ZIw-ED; Sun, 10 May 2020 03:58:14 +0200
+Date:   Sun, 10 May 2020 03:58:14 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Shannon Nelson <snelson@pensando.io>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>, jeyu@kernel.org,
+        akpm@linux-foundation.org, arnd@arndb.de, rostedt@goodmis.org,
+        mingo@redhat.com, aquini@redhat.com, cai@lca.pw, dyoung@redhat.com,
+        bhe@redhat.com, peterz@infradead.org, tglx@linutronix.de,
+        gpiccoli@canonical.com, pmladek@suse.com, tiwai@suse.de,
+        schlad@suse.de, andriy.shevchenko@linux.intel.com,
+        keescook@chromium.org, daniel.vetter@ffwll.ch, will@kernel.org,
+        mchehab+samsung@kernel.org, kvalo@codeaurora.org,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/15] net: taint when the device driver firmware crashes
+Message-ID: <20200510015814.GE362499@lunn.ch>
+References: <20200509043552.8745-1-mcgrof@kernel.org>
+ <1e097eb0-6132-f549-8069-d13b678183f5@pensando.io>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1e097eb0-6132-f549-8069-d13b678183f5@pensando.io>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add documentation of l1d flushing, explain the need for the
-feature and how it can be used.
+On Sat, May 09, 2020 at 06:01:51PM -0700, Shannon Nelson wrote:
+> On 5/8/20 9:35 PM, Luis Chamberlain wrote:
+> > Device driver firmware can crash, and sometimes, this can leave your
+> > system in a state which makes the device or subsystem completely
+> > useless. Detecting this by inspecting /proc/sys/kernel/tainted instead
+> > of scraping some magical words from the kernel log, which is driver
+> > specific, is much easier. So instead this series provides a helper which
+> > lets drivers annotate this and shows how to use this on networking
+> > drivers.
+> > 
+> If the driver is able to detect that the device firmware has come back
+> alive, through user intervention or whatever, should there be a way to
+> "untaint" the kernel?  Or would you expect it to remain tainted?
 
-Signed-off-by: Balbir Singh <sblbir@amazon.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
----
- Documentation/admin-guide/hw-vuln/index.rst   |  1 +
- .../admin-guide/hw-vuln/l1d_flush.rst         | 40 +++++++++++++++++++
- 2 files changed, 41 insertions(+)
- create mode 100644 Documentation/admin-guide/hw-vuln/l1d_flush.rst
+Hi Shannon
 
-diff --git a/Documentation/admin-guide/hw-vuln/index.rst b/Documentation/admin-guide/hw-vuln/index.rst
-index 0795e3c2643f..35633b299d45 100644
---- a/Documentation/admin-guide/hw-vuln/index.rst
-+++ b/Documentation/admin-guide/hw-vuln/index.rst
-@@ -14,3 +14,4 @@ are configurable at compile, boot or run time.
-    mds
-    tsx_async_abort
-    multihit.rst
-+   l1d_flush
-diff --git a/Documentation/admin-guide/hw-vuln/l1d_flush.rst b/Documentation/admin-guide/hw-vuln/l1d_flush.rst
-new file mode 100644
-index 000000000000..7d515b8c29f1
---- /dev/null
-+++ b/Documentation/admin-guide/hw-vuln/l1d_flush.rst
-@@ -0,0 +1,40 @@
-+L1D Flushing for the paranoid
-+=============================
-+
-+With an increasing number of vulnerabilities being reported around data
-+leaks from L1D, a new user space mechanism to flush the L1D cache on
-+context switch is added to the kernel. This should help address
-+CVE-2020-0550 and for paranoid applications, keep them safe from any
-+yet to be discovered vulnerabilities, related to leaks from the L1D
-+cache.
-+
-+Tasks can opt in to this mechanism by using a prctl (implemented only
-+for x86 at the moment).
-+
-+Related CVES
-+------------
-+At the present moment, the following CVEs can be addressed by this
-+mechanism
-+
-+    =============       ========================     ==================
-+    CVE-2020-0550       Improper Data Forwarding     OS related aspects
-+    =============       ========================     ==================
-+
-+Usage Guidelines
-+----------------
-+Applications can call ``prctl(2)`` with one of these two arguments
-+
-+1. PR_SET_L1D_FLUSH - flush the L1D cache on context switch (out)
-+2. PR_GET_L1D_FLUSH - get the current state of the L1D cache flush, returns 1
-+   if set and 0 if not set.
-+
-+**NOTE**: The feature is disabled by default, applications to need to specifically
-+opt into the feature to enable it.
-+
-+Mitigation
-+----------
-+When PR_SET_L1D_FLUSH is enabled for a task, on switching tasks (when
-+the address space changes), a flush of the L1D cache is performed for
-+the task when it leaves the CPU. If the underlying CPU supports L1D
-+flushing in hardware, the hardware mechanism is used, otherwise a software
-+fallback, similar to the mechanism used by L1TF is used.
--- 
-2.17.1
+In general, you don't want to be able to untained. Say a non-GPL
+licenced module is loaded, which taints the kernel. It might then try
+to untaint the kernel to hide its.
 
+As for firmware, how much damage can the firmware do as it crashed? If
+it is a DMA master, it could of splattered stuff through
+memory. Restarting the firmware is not going to reverse the damage it
+has done.
+
+    Andrew
