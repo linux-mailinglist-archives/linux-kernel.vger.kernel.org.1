@@ -2,111 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A19CA1CCD1F
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 20:59:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA3001CCFD4
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 04:44:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729095AbgEJS62 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 10 May 2020 14:58:28 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:37822 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728756AbgEJS62 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 May 2020 14:58:28 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mtapsc-2-ai4aFd-aMnmImmhU2s39WA-1; Sun, 10 May 2020 19:58:24 +0100
-X-MC-Unique: ai4aFd-aMnmImmhU2s39WA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Sun, 10 May 2020 19:58:24 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Sun, 10 May 2020 19:58:24 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Joe Perches' <joe@perches.com>, Arnd Bergmann <arnd@arndb.de>,
-        "Oleksandr Natalenko" <oleksandr@redhat.com>
-CC:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: RE: [PATCH] Kconfig: default to CC_OPTIMIZE_FOR_PERFORMANCE_O3 for
- gcc >= 10
-Thread-Topic: [PATCH] Kconfig: default to CC_OPTIMIZE_FOR_PERFORMANCE_O3 for
- gcc >= 10
-Thread-Index: AQHWJUo8bK79Vz6Er0qWTasVui4yHqihRWbAgABE0gCAABxpkA==
-Date:   Sun, 10 May 2020 18:58:24 +0000
-Message-ID: <eeb52e23496f4730bb115d1e8c00743e@AcuMS.aculab.com>
-References: <20200507224530.2993316-1-Jason@zx2c4.com>
-         <20200508090202.7s3kcqpvpxx32syu@butterfly.localdomain>
-         <CAHmME9pTZTa9AEUL0-ojTr7P-F7NYe8OR9=-GBPaQNpnSDrEiw@mail.gmail.com>
-         <20200508113336.2vdfdnc6tqyx4pu6@butterfly.localdomain>
-         <CAK8P3a0dJ0vNnktcoWFiPKB4NJbeyf7nvwWf0YLyeUyxT5pvQg@mail.gmail.com>
-         <c774d7371a9599526090e63e85f61e69bddf4795.camel@perches.com>
-         <9590a4674863448e8b13fee5086fcf73@AcuMS.aculab.com>
- <c78e00a05d19a6823e48c7bd50144f0563908a1a.camel@perches.com>
-In-Reply-To: <c78e00a05d19a6823e48c7bd50144f0563908a1a.camel@perches.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1728151AbgEKCoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 May 2020 22:44:00 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:4386 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726013AbgEKCoA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 May 2020 22:44:00 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id E0D7F9B4DF38CDC892A2;
+        Mon, 11 May 2020 10:43:55 +0800 (CST)
+Received: from localhost.localdomain (10.175.118.36) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 11 May 2020 10:43:45 +0800
+From:   Luo bin <luobin9@huawei.com>
+To:     <davem@davemloft.net>
+CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <luoxianjun@huawei.com>, <luobin9@huawei.com>,
+        <yin.yinshi@huawei.com>, <cloud.wangxiaoyun@huawei.com>
+Subject: [PATCH net v3] hinic: fix a bug of ndo_stop
+Date:   Sun, 10 May 2020 19:01:08 +0000
+Message-ID: <20200510190108.22847-1-luobin9@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
+X-Originating-IP: [10.175.118.36]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joe Perches
-> Sent: 10 May 2020 18:45
-> 
-> On Sun, 2020-05-10 at 12:47 +0000, David Laight wrote:
-> > From: Joe Perches
-> > > Sent: 08 May 2020 16:06
-> > > On Fri, 2020-05-08 at 13:49 +0200, Arnd Bergmann wrote:
-> > > > Personally, I'm more interested in improving compile speed of the kernel
-> > >
-> > > Any opinion on precompiled header support?
-> >
-> > When ever I've been anywhere near it it is always a disaster.
-> 
-> A disaster? Why?
+if some function in ndo_stop interface returns failure because of
+hardware fault, must go on excuting rest steps rather than return
+failure directly, otherwise will cause memory leak.And bump the
+timeout for SET_FUNC_STATE to ensure that cmd won't return failure
+when hw is busy. Otherwise hw may stomp host memory if we free
+memory regardless of the return value of SET_FUNC_STATE.
 
-The only time I've had systems that used them they always got
-out of step with the headers - probable due to #define changes.
-If auto-generated by the compiler then parallel makes also
-give problems.
+Fixes: 51ba902a16e6 ("net-next/hinic: Initialize hw interface")
+Signed-off-by: Luo bin <luobin9@huawei.com>
+---
+ .../net/ethernet/huawei/hinic/hinic_hw_mgmt.c    | 16 ++++++++++++----
+ drivers/net/ethernet/huawei/hinic/hinic_main.c   | 16 ++--------------
+ 2 files changed, 14 insertions(+), 18 deletions(-)
 
-> For a large commercial c only project, it worked well
-> by reducing a combined multi-include file, similar to
-> kernel.h here, to a single file.
-
-Certainly reducing the number of directories searched
-can make a big difference.
-
-I've also compiled .so by merging all the sources into a
-single file.
-
-> That was before SSDs though and the file open times
-> might have been rather larger then.
-
-The real killer is lots of directory names in the -I <paths>
-especially over NFS.
-
-I've also looked at system call stats during a kernel compile.
-open() dominated and my 'gut feeling' was that most were
-failing opens.
-
-I also suspect that modern compilers remember that an include
-file contained an include guard - and don't even both looking
-for it a second time.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+diff --git a/drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c b/drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c
+index 8995e32dd1c0..992908e6eebf 100644
+--- a/drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c
++++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c
+@@ -45,6 +45,8 @@
+ 
+ #define MGMT_MSG_TIMEOUT                5000
+ 
++#define SET_FUNC_PORT_MGMT_TIMEOUT	25000
++
+ #define mgmt_to_pfhwdev(pf_mgmt)        \
+ 		container_of(pf_mgmt, struct hinic_pfhwdev, pf_to_mgmt)
+ 
+@@ -238,12 +240,13 @@ static int msg_to_mgmt_sync(struct hinic_pf_to_mgmt *pf_to_mgmt,
+ 			    u8 *buf_in, u16 in_size,
+ 			    u8 *buf_out, u16 *out_size,
+ 			    enum mgmt_direction_type direction,
+-			    u16 resp_msg_id)
++			    u16 resp_msg_id, u32 timeout)
+ {
+ 	struct hinic_hwif *hwif = pf_to_mgmt->hwif;
+ 	struct pci_dev *pdev = hwif->pdev;
+ 	struct hinic_recv_msg *recv_msg;
+ 	struct completion *recv_done;
++	unsigned long timeo;
+ 	u16 msg_id;
+ 	int err;
+ 
+@@ -267,8 +270,9 @@ static int msg_to_mgmt_sync(struct hinic_pf_to_mgmt *pf_to_mgmt,
+ 		goto unlock_sync_msg;
+ 	}
+ 
+-	if (!wait_for_completion_timeout(recv_done,
+-					 msecs_to_jiffies(MGMT_MSG_TIMEOUT))) {
++	timeo = msecs_to_jiffies(timeout ? timeout : MGMT_MSG_TIMEOUT);
++
++	if (!wait_for_completion_timeout(recv_done, timeo)) {
+ 		dev_err(&pdev->dev, "MGMT timeout, MSG id = %d\n", msg_id);
+ 		err = -ETIMEDOUT;
+ 		goto unlock_sync_msg;
+@@ -342,6 +346,7 @@ int hinic_msg_to_mgmt(struct hinic_pf_to_mgmt *pf_to_mgmt,
+ {
+ 	struct hinic_hwif *hwif = pf_to_mgmt->hwif;
+ 	struct pci_dev *pdev = hwif->pdev;
++	u32 timeout = 0;
+ 
+ 	if (sync != HINIC_MGMT_MSG_SYNC) {
+ 		dev_err(&pdev->dev, "Invalid MGMT msg type\n");
+@@ -353,9 +358,12 @@ int hinic_msg_to_mgmt(struct hinic_pf_to_mgmt *pf_to_mgmt,
+ 		return -EINVAL;
+ 	}
+ 
++	if (cmd == HINIC_PORT_CMD_SET_FUNC_STATE)
++		timeout = SET_FUNC_PORT_MGMT_TIMEOUT;
++
+ 	return msg_to_mgmt_sync(pf_to_mgmt, mod, cmd, buf_in, in_size,
+ 				buf_out, out_size, MGMT_DIRECT_SEND,
+-				MSG_NOT_RESP);
++				MSG_NOT_RESP, timeout);
+ }
+ 
+ /**
+diff --git a/drivers/net/ethernet/huawei/hinic/hinic_main.c b/drivers/net/ethernet/huawei/hinic/hinic_main.c
+index 13560975c103..63b92f6cc856 100644
+--- a/drivers/net/ethernet/huawei/hinic/hinic_main.c
++++ b/drivers/net/ethernet/huawei/hinic/hinic_main.c
+@@ -483,7 +483,6 @@ static int hinic_close(struct net_device *netdev)
+ {
+ 	struct hinic_dev *nic_dev = netdev_priv(netdev);
+ 	unsigned int flags;
+-	int err;
+ 
+ 	down(&nic_dev->mgmt_lock);
+ 
+@@ -497,20 +496,9 @@ static int hinic_close(struct net_device *netdev)
+ 
+ 	up(&nic_dev->mgmt_lock);
+ 
+-	err = hinic_port_set_func_state(nic_dev, HINIC_FUNC_PORT_DISABLE);
+-	if (err) {
+-		netif_err(nic_dev, drv, netdev,
+-			  "Failed to set func port state\n");
+-		nic_dev->flags |= (flags & HINIC_INTF_UP);
+-		return err;
+-	}
++	hinic_port_set_state(nic_dev, HINIC_PORT_DISABLE);
+ 
+-	err = hinic_port_set_state(nic_dev, HINIC_PORT_DISABLE);
+-	if (err) {
+-		netif_err(nic_dev, drv, netdev, "Failed to set port state\n");
+-		nic_dev->flags |= (flags & HINIC_INTF_UP);
+-		return err;
+-	}
++	hinic_port_set_func_state(nic_dev, HINIC_FUNC_PORT_DISABLE);
+ 
+ 	if (nic_dev->flags & HINIC_RSS_ENABLE) {
+ 		hinic_rss_deinit(nic_dev);
+-- 
+2.17.1
 
