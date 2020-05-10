@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BE0F1CCDCF
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 22:25:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A53D31CCDBF
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 22:25:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729498AbgEJUZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 May 2020 16:25:33 -0400
+        id S1729430AbgEJUY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 May 2020 16:24:59 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729358AbgEJUYs (ORCPT
+        by vger.kernel.org with ESMTP id S1729379AbgEJUYs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 10 May 2020 16:24:48 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F909C05BD09
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCC5DC061A0C
         for <linux-kernel@vger.kernel.org>; Sun, 10 May 2020 13:24:48 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id d184so3764039pfd.4
+Received: by mail-pg1-x542.google.com with SMTP id r10so3061393pgv.8
         for <linux-kernel@vger.kernel.org>; Sun, 10 May 2020 13:24:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ktEJvuLjRdGObd9XB4X6c1FTgen2GQ5GeA/f/mZmo1s=;
-        b=Y/sBPsqX3MXZ9SIaNFNXmIdsJ3hVH9j0QIs/ZWile2giWgHsi0SikYyILcF9vk3GX2
-         ubDac1MgzJ2xuFzRSepzs0eQUPCFYIxpGN1trlcxmhG3QmQUnUEyRJVdGeFnc/kcCcS5
-         giZ9wkrUJX1JeOKrlBYauH00e0HPsaTkbRGDo=
+        bh=e8QxXpTtzEc0PFUpgGtgZUc+FvTwN2g4UuYupfacY68=;
+        b=SE/Lj2r/qm5MRAqEmy91aIMpwxOMaSbPzJm9LffMRTM1bMYU65FQ1TKG3X0ZDbyYio
+         7B7iJyomdn5ZaPKTBC2NPCyLpN+6NjzvPW1RdCc5OrFF7OGirTC6irYkn7I1yMOmA0QU
+         6ab1OTO/QvQNAoQqtEtzq1eDx2y9kcPmeWYbw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ktEJvuLjRdGObd9XB4X6c1FTgen2GQ5GeA/f/mZmo1s=;
-        b=djHVa9PA0c98XfAhWNkYYtbH1CvwfeDPGENAJFtR/xAuj6W9Bf5b3Ho+ZoM7KFAXxy
-         f2GGIcClTEcSYzC7cT3uJEEXNxZ0WHyKSQdygvNUgcHHpx9pHSTZJSCCtGgdAfwq/fXw
-         Wl9NtNiZOLFristvkN5hxPpBMt0uAn+vhtGUzPM0rY44Rh4Fed7FCcNztEjryj9WD4HS
-         BoW9xebAyPns09hEnQndEtHMpJk7+jpWr3d+2l2oh2sfZ/BZD3ydGKGLgVVyN8o568++
-         10dw3VBRLLiAEN8g3AdpjlgPie00cUsku501VGflaZROmBXgCejuUs7zP1OsEjKZI9p1
-         TEPg==
-X-Gm-Message-State: AGi0PuZxW4oU0h/2c90N1qJIUOBavrKPe/Jb3ZkFM5/e2zDg5Vf0WXHt
-        R7ygf+CU4PKE9Tf0WMfPVp9t8A==
-X-Google-Smtp-Source: APiQypLp/RqzTPiImN8RnELw3dvc46eWFYba4R0+hMF6+nxXnghgmI0h46ibCRZWsSMjsf1wcUokbg==
-X-Received: by 2002:aa7:9546:: with SMTP id w6mr12944921pfq.114.1589142287716;
-        Sun, 10 May 2020 13:24:47 -0700 (PDT)
+        bh=e8QxXpTtzEc0PFUpgGtgZUc+FvTwN2g4UuYupfacY68=;
+        b=D5ViLlizd/QJaRDKG+WyGuXL0HpPMpXTDo9WKslc9BHPQ1DjetC6w06jcv5KfnWZfG
+         UKKQEsM4FreFheKhujIXsjGcGmuJyb18hnGpetHyfU7Yr6/WJGLp0Epp9N8tkTy77OsP
+         OgyxgkB1qg1HKixfTJ3BRXkmwfi07p79DhLj6u0jdzezQb9e/xNfqhflOUziMA+tnMNu
+         9EZc7gGGI2T+uHPmep465Ps8mtQ5an4L2TyCMIJpGxZXLbyKGAt/qExVvvJy+Mmd/ER/
+         ZsIgJa3+aAxAi23+x1QuHoj+qgjCeovK98j9NovgeKeg1Wus9VQaNfylQ3EPMxrYvBgI
+         YSIg==
+X-Gm-Message-State: AGi0PubsSZnHm7fmq3SL5wlMAKxje1fS//5S6cnhwhLtPs4uZ5Wxtd3G
+        tKm9ZUk3mMTmSkVxun1p+chhzA==
+X-Google-Smtp-Source: APiQypJP9SdsFTI/n79iIdc/+hcTxLTAwENcl6uTzDuzTIjiRCcw0DdJASm1sZtZg0sIzx1RfipUbw==
+X-Received: by 2002:a63:a61:: with SMTP id z33mr11625145pgk.440.1589142288307;
+        Sun, 10 May 2020 13:24:48 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q14sm6250746pgq.60.2020.05.10.13.24.43
+        by smtp.gmail.com with ESMTPSA id c10sm7271971pfm.50.2020.05.10.13.24.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Sun, 10 May 2020 13:24:45 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
@@ -62,9 +62,9 @@ Cc:     Kees Cook <keescook@chromium.org>,
         Pavel Tatashin <pasha.tatashin@soleen.com>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mtd@lists.infradead.org
-Subject: [PATCH v7 06/18] pstore/ftrace: Provide ftrace log merging routine
-Date:   Sun, 10 May 2020 13:24:24 -0700
-Message-Id: <20200510202436.63222-7-keescook@chromium.org>
+Subject: [PATCH v7 07/18] printk: Introduce kmsg_dump_reason_str()
+Date:   Sun, 10 May 2020 13:24:25 -0700
+Message-Id: <20200510202436.63222-8-keescook@chromium.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200510202436.63222-1-keescook@chromium.org>
 References: <20200510202436.63222-1-keescook@chromium.org>
@@ -75,190 +75,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the ftrace log merging logic out of pstore/ram into pstore/ftrace
-so other backends can use it, like pstore/zone.
+The pstore subsystem already had a private version of this function.
+With the coming addition of the pstore/zone driver, this needs to be
+shared. As it really should live with printk, move it there instead.
 
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- fs/pstore/ftrace.c   | 54 +++++++++++++++++++++++++++++++++++++++++
- fs/pstore/internal.h |  9 +++++++
- fs/pstore/ram.c      | 57 +++-----------------------------------------
- 3 files changed, 66 insertions(+), 54 deletions(-)
+ fs/pstore/platform.c      | 22 +---------------------
+ include/linux/kmsg_dump.h |  7 +++++++
+ kernel/printk/printk.c    | 21 +++++++++++++++++++++
+ 3 files changed, 29 insertions(+), 21 deletions(-)
 
-diff --git a/fs/pstore/ftrace.c b/fs/pstore/ftrace.c
-index bfbfc2698070..5c0450701293 100644
---- a/fs/pstore/ftrace.c
-+++ b/fs/pstore/ftrace.c
-@@ -16,6 +16,7 @@
- #include <linux/debugfs.h>
- #include <linux/err.h>
- #include <linux/cache.h>
-+#include <linux/slab.h>
- #include <asm/barrier.h>
- #include "internal.h"
+diff --git a/fs/pstore/platform.c b/fs/pstore/platform.c
+index 90d146fbc7d2..a9e297eefdff 100644
+--- a/fs/pstore/platform.c
++++ b/fs/pstore/platform.c
+@@ -135,26 +135,6 @@ enum pstore_type_id pstore_name_to_type(const char *name)
+ }
+ EXPORT_SYMBOL_GPL(pstore_name_to_type);
  
-@@ -132,3 +133,56 @@ void pstore_unregister_ftrace(void)
+-static const char *get_reason_str(enum kmsg_dump_reason reason)
+-{
+-	switch (reason) {
+-	case KMSG_DUMP_PANIC:
+-		return "Panic";
+-	case KMSG_DUMP_OOPS:
+-		return "Oops";
+-	case KMSG_DUMP_EMERG:
+-		return "Emergency";
+-	case KMSG_DUMP_RESTART:
+-		return "Restart";
+-	case KMSG_DUMP_HALT:
+-		return "Halt";
+-	case KMSG_DUMP_POWEROFF:
+-		return "Poweroff";
+-	default:
+-		return "Unknown";
+-	}
+-}
+-
+ static void pstore_timer_kick(void)
+ {
+ 	if (pstore_update_ms < 0)
+@@ -407,7 +387,7 @@ static void pstore_dump(struct kmsg_dumper *dumper,
+ 	unsigned int	part = 1;
+ 	int		ret;
  
- 	debugfs_remove_recursive(pstore_ftrace_dir);
+-	why = get_reason_str(reason);
++	why = kmsg_dump_reason_str(reason);
+ 
+ 	if (down_trylock(&psinfo->buf_lock)) {
+ 		/* Failed to acquire lock: give up if we cannot wait. */
+diff --git a/include/linux/kmsg_dump.h b/include/linux/kmsg_dump.h
+index cfc042066be7..b3ddb0b2ee40 100644
+--- a/include/linux/kmsg_dump.h
++++ b/include/linux/kmsg_dump.h
+@@ -72,6 +72,8 @@ void kmsg_dump_rewind(struct kmsg_dumper *dumper);
+ int kmsg_dump_register(struct kmsg_dumper *dumper);
+ 
+ int kmsg_dump_unregister(struct kmsg_dumper *dumper);
++
++const char *kmsg_dump_reason_str(enum kmsg_dump_reason reason);
+ #else
+ static inline void kmsg_dump(enum kmsg_dump_reason reason)
+ {
+@@ -113,6 +115,11 @@ static inline int kmsg_dump_unregister(struct kmsg_dumper *dumper)
+ {
+ 	return -EINVAL;
  }
 +
-+ssize_t pstore_ftrace_combine_log(char **dest_log, size_t *dest_log_size,
-+				  const char *src_log, size_t src_log_size)
++static inline const char *kmsg_dump_reason_str(enum kmsg_dump_reason reason)
 +{
-+	size_t dest_size, src_size, total, dest_off, src_off;
-+	size_t dest_idx = 0, src_idx = 0, merged_idx = 0;
-+	void *merged_buf;
-+	struct pstore_ftrace_record *drec, *srec, *mrec;
-+	size_t record_size = sizeof(struct pstore_ftrace_record);
-+
-+	dest_off = *dest_log_size % record_size;
-+	dest_size = *dest_log_size - dest_off;
-+
-+	src_off = src_log_size % record_size;
-+	src_size = src_log_size - src_off;
-+
-+	total = dest_size + src_size;
-+	merged_buf = kmalloc(total, GFP_KERNEL);
-+	if (!merged_buf)
-+		return -ENOMEM;
-+
-+	drec = (struct pstore_ftrace_record *)(*dest_log + dest_off);
-+	srec = (struct pstore_ftrace_record *)(src_log + src_off);
-+	mrec = (struct pstore_ftrace_record *)(merged_buf);
-+
-+	while (dest_size > 0 && src_size > 0) {
-+		if (pstore_ftrace_read_timestamp(&drec[dest_idx]) <
-+		    pstore_ftrace_read_timestamp(&srec[src_idx])) {
-+			mrec[merged_idx++] = drec[dest_idx++];
-+			dest_size -= record_size;
-+		} else {
-+			mrec[merged_idx++] = srec[src_idx++];
-+			src_size -= record_size;
-+		}
-+	}
-+
-+	while (dest_size > 0) {
-+		mrec[merged_idx++] = drec[dest_idx++];
-+		dest_size -= record_size;
-+	}
-+
-+	while (src_size > 0) {
-+		mrec[merged_idx++] = srec[src_idx++];
-+		src_size -= record_size;
-+	}
-+
-+	kfree(*dest_log);
-+	*dest_log = merged_buf;
-+	*dest_log_size = total;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(pstore_ftrace_combine_log);
-diff --git a/fs/pstore/internal.h b/fs/pstore/internal.h
-index 8efd72d93b10..7fb219042f13 100644
---- a/fs/pstore/internal.h
-+++ b/fs/pstore/internal.h
-@@ -12,9 +12,18 @@ extern unsigned long kmsg_bytes;
- #ifdef CONFIG_PSTORE_FTRACE
- extern void pstore_register_ftrace(void);
- extern void pstore_unregister_ftrace(void);
-+ssize_t pstore_ftrace_combine_log(char **dest_log, size_t *dest_log_size,
-+				  const char *src_log, size_t src_log_size);
- #else
- static inline void pstore_register_ftrace(void) {}
- static inline void pstore_unregister_ftrace(void) {}
-+static inline ssize_t
-+pstore_ftrace_combine_log(char **dest_log, size_t *dest_log_size,
-+			  const char *src_log, size_t src_log_size)
-+{
-+	*dest_log_size = 0;
-+	return 0;
++	return "Disabled";
 +}
  #endif
  
- #ifdef CONFIG_PSTORE_PMSG
-diff --git a/fs/pstore/ram.c b/fs/pstore/ram.c
-index 672ad80646c5..b7929fdc0c72 100644
---- a/fs/pstore/ram.c
-+++ b/fs/pstore/ram.c
-@@ -21,6 +21,7 @@
- #include <linux/pstore_ram.h>
- #include <linux/of.h>
- #include <linux/of_address.h>
-+#include "internal.h"
+ #endif /* _LINUX_KMSG_DUMP_H */
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index 1aab69a8a2bf..67a284830d74 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -3144,6 +3144,27 @@ EXPORT_SYMBOL_GPL(kmsg_dump_unregister);
+ static bool always_kmsg_dump;
+ module_param_named(always_kmsg_dump, always_kmsg_dump, bool, S_IRUGO | S_IWUSR);
  
- #define RAMOOPS_KERNMSG_HDR "===="
- #define MIN_MEM_SIZE 4096UL
-@@ -172,59 +173,6 @@ static bool prz_ok(struct persistent_ram_zone *prz)
- 			   persistent_ram_ecc_string(prz, NULL, 0));
- }
- 
--static
--ssize_t ftrace_log_combine(char **dest_log, size_t *dest_log_size,
--			   const char *src_log, size_t src_log_size)
--{
--	size_t dest_size, src_size, total, dest_off, src_off;
--	size_t dest_idx = 0, src_idx = 0, merged_idx = 0;
--	void *merged_buf;
--	struct pstore_ftrace_record *drec, *srec, *mrec;
--	size_t record_size = sizeof(struct pstore_ftrace_record);
--
--	dest_off = *dest_log_size % record_size;
--	dest_size = *dest_log_size - dest_off;
--
--	src_off = src_log_size % record_size;
--	src_size = src_log_size - src_off;
--
--	total = dest_size + src_size;
--	merged_buf = kmalloc(total, GFP_KERNEL);
--	if (!merged_buf)
--		return -ENOMEM;
--
--	drec = (struct pstore_ftrace_record *)(*dest_log + dest_off);
--	srec = (struct pstore_ftrace_record *)(src_log + src_off);
--	mrec = (struct pstore_ftrace_record *)(merged_buf);
--
--	while (dest_size > 0 && src_size > 0) {
--		if (pstore_ftrace_read_timestamp(&drec[dest_idx]) <
--		    pstore_ftrace_read_timestamp(&srec[src_idx])) {
--			mrec[merged_idx++] = drec[dest_idx++];
--			dest_size -= record_size;
--		} else {
--			mrec[merged_idx++] = srec[src_idx++];
--			src_size -= record_size;
--		}
--	}
--
--	while (dest_size > 0) {
--		mrec[merged_idx++] = drec[dest_idx++];
--		dest_size -= record_size;
--	}
--
--	while (src_size > 0) {
--		mrec[merged_idx++] = srec[src_idx++];
--		src_size -= record_size;
--	}
--
--	kfree(*dest_log);
--	*dest_log = merged_buf;
--	*dest_log_size = total;
--
--	return 0;
--}
--
- static ssize_t ramoops_pstore_read(struct pstore_record *record)
- {
- 	ssize_t size = 0;
-@@ -297,7 +245,8 @@ static ssize_t ramoops_pstore_read(struct pstore_record *record)
- 						prz_next->corrected_bytes;
- 				tmp_prz->bad_blocks += prz_next->bad_blocks;
- 
--				size = ftrace_log_combine(&tmp_prz->old_log,
-+				size = pstore_ftrace_combine_log(
-+						&tmp_prz->old_log,
- 						&tmp_prz->old_log_size,
- 						prz_next->old_log,
- 						prz_next->old_log_size);
++const char *kmsg_dump_reason_str(enum kmsg_dump_reason reason)
++{
++	switch (reason) {
++	case KMSG_DUMP_PANIC:
++		return "Panic";
++	case KMSG_DUMP_OOPS:
++		return "Oops";
++	case KMSG_DUMP_EMERG:
++		return "Emergency";
++	case KMSG_DUMP_RESTART:
++		return "Restart";
++	case KMSG_DUMP_HALT:
++		return "Halt";
++	case KMSG_DUMP_POWEROFF:
++		return "Poweroff";
++	default:
++		return "Unknown";
++	}
++}
++EXPORT_SYMBOL_GPL(kmsg_dump_reason_str);
++
+ /**
+  * kmsg_dump - dump kernel log to kernel message dumpers.
+  * @reason: the reason (oops, panic etc) for dumping
 -- 
 2.20.1
 
