@@ -2,265 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 268951CC74E
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 08:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BBDA1CC756
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 08:48:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728630AbgEJG1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 May 2020 02:27:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725907AbgEJG1J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 May 2020 02:27:09 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CE5EC061A0E
-        for <linux-kernel@vger.kernel.org>; Sat,  9 May 2020 23:27:09 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id d197so3346512ybh.6
-        for <linux-kernel@vger.kernel.org>; Sat, 09 May 2020 23:27:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LlF/34CgxoBxoJLVP8twBsmj16m/IsBbnycut7Kq4CI=;
-        b=iTimFOTZMp0DwG2n0e7JIG0yIqdpxGyIX8QZlEgqUrwzh24uDspNqwPJIm2DOkq0fq
-         3N5cOc1okdFXlsmA13pxsr2s/6o0aSp9qZiYLk9qZvEhBlqCnrZFTRBsEHTtQRg3Dl3U
-         U2vxEBloNQcx3Ji3oEpaIdjHoDY5ezY8rO5TXc9L5w2gzcewe5RHw5e0OmVIlquR7oYK
-         Mqx3JdYzMrY820GM71uXm2XXl6LYOasVfjQ/iWxXVMzecX2YbKk9fsuda8mZgA71nNeq
-         tQOjE2yooVYlCuzNks4+J07RjlWsnLkU4h84xUxdlNbPXT6N64Zm6ad8lYzXFXkLR7Bh
-         Maug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LlF/34CgxoBxoJLVP8twBsmj16m/IsBbnycut7Kq4CI=;
-        b=G8Qenxfrdl62ASSsXK6MccIRtkiX3TZCFa7O52bG2dxrAyY+y/L/jhsUTZm7/AJuX0
-         +LZC70/Y9lVREpDCYtzVf0Y/bl4xci/+X9GcbS/TduaqOk6bafnrvGSP2KYlMAnOuj0u
-         0M0dlKak1mN8tV7bVfGb03FdM1L9AY8pJnd1fRaaFzgD39BnfGIPUZDe6ZQ5n5skDRqY
-         BnFfQW4CMT2aCOgTnf7Fqp18DoQMlNChM8J+dwRyclCqgTmTHpQ2tNV1i8xk0iRsMFFf
-         QNDZaT+8recgUgg9GfcS53Byr7NtH4LyPoO1Mwzs9MknjZ20PkfQ3M0JJLuZHHq6mzUG
-         0BVg==
-X-Gm-Message-State: AGi0PuZXx4pxSRFIqlv0HPIxP2Ip2kWbsU3Tz4xh8nJBVnGBbzZqysXZ
-        t+FgortvaiQCnMCCmkNMh48Wt5CPkaiApuxNs2Wo/Q==
-X-Google-Smtp-Source: APiQypJmuJSsn9qvIYa6JYZa84ajJNkvV/KNU7dU3JOF+ZlFrbgOobS75gYWVoCxO0XISFM5rrVDVcp1TaRoeujqzag=
-X-Received: by 2002:a25:d688:: with SMTP id n130mr16019697ybg.324.1589092027262;
- Sat, 09 May 2020 23:27:07 -0700 (PDT)
+        id S1726660AbgEJGsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 May 2020 02:48:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53762 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725810AbgEJGsY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 May 2020 02:48:24 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DF9B120746;
+        Sun, 10 May 2020 06:48:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589093303;
+        bh=Jt2ZmI4jxEXSvlstEfwyzyeZhTT/glbADv+7sZp1TwM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RxXU+/m2DIjg87amFaxqurQLKs8quLyPScABwqfg6oUVQYOgHAk22GwA8BT4I/ZOg
+         vo0hj6YZunBgBahCuG69MHoD4rN8o9pa80PXNORzq+RacX1jBiDvZEbEBVs5N6nWCn
+         /tH+qpAMgsDVE0olYy6weZqNYg1ccGSbjgU9K6nQ=
+Date:   Sun, 10 May 2020 08:48:19 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     rananta@codeaurora.org
+Cc:     jslaby@suse.com, andrew@daynix.com, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] tty: hvc: Fix data abort due to race in hvc_open
+Message-ID: <20200510064819.GB3400311@kroah.com>
+References: <20200428032601.22127-1-rananta@codeaurora.org>
+ <20200506094851.GA2787548@kroah.com>
+ <98bbe7afabf48d8e8fe839fdc9e836a5@codeaurora.org>
 MIME-Version: 1.0
-References: <1588868938-21933-1-git-send-email-pc@us.ibm.com>
- <1588868938-21933-3-git-send-email-pc@us.ibm.com> <0b276c65-9c54-c6eb-0381-f56c4ccf5ec2@linux.ibm.com>
-In-Reply-To: <0b276c65-9c54-c6eb-0381-f56c4ccf5ec2@linux.ibm.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Sat, 9 May 2020 23:26:56 -0700
-Message-ID: <CAP-5=fV4-m-x6hNLvVGcBHHrL_Z67+4tM=ruxbZJpjn5V6Eqtg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] perf: Add missing metrics to POWER9 'cpi_breakdown'
-To:     kajoljain <kjain@linux.ibm.com>
-Cc:     "Paul A. Clarke" <pc@us.ibm.com>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        ananth@linux.vnet.ibm.com, maddy@linux.vnet.ibm.com,
-        naveen.n.rao@linux.vnet.ibm.com, sukadev@linux.ibm.com,
-        mpe@ellerman.id.au
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <98bbe7afabf48d8e8fe839fdc9e836a5@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 8, 2020 at 12:05 AM kajoljain <kjain@linux.ibm.com> wrote:
-> On 5/7/20 9:58 PM, Paul A. Clarke wrote:
-> > From: "Paul A. Clarke" <pc@us.ibm.com>
-> >
-> > Add the following metrics to the POWER9 'cpi_breakdown' metricgroup:
-> > - ict_noslot_br_mpred_cpi
-> > - ict_noslot_br_mpred_icmiss_cpi
-> > - ict_noslot_cyc_other_cpi
-> > - ict_noslot_disp_held_cpi
-> > - ict_noslot_disp_held_hb_full_cpi
-> > - ict_noslot_disp_held_issq_cpi
-> > - ict_noslot_disp_held_other_cpi
-> > - ict_noslot_disp_held_sync_cpi
-> > - ict_noslot_disp_held_tbegin_cpi
-> > - ict_noslot_ic_l2_cpi
-> > - ict_noslot_ic_l3_cpi
-> > - ict_noslot_ic_l3miss_cpi
-> > - ict_noslot_ic_miss_cpi
-> >
-> > Signed-off-by: Paul A. Clarke <pc@us.ibm.com>
->
-> Reviewed-by: Kajol Jain <kjain@linux.ibm.com>
+On Sat, May 09, 2020 at 06:30:56PM -0700, rananta@codeaurora.org wrote:
+> On 2020-05-06 02:48, Greg KH wrote:
+> > On Mon, Apr 27, 2020 at 08:26:01PM -0700, Raghavendra Rao Ananta wrote:
+> > > Potentially, hvc_open() can be called in parallel when two tasks calls
+> > > open() on /dev/hvcX. In such a scenario, if the
+> > > hp->ops->notifier_add()
+> > > callback in the function fails, where it sets the tty->driver_data to
+> > > NULL, the parallel hvc_open() can see this NULL and cause a memory
+> > > abort.
+> > > Hence, serialize hvc_open and check if tty->private_data is NULL
+> > > before
+> > > proceeding ahead.
+> > > 
+> > > The issue can be easily reproduced by launching two tasks
+> > > simultaneously
+> > > that does nothing but open() and close() on /dev/hvcX.
+> > > For example:
+> > > $ ./simple_open_close /dev/hvc0 & ./simple_open_close /dev/hvc0 &
+> > > 
+> > > Signed-off-by: Raghavendra Rao Ananta <rananta@codeaurora.org>
+> > > ---
+> > >  drivers/tty/hvc/hvc_console.c | 16 ++++++++++++++--
+> > >  1 file changed, 14 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/drivers/tty/hvc/hvc_console.c
+> > > b/drivers/tty/hvc/hvc_console.c
+> > > index 436cc51c92c3..ebe26fe5ac09 100644
+> > > --- a/drivers/tty/hvc/hvc_console.c
+> > > +++ b/drivers/tty/hvc/hvc_console.c
+> > > @@ -75,6 +75,8 @@ static LIST_HEAD(hvc_structs);
+> > >   */
+> > >  static DEFINE_MUTEX(hvc_structs_mutex);
+> > > 
+> > > +/* Mutex to serialize hvc_open */
+> > > +static DEFINE_MUTEX(hvc_open_mutex);
+> > >  /*
+> > >   * This value is used to assign a tty->index value to a hvc_struct
+> > > based
+> > >   * upon order of exposure via hvc_probe(), when we can not match it
+> > > to
+> > > @@ -346,16 +348,24 @@ static int hvc_install(struct tty_driver
+> > > *driver, struct tty_struct *tty)
+> > >   */
+> > >  static int hvc_open(struct tty_struct *tty, struct file * filp)
+> > >  {
+> > > -	struct hvc_struct *hp = tty->driver_data;
+> > > +	struct hvc_struct *hp;
+> > >  	unsigned long flags;
+> > >  	int rc = 0;
+> > > 
+> > > +	mutex_lock(&hvc_open_mutex);
+> > > +
+> > > +	hp = tty->driver_data;
+> > > +	if (!hp) {
+> > > +		rc = -EIO;
+> > > +		goto out;
+> > > +	}
+> > > +
+> > >  	spin_lock_irqsave(&hp->port.lock, flags);
+> > >  	/* Check and then increment for fast path open. */
+> > >  	if (hp->port.count++ > 0) {
+> > >  		spin_unlock_irqrestore(&hp->port.lock, flags);
+> > >  		hvc_kick();
+> > > -		return 0;
+> > > +		goto out;
+> > >  	} /* else count == 0 */
+> > >  	spin_unlock_irqrestore(&hp->port.lock, flags);
+> > 
+> > Wait, why isn't this driver just calling tty_port_open() instead of
+> > trying to open-code all of this?
+> > 
+> > Keeping a single mutext for open will not protect it from close, it will
+> > just slow things down a bit.  There should already be a tty lock held by
+> > the tty core for open() to keep it from racing things, right?
+> The tty lock should have been held, but not likely across ->install() and
+> ->open() callbacks, thus resulting in a race between hvc_install() and
+> hvc_open(),
 
-Tested with:
-https://lore.kernel.org/lkml/20200508053629.210324-3-irogers@google.com/
-Tested-by: Ian Rogers <irogers@google.com>
+How?  The tty lock is held in install, and should not conflict with
+open(), otherwise we would be seeing this happen in all tty drivers,
+right?
 
-Thanks,
-Ian
+> where hvc_install() sets a data and the hvc_open() clears it. hvc_open()
+> doesn't
+> check if the data was set to NULL and proceeds.
 
-> Thanks,
-> Kajol Jain
-> > ---
-> >  .../arch/powerpc/power9/metrics.json          | 143 ++++++++++--------
-> >  1 file changed, 78 insertions(+), 65 deletions(-)
-> >
-> > diff --git a/tools/perf/pmu-events/arch/powerpc/power9/metrics.json b/tools/perf/pmu-events/arch/powerpc/power9/metrics.json
-> > index 811c2a8c1c9e..6169351a72c8 100644
-> > --- a/tools/perf/pmu-events/arch/powerpc/power9/metrics.json
-> > +++ b/tools/perf/pmu-events/arch/powerpc/power9/metrics.json
-> > @@ -207,6 +207,84 @@
-> >          "MetricGroup": "cpi_breakdown",
-> >          "MetricName": "fxu_stall_cpi"
-> >      },
-> > +    {
-> > +        "BriefDescription": "Ict empty for this thread due to branch mispred",
-> > +        "MetricExpr": "PM_ICT_NOSLOT_BR_MPRED/PM_RUN_INST_CMPL",
-> > +        "MetricGroup": "cpi_breakdown",
-> > +        "MetricName": "ict_noslot_br_mpred_cpi"
-> > +    },
-> > +    {
-> > +        "BriefDescription": "Ict empty for this thread due to Icache Miss and branch mispred",
-> > +        "MetricExpr": "PM_ICT_NOSLOT_BR_MPRED_ICMISS/PM_RUN_INST_CMPL",
-> > +        "MetricGroup": "cpi_breakdown",
-> > +        "MetricName": "ict_noslot_br_mpred_icmiss_cpi"
-> > +    },
-> > +    {
-> > +        "BriefDescription": "ICT other stalls",
-> > +        "MetricExpr": "(PM_ICT_NOSLOT_CYC - PM_ICT_NOSLOT_IC_MISS - PM_ICT_NOSLOT_BR_MPRED_ICMISS - PM_ICT_NOSLOT_BR_MPRED - PM_ICT_NOSLOT_DISP_HELD)/PM_RUN_INST_CMPL",
-> > +        "MetricGroup": "cpi_breakdown",
-> > +        "MetricName": "ict_noslot_cyc_other_cpi"
-> > +    },
-> > +    {
-> > +        "BriefDescription": "Cycles in which the NTC instruciton is held at dispatch for any reason",
-> > +        "MetricExpr": "PM_ICT_NOSLOT_DISP_HELD/PM_RUN_INST_CMPL",
-> > +        "MetricGroup": "cpi_breakdown",
-> > +        "MetricName": "ict_noslot_disp_held_cpi"
-> > +    },
-> > +    {
-> > +        "BriefDescription": "Ict empty for this thread due to dispatch holds because the History Buffer was full. Could be GPR/VSR/VMR/FPR/CR/XVF",
-> > +        "MetricExpr": "PM_ICT_NOSLOT_DISP_HELD_HB_FULL/PM_RUN_INST_CMPL",
-> > +        "MetricGroup": "cpi_breakdown",
-> > +        "MetricName": "ict_noslot_disp_held_hb_full_cpi"
-> > +    },
-> > +    {
-> > +        "BriefDescription": "Ict empty for this thread due to dispatch hold on this thread due to Issue q full, BRQ full, XVCF Full, Count cache, Link, Tar full",
-> > +        "MetricExpr": "PM_ICT_NOSLOT_DISP_HELD_ISSQ/PM_RUN_INST_CMPL",
-> > +        "MetricGroup": "cpi_breakdown",
-> > +        "MetricName": "ict_noslot_disp_held_issq_cpi"
-> > +    },
-> > +    {
-> > +        "BriefDescription": "ICT_NOSLOT_DISP_HELD_OTHER_CPI",
-> > +        "MetricExpr": "(PM_ICT_NOSLOT_DISP_HELD - PM_ICT_NOSLOT_DISP_HELD_HB_FULL - PM_ICT_NOSLOT_DISP_HELD_SYNC - PM_ICT_NOSLOT_DISP_HELD_TBEGIN - PM_ICT_NOSLOT_DISP_HELD_ISSQ)/PM_RUN_INST_CMPL",
-> > +        "MetricGroup": "cpi_breakdown",
-> > +        "MetricName": "ict_noslot_disp_held_other_cpi"
-> > +    },
-> > +    {
-> > +        "BriefDescription": "Dispatch held due to a synchronizing instruction at dispatch",
-> > +        "MetricExpr": "PM_ICT_NOSLOT_DISP_HELD_SYNC/PM_RUN_INST_CMPL",
-> > +        "MetricGroup": "cpi_breakdown",
-> > +        "MetricName": "ict_noslot_disp_held_sync_cpi"
-> > +    },
-> > +    {
-> > +        "BriefDescription": "the NTC instruction is being held at dispatch because it is a tbegin instruction and there is an older tbegin in the pipeline that must complete before the younger tbegin can dispatch",
-> > +        "MetricExpr": "PM_ICT_NOSLOT_DISP_HELD_TBEGIN/PM_RUN_INST_CMPL",
-> > +        "MetricGroup": "cpi_breakdown",
-> > +        "MetricName": "ict_noslot_disp_held_tbegin_cpi"
-> > +    },
-> > +    {
-> > +        "BriefDescription": "ICT_NOSLOT_IC_L2_CPI",
-> > +        "MetricExpr": "(PM_ICT_NOSLOT_IC_MISS - PM_ICT_NOSLOT_IC_L3 - PM_ICT_NOSLOT_IC_L3MISS)/PM_RUN_INST_CMPL",
-> > +        "MetricGroup": "cpi_breakdown",
-> > +        "MetricName": "ict_noslot_ic_l2_cpi"
-> > +    },
-> > +    {
-> > +        "BriefDescription": "Ict empty for this thread due to icache misses that were sourced from the local L3",
-> > +        "MetricExpr": "PM_ICT_NOSLOT_IC_L3/PM_RUN_INST_CMPL",
-> > +        "MetricGroup": "cpi_breakdown",
-> > +        "MetricName": "ict_noslot_ic_l3_cpi"
-> > +    },
-> > +    {
-> > +        "BriefDescription": "Ict empty for this thread due to icache misses that were sourced from beyond the local L3. The source could be local/remote/distant memory or another core's cache",
-> > +        "MetricExpr": "PM_ICT_NOSLOT_IC_L3MISS/PM_RUN_INST_CMPL",
-> > +        "MetricGroup": "cpi_breakdown",
-> > +        "MetricName": "ict_noslot_ic_l3miss_cpi"
-> > +    },
-> > +    {
-> > +        "BriefDescription": "Ict empty for this thread due to Icache Miss",
-> > +        "MetricExpr": "PM_ICT_NOSLOT_IC_MISS/PM_RUN_INST_CMPL",
-> > +        "MetricGroup": "cpi_breakdown",
-> > +        "MetricName": "ict_noslot_ic_miss_cpi"
-> > +    },
-> >      {
-> >          "MetricExpr": "(PM_NTC_ISSUE_HELD_DARQ_FULL + PM_NTC_ISSUE_HELD_ARB + PM_NTC_ISSUE_HELD_OTHER)/PM_RUN_INST_CMPL",
-> >          "MetricGroup": "cpi_breakdown",
-> > @@ -1819,71 +1897,6 @@
-> >          "MetricExpr": "PM_FXU_IDLE / PM_CYC",
-> >          "MetricName": "fxu_all_idle"
-> >      },
-> > -    {
-> > -        "BriefDescription": "Ict empty for this thread due to branch mispred",
-> > -        "MetricExpr": "PM_ICT_NOSLOT_BR_MPRED/PM_RUN_INST_CMPL",
-> > -        "MetricName": "ict_noslot_br_mpred_cpi"
-> > -    },
-> > -    {
-> > -        "BriefDescription": "Ict empty for this thread due to Icache Miss and branch mispred",
-> > -        "MetricExpr": "PM_ICT_NOSLOT_BR_MPRED_ICMISS/PM_RUN_INST_CMPL",
-> > -        "MetricName": "ict_noslot_br_mpred_icmiss_cpi"
-> > -    },
-> > -    {
-> > -        "BriefDescription": "ICT other stalls",
-> > -        "MetricExpr": "(PM_ICT_NOSLOT_CYC - PM_ICT_NOSLOT_IC_MISS - PM_ICT_NOSLOT_BR_MPRED_ICMISS - PM_ICT_NOSLOT_BR_MPRED - PM_ICT_NOSLOT_DISP_HELD)/PM_RUN_INST_CMPL",
-> > -        "MetricName": "ict_noslot_cyc_other_cpi"
-> > -    },
-> > -    {
-> > -        "BriefDescription": "Cycles in which the NTC instruciton is held at dispatch for any reason",
-> > -        "MetricExpr": "PM_ICT_NOSLOT_DISP_HELD/PM_RUN_INST_CMPL",
-> > -        "MetricName": "ict_noslot_disp_held_cpi"
-> > -    },
-> > -    {
-> > -        "BriefDescription": "Ict empty for this thread due to dispatch holds because the History Buffer was full. Could be GPR/VSR/VMR/FPR/CR/XVF",
-> > -        "MetricExpr": "PM_ICT_NOSLOT_DISP_HELD_HB_FULL/PM_RUN_INST_CMPL",
-> > -        "MetricName": "ict_noslot_disp_held_hb_full_cpi"
-> > -    },
-> > -    {
-> > -        "BriefDescription": "Ict empty for this thread due to dispatch hold on this thread due to Issue q full, BRQ full, XVCF Full, Count cache, Link, Tar full",
-> > -        "MetricExpr": "PM_ICT_NOSLOT_DISP_HELD_ISSQ/PM_RUN_INST_CMPL",
-> > -        "MetricName": "ict_noslot_disp_held_issq_cpi"
-> > -    },
-> > -    {
-> > -        "BriefDescription": "ICT_NOSLOT_DISP_HELD_OTHER_CPI",
-> > -        "MetricExpr": "(PM_ICT_NOSLOT_DISP_HELD - PM_ICT_NOSLOT_DISP_HELD_HB_FULL - PM_ICT_NOSLOT_DISP_HELD_SYNC - PM_ICT_NOSLOT_DISP_HELD_TBEGIN - PM_ICT_NOSLOT_DISP_HELD_ISSQ)/PM_RUN_INST_CMPL",
-> > -        "MetricName": "ict_noslot_disp_held_other_cpi"
-> > -    },
-> > -    {
-> > -        "BriefDescription": "Dispatch held due to a synchronizing instruction at dispatch",
-> > -        "MetricExpr": "PM_ICT_NOSLOT_DISP_HELD_SYNC/PM_RUN_INST_CMPL",
-> > -        "MetricName": "ict_noslot_disp_held_sync_cpi"
-> > -    },
-> > -    {
-> > -        "BriefDescription": "the NTC instruction is being held at dispatch because it is a tbegin instruction and there is an older tbegin in the pipeline that must complete before the younger tbegin can dispatch",
-> > -        "MetricExpr": "PM_ICT_NOSLOT_DISP_HELD_TBEGIN/PM_RUN_INST_CMPL",
-> > -        "MetricName": "ict_noslot_disp_held_tbegin_cpi"
-> > -    },
-> > -    {
-> > -        "BriefDescription": "ICT_NOSLOT_IC_L2_CPI",
-> > -        "MetricExpr": "(PM_ICT_NOSLOT_IC_MISS - PM_ICT_NOSLOT_IC_L3 - PM_ICT_NOSLOT_IC_L3MISS)/PM_RUN_INST_CMPL",
-> > -        "MetricName": "ict_noslot_ic_l2_cpi"
-> > -    },
-> > -    {
-> > -        "BriefDescription": "Ict empty for this thread due to icache misses that were sourced from the local L3",
-> > -        "MetricExpr": "PM_ICT_NOSLOT_IC_L3/PM_RUN_INST_CMPL",
-> > -        "MetricName": "ict_noslot_ic_l3_cpi"
-> > -    },
-> > -    {
-> > -        "BriefDescription": "Ict empty for this thread due to icache misses that were sourced from beyond the local L3. The source could be local/remote/distant memory or another core's cache",
-> > -        "MetricExpr": "PM_ICT_NOSLOT_IC_L3MISS/PM_RUN_INST_CMPL",
-> > -        "MetricName": "ict_noslot_ic_l3miss_cpi"
-> > -    },
-> > -    {
-> > -        "BriefDescription": "Ict empty for this thread due to Icache Miss",
-> > -        "MetricExpr": "PM_ICT_NOSLOT_IC_MISS/PM_RUN_INST_CMPL",
-> > -        "MetricName": "ict_noslot_ic_miss_cpi"
-> > -    },
-> >      {
-> >          "BriefDescription": "Rate of IERAT reloads from L2",
-> >          "MetricExpr": "PM_IPTEG_FROM_L2 * 100 / PM_RUN_INST_CMPL",
-> >
+What data is being set that hvc_open is checking?
+
+And you are not grabbing a lock in your install callback, you are only
+serializing your open call here, I don't see how this is fixing anything
+other than perhaps slowing down your codepaths.
+
+As an arument why this isn't correct, can you answer why this same type
+of change wouldn't be required for all tty drivers in the tree?
+
+thanks,
+
+greg k-h
