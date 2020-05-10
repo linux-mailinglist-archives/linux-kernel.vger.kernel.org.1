@@ -2,116 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39C631CCA2D
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 12:20:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30BAE1CCA46
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 12:29:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728315AbgEJKUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 May 2020 06:20:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41788 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725839AbgEJKUr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 May 2020 06:20:47 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3D1E5207DD;
-        Sun, 10 May 2020 10:20:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589106046;
-        bh=5i70s4OyllLpBXCIVzWuGh73mp5oczUpR2uKHtbqmW0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=qydJXYu5FWAoZNyCJvtDm+57uDSVlA4tBscTSdYjoXY+N7G2eu1W6W2G+yE/G04/a
-         /xgPJmJLC9puXYh0VvRSDLp7Fro77HsrFv4Yq2+gOMsVv/3eCJy7aa1kMNKGjjN5D5
-         fGj3eOTXDxmFbxKXjxVY+kBB/S4ScynFiJ53+HYE=
-Date:   Sun, 10 May 2020 11:20:42 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Jonathan Bakker <xc-racer2@live.ca>
-Cc:     linus.walleij@linaro.org, knaack.h@gmx.de, lars@metafoo.de,
-        pmeerw@pmeerw.net, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iio: light: gp2ap002: Take runtime PM reference on
- light read
-Message-ID: <20200510112042.3f995867@archlinux>
-In-Reply-To: <BN6PR04MB0660DD24B7B4418DCC2806FBA3A30@BN6PR04MB0660.namprd04.prod.outlook.com>
-References: <BN6PR04MB0660DD24B7B4418DCC2806FBA3A30@BN6PR04MB0660.namprd04.prod.outlook.com>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1728855AbgEJK3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 May 2020 06:29:00 -0400
+Received: from 212.199.177.27.static.012.net.il ([212.199.177.27]:48400 "EHLO
+        herzl.nuvoton.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726913AbgEJK27 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 May 2020 06:28:59 -0400
+Received: from taln60.nuvoton.co.il (ntil-fw [212.199.177.25])
+        by herzl.nuvoton.co.il (8.13.8/8.13.8) with ESMTP id 04AANrFe015175;
+        Sun, 10 May 2020 13:23:53 +0300
+Received: by taln60.nuvoton.co.il (Postfix, from userid 20088)
+        id 94DF6639C0; Sun, 10 May 2020 13:23:53 +0300 (IDT)
+From:   Tali Perry <tali.perry1@gmail.com>
+To:     ofery@google.com, brendanhiggins@google.com,
+        avifishman70@gmail.com, tmaimon77@gmail.com, kfting@nuvoton.com,
+        venture@google.com, yuenn@google.com, benjaminfair@google.com,
+        robh+dt@kernel.org, wsa@the-dreams.de,
+        andriy.shevchenko@linux.intel.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
+        openbmc@lists.ozlabs.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Tali Perry <tali.perry1@gmail.com>,
+        kbuild test robot <lkp@intel.com>
+Subject: [PATCH v10 0/3] i2c: npcm7xx: add NPCM i2c controller driver
+Date:   Sun, 10 May 2020 13:23:27 +0300
+Message-Id: <20200510102330.66715-1-tali.perry1@gmail.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  8 May 2020 18:42:21 -0700
-Jonathan Bakker <xc-racer2@live.ca> wrote:
+This patch set adds i2c controller support 
+for the Nuvoton NPCM Baseboard Management Controller (BMC).
 
-> The light sensor needs the regulators to be enabled which means
-> the runtime PM needs to be on.  This only happened when the
-> proximity part of the chip was enabled.
-> 
-> As fallout from this change, only report changes to the prox
-> state in the interrupt handler when it is explicitly enabled.
-> 
-> Signed-off-by: Jonathan Bakker <xc-racer2@live.ca>
-Looks good to me, but needs a fixes tag as we'll want to fix
-this up in all kernels where it applies (just the current
-RCs I think..)
+NPCM7xx includes 16 I2C controllers. This driver operates the controller.
+This module also includes a slave mode.
 
-Thanks,
+---
+v10 -> v9:
+	- Fix according to maintainer comments.
+	- binding file changed to yaml format.
+	- Shorten recovery flow.
+	- Add support for health monitoring counters.
 
-Jonathan
+v9 -> v8:
+	- Fix according to maintainer comments.
+	- Split lines of iowrite..(ioread..) to separate lines.
+	- Use readx_poll_timeout_atomic
+	- resolve various style issues.
+	 
+v8 -> v7:
+	- Split to two commits, one for master, one for slave.
+	- Rename smb to i2c.
+	- Remove global vars.
 
-> ---
->  drivers/iio/light/gp2ap002.c | 19 ++++++++++++++++---
->  1 file changed, 16 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/iio/light/gp2ap002.c b/drivers/iio/light/gp2ap002.c
-> index b7ef16b28280..7a2679bdc987 100644
-> --- a/drivers/iio/light/gp2ap002.c
-> +++ b/drivers/iio/light/gp2ap002.c
-> @@ -158,6 +158,9 @@ static irqreturn_t gp2ap002_prox_irq(int irq, void *d)
->  	int val;
->  	int ret;
->  
-> +	if (!gp2ap002->enabled)
-> +		goto err_retrig;
-> +
->  	ret = regmap_read(gp2ap002->map, GP2AP002_PROX, &val);
->  	if (ret) {
->  		dev_err(gp2ap002->dev, "error reading proximity\n");
-> @@ -247,6 +250,8 @@ static int gp2ap002_read_raw(struct iio_dev *indio_dev,
->  	struct gp2ap002 *gp2ap002 = iio_priv(indio_dev);
->  	int ret;
->  
-> +	pm_runtime_get_sync(gp2ap002->dev);
-> +
->  	switch (mask) {
->  	case IIO_CHAN_INFO_RAW:
->  		switch (chan->type) {
-> @@ -255,13 +260,21 @@ static int gp2ap002_read_raw(struct iio_dev *indio_dev,
->  			if (ret < 0)
->  				return ret;
->  			*val = ret;
-> -			return IIO_VAL_INT;
-> +			ret = IIO_VAL_INT;
-> +			goto out;
->  		default:
-> -			return -EINVAL;
-> +			ret = -EINVAL;
-> +			goto out;
->  		}
->  	default:
-> -		return -EINVAL;
-> +		ret = -EINVAL;
->  	}
-> +
-> +out:
-> +	pm_runtime_mark_last_busy(gp2ap002->dev);
-> +	pm_runtime_put_autosuspend(gp2ap002->dev);
-> +
-> +	return ret;
->  }
->  
->  static int gp2ap002_init(struct gp2ap002 *gp2ap002)
+v7 -> v6:
+	- Rebased on Linux 5.4-rc8  (was Linux 5.4-rc7).
+	- Fix issue found by kbuild test robot (redundant include).
+	- Note: left a warning related to fall through. This fall through is
+	  intentional.
+	
+v6 -> v5:
+	- Update documentation
+
+v5 -> v4:
+	- support recovery
+	- master-slave switch support needed for IPMB
+
+v4 -> v3:
+	- typo on cover letter.
+
+v3 -> v2:
+	- fix dt binding: compatible name: omit "bus"
+
+v2 -> v1:
+	- run check patch in strict mode.
+	- use linux crc.
+	- define regs in constant offset without base.
+	- remove debug prints.
+	- no declarations for local functions.
+	
+v1: initial version
+
+Signed-off-by: Tali Perry <tali.perry1@gmail.com>
+Reported-by: kbuild test robot <lkp@intel.com>
+
+---
+Tali Perry (3):
+  dt-bindings: i2c: npcm7xx: add NPCM I2C controller documentation
+  i2c: npcm7xx: Add Nuvoton NPCM I2C controller driver
+  i2c: npcm7xx: Add support for slave mode for Nuvoton NPCM BMC I2C
+    controller driver.
+
+ .../bindings/i2c/nuvoton,npcm7xx-i2c.yaml     |   62 +
+ drivers/i2c/busses/Kconfig                    |    9 +
+ drivers/i2c/busses/Makefile                   |    1 +
+ drivers/i2c/busses/i2c-npcm7xx.c              | 2467 +++++++++++++++++
+ 4 files changed, 2539 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/i2c/nuvoton,npcm7xx-i2c.yaml
+ create mode 100644 drivers/i2c/busses/i2c-npcm7xx.c
+
+
+base-commit: 262f7a6b8317a06e7d51befb690f0bca06a473ea
+-- 
+2.22.0
 
