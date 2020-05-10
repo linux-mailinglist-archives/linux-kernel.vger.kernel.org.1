@@ -2,113 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BC031CCE09
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 22:53:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5C691CCDFC
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 22:49:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729502AbgEJUws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 May 2020 16:52:48 -0400
-Received: from mail.ispras.ru ([83.149.199.45]:52912 "EHLO mail.ispras.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729389AbgEJUwc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 May 2020 16:52:32 -0400
-Received: from localhost.localdomain (unknown [46.188.10.168])
-        by mail.ispras.ru (Postfix) with ESMTPSA id E0888CD46B;
-        Sun, 10 May 2020 23:52:29 +0300 (MSK)
-From:   Alexander Monakov <amonakov@ispras.ru>
-To:     linux-kernel@vger.kernel.org
-Cc:     Alexander Monakov <amonakov@ispras.ru>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        Yazen Ghannam <yazen.ghannam@amd.com>,
-        Brian Woods <brian.woods@amd.com>,
-        Clemens Ladisch <clemens@ladisch.de>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-hwmon@vger.kernel.org, linux-edac@vger.kernel.org
-Subject: [PATCH 3/3] EDAC/amd64: Add AMD family 17h model 60h PCI IDs
-Date:   Sun, 10 May 2020 20:48:42 +0000
-Message-Id: <20200510204842.2603-4-amonakov@ispras.ru>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200510204842.2603-1-amonakov@ispras.ru>
-References: <20200510204842.2603-1-amonakov@ispras.ru>
+        id S1729365AbgEJUta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 May 2020 16:49:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729216AbgEJUta (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 May 2020 16:49:30 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 216D3C061A0C;
+        Sun, 10 May 2020 13:49:30 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49Kx51663xz9sSc;
+        Mon, 11 May 2020 06:49:25 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1589143766;
+        bh=mJUvh5jroj1ztaJp3MGTxckhrhGeFpIRDrh7kNWFb/8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=iN5hwNVf7jztA841KkPITOpWsf9kBUZEX+L8RWxf8oD64S9FoQbUoaChpwC22KJWz
+         utTYFyOSOyO2T5ezdYdZBAK74RhAP1iqELKNudASMc/0F06AI5vjiFn5rrREJm9ejE
+         ylV9kb4Zk4nwURDSn0oY5k/fUpCBFeSAEIWJa6Gnk2dALxgRII5QtDSFnIaSrJKY0K
+         6RIQQHezrXlcVYua08heTzPO68m9edE6f3AW08hJWUkAgP7JRrHZcNLJdg9dtwgo0B
+         iE5wciu71GnvMDgy4KiQjGr5i+jjfymWshPMwLCUpXu9yfykV3phR6by0hal7wAC9C
+         7rpTnROShd2JA==
+Date:   Mon, 11 May 2020 06:49:19 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        David Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Brian Foster <bfoster@redhat.com>
+Subject: linux-next: Fixes tag needs some work in the xfs tree
+Message-ID: <20200511064919.5cd5dd28@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/+/xVCeJAwV=Cl3X=Ao=Yk2R";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for AMD Renoir (4000-series Ryzen CPUs).
+--Sig_/+/xVCeJAwV=Cl3X=Ao=Yk2R
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Alexander Monakov <amonakov@ispras.ru>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: x86@kernel.org
-Cc: Yazen Ghannam <yazen.ghannam@amd.com>
-Cc: Brian Woods <brian.woods@amd.com>
-Cc: Clemens Ladisch <clemens@ladisch.de>
-Cc: Jean Delvare <jdelvare@suse.com>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: linux-hwmon@vger.kernel.org
-Cc: linux-edac@vger.kernel.org
----
- drivers/edac/amd64_edac.c | 14 ++++++++++++++
- drivers/edac/amd64_edac.h |  3 +++
- 2 files changed, 17 insertions(+)
+Hi all,
 
-diff --git a/drivers/edac/amd64_edac.c b/drivers/edac/amd64_edac.c
-index 1136500c5f53..d50365e9217a 100644
---- a/drivers/edac/amd64_edac.c
-+++ b/drivers/edac/amd64_edac.c
-@@ -2319,6 +2319,16 @@ static struct amd64_family_type family_types[] = {
- 			.dbam_to_cs		= f17_addr_mask_to_cs_size,
- 		}
- 	},
-+	[F17_M60H_CPUS] = {
-+		.ctl_name = "F17h_M60h",
-+		.f0_id = PCI_DEVICE_ID_AMD_17H_M60H_DF_F0,
-+		.f6_id = PCI_DEVICE_ID_AMD_17H_M60H_DF_F6,
-+		.max_mcs = 2,
-+		.ops = {
-+			.early_channel_count	= f17_early_channel_count,
-+			.dbam_to_cs		= f17_addr_mask_to_cs_size,
-+		}
-+	},
- 	[F17_M70H_CPUS] = {
- 		.ctl_name = "F17h_M70h",
- 		.f0_id = PCI_DEVICE_ID_AMD_17H_M70H_DF_F0,
-@@ -3357,6 +3367,10 @@ static struct amd64_family_type *per_family_init(struct amd64_pvt *pvt)
- 			fam_type = &family_types[F17_M30H_CPUS];
- 			pvt->ops = &family_types[F17_M30H_CPUS].ops;
- 			break;
-+		} else if (pvt->model >= 0x60 && pvt->model <= 0x6f) {
-+			fam_type = &family_types[F17_M60H_CPUS];
-+			pvt->ops = &family_types[F17_M60H_CPUS].ops;
-+			break;
- 		} else if (pvt->model >= 0x70 && pvt->model <= 0x7f) {
- 			fam_type = &family_types[F17_M70H_CPUS];
- 			pvt->ops = &family_types[F17_M70H_CPUS].ops;
-diff --git a/drivers/edac/amd64_edac.h b/drivers/edac/amd64_edac.h
-index abbf3c274d74..52b5d03eeba0 100644
---- a/drivers/edac/amd64_edac.h
-+++ b/drivers/edac/amd64_edac.h
-@@ -120,6 +120,8 @@
- #define PCI_DEVICE_ID_AMD_17H_M10H_DF_F6 0x15ee
- #define PCI_DEVICE_ID_AMD_17H_M30H_DF_F0 0x1490
- #define PCI_DEVICE_ID_AMD_17H_M30H_DF_F6 0x1496
-+#define PCI_DEVICE_ID_AMD_17H_M60H_DF_F0 0x1448
-+#define PCI_DEVICE_ID_AMD_17H_M60H_DF_F6 0x144e
- #define PCI_DEVICE_ID_AMD_17H_M70H_DF_F0 0x1440
- #define PCI_DEVICE_ID_AMD_17H_M70H_DF_F6 0x1446
- #define PCI_DEVICE_ID_AMD_19H_DF_F0	0x1650
-@@ -293,6 +295,7 @@ enum amd_families {
- 	F17_CPUS,
- 	F17_M10H_CPUS,
- 	F17_M30H_CPUS,
-+	F17_M60H_CPUS,
- 	F17_M70H_CPUS,
- 	F19_CPUS,
- 	NUM_FAMILIES,
--- 
-2.26.2
+In commit
 
+  43dc0aa84ef7 ("xfs: fix unused variable warning in buffer completion on !=
+DEBUG")
+
+Fixes tag
+
+  Fixes: 7376d745473 ("xfs: random buffer write failure errortag")
+
+has these problem(s):
+
+  - SHA1 should be at least 12 digits long
+    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
+    or later) just making sure it is not set (or set to "auto").
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/+/xVCeJAwV=Cl3X=Ao=Yk2R
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl64aNAACgkQAVBC80lX
+0GzCkgf9FC1x7wXEAObLtB6g4ioTF0mbUq/Z8iNuPaJjnEHCm3EIEtGx/GTKQsVx
+rhKLGG98kGDx6lT1Y58Cgw8bk2NMNrPm+wLyEWhOAFpi/YWFtmZNqGHiWSX+YA8p
+BoGXbvIbU032y5yeEQfKC5NP2g3DRMPs1Ze5S2Tu2UsPXV/1DIDHMRu+CH3FD0pS
+bWhWscOGeoZrJhrKTRWh39wxUUSzIxHvZ+inX4JHSD2MumU+EG2eyEaxwWCXM09t
+bnTAk0PuEe+BiEcypcuVobMHr8Rex99N9UG0Xs1HndVcsUcIvORcUBCN49iKzKSd
+64R1/c1ukLMHuQJ61LZmnFfyccl0gA==
+=tLlb
+-----END PGP SIGNATURE-----
+
+--Sig_/+/xVCeJAwV=Cl3X=Ao=Yk2R--
