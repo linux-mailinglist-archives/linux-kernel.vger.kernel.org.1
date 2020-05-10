@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE72D1CCAF2
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 14:24:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7858C1CCAF6
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 14:24:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728932AbgEJMYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 May 2020 08:24:42 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:56632 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728874AbgEJMYl (ORCPT
+        id S1729008AbgEJMYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 May 2020 08:24:48 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:26195 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728874AbgEJMYn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 May 2020 08:24:41 -0400
+        Sun, 10 May 2020 08:24:43 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589113479;
+        s=mimecast20190719; t=1589113482;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=9jiDyRnN1GpR8mrfv5e1QlJJqEG97qcE0l4S/3QO1NY=;
-        b=Om0YOmPZ5QbLA9ga/PMpB6FClt7RFpkVxDS1tVS3vmkt5mqMnGVqmTSZfq/Q7sBGPhsqZP
-        kwyazOwKkrjZmNAP9BVjvcxPLFtGOaGA6uWULo14lWPYftXnpOIL3iMHGp7S2+yeWcF5Rk
-        u21kW1lTi2md8QLMRgZccXVt74anu7c=
+        bh=vaSfusBfcGuWtpLDZO+nitz176bAfcWOMkB3GTG1aLs=;
+        b=EGyHdo9R7dMaV7C/oTUj9Qo6CksFdE4UhRTe//oUrvA1eLUUHbtRSYZDccusKo2cdHBgRj
+        S5MgcFZgcVWZh1epqJ81+nkX5/1wLqMes0KLQzKlFDpGJmUz6Qe5IKsArtYhOLwtbHumaY
+        gNMfpHytXF7zUE2E+9vkdtAPmfbmneQ=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-419-roNam2wLMF643auX-Eam0Q-1; Sun, 10 May 2020 08:24:37 -0400
-X-MC-Unique: roNam2wLMF643auX-Eam0Q-1
+ us-mta-215-_rjgrsf6NoS5RNnuspAfRA-1; Sun, 10 May 2020 08:24:38 -0400
+X-MC-Unique: _rjgrsf6NoS5RNnuspAfRA-1
 Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3D548835B40;
-        Sun, 10 May 2020 12:24:36 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9B5E1835B41;
+        Sun, 10 May 2020 12:24:37 +0000 (UTC)
 Received: from x1.localdomain.com (ovpn-112-76.ams2.redhat.com [10.36.112.76])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 259885D9C9;
-        Sun, 10 May 2020 12:24:35 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 834BD5D9C9;
+        Sun, 10 May 2020 12:24:36 +0000 (UTC)
 From:   Hans de Goede <hdegoede@redhat.com>
 To:     Darren Hart <dvhart@infradead.org>,
         Andy Shevchenko <andy@infradead.org>
 Cc:     Hans de Goede <hdegoede@redhat.com>,
         platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] platform/x86: asus-wmi: Add support for SW_TABLET_MODE
-Date:   Sun, 10 May 2020 14:24:31 +0200
-Message-Id: <20200510122432.123751-2-hdegoede@redhat.com>
+Subject: [PATCH 3/3] platform/x86: asus-wmi: Ignore WMI events with code 0x79
+Date:   Sun, 10 May 2020 14:24:32 +0200
+Message-Id: <20200510122432.123751-3-hdegoede@redhat.com>
 In-Reply-To: <20200510122432.123751-1-hdegoede@redhat.com>
 References: <20200510122432.123751-1-hdegoede@redhat.com>
 MIME-Version: 1.0
@@ -52,99 +52,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Asus 2-in-1s with a detachable keyboard the Asus WMI interface
-reports if the tablet is attached to the keyboard or not.
+On some Asus devices, e.g. the T100TA, when the charger is connected
+we not only get a WMI event with code 0x58, but immediately after that
+event we also get an even with code 0x79.
 
-Report if the 2-in-1 is in tablet or clamshell mode to userspace
-by reporting SW_TABLET_MODE events to userspace.
+This is likely related to these devices having an Asus WMI device with a
+device-id of 0x00120066, which seems to provide some sort of charger-type
+info. The T100TA charger over a micro-USB connector, the embedded-
+controller register read when calling asus_wmi_get_devstate(0x00120066)
+returns different values when connected to a USB port (max 500mA charging)
+vs when connected to a 2A capable wall-charger. But the AML code reading
+this mangles the return value so that we can no longer tell the difference.
+So for now the meaning of the value return when getting the status of
+device-id 0x00120066 is unclear.
 
-This has been tested on a T100TA, T100CHI, T100HA and T200TA.
+This commit adds a key-mapping of code 0x79 to KE_IGNORE, silencing the
+kernel logging the following message every time the charger is plugged-in:
+
+[   79.639548] asus_wmi: Unknown key 79 pressed
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- drivers/platform/x86/asus-wmi.c            | 24 ++++++++++++++++++++--
- include/linux/platform_data/x86/asus-wmi.h |  3 +++
- 2 files changed, 25 insertions(+), 2 deletions(-)
+ drivers/platform/x86/asus-nb-wmi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
-index 25ec821dae21..1ab07fa9b08a 100644
---- a/drivers/platform/x86/asus-wmi.c
-+++ b/drivers/platform/x86/asus-wmi.c
-@@ -57,6 +57,7 @@ MODULE_LICENSE("GPL");
- #define NOTIFY_BRNDOWN_MIN		0x20
- #define NOTIFY_BRNDOWN_MAX		0x2e
- #define NOTIFY_FNLOCK_TOGGLE		0x4e
-+#define NOTIFY_KBD_DOCK_CHANGE		0x75
- #define NOTIFY_KBD_BRTUP		0xc4
- #define NOTIFY_KBD_BRTDWN		0xc5
- #define NOTIFY_KBD_BRTTOGGLE		0xc7
-@@ -346,7 +347,7 @@ static bool asus_wmi_dev_is_present(struct asus_wmi *asus, u32 dev_id)
- 
- static int asus_wmi_input_init(struct asus_wmi *asus)
- {
--	int err;
-+	int err, result;
- 
- 	asus->inputdev = input_allocate_device();
- 	if (!asus->inputdev)
-@@ -362,6 +363,14 @@ static int asus_wmi_input_init(struct asus_wmi *asus)
- 	if (err)
- 		goto err_free_dev;
- 
-+	result = asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_KBD_DOCK);
-+	if (result >= 0) {
-+		input_set_capability(asus->inputdev, EV_SW, SW_TABLET_MODE);
-+		input_report_switch(asus->inputdev, SW_TABLET_MODE, !result);
-+	} else if (result != -ENODEV) {
-+		pr_err("Error checking for keyboard-dock: %d\n", result);
-+	}
-+
- 	err = input_register_device(asus->inputdev);
- 	if (err)
- 		goto err_free_dev;
-@@ -2055,9 +2064,9 @@ static int asus_wmi_get_event_code(u32 value)
- 
- static void asus_wmi_handle_event_code(int code, struct asus_wmi *asus)
- {
--	int orig_code;
- 	unsigned int key_value = 1;
- 	bool autorelease = 1;
-+	int result, orig_code;
- 
- 	orig_code = code;
- 
-@@ -2102,6 +2111,17 @@ static void asus_wmi_handle_event_code(int code, struct asus_wmi *asus)
- 		return;
- 	}
- 
-+	if (code == NOTIFY_KBD_DOCK_CHANGE) {
-+		result = asus_wmi_get_devstate_simple(asus,
-+						      ASUS_WMI_DEVID_KBD_DOCK);
-+		if (result >= 0) {
-+			input_report_switch(asus->inputdev, SW_TABLET_MODE,
-+					    !result);
-+			input_sync(asus->inputdev);
-+		}
-+		return;
-+	}
-+
- 	if (asus->fan_boost_mode_available && code == NOTIFY_KBD_FBM) {
- 		fan_boost_mode_switch_next(asus);
- 		return;
-diff --git a/include/linux/platform_data/x86/asus-wmi.h b/include/linux/platform_data/x86/asus-wmi.h
-index d39fc658c320..897b8332a39f 100644
---- a/include/linux/platform_data/x86/asus-wmi.h
-+++ b/include/linux/platform_data/x86/asus-wmi.h
-@@ -85,6 +85,9 @@
- /* Maximum charging percentage */
- #define ASUS_WMI_DEVID_RSOC		0x00120057
- 
-+/* Keyboard dock */
-+#define ASUS_WMI_DEVID_KBD_DOCK		0x00120063
-+
- /* DSTS masks */
- #define ASUS_WMI_DSTS_STATUS_BIT	0x00000001
- #define ASUS_WMI_DSTS_UNKNOWN_BIT	0x00000002
+diff --git a/drivers/platform/x86/asus-nb-wmi.c b/drivers/platform/x86/asus-nb-wmi.c
+index 6f12747a359a..b2887556fd4d 100644
+--- a/drivers/platform/x86/asus-nb-wmi.c
++++ b/drivers/platform/x86/asus-nb-wmi.c
+@@ -472,6 +472,7 @@ static const struct key_entry asus_nb_wmi_keymap[] = {
+ 	{ KE_KEY, 0x6B, { KEY_TOUCHPAD_TOGGLE } },
+ 	{ KE_IGNORE, 0x6E, },  /* Low Battery notification */
+ 	{ KE_KEY, 0x71, { KEY_F13 } }, /* General-purpose button */
++	{ KE_IGNORE, 0x79, },  /* Charger type dectection notification */
+ 	{ KE_KEY, 0x7a, { KEY_ALS_TOGGLE } }, /* Ambient Light Sensor Toggle */
+ 	{ KE_KEY, 0x7c, { KEY_MICMUTE } },
+ 	{ KE_KEY, 0x7D, { KEY_BLUETOOTH } }, /* Bluetooth Enable */
 -- 
 2.26.0
 
