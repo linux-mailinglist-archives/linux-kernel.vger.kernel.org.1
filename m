@@ -2,73 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D59241CCB7E
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 16:16:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFEEF1CCB7F
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 16:16:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728926AbgEJOQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 May 2020 10:16:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43762 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726085AbgEJOQ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 May 2020 10:16:27 -0400
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5E08120731;
-        Sun, 10 May 2020 14:16:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589120186;
-        bh=JoXp1b+KeTY8KVDJyv8y3dbmFWJNkib3A2oc5JnvfEQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2Ys+BElbLFkYaEcntCMxB6tbjlSRHT/sczkAEQ+6GiI6WDolNHq+wZc3tH6DlE4Tn
-         687RgNLZp5mI7ijY/Fm/cAWKFGaAxsAEcv8c2K3bggRsPVi7X0hm43/o4MvSJOXfwj
-         Dxg1aW/OceEzrlVnOlluf52yDv0x1563SXEuuozo=
-Date:   Sun, 10 May 2020 10:16:25 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de, bp@alien8.de,
-        luto@kernel.org, hpa@zytor.com, tony.luck@intel.com,
-        ak@linux.intel.com, ravi.v.shankar@intel.com,
-        chang.seok.bae@intel.com
-Subject: Re: [PATCH v11 00/18] Enable FSGSBASE instructions
-Message-ID: <20200510141625.GL13035@sasha-vm>
-References: <20200509173655.13977-1-sashal@kernel.org>
- <c4f62190-260a-c6e3-f1f6-6498660a7d1f@intel.com>
+        id S1728990AbgEJOQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 May 2020 10:16:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726085AbgEJOQm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 May 2020 10:16:42 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFC65C061A0C
+        for <linux-kernel@vger.kernel.org>; Sun, 10 May 2020 07:16:41 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id w7so7549632wre.13
+        for <linux-kernel@vger.kernel.org>; Sun, 10 May 2020 07:16:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=myKkIL8Io7d1AQISW4YDYz95HqbEVvSclwrsMEk7Ibk=;
+        b=eD+XnfD7Kl7SYS6iegvXaQoZxqJJODwR9zc46He+VJBL6D107KPTCrTlQ5lbp7Txti
+         enOBObSVHFZjhlSTL92kP8+g0zVWkbx71hEEF6lRa0VemFwx2PkG1UnBsPiaTsPKeVvk
+         I3Bb20QSxM4tgIMXAJPHqUaD2xqjou/SQ4358+RDg0KMGIG/absYchMH2dBDB1QR3vRG
+         739d2HUgjEruyXRVNrDaEbI4PLrd72JEIO7+pbzfBmBmp5vCq7tU1LVq1nVWg/lbnBMp
+         dJq4nIjg2ZWHU79J/S4Cc6qp/HwfKJf7HmVge176GXp23i3xAgFNXFRY6rXz7n55wW46
+         82/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=myKkIL8Io7d1AQISW4YDYz95HqbEVvSclwrsMEk7Ibk=;
+        b=LbB+0tMGHERyW1zieD0t49EYQ+AK1fgcBD13nyjwtCCh9jUgkwvAWzw8q8ixzcbv6f
+         wtNJ5yV1RYsNk18y4hH0N2944o7MJNOefBAtK+y45fMdxWBME3psQJZtd72+bQ6A4sv7
+         qcJ/H0qt9/4GDyWTyTHLWre3lUozzDiRMf/9/Ljd2tdwjMMFwcx0Jivrms8vPIVVJoIt
+         hVu7rvD2PxZ8KuPe4CjvFlxx6MwG3MsGXsmvm5jOvhaIPo+x6k9c4pHrbSxD2v+ARtgL
+         dqUNwcWc8HcHWPJXYE2OXcZmcCLOic2wgFIAYj+A7NnK0uXPJqzlwMzJfSv6/oIKb6C6
+         Cwyw==
+X-Gm-Message-State: AGi0PubBP9udJl1GdVh4ggEadUSaPB2KYAl949OBGEGmawD8aK5IVDxK
+        TuuKjaTlW8++6V5A0tChFbM=
+X-Google-Smtp-Source: APiQypKyxMvlsXum8I+LmmZsCHh8Fud8quUXJ96Hyhx4teOk+bCqAHYWzwjNCkCqK7VahaiuUJvLHw==
+X-Received: by 2002:adf:c381:: with SMTP id p1mr14037249wrf.148.1589120200718;
+        Sun, 10 May 2020 07:16:40 -0700 (PDT)
+Received: from akira-laptop.home ([2a01:cb19:8b28:7600:48ff:3af:e1d8:fd19])
+        by smtp.googlemail.com with ESMTPSA id s11sm12929657wrp.79.2020.05.10.07.16.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 May 2020 07:16:40 -0700 (PDT)
+From:   Akira Shimahara <akira215corp@gmail.com>
+To:     greg@kroah.com, rdunlap@infradead.org
+Cc:     zbr@ioremap.net, linux-kernel@vger.kernel.org,
+        Akira Shimahara <akira215corp@gmail.com>
+Subject: [PATCH v6 3/9] w1_therm: adding sysfs-driver-w1_therm doc
+Date:   Sun, 10 May 2020 16:16:33 +0200
+Message-Id: <20200510141633.172861-1-akira215corp@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <c4f62190-260a-c6e3-f1f6-6498660a7d1f@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 09, 2020 at 06:40:02PM -0700, Dave Hansen wrote:
->On 5/9/20 10:36 AM, Sasha Levin wrote:
->> Changes from v10:
->>
->>  - Rewrite the commit message for patch #1.
->>  - Document communication/acks from userspace projects that are
->>    potentially affected by this.
->
->I'm glad someone's pushing this forward.  But, I'm also very curious how
->you came to be submitting this series.  Is this a team effort between
->you, the And[iy]s and Chang?  Or, were you just trying to help out?
->
->I was hoping to see some acknowledgement of this situation in the cover
->letter but didn't see anything.
+Adding a sysfs-driver-w1_therm documentation file in
+Documentation/ABI/testing. It describe the onlys sysfs entry of w1_therm
+module, based on Documentation/w1/slaves/w1_therm.rst
 
-What happened here was that v9 needed to be rebased on top of v5.7 which
-required some changes. I did the rebase and sent it to Andi and Chang
-who have suggested that I'll just send it out myself. There was no
-planning beyond that.
+Signed-off-by: Akira Shimahara <akira215corp@gmail.com>
+---
+Changes in v5:
+- All patch serie in one .c file
+- Correcting some comments
+- adding <linux/string.h> include
+Changes in v6:
+- Formatting code comments according to kernel-doc requirements
 
-My interest in this is that we have a few workloads that value the
-ability to access FS/GS base directly and show nice performance
-improvement with this patchset. I'm not a fan of carrying stuff out of
-tree :)
+ Documentation/ABI/testing/sysfs-driver-w1_therm | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-driver-w1_therm
 
+diff --git a/Documentation/ABI/testing/sysfs-driver-w1_therm b/Documentation/ABI/testing/sysfs-driver-w1_therm
+new file mode 100644
+index 0000000..4a85663
+--- /dev/null
++++ b/Documentation/ABI/testing/sysfs-driver-w1_therm
+@@ -0,0 +1,17 @@
++What:		/sys/bus/w1/devices/.../w1_slave
++Date:		May 2020
++Contact:	Akira Shimahara <akira215corp@gmail.com>
++Description:
++		(RW) return the temperature in 1/1000 degC.
++		*read*: return 2 lines with the hexa output data sent on the
++		bus, return the CRC check and temperature in 1/1000 degC
++		*write* :
++			* '0' : save the 2 or 3 bytes to the device EEPROM
++			(i.e. TH, TL and config register)
++			* '9..12' : set the device resolution in RAM
++			(if supported)
++			* Anything else: do nothing
++		refer to Documentation/w1/slaves/w1_therm.rst for detailed
++		information.
++Users:		any user space application which wants to communicate with
++		w1_term device
+\ No newline at end of file
 -- 
-Thanks,
-Sasha
+2.26.2
+
