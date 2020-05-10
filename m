@@ -2,70 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFAA41CCE49
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 23:51:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CABAF1CCE72
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 00:05:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729450AbgEJVvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 May 2020 17:51:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40290 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727771AbgEJVvI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 May 2020 17:51:08 -0400
-Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2109E20801;
-        Sun, 10 May 2020 21:51:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589147467;
-        bh=i4ZPjwrBwKNSFaeYz7pCXGUsqvDB4d5elw4u0iWikqo=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=qitNJdcXLZqpDlIrtjn2N+p/iDXOHEpBMDjVawS+xKO4G0vgNsROFtKDM3gtIOKM3
-         NgEzu68AHqBKTw21Sc47X+ZemTTvI2x3BjyTL/cnsBIy925Ip5eCw4QutpXEk8mgbQ
-         OoFo4mNNfWnnfdele7WPBIgTPdb0sP648yH6JZCc=
-Date:   Sun, 10 May 2020 23:51:04 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-cc:     Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        live-patching@vger.kernel.org, Joe Perches <joe@perches.com>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: adjust to livepatch .klp.arch removal
-In-Reply-To: <20200509073258.5970-1-lukas.bulwahn@gmail.com>
-Message-ID: <nycvar.YFH.7.76.2005102350050.25812@cbobk.fhfr.pm>
-References: <20200509073258.5970-1-lukas.bulwahn@gmail.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S1729342AbgEJWFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 May 2020 18:05:53 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:47498 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727771AbgEJWFw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 May 2020 18:05:52 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 738CA8030802;
+        Sun, 10 May 2020 22:05:49 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 9vGjWYW_TGFn; Mon, 11 May 2020 01:05:48 +0300 (MSK)
+Date:   Mon, 11 May 2020 01:05:41 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>, <linux-pm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Huacai Chen <chenhc@lemote.com>,
+        Alexander Lobakin <alobakin@dlink.ru>,
+        Daniel Silsby <dansilsby@gmail.com>,
+        =?utf-8?B?UmVuw6k=?= van Dorst <opensource@vdorst.com>,
+        Cedric Hombourger <Cedric_Hombourger@mentor.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?= <f4bug@amsat.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Allison Randal <allison@lohutok.net>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Zhou Yanjie <zhouyanjie@zoho.com>,
+        =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
+        <zhouyanjie@wanyeetech.com>, Kamal Dasu <kdasu.kdev@gmail.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kvm@vger.kernel.org>
+Subject: Re: [PATCH v2 06/20] mips: Add MIPS32 Release 5 support
+Message-ID: <20200510220541.izel23i5ss7yiirq@mobilestation>
+References: <20200306124807.3596F80307C2@mail.baikalelectronics.ru>
+ <20200506174238.15385-1-Sergey.Semin@baikalelectronics.ru>
+ <20200506174238.15385-7-Sergey.Semin@baikalelectronics.ru>
+ <20200508133040.GB15641@alpha.franken.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200508133040.GB15641@alpha.franken.de>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 9 May 2020, Lukas Bulwahn wrote:
-
-> Commit 1d05334d2899 ("livepatch: Remove .klp.arch") removed
-> arch/x86/kernel/livepatch.c, but missed to adjust the LIVE PATCHING entry
-> in MAINTAINERS.
+On Fri, May 08, 2020 at 03:30:40PM +0200, Thomas Bogendoerfer wrote:
+> On Wed, May 06, 2020 at 08:42:24PM +0300, Sergey.Semin@baikalelectronics.ru wrote:
+> > We also could add CPU_MIPS64_R5 config support here, but I don't think
+> > it's necessary at the moment seeing there is no any real chip ever
+> > produced with that arch. Right?
 > 
-> Since then, ./scripts/get_maintainer.pl --self-test=patterns complains:
+> how much is missing ? Looks like not too much, so it might be worth
+> to add it at least for symmetry to the other ISAs...
+
+Yeah, just a few more alteration to add together with new CPU_MIPS64_R5 config.
+I'll do this in v3.
+
+-Sergey
+
 > 
->   warning: no file matches  F:  arch/x86/kernel/livepatch.c
+> Thomas.
 > 
-> So, drop that obsolete file entry in MAINTAINERS.
-> 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-
-I've added
-
-	Fixes: 1d05334d2899 ("livepatch: Remove .klp.arch")
-
-and applied, thanks.
-
--- 
-Jiri Kosina
-SUSE Labs
-
+> -- 
+> Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+> good idea.                                                [ RFC1925, 2.3 ]
