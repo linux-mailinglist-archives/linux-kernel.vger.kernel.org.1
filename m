@@ -2,73 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65F2D1CCDF4
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 22:36:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F9A01CCE02
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 22:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729342AbgEJUf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 May 2020 16:35:56 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:24166 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729106AbgEJUfz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 May 2020 16:35:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589142954;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DSFlNYwfdCpOV/I7s5/Tc33w1643YGxcvEZSHoh8T7o=;
-        b=NS8UgBqKolxq01iX4MHBcj+MMAHW9gRcQwpP0q9cacQlV0TeYVRL8vACjC73UBW/s60ZOf
-        GbufZIP9xDdY+CrbUqO9ZmCyUzBa5A1l9AQM1FJTEXeDgUwnMQaT2Iq4ryCZaictX5huOS
-        Y/Sd2EIdi6htTsN7VFgA//aUfkoWUjo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-96-K3k0KoFINIa8H5p22cqmrw-1; Sun, 10 May 2020 16:35:52 -0400
-X-MC-Unique: K3k0KoFINIa8H5p22cqmrw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 68F19107ACCA;
-        Sun, 10 May 2020 20:35:51 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-118-225.rdu2.redhat.com [10.10.118.225])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C83C160DB4;
-        Sun, 10 May 2020 20:35:43 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <d4efead1d6dba67f5c862a8d00ca88dd3c45dd34.camel@hammerspace.com>
-References: <d4efead1d6dba67f5c862a8d00ca88dd3c45dd34.camel@hammerspace.com> <158897619675.1119820.2203023452686054109.stgit@warthog.procyon.org.uk>
-To:     Trond Myklebust <trondmy@hammerspace.com>
-Cc:     dhowells@redhat.com,
-        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        "cmaiolino@redhat.com" <cmaiolino@redhat.com>,
-        "carmark.dlut@gmail.com" <carmark.dlut@gmail.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-cachefs@redhat.com" <linux-cachefs@redhat.com>,
-        "dwysocha@redhat.com" <dwysocha@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>
-Subject: Re: [PATCH 0/5] cachefiles, nfs: Fixes
+        id S1729445AbgEJUwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 May 2020 16:52:34 -0400
+Received: from mail.ispras.ru ([83.149.199.45]:52852 "EHLO mail.ispras.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729380AbgEJUwc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 May 2020 16:52:32 -0400
+Received: from localhost.localdomain (unknown [46.188.10.168])
+        by mail.ispras.ru (Postfix) with ESMTPSA id C7DFECD464;
+        Sun, 10 May 2020 23:52:28 +0300 (MSK)
+From:   Alexander Monakov <amonakov@ispras.ru>
+To:     linux-kernel@vger.kernel.org
+Cc:     Alexander Monakov <amonakov@ispras.ru>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        Yazen Ghannam <yazen.ghannam@amd.com>,
+        Brian Woods <brian.woods@amd.com>,
+        Clemens Ladisch <clemens@ladisch.de>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-hwmon@vger.kernel.org, linux-edac@vger.kernel.org
+Subject: [PATCH 0/3] k10temp and EDAC support for AMD Renoir
+Date:   Sun, 10 May 2020 20:48:39 +0000
+Message-Id: <20200510204842.2603-1-amonakov@ispras.ru>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1787829.1589142943.1@warthog.procyon.org.uk>
-Date:   Sun, 10 May 2020 21:35:43 +0100
-Message-ID: <1787830.1589142943@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Trond Myklebust <trondmy@hammerspace.com> wrote:
+Hello!
 
-> I can pull this branch, and send it together with the NFS client
-> bugfixes for 5.7-rc5.
+This simple patch series adds support for new AMD Ryzen CPU generation
+(model 17h family 60h) by adding the new PCI IDs as appropriate in the
+amd_nb, k10temp and amd64_edac drivers.
 
-Thanks!
+The change in k10temp is the one most important for users (temperature
+sensors of the new CPUs), the amd_nb patch is a prerequisite for that,
+and finally edac_amd64 patch is necessary, because otherwise loading
+that module produces a warning due to incomplete support.
 
-David
+Thank you.
+
+Alexander Monakov (3):
+  x86/amd_nb: add AMD family 17h model 60h PCI IDs
+  hwmon: (k10temp) Add AMD family 17h model 60h PCI match
+  EDAC/amd64: Add AMD family 17h model 60h PCI IDs
+
+ arch/x86/kernel/amd_nb.c  |  5 +++++
+ drivers/edac/amd64_edac.c | 14 ++++++++++++++
+ drivers/edac/amd64_edac.h |  3 +++
+ drivers/hwmon/k10temp.c   |  1 +
+ include/linux/pci_ids.h   |  1 +
+ 5 files changed, 24 insertions(+)
+
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: x86@kernel.org
+Cc: Yazen Ghannam <yazen.ghannam@amd.com>
+Cc: Brian Woods <brian.woods@amd.com>
+Cc: Clemens Ladisch <clemens@ladisch.de>
+Cc: Jean Delvare <jdelvare@suse.com>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Cc: linux-hwmon@vger.kernel.org
+Cc: linux-edac@vger.kernel.org
+-- 
+2.26.2
 
