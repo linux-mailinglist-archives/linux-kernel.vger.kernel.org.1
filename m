@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDDC11CCC71
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 18:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F29201CCC73
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 18:56:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729106AbgEJQzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 May 2020 12:55:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36730 "EHLO
+        id S1729161AbgEJQzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 May 2020 12:55:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728849AbgEJQzp (ORCPT
+        by vger.kernel.org with ESMTP id S1729113AbgEJQzp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 10 May 2020 12:55:45 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1A01C061A0C
-        for <linux-kernel@vger.kernel.org>; Sun, 10 May 2020 09:55:43 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id s8so7936397wrt.9
-        for <linux-kernel@vger.kernel.org>; Sun, 10 May 2020 09:55:43 -0700 (PDT)
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 605F8C061A0E
+        for <linux-kernel@vger.kernel.org>; Sun, 10 May 2020 09:55:44 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id 50so7410901wrc.11
+        for <linux-kernel@vger.kernel.org>; Sun, 10 May 2020 09:55:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+yH7k9gYgB13VpgYEG3/Nblh9Wnj5tBiFfhJeIl7DDs=;
-        b=WZbX19e3hZcwLTtyejO//MC5pLm3CMTwEEijlQoQvY7YPA6Ak7elm34dF6giZQ5LRR
-         n4NLp2mH5WdAQhauFMYLXz7vCuXH9z2ONe4zBnkoX2b+3+euVm2FQC5TxzqTTAwXG4GS
-         3Z0Sk07D/l76RQCp1wBVCnMYCpML4m6Beab4yAXEFAFjNuDqYR477//SaltCfhgQDAKv
-         YZ+lBOpLJRZcQYcTM2Dm4/YITYssgZG2nGt63nQ7aE3zK56h87pYI8mJHFFNVYFtx7LG
-         11vyofZFHHTbXvw3e91k8tO7502muM8M3dtZbAqEQT5eVDPnGwqoTLkNBYwpvGAcjV3B
-         uy+g==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=SCZR0RDMG3XJhGAGRvblpDgemNbadL77Ape7/cMT2Jk=;
+        b=LgVoPKRXtKyWOqYktFWRpIfKlpXdA950wCd2yJkk1y6mRWG9CgvwhxCh+VLXpXYi8G
+         isZlsRVnB2AJfLgDpBf5IwLL+F+xLLm+vLe5V8dfFZ1lZ5XxiQN1M+euNM0cjj8s6dxT
+         4y3jVmrE0FzRMojZ1yZZw1dT+gmZ7jPBZFO7tFnCMJhrHGQSd9XmAV4gGs0aLissqb98
+         UiLnV2bb5HGcSGff55PmCb2b9neSqsPsctfKOJWOLJBxeLc0n/RMBYmAzW2bxvzZ1o7G
+         ca7cOJPGz/1a4XLT6HD1Y0EKIZy2oDbA8DL6NGUCyrNQm5rMurIRCp1EksMFjVRmDR1V
+         77tA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+yH7k9gYgB13VpgYEG3/Nblh9Wnj5tBiFfhJeIl7DDs=;
-        b=ACVvDOrhIp601rethjZlq9ekn2GZJdRf4bPOqAB1Ubw4LrLy2s7cab/wbxumHKJwBB
-         SXJL8cDV91+CyzFLZUwS0SLwCkNJBgd2XOawHmsInt00ZY7eQWSzkRMVtbd01xFUgJEH
-         m7XHVa69bMuRNKPL6Hc6uc7T7vwowvyA+lj8tMfH6Az9q03YYX5uGG1HuBhnNOo6VUR+
-         xtIhVNXFjTQigAYhOYh1COPufDhwoo8REaGNEvm7bsfnbpO9ZlRtWOyRyNdsKjPeukxa
-         WGajd5rquQJmM2PaMRO8VjdSxup23KckjlfKsoTcNOhl2HZx1W4CAzxVceQSgFhlkdv1
-         9FWA==
-X-Gm-Message-State: AGi0PuZmOnaBC4TVjdj41glnAhvAuF7T5CEiOvnRAdXXvdW0AI7aSzwC
-        TFeym/NcPonZc76LD/kePGA=
-X-Google-Smtp-Source: APiQypKO460W1UO0ySq0DC1F1clgOS2zZOWECa6qEnCMEpsIWu09PeM5rrGZWTiQ+sx8PX0ES5vpfw==
-X-Received: by 2002:adf:a74b:: with SMTP id e11mr13248517wrd.99.1589129742124;
-        Sun, 10 May 2020 09:55:42 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=SCZR0RDMG3XJhGAGRvblpDgemNbadL77Ape7/cMT2Jk=;
+        b=uk9tnlu67CTw/gsgGhylyf66tx04rUO6ZyCwhSDzkO0kms1gExd4w6J/1JI4wRM1Fm
+         rGqZfYzZEiFIIFyZsLOCmFpo5IfjQCS3zmFXi00V8N+4rj5T/s3fxck1Vm+YC3WgZVFT
+         4uAL+MuRSbU5O/vhCnY0zVHi8KcYKR/SDZR3Cbkr7dZgupInDXi3aNRFjaHhGR03TnfT
+         XarzjI6CLYMpOO/mpxdhG4uDOA/e/rRJsaVbn39+8+pcjdhL0I20XcFgs4rbgiHkjPTf
+         qeADnapUjp/7hfczofkVazVwWNa8RQAnoRIEqFhnkdD9DhCbms0VRzLJ1vdA7JbehAvn
+         zpIQ==
+X-Gm-Message-State: AGi0PuY2cp2it5b/qDYxDyDxZAjWcg/X1UmeJaSdFj/gUyXQnwjJb9zi
+        KFEcqIQ0w/GU5cg7eY1Jcuc=
+X-Google-Smtp-Source: APiQypKtLpPlZkPTEpuhPfSdLDXG2WtCWVp/p+U2lL9gCsx/HvonVK58WW19yileLXj8XmEnrOCQcQ==
+X-Received: by 2002:adf:afd6:: with SMTP id y22mr13959393wrd.417.1589129743009;
+        Sun, 10 May 2020 09:55:43 -0700 (PDT)
 Received: from localhost.localdomain ([2a01:e0a:1f1:d0f0:1cc8:b1f1:a2b8:a1ee])
-        by smtp.gmail.com with ESMTPSA id g15sm13637670wrp.96.2020.05.10.09.55.40
+        by smtp.gmail.com with ESMTPSA id g15sm13637670wrp.96.2020.05.10.09.55.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 May 2020 09:55:41 -0700 (PDT)
+        Sun, 10 May 2020 09:55:42 -0700 (PDT)
 From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 To:     Rob Herring <robh@kernel.org>,
         Tomeu Vizoso <tomeu.vizoso@collabora.com>,
@@ -59,10 +59,12 @@ To:     Rob Herring <robh@kernel.org>,
         Chen-Yu Tsai <wens@csie.org>
 Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
         =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH 00/15][RFC] Add regulator devfreq support to Panfrost
-Date:   Sun, 10 May 2020 18:55:23 +0200
-Message-Id: <20200510165538.19720-1-peron.clem@gmail.com>
+Subject: [PATCH 01/15] drm/panfrost: avoid static declaration
+Date:   Sun, 10 May 2020 18:55:24 +0200
+Message-Id: <20200510165538.19720-2-peron.clem@gmail.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200510165538.19720-1-peron.clem@gmail.com>
+References: <20200510165538.19720-1-peron.clem@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -71,91 +73,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This declaration can be avoided so change it.
 
-This serie cleans and adds regulator support to Panfrost devfreq.
-This is mostly based on comment for the freshly introduced lima
-devfreq.
+Signed-off-by: Clément Péron <peron.clem@gmail.com>
+---
+ drivers/gpu/drm/panfrost/panfrost_devfreq.c | 38 ++++++++++-----------
+ 1 file changed, 18 insertions(+), 20 deletions(-)
 
-We need to add regulator support because on Allwinner the GPU OPP
-table defines both frequencies and voltages.
-
-First patches [01-08] should not change the actual behavior
-and introduce a proper panfrost_devfreq struct.
-
-Fatches after are WIP and add regulator support.
-
-However I got several issues first we need to avoid getting regulator
-if devfreq get by itself the regulator, but as of today the OPP
-framework only get and don't enable the regulator...
-An HACK for now is to add regulator-always-on in the device-tree.
-
-Then when I enable devfreq I got several faults like.
-I'm totally noob on GPU sched/fault and couldn't be helpfull with this.
-
-I got this running glmark2 on T720 (Allwinner H6) with Mesa 20.0.5.
-# glmark2-es2-drm
-=======================================================
-    glmark2 2017.07
-=======================================================
-    OpenGL Information
-    GL_VENDOR:     Panfrost
-    GL_RENDERER:   Mali T720 (Panfrost)
-    GL_VERSION:    OpenGL ES 2.0 Mesa 20.0.5
-=======================================================
-
-[   93.550063] panfrost 1800000.gpu: GPU Fault 0x00000088 (UNKNOWN) at 0x0000000080117100
-[   94.045401] panfrost 1800000.gpu: gpu sched timeout, js=0, config=0x3700, status=0x8, head=0x21d6c00, tail=0x21d6c00, sched_job=00000000e3c2132f
-
-[  328.871070] panfrost 1800000.gpu: Unhandled Page fault in AS0 at VA 0x0000000000000000
-[  328.871070] Reason: TODO
-[  328.871070] raw fault status: 0xAA0003C2
-[  328.871070] decoded fault status: SLAVE FAULT
-[  328.871070] exception type 0xC2: TRANSLATION_FAULT_LEVEL2
-[  328.871070] access type 0x3: WRITE
-[  328.871070] source id 0xAA00
-[  329.373327] panfrost 1800000.gpu: gpu sched timeout, js=1, config=0x3700, status=0x8, head=0xa1a4900, tail=0xa1a4900, sched_job=000000007ac31097
-[  329.386527] panfrost 1800000.gpu: js fault, js=0, status=DATA_INVALID_FAULT, head=0xa1a4c00, tail=0xa1a4c00
-[  329.396293] panfrost 1800000.gpu: gpu sched timeout, js=0, config=0x3700, status=0x58, head=0xa1a4c00, tail=0xa1a4c00, sched_job=0000000004c90381
-[  329.411521] panfrost 1800000.gpu: Unhandled Page fault in AS0 at VA 0x0000000000000000
-[  329.411521] Reason: TODO
-[  329.411521] raw fault status: 0xAA0003C2
-[  329.411521] decoded fault status: SLAVE FAULT
-[  329.411521] exception type 0xC2: TRANSLATION_FAULT_LEVEL2
-[  329.411521] access type 0x3: WRITE
-[  329.411521] source id 0xAA00
-
-Thanks for your reviews, help on this serie,
-Clement
-
-Clément Péron (15):
-  drm/panfrost: avoid static declaration
-  drm/panfrost: clean headers in devfreq
-  drm/panfrost: don't use pfdevfreq.busy_count to know if hw is idle
-  drm/panfrost: introduce panfrost_devfreq struct
-  drm/panfrost: use spinlock instead of atomic
-  drm/panfrost: properly handle error in probe
-  drm/panfrost: use device_property_present to check for OPP
-  drm/panfrost: move devfreq_init()/fini() in device
-  drm/panfrost: dynamically alloc regulators
-  drm/panfrost: add regulators to devfreq
-  drm/panfrost: set devfreq clock name
-  arm64: defconfig: Enable devfreq cooling device
-  arm64: dts: allwinner: h6: Add cooling map for GPU
-  [DO NOT MERGE] arm64: dts: allwinner: h6: Add GPU OPP table
-  [DO NOT MERGE] arm64: dts: allwinner: force GPU regulator to be always
-
- .../dts/allwinner/sun50i-h6-beelink-gs1.dts   |   1 +
- arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi  | 102 ++++++++++
- arch/arm64/configs/defconfig                  |   1 +
- drivers/gpu/drm/panfrost/panfrost_devfreq.c   | 190 ++++++++++++------
- drivers/gpu/drm/panfrost/panfrost_devfreq.h   |  32 ++-
- drivers/gpu/drm/panfrost/panfrost_device.c    |  56 ++++--
- drivers/gpu/drm/panfrost/panfrost_device.h    |  14 +-
- drivers/gpu/drm/panfrost/panfrost_drv.c       |  15 +-
- drivers/gpu/drm/panfrost/panfrost_job.c       |  10 +-
- 9 files changed, 310 insertions(+), 111 deletions(-)
-
+diff --git a/drivers/gpu/drm/panfrost/panfrost_devfreq.c b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
+index 413987038fbf..1b560b903ea6 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_devfreq.c
++++ b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
+@@ -14,7 +14,24 @@
+ #include "panfrost_gpu.h"
+ #include "panfrost_regs.h"
+ 
+-static void panfrost_devfreq_update_utilization(struct panfrost_device *pfdev);
++static void panfrost_devfreq_update_utilization(struct panfrost_device *pfdev)
++{
++	ktime_t now;
++	ktime_t last;
++
++	if (!pfdev->devfreq.devfreq)
++		return;
++
++	now = ktime_get();
++	last = pfdev->devfreq.time_last_update;
++
++	if (atomic_read(&pfdev->devfreq.busy_count) > 0)
++		pfdev->devfreq.busy_time += ktime_sub(now, last);
++	else
++		pfdev->devfreq.idle_time += ktime_sub(now, last);
++
++	pfdev->devfreq.time_last_update = now;
++}
+ 
+ static int panfrost_devfreq_target(struct device *dev, unsigned long *freq,
+ 				   u32 flags)
+@@ -139,25 +156,6 @@ void panfrost_devfreq_suspend(struct panfrost_device *pfdev)
+ 	devfreq_suspend_device(pfdev->devfreq.devfreq);
+ }
+ 
+-static void panfrost_devfreq_update_utilization(struct panfrost_device *pfdev)
+-{
+-	ktime_t now;
+-	ktime_t last;
+-
+-	if (!pfdev->devfreq.devfreq)
+-		return;
+-
+-	now = ktime_get();
+-	last = pfdev->devfreq.time_last_update;
+-
+-	if (atomic_read(&pfdev->devfreq.busy_count) > 0)
+-		pfdev->devfreq.busy_time += ktime_sub(now, last);
+-	else
+-		pfdev->devfreq.idle_time += ktime_sub(now, last);
+-
+-	pfdev->devfreq.time_last_update = now;
+-}
+-
+ void panfrost_devfreq_record_busy(struct panfrost_device *pfdev)
+ {
+ 	panfrost_devfreq_update_utilization(pfdev);
 -- 
 2.20.1
 
