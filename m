@@ -2,90 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C843A1CCB36
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 14:57:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D90E51CCB3A
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 14:58:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728940AbgEJM5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 May 2020 08:57:07 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:25770 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726863AbgEJM5G (ORCPT
+        id S1729058AbgEJM57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 May 2020 08:57:59 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:19586 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726863AbgEJM56 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 May 2020 08:57:06 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1589115425; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=xbNlNcKRFd58rmwKnqoHJadbCNL3+FrGOdfqkWJ4rUI=; b=UeUEESe2AXb7xpDp0Ud+yu1mgizU4Bkwq7s8k6xPhUkq5v3wAiHHkm5uJbj/0GKPUU6y7Z1n
- pbtoqFGOG/I8M8WZ/J10Mux2JD1OCX9AAkJIRDZjNXxjW7pHJEz9oAFMW439m6iXG9KkDxYt
- Zdv4/ca2ZR+vVdxjytKXJXnc3Os=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5eb7fa21.7f5a2c165c38-smtp-out-n05;
- Sun, 10 May 2020 12:57:05 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3DEA1C44788; Sun, 10 May 2020 12:57:04 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from codeaurora.org (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pkondeti)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C134DC433F2;
-        Sun, 10 May 2020 12:56:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C134DC433F2
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=pkondeti@codeaurora.org
-From:   Pavankumar Kondeti <pkondeti@codeaurora.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Pavankumar Kondeti <pkondeti@codeaurora.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Sun, 10 May 2020 08:57:58 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04ACUjtJ061216;
+        Sun, 10 May 2020 08:57:08 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 30xe5sbhur-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 10 May 2020 08:57:08 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 04ACpD9g007705;
+        Sun, 10 May 2020 12:57:06 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 30wm55afgn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 10 May 2020 12:57:06 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04ACv4sV63242508
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 10 May 2020 12:57:04 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 58368AE04D;
+        Sun, 10 May 2020 12:57:04 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 19C48AE051;
+        Sun, 10 May 2020 12:57:01 +0000 (GMT)
+Received: from vajain21-in-ibm-com (unknown [9.199.51.177])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Sun, 10 May 2020 12:57:00 +0000 (GMT)
+Received: by vajain21-in-ibm-com (sSMTP sendmail emulation); Sun, 10 May 2020 18:27:00 +0530
+From:   Vaibhav Jain <vaibhav@linux.ibm.com>
+To:     Joe Perches <joe@perches.com>, Borislav Petkov <bp@alien8.de>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-nvdimm@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Subject: [PATCH] sched/debug: Fix requested task uclamp values shown in procfs
-Date:   Sun, 10 May 2020 18:26:41 +0530
-Message-Id: <1589115401-26391-1-git-send-email-pkondeti@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Piotr Maziarz <piotrx.maziarz@linux.intel.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: Re: [PATCH v7 2/5] seq_buf: Export seq_buf_printf() to external modules
+In-Reply-To: <ff1fcc5b32a9ad209660c7cfe7e212c1a16ba10d.camel@perches.com>
+References: <20200508104922.72565-1-vaibhav@linux.ibm.com> <20200508104922.72565-3-vaibhav@linux.ibm.com> <20200508113100.GA19436@zn.tnic> <87blmy8wm8.fsf@linux.ibm.com> <ff1fcc5b32a9ad209660c7cfe7e212c1a16ba10d.camel@perches.com>
+Date:   Sun, 10 May 2020 18:27:00 +0530
+Message-ID: <87y2q06j8j.fsf@linux.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-10_04:2020-05-08,2020-05-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
+ phishscore=0 suspectscore=1 priorityscore=1501 mlxscore=0 clxscore=1011
+ lowpriorityscore=0 malwarescore=0 impostorscore=0 mlxlogscore=786
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005100113
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The intention of commit 96e74ebf8d59 ("sched/debug: Add task uclamp
-values to SCHED_DEBUG procfs") was to print requested and effective
-task uclamp values. The requested values printed are read from p->uclamp,
-which holds the last effective values. Fix this by printing the values
-from p->uclamp_req.
+Hi Joe,
 
-Fixes: 96e74ebf8d59 ("sched/debug: Add task uclamp values to SCHED_DEBUG procfs")
-Signed-off-by: Pavankumar Kondeti <pkondeti@codeaurora.org>
----
- kernel/sched/debug.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Joe Perches <joe@perches.com> writes:
 
-diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-index a562df5..239970b 100644
---- a/kernel/sched/debug.c
-+++ b/kernel/sched/debug.c
-@@ -948,8 +948,8 @@ void proc_sched_show_task(struct task_struct *p, struct pid_namespace *ns,
- 	P(se.avg.util_est.enqueued);
- #endif
- #ifdef CONFIG_UCLAMP_TASK
--	__PS("uclamp.min", p->uclamp[UCLAMP_MIN].value);
--	__PS("uclamp.max", p->uclamp[UCLAMP_MAX].value);
-+	__PS("uclamp.min", p->uclamp_req[UCLAMP_MIN].value);
-+	__PS("uclamp.max", p->uclamp_req[UCLAMP_MAX].value);
- 	__PS("effective uclamp.min", uclamp_eff_value(p, UCLAMP_MIN));
- 	__PS("effective uclamp.max", uclamp_eff_value(p, UCLAMP_MAX));
- #endif
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+> On Fri, 2020-05-08 at 17:30 +0530, Vaibhav Jain wrote:
+>> Hi Boris,
+>> 
+>> Borislav Petkov <bp@alien8.de> writes:
+>> 
+>> > On Fri, May 08, 2020 at 04:19:19PM +0530, Vaibhav Jain wrote:
+>> > > 'seq_buf' provides a very useful abstraction for writing to a string
+>> > > buffer without needing to worry about it over-flowing. However even
+>> > > though the API has been stable for couple of years now its stills not
+>> > > exported to external modules limiting its usage.
+>> > > 
+>> > > Hence this patch proposes update to 'seq_buf.c' to mark
+>> > > seq_buf_printf() which is part of the seq_buf API to be exported to
+>> > > external GPL modules. This symbol will be used in later parts of this
+>> > 
+>> > What is "external GPL modules"?
+>> I am referring to Kernel Loadable Modules with MODULE_LICENSE("GPL")
+>> here.
+>
+> Any reason why these Kernel Loadable Modules with MODULE_LICENSE("GPL")
+> are not in the kernel tree?
+
+The Kernel GPL module that this patch reffers to is 'papr_scm' which is already
+in kernel tree at arch/powerpc/platforms/pseries/papr_scm.c . 
+
+~ Vaibhav
