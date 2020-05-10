@@ -2,94 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD6E81CCC7B
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 18:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD2A41CCC8E
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 19:14:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729282AbgEJQ4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 May 2020 12:56:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36800 "EHLO
+        id S1729073AbgEJRNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 May 2020 13:13:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729267AbgEJQz7 (ORCPT
+        by vger.kernel.org with ESMTP id S1728360AbgEJRNq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 May 2020 12:55:59 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E523C05BD09
-        for <linux-kernel@vger.kernel.org>; Sun, 10 May 2020 09:55:59 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id k1so7959146wrx.4
-        for <linux-kernel@vger.kernel.org>; Sun, 10 May 2020 09:55:59 -0700 (PDT)
+        Sun, 10 May 2020 13:13:46 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F2BBC061A0C
+        for <linux-kernel@vger.kernel.org>; Sun, 10 May 2020 10:13:46 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id h26so5469445lfg.6
+        for <linux-kernel@vger.kernel.org>; Sun, 10 May 2020 10:13:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=LrpA01gh5f+4wCQVfiK/c2w8CUJsi/9aedeoRmkPm1A=;
-        b=NVaFtRRUuIuJfOZ9VWEnsEcaHQLlxP0KjmHTYVaEol0TnaJzw14uuF0Ej7tBkZ/dXf
-         q0cdIPbQ2ReTKQaZIx08FJyyfpQc46H2PP4lMAzaqienz9TjB71dMtXN47KrqWcqxFbO
-         o1GK6lICcOVrfd0JUYo7eFmGGoXkfVH4g5DyGe4DFL2x74lhjkHAhAKErSB3hDhAXgYX
-         bk95+Er61/m+x/X2LdsArOEZHganSOruTT+9efLroE+3vQu55tRQknbws3XuQKzD6QoT
-         IhjlB0qHt90lQUSKTqPGVmIAJ1qjyAp27DajDztvQ0ZQsoWHXMxcgrFUIIdhtqbkj+dD
-         UM+w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=L0PU0Sit1xVzizBuCfAb4eyKFOp6O3/xozVDhgWBKUI=;
+        b=mSW6dX7sU9WzMquExUTs5lRnJU8G33pM7AlzK4+4fstLsU3pFVu1YI7BtD0xVrjzsG
+         NAND5lEXyQIDNn8hh5t5vAwJWGG+8SBh6OIgt/3dWnw45be3OtcEgqleuRrxPVcdRFo+
+         FZPQq9js9Esi1rdL6qhc4a056DpNYQtNijx2WxuK4iiyAYs2hb0JM20AJAK1XREO3iav
+         7qvWbbK95ewa+EJUC+l4o2lbvVOwXyUtdWsxjCFrGsigJMWjOlcYx6niU+ukpMBcu5Lb
+         nUDKGAvmcru0C2gOm3ngkf4chwIoa6L9Ag4BtkkOvA0g9F43Vf9XrLuhKZIOnKc/VTVD
+         ERsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=LrpA01gh5f+4wCQVfiK/c2w8CUJsi/9aedeoRmkPm1A=;
-        b=KrQiUUb/DOUQwjqwvLyDxzvwe31tLJ4add+X3ST4SSS93hxnC1H8kRU6L9LaRK5sdO
-         g0RN4m6kLc2+IdvI/MAdvTSCjdoMQGz5u4qa5nC6eaHwAUrKSXPDUJJkjUEOabtZx8ob
-         f9omXJyt8SA870wWSrejnwsLlpOJrgufFKWbl3XHmbUy9NNZofdxZmEC1e631C80nbK6
-         Cs5qli8YDgd1FhAsmuj8mTH4Yc3peBV+2+teGPDeccWy1QfN1nSMiN706+23r2YpcgWZ
-         aV7i58HaR6ZCu9PG1xFIESI65EATj/nWMun2G/+3hOmJKgEQflZLjknR0Lul3EajUj1T
-         M+TA==
-X-Gm-Message-State: AGi0PubzCEcqT6SbbBOZXCAT2QD/g5OjM8mZo+2N2OJt3KjB+NzFJcxp
-        KH0JaKvNBjmL1x8wZZrqSC4=
-X-Google-Smtp-Source: APiQypKucmou8UiKBQJLi/Cx8j6Ix30yatDbTUUMPyd8Dq8FziM9EgDPuGCXjSGiQ84ZMUcD+phxZA==
-X-Received: by 2002:a5d:46c7:: with SMTP id g7mr14131363wrs.293.1589129757999;
-        Sun, 10 May 2020 09:55:57 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:e0a:1f1:d0f0:1cc8:b1f1:a2b8:a1ee])
-        by smtp.gmail.com with ESMTPSA id g15sm13637670wrp.96.2020.05.10.09.55.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 May 2020 09:55:57 -0700 (PDT)
-From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-To:     Rob Herring <robh@kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Steven Price <steven.price@arm.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH 15/15] [DO NOT MERGE] arm64: dts: allwinner: force GPU regulator to be always
-Date:   Sun, 10 May 2020 18:55:38 +0200
-Message-Id: <20200510165538.19720-16-peron.clem@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200510165538.19720-1-peron.clem@gmail.com>
-References: <20200510165538.19720-1-peron.clem@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=L0PU0Sit1xVzizBuCfAb4eyKFOp6O3/xozVDhgWBKUI=;
+        b=qG71B6lgZo3bpY6zw7B3TTtyZJD23JV748kXde7Oz0WhcTqiUw6iv4WYTBU0FfC7VX
+         Ar2AelNShz7WsRw5BZVMZCyFrTw6vxOMKOfx1XhiUufX0CNXyZ/dnFhRiLTPO3SFGWZl
+         xtPZEbRNAmu0MJil8bm9abGDGjJDpryzZFDH2cv6aW9uG2NiEWQo/VXUFo7mYQ/7Bmnf
+         68C6NR51UTY3SDZn8IUbQIie2Ix5YbZbDNARaD4q7WXTxD9fUgaOM7eMMPHK1aJM7Mr3
+         rc9mgFydYrHxleCCOGixxl29HuuQXtxvlQeLsnkuODGlcpS2sMqnfzFJ4YLR/zLvGt7c
+         /Zag==
+X-Gm-Message-State: AOAM531pUzmRfS2sNenl8kZG4JnqlORkB0WXbxrpcoTQ1PwvMSsd47Ki
+        SBy+aEF59CQN2f9w9PPa+yCtMsdShUjaAvAK/l5mutEykI2Z
+X-Google-Smtp-Source: ABdhPJwmZ4ZH/9gtqfbWFujLYwL85fv+j086CAJLvilSP28mhonT8qemqb/0puh0db+xvCYpRz+KFEN25n/BmTY44IU=
+X-Received: by 2002:a05:6512:308e:: with SMTP id z14mr8598183lfd.29.1589130823318;
+ Sun, 10 May 2020 10:13:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <CADa2P2UP1AtEmQYtyqUFKVNz8Rxii+-Zut3ibc5pMYnQB90-zw@mail.gmail.com>
+ <32637993-b73f-c2cb-6823-590c1638b5a6@infradead.org>
+In-Reply-To: <32637993-b73f-c2cb-6823-590c1638b5a6@infradead.org>
+From:   Mahmood Naderan <mahmood.nt@gmail.com>
+Date:   Sun, 10 May 2020 21:43:32 +0430
+Message-ID: <CADa2P2UTMwwYPFLW+UM5FNBL+_8Pi_Am+saa+Y2ywpi0jPDvWw@mail.gmail.com>
+Subject: Re: Using a custom LDFLAG for all objects and binaries
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Clément Péron <peron.clem@gmail.com>
----
- arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts | 1 +
- 1 file changed, 1 insertion(+)
+> Have you read Documentation/kbuild/makefiles.rst ?
+>
+>     LDFLAGS
+>         Generic $(LD) options
+>
+>         Flags used for all invocations of the linker.
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-index 3f7ceeb1a767..14257f7476b8 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-@@ -245,6 +245,7 @@
- 			};
- 
- 			reg_dcdcc: dcdcc {
-+				regulator-always-on;
- 				regulator-enable-ramp-delay = <32000>;
- 				regulator-min-microvolt = <810000>;
- 				regulator-max-microvolt = <1080000>;
--- 
-2.20.1
 
+What I see is this in Documentation/kbuild/makefiles.txt
+
+    LDFLAGS             Generic $(LD) options
+
+        Flags used for all invocations of the linker.
+        Often specifying the emulation is sufficient.
+
+        Example:
+                #arch/s390/Makefile
+                LDFLAGS         := -m elf_s390
+        Note: ldflags-y can be used to further customise
+        the flags used. See chapter 3.7.
+
+
+
+I have two questions then:
+1- Can I use that as a bash variable? Like "LDFLAGS=--emit-relocs make"
+or
+2- Editing arch/x86/Makefile with
+   KBUILD_LDFLAGS := -m --emit-relocs elf_$(UTS_MACHINE)
+
+Thanks for your help.
+
+
+Regards,
+Mahmood
