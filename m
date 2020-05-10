@@ -2,77 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 440A21CCDE5
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 22:31:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C019B1CCDEF
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 22:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729319AbgEJUb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 May 2020 16:31:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38528 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728468AbgEJUb2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 May 2020 16:31:28 -0400
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 45EA420731
-        for <linux-kernel@vger.kernel.org>; Sun, 10 May 2020 20:31:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589142688;
-        bh=LfFf6ZVT2QkA6Dtvvht9TOnFtd+bdPkSZsNrSwHsybo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=2NupWFCZ3k0yTEcTI14LQv+FJnLP7aZ+u9axLeO+nzvK/ofiShJfbA4zKx0STIrtz
-         5rGvWNK1zGM+Qdw36s+kloNPxySOtzDqBC2RQHCF6FS4AMgy7+cehprcKv4GbxIDd2
-         Y43nDyerY/uG28I3mg5b8UxBLlZCZrhq8iBgixLs=
-Received: by mail-wm1-f48.google.com with SMTP id u16so16843557wmc.5
-        for <linux-kernel@vger.kernel.org>; Sun, 10 May 2020 13:31:28 -0700 (PDT)
-X-Gm-Message-State: AGi0PuaeQK/sYELr878E8jW+i3eIZ7ed9GH2taZGAnyiUCa+NCQ08tXg
-        C6rPD61CCneEiaHrSG1A307Dc/6rR+4S84ng8OS2Vw==
-X-Google-Smtp-Source: APiQypJ6xO7jNX24c2MwAVgxgagog95NUtkNmOpqwlQ/nIEPmIByfqutAZZ0BPV6VeoidLZdW7OmqZmjG64p347cqNo=
-X-Received: by 2002:a7b:c5d3:: with SMTP id n19mr20552281wmk.21.1589142686852;
- Sun, 10 May 2020 13:31:26 -0700 (PDT)
+        id S1729425AbgEJUcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 May 2020 16:32:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729377AbgEJUcB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 May 2020 16:32:01 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4DD6C061A0C
+        for <linux-kernel@vger.kernel.org>; Sun, 10 May 2020 13:31:59 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id p25so3753507pfn.11
+        for <linux-kernel@vger.kernel.org>; Sun, 10 May 2020 13:31:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0KiTiJrfrc9OVCGuZbos3d47NLpXfJnte4vSA/u87SI=;
+        b=A9gC3dB608EdDSmZiIs04DyzufuimTcBcTwntuIDBL7fRNDYiRum2ReDQQgmtsoABW
+         ckocj4U/0MNHD1313IpNaF2kxU4zz3+jqLXcgSnVqpHCk7L5xfx67oW5cuky1x4i48+D
+         hZhxpf+FPzamsqW7Km5npGqFwgUnoGP41i+8M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0KiTiJrfrc9OVCGuZbos3d47NLpXfJnte4vSA/u87SI=;
+        b=qOIPzRcMRr6NuwwphPAzhBsyaFEBD9uyAYETlRp6A2aVrZR4kGKejTWBnBPvX5HukM
+         2bqutGoVMAnn+6hziT9pUHReY/d5lCojdpSCPS4UiVKH5BpVBOZzLiUPAXMmIZfQA0Mm
+         F9moJAEfqgSgPklrCdMJAQBH3zOu9wJpgCLSjMg3gBwffqiQdrKxKnEwYnYYmgCafnBv
+         yDX9vlC5F6F008wZumN5ozCSTwNvILo0fC+swbfv4MLOBya4ErNSmY+/NOnosKy3IyyC
+         fnofI8zqCX1geriGfRhSUwKPvqME3tVwXQeEt7O1z67jLm+xXaRQOrpc10kWJxWD6tyn
+         Rezw==
+X-Gm-Message-State: AGi0Pua4sIHT91KhFOWGPGPXDBxC6KgoYneoRYGu1u7St/SzrUNxt/GR
+        rc6N6t+vV1ToDhi4HzTylAdDAyGFRV0=
+X-Google-Smtp-Source: APiQypJCRQLdsw9Fe1HgOwYYJLrkhYfsqX1sxUkQfq3pTFPjcTycIcITLoMmcvS0/tuAMDUBYZhxUg==
+X-Received: by 2002:aa7:8e8b:: with SMTP id a11mr12736041pfr.62.1589142718963;
+        Sun, 10 May 2020 13:31:58 -0700 (PDT)
+Received: from pmalani2.mtv.corp.google.com ([2620:15c:202:201:476b:691:abc3:38db])
+        by smtp.gmail.com with ESMTPSA id p7sm6189094pgg.91.2020.05.10.13.31.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 May 2020 13:31:58 -0700 (PDT)
+From:   Prashant Malani <pmalani@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     bleung@chromium.org, Prashant Malani <pmalani@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        linux-usb@vger.kernel.org (open list:USB TYPEC CLASS)
+Subject: [PATCH] usb: typec: mux: intel: Fix DP_HPD_LVL bit field
+Date:   Sun, 10 May 2020 13:31:43 -0700
+Message-Id: <20200510203148.122364-1-pmalani@chromium.org>
+X-Mailer: git-send-email 2.26.2.645.ge9eca65c58-goog
 MIME-Version: 1.0
-References: <20200505134354.774943181@linutronix.de> <20200505134903.949227617@linutronix.de>
-In-Reply-To: <20200505134903.949227617@linutronix.de>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Sun, 10 May 2020 13:31:15 -0700
-X-Gmail-Original-Message-ID: <CALCETrX=dgHba0yQVwi2a30w3RJTe2v7O7m+6pHVJXickVcEEA@mail.gmail.com>
-Message-ID: <CALCETrX=dgHba0yQVwi2a30w3RJTe2v7O7m+6pHVJXickVcEEA@mail.gmail.com>
-Subject: Re: [patch V4 part 3 07/29] x86/entry: Distangle idtentry
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 5, 2020 at 7:15 AM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> From: Thomas Gleixner <tglx@linutronix.de>
->
-> idtentry is a completely unreadable maze. Split it into distinct idtentry
-> variants which only contain the minimal code:
->
->   - idtentry for regular exceptions
->   - idtentry_mce_debug for #MCE and #DB
->   - idtentry_df for #DF
->
-> The generated binary code is equivalent.
+According to the PMC Type C Subsystem (TCSS) Mux programming guide rev
+0.6, the PMC HPD request LVL bit field is bit 5.
+Fix the definition here to match the programming guide.
 
-Acked-by: Andy Lutomirski <luto@kernel.org>
+Since this bit field is changing, explicitly define a field for the
+HPD_HIGH mode data bit.
+
+Signed-off-by: Prashant Malani <pmalani@chromium.org>
+Fixes: 6701adfa9693 ("usb: typec: driver for Intel PMC mux control")
+---
+ drivers/usb/typec/mux/intel_pmc_mux.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/usb/typec/mux/intel_pmc_mux.c b/drivers/usb/typec/mux/intel_pmc_mux.c
+index 67c5139cfa0d..15074aec94eb 100644
+--- a/drivers/usb/typec/mux/intel_pmc_mux.c
++++ b/drivers/usb/typec/mux/intel_pmc_mux.c
+@@ -63,6 +63,7 @@ enum {
+ #define PMC_USB_ALTMODE_DP_MODE_SHIFT	8
+ 
+ /* TBT specific Mode Data bits */
++#define PMC_USB_ALTMODE_HPD_HIGH	BIT(14)
+ #define PMC_USB_ALTMODE_TBT_TYPE	BIT(17)
+ #define PMC_USB_ALTMODE_CABLE_TYPE	BIT(18)
+ #define PMC_USB_ALTMODE_ACTIVE_LINK	BIT(20)
+@@ -75,7 +76,7 @@ enum {
+ 
+ /* Display HPD Request bits */
+ #define PMC_USB_DP_HPD_IRQ		BIT(5)
+-#define PMC_USB_DP_HPD_LVL		BIT(6)
++#define PMC_USB_DP_HPD_LVL		BIT(4)
+ 
+ struct pmc_usb;
+ 
+@@ -158,8 +159,7 @@ pmc_usb_mux_dp(struct pmc_usb_port *port, struct typec_mux_state *state)
+ 			 PMC_USB_ALTMODE_DP_MODE_SHIFT;
+ 
+ 	if (data->status & DP_STATUS_HPD_STATE)
+-		req.mode_data |= PMC_USB_DP_HPD_LVL <<
+-				 PMC_USB_ALTMODE_DP_MODE_SHIFT;
++		req.mode_data |= PMC_USB_ALTMODE_HPD_HIGH;
+ 
+ 	return pmc_usb_command(port, (void *)&req, sizeof(req));
+ }
+-- 
+2.26.2.645.ge9eca65c58-goog
+
