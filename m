@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC5E81CC614
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 03:48:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E341F1CC616
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 03:49:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728982AbgEJBsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 May 2020 21:48:32 -0400
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:13612 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728940AbgEJBsb (ORCPT
+        id S1729019AbgEJBsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 May 2020 21:48:46 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:45303 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728988AbgEJBsp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 May 2020 21:48:31 -0400
+        Sat, 9 May 2020 21:48:45 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1589075309; x=1620611309;
+  t=1589075324; x=1620611324;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=TfCbh6Ws4bPSN17KqjjWMeKKKnG2rMNi9Ev0fkWczFs=;
-  b=p3hf9Zli3AD5jJIbFADutUxHA5r4ry1fuCPsZ8+9vI1ocu4bwAkRpoD+
-   pIY4JPuTSPN3LbL1umkwX5ylsNijZIEVtjdBXb+IS9MIrB5BQEkfK0hfj
-   1+uou/LyH5AoUZHruxR/Hrn+q1mbbr1tOZ/RomN3D9YdpJ74+KrCrYKIr
-   Q=;
-IronPort-SDR: cuA/kqCtr1mXVxwbcnhhByUY5S2q9JXtBxskxvB0VRjIPI99fWMxzFC9XXQBrSCK2jrgdHZl8f
- Awo8q+hnss3Q==
+  bh=JgKbzbI+PIq+yMjGX5OcL/YpstrXh4PxUaSMBduOT2o=;
+  b=RyR27R6vAfU1rEVxyhc2o8dY7PjVDNgRQGCQEwzlzQpBQ0xo+v5uCJLA
+   AmBWmA6xTNqg/C/Sk8GrEgPD0rCB8HKqdrXJmZGoDBK1/hh+xd8Dj1Te5
+   y3oyd0IEf3rc/5V5HLUQoOG3nL0QMAtC0djCtYs9ow+PaKZrHncljFvpG
+   s=;
+IronPort-SDR: 8r5hak5Kz1fsznw7yuBgqacSbqZl8udM/jhd9z9ldG/EiyPoDaGa4ShDaGXOQ1PIH4bGsctoxp
+ AdHite84RWJg==
 X-IronPort-AV: E=Sophos;i="5.73,373,1583193600"; 
-   d="scan'208";a="30835695"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1a-821c648d.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 10 May 2020 01:48:20 +0000
-Received: from EX13MTAUWA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1a-821c648d.us-east-1.amazon.com (Postfix) with ESMTPS id 5290BA2368;
-        Sun, 10 May 2020 01:48:17 +0000 (UTC)
-Received: from EX13D01UWA001.ant.amazon.com (10.43.160.60) by
- EX13MTAUWA001.ant.amazon.com (10.43.160.118) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Sun, 10 May 2020 01:48:16 +0000
-Received: from EX13MTAUWC001.ant.amazon.com (10.43.162.135) by
- EX13d01UWA001.ant.amazon.com (10.43.160.60) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Sun, 10 May 2020 01:48:16 +0000
-Received: from localhost (10.85.6.121) by mail-relay.amazon.com
- (10.43.162.232) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sun, 10 May 2020 01:48:15 +0000
+   d="scan'208";a="43724244"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1e-17c49630.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 10 May 2020 01:48:42 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-1e-17c49630.us-east-1.amazon.com (Postfix) with ESMTPS id 1D411A2372;
+        Sun, 10 May 2020 01:48:38 +0000 (UTC)
+Received: from EX13D01UWB004.ant.amazon.com (10.43.161.157) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Sun, 10 May 2020 01:48:18 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (10.43.61.82) by
+ EX13d01UWB004.ant.amazon.com (10.43.161.157) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Sun, 10 May 2020 01:48:18 +0000
+Received: from localhost (10.85.6.121) by mail-relay.amazon.com (10.43.61.243)
+ with Microsoft SMTP Server id 15.0.1497.2 via Frontend Transport; Sun, 10 May
+ 2020 01:48:17 +0000
 From:   Balbir Singh <sblbir@amazon.com>
 To:     <tglx@linutronix.de>, <linux-kernel@vger.kernel.org>
 CC:     <jpoimboe@redhat.com>, <tony.luck@intel.com>,
         <keescook@chromium.org>, <benh@kernel.crashing.org>,
         <x86@kernel.org>, <dave.hansen@intel.com>,
         <thomas.lendacky@amd.com>, Balbir Singh <sblbir@amazon.com>
-Subject: [PATCH v6 3/6] arch/x86/mm: Refactor cond_ibpb() to support other use cases
-Date:   Sun, 10 May 2020 11:48:00 +1000
-Message-ID: <20200510014803.12190-4-sblbir@amazon.com>
+Subject: [PATCH v6 4/6] arch/x86/kvm: Refactor L1D flushing
+Date:   Sun, 10 May 2020 11:48:01 +1000
+Message-ID: <20200510014803.12190-5-sblbir@amazon.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200510014803.12190-1-sblbir@amazon.com>
 References: <20200510014803.12190-1-sblbir@amazon.com>
@@ -59,146 +59,221 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cond_ibpb() has the necessary bits required to track the
-previous mm in switch_mm_irqs_off(). This can be reused for
-other use cases like L1D flushing (on context switch out).
+Move out the initialization function to l1d_flush_init_once()
+so that it can be reused for subsequent patches. The side-effect
+of this patch is that the memory allocated for l1d flush pages
+is no longer freed up and the memory allocated once is shared
+amongst callers.
+
+l1d_flush_sw/hw() are now abstracted under arch_l1d_flush().
+vmx_l1d_flush_mutex however continues to exist as it also used
+from other code paths.
 
 Suggested-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Balbir Singh <sblbir@amazon.com>
 ---
- arch/x86/include/asm/tlbflush.h |  2 +-
- arch/x86/mm/tlb.c               | 43 +++++++++++++++++----------------
- 2 files changed, 23 insertions(+), 22 deletions(-)
+ arch/x86/include/asm/cacheflush.h | 12 +++---
+ arch/x86/kernel/l1d_flush.c       | 64 +++++++++++++++++++++++--------
+ arch/x86/kvm/vmx/vmx.c            | 20 ++--------
+ 3 files changed, 57 insertions(+), 39 deletions(-)
 
-diff --git a/arch/x86/include/asm/tlbflush.h b/arch/x86/include/asm/tlbflush.h
-index 8c87a2e0b660..a927d40664df 100644
---- a/arch/x86/include/asm/tlbflush.h
-+++ b/arch/x86/include/asm/tlbflush.h
-@@ -83,7 +83,7 @@ struct tlb_state {
- 	/* Last user mm for optimizing IBPB */
- 	union {
- 		struct mm_struct	*last_user_mm;
--		unsigned long		last_user_mm_ibpb;
-+		unsigned long		last_user_mm_spec;
- 	};
+diff --git a/arch/x86/include/asm/cacheflush.h b/arch/x86/include/asm/cacheflush.h
+index 21cc3b28fa63..851d8f1ab827 100644
+--- a/arch/x86/include/asm/cacheflush.h
++++ b/arch/x86/include/asm/cacheflush.h
+@@ -7,11 +7,13 @@
+ #include <asm/special_insns.h>
  
- 	u16 loaded_mm_asid;
-diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-index cf81902e6992..10056b8d8f01 100644
---- a/arch/x86/mm/tlb.c
-+++ b/arch/x86/mm/tlb.c
-@@ -43,10 +43,11 @@
-  */
- 
- /*
-- * Use bit 0 to mangle the TIF_SPEC_IB state into the mm pointer which is
-- * stored in cpu_tlb_state.last_user_mm_ibpb.
-+ * Bits to mangle the TIF_SPEC_IB state into the mm pointer which is
-+ * stored in cpu_tlb_state.last_user_mm_spec.
-  */
- #define LAST_USER_MM_IBPB	0x1UL
-+#define LAST_USER_MM_SPEC_MASK	(LAST_USER_MM_IBPB)
- 
- /*
-  * The x86 feature is called PCID (Process Context IDentifier). It is similar
-@@ -345,19 +346,24 @@ static void sync_current_stack_to_mm(struct mm_struct *mm)
- 	}
- }
- 
--static inline unsigned long mm_mangle_tif_spec_ib(struct task_struct *next)
-+static inline unsigned long mm_mangle_tif_spec_bits(struct task_struct *next)
- {
- 	unsigned long next_tif = task_thread_info(next)->flags;
--	unsigned long ibpb = (next_tif >> TIF_SPEC_IB) & LAST_USER_MM_IBPB;
-+	unsigned long spec_bits = (next_tif >> TIF_SPEC_IB) & LAST_USER_MM_SPEC_MASK;
- 
--	return (unsigned long)next->mm | ibpb;
-+	return (unsigned long)next->mm | spec_bits;
- }
- 
--static void cond_ibpb(struct task_struct *next)
-+static void cond_mitigation(struct task_struct *next)
- {
-+	unsigned long prev_mm, next_mm;
+ #define L1D_CACHE_ORDER 4
 +
- 	if (!next || !next->mm)
- 		return;
- 
-+	next_mm = mm_mangle_tif_spec_bits(next);
-+	prev_mm = this_cpu_read(cpu_tlbstate.last_user_mm_spec);
++enum l1d_flush_options {
++	L1D_FLUSH_POPULATE_TLB = 0x1,
++};
 +
+ void clflush_cache_range(void *addr, unsigned int size);
+-void l1d_flush_populate_tlb(void *l1d_flush_pages);
+-void *l1d_flush_alloc_pages(void);
+-void l1d_flush_cleanup_pages(void *l1d_flush_pages);
+-void l1d_flush_sw(void *l1d_flush_pages);
+-int l1d_flush_hw(void);
++int l1d_flush_init_once(void);
++void arch_l1d_flush(enum l1d_flush_options options);
+ 
+ #endif /* _ASM_X86_CACHEFLUSH_H */
+diff --git a/arch/x86/kernel/l1d_flush.c b/arch/x86/kernel/l1d_flush.c
+index 5871794f890d..ad66e5fe1565 100644
+--- a/arch/x86/kernel/l1d_flush.c
++++ b/arch/x86/kernel/l1d_flush.c
+@@ -1,10 +1,10 @@
+ #include <linux/mm.h>
+ #include <asm/cacheflush.h>
+ 
+-void *l1d_flush_alloc_pages(void)
++static void *l1d_flush_alloc_pages(void)
+ {
+ 	struct page *page;
+-	void *l1d_flush_pages = NULL;
++	void *flush_pages = NULL;
+ 	int i;
+ 
  	/*
- 	 * Both, the conditional and the always IBPB mode use the mm
- 	 * pointer to avoid the IBPB when switching between tasks of the
-@@ -368,8 +374,6 @@ static void cond_ibpb(struct task_struct *next)
- 	 * exposed data is not really interesting.
+@@ -14,7 +14,7 @@ void *l1d_flush_alloc_pages(void)
+ 	page = alloc_pages(GFP_KERNEL, L1D_CACHE_ORDER);
+ 	if (!page)
+ 		return NULL;
+-	l1d_flush_pages = page_address(page);
++	flush_pages = page_address(page);
+ 
+ 	/*
+ 	 * Initialize each page with a different pattern in
+@@ -22,25 +22,19 @@ void *l1d_flush_alloc_pages(void)
+ 	 * virtualization case.
  	 */
- 	if (static_branch_likely(&switch_mm_cond_ibpb)) {
--		unsigned long prev_mm, next_mm;
+ 	for (i = 0; i < 1u << L1D_CACHE_ORDER; ++i) {
+-		memset(l1d_flush_pages + i * PAGE_SIZE, i + 1,
++		memset(flush_pages + i * PAGE_SIZE, i + 1,
+ 				PAGE_SIZE);
+ 	}
+-	return l1d_flush_pages;
++	return flush_pages;
+ }
+-EXPORT_SYMBOL_GPL(l1d_flush_alloc_pages);
+ 
+-void l1d_flush_cleanup_pages(void *l1d_flush_pages)
+-{
+-	free_pages((unsigned long)l1d_flush_pages, L1D_CACHE_ORDER);
+-}
+-EXPORT_SYMBOL_GPL(l1d_flush_cleanup_pages);
+ 
+ /*
+  * Not all users of l1d flush would want to populate the TLB first
+  * split out the function so that callers can optionally flush the L1D
+  * cache via sw without prefetching the TLB.
+  */
+-void l1d_flush_populate_tlb(void *l1d_flush_pages)
++static void l1d_flush_populate_tlb(void *l1d_flush_pages)
+ {
+ 	int size = PAGE_SIZE << L1D_CACHE_ORDER;
+ 
+@@ -58,9 +52,8 @@ void l1d_flush_populate_tlb(void *l1d_flush_pages)
+ 		    [size] "r" (size)
+ 		: "eax", "ebx", "ecx", "edx");
+ }
+-EXPORT_SYMBOL_GPL(l1d_flush_populate_tlb);
+ 
+-int l1d_flush_hw(void)
++static int l1d_flush_hw(void)
+ {
+ 	if (static_cpu_has(X86_FEATURE_FLUSH_L1D)) {
+ 		wrmsrl(MSR_IA32_FLUSH_CMD, L1D_FLUSH);
+@@ -68,9 +61,8 @@ int l1d_flush_hw(void)
+ 	}
+ 	return -ENOTSUPP;
+ }
+-EXPORT_SYMBOL_GPL(l1d_flush_hw);
+ 
+-void l1d_flush_sw(void *l1d_flush_pages)
++static void l1d_flush_sw(void *l1d_flush_pages)
+ {
+ 	int size = PAGE_SIZE << L1D_CACHE_ORDER;
+ 
+@@ -87,4 +79,42 @@ void l1d_flush_sw(void *l1d_flush_pages)
+ 			[size] "r" (size)
+ 			: "eax", "ecx");
+ }
+-EXPORT_SYMBOL_GPL(l1d_flush_sw);
++
++static void *l1d_flush_pages;
++static DEFINE_MUTEX(l1d_flush_mutex);
++
++/*
++ * Initialize and setup L1D flush once, each caller will reuse the
++ * l1d_flush_pages for flushing, no per CPU allocations or NUMA aware
++ * allocations at the moment.
++ */
++int l1d_flush_init_once(void)
++{
++	int ret = 0;
++
++	if (boot_cpu_data.x86_vendor != X86_VENDOR_INTEL)
++		return -ENOTSUPP;
++
++	if (static_cpu_has(X86_FEATURE_FLUSH_L1D) || l1d_flush_pages)
++		return ret;
++
++	mutex_lock(&l1d_flush_mutex);
++	if (!l1d_flush_pages)
++		l1d_flush_pages = l1d_flush_alloc_pages();
++	ret = l1d_flush_pages ? 0 : -ENOMEM;
++	mutex_unlock(&l1d_flush_mutex);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(l1d_flush_init_once);
++
++void arch_l1d_flush(enum l1d_flush_options options)
++{
++	if (!l1d_flush_hw())
++		return;
++
++	if (options & L1D_FLUSH_POPULATE_TLB)
++		l1d_flush_populate_tlb(l1d_flush_pages);
++
++	l1d_flush_sw(l1d_flush_pages);
++}
++EXPORT_SYMBOL_GPL(arch_l1d_flush);
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 4f95927aad4c..d56702578588 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -203,8 +203,6 @@ static const struct {
+ 	[VMENTER_L1D_FLUSH_NOT_REQUIRED] = {"not required", false},
+ };
+ 
+-static void *vmx_l1d_flush_pages;
 -
- 		/*
- 		 * This is a bit more complex than the always mode because
- 		 * it has to handle two cases:
-@@ -399,20 +403,14 @@ static void cond_ibpb(struct task_struct *next)
- 		 * Optimize this with reasonably small overhead for the
- 		 * above cases. Mangle the TIF_SPEC_IB bit into the mm
- 		 * pointer of the incoming task which is stored in
--		 * cpu_tlbstate.last_user_mm_ibpb for comparison.
--		 */
--		next_mm = mm_mangle_tif_spec_ib(next);
--		prev_mm = this_cpu_read(cpu_tlbstate.last_user_mm_ibpb);
--
--		/*
-+		 * cpu_tlbstate.last_user_mm_spec for comparison.
-+		 *
- 		 * Issue IBPB only if the mm's are different and one or
- 		 * both have the IBPB bit set.
- 		 */
- 		if (next_mm != prev_mm &&
- 		    (next_mm | prev_mm) & LAST_USER_MM_IBPB)
- 			indirect_branch_prediction_barrier();
--
--		this_cpu_write(cpu_tlbstate.last_user_mm_ibpb, next_mm);
+ static int vmx_setup_l1d_flush(enum vmx_l1d_flush_state l1tf)
+ {
+ 	if (!boot_cpu_has_bug(X86_BUG_L1TF)) {
+@@ -247,12 +245,9 @@ static int vmx_setup_l1d_flush(enum vmx_l1d_flush_state l1tf)
+ 		l1tf = VMENTER_L1D_FLUSH_ALWAYS;
  	}
  
- 	if (static_branch_unlikely(&switch_mm_always_ibpb)) {
-@@ -421,11 +419,12 @@ static void cond_ibpb(struct task_struct *next)
- 		 * different context than the user space task which ran
- 		 * last on this CPU.
- 		 */
--		if (this_cpu_read(cpu_tlbstate.last_user_mm) != next->mm) {
-+		if ((prev_mm & ~LAST_USER_MM_SPEC_MASK) !=
-+					(unsigned long)next->mm)
- 			indirect_branch_prediction_barrier();
--			this_cpu_write(cpu_tlbstate.last_user_mm, next->mm);
--		}
+-	if (l1tf != VMENTER_L1D_FLUSH_NEVER && !vmx_l1d_flush_pages &&
+-	    !boot_cpu_has(X86_FEATURE_FLUSH_L1D)) {
+-		vmx_l1d_flush_pages = l1d_flush_alloc_pages();
+-		if (!vmx_l1d_flush_pages)
++	if (l1tf != VMENTER_L1D_FLUSH_NEVER)
++		if (l1d_flush_init_once())
+ 			return -ENOMEM;
+-	}
+ 
+ 	l1tf_vmx_mitigation = l1tf;
+ 
+@@ -6058,12 +6053,7 @@ static void vmx_l1d_flush(struct kvm_vcpu *vcpu)
  	}
-+
-+	this_cpu_write(cpu_tlbstate.last_user_mm_spec, next_mm);
+ 
+ 	vcpu->stat.l1d_flush++;
+-
+-	if (!l1d_flush_hw())
+-		return;
+-
+-	l1d_flush_populate_tlb(vmx_l1d_flush_pages);
+-	l1d_flush_sw(vmx_l1d_flush_pages);
++	arch_l1d_flush(L1D_FLUSH_POPULATE_TLB);
  }
  
- #ifdef CONFIG_PERF_EVENTS
-@@ -550,8 +549,10 @@ void switch_mm_irqs_off(struct mm_struct *prev, struct mm_struct *next,
- 		 * Avoid user/user BTB poisoning by flushing the branch
- 		 * predictor when switching between processes. This stops
- 		 * one process from doing Spectre-v2 attacks on another.
-+		 * The hook can also be used for mitigations that rely
-+		 * on switch_mm for hooks.
- 		 */
--		cond_ibpb(tsk);
-+		cond_mitigation(tsk);
+ static void update_cr8_intercept(struct kvm_vcpu *vcpu, int tpr, int irr)
+@@ -8056,10 +8046,6 @@ static struct kvm_x86_init_ops vmx_init_ops __initdata = {
  
- 		if (IS_ENABLED(CONFIG_VMAP_STACK)) {
- 			/*
-@@ -677,7 +678,7 @@ void initialize_tlbstate_and_flush(void)
- 	write_cr3(build_cr3(mm->pgd, 0));
- 
- 	/* Reinitialize tlbstate. */
--	this_cpu_write(cpu_tlbstate.last_user_mm_ibpb, LAST_USER_MM_IBPB);
-+	this_cpu_write(cpu_tlbstate.last_user_mm_spec, LAST_USER_MM_IBPB);
- 	this_cpu_write(cpu_tlbstate.loaded_mm_asid, 0);
- 	this_cpu_write(cpu_tlbstate.next_asid, 1);
- 	this_cpu_write(cpu_tlbstate.ctxs[0].ctx_id, mm->context.ctx_id);
+ static void vmx_cleanup_l1d_flush(void)
+ {
+-	if (vmx_l1d_flush_pages) {
+-		l1d_flush_cleanup_pages(vmx_l1d_flush_pages);
+-		vmx_l1d_flush_pages = NULL;
+-	}
+ 	/* Restore state so sysfs ignores VMX */
+ 	l1tf_vmx_mitigation = VMENTER_L1D_FLUSH_AUTO;
+ }
 -- 
 2.17.1
 
