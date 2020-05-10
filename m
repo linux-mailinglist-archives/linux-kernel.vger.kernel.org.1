@@ -2,117 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F7DF1CCA18
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 12:13:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 767601CCA1B
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 12:13:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728464AbgEJKNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 May 2020 06:13:19 -0400
-Received: from mailomta7-sa.btinternet.com ([213.120.69.13]:41164 "EHLO
-        sa-prd-fep-040.btinternet.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725839AbgEJKNT (ORCPT
+        id S1728849AbgEJKNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 May 2020 06:13:39 -0400
+Received: from mail.kocurkovo.cz ([185.8.236.170]:47500 "EHLO
+        mail.kocurkovo.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725839AbgEJKNj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 May 2020 06:13:19 -0400
-Received: from sa-prd-rgout-003.btmx-prd.synchronoss.net ([10.2.38.6])
-          by sa-prd-fep-040.btinternet.com with ESMTP
-          id <20200510101316.TBCT5900.sa-prd-fep-040.btinternet.com@sa-prd-rgout-003.btmx-prd.synchronoss.net>;
-          Sun, 10 May 2020 11:13:16 +0100
-Authentication-Results: btinternet.com;
-    auth=pass (LOGIN) smtp.auth=j.oldman998@btinternet.com
-X-Originating-IP: [31.53.141.224]
-X-OWM-Source-IP: 31.53.141.224 (GB)
-X-OWM-Env-Sender: j.oldman998@btinternet.com
-X-VadeSecure-score: verdict=clean score=0/300, class=clean
-X-RazorGate-Vade: gggruggvucftvghtrhhoucdtuddrgeduhedrkeekgddvjecutefuodetggdotefrodftvfcurfhrohhfihhlvgemuceutffkvffkuffjvffgnffgvefqofdpqfgfvfenuceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofestddtredtredttdenucfhrhhomheplfhohhhnucfqlhgumhgrnhcuoehjohhhnhdrohhlughmrghnsehpohhlvghhihhllhdrtghordhukheqnecuggftrfgrthhtvghrnhepgeeftdfhfeeuiefhgfekfeethedutddtfeduteevleevfedvfefhjeeijefhgffgnecukfhppeefuddrheefrddugedurddvvdegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehhvghlohephhgvnhhrhidrhhhomhgvpdhinhgvthepfedurdehfedrudeguddrvddvgedpmhgrihhlfhhrohhmpeeojhhohhhnrdholhgumhgrnhesphholhgvhhhilhhlrdgtohdruhhkqedprhgtphhtthhopeeosggtmhdqkhgvrhhnvghlqdhfvggvuggsrggtkhdqlhhishhtsegsrhhorggutghomhdrtghomheqpdhrtghpthhtohepoeguvghvvghlsegurhhivhgvrhguvghvrdhoshhuohhslhdrohhrgheqpdhrtghpthhtohepoehgrhgvghhkhheslhhinhhugihfohhunhgurghtihhonhdrohhrgheqpdhrtghpthhtohepoehjohhhnhdrohhlughmrghnsehpohhlvghhihhllhdrtghordhukheqpdhrtghpthhtohepoehlihhnuhigqdgrrhhmqdhkvghrnhgvlheslhhishhtshdr
-        ihhnfhhrrgguvggrugdrohhrgheqpdhrtghpthhtohepoehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgheqpdhrtghpthhtohepoehlihhnuhigqdhrphhiqdhkvghrnhgvlheslhhishhtshdrihhnfhhrrgguvggrugdrohhrgheqpdhrtghpthhtohepoehnshgrvghniihjuhhlihgvnhhnvgesshhushgvrdguvgeq
-X-RazorGate-Vade-Verdict: clean 0
-X-RazorGate-Vade-Classification: clean
-Received: from henry.home (31.53.141.224) by sa-prd-rgout-003.btmx-prd.synchronoss.net (5.8.340) (authenticated as j.oldman998@btinternet.com)
-        id 5E3A268A0FE173CE; Sun, 10 May 2020 11:13:16 +0100
-From:   John Oldman <john.oldman@polehill.co.uk>
-To:     nsaenzjulienne@suse.de
-Cc:     gregkh@linuxfoundation.org, bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org,
-        John Oldman <john.oldman@polehill.co.uk>
-Subject: [PATCH V3] staging: vc04_services: vchiq_connected.c: Block comment alignment
-Date:   Sun, 10 May 2020 11:13:08 +0100
-Message-Id: <20200510101308.10451-1-john.oldman@polehill.co.uk>
-X-Mailer: git-send-email 2.17.1
+        Sun, 10 May 2020 06:13:39 -0400
+Received: by mail.kocurkovo.cz (Postfix, from userid 1000)
+        id 4BB873EC5; Sun, 10 May 2020 12:13:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.kocurkovo.cz 4BB873EC5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kocurkovo.cz;
+        s=mail; t=1589105616;
+        bh=E0i6v1PLlG/Dpi68kRCTMA5zGexAmRdwWxCOCY2+Z6k=;
+        h=From:To:Cc:Subject:Date:From;
+        b=uJSNVAOsVrUbMTQN6cY0sZqEwH3GH+7nEhUHe6wSEuoXRgHZFDq0lpqOZsSVpQbCp
+         ss9pFyUuFBOwCI3u5dznvHAX6dmZrRahZusFP1SNlBMs/jIEha6kzSDxt44xt+qFFY
+         lBWTDK6wg7w8Rb/3sLOL/UMz/k5ugwmtlBL8chVw=
+From:   Matej Dujava <mdujava@kocurkovo.cz>
+To:     Forest Bond <forest@alittletooquiet.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devel@driverdev.osuosl.org
+Cc:     Quentin Deslandes <quentin.deslandes@itdev.co.uk>,
+        linux-kernel@vger.kernel.org, Matej Dujava <mdujava@kocurkovo.cz>
+Subject: [PATCH v2 0/2] staging: vt6656: vt6655: cleaning Makefile
+Date:   Sun, 10 May 2020 12:13:33 +0200
+Message-Id: <1589105615-22271-1-git-send-email-mdujava@kocurkovo.cz>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Coding style issue
-This patch clears the checkpatch.pl "Block comments should align the * on each line" warning.
+This patchset will remove unused definitions of C Macros, reorder variable definition and increase indentation to match visual block.
 
-Signed-off-by: John Oldman <john.oldman@polehill.co.uk>
 ---
-v1: Initial attempt.
-v2: Resubmitted with shorter comment line, as suggested by Greg KH.
-v3: Resubmitted with descriptiuon text moved into the comment area.
+v2: spliting original patch to 2 separate patches
 
- .../interface/vchiq_arm/vchiq_connected.c     | 32 +++++++++----------
- 1 file changed, 16 insertions(+), 16 deletions(-)
+Matej Dujava (2):
+  staging: vt6656: vt6655: clean Makefiles
+  staging: vt6655: vt6656: change order of makefile variable definitions
 
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_connected.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_connected.c
-index 1640906e3929..993535bbc479 100644
---- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_connected.c
-+++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_connected.c
-@@ -15,10 +15,10 @@ static   int                        g_once_init;
- static   struct mutex               g_connected_mutex;
- 
- /****************************************************************************
--*
--* Function to initialize our lock.
--*
--***************************************************************************/
-+ *
-+ * Function to initialize our lock.
-+ *
-+ ***************************************************************************/
- 
- static void connected_init(void)
- {
-@@ -29,13 +29,13 @@ static void connected_init(void)
- }
- 
- /****************************************************************************
--*
--* This function is used to defer initialization until the vchiq stack is
--* initialized. If the stack is already initialized, then the callback will
--* be made immediately, otherwise it will be deferred until
--* vchiq_call_connected_callbacks is called.
--*
--***************************************************************************/
-+ *
-+ * This function is used to defer initialization until the vchiq stack is
-+ * initialized. If the stack is already initialized, then the callback will
-+ * be made immediately, otherwise it will be deferred until
-+ * vchiq_call_connected_callbacks is called.
-+ *
-+ ***************************************************************************/
- 
- void vchiq_add_connected_callback(VCHIQ_CONNECTED_CALLBACK_T callback)
- {
-@@ -64,11 +64,11 @@ void vchiq_add_connected_callback(VCHIQ_CONNECTED_CALLBACK_T callback)
- }
- 
- /****************************************************************************
--*
--* This function is called by the vchiq stack once it has been connected to
--* the videocore and clients can start to use the stack.
--*
--***************************************************************************/
-+ *
-+ * This function is called by the vchiq stack once it has been connected to
-+ * the videocore and clients can start to use the stack.
-+ *
-+ ***************************************************************************/
- 
- void vchiq_call_connected_callbacks(void)
- {
--- 
-2.17.1
+ drivers/staging/vt6655/Makefile      | 27 ++++++++++++---------------
+ drivers/staging/vt6655/device_main.c |  1 -
+ drivers/staging/vt6656/Makefile      |  7 ++-----
+ 3 files changed, 14 insertions(+), 21 deletions(-)
+
+--
+2.26.2
 
