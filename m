@@ -2,178 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E4A61CCDAF
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 22:19:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC94B1CCDB4
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 May 2020 22:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729185AbgEJURp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 May 2020 16:17:45 -0400
-Received: from mga01.intel.com ([192.55.52.88]:35954 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728468AbgEJURp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 May 2020 16:17:45 -0400
-IronPort-SDR: x3gaxqufZR9jPgNn7qaM5fWluB8A9Fo5ZpfXUHtH25LlNPjtpPUdhliiE4YfXtEPFiRezTLrCa
- 8JT6sFmmrARA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2020 13:17:45 -0700
-IronPort-SDR: gNML2oFOSPG5DE7Pxdk6EATh9VPlC5eRDPSyc6prKIPeqkuiaHltQFxA9Uzq+6orVppUoNxZ+c
- aWkiDSTF6zFA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,377,1583222400"; 
-   d="scan'208";a="408701289"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 10 May 2020 13:17:43 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1jXsOM-000J7k-Ti; Mon, 11 May 2020 04:17:42 +0800
-Date:   Mon, 11 May 2020 04:17:09 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 506c28aae936a300b6eb16e4fe8472755b10ae44
-Message-ID: <5eb86145.j+C+piZbINoYXdkG%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1729386AbgEJUYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 May 2020 16:24:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729356AbgEJUYq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 May 2020 16:24:46 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00A33C061A0E
+        for <linux-kernel@vger.kernel.org>; Sun, 10 May 2020 13:24:45 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id k7so1771477pjs.5
+        for <linux-kernel@vger.kernel.org>; Sun, 10 May 2020 13:24:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jMnvmwdf0lD4TWDxpQeCiDqgUg/BNY/6yd0J6c0RUaw=;
+        b=jxnIlVzjg4LuX0x4ZxxB1JEkhMutYk9n+d2bj8maSEKQYCpP8QW0AvSZM2+MydWo17
+         hFg6spS4Y8qyZldiFLK7H6lD7DqCwh+ptn93hbbWPLowJU5q3HpQS2XQ7NI8YXkdrfmC
+         XKExDDq/gQbLg5YH+GX/v6KMd7og+GDHK5M8k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jMnvmwdf0lD4TWDxpQeCiDqgUg/BNY/6yd0J6c0RUaw=;
+        b=RmJE6OtlUTV0kBqQQr4arS0F9qo/e9w2WFF0e5tRZ/flWCeZF0N+S+ffENYMO9JJlX
+         vuYl7q74DRk9WKMWdPEI7Jicft0Tc1QQRulWrfIu1eD39C63SVEicoVi9KrzYOMF/Ntf
+         Yeon5gGCtM649bIE+4/OzSjs6hqxmOJKphy/ZnND83JRQAElbDuxM1FkimHoCytONocx
+         l5TmftfbtpY9VSjLaFnNIEaxzx4YrA47AFdjkB1o3zHSZKHp/jJidbZGiYM3t9cvHYJs
+         TuyeKCgFvCY0yKPq1fEp48Lbw3HxhwaBqr6Xqb5SmrUQxxTuwftdG5ddSft6V5X6WnD7
+         NHyA==
+X-Gm-Message-State: AGi0PubqeHKHzC2ZwdF3x6PgaORsAvCsJoBWlldzrXMaxMGUwuUiHBdJ
+        hXIOzhxdKK2nbUtPoBCKkNT3jQ==
+X-Google-Smtp-Source: APiQypLvN7WjM+iFu647e6o7NyvuJP0SZANsYUCqdd2Q7tf4QMuUe/X50yR6CDzAlEROB6zdXlLglg==
+X-Received: by 2002:a17:902:9b8e:: with SMTP id y14mr12182467plp.109.1589142285531;
+        Sun, 10 May 2020 13:24:45 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id gm3sm7871240pjb.49.2020.05.10.13.24.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 May 2020 13:24:41 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     WeiXiong Liao <liaoweixiong@allwinnertech.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Rob Herring <robh@kernel.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org
+Subject: [PATCH v7 00/18] pstore: mtd: support crash log to block and mtd device
+Date:   Sun, 10 May 2020 13:24:18 -0700
+Message-Id: <20200510202436.63222-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  master
-branch HEAD: 506c28aae936a300b6eb16e4fe8472755b10ae44  Merge branch 'core/core'
+Hi!
 
-elapsed time: 705m
+Well, I guess I spoke too soon. :) Here is v7. Hopefully this is
+it. WeiXiong, can you test this and make sure you're happy with the
+results?
 
-configs tested: 119
-configs skipped: 1
+Take care!
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+-Kees
 
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                               allnoconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-sparc                            allyesconfig
-m68k                             allyesconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                                defconfig
-i386                              debian-10.3
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                              allnoconfig
-m68k                           sun3_defconfig
-m68k                                defconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                             allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                              allyesconfig
-c6x                               allnoconfig
-openrisc                         allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
-arc                                 defconfig
-arc                              allyesconfig
-microblaze                       allyesconfig
-sh                               allmodconfig
-sh                                allnoconfig
-microblaze                        allnoconfig
-mips                             allyesconfig
-mips                              allnoconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                              defconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          rhel-kconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a006-20200510
-i386                 randconfig-a005-20200510
-i386                 randconfig-a003-20200510
-i386                 randconfig-a001-20200510
-i386                 randconfig-a004-20200510
-i386                 randconfig-a002-20200510
-i386                 randconfig-a006-20200511
-i386                 randconfig-a005-20200511
-i386                 randconfig-a003-20200511
-i386                 randconfig-a001-20200511
-i386                 randconfig-a004-20200511
-i386                 randconfig-a002-20200511
-x86_64               randconfig-a005-20200510
-x86_64               randconfig-a003-20200510
-x86_64               randconfig-a001-20200510
-x86_64               randconfig-a005-20200511
-x86_64               randconfig-a003-20200511
-x86_64               randconfig-a006-20200511
-x86_64               randconfig-a004-20200511
-x86_64               randconfig-a001-20200511
-x86_64               randconfig-a002-20200511
-x86_64               randconfig-a016-20200510
-x86_64               randconfig-a012-20200510
-x86_64               randconfig-a015-20200510
-x86_64               randconfig-a013-20200510
-x86_64               randconfig-a014-20200510
-x86_64               randconfig-a011-20200510
-i386                 randconfig-a012-20200510
-i386                 randconfig-a016-20200510
-i386                 randconfig-a014-20200510
-i386                 randconfig-a011-20200510
-i386                 randconfig-a013-20200510
-i386                 randconfig-a015-20200510
-i386                 randconfig-a012-20200511
-i386                 randconfig-a016-20200511
-i386                 randconfig-a014-20200511
-i386                 randconfig-a011-20200511
-i386                 randconfig-a013-20200511
-i386                 randconfig-a015-20200511
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                                defconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                                  kexec
-x86_64                              fedora-25
+v7:
+- more renamings in the exported APIs and structs
+- fix mtd build
+- replace psblk_blkdev_info with passing in a struct to fill
+- consolidate bdev opening/checking
+- rename psblk_device -> pstore_device_info
+- kerndoc for pstore_blk_get_config
+- fix hunks in wrong patch
+- add missing "static"s for local functions (0day)
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+v6: https://lore.kernel.org/lkml/20200509234103.46544-1-keescook@chromium.org/
+v5: https://lore.kernel.org/lkml/1589022854-19821-1-git-send-email-liaoweixiong@allwinnertech.com/
+v4: https://lore.kernel.org/lkml/20200508064004.57898-1-keescook@chromium.org/
+v3: https://lore.kernel.org/lkml/1585126506-18635-1-git-send-email-liaoweixiong@allwinnertech.com/
+v2: https://lore.kernel.org/lkml/1581078355-19647-1-git-send-email-liaoweixiong@allwinnertech.com/
+v1: https://lore.kernel.org/lkml/1579482233-2672-1-git-send-email-liaoweixiong@allwinnertech.com/
+
+
+Kees Cook (8):
+  pstore/ram: Move dump_oops to end of module_param list
+  pstore/platform: Switch pstore_info::name to const
+  pstore/platform: Move module params after declarations
+  pstore/platform: Use backend name for console registration
+  pstore/ram: Refactor ftrace buffer merging
+  pstore/ftrace: Provide ftrace log merging routine
+  printk: Introduce kmsg_dump_reason_str()
+  pstore/blk: Introduce "best_effort" mode
+
+WeiXiong Liao (10):
+  pstore/zone: Introduce common layer to manage storage zones
+  pstore/blk: Introduce backend for block devices
+  pstore/zone,blk: Add support for pmsg frontend
+  pstore/zone,blk: Add console frontend support
+  pstore/zone,blk: Add ftrace frontend support
+  Documentation: Add details for pstore/blk
+  pstore/zone: Provide way to skip "broken" zone for MTD devices
+  pstore/blk: Provide way to query pstore configuration
+  pstore/blk: Support non-block storage devices
+  mtd: Support kmsg dumper based on pstore/blk
+
+ Documentation/admin-guide/pstore-blk.rst |  243 ++++
+ MAINTAINERS                              |    1 +
+ drivers/mtd/Kconfig                      |   10 +
+ drivers/mtd/Makefile                     |    1 +
+ drivers/mtd/mtdpstore.c                  |  564 +++++++++
+ fs/pstore/Kconfig                        |  109 ++
+ fs/pstore/Makefile                       |    6 +
+ fs/pstore/blk.c                          |  520 ++++++++
+ fs/pstore/ftrace.c                       |   54 +
+ fs/pstore/internal.h                     |    9 +
+ fs/pstore/platform.c                     |   40 +-
+ fs/pstore/ram.c                          |   70 +-
+ fs/pstore/zone.c                         | 1463 ++++++++++++++++++++++
+ include/linux/kmsg_dump.h                |    7 +
+ include/linux/pstore.h                   |    2 +-
+ include/linux/pstore_blk.h               |  118 ++
+ include/linux/pstore_zone.h              |   60 +
+ kernel/printk/printk.c                   |   21 +
+ 18 files changed, 3210 insertions(+), 88 deletions(-)
+ create mode 100644 Documentation/admin-guide/pstore-blk.rst
+ create mode 100644 drivers/mtd/mtdpstore.c
+ create mode 100644 fs/pstore/blk.c
+ create mode 100644 fs/pstore/zone.c
+ create mode 100644 include/linux/pstore_blk.h
+ create mode 100644 include/linux/pstore_zone.h
+
+-- 
+2.20.1
+
