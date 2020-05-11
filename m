@@ -2,208 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 261821CE27C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 20:21:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 828981CE2CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 20:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731127AbgEKSV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 14:21:26 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:42805 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731032AbgEKSVW (ORCPT
+        id S1731124AbgEKSac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 14:30:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729905AbgEKSac (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 14:21:22 -0400
-Received: by mail-io1-f69.google.com with SMTP id c2so9214432iod.9
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 11:21:21 -0700 (PDT)
+        Mon, 11 May 2020 14:30:32 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A74EAC061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 11:30:31 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id d16so8846181edq.7
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 11:30:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xryJwG59JLB17PZEyr7DCd9/6LaHNOFAsde4B/bIMlo=;
+        b=g/MBnQ5L6r5hjAiqwK3Lokfo6oOGGuM5QvnhrybDQ8sLEIE9qu0oU9BD1e40bwbjAC
+         M+dhC4n2RQfKhcKsZNLukjmvWdhFWzFs4+nXX9dq4XhIt5ePh2P/IqRFgcbyzxa/All8
+         k52VX6HiUg8D6PfcVMkdAhelN3aqeQxt4UIbs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=CHOkFnrfNMfKG7b6Q4Npd24oP1fJe4QpB/xNqqVOEeY=;
-        b=HOt5c0+7x51MIKC0NaRpNe0tMdhtrYmGltX/XZSk1O3l/qGdwrDbvbnx6d7wzQL44I
-         UenVPBSKz31m4zFzCgIZpxhNDStmju1P4RVRAm3TCOM8NKYqecqeKNlcRW+61Bk292Dc
-         a2sjCxmKSu1hQRRrx74rwqgneJvWVlBE+n3HFE+zczquAIYsRcaSm/sXvNaA/CpTGeUW
-         nm8phYCKms2ROtsi8p6lsksaGAc+CMzlAFyI9BVPYM4f0PYPz+hJQB8Bbzi5UoEWeBa6
-         n8XXapgVdjCd6Ns0cJVvCTgthCBNsPXew4n9rZj5C+IhpnlbkxyIeG6jiolxFt97gFue
-         r6Aw==
-X-Gm-Message-State: AGi0PuYgJj/JQp0e4KRRBcUgE6ihZwkXm981tffQA8z23GExDPL5JWri
-        fTzXEOdvIcGuZU4SkYtrlvdKuLASg/ua87eWF8SdVN71OYll
-X-Google-Smtp-Source: APiQypJANE+T8nnZenndQy6vlFpGHn8hSZA1QXdsDb/mGt/aXgGztJl2ua8QNjF5t/eJxlkmZdfrfVObMupVvY1IvY4Fz6XDHuWh
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xryJwG59JLB17PZEyr7DCd9/6LaHNOFAsde4B/bIMlo=;
+        b=fYdknLbFWuMMXNj96oCYEvtBJUdIJOOHpJd8pXAkVJFXqhL8Vmt9OC8a3KlfIgB6qc
+         YIVxUz9a3tyGuyYmS2Zq4Ud7xgLNKTvWS9AMk2hSEjtEzeCVjshDoiqbJ5nu0W1Lvukt
+         CotuybGmOKjx4wft2Tp3ZkNwlGIQWBK6MLDyzMkEkxBi3A+5NMpb0nNCx1fl3WrHpjW6
+         gl1jfwAK8LjTyarbI1A2ePH5V9Z+pgqtZTe5YpyDnxTMuM6cm+Oib4M1BAj/u3tYMW/8
+         6x8Pq5ZO+CrJjbJ5wraYkgcbhV9s+dxLXDdaFfCxi9DmFhpXYFjdSuMASDiB1WrPVHIB
+         UOpg==
+X-Gm-Message-State: AGi0PuYxkOPJL6K+pyN38oWB+CXyZUYRGCE5yRo3TgIVQm+E1gS2MZNF
+        3TdlQf74c7uuaNcV/g36zUkyM2U2QWM=
+X-Google-Smtp-Source: APiQypLHUUGpJt9BHkMKa3OqnOfRmxbQIpX6fZ+QRNFwISKUxAvFOSP5yk6PURuT7Ul3APGr1CWe4g==
+X-Received: by 2002:a50:9e6a:: with SMTP id z97mr13974085ede.375.1589221830071;
+        Mon, 11 May 2020 11:30:30 -0700 (PDT)
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com. [209.85.221.53])
+        by smtp.gmail.com with ESMTPSA id k21sm1283608ejr.61.2020.05.11.11.30.29
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 May 2020 11:30:29 -0700 (PDT)
+Received: by mail-wr1-f53.google.com with SMTP id w7so12232043wre.13
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 11:30:29 -0700 (PDT)
+X-Received: by 2002:a2e:9a54:: with SMTP id k20mr11787437ljj.265.1589221464037;
+ Mon, 11 May 2020 11:24:24 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a02:c615:: with SMTP id i21mr6690238jan.30.1589221281346;
- Mon, 11 May 2020 11:21:21 -0700 (PDT)
-Date:   Mon, 11 May 2020 11:21:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f1b78f05a563695e@google.com>
-Subject: possible deadlock in sk_diag_fill (2)
-From:   syzbot <syzbot+c07a7e4d97298524f320@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, felipe@felipegasper.com,
-        gregkh@linuxfoundation.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
-Content-Type: text/plain; charset="UTF-8"
+References: <20200504230309.237398-1-ndesaulniers@google.com>
+ <CAKwvOdmspKUknbzDn9kY2jMgkFw=Ktvst0ZtwambDOfybqJGWw@mail.gmail.com> <CAHk-=wif=_ZomkWJAmQRCUAMHQ72V3NEQ-OteiPE56K7KoSjbQ@mail.gmail.com>
+In-Reply-To: <CAHk-=wif=_ZomkWJAmQRCUAMHQ72V3NEQ-OteiPE56K7KoSjbQ@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 11 May 2020 11:24:07 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whhCBvjXtRiFM2JEZ4XyBmuPprvdo5tpPVBqUhkRszxiQ@mail.gmail.com>
+Message-ID: <CAHk-=whhCBvjXtRiFM2JEZ4XyBmuPprvdo5tpPVBqUhkRszxiQ@mail.gmail.com>
+Subject: Re: [PATCH] x86: support i386 with Clang
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Dmitry Golovin <dima@golovin.in>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: multipart/mixed; boundary="000000000000d91fe305a563741a"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+--000000000000d91fe305a563741a
+Content-Type: text/plain; charset="UTF-8"
 
-syzbot found the following crash on:
+On Mon, May 11, 2020 at 11:12 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> Would using "__builtin_choose_expr()" be able to avoid this whole issue?
 
-HEAD commit:    e99332e7 gcc-10: mark more functions __init to avoid secti..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1557910c100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8a96cf498e199d8b
-dashboard link: https://syzkaller.appspot.com/bug?extid=c07a7e4d97298524f320
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-userspace arch: i386
+We actually have a fair amount of "pick expression based on size", so
+with a few helper macros we could make the code look better than the
+case statements too.
 
-Unfortunately, I don't have any reproducer for this crash yet.
+Something (ENTIRELY UNTESTED!) like the attached patch, perhaps?
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+c07a7e4d97298524f320@syzkaller.appspotmail.com
+NOTE! I only converted one single use to that "pick_size_xyz()" model.
+If this actually works for clang too, we could do the others.
 
-======================================================
-WARNING: possible circular locking dependency detected
-5.7.0-rc4-syzkaller #0 Not tainted
-------------------------------------------------------
-syz-executor.3/31514 is trying to acquire lock:
-ffff88806be19668 (&u->lock/1){+.+.}-{2:2}, at: sk_diag_dump_icons net/unix/diag.c:86 [inline]
-ffff88806be19668 (&u->lock/1){+.+.}-{2:2}, at: sk_diag_fill.isra.0+0x9d0/0x10e0 net/unix/diag.c:154
+I guess I should just test it, since I have that clang tree.
 
-but task is already holding lock:
-ffff888091bbf1e0 (rlock-AF_UNIX){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:353 [inline]
-ffff888091bbf1e0 (rlock-AF_UNIX){+.+.}-{2:2}, at: sk_diag_dump_icons net/unix/diag.c:68 [inline]
-ffff888091bbf1e0 (rlock-AF_UNIX){+.+.}-{2:2}, at: sk_diag_fill.isra.0+0x8eb/0x10e0 net/unix/diag.c:154
+                  Linus
 
-which lock already depends on the new lock.
+--000000000000d91fe305a563741a
+Content-Type: application/octet-stream; name=patch
+Content-Disposition: attachment; filename=patch
+Content-Transfer-Encoding: base64
+Content-ID: <f_ka2tez6f0>
+X-Attachment-Id: f_ka2tez6f0
 
-
-the existing dependency chain (in reverse order) is:
-
--> #1 (rlock-AF_UNIX){+.+.}-{2:2}:
-       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-       _raw_spin_lock_irqsave+0x8c/0xbf kernel/locking/spinlock.c:159
-       skb_queue_tail+0x27/0x180 net/core/skbuff.c:3143
-       unix_dgram_sendmsg+0xc96/0x12e0 net/unix/af_unix.c:1806
-       sock_sendmsg_nosec net/socket.c:652 [inline]
-       sock_sendmsg+0xcf/0x120 net/socket.c:672
-       ____sys_sendmsg+0x308/0x7e0 net/socket.c:2362
-       ___sys_sendmsg+0x100/0x170 net/socket.c:2416
-       __sys_sendmmsg+0x296/0x480 net/socket.c:2499
-       __compat_sys_sendmmsg net/compat.c:672 [inline]
-       __do_compat_sys_sendmmsg net/compat.c:679 [inline]
-       __se_compat_sys_sendmmsg net/compat.c:676 [inline]
-       __ia32_compat_sys_sendmmsg+0x9b/0x100 net/compat.c:676
-       do_syscall_32_irqs_on arch/x86/entry/common.c:337 [inline]
-       do_fast_syscall_32+0x270/0xe90 arch/x86/entry/common.c:396
-       entry_SYSENTER_compat+0x70/0x7f arch/x86/entry/entry_64_compat.S:139
-
--> #0 (&u->lock/1){+.+.}-{2:2}:
-       check_prev_add kernel/locking/lockdep.c:2515 [inline]
-       check_prevs_add kernel/locking/lockdep.c:2620 [inline]
-       validate_chain kernel/locking/lockdep.c:3237 [inline]
-       __lock_acquire+0x2ab1/0x4c50 kernel/locking/lockdep.c:4355
-       lock_acquire+0x1f2/0x8f0 kernel/locking/lockdep.c:4934
-       _raw_spin_lock_nested+0x30/0x40 kernel/locking/spinlock.c:361
-       sk_diag_dump_icons net/unix/diag.c:86 [inline]
-       sk_diag_fill.isra.0+0x9d0/0x10e0 net/unix/diag.c:154
-       sk_diag_dump net/unix/diag.c:192 [inline]
-       unix_diag_dump+0x441/0x550 net/unix/diag.c:220
-       netlink_dump+0x50b/0xf50 net/netlink/af_netlink.c:2245
-       __netlink_dump_start+0x63f/0x910 net/netlink/af_netlink.c:2353
-       netlink_dump_start include/linux/netlink.h:246 [inline]
-       unix_diag_handler_dump+0x3ea/0x7b0 net/unix/diag.c:321
-       __sock_diag_cmd net/core/sock_diag.c:233 [inline]
-       sock_diag_rcv_msg+0x2fe/0x3e0 net/core/sock_diag.c:264
-       netlink_rcv_skb+0x15a/0x410 net/netlink/af_netlink.c:2469
-       sock_diag_rcv+0x26/0x40 net/core/sock_diag.c:275
-       netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
-       netlink_unicast+0x537/0x740 net/netlink/af_netlink.c:1329
-       netlink_sendmsg+0x882/0xe10 net/netlink/af_netlink.c:1918
-       sock_sendmsg_nosec net/socket.c:652 [inline]
-       sock_sendmsg+0xcf/0x120 net/socket.c:672
-       sock_write_iter+0x289/0x3c0 net/socket.c:1004
-       call_write_iter include/linux/fs.h:1907 [inline]
-       do_iter_readv_writev+0x5a8/0x850 fs/read_write.c:694
-       do_iter_write fs/read_write.c:999 [inline]
-       do_iter_write+0x18b/0x600 fs/read_write.c:980
-       compat_writev+0x1f1/0x390 fs/read_write.c:1352
-       do_compat_writev+0xd5/0x1d0 fs/read_write.c:1373
-       do_syscall_32_irqs_on arch/x86/entry/common.c:337 [inline]
-       do_fast_syscall_32+0x270/0xe90 arch/x86/entry/common.c:396
-       entry_SYSENTER_compat+0x70/0x7f arch/x86/entry/entry_64_compat.S:139
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(rlock-AF_UNIX);
-                               lock(&u->lock/1);
-                               lock(rlock-AF_UNIX);
-  lock(&u->lock/1);
-
- *** DEADLOCK ***
-
-5 locks held by syz-executor.3/31514:
- #0: ffffffff8a58a388 (sock_diag_mutex){+.+.}-{3:3}, at: sock_diag_rcv+0x17/0x40 net/core/sock_diag.c:274
- #1: ffffffff8a58a448 (sock_diag_table_mutex){+.+.}-{3:3}, at: __sock_diag_cmd net/core/sock_diag.c:228 [inline]
- #1: ffffffff8a58a448 (sock_diag_table_mutex){+.+.}-{3:3}, at: sock_diag_rcv_msg+0x18d/0x3e0 net/core/sock_diag.c:264
- #2: ffff888050ce1630 (nlk_cb_mutex-SOCK_DIAG){+.+.}-{3:3}, at: netlink_dump+0xd4/0xf50 net/netlink/af_netlink.c:2200
- #3: ffffffff8a65df18 (unix_table_lock){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:353 [inline]
- #3: ffffffff8a65df18 (unix_table_lock){+.+.}-{2:2}, at: unix_diag_dump+0x10c/0x550 net/unix/diag.c:206
- #4: ffff888091bbf1e0 (rlock-AF_UNIX){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:353 [inline]
- #4: ffff888091bbf1e0 (rlock-AF_UNIX){+.+.}-{2:2}, at: sk_diag_dump_icons net/unix/diag.c:68 [inline]
- #4: ffff888091bbf1e0 (rlock-AF_UNIX){+.+.}-{2:2}, at: sk_diag_fill.isra.0+0x8eb/0x10e0 net/unix/diag.c:154
-
-stack backtrace:
-CPU: 0 PID: 31514 Comm: syz-executor.3 Not tainted 5.7.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x188/0x20d lib/dump_stack.c:118
- check_noncircular+0x32e/0x3e0 kernel/locking/lockdep.c:1846
- check_prev_add kernel/locking/lockdep.c:2515 [inline]
- check_prevs_add kernel/locking/lockdep.c:2620 [inline]
- validate_chain kernel/locking/lockdep.c:3237 [inline]
- __lock_acquire+0x2ab1/0x4c50 kernel/locking/lockdep.c:4355
- lock_acquire+0x1f2/0x8f0 kernel/locking/lockdep.c:4934
- _raw_spin_lock_nested+0x30/0x40 kernel/locking/spinlock.c:361
- sk_diag_dump_icons net/unix/diag.c:86 [inline]
- sk_diag_fill.isra.0+0x9d0/0x10e0 net/unix/diag.c:154
- sk_diag_dump net/unix/diag.c:192 [inline]
- unix_diag_dump+0x441/0x550 net/unix/diag.c:220
- netlink_dump+0x50b/0xf50 net/netlink/af_netlink.c:2245
- __netlink_dump_start+0x63f/0x910 net/netlink/af_netlink.c:2353
- netlink_dump_start include/linux/netlink.h:246 [inline]
- unix_diag_handler_dump+0x3ea/0x7b0 net/unix/diag.c:321
- __sock_diag_cmd net/core/sock_diag.c:233 [inline]
- sock_diag_rcv_msg+0x2fe/0x3e0 net/core/sock_diag.c:264
- netlink_rcv_skb+0x15a/0x410 net/netlink/af_netlink.c:2469
- sock_diag_rcv+0x26/0x40 net/core/sock_diag.c:275
- netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
- netlink_unicast+0x537/0x740 net/netlink/af_netlink.c:1329
- netlink_sendmsg+0x882/0xe10 net/netlink/af_netlink.c:1918
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- sock_write_iter+0x289/0x3c0 net/socket.c:1004
- call_write_iter include/linux/fs.h:1907 [inline]
- do_iter_readv_writev+0x5a8/0x850 fs/read_write.c:694
- do_iter_write fs/read_write.c:999 [inline]
- do_iter_write+0x18b/0x600 fs/read_write.c:980
- compat_writev+0x1f1/0x390 fs/read_write.c:1352
- do_compat_writev+0xd5/0x1d0 fs/read_write.c:1373
- do_syscall_32_irqs_on arch/x86/entry/common.c:337 [inline]
- do_fast_syscall_32+0x270/0xe90 arch/x86/entry/common.c:396
- entry_SYSENTER_compat+0x70/0x7f arch/x86/entry/entry_64_compat.S:139
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+IGFyY2gveDg2L2luY2x1ZGUvYXNtL3BlcmNwdS5oIHwgMzEgKysrKysrKysrKysrKysrKy0tLS0t
+LS0tLS0tLS0tLQogMSBmaWxlIGNoYW5nZWQsIDE2IGluc2VydGlvbnMoKyksIDE1IGRlbGV0aW9u
+cygtKQoKZGlmZiAtLWdpdCBhL2FyY2gveDg2L2luY2x1ZGUvYXNtL3BlcmNwdS5oIGIvYXJjaC94
+ODYvaW5jbHVkZS9hc20vcGVyY3B1LmgKaW5kZXggMjI3ODc5N2M3NjlkLi5iNDc5YTBlNjUwZTUg
+MTAwNjQ0Ci0tLSBhL2FyY2gveDg2L2luY2x1ZGUvYXNtL3BlcmNwdS5oCisrKyBiL2FyY2gveDg2
+L2luY2x1ZGUvYXNtL3BlcmNwdS5oCkBAIC04Niw2ICs4NiwxNyBAQAogLyogRm9yIGFyY2gtc3Bl
+Y2lmaWMgY29kZSwgd2UgY2FuIHVzZSBkaXJlY3Qgc2luZ2xlLWluc24gb3BzICh0aGV5CiAgKiBk
+b24ndCBnaXZlIGFuIGx2YWx1ZSB0aG91Z2gpLiAqLwogZXh0ZXJuIHZvaWQgX19iYWRfcGVyY3B1
+X3NpemUodm9pZCk7CitleHRlcm4gdm9pZCBfX2JhZF9leHByX3NpemUodm9pZCk7CisKKyNkZWZp
+bmUgcGlja190eXBlX2V4cHJlc3Npb24oeCwgZTgsIGUxNiwgZTMyLCBlNjQpCVwKKwlfX2J1aWx0
+aW5fY2hvb3NlX2V4cHIoc2l6ZW9mKHgpPT0xLCBlOCwJCVwKKwlfX2J1aWx0aW5fY2hvb3NlX2V4
+cHIoc2l6ZW9mKHgpPT0yLCBlMTYsCVwKKwlfX2J1aWx0aW5fY2hvb3NlX2V4cHIoc2l6ZW9mKHgp
+PT00LCBlMzIsCVwKKwlfX2J1aWx0aW5fY2hvb3NlX2V4cHIoc2l6ZW9mKHgpPT04LCBlNjQsCVwK
+KwlfX2JhZF9leHByX3NpemUoKSkpKSkKKworI2RlZmluZSBwaWNrX3R5cGVfc3RhdGVtZW50KHgs
+IHM4LCBzMTYsIHMzMiwgczY0KSBcCisJcGlja190eXBlX2V4cHJlc3Npb24oeCwgKHtzODswO30p
+LCAoe3MxNjswO30pLCh7czMyOzA7fSksKHtzNjQ7MDt9KSkKIAogI2RlZmluZSBwZXJjcHVfdG9f
+b3AocXVhbCwgb3AsIHZhciwgdmFsKQkJXAogZG8gewkJCQkJCQlcCkBAIC05NSwyOSArMTA2LDE5
+IEBAIGRvIHsJCQkJCQkJXAogCQlwdG9fdG1wX18gPSAodmFsKTsJCQlcCiAJCSh2b2lkKXB0b190
+bXBfXzsJCQlcCiAJfQkJCQkJCVwKLQlzd2l0Y2ggKHNpemVvZih2YXIpKSB7CQkJCVwKLQljYXNl
+IDE6CQkJCQkJXAorCXBpY2tfdHlwZV9zdGF0ZW1lbnQodmFyLAkJCVwKIAkJYXNtIHF1YWwgKG9w
+ICJiICUxLCJfX3BlcmNwdV9hcmcoMCkJXAogCQkgICAgOiAiK20iICh2YXIpCQkJXAotCQkgICAg
+OiAicWkiICgocHRvX1RfXykodmFsKSkpOwkJXAotCQlicmVhazsJCQkJCVwKLQljYXNlIDI6CQkJ
+CQkJXAorCQkgICAgOiAicWkiICgocHRvX1RfXykodmFsKSkpLAkJXAogCQlhc20gcXVhbCAob3Ag
+IncgJTEsIl9fcGVyY3B1X2FyZygwKQlcCiAJCSAgICA6ICIrbSIgKHZhcikJCQlcCi0JCSAgICA6
+ICJyaSIgKChwdG9fVF9fKSh2YWwpKSk7CQlcCi0JCWJyZWFrOwkJCQkJXAotCWNhc2UgNDoJCQkJ
+CQlcCisJCSAgICA6ICJyaSIgKChwdG9fVF9fKSh2YWwpKSksCQlcCiAJCWFzbSBxdWFsIChvcCAi
+bCAlMSwiX19wZXJjcHVfYXJnKDApCVwKIAkJICAgIDogIittIiAodmFyKQkJCVwKLQkJICAgIDog
+InJpIiAoKHB0b19UX18pKHZhbCkpKTsJCVwKLQkJYnJlYWs7CQkJCQlcCi0JY2FzZSA4OgkJCQkJ
+CVwKKwkJICAgIDogInJpIiAoKHB0b19UX18pKHZhbCkpKSwJCVwKIAkJYXNtIHF1YWwgKG9wICJx
+ICUxLCJfX3BlcmNwdV9hcmcoMCkJXAogCQkgICAgOiAiK20iICh2YXIpCQkJXAotCQkgICAgOiAi
+cmUiICgocHRvX1RfXykodmFsKSkpOwkJXAotCQlicmVhazsJCQkJCVwKLQlkZWZhdWx0OiBfX2Jh
+ZF9wZXJjcHVfc2l6ZSgpOwkJCVwKLQl9CQkJCQkJXAorCQkgICAgOiAicmUiICgocHRvX1RfXyko
+dmFsKSkpKTsJCVwKIH0gd2hpbGUgKDApCiAKIC8qCg==
+--000000000000d91fe305a563741a--
