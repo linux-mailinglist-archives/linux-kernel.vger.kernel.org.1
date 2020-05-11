@@ -2,65 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3107D1CD8C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 13:46:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E9AC1CD8B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 13:41:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729643AbgEKLqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 07:46:51 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:4329 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726068AbgEKLqv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 07:46:51 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 15DC253A6DB7E3CFC730;
-        Mon, 11 May 2020 19:46:48 +0800 (CST)
-Received: from linux-ibm.site (10.175.102.37) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 11 May 2020 19:46:40 +0800
-From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
-To:     <hare@suse.de>, <jejb@linux.ibm.com>, <martin.petersen@oracle.com>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wangxiongfeng2@huawei.com>
-Subject: [PATCH] scsi: fcoe: add a newline when printing 'fcoe_transport' by sysfs
-Date:   Mon, 11 May 2020 19:40:40 +0800
-Message-ID: <1589197240-28118-1-git-send-email-wangxiongfeng2@huawei.com>
-X-Mailer: git-send-email 1.7.12.4
+        id S1729633AbgEKLlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 07:41:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57094 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726068AbgEKLlP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 07:41:15 -0400
+Received: from localhost (unknown [122.167.117.121])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0B16420708;
+        Mon, 11 May 2020 11:41:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589197274;
+        bh=qVA+9DJ79+6bkSsk8R/e1V4bMq1lEKRjniVj/AiExgc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=x7dILyMr6XdHySREvLDzpe5C5AhgDfkT6/IMWHn2goMLLn6acGj+pM7k7VtP6x9wZ
+         77xc7BrxSSdZVjRgeXF/VDqfoKD3OJm0qYs8Pk6e7juqTbh3aZLFziSplI0QZ/GYLc
+         ihYC1C3Ls3rqC5Vnqc8S5a+qrhBv1/9gn6Dpo3q8=
+Date:   Mon, 11 May 2020 17:11:08 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     "Liao, Bard" <bard.liao@intel.com>
+Cc:     Bard Liao <yung-chuan.liao@linux.intel.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tiwai@suse.de" <tiwai@suse.de>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "jank@cadence.com" <jank@cadence.com>,
+        "srinivas.kandagatla@linaro.org" <srinivas.kandagatla@linaro.org>,
+        "rander.wang@linux.intel.com" <rander.wang@linux.intel.com>,
+        "ranjani.sridharan@linux.intel.com" 
+        <ranjani.sridharan@linux.intel.com>,
+        "hui.wang@canonical.com" <hui.wang@canonical.com>,
+        "pierre-louis.bossart@linux.intel.com" 
+        <pierre-louis.bossart@linux.intel.com>,
+        "Kale, Sanyog R" <sanyog.r.kale@intel.com>,
+        "Blauciak, Slawomir" <slawomir.blauciak@intel.com>,
+        "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH 3/3] soundwire: bus_type: add sdw_master_device support
+Message-ID: <20200511114108.GU1375924@vkoul-mobl>
+References: <20200429185145.12891-1-yung-chuan.liao@linux.intel.com>
+ <20200429185145.12891-4-yung-chuan.liao@linux.intel.com>
+ <20200511063227.GS1375924@vkoul-mobl>
+ <DM6PR11MB40748EA6346831A67BD218C7FFA10@DM6PR11MB4074.namprd11.prod.outlook.com>
+ <20200511090003.GT1375924@vkoul-mobl>
+ <DM6PR11MB407432225D0DA6E671DBAF67FFA10@DM6PR11MB4074.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.102.37]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <DM6PR11MB407432225D0DA6E671DBAF67FFA10@DM6PR11MB4074.namprd11.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When I print 'fcoe_transport' by sysfs, it displays as follows. It is
-better to add a newline for easy reading.
+On 11-05-20, 11:34, Liao, Bard wrote:
+> 
+> 
+> > -----Original Message-----
+> > From: Vinod Koul <vkoul@kernel.org>
+> > Sent: Monday, May 11, 2020 5:00 PM
+> > To: Liao, Bard <bard.liao@intel.com>
+> > Cc: Bard Liao <yung-chuan.liao@linux.intel.com>; alsa-devel@alsa-project.org;
+> > linux-kernel@vger.kernel.org; tiwai@suse.de; broonie@kernel.org;
+> > gregkh@linuxfoundation.org; jank@cadence.com;
+> > srinivas.kandagatla@linaro.org; rander.wang@linux.intel.com;
+> > ranjani.sridharan@linux.intel.com; hui.wang@canonical.com; pierre-
+> > louis.bossart@linux.intel.com; Kale, Sanyog R <sanyog.r.kale@intel.com>;
+> > Blauciak, Slawomir <slawomir.blauciak@intel.com>; Lin, Mengdong
+> > <mengdong.lin@intel.com>
+> > Subject: Re: [PATCH 3/3] soundwire: bus_type: add sdw_master_device support
+> > 
+> > On 11-05-20, 08:04, Liao, Bard wrote:
+> > > > -----Original Message-----
+> > > > From: Vinod Koul <vkoul@kernel.org>
+> > > > Sent: Monday, May 11, 2020 2:32 PM
+> > > > To: Bard Liao <yung-chuan.liao@linux.intel.com>
+> > > > Cc: alsa-devel@alsa-project.org; linux-kernel@vger.kernel.org;
+> > > > tiwai@suse.de; broonie@kernel.org; gregkh@linuxfoundation.org;
+> > > > jank@cadence.com; srinivas.kandagatla@linaro.org;
+> > > > rander.wang@linux.intel.com; ranjani.sridharan@linux.intel.com;
+> > > > hui.wang@canonical.com; pierre- louis.bossart@linux.intel.com; Kale,
+> > > > Sanyog R <sanyog.r.kale@intel.com>; Blauciak, Slawomir
+> > > > <slawomir.blauciak@intel.com>; Lin, Mengdong
+> > > > <mengdong.lin@intel.com>; Liao, Bard <bard.liao@intel.com>
+> > > > Subject: Re: [PATCH 3/3] soundwire: bus_type: add sdw_master_device
+> > > > support
+> > > >
+> > > > On 30-04-20, 02:51, Bard Liao wrote:
+> > > > > @@ -24,9 +24,14 @@ int sdw_bus_master_add(struct sdw_bus *bus,
+> > > > > struct
+> > > > device *parent,
+> > > > >  	struct sdw_master_prop *prop = NULL;
+> > > > >  	int ret;
+> > > > >
+> > > > > -	if (!bus->dev) {
+> > > > > -		pr_err("SoundWire bus has no device\n");
+> > > > > -		return -ENODEV;
+> > > >
+> > > > This check is removed and not moved into sdw_master_device_add()
+> > > > either, can you add here or in patch 1 and keep checking the parent
+> > > > device please
+> > >
+> > > We will set bus->dev = &md->dev in the end of sdw_master_device_add().
+> > 
+> > We need to test if this is valid or not :)
+> > 
+> > > That's why we remove the test. But now I am wandering does it make
+> > > sense to set bus->dev = &md->dev? Maybe it makes more sense to set
+> > > bus->dev = sdw control device.
+> > > A follow up question is that should slave device a child of bus device
+> > > or master device? I would prefer bus device if it makes sense.
+> > > I will check bus->dev and parent and remove bus->dev = &md->dev in the
+> > > next version.
+> > 
+> > the parent is bus->dev and sdw_master_device created would be child of this
+> > and should be set as such. You can remove it from bus object and keep in
+> > sdw_master_device object, that is fine by me.
+> 
+> Looks like we don't need the parent and fwnode parameter since we can
+> get them from bus->dev 😊
 
-[root@hulk-202 ~]# cat /sys/module/libfcoe/parameters/show
-Attached FCoE transports:fcoe [root@hulk-202 ~]#
+Quite right
 
-Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
----
- drivers/scsi/fcoe/fcoe_transport.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+> > The sdw_slave is child of sdw_master_device now and looks to be set correct.
+> 
+> So, it will be
+> bus device
+>     -> master device
+>          -> slave device
+> right?
 
-diff --git a/drivers/scsi/fcoe/fcoe_transport.c b/drivers/scsi/fcoe/fcoe_transport.c
-index a20ddc3..1b82753 100644
---- a/drivers/scsi/fcoe/fcoe_transport.c
-+++ b/drivers/scsi/fcoe/fcoe_transport.c
-@@ -607,7 +607,10 @@ static int fcoe_transport_show(char *buffer, const struct kernel_param *kp)
- 	}
- 	mutex_unlock(&ft_mutex);
- 	if (i == j)
--		i += snprintf(&buffer[i], IFNAMSIZ, "none");
-+		i += snprintf(&buffer[i], IFNAMSIZ, "none\n");
-+	else if (PAGE_SIZE - i >= 1)
-+		i += sprintf(&buffer[i], "\n");
-+
- 	return i;
- }
- 
+yes
+
+> 
+> I have a question here. We have pm supported on bus and slave devices,
+> but not master device. Will pm work with this architecture?
+> Can it be
+> bus device
+>     -> master device & slave device?
+
+yes it would and you should check it out. The pm (runtime_pm) works well
+with child devices and parents, so we need to ensure that parents are
+set properly.
+
+Thanks
 -- 
-1.7.12.4
-
+~Vinod
