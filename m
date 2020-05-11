@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED8E41CE6A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 23:03:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 284731CE640
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 23:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732039AbgEKU75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 16:59:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44018 "EHLO
+        id S1732088AbgEKVAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 17:00:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731936AbgEKU7l (ORCPT
+        by vger.kernel.org with ESMTP id S1731983AbgEKU7r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 16:59:41 -0400
+        Mon, 11 May 2020 16:59:47 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57687C061A0E;
-        Mon, 11 May 2020 13:59:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E851C061A0E;
+        Mon, 11 May 2020 13:59:47 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jYFWV-0005pn-A2; Mon, 11 May 2020 22:59:39 +0200
+        id 1jYFWb-0005r2-AB; Mon, 11 May 2020 22:59:45 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 5757F1C0837;
-        Mon, 11 May 2020 22:59:30 +0200 (CEST)
-Date:   Mon, 11 May 2020 20:59:30 -0000
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 271E61C0854;
+        Mon, 11 May 2020 22:59:31 +0200 (CEST)
+Date:   Mon, 11 May 2020 20:59:31 -0000
 From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] rcutorture: Add torture tests for RCU Tasks Trace
+Subject: [tip: core/rcu] rcu-tasks: Code movement to allow more Tasks RCU variants
 Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <158923077025.390.480686560796550762.tip-bot2@tip-bot2>
+Message-ID: <158923077107.390.1601597834253295542.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -47,167 +47,160 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     c1a76c0b6abac4e7eb49b5c24a0829f47b70769d
-Gitweb:        https://git.kernel.org/tip/c1a76c0b6abac4e7eb49b5c24a0829f47b70769d
+Commit-ID:     d01aa2633b5d5ebc16fa47ad7a5e8e9f00482554
+Gitweb:        https://git.kernel.org/tip/d01aa2633b5d5ebc16fa47ad7a5e8e9f00482554
 Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Tue, 10 Mar 2020 10:32:30 -07:00
+AuthorDate:    Thu, 05 Mar 2020 17:07:07 -08:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
 CommitterDate: Mon, 27 Apr 2020 11:03:51 -07:00
 
-rcutorture: Add torture tests for RCU Tasks Trace
+rcu-tasks: Code movement to allow more Tasks RCU variants
 
-This commit adds the definitions required to torture the tracing flavor
-of RCU tasks.
+This commit does nothing but move rcu_tasks_wait_gp() up to a new section
+for common code.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/Kconfig.debug                                    |  2 +-
- kernel/rcu/rcu.h                                            |  1 +-
- kernel/rcu/rcutorture.c                                     | 44 ++++++-
- tools/testing/selftests/rcutorture/configs/rcu/CFLIST       |  1 +-
- tools/testing/selftests/rcutorture/configs/rcu/TRACE01      | 10 ++-
- tools/testing/selftests/rcutorture/configs/rcu/TRACE01.boot |  1 +-
- 6 files changed, 58 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/TRACE01
- create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/TRACE01.boot
+ kernel/rcu/tasks.h | 122 ++++++++++++++++++++++----------------------
+ 1 file changed, 63 insertions(+), 59 deletions(-)
 
-diff --git a/kernel/rcu/Kconfig.debug b/kernel/rcu/Kconfig.debug
-index b5f3545..452feae 100644
---- a/kernel/rcu/Kconfig.debug
-+++ b/kernel/rcu/Kconfig.debug
-@@ -30,6 +30,7 @@ config RCU_PERF_TEST
- 	select SRCU
- 	select TASKS_RCU
- 	select TASKS_RUDE_RCU
-+	select TASKS_TRACE_RCU
- 	default n
- 	help
- 	  This option provides a kernel module that runs performance
-@@ -48,6 +49,7 @@ config RCU_TORTURE_TEST
- 	select SRCU
- 	select TASKS_RCU
- 	select TASKS_RUDE_RCU
-+	select TASKS_TRACE_RCU
- 	default n
- 	help
- 	  This option provides a kernel module that runs torture tests
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index c574620..7290386 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -442,6 +442,7 @@ enum rcutorture_type {
- 	RCU_FLAVOR,
- 	RCU_TASKS_FLAVOR,
- 	RCU_TASKS_RUDE_FLAVOR,
-+	RCU_TASKS_TRACING_FLAVOR,
- 	RCU_TRIVIAL_FLAVOR,
- 	SRCU_FLAVOR,
- 	INVALID_RCU_FLAVOR
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 6b06638..0bec925 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -45,6 +45,7 @@
- #include <linux/sched/sysctl.h>
- #include <linux/oom.h>
- #include <linux/tick.h>
-+#include <linux/rcupdate_trace.h>
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 344426e..d8b09d5 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -213,6 +213,69 @@ static void __init rcu_tasks_bootup_oddness(void)
  
- #include "rcu.h"
- 
-@@ -757,6 +758,45 @@ static struct rcu_torture_ops tasks_rude_ops = {
- 	.name		= "tasks-rude"
- };
- 
-+/*
-+ * Definitions for tracing RCU-tasks torture testing.
-+ */
+ ////////////////////////////////////////////////////////////////////////
+ //
++// Shared code between task-list-scanning variants of Tasks RCU.
 +
-+static int tasks_tracing_torture_read_lock(void)
++/* Wait for one RCU-tasks grace period. */
++static void rcu_tasks_wait_gp(struct rcu_tasks *rtp)
 +{
-+	rcu_read_lock_trace();
-+	return 0;
++	struct task_struct *g, *t;
++	unsigned long lastreport;
++	LIST_HEAD(holdouts);
++	int fract;
++
++	rtp->pregp_func();
++
++	/*
++	 * There were callbacks, so we need to wait for an RCU-tasks
++	 * grace period.  Start off by scanning the task list for tasks
++	 * that are not already voluntarily blocked.  Mark these tasks
++	 * and make a list of them in holdouts.
++	 */
++	rcu_read_lock();
++	for_each_process_thread(g, t)
++		rtp->pertask_func(t, &holdouts);
++	rcu_read_unlock();
++
++	rtp->postscan_func();
++
++	/*
++	 * Each pass through the following loop scans the list of holdout
++	 * tasks, removing any that are no longer holdouts.  When the list
++	 * is empty, we are done.
++	 */
++	lastreport = jiffies;
++
++	/* Start off with HZ/10 wait and slowly back off to 1 HZ wait. */
++	fract = 10;
++
++	for (;;) {
++		bool firstreport;
++		bool needreport;
++		int rtst;
++
++		if (list_empty(&holdouts))
++			break;
++
++		/* Slowly back off waiting for holdouts */
++		schedule_timeout_interruptible(HZ/fract);
++
++		if (fract > 1)
++			fract--;
++
++		rtst = READ_ONCE(rcu_task_stall_timeout);
++		needreport = rtst > 0 && time_after(jiffies, lastreport + rtst);
++		if (needreport)
++			lastreport = jiffies;
++		firstreport = true;
++		WARN_ON(signal_pending(current));
++		rtp->holdouts_func(&holdouts, needreport, &firstreport);
++	}
++
++	rtp->postgp_func();
 +}
 +
-+static void tasks_tracing_torture_read_unlock(int idx)
-+{
-+	rcu_read_unlock_trace();
-+}
-+
-+static void rcu_tasks_tracing_torture_deferred_free(struct rcu_torture *p)
-+{
-+	call_rcu_tasks_trace(&p->rtort_rcu, rcu_torture_cb);
-+}
-+
-+static struct rcu_torture_ops tasks_tracing_ops = {
-+	.ttype		= RCU_TASKS_TRACING_FLAVOR,
-+	.init		= rcu_sync_torture_init,
-+	.readlock	= tasks_tracing_torture_read_lock,
-+	.read_delay	= srcu_read_delay,  /* just reuse srcu's version. */
-+	.readunlock	= tasks_tracing_torture_read_unlock,
-+	.get_gp_seq	= rcu_no_completed,
-+	.deferred_free	= rcu_tasks_tracing_torture_deferred_free,
-+	.sync		= synchronize_rcu_tasks_trace,
-+	.exp_sync	= synchronize_rcu_tasks_trace,
-+	.call		= call_rcu_tasks_trace,
-+	.cb_barrier	= rcu_barrier_tasks_trace,
-+	.fqs		= NULL,
-+	.stats		= NULL,
-+	.irq_capable	= 1,
-+	.slow_gps	= 1,
-+	.name		= "tasks-tracing"
-+};
-+
- static unsigned long rcutorture_seq_diff(unsigned long new, unsigned long old)
- {
- 	if (!cur_ops->gp_diff)
-@@ -1323,6 +1363,7 @@ static bool rcu_torture_one_read(struct torture_random_state *trsp)
- 				  rcu_read_lock_bh_held() ||
- 				  rcu_read_lock_sched_held() ||
- 				  srcu_read_lock_held(srcu_ctlp) ||
-+				  rcu_read_lock_trace_held() ||
- 				  torturing_tasks());
- 	if (p == NULL) {
- 		/* Wait for rcu_torture_writer to get underway */
-@@ -2440,7 +2481,8 @@ rcu_torture_init(void)
- 	int firsterr = 0;
- 	static struct rcu_torture_ops *torture_ops[] = {
- 		&rcu_ops, &rcu_busted_ops, &srcu_ops, &srcud_ops,
--		&busted_srcud_ops, &tasks_ops, &tasks_rude_ops, &trivial_ops,
-+		&busted_srcud_ops, &tasks_ops, &tasks_rude_ops,
-+		&tasks_tracing_ops, &trivial_ops,
- 	};
++////////////////////////////////////////////////////////////////////////
++//
+ // Simple variant of RCU whose quiescent states are voluntary context
+ // switch, cond_resched_rcu_qs(), user-space execution, and idle.
+ // As such, grace periods can take one good long time.  There are no
+@@ -333,65 +396,6 @@ static void rcu_tasks_postgp(void)
+ 	synchronize_rcu();
+ }
  
- 	if (!torture_init_begin(torture_type, verbose))
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/CFLIST b/tools/testing/selftests/rcutorture/configs/rcu/CFLIST
-index ec0c72f..dfb1817 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/CFLIST
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/CFLIST
-@@ -15,3 +15,4 @@ TASKS01
- TASKS02
- TASKS03
- RUDE01
-+TRACE01
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TRACE01 b/tools/testing/selftests/rcutorture/configs/rcu/TRACE01
-new file mode 100644
-index 0000000..078e2c1
---- /dev/null
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TRACE01
-@@ -0,0 +1,10 @@
-+CONFIG_SMP=y
-+CONFIG_NR_CPUS=4
-+CONFIG_HOTPLUG_CPU=y
-+CONFIG_PREEMPT_NONE=y
-+CONFIG_PREEMPT_VOLUNTARY=n
-+CONFIG_PREEMPT=n
-+CONFIG_DEBUG_LOCK_ALLOC=y
-+CONFIG_PROVE_LOCKING=y
-+#CHECK#CONFIG_PROVE_RCU=y
-+CONFIG_RCU_EXPERT=y
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TRACE01.boot b/tools/testing/selftests/rcutorture/configs/rcu/TRACE01.boot
-new file mode 100644
-index 0000000..9675ad6
---- /dev/null
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TRACE01.boot
-@@ -0,0 +1 @@
-+rcutorture.torture_type=tasks-tracing
+-/* Wait for one RCU-tasks grace period. */
+-static void rcu_tasks_wait_gp(struct rcu_tasks *rtp)
+-{
+-	struct task_struct *g, *t;
+-	unsigned long lastreport;
+-	LIST_HEAD(holdouts);
+-	int fract;
+-
+-	rtp->pregp_func();
+-
+-	/*
+-	 * There were callbacks, so we need to wait for an RCU-tasks
+-	 * grace period.  Start off by scanning the task list for tasks
+-	 * that are not already voluntarily blocked.  Mark these tasks
+-	 * and make a list of them in holdouts.
+-	 */
+-	rcu_read_lock();
+-	for_each_process_thread(g, t)
+-		rtp->pertask_func(t, &holdouts);
+-	rcu_read_unlock();
+-
+-	rtp->postscan_func();
+-
+-	/*
+-	 * Each pass through the following loop scans the list of holdout
+-	 * tasks, removing any that are no longer holdouts.  When the list
+-	 * is empty, we are done.
+-	 */
+-	lastreport = jiffies;
+-
+-	/* Start off with HZ/10 wait and slowly back off to 1 HZ wait. */
+-	fract = 10;
+-
+-	for (;;) {
+-		bool firstreport;
+-		bool needreport;
+-		int rtst;
+-
+-		if (list_empty(&holdouts))
+-			break;
+-
+-		/* Slowly back off waiting for holdouts */
+-		schedule_timeout_interruptible(HZ/fract);
+-
+-		if (fract > 1)
+-			fract--;
+-
+-		rtst = READ_ONCE(rcu_task_stall_timeout);
+-		needreport = rtst > 0 && time_after(jiffies, lastreport + rtst);
+-		if (needreport)
+-			lastreport = jiffies;
+-		firstreport = true;
+-		WARN_ON(signal_pending(current));
+-		rtp->holdouts_func(&holdouts, needreport, &firstreport);
+-	}
+-
+-	rtp->postgp_func();
+-}
+-
+ void call_rcu_tasks(struct rcu_head *rhp, rcu_callback_t func);
+ DEFINE_RCU_TASKS(rcu_tasks, rcu_tasks_wait_gp, call_rcu_tasks, "RCU Tasks");
+ 
