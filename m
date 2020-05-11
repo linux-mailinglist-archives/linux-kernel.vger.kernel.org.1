@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FC171CE6F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 23:06:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31A7A1CE615
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 22:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732557AbgEKVFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 17:05:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43916 "EHLO
+        id S1731714AbgEKU7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 16:59:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731785AbgEKU7X (ORCPT
+        by vger.kernel.org with ESMTP id S1728046AbgEKU7T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 16:59:23 -0400
+        Mon, 11 May 2020 16:59:19 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A91CBC061A0C;
-        Mon, 11 May 2020 13:59:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EE8AC061A0C;
+        Mon, 11 May 2020 13:59:19 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jYFWD-0005gB-11; Mon, 11 May 2020 22:59:21 +0200
+        id 1jYFW9-0005g4-JY; Mon, 11 May 2020 22:59:17 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 970C01C0494;
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 3ACB31C001F;
         Mon, 11 May 2020 22:59:17 +0200 (CEST)
 Date:   Mon, 11 May 2020 20:59:17 -0000
 From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] torture: Add --kcsan argument to top-level kvm.sh script
-Cc:     Marco Elver <elver@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
+Subject: [tip: core/rcu] torture: Make --kcsan argument also create a summary
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <158923075754.390.4157511696423680972.tip-bot2@tip-bot2>
+Message-ID: <158923075718.390.14594827028058025641.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -48,72 +47,90 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     7226c5cbaa9ffb47259e34468bd0122238545d62
-Gitweb:        https://git.kernel.org/tip/7226c5cbaa9ffb47259e34468bd0122238545d62
+Commit-ID:     10cec0de11ab585e9a4f08357be4b5bf56bfc3a9
+Gitweb:        https://git.kernel.org/tip/10cec0de11ab585e9a4f08357be4b5bf56bfc3a9
 Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Tue, 07 Apr 2020 17:31:35 -07:00
+AuthorDate:    Thu, 09 Apr 2020 10:29:32 -07:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Thu, 07 May 2020 10:15:28 -07:00
+CommitterDate: Thu, 07 May 2020 10:15:29 -07:00
 
-torture: Add --kcsan argument to top-level kvm.sh script
+torture: Make --kcsan argument also create a summary
 
-Although the existing --kconfig argument can be used to run KCSAN for
-an rcutorture test, it is not as straightforward as one might like:
+The KCSAN tool emits a great many warnings for current kernels, for
+example, a one-hour run of the full set of rcutorture scenarios results
+in no fewer than 3252 such warnings, many of which are duplicates
+or are otherwise closely related.  This commit therefore introduces
+a kcsan-collapse.sh script that maps these warnings down to a set of
+function pairs (22 of them given the 3252 individual warnings), placing
+the resulting list in decreasing order of frequency of occurrence into
+a kcsan.sum file.  If any KCSAN warnings were produced, the pathname of
+this file is emitted at the end of the summary of the rcutorture runs.
 
-	--kconfig "CONFIG_DEBUG_INFO=y CONFIG_KCSAN=y \
-		   CONFIG_KCSAN_ASSUME_PLAIN_WRITES_ATOMIC=n \
-		   CONFIG_KCSAN_REPORT_VALUE_CHANGE_ONLY=n \
-		   CONFIG_KCSAN_REPORT_ONCE_IN_MS=100000 \
-		   CONFIG_KCSAN_VERBOSE=y CONFIG_KCSAN_INTERRUPT_WATCHER=y"
-
-This commit therefore adds a "--kcsan" argument that emulates the above
---kconfig command.  Note that if you specify a Kconfig option using
--kconfig that conflicts with one that --kcsan adds, you get whatever
-the script and the build system decide to give you.
-
-Cc: Marco Elver <elver@google.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/kvm.sh | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ tools/testing/selftests/rcutorture/bin/kcsan-collapse.sh | 22 +++++++-
+ tools/testing/selftests/rcutorture/bin/kvm-recheck.sh    |  9 +++-
+ tools/testing/selftests/rcutorture/bin/kvm.sh            |  1 +-
+ 3 files changed, 32 insertions(+)
+ create mode 100755 tools/testing/selftests/rcutorture/bin/kcsan-collapse.sh
 
+diff --git a/tools/testing/selftests/rcutorture/bin/kcsan-collapse.sh b/tools/testing/selftests/rcutorture/bin/kcsan-collapse.sh
+new file mode 100755
+index 0000000..e5cc6b2
+--- /dev/null
++++ b/tools/testing/selftests/rcutorture/bin/kcsan-collapse.sh
+@@ -0,0 +1,22 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0+
++#
++# If this was a KCSAN run, collapse the reports in the various console.log
++# files onto pairs of functions.
++#
++# Usage: kcsan-collapse.sh resultsdir
++#
++# Copyright (C) 2020 Facebook, Inc.
++#
++# Authors: Paul E. McKenney <paulmck@kernel.org>
++
++if test -z "$TORTURE_KCONFIG_KCSAN_ARG"
++then
++	exit 0
++fi
++cat $1/*/console.log |
++	grep "BUG: KCSAN: " |
++	sed -e 's/^\[[^]]*] //' |
++	sort |
++	uniq -c |
++	sort -k1nr > $1/kcsan.sum
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh b/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh
+index 0326f4a..736f047 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh
+@@ -70,6 +70,15 @@ do
+ 			fi
+ 		fi
+ 	done
++	if test -f "$rd/kcsan.sum"
++	then
++		if test -s "$rd/kcsan.sum"
++		then
++			echo KCSAN summary in $rd/kcsan.sum
++		else
++			echo Clean KCSAN run in $rd
++		fi
++	fi
+ done
+ EDITOR=echo kvm-find-errors.sh "${@: -1}" > $T 2>&1
+ ret=$?
 diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
-index 2315e2e..34b368d 100755
+index 34b368d..75ae8e3 100755
 --- a/tools/testing/selftests/rcutorture/bin/kvm.sh
 +++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
-@@ -31,6 +31,7 @@ TORTURE_DEFCONFIG=defconfig
- TORTURE_BOOT_IMAGE=""
- TORTURE_INITRD="$KVM/initrd"; export TORTURE_INITRD
- TORTURE_KCONFIG_ARG=""
-+TORTURE_KCONFIG_KCSAN_ARG=""
- TORTURE_KMAKE_ARG=""
- TORTURE_QEMU_MEM=512
- TORTURE_SHUTDOWN_GRACE=180
-@@ -133,6 +134,9 @@ do
- 		TORTURE_KCONFIG_ARG="$2"
- 		shift
- 		;;
-+	--kcsan)
-+		TORTURE_KCONFIG_KCSAN_ARG="CONFIG_DEBUG_INFO=y CONFIG_KCSAN=y CONFIG_KCSAN_ASSUME_PLAIN_WRITES_ATOMIC=n CONFIG_KCSAN_REPORT_VALUE_CHANGE_ONLY=n CONFIG_KCSAN_REPORT_ONCE_IN_MS=100000 CONFIG_KCSAN_VERBOSE=y CONFIG_KCSAN_INTERRUPT_WATCHER=y"; export TORTURE_KCONFIG_KCSAN_ARG
-+		;;
- 	--kmake-arg)
- 		checkarg --kmake-arg "(kernel make arguments)" $# "$2" '.*' '^error$'
- 		TORTURE_KMAKE_ARG="$2"
-@@ -201,6 +205,9 @@ else
- 	exit 1
- fi
+@@ -472,6 +472,7 @@ echo
+ echo
+ echo " --- `date` Test summary:"
+ echo Results directory: $resdir/$ds
++kcsan-collapse.sh $resdir/$ds
+ kvm-recheck.sh $resdir/$ds
+ ___EOF___
  
-+TORTURE_KCONFIG_ARG="${TORTURE_KCONFIG_ARG} ${TORTURE_KCONFIG_KCSAN_ARG}"
-+TORTURE_KCONFIG_ARG="`echo ${TORTURE_KCONFIG_ARG} | sed -e 's/^ *//' -e 's/ *$//'`"
-+
- CONFIGFRAG=${KVM}/configs/${TORTURE_SUITE}; export CONFIGFRAG
- 
- defaultconfigs="`tr '\012' ' ' < $CONFIGFRAG/CFLIST`"
-@@ -310,6 +317,7 @@ TORTURE_BUILDONLY="$TORTURE_BUILDONLY"; export TORTURE_BUILDONLY
- TORTURE_DEFCONFIG="$TORTURE_DEFCONFIG"; export TORTURE_DEFCONFIG
- TORTURE_INITRD="$TORTURE_INITRD"; export TORTURE_INITRD
- TORTURE_KCONFIG_ARG="$TORTURE_KCONFIG_ARG"; export TORTURE_KCONFIG_ARG
-+TORTURE_KCONFIG_KCSAN_ARG="$TORTURE_KCONFIG_KCSAN_ARG"; export TORTURE_KCONFIG_KCSAN_ARG
- TORTURE_KMAKE_ARG="$TORTURE_KMAKE_ARG"; export TORTURE_KMAKE_ARG
- TORTURE_QEMU_CMD="$TORTURE_QEMU_CMD"; export TORTURE_QEMU_CMD
- TORTURE_QEMU_INTERACTIVE="$TORTURE_QEMU_INTERACTIVE"; export TORTURE_QEMU_INTERACTIVE
