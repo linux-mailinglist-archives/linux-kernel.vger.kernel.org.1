@@ -2,617 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35CC21CD413
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 10:36:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 846131CD419
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 10:37:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729259AbgEKIgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 04:36:33 -0400
-Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:57119 "EHLO
-        smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728574AbgEKIgd (ORCPT
+        id S1729300AbgEKIg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 04:36:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729241AbgEKIg5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 04:36:33 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436282|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0537608-0.000255462-0.945984;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03278;MF=liaoweixiong@allwinnertech.com;NM=1;PH=DS;RN=16;RT=16;SR=0;TI=SMTPD_---.HWnA6YQ_1589186181;
-Received: from 172.16.10.102(mailfrom:liaoweixiong@allwinnertech.com fp:SMTPD_---.HWnA6YQ_1589186181)
-          by smtp.aliyun-inc.com(10.147.43.230);
-          Mon, 11 May 2020 16:36:21 +0800
-Subject: Re: [PATCH v7 10/18] pstore/zone,blk: Add support for pmsg frontend
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Rob Herring <robh@kernel.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org
-References: <20200510202436.63222-1-keescook@chromium.org>
- <20200510202436.63222-11-keescook@chromium.org>
-From:   WeiXiong Liao <liaoweixiong@allwinnertech.com>
-Message-ID: <3b14333e-9f9b-9ac5-e30e-79b42bbd6526@allwinnertech.com>
-Date:   Mon, 11 May 2020 16:36:30 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        Mon, 11 May 2020 04:36:57 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6004EC061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 01:36:57 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id j3so8490997ljg.8
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 01:36:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uTACYE7j0scanHP1lxZqHebprajc44vIBRsVz41w1FU=;
+        b=IRo21g2UTz2wmtpeTcPJx7UUpRTtwLL1rFWgrmQzT9mraEXHG9ZK/MMBZ1qOnIxwdP
+         o5BSUwO73QF94BWtOWI2uMunqOcho4CN4TW5LcsXlW6xhhaVG0Ly3mEcyZYuGjrEBBhT
+         SPqTmmaIjGzwd6Km+xVXYH/zjVMKhCSuUtqSKDOKS5wPMgiGWbbNJAbW/qMRjd+mzVod
+         qw234RUJl2cafH13spJTPpW/vd2MaZzm06P44efEahI4xa3bctvo9GW83Tb0+epDkv4b
+         rFRZtnl08HNO4LghwwFRHSnUoRF6xHF5PqRSEB6THrwt59isxybZXHbtR0HdbxpWSaEK
+         mx9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uTACYE7j0scanHP1lxZqHebprajc44vIBRsVz41w1FU=;
+        b=oMKCE83t8+3yDdYB4qdJsmaTfWiqmodKpsk2MpYto4tCUW3fNDBQg3M1kkt/1mfZq/
+         MAMgvp7x+6b2tlwCGAwI7cs33x+A8oBtr4sGKJixTR42FIL9zlD5QHcy3X/XpKU4WyAo
+         DyplwFmQ7I3AibduOjl+k21V/g+WYwxH1aapxltOqoJEPlwSeSMjn/lr1SpCWJYFBuz+
+         PXkdw3+kipBbqzGbwpbehw0I2+HSGHi4wfntauQTnUxt5ZJOUI+QpWG3HvVEv2KsDUR4
+         S2Nwp9RlezggcHKOecw0e9Fyeo6b1BD4pezgWm2bwCDak+rXJ1JiQMcGA+P72nXnDkPX
+         fkLA==
+X-Gm-Message-State: AOAM530uNOGhuG64CceSSsxJgX+5nzt6xjCFODVMcGmX1n3T+yLEpYSJ
+        f3n+rKoAU6Mj4W8cWM9siQApsLZ98GB8MzIfYp+HSg==
+X-Google-Smtp-Source: ABdhPJztZwJvJ8ran123zF7xFEPIgEE2FXK5DJ8V4rnxI8D4hL96VJZqW9neFSjHxr2lnN20DmLboYSbcjDbc549mfU=
+X-Received: by 2002:a2e:8046:: with SMTP id p6mr9040662ljg.21.1589186215684;
+ Mon, 11 May 2020 01:36:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200510202436.63222-11-keescook@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200506141821.GA9773@lorien.usersys.redhat.com>
+ <20200507203612.GF19331@lorien.usersys.redhat.com> <20200508151515.GA25974@geo.homenetwork>
+ <CAKfTPtCeA1VcEierR5iyQJApU5JMFQqkMSR+2JGU4o5cG76opQ@mail.gmail.com> <20200508170213.GA27353@geo.homenetwork>
+In-Reply-To: <20200508170213.GA27353@geo.homenetwork>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Mon, 11 May 2020 10:36:43 +0200
+Message-ID: <CAKfTPtC_YFEPJukbvdo0TKSke1NW9Cw3VsNQFM5u_o4UPKG8=A@mail.gmail.com>
+Subject: Re: [PATCH v2] sched/fair: Fix enqueue_task_fair warning some more
+To:     Tao Zhou <zohooouoto@zoho.com.cn>
+Cc:     Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Tao Zhou <ouwen210@hotmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hi Kees Cook,
+Hi Tao,
 
-On 2020/5/11 AM 4:24, Kees Cook wrote:
-> From: WeiXiong Liao <liaoweixiong@allwinnertech.com>
-> 
-> Add pmsg support to pstore/blk (through pstore/zone). To enable, pmsg_size
-> must be greater than 0 and a multiple of 4096.
-> 
-> Signed-off-by: WeiXiong Liao <liaoweixiong@allwinnertech.com>
-> Link: https://lore.kernel.org/r/1585126506-18635-5-git-send-email-liaoweixiong@allwinnertech.com
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  fs/pstore/Kconfig           |  12 ++
->  fs/pstore/blk.c             |   9 ++
->  fs/pstore/zone.c            | 269 ++++++++++++++++++++++++++++++++++--
->  include/linux/pstore_zone.h |   2 +
->  4 files changed, 282 insertions(+), 10 deletions(-)
-> 
-> diff --git a/fs/pstore/Kconfig b/fs/pstore/Kconfig
-> index 92ba73bd0b62..f18cd126d83f 100644
-> --- a/fs/pstore/Kconfig
-> +++ b/fs/pstore/Kconfig
-> @@ -224,3 +224,15 @@ config PSTORE_BLK_MAX_REASON
->  
->  	  NOTE that, both Kconfig and module parameters can configure
->  	  pstore/blk, but module parameters have priority over Kconfig.
-> +
-> +config PSTORE_BLK_PMSG_SIZE
-> +	int "Size in Kbytes of pmsg to store"
-> +	depends on PSTORE_BLK
-> +	depends on PSTORE_PMSG
-> +	default 64
-> +	help
-> +	  This just sets size of pmsg (pmsg_size) for pstore/blk. The size is
-> +	  in KB and must be a multiple of 4.
-> +
-> +	  NOTE that, both Kconfig and module parameters can configure
-> +	  pstore/blk, but module parameters have priority over Kconfig.
-> diff --git a/fs/pstore/blk.c b/fs/pstore/blk.c
-> index cec1fa261d1b..516a5f80d627 100644
-> --- a/fs/pstore/blk.c
-> +++ b/fs/pstore/blk.c
-> @@ -27,6 +27,14 @@ module_param(max_reason, int, 0400);
->  MODULE_PARM_DESC(max_reason,
->  		 "maximum reason for kmsg dump (default 2: Oops and Panic)");
->  
-> +#if IS_ENABLED(CONFIG_PSTORE_PMSG)
-> +static long pmsg_size = CONFIG_PSTORE_BLK_PMSG_SIZE;
-> +#else
-> +static long pmsg_size = -1;
-> +#endif
-> +module_param(pmsg_size, long, 0400);
-> +MODULE_PARM_DESC(pmsg_size, "pmsg size in kbytes");
-> +
->  /*
->   * blkdev - the block device to use for pstore storage
->   *
-> @@ -132,6 +140,7 @@ static int psblk_register_do(struct pstore_device_info *dev)
->  	}
->  
->  	verify_size(kmsg_size, 4096, dev->flags & PSTORE_FLAGS_DMESG);
-> +	verify_size(pmsg_size, 4096, dev->flags & PSTORE_FLAGS_PMSG);
->  #undef verify_size
->  
->  	pstore_zone_info->total_size = dev->total_size;
-> diff --git a/fs/pstore/zone.c b/fs/pstore/zone.c
-> index a388c299ebb1..03dc87791c24 100644
-> --- a/fs/pstore/zone.c
-> +++ b/fs/pstore/zone.c
-> @@ -27,12 +27,14 @@
->   *
->   * @sig: signature to indicate header (PSZ_SIG xor PSZONE-type value)
->   * @datalen: length of data in @data
-> + * @start: offset into @data where the beginning of the stored bytes begin
->   * @data: zone data.
->   */
->  struct psz_buffer {
->  #define PSZ_SIG (0x43474244) /* DBGC */
->  	uint32_t sig;
->  	atomic_t datalen;
-> +	atomic_t start;
->  	uint8_t data[];
->  };
->  
-> @@ -88,9 +90,11 @@ struct pstore_zone {
->   * struct psz_context - all about running state of pstore/zone
->   *
->   * @opszs: oops/panic storage zones
-> + * @ppsz: pmsg storage zone
->   * @kmsg_max_cnt: max count of @opszs
->   * @kmsg_read_cnt: counter to read oops zone
->   * @kmsg_write_cnt: counter to write
-> + * @pmsg_read_cnt: counter to read pmsg zone
->   * @oops_counter: counter to oops
->   * @panic_counter: counter to panic
->   * @recovered: whether finish recovering data from storage
-> @@ -101,9 +105,11 @@ struct pstore_zone {
->   */
->  struct psz_context {
->  	struct pstore_zone **opszs;
-> +	struct pstore_zone *ppsz;
->  	unsigned int kmsg_max_cnt;
->  	unsigned int kmsg_read_cnt;
->  	unsigned int kmsg_write_cnt;
-> +	unsigned int pmsg_read_cnt;
->  	/*
->  	 * the counter should be recovered when recover.
->  	 * It records the oops/panic times after burning rather than booting.
-> @@ -143,15 +149,20 @@ static inline int buffer_datalen(struct pstore_zone *zone)
->  	return atomic_read(&zone->buffer->datalen);
->  }
->  
-> +static inline int buffer_start(struct pstore_zone *zone)
-> +{
-> +	return atomic_read(&zone->buffer->start);
-> +}
-> +
->  static inline bool is_on_panic(void)
->  {
->  	return atomic_read(&pstore_zone_cxt.on_panic);
->  }
->  
-> -static ssize_t psz_zone_read(struct pstore_zone *zone, char *buf,
-> +static ssize_t psz_zone_read_buffer(struct pstore_zone *zone, char *buf,
->  		size_t len, unsigned long off)
->  {
-> -	if (!buf || !zone->buffer)
-> +	if (!buf || !zone || !zone->buffer)
->  		return -EINVAL;
->  	if (off > zone->buffer_size)
->  		return -EINVAL;
-> @@ -160,6 +171,18 @@ static ssize_t psz_zone_read(struct pstore_zone *zone, char *buf,
->  	return len;
->  }
->  
-> +static int psz_zone_read_oldbuf(struct pstore_zone *zone, char *buf,
-> +		size_t len, unsigned long off)
-> +{
-> +	if (!buf || !zone || !zone->oldbuf)
-> +		return -EINVAL;
-> +	if (off > zone->buffer_size)
-> +		return -EINVAL;
-> +	len = min_t(size_t, len, zone->buffer_size - off);
-> +	memcpy(buf, zone->oldbuf->data + off, len);
-> +	return 0;
-> +}
-> +
->  static int psz_zone_write(struct pstore_zone *zone,
->  		enum psz_flush_mode flush_mode, const char *buf,
->  		size_t len, unsigned long off)
-> @@ -415,6 +438,93 @@ static int psz_kmsg_recover(struct psz_context *cxt)
->  	return ret;
->  }
->  
-> +static int psz_recover_zone(struct psz_context *cxt, struct pstore_zone *zone)
-> +{
-> +	struct pstore_zone_info *info = cxt->pstore_zone_info;
-> +	struct psz_buffer *oldbuf, tmpbuf;
-> +	int ret = 0;
-> +	char *buf;
-> +	ssize_t rcnt, len, start, off;
-> +
-> +	if (!zone || zone->oldbuf)
-> +		return 0;
-> +
-> +	if (is_on_panic()) {
-> +		/* save data as much as possible */
-> +		psz_flush_dirty_zone(zone);
-> +		return 0;
-> +	}
-> +
-> +	if (unlikely(!info->read))
-> +		return -EINVAL;
-> +
-> +	len = sizeof(struct psz_buffer);
-> +	rcnt = info->read((char *)&tmpbuf, len, zone->off);
-> +	if (rcnt != len) {
-> +		pr_debug("read zone %s failed\n", zone->name);
-> +		return (int)rcnt < 0 ? (int)rcnt : -EIO;
-> +	}
-> +
-> +	if (tmpbuf.sig != zone->buffer->sig) {
-> +		pr_debug("no valid data in zone %s\n", zone->name);
-> +		return 0;
-> +	}
-> +
-> +	if (zone->buffer_size < atomic_read(&tmpbuf.datalen) ||
-> +		zone->buffer_size < atomic_read(&tmpbuf.start)) {
-> +		pr_info("found overtop zone: %s: off %lld, size %zu\n",
-> +				zone->name, zone->off, zone->buffer_size);
-> +		/* just keep going */
-> +		return 0;
-> +	}
-> +
-> +	if (!atomic_read(&tmpbuf.datalen)) {
-> +		pr_debug("found erased zone: %s: off %lld, size %zu, datalen %d\n",
-> +				zone->name, zone->off, zone->buffer_size,
-> +				atomic_read(&tmpbuf.datalen));
-> +		return 0;
-> +	}
-> +
-> +	pr_debug("found nice zone: %s: off %lld, size %zu, datalen %d\n",
-> +			zone->name, zone->off, zone->buffer_size,
-> +			atomic_read(&tmpbuf.datalen));
-> +
-> +	len = atomic_read(&tmpbuf.datalen) + sizeof(*oldbuf);
-> +	oldbuf = kzalloc(len, GFP_KERNEL);
-> +	if (!oldbuf)
-> +		return -ENOMEM;
-> +
-> +	memcpy(oldbuf, &tmpbuf, sizeof(*oldbuf));
-> +	buf = (char *)oldbuf + sizeof(*oldbuf);
-> +	len = atomic_read(&oldbuf->datalen);
-> +	start = atomic_read(&oldbuf->start);
-> +	off = zone->off + sizeof(*oldbuf);
-> +
-> +	/* get part of data */
-> +	rcnt = info->read(buf, len - start, off + start);
-> +	if (rcnt != len - start) {
-> +		pr_err("read zone %s failed\n", zone->name);
-> +		ret = (int)rcnt < 0 ? (int)rcnt : -EIO;
-> +		goto free_oldbuf;
-> +	}
-> +
-> +	/* get the rest of data */
-> +	rcnt = info->read(buf + len - start, start, off);
-> +	if (rcnt != start) {
-> +		pr_err("read zone %s failed\n", zone->name);
-> +		ret = (int)rcnt < 0 ? (int)rcnt : -EIO;
-> +		goto free_oldbuf;
-> +	}
-> +
-> +	zone->oldbuf = oldbuf;
-> +	psz_flush_dirty_zone(zone);
-> +	return 0;
-> +
-> +free_oldbuf:
-> +	kfree(oldbuf);
-> +	return ret;
-> +}
-> +
->  /**
->   * psz_recovery() - recover data from storage
->   * @cxt: the context of pstore/zone
-> @@ -434,6 +544,10 @@ static inline int psz_recovery(struct psz_context *cxt)
->  	if (ret)
->  		goto recover_fail;
->  
-> +	ret = psz_recover_zone(cxt, cxt->ppsz);
-> +	if (ret)
-> +		goto recover_fail;
-> +
->  	pr_debug("recover end!\n");
->  	atomic_set(&cxt->recovered, 1);
->  	return 0;
-> @@ -448,9 +562,17 @@ static int psz_pstore_open(struct pstore_info *psi)
->  	struct psz_context *cxt = psi->data;
->  
->  	cxt->kmsg_read_cnt = 0;
-> +	cxt->pmsg_read_cnt = 0;
->  	return 0;
->  }
->  
-> +static inline bool psz_old_ok(struct pstore_zone *zone)
-> +{
-> +	if (zone && zone->oldbuf && atomic_read(&zone->oldbuf->datalen))
-> +		return true;
-> +	return false;
-> +}
-> +
->  static inline bool psz_ok(struct pstore_zone *zone)
->  {
->  	if (zone && zone->buffer && buffer_datalen(zone))
-> @@ -475,6 +597,25 @@ static inline int psz_kmsg_erase(struct psz_context *cxt,
->  	return psz_zone_write(zone, FLUSH_META, NULL, 0, 0);
->  }
->  
-> +static inline int psz_record_erase(struct psz_context *cxt,
-> +		struct pstore_zone *zone)
-> +{
-> +	if (unlikely(!psz_old_ok(zone)))
-> +		return 0;
-> +
-> +	kfree(zone->oldbuf);
-> +	zone->oldbuf = NULL;
-> +	/*
-> +	 * if there are new data in zone buffer, that means the old data
-> +	 * are already invalid. It is no need to flush 0 (erase) to
-> +	 * block device.
-> +	 */
-> +	if (!buffer_datalen(zone))
-> +		return psz_zone_write(zone, FLUSH_META, NULL, 0, 0);
-> +	psz_flush_dirty_zone(zone);
-> +	return 0;
-> +}
-> +
->  static int psz_pstore_erase(struct pstore_record *record)
->  {
->  	struct psz_context *cxt = record->psi->data;
-> @@ -484,6 +625,8 @@ static int psz_pstore_erase(struct pstore_record *record)
->  		if (record->id >= cxt->kmsg_max_cnt)
->  			return -EINVAL;
->  		return psz_kmsg_erase(cxt, cxt->opszs[record->id], record);
-> +	case PSTORE_TYPE_PMSG:
-> +		return psz_record_erase(cxt, cxt->ppsz);
->  	default:
->  		return -EINVAL;
->  	}
-> @@ -504,8 +647,10 @@ static void psz_write_kmsg_hdr(struct pstore_zone *zone,
->  	hdr->reason = record->reason;
->  	if (hdr->reason == KMSG_DUMP_OOPS)
->  		hdr->counter = ++cxt->oops_counter;
-> -	else
-> +	else if (hdr->reason == KMSG_DUMP_PANIC)
->  		hdr->counter = ++cxt->panic_counter;
-> +	else
-> +		hdr->counter = 0;
+On Fri, 8 May 2020 at 18:58, Tao Zhou <zohooouoto@zoho.com.cn> wrote:
+>
+> On Fri, May 08, 2020 at 05:27:44PM +0200, Vincent Guittot wrote:
+> > On Fri, 8 May 2020 at 17:12, Tao Zhou <zohooouoto@zoho.com.cn> wrote:
+> > >
+> > > Hi Phil,
+> > >
+> > > On Thu, May 07, 2020 at 04:36:12PM -0400, Phil Auld wrote:
+> > > > sched/fair: Fix enqueue_task_fair warning some more
+> > > >
+> > > > The recent patch, fe61468b2cb (sched/fair: Fix enqueue_task_fair warning)
+> > > > did not fully resolve the issues with the rq->tmp_alone_branch !=
+> > > > &rq->leaf_cfs_rq_list warning in enqueue_task_fair. There is a case where
+> > > > the first for_each_sched_entity loop exits due to on_rq, having incompletely
+> > > > updated the list.  In this case the second for_each_sched_entity loop can
+> > > > further modify se. The later code to fix up the list management fails to do
+> > > > what is needed because se no longer points to the sched_entity which broke
+> > > > out of the first loop.
+> > > >
+> > >
+> > > > Address this by calling leaf_add_rq_list if there are throttled parents while
+> > > > doing the second for_each_sched_entity loop.
+> > >
+> > > Thanks for your trace imformation and explanation. I
+> > > truely have learned from this and that.
+> > >
+> > > s/leaf_add_rq_list/list_add_leaf_cfs_rq/
+> > >
+> > > >
+> > > > Suggested-by: Vincent Guittot <vincent.guittot@linaro.org>
+> > > > Signed-off-by: Phil Auld <pauld@redhat.com>
+> > > > Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > > > Cc: Vincent Guittot <vincent.guittot@linaro.org>
+> > > > Cc: Ingo Molnar <mingo@kernel.org>
+> > > > Cc: Juri Lelli <juri.lelli@redhat.com>
+> > > > ---
+> > > >  kernel/sched/fair.c | 7 +++++++
+> > > >  1 file changed, 7 insertions(+)
+> > > >
+> > > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > > > index 02f323b85b6d..c6d57c334d51 100644
+> > > > --- a/kernel/sched/fair.c
+> > > > +++ b/kernel/sched/fair.c
+> > > > @@ -5479,6 +5479,13 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
+> > > >               /* end evaluation on encountering a throttled cfs_rq */
+> > > >               if (cfs_rq_throttled(cfs_rq))
+> > > >                       goto enqueue_throttle;
+> > > > +
+> > > > +               /*
+> > > > +                * One parent has been throttled and cfs_rq removed from the
+> > > > +                * list. Add it back to not break the leaf list.
+> > > > +                */
+> > > > +               if (throttled_hierarchy(cfs_rq))
+> > > > +                       list_add_leaf_cfs_rq(cfs_rq);
+> > > >       }
+> > >
+> > > I was confused by why the throttled cfs rq can be on list.
+> > > It is possible when enqueue a task and thanks to the 'threads'.
+> > > But I think the above comment does not truely put the right
+> > > intention, right ?
+> > > If throttled parent is onlist, the child cfs_rq is ignored
+> > > to be added to the leaf cfs_rq list me think.
+> > >
+> > > unthrottle_cfs_rq() follows the same logic if i am not wrong.
+> > > Is it necessary to add the above to it ?
+> >
+> > When a cfs_rq is throttled, its sched group is dequeued and all child
+> > cfs_rq are removed from  leaf_cfs_rq list. But the sched group of the
+> > child cfs_rq stay enqueued in the throttled cfs_rq so child sched
+> > group->on_rq might be still set.
+>
+> If there is a throttle of throttle, and unthrottle the child throttled
+> cfs_rq(ugly):
+>                                ...
+>                                 |
+>                       cfs_rq throttled (parent A)
+>                                 |
+>                                 |
+>                       cfs_rq in hierarchy (B)
+>                                 |
+>                                 |
+>                       cfs_rq throttled (C)
+>                                 |
+>                                ...
+>
+> Then unthrottle the child throttled cfs_rq C, now the A is on the
+> leaf_cfs_rq list. sched_group entity of C is enqueued to B, and
+> sched_group entity of B is on_rq and is ignored by enqueue but in
+> the throttled hierarchy and not add to leaf_cfs_rq list.
+> The above may be absolutely wrong that I miss something.
 
-I think
-This difference should move to first patch to support
+several things:
 
->  }
->  
->  static inline int notrace psz_kmsg_write_record(struct psz_context *cxt,
-> @@ -555,6 +700,53 @@ static int notrace psz_kmsg_write(struct psz_context *cxt,
->  	return 0;
->  }
->  
-> +static int notrace psz_record_write(struct pstore_zone *zone,
-> +		struct pstore_record *record)
-> +{
-> +	size_t start, rem;
-> +	int cnt = record->size;
-> +	bool is_full_data = false;
-> +	char *buf = record->buf;
-> +
-> +	if (!zone || !record)
-> +		return -ENOSPC;
-> +
-> +	if (atomic_read(&zone->buffer->datalen) >= zone->buffer_size)
-> +		is_full_data = true;
-> +
-> +	if (unlikely(cnt > zone->buffer_size)) {
-> +		buf += cnt - zone->buffer_size;
-> +		cnt = zone->buffer_size;
-> +	}
-> +
-> +	start = buffer_start(zone);
-> +	rem = zone->buffer_size - start;
-> +	if (unlikely(rem < cnt)) {
-> +		psz_zone_write(zone, FLUSH_PART, buf, rem, start);
-> +		buf += rem;
-> +		cnt -= rem;
-> +		start = 0;
-> +		is_full_data = true;
-> +	}
-> +
-> +	atomic_set(&zone->buffer->start, cnt + start);
-> +	psz_zone_write(zone, FLUSH_PART, buf, cnt, start);
-> +
-> +	/**
-> +	 * psz_zone_write will set datalen as start + cnt.
-> +	 * It work if actual data length lesser than buffer size.
-> +	 * If data length greater than buffer size, pmsg will rewrite to
-> +	 * beginning of zone, which make buffer->datalen wrongly.
-> +	 * So we should reset datalen as buffer size once actual data length
-> +	 * greater than buffer size.
-> +	 */
-> +	if (is_full_data) {
-> +		atomic_set(&zone->buffer->datalen, zone->buffer_size);
-> +		psz_zone_write(zone, FLUSH_META, NULL, 0, 0);
-> +	}
-> +	return 0;
-> +}
-> +
->  static int notrace psz_pstore_write(struct pstore_record *record)
->  {
->  	struct psz_context *cxt = record->psi->data;
-> @@ -566,6 +758,8 @@ static int notrace psz_pstore_write(struct pstore_record *record)
->  	switch (record->type) {
->  	case PSTORE_TYPE_DMESG:
->  		return psz_kmsg_write(cxt, record);
-> +	case PSTORE_TYPE_PMSG:
-> +		return psz_record_write(cxt->ppsz, record);
->  	default:
->  		return -EINVAL;
->  	}
-> @@ -581,6 +775,13 @@ static struct pstore_zone *psz_read_next_zone(struct psz_context *cxt)
->  			return zone;
->  	}
->  
-> +	if (cxt->pmsg_read_cnt == 0) {
-> +		cxt->pmsg_read_cnt++;
-> +		zone = cxt->ppsz;
-> +		if (psz_old_ok(zone))
-> +			return zone;
-> +	}
-> +
->  	return NULL;
->  }
->  
-> @@ -631,7 +832,7 @@ static ssize_t psz_kmsg_read(struct pstore_zone *zone,
->  			return -ENOMEM;
->  	}
->  
-> -	size = psz_zone_read(zone, record->buf + hlen, size,
-> +	size = psz_zone_read_buffer(zone, record->buf + hlen, size,
->  			sizeof(struct psz_kmsg_header));
->  	if (unlikely(size < 0)) {
->  		kfree(record->buf);
-> @@ -641,6 +842,32 @@ static ssize_t psz_kmsg_read(struct pstore_zone *zone,
->  	return size + hlen;
->  }
->  
-> +static ssize_t psz_record_read(struct pstore_zone *zone,
-> +		struct pstore_record *record)
-> +{
-> +	size_t len;
-> +	struct psz_buffer *buf;
-> +
-> +	if (!zone || !record)
-> +		return -ENOSPC;
-> +
-> +	buf = (struct psz_buffer *)zone->oldbuf;
-> +	if (!buf)
-> +		return -ENOMSG;
-> +
-> +	len = atomic_read(&buf->datalen);
-> +	record->buf = kmalloc(len, GFP_KERNEL);
-> +	if (!record->buf)
-> +		return -ENOMEM;
-> +
-> +	if (unlikely(psz_zone_read_oldbuf(zone, record->buf, len, 0))) {
-> +		kfree(record->buf);
-> +		return -ENOMSG;
-> +	}
-> +
-> +	return len;
-> +}
-> +
->  static ssize_t psz_pstore_read(struct pstore_record *record)
->  {
->  	struct psz_context *cxt = record->psi->data;
-> @@ -665,6 +892,9 @@ static ssize_t psz_pstore_read(struct pstore_record *record)
->  		readop = psz_kmsg_read;
->  		record->id = cxt->kmsg_read_cnt - 1;
->  		break;
-> +	case PSTORE_TYPE_PMSG:
-> +		readop = psz_record_read;
-> +		break;
->  	default:
->  		goto next_zone;
->  	}
-> @@ -720,6 +950,8 @@ static void psz_free_all_zones(struct psz_context *cxt)
->  {
->  	if (cxt->opszs)
->  		psz_free_zones(&cxt->opszs, &cxt->kmsg_max_cnt);
-> +	if (cxt->ppsz)
-> +		psz_free_zone(&cxt->ppsz);
->  }
->  
->  static struct pstore_zone *psz_init_zone(enum pstore_type_id type,
-> @@ -753,8 +985,10 @@ static struct pstore_zone *psz_init_zone(enum pstore_type_id type,
->  	zone->type = type;
->  	zone->buffer_size = size - sizeof(struct psz_buffer);
->  	zone->buffer->sig = type ^ PSZ_SIG;
-> +	zone->oldbuf = NULL;
->  	atomic_set(&zone->dirty, 0);
->  	atomic_set(&zone->buffer->datalen, 0);
-> +	atomic_set(&zone->buffer->start, 0);
->  
->  	*off += size;
->  
-> @@ -809,19 +1043,28 @@ static int psz_alloc_zones(struct psz_context *cxt)
->  	struct pstore_zone_info *info = cxt->pstore_zone_info;
->  	loff_t off = 0;
->  	int err;
-> -	size_t size;
-> +	size_t off_size = 0;
-> +
-> +	off_size += info->pmsg_size;
-> +	cxt->ppsz = psz_init_zone(PSTORE_TYPE_PMSG, &off, info->pmsg_size);
-> +	if (IS_ERR(cxt->ppsz)) {
-> +		err = PTR_ERR(cxt->ppsz);
-> +		cxt->ppsz = NULL;
-> +		goto free_out;
-> +	}
->  
-> -	size = info->total_size;
-> -	cxt->opszs = psz_init_zones(PSTORE_TYPE_DMESG, &off, size,
-> +	cxt->opszs = psz_init_zones(PSTORE_TYPE_DMESG, &off,
-> +			info->total_size - off_size,
->  			info->kmsg_size, &cxt->kmsg_max_cnt);
->  	if (IS_ERR(cxt->opszs)) {
->  		err = PTR_ERR(cxt->opszs);
->  		cxt->opszs = NULL;
-> -		goto fail_out;
-> +		goto free_out;
->  	}
->  
->  	return 0;
-> -fail_out:
-> +free_out:
-> +	psz_free_all_zones(cxt);
->  	return err;
->  }
->  
-> @@ -844,7 +1087,7 @@ int register_pstore_zone(struct pstore_zone_info *info)
->  		return -EINVAL;
->  	}
->  
-> -	if (!info->kmsg_size) {
-> +	if (!info->kmsg_size && !info->pmsg_size) {
->  		pr_warn("at least one record size must be non-zero\n");
->  		return -EINVAL;
->  	}
-> @@ -866,6 +1109,7 @@ int register_pstore_zone(struct pstore_zone_info *info)
->  
->  	check_size(total_size, 4096);
->  	check_size(kmsg_size, SECTOR_SIZE);
-> +	check_size(pmsg_size, SECTOR_SIZE);
->  
->  #undef check_size
->  
-> @@ -891,6 +1135,7 @@ int register_pstore_zone(struct pstore_zone_info *info)
->  	pr_debug("register %s with properties:\n", info->name);
->  	pr_debug("\ttotal size : %ld Bytes\n", info->total_size);
->  	pr_debug("\tkmsg size : %ld Bytes\n", info->kmsg_size);
-> +	pr_debug("\tpmsg size : %ld Bytes\n", info->pmsg_size);
->  
->  	err = psz_alloc_zones(cxt);
->  	if (err) {
-> @@ -920,6 +1165,10 @@ int register_pstore_zone(struct pstore_zone_info *info)
->  			pr_cont(",panic_write");
->  		pr_cont(")");
->  	}
-> +	if (info->pmsg_size) {
-> +		cxt->pstore.flags |= PSTORE_FLAGS_PMSG;
-> +		pr_cont(" pmsg");
-> +	}
->  	pr_cont("\n");
->  
->  	err = pstore_register(&cxt->pstore);
-> diff --git a/include/linux/pstore_zone.h b/include/linux/pstore_zone.h
-> index eb005d9ae40c..29c367a3bd80 100644
-> --- a/include/linux/pstore_zone.h
-> +++ b/include/linux/pstore_zone.h
-> @@ -17,6 +17,7 @@ typedef ssize_t (*pstore_zone_write_op)(const char *, size_t, loff_t);
->   * @kmsg_size:	The size of oops/panic zone. Zero means disabled, otherwise,
->   *		it must be multiple of SECTOR_SIZE(512 Bytes).
->   * @max_reason: Maximum kmsg dump reason to store.
-> + * @pmsg_size:	The size of pmsg zone which is the same as @kmsg_size.
->   * @read:	The general read operation. Both of the function parameters
->   *		@size and @offset are relative value to storage.
->   *		On success, the number of bytes should be returned, others
-> @@ -33,6 +34,7 @@ struct pstore_zone_info {
->  	unsigned long total_size;
->  	unsigned long kmsg_size;
->  	int max_reason;
-> +	unsigned long pmsg_size;
->  	pstore_zone_read_op read;
->  	pstore_zone_write_op write;
->  	pstore_zone_write_op panic_write;
-> 
+your example above is safe IMO because when C is unthrottle, It's
+group se will be enqueued on B which will be added to leaf_cfs_rq
+list.
+Then the group se of B is already on_rq but A is throttled and the 1st
+loop break.  The 2nd loop will ensure that A is added to leaf_cfs_rq
+list
 
--- 
-WeiXiong Liao
+Now, if we add one more level between C and A, we have a problem and
+we should add something similar in the else
+
+Finally, while checking the unthrottle_cfs_rq, the test if
+(!cfs_rq->load.weight) return"  skips all the for_each_entity loop and
+can break the leaf_cfs_rq
+
+We need to jump to the last loop in such case
+
+>
+> Another thing :
+> In enqueue_task_fair():
+>
+>         for_each_sched_entity(se) {
+>                 cfs_rq = cfs_rq_of(se);
+>
+>                 if (list_add_leaf_cfs_rq(cfs_rq))
+>                         break;
+>         }
+>
+> In unthrottle_cfs_rq():
+>
+>         for_each_sched_entity(se) {
+>                 cfs_rq = cfs_rq_of(se);
+>
+>                 list_add_leaf_cfs_rq(cfs_rq);
+>         }
+>
+> The difference between them is that if condition, add if
+> condition to unthrottle_cfs_rq() may be an optimization and
+> keep the same.
+
+Yes we can do the same kind of optimization
+
+>
+> > >
+> > > Thanks,
+> > > Tau
+> > >
+> > > >
+> > > >  enqueue_throttle:
+> > > > --
+> > > > 2.18.0
+> > > >
+> > > > V2 rework the fix based on Vincent's suggestion. Thanks Vincent.
+> > > >
+> > > >
+> > > > Cheers,
+> > > > Phil
+> > > >
+> > > > --
+> > > >
