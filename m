@@ -2,121 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9D7F1CDFD3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 18:02:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAA5A1CDFE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 18:05:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730331AbgEKQC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 12:02:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54056 "EHLO
+        id S1730542AbgEKQFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 12:05:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729802AbgEKQC3 (ORCPT
+        by vger.kernel.org with ESMTP id S1730303AbgEKQFG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 12:02:29 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC396C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 09:02:28 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id e26so18607960wmk.5
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 09:02:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YJxLpJX62Fekaa+AoIWZZCIoU3KlFpvhoNLivrRXfy0=;
-        b=uv/YZnkNB3ieOwzEoD7DCWpFpAn+e/KKj67tegbx5RTEoNCuSd/EAzBjup0e9sx0K8
-         /mY90Bfv1qB2WQ4Yvi98RQtvi7IHohDApmRWP6Dk5I61Qa6Bm/uSvVKg8/JhOyBeXlE8
-         nTATGRzTclMXnN4nzeAazZGf3P4ZP0h2F049N6/eaGWwhE30RlY9o2sM7ZWmFitx9uX/
-         zPAGOX2FnmhjfBGWIIjjiZPeThZM2hYn5g0cnMbFaM0UDtrj17O5kMJkGq/CLQU4dqS7
-         VPrG8ITNOqjV0naX6BbyG5ftg+IT3O1MBbW9rbj4/Apb/9es0DgNxSzA2HAEujAMiv0H
-         kZ/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YJxLpJX62Fekaa+AoIWZZCIoU3KlFpvhoNLivrRXfy0=;
-        b=j6DPpHYQlAOEsCNaLkk/aiairfdVlztZEoFDyiWnAUyPKpgk2k8bsvdA719GTcciM7
-         t9Vo34YsmCgxJPZA9IF8R2PqRlnItCEX9NGD8il/pdzpdLDUQ4ue6rMOrIwlNq06GvxU
-         c4lSiZcDrwuttZGE3HsVrOvOAmgtLzaPVTDvD6rSCxzBLWbAoAaNd2POy5GBWYCIMJhA
-         inRXX+Udh/u9PED4hOr3ahTDzuGnAYzIRUA91/EUslAacZslkiudXOLD7KkvSetPgKA1
-         x1oiQviwRokbdgkhUYFtG5fJhpZvfI/Ux2RWNzCJZYAcqnedby8JXRTpSMmF4PXgXkPg
-         qyBw==
-X-Gm-Message-State: AGi0PuYMhJJaD1hfhOVGmf0XjP+oVdQ1Irsse0ctgihx495iZALz4d6I
-        DyF6r7M+ckNP+nnyjA/xVhIUgQ==
-X-Google-Smtp-Source: APiQypJf2L0prcQVNRJ7wp9Af8wHYgkMBEEqatM3HbAZY3RC7lUVWyWWeVTHGg5jc/YsIzU0qNqOgg==
-X-Received: by 2002:a7b:c931:: with SMTP id h17mr34342830wml.105.1589212947333;
-        Mon, 11 May 2020 09:02:27 -0700 (PDT)
-Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
-        by smtp.gmail.com with ESMTPSA id v124sm27068657wme.45.2020.05.11.09.02.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2020 09:02:26 -0700 (PDT)
-Date:   Mon, 11 May 2020 17:02:24 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     jason.wessel@windriver.com, gregkh@linuxfoundation.org,
-        corbet@lwn.net, frowand.list@gmail.com, bjorn.andersson@linaro.org,
-        linux-serial@vger.kernel.org, mingo@redhat.com, hpa@zytor.com,
-        jslaby@suse.com, kgdb-bugreport@lists.sourceforge.net,
-        sumit.garg@linaro.org, will@kernel.org, tglx@linutronix.de,
-        agross@kernel.org, catalin.marinas@arm.com, bp@alien8.de,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 07/12] kgdboc: Remove useless #ifdef
- CONFIG_KGDB_SERIAL_CONSOLE in kgdboc
-Message-ID: <20200511160224.cvelsmnpxc2ykgzb@holly.lan>
-References: <20200507200850.60646-1-dianders@chromium.org>
- <20200507130644.v4.7.Icb528f03d0026d957e60f537aa711ada6fd219dc@changeid>
+        Mon, 11 May 2020 12:05:06 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8031AC061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 09:05:06 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 1897E2A0A89;
+        Mon, 11 May 2020 17:05:04 +0100 (BST)
+Date:   Mon, 11 May 2020 18:05:00 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Parshuram Thombare <pthombar@cadence.com>
+Cc:     <bbrezillon@kernel.org>, <vitor.soares@synopsys.com>,
+        <pgaj@cadence.com>, <linux-i3c@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <mparab@cadence.com>,
+        <praneeth@ti.com>
+Subject: Re: [PATCH v7 1/7] i3c: master: secondary master initialization
+ document
+Message-ID: <20200511180500.6e1c4453@collabora.com>
+In-Reply-To: <1589202759-5677-1-git-send-email-pthombar@cadence.com>
+References: <1589202702-4879-1-git-send-email-pthombar@cadence.com>
+        <1589202759-5677-1-git-send-email-pthombar@cadence.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200507130644.v4.7.Icb528f03d0026d957e60f537aa711ada6fd219dc@changeid>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 07, 2020 at 01:08:45PM -0700, Douglas Anderson wrote:
-> This file is only ever compiled if that config is on since the
-> Makefile says:
-> 
->   obj-$(CONFIG_KGDB_SERIAL_CONSOLE) += kgdboc.o
-> 
-> Let's get rid of the useless #ifdef.
-> 
-> Reported-by: Daniel Thompson <daniel.thompson@linaro.org>
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+On Mon, 11 May 2020 15:12:39 +0200
+Parshuram Thombare <pthombar@cadence.com> wrote:
 
-Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+> Document describing secondary master initialization,
+> mastership handover and DEFSLVS handling processes.
 
+Thanks for doing that, but you probably didn't try to compile the doc
+(the formatting is all messed up).
 
+# make htmldocs
+
+and then check the output in Documentation/output/ (open index.html
+with a web-browser and go to the i3c section).
+
+> 
+> Signed-off-by: Parshuram Thombare <pthombar@cadence.com>
 > ---
+>  Documentation/driver-api/i3c/index.rst        |   1 +
+>  .../i3c/secondary-master-initialization.rst   | 118 ++++++++++++++++++
+>  2 files changed, 119 insertions(+)
+>  create mode 100644 Documentation/driver-api/i3c/secondary-master-initialization.rst
 > 
-> Changes in v4:
-> - ("kgdboc: Remove useless #ifdef...") new for v4.
-> 
-> Changes in v3: None
-> Changes in v2: None
-> 
->  drivers/tty/serial/kgdboc.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/kgdboc.c b/drivers/tty/serial/kgdboc.c
-> index 519d8cfbfbed..2e9158fff976 100644
-> --- a/drivers/tty/serial/kgdboc.c
-> +++ b/drivers/tty/serial/kgdboc.c
-> @@ -380,7 +380,6 @@ static struct kgdb_io kgdboc_io_ops = {
->  	.post_exception		= kgdboc_post_exp_handler,
->  };
->  
-> -#ifdef CONFIG_KGDB_SERIAL_CONSOLE
->  static int kgdboc_option_setup(char *opt)
->  {
->  	if (!opt) {
-> @@ -409,7 +408,6 @@ static int __init kgdboc_early_init(char *opt)
->  }
->  
->  early_param("ekgdboc", kgdboc_early_init);
-> -#endif /* CONFIG_KGDB_SERIAL_CONSOLE */
->  
->  module_init(init_kgdboc);
->  module_exit(exit_kgdboc);
-> -- 
-> 2.26.2.645.ge9eca65c58-goog
-> 
+> diff --git a/Documentation/driver-api/i3c/index.rst b/Documentation/driver-api/i3c/index.rst
+> index 783d6dad054b..af2a0aa68f5b 100644
+> --- a/Documentation/driver-api/i3c/index.rst
+> +++ b/Documentation/driver-api/i3c/index.rst
+> @@ -9,3 +9,4 @@ I3C subsystem
+>     protocol
+>     device-driver-api
+>     master-driver-api
+> +   secondary-master-initialization
+> diff --git a/Documentation/driver-api/i3c/secondary-master-initialization.rst b/Documentation/driver-api/i3c/secondary-master-initialization.rst
+> new file mode 100644
+> index 000000000000..9d1869550807
+> --- /dev/null
+> +++ b/Documentation/driver-api/i3c/secondary-master-initialization.rst
+> @@ -0,0 +1,118 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +===================================
+> +I3C Secondary Master Initialization
+> +===================================
+> +
+> ++-----------------------------------------+-------------------------------------------+
+> +| **Main master**                         | **Secondary master**                      |
+> ++=========================================+===========================================+
+> +|                                         |                                           |
+> +| | Do I3C master controller specific     | | Do I3C master controller specefic       |
+> +|   initialization.                       |   initialization, except enabling         |
+> +|                                         |   the DEFSLVS interrupt.                  |
+> +| | Call i3c_master_register              | | Call i3c_secondary_master_register      |
+> +|                                         |                                           |
+> +|   *i3c_master_register*                 |   *i3c_secondary_master_register*         |
+> +|    | Initialize I3C master controller   |    | Initialize I3C master controller     |
+> +|      object.                            |      object.                              |
+> +|    | Scan I3C and I2C devices from DTS. |    | Scan I2C devices from DTS.           |
+> +|    | Set appropriate bus mode based on  |    | Set appropriate bus mode based on    |
+> +|      I2C devices information.           |      I3C and I2C devices information.     |
+> +|    | Create a work queue.               |    | Create a work queue.                 |
+> +|    | Call i3c_master_bus_init           |    | Call i3c_secondary_master_bus_init   |
+> +|                                         |                                           |
+> +|      *i3c_master_bus_init*              |      *i3c_secondary_master_bus_init*      |
+> +|       | Call bus_init to do controller  |       | Call bus_init to do controller    |
+> +|         specific bus initialization and |         specific bus initialization and   |
+> +|         enabling the controller.        |         enabling the controller.          |
+> +|       | Create I3C device representing a|       | Create I3C device representing a  |
+> +|         master and add it to the I3C    |         master and add it to the I3C      |
+> +|         device list.                    |         device list.                      |
+> +|       | Set current master to the device|                                           |
+> +|         created to represent I3C master |    | Allocate memory for 'defslvs_data',  |
+> +|         device.                         |      that will be used to pass I3C        |
+> +|       | Reset all dynamic address that  |      device list received in DEFSLVS      |
+> +|         may have been assigned before.  |      to I3C core DEFSLVS processing       |
+> +|       | Disable all slave events before |    | Add I3C device representing this     |
+> +|         starting DAA.                   |      master to the system.                |
+> +|       | Pre-assign dynamic address and  |    | Expose our I3C bus as an I2C adapter |
+> +|         retrieve device information if  |      so that I2C devices are exposed      |
+> +|         needed.                         |      through the I2C subsystem.           |
+> +|       | Do dynamic address assignment to|                                           |
+> +|         all I3C devices currenly present| | Enable DEFSLVS interrupt.               |
+> +|         on the bus.                     |                                           |
+> +|       | Create I3C devices representing |                                           |
+> +|         those found during DAA.         +-------------------------------------------+
+> +|       | Send DEFSVLS message            | | *DEFSLVS interrupt*                     |
+> +|         containing information about all| | Controller driver can chose how to      |
+> +|         known I3C and I2C devices.      |   to handle I2C devices received in       |
+> +|                                         |   DEFSLVS e.g. Cadence's controller       |
+> +|                                         |   driver ignore I2C devices from          |
+> +|                                         |   DEFSLVS and only uses I2C device        |
+> +|                                         |   information from DTS.                   |
+> +|                                         | | Read all I3C devices information        |
+> +|                                         |   from DEFSLVS message in hardware to     |
+> +|                                         |   defslvs_data in master object.          |
+> +|                                         | | Call i3c_master_process_defslvs         |
+> +|                                         |                                           |
+> +|                                         |   *i3c_master_process_defslvs*            |
+> +|                                         |    | Acquire I3c bus                      |
+> +|                                         |                                           |
+> +|                                         |      *i3c_master_acquire_bus*             |
+> +|    | Add I3C device representing this   |       | If device is already holding the  |
+> +|      master to the system.              |         mastership, just broadcast DISEC  |
+> +|    | Expose our I3C bus as an I2C       |         MR, HJ message and return.        |
+> +|      adapter so that I2C devices are    |       | Check if device has got a address |
+> +|      exposed through the I2C subsystem. |         by polling with a timeout.        |
+> +|    | Register all I3C devices.          |                                           |
+> +|                                         |       | Send MR request: Controller driver|
+> +|                                         |         should check if it is already in  |
+> +|                                         |         master mode, to handle the case   |
+> +|                                         |         of mastership yielded but due to  |
+> +|                                         |         poll timeout acquire failed.      |
+> +|                                         |       | If not a master, wait until MR    |
+> +|                                         |         ENEC is received if currently it  |
+> +|                                         |         is disabled.                      |
+> +|    | Broadcast ENEC MR, HJ message.     |       | Send MR request.                  |
+> ++-----------------------------------------+                                           |
+> +| | *MR request interrupt*                |                                           |
+> +|                                         |                                           |
+> +|   *i3c_master_yield_bus*                |                                           |
+> +|    | Check if this device is still a    |                                           |
+> +|      master to handle a case of         |                                           |
+> +|      multiple MR requests from different|                                           |
+> +|      devices at a same time.            |                                           |
+> +|    | Broadcast DISEC MR, HJ message.    |                                           |
+> +|      New master should broadcast ENEC   |                                           |
+> +|      MR, HJ once it's usage of bus is   |                                           |
+> +|      done.                              |                                           |
+> +|    | Get accept mastership acknowldege  |                                           |
+> +|      from requesting master.            |                                           |
+> +|    | Mastership hand over is done.      |       | Check if device enter master      |
+> +|    | In case of failure reenable        |         mode by polling with a timeout.   |
+> +|      MR requests by broadcasting ENEC   |                                           |
+> +|      MR, HJ.                            |    Handle I3C device list from DEFSLVS.   |
+> +|                                         |                                           |
+> +|                                         |    *i3c_master_populate_bus*              |
+> +|                                         |     | Free up all I3C addresses to handle |
+> +|                                         |       address re assignment by main       |
+> +|                                         |       master.                             |
+> +|                                         |     | Move all devices from I3C list to a |
+> +|                                         |       temporary list.                     |
+> +|                                         |     | For every device from defslvs_data  |
+> +|                                         |       list except the receiving master    |
+> +|                                         |       device, retrieve pid and compare it |
+> +|                                         |       with already known I3C devices from |
+> +|                                         |       I3C list. If match is found,        |
+> +|                                         |       allocate new address and move the   |
+> +|                                         |       device to the original I3C device   |
+> +|                                         |       list. If no match is found, it is a |
+> +|                                         |       new device. Register and add it to  |
+> +|                                         |       the original I3C list.              |
+> +|                                         |     | At the end if temporary list is not |
+> +|                                         |       empty, it contains unplugged I3C    |
+> +|                                         |       device. Deregister and delete them. |
+> +|                                         |                                           |
+> +|                                         |     Broadcast ENEC MR, HJ message.        |
+> ++-----------------------------------------+-------------------------------------------+
