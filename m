@@ -2,94 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78D1F1CE2E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 20:36:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A07711CE2EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 20:41:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731095AbgEKSgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 14:36:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729727AbgEKSgt (ORCPT
+        id S1731073AbgEKSlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 14:41:53 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:25864 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729768AbgEKSlx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 14:36:49 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFBD3C061A0C;
-        Mon, 11 May 2020 11:36:48 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id a136so1918441qkg.6;
-        Mon, 11 May 2020 11:36:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hA9NFTb1+7k7xQlzFjP2Fi9iwvqTE3WYCLOf33vGY+M=;
-        b=sfNDo4R5La/bb5OB6hnHssr8h76VH8aLlD1rbbIrvmbck/Xcsy2pD667yGsFJrWSjY
-         69qZrPn1OjscwhR1UkWrkAiWM0uu1dTKhxraBDKrcDO/uZCevhIjikLCLNJHUJWZdxks
-         eHmU6wKWNZV0fCkzqxknLJJdTbHw06VCk3mPuBnxK3IXft7SHvpyarHkw/4OK8LprC5g
-         stnM+EsOyBq+HIw856oLjv0uw6yvjDout+tkpcg48t7k+U+97m/rIQ9YxVrsFEbZy50r
-         6QtfKIQRRsrvvPbWLZBMd0ABM0SzIs+NQzFvkxOPODlWrntgLVkXSmow159TwMcxKa0d
-         zu5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=hA9NFTb1+7k7xQlzFjP2Fi9iwvqTE3WYCLOf33vGY+M=;
-        b=HXgPxq3hLz6O5vtrQIID+hI202xiLsbAKZjvw8uggaTY14sbe/wm6gfTtyDqeEGr6X
-         dPmwuV9Vta33X9I/QCuaB1rZ+ai2nyet43Bh9e3tPpt1RBHUaopaKcjICgGW9G2g9Jln
-         HhTkgVN8DlcqPI8t+ZldXLqZCoE3qpc54oXoMuJQDCiC+jHnysp8pNhsNLC+xLidgkCe
-         rVYlZamVOhNBZPUo3l5lK5H8ihEKwmx2WUykFd3MXKHa80vhxyNAbsfYs1nxJ/vi+KUo
-         CQCRWDoayjga1GgZb/J81NH/BfObICrltPgIUuUhBLmWCqZ1HEn4Kv3Xn6sOk89x8OAX
-         M2NA==
-X-Gm-Message-State: AGi0PubCvB3lrW+rTpESKukFycWsv7m2L0+XTUJ8NWjM7nJqv1zTs3DJ
-        18GQ3HmV2SotWnV7Cvm7aMk=
-X-Google-Smtp-Source: APiQypJmWrK/qPSGb3yE+HiSRqj/fjCSLcZsMaJeZzIuWtFaDmCqFgjK4i5q9yCvDhdylDhKy8svZQ==
-X-Received: by 2002:a37:a30f:: with SMTP id m15mr16398937qke.271.1589222207680;
-        Mon, 11 May 2020 11:36:47 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id e16sm10096205qtc.92.2020.05.11.11.36.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2020 11:36:46 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Mon, 11 May 2020 14:36:45 -0400
-To:     Mike Lothian <mike@fireburn.co.uk>
-Cc:     nivedita@alum.mit.edu, Ard Biesheuvel <ardb@kernel.org>,
-        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org
-Subject: Re: [PATCH v2 4/5] efi/x86: Remove extra headroom for setup block
-Message-ID: <20200511183645.GA596850@rani.riverdale.lan>
-References: <20200303221205.4048668-5-nivedita@alum.mit.edu>
- <20200511170149.1363260-1-mike@fireburn.co.uk>
+        Mon, 11 May 2020 14:41:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589222511;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XWo1dhUmPcxI5RGaFhx3UMrLMTx+OfBASGTN8Q1Mv3g=;
+        b=AULQJavuqARgzrg41+xex0RyCge8s2uiofyuGjQCTVZKRSJRgS9oQtrbXGF4CEujgrJ73x
+        oypOdwPWM6++F9MTKQYMM7nTOqBGP6mG3NDk9fIGhJ0d/E1hvOMGNjLoYqmu8jFR4aW9nT
+        yvwoG2GWGdBIQQJ0ORROW4RKY9GTpOg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-338-8SlbbwLQOwudMFP9HfDsIA-1; Mon, 11 May 2020 14:41:48 -0400
+X-MC-Unique: 8SlbbwLQOwudMFP9HfDsIA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BC7D51005510;
+        Mon, 11 May 2020 18:41:47 +0000 (UTC)
+Received: from localhost (unknown [10.18.25.174])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 73487784AF;
+        Mon, 11 May 2020 18:41:44 +0000 (UTC)
+Date:   Mon, 11 May 2020 14:41:43 -0400
+From:   Mike Snitzer <snitzer@redhat.com>
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     agk@redhat.com, dm-devel@redhat.com, linux-kernel@vger.kernel.org,
+        song@kernel.org, breeves@redhat.com, mpatocka@redhat.com,
+        khazhy@google.com, kernel@collabora.com
+Subject: Re: [PATCH v4 0/2] Historical Service Time Path Selector
+Message-ID: <20200511184143.GA8274@redhat.com>
+References: <20200511163910.3778467-1-krisman@collabora.com>
+ <20200511170235.GA7719@redhat.com>
+ <85ftc6l7lb.fsf@collabora.com>
+ <20200511173155.GA7892@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200511170149.1363260-1-mike@fireburn.co.uk>
+In-Reply-To: <20200511173155.GA7892@redhat.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 11, 2020 at 06:01:49PM +0100, Mike Lothian wrote:
-> Hi
-> 
-> This patch has been causing issues for me since switching to GCC 10.1:
-> 
->   CALL    scripts/checksyscalls.sh
->   CALL    scripts/atomic/check-atomics.sh
->   DESCEND  objtool
->   CHK     include/generated/compile.h
->   HOSTCC  arch/x86/boot/tools/build
-> /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../x86_64-pc-linux-gnu/bin/ld: error: linker defined: multiple definition of '_end'
-> /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../x86_64-pc-linux-gnu/bin/ld: /tmp/ccEkW0jM.o: previous definition here
-> collect2: error: ld returned 1 exit status
-> make[1]: *** [scripts/Makefile.host:103: arch/x86/boot/tools/build] Error 1
-> make: *** [arch/x86/Makefile:303: bzImage] Error 2
-> 
-> Cheers
-> 
-> Mike
+On Mon, May 11 2020 at  1:31pm -0400,
+Mike Snitzer <snitzer@redhat.com> wrote:
 
-I'm not getting an error even with gcc 10 for some reason, but I can see
-that it is busted. It's using the linker-defined _end symbol which is
-just pass the end of the .bss.
+> On Mon, May 11 2020 at  1:11pm -0400,
+> Gabriel Krisman Bertazi <krisman@collabora.com> wrote:
+> 
+> > Mike Snitzer <snitzer@redhat.com> writes:
+> > 
+> > > On Mon, May 11 2020 at 12:39pm -0400,
+> > > Gabriel Krisman Bertazi <krisman@collabora.com> wrote:
+> > >
+> > >> Hi,
+> > >> 
+> > >> This fourth version of HST applies the suggestion from Mikulas Patocka
+> > >> to do the ktime_get_ns inside the mpath map_bio instead of generic
+> > >> device-mapper code. This means that struct dm_mpath_io gained another
+> > >> 64bit field.  For the request-based case, we continue to use the block
+> > >> layer start time information.
+> > >> 
+> > >> With this modification, I was able obtain similar performance on  BIO
+> > >> to request-based multipath with HST on the benchmarks shared in v1.
+> > >> 
+> > >> v3: https://www.redhat.com/archives/dm-devel/2020-April/msg00308.html
+> > >> v2: https://www.redhat.com/archives/dm-devel/2020-April/msg00270.html
+> > >> v1: https://www.redhat.com/archives/dm-devel/2020-April/msg00176.html
+> > >
+> > > I already staged your v3 in linux-next.  Please provide an incremental
+> > > patch that layers on this git branch:
+> > >
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/device-mapper/linux-dm.git/log/?h=dm-5.8
+> > >
+> > > I was hopeful for a flag to be set (e.g. in 'struct path_selector') to
+> > > reflect whether the path selector expects highres start_time.  Makes
+> > > little sense to incur that extra cost of providing the time if the path
+> > > selector doesn't even use it.
+> > >
+> > > Alternatively, could split out the setting of the time needed by .end_io
+> > > to a new path_selector_type method (e.g. .set_start_time).  And then
+> > > only use ktime_get_ns() for bio-based if .set_start_time is defined.
+> > > Would get a little fiddly needing to make sure a stale start_time isn't
+> > > used... also, makes more sense to conditionally call this
+> > > .set_start_time just after .start_io is.
+> > 
+> > Oh, my apologies, I hadn't noticed it was merged.  I will make the time fetch
+> > conditional and submit a new patch based on that branch.
+> 
+> I don't want to waste your time so please don't run with that idea just yet.
+> 
+> There is a possibility we really _do_ need higher resolution time.
+> 
+> I'm about to have a concall to discuss some disk IO stat issues with DM
+> disk stats vs NVMe disk stats (provided by block core).
+> 
+> I'll let you know the outcome and we can discuss further.
 
-Does adding "static" to the declaration of _end fix your error?
+OK, that concall's issue had nothing to do with needing higher
+resolution time (was about IOPs realized with requested-based vs
+bio-based).
+
+Reality is, DM won't need anything higher resolution than jiffies until
+block core's interfaces require something other than jiffies
+(e.g. generic_end_io_acct).
+
+So feel free to proceed with the conditional time fetch solution you
+were going to run with (prior to my previous mail asking you to hold
+off).
+
+Sorry for the noise.  Thanks,
+Mike
+
