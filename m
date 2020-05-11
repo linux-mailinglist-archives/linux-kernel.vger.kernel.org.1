@@ -2,336 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 601B11CDC23
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 15:54:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9184D1CDC54
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 15:59:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730442AbgEKNyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 09:54:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730393AbgEKNyF (ORCPT
+        id S1730394AbgEKN6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 09:58:44 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:6984 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730153AbgEKN6o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 09:54:05 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E595FC061A0C;
-        Mon, 11 May 2020 06:54:04 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id w7so11076035wre.13;
-        Mon, 11 May 2020 06:54:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=i3CwaVZo2yZOx6PZVKcFbgxVoWFw6OQhkXpLdCWMfCQ=;
-        b=B5JbkNS69EWc8vE7PKNSx9Aoi/F8mfxva5LZKtqlwfd8oi2LDOi4HUklb01wV66/Yx
-         KDZGdX2tP92WC6sLvDo6HA1lVSJ/ZdXlyQKeI4LN38Sysfa3obSVI8v8mFAZU3v5oaxX
-         rb6lcjY6EIFecuaZtzreh5BgvowQoAj2a3YZHv6I+a6zMjvgCXxCyAAi2qtD0QAv8zT8
-         zZmx5GbgQX7x4VxSDocuadd/uEWSG8AzihUkTwqSuZJ6AnsW5O9E4i/5v2Rl5K2NE1j1
-         BEcSbKEdliuOlq84ea4Btr1GK1rYosJ3HLeq+uhuN+GtlyRFY63Df6okn67PM2hBP+/Q
-         amsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=i3CwaVZo2yZOx6PZVKcFbgxVoWFw6OQhkXpLdCWMfCQ=;
-        b=tZDM/uAr3VBJ6o+fNXQVvvMKhbcfRkJ88+6zp+GcE+Wa/eO5HmaL8iaVzaKP7SjEx8
-         piHqLpL3G4CjNUsGIGHRpXTjfLiCjz+XLAU+9Jc64uCQGlPvw3vebC5JfZSVl0d5ELig
-         VHlSxmIwZapulgN1y9daPwES6Mo1jOS2KkpdJ7OuQmKvB7hF4hYgYSdP9ilO2BCRWQHf
-         JhBZ7c0wtBnEtsDdP1EvxCfJpccJWH+lACz+IiuKfff88rANLYFiLW3dggHU1s8KOKfY
-         Y55uAuck7KQ34NhtKx70V/6R0RYZcHqkB5IeJO+Mkn2ZSCJtcnnDJdKU2f5OftV9bFVE
-         Bgtg==
-X-Gm-Message-State: AGi0PuawAScsJUSkSiDC3jNxdM7eryDzPdg+WK6mA0Iuz+mxYgY1FdP5
-        8P3RkFfghXyns/uOzlbZhzg=
-X-Google-Smtp-Source: APiQypKebask4Ho3rOkqLBhRl0AP4Hc8zYsk2bQNQcX/sZ2BsbpNqqa25S+8oX+qzPtnNvwDP9gEjQ==
-X-Received: by 2002:adf:e988:: with SMTP id h8mr8978710wrm.365.1589205243514;
-        Mon, 11 May 2020 06:54:03 -0700 (PDT)
-Received: from localhost.localdomain ([86.121.118.29])
-        by smtp.gmail.com with ESMTPSA id 2sm17596413wre.25.2020.05.11.06.54.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2020 06:54:03 -0700 (PDT)
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     andrew@lunn.ch, f.fainelli@gmail.com, vivien.didelot@gmail.com
-Cc:     davem@davemloft.net, kuba@kernel.org, jiri@mellanox.com,
-        idosch@idosch.org, rmk+kernel@armlinux.org.uk,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 net-next 15/15] docs: net: dsa: sja1105: document the best_effort_vlan_filtering option
-Date:   Mon, 11 May 2020 16:53:38 +0300
-Message-Id: <20200511135338.20263-16-olteanv@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200511135338.20263-1-olteanv@gmail.com>
-References: <20200511135338.20263-1-olteanv@gmail.com>
+        Mon, 11 May 2020 09:58:44 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04BDZnJP187294;
+        Mon, 11 May 2020 09:57:40 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30wrvye4ev-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 May 2020 09:57:40 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 04BDZvDJ188154;
+        Mon, 11 May 2020 09:57:39 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30wrvye4dg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 May 2020 09:57:39 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 04BDQIJl026532;
+        Mon, 11 May 2020 13:57:36 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma04ams.nl.ibm.com with ESMTP id 30wm55cgv4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 May 2020 13:57:36 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04BDvXGV47579358
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 11 May 2020 13:57:33 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C0CD8A4055;
+        Mon, 11 May 2020 13:57:33 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BA810A4053;
+        Mon, 11 May 2020 13:57:29 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.148.203.187])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Mon, 11 May 2020 13:57:29 +0000 (GMT)
+Date:   Mon, 11 May 2020 16:57:27 +0300
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Anthony Yznaga <anthony.yznaga@oracle.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        willy@infradead.org, corbet@lwn.net, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        akpm@linux-foundation.org, hughd@google.com, ebiederm@xmission.com,
+        masahiroy@kernel.org, ardb@kernel.org, ndesaulniers@google.com,
+        dima@golovin.in, daniel.kiper@oracle.com, nivedita@alum.mit.edu,
+        rafael.j.wysocki@intel.com, dan.j.williams@intel.com,
+        zhenzhong.duan@oracle.com, jroedel@suse.de, bhe@redhat.com,
+        guro@fb.com, Thomas.Lendacky@amd.com,
+        andriy.shevchenko@linux.intel.com, keescook@chromium.org,
+        hannes@cmpxchg.org, minchan@kernel.org, mhocko@kernel.org,
+        ying.huang@intel.com, yang.shi@linux.alibaba.com,
+        gustavo@embeddedor.com, ziqian.lzq@antfin.com,
+        vdavydov.dev@gmail.com, jason.zeng@intel.com, kevin.tian@intel.com,
+        zhiyuan.lv@intel.com, lei.l.li@intel.com, paul.c.lai@intel.com,
+        ashok.raj@intel.com, linux-fsdevel@vger.kernel.org,
+        linux-doc@vger.kernel.org, kexec@lists.infradead.org
+Subject: Re: [RFC 14/43] mm: memblock: PKRAM: prevent memblock resize from
+ clobbering preserved pages
+Message-ID: <20200511135727.GA983798@linux.ibm.com>
+References: <1588812129-8596-1-git-send-email-anthony.yznaga@oracle.com>
+ <1588812129-8596-15-git-send-email-anthony.yznaga@oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1588812129-8596-15-git-send-email-anthony.yznaga@oracle.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-11_06:2020-05-11,2020-05-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
+ adultscore=0 mlxlogscore=999 clxscore=1011 mlxscore=0 impostorscore=0
+ lowpriorityscore=0 phishscore=0 priorityscore=1501 suspectscore=5
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005110112
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+On Wed, May 06, 2020 at 05:41:40PM -0700, Anthony Yznaga wrote:
+> The size of the memblock reserved array may be increased while preserved
+> pages are being reserved. When this happens, preserved pages that have
+> not yet been reserved are at risk for being clobbered when space for a
+> larger array is allocated.
+> When called from memblock_double_array(), a wrapper around
+> memblock_find_in_range() walks the preserved pages pagetable to find
+> sufficiently sized ranges without preserved pages and passes them to
+> memblock_find_in_range().
 
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
----
-Changes in v2:
-None.
+I'd suggest to create an array of memblock_region's that will contain
+the PKRAM ranges before kexec and pass this array to the new kernel.
+Then, somewhere in start_kerenel() replace replace
+memblock.reserved->regions with that array. 
 
- .../networking/devlink-params-sja1105.txt     |  27 +++
- Documentation/networking/dsa/sja1105.rst      | 211 +++++++++++++++---
- 2 files changed, 212 insertions(+), 26 deletions(-)
- create mode 100644 Documentation/networking/devlink-params-sja1105.txt
+> Signed-off-by: Anthony Yznaga <anthony.yznaga@oracle.com>
+> ---
+>  include/linux/pkram.h |  3 +++
+>  mm/memblock.c         | 15 +++++++++++++--
+>  mm/pkram.c            | 51 +++++++++++++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 67 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/pkram.h b/include/linux/pkram.h
+> index edc5d8bef9d3..409022e1472f 100644
+> --- a/include/linux/pkram.h
+> +++ b/include/linux/pkram.h
+> @@ -62,6 +62,9 @@ struct page *pkram_load_page(struct pkram_stream *ps, unsigned long *index,
+>  ssize_t pkram_write(struct pkram_stream *ps, const void *buf, size_t count);
+>  size_t pkram_read(struct pkram_stream *ps, void *buf, size_t count);
+>  
+> +phys_addr_t pkram_memblock_find_in_range(phys_addr_t start, phys_addr_t end,
+> +					 phys_addr_t size, phys_addr_t align);
+> +
+>  #ifdef CONFIG_PKRAM
+>  extern unsigned long pkram_reserved_pages;
+>  void pkram_reserve(void);
+> diff --git a/mm/memblock.c b/mm/memblock.c
+> index c79ba6f9920c..69ae883b8d21 100644
+> --- a/mm/memblock.c
+> +++ b/mm/memblock.c
+> @@ -16,6 +16,7 @@
+>  #include <linux/kmemleak.h>
+>  #include <linux/seq_file.h>
+>  #include <linux/memblock.h>
+> +#include <linux/pkram.h>
+>  
+>  #include <asm/sections.h>
+>  #include <linux/io.h>
+> @@ -349,6 +350,16 @@ phys_addr_t __init_memblock memblock_find_in_range(phys_addr_t start,
+>  	return ret;
+>  }
+>  
+> +phys_addr_t __init_memblock __memblock_find_in_range(phys_addr_t start,
+> +					phys_addr_t end, phys_addr_t size,
+> +					phys_addr_t align)
+> +{
+> +	if (IS_ENABLED(CONFIG_PKRAM))
+> +		return pkram_memblock_find_in_range(start, end, size, align);
+> +	else
+> +		return memblock_find_in_range(start, end, size, align);
+> +}
+> +
+>  static void __init_memblock memblock_remove_region(struct memblock_type *type, unsigned long r)
+>  {
+>  	type->total_size -= type->regions[r].size;
+> @@ -447,11 +458,11 @@ static int __init_memblock memblock_double_array(struct memblock_type *type,
+>  		if (type != &memblock.reserved)
+>  			new_area_start = new_area_size = 0;
+>  
+> -		addr = memblock_find_in_range(new_area_start + new_area_size,
+> +		addr = __memblock_find_in_range(new_area_start + new_area_size,
+>  						memblock.current_limit,
+>  						new_alloc_size, PAGE_SIZE);
+>  		if (!addr && new_area_size)
+> -			addr = memblock_find_in_range(0,
+> +			addr = __memblock_find_in_range(0,
+>  				min(new_area_start, memblock.current_limit),
+>  				new_alloc_size, PAGE_SIZE);
+>  
+> diff --git a/mm/pkram.c b/mm/pkram.c
+> index dd3c89614010..e49c9bcd3854 100644
+> --- a/mm/pkram.c
+> +++ b/mm/pkram.c
+> @@ -1238,3 +1238,54 @@ void pkram_free_pgt(void)
+>  	__free_pages_core(virt_to_page(pkram_pgd), 0);
+>  	pkram_pgd = NULL;
+>  }
+> +
+> +static int __init_memblock pkram_memblock_find_cb(struct pkram_pg_state *st, unsigned long base, unsigned long size)
+> +{
+> +	unsigned long end = base + size;
+> +	unsigned long addr;
+> +
+> +	if (size < st->min_size)
+> +		return 0;
+> +
+> +	addr =  memblock_find_in_range(base, end, st->min_size, PAGE_SIZE);
+> +	if (!addr)
+> +		return 0;
+> +
+> +	st->retval = addr;
+> +	return 1;
+> +}
+> +
+> +/*
+> + * It may be necessary to allocate a larger reserved memblock array
+> + * while populating it with ranges of preserved pages.  To avoid
+> + * trampling preserved pages that have not yet been added to the
+> + * memblock reserved list this function implements a wrapper around
+> + * memblock_find_in_range() that restricts searches to subranges
+> + * that do not contain preserved pages.
+> + */
+> +phys_addr_t __init_memblock pkram_memblock_find_in_range(phys_addr_t start,
+> +					phys_addr_t end, phys_addr_t size,
+> +					phys_addr_t align)
+> +{
+> +	struct pkram_pg_state st = {
+> +		.range_cb = pkram_memblock_find_cb,
+> +		.min_addr = start,
+> +		.max_addr = end,
+> +		.min_size = PAGE_ALIGN(size),
+> +		.find_holes = true,
+> +	};
+> +
+> +	if (!pkram_reservation_in_progress)
+> +		return memblock_find_in_range(start, end, size, align);
+> +
+> +	if (!pkram_pgd) {
+> +		WARN_ONCE(1, "No preserved pages pagetable\n");
+> +		return memblock_find_in_range(start, end, size, align);
+> +	}
+> +
+> +	WARN_ONCE(memblock_bottom_up(), "PKRAM: bottom up memblock allocation not yet supported\n");
+> +
+> +	pkram_walk_pgt_rev(&st, pkram_pgd);
+> +
+> +	return st.retval;
+> +}
+> -- 
+> 2.13.3
+> 
 
-diff --git a/Documentation/networking/devlink-params-sja1105.txt b/Documentation/networking/devlink-params-sja1105.txt
-new file mode 100644
-index 000000000000..1d71742e270a
---- /dev/null
-+++ b/Documentation/networking/devlink-params-sja1105.txt
-@@ -0,0 +1,27 @@
-+best_effort_vlan_filtering
-+			[DEVICE, DRIVER-SPECIFIC]
-+			Allow plain ETH_P_8021Q headers to be used as DSA tags.
-+			Benefits:
-+			- Can terminate untagged traffic over switch net
-+			  devices even when enslaved to a bridge with
-+			  vlan_filtering=1.
-+			- Can terminate VLAN-tagged traffic over switch net
-+			  devices even when enslaved to a bridge with
-+			  vlan_filtering=1, with some constraints (no more than
-+			  7 non-pvid VLANs per user port).
-+			- Can do QoS based on VLAN PCP and VLAN membership
-+			  admission control for autonomously forwarded frames
-+			  (regardless of whether they can be terminated on the
-+			  CPU or not).
-+			Drawbacks:
-+			- User cannot use VLANs in range 1024-3071. If the
-+			  switch receives frames with such VIDs, it will
-+			  misinterpret them as DSA tags.
-+			- Switch uses Shared VLAN Learning (FDB lookup uses
-+			  only DMAC as key).
-+			- When VLANs span cross-chip topologies, the total
-+			  number of permitted VLANs may be less than 7 per
-+			  port, due to a maximum number of 32 VLAN retagging
-+			  rules per switch.
-+			Configuration mode: runtime
-+			Type: bool.
-diff --git a/Documentation/networking/dsa/sja1105.rst b/Documentation/networking/dsa/sja1105.rst
-index 34581629dd3f..b6bbc17814fb 100644
---- a/Documentation/networking/dsa/sja1105.rst
-+++ b/Documentation/networking/dsa/sja1105.rst
-@@ -66,34 +66,193 @@ reprogrammed with the updated static configuration.
- Traffic support
- ===============
- 
--The switches do not support switch tagging in hardware. But they do support
--customizing the TPID by which VLAN traffic is identified as such. The switch
--driver is leveraging ``CONFIG_NET_DSA_TAG_8021Q`` by requesting that special
--VLANs (with a custom TPID of ``ETH_P_EDSA`` instead of ``ETH_P_8021Q``) are
--installed on its ports when not in ``vlan_filtering`` mode. This does not
--interfere with the reception and transmission of real 802.1Q-tagged traffic,
--because the switch does no longer parse those packets as VLAN after the TPID
--change.
--The TPID is restored when ``vlan_filtering`` is requested by the user through
--the bridge layer, and general IP termination becomes no longer possible through
--the switch netdevices in this mode.
--
--The switches have two programmable filters for link-local destination MACs.
-+The switches do not have hardware support for DSA tags, except for "slow
-+protocols" for switch control as STP and PTP. For these, the switches have two
-+programmable filters for link-local destination MACs.
- These are used to trap BPDUs and PTP traffic to the master netdevice, and are
- further used to support STP and 1588 ordinary clock/boundary clock
--functionality.
--
--The following traffic modes are supported over the switch netdevices:
--
--+--------------------+------------+------------------+------------------+
--|                    | Standalone | Bridged with     | Bridged with     |
--|                    | ports      | vlan_filtering 0 | vlan_filtering 1 |
--+====================+============+==================+==================+
--| Regular traffic    |     Yes    |       Yes        |  No (use master) |
--+--------------------+------------+------------------+------------------+
--| Management traffic |     Yes    |       Yes        |       Yes        |
--| (BPDU, PTP)        |            |                  |                  |
--+--------------------+------------+------------------+------------------+
-+functionality. For frames trapped to the CPU, source port and switch ID
-+information is encoded by the hardware into the frames.
-+
-+But by leveraging ``CONFIG_NET_DSA_TAG_8021Q`` (a software-defined DSA tagging
-+format based on VLANs), general-purpose traffic termination through the network
-+stack can be supported under certain circumstances.
-+
-+Depending on VLAN awareness state, the following operating modes are possible
-+with the switch:
-+
-+- Mode 1 (VLAN-unaware): a port is in this mode when it is used as a standalone
-+  net device, or when it is enslaved to a bridge with ``vlan_filtering=0``.
-+- Mode 2 (fully VLAN-aware): a port is in this mode when it is enslaved to a
-+  bridge with ``vlan_filtering=1``. Access to the entire VLAN range is given to
-+  the user through ``bridge vlan`` commands, but general-purpose (anything
-+  other than STP, PTP etc) traffic termination is not possible through the
-+  switch net devices. The other packets can be still by user space processed
-+  through the DSA master interface (similar to ``DSA_TAG_PROTO_NONE``).
-+- Mode 3 (best-effort VLAN-aware): a port is in this mode when enslaved to a
-+  bridge with ``vlan_filtering=1``, and the devlink property of its parent
-+  switch named ``best_effort_vlan_filtering`` is set to ``true``. When
-+  configured like this, the range of usable VIDs is reduced (0 to 1023 and 3072
-+  to 4094), so is the number of usable VIDs (maximum of 7 non-pvid VLANs per
-+  port*), and shared VLAN learning is performed (FDB lookup is done only by
-+  DMAC, not also by VID).
-+
-+To summarize, in each mode, the following types of traffic are supported over
-+the switch net devices:
-+
-++-------------+-----------+--------------+------------+
-+|             |   Mode 1  |    Mode 2    |   Mode 3   |
-++=============+===========+==============+============+
-+|   Regular   |    Yes    |      No      |     Yes    |
-+|   traffic   |           | (use master) |            |
-++-------------+-----------+--------------+------------+
-+| Management  |    Yes    |     Yes      |     Yes    |
-+|   traffic   |           |              |            |
-+| (BPDU, PTP) |           |              |            |
-++-------------+-----------+--------------+------------+
-+
-+To configure the switch to operate in Mode 3, the following steps can be
-+followed::
-+
-+  ip link add dev br0 type bridge
-+  # swp2 operates in Mode 1 now
-+  ip link set dev swp2 master br0
-+  # swp2 temporarily moves to Mode 2
-+  ip link set dev br0 type bridge vlan_filtering 1
-+  [   61.204770] sja1105 spi0.1: Reset switch and programmed static config. Reason: VLAN filtering
-+  [   61.239944] sja1105 spi0.1: Disabled switch tagging
-+  # swp3 now operates in Mode 3
-+  devlink dev param set spi/spi0.1 name best_effort_vlan_filtering value true cmode runtime
-+  [   64.682927] sja1105 spi0.1: Reset switch and programmed static config. Reason: VLAN filtering
-+  [   64.711925] sja1105 spi0.1: Enabled switch tagging
-+  # Cannot use VLANs in range 1024-3071 while in Mode 3.
-+  bridge vlan add dev swp2 vid 1025 untagged pvid
-+  RTNETLINK answers: Operation not permitted
-+  bridge vlan add dev swp2 vid 100
-+  bridge vlan add dev swp2 vid 101 untagged
-+  bridge vlan
-+  port    vlan ids
-+  swp5     1 PVID Egress Untagged
-+
-+  swp2     1 PVID Egress Untagged
-+           100
-+           101 Egress Untagged
-+
-+  swp3     1 PVID Egress Untagged
-+
-+  swp4     1 PVID Egress Untagged
-+
-+  br0      1 PVID Egress Untagged
-+  bridge vlan add dev swp2 vid 102
-+  bridge vlan add dev swp2 vid 103
-+  bridge vlan add dev swp2 vid 104
-+  bridge vlan add dev swp2 vid 105
-+  bridge vlan add dev swp2 vid 106
-+  bridge vlan add dev swp2 vid 107
-+  # Cannot use mode than 7 VLANs per port while in Mode 3.
-+  [ 3885.216832] sja1105 spi0.1: No more free subvlans
-+
-+\* "maximum of 7 non-pvid VLANs per port": Decoding VLAN-tagged packets on the
-+CPU in mode 3 is possible through VLAN retagging of packets that go from the
-+switch to the CPU. In cross-chip topologies, the port that goes to the CPU
-+might also go to other switches. In that case, those other switches will see
-+only a retagged packet (which only has meaning for the CPU). So if they are
-+interested in this VLAN, they need to apply retagging in the reverse direction,
-+to recover the original value from it. This consumes extra hardware resources
-+for this switch. There is a maximum of 32 entries in the Retagging Table of
-+each switch device.
-+
-+As an example, consider this cross-chip topology::
-+
-+  +-------------------------------------------------+
-+  | Host SoC                                        |
-+  |           +-------------------------+           |
-+  |           | DSA master for embedded |           |
-+  |           |   switch (non-sja1105)  |           |
-+  |  +--------+-------------------------+--------+  |
-+  |  |   embedded L2 switch                      |  |
-+  |  |                                           |  |
-+  |  |   +--------------+     +--------------+   |  |
-+  |  |   |DSA master for|     |DSA master for|   |  |
-+  |  |   |  SJA1105 1   |     |  SJA1105 2   |   |  |
-+  +--+---+--------------+-----+--------------+---+--+
-+
-+  +-----------------------+ +-----------------------+
-+  |   SJA1105 switch 1    | |   SJA1105 switch 2    |
-+  +-----+-----+-----+-----+ +-----+-----+-----+-----+
-+  |sw1p0|sw1p1|sw1p2|sw1p3| |sw2p0|sw2p1|sw2p2|sw2p3|
-+  +-----+-----+-----+-----+ +-----+-----+-----+-----+
-+
-+To reach the CPU, SJA1105 switch 1 (spi/spi2.1) uses the same port as is uses
-+to reach SJA1105 switch 2 (spi/spi2.2), which would be port 4 (not drawn).
-+Similarly for SJA1105 switch 2.
-+
-+Also consider the following commands, that add VLAN 100 to every sja1105 user
-+port::
-+
-+  devlink dev param set spi/spi2.1 name best_effort_vlan_filtering value true cmode runtime
-+  devlink dev param set spi/spi2.2 name best_effort_vlan_filtering value true cmode runtime
-+  ip link add dev br0 type bridge
-+  for port in sw1p0 sw1p1 sw1p2 sw1p3 \
-+              sw2p0 sw2p1 sw2p2 sw2p3; do
-+      ip link set dev $port master br0
-+  done
-+  ip link set dev br0 type bridge vlan_filtering 1
-+  for port in sw1p0 sw1p1 sw1p2 sw1p3 \
-+              sw2p0 sw2p1 sw2p2; do
-+      bridge vlan add dev $port vid 100
-+  done
-+  ip link add link br0 name br0.100 type vlan id 100 && ip link set dev br0.100 up
-+  ip addr add 192.168.100.3/24 dev br0.100
-+  bridge vlan add dev br0 vid 100 self
-+
-+  bridge vlan
-+  port    vlan ids
-+  sw1p0    1 PVID Egress Untagged
-+           100
-+
-+  sw1p1    1 PVID Egress Untagged
-+           100
-+
-+  sw1p2    1 PVID Egress Untagged
-+           100
-+
-+  sw1p3    1 PVID Egress Untagged
-+           100
-+
-+  sw2p0    1 PVID Egress Untagged
-+           100
-+
-+  sw2p1    1 PVID Egress Untagged
-+           100
-+
-+  sw2p2    1 PVID Egress Untagged
-+           100
-+
-+  sw2p3    1 PVID Egress Untagged
-+
-+  br0      1 PVID Egress Untagged
-+           100
-+
-+SJA1105 switch 1 consumes 1 retagging entry for each VLAN on each user port
-+towards the CPU. It also consumes 1 retagging entry for each non-pvid VLAN that
-+it is also interested in, which is configured on any port of any neighbor
-+switch.
-+
-+In this case, SJA1105 switch 1 consumes a total of 11 retagging entries, as
-+follows:
-+- 8 retagging entries for VLANs 1 and 100 installed on its user ports
-+  (``sw1p0`` - ``sw1p3``)
-+- 3 retagging entries for VLAN 100 installed on the user ports of SJA1105
-+  switch 2 (``sw2p0`` - ``sw2p2``), because it also has ports that are
-+  interested in it. The VLAN 1 is a pvid on SJA1105 switch 2 and does not need
-+  reverse retagging.
-+
-+SJA1105 switch 2 also consumes 11 retagging entries, but organized as follows:
-+- 7 retagging entries for the bridge VLANs on its user ports (``sw2p0`` -
-+  ``sw2p3``).
-+- 4 retagging entries for VLAN 100 installed on the user ports of SJA1105
-+  switch 1 (``sw1p0`` - ``sw1p3``).
- 
- Switching features
- ==================
 -- 
-2.17.1
-
+Sincerely yours,
+Mike.
