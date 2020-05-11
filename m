@@ -2,122 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 673D91CDC3B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 15:55:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83B1E1CDC14
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 15:54:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730526AbgEKNzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 09:55:24 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:44028 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729881AbgEKNzW (ORCPT
+        id S1730309AbgEKNxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 09:53:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730272AbgEKNxq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 09:55:22 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04BDWmQi076390;
-        Mon, 11 May 2020 13:54:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=l8+HMXEE9aB0aOSWY8gkTyeJdorvKTxSlVmAOSdcjqA=;
- b=g+4PnH9b6IUUTsD5shCXGlMc9mf404vXB7+3/VxoJKWA5XFa/brzGF9lJqPihs/sRuCM
- oCYa+DkhZjCft844U5qlEm7deV0FLYSFqut++LP4dTRVbMYXE3TpcIin/RKuKeC2vLzj
- otJngqrymF0mbpX+msnfzoA1SSbgJNBsrTC5J5TYrmy/C6gjjMf+5g/ZLxa6h+l2kXUN
- sQKogI/jdkEz9u045BrjzUB1Me9aDPjuSP1A4ta8NkcWp/K/OEfNP1GyuV2Z7YSuUKbW
- YGuDw4QYd4l9dglhLMj4RRNI3XXL7VVjOEr+M5kJLLNUqUKgyR7Vk4BjLTWxGBi+9NmE ow== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 30x3gmd71b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 11 May 2020 13:54:26 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04BDXY8X016654;
-        Mon, 11 May 2020 13:54:25 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 30x63mrmgg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 11 May 2020 13:54:25 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04BDsLQE010452;
-        Mon, 11 May 2020 13:54:22 GMT
-Received: from linux-1.home (/92.157.36.49)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 11 May 2020 06:54:20 -0700
-Subject: Re: [patch V4 part 5 07/31] x86/entry: Provide
- idtentry_entry/exit_cond_rcu()
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>
-References: <20200505135341.730586321@linutronix.de>
- <20200505135828.808686575@linutronix.de>
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-Message-ID: <72cb3e24-3f82-7e2a-7630-233749c780c4@oracle.com>
-Date:   Mon, 11 May 2020 15:53:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <20200505135828.808686575@linutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9617 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=0
- malwarescore=0 phishscore=0 adultscore=0 mlxlogscore=940 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2005110112
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9617 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=976
- clxscore=1015 spamscore=0 lowpriorityscore=0 phishscore=0 bulkscore=0
- malwarescore=0 priorityscore=1501 mlxscore=0 suspectscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005110112
+        Mon, 11 May 2020 09:53:46 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AB79C061A0C;
+        Mon, 11 May 2020 06:53:46 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id v12so11037247wrp.12;
+        Mon, 11 May 2020 06:53:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=DWt/wZ7mmPAQXQOu5mlkf9aGiZr82IVGoApLaprsibc=;
+        b=s4FYq0euNJOaf10ErT8ojnM/K0FKxONCHXk+61YMwdnHmsDwa3VdU+CnYo7AO/EeO5
+         Pf/u2B4mUOPqYO4tRNpy6pev2G/BZv7sMqQB1/FnqCL36uz5LSblfF+e+g+xk1sWJlEx
+         eDFayl8lLeBn759hTo3A8v5z0RNDnKF/5dkPu5bwV+WwPixLRio1dv8t6t0el/l4FDEV
+         tGoa09orA1M9iYpw+kiOm/jUpQmAUo+ue2/PXCjqp6f5apgBji689YI7Zjc755P+5F5H
+         CdZDmNEnTsy/xaDeHTHnhe/JTC+diCoTbldCnjRggSAjdk2EY0im+MATjRfJ8qEVPAlM
+         gVmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=DWt/wZ7mmPAQXQOu5mlkf9aGiZr82IVGoApLaprsibc=;
+        b=X6dTXmS+vUi3gpiGc2Hq9/aP8XSNxCgyPj3ZbzQqxDfyMMAoFf7/D4VJg2gKaYYCPd
+         nyC+k+4z6/OiOJruCZfB41BPX4h1miBdrkURoUE+jnNgcJp8EDvRwzj0xFpSmmVUP7Pz
+         iFWx1r6WsR1t7IKjpQeEPtqbmNN1spwHP78Dal1IngwLwea80E5qMPK0vydLhatmyS9I
+         2uSgJYi6jcii1/1mWrPwy3YeAOVsymXEsDZV8oB9j/OYLQuUUKy48M6S/VM2mcyxnBJQ
+         xRrQ8v2HuNb6sxc9XSFG9tRuyHpJkvk3D0fWnOa28NuKE59NNxXQyyHlg4qgBm5iZKNW
+         fHLQ==
+X-Gm-Message-State: AGi0PuaokFKQWaaf+IilxejX+CMbN+kd90sVUZ1Wfu5HbxB6yfON7Wak
+        QSGsCr/D9AIik4vwSIIB4Ho=
+X-Google-Smtp-Source: APiQypLtlc6SYID6KBCDA++125iB+xlVDhcNY23F6cYVHOZmHqJXbZtklEkadlytqGgK5OKneceJ7A==
+X-Received: by 2002:a5d:56c6:: with SMTP id m6mr18873848wrw.78.1589205224786;
+        Mon, 11 May 2020 06:53:44 -0700 (PDT)
+Received: from localhost.localdomain ([86.121.118.29])
+        by smtp.gmail.com with ESMTPSA id 2sm17596413wre.25.2020.05.11.06.53.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 May 2020 06:53:44 -0700 (PDT)
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     andrew@lunn.ch, f.fainelli@gmail.com, vivien.didelot@gmail.com
+Cc:     davem@davemloft.net, kuba@kernel.org, jiri@mellanox.com,
+        idosch@idosch.org, rmk+kernel@armlinux.org.uk,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 net-next 00/15] Traffic support for dsa_8021q in vlan_filtering=1 mode
+Date:   Mon, 11 May 2020 16:53:23 +0300
+Message-Id: <20200511135338.20263-1-olteanv@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-On 5/5/20 3:53 PM, Thomas Gleixner wrote:
-> The pagefault handler cannot use the regular idtentry_enter() because on
-> that invokes rcu_irq_enter() the pagefault was caused in the kernel.
+This series is an attempt to support as much as possible in terms of
+traffic I/O from the network stack with the only dsa_8021q user thus
+far, sja1105.
 
-I am struggling to understand this part of the sentence: "because on
-that invokes rcu_irq_enter() the pagefault was caused in the kernel."
+The hardware doesn't support pushing a second VLAN tag to packets that
+are already tagged, so our only option is to combine the dsa_8021q with
+the user tag into a single tag and decode that on the CPU.
 
-Do you mean: "because that invokes rcu_irq_enter() if the pagefault was
-caused in the kernel." ?
+The assumption is that there is a type of use cases for which 7 VLANs
+per port are more than sufficient, and that there's another type of use
+cases where the full 4096 entries are barely enough. Those use cases are
+very different from one another, so I prefer trying to give both the
+best experience by creating this best_effort_vlan_filtering knob to
+select the mode in which they want to operate in.
 
-alex.
+v1 was submitted here:
+https://patchwork.ozlabs.org/project/netdev/cover/20200510164255.19322-1-olteanv@gmail.com/
 
-> Not a
-> problem per se, but kernel side page faults can schedule which is not
-> possible without invoking rcu_irq_exit().
-> 
-> Adding rcu_irq_exit() and a matching rcu_irq_enter() into the actual
-> pagefault handling code is possible, but not pretty either.
-> 
-> Provide idtentry_entry/exit_cond_rcu() which calls rcu_irq_enter() only
-> when RCU is not watching. While this is not a legit kernel #PF establishing
-> RCU before handling it avoids RCU side effects which might affect
-> debugability.
-> 
-> The function is also useful for implementing lightweight scheduler IPI
-> entry handling later.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
->   arch/x86/entry/common.c         |  119 ++++++++++++++++++++++++++++++++++------
->   arch/x86/include/asm/idtentry.h |    3 +
->   2 files changed, 106 insertions(+), 16 deletions(-)
+Changes in v2:
+Patch 01/15:
+- Rename variable from vlan_bridge_vtu to configure_vlans_while_disabled.
+Patch 03/15:
+- Be much more thorough, and make sure that things like virtual links
+  and FDB operations still work properly.
+Patch 05/15:
+- Free the vlan lists on teardown.
+- Simplify sja1105_classify_vlan: only look at priv->expect_dsa_8021q.
+- Keep vid 1 in the list of dsa_8021q VLANs, to make sure that untagged
+  packets transmitted from the stack, like PTP, continue to work in
+  VLAN-unaware mode.
+Patch 06/15:
+- Adapt to vlan_bridge_vtu variable name change.
+Patch 11/15:
+- In sja1105_best_effort_vlan_filtering_set, get the vlan_filtering
+  value of each port instead of just one time for port 0. Normally this
+  shouldn't matter, but it avoids issues when port 0 is disabled in
+  device tree.
+Patch 14/14:
+- Only do anything in sja1105_build_subvlans and in
+  sja1105_build_crosschip_subvlans when operating in
+  SJA1105_VLAN_BEST_EFFORT state. This avoids installing VLAN retagging
+  rules in unaware mode, which would cost us a penalty in terms of
+  usable frame memory.
+
+Russell King (1):
+  net: dsa: provide an option for drivers to always receive bridge VLANs
+
+Vladimir Oltean (14):
+  net: dsa: tag_8021q: introduce a vid_is_dsa_8021q helper
+  net: dsa: sja1105: keep the VLAN awareness state in a driver variable
+  net: dsa: sja1105: deny alterations of dsa_8021q VLANs from the bridge
+  net: dsa: sja1105: save/restore VLANs using a delta commit method
+  net: dsa: sja1105: allow VLAN configuration from the bridge in all
+    states
+  net: dsa: sja1105: exit sja1105_vlan_filtering when called multiple
+    times
+  net: dsa: sja1105: prepare tagger for handling DSA tags and VLAN
+    simultaneously
+  net: dsa: tag_8021q: support up to 8 VLANs per port using sub-VLANs
+  net: dsa: tag_sja1105: implement sub-VLAN decoding
+  net: dsa: sja1105: add a new best_effort_vlan_filtering devlink
+    parameter
+  net: dsa: sja1105: add packing ops for the Retagging Table
+  net: dsa: sja1105: implement a common frame memory partitioning
+    function
+  net: dsa: sja1105: implement VLAN retagging for dsa_8021q sub-VLANs
+  docs: net: dsa: sja1105: document the best_effort_vlan_filtering
+    option
+
+ .../networking/devlink-params-sja1105.txt     |   27 +
+ Documentation/networking/dsa/sja1105.rst      |  211 ++-
+ drivers/net/dsa/sja1105/sja1105.h             |   29 +
+ .../net/dsa/sja1105/sja1105_dynamic_config.c  |   33 +
+ drivers/net/dsa/sja1105/sja1105_main.c        | 1128 +++++++++++++++--
+ drivers/net/dsa/sja1105/sja1105_spi.c         |    6 +
+ .../net/dsa/sja1105/sja1105_static_config.c   |   62 +-
+ .../net/dsa/sja1105/sja1105_static_config.h   |   16 +
+ drivers/net/dsa/sja1105/sja1105_vl.c          |   44 +-
+ include/linux/dsa/8021q.h                     |   42 +-
+ include/linux/dsa/sja1105.h                   |    5 +
+ include/net/dsa.h                             |    7 +
+ net/dsa/slave.c                               |   12 +-
+ net/dsa/tag_8021q.c                           |  108 +-
+ net/dsa/tag_sja1105.c                         |   38 +-
+ 15 files changed, 1508 insertions(+), 260 deletions(-)
+ create mode 100644 Documentation/networking/devlink-params-sja1105.txt
+
+-- 
+2.17.1
+
