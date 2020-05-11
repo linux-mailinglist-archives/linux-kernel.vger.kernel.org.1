@@ -2,125 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F27CA1CD4E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 11:28:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 496F51CD53F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 11:35:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729423AbgEKJ15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 05:27:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48814 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728260AbgEKJ15 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 05:27:57 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 21A6B206E6;
-        Mon, 11 May 2020 09:27:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589189277;
-        bh=oqgSUGP9MR8xZApzgNfSSeMcrgiWYjklZNtwHFxto4M=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=zZ/MnKpipz2Wmf+CG2sWYdc/PG4RRutTEk8EEmhSnamy+IWovmhTb7USVthxrPZhZ
-         FD4akhu3sVoZL21TND/PgEFvujvBLJVGdha/iLWAxQ25UqHh+wg0Ge2XSXLTfVseSd
-         VoXNUv5FTEWNN017WQ69dU8FGDElRT5npNqAjWPM=
-Date:   Mon, 11 May 2020 18:27:52 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Xiao Yang <yangx.jy@cn.fujitsu.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Shuah Khan <shuah@kernel.org>,
-        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Li Philip <philip.li@intel.com>,
-        Liu Yiding <yidingx.liu@intel.com>
-Subject: Re: [PATCH 3/3] selftests/ftrace: Use /bin/echo instead of built-in
- echo
-Message-Id: <20200511182752.c83f3454bcb3e205cf2bda4a@kernel.org>
-In-Reply-To: <5EB8FD31.9020906@cn.fujitsu.com>
-References: <158834025077.28357.15141584656220094821.stgit@devnote2>
-        <158834028054.28357.398159034694277189.stgit@devnote2>
-        <5EB3AE7C.5@cn.fujitsu.com>
-        <20200507181505.3e8369ee39f14d9c74ec986b@kernel.org>
-        <5EB8FD31.9020906@cn.fujitsu.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1729600AbgEKJeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 05:34:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725790AbgEKJeH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 05:34:07 -0400
+Received: from forwardcorp1o.mail.yandex.net (forwardcorp1o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::193])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FED6C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 02:34:06 -0700 (PDT)
+Received: from mxbackcorp2j.mail.yandex.net (mxbackcorp2j.mail.yandex.net [IPv6:2a02:6b8:0:1619::119])
+        by forwardcorp1o.mail.yandex.net (Yandex) with ESMTP id 9278C2E0B11;
+        Mon, 11 May 2020 12:34:02 +0300 (MSK)
+Received: from myt4-18a966dbd9be.qloud-c.yandex.net (myt4-18a966dbd9be.qloud-c.yandex.net [2a02:6b8:c00:12ad:0:640:18a9:66db])
+        by mxbackcorp2j.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id reGjoSLEJq-Y0XqJVmE;
+        Mon, 11 May 2020 12:34:02 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1589189642; bh=MGEF9xP5Qv6FPGCxjbJhWxmWFx6dPI6oeezhHBsf+rc=;
+        h=In-Reply-To:Message-ID:From:Date:References:To:Subject:Cc;
+        b=mwS7DMSvBj3jlt9a2sJJCwLOkbkP58CsD+3SORjXLPm3zW7gkn/BKPM+pVY/cY8Kd
+         KtQfD44pPGcoG4Unlp3e9zHUPnnQ/juS1UrcPZfdE1r+UuTCYen3qntrUl4pCIQLdR
+         ftmD1pKYDy0WojoV1lcmwF07jbHqD+hRwG1y/XHw=
+Authentication-Results: mxbackcorp2j.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from dynamic-vpn.dhcp.yndx.net (dynamic-vpn.dhcp.yndx.net [2a02:6b8:b081:423::1:1])
+        by myt4-18a966dbd9be.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id YWKiKxEGPb-Y0WG1DhL;
+        Mon, 11 May 2020 12:34:00 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+Subject: Re: [PATCH] doc: cgroup: update note about conditions when oom killer
+ is invoked
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, Roman Gushchin <guro@fb.com>
+References: <158894738928.208854.5244393925922074518.stgit@buzz>
+ <20200511083904.GB29153@dhcp22.suse.cz>
+From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Message-ID: <0ddb8e58-5bfd-7754-6979-4276acf5b4c8@yandex-team.ru>
+Date:   Mon, 11 May 2020 12:34:00 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20200511083904.GB29153@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-CA
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 May 2020 15:22:25 +0800
-Xiao Yang <yangx.jy@cn.fujitsu.com> wrote:
 
-> On 2020/5/7 17:15, Masami Hiramatsu wrote:
-> > On Thu, 7 May 2020 14:45:16 +0800
-> > Xiao Yang<yangx.jy@cn.fujitsu.com>  wrote:
-> >
-> >> On 2020/5/1 21:38, Masami Hiramatsu wrote:
-> >>> Since the built-in echo has different behavior in POSIX shell
-> >>> (dash) and bash, we forcibly use /bin/echo -E (not interpret
-> >>> backslash escapes) by default.
-> >>>
-> >>> This also fixes some test cases which expects built-in
-> >>> echo command.
-> >>>
-> >>> Reported-by: Liu Yiding<yidingx.liu@intel.com>
-> >>> Signed-off-by: Masami Hiramatsu<mhiramat@kernel.org>
-> >>> ---
-> >>>    tools/testing/selftests/ftrace/test.d/functions    |    3 +++
-> >>>    .../test.d/trigger/trigger-trace-marker-hist.tc    |    2 +-
-> >>>    .../trigger-trace-marker-synthetic-kernel.tc       |    4 ++++
-> >>>    .../trigger/trigger-trace-marker-synthetic.tc      |    4 ++--
-> >>>    4 files changed, 10 insertions(+), 3 deletions(-)
-> >>>
-> >>> diff --git a/tools/testing/selftests/ftrace/test.d/functions b/tools/testing/selftests/ftrace/test.d/functions
-> >>> index 5d4550591ff9..ea59b6ea2c3e 100644
-> >>> --- a/tools/testing/selftests/ftrace/test.d/functions
-> >>> +++ b/tools/testing/selftests/ftrace/test.d/functions
-> >>> @@ -1,3 +1,6 @@
-> >>> +# Since the built-in echo has different behavior in POSIX shell (dash) and
-> >>> +# bash, we forcibly use /bin/echo -E (not interpret backslash escapes).
-> >>> +alias echo="/bin/echo -E"
-> >> Hi Masami, Steven
-> >>
-> >> It seems that only kprobe_syntax_errors.tc is impacted by the issue
-> >> currently.  Is it necessary for all tests to use /bin/echo and could we
-> >> just make kprobe_syntax_errors.tc use /bin/echo?
-> >
-> > Yes, I would like to unify the "echo"'s behavior among the testcases
-> > instead of patching each failure in the future.
-> > Or would you have any concern on it?
-> Hi Masami,
+
+On 11/05/2020 11.39, Michal Hocko wrote:
+> On Fri 08-05-20 17:16:29, Konstantin Khlebnikov wrote:
+>> Starting from v4.19 commit 29ef680ae7c2 ("memcg, oom: move out_of_memory
+>> back to the charge path") cgroup oom killer is no longer invoked only from
+>> page faults. Now it implements the same semantics as global OOM killer:
+>> allocation context invokes OOM killer and keeps retrying until success.
+>>
+>> Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
 > 
-> Very sorry for the late reply.
+> Acked-by: Michal Hocko <mhocko@suse.com>
 > 
-> We may not avoid fixing related failures after your change:
-> 1) We have to reuse built-in echo (do alias echo=echo) if we want to 
-> test common_pid for histogram.
-> 2) We have to reuse built-in echo if some new tests want to interpret 
-> backslash escapes in future.
+>> ---
+>>   Documentation/admin-guide/cgroup-v2.rst |   17 ++++++++---------
+>>   1 file changed, 8 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+>> index bcc80269bb6a..1bb9a8f6ebe1 100644
+>> --- a/Documentation/admin-guide/cgroup-v2.rst
+>> +++ b/Documentation/admin-guide/cgroup-v2.rst
+>> @@ -1172,6 +1172,13 @@ PAGE_SIZE multiple when read back.
+>>   	Under certain circumstances, the usage may go over the limit
+>>   	temporarily.
+>>   
+>> +	In default configuration regular 0-order allocation always
+>> +	succeed unless OOM killer choose current task as a victim.
+>> +
+>> +	Some kinds of allocations don't invoke the OOM killer.
+>> +	Caller could retry them differently, return into userspace
+>> +	as -ENOMEM or silently ignore in cases like disk readahead.
+> 
+> I would probably add -EFAULT but the less error codes we document the
+> better.
 
-1) yes, that's what I need to do for avoiding "pid" key histogram
-  (but I think we should have better way to test it)
-2) No, in that case you should use "/bin/echo -e" explicitly.
-   dash's built-in echo doesn't support it.
+Yeah, EFAULT was a most obscure result of memory shortage.
+Fortunately with new behaviour this shouldn't happens a lot.
 
-> Is it simple to provide two implementations of echo?(built-in echo and 
-> echo command?) and then just apply echo command for kprobe_syntax_errors.tc?
+Actually where it is still possible? THP always fallback to 0-order.
+I mean EFAULT could appear inside kernel only if task is killed so
+nobody would see it.
 
-Hmm, OK, there might be another reason we reconsider this patch.
-
-- Alisasing echo (this patch) can avoid dash related issues but
-  this also makes "echo" running in another process implicitly.
-
-- Using /bin/echo for backslash explicitly will be missed unless
-  user runs it on dash, but it will keep "echo" in same process.
-
-So both have pros/cons, but your idea will be locally effected.
-OK, I'll retry it.
-
-Thank you,
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+> 
+>> +
+>>   	This is the ultimate protection mechanism.  As long as the
+>>   	high limit is used and monitored properly, this limit's
+>>   	utility is limited to providing the final safety net.
+>> @@ -1228,17 +1235,9 @@ PAGE_SIZE multiple when read back.
+>>   		The number of time the cgroup's memory usage was
+>>   		reached the limit and allocation was about to fail.
+>>   
+>> -		Depending on context result could be invocation of OOM
+>> -		killer and retrying allocation or failing allocation.
+>> -
+>> -		Failed allocation in its turn could be returned into
+>> -		userspace as -ENOMEM or silently ignored in cases like
+>> -		disk readahead.  For now OOM in memory cgroup kills
+>> -		tasks iff shortage has happened inside page fault.
+>> -
+>>   		This event is not raised if the OOM killer is not
+>>   		considered as an option, e.g. for failed high-order
+>> -		allocations.
+>> +		allocations or if caller asked to not retry attempts.
+>>   
+>>   	  oom_kill
+>>   		The number of processes belonging to this cgroup
+> 
