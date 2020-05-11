@@ -2,83 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D27691CD319
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 09:43:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F3201CD320
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 09:43:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729005AbgEKHnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 03:43:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725790AbgEKHnD (ORCPT
+        id S1728625AbgEKHng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 03:43:36 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([146.101.78.151]:55306 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725790AbgEKHng (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 03:43:03 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF15CC061A0C;
-        Mon, 11 May 2020 00:43:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=DAesUFHs3+q5GtlegIPJlfeGWtX+Y+hxDiwu9e6F0sY=; b=kVWkXI+hLMTACOSwPqCaOyS2We
-        VFyTICdLnsGOW4GySQeVAHxa/bnE/VB27ScJS0+ibDJVEy3tQvZoSwSNXToYYtW+aLUcLjOiXW9pU
-        f41QUPV25MliC0FCocYSJnQ37unthzZT17mmsih8cG+znSLkJJzOF+BGfz25pBJEbMiyUwJhrXhjR
-        x33YDWAcnzViVhSZQb0c3gKT7+qtWLTufIlevJdS0sXlTBfbTyBpC9QPBrs7ZIX3f3A2At227q3fP
-        5k51WwJAmlHUvyM5f7JFs0pu1Tcaww4yZFrCp/ZdhnsKGAy+xCihTerrfmBqFVehwvniM7PydMxpy
-        Cc97eILA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jY35J-0007Gl-US; Mon, 11 May 2020 07:42:46 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 386CB303DA0;
-        Mon, 11 May 2020 09:42:43 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1D4392870C6C3; Mon, 11 May 2020 09:42:43 +0200 (CEST)
-Date:   Mon, 11 May 2020 09:42:43 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Joerg Roedel <jroedel@suse.de>, Joerg Roedel <joro@8bytes.org>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Mon, 11 May 2020 03:43:36 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-209-P9C41s_OM427cyZHLO5SQQ-1; Mon, 11 May 2020 08:43:32 +0100
+X-MC-Unique: P9C41s_OM427cyZHLO5SQQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Mon, 11 May 2020 08:43:32 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Mon, 11 May 2020 08:43:32 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Linus Torvalds' <torvalds@linux-foundation.org>,
         Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Subject: Re: [RFC PATCH 0/7] mm: Get rid of vmalloc_sync_(un)mappings()
-Message-ID: <20200511074243.GE2957@hirez.programming.kicks-ass.net>
-References: <20200508144043.13893-1-joro@8bytes.org>
- <CALCETrX0ubjc0Gf4hCY9RWH6cVEKF1hv3RzqToKMt9_bEXXBvw@mail.gmail.com>
- <20200508213609.GU8135@suse.de>
- <CALCETrVxP87o2+aaf=RLW--DSpMrs=BXSQphN6bG5Y4X+OY8GQ@mail.gmail.com>
- <20200509175217.GV8135@suse.de>
- <CALCETrVU-+G3K5ABBRSEMiwnskL4mZsVcoTESZXnu34J7TaOqw@mail.gmail.com>
+        Masahiro Yamada <yamada.masahiro@socionext.com>
+CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: RE: I disabled more compiler warnings..
+Thread-Topic: I disabled more compiler warnings..
+Thread-Index: AQHWJwHjj7O/Wk29GEyLgXD8YJ1BI6iigEwg
+Date:   Mon, 11 May 2020 07:43:32 +0000
+Message-ID: <8320f29ca61146fc985083621685ac95@AcuMS.aculab.com>
+References: <CAHk-=wjah-fkfzMdmCNN8v7uriJsGeYjHh18wkXDZa2sxuAXzA@mail.gmail.com>
+In-Reply-To: <CAHk-=wjah-fkfzMdmCNN8v7uriJsGeYjHh18wkXDZa2sxuAXzA@mail.gmail.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALCETrVU-+G3K5ABBRSEMiwnskL4mZsVcoTESZXnu34J7TaOqw@mail.gmail.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 09, 2020 at 12:05:29PM -0700, Andy Lutomirski wrote:
+RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogMTAgTWF5IDIwMjAgMjA6MzMNCi4uLg0KPiBB
+bmQgYXMgcGFydCBvZiB0aGF0LCB0aGVyZSB3ZXJlIGEgbG90IG9mIG5ldyB3YXJuaW5ncyBpbiB0
+aGUga2VybmVsIGJ1aWxkLg0KPiANCj4gSSBsZXQgdGhlbSBnbyBmb3IgYSB3aGlsZSwgaW4gdGhl
+IGJlbGllZiB0aGF0IEkgY291bGQgZGVhbCB3aXRoIGl0LA0KPiBidXQgdGhlbiB5ZXN0ZXJkYXkg
+SSBkaWQgYSBwdWxsIGFuZCBkaWRuJ3QgaW5pdGlhbGx5IGV2ZW4gbm90aWNlIHRoYXQNCj4gdGhl
+IGVuZCByZXN1bHQgZGlkbid0IGNvbXBpbGUgZm9yIG1lLCBiZWNhdXNlIHRoZSBidWlsZCBlcnJv
+ciB3YXMNCj4gaGlkZGVuIGJ5IHRoZSBodW5kcmVkcyBvZiBsaW5lcyBvZiB3YXJuaW5ncyAuLi4N
+Cg0KT25lIHByb2JsZW0gaXMgdGhhdCBnbWFrZSBpcyB2ZXJ5IGJhZCBhdCBzdG9wcGluZyBwYXJh
+bGxlbA0KbWFrZXMgd2hlbiBvbmUgY29tbWFuZCBmYWlscy4NClNvIHRoZSBrZXJuZWwgYnVpbGQg
+Y2FycmllcyBvbiBmaXJpbmcgb2ZmIG5ldyBjb21waWxhdGlvbnMNCmV2ZW4gYWZ0ZXIgb25lIGhh
+cyBmYWlsZWQuDQoNCkkndmUgbm90IGxvb2tlZCBpbnNpZGUgZ21ha2UsIGJ1dCBJIGZpeGVkIG5t
+YWtlIHNvIHRoYXQgaXQNCnByb3Blcmx5IHVzZWQgYSBzaW5nbGUgam9iIHRva2VuIHBpcGUgZm9y
+IHRoZSBlbnRpcmUgKE5ldEJTRCkNCmJ1aWxkIGFuZCB0aGVuIGZsdXNoZWQgYW5kIHJlZmlsbGVk
+IGl0IHdpdGggJ2Fib3J0JyB0b2tlbnMNCndoZW4gYW55IGNvbW1hbmQgZmFpbGVkLg0KVGhhdCBt
+YWRlIHRoZSBidWlsZCBzdG9wIGFsbW9zdCBpbW1lZGlhdGVseS4NCg0KCURhdmlkDQoNCi0NClJl
+Z2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0
+b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykN
+Cg==
 
-> On x86_64, the only real advantage is that the handful of corner cases
-> that make vmalloc faults unpleasant (mostly relating to vmap stacks)
-> go away.  On x86_32, a bunch of mind-bending stuff (everything your
-> series deletes but also almost everything your series *adds*) goes
-> away.  There may be a genuine tiny performance hit on 2-level systems
-> due to the loss of huge pages in vmalloc space, but I'm not sure I
-> care or that we use them anyway on these systems.  And PeterZ can stop
-> even thinking about RCU.
-> 
-> Am I making sense?
-
-I think it'll work for x86_64 and that is really all I care about :-)
