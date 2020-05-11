@@ -2,221 +2,343 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D13F51CD766
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 13:14:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69D7B1CD76D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 13:15:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729241AbgEKLOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 07:14:19 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:57732 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725993AbgEKLOT (ORCPT
+        id S1729548AbgEKLOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 07:14:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725993AbgEKLOo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 07:14:19 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1589195658; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: References: Cc: To: From:
- Subject: Sender; bh=9u8N99k1vcfk6hizX5mCjz6icu5JY2q9ybf2Dfz1tcs=; b=HN6B2vki6p06dSYFSYf+wSAhPOama4rh2sWbLPkZH43p6UCq2Na6aE6xnSJlUlj4Iyv77Xxe
- gk68UM2o+44/sOHVVgZaRhS+Vk2vr6XWlHeLU5/EI6qCW1Ghj+H0KmFTvfHz7iLBBIg5qbRa
- 3UCEtg3CCUnVRE6IXASNX9+E9zc=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5eb93385.7f619ce53e68-smtp-out-n04;
- Mon, 11 May 2020 11:14:13 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9A777C433BA; Mon, 11 May 2020 11:14:13 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.0.104] (unknown [103.248.210.206])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: vjitta)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 982BAC433F2;
-        Mon, 11 May 2020 11:14:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 982BAC433F2
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=vjitta@codeaurora.org
-Subject: Re: [PATCH] iommu/iova: Retry from last rb tree node if iova search
- fails
-From:   Vijayanand Jitta <vjitta@codeaurora.org>
-To:     Robin Murphy <robin.murphy@arm.com>, joro@8bytes.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Cc:     vinmenon@codeaurora.org, kernel-team@android.com
-References: <1588795317-20879-1-git-send-email-vjitta@codeaurora.org>
- <d9bfde9f-8f16-bf1b-311b-ea6c2b8ab93d@arm.com>
- <b80fdf37-e635-2d65-c523-8e1d0bd8085b@codeaurora.org>
-Message-ID: <821c666b-ddf8-8b5c-1e8c-69a06ae1c727@codeaurora.org>
-Date:   Mon, 11 May 2020 16:44:06 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Mon, 11 May 2020 07:14:44 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D27BC061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 04:14:44 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id c4so3842046qvi.6
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 04:14:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0Yiq17KeeoPAL2ALedPiCre2LYd91TsHJmWVoUnhISo=;
+        b=mXiDmvSvTFmjTNGHJW5HppQE/j79m3K1ScMXBDhJDly96MT5S03eU40+S3/A3euASl
+         iUwCx5a83xlJZIJgIUhV2mvAHSkzYre2HwzxM0mg8uwK9WEQvmCtoIa9tOi6EDAxMb9o
+         QbyRE2xHy+xtV6+QjkeW8Xz8Eou2O0qIKxe7UGxNTjJgwk5IaihN1cRpr8pFebgAcn3E
+         5EYDFlGGnXiKKz96JuYb+cNzxEbgly2ShCZQo0WS13CeIRLWD4CFlrVuOMAKIy0mEE/Q
+         znzuLMzo+UKM7HMfTYr7W2Dg6UEZDranxbv0LL/nkxmuhnjAlelj/evOxXPqTaFw9SBJ
+         9W0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0Yiq17KeeoPAL2ALedPiCre2LYd91TsHJmWVoUnhISo=;
+        b=rJuy1BIWORHYyTYHY1O3RiEXPE0qiT5ZWo/+OjtjCtHfVG2OcoJnzoRmV+4z5X85Vf
+         VRBULU4zBt88bUYuagwd6Xcm9pA3+YMphRRxjh0o2XBX6Jh6qV0zfhD+V/j31+2eYP8+
+         0eG0fHy5VFO29DILMiTW/qmQexmUNRs0NMDD00hbJ5bF1ghAjyDlQZxgpkxgmYR/kyNY
+         Y1YzimraCK29FEbhJz2wxP5EahD4TUiuXRmJ6/HPTKke4i536ZABuVZ93fQ+V+gOeYpz
+         8c1lG8eYFqPtO42gN88ZhTVPE5zsgIkchiG4jgXpZfWB2kOUFRueV8O8tzNICb4hLXFi
+         VCgQ==
+X-Gm-Message-State: AGi0Puab/ixRTXUemTC5s/+DX0XnZCWxOXF4bJcVKIoyfjPBKFRiMC9S
+        zKNI0iKRpHxVcQlXiNnLj8cGRB4gpZZSTbgjrm0lxA==
+X-Google-Smtp-Source: APiQypIYqtmt1bPrIhz3JB1mSMaP5a44LvgTZA7lTJtmjS4bFaIxSks43ptcJPXAdQeIq9m7aJHKbwDNu7IJb+RstTo=
+X-Received: by 2002:a0c:db03:: with SMTP id d3mr5012984qvk.80.1589195683252;
+ Mon, 11 May 2020 04:14:43 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <b80fdf37-e635-2d65-c523-8e1d0bd8085b@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+References: <20200511023111.15310-1-walter-zh.wu@mediatek.com>
+In-Reply-To: <20200511023111.15310-1-walter-zh.wu@mediatek.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 11 May 2020 13:14:32 +0200
+Message-ID: <CACT4Y+YN7cmx71UKiREV7UhMdTfuxQEOGUrtDVXDvK9PW7qNPw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] rcu/kasan: record and print call_rcu() call stack
+To:     Walter Wu <walter-zh.wu@mediatek.com>
+Cc:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, May 11, 2020 at 4:31 AM Walter Wu <walter-zh.wu@mediatek.com> wrote:
+>
+> This feature will record first and last call_rcu() call stack and
+> print two call_rcu() call stack in KASAN report.
+>
+> When call_rcu() is called, we store the call_rcu() call stack into
+> slub alloc meta-data, so that KASAN report can print rcu stack.
+>
+> It doesn't increase the cost of memory consumption. Because we don't
+> enlarge struct kasan_alloc_meta size.
+> - add two call_rcu() call stack into kasan_alloc_meta, size is 8 bytes.
+> - remove free track from kasan_alloc_meta, size is 8 bytes.
+>
+> [1]https://bugzilla.kernel.org/show_bug.cgi?id=198437
+> [2]https://groups.google.com/forum/#!searchin/kasan-dev/better$20stack$20traces$20for$20rcu%7Csort:date/kasan-dev/KQsjT_88hDE/7rNUZprRBgAJ
+>
+> Signed-off-by: Walter Wu <walter-zh.wu@mediatek.com>
+> Suggested-by: Dmitry Vyukov <dvyukov@google.com>
+> Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+> Cc: Dmitry Vyukov <dvyukov@google.com>
+> Cc: Alexander Potapenko <glider@google.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Josh Triplett <josh@joshtriplett.org>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> Cc: Joel Fernandes <joel@joelfernandes.org>
+> ---
+>  include/linux/kasan.h |  2 ++
+>  kernel/rcu/tree.c     |  3 +++
+>  lib/Kconfig.kasan     |  2 ++
+>  mm/kasan/common.c     |  4 ++--
+>  mm/kasan/generic.c    | 29 +++++++++++++++++++++++++++++
+>  mm/kasan/kasan.h      | 19 +++++++++++++++++++
+>  mm/kasan/report.c     | 21 +++++++++++++++++----
+>  7 files changed, 74 insertions(+), 6 deletions(-)
+>
+> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+> index 31314ca7c635..23b7ee00572d 100644
+> --- a/include/linux/kasan.h
+> +++ b/include/linux/kasan.h
+> @@ -174,11 +174,13 @@ static inline size_t kasan_metadata_size(struct kmem_cache *cache) { return 0; }
+>
+>  void kasan_cache_shrink(struct kmem_cache *cache);
+>  void kasan_cache_shutdown(struct kmem_cache *cache);
+> +void kasan_record_aux_stack(void *ptr);
+>
+>  #else /* CONFIG_KASAN_GENERIC */
+>
+>  static inline void kasan_cache_shrink(struct kmem_cache *cache) {}
+>  static inline void kasan_cache_shutdown(struct kmem_cache *cache) {}
+> +static inline void kasan_record_aux_stack(void *ptr) {}
+>
+>  #endif /* CONFIG_KASAN_GENERIC */
+>
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 06548e2ebb72..de872b6cc261 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -57,6 +57,7 @@
+>  #include <linux/slab.h>
+>  #include <linux/sched/isolation.h>
+>  #include <linux/sched/clock.h>
+> +#include <linux/kasan.h>
+>  #include "../time/tick-internal.h"
+>
+>  #include "tree.h"
+> @@ -2694,6 +2695,8 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
+>                 trace_rcu_callback(rcu_state.name, head,
+>                                    rcu_segcblist_n_cbs(&rdp->cblist));
+>
+> +       kasan_record_aux_stack(head);
+> +
+>         /* Go handle any RCU core processing required. */
+>         if (IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
+>             unlikely(rcu_segcblist_is_offloaded(&rdp->cblist))) {
+> diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
+> index 81f5464ea9e1..56a89291f1cc 100644
+> --- a/lib/Kconfig.kasan
+> +++ b/lib/Kconfig.kasan
+> @@ -58,6 +58,8 @@ config KASAN_GENERIC
+>           For better error detection enable CONFIG_STACKTRACE.
+>           Currently CONFIG_KASAN_GENERIC doesn't work with CONFIG_DEBUG_SLAB
+>           (the resulting kernel does not boot).
+> +         Currently CONFIG_KASAN_GENERIC will print first and last call_rcu()
+> +         call stack. It doesn't increase the cost of memory consumption.
+
+We don't plan to change this and this is not a bug, right? So I think
+using "Currently" is confusing. What's changing in future?
+
+s/will print/prints/
+Simple present tense is the default for documentation, we are just
+stating facts.
+
+The remark about not increasing memory consumption is both false and
+not useful (we don't give an option to change this).
+
+I would just say:
+
+"In generic mode KASAN prints first and last call_rcu() call stacks in reports."
 
 
-On 5/9/2020 12:25 AM, Vijayanand Jitta wrote:
-> 
-> 
-> On 5/7/2020 6:54 PM, Robin Murphy wrote:
->> On 2020-05-06 9:01 pm, vjitta@codeaurora.org wrote:
->>> From: Vijayanand Jitta <vjitta@codeaurora.org>
->>>
->>> When ever a new iova alloc request comes iova is always searched
->>> from the cached node and the nodes which are previous to cached
->>> node. So, even if there is free iova space available in the nodes
->>> which are next to the cached node iova allocation can still fail
->>> because of this approach.
->>>
->>> Consider the following sequence of iova alloc and frees on
->>> 1GB of iova space
->>>
->>> 1) alloc - 500MB
->>> 2) alloc - 12MB
->>> 3) alloc - 499MB
->>> 4) free -  12MB which was allocated in step 2
->>> 5) alloc - 13MB
->>>
->>> After the above sequence we will have 12MB of free iova space and
->>> cached node will be pointing to the iova pfn of last alloc of 13MB
->>> which will be the lowest iova pfn of that iova space. Now if we get an
->>> alloc request of 2MB we just search from cached node and then look
->>> for lower iova pfn's for free iova and as they aren't any, iova alloc
->>> fails though there is 12MB of free iova space.
->>
->> Yup, this could definitely do with improving. Unfortunately I think this
->> particular implementation is slightly flawed...
->>
->>> To avoid such iova search failures do a retry from the last rb tree node
->>> when iova search fails, this will search the entire tree and get an iova
->>> if its available
->>>
->>> Signed-off-by: Vijayanand Jitta <vjitta@codeaurora.org>
->>> ---
->>>   drivers/iommu/iova.c | 11 +++++++++++
->>>   1 file changed, 11 insertions(+)
->>>
->>> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
->>> index 0e6a953..2985222 100644
->>> --- a/drivers/iommu/iova.c
->>> +++ b/drivers/iommu/iova.c
->>> @@ -186,6 +186,7 @@ static int __alloc_and_insert_iova_range(struct
->>> iova_domain *iovad,
->>>       unsigned long flags;
->>>       unsigned long new_pfn;
->>>       unsigned long align_mask = ~0UL;
->>> +    bool retry = false;
->>>         if (size_aligned)
->>>           align_mask <<= fls_long(size - 1);
->>> @@ -198,6 +199,8 @@ static int __alloc_and_insert_iova_range(struct
->>> iova_domain *iovad,
->>>         curr = __get_cached_rbnode(iovad, limit_pfn);
->>>       curr_iova = rb_entry(curr, struct iova, node);
->>> +
->>> +retry_search:
->>>       do {
->>>           limit_pfn = min(limit_pfn, curr_iova->pfn_lo);
->>>           new_pfn = (limit_pfn - size) & align_mask;
->>> @@ -207,6 +210,14 @@ static int __alloc_and_insert_iova_range(struct
->>> iova_domain *iovad,
->>>       } while (curr && new_pfn <= curr_iova->pfn_hi);
->>>         if (limit_pfn < size || new_pfn < iovad->start_pfn) {
->>> +        if (!retry) {
->>> +            curr = rb_last(&iovad->rbroot);
->>
->> Why walk when there's an anchor node there already? However...
->>
->>> +            curr_iova = rb_entry(curr, struct iova, node);
->>> +            limit_pfn = curr_iova->pfn_lo;
->>
->> ...this doesn't look right, as by now we've lost the original limit_pfn
->> supplied by the caller, so are highly likely to allocate beyond the
->> range our caller asked for. In fact AFAICS we'd start allocating from
->> directly directly below the anchor node, beyond the end of the entire
->> address space.
->>
->> The logic I was imagining we want here was something like the rapidly
->> hacked up (and untested) diff below.
->>
->> Thanks,
->> Robin.
->>
-> 
-> Thanks for your comments ,I have gone through below logic and I see some
-> issue with retry check as there could be case where alloc_lo is set to
-> some pfn other than start_pfn in that case we don't retry and there can
-> still be iova available. I understand its a hacked up version, I can
-> work on this.
-> 
-> But how about we just store limit_pfn and get the node using that and
-> retry for once from that node, it would be similar to my patch just
-> correcting the curr node and limit_pfn update in retry check. do you see
-> any issue with this approach ?
-> 
-> 
-> Thanks,
-> Vijay.
-
-I found one issue with my earlier approach, where we search twice from
-cached node to the start_pfn, this can be avoided if we store the pfn_hi
-of the cached node make this as alloc_lo when we retry. I see the below
-diff also does the same, I have posted v2 version of the patch after
-going through the comments and the below diff. can you please review that.
-
-Thanks,
-Vijay
->> ----->8-----
->> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
->> index 0e6a9536eca6..3574c19272d6 100644
->> --- a/drivers/iommu/iova.c
->> +++ b/drivers/iommu/iova.c
->> @@ -186,6 +186,7 @@ static int __alloc_and_insert_iova_range(struct
->> iova_domain *iovad,
->>         unsigned long flags;
->>         unsigned long new_pfn;
->>         unsigned long align_mask = ~0UL;
->> +       unsigned long alloc_hi, alloc_lo;
->>
->>         if (size_aligned)
->>                 align_mask <<= fls_long(size - 1);
->> @@ -196,17 +197,27 @@ static int __alloc_and_insert_iova_range(struct
->> iova_domain *iovad,
->>                         size >= iovad->max32_alloc_size)
->>                 goto iova32_full;
->>
->> +       alloc_hi = IOVA_ANCHOR;
->> +       alloc_lo = iovad->start_pfn;
->> +retry:
->>         curr = __get_cached_rbnode(iovad, limit_pfn);
->>         curr_iova = rb_entry(curr, struct iova, node);
->> +       if (alloc_hi < curr_iova->pfn_hi) {
->> +               alloc_lo = curr_iova->pfn_hi;
->> +               alloc_hi = limit_pfn;
->> +       }
->> +
->>         do {
->> -               limit_pfn = min(limit_pfn, curr_iova->pfn_lo);
->> -               new_pfn = (limit_pfn - size) & align_mask;
->> +               alloc_hi = min(alloc_hi, curr_iova->pfn_lo);
->> +               new_pfn = (alloc_hi - size) & align_mask;
->>                 prev = curr;
->>                 curr = rb_prev(curr);
->>                 curr_iova = rb_entry(curr, struct iova, node);
->>         } while (curr && new_pfn <= curr_iova->pfn_hi);
->>
->> -       if (limit_pfn < size || new_pfn < iovad->start_pfn) {
->> +       if (limit_pfn < size || new_pfn < alloc_lo) {
->> +               if (alloc_lo == iovad->start_pfn)
->> +                       goto retry;
->>                 iovad->max32_alloc_size = size;
->>                 goto iova32_full;
->>         }
+>  config KASAN_SW_TAGS
+>         bool "Software tag-based mode"
+> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+> index 2906358e42f0..8bc618289bb1 100644
+> --- a/mm/kasan/common.c
+> +++ b/mm/kasan/common.c
+> @@ -41,7 +41,7 @@
+>  #include "kasan.h"
+>  #include "../slab.h"
+>
+> -static inline depot_stack_handle_t save_stack(gfp_t flags)
+> +depot_stack_handle_t kasan_save_stack(gfp_t flags)
+>  {
+>         unsigned long entries[KASAN_STACK_DEPTH];
+>         unsigned int nr_entries;
+> @@ -54,7 +54,7 @@ static inline depot_stack_handle_t save_stack(gfp_t flags)
+>  static inline void set_track(struct kasan_track *track, gfp_t flags)
+>  {
+>         track->pid = current->pid;
+> -       track->stack = save_stack(flags);
+> +       track->stack = kasan_save_stack(flags);
+>  }
+>
+>  void kasan_enable_current(void)
+> diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
+> index 56ff8885fe2e..b86880c338e2 100644
+> --- a/mm/kasan/generic.c
+> +++ b/mm/kasan/generic.c
+> @@ -325,3 +325,32 @@ DEFINE_ASAN_SET_SHADOW(f2);
+>  DEFINE_ASAN_SET_SHADOW(f3);
+>  DEFINE_ASAN_SET_SHADOW(f5);
+>  DEFINE_ASAN_SET_SHADOW(f8);
+> +
+> +void kasan_record_aux_stack(void *addr)
+> +{
+> +       struct page *page = kasan_addr_to_page(addr);
+> +       struct kmem_cache *cache;
+> +       struct kasan_alloc_meta *alloc_info;
+> +       void *object;
+> +
+> +       if (!(page && PageSlab(page)))
+> +               return;
+> +
+> +       cache = page->slab_cache;
+> +       object = nearest_obj(cache, page, addr);
+> +       alloc_info = get_alloc_info(cache, object);
+> +
+> +       if (!alloc_info->rcu_stack[0])
+> +               /* record first call_rcu() call stack */
+> +               alloc_info->rcu_stack[0] = kasan_save_stack(GFP_NOWAIT);
+> +       else
+> +               /* record last call_rcu() call stack */
+> +               alloc_info->rcu_stack[1] = kasan_save_stack(GFP_NOWAIT);
+> +}
+> +
+> +struct kasan_track *kasan_get_aux_stack(struct kasan_alloc_meta *alloc_info,
+> +                                               u8 idx)
+> +{
+> +       return container_of(&alloc_info->rcu_stack[idx],
+> +                                               struct kasan_track, stack);
+> +}
+> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+> index e8f37199d885..1cc1fb7b0de3 100644
+> --- a/mm/kasan/kasan.h
+> +++ b/mm/kasan/kasan.h
+> @@ -96,15 +96,28 @@ struct kasan_track {
+>         depot_stack_handle_t stack;
+>  };
+>
+> +#ifdef CONFIG_KASAN_GENERIC
+> +#define SIZEOF_PTR sizeof(void *)
+> +#define KASAN_NR_RCU_CALL_STACKS 2
+> +#else /* CONFIG_KASAN_GENERIC */
+>  #ifdef CONFIG_KASAN_SW_TAGS_IDENTIFY
+>  #define KASAN_NR_FREE_STACKS 5
+>  #else
+>  #define KASAN_NR_FREE_STACKS 1
+>  #endif
+> +#endif /* CONFIG_KASAN_GENERIC */
+>
+>  struct kasan_alloc_meta {
+>         struct kasan_track alloc_track;
+> +#ifdef CONFIG_KASAN_GENERIC
+> +       /*
+> +        * call_rcu() call stack is stored into struct kasan_alloc_meta.
+> +        * The free stack is stored into freed object.
+> +        */
+> +       depot_stack_handle_t rcu_stack[KASAN_NR_RCU_CALL_STACKS];
+> +#else
+>         struct kasan_track free_track[KASAN_NR_FREE_STACKS];
+> +#endif
+>  #ifdef CONFIG_KASAN_SW_TAGS_IDENTIFY
+>         u8 free_pointer_tag[KASAN_NR_FREE_STACKS];
+>         u8 free_track_idx;
+> @@ -159,16 +172,22 @@ void kasan_report_invalid_free(void *object, unsigned long ip);
+>
+>  struct page *kasan_addr_to_page(const void *addr);
+>
+> +depot_stack_handle_t kasan_save_stack(gfp_t flags);
+> +
+>  #if defined(CONFIG_KASAN_GENERIC) && \
+>         (defined(CONFIG_SLAB) || defined(CONFIG_SLUB))
+>  void quarantine_put(struct kasan_free_meta *info, struct kmem_cache *cache);
+>  void quarantine_reduce(void);
+>  void quarantine_remove_cache(struct kmem_cache *cache);
+> +struct kasan_track *kasan_get_aux_stack(struct kasan_alloc_meta *alloc_info,
+> +                       u8 idx);
+>  #else
+>  static inline void quarantine_put(struct kasan_free_meta *info,
+>                                 struct kmem_cache *cache) { }
+>  static inline void quarantine_reduce(void) { }
+>  static inline void quarantine_remove_cache(struct kmem_cache *cache) { }
+> +static inline struct kasan_track *kasan_get_aux_stack(
+> +                       struct kasan_alloc_meta *alloc_info, u8 idx) { return NULL; }
+>  #endif
+>
+>  #ifdef CONFIG_KASAN_SW_TAGS
+> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
+> index 80f23c9da6b0..f16a1a210815 100644
+> --- a/mm/kasan/report.c
+> +++ b/mm/kasan/report.c
+> @@ -105,9 +105,13 @@ static void end_report(unsigned long *flags)
+>         kasan_enable_current();
+>  }
+>
+> -static void print_track(struct kasan_track *track, const char *prefix)
+> +static void print_track(struct kasan_track *track, const char *prefix,
+> +                                               bool is_callrcu)
+>  {
+> -       pr_err("%s by task %u:\n", prefix, track->pid);
+> +       if (is_callrcu)
+> +               pr_err("%s:\n", prefix);
+> +       else
+> +               pr_err("%s by task %u:\n", prefix, track->pid);
+>         if (track->stack) {
+>                 unsigned long *entries;
+>                 unsigned int nr_entries;
+> @@ -187,11 +191,20 @@ static void describe_object(struct kmem_cache *cache, void *object,
+>         if (cache->flags & SLAB_KASAN) {
+>                 struct kasan_track *free_track;
+>
+> -               print_track(&alloc_info->alloc_track, "Allocated");
+> +               print_track(&alloc_info->alloc_track, "Allocated", false);
+>                 pr_err("\n");
+>                 free_track = kasan_get_free_track(cache, object, tag);
+> -               print_track(free_track, "Freed");
+> +               print_track(free_track, "Freed", false);
+>                 pr_err("\n");
+> +
+> +               if (IS_ENABLED(CONFIG_KASAN_GENERIC)) {
+> +                       free_track = kasan_get_aux_stack(alloc_info, 0);
+> +                       print_track(free_track, "First call_rcu() call stack", true);
+> +                       pr_err("\n");
+> +                       free_track = kasan_get_aux_stack(alloc_info, 1);
+> +                       print_track(free_track, "Last call_rcu() call stack", true);
+> +                       pr_err("\n");
+> +               }
+>         }
+>
+>         describe_object_addr(cache, object, addr);
+> --
+> 2.18.0
+>
+> --
+> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/20200511023111.15310-1-walter-zh.wu%40mediatek.com.
