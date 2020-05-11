@@ -2,79 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB021CD10A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 06:50:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF7391CD106
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 06:50:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729294AbgEKErY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 00:47:24 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:55975 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728030AbgEKErV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 00:47:21 -0400
-X-IronPort-AV: E=Sophos;i="5.73,378,1583164800"; 
-   d="scan'208";a="91900972"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 11 May 2020 12:47:18 +0800
-Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
-        by cn.fujitsu.com (Postfix) with ESMTP id EE3B24BCC8AE;
-        Mon, 11 May 2020 12:47:17 +0800 (CST)
-Received: from [10.167.226.45] (10.167.226.45) by
- G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Mon, 11 May 2020 12:47:21 +0800
-Subject: Re: [PATCH] selftests:mptcp: fix empty optstring
-To:     <shuah@kernel.org>
-CC:     Li Zhijian <zhijianx.li@intel.com>,
-        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <matthieu.baerts@tessares.net>
-References: <20200402065216.23301-1-zhijianx.li@intel.com>
-From:   Li Zhijian <lizhijian@cn.fujitsu.com>
-Message-ID: <4bdd5672-eb24-2e49-e286-702510be0882@cn.fujitsu.com>
-Date:   Mon, 11 May 2020 12:47:05 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1729259AbgEKErN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 00:47:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40996 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728061AbgEKErL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 00:47:11 -0400
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0E14620820;
+        Mon, 11 May 2020 04:47:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589172431;
+        bh=/Mlb2q0Tz785tx5Tpwi6DAkt1Dqh6dX+9WwYZ3hNezc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CmrA7QpJS/snXofFBGccySF0Qruca5pxPZZ6DA5HnT7SBa79xDYBn0RyRPm2YuY2z
+         OX9paK7yrAiHrayCJXDegy2bP9/PzbBqXDAUjBGt2z+9AaPO63hTesEjX85oaKid4C
+         DVVGAOUFBmKYOZFegUh0xp5rQxdtIpvA4udAu4gs=
+Date:   Mon, 11 May 2020 00:47:09 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>, linux-kernel@vger.kernel.org,
+        tglx@linutronix.de, bp@alien8.de, luto@kernel.org, hpa@zytor.com,
+        tony.luck@intel.com, ravi.v.shankar@intel.com,
+        chang.seok.bae@intel.com
+Subject: Re: [PATCH v11 00/18] Enable FSGSBASE instructions
+Message-ID: <20200511044709.GN13035@sasha-vm>
+References: <20200509173655.13977-1-sashal@kernel.org>
+ <c4f62190-260a-c6e3-f1f6-6498660a7d1f@intel.com>
+ <20200510141625.GL13035@sasha-vm>
+ <20200511005319.GK3538@tassilo.jf.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200402065216.23301-1-zhijianx.li@intel.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.167.226.45]
-X-ClientProxiedBy: G08CNEXCHPEKD04.g08.fujitsu.local (10.167.33.200) To
- G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201)
-X-yoursite-MailScanner-ID: EE3B24BCC8AE.A1CAF
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: lizhijian@cn.fujitsu.com
-X-Spam-Status: No
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200511005319.GK3538@tassilo.jf.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ping
-
-
-On 4/2/20 2:52 PM, Li Zhijian wrote:
-> From: Li Zhijian <lizhijian@cn.fujitsu.com>
+On Sun, May 10, 2020 at 05:53:19PM -0700, Andi Kleen wrote:
+>> My interest in this is that we have a few workloads that value the
+>> ability to access FS/GS base directly and show nice performance
 >
-> Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
-> ---
->   tools/testing/selftests/net/mptcp/pm_netlink.sh | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/tools/testing/selftests/net/mptcp/pm_netlink.sh b/tools/testing/selftests/net/mptcp/pm_netlink.sh
-> index 9172746b6cf0..8c7998c64d9e 100755
-> --- a/tools/testing/selftests/net/mptcp/pm_netlink.sh
-> +++ b/tools/testing/selftests/net/mptcp/pm_netlink.sh
-> @@ -8,8 +8,7 @@ usage() {
->   	echo "Usage: $0 [ -h ]"
->   }
->   
-> -
-> -while getopts "$optstring" option;do
-> +while getopts "h" option;do
->   	case "$option" in
->   	"h")
->   		usage $0
+>Can you please share some rough numbers, Sasha?
 
+I don't have any recent numbers around these - this series effectively
+enables certain workloads rather than just improve the performance
+somewhat so benchmarking for exact numbers isn't too interesting here.
 
+>I would expect everything that does a lot of context switches
+>to benefit automatically, apart from the new free register (which
+>requires enabling, but also has great potential)
 
+And even more so when these registers are actually being used for the
+purpose they were designed for (this is in the context of secure
+computing/enclaves/etc).
+
+-- 
+Thanks,
+Sasha
