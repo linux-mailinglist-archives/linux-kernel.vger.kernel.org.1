@@ -2,278 +2,359 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A5231CE017
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 18:08:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3748B1CE2A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 20:27:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730673AbgEKQIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 12:08:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729556AbgEKQIe (ORCPT
+        id S1731172AbgEKS1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 14:27:35 -0400
+Received: from mail-oo1-f68.google.com ([209.85.161.68]:40411 "EHLO
+        mail-oo1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729772AbgEKS1c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 12:08:34 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5742C061A0C;
-        Mon, 11 May 2020 09:08:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Z/d+TrVPdrsAk44CoqF5IGdRSpSm6eZWCXJ37KrAT1c=; b=u9oRacQAicljKtNFCklFNYSPYA
-        WiFsRel6xtyrX4c3ZQDFQ9rMR0M0J9/x8c4PANjWEpVfgSPLO9LZrfI1TQP7FIAr2h4FF8N2dP8iH
-        721hzr4Lg/7ERwJhu86zdHvsYVXiKKBfGNjKdq4jJv71t4n2136iHYokfcJ/derIadDpfLknKA9jg
-        +49xmmwXv6bdIxA2FcCVmsNqFhxkKgbuQ0Og5FLSSgj/FassEHnGFHUTdMbw+EoyS/wTK5N2yVzMs
-        EX+5voAQynyenRLjd4opgL1meH/rOLCCz3sFUfJ8VM+luujCJsgbEWA4HlCZ98CPPb/npmFFII5i+
-        lpW97mkQ==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jYAyc-0005N0-BE; Mon, 11 May 2020 16:08:22 +0000
-Date:   Mon, 11 May 2020 09:08:22 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Joerg Roedel <jroedel@suse.de>, Joerg Roedel <joro@8bytes.org>,
-        x86@kernel.org, hpa@zytor.com,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>, rjw@rjwysocki.net,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [RFC PATCH 0/7] mm: Get rid of vmalloc_sync_(un)mappings()
-Message-ID: <20200511160822.GX16070@bombadil.infradead.org>
-References: <20200508144043.13893-1-joro@8bytes.org>
- <20200508192000.GB2957@hirez.programming.kicks-ass.net>
- <20200508213407.GT8135@suse.de>
- <20200509092516.GC2957@hirez.programming.kicks-ass.net>
- <20200510011157.GU16070@bombadil.infradead.org>
- <20200511073134.GD2957@hirez.programming.kicks-ass.net>
- <20200511155204.GW16070@bombadil.infradead.org>
+        Mon, 11 May 2020 14:27:32 -0400
+Received: by mail-oo1-f68.google.com with SMTP id r1so2151722oog.7;
+        Mon, 11 May 2020 11:27:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=NEhmUjxmMxFS/+AGYCBakZM95xtx9z/rJXXQu+QnHis=;
+        b=NG4i3uAAs6BrKoDllf0C3jwAGyHZ02i2NlhvYXE+flvCJCSt5PvlIHJYiTABm13yzz
+         m5Ij8YBf0R7mFoaQqyPT1SVkdlyZmTDQPwAHv8V86pWS6mlbP+9+h9xE9lou1B31LjwU
+         OT92w8R24enpn+iyjHxDiJESLOJsJ/m71OOeOyi1s5NjqGbNvZaVupiNCfqdgdVLYSX8
+         HEmlA6pUyMFFamWWMPguIvLk5iPxhSiaTVG/tuV8qg+NM1BrE3PqM1bPlovyXT7Ib/KT
+         3LMYlaStU9cH/QqJPR6Dq/wUMq/A4gpZ2FaNC1RvFxxjXAkEOIVBhRA7HbHb8gpu7fGt
+         XoNA==
+X-Gm-Message-State: AGi0PuZOTSFVhyQ78od9bMC3x9skDTITc9ndcuVpDyiBwoBy9pFDYH5t
+        hPWpzrU71RmHIY/G77eVcA==
+X-Google-Smtp-Source: APiQypJ2tCEY94DibtPhSB6E64qp0zvWDNdnfInerFAEcuNveALL2bqOE3j3w2SQt788EebeNwR/cA==
+X-Received: by 2002:a4a:e59a:: with SMTP id o26mr14874963oov.54.1589221650502;
+        Mon, 11 May 2020 11:27:30 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id e63sm2836662ote.41.2020.05.11.11.27.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 May 2020 11:27:29 -0700 (PDT)
+Received: (nullmailer pid 19038 invoked by uid 1000);
+        Mon, 11 May 2020 16:09:24 -0000
+Date:   Mon, 11 May 2020 11:09:24 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-mips@vger.kernel.org, linux-i2c@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 02/12] dt-bindings: i2c: Convert DW I2C binding to DT
+ schema
+Message-ID: <20200511160924.GA9628@bogus>
+References: <20200306132001.1B875803087C@mail.baikalelectronics.ru>
+ <20200510095019.20981-1-Sergey.Semin@baikalelectronics.ru>
+ <20200510095019.20981-3-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="wac7ysb48OaltWcw"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200511155204.GW16070@bombadil.infradead.org>
+In-Reply-To: <20200510095019.20981-3-Sergey.Semin@baikalelectronics.ru>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---wac7ysb48OaltWcw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, May 11, 2020 at 08:52:04AM -0700, Matthew Wilcox wrote:
-> On Mon, May 11, 2020 at 09:31:34AM +0200, Peter Zijlstra wrote:
-> > On Sat, May 09, 2020 at 06:11:57PM -0700, Matthew Wilcox wrote:
-> > > Iterating an XArray (whether the entire thing
-> > > or with marks) is RCU-safe and faster than iterating a linked list,
-> > > so this should solve the problem?
-> > 
-> > It can hardly be faster if you want all elements -- which is I think the
-> > case here. We only call into this if we change an entry, and then we
-> > need to propagate that change to all.
+On Sun, May 10, 2020 at 12:50:08PM +0300, Serge Semin wrote:
+> Modern device tree bindings are supposed to be created as YAML-files
+> in accordance with dt-schema. This commit replaces Synopsys DW I2C
+> legacy bare text bindings with YAML file. As before the bindings file
+> states that the corresponding dts node is supposed to be compatible
+> either with generic DW I2C controller or with Microsemi Ocelot SoC I2C
+> one, to have registers, interrupts and clocks properties. In addition
+> the node may have clock-frequency, i2c-sda-hold-time-ns,
+> i2c-scl-falling-time-ns and i2c-sda-falling-time-ns optional properties.
 > 
-> Of course it can be faster.  Iterating an array is faster than iterating
-> a linked list because caches.  While an XArray is a segmented array
-> (so slower than a plain array), it's plainly going to be faster than
-> iterating a linked list.
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: Paul Burton <paulburton@kernel.org>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
+> Cc: Wolfram Sang <wsa@the-dreams.de>
+> Cc: Frank Rowand <frowand.list@gmail.com>
+> Cc: linux-mips@vger.kernel.org
+> 
+> ---
+> 
+> Changelog v2:
+> - Make sure that "mscc,ocelot-i2c" compatible node may have up to two
+>   registers space defined, while normal DW I2C controller will have only
+>   one registers space.
+> - Add "mscc,ocelot-i2c" example to test the previous fix.
+> - Declare "unevaluatedProperties" property instead of
+>   "additionalProperties" one.
+> - Due to the previous fix we can now discard the dummy boolean properties
+>   definitions, since the proper type evaluation will be performed by the
+>   generic i2c-controller.yaml schema.
+> ---
+>  .../bindings/i2c/i2c-designware.txt           |  73 ---------
+>  .../bindings/i2c/snps,designware-i2c.yaml     | 154 ++++++++++++++++++
+>  2 files changed, 154 insertions(+), 73 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-designware.txt
+>  create mode 100644 Documentation/devicetree/bindings/i2c/snps,designware-i2c.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/i2c/i2c-designware.txt b/Documentation/devicetree/bindings/i2c/i2c-designware.txt
+> deleted file mode 100644
+> index 08be4d3846e5..000000000000
+> --- a/Documentation/devicetree/bindings/i2c/i2c-designware.txt
+> +++ /dev/null
+> @@ -1,73 +0,0 @@
+> -* Synopsys DesignWare I2C
+> -
+> -Required properties :
+> -
+> - - compatible : should be "snps,designware-i2c"
+> -                or "mscc,ocelot-i2c" with "snps,designware-i2c" for fallback
+> - - reg : Offset and length of the register set for the device
+> - - interrupts : <IRQ> where IRQ is the interrupt number.
+> - - clocks : phandles for the clocks, see the description of clock-names below.
+> -   The phandle for the "ic_clk" clock is required. The phandle for the "pclk"
+> -   clock is optional. If a single clock is specified but no clock-name, it is
+> -   the "ic_clk" clock. If both clocks are listed, the "ic_clk" must be first.
+> -
+> -Recommended properties :
+> -
+> - - clock-frequency : desired I2C bus clock frequency in Hz.
+> -
+> -Optional properties :
+> -
+> - - clock-names : Contains the names of the clocks:
+> -    "ic_clk", for the core clock used to generate the external I2C clock.
+> -    "pclk", the interface clock, required for register access.
+> -
+> - - reg : for "mscc,ocelot-i2c", a second register set to configure the SDA hold
+> -   time, named ICPU_CFG:TWI_DELAY in the datasheet.
+> -
+> - - i2c-sda-hold-time-ns : should contain the SDA hold time in nanoseconds.
+> -   This option is only supported in hardware blocks version 1.11a or newer and
+> -   on Microsemi SoCs ("mscc,ocelot-i2c" compatible).
+> -
+> - - i2c-scl-falling-time-ns : should contain the SCL falling time in nanoseconds.
+> -   This value which is by default 300ns is used to compute the tLOW period.
+> -
+> - - i2c-sda-falling-time-ns : should contain the SDA falling time in nanoseconds.
+> -   This value which is by default 300ns is used to compute the tHIGH period.
+> -
+> -Examples :
+> -
+> -	i2c@f0000 {
+> -		#address-cells = <1>;
+> -		#size-cells = <0>;
+> -		compatible = "snps,designware-i2c";
+> -		reg = <0xf0000 0x1000>;
+> -		interrupts = <11>;
+> -		clock-frequency = <400000>;
+> -	};
+> -
+> -	i2c@1120000 {
+> -		#address-cells = <1>;
+> -		#size-cells = <0>;
+> -		compatible = "snps,designware-i2c";
+> -		reg = <0x1120000 0x1000>;
+> -		interrupt-parent = <&ictl>;
+> -		interrupts = <12 1>;
+> -		clock-frequency = <400000>;
+> -		i2c-sda-hold-time-ns = <300>;
+> -		i2c-sda-falling-time-ns = <300>;
+> -		i2c-scl-falling-time-ns = <300>;
+> -	};
+> -
+> -	i2c@1120000 {
+> -		#address-cells = <1>;
+> -		#size-cells = <0>;
+> -		reg = <0x2000 0x100>;
+> -		clock-frequency = <400000>;
+> -		clocks = <&i2cclk>;
+> -		interrupts = <0>;
+> -
+> -		eeprom@64 {
+> -			compatible = "linux,slave-24c02";
+> -			reg = <0x40000064>;
+> -		};
+> -	};
+> diff --git a/Documentation/devicetree/bindings/i2c/snps,designware-i2c.yaml b/Documentation/devicetree/bindings/i2c/snps,designware-i2c.yaml
+> new file mode 100644
+> index 000000000000..8d4e5fccbd1c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/i2c/snps,designware-i2c.yaml
+> @@ -0,0 +1,154 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/i2c/snps,designware-i2c.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Synopsys DesignWare APB I2C Controller
+> +
+> +maintainers:
+> +  - Jarkko Nikula <jarkko.nikula@linux.intel.com>
+> +
+> +allOf:
+> +  - $ref: /schemas/i2c/i2c-controller.yaml#
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          not:
+> +            contains:
+> +              const: mscc,ocelot-i2c
+> +    then:
+> +      properties:
+> +        reg:
+> +          maxItems: 1
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - description: Generic Synopsys DesignWare I2C controller
+> +        const: snps,designware-i2c
+> +      - description: Microsemi Ocelot SoCs I2C controller
+> +        items:
+> +          - const: mscc,ocelot-i2c
+> +          - const: snps,designware-i2c
+> +
+> +  reg:
+> +    minItems: 1
+> +    items:
+> +      - description: DW APB I2C controller memory mapped registers
+> +      - description: |
+> +          ICPU_CFG:TWI_DELAY registers to setup the SDA hold time.
+> +          This registers are specific to the Ocelot I2C-controller.
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    minItems: 1
+> +    items:
+> +      - description: I2C controller reference clock source
+> +      - description: APB interface clock source
+> +
+> +  clock-names:
+> +    minItems: 1
+> +    items:
+> +      - const: ref
+> +      - const: pclk
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +  clock-frequency:
+> +    description: Desired I2C bus clock frequency in Hz
+> +    enum: [100000, 400000, 1000000, 3400000]
+> +    default: 400000
+> +
+> +  i2c-sda-hold-time-ns:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
 
-Quantifying this:
+Don't need a type ref as properties with a unit-suffix already have one.
 
-$ ./array-vs-list 
-walked sequential array in 0.002039s
-walked sequential list in 0.002807s
-walked sequential array in 0.002017s
-walked shuffled list in 0.102367s
-walked shuffled array in 0.012114s
+> +    description: |
+> +      The property should contain the SDA hold time in nanoseconds. This option
+> +      is only supported in hardware blocks version 1.11a or newer or on
+> +      Microsemi SoCs.
+> +
+> +  i2c-scl-falling-time-ns:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: |
+> +      The property should contain the SCL falling time in nanoseconds.
+> +      This value is used to compute the tLOW period.
+> +    default: 300
+> +
+> +  i2c-sda-falling-time-ns:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: |
+> +      The property should contain the SDA falling time in nanoseconds.
+> +      This value is used to compute the tHIGH period.
+> +    default: 300
+> +
+> +  dmas:
+> +    items:
+> +      - description: TX DMA Channel
+> +      - description: RX DMA Channel
+> +
+> +  dma-names:
+> +    items:
+> +      - const: tx
+> +      - const: rx
+> +
+> +unevaluatedProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - "#address-cells"
+> +  - "#size-cells"
+> +  - interrupts
+> +
+> +examples:
+> +  - |
+> +    i2c@f0000 {
+> +      compatible = "snps,designware-i2c";
+> +      reg = <0xf0000 0x1000>;
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +      interrupts = <11>;
+> +      clock-frequency = <400000>;
+> +    };
+> +  - |
+> +    i2c@1120000 {
+> +      compatible = "snps,designware-i2c";
+> +      reg = <0x1120000 0x1000>;
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +      interrupts = <12 1>;
+> +      clock-frequency = <400000>;
+> +      i2c-sda-hold-time-ns = <300>;
+> +      i2c-sda-falling-time-ns = <300>;
+> +      i2c-scl-falling-time-ns = <300>;
+> +    };
+> +  - |
+> +    i2c@2000 {
+> +      compatible = "snps,designware-i2c";
+> +      reg = <0x2000 0x100>;
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +      clock-frequency = <400000>;
+> +      clocks = <&i2cclk>;
+> +      interrupts = <0>;
+> +
+> +      eeprom@64 {
+> +        compatible = "linux,slave-24c02";
+> +        reg = <0x40000064>;
 
-Attached is the source code; above results on a Kaby Lake with
-CFLAGS="-O2 -W -Wall -g".
+This causes 'make dt_binding_check' to fail. The unit-address should be 
+'40000064'. However, there's a bug in dtc not liking the high bits set 
+either. There's a fix pending, but I'd just fix the example here to 
+avoid the issue. 
 
---wac7ysb48OaltWcw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="array-vs-list.c"
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <unistd.h>
-
-unsigned long count = 1000 * 1000;
-unsigned int verbose;
-
-struct object {
-	struct object *next;
-	struct object *prev;
-	unsigned int value;
-};
-
-#define printv(level, fmt, ...) \
-	if (level <= verbose) { printf(fmt, ##__VA_ARGS__); }
-
-void check_total(unsigned long total)
-{
-	if (total * 2 != count * (count + 1))
-		printf("Check your staging! (%lu %lu)\n", total, count);
-}
-
-void alloc_objs(struct object **array)
-{
-	unsigned long i;
-
-	for (i = 0; i < count; i++) {
-		struct object *obj = malloc(sizeof(*obj));
-
-		obj->value = i + 1;
-		/* Add to the array */
-		array[i] = obj;
-	}
-}
-
-void shuffle(struct object **array, unsigned long seed)
-{
-	unsigned long i;
-
-	printv(1, "random seed %lu\n", seed);
-	srand48(seed);
-
-	/* Shuffle the array */
-	for (i = 1; i < count; i++) {
-		struct object *obj;
-		unsigned long j = (unsigned int)mrand48() % (i + 1);
-
-		if (i == j)
-			continue;
-		obj = array[j];
-		array[j] = array[i];
-		array[i] = obj;
-	}
-}
-
-void create_list(struct object **array, struct object *list)
-{
-	unsigned long i;
-
-	list->next = list;
-	list->prev = list;
-
-	for (i = 0; i < count; i++) {
-		struct object *obj = array[i];
-		/* Add to the tail of the list */
-		obj->next = list;
-		obj->prev = list->prev;
-		list->prev->next = obj;
-		list->prev = obj;
-	}
-}
-
-void walk_list(struct object *list)
-{
-	unsigned long total = 0;
-	struct object *obj;
-
-	for (obj = list->next; obj != list; obj = obj->next) {
-		total += obj->value;
-	}
-
-	check_total(total);
-}
-
-void walk_array(struct object **array)
-{
-	unsigned long total = 0;
-	unsigned long i;
-
-	for (i = 0; i < count; i++) {
-		total += array[i]->value;
-	}
-
-	check_total(total);
-}
-
-/* time2 - time1 */
-double diff_time(struct timespec *time1, struct timespec *time2)
-{
-	double result = time2->tv_nsec - time1->tv_nsec;
-
-	return time2->tv_sec - time1->tv_sec + result / 1000 / 1000 / 1000;
-}
-
-int main(int argc, char **argv)
-{
-	int opt;
-	unsigned long seed = time(NULL);
-	struct object **array;
-	struct object list;
-	struct timespec time1, time2;
-
-	while ((opt = getopt(argc, argv, "c:s:v")) != -1) {
-		if (opt == 'c')
-			count *= strtoul(optarg, NULL, 0);
-		else if (opt == 's')
-			seed = strtoul(optarg, NULL, 0);
-		else if (opt == 'v')
-			verbose++;
-	}
-
-	clock_gettime(CLOCK_MONOTONIC, &time1);
-	array = calloc(count, sizeof(void *));
-	alloc_objs(array);
-	clock_gettime(CLOCK_MONOTONIC, &time2);
-	printv(1, "allocated %lu items in %fs\n", count,
-			diff_time(&time1, &time2));
-
-	clock_gettime(CLOCK_MONOTONIC, &time1);
-	walk_array(array);
-	clock_gettime(CLOCK_MONOTONIC, &time2);
-	printf("walked sequential array in %fs\n",
-			diff_time(&time1, &time2));
-
-	clock_gettime(CLOCK_MONOTONIC, &time1);
-	create_list(array, &list);
-	clock_gettime(CLOCK_MONOTONIC, &time2);
-	printv(1, "created list in %fs\n",
-			diff_time(&time1, &time2));
-
-	clock_gettime(CLOCK_MONOTONIC, &time1);
-	walk_list(&list);
-	clock_gettime(CLOCK_MONOTONIC, &time2);
-	printf("walked sequential list in %fs\n",
-			diff_time(&time1, &time2));
-
-	clock_gettime(CLOCK_MONOTONIC, &time1);
-	walk_array(array);
-	clock_gettime(CLOCK_MONOTONIC, &time2);
-	printf("walked sequential array in %fs\n",
-			diff_time(&time1, &time2));
-
-	clock_gettime(CLOCK_MONOTONIC, &time1);
-	shuffle(array, seed);
-	clock_gettime(CLOCK_MONOTONIC, &time2);
-	printv(1, "shuffled array in %fs\n",
-			diff_time(&time1, &time2));
-
-	clock_gettime(CLOCK_MONOTONIC, &time1);
-	create_list(array, &list);
-	clock_gettime(CLOCK_MONOTONIC, &time2);
-	printv(1, "created list in %fs\n",
-			diff_time(&time1, &time2));
-
-	clock_gettime(CLOCK_MONOTONIC, &time1);
-	walk_list(&list);
-	clock_gettime(CLOCK_MONOTONIC, &time2);
-	printf("walked shuffled list in %fs\n",
-			diff_time(&time1, &time2));
-
-	clock_gettime(CLOCK_MONOTONIC, &time1);
-	walk_array(array);
-	clock_gettime(CLOCK_MONOTONIC, &time2);
-	printf("walked shuffled array in %fs\n",
-			diff_time(&time1, &time2));
-
-	return 0;
-}
-
---wac7ysb48OaltWcw--
+> +      };
+> +    };
+> +  - |
+> +    i2c@100400 {
+> +      compatible = "mscc,ocelot-i2c", "snps,designware-i2c";
+> +      reg = <0x100400 0x100>, <0x198 0x8>;
+> +      pinctrl-0 = <&i2c_pins>;
+> +      pinctrl-names = "default";
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +      interrupts = <8>;
+> +      clocks = <&ahb_clk>;
+> +    };
+> +...
+> -- 
+> 2.25.1
+> 
