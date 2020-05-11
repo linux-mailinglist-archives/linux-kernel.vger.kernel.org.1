@@ -2,106 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B3A01CD900
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 13:54:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2180F1CD906
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 13:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729769AbgEKLy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 07:54:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43326 "EHLO
+        id S1729818AbgEKLy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 07:54:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726068AbgEKLy0 (ORCPT
+        by vger.kernel.org with ESMTP id S1726068AbgEKLy4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 07:54:26 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F1F0C061A0C;
-        Mon, 11 May 2020 04:54:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=Buqh0OZMLcugsZlRcTYYMXify7/0tWoE2J3AjTr3UcQ=; b=jAJLj/eV5bjdkVOZFkvPHT6sQ
-        YQA0RsFqtvhEi5lNamudGLIjl8+wqJ14Hsk24dAovsgewwJBmEktcyj9BCJ0fLUVw6qGKQZmCd9kh
-        pMqDqFjx35d0Vbg3HF4S3F4lI+AeoH30cu0s1lZUyJHQX/agpRnfEN2c233q3PmXx4lt/Ds7wwueP
-        LPAQnanvGj0Zd29x16C/vXVWzhqPOqcB6RJjfDoTJsrPSOJbKs5aL8+4hAdsBse1Oa7rcsG7tQj2J
-        wmFfTL8amfaH+uu4FQomNE69tRCXwCTWR2Wdzb7l0KaUyEWb2/4Fjxh6whlwnv2xYqdvqrNepjWEs
-        vx3jzIqSg==;
-Received: from shell.armlinux.org.uk ([2001:4d48:ad52:3201:5054:ff:fe00:4ec]:38874)
-        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.90_1)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1jY70i-00067E-Ll; Mon, 11 May 2020 12:54:16 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1jY70e-0005eH-IU; Mon, 11 May 2020 12:54:12 +0100
-Date:   Mon, 11 May 2020 12:54:12 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next 01/15] net: dsa: provide an option for drivers
- to always receive bridge VLANs
-Message-ID: <20200511115412.GR1551@shell.armlinux.org.uk>
-References: <20200510164255.19322-1-olteanv@gmail.com>
- <20200510164255.19322-2-olteanv@gmail.com>
- <20200511113850.GQ1551@shell.armlinux.org.uk>
- <CA+h21hpsBvjDJpRKwOj8ncN_NyE1Qh+HQfYLFu3eb_wgyS__bg@mail.gmail.com>
+        Mon, 11 May 2020 07:54:56 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9866FC061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 04:54:56 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jY70w-0004ZX-Cc; Mon, 11 May 2020 13:54:30 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id AB288FFBF8; Mon, 11 May 2020 13:54:29 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Alexandre Chartre <alexandre.chartre@oracle.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [patch V4 part 5 02/31] x86/entry: Provide helpers for execute on irqstack
+In-Reply-To: <7477e59e-50d9-3446-dce7-3aa07e74cf5f@oracle.com>
+References: <20200505135341.730586321@linutronix.de> <20200505135828.316937774@linutronix.de> <7477e59e-50d9-3446-dce7-3aa07e74cf5f@oracle.com>
+Date:   Mon, 11 May 2020 13:54:29 +0200
+Message-ID: <871rnq7klm.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+h21hpsBvjDJpRKwOj8ncN_NyE1Qh+HQfYLFu3eb_wgyS__bg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 11, 2020 at 02:40:29PM +0300, Vladimir Oltean wrote:
-> On Mon, 11 May 2020 at 14:38, Russell King - ARM Linux admin
-> <linux@armlinux.org.uk> wrote:
-> >
-> > On Sun, May 10, 2020 at 07:42:41PM +0300, Vladimir Oltean wrote:
-> > > From: Russell King <rmk+kernel@armlinux.org.uk>
-> > >
-> > > DSA assumes that a bridge which has vlan filtering disabled is not
-> > > vlan aware, and ignores all vlan configuration. However, the kernel
-> > > software bridge code allows configuration in this state.
-> > >
-> > > This causes the kernel's idea of the bridge vlan state and the
-> > > hardware state to disagree, so "bridge vlan show" indicates a correct
-> > > configuration but the hardware lacks all configuration. Even worse,
-> > > enabling vlan filtering on a DSA bridge immediately blocks all traffic
-> > > which, given the output of "bridge vlan show", is very confusing.
-> > >
-> > > Provide an option that drivers can set to indicate they want to receive
-> > > vlan configuration even when vlan filtering is disabled. At the very
-> > > least, this is safe for Marvell DSA bridges, which do not look up
-> > > ingress traffic in the VTU if the port is in 8021Q disabled state. It is
-> > > also safe for the Ocelot switch family. Whether this change is suitable
-> > > for all DSA bridges is not known.
-> > >
-> > > Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
-> > > Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> >
-> > This patch was NAK'd because of objections to the "vlan_bridge_vtu"
-> > name.  Unfortunately, this means that the bug for Marvell switches
-> > remains unfixed to this day.
-> >
-> 
-> How about "accept_vlan_while_unaware"?
+Alexandre Chartre <alexandre.chartre@oracle.com> writes:
+> On 5/5/20 3:53 PM, Thomas Gleixner wrote:
+>> +	__this_cpu_add(irq_count, 1);					\
+>> +	asm volatile(							\
+>> +		"pushq  %%rbp					\n"	\
+>> +		"movq   %%rsp, %%rbp				\n"	\
+>> +		"movq	%%rsp, (%[ts])				\n"	\
+>> +		"movq	%[ts], %%rsp				\n"	\
+>> +		"1:						\n"	\
+>> +		"	.pushsection .discard.instr_begin	\n"	\
+>> +		"	.long 1b - .				\n"	\
+>> +		"	.popsection				\n"	\
+>> +		"call	" __ASM_FORM(func) "			\n"	\
+>> +		"2:						\n"	\
+>> +		"	.pushsection .discard.instr_end		\n"	\
+>> +		"	.long 2b - .				\n"	\
+>> +		"	.popsection				\n"	\
+>> +		"popq	%%rsp					\n"	\
+>> +		"leaveq						\n"	\
+>> +		:							\
+>> +		: [ts] "r" (tos)					\
+>> +		: "memory"						\
+>> +		);							\
+>> +	__this_cpu_sub(irq_count, 1);					\
+>> +}
+>
+> The pushsection/popsection discard.instr_begin/end sequences are used several
+> times in asm() statement at different places, so I wonder if it might be worth
+> having a macro.
 
-It's up to DSA maintainers.
+As discussed elsewhere this is going to move to ASM partially and the
+various variants are not longer necessary.
 
-However, I find that rather confusing. What's "unaware"? The point of
-this boolean is to program the vlan tables while vlan filtering is
-disabled. "accept_vlan_while_vlan_filtering_disabled" is way too long.
+Thanks,
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTC broadband for 0.8mile line in suburbia: sync at 10.2Mbps down 587kbps up
+        tglx
