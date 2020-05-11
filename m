@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C8831CE638
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 23:00:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 221681CE64F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 23:02:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732187AbgEKVAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 17:00:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44124 "EHLO
+        id S1732244AbgEKVBE convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 May 2020 17:01:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732066AbgEKVAB (ORCPT
+        by vger.kernel.org with ESMTP id S1732001AbgEKVAH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 17:00:01 -0400
+        Mon, 11 May 2020 17:00:07 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6403C061A0C;
-        Mon, 11 May 2020 14:00:00 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6400CC061A0C;
+        Mon, 11 May 2020 14:00:07 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jYFWo-00060D-UV; Mon, 11 May 2020 22:59:59 +0200
+        id 1jYFWv-000613-7h; Mon, 11 May 2020 23:00:05 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 5B7B31C074B;
-        Mon, 11 May 2020 22:59:42 +0200 (CEST)
-Date:   Mon, 11 May 2020 20:59:42 -0000
-From:   "tip-bot2 for Jules Irenge" <tip-bot2@linutronix.de>
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 842841C086D;
+        Mon, 11 May 2020 22:59:43 +0200 (CEST)
+Date:   Mon, 11 May 2020 20:59:43 -0000
+From:   tip-bot2 for Jonathan =?utf-8?q?Neusch=C3=A4fer?= 
+        <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] rcu: Replace assigned pointer ret value by
- corresponding boolean value
-Cc:     Jules Irenge <jbi.octave@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+Subject: [tip: core/rcu] Revert "rculist: Describe variadic macro argument in
+ a Sphinx-compatible way"
+Cc:     j.neuschaefer@gmx.net, "Paul E. McKenney" <paulmck@kernel.org>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <158923078227.390.16875132364939168186.tip-bot2@tip-bot2>
+Message-ID: <158923078346.390.5687192511992244193.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
 X-Linutronix-Spam-Score: -1.0
 X-Linutronix-Spam-Level: -
 X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
@@ -49,49 +49,45 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     a66dbda7893f48b97d7406ae42fa29190aa672a0
-Gitweb:        https://git.kernel.org/tip/a66dbda7893f48b97d7406ae42fa29190aa672a0
-Author:        Jules Irenge <jbi.octave@gmail.com>
-AuthorDate:    Fri, 27 Mar 2020 21:23:53 
+Commit-ID:     ddc465936643108d5ba61f88594a2868d6a156ab
+Gitweb:        https://git.kernel.org/tip/ddc465936643108d5ba61f88594a2868d6a156ab
+Author:        Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+AuthorDate:    Thu, 05 Mar 2020 23:22:55 +01:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
 CommitterDate: Mon, 27 Apr 2020 11:01:16 -07:00
 
-rcu: Replace assigned pointer ret value by corresponding boolean value
+Revert "rculist: Describe variadic macro argument in a Sphinx-compatible way"
 
-Coccinelle reports warnings at rcu_read_lock_held_common()
+This reverts commit f452ee096d95482892b101bde4fd037fa025d3cc.
 
-WARNING: Assignment of 0/1 to bool variable
+The workaround became unnecessary with commit 43756e347f21
+("scripts/kernel-doc: Add support for named variable macro arguments").
 
-To fix this,
-the assigned  pointer ret values are replaced by corresponding boolean value.
-Given that ret is a pointer of bool type
-
-Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
+Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/update.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ include/linux/rculist.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-index 72461dd..17f2356 100644
---- a/kernel/rcu/update.c
-+++ b/kernel/rcu/update.c
-@@ -98,15 +98,15 @@ module_param(rcu_normal_after_boot, int, 0);
- static bool rcu_read_lock_held_common(bool *ret)
- {
- 	if (!debug_lockdep_rcu_enabled()) {
--		*ret = 1;
-+		*ret = true;
- 		return true;
- 	}
- 	if (!rcu_is_watching()) {
--		*ret = 0;
-+		*ret = false;
- 		return true;
- 	}
- 	if (!rcu_lockdep_current_cpu_online()) {
--		*ret = 0;
-+		*ret = false;
- 		return true;
- 	}
- 	return false;
+diff --git a/include/linux/rculist.h b/include/linux/rculist.h
+index 8214cdc..7375bb3 100644
+--- a/include/linux/rculist.h
++++ b/include/linux/rculist.h
+@@ -371,7 +371,7 @@ static inline void list_splice_tail_init_rcu(struct list_head *list,
+  * @pos:	the type * to use as a loop cursor.
+  * @head:	the head for your list.
+  * @member:	the name of the list_head within the struct.
+- * @cond...:	optional lockdep expression if called from non-RCU protection.
++ * @cond:	optional lockdep expression if called from non-RCU protection.
+  *
+  * This list-traversal primitive may safely run concurrently with
+  * the _rcu list-mutation primitives such as list_add_rcu()
+@@ -646,7 +646,7 @@ static inline void hlist_add_behind_rcu(struct hlist_node *n,
+  * @pos:	the type * to use as a loop cursor.
+  * @head:	the head for your list.
+  * @member:	the name of the hlist_node within the struct.
+- * @cond...:	optional lockdep expression if called from non-RCU protection.
++ * @cond:	optional lockdep expression if called from non-RCU protection.
+  *
+  * This list-traversal primitive may safely run concurrently with
+  * the _rcu list-mutation primitives such as hlist_add_head_rcu()
