@@ -2,131 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 865821CE3A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 21:15:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0D6B1CE388
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 21:04:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731357AbgEKTPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 15:15:38 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:35722 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728613AbgEKTPi (ORCPT
+        id S1731251AbgEKTEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 15:04:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728613AbgEKTEM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 15:15:38 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04BJFZNf083357;
-        Mon, 11 May 2020 14:15:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1589224535;
-        bh=i3l1grILIbxc03pyhfwIusQdRfYWPfn5hdnAbv7xGzw=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=QRIMqbF5Jue8dYveT0mJj8JkwiOMW3yewVqcZtzlL7XYiQcg2jxMw0fHBVbwXHXHn
-         spp0E7TO0OMq0zksJd5IIKLjfrq7KgeVKY9f4f7VWLxSiDdGfbjojZI89IjY95YZbr
-         L7fuius7nMy3/X0cBiAiOs5p7OZ1nikRCrRqBekc=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04BJFZHA077175
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 11 May 2020 14:15:35 -0500
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 11
- May 2020 14:15:34 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 11 May 2020 14:15:34 -0500
-Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04BJFVuO003772;
-        Mon, 11 May 2020 14:15:34 -0500
-Subject: Re: [PATCH v2] dt-bindings: power: Convert bq27xxx dt to yaml
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-CC:     <linux-pm@vger.kernel.org>, <robh@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
-        "Andrew F . Davis" <afd@ti.com>
-References: <20200507183013.27261-1-dmurphy@ti.com>
- <20200510161721.257vprq6rqp64wu5@earth.universe>
- <fb9b240e-9bfe-1295-6fc4-700d886ea7c9@ti.com>
- <20200511143241.nmkti7meahvj2swt@earth.universe>
- <8674289c-038d-d811-4786-322d66072527@ti.com>
- <20200511145700.lnytcr747snnolya@earth.universe>
- <57e2495d-ec06-53ff-c2b5-10062da2848f@ti.com>
- <20200511153055.7u7afdcpcfbsmswq@earth.universe>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <767f3083-45ae-9198-0a25-6beddc7e0c03@ti.com>
-Date:   Mon, 11 May 2020 14:06:33 -0500
+        Mon, 11 May 2020 15:04:12 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F7DC061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 12:04:11 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id t3so8465778otp.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 12:04:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=landley-net.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=s73sYUjU2T+59AL45Tu6TCysxqjsop1IGHTRXXypctk=;
+        b=E5S6DY5dOJAQJ1y0RjFlD/g9ZJgf1fK9Qa/tgwB0E5Z9j1UTeta7QmykD9FZ30bOni
+         c4DVq96s2Evv7V9KaW8OQhxbMXwoepXtudd6kQBCa0dJySxYJmwTUrwF2+oRTKC9ExjM
+         gjI+gsIZtPs/bQ+CEiDeOzXyiAhkG5gTCLG6eca9ZRGsF5kXUQvmXWk2zEj5UhOhWuXa
+         hFfBbR18/T3k5p7wj0/LC2+XlwCvrJcFZIIGpWEZHY/IlzLM4XaQkuhODDxDAldBSqfq
+         Zvh1PkSumtOA9HVXZnMw8PSWuZdBo3yLIU5xWM/ii+gXYIVomaFt0qBQWmDt+mvi3Hs0
+         9cfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=s73sYUjU2T+59AL45Tu6TCysxqjsop1IGHTRXXypctk=;
+        b=XaJfQhYEj7ocRJSkYGaOQ941xxFYgqpD9RSuLxYFJDIG4XGOK/Y6YgxPmF+oNO35C9
+         dfXnbLdtTT9DI4XoOanP7yb9EXKpZ+HmAuj0Io6dCdst/zLCzxcjT7CzmogH8oFMFaNf
+         5mIhKZMnItn14fc3coEY3TinKVG/mV6GLFIbcrVgGBkEmweMpawIxH+NXH3UoifRJq01
+         cLaB2yNQWPS4xERpi0z6nNoTbTztPUrIYQJAA/mv374wA5Sv6HmHd9O680YODAGqU+zN
+         BQiceqz6+YENqDfE0W0zWY6lS7yemReHFSjmX8GWVepyw6/xTkPh+HViaeTwyuUTLuXa
+         tAtw==
+X-Gm-Message-State: AGi0Pub72xXFWY05hSf2ql/43p6MQdne2ZPW3BUpAK8tfYvWgd3BtdXE
+        yJAvG85GhZaiKwlaFtk1eNKPiQ==
+X-Google-Smtp-Source: APiQypJIVFT+ZCv+tK80xUXbracodPGzrtONiD0MTwj6mM4HCs3oxADGxVBontAQ8QNSI/IJI96jVw==
+X-Received: by 2002:a05:6830:22e8:: with SMTP id t8mr14366049otc.229.1589223851277;
+        Mon, 11 May 2020 12:04:11 -0700 (PDT)
+Received: from [192.168.86.21] ([136.62.4.88])
+        by smtp.gmail.com with ESMTPSA id a7sm2848586otr.15.2020.05.11.12.04.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 May 2020 12:04:10 -0700 (PDT)
+Subject: Re: [PATCH 3/5] exec: Remove recursion from search_binary_handler
+To:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Andy Lutomirski <luto@amacapital.net>, dalias@libc.org
+References: <87h7wujhmz.fsf@x220.int.ebiederm.org>
+ <87sgga6ze4.fsf@x220.int.ebiederm.org>
+ <87v9l4zyla.fsf_-_@x220.int.ebiederm.org>
+ <87eerszyim.fsf_-_@x220.int.ebiederm.org>
+ <ee83587b-8a1c-3c4f-cc0f-7bc98afabae1@I-love.SAKURA.ne.jp>
+ <CAHk-=wgQ2ovXMW=5ZHCpowkE1PwPQSL7oV4YXzBxd6eqNRXxnQ@mail.gmail.com>
+ <87sgg6v8we.fsf@x220.int.ebiederm.org>
+From:   Rob Landley <rob@landley.net>
+Message-ID: <f33135b7-caa2-94f3-7563-fab6a1f5da0f@landley.net>
+Date:   Mon, 11 May 2020 14:10:23 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <20200511153055.7u7afdcpcfbsmswq@earth.universe>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <87sgg6v8we.fsf@x220.int.ebiederm.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sebastian
+On 5/11/20 9:33 AM, Eric W. Biederman wrote:
+> What I do see is that interp_data is just a parameter that is smuggled
+> into the call of search binary handler.  And the next binary handler
+> needs to be binfmt_elf for it to make much sense, as only binfmt_elf
+> (and binfmt_elf_fdpic) deals with BINPRM_FLAGS_EXECFD.
 
-On 5/11/20 10:30 AM, Sebastian Reichel wrote:
-> Hi,
->
-> On Mon, May 11, 2020 at 09:55:11AM -0500, Dan Murphy wrote:
->> On 5/11/20 9:57 AM, Sebastian Reichel wrote:
->>> On Mon, May 11, 2020 at 09:29:59AM -0500, Dan Murphy wrote:
->>>> On 5/11/20 9:32 AM, Sebastian Reichel wrote:
->>>>> On Mon, May 11, 2020 at 07:25:06AM -0500, Dan Murphy wrote:
->>>>>> On 5/10/20 11:17 AM, Sebastian Reichel wrote:
->>>>>>> This needs is missing the power-supplies property. The N900 DT
->>>>>>> contains a bq27200 referencing the charger, so it should fail the DT
->>>>>>> check without the property being listed here.
->>>>>> Hmm.  I ran the dt checker specifically on the binding and it did not fail.
->>>>>> Unless I need to build some other DTs as well.
->>>>>> Either I will have the power-supplies property
->>>>> I just tried it myself. The problem is the way you are specifying
->>>>> the compatible strings. This is the parsing result:
->>>>>
->>>>> enum: ['ti,bq27200 - BQ27200', 'ti,bq27210 - BQ27210', 'ti,bq27500 - deprecated,
->>>>>          use revision specific property below', ...
->>>>>
->>>>> You can see this in Documentation/devicetree/bindings/processed-schema.yaml, which
->>>>> is generated by running the check. The compatible comments need a # as separation
->>>>> character like this to generate proper bindings:
->>>>>
->>>>> properties:
->>>>>      compatible:
->>>>>        enum:
->>>>>          - ti,bq27200 # BQ27200
->>>>>          - ti,bq27210 # BQ27210
->>>>>          - ti,bq27500 # deprecated, use revision specific property below
->>>> Well honestly not sure why we need the comment either. These are pretty
->>>> self explanatory maybe we should just remove the additional comments
->>> Fine with me.
->> Ack
->>>> Any consideration on just removing the deprecated values?
->>> Let's keep them with their comment for now. Removing them should
->>> start with marking them as depracated in the binding and generating
->>> a runtime warning in the driver, so that people become aware of the
->>> problem. At least for ti,bq27500 we have mainline users At least for
->>> ti,bq27500 we have mainline users.
->> There are only 2 dts files that have this reference unless we are not sure
->> which device is actually in use.
-> DT is considered ABI and one is supposed to be able to boot a new
-> kernel with an old DT. It's not enough to just update the in-tree
-> dts files. I suppose we can consider removing support for the old
-> compatible values after having the warning being printed for some
-> time and the mainline users being converted to the new binding.
+The binfmt_elf_fdpic driver is separate from binfmt_elf for the same reason
+ext2/ext3/ext4 used to have 3 drivers: fdpic is really just binfmt_elf with the
+4 main sections (text, data, bss, rodata) able to move independently of each
+other (each tracked with its own base pointer).
 
-Yes I know. I may have said that before.
+It's kind of -fPIE on steroids, and various security people have sniffed at it
+over the years to give ASLR more degrees of freedom on with-MMU systems. Many
+moons ago Rich Felker proposed teaching the fdpic loader how to load normal ELF
+binaries so there's just the one loader (there's a flag in the ELF header to say
+whether the sections are independent or not).
 
-After looking at the driver and how this is all stitched together I 
-think I am just going to stick to the DT conversion as is.
-
-I will make the basic changes for conversion but any changes to the 
-compatibles should be done later.
-
-Dan
-
-
-> -- Sebastian
+Rob
