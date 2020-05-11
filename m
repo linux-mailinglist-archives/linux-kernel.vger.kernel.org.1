@@ -2,153 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BF961CD847
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 13:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61B5B1CD875
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 13:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729704AbgEKL1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 07:27:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729493AbgEKL1j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 07:27:39 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76313C061A0C;
-        Mon, 11 May 2020 04:27:39 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id w20so9056886ljj.0;
-        Mon, 11 May 2020 04:27:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vaB9hU9OmyfFXTQp3Ro8TCS0oJ1JBGJMlLHsQD/icQs=;
-        b=B11Pm6i378UfISHZsNk0nzMTp1ytpuFElTXChP5p5rfSBHgFXSvuIWdO9AuSII/v4L
-         JoXj8tmU64Sov4ttXUk+utPGxHIq+UsAHzKdC+xfO2pyjaQgU0B8FNCNM1tEE5a6a+Bb
-         lVLbbKB5+Drtgyu+Cx6j2yuv4R6xL3Vx83M/2VTvQGYK5L9CGr8jRyKNLN/TGYcESVrg
-         fPnZvzpHrNC2Ub7OaStzqBPbwrPL5nuRFb5OH615K8cpdmSNBoRfCYqnn1LNnamAJLVa
-         ymOntHstg1G1B2aaxiJSR7DHWzSbohQ93hZO8PTB8Ync9/qLg3Qkf7TZJn0VuMhti5DF
-         Dd4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vaB9hU9OmyfFXTQp3Ro8TCS0oJ1JBGJMlLHsQD/icQs=;
-        b=bZM+bRI+7C56Qk/3OEBJDXT1zdT5k4hXmGVEBEKW+V9gmrBFO5/983DT74rBf1otrz
-         cEGENfIqXj4jLT6z5k0Lr3En3oIAwN398ctLP1sGSJ+u27lYnwiiCoUe0DGGnjimTDKI
-         pYnKTk6UOC2ws3d2kL0wjcPxW1cWaX78cq795Uxt4FD1wyUE5BiRH06/ZPSkG09DNjEC
-         msk4hz0ffuiCkabO39oKDOioPu+tk8HneyhaO785bu3yZP5L4z39OM4fRsffTLk80cAa
-         ngMKL6TYjJ5rxNSgI2c8C55x/SSoVNSDdNXIBinLphQZCCcRcYKsiLdPM4/4rhLmR8qd
-         hLwA==
-X-Gm-Message-State: AOAM5311qEGiTP2WhYGiptTeoOcN8pwvkj/Me6Iroufp8PL/ATD6pjSk
-        pFBd7cYrhVoYKJFrm5BlKH0n/FLzvtuEuZYqmIk=
-X-Google-Smtp-Source: ABdhPJxjS7B69iERkJXybN1FRa7Oxd7PZfUVSfeSeQJxEpGjVNnxZ1aHys/mj0Ck3Q4insH6zi+f+AQGU7gf0xFawuI=
-X-Received: by 2002:a2e:b6d3:: with SMTP id m19mr6903929ljo.43.1589196457920;
- Mon, 11 May 2020 04:27:37 -0700 (PDT)
+        id S1729877AbgEKLaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 07:30:08 -0400
+Received: from mail-am6eur05on2051.outbound.protection.outlook.com ([40.107.22.51]:35097
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729763AbgEKL35 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 07:29:57 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PrB7az6Se4vnY1hDos44bcWB4DUlXJhzFzavv5rRkrLW6NSJ6ByvW3UybqyhXpWq+cMP58F0muKWFZNmD1k7ZRVoRPwPXL45PH2/dLA0V7DYUnt4KREhjhqWAuD2j2JqWwqrphkCqVgLBFXsUnhT+l60DUX/z0TDin5t3mKBYGjPyR7NN1KZC1Wblj5B1dgxKNmUr+KyFl4geRF++M9OTxCM3DcjzDeMS5RdfNAQObgq07CT2FowG/l3UVo3zcR8djqBPoNLmIMULZwfu17ksD0EYeolShqXoS77wDhMhun9oepRcUkf6m61i4s4FjgT4tAR4/prg+ww9H+hjbopYQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ObWcEOpEpFfJVPvHgm43Z5lZ0yWMZH7Kj09ih2sUlqQ=;
+ b=IDBG96fDVjQZ1NGxR1M8jeiaCR3Ujq0EmXr/QAy0pp+Edby54+DncpPnHqM0MlTMJd+1E8goS4MNxhaC49GdcIFF9iEcdx0pGb4hFMVPGyJ3W6CleKkY5XA8cMbBJ7PnToqSGlYTj08TrHzi/DRJm2/p4Ff+F9VhYJ9IhnPJ5ri1ULj6UHksVP4Tg0sE7BJ/68MGG2d29mxX12hcrJhJlbPC8MLK5LsDVhOaBCP5oHTGbzUoUt2J2Fghl2uzUgp9B82Xv6OxnHg89/wzVqtZYHPZamVZGelzJTwATvSriEFEPgKSXu4cw29jB6nIvclffF5tqq6LZLEb/Luz3fZpJw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ObWcEOpEpFfJVPvHgm43Z5lZ0yWMZH7Kj09ih2sUlqQ=;
+ b=Xn1SEQKb1oeEJdB7xERLdkIW1EySQMDwhZpiIxp2fMOJpmXeXmoqPJbj47IyKXM00+f5jyptaFu83jzJN8OrMcSftGGpnRqDSqTeqTHqKkIGfoXme9P0nvLPxlIL8U//e+W4Ovpov/2pimrD3NzSfNDxPogPsH6krIwuz/cx+Ps=
+Received: from AM6PR0402MB3911.eurprd04.prod.outlook.com
+ (2603:10a6:209:1c::10) by AM6PR0402MB3320.eurprd04.prod.outlook.com
+ (2603:10a6:209:5::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.27; Mon, 11 May
+ 2020 11:29:52 +0000
+Received: from AM6PR0402MB3911.eurprd04.prod.outlook.com
+ ([fe80::a5f9:57c:97d3:491f]) by AM6PR0402MB3911.eurprd04.prod.outlook.com
+ ([fe80::a5f9:57c:97d3:491f%6]) with mapi id 15.20.2979.033; Mon, 11 May 2020
+ 11:29:52 +0000
+From:   Anson Huang <anson.huang@nxp.com>
+To:     Aisheng Dong <aisheng.dong@nxp.com>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     dl-linux-imx <linux-imx@nxp.com>
+Subject: RE: [PATCH] dt-bindings: reset: Convert i.MX7 reset to json-schema
+Thread-Topic: [PATCH] dt-bindings: reset: Convert i.MX7 reset to json-schema
+Thread-Index: AQHWJds0OPSvvSW4KEe8q/kgqrzEB6iiv38AgAADi5A=
+Date:   Mon, 11 May 2020 11:29:51 +0000
+Message-ID: <AM6PR0402MB3911ED577118BB1A0B12E3FFF5A10@AM6PR0402MB3911.eurprd04.prod.outlook.com>
+References: <1589012077-12088-1-git-send-email-Anson.Huang@nxp.com>
+ <AM6PR04MB4966E5E547A29199B84936A180A10@AM6PR04MB4966.eurprd04.prod.outlook.com>
+In-Reply-To: <AM6PR04MB4966E5E547A29199B84936A180A10@AM6PR04MB4966.eurprd04.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [92.121.68.129]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: be39db33-fe36-404c-4006-08d7f59e9f43
+x-ms-traffictypediagnostic: AM6PR0402MB3320:|AM6PR0402MB3320:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM6PR0402MB332048A2B623866A8D4C164CF5A10@AM6PR0402MB3320.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6108;
+x-forefront-prvs: 04004D94E2
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: xYB+wtYYdCwsSvxypFWVqeNLvXQSYwpzevM27Gg5UN03woSc6OcvR3ZctX4sR5lnsw4BfFUx+hgT129ULu2qvA0K8dvOEQLVIPsh8JWWNH+aB4nzO6lPnW+Q3pJLqsxxIB/UAU43i9ghBHmfvnGhZp1XLGhZUtxGsJ9QMuAqpHxuFvV225YWZ44oh0BwEEm9f34BMr8ic4mF9h0dgfvioxdgdYlruL7cZLGeo9oDJLZ2SoRPm56pgLJ/eMbMpMQ8EFac0Z6mvR2Ay431Bxrwqexw0I12je8x82dTnNJrmuSlXvQdw/i7gLgI2Hc68gIALBhCiesDz8Ty5jlaigGMWrRgEgn33M8fvGfcndq8JvuntnlxlQ6HAizFfTH9NndbrrZl90v7OJzC4wnzDiDvO6Wai8JDxVUhnwbO/UjxYzra6TViNVuIpEyifw7qSZGpnzB7/CBtpUjManL7DxjafWyZDWGJv+6EOUodo4PMvHIE6tpUPF1+LIOnljPpYIyZDwz+258qA+8TI9eZWOl4viXfJXUUu6MmMn1TQOYkNxQ=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR0402MB3911.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(346002)(396003)(366004)(376002)(136003)(33430700001)(478600001)(86362001)(44832011)(33440700001)(186003)(26005)(110136005)(6506007)(2906002)(316002)(66476007)(66556008)(64756008)(66446008)(8676002)(52536014)(5660300002)(66946007)(33656002)(8936002)(76116006)(4326008)(7696005)(9686003)(55016002)(71200400001)(921003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: E03Wi1iyO2PB4lkv+3nKoaQSN7q8BMSVoOe89Lr3TFkQ3L0rvmojv/PpdpKPVYU79CBGIv4pU6zlfzeIVTfrpxnWNjlmNYx1zH+iEBLxG8nmqpgbSPRH+4qKzlbZkuMX+pQ5Lul0lc9NVp0DHtoVKCTQH1Ez5sM+Kv7BHl23kH+dbgxCKqSAobg7Rid4tufrAtiTjd0VQi96++3YUZi4KgNO98mymKcFH4DC7vPXDYdAwpkxowcscrIB+SfKnvulXmicer0y8JEOua9Zv/XTXV3gWJCj+QMoU5R0n2W0/iWXwcv6yIUjoKQd7SwKW7RKQyi6wYoAUSaAjMpZ0ctntRod6eKpQjPVkcKW7I1mDU2Zk0G/3lcb/0wzZdu/O3oBABXRDtiL4tb2HKu379EEtaqSYmVParyvC6yr4IbLPlzcFCpcC/ti+5lwspkCviE9EeKzIFgjZjYF5K+CCqQdJRTGNymQ0GyJf9ciEQQCYLs=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20200510102330.66715-1-tali.perry1@gmail.com> <20200510102330.66715-3-tali.perry1@gmail.com>
- <20200511091759.GE185537@smile.fi.intel.com>
-In-Reply-To: <20200511091759.GE185537@smile.fi.intel.com>
-From:   Tali Perry <tali.perry1@gmail.com>
-Date:   Mon, 11 May 2020 14:28:50 +0300
-Message-ID: <CAHb3i=tERsM+gwmQN1+vjnML9o5NxRK=uBokEUsd-Ljyje4s3A@mail.gmail.com>
-Subject: Re: [PATCH v10 2/3] i2c: npcm7xx: Add Nuvoton NPCM I2C controller driver
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     ofery@google.com, Brendan Higgins <brendanhiggins@google.com>,
-        avifishman70@gmail.com, Tomer Maimon <tmaimon77@gmail.com>,
-        kfting@nuvoton.com, Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: be39db33-fe36-404c-4006-08d7f59e9f43
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 May 2020 11:29:52.1027
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: pd5HphrPJQcB420keX35oDsRZix6VaVA2SVS5nFeMrNMcawxK4Av6myvJpvv62NnRtn/3wW9Qpq2CzKwG/PT+Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR0402MB3320
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 11, 2020 at 12:18 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Sun, May 10, 2020 at 01:23:29PM +0300, Tali Perry wrote:
-> > Add Nuvoton NPCM BMC I2C controller driver.
->
-> Some cosmetic changes needs to be done.
->
-
-Thanks for the review and the comments.
-Will fix all, have a few questions (below)
-
-> ...
->
-> > +/*
-> > + * Nuvoton NPCM7xx I2C Controller driver
-> > + *
-> > + * Copyright (C) 2020 Nuvoton Technologies tali.perry@nuvoton.com
-> > + */
->
-> So, entire file has C99 comment style, but this and few other places.
-> Any reason of inconsistency?
->
-> ...
->
-> > +#if IS_ENABLED(CONFIG_DEBUG_FS)
->
-> Why?
-
-We wanted to add an optional feature to track i2c slave status.
-the NPCM has 16 channels handling multiple devices each. Some of the devices
-are polled periodically, and might power down.
-The user wanted to implement a health monitoring option
-to occasionally check the status of the buses (how many timeouts, recovery etc.)
-This feature is optional and depends on CONFIG_DEBUG_FS The counters are exposed
-to user through the file system.
-
-....
-
-> ...
->
-> > +#define I2C_NUM_OF_ADDR 10
->
-> Is it 10-bit address support or what?
->
-
-No, the NPCM has an option to respond to multiple slave addresses
-(10 own slave addresses)
-
-
-
-...
-
-> > +     // Repeat the following sequence until SDA is released
-> > +     do {
-> > +             // Issue a single SCL toggle
-> > +             iowrite8(NPCM_I2CCST_TGSCL, bus->reg + NPCM_I2CCST);
-> > +             udelay(20);
-> > +             // If SDA line is inactive (high), stop
-> > +             if (npcm_i2c_get_SDA(_adap)) {
-> > +                     done = true;
-> > +                     status = 0;
-> > +             }
-> > +     } while (!done && iter--);
->
-> readx_poll_timeout() ?
-
-Not exactly, readx_poll_timeout includes only a read operation, here there is a
-write in the middle. (iowrite8)
-
-
->
-> ...
->
-
-
-...
-
-
-Thanks!
-Tali Perry
-Nuvoton Technologies
+DQoNCj4gU3ViamVjdDogUkU6IFtQQVRDSF0gZHQtYmluZGluZ3M6IHJlc2V0OiBDb252ZXJ0IGku
+TVg3IHJlc2V0IHRvIGpzb24tc2NoZW1hDQo+IA0KPiBbLi4uXQ0KPiANCj4gPiArDQo+ID4gK21h
+aW50YWluZXJzOg0KPiA+ICsgIC0gQW5zb24gSHVhbmcgPEFuc29uLkh1YW5nQG54cC5jb20+DQo+
+ID4gKw0KPiA+ICtkZXNjcmlwdGlvbjogfA0KPiA+ICsgIFRoZSBzeXN0ZW0gcmVzZXQgY29udHJv
+bGxlciBjYW4gYmUgdXNlZCB0byByZXNldCB2YXJpb3VzIHNldCBvZg0KPiA+ICsgIHBlcmlwaGVy
+YWxzLiBEZXZpY2Ugbm9kZXMgdGhhdCBuZWVkIGFjY2VzcyB0byByZXNldCBsaW5lcyBzaG91bGQN
+Cj4gPiArICBzcGVjaWZ5IHRoZW0gYXMgYSByZXNldCBwaGFuZGxlIGluIHRoZWlyIGNvcnJlc3Bv
+bmRpbmcgbm9kZSBhcw0KPiA+ICsgIHNwZWNpZmllZCBpbiByZXNldC50eHQuDQo+ID4gKw0KPiA+
+ICsgIEZvciBsaXN0IG9mIGFsbCB2YWxpZCByZXNldCBpbmRpY2VzIHNlZQ0KPiA+ICsgICAgPGR0
+LWJpbmRpbmdzL3Jlc2V0L2lteDctcmVzZXQuaD4gZm9yIGkuTVg3LA0KPiA+ICsgICAgPGR0LWJp
+bmRpbmdzL3Jlc2V0L2lteDhtcS1yZXNldC5oPiBmb3IgaS5NWDhNUSBhbmQNCj4gPiArICAgIDxk
+dC1iaW5kaW5ncy9yZXNldC9pbXg4bXEtcmVzZXQuaD4gZm9yIGkuTVg4TU0gYW5kDQo+ID4gKyAg
+ICA8ZHQtYmluZGluZ3MvcmVzZXQvaW14OG1xLXJlc2V0Lmg+IGZvciBpLk1YOE1OIGFuZA0KPiAN
+Cj4gSG93IGFib3V0IGNvbWJpbmUgYWJvdmUgdGhyZWUgaXRlbXM/DQoNCldpbGwgZG8uDQoNCj4g
+DQo+ID4gKyAgICA8ZHQtYmluZGluZ3MvcmVzZXQvaW14OG1wLXJlc2V0Lmg+IGZvciBpLk1YOE1Q
+DQo+ID4gKw0KPiA+ICtwcm9wZXJ0aWVzOg0KPiA+ICsgIGNvbXBhdGlibGU6DQo+ID4gKyAgICBp
+dGVtczoNCj4gPiArICAgICAgLSBlbnVtOg0KPiA+ICsgICAgICAgIC0gZnNsLGlteDdkLXNyYw0K
+PiA+ICsgICAgICAgIC0gZnNsLGlteDhtcS1zcmMNCj4gPiArICAgICAgICAtIGZzbCxpbXg4bW0t
+c3JjDQo+ID4gKyAgICAgICAgLSBmc2wsaW14OG1uLXNyYw0KPiA+ICsgICAgICAgIC0gZnNsLGlt
+eDhtcC1zcmMNCj4gPiArICAgICAgLSBjb25zdDogc3lzY29uDQo+ID4gKw0KPiA+ICsgIHJlZzoN
+Cj4gPiArICAgIG1heEl0ZW1zOiAxDQo+ID4gKw0KPiA+ICsgIGludGVycnVwdHM6DQo+ID4gKyAg
+ICBtYXhJdGVtczogMQ0KPiA+ICsNCj4gPiArICAnI3Jlc2V0LWNlbGxzJzoNCj4gPiArICAgIGNv
+bnN0OiAxDQo+ID4gKw0KPiA+ICtyZXF1aXJlZDoNCj4gPiArICAtIGNvbXBhdGlibGUNCj4gPiAr
+ICAtIHJlZw0KPiA+ICsgIC0gaW50ZXJydXB0cw0KPiA+ICsgIC0gJyNyZXNldC1jZWxscycNCj4g
+PiArDQo+ID4gK2FkZGl0aW9uYWxQcm9wZXJ0aWVzOiBmYWxzZQ0KPiA+ICsNCj4gPiArZXhhbXBs
+ZXM6DQo+ID4gKyAgLSB8DQo+ID4gKyAgICAjaW5jbHVkZSA8ZHQtYmluZGluZ3MvaW50ZXJydXB0
+LWNvbnRyb2xsZXIvYXJtLWdpYy5oPg0KPiA+ICsNCj4gPiArICAgIHJlc2V0LWNvbnRyb2xsZXJA
+MzAzOTAwMDAgew0KPiA+ICsgICAgICAgIGNvbXBhdGlibGUgPSAiZnNsLGlteDdkLXNyYyIsICJz
+eXNjb24iOw0KPiA+ICsgICAgICAgIHJlZyA9IDwweDMwMzkwMDAwIDB4MjAwMD47DQo+ID4gKyAg
+ICAgICAgaW50ZXJydXB0cyA9IDxHSUNfU1BJIDg5IElSUV9UWVBFX0xFVkVMX0hJR0g+Ow0KPiA+
+ICsgICAgICAgICNyZXNldC1jZWxscyA9IDwxPjsNCj4gPiArICAgIH07DQo+ID4gKw0KPiA+ICsu
+Li4NCj4gDQo+IElzIHRoaXMgcmVxdWlyZWQ/DQoNCkl0IGNhbiBiZSByZW1vdmVkLCB3aWxsIHJl
+bW92ZSBpdCBpbiBuZXh0IHZlcnNpb24uDQoNCkFuc29uDQo=
