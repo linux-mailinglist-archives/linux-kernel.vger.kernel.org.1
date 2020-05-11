@@ -2,86 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B00F1CD55E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 11:36:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71D461CD565
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 11:37:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729408AbgEKJgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 05:36:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50188 "EHLO
+        id S1729453AbgEKJhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 05:37:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725790AbgEKJgd (ORCPT
+        by vger.kernel.org with ESMTP id S1725790AbgEKJhD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 05:36:33 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0195BC061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 02:36:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=YNHgbChJZQ7ZhkULZQtUTSd3NIM4J1mM9pYKXez7Uro=; b=CyE6hWK4nJDqzRWnqxpzFEAcIV
-        vv4ZpLl4Vr13+F4Dv14/vr2KLGFXZ1vtSAmAtSkomqWXP3H1z1pE/5C8QNZO9vahTSpx/eBdoyNcK
-        6PbULwPtKEPM2Zw+Hd2eIWT934E/DMjoErfi+0DegFA/HXiqWp3Hg1CFCqv0BUjP9PyFYxarpVkJb
-        mH4pMJEq4Qv3hPMQMbpTzMmE1DGMNtI6QHUghceMPJ8HLIrcrMlubCLnt1np+wjqbqJN24RUiYDbj
-        oSVZxTiMFDbpEXtQktDP2mJwgVjCAkKBoQ/sSCjRSdk1ohclP31oyZkz6mdJj77Mm1hXp0N4q5KaN
-        nnVbhG0Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jY4rB-0008Np-JS; Mon, 11 May 2020 09:36:17 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9958E301A80;
-        Mon, 11 May 2020 11:36:15 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 74269200FC689; Mon, 11 May 2020 11:36:15 +0200 (CEST)
-Date:   Mon, 11 May 2020 11:36:15 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Paul Menzel <pmenzel@molgen.mpg.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        Radoslaw Biernacki <biernacki@google.com>,
-        Ross Zwisler <zwisler@google.com>,
-        Daniel Drake <drake@endlessm.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>, Len Brown <len.brown@intel.com>,
-        linux@endlessm.com,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Thorsten Leemhuis <regressions@leemhuis.info>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] x86/tsc: Use hard-coded crystal clock for Skylake mobile
-Message-ID: <20200511093615.GG2957@hirez.programming.kicks-ass.net>
-References: <20200509113717.9084-1-pmenzel@molgen.mpg.de>
- <87eerr3ppb.fsf@nanos.tec.linutronix.de>
- <edc5af47-27e6-753f-c095-bd3087942690@molgen.mpg.de>
+        Mon, 11 May 2020 05:37:03 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E762C061A0C;
+        Mon, 11 May 2020 02:37:03 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id a2so14337118oia.11;
+        Mon, 11 May 2020 02:37:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=22vKbxGNsiWZ2IBSP8WLC1U/nWrORH0rvsSsTyvQNUY=;
+        b=NlWCo7dP/VWuLfWFdFpzGMrV/pRiSGLxiW3StDcnOyZmQN6A9Bo+mt7HtKIxnbyb6O
+         B8AODeAWxDTon/SfhHFqtbftk7/4PBAtisXRVFzy741HpZy9IPiF9cB2mD2Ya5YgqZXP
+         +87UId71b74B5yjf3GPRANw9E1YJCdjRX8KDQr7shkLs+jfWI+OBsUBxLcs7mzOy7YYJ
+         ywqwXwg195c6oAZokkPSacE5AUF6ee09oxXDQ4jcwuzoBPpsIuLrPKqAih6S6KqileaB
+         HIjrM8/kIXAzo//UG6HWjEYL0RIDomANSO8k/Q4VxaM5ShEpBqzdVNbpJWPV8pqoOOaD
+         ootA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=22vKbxGNsiWZ2IBSP8WLC1U/nWrORH0rvsSsTyvQNUY=;
+        b=MnpXZIboNws6C1bI7nWYQ25vyovgZILhF3Ct8lE2bxHvpQnZ6bpgLIO0dd/XSHI5Pq
+         LlkZ1TWMddpQaH8gUQoYT4aS6C1ZiKiIX8ZzQIHe5kDJlFKNl/PlS3IKJ8BCDAwPljDr
+         buX4zSrymKnzG7Ot/xG9lELao/h1Bz73FkpiFTj+FpBthJ4DvhAgeIxB1B0XCLwiIbRs
+         ryX7fXnk/2xvkameyjzju48D8jAQdwJ5NhfxegroVjN2UhREvss2X3T2WnIGHpRTs4zC
+         VK9ecF5/Y3+FX2X3/gJyq6aRm7Eo8g/YeuSTAh7zlhhKdUYwS5SCwDtdyq5k4ykBqWGo
+         /AQg==
+X-Gm-Message-State: AGi0PuZE8vFNZVnQGy82KNRg0/uxrxe7nLSHkrqLhU3FVgDJwiUEXNFP
+        brIencyDY7Ok5JdJAgITSHT+b9AtZS1gbKJWceCKYQ==
+X-Google-Smtp-Source: APiQypItVNPD5CU0V3ko73rD3gop/ALAVZC9z5N0O6VQktyi+IqeOBVFv0YirK83X6veZdCfSKOn3G7NXIZF7PpTQHY=
+X-Received: by 2002:aca:abd0:: with SMTP id u199mr18289341oie.130.1589189822681;
+ Mon, 11 May 2020 02:37:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <edc5af47-27e6-753f-c095-bd3087942690@molgen.mpg.de>
+References: <20200511091142.208787-1-daniel.vetter@ffwll.ch> <20200511091142.208787-3-daniel.vetter@ffwll.ch>
+In-Reply-To: <20200511091142.208787-3-daniel.vetter@ffwll.ch>
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+Date:   Mon, 11 May 2020 12:36:17 +0300
+Message-ID: <CAFCwf10m14ModSuRbQAsWf5CSJvTeP7YRzcokD=o+m2Pa0TqKg@mail.gmail.com>
+Subject: Re: [PATCH 3/3] misc/habalabs: don't set default fence_ops->wait
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Olof Johansson <olof@lixom.net>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 11, 2020 at 09:38:34AM +0200, Paul Menzel wrote:
+On Mon, May 11, 2020 at 12:11 PM Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
+>
+> It's the default.
+Thanks for catching that.
 
-> Sorry about that. From `MAINTAINERS` I thought x86@kernel.org is wanted.
-> Other subsystems list LKML explicitly there.
+>
+> Also so much for "we're not going to tell the graphics people how to
+> review their code", dma_fence is a pretty core piece of gpu driver
+> infrastructure. And it's very much uapi relevant, including piles of
+> corresponding userspace protocols and libraries for how to pass these
+> around.
+>
+> Would be great if habanalabs would not use this (from a quick look
+> it's not needed at all), since open source the userspace and playing
+> by the usual rules isn't on the table. If that's not possible (because
+> it's actually using the uapi part of dma_fence to interact with gpu
+> drivers) then we have exactly what everyone promised we'd want to
+> avoid.
 
-Not sure what you're reading but:
+We don't use the uapi parts, we currently only using the fencing and
+signaling ability of this module inside our kernel code. But maybe I
+didn't understand what you request. You want us *not* to use this
+well-written piece of kernel code because it is only used by graphics
+drivers ?
+I'm sorry but I don't get this argument, if this is indeed what you meant.
 
-X86 ARCHITECTURE (32-BIT AND 64-BIT)
-M:      Thomas Gleixner <tglx@linutronix.de>
-M:      Ingo Molnar <mingo@redhat.com>
-M:      Borislav Petkov <bp@alien8.de>
-M:      x86@kernel.org
-R:      "H. Peter Anvin" <hpa@zytor.com>
-L:      linux-kernel@vger.kernel.org
-S:      Maintained
-T:      git git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/core
-F:      Documentation/devicetree/bindings/x86/
-F:      Documentation/x86/
-F:      arch/x86/
+Oded
 
-Explicitly lists LKML, also note how x86@kernel.org is M not L. It is in
-fact a mail alias for just a few people, it is _NOT_ a list.
+>
+> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc:     Olof Johansson <olof@lixom.net>
+> Cc: Oded Gabbay <oded.gabbay@gmail.com>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: linux-media@vger.kernel.org
+> Cc: linaro-mm-sig@lists.linaro.org
+> ---
+>  drivers/misc/habanalabs/command_submission.c | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/drivers/misc/habanalabs/command_submission.c b/drivers/misc/habanalabs/command_submission.c
+> index 409276b6374d..cc3ce759b6c3 100644
+> --- a/drivers/misc/habanalabs/command_submission.c
+> +++ b/drivers/misc/habanalabs/command_submission.c
+> @@ -46,7 +46,6 @@ static const struct dma_fence_ops hl_fence_ops = {
+>         .get_driver_name = hl_fence_get_driver_name,
+>         .get_timeline_name = hl_fence_get_timeline_name,
+>         .enable_signaling = hl_fence_enable_signaling,
+> -       .wait = dma_fence_default_wait,
+>         .release = hl_fence_release
+>  };
+>
+> --
+> 2.26.2
+>
