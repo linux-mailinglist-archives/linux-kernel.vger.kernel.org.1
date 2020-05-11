@@ -2,79 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E8071CD484
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 11:09:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 058D91CD48E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 11:12:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728882AbgEKJJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 05:09:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45954 "EHLO
+        id S1728989AbgEKJLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 05:11:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725790AbgEKJJJ (ORCPT
+        with ESMTP id S1727093AbgEKJLz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 05:09:09 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AD2AC061A0C;
-        Mon, 11 May 2020 02:09:09 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 3349023E50;
-        Mon, 11 May 2020 11:08:59 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1589188146;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nYiBpFWVppKd294LTd9vUa0KsvmfWdjfxWQ8LrUsrj4=;
-        b=f6xUb0CZa5gRppVvuuzdVssw51YwDLUpFH/2hOk7zy3nS2DkjuGw35aY4HcwiTiCA8kfj/
-        QakS1wGwxdbCdCvps1WmznVZDb41Ew5+Lt9dNoejGoj304qs5dJBxhfo5VOfncp3MUfz2e
-        dCPI1ovbk7PVarPmfEmMEdswWVgPXEA=
+        Mon, 11 May 2020 05:11:55 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6107C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 02:11:54 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id m12so12305790wmc.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 02:11:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kypGotJsMo32YHf8OUx+eQZgE4BXycYY0Yyrzee1xg4=;
+        b=BFrWfiefay0G3axbOIvAU7cL37XL0viEFlie/9f9z/E/mFIyz7gZQoFRa+kNZK4LQx
+         XBOAAjgo9eXYRtibV6b8JVgQXHu/raQFY9l+V/l90+qLnl7fWQMjeziBAPOHwuPSFxCx
+         NRDFbLWUul18dgcd2jgUu1QFdBk9GP0ZhMwg8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kypGotJsMo32YHf8OUx+eQZgE4BXycYY0Yyrzee1xg4=;
+        b=G5mV9BB4J6Ize0KgvefIHp33KMTjisUb6bBJn6TajobliU1fgoqCUuj4uOt0zypo28
+         o/DsexxdihI5JLJeoKptJlfanEb1E33we/24QWYHaO7o7tAQ5Ib/Ynwut8nRYfFZV+w0
+         TtdG8/bSVDaYsxwr6CBAVVfJb0nOFxEQzBU7cbwLKe2pQt+Ttqe/VOlt2simBaCvFcrC
+         9/ralE3MlQR1gs6DWdo4/7Y9dkYrRV/ZO9J7SjKhIQ3P3//ugmYDCvT5ugKEU5yGcnUH
+         WLqo9Kzgh2ZdvP6ivU/Kns0LS7mih6h5DSkUBNEzNTrG4dESio5fo+ezszB3m5++eXuZ
+         2p/g==
+X-Gm-Message-State: AGi0PuZeK/s+y42WOboc8yQIvaoHlNOjT2k2fK3alsCK3K7vf9NLztqX
+        qXHD5REVNNyMdHZbnBHxOPUi8RZsQXU=
+X-Google-Smtp-Source: APiQypJu6MhVzS21pUOPY5hvSgBf8+CIjEHG8jg44vuH9LazUaM1m9dy/ExDV8ceiF+NtEDozOxG/w==
+X-Received: by 2002:a1c:acc8:: with SMTP id v191mr24673393wme.128.1589188313116;
+        Mon, 11 May 2020 02:11:53 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id t4sm17506299wri.54.2020.05.11.02.11.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 May 2020 02:11:52 -0700 (PDT)
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Subject: [PATCH 1/3] drm/writeback: don't set fence->ops to default
+Date:   Mon, 11 May 2020 11:11:40 +0200
+Message-Id: <20200511091142.208787-1-daniel.vetter@ffwll.ch>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 11 May 2020 11:08:59 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Shawn Guo <shawnguo@kernel.org>
-Cc:     dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Li Yang <leoyang.li@nxp.com>, Peng Ma <peng.ma@nxp.com>
-Subject: Re: [PATCH 1/2] dt-bindings: dma: fsl-edma: fix ls1028a-edma
- compatible
-In-Reply-To: <20200413141830.GA4722@dragon>
-References: <20200306205403.29881-1-michael@walle.cc>
- <20200413141830.GA4722@dragon>
-User-Agent: Roundcube Webmail/1.4.4
-Message-ID: <de4a40b03858930c15724302b3bf7bd0@walle.cc>
-X-Sender: michael@walle.cc
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shawn Guo,
+It's the default.
 
-Am 2020-04-13 16:18, schrieb Shawn Guo:
-> On Fri, Mar 06, 2020 at 09:54:02PM +0100, Michael Walle wrote:
->> The bootloader will fix up the IOMMU entries only on nodes with the
->> compatible "fsl,vf610-edma". Thus make this compatible string 
->> mandatory
->> for the ls1028a-edma.
->> 
->> While at it, fix the "fsl,fsl," typo.
->> 
->> Signed-off-by: Michael Walle <michael@walle.cc>
->> Fixes: d8c1bdb5288d ("dt-bindings: dma: fsl-edma: add new 
->> fsl,fsl,ls1028a-edma")
-> 
-> Applied both.  Will try to send for 5.7-rc inclusion.
+Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: Maxime Ripard <mripard@kernel.org>
+Cc: Thomas Zimmermann <tzimmermann@suse.de>
+Cc: David Airlie <airlied@linux.ie>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+---
+ drivers/gpu/drm/drm_writeback.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Are there any news on the inclusion? Unfortunately, I also forgot the 
-fixes
-tag on patch 2/2, so it won't end up in v5.7.x.
+diff --git a/drivers/gpu/drm/drm_writeback.c b/drivers/gpu/drm/drm_writeback.c
+index 43d9e3bb3a94..dccf4504f1bb 100644
+--- a/drivers/gpu/drm/drm_writeback.c
++++ b/drivers/gpu/drm/drm_writeback.c
+@@ -108,7 +108,6 @@ static const struct dma_fence_ops drm_writeback_fence_ops = {
+ 	.get_driver_name = drm_writeback_fence_get_driver_name,
+ 	.get_timeline_name = drm_writeback_fence_get_timeline_name,
+ 	.enable_signaling = drm_writeback_fence_enable_signaling,
+-	.wait = dma_fence_default_wait,
+ };
+ 
+ static int create_writeback_properties(struct drm_device *dev)
+-- 
+2.26.2
 
--michael
