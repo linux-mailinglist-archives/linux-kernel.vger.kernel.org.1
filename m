@@ -2,161 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A336A1CD82D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 13:26:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 624261CD840
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 13:27:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729925AbgEKL02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 07:26:28 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:39938 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729886AbgEKL0O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 07:26:14 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 49LJXZ12xkz9ty3l;
-        Mon, 11 May 2020 13:26:06 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id jjG6-7I3oC-h; Mon, 11 May 2020 13:26:06 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 49LJXZ0GdRz9ty3g;
-        Mon, 11 May 2020 13:26:06 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id B5E088B7AE;
-        Mon, 11 May 2020 13:26:12 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id R-ATr0yYLvil; Mon, 11 May 2020 13:26:12 +0200 (CEST)
-Received: from pc16570vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 78E7D8B7AD;
-        Mon, 11 May 2020 13:26:12 +0200 (CEST)
-Received: by pc16570vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 5B57465A09; Mon, 11 May 2020 11:26:12 +0000 (UTC)
-Message-Id: <cd24ae9437183388376db1b936a5c14b8bf027a6.1589196133.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <cover.1589196133.git.christophe.leroy@csgroup.eu>
-References: <cover.1589196133.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v3 45/45] powerpc/32s: Implement dedicated kasan_init_region()
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Mon, 11 May 2020 11:26:12 +0000 (UTC)
+        id S1729465AbgEKL1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 07:27:12 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:39953 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729982AbgEKL1I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 07:27:08 -0400
+Received: from mail-ej1-f69.google.com ([209.85.218.69])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <guilherme.piccoli@canonical.com>)
+        id 1jY6aP-0005ZQ-El
+        for linux-kernel@vger.kernel.org; Mon, 11 May 2020 11:27:05 +0000
+Received: by mail-ej1-f69.google.com with SMTP id cb22so3747266ejb.12
+        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 04:27:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6s913c52qXog287G0uRKNKSekm/u+OcHV1ByehHSyNs=;
+        b=rwVPt9VGk2LHgJmQ3Hifkm3M896BLggv7ABT5e1qbw4/Q4PuDgLzRB3i8Unz7woY0r
+         Vpmiwt+T0g5P6cm486uNaPpLRXZeaox9KfyBPnREYLhAv10DMvGBRG4YRrW/x8OJD5M8
+         FzU/+DA3Wo8hR0X6L4gLaznthuVtwinDfpVNc3J6vJubPPyEFcA5eYacl3GKWn3gRvb0
+         RRDQNf8355fKizK2bSJspbWq3/C9myj2LMff5W7UhDQEB7rESSaEd+GqB+tjePGRF4uP
+         7XchhKbf4COn20wbtr/4S5R8KAtCYlZob3T6gi+DSj6jHPR5mGDPrHF1Y4YrWIPSoJuL
+         PS5Q==
+X-Gm-Message-State: AGi0PuZrrB4IbDQ8yySVnSJddGzKbVNyLMfx2jSvNNNZI+Oh/aEnkdLw
+        MRNMvpCB4wdKgjP3/FTqBwLPsycMXZO6/uRLLA3rDmF7bTl/EOYJykJ6EdQ71r0XrKwMrvvvc7j
+        IzvHiFxS9EILoR7gxviTid7dZtdqCoplnOy/dywKlCzWQVjBw6/SX68y0cQ==
+X-Received: by 2002:a17:906:e098:: with SMTP id gh24mr13250455ejb.44.1589196425147;
+        Mon, 11 May 2020 04:27:05 -0700 (PDT)
+X-Google-Smtp-Source: APiQypJK5vYrawWYQ4rT6+ywp/xCU6lU3xhBAyIqYrYAMAAN44ZPbDkRzW2yvynqnjzplQWrqO23kmx5LdF727eZk+s=
+X-Received: by 2002:a17:906:e098:: with SMTP id gh24mr13250440ejb.44.1589196424851;
+ Mon, 11 May 2020 04:27:04 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200507215946.22589-1-gpiccoli@canonical.com>
+ <20200507160438.ed336a1e00c23c6863d75ae5@linux-foundation.org>
+ <CALJn8nNDqWwanhmutCiP-WBLN1eSg2URrG2j5R4kzgHTYObs7Q@mail.gmail.com>
+ <alpine.DEB.2.22.394.2005081129100.236131@chino.kir.corp.google.com>
+ <CAHD1Q_wF6Mzf5JipXGZKvn2YDR+FQ6ePuKOe-1W-t_VapxMCxg@mail.gmail.com> <alpine.DEB.2.22.394.2005101821160.172131@chino.kir.corp.google.com>
+In-Reply-To: <alpine.DEB.2.22.394.2005101821160.172131@chino.kir.corp.google.com>
+From:   Guilherme Piccoli <gpiccoli@canonical.com>
+Date:   Mon, 11 May 2020 08:26:28 -0300
+Message-ID: <CAHD1Q_zrQmUTRpdW3bZ0CRKuu2dKgueXUjqCNtC5oyZ67CGp2A@mail.gmail.com>
+Subject: Re: [PATCH] mm, compaction: Indicate when compaction is manually
+ triggered by sysctl
+To:     David Rientjes <rientjes@google.com>
+Cc:     "Guilherme G. Piccoli" <kernel@gpiccoli.net>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Gavin Guo <gavin.guo@canonical.com>,
+        Mel Gorman <mgorman@techsingularity.net>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement a kasan_init_region() dedicated to book3s/32 that
-allocates KASAN regions using BATs.
+On Sun, May 10, 2020 at 10:25 PM David Rientjes <rientjes@google.com> wrote:
+> [...]
+> The kernel log is not preferred for this (or drop_caches, really) because
+> the amount of info can causing important information to be lost.  We don't
+> really gain anything by printing that someone manually triggered
+> compaction; they could just write to the kernel log themselves if they
+> really wanted to.  The reverse is not true: we can't suppress your kernel
+> message with this patch.
+>
+> Instead, a statsfs-like approach could be used to indicate when this has
+> happened and there is no chance of losing events because it got scrolled
+> off the kernel log.  It has the added benefit of not requiring the entire
+> log to be parsed for such events.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/include/asm/kasan.h      |  1 +
- arch/powerpc/mm/kasan/Makefile        |  1 +
- arch/powerpc/mm/kasan/book3s_32.c     | 57 +++++++++++++++++++++++++++
- arch/powerpc/mm/kasan/kasan_init_32.c |  2 +-
- 4 files changed, 60 insertions(+), 1 deletion(-)
- create mode 100644 arch/powerpc/mm/kasan/book3s_32.c
+OK, agreed! Let's forget the kernel log. So, do you think the way to
+go is the statsfs, not a zoneinfo stat, a per-node thing? I'm saying
+that because kernel mm subsystem statistics seem pretty.."comfortable"
+the way they are, in files like vmstat, zoneinfo, etc. Let me know
+your thoughts on this, if I could work on that or should wait statsfs.
+Thanks,
 
-diff --git a/arch/powerpc/include/asm/kasan.h b/arch/powerpc/include/asm/kasan.h
-index 107a24c3f7b3..be85c7005fb1 100644
---- a/arch/powerpc/include/asm/kasan.h
-+++ b/arch/powerpc/include/asm/kasan.h
-@@ -34,6 +34,7 @@ static inline void kasan_init(void) { }
- static inline void kasan_late_init(void) { }
- #endif
- 
-+void kasan_update_early_region(unsigned long k_start, unsigned long k_end, pte_t pte);
- int kasan_init_shadow_page_tables(unsigned long k_start, unsigned long k_end);
- int kasan_init_region(void *start, size_t size);
- 
-diff --git a/arch/powerpc/mm/kasan/Makefile b/arch/powerpc/mm/kasan/Makefile
-index 440038ea79f1..bb1a5408b86b 100644
---- a/arch/powerpc/mm/kasan/Makefile
-+++ b/arch/powerpc/mm/kasan/Makefile
-@@ -4,3 +4,4 @@ KASAN_SANITIZE := n
- 
- obj-$(CONFIG_PPC32)           += kasan_init_32.o
- obj-$(CONFIG_PPC_8xx)		+= 8xx.o
-+obj-$(CONFIG_PPC_BOOK3S_32)	+= book3s_32.o
-diff --git a/arch/powerpc/mm/kasan/book3s_32.c b/arch/powerpc/mm/kasan/book3s_32.c
-new file mode 100644
-index 000000000000..4bc491a4a1fd
---- /dev/null
-+++ b/arch/powerpc/mm/kasan/book3s_32.c
-@@ -0,0 +1,57 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#define DISABLE_BRANCH_PROFILING
-+
-+#include <linux/kasan.h>
-+#include <linux/memblock.h>
-+#include <asm/pgalloc.h>
-+#include <mm/mmu_decl.h>
-+
-+int __init kasan_init_region(void *start, size_t size)
-+{
-+	unsigned long k_start = (unsigned long)kasan_mem_to_shadow(start);
-+	unsigned long k_end = (unsigned long)kasan_mem_to_shadow(start + size);
-+	unsigned long k_cur = k_start;
-+	int k_size = k_end - k_start;
-+	int k_size_base = 1 << (ffs(k_size) - 1);
-+	int ret;
-+	void *block;
-+
-+	block = memblock_alloc(k_size, k_size_base);
-+
-+	if (block && k_size_base >= SZ_128K && k_start == ALIGN(k_start, k_size_base)) {
-+		int k_size_more = 1 << (ffs(k_size - k_size_base) - 1);
-+
-+		setbat(-1, k_start, __pa(block), k_size_base, PAGE_KERNEL);
-+		if (k_size_more >= SZ_128K)
-+			setbat(-1, k_start + k_size_base, __pa(block) + k_size_base,
-+			       k_size_more, PAGE_KERNEL);
-+		if (v_block_mapped(k_start))
-+			k_cur = k_start + k_size_base;
-+		if (v_block_mapped(k_start + k_size_base))
-+			k_cur = k_start + k_size_base + k_size_more;
-+
-+		update_bats();
-+	}
-+
-+	if (!block)
-+		block = memblock_alloc(k_size, PAGE_SIZE);
-+	if (!block)
-+		return -ENOMEM;
-+
-+	ret = kasan_init_shadow_page_tables(k_start, k_end);
-+	if (ret)
-+		return ret;
-+
-+	kasan_update_early_region(k_start, k_cur, __pte(0));
-+
-+	for (; k_cur < k_end; k_cur += PAGE_SIZE) {
-+		pmd_t *pmd = pmd_ptr_k(k_cur);
-+		void *va = block + k_cur - k_start;
-+		pte_t pte = pfn_pte(PHYS_PFN(__pa(va)), PAGE_KERNEL);
-+
-+		__set_pte_at(&init_mm, k_cur, pte_offset_kernel(pmd, k_cur), pte, 0);
-+	}
-+	flush_tlb_kernel_range(k_start, k_end);
-+	return 0;
-+}
-diff --git a/arch/powerpc/mm/kasan/kasan_init_32.c b/arch/powerpc/mm/kasan/kasan_init_32.c
-index 76d418af4ce8..c42085801c04 100644
---- a/arch/powerpc/mm/kasan/kasan_init_32.c
-+++ b/arch/powerpc/mm/kasan/kasan_init_32.c
-@@ -79,7 +79,7 @@ int __init __weak kasan_init_region(void *start, size_t size)
- 	return 0;
- }
- 
--static void __init
-+void __init
- kasan_update_early_region(unsigned long k_start, unsigned long k_end, pte_t pte)
- {
- 	unsigned long k_cur;
--- 
-2.25.0
 
+Guilherme
