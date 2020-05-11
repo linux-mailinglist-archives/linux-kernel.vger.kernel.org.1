@@ -2,66 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B618F1CD734
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 13:07:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1E9A1CD762
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 13:13:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729449AbgEKLHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 07:07:09 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:35180 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728638AbgEKLHJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 07:07:09 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id D74FF84D37ED8A17CD91;
-        Mon, 11 May 2020 19:07:03 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 11 May 2020 19:06:55 +0800
-From:   Samuel Zou <zou_wei@huawei.com>
-To:     <sre@kernel.org>
-CC:     <andriy.shevchenko@linux.intel.com>,
-        <matti.vaittinen@fi.rohmeurope.com>, <linux-pm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Samuel Zou <zou_wei@huawei.com>
-Subject: [PATCH -next] power: supply: Make bd9995x_chip_reset static
-Date:   Mon, 11 May 2020 19:12:57 +0800
-Message-ID: <1589195577-8723-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        id S1729382AbgEKLNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 07:13:09 -0400
+Received: from foss.arm.com ([217.140.110.172]:56782 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725993AbgEKLNJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 07:13:09 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E63841FB;
+        Mon, 11 May 2020 04:13:08 -0700 (PDT)
+Received: from [192.168.0.7] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 678013F305;
+        Mon, 11 May 2020 04:13:06 -0700 (PDT)
+Subject: Re: [PATCH v5 3/4] sched: Allow sched_{get,set}attr to change
+ latency_nice of the task
+To:     Parth Shah <parth@linux.ibm.com>, linux-kernel@vger.kernel.org
+Cc:     peterz@infradead.org, mingo@redhat.com, vincent.guittot@linaro.org,
+        qais.yousef@arm.com, chris.hyser@oracle.com,
+        pkondeti@codeaurora.org, patrick.bellasi@matbug.net,
+        valentin.schneider@arm.com, David.Laight@ACULAB.COM,
+        pjt@google.com, pavel@ucw.cz, tj@kernel.org,
+        dhaval.giani@oracle.com, qperret@google.com,
+        tim.c.chen@linux.intel.com
+References: <20200228090755.22829-1-parth@linux.ibm.com>
+ <20200228090755.22829-4-parth@linux.ibm.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <00bf190a-6d84-48aa-83cb-b25e6c24777c@arm.com>
+Date:   Mon, 11 May 2020 13:13:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200228090755.22829-4-parth@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following sparse warning:
+On 28/02/2020 10:07, Parth Shah wrote:
+> Introduce the latency_nice attribute to sched_attr and provide a
+> mechanism to change the value with the use of sched_setattr/sched_getattr
+> syscall.
+> 
+> Also add new flag "SCHED_FLAG_LATENCY_NICE" to hint the change in
+> latency_nice of the task on every sched_setattr syscall.
+> 
+> Signed-off-by: Parth Shah <parth@linux.ibm.com>
+> Reviewed-by: Qais Yousef <qais.yousef@arm.com>
 
-drivers/power/supply/bd99954-charger.c:1028:6: warning: symbol 'bd9995x_chip_reset' was not declared.
+[...]
 
-The bd9995x_chip_reset() has only one call site within bd99954-charger.c
-It should be static
+ndif /* _UAPI_LINUX_SCHED_TYPES_H */
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 866ea3d2d284..cd1fb9c8be26 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -4710,6 +4710,9 @@ static void __setscheduler_params(struct task_struct *p,
+>  	p->rt_priority = attr->sched_priority;
+>  	p->normal_prio = normal_prio(p);
+>  	set_load_weight(p, true);
+> +
+> +	if (attr->sched_flags & SCHED_FLAG_LATENCY_NICE)
+> +		p->latency_nice = attr->sched_latency_nice;
+>  }
 
-Fixes: 0902f8366491 ("power: supply: Support ROHM bd99954 charger")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Samuel Zou <zou_wei@huawei.com>
----
- drivers/power/supply/bd99954-charger.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+How do you make sure that p->latency_nice can be set independently from
+p->static_prio?
 
-diff --git a/drivers/power/supply/bd99954-charger.c b/drivers/power/supply/bd99954-charger.c
-index 3da39c7..ffd8bfa 100644
---- a/drivers/power/supply/bd99954-charger.c
-+++ b/drivers/power/supply/bd99954-charger.c
-@@ -1025,7 +1025,7 @@ static int bd9995x_fw_probe(struct bd9995x_device *bd)
- 	return 0;
- }
- 
--void bd9995x_chip_reset(void *bd)
-+static void bd9995x_chip_reset(void *bd)
- {
- 	__bd9995x_chip_reset(bd);
- }
--- 
-2.6.2
+AFAICS, util_clamp achieves this by relying on SCHED_FLAG_KEEP_PARAMS,
+so completely bypassing __setscheduler_params() and using it's own
+__setscheduler_uclamp().
 
+[...]
