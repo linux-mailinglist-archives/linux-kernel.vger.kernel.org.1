@@ -2,144 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 828981CE2CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 20:30:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5BA01CE288
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 20:25:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731124AbgEKSac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 14:30:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729905AbgEKSac (ORCPT
+        id S1731069AbgEKSY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 14:24:59 -0400
+Received: from mail-pj1-f65.google.com ([209.85.216.65]:37113 "EHLO
+        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729713AbgEKSY6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 14:30:32 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A74EAC061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 11:30:31 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id d16so8846181edq.7
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 11:30:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xryJwG59JLB17PZEyr7DCd9/6LaHNOFAsde4B/bIMlo=;
-        b=g/MBnQ5L6r5hjAiqwK3Lokfo6oOGGuM5QvnhrybDQ8sLEIE9qu0oU9BD1e40bwbjAC
-         M+dhC4n2RQfKhcKsZNLukjmvWdhFWzFs4+nXX9dq4XhIt5ePh2P/IqRFgcbyzxa/All8
-         k52VX6HiUg8D6PfcVMkdAhelN3aqeQxt4UIbs=
+        Mon, 11 May 2020 14:24:58 -0400
+Received: by mail-pj1-f65.google.com with SMTP id a7so8199362pju.2;
+        Mon, 11 May 2020 11:24:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xryJwG59JLB17PZEyr7DCd9/6LaHNOFAsde4B/bIMlo=;
-        b=fYdknLbFWuMMXNj96oCYEvtBJUdIJOOHpJd8pXAkVJFXqhL8Vmt9OC8a3KlfIgB6qc
-         YIVxUz9a3tyGuyYmS2Zq4Ud7xgLNKTvWS9AMk2hSEjtEzeCVjshDoiqbJ5nu0W1Lvukt
-         CotuybGmOKjx4wft2Tp3ZkNwlGIQWBK6MLDyzMkEkxBi3A+5NMpb0nNCx1fl3WrHpjW6
-         gl1jfwAK8LjTyarbI1A2ePH5V9Z+pgqtZTe5YpyDnxTMuM6cm+Oib4M1BAj/u3tYMW/8
-         6x8Pq5ZO+CrJjbJ5wraYkgcbhV9s+dxLXDdaFfCxi9DmFhpXYFjdSuMASDiB1WrPVHIB
-         UOpg==
-X-Gm-Message-State: AGi0PuYxkOPJL6K+pyN38oWB+CXyZUYRGCE5yRo3TgIVQm+E1gS2MZNF
-        3TdlQf74c7uuaNcV/g36zUkyM2U2QWM=
-X-Google-Smtp-Source: APiQypLHUUGpJt9BHkMKa3OqnOfRmxbQIpX6fZ+QRNFwISKUxAvFOSP5yk6PURuT7Ul3APGr1CWe4g==
-X-Received: by 2002:a50:9e6a:: with SMTP id z97mr13974085ede.375.1589221830071;
-        Mon, 11 May 2020 11:30:30 -0700 (PDT)
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com. [209.85.221.53])
-        by smtp.gmail.com with ESMTPSA id k21sm1283608ejr.61.2020.05.11.11.30.29
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 May 2020 11:30:29 -0700 (PDT)
-Received: by mail-wr1-f53.google.com with SMTP id w7so12232043wre.13
-        for <linux-kernel@vger.kernel.org>; Mon, 11 May 2020 11:30:29 -0700 (PDT)
-X-Received: by 2002:a2e:9a54:: with SMTP id k20mr11787437ljj.265.1589221464037;
- Mon, 11 May 2020 11:24:24 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=gzjYF0ep8XMaeJksKcr1mwS/Ul5KRJgBfVKTrx7XdJ8=;
+        b=YDHwCHen8nAIlXkNjGyytBp4l/3THc/CLlDSTpZ2ov/9MEQ9lgcGqlURz9eWD6UY49
+         Ht+7MCXeLI4re36/2CCRhVtRAz59KEmu1sZ+TgiPFxhMNu7lJr9cYWEKvA40lcd+dhi8
+         qkRg97EWRcR8h3DdOA6gQMW/3obhX9IcJxhXyiFEqC2hO9t2GwThObeG6skwYIlx8sp3
+         0zY/VMtBmda9nvA7gUkcTaLaxTDKB4s03ctagWfEms0bF0vWacZ5eUWbRmpXDPGBBJFV
+         rkTLmHOUQuyw6s7yTeHsEFzZvW3IgdEtgld/kh7ONUN99NarRzrJCrk3w2p73DYXxSg4
+         yvmw==
+X-Gm-Message-State: AGi0PubnsxvtM0K7F8T+3Rp5ASSZyrscyWV9K/tJiAZ9AfB91aoC7qHH
+        o/NqBnO51FBLWtJQBWzGq38RwVF1Mo0=
+X-Google-Smtp-Source: APiQypKPXNbqjUaKuNkDw/NfTC1wA3JKFcVH3i5a3y/+Dd5/xFN9T+yDEPZ7DD1beXNuM8j6Z44Wqw==
+X-Received: by 2002:a17:902:8e87:: with SMTP id bg7mr16102782plb.91.1589221497577;
+        Mon, 11 May 2020 11:24:57 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id k6sm10585413pju.44.2020.05.11.11.24.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 May 2020 11:24:56 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id 62A1240605; Mon, 11 May 2020 18:24:55 +0000 (UTC)
+Date:   Mon, 11 May 2020 18:24:55 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Rafael Aquini <aquini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        dyoung@redhat.com, bhe@redhat.com, corbet@lwn.net,
+        keescook@chromium.org, akpm@linux-foundation.org, cai@lca.pw,
+        rdunlap@infradead.org, tytso@mit.edu, bunk@kernel.org,
+        torvalds@linux-foundation.org, gregkh@linuxfoundation.org,
+        labbott@redhat.com, jeffm@suse.com, jikos@kernel.org, jeyu@suse.de,
+        tiwai@suse.de, AnDavis@suse.com, rpalethorpe@suse.de
+Subject: Re: [PATCH v3] kernel: add panic_on_taint
+Message-ID: <20200511182455.GR11244@42.do-not-panic.com>
+References: <20200509135737.622299-1-aquini@redhat.com>
 MIME-Version: 1.0
-References: <20200504230309.237398-1-ndesaulniers@google.com>
- <CAKwvOdmspKUknbzDn9kY2jMgkFw=Ktvst0ZtwambDOfybqJGWw@mail.gmail.com> <CAHk-=wif=_ZomkWJAmQRCUAMHQ72V3NEQ-OteiPE56K7KoSjbQ@mail.gmail.com>
-In-Reply-To: <CAHk-=wif=_ZomkWJAmQRCUAMHQ72V3NEQ-OteiPE56K7KoSjbQ@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 11 May 2020 11:24:07 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whhCBvjXtRiFM2JEZ4XyBmuPprvdo5tpPVBqUhkRszxiQ@mail.gmail.com>
-Message-ID: <CAHk-=whhCBvjXtRiFM2JEZ4XyBmuPprvdo5tpPVBqUhkRszxiQ@mail.gmail.com>
-Subject: Re: [PATCH] x86: support i386 with Clang
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Dmitry Golovin <dima@golovin.in>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: multipart/mixed; boundary="000000000000d91fe305a563741a"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200509135737.622299-1-aquini@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000d91fe305a563741a
-Content-Type: text/plain; charset="UTF-8"
+On Sat, May 09, 2020 at 09:57:37AM -0400, Rafael Aquini wrote:
+> +Trigger Kdump on add_taint()
+> +============================
+> +
+> +The kernel parameter, panic_on_taint, calls panic() from within add_taint(),
+> +whenever the value set in this bitmask matches with the bit flag being set
+> +by add_taint(). This will cause a kdump to occur at the panic() call.
+> +In cases where a user wants to specify this during runtime,
+> +/proc/sys/kernel/panic_on_taint can be set to a respective bitmask value
+> +to achieve the same behaviour.
+> +
+>  Contact
+>  =======
+>  
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 7bc83f3d9bdf..4a69fe49a70d 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -3404,6 +3404,21 @@
+>  	panic_on_warn	panic() instead of WARN().  Useful to cause kdump
+>  			on a WARN().
+>  
+> +	panic_on_taint=	[KNL] conditionally panic() in add_taint()
+> +			Format: <str>
+> +			Specifies, as a string, the TAINT flag set that will
+> +			compose a bitmask for calling panic() when the kernel
+> +			gets tainted.
+> +			See Documentation/admin-guide/tainted-kernels.rst for
+> +			details on the taint flags that users can pick to
+> +			compose the bitmask to assign to panic_on_taint.
+> +			When the string is prefixed with a '-' the bitmask
+> +			set in panic_on_taint will be mutually exclusive
+> +			with the sysctl knob kernel.tainted, and any attempt
+> +			to write to that sysctl will fail with -EINVAL for
+> +			any taint value that masks with the flags set for
+> +			this option.
 
-On Mon, May 11, 2020 at 11:12 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> Would using "__builtin_choose_expr()" be able to avoid this whole issue?
+This talks about using a string, but that it sets a bitmask. Its not
+very clear that one must use the string representation from each taint
+flag. Also, I don't think to use the character representation as we
+limit ourselves to the alphabet and quirky what-should-be-arbitrary
+characters that represent the taint flags. The taint flag character
+representation is juse useful for human reading of a panic, but I think
+because of the limitation of the mask with the alphabet this was not
+such a great idea long term.
 
-We actually have a fair amount of "pick expression based on size", so
-with a few helper macros we could make the code look better than the
-case statements too.
+So, I don't think we should keep on extending the alphabet use case, a
+simple digit representation would suffice. I think this means we'd need
+two params one for exclusive and one for the value of the taint.
 
-Something (ENTIRELY UNTESTED!) like the attached patch, perhaps?
+Using a hex value or number also lets us make the input value shorter.
 
-NOTE! I only converted one single use to that "pick_size_xyz()" model.
-If this actually works for clang too, we could do the others.
+If a kernel boots with panic-on-taint flag not yet supported, we don't
+complain, therefore getting a false sense of security that we will panic
+with a not yet supported taint flag. I think we should pr_warn() or
+fail to boot when that happens.
 
-I guess I should just test it, since I have that clang tree.
-
-                  Linus
-
---000000000000d91fe305a563741a
-Content-Type: application/octet-stream; name=patch
-Content-Disposition: attachment; filename=patch
-Content-Transfer-Encoding: base64
-Content-ID: <f_ka2tez6f0>
-X-Attachment-Id: f_ka2tez6f0
-
-IGFyY2gveDg2L2luY2x1ZGUvYXNtL3BlcmNwdS5oIHwgMzEgKysrKysrKysrKysrKysrKy0tLS0t
-LS0tLS0tLS0tLQogMSBmaWxlIGNoYW5nZWQsIDE2IGluc2VydGlvbnMoKyksIDE1IGRlbGV0aW9u
-cygtKQoKZGlmZiAtLWdpdCBhL2FyY2gveDg2L2luY2x1ZGUvYXNtL3BlcmNwdS5oIGIvYXJjaC94
-ODYvaW5jbHVkZS9hc20vcGVyY3B1LmgKaW5kZXggMjI3ODc5N2M3NjlkLi5iNDc5YTBlNjUwZTUg
-MTAwNjQ0Ci0tLSBhL2FyY2gveDg2L2luY2x1ZGUvYXNtL3BlcmNwdS5oCisrKyBiL2FyY2gveDg2
-L2luY2x1ZGUvYXNtL3BlcmNwdS5oCkBAIC04Niw2ICs4NiwxNyBAQAogLyogRm9yIGFyY2gtc3Bl
-Y2lmaWMgY29kZSwgd2UgY2FuIHVzZSBkaXJlY3Qgc2luZ2xlLWluc24gb3BzICh0aGV5CiAgKiBk
-b24ndCBnaXZlIGFuIGx2YWx1ZSB0aG91Z2gpLiAqLwogZXh0ZXJuIHZvaWQgX19iYWRfcGVyY3B1
-X3NpemUodm9pZCk7CitleHRlcm4gdm9pZCBfX2JhZF9leHByX3NpemUodm9pZCk7CisKKyNkZWZp
-bmUgcGlja190eXBlX2V4cHJlc3Npb24oeCwgZTgsIGUxNiwgZTMyLCBlNjQpCVwKKwlfX2J1aWx0
-aW5fY2hvb3NlX2V4cHIoc2l6ZW9mKHgpPT0xLCBlOCwJCVwKKwlfX2J1aWx0aW5fY2hvb3NlX2V4
-cHIoc2l6ZW9mKHgpPT0yLCBlMTYsCVwKKwlfX2J1aWx0aW5fY2hvb3NlX2V4cHIoc2l6ZW9mKHgp
-PT00LCBlMzIsCVwKKwlfX2J1aWx0aW5fY2hvb3NlX2V4cHIoc2l6ZW9mKHgpPT04LCBlNjQsCVwK
-KwlfX2JhZF9leHByX3NpemUoKSkpKSkKKworI2RlZmluZSBwaWNrX3R5cGVfc3RhdGVtZW50KHgs
-IHM4LCBzMTYsIHMzMiwgczY0KSBcCisJcGlja190eXBlX2V4cHJlc3Npb24oeCwgKHtzODswO30p
-LCAoe3MxNjswO30pLCh7czMyOzA7fSksKHtzNjQ7MDt9KSkKIAogI2RlZmluZSBwZXJjcHVfdG9f
-b3AocXVhbCwgb3AsIHZhciwgdmFsKQkJXAogZG8gewkJCQkJCQlcCkBAIC05NSwyOSArMTA2LDE5
-IEBAIGRvIHsJCQkJCQkJXAogCQlwdG9fdG1wX18gPSAodmFsKTsJCQlcCiAJCSh2b2lkKXB0b190
-bXBfXzsJCQlcCiAJfQkJCQkJCVwKLQlzd2l0Y2ggKHNpemVvZih2YXIpKSB7CQkJCVwKLQljYXNl
-IDE6CQkJCQkJXAorCXBpY2tfdHlwZV9zdGF0ZW1lbnQodmFyLAkJCVwKIAkJYXNtIHF1YWwgKG9w
-ICJiICUxLCJfX3BlcmNwdV9hcmcoMCkJXAogCQkgICAgOiAiK20iICh2YXIpCQkJXAotCQkgICAg
-OiAicWkiICgocHRvX1RfXykodmFsKSkpOwkJXAotCQlicmVhazsJCQkJCVwKLQljYXNlIDI6CQkJ
-CQkJXAorCQkgICAgOiAicWkiICgocHRvX1RfXykodmFsKSkpLAkJXAogCQlhc20gcXVhbCAob3Ag
-IncgJTEsIl9fcGVyY3B1X2FyZygwKQlcCiAJCSAgICA6ICIrbSIgKHZhcikJCQlcCi0JCSAgICA6
-ICJyaSIgKChwdG9fVF9fKSh2YWwpKSk7CQlcCi0JCWJyZWFrOwkJCQkJXAotCWNhc2UgNDoJCQkJ
-CQlcCisJCSAgICA6ICJyaSIgKChwdG9fVF9fKSh2YWwpKSksCQlcCiAJCWFzbSBxdWFsIChvcCAi
-bCAlMSwiX19wZXJjcHVfYXJnKDApCVwKIAkJICAgIDogIittIiAodmFyKQkJCVwKLQkJICAgIDog
-InJpIiAoKHB0b19UX18pKHZhbCkpKTsJCVwKLQkJYnJlYWs7CQkJCQlcCi0JY2FzZSA4OgkJCQkJ
-CVwKKwkJICAgIDogInJpIiAoKHB0b19UX18pKHZhbCkpKSwJCVwKIAkJYXNtIHF1YWwgKG9wICJx
-ICUxLCJfX3BlcmNwdV9hcmcoMCkJXAogCQkgICAgOiAiK20iICh2YXIpCQkJXAotCQkgICAgOiAi
-cmUiICgocHRvX1RfXykodmFsKSkpOwkJXAotCQlicmVhazsJCQkJCVwKLQlkZWZhdWx0OiBfX2Jh
-ZF9wZXJjcHVfc2l6ZSgpOwkJCVwKLQl9CQkJCQkJXAorCQkgICAgOiAicmUiICgocHRvX1RfXyko
-dmFsKSkpKTsJCVwKIH0gd2hpbGUgKDApCiAKIC8qCg==
---000000000000d91fe305a563741a--
+  Luis
