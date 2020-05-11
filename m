@@ -2,41 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 146EF1CD120
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 06:54:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 324EE1CD127
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 May 2020 06:54:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729163AbgEKExz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 May 2020 00:53:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38172 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728710AbgEKExw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 May 2020 00:53:52 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1716824953;
-        Mon, 11 May 2020 04:53:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589172831;
-        bh=42vi448p+mrkPGZCOyniyT8x08SXAABtZ5W56U5+AFk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wVATPgy4J3UEM/lNkY5n2GXotROHwWFFAKRGD1BrwdZjZlHs/9LHr8cOqlxQWQtqF
-         imaE1vwOuZ3NitC41uzVYxcvGV7Ai62RDIkDVfPh6hgDF2F5IDxR4ZIJtUMmzXoYc+
-         BghxsO/MyWKiaxz0Gfnt6Eu7yc7ahBE+8eqqKMR0=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, tglx@linutronix.de, bp@alien8.de,
-        luto@kernel.org
-Cc:     hpa@zytor.com, dave.hansen@intel.com, tony.luck@intel.com,
-        ak@linux.intel.com, ravi.v.shankar@intel.com,
-        chang.seok.bae@intel.com, Sasha Levin <sashal@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH v12 18/18] Documentation/x86/64: Add documentation for GS/FS addressing mode
-Date:   Mon, 11 May 2020 00:53:11 -0400
-Message-Id: <20200511045311.4785-19-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200511045311.4785-1-sashal@kernel.org>
-References: <20200511045311.4785-1-sashal@kernel.org>
+        id S1729358AbgEKEyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 May 2020 00:54:24 -0400
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:58345 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728447AbgEKExg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 May 2020 00:53:36 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 775DD31D;
+        Mon, 11 May 2020 00:53:34 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Mon, 11 May 2020 00:53:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
+         h=from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=8D8NJelTXQUt+y8GwfLHQxRi1C
+        J86uY3Kb4mQLltkjw=; b=zgllr2/We9jSxleBcw1/2ntO2hUrSugVHY8sobNYiI
+        HbYQxNlr2bs7gcpfKFsFT7G25mrKBIW7bhZoY1/gDpDhzxZ40IU0uYtt3VpblQzs
+        HXjerXdr107XEOGeldKITEWDOYHMEgQeXZiozOc6v0a3YCHXVWYE6NKbXKHE4KT+
+        T63+aX+EqNsCWdLHAd5HV3KyGVvG0DRaK0ynN6dmRqltIX/KJIO3KASszbYJ801N
+        qsK9dPj21asjFYi8aLXIFLUmDNUuWZ/OrK5JsfwCxd5xfxYAxwdnPG7/rdShBIs/
+        Ad0KOfwfmlUkoZTVQj/uy3Bf5XGWFahdQHRmnf9h6mhQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=8D8NJelTXQUt+y8Gw
+        fLHQxRi1CJ86uY3Kb4mQLltkjw=; b=lsRP5ghf6A2aa0OYp6Dq/fYECjUfzei3d
+        v7JExSsAgGZND3KdvNmAVBFK92dDdyZySqiXfwsdwfhS7EWYgTJWNak9smsWq+Tc
+        eX+O5t3Oneq9dNmQ3+7kd2LnVpMmKFiKfgKDct1PRUBlQkROFHKcywJwFtAEjjjn
+        axXum50LzGpJ36ut77SDC/ZjS7Yju701bC+yZ+KXgSagt1rGmcG0REIcpa7IsplI
+        spy2Nnl9LCncapLJRz6Z9GAuisZ39kF/aclitjfLFutFVOsK1N25G5JRdDSEWWzY
+        OopTf6VNJ/EHaSNeQkrgI8EELv6MTqyNqMEhK/KzM4Z9ohtGnhizA==
+X-ME-Sender: <xms:Tdq4Xp7hFnFA8RCNxMMjdMy6lY6Ai6a-stgC2CS8MhP20I0dFb5EHg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrkeelgdekiecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
+    dtnecuhfhrohhmpeetlhhishhtrghirhcuhfhrrghntghishcuoegrlhhishhtrghirhes
+    rghlihhsthgrihhrvdefrdhmvgeqnecuggftrfgrthhtvghrnhepjeeliefhvdetgfdtte
+    fhtdegffdtiefffeejiefffeevueeljeehjeevhfffueeknecukfhppeejfedrleefrdek
+    gedrvddtkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    hmpegrlhhishhtrghirhesrghlihhsthgrihhrvdefrdhmvg
+X-ME-Proxy: <xmx:Tdq4XlUhq1SfSIi0Dog1rq1pXW9vvaDysx-oDCvZGsuGvxBm7_afUQ>
+    <xmx:Tdq4XjE_-2z8D69JUQ7-KEqmV0cCeeLtiIPZCOYBYdWEAaSbVOcafA>
+    <xmx:Tdq4XtcDYespdNQn6t2OCVTV5rOCfMpgdc0k_MLh4gBKZrY5QONaJQ>
+    <xmx:Ttq4Xlg3sojeM94SUMQqTIyZesXdG6DZCFyPz7ktH0hj6K5Dzl7WQg>
+Received: from alistair-xps-14z.alistair23.me (c-73-93-84-208.hsd1.ca.comcast.net [73.93.84.208])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 1146F328005D;
+        Mon, 11 May 2020 00:53:32 -0400 (EDT)
+From:   Alistair Francis <alistair@alistair23.me>
+To:     broonie@kernel.org, linux-spi@vger.kernel.org
+Cc:     mripard@kernel.org, wens@csie.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        alistair23@gmail.com, Alistair Francis <alistair@alistair23.me>
+Subject: [PATCH v2] spi: sun6i: Add support for GPIO chip select lines
+Date:   Sun, 10 May 2020 21:53:30 -0700
+Message-Id: <20200511045330.690507-1-alistair@alistair23.me>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -44,247 +68,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+Set use_gpio_descriptors as true to support using generic GPIO
+lines for the chip select.
 
-Explain how the GS/FS based addressing can be utilized in user space
-applications along with the differences between the generic prctl() based
-GS/FS base control and the FSGSBASE version available on newer CPUs.
-
-Originally-by: Andi Kleen <ak@linux.intel.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: H. Peter Anvin <hpa@zytor.com>
-Cc: Dave Hansen <dave.hansen@intel.com>
-Cc: Tony Luck <tony.luck@intel.com>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Randy Dunlap <rdunlap@infradead.org>
-Cc: Jonathan Corbet <corbet@lwn.net>
+Signed-off-by: Alistair Francis <alistair@alistair23.me>
 ---
- Documentation/x86/x86_64/fsgs.rst  | 199 +++++++++++++++++++++++++++++
- Documentation/x86/x86_64/index.rst |   1 +
- 2 files changed, 200 insertions(+)
- create mode 100644 Documentation/x86/x86_64/fsgs.rst
+v2:
+ - Use use_gpio_descriptors instead of spi_setup
 
-diff --git a/Documentation/x86/x86_64/fsgs.rst b/Documentation/x86/x86_64/fsgs.rst
-new file mode 100644
-index 0000000000000..50960e09e1f66
---- /dev/null
-+++ b/Documentation/x86/x86_64/fsgs.rst
-@@ -0,0 +1,199 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+Using FS and GS segments in user space applications
-+===================================================
-+
-+The x86 architecture supports segmentation. Instructions which access
-+memory can use segment register based addressing mode. The following
-+notation is used to address a byte within a segment:
-+
-+  Segment-register:Byte-address
-+
-+The segment base address is added to the Byte-address to compute the
-+resulting virtual address which is accessed. This allows to access multiple
-+instances of data with the identical Byte-address, i.e. the same code. The
-+selection of a particular instance is purely based on the base-address in
-+the segment register.
-+
-+In 32-bit mode the CPU provides 6 segments, which also support segment
-+limits. The limits can be used to enforce address space protections.
-+
-+In 64-bit mode the CS/SS/DS/ES segments are ignored and the base address is
-+always 0 to provide a full 64bit address space. The FS and GS segments are
-+still functional in 64-bit mode.
-+
-+Common FS and GS usage
-+------------------------------
-+
-+The FS segment is commonly used to address Thread Local Storage (TLS). FS
-+is usually managed by runtime code or a threading library. Variables
-+declared with the '__thread' storage class specifier are instantiated per
-+thread and the compiler emits the FS: address prefix for accesses to these
-+variables. Each thread has its own FS base address so common code can be
-+used without complex address offset calculations to access the per thread
-+instances. Applications should not use FS for other purposes when they use
-+runtimes or threading libraries which manage the per thread FS.
-+
-+The GS segment has no common use and can be used freely by
-+applications. GCC and Clang support GS based addressing via address space
-+identifiers.
-+
-+Reading and writing the FS/GS base address
-+------------------------------------------
-+
-+There exist two mechanisms to read and write the FS/GS base address:
-+
-+ - the arch_prctl() system call
-+
-+ - the FSGSBASE instruction family
-+
-+Accessing FS/GS base with arch_prctl()
-+--------------------------------------
-+
-+ The arch_prctl(2) based mechanism is available on all 64-bit CPUs and all
-+ kernel versions.
-+
-+ Reading the base:
-+
-+   arch_prctl(ARCH_GET_FS, &fsbase);
-+   arch_prctl(ARCH_GET_GS, &gsbase);
-+
-+ Writing the base:
-+
-+   arch_prctl(ARCH_SET_FS, fsbase);
-+   arch_prctl(ARCH_SET_GS, gsbase);
-+
-+ The ARCH_SET_GS prctl may be disabled depending on kernel configuration
-+ and security settings.
-+
-+Accessing FS/GS base with the FSGSBASE instructions
-+---------------------------------------------------
-+
-+ With the Ivy Bridge CPU generation Intel introduced a new set of
-+ instructions to access the FS and GS base registers directly from user
-+ space. These instructions are also supported on AMD Family 17H CPUs. The
-+ following instructions are available:
-+
-+  =============== ===========================
-+  RDFSBASE %reg   Read the FS base register
-+  RDGSBASE %reg   Read the GS base register
-+  WRFSBASE %reg   Write the FS base register
-+  WRGSBASE %reg   Write the GS base register
-+  =============== ===========================
-+
-+ The instructions avoid the overhead of the arch_prctl() syscall and allow
-+ more flexible usage of the FS/GS addressing modes in user space
-+ applications. This does not prevent conflicts between threading libraries
-+ and runtimes which utilize FS and applications which want to use it for
-+ their own purpose.
-+
-+FSGSBASE instructions enablement
-+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-+ The instructions are enumerated in CPUID leaf 7, bit 0 of EBX. If
-+ available /proc/cpuinfo shows 'fsgsbase' in the flag entry of the CPUs.
-+
-+ The availability of the instructions does not enable them
-+ automatically. The kernel has to enable them explicitly in CR4. The
-+ reason for this is that older kernels make assumptions about the values in
-+ the GS register and enforce them when GS base is set via
-+ arch_prctl(). Allowing user space to write arbitrary values to GS base
-+ would violate these assumptions and cause malfunction.
-+
-+ On kernels which do not enable FSGSBASE the execution of the FSGSBASE
-+ instructions will fault with a #UD exception.
-+
-+ The kernel provides reliable information about the enabled state in the
-+ ELF AUX vector. If the HWCAP2_FSGSBASE bit is set in the AUX vector, the
-+ kernel has FSGSBASE instructions enabled and applications can use them.
-+ The following code example shows how this detection works::
-+
-+   #include <sys/auxv.h>
-+   #include <elf.h>
-+
-+   /* Will be eventually in asm/hwcap.h */
-+   #ifndef HWCAP2_FSGSBASE
-+   #define HWCAP2_FSGSBASE        (1 << 1)
-+   #endif
-+
-+   ....
-+
-+   unsigned val = getauxval(AT_HWCAP2);
-+
-+   if (val & HWCAP2_FSGSBASE)
-+        printf("FSGSBASE enabled\n");
-+
-+FSGSBASE instructions compiler support
-+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-+
-+GCC version 4.6.4 and newer provide instrinsics for the FSGSBASE
-+instructions. Clang 5 supports them as well.
-+
-+  =================== ===========================
-+  _readfsbase_u64()   Read the FS base register
-+  _readfsbase_u64()   Read the GS base register
-+  _writefsbase_u64()  Write the FS base register
-+  _writegsbase_u64()  Write the GS base register
-+  =================== ===========================
-+
-+To utilize these instrinsics <immintrin.h> must be included in the source
-+code and the compiler option -mfsgsbase has to be added.
-+
-+Compiler support for FS/GS based addressing
-+-------------------------------------------
-+
-+GCC version 6 and newer provide support for FS/GS based addressing via
-+Named Address Spaces. GCC implements the following address space
-+identifiers for x86:
-+
-+  ========= ====================================
-+  __seg_fs  Variable is addressed relative to FS
-+  __seg_gs  Variable is addressed relative to GS
-+  ========= ====================================
-+
-+The preprocessor symbols __SEG_FS and __SEG_GS are defined when these
-+address spaces are supported. Code which implements fallback modes should
-+check whether these symbols are defined. Usage example::
-+
-+  #ifdef __SEG_GS
-+
-+  long data0 = 0;
-+  long data1 = 1;
-+
-+  long __seg_gs *ptr;
-+
-+  /* Check whether FSGSBASE is enabled by the kernel (HWCAP2_FSGSBASE) */
-+  ....
-+
-+  /* Set GS base to point to data0 */
-+  _writegsbase_u64(&data0);
-+
-+  /* Access offset 0 of GS */
-+  ptr = 0;
-+  printf("data0 = %ld\n", *ptr);
-+
-+  /* Set GS base to point to data1 */
-+  _writegsbase_u64(&data1);
-+  /* ptr still addresses offset 0! */
-+  printf("data1 = %ld\n", *ptr);
-+
-+
-+Clang does not provide the GCC address space identifiers, but it provides
-+address spaces via an attribute based mechanism in Clang 2.6 and newer
-+versions:
-+
-+ ==================================== =====================================
-+  __attribute__((address_space(256))  Variable is addressed relative to GS
-+  __attribute__((address_space(257))  Variable is addressed relative to FS
-+ ==================================== =====================================
-+
-+FS/GS based addressing with inline assembly
-+-------------------------------------------
-+
-+In case the compiler does not support address spaces, inline assembly can
-+be used for FS/GS based addressing mode::
-+
-+	mov %fs:offset, %reg
-+	mov %gs:offset, %reg
-+
-+	mov %reg, %fs:offset
-+	mov %reg, %gs:offset
-diff --git a/Documentation/x86/x86_64/index.rst b/Documentation/x86/x86_64/index.rst
-index d6eaaa5a35fcd..a56070fc8e77a 100644
---- a/Documentation/x86/x86_64/index.rst
-+++ b/Documentation/x86/x86_64/index.rst
-@@ -14,3 +14,4 @@ x86_64 Support
-    fake-numa-for-cpusets
-    cpu-hotplug-spec
-    machinecheck
-+   fsgs
+ drivers/spi/spi-sun6i.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/spi/spi-sun6i.c b/drivers/spi/spi-sun6i.c
+index ec7967be9e2f..ecea15534c42 100644
+--- a/drivers/spi/spi-sun6i.c
++++ b/drivers/spi/spi-sun6i.c
+@@ -470,6 +470,7 @@ static int sun6i_spi_probe(struct platform_device *pdev)
+ 
+ 	master->max_speed_hz = 100 * 1000 * 1000;
+ 	master->min_speed_hz = 3 * 1000;
++	master->use_gpio_descriptors = true;
+ 	master->set_cs = sun6i_spi_set_cs;
+ 	master->transfer_one = sun6i_spi_transfer_one;
+ 	master->num_chipselect = 4;
 -- 
-2.20.1
+2.26.2
 
